@@ -53,7 +53,6 @@
  *     the same generator. The code IS the algebra IS the transport.
  */
 
-
 // ── Teaching error integration ────────────────────────────────────────────────────────────
 // Imports are conditional: if the error-envelope module is available, we use it.
 // If not (e.g. in a browser environment), we fall back to bare NACKs.
@@ -66,10 +65,10 @@ import type { DimensionalBnn } from "../planning/error-bnn-bridge";
 // Four rows (data packets), eight columns (data + parity positions).
 // Each row is a weight-4 codeword. The concrete Adinkra generator.
 const ADINKRA_G: readonly (readonly number[])[] = [
-  [1, 0, 0, 0,  0, 1, 1, 1],
-  [0, 1, 0, 0,  1, 0, 1, 1],
-  [0, 0, 1, 0,  1, 1, 0, 1],
-  [0, 0, 0, 1,  1, 1, 1, 0],
+  [1, 0, 0, 0, 0, 1, 1, 1],
+  [0, 1, 0, 0, 1, 0, 1, 1],
+  [0, 0, 1, 0, 1, 1, 0, 1],
+  [0, 0, 0, 1, 1, 1, 1, 0],
 ] as const;
 
 // Block size: 4 data + 4 parity = 8 packets per block
@@ -77,12 +76,12 @@ const BLOCK_DATA = 4;
 const BLOCK_TOTAL = 8;
 
 // AIMD parameters
-const HIGH_LOSS_THRESHOLD = 0.05;  // 5% loss → back off
-const LOW_LOSS_THRESHOLD  = 0.01;  // 1% loss → speed up
-const GAP_STEP_MS         = 2;     // additive increase step (ms)
-const MIN_GAP_MS          = 1;     // minimum inter-packet gap (ms)
-const MAX_GAP_MS          = 500;   // maximum inter-packet gap (ms, ~2 pkt/s floor)
-const LOSS_WINDOW         = 64;    // sliding window for loss estimation (packets)
+const HIGH_LOSS_THRESHOLD = 0.05; // 5% loss → back off
+const LOW_LOSS_THRESHOLD = 0.01; // 1% loss → speed up
+const GAP_STEP_MS = 2; // additive increase step (ms)
+const MIN_GAP_MS = 1; // minimum inter-packet gap (ms)
+const MAX_GAP_MS = 500; // maximum inter-packet gap (ms, ~2 pkt/s floor)
+const LOSS_WINDOW = 64; // sliding window for loss estimation (packets)
 
 // Gossip debounce jitter window (ms)
 const JITTER_MIN_MS = 50;
@@ -93,7 +92,7 @@ const JITTER_MAX_MS = 200;
 /** XOR two equal-length byte arrays in-place (a ⊕= b). */
 function xorBytes(a: Uint8Array, b: Uint8Array): void {
   const len = Math.min(a.length, b.length);
-  for (let i = 0; i < len; i++) a[i] ^= b[i];
+  for (let i = 0; i < len; i++) a[i] = a[i]! ^ b[i]!;
 }
 
 /** Compute the 4 parity packets for a block of 4 data packets using the Adinkra generator.
@@ -123,14 +122,17 @@ export function computeAdinkraParity(data: readonly Uint8Array[]): Uint8Array[] 
  *    - If the erased position is a parity position j: recompute p_j from the data.
  */
 export function recoverAdinkraErasure(
-  block: (Uint8Array | null)[],  // length 8, one null = erased
+  block: (Uint8Array | null)[], // length 8, one null = erased
 ): Uint8Array | null {
-  const erasedIdx = block.findIndex(p => p === null);
+  if (block.length !== BLOCK_TOTAL) return null;
+  const erasedIdx = block.findIndex((p) => p === null);
   if (erasedIdx === -1) return null; // no erasure
-  const erasedCount = block.filter(p => p === null).length;
-  if (erasedCount > 1) return null;  // too many erasures for [8,4,4]
+  const erasedCount = block.filter((p) => p === null).length;
+  if (erasedCount > 1) return null; // too many erasures for [8,4,4]
 
-  const len = block.find(p => p !== null)!.length;
+  const sample = block.find((p) => p !== null);
+  if (!sample) return null;
+  const len = sample.length;
   const recovered = new Uint8Array(len);
 
   if (erasedIdx < BLOCK_DATA) {
@@ -144,7 +146,7 @@ export function recoverAdinkraErasure(
         // p_j = XOR of d_k where G[k][4+j] = 1
         // d_i = p_j XOR (XOR of d_k for k ≠ i where G[k][4+j] = 1)
         const pj = block[4 + j];
-        if (pj === null) continue; // this parity is also erased, try next
+        if (!pj) continue; // this parity is also erased, try next
         recovered.set(pj);
         for (let k = 0; k < BLOCK_DATA; k++) {
           if (k !== i && ADINKRA_G[k]![4 + j] === 1) {
@@ -172,10 +174,10 @@ export function recoverAdinkraErasure(
 // ── Packet framing ────────────────────────────────────────────────────────────────────────
 
 export interface LossyPacketHeader {
-  readonly seq: number;       // global sequence number (monotone)
-  readonly blockSeq: number;  // block sequence number (seq / BLOCK_TOTAL)
-  readonly blockPos: number;  // position within block (0..7)
-  readonly isData: boolean;   // true = data packet (pos 0..3), false = parity (pos 4..7)
+  readonly seq: number; // global sequence number (monotone)
+  readonly blockSeq: number; // block sequence number (seq / BLOCK_TOTAL)
+  readonly blockPos: number; // position within block (0..7)
+  readonly isData: boolean; // true = data packet (pos 0..3), false = parity (pos 4..7)
   readonly payloadLen: number;
 }
 
@@ -234,6 +236,28 @@ export interface NackMessage {
   readonly retractableBeliefId?: string;
 }
 
+function isNackMessage(value: unknown): value is NackMessage {
+  if (typeof value !== "object" || value === null) return false;
+  const candidate = value as Partial<NackMessage>;
+  const validCause =
+    candidate.cause === "congestion" ||
+    candidate.cause === "corruption" ||
+    candidate.cause === "timeout" ||
+    candidate.cause === "unknown";
+  return (
+    candidate.type === "nack" &&
+    Array.isArray(candidate.missingSeqs) &&
+    candidate.missingSeqs.every((seq) => Number.isSafeInteger(seq) && seq >= 0) &&
+    validCause &&
+    typeof candidate.why === "string" &&
+    typeof candidate.howToFix === "string" &&
+    (candidate.retractableBeliefId === undefined || typeof candidate.retractableBeliefId === "string")
+  );
+}
+
+/** Sequence-only NACK represented by the compact binary codec. */
+export type DecodedNackMessage = Pick<NackMessage, "type" | "missingSeqs">;
+
 export function encodeNack(nack: NackMessage): Buffer {
   const buf = Buffer.alloc(4 + nack.missingSeqs.length * 4);
   buf.writeUInt32BE(nack.missingSeqs.length, 0);
@@ -243,7 +267,7 @@ export function encodeNack(nack: NackMessage): Buffer {
   return buf;
 }
 
-export function decodeNack(buf: Buffer): NackMessage | null {
+export function decodeNack(buf: Buffer): DecodedNackMessage | null {
   if (buf.length < 4) return null;
   const count = buf.readUInt32BE(0);
   if (buf.length < 4 + count * 4) return null;
@@ -255,10 +279,10 @@ export function decodeNack(buf: Buffer): NackMessage | null {
 // ── AIMD congestion controller ────────────────────────────────────────────────────────────
 
 export interface AimdState {
-  gapMs: number;           // current inter-packet gap (ms)
-  sentCount: number;       // packets sent in the current window
-  nackCount: number;       // NACKs received in the current window
-  windowStart: number;     // timestamp of window start
+  gapMs: number; // current inter-packet gap (ms)
+  sentCount: number; // packets sent in the current window
+  nackCount: number; // NACKs received in the current window
+  windowStart: number; // timestamp of window start
 }
 
 export function makeAimdState(initialGapMs = 10): AimdState {
@@ -302,7 +326,7 @@ export function lossRate(state: AimdState): number {
 
 export interface ReceiverBlock {
   readonly blockSeq: number;
-  readonly packets: (Uint8Array | null)[];  // length 8
+  readonly packets: (Uint8Array | null)[]; // length 8
   receivedCount: number;
   recovered: boolean;
 }
@@ -319,7 +343,7 @@ export function addToBlock(block: ReceiverBlock, pos: number, payload: Uint8Arra
   block.receivedCount++;
 
   // Check if we have all 4 data packets (no erasure needed)
-  const dataComplete = block.packets.slice(0, BLOCK_DATA).every(p => p !== null);
+  const dataComplete = block.packets.slice(0, BLOCK_DATA).every((p) => p !== null);
   if (dataComplete && !block.recovered) {
     block.recovered = true;
     return block.packets.slice(0, BLOCK_DATA) as Uint8Array[];
@@ -327,7 +351,7 @@ export function addToBlock(block: ReceiverBlock, pos: number, payload: Uint8Arra
 
   // Check if we have 7 of 8 packets (1 erasure, recoverable by [8,4,4])
   if (block.receivedCount === BLOCK_TOTAL - 1 && !block.recovered) {
-    const erasedIdx = block.packets.findIndex(p => p === null);
+    const erasedIdx = block.packets.findIndex((p) => p === null);
     const recovered = recoverAdinkraErasure(block.packets);
     if (recovered !== null) {
       block.packets[erasedIdx] = recovered;
@@ -343,16 +367,17 @@ export function addToBlock(block: ReceiverBlock, pos: number, payload: Uint8Arra
 
 export interface SenderBlock {
   readonly blockSeq: number;
-  readonly dataPackets: Uint8Array[];   // length 4
+  readonly dataPackets: Uint8Array[]; // length 4
   readonly parityPackets: Uint8Array[]; // length 4
 }
 
 /** Build a sender block: 4 data packets → 4 parity packets via Adinkra [8,4,4]. */
 export function buildSenderBlock(blockSeq: number, data: readonly Uint8Array[]): SenderBlock {
-  if (data.length !== BLOCK_DATA) throw new Error(`buildSenderBlock: expected ${BLOCK_DATA} data packets, got ${data.length}`);
-  const maxLen = Math.max(...data.map(d => d.length));
+  if (data.length !== BLOCK_DATA)
+    throw new Error(`buildSenderBlock: expected ${BLOCK_DATA} data packets, got ${data.length}`);
+  const maxLen = Math.max(...data.map((d) => d.length));
   // Pad all data packets to the same length
-  const padded = data.map(d => {
+  const padded = data.map((d) => {
     if (d.length === maxLen) return d;
     const p = new Uint8Array(maxLen);
     p.set(d);
@@ -390,9 +415,14 @@ export function scheduleGossipRebroadcast(
  *    ch.onLossRate(rate => { ... });            // called after each AIMD window
  */
 export class LossyUdpChannel {
+  private readonly transport: {
+    broadcast(text: string): void;
+    onMessage(h: (text: string, from: string) => void): void;
+  };
+  private readonly myZid: string;
   private aimd: AimdState = makeAimdState(10);
   private sendBlockSeq = 0;
-  private sendQueue: Uint8Array[] = [];   // accumulate 4 data packets before sending a block
+  private sendQueue: Uint8Array[] = []; // accumulate 4 data packets before sending a block
   private recvBlocks = new Map<number, ReceiverBlock>();
   private expectedSeq = 0;
   private dataHandlers: Array<(payload: Uint8Array) => void> = [];
@@ -402,14 +432,16 @@ export class LossyUdpChannel {
   private bnn: DimensionalBnn | null = null;
 
   constructor(
-    private readonly transport: {
+    transport: {
       broadcast(text: string): void;
       onMessage(h: (text: string, from: string) => void): void;
     },
-    private readonly myZid: string,
+    myZid: string,
     /** Optional DimensionalBnn for absorbing teaching NACKs. */
     bnn?: DimensionalBnn,
   ) {
+    this.transport = transport;
+    this.myZid = myZid;
     if (bnn) this.bnn = bnn;
     transport.onMessage((text, _from) => void this.handleIncoming(text));
   }
@@ -430,19 +462,27 @@ export class LossyUdpChannel {
     if (this.sendQueue.length >= BLOCK_DATA) this.flushBlock();
   }
 
-  onData(h: (payload: Uint8Array) => void): void { this.dataHandlers.push(h); }
-  onLossRate(h: (rate: number) => void): void { this.lossHandlers.push(h); }
+  onData(h: (payload: Uint8Array) => void): void {
+    this.dataHandlers.push(h);
+  }
+  onLossRate(h: (rate: number) => void): void {
+    this.lossHandlers.push(h);
+  }
   /** Called when a teaching NACK envelope is emitted (for logging / UI). */
-  onEnvelope(h: (envelope: ErrorEnvelope) => void): void { this.envelopeHandlers.push(h); }
+  onEnvelope(h: (envelope: ErrorEnvelope) => void): void {
+    this.envelopeHandlers.push(h);
+  }
 
   private flushBlock(): void {
     const data = this.sendQueue.splice(0, BLOCK_DATA);
     const block = buildSenderBlock(this.sendBlockSeq++, data);
     const allPackets = [...block.dataPackets, ...block.parityPackets];
     for (let pos = 0; pos < BLOCK_TOTAL; pos++) {
-      const seq = (block.blockSeq * BLOCK_TOTAL) + pos;
+      const seq = block.blockSeq * BLOCK_TOTAL + pos;
       const header: LossyPacketHeader = {
-        seq, blockSeq: block.blockSeq, blockPos: pos,
+        seq,
+        blockSeq: block.blockSeq,
+        blockPos: pos,
         isData: pos < BLOCK_DATA,
         payloadLen: allPackets[pos]!.length,
       };
@@ -459,8 +499,18 @@ export class LossyUdpChannel {
   }
 
   private async handleIncoming(text: string): Promise<void> {
-    let envelope: { type?: string; zid?: string; pkt?: string; nack?: number[] };
-    try { envelope = JSON.parse(text); } catch { return; }
+    let envelope: {
+      type?: string;
+      zid?: string;
+      pkt?: string;
+      nack?: number[];
+      teaching?: unknown;
+    };
+    try {
+      envelope = JSON.parse(text);
+    } catch {
+      return;
+    }
     if (envelope.type === "lossy-udp-nack" && Array.isArray(envelope.nack)) {
       // Teaching NACK received: update AIMD loss estimate + absorb into BNN
       const prevRate = lossRate(this.aimd);
@@ -470,24 +520,32 @@ export class LossyUdpChannel {
         for (const h of this.lossHandlers) h(newRate);
       }
       // Absorb teaching error into DimensionalBnn if available
-      if (this.bnn && envelope.teaching) {
-        const teaching = envelope.teaching as NackMessage;
+      if (this.bnn && isNackMessage(envelope.teaching)) {
+        const teaching = envelope.teaching;
         // Import absorbError lazily to avoid circular deps in browser environments
         try {
           const { absorbError: absorb } = await import("../planning/error-bnn-bridge");
           const { teachingError: mkEnv } = await import("../protocol/error-envelope");
           const corrId = `nack:${this.myZid}:${Date.now()}`;
-          const errEnv = mkEnv(corrId, {
-            what: `missing seqs: ${teaching.missingSeqs.join(",")}`,
-            why: teaching.why,
-            howToFix: teaching.howToFix,
-            dimension: "transport",
-            severity: envelope.nack.length > 3 ? "error" : "warn",
-            retractableBeliefId: teaching.retractableBeliefId,
-          }, new Date().toISOString());
-          this.bnn = absorb(this.bnn, errEnv);
+          const retractable =
+            teaching.retractableBeliefId === undefined ? {} : { retractableBeliefId: teaching.retractableBeliefId };
+          const errEnv = mkEnv(
+            corrId,
+            {
+              what: `missing seqs: ${teaching.missingSeqs.join(",")}`,
+              why: teaching.why,
+              howToFix: teaching.howToFix,
+              dimension: "transport",
+              severity: envelope.nack.length > 3 ? "error" : "warn",
+              ...retractable,
+            },
+            new Date().toISOString(),
+          );
+          absorb(this.bnn, errEnv);
           for (const h of this.envelopeHandlers) h(errEnv);
-        } catch { /* browser env without dynamic import */ }
+        } catch {
+          /* browser env without dynamic import */
+        }
       }
       return;
     }
@@ -507,20 +565,26 @@ export class LossyUdpChannel {
         // Infer cause from AIMD state: high loss rate → congestion, else unknown
         const lr = lossRate(this.aimd);
         const cause: LossCause = lr > 0.1 ? "congestion" : lr > 0.02 ? "timeout" : "unknown";
-        const howToFix = cause === "congestion"
-          ? "reduce send rate: increase inter-packet gap by 2x"
-          : cause === "timeout"
-          ? "increase block size timeout: wait 50ms before declaring erasure"
-          : "retry with smaller block size (2 data + 2 parity)";
+        const howToFix =
+          cause === "congestion"
+            ? "reduce send rate: increase inter-packet gap by 2x"
+            : cause === "timeout"
+              ? "increase block size timeout: wait 50ms before declaring erasure"
+              : "retry with smaller block size (2 data + 2 parity)";
         const teachingNack: NackMessage = {
           type: "nack",
           missingSeqs: missing,
           cause,
           why: `${missing.length} packet(s) missing in sequence [${missing[0]}..${missing[missing.length - 1]}]; inferred cause: ${cause}`,
           howToFix,
-          retractableBeliefId: missing.map(s => `received:seq=${s}:zid=${this.myZid}`).join(","),
+          retractableBeliefId: missing.map((s) => `received:seq=${s}:zid=${this.myZid}`).join(","),
         };
-        const nackEnv = JSON.stringify({ type: "lossy-udp-nack", zid: this.myZid, nack: missing, teaching: teachingNack });
+        const nackEnv = JSON.stringify({
+          type: "lossy-udp-nack",
+          zid: this.myZid,
+          nack: missing,
+          teaching: teachingNack,
+        });
         this.transport.broadcast(nackEnv);
       }
     }
@@ -555,17 +619,14 @@ export class LossyUdpChannel {
  *  Use when bandwidth is very limited (LoRa, BLE) and the [8,4,4] overhead is too high.
  *  Corrects exactly 1 erasure per block of N+1 packets. */
 export function xorParityBlock(data: readonly Uint8Array[]): Uint8Array {
-  const len = Math.max(...data.map(d => d.length));
+  const len = Math.max(...data.map((d) => d.length));
   const parity = new Uint8Array(len);
   for (const d of data) xorBytes(parity, d);
   return parity;
 }
 
-export function xorRecoverErasure(
-  data: readonly (Uint8Array | null)[],
-  parity: Uint8Array,
-): Uint8Array | null {
-  const erasedCount = data.filter(d => d === null).length;
+export function xorRecoverErasure(data: readonly (Uint8Array | null)[], parity: Uint8Array): Uint8Array | null {
+  const erasedCount = data.filter((d) => d === null).length;
   if (erasedCount !== 1) return null;
   const recovered = new Uint8Array(parity);
   for (const d of data) {

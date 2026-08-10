@@ -22,6 +22,7 @@ import {
   scheduleGossipRebroadcast,
   LossyUdpChannel,
 } from "./udp-lossy-transport";
+import { createDimensionalBnn } from "../planning/error-bnn-bridge";
 
 // ── Helpers ────────────────────────────────────────────────────────────────────────────────
 function makeData(n: number, seed = 0): Uint8Array[] {
@@ -41,16 +42,16 @@ describe("udp-lossy-transport", () => {
     // For a systematic [I|A] code, each parity packet p_j = XOR of data packets where G[i][4+j]=1.
     // Verify: XOR of the relevant data packets equals the parity packet.
     const G = [
-      [1, 0, 0, 0,  0, 1, 1, 1],
-      [0, 1, 0, 0,  1, 0, 1, 1],
-      [0, 0, 1, 0,  1, 1, 0, 1],
-      [0, 0, 0, 1,  1, 1, 1, 0],
+      [1, 0, 0, 0, 0, 1, 1, 1],
+      [0, 1, 0, 0, 1, 0, 1, 1],
+      [0, 0, 1, 0, 1, 1, 0, 1],
+      [0, 0, 0, 1, 1, 1, 1, 0],
     ];
     for (let j = 0; j < 4; j++) {
       const expected = new Uint8Array(8);
       for (let i = 0; i < 4; i++) {
         if (G[i]![4 + j] === 1) {
-          for (let k = 0; k < 8; k++) expected[k] ^= data[i]![k]!;
+          for (let k = 0; k < 8; k++) expected[k] = expected[k]! ^ data[i]![k]!;
         }
       }
       expect(Array.from(parity[j]!)).toEqual(Array.from(expected));
@@ -189,7 +190,7 @@ describe("udp-lossy-transport", () => {
     const data = makeData(7, 17);
     const parity = xorParityBlock(data);
     // Drop packet 3
-    const withErasure = data.map((d, i) => i === 3 ? null : d) as (Uint8Array | null)[];
+    const withErasure = data.map((d, i) => (i === 3 ? null : d)) as (Uint8Array | null)[];
     const recovered = xorRecoverErasure(withErasure, parity);
     expect(recovered).not.toBeNull();
     expect(Array.from(recovered!)).toEqual(Array.from(data[3]!));
@@ -199,7 +200,7 @@ describe("udp-lossy-transport", () => {
   it("ULT-13 (negative): XOR parity cannot recover 2 erasures", () => {
     const data = makeData(7, 88);
     const parity = xorParityBlock(data);
-    const withErasure = data.map((d, i) => (i === 1 || i === 4) ? null : d) as (Uint8Array | null)[];
+    const withErasure = data.map((d, i) => (i === 1 || i === 4 ? null : d)) as (Uint8Array | null)[];
     const recovered = xorRecoverErasure(withErasure, parity);
     expect(recovered).toBeNull();
   });
@@ -207,9 +208,63 @@ describe("udp-lossy-transport", () => {
   // ── ULT-14: Gossip debounce fires within jitter window ────────────────────────────────
   it("ULT-14: gossip debounce fires within jitter window", async () => {
     let fired = false;
-    const cancel = scheduleGossipRebroadcast(() => { fired = true; }, 10, 30);
-    await new Promise(r => setTimeout(r, 50));
+    const cancel = scheduleGossipRebroadcast(
+      () => {
+        fired = true;
+      },
+      10,
+      30,
+    );
+    await new Promise((r) => setTimeout(r, 50));
     expect(fired).toBe(true);
     cancel(); // no-op since already fired
+  });
+
+  it("ULT-15: teaching NACKs retain and update the supplied Bayesian state", async () => {
+    let receive: (text: string, from: string) => void = () => {};
+    const bnn = createDimensionalBnn();
+    const transport = {
+      broadcast: () => {},
+      onMessage: (handler: (text: string, from: string) => void) => {
+        receive = handler;
+      },
+    };
+    const channel = new LossyUdpChannel(transport, "receiver", bnn);
+    let resolveEnvelope: (() => void) | null = null;
+    channel.onEnvelope(() => {
+      const resolve = resolveEnvelope;
+      resolveEnvelope = null;
+      resolve?.();
+    });
+
+    const sendTeachingNack = async (missingSeq: number): Promise<void> => {
+      const observed = new Promise<void>((resolve) => {
+        resolveEnvelope = resolve;
+      });
+      receive(
+        JSON.stringify({
+          type: "lossy-udp-nack",
+          nack: [missingSeq],
+          teaching: {
+            type: "nack",
+            missingSeqs: [missingSeq],
+            cause: "timeout",
+            why: `sequence ${missingSeq} did not arrive`,
+            howToFix: "increase the receive window",
+            retractableBeliefId: `received:${missingSeq}`,
+          },
+        }),
+        "sender",
+      );
+      await observed;
+    };
+
+    await sendTeachingNack(1);
+    const afterFirst = bnn.states.get("transport")?.obsCount;
+    await sendTeachingNack(2);
+    const afterSecond = bnn.states.get("transport")?.obsCount;
+
+    expect(afterFirst).toBe(1);
+    expect(afterSecond).toBe(2);
   });
 });
