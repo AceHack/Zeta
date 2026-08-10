@@ -155,3 +155,22 @@ describe("zeta-transport-cell", () => {
     expect(Array.isArray(parsed)).toBe(true);
   });
 });
+
+  // ZTC-13: PriorHint auto-attach — successful send embeds BNN posteriors in event payload
+  test("ZTC-13: PriorHint auto-attach — successful send embeds BNN posteriors", async () => {
+    const sent: string[] = [];
+    const mockT = { broadcast: async (e: string) => { sent.push(e); }, onMessage: () => {} };
+    const cell = createZetaTransportCell("test-node", { websocket: mockT });
+    await cell.send(JSON.stringify({ type: "heartbeat", ts: 1 }));
+    expect(sent.length).toBe(1);
+    const parsed = JSON.parse(sent[0]!) as Record<string, unknown>;
+    // The event should have __priorHints attached
+    expect(parsed.__priorHints).toBeDefined();
+    const hints = parsed.__priorHints as Array<{ dimension: string; mu: number }>;
+    expect(hints.length).toBeGreaterThan(0);
+    // Each hint should have a valid mu in [0,1]
+    for (const h of hints) {
+      expect(h.mu).toBeGreaterThanOrEqual(0);
+      expect(h.mu).toBeLessThanOrEqual(1);
+    }
+  });

@@ -18,6 +18,8 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { evolve, createAgent, createSociety, type SocietyAgent, type Society } from "./society-evolution";
+import { createDimensionalBnn, dimensionPosterior, ALL_DIMENSIONS } from "./error-bnn-bridge";
+import type { PriorHint } from "../protocol/batch-teaching-envelope";
 import { founderGenome } from "./agent-genome";
 import type { CalibrationPosterior } from "./calibration-ledger";
 
@@ -102,6 +104,21 @@ async function main(): Promise<number> {
 
   // Write the evolution result as a G-set event
   const eventId = `society-${Date.now().toString(36)}`;
+  // Attach BNN posteriors as PriorHints so receivers can merge them into their own BNNs.
+  // This is the PriorHint exchange: the whole society converges toward a shared posterior
+  // over time as each evolution event carries the current BNN state.
+  const bnn = createDimensionalBnn();
+  const priorHints: PriorHint[] = ALL_DIMENSIONS.map(d => {
+    const p = dimensionPosterior(bnn, d);
+    return {
+      dimension: d,
+      mu: p.mu,
+      sigma2: p.sigma2 * p.sigma2,
+      robustnessWeight: p.w,
+      obsCount: 0,
+      senderZid: "society-runner",
+    };
+  });
   const event = {
     id: eventId,
     at: new Date().toISOString(),
@@ -112,6 +129,9 @@ async function main(): Promise<number> {
     meanFitness: society.meanFitness,
     fitnessSpread: society.fitnessSpread,
     geneticDiversity: society.geneticDiversity,
+    // PriorHint exchange: BNN posteriors for bidirectional EP update
+    // Receivers call ZetaTransportCell.mergePriorHints(event.priorHints) to update their BNNs
+    priorHints,
   };
 
   try {

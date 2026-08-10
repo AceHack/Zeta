@@ -241,6 +241,7 @@ export default function OracleRaceMode() {
     cause: string; howToFix: string; lossRate: number; ts: number;
   }>>([]);
   const [showNackLog, setShowNackLog] = useState(false);
+  const [erasureHeat, setErasureHeat] = useState<{ accounted: number; unaccounted: number; total: number } | null>(null);
   const [tangleMap, setTangleMap] = useState<number[][] | null>(null);
   const [fusionHistory, setFusionHistory] = useState<Array<{ run: number; df: number; spread: number }>>([]);
   const [runCount, setRunCount] = useState(0);
@@ -453,6 +454,9 @@ export default function OracleRaceMode() {
       ts: Date.now() - (2 - i) * 1200,
     }));
     setNackLog(simNacks);
+    // Compute erasureHeat: accounted vs unaccounted bare erasures
+    // Simulated: 1 accounted (bounded-forget TTL), 1 unaccounted (unexpected drop)
+    setErasureHeat({ accounted: 1, unaccounted: 1, total: 3 });
   }, [doneCount]);
   // Z-2 status badge: if spread < 0.05 and meanDf > 1.3, Z-2 amplitude claim is plausible
   // Tangle map: compute PLV between every pair of oracles after race completes
@@ -1141,6 +1145,26 @@ export default function OracleRaceMode() {
         <div style={{ marginTop: "0.5rem", padding: "0.6rem", background: "rgba(239,68,68,0.05)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 6 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
             <strong style={{ color: "#ef4444", fontSize: "0.65rem" }}>🔴 Teaching NACK Log</strong>
+            {erasureHeat && (
+              <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                <span style={{ fontSize: "0.55rem", color: "#64748b" }}>Unaccounted heat:</span>
+                <div style={{ width: 60, height: 8, background: "rgba(255,255,255,0.1)", borderRadius: 4, overflow: "hidden" }}>
+                  <div style={{
+                    height: "100%",
+                    width: `${Math.min(100, (erasureHeat.unaccounted / Math.max(1, erasureHeat.total)) * 100)}%`,
+                    background: erasureHeat.unaccounted === 0 ? "#22c55e" : erasureHeat.unaccounted / erasureHeat.total > 0.5 ? "#ef4444" : "#f59e0b",
+                    borderRadius: 4,
+                    transition: "width 0.3s ease",
+                  }} />
+                </div>
+                <span style={{ fontSize: "0.55rem", color: erasureHeat.unaccounted === 0 ? "#22c55e" : "#ef4444" }}>
+                  {erasureHeat.unaccounted === 0 ? "✓ cold" : `${erasureHeat.unaccounted} leak${erasureHeat.unaccounted > 1 ? "s" : ""}`}
+                </span>
+                {erasureHeat.accounted > 0 && (
+                  <span style={{ fontSize: "0.5rem", color: "#64748b" }}>({erasureHeat.accounted} accounted)</span>
+                )}
+              </div>
+            )}
             <button onClick={() => setShowNackLog(v => !v)} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: "0.6rem", padding: 0 }}>
               {showNackLog ? "▲ collapse" : "▼ expand"}
             </button>

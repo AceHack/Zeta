@@ -29,7 +29,39 @@
  *
  * All three are the same knob: the external observer that prevents groupthink.
  *
- * ## Quasi-time-crystal loop detection
+ * ## Anchors for the -1 retraction and pseudo-retrocausality
+ *
+ * Note: Geometry of Interaction / Int construction was considered and retracted
+ * (Otto, 2026-08-10). Int's backward component is a genuine reverse arrow in the
+ * categorical sense; our -1 arrives FORWARD in time with an inverted sign and
+ * reinterprets earlier +1s under the fold. Same direction, opposite weight — not
+ * the same construction. The anchors that do fit:
+ *
+ * 1. **DBSP / Differential Dataflow** (McSherry, Murray, Isard, Abadi 2013):
+ *    incremental computation over changes. The -1 retraction is a negative delta
+ *    in the change stream. The new generator is the positive delta that replaces it.
+ *    The fold is the running sum. This is the most direct structural match.
+ *
+ * 2. **Bitemporality** (Snodgrass 1992, SQL:2011 temporal tables):
+ *    valid time = when the fact was true in the world;
+ *    transaction time = when the database knew about it.
+ *    The -1 retraction changes the transaction-time view WITHOUT altering valid-time.
+ *    "Retract the belief that frameId was received" = the transaction-time row is
+ *    superseded; the valid-time fact (the frame was sent) is unchanged.
+ *
+ * 3. **AGM Belief Revision** (Alchourrón, Gärdenfors, Makinson 1985):
+ *    contraction (−) removes a belief; expansion (+) adds one; revision (∗) does both.
+ *    The -1 retraction is the contraction operator. The new generator is the expansion.
+ *    The combined teaching ack is a revision: retract the old belief, add the new one.
+ *
+ * 4. **Stückelberg–Feynman** (Feynman 1949):
+ *    a positron is an electron traveling backward in time. The -1 retraction is the
+ *    positron: same particle, opposite charge, arriving forward in time. The "pseudo"
+ *    in pseudo-retrocausality is precisely this: the signal arrives forward in time
+ *    but carries the sign of a backward-traveling event.
+ *    See: docs/research/2026-08-10-variance-same-structure-opposite-labels-… §5a.
+ *
+* ## Quasi-time-crystal loop detection
  *
  * A quasi-time-crystal is a loop that repeats with a period that is not a simple
  * fraction of the tick rate. In the ferry throttler, this manifests as a lane that
@@ -63,6 +95,11 @@
  * - Chenciner & Montgomery (2000) — figure-8 choreography
  * - Wilczek (2012) — time crystals
  * - Else et al. (2016) — Floquet time crystals
+ * - McSherry, Murray, Isard, Abadi (2013) — DBSP / Differential Dataflow
+ * - Snodgrass (1992) / SQL:2011 — Bitemporality (valid vs transaction time)
+ * - Alchourrón, Gärdenfors, Makinson (1985) — AGM Belief Revision
+ * - Feynman (1949) — Stückelberg–Feynman positron / pseudo-retrocausality
+ * - Otto (2026-08-10) — Int/GoI retracted; see variance-same-structure-opposite-labels §5a
  */
 
 import type { BatchAck } from "./mux-transport-bridge";

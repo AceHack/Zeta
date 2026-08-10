@@ -152,7 +152,21 @@ export class ZetaTransportCell {
     const results: SendResult[] = [];
     for (const desc of active) {
       try {
-        await desc.transport.broadcast(event);
+        // Attach current BNN posteriors as PriorHints in the event payload
+        // This closes the bidirectional EP loop: receiver can merge our posterior
+        const priorHints: PriorHint[] = ALL_DIMENSIONS.map(d => {
+          const p = dimensionPosterior(this._bnn, d);
+          return { dimension: d, mu: p.mu, sigma2: p.sigma2 * p.sigma2, robustnessWeight: p.w, obsCount: 0, senderZid: this._nodeId };
+        });
+        // Embed prior hints as a JSON annotation in the event (non-breaking: receivers that
+        // don't understand it will ignore the __priorHints field)
+        let eventWithHints = event;
+        try {
+          const parsed = JSON.parse(event) as Record<string, unknown>;
+          parsed.__priorHints = priorHints;
+          eventWithHints = JSON.stringify(parsed);
+        } catch { /* not JSON — send as-is */ }
+        await desc.transport.broadcast(eventWithHints);
         // Successful send → update quasi-crystal state (not rejected)
         desc.quasiState = updateQuasiState(desc.quasiState, false);
         desc.feedback = updateLaneFeedback(desc.feedback, { kind: "received", frameId: event.slice(0, 16) });
@@ -203,6 +217,38 @@ export class ZetaTransportCell {
   onMessage(handler: (msg: string, from: TransportKind) => void): void {
     for (const desc of this._transports) {
       desc.transport.onMessage(msg => handler(msg, desc.kind));
+    }
+  }
+
+  /**
+   * Merge incoming PriorHints from a received event into the local BNN.
+   * Call this when receiving an event that has __priorHints attached.
+   * This is the yin corner: the receiver learns from the sender's posterior.
+   */
+  mergePriorHints(hints: PriorHint[], trustWeight = 0.5): void {
+    for (const hint of hints) {
+      const local = dimensionPosterior(this._bnn, hint.dimension);
+      const merged = mergePriorHint(
+        { mu: local.mu, sigma2: local.sigma2 * local.sigma2 },
+        hint,
+        trustWeight,
+      );
+      // Absorb the merged posterior as a soft observation
+      // (low severity = soft update, not a hard error)
+      const envelope: ErrorEnvelope = {
+        envelopeId: `prior:${hint.dimension}:${hint.senderZid ?? "unknown"}`,
+        correlationId: `prior:${hint.dimension}`,
+        beacon: `Prior hint from ${hint.senderZid ?? "unknown"}: μ=${merged.mu.toFixed(3)}, σ²=${merged.sigma2.toFixed(3)}`,
+        mirror: {
+          what: `prior hint for dimension ${hint.dimension}`,
+          why: `bidirectional EP update from sender ${hint.senderZid ?? "unknown"}`,
+          howToFix: "no action needed — this is a soft prior update",
+          dimension: hint.dimension,
+          severity: "info",
+        },
+        emittedAt: new Date().toISOString(),
+      };
+      absorbError(this._bnn, envelope);
     }
   }
 
@@ -267,3 +313,5 @@ export function createZetaTransportCell(
 }
 import { envelopeId } from "../protocol/error-envelope";
 import type { ErrorEnvelope } from "../protocol/error-envelope";
+import type { PriorHint } from "../protocol/batch-teaching-envelope";
+import { mergePriorHint } from "../protocol/batch-teaching-envelope";

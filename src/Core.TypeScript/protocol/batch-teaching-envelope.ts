@@ -153,6 +153,17 @@ export interface BatchItemCell {
    * Computed field — not stored, derived from retractableBeliefId presence.
    */
   readonly isTeaching: boolean;
+  /**
+   * Optional reason why this erasure was deliberately paid.
+   * Present = accounted heat (the system is working, not alarming).
+   * Absent = unaccounted heat (the alarm signal).
+   *
+   * Examples of accounted reasons:
+   * - "versioned-migration: dropped old schema form after 30-day transition window"
+   * - "bounded-forget: TTL expired, bounded-forget policy applied"
+   * - "known-landauer: branch collapsed after measurement, Landauer cost paid"
+   */
+  readonly accountedReason?: string;
 }
 
 // ── The batch envelope ────────────────────────────────────────────────────────
@@ -234,6 +245,20 @@ export interface BatchSummary {
   /** Teaching ratio: teachingErrors / failedItems (0 = all erasure, 1 = all teaching) */
   readonly teachingRatio: number;
   /**
+   * Accounted heat: bare erasures that were DELIBERATELY paid (marked with accountedReason).
+   * Deliberate erasures are the system working — a versioned migration that drops the old
+   * form, a known Landauer cost, a bounded-forget policy. These are NOT alarming.
+   * Grounding: docs/research/2026-08-10-tsirelson-… §4a — a versioned migration is
+   * Adj-shaped (near-free); a migration that drops the old form is an erasure and pays.
+   */
+  readonly accountedHeat: number;
+  /**
+   * Unaccounted heat: bare erasures that were NOT deliberately paid (no accountedReason).
+   * This is the alarm signal. Minimising total heat is NOT the goal — heat spent
+   * deliberately is the system working. Unaccounted heat is the entropy leak.
+   */
+  readonly unaccountedHeat: number;
+  /**
    * True if this envelope carries prior hints (bidirectional EP mode).
    * False if it is one-way teaching only.
    */
@@ -255,6 +280,7 @@ export function makeBatchItemCell(spec: {
   reason: string;
   what: string;
   itemStatus?: number;
+  accountedReason?: string;
 }): BatchItemCell {
   return {
     itemId: spec.itemId,
@@ -266,6 +292,7 @@ export function makeBatchItemCell(spec: {
     what: spec.what,
     itemStatus: spec.itemStatus ?? 422,
     isTeaching: spec.retractableBeliefId !== undefined,
+    accountedReason: spec.accountedReason,
   };
 }
 
@@ -285,6 +312,8 @@ export function makeBatchEnvelope(spec: {
   const teachingErrors = errors.filter(e => e.isTeaching).length;
   const bareErasures = failedItems - teachingErrors;
   const teachingRatio = failedItems > 0 ? teachingErrors / failedItems : 1;
+  const accountedHeat = errors.filter(e => !e.isTeaching && e.accountedReason !== undefined).length;
+  const unaccountedHeat = bareErasures - accountedHeat;
 
   // Dominant dimension: most common dimension across failed items
   const dimCounts = new Map<ErrorDimension, number>();
@@ -319,6 +348,8 @@ export function makeBatchEnvelope(spec: {
       bareErasures,
       dominantDimension,
       teachingRatio,
+      accountedHeat,
+      unaccountedHeat,
       hasPriorHints: (priorHints?.length ?? 0) > 0,
     },
   };

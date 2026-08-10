@@ -332,3 +332,24 @@ describe("batch-teaching-envelope", () => {
     expect(joint.mu).toBeCloseTo(local.mu, 5);
     expect(joint.sigma2).toBeCloseTo(local.sigma2, 5);
   });
+
+  // BTE-19: accountedHeat vs unaccountedHeat — deliberate erasures are not alarming
+  test("BTE-19: accountedHeat vs unaccountedHeat — deliberate erasures are not alarming", () => {
+    const env = makeBatchEnvelope({
+      batchFrameId: "frame-heat",
+      correlationId: "corr-heat",
+      totalItems: 5,
+      errors: [
+        makeBatchItemCell({ itemId: "a", generatorFn: "retry", dimension: "transport", severity: "error", reason: "timeout", what: "a" }), // bare erasure, unaccounted
+        makeBatchItemCell({ itemId: "b", generatorFn: "retry", dimension: "transport", severity: "error", reason: "timeout", what: "b", accountedReason: "bounded-forget: TTL expired" }), // accounted
+        makeBatchItemCell({ itemId: "c", retractableBeliefId: "belief:c", generatorFn: "retry", dimension: "schema", severity: "error", reason: "invalid", what: "c" }), // teaching
+      ],
+    });
+    expect(env.summary.bareErasures).toBe(2);
+    expect(env.summary.accountedHeat).toBe(1);   // b has accountedReason
+    expect(env.summary.unaccountedHeat).toBe(1); // a has no accountedReason — the alarm
+    expect(env.summary.teachingErrors).toBe(1);  // c is teaching
+    // The alarm fires on unaccountedHeat, not totalHeat
+    const alarm = env.summary.unaccountedHeat > 0;
+    expect(alarm).toBe(true);
+  });
