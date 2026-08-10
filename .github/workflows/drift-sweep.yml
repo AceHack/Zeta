@@ -182,11 +182,19 @@ jobs:
           bun src/Core.TypeScript/hygiene/drift-ledger.ts report \
             --dir docs/drift-events --json > data/drift-mtth.json
 
+      - name: Publish the drift genome fitness (society-evolution's ledger contract)
+        # The gyroscope as a citizen of planning/society-evolution.ts:
+        # tunables encoded on the society's 7-channel genome, fitness scored
+        # from THIS ledger each tick, published for the generational loop to
+        # select on. Measurement only — a genome that wants to become config
+        # goes through the registry-change discipline.
+        run: bun src/Core.TypeScript/hygiene/drift-genome.ts
+
       - name: Commit and push the tick event (and any SLO filings)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/drift-events docs/letters workitems data/drift-mtth.json
+          git add docs/drift-events docs/letters workitems data/drift-mtth.json data/drift-genome.json
           if git diff --cached --quiet; then
             echo "Nothing staged — no tick recorded."
           else
