@@ -32,8 +32,19 @@
 name: drift-sweep
 
 on:
+  # EVENT-DRIVEN TICK (Aaron 2026-08-10, "how do we speed it up"): the tick
+  # fires on every real push to main — drift is measured the moment it can
+  # exist. Loop-safe by construction: the sweep's own bookkeeping (and the
+  # retraction actuator's pushes) use GITHUB_TOKEN, which never triggers
+  # workflows; only human/agent-credential landings mint ticks. The cron
+  # drops to a twice-hourly HEARTBEAT (catches token-pushed drift + proves
+  # liveness). Because every budget and MTTH is denominated in TICKS, not
+  # wallclock, the whole organism speeds up proportionally with zero
+  # recalibration — the phase-clock design's dividend.
+  push:
+    branches: [main]
   schedule:
-    - cron: "23 */4 * * *" # every 4 hours, off-minute
+    - cron: "7,37 * * * *" # twice-hourly heartbeat, off-minute
   workflow_dispatch: {}
 
 permissions:
