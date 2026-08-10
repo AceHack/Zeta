@@ -497,6 +497,7 @@ body {
   margin: 0.75rem 0;
 }
 
+.zeta-database-summary div,
 .zeta-browser-summary div:not(.zeta-browser-meter) {
   min-width: 0;
   padding: 0.45rem;
@@ -618,13 +619,6 @@ body {
   margin: 0.75rem 0;
 }
 
-.zeta-database-summary div {
-  min-width: 0;
-  padding: 0.45rem;
-  border: 1px solid var(--room-line);
-  border-radius: 6px;
-}
-
 .zeta-database-summary dt {
   color: var(--room-muted);
   font-size: 0.72rem;
@@ -645,7 +639,7 @@ body {
   list-style: none;
 }
 
-.zeta-database-row,
+.zeta-database-row-select,
 .zeta-database-feedback-row {
   display: grid;
   grid-template-columns: minmax(8rem, 1fr) minmax(10rem, 2fr) minmax(3rem, auto);
@@ -655,6 +649,21 @@ body {
   padding: 0.4rem 0.5rem;
   border: 1px solid var(--room-line);
   border-radius: 6px;
+}
+
+.zeta-database-row-select {
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  background: transparent;
+  cursor: pointer;
+}
+
+.zeta-database-row-select:hover,
+.zeta-database-row-select:focus-visible {
+  border-color: var(--room-selected);
+  outline: none;
 }
 
 .zeta-database-row-key,
@@ -769,7 +778,7 @@ body {
 
   .zeta-heat-row,
   .zeta-room-tick,
-  .zeta-database-row,
+  .zeta-database-row-select,
   .zeta-database-feedback-row {
     grid-template-columns: 1fr;
   }

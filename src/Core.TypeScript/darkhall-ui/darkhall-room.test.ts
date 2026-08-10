@@ -337,6 +337,8 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain('data-database-admission="backpressured"');
     expect(html).toContain('data-database-rows="2"');
     expect(html).toContain('data-row-key="game/&lt;score&gt;" data-row-weight="1"');
+    expect(html).toContain('data-database-row-select="true" data-row-key="game/&lt;score&gt;"');
+    expect(html).toContain('aria-label="Load game/&lt;score&gt; into the row command editor"');
     expect(html).toContain("9000 &amp; rising");
     expect(html).toContain('data-row-key="game/lives" data-row-weight="-1"');
     expect(html).not.toContain("game/<score>");

@@ -3,8 +3,9 @@ import type {
   DarkHallBrowserDatabaseCommand,
 } from "./darkhall-browser-database-controller";
 import type { DarkHallBrowserControllerInputSource } from "./darkhall-browser-controller-input";
+import type { DarkHallDatabaseRow } from "./darkhall-database-readout";
 
-export const DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_SCHEMA = "zeta.darkhall.browser-row-command-editor.v1" as const;
+export const DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_SCHEMA = "zeta.darkhall.browser-row-command-editor.v2" as const;
 export const DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_MOUNT_ID = "darkhall-row-command-editor" as const;
 
 const rowKeySelector = "[data-row-command-key]";
@@ -22,6 +23,7 @@ export interface DarkHallBrowserRowCommandEditorFeedback {
     | "row-command-editor-fields-unavailable"
     | "row-command-editor-listener-failed"
     | "row-command-editor-observer-failed"
+    | "row-command-editor-field-write-failed"
     | "row-command-key-required"
     | "row-command-key-invalid"
     | "row-command-payload-too-large"
@@ -53,6 +55,8 @@ export interface DarkHallBrowserRowCommandEditorReadout {
   readonly refused: number;
   readonly backpressured: number;
   readonly nextEventSequence: number;
+  readonly loaded: number;
+  readonly loadedRowKey: string | null;
   readonly feedbackCode: DarkHallBrowserRowCommandEditorFeedback["code"] | null;
   readonly last: DarkHallBrowserRowCommandEditorInteraction | null;
 }
@@ -77,6 +81,7 @@ export interface DarkHallBrowserRowCommandEditorOptions {
 
 export interface DarkHallBrowserRowCommandEditorRuntime {
   read(): DarkHallBrowserRowCommandEditorReadout;
+  load(row: DarkHallDatabaseRow): DarkHallBrowserRowCommandEditorResult<DarkHallBrowserRowCommandEditorReadout>;
   resolve(
     action: DarkHallBrowserDatabaseAction,
     source: DarkHallBrowserControllerInputSource,
@@ -184,8 +189,17 @@ function fieldValue(field: unknown): string | null {
   return typeof value === "string" ? value : null;
 }
 
+function setFieldValue(field: unknown, value: string): boolean {
+  if (!isRecord(field)) return false;
+  try {
+    return Reflect.set(field, "value", value) && member(field, "value") === value;
+  } catch {
+    return false;
+  }
+}
+
 function parseMagnitude(value: string): number | null {
-  if (!/^[1-9][0-9]*$/u.test(value)) return null;
+  if (!/^[1-9]\d*$/u.test(value)) return null;
   const magnitude = Number(value);
   return Number.isSafeInteger(magnitude) ? magnitude : null;
 }
@@ -243,14 +257,15 @@ function renderReadoutAttributes(
     ["data-row-command-resolved", readout.resolved.toString()],
     ["data-row-command-refused", readout.refused.toString()],
     ["data-row-command-backpressured", readout.backpressured.toString()],
+    ["data-row-command-loaded", readout.loaded.toString()],
+    ["data-row-command-loaded-key", readout.loadedRowKey ?? "none"],
     ["data-row-command-feedback", readout.feedbackCode ?? "none"],
   ];
   try {
-    const set = attributes.every(([name, value]) => {
+    for (const [name, value] of attributes) {
       Reflect.apply(mount.setAttribute, mount.value, [name, value]);
-      return true;
-    });
-    return set && setText(fields.status, `${readout.validity} | ${readout.payloadBytes.toString()} bytes`);
+    }
+    return setText(fields.status, `${readout.validity} | ${readout.payloadBytes.toString()} bytes`);
   } catch {
     return false;
   }
@@ -318,6 +333,8 @@ export function startDarkHallBrowserRowCommandEditor(
   let refused = 0;
   let backpressured = 0;
   let nextEventSequence = 0;
+  let loaded = 0;
+  let loadedRowKey: string | null = null;
   let last: DarkHallBrowserRowCommandEditorInteraction | null = null;
 
   const snapshot = (): EditorSnapshot => {
@@ -360,6 +377,8 @@ export function startDarkHallBrowserRowCommandEditor(
       refused,
       backpressured,
       nextEventSequence,
+      loaded,
+      loadedRowKey,
       feedbackCode: current.validation.ok ? null : current.validation.feedback.code,
       last,
     };
@@ -424,8 +443,35 @@ export function startDarkHallBrowserRowCommandEditor(
     return published.ok ? succeeded(command) : published;
   };
 
+  const load = (
+    row: DarkHallDatabaseRow,
+  ): DarkHallBrowserRowCommandEditorResult<DarkHallBrowserRowCommandEditorReadout> => {
+    if (stopped) return failed("row-command-editor-stopped", "The row command editor has stopped.", "cold");
+    const magnitude = Number.isSafeInteger(row.weight) && row.weight !== 0 ? Math.abs(row.weight) : null;
+    const payloadBytes = new TextEncoder().encode(row.payload).byteLength;
+    const rowValidation = validation(row.rowKey, payloadBytes, magnitude, options.maxPayloadBytes);
+    if (!rowValidation.ok) return rowValidation;
+    const previous = [fieldValue(fields.rowKey), fieldValue(fields.payload), fieldValue(fields.magnitude)] as const;
+    if (previous.some((value) => value === null)) {
+      return failed("row-command-editor-fields-unavailable", "The browser stopped exposing an editor field value.");
+    }
+    const next = [row.rowKey, row.payload, magnitude?.toString() ?? ""] as const;
+    const targets = [fields.rowKey, fields.payload, fields.magnitude] as const;
+    const written = targets.every((target, index) => setFieldValue(target, next[index] ?? ""));
+    if (!written) {
+      targets.forEach((target, index) => setFieldValue(target, previous[index] ?? ""));
+      return failed(
+        "row-command-editor-field-write-failed",
+        "The browser refused to load a materialized database row into the command editor.",
+      );
+    }
+    loaded += 1;
+    loadedRowKey = row.rowKey;
+    return publish();
+  };
+
   const changed: NativeListener = () => {
-    void publish();
+    publish();
   };
   try {
     Reflect.apply(mount.add, mount.value, ["input", changed]);
@@ -438,6 +484,7 @@ export function startDarkHallBrowserRowCommandEditor(
 
   const runtime: DarkHallBrowserRowCommandEditorRuntime = {
     read,
+    load,
     resolve,
     stop: () => {
       if (stopped) return succeeded(read());

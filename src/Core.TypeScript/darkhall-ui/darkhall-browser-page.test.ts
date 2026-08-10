@@ -8,9 +8,16 @@ import {
   startNativeDarkHallBrowserPage,
 } from "./darkhall-browser-page";
 import { DARK_HALL_BROWSER_CONTROLLER_INPUT_SCHEMA } from "./darkhall-browser-controller-input";
+import { DARK_HALL_BROWSER_DATABASE_ROW_SELECTION_SCHEMA } from "./darkhall-browser-database-row-selection";
 import { DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_SCHEMA } from "./darkhall-browser-row-command-editor";
 
 type NativeListener = (event?: unknown) => void;
+
+function addNativeListener(entries: Map<string, Set<NativeListener>>, type: string, listener: NativeListener): void {
+  const listeners = entries.get(type) ?? new Set();
+  listeners.add(listener);
+  entries.set(type, listeners);
+}
 
 class NativeMount {
   innerHTML = "standing room";
@@ -26,9 +33,7 @@ class NativeMount {
   }
 
   addEventListener(type: string, listener: NativeListener): void {
-    const entries = this.listeners.get(type) ?? new Set();
-    entries.add(listener);
-    this.listeners.set(type, entries);
+    addNativeListener(this.listeners, type, listener);
   }
 
   removeEventListener(type: string, listener: NativeListener): void {
@@ -70,9 +75,7 @@ class NativeEditorMount {
   }
 
   addEventListener(type: string, listener: NativeListener): void {
-    const entries = this.listeners.get(type) ?? new Set();
-    entries.add(listener);
-    this.listeners.set(type, entries);
+    addNativeListener(this.listeners, type, listener);
   }
 
   removeEventListener(type: string, listener: NativeListener): void {
@@ -100,6 +103,22 @@ class NativeControllerCell {
   }
 }
 
+class NativeDatabaseRowControl {
+  private readonly rowKey: string;
+
+  constructor(rowKey: string) {
+    this.rowKey = rowKey;
+  }
+
+  closest(selector: string): NativeDatabaseRowControl | null {
+    return selector === "[data-database-row-select]" ? this : null;
+  }
+
+  getAttribute(name: string): string | null {
+    return name === "data-row-key" ? this.rowKey : null;
+  }
+}
+
 class NativeServiceWorkerContainer {
   readonly messages: BrowserTabChannelMessage[] = [];
   readonly listeners = new Map<string, Set<NativeListener>>();
@@ -117,9 +136,7 @@ class NativeServiceWorkerContainer {
   }
 
   addEventListener(type: string, listener: NativeListener): void {
-    const entries = this.listeners.get(type) ?? new Set();
-    entries.add(listener);
-    this.listeners.set(type, entries);
+    addNativeListener(this.listeners, type, listener);
   }
 
   removeEventListener(type: string, listener: NativeListener): void {
@@ -149,7 +166,7 @@ class NativeBrowserRoot {
       return null;
     },
     addEventListener: (type: string, listener: NativeListener): void => {
-      this.add(this.documentListeners, type, listener);
+      addNativeListener(this.documentListeners, type, listener);
     },
     removeEventListener: (type: string, listener: NativeListener): void => {
       this.documentListeners.get(type)?.delete(listener);
@@ -157,7 +174,7 @@ class NativeBrowserRoot {
   };
 
   addEventListener(type: string, listener: NativeListener): void {
-    this.add(this.pageListeners, type, listener);
+    addNativeListener(this.pageListeners, type, listener);
   }
 
   removeEventListener(type: string, listener: NativeListener): void {
@@ -166,12 +183,6 @@ class NativeBrowserRoot {
 
   emitDocument(type: string, event: unknown): void {
     for (const listener of this.documentListeners.get(type) ?? []) listener(event);
-  }
-
-  private add(entries: Map<string, Set<NativeListener>>, type: string, listener: NativeListener): void {
-    const listeners = entries.get(type) ?? new Set();
-    listeners.add(listener);
-    entries.set(type, listeners);
   }
 }
 
@@ -250,6 +261,15 @@ describe("Dark Hall active browser page", () => {
         feedbackCode: "row-command-key-required",
         last: null,
       },
+      selection: {
+        schema: DARK_HALL_BROWSER_DATABASE_ROW_SELECTION_SCHEMA,
+        status: "live",
+        selected: 0,
+        refused: 0,
+        backpressured: 0,
+        selectedRowKey: null,
+        last: null,
+      },
       input: {
         schema: DARK_HALL_BROWSER_CONTROLLER_INPUT_SCHEMA,
         status: "live",
@@ -282,6 +302,7 @@ describe("Dark Hall active browser page", () => {
     expect(root.mount.innerHTML).toContain("game/score");
     expect(root.mount.attributes.get("data-controller-input-status")).toBe("live");
     expect(root.mount.attributes.get("data-controller-input-source")).toBe("none");
+    expect(root.mount.attributes.get("data-database-selection-status")).toBe("live");
 
     root.mount.emit("click", {
       button: 0,
@@ -306,6 +327,51 @@ describe("Dark Hall active browser page", () => {
     expect(root.mount.attributes.get("data-controller-input-outcome")).toBe("accepted");
     expect(requests).toHaveLength(3);
 
+    root.mount.emit("click", {
+      button: 0,
+      detail: 1,
+      target: new NativeDatabaseRowControl("game/score"),
+      preventDefault: () => undefined,
+    });
+    expect(started.value.read()).toMatchObject({
+      editor: {
+        validity: "ready",
+        rowKey: "game/score",
+        payloadBytes: 4,
+        magnitude: 1,
+        loaded: 1,
+        loadedRowKey: "game/score",
+        nextEventSequence: 0,
+      },
+      selection: {
+        selected: 1,
+        selectedRowKey: "game/score",
+        last: { source: "pointer", outcome: "selected" },
+      },
+      input: { accepted: 2 },
+    });
+    expect(root.editor.rowKey.value).toBe("game/score");
+    expect(root.editor.payload.value).toBe("9000");
+    expect(root.editor.magnitude.value).toBe("1");
+    expect(root.mount.attributes.get("data-database-selection-row")).toBe("game/score");
+    expect(requests).toHaveLength(3);
+
+    root.mount.emit("click", {
+      button: 0,
+      detail: 1,
+      target: new NativeControllerCell(SLOT.UNDO_RETRACT),
+      preventDefault: () => undefined,
+    });
+    await waitFor(() => started.value.read().input.accepted === 3);
+    expect(requests[3]?.deltas).toEqual([
+      { eventId: "tab-a/row-command/0", rowKey: "game/score", payload: "9000", weight: -1 },
+    ]);
+    expect(started.value.read()).toMatchObject({
+      editor: { resolved: 1, nextEventSequence: 1, last: { kind: "retract", outcome: "resolved" } },
+      controller: { kind: "retract", cell: SLOT.UNDO_RETRACT, signedWeight: -1 },
+      input: { accepted: 3, last: { cell: SLOT.UNDO_RETRACT, outcome: "accepted" } },
+    });
+
     root.editor.rowKey.value = "game/score";
     root.editor.payload.value = "9001";
     root.editor.magnitude.value = "2";
@@ -326,9 +392,9 @@ describe("Dark Hall active browser page", () => {
       target: new NativeControllerCell(SLOT.ACCEPT),
       preventDefault: () => undefined,
     });
-    await waitFor(() => started.value.read().input.accepted === 3);
-    expect(requests[3]?.deltas).toEqual([
-      { eventId: "tab-a/row-command/0", rowKey: "game/score", payload: "9001", weight: 2 },
+    await waitFor(() => started.value.read().input.accepted === 4);
+    expect(requests[4]?.deltas).toEqual([
+      { eventId: "tab-a/row-command/1", rowKey: "game/score", payload: "9001", weight: 2 },
     ]);
     expect(started.value.read().database).toMatchObject({ revision: 8, accepted: 1 });
     expect(started.value.read().controller).toMatchObject({ kind: "emit", cell: SLOT.ACCEPT, signedWeight: 2 });
@@ -336,20 +402,10 @@ describe("Dark Hall active browser page", () => {
     expect(root.mount.innerHTML).toContain(`data-cell="${SLOT.ACCEPT.toString()}"`);
     expect(root.mount.innerHTML).toContain('data-selected="true"');
 
-    root.mount.emit("click", {
-      button: 0,
-      detail: 1,
-      target: new NativeControllerCell(SLOT.UNDO_RETRACT),
-      preventDefault: () => undefined,
-    });
-    await waitFor(() => started.value.read().input.accepted === 4);
-    expect(requests[4]?.deltas).toEqual([
-      { eventId: "tab-a/row-command/1", rowKey: "game/score", payload: "9001", weight: -2 },
-    ]);
     expect(started.value.read()).toMatchObject({
-      editor: { resolved: 2, nextEventSequence: 2, last: { kind: "retract", outcome: "resolved" } },
-      controller: { kind: "retract", cell: SLOT.UNDO_RETRACT, signedWeight: -2 },
-      input: { accepted: 4, last: { cell: SLOT.UNDO_RETRACT, outcome: "accepted" } },
+      editor: { resolved: 2, nextEventSequence: 2, last: { kind: "emit", outcome: "resolved" } },
+      controller: { kind: "emit", cell: SLOT.ACCEPT, signedWeight: 2 },
+      input: { accepted: 4, last: { cell: SLOT.ACCEPT, outcome: "accepted" } },
     });
     expect(root.serviceWorker.messages).toContainEqual({
       schema: BROWSER_TAB_COORDINATOR_SCHEMA,
@@ -365,6 +421,7 @@ describe("Dark Hall active browser page", () => {
     expect(started.value.stop()).toMatchObject({ ok: true, value: { status: "stopped" } });
     expect(root.mount.attributes.get("data-pwa-status")).toBe("stopped");
     expect(root.mount.attributes.get("data-controller-input-status")).toBe("stopped");
+    expect(root.mount.attributes.get("data-database-selection-status")).toBe("stopped");
     expect(root.editor.attributes.get("data-row-command-status")).toBe("stopped");
     expect(root.mount.innerHTML).toMatch(/data-action-id="darkhall\.database\.emit"[^>]* disabled>/u);
     expect(root.mount.innerHTML).toMatch(/data-action-id="darkhall\.database\.retract"[^>]* disabled>/u);
@@ -423,7 +480,9 @@ describe("Dark Hall active browser page", () => {
           return Promise.resolve({ ok: true, value: databaseReadout(request, 9, "9010") });
         }
         return new Promise((resolve) => {
-          hydrationGate.release = () => resolve({ ok: true, value: databaseReadout(request) });
+          hydrationGate.release = () => {
+            resolve({ ok: true, value: databaseReadout(request) });
+          };
         });
       },
     });
@@ -439,7 +498,7 @@ describe("Dark Hall active browser page", () => {
         revision: 9,
       },
     });
-    hydrationGate.release?.();
+    hydrationGate.release();
 
     const started = await starting;
     expect(started).toMatchObject({ ok: true, value: {} });

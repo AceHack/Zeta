@@ -450,9 +450,15 @@ function renderDatabaseReadout(readout: DarkHallDatabaseReadout | undefined): st
         attr("data-row-key", row.rowKey),
         attr("data-row-weight", row.weight),
         ">",
+        '<button type="button" class="zeta-database-row-select"',
+        attr("data-database-row-select", "true"),
+        attr("data-row-key", row.rowKey),
+        attr("aria-label", `Load ${row.rowKey} into the row command editor`),
+        ">",
         `<code class="zeta-database-row-key">${escapeHtml(row.rowKey)}</code>`,
         `<span class="zeta-database-row-payload">${escapeHtml(row.payload)}</span>`,
         `<span class="zeta-database-row-weight">${row.weight > 0 ? "+" : ""}${row.weight.toString()}</span>`,
+        "</button>",
         "</li>",
       ].join(""),
     ),
@@ -574,6 +580,11 @@ function roomTemperatureTreaty(
   });
 }
 
+function continuationTemperature(readout: TranscriptContinuationReadout): MindTemp {
+  if (readout.resumable) return "warm";
+  return readout.admissionFeedback.length > 0 ? "hot" : "cool";
+}
+
 function roomPredictions(
   transcript: RoomRunTranscript,
   heat: HeatReadout | ReturnType<typeof summarizeHeatRows>,
@@ -589,7 +600,7 @@ function roomPredictions(
       : [
           {
             label: "continuation",
-            temp: continuation.resumable ? "warm" : continuation.admissionFeedback.length > 0 ? "hot" : "cool",
+            temp: continuationTemperature(continuation),
             valueMilli: continuation.resumable ? 1000 : 0,
             epsilonMilli: countMilli(continuation.admissionFeedback.length),
           },

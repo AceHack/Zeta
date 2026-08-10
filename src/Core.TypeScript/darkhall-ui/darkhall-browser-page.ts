@@ -39,9 +39,15 @@ import {
   type DarkHallBrowserRowCommandEditorReadout,
   type DarkHallBrowserRowCommandEditorRuntime,
 } from "./darkhall-browser-row-command-editor";
+import {
+  startDarkHallBrowserDatabaseRowSelection,
+  type DarkHallBrowserDatabaseRowSelectionReadout,
+  type DarkHallBrowserDatabaseRowSelectionResult,
+  type DarkHallBrowserDatabaseRowSelectionRuntime,
+} from "./darkhall-browser-database-row-selection";
 import { renderDarkHallRoomHtml, type RoomRunTranscript } from "./darkhall-room";
 
-export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v5" as const;
+export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v6" as const;
 export const DARK_HALL_BROWSER_PAGE_GLOBAL = "__zetaDarkHallPage" as const;
 export const DARK_HALL_BROWSER_PAGE_MOUNT_ID = "darkhall-room" as const;
 
@@ -63,6 +69,8 @@ export interface DarkHallBrowserPageFeedback {
     | "page-database-stop-failed"
     | "page-editor-start-failed"
     | "page-editor-stop-failed"
+    | "page-selection-start-failed"
+    | "page-selection-stop-failed"
     | "page-input-start-failed"
     | "page-input-stop-failed"
     | "page-controller-stop-failed"
@@ -86,6 +94,7 @@ export interface DarkHallBrowserPageReadout {
   readonly database: DarkHallDatabaseReadout;
   readonly controller: DarkHallBrowserDatabaseControllerReadout | null;
   readonly editor: DarkHallBrowserRowCommandEditorReadout;
+  readonly selection: DarkHallBrowserDatabaseRowSelectionReadout;
   readonly input: DarkHallBrowserControllerInputReadout;
 }
 
@@ -98,6 +107,10 @@ export interface DarkHallBrowserPageRuntime {
     cell: number,
     source: DarkHallBrowserControllerInputSource,
   ): Promise<DarkHallBrowserControllerInputResult<DarkHallBrowserControllerInputReadout>>;
+  selectDatabaseRow(
+    rowKey: string,
+    source: DarkHallBrowserControllerInputSource,
+  ): DarkHallBrowserDatabaseRowSelectionResult<DarkHallBrowserDatabaseRowSelectionReadout>;
   stop(): DarkHallBrowserPageResult<DarkHallBrowserPageReadout>;
 }
 
@@ -138,7 +151,7 @@ interface NativePageContext {
 export const DARK_HALL_BROWSER_PAGE_TRANSCRIPT: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
   roomName: "dark hall browser node",
-  seed: "browser-page-v5",
+  seed: "browser-page-v6",
   generatedBy: "darkhall-browser-page",
   controller: DARK_HALL_BROWSER_DATABASE_ACTIONS.map((action) => ({
     cell: action.cell,
@@ -420,6 +433,7 @@ export async function startNativeDarkHallBrowserPage(
 
   let receiveDatabaseInvalidation: ((invalidation: BrowserDatabaseInvalidation) => void) | null = null;
   let startupDatabaseInvalidation: BrowserDatabaseInvalidation | null = null;
+  const pendingStartupInvalidation = (): BrowserDatabaseInvalidation | null => startupDatabaseInvalidation;
   const onDatabaseInvalidated = (invalidation: BrowserDatabaseInvalidation): void => {
     if (receiveDatabaseInvalidation !== null) {
       receiveDatabaseInvalidation(invalidation);
@@ -467,6 +481,7 @@ export async function startNativeDarkHallBrowserPage(
 
   const pwa: DarkHallBrowserPwaRuntime = pwaResult.value;
   let latestDatabase: DarkHallDatabaseReadout | null = null;
+  const observedDatabase = (): DarkHallDatabaseReadout | null => latestDatabase;
   let latestController: DarkHallBrowserDatabaseControllerReadout | null = null;
   const databaseStarted = startBrowserZetaDbTabRuntime({
     databaseNodeId: databaseNodeId.value,
@@ -526,8 +541,9 @@ export async function startNativeDarkHallBrowserPage(
       hydrated.feedback.severity,
     );
   }
-  if (startupDatabaseInvalidation !== null) {
-    receiveDatabaseInvalidation(startupDatabaseInvalidation);
+  const startupInvalidation = pendingStartupInvalidation();
+  if (startupInvalidation !== null) {
+    receiveDatabaseInvalidation(startupInvalidation);
   }
   const drained = await database.drainInvalidations();
   if (!drained.ok) {
@@ -540,7 +556,8 @@ export async function startNativeDarkHallBrowserPage(
       drained.feedback.severity,
     );
   }
-  if (latestDatabase === null) {
+  const initialDatabase = observedDatabase();
+  if (initialDatabase === null) {
     return databaseFailure(
       context,
       pwa,
@@ -550,7 +567,7 @@ export async function startNativeDarkHallBrowserPage(
       "heat",
     );
   }
-  const hydratedDatabase = latestDatabase;
+  const hydratedDatabase = initialDatabase;
   const controllerStarted = startDarkHallBrowserDatabaseController({
     maxCommandBytes: databaseLimits.maxCheckpointBytes,
     tick: (deltas) => database.tick(deltas),
@@ -634,6 +651,48 @@ export async function startNativeDarkHallBrowserPage(
       },
     };
   };
+  const selectionStarted = startDarkHallBrowserDatabaseRowSelection({
+    pointerTarget: context.mount.value,
+    resolveRow: (rowKey) => {
+      const row = (latestDatabase ?? hydratedDatabase).rows.find((candidate) => candidate.rowKey === rowKey);
+      return row === undefined ? null : { ...row };
+    },
+    loadRow: (row) => editor.load(row),
+    observe: (readout) => {
+      const interaction = readout.last;
+      const attributes: readonly (readonly [string, string])[] = [
+        ["data-database-selection-status", readout.status],
+        ["data-database-selection-count", readout.selected.toString()],
+        ["data-database-selection-row", readout.selectedRowKey ?? "none"],
+        ["data-database-selection-source", interaction?.source ?? "none"],
+        ["data-database-selection-outcome", interaction?.outcome ?? "none"],
+        ["data-database-selection-feedback", interaction?.feedbackCode ?? "none"],
+      ];
+      return attributes.every(([name, value]) => context.mount.setAttribute(name, value))
+        ? { ok: true }
+        : {
+            ok: false,
+            feedback: {
+              severity: "heat",
+              code: "database-row-selection-readout-attribute-failed",
+              detail: "The browser refused a database row selection readout attribute.",
+            },
+          };
+    },
+  });
+  if (!selectionStarted.ok) {
+    editor.stop();
+    controller.stop();
+    database.stop();
+    pwa.browser.host.stop();
+    context.mount.setStatus(inputPageStatus(selectionStarted.feedback.severity), selectionStarted.feedback.code);
+    return failed(
+      "page-selection-start-failed",
+      `${selectionStarted.feedback.code}: ${selectionStarted.feedback.detail}`,
+      selectionStarted.feedback.severity === "heat" ? "heat" : "backpressure",
+    );
+  }
+  const selection: DarkHallBrowserDatabaseRowSelectionRuntime = selectionStarted.value;
   const inputStarted = startDarkHallBrowserControllerInput({
     pointerTarget: context.mount.value,
     keyboardTarget: context.document,
@@ -663,6 +722,7 @@ export async function startNativeDarkHallBrowserPage(
     },
   });
   if (!inputStarted.ok) {
+    selection.stop();
     editor.stop();
     controller.stop();
     database.stop();
@@ -684,6 +744,7 @@ export async function startNativeDarkHallBrowserPage(
     !context.mount.setAttribute("data-browser-tab", tabId.value)
   ) {
     input.stop();
+    selection.stop();
     editor.stop();
     controller.stop();
     database.stop();
@@ -703,6 +764,7 @@ export async function startNativeDarkHallBrowserPage(
     database: latestDatabase ?? hydratedDatabase,
     controller: latestController,
     editor: editor.read(),
+    selection: selection.read(),
     input: input.read(),
   });
 
@@ -710,6 +772,7 @@ export async function startNativeDarkHallBrowserPage(
     read,
     dispatchController: (command) => controller.dispatch(command),
     dispatchControllerInput: (cell, source) => input.dispatchCell(cell, source),
+    selectDatabaseRow: (rowKey, source) => selection.select(rowKey, source),
     stop: () => {
       const inputStopped = input.stop();
       if (!inputStopped.ok) {
@@ -718,6 +781,15 @@ export async function startNativeDarkHallBrowserPage(
           "page-input-stop-failed",
           `${inputStopped.feedback.code}: ${inputStopped.feedback.detail}`,
           inputStopped.feedback.severity === "heat" ? "heat" : "backpressure",
+        );
+      }
+      const selectionStopped = selection.stop();
+      if (!selectionStopped.ok) {
+        context.mount.setStatus(inputPageStatus(selectionStopped.feedback.severity), selectionStopped.feedback.code);
+        return failed(
+          "page-selection-stop-failed",
+          `${selectionStopped.feedback.code}: ${selectionStopped.feedback.detail}`,
+          selectionStopped.feedback.severity === "heat" ? "heat" : "backpressure",
         );
       }
       const editorStopped = editor.stop();

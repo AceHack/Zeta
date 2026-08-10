@@ -11,9 +11,10 @@ import { buildBrowserPwaAssets } from "./browser-pwa-build";
 import type { DarkHallDatabaseReadout } from "../darkhall-ui/darkhall-database-readout";
 import type { DarkHallBrowserDatabaseControllerReadout } from "../darkhall-ui/darkhall-browser-database-controller";
 import type { DarkHallBrowserControllerInputReadout } from "../darkhall-ui/darkhall-browser-controller-input";
+import type { DarkHallBrowserDatabaseRowSelectionReadout } from "../darkhall-ui/darkhall-browser-database-row-selection";
 import type { DarkHallBrowserRowCommandEditorReadout } from "../darkhall-ui/darkhall-browser-row-command-editor";
 
-export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v5" as const;
+export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v6" as const;
 
 interface BrowserPwaPageReadout {
   readonly registration: BrowserServiceWorkerRegistrationReadout;
@@ -21,6 +22,7 @@ interface BrowserPwaPageReadout {
   readonly host: BrowserLifecycleHostReadout;
   readonly database: DarkHallDatabaseReadout;
   readonly editor: DarkHallBrowserRowCommandEditorReadout;
+  readonly selection: DarkHallBrowserDatabaseRowSelectionReadout;
   readonly input: DarkHallBrowserControllerInputReadout;
   readonly renderedTransport: string | null;
   readonly renderedDatabaseRevision: string | null;
@@ -43,6 +45,7 @@ interface BrowserPwaPageGlobal {
             readonly database: DarkHallDatabaseReadout;
             readonly controller: DarkHallBrowserDatabaseControllerReadout | null;
             readonly editor: DarkHallBrowserRowCommandEditorReadout;
+            readonly selection: DarkHallBrowserDatabaseRowSelectionReadout;
             readonly input: DarkHallBrowserControllerInputReadout;
           };
           stop(): unknown;
@@ -64,6 +67,7 @@ export interface BrowserPwaSmokeTranscript {
     readonly writerCommand: DarkHallBrowserDatabaseControllerReadout;
     readonly retractionCommand: DarkHallBrowserDatabaseControllerReadout;
     readonly writerEditor: DarkHallBrowserRowCommandEditorReadout;
+    readonly writerSelection: DarkHallBrowserDatabaseRowSelectionReadout;
     readonly peerAfterWrite: BrowserPwaPageReadout;
     readonly freshPage: BrowserPwaPageReadout;
   };
@@ -185,6 +189,14 @@ async function waitForControllerInput(page: Page, source: "keyboard" | "pointer"
   );
 }
 
+async function readControllerInput(page: Page, pageName: string): Promise<DarkHallBrowserControllerInputReadout> {
+  return page.evaluate((name) => {
+    const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+    if (started?.ok !== true) throw new Error(`${name} did not expose its active runtime.`);
+    return started.value.read().input;
+  }, pageName);
+}
+
 async function waitForRowCommand(
   page: Page,
   kind: "emit" | "retract",
@@ -206,6 +218,25 @@ async function waitForRowCommand(
       );
     },
     [kind, revision, resolved],
+    { timeout: timeoutMs },
+  );
+}
+
+async function waitForRowSelection(page: Page, rowKey: string, selected: number): Promise<void> {
+  await page.waitForFunction(
+    ({ expectedRowKey, expectedSelected }: { readonly expectedRowKey: string; readonly expectedSelected: number }) => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok !== true) return false;
+      const readout = started.value.read();
+      return (
+        readout.selection.selected === expectedSelected &&
+        readout.selection.selectedRowKey === expectedRowKey &&
+        readout.editor.rowKey === expectedRowKey &&
+        readout.editor.loadedRowKey === expectedRowKey &&
+        readout.editor.validity === "ready"
+      );
+    },
+    { expectedRowKey: rowKey, expectedSelected: selected },
     { timeout: timeoutMs },
   );
 }
@@ -239,6 +270,7 @@ async function observe(page: Page, pageName: string): Promise<BrowserPwaPageRead
           host: readout.host,
           database: readout.database,
           editor: readout.editor,
+          selection: readout.selection,
           input: readout.input,
           renderedTransport:
             globalThis.document.querySelector("[data-browser-transport]")?.getAttribute("data-browser-transport") ??
@@ -264,26 +296,31 @@ async function observe(page: Page, pageName: string): Promise<BrowserPwaPageRead
   return readout.value;
 }
 
-function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
-  const failures: string[] = [];
-  for (const [pageName, page] of [
-    ["page A", transcript.beforeStop.pageA],
-    ["page B", transcript.beforeStop.pageB],
-  ] as const) {
-    if (page.registration.status !== "controlled") failures.push(`${pageName} was not worker-controlled`);
-    if (page.transport.selected !== "service-worker") failures.push(`${pageName} did not select the worker channel`);
-    if (page.renderedTransport !== "service-worker") failures.push(`${pageName} did not render its transport`);
-    if (page.database.revision !== 0 || page.database.rows.length !== 0) {
-      failures.push(`${pageName} did not start from the empty database image`);
-    }
-    if (page.renderedDatabaseRevision !== "0") failures.push(`${pageName} did not render startup hydration`);
-    if (page.editor.status !== "live" || page.editor.validity !== "incomplete") {
-      failures.push(`${pageName} did not expose a cold live row command editor`);
-    }
-    if (page.host.coordinator.liveness.liveTabIds.join(",") !== "tab-a,tab-b") {
-      failures.push(`${pageName} did not observe both tabs`);
-    }
+function validateStartingPage(pageName: string, page: BrowserPwaPageReadout, failures: string[]): void {
+  if (page.registration.status !== "controlled") failures.push(`${pageName} was not worker-controlled`);
+  if (page.transport.selected !== "service-worker") failures.push(`${pageName} did not select the worker channel`);
+  if (page.renderedTransport !== "service-worker") failures.push(`${pageName} did not render its transport`);
+  if (page.database.revision !== 0 || page.database.rows.length !== 0) {
+    failures.push(`${pageName} did not start from the empty database image`);
   }
+  if (page.renderedDatabaseRevision !== "0") failures.push(`${pageName} did not render startup hydration`);
+  if (page.editor.status !== "live" || page.editor.validity !== "incomplete") {
+    failures.push(`${pageName} did not expose a cold live row command editor`);
+  }
+  if (page.selection.status !== "live" || page.selection.selected !== 0) {
+    failures.push(`${pageName} did not expose a cold live row selection surface`);
+  }
+  if (page.host.coordinator.liveness.liveTabIds.join(",") !== "tab-a,tab-b") {
+    failures.push(`${pageName} did not observe both tabs`);
+  }
+}
+
+function validateStartingPages(transcript: BrowserPwaSmokeTranscript, failures: string[]): void {
+  validateStartingPage("page A", transcript.beforeStop.pageA, failures);
+  validateStartingPage("page B", transcript.beforeStop.pageB, failures);
+}
+
+function validateContinuityAndInput(transcript: BrowserPwaSmokeTranscript, failures: string[]): void {
   if (transcript.afterStop.pageA.host.coordinator.liveness.liveTabIds.join(",") !== "tab-a") {
     failures.push(
       `page A did not remain live after page B stopped: ${transcript.afterStop.pageA.host.coordinator.liveness.liveTabIds.join(",")}`,
@@ -314,6 +351,9 @@ function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
       `page A did not retain page B's stopped state: ${transcript.afterStop.pageA.host.coordinator.liveness.darkTabIds.join(",")}`,
     );
   }
+}
+
+function validateDatabaseCommands(transcript: BrowserPwaSmokeTranscript, failures: string[]): void {
   if (
     transcript.database.writerCommand.kind !== "emit" ||
     transcript.database.writerCommand.signedWeight !== 1 ||
@@ -337,11 +377,26 @@ function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
   if (
     transcript.database.writerEditor.validity !== "ready" ||
     transcript.database.writerEditor.resolved !== 3 ||
+    transcript.database.writerEditor.loaded !== 1 ||
+    transcript.database.writerEditor.loadedRowKey !== "game/score" ||
     transcript.database.writerEditor.nextEventSequence !== 3 ||
     transcript.database.writerEditor.last?.eventId !== "tab-b/row-command/2"
   ) {
     failures.push("page B did not retain deterministic row-command editor sequencing");
   }
+  if (
+    transcript.database.writerSelection.selected !== 1 ||
+    transcript.database.writerSelection.selectedRowKey !== "game/score" ||
+    transcript.database.writerSelection.last?.source !== "pointer" ||
+    transcript.database.writerSelection.last.outcome !== "selected"
+  ) {
+    failures.push(
+      `page B did not preload the editor from a typed materialized row: ${JSON.stringify(transcript.database.writerSelection)}`,
+    );
+  }
+}
+
+function validateHydration(transcript: BrowserPwaSmokeTranscript, failures: string[]): void {
   for (const [pageName, page, executorId] of [
     ["peer page A", transcript.database.peerAfterWrite, "tab-a"],
     ["fresh page C", transcript.database.freshPage, "tab-c"],
@@ -363,6 +418,14 @@ function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
   if (transcript.database.freshPage.host.coordinator.liveness.liveTabIds.join(",") !== "tab-c") {
     failures.push("fresh page C was not the only live page during startup hydration");
   }
+}
+
+function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
+  const failures: string[] = [];
+  validateStartingPages(transcript, failures);
+  validateContinuityAndInput(transcript, failures);
+  validateDatabaseCommands(transcript, failures);
+  validateHydration(transcript, failures);
   return failures;
 }
 
@@ -430,13 +493,13 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
     stage = "route pointer and keyboard controller input";
     await pageB.click('[data-action-id="darkhall.database.inspect"]');
     await waitForControllerInput(pageB, "pointer", 6);
+    const pointerInput = await readControllerInput(pageB, "page B");
     await pageA.keyboard.press("KeyC");
     await waitForControllerInput(pageA, "keyboard", 12);
+    const keyboardInput = await readControllerInput(pageA, "page A");
     const [beforeA, beforeB] = await Promise.all([observe(pageA, "page A"), observe(pageB, "page B")]);
-    const pointerInput = beforeB.input;
-    const keyboardInput = beforeA.input;
 
-    stage = "edit, emit, retract, and re-emit database row";
+    stage = "edit, emit, select, retract, and re-emit database row";
     await pageB.fill("[data-row-command-key]", "game/score");
     await pageB.fill("[data-row-command-payload]", "9000");
     await pageB.fill("[data-row-command-magnitude]", "1");
@@ -450,6 +513,17 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
     await pageB.click('[data-action-id="darkhall.database.emit"]');
     await waitForDatabase(pageB, 1, "9000");
     await waitForRowCommand(pageB, "emit", 1, 1);
+    await pageB.fill("[data-row-command-key]", "");
+    await pageB.fill("[data-row-command-payload]", "unselected");
+    await pageB.fill("[data-row-command-magnitude]", "7");
+    await pageB.waitForFunction(
+      `() => globalThis.__zetaDarkHallPage?.ok === true &&
+        globalThis.__zetaDarkHallPage.value.read().editor.validity === "incomplete"`,
+      undefined,
+      { timeout: timeoutMs },
+    );
+    await pageB.click('.zeta-database-row-select[data-row-key="game/score"]');
+    await waitForRowSelection(pageB, "game/score", 1);
     await pageB.click('[data-action-id="darkhall.database.retract"]');
     await waitForDatabaseWithoutScore(pageB, 2);
     await waitForRowCommand(pageB, "retract", 2, 2);
@@ -469,7 +543,7 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
       if (started?.ok !== true) throw new Error("Page B did not expose its active runtime.");
       const readout = started.value.read();
       if (readout.controller === null) throw new Error("Page B did not expose its final emit readout.");
-      return { controller: readout.controller, editor: readout.editor };
+      return { controller: readout.controller, editor: readout.editor, selection: readout.selection };
     });
     await waitForDatabase(pageA, 3, "9000");
     const peerAfterWrite = await observe(pageA, "page A after peer database write");
@@ -513,6 +587,7 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
         writerCommand: writerState.controller,
         retractionCommand,
         writerEditor: writerState.editor,
+        writerSelection: writerState.selection,
         peerAfterWrite,
         freshPage,
       },

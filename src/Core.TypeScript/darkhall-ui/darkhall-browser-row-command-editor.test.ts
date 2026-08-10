@@ -205,6 +205,74 @@ describe("Dark Hall browser row command editor", () => {
     });
   });
 
+  test("loads a materialized row without advancing the command sequence", () => {
+    const mount = new NativeEditorMount();
+    const started = startDarkHallBrowserRowCommandEditor({
+      mount,
+      eventIdPrefix: "tab-a",
+      maxPayloadBytes: 4,
+      observe: () => ({ ok: true }),
+    });
+
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+    expect(started.value.load({ rowKey: "game/score", payload: "9000", weight: -3 })).toMatchObject({
+      ok: true,
+      value: {
+        validity: "ready",
+        rowKey: "game/score",
+        magnitude: 3,
+        loaded: 1,
+        loadedRowKey: "game/score",
+        nextEventSequence: 0,
+        resolved: 0,
+      },
+    });
+    expect(mount.rowKey.value).toBe("game/score");
+    expect(mount.payload.value).toBe("9000");
+    expect(mount.magnitude.value).toBe("3");
+    expect(mount.attributes.get("data-row-command-loaded")).toBe("1");
+    expect(mount.attributes.get("data-row-command-loaded-key")).toBe("game/score");
+
+    expect(started.value.load({ rowKey: "game/score", payload: "12345", weight: 1 })).toMatchObject({
+      ok: false,
+      feedback: { severity: "backpressure", code: "row-command-payload-too-large" },
+    });
+    expect(started.value.load({ rowKey: "game/score", payload: "9000", weight: 0 })).toMatchObject({
+      ok: false,
+      feedback: { severity: "cold", code: "row-command-magnitude-invalid" },
+    });
+    expect(started.value.read()).toMatchObject({ loaded: 1, nextEventSequence: 0 });
+
+    expect(started.value.stop().ok).toBe(true);
+    expect(started.value.load({ rowKey: "game/score", payload: "9000", weight: 1 })).toMatchObject({
+      ok: false,
+      feedback: { severity: "cold", code: "row-command-editor-stopped" },
+    });
+  });
+
+  test("rolls back a partial field load when the browser refuses a write", () => {
+    const mount = new NativeEditorMount();
+    const started = startDarkHallBrowserRowCommandEditor({
+      mount,
+      eventIdPrefix: "tab-a",
+      maxPayloadBytes: 1024,
+      observe: () => ({ ok: true }),
+    });
+
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+    Object.defineProperty(mount.payload, "value", { configurable: true, value: "original", writable: false });
+    expect(started.value.load({ rowKey: "game/score", payload: "9000", weight: 1 })).toMatchObject({
+      ok: false,
+      feedback: { severity: "heat", code: "row-command-editor-field-write-failed" },
+    });
+    expect(mount.rowKey.value).toBe("");
+    expect(mount.payload.value).toBe("original");
+    expect(mount.magnitude.value).toBe("1");
+    expect(started.value.read()).toMatchObject({ loaded: 0, loadedRowKey: null, nextEventSequence: 0 });
+  });
+
   test("types invalid configuration, mounts, fields, and observer refusal", () => {
     expect(
       startDarkHallBrowserRowCommandEditor({
