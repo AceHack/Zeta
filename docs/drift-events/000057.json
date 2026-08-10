@@ -1,0 +1,14 @@
+{
+  "tick": 57,
+  "at": "2026-08-10T21:06:09.117Z",
+  "findings": [
+    {
+      "path": "docs/handoffs/2026-08-10-lumen-8h-review-addison.md",
+      "rule": "MD022"
+    },
+    {
+      "path": "docs/handoffs/2026-08-10-lumen-8h-review-addison.md",
+      "rule": "MD032"
+    }
+  ]
+}
