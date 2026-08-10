@@ -1,0 +1,15 @@
+{
+  "genomeHex": "#400201",
+  "generation": 0,
+  "tick": 75,
+  "fitness": -1.324,
+  "phenotype": {
+    "adaptiveMultiplier": 2,
+    "adaptiveMinHeals": 2,
+    "adaptiveFloorTicks": 1,
+    "defaultBudgetTicks": 6,
+    "bd001BudgetTicks": 1,
+    "retractionTriggerTicks": 2,
+    "healerAxes": 7
+  }
+}
