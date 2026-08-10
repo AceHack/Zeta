@@ -1,11 +1,12 @@
 ---
 id: 081KZHGP45V08QG0R001C0NFFS
 type: task
-state: backlog
+state: done
 priority: P2
 slug: auto-revert-healer-for-whole-repo-build-drift-on-main-vera-r
 title: "Auto-revert healer for whole-repo build drift on main (Vera ratification note)"
 created: 2026-08-08T20:23:01.051Z
+completed: 2026-08-10T19:39:09.020Z
 depends_on: []
 composes_with: []
 ---
