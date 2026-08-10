@@ -438,6 +438,27 @@
         DLA rule in biological hardware over 600 million years. The posterior is fused via
         Condorcet weighting with the other oracles — the worm gets one vote, same as the GPU.
       </div>
+      <!-- Connectome stats tooltip button -->
+      <div style="margin:0.3rem 0 0.5rem; display:flex; align-items:center; gap:0.5rem;">
+        <span style="font-size:0.6rem; font-family:monospace; color:#14b8a6;">✓ Real connectome — White 1986</span>
+        <button onclick="toggleWormStats()" style="font-size:0.55rem; font-family:monospace; background:rgba(20,184,166,0.1); border:1px solid rgba(20,184,166,0.3); color:#14b8a6; border-radius:4px; padding:0.1rem 0.4rem; cursor:pointer;">ⓘ Stats</button>
+      </div>
+      <div id="worm-stats-panel" style="display:none; margin-bottom:0.5rem; padding:0.4rem 0.6rem; background:rgba(15,23,42,0.9); border:1px solid #334155; border-radius:6px; font-size:0.6rem; font-family:monospace; color:#94a3b8; line-height:1.6;">
+        <div style="color:#14b8a6; font-weight:bold; margin-bottom:0.2rem;">White 1986 Connectome (OpenWorm c302)</div>
+        <div>Neurons: <span style="color:#e2e8f0;">521</span> (hermaphrodite, all cell types)</div>
+        <div>Synapses: <span style="color:#e2e8f0;">10,340</span> (chemical + gap junctions)</div>
+        <div>Sensory neurons: <span style="color:#60a5fa;">~60</span> (AFD, ASE, AWC, …)</div>
+        <div>Motor neurons: <span style="color:#f59e0b;">~75</span> (VA, VB, DA, DB, …)</div>
+        <div>Mean in-degree: <span style="color:#e2e8f0;">~19.8</span></div>
+        <div>Max in-degree: <span style="color:#e2e8f0;">~75</span> (hub neuron: RIA)</div>
+        <div style="margin-top:0.2rem; color:#64748b; font-size:0.55rem;">Source: White et al. 1986, J. Neurosci. OpenWorm c302 project.</div>
+      </div>
+      <script>
+      function toggleWormStats() {
+        const p = document.getElementById('worm-stats-panel');
+        p.style.display = p.style.display === 'none' ? 'block' : 'none';
+      }
+      </script>
       <!-- Worm live demo: interactive sensory weight slider -->
       <div style="margin:0.5rem 0; padding:0.5rem; background:rgba(216,180,254,0.05); border:1px solid rgba(216,180,254,0.15); border-radius:6px; font-size:0.6rem;">
         <div style="font-weight:700; color:#d8b4fe; margin-bottom:0.3rem; letter-spacing:0.06em; text-transform:uppercase;">🪱 Worm Oracle — Live Posterior</div>
