@@ -63,6 +63,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Sync to origin tip (event-driven ticks race pushes)
+        # The checkout is pinned to the TRIGGERING commit, which can predate
+        # the previous sweep's bookkeeping push — reading the ledger from it
+        # double-mints tick numbers (first observed: 000070 add/add race,
+        # the speedup's own first drift). The tick must be computed from
+        # origin's latest ledger.
+        run: |
+          git fetch origin main
+          git reset --hard origin/main
+
       - name: Install bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
@@ -181,6 +191,14 @@ jobs:
             echo "Nothing staged — no tick recorded."
           else
             git commit -m "drift: record sweep tick + certified heals [skip ci]"
-            git pull --rebase origin main
-            git push
+            # Bookkeeping races are NON-FATAL by design: findings are
+            # recomputed and heals are certified-idempotent, so a lost tick
+            # is a skipped heartbeat, not an error — the next tick
+            # re-records everything. Red runs here would just be noise.
+            if ! git pull --rebase origin main; then
+              git rebase --abort || true
+              echo "tick bookkeeping lost a push race — next tick re-records (idempotent)"
+              exit 0
+            fi
+            git push || echo "push race — next tick re-records (idempotent)"
           fi
