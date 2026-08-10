@@ -179,8 +179,8 @@ export interface ZetaStorageCellOptions {
  */
 export class ZetaStorageCell {
   private readonly _primary: ZetaStoragePort;
-  private readonly _fallback?: ZetaStoragePort;
-  private readonly _transport?: ZetaTransportCell;
+  private readonly _fallback: ZetaStoragePort | undefined;
+  private readonly _transport: ZetaTransportCell | undefined;
   private readonly _nodeId: string;
 
   constructor(opts: ZetaStorageCellOptions) {

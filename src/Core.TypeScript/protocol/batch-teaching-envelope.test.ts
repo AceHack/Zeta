@@ -19,17 +19,18 @@ import {
   type BatchItemCell,
   type PriorHint,
 } from "./batch-teaching-envelope";
+import type { ErrorDimension } from "./error-envelope";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function makeCell(
   itemId: string,
-  dimension: "transport" | "schema" | "toolchain" | "auth" | "constraint" | "version" | "unknown",
+  dimension: ErrorDimension,
   teaching: boolean,
 ): BatchItemCell {
   return makeBatchItemCell({
     itemId,
-    retractableBeliefId: teaching ? `belief:${itemId}` : undefined,
+    ...(teaching ? { retractableBeliefId: `belief:${itemId}` } : {}),
     generatorFn: `retry:${itemId}`,
     dimension,
     severity: "error",

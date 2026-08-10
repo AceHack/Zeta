@@ -3,11 +3,11 @@
  */
 import { describe, test, expect } from "bun:test";
 import { createZetaTransportCell, makeTransportDescriptor } from "./zeta-transport-cell";
-import type { SalonTransport } from "./gossip-mesh-transport";
+import type { ZetaTransport } from "./zeta-transport-cell";
 
 // ── Mock transport ─────────────────────────────────────────────────────────────
 
-function makeMockTransport(shouldFail = false, failReason = "transport timeout"): SalonTransport & { sent: string[] } {
+function makeMockTransport(shouldFail = false, failReason = "transport timeout"): ZetaTransport & { sent: string[] } {
   const sent: string[] = [];
   return {
     sent,
@@ -16,7 +16,6 @@ function makeMockTransport(shouldFail = false, failReason = "transport timeout")
       sent.push(msg);
     },
     onMessage(_handler: (msg: string) => void) {},
-    async publish(_topic: string, _msg: string) {},
   };
 }
 

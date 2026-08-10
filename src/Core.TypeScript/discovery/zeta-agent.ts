@@ -50,8 +50,7 @@
  * - gossip-mesh-transport.ts (all transport adapters)
  */
 
-import { createZetaTransportCell, type ZetaTransportCell } from "./zeta-transport-cell";
-import type { SalonTransport } from "./gossip-mesh-transport";
+import { createZetaTransportCell, type ZetaTransportCell, type ZetaTransport } from "./zeta-transport-cell";
 
 // ── Agent identity ─────────────────────────────────────────────────────────────
 
@@ -74,7 +73,7 @@ export interface AgentTickResult {
   readonly transport: string;
   readonly ok: boolean;
   readonly teachingAcks: Array<{ dimension: string; generatorFn: string }>;
-  readonly bnnStatus: Array<{ dimension: string; mu: number; sigma: number }>;
+  readonly bnnStatus: Array<{ dimension: string; mu: number; sigma2: number }>;
   readonly quasiCrystals: string[]; // transport kinds in quasi-crystal loops
 }
 
@@ -95,7 +94,7 @@ export class ZetaAgent {
 
   /** Initialize the transport cell. Call before tick(). */
   async init(): Promise<void> {
-    const transports: Partial<Record<string, SalonTransport>> = {};
+    const transports: Partial<Record<string, ZetaTransport>> = {};
 
     // Git transport (always available — the durable record of truth)
     transports["git"] = this._makeGitTransport();
@@ -115,7 +114,7 @@ export class ZetaAgent {
 
     this._cell = createZetaTransportCell(
       this._config.nodeId,
-      transports as Record<string, SalonTransport>,
+      transports as Record<string, ZetaTransport>,
       {
         onTeachingAck: (_kind, dimension, generatorFn) => {
           this._teachingAcks.push({ dimension, generatorFn });
@@ -140,14 +139,14 @@ export class ZetaAgent {
       transport: results.filter(r => r.ok).map(r => r.transport).join("+") || "none",
       ok: results.some(r => r.ok),
       teachingAcks: [...this._teachingAcks],
-      bnnStatus: bnnStatus.map(s => ({ dimension: s.dimension, mu: s.mu, sigma: s.sigma })),
+      bnnStatus: bnnStatus.map(s => ({ dimension: s.dimension, mu: s.mu, sigma2: s.sigma2 })),
       quasiCrystals: health.filter(h => h.dilationFactor < 0.5).map(h => h.kind),
     };
   }
 
   // ── Private transport factories ──────────────────────────────────────────────
 
-  private _makeGitTransport(): SalonTransport {
+  private _makeGitTransport(): ZetaTransport {
     // Git transport: write events to the event directory as JSON files.
     // The society-heartbeat.yml workflow commits these files to main.
     const eventDir = this._config.eventDir;
@@ -163,11 +162,10 @@ export class ZetaAgent {
         // Git transport is write-only in the agent context.
         // Reading is done by the society-evolution-runner.ts.
       },
-      async publish(_topic: string, _msg: string) {},
     };
   }
 
-  private _makeWebSocketTransport(url: string): SalonTransport {
+  private _makeWebSocketTransport(url: string): ZetaTransport {
     // WebSocket transport: push events to the realtime server.
     // Uses the same pattern as run-loop-real.ts (fire-and-forget).
     return {
@@ -176,29 +174,44 @@ export class ZetaAgent {
         const client = createRealtimeClient({ url, timeoutMs: 3000, autoReconnect: false });
         try {
           // Push as a raw string event (the realtime server accepts any JSON)
-          const event = { id: `agent-${Date.now()}`, at: new Date().toISOString(), by: "zeta-agent", payload: msg };
+          // RealtimeEvent requires action field — use kind: "heartbeat"
+          const event = {
+            id: `agent-${Date.now()}`,
+            at: new Date().toISOString(),
+            by: "zeta-agent",
+            action: { kind: "heartbeat" as const },
+            payload: msg,
+          };
           await client.push(event as Parameters<typeof client.push>[0]);
         } finally {
           client.close();
         }
       },
       onMessage(_handler: (msg: string) => void) {},
-      async publish(_topic: string, _msg: string) {},
     };
   }
 
-  private _makeUdpTransport(group: string, port: number): SalonTransport {
+  private _makeUdpTransport(group: string, port: number): ZetaTransport {
     // UDP multicast transport: broadcast events over the LAN mesh.
-    // Uses udp-lossy-transport.ts (Adinkra [8,4,4] ECC + AIMD backoff).
+    // Uses lossyUdpMeshTransport (Adinkra [8,4,4] ECC + AIMD backoff).
+    // Lazily initialised on first broadcast call — fire-and-forget.
+    let _udpTransport: { publish(text: string): void; onFrame(h: (text: string, from?: string) => void): void } | null = null;
+    const getUdpTransport = async () => {
+      if (_udpTransport === null) {
+        const { lossyUdpMeshTransport } = await import("./gossip-mesh-transport");
+        _udpTransport = lossyUdpMeshTransport({ group, port });
+      }
+      return _udpTransport;
+    };
     return {
       async broadcast(msg: string) {
-        const { LossyUdpChannel } = await import("./udp-lossy-transport");
-        const channel = new LossyUdpChannel({ group, port, nodeId: "zeta-agent" });
-        await channel.send(Buffer.from(msg, "utf-8"));
-        channel.close();
+        const t = await getUdpTransport();
+        t.publish(msg);
       },
-      onMessage(_handler: (msg: string) => void) {},
-      async publish(_topic: string, _msg: string) {},
+      onMessage(_handler: (msg: string) => void) {
+        // UDP is write-only in the agent context (outbound heartbeats only).
+        // Inbound messages are handled by the gossip salon.
+      },
     };
   }
 }
@@ -210,12 +223,12 @@ export class ZetaAgent {
  * Used by the society-heartbeat.yml workflow.
  */
 export function createAgentFromEnv(): ZetaAgent {
+  // Use spread pattern for optional fields to satisfy exactOptionalPropertyTypes
   return new ZetaAgent({
     nodeId: process.env.ZETA_AGENT_ID ?? "lumen",
     eventDir: process.env.ZETA_EVENT_DIR ?? "docs/observe-events",
-    realtimeUrl: process.env.ZETA_REALTIME_URL,
-    udpMulticastGroup: process.env.ZETA_UDP_MULTICAST_GROUP,
-    udpPort: process.env.ZETA_UDP_PORT ? parseInt(process.env.ZETA_UDP_PORT, 10) : undefined,
+    ...(process.env.ZETA_REALTIME_URL ? { realtimeUrl: process.env.ZETA_REALTIME_URL } : {}),
+    ...(process.env.ZETA_UDP_MULTICAST_GROUP ? { udpMulticastGroup: process.env.ZETA_UDP_MULTICAST_GROUP } : {}),
+    ...(process.env.ZETA_UDP_PORT ? { udpPort: parseInt(process.env.ZETA_UDP_PORT, 10) } : {}),
   });
 }
-

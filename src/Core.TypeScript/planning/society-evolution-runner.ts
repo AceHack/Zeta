@@ -18,7 +18,13 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { evolve, createAgent, createSociety, type SocietyAgent, type Society } from "./society-evolution";
-import { createDimensionalBnn, dimensionPosterior, ALL_DIMENSIONS } from "./error-bnn-bridge";
+import { createDimensionalBnn, dimensionPosterior } from "./error-bnn-bridge";
+import type { ErrorDimension } from "../protocol/error-envelope";
+// All known error dimensions — defined locally because error-bnn-bridge does not export ALL_DIMENSIONS
+const ALL_DIMENSIONS: readonly ErrorDimension[] = [
+  "schema", "type", "range", "constraint", "auth",
+  "transport", "toolchain", "calibration", "unknown",
+] as const;
 import type { PriorHint } from "../protocol/batch-teaching-envelope";
 import { founderGenome } from "./agent-genome";
 import type { CalibrationPosterior } from "./calibration-ledger";
@@ -109,12 +115,12 @@ async function main(): Promise<number> {
   // over time as each evolution event carries the current BNN state.
   const bnn = createDimensionalBnn();
   const priorHints: PriorHint[] = ALL_DIMENSIONS.map(d => {
-    const p = dimensionPosterior(bnn, d);
+    const p = dimensionPosterior(bnn, d as ErrorDimension);
     return {
       dimension: d,
       mu: p.mu,
       sigma2: p.sigma2 * p.sigma2,
-      robustnessWeight: p.w,
+      robustnessWeight: p.robustnessWeight,
       obsCount: 0,
       senderZid: "society-runner",
     };
