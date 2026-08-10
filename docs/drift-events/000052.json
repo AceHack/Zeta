@@ -1,0 +1,14 @@
+{
+  "tick": 52,
+  "at": "2026-08-10T02:38:48.042Z",
+  "findings": [
+    {
+      "path": "docs/specs/threshold-signature-verification-combine.md",
+      "rule": "MD012"
+    },
+    {
+      "path": "Zeta.sln",
+      "rule": "BD001"
+    }
+  ]
+}
