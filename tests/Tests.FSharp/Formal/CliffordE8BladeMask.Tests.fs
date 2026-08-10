@@ -191,10 +191,33 @@ let ``RC-3: closure under reflections IN the 32 versor-normed roots themselves (
                     changed <- true
                     newFrontier.Add(image)
         frontier <- newFrontier |> Seq.toList
-    // Record the measured value — provenance-flagged from Otto's doc (expected 48)
+    // MEASURED 2026-08-09: exactly 48. The old bounds (>32, <=240) could not fail for any
+    // plausible implementation — they admitted 33 and 240 alike, so the test recorded nothing.
     let actualSize = closure.Count
-    Assert.True(actualSize > 32, sprintf "Expected closure > 32 (got %d)" actualSize)
-    Assert.True(actualSize <= 240, sprintf "Expected closure <= 240 (got %d)" actualSize)
+    Assert.Equal(48, actualSize)
+
+    // 48 alone does NOT identify D4+D4 — F4 also has 48 roots. Assert the invariants that
+    // exclude it (.claude/rules/numerology-vs-number-theory.md).
+    let closureRoots =
+        closure |> Seq.map (fun s -> s.Split(',') |> Array.map int) |> Seq.toArray
+
+    // (1) one norm class ⇒ simply-laced ⇒ not F4 (which has long and short roots)
+    let norms = closureRoots |> Array.map (fun r -> Array.map2 (*) r r |> Array.sum) |> Array.distinct
+    Assert.Equal<int[]>([| 4 |], norms)
+
+    // (2) two orthogonal components of 24 roots each ⇒ D4 + D4 (D4 is the unique
+    //     simply-laced 24-root system), not a single rank-8 system of 48 roots
+    let n = closureRoots.Length
+    let parent = Array.init n id
+    let rec find i = if parent.[i] = i then i else (parent.[i] <- find parent.[i]; parent.[i])
+    let union a b = let ra, rb = find a, find b in if ra <> rb then parent.[ra] <- rb
+    for i in 0 .. n - 1 do
+        for j in i + 1 .. n - 1 do
+            if (Array.map2 (*) closureRoots.[i] closureRoots.[j] |> Array.sum) <> 0 then union i j
+
+    let componentSizes =
+        [ 0 .. n - 1 ] |> List.groupBy find |> List.map (snd >> List.length) |> List.sort
+    Assert.Equal<int list>([ 24; 24 ], componentSizes)
 
 [<Fact>]
 let ``LI-1: the 16 single-blade versor-normed roots are invariant — singleton supports always versor-normed`` () =
