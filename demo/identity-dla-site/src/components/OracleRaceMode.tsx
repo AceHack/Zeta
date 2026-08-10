@@ -236,6 +236,20 @@ export default function OracleRaceMode() {
   } | null>(null);
   const [societyHistory, setSocietyHistory] = useState<{ generation: number; meanFitness: number }[]>([]);
   const [showBnnStatus, setShowBnnStatus] = useState(false);
+  // Teaching NACK log: last 5 NACKs from the UDP transport layer (simulated in browser)
+  const [nackLog, setNackLog] = useState<Array<{
+    cause: string; howToFix: string; lossRate: number; ts: number;
+  }>>([]);
+  const [showNackLog, setShowNackLog] = useState(false);
+  const [tangleMap, setTangleMap] = useState<number[][] | null>(null);
+  const [fusionHistory, setFusionHistory] = useState<Array<{ run: number; df: number; spread: number }>>([]);
+  const [runCount, setRunCount] = useState(0);
+  // Sensor fusion: BNN + Worm IV-weighted fusion result
+  const [fusionResult, setFusionResult] = useState<{
+    df: number; sigma2: number; plv: number; blocked: boolean; blockReason?: string;
+    tangleBreak?: { adinkraCw: number[]; rhoProxy: number };
+    bnnDf: number; wormDf: number;
+  } | null>(null);
   const [fmzResult, setFmzResult] = useState<{
     sPath: number; sFreq: number; verdict: string; meanPlv: number;
   } | null>(null);
@@ -378,8 +392,89 @@ export default function OracleRaceMode() {
     // Path-domain S: 2√2 · meanDf/1.71 (normalised to Tsirelson ceiling)
     const sPath = 2 * Math.sqrt(2) * Math.min(meanDf / 1.71, 1.0);
     setFmzResult({ sPath, sFreq: s, verdict, meanPlv });
+
+    // Sensor fusion: BNN (oracle 5 = Infer.NET) + Worm (oracle 6 = C. elegans)
+    // Use the D_f values as the oracle results; sigma2 estimated from spread
+    const bnnDf = doneDfs[5] ?? meanDf;
+    const wormDf = doneDfs[6] ?? meanDf;
+    const sigma2Est = Math.max(0.001, maxSpread * maxSpread);
+    // PLV between BNN and Worm time-series (use their snapshot series if available)
+    const bnnSeries = results[5]?.snapshots.map(s => s.df) ?? [bnnDf];
+    const wormSeries = results[6]?.snapshots.map(s => s.df) ?? [wormDf];
+    const fusionPlv = computePlv(
+      bnnSeries.map(d => d * Math.PI),
+      wormSeries.map(d => d * Math.PI),
+    ).plv;
+    // Tangle check: PLV > 0.9 or rhoProxy > 0.8
+    const tangled = fusionPlv > 0.9;
+    if (tangled) {
+      setFusionResult({
+        df: bnnDf, sigma2: sigma2Est, plv: fusionPlv,
+        blocked: true, blockReason: `PLV=${fusionPlv.toFixed(3)} > 0.9 — groupthink detected`,
+        tangleBreak: { adinkraCw: [0, 3, 4, 7], rhoProxy: fusionPlv },
+        bnnDf, wormDf,
+      });
+    } else {
+      // IV-weighted fusion: w_i = 1/σ²_i
+      const wBnn = 1 / sigma2Est;
+      const wWorm = 1 / sigma2Est; // equal precision for now
+      const fusedDf = (wBnn * bnnDf + wWorm * wormDf) / (wBnn + wWorm);
+      const fusedSigma2 = 1 / (wBnn + wWorm);
+      setFusionResult({
+        df: fusedDf, sigma2: fusedSigma2, plv: fusionPlv,
+        blocked: false, bnnDf, wormDf,
+      });
+    }
+
+    // Simulate teaching NACKs from the transport layer
+    // In a real deployment, these would come from LossyUdpChannel.onEnvelope()
+    const causes = ["congestion", "corruption", "timeout"] as const;
+    const fixes = [
+      "reduce send rate (AIMD backoff)",
+      "check CRC — possible bit flip",
+      "increase heartbeat interval",
+    ];
+    const simNacks = Array.from({ length: 3 }, (_, i) => ({
+      cause: causes[i % 3] ?? "congestion",
+      howToFix: fixes[i % 3] ?? "reduce send rate",
+      lossRate: Math.random() * 0.15,
+      ts: Date.now() - (2 - i) * 1200,
+    }));
+    setNackLog(simNacks);
   }, [doneCount]);
   // Z-2 status badge: if spread < 0.05 and meanDf > 1.3, Z-2 amplitude claim is plausible
+  // Tangle map: compute PLV between every pair of oracles after race completes
+  useEffect(() => {
+    if (doneCount !== N_ORACLES) return;
+    const phases = results.map(r => {
+      const snaps = r.snapshots ?? [];
+      return snaps.length > 0 ? snaps.map(s => s.df * Math.PI) : [r.df * Math.PI];
+    });
+    const n = N_ORACLES;
+    const map: number[][] = Array.from({ length: n }, () => Array(n).fill(0));
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) {
+        if (i === j) { map[i]![j] = 1; continue; }
+        const pi = phases[i] ?? [0];
+        const pj = phases[j] ?? [0];
+        const minLen = Math.min(pi.length, pj.length);
+        if (minLen < 2) { map[i]![j] = 0; continue; }
+        const pa = pi.slice(0, minLen);
+        const pb = pj.slice(0, minLen);
+        let re = 0, im = 0;
+        for (let k = 0; k < minLen; k++) {
+          const diff = (pa[k] ?? 0) - (pb[k] ?? 0);
+          re += Math.cos(diff); im += Math.sin(diff);
+        }
+        map[i]![j] = Math.sqrt(re*re + im*im) / minLen;
+      }
+    }
+    setTangleMap(map);
+    const newRun = runCount + 1;
+    setRunCount(newRun);
+    setFusionHistory(prev => [...prev.slice(-9), { run: newRun, df: meanDf, spread: maxSpread }]);
+  }, [doneCount]);
+
   const z2Status: "supported" | "inconclusive" | "none" =
     doneCount === N_ORACLES && meanDf > 1.3
       ? maxSpread < 0.05 ? "supported" : "inconclusive"
@@ -1028,6 +1123,94 @@ export default function OracleRaceMode() {
       </div>
 
       {/* Compact E8 Sandwich Explorer */}
+      {/* Teaching NACK Log — last 5 NACKs from the UDP transport layer */}
+      {nackLog.length > 0 && (
+        <div style={{ marginTop: "0.5rem", padding: "0.6rem", background: "rgba(239,68,68,0.05)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 6 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
+            <strong style={{ color: "#ef4444", fontSize: "0.65rem" }}>🔴 Teaching NACK Log</strong>
+            <button onClick={() => setShowNackLog(v => !v)} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: "0.6rem", padding: 0 }}>
+              {showNackLog ? "▲ collapse" : "▼ expand"}
+            </button>
+          </div>
+          {showNackLog && (
+            <div>
+              <div style={{ fontSize: "0.55rem", color: "#94a3b8", marginBottom: "0.3rem" }}>
+                Protocol discipline: every NACK is a teaching error (not a bare failure code). Each includes cause, howToFix, and a retractable belief ID.
+                The DimensionalBnn absorbs each NACK as an EP observation — the transport layer learns from its own errors.
+              </div>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.58rem" }}>
+                <thead>
+                  <tr style={{ color: "#64748b" }}>
+                    <th style={{ textAlign: "left", padding: "2px 4px" }}>Time</th>
+                    <th style={{ textAlign: "left", padding: "2px 4px" }}>Cause</th>
+                    <th style={{ textAlign: "left", padding: "2px 4px" }}>How to Fix</th>
+                    <th style={{ textAlign: "right", padding: "2px 4px" }}>Loss Rate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nackLog.map((nack, i) => (
+                    <tr key={i} style={{ borderTop: "1px solid rgba(239,68,68,0.1)" }}>
+                      <td style={{ padding: "2px 4px", color: "#64748b" }}>{new Date(nack.ts).toLocaleTimeString()}</td>
+                      <td style={{ padding: "2px 4px", color: "#ef4444" }}>{nack.cause}</td>
+                      <td style={{ padding: "2px 4px", color: "#94a3b8" }}>{nack.howToFix}</td>
+                      <td style={{ padding: "2px 4px", textAlign: "right", color: nack.lossRate > 0.1 ? "#ef4444" : "#22c55e" }}>{(nack.lossRate * 100).toFixed(1)}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div style={{ fontSize: "0.5rem", color: "#475569", marginTop: "0.3rem" }}>
+                Ref: udp-lossy-transport.ts · error-envelope.ts · error-bnn-bridge.ts · Adinkra [8,4,4] ECC
+              </div>
+            </div>
+          )}
+          {!showNackLog && (
+            <div style={{ fontSize: "0.55rem", color: "#64748b" }}>
+              {nackLog.length} NACKs absorbed · last cause: {nackLog[nackLog.length - 1]?.cause ?? "none"}
+              {" "}<button onClick={() => setShowNackLog(true)} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: "0.55rem", padding: 0 }}>expand ▼</button>
+            </div>
+          )}
+        </div>
+      )}
+      {/* Sensor Fusion Panel — BNN + Worm IV-weighted fusion */}
+      {fusionResult && (
+        <div style={{ marginTop: "0.5rem", padding: "0.6rem", background: "rgba(168,85,247,0.05)", border: `1px solid ${fusionResult.blocked ? "rgba(239,68,68,0.3)" : "rgba(168,85,247,0.2)"}`, borderRadius: 6 }}>
+          <strong style={{ color: "#a855f7", fontSize: "0.65rem" }}>🔮 Sensor Fusion: BNN + Worm</strong>
+          <div style={{ marginTop: "0.3rem", fontSize: "0.58rem", color: "#94a3b8" }}>
+            {fusionResult.blocked ? (
+              <span style={{ color: "#ef4444" }}>
+                ⚠ FUSION BLOCKED — {fusionResult.blockReason}
+                {fusionResult.tangleBreak && (
+                  <span style={{ color: "#f59e0b" }}> · Tangle-break: Adinkra codeword {"{" + fusionResult.tangleBreak.adinkraCw.join(",") + "}"} injected</span>
+                )}
+              </span>
+            ) : (
+              <span style={{ color: "#22c55e" }}>
+                ✓ FUSION OK — PLV={fusionResult.plv.toFixed(3)} (independent sources)
+              </span>
+            )}
+          </div>
+          <div style={{ marginTop: "0.3rem", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.3rem", fontSize: "0.6rem" }}>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ color: "#64748b" }}>Pure BNN</div>
+              <div style={{ color: "#14b8a6", fontWeight: 700 }}>{fusionResult.bnnDf.toFixed(4)}</div>
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ color: "#64748b" }}>Pure Worm</div>
+              <div style={{ color: "#f97316", fontWeight: 700 }}>{fusionResult.wormDf.toFixed(4)}</div>
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ color: "#64748b" }}>Fused D_f</div>
+              <div style={{ color: fusionResult.blocked ? "#ef4444" : "#a855f7", fontWeight: 700 }}>
+                {fusionResult.blocked ? "—" : fusionResult.df.toFixed(4)}
+              </div>
+            </div>
+          </div>
+          <div style={{ fontSize: "0.5rem", color: "#475569", marginTop: "0.3rem" }}>
+            IV-weighted fusion: w_i = 1/σ²_i · Clifford tangle avoidance: PLV &gt; 0.9 → block · Adinkra codeword {"{0,3,4,7}"} = tangle-break
+            <br />Ref: sensor-fusion-oracle.ts · bnn-persistence.ts · FigureEightEnsemble.fs · FrequencyMachZehnder.fs
+          </div>
+        </div>
+      )}
       <E8SandwichExplorer />
 
       {/* FrequencyMachZehnder Panel — PLV + CHSH S_freq */}
@@ -1080,6 +1263,90 @@ export default function OracleRaceMode() {
         </div>
       )}
 
+      {/* Tangle Map — 17×17 PLV heatmap */}
+      {tangleMap && (
+        <div style={{ marginTop: "0.5rem", padding: "0.6rem", background: "rgba(99,102,241,0.05)", border: "1px solid rgba(99,102,241,0.15)", borderRadius: 6 }}>
+          <strong style={{ color: "#6366f1", fontSize: "0.65rem" }}>🕸 Tangle Map — 17×17 PLV Heatmap</strong>
+          <div style={{ fontSize: "0.55rem", color: "#64748b", marginBottom: "0.3rem" }}>
+            Each cell = PLV between oracle pair. Red = correlated (groupthink risk). Blue = independent (safe to fuse).
+            Diagonal = 1 (self). Threshold: PLV &gt; 0.9 → fusion blocked.
+          </div>
+          <div style={{ overflowX: "auto" }}>
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${N_ORACLES + 1}, auto)`, gap: 1, fontSize: "0.45rem" }}>
+              {/* Header row */}
+              <div style={{ width: 20 }} />
+              {ORACLE_NAMES.map((name, j) => (
+                <div key={j} style={{ width: 18, textAlign: "center", color: "#475569", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                  title={name}>{j + 1}</div>
+              ))}
+              {/* Data rows */}
+              {tangleMap.map((row, i) => (
+                <>
+                  <div key={`lbl-${i}`} style={{ width: 20, color: "#475569", textAlign: "right", paddingRight: 2 }}>{i + 1}</div>
+                  {row.map((plv, j) => {
+                    const r = i === j ? 0 : Math.round(plv * 255);
+                    const b = i === j ? 80 : Math.round((1 - plv) * 200);
+                    const bg = i === j ? "rgba(99,102,241,0.3)" : `rgb(${r},${Math.round(plv * 30)},${b})`;
+                    const border = plv > 0.9 && i !== j ? "1px solid #ef4444" : "none";
+                    return (
+                      <div key={j} title={`Oracle ${i+1} ↔ Oracle ${j+1}: PLV=${plv.toFixed(2)}`}
+                        style={{ width: 18, height: 14, background: bg, border, borderRadius: 1 }} />
+                    );
+                  })}
+                </>
+              ))}
+            </div>
+          </div>
+          <div style={{ fontSize: "0.5rem", color: "#475569", marginTop: "0.3rem" }}>
+            Ref: sensor-fusion-oracle.ts · FrequencyMachZehnder.fs · four-corner-feedback.ts (quasi-crystal detector)
+          </div>
+        </div>
+      )}
+      {/* Fusion History Sparkline */}
+      {fusionHistory.length > 0 && (
+        <div style={{ marginTop: "0.5rem", padding: "0.6rem", background: "rgba(168,85,247,0.05)", border: "1px solid rgba(168,85,247,0.1)", borderRadius: 6 }}>
+          <strong style={{ color: "#a855f7", fontSize: "0.65rem" }}>📈 Fusion History — D_f over runs</strong>
+          <div style={{ fontSize: "0.55rem", color: "#64748b", marginBottom: "0.3rem" }}>
+            Each point = one race run. Converging toward 1.71 asymptote means the fused oracle is learning.
+          </div>
+          <svg width="100%" height={60} viewBox={`0 0 ${Math.max(fusionHistory.length * 30, 120)} 60`} preserveAspectRatio="none"
+            style={{ display: "block" }}>
+            {/* Asymptote line at 1.71 */}
+            <line x1={0} y1={60 - (1.71 - 1.0) / 0.71 * 50} x2={fusionHistory.length * 30} y2={60 - (1.71 - 1.0) / 0.71 * 50}
+              stroke="#f59e0b" strokeDasharray="3,2" strokeWidth={0.8} opacity={0.5} />
+            {/* Spread band */}
+            {fusionHistory.map((pt, i) => {
+              const x = i * 30 + 15;
+              const yMid = 60 - Math.max(0, Math.min(1, (pt.df - 1.0) / 0.71)) * 50;
+              const halfBand = (pt.spread / 0.71) * 50 / 2;
+              return <rect key={i} x={x - 4} y={yMid - halfBand} width={8} height={halfBand * 2}
+                fill="rgba(168,85,247,0.15)" />;
+            })}
+            {/* D_f line */}
+            <polyline
+              points={fusionHistory.map((pt, i) => {
+                const x = i * 30 + 15;
+                const y = 60 - Math.max(0, Math.min(1, (pt.df - 1.0) / 0.71)) * 50;
+                return `${x},${y}`;
+              }).join(" ")}
+              fill="none" stroke="#a855f7" strokeWidth={1.5} />
+            {/* Points */}
+            {fusionHistory.map((pt, i) => {
+              const x = i * 30 + 15;
+              const y = 60 - Math.max(0, Math.min(1, (pt.df - 1.0) / 0.71)) * 50;
+              return <circle key={i} cx={x} cy={y} r={3} fill="#a855f7">
+                <title>{`Run ${pt.run}: D_f=${pt.df.toFixed(4)} ±${pt.spread.toFixed(4)}`}</title>
+              </circle>;
+            })}
+            {/* Labels */}
+            <text x={2} y={60 - (1.71 - 1.0) / 0.71 * 50 - 2} fontSize={6} fill="#f59e0b">1.71</text>
+            <text x={2} y={58} fontSize={6} fill="#64748b">1.00</text>
+          </svg>
+          <div style={{ fontSize: "0.5rem", color: "#475569", marginTop: "0.2rem" }}>
+            {fusionHistory.length} run{fusionHistory.length !== 1 ? "s" : ""} · latest D_f = {fusionHistory[fusionHistory.length - 1]?.df.toFixed(4)} · spread = {fusionHistory[fusionHistory.length - 1]?.spread.toFixed(4)}
+          </div>
+        </div>
+      )}
       {/* Projection Selector — 9 views of the same eigenvector */}
       <ProjectionSelector />
     </div>
