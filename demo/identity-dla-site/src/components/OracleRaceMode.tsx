@@ -271,6 +271,12 @@ export default function OracleRaceMode() {
   // Merged BNN posteriors from GitHub society priorHints (EP bidirectional update)
   const [mergedPosteriors, setMergedPosteriors] = useState<Array<{ dimension: string; mu: number; sigma2: number }>>([]);
   const [showFmz, setShowFmz] = useState(false);
+  // Live agent badge: fetch latest agent event timestamps from GitHub
+  const [agentBadge, setAgentBadge] = useState<{
+    liveCount: number;
+    agents: Array<{ id: string; lastAt: string; ageMinutes: number }>;
+    status: "live" | "stale" | "offline" | "loading";
+  } | null>(null);
 
   // On mount: decode #race=... hash if present and populate seed log
   useEffect(() => {
@@ -350,6 +356,46 @@ export default function OracleRaceMode() {
   // Fetch the latest society evolution event from GitHub when the race completes
   useEffect(() => {
     if (results.filter(r => r.done).length !== N_ORACLES) return;
+    // ── Live agent badge (step 3) ──────────────────────────────────────────────
+    // Fetch the latest non-society event per agent from GitHub observe-events.
+    // An agent is "live" if its last event is < 90 min ago (3 heartbeat cycles).
+    fetch("https://api.github.com/repos/Lucent-Financial-Group/Zeta/contents/docs/observe-events?ref=main")
+      .then(r => r.json())
+      .then((files: unknown) => {
+        if (!Array.isArray(files)) return;
+        const agentFiles = (files as Array<{ name: string; download_url: string }>)
+          .filter(f => !f.name.startsWith("society-") && f.name.endsWith(".json"))
+          .sort((a, b) => b.name.localeCompare(a.name))
+          .slice(0, 30); // last 30 events across all agents
+        return Promise.all(agentFiles.map(f => fetch(f.download_url).then(r => r.json())));
+      })
+      .then((events: unknown) => {
+        if (!Array.isArray(events)) return;
+        const now = Date.now();
+        // Group by agent, keep the latest event per agent
+        const latestByAgent = new Map<string, string>();
+        for (const e of events) {
+          if (!e || typeof e !== "object") continue;
+          const ev = e as Record<string, unknown>;
+          const by = typeof ev["by"] === "string" ? ev["by"] : null;
+          const at = typeof ev["at"] === "string" ? ev["at"] : null;
+          if (!by || !at) continue;
+          const existing = latestByAgent.get(by);
+          if (!existing || at > existing) latestByAgent.set(by, at);
+        }
+        const agents = Array.from(latestByAgent.entries())
+          .map(([id, lastAt]) => ({
+            id,
+            lastAt,
+            ageMinutes: Math.round((now - new Date(lastAt).getTime()) / 60000),
+          }))
+          .sort((a, b) => a.ageMinutes - b.ageMinutes);
+        const liveCount = agents.filter(a => a.ageMinutes < 90).length;
+        const status: "live" | "stale" | "offline" =
+          liveCount > 0 ? "live" : agents.length > 0 ? "stale" : "offline";
+        setAgentBadge({ liveCount, agents, status });
+      })
+      .catch(() => { /* non-fatal */ });
     fetch("https://api.github.com/repos/Lucent-Financial-Group/Zeta/contents/docs/observe-events?ref=main")
       .then(r => r.json())
       .then((files: unknown) => {
@@ -735,6 +781,34 @@ export default function OracleRaceMode() {
                 Seeds were NOT shared — each oracle used Date.now() + oracle_id (genuinely independent clocks).
                 Shared seed = tautology. Independent seeds + agreement = real evidence.
               </div>
+              {/* Live agent badge — shows how many GitHub agents are heartbeating */}
+              {agentBadge && (
+                <div style={{ marginTop: "0.4rem", display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
+                  <span style={{
+                    fontSize: "0.55rem", padding: "0.1rem 0.4rem", borderRadius: 3,
+                    background: agentBadge.status === "live" ? "rgba(16,185,129,0.15)" : "rgba(100,116,139,0.15)",
+                    border: `1px solid ${agentBadge.status === "live" ? "#10b981" : "#475569"}`,
+                    color: agentBadge.status === "live" ? "#10b981" : "#64748b",
+                    fontFamily: "monospace",
+                  }}>
+                    {agentBadge.status === "live"
+                      ? `🟢 ${agentBadge.liveCount} agent${agentBadge.liveCount !== 1 ? "s" : ""} live`
+                      : agentBadge.status === "stale"
+                      ? "🟡 agents stale (>90 min)"
+                      : "🔴 agents offline"}
+                  </span>
+                  {agentBadge.agents.slice(0, 4).map(a => (
+                    <span key={a.id} style={{
+                      fontSize: "0.5rem", padding: "0.05rem 0.25rem", borderRadius: 2,
+                      background: a.ageMinutes < 90 ? "rgba(16,185,129,0.1)" : "rgba(100,116,139,0.1)",
+                      border: `1px solid ${a.ageMinutes < 90 ? "#065f46" : "#334155"}`,
+                      color: a.ageMinutes < 90 ? "#6ee7b7" : "#475569",
+                    }}>
+                      {a.id} {a.ageMinutes < 60 ? `${a.ageMinutes}m` : `${Math.round(a.ageMinutes/60)}h`} ago
+                    </span>
+                  ))}
+                </div>
+              )}
             </>
           ) : (
             <>

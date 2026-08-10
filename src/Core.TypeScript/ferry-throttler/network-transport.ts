@@ -42,6 +42,11 @@ import {
   type BatchTeachingEnvelope,
 } from "../protocol/batch-teaching-envelope";
 import type { ErrorDimension, ErrorSeverity } from "../protocol/error-envelope";
+import { batchTemperatureReadout as _batchTemperatureReadout, batchHeatLabel, type TemperatureReadout } from "../protocol/batch-heat-bridge";
+
+export type { TemperatureReadout };
+// Re-export for consumers that want to compute readouts from envelopes
+export { _batchTemperatureReadout as batchTemperatureReadout };
 
 // ═══ Transport Interface (the injected network port) ════════════════════════════
 
@@ -89,6 +94,13 @@ export type SendOutcome =
        * High erasureHeat = protocol is losing information (entropy leak).
        */
       readonly batchTeachingEnvelope?: BatchTeachingEnvelope;
+      /**
+       * TemperatureReadout derived from the envelope's unaccountedHeat.
+       * Mirrors Vera's Heat.fs TemperatureBand: cold/warm/hot/critical.
+       * Present iff batchTeachingEnvelope is present.
+       * Alarm fires on unaccountedHeat only — accounted erasures are NOT alarming.
+       */
+      readonly temperatureReadout?: TemperatureReadout;
     };
 
 /**
@@ -176,7 +188,9 @@ export function createNetworkProcessBatch<T>(
       // contract is fire-and-forget for the basic arity. The event is still in
       // the local durable log (event-sink-folder); the network send is best-effort
       // replication, not the source of truth.
-      console.error(`[ferry-network] send failed: ${outcome.reason} (batch ${frame.id}, ${frame.count} items)`);
+      const env = outcome.batchTeachingEnvelope;
+      const heatLabel = env ? batchHeatLabel(env.summary) : "unknown";
+      console.error(`[ferry-network] send failed: ${outcome.reason} (batch ${frame.id}, ${frame.count} items, heat=${heatLabel})`);
     }
   };
 }
