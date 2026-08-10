@@ -30,3 +30,15 @@ per_rule:
   # gate run gets ONE tick of tolerance, then work is mechanically filed.
   BD001:
     max_open_age_ticks: 1
+
+  # LD001 = package.json / bun.lock desync. Like BD001 this is a HARD red: every
+  # consumer runs `bun install --frozen-lockfile`, which fails closed, so the build
+  # is broken for everyone while it stays open. It cost two red mains on 2026-08-10
+  # (c101a6ac9 added dependencies, 47095a706 removed one).
+  #
+  # Budget 1 — same tolerance as BD001, for a stronger reason. This class has a
+  # dedicated healer (.github/workflows/lockfile-healer.yml) running every 17 minutes
+  # AND on push. A finding still open after a full 4-hour sweep tick therefore means
+  # the HEALER failed, not that nobody got to it, and that deserves filed work.
+  LD001:
+    max_open_age_ticks: 1

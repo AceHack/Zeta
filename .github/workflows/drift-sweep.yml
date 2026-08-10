@@ -97,6 +97,30 @@ jobs:
             fi
           fi
 
+      - name: Detect lockfile desync (LD001)
+        # package.json dependencies changed without a regenerated bun.lock. Every
+        # consumer runs --frozen-lockfile, which fails closed, so this breaks the
+        # build for EVERYONE — it turned main red twice on 2026-08-10, once by an
+        # ADD (c101a6ac9) and once by a REMOVE (47095a706).
+        #
+        # Anchored to package.json, which is tracked and so survives the --tracked
+        # guard. The detector reports INDETERMINATE rather than a finding when bun
+        # fails for any other reason, so a registry blip cannot enter the permanent
+        # ledger as dependency drift.
+        #
+        # This class has a HEALER (.github/workflows/lockfile-healer.yml), so its
+        # MTTH here measures the healer's real response time rather than a human's
+        # attention — which is the point of measuring it.
+        run: |
+          set +e
+          bun src/Core.TypeScript/hygiene/audit-lockfile-sync.ts >> /tmp/findings.txt
+          case $? in
+            0) echo "LD001: package.json and bun.lock agree" ;;
+            1) echo "LD001: lockfile desync detected" ;;
+            *) echo "LD001: indeterminate — no finding recorded" ;;
+          esac
+          exit 0
+
       - name: Install dependencies (yaml parser for the SLO registry)
         run: bun install --frozen-lockfile
 

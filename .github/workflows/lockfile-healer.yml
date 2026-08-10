@@ -1,0 +1,148 @@
+# LD001 self-healer — regenerate bun.lock when package.json has moved without it.
+#
+# Aaron 2026-08-10: "lets drift detect this on our auto heal cluster too if possible
+# one of our low no intelligence auto healers if we can and drift" / "the self heal
+# stuff should be running 24 7 with our little free agent society on github actions".
+#
+# WHY THIS CLASS EARNED A HEALER
+# ------------------------------
+# It turned main red TWICE on 2026-08-10, in both directions:
+#   c101a6ac9  ADDED two dependencies, no lockfile update
+#   47095a706  REMOVED one dependency, no lockfile update
+# Every consumer runs `bun install --frozen-lockfile`, which fails closed, so the
+# build breaks for everyone until a human notices. Both times, a human noticing WAS
+# the recovery mechanism. This replaces that with a machine.
+#
+# WHY IT IS SAFE TO AUTOMATE — the properties that make it "no intelligence"
+# -------------------------------------------------------------------------
+# The auto-revert healer is deliberately gated because reverting main can erase work
+# other lanes built on. This healer has none of that blast radius, and the reasons
+# are checkable rather than asserted:
+#
+#   1. ONE GENERATED FILE. It stages `bun.lock` and nothing else. `package.json` —
+#      the human's actual intent — is never touched, and the job FAILS if it moved.
+#   2. NO JUDGEMENT. The fix is `bun install`. There is no choice to make, no
+#      candidate to select, no diff to interpret.
+#   3. IDEMPOTENT. Running it twice is a no-op: the second run finds nothing to
+#      commit. Apply-N-times == apply-once (§12).
+#   4. SELF-VERIFYING. It re-runs `--frozen-lockfile` AFTER healing and refuses to
+#      push unless that passes. It cannot commit a lockfile that does not fix the
+#      problem it was summoned for.
+#   5. CONVERGENT AND REVERSIBLE. The output is a pure function of package.json at
+#      that commit; a wrong result is one `git revert` away and erases no one's work.
+#
+# It also refuses rather than guesses: a network failure or a missing binary is
+# INDETERMINATE, never desync (see audit-lockfile-sync.ts `classify`), so a registry
+# blip can never trick it into rewriting a lockfile that was correct.
+#
+# 24/7 CADENCE
+# ------------
+# Scheduled every 17 minutes (off-minute, per the thundering-herd convention) so the
+# society is always watching, PLUS an immediate trigger on any push to main that
+# touches package.json or bun.lock — so the common case heals in one build cycle
+# rather than waiting for the next tick.
+#
+# Loop safety: the push uses the workflow's GITHUB_TOKEN, whose pushes do not
+# trigger workflows, and the commit message carries [skip ci]. Belt and suspenders,
+# matching drift-sweep.yml.
+
+name: lockfile-healer
+
+on:
+  schedule:
+    - cron: "*/17 * * * *"
+  push:
+    branches: [main]
+    paths:
+      - "package.json"
+      - "bun.lock"
+      - ".github/workflows/lockfile-healer.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write # commits the regenerated lockfile
+
+concurrency:
+  group: lockfile-healer
+  cancel-in-progress: false # never cancel a heal mid-push
+
+jobs:
+  heal:
+    name: LD001 — heal bun.lock desync
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Detect (authoritative — the same command every consumer runs)
+        id: detect
+        run: |
+          set +e
+          bun src/Core.TypeScript/hygiene/audit-lockfile-sync.ts --human
+          code=$?
+          set -e
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          case "$code" in
+            0) echo "in sync — nothing to heal" ;;
+            1) echo "DESYNC detected — healing" ;;
+            *) echo "INDETERMINATE — refusing to touch the lockfile" ;;
+          esac
+
+      - name: Heal
+        if: steps.detect.outputs.code == '1'
+        run: bun install
+
+      - name: Refuse if anything but bun.lock moved
+        if: steps.detect.outputs.code == '1'
+        run: |
+          # The healer's entire safety case rests on this. `bun install` should only
+          # ever rewrite the lockfile; if it has touched package.json or anything
+          # else, the situation is not the one this healer was built for and a human
+          # should look.
+          changed=$(git diff --name-only)
+          if [ "$changed" != "bun.lock" ]; then
+            echo "::error::expected only bun.lock to change, got: ${changed:-<nothing>}"
+            exit 1
+          fi
+
+      - name: Verify the heal actually heals
+        if: steps.detect.outputs.code == '1'
+        run: |
+          # Self-verification: refuse to push a lockfile that does not resolve the
+          # very condition that summoned the healer.
+          bun install --frozen-lockfile
+
+      - name: Commit and push
+        if: steps.detect.outputs.code == '1'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bun.lock
+          git commit -m "fix(deps): regenerate bun.lock (LD001 auto-heal) [skip ci]
+
+          package.json dependencies moved without a regenerated lockfile, so
+          \`bun install --frozen-lockfile\` was failing for every consumer.
+
+          Healed automatically: bun.lock only, verified with --frozen-lockfile
+          before pushing. package.json untouched."
+          # Rebase: the fleet pushes to main constantly and this lane only ever
+          # appends one regenerated file.
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## LD001 lockfile healer"
+            echo
+            case "${{ steps.detect.outputs.code }}" in
+              0) echo "In sync — no action." ;;
+              1) echo "**Healed.** bun.lock regenerated, verified, and pushed." ;;
+              *) echo "**Indeterminate** — bun could not determine sync state. Refused to act; no lockfile was written." ;;
+            esac
+          } >> "$GITHUB_STEP_SUMMARY"
