@@ -58,6 +58,7 @@ import { staleJsHealer } from "./stale-js";
 import { unpinnedActionsHealer } from "./unpinned-actions";
 import { exactOptionalHealer } from "./exact-optional-spread";
 import { unusedImportHealer } from "./unused-import";
+import { staleDocCrossRefHealer } from "./stale-doc-cross-ref";
 
 /**
  * The default bound. Chosen from the observed corpus, not from taste: real Tier-0 drift runs
@@ -85,9 +86,9 @@ function collectFiles(dir: string, base: string = dir): Map<string, string> {
         walk(full);
       } else if (entry.isFile()) {
         const rel = relative(base, full);
-        // Only include healable files (TS, YAML workflows)
+        // Only include healable files (TS, YAML workflows, markdown docs)
         if (rel.endsWith(".ts") || rel.endsWith(".tsx") ||
-            rel.endsWith(".js") ||
+            rel.endsWith(".js") || rel.endsWith(".md") ||
             (rel.endsWith(".yml") && rel.includes(".github/workflows/"))) {
           try {
             files.set(rel, readFileSync(full, "utf-8"));
@@ -106,6 +107,7 @@ const tier0 = composeHealers("tier-0-composed", [
   unpinnedActionsHealer,
   unusedImportHealer,
   exactOptionalHealer,
+  staleDocCrossRefHealer,
 ]);
 
 /** What the healers WOULD do. Computed in full before anything touches disk. */
