@@ -132,18 +132,61 @@ extensively by Abramsky — builds a compact closed category from a traced one, 
 arrow.** That is four corners as a definition, not a metaphor — the dual pair *plus* the
 feedback channels.
 
-**Honest limit, and the reason this section is register-marked differently.** I know the
-four-corner design only through Lumen's description (`BatchTeachingEnvelope`,
-`PriorHint`, four-corner feedback). If the corners are *prediction forward / error
-backward, per party*, the Int shape fits and predictive coding is a second anchor. If
-they are something else, the anchor may not apply, and it should be checked against the
-actual protocol before being relied on. **Offered to be refuted, not asserted.**
+## 5a. RETRACTED SAME DAY — the Int anchor does not fit, and Aaron supplied the reason
+
+§5 was offered to be refuted. It was, within the hour, by the operator describing what
+the four corners actually are:
+
+> *"It's pseudo retro-causality over Z-sets, with −1 generator-function updates that
+> reinterpret the past +1."*
+
+**That is not the Int shape, and the difference is precise.** Int/GoI's `A⁻` is a genuine
+**reverse arrow** — demand or continuation travelling *opposite to the data*,
+simultaneously, inside a single morphism. A Z-set `−1` does none of that. It arrives
+**forward in time** like every other event; what is inverted is its **sign in the
+algebra**. Its effect is to revise the *interpretation* of earlier `+1`s when the fold is
+recomputed.
+
+**Same direction, opposite weight — not opposite direction.** Reaching for the Int
+construction was label-driven: "two signs, two directions, four corners" is a count
+match, which is the failure §0 of this very file names. Recorded rather than quietly
+edited out, because the retraction is the more useful artifact.
+
+**The anchors that do fit:**
+
+- **DBSP / differential dataflow** (Budiu et al.; McSherry) — the native one, and already
+  this repo's foundation. Signed weights with `consolidate` annihilating `+1`/`−1` is
+  exactly incremental view maintenance staying consistent under correction.
+- **Bitemporality** (Snodgrass) — valid time vs transaction time. A correction recorded
+  *now* against an *earlier* valid time reinterprets the past without rewriting it. This
+  is the sharpest gloss on "pseudo": what we now believe about then changes; the record of
+  what we believed at the time does not.
+- **AGM belief revision** (Alchourrón, Gärdenfors, Makinson) — the logic of contraction
+  and revision; a `−1` is a contraction operator.
+- **Stückelberg–Feynman** — the antiparticle as a particle travelling backward in time,
+  which is Aaron's own long-standing reading of retraction, and a far better fit than Int:
+  `consolidate` annihilating `+1` against `−1` *is* pair annihilation.
+
+**And the mechanism that makes "pseudo" honest rather than hand-waving:** the log is
+**append-only and monotone**; only the *conclusion* is non-monotone. Nothing in the past
+is edited, so no causality is violated — a later arrival changes only what the fold
+yields. That is precisely why it stays sound while looking retrocausal, and it is the
+same split as
+[Z-set vs G-set](2026-08-10-the-threshold-rhyme-pay-per-step-with-a-deadline-vs-pay-once-and-foreclose-aaron.md):
+monotone substrate, revisable reading.
+
+**What survives of §5:** the *critique* of Meijer stands untouched — a dual pair is not a
+loop, and Rx's missing backpressure is the historical proof. What does not survive is the
+claim that Int/GoI is where Zeta's four corners live. Trace remains the right structure
+for *feedback in dataflow*; it is not the right structure for *retraction over a signed
+history*.
 
 ## 6. The one-line version
 
-> **Variance is one application of `op`. Feedback is a trace. Meijer's duality is the
-> first; a control loop needs the second; profunctor optics and the Int construction are
-> where they meet.**
+> **Variance is one application of `op`. Feedback is a trace. Retraction is neither — it
+> is a sign flip over a monotone log.** Meijer's duality is the first; a control loop
+> needs the second; Zeta's four corners are the third, and conflating them was this
+> file's own caught error.
 
 ## 7. Anchors (Beacon)
 
