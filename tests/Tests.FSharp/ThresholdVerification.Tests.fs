@@ -589,6 +589,16 @@ let ``R10 the verdict carries identities, counts and indices only — no byte ma
     Assert.Contains("\"A\"", rendered, StringComparison.Ordinal)
     Assert.Contains("\"X\"", rendered, StringComparison.Ordinal)
 
+    // R10 covers error messages too, not only verdicts: the richest ConfigError carries a signer
+    // and a scheme name and nothing else.
+    let cfg =
+        cfgError [ entry ecdsaId "A" a; entry ecdsaId "A" a ] 1 ecdsaOnly schemes
+
+    let renderedCfg = sprintf "%A" cfg
+    Assert.DoesNotContain("uy", renderedCfg, StringComparison.Ordinal)
+    Assert.DoesNotContain(Convert.ToBase64String(a.Public), renderedCfg, StringComparison.Ordinal)
+    Assert.Contains("\"A\"", renderedCfg, StringComparison.Ordinal)
+
 // ---------------------------------------------------------------------------------------------
 // R1 — the verdict explains itself in typed values a caller can branch on.
 // ---------------------------------------------------------------------------------------------
@@ -666,3 +676,33 @@ let ``R3 an off-roster signer never contributes to the count, even with a perfec
     shouldEqual [ sid "A" ] verdict.VerifiedSigners
     shouldEqual [ sid "X" ] verdict.UnknownSigners
     Assert.True(denialReasons verdict |> List.contains (InsufficientVerifiedSigners(2, 1)))
+
+/// Ambiguity A15, pinned: R3 says an off-roster signature must not COUNT and must be REPORTED.
+/// It does not say it denies. This derivation chose "does not veto" — an unknown signer alongside
+/// enough rostered ones authorizes, and is still reported. The opposite reading is defensible and
+/// this is the input that separates the two.
+[<Fact>]
+let ``R3 an unknown signer does not veto: enough rostered signers still authorize, and the stranger is still reported`` () =
+    let a, b, x = ecdsaKey (), ecdsaKey (), ecdsaKey ()
+    let schemes = [ ecdsaP256 ]
+
+    let v =
+        { Roster = [ entry ecdsaId "A" a; entry ecdsaId "B" b ]
+          Threshold = 2
+          Policy = ecdsaOnly }
+
+    let verdict =
+        okVerdict (
+            verify
+                schemes
+                v
+                (request
+                    0L
+                    [ submission ecdsaId "A" (a.Sign message)
+                      submission ecdsaId "B" (b.Sign message)
+                      submission ecdsaId "X" (x.Sign message) ])
+        )
+
+    Assert.True(isAuthorized verdict)
+    shouldEqual [ sid "A"; sid "B" ] verdict.VerifiedSigners
+    shouldEqual [ sid "X" ] verdict.UnknownSigners
