@@ -22,20 +22,47 @@ open System.Threading
 /// paper's protocol is fully implemented and TLA+-verified.
 [<RequireQualifiedAccess>]
 type DurabilityMode =
-    /// **Stable-storage durability (advertised target; currently NOT
-    /// fulfilled by the shipped implementation).** The stated
-    /// contract is: every `Save` is `fsync`'d before returning, so on
-    /// a host crash everything acknowledged is recoverable. Throughput
-    /// is expected to be ≤ 1000 TPS on commodity NVMe with per-op
-    /// fsync, ~50 kTPS with group commit. Correctness model: buffered
-    /// durable linearizability (Izraelevitz DISC'16).
+    /// **Stable-storage durability — SHIPPED.** Every `Save` is `fsync`'d
+    /// before returning, so on a host crash everything acknowledged is
+    /// recoverable. Throughput is expected to be ≤ 1000 TPS on commodity
+    /// NVMe with per-op fsync, ~50 kTPS with group commit. Correctness
+    /// model: buffered durable linearizability (Izraelevitz DISC'16).
     ///
-    /// **Honesty note:** `createBackingStore` currently maps
-    /// this variant to the `OsBuffered` implementation because the
-    /// per-`Save` fsync path hasn't shipped yet. Selecting this mode
-    /// today gets `OsBuffered` semantics. The factory flags the
-    /// mismatch at construction (see `createBackingStore`). Tracked
-    /// as a P0 in `docs/BACKLOG.md`.
+    /// The crash-consistent write protocol, per `Save`
+    /// (`DiskSpine.writeAtomicFrame`, and the async twin in
+    /// `DiskAsyncBackingStore`):
+    ///
+    ///   1. write the data frame, then `Flush(flushToDisk = true)`;
+    ///   2. write the header frame, then `Flush(flushToDisk = true)`;
+    ///   3. atomically `Move` the header onto the candidate path;
+    ///   4. `FileSync.fsyncDir` the parent directory, so the *directory
+    ///      entry* for a newly-created file is durable too — without this
+    ///      a hard reset can lose a file whose contents were flushed.
+    ///
+    /// Data before header before rename is deliberate: a torn write can
+    /// leave a data frame with no header (ignored on recovery), never a
+    /// header pointing at absent data.
+    ///
+    /// **The one real gap: Windows.** `FileSync.fsyncDir` is a no-op on
+    /// Windows (`FileSync.fs:41` — "documented gap, not an equivalence"),
+    /// because there is no directory-fsync equivalent. Steps 1–3 still
+    /// hold, so acknowledged *content* is durable; what is not guaranteed
+    /// on Windows is the durability of the directory entry for a
+    /// newly-created file across a hard reset. POSIX hosts get the full
+    /// protocol.
+    ///
+    /// **Corrected 2026-08-10.** This doc comment previously carried an
+    /// "honesty note" stating that `createBackingStore` mapped this
+    /// variant to `OsBuffered` because the per-`Save` fsync path "hasn't
+    /// shipped yet", that the factory flagged the mismatch, and that a P0
+    /// tracked it. All three were stale: the factory passes
+    /// `fsyncPerSave = true` (see `createBackingStore` below), the disk
+    /// store honours it, no mismatch flagging exists in the factory, and
+    /// no open P0 in `docs/BACKLOG.md` refers to it — the nearest item
+    /// (081KR2E4K0008QG0R000ARCH0X) is closed. The note UNDER-claimed a
+    /// guarantee that ships, which is its own hazard on a durability
+    /// contract: an operator reading it would pick a weaker mode than
+    /// they need, or rule the store out for a workload it can serve.
     | StableStorage
 
     /// **OS-buffered durability.** Writes go to the OS page cache;
@@ -215,12 +242,17 @@ module DurabilityMode =
     /// Async sibling of `createBackingStore` — picks an `IAsyncBackingStore`
     /// for the declared mode (genuine `File.*Async`, no `Task.Run` fakery).
     ///
-    /// **`StableStorage` is honoured for real here**: unlike the sync
-    /// `createBackingStore` (which maps `StableStorage` → OS-buffered with an
-    /// honesty note), the async disk store supports fsync-per-save, so this
-    /// returns a genuinely write-through store. Caveat carried from
-    /// `DiskAsyncBackingStore`: data + file metadata are fsync'd, parent-dir
-    /// fsync (crash-consistent creates) is a documented follow-up.
+    /// **`StableStorage` is honoured here**, by the same crash-consistent
+    /// protocol as the sync path: data frame fsync → header frame fsync →
+    /// atomic rename → parent-directory fsync
+    /// (`DiskSpineAsync.fs:70-98`), with genuine `File.*Async` I/O.
+    ///
+    /// **Corrected 2026-08-10.** This comment previously said the sync
+    /// `createBackingStore` maps `StableStorage` → OS-buffered, and that
+    /// parent-dir fsync was "a documented follow-up" here. Both were stale:
+    /// the sync path fsyncs per save (see `StableStorage` above) and BOTH
+    /// stores fsync the parent directory. The only remaining gap is
+    /// Windows, where `FileSync.fsyncDir` is a documented no-op.
     let createAsyncBackingStore<'K when 'K : comparison>
         (mode: DurabilityMode)
         (workDir: string)
