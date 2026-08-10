@@ -244,6 +244,18 @@ export default function OracleRaceMode() {
   const [tangleMap, setTangleMap] = useState<number[][] | null>(null);
   const [fusionHistory, setFusionHistory] = useState<Array<{ run: number; df: number; spread: number }>>([]);
   const [runCount, setRunCount] = useState(0);
+  const [prevTangleMap, setPrevTangleMap] = useState<number[][] | null>(null);
+  const [showComparison, setShowComparison] = useState(false);
+  // Quasi-crystal pairs: oracle pairs with PLV > 0.9 (groupthink risk)
+  const quasiCrystalPairs = tangleMap
+    ? tangleMap.flatMap((row, i) =>
+        row.flatMap((plv, j) =>
+          plv > 0.9 && i !== j && i < j
+            ? [{ i, j, plv }]
+            : []
+        )
+      )
+    : [];
   // Sensor fusion: BNN + Worm IV-weighted fusion result
   const [fusionResult, setFusionResult] = useState<{
     df: number; sigma2: number; plv: number; blocked: boolean; blockReason?: string;
@@ -469,6 +481,7 @@ export default function OracleRaceMode() {
         map[i]![j] = Math.sqrt(re*re + im*im) / minLen;
       }
     }
+    if (tangleMap) setPrevTangleMap(tangleMap);
     setTangleMap(map);
     const newRun = runCount + 1;
     setRunCount(newRun);
@@ -1266,7 +1279,27 @@ export default function OracleRaceMode() {
       {/* Tangle Map — 17×17 PLV heatmap */}
       {tangleMap && (
         <div style={{ marginTop: "0.5rem", padding: "0.6rem", background: "rgba(99,102,241,0.05)", border: "1px solid rgba(99,102,241,0.15)", borderRadius: 6 }}>
-          <strong style={{ color: "#6366f1", fontSize: "0.65rem" }}>🕸 Tangle Map — 17×17 PLV Heatmap</strong>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+            <strong style={{ color: "#6366f1", fontSize: "0.65rem" }}>🕸 Tangle Map — 17×17 PLV Heatmap</strong>
+            {quasiCrystalPairs.length > 0 && (
+              <span style={{
+                background: "rgba(245,158,11,0.15)", border: "1px solid #f59e0b",
+                color: "#f59e0b", fontSize: "0.55rem", padding: "1px 6px", borderRadius: 4,
+                animation: "pulse 1.5s infinite",
+              }}>
+                ⚡ QUASI-CRYSTAL: {quasiCrystalPairs.length} pair{quasiCrystalPairs.length !== 1 ? "s" : ""} PLV&gt;0.9
+                {" "}({quasiCrystalPairs.map(p => `O${p.i+1}↔O${p.j+1}`).join(", ")})
+              </span>
+            )}
+            {prevTangleMap && (
+              <button
+                onClick={() => setShowComparison(c => !c)}
+                style={{ fontSize: "0.5rem", padding: "1px 6px", background: showComparison ? "rgba(99,102,241,0.2)" : "transparent",
+                  border: "1px solid rgba(99,102,241,0.4)", color: "#6366f1", borderRadius: 4, cursor: "pointer" }}>
+                {showComparison ? "▲ Hide comparison" : "▼ Compare runs"}
+              </button>
+            )}
+          </div>
           <div style={{ fontSize: "0.55rem", color: "#64748b", marginBottom: "0.3rem" }}>
             Each cell = PLV between oracle pair. Red = correlated (groupthink risk). Blue = independent (safe to fuse).
             Diagonal = 1 (self). Threshold: PLV &gt; 0.9 → fusion blocked.
@@ -1300,6 +1333,43 @@ export default function OracleRaceMode() {
           <div style={{ fontSize: "0.5rem", color: "#475569", marginTop: "0.3rem" }}>
             Ref: sensor-fusion-oracle.ts · FrequencyMachZehnder.fs · four-corner-feedback.ts (quasi-crystal detector)
           </div>
+          {/* Run comparison: side-by-side tangle maps */}
+          {showComparison && prevTangleMap && (
+            <div style={{ marginTop: "0.4rem" }}>
+              <div style={{ fontSize: "0.55rem", color: "#6366f1", marginBottom: "0.2rem" }}>
+                Run comparison — stable cells = structural correlation, not noise
+              </div>
+              <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+                {[{ label: `Run ${runCount - 1}`, map: prevTangleMap }, { label: `Run ${runCount}`, map: tangleMap! }].map(({ label, map }) => (
+                  <div key={label}>
+                    <div style={{ fontSize: "0.5rem", color: "#94a3b8", marginBottom: "0.2rem" }}>{label}</div>
+                    <div style={{ display: "grid", gridTemplateColumns: `repeat(${N_ORACLES}, auto)`, gap: 1 }}>
+                      {map.map((row, i) => row.map((plv, j) => {
+                        const r = i === j ? 0 : Math.round(plv * 200);
+                        const b = i === j ? 60 : Math.round((1 - plv) * 160);
+                        const bg = i === j ? "rgba(99,102,241,0.3)" : `rgb(${r},${Math.round(plv * 20)},${b})`;
+                        return <div key={`${i}-${j}`} style={{ width: 10, height: 8, background: bg, borderRadius: 1 }} />;
+                      }))}
+                    </div>
+                  </div>
+                ))}
+                <div>
+                  <div style={{ fontSize: "0.5rem", color: "#94a3b8", marginBottom: "0.2rem" }}>Δ (stable if same)</div>
+                  <div style={{ display: "grid", gridTemplateColumns: `repeat(${N_ORACLES}, auto)`, gap: 1 }}>
+                    {tangleMap!.map((row, i) => row.map((plv, j) => {
+                      const prev = prevTangleMap[i]?.[j] ?? 0;
+                      const delta = Math.abs(plv - prev);
+                      const bg = delta < 0.1 ? "rgba(34,197,94,0.4)" : delta < 0.3 ? "rgba(245,158,11,0.4)" : "rgba(239,68,68,0.4)";
+                      return <div key={`${i}-${j}`} title={`Δ=${delta.toFixed(2)}`} style={{ width: 10, height: 8, background: bg, borderRadius: 1 }} />;
+                    }))}
+                  </div>
+                </div>
+              </div>
+              <div style={{ fontSize: "0.45rem", color: "#64748b", marginTop: "0.2rem" }}>
+                Green = stable (structural), amber = variable, red = unstable (noise)
+              </div>
+            </div>
+          )}
         </div>
       )}
       {/* Fusion History Sparkline */}

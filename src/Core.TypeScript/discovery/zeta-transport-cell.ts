@@ -1,0 +1,269 @@
+/**
+ * zeta-transport-cell.ts — YinYang cell that unifies all Zeta transports.
+ *
+ * ## The YinYang cell model
+ *
+ * A YinYang cell has two corners (the yin and the yang):
+ *   Execution corner (yang): send events outward to the network
+ *   Feedback corner (yin):   receive teaching acks from the network
+ *
+ * This is the operational implementation of the Vision Monad:
+ *   - The yang corner is the "I" (the agent's action)
+ *   - The yin corner is the "Eye" (the agent's self-observation)
+ *   - The BNN posterior is the agent's model of its own future spacetimes
+ *   - The quasi-crystal detector prunes branches that are too costly
+ *
+ * ## Transport unification
+ *
+ * The cell multiplexes across all available transports simultaneously:
+ *   - UDP multicast (LAN/WiFi mesh 802.11s) — fastest, lossy, Adinkra ECC
+ *   - Reticulum (mesh, LoRa/BLE/TCP) — medium range, self-certifying addresses
+ *   - WebSocket (realtime server) — lowest latency for online agents
+ *   - Git commits (GitHub) — durable, foldable, G-set semantics
+ *   - BroadcastChannel (browser tabs) — zero-latency for same-origin agents
+ *
+ * ## Online BNN learning
+ *
+ * Every teaching ack from the feedback corner is absorbed by the DimensionalBnn:
+ *   - Congestion acks → transport dimension
+ *   - Schema acks → schema dimension
+ *   - Auth acks → auth dimension
+ *   - etc.
+ *
+ * The BNN posterior predicts which transport will succeed for the next event.
+ * The cell uses this prediction to prioritize transports (highest posterior μ first).
+ *
+ * ## Quasi-time-crystal detection
+ *
+ * The quasi-crystal detector watches the rejection pattern per transport.
+ * If a transport is in a quasi-crystal loop (period ≤ 4, autocorrelation ≥ 0.8),
+ * the cell time-dilates it (reduces its priority to near-zero) and routes to
+ * other transports until the loop breaks.
+ *
+ * ## Homoiconicity
+ *
+ * The YinYang cell is homoiconic with:
+ *   - The Adinkra [8,4,4] ECC (execution = data, feedback = parity)
+ *   - The BipartiteMachZehnder (execution = path 0, feedback = path 1)
+ *   - The FrequencyMachZehnder (execution = DC bin, feedback = AC bins)
+ *   - The FigureEightEnsemble (execution = body A, feedback = body B)
+ *   - The Friedkin-Johnsen model (execution = influence, feedback = stubbornness)
+ *
+ * All five are the same knob: the external observer that prevents groupthink.
+ *
+ * ## References
+ *
+ * - mux-transport-bridge.ts (four-corner MuxChannel adapter)
+ * - four-corner-feedback.ts (teaching BatchAck, quasi-crystal detector)
+ * - gossip-mesh-transport.ts (all transport adapters)
+ * - udp-lossy-transport.ts (Adinkra ECC over UDP)
+ * - sensor-fusion-oracle.ts (BNN+Worm fusion)
+ * - bnn-persistence.ts (DimensionalBnn serialization)
+ * - yin-yang-composition-probe.ts (YinYang composition probe)
+ */
+
+import type { SalonTransport } from "./gossip-mesh-transport";
+import type { ErrorDimension } from "../protocol/error-envelope";
+import {
+  makeQuasiState,
+  updateQuasiState,
+  makeLaneFeedbackTracker,
+  updateLaneFeedback,
+  upgradeAck,
+  dominantDimension,
+  type LaneFeedbackTracker,
+  type QuasiCrystalState,
+} from "../ferry-throttler/four-corner-feedback";
+import {
+  createDimensionalBnn,
+  absorbError,
+  dimensionPosterior,
+  type DimensionalBnn,
+} from "../planning/error-bnn-bridge";
+
+// All known error dimensions for BNN status reporting
+const ALL_DIMENSIONS = ["schema", "version", "constraint", "auth", "transport", "toolchain", "unknown"] as const;
+import type { ErrorDimension } from "../protocol/error-envelope";
+
+// ── Transport descriptor ───────────────────────────────────────────────────────
+
+export type TransportKind = "udp" | "reticulum" | "websocket" | "git" | "broadcast";
+
+export interface TransportDescriptor {
+  readonly kind: TransportKind;
+  readonly transport: SalonTransport;
+  /** Priority (0 = highest). Updated by BNN posterior. */
+  priority: number;
+  /** Quasi-crystal state for this transport. */
+  quasiState: QuasiCrystalState;
+  /** Lane feedback tracker for this transport. */
+  feedback: LaneFeedbackTracker;
+  /** Time-dilation factor (1 = normal, 0 = fully dilated). */
+  dilationFactor: number;
+}
+
+// ── ZetaTransportCell ──────────────────────────────────────────────────────────
+
+export interface ZetaTransportCellOptions {
+  /** Available transports (at least one required). */
+  readonly transports: readonly TransportDescriptor[];
+  /** DimensionalBnn for online learning (shared across all transports). */
+  readonly bnn?: DimensionalBnn;
+  /** Node identity (stamped on outgoing events). */
+  readonly nodeId: string;
+  /** Callback when a teaching ack is received. */
+  readonly onTeachingAck?: (kind: TransportKind, dimension: ErrorDimension, generatorFn: string) => void;
+}
+
+export interface SendResult {
+  readonly ok: boolean;
+  readonly transport: TransportKind;
+  readonly reason?: string;
+  readonly teachingAck?: { dimension: ErrorDimension; generatorFn: string };
+}
+
+/**
+ * ZetaTransportCell — the YinYang cell that unifies all transports.
+ *
+ * Multiplexes across all available transports simultaneously (fan-out).
+ * Uses the BNN posterior to prioritize transports.
+ * Detects quasi-crystal loops and time-dilates affected transports.
+ */
+export class ZetaTransportCell {
+  private readonly _transports: TransportDescriptor[];
+  private readonly _bnn: DimensionalBnn;
+  private readonly _nodeId: string;
+  private readonly _onTeachingAck?: (kind: TransportKind, dimension: ErrorDimension, generatorFn: string) => void;
+
+  constructor(opts: ZetaTransportCellOptions) {
+    this._transports = [...opts.transports];
+    this._bnn = opts.bnn ?? createDimensionalBnn();
+    this._nodeId = opts.nodeId;
+    this._onTeachingAck = opts.onTeachingAck;
+  }
+
+  /** Send an event over all non-dilated transports (fan-out). */
+  async send(event: string): Promise<SendResult[]> {
+    // Sort by priority (lowest number = highest priority), skip fully dilated
+    const active = this._transports
+      .filter(t => t.dilationFactor > 0.05)
+      .sort((a, b) => a.priority - b.priority);
+
+    const results: SendResult[] = [];
+    for (const desc of active) {
+      try {
+        await desc.transport.broadcast(event);
+        // Successful send → update quasi-crystal state (not rejected)
+        desc.quasiState = updateQuasiState(desc.quasiState, false);
+        desc.feedback = updateLaneFeedback(desc.feedback, { kind: "received", frameId: event.slice(0, 16) });
+        results.push({ ok: true, transport: desc.kind });
+      } catch (err) {
+        const reason = err instanceof Error ? err.message : String(err);
+        // Failed send → upgrade to teaching ack, update BNN and quasi-crystal state
+        const rawAck = { kind: "rejected" as const, frameId: event.slice(0, 16), reason };
+        const teachingAck = upgradeAck(rawAck, desc.priority);
+        if (teachingAck.kind === "rejected") {
+        // Absorb into BNN
+          const corrId = `${desc.kind}:${event.slice(0, 8)}`;
+          const envelope: ErrorEnvelope = {
+            envelopeId: envelopeId(corrId, teachingAck.dimension, `transport ${desc.kind} rejected event`, reason),
+            correlationId: corrId,
+            beacon: `Transport ${desc.kind} rejected event: ${reason}. Fix: ${teachingAck.generatorFn}`,
+            mirror: {
+              what: `transport ${desc.kind} rejected event`,
+              why: reason,
+              howToFix: teachingAck.generatorFn,
+              dimension: teachingAck.dimension,
+              severity: "error",
+              retractableBeliefId: teachingAck.retractableBeliefId,
+            },
+            emittedAt: new Date().toISOString(),
+          };
+          absorbError(this._bnn, envelope);
+          // Update quasi-crystal state (rejected)
+          desc.quasiState = updateQuasiState(desc.quasiState, true);
+          desc.feedback = updateLaneFeedback(desc.feedback, teachingAck);
+          // Update dilation factor
+          desc.dilationFactor = desc.quasiState.dilationFactor;
+          // Update priority from BNN posterior
+          const status = ALL_DIMENSIONS.map(d => ({ dimension: d, ...dimensionPosterior(this._bnn, d) }));
+          const transportStatus = status.find(s => s.dimension === teachingAck.dimension);
+          if (transportStatus) {
+            desc.priority = Math.round((1 - transportStatus.mu) * 10);
+          }
+          this._onTeachingAck?.(desc.kind, teachingAck.dimension, teachingAck.generatorFn);
+          results.push({ ok: false, transport: desc.kind, reason, teachingAck: { dimension: teachingAck.dimension, generatorFn: teachingAck.generatorFn } });
+        }
+      }
+    }
+    return results;
+  }
+
+  /** Register a message handler on all transports. */
+  onMessage(handler: (msg: string, from: TransportKind) => void): void {
+    for (const desc of this._transports) {
+      desc.transport.onMessage(msg => handler(msg, desc.kind));
+    }
+  }
+
+  /** Get the current BNN status (per-dimension posteriors). */
+  bnnStatus() {
+    return ALL_DIMENSIONS.map(d => ({
+      dimension: d,
+      ...dimensionPosterior(this._bnn, d),
+    }));
+  }
+
+  /** Get the current transport health summary. */
+  health(): Array<{ kind: TransportKind; priority: number; dilationFactor: number; quasiPeriod: number; dominantError: ErrorDimension }> {
+    return this._transports.map(t => ({
+      kind: t.kind,
+      priority: t.priority,
+      dilationFactor: t.dilationFactor,
+      quasiPeriod: t.quasiState.period,
+      dominantError: dominantDimension(t.feedback),
+    }));
+  }
+
+  /** Serialize BNN state for persistence. */
+  serializeBnn(): string {
+    return JSON.stringify(this.bnnStatus());
+  }
+}
+
+// ── Factory helpers ────────────────────────────────────────────────────────────
+
+/** Create a TransportDescriptor from a SalonTransport. */
+export function makeTransportDescriptor(
+  kind: TransportKind,
+  transport: SalonTransport,
+  priority = 0,
+): TransportDescriptor {
+  return {
+    kind,
+    transport,
+    priority,
+    quasiState: makeQuasiState(),
+    feedback: makeLaneFeedbackTracker(priority),
+    dilationFactor: 1,
+  };
+}
+
+/** Create a ZetaTransportCell from a map of transport kinds to SalonTransports. */
+export function createZetaTransportCell(
+  nodeId: string,
+  transports: Partial<Record<TransportKind, SalonTransport>>,
+  opts?: Partial<Omit<ZetaTransportCellOptions, "nodeId" | "transports">>,
+): ZetaTransportCell {
+  const descs: TransportDescriptor[] = [];
+  const order: TransportKind[] = ["broadcast", "websocket", "udp", "reticulum", "git"];
+  for (let i = 0; i < order.length; i++) {
+    const kind = order[i]!;
+    const t = transports[kind];
+    if (t) descs.push(makeTransportDescriptor(kind, t, i));
+  }
+  if (descs.length === 0) throw new RangeError("ZetaTransportCell: at least one transport required");
+  return new ZetaTransportCell({ nodeId, transports: descs, ...opts });
+}
+import { envelopeId } from "../protocol/error-envelope";
+import type { ErrorEnvelope } from "../protocol/error-envelope";

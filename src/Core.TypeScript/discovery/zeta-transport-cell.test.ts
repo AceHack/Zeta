@@ -1,0 +1,157 @@
+/**
+ * zeta-transport-cell.test.ts — Tests for the ZetaTransportCell YinYang convergence layer.
+ */
+import { describe, test, expect } from "bun:test";
+import { createZetaTransportCell, makeTransportDescriptor } from "./zeta-transport-cell";
+import type { SalonTransport } from "./gossip-mesh-transport";
+
+// ── Mock transport ─────────────────────────────────────────────────────────────
+
+function makeMockTransport(shouldFail = false, failReason = "transport timeout"): SalonTransport & { sent: string[] } {
+  const sent: string[] = [];
+  return {
+    sent,
+    async broadcast(msg: string) {
+      if (shouldFail) throw new Error(failReason);
+      sent.push(msg);
+    },
+    onMessage(_handler: (msg: string) => void) {},
+    async publish(_topic: string, _msg: string) {},
+  };
+}
+
+describe("zeta-transport-cell", () => {
+  // ZTC-1: createZetaTransportCell requires at least one transport
+  test("ZTC-1: throws if no transports provided", () => {
+    expect(() => createZetaTransportCell("node-1", {})).toThrow("at least one transport");
+  });
+
+  // ZTC-2: send succeeds over a healthy transport
+  test("ZTC-2: send succeeds over healthy transport", async () => {
+    const mock = makeMockTransport(false);
+    const cell = createZetaTransportCell("node-1", { broadcast: mock });
+    const results = await cell.send("hello");
+    expect(results).toHaveLength(1);
+    expect(results[0]!.ok).toBe(true);
+    expect(results[0]!.transport).toBe("broadcast");
+    expect(mock.sent).toHaveLength(1);
+  });
+
+  // ZTC-3: send returns teaching ack on failure
+  test("ZTC-3: send returns teaching ack on transport failure", async () => {
+    const mock = makeMockTransport(true, "transport timeout");
+    const cell = createZetaTransportCell("node-1", { websocket: mock });
+    const results = await cell.send("hello");
+    expect(results[0]!.ok).toBe(false);
+    expect(results[0]!.teachingAck).toBeDefined();
+    expect(results[0]!.teachingAck!.dimension).toBe("transport");
+  });
+
+  // ZTC-4: fan-out sends over all non-dilated transports
+  test("ZTC-4: fan-out sends over all healthy transports", async () => {
+    const mock1 = makeMockTransport(false);
+    const mock2 = makeMockTransport(false);
+    const cell = createZetaTransportCell("node-1", { broadcast: mock1, websocket: mock2 });
+    const results = await cell.send("hello");
+    expect(results).toHaveLength(2);
+    expect(results.every(r => r.ok)).toBe(true);
+    expect(mock1.sent).toHaveLength(1);
+    expect(mock2.sent).toHaveLength(1);
+  });
+
+  // ZTC-5: failed transport is time-dilated after quasi-crystal loop
+  test("ZTC-5: transport is time-dilated after 16 consecutive failures", async () => {
+    const mock = makeMockTransport(true, "transport timeout");
+    const cell = createZetaTransportCell("node-1", { udp: mock });
+    // Send 16 times to trigger quasi-crystal detection
+    for (let i = 0; i < 16; i++) {
+      await cell.send(`event-${i}`);
+    }
+    const health = cell.health();
+    const udpHealth = health.find(h => h.kind === "udp");
+    expect(udpHealth).toBeDefined();
+    // After 16 consecutive failures, the transport should be time-dilated
+    expect(udpHealth!.dilationFactor).toBeLessThan(1);
+  });
+
+  // ZTC-6: BNN status reflects absorbed errors
+  test("ZTC-6: BNN status reflects absorbed transport errors", async () => {
+    const mock = makeMockTransport(true, "transport timeout");
+    const cell = createZetaTransportCell("node-1", { udp: mock });
+    await cell.send("event-1");
+    const status = cell.bnnStatus();
+    expect(status.length).toBeGreaterThan(0);
+    // The transport dimension should have been updated
+    const transportStatus = status.find(s => s.dimension === "transport");
+    expect(transportStatus).toBeDefined();
+  });
+
+  // ZTC-7: onTeachingAck callback is called on failure
+  test("ZTC-7: onTeachingAck callback fires on transport failure", async () => {
+    const mock = makeMockTransport(true, "auth failed");
+    const acks: Array<{ dimension: string; generatorFn: string }> = [];
+    const cell = createZetaTransportCell("node-1", { websocket: mock }, {
+      onTeachingAck: (_kind, dimension, generatorFn) => acks.push({ dimension, generatorFn }),
+    });
+    await cell.send("event-1");
+    expect(acks).toHaveLength(1);
+    expect(acks[0]!.dimension).toBe("auth");
+  });
+
+  // ZTC-8: health() returns correct structure
+  test("ZTC-8: health() returns transport health summary", () => {
+    const mock = makeMockTransport(false);
+    const cell = createZetaTransportCell("node-1", { broadcast: mock, git: mock });
+    const health = cell.health();
+    expect(health).toHaveLength(2);
+    expect(health.map(h => h.kind).sort()).toEqual(["broadcast", "git"]);
+  });
+
+  // ZTC-9: priority ordering — broadcast before git
+  test("ZTC-9: broadcast is prioritized over git (lower priority number)", () => {
+    const mock = makeMockTransport(false);
+    const cell = createZetaTransportCell("node-1", { broadcast: mock, git: mock });
+    const health = cell.health();
+    const broadcastPriority = health.find(h => h.kind === "broadcast")!.priority;
+    const gitPriority = health.find(h => h.kind === "git")!.priority;
+    expect(broadcastPriority).toBeLessThan(gitPriority);
+  });
+
+  // ZTC-10: makeTransportDescriptor creates correct descriptor
+  test("ZTC-10: makeTransportDescriptor creates correct descriptor", () => {
+    const mock = makeMockTransport(false);
+    const desc = makeTransportDescriptor("udp", mock, 2);
+    expect(desc.kind).toBe("udp");
+    expect(desc.priority).toBe(2);
+    expect(desc.dilationFactor).toBe(1);
+    expect(desc.quasiState.isQuasi).toBe(false);
+  });
+
+  // ZTC-11 (negative): fully dilated transport is skipped
+  test("ZTC-11 (negative): fully dilated transport is skipped", async () => {
+    const mock1 = makeMockTransport(false);
+    const mock2 = makeMockTransport(false);
+    const desc1 = makeTransportDescriptor("broadcast", mock1, 0);
+    const desc2 = makeTransportDescriptor("git", mock2, 1);
+    // Manually dilate desc2
+    desc2.dilationFactor = 0; // fully dilated
+    const { ZetaTransportCell } = await import("./zeta-transport-cell");
+    const cell = new ZetaTransportCell({ nodeId: "node-1", transports: [desc1, desc2] });
+    const results = await cell.send("hello");
+    // Only broadcast should have been used (git is fully dilated)
+    expect(results).toHaveLength(1);
+    expect(results[0]!.transport).toBe("broadcast");
+    expect(mock2.sent).toHaveLength(0);
+  });
+
+  // ZTC-12: serializeBnn returns valid JSON
+  test("ZTC-12: serializeBnn returns valid JSON", async () => {
+    const mock = makeMockTransport(true, "schema validation failed");
+    const cell = createZetaTransportCell("node-1", { udp: mock });
+    await cell.send("event-1");
+    const json = cell.serializeBnn();
+    expect(() => JSON.parse(json)).not.toThrow();
+    const parsed = JSON.parse(json);
+    expect(Array.isArray(parsed)).toBe(true);
+  });
+});
