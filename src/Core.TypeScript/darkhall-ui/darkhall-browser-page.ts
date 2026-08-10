@@ -24,9 +24,17 @@ import {
   type DarkHallBrowserDatabaseControllerResult,
   type DarkHallBrowserDatabaseControllerRuntime,
 } from "./darkhall-browser-database-controller";
+import {
+  startDarkHallBrowserControllerInput,
+  type DarkHallBrowserControllerCommandResolver,
+  type DarkHallBrowserControllerInputReadout,
+  type DarkHallBrowserControllerInputResult,
+  type DarkHallBrowserControllerInputRuntime,
+  type DarkHallBrowserControllerInputSource,
+} from "./darkhall-browser-controller-input";
 import { renderDarkHallRoomHtml, type RoomRunTranscript } from "./darkhall-room";
 
-export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v3" as const;
+export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v4" as const;
 export const DARK_HALL_BROWSER_PAGE_GLOBAL = "__zetaDarkHallPage" as const;
 export const DARK_HALL_BROWSER_PAGE_MOUNT_ID = "darkhall-room" as const;
 
@@ -46,6 +54,8 @@ export interface DarkHallBrowserPageFeedback {
     | "page-database-start-failed"
     | "page-database-hydration-failed"
     | "page-database-stop-failed"
+    | "page-input-start-failed"
+    | "page-input-stop-failed"
     | "page-controller-stop-failed"
     | "page-stop-failed";
   readonly detail: string;
@@ -66,6 +76,7 @@ export interface DarkHallBrowserPageReadout {
   readonly host: BrowserLifecycleHostReadout;
   readonly database: DarkHallDatabaseReadout;
   readonly controller: DarkHallBrowserDatabaseControllerReadout | null;
+  readonly input: DarkHallBrowserControllerInputReadout;
 }
 
 export interface DarkHallBrowserPageRuntime {
@@ -73,6 +84,10 @@ export interface DarkHallBrowserPageRuntime {
   dispatchController(
     command: DarkHallBrowserDatabaseCommand,
   ): Promise<DarkHallBrowserDatabaseControllerResult<DarkHallBrowserDatabaseControllerReadout>>;
+  dispatchControllerInput(
+    cell: number,
+    source: DarkHallBrowserControllerInputSource,
+  ): Promise<DarkHallBrowserControllerInputResult<DarkHallBrowserControllerInputReadout>>;
   stop(): DarkHallBrowserPageResult<DarkHallBrowserPageReadout>;
 }
 
@@ -91,6 +106,8 @@ export interface NativeDarkHallBrowserPageOptions {
   readonly databaseStoreName?: string;
   readonly databaseLimits?: ZetaDbTickLimits;
   readonly databaseExecutor?: BrowserZetaDbTabExecutor;
+  readonly maxControllerInputInFlight?: number;
+  readonly controllerCommandResolver?: DarkHallBrowserControllerCommandResolver;
 }
 
 interface NativePageMount {
@@ -101,6 +118,7 @@ interface NativePageMount {
 
 interface NativePageContext {
   readonly mount: NativePageMount;
+  readonly document: unknown;
   readonly parameters: URLSearchParams;
   readonly mintTabId: () => string | null;
 }
@@ -108,7 +126,7 @@ interface NativePageContext {
 export const DARK_HALL_BROWSER_PAGE_TRANSCRIPT: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
   roomName: "dark hall browser node",
-  seed: "browser-page-v3",
+  seed: "browser-page-v4",
   generatedBy: "darkhall-browser-page",
   controller: DARK_HALL_BROWSER_DATABASE_ACTIONS.map((action) => ({
     cell: action.cell,
@@ -225,6 +243,7 @@ function nativePageContext(root: unknown, mountId: string): DarkHallBrowserPageR
 
   return succeeded({
     mount,
+    document: documentValue,
     parameters: new URLSearchParams(search),
     mintTabId: () => {
       if (randomUuid === null) return null;
@@ -264,6 +283,10 @@ function initialSequence(value: string | null): DarkHallBrowserPageResult<number
 
 function pageStatusFromSeverity(severity: DarkHallBrowserPageFeedback["severity"]): "backpressured" | "heat" {
   return severity === "backpressure" ? "backpressured" : "heat";
+}
+
+function inputPageStatus(severity: "cold" | "backpressure" | "heat"): "backpressured" | "heat" {
+  return severity === "heat" ? "heat" : "backpressured";
 }
 
 function pwaOptions(
@@ -343,7 +366,18 @@ export async function startNativeDarkHallBrowserPage(
   if (!sequence.ok) return sequence;
   const databaseNodeId = identifier(options.databaseNodeId ?? null, `${nodeId.value}:database`);
   if (!databaseNodeId.ok) return databaseNodeId;
-  const pageTranscript = options.transcript ?? DARK_HALL_BROWSER_PAGE_TRANSCRIPT;
+  const suppliedTranscript = options.transcript ?? DARK_HALL_BROWSER_PAGE_TRANSCRIPT;
+  const pageTranscript =
+    options.controllerCommandResolver === undefined
+      ? {
+          ...suppliedTranscript,
+          controller: suppliedTranscript.controller.map((cell) =>
+            cell.actionId === "darkhall.database.emit" || cell.actionId === "darkhall.database.retract"
+              ? { ...cell, enabled: false }
+              : { ...cell },
+          ),
+        }
+      : suppliedTranscript;
   const databaseLimits = options.databaseLimits ?? defaultDatabaseLimits;
 
   let receiveDatabaseInvalidation: ((invalidation: BrowserDatabaseInvalidation) => void) | null = null;
@@ -517,6 +551,48 @@ export async function startNativeDarkHallBrowserPage(
     );
   }
   const controller: DarkHallBrowserDatabaseControllerRuntime = controllerStarted.value;
+  const inputStarted = startDarkHallBrowserControllerInput({
+    pointerTarget: context.mount.value,
+    keyboardTarget: context.document,
+    maxInFlight: options.maxControllerInputInFlight ?? 1,
+    ...(options.controllerCommandResolver === undefined
+      ? {}
+      : { resolveCommand: options.controllerCommandResolver }),
+    dispatch: (command) => controller.dispatch(command),
+    observe: (readout) => {
+      const interaction = readout.last;
+      const attributes: readonly (readonly [string, string])[] = [
+        ["data-controller-input-status", readout.status],
+        ["data-controller-input-in-flight", readout.inFlight.toString()],
+        ["data-controller-input-source", interaction?.source ?? "none"],
+        ["data-controller-input-cell", interaction?.cell.toString() ?? "none"],
+        ["data-controller-input-outcome", interaction?.outcome ?? "none"],
+        ["data-controller-input-feedback", interaction?.feedbackCode ?? "none"],
+      ];
+      return attributes.every(([name, value]) => context.mount.setAttribute(name, value))
+        ? { ok: true }
+        : {
+            ok: false,
+            feedback: {
+              severity: "heat",
+              code: "controller-input-readout-attribute-failed",
+              detail: "The browser refused a controller input readout attribute.",
+            },
+          };
+    },
+  });
+  if (!inputStarted.ok) {
+    controller.stop();
+    database.stop();
+    pwa.browser.host.stop();
+    context.mount.setStatus(inputPageStatus(inputStarted.feedback.severity), inputStarted.feedback.code);
+    return failed(
+      "page-input-start-failed",
+      `${inputStarted.feedback.code}: ${inputStarted.feedback.detail}`,
+      inputStarted.feedback.severity === "heat" ? "heat" : "backpressure",
+    );
+  }
+  const input: DarkHallBrowserControllerInputRuntime = inputStarted.value;
 
   let status: DarkHallBrowserPageStatus = "live";
   if (
@@ -525,6 +601,7 @@ export async function startNativeDarkHallBrowserPage(
     !context.mount.setAttribute("data-browser-transport", pwa.browser.transport.selected) ||
     !context.mount.setAttribute("data-browser-tab", tabId.value)
   ) {
+    input.stop();
     controller.stop();
     database.stop();
     pwa.browser.host.stop();
@@ -542,12 +619,23 @@ export async function startNativeDarkHallBrowserPage(
     host: pwa.browser.host.read(),
     database: latestDatabase ?? hydratedDatabase,
     controller: latestController,
+    input: input.read(),
   });
 
   return succeeded({
     read,
     dispatchController: (command) => controller.dispatch(command),
+    dispatchControllerInput: (cell, source) => input.dispatchCell(cell, source),
     stop: () => {
+      const inputStopped = input.stop();
+      if (!inputStopped.ok) {
+        context.mount.setStatus(inputPageStatus(inputStopped.feedback.severity), inputStopped.feedback.code);
+        return failed(
+          "page-input-stop-failed",
+          `${inputStopped.feedback.code}: ${inputStopped.feedback.detail}`,
+          inputStopped.feedback.severity === "heat" ? "heat" : "backpressure",
+        );
+      }
       const controllerStopped = controller.stop();
       if (!controllerStopped.ok) {
         context.mount.setStatus(

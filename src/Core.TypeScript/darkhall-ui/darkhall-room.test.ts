@@ -273,6 +273,9 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain('data-selected="true"');
     expect(html).toContain('data-cell="13"');
     expect(html).toContain("darkhall.play.meta-cart-host");
+    expect(html).toContain('class="zeta-room-cell-input"');
+    expect(html).toContain('data-controller-cell="13"');
+    expect(html).toContain('aria-keyshortcuts="D"');
     expect(html).toContain("spawn:darkhall-heat-board");
     expect(html).toContain(`data-temperature-treaty="${HEAT_SIGNAL_TREATY_PATH}"`);
     expect(html).toContain(`data-temperature-oracle="${TEMPERATURE_REFERENCE_ORACLE}"`);

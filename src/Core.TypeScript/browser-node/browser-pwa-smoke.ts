@@ -13,14 +13,16 @@ import type {
   DarkHallBrowserDatabaseCommand,
   DarkHallBrowserDatabaseControllerReadout,
 } from "../darkhall-ui/darkhall-browser-database-controller";
+import type { DarkHallBrowserControllerInputReadout } from "../darkhall-ui/darkhall-browser-controller-input";
 
-export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v3" as const;
+export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v4" as const;
 
 interface BrowserPwaPageReadout {
   readonly registration: BrowserServiceWorkerRegistrationReadout;
   readonly transport: BrowserTabTransportReadout;
   readonly host: BrowserLifecycleHostReadout;
   readonly database: DarkHallDatabaseReadout;
+  readonly input: DarkHallBrowserControllerInputReadout;
   readonly renderedTransport: string | null;
   readonly renderedDatabaseRevision: string | null;
   readonly renderedDatabaseRows: readonly {
@@ -40,6 +42,7 @@ interface BrowserPwaPageGlobal {
             readonly transport: BrowserTabTransportReadout;
             readonly host: BrowserLifecycleHostReadout;
             readonly database: DarkHallDatabaseReadout;
+            readonly input: DarkHallBrowserControllerInputReadout;
           };
           dispatchController(
             command: DarkHallBrowserDatabaseCommand,
@@ -66,6 +69,10 @@ export interface BrowserPwaSmokeTranscript {
     readonly writerCommand: DarkHallBrowserDatabaseControllerReadout;
     readonly peerAfterWrite: BrowserPwaPageReadout;
     readonly freshPage: BrowserPwaPageReadout;
+  };
+  readonly controllerInput: {
+    readonly pointer: DarkHallBrowserControllerInputReadout;
+    readonly keyboard: DarkHallBrowserControllerInputReadout;
   };
 }
 
@@ -155,6 +162,19 @@ async function waitForSurvivor(page: Page): Promise<void> {
   );
 }
 
+async function waitForControllerInput(page: Page, source: "keyboard" | "pointer", cell: number): Promise<void> {
+  await page.waitForFunction(
+    `([expectedSource, expectedCell]) => {
+      const started = globalThis.__zetaDarkHallPage;
+      if (started?.ok !== true) return false;
+      const input = started.value.read().input;
+      return input.accepted >= 1 && input.last?.source === expectedSource && input.last.cell === expectedCell;
+    }`,
+    [source, cell],
+    { timeout: timeoutMs },
+  );
+}
+
 async function observe(page: Page, pageName: string): Promise<BrowserPwaPageReadout> {
   const observation = await page.evaluate(() => {
     const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
@@ -183,6 +203,7 @@ async function observe(page: Page, pageName: string): Promise<BrowserPwaPageRead
           transport: readout.transport,
           host: readout.host,
           database: readout.database,
+          input: readout.input,
           renderedTransport:
             globalThis.document.querySelector("[data-browser-transport]")?.getAttribute("data-browser-transport") ??
             null,
@@ -226,6 +247,26 @@ function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
   }
   if (transcript.afterStop.pageA.host.coordinator.liveness.liveTabIds.join(",") !== "tab-a") {
     failures.push("page A did not remain live after page B stopped");
+  }
+  if (
+    transcript.controllerInput.pointer.last?.source !== "pointer" ||
+    transcript.controllerInput.pointer.last.cell !== 6 ||
+    transcript.controllerInput.pointer.last.actionId !== "darkhall.database.inspect" ||
+    transcript.controllerInput.pointer.last.outcome !== "accepted"
+  ) {
+    failures.push(
+      `page B did not route pointer activation through controller cell 6: ${JSON.stringify(transcript.controllerInput.pointer.last)}`,
+    );
+  }
+  if (
+    transcript.controllerInput.keyboard.last?.source !== "keyboard" ||
+    transcript.controllerInput.keyboard.last.cell !== 12 ||
+    transcript.controllerInput.keyboard.last.actionId !== "darkhall.database.refresh" ||
+    transcript.controllerInput.keyboard.last.outcome !== "accepted"
+  ) {
+    failures.push(
+      `page A did not route keyboard KeyC through controller cell 12: ${JSON.stringify(transcript.controllerInput.keyboard.last)}`,
+    );
   }
   if (!transcript.afterStop.pageA.host.coordinator.liveness.darkTabIds.includes("tab-b")) {
     failures.push("page A did not retain page B's stopped state");
@@ -318,7 +359,15 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
       dispatchEvent(new PageTransitionEvent("pageshow", { persisted: true }));
     });
     await Promise.all([waitForTwoTabs(pageA), waitForTwoTabs(pageB)]);
+
+    stage = "route pointer and keyboard controller input";
+    await pageB.click('[data-action-id="darkhall.database.inspect"]');
+    await waitForControllerInput(pageB, "pointer", 6);
+    await pageA.keyboard.press("KeyC");
+    await waitForControllerInput(pageA, "keyboard", 12);
     const [beforeA, beforeB] = await Promise.all([observe(pageA, "page A"), observe(pageB, "page B")]);
+    const pointerInput = beforeB.input;
+    const keyboardInput = beforeA.input;
 
     stage = "write and propagate database row";
     const writerResult = await pageB.evaluate(async () => {
@@ -366,6 +415,7 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
         peerAfterWrite,
         freshPage,
       },
+      controllerInput: { pointer: pointerInput, keyboard: keyboardInput },
     };
     const failures = validate(transcript);
     if (failures.length > 0) return failed("assertion-failed", failures.join("; "));

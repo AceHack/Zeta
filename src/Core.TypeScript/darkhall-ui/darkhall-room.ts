@@ -206,6 +206,25 @@ function renderControllerCell(cell: ControllerCell): string {
   if (cell.selected) state = "selected";
   const label = cell.label.length > 0 ? escapeHtml(cell.label) : "&nbsp;";
   const actionId = cell.actionId ?? "";
+  const contents = [
+    `<span class="zeta-room-cell-index">${cell.cell.toString().padStart(2, "0")}</span>`,
+    `<span class="zeta-room-cell-label">${label}</span>`,
+    actionId.length > 0 ? `<span class="zeta-room-cell-action">${escapeHtml(actionId)}</span>` : "",
+  ].join("");
+  const control =
+    actionId.length === 0
+      ? contents
+      : [
+          '<button type="button" class="zeta-room-cell-input"',
+          attr("data-controller-cell", cell.cell),
+          attr("data-action-id", actionId),
+          attr("aria-label", `${cell.label} (${actionId})`),
+          attr("aria-keyshortcuts", cell.cell.toString(16).toUpperCase()),
+          enabled ? "" : " disabled",
+          ">",
+          contents,
+          "</button>",
+        ].join("");
 
   return [
     `<li class="zeta-room-cell"`,
@@ -215,9 +234,7 @@ function renderControllerCell(cell: ControllerCell): string {
     attr("data-gate", cell.gate),
     attr("data-action-class", cell.actionClass),
     ">",
-    `<span class="zeta-room-cell-index">${cell.cell.toString().padStart(2, "0")}</span>`,
-    `<span class="zeta-room-cell-label">${label}</span>`,
-    actionId.length > 0 ? `<span class="zeta-room-cell-action">${escapeHtml(actionId)}</span>` : "",
+    control,
     "</li>",
   ].join("");
 }

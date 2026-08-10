@@ -7,12 +7,14 @@ import {
   renderDarkHallBrowserNodeDocument,
   startNativeDarkHallBrowserPage,
 } from "./darkhall-browser-page";
+import { DARK_HALL_BROWSER_CONTROLLER_INPUT_SCHEMA } from "./darkhall-browser-controller-input";
 
 type NativeListener = (event?: unknown) => void;
 
 class NativeMount {
   innerHTML = "standing room";
   readonly attributes = new Map<string, string>();
+  readonly listeners = new Map<string, Set<NativeListener>>();
 
   setAttribute(name: string, value: string): void {
     this.attributes.set(name, value);
@@ -20,6 +22,36 @@ class NativeMount {
 
   removeAttribute(name: string): void {
     this.attributes.delete(name);
+  }
+
+  addEventListener(type: string, listener: NativeListener): void {
+    const entries = this.listeners.get(type) ?? new Set();
+    entries.add(listener);
+    this.listeners.set(type, entries);
+  }
+
+  removeEventListener(type: string, listener: NativeListener): void {
+    this.listeners.get(type)?.delete(listener);
+  }
+
+  emit(type: string, event: unknown): void {
+    for (const listener of this.listeners.get(type) ?? []) listener(event);
+  }
+}
+
+class NativeControllerCell {
+  readonly cell: number;
+
+  constructor(cell: number) {
+    this.cell = cell;
+  }
+
+  closest(selector: string): NativeControllerCell | null {
+    return selector === "[data-controller-cell]" ? this : null;
+  }
+
+  getAttribute(name: string): string | null {
+    return name === "data-controller-cell" ? this.cell.toString() : null;
   }
 }
 
@@ -81,6 +113,10 @@ class NativeBrowserRoot {
     this.pageListeners.get(type)?.delete(listener);
   }
 
+  emitDocument(type: string, event: unknown): void {
+    for (const listener of this.documentListeners.get(type) ?? []) listener(event);
+  }
+
   private add(entries: Map<string, Set<NativeListener>>, type: string, listener: NativeListener): void {
     const listeners = entries.get(type) ?? new Set();
     listeners.add(listener);
@@ -114,6 +150,14 @@ function databaseExecutor(
   return Promise.resolve({ ok: true, value: databaseReadout(request) });
 }
 
+async function waitFor(predicate: () => boolean): Promise<void> {
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    if (predicate()) return;
+    await Promise.resolve();
+  }
+  throw new Error("Timed out waiting for the browser page readout.");
+}
+
 describe("Dark Hall active browser page", () => {
   test("hydrates before live, publishes bounded writes, and projects the database readout", async () => {
     const root = new NativeBrowserRoot();
@@ -144,6 +188,14 @@ describe("Dark Hall active browser page", () => {
         rows: [{ rowKey: "game/score", payload: "9000", weight: 1 }],
       },
       controller: null,
+      input: {
+        schema: DARK_HALL_BROWSER_CONTROLLER_INPUT_SCHEMA,
+        status: "live",
+        accepted: 0,
+        refused: 0,
+        backpressured: 0,
+        last: null,
+      },
     });
     expect(requests).toHaveLength(1);
     expect(requests[0]).toMatchObject({
@@ -166,6 +218,31 @@ describe("Dark Hall active browser page", () => {
     expect(root.mount.innerHTML).toContain('data-browser-local-tab="tab-a"');
     expect(root.mount.innerHTML).toContain('data-database-revision="7"');
     expect(root.mount.innerHTML).toContain("game/score");
+    expect(root.mount.attributes.get("data-controller-input-status")).toBe("live");
+    expect(root.mount.attributes.get("data-controller-input-source")).toBe("none");
+
+    root.mount.emit("click", {
+      button: 0,
+      detail: 1,
+      target: new NativeControllerCell(SLOT.INSPECT),
+      preventDefault: () => undefined,
+    });
+    await waitFor(() => started.value.read().input.accepted === 1);
+    root.emitDocument("keydown", {
+      code: "KeyC",
+      target: { tagName: "DIV" },
+      preventDefault: () => undefined,
+    });
+    await waitFor(() => started.value.read().input.accepted === 2);
+    expect(started.value.read().input.last).toMatchObject({
+      source: "keyboard",
+      cell: SLOT.REFRESH,
+      actionId: "darkhall.database.refresh",
+      outcome: "accepted",
+    });
+    expect(root.mount.attributes.get("data-controller-input-cell")).toBe(SLOT.REFRESH.toString());
+    expect(root.mount.attributes.get("data-controller-input-outcome")).toBe("accepted");
+    expect(requests).toHaveLength(3);
 
     expect(
       await started.value.dispatchController({
@@ -202,6 +279,9 @@ describe("Dark Hall active browser page", () => {
 
     expect(started.value.stop()).toMatchObject({ ok: true, value: { status: "stopped" } });
     expect(root.mount.attributes.get("data-pwa-status")).toBe("stopped");
+    expect(root.mount.attributes.get("data-controller-input-status")).toBe("stopped");
+    expect(root.mount.listeners.get("click")?.size ?? 0).toBe(0);
+    expect(root.documentListeners.get("keydown")?.size ?? 0).toBe(0);
   });
 
   test("mints a per-tab identity when the active URL does not provide one", async () => {
@@ -337,5 +417,8 @@ describe("Dark Hall active browser page", () => {
     expect(document).toContain("darkhall.database.retract");
     expect(document).toContain(`data-cell="${SLOT.REFRESH.toString()}"`);
     expect(document).toContain("darkhall.database.refresh");
+    expect(document).toContain('class="zeta-room-cell-input"');
+    expect(document).toContain('data-controller-cell="6"');
+    expect(document).toContain('aria-keyshortcuts="C"');
   });
 });

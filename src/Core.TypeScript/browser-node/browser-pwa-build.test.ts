@@ -41,6 +41,7 @@ describe("browser PWA production build", () => {
     expect(pageEntry).toContain("startNativeDarkHallBrowserPage");
     expect(pageEntry).toContain("startBrowserZetaDbTabRuntime");
     expect(pageEntry).toContain("startDarkHallBrowserDatabaseController");
+    expect(pageEntry).toContain("startDarkHallBrowserControllerInput");
     expect(pageEntry).toContain("runBrowserZetaDbWake");
     expect(pageEntry).toContain("__zetaDarkHallPage");
     expect(pageEntry).not.toMatch(/from\s+["']\.\//);
