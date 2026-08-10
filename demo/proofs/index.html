@@ -556,6 +556,15 @@
           <span><span style="display:inline-block; width:10px; height:10px; background:rgba(107,114,128,0.2); border-radius:2px; margin-right:3px;"></span>neither</span>
           <span style="color:rgba(167,139,250,0.5);">(both = purple)</span>
         </div>
+        <div style="display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem; flex-wrap:wrap;">
+          <button id="e8-orbit-btn" style="background:rgba(167,139,250,0.15); color:var(--purple); border:1px solid rgba(167,139,250,0.3); padding:0.2rem 0.6rem; font-size:0.6rem; border-radius:4px; cursor:pointer; transition:background 0.15s;" onmouseover="this.style.background='rgba(167,139,250,0.25)'" onmouseout="this.style.background='rgba(167,139,250,0.15)'">⟳ Show Group Orbits</button>
+          <span id="e8-orbit-label" style="font-size:0.6rem; color:var(--muted);"></span>
+        </div>
+        <div id="e8-histogram" style="margin-top:0.5rem; display:none;">
+          <div style="font-size:0.55rem; color:var(--muted); margin-bottom:0.25rem; text-transform:uppercase; letter-spacing:0.06em;">Preservation histogram — all 32 VN roots</div>
+          <div id="e8-hist-bars" style="display:flex; gap:3px; align-items:flex-end; height:40px;"></div>
+          <div id="e8-hist-labels" style="display:flex; gap:3px; margin-top:2px;"></div>
+        </div>
       </div>
       <script>
       (function() {
@@ -646,6 +655,68 @@
         sel.addEventListener('change', render);
         selB.addEventListener('change', render);
         render();
+
+        // ── Group orbit mode ─────────────────────────────────────────────────
+        // Precompute all 32 preservation patterns and group by identical pattern
+        const allPatterns = vnRoots.map((a, idx) => {
+          const p = computePreserved(a);
+          return { idx, key: p.map(v=>v?'1':'0').join(''), count: p.filter(Boolean).length, pattern: p };
+        });
+        // Group by key
+        const groups = new Map();
+        allPatterns.forEach(({idx, key, count}) => {
+          if (!groups.has(key)) groups.set(key, { indices: [], count });
+          groups.get(key).indices.push(idx);
+        });
+        const groupList = [...groups.values()].sort((a,b) => b.count - a.count);
+
+        // Build histogram
+        const histDiv = document.getElementById('e8-histogram');
+        const histBars = document.getElementById('e8-hist-bars');
+        const histLabels = document.getElementById('e8-hist-labels');
+        const countBuckets = [0, 64, 128, 240];
+        const bucketCounts = countBuckets.map(c => allPatterns.filter(p => p.count === c).length);
+        const maxBucket = Math.max(...bucketCounts);
+        countBuckets.forEach((c, i) => {
+          const bar = document.createElement('div');
+          const h = maxBucket > 0 ? Math.round((bucketCounts[i] / maxBucket) * 36) : 0;
+          bar.style.cssText = 'width:28px;background:rgba(167,139,250,' + (0.3 + 0.5*(c/240)) + ');border-radius:2px 2px 0 0;height:' + h + 'px;transition:height 0.3s;';
+          bar.title = c + ' preserved: ' + bucketCounts[i] + ' roots';
+          histBars.appendChild(bar);
+          const lbl = document.createElement('div');
+          lbl.style.cssText = 'width:28px;font-size:0.5rem;color:var(--muted);text-align:center;';
+          lbl.textContent = c + ' (' + bucketCounts[i] + ')';
+          histLabels.appendChild(lbl);
+        });
+
+        let orbitActive = false;
+        let orbitTimer = null;
+        let orbitStep = 0;
+        document.getElementById('e8-orbit-btn').addEventListener('click', () => {
+          orbitActive = !orbitActive;
+          const btn = document.getElementById('e8-orbit-btn');
+          const lbl = document.getElementById('e8-orbit-label');
+          histDiv.style.display = orbitActive ? 'block' : 'none';
+          if (orbitActive) {
+            btn.textContent = '⏹ Stop Orbit';
+            lbl.textContent = groupList.length + ' distinct maps (group order ' + vnRoots.length + ')';
+            const cycle = () => {
+              if (!orbitActive) return;
+              const g = groupList[orbitStep % groupList.length];
+              sel.value = g.indices[0];
+              render();
+              // Highlight all roots in this orbit group in the select
+              lbl.textContent = 'Map ' + (orbitStep % groupList.length + 1) + '/' + groupList.length + ': ' + g.count + ' preserved, ' + g.indices.length + ' roots share this map';
+              orbitStep++;
+              orbitTimer = setTimeout(cycle, 900);
+            };
+            cycle();
+          } else {
+            btn.textContent = '⟳ Show Group Orbits';
+            lbl.textContent = '';
+            if (orbitTimer) clearTimeout(orbitTimer);
+          }
+        });
       })();
       </script>
       <div class="card-links">
