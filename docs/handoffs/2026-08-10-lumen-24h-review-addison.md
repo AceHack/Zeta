@@ -200,7 +200,7 @@ Fetches the latest `society-*.json` from Zeta main on page load and shows genera
 | `empowerment-bound.ts` | 10/10 EB | Linear-blend vacuity proof, externality bound |
 | `error-envelope.ts` | 12/12 EE | Dual-register envelope, EP observation adapter |
 | `error-bnn-bridge.ts` | — | Per-dimension StudentTBnn, absorbError, errorRichness |
-| `xorshift-minimal-poly.test.ts` | 5/5 XP | Degree 8 ≤ 11, closes PhaseClockErasure.lean open axiom |
+| `xorshift-minimal-poly.test.ts` | 5/5 XP | Linear complexity 8. **Correction 2026-08-10:** does NOT close any Lean obligation — that compared an LFSR linear complexity against a polynomial-degree bound, and the Lean theorem has been withdrawn as false. |
 | `society-evolution-runner.ts` | — | CLI entry point for society-heartbeat cron |
 | `ace-cli.ts` (extended) | 22/22 ACE | bnnStatus command, absorbAceError wiring |
 
@@ -222,7 +222,7 @@ Fetches the latest `society-*.json` from Zeta main on page load and shows genera
 | RC-3 measured closure size (D₄⊕D₄ = 48?) | Measured, confirmed 48 by Otto separately | Otto confirmed |
 | Z-1 discharge (ζ-regularization) | Open — falsifier stands | Soraya |
 | Soraya's §7.3 items (empowermentBound externality proof) | Implementable against `externalitySafe()` | Soraya |
-| Lean4 `PhaseClockErasure.lean` CI check | xorshift axiom closed (degree 8 ≤ 11) | Verify CI |
+| Lean4 `PhaseClockErasure.lean` CI check | **Corrected 2026-08-10:** the axiom was not closed — `xorshift_mod17_in_rsCode` was FALSE (the 16 values interpolate to degree 15) and is withdrawn. The file also did not compile, and no CI check existed for it. Now type-checked + axiom-audited. | Done — Otto |
 | `society-heartbeat.yml` first tick | Pushed, should fire within 30 min | Monitor |
 
 ---

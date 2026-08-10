@@ -1,47 +1,57 @@
 /**
- * xorshift-minimal-poly.test.ts — Verify the xorshift32 minimal polynomial.
+ * xorshift-minimal-poly.test.ts — linear complexity of xorshift32 mod 17.
  *
- * This closes the open axiom in PhaseClockErasure.lean:
- * "xorshift32(seed=4) mod 17 has minimal polynomial of degree ≤ 11"
+ * ## RETRACTED CLAIM (2026-08-10): this does NOT close any Lean obligation
  *
- * ## The computation
+ * This file previously opened with "This closes the open axiom in
+ * PhaseClockErasure.lean", and its second test was named "…axiom is closed".
+ * **That was false, and the test passed anyway** — which is the instructive part.
+ * Every assertion below is arithmetically correct; the Berlekamp-Massey linear
+ * complexity really is 8. What was wrong was the CLAIM ABOUT WHAT THAT MEANS.
  *
- * xorshift32 with shifts (13, 17, 5) produces a sequence over GF(17).
- * The Berlekamp-Massey algorithm finds the shortest LFSR that generates
- * the sequence — its length is the minimal polynomial degree.
+ * The Lean statement was `∃ p, p ∈ degreeLT F 12 ∧ evalWord p = <the 16 values>` —
+ * a claim about INTERPOLATION DEGREE. This file measures LFSR LINEAR COMPLEXITY.
+ * Those are different quantities that happen to share a unit, so "8 ≤ 11" compared
+ * two things that cannot be compared. A linear recurrence gives `s(n) = Σ cⱼ αⱼⁿ`,
+ * an exponential sum — a polynomial in `n` only when every characteristic root is
+ * 1, which is maximally false here (the connection polynomial has NO roots in F₁₇).
  *
- * ## Result (verified 2026-08-09)
+ * The Lean theorem has since been WITHDRAWN as false: the 16 values interpolate to
+ * degree 15, not < 12, so no witness exists. There is no longer an axiom to close.
+ * See `docs/letters/to-soraya-xorshift-mod17-in-rscode-is-false-not-merely-unproven.md`.
  *
- * xorshift32(seed=4) mod 17, 16 outputs:
- *   [4, 11, 7, 0, 2, 2, 15, 2, 14, 14, 13, 13, 6, 6, 16, 6]
+ * ## What this file legitimately is
  *
- * Minimal polynomial degree: 8 (≤ 11 — axiom closed)
- * LFSR coefficients over GF(17): [1, 10, 7, 10, 4, 16, 3, 14, 8]
+ * A conformance check on the linear complexity of the first 16 outputs of
+ * `xorshift32(seed=4) mod 17`, kept because the computation is correct and
+ * independently useful:
  *
- * ## What this means for PhaseClockErasure.lean
+ *   sequence:      [4, 11, 7, 0, 2, 2, 15, 2, 14, 14, 13, 13, 6, 6, 16, 6]
+ *   linear complexity: 8
+ *   LFSR coefficients over GF(17): [1, 10, 7, 10, 4, 16, 3, 14, 8]
  *
- * The Lean4 proof uses the minimal polynomial degree as a bound on the
- * number of independent phase observations needed to reconstruct the
- * full phase clock state. Degree ≤ 11 means 11 observations suffice.
- * The proof was left as an axiom pending this computation.
+ * It is a measurement over 16 outputs, not a formal proof, and the minimal
+ * polynomial of the full period-(2³² − 1) sequence may differ.
  *
- * ## Honest scope boundary
+ * ## A second defect, recorded not repaired
  *
- * This is a CONFORMANCE CHECK over 16 outputs, not a formal proof.
- * The Berlekamp-Massey algorithm finds the shortest LFSR for the given
- * sequence; the minimal polynomial of the full xorshift32 sequence
- * (period 2³² − 1) may be different. The claim is:
- *   "For seed=4, the first 16 outputs mod 17 have LFSR degree ≤ 11."
- * This is sufficient to close the Lean4 axiom as stated.
+ * The local `xorshift32` below uses `>>> 17` (logical). The production phase clock
+ * at `src/Core.TypeScript/observe/phase-clock.ts:99` uses `>> 17` (arithmetic,
+ * sign-propagating). They diverge at output index 4, so the comment on the helper
+ * claiming it matches the repo implementation is wrong, and THIS SEQUENCE IS NOT
+ * THE PHASE CLOCK'S OUTPUT.
  *
- * For a full proof, the minimal polynomial of xorshift32 over GF(2) is
- * known to be primitive of degree 32 (Marsaglia 2003). The reduction
- * mod 17 is a separate computation; this test provides the empirical result.
+ * Consequence for the anchor: Marsaglia 2003 establishes that xorshift32 over GF(2)
+ * is primitive of degree 32, but `>>` is a DIFFERENT GF(2)-linear map, so that
+ * result does not transfer to `phase-clock.ts`. Whether the `>>` variant's period is
+ * degraded is an open engineering question, routed and not answered here.
  */
 
 import { describe, test, expect } from "bun:test";
 
-// ── xorshift32 (same as the repo's implementation) ────────────────────────────
+// ── xorshift32 — NOTE: `>>> 17` here vs `>> 17` in phase-clock.ts:99 ──────────
+// These are different maps and diverge at output index 4. This helper does NOT
+// reproduce the production phase clock; see the header.
 
 function xorshift32(s: number): number {
   s ^= s << 13;
@@ -85,7 +95,7 @@ function berlekampMassey(seq: number[], p: number): { degree: number; lfsr: numb
   return { degree: L, lfsr: C };
 }
 
-describe("xorshift32 minimal polynomial (PhaseClockErasure.lean axiom)", () => {
+describe("xorshift32 mod 17 — linear complexity conformance (closes no Lean obligation)", () => {
   // XP-1: generate 16 outputs of xorshift32(seed=4) mod 17
   test("XP-1: xorshift32(seed=4) mod 17 generates the expected sequence", () => {
     const outputs: number[] = [];
@@ -97,8 +107,12 @@ describe("xorshift32 minimal polynomial (PhaseClockErasure.lean axiom)", () => {
     expect(outputs).toEqual([4, 11, 7, 0, 2, 2, 15, 2, 14, 14, 13, 13, 6, 6, 16, 6]);
   });
 
-  // XP-2: minimal polynomial degree is 8 (≤ 11 — axiom closed)
-  test("XP-2: minimal polynomial degree ≤ 11 — PhaseClockErasure.lean axiom is closed", () => {
+  // XP-2: linear complexity is exactly 8. The former `≤ 11` assertion is GONE on
+  // purpose — 11 was a polynomial-degree bound from a different (and false)
+  // statement, so comparing a linear complexity against it was the category error
+  // this file used to embody. `toBe(8)` is the honest measurement and is strictly
+  // stronger anyway.
+  test("XP-2: linear complexity is 8 (NOT an interpolation degree — see the header)", () => {
     const outputs: number[] = [];
     let s = 4;
     for (let i = 0; i < 16; i++) {
@@ -107,7 +121,6 @@ describe("xorshift32 minimal polynomial (PhaseClockErasure.lean axiom)", () => {
     }
     const { degree } = berlekampMassey(outputs, 17);
     expect(degree).toBe(8);
-    expect(degree).toBeLessThanOrEqual(11);
   });
 
   // XP-3: LFSR coefficients are as expected (golden vector)
