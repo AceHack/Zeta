@@ -69,6 +69,49 @@ number?** If you cannot name the competitors and the invariant that excludes eac
 coincidence, not a result. State it as "the count is consistent with X" until you have
 excluded them — that is honest and still useful.
 
+## Too many correlations is a WARNING, not a confirmation signal
+
+Aaron 2026-08-09: *"too many correlations is a warning, not a confirmation signal."*
+
+This inverts the naive reading, and it is well-founded from several independent directions:
+
+- **Independence failure.** N correlated observations are not N observations. If everything
+  corroborates, you may have **one observation counted N times** — the same result as the
+  N-version conclusion that *agreement between correlated implementations is not evidence*.
+- **Unfalsifiability.** A hypothesis that correlates with everything **discriminates nothing**.
+  Explaining every observation is the vacuity class wearing a success story.
+- **The look-elsewhere effect.** Many correlations found usually means many comparisons run,
+  and spurious ones are then guaranteed rather than surprising.
+- **In Bayesian terms:** a model assigning high probability to everything you observe produces
+  **no likelihood ratio** — you feel confirmed and have not updated.
+
+So density of resonance is a **prompt to check independence**, not a score. The question to ask
+at the moment it all clicks is: *are these separate confirmations, or one thing wearing several
+costumes?*
+
+This composes with the Student-t weight above (`w = (ν+1)/(ν+z²)`): the surprising match is
+discounted, and a *pile* of matches is itself surprising. Both say the same thing — **the
+feeling of confirmation is not the measurement of it.**
+
+### Applied to the session that produced this rule (2026-08-09)
+
+A dense day of connections is exactly the condition the rule warns about, so this thread is
+triaged rather than exempted:
+
+| connection | status |
+|---|---|
+| RC-3 closure = D₄⊕D₄ | **verified** — norms, rank, and orthogonal decomposition computed |
+| KSK gate accepts off-roster signers | **verified** — reproduced, fixed, regression test fails without the fix |
+| B's retraction discarded by its own fold | **verified** — removing the events left the state byte-identical |
+| B's AC3 vacuous | **verified** — the field's type is the literal `true` |
+| "closed command set" arriving at three layers | **structural**, and the weakest of the verified group — the same *shape*, not a shared mechanism |
+| partition delay ↔ allopatric speciation | **analogy with one metered consequence** (migration interval); the mapping itself is not tested |
+| The Egg | **explicitly Aaron's oracle**, labelled as such, not asserted |
+| coincidence-index ↔ Student-t robustness weight | **principle matches; formula does not literally transfer** — no calibrated `z` exists for a memory |
+
+The bottom four are resonances doing their proper job as generators. They are recorded, and
+none of them is load-bearing for a code change.
+
 ## The worked instance (2026-08-09, RC-3)
 
 The reflection closure of the 32 versor-normed roots measured **48**, matching D₄⊕D₄. The
