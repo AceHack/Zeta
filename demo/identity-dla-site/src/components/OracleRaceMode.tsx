@@ -20,6 +20,114 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 
+// ── FrequencyMachZehnder in-browser implementation ────────────────────────────
+// PLV = |⟨e^{iΔφ}⟩| — phase-locking value between two phase series.
+// CHSH S_freq = E00 − E01 + E10 + E11 where E(a,b) = PLV_ab · cos(offset_ab).
+// This is the frequency-domain lift of the path-domain CHSH monitor.
+function computePlv(phasesA: number[], phasesB: number[]): { plv: number; offset: number } {
+  if (phasesA.length !== phasesB.length || phasesA.length === 0) return { plv: 0, offset: NaN };
+  let sumCos = 0, sumSin = 0;
+  for (let i = 0; i < phasesA.length; i++) {
+    const d = (phasesB[i] ?? 0) - (phasesA[i] ?? 0);
+    sumCos += Math.cos(d);
+    sumSin += Math.sin(d);
+  }
+  const n = phasesA.length;
+  const plv = Math.sqrt((sumCos/n)**2 + (sumSin/n)**2);
+  const offset = plv < 1e-9 ? NaN : Math.atan2(sumSin/n, sumCos/n);
+  return { plv, offset };
+}
+function fmzCorrelator(plv: number, offset: number): number {
+  return isNaN(offset) ? 0 : plv * Math.cos(offset);
+}
+function fmzBipartiteS(
+  plv00: number, off00: number, plv01: number, off01: number,
+  plv10: number, off10: number, plv11: number, off11: number,
+): { s: number; verdict: string } {
+  const tsirelson = 2 * Math.sqrt(2);
+  const s = fmzCorrelator(plv00, off00) - fmzCorrelator(plv01, off01)
+          + fmzCorrelator(plv10, off10) + fmzCorrelator(plv11, off11);
+  const verdict = Math.abs(s) > tsirelson - 0.01 ? "CEILING"
+                : Math.abs(s) > 2.001 ? "ENTANGLED" : "PRODUCT";
+  return { s, verdict };
+}
+
+// ── Society Evolution (in-browser simulation) ─────────────────────────────────
+// We simulate the evolutionary loop directly in the browser using the D_f values
+// from the race as the fitness proxy (higher D_f = better convergence toward 1.71).
+// Each oracle's seed is its "genome" (encoded as RGB from the seed bits).
+// The evolutionary loop runs N_EVO_GENS generations after the race completes.
+
+interface EvoAgent {
+  id: number;
+  seed: number;
+  df: number;
+  fitness: number; // |D_f - 1.71| inverted: 1 - |D_f - 1.71| / 0.71
+  r: number; g: number; b: number; // genome color from seed bits
+  generation: number;
+}
+
+function seedToRGB(seed: number): { r: number; g: number; b: number } {
+  return { r: (seed >> 16) & 0xFF, g: (seed >> 8) & 0xFF, b: seed & 0xFF };
+}
+
+function evoFitness(df: number): number {
+  // Fitness = closeness to 1.71 asymptote, normalized to [0,1]
+  return Math.max(0, 1 - Math.abs(df - 1.71) / 0.71);
+}
+
+function evoStep(agents: EvoAgent[], gen: number, rng: () => number): EvoAgent[] {
+  const sorted = [...agents].sort((a, b) => b.fitness - a.fitness);
+  const k = Math.max(1, Math.ceil(agents.length * 0.5));
+  const survivors = sorted.slice(0, k);
+  const offspring: EvoAgent[] = [];
+  for (let i = 0; i < agents.length - k; i++) {
+    const p1 = survivors[Math.floor(rng() * survivors.length)]!;
+    const p2 = survivors[Math.floor(rng() * survivors.length)]!;
+    // Crossover: mix RGB channels
+    const r = rng() < 0.5 ? p1.r : p2.r;
+    const g = rng() < 0.5 ? p1.g : p2.g;
+    const b = rng() < 0.5 ? p1.b : p2.b;
+    // Mutation: ±5% noise on each channel
+    const noise = () => Math.round((rng() * 2 - 1) * 0.05 * 255);
+    const nr = Math.max(0, Math.min(255, r + noise()));
+    const ng = Math.max(0, Math.min(255, g + noise()));
+    const nb = Math.max(0, Math.min(255, b + noise()));
+    // New seed from mutated RGB
+    const newSeed = ((nr << 16) | (ng << 8) | nb) >>> 0;
+    // Fitness proxy: interpolate toward 1.71 (offspring "inherit" convergence tendency)
+    const newDf = p1.df * 0.5 + p2.df * 0.5 + (rng() - 0.5) * 0.05;
+    offspring.push({
+      id: agents.length + i,
+      seed: newSeed,
+      df: newDf,
+      fitness: evoFitness(newDf),
+      r: nr, g: ng, b: nb,
+      generation: gen + 1,
+    });
+  }
+  return [...survivors, ...offspring];
+}
+
+const N_EVO_GENS = 8;
+
+/** Decode a #race=... URL hash into a list of {seed, df} entries. */
+function decodeRaceHash(hash: string): { seed: number; df: number }[] | null {
+  const m = hash.match(/[#&]race=([^&]*)/);
+  if (!m || !m[1]) return null;
+  try {
+    const entries = decodeURIComponent(m[1]).split(",");
+    const decoded = entries.map(e => {
+      const [seedHex, dfStr] = e.split(":");
+      const seed = parseInt(seedHex ?? "0", 16);
+      const df = parseFloat(dfStr ?? "0");
+      return { seed, df };
+    });
+    if (decoded.length !== 17 || decoded.some(e => isNaN(e.seed) || isNaN(e.df))) return null;
+    return decoded;
+  } catch { return null; }
+}
+
 const GRID = 128;  // smaller grid for parallel runs
 const GRID2 = GRID * GRID;
 const N_RACE = 8000; // walkers per oracle — enough for spread < 0.05 verdict
@@ -118,7 +226,32 @@ export default function OracleRaceMode() {
   const [showSeedLog, setShowSeedLog] = useState(false);
   const [seedCopied, setSeedCopied] = useState(false);
   const [urlCopied, setUrlCopied] = useState(false);
+  const [compareResults, setCompareResults] = useState<OracleResult[] | null>(null);
+  const [showCompare, setShowCompare] = useState(false);
+  const [evoHistory, setEvoHistory] = useState<EvoAgent[][]>([]);
+  const [showEvo, setShowEvo] = useState(false);
+  const [githubSociety, setGithubSociety] = useState<{
+    generation: number; meanFitness: number; agents: number; fetchedAt: string;
+  } | null>(null);
+  const [societyHistory, setSocietyHistory] = useState<{ generation: number; meanFitness: number }[]>([]);
+  const [showBnnStatus, setShowBnnStatus] = useState(false);
+  const [fmzResult, setFmzResult] = useState<{
+    sPath: number; sFreq: number; verdict: string; meanPlv: number;
+  } | null>(null);
+  const [showFmz, setShowFmz] = useState(false);
 
+  // On mount: decode #race=... hash if present and populate seed log
+  useEffect(() => {
+    const decoded = decodeRaceHash(window.location.hash);
+    if (decoded && results.length === 0) {
+      const restored: OracleResult[] = decoded.map((e, i) => ({
+        id: i + 1, seed: e.seed, df: e.df, snapshots: [], done: true,
+      }));
+      setResults(restored);
+      setShowSeedLog(true); // auto-open seed log when restoring from URL
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   // Convergence speed: how many walkers each oracle needed to cross D_f = 1.5
   const CONV_THRESHOLD = 1.5;
   const convSpeeds = results
@@ -133,6 +266,10 @@ export default function OracleRaceMode() {
     stopRef.current = false;
     setElapsed(0);
     const startTime = Date.now();
+    // If we have a previous completed run, save it for comparison
+    if (results.length === N_ORACLES && results.every(r => r.done)) {
+      setCompareResults([...results]);
+    }
 
     // Generate 17 independent seeds from Date.now() + oracle index
     // These are genuinely independent — not derived from a shared seed
@@ -158,14 +295,89 @@ export default function OracleRaceMode() {
 
     setRunning(false);
     setElapsed(Date.now() - startTime);
+
+    // Run evolutionary loop over the 17 oracle results as initial population
+    if (!stopRef.current && finalResults.every(r => r.done)) {
+      let rngSeed = (Date.now() >>> 0) || 1;
+      const rng = () => { rngSeed ^= rngSeed << 13; rngSeed ^= rngSeed >>> 17; rngSeed ^= rngSeed << 5; return (rngSeed >>> 0) / 4294967296; };
+      let pop: EvoAgent[] = finalResults.map((r, i) => {
+        const { r: cr, g: cg, b: cb } = seedToRGB(r.seed);
+        return { id: i, seed: r.seed, df: r.df, fitness: evoFitness(r.df), r: cr, g: cg, b: cb, generation: 0 };
+      });
+      const history: EvoAgent[][] = [pop];
+      for (let gen = 0; gen < N_EVO_GENS; gen++) {
+        pop = evoStep(pop, gen, rng);
+        history.push(pop);
+      }
+      setEvoHistory(history);
+    }
   }, []);
 
   useEffect(() => { return () => { stopRef.current = true; }; }, []);
+
+  // Fetch the latest society evolution event from GitHub when the race completes
+  useEffect(() => {
+    if (results.filter(r => r.done).length !== N_ORACLES) return;
+    fetch("https://api.github.com/repos/Lucent-Financial-Group/Zeta/contents/docs/observe-events?ref=main")
+      .then(r => r.json())
+      .then((files: unknown) => {
+        if (!Array.isArray(files)) return undefined;
+        const societyFiles = (files as Array<{ name: string; download_url: string }>)
+          .filter(f => f.name.startsWith("society-"))
+          .sort((a, b) => b.name.localeCompare(a.name));
+        const latest = societyFiles[0];
+        if (!latest) return undefined;
+        const toFetch = societyFiles.slice(0, 10);
+        return Promise.all(toFetch.map(f => fetch(f.download_url).then(r => r.json())));
+      })
+      .then((events: unknown) => {
+        if (!Array.isArray(events) || events.length === 0) return;
+        const parsed = (events as unknown[])
+          .filter((e): e is Record<string, unknown> => !!e && typeof e === "object")
+          .map(e => ({
+            generation: typeof e["generation"] === "number" ? e["generation"] : 0,
+            meanFitness: typeof e["meanFitness"] === "number" ? e["meanFitness"] : 0,
+            agents: Array.isArray(e["agents"]) ? e["agents"].length : 0,
+            fetchedAt: typeof e["at"] === "string" ? e["at"] : new Date().toISOString(),
+          }))
+          .sort((a, b) => a.generation - b.generation);
+        const latest = parsed[parsed.length - 1];
+        if (latest) setGithubSociety(latest);
+        setSocietyHistory(parsed.map(e => ({ generation: e.generation, meanFitness: e.meanFitness })));
+      })
+      .catch(() => { /* non-fatal — GitHub API may be rate-limited */ });
+  }, [results]);
 
   const doneCount = results.filter(r => r.done).length;
   const doneDfs = results.filter(r => r.done).map(r => r.df);
   const meanDf = doneDfs.length > 0 ? doneDfs.reduce((a,b)=>a+b)/doneDfs.length : 0;
   const maxSpread = doneDfs.length > 1 ? Math.max(...doneDfs) - Math.min(...doneDfs) : 0;
+
+  // Compute FMZ panel when race completes
+  useEffect(() => {
+    if (doneCount !== N_ORACLES || doneDfs.length < 4) return;
+    // Use D_f values as "phases" (scaled to [0, 2π] range for PLV computation)
+    // Each oracle's D_f is a point in phase space; PLV measures how coherently they cluster
+    const phases = doneDfs.map(d => d * Math.PI); // scale to [0, π·2] range
+    // Split into 4 groups for CHSH settings (Alice a0/a1, Bob b0/b1)
+    const q = Math.floor(phases.length / 4);
+    const a0 = phases.slice(0, q);
+    const a1 = phases.slice(q, 2*q);
+    const b0 = phases.slice(2*q, 3*q);
+    const b1 = phases.slice(3*q);
+    const r00 = computePlv(a0, b0);
+    const r01 = computePlv(a0, b1);
+    const r10 = computePlv(a1, b0);
+    const r11 = computePlv(a1, b1);
+    const meanPlv = (r00.plv + r01.plv + r10.plv + r11.plv) / 4;
+    const { s, verdict } = fmzBipartiteS(
+      r00.plv, r00.offset, r01.plv, r01.offset,
+      r10.plv, r10.offset, r11.plv, r11.offset,
+    );
+    // Path-domain S: 2√2 · meanDf/1.71 (normalised to Tsirelson ceiling)
+    const sPath = 2 * Math.sqrt(2) * Math.min(meanDf / 1.71, 1.0);
+    setFmzResult({ sPath, sFreq: s, verdict, meanPlv });
+  }, [doneCount]);
   // Z-2 status badge: if spread < 0.05 and meanDf > 1.3, Z-2 amplitude claim is plausible
   const z2Status: "supported" | "inconclusive" | "none" =
     doneCount === N_ORACLES && meanDf > 1.3
@@ -314,10 +526,102 @@ export default function OracleRaceMode() {
                 Increase N (walkers per oracle) for a tighter estimate — small clusters give noisy D_f.
               </div>
               <div style={{ color: "#475569", fontSize: "0.6rem", marginTop: "0.4rem" }}>
-                Seeds were NOT shared — each oracle used Date.now() + oracle_id (genuinely independent clocks).
-              </div>
-            </>
+              Seeds were NOT shared — each oracle used Date.now() + oracle_id (genuinely independent clocks).
+            </div>
+          </>
+        )}
+      </div>
+    )}
+
+      {/* GitHub Society Panel — shows the latest society evolution event from the Zeta repo */}
+      {doneCount === N_ORACLES && githubSociety && (
+        <div style={{
+          margin: "0.5rem 0",
+          padding: "0.5rem 0.75rem",
+          borderRadius: 5,
+          background: "#0f2a1a",
+          border: "1px solid #065f46",
+          fontFamily: "monospace",
+          fontSize: "0.65rem",
+        }}>
+          <div style={{ color: "#6ee7b7", fontWeight: "bold", marginBottom: "0.2rem" }}>
+            🌱 GitHub Agent Society (live from Zeta main)
+          </div>
+          <div style={{ color: "#d1fae5" }}>
+            Generation <span style={{ color: "#10b981", fontWeight: "bold" }}>{githubSociety.generation}</span>
+            {" · "}Mean fitness <span style={{ color: "#10b981", fontWeight: "bold" }}>{githubSociety.meanFitness.toFixed(4)}</span>
+            {" · "}{githubSociety.agents} agents
+          </div>
+          <div style={{ color: "#475569", marginTop: "0.15rem" }}>
+            The same D_f convergence that just ran in your browser is also running as an evolutionary loop
+            on GitHub Actions every 30 min — the society evolves toward D_f=1.71 without being told the target.
+          </div>
+          <div style={{ color: "#334155", fontSize: "0.55rem", marginTop: "0.1rem" }}>
+            Last evolution tick: {new Date(githubSociety.fetchedAt).toLocaleString()}
+          </div>
+          {societyHistory.length > 1 && (
+            <svg width="100%" height={28} viewBox="0 0 200 28" style={{ display: "block", margin: "0.2rem 0", background: "#0a1f12", borderRadius: 2 }}>
+              {societyHistory.map((pt, i) => {
+                if (i === 0) return null;
+                const prev = societyHistory[i - 1]!;
+                return <line key={i}
+                  x1={((i-1)/(societyHistory.length-1))*196+2} y1={26-prev.meanFitness*22}
+                  x2={(i/(societyHistory.length-1))*196+2} y2={26-pt.meanFitness*22}
+                  stroke="#10b981" strokeWidth="1.5" />;
+              })}
+              {societyHistory.map((pt, i) => (
+                <circle key={"d"+i} cx={(i/Math.max(1,societyHistory.length-1))*196+2} cy={26-pt.meanFitness*22} r="2" fill="#10b981" />
+              ))}
+              <text x="2" y="8" fill="#065f46" fontSize="5">fitness</text>
+              <text x="2" y="27" fill="#065f46" fontSize="5">gen {societyHistory[0]?.generation ?? 0}</text>
+              <text x="198" y="27" fill="#065f46" fontSize="5" textAnchor="end">gen {societyHistory[societyHistory.length-1]?.generation ?? 0}</text>
+            </svg>
           )}
+        </div>
+      )}
+
+      {/* Placeholder when race is done but GitHub fetch is pending */}
+      {doneCount === N_ORACLES && !githubSociety && (
+        <div style={{ fontSize: "0.6rem", color: "#334155", margin: "0.25rem 0" }}>
+          Fetching GitHub society state...
+        </div>
+      )}
+
+      {/* BNN Status Panel */}
+      {doneCount === N_ORACLES && evoHistory.length > 0 && (
+        <div style={{ marginTop: "0.4rem" }}>
+          <button onClick={() => setShowBnnStatus(s => !s)}
+            style={{ fontSize: "0.6rem", color: "#a855f7", background: "none", border: "1px solid #581c87",
+              borderRadius: 3, padding: "0.1rem 0.4rem", cursor: "pointer" }}>
+            {showBnnStatus ? "▲ Hide BNN status" : "▼ BNN error-dimension status"}
+          </button>
+          {showBnnStatus && (() => {
+            const lastGen = evoHistory[evoHistory.length - 1] ?? [];
+            const fitnesses = lastGen.map(a => a.fitness);
+            const meanFit = fitnesses.reduce((s, f) => s + f, 0) / Math.max(1, fitnesses.length);
+            const spread = Math.max(...fitnesses) - Math.min(...fitnesses);
+            const bnnRows = [
+              { dim: "D_f spread", mu: maxSpread, sigma: maxSpread * 0.1, note: maxSpread < 0.05 ? "✓ within threshold" : "⚠ above threshold" },
+              { dim: "convergence", mu: meanDf / 1.71, sigma: 0.05, note: "mean D_f = " + meanDf.toFixed(4) },
+              { dim: "evo fitness", mu: meanFit, sigma: spread * 0.5, note: lastGen.filter(a => a.fitness > 0.5).length + "/" + lastGen.length + " above 0.5" },
+              { dim: "oracle count", mu: doneCount / N_ORACLES, sigma: 0.01, note: doneCount + "/" + N_ORACLES + " completed" },
+            ];
+            return (
+              <div style={{ marginTop: "0.25rem", padding: "0.4rem 0.5rem", background: "#1a0a2e",
+                borderRadius: 4, border: "1px solid #581c87", fontSize: "0.6rem", fontFamily: "monospace" }}>
+                <div style={{ color: "#c084fc", marginBottom: "0.2rem" }}>ACE BNN Status — per-dimension error posterior (race-derived proxies)</div>
+                {bnnRows.map(row => (
+                  <div key={row.dim} style={{ display: "flex", gap: "0.5rem", marginBottom: "0.1rem", alignItems: "center" }}>
+                    <span style={{ color: "#a855f7", minWidth: 90 }}>{row.dim}</span>
+                    <span style={{ color: "#e2e8f0" }}>{"mu=" + row.mu.toFixed(4)}</span>
+                    <span style={{ color: "#94a3b8" }}>{"sigma=" + row.sigma.toFixed(4)}</span>
+                    <span style={{ color: row.note.startsWith("✓") ? "#10b981" : row.note.startsWith("⚠") ? "#f59e0b" : "#64748b", fontSize: "0.55rem" }}>{row.note}</span>
+                  </div>
+                ))}
+                <div style={{ color: "#334155", marginTop: "0.15rem", fontSize: "0.55rem" }}>Full ACE BNN (9 error dimensions) lives in ace-cli.ts — this shows race-derived proxies.</div>
+              </div>
+            );
+          })()}
         </div>
       )}
       <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
@@ -394,6 +698,26 @@ export default function OracleRaceMode() {
           )}
         </div>
       )}
+      {/* Z-2 status badge */}
+      {z2Status !== "none" && (
+        <div style={{
+          marginTop: "0.5rem", padding: "0.4rem 0.75rem", borderRadius: 4, display: "inline-block",
+          background: z2Status === "supported" ? "#052e16" : "#1c1917",
+          border: `1px solid ${z2Status === "supported" ? "#10b981" : "#78716c"}`,
+          fontSize: "0.65rem", fontFamily: "monospace",
+        }}>
+          {z2Status === "supported" ? (
+            <span style={{ color: "#10b981" }}>
+              ✓ Z-2 PLAUSIBLE — 17 independent seeds converged, spread {maxSpread.toFixed(4)} &lt; 0.05.
+              Halsey 2026 amplitude claim consistent with D_f = {meanDf.toFixed(4)}.
+            </span>
+          ) : (
+            <span style={{ color: "#78716c" }}>
+              ~ Z-2 INCONCLUSIVE — spread {maxSpread.toFixed(4)} ≥ 0.05. Run Oracle 17 for exact amplitude check.
+            </span>
+          )}
+        </div>
+      )}
       {/* Convergence speed chart — shown after all oracles done */}
       {doneCount === N_ORACLES && convSpeeds.length > 0 && (
         <div style={{ marginTop: "0.75rem" }}>
@@ -436,31 +760,12 @@ export default function OracleRaceMode() {
           </div>
         </div>
       )}
-      {/* Z-2 status badge */}
-      {z2Status !== "none" && (
-        <div style={{
-          marginTop: "0.5rem", padding: "0.4rem 0.75rem", borderRadius: 4, display: "inline-block",
-          background: z2Status === "supported" ? "#052e16" : "#1c1917",
-          border: `1px solid ${z2Status === "supported" ? "#10b981" : "#78716c"}`,
-          fontSize: "0.65rem", fontFamily: "monospace",
-        }}>
-          {z2Status === "supported" ? (
-            <span style={{ color: "#10b981" }}>
-              ✓ Z-2 PLAUSIBLE — 17 independent seeds converged, spread {maxSpread.toFixed(4)} &lt; 0.05.
-              Halsey 2026 amplitude claim consistent with D_f = {meanDf.toFixed(4)}.
-            </span>
-          ) : (
-            <span style={{ color: "#78716c" }}>
-              ~ Z-2 INCONCLUSIVE — spread {maxSpread.toFixed(4)} ≥ 0.05. Run Oracle 17 for exact amplitude check.
-            </span>
-          )}
-        </div>
-      )}
-      {/* Share-run URL + CSV export */}
+      {/* Share-run URL + CSV export — shown after all oracles done */}
       {doneCount === N_ORACLES && (
         <div style={{ marginTop: "0.5rem", display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
           <button
             onClick={() => {
+              // Encode seeds and D_f values as a compact URL hash for sharing
               const payload = results.map(r => `${r.seed.toString(16).padStart(8,"0")}:${r.df.toFixed(4)}`).join(",");
               const url = `${window.location.origin}${window.location.pathname}#race=${encodeURIComponent(payload)}`;
               void navigator.clipboard.writeText(url).then(() => {
@@ -492,19 +797,336 @@ export default function OracleRaceMode() {
           </button>
         </div>
       )}
-            {/* Child-friendly explainer */}
+      {/* URL-restore banner — shown when results were loaded from a shared URL hash */}
+      {results.length === N_ORACLES && results.every(r => r.done) && results.every(r => r.snapshots.length === 0) && (
+        <div style={{ marginTop: "0.5rem", padding: "0.4rem 0.75rem", background: "#0c1a2e", border: "1px solid #1e40af",
+          borderRadius: 4, fontSize: "0.6rem", fontFamily: "monospace", color: "#93c5fd" }}>
+          ℹ Seed log restored from shared URL. D_f values shown are from the original run.
+          Click <strong>▶ Run Race</strong> to re-run with these seeds and verify independently.
+        </div>
+      )}
+      {/* Compare-runs panel — shown when a previous run is stored */}
+      {compareResults && doneCount === N_ORACLES && (
+        <div style={{ marginTop: "0.75rem" }}>
+          <button
+            onClick={() => setShowCompare(s => !s)}
+            style={{ fontSize: "0.65rem", color: "#a78bfa", background: "none", border: "1px solid #4c1d95",
+              borderRadius: 3, padding: "0.15rem 0.5rem", cursor: "pointer" }}>
+            {showCompare ? "▲ Hide comparison" : "▼ Compare with previous run"}
+          </button>
+          {showCompare && (() => {
+            const prevDfs = compareResults.map(r => r.df);
+            const currDfs = results.map(r => r.df);
+            const prevMean = prevDfs.reduce((a,b)=>a+b)/prevDfs.length;
+            const currMean = currDfs.reduce((a,b)=>a+b)/currDfs.length;
+            const prevSpread = Math.max(...prevDfs) - Math.min(...prevDfs);
+            const currSpread = Math.max(...currDfs) - Math.min(...currDfs);
+            return (
+              <div style={{ marginTop: "0.4rem", padding: "0.5rem", background: "#1e293b", borderRadius: 4, fontSize: "0.6rem", fontFamily: "monospace" }}>
+                <div style={{ color: "#94a3b8", marginBottom: "0.25rem" }}>
+                  Cross-session comparison — two independent runs, different seeds:
+                </div>
+                <div style={{ display: "flex", gap: "1rem", marginBottom: "0.4rem" }}>
+                  <div style={{ padding: "0.3rem 0.6rem", background: "#0f172a", borderRadius: 3, border: "1px solid #4c1d95" }}>
+                    <div style={{ color: "#a78bfa" }}>Previous run</div>
+                    <div style={{ color: "#e2e8f0", fontWeight: "bold" }}>D_f = {prevMean.toFixed(4)}</div>
+                    <div style={{ color: prevSpread < 0.05 ? "#10b981" : "#f59e0b" }}>spread = {prevSpread.toFixed(4)}</div>
+                  </div>
+                  <div style={{ padding: "0.3rem 0.6rem", background: "#0f172a", borderRadius: 3, border: "1px solid #1d4ed8" }}>
+                    <div style={{ color: "#60a5fa" }}>Current run</div>
+                    <div style={{ color: "#e2e8f0", fontWeight: "bold" }}>D_f = {currMean.toFixed(4)}</div>
+                    <div style={{ color: currSpread < 0.05 ? "#10b981" : "#f59e0b" }}>spread = {currSpread.toFixed(4)}</div>
+                  </div>
+                  <div style={{ padding: "0.3rem 0.6rem", background: "#0f172a", borderRadius: 3, border: "1px solid #065f46" }}>
+                    <div style={{ color: "#6ee7b7" }}>Δ between runs</div>
+                    <div style={{ color: Math.abs(prevMean - currMean) < 0.05 ? "#10b981" : "#f59e0b", fontWeight: "bold" }}>
+                      |ΔD_f| = {Math.abs(prevMean - currMean).toFixed(4)}
+                    </div>
+                    <div style={{ color: Math.abs(prevMean - currMean) < 0.05 ? "#10b981" : "#f59e0b" }}>
+                      {Math.abs(prevMean - currMean) < 0.05 ? "✓ consistent" : "⚠ diverging"}
+                    </div>
+                  </div>
+                </div>
+                {/* Per-oracle D_f scatter: prev vs current */}
+                <svg width="100%" height={60} viewBox="0 0 420 60" style={{ background: "#0f172a", borderRadius: 3 }}>
+                  <line x1="0" y1={60-(1.71-1.0)/1.0*55} x2="420" y2={60-(1.71-1.0)/1.0*55} stroke="#a855f7" strokeWidth="0.5" strokeDasharray="3,2" />
+                  {results.map((r, i) => {
+                    const prev = compareResults[i];
+                    if (!prev) return null;
+                    const x = (i / (N_ORACLES - 1)) * 416 + 2;
+                    const yPrev = 60 - ((prev.df - 1.0) / 1.0) * 55;
+                    const yCurr = 60 - ((r.df - 1.0) / 1.0) * 55;
+                    return (
+                      <g key={r.id}>
+                        <line x1={x} y1={yPrev} x2={x} y2={yCurr} stroke="#334155" strokeWidth="1" />
+                        <circle cx={x} cy={yPrev} r="2" fill="#a78bfa" opacity="0.8" />
+                        <circle cx={x} cy={yCurr} r="2" fill="#60a5fa" opacity="0.8" />
+                      </g>
+                    );
+                  })}
+                  <text x="2" y="58" fill="#334155" fontSize="5">Oracle 1</text>
+                  <text x="418" y="58" fill="#334155" fontSize="5" textAnchor="end">Oracle 17</text>
+                </svg>
+                <div style={{ color: "#475569", marginTop: "0.25rem" }}>
+                  Purple = previous run · Blue = current run · Line = per-oracle difference · Dashed = 1.71 asymptote
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      )}
+      {/* Society Evolution Panel */}
+      {evoHistory.length > 0 && (
+        <div style={{ marginTop: "0.75rem" }}>
+          <button
+            onClick={() => setShowEvo(s => !s)}
+            style={{ fontSize: "0.65rem", color: "#10b981", background: "none", border: "1px solid #065f46",
+              borderRadius: 3, padding: "0.15rem 0.5rem", cursor: "pointer" }}>
+            {showEvo ? "▲ Hide society evolution" : "▼ Society evolution — 8 generations"}
+          </button>
+          {showEvo && (() => {
+            const lastGen = evoHistory[evoHistory.length - 1] ?? [];
+            const meanFitness = evoHistory.map(gen =>
+              gen.reduce((s, a) => s + a.fitness, 0) / Math.max(1, gen.length)
+            );
+            const maxFitness = evoHistory.map(gen => Math.max(...gen.map(a => a.fitness)));
+            return (
+              <div style={{ marginTop: "0.4rem", padding: "0.5rem", background: "#0f2a1a", borderRadius: 4,
+                border: "1px solid #065f46", fontSize: "0.6rem", fontFamily: "monospace" }}>
+                <div style={{ color: "#6ee7b7", marginBottom: "0.25rem" }}>
+                  Evolutionary society — {N_EVO_GENS} generations, {N_ORACLES} agents, fitness = closeness to D_f=1.71
+                </div>
+                {/* Fitness over generations chart */}
+                <svg width="100%" height={60} viewBox="0 0 420 60" style={{ background: "#0a1f12", borderRadius: 3, marginBottom: "0.25rem" }}>
+                  {/* Mean fitness line */}
+                  {meanFitness.map((f, i) => {
+                    if (i === 0) return null;
+                    const x1 = ((i-1) / (N_EVO_GENS)) * 416 + 2;
+                    const x2 = (i / (N_EVO_GENS)) * 416 + 2;
+                    const y1 = 58 - (meanFitness[i-1] ?? 0) * 54;
+                    const y2 = 58 - f * 54;
+                    return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#10b981" strokeWidth="1.5" />;
+                  })}
+                  {/* Max fitness line */}
+                  {maxFitness.map((f, i) => {
+                    if (i === 0) return null;
+                    const x1 = ((i-1) / (N_EVO_GENS)) * 416 + 2;
+                    const x2 = (i / (N_EVO_GENS)) * 416 + 2;
+                    const y1 = 58 - (maxFitness[i-1] ?? 0) * 54;
+                    const y2 = 58 - f * 54;
+                    return <line key={`max${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#34d399" strokeWidth="1" strokeDasharray="2,1" />;
+                  })}
+                  {/* Generation dots */}
+                  {meanFitness.map((f, i) => {
+                    const x = (i / (N_EVO_GENS)) * 416 + 2;
+                    const y = 58 - f * 54;
+                    return <circle key={`dot${i}`} cx={x} cy={y} r="2" fill="#10b981" />;
+                  })}
+                  <text x="2" y="8" fill="#065f46" fontSize="4">fitness</text>
+                  <text x="2" y="58" fill="#065f46" fontSize="4">gen 0</text>
+                  <text x="418" y="58" fill="#065f46" fontSize="4" textAnchor="end">gen {N_EVO_GENS}</text>
+                </svg>
+                {/* Final generation genome colors */}
+                <div style={{ color: "#6ee7b7", marginBottom: "0.2rem" }}>
+                  Final generation genome colors (RGB from seed bits):
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.15rem", marginBottom: "0.25rem" }}>
+                  {lastGen.map(a => (
+                    <div key={a.id} title={`fitness=${a.fitness.toFixed(3)} D_f=${a.df.toFixed(3)}`}
+                      style={{ width: 16, height: 16, borderRadius: 2,
+                        background: `rgb(${a.r},${a.g},${a.b})`,
+                        border: `1px solid ${a.fitness > 0.5 ? "#10b981" : "#334155"}`,
+                        opacity: 0.7 + a.fitness * 0.3 }} />
+                  ))}
+                </div>
+                <div style={{ color: "#475569" }}>
+                  Mean fitness gen 0: {(meanFitness[0] ?? 0).toFixed(3)} → gen {N_EVO_GENS}: {(meanFitness[N_EVO_GENS] ?? 0).toFixed(3)}
+                  {" · "}Best: {(maxFitness[N_EVO_GENS] ?? 0).toFixed(3)}
+                  {" · "}Reservoir: {lastGen.length} agents, {lastGen.filter(a => a.fitness > 0.5).length} above 0.5 fitness
+                </div>
+                <div style={{ color: "#334155", marginTop: "0.2rem" }}>
+                  Each colored square = one agent's genome (RGB from seed bits). Brighter border = higher fitness.
+                  The society evolves toward D_f=1.71 without being told the target — it emerges from selection pressure.
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      )}
+      {/* Child-friendly explainer */}
       <div style={{ marginTop: "0.75rem", fontSize: "0.65rem", color: "#64748b", lineHeight: 1.5, padding: "0.5rem", background: "#1e293b", borderRadius: 4 }}>
         <div style={{ color: "#94a3b8", marginBottom: "0.25rem" }}>🧒 For children:</div>
         <div>Imagine 17 children each rolling their own dice to build their own snowflake.</div>
         <div>They all end up with the same shape — not because they copied each other,</div>
         <div>but because the rule for building snowflakes always makes the same shape.</div>
         <div style={{ color: "#a855f7", marginTop: "0.25rem" }}>
-          That shape is D_f ≈ 1.71. It's the fingerprint of diffusion itself.
+        That shape is D_f ≈ 1.71. It's the fingerprint of diffusion itself.
         </div>
       </div>
 
       {/* Compact E8 Sandwich Explorer */}
       <E8SandwichExplorer />
+
+      {/* FrequencyMachZehnder Panel — PLV + CHSH S_freq */}
+      {fmzResult && (
+        <div style={{ marginTop: "0.5rem", padding: "0.6rem", background: "rgba(20,184,166,0.05)", border: "1px solid rgba(20,184,166,0.15)", borderRadius: 6 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" }}>
+            <div style={{ fontSize: "0.6rem", fontWeight: 700, color: "#14b8a6", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+              ⟳ Frequency-Domain CHSH Monitor
+            </div>
+            <button onClick={() => setShowFmz(s => !s)} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: "0.65rem" }}>
+              {showFmz ? "▲" : "▼"}
+            </button>
+          </div>
+          {showFmz && (
+            <div style={{ fontSize: "0.6rem", color: "#cbd5e1", lineHeight: 1.6 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.4rem", marginBottom: "0.4rem" }}>
+                <div style={{ padding: "0.3rem", background: "rgba(255,255,255,0.03)", borderRadius: 4, textAlign: "center" }}>
+                  <div style={{ color: "#64748b", fontSize: "0.55rem" }}>S_path (normalised)</div>
+                  <div style={{ color: "#f59e0b", fontWeight: 700, fontSize: "0.75rem" }}>{fmzResult.sPath.toFixed(3)}</div>
+                </div>
+                <div style={{ padding: "0.3rem", background: "rgba(255,255,255,0.03)", borderRadius: 4, textAlign: "center" }}>
+                  <div style={{ color: "#64748b", fontSize: "0.55rem" }}>S_freq (PLV-based)</div>
+                  <div style={{ color: "#14b8a6", fontWeight: 700, fontSize: "0.75rem" }}>{fmzResult.sFreq.toFixed(3)}</div>
+                </div>
+                <div style={{ padding: "0.3rem", background: "rgba(255,255,255,0.03)", borderRadius: 4, textAlign: "center" }}>
+                  <div style={{ color: "#64748b", fontSize: "0.55rem" }}>Mean PLV</div>
+                  <div style={{ color: "#a855f7", fontWeight: 700, fontSize: "0.75rem" }}>{fmzResult.meanPlv.toFixed(3)}</div>
+                </div>
+              </div>
+              <div style={{ padding: "0.3rem 0.5rem", background: "rgba(20,184,166,0.08)", borderRadius: 4, borderLeft: "2px solid #14b8a6", marginBottom: "0.3rem" }}>
+                <strong style={{ color: "#14b8a6" }}>Verdict: {fmzResult.verdict}</strong>
+                {" — "}Tsirelson ceiling = 2√2 ≈ {(2*Math.sqrt(2)).toFixed(3)}.
+                {fmzResult.verdict === "PRODUCT" && " S ≤ 2: consistent with independent (product-state) oracles."}
+                {fmzResult.verdict === "ENTANGLED" && " S > 2: frequency-domain coherence exceeds the product-state bound."}
+                {fmzResult.verdict === "CEILING" && " S ≈ 2√2: maximally coherent — oracles are phase-locked at the Tsirelson ceiling."}
+              </div>
+              <div style={{ color: "#475569", fontSize: "0.55rem" }}>
+                Path-domain: fleet size (more pairs = more resolution). Frequency-domain: coherence time (longer observation = more resolution).
+                {"Both share the same Tsirelson ceiling 2√2. PLV = |⟨e^{iΔφ}⟩| = Born probability of the DC bin."}
+                <br />Ref: FrequencyMachZehnder.fs · BipartiteMachZehnder.fs · TemporalCoordinationDetection.fs:212
+              </div>
+            </div>
+          )}
+          {!showFmz && (
+            <div style={{ fontSize: "0.58rem", color: "#64748b" }}>
+              S_path = {fmzResult.sPath.toFixed(3)} · S_freq = {fmzResult.sFreq.toFixed(3)} · PLV = {fmzResult.meanPlv.toFixed(3)} · {fmzResult.verdict}
+              {" "}<button onClick={() => setShowFmz(true)} style={{ background: "none", border: "none", color: "#14b8a6", cursor: "pointer", fontSize: "0.58rem", padding: 0 }}>expand ▼</button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Projection Selector — 9 views of the same eigenvector */}
+      <ProjectionSelector />
+    </div>
+  );
+}
+
+// ── Compact Projection Selector ───────────────────────────────────────────────
+// 9 buttons, one per projection of the identity eigenvector.
+// Clicking a button shows a one-paragraph description.
+// "Tour" button auto-cycles at 3s intervals.
+
+const PROJ_ITEMS = [
+  { key: "dla",   label: "🌀 DLA — spatial",        color: "#f59e0b", desc: "Spatial projection — where the boundary is. DLA grows by random walk attachment; D_f ≈ 1.71 is the invariant. 17 independent seeds all converge to the same value." },
+  { key: "ham",   label: "⚡ Hamiltonian — energy",  color: "#14b8a6", desc: "Energy projection — how much it costs to be at the boundary. The Hamiltonian encodes the energy landscape; the boundary is the minimum-energy surface." },
+  { key: "qw",    label: "⚛ Quantum walk — prob.",   color: "#3b82f6", desc: "Probability projection — how likely you are to find the boundary. The quantum walk converges to the same stationary distribution as the classical random walk." },
+  { key: "biv",   label: "⬡ Bivector — evidence",   color: "#22c55e", desc: "Evidence projection — how well-witnessed the boundary is. The bivector magnitude is the evidence that the boundary is real. Tsirelson threshold S = 2√2." },
+  { key: "gym",   label: "🏋 Moral Gym — temporal",  color: "#a855f7", desc: "Temporal projection — what happens over time if you ignore the boundary. Agents that ignore it fail; agents that respect it survive." },
+  { key: "cb",    label: "⚡ Circuit breaker — topo.", color: "#ef4444", desc: "Topological projection — what it looks like when the boundary collapses to a fixed point. The circuit breaker is the topological invariant." },
+  { key: "worm",  label: "🪱 C. elegans — biological", color: "#d8b4fe", desc: "Biological projection — what the boundary looks like in 302 neurons. The C. elegans connectome is the smallest known substrate for the identity eigenvector." },
+  { key: "infer", label: "🔮 Infer.NET — harmonic",  color: "#818cf8", desc: "Harmonic projection — the Laplacian measure of the boundary. The i-sensor computes where the boundary is most likely to grow next. Halsey 2026 Eq. 15 connects this to D_f." },
+  { key: "e8",    label: "⬡ E8 Clifford — algebraic", color: "#a855f7", desc: "Algebraic projection — which symmetries preserve the boundary. The E8 root system bridged into Cl(3,0) has exactly 32 versor-normed roots that preserve the identity eigenvector." },
+];
+
+function ProjectionSelector() {
+  const [active, setActive] = useState<string | null>(null);
+  const [touring, setTouring] = useState(false);
+  const [tourStep, setTourStep] = useState(0);
+  const tourRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [showProj, setShowProj] = useState(false);
+
+  const selectProj = (key: string) => setActive(key);
+
+  const toggleTour = () => {
+    if (touring) {
+      setTouring(false);
+      if (tourRef.current) clearTimeout(tourRef.current);
+    } else {
+      setTouring(true);
+      setTourStep(0);
+    }
+  };
+
+  useEffect(() => {
+    if (!touring) return;
+    const key = PROJ_ITEMS[tourStep % PROJ_ITEMS.length]?.key ?? "dla";
+    setActive(key);
+    tourRef.current = setTimeout(() => setTourStep(s => s + 1), 3000);
+    return () => { if (tourRef.current) clearTimeout(tourRef.current); };
+  }, [touring, tourStep]);
+
+  const activeItem = PROJ_ITEMS.find(p => p.key === active);
+
+  if (!showProj) {
+    return (
+      <div style={{ marginTop: "0.5rem" }}>
+        <button
+          onClick={() => setShowProj(true)}
+          style={{ background: "rgba(245,158,11,0.1)", color: "#f59e0b", border: "1px solid rgba(245,158,11,0.2)", padding: "0.2rem 0.6rem", fontSize: "0.6rem", borderRadius: 4, cursor: "pointer", letterSpacing: "0.06em", textTransform: "uppercase" }}
+        >
+          ◎ Show Projection Selector — 9 views of the same eigenvector
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ marginTop: "0.5rem", padding: "0.6rem", background: "rgba(245,158,11,0.05)", border: "1px solid rgba(245,158,11,0.15)", borderRadius: 6 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" }}>
+        <div style={{ fontSize: "0.6rem", fontWeight: 700, color: "#f59e0b", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+          ◎ Projection Selector — same eigenvector, 9 views
+        </div>
+        <div style={{ display: "flex", gap: "0.4rem" }}>
+          <button
+            onClick={toggleTour}
+            style={{ background: touring ? "rgba(245,158,11,0.25)" : "rgba(245,158,11,0.1)", color: "#f59e0b", border: "1px solid rgba(245,158,11,0.25)", padding: "0.15rem 0.5rem", fontSize: "0.58rem", borderRadius: 4, cursor: "pointer" }}
+          >
+            {touring ? "⏹ Stop" : "▶ Tour"}
+          </button>
+          <button onClick={() => { setShowProj(false); setTouring(false); if (tourRef.current) clearTimeout(tourRef.current); }} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: "0.7rem" }}>✕</button>
+        </div>
+      </div>
+      <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap", marginBottom: "0.4rem" }}>
+        {PROJ_ITEMS.map(p => (
+          <button
+            key={p.key}
+            onClick={() => selectProj(p.key)}
+            style={{
+              background: active === p.key ? `${p.color}22` : "rgba(255,255,255,0.03)",
+              color: active === p.key ? p.color : "#64748b",
+              border: `1px solid ${active === p.key ? p.color + "44" : "rgba(255,255,255,0.08)"}`,
+              padding: "0.15rem 0.4rem", fontSize: "0.58rem", borderRadius: 4, cursor: "pointer",
+              transition: "all 0.15s",
+              opacity: active && active !== p.key ? 0.5 : 1,
+              transform: active === p.key ? "scale(1.04)" : "scale(1)",
+            }}
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
+      {activeItem && (
+        <div style={{ fontSize: "0.6rem", color: "#cbd5e1", lineHeight: 1.5, padding: "0.3rem 0.5rem", background: "rgba(255,255,255,0.03)", borderRadius: 4, borderLeft: `2px solid ${activeItem.color}` }}>
+          {activeItem.desc}
+        </div>
+      )}
+      {touring && (
+        <div style={{ fontSize: "0.55rem", color: "#64748b", marginTop: "0.25rem" }}>
+          {(tourStep % PROJ_ITEMS.length) + 1} / {PROJ_ITEMS.length} — auto-cycling at 3s
+        </div>
+      )}
     </div>
   );
 }

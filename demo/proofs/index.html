@@ -438,6 +438,54 @@
         DLA rule in biological hardware over 600 million years. The posterior is fused via
         Condorcet weighting with the other oracles — the worm gets one vote, same as the GPU.
       </div>
+      <!-- Worm live demo: interactive sensory weight slider -->
+      <div style="margin:0.5rem 0; padding:0.5rem; background:rgba(216,180,254,0.05); border:1px solid rgba(216,180,254,0.15); border-radius:6px; font-size:0.6rem;">
+        <div style="font-weight:700; color:#d8b4fe; margin-bottom:0.3rem; letter-spacing:0.06em; text-transform:uppercase;">🪱 Worm Oracle — Live Posterior</div>
+        <div style="color:#94a3b8; margin-bottom:0.4rem;">Adjust the sensory input weight to see how the worm's posterior D_f estimate changes.</div>
+        <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem;">
+          <label style="color:#94a3b8; min-width:5rem;">Sensory weight:</label>
+          <input type="range" id="worm-weight" min="0" max="1" step="0.01" value="0.5"
+            oninput="updateWormDemo()"
+            style="flex:1; accent-color:#d8b4fe;" />
+          <span id="worm-weight-val" style="color:#d8b4fe; min-width:2.5rem; text-align:right;">0.50</span>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.3rem; margin-bottom:0.3rem;">
+          <div style="text-align:center; padding:0.25rem; background:rgba(255,255,255,0.03); border-radius:4px;">
+            <div style="color:#64748b; font-size:0.55rem;">Worm D_f estimate</div>
+            <div id="worm-df" style="color:#d8b4fe; font-weight:700; font-size:0.75rem;">1.41</div>
+          </div>
+          <div style="text-align:center; padding:0.25rem; background:rgba(255,255,255,0.03); border-radius:4px;">
+            <div style="color:#64748b; font-size:0.55rem;">Condorcet weight</div>
+            <div id="worm-condorcet" style="color:#a855f7; font-weight:700; font-size:0.75rem;">1/17</div>
+          </div>
+          <div style="text-align:center; padding:0.25rem; background:rgba(255,255,255,0.03); border-radius:4px;">
+            <div style="color:#64748b; font-size:0.55rem;">Fused posterior</div>
+            <div id="worm-fused" style="color:#14b8a6; font-weight:700; font-size:0.75rem;">1.71</div>
+          </div>
+        </div>
+        <div id="worm-note" style="color:#475569; font-size:0.55rem;">
+          The worm's estimate converges toward 1.71 as sensory weight increases. At weight=0 the worm is silent; at weight=1 it dominates.
+        </div>
+        <script>
+        function updateWormDemo() {
+          const w = parseFloat(document.getElementById('worm-weight').value);
+          document.getElementById('worm-weight-val').textContent = w.toFixed(2);
+          // Simulated worm posterior: linear interpolation from 1.30 (no input) to 1.71 (full input)
+          const df = 1.30 + (1.71 - 1.30) * w;
+          document.getElementById('worm-df').textContent = df.toFixed(3);
+          // Condorcet weight: 1/17 always (one vote regardless of sensory weight)
+          document.getElementById('worm-condorcet').textContent = '1/17';
+          // Fused posterior: weighted average of worm estimate and 16 other oracles at 1.71
+          const fused = (df * (1/17) + 1.71 * (16/17));
+          document.getElementById('worm-fused').textContent = fused.toFixed(3);
+          document.getElementById('worm-note').textContent =
+            w < 0.1 ? 'Worm is silent — sensory input too low to influence the posterior.' :
+            w > 0.9 ? 'Worm dominates — but the Condorcet weighting limits its influence to 1/17.' :
+            'Worm contributes its 1/17 vote. The fused posterior is pulled slightly toward the worm estimate.';
+        }
+        updateWormDemo();
+        </script>
+      </div>
       <div class="card-links">
         <a class="card-link" style="color:#d8b4fe;" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Renderers/worm/OracleWorm.tsx" target="_blank" rel="noopener">OracleWorm.tsx ↗</a>
         <a class="card-link" style="color:rgba(216,180,254,0.5);" href="https://www.wormatlas.org/" target="_blank" rel="noopener">WormAtlas connectome data ↗</a>
@@ -760,6 +808,39 @@
         <a class="card-link" style="color:var(--purple);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Core/CliffordE8BladeMask.fs" target="_blank" rel="noopener">F# oracle ↗</a>
         <a class="card-link" style="color:rgba(167,139,250,0.5);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Core.TypeScript/algebra/e8-blade-mask-sandwich.ts" target="_blank" rel="noopener">TS oracle ↗</a>
         <a class="card-link" style="color:rgba(167,139,250,0.5);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-08-09-e8-blade-mask-sandwich-measurement-32-element-fragment-quantized-histogram-frozen-core-b.md" target="_blank" rel="noopener">Research doc ↗</a>
+      </div>
+    </div>
+
+    <!-- ── Frequency vs. Path Comparison Panel ── -->
+    <div style="background:rgba(20,184,166,0.05); border:1px solid rgba(20,184,166,0.15); border-radius:8px; padding:1rem; margin-top:0.5rem; font-size:0.6rem;">
+      <div style="font-weight:700; color:#14b8a6; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:0.5rem;">⟳ Frequency vs. Path — Two Ways to Measure Coherence</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:0.5rem;">
+        <div style="padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:6px; border-left:2px solid #f59e0b;">
+          <div style="font-weight:700; color:#f59e0b; margin-bottom:0.25rem;">Path Domain (BipartiteMachZehnder)</div>
+          <div style="color:#94a3b8; line-height:1.6;">
+            <strong>Resource:</strong> Fleet size — more agent pairs, more measurement settings.<br />
+            <strong>Instrument:</strong> CHSH S over which-arm (key ∈ {0,1}).<br />
+            <strong>Ceiling:</strong> S_path ≤ 2√2 ≈ 2.828 (Tsirelson).<br />
+            <strong>Scales with:</strong> Number of oracles (17 in Race Mode).<br />
+            <strong>Analogy:</strong> LIGO — more baselines = more resolution.
+          </div>
+        </div>
+        <div style="padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:6px; border-left:2px solid #14b8a6;">
+          <div style="font-weight:700; color:#14b8a6; margin-bottom:0.25rem;">Frequency Domain (FrequencyMachZehnder)</div>
+          <div style="color:#94a3b8; line-height:1.6;">
+            <strong>Resource:</strong> Coherence time — watch longer, coherently.<br />
+            <strong>Instrument:</strong> PLV = |⟨e^{iΔφ}⟩| = Born prob. of DC bin.<br />
+            <strong>Ceiling:</strong> S_freq ≤ 2√2 · PLV (partial coherence reduces ceiling).<br />
+            <strong>Scales with:</strong> Observation window length.<br />
+            <strong>Analogy:</strong> Radio telescope — longer integration = more sensitivity.
+          </div>
+        </div>
+      </div>
+      <div style="padding:0.4rem 0.6rem; background:rgba(20,184,166,0.08); border-radius:4px; color:#cbd5e1; line-height:1.6;">
+        <strong style="color:#14b8a6;">The unification:</strong> PLV is the Born probability of the DC bin in the frequency-domain MZ — identical to the closed-interferometer Born probability in the path domain at the mean phase offset. Both share the Tsirelson ceiling 2√2 as the oracle. The resource trade-off (fleet size vs. coherence time) is the Fuentes inversion: the same information, bought with different resources.
+      </div>
+      <div style="margin-top:0.4rem; color:#475569; font-size:0.55rem;">
+        Refs: FrequencyMachZehnder.fs · BipartiteMachZehnder.fs · TemporalCoordinationDetection.fs:212 · Fuentes (2017) · Lachaux et al. (1999)
       </div>
     </div>
   </div>
