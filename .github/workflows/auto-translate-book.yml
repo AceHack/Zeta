@@ -26,9 +26,22 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Setup Ollama cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ollama
+          key: ollama-qwen2.5-7b
+
+      - name: Install Ollama
+        run: curl -fsSL https://ollama.com/install.sh | sh
+
+      - name: Start Ollama and Pull Model
+        run: |
+          ollama serve &
+          sleep 5
+          ollama pull qwen2.5:7b
+
       - name: Run Book Translation
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: bun run docs/books/you-born-at-the-hinge/scripts/translate_book.ts
 
       - name: Commit translated files

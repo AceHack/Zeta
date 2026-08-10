@@ -1,6 +1,5 @@
 import * as fs from "fs";
 import * as path from "path";
-import { GoogleGenAI } from "@google/genai";
 
 const TARGET_DIR = path.join(__dirname, "..", "site");
 
@@ -68,20 +67,23 @@ async function processChunk(langName: string, chunkHtml: string): Promise<string
   if (!chunkHtml.trim()) return chunkHtml;
 
   const prompt = PROMPT_TEMPLATE(langName, chunkHtml);
-  const ai = new GoogleGenAI({}); // Reads GEMINI_API_KEY from the Node environment.
-
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3.1-pro",
-      contents: prompt,
+    const response = await fetch("http://localhost:11434/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "qwen2.5:7b",
+        prompt: prompt,
+        stream: false
+      })
     });
 
-    if (response.text === undefined) {
-      console.error("The translation response did not contain text.");
-      return chunkHtml;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    let output = response.text.trim();
+    const data = await response.json();
+    let output = data.response.trim();
     if (output.startsWith("```html")) output = output.slice(7);
     if (output.startsWith("```")) output = output.slice(3);
     if (output.endsWith("```")) output = output.slice(0, -3);

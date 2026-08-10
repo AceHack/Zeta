@@ -58,7 +58,6 @@
     "smol-toml": "1.6.1"
   },
   "dependencies": {
-    "@google/genai": "^2.16.0",
     "@nats-io/jetstream": "3.4.0",
     "@nats-io/transport-node": "3.4.0",
     "@noble/ciphers": "2.2.0",
