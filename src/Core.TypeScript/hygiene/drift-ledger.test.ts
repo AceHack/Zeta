@@ -189,3 +189,49 @@ describe("normalizeSloConfig", () => {
     expect(() => normalizeSloConfig(null)).toThrow();
   });
 });
+
+describe("adaptive budgets — the gyroscope closure", () => {
+  const acfg = normalizeSloConfig({
+    defaults: { max_open_age_ticks: 6 },
+    per_rule: { BD001: { max_open_age_ticks: 1 } },
+    adaptive: { multiplier: 2, min_heals: 2, floor_ticks: 1 },
+  });
+
+  test("a class with evidence gets ceil(2 x its own MTTH)", () => {
+    // MD032 healed twice at 3 ticks each -> MTTH 3 -> budget 6; then a
+    // finding open 7 ticks breaches; open 6 does not.
+    const events = [
+      sweep(1, [["a.md", "MD032"]]), sweep(4, []),
+      sweep(5, [["a.md", "MD032"]]), sweep(8, []),
+      sweep(9, [["b.md", "MD032"]]), sweep(16, [["b.md", "MD032"]]),
+    ];
+    const r = foldMtth(events);
+    const b = sloBreaches(r, acfg);
+    expect(b.map((x) => x.rule)).toEqual(["MD032"]); // age 7 > 2x3=6
+    expect(b[0]!.maxOpenAgeTicks).toBe(6);
+  });
+
+  test("explicit per_rule override beats the measured budget", () => {
+    const events = [
+      sweep(1, [["x", "BD001"]]), sweep(11, []), // MTTH 10 -> adaptive would say 20
+      sweep(12, [["y", "BD001"]]), sweep(14, [["y", "BD001"]]),
+    ];
+    const b = sloBreaches(foldMtth(events), acfg);
+    expect(b.map((x) => x.rule)).toEqual(["BD001"]); // age 2 > explicit 1
+    expect(b[0]!.maxOpenAgeTicks).toBe(1);
+  });
+
+  test("insufficient evidence falls back to defaults", () => {
+    const events = [
+      sweep(1, [["a", "MD099"]]), sweep(2, []), // 1 heal < min_heals 2
+      sweep(3, [["b", "MD099"]]), sweep(8, [["b", "MD099"]]),
+    ];
+    const b = sloBreaches(foldMtth(events), acfg);
+    expect(b).toEqual([]); // age 5 <= default 6, adaptive (2x1=2) NOT applied
+  });
+
+  test("config without adaptive block behaves exactly as before", () => {
+    expect(sloBreaches(foldMtth([sweep(1, [["a", "MD032"]]), sweep(9, [["a", "MD032"]])]), cfg)
+      .map((x) => x.rule)).toEqual(["MD032"]);
+  });
+});

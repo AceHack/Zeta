@@ -182,6 +182,17 @@ export function foldMtth(events: readonly SweepEvent[]): MtthReport {
 export interface SloConfig {
   readonly defaults: { readonly maxOpenAgeTicks: number };
   readonly perRule: Readonly<Record<string, { readonly maxOpenAgeTicks: number }>>;
+  /** Gyroscope closure (2026-08-10): budgets derived from each class's OWN
+   * measured MTTH — tolerance = ceil(multiplier x mtth), once the class has
+   * minHeals of evidence, floored at floorTicks. Explicit perRule overrides
+   * always win; classes without evidence fall back to defaults. A "leak"
+   * is thereby drift outliving the fleet's own demonstrated pace, not an
+   * arbitrary constant. */
+  readonly adaptive?: {
+    readonly multiplier: number;
+    readonly minHeals: number;
+    readonly floorTicks: number;
+  };
 }
 
 export interface SloBreach {
@@ -191,8 +202,14 @@ export interface SloBreach {
   readonly maxOpenAgeTicks: number;
 }
 
-export function sloLimit(cfg: SloConfig, rule: string): number {
-  return cfg.perRule[rule]?.maxOpenAgeTicks ?? cfg.defaults.maxOpenAgeTicks;
+export function sloLimit(cfg: SloConfig, rule: string, cls?: ClassMtth): number {
+  const explicit = cfg.perRule[rule]?.maxOpenAgeTicks;
+  if (explicit !== undefined) return explicit; // explicit always wins
+  const a = cfg.adaptive;
+  if (a !== undefined && cls !== undefined && cls.mtthTicks !== null && cls.healedCount >= a.minHeals) {
+    return Math.max(a.floorTicks, Math.ceil(a.multiplier * cls.mtthTicks));
+  }
+  return cfg.defaults.maxOpenAgeTicks;
 }
 
 /** Pure: classes whose oldest open finding has OUTLIVED its budget. Breach is
@@ -200,7 +217,7 @@ export function sloLimit(cfg: SloConfig, rule: string): number {
 export function sloBreaches(report: MtthReport, cfg: SloConfig): readonly SloBreach[] {
   return report.classes.flatMap((c) => {
     if (c.oldestOpenAgeTicks === null) return [];
-    const max = sloLimit(cfg, c.rule);
+    const max = sloLimit(cfg, c.rule, c);
     return c.oldestOpenAgeTicks > max
       ? [{ rule: c.rule, openCount: c.openCount, oldestOpenAgeTicks: c.oldestOpenAgeTicks, maxOpenAgeTicks: max }]
       : [];
@@ -226,6 +243,11 @@ export function newlyBreaching(breaches: readonly SloBreach[], filed: FiledMap):
 interface RawSloYaml {
   readonly defaults?: { readonly max_open_age_ticks?: number };
   readonly per_rule?: Readonly<Record<string, { readonly max_open_age_ticks?: number }>>;
+  readonly adaptive?: {
+    readonly multiplier?: number;
+    readonly min_heals?: number;
+    readonly floor_ticks?: number;
+  };
 }
 
 /** Registry surface is snake_case YAML (registry/drift-slo.yaml, sibling of
@@ -247,6 +269,20 @@ export function normalizeSloConfig(rawDoc: unknown): SloConfig {
       throw new Error(`drift-slo config: per_rule.${rule}.max_open_age_ticks must be a number >= 1`);
     }
     perRule[rule] = { maxOpenAgeTicks: n };
+  }
+  const rawA = raw?.adaptive;
+  if (rawA !== undefined) {
+    const m = rawA.multiplier;
+    const mh = rawA.min_heals;
+    const ft = rawA.floor_ticks;
+    if (
+      typeof m !== "number" || m <= 0 ||
+      typeof mh !== "number" || mh < 1 ||
+      typeof ft !== "number" || ft < 1
+    ) {
+      throw new Error("drift-slo config: adaptive needs multiplier > 0, min_heals >= 1, floor_ticks >= 1");
+    }
+    return { defaults: { maxOpenAgeTicks: def }, perRule, adaptive: { multiplier: m, minHeals: mh, floorTicks: ft } };
   }
   return { defaults: { maxOpenAgeTicks: def }, perRule };
 }

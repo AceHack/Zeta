@@ -17,8 +17,19 @@
 # registry's consent discipline is the sibling precedent).
 
 defaults:
-  # ~24 hours at the 4-hour cadence.
+  # ~24 hours at the 4-hour cadence — the fallback for classes without
+  # measured evidence.
   max_open_age_ticks: 6
+
+# Gyroscope closure (2026-08-10): once a class has min_heals of measured
+# evidence, its budget derives from its OWN demonstrated MTTH —
+# ceil(multiplier x mtth), floored at floor_ticks. Explicit per_rule
+# overrides always win. A "leak" is thereby drift outliving the fleet's
+# own proven pace, not an arbitrary constant.
+adaptive:
+  multiplier: 2
+  min_heals: 2
+  floor_ticks: 1
 
 # Per-rule overrides (tighter or looser than the default), e.g.:
 #   MD022:
