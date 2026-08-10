@@ -74,15 +74,110 @@ Three consequences follow immediately:
    linear map, and the cited primitivity does not transfer. Per the checked-anchor
    discipline, the citation on the current implementation is uncheckable as applied.
 
-## What is NOT claimed
+## UPDATE (same day): both open questions are now measured
 
-The cycle length from the production seed was **not** measured to completion — the
-orbit did not close within 20,000,000 steps, so the period is long, and this is
-**not** a "the clock repeats immediately" finding. Singularity and short period are
-different defects; only the first is established here.
+The first version of this note declined two claims. Aaron: *"lets try to push on this
+and see what comes out."* Both are now settled by computation rather than left open.
 
-Nor is any exploitability claimed. Whether the collision matters depends entirely on
-what the derived seed is used for downstream, which this note does not survey.
+### 1. The period IS reduced — by exactly a factor of ~4
+
+A 2³²-step walk is unnecessary: the map is linear, so the orbit's period is the
+multiplicative order of `x` modulo the minimal polynomial of the orbit. Computed
+directly:
+
+| variant | minimal polynomial | period |
+|---|---|---|
+| `>>` (production) | degree 31, factors as **(x+1)² · (irreducible deg 29)** | **1,073,741,822 = 2·(2²⁹−1)** |
+| `>>>` (test/Marsaglia) | degree 32, irreducible | **4,294,967,295 = 2³²−1** (full) |
+
+So the shipped clock has **a quarter of the period** it is assumed to have, and the
+`>>>` variant hits the full maximal period exactly — an independent confirmation of
+Marsaglia's primitivity result, and of the fact that it applies to that map and not
+to this one.
+
+Honest scale, since a factor of 4 is not automatically alarming: ~1.07 × 10⁹ ticks is
+still enormous at any heartbeat cadence. **The period is a real but secondary
+defect.** The primary one remains the collision.
+
+### 2. The collision reaches an authentication path — one exact forged seed
+
+`src/Core.TypeScript/observe/phase-erasure.ts:78`:
+
+```ts
+export function verifyPhase(claimed: PhaseState): boolean {
+  const clock = createPhaseClock(COMMON_SEED);
+  for (let i = 0; i < claimed.phase; i++) clock.tick("heartbeat");
+  return clock.state.seed === claimed.seed;   // seed equality IS the check
+}
+```
+
+`COMMON_SEED = 4` (`phase-clock.ts:77`). Its kernel twin is `4 ^ 0xfc001fff =
+0xfc001ffb`. Measured:
+
+```
+start   A=0x00000004   B=0xfc001ffb
+tick 1  A=0x00108084   B=0x00108084   IDENTICAL
+tick 2  A=0x10011804   B=0x10011804   IDENTICAL
+…identical for the first 100,000 ticks (and, by linearity, forever)
+```
+
+**A clock started from `0xfc001ffb` is indistinguishable from the real one to
+`verifyPhase` at every phase ≥ 1.** The verifier's whole content is seed equality, and
+the twin produces equal seeds from the first tick onward.
+
+Scoped precisely, because overstating this would be its own error: this is **one**
+alternative pre-image, not a general forgery. It does not let an attacker choose a
+phase or a seed — it means the "which starting state" question has exactly two answers
+instead of one, forever. Wherever the phase seed is treated as evidence of a
+*particular* origin, that evidence is one bit weaker than it reads.
+
+## Shipping the fix mechanically — the schema-evolution algebra already fits
+
+Aaron: *"can we use the lessons from 0 down time schema evolution code and math to
+push out changes like this mechanically and safely?"* Yes, and the fit is exact rather
+than analogical — `src/Core/SchemaEvolution.fs` already has every piece.
+
+The PRNG **is** a schema for a derived sequence, so the change is a version bump, and
+each of that module's guarantees lands on a real part of this problem:
+
+| SchemaEvolution concept | applied to the PRNG change |
+|---|---|
+| schema version label | `prngVersion` on `PhaseState`: v1 = `>>`, v2 = `>>>` |
+| `addField key default` (backward compat) | records written before the bump have no version tag → default to **v1**, so old persisted state stays readable |
+| forward compat (old reader ignores unknown) | a v1-only reader keeps working on v2 records it does not interpret |
+| `Up : v1 → v2` | recompute the sequence under the logical shift |
+| **`Down : option` — `None` means non-invertible** | **this is the load-bearing one, see below** |
+
+**The invertibility taxonomy gives the honest answer, and it is not "just flip the
+character."** `Migration.Down` is an *option* precisely so a migration can declare
+itself non-invertible, and this one is: v1 is 2-to-1, so a v1 seed does not determine
+which of its two pre-images produced it. There is no `Down`. Rollback from v2 to v1
+requires **compensation, not an inverse** — exactly the case that field was designed to
+express. The singularity that is the bug is the same singularity that makes the
+migration irreversible; the algebra already had a slot for it.
+
+So the mechanical rollout is expand → migrate → contract, with no flag day:
+
+1. **Expand.** Add `prngVersion` to `PhaseState`, defaulting absent → v1 (`addField`).
+   Teach `verifyPhase` to dispatch on the tag and accept both. Nothing changes
+   behaviourally; both versions are now expressible.
+2. **Migrate.** New clocks emit v2. Existing v1 records keep verifying under v1.
+3. **Contract.** When no v1 records remain in the window that matters, drop the v1
+   branch.
+
+Two things must move with it, and they are mechanical:
+
+- **Golden/DST fixtures become per-version.** Any fixture pinning a phase sequence is
+  pinning v1; it stays valid *as a v1 fixture* and a v2 vector is added beside it. This
+  is the existing hex-in-JSON golden-vector discipline, not new machinery.
+- **The `Down = None` declaration must be explicit**, so nobody later assumes a
+  rollback path that cannot exist.
+
+What this does **not** remove is the decision itself. Expand/contract makes the change
+*safe to deploy*, not automatic: someone still has to accept that v1-derived identity
+evidence keeps its one-bit weakness for as long as v1 records are honoured. That is the
+compatibility call, and it is still the phase-clock owner's with Kira on the
+engineering read.
 
 ## Why it matters for a *phase clock* specifically
 
