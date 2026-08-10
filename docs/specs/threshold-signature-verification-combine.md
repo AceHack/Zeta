@@ -174,3 +174,68 @@ divergence above.
 Cost: one additional implementation, plus real machine contention — three concurrent Release
 builds pushed load average past 28 and were the dominant wall-clock cost. **Generation-2
 should stagger builds**, since worktree isolation isolates the filesystem and not the CPU.
+
+
+---
+
+# CORRECTION — B reported after this combine was merged
+
+The coordinator judged derivation B wedged (flat transcript, zero CPU, an unanswered nudge),
+pushed its three commits, and recorded in §4 that **"B's ambiguity list and coverage table are
+lost."** That was wrong. B was slow, not dead, and delivered a full report: **14 ambiguities and
+a complete coverage table.** §4 stands as written for the record; everything it concluded about
+B is superseded here.
+
+## B strengthens the headline from two-way to THREE-way co-discovery
+
+B's **D1** is the canonical-signed-bytes defect — so **all three derivations found it
+independently**, and B stated the consequence before any combine existed:
+
+> *"Any two derivations answering D1 differently cannot verify each other's signatures, **and
+> every derivation's own tests pass regardless** — start the combine there."*
+
+B predicted §0 from inside its own isolation. That is the protocol working exactly as intended.
+
+B's **D2** also independently reaches C's R7 epoch problem — and names the attack: a
+requester-supplied epoch is a **downgrade attack**, so B chose verifier-supplied and made
+`verify` 4-ary. **C found the hole, B found the same hole and its mitigation, A treated it as a
+completeness gap.** Three-way co-discovery of the security issue, with three different severity
+readings.
+
+## What only B found
+
+- **D5 — first-wins duplicate handling enables signer SUPPRESSION.** An attacker injects a junk
+  submission under a target's identity; if the first copy wins, the target's genuine signature
+  never counts. B chose any-valid-counts. **A denial-of-participation attack nobody else saw.**
+- **D12 — R2 forbids a global roster, but does it forbid a global registry?** B's reasoning is
+  the sharp part: migration windows must live on the *verifier*, not the registry, **or you
+  recreate the cutover coordinator R7 exists to deny.** That is this repo's central argument,
+  rediscovered from the inside.
+- **D4 — must every multi-scheme verifier state an end date?** B chose strict and flagged it as
+  its **least-confident call**, noting that permanent hybrid classical+PQ is real practice. It
+  is right to doubt it: my spec assumed migration is always transitional, and that assumption is
+  false for hybrid deployments.
+- **D14 — key rotation (two keys, one scheme) is undefined**; B made it a config error and
+  deferred the alternative.
+
+## B's coverage — also no rounding up
+
+`R9` and `AC7` declared `partial`, with the reasons named: no property-based/DST harness, "on
+any machine" untested, and **the port contract *permits* an impure adapter** — a hole in R6's
+design, not merely in B's tests. So **all three derivations declared R9 partial**, which makes
+R9 the most reliably under-specified requirement in the document.
+
+## Environment findings (generation-2 infrastructure)
+
+B hit two host-level blockers and named them rather than working around them silently:
+`.mise.toml` untrusted in a fresh worktree (so the pinned SDK did not resolve), and a
+machine-wide **"Too many open files in system"** during the first solution build. Both are
+worktree/host issues, and the second corroborates the build-contention finding with a concrete
+failure mode: **N concurrent worktree builds exhaust host file descriptors, not just CPU.**
+
+## What this correction does to §7
+
+The N=3 argument **strengthens**. It was made on A ∥ C with B's implementation as a silent
+third data point; with B's report, three of the run's most important defects are three-way
+co-discoveries rather than two-way, and B contributed one attack (D5) and one architectural
+argument (D12) that neither other derivation found.

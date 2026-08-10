@@ -122,6 +122,60 @@ it *shorter*. Premature migration is the failure mode of the island model, and a
 that speeds the loop up by shortening isolation has optimised away the only thing that
 worked.
 
+## Generation 1 ran (2026-08-09) — what it produced, and what to fix next
+
+Three F# derivations of one clean-room spec, isolated worktrees, none seeing the others.
+Full result: [`threshold-signature-verification-combine.md`](../../../../docs/specs/threshold-signature-verification-combine.md).
+
+**The generation-0 fixes worked.** Both reporting derivations declared `partial` where they
+could have claimed `implemented` and been believed — and **each marked partial exactly where
+the other marked implemented**, having hit different edges of the same under-specification.
+Generation 0's failure (one derivation claiming twelve of twelve, four claims not surviving
+execution) did not recur.
+
+### CO-DISCOVERY is the signal — score it explicitly
+
+> **One derivation naming an ambiguity is a hypothesis. Two naming it independently is
+> evidence.** Rank the combine's output by how many derivations found each defect, not by how
+> compelling the argument reads.
+
+Four defects were co-discovered here and are therefore near-certain. The single-derivation
+finds were still the *most severe* — but they carry the weaker warrant, and the combine must
+say which is which rather than presenting one list.
+
+### Why N=3 beat N=2 — the specific reason, not a preference
+
+Two derivations added a domain tag to the signed message; the third added none, reasoning only
+about injectivity, which was the only property the spec's rationale argued for. **The tagless
+one is what proved the spec permits omitting domain separation entirely** — a real weakness
+against cross-protocol replay.
+
+> **N=2 shows you *that* two readings exist. N=3 shows you the reading nobody defended.** The
+> pair agreed and looked settled; the outlier carried the finding.
+
+Corollary for choosing N: the marginal derivation is worth most **where the requirement is
+prose rather than arithmetic** — that is where honest readings multiply.
+
+### Generation-2 fixes
+
+1. **Append each ambiguity the moment it is resolved.** Generation 1 required an incremental
+   report; one derivation wrote the *skeleton* first, as instructed, then wedged before filling
+   it in. Its code survived and its analysis did not. **A skeleton proves intent and preserves
+   nothing** — the unit of incrementality must be the finding, not the file.
+2. **Stagger the builds.** Worktree isolation isolates the **filesystem, not the CPU**. Three
+   concurrent Release builds pushed load average past 28 and dominated wall-clock. Isolation is
+   about independence, not throughput — do not read a green worktree plan as a parallel-speed
+   plan.
+3. **Do not call a slow derivation a dead one.** In generation 1 the coordinator judged a
+   derivation wedged — flat transcript, zero CPU, an unanswered nudge — pushed its commits, and
+   wrote its analysis off as lost. **It was simply slow, and later delivered a full report with
+   14 ambiguities.** The rescue was harmless; the *conclusion* was wrong and had to be corrected
+   after the combine had already merged. Committed-but-unpushed work IS recoverable from the
+   worktree, so preserve it — but **preserving is not pronouncing.** State "not yet reported",
+   never "lost", until the agent is confirmed dead.
+4. **Fix the spec before dispatching a further derivation.** A fourth against unamended text
+   reproduces every divergence already found, and pays full price for nothing.
+
 ## Pointers
 
 - `docs/specs/key-custody-n-version-combine.md` — the worked run:
