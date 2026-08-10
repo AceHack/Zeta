@@ -2,16 +2,15 @@ import { describe, expect, test } from "bun:test";
 import { type DuplexEndpoint, type Frame } from "../model-backend/duplex-transport.ts";
 import { multiplexedDuplexTransport, type MuxFrame } from "../model-backend/multiplexed-duplex-transport.ts";
 import { type PersonaFrame, type PersonaCtl, askPersona, awaitHello, interruptPersona, openPersona, servePersona } from "../model-backend/persona-transport.ts";
-import { toHex } from "../zeta-id/encoding.ts";
 import { inMemoryZetaStore } from "../model-backend/zeta-store.ts";
 import type { ModelTurn } from "../model-backend/zeta-agent-loop.ts";
 import type { ZetaId } from "../zeta-id/types.ts";
-import type { BroadcastTransport, DiscoveryTransport } from "../discovery/discovery-beacon.ts";
+import type { DiscoveryTransport } from "../discovery/discovery-beacon.ts";
+import type { BroadcastTransport } from "../discovery/llmtv-broadcast.ts";
 import { cloudPersonaParticipant } from "./participant.ts";
-import type { ISummon, SummonResult } from "../peer-call/summon.ts";
+import type { ISummon } from "../peer-call/summon.ts";
 
 const pid = (n: bigint): ZetaId => n as ZetaId;
-const tick = () => new Promise<void>((r) => setTimeout(r, 0));
 
 // -- Deterministic Lossy UDP Simulator (from gossip-salon.proof.test.ts) --
 function createLossyDupMesh(delayMs: number) {
@@ -60,11 +59,14 @@ function createLossyDupMesh(delayMs: number) {
 
 // -- Adapter: Broadcast UDP Mesh -> DuplexEndpoint --
 function meshDuplexAdapter(meshAttach: DiscoveryTransport & BroadcastTransport): DuplexEndpoint<MuxFrame, never> {
-  const listeners = new Set<(f: Frame<MuxFrame, never>) => void>();
-  meshAttach.onMessage((text) => {
+  const queue: Frame<MuxFrame, never>[] = [];
+  const waiters: ((r: IteratorResult<Frame<MuxFrame, never>>) => void)[] = [];
+  meshAttach.onMessage((text: string) => {
     try {
-      const parsed = JSON.parse(text);
-      for (const l of listeners) l(parsed);
+      const parsed = JSON.parse(text) as Frame<MuxFrame, never>;
+      const w = waiters.shift();
+      if (w) w({ value: parsed, done: false });
+      else queue.push(parsed);
     } catch {}
   });
   return {
@@ -72,10 +74,15 @@ function meshDuplexAdapter(meshAttach: DiscoveryTransport & BroadcastTransport):
       meshAttach.publish(JSON.stringify(frame));
       return Promise.resolve();
     },
-    listen: (l) => {
-      listeners.add(l);
-      return () => listeners.delete(l);
-    }
+    inbound: async function*() {
+      for (;;) {
+        const next = queue.shift();
+        if (next !== undefined) { yield next; continue; }
+        const r = await new Promise<IteratorResult<Frame<MuxFrame, never>>>((res) => waiters.push(res));
+        if (r.done) return;
+        yield r.value;
+      }
+    },
   };
 }
 
@@ -130,7 +137,7 @@ describe("Observe Event Loop over Lossy UDP Mesh Transport", () => {
     // Provide a mocked ISummon to the Participant to bind it directly to the multiplexer over UDP
     let lastCh: import("../model-backend/multiplexed-duplex-transport.ts").MuxChannel<PersonaFrame, PersonaCtl> | null = null;
     const testSummoner: ISummon = {
-      summon: async (personaName, prompt, opts) => {
+      summon: async (_personaName, prompt, _opts) => {
         const ch = clientTransport.open();
         lastCh = ch;
         await openPersona(ch);
@@ -145,15 +152,16 @@ describe("Observe Event Loop over Lossy UDP Mesh Transport", () => {
         if (reply.kind === "error") {
             return { success: false, exitCode: 2, outputFile: "", stdout: "", stderr: reply.error };
         }
-        return { success: true, exitCode: 0, outputFile: "", stdout: reply.content, stderr: "" };
+        const stdout = reply.kind === "answer" ? reply.content : "";
+        return { success: true, exitCode: 0, outputFile: "", stdout, stderr: "" };
       }
     };
 
     const participant = cloudPersonaParticipant(testSummoner, "UniversalGrammarPersona");
 
     // Client begins the choose event loop
-    const menu = [{ kind: "navigate" as const, group: "Navigate" as const, name: "test-nav", slot: 1 }];
-    const choosePromise = participant.choose({ backlog: [], mode: "Explore", operator: undefined }, menu);
+    const menu: import("../observe/observe.ts").NextAction[] = [{ kind: "explore", reason: "test-nav" }];
+    const choosePromise = participant.choose({ backlog: [], mode: "explore" }, menu);
 
     // Pump mesh for initial prompt delivery
     mesh.advance(150);

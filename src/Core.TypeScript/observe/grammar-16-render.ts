@@ -139,5 +139,7 @@ export function leadSlot(world: World): number | null {
     case "preserve_ferry":
     case "respond_to_operator":
       return null; // operator-priority: above the menu, not a slot
+    default:
+      return null; // exhaustive: all known kinds handled above
   }
 }

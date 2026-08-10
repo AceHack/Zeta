@@ -406,9 +406,9 @@ export class PersonaSummoner implements ISummon {
     // or passed via options for openai compat endpoints.
     // We will use a dummy config for now, assuming OPENAI_API_KEY is available.
     const backendConfig = { 
-        id: "openai", 
-        url: harness.host || process.env.OPENAI_API_BASE || "https://api.openai.com/v1", 
-        apiKey: process.env.OPENAI_API_KEY || "" 
+        baseUrl: harness.host || process.env.OPENAI_API_BASE || "https://api.openai.com/v1", 
+        apiKey: process.env.OPENAI_API_KEY || "",
+        model,
     };
     const backend = openAiCompatBackend(backendConfig, transport);
     
@@ -419,17 +419,12 @@ export class PersonaSummoner implements ISummon {
            { role: "user" as const, content: fullPrompt }
        ];
        
-       let stdout = "";
-       if (streamOpt && backend.postStream) {
-           const stream = backend.postStream(messages, { model });
-           for await (const chunk of stream) {
-               stdout += chunk;
-               process.stdout.write(chunk.content);
-           }
-       } else {
-           const res = await backend.post(messages, { model });
-           stdout = res.text;
+       const outcome = await backend.complete({ messages, model });
+       if (!outcome.ok) {
+           return { success: false, exitCode: 2, outputFile, stdout: "", stderr: `backend error: ${outcome.error}\n` };
        }
+       const stdout = outcome.result.content;
+       if (streamOpt) process.stdout.write(stdout);
        
        try { writeFileSync(outputFile, stdout); } catch {}
        return { success: true, exitCode: 0, outputFile, stdout, stderr: "" };
@@ -463,7 +458,8 @@ export class PersonaSummoner implements ISummon {
       });
 
       const ds = platformWebSocket(ws);
-      const ep = webSocketEndpoint<PersonaFrame, PersonaCtl>(ds);
+      // The physical WebSocket layer carries MuxFrames; PersonaFrame is the logical layer above.
+      const ep = webSocketEndpoint<import("../model-backend/multiplexed-duplex-transport.ts").MuxFrame, never>(ds);
       const client = multiplexedDuplexTransport<PersonaFrame, PersonaCtl>(ep);
       const channel = client.open();
 
@@ -480,7 +476,7 @@ export class PersonaSummoner implements ISummon {
         throw new Error(reply.error);
       }
 
-      const stdout = reply.content;
+      const stdout = reply.kind === "answer" ? reply.content : "";
       if (outputFile) {
         import("fs").then(fs => fs.writeFileSync(outputFile, stdout, "utf8")).catch(()=>{});
       } else if (!streamOpt) {
