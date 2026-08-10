@@ -79,7 +79,7 @@
  */
 
 import type { SalonTransport } from "./gossip-salon";
-
+import { LossyUdpChannel } from "./udp-lossy-transport";
 // ── UDP multicast transport ────────────────────────────────────────────────────
 
 /** Configuration for the UDP multicast transport. */
@@ -295,6 +295,142 @@ export function gitSalonTransport(onPublish: (text: string) => void): SalonTrans
  *
  * @param transports - One or more SalonTransport instances to multiplex.
  */
+// ── Lossy UDP mesh transport (Adinkra ECC) ─────────────────────────────────────
+
+/**
+ * Create a SalonTransport backed by UDP multicast with Adinkra [8,4,4] erasure coding.
+ *
+ * This is the production-grade version of udpMeshTransport. It wraps the bare UDP
+ * socket with a LossyUdpChannel that:
+ * - Encodes every 4 gossip rumors as a block of 8 UDP packets (4 data + 4 parity).
+ * - Recovers any 1 lost packet per block without retransmission.
+ * - Emits teaching NACKs (not bare failure codes) when loss is detected.
+ * - Feeds the DimensionalBnn transport factor with every NACK.
+ * - Uses AIMD backoff to avoid congestion spirals.
+ *
+ * ## Homoiconicity: physics ↔ transport
+ *
+ * The Adinkra [8,4,4] code is the same structure as the E8 lattice generator
+ * (via Construction A). Using it for UDP erasure coding means the transport layer
+ * and the physics layer share the same generator matrix. This prevents a class of
+ * distributed simulation bugs where the transport entropy leaks into the physics
+ * measurement: if the ECC fails, the failure is detectable (not silent corruption).
+ *
+ * ## Society evolution integration
+ *
+ * Each gossip block carries a `societyGen` field in the parity metadata. The
+ * evolutionary society runner increments this on each generation. Receivers can
+ * detect if they are behind (their local gen < received gen) and trigger a
+ * society-evolution-runner sync.
+ *
+ * @param cfg - UDP multicast configuration.
+ * @param onReady - Called when the socket is bound and ready to send.
+ * @param onTeachingNack - Optional callback for teaching NACKs (for UI display).
+ */
+export function lossyUdpMeshTransport(
+  cfg: UdpMeshConfig = DEFAULT_UDP_MESH_CONFIG,
+  onReady?: () => void,
+  onTeachingNack?: (nack: { cause: string; howToFix: string; lossRate: number }) => void,
+): SalonTransport & { close(): void; channel: LossyUdpChannel } {
+  // Build the base UDP transport (raw socket, no ECC)
+  const base = udpMeshTransport(cfg, onReady);
+
+  // Create the Adinkra [8,4,4] ECC channel on top of the raw socket
+  // The LossyUdpChannel wraps any {broadcast, onMessage} transport.
+  const channel = new LossyUdpChannel(
+    {
+      broadcast: (text) => base.publish(text),
+      onMessage: (h) => base.onFrame(h),
+    },
+    `mesh:${cfg.group}:${cfg.port}`,
+  );
+
+  // Wire teaching NACK callback if provided
+  if (onTeachingNack) {
+    channel.onEnvelope((env) => {
+      // Extract cause/howToFix from the error envelope
+      const mirror = env.mirror as { cause?: string; howToFix?: string; lossRate?: number } | undefined;
+      if (mirror) {
+        onTeachingNack({
+          cause: mirror.cause ?? "unknown",
+          howToFix: mirror.howToFix ?? "reduce send rate",
+          lossRate: mirror.lossRate ?? 0,
+        });
+      }
+    });
+  }
+
+  // The salon handlers receive recovered rumors (not raw UDP packets)
+  const handlers: Array<(text: string, from?: string) => void> = [];
+  channel.onData((payload) => {
+    const text = Buffer.from(payload).toString("utf8");
+    for (const h of handlers) h(text);
+  });
+
+  return {
+    // publish: queue the text as a Uint8Array payload; the channel flushes when 4 are queued
+    publish: (text) => channel.send(Buffer.from(text, "utf8")),
+    onFrame: (h) => handlers.push(h),
+    close: () => base.close(),
+    channel,
+  };
+}
+
+// ── Society evolution transport wrapper ────────────────────────────────────────
+
+/**
+ * Wrap any SalonTransport with society-evolution awareness.
+ *
+ * Adds a `societyGen` field to every published rumor. Receivers that see a
+ * higher generation number than their local state trigger a sync.
+ *
+ * This is the bridge between the gossip transport and the evolutionary society:
+ * - The gossip salon carries rumors (observations, crossings, kept-claims).
+ * - The society evolution runner reads the G-set of rumors and evolves agents.
+ * - The societyEvolutionTransport makes the generation number visible in the
+ *   transport layer, so nodes can detect when they are behind without polling.
+ *
+ * @param inner - The underlying transport to wrap.
+ * @param getLocalGen - Returns the current local society generation number.
+ * @param onGenAhead - Called when a received rumor has a higher generation.
+ */
+export function societyEvolutionTransport(
+  inner: SalonTransport,
+  getLocalGen: () => number,
+  onGenAhead?: (receivedGen: number, localGen: number) => void,
+): SalonTransport {
+  const handlers: Array<(text: string, from?: string) => void> = [];
+  inner.onFrame((text, from) => {
+    // Try to parse the society generation from the rumor
+    try {
+      const parsed = JSON.parse(text) as { societyGen?: number; [k: string]: unknown };
+      if (typeof parsed.societyGen === "number") {
+        const localGen = getLocalGen();
+        if (parsed.societyGen > localGen) {
+          onGenAhead?.(parsed.societyGen, localGen);
+        }
+      }
+    } catch {
+      // Not a JSON rumor — pass through as-is
+    }
+    for (const h of handlers) h(text, from);
+  });
+  return {
+    publish: (text) => {
+      // Inject the local society generation into every published rumor
+      try {
+        const parsed = JSON.parse(text) as { [k: string]: unknown };
+        parsed.societyGen = getLocalGen();
+        inner.publish(JSON.stringify(parsed));
+      } catch {
+        // Not JSON — publish as-is (no generation injection)
+        inner.publish(text);
+      }
+    },
+    onFrame: (h) => handlers.push(h),
+  };
+}
+
 export function multiplexTransport(...transports: SalonTransport[]): SalonTransport {
   const handlers: Array<(text: string, from?: string) => void> = [];
   for (const t of transports) {
