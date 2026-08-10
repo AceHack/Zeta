@@ -180,6 +180,26 @@ else
 fi
 echo
 
+# ── File-descriptor headroom for parallel builds ─────────────────────
+# A 3-way parallel build died with "Too many open files IN SYSTEM" — the system-wide
+# table, not `ulimit -n` (which was already 1048576 and irrelevant to that failure).
+if [ -r "$(dirname "$0")/common/fd-limits.sh" ]; then
+  # shellcheck source=common/fd-limits.sh
+  . "$(dirname "$0")/common/fd-limits.sh"
+  _fd_cur=$(zeta_fd_system_max)
+  if [ -z "$_fd_cur" ]; then
+    warn "fd-limits: cannot read the system-wide file-descriptor max on this platform"
+  elif zeta_fd_headroom_ok; then
+    pass "fd-limits: system-wide max is $_fd_cur (>= $ZETA_FD_WANT_SYSTEM)"
+  else
+    warn "fd-limits: system-wide max is $_fd_cur, below $ZETA_FD_WANT_SYSTEM — parallel builds can die with 'Too many open files in system'"
+    echo "    Raising it is a CEILING change, not a reservation — it costs nothing until used."
+    echo "    Apply by hand (needs sudo; this script deliberately does not change system settings):"
+    zeta_fd_remedy | sed 's/^/  /'
+  fi
+  echo
+fi
+
 # ── Summary ─────────────────────────────────────────────────────────
 echo "=== Summary ==="
 echo "✓ ok: $OK   ⚠ warn: $WARN   ✗ fail: $FAIL"
