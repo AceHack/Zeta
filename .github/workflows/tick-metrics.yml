@@ -54,5 +54,16 @@ jobs:
             echo "No new metrics to commit."
           else
             git commit -m "metrics: append tick frame [skip ci]"
-            git push
+            # Rebase before pushing. This job runs every 15 minutes and appends to
+            # data/tick-*.json; the fleet pushes to main continuously, so a bare
+            # `git push` loses the race and fails non-fast-forward — which is exactly
+            # what happened on 8b4273ca9 (run 31428773872). Not a code failure: the
+            # frame was computed correctly and simply could not land.
+            #
+            # Rebase rather than merge: this lane only ever appends generated metric
+            # frames, so a merge commit here is pure noise. Matches lockfile-healer.yml
+            # and drift-sweep.yml, which already do this; tick-metrics was the one
+            # commit-back workflow still pushing bare.
+            git pull --rebase --autostash origin main
+            git push origin HEAD:main
           fi
