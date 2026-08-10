@@ -36,6 +36,12 @@
  */
 
 import type { EntropyTracker } from "../algebra/entropy-tracker";
+import {
+  makeBatchItemCell,
+  makeBatchEnvelope,
+  type BatchTeachingEnvelope,
+} from "../protocol/batch-teaching-envelope";
+import type { ErrorDimension, ErrorSeverity } from "../protocol/error-envelope";
 
 // ═══ Transport Interface (the injected network port) ════════════════════════════
 
@@ -73,7 +79,51 @@ export interface BatchFrame {
 /** The transport's send outcome (never throws — Result discipline). */
 export type SendOutcome =
   | { readonly ok: true; readonly acked: boolean }
-  | { readonly ok: false; readonly reason: string };
+  | {
+      readonly ok: false;
+      readonly reason: string;
+      /**
+       * Optional RFC 9457 batch teaching envelope.
+       * Present when the transport can identify which items failed and why.
+       * Absent for bare transport failures (connection refused, timeout).
+       * High erasureHeat = protocol is losing information (entropy leak).
+       */
+      readonly batchTeachingEnvelope?: BatchTeachingEnvelope;
+    };
+
+/**
+ * Build a BatchTeachingEnvelope from a list of failed item ids and a reason.
+ * Convenience helper for transports that know which items failed.
+ */
+export function buildBatchTeachingEnvelope(opts: {
+  batchFrameId: string;
+  correlationId: string;
+  totalItems: number;
+  failedItemIds: readonly string[];
+  reason: string;
+  dimension: ErrorDimension;
+  generatorFn: string;
+  retractableBeliefId?: string;
+  severity?: ErrorSeverity;
+}): BatchTeachingEnvelope {
+  const cells = opts.failedItemIds.map(itemId =>
+    makeBatchItemCell({
+      itemId,
+      retractableBeliefId: opts.retractableBeliefId,
+      generatorFn: opts.generatorFn,
+      dimension: opts.dimension,
+      severity: opts.severity ?? "error",
+      reason: opts.reason,
+      what: itemId,
+    }),
+  );
+  return makeBatchEnvelope({
+    batchFrameId: opts.batchFrameId,
+    correlationId: opts.correlationId,
+    totalItems: opts.totalItems,
+    errors: cells,
+  });
+}
 
 // ═══ Ferry-to-Network Adapter ══════════════════════════════════════════════════
 
