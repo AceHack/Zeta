@@ -5,22 +5,23 @@
  * This panel simulates the 302-neuron C. elegans connectome (White 1986)
  * as a Kuramoto phase oscillator network. The Chip-8 display pixels are
  * mapped onto sensory neurons; motor neuron phases drive the DLA sticking
- * probability. The worm has no knowledge of DLA, the sticking constant, or the other
+ * probability. The worm has no knowledge of DLA, Tsirelson, or the other
  * oracles — it is a fully independent biological substrate.
  *
  * The Kuramoto order parameter r ∈ [0,1] is the worm's ρ:
- *   r < 0.2357 (the sticking threshold) → incoherent, independent
+ *   r < 0.2357 (Tsirelson threshold) → incoherent, independent
  *   r > 0.2357 → synchronized, correlated
  *
  * The DLA cluster grows where the worm's motor neurons are synchronized.
  * The fractal dimension of the resulting cluster is Oracle 7's D_f.
+ *
+ * Real connectome: White 1986 (521 neurons, 10,340 synapses) loaded from
+ * /celegans-connectome.json at runtime. Falls back to synthetic if unavailable.
  */
 
 import { useEffect, useRef, useState } from "react";
 
-// ── Minimal Kuramoto simulation (mirrors CelegansController.fs) ─────────────
-
-// ── Real connectome data type ─────────────────────────────────────────────────
+// ── Real connectome loader ────────────────────────────────────────────────────
 interface ConnectomeData {
   neurons: string[];
   edges: [number, number, number, number][]; // [pre_idx, post_idx, weight, is_electrical]
@@ -32,44 +33,53 @@ async function loadConnectome(): Promise<ConnectomeData> {
   _connectomeCache = await resp.json() as ConnectomeData;
   return _connectomeCache;
 }
-// Build the coupling matrix from real White 1986 data
-function buildRealConnectome(data: ConnectomeData): { K: Float32Array; nNeurons: number; sensoryIdx: number[]; motorIdx: number[] } {
+interface ConnectomeStats {
+  nNeurons: number; nEdges: number; nSensory: number; nMotor: number;
+  maxDegree: number; meanDegree: number; hubNeuron: string;
+}
+function buildRealConnectome(data: ConnectomeData): {
+  K: Float32Array; nNeurons: number; sensoryIdx: number[]; motorIdx: number[];
+  stats: ConnectomeStats;
+} {
   const N = data.neurons.length;
   const K = new Float32Array(N * N);
-  // Identify sensory and motor neurons by name prefix (WormAtlas classification)
-  const sensoryPrefixes = ["AFD", "ASE", "ASH", "ASI", "ASJ", "ASK", "AWA", "AWB", "AWC", "ADF", "ADL", "AQR", "PHA", "PHB", "IL1", "IL2", "OLL", "OLQ", "CEP", "ADE", "PDE", "PVD", "FLP"];
-  const motorPrefixes = ["VA", "VB", "VC", "VD", "DA", "DB", "DD", "AS", "MU"];
+  const sensoryPrefixes = ["AFD","ASE","ASH","ASI","ASJ","ASK","AWA","AWB","AWC","ADF","ADL","AQR","PHA","PHB","IL1","IL2","OLL","OLQ","CEP","ADE","PDE","PVD","FLP"];
+  const motorPrefixes = ["VA","VB","VC","VD","DA","DB","DD","AS","MU"];
   const sensoryIdx: number[] = [];
   const motorIdx: number[] = [];
   data.neurons.forEach((name, i) => {
     if (sensoryPrefixes.some(p => name.startsWith(p))) sensoryIdx.push(i);
     if (motorPrefixes.some(p => name.startsWith(p))) motorIdx.push(i);
   });
-  // Fill coupling matrix from edges; normalize each row by max weight
+  const degreeIn = new Array(N).fill(0);
   const rowMax = new Float32Array(N);
   for (const [pre, post, w] of data.edges) {
-    K[post * N + pre] += w; // post-synaptic = row
+    K[post * N + pre] += w;
+    degreeIn[post]++;
     if (K[post * N + pre] > rowMax[post]) rowMax[post] = K[post * N + pre];
   }
   for (let i = 0; i < N; i++) {
-    if (rowMax[i] > 0) {
-      for (let j = 0; j < N; j++) K[i * N + j] /= rowMax[i];
-    }
+    if (rowMax[i] > 0) for (let j = 0; j < N; j++) K[i * N + j] /= rowMax[i];
   }
-  return { K, nNeurons: N, sensoryIdx, motorIdx };
+  const maxDegree = Math.max(...degreeIn);
+  const meanDegree = degreeIn.reduce((a, b) => a + b, 0) / N;
+  const hubIdx = degreeIn.indexOf(maxDegree);
+  const stats: ConnectomeStats = {
+    nNeurons: N, nEdges: data.edges.length,
+    nSensory: sensoryIdx.length, nMotor: motorIdx.length,
+    maxDegree, meanDegree: Math.round(meanDegree * 10) / 10,
+    hubNeuron: data.neurons[hubIdx] ?? "?"
+  };
+  return { K, nNeurons: N, sensoryIdx, motorIdx, stats };
 }
 
-const N_NEURONS = 302;
-const STICKING_THRESHOLD = 1 / (3 * Math.sqrt(2)); // 0.2357
+// ── Minimal Kuramoto simulation (mirrors CelegansController.fs) ─────────────
 
-// Functional neuron groups (simplified WormAtlas classification)
-const SENSORY_PREFIXES = ["AF", "AS", "AW", "PH", "IL", "OL", "CE"];
-const MOTOR_PREFIXES = ["VA", "VB", "VC", "VD", "DA", "DB", "DD", "MU"];
+const N_NEURONS = 302;
+const TSIRELSON = 1 / (3 * Math.sqrt(2)); // 0.2357
 
 // Lightweight LCG hash — avoids BigInt for ES2019 compat
-// Maps (seed, i) → float in [0,1) deterministically
 function hashFloat(seed: number, i: number): number {
-  // xorshift32 mix of seed and i
   let x = (seed ^ (i * 2654435761)) >>> 0;
   x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
   x = (x * 1664525 + 1013904223) >>> 0;
@@ -77,12 +87,9 @@ function hashFloat(seed: number, i: number): number {
   return (x >>> 0) / 4294967296;
 }
 
-// Generate synthetic connectome coupling matrix from seed
-// (matches the statistical properties of the White 1986 data)
+// Generate synthetic connectome coupling matrix from seed (fallback)
 function buildSyntheticConnectome(seed: number): Float32Array {
-  // N×N coupling matrix (row = post, col = pre)
   const K = new Float32Array(N_NEURONS * N_NEURONS);
-  // Average degree ~40 (White 1986: 7,000 synapses / 302 neurons ≈ 23 in-degree)
   const avgDegree = 23;
   for (let i = 0; i < N_NEURONS; i++) {
     let rowMax = 0;
@@ -95,12 +102,7 @@ function buildSyntheticConnectome(seed: number): Float32Array {
         if (w > rowMax) rowMax = w;
       }
     }
-    // Normalize row
-    if (rowMax > 0) {
-      for (let j = 0; j < N_NEURONS; j++) {
-        K[i * N_NEURONS + j] /= rowMax;
-      }
-    }
+    if (rowMax > 0) for (let j = 0; j < N_NEURONS; j++) K[i * N_NEURONS + j] /= rowMax;
   }
   return K;
 }
@@ -109,60 +111,64 @@ interface WormState {
   phase: Float32Array;
   omega: Float32Array;
   K: Float32Array;
+  nNeurons: number;
+  kGlobal: number;
   orderParameter: number;
-  cluster: Set<number>; // DLA cluster on 64×32 grid
+  cluster: Set<number>;
   df: number;
   stuckCount: number;
+  // Neuron activity heatmap: phase per neuron mapped to 64×32 grid
+  neuronPhases: Float32Array;
 }
 
-function initWormState(seed: number): WormState {
-  const phase = new Float32Array(N_NEURONS);
-  const omega = new Float32Array(N_NEURONS);
-  for (let i = 0; i < N_NEURONS; i++) {
+function initWormState(seed: number, K?: Float32Array, nNeurons?: number): WormState {
+  const N = nNeurons ?? N_NEURONS;
+  const phase = new Float32Array(N);
+  const omega = new Float32Array(N);
+  for (let i = 0; i < N; i++) {
     phase[i] = hashFloat(seed, i) * 2 * Math.PI;
     omega[i] = 1.0 + 0.1 * (hashFloat(seed + 1, i) - 0.5);
   }
-  const K = buildSyntheticConnectome(seed + 2);
-  return { phase, omega, K, orderParameter: 0, cluster: new Set([32 * 64 + 32]), df: 0, stuckCount: 1 };
+  const useK = K ?? buildSyntheticConnectome(seed + 2);
+  return {
+    phase, omega, K: useK, nNeurons: N, kGlobal: 1.0,
+    orderParameter: 0,
+    cluster: new Set([16 * 64 + 32]),
+    df: 0, stuckCount: 1,
+    neuronPhases: new Float32Array(N),
+  };
 }
 
 // One Kuramoto step (dt=0.05s, Euler)
 function kuramotoStep(state: WormState): WormState {
-  const { phase, omega, K } = state;
-  const newPhase = new Float32Array(N_NEURONS);
+  const { phase, omega, K, nNeurons: N } = state;
+  const newPhase = new Float32Array(N);
   const dt = 0.05;
-  for (let i = 0; i < N_NEURONS; i++) {
+  for (let i = 0; i < N; i++) {
     let coupling = 0;
-    for (let j = 0; j < N_NEURONS; j++) {
-      const kij = K[i * N_NEURONS + j];
+    for (let j = 0; j < N; j++) {
+      const kij = K[i * N + j];
       if (kij > 0) coupling += kij * Math.sin(phase[j] - phase[i]);
     }
-    newPhase[i] = phase[i] + dt * (omega[i] + coupling / N_NEURONS);
+    newPhase[i] = phase[i] + dt * (omega[i] + state.kGlobal * coupling / N);
     newPhase[i] = ((newPhase[i] % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
   }
-
-  // Order parameter r
   let sumSin = 0, sumCos = 0;
-  for (let i = 0; i < N_NEURONS; i++) {
-    sumSin += Math.sin(newPhase[i]);
-    sumCos += Math.cos(newPhase[i]);
-  }
-  const r = Math.sqrt(sumSin * sumSin + sumCos * sumCos) / N_NEURONS;
-
-  return { ...state, phase: newPhase, orderParameter: r };
+  for (let i = 0; i < N; i++) { sumSin += Math.sin(newPhase[i]); sumCos += Math.cos(newPhase[i]); }
+  const r = Math.sqrt(sumSin * sumSin + sumCos * sumCos) / N;
+  return { ...state, phase: newPhase, orderParameter: r, neuronPhases: newPhase };
 }
 
 // Inject display brightness into sensory neurons
 function injectDisplay(state: WormState, displayBrightness: number[]): WormState {
   const newPhase = new Float32Array(state.phase);
-  // First ~60 neurons are "sensory" in our simplified model
-  const nSensory = 60;
+  const nSensory = Math.min(60, state.nNeurons);
   const stripW = Math.max(1, Math.floor(64 / nSensory));
-  for (let k = 0; k < nSensory && k < N_NEURONS; k++) {
+  for (let k = 0; k < nSensory; k++) {
     const x0 = k * stripW;
     const x1 = Math.min(64, x0 + stripW);
     let brightness = 0;
-    for (let x = x0; x < x1; x++) brightness += displayBrightness[x] || 0;
+    for (let x = x0; x < x1; x++) brightness += displayBrightness[x] ?? 0;
     brightness /= (x1 - x0);
     newPhase[k] = (newPhase[k] + brightness * Math.PI / 4) % (2 * Math.PI);
   }
@@ -171,21 +177,14 @@ function injectDisplay(state: WormState, displayBrightness: number[]): WormState
 
 // Motor readout → sticking probability
 function motorReadout(state: WormState): number {
-  const { phase } = state;
-  // Last ~100 neurons are "motor" in our simplified model
-  const motorStart = 200;
+  const { phase, nNeurons: N } = state;
+  const motorStart = Math.floor(N * 0.66);
   let sumSin = 0, sumCos = 0;
-  for (let i = 0; i < N_NEURONS; i++) {
-    sumSin += Math.sin(phase[i]);
-    sumCos += Math.cos(phase[i]);
-  }
+  for (let i = 0; i < N; i++) { sumSin += Math.sin(phase[i]); sumCos += Math.cos(phase[i]); }
   const meanPhase = Math.atan2(sumSin, sumCos);
   let motorCos = 0;
-  for (let i = motorStart; i < N_NEURONS; i++) {
-    motorCos += Math.cos(phase[i] - meanPhase);
-  }
-  motorCos /= (N_NEURONS - motorStart);
-  // Map to sticking probability: high synchrony → high sticking
+  for (let i = motorStart; i < N; i++) motorCos += Math.cos(phase[i] - meanPhase);
+  motorCos /= (N - motorStart);
   return Math.max(0.05, Math.min(0.95, 0.5 + 0.4 * motorCos));
 }
 
@@ -194,42 +193,27 @@ function dlaStep(state: WormState, seed: number, tick: number): WormState {
   const { cluster } = state;
   const W = 64, H = 32;
   const pStick = motorReadout(state);
-
-  // Random walker
-        const h = hashFloat(seed + tick * 1000, 0);
-
+  const h = hashFloat(seed + tick * 1000, 0);
   const angle = h * 2 * Math.PI;
   const r = Math.max(...Array.from(cluster).map(idx => {
     const cx = idx % W - W / 2, cy = Math.floor(idx / W) - H / 2;
     return Math.sqrt(cx * cx + cy * cy);
   })) + 3;
-
   let wx = Math.round(W / 2 + r * Math.cos(angle));
   let wy = Math.round(H / 2 + r * Math.sin(angle));
-
-  // Walk until stuck or escaped
-  const maxSteps = 500;
-  for (let step = 0; step < maxSteps; step++) {
-        const dx = Math.round(hashFloat(seed + tick * 1000 + step * 4, 0) * 2 - 1);
-        const dy = Math.round(hashFloat(seed + tick * 1000 + step * 4 + 1, 0) * 2 - 1);
-
+  for (let step = 0; step < 500; step++) {
+    const dx = Math.round(hashFloat(seed + tick * 1000 + step * 4, 0) * 2 - 1);
+    const dy = Math.round(hashFloat(seed + tick * 1000 + step * 4 + 1, 0) * 2 - 1);
     wx = Math.max(0, Math.min(W - 1, wx + dx));
     wy = Math.max(0, Math.min(H - 1, wy + dy));
-
     const idx = wy * W + wx;
-    const neighbors = [idx - 1, idx + 1, idx - W, idx + W];
-    const hasNeighbor = neighbors.some(n => cluster.has(n));
-
-    if (hasNeighbor) {
-      const stickRoll = hashFloat(seed + tick * 1000 + step * 4 + 2, 0);
-      if (stickRoll < pStick) {
+    if ([idx-1, idx+1, idx-W, idx+W].some(n => cluster.has(n))) {
+      if (hashFloat(seed + tick * 1000 + step * 4 + 2, 0) < pStick) {
         const newCluster = new Set(cluster);
         newCluster.add(idx);
         return { ...state, cluster: newCluster, stuckCount: newCluster.size };
       }
     }
-
-    // Escape check
     const cx = wx - W / 2, cy = wy - H / 2;
     if (Math.sqrt(cx * cx + cy * cy) > r * 2) break;
   }
@@ -264,24 +248,34 @@ interface Props {
   gridSize: number;
   targetParticles: number;
   onResult?: (df: number, stuckCount: number, orderParameter: number) => void;
+  couplingK?: number; // Kuramoto global coupling constant (default 1.0)
 }
 
-export default function OracleWorm({ seed, gridSize, targetParticles, onResult }: Props) {
+// Top WormAtlas neuron names by functional role (for glow labels)
+const WORM_NEURON_NAMES = [
+  "ASEL","ASER","AWC","AWB","AFD","ASE","ASH","ASI","ASJ","ASK",
+  "AIY","AIZ","RIA","RIB","AVA","AVB","AVD","AVE","PVC","DVA",
+  "VA1","VB1","DA1","DB1","DD1","AS1","MU","SAA","SAB","SMB"
+];
+
+export default function OracleWorm({ seed, gridSize, targetParticles, onResult, couplingK: initK = 1.0 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [state, setState] = useState<WormState | null>(null);
   const [done, setDone] = useState(false);
   const [connectomeSource, setConnectomeSource] = useState<"loading" | "real" | "synthetic">("loading");
+  const [connectomeStats, setConnectomeStats] = useState<ConnectomeStats | null>(null);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [couplingK, setCouplingK] = useState(initK);
+  const couplingKRef = useRef(initK);
   const stateRef = useRef<WormState | null>(null);
   const tickRef = useRef(0);
   const rafRef = useRef<number>(0);
 
-  // Initialize
+  // Initialize — try real connectome first, fall back to synthetic
   useEffect(() => {
     setConnectomeSource("loading");
-    // Try to load the real White 1986 connectome; fall back to synthetic
     loadConnectome().then(data => {
-      const { K, nNeurons, sensoryIdx, motorIdx } = buildRealConnectome(data);
-      // Override the synthetic K in initWormState with the real one
+      const { K, nNeurons, stats } = buildRealConnectome(data);
       const phase = new Float32Array(nNeurons);
       const omega = new Float32Array(nNeurons);
       for (let i = 0; i < nNeurons; i++) {
@@ -289,22 +283,23 @@ export default function OracleWorm({ seed, gridSize, targetParticles, onResult }
         omega[i] = 1.0 + 0.1 * (hashFloat(seed + 1, i) - 0.5);
       }
       let ws: WormState = {
-        phase, omega, K,
+        phase, omega, K, nNeurons,
+        kGlobal: couplingKRef.current,
         orderParameter: 0,
         cluster: new Set([16 * 64 + 32]),
         df: 0, stuckCount: 1,
+        neuronPhases: new Float32Array(nNeurons),
       };
-      // Warm up 200 steps with real connectome
       for (let i = 0; i < 200; i++) ws = kuramotoStep(ws);
       stateRef.current = ws;
       setState(ws);
       tickRef.current = 0;
       setDone(false);
       setConnectomeSource("real");
+      setConnectomeStats(stats);
     }).catch(() => {
-      // Fall back to synthetic connectome
-      const s = initWormState(seed);
-      let ws = s;
+      const ws0 = initWormState(seed);
+      let ws = ws0;
       for (let i = 0; i < 200; i++) ws = kuramotoStep(ws);
       stateRef.current = ws;
       setState(ws);
@@ -314,10 +309,17 @@ export default function OracleWorm({ seed, gridSize, targetParticles, onResult }
     });
   }, [seed]);
 
+  // Update kGlobal in running state when slider changes
+  useEffect(() => {
+    couplingKRef.current = couplingK;
+    if (stateRef.current) {
+      stateRef.current = { ...stateRef.current, kGlobal: couplingK };
+    }
+  }, [couplingK]);
+
   // Animation loop
   useEffect(() => {
     if (!state || done) return;
-
     const animate = () => {
       let s = stateRef.current!;
       if (s.stuckCount >= targetParticles) {
@@ -328,48 +330,62 @@ export default function OracleWorm({ seed, gridSize, targetParticles, onResult }
         onResult?.(df, s.stuckCount, s.orderParameter);
         return;
       }
-
-      // Inject display brightness (column averages of current cluster)
       const brightness = new Array(64).fill(0);
       s.cluster.forEach(idx => { brightness[idx % 64] += 1; });
       const maxB = Math.max(...brightness, 1);
       const normBrightness = brightness.map(b => b / maxB);
-
       s = injectDisplay(s, normBrightness);
       s = kuramotoStep(s);
-      // Run 3 DLA steps per Kuramoto step (match growth rate to other oracles)
-      for (let i = 0; i < 3; i++) {
-        s = dlaStep(s, seed, tickRef.current * 3 + i);
-      }
+      for (let i = 0; i < 3; i++) s = dlaStep(s, seed, tickRef.current * 3 + i);
       tickRef.current++;
-
       stateRef.current = s;
       setState(s);
       rafRef.current = requestAnimationFrame(animate);
     };
-
     rafRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafRef.current);
   }, [state?.stuckCount === 0, done]);
 
-  // Render to canvas
+  // Render to canvas — with neuron activity heatmap
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !state) return;
     const ctx = canvas.getContext("2d")!;
     const W = 64, H = 32;
     const scale = gridSize / W;
+    const N = state.nNeurons;
 
     ctx.fillStyle = "#050a0f";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw order parameter heatmap (teal gradient)
+    // ── Neuron activity heatmap ──────────────────────────────────────────────
+    const phaseImg = ctx.createImageData(W, H);
+    for (let ni = 0; ni < N; ni++) {
+      const px = ni % W;
+      const py = Math.floor(ni / W) % H;
+      const phi = state.neuronPhases[ni] ?? 0;
+      const t = phi / (2 * Math.PI); // 0→1
+      const rr = Math.round(t < 0.5 ? 0 : (t - 0.5) * 2 * 255);
+      const gg = Math.round(t < 0.5 ? t * 2 * 180 : (1 - (t - 0.5) * 2) * 180);
+      const bb = Math.round(t < 0.5 ? (1 - t * 2) * 200 : 0);
+      const pidx = (py * W + px) * 4;
+      phaseImg.data[pidx] = rr;
+      phaseImg.data[pidx + 1] = gg;
+      phaseImg.data[pidx + 2] = bb;
+      phaseImg.data[pidx + 3] = 80; // semi-transparent
+    }
+    const tmpCanvas = document.createElement("canvas");
+    tmpCanvas.width = W; tmpCanvas.height = H;
+    tmpCanvas.getContext("2d")!.putImageData(phaseImg, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(tmpCanvas, 0, 0, canvas.width, canvas.height);
+
     const r = state.orderParameter;
-    const alpha = Math.min(0.6, r * 2);
+    const alpha = Math.min(0.3, r * 1.2);
     ctx.fillStyle = `rgba(0, 200, 180, ${alpha})`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw cluster (amber)
+    // ── DLA cluster — retro-phosphor amber glow ──────────────────────────────
     state.cluster.forEach(idx => {
       const x = idx % W, y = Math.floor(idx / W);
       const intensity = Math.min(1, state.orderParameter * 3 + 0.3);
@@ -379,9 +395,48 @@ export default function OracleWorm({ seed, gridSize, targetParticles, onResult }
       ctx.fillRect(x * scale, y * scale, scale, scale);
     });
 
-    // Draw sticking threshold line
-    const tLine = STICKING_THRESHOLD * canvas.height;
-    ctx.strokeStyle = "rgba(255,200,50,0.4)";
+    // ── Top-10 glowing neuron dots (phosphor CRT style) ──────────────────────
+    // Find top-10 neurons by phase magnitude (most active)
+    const phases = Array.from(state.neuronPhases);
+    const topIdx = phases
+      .map((p, i) => ({ p, i }))
+      .sort((a, b) => b.p - a.p)
+      .slice(0, 10)
+      .map(x => x.i);
+    topIdx.forEach((ni, rank) => {
+      const px = (ni % W) * scale + scale / 2;
+      const py = (Math.floor(ni / W) % H) * scale + scale / 2;
+      const phi = phases[ni] ?? 0;
+      const brightness = 0.4 + 0.6 * (phi / (2 * Math.PI));
+      // Phosphor glow: radial gradient bloom
+      const glowR = scale * 2.5;
+      const grad = ctx.createRadialGradient(px, py, 0, px, py, glowR);
+      const alpha2 = Math.round(brightness * 255).toString(16).padStart(2, "0");
+      grad.addColorStop(0, `#ffcc00${alpha2}`);   // bright amber core
+      grad.addColorStop(0.3, `#ff8800${Math.round(brightness * 120).toString(16).padStart(2, "0")}`);
+      grad.addColorStop(1, "rgba(255,136,0,0)");
+      ctx.beginPath();
+      ctx.arc(px, py, glowR, 0, 2 * Math.PI);
+      ctx.fillStyle = grad;
+      ctx.fill();
+      // Neuron name label (top-5 only to avoid clutter)
+      if (rank < 5) {
+        const name = WORM_NEURON_NAMES[ni % WORM_NEURON_NAMES.length] ?? `N${ni}`;
+        ctx.font = `${Math.max(5, scale * 0.7)}px "JetBrains Mono", monospace`;
+        ctx.fillStyle = `rgba(255,204,0,${brightness * 0.9})`;
+        ctx.fillText(name, px + scale * 0.5, py - scale * 0.3);
+      }
+    });
+
+    // ── CRT scanline overlay ─────────────────────────────────────────────────
+    for (let sy = 0; sy < canvas.height; sy += 2) {
+      ctx.fillStyle = "rgba(0,0,0,0.18)";
+      ctx.fillRect(0, sy, canvas.width, 1);
+    }
+
+    // ── Tsirelson threshold line (phosphor green dashes) ─────────────────────
+    const tLine = TSIRELSON * canvas.height;
+    ctx.strokeStyle = "rgba(0,255,100,0.35)";
     ctx.setLineDash([4, 4]);
     ctx.beginPath();
     ctx.moveTo(0, tLine);
@@ -396,25 +451,89 @@ export default function OracleWorm({ seed, gridSize, targetParticles, onResult }
 
   return (
     <div className="flex flex-col gap-2">
-      <canvas
-        ref={canvasRef}
-        width={gridSize}
-        height={gridSize / 2}
-        className="w-full rounded border border-white/10"
-        style={{ imageRendering: "pixelated" }}
-      />
-        <div className="flex justify-between text-xs font-mono text-white/50">
-          <span>r = {r.toFixed(3)} {r < STICKING_THRESHOLD ? "< ρ*" : "> ρ*"}</span>
-          <span>{done ? `D_f = ${df.toFixed(3)}` : `${pct}%`}</span>
+      <div style={{ position: "relative" }}>
+        <canvas
+          ref={canvasRef}
+          width={gridSize}
+          height={gridSize / 2}
+          className="w-full rounded border border-white/10"
+          style={{ imageRendering: "pixelated" }}
+        />
+        {/* Retro-phosphor legend */}
+        <div style={{ position: "absolute", top: 2, right: 4, fontSize: "0.55rem", fontFamily: '"JetBrains Mono", monospace', color: "rgba(255,255,255,0.5)", lineHeight: 1.3 }}>
+          <div style={{ color: "#60a5fa" }}>● phase=0</div>
+          <div style={{ color: "#14b8a6" }}>● phase=π/2</div>
+          <div style={{ color: "#ffcc00" }}>● phase=π (hot)</div>
         </div>
-        <div className="text-xs font-mono text-center" style={{ marginTop: "0.1rem" }}>
-          {connectomeSource === "loading" && <span style={{ color: "#64748b" }}>⏳ Loading White 1986 connectome…</span>}
-          {connectomeSource === "real" && <span style={{ color: "#14b8a6" }}>✓ Real connectome — White 1986 ({521} neurons, 10,340 synapses)</span>}
-          {connectomeSource === "synthetic" && <span style={{ color: "#f59e0b" }}>⚠ Synthetic connectome (real data unavailable)</span>}
-        </div>
+        {/* CRT corner vignette */}
+        <div style={{ position: "absolute", inset: 0, borderRadius: "inherit", pointerEvents: "none",
+          background: "radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.55) 100%)" }} />
+      </div>
+      {/* Kuramoto coupling strength slider */}
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.6rem", fontFamily: '"JetBrains Mono", monospace' }}>
+        <span style={{ color: "#64748b", minWidth: "4.5rem" }}>K coupling:</span>
+        <input
+          type="range" min="0" max="3" step="0.05" value={couplingK}
+          onChange={e => setCouplingK(parseFloat(e.target.value))}
+          style={{ flex: 1, accentColor: "#f59e0b", cursor: "pointer" }}
+        />
+        <span style={{ color: couplingK > 1.5 ? "#f59e0b" : couplingK < 0.5 ? "#60a5fa" : "#14b8a6", minWidth: "2.5rem", textAlign: "right" }}>
+          {couplingK.toFixed(2)}
+        </span>
+        <span style={{ color: "#475569", fontSize: "0.5rem" }}>
+          {couplingK < 0.3 ? "incoherent" : couplingK > 2.0 ? "locked" : "partial"}
+        </span>
+      </div>
+      <div className="flex justify-between text-xs font-mono text-white/50">
+        <span>r = {r.toFixed(3)} {r < TSIRELSON ? "< ρ*" : "> ρ*"}</span>
+        <span>{done ? `D_f = ${df.toFixed(3)}` : `${pct}%`}</span>
+      </div>
+      {/* Connectome source badge with tooltip */}
+      <div style={{ position: "relative", textAlign: "center" }}>
+        <span
+          style={{ fontSize: "0.6rem", fontFamily: "monospace", cursor: "pointer",
+            color: connectomeSource === "real" ? "#14b8a6" : connectomeSource === "synthetic" ? "#f59e0b" : "#64748b" }}
+          onMouseEnter={() => setShowTooltip(true)}
+          onMouseLeave={() => setShowTooltip(false)}
+        >
+          {connectomeSource === "loading" && "⏳ Loading White 1986 connectome…"}
+          {connectomeSource === "real" && "✓ Real connectome — White 1986 ⓘ"}
+          {connectomeSource === "synthetic" && "⚠ Synthetic connectome ⓘ"}
+        </span>
+        {showTooltip && connectomeStats && (
+          <div style={{
+            position: "absolute", bottom: "1.4rem", left: "50%", transform: "translateX(-50%)",
+            background: "#0f172a", border: "1px solid #334155", borderRadius: 6,
+            padding: "0.5rem 0.75rem", zIndex: 50, minWidth: 200, textAlign: "left",
+            fontSize: "0.65rem", fontFamily: "monospace", color: "#94a3b8", lineHeight: 1.6,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.6)"
+          }}>
+            <div style={{ color: "#14b8a6", fontWeight: "bold", marginBottom: "0.25rem" }}>White 1986 Connectome</div>
+            <div>Neurons: <span style={{ color: "#e2e8f0" }}>{connectomeStats.nNeurons}</span></div>
+            <div>Synapses: <span style={{ color: "#e2e8f0" }}>{connectomeStats.nEdges.toLocaleString()}</span></div>
+            <div>Sensory: <span style={{ color: "#60a5fa" }}>{connectomeStats.nSensory}</span> · Motor: <span style={{ color: "#f59e0b" }}>{connectomeStats.nMotor}</span></div>
+            <div>Mean in-degree: <span style={{ color: "#e2e8f0" }}>{connectomeStats.meanDegree}</span></div>
+            <div>Max in-degree: <span style={{ color: "#e2e8f0" }}>{connectomeStats.maxDegree}</span> ({connectomeStats.hubNeuron})</div>
+            <div style={{ marginTop: "0.25rem", color: "#64748b", fontSize: "0.6rem" }}>Source: White et al. 1986, OpenWorm c302</div>
+          </div>
+        )}
+        {showTooltip && connectomeSource === "synthetic" && (
+          <div style={{
+            position: "absolute", bottom: "1.4rem", left: "50%", transform: "translateX(-50%)",
+            background: "#0f172a", border: "1px solid #334155", borderRadius: 6,
+            padding: "0.5rem 0.75rem", zIndex: 50, minWidth: 180, textAlign: "left",
+            fontSize: "0.65rem", fontFamily: "monospace", color: "#94a3b8", lineHeight: 1.6,
+          }}>
+            <div style={{ color: "#f59e0b", fontWeight: "bold" }}>Synthetic Connectome</div>
+            <div>Statistical approximation of White 1986</div>
+            <div>Mean in-degree ≈ 23 (LCG hash)</div>
+            <div style={{ color: "#64748b", fontSize: "0.6rem", marginTop: "0.25rem" }}>Real data unavailable — check /celegans-connectome.json</div>
+          </div>
+        )}
+      </div>
       {!done && (
         <div className="text-xs font-mono text-teal-400/70 text-center">
-          302 neurons · Kuramoto coupling · {state?.stuckCount ?? 0} stuck
+          {connectomeStats ? connectomeStats.nNeurons : N_NEURONS} neurons · Kuramoto coupling · {state?.stuckCount ?? 0} stuck
         </div>
       )}
       {done && (

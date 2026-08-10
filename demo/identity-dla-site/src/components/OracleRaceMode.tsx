@@ -18,6 +18,7 @@
  *  but because the rule for building snowflakes always makes the same shape."
  */
 
+import OracleWorm from "./OracleWorm";
 import { useEffect, useRef, useState, useCallback } from "react";
 
 // ── FrequencyMachZehnder in-browser implementation ────────────────────────────
@@ -513,10 +514,35 @@ export default function OracleRaceMode() {
                   {r.done ? r.df.toFixed(4) : "running..."}
                 </div>
                 <div style={{ color: "#475569", fontSize: "0.55rem" }}>seed: {r.seed.toString(16).slice(-6)}</div>
+                {r.id === 7 && (
+                  <div style={{ color: "#d8b4fe", fontSize: "0.5rem", marginTop: "0.1rem" }}>🪱 biological</div>
+                )}
               </div>
             ))}
           </div>
         </div>
+      )}
+      {/* Live worm oracle panel — runs real Kuramoto model independently of the race */}
+      {doneCount > 0 && (
+        <details style={{ marginBottom: "0.75rem" }}>
+          <summary style={{ fontSize: "0.65rem", fontFamily: '"JetBrains Mono", monospace', color: "#d8b4fe", cursor: "pointer", userSelect: "none" }}>
+            🪱 Oracle 7 — C. elegans Biological Substrate (live Kuramoto, independent run)
+          </summary>
+          <div style={{ marginTop: "0.5rem", padding: "0.5rem", background: "#0a0f1a", border: "1px solid rgba(216,180,254,0.2)", borderRadius: 4 }}>
+            <div style={{ fontSize: "0.55rem", color: "#64748b", marginBottom: "0.4rem", fontFamily: '"JetBrains Mono", monospace' }}>
+              This oracle runs the real White 1986 connectome (521 neurons, 10,340 synapses) as a Kuramoto phase oscillator network.
+              It is NOT in the race loop — it runs independently at its own pace. The D_f it produces is the biological substrate's vote.
+            </div>
+            <OracleWorm
+              seed={Date.now() + 7}
+              gridSize={256}
+              targetParticles={800}
+              onResult={(df, stuck, r) => {
+                console.log(`Worm oracle: D_f=${df.toFixed(4)}, stuck=${stuck}, r=${r.toFixed(4)}`);
+              }}
+            />
+          </div>
+        </details>
       )}
 
       {/* Controls */}
