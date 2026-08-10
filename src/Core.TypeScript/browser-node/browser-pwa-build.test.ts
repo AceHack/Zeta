@@ -39,6 +39,8 @@ describe("browser PWA production build", () => {
 
     const pageEntry = readFileSync(join(outDir, "darkhall-browser-page.js"), "utf8");
     expect(pageEntry).toContain("startNativeDarkHallBrowserPage");
+    expect(pageEntry).toContain("startBrowserZetaDbTabRuntime");
+    expect(pageEntry).toContain("runBrowserZetaDbWake");
     expect(pageEntry).toContain("__zetaDarkHallPage");
     expect(pageEntry).not.toMatch(/from\s+["']\.\//);
 

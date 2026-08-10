@@ -8,14 +8,23 @@ import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { BrowserServiceWorkerRegistrationReadout } from "./browser-service-worker-registration";
 import type { BrowserTabTransportReadout } from "./browser-tab-channel-selector";
 import { buildBrowserPwaAssets } from "./browser-pwa-build";
+import type { DarkHallDatabaseReadout } from "../darkhall-ui/darkhall-database-readout";
+import type { ZetaDbDelta, ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 
-export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v1" as const;
+export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v2" as const;
 
 interface BrowserPwaPageReadout {
   readonly registration: BrowserServiceWorkerRegistrationReadout;
   readonly transport: BrowserTabTransportReadout;
   readonly host: BrowserLifecycleHostReadout;
+  readonly database: DarkHallDatabaseReadout;
   readonly renderedTransport: string | null;
+  readonly renderedDatabaseRevision: string | null;
+  readonly renderedDatabaseRows: readonly {
+    readonly rowKey: string | null;
+    readonly payload: string | null;
+    readonly weight: string | null;
+  }[];
 }
 
 interface BrowserPwaPageGlobal {
@@ -27,7 +36,14 @@ interface BrowserPwaPageGlobal {
             readonly registration: BrowserServiceWorkerRegistrationReadout;
             readonly transport: BrowserTabTransportReadout;
             readonly host: BrowserLifecycleHostReadout;
+            readonly database: DarkHallDatabaseReadout;
           };
+          databaseTick(
+            deltas: readonly ZetaDbDelta[],
+          ): Promise<
+            | { readonly ok: true; readonly value: ZetaDbTickReadout }
+            | { readonly ok: false; readonly feedback: { readonly detail: string } }
+          >;
           stop(): unknown;
         };
       }
@@ -42,6 +58,11 @@ export interface BrowserPwaSmokeTranscript {
   };
   readonly afterStop: {
     readonly pageA: BrowserPwaPageReadout;
+  };
+  readonly database: {
+    readonly writerTick: ZetaDbTickReadout;
+    readonly peerAfterWrite: BrowserPwaPageReadout;
+    readonly freshPage: BrowserPwaPageReadout;
   };
 }
 
@@ -84,9 +105,24 @@ async function waitForReady(page: Page): Promise<void> {
       if (started?.ok !== true) return false;
       const readout = started.value.read();
       return readout.registration.status === "controlled" &&
-        readout.transport.selected === "service-worker";
+        readout.transport.selected === "service-worker" &&
+        readout.database.revision >= 0;
     }`,
     undefined,
+    { timeout: timeoutMs },
+  );
+}
+
+async function waitForDatabase(page: Page, revision: number, payload: string): Promise<void> {
+  await page.waitForFunction(
+    `([expectedRevision, expectedPayload]) => {
+      const started = globalThis.__zetaDarkHallPage;
+      if (started?.ok !== true) return false;
+      const database = started.value.read().database;
+      return database.revision === expectedRevision &&
+        database.rows.some((row) => row.rowKey === "game/score" && row.payload === expectedPayload && row.weight === 1);
+    }`,
+    [revision, payload],
     { timeout: timeoutMs },
   );
 }
@@ -143,9 +179,17 @@ async function observe(page: Page, pageName: string): Promise<BrowserPwaPageRead
           registration: readout.registration,
           transport: readout.transport,
           host: readout.host,
+          database: readout.database,
           renderedTransport:
             globalThis.document.querySelector("[data-browser-transport]")?.getAttribute("data-browser-transport") ??
             null,
+          renderedDatabaseRevision:
+            globalThis.document.querySelector(".zeta-room-database")?.getAttribute("data-database-revision") ?? null,
+          renderedDatabaseRows: [...globalThis.document.querySelectorAll(".zeta-database-row")].map((row) => ({
+            rowKey: row.getAttribute("data-row-key"),
+            payload: row.querySelector(".zeta-database-row-payload")?.textContent ?? null,
+            weight: row.getAttribute("data-row-weight"),
+          })),
         },
       },
     };
@@ -169,6 +213,10 @@ function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
     if (page.registration.status !== "controlled") failures.push(`${pageName} was not worker-controlled`);
     if (page.transport.selected !== "service-worker") failures.push(`${pageName} did not select the worker channel`);
     if (page.renderedTransport !== "service-worker") failures.push(`${pageName} did not render its transport`);
+    if (page.database.revision !== 0 || page.database.rows.length !== 0) {
+      failures.push(`${pageName} did not start from the empty database image`);
+    }
+    if (page.renderedDatabaseRevision !== "0") failures.push(`${pageName} did not render startup hydration`);
     if (page.host.coordinator.liveness.liveTabIds.join(",") !== "tab-a,tab-b") {
       failures.push(`${pageName} did not observe both tabs`);
     }
@@ -179,10 +227,30 @@ function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
   if (!transcript.afterStop.pageA.host.coordinator.liveness.darkTabIds.includes("tab-b")) {
     failures.push("page A did not retain page B's stopped state");
   }
+  if (transcript.database.writerTick.revision !== 1 || transcript.database.writerTick.accepted !== 1) {
+    failures.push("page B did not commit exactly one database delta");
+  }
+  for (const [pageName, page, executorId] of [
+    ["peer page A", transcript.database.peerAfterWrite, "tab-a"],
+    ["fresh page C", transcript.database.freshPage, "tab-c"],
+  ] as const) {
+    if (page.database.revision !== 1 || page.database.executorId !== executorId) {
+      failures.push(`${pageName} did not read revision 1 through its own browser-tab executor`);
+    }
+    if (!page.database.rows.some((row) => row.rowKey === "game/score" && row.payload === "9000" && row.weight === 1)) {
+      failures.push(`${pageName} did not reconstruct the persisted score row`);
+    }
+    if (page.renderedDatabaseRevision !== "1" || page.renderedDatabaseRows[0]?.payload !== "9000") {
+      failures.push(`${pageName} did not render the reconstructed database row`);
+    }
+  }
+  if (transcript.database.freshPage.host.coordinator.liveness.liveTabIds.join(",") !== "tab-c") {
+    failures.push("fresh page C was not the only live page during startup hydration");
+  }
   return failures;
 }
 
-/** Exercise the emitted runtime and worker together in two real Chromium pages. */
+/** Exercise peer propagation and fresh-page recovery through the emitted Chromium runtime. */
 export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
   const outDir = mkdtempSync(join(tmpdir(), "zeta-browser-pwa-smoke-"));
   let browser: Browser | null = null;
@@ -244,20 +312,53 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
     await Promise.all([waitForTwoTabs(pageA), waitForTwoTabs(pageB)]);
     const [beforeA, beforeB] = await Promise.all([observe(pageA, "page A"), observe(pageB, "page B")]);
 
+    stage = "write and propagate database row";
+    const writerResult = await pageB.evaluate(async () => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok !== true) throw new Error("Page B did not expose its active runtime.");
+      return started.value.databaseTick([
+        { eventId: "pwa-score-9000", rowKey: "game/score", payload: "9000", weight: 1 },
+      ]);
+    });
+    if (!writerResult.ok) throw new Error(writerResult.feedback.detail);
+    await waitForDatabase(pageA, 1, "9000");
+    const peerAfterWrite = await observe(pageA, "page A after peer database write");
+
     stage = "stop second page";
     await pageB.evaluate(() => {
       const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
       if (started?.ok === true) started.value.stop();
     });
     await waitForSurvivor(pageA);
+    const survivor = await observe(pageA, "page A after stop");
+
+    stage = "stop existing pages before fresh hydration";
+    await pageA.evaluate(() => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok === true) started.value.stop();
+    });
+    await Promise.all([pageA.close(), pageB.close()]);
+
+    stage = "hydrate a fresh page from IndexedDB";
+    const pageC = await context.newPage();
+    await pageC.goto(`${baseUrl}?tab=tab-c&sequence=300`);
+    await waitForReady(pageC);
+    await waitForDatabase(pageC, 1, "9000");
+    const freshPage = await observe(pageC, "fresh page C");
+
     const transcript: BrowserPwaSmokeTranscript = {
       schema: BROWSER_PWA_SMOKE_SCHEMA,
       beforeStop: { pageA: beforeA, pageB: beforeB },
-      afterStop: { pageA: await observe(pageA, "page A after stop") },
+      afterStop: { pageA: survivor },
+      database: {
+        writerTick: writerResult.value,
+        peerAfterWrite,
+        freshPage,
+      },
     };
     const failures = validate(transcript);
     if (failures.length > 0) return failed("assertion-failed", failures.join("; "));
-    await pageA.evaluate(() => {
+    await pageC.evaluate(() => {
       const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
       if (started?.ok === true) started.value.stop();
     });

@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { BROWSER_TAB_COORDINATOR_SCHEMA, type BrowserTabChannelMessage } from "../browser-node/browser-tab-coordinator";
+import type { ZetaDbTickReadout, ZetaDbTickRequest } from "../zetadb/zeta-db-node";
 import {
   DARK_HALL_BROWSER_PAGE_SCHEMA,
   renderDarkHallBrowserNodeDocument,
@@ -46,6 +47,10 @@ class NativeServiceWorkerContainer {
   removeEventListener(type: string, listener: NativeListener): void {
     this.listeners.get(type)?.delete(listener);
   }
+
+  dispatch(message: BrowserTabChannelMessage): void {
+    for (const listener of this.listeners.get("message") ?? []) listener({ data: message });
+  }
 }
 
 class NativeBrowserRoot {
@@ -82,10 +87,43 @@ class NativeBrowserRoot {
   }
 }
 
+function databaseReadout(
+  request: ZetaDbTickRequest,
+  revision = request.deltas.length > 0 ? 8 : 7,
+  payload = request.deltas.length > 0 ? "9001" : "9000",
+): ZetaDbTickReadout {
+  return {
+    schema: "zeta.db.tick.v1",
+    nodeId: request.nodeId,
+    executorId: request.executorId,
+    executorKind: request.executorKind,
+    revision,
+    admission: "complete",
+    accepted: request.deltas.length,
+    duplicates: 0,
+    nextDeltaIndex: request.deltas.length,
+    rows: [{ rowKey: "game/score", payload, weight: 1 }],
+    feedback: [],
+  };
+}
+
+function databaseExecutor(
+  request: ZetaDbTickRequest,
+): Promise<{ readonly ok: true; readonly value: ZetaDbTickReadout }> {
+  return Promise.resolve({ ok: true, value: databaseReadout(request) });
+}
+
 describe("Dark Hall active browser page", () => {
-  test("owns explicit startup and projects its live worker-backed tab", async () => {
+  test("hydrates before live, publishes bounded writes, and projects the database readout", async () => {
     const root = new NativeBrowserRoot();
-    const started = await startNativeDarkHallBrowserPage({ root });
+    const requests: ZetaDbTickRequest[] = [];
+    const started = await startNativeDarkHallBrowserPage({
+      root,
+      databaseExecutor: (request) => {
+        requests.push(request);
+        return databaseExecutor(request);
+      },
+    });
 
     expect(started.ok).toBe(true);
     if (!started.ok) return;
@@ -97,6 +135,20 @@ describe("Dark Hall active browser page", () => {
       registration: { status: "controlled" },
       transport: { selected: "service-worker" },
       host: { state: "foreground", stopped: false },
+      database: {
+        nodeId: "zeta-darkhall-browser-node:database",
+        executorId: "tab-a",
+        revision: 7,
+        accepted: 0,
+        rows: [{ rowKey: "game/score", payload: "9000", weight: 1 }],
+      },
+    });
+    expect(requests).toHaveLength(1);
+    expect(requests[0]).toMatchObject({
+      nodeId: "zeta-darkhall-browser-node:database",
+      executorId: "tab-a",
+      executorKind: "browser-tab",
+      deltas: [],
     });
     expect(root.serviceWorker.registrations).toHaveLength(1);
     expect(root.serviceWorker.messages.filter((message) => message.kind === "presence")).toContainEqual({
@@ -110,6 +162,23 @@ describe("Dark Hall active browser page", () => {
     expect(root.mount.attributes.get("data-browser-transport")).toBe("service-worker");
     expect(root.mount.attributes.get("data-browser-tab")).toBe("tab-a");
     expect(root.mount.innerHTML).toContain('data-browser-local-tab="tab-a"');
+    expect(root.mount.innerHTML).toContain('data-database-revision="7"');
+    expect(root.mount.innerHTML).toContain("game/score");
+
+    expect(
+      await started.value.databaseTick([{ eventId: "score-9001", rowKey: "game/score", payload: "9001", weight: 1 }]),
+    ).toMatchObject({ ok: true, value: { revision: 8, accepted: 1 } });
+    expect(started.value.read().database).toMatchObject({ revision: 8, accepted: 1 });
+    expect(root.serviceWorker.messages).toContainEqual({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: "zeta-darkhall-browser-node",
+      kind: "database-invalidated",
+      invalidation: {
+        sourceTabId: "tab-a",
+        databaseNodeId: "zeta-darkhall-browser-node:database",
+        revision: 8,
+      },
+    });
 
     expect(started.value.stop()).toMatchObject({ ok: true, value: { status: "stopped" } });
     expect(root.mount.attributes.get("data-pwa-status")).toBe("stopped");
@@ -118,11 +187,80 @@ describe("Dark Hall active browser page", () => {
   test("mints a per-tab identity when the active URL does not provide one", async () => {
     const root = new NativeBrowserRoot();
     root.location.search = "";
-    const started = await startNativeDarkHallBrowserPage({ root });
+    const started = await startNativeDarkHallBrowserPage({ root, databaseExecutor });
 
     expect(started).toMatchObject({ ok: true, value: {} });
     if (started.ok) {
       expect(started.value.read().tabId).toBe("tab-minted-tab");
+      expect(started.value.stop().ok).toBe(true);
+    }
+  });
+
+  test("refuses live status when the finite database hydration is backpressured", async () => {
+    const root = new NativeBrowserRoot();
+    const result = await startNativeDarkHallBrowserPage({
+      root,
+      databaseExecutor: () =>
+        Promise.resolve({
+          ok: false,
+          feedback: {
+            severity: "backpressure",
+            code: "database-read-failed",
+            detail: "The persisted image is temporarily unavailable.",
+          },
+        }),
+    });
+
+    expect(result).toMatchObject({
+      ok: false,
+      feedback: {
+        severity: "backpressure",
+        code: "page-database-hydration-failed",
+      },
+    });
+    expect(root.mount.attributes.get("data-pwa-status")).toBe("backpressured");
+    expect(root.mount.attributes.get("data-pwa-detail")).toBe("page-database-hydration-failed");
+  });
+
+  test("drains a peer invalidation queued while startup hydration is still running", async () => {
+    const root = new NativeBrowserRoot();
+    const requests: ZetaDbTickRequest[] = [];
+    const hydrationGate: { release?: () => void } = {};
+    const starting = startNativeDarkHallBrowserPage({
+      root,
+      databaseExecutor: (request) => {
+        requests.push(request);
+        if (requests.length > 1) {
+          return Promise.resolve({ ok: true, value: databaseReadout(request, 9, "9010") });
+        }
+        return new Promise((resolve) => {
+          hydrationGate.release = () => resolve({ ok: true, value: databaseReadout(request) });
+        });
+      },
+    });
+    while (hydrationGate.release === undefined) await Promise.resolve();
+
+    root.serviceWorker.dispatch({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: "zeta-darkhall-browser-node",
+      kind: "database-invalidated",
+      invalidation: {
+        sourceTabId: "tab-b",
+        databaseNodeId: "zeta-darkhall-browser-node:database",
+        revision: 9,
+      },
+    });
+    hydrationGate.release?.();
+
+    const started = await starting;
+    expect(started).toMatchObject({ ok: true, value: {} });
+    expect(requests).toHaveLength(2);
+    expect(requests[1]?.deltas).toEqual([]);
+    if (started.ok) {
+      expect(started.value.read()).toMatchObject({
+        status: "live",
+        database: { revision: 9, executorId: "tab-a", rows: [{ payload: "9010" }] },
+      });
       expect(started.value.stop().ok).toBe(true);
     }
   });
