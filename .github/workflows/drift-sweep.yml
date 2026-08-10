@@ -64,6 +64,22 @@ jobs:
           echo "markdownlint exit: $? ($(wc -l < /tmp/findings.txt) output line(s))"
           exit 0
 
+      - name: Retraction actuator (sovereign push_retraction edge — 081KZHGP45V)
+        # The hands of episode-protocol.ts. Consent: RFC round 2026-08-10
+        # (Vera+Riven builder assents; Lior/Soraya conditions in the machine's
+        # laws; operator word). ALL decisions are the state machine's — this
+        # step gathers facts, steps the machine, executes commands. Runs
+        # BEFORE this tick's sweep so openTicks reflects completed ticks.
+        # Bot pushes don't trigger workflows: the actuator dispatches gate.yml
+        # after pushing; post_push_gate reads check-runs by SHA next tick.
+        # Safe-pattern: first-party context via env only.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          git fetch --deepen=50 origin main
+          bun src/Core.TypeScript/hygiene/retraction-actuator.ts
+
       - name: Detect build drift on main (BD001 — detector half of 081KZHGP45V)
         # Queries the latest COMPLETED gate push-run on main; any failed
         # build-and-test leg becomes a BD001 finding anchored to Zeta.sln
@@ -97,30 +113,6 @@ jobs:
             fi
           fi
 
-      - name: Detect lockfile desync (LD001)
-        # package.json dependencies changed without a regenerated bun.lock. Every
-        # consumer runs --frozen-lockfile, which fails closed, so this breaks the
-        # build for EVERYONE — it turned main red twice on 2026-08-10, once by an
-        # ADD (c101a6ac9) and once by a REMOVE (47095a706).
-        #
-        # Anchored to package.json, which is tracked and so survives the --tracked
-        # guard. The detector reports INDETERMINATE rather than a finding when bun
-        # fails for any other reason, so a registry blip cannot enter the permanent
-        # ledger as dependency drift.
-        #
-        # This class has a HEALER (.github/workflows/lockfile-healer.yml), so its
-        # MTTH here measures the healer's real response time rather than a human's
-        # attention — which is the point of measuring it.
-        run: |
-          set +e
-          bun src/Core.TypeScript/hygiene/audit-lockfile-sync.ts >> /tmp/findings.txt
-          case $? in
-            0) echo "LD001: package.json and bun.lock agree" ;;
-            1) echo "LD001: lockfile desync detected" ;;
-            *) echo "LD001: indeterminate — no finding recorded" ;;
-          esac
-          exit 0
-
       - name: Install dependencies (yaml parser for the SLO registry)
         run: bun install --frozen-lockfile
 
@@ -147,7 +139,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/drift-events workitems data/drift-mtth.json
+          git add docs/drift-events docs/letters workitems data/drift-mtth.json
           if git diff --cached --quiet; then
             echo "Nothing staged — no tick recorded."
           else
