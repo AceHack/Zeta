@@ -1,0 +1,83 @@
+# Proof-closure drift telemetry — does a proof file CLAIM closure it does not have?
+#
+# Detects the contradiction where a comment asserts "no sorry" / "no axiom" /
+# "the proof chain is CLOSED" while the code below it still carries `sorry`,
+# `admit`, or an `axiom` declaration.
+#
+# Why a workflow can see this and the Lean build cannot:
+#   `sorry` makes Lean ACCEPT the file. A green build is therefore not evidence
+#   of closure — it is evidence of compilation. Nothing in the normal toolchain
+#   compares the prose claim against the tactic block, so this class of drift is
+#   invisible to every gate we already run.
+#
+# TELEMETRY, NOT A GATE (deliberate).
+#   Per `docs/DECISIONS/2026-07-09-drift-and-heal-replaces-pre-merge-gates-…`:
+#   a required serial pre-merge gate is a global lock on the write path, and one
+#   lane's drift then blocks every other lane. So this job REPORTS and never
+#   blocks — `continue-on-error` on the audit step, and the job's own success is
+#   not conditioned on a clean result. It exists so the mistake is seen after the
+#   fact and corrected, while the fleet keeps moving.
+#
+# Origin: 2026-08-10. `ImaginaryStack/PhaseClockErasure.lean` line 90 read
+# "The ECC proof chain is CLOSED: no axiom, no sorry, non-vacuous" while
+# `xorshift_mod17_in_rsCode` at line 114 was proven by `sorry`. Found by hand
+# during a routed CI verification; automated here so the next one is not.
+
+name: proof-closure-drift
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/Core.Lean4/**/*.lean"
+      - "src/Core.TypeScript/hygiene/audit-proof-closure-claims.ts"
+      - ".github/workflows/proof-closure-drift.yml"
+  schedule:
+    - cron: "23 */6 * * *" # four times a day, off the hour
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: proof-closure-drift
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: Proof-closure claim audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Audit proof-closure claims
+        id: audit
+        continue-on-error: true # drift telemetry never blocks the fleet
+        run: |
+          bun src/Core.TypeScript/hygiene/audit-proof-closure-claims.ts | tee audit.txt
+          echo "status=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Publish drift to the run summary
+        if: always()
+        run: |
+          {
+            echo "## Proof-closure drift"
+            echo
+            if [ "${{ steps.audit.outcome }}" = "success" ]; then
+              echo "No proof file claims a closure it does not have."
+            else
+              echo "**Drift found.** A file claims closure while carrying \`sorry\` / \`admit\` / \`axiom\`."
+              echo
+              echo "A \`sorry\` makes the file compile, so a green build is not evidence."
+              echo "Correct whichever is wrong: discharge the marker, or retract the claim."
+            fi
+            echo
+            echo '```'
+            cat audit.txt 2>/dev/null || echo "(no output captured)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
