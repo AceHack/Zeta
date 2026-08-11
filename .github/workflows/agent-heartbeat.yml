@@ -180,7 +180,7 @@ jobs:
       # said "[heal] Committed healed files", which was true and completely inert: the heal
       # never reached the repository. The self-healing system had never actually healed
       # anything. Keeping it here means one push carries both the event and the heal.
-      - name: Hunt tests that cannot fail (one mutant per agent per tick)
+      - name: Find tests that cannot fail (one mutant per agent per tick)
         env:
           AGENT: ${{ matrix.agent }}
         run: |
@@ -196,16 +196,59 @@ jobs:
           # files having exchanged NO messages. Adding members adds throughput at zero coordination
           # cost.
           #
-          # DRIFT REPORT, NOT A GATE (exit 3 = surviving mutant). It never fails the tick: this
-          # bounds DETECTION LATENCY, it does not block. `|| true` keeps the tick alive while the
-          # ::warning:: keeps the finding loud — the runner prints the file, suite, and mutation.
+          # NOT A HUNT (renamed 2026-08-11). The runner reports a NEUTRAL FACT — the suite could not
+          # distinguish this variant from the baseline — and deciding whether that is a TEST GAP or a
+          # genuine DEGREE OF FREEDOM is undecidable (Budd & Angluin 1982). So it does not decide.
+          # It prints a bounded 4x4 menu of honest responses and an agent picks a cell; a dimension
+          # already declared free in db/mutation-freedoms/<agent>.json goes SILENT, which is what
+          # stops every tick re-reporting the same known freedoms.
           #
-          # Runs BEFORE the push per the ordering rule below, though it writes nothing: runMutant
-          # restores the file in a `finally`, including when the suite cannot run at all.
+          # DRIFT REPORT, NOT A GATE. It never fails the tick: this bounds DETECTION LATENCY, it does
+          # not block. Two distinct outcomes, previously flattened by a bare `|| true`:
+          #   exit 3  indistinguishable AND undeclared  -> the finding
+          #   exit 4  SPECIFICATION TIGHTENED           -> a mutant now dies in a dimension someone
+          #                                               declared free; drift in the other direction
+          # Both are annotated ::warning:: by the runner. Until 2026-08-11 the only annotation was on
+          # the "no files matched" edge case, so this comment's old claim that the warning "keeps the
+          # finding loud" was false for the case it cared about — the finding sat in log output.
+          #
+          # Runs BEFORE the push per the ordering rule below. It writes nothing unless `--choose` is
+          # passed (it is not, here): runMutant restores the file in a `finally`, including when the
+          # suite cannot run at all.
+          # --since MUST be a git approxidate string. "24h" is NOT one: git silently matches nothing
+          # rather than erroring, so this step was a COMPLETE NO-OP from the day it shipped — every
+          # tick the runner's own guard printed "returned NO FILES AT ALL" and did nothing. Measured
+          # 2026-08-11 on this repo: `--since 24h` -> 0 files, `--since "24 hours ago"` -> 1691.
+          # The standing job that finds tests which cannot fail was itself unable to fail, which is
+          # precisely the defect class it exists to catch. The guard was right and loud for months;
+          # nobody acted on it. Do not "tidy" this back to a short form.
           TICK=$(git rev-list --count HEAD)
-          echo "[mutation] $AGENT tick=$TICK — hunting one surviving mutant"
-          bun src/Core.TypeScript/hygiene/mutation-runner.ts \
-            --agent "$AGENT" --tick "$TICK" --since 24h 2>&1 || true
+          echo "[mutation] $AGENT tick=$TICK — observing one mutant"
+          set +e
+          OUT=$(bun src/Core.TypeScript/hygiene/mutation-runner.ts \
+            --agent "$AGENT" --tick "$TICK" --since "24 hours ago" 2>&1)
+          RC=$?
+          set -e
+          echo "$OUT"
+
+          # Surface the readout in the run UI, not only in scrollback. The menu is the actionable
+          # part — a finding nobody can act on is a finding nobody acts on.
+          if [ "$RC" = "3" ] || [ "$RC" = "4" ]; then
+            {
+              if [ "$RC" = "4" ]; then
+                echo "### mutation ($AGENT, tick $TICK) — SPECIFICATION TIGHTENED"
+              else
+                echo "### mutation ($AGENT, tick $TICK) — indistinguishable under suite"
+              fi
+              echo ""
+              echo '```'
+              echo "$OUT"
+              echo '```'
+              echo ""
+              echo "Act with: \`bun src/Core.TypeScript/hygiene/mutation-runner.ts --agent $AGENT --tick $TICK --choose <cell> --reason \"...\"\`"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit 0
 
       - name: Measure cadence (declared vs actual — detect silent degradation)
         env:

@@ -359,6 +359,15 @@ function main(): void {
       process.exit(3);
     }
 
+    // ::warning:: on the FINDING itself. Until 2026-08-11 the only annotation in this file was on
+    // the "no files matched" edge case, so the workflow's comment claiming "the ::warning:: keeps
+    // the finding loud" was false for the case it cared about — the finding was buried in log
+    // output while the edge case was loud. Annotations are single-line; the detail stays below.
+    console.error(
+      `::warning file=${finding.source}::[mutation] indistinguishable under ${finding.test} ` +
+        `(${finding.mutation}) — not declared free by ${agent}. Choose a cell or declare it.`,
+    );
+
     console.error(`  ── what you may do (4x4 controller grammar, ${ESCAPE_INDEX + 1} cells) ──`);
     for (const cell of readout.grid) {
       if (cell) console.error(`    [${String(cell.index).padStart(2)}] ${cell.label}`);
@@ -383,6 +392,10 @@ function main(): void {
         `  The suite now separates a variant that was previously believed unconstrained. Either a\n` +
         `  test was added deliberately — retract the freedom, giving a reason — or a test began\n` +
         `  constraining something by accident, which is drift in the other direction.\n`,
+    );
+    console.error(
+      `::warning file=${finding.source}::[mutation] SPECIFICATION TIGHTENED — ${finding.mutation} ` +
+        `is now caught by ${finding.test}, but ${holders} declared it free. Retract or investigate.`,
     );
     process.exit(4);
   }
