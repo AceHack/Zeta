@@ -25,16 +25,16 @@ It is the software sibling of the two hardware-bringup workstreams
 
 Shipped artifacts:
 
-- [`.claude/skills/agent-loop/SKILL.md`](../../../.claude/skills/agent-loop/SKILL.md) — the distributable workflow-engine skill (active, ratified 2026-05-28)
-- [`src/Core.TypeScript/workflow-engine/agent-loop/`](../../../src/Core.TypeScript/workflow-engine/agent-loop/) — TS behavior layer: `state-machine.ts` + `work-lifecycle-state-machine.ts` (+ test + README)
+- `.claude/skills/agent-loop/SKILL.md` <!-- STALE-REF: ../../../.claude/skills/agent-loop/SKILL.md --> — the distributable workflow-engine skill (active, ratified 2026-05-28)
+- `src/Core.TypeScript/workflow-engine/agent-loop/` <!-- STALE-REF: ../../../src/Core.TypeScript/workflow-engine/agent-loop/ --> — TS behavior layer: `state-machine.ts` + `work-lifecycle-state-machine.ts` (+ test + README)
 
 Grounding backlog:
 
-- [`081KSKBP80008QG0R000B3Y19A`](../../backlog/P1/081KSKBP80008QG0R000B3Y19A-workflow-engine-v1-fsharp-du-state-machine-git-append-only-four-corner-monad-banned-if-universal-action-grammar-otto-five-modifications-multi-participant-non-cage-aaron-mika-kestrel-otto-2026-05-27.md) — workflow-engine-v1: F# DU state-machine + Git append-only + four-corner-monad + universal-action-grammar (the v1 spec)
-- [`081KSNY2Z0008QG0R002A785QR`](../../backlog/P1/081KSNY2Z0008QG0R002A785QR-per-host-adapters-github-gitlab-gitea-bitbucket-isomorphic-cross-host-substrate-aaron-2026-05-28.md) — per-host adapters (github/gitlab/gitea/bitbucket isomorphic substrate)
-- [`081KSNY2Z0008QG0R003WFDCJ9`](../../backlog/P1/081KSNY2Z0008QG0R003WFDCJ9-lifecycle-du-split-trajectory-push-vs-pr-review-determinereviewlevel-discriminator-kestrel-2026-05-28.md) — lifecycle-DU-split (push-vs-PR-review `determineReviewLevel` discriminator)
-- [`081KSNY2Z0008QG0R0036KH026`](../../backlog/P1/081KSNY2Z0008QG0R0036KH026-hats-become-workflow-definitions-compression-unifies-hat-substrate-workflow-engine-heartbeat-folder-dashboard-aaron-2026-05-28.md) — hats *become* workflow definitions (unifies hat-substrate + workflow-engine + heartbeat-folder + dashboard)
-- [`081KSKBP80008QG0R0031DTHS9`](../../backlog/P1/081KSKBP80008QG0R0031DTHS9-ople-primitives-implementation-extend-observe-persist-limit-emit-with-tfeedback-discriminated-unions-framework-primitive-substrate-engineering-aaron-2026-05-27.md) — OPLE primitives + TFeedback discriminated unions (framework-primitive substrate)
+- `081KSKBP80008QG0R000B3Y19A` <!-- STALE-REF: ../../backlog/P1/081KSKBP80008QG0R000B3Y19A-workflow-engine-v1-fsharp-du-state-machine-git-append-only-four-corner-monad-banned-if-universal-action-grammar-otto-five-modifications-multi-participant-non-cage-aaron-mika-kestrel-otto-2026-05-27.md --> — workflow-engine-v1: F# DU state-machine + Git append-only + four-corner-monad + universal-action-grammar (the v1 spec)
+- `081KSNY2Z0008QG0R002A785QR` <!-- STALE-REF: ../../backlog/P1/081KSNY2Z0008QG0R002A785QR-per-host-adapters-github-gitlab-gitea-bitbucket-isomorphic-cross-host-substrate-aaron-2026-05-28.md --> — per-host adapters (github/gitlab/gitea/bitbucket isomorphic substrate)
+- `081KSNY2Z0008QG0R003WFDCJ9` <!-- STALE-REF: ../../backlog/P1/081KSNY2Z0008QG0R003WFDCJ9-lifecycle-du-split-trajectory-push-vs-pr-review-determinereviewlevel-discriminator-kestrel-2026-05-28.md --> — lifecycle-DU-split (push-vs-PR-review `determineReviewLevel` discriminator)
+- `081KSNY2Z0008QG0R0036KH026` <!-- STALE-REF: ../../backlog/P1/081KSNY2Z0008QG0R0036KH026-hats-become-workflow-definitions-compression-unifies-hat-substrate-workflow-engine-heartbeat-folder-dashboard-aaron-2026-05-28.md --> — hats *become* workflow definitions (unifies hat-substrate + workflow-engine + heartbeat-folder + dashboard)
+- `081KSKBP80008QG0R0031DTHS9` <!-- STALE-REF: ../../backlog/P1/081KSKBP80008QG0R0031DTHS9-ople-primitives-implementation-extend-observe-persist-limit-emit-with-tfeedback-discriminated-unions-framework-primitive-substrate-engineering-aaron-2026-05-27.md --> — OPLE primitives + TFeedback discriminated unions (framework-primitive substrate)
 
 ## Composes with
 
@@ -46,7 +46,7 @@ The DU / control-flow rule cluster auto-loaded in `.claude/rules/`:
 - `function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md`
 
 **Beacon synthesis (external first-principles grounding for this engine's
-lightlike/ray-tracing model):** [`docs/research/2026-05-29-lightlike-substrate-as-causal-sets-category-theory-edge-of-chaos-calm-gradient-mirror-to-beacon-synthesis-aaron-otto-4-8.md`](../../research/2026-05-29-lightlike-substrate-as-causal-sets-category-theory-edge-of-chaos-calm-gradient-mirror-to-beacon-synthesis-aaron-otto-4-8.md)
+lightlike/ray-tracing model):** `docs/research/2026-05-29-lightlike-substrate-as-causal-sets-category-theory-edge-of-chaos-calm-gradient-mirror-to-beacon-synthesis-aaron-otto-4-8.md` <!-- STALE-REF: ../../research/2026-05-29-lightlike-substrate-as-causal-sets-category-theory-edge-of-chaos-calm-gradient-mirror-to-beacon-synthesis-aaron-otto-4-8.md -->
 — the engine runs ray-tracing over any lightlike (git) surface; this doc
 grounds that in causal-set theory + presheaf semantics + edge-of-chaos + the
 CALM-gradient consensus stack (CRDT → per-row CASPaxos/Raft → BFT).

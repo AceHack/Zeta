@@ -11,7 +11,7 @@ embed path, credential-binding model tests). Physical S6 UX feel + real
 WiFi association remain metal-gated.
 Next concrete action: **minimize metal** — per-federation threat-model
 stub template (see
-[`docs/security/USB-IDENTITY-THREAT-MODEL.md`](../../security/USB-IDENTITY-THREAT-MODEL.md):
+`docs/security/USB-IDENTITY-THREAT-MODEL.md` <!-- STALE-REF: ../../security/USB-IDENTITY-THREAT-MODEL.md -->:
 traveler → cluster → federation → ISociety/CTM, self-similar).
 Cluster/federation glossary promoted (`docs/SEED-VOCABULARY.md` +
 `docs/GLOSSARY.md` §Society identity). Credential binding model tests
@@ -55,18 +55,18 @@ substrates; usb/zflash keeps the local one alive with minimal human-in-the-loop
 
 Shipped artifacts:
 
-- [`src/Core.TypeScript/zflash/cli.ts`](../../../src/Core.TypeScript/zflash/cli.ts) — the flashing tool (Touch ID + nonce + SSH auto-inject)
-- [`full-ai-cluster/usb-nixos-installer/`](../../../full-ai-cluster/usb-nixos-installer/) — the installer ISO substrate + first-boot role-picker
-- [`.claude/skills/flash-cluster-iso/SKILL.md`](../../../.claude/skills/flash-cluster-iso/SKILL.md) — operator + agent-driven (expect) flashing skill
+- `src/Core.TypeScript/zflash/cli.ts` <!-- STALE-REF: ../../../src/Core.TypeScript/zflash/cli.ts --> — the flashing tool (Touch ID + nonce + SSH auto-inject)
+- `full-ai-cluster/usb-nixos-installer/` <!-- STALE-REF: ../../../full-ai-cluster/usb-nixos-installer/ --> — the installer ISO substrate + first-boot role-picker
+- `.claude/skills/flash-cluster-iso/SKILL.md` <!-- STALE-REF: ../../../.claude/skills/flash-cluster-iso/SKILL.md --> — operator + agent-driven (expect) flashing skill
 
 Grounding backlog:
 
-- [`081KSGS9H0008QG0R001EZKNCB`](../../backlog/P1/081KSGS9H0008QG0R001EZKNCB-zflash-agent-mode-native-implementation-close-doc-vs-impleme.md) — zflash agent-mode native implementation (**closed** — `--agent` in `cli.ts`)
+- `081KSGS9H0008QG0R001EZKNCB` <!-- STALE-REF: ../../backlog/P1/081KSGS9H0008QG0R001EZKNCB-zflash-agent-mode-native-implementation-close-doc-vs-impleme.md --> — zflash agent-mode native implementation (**closed** — `--agent` in `cli.ts`)
 - Workitem `081KV1PY2H308QG0R00347547K` — `zeta flash` MCP router (**done** #8104)
-- [`081KSGS9H0008QG0R0011BC7T2`](../../backlog/P1/081KSGS9H0008QG0R0011BC7T2-ci-cascade-6-full-install-plus-cluster-auto-join-eliminate-r.md) — CI cascade-6: slices 1–3 landed (#8126, #8129, #8139); scenarios 1 + 2 hard gate (scenario 2 green run 27602908527 after #8478 initrd virtio)
-- [`081KSGS9H0008QG0R00120EEHM`](../../backlog/P1/081KSGS9H0008QG0R00120EEHM-installer-config-bugs-cluster-hostname-not-unique-gh-auth-not-respected-banner-password-disclosure-empirical-aaron-2026-05-26.md) — installer config bugs (hostname-not-unique, gh-auth, banner)
-- [`081KSGS9H0008QG0R003V23XNZ`](../../backlog/P1/081KSGS9H0008QG0R003V23XNZ-iter5-wifi-credentials-injection-via-usb-esp-for-zero-typing-cluster-bringup-without-ethernet-load-bearing-for-homelab-persona-aaron-2026-05-26.md) — iter-5 WiFi-credentials injection via USB ESP (zero-typing bringup without ethernet)
-- [`081KSGS9H0008QG0R002T3BJ2R`](../../backlog/P1/081KSGS9H0008QG0R002T3BJ2R-iter4-ssh-key-and-hashedpassword-substrate-for-cluster-bringup-2026-05-26.md) — iter-4 SSH-key + hashedPassword substrate (shared seam with encryption)
+- `081KSGS9H0008QG0R0011BC7T2` <!-- STALE-REF: ../../backlog/P1/081KSGS9H0008QG0R0011BC7T2-ci-cascade-6-full-install-plus-cluster-auto-join-eliminate-r.md --> — CI cascade-6: slices 1–3 landed (#8126, #8129, #8139); scenarios 1 + 2 hard gate (scenario 2 green run 27602908527 after #8478 initrd virtio)
+- `081KSGS9H0008QG0R00120EEHM` <!-- STALE-REF: ../../backlog/P1/081KSGS9H0008QG0R00120EEHM-installer-config-bugs-cluster-hostname-not-unique-gh-auth-not-respected-banner-password-disclosure-empirical-aaron-2026-05-26.md --> — installer config bugs (hostname-not-unique, gh-auth, banner)
+- `081KSGS9H0008QG0R003V23XNZ` <!-- STALE-REF: ../../backlog/P1/081KSGS9H0008QG0R003V23XNZ-iter5-wifi-credentials-injection-via-usb-esp-for-zero-typing-cluster-bringup-without-ethernet-load-bearing-for-homelab-persona-aaron-2026-05-26.md --> — iter-5 WiFi-credentials injection via USB ESP (zero-typing bringup without ethernet)
+- `081KSGS9H0008QG0R002T3BJ2R` <!-- STALE-REF: ../../backlog/P1/081KSGS9H0008QG0R002T3BJ2R-iter4-ssh-key-and-hashedpassword-substrate-for-cluster-bringup-2026-05-26.md --> — iter-4 SSH-key + hashedPassword substrate (shared seam with encryption)
 
 ## Composes with
 
@@ -88,4 +88,4 @@ QEMU scenarios 1–4 green; scenario 2 asserts first-session serial markers on *
 
 ## Society validation (not PR-centric)
 
-Per [`docs/BUILD-GATES.md`](../../BUILD-GATES.md): local `preflight` before push; peer replay; CI is signal. Tiers S0–S6 in FIRST-SESSION.md. Full QEMU cascade = society cadence, not per-edit tax.
+Per `docs/BUILD-GATES.md` <!-- STALE-REF: ../../BUILD-GATES.md -->: local `preflight` before push; peer replay; CI is signal. Tiers S0–S6 in FIRST-SESSION.md. Full QEMU cascade = society cadence, not per-edit tax.

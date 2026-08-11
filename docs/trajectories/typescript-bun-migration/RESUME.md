@@ -260,11 +260,11 @@ The full per-slice checklist lives in
 Before the **first mutating action** on the next TS/Bun port slice,
 the layered Gate B baseline must exist and be current:
 
-- [`docs/best-practices/typescript.md`](../../best-practices/typescript.md)
+- `docs/best-practices/typescript.md` <!-- STALE-REF: ../../best-practices/typescript.md -->
   — language / type-system / typed-linting standard.
-- [`docs/best-practices/bun.md`](../../best-practices/bun.md)
+- `docs/best-practices/bun.md` <!-- STALE-REF: ../../best-practices/bun.md -->
   — Bun runtime / process / file IO / shell standard.
-- [`docs/best-practices/repo-scripting.md`](../../best-practices/repo-scripting.md)
+- `docs/best-practices/repo-scripting.md` <!-- STALE-REF: ../../best-practices/repo-scripting.md -->
   — Zeta composition layer (Zeta-specific scripting conventions +
   per-slice audit checklist).
 

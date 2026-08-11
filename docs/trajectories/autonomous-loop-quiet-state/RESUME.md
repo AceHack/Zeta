@@ -5,9 +5,9 @@ Last refreshed: 2026-05-21
 Parent trajectory: [`docs/trajectories/autonomous-loop-coordination/RESUME.md`](../autonomous-loop-coordination/RESUME.md)
 Grounding rules:
 
-- [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — Standing-by failure mode discipline (brief-ack counter + escalation triggers)
-- [`.claude/rules/never-be-idle.md`](../../../.claude/rules/never-be-idle.md) — never-be-idle priority ladder
-- [`.claude/rules/tick-must-never-stop.md`](../../../.claude/rules/tick-must-never-stop.md) — catch-43 sentinel discipline
+- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md --> — Standing-by failure mode discipline (brief-ack counter + escalation triggers)
+- `.claude/rules/never-be-idle.md` <!-- STALE-REF: ../../../.claude/rules/never-be-idle.md --> — never-be-idle priority ladder
+- `.claude/rules/tick-must-never-stop.md` <!-- STALE-REF: ../../../.claude/rules/tick-must-never-stop.md --> — catch-43 sentinel discipline
 
 Grounding memory (user-scope, originated this trajectory):
 
@@ -70,9 +70,9 @@ When the cron fires `<<autonomous-loop>>`:
 ## Composes with
 
 - Parent trajectory `autonomous-loop-coordination` — "queue-empty is runway, not completion" principle this packet operationalizes
-- [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — brief-ack counter discipline, including the fabricated-substrate guard (this trajectory composes WITH it; counter still ticks during quiet-state advancement)
-- [`.claude/rules/never-be-idle.md`](../../../.claude/rules/never-be-idle.md) — never-be-idle priority ladder
-- [`.claude/rules/edge-defining-work-not-speculation.md`](../../../.claude/rules/edge-defining-work-not-speculation.md) — quiet-state advancement IS edge-defining work, not speculation
+- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md --> — brief-ack counter discipline, including the fabricated-substrate guard (this trajectory composes WITH it; counter still ticks during quiet-state advancement)
+- `.claude/rules/never-be-idle.md` <!-- STALE-REF: ../../../.claude/rules/never-be-idle.md --> — never-be-idle priority ladder
+- `.claude/rules/edge-defining-work-not-speculation.md` <!-- STALE-REF: ../../../.claude/rules/edge-defining-work-not-speculation.md --> — quiet-state advancement IS edge-defining work, not speculation
 - User-scope memory `aaron_operator_tool_interrupt_as_cost_discipline_signal_brief_ack_pure_no_tools_2026_05_19.md` — cost-discipline boundary this trajectory respects
 - User-scope memory `aaron_chained_homeostasis_meta_frame_emergent_safe_mutual_alignment_drives_forward_2026_05_19.md` — chained-homeostasis principle (quiet-state advancement IS the chain operating during operator-absence)
 - Autonomous-loop-tick instructions absorbed via `<<autonomous-loop>>` cron (per the loop-tick instructions: "If everything is genuinely quiet — say so in one sentence and stop" — this trajectory ADDS the "or advance a bounded trajectory step" clause)

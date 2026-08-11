@@ -3,7 +3,7 @@
 **Provenance:** Aaron 2026-07-02: *"we need two distinct design languages on top of the
 base — corporate = fallout-shelter UI (like we have), and sovereign = liminal UI (like we
 have too)."* Formalizes the "two surfaces of one building" (Iris's handoff) into a named,
-layered token architecture. Iris owns this language ([`iris`](../../.claude/agents/user-experience-engineer.md)).
+layered token architecture. Iris owns this language (`iris` <!-- STALE-REF: ../../.claude/agents/user-experience-engineer.md -->).
 
 ## The three layers
 
@@ -116,6 +116,6 @@ discipline (the case IS the attribute) applied to the design system itself.
 - [`root-site-iris/HANDOFF.md`](root-site-iris/HANDOFF.md) — the original two-surfaces tokens.
 - [`the-nested-surfaces-addison-business-otto-hall-llmtv-minds.md`](the-nested-surfaces-addison-business-otto-hall-llmtv-minds.md)
   — business-ops (Corporate) ⊃ game vault ⊃ dark hall ⊃ LLMTV (Sovereign) nesting.
-- [`.claude/agents/user-experience-engineer.md`](../../.claude/agents/user-experience-engineer.md)
+- `.claude/agents/user-experience-engineer.md` <!-- STALE-REF: ../../.claude/agents/user-experience-engineer.md -->
   — Iris owns this language.
 - `docs/trajectories/ai-sovereignty-path/` — why "Sovereign" is the meaning, not a look.

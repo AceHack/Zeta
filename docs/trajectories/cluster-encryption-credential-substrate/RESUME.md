@@ -83,12 +83,12 @@ beacon doc's "Trust-calculus / Sleeping Bear" section for the full layering.
 
 ## Grounding backlog (on `origin/main`)
 
-- [`081KSGS9H0008QG0R002T3BJ2R`](../../backlog/P1/081KSGS9H0008QG0R002T3BJ2R-iter4-ssh-key-and-hashedpassword-substrate-for-cluster-bringup-2026-05-26.md) — iter-4 SSH-key + hashedPassword substrate for cluster bringup (shared seam with usb/zflash)
-- [`081KSKBP80008QG0R003AX2A69`](../../backlog/P1/081KSKBP80008QG0R003AX2A69-credential-persistence-on-usb-esp-plus-boot-sequence-auth-method-picker-encrypted-blob-bound-to-usb-uuid-plus-operator-passphrase-aaron-2026-05-27.md) — credential persistence on USB ESP + boot-sequence auth-method picker + encrypted blob bound to USB UUID + operator passphrase (live focal point)
-- [`081KSKBP80008QG0R003ETGS01`](../../backlog/P1/081KSKBP80008QG0R003ETGS01-zeta-install-sh-step-6-77-cred-picker-integration-interactive-bake-vs-zflash-token-override-aaron-2026-05-27.md) — credential-picker integration (interactive-bake vs zflash-token override)
-- [`081KSGS9H0008QG0R003JNSVR5`](../../backlog/P1/081KSGS9H0008QG0R003JNSVR5-installer-interactive-login-vs-baked-in-keys-ci-test-tension-resolve-without-shipping-credentials-aaron-2026-05-26.md) — interactive-login vs baked-in-keys CI-test tension (the live design question)
-- [`081KSGS9H0008QG0R00120EEHM`](../../backlog/P1/081KSGS9H0008QG0R00120EEHM-installer-config-bugs-cluster-hostname-not-unique-gh-auth-not-respected-banner-password-disclosure-empirical-aaron-2026-05-26.md) — installer config bugs (gh-auth not respected, banner password disclosure)
-- [`081KSKBP80008QG0R000Y2B7HC`](../../backlog/P1/081KSKBP80008QG0R000Y2B7HC-sigstore-cosign-artifact-signing-free-stuff-iso-containers-tarballs-backed-by-fulcio-rekor-aaron-2026-05-27.md) — sigstore/cosign artifact signing (ISO/containers/tarballs via Fulcio/Rekor)
+- `081KSGS9H0008QG0R002T3BJ2R` <!-- STALE-REF: ../../backlog/P1/081KSGS9H0008QG0R002T3BJ2R-iter4-ssh-key-and-hashedpassword-substrate-for-cluster-bringup-2026-05-26.md --> — iter-4 SSH-key + hashedPassword substrate for cluster bringup (shared seam with usb/zflash)
+- `081KSKBP80008QG0R003AX2A69` <!-- STALE-REF: ../../backlog/P1/081KSKBP80008QG0R003AX2A69-credential-persistence-on-usb-esp-plus-boot-sequence-auth-method-picker-encrypted-blob-bound-to-usb-uuid-plus-operator-passphrase-aaron-2026-05-27.md --> — credential persistence on USB ESP + boot-sequence auth-method picker + encrypted blob bound to USB UUID + operator passphrase (live focal point)
+- `081KSKBP80008QG0R003ETGS01` <!-- STALE-REF: ../../backlog/P1/081KSKBP80008QG0R003ETGS01-zeta-install-sh-step-6-77-cred-picker-integration-interactive-bake-vs-zflash-token-override-aaron-2026-05-27.md --> — credential-picker integration (interactive-bake vs zflash-token override)
+- `081KSGS9H0008QG0R003JNSVR5` <!-- STALE-REF: ../../backlog/P1/081KSGS9H0008QG0R003JNSVR5-installer-interactive-login-vs-baked-in-keys-ci-test-tension-resolve-without-shipping-credentials-aaron-2026-05-26.md --> — interactive-login vs baked-in-keys CI-test tension (the live design question)
+- `081KSGS9H0008QG0R00120EEHM` <!-- STALE-REF: ../../backlog/P1/081KSGS9H0008QG0R00120EEHM-installer-config-bugs-cluster-hostname-not-unique-gh-auth-not-respected-banner-password-disclosure-empirical-aaron-2026-05-26.md --> — installer config bugs (gh-auth not respected, banner password disclosure)
+- `081KSKBP80008QG0R000Y2B7HC` <!-- STALE-REF: ../../backlog/P1/081KSKBP80008QG0R000Y2B7HC-sigstore-cosign-artifact-signing-free-stuff-iso-containers-tarballs-backed-by-fulcio-rekor-aaron-2026-05-27.md --> — sigstore/cosign artifact signing (ISO/containers/tarballs via Fulcio/Rekor)
 
 ## Composes with
 

@@ -288,7 +288,7 @@ Operational axis-split: "trajectories track motion; agendas track claim-status a
 5. **Cross-AI substrate-triangulation operating**: DeepSeek's mapping demonstrates framework's substrate-engineering pipeline has external operational utility at package-distribution scope; convergence-signal that pipeline framing is load-bearing across AI surfaces
 6. **Composes with existing backlog**: substrate continues existing 081KQZVQW0008QG0R000ZHEN62 → 081KR2E4K0008QG0R0033WVCXE → 081KR2E4K0008QG0R002YE3MMD → 081KRFA460008QG0R001H98EXJ chain; this trajectory adds the substrate-engineering pipeline framing alongside the existing implementation work
 
-## Composes with [`docs/governance/MANIFESTO.md`](../../governance/MANIFESTO.md)
+## Composes with `docs/governance/MANIFESTO.md` <!-- STALE-REF: ../../governance/MANIFESTO.md -->
 
 Ace package manager operationalizes several manifesto constraints + the m/acc orientation at distribution scope:
 

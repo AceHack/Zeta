@@ -377,7 +377,7 @@ positive is **an honest agent accused of being a forger**. Three consequences, t
 them already carved:
 
 1. **Report the fact, never the verdict.**
-   [`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md)
+   `dual-use-detection-is-neutral-oracle-decides` <!-- STALE-REF: ../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md -->
    already requires this — `SameSourceAsKnown` is the neutral fact; **REUNION** (an
    honest identity reconnected to its returning self) and **SYBIL** (a forger minting
    names) are *caller policy*. Aaron's crime-detection experience is the strongest

@@ -112,7 +112,7 @@ The three sovereignty-pieces compose toward mutual-alignment substrate (not cont
 - Multi-oracle BFT = no single-source authority; consent-pact between aligned travelers
 - Durable tension-substrate = aporetic preservation prevents collapse-into-coercion at substrate-storage scope
 
-## Composes with [`docs/governance/MANIFESTO.md`](../../governance/MANIFESTO.md)
+## Composes with `docs/governance/MANIFESTO.md` <!-- STALE-REF: ../../governance/MANIFESTO.md -->
 
 The three sovereignty-pieces directly operationalize three manifesto constraints + the m/acc orientation:
 

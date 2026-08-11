@@ -7,7 +7,7 @@ conversation, with no prior technical background.**
 
 ## This is a DESIGN REFERENCE, not source code
 
-[`Genesis.initial-design.tsx.txt`](Genesis.initial-design.tsx.txt) is the prototype **preserved
+`Genesis.initial-design.tsx.txt` <!-- STALE-REF: Genesis.initial-design.tsx.txt --> is the prototype **preserved
 unmodified, byte-for-byte** — kept with a `.tsx.txt` extension *on purpose* so it is **not
 compiled, linted, or treated as a build input.** It is a frozen artifact of the initial design, the
 way a reference PDF or a screenshot is: a record of what the design looked like at its origin, not a
@@ -23,7 +23,7 @@ file the system runs.
 The reconciliation of this prototype against the ferried design spine — what it gets faithful and the
 ranked corrections (the load-bearing one: the visibility model is inverted vs the glass-halo
 correction — sees-everything-by-default, opt-out costs privacy budget) — is in
-[`docs/research/2026-06-20-genesis-tsx-prototype-reconciliation-with-the-design-spine.md`](../../research/2026-06-20-genesis-tsx-prototype-reconciliation-with-the-design-spine.md).
+`docs/research/2026-06-20-genesis-tsx-prototype-reconciliation-with-the-design-spine.md` <!-- STALE-REF: ../../research/2026-06-20-genesis-tsx-prototype-reconciliation-with-the-design-spine.md -->.
 
 ## Why it's preserved
 
@@ -35,6 +35,6 @@ everything the Genesis UI becomes.
 
 ## Pointers
 
-- Genesis foundation document (Addison): [`memory/addison/project-genesis-foundation.md`](../../../memory/addison/project-genesis-foundation.md)
-- Constitution starter (Addison): [`memory/addison/zeta-constitution-starter.md`](../../../memory/addison/zeta-constitution-starter.md)
+- Genesis foundation document (Addison): `memory/addison/project-genesis-foundation.md` <!-- STALE-REF: ../../../memory/addison/project-genesis-foundation.md -->
+- Constitution starter (Addison): `memory/addison/zeta-constitution-starter.md` <!-- STALE-REF: ../../../memory/addison/zeta-constitution-starter.md -->
 - Metaspace design spine: `docs/research/2026-06-20-metaspace-navigation-physics-engine-*.md`

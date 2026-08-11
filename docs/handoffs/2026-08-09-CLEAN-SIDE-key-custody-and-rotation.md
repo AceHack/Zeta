@@ -23,7 +23,7 @@ not seen that material, and **you must not go looking for it**:
 
 **Independent derivation is the entire protection**, and it is destroyed if the clean side
 reaches around the wall. Governing rule:
-[`.claude/rules/cleanroom-two-team-separation.md`](../../.claude/rules/cleanroom-two-team-separation.md) — read it first.
+`.claude/rules/cleanroom-two-team-separation.md` <!-- STALE-REF: ../../.claude/rules/cleanroom-two-team-separation.md --> — read it first.
 
 Also note: *"make it N% different"* is **not** a defense and must not guide any decision.
 There is no percentage threshold that makes a derivative work non-infringing, and that
@@ -31,7 +31,7 @@ reasoning presupposes deriving from the original. **Design from the requirements
 
 ## Your only functional input
 
-**[`docs/specs/key-custody-and-rotation-cleanroom-spec.md`](../specs/key-custody-and-rotation-cleanroom-spec.md)**
+**`docs/specs/key-custody-and-rotation-cleanroom-spec.md` <!-- STALE-REF: ../specs/key-custody-and-rotation-cleanroom-spec.md -->**
 
 12 requirements (R1–R12) + 6 acceptance criteria, each written as *what the system must do*
 and justified from Zeta's own constraints. Implement from the requirements, in whatever

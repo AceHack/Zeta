@@ -105,7 +105,7 @@ get richer.
 **And the uniqueness is the entire reason there is anything to learn.** If every node held
 the same history, N nodes would give one observation, not N — the
 correlation-destroys-evidence result from
-[the amortization doc](../../research/2026-08-10-amortization-is-deliberate-correlation-cost-cluster-decomposition-and-the-potential-as-condensate.md),
+the amortization doc <!-- STALE-REF: ../../research/2026-08-10-amortization-is-deliberate-correlation-cost-cluster-decomposition-and-the-potential-as-condensate.md -->,
 arriving from the other side. So the system wants **shared substrate** (cheap — sharing is
 where savings come from) and **independent histories** (informative — independence is
 where evidence comes from). Same structure, opposite sign, exactly as in §5 of that doc.
@@ -169,8 +169,8 @@ direction.
 
 ## 6. Pointers
 
-- [`.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`](../../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md) — report the fact, never the verdict
-- [`.claude/rules/privacy-budget-is-hard-money-earned-by-others.md`](../../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md) — why frost must be structural, not policy; the newcomer path that does not reopen minting
-- [`.claude/rules/manifesto-13-specifications.md`](../../../.claude/rules/manifesto-13-specifications.md) — §1 scale-free, §11 multi-oracle, §13 noninterference
-- [`.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md`](../../../.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md) — emergent hubs vs appointed; the IP boundary this trajectory sits on
+- `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md` <!-- STALE-REF: ../../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md --> — report the fact, never the verdict
+- `.claude/rules/privacy-budget-is-hard-money-earned-by-others.md` <!-- STALE-REF: ../../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md --> — why frost must be structural, not policy; the newcomer path that does not reopen minting
+- `.claude/rules/manifesto-13-specifications.md` <!-- STALE-REF: ../../../.claude/rules/manifesto-13-specifications.md --> — §1 scale-free, §11 multi-oracle, §13 noninterference
+- `.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md` <!-- STALE-REF: ../../../.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md --> — emergent hubs vs appointed; the IP boundary this trajectory sits on
 - `docs/research/2026-08-10-the-threshold-rhyme-*` — foreclose-vs-per-step; frost is the foreclosing branch

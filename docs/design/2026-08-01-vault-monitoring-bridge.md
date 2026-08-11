@@ -11,16 +11,16 @@ A TypeScript adapter reads the live heartbeat event log and tick-history, then p
 
 | Artifact | Path | What it is |
 |----------|------|------------|
-| Addison's Genesis Foundation | [`memory/addison/project-genesis-foundation.md`](../../memory/addison/project-genesis-foundation.md) | The full vault/room/hat/agent ontology |
+| Addison's Genesis Foundation | `memory/addison/project-genesis-foundation.md` <!-- STALE-REF: ../../memory/addison/project-genesis-foundation.md --> | The full vault/room/hat/agent ontology |
 | Genesis TSX Prototype (reference) | [`docs/design/addison-genesis-initial/`](addison-genesis-initial/) | Addison's initial React UI — the frozen design origin |
 | Nested Surfaces doc | [`docs/design/the-nested-surfaces-addison-business-otto-hall-llmtv-minds.md`](the-nested-surfaces-addison-business-otto-hall-llmtv-minds.md) | How settlement ⊃ vault ⊃ hall ⊃ LLMTV nest |
 | Root Site Handoff | [`docs/design/root-site-iris/HANDOFF.md`](root-site-iris/HANDOFF.md) | What's deployed on Pages, data contracts |
 | Settlement page (live) | [settlement.html](https://lucent-financial-group.github.io/settlement.html) | The cross-section cutaway (renders from vault-state.json) |
 | Vaults page (live) | [vaults.html](https://lucent-financial-group.github.io/vaults.html) | Vault drill-down (rooms/hats/agents) |
-| Professional Dashboard | [`data/monitor.html`](../../data/monitor.html) | The numbers view (same data, different surface) |
-| Heartbeat Workflow | [`.github/workflows/agent-heartbeat.yml`](../../.github/workflows/agent-heartbeat.yml) | The 3-agent society loop |
-| Self-Healing Handoff | [`docs/handoffs/2026-08-01-shadow-to-alexa-self-healing-drift-classes-and-intelligence-tiers.md`](../handoffs/2026-08-01-shadow-to-alexa-self-healing-drift-classes-and-intelligence-tiers.md) | Drift classes, healer tiers, escalation |
-| Vault-as-Home Research | [`docs/research/2026-06-20-the-acceptable-experiment-everyone-is-it-vault-as-home-iff-exit-capturerate-is-the-vault-tec-detector.md`](../research/2026-06-20-the-acceptable-experiment-everyone-is-it-vault-as-home-iff-exit-capturerate-is-the-vault-tec-detector.md) | Everyone-is-IT, CaptureRate detector |
+| Professional Dashboard | `data/monitor.html` <!-- STALE-REF: ../../data/monitor.html --> | The numbers view (same data, different surface) |
+| Heartbeat Workflow | `.github/workflows/agent-heartbeat.yml` <!-- STALE-REF: ../../.github/workflows/agent-heartbeat.yml --> | The 3-agent society loop |
+| Self-Healing Handoff | `docs/handoffs/2026-08-01-shadow-to-alexa-self-healing-drift-classes-and-intelligence-tiers.md` <!-- STALE-REF: ../handoffs/2026-08-01-shadow-to-alexa-self-healing-drift-classes-and-intelligence-tiers.md --> | Drift classes, healer tiers, escalation |
+| Vault-as-Home Research | `docs/research/2026-06-20-the-acceptable-experiment-everyone-is-it-vault-as-home-iff-exit-capturerate-is-the-vault-tec-detector.md` <!-- STALE-REF: ../research/2026-06-20-the-acceptable-experiment-everyone-is-it-vault-as-home-iff-exit-capturerate-is-the-vault-tec-detector.md --> | Everyone-is-IT, CaptureRate detector |
 
 ---
 
