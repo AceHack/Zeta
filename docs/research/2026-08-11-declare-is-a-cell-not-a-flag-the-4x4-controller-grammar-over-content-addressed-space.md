@@ -4,9 +4,17 @@
 with choose-your-own-adventure over content-addressed space"*) · **Recorded by:** Otto (shadow)
 
 **What this answers:** the one piece of the mutation-freedom ledger deliberately left unbuilt. The
-ledger (`7ac72a069`) can be read but not written, because `--declare` would be an *unbounded write
+ledger (`7ac72a069`) could be read but not written, because `--declare` would be an *unbounded write
 path* letting an agent record a judgement about a specification with nothing shaping the action. The
 answer is not to add the flag more carefully. It is that **the write is a cell in a bounded menu**.
+
+> **STATUS: BUILT** (`ff73ae184` the menu, `5d920c905` execute + append). This file is the design; the
+> implementation is `src/Core.TypeScript/hygiene/mutation-readout.ts` with 22 tests. What shipped
+> differs from the sketch below in one respect worth naming: §2's cells are **not a fixed list** —
+> the menu is constructed per finding, so an already-declared dimension offers *retract* and withholds
+> *declare*, and each disagreeing declarer becomes its own "read their reason" cell. A fixed list
+> would have been §5's third falsifier ("the same cells regardless of the finding") coming true on
+> the first commit.
 
 ---
 
