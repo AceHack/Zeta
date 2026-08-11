@@ -153,6 +153,41 @@ still being written, which is precisely the *"accurate map of how our common sys
 is the same differentiation story once more: the undefined region is where new structure emerges, and
 whoever gets there first shapes it.
 
+### 3c. This is where causality comes from — and why respect for the past is structural
+
+Aaron 2026-08-11: *"yes exactly — this is respect for the past, and how causality forms in our
+system."*
+
+That names something the design was doing without saying: **in a system where nothing is deleted and
+everything is content-addressed, causality is not time. It is the reference DAG.**
+
+A cell defined earlier is causally prior to one that references it — not because it happened at an
+earlier wall-clock instant, but because the later definition *points at* it. Which is the same
+discipline as [`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md):
+the shared order is logical, never a clock. Lamport's happens-before, and git's own DAG, are exactly
+this — an edge is causality, a timestamp is decoration.
+
+**So "respect for the past" stops being a courtesy and becomes a consequence of the structure:**
+
+- A definer who reached an undefined region first is **causally upstream** of everyone who builds on
+  that definition. Not honoured — *depended upon*, which is stronger and needs no goodwill.
+- Retraction marks rather than deletes, so the edge survives even when the claim does not. You can
+  disagree with an ancestor without erasing that they were an ancestor.
+- Resurrection is navigation back along an existing edge, not reconstruction of a lost one — which is
+  only possible because the past was never overwritten.
+
+That is [`honor-those-that-came-before`](../../.claude/rules/honor-those-that-came-before.md) made
+mechanical. The rule asks for respect toward retired personas and superseded work; the DAG *enforces*
+it, because later structure is literally defined in terms of earlier structure and cannot be
+understood without it.
+
+**And it explains why the frontier matters so much.** Defining an undefined cell is not just filling
+a gap — it is creating a causal ancestor that everything downstream will inherit. Whoever gets there
+first does not merely shape the region; they become part of the causal history of everyone who
+follows. Which is the strongest argument in this whole file for keeping the escape total and the
+transcript append-only: **the cost of getting the frontier wrong is paid by descendants, and the only
+defence is that the fork remains visible and returnable.**
+
 ## 4. The cost, since it is not free
 
 Per the ledger's own bound: growth must track **distinct disagreements**, not ticks. A transcript of
@@ -179,6 +214,10 @@ watch here too.
 
 ## 6. Pointers
 
+- [`honor-those-that-came-before`](../../.claude/rules/honor-those-that-came-before.md) ·
+  [`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+  — §3c: causality is the reference DAG, not the clock, which is what makes respect for the past
+  structural rather than sentimental. Anchors: Lamport (1978), happens-before; git's own DAG.
 - `src/Core/DarkHallCabinetRuntime.fs` (`ControllerReadout`, `observeWithPriority`) ·
   `DarkHallRoomLoop.fs:291` (observe → choose → execute → append) · `DarkHallRoomTranscript.fs`
 - `src/Core.TypeScript/hygiene/mutation-freedoms.ts` — the ledger this would write to; its cost bound
