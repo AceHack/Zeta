@@ -52,6 +52,7 @@ const CAPABILITY_EVIDENCE: readonly CapabilityEvidence[] = [
   { capability: "service-worker", paths: [["navigator", "serviceWorker"]], evidence: "defined" },
   { capability: "background-sync", paths: [["SyncManager"]], evidence: "defined" },
   { capability: "indexed-db", paths: [["indexedDB"]], evidence: "defined" },
+  { capability: "web-locks", paths: [["navigator", "locks", "request"]], evidence: "function" },
   { capability: "opfs", paths: [["navigator", "storage", "getDirectory"]], evidence: "function" },
   { capability: "web-crypto", paths: [["crypto", "subtle"]], evidence: "defined" },
   { capability: "web-rtc", paths: [["RTCPeerConnection"]], evidence: "defined" },

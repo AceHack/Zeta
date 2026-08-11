@@ -5,10 +5,12 @@ import {
 } from "../darkhall-ui/darkhall-browser-durable-runtime";
 import { zetaDbTickToDarkHallDatabaseReadout } from "../darkhall-ui/darkhall-database-readout";
 import type { BrowserCheckpointRecord } from "./browser-checkpoint-port";
+import type { BrowserExecutionAdmissionFeedback } from "./browser-execution-admission";
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import { createNativeServiceWorkerTabChannel } from "./browser-service-worker-channel";
 import type { RoomRunTranscript } from "../darkhall-ui/darkhall-room";
 import { runBrowserZetaDbWake } from "./browser-zetadb-image-port";
+import { createNativeBrowserExecutionAdmission } from "./browser-web-lock-execution-admission";
 import type { ZetaDbDelta, ZetaDbFeedback, ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 import {
   startBrowserZetaDbTabRuntime,
@@ -19,7 +21,11 @@ import type { BrowserDatabaseInvalidation } from "./browser-tab-coordinator";
 
 export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v5" as const;
 
-type BrowserMultitabFeedback = DarkHallBrowserDurableFeedback | BrowserZetaDbTabFeedback | ZetaDbFeedback;
+type BrowserMultitabFeedback =
+  | DarkHallBrowserDurableFeedback
+  | BrowserExecutionAdmissionFeedback
+  | BrowserZetaDbTabFeedback
+  | ZetaDbFeedback;
 
 export type BrowserMultitabFixtureReadout =
   | {
@@ -163,6 +169,7 @@ const tabId = queryParameter("tab") ?? "tab-unknown";
 const databaseNodeId = `${nodeId}:database`;
 let receiveDatabaseInvalidation: ((invalidation: BrowserDatabaseInvalidation) => void) | null = null;
 let startupDatabaseInvalidation: BrowserDatabaseInvalidation | null = null;
+const pendingStartupDatabaseInvalidation = (): BrowserDatabaseInvalidation | null => startupDatabaseInvalidation;
 const onDatabaseInvalidated = (invalidation: BrowserDatabaseInvalidation): void => {
   if (receiveDatabaseInvalidation !== null) {
     receiveDatabaseInvalidation(invalidation);
@@ -216,20 +223,24 @@ if (!started.ok) {
   };
 } else {
   const runtime = started.value;
-  const databaseRuntime = startBrowserZetaDbTabRuntime({
-    databaseNodeId,
-    executorId: tabId,
-    limits: { maxDeltas: 16, maxEntries: 64, maxCheckpointBytes: 64 * 1024 },
-    execute: (request) =>
-      runBrowserZetaDbWake(
-        globalThis,
-        { databaseName: "zeta-browser-smoke-node", storeName: "database-images" },
-        request,
-      ),
-    observe: (tick) => runtime.updateDatabaseReadout(zetaDbTickToDarkHallDatabaseReadout(tick)),
-    publishInvalidation: (nextDatabaseNodeId, revision) =>
-      runtime.publishDatabaseInvalidation(nextDatabaseNodeId, revision),
-  });
+  const databaseAdmission = createNativeBrowserExecutionAdmission(globalThis);
+  const databaseRuntime = databaseAdmission.ok
+    ? startBrowserZetaDbTabRuntime({
+        databaseNodeId,
+        executorId: tabId,
+        limits: { maxDeltas: 16, maxEntries: 64, maxCheckpointBytes: 64 * 1024 },
+        admission: databaseAdmission.value,
+        execute: (request) =>
+          runBrowserZetaDbWake(
+            globalThis,
+            { databaseName: "zeta-browser-smoke-node", storeName: "database-images" },
+            request,
+          ),
+        observe: (tick) => runtime.updateDatabaseReadout(zetaDbTickToDarkHallDatabaseReadout(tick)),
+        publishInvalidation: (nextDatabaseNodeId, revision) =>
+          runtime.publishDatabaseInvalidation(nextDatabaseNodeId, revision),
+      })
+    : databaseAdmission;
   if (!databaseRuntime.ok) {
     const failure: BrowserMultitabFixtureFailure = databaseRuntime;
     runtime.stop();
@@ -246,7 +257,8 @@ if (!started.ok) {
     receiveDatabaseInvalidation = (invalidation) => {
       database.receiveInvalidation(invalidation);
     };
-    if (startupDatabaseInvalidation !== null) receiveDatabaseInvalidation(startupDatabaseInvalidation);
+    const startupInvalidation = pendingStartupDatabaseInvalidation();
+    if (startupInvalidation !== null) receiveDatabaseInvalidation(startupInvalidation);
     api = {
       read: () => read(runtime),
       checkpoint: (revision) => runtime.checkpoint(revision, transcriptAtRevision(revision)),

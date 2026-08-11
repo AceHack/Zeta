@@ -1,6 +1,11 @@
 import { describe, expect, test } from "bun:test";
 import type { ZetaDbTickReadout, ZetaDbTickRequest } from "../zetadb/zeta-db-node";
-import { startBrowserZetaDbTabRuntime } from "./browser-zetadb-tab-runtime";
+import {
+  browserExecutionAdmitted,
+  createInMemoryBrowserExecutionAdmission,
+  type BrowserExecutionAdmissionPort,
+} from "./browser-execution-admission";
+import { startBrowserZetaDbTabRuntime, type BrowserZetaDbTabExecutor } from "./browser-zetadb-tab-runtime";
 
 const limits = { maxDeltas: 8, maxEntries: 16, maxCheckpointBytes: 16 * 1024 };
 
@@ -21,14 +26,17 @@ function readout(request: ZetaDbTickRequest, revision: number): ZetaDbTickReadou
 }
 
 function start(
-  execute: (request: ZetaDbTickRequest) => Promise<{ readonly ok: true; readonly value: ZetaDbTickReadout }>,
+  execute: BrowserZetaDbTabExecutor,
+  admission: BrowserExecutionAdmissionPort = createInMemoryBrowserExecutionAdmission(),
+  executorId = "tab-a",
 ) {
   const observed: ZetaDbTickReadout[] = [];
   const published: { readonly databaseNodeId: string; readonly revision: number }[] = [];
   const started = startBrowserZetaDbTabRuntime({
     databaseNodeId: "browser/global",
-    executorId: "tab-a",
+    executorId,
     limits,
+    admission,
     execute,
     observe: (value) => {
       observed.push(value);
@@ -45,6 +53,31 @@ function start(
 }
 
 describe("browser ZetaDB tab runtime", () => {
+  test("rejects a missing execution admission port as typed configuration feedback", () => {
+    const started = startBrowserZetaDbTabRuntime({
+      databaseNodeId: "database-a",
+      executorId: "tab-a",
+      limits,
+      admission: undefined as never,
+      execute: () =>
+        Promise.resolve({
+          ok: false,
+          feedback: { severity: "heat", code: "database-read-failed", detail: "unused" },
+        }),
+      observe: () => ({ ok: true }),
+      publishInvalidation: () => ({ ok: true }),
+    });
+
+    expect(started).toEqual({
+      ok: false,
+      feedback: {
+        severity: "heat",
+        code: "database-tab-configuration-invalid",
+        detail: "A browser database tab runtime requires identifiers and positive safe-integer tick budgets.",
+      },
+    });
+  });
+
   test("publishes accepted local writes and renders their finite tick", async () => {
     const requests: ZetaDbTickRequest[] = [];
     const { runtime, observed, published } = start((request) => {
@@ -114,6 +147,7 @@ describe("browser ZetaDB tab runtime", () => {
         databaseNodeId: "",
         executorId: "tab-a",
         limits,
+        admission: createInMemoryBrowserExecutionAdmission(),
         execute: () => Promise.resolve({ ok: true, value: {} as never }),
         observe: () => ({ ok: true }),
         publishInvalidation: () => ({ ok: true }),
@@ -134,6 +168,7 @@ describe("browser ZetaDB tab runtime", () => {
       databaseNodeId: "browser/global",
       executorId: "tab-a",
       limits,
+      admission: createInMemoryBrowserExecutionAdmission(),
       execute: (request) => {
         const tick = readout(request, 3);
         requestTicks.push(tick);
@@ -151,5 +186,73 @@ describe("browser ZetaDB tab runtime", () => {
       await started.value.tick([{ eventId: "event/3", rowKey: "row/3", payload: "three", weight: 1 }]),
     ).toMatchObject({ ok: false, feedback: { code: "database-tab-publish-failed" } });
     expect(requestTicks).toHaveLength(1);
+  });
+
+  test("backpressures a competing tab and admits it after the finite owner releases", async () => {
+    const admission = createInMemoryBrowserExecutionAdmission();
+    let release: (() => void) | undefined;
+    const first = start(
+      async (request) => {
+        await new Promise<void>((resolve) => {
+          release = resolve;
+        });
+        return { ok: true, value: readout(request, 1) };
+      },
+      admission,
+      "tab-a",
+    );
+    const second = start((request) => Promise.resolve({ ok: true, value: readout(request, 2) }), admission, "tab-b");
+
+    const delta = { eventId: "event/held", rowKey: "game/score", payload: "1", weight: 1 } as const;
+    const held = first.runtime.tick([delta]);
+    for (let attempt = 0; attempt < 100 && release === undefined; attempt += 1) await Promise.resolve();
+    expect(release).toBeDefined();
+    expect(await second.runtime.tick([delta])).toMatchObject({
+      ok: false,
+      feedback: { severity: "backpressure", code: "database-tab-execution-backpressured" },
+    });
+
+    release?.();
+    expect(await held).toMatchObject({ ok: true, value: { executorId: "tab-a", revision: 1 } });
+    expect(await second.runtime.tick([delta])).toMatchObject({
+      ok: true,
+      value: { executorId: "tab-b", revision: 2 },
+    });
+  });
+
+  test("keeps revision CAS authoritative when an admission adapter admits both tabs", async () => {
+    const permissiveAdmission: BrowserExecutionAdmissionPort = {
+      tryRun: async (resourceId, operation) => browserExecutionAdmitted(resourceId, await operation()),
+    };
+    let revision = 0;
+    const execute: BrowserZetaDbTabExecutor = async (request) => {
+      await Promise.resolve();
+      if (request.expectedRevision !== revision) {
+        return {
+          ok: false,
+          feedback: {
+            severity: "backpressure",
+            code: "database-revision-conflict",
+            detail: `Expected revision ${String(request.expectedRevision)} but found ${String(revision)}.`,
+          },
+        };
+      }
+      revision += 1;
+      return { ok: true, value: readout(request, revision) };
+    };
+    const first = start(execute, permissiveAdmission, "tab-a");
+    const second = start(execute, permissiveAdmission, "tab-b");
+
+    const results = await Promise.all([
+      first.runtime.compareAndSwap(0, [{ eventId: "event/a", rowKey: "game/score", payload: "1", weight: 1 }]),
+      second.runtime.compareAndSwap(0, [{ eventId: "event/b", rowKey: "game/score", payload: "2", weight: 1 }]),
+    ]);
+
+    expect(results.filter((result) => result.ok)).toHaveLength(1);
+    expect(results.find((result) => !result.ok)).toMatchObject({
+      ok: false,
+      feedback: { code: "database-revision-conflict" },
+    });
+    expect(revision).toBe(1);
   });
 });

@@ -37,6 +37,7 @@ describe("browser runtime capability probe", () => {
         serial: {},
         hid: {},
         bluetooth: {},
+        locks: { request: () => undefined },
       },
       __zetaBrowserBridge: { extension: true, nativeMessaging: true },
     });
@@ -58,6 +59,7 @@ describe("browser runtime capability probe", () => {
       "web-crypto",
       "web-gpu",
       "web-hid",
+      "web-locks",
       "web-rtc",
       "web-serial",
       "web-usb",

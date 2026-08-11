@@ -21,6 +21,7 @@ export type BrowserNodeCapability =
   | "service-worker"
   | "background-sync"
   | "indexed-db"
+  | "web-locks"
   | "opfs"
   | "web-crypto"
   | "web-rtc"

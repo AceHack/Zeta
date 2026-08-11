@@ -4,8 +4,6 @@ module Zeta.Tests.Formal.Z3LawsTests
 open System
 open System.Diagnostics
 open System.IO
-open System.Collections.Generic
-open System.Text.Json
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Formal
@@ -996,50 +994,9 @@ let ``E prover proves Real-distress excludes fictional-scene (FOL)`` () =
 
 [<Fact>]
 let ``Z3 vs CVC5 cross-check harness catches a planted disagreement`` () =
-    let sha256 (input: string) =
-        use hasher = System.Security.Cryptography.SHA256.Create()
-        let bytes = hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input))
-        bytes |> Array.map (fun b -> b.ToString("x2")) |> String.concat ""
-
-    let findRepoRoot () =
-        let rec search (dir: string) =
-            if File.Exists(Path.Combine(dir, "Zeta.sln")) then
-                dir
-            else
-                let parent = Directory.GetParent(dir)
-                if parent = null then
-                    failwith "Could not find repository root (Zeta.sln)"
-                else
-                    search parent.FullName
-        search (Directory.GetCurrentDirectory())
-
-    let originalMode = Environment.GetEnvironmentVariable("ZETA_SOLVER_MODE")
-    let replayPath = Path.Combine(findRepoRoot(), "tests/Tests.FSharp/Formal/solver-replay.json")
-    let backupExist = File.Exists(replayPath)
-    let backupContent = if backupExist then File.ReadAllText(replayPath) else ""
-    try
-        Environment.SetEnvironmentVariable("ZETA_SOLVER_MODE", "replay")
-        
-        let dummyQuery = "(check-sat) ; dummy disagreement query"
-        let hash = sha256 dummyQuery
-        let db = Dictionary<string, Dictionary<string, string>>()
-        db.["z3"] <- Dictionary()
-        db.["z3"].[hash] <- "unsat"
-        db.["cvc5"] <- Dictionary()
-        db.["cvc5"].[hash] <- "sat" // mismatch!
-        
-        let options = JsonSerializerOptions(WriteIndented = true)
-        let json = JsonSerializer.Serialize(db, options)
-        File.WriteAllText(replayPath, json)
-        
-        (fun () -> SolverHarness.crossCheck dummyQuery |> ignore)
-        |> should throw typeof<System.Exception>
-    finally
-        Environment.SetEnvironmentVariable("ZETA_SOLVER_MODE", originalMode)
-        if backupExist then
-            File.WriteAllText(replayPath, backupContent)
-        else
-            if File.Exists(replayPath) then File.Delete(replayPath)
+    let dummyQuery = "(check-sat) ; dummy disagreement query"
+    (fun () -> SolverHarness.requireAgreement dummyQuery Unsat Sat |> ignore)
+    |> should throw typeof<System.Exception>
 
 
 [<Fact>]

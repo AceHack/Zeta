@@ -295,11 +295,7 @@ module SolverHarness =
                 | Unsat -> true
                 | _ -> false
 
-    /// Run Z3 and CVC5, assert agreement, and surface disagreement/crashes
-    let crossCheck (query: string) : SolverVerdict * SolverVerdict =
-        let z3Verdict = runZ3 query
-        let cvc5Verdict = runCvc5 query
-        
+    let internal requireAgreement (query: string) (z3Verdict: SolverVerdict) (cvc5Verdict: SolverVerdict) =
         match z3Verdict, cvc5Verdict with
         | Unsat, Unsat -> (Unsat, Unsat)
         | Sat, Sat -> (Sat, Sat)
@@ -307,6 +303,12 @@ module SolverHarness =
         | v1, v2 -> 
             let errorMsg = sprintf "Solver disagreement: Z3 returned %A, CVC5 returned %A for query hash %s" v1 v2 (sha256 query)
             failwith errorMsg
+
+    /// Run Z3 and CVC5, assert agreement, and surface disagreement/crashes
+    let crossCheck (query: string) : SolverVerdict * SolverVerdict =
+        let z3Verdict = runZ3 query
+        let cvc5Verdict = runCvc5 query
+        requireAgreement query z3Verdict cvc5Verdict
 
     /// Prove FOL-shaped TPTP conjecture on E prover
     let proveFOL (query: string) : bool =

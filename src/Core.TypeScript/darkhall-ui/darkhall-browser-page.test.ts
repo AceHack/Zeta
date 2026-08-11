@@ -148,12 +148,29 @@ class NativeServiceWorkerContainer {
   }
 }
 
+class NativeLockManager {
+  readonly requests: {
+    readonly name: string;
+    readonly options: { readonly ifAvailable: boolean; readonly mode: string };
+  }[] = [];
+
+  request<T>(
+    name: string,
+    options: { readonly ifAvailable: boolean; readonly mode: "exclusive" },
+    callback: (lock: { readonly name: string; readonly mode: "exclusive" }) => Promise<T>,
+  ): Promise<T> {
+    this.requests.push({ name, options });
+    return callback({ name, mode: "exclusive" });
+  }
+}
+
 class NativeBrowserRoot {
   readonly mount = new NativeMount();
   readonly editor = new NativeEditorMount();
   editorAvailable = true;
   readonly serviceWorker = new NativeServiceWorkerContainer();
-  readonly navigator = { serviceWorker: this.serviceWorker };
+  readonly locks = new NativeLockManager();
+  readonly navigator = { serviceWorker: this.serviceWorker, locks: this.locks };
   readonly location = { search: "?tab=tab-a&sequence=12" };
   readonly crypto = { randomUUID: (): string => "minted-tab" };
   readonly documentListeners = new Map<string, Set<NativeListener>>();
@@ -280,6 +297,7 @@ describe("Dark Hall active browser page", () => {
       },
     });
     expect(requests).toHaveLength(1);
+    expect(root.locks.requests).toEqual([]);
     expect(requests[0]).toMatchObject({
       nodeId: "zeta-darkhall-browser-node:database",
       executorId: "tab-a",
@@ -365,6 +383,10 @@ describe("Dark Hall active browser page", () => {
       preventDefault: () => undefined,
     });
     await waitFor(() => started.value.read().input.accepted === 3);
+    expect(root.locks.requests[0]).toEqual({
+      name: "zeta:database/zeta-darkhall-browser-node:database",
+      options: { ifAvailable: true, mode: "exclusive" },
+    });
     expect(requests[3]?.deltas).toEqual([
       { eventId: "tab-a/row-command/0", rowKey: "game/score", payload: "9000", weight: -1 },
     ]);
@@ -469,6 +491,24 @@ describe("Dark Hall active browser page", () => {
     });
     expect(root.mount.attributes.get("data-pwa-status")).toBe("backpressured");
     expect(root.mount.attributes.get("data-pwa-detail")).toBe("page-database-hydration-failed");
+  });
+
+  test("backpressures startup when cross-tab execution admission is unavailable", async () => {
+    const root = new NativeBrowserRoot();
+    Reflect.deleteProperty(root.navigator, "locks");
+
+    const result = await startNativeDarkHallBrowserPage({ root, databaseExecutor });
+
+    expect(result).toMatchObject({
+      ok: false,
+      feedback: {
+        severity: "backpressure",
+        code: "page-database-start-failed",
+        detail: expect.stringContaining("execution-admission-unavailable") as unknown as string,
+      },
+    });
+    expect(root.mount.attributes.get("data-pwa-status")).toBe("backpressured");
+    expect(root.serviceWorker.registrations).toHaveLength(0);
   });
 
   test("drains a peer invalidation queued while startup hydration is still running", async () => {

@@ -6,12 +6,15 @@ import type {
   ZetaDbTickReadout,
   ZetaDbTickRequest,
 } from "../zetadb/zeta-db-node";
+import type { BrowserExecutionAdmissionPort } from "./browser-execution-admission";
 import type { BrowserDatabaseInvalidation } from "./browser-tab-coordinator";
 
 export interface BrowserZetaDbTabFeedback {
   readonly severity: "backpressure" | "heat";
   readonly code:
     | "database-tab-configuration-invalid"
+    | "database-tab-admission-failed"
+    | "database-tab-execution-backpressured"
     | "database-tab-executor-threw"
     | "database-tab-observer-failed"
     | "database-tab-publish-failed"
@@ -36,6 +39,7 @@ export interface BrowserZetaDbTabRuntimeOptions {
   readonly databaseNodeId: string;
   readonly executorId: string;
   readonly limits: ZetaDbTickLimits;
+  readonly admission: BrowserExecutionAdmissionPort;
   readonly execute: BrowserZetaDbTabExecutor;
   readonly observe: (readout: ZetaDbTickReadout) => BrowserZetaDbTabEdgeResult;
   readonly publishInvalidation: (databaseNodeId: string, revision: number) => BrowserZetaDbTabEdgeResult;
@@ -72,6 +76,15 @@ function isRevision(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
 }
 
+function isExecutionAdmissionPort(value: unknown): value is BrowserExecutionAdmissionPort {
+  if (value === null || typeof value !== "object") return false;
+  try {
+    return typeof Reflect.get(value, "tryRun") === "function";
+  } catch {
+    return false;
+  }
+}
+
 function validLimits(limits: ZetaDbTickLimits): boolean {
   return (
     Number.isSafeInteger(limits.maxDeltas) &&
@@ -90,6 +103,62 @@ function edgeFailure(
   return failed(code, `${edge.feedback.code}: ${edge.feedback.detail}`, edge.feedback.severity);
 }
 
+type ExecutorOutcome =
+  | { readonly kind: "returned"; readonly result: ZetaDbResult<ZetaDbTickReadout> }
+  | { readonly kind: "threw" };
+
+async function captureExecutor(
+  options: BrowserZetaDbTabRuntimeOptions,
+  request: ZetaDbTickRequest,
+): Promise<ExecutorOutcome> {
+  try {
+    return { kind: "returned", result: await options.execute(request) };
+  } catch {
+    return { kind: "threw" };
+  }
+}
+
+async function admitMutation(
+  options: BrowserZetaDbTabRuntimeOptions,
+  operation: () => Promise<ExecutorOutcome>,
+): Promise<BrowserZetaDbTabResult<ExecutorOutcome>> {
+  let admitted;
+  try {
+    admitted = await options.admission.tryRun<ExecutorOutcome>(`database/${options.databaseNodeId}`, operation);
+  } catch {
+    return failed(
+      "database-tab-admission-failed",
+      "The injected browser database execution admission port threw during a finite tick.",
+    );
+  }
+  if (!admitted.ok) {
+    return failed(
+      "database-tab-admission-failed",
+      `${admitted.feedback.code}: ${admitted.feedback.detail}`,
+      admitted.feedback.severity,
+    );
+  }
+  return admitted.value.status === "busy"
+    ? failed(
+        "database-tab-execution-backpressured",
+        `Another browser context is executing a finite tick for ${options.databaseNodeId}.`,
+        "backpressure",
+      )
+    : succeeded(admitted.value.value);
+}
+
+async function executeDatabaseRequest(
+  options: BrowserZetaDbTabRuntimeOptions,
+  request: ZetaDbTickRequest,
+): Promise<BrowserZetaDbTabResult<ZetaDbTickReadout>> {
+  const operation = (): Promise<ExecutorOutcome> => captureExecutor(options, request);
+  const outcome = request.deltas.length === 0 ? succeeded(await operation()) : await admitMutation(options, operation);
+  if (!outcome.ok) return outcome;
+  return outcome.value.kind === "threw"
+    ? failed("database-tab-executor-threw", "The injected browser database executor threw during a finite tick.")
+    : outcome.value.result;
+}
+
 /**
  * Serialize this tab's writes and peer-triggered rereads over one finite tick executor.
  * Messages carry only revision evidence; persisted database bytes remain authoritative.
@@ -97,7 +166,12 @@ function edgeFailure(
 export function startBrowserZetaDbTabRuntime(
   options: BrowserZetaDbTabRuntimeOptions,
 ): BrowserZetaDbTabResult<BrowserZetaDbTabRuntime> {
-  if (!isIdentifier(options.databaseNodeId) || !isIdentifier(options.executorId) || !validLimits(options.limits)) {
+  if (
+    !isIdentifier(options.databaseNodeId) ||
+    !isIdentifier(options.executorId) ||
+    !validLimits(options.limits) ||
+    !isExecutionAdmissionPort(options.admission)
+  ) {
     return failed(
       "database-tab-configuration-invalid",
       "A browser database tab runtime requires identifiers and positive safe-integer tick budgets.",
@@ -120,24 +194,16 @@ export function startBrowserZetaDbTabRuntime(
       return succeeded(lastTick);
     }
 
-    let executed: ZetaDbResult<ZetaDbTickReadout>;
-    try {
-      const request: ZetaDbTickRequest = {
-        nodeId: options.databaseNodeId,
-        executorId: options.executorId,
-        executorKind: "browser-tab",
-        deltas,
-        limits: options.limits,
-        ...(expectedRevision === null ? {} : { expectedRevision }),
-        ...(expectedRevision === null ? {} : { requireComplete: true }),
-      };
-      executed = await options.execute(request);
-    } catch {
-      return failed(
-        "database-tab-executor-threw",
-        "The injected browser database executor threw during a finite tick.",
-      );
-    }
+    const request: ZetaDbTickRequest = {
+      nodeId: options.databaseNodeId,
+      executorId: options.executorId,
+      executorKind: "browser-tab",
+      deltas,
+      limits: options.limits,
+      ...(expectedRevision === null ? {} : { expectedRevision }),
+      ...(expectedRevision === null ? {} : { requireComplete: true }),
+    };
+    const executed = await executeDatabaseRequest(options, request);
     if (!executed.ok) return executed;
 
     const tick = executed.value;

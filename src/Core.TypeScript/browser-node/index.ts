@@ -134,6 +134,22 @@ export {
 } from "./zeta-storage-cell";
 
 export {
+  BROWSER_EXECUTION_ADMISSION_SCHEMA,
+  browserExecutionAdmissionFailed,
+  browserExecutionAdmitted,
+  browserExecutionBusy,
+  createInMemoryBrowserExecutionAdmission,
+  isBrowserExecutionResourceId,
+  type BrowserExecutionAdmissionFeedback,
+  type BrowserExecutionAdmissionPort,
+  type BrowserExecutionAdmissionPortResult,
+  type BrowserExecutionAdmissionReadout,
+  type BrowserExecutionAdmissionResult,
+} from "./browser-execution-admission";
+
+export { createNativeBrowserExecutionAdmission } from "./browser-web-lock-execution-admission";
+
+export {
   BROWSER_ZETA_DB_WAKE_RESPONSE_SCHEMA,
   BROWSER_ZETA_DB_WAKE_SCHEMA,
   handleBrowserZetaDbWakeMessage,

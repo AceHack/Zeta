@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { createInMemoryBrowserExecutionAdmission } from "../browser-node/browser-execution-admission";
 import {
   createInMemoryZetaDbImagePort,
   runZetaDbNodeTick,
@@ -167,6 +168,7 @@ describe("Dark Hall browser database controller", () => {
       databaseNodeId: "database-a",
       executorId: "tab-a",
       limits: { maxDeltas: 8, maxEntries: 32, maxCheckpointBytes: 32 * 1024 },
+      admission: createInMemoryBrowserExecutionAdmission(),
       execute: (request) => runZetaDbNodeTick(port, request),
       observe: () => ({ ok: true }),
       publishInvalidation: () => ({ ok: true }),
