@@ -33,6 +33,7 @@ establishes a common understanding + a metric of trust that
 leadership must actively anchor.
 
 ## Aaron's extension: substrate at beacon-level IS the
+
 ## alignment contract
 
 Aaron 2026-05-04 verbatim:

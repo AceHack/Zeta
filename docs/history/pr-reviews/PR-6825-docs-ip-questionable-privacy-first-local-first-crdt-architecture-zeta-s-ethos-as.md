@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron-forwarded talk (2026-06-07, "similar thought lineage; do it in zset if it makes sense")
+
 Privacy-first / decentralized / local-first design **is Zeta's manifesto stated as architecture** (consent-first §6, weight-free §3, user-at-center):
 
 - **decomplecting** (Rich Hickey, cited) = Rodney's Razor + DV2.0 + hexagonal ports

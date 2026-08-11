@@ -76,9 +76,11 @@ Next: run web searches per prompt, land in research/ docs, then inline in AGENT-
 - Prepares research landing for remaining rules without broad scope.
 
 ## One bounded step
+
 Exactly one change: the TS stub. Next slice can consume the helper for actual anchor research.
 
 ## Claim protocol
+
 Co-Authored-By: Grok <noreply@x.ai>
 Branch: claim/b0314-bp-nn-rule-anchor-backfill-slice10-riven-2026-05-11
 Worktree: .config/superpowers/worktrees/Zeta/claim-b0314-...-slice10-riven-2026-05-11

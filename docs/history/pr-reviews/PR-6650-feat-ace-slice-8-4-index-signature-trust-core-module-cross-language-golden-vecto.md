@@ -47,6 +47,7 @@ Spec: `docs/agendas/ace-package-manager/2026-06-03-ace-slice8.4-index-signature-
 - Envelope `sig` + `key_id` + canonical bytes **independently re-derived via Python `cryptography`** at fixture-creation (non-tautological, assert-don't-skip).
 
 ### Canonical-gate status (operator 2026-06-03)
+
 Per the canonical-primitive gate (proof **and** 4-language byte-lock): index-signature stays **TS-only + proof-owed → NOT canonical yet**. The golden vectors are the *data the eventual 4-language byte-lock + proof run on*; the proof half lives in the formal-coverage / lean-proof lane.
 
 ### Gates (all green locally)

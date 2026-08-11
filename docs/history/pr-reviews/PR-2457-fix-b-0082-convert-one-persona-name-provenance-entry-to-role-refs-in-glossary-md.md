@@ -41,9 +41,11 @@
 - Grep for persona names in provenance context: only this entry matched.
 
 ## Why this slice
+
 081KQ8P5D0008QG0R0032HWBYK audit scope noted likely other entries, but smallest safe = this explicit one from the source Copilot finding on PR #671. Decomposition assumption: the item was broader than one edit; this is the atomic first step.
 
 ## Next
+
 Child row for full sweep + TS audit tool (to satisfy 'prefer code over docs') can follow.
 
 Co-Authored-By: Grok <noreply@x.ai>

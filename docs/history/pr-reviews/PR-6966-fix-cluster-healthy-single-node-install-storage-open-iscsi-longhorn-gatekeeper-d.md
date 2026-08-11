@@ -32,20 +32,25 @@ Hardens a fresh install so it comes up healthy on its own. Every gap was found d
 ## What was broken (and is now fixed)
 
 ### 1. Storage was completely dead — `open-iscsi` missing
+
 Longhorn attaches volumes over iSCSI, but `open-iscsi` was configured on **no** node. So the `longhorn` StorageClass could never provision and **every** stateful workload (vault, spire, kube-prometheus-stack, nats, weaviate, and any agent StatefulSet for persistent memory) sat `Pending` forever.
 → New `modules/longhorn-prereqs.nix` (open-iscsi + `iscsi_tcp` + nfs-utils for RWX + `/var/lib/longhorn`), imported by `common.nix` so **every** node gets it. The storage analog of the rpfilter fix.
 
 ### 2. Gatekeeper bricked the control plane
+
 `validatingWebhookFailurePolicy: Fail` makes the webhook intercept **every** write cluster-wide — including k3s's own cluster-scoped CRD updates (`addons.k3s.cattle.io`). With gatekeeper's pods not ready (no endpoints), those writes are rejected and **k3s aborts startup → the apiserver crash-loops** (observed: 41 restarts in 10 min, API permanently 503).
 → Validating webhook → `Ignore` (fail-open; matches the mutating one), exempt system/infra namespaces, replicas → 1. A policy engine must never be able to take down the apiserver.
 
 ### 3. Longhorn replica count > node count
+
 `defaultReplicaCount: 2` on a single node leaves every volume permanently `Degraded`. → `1` (bump as workers join).
 
 ### 4. Two default StorageClasses
+
 k3s ships `local-path` (default) **and** `local-storage.nix` declares `zeta-local-path` (default) — invalid; class-less PVCs bind non-deterministically. → `--disable=local-storage` so `zeta-local-path` is the single default.
 
 ## Result
+
 A reinstall should now reach: node Ready → DNS up → Longhorn provisions → vault/spire/stateful PVCs bind → gatekeeper can't deadlock the API. Nothing here changes multi-node intent (replica counts carry 'bump as workers join' notes).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -28,6 +28,7 @@
 ## Description
 
 ## What — first non-dep slice of the COW store (`081KTGTJC1Q`)
+
 A value stored once, keyed by its content hash (the key IS the address):
 
 - **Single-instance / dedup** — `put` of already-present content is a no-op on the node set (idempotent).
@@ -35,6 +36,7 @@ A value stored once, keyed by its content hash (the key IS the address):
 - **Hash-parameterized** — address from injected `hashOf`: XxHash128 (`ZSetMerkle.root`) today, **BLAKE3** for the git-replacement store (pending the dep add).
 
 ## Test
+
 `dotnet test … --filter ContentStore` → **4 passed** (address round-trip, dedup+idempotent put, distinct-content→distinct-nodes, COW version isolation).
 
 Next: multi-parent closure-table DAG (folders → nodes) on top of `Hierarchy.fs`.

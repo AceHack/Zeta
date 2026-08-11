@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 One bounded step: re-decomposed 081KQDTYV0008QG0R003QD8YTE (too-broad 3-subitem framing) into 6 smallest dependency-ordered atomic child backlog rows using fresh IDs 081KRA5AR0008QG0R000Y6102S..081KRA5AR0008QG0R0021SSM9R. Assumed prior decomposition mistake per rules. Prefer TS code paths. Worktree-isolated, claim branch already pushed, root untouched.
 
 This PR changes two files: the 081KQDTYV0008QG0R003QD8YTE backlog row and the Claude.ai stability correction research archive.
 
 ## Decomposition
+
 **Buildable now:**
 
 - 081KRA5AR0008QG0R000Y6102S — TS pre-push hook entrypoint

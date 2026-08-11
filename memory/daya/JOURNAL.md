@@ -123,12 +123,14 @@ P2:
   engineer (Daya)` (prose-voice; Samir judges).
 
 ### Rename-sweep residuals
+
 Round-33 `researcher -> engineer` 27-file sweep: 3 misses in
 new-persona surfaces (above, all P1). PROJECT-EMPATHY ->
 CONFLICT-RESOLUTION 98-file sweep: zero residuals across 14
 audited files.
 
 ### Recommended new entry
+
 `docs/DEBT.md` `wake-up-drift`: "codify a skill-body + cross-
 reference grep-gate in the rename checklist; r33 sweep caught
 27 files but missed 3 self-references inside newly-landed

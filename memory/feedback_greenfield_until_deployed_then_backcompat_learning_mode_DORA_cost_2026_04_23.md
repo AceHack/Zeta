@@ -199,6 +199,7 @@ Breaking changes after deployment undo the lock-in unless
 coordinated.
 
 ### External-contribution-ready branch-protection
+
 (2026-04-23 delegation)
 
 External contributors need predictable contracts. A

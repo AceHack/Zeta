@@ -28,6 +28,7 @@
 ## Description
 
 ## What — ecosystem interop you greenlit (`081KTH0WQ3C`)
+
 Debezium's `before`/`after`/`op` envelope **is a DBSP Z-set delta** — so we can read a Debezium stream into Z-set deltas and emit our deltas as Debezium events.
 
 - **`toZSetDelta`** (READ): `c`/`r` → `+after`, `d` → `−before`, `u` → `−before+after`, `t` → empty (truncate = retract-all, handled at stream level).
@@ -35,6 +36,7 @@ Debezium's `before`/`after`/`op` envelope **is a DBSP Z-set delta** — so we ca
 - Generic over the row type `'K` (`DynamicValue` is `NoComparison`, so DynamicValue rows key by a canonical encoding — integration follow-up; CloudEvents envelope wrap is the other follow-up).
 
 ## Test
+
 `dotnet test … --filter DebeziumCdc` → **4 passed** incl. FsCheck law **read∘write = id** at the delta level.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

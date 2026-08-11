@@ -47,6 +47,7 @@ Operator-forwarded Aaron-Mika conversation landed as the **canonical architectur
 - Per-partition **CRDTs**; provenance-for-payment-only (not licensing); **leash = plugin, not base**.
 
 ## Razor
+
 Architecture (DUs/RX/Git/CRDTs/Zeta-ID/rollups/SPIFFE) is operational; *threads-of-time / time breaks its promise* is mirror-tier (the per-agent-illusion engineering requirement), not literal-time-metaphysics.
 
 **081KSV2WD0008QG0R0020P6ZH2** owns the self-propagating-Markdown compiler-rule + bootstrap-traveler template (per-partition-root resolution via RX-join-over-CRDTs).

@@ -96,6 +96,7 @@ catalogue was unbalanced (no negative-directive term);
 `decohere*` restores the pair.
 
 ### Decoherence — physics register primer (for substrate
+
 context)
 
 In quantum physics, decoherence is the loss of phase

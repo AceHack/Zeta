@@ -37,9 +37,11 @@ The **C# corner** of the four-oracle compiler-BFT for the Bonsai-subset expressi
 - **accumulate-mode**: `ParseAll` collects **every** per-node decline keyed by JSON-path; `ToProblemDetails` groups into the RFC-9457 `ProblemDetails` errors-map. Ferry of TS #6436.
 
 ## Tests — 23, all pass; 0 warnings
+
 Byte-exact golden fixed-point (theory over all golden cases) + an independently-constructed tree → same canonical + rejection-by-variant (UnsupportedVersion / MalformedJson / UnknownKind / UnknownConstTag / UnknownOp / NonSafeInt / NonCanonical / TooDeep) + accumulate (3 independent declines with their paths + `ProblemDetails` keys + single malformed / single non-canonical). Analyzer-clean under Meziantou + .NET analyzers + `TreatWarningsAsErrors`.
 
 ## Oracle family
+
 TS + F# + C# done. **Rust is the last corner** (next PR; production zero-dep → hand-rolled minimal JSON reader for the tiny canonical grammar, `std::result::Result` native).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

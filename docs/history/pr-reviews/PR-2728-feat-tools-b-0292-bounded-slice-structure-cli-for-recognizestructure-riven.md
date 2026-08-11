@@ -28,12 +28,15 @@
 ## Description
 
 ## Summary
+
 One bounded step on 081KR2E4K0008QG0R001ZZ5XXF: added `--structure` flag to `tools/concordance/concordance.ts` exercising the `recognizeStructure` export (TS, no new deps, GPU-ready stub surface).
 
 ## Why
+
 Extends the typed surface from the prior re-decomp slice into a testable CLI entrypoint. Keeps the no-op stub (as current design) but wires it for future pattern impl.
 
 ## Focused check outcome
+
 ```
 $ bun tools/concordance/concordance.ts --structure README.md
 Structure patterns: 0
@@ -47,9 +50,11 @@ Structure patterns: 0
 - Prepares next atomic child (e.g. non-empty pattern logic).
 
 ## Claim
+
 Per AGENT-CLAIM-PROTOCOL, this is Riven's claim on claim/b0292-... branch. Co-Authored-By trailer on commit.
 
 ## Next
+
 After merge, re-decompose 081KR2E4K0008QG0R001ZZ5XXF per "always re-decompose" rule into children for subsequent bounded slices.
 
 Made with [Cursor](https://cursor.com)

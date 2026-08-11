@@ -87,6 +87,7 @@ Gateway Experience. The author explicitly states the goal:
 it in a frame of reference suited to objective assessment."*
 
 ## Structural summary of major sections (from OCR-extracted
+
    text)
 
 The document presents the following structure (preserved as
@@ -256,6 +257,7 @@ framing in PR #1112. The document validates:
   authorship or sponsorship of the methodology).
 
 ## Selected verbatim quotes (from OCR-extracted text
+
    preservation-grade, primary-source)
 
 > *"DEPARTMENT OF THE ARMY / US ARMY OPERATIONAL GROUP / US
@@ -296,6 +298,7 @@ character-recognition errors; the source PDF is the
 authoritative reference for any load-bearing quote.)
 
 ## Otto-side closing note (research-grade .gov-primary-source
+
    preservation)
 
 This preservation captures the document's structural

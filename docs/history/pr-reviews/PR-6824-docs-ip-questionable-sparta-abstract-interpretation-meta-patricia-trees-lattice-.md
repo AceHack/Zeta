@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron-forwarded talk (2026-06-07, "this is our nod, relevant")
+
 **Sparta / abstract interpretation** (Meta's ReDex). Two pieces land on Zeta:
 
 - **Patricia trees** (Okasaki & Gill, *Fast Mergeable Integer Maps*) — immutable integer-keyed maps, structural sharing / store-only-diffs (Sparta: hash-table → Patricia in 4 lines → **90% memory / 60% time**). The **int-keyed cousin of our HAMT** for `ZSet`/`IndexedZSet`/seq-keyed state.

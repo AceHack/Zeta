@@ -38,6 +38,7 @@
 **Capture** — command surface is NOT a 1:1 git mirror — curated, retractable-by-nature, compensating actions built in where not truly retractable; the data plane is the ONE interface over both git AND filesystem; git-zeta verbs are the freedom escape layer.
 
 ## Test
+
 `dotnet test tests/Tests.FSharp.Git` → **29 passed** (3 new).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

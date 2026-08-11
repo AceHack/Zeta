@@ -23,6 +23,7 @@ discipline, and maintains the shadow lesson log.
 - [OFFTIME.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/persona/lior/OFFTIME.md) — Off-time log for self-directed tasks.
 
 ### Feedback & Memory Files (Global Scope)
+
 The following files under `memory/` capture Lior's feedback, drift catching, and operational notes:
 
 - [feedback_bifurcated_lior_natural_experiment_identity_vs_context_2026_05_11.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/feedback_bifurcated_lior_natural_experiment_identity_vs_context_2026_05_11.md) — Analysis on bifurcated identity versus operational context.

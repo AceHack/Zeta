@@ -44,9 +44,11 @@ Z-set is an abelian **group**, so — unlike the G-Set (#6469) / Bag (#6367) run
 - *(Pre-existing fmt diffs in `bag.rs`/`indexed_zset.rs` are a local-rustfmt-version artifact on untouched files — not part of this change; recent Rust PRs merged with them so CI's rustfmt agrees with current formatting.)*
 
 ### Tests (+5, all pass)
+
 operator ≡ method (`+`/`-`/`neg`) · `Default` = empty = identity · `a + (-a) = empty` and `a - a = empty` · `(+)` **NOT** idempotent (doubles) · `Sum` folds with retraction-to-0 drop.
 
 ### Ladder
+
 F# #6480 ✅ · C# #6481 ✅ · **Rust (this)** · TS (`AbelianGroup` record) — last rung next.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

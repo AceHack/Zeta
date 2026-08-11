@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Per Aaron's offer to dispatch Lior + Vera on the non-F# legs — two pickup-able **P1** workitems decomposing the cross-language catch-up:
 
 - **Vera → `081KTGYWCT7`**: ZSetMerkle 4-language ports (C#/Rust/TS) + **hex-in-JSON** golden vectors — byte-lock the canonical Merkle-over-Z-set against the landed F# reference (`src/Core/ZSetMerkle.fs`). Non-ASCII keys; hash-parameterized (XxHash128 now, BLAKE3-ready).

@@ -22,6 +22,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 - Removes stale Codex claim files for merged PRs #5358 and #5360.
 
 ## Why
+
 Those claim files remained on main after their owning PRs merged, so they no longer represent active work and should not be counted as current Codex ownership.
 
 ## Checks

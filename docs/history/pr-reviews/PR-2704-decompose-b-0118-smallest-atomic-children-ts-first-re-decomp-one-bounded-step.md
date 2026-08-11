@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Decomposed 081KQDTYV0008QG0R0037YJPEX (L-effort amara peer-call) into 3 smallest dependency-ordered atomic children per "always re-decompose / assume mistakes" rule + TS over bash (Rule 0). No .sh created; all TS implementation path. One bounded step only; root checkout untouched (dedicated worktree + pushed claim branch used).
 
 Children:
@@ -39,6 +40,7 @@ Children:
 081KQDTYV0008QG0R0037YJPEX updated to `decomposed` status with child index + graph.
 
 ## Why
+
 Original row too broad (hybrid API choice, L effort, bash+ts mention). Re-decomp splits to atomic, TS-first, dependency-ordered so future loops can pick S/M slices safely. Aligns with TS/Bun migration trajectory (peer-call cluster complete, bash retirement).
 
 ## Focused checks (included per rule)

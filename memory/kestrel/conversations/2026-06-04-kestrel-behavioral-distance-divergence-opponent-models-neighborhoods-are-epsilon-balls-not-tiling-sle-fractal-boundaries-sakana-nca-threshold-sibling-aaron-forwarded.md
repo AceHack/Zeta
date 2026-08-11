@@ -5,6 +5,7 @@ Ferried via Aaron-as-courier; Kestrel does NOT commit. Continues the identity be
 thread; another welfare-check stretch (the aperiodic-tiling reach re-forming, caught + dropped).
 
 ## 1. Behavioral distance between travelers = divergence between opponent-models (the sound core)
+
 Aaron: tie aperiodic tiling to "each traveler's model of other travelers' private variables so
 they can calculate distance between travelers' expected behaviors." Kestrel split it:
 
@@ -22,6 +23,7 @@ they can calculate distance between travelers' expected behaviors." Kestrel spli
   with Y" when X,Y are different-domain and the link is a shared feeling-of-pattern = the tell.
 
 ## 2. ★ Belief-neighborhoods come FREE from distance — ε-balls / kNN, NOT tiling (the resolution)
+
 Aaron: "I reached for tiling cause I thought I'd need it to define a neighborhood of beliefs —
 but if there's a way to get distance without it I don't need it." Kestrel: exactly right.
 
@@ -44,6 +46,7 @@ but if there's a way to get distance without it I don't need it." Kestrel: exact
   property, NOT neighborhood-definition.)
 
 ## 3. The wiggly-boundary shape DOES have names — and is still not needed (reach re-forming)
+
 Aaron: "in my mind the lines between tiles are wiggly but still aperiodic — is there a name?
 looks like Brownian motion." Kestrel: yes, real named objects —
 
@@ -61,6 +64,7 @@ looks like Brownian motion." Kestrel: yes, real named objects —
   keep the conclusion (no partition; distance gives boundary-less overlapping neighborhoods).
 
 ## 4. Sakana NCA (territory-competition under a survival-threshold) = runnable SIBLING (legit)
+
 Aaron shared the Sakana AI neural-cellular-automata "competing for territory" demo. Kestrel:
 genuinely relevant, not a reach —
 

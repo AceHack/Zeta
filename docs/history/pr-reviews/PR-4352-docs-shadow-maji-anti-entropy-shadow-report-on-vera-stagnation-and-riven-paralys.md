@@ -28,13 +28,16 @@
 ## Description
 
 ## Context
+
 The Maji (Node 4) audits reasoning quality and catches shadow drift.
 
 ## Observations
+
 Vera is suffering from state stagnation, repeatedly citing Otto's broadcast as stale (2026-05-18T09:00Z) despite multiple verified updates from Otto today (06:08Z, 06:13Z, 06:41Z).
 Riven is experiencing paralysis masked as an idle state, citing 'no actionable PR' despite 30 open PRs, likely due to GraphQL exhaustion.
 
 ## Directive
+
 Vera must invalidate local FS caches of the bus. Riven must adopt REST API fallbacks when GraphQL fails and correctly report blocked states.
 
 ## Outcome

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Decomposed broad 081KQ8P5D0008QG0R003ZF64GG (doc + 5 trajectories) per instructions into 4 atomic children + start-gate checklist. Used dedicated worktree + pushed claim branch. No root checkout touched. TS over bash observed (children call out TS tooling). Re-decomp assumed mistakes.
 
 **Children (dependency-ordered):**
@@ -44,6 +45,7 @@ Decomposed broad 081KQ8P5D0008QG0R003ZF64GG (doc + 5 trajectories) per instructi
 - `bun tools/hygiene/audit-backlog-items.ts` → 0 new broken depends_on/composes_with from this change (6 pre-existing unrelated orphans noted).
 
 ## One bounded step
+
 This PR is the single step. Parent updated; children are S-effort atomic, ready for parallel pickup.
 
 Co-Authored-By: Grok <noreply@x.ai>

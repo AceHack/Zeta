@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest bounded slice of 081KR2E4K0008QG0R003RVDX91 (P1): skeleton for `tools/playwright/github-ui/snapshot.ts`.
 
 - Re-decomposed on the fly (original row too broad; assumes decomp mistakes per rules).
@@ -48,6 +49,7 @@ Smallest bounded slice of 081KR2E4K0008QG0R003RVDX91 (P1): skeleton for `tools/p
 - Claim + Co-Authored-By trailer.
 
 ## Next
+
 Subsequent slices will flesh extractors; this PR arms the foundation.
 
 Co-Authored-By: Grok <noreply@x.ai>

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KQ3HBZ0008QG0R0012P9EBM (P2 universal substrate-knowledge sweep). Re-decomposed parent (L-effort, too broad per "always re-decompose" rule); this is one bounded S-step: F# code addition in existing `Zeta.SubstrateDiscovery` tool.
 
 - Inaugural biology substrate wired as `--biology` command (retraction-native autopoiesis/homeostasis + Kauffman/Wolpert seeds)
@@ -42,9 +43,11 @@ Smallest safe slice of 081KQ3HBZ0008QG0R0012P9EBM (P2 universal substrate-knowle
 - `dotnet build .../Zeta.SubstrateDiscovery.fsproj`: 0/0
 
 ## One bounded step
+
 Exactly as required: no scope creep, no new files, no broad implementation. Next slice would be trade/vocational or next subject after re-decomp.
 
 ## Claim
+
 Branch: `claim/081KQ3HBZ0008QG0R0012P9EBM-universal-sweep-smallest-slice-riven-2026-05-09`
 Worktree: isolated, not root
 

@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron-forwarded Strange Loop talk (2026-06-07)
+
 **David Greenberg — Hitchhiker trees**: a **path-copying (functional/immutable) fractal/B+ tree** with per-index-node write buffers + flush control, optimized for remote storage (datacrypt). *"This is also relevant."*
 
 It's the **sorted, range-scannable, IO/remote-optimized immutable index** for the COW store:

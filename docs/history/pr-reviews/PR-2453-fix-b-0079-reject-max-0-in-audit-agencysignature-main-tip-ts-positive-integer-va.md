@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KQ8P5D0008QG0R002NYQ5PJ (P2): hardened the `--max` validator in the live TS implementation of the AgencySignature main-tip auditor.
 
 Re-decomposition during build: 081KQ8P5D0008QG0R002NYQ5PJ targeted the legacy `.sh` (Codex findings on PR #663). Per Rule 0 (no new .sh) + completed TS port (#882), the canonical surface is now `audit-agencysignature-main-tip.ts`. The 5 Codex findings are addressed incrementally in the TS port lineage; this slice closes the specific `--max=0` silent-PASS gap (finding #5).

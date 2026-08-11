@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 081KSXN940008QG0R00171YAZW's row said **"not started,"** but `tools/agent-bus/` already exists on main — caught while about to (re)build slice 1 (verify-existing-substrate; no duplicate landed). Corrects the stale status.
 
 ## Actual state

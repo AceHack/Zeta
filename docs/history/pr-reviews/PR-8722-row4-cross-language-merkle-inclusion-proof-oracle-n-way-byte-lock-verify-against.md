@@ -32,6 +32,7 @@
 Discharges the remaining N-way leg of math-team handoff **row 4**. The structural + FsCheck legs (completeness, no-forge, determinism, single-leaf, retraction-native) and the **root** byte-lock (`zset-merkle`) are already on main. This adds the missing piece: the per-leaf **witness** (the audit path) is now byte-portable across independent language oracles, not just exercised in F#.
 
 ### What's proven
+
 A new `zset-merkle-proof` cross-verification primitive byte-locks the full inclusion proof — **sibling digests + left/right flags + leaf encoding + the root it commits to** — via the canonical string:
 
 ```
@@ -39,6 +40,7 @@ root_hex|leaf_key_hex:leaf_weight|<R|L>sibling_hex,...
 ```
 
 ### Two independent oracles (N-way independence preserved)
+
 | Oracle | Source | Role |
 |---|---|---|
 | **F#** | `ZSetMerkleProof.CrossVerify.Tests.fs` | emits via the **shipping** `ZSetMerkle.proofFor` (reference impl under test) |
@@ -54,9 +56,11 @@ Both produce **byte-identical** proof strings for all 7 vectors.
 `proof.test.ts` pins fidelity in the `bun test` sweep: weight tamper, sibling-digest tamper, and an **asymmetric** direction-flag flip each break verification; single-leaf has an empty path and verifies. (The odd-node self-pairing step is genuinely symmetric, so the test deliberately flips an asymmetric `,L` step.)
 
 ### Vectors
+
 `singleton`, `pair-left`, `pair-right`, `triple-odd-node` (odd-node duplication), `net-retraction-survivor` (retracted pair cancels before the proof — root matches the root primitive's `multi-signed-net`), `non-ascii-ordinal` (UTF-8 byte ordering), `eight-leaf-balanced`.
 
 ### Honest scope
+
 Structure + cross-language byte-portability are **proven**. Digest collision-resistance remains the **named crypto premise** (XxHash128 is non-cryptographic; swap to BLAKE3 for Byzantine integrity) — identical scope to the sibling root primitive.
 
 ### Gate

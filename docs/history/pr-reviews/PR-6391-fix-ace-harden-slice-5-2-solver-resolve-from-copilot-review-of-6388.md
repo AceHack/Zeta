@@ -30,12 +30,14 @@
 Follow-up to #6388 (slice 5.2 — semver + solver, merged `a7263f2d2`). Auto-merge fired on the 7 required checks **before** Copilot's async review completed, so 8 review threads landed on the already-merged PR. This addresses all 8 on the now-merged code. **TS-only; no .NET touched.**
 
 ### P0 robustness — untrusted-JSON crash → clean refusal
+
 Dependency edges are untrusted JSON. Both edge kinds read `edge.version` (`registry` → `parseRange`, `inline` → `satisfies`/pin), so a non-string `version` (number/null) threw instead of refusing.
 
 - **solver.ts** — `typeof edge.name/edge.version === "string"` guard right after the kind-check → `invalid-package`.
 - **resolve.ts** — registry branch now parses `edge.version` with `parseRange` (guards non-string **and** malformed-string range) before the `satisfies` re-check; inline branch adds the `edge.version` string guard.
 
 ### P1 — dead reason
+
 `resolve()`'s `ResolveReason` listed `"bad-range"` but never emitted it. The `parseRange` path above now emits it legitimately (non-string / malformed registry range) — defense-in-depth, since `resolve()` must not assume `solve()` ran.
 
 ### P0 lint + P2 cleanups
@@ -46,6 +48,7 @@ Dependency edges are untrusted JSON. Both edge kinds read `edge.version` (`regis
 - **ace.ts** — load the registry once and reuse for both `solve()` and `resolve()` (was `loadRegistry()` twice → the two phases could observe different registries).
 
 ### Tests
+
 +5 regression tests (2 solver, 3 resolve): non-string version → `invalid-package` (solver) / `bad-range` (resolve registry), malformed range string → `bad-range`, inline non-string version → `invalid-package`. Full ace suite **168 pass / 0 fail**; strict whole-repo `tsc` clean.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

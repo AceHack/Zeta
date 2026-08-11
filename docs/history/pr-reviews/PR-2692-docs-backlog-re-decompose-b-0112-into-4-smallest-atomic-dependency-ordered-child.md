@@ -37,6 +37,7 @@
 - Build gate passed (0 warnings, 0 errors) before edit.
 
 ## Focused checks outcome
+
 bun tools/hygiene/audit-backlog-items.ts:
 
 - Broken depends_on: 6 (pre-existing, unrelated to 081KQDTYV0008QG0R003MV3WAR or children)
@@ -44,6 +45,7 @@ bun tools/hygiene/audit-backlog-items.ts:
 - No new orphans or 081KQDTYV0008QG0R003MV3WAR graph issues introduced.
 
 ## One bounded step
+
 Only the re-decomp note + umbrella update; child row creation deferred to next atomic pass.
 
 Co-Authored-By: Grok <noreply@x.ai>

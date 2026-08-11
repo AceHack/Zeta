@@ -35,6 +35,7 @@
 - add `QubitIsoRawGateSweep` to the quantum BenchmarkDotNet suite
 
 ## Independence shape
+
 Q# still owns the oracle fixture. F# validates and benchmarks against the committed JSON treaty with F#/.NET only; no QDK, Python, or TS runtime dependency is introduced.
 
 ## Validation

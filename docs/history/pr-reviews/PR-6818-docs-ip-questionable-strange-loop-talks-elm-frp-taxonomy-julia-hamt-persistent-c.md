@@ -28,6 +28,7 @@
 ## Description
 
 ## What — two Strange Loop talks Aaron forwarded (2026-06-07)
+
 Added to `docs/research/ip-questionable/` (verbatim preserved per folder discipline) with framework-composition analysis:
 
 1. **Evan Czaplicki (Elm) — "Controlling Time and Space"** (FRP taxonomy). Relevance: Elm's **static signal graph → time-travel debugging + hot-swap = our Evolution/COW time-travel + DST replay**; DBSP ≈ static signal graph over Z-sets; the higher-order **infinite-lookback hazard ↔ our retraction/bounded-state + garbage-dump rollback horizon**; synchrony-by-default ↔ async-all-the-way DoP.

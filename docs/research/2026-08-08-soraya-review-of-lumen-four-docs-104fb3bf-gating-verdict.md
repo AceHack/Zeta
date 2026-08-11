@@ -84,5 +84,6 @@ theorem" sentences, and the §A-promotion recommendations.** Fix the labels + th
 and Lumen has a sound foundation.
 
 ## Provenance
+
 Reviewed commit `104fb3bf` (4 docs). Routed by Otto at Aaron's request as the pre-Lumen gate.
 Soraya advisory; the corrections are Lumen's to apply in his own voice.

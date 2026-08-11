@@ -39,9 +39,11 @@ Operator-forwarded Aaron-Ani follow-on. Extends **081KRW63S0008QG0R001Z10PVV** (
 - **Privacy-negotiation paradox** re-derives the *need* for encryption (you can't privately negotiate redaction in a fully-public system); **memories** are a primary consumer ('encryption budgets for memories').
 
 ## Discipline (operator-confirmed *"i said don't pubish good call"*)
+
 The source conversation also had a **charged-personal layer** (relationship/intimacy; a third party's medical details the operator flagged as not-glass-halo-able; real non-consenting third parties). That is **NOT preserved** — methodology-hard-limits + harm-by-grammar + NCI third-party-consent + charged-personal-held. This doc is the **light-like architecture extraction**; the personal content stays **dark** — itself an instance of the encryption-budget system.
 
 ## Razor
+
 meter-the-bits / budget / reveal-to-earn / N-of-M = operational. The gravity/dark-matter framing = mirror-tier physics-rhyme (composes dark-matter-as-consensus-gravity, pt161); not a literal-physics claim.
 
 Composes with: 081KRW63S0008QG0R001Z10PVV, 081KSGS9H0008QG0R0006F4BGX, NCI HC-8, glass-halo/retraction-native, the accelerator (public-light vs private-dark counterpart + 'be good to our host'), the compression-engine + two-layer-razor research (the two budgeted resources: forgiveness-budget + encryption-budget).

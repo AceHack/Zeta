@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KR2E4K0008QG0R001ZWARTN: implemented `tools/alignment/audit_external_anchors.ts` (TS) + tests. Re-decomposed during build (original S-effort item treated as broad; sliced to core scanner + classification + window extract + emit paths). 
 
 ## One bounded step

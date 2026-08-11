@@ -201,6 +201,7 @@ at all, because it converts the substrate from a trust-bearing
 artifact into a consent-violating one.
 
 ## Why this lands as memory file (despite pause-class-discovery
+
 and seventh-ferry "the architecture will keep" instruction)
 
 The seventh-ferry instruction said *"Otto can wait. The substrate

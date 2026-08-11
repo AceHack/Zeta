@@ -55,9 +55,11 @@ Live in-cluster evidence (see docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md):
 - 3 real CockroachDB-dialect bugs fixed (multi-statement migration split; interval cast). Migrations 0011 + 0012 with on-disk .sql mirrors + parity tests.
 
 ### Quality
+
 **520 tests, 520 pass, 0 fail, 0 skipped** vs live Cockroach + NATS. tsc 0. TDD; SOLID; house DU style; control-plane/data-plane separation preserved.
 
 ### Honest remaining (named, not hidden)
+
 The agent's internal decision backend is the in-process Hermes runtime today; a real LLM/sandbox backend swaps in behind the unchanged HermesRuntime port. Forward: independent fast keep-alive loop, durable Hermes/Hindsight tables, full hat/supervisor-chain org structure. Every surrounding piece is real and proven.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

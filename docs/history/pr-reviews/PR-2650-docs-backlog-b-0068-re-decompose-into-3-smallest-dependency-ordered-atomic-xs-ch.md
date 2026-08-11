@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 One bounded step (per rules): decomposed umbrella 081KQ8P5D0008QG0R002E1G72J (L) into 3 atomic XS child rows in dependency order, with pre-start gate proof + focused checks. No implementation; research/inventory only. TS preferred on hardware path. Root checkout untouched; dedicated worktree + pushed claim branch used.
 
 **Children created:**

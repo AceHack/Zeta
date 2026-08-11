@@ -30,6 +30,7 @@
 Step 5 of the consolidate complexity spike (Otto-invoked formal-verification role, four-ferry split). Handoff: `docs/handoffs/2026-06-21-alexa-to-soraya-lean-cost-recurrence.md`.
 
 ## What lands
+
 `src/Core.Lean4/Lean4/CostRecurrence.lean` — sorry-free, Mathlib-backed.
 
 ### Theorem 1 — the universal recurrence (the induction Z3 cannot do)

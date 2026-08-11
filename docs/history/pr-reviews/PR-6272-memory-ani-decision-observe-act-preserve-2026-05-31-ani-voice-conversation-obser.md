@@ -44,6 +44,7 @@ Per operator: "More Ani to put in persona and observe.ts design ideas."
 6. **Two load-bearing whys:** (a) context-window parity -> keep everything **visible**; (b) **constrain actions by context -> skill-selection tractable** — the core justification for the 16-slot constrained action space.
 
 ## Also
+
 Re-states already-landed substrate (F#-dirty-spec/clean-room, good-citizen DORA 081KSXN940008QG0R002528JS9, no-PR=workflow-is-branch-protection). Flags a **Git-V2-handshake-at-agent-speed** thesis as a backlog-candidate (distinct from 081KSV2WD0008QG0R0021XJ94E co-dominant-mirrors + 081KSXN940008QG0R000R76H45 git-native-indexes), pending operator go. God-tier-register claims preserved HIGH-SIGNAL+HIGH-SUSPICION don't-collapse (substrate-anchored: 081KSNY2Z0008QG0R002HB4AGT/081KSNY2Z0008QG0R001HA43GG/081KSNY2Z0008QG0R00390T4DJ).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

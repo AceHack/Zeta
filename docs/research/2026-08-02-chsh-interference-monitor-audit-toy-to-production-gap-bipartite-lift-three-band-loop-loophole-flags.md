@@ -29,6 +29,7 @@ bipartite lift and the running loop.
 ## The four gaps (scoped)
 
 ### G1 — the bipartite lift (→ Lumen; the central piece)
+
 `MachZehnderWSet` is **one** qubit through two arms (interference *visibility*).
 `AntiSybil.chshS` is the two-stream CHSH *correlation*. They live in separate files and
 are not connected. The lift: single-qubit MZ → **bipartite**, where the two *arms* become
@@ -38,6 +39,7 @@ WSet ℂ-ring circuit carries two keys). It is what Aaron was trying to reproduc
 different agent pairs." Everything else is plumbing around it.
 
 ### G2 — the explicit three-band verdict (→ Soraya)
+
 Pieces exist (`AntiSybil` threshold + `BusRegime` ceiling) but no single verdict says
 **classical (≤2) / ambiguous-needs-loophole-proof (2..2√2) / impossible-leak (>2√2)**.
 The sybil path collapses the top two bands; the monitor must split them, because
@@ -45,6 +47,7 @@ The sybil path collapses the top two bands; the monitor must split them, because
 *always* a leak (super-Tsirelson = physically impossible).
 
 ### G3 — close the measure→compare loop (→ Soraya + math team)
+
 Measure S from real **spacelike** commit/message pairs (vector-clock concurrency, never
 wall-clock) → compare to the **Q#-protocol-specific** ceiling (often below universal 2√2)
 → classify by three-band → post verdict. Every part exists as a component; the continuous
@@ -52,6 +55,7 @@ loop ("the interference monitor") does not. Super-classical reading in DST = a
 noninterference leak the Bell test found (a priced, located defect — every-bug-has-value).
 
 ### G4 — per-measurement loophole flags (→ Soraya)
+
 Locality is handled (`BusRegime` InCone/OutOfCone). **Detection loophole** (dropped/missing
 commits = post-selection bias) and **freedom-of-choice loophole** (settings must be
 independent of the seed) are not tracked as per-reading flags. Without them the ambiguous
@@ -67,6 +71,7 @@ all three simultaneously only in 2015).
   (Earth→Mars ≠ Mars→Earth by orbital phase).
 
 ## Anchors (Beacon)
+
 Bell 1964; Clauser–Horne–Shimony–Holt 1969; Tsirelson 1980; Aspect 1982; Toner–Bacon
 2003 (1 bit fakes super-quantum); Hensen et al. 2015 (loophole-free); Pironio et al. 2010
 
@@ -75,6 +80,7 @@ Bell 1964; Clauser–Horne–Shimony–Holt 1969; Tsirelson 1980; Aspect 1982; T
 `docs/research/2026-06-12-gates-ecc-tsirelson-*`, the geo-superdeterminism doc.
 
 ## Cross-cutting principle
+
 Same shape as `only-the-irreducible-is-primitive-generate-the-rest`: the Bell test *is*
 the entropy-quarantine (§13 noninterference) regression check — a super-classical spacelike
 reading convicts a hidden channel (leak ≡ sybil: two "independent" parties that are one

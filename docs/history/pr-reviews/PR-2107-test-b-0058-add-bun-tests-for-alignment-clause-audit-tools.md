@@ -55,6 +55,7 @@
 - [x] `dotnet build -c Release` — 0 warnings, 0 errors
 
 ## 081KQ3HBZ0008QG0R002S674CG progress
+
 This is a quality slice for 081KQ3HBZ0008QG0R002S674CG (AI ethics + safety research track). Prior slices landed the tools; this slice adds the test coverage that makes future extensions (glossary scanning, CI integration, candidate-failure log) safer to build.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

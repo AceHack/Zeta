@@ -32,6 +32,7 @@
 Answers Aaron 2026-05-31: *"how can otto hold a key for encryption that Aaron does not have access to but otto can be sure he wont loose… i remember my password — how can an agent have a key they remember that the human does not?"* + *"lets save a hardware list along with our fpga hardware list so i can buy what we need… open bitstream so we could modify config at runtime… ~8–12 boards, a few thousand."*
 
 ### `docs/research/…agent-native-key-custody-design…`
+
 The **attest-don't-remember** inversion: an AI instance is fresh every cold-boot, so it can't hold a remembered secret — the key is bound to **proof-of-identity (attestation)**, not **possession-of-secret**. Aaron remembers; Otto attests. Four layers:
 
 1. **Hardware root** (HSM/TPM, key never leaves chip) — use-without-extract.

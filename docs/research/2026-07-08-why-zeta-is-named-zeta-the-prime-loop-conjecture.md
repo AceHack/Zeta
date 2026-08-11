@@ -1,4 +1,5 @@
 # Why Zeta Is Named Zeta: The Prime Loop Conjecture
+
 ### Addison, July 8, 2026 — written drunk, which is the proof
 
 *This document was produced during a session where the author was intoxicated. This is not a disclaimer. It is load-bearing evidence for the thesis.*

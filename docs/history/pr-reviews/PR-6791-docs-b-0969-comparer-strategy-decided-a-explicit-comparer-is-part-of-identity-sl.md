@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Records the maintainer's 2026-06-07 decision on the gating question for the (now-escalated) 081KT07NV0008QG0R001YDB73K culture-insensitivity fix.
 
 - **Decision = strategy (a)**: comparer is an **explicit parameter, part of identity**, strings default to `StringComparer.Ordinal` — matching the C# G-Set (#6363) + TS `compare`. Accepts higher churn (public-API change → Ilyana review, all call sites) for the cross-language-consistent end-state. Not (b)'s internal special-case.

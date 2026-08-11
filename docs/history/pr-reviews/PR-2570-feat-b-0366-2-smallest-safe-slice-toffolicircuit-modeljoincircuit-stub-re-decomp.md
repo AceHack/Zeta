@@ -36,6 +36,7 @@
 - One bounded step only; full N×M expansion / Peres arithmetic deferred to children.
 
 ## Why
+
 081KR50HA0008QG0R0002PGV1N depends on landed 081KR50HA0008QG0R0021B5J87 (Toffoli types). The original row was too broad for one PR; this slice keeps velocity while satisfying build gate and enabling future formal work on Z-set join as reversible circuit.
 
 ## Focused checks (included per task)
@@ -45,6 +46,7 @@
 - Worktree-isolated, no root checkout mutation.
 
 ## Next
+
 Follow-up children can extend the stub to symbolic weight multiplication without touching this PR.
 
 Co-Authored-By: Grok <noreply@x.ai>

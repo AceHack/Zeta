@@ -37,6 +37,7 @@ Slice 5.3 of the Ace DLC package manager (081KR2E4K0008QG0R002YE3MMD), building 
 - **`.claude/skills/ace/SKILL.md`**: documents `--frozen`/`--lockfile` + the lockfile.
 
 ## Decisions (from the #6400 spec)
+
 cargo-style write + opt-in `--frozen` read · `./ace.lock` in CWD + `--lockfile` override · full-pin (registry-independent replay).
 
 ## Verification
@@ -45,6 +46,7 @@ cargo-style write + opt-in `--frozen` read · `./ace.lock` in CWD + `--lockfile`
 - `bun --bun tsc --noEmit -p tsconfig.json` → exit 0 · markdownlint clean · commit canary 67 throughout.
 
 ## Review trail
+
 Three review rounds during the build: lockfile.ts module review (P2 test gap fixed), ace.ts integration review (untrusted-signature frozen test added + de-shadow), final holistic review (frozen two-pass atomicity + store-collision parity + SKILL flags). All false-green-sanity-checked.
 
 Deferred enhancements tracked in 081KT07NV0008QG0R002GV3MXW (`ace update`), 081KT07NV0008QG0R0028AAV0E (`--locked` mode), 081KT07NV0008QG0R003VDHWWG (lockfile ergonomics) — filed with the spec.

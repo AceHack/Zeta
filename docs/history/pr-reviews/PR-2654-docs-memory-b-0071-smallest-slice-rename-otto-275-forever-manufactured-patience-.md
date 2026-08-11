@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KQ8P5D0008QG0R0030BTJZK (P2): rename the otto_275_forever memory file + minimal frontmatter/body reframe to drop "live-lock 9th pattern" misclassification and align to Otto-352 taxonomy split (manufactured-patience as distinct class: concurrent-thrash / stuck-loop / honest-wait).
 
 - Used dedicated worktree + pushed claim branch (never touched root checkout)
@@ -49,6 +50,7 @@ Smallest safe slice of 081KQ8P5D0008QG0R0030BTJZK (P2): rename the otto_275_fore
 - Commit uses required Co-Authored-By: Grok trailer
 
 ## Next
+
 Follow-up children will handle MEMORY.md row + cross-ref audit (per re-decomp).
 
 Co-Authored-By: Grok <noreply@x.ai>

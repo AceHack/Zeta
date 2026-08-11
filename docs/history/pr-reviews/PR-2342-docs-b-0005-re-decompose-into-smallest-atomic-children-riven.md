@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Re-decomposed 081KQ0YZ80008QG0R003GMGDRH (broad M row with Path A/B choice) into 5 smallest dependency-ordered atomic child rows. Original decomposition mistake: bundled decision+execution+schema into one non-atomic item; violated "re-decompose during build" and "smallest atomic" rules.
 
 **New atomic children (build order):**
@@ -41,6 +42,7 @@ Re-decomposed 081KQ0YZ80008QG0R003GMGDRH (broad M row with Path A/B choice) into
 081KQ0YZ80008QG0R003GMGDRH now parent pointer only.
 
 ## One bounded step
+
 Exactly one: this re-decomp edit + checks + PR. No root checkout touched; dedicated worktree + pushed claim branch used per rules.
 
 ## Focused checks (included per rule)
@@ -51,6 +53,7 @@ Exactly one: this re-decomp edit + checks + PR. No root checkout touched; dedica
 - Branch: claim/b0005-decompose-aurora-courier-split-riven-2026-05-09 pushed, ZETA_EXPECTED_BRANCH set.
 
 ## Why
+
 Matches Rule 0 (TS preference not violated — no bash), prefer code but this is backlog decomp per task. Prepares atomic pickup for next bounded step (081KR50HA0008QG0R002HMCS5Y).
 
 Co-Authored-By: Grok <noreply@x.ai>

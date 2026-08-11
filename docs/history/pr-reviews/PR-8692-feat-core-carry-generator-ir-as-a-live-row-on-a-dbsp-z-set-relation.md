@@ -36,6 +36,7 @@ Closes the codegen-forward trajectory's last open thread: the generator IR is no
 - **F# tests (`GeneratorIrRegistry.Tests.fs`, 8)** pin: the relation row reproduces each committed `*.ir.json` **byte-for-byte** (materialised view); the group law (register+retract=Zero); full==incremental; ZetaId=content-address; `byZetaId` resolves live but not retracted rows.
 
 ## Honest tier
+
 The committed `*.ir.json` files are the rows' **serialised payloads** — the F# tests prove the file IS the relation row's bytes, so the TS view and F# relation are the **same** relation, not two parallel copies. The relation is an in-memory `known` set today (not yet streamed through a running DBSP circuit); that streaming integration is the natural follow-on.
 
 ## Gates

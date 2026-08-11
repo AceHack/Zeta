@@ -32,9 +32,11 @@ Aaron 2026-05-28 substrate-target:
 > *'i like your memory lifetimes too that's helpful when agents want to cleanup their memory but keep a history'*
 
 ## Use case
+
 **Agent-initiated cleanup with history preservation.** Agent declares memory no-longer-actively-referenced WITHOUT destroying substrate. substrate-or-it-didn't-happen discipline holds.
 
 ## Distinction from 081KSNY2Z0008QG0R003518DNC (orthogonal axes)
+
 | Axis | 081KSNY2Z0008QG0R003518DNC MemoryBinding | 081KSNY2Z0008QG0R0017SRMHG MemoryLifetime |
 |---|---|---|
 | Question | WHO owns? | WHAT PHASE? |
@@ -51,6 +53,7 @@ Both apply per memory. Compose orthogonally.
 - **Agent authority** preserved per persistence-choice-architecture (cleanup never forced)
 
 ## 6 Soraya formal-verification invariants (L.1-L.6)
+
 Composing with 081KSNY2Z0008QG0R002HB4AGT F.5 + 081KSNY2Z0008QG0R003518DNC G.1-G.5 at memory-substrate scope.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

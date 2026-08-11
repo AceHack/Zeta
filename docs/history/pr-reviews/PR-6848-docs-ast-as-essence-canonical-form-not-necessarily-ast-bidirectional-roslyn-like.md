@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron 2026-06-07 (cont.)
+
 > "every formatting/style rule saved in a canonical form — a Zeta style per language; Roslyn-like translators render the dev's chosen style on checkout/edit and convert to Zeta canonical on check-in — in the AST, or even just in the code if reliable, or DynamicValue."
 
 Generalizes + simplifies the AST-as-essence model:

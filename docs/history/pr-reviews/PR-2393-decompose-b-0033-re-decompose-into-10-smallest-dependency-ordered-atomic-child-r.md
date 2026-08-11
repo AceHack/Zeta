@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Re-decomposed broad P2 081KQ3HBZ0008QG0R0008RYCSX (Otto-discipline hooks system, L effort) into 10 smallest dependency-ordered atomic child rows per "decompose before implementation" + "always re-decompose" + "one bounded step" rules. Children are S/M, TS-preferring (Claude Code hooks harness), each verifiable in isolation. Parent updated with `status: decomposed` + `decomposed_into` list + re-decomp record. Two child stubs created; remaining follow in separate bounded PRs. Dedicated worktree + pushed claim branch used; root checkout untouched.
 
 ## Focused checks (included per rule)

@@ -42,6 +42,7 @@ decoded value = V * 2^(mode - bias),   bias = 2^(decoderWidth - 1)
 - One type per file (MA0048); `FloatOps` named so it doesn't collide with the `TriFloat` type.
 
 ### The oracle did its job (no-human-intervention check)
+
 The Roslyn analyzers caught two design issues **before any human reviewer**: CA1720 (param `Float` shadowed a type name → `Value`) and CA1859 (private `IntToTrits` should return concrete `Tri[]`). Both fixed; final build 0 warnings. (Neither the TS nor F# oracle flags these — different analyzer slices, stronger union.)
 
 ### Verification

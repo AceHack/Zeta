@@ -28,6 +28,7 @@
 ## Description
 
 ## What — 081KT07NV0008QG0R001YDB73K slice-1 foundation
+
 The **stable collation seed** (Aaron confirmed it survives "all the parameters") + the SQL-Server parameterized-model design direction.
 
 - **`src/Core/Collation.fs`** — DB-style collation selection: shipped default **`binary`** (`StringComparer.Ordinal`, codepoint/byte order); named catalog (`binary`/`ordinal`/`ordinal-ci`/`invariant`/`invariant-ci`, name lookup case-insensitive); **`forKey<'T>`** resolves string→Ordinal (the 081KT07NV0008QG0R001YDB73K fix — never culture-sensitive `Comparer<string>.Default`) else `Comparer<'T>.Default`. **5 tests** green.
@@ -37,6 +38,7 @@ The **stable collation seed** (Aaron confirmed it survives "all the parameters")
 Seed is **additive** (no existing API touched). The primitive rewiring (G-Set → Z-set carrying a collation) is the next slices, with Ilyana/Naledi/Soraya review.
 
 ## Test
+
 `dotnet test … --filter CollationTests` → **5 passed**; Core builds clean.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -42,6 +42,7 @@
 - No overlapping claims for 081KR2E4K0008QG0R001ZZ5XXF slice.
 
 ## Next
+
 One bounded step complete. PR ready for review/merge. Arm auto-merge after.
 
 Co-Authored-By: Grok <noreply@x.ai>

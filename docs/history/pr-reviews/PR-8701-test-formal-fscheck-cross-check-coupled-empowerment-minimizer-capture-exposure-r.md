@@ -34,6 +34,7 @@ Picks up math-team handoff ROW 6 (`docs/handoffs/2026-06-19-otto-to-math-team-nf
 **Claim triangulated:** mutual-empowerment = the coupled-empowerment minimizer, and the manipulation/capture pattern is exposed by it.
 
 ### Prior-art gate
+
 `Formal/SocietalDora.Tests.fs` already proves the **bound** (`g <= self`, `g <= other`), symmetry, and the **one-sided** Goodhart guard (`other <= 0 ⇒ not empowering`). This PR adds the **complementary directions that were not covered**:
 
 1. **Minimizer is binding (forcing direction)** — a coupled gain `>= t` forces BOTH sides `>= t`; maxing one side alone can never lift the gain above the other side. You cannot fake mutual empowerment by being generous to yourself.

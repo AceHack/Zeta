@@ -36,9 +36,11 @@ Rust parity oracle for **Bag** (G-Set ⊂ Bag ⊂ Z-set), mirroring the TS refer
 - `lib.rs` — `pub mod bag;`.
 
 ### Cross-language note
+
 `i64` counts make the TS `assertCount` (non-integer guard) **unnecessary by type** — only the overflow guard carries over (`add_counts` via `checked_add`, used by union/of_entries/total). Overflow threshold is per-representation (JS 2^53 vs i64 2^63); the small-count fixtures stay within both, so all four oracles agree.
 
 ### Gates
+
 18 lib unit tests + 2 cross-verify (bag + gset) pass; `cargo fmt --check` + `cargo clippy` clean; zero production deps (serde_json dev-only, matching gset).
 
 Note: `cargo fmt` normalized one line-wrap in the sibling `gset_cross_verify.rs` (cosmetic `.as_array()` chain wrap — same normalization it applied to the new bag test); no logic change.

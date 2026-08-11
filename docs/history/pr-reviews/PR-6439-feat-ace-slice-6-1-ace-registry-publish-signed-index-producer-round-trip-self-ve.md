@@ -43,6 +43,7 @@ Slice 6.1 — **`ace registry publish`** (081KT07NV0008QG0R0016FVWD7), the produ
 - Final holistic review: zero P0; self-verify confirmed genuine + never-writes-on-failure; producer/consumer coherent (published index satisfies the slice-6 consumer). Review fixes: duplicate + malformed-key e2e coverage added; dead anti-rollback guard clarified (defense-in-depth for the deferred `--sequence` flag).
 
 ### Deferred (081KT07NV0008QG0R0016FVWD7 stays open for these)
+
 Per-package url override, ETag/Last-Modified sidecar, multi-dir, incremental/multi-signer publish.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

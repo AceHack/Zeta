@@ -41,9 +41,11 @@ Adds the optional **third BP-16 leg** Soraya named for non-register-collapse (`0
 - **Join premises** — commutative + idempotent + **associative** (associativity = the 081KT07NV0008QG0R001YDB73K failure class).
 
 ## Honest scope (Soraya)
+
 An **analogue, not a replay**: `GCounter` is a pure register with no commons/standing split, so non-collapse is witnessed *structurally* (disjoint keys preserved) not *semantically*. The Lean Facet-2 proof stays source-of-truth for the standing-locus claim; this leg independently corroborates its CRDT-join premises over shipped F#. The consent-guard / capture-unreachability facet (TLA+ Facet-1) has no runtime analogue and is **not** covered here.
 
 ## Verification
+
 `dotnet test --filter NonRegisterCollapseCrossVerify` → **4 passed**. Build 0-warn. Registry + FROZEN-CORE §B rows updated to full BP-16.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

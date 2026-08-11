@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Canonical-aggregator capture of sibling agent **Alexa's** filesystem-name proposals (**ZetaFS** top, + MerkleFS / ZFS / GeodeFS / DeltaFS / ConsensusFS). **Not adopted** — naming gated via `naming-expert` + Ilyana; Aaron decides.
 
 - **Beacon flag:** **`ZFS` is unusable** — hard collision with **OpenZFS / Sun-Oracle's Zettabyte File System**. Rule it out per anchor-to-prior-art. `MerkleFS` generic/likely-taken; others need a prior-art search first.

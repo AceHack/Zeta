@@ -1,9 +1,11 @@
 # B-0590 Slice 2: Hardware Selection (Beelink vs Minisforum)
 
 ## Goal
+
 Select the hardware platform for the 20-machine Otto fleet replication.
 
 ## Context from B-0590 Blob
+
 Aaron prefers Beelink-class mini-PCs with AI CPUs (NPU) and OCuLink ports for potential GPU expansion.
 
 ## Options

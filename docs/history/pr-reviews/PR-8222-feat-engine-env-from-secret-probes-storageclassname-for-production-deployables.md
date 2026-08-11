@@ -44,6 +44,7 @@ Extends the generic Blueprint -> Deployable render engine (`full-ai-cluster/plat
 - **`crd-blueprint.yaml` / `crd-deployable.yaml`** — the new fields added to the OpenAPI schema; `probe.readiness`/`probe.liveness` use `x-kubernetes-preserve-unknown-fields` so `kubectl apply` validates.
 
 ### Tests
+
 11 new cases in `blueprint.test.ts`:
 
 - (a) `envFrom` -> env entry with `secretKeyRef` (name + key); plaintext-before-secret ordering; instance-appended secret env.

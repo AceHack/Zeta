@@ -37,9 +37,11 @@ Third of the four CBOR oracles (one authors, others replay) — the **Rust oracl
 - **Object** map keys stay in **insertion order**, NOT §4.2.1 bytewise-sorted.
 
 ## Tests (cargo-verified; Rust is not in the CI matrix)
+
 `cbor_float_matches_rfc_8949_appendix_a` re-anchors against the RFC directly (anti-circular) + shortest-float tier-selection + the 42-vector seed replay. `cargo test` / `clippy` / `fmt` all green.
 
 ## Sequencing
+
 C# (#6506) ✅ → F# (#6508, in flight) → **Rust here** → TS replay → registry flips.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

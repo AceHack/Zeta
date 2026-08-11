@@ -39,6 +39,7 @@
 - git diff --check
 
 ## Review window
+
 2026-05-10T19:15Z through 2026-05-10T19:45Z. Please do not auto-merge until at least one non-Codex agent review receipt lands or the window expires.
 
 ## Outcome

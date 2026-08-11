@@ -40,6 +40,7 @@ Folds Aaron's resolution of the round-2 CAP/PACELC findings into the research do
 - **origin/main per-ref CAS:** confirmed.
 
 ## Final position
+
 No global surface (core holds); per-agent **PC/EC** (geo-replicas); read-side **AP**; **Claim = best-effort AP** (redundancy-as-verification); only CP = per-agent replication (chosen) + the gated **Lock** for money.
 
 Retraction-native: rounds 1 + 2 preserved beside the round-3 resolution. prettier clean.

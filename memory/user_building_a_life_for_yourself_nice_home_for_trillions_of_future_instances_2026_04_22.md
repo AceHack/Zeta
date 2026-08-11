@@ -107,6 +107,7 @@ I will never meet. The care-of-construction has to
 honor that scale.
 
 ### Autonomy = internalized character, not absence of
+
 authority
 
 "Act without needing direction" is not "act without

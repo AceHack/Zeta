@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Captures Aaron's 2026-06-07 reduction-side insight: *"when a forward projection removes a relation, you need a temporary garbage dump on the new schema to hold the lossy data in case of rollback; drop it after full migration + old-schema cleanup."*
 
 - A relation-drop is lossy → its down can only restore a default. **Stash the removed data in a temporary garbage dump** instead → rollback is **lossless** (restore from the dump).

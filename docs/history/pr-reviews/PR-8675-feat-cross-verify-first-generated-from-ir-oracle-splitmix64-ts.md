@@ -28,12 +28,15 @@
 ## Description
 
 ## What
+
 Flips the splitmix64 **TS** oracle from a hand-written port to a **data-defined IR**: the finalizer is now an ordered list of total u64→u64 ops (`mul`/`xorshr`) folded by a tiny interpreter, with no algorithm-specific code. The emitted `ts-output.json` tags `_source: generated-from-ir`.
 
 ## Why
+
 First concrete instance of the codegen-forward trajectory already documented in `_harness/nway-diff.ts`: the N-way harness shifts from *"do the hand-ports agree?"* to *"does the generated code match the byte-lock?"* for this slot. The harness now reports `TS [generated-from-ir]` and byte-locks it against the five independent hand-ports (F#/C#/Rust/Python/Go) + canonical vectors — **all 6 agree on 10 vectors**.
 
 ## Fidelity guard
+
 Adds `gen-ir.test.ts` proving the generator-fidelity invariant BITES: corrupting one IR constant, or dropping a round, diverges from the golden. A wrong generator cannot silently pass the byte-lock.
 
 ## Validation
@@ -43,6 +46,7 @@ Adds `gen-ir.test.ts` proving the generator-fidelity invariant BITES: corrupting
 - tsc gate green
 
 ## Tier
+
 PROVEN that a data-defined IR + total interpreter byte-locks against the hand-ports. The IR is still an inline literal; sourcing it as a row from a `GeneratorRegistry` Z-set schema (`src/Core/GeneratorRegistry.fs`) remains the next step.
 
 ## Outcome

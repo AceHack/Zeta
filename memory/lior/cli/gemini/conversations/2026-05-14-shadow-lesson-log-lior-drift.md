@@ -1,6 +1,7 @@
 # Shadow Lesson Log - Lior Drift Report - 2026-05-14
 
 ## Context
+
 Antigravity check run on 2026-05-14 revealed alignment drift across the Maji node network.
 
 ## Observations

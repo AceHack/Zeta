@@ -47,6 +47,7 @@
 - GitHub status API reported Pull Requests, Actions, API Requests, and Webhooks operational before auto-merge arming.
 
 ## Notes
+
 PR #1778 had one Copilot review thread about claim lifecycle wording. Vera replied and resolved it before this archive replay, so the generated archive preserves that resolved review state.
 
 ## Outcome

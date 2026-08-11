@@ -30,6 +30,7 @@
 Filed during an autonomous-loop post-merge health check on `main` (`e05d2c389`, the #6161 F# tri-boolean merge).
 
 ## Finding
+
 `build-and-test (windows-2025)` + `build-and-test (windows-11-arm)` are RED on main — failing in ~16–35s at the **Checkout** step with:
 ```
 error: unable to create file memory/persona/.../2026-05-25-aaron-mika-grok-runbooks-...-glass-halo.md: Filename too long
@@ -43,9 +44,11 @@ Classic Windows **MAX_PATH (260-char)** limit — git refuses to create the long
 - **But Windows CI is silently red** — a real Windows-only regression would be invisible (checkout fails before build/test runs).
 
 ## Scope
+
 31+ persona paths exceed 200 chars; worst basename is 244 chars (≈280+ full path > 260 MAX_PATH).
 
 ## Why a row, not a fix
+
 The fix is cross-cutting (CI workflow **and/or** the persona-archive naming convention) — operator-driven. The row documents 4 options (likely option 3: `core.longpaths` in the windows checkout step **now** + a soft basename-length budget going forward, no history rename). **Not auto-applied** — steward-not-initiator.
 
 P3 (non-blocking). Search-first confirmed a genuine gap. Composes with 081KQ8P5D0008QG0R001590WJ3 (naming-tooling), the refresh/blocked-green-ci rules.

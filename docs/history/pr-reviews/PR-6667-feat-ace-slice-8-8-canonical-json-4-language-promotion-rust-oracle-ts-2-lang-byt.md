@@ -34,6 +34,7 @@
 Spec: `docs/agendas/ace-package-manager/2026-06-03-ace-slice8.8-canonical-json-4lang-rust-oracle-design.md` (in this PR).
 
 ### Incremental by design
+
 `compare.ts` is resilient to a missing language (try/catch → null). This slice lands **TS + Rust**; **F#/C# follow in 8.8.1 / 8.8.2** (their `<lang>-output.json` simply don't exist yet; the oracle skips them and still enforces TS↔Rust↔canonical).
 
 ### ⚠️ Precedent-setting decisions (first Ace→Rust promotion — please scrutinize)
@@ -53,9 +54,11 @@ Spec: `docs/agendas/ace-package-manager/2026-06-03-ace-slice8.8-canonical-json-4
 - **lone-surrogate-bare** — top-level lone-surrogate reject path. `vectors.json` now canonical[9] + invalid[5].
 
 ### Non-tautology
+
 Three-way agreement: **Python** authored the expected (8.5), **TS** reproduced it (8.5), **Rust** reproduces it (8.8) via a wholly separate impl + hand-rolled parser. **0 mismatches on all 14 vectors.**
 
 ### Canonical-gate
+
 canonical-json is now **2-language byte-locked (TS+Rust)**; still proof-owed + F#/C#-owed → not canonical yet, but materially closer.
 
 ### Gates (all green locally)

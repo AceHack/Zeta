@@ -36,6 +36,7 @@
 - Scans child YAML manifests for Longhorn PVC references when building the included set.
 
 ## Included proof targets (16)
+
 `alloy`, `argo-rollouts`, `argo-workflows`, `argocd`, `cert-manager`, `cilium-lb-ipam`, `dapr`, `external-secrets`, `forgejo`, `hat-system`, `headlamp`, `loki`, `node-feature-discovery`, `open-policy-agent`, `sealed-secrets`, `trust-manager`
 
 ## Test plan

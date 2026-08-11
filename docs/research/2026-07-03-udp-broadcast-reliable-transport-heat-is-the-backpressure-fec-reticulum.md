@@ -27,6 +27,7 @@ the throughput MultiplexedWebSockets hits (~115k/s), **packet loss is expected**
 ## 2. The three layers on top of raw UDP broadcast (and where each already lives)
 
 ### (a) Reliability / loss recovery — FEC over broadcast (avoid NAK implosion), or Reticulum
+
 Retransmit-based reliability (ARQ / selective-NAK) does not scale on *broadcast*: every receiver
 NAKing a lost packet is the classic **NAK-implosion** problem. The broadcast-correct answer is
 **forward error correction** — send redundancy so receivers recover *without* asking (fountain /
@@ -37,6 +38,7 @@ including UDP — so the transport can lean on Reticulum for the mesh-reliabilit
 re-deriving NORM.
 
 ### (b) Backpressure / congestion control — THIS IS OUR HEAT (Vera's system)
+
 The load-bearing insight. Over an analog / lossy mesh you **cannot** use TCP's implicit congestion
 signals (RTT inflation, drop-as-signal) reliably — loss is ambient noise, not a clean congestion cue.
 You need an **explicit, metered, propagating backpressure signal**. **That signal already exists and
@@ -59,6 +61,7 @@ and works where TCP's assumptions break. Vera's heat work and Aaron's unbuilt UD
 same system: **heat is the mesh's congestion control.**
 
 ### (c) Discovery + auth — already built
+
 UDP-broadcast discovery is `discovery-beacon.ts` (WS-Discovery reborn: Hello/Bye/Probe on UDP
 multicast), and its **auth** is the signed-beacon membrane (`beacon-auth.ts`, Ed25519 — shipped). The
 earlier bus finding (unsigned UDP discovery = DDoS/spoof) is the security sibling: a connectionless UDP

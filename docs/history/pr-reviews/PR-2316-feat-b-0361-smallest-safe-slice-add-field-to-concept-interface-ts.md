@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KR50HA0008QG0R001G4QHQF (P1): added optional `anchor?: string` to the `Concept` interface in `tools/alignment/concept_registry.ts`.
 
 This is the single bounded TS-code change (per "prefer F#/TS code over docs" and Rule 0) that enables the human-lineage anchor step for concept workflows without touching the broader formal-verification-expert routing, literature map creation, or backlog-gate extension.

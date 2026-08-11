@@ -168,6 +168,7 @@ canonical-bidding ones promoted in a follow-up cooling-
 period-respecting PR.
 
 ## The recursive application — don't-ask-permission has a
+
 twin
 
 The just-landed don't-ask-permission rule says: agents have

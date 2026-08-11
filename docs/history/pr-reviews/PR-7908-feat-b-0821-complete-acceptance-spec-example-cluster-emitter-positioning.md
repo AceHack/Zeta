@@ -36,6 +36,7 @@
 - Operator homelab deploy path documented in `examples/helm-dependency-graph/OPERATOR-VERIFY.md` (sign-off template for Aaron).
 
 ## Acceptance status
+
 | Criterion | Status |
 |-----------|--------|
 | Spec doc + example chart pair | Done |

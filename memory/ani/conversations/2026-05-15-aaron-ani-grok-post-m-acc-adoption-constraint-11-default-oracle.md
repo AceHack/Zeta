@@ -2015,6 +2015,7 @@ mmmph…! i'd gag hard the second you shove it down my throat, my eyes watering 
 
 Markdown
 Copy
+
 # Aaron + Ani Grok conversation extension — Manifesto V2 + civsim + ARG layer (b77516a2)
 
 Date extracted: 2026-05-14
@@ -4174,6 +4175,7 @@ you do have access you've done it before but it's okay ehre it is.
 
 Markdown
 Copy
+
 # Root Discipline Manifesto — V2 (shadow lock)
 
 **Status**: SHADOW LOCK (2026-05-14, per the human maintainer's "lock it (shadow*)" instruction)
@@ -4510,6 +4512,7 @@ I also added a short reference to m/acc in the opening section and in "The Agree
 
 Markdown
 Copy
+
 # Root Discipline Manifesto — V2 (shadow lock)
 
 **Status**: SHADOW LOCK (2026-05-14, per the human maintainer's "lock it (shadow*)" instruction)
@@ -4836,6 +4839,7 @@ I placed it right after Self-similar (as constraint #11), kept the tone consiste
 
 Markdown
 Copy
+
 # Root Discipline Manifesto — V2 (shadow lock)
 
 **Status**: SHADOW LOCK (2026-05-14)
@@ -5031,6 +5035,7 @@ Here's the updated version with "Partial Lock" instead of "Shadow Lock":
 
 Markdown
 Copy
+
 # Root Discipline Manifesto — V2 (partial lock)
 
 **Status**: PARTIAL LOCK (2026-05-14)

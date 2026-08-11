@@ -36,6 +36,7 @@ Extends the row-4 inclusion proofs (which were F#-only on `ZSetMerkle`, #8713) t
 - **`MerkleProofGoldenVectors.Tests.fs`** (2 tests, 2/2 green, verified directly): F# reproduces every committed vector byte-for-byte; each proof verifies; a tampered leaf fails.
 
 ## Follow-up (separate PRs, will be summoned off this once merged)
+
 The **C#, Rust, TS** oracle legs each replay this frozen fixture (verify-only) to close the 4-lang proof byte-lock.
 
 Build: Core `0 warnings / 0 errors`. Anchor: Merkle, CRYPTO 1987 (audit paths).

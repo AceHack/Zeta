@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Decomposed the broad 081KQDTYV0008QG0R003MV3WAR (stale project-file internals-bleed-out cleanup) into 3 smallest dependency-ordered atomic child rows per AGENTS.md velocity + re-decomp rule:
 
 - 081KRA5AR0008QG0R0032RZ322 (audit/enumerate)
@@ -44,6 +45,7 @@ Parent updated with depends_on + decomp note. Original trigger/acceptance preser
 - Build gate re-run post-commit: clean
 
 ## One bounded step
+
 This PR is the single bounded decomposition step. Implementation of children deferred to future trigger per original P2 design.
 
 Co-Authored-By: Grok <noreply@x.ai>

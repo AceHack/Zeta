@@ -36,6 +36,7 @@
 - raise the x64 AI-cluster ISO PR/push timeout from 90 to 180 minutes after a cold build cancelled at 90 minutes while still compiling Nix dependencies
 
 ## Root cause
+
 Current main gate failed before semgrep ran. The failing job hit repeated HTTP 500s while tools/setup/install.sh downloaded the pinned mise release tarball. The existing common curl helper retried, but exhausted its approximate 12-second window.
 
 After the retry fix, the Windows Docker install shield surfaced a separate stale-path bug: the installer used tools/setup/manifests/from-bun-global, but the smoke verifier still read tools/setup/manifests/agent-clis.

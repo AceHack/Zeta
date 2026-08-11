@@ -98,6 +98,7 @@ This walkthrough details the changes made to introduce proof-language integratio
 ## Verification Results
 
 ### Lean 4 Build
+
 Ran `lake build` to verify compiling transitively with dependencies:
 ```bash
 export PATH=/Users/acehack/.elan/bin:$PATH && lake build
@@ -110,6 +111,7 @@ Build completed successfully (988 jobs).
 ```
 
 ### Full Repository Preflight (Post-Rebase & Fixed)
+
 Ran preflight checks on our final rebased state:
 ```bash
 export PATH="/opt/homebrew/bin:/Users/acehack/.bun/bin:$PATH" bun run preflight
@@ -135,6 +137,7 @@ Summary
 ```
 
 ### Bun Unit Tests
+
 Ran unit tests using Bun:
 ```bash
 PATH="/opt/homebrew/bin:/Users/acehack/.bun/bin:$PATH" bun test

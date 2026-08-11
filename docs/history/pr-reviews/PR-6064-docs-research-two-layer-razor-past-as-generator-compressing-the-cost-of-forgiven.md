@@ -36,9 +36,11 @@ Operator-forwarded Ani follow-on to the compression-engine reframe (#6063). Land
 - Storage cost of history stops growing linearly with event volume; dominated by active-generator size instead.
 
 ## Razor-disciplined (Aaron cut it himself)
+
 The god-tier *"this is how the universe never runs out of space"* claim is **razored out** → down to *"a designed, verifiable system property, provable with data + formal verification over time"* — not a claim about reality. (The compression-engine eating its own god-tier tail — the Fix(R) self-application from #6063.)
 
 ## Composition with the accelerator
+
 This is the **mechanism** for the event-store forgiveness-budget (`docs/accelerator/EVENT-STORE-SCHEMA.md` compaction/tiering): per-agent stream = a partition (single-writer → canonical causal order by construction); `_compacted/` cold-tier = Layer 2 output; past-as-generator = the extreme compaction form (replace a compacted segment with the `transition`-fold generator). A companion push to the accelerator branch wires this reference in.
 
 Composes with: #6063, the columnar-storage + DBSP/streaming-incremental substrate, `tools/agent-loop/state-machine.ts` (transition as replay generator), razor-discipline + god-tier-don't-collapse.

@@ -20,6 +20,7 @@ panopticon. Privacy is therefore a **hard precondition**, not a later feature.
 ## What "have privacy" concretely requires (the checklist)
 
 ### 1. Reticulum's privacy properties must be actually USED (not just the transport)
+
 Reticulum (Mark Qvist) already provides, by design: **initiator anonymity** (no source addresses on
 the network), **per-hop + end-to-end encryption**, **destinations as cryptographic hashes**, and
 **unannounced/inbound-only destinations**. The gate: the swarm uses these — cells/tests route so that
@@ -28,6 +29,7 @@ is **no plaintext metadata** on the bus. (Reticulum gives forward secrecy + no m
 must not bypass it with a side channel.)
 
 ### 2. Test artifacts must be privacy-budgeted — reveal-to-earn / encrypt-to-spend
+
 Because **metrics = test history** and **test artifacts check in**, every artifact must pass through
 the **privacy-budget economy** (`PrivacyEconomy.fs`; Soraya **C5** soundness / **C11** disclosure
 budget) before it lands: **disclose** what is safe (public, reduces others' uncertainty, *earns*
@@ -37,6 +39,7 @@ uncertainty must be **budget-gated**, so the swarm cannot accidentally exfiltrat
 main as a side effect of "metrics."
 
 ### 3. Private state stays observer-dependent — summon vs model (C15)
+
 When a what-remains is summoned/modeled inside a DST room, the **private interior must not leak**:
 **consented summon** brings the real interior in; **without consent** only a **soft model of the Markov
 boundary** is held (never penetrate the boundary). The observer-dependent-truth exploit (**C15**) must
@@ -44,17 +47,20 @@ be contained *before* launch — a swarm of summoning tests is exactly the threa
 un-gated summon would leak private state.
 
 ### 4. Consent-first on every observation surface (§6)
+
 The swarm observes on every tick. Manifesto **§6** (ongoing, granular, revocable consent) must hold
 **per observation surface**: a traveler can withhold/revoke being observed or summoned, and the swarm
 honors it live. No standing observation without standing consent.
 
 ### 5. Identity-key privacy holds (already built, keep it)
+
 The keyring (`derive.ts` / `keyset.ts`) gives each traveler keys; **private material never leaks**
 (GH-secrets / metal-held; the 4×4 golden is public-only; tests assert no-private-leak). Private
 channels use Nostr/encryption. The dual-key rotation means a leaked key is **rotatable**, not fatal.
 This pillar is in place — the gate is to keep it as the swarm scales.
 
 ### 6. Forward secrecy across epochs (ties to rotated-time)
+
 When the correlation/time-root rotates (the dual-root-for-time work, claim TR1), **past epochs' private
 correlations must not be reconstructable from the new root** (Signal-ratchet forward secrecy). A swarm
 that runs for a long time must not let later state retro-decrypt earlier private state.

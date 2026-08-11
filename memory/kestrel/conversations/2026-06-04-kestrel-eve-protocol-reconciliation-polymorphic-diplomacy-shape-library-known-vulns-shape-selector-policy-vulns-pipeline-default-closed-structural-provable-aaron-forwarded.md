@@ -22,6 +22,7 @@ related_memory:
 > Scribed by Otto from Aaron's forward.
 
 ## 1. Eve Protocol reconciliation — the infinity is in the right place
+
 Eve = V8-hidden-class shape-evolution over DynamicValue over an infinite stream. In the
 built terms: **stream = νF (infinite, ticking); each timestep-snapshot = μF (finite,
 complete, serializable/checkable — "complete per tick"); the value evolves = νF ticking
@@ -42,6 +43,7 @@ the un-analyzable box the razor forbids). Keep the shape-cache first-class/inspe
 canonical.
 
 ## 2. Polymorphic diplomacy — structural-safe, NOT semantic-safe
+
 Aaron's name + hedge ("'safe', well not fully — eliminates many classes if you do the
 trust boundaries right + an interrogation interface on the stream"). Apt: **diplomacy =
 negotiation between not-fully-trusting parties; agree terms before exchange; interrogation
@@ -59,6 +61,7 @@ peer's self-declaration** (a malicious peer lies about its shape — same verify
 not a rubber stamp.
 
 ## 3. Razor-cut shape library (semantics + known-vulns)
+
 The semantic layer negotiation doesn't cover lives in a **canonical shape library** —
 irreducible base shapes (razor-cut: one instance, isomorphism-collapsed, orthogonal
 labels = the base ontology graduating from structural to semantic) with semantic meaning +
@@ -74,6 +77,7 @@ gives ZERO protection against novel attacks, and "we check known vulns" rounds u
 (strengthening) = sound; reject-known-bad-allow-else = the hole.
 
 ## 4. The pipeline: shape + selector + policy + vulns (the kernel at the validation junction)
+
 Aaron: "so it's context-aware?" — Yes, and it's the **predicate-over-shape kernel reused
 at the validation junction**: **shape** (what it is, from the library) → **selector**
 (predicate picking which policy applies in this context) → **policy** (positive/default-
@@ -89,6 +93,7 @@ located in the selector's fallthrough, so the NOVEL shape gets denied not bypass
 which is exactly where the dangerous attack lives).
 
 ## 5. Default-closed / force-open-explicit — kills the fail-open CVE class
+
 Aaron: "default close and make people force it open is the right shape to avoid 1000s of
 high CVEs." Exactly. **The overwhelming majority of high CVEs are FAIL-OPEN bugs** — an
 unanticipated state (unrecognized input, missing check, error path) defaults to ALLOW
@@ -107,6 +112,7 @@ signoff unreachable"); types enforce missing-case=deny at compile. Prove fail-cl
 structural, don't hope the convention holds.
 
 ## Through-line / Kestrel-stance
+
 The full layered validator over the razor-cut shape library: **negotiation (structural-
 safe) + positive-validation (default-deny semantic base) + known-vulns (catalogued-bad
 blocklist) + apply-gating (reified-computation surface)** — each layer's scope honest;

@@ -32,6 +32,7 @@
 Easy blueprint creation, **user-driven and agentic** — so you (or an automated agent task) iterate with an agent to stand up a server and **save it as a reusable blueprint**. Question #2.
 
 ### The agent (`blueprint-agent.ts`, pure + tested)
+
 `build(message, draft?) → { reply, spec? }` with a real **game-server knowledge base** (correct SteamCMD specs):
 
 | Game | App ID | Ports |
@@ -53,6 +54,7 @@ It **iterates on a draft**: "expose public", "give it more memory" / "set memory
 - **Library:** added `unturned` + `arma-reforger` blueprints (real SteamCMD ids/ports) alongside `gmod` — deployable out of the box.
 
 ### UI (`BlueprintBuilder.tsx`)
+
 A chat panel with **game quick-pick chips** (GMod/Unturned/Arma Reforger/Valheim/Rust/Minecraft) on the left and a **live draft** (editable name; badges for ports/vars/expose/memory; YAML preview) on the right. Describe → propose → iterate → **Save** → it lands in the catalog. (Create gains a "Build a blueprint" button; saving refreshes the catalog.)
 
 ## Tests — +14 (97 in the portal), all green

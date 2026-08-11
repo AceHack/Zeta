@@ -28,6 +28,7 @@
 ## Description
 
 ## Problem
+
 `flash-usb-windows.ts` can't flash **and** key a **removable** USB stick written with an isohybrid ISO (the common case):
 
 - `Set-Disk -IsOffline` → *"Removable media cannot be set to offline"*
@@ -36,6 +37,7 @@
 Confirmed on a PNY USB 3.2.1 FD (2026-06-07) flashing the AI-cluster installer ISO.
 
 ## What this adds
+
 **`flash-and-inject.ts`** — one elevated process that does it correctly for removable media:
 
 1. `mountvol /R` + `/N` then `Clear-Disk` to force-dismount + blank (no offline).
@@ -48,6 +50,7 @@ Confirmed on a PNY USB 3.2.1 FD (2026-06-07) flashing the AI-cluster installer I
 Both reuse the shared, unit-tested pure helpers from `flash-usb-windows.ts` (`autoDiscoverIso` / `validateIso` / `human`). Validated end-to-end: a full flash + inject + read-back-verify (`RESULT:OK`, reconstructed LFN = `zeta-authorized-keys.pub`).
 
 ## Follow-up (separate PR)
+
 Fold the raw-FAT inject path into `flash-usb-windows.ts` behind a removable-media check, with pure-function tests matching that file's existing 51-test suite, so there's one unified Windows flasher.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

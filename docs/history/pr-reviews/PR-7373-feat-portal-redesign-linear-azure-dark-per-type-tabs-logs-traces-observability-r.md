@@ -39,6 +39,7 @@ The real redesign you asked for, plus per-resource-type tabs and the logs/traces
 - **ResourceConsole**: flat header + a **horizontal underline tab bar**.
 
 ### Per-type tabs — `tabsFor(category)`
+
 | Type | Tabs |
 |---|---|
 | **Game** | Overview · Metrics · Logs · Traces · **Console (RCON)** · **Files** · Config · Events · Room · Danger |

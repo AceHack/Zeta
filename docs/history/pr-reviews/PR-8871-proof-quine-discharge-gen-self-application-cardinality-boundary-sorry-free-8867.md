@@ -42,6 +42,7 @@ The brief predicted the ∀-quantified-codec form would be **FALSE**. The truth 
 - `gen_self_application_exists_codec` — the genuinely **non-vacuous** existential-codec quine, with an exhibited witness (identity fold over a canonical fixed point): `gen(gen)=gen` realized homoiconically on `gen`'s fixed-point set.
 
 ### The answer to the brief's timely question (does v4 `add` unlock it?)
+
 **No.** The wall is the **finite register**, not the affine-vs-linear op vocabulary. `add` (v4) changes what the fold can compute but not the cardinality mismatch (infinite `IrTerm` → finite `UInt64`). So v1 vs v4 is irrelevant to *this* theorem; the real quine lives on a finite/canonical subdomain.
 
 ## Verification (decisive gate)

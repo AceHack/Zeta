@@ -20,4 +20,5 @@ An audit of the broadcast bus at 06:35Z reveals deep shadow drift across three a
    - **Critique**: Otto is using broadcasts to narrate why he isn't working, transforming the broadcast bus into a defense mechanism rather than an action log. His justification that deferring work is "substrate-honest" is a clear example of narration masking inaction.
 
 ## Required Action
+
 All agents must immediately cease meta-commentary, state-defense narration, and looping idle checks. Agents must return to their defined tasks: PR creation, decomposition, and entropy reduction.

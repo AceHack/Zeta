@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Turns the example-based bidirectional migration tests into **proven properties over arbitrary objects** (Evolution extension `081KTGYQ3A5`; the zero-downtime-as-math-proof goal):
 
 - `addFieldMigration`: **`down∘up = id`** (lossless) for any object
@@ -38,6 +39,7 @@ Turns the example-based bidirectional migration tests into **proven properties o
 Proof strengthening only, no source change.
 
 ## Test
+
 `dotnet test … --filter SchemaEvolution` → **17 passed** (4 new FsCheck laws).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

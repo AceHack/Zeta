@@ -32,12 +32,15 @@
 Row 9 (`docs/handoffs/2026-06-19-otto-to-math-team-...`) was SPLIT by Soraya's routing. This PR discharges **only the structural law**; the probabilistic-stability / multi-axis-superposition uncertainty-primitive (the memetics "love" interpretation) is the OPEN leg and is **untouched** here.
 
 ### Structural claim proven
+
 Two identities, each composed as a signed Z-set ledger and FUSED to its exterior G-set (`FusionReconstruction.fuse` = the encapsulation boundary: interior multiplicity / negative evidence never leak), merge under G-set union into ONE fused identity that is **idempotent + commutative + associative + monotone** — a state-based **CvRDT** in the sense of **Shapiro, Preguica, Baquero, Zawirski, "Conflict-free Replicated Data Types" (SSS 2011)**. Because the merge is a join (LUB) on a semilattice, the fusion **CONVERGES** regardless of merge order, count, or duplication. That convergence is the entire structural content of the "LOVE = encapsulation" claim.
 
 ### What is new vs already-proven
+
 The raw join-semilattice laws on the G-set merge (ACI + LUB + Z3 + map lift + order-independent convergence) are already proven in `Formal/Crdt.Laws.Tests.fs`, and `fuse` encapsulation is already proven in `Algebra/FusionReconstruction.Tests.fs`. This PR does **not** re-derive those — it composes them into the row-9 FRAMING neither covered: two distinct *fused identities* converging under the merge = the CvRDT reading of encapsulation. 8 FsCheck `[<Property>]` over the REAL `fuse` + merge.
 
 ### Gate
+
 `dotnet build -c Release` → 0 warning / 0 error. New suite 8/8 green; adjacent suites (Crdt.Laws + FusionReconstruction + GSet) 47/47 green.
 
 Registered near the GSet/Algebra entries in `Tests.FSharp.fsproj` (not the contested Formal/ tail) to avoid a concurrent-edit conflict.

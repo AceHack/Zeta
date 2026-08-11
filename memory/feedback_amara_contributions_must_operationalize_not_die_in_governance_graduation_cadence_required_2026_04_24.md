@@ -99,6 +99,7 @@ Otto ships ONE small Amara-derived operational change.
    Requires multi-node foundation first. LARGE.
 
 ### Gating discipline (per Otto-82 / Otto-104
+
 authority calibration)
 
 - **Advisory-only Aminata pass** on each item. Aminata
@@ -197,6 +198,7 @@ Elapsed from Aaron's directive to shipped PR: ~30 min
 inside the same Otto-105 tick. Establishes the pattern.
 
 ## Aaron Otto-105 second message — widens scope to ALL
+
 research
 
 *"we need to be constantly moving her stuff in just like

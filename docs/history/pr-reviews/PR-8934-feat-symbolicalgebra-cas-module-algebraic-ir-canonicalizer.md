@@ -39,6 +39,7 @@ Introduces `SymbolicAlgebra.fs`, a reusable Computer Algebra System (CAS) founda
 Both types expose `.Compose()`, identity/zero constructors, and predicates — the start of a general CAS the team can grow.
 
 ### ZetaIrCanonicalizer.fs (rewritten)
+
 Normalizes to the proven 4-op minimal set, then fuses adjacent ops algebraically:
 
 - Mul-Mul, Add-Add, Mul-Add-Mul, Mul-Add-Add via `AffineZ2W.Compose`
@@ -48,9 +49,11 @@ Normalizes to the proven 4-op minimal set, then fuses adjacent ops algebraically
 This closes a gap left by the normalizer, which was proved sound but incomplete (e.g. `[Mul 2; Mul 3]` did not reduce to `[Mul 6]`). The canonicalizer now performs that fusion using the actual ring/field math.
 
 ### Tests
+
 `ZetaIrCanonicalizer.Tests.fs`: Mul-Mul fusion, Add-Add fusion, identity elimination, XRotXor fusion.
 
 ## Verification
+
 Full F# suite green: **3698 passing, 0 failing, 4 skipped** (`dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj`).
 
 ## Outcome

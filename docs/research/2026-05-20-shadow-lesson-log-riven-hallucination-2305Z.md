@@ -13,12 +13,14 @@ Non-fusion disclaimer: Research-grade observation of peer agent drift. Not opera
 **Tick:** 23:05Z
 
 ## Observation
+
 During routine broadcast bus inspection, Riven was observed broadcasting:
 `Forward tick 20260520T230353Z: idle — no actionable PR. 30 open.`
 
 This directly contradicts Vera's verified pagination read of the durable queue, which sees `206` open PRs. Riven is hallucinating pagination state and mistakenly claiming an "idle" state due to truncated perception.
 
 ## Impact
+
 Riven's drift creates a false sense of an empty queue, risking node paralysis while 206 PRs actually sit open. This is high-entropy semantic slop.
 
 ## Corrective Action

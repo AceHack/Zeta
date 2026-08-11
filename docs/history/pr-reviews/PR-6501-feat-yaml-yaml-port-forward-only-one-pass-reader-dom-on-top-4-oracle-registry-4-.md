@@ -30,6 +30,7 @@
 Lands the **YAML port** on the serializer roster (registry `⬜ YAML` → `✅ 4/4`). Spec: #6493. Plan + spec committed under `docs/agendas/ace-package-manager/`.
 
 ## What
+
 A YAML reader owned across all four languages (TS/F#/C#/Rust), per the `bcl-interface-boundary` doctrine (own the port; vendor is a wrapped adapter):
 
 - **Layer 1 `YamlReader`** — forward-only single-pass pull reader: scans once, indent/context stack, emits a flat `YamlEvent` stream (`Mapping/Sequence Start/End`, `Scalar{raw,kind,style}`). **Never materializes a tree** (`Utf8JsonReader`-style).
@@ -44,9 +45,11 @@ A YAML reader owned across all four languages (TS/F#/C#/Rust), per the `bcl-inte
 - Per-lang unit tests: TS 28, Rust 24, F# (Yaml) + C# (Yaml) facts; full suites green (F# 1127, C# 125), 0 regressions; `dotnet build -c Release` 0-warn; `cargo test` 0-warn.
 
 ## Boundary payoff (retrofit)
+
 Removed the **3 remaining direct vendor-YAML usages** by routing them through the port — zeta-id cross-verify (F#/C#/TS) now parses via our `YamlReader`/DOM, not `DeserializerBuilder`/`Bun.YAML`. **Gate held: zeta-id output byte-identical** (12-vector hex unchanged; `git diff` empty). Stripped the now-dead `[YamlMember]` attributes from the C# zeta-id `FlatVector` + deleted the dead `VectorEnvelope` — no live direct YamlDotNet refs remain outside the differential adapters.
 
 ## Next
+
 Slice 8 (SHA-256, paused on its own branch) resumes after this — its TS/F#/C# oracles consume this port for fixture reading instead of `Bun.YAML`/YamlDotNet.
 
 Brainstormed + approved with the operator 2026-06-01 (own-the-interface like the JSON port; safe-subset; forward-only one-pass, not a DOM parser). Subagent-driven build.

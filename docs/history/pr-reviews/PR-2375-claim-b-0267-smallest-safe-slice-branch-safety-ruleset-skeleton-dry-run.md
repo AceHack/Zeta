@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Claim + verification of 081KR2E4K0008QG0R002NYV33T smallest safe slice (slice 1 skeleton per re-decomp in backlog). Bounded one-step: claim branch + focused checks only. No live API, no root touch.
 
 ## Checks (in dedicated worktree)

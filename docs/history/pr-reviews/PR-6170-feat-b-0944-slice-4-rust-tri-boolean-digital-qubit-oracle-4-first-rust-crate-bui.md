@@ -47,6 +47,7 @@ This is the repo's **first Rust crate** (Rust was greenfield — no prior `.rs`,
 > **FOUR of four oracles now agree: TS 8/8 · F# 7/7 · C# 10/10 · Rust 9/9.** The digital-qubit cell is right across all four compilers. Remaining: slice 5 (tri-boolean float) + slice 6 (cross-language conformance-vector harness = the BFT ballot).
 
 ## Surfaced, NOT auto-fixed
+
 There is **no Rust CI in this repo yet**, so this crate is verified locally but not gated in CI. Adding a rust toolchain + cargo test/clippy to CI is a cross-cutting infra follow-up (like 081KSV2WD0008QG0R001XKG1B5) for your decision — not added autonomously here.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

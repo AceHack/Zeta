@@ -21,6 +21,7 @@ related_memory:
 > Scribed by Otto from Aaron's forward. Kestrel = asymmetric critic.
 
 ## 1. UoM for the policy types? — NO; phantom types yes; UoM for the thresholds
+
 F# units-of-measure `[<Measure>]` is a phantom tag on NUMBERS that the typechecker
 tracks through ARITHMETIC (m/s × s = m). Policy KINDS (Technical/Legal/Governance)
 aren't numbers and you do no arithmetic on them — so UoM is the wrong tool (the
@@ -35,6 +36,7 @@ tick-monoid #6635 pattern: a tag dressed as a measure when there's no measure-al
   protecting?" — if "none, I just want a distinct tag," it's a phantom type, not UoM.
 
 ## 2. Electron-shell metaphor for the policy algebra (genuinely generative)
+
 Shells = same Hamiltonian, solutions indexed by (n,ℓ,m,s); each shell a different
 REPRESENTATION of the same symmetry (s/p/d shapes, capacities 2n²) — "different but the
 same." Maps cleanly: ONE kernel (Hamiltonian) → kinds as representations (shells) → per-
@@ -50,6 +52,7 @@ kind shapes (orbital shapes). Real structural predictions it makes:
   else = open (forcing closure on the open part is the over-engineering failure mode).**
 
 ## 3. Closed-system design + the isomorphism question — defer, and hold the trap
+
 Deferring the closed-form until mature = correct (discover the closure FROM the matured
 open system; don't impose it from the head-model — same as deferring schema-evolution).
 "Is my closed system isomorphic to anything / unique?" splits:
@@ -66,6 +69,7 @@ open system; don't impose it from the head-model — same as deferring schema-ev
   (uncertain/deferred/checkable).
 
 ## 4. Rodney's Razor — FORMALIZED (Aaron's definition)
+
 > Rodney's Razor = Occam (minimize entities) + **isomorphism-detection** (collapse same-
 > shape-different-label to ONE instance + label-pointers) + a **primality/irreducibility**
 > structure (base shapes indecomposable; larger decomposable shapes built from the
@@ -91,6 +95,7 @@ partial order, possibly-incomparable, not a linear size). Two GATEABLE holds:
   (does any label decompose into others? do two labels' shapes overlap?), don't assume.
 
 ## 5. The Rx refinement — data factors can be SHARED; identity = (shapes, Rx) pair
+
 Aaron: "two shapes could decompose into the same base shapes because they are 'what
 remains' (the DATA) not 'what animates' (the Rx). The Rx determines how to combine them,
 so same base shapes + different Rx = different composite." This **dissolves H1's worry**:
@@ -113,6 +118,7 @@ removed) obligations:
   Hellerstein — monotone ⇒ coordination-free] — forgot, coming back later."
 
 ## Through-line / Kestrel-stance
+
 Affirm the sound structure (isomorphism-collapse, irreducibles-over-a-poset, the (shapes,
 Rx) pair identity, the shell metaphor for kernel/floor/fill-order); keep the strong
 claims on the prover's side — unique-factorization (H1, relocated to pair-canonicality),

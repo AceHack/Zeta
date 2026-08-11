@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Claimed + implemented **smallest safe slice** of 081KR2E4K0008QG0R002NYV33T (P1 GitHub ruleset split — safety ruleset).
 
 - Used dedicated worktree + pushed claim branch (per rules).

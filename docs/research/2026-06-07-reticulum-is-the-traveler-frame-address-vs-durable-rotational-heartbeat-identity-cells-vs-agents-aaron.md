@@ -62,6 +62,7 @@ dedication — *memory held* is the yin persistence, never erased.)
 ## Two claims
 
 ### 1. Reticulum ≈ the traveler frame
+
 The Reticulum routing/addressing model is *very close to* the traveler-frame concept (#6893). Both **address and
 route self-propagating patterns** across a frame with no privileged global center — Reticulum is the
 **operational form of the traveler-frame topology** (the mesh that carries closures, #6932). Routing a closure

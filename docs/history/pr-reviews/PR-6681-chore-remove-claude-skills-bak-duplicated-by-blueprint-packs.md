@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Removes `.claude/skills.bak/` (261 dirs). After the #6680 migration it is fully duplicated by the blueprint packs.
 
 **Audit (pre-delete):** 261 dirs, **0** non-SKILL.md files, and every SKILL.md has a matching `<pack>/blueprints/<name>.md`. The two `skill.yaml` companions were already carried into their packs. Git history preserves the originals (recoverable from the migration commit).

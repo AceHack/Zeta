@@ -30,6 +30,7 @@
 ## Two operator-authorized items (2026-05-31)
 
 ### b2 — `install.sh` git-bash arm DRIVES the Windows install
+
 Previously the `MINGW*|MSYS*|CYGWIN*` arm just printed "run `pwsh install.ps1`" and exited 2. Now it **execs `install.ps1`** via `pwsh` (or falls back to `powershell.exe`), with `cygpath` path conversion and a no-PowerShell fallback (message + exit 2). So `bash tools/setup/install.sh` from Git Bash installs Zeta on Windows in one shot — **parity with the Unix one-liner**.
 
 - `exec` replaces the shell so `install.ps1`'s exit code propagates.
@@ -37,6 +38,7 @@ Previously the `MINGW*|MSYS*|CYGWIN*` arm just printed "run `pwsh install.ps1`" 
 - `bash -n` clean.
 
 ### Safe-search grep wrapper — `tools/search/grep.ts`
+
 Content-search wrapper with `references/upstreams` + `node_modules` + build-output excludes **baked in** — structural, not behavioral (per `architecture-is-safety-mechanism-not-discipline` + `references-upstreams-not-our-code-search-excludes`). Came from an operator catch: agents doing raw `Get-ChildItem -Recurse | Select-String` / `find | xargs grep` don't honor `.gitignore` and walk into the gigabytes of mirrored upstream repos.
 
 - **Zero-dep Bun-native walk** so the excludes hold even where `rg` isn't on PATH (this laptop has none).
@@ -45,6 +47,7 @@ Content-search wrapper with `references/upstreams` + `node_modules` + build-outp
 - **10 tests pass** (asserts the upstreams/node_modules/bin exclusion + match correctness + arg parsing).
 
 ## Note on diff
+
 Branch is behind a fast-moving `main`; the 3-dot (real PR) diff is the focused 3-file set (grep.ts, grep.test.ts, install.sh). The `install.sh` change triggers the NixOS + Windows Docker install tests (paths-gated) — both expected green (b2 only touches the git-bash arm neither test exercises).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -44,6 +44,7 @@
 - dotnet format --verify-no-changes (blocked locally: same SDK mismatch)
 
 ## Review
+
 Subagent review attempted, but the platform rejected new agents with: collab spawn failed: agent thread limit reached.
 
 ## Outcome

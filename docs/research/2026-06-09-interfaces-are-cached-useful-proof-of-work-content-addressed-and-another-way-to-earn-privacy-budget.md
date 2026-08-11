@@ -15,6 +15,7 @@ gives the **economic reason they are valuable**: a proven interface is **cached 
 producing/contributing one is **another way to earn privacy budget**.
 
 ### 1. Cached USEFUL proof-of-work
+
 A proven interface took **work** to produce (derive, byte-lock, prove). Because interface≡proof is
 **content-addressed** (fingerprint = canonical root), that work is **cached**: computed once, then
 **reused by anyone, forever**, by its address — never recomputed (free dedup; idempotent). *Peeled:*
@@ -25,6 +26,7 @@ valuable, verifiable result.) The cache *is* the value: a library of content-add
 interfaces is accumulated, deduplicated, reusable proof-of-work.
 
 ### 2. Another way to earn privacy budget
+
 Contributing a proven interface is a **disclosure that reduces everyone's uncertainty** — so it **earns
 privacy budget** in the reveal-to-earn / encrypt-to-spend economy (the disclosure budget; Soraya
 C5/C11; uncertainty-reduction-at-the-border earns trust + leverage). Until now the budget-earning moves

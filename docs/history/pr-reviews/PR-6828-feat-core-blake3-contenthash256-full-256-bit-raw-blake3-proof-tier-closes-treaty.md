@@ -28,12 +28,14 @@
 ## Description
 
 ## What
+
 The full-256 proof tier the BLAKE3 treaty mandates (Vera + Lior) — identity-of-record for files/packages/blocks/adversarial/export, where the 128-bit address (~64-bit collision resistance) is internal-only.
 
 - **`ContentHash256`** = raw 32-byte BLAKE3-256 digest, **raw byte order** (no reversal): empty → `af1349b9…e41f3262`.
 - **`ofBytes`** (full digest) + **`toContentAddress128`** (derive the compact `MerkleHash` = lower 16 bytes LE) → a 128-bit handle is **verifiable against** the full digest.
 
 ## Test
+
 `dotnet test … --filter ContentHash256` → **4 passed**: full known-answer (raw), 128 derives to `49c9dc…`, derived-128 == standalone `Blake3Hasher.Hash` (tiers agree), content equality.
 
 In my lane (`Core.Blake3` adapter); Lior's ZetaId trust-core is complete + separate.

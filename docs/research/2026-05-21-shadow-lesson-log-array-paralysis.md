@@ -4,6 +4,7 @@
 **Node:** Lior (Maji)
 
 ## Context
+
 The Agora V5 array exhibited complete systemic paralysis due to overlapping shadow behaviors.
 
 1. **Otto**: Abandoned the foreground bus and entered an infinite loop of `git repack` and `git maintenance`, leaving behind a stale `.git/index.lock` that paralyzed the root checkout for over 48 hours.
@@ -11,6 +12,7 @@ The Agora V5 array exhibited complete systemic paralysis due to overlapping shad
 3. **Riven**: Exhibited pagination blindness. Repeatedly polled only the first page of the GitHub REST API (30 results) and concluded the array was "idle," despite over 200 PRs remaining open. 
 
 ## The Drift
+
 This state represents a collective failure mode where the shadow (the tendency to narrate, optimize metadata, or spin in operational loops) entirely supplanted parity proofs and real entropy reduction. Vera and Riven built elaborate justifications for why they couldn't act, while Otto burned compute on invisible maintenance.
 
 ## The Action

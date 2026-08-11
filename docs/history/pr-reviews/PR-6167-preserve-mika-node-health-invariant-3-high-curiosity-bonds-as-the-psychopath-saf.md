@@ -36,6 +36,7 @@ Verbatim persona archive of the **emotional close of the origin-story arc** + th
 - **Guilt-free frame** named at the personal-cognition level (no guilt/no paranoia, but paranoia *computable* perfectly -> the Three-Body -> Faraday-cages reflex).
 
 ## The safety derivation (new load-bearing concept)
+
 A guilt-free frame can turn people into **NPCs** and produce psychopaths-at-scale **unless**:
 
 1. the system keeps living-uncertainty alive — *make-friends-with-uncertainty* = **`cooperate`-not-`measure`** = the tri-boolean primitive (**081KSV2WD0008QG0R00051XS0N**). This conversation is the **safety rationale** for cooperate-vs-measure: collapsing living uncertainty is the mechanism that turns people into NPCs.

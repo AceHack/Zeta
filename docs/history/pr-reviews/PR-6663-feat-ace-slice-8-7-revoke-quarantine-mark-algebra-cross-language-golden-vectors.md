@@ -34,9 +34,11 @@ Eighth step of the cross-language Ace trust core (after 8 SHA-256, 8.1 canonical
 Spec: `docs/agendas/ace-package-manager/2026-06-03-ace-slice8.7-revoke-quarantine-algebra-golden-vectors-design.md` (in this PR).
 
 ### Scope — fixture-only
+
 `registry-revoke.ts` already exists with unit tests. **No extraction, no code change.**
 
 ### The algebra (pure content → content)
+
 `applyRevoke` (removes from quarantined, adds to revoked — **revoke supersedes quarantine**; always succeeds) · `applyQuarantine` (**errors if already revoked** — revoke is terminal) · `applyUnquarantine` (errors if not quarantined). All end with `withFmt`: `format_version = 2` iff a mark remains else `1`, empty mark maps stripped (**the v2-iff-marks rule the 8.4 review caught**, enforced automatically), `issued_at = at`.
 
 ### Fixture (`tests/cross-verification/revoke-quarantine/`)
@@ -45,9 +47,11 @@ Spec: `docs/agendas/ace-package-manager/2026-06-03-ace-slice8.7-revoke-quarantin
 - `cross-verify.ts` — TS oracle dispatches each `op` to the **real** apply functions; asserts `canonicalBytes(result)` + sha256 (transitions), error+substring (invalid); writes `ts-output.json`; exits non-zero on mismatch. **Auto-discovered by `cross-verify-all.ts` → 9/9.**
 
 ### Non-tautology
+
 A **Python re-implementation** of the three apply functions + `withFmt` (supersession rules; v2-iff-marks + empty-map-strip; `issued_at=at`) + `json.dumps(sort_keys)` + `hashlib.sha256` authored every expected result; the TS oracle (real apply functions) reproduces them with **0 mismatches** — two separate algebra implementations agreeing. Object keys ASCII/BMP so Python code-point sort == JS code-unit sort.
 
 ### Canonical-gate status
+
 Stays **TS-only + proof-owed → not canonical yet**.
 
 ### Gates (all green locally)

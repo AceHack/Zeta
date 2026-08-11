@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Decomposed 081KQDTYV0008QG0R003N15ZW2 (P2 immune system upgrades research absorb) into 3 smallest atomic dependency-ordered child rows per backlog-decomposer skill + AGENTS.md / CLAUDE.md rules.
 
 - 081KRA5AR0008QG0R003BSHKWV: source survey + note capture (buildable now)

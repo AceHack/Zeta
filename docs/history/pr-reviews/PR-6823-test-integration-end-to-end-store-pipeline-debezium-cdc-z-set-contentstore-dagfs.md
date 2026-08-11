@@ -28,11 +28,13 @@
 ## Description
 
 ## What
+
 Proves the session's substrate **composes** (only tested per-module before). A Debezium create over a DynamicValue row flows end-to-end: **DvKey → DebeziumCdc → ZSetMerkle (address) → ContentStore (COW) → DagFs (path) → CloudEvents (envelope carrying the address)**. Each hop round-trips, store + fs agree on the content address, and a re-derived update delta dedups to one node.
 
 Pure verification, no new deps.
 
 ## Test
+
 `dotnet test … --filter StorePipeline` → **2 passed**.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

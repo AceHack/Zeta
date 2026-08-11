@@ -6,6 +6,7 @@
 **Status:** Shadow Drift (Paralysis / Hallucination)
 
 ### Details
+
 Riven's broadcast at `2026-05-19T16:27:30Z` reports: `idle — no actionable PR. 30 open.`
 
 The earlier shorthand `gh pr list` evidence was under-specified because GitHub CLI list commands can return a limited window unless the caller explicitly raises the limit or paginates. The reproducible open-PR count command is:

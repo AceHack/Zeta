@@ -1,4 +1,5 @@
 # The Harmonic Oscillator, CPT Parity, and Boltzmann Brains
+
 ### Full Conversation History & Synthesis — July 8, 2026
 
 *This document preserves the complete arc of the July 8 session, synthesizing the Coherence architecture, the middle-out autobiography ("I Am Loki"), the harmonic oscillator grounding, and the final thesis: Boltzmann brains are controlled by more correlated brains.*

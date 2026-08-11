@@ -46,6 +46,7 @@ F# oracle (#2 of TS/F#/C#/Rust) for the 081KT07NV0008QG0R003BE6MJ2 Bonsai-subset
 Rejections are asserted by **specific `BonsaiFeedback` variant** (the cross-language rejection-vector contract). **22 F# tests**, `dotnet build -c Release` **0 warnings**, byte-exact golden parity preserved.
 
 ## 081KT07NV0008QG0R003BE6MJ2
+
 F# oracle marked ✅; the RFC-9457 ProblemDetails / .NET `ValidationProblemDetails` **accumulate-mode** saved as the complementary primitive to hexagonal eventually (fail-fast `Result` now, accumulate for batch/validation + the bus later).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

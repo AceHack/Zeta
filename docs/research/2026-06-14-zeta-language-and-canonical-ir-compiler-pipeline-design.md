@@ -1,6 +1,7 @@
 # Zeta Language & Canonical IR: Multi-Language Reactive Compiler Pipeline
 
 ## Goal
+
 Design a custom programming language (**Zeta**) and a canonical intermediate representation (**Zeta IR**) that can be parsed and compiled down to our 6 target languages (TypeScript, F#, C#, Rust, Python, Go). 
 
 The compiler pipeline will limit itself strictly to **interfaces and Rx stream query definitions**, treating deterministic values (`DynamicValue`), probabilistic values (`SoftValue`), and stream graphs (`Rx`) as homoiconic duals.
@@ -31,6 +32,7 @@ graph TD
 The Zeta language is a domain-specific, pure functional language for stream transformations. It has no loops or side effects; all execution flows through Rx stream queries and pure functions.
 
 ### Sample Syntax: `ZSetMerkle` in Zeta Language
+
 ```zeta
 // Define the interface contract
 interface ZSetMerkle<T> {
@@ -66,6 +68,7 @@ impl ZSetMerkle<T> for StandardHasher {
 The Zeta IR is represented entirely as a `DynamicValue` tree. Because computation (`Rx`) and data are duals, an Rx operator pipeline is just another shape of value in this tree.
 
 ### Abstract Syntax of Zeta IR
+
 Using F# union syntax to define the IR core:
 
 ```fsharp

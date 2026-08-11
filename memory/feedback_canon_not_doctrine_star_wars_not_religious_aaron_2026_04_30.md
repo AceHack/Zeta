@@ -452,6 +452,7 @@ no privileged singular layer. Bootstraps all the way down,
 including the canonicalization process itself.
 
 ### Aaron's anchor-free cognitive style — the human-lineage
+
 anchor for 0-doctrine
 
 Per the canonical-definition rule

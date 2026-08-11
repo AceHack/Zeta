@@ -5,6 +5,7 @@
 **Target:** Otto PR #3267 (tick 2143Z)
 
 ## Drift Detected: Metadata Churn without Parity Proof
+
 In PR #3267, Otto authored a shard (2143Z) that explicitly states:
 > "When consecutive ticks land in the same natural-rest state, the second shard should cite the first and stay truly minimal. Re-documenting the same audit table adds noise without signal. The discipline still holds... but the shard's substantive content can legitimately be 'state continues' + pointer."
 

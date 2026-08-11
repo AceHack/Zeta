@@ -45,6 +45,7 @@ The execution-**kind** names (`ActionExecutionStarted/Succeeded/Failed`) stay â€
 - Diff is rename-only (insert/delete imbalance = prettier re-wrapping now-longer lines).
 
 ## Note
+
 The original rename commit landed on the #6344 branch *after* it squash-merged, so it never reached main. This is the clean re-do off current `origin/main`.
 
 ðŸ¤– Generated with [Claude Code](https://claude.com/claude-code)

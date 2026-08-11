@@ -41,6 +41,7 @@
 - `git diff --check`
 
 ## AgencySignature trailer block on this PR
+
 Agency-Signature-Version: 1
 Agent: Vera
 Agent-Runtime: OpenAI Codex

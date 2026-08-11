@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Lior finished + landed the ZetaId overlay (4 oracles, cross-verify 12/12, all green). I held the Vera+Lior treaty **decision-record** local during his in-flight work (no-collision discipline) and now **reconcile it with the as-built**:
 
 - **Category 9 = ContentAddress**, 10..15 = Generic, 0..8 = Observation; **`ZetaIdPayload`** DU (`Observation` | `ContentAddress(ver,≤119)` | `Generic(ver,cat≥10,≤119)`); `packGeneric` carries a **119-bit** payload (version+category spend 9 of 128); FsCheck `unpack∘pack = id`.

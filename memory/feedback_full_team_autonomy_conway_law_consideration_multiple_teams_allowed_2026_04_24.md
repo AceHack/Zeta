@@ -74,6 +74,7 @@ Before creating a new team:
    unilaterally now.
 
 ## What the prior "Architect needed extra stuff"
+
 constraint was
 
 Per `docs/CONFLICT-RESOLUTION.md` + Kenji's Architect

@@ -36,9 +36,11 @@
 **F# `src/Core` ordering audit COMPLETE** — with GSet/ZSet/IndexedZSet (landed) + Bag (already ordinal), the binary/ordinal collation default is enforced across the whole F# core.
 
 ## Test
+
 `dotnet test … --filter Hierarchy|Residuated|Aggregate|Closure` → **51 passed** (1 pre-existing skip).
 
 ## Remaining 081KT07NV0008QG0R001YDB73K
+
 C#/Rust/TS oracle audit · non-ASCII golden-vector regen · analyzer enforcement (`CA1304/1305/1307/1310/2007`) · carry-as-identity selection API (strategy a).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

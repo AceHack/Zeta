@@ -36,9 +36,11 @@ The **last algebra-ladder rung**. IndexedZSet (`Z[K×V]`, the join/aggregation r
 - The bilinear **`join`** (the DBSP product) is **not** the group op and is left untouched — the ring multiply is surfaced separately, not as a numeric default.
 
 ### Tests (+5, **16/16** IndexedZSet pass; Core 0 warn / 0 err)
+
 operator `≡` module fn (`+`/`~-`/`-`) · `Zero` = `empty` = `GenericZero` · `a + (-a) = Zero` and `a - a = Zero` · `Seq.sum` aggregates with key-empties-out drop · `(+)` **NOT** idempotent (doubles value-weights).
 
 ### Ladder
+
 Z-set 4/4 done (#6480–#6483). IndexedZSet: **F# (this)** · C# IWSAM · Rust · TS to follow.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

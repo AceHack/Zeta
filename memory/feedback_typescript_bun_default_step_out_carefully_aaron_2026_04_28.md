@@ -63,6 +63,7 @@ Bar is high. Justify with one of:
 If none of those apply: write TypeScript on Bun.
 
 ## When NOT to step out (i.e. default to TypeScript even though
+
 Python feels easier)
 
 - "It's a quick script" — quick scripts compound. Today's

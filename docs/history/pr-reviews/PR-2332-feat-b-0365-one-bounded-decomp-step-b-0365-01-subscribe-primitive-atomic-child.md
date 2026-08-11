@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 One bounded step per task rules: dedicated worktree + pushed claim branch, no root checkout touch, worldview refresh, trajectories read, build gate passed (0w0e).
 
 Decomposed 081KR50HA0008QG0R002R3NVGS (L research bundle) by extracting first atomic child 081KR50HA0008QG0R002R3NVGS-01 (subscribe primitive ZSet law definition, S effort, no deps, research).
@@ -43,6 +44,7 @@ Per "always re-decompose" and "assume mistakes": this pass splits only the small
 - Prefer F#/TS: child is research substrate for future F# encoding of subscribe law.
 
 ## Next (after this PR)
+
 081KR50HA0008QG0R002R3NVGS-01 becomes buildable-now root; follow-on children for Rice proof, Class 4 taxonomy, Houman reactor will depend on it.
 
 Co-Authored-By: Grok <noreply@x.ai>

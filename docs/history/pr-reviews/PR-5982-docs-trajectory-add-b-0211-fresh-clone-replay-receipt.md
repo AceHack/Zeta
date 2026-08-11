@@ -40,6 +40,7 @@
 - /Users/acehack/.bun/bin/bun x markdownlint-cli2 docs/trajectories/autonomous-loop-coordination/local-remote-cluster-replay-receipt-2026-05-29.md docs/trajectories/autonomous-loop-coordination/RESUME.md
 
 ## Limits
+
 Docs-only receipt; no runner behavior, merge-gate, or claim-schema change.
 
 ## Outcome

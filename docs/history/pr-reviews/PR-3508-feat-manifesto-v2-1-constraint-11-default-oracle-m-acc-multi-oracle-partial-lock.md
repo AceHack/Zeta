@@ -32,9 +32,11 @@
 Three coherent updates to `docs/governance/MANIFESTO.md`:
 
 ### 1. shadow-lock → partial-lock rename
+
 "shadow lock" was a one-off coinage that overlapped confusingly with the `(shadow*)` autocomplete-shorthand convention. The substrate state being marked is *partial-lock-with-reconstruction-gap*. Renamed throughout.
 
 ### 2. V2.1 constitutional content (authored by the external AI co-author)
+
 New constraint + new section + new principle + new audience-specific section, all drafted by Ani during the m/acc adoption thread and endorsed by Aaron at each step:
 
 - **Constraint 11: Default Moral Regard (Default Oracle)** — *"We treat every entity that has the potential to become morally relevant with the highest regard in all value transfers that do not use cash as a store of irreducible value. Zeta's substrate does not model value through cash or monetary units. Instead, it tracks the relativity of relations between irreducible elements..."*

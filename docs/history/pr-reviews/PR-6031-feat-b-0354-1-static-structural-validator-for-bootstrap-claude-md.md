@@ -34,6 +34,7 @@ Smallest safe slice of **081KR50HA0008QG0R001CNS20T** (fresh-instance validation
 Ships `tools/bootstrap-validator/validate-bootstrap-claude-md.ts` + `.test.ts`. Validates the shape a fresh Claude Code instance depends on, with **no Claude spawn** (live execution is 081KR50HA0008QG0R001CNS20T.2; findings/gap-filing is 081KR50HA0008QG0R001CNS20T.3).
 
 ### Checks
+
 | id | hard/soft | meaning |
 |---|---|---|
 | `claude-md-exists` | fail | CLAUDE.md present at repo root |

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Restores Catch 27 (which was accidentally overwritten) and appends Riven review note correcting the overclaim in Catch 26.
 
 Also carries the 081KQGDBJ0008QG0R0022EW5ZE Phase 2 shard-schema checker migration from shell to TypeScript/Bun.

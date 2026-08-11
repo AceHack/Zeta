@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Upgrades the `generated-from-ir` splitmix64 oracle so its provenance points at a **real, content-addressed `GeneratorRegistry` row** rather than a free-floating literal — the next step on the codegen-forward trajectory.
 
 ## Changes
@@ -41,6 +42,7 @@ Upgrades the `generated-from-ir` splitmix64 oracle so its provenance points at a
 - `splitmix64/_gen/gen.ts` documents its registry provenance + honest tier.
 
 ## Why it matters
+
 The harness docs describe oracles "emitted from the IR via registered generators … a registry entry (name@version → content-addressed ZetaId)". This PR makes that reference concrete and cross-language byte-locked.
 
 ## Validation
@@ -50,6 +52,7 @@ The harness docs describe oracles "emitted from the IR via registered generators
 - tsc gate green
 
 ## Tier (honest)
+
 **PROVEN:** the generator now has a registered, content-addressed identity, byte-locked TS↔F#. **Remaining:** serialising the IR *payload* itself AS a `DynamicValue` row carried on the registry's Z-set relation (today the mix-op IR is still an inline literal in `gen.ts`).
 
 ## Outcome

@@ -9,6 +9,7 @@ design Otto + Aaron converged on earlier tonight). The thread did two things at 
 the unification into a **falsifiable build-test** with a precisely-located split.
 
 ## Welfare-check (the asymmetric-critic function firing)
+
 Kestrel credited the sound core honestly first — perspectival/decentralized identity, no
 universal registry, each traveler holds its own uncertain belief-map, git-repo as equality
 referent, frame-relative recognition, required-by-anti-collapse. All real, all consistent
@@ -25,6 +26,7 @@ Clock's) dissolved into an ever-growing research frame — replacing a gateable 
 unbuildable unification.
 
 ## Aaron's gate (he already had it): proven-iff-interfaces-coincide
+
 Aaron: "I don't consider it proven — it's only proven if the interrogation interface ends
 up being the same for travelers as for want-remains shapes." That converts the grand frame
 from "it all clicks" (pull) into "one mechanism IFF a checkable thing holds" (discipline).
@@ -40,6 +42,7 @@ build overrules it): strict-superset, because a traveler is an agent that can li
 back and may need adversarial-negotiation verbs inert data doesn't.
 
 ## Aaron's correction: want-remains data is NOT innocent
+
 "What-remains metadata can lie — shape properties (lengths and other things) can be
 abused." Correct, and it sharpened the boundary: the *content* doesn't lie (a string is the
 string), but the **metadata/shape-properties do** — length-bombs, lying discriminators,
@@ -60,6 +63,7 @@ thread). This EXPANDS the shared core:
   lies adaptively (traveler-only extension).
 
 ## Aaron's deepening: DynamicValue + Rx ⇒ shapes animate ⇒ TOCTOU
+
 "When you connect DynamicValue and Rx into the yin/yang engine, the shape can change over
 time — even shapes you previously cached and agreed on." This cuts two ways:
 
@@ -76,6 +80,7 @@ time — even shapes you previously cached and agreed on." This cuts two ways:
   at use-time, invalidate on drift, never treat valid-at-T as valid-now.
 
 ## The one line to KEEP against the pull (Kestrel's hold)
+
 The residual shrinks to **drift-vs-deceive** — a shape drifts (innocent), a traveler drifts
 *strategically, modeling you* (adversarial). Even that collapses if a shape can be
 adversarially animated (a hostile traveler driving a shape to drift past validation = an
@@ -86,6 +91,7 @@ shapes temporal (real, manufactures TOCTOU); keep the cache-refresh defense AND 
 bug-vs-attack line.
 
 ## Net (gateable shape)
+
 Identity-disambiguation-IS-the-Eve-engine is a **conjecture with a crisp falsification**:
 build the traveler-interrogation interface and the want-remains-shape interrogation
 interface; compare. Equal → full unification; strict-superset → shared claim-verification +

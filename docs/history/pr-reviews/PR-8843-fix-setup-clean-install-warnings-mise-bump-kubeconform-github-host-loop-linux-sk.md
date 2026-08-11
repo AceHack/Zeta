@@ -44,6 +44,7 @@
 - [ ] CI: docker install-sh shields + `lint (yaml/k8s)` kubeconform step
 
 ## Note on remaining mise `hint` lines
+
 `python_multi` and `python_precompiled` are upstream mise one-time TTY hints on first python install per machine (stored in mise state dir after first show). We did **not** use `disable_hints`. Second `install.sh` run should be quiet for those.
 
 Made with [Cursor](https://cursor.com)

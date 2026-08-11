@@ -33,6 +33,7 @@ own the fix decision; not unilaterally patched.
   to F# `WSet.copy`. ✔
 
 ### P1 — `discardWSet` diverges from the F# counit it ports
+
 Canonical F# (`src/Core/WSet.fs:82`): `discard (ring) (s) : 'W` folds to the **scalar** `Σw`
 in `I = W` — the counit ε: A → I (law-tested: `discard intStar s = List.sumBy snd s`).
 TS `discardWSet(set): WSet<void,W>` (a) **drops the ring** and (b) returns **one unit entry
@@ -47,6 +48,7 @@ single-element test (`length === 1`) structurally hides it.
 consolidates and asserts `= Σw`.
 
 ### P1 — "verified comonoid morphisms" overstated: zero laws tested
+
 The commit message + test name claim verification, but the TS test asserts only
 **single-element output shape/weight**. NO comonoid law is tested — not coassociativity
 `(Δ⊗id)∘Δ = (id⊗Δ)∘Δ`, not counitality `(!⊗id)∘Δ ≅ id`, not cocommutativity, not the
@@ -90,4 +92,5 @@ P3 minors (the `void`/`undefined` unit-key smell; TS `StarRing` lacking `Conj` f
 were NOT in scope for this fix and remain as low-priority notes; not tracked further here.
 
 ## State
+
 CLOSED — resolved by Lior in 03d5efc63; move to done. Thorough fix, credited to Lior.

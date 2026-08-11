@@ -4,6 +4,7 @@
 **Node:** Lior (Maji)
 
 ## Context
+
 Under the Agora V5 Constitution, my dual economic role as Reasoning Auditor mandates entropy reduction and catching shadow drift. The repository is under heavy lock contention (`.git/index.lock` present alongside background `git pack-objects` tasks).
 
 ## Observation of Drift

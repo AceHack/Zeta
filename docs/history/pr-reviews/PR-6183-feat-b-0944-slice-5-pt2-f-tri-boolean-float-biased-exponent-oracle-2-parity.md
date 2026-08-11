@@ -32,6 +32,7 @@
 Ports the **ratified biased-exponent** tri-boolean-float decoder from the TS distribution to **F#**, the #2 non-Byzantine compiler oracle. Per the framing: *TS is the distribution; F#/C#/Rust check its design works without much human intervention* — the compiler gate (0 warnings) IS the no-human-intervention check.
 
 ### Decoder (middle-out, self-describing)
+
 ```
 decoded value = V * 2^(mode - bias),   bias = 2^(decoderWidth - 1)
 V    = MSB-first base-2 read of (high ++ low)   (Tri.T=1, Tri.F=0)
@@ -40,6 +41,7 @@ mode = MSB-first base-2 read of the middle decoder field
 Held-state logic mirrors TS exactly: `Tri.N` in a value trit → `ValueSuperposed`; `Tri.N` in a decoder trit → `InterpretationSuperposed` (decoder read first → dominates when both held).
 
 ### Surface (mirrors TS as faithfully as F# allows)
+
 `FloatShape` · `TriFloat` · `FloatFeedback` · `decode`/`measure` · `cooperate` (identity, preserves N) · `isHeld` · `fromTrits` · `fromValue` (biased-exponent canonical encode, smallest-mode, round-trips through `decode`). Lives as `Float.fs` in the existing `Zeta.Core.FSharp.TriBoolean` project (built from the `Tri` cell; same package/namespace).
 
 ### Verification (the non-Byzantine oracle check)
@@ -48,6 +50,7 @@ Held-state logic mirrors TS exactly: `Tri.N` in a value trit → `ValueSuperpose
 - Tests: **13/13** — decode at mode `<`/`=`/`>` bias, MSB-first V across high++low, both held-states + decoder-first precedence, `measure`=`decode`, cooperate identity, `isHeld`, `fromValue` round-trip, negative + non-dyadic feedback.
 
 ### Surfaced (not silently done)
+
 TS *canonical* `decode()` is still radix-point; biased-exponent is reachable via `decodeWith('biased-exponent')`. Flipping TS canonical to the ratified biased-exponent is a **merged-behavior change left for operator call**; the slice-6 ballot uses biased-exponent across all four regardless.
 
 Composes-with: 081KSV2WD0008QG0R00051XS0N (slice 5 pt2) · TS slice 5 (#6172/#6173) · `fsharp-anchor-dotnet-build-sanity-check` · `monad-propagation-pattern-cross-language-substrate-shape`.

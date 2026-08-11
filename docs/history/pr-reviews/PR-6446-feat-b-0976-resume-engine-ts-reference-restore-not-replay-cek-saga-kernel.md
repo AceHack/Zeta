@@ -30,6 +30,7 @@
 Starts the **resume-engine slice** — the self-evolving-saga kernel the serialized Bonsai expression-tree feeds (the `bonsai.ts` serializer is the *shape*; this is the *evaluator* that runs it durably). TS reference oracle (#1 of TS/F#/C#/Rust); the proven Bonsai pattern — TS authors the golden saga-traces, F#/C#/Rust ferry.
 
 ## Model — restore-not-replay (the row's distinguishing property)
+
 A small-step **CEK machine** over the Bonsai-subset `Expr`. **`call` nodes are activities** (the suspension points). Pure parts (`const`/`param`/`binary`/`cond`) evaluate inline; at an activity the machine **suspends**, handing back a fully serializable **`SagaState`** = the remaining continuation (the `kont` stack) + the pending activity. `resume(state, result)` **restores** the continuation and feeds the result back as the call's value — it does **not** replay from the top, so prior activities are never re-invoked (vs Temporal's replay-with-memoization). Each `kont` frame **is the closure** — it captures exactly the env + sub-expr it still needs (the slice's "serialize closure + expr-tree").
 
 ## Shape (matches the Bonsai oracle conventions)
@@ -39,6 +40,7 @@ A small-step **CEK machine** over the Bonsai-subset `Expr`. **`call` nodes are a
 - Slice-1 scope: `const`/`param`/`binary`/`cond`/`call`. `lambda` application deferred to slice-2 (declines `UnsupportedNode`).
 
 ## Tests — 11 (68 bonsai-dir total), tsc clean
+
 `resume-golden.json` has 5 saga-traces (sequential activities · cond-branch-on-activity · activity-with-computed-args · pure-no-suspension · param-binding + activity) — the cross-language behavioral lock (same suspension sequence + final value). Each trace **persists + restores at every suspension** (proves restore-not-replay) + feedback-variant + state round-trip.
 
 Fills the `PRIMITIVE-REGISTRY` **"serializable deferred execution = self-evolving sagas"** line (Event/reactive) — the TS cell. F#/C#/Rust ferry next.

@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 **CloudEvents** bus-envelope adoption (`081KTH0WQ3C`) — rides our DynamicValue codecs:
 
 - `CloudEvent` record: required `id`/`source`/`specversion`/`type` + optional `time`/`subject`/`datacontenttype`/`dataschema` + extension attributes + `data`.
@@ -37,6 +38,7 @@
 **Also answers your convergence question with a proof:** `editLocal` to content identical to an existing file **converges** — content-addressing dedups, so the path just moves to the shared node (no duplicate). New `DagFs` test asserts both paths resolve to the same address after the edit.
 
 ## Test
+
 `dotnet test … --filter DagFs|CloudEvents` → **9 passed**.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

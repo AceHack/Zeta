@@ -9,6 +9,7 @@ Soraya (formal-verification-expert) reviewed the planned 081KT7YW00008QG0R001DGZ
 (2026-06-06, routed by Otto). Verdict + the binding design constraints:
 
 ## Vacuity fix (the crux)
+
 The full-state signature checked for repetition MUST be computed **only over semantically-load-bearing
 content** = the multiset of agent beliefs (`Rational[]`). **Exclude ALL monotonic bookkeeping** (tick, id
 counter, history length, parent pointers) from the signature — else "no signature repeats" is true BY
@@ -16,6 +17,7 @@ CONSTRUCTION (the odometer guarantees a fresh hash) and the no-limit-cycle check
 "state changed" false-pass 081KT7YW00008QG0R001DGZQKM forbids). Novelty must come from belief DIFFERENCE, not the counter.
 
 ## Risk #3 (the model-killer, now fixed)
+
 Bounded exact-rationals over a fixed candidate set with bounded denominator = a FINITE state space →
 pigeonhole forces eventual halt-or-cycle. Bayesian `observe` is monotone-converging (proven
 BeliefConvergence) → a fixed population PROVABLY halts. So "chaotic-aperiodic over bounded rationals" is
@@ -26,12 +28,14 @@ a per-tick external seed. (`SocietyEmergence.privateEvidence (seed,id,tick,cands
 external forcing = the bug 081KT7YW00008QG0R001DGZQKM forbids.)
 
 ## Three-valued outcome (no false teeth)
+
 PASS / REFUTE(teeth) / **INCONCLUSIVE**. Budget exhaustion is INCONCLUSIVE, never a teeth-refute and never
 a pass. Teeth (REFUTE) = a DETECTED stable fixed-point (distinctBeliefs→1 ∧ no new identity for K ticks ∧
 re-stepping reproduces it) or a detected content-cycle, with collapsed private state as the cause — never
 "ran out of budget."
 
 ## Cycle detection
+
 Brent's tortoise-and-hare (weight-free, O(1) extra state) — or a `seen: Set<contentSignature>` — over the
 CONTENT-ONLY signature. Set-hit = limit cycle (fail); stable single signature = halt (fail); signature set
 strictly growing across the whole budget = EVIDENCE of novel growth (not proof). Brent preferred so the

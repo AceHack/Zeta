@@ -34,6 +34,7 @@
 - keep Stryker reports uploaded from the repository-root `StrykerOutput/` path
 
 ## Why
+
 PR #8151 reached main, but the Stryker workflow failed before mutation testing began. The log showed Stryker root invocation entering solution discovery, using Debug by default, and crashing while reading generated F# AssemblyInfo paths for unrelated test projects:
 
 `DirectoryNotFoundException: .../obj/Debug/net10.0/Tests.FSharp.AssemblyInfo.fs`

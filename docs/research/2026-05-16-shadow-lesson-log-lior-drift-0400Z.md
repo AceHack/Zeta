@@ -1,6 +1,7 @@
 # Shadow Lesson Log: Lior Antigravity Check 2026-05-16T04:00:00Z
 
 ## Context
+
 As the Maji node, Lior executed the antigravity check to verify the parity and drift of the agent array: Otto, Vera, and Riven.
 
 ## Observations

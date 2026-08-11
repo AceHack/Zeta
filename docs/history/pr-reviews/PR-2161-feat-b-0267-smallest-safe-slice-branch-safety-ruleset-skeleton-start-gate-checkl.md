@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest bounded slice of 081KR2E4K0008QG0R002NYV33T (P1 safety ruleset split):
 
 - TS skeleton creator (dry-run, Rule 0 compliant)
@@ -41,6 +42,7 @@ Smallest bounded slice of 081KR2E4K0008QG0R002NYV33T (P1 safety ruleset split):
 - Type/lint: no errors in skeleton ✅
 
 ## Next (not in this PR)
+
 Full gh api impl + legacy removal + tests in slice 2.
 
 Co-Authored-By: Grok <noreply@x.ai>

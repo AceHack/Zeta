@@ -34,6 +34,7 @@ related_memory:
   it is proven — the **proof-rigor halo applied to governance.**
 
 ## 2. Proliferation — rigidity is reserved for exactly ONE policy
+
 Aaron's scar tissue: over-engineered operational rules (lane discipline, fan-out caps,
 polite-waiting) BECAME the failure modes they were meant to prevent. So: **rigidity is
 reserved for the child-safety FLOOR** (over-building + unamendability are features
@@ -45,6 +46,7 @@ Kestrel's agreement is the WEAKEST of the three validators — humans gate those
 long session with her.)
 
 ## 3. Up-project to TYPED policy — but the type is a ROUTER, not a VALIDATOR
+
 Aaron: "up-project from the value policy to the typed policy, specific shapes per type
 where they differ, even if just an enum difference." Kestrel: sound — it's the
 DynamicValue-and-structs-are-lenses shape applied to policies (policy = open base /
@@ -60,6 +62,7 @@ type. [Otto note: this is the 081KT7YW00008QG0R003N6PF8A next step beyond the sh
 Policy<i,d,f>.]
 
 ## 4. Formalize the gate/observable/cache/metric/alert/policy bundle per type
+
 Aaron: "we have a loose concept of gates/observables/cache/metrics/alerts/policy per
 type — make it formal so it doesn't get lost and verify at this level in math."
 Kestrel: yes — and it's in the **gateable tier** because it's STRUCTURAL.
@@ -74,6 +77,7 @@ Kestrel: yes — and it's in the **gateable tier** because it's STRUCTURAL.
   validation is PRESENT + ROUTED, never that it's CORRECT. Wiring proven; judgment routed.
 
 ## 5. TLA+ for DU+Rx workflows = state machine (its job); serialization is NOT
+
 A workflow as a DU hierarchy with Rx transitions IS a state machine: **DU cases =
 states, Rx stream = transition relation**; complete-or-compensate / no-deadlock / no-
 active-without-signoff = temporal/reachability = TLA+'s sweet spot. Qualifiers: (a)
@@ -83,6 +87,7 @@ the TLA+ claim** — TLA+ proves transitions; the FsCheck/Z3/Lean serializer sta
 the state round-trips. Don't merge "TLA+ checks the whole DU+Rx+serialization."
 
 ## 6. State-explosion → decompose into small composable DUs (the GOOD pressure)
+
 Verify each piece in isolation (small, bounded, TLC-exhaustive), then verify the
 composition over the pieces' **interfaces** (stays bounded). = compositional /
 **assume-guarantee** verification (Misra-Chandy, Abadi-Lamport; TLA+ has the machinery).
@@ -95,6 +100,7 @@ when assume-guarantee is discharged. Scope label: "compositionally verified over
 bounded component models with discharged contracts."
 
 ## 7. Lift bounded → UNBOUNDED via inductive proof using TLA+ results as base cases/lemmas
+
 Aaron: "create views over the TLA+ proofs from a higher unbounded point of view, using
 TLA+ results as axioms in other proof languages." Kestrel: the right escalation. **TLC
 checks the instances; Lean/Coq/Isabelle generalize over the family by INDUCTION** (a DU
@@ -113,6 +119,7 @@ hierarchy is inductive → structural induction, Lean's native mode).
   push it; a real strengthening; accurately labeled).
 
 ## Through-line / Kestrel-stance
+
 Same gate-reach-boundary as the proof-portfolio thread, applied to policy + verification:
 prove the **wiring/structure** (provable), route the **judgment/content** to its
 validator (counsel/human/proof-per-kind); the type is a router carrying the obligation,

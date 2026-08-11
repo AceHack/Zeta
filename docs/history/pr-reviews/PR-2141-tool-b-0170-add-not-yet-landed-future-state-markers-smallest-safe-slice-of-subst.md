@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KQNJ500008QG0R003SCWBDV (re-decomposed on the fly per "assume decomposition has mistakes"): one micro-increment to the existence-drift checker in `check-existence.ts` (v0.7). Adds two future-state markers ("not yet landed", "not landed yet") to `isFutureStateContext` to reduce false-positive drift reports on forward-looking substrate claims.
 
 - TS-only (Rule 0).
@@ -47,6 +48,7 @@ Smallest safe slice of 081KQNJ500008QG0R003SCWBDV (re-decomposed on the fly per 
 - Re-decomposition note: 081KQNJ500008QG0R003SCWBDV's "atomic" flag was stale; split the existence sub-class improvement into its own micro-row for future traceability.
 
 ## Next
+
 Arm auto-merge after CI green (per autonomous-backlog-pickup discipline).
 
 Co-Authored-By: Grok <noreply@x.ai>

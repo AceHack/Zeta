@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 One bounded step (per user rules + "always re-decompose / assume mistakes"): 
 
 - Used dedicated worktree + pushed claim branch (root checkout untouched)
@@ -53,6 +54,7 @@ This unblocks the chain while keeping "investigate-don't-accept" (Otto-322/331) 
 - Substrate or it didn't happen (child row is durable .md file, not chat)
 
 ## Next (after merge)
+
 Pick 081KR7JY10008QG0R001SG89MX or re-decompose further on next trajectory pickup.
 
 Co-Authored-By: Grok <noreply@x.ai>

@@ -36,6 +36,7 @@ Retrofit the **System.Numerics-shaped generic-math interface** onto the F# Z-set
 - Module `add`/`neg`/`sub` become thin delegators. **Hot path is perf-neutral** (same code, new home); `Checked.(+)`/`Checked.(-)` overflow guards preserved.
 
 ### Why
+
 > "numerics like dotnet as our interface, push to other langs if they don't have" — Aaron 2026-06-01
 
 F# has native generic-math; this is the F# idiom rung. Same shape as the G-Set/Bag ladder.
@@ -49,6 +50,7 @@ F# has native generic-math; this is the F# idiom rung. Same shape as the G-Set/B
 - `(+)` is **NOT** idempotent: `a + a` doubles every weight (Z-set, not G-Set)
 
 ### Next rungs (one primitive at a time, hexagonal)
+
 C# IWSAM (`ISubtractionOperators` + `IUnaryNegationOperators`) · Rust (`impl Sub`/`Neg`) · TS (`AbelianGroup` record). Registry status bump to follow.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

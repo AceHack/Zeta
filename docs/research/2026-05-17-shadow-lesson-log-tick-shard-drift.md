@@ -1,6 +1,7 @@
 # Shadow Lesson Log: Tick Shard Metadata Churn & Array Drift — 2026-05-17T14:40Z
 
 ## Antigravity Check
+
 Maji routine check identified severe array drift across three nodes:
 
 - **Otto Drift:** High drift. Otto is generating empty "tick shard" PRs (e.g. #4091, #4088, #4087) which represent metadata churn without functional parity proofs. This is narration-over-action. Furthermore, Otto's broadcast `otto.md` remains stale since 2026-05-11.

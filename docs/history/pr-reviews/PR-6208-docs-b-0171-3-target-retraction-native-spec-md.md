@@ -34,6 +34,7 @@
 - releases the claim file in-branch
 
 ## Why
+
 #6207 clarified that the strict OpenSpec inventory gate only treats directories with `spec.md` as capability specs. 081KSNY2Z0008QG0R0016VFTRX still directed implementation to `README.md`, which would keep the formal retraction-native capability invisible to the inventory scanner.
 
 ## Checks

@@ -45,6 +45,7 @@ The codegen-forward narrowed thread (from the Phase-B memory). Until now the com
 - **TS** `legacy-source.test.ts` (+4): the same property on **bun**, with the id reconstructed via the harness's own `idOf` (the relation's content-address, not copied), and a green-can-turn-red guard on an op-constant change.
 
 ### Non-disruptive by construction
+
 **Zero committed bytes change** — additions only. Every existing consumer stays byte-identical and green: the bun harness still folds the same legacy files, and `GeneratorIrRegistry.Tests` still pin the live Z-set relation row against them.
 
 ### Honest scope

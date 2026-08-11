@@ -28,6 +28,7 @@
 ## Description
 
 ## Why (Aaron 2026-06-21)
+
 > "make sure our blueprints have rotation/setup/teardown for all ports + flows, then test them a few times and get them right — this is the hardest part of onboarding, make it tight; it's basically a new fork setting up for the first time after a teardown."
 
 A repeatable **new-fork** lifecycle harness that exercises **setup → (rotate) → teardown → re-setup** repeatedly and proves it converges, so we can iterate to tight.
@@ -35,6 +36,7 @@ A repeatable **new-fork** lifecycle harness that exercises **setup → (rotate) 
 **Security-class — left OPEN, NO auto-merge (Otto verify-gates).**
 
 ## What it does
+
 Drives the **real** `setup-machine` / `ca` / `teardown` modules (not re-implemented) end-to-end, asserting convergence each cycle:
 
 1. **SETUP** — `setupMachine` realizes a CA + machine key + signs a cert under one fake-biometric approval. Asserts CA present, machine key present + registered, cert present + **N+M correct** (Key ID = machine-only, principal = user, **no `user@machine` composite**).
@@ -45,9 +47,11 @@ Drives the **real** `setup-machine` / `ca` / `teardown` modules (not re-implemen
 6. **ROTATE** — exercises the **one** real rotate primitive that exists (`keyset.rotate`: gapless dual-key set, old retired / new active / overlap ≥2). **No unified per-PORT rotate command exists** — that gap is **asserted, not faked** (see matrix).
 
 ## ABSOLUTE SAFETY — sandbox-only (confirmed)
+
 Every cycle runs **entirely** in throwaway temp dirs: a temp HOME (`mktemp`; all private material under it) + a temp repoRoot (all public artifacts), a **fake biometric door**, a **fake `gitRm`** (unlinks under the temp repo only — **no real `git`**, honors shared-checkout-is-view-only), and a **no-network** trust resolver. Keygen is genuine `ssh-keygen` but aimed wholly at the sandbox via the modules' own `home`/`repoRoot` knobs. A `SANDBOX-ONLY` meta-test asserts every touched path lives strictly under `tmpdir()`. The real `~/.config/zeta` was verified **untouched** (its dirs predate the run by hours; the harness never uses the default paths).
 
 ## Coverage matrix — setup / rotate / teardown per port/flow
+
 Legend: ✅ exists · ⚠️ partial / manual-only · ❌ missing (gap for Otto to backlog)
 
 | Port / flow | setup (code) | setup (blueprint) | rotate (code) | rotate (blueprint) | teardown (code) | teardown (blueprint) |

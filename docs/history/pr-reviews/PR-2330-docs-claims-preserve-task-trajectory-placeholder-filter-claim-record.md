@@ -38,6 +38,7 @@
 - npx markdownlint-cli2 docs/history/claims/task-trajectory-placeholder-filter-2026-05-08.md
 
 ## Notes
+
 This PR preserves local coordination substrate before the stale merged worktree is cleaned.
 
 ## Outcome

@@ -40,6 +40,7 @@ Per maintainer (2026-06-13): Python is now a first-class cross-verification lang
 - B-0156 backlog row: **superseded** note — the `.sh`→TS half stands; only "no `.py`" is reversed. Records the language anchors: F#=db, TS=distribution, C#=2nd distribution, Rust=fast, Python=common-AI, Go=k8s.
 
 ## Verified
+
 `actionlint` clean on gate.yml · no active imports of the deleted script · markdownlint clean.
 
 > Note: this branch is off a main tip that carries an in-flight `TempCompareTest` (unconditional throw) in `GSetCrossVerifyTests.cs`, so the C# build-and-test check will show red from *that* (not this change) until it's removed.

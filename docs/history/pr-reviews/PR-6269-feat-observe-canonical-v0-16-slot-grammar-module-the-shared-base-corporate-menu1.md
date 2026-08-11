@@ -30,6 +30,7 @@
 First **code** slice of the canonical-retrofit (design-of-record: ADR #6267 / `docs/DECISIONS/2026-05-31-observe-act-16-direction-...md`).
 
 ## What + why
+
 The v0 16-slot grammar (4×4 Navigate/Commit/Scope/Meta, Xbox-controller) existed only as **ADR prose** + a **corporate-private copy** in Max's `Menu16Slot[]` (`agentic-organization/`). This makes it **canonical code** — the single shared base both the sovereign `buildMenu()` and (later) corporate `Menu16` derive from:
 
 - `GRAMMAR_16_V0` — the 16 fixed slots (dense 0–15, four groups of four), in the ADR's exact table order.
@@ -44,6 +45,7 @@ The v0 16-slot grammar (4×4 Navigate/Commit/Scope/Meta, Xbox-controller) existe
 - **Tested** — full `tools/observe/` suite **61/61 green**; cross-dir canonical `Tri` import resolves.
 
 ## Surfaced (not collapsed)
+
 The sovereign `NextAction` algebra has **4 free modes** (explore/play/self_reflect/free_time) but v0 has **1 free slot** (14 = free-time/rest). The `NextAction.kind → slot` projection is the **next slice** — left OPEN here on purpose rather than fabricating a clean total mapping that papers over a real design question.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Completes the codegen-forward step started in #8679: the splitmix64 `generated-from-ir` oracle's IR is no longer an inline TS literal — it is a **real DynamicValue row**, byte-locked cross-language.
 
 ## Changes
@@ -38,6 +39,7 @@ Completes the codegen-forward step started in #8679: the splitmix64 `generated-f
 - **F# test** (`DynamicValue.Canonical.Tests.fs`) pins the cross-language byte-lock: the **real shipping** `DynamicValue.toCanonicalJson` reproduces `splitmix64.ir.json` byte-for-byte and round-trips it — proving the row is a schema value **both languages agree on**, not a TS-only artifact.
 
 ## Why it matters
+
 This makes "the IR is a row in the schema" literally true: the generator reads its algorithm from a serialised DynamicValue, decoded through the same canonical-JSON machinery the rest of Zeta uses, and that row's bytes are locked across TS and F#.
 
 ## Validation
@@ -48,6 +50,7 @@ This makes "the IR is a row in the schema" literally true: the generator reads i
 - tsc gate green
 
 ## Tier (honest)
+
 **PROVEN:** IR-as-DynamicValue-row + total interpreter byte-locks against the five independent hand-ports and canonical, with the row's encoding locked TS↔F#. **Remaining:** carrying the row as a live tuple on the registry's DBSP Z-set relation (today it is a checked-in canonical document).
 
 ## Outcome

@@ -42,6 +42,7 @@ preserved-as-is content; Otto-side narrative does not propagate.
 ---
 
 ## Claude.ai's eighth response (verbatim — receiving the
+
 seventh-ferry's morning corrections)
 
 > That changes the picture and I want to receive it as the correction it is.
@@ -144,6 +145,7 @@ fact in the corrections memory, not as new substrate-rule.
 ---
 
 ## Claude.ai's ninth response (verbatim — receiving the
+
 LFG-NC-inc + Addison-co-owner + KSK-robotics + cloud-native-as-
 business-shortcut layer)
 
@@ -200,6 +202,7 @@ business-shortcut layer)
 ---
 
 ## Otto-side closing note (revised after Aaron's further
+
 factual layering)
 
 Two further corrections received and captured in the corrections-

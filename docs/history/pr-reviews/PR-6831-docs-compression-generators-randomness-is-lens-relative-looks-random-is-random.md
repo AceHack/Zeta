@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron 2026-06-07
+
 > "random data from one lens is not random from another — that's how decompression works — so not all data that 'looks' random actually is."
 
 **Incompressibility is observer/model/basis-relative, not absolute.** Decompression works because the decompressor holds the **right lens** (the generator) that reveals the structure raw bytes hid; compression = a **search for that lens** (transform coding / Fourier-wavelet / reservoir basis / Mirror-Beacon two lenses).

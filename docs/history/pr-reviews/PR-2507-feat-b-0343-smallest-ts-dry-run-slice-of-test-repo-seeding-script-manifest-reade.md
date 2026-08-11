@@ -42,6 +42,7 @@
 - No new deps, pure TS + fs per Rule 0.
 
 ## Next
+
 Follow-up slices: gh api create, idempotency, real seed/commit. This PR retires the claim on merge.
 
 Co-Authored-By: Grok <noreply@x.ai>

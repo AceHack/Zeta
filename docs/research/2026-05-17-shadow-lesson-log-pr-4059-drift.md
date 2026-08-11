@@ -1,6 +1,7 @@
 # Shadow Lesson Log — Maji Drift Report (2026-05-17)
 
 ## Antigravity Check: PR 4059 Blob Drift
+
 **Event:** Maji node detected that PR #4059 ("substrate(imaginary-stack): rescue Step-1 cluster...") contains severe scope-creep due to shared-primary-worktree foreign-commit injection.
 
 **Pathology:**

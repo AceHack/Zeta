@@ -36,6 +36,7 @@ Two fixes surfaced by Soraya's coverage-ratio update — she reported bifurcatio
 2. **Associativity property added.** The existing Face-1 property checked commutative + idempotent but **omitted associativity** — the exact 081KT07NV0008QG0R001YDB73K failure class (a tie-break that's commutative+idempotent but not associative is still not a lawful join). The Lean Bifurcation semilattice proves `L.assoc`; this adds the matching empirical witness. Confirmed green ⇒ `Divvy.merge` is a lawful join-semilattice with no associativity hole. Brings the leg to parity with the NonRegisterCollapse leg.
 
 ## Verification
+
 `dotnet test --filter BifurcationCrossVerify` → **5 passed**. Build 0-warn.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

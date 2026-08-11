@@ -32,6 +32,7 @@
 Discharges **Phase A** of the gen-gen capstone (math-team handoff **row 10, Face 3**): *"Freeze the IR (prerequisite, blocking) — nothing byte-locks against a moving IR."*
 
 ### The problem
+
 `GeneratorIrRegistry` already carries the generator IR as a **live row on a DBSP Z-set relation** and reproduces the committed `*.ir.json` byte-for-byte. But the two shipped artifacts disagree on shape:
 
 | Legacy artifact | `zetaId` | `width` |
@@ -42,6 +43,7 @@ Discharges **Phase A** of the gen-gen capstone (math-team handoff **row 10, Face
 A self-hosting fixed-point proof (`gen(gen)=gen`) cannot point at a moving target.
 
 ### The freeze (`src/Core/ZetaIrV1.fs`)
+
 Canonical envelope, frozen key order:
 ```json
 { "schema": "zeta-ir-v1", "generator": "...", "version": 1, "width": 64,
@@ -57,6 +59,7 @@ Canonical envelope, frozen key order:
 - `docs/specs/zeta-ir-v1.md` records the layout + **evolution contract** (tag is the version; freeze-then-grow; identity stays derived; the golden is the gate).
 
 ### Legacy files
+
 The two `*.ir.json` artifacts are **grandfathered pre-v1** and are **not** rewritten here — their existing byte-locks stand. The `ops` pipeline is identical (asserted against the live `GeneratorIrRegistry` row), so v1 is a re-enveloping, not a semantic change.
 
 ### Honest scope

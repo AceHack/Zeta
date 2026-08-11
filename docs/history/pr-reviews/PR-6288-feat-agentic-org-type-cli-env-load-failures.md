@@ -41,9 +41,11 @@
 - git diff --check
 
 ## KIND
+
 No new KIND runner was added for this slice because the behavior is pure CLI env parsing and cycle-input construction. Existing production KIND proofs still exercise the runAgentCliMain boundary; this PR hardens the setup contract feeding that boundary.
 
 ## Subagent Review
+
 Attempted twice, but the platform returned: collab spawn failed: agent thread limit reached. Local review found no issues in the bounded patch.
 
 ## Outcome

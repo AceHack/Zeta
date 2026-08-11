@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KQ0YZ80008QG0R001AN2CJ3 (P2 Pliny carve-out wording tightening): re-decompose the item (assumed decomp mistake in original: single atomic PR across 4 high-blast surfaces; corrected to staged plan respecting Otto-300 rigor + explicit sign-off). 
 
 - Created `docs/claims/b0011-....md` per AGENT-CLAIM-PROTOCOL.md

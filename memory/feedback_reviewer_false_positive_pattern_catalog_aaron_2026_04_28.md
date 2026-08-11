@@ -252,6 +252,7 @@ exemptions.
 ---
 
 ### Class 6 — Cross-reference target out of scope (form-1, but the
+
 underlying class is "broken in-repo cross-reference")
 
 **Frequency:** ~10% of false-positives that are actually class-3-real
@@ -289,6 +290,7 @@ no upstream improvement needed.
 ---
 
 ### Class 7 — Recursive-CI new threads (procedural class, not
+
 false-positive but worth naming)
 
 **Frequency:** every CI cycle on every PR.

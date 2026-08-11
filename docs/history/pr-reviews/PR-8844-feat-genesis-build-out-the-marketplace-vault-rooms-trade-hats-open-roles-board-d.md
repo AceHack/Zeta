@@ -32,6 +32,7 @@
 Turns the Marketplace from a locked Phase-2 stub (`rooms:[]`) into a fully navigable vault. Source-only change under `genesis/_src/` (the served Pages build is unchanged — happy to regenerate it in a follow-up).
 
 ### Rooms (8)
+
 | Room | What it trades |
 |---|---|
 | **Vaults** | Whole vaults — rooms, hats, and standing move with them |
@@ -44,12 +45,15 @@ Turns the Marketplace from a locked Phase-2 stub (`rooms:[]`) into a fully navig
 | **Exchange & Escrow** | The clearing floor — escrow + arbiter settle every trade |
 
 ### Hats
+
 Each trading room carries **Merchant / Seller / Buyer** hats with realistic grants and denies. **Exchange & Escrow** adds **Escrow Agent** and **Arbiter**. The **Hats room** reworks the hat into a *role to be fulfilled* via a new `requires` field rendered in `HatView`.
 
 ### Public Standing (reputation)
+
 Reputation is modeled as a **public, read-only profile attribute** — a score + basis shown on `AgentView`, "earned by behavior · not for sale." It is **not** a marketplace good you buy or sell.
 
 ### New settlers
+
 **Mercer** (market-maker) and **Verity** (escrow & arbiter) wear the new hats. All five agents now carry a public Standing.
 
 ### Verification

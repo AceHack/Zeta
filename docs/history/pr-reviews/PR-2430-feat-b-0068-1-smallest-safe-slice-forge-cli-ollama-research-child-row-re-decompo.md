@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 Decomposed 081KQ8P5D0008QG0R002E1G72J (P2 local-AI umbrella) into smallest dependency-ordered atomic child backlog rows.
 One bounded step per rules: created first child 081KRA5AR0008QG0R001JVT5FX (research-only S slice on Forge CLI + Ollama bridge).
 
 **Re-decomposition note**: 081KQ8P5D0008QG0R002E1G72J umbrella assumed broad → first child is pure research (WebSearch + doc) to keep velocity. Future children: hardware audit (TS), smoke-test, direct-integration matrix. Always re-decompose during build.
 
 ## Child row created
+
 `docs/backlog/P2/081KRA5AR0008QG0R001JVT5FX-forge-cli-ollama-research-slice-aaron-2026-05-10.md`
 
 ## Focused checks (per task rule)

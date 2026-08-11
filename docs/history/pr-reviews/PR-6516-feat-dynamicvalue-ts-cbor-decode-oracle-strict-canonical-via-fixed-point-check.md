@@ -35,6 +35,7 @@ Last of the four CBOR-decode oracles (C# #6512, F# #6514, Rust #6515 already lan
 - Repoints the existing **encode** test at the module (no inline encoder) and adds the new **decode** test.
 
 ## Strict-canonical via one fixed-point check
+
 Per-form readers stay lenient; a single check — `canonicalCbor(decoded)` must equal the input bytes — rejects every non-canonical form as `NonCanonical`:
 
 - non-shortest int / length width (`18 00`, `18 17`)
@@ -44,6 +45,7 @@ Per-form readers stay lenient; a single check — `canonicalCbor(decoded)` must 
 One check replaces scattered per-form strictness and is trivially consistent with the other oracles. Public API returns `DecodeResult`, never throws (internal `CborDecodeError` caught at the boundary).
 
 ## Tests
+
 `golden-vectors-cbor-decode.test.ts`: every seed vector decodes `ok` (byte-lock via the internal fixed-point check against the already-verified encoder) + structural match; plus malformed (`UnexpectedEnd`/`TrailingData`/`Unsupported`/`NonTextKey`) and non-canonical rejections.
 
 **89 TS tests pass; `tsc` / eslint / prettier clean.** `DecodeError` mirrors C#/F#/Rust. The compilers don't lie.

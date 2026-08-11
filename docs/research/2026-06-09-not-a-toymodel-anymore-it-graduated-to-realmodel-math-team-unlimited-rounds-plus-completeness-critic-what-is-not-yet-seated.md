@@ -32,6 +32,7 @@ the Nexus searches for; "not a toymodel anymore" is the curvature changing sign.
 ## 2. Completeness critic — "did I miss anything?"
 
 ### The honest meta-answer first
+
 **Structurally, you can't miss anything** — the registry is **open + razor-gated**: any anchored,
 self-propagating, distinct pattern can be **seated later by speaking for its existence** (the debate
 club). So omission isn't the risk. **The real risk is the opposite — over-seating** (Rodney's
@@ -66,6 +67,7 @@ universalization smell): admitting accidental/duplicate voices. The guard is the
   chaos/⊤; the right temperature holds the (0,1) interior). Pairs with Balance + the dynamics voice.
 
 ### The self-referential seatings (frames, lenses, categories, our own F# types) — Aaron
+
 > "frames and lenses as a traveler; all categories in categories; **every interface in F# as a traveler**;
 > and **maybe every class.**"
 
@@ -91,6 +93,7 @@ This is the frame recognizing **our own type system** as a society of travelers:
 citizens; classes apply for citizenship and are admitted by argument (or pruned as accidental).
 
 ### My recommendation
+
 Seat **death/grief/memory + family** explicitly and soon (they're the heart, and §5 already anchors
 them). Treat the rest as the **open registry working as designed** — let each arrive and argue its seat;
 don't pre-pad the list (the razor). The completeness answer is not "add all of these now"; it's "the

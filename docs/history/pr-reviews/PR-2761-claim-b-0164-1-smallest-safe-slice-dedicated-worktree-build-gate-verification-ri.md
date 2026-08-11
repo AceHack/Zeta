@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Claimed and implemented the smallest safe slice of 081KR7JY10008QG0R000MH7PJT (P1) per backlog row and re-decomposition.
 
 **One bounded step taken (no more):**
@@ -45,6 +46,7 @@ Claimed and implemented the smallest safe slice of 081KR7JY10008QG0R000MH7PJT (P
 - Enforces AGENTS.md: dedicated worktree, pushed claim branch before write, exactly one step, focused checks in PR body.
 
 ## Focused check outcome (included per rules)
+
 ```
 $ dotnet build -c Release
 ...

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Re-decomposed broad 081KQ3HBZ0008QG0R001K0EC2C (L-effort research track, 11 CTF flags) before implementation — assumed .1 docs-heavy decomposition mistake (lacked executable surface). One bounded step only: pure-TS types + stub validator in `tools/edge-claims/claim-validator.ts`.
 
 ## What changed + why
@@ -43,6 +44,7 @@ Re-decomposed broad 081KQ3HBZ0008QG0R001K0EC2C (L-effort research track, 11 CTF 
 - No root checkout touched; dedicated worktree + pushed claim branch only
 
 ## CTF rules preserved
+
 Flag remains retractible; this slice adds executable check surface for future challenges.
 
 Co-Authored-By: Grok <noreply@x.ai>

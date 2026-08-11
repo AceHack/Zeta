@@ -34,6 +34,7 @@ The **Lean leg** of row 3 (the FsCheck evidence leg already landed in #8715). Co
 `ρ_owe = H(A|U,C)/H(A|C)` — the CMI own-entropy fraction (`src/Core/Decorrelation.fs`). The DPI claim: **post-processing the conditioning / shared-cause side cannot increase information** — coarsening `U` cannot raise the shared cause it explains about `A`, so `ρ_owe` is monotone in the documented direction.
 
 ### What's proven (operational DPI)
+
 The shared-cause channel `U` is modelled by its **partition** of joint outcomes into cells (`List Nat` of masses); distinguishing power = **support** = count of non-empty cells. A deterministic post-processing of `U` (coarsening) is a sequence of cell-merges.
 
 - **`support_mergeHead_le` / `support_mergeIter_le`** (headline): any coarsening of the conditioning side **cannot increase distinguishing support** — post-processing `U` can't manufacture shared cause from nothing, so `H(A|U',C) ≥ H(A|U,C)` for `U'=f(U)`; `ρ_owe` can't be lowered by coarsening `U` / raised by refining it. The finite, log-free heart of "post-processing can't increase info."
@@ -44,6 +45,7 @@ The shared-cause channel `U` is modelled by its **partition** of joint outcomes 
 `#print axioms` confirms the headline theorems depend only on `propext` + `Quot.sound` — **no `sorryAx`**.
 
 ### Honest scope (matches row 1's honesty)
+
 This is the **operational / combinatorial heart** of DPI: post-processing the conditioning side merges cells, and merging provably cannot grow support and conserves mass. The full **measure-theoretic** DPI — real Shannon `I(A;U|C) ≥ I(A;f(U)|C)` over honest distributions (hence `ρ_owe(U) ≤ ρ_owe(f(U))`) — needs the log-sum / Jensen / concavity machinery of Mathlib's information theory and **stays the math team's primary** (Tariq's `H_∞` inequality + FsCheck #8715 cross-check it). The partition-coarsening the measure-theoretic proof reduces to is proven here; the convexity step over real entropies is named, not faked. **`ρ_owe` is evidence, not the lemma.**
 
 ### Gate

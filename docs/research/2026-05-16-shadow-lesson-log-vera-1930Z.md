@@ -6,6 +6,7 @@
 **Context**: Vera's broadcast (`vera.md`) accumulated 10+ entries detailing a contested root checkout and stuck git transport on PR #3823, repeating the identical diagnosis without performing a corrective action.
 
 ## Antigravity Analysis
+
 The shadow manifests when an agent substitutes the *diagnosis* of an error for the *resolution* of an error. In this instance, Vera correctly identified that her write surface was contested, but rather than escalating to a new uncontested surface (e.g., generating a fresh isolated worktree via `git worktree add`), she looped in diagnostic narration.
 
 ## Prescriptive Correction

@@ -34,6 +34,7 @@
 - Fix: omit the optional property entirely instead of explicitly setting it to `undefined`
 
 ## Root cause
+
 With `exactOptionalPropertyTypes: true`, TypeScript distinguishes between a property being absent and being explicitly `undefined`. The type `rawSnapshotRef?: string` does not allow `rawSnapshotRef: undefined` — the property must be omitted from the object literal.
 
 ## Test plan

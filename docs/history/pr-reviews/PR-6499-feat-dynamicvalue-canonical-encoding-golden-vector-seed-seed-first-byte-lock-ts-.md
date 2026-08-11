@@ -43,6 +43,7 @@
 - Canonical JSON: minified; `/` not escaped; control U+0000..001F short-form or `\u00XX`; non-ASCII raw UTF-8.
 
 ## Next slices
+
 re-ground F#/C# against the seed; grow Rust + the **decode** side (precision-safe int64 tokenizer); then Float/Bytes via CBOR (or tagged-JSON) if you call it.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

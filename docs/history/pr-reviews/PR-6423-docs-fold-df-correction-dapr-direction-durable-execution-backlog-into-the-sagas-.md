@@ -30,6 +30,7 @@
 Folds three operator-directed sharpenings (2026-06-01) into the self-evolving-sagas note + registry want-line.
 
 ## 1. DF correction (you caught my overclaim)
+
 Closure-serialization is **not** the crux. DF/replay engines don't serialize non-serializable handles either — they **forbid** them ([orchestrator code-constraints](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-code-constraints): handles live in run-once activities). With the shared no-handles discipline, our closure is all serializable values (no harder than DF's history). New table: **resume needs only no-handles; replay needs no-handles AND no-non-determinism** (it re-runs the body) → resume is the looser constraint set.
 
 ## 2. Dapr direction ("we are going to have dapr and dapr actors and workflow")
@@ -39,6 +40,7 @@ Closure-serialization is **not** the crux. DF/replay engines don't serialize non
 - Pragmatic shape: ride Dapr Actors as runtime/carrier + saga **resume** (not Workflow **replay**) → looser body-constraints + live self-evolution; Dapr Workflow stays available as a replay-family backend.
 
 ## 3. Existing durable-execution backlog ("we have some backlog around this too")
+
 Composes onto — not mints — the cluster: **081KQZVQW0008QG0R000PPQ3MH** (Temporal/Reaqtor/Orleans/Bonsai research) · **081KRYRGG0008QG0R0018CMFQY / 081KSNY2Z0008QG0R001TMM2HY** (our-own durabletask fork; **"saga compensation = retraction = additive inverse in Z-set algebra" already lives here** — this note sharpens it) · **081KS6FPN0008QG0R003Y3MCVE** (zeta-on-Orleans, grain identity = agent identity) · 081KSE6WT0008QG0R002275NDE/081KSE6WT0008QG0R0009YYNP4/081KSE6WT0008QG0R000JSJ3SR/081KQ3HBZ0008QG0R000RP1WDN/081KQZVQW0008QG0R000W4B8KT. Fixes the verify-existing-substrate miss in the first cut (#6415).
 
 All cited backlog links verified resolvable; markdownlint clean. Capture only — no build.

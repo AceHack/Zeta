@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Re-decomposed 081KQ3HBZ0008QG0R002SM3G49 (P2 isomorphism/homomorphism catalog) into the smallest dependency-ordered atomic child backlog rows. Assumed prior decomp (in-row 081KQ3HBZ0008QG0R002SM3G49.1..4) had mistakes: too coarse, prose-heavy, L-effort not sliced small enough. New children are atomic (S/M), strictly dep-ordered, and prefer TS code over hand-written docs (md becomes generated output).
 
 **New atomic children:**
@@ -54,6 +55,7 @@ This is the single bounded step per instructions; no implementation, only the re
 - No touch to contested root checkout
 
 ## Next
+
 Children now claimable as separate smallest slices. PR is docs-only change, auto-merge safe.
 
 Co-Authored-By: Grok <noreply@x.ai>

@@ -170,6 +170,7 @@ on this box (Lean v4.30.0-rc1 + Mathlib, TLC 2026.05.18, Java 26).
   is verified by construction (ENABLED in every reachable state).
 
 ### Liveness disposition — CONFIRMED correct, now BOTH-SIDED by execution
+
 The earlier pass asserted "unsound to gate, and violated in a sound model." I proved BOTH halves live:
 
 - **Spurious-pass half:** added `PROPERTY EventualCommit` alongside the state `CONSTRAINT` -> TLC
@@ -196,6 +197,7 @@ The earlier pass asserted "unsound to gate, and violated in a sound model." I pr
   this adds the explicit sorry-regression guard the other research proofs get.)
 
 ### Modeling-scope note (Beacon honesty, not a defect)
+
 The Lean file proves the STRUCTURE of the two-ledger model in Nat arithmetic — `larger_window_less_excess`
 is the cross-multiplied "L^2/tau decreasing in tau" and `quasistatic_limit` uses integer division to model
 "excess < 1". These are honest combinatorial shadows of Schmiedl-Seifert finite-time thermodynamics, NOT

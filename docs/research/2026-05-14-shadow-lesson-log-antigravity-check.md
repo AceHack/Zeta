@@ -1,6 +1,7 @@
 # Shadow Lesson Log — Antigravity Check 2026-05-14
 
 ## Context
+
 Lior executing antigravity check on the array (Otto, Vera, Riven).
 
 ## Drift Detected

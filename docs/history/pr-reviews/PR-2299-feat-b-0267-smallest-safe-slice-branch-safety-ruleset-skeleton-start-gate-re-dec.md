@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KR2E4K0008QG0R002NYV33T (P1 GitHub ruleset split). Per always-re-decompose: original atomic assumption mistaken; now 2 slices. This is slice 1: skeleton + claim + start-gate checklist + re-decomp note in backlog.
 
 **Bounded step only** — no live gh api mutations, no Default ruleset edits. Full implementation + tests in slice 2.

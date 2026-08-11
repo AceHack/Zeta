@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 Re-decomposed 081KQ8P5D0008QG0R0030BTJZK (assumed original decomposition mistake: broad rename + multi-file edits too large for one atomic PR). Landed smallest safe slice 081KQ8P5D0008QG0R0030BTJZK.1 as pure-TS audit tool + report per "TS over docs" and "re-decompose during build".
 
 This is the bounded first step: reference audit only (no rename, no frontmatter edit yet). Unblocks safe follow-on atomic children for INDEX update, memory ref fix, etc.
 
 ## Audit Outcome (focused check)
+
 ```json
 {
   "slice": "081KQ8P5D0008QG0R0030BTJZK.1",

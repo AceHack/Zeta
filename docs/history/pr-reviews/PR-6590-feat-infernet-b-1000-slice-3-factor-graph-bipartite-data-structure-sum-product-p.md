@@ -41,6 +41,7 @@ The bipartite structure inference runs on, generic over the slice-2 message fami
   - `passOnce` = one synchronous round; `passRounds n` = a fixed schedule
 
 ### Tests (`FactorGraph.Tests.fs` — 5/5)
+
 single variable + two Gaussian priors → marginal = product (mean 1, var .5) · lone prior → marginal = the prior · **equality** of two vars `Beta(2,1)`,`Beta(1,2)` → both marginals = `Beta(2,2)` (evidence crosses the equality factor) · `equality` sends each neighbor the product of the others · `prior` sends its fixed message.
 
 Spec: Kschischang–Frey–Loeliger 2001 (sum-product). New public surface (`Factor`, `FactorGraph`) — flagging for **public-api-designer (Ilyana)** (advisory). `dotnet build -c Release`: **0 warnings**. `dotnet test`: **5/5**.

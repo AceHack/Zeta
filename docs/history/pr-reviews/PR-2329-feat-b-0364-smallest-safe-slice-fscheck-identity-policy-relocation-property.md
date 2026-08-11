@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KR50HA0008QG0R00096ZEYA (re-decomposed from atomic: identity base before non-trivial queries).
 
 - Added `tests/Tests.FSharp/Properties/Policy.Relocation.Tests.fs` with one FsCheck property proving semantic preservation for identity query relocation (local == central after reintegration via ZSet equality).

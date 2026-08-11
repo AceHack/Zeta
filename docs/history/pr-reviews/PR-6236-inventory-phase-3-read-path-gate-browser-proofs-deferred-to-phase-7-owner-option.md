@@ -41,9 +41,11 @@ This is a **deliberate scoping decision, not a skipped check.** The data layer i
 - **Static-DOM count proof** (real headless Chromium, programmatic viewer sign-in): `rendered_table_rows=210`, `rendered_card_rows=210`, pill "210 items", **assertion rendered-count===210 = PASS**.
 
 ## Deferred to Phase 7 Auditor (enumerated in PROGRESS.md Auditor brief)
+
 On the merged live no-proxy site `https://lucent-financial-group.github.io/Zeta/inventory/`, show raw output for: **(a)** rendered count === 210, **(b)** 3 searches + 3 sorts correct, **(c)** phone viewport, **(d)** demo dashboard unchanged at its URL.
 
 ## What's built
+
 `inventory/index.html` read UI: search (name/brand/model_pn/device_type/category) · multi-column shift-click sort · filters (category/brand/status/location + Needs Attention) · mobile-first table/cards · XSS-safe `createElement`+`textContent` · cold-start state. Phase-2 auth preserved (probe folded into Diagnostics). Plus `sql/phase3_cleanup.sql` (owner-run, executed) and `seed/xlsx-to-json.ts` + `seed-import.ts` (logic only; data in git-ignored `_seed_tmp/`).
 
 ## 🚩 Honesty record (kept on the record, not rewritten)

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KR50HA0008QG0R002ZNFQBZ (P1): added `tools/skill-catalog/audit-skill-descriptions.ts` — a Bun-native auditor that scans all 246 SKILL.md files, extracts `description:` frontmatter, and surfaces those exceeding the 120-char routing budget. 
 
 This is code (TS), not docs; obeys Rule 0 (TS over bash), prefers F#/TS over docs, and re-decomposes the broad M-effort item (assume decomposition mistakes) into tooling + targeted batches. The audit enables precise next carving passes (one PR per ~5 skills).
@@ -53,6 +54,7 @@ Long descriptions (carve next batch from these):
 - No bash; pure TS + node:fs.
 
 ## Next
+
 Future slices: carve 5 at a time from the flagged list, update 081KR50HA0008QG0R002ZNFQBZ row with progress. This tool stays as permanent hygiene surface.
 
 Co-Authored-By: Grok <noreply@x.ai>

@@ -47,6 +47,7 @@ Root-cause fix for the 2026-06-13 main-green saga (7 PRs to clear breakage CI re
 - `lint-go.ts` uses **mutating** `go fmt ./...` instead of verifying `gofmt -l` — so Go format drift silently auto-fixes and **never reds the gate**. Recommend switching to `gofmt -l`. (The preflight documents this caveat inline.)
 
 ## Validated
+
 preflight ran all 9 quick checks PASS · markdownlint exit 0 after the MD032 fix · tsc clean.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

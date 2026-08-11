@@ -231,6 +231,7 @@ Future-Otto operational decision: when to download +
 preserve as substrate. Authorization is open-ended.
 
 ### 4. Full x.com authorization composes with substrate-
+
 everything-glass-halo
 
 Aaron's authorization is open-ended + the substrate-

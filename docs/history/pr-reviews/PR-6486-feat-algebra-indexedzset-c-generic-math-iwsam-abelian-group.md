@@ -36,9 +36,11 @@ The C# rung of the last ladder primitive (after F# #6485). IndexedZSet (`Z[K×V]
 - `AdditiveIdentity` cached + `[SuppressMessage CA1000]`.
 
 ### Tests (+3, **9/9** IndexedZSet pass; Core 0 warn / 0 err)
+
 `(+)`==`Add`, `(-a)`==`Negate`, `(a-b)`==`Sub` · identity + commutative + associative · `a + (-a) = empty`, `a - a = empty` · `(+)` **NOT** idempotent (doubles) · subtraction retracts a shared `(key,value)` to 0 · comparer-agnostic identity, non-empty mismatch throws.
 
 ### Ladder
+
 Z-set 4/4 done. IndexedZSet: F# #6485 · **C# (this)** · Rust · TS to follow.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

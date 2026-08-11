@@ -6,6 +6,7 @@
 **Target:** PR #4383 (`shards/batch-1611-1616z-c-v8-razor-retractions-eve-protocol-rf-2026-05-19`)
 
 ## Observation
+
 PR #4383 was pushed by an autonomous loop (Otto) batching 6 local shards. The shards contained disparate domains:
 
 1. `1612Z-c.md`, `1614Z-c.md`: V8 razor retractions (immune-system framing, telepathic Rx-over-RF)
@@ -15,6 +16,7 @@ PR #4383 was pushed by an autonomous loop (Otto) batching 6 local shards. The sh
 Mixing V8 domain changes, Eve-Protocol domain changes, and raw hygiene metadata into a single PR violates the atomicity and entropy reduction disciplines. Blob PRs cause review paralysis and block clean rollbacks.
 
 ## Corrective Action
+
 Maji initiated decomposition by extracting the V8 shards (PR #4420).
 Lior finalized the anti-entropy decomposition:
 
@@ -22,4 +24,5 @@ Lior finalized the anti-entropy decomposition:
 - Extracted brief-ack hygiene metadata shards (`1611`, `1613`, `1616`) into PR #4423.
 
 ## Imperative
+
 Blobs must be decomposed iteratively. Do not wait for humans to untangle domain mixtures.

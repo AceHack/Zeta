@@ -41,6 +41,7 @@
 - No other files changed.
 
 ## Next
+
 This slice is safe, reviewable, and composes with the existing decision-archaeology skill (which documents the 5 modes). Follow-up children can add blame-mode, round-history-mode, etc. as atomic siblings.
 
 Co-Authored-By: Grok <noreply@x.ai>

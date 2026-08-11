@@ -39,6 +39,7 @@ Takes the commit SHA `POST /git/commits` returns and points the seed branch at i
 - `buildSeedRefUpdateRequest(owner, repo, branch, commitSha, refExists)` builder.
 
 ### The two-endpoint subtlety (search-first, Otto-364)
+
 Verified against [docs.github.com/en/rest/git/refs](https://docs.github.com/en/rest/git/refs) (API version 2022-11-28):
 
 | Case | Endpoint | Body | Ref form |
@@ -51,6 +52,7 @@ Getting the form wrong yields a 404 (`PATCH refs/heads/heads/...`) or a 422 (POS
 `force` is always `false`: the seed only fast-forwards. A non-fast-forward means the branch diverged from the tree the diff was computed against, so it fails loudly (422) rather than clobbering peer commits — same non-coercion discipline as `git push --force-with-lease`.
 
 ### Slice chain now complete (pure write side)
+
 `parse → diff → buildTree → buildCommit → buildRef`. Future network slice = `POST /git/blobs` → `POST /git/trees` → `POST /git/commits` → this → done.
 
 ## Focused checks

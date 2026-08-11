@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KR2E4K0008QG0R003E09GMM per its own decomposition: the Playwright-free pure-TS core (a)+(b)+(c) — diff engine, snapshot-set persistence, Markdown report renderer — with full unit-test coverage. Live capture + cadence wiring deferred to follow-on.
 
 Re-decomposed on arrival (per "always re-decompose" rule): confirmed the slice boundary is correct; no mistakes in the provided decomposition. One bounded step: verification only (no new code).

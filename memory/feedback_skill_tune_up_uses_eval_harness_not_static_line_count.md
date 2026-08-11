@@ -192,6 +192,7 @@ from claiming authority it hasn't earned; the scheduled
 harness run closes the gap on the next invocation.
 
 ## Interaction with `feedback_tech_best_practices_living_
+
 list_and_canonical_use_auditing.md`
 
 That memory establishes the per-tech expert-skill

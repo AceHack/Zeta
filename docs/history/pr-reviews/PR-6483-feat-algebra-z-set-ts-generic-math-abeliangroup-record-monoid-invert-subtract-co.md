@@ -30,6 +30,7 @@
 TS has no operator overloading / generic-math, so we **push our own port as a record** of the operations ("numerics like dotnet as our interface, push to other langs if they don't have", Aaron 2026-06-01). The **last rung** after F# (#6480), C# (#6481), Rust (#6482) — completes the Z-set ladder **4/4**.
 
 ### What
+
 Z-set is an abelian **group**, so it extends the shared `Monoid` (from `g-set.ts`: `empty` + `concat`) with `invert` (= `negate`) + `subtract` (= `union∘negate`) as an `AbelianGroup<T>` interface. **NOT `INumber`** — no ordering; the ring scalar is per-element. Factories are comparator-specific (the F#/C#/Rust twins bake the comparer into the type / use a default):
 
 - `monoid(compare): Monoid<ZSet<T>>` — additive-monoid view (parity with G-Set/Bag)
@@ -37,12 +38,15 @@ Z-set is an abelian **group**, so it extends the shared `Monoid` (from `g-set.ts
 - `concatAll(compare, zs)` — fold a collection (the `Sum` / `Seq.sum` analog)
 
 ### Verification (from repo root, matching CI gates)
+
 `tsc --noEmit -p tsconfig.json` **clean** · `eslint` **clean** · `prettier --check` **clean** (both files) · `bun test` **21/21** (16 original + 5 new).
 
 ### Tests (+5)
+
 `monoid`: concat == union + empty identity · `abelianGroup`: invert == negate, subtract == union(negate), IS-A Monoid · inverse law: `concat(a, invert(a)) == empty` and `subtract(a, a) == empty` · concat **NOT** idempotent (doubles) · `concatAll` folds with retraction-to-0 drop (+ empty-collection ⇒ empty).
 
 ### Ladder — Z-set generic-math 4/4 ✅
+
 F# #6480 · C# #6481 · Rust #6482 · **TS (this)**. Registry status bump to follow.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

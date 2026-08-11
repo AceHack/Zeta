@@ -43,6 +43,7 @@
 - **Actions SHA-pinned** to the repo's trusted versions (per the dep-pin rule): `actions/checkout@de0fac2 # v6.0.2`, `oven-sh/setup-bun@0c5077e # v2.2.0`.
 
 ## First run plan
+
 After merge, the **first validation dispatch uses `iterations_remaining=1`** (single cycle, NO recursion) to prove the live path before any bounded-recursion run. Bounded-recursion runs are then operator-initiated.
 
 Closes Action Item 3's go-live step (the harness + staged workflow landed earlier on the accelerator branch; this makes it live).

@@ -37,6 +37,7 @@ Two things Aaron authorized 2026-06-02: run the algebra-first procedure on **tic
 - **"Everything is algebra" convergence:** codecs (codec algebra) + time (temporal-operator algebra) both fold → the registry collapses toward **algebras on orthogonal axes + generic-math base**; the only non-algebra residue is **runtimes** + **asymmetric exceptions** (neither a registry primitive).
 
 ## New auto-loaded rule — `.claude/rules/algebra-first-admission-...`
+
 Saves the minimal procedures Aaron derived across the 081KT2T2J0008QG0R0008TFHJT arc:
 
 - the **algebra-first admission procedure** (ordered: can-it-be-algebra → algebra-covers? → other-rules? → else add),

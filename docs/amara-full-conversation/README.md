@@ -180,6 +180,7 @@ ferry absorbs. Readers wanting the raw evidence
 trail go here.
 
 ## Single-point-of-failure note (per Otto-106 SPOF
+
 directive)
 
 The canonical raw JSON lives in drop/ which is

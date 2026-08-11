@@ -36,6 +36,7 @@
 - Fixes rebased-main CI drift in ZetaId codegen strict parsing, generated Python allowlisting, and Python import/format order.
 
 ## Why
+
 This keeps Q#/Bayesian/Reticulum-style experiments behind an owned interface. The scheduler sees forecast reports and honest byte backpressure; plugin arithmetic stays outside core runtime assumptions.
 
 ## Validation

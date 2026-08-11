@@ -50,6 +50,7 @@ described.
   the without_skill output.
 
 ## The backup use case — why this is the canonical
+
 technique
 
 Rewriting tape archives on every deletion request is
@@ -66,6 +67,7 @@ this:
 - This is what Aaron's contact was talking about.
 
 ## Gotchas that any future user-privacy-expert skill
+
 should flag
 
 - **Single-tenant DEK per subject** is the rule. A

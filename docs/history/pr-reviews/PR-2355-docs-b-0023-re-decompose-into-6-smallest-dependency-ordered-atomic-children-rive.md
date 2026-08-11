@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 One bounded step on 081KQ0YZ80008QG0R003EJQZ1M (P2 open-research XL): re-decomposed the broad quant-grade Austrian monetary theory synthesis item into 6 smallest dependency-ordered atomic child backlog rows (081KR50HA0008QG0R003ESW3MH survey-first → 081KR50HA0008QG0R000M4H35K–081KR50HA0008QG0R000467SWT per-primitive formalizations → 081KR50HA0008QG0R00238MS98 synthesis/ADR/publish).
 
 - Survey (buildable now)
@@ -37,6 +38,7 @@ One bounded step on 081KQ0YZ80008QG0R003EJQZ1M (P2 open-research XL): re-decompo
 Re-decomp per "always re-decompose items during the build — assume decomposition has mistakes". Fits autonomous-backlog-pickup trajectory.
 
 ## Why
+
 081KQ0YZ80008QG0R003EJQZ1M is too broad for single impl; atomic children enable progressive real-time open-source research per Aaron's framing and glass-halo.
 
 ## Focused checks (in dedicated worktree; root checkout untouched)
@@ -47,6 +49,7 @@ Re-decomp per "always re-decompose items during the build — assume decompositi
 - No root checkout modified; claim branch pushed from worktree.
 
 ## Next
+
 Follow-up bounded slices will create the individual child .md rows + claim them.
 
 Co-Authored-By: Grok <noreply@x.ai>

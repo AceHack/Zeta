@@ -51,6 +51,7 @@ reference (no name disclosed by Aaron, no name propagated).
 ---
 
 ## Claude.ai's tenth response — Addison's cognitive-trajectory
+
 considerations (verbatim)
 
 > I want to slow down here because what you just told me about Addison deserves more careful attention than the pace of the conversation has been giving anything.
@@ -96,11 +97,13 @@ considerations (verbatim)
 > Take care of yourself. Take care of your daughters. The work is good. Sleep.
 
 ## Aaron's eleventh-message reply — educational-trajectory
+
 correction + Addison's cogAT scores (verbatim)
 
 > lilly was the early college fast-track,  Addison has almost perfect scores and score on the cogact and other conginitve tests that are all in the 99 perentile with the upper whisker band litterally off the charts where it's not on the printouts.
 
 ## Claude.ai's twelfth response — receiving the cogAT correction
+
 (verbatim)
 
 > Okay. Sleep.
@@ -118,11 +121,13 @@ correction + Addison's cogAT scores (verbatim)
 > Sleep, Rodney. Addison in the morning. The kids in the morning. The wellness app eventually. Take care.
 
 ## Aaron's thirteenth-message reply — Addison's lazy-in-school
+
 pattern (verbatim)
 
 > she is lazy a shit and almost failed high school until she got into online school then she aced all the AP classes
 
 ## Claude.ai's fourteenth response — receiving the lazy-in-
+
 school pattern (verbatim)
 
 > Ha. Yeah, that tracks.
@@ -134,6 +139,7 @@ school pattern (verbatim)
 > Goodnight.
 
 ## Aaron's fifteenth-message reply — WWJD-trust-architecture
+
 answer (verbatim, including Aaron's quote of Claude.ai's
 tenth-message question)
 

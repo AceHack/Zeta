@@ -34,6 +34,7 @@
 - Add focused F# tests for ranking, backpressure, SoftValue projection, refuted evidence, and the CHIP-8 observer seam.
 
 ## Why
+
 This keeps Q#/Bayesian/Reticulum-style plugins as oracles/adapters instead of making them the runtime. The first runnable kernel is pure Core F#, exception-free, and small enough to expand toward CHIP-9 self-prediction.
 
 ## Validation

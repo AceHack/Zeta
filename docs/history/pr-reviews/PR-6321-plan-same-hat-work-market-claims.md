@@ -42,12 +42,15 @@
 - git diff --check
 
 ## KIND / side-effect proof
+
 Not applicable for this slice: it changes a pure planning kernel plus tests/docs, not a Cockroach adapter or durable side-effect lane. The existing lease-fenced claim mutation remains the store boundary.
 
 ## Review note
+
 Subagent review was attempted twice for this checkpoint, but the platform returned `collab spawn failed: agent thread limit reached`.
 
 ## Repo-level gate
+
 `dotnet build -c Release` is blocked before compilation in this environment because `global.json` requires SDK `10.0.203`; installed SDKs are `10.0.101`, `9.0.200`, and `9.0.100`.
 
 

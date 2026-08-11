@@ -41,9 +41,11 @@
 - No TS/bash edits (Rule 0 observed; this was decomp pointer only).
 
 ## Why this slice
+
 081KQ3HBZ0008QG0R003V6B2ME is L-effort broad track. v0 catalog shipped; next is video-game priority seeds (Aaron-marked higher). This pointer makes the child claimable without sprawling the parent.
 
 ## Next
+
 081KR7JY10008QG0R0018G7ZQV will implement the 5 video-game seeds as typed catalog extension (prefer F#/TS).
 
 Co-Authored-By: Grok <noreply@x.ai>

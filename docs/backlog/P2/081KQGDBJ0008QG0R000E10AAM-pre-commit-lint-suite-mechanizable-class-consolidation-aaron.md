@@ -46,6 +46,7 @@ what the "Empirical motivation" section below cites and what
 implementation should use as stable class identifiers.
 
 <!-- markdownlint-disable MD029 -->
+
 ### Markdown rendering (classes 1-4)
 
 1. **MD032 / blanks-around-lists**: literal line-leading `+` in

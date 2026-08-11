@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KR50HA0008QG0R000239VTZ (re-decomposed during build): curated concept-class regex index (alignment-clauses HC/SD/DIR, BP-*, Otto-*, B-*, named patterns, lineage anchors, shadow classes, formal tools) over memory/ docs/ .claude/ dirs. Produces .concept-index.json + instant lookup CLI.
 
 Original backlog described free-text term→file; re-decomposed to curated queries (guardrails from Vera) to keep it reviewable, bounded, and non-drift. This is the atomic TS core.

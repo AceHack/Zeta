@@ -34,6 +34,7 @@
 - fix the current Q# transcript validation build break by comparing interference rows to the source-owned F# observable treaty rows
 
 ## Why
+
 The repo direction is that `tools/` should stay for setup/build-machine shell surfaces, while reusable code lives under `src/`. These state machines are source substrate, not bootstrap scripts.
 
 ## Validation
@@ -48,6 +49,7 @@ The repo direction is that `tools/` should stay for setup/build-machine shell su
 - `dotnet test Zeta.sln -c Release --no-build`
 
 ## Notes
+
 `bun run lint:typescript` still hits pre-existing repo-wide parser-project issues outside this branch (`.claude/hooks`, `agentic-organization`, `tools/zflash`, `vocab/gen`, etc.). The moved source files pass scoped ESLint.
 
 

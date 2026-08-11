@@ -54,6 +54,7 @@ for humans — the proofs and published assumptions stay underneath (the #7635/#
 a demo shows the system working, the treaty shows it can't silently stop.
 
 ### 4. "When you control our eyes and ears you control our hearts — with great power comes great
+
 consent-first responsibility" — CARVED; manifesto §6 gains its vernacular form
 
 The strongest line in the ferry. The sensory channel IS the power channel (McLuhan; the attention

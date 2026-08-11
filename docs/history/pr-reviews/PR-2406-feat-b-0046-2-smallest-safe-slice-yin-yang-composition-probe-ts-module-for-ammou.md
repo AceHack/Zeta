@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 One bounded step on 081KQ3HBZ0008QG0R0001XKNWK (re-decomposed Stage 2): pure TS yin-yang gate for Ammous Bitcoin-Standard candidate-probe. Substrate denominated in time/energy; money-extraction excluded. Gated by explicit unification + harmonious-division poles (yin-yang composition per backlog).
 
 **Re-decomposition note**: Assumed Stage 2 decomposition mistake; split to atomic code surface (probe fn) before impl. Prefer F#/TS over docs.

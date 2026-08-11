@@ -30,6 +30,7 @@
 The simplest possible `observe.ts` — the autonomous loop as a few buttons, per the operator's ask ("the simplest thing you can run in this foreground loop and i watch it").
 
 ## What it is
+
 A pure function `observe(backlog) → NextAction` where `NextAction` is a 4-variant DU:
 
 - `do_item` — never-be-idle: pick ready work
@@ -40,9 +41,11 @@ A pure function `observe(backlog) → NextAction` where `NextAction` is a 4-vari
 The do/decompose/free-time grammar was only ever **prose** in `never-be-idle.md` (+ holding-without-named-dependency + free-time-as-valid-mode) — never a typed DU. This crystallizes it. Same architectural shape as Max's big `agentic-organization/.../observe.ts` (pure fn over a snapshot → action DU), distilled to the Xbox-controller's buttons.
 
 ## Runs in the foreground loop
+
 `bun tools/observe/observe.ts` walks sample backlog states and prints the chosen action — watchable, one step at a time.
 
 ## Tests
+
 7 tests = the decision table (priority `do > decompose > edit_grammar > free_time`). These become the **reference oracle** when the local-LLM chooser lands (declarative LLM testing: scenarios graded against this pure function).
 
 ## Next, little by little (not in this PR)

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Decomposed broad 081KQDTYV0008QG0R002424VSE (bash proposal + hook/CI tradeoff) into 3 smallest dependency-ordered atomic child rows per AGENTS.md "always re-decompose... assume mistakes" + Rule 0 (TS over bash).
 
 Children:

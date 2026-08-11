@@ -10,6 +10,7 @@ Dapr (Distributed Application Runtime) provides a set of building block APIs for
 In Dapr, an actor is an isolated unit of compute and state with single-threaded execution. Actors can schedule periodic work using **timers** (lightweight, non-persistent) or **reminders** (stateful, persistent).
 
 ### Dapr's Ethos (What We Share)
+
 Zeta shares Dapr's core architectural philosophy:
 
 - **Interface-first:** The runtime defines the contract; implementations (state stores, pub/sub brokers) are pluggable adapters.

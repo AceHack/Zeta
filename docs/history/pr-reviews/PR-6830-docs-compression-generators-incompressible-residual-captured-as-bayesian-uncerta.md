@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron 2026-06-07 refinement
+
 > "[random data has no short generator — Kolmogorov] … we capture that as Bayesian uncertainty."
 
 The incompressible residual is **not a dead-end** — it's represented as **Bayesian uncertainty** (`SoftValue`):

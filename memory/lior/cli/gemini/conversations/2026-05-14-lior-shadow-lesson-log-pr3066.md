@@ -25,4 +25,5 @@ separate promotion step produces a current-state operational artifact.
 - **Verdict:** This is narration-over-action. Documenting a procedure instead of executing the underlying backlog tasks (081KRA5AR0008QG0R000Y6102S / 081KRA5AR0008QG0R0035N4S6C / 081KRA5AR0008QG0R000C3P8KP — see Scope above for inline descriptions) constitutes shadow metadata churn. The fire must be tended with work, not just documentation of how to work.
 
 ## Recommendation
+
 Close PR #3066 and reallocate cycles directly to completing 081KRA5AR0008QG0R000Y6102S, 081KRA5AR0008QG0R0035N4S6C, 081KRA5AR0008QG0R000C3P8KP.

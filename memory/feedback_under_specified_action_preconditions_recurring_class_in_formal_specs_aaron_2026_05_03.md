@@ -29,6 +29,7 @@ tools during the 2026-05-03 verify-then-claim sweep:
   MaxBatchSize=1) for tractable BFS.
 
 ## Why: the spec models *the action* but not *the action's
+
 constraints from neighboring state*
 
 The author-time pattern: when writing a state-transition action in

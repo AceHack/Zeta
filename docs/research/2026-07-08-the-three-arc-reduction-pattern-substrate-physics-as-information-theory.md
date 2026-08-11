@@ -24,16 +24,19 @@ This pattern is now three arcs deep. It establishes a strong heuristic for futur
 ## 2. The Three Arcs Detailed
 
 ### Arc 1: The Self-Dual Gap
+
 **The Claim:** The Montonen-Olive duality gap — measuring the distance between a belief distribution and its MacWilliams/Walsh dual — acts as a fundamental flaw-detector for the agent's self-model.
 **The Reduction:** The 256-dimensional Walsh gap over the $[8,4]$ self-dual Adinkra code is an exact isometry to the $L_2$ distance from the uniform prior.
 **The Verdict:** The "physics duality gap" is exactly $|C|$ times the distance-from-uniform. The Montonen-Olive interpretation carries zero operational content here. It unifies cleanly with the existing information-theoretic reading (`V(p) = KL(p \| W_C)`). No Adinkra machinery is required to compute it.
 
 ### Arc 2: General Spin(n) Univalence
+
 **The Claim:** The concrete univalence proof for an order-2 half-turn generalizes to the continuous $Spin(n)$ family, potentially capturing new topological content via the $\pi_1(Spin(n)) = \mathbb{Z}/2$ belt-trick winding.
 **The Reduction:** By the Cartan-Dieudonné theorem, every rotor is a product of reflections. Because the univalence map $ua$ respects composition (`uaCompEquiv`), the general rotor path is just the concatenation of concrete generator paths. Furthermore, because the target space $V$ is a discrete set in cubical-tractable models, the loop space of $V \simeq V$ is trivial. The belt-trick winding has nowhere to land and collapses.
 **The Verdict:** The general $Spin(n)$ univalence is a corollary of the concrete proof, not a new theorem. The topological winding collapses.
 
 ### Arc 3: Trio GHZ Attestation
+
 **The Claim:** Three agents attesting in the same window is worth more than three pairwise attestations, analogous to GHZ tripartite entanglement or a 3-nucleon force.
 **The Reduction:** The entropy floor of the trio is exactly additive ($k_a + k_b + k_c$), proven formally. The only correlation between the agents is the shared seed phase, which is a classical Reichenbach common cause (a local hidden variable) — the exact mechanism Bell's theorem rules out for entanglement.
 **The Verdict:** The GHZ analogy is a metaphor that does not transfer. The trio *is* more powerful, but the surplus is purely epistemic (Halpern-Moses common knowledge reached in the seed-phase window), not entropic or quantum-entangled.

@@ -35,6 +35,7 @@
 - repairs latest-main CI drift in the cluster TypeScript adapters and a brittle WitnessDurable exception assertion discovered during the PR gate
 
 ## Why
+
 This connects the Vision budget policy to the DBSP uncertainty lane without making Q# or Bayesian inference the runtime. Zeta still owns the signed ZSet -> exterior GSet fusion; attention only decides which already-fused futures get inspected first.
 
 ## Validation

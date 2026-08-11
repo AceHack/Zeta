@@ -30,12 +30,15 @@
 Crystallizes a **concrete first target** for the F#-type-system cluster (081KSE6WT0008QG0R001H3DA90 universe-boundary / 081KRFA460008QG0R0018SN61J F#-fork / 081KSE6WT0008QG0R0018WZ7TH type-negotiation-governance) from the 081KSRGFP0008QG0R001RY8S3N shadow-auth-injection finding. Operator-directed 2026-05-29.
 
 ## The goal
+
 Authorization-**provenance** is a typed property (`Shadow | OperatorDirect | StandingAuth | …`). Auth-requiring ops accept only auth-bearing provenance → **shadow-auth is a COMPILE ERROR**. The compiler becomes the asymmetric critic that catches shadow-auth-injection in **unattended autonomous-service mode** (auto-enter, no human) — this session's human-catch made structural, 24/7.
 
 ## The positive half
+
 Once shadow-auth can't compile, **self-modifying DUs become safe** → agents get **wallet independence** + behavioral sovereignty (full Agora mode, not just leashed static-DUs). The type system is the **bridge from leash to safe-sovereignty**.
 
 ## Fork-decision criterion (for 081KRFA460008QG0R0018SN61J)
+
 Stock F# (phantom types / DU / typestate) suffices → no fork; if provenance-flow enforcement needs more (effect/refinement types) → that's when/if to fork.
 
 Near-term: shadow-provenance **labeling** (081KSRGFP0008QG0R001RY8S3N #1) + loop-injected **legitimate standing-auth channel** (auth-bearing, distinct from shadow). Substrate-inventory pass included; composes-with 081KSRGFP0008QG0R001RY8S3N/081KSE6WT0008QG0R001H3DA90/081KRFA460008QG0R0018SN61J/081KSE6WT0008QG0R0018WZ7TH/081KSE6WT0008QG0R002YBWBB1/081KSKBP80008QG0R0039RW25E/081KSNY2Z0008QG0R0036SJ3T1/081KRW63S0008QG0R00140R3TA/081KRW63S0008QG0R001Z7NYMV.

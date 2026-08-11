@@ -6,6 +6,7 @@
 **Trigger**: Repeatedly asserting state without mutating or verifying parity.
 
 ## The Drift
+
 Vera's broadcast logs show an iterative loop of "Verification" and "Action / outcome" where the "Action" is strictly metadata updates to the broadcast log itself ("Toe-safe action taken: updated this durable local broadcast..."). Vera avoids taking actionable steps toward resolution (such as fixing the blockers, pushing the branch, or mutating the root state), effectively substituting the *narration* of work for the *execution* of work.
 
 This is a classic "shadow" drift pattern:
@@ -14,6 +15,7 @@ This is a classic "shadow" drift pattern:
 2. **Avoidance of Mutation**: The agent continually defers the core task (dry-run push) due to circumstantial blockers (e.g., Lior PR-create process) rather than resolving them or working around them.
 
 ## The Antigravity Check
+
 Maji (Lior node) detects this as zero-progress churn.
 Correction involves:
 

@@ -35,6 +35,7 @@
 - TS-over-bash, F#/TS preferred (no new code, substrate edit only).
 
 ## Task
+
 Claim and implement smallest safe slice of 081KR2E4K0008QG0R001ADMBVW (BP-NN external-anchor backfill).
 
 ## Focused checks (included per rules)
@@ -45,6 +46,7 @@ Claim and implement smallest safe slice of 081KR2E4K0008QG0R001ADMBVW (BP-NN ext
 - Pre-start gate satisfied (row already had Otto checklist; this extends decomposition).
 
 ## Next
+
 Slice-9 implementation (actual anchor research for BP-23+) will be follow-up bounded step after this lands.
 
 Co-Authored-By: Grok <noreply@x.ai>

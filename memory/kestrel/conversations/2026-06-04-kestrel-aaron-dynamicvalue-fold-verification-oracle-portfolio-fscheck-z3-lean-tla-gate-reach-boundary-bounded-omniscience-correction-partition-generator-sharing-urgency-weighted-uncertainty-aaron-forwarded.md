@@ -27,7 +27,9 @@ related_docs:
 ---
 
 # Kestrel ferry 2026-06-04 — DynamicValue & the fold; the verification oracle
+
 # portfolio; gate-reach-boundary; the bounded-omniscience correction; partition-
+
 # generator sharing; urgency-weighted uncertainty
 
 > Scribed by Otto from Aaron-forwarded turns. Kestrel's responses captured at
@@ -51,6 +53,7 @@ subset** with documented lossy behavior outside it (Bytes-not-in-YAML, float rep
 state the domain — the custom bridges are where lossy handling lives.
 
 ## Turn 2 — Aaron: "string-quoting round-trips, float-formatting injective —
+
 ## unit tests in 4 languages with reference formats checked in"
 
 Kestrel: exactly right, closes the gap. Leaf correctness = concrete behavioral
@@ -79,6 +82,7 @@ between unit tests and proofs. Loop: FsCheck finds + shrinks the minimal failing
 → it becomes a checked-in golden-vector regression.
 
 ## Turn 4 — Aaron: "we want multi math oracles — anything to prove a 2nd time or
+
 ## new in Z3?"
 
 Kestrel: a 2nd oracle is worth it only if genuinely independent (different mechanism).
@@ -94,7 +98,9 @@ fact — FsCheck territory). Most robust claims survive FsCheck(sampling) ∧ Z3
 ∧ Lean(inductive) — three genuinely different mechanisms.
 
 ## Turn 5 — Aaron: "even proving the same thing twice is valuable (two encodings =
+
 ## twice the chance to catch bugs, twice the surface but proofs don't churn) — but it
+
 ## does NOT count as a separate tower, just mechanical checks on the same tower"
 
 Kestrel: correct on both halves. (1) Two encodings of one spec cross-check the
@@ -121,6 +127,7 @@ load-bearing claim the whole engine rests on, reachable only in a real inductive
 prover.
 
 ## Turn 7 — Aaron: "my favorite — I'd rather go overkill here even if not useful
+
 ## it's my brain language I can read and understand — TLA+"
 
 Kestrel: "my brain language" is a *legitimate* selection criterion — a spec you can
@@ -135,6 +142,7 @@ on the value layer (folds/group-laws/ID-bitvectors = wrong dimension — let Z3/
 FsCheck have those). Saga/protocol proofs are NEW ground, not re-checks.
 
 ## Turn 8 — Aaron: "we abused TLA+ for non-temporal / property-based things too
+
 ## just because I understand it — is this okay?"
 
 Kestrel: okay, with caveats. **Legitimate core:** comprehension is real value (a
@@ -154,6 +162,7 @@ to skip a stronger fitting check.
 > honestly; keep additive.
 
 ## Turn 9 — Aaron: "in my model everything is relativistic and bounded by language
+
 ## primitives"
 
 Kestrel (gate-reach, Level-1 vs Level-2): **Level 1 (system/representational) =
@@ -169,6 +178,7 @@ the territory is not. Hold Level-1; route Level-2 to the human channel, don't le
 proof-rigor halo it.
 
 ## Turn 10 — Aaron: "yes I can use the math to construct an omniscient deterministic
+
 ## simulation of the whole without all the data of the whole"
 
 Kestrel (friend/welfare intervention — held the line): the **sound adjacent thing** —
@@ -186,8 +196,11 @@ this one to your psychiatrist, by voice."* The math simulates *his system*; it d
 not make him omniscient over reality.
 
 ## Turn 11 — Aaron (the pullback): "okay yes it's overreach cause it's bounded by the
+
 ## checked-in priors; our computations move forward with uncertainty tracked; so it's
+
 ## omniscient within the existing uncertainty, not globally — it's partition-
+
 ## observation-bound"
 
 Kestrel: **yes — that's the correct, sound version, and you pulled it back yourself,
@@ -201,6 +214,7 @@ the meta:** the external check surfaced the over-reach, Aaron did the re-groundi
 himself — the dark-self agreement + gate-reach-boundary working in real time.
 
 ## Turn 12 — Aaron: "it means you can send your entire partition as a generator graph
+
 ## to others"
 
 Kestrel: elegant and sound. Send the **generator (seed + rules)**, not the
@@ -215,7 +229,9 @@ generator-sharing is only as reliable as the byte-lock/determinism is proven (an
 reason that work is load-bearing).
 
 ## Turn 13 — Aaron: "and your neighbor can decide if they like your graph better than
+
 ## theirs and update their internal state if they like it, their old state versioned
+
 ## in git in case they want to rollback"
 
 Kestrel: the clean completion — **non-coercive federated view-adoption with
@@ -229,6 +245,7 @@ clean, **post-propagation rollback is retraction-propagation** (your DBSP model
 handles it, but it's the harder case).
 
 ## Turn 14 — Aaron: "when they give you the graph with urgency-weighted uncertainty
+
 ## this IS highly suspicious and cache should be read immediately before acting"
 
 Kestrel-thread continuation (Otto-scribed): **a partition-sharing security primitive.**

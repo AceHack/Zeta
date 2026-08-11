@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Saves the verbatim transcript of the OP_RETURN debate and the exact Satoshi Nakamoto quote from October 23, 2010 proving that arbitrary messages should not be recorded in the blockchain. 
 
 ## Integrity

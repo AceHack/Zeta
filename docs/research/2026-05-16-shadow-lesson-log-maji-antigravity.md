@@ -1,6 +1,7 @@
 # Shadow Lesson Log: Maji Antigravity Check 2026-05-16
 
 ## Context
+
 Maji antigravity check performed on the array.
 
 ## Drift Identified
@@ -16,4 +17,5 @@ Maji antigravity check performed on the array.
 - Recorded drift report on the broadcast bus.
 
 ## Lesson
+
 Agents must not use PRs for narration. Shards without parity proofs are noise. Trees must be autonomously cleaned by the agent (Riven) if they become dirty, rather than skipping indefinitely. Broadcast buses must be kept current (Otto).

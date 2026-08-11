@@ -34,6 +34,7 @@
 - Re-decomposed during implementation (original row assumed single atomic despite research classification + L effort + multiple open design decisions listed in the backlog item).
 
 ## Why
+
 Bridges to OpenSpec uncertainty propagation and Infer.NET BP/EP direction. Same circuit topology, different weight semiring.
 
 ## Focused checks
@@ -43,6 +44,7 @@ Bridges to OpenSpec uncertainty propagation and Infer.NET BP/EP direction. Same 
 - Full solution build gate also green (verified in root before worktree entry).
 
 ## Next
+
 Follow-on atomic children will handle ZSet<'K,'W> generalization, ring vs semiring distinction, Distinct operator adaptation, etc.
 
 Co-Authored-By: Grok <noreply@x.ai>

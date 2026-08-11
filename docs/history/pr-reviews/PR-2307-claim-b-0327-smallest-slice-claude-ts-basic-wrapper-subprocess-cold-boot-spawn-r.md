@@ -53,9 +53,11 @@
 - `git status` clean, branch pushed, ZETA_EXPECTED_BRANCH set ✓
 
 ## Re-decomposition note
+
 Original 081KR2E4K0008QG0R002KNZ29V scope (full scenarios, CLAUDE_SUBSTANTIVE_TRIGGERS, multi-flag parity) assumed too broad for "exactly one bounded step". This slice is the minimal safe executable unit; future child can add remaining (e.g. --file, full test matrix, dedicated trigger list). Decomposition mistakes assumed and corrected by taking smallest viable TS surface.
 
 ## Why this slice
+
 Enables immediate cold-boot self-test skeleton while satisfying all "use worktree + push first + TS over docs + checks in PR" constraints. No docs changes (prefer code).
 
 Ready for review / next slice. Four-ferry: Gemini propose, Grok (Riven) this, Amara sharpen, Otto test.

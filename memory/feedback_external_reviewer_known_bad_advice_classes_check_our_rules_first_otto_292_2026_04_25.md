@@ -226,6 +226,7 @@ than amending" rule + retractability discipline (visible
 revision, not silent rewrite).
 
 ### B-8. Suppress analyzer finding via `_ = Send(...)` /
+
 `Assert.True(true)` / empty `catch (Exception) { }`
 
 **Pattern:** "discard the return value to silence

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Re-decomposed 081KQ8P5D0008QG0R0014HJFF5 (P2 PR#72 punch-list drift sweep) per "always re-decompose... assume mistakes" into 2 smallest atomic S-effort dependency-ordered children (TS-preferring). One bounded step only. Dedicated worktree + claim branch pushed *before* any write. Root checkout untouched. Focused checks included.
 
 **Children (parallel, no deps):**
@@ -36,6 +37,7 @@ Re-decomposed 081KQ8P5D0008QG0R0014HJFF5 (P2 PR#72 punch-list drift sweep) per "
 - 081KRA5AR0008QG0R0027YDY5C: wallet-v0 §377 / §8.1 bond-ledger vs INTENTIONAL-DEBT.md alignment
 
 ## Why
+
 Original remaining items (after 081KQ8P5D0008QG0R0014HJFF5.1) still touched multiple specs; split ensures atomic, reviewable, one-file max slices. Matches 081KQ3HBZ0008QG0R0008RYCSX/081KQ3HBZ0008QG0R001K0EC2C/081KQ8P5D0008QG0R002E1G72J/B-009x decomp pattern. TS preference noted for future verifier tooling.
 
 ## Changes (exactly 3 files)
@@ -50,6 +52,7 @@ Original remaining items (after 081KQ8P5D0008QG0R0014HJFF5.1) still touched mult
 - No other files touched; no tests needed for pure-doc decomp step
 
 ## Next
+
 Children are now buildable independently. Future slices on .2/.3 will run same gate + start-gate (prior-art + dep check) before impl.
 
 Co-Authored-By: Grok <noreply@x.ai>

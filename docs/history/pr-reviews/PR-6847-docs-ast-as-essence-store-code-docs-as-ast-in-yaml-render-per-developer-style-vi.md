@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron 2026-06-07 (resolves the bit-perfect / format-on-checkin thread)
+
 Custom file handlers store the **AST (in YAML)** instead of source text → removes all formatting/whitespace/style noise.
 
 - **AST = the content-addressed essence** (confluent, dedupable, **semantic AST-level merge**).

@@ -40,6 +40,7 @@
 - makes the safety condition explicit: syncing only works in high-trust human/AI environments where truth can surface, assumptions can be corrected, decisions are retractable, and neither side is treated as disposable
 
 ## Why
+
 The control clone should be a deploy surface, not a private source of truth. This PR turns the loop-shaping lessons from the foreground session into reviewable repo history, so future GitHub Pages/Superfluid surfaces can render decisions, assumptions, reversions, PR outcomes, and alignment-review notes as **syncing with the AI** instead of chat archaeology.
 
 The UI should teach people to work with AI without reproducing the domination pattern. That means reviewing assumptions, correcting drift, steering the next walk, explicitly learning the human, and resisting the old classify-command-extract-scale pattern that shows up whenever coordination becomes control. Zeta's role in that transition is stability: enough reproducible substrate to move from central authorship into distributed agency without losing the trail.

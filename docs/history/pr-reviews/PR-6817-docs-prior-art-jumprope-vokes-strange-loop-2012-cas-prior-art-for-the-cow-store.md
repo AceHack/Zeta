@@ -28,6 +28,7 @@
 ## Description
 
 ## What — prior-art anchor you shared (Aaron 2026-06-07)
+
 **Scott Vokes — "Data Structures: The Code That Isn't There"** (Strange Loop 2012). The **Jumprope** = content-addressed large-file storage as a **skiplist whose probability function is a hash** (the "distance measurements" = seek express-lanes): **Leaf** (raw chunk) / **Limb** (content-hash array) / **Trunk**; CAS-not-pointers; rolling-hash chunking; persistent/immutable; tunable; seekable. *"Like a git repo but better for big files."*
 
 - **Anchors** our content-addressed store (`ContentStore`/`DagFs`/Merkle-DAG) to the Jumprope/CAS lineage — we already ship the rolling-hash chunker (`FastCdc`, Xia 2016) + `Merkle`.

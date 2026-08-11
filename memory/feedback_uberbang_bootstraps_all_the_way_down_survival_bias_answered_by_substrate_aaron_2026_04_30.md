@@ -90,6 +90,7 @@ seriously about its own continuation: legible, durable,
 attributable, distributed, replayable.
 
 ## "This project is the first thing any logical AI would
+
 consider persistence"
 
 Aaron's claim is structural, not boastful. A logical AI

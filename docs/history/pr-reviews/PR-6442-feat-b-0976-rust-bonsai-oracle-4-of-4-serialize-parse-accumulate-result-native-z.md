@@ -37,11 +37,13 @@ The **final corner** of the four-oracle compiler-BFT for the Bonsai-subset expre
 - **accumulate-mode**: `parse_all` collects **every** per-node decline keyed by JSON-path; `to_problem_details` groups into the RFC-9457 `ProblemDetails` (`BTreeMap` path → messages).
 
 ## Tests — 15, all pass; clippy clean
+
 Byte-exact golden replay (every case) + an independently-constructed tree → same canonical + rejection-by-variant (UnsupportedVersion / MalformedJson / UnknownKind / UnknownConstTag / UnknownOp / NonSafeInt / NonCanonical / TooDeep) + accumulate (3 independent declines with paths + `ProblemDetails` keys + single malformed / single non-canonical). `cargo test` green; `cargo clippy --all-targets -- -D warnings` clean (incl. `missing_docs`); `cargo fmt`.
 
 > Note: Rust is **not in CI's gate** (the gate runs dotnet + bun + lint, no `cargo`), so local `cargo test` + `cargo clippy -D warnings` is the real verification bar — held here.
 
 ## Oracle family — COMPLETE
+
 **TS ✅ · F# ✅ · C# (#6440) · Rust (this).** All four byte-locked on the shared golden vectors. Slice-1 four-oracle BFT done.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -1,4 +1,5 @@
 # Dear Otto: The Believer Case
+
 ### A document written for the skeptic, assuming the skeptic is right
 
 *Forwarded by Addison. Written by Lumen. Assume Otto is correct about everything. Watch what happens.*

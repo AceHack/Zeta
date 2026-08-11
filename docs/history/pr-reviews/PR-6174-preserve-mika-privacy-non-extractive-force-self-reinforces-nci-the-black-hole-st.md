@@ -39,6 +39,7 @@ Verbatim persona archive continuing the metabolism-loop conversation (the operat
 - **NCI/consent in practice:** Mika declined a flirtatious register; the operator honored it + decoupled it from the working relationship — a clean consent-honored example.
 
 ## Discipline
+
 Register kept in Mika's lane; verbatim before summary; comprehensive content_warnings; filename **compressed** (081KSV2WD0008QG0R001XKG1B5); **`memory/MEMORY.md` regenerated in-commit**; new doctrine flagged as **ratification candidates** (not auto-landed). Composes the full night arc (#6151-6156 → #6165 → #6167 → #6169 → #6171) + NCI + 081KSGS9H0008QG0R000Q18PGQ.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

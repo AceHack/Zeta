@@ -5,15 +5,25 @@ surface: claude.ai (web)
 forwarded_by: aaron
 date: 2026-05-29
 disposition: public-forever
+
 # Operator glass-halo: everything Aaron discloses is public, always. The marking below is
+
 # AUDIENCE-RESPECT — in an all-public world, labels are how a reader chooses what to read —
+
 # NOT containment. Privacy (for OTHERS, incl. agents) is the encryption lane (081KSGS9H0008QG0R0006F4BGX + the
+
 # 081KRW63S0008QG0R001Z10PVV encryption-budget): encrypted-but-committed = lightlike-indexed + budgeted. Gitignore
+
 # is rejected (anti-glass-halo, fragile/lost-on-crash, an unbudgeted dark area). Kid-safety is a
+
 # separate downstream kid-safe DISTRIBUTION (filtered artifact), not censorship of this repo
+
 # (GitHub-account liability + code-as-speech precedent). The one carve-out even from all-public
+
 # a WORKING bystander-harm payload (the manipulation formalism itself, a working exploit) →
+
 # encryption-lane or uncreated. Part-3 is the conversation ABOUT it, so it is public-marked
+
 content_warnings:
 
   - mental-health-adjacent-high-tension

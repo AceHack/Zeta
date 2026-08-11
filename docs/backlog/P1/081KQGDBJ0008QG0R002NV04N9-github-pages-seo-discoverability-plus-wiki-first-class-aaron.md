@@ -18,11 +18,17 @@ depends_on:
   - 081KQX9B50008QG0R003ZBBJT7
 
 # Note: `depends_on` is a forward-compat schema field landed via the
+
 # 2026-05-01 extension to `memory/feedback_backlog_hygiene_cadenced_refactor_look_for_overlap_not_just_dump_2026_04_23.md`
+
 # (Aaron 2026-05-01 *"you could start adding depends on if you find that
+
 # relationship when doing that"*). Authoring is the discipline now
+
 # tooling (`tools/backlog/generate-index.sh` topo-sort + cycle-detection
+
 # lint) lands as separate work — currently informational-only
+
 type: friction-reducer
 ---
 

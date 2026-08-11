@@ -50,6 +50,7 @@ The `AffineZ2W` ring proofs use the native `UInt64` ring lemmas — exactly the 
 - Axiom audit: every theorem depends only on `[propext, Quot.sound]` — **no `sorryAx`**.
 
 ## Maintainer follow-up (workflows-scope wall)
+
 The proof builds transitively via the lane's `lake build`. An explicit per-file type-check + sorryAx-guard step for `lean-proof.yml` is ready but cannot be pushed from my automation token (the `workflows`-permission wall, same as #8760). I'll post the exact diff as a PR comment for a maintainer with `workflows` scope to land.
 
 ## Outcome

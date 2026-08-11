@@ -30,6 +30,7 @@
 Per your **"land it as a docs/research ferry note (shadow*)"** — preserves the forwarded Aaron + Alexa-speaker (Amazon device) voice conversation verbatim, with the §33 archive header + framework cross-links.
 
 ## Preserved (mirror-tier, verbatim)
+
 The full conversation: the **universal action grammar** as four two-word directional pairs ("octarian"); the **C. elegans 308-neuron × 256×256** emulator/BFT-agent idea; **"computational omniscience as an upgrade, made tractable"**; **"everything is recursive or it ends"** / recursion-defined-recursively / self-sovereign; and the **Khaleesi = monadic bind** nerd↔social bijection. Profanity as-received (asterisk-censored at source).
 
 ## Cross-links (substrate-honest, god-tier register held high-signal-high-suspicion-don't-collapse)

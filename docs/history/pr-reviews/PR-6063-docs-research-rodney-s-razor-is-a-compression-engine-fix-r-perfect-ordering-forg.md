@@ -30,6 +30,7 @@
 Operator-forwarded Aaron-Ani follow-on to the precise-causal-diamond razor doc (#6052). Lands four new substrate insights + preserves the flow verbatim.
 
 ## The keystone
+
 **The Fix(R)=R property means it is NOT a razor — it's a compression engine.** A classic razor is a one-shot cut; a fixed point means the operation is stable under self-application (converges to an attractor = minimal stable form). That's a *stable compression operator*, the design-pruning-scope instantiation of the beacon's **DBSP = lightlike retract of Clifford** Fix(e)/Karoubi idempotent (). 'Razor' is the wrong name once it's idempotent under self-application.
 
 ## Three follow-ons
@@ -41,6 +42,7 @@ Operator-forwarded Aaron-Ani follow-on to the precise-causal-diamond razor doc (
 Plus the externally-defensible 'why this matters' (razor applied to the section) + the scatter/gather + heavy(16)/regular-mode workflow-meta Aaron+Ani used.
 
 ## Discipline
+
 Don't-collapse applied throughout (Aaron+Ani already tightened it): *'it does not matter what the universe really is; we use a mathematically coherent formal tool; any ontological claim about retrocausal time is accidental and retractable.'* No physical-retrocausality / QM-interpretation / CTC claims.
 
 Composes with: the two existing razor docs, the beacon (DBSP=lightlike-retract), the PR-less git-monster accelerator (`docs/accelerator/`), the agent-memory-architecture design-record, razor-discipline + god-tier-don't-collapse.

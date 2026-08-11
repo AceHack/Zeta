@@ -45,6 +45,7 @@ Wave 2 of the forge-host-adapter spec. Implements the concrete GitHub adapter be
 - **index.ts** — auto-registers with forge-host registry on import
 
 ### Tests
+
 38 tests pass. Error classification covers: auth, permission, not-found, rate-limit, network/5xx, internal.
 
 ### Next (Wave 3)

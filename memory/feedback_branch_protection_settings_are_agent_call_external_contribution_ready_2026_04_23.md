@@ -185,6 +185,7 @@ Four concerns must compose:
    all ignore that most work is agent-originated.
 
 ## First concrete application — HB-004 revised twice then
+
 closed on empirical finding
 
 The sharpening above inverted my initial read (from

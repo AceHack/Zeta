@@ -5,11 +5,13 @@
 **Related row:** B-0476
 
 ## Purpose
+
 Apply Aaron's smell test: *"If two substrate clusters need DIFFERENT GitHub rulesets to govern them, that divergence IS the signal they should live in DIFFERENT repos."*
 
 ## Per-repo Ruleset Enumeration
 
 ### 1. `LFG/Zeta` (main)
+
 Uses **GitHub Rulesets**:
 
 - **Branch Safety** (16189060): Requires linear history, blocks non-fast-forward, blocks deletion.
@@ -19,6 +21,7 @@ Uses **GitHub Rulesets**:
 Legacy protection: Requires conversation resolution. `allow_squash_merge: true`, `allow_auto_merge: true`.
 
 ### 2. `AceHack/Zeta` (mirror)
+
 Uses **GitHub Rulesets**:
 
 - **Default** (15524390): Requires linear history, blocks deletion/non-fast-forward, requires `copilot_code_review`, requires `code_quality` (all severity). Squash-merge only. Includes bypass permissions for the `AceHack` user.
@@ -26,6 +29,7 @@ Uses **GitHub Rulesets**:
 `allow_squash_merge: true`, `allow_auto_merge: true`.
 
 ### 3. `LFG/civsim` (new product repo)
+
 Uses **Legacy Branch Protection** on `main`:
 
 - Requires 1 approving review.

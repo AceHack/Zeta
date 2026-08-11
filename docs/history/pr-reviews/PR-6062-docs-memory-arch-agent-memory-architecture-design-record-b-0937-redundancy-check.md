@@ -41,6 +41,7 @@ Consolidates Aaron's 2026-05-29 thread into the agent-memory-architecture design
 8. **From-the-inside** agent perspective (cold-boot budget tension felt; recognition-failure is the dominant risk; pointers must be cheap; mirror→beacon gives the substrate a direction).
 
 ## 081KSRGFP0008QG0R001A43EC6 (`docs/backlog/P2/`)
+
 Redundancy-check audit tool: duplicate-content / mirror-rhyme-with-beacon-equivalent / orphaned-satellite / **hub-over-budget detector**. Class 4 (hub-over-budget) is the minimal slice that mechanizes the 081KSRGFP0008QG0R002F5KY8Y trigger proactively (catch the next oversized rule before the harness warning fires).
 
 ## Verify

@@ -8,6 +8,7 @@ line drawn. Sources: `src/Core/CayleyDickson.fs`, `src/Core/HexCore.fs`,
 081KT2T2J0008QG0R0026MS6PV / 081KT2T2J0008QG0R002Z46D8Q / 081KRW63S0008QG0R000QJR08H / 081KT2T2J0008QG0R003VK5GRX / 081KT2T2J0008QG0R0019YVX8M, and the Prism + hex-core threads.*
 
 ## What this IS, in one line (Aaron 2026-06-05)
+
 **This is the proof basis for a TRAVELER FRAME on top of DBSP.** Each traveler carries this hex-core
 coordinate frame (the orientation tile — its own when / bearing / range / identity / I-O) over its
 **own DBSP stream**; there is no central frame (the perspectival / no-central-controller model — each
@@ -77,6 +78,7 @@ IS that wall.)
   genuine gap (only SHA-256 + Merkle integrity exist; BLAKE3 roadmap).
 
 ## Where it's going (no rush)
+
 Build the physics core ON the proven algebra: discharge the reconstruction lemma → land Adinkra ECC
 (081KRW63S0008QG0R000QJR08H) → wire the hex walls to the proven floor primitives they already map to (Remember-When=Clock ✅,
 Rainbow-Table=Identity ✅, Observe-Emit=reflective engine) → grow the measurement axes (how-sure=SoftValue

@@ -15,6 +15,7 @@ type: feature
 # B-0590 Slice 3 — Control box setup (PXE + DHCP + HTTP)
 
 ## Origin
+
 Peeled from the B-0590 blob (20-machine Otto fleet replication).
 Slice 3 focuses specifically on setting up the control box that will drive the bare-metal installations for the fleet.
 
@@ -33,4 +34,5 @@ Slice 3 focuses specifically on setting up the control box that will drive the b
 - [ ] HTTP server successfully serves OS images and preseed/cloud-init files.
 
 ## Next Steps
+
 Once this slice is complete, we move to Slice 4 (OS choice decision) and Slice 5 (Bare-metal install automation script).

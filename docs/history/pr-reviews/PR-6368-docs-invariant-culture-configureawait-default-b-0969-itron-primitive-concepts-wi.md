@@ -30,12 +30,15 @@
 Three maintainer-directed captures from this session (docs-only).
 
 ### 1. 081KT07NV0008QG0R001YDB73K (P1) — invariant-culture-everywhere + `ConfigureAwait(false)`
+
 .NET's framework defaults are client/UI defaults; Zeta is server/library/agent code → **invariant culture / ordinal by default, `ConfigureAwait(false)` by default**, culture-sensitive is opt-in. **Not hypothetical** — already broke cross-language parity: the F# G-Set sorts via `Comparer<'T>.Default` (culture-sensitive), diverging from TS/C#/Rust ordinal on non-ASCII keys (masked by ASCII fixtures, documented as a "known gap"). F# G-Set ordinal fix = first concrete action; `CA1304/5/7/10` + `CA2007` analyzer enforcement generalizes it.
 
 ### 2. Itron primitive concepts → wish list (no separate research doc, per maintainer)
+
 4-agent deep survey of the Itron .NET platform (7.8 GB, 37 modules), **concept-only / clean-room**, added to `docs/PRIMITIVE-REGISTRY.md` as an "Itron-surveyed" wish-list subsection: caching (soft/hard-TTL read-through, batch-miss, soft/hard-miss metrics split), resource/lifecycle (AtomicBool once-latch, readiness/liveness probe, app-host reverse-stop, DST periodic-loop, error-category map), messaging/distributed (broker port w/ in-memory DST adapter, workflow-as-data, BatchItemResult, segmenter, versioned codec negotiation), path/variant (PropertyPath, DVal tree), codec (BitReader/Writer, RangeSet), observability (register/value + IsDelta, ScaleTimer EWMA, tracer HOF, forceSample, Welford merge). **Meta-lesson Itron independently validates:** every port ships an in-memory adapter (= the DST seam); vendor import in core = lint failure (= our own-interfaces + BCL-boundary rules, from a shipped commercial codebase).
 
 ### 3. CAP-per-layer research doc
+
 `docs/research/2026-06-01-cap-per-layer-map-…`: per-agent algebra = **AP/CALM**, merge/claim = **CP** (federated `git push` as truth-machine, not central), reports = **AP-eventual**. "Beat CAP" is an overclaim (it's a theorem); the per-layer redraw is the real model. Novel: double-work = a free multi-oracle review at merge; federated (each agent own repos/busses/mains), not a single master.
 
 Docs-only; prettier + markdownlint clean; backlog index regenerated.

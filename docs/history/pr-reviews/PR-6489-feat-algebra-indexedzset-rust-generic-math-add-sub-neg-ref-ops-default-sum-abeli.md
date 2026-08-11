@@ -37,12 +37,15 @@ The Rust rung of the last ladder primitive (after F# #6485 + C# #6486). Rust has
 - **`clippy --all-targets -D warnings` clean** (the idiomaticity gate); zero `unsafe`, zero raw pointers, zero `num_traits` dep.
 
 ### Verification
+
 diff isolated to `src/indexed_zset.rs` (130 insertions); rustfmt clean on the added regions (pre-existing local-rustfmt-version diffs at lines 275/282 are the unchanged merge-join combiner, not this change); cross-verify golden replay green.
 
 ### Tests (+5, all pass; inline `mod tests`)
+
 operator `≡` method · `Default` = empty = identity · `a + (-a) = empty`, `a - a = empty` · `(+)` **NOT** idempotent (doubles) · `Sum` folds with key-empties-out retraction drop.
 
 ### Ladder
+
 IndexedZSet: F# #6485 · C# #6486 · **Rust (this)** · TS — last rung next.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

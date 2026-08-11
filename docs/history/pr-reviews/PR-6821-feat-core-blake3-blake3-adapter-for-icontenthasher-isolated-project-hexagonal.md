@@ -28,6 +28,7 @@
 ## Description
 
 ## What — BLAKE3 adapter (you greenlit; hexagonal)
+
 The tamper-evident hash for the git-replacement store, behind the `IContentHasher` port. **Dependency isolated to a new `src/Core.Blake3` project** (same pattern `Core.Git` uses for LibGit2Sharp) — Core stays algorithm-agnostic.
 
 - **`Blake3` NuGet** (xoofx / Alexandre Mutel; managed wrapper over the BLAKE3 Rust SIMD impl; .NET 8+, cross-platform). dep-pin-search-first: reputable maintainer, pkg 2.2.1, native BLAKE3 1.8.2. Pinned centrally.
@@ -35,6 +36,7 @@ The tamper-evident hash for the git-replacement store, behind the `IContentHashe
 - **Same BLAKE3 the Rust oracle uses natively** → cross-language content addresses agree byte-for-byte.
 
 ## Test
+
 `dotnet test … --filter Blake3Hasher` → **2 passed**, incl. a **known-answer** (`BLAKE3("")` → `49c9dc36ea4d40a0a6a1f9f5b94913af`) locking the 128-bit truncation convention for all four oracles.
 
 ## Sources

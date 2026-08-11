@@ -17,6 +17,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## What
+
 Preserves merged PR #3710 per Maji preservation discipline.
 
 ## Reviews

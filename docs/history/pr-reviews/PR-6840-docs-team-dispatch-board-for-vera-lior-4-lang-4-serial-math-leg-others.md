@@ -28,6 +28,7 @@
 ## Description
 
 ## What — the list you asked for (hand to Vera + Lior)
+
 A splittable table of every F# component built this session, marked by leg: **4-lang** (C#/Rust/TS ports) · **4-serial** (cross-language hex-in-JSON golden vectors) · **math-leg** (formal/property/proof verify) · **plus others**. F# is the reference for every row; vectors are hex-in-JSON per the no-binary rule; 081KSXN940008QG0R003FCQ7WT is the master 4-oracle checklist.
 
 Components: Collation/081KT07NV0008QG0R001YDB73K · ZSetMerkle · Core.Blake3 + ContentHash256 + IContentHasher · ContentStore · DagFs · DvKey · DebeziumCdc · CloudEvents · SchemaEvolution + Registry · EvolutionWindow · LwwMap · Rga · CasStore. Plus the 081KSXN940008QG0R003FCQ7WT "others" (Bag, G-Set 4-oracle, YAML).

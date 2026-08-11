@@ -49,6 +49,7 @@ Commits the three `/inventory` contract docs and resolves the Phase 0a open item
 - **(c) region = USA** — acceptable; standard US regions available.
 
 ### Item #7 — Supabase dashboard setup steps
+
 Provided in the PROGRESS.md appendix (create project → US region → Free; RLS-on note; where to find Project URL + publishable/anon key). The **service_role/secret key is never requested**.
 
 ### Notes

@@ -46,6 +46,7 @@ The huddle flagged that the **windowsfilter driver** has thin/contradictory evid
 - actionlint clean (exit 0).
 
 ## Next (once the log confirms ollama installs)
+
 Harden the smoke to **assert** ollama present on Windows — finishing the assert-don't-skip trio.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

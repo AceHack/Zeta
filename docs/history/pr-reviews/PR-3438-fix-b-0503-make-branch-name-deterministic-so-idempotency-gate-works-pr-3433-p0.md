@@ -38,12 +38,15 @@ The earlier `recovery/<prNumber>-<timestamp>` form made every `openRecoveryPR()`
 New regression test (`queries checkRecoveryPRExists with the deterministic branch name`) locks in the contract.
 
 ### P? — Backtick in `branchName` breaks PR body
+
 Added `sanitizeForInlineCode` helper; backticks in branchName replaced with `_` before the inline-code interpolation. New test covers the case.
 
 ### P? — Unused `RecoveryResult` type import in tests
+
 Removed.
 
 ### P? — Test description/regex mismatch
+
 Old: "digits, /, -" but regex permitted `a-z`. Replaced both with the actual `^recovery\/\d+$` for the new deterministic form.
 
 ## Test count: 14 → 16

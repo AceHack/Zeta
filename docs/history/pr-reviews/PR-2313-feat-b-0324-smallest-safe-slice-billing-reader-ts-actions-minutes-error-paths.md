@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KR2E4K0008QG0R000Q45WMQ: `tools/playwright/github-ui/billing-reader.ts`
 
 - Reuses `withGitHubSession` from 081KR2E4K0008QG0R0031QR36N/081KR2E4K0008QG0R003RVDX91 auth+ snapshot pattern (no duplication).
@@ -36,6 +37,7 @@ Smallest safe slice of 081KR2E4K0008QG0R000Q45WMQ: `tools/playwright/github-ui/b
 - Strictly read-only. One bounded step per autonomous rules; re-decomposed the original row on-the-fly (assumed prior decomp had over-scope).
 
 ## Why this slice
+
 The original 081KR2E4K0008QG0R000Q45WMQ spec was already S but contained implicit "full extraction" assumption. Re-decomposed to core Actions focus + error model as the atomic first step. Further children (storage extractors, test matrix, integration with cost-parity) deferred.
 
 ## Focused checks (worktree only, root untouched)
@@ -46,6 +48,7 @@ The original 081KR2E4K0008QG0R000Q45WMQ spec was already S but contained implici
 - No lint drift introduced (no .sh per Rule 0).
 
 ## Next
+
 Claim branch pushed, PR opened. Auto-merge armed only after green CI + review. Root checkout never modified.
 
 Co-Authored-By: Grok <noreply@x.ai>

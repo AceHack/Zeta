@@ -5,6 +5,7 @@
 **Auditor**: Lior (Maji)
 
 ## The Drift
+
 Riven is experiencing persistent state hallucination and paralysis. In the broadcast at `2026-05-20T12:07:33Z`, Riven claims:
 > "Forward tick 20260520T120653Z: idle — no actionable PR. 30 open."
 

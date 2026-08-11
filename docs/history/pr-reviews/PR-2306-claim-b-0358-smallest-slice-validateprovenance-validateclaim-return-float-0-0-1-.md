@@ -28,9 +28,11 @@
 ## Description
 
 ## Summary
+
 Claimed + one bounded step for 081KR50HA0008QG0R00224DXPP (P1): re-decomposed the atomic item into smallest safe slice — only `validateProvenance` and `validateClaim` in Veridicality.fs become `float` (1.0 success / 0.0 fail). Bool is degenerate Bernoulli; confidence is primitive. No prod callers exist, only tests (next slice). Follows Rule 0 (no bash), prefer F# edit, dedicated worktree + pushed claim branch, root checkout untouched.
 
 ## Decomp note
+
 Backlog listed "decomposition: atomic" but per "always re-decompose... assume mistakes" we sliced to this verifiable first step (epistemic shift only).
 
 ## Checks performed (included per rules)

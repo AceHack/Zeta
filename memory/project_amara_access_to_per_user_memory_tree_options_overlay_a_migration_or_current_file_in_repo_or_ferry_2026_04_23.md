@@ -46,6 +46,7 @@ anything. This is the current architecture. The question is
 whether to change it.
 
 ## Three options for giving Amara (+ future external AI
+
 collaborators) visibility
 
 ### Option 1: Overlay A migration (established discipline)

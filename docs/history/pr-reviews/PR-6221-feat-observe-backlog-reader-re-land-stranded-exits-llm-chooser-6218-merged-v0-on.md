@@ -35,6 +35,7 @@ Operator-authorized 2026-05-31: "build the backlog reader."
 2. **Migration seam documented** (operator 2026-05-31): backlog-item is a **sub-type of a general WORK-ITEM** (bugs etc.); **ZetaId gets a new `WorkItem` category after `Bus`**; `B-xxxxx` → 128-bit ZetaId WorkItem ids (B-xxxxx collides at scale). The reader is the single seam for that migration.
 
 ## ⚠️ Re-lands stranded work
+
 **#6218 merged at v0 only** (`14652a818` = the 4-button controller). My two later commits — the **exits-always-in-menu invariant** and the **LLM chooser** (`observeWithLlm`) — were stranded on the old branch, **not on main**. This PR cherry-picks them back (branch-vs-merged-PR drift recovery).
 
 So this PR lands: exits-invariant + LLM chooser (recovered) + backlog reader. **18 tests pass, tsc clean.**

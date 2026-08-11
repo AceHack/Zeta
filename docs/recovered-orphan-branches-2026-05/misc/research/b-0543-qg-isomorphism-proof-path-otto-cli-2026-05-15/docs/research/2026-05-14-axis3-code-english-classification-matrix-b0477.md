@@ -5,11 +5,13 @@
 **Related row:** B-0477
 
 ## Purpose
+
 Produce the per-repo Axis-3 classification matrix across all existing and proposed repositories, distinguishing Code from English substrate while preserving the engineering-docs exception. Provide split recommendations based on Data Vault 2.0 change-rate discipline.
 
 ## Axis-3 Tier Definitions
 
 ### Code Tier
+
 Content whose primary purpose is executable, compilable, or directly testable.
 
 - Source code (F#, C#, TypeScript, Python)
@@ -26,6 +28,7 @@ Content whose primary purpose is executable, compilable, or directly testable.
 - Security policies, `CODE_OF_CONDUCT.md`
 
 ### English Tier
+
 Content whose primary purpose is discursive, philosophical, or substrate-narrative.
 
 - Research documents (`docs/research/**`)

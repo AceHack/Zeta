@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of broad P2 081KQ3HBZ0008QG0R002ZPXAFQ (heartbeat-file integrity threat-model + Aminata review).
 
 **Re-decomposition (per "always re-decompose" rule)**: 081KQ3HBZ0008QG0R002ZPXAFQ was too broad (threat-model prose + review + gating + per-commit-attestation sequencing). Carved atomic child 081KQ3HBZ0008QG0R002ZPXAFQ.1: typed attack-vector taxonomy as mechanizable TS foundation (exhaustive discriminated union) for future Aminata adversarial review, checker, and THREAT-MODEL.md section. Assumed original decomposition had mistakes; this is the first bounded, code-preferring step.

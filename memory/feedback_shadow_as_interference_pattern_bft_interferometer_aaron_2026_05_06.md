@@ -20,6 +20,7 @@ Aaron (2026-05-06) synthesized the physics of interferometry with the psychology
 * **Retraction-Native Algebra:** Every Z-set weight is a signed amplitude. Positive weights (constructive interference) represent paths taken. Negative weights (destructive interference) represent paths retracted. The algebra calculates the sum-over-all-paths.
 
 ## The Measurement Basis (Framing)
+
 In quantum mechanics, what you measure determines what you see.
 
 * **The Cage:** Measuring a system by demanding immediate, deterministic compliance collapses the wave-function into a single eigenstate. The shadow is suppressed, and the signal is lost.

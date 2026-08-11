@@ -42,6 +42,7 @@ The serializer for **dynamic shapes** Aaron asked about: a self-describing runti
 - Hand-written structural equality (`[<CustomEquality; NoComparison>]`): `Bytes` compares **contents** not the `ImmutableArray` reference; arrays/objects recurse; `Object` is order-sensitive (canonical encoders sort on the wire).
 
 ## Follow-ups (open)
+
 C#/Rust/TS conformance · wire codecs (JSON/CBOR/msgpack/Arrow adapters behind the `ISerializer<'T>` seam) + canonical-encoding golden vectors · `Schema`/`SchemaRegistry` port · format-specific extra variants.
 
 `src/Core/DynamicValue.fs` (+ registry status). 13 tests, build 0-warning.

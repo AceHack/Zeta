@@ -39,6 +39,7 @@
 - `git diff --check`
 
 ## Root Cause
+
 `backlog-index-integrity` failed on main at 8544cb6bd because `docs/backlog/P2/081KTZ4EF0008QG0R001R3XPYV-...md` was not in the frozen legacy registry. Future work should still mint ZetaId workitems; this PR only preserves an already-merged legacy row.
 
 ## Outcome

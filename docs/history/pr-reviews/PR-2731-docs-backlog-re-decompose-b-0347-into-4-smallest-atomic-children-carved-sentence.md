@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Re-decomposed broad 081KR50HA0008QG0R002ZNFQBZ (200+ skills, routing budget pressure from long descriptions) into 4 category-bounded atomic children. This is the smallest safe slice + re-decomp pass (assumes initial atomic label was mistaken per "always re-decompose" rule). No skill files touched; pure backlog hygiene. Dedicated worktree + pushed claim branch used; root checkout untouched.
 
 ## One bounded step
@@ -42,9 +43,11 @@ Re-decomposed broad 081KR50HA0008QG0R002ZNFQBZ (200+ skills, routing budget pres
 - Branch pushed, claim protocol followed (no root edits).
 
 ## Why
+
 Enables parallel safe carving slices without context overflow or broad PR. Router budget fix remains goal; this unlocks it.
 
 ## Next
+
 Children 081KR50HA0008QG0R002ZNFQBZ.1–4 will each carve ~40-60 descriptions to single routing sentence + doctor verify.
 
 Co-Authored-By: Grok <noreply@x.ai>

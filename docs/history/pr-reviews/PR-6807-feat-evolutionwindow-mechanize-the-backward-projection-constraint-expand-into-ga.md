@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Evolution extension (`081KTGYQ3A5`)
+
 The expansion-side safety barrier (the backward-projection constraint) as code.
 
 - **`EvolutionWindow`** tracks the live-reader set by schema version; **`mayExpandInto targetV`** = every live reader is already `>= targetV` (no older reader owed a lossy flat projection of the expanded data).
@@ -35,6 +36,7 @@ The expansion-side safety barrier (the backward-projection constraint) as code.
 - `readerJoins`/`readerLeaves` model the window; a reader leaving is part of **CONTRACT**.
 
 ## Test
+
 `dotnet test … --filter EvolutionWindow` → **5 passed** (3 example + 2 FsCheck laws).
 
 The reduction-side complement (garbage-dump for lossy removals) is captured separately.

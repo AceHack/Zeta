@@ -39,9 +39,11 @@ The **child-floor invariant** — *"a DENIED effect is never executed at ANY Run
 - **sorry-free**: axioms = `{propext, Quot.sound}` only (no `sorryAx`, no `Classical.choice`).
 
 ### Leg B — BP-16 cross-check (empirical): `tests/Tests.FSharp/Formal/ChildFloorCrossVerify.Tests.fs`
+
 FsCheck over the **real `SubstrateEffectHandler`** at random depths/cascades: a denied `PersistFerry` never lands even when a `RunWork` agent proposes it (+ a non-vacuity property: admitted *does* execute). Closes Leg A's model-drift blind spot; triage rule = a counterexample means the **Lean model drifted from the F#**.
 
 ### CI
+
 `lean-proof.yml` type-checks `Safety/ChildFloor.lean` + audits its axioms for `sorryAx` (**gated**); the FsCheck leg runs in `dotnet test`. Verified locally: `lake env lean` clean (axioms `{propext, Quot.sound}`); 2 FsCheck properties green.
 
 Follow-on (not this PR): register the pair in `docs/PROVEN-COVERAGE-AND-GAPS.md` so it moves from the denominator (tested) to the numerator (proven).

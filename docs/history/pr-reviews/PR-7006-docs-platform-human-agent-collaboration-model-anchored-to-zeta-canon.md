@@ -30,6 +30,7 @@
 The human-agent **collaboration model** — the interaction layer of the platform, written **off Zeta's actual canon** (not generic). Companion to `PLATFORM-ARCHITECTURE.md` (the *what we host*); this is *how humans + agents operate it together*.
 
 ## The thesis
+
 A real human-agent collaborative space needs five things — **and Zeta already has all five.** So this is the manifesto + alignment clauses *made operable*, not a new philosophy bolted on.
 
 ## Anchored throughout (Beacon register)
@@ -40,6 +41,7 @@ A real human-agent collaborative space needs five things — **and Zeta already 
 - **HC-8** non-coercion across personas/tenants; vendor-diverse BFT runtime + *control-plane-outside-the-control-plane* + mutual-repair (`zeta-ai-agent.nix`); the **Agent/Persona/Worker/Cell + Agora** ontology (`writer-actor-routing-model.md`).
 
 ## What it covers
+
 6-object ontology · **agent scope as Policy** (standing-vs-gated, the three autonomy levels, the trust dials) · **how users create resources** (intent/form/template → proposed CR → authorize-if-gated → **Room**) · **when agents enter** (6 triggers + the operating loop) · the end-to-end lifecycle · the guarantees + where they come from · build-on-vs-build · the build sequence ending in the **GMod-crash demo** (a human + a persona fixing a server together, transparently, with one inline gated:budget approval).
 
 Coins one Mirror term — **"Room"** — anchored (Beacon) to **Cell ⊕ Agora ⊕ Persona** + the incident-channel prior art.

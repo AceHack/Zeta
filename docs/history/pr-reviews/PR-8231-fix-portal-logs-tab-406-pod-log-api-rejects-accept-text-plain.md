@@ -28,15 +28,19 @@
 ## Description
 
 ## Problem
+
 The resource console **Logs** tab showed `could not read logs: 406` in the browser.
 
 ## Root cause
+
 k3s 1.34's API content-negotiation returns **406 Not Acceptable** when the pod `log` subresource is requested with an explicit `Accept: text/plain`. The decode fix in #8229 made the route resolve correctly (HTTP 200 envelope), exposing this deeper 406 in the log payload itself.
 
 ## Fix
+
 Request `Accept: */*` for the pod-log read in `K8sOps.logs`.
 
 ## Verification (live, portal service account)
+
 ```
 Accept=text/plain -> HTTP 406
 Accept=*/*       -> HTTP 200

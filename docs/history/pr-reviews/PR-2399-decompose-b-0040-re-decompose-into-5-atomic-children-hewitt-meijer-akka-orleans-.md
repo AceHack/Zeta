@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Exactly one bounded step for 081KQ3HBZ0008QG0R000RP1WDN (P2 actor-model lens): re-decomposed the broad research item into 5 atomic child rows (one per source framework + vocabulary lens). Parent updated with decomposition section, children enumerated, next-slice pointer. Follows "assume decomposition has mistakes" + "decompose before implementation if broad".
 
 - Dedicated worktree: /tmp/zeta-claim-b0040

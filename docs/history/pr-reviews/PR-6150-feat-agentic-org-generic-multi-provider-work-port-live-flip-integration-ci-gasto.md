@@ -34,6 +34,7 @@ Carries this work-stream's **agentic-organization** delta onto current `main` (1
 Two shipped tracks + a strategy package for the next phase.
 
 ### 1. Generic provider-agnostic work port + the live flip (GEN1–GEN5)
+
 **One surface, the configured provider runs the translated action.**
 
 - `project / pull / advance` over a `WorkProviderKind` DU (**github | gitlab | jira | linear**) split into families (`code_review` PR/MR vs `work_item` card). `actionsForFamily` is the translation table; `assertProviderSupports` is the structural guard (a card can't Merge, a PR can't Transition). **Adding a provider = a translation, not a call site.**
@@ -43,6 +44,7 @@ Two shipped tracks + a strategy package for the next phase.
 - Subagent-reviewed: GitLab partials tightened to throw (no silent empty MR); changes-requested axis documented fail-safe; regression tests added.
 
 ### 2. Integration CI (INT1)
+
 The 7 previously-skipped integration tests run **green** against real Cockroach+NATS — they were env-gated, not undone. `npm run test:integration` + `.github/workflows/integration.yml` (stands real Cockroach+NATS containers, **fails the job if any test skips**) + `ci.yml` (fast hermetic typecheck + unit suite).
 
 ### 3. Strategy package (for the next build phase — see the handoff)

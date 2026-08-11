@@ -37,9 +37,11 @@ Second of the four CBOR oracles (one authors, others replay) — the **F# oracle
 - **Object** map keys stay in **insertion order**, NOT §4.2.1 bytewise-sorted (order-significant — same call v1 made for JSON).
 
 ## Tests (13 green)
+
 `float matches RFC 8949 Appendix A` re-anchors the float logic against the RFC directly (anti-circular) + the 42-vector seed replay + Inf/-Inf/NaN/-0.0.
 
 ## Sequencing
+
 C# (#6506) ✅ → **F# here** → Rust replay → TS replay → registry flips to "Float/Bytes locked under CBOR".
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

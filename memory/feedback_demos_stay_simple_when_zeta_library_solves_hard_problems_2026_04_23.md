@@ -57,6 +57,7 @@ re-derive the discipline.
   operator algebra, just the use case
 
 ## Why this composes with the earlier
+
 samples-readability discipline
 
 Per `memory/feedback_samples_readability_real_code_zero_alloc_2026_04_22.md`

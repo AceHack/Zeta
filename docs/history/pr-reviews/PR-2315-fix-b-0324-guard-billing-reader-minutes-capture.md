@@ -33,6 +33,7 @@
 - preserve the existing parse-error result shape when the regex match lacks that capture
 
 ## Why
+
 Main push gate is failing `lint (tsc tools)` at `tools/playwright/github-ui/billing-reader.ts(81,34)` after #2313/#2314. This fixes that TypeScript regression from current `main`.
 
 ## Verification

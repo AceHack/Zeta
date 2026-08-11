@@ -37,6 +37,7 @@
 - 9 new tests; **60/60 bus + claim tests pass** (was 51 before this slice)
 
 ## Prior slices
+
 | Slice | PR | Content |
 |---|---|---|
 | 1 | #2886 | types.ts + bus.ts (publish/list/read/clean) + tests |
@@ -61,6 +62,7 @@ dotnet build -c Release
 ```
 
 ## Backlog item
+
 `docs/backlog/P1/081KR7JY10008QG0R000R503K2-inter-agent-ephemeral-communication-bus-nats-protocol.md`
 
 operative-authorization: aaron 2026-05-12: "- The "go hard" + dense-encoding-mode authorizations —"

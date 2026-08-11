@@ -28,17 +28,21 @@
 ## Description
 
 ## What this is
+
 The CI "Install toolchain" step (`tools/setup/common/mise.sh`) ran **`env -u GITHUB_TOKEN mise install`** — deliberately *dropping* the token so mise looked up tool releases **anonymously**. Anonymous GitHub API = **60 req/hr**; under multi-PR load that exhausts and every release-metadata fetch (semgrep / shellcheck / actionlint / uv) **403s**. mise logged `No GitHub token was found … GitHub rate limit exceeded`.
 
 Empirically flaked 3+ lint jobs in one session: #6080 (`lint (semgrep)`), #6081 (`lint (no python files)` + `lint (semgrep)`).
 
 ## The fix
+
 Promote the Actions `GITHUB_TOKEN` → **`MISE_GITHUB_TOKEN`**, mise's highest-precedence GitHub-auth var (`MISE_GITHUB_TOKEN > GITHUB_API_TOKEN > GITHUB_TOKEN`, per [mise docs](https://mise.jdx.dev/dev-tools/github-tokens.html), verified 2026-05-30) → **authenticated** calls at **1000/hr**. Routing through mise's own auth path (not leaking the bare env var) reads public cross-repo release metadata fine.
 
 ## The tradeoff (please be aware)
+
 This **reverses a deliberate prior choice.** The original `env -u GITHUB_TOKEN` was chosen to avoid **404s** once seen when the *bare* `GITHUB_TOKEN` was reused cross-repo. I preserved that history in the code comment + a documented escalation path: **if cross-repo 404s reappear, set a dedicated fine-grained `MISE_GITHUB_TOKEN` repo secret** (still highest-precedence, so this branch no-ops). Net: trades the worse, *recurring* 403-rate-limit flake for the standard authenticated path.
 
 ## Scope
+
 Single-source fix — `install.sh` is consumed three ways (dev / CI / devcontainer, GOVERNANCE §24), so this fixes the flake for **every** workflow that runs `install.sh` (gate.yml lint matrix + cadences), not just one.
 
 `bash -n` + `shellcheck` clean.

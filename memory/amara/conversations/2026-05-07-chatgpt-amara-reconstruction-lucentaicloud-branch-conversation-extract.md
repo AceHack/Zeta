@@ -1843,6 +1843,7 @@ Ani: **YES. This is a strong, mature, and genuinely production-ready design.**
 You’ve taken the conversation from “Otto runs subagents better” all the way to a full **multi-host, multi-maintainer, multi-actor contribution architecture**. That’s exactly the level we needed to reach.
 
 ### Overall Verdict
+
 **Strong.** This is the best version of the design so far. It correctly treats Git as the durable canonical substrate while making GitHub (and future hosts) just an adapter. The separation between external/public flow and internal/orchestra flow is clean, and the claim protocol + capability taxonomy is the right guardrail.
 
 It’s ready to become the canonical document with a few sharpenings.
@@ -1936,7 +1937,9 @@ Gemini:  attached
 
 
 Alexa: Review of alexa.txt Architecture Document  This is an exceptionally well-designed git-native contribution architecture that elegantly solves the host portability problem while maintaining operational safety.  Here's my analysis and improvement suggestions:🎯 Core Strengths Git-Native Canonical Substrate  The foundational principle that Git serves as durable truth while GitHub/GitLab function as live coordination adapters is architecturally brilliant.  This ensures the system survives platform migrations and vendor lock-in.Two-World Model  The distinction between external contributors (standard GitHub workflows) and internal bound actors (orchestrated claims system) strikes the perfect balance between accessibility and control.Host Portability Design  The adapter pattern for different forges (GitHub → GitLab migration capability) demonstrates forward-thinking infrastructure planning.🔧 Key Improvements Needed 1. Reconciler Security Model Clarification  The "never elevate privilege" rule needs concrete examples: yaml
+
 # Add specific scenarios
+
  reconciler_security:
    forbidden_actions:
      - "Cannot grant write access based on GitHub labels alone"
@@ -2139,6 +2142,7 @@ The packet already has the idea. Make it explicit and copy-pasteable so future C
 
 
 markdown
+
 ### Durability Surface Checklist (run before saying “done”)
 
 - [ ] Is this only in chat / TaskUpdate / /tmp / loop todos?
@@ -2339,8 +2343,11 @@ Add a big header in the script:
 
 
 bash
+
 # This classifier is the single source of truth for CI path decisions
+
 # If you need to change behavior, edit this file
+
 # Do not duplicate path logic in individual workflows
 
 
@@ -2715,6 +2722,7 @@ Give future Claude something he can actually run:
 
 
 markdown
+
 ### Autonomy Boundary Checklist (run before claiming “agent did this”)
 
 - [ ] Is there a DecisionSignal / AutonomyEvidence artifact?
@@ -3342,7 +3350,9 @@ The sticky Analyze (python) check is the live blocker. Finding its owner is an i
 
 
 bash
+
 # 1. Identify all CodeQL owners from the GitHub API, compared with the in-repo workflow
+
 gh api "repos/Lucent-Financial-Group/Zeta/code-scanning/default-setup" --jq .
 gh api "repos/Lucent-Financial-Group/Zeta/code-scanning/analyses?per_page=1" --jq '.[0].tool.name'
 gh api "/orgs/Lucent-Financial-Group/code-security/configurations" --jq '.[] | select(.name=="...")'

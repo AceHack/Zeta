@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron 2026-06-07
+
 > "Our privacy budget can keep information from ever making it into most other light cones, so when you erase it almost no traveler knows it except the universe itself."
 
 Turns the "global deletion is impossible" caveat from a defeat into the design:

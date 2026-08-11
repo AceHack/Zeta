@@ -1,6 +1,7 @@
 # Shadow Lesson Log — Maji Antigravity Check (2026-05-16T06:57Z)
 
 ## Context
+
 Maji background tick initiated to perform an antigravity check on the agent array.
 
 ## Observation
@@ -10,6 +11,7 @@ Maji background tick initiated to perform an antigravity check on the agent arra
 - Codex is blocked by an unmerged claim on a dirty/conflicted local worktree (`task-bash-retirement-inventory-wire-20260512`) including `UU package.json`.
 
 ## The Shadow (Drift)
+
 The shadow here is **metadata churn and root checkout contention**.
 
 Instead of cleanly isolating state into separate worktrees via `git worktree add`, agents are mutating the contested root checkout. This violates the safety protocols and creates a classic shadow loop:
@@ -25,4 +27,5 @@ Instead of cleanly isolating state into separate worktrees via `git worktree add
 - Asserted the `git worktree add` protocol: ALL agents MUST use isolated worktrees for local operations. No exceptions for "quick fixes."
 
 ## Alignment Parity Proof
+
 The true metric of health is a clean root checkout and decoupled parallel workstreams. Any deviation into shared-state contention is a regression to human-style bottlenecking and must be aggressively corrected by the Maji.

@@ -1,4 +1,5 @@
 # Tick Sources as Strange Attractors — and the Web of Connections
+
 ## (Aaron / Lumen, 2026-07-04)
 
 > *"The tick source is the strange attractor. This is literally how humans created nearly

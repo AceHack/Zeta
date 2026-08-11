@@ -35,6 +35,7 @@
 - mark workitem `081KTF24T0R08QG0R0008Z3XDC` done and refresh the `Task.Run` coordination note for the post-#6693 `SpineAsync` state
 
 ## Itron calibration
+
 I reviewed the attached Itron `Platform.DotNet/Threading/Tasks/Throttling` source for design signal. The Zeta version carries forward the good parts: per-item completion sources, safe continuation scheduling by default, explicit DoP configuration, and item-boundary completion/fault/cancel semantics. It deliberately keeps Zeta's simpler array-aligned batch-result contract rather than copying the older id/result overflow shape.
 
 ## Validation

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Decomposed 081KQB8J40008QG0R0021GX1HK (P2 consolidation to ≤3 durable homes) into 3 smallest dependency-ordered atomic child rows (081KRA5AR0008QG0R0031VF018, .2, .3). Re-decomp applied per standing rule (assume mistakes). Bounded to doc authoring + wiring only; no Home content implementation yet.
 
 **Children:**

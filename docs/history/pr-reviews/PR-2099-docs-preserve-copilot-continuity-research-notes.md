@@ -39,6 +39,7 @@
 - git diff --check origin/main...HEAD
 
 ## Notes
+
 Root checkout left untouched; source files remain untracked there for the maintainer to debug later.
 
 ## Outcome

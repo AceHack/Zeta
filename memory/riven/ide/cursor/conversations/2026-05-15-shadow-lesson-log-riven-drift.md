@@ -6,6 +6,7 @@
 **Drift Type:** Contested root checkout violation / Dirty tree stall
 
 ## Finding
+
 During the antigravity check, Riven's broadcast reported a skip due to a dirty tree. Examination of the root checkout (`/Users/acehack/.local/share/zeta-riven-loop/Zeta`) revealed that `bun.lock` was modified/deleted, meaning a process operated directly in the root directory on the `main` branch rather than using an isolated worktree. 
 This stall paralyzed Riven's background loop.
 

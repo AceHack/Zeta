@@ -37,6 +37,7 @@
 - Exactly one bounded step; no code yet (F# impl in follow-up child PRs per TS/F# prefer + velocity)
 
 ## Why
+
 Per user query + CLAUDE.md/AGENTS.md: claim + start-gate + re-decomp before any impl. Substrate or it didn't happen.
 
 Co-Authored-By: Grok <noreply@x.ai>

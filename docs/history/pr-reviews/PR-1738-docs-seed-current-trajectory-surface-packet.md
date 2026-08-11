@@ -39,6 +39,7 @@
 - `bunx markdownlint-cli2 docs/trajectories/factory-trajectory-surface/RESUME.md`
 
 ## Coordination
+
 This follows the Vera #659 triage claim recommendation: land a fresh current-state anchor first, then close the legacy #659 branch after replacement substrate exists.
 
 ## Outcome

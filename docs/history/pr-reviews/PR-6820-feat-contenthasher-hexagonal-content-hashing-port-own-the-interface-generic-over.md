@@ -28,6 +28,7 @@
 ## Description
 
 ## What — your BLAKE3 hexagonal directive
+
 > *"hexagonal the blake dep and make sure we own the interface; also we can go generic — many algos could match our interface, not just blake."*
 
 - **`IContentHasher`** port (`Name` + `Hash: byte[] -> MerkleHash`): the store/Merkle depend on **this**, never on a concrete hash library.
@@ -35,6 +36,7 @@
 - **BLAKE3** (the decided tamper-evident hash) becomes **one adapter behind this port**, with the NuGet dependency **isolated to that adapter** — the rest of the codebase stays algorithm-agnostic. Resolves the BLAKE3 gating via *abstraction ownership* (no direct dep added yet — the port is the deliverable; the BLAKE3 adapter lands behind it when we add the dep).
 
 ## Test
+
 `dotnet test … --filter ContentHasher` → **3 passed** (default xxhash128 = `MerkleHash.ofBytes`; `hashOf` adapter; a custom adapter conforms — proving generic-over-algorithms).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

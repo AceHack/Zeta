@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron 2026-06-07
+
 > "that really only works for simulation time, not runtime — we need Orleans, or build consensus to handle a thread failing on read/write to state. If we make state CAS per row this isn't as big an issue — maybe we don't need Orleans lol."
 
 - **Sim-time vs runtime:** the sequential pointer is sufficient under **DST** (single-threaded, deterministic, replayable) but **not at runtime** — a thread can fail mid read/write, and the bare cursor has no single-activation/recovery.

@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron 2026-06-07
+
 > "the merge request could be your fs metadata, and their response is a streaming response of missing content."
 
 The network form of the ancestry-free merge — content-addressing makes it trivial:

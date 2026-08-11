@@ -37,9 +37,11 @@ Fourth and final CBOR oracle (one authors, others replay) — the **TS oracle** 
 - **Object** map keys stay in **insertion order**, NOT §4.2.1 bytewise-sorted.
 
 ## Tests (45 bun tests; eslint + tsc + prettier clean)
+
 `cbor float matches RFC 8949 Appendix A` re-anchors against the RFC directly (anti-circular) + shortest-float tier selection + the 42-vector seed replay.
 
 ## Sequencing — CBOR lock complete after this
+
 C# (#6506) ✅ → F# (#6508) → Rust (#6509) → **TS here**. Once all four merge, the registry flips to "Float/Bytes locked under CBOR" and DynamicValue is fully byte-locked across all 8 shapes in all 4 languages.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

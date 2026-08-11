@@ -34,6 +34,7 @@
 - add a parser regression test for fenced YAML manifest entries
 
 ## Context
+
 Follow-up to PR #2722 Copilot review threads. PR #2722 auto-merged while Vera was preparing the fix, so this branch applies the review fix on top of current main.
 
 ## Verification

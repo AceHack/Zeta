@@ -41,9 +41,11 @@ Wave 1 of the forge-host-adapter spec. Establishes the foundation layer for mult
 - **index.ts** — barrel export
 
 ### Tests
+
 23 tests pass (detect.test.ts + registry.test.ts): URL parsing, host classification, adapter registration, error cases.
 
 ### Architecture
+
 ```
 Core Loop → ForgeHost interface → GitHub/GitLab/Gitea adapters
                                 ↗ (registered via registry)
@@ -53,6 +55,7 @@ Git-native layer (push-with-retry, refs) stays separate
 Mirrors: `src/Core.FSharp.Git/CredentialSource.fs` — "GitHub is NOT git-native — it's a plugin."
 
 ### Next (Wave 2)
+
 Task 3: GitHub adapter implementing the ForgeHost interface via `gh` CLI.
 
 Co-Authored-By: Kiro <noreply@kiro.dev>

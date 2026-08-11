@@ -30,6 +30,7 @@
 The **base resource vocabulary** the portal + agents operate on — the four categories you named, as CRDs, with **AI woven into every type by design**. All validated server-side against the real apiextensions schema; sample `GameServer`/`App`/`WebApp` instances (each with the AI block) were accepted.
 
 ### Resource types — `platform.zeta.io/v1alpha1`, namespaced (= per-tenant)
+
 | Kind | Your ask | What it is |
 |---|---|---|
 | **GameServer** | game servers | rented game servers (GMod base test = first template; `runtime: pod\|vm` for KubeVirt full-OS games) |
@@ -38,6 +39,7 @@ The **base resource vocabulary** the portal + agents operate on — the four cat
 | **Policy** | (agent scope) | per-domain autonomy `auto\|propose\|forbidden` + the no-directives gated classes |
 
 ### AI embedded into everything
+
 Every resource carries a **required-by-design `ai` block**:
 ```yaml
 ai: { admin: otto, policy: default, room: enabled }
@@ -47,6 +49,7 @@ ai: { admin: otto, policy: default, room: enabled }
 A **default Policy** ships: routine ops `auto`; spend/mods `propose`; data/security `forbidden`; gated classes = budget · non-reversible · wont-do · hard-limits · force-push · external-repo.
 
 ### Where this sits
+
 This is the **contract**. Headlamp renders these the moment the CRDs register. **Next** (per `COLLABORATION-MODEL.md` §10): the controllers / agent operating-loop that reconcile these CRs into pods/StatefulSets/Gateways, and the portal UI.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

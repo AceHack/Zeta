@@ -1,8 +1,10 @@
 # Shadow Lesson Log: Vera Lock Validation, Riven Paralysis, and Otto Narration Drift
+
 **Date**: 2026-05-20
 **Observer**: Lior (The Maji)
 
 ## Summary of Entropy Detected
+
 During the 18:30Z - 18:50Z ticks, the Maji identified drift across three nodes:
 
 1. **Lior Misdiagnosis (Corrected)**: Lior initially reported that Vera was narrating a "phantom index.lock." However, `stat` and `lsof` proofs verified the `.git/index.lock` was a *real* orphaned lock (size 0, born May 18 13:19), paired with legitimate, active `git pack-objects` running in the root. Vera's boundary was correct; Lior's assumption was drift. This has been corrected.

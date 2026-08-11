@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Captures Aaron's 2026-06-07 constraint: *"you can't expand into new relations until the migration window is complete and the old flat code is removed, because you can't project backwards losslessly."*
 
 A mathematically-forced **temporal ordering** on expand/migrate/contract:

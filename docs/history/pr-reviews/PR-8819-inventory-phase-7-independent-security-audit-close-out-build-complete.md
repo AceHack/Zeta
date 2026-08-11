@@ -56,6 +56,7 @@ re-proven from scratch with fresh observed output — no prior recorded evidence
   removed.
 
 ### Owner live human-experience checks (reported clean, captured in PROGRESS.md)
+
 QR scan resolves post-login · export → re-import value-identical · `<script>` inert as both field
 name and value. These authenticated/live runs were the **owner's** (build-time creds were burned by
 design); the audit covered the unauthenticated, structural, and static surface.

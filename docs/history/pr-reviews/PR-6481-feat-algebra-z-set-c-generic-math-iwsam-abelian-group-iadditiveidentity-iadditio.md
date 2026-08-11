@@ -44,6 +44,7 @@ The **dotnet-native** form of "numerics like dotnet as our interface" (Aaron 202
 - comparer-agnostic identity, but non-empty mismatch still throws (`+` and `-`)
 
 ### Ladder
+
 F# #6480 ✅ · **C# (this)** · Rust (`impl Sub`/`Neg`) next · TS (`AbelianGroup` record) next.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

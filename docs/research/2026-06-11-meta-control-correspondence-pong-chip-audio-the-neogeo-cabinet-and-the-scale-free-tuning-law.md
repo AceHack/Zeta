@@ -3,6 +3,7 @@
 Aaron 2026-06-11, the closing stream (verbatim-anchored, built same-night):
 
 ## The meta tier (BUILT: `MetaControl`)
+
 > "The game moves faster than you or I play. My son may play raw controls, but slow guys like me and
 > you, Otto, play META control schemes — controlling automated liveness loops with multi-objective
 > optimization with the controller — and WATCH."
@@ -11,6 +12,7 @@ loop and watch it play at machine speed (the monorail with a destination dial). 
 weights; Focus spotlights; Watch is first-class. The policy's care is monotone in the weight (tested).
 
 ## Correspondence pong (BUILT: `CorrespondencePong`) — "git = text message, reticulum = conference"
+
 > "Turn pong into turn-based: try different multi-objective optimizations and send it back and forth —
 > you don't play, you watch outcomes — and like text messages you can TRY SEVERAL TIMES BEFORE YOU
 > REPLY. That's how the Apple games work." / "Think Destiny/Risk-of-Rain style but 2D first." /
@@ -25,6 +27,7 @@ The Neo Geo MVS multi-cart cabinet named as the arcade's feel anchor; Risk-of-Ra
 the named genre target.
 
 ## Chip audio (BUILT: `ChipAudio`) — "we can hear and see the system using the same math"
+
 > "Use Cayley for audio too — 8-bit sawtooth and all that, with only text; more generator ZetaId
 > points for audio; and MIDI." / "Now our 8-track is REAL 8-track audio too lol."
 The phase that draws IS the oscillator: saw = phase, square = its sign, triangle = its fold, sine =
@@ -34,6 +37,7 @@ midi.track); MIDI notes ride the membrane as text crossings. And yes: the cartri
 now literally include AUDIO TRACKS — the 8-track joke became the spec.
 
 ## The scale-free tuning law (his words, held as design law)
+
 > "Everything should be regularizable / scale-free like MUSIC SCALES — we don't have to pick anything
 > but scale-free right now, we don't have to fight music theory — but always TUNABLE into the
 > traveler's native frequencies and amplitudes."
@@ -43,6 +47,7 @@ ratios onto their native frequencies/amplitudes at the edge) — the honest-capa
 ears. Music theory becomes a binding library, never a kernel law.
 
 ## The only-entropy tester + the debugging interface
+
 > "I can be the ONLY entropy other than the deterministic simulation — test our boundaries, try to get
 > out of bounds myself, test the reflection engine and the flux capacitor, try to break things. I'm
 > good at breaking things. This is our new debugging interface — I can fly through math-proof terrain;

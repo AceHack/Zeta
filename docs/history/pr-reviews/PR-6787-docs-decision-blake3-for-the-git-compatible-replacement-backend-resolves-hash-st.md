@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Resolves the open hash-strength decision in `081KTGTJC1Q` per Aaron 2026-06-07: *"we want to replace git eventually with our own compatible backend, so we need BLAKE3 — something that respects tamper. We don't want to lose features."*
 
 - **Hash = BLAKE3** (cryptographic, tamper-respecting), **not** XxHash128. Rationale is the end-goal: the fs backend is meant to **replace git with a compatible backend**, so it must be ≥ git's object integrity and lose no features; XxHash128 (fast, non-crypto) would forfeit tamper-evidence. BLAKE3 is `Merkle.fs`'s existing P2-flagged path, **promoted to required**. Not yet a dependency — adding it + parameterizing the Merkle hash is part of the item.

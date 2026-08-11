@@ -21,6 +21,7 @@ related_memory:
 > hostile-input classes remain, and which are provable vs fuzz-only.
 
 ## Already covered (don't double-count)
+
 round-trip (decode∘encode=id), injectivity, canonicality (fixed-point check), format-
 agreement matrix, never-collapse (distinct empties), lens get-put + LossReport-completeness.
 
@@ -52,6 +53,7 @@ concentrate (DoS-by-crash, DoS-by-hang, DoS-by-expansion, signature-bypass). Pro
 garbage" half that round-trip-on-valid-data doesn't touch.
 
 ## Where heavy FUZZING goes (the hostile/unstructured space proof+FsCheck don't reach)
+
 Distinction: FsCheck generates STRUCTURED valid-ish inputs + checks properties; fuzzing
 generates UNSTRUCTURED/hostile bytes + checks doesn't-crash/hang/misbehave. Fuzzing's home
 = the "safe on hostile input" gap above (same gap). Sorted by value:
@@ -78,6 +80,7 @@ regression / golden vector (cross-lang divergence → golden). Same discover→s
 as FsCheck, in the hostile space.
 
 ## The whole verification stack (mental model)
+
 **Lean/Z3 prove the STRUCTURE** (all cases, valid) → **FsCheck property-tests the valid
 LEAF space** (sampled, structured) → **FUZZING attacks the hostile BYTE space**
 (no-crash/hang/divergence, unstructured) → **golden vectors PIN** everything any of them

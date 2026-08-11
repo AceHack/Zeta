@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Scenarios 3/4 qcow2 baseline snapshots were taken when serial showed `[iter-5.1]` (mid-install hardware-config step), not after full install. Changes `INITIAL_INSTALL_SERIAL_MARKERS` to `ZETA CLUSTER NODE INSTALL COMPLETE`.
 
 ## Test plan

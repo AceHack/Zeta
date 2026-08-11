@@ -22,17 +22,21 @@ Collapse to a single decision occurs *locally*, inside a **Room**, when its time
 The four objections regarding the physical quantum claims are largely correct about *hardware quantum mechanics*, but they are already handled by the repository's own stated discipline and honest tiering.
 
 ### Objection 1: "N-way multi-vendor exists" overclaims
+
 **Verdict:** Partially true. The system currently features **two** built and running oracles: the Q# continuous-amplitude reference and the TypeScript `quantum-circuit` simulator, plus the F# finite-resolution treaty. The cross-vendor roster (Qiskit, Cirq, PennyLane) is declared in the manifest but is not yet running tests.
 **Tier:** Built ≥2 independent gate-model oracles; cross-vendor N-way pending.
 
 ### Objection 2: Amplitude isn't banished
+
 **Verdict:** True, and embraced by design. The treaty (`QuantumObservableTreaty.fs`) explicitly retains Q# as the continuous-amplitude reference. Zeta's claim is finite-precision convergence to that reference, not the elimination of amplitude as a coordinate.
 
 ### Objection 3: Rx-as-braided-category is conjecture
+
 **Verdict:** Discharged (2026-06-20). The categorical semantics of dataflow streams as monoidal categories is established in the literature [6]. The `schema-rx-join.test.ts` proves that disjoint deltas commute, forming a symmetric monoidal category. 
 **Discharge (§B):** To upgrade this to a *non-trivial* braided category, bounded-time room reorder must be non-symmetric (the braiding operator β² ≠ id). This irreversibility is now formally anchored in `RoomHorizon.fs` (PR #8672): finite-horizon forgetting emits `room-horizon.forgotten` heat. Because forgetting spends entropy, swapping events and swapping them back is a *new* event that spends more heat, not the inverse operation. You cannot un-spend the heat. Therefore, bounded-time room reorder is strictly non-symmetric, fulfilling the braided-monoidal requirement.
 
 ### Objection 4: Q# can't prove Tsirelson maximality
+
 **Verdict:** True, and explicitly stated in the Vera handoff brief ("sampling can't prove a supremum"). 
 **External Anchor:** The standard, runnable tool to formally certify the 2√2 Tsirelson bound is the **NPA hierarchy** (Navascués–Pironio–Acín) of semidefinite programs [7]. This provides the concrete discharge path: Q# verifies the corner values converge to 2√2, while an NPA SDP certificate proves the maximality.
 

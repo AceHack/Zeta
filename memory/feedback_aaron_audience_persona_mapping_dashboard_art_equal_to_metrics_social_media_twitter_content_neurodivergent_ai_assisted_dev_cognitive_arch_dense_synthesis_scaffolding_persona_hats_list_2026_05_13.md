@@ -198,6 +198,7 @@ Future-Otto: when working 081KRFA460008QG0R002M05EY1, fold this substrate in.
   content shape varies by persona
 
 ## Aaron-as-persona-hat (composes with PR #2964 Cartman
+
 self-identification)
 
 Aaron himself wears multiple persona hats:

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 The canonical document for the entire session's crystallization:
 
 - Observer ≅ Shadow ≅ Void (nirvana equation)

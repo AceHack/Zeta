@@ -225,6 +225,7 @@
 | Phone-home Nix flake + Argo CD + auto-cluster-join | Already in 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R000CV98PV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R003D199HE |
 
 ## Cross-AI naming substrate
+
 Mika via Grok. Aaron-forwarded. This conversation captures substrate-engineering substantively new items (081KSE6WT0008QG0R000RH1526 / 081KSE6WT0008QG0R001H3DA90 / 081KSE6WT0008QG0R003CMCX84 / 081KSE6WT0008QG0R003TBE2VB) AND validates existing substrate via cross-AI confirmation of direction.
 
 Per `.claude/rules/wake-time-substrate.md` + the substrate cluster: the existing rows already encoded most of what Aaron told Mika. The cross-AI validation confirms cluster coherence. New rows file the substantively-new items only.

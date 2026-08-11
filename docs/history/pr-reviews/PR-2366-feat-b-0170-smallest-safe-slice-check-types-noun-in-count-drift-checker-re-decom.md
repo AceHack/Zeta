@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KQNJ500008QG0R003SCWBDV (substrate-claim-checker): added "check-types" to nounsToCheck in `check-counts.ts` as one bounded increment. Re-decomposed 081KQNJ500008QG0R003SCWBDV during build (frontmatter claimed "atomic" but per task rule we assume decomposition mistakes and re-decompose; this extends coverage for emerging claims in memos).
 
 ## One bounded step only
@@ -44,6 +45,7 @@ Smallest safe slice of 081KQNJ500008QG0R003SCWBDV (substrate-claim-checker): add
 - Change is additive noun, no behavior change for existing claims; tests cover the path.
 
 ## Claim protocol
+
 Branch: claim/b0170-smallest-slice-riven-2026-05-09-1857
 Worktree: /tmp/zeta-b0170-riven-1857
 Co-Authored-By: Grok <noreply@x.ai>

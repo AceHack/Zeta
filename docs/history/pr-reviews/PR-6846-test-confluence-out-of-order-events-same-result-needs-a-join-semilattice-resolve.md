@@ -35,6 +35,7 @@
 **Precise theorem:** out-of-order → same result **iff the resolver is a join-semilattice op (idempotent)**; accumulating/counter resolvers are SerializedSaga semantics. Confluence research doc updated.
 
 ## Test
+
 `dotnet test … --filter ConfluenceTests` → **4 passed**.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

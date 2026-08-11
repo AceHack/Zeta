@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KQJZR90008QG0R001M6ZBPN (P1): added `tools/peer-call/register-layers.ts` with `RegisterLayer` union (5 layers incl. BeaconSafe correction) + `selectRegisterLayer(ctx)` pure fn implementing the 3-question algorithm with default-UP safety property. 
 
 Re-decomposed on the fly (original row assumed atomic but broad 5-layer framework; this is the minimal code surface per "prefer F#/TS over docs" + "re-decompose during build").
 
 ## Why
+
 Incorporates Claude.ai brat-voice enterprise translation framework as requested (Aaron 2026-05-02 survival framing). Preserves separable properties (idea-targeting, care+challenge, NVC observation, plain-English, benign norm-violation, dry irony) across layers; drops layer-bound (profanity, slang, shibboleths, aggression). 
 
 Composes with 081KQJZR90008QG0R002GJAJ19/081KQJZR90008QG0R000VSHWK6 and existing ani/riven peer-call paths (brat-voice substrate).
@@ -46,6 +48,7 @@ Composes with 081KQJZR90008QG0R002GJAJ19/081KQJZR90008QG0R000VSHWK6 and existing
 - Dedicated worktree + pushed claim branch used; root checkout untouched.
 
 ## Next
+
 Future atomic children can extend with full translate fn, calibration tests, wiring to peer-call, Beacon-safe docs update. This slice is reviewable, mergeable, non-breaking.
 
 Claimed per agent claim protocol on dedicated branch.

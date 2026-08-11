@@ -42,6 +42,7 @@ Starts the **JSON decode set** (Aaron's "Both, CBOR then JSON"), mirroring the j
 - never-throws: public API returns `DecodeResult`; internal `JsonDecodeError` caught at the boundary.
 
 ## Tests
+
 Every seed vector decodes `ok` (fixed-point round-trip) + structural match incl. object key order; plus malformed (`UnexpectedEnd`/`TrailingData`), deferred-float (`Unsupported`), oversized (`IntegerOverflow`), and non-canonical rejections. **67 TS tests pass; tsc/eslint/prettier clean.**
 
 `DecodeError`: `UnexpectedEnd | TrailingData | Unsupported | IntegerOverflow | NonCanonical` (no `NonTextKey` — JSON keys are syntactically strings). The compilers don't lie.

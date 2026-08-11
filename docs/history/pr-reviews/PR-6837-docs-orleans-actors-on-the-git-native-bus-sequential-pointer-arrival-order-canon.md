@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron 2026-06-07
+
 > "we can simulate Orleans actors with a git-native bus like we already have, and a pointer sequentially reading messages that treats arrival order as the canonical order of events and does not support retraction."
 
 Concretizes the **SerializedSaga** lane (cells-as-geodes) into a **cursor discipline** on existing infra — no separate actor runtime:

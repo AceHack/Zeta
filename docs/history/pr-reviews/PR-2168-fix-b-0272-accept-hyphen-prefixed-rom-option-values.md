@@ -39,6 +39,7 @@
 - `git diff --check`
 
 ## Coordination
+
 Follow-up to the merged #2166 review thread. This intentionally keeps the older `claim/b0272-rom-canonical-naming-smallest-slice-2026-05-08` single-quote parser branch out of scope so it can be handled separately or retired deliberately.
 
 ## Outcome

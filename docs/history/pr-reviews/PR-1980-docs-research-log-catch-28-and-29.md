@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Restores Catch 28 (Lior asking over checking) which was lost in a hard reset, and adds Catch 29 (Otto projecting human fatigue to excuse context window exhaustion).
 
 ## Integrity

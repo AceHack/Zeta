@@ -68,6 +68,7 @@ laptop 2026-05-30. Closes the `install.sh:159` "Windows backlogged" loop (slice 
 - 13 unit tests green.
 
 ### Merge coordination (operator-aware)
+
 The live loop's clone tracks `origin/feat/windows-parity-2026-05-30`. On merge (branch
 auto-deletes), flip `%LOCALAPPDATA%\zeta-otto-loop\loop-ref.txt` -> `main`. Otto will handle
 this at merge.

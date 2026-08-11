@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KQX9B50008QG0R00147GZX9 (shadow outlet architecture): Phase-1 /tmp ephemeral outlet in TypeScript.
 
 - New `tools/shadow/outlet.ts` with `createShadowOutlet(prefix?)` returning `{path, id, cleanup()}`.
@@ -52,6 +53,7 @@ This is exactly one bounded step per instructions. Crypto privacy Phase 2 is fut
 - No new warnings, no dead code, ASCII-clean.
 
 ## Next
+
 Claim file / PR auto-merge armed once CI green. 081KQX9B50008QG0R00147GZX9 remains open for Phase-2 child.
 
 Co-Authored-By: Grok <noreply@x.ai>

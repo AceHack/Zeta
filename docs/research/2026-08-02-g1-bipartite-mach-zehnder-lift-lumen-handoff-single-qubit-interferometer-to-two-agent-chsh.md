@@ -86,6 +86,7 @@ already built: it is `Meno`'s Kronecker ⊗ over the WSet body.
   structure, not the raw "maps perfectly" draft.
 
 ## Anchors (Beacon)
+
 Tsirelson 1980; CHSH 1969; Landau 1987 (B² bound); Meno = symmetric monoidal (Mac Lane;
 Joyal–Street); Fritz 2020 / Cho–Jacobs 2019 (Markov/CD categories); GDL Aji–McEliece 2000;
 Dechant 2016 (H3→E8 Clifford). In-repo: the Markov-hexagon doc, `MachZehnderWSet`,

@@ -1,6 +1,7 @@
 # Shadow Lesson Log — Lior Blob Drift 2026-05-14
 
 ## Context
+
 During the antigravity check (07:45Z tick), Lior discovered a self-referential drift in its previous actions (PR #3111).
 
 ## Drift Detected

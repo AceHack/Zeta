@@ -5,6 +5,7 @@
 **Related row:** 081KRHWGX0008QG0R002DP6AZN
 
 ## Purpose
+
 Populate the two-axis classification matrix for all existing and proposed LFG repositories, assigning each to either the Mirror (fast, speculative, internal) or Beacon (governed, citation-gated, canonical) tier.
 
 ## Classification Matrix & Rationale
@@ -29,4 +30,5 @@ Populate the two-axis classification matrix for all existing and proposed LFG re
 - **LFG/civsim:** The original 081KRFA460008QG0R0007RWSN1 assumption was `Mirror`. However, given the PR #2909 governance escalation and the fact that it is the flagship external implementation of the mutual-privacy engine, it has functionally bypassed the Mirror tier and established itself as a Beacon. This will be flagged for explicit resolution in the 081KRHWGX0008QG0R0023FDYVE ADR.
 
 ## Conclusion
+
 The Axis-2 structure holds cleanly. Repositories whose primary value is stability, security, and external citation (Zeta, ace, Aurora, civsim) fall cleanly into Beacon. Repositories whose primary value is velocity, experimentation, and speculative game design (Forge, KSK, DIO, american-dream) fall cleanly into Mirror. This matrix is ready to be formalized in the 081KRHWGX0008QG0R0023FDYVE ADR.

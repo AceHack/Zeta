@@ -43,6 +43,7 @@
 - git diff --check origin/main...HEAD
 
 ## Notes
+
 The final archive replay was deterministic: archive=noop, manifest=noop, threads=0, comments=0, fixCommits=0.
 
 ## Outcome

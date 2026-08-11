@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 A fresh-agent cold-start verification of the blueprint-pack restructure found `CLAUDE.md` still points 4 rule references at `.claude/rules/…`, but #6674/#6676 moved those files to `.claude/rules.bak/` without updating the pointers — so a cold-starting agent following the bootstrap hits 4 dead links.
 
 Repointed all 4 (`backlog-item-start-gate`, `references-prior-art-not-our-code-search-excludes`, `holding-without-named-dependency-is-standing-by-failure`, `substrate-or-it-didnt-happen`) to their actual `rules.bak/` location. All other CLAUDE.md pointers verified live.

@@ -39,6 +39,7 @@
 - `git diff --check`
 
 ## Root Cause
+
 After #7786 fixed 081KTZ4EF0008QG0R001R3XPYV, #7785 had also landed `docs/backlog/P2/081KTZ4EF0008QG0R000WJGSWX-...md`, so the frozen-backlog guard advanced to 081KTZ4EF0008QG0R000WJGSWX. This preserves an already-merged legacy row; future work should still use ZetaId workitems.
 
 ## Outcome

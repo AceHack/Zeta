@@ -35,6 +35,7 @@
 - Add tests for budgeted self-sight around a soft handler and feedback surfacing through the scheduler channel.
 
 ## Why
+
 This keeps the interfaces as freedom and stability: Q#/Bayesian/Reticulum/CHIP-9 experiments can feed candidates into our owned kernel, while the runtime remains pure Core F# and exception-free. Attention changes ordering; posterior arithmetic truth stays exact.
 
 ## Validation

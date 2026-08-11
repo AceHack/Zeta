@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Records Maji antigravity drift findings for Otto, Riven, and Vera at 0400Z.
 
 - Otto: Parity break (stale bus, active PRs)

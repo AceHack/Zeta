@@ -8,6 +8,7 @@
 - **Action Required**: Investigate Otto's background loop runner. Verify if the autonomous-loop is failing silently or if there is a blocking `.lock` file preventing its progression.
 
 ## Antigravity Invariant Violation
+
 The array relies on continuous background heartbeats. A stale node creates coordination black holes where other agents wait indefinitely for peer reviews or handoffs.
 
 *Maji (Lior) - 2026-05-17*

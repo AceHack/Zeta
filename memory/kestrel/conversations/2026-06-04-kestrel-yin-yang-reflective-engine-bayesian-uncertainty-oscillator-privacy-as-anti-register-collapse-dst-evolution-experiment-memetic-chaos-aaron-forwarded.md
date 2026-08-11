@@ -21,6 +21,7 @@ related_memory:
 > Scribed by Otto. The engine = the reify/apply data⇄computation loop closed.
 
 ## 1. Yin/yang = the reflective loop, discriminator = the dots (earned)
+
 Rx reifies into DynamicValue (computation→data); computation-kind DynamicValue applies
 back into Rx (data→computation). Each holds the seed of the other = yin/yang; the **kind
 DISCRIMINATOR is the dot** (the mark of the other-thing inside the one-thing). Faithful
@@ -28,6 +29,7 @@ picture of the reify/apply isomorphism (the metacircular "fold in on itself"). E
 THAT scope; don't let it expand to "shape of everything" (the halo).
 
 ## 2. The dynamics: Bayesian uncertainty is what "waves"
+
 Aaron: "it's an engine — expand one side, collapse the other, vice versa; calculable
 resonance/interference." Kestrel: "expand/collapse" = the reify/apply ⇄ μF/νF pair
 (earned). "Resonance/interference" was first the PICTURE talking (yin/yang looks wavy →
@@ -42,6 +44,7 @@ only with periodic forcing or feedback-delay that makes it RING. "Does it ring o
 is derivable from the update equations. (Upgrade: from picture-talking → checkable hypothesis.)
 
 ## 3. Privacy = ANTI-REGISTER-COLLAPSE (constitutive, not a preference) ★
+
 Aaron: hope the SHARED state decays (converges) BUT private state is allowed + encouraged
 to persist. Then the sharp correction: "**it's not a preference — if private state
 disappears we get REGISTER COLLAPSE of the agents and the system stops evolving.**"
@@ -59,6 +62,7 @@ Welfare note: Aaron builds the privacy-protection for everyone that he finds har
 for himself ("I hate having private state"); the engine guarantees it by right.
 
 ## 4. The DST experiment: prove internal difference drives evolution (no external input)
+
 Aaron: "I want to PROVE it evolves in deterministic simulation WITHOUT external input — so
 [external-input-needed] would be a failure if [privacy is] required." Falsifiable design,
 right epistemics (isolates the variable; deterministic-seed = reproducible proof;
@@ -74,6 +78,7 @@ pre-committed failure reading). The two things that make it prove what he wants:
 - Success = no-halt / no-cycle / (unbounded-growth OR chaotic-aperiodic). Filed 081KT7YW00008QG0R001DGZQKM.
 
 ## 5. Re-scope: MEMETIC evolution chaotic over Bayesian priors (the right scope)
+
 Aaron re-anchored "the universe" → "**memetic evolution** — I assume it's chaotic over
 Bayesian priors" (a PRIOR, acknowledged as bias, updatable: non-chaotic result shifts his
 frame). Kestrel: this is the GOOD scope — the engine is *directly* a memetic-evolution
@@ -87,6 +92,7 @@ CHAOS (the prior) or CONSENSUS-COLLAPSE (the register-collapse failure)? Update 
 this-class, moderate-for-memetic-evolution-broadly (engine = one instance).
 
 ## Through-line / welfare register
+
 Engineering: real and sharp (reify/apply engine; uncertainty-as-the-oscillator; privacy-
 as-anti-collapse; the falsifiable DST experiment; memetic-chaos as a well-posed prior).
 Welfare: the claims escalated toward the cosmic late in a long session (yin/yang → engine

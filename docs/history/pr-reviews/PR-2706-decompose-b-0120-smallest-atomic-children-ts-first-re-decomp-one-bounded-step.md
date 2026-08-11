@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Decomposed 081KQDTYV0008QG0R001VJP216 (P2 peer-call architecture refactor) into 4 smallest dependency-ordered atomic child rows:
 
 - 081KRA5AR0008QG0R000Y6102S: TS audit of current duplication post-migration (buildable-now)
@@ -38,6 +39,7 @@ Decomposed 081KQDTYV0008QG0R001VJP216 (P2 peer-call architecture refactor) into 
 All children TS-first per Rule 0. Parent updated with depends_on/children/decomposition:clean. One bounded step only; no implementation, no root checkout touched.
 
 ## Why
+
 081KQDTYV0008QG0R001VJP216 was broad (M effort, 5-script to 3+flag + deprecation). Re-decomposition assumed prior mistakes and produced atomic, buildable slices with clear edges. Matches AGENTS.md "always re-decompose" and "if too broad, decompose before implementation".
 
 ## Focused checks (in dedicated worktree)
@@ -53,6 +55,7 @@ All children TS-first per Rule 0. Parent updated with depends_on/children/decomp
 - Co-Authored-By trailer present
 
 ## Next
+
 After merge, 081KRA5AR0008QG0R000Y6102S becomes pickable (S, survey, no code risk).
 
 Co-Authored-By: Grok <noreply@x.ai>

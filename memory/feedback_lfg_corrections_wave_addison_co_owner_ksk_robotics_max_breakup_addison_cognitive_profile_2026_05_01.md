@@ -33,6 +33,7 @@ Glass Halo + Otto-231; Otto-side narrative does not propagate
 the name.
 
 ### 3. KSK (Kinetic Safeguard Kernel) = robotics, not wellness-app
+
    safety-runtime
 
 Aaron 2026-05-01: *"the KSK we added because we have NVIDA Thor
@@ -57,6 +58,7 @@ requirements, different override-resistance shape). Worth
 interrogating but not blocker.
 
 ### 4. Cloud-native = business shortcut, not technical
+
    architecture
 
 Aaron 2026-05-01: *"cloud-native was a shortcut cause max didn't
@@ -78,6 +80,7 @@ on a cloud-native version is the WWJD-pirate-not-priest
 overclaim trap.
 
 ### 5. Max + the consent-rule-subject — career lineage at
+
    Wake County Early College for Health Care + 2-year-degree
    fast-track
 
@@ -160,6 +163,7 @@ dependency may face restrictions/requirements over the next few
 years. Worth aware-of as architecture scales; not urgent.
 
 ## Override-resistance via Max (BFT-many-masters applied to
+
    Aaron's own sustainability) — project-context, not Otto-side
    implementable
 

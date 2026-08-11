@@ -42,6 +42,7 @@ Implements Ace slice 4 per the merged spec (`docs/agendas/ace-package-manager/20
 - Final opus code-review pass: 2 P1s found + fixed (root content_hash preflight closing the D6 atomicity gap; `invalid-package` shape-guard so malformed dep JSON refuses cleanly instead of throwing) + a P2 test + a nit comment.
 
 ## Scope
+
 Inline-URL only. Registry + semver = slice 5. Store-collision is **refused** (strict); re-keying the store by identity is deferred to **081KT07NV0008QG0R001HKPJW6** (only if same-files-different-identity ever arises). Commit canary 67 throughout.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Evolution extension (`081KTGYQ3A5`)
+
 Implements Aaron's garbage-dump mechanism: a relation removal that stays **losslessly reversible for the migration window**.
 
 - **`dumpKey "__evo_dump__"`** — reserved subtree holding removed data as `key -> {idx; val}` (records original **position** so restore is position-exact).
@@ -35,6 +36,7 @@ Implements Aaron's garbage-dump mechanism: a relation removal that stays **lossl
 - **`removeFieldWithDumpMigration`**: `down(up x) = x` for any object (the **real value** recovered, not a default) — turning the only lossy primitive op into a window-scoped **true inverse**. The dump *is* the retained shadow.
 
 ## Test
+
 `dotnet test … --filter SchemaEvolution` → **20 passed** (4 new incl. an **FsCheck position-exact round-trip law** `down∘up = id` over arbitrary objects).
 
 Pairs with `EvolutionWindow`: **expand gated on contract; reduce reversible via the contract-scoped dump** = full bidirectional safety, now built.

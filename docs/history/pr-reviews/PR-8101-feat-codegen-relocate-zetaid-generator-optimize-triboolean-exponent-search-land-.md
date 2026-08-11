@@ -28,6 +28,7 @@
 ## Description
 
 ### Why
+
 Consolidates layout-driven generation under the TypeScript source directory (`src/Core.TypeScript/zeta-id/`) keeping `tools/` clean of language source files. Restructures the TriBoolean floating-point exponent search bounds with a logarithmic range limit to prevent hangs on wide decoders. Introduces native, allocation-invariant benchmarks for `ZetaId` the "Ben way" to establish performance baselines.
 
 ### What

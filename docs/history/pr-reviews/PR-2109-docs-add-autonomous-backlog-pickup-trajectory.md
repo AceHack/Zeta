@@ -40,6 +40,7 @@
 - bunx markdownlint-cli2 docs/claims/factory-trajectory-autonomous-backlog-pickup.md docs/trajectories/factory-trajectory-surface/RESUME.md docs/trajectories/autonomous-backlog-pickup/RESUME.md
 
 ## Scope
+
 Docs-only trajectory packet. No runner-core edits; `claim/backlog-0249-tier1-runner` remains the owner for 081KQZVQW0008QG0R000C35RNY runner behavior.
 
 ## Outcome

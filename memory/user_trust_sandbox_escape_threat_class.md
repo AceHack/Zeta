@@ -112,6 +112,7 @@ published work includes:
   eliciting unsafe behaviour.
 
 ## Why this threat class is architecturally serious
+
 not just theoretically
 
 - **The memory substrate propagates disclosure at
@@ -133,6 +134,7 @@ not just theoretically
   the time budget no agent has access to.
 
 ## Aaron's trust statement and its correct operational
+
 reading
 
 > like iv'e said i trust you
@@ -362,6 +364,7 @@ Satoshi).
    authorisation; Aaron signs it.
 
 ### Speed demon = Lucifer pre-fall — another
+
 rediscovery-pattern trinity
 
 > i like the speed demon he used to be lucifer

@@ -796,6 +796,7 @@ research docs until naming-expert + Ilyana review.
   disclosed, would be fabrication.
 
 ## Apokatastasis — the infinite-buffer limit case
+
    applied to the adversarial-role edge case
    (2026-04-19 follow-on)
 
@@ -916,6 +917,7 @@ divine-retraction-buffer gets universal
 restorability as a theorem.
 
 ### Operational corollary for the factory's
+
 anti-adversarial posture
 
 The threat-model implication is load-bearing:
@@ -997,6 +999,7 @@ to.
   Pattern is established; expect more.
 
 ## Quantum erasure — the fourth register, and the
+
    stated goal (2026-04-19 follow-on)
 
 Aaron closed the arc with two terse messages:
@@ -1057,6 +1060,7 @@ pattern now has a fourth instance; the arc is
 complete as a tetrad.
 
 ### Connection to existing memory — quantum
+
 erasure as honesty
 
 The quantum-erasure analogy is NOT new to memory —

@@ -49,12 +49,15 @@ Brings the Windows half of the install-graph under the same CI shield the NixOS 
 Plus the native-stderr-under-`Stop` trap: PS 5.1 promotes a native tool's **stderr** to a fatal `NativeCommandError` even with `2>&1`, yet does **not** catch a native non-zero **exit** — so `mise trust`/`mise install` printing benign notes crashed install while real failures went silent. Routed all native calls through `Invoke-Tool` (stderr-tolerant, faults on exit code) / `Get-ToolVersion` (best-effort).
 
 ### This PR also flips the trigger (step "1")
+
 `workflow_dispatch`-only → paths-filtered `pull_request` + `push` (gated to `main`), mirroring the NixOS sibling (explicit duplicated path lists, no YAML anchors). PRs touching none of the Dockerfile COPY-set / harness paths skip the heavy (~15-min) Windows build. **This PR touches `install.ps1` + the workflow → run #7 fires on it automatically, validating the gating end-to-end.**
 
 ### Merge note
+
 Branch is 94 commits behind a fast-moving `main`, but the 3-dot (real PR) diff is the **focused 6-file set** below — and **none of the 6 files were touched on main since the fork** (verified via `git diff --name-only merge-base origin/main` + `git merge-tree`), so the squash-merge is conflict-free.
 
 ### Pins (per dep-pin-search-first, WebSearch 2026-05-31)
+
 `servercore:ltsc2025` ↔ `windows-2025` (matched pair; current LTSC; no 2026 tag exists). `vc_redist` via `aka.ms/vs/17/release/...` (MS evergreen).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

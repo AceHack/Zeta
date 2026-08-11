@@ -28,12 +28,15 @@
 ## Description
 
 ## What
+
 Renames the do_item `ExecutorTier` member **`"docker"` → `"oci"`** so the code matches the merged 081KT07NV0008QG0R001CBQ2X2 §2.2 OCI-runtime verdict (#6347): the real-work tier is a **runtime-agnostic** local OCI runtime (podman default, swappable to docker/nerdctl/finch via `ZETA_CONTAINER_RUNTIME`), not a docker-specific tier. The Started-observation audit now names the boundary **class**, not a vendor — so it doesn't lie about which engine ran.
 
 ## Why now
+
 Code↔decided-design consistency: §2.2 landed the OCI verdict but the enum still said `docker`. Small, safe substrate-honesty fix on the do_item/observe lane (081KSXN940008QG0R001A4WWX4 checklist push).
 
 ## Verification
+
 Pure rename + comment. 122 pass; tsc / eslint (pinned) / prettier clean; no residual `tier: "docker"`.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

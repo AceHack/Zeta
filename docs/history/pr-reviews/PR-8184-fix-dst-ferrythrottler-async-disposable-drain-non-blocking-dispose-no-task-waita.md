@@ -30,6 +30,7 @@
 First increment of the accidental-`Wait()` / DST cleanup around `IScheduler` + the throttler (Aaron-assigned).
 
 ## Problem
+
 `FerryThrottler`'s `IDisposable.Dispose` blocked on `Task.WaitAll(ferryTasks, 500)` — sync-over-async that is **DST-hostile** (wall-clock timeout DST can't replay) **and deadlocks the DoP=1 deterministic path**: with an injected `DeterministicSyncContext` the ferry continuations route to the pump, which can't run while `Dispose` blocks the thread, so the ferries never complete and the 500ms timeout silently abandons them.
 
 ## Fix (both throttler arities + DiskDeltaLog)
@@ -39,6 +40,7 @@ First increment of the accidental-`Wait()` / DST cleanup around `IScheduler` + t
 - `DiskDeltaLog` forwards `IAsyncDisposable` to the throttler.
 
 ## Verify
+
 No test relied on `Dispose` draining synchronously (verified). Build 0 warnings; FerryThrottler/SoftThrottle suite **53/53** green.
 
 Remaining increments: SpineAsync (`SpinWait`/`worker.Wait`), WorkStealingRuntime (`Completion.Wait`), PluginHarness (sync-over-async ×4), CLI mains.

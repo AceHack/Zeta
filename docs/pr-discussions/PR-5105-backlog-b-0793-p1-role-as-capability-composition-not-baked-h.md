@@ -40,10 +40,13 @@ zflash --host pikachu --role control-plane
 # → Single role
 
 zflash --host charizard --role worker-gpu,control-plane,storage
+
 # → TRIPLE role on one node (homelab persona's typical 1-3 node cluster)
 
 zflash --host bulbasaur --role worker-cpu
+
 # → CPU-only worker
+
 \`\`\`
 
 Default: \`--role control-plane\` (preserves zero-typing single-node UX).

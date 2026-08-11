@@ -39,6 +39,7 @@
 - git diff --check origin/main...HEAD
 
 ## Coordination
+
 This claim deliberately avoids `.codex/` and `docs/CODEX-HARNESS-NOTES.md` because the active Codex host heartbeat owns those paths. The implementation releases its temporary claim file in the same branch, so the PR diff is documentation-only.
 
 ## Outcome

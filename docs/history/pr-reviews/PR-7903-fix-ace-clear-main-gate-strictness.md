@@ -34,6 +34,7 @@
 - Add the missing blank line before the Round 46 list so markdownlint passes.
 
 ## Root cause
+
 `riven/b0821-deps-engine` landed with code that was runtime-correct but not strict-TypeScript clean under CI's `exactOptionalPropertyTypes` and indexed-access checks. The same main gate also caught one MD032 list-spacing issue in `docs/ROUND-HISTORY.md`.
 
 ## Validation

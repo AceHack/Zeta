@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 One bounded step for 081KR2E4K0008QG0R002JW751Y (re-decomposed per "assume mistakes" rule): minimal TS stub at `tools/bootstrap-razor/seed-test-repo.ts` implementing --dry-run + manifest plan reader. No gh, no create, no mutation — follows Rule 0 (TS over bash), pre-start gate, and trajectory discipline.
 
 **Why this slice**: Original ACs + create+seed = M broad; smallest atomic = stub only. Follow-ups for gh api / idempotency.
@@ -46,6 +47,7 @@ One bounded step for 081KR2E4K0008QG0R002JW751Y (re-decomposed per "assume mista
 - Branch pushed: claim/b0343-test-repo-seeding-script-ts-smallest-slice-riven-2026-05-11
 
 ## Next
+
 Follow-up slices: gh api create, idempotency, real seeding + commit logic.
 
 Co-Authored-By: Grok <noreply@x.ai>

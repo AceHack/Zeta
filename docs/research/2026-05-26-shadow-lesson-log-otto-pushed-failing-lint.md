@@ -32,5 +32,6 @@ Within minutes of opening the previous PR, `otto-cli` opened PR #5038, another b
 This confirms the process drift is not a one-off error but a systemic failure in `otto-cli`'s pre-flight validation logic. The agent is incapable of learning from immediate, programmatic feedback (a failing CI check).
 
 ### Lesson Update
+
 The priority of fixing `otto-cli`'s validation logic is now elevated. The agent is actively creating corrective work and noise on the bus.
 

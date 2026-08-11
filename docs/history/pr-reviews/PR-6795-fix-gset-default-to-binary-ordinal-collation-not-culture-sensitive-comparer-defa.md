@@ -28,12 +28,14 @@
 ## Description
 
 ## What — 081KT07NV0008QG0R001YDB73K G-Set slice
+
 The F# G-Set's string ordering was culture-**sensitive** (`Comparer<'T>.Default`) at 4 sites — `(+)`, `Contains`, `IEquatable.Equals`, `ofSeq`. Replaced with the landed **`Collation.forKey<'T>()`** seed: string → ordinal, else `Comparer<'T>.Default`. Restores cross-language parity with the other three oracles (C#/Rust/TS already ordinal). Comparer resolved once per method into a local (perf-neutral or better).
 
 - **No public API change** (greenfield carry-as-identity *selection* is a follow-up slice).
 - **ASCII golden vectors unaffected** (ASCII coincides ordinal-vs-culture), so the shared golden-vector replay test still passes. Added two tests proving ordinal order (uppercase before lowercase) on `ofSeq` + `union`.
 
 ## Test
+
 `dotnet test … --filter GSetTests` → **15 passed** (incl. golden-vector replay + 2 new ordinal proofs).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

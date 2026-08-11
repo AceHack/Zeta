@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Claim + one bounded step for 081KR2E4K0008QG0R001ADMBVW slice 9.
 
 - Re-decomposed remaining BP-23–28 per 'assume decomposition mistakes' rule; this claim bounds to smallest safe slice (BP-23/24/25).
@@ -36,6 +37,7 @@ Claim + one bounded step for 081KR2E4K0008QG0R001ADMBVW slice 9.
 - Focused check: `dotnet build -c Release` → 0 Warning(s) 0 Error(s) (gate passed in both root and worktree).
 
 ## Why
+
 081KR2E4K0008QG0R001ADMBVW is broad (28 rules, 10 slices); re-decomp ensures velocity over stability and one-step-at-a-time.
 
 ## Checks
@@ -45,6 +47,7 @@ Claim + one bounded step for 081KR2E4K0008QG0R001ADMBVW slice 9.
 - TS preference: claim uses structured md substrate (no bash)
 
 ## Next
+
 Research + land anchors for the 3 rules in follow-on commit on this branch (or child PR).
 
 Co-Authored-By: Grok <noreply@x.ai>

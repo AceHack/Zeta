@@ -34,6 +34,7 @@
 - pin `BellState.phiPlus()` to the committed Q# `BellPhiPlusPrep` vector and Q# Bell preparation probabilities
 
 ## Context
+
 Otto is moving the CHIP-9/self-trace lane forward on main; this keeps Vera on the Q# oracle path and closes the two-qubit Bell-prep gap already present in `qsharp-golden.json`.
 
 ## Verification

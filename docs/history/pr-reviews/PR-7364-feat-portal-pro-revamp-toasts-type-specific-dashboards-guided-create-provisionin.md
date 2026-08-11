@@ -32,9 +32,11 @@
 Addresses the "too gamified / not professional enough" feedback with four changes.
 
 ### 1. Real toasts — no more inline HTML on button press
+
 All actions now use **sonner** toasts (`toast.promise` with loading → success/error), bottom-right, dark: lifecycle (restart/stop/start), config apply, grants (approve/deny), deploy, copy. The inline `{toast && <div>}` banners that loaded into the page are **gone**.
 
 ### 2. Type-specific dashboards
+
 Each resource kind gets its **own** Overview, not one generic view:
 
 - **Game server** — status, players online/max (bar), map, tickrate, **copyable connect address**, uptime, recent joins.
@@ -45,9 +47,11 @@ Each resource kind gets its **own** Overview, not one generic view:
 Backend: `ResourceOps.dashboard()` → discriminated union by category; `GET /api/resources/:r/dashboard`.
 
 ### 3. Guided, page-by-page Create + provisioning
+
 The create flow is now a **wizard** with a step rail (Basics → Configuration → Review), each step **titled and explained** (DNS-safe naming, namespace = tenant boundary, per-exposure help text, blueprint-variable descriptions). Deploy opens a **staged Provisioning view** that walks visible stages (validating → resolving blueprint → creating objects → provisioning storage → scheduling → pulling image → starting → opening room) and finishes with a success toast.
 
 ### 4. De-gamify
+
 Flat logo (no gradient), restrained **monochrome persona chips** (no rainbow), denser enterprise layout, status pills, professional stat tiles.
 
 ## Tests — +2 (58 in the portal), all green

@@ -32,9 +32,11 @@
 Parent: 081KQTPYE0008QG0R00392KABJ (bootstrap razor). Row: `docs/backlog/P1/081KR2E4K0008QG0R002JW751Y-test-repo-seeding-script-ts-b0193.md`.
 
 ### Substrate-drift check (start-gate step 0)
+
 `tools/bootstrap-razor/seed-test-repo.ts` already exists; three 081KR2E4K0008QG0R002JW751Y PRs are merged (#2716/#2722/#2723 — the "smallest safe slice" stub). Discriminator result: **in-progress, NOT drift**. ACs 1, 2, 4 met by the stub; **AC 3 (idempotency) explicitly deferred** in the stub (`"Idempotency + gh create + real seeding: follow-up slice"`). This PR takes the next bounded step toward AC 3 without redoing the stub.
 
 ### What this slice adds
+
 The stub's `--dry-run` echoed manifest **patterns**. This slice resolves them to the **concrete file set** — the prerequisite computation for AC 1 ("seed exactly the files listed") and AC 3 (idempotency = compare resolved set vs target repo). Still **no `gh`, no repo creation, no mutation** — only a read-only filesystem scan.
 
 - `resolveSeedFiles(candidates, manifest)` — pure `include ∧ ¬exclude` resolver, exclude-wins, sorted; independently testable without a filesystem.
@@ -42,6 +44,7 @@ The stub's `--dry-run` echoed manifest **patterns**. This slice resolves them to
 - `--dry-run` now lists the **39 resolved concrete seed files**. Same `Bun.Glob` engine for resolution + scan, so `**`/`*` semantics agree.
 
 ### Finding (surfaced, not fixed — out of scope)
+
 Resolved count (39) and OpenSpec spec count (9) diverge from `SEED-MANIFEST.md`'s documented estimate (~47 total / 6 OpenSpec specs); the `openspec/specs/**/overlays/**` pattern resolves to nothing (no overlays exist yet). Surfacing this estimate-vs-reality drift is exactly the value of resolution over pattern-echoing. Manifest-metric reconciliation belongs to a separate row.
 
 ### Focused checks
@@ -52,6 +55,7 @@ Resolved count (39) and OpenSpec spec count (9) diverge from `SEED-MANIFEST.md`'
 - No F#/C# touched → `dotnet build` gate not applicable (TS-only change under `tools/`).
 
 ### Scope discipline
+
 One bounded step. No `gh` calls, no repo creation, no network. AC 1 (repo creation) + AC 3 (idempotency) remain follow-up slices; this PR builds the resolved-set computation both depend on.
 
 operative-authorization: aaron 2026-05-14: "- **Devil-pole** (edge-runner drive): keep pushing, discover, go hard, never-be-idle"

@@ -144,6 +144,7 @@ this property — they ship atomically with the code.
   "obligations inherited."
 
 ### Demos that do NOT touch API-consumer or
+
 serialization surfaces
 
 - Demo changes that are purely internal (refactor, code

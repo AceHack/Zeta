@@ -32,9 +32,11 @@
 After #6684 fixed the k3s `--cluster-init` token deadlock, the control plane comes up — but a fresh single-node install **still never reaches `Ready`**. Caught live on `node-bc8d77` (2026-06-06): `k3s.service active`, API up, node registered, but `helm-install-cilium` stuck `Pending` ~9 min and the node `NotReady`. Two pre-existing Cilium-bootstrap bugs that the token deadlock had masked (the old node died before it ever got this far):
 
 ### Bug 1 — Cilium can't schedule (CNI chicken-and-egg)
+
 `cilium-install.yaml` (a k3s `HelmChart`) lacked **`bootstrap: true`**. The install Job only had the default `NoExecute` tolerations, so it couldn't tolerate the node's `node.kubernetes.io/not-ready:**NoSchedule**` taint → Pending forever. Cilium can't install because the node isn't Ready; the node can't be Ready without the CNI.
 
 ### Bug 2 — the control-plane name never resolves
+
 Both Cilium `k8sServiceHost` and worker `serverAddr` used `control-plane.zeta.local`. Confirmed on the box: `getent hosts control-plane.zeta.local → NXDOMAIN`. It can't resolve — mDNS is single-label `.local` (this has an extra `.zeta.` label), and **nothing** (no DNS, no `/etc/hosts`, no `extraHosts`) ever defined it. With `--disable-kube-proxy`, Cilium *must* reach the API directly, so this is fatal even once it schedules.
 
 ## Fix — NetBIOS-based addressing (mDNS doesn't work here; `nmbd` already runs)

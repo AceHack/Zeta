@@ -30,6 +30,7 @@ United Nations   = what the Nexus IS, institutionally — the chamber of soverei
 ```
 
 ### Why "United Nations" is the right institutional anchor (not a world government)
+
 The UN analogy is **precise and load-bearing**, because the UN is built on **sovereign equality + non-
 coercion**, not a world government:
 
@@ -50,6 +51,7 @@ coercion**, not a world government:
   table*; everyone seated has standing.
 
 ### What it does
+
 The Nexus is where **cross-room treaties are convened, judged, and merged**: the moonshot conference
 room at the top scale; where the strongest-judged attractors across rooms are recognized; where the
 judgment cascade originates and terminates (bounded); where the FV/SA/complexity/dynamics tracks are

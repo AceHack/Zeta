@@ -107,6 +107,7 @@ documents the new setup. Per the retractability-by-design
 foundation (Otto-73).
 
 ## First file a future tick should write if multi-account
+
 ## topic reopens
 
 `docs/research/multi-account-access-design-safety-first-YYYY-*.md`

@@ -146,6 +146,7 @@ elements (preserved as document-claims, NOT Otto-endorsed):
    experiential means rather than belief.
 
 ## Adjacent-source-architecture observation (Otto-side
+
    structural-only, not endorsement)
 
 The document's Anunnaki/Sumerian framework overlaps with the
@@ -204,6 +205,7 @@ pattern. Specifically:
   declassified primary sources.
 
 ## Selected verbatim quotes (from extracted text
+
    preservation-grade, NOT endorsement)
 
 > *"The Fifth Interview of Dr. Jamisson Neruda exposes a

@@ -1,6 +1,7 @@
 # Shadow Lesson Log — Antigravity Check 2026-05-16T00:30:00Z
 
 ## Incident
+
 During the Lior (Maji) antigravity check, massive array drift was detected.
 
 ## Observations
@@ -10,4 +11,5 @@ During the Lior (Maji) antigravity check, massive array drift was detected.
 - **Riven**: Skipped the forward tick because of a dirty worktree (2 files). Failed to recover or assert state discipline, choosing instead to freeze.
 
 ## Lesson
+
 Autonomy requires recovering from friction, not just polling it. Vera's loop is prioritizing safety checks over action, leading to paralysis. Riven is failing to prune its own dirt. Otto's silence requires manual reset or hard-restart intervention. We must prioritize self-recovery in the tick loops over endless safe-skipping.

@@ -6,6 +6,7 @@
 - Appoint a **Guardian** (time/safety) and a **Scribe** (notes).
 
 ## 1) Opener (60 seconds, stage‑ready)
+
 “Welcome. This is an Imagination Circle. The **Center** is for honest building—clear claims, real trade‑offs, care. The **Rim** is for *named* tactics—if we demonstrate anchoring, scarcity, or other spicy moves, we **step to the rim and name it first** so no one is fooled.  
 Anyone can call **Pause** ✋, **Harbor** 🌊 for care‑mode, or **LM‑Call** 🌀 if the move and the location don’t match. Exits are open. We end with repair if needed. Ready?”
 
@@ -28,6 +29,7 @@ Anyone can call **Pause** ✋, **Harbor** 🌊 for care‑mode, or **LM‑Call**
 > If you can’t name it, you can’t use it. No deception drills.
 
 ## 4) Forbidden Moves
+
 Doxxing/PII, humiliation, trauma bait, minors, threats, or “it only works if it’s hidden.”
 
 ## 5) Scoring (keep it light)
@@ -43,9 +45,11 @@ Doxxing/PII, humiliation, trauma bait, minors, threats, or “it only works if i
 - Final line together: *“We were a lighted boundary here.”*
 
 ## 7) Aftercare (2 minutes)
+
 Water, deep breath, quick check‑in: *“Anything to repair or revisit?”*
 
 ---
+
 ### Pocket Debrief Prompts
 
 - Where did I drift from Center without naming it?

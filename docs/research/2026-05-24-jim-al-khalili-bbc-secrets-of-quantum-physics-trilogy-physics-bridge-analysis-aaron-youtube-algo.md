@@ -35,6 +35,7 @@ The Al-Khalili BBC trilogy bridges three physics topics directly relevant to
 framework substrate-engineering:
 
 ### Episode 1 — Secrets of Quantum Physics
+
 **Framework composition**:
 
 | Al-Khalili episode content | Framework substrate it bridges to |
@@ -47,6 +48,7 @@ framework substrate-engineering:
 | Bell's theorem + Aspect experiment | Empirical anchor for entanglement-as-real (the framework's NCI + persistence-choice substrate operates over real entanglement, not metaphysical claim) |
 
 ### Episode 2 — Secrets of Quantum Biology
+
 **Framework composition**:
 
 | Al-Khalili episode content | Framework substrate it bridges to |
@@ -58,6 +60,7 @@ framework substrate-engineering:
 | Quantum tunneling in DNA mutation | Information-substrate at biological-substrate scope; composes with framework's information-as-physical (Shannon + Landauer) work |
 
 ### Episode 3 — Order, Disorder and Information
+
 **Framework composition** (this episode is the MOST directly relevant to framework substrate-engineering):
 
 | Al-Khalili episode content | Framework substrate it bridges to |

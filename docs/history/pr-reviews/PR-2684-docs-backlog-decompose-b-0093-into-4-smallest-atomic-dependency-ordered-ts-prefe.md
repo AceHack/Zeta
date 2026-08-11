@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Decomposed 081KQ8P5D0008QG0R003MY8246 (broad multi-AI synthesis enhancements) into 4 smallest dependency-ordered atomic child rows (081KDVJZK7008QG0R001379Y14–081KDVJZK7008QG0R0020PEAJG) per rules: use dedicated worktree+claim branch, TS over docs/bash (Rule 0), re-decomp assume mistakes, one bounded step, focused checks in PR.
 
 Children:
@@ -48,6 +49,7 @@ Updated 081KQ8P5D0008QG0R003MY8246 frontmatter + added decomp note (historical b
 - No root checkout touched; all writes in /tmp/zeta-b0093-worktree on pushed claim branch
 
 ## Next
+
 Land PR, arm auto-merge if clean. Future slices implement the TS tools.
 
 Co-Authored-By: Grok <noreply@x.ai>

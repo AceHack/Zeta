@@ -74,6 +74,7 @@ AutoDream is still flag-gated while AutoMemory is
 generally available).
 
 ## What Anthropic prescribes vs. what the factory
+
 customises
 
 **Anthropic-prescribed** (from the CLAUDE.md

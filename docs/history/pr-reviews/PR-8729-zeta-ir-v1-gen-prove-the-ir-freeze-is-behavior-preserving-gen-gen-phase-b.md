@@ -46,9 +46,11 @@ Neither shares a fold module with the other (N-way independence).
 Comparison is over **parsed maps**, not raw bytes: the F# emitter sorts object keys while TS preserves insertion order, so the JSON texts differ though the vectors are identical. The `_source` provenance tag is intentionally excluded (`generated-from-zeta-ir-v1` vs the golden's `generated-from-ir`).
 
 ### Why splitmix64 is the sharp case
+
 Its legacy row had **no `width`**, so its generator hardcoded the u64 mask. The v1 row supplies `width:64` **as data**, and folding that data still reproduces the identical golden — the width is now load-bearing IR, not code.
 
 ### Fidelity (`gen.test.ts`, 5/5) — the green can turn red
+
 Corrupt one `mul` constant, narrow `width` to 63, drop the last op, or reorder two ops → each diverges from the golden.
 
 ### Honest scope

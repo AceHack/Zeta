@@ -93,15 +93,18 @@ git fetch origin
 git checkout ai-cluster-bootstrap
 
 # 2. (Apple Silicon only — one-time linux-builder setup)
+
 nix run nix-darwin/nix-darwin-24.11#darwin-rebuild -- switch \
   --flake full-ai-cluster#zeta-mac
 
 # 3. Build the installer ISO
+
 cd full-ai-cluster
 nix build .#installer-iso
 ls -lh result/iso/zeta-installer-*.iso
 
 # 4. Write to USB (macOS — replace diskN with YOUR USB device number from \`diskutil list\`)
+
 diskutil unmountDisk /dev/diskN
 sudo dd if=result/iso/zeta-installer-*.iso of=/dev/rdiskN bs=4m status=progress
 diskutil eject /dev/diskN
@@ -113,9 +116,11 @@ diskutil eject /dev/diskN
 # Boot the target on the USB. At the console
 
 # Network up
+
 nmtui
 
 # Partition (example: single ext4 + EFI — replace /dev/sda with your target disk)
+
 sgdisk --zap-all /dev/sda
 sgdisk -n 1:0:+512M -t 1:ef00 -c 1:boot /dev/sda
 sgdisk -n 2:0:0     -t 2:8300 -c 2:nixos /dev/sda
@@ -125,14 +130,17 @@ mount /dev/disk/by-label/nixos /mnt
 mkdir -p /mnt/boot && mount /dev/disk/by-label/boot /mnt/boot
 
 # Clone cluster flake
+
 git clone https://github.com/Lucent-Financial-Group/Zeta /mnt/etc/zeta
 
 # Per-machine hardware config (must be copied into the host dir)
+
 nixos-generate-config --root /mnt
 cp /mnt/etc/nixos/hardware-configuration.nix \
    /mnt/etc/zeta/full-ai-cluster/nixos/hosts/<host>/hardware-configuration.nix
 
 # K3S cluster token (control-plane only on first install — save the token for workers)
+
 nixos-enter --root /mnt -- bash -c '
   mkdir -p /var/lib/rancher/k3s/server
   openssl rand -hex 64 > /var/lib/rancher/k3s/server/token
@@ -141,10 +149,13 @@ nixos-enter --root /mnt -- bash -c '
 cat /mnt/var/lib/rancher/k3s/server/token   # ← save this; needed on every worker
 
 # Install
+
 nixos-install --flake /mnt/etc/zeta/full-ai-cluster#<host>
+
 # <host> = control-plane | worker-gpu | 
 
 # Set zeta user password + reboot
+
 nixos-enter --root /mnt -- passwd zeta
 reboot
 \`\`\`

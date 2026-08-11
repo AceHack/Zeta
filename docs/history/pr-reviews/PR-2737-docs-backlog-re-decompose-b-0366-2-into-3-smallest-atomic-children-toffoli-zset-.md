@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Re-decomposed 081KR50HA0008QG0R0002PGV1N (Toffoli circuit for Z-set join — formal gate-network model) into 3 smallest atomic children:
 
 - 081KRA5AR0008QG0R002X77BEB ToffoliCircuit type + wire-map (S)
@@ -44,6 +45,7 @@ All F#-first per "prefer F#/TS code over docs", one bounded step, claim branch +
 - TS-over-bash / F# preference observed (children target F# code surface).
 
 ## Focused check outcome
+
 ```bash
 dotnet build -c Release
 # Build succeeded. 0 Warning(s) 0 Error(s)

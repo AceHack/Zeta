@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Maintainer 2026-06-07 refinement on 081KT07NV0008QG0R001YDB73K's comparer strategy: **don't treat it as a CS comparer parameter — treat it like database collation selection.**
 
 - **A catalog of named, selectable collations** (like SQL/Postgres `COLLATE`, ICU locales) — part of a value's identity, not raw `IComparer` plumbing.

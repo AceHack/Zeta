@@ -39,6 +39,7 @@
 - git diff --check origin/main...HEAD
 
 ## Notes
+
 Research-grade continuation only; no operational policy promotion.
 
 ## Outcome

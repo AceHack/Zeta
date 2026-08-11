@@ -39,6 +39,7 @@
 - `git diff --check origin/main...HEAD`
 
 ## Notes
+
 PR #1766 had no review threads; this routes the workflow-generated archive through PR review because direct pushes to `main` are guarded by repository rules.
 
 ## Outcome

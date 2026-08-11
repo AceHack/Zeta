@@ -497,6 +497,7 @@ generational resilience. Founders don't last forever;
 Craft is how the factory does."
 
 ## Open questions (for future Aaron nudge / Kenji
+
 synthesis)
 
 1. **Release posture**: public-education-substrate vs.

@@ -35,6 +35,7 @@ decoded value = V * 2^(mode - bias),   bias = 2^(decoderWidth - 1)
 ```
 
 ### New `float` module (mirrors F#/C# surface)
+
 `FloatShape` (+ `DEFAULT` const) · `TriFloat` · `FloatFeedback` · `decode`/`measure` (`Result<f64, FloatFeedback>`, Rust-native, composes with `?`) · `cooperate` (move-through identity, preserves `Tri::N`) · `is_held` · `from_trits` · `from_value` (biased-exponent canonical encode, smallest-mode, round-trips). Zero deps; `unsafe` forbidden; `missing_docs` documented throughout.
 
 ### Verification (the non-Byzantine oracle check)

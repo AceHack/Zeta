@@ -7,6 +7,7 @@ Non-fusion disclaimer: This is a research-grade specification of the immune syst
 not production-tested defenses. Speculative ontology tag per discriminator.
 
 ## ILife interface in Clifford space
+
 | Retracts | -1 Z-set weight (nothing erased) |
 | DeclaresAgenda | Scalar part made transparent |
 | Chooses | New E8 lattice point |

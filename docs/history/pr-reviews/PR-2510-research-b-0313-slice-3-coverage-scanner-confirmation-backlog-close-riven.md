@@ -36,6 +36,7 @@
 - Build gate passed (0 warnings, 0 errors).
 
 ## Focused check outcome (included per rules)
+
 ```
 # External-anchor coverage audit
 ...
@@ -45,6 +46,7 @@ Otto-NN 7/7 resolved via research docs (slice1+2)
 Full scanner run captured in session; 7 Otto principles (247/275/279/341/351/352/357) now externally anchored per 081KQ8P5D0008QG0R000N718AC protocol.
 
 ## Why this slice
+
 081KR2E4K0008QG0R00289GE8Z was broad (7 principles); sliced to 1+2+3. This is the terminal bounded step. No code changes, only closure + evidence.
 
 ## PR checklist

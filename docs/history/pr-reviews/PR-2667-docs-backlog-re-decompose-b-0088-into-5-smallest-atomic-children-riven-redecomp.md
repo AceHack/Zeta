@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Re-decomposed broad 081KQ8P5D0008QG0R002FSTGXP (advisory lint + promote/weaken + siblings) into 5 XS atomic, dependency-ordered child rows per "always re-decompose, assume mistakes" rule and Riven trajectory discipline.
 
 **Children created (in worktree, no root touch):**
@@ -39,6 +40,7 @@ Re-decomposed broad 081KQ8P5D0008QG0R002FSTGXP (advisory lint + promote/weaken +
 - 081KRA5AR0008QG0R000WP3VYT: audit backlog-index-integrity-lint (parallel)
 
 ## One bounded step
+
 Exactly this decomposition + PR. No implementation of promote/weaken.
 
 ## Rules followed
@@ -51,6 +53,7 @@ Exactly this decomposition + PR. No implementation of promote/weaken.
 - Co-Authored-By trailer present
 
 ## Next
+
 081KRA5AR0008QG0R000GZ8ECC is now pickable (root, S→XS). Maintainer decision surface preserved.
 
 Closes 081KQ8P5D0008QG0R002FSTGXP decomposition slice.

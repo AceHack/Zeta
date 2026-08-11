@@ -30,9 +30,11 @@
 Follow-up to #6519 addressing a Codex P2 review thread.
 
 ## Problem
+
 `NumberStyles.HexNumber` = `AllowLeadingWhite | AllowTrailingWhite | AllowHexSpecifier` — it trims surrounding whitespace. So a malformed escape like `"\u 001"` / `"\u001 "` was trimmed and **accepted** as a decoded char, then surfaced as `NonCanonical` by the fixed-point check, instead of the `UnexpectedEnd` the JSON decoder promises (and the TS oracle's `/^[0-9a-fA-F]{4}$/` regex already enforces).
 
 ## Fix
+
 `NumberStyles.HexNumber` → `NumberStyles.AllowHexSpecifier` (hex digits only, no whitespace flags). Added whitespace-`\u` rejection cases. **26 tests pass; Release 0-warnings.**
 
 The same fix is applied to the F# oracle in #6520 (pushed before merge). The Rust oracle (next) uses a strict hex check from the start. The compilers don't lie.

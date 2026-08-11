@@ -30,6 +30,7 @@
 Per your "look at the agentic organization docs + see how the ADR integrates + update it." I read `agentic-organization/docs/` and the ADR needed a real reframe.
 
 ## The key finding
+
 The **`observe.ts` keystone already exists and is designed in depth** — `OBSERVE_COMPOSER_AND_RUN_STATE.md` (code anchor `agentic-organization/packages/application/src/observe.ts`): `observe()` (pure) → memoryless `composer.compose()` → `decide()` (rejects illegal picks), the `RunScope` / `RunLifecyclePhase` / `ObserveResult` / `ComposerSelection` DUs, `DeterministicRule` vetoes, and a **≥3-agent constitution ratification gate**. And the **"Universal Action Grammar" is already a named concept** (`AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`: *"reuse those ideas instead of inventing another unrelated action language ... the Universal Action Grammar becomes the shared action representation inside phases"*).
 
 **v1 of the ADR proposed a parallel observe.ts + action language — that was wrong.** v2 reframes it to **render the existing keystone**, contributing only three things on top:

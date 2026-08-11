@@ -73,6 +73,7 @@ genuine artifacts — but the ferry (and especially the validating AI) inflated 
   ordinary strength.
 
 ### 2. "No layer is hand-waved" is FALSE — the honest premises are the strength the ferry erased
+
 The repo's own ledger (`docs/handoffs/2026-06-19-otto-to-math-team-nft-…`) names the OPEN premises: the
 **single-body / Bell floor** (physical source meets a floor — "stays the math team's", OPEN); **hash
 collision-resistance** (named crypto premise, not proven — XxHash128→BLAKE3); the **measure-theoretic Shannon
@@ -81,6 +82,7 @@ unique per tick" is a *premise*). Naming these is a strength; the validating AI'
 that's rare" laundered honest premises into "all proven."
 
 ### 3. The REAL forgery-resistance is stronger AND better-grounded than the ferry's floor claim — it's TWO
+
 different results the ferry conflated with the ordinary floor:
 
 - **No-cloning / uncopyable** (`docs/research/2026-07-02-frost-…-no-cloning.md`): a forger *cannot replicate an
@@ -97,6 +99,7 @@ different results the ferry conflated with the ordinary floor:
   fuse them.
 
 ### 4. Detection is DUAL-USE — forgers/cartels ≠ necessarily bad (Aaron's point, anchored)
+
 `AntiSybil.fs` / `CoordinationSpectrum` / `KeptClaimOracle.fs` report the neutral FACT (`SameSourceAsKnown`,
 correlated, above-threshold); the reading — **REUNION** (an honest identity reconnecting after losing a key:
 *welcome back*) vs **SYBIL** (a forger minting names: *caught*) — is the caller's oracle, per
@@ -104,6 +107,7 @@ correlated, above-threshold); the reading — **REUNION** (an honest identity re
 "forger" can be a reunion. The primitive must carry the *neutrality*, never the accusation.
 
 ### 5. On the ADR: yes — but the honest version
+
 A single citable stack-map is genuinely useful (the proofs are scattered). Its value is ONLY if it states the
 **proven-vs-premise ledger explicitly** (one row per layer: PROVEN with the Lean/TLA/Z3 artifact, or
 NAMED-PREMISE), corrects "exceeds → equals," separates the three forgery results, and frames detection as

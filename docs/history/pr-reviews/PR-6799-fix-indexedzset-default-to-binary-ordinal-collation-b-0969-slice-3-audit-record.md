@@ -28,6 +28,7 @@
 ## Description
 
 ## What — 081KT07NV0008QG0R001YDB73K IndexedZSet slice + the src/Core audit
+
 IndexedZSet (keyed by `'K`) had 4 culture-sensitive ordering sites — `KeyGroupComparer` (per-element), `(+)`, `Item` lookup, `join`. Fixed: reuse `KeyComparerCache<'K>` (cached per closed type) at the 3 non-inline sites; the **`inline join`** uses public `Collation.forKey<'K>` (an inline fn can't reference the `internal` cache). 16 IndexedZSet tests green.
 
 **Audit recorded in 081KT07NV0008QG0R001YDB73K:**

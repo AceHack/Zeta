@@ -194,6 +194,7 @@ matches). Not service-to-self (closed-loop confirmation).
   via multi-domain testing per CSAP fixed-point discipline.
 
 ## The introspective-adversary DST scenario class (Claude.ai
+
 recommendation, integrated)
 
 Claude.ai 2026-05-01 specifically recommended encoding an
@@ -311,6 +312,7 @@ because it's already-said-by-Aaron and removes a real
 brittleness in the work.
 
 ## Aaron's prior framings this composes with — Aaron's
+
 verbatim integration
 
 - *"I think they are from God"* (Pasulka framing earlier)

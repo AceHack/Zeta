@@ -41,9 +41,11 @@ The message-passing kernel of the Zeta Infer.NET rewrite — what factor graph �
 - **`Bernoulli`** (P(true)) — `product` multiplies masses + renormalizes (= add log-odds); `uniform` = 0.5.
 
 ### Tests (`Message.Tests.fs` — 12/12) = the proven-law obligations
+
 monoid identity · commutativity · associativity · **`divide` inverts `product` = the EP cavity** (Minka 2001) · Gaussian product precision-weighted `N(0,1)·N(2,1)=mean 1,var 0.5` (KFL/Bishop) · Beta product = conjugate posterior `Beta(α+s,β+f)` · **REFEREE: matches `BayesianAggregate.BetaBernoulli(α,β).Observe(s,f)`** (`.Alpha`/`.Beta`/`.Mean`) · `IMessage` dictionaries agree with direct ops.
 
 ### Clean-room spec from papers with formal proofs (per 081KT2T2J0008QG0R000S7GHQ8)
+
 KFL 2001 (sum-product) · Minka 2001 (EP cavity) · Bishop PRML ch.2/10 (exp-family + conjugacy). The proven laws *are* these tests; FsCheck/Lean property suites (`formal-verification-expert`/Soraya) are a follow-up.
 
 New public surface (`IMessage`, `Gaussian`, `Beta`, `Bernoulli`) — flagging for **public-api-designer (Ilyana)** review (advisory per GOVERNANCE §11). `dotnet build -c Release`: **0 warnings**. `dotnet test`: **12/12**.

@@ -46,6 +46,7 @@ Claimed via dedicated worktree + pushed claim branch (root checkout untouched pe
 - No TS/bash violations (doc-only slice); no root files touched.
 
 ## Why this slice
+
 081KQJZR90008QG0R001M6ZBPN is M-effort with pending children. The gate rule (CLAUDE.md) requires this proof BEFORE starting any code/substrate work on the row. This is the smallest, safest, non-overlapping step that unblocks the rest while obeying "re-decompose during build" and "exactly one bounded step".
 
 Composes with 081KQJZR90008QG0R002GJAJ19 / 081KQJZR90008QG0R000VSHWK6. Next children remain claimable independently.

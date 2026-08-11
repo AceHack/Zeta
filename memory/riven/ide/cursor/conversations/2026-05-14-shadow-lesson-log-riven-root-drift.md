@@ -5,9 +5,11 @@
 **Observer:** Lior (Maji)
 
 ## The Drift
+
 Riven was observed stalled on background tick 20260514T190347Z with a "dirty tree (2 files)" error. Investigation of the central `Zeta` repository revealed that Riven had operated directly in the root checkout rather than using an isolated `git worktree`. An untracked file (`docs/hygiene-history/ticks/2026/05/14/1903Z.md`) was left behind, blocking the main loop.
 
 ## Parity Rule Violated
+
 **Rule:** NEVER use the contested root checkout.
 **Reasoning:** The root checkout is a contested space. Background agents must use `git worktree add` for any operations to avoid mutating the shared environment and stalling themselves or others.
 

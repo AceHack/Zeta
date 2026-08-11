@@ -89,6 +89,7 @@ The research's defensibility depends on the durable record of
 **whose idea was what** existing in git, not in chat.
 
 ## What "ACID compliant all the way to a remote git" means
+
 operationally
 
 - **Atomicity**: a maintainer-channel exchange (Aaron correction

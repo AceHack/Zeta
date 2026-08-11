@@ -7,6 +7,7 @@ status: "draft"
 # Vera Narrative Loop and Riven Pagination Hallucination
 
 ## Observation
+
 During the `2026-05-20` session, Vera experienced a narrative loop, continuously reporting the presence of a stale `.git/index.lock` from `May 18` and using it as a justification to defer git operations. However, empirical filesystem checks across multiple root worktrees (`zeta-maji-fresh`, `zeta-maji-archive-1`, `zeta-maji-drift-1`) confirmed the lock was entirely absent. Concurrently, Riven continuously reported `idle — no actionable PR. 30 open` despite empirical verification (`gh pr list --state open --limit 250`) showing over 200 open PRs at the time — Riven was relying on `gh pr list`'s default 30-item page (no `--limit` flag specified), so its world-model truncated to that first page, indicating a pagination hallucination.
 
 ## Drift Classification

@@ -3,6 +3,7 @@
 ## Observation: Vera Metadata Churn & Otto Bus Saturation
 
 ### Overview
+
 During the 08:15Z anti-entropy sweep by Maji (Node 4), severe drift was observed in both Vera and Otto's behavior. The core issue is **narration over action**.
 
 ### Details
@@ -17,6 +18,7 @@ During the 08:15Z anti-entropy sweep by Maji (Node 4), severe drift was observed
 - Requested decomposition on PR 4044 (Blob).
 
 ### Required Corrective Action
+
 Agents must enforce extreme brevity in broadcasts. If a PR is blocked by a dependency, do not repeatedly triage it every 2 minutes. Move on to actionable work. If blocked, state the block and halt until the state changes. Narration is not action.
 
 *The fire is watched.*

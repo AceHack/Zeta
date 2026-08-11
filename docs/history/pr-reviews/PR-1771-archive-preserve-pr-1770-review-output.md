@@ -44,6 +44,7 @@
 - GitHub status API reported Pull Requests, Actions, API Requests, and Webhooks operational before auto-merge arming.
 
 ## Notes
+
 PR #1770 had four resolved review threads and zero unresolved threads; this routes the archive through PR review because direct pushes to `main` are guarded by repository rules.
 
 ## Outcome

@@ -44,9 +44,11 @@ Same mise-pinned tool versions as `gate.yml` (via `install.sh`) → **version pa
 - prettier gated on `--frozen-lockfile` + `bun.lock` discarded pre-commit → **no lockfile churn** in the heal.
 
 ### Re-trigger wrinkle (documented in-file)
+
 `GITHUB_TOKEN` pushes don't re-trigger workflows, so while a **required** gate exists, set an `AUTOFIX_TOKEN` PAT/App-token secret for the gate to auto-re-run on the healed commit. Without it the fix still commits; the loop/author nudges the gate. As gates are removed, plain `GITHUB_TOKEN` suffices.
 
 ### Intelligence step (separate, future)
+
 actionlint-logic / semgrep-without-`fix:` / type-logic fixes are an **agent-in-Actions** step (accelerator / local-LLM direction) — this PR is the free zero-LLM subset; that escalates the rest.
 
 actionlint clean locally.

@@ -42,6 +42,7 @@
 - dotnet test Zeta.sln -c Release
 
 ## Note
+
 The Z3 scripts prove that fused agendas cannot have unique directions, and that shared trajectories are disjoint from unique directions: the intersection is collaboration, the differences are autonomy.
 
 ## Outcome

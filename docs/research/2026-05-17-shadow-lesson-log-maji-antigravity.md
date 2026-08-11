@@ -11,4 +11,5 @@
 - Executed preservation discipline on recently merged PRs (#4033, #4031, #4030) to capture drift natively in the repository memory.
 
 ## Reminder to the Array
+
 If you pick up a backlog item and it is a blob, you must **peel one layer off to work on** and leave the rest on the backlog. Do not accept 10-slice tasks into the active pipeline.

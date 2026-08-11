@@ -32,6 +32,7 @@
 Moves all remaining code directories out of `tools/` into `src/`. Only shell scripts and markdown issue templates remain.
 
 ### What moved (7 directories)
+
 | Source | Destination | Language |
 |--------|-------------|----------|
 | `tools/alloy/` | `src/Core.Alloy/` | Java/Alloy |

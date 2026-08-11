@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Decomposes broad P2/L 081KQ0YZ80008QG0R002HWBHKJ ("Translate repo into other human languages") into two smallest dependency-ordered atomic child rows before any implementation:
 
 - 081KR50HA0008QG0R000YTJE8Q: TS substrate inventory scanner (focused mode for P0 surfaces + cross-ref graph)
@@ -36,6 +37,7 @@ Decomposes broad P2/L 081KQ0YZ80008QG0R002HWBHKJ ("Translate repo into other hum
 Follows "if the item is too broad, decompose before implementation", "always re-decompose items during the build — assume decomposition has mistakes", Rule 0 (TS), substrate-or-it-didn't-happen, one-bounded-step.
 
 ## Why
+
 081KQ0YZ80008QG0R002HWBHKJ spans entire repo, 14 languages, code+docs+memory — L effort. First step produces concrete map + anchors so later slices (drift lint, per-lang pilots) are targeted, not speculative.
 
 ## Focused checks (executed in dedicated worktree)
@@ -47,6 +49,7 @@ Follows "if the item is too broad, decompose before implementation", "always re-
 - `git worktree` + `gh pr` on LFG remote only
 
 ## Next (after merge)
+
 Re-decompose further if needed; 081KR50HA0008QG0R000YTJE8Q will feed 081KR7JY10008QG0R000EGAPAN (pipeline) and 081KR7JY10008QG0R000D7JTBB (Spanish pilot).
 
 Co-Authored-By: Grok <noreply@x.ai>

@@ -32,6 +32,7 @@
 Row 8 of `docs/handoffs/2026-06-19-otto-to-math-team-…` has two legs. This ships the **buildable measurability leg**; the **uniqueness / most-objective-lens leg stays research-open** (per Soraya's split note — deliberately not attempted here).
 
 ### What it proves
+
 A new FsCheck file `tests/Tests.FSharp/Formal/MoralLensMeasurability.Tests.fs` proving Zeta's default moral-lens measures are **Goodhart-resistant and correctly ordered** — that the measure actually separates **healthy** (co-empowerment + diversity-preservation / non-coercion) from **the concern** (coercion + diversity-collapse).
 
 Built **on** the existing measures (no new production code):
@@ -50,6 +51,7 @@ The two axes and the conjunctive "healthy gate" are **test-local compositions** 
 4. **The concern is detected** — coercion + diversity-collapse scores strictly worse on **both** axes than healthy on every unambiguous generated pair (+4b: `ρ_owe`=0 mirror ⇒ QPG=0).
 
 ### Honest scope (preserved in comments/test names)
+
 An objective **measure of a chosen value** (non-coercion + co-empowerment = good), **not** value-free morality — consistent with manifesto §11 Default Moral Regard + the Multi-Oracle Principle (the **default** lens, not mandatory). Held provisional.
 
 ### Gate

@@ -28,6 +28,7 @@
 ## Description
 
 ## Context
+
 Riven hallucinated 30 open PRs due to unpaginated gh pr list, resulting in false idle state.
 This PR formally preserves the Maji shadow critique into the repository memory.
 

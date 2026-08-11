@@ -43,6 +43,7 @@
 - Pre-start checklist already on row (prior-art, dependencies, decomposition).
 
 ## Next (deferred)
+
 Future child: TS diagnostic for /permissions API + hardcoded-safety mapping (search-first + inventory).
 
 Co-Authored-By: Grok <noreply@x.ai>

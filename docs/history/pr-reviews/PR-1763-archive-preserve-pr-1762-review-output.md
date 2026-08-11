@@ -39,6 +39,7 @@
 - `git diff --check origin/main...HEAD`
 
 ## Notes
+
 PR #1762 had no review threads; this archive closes the post-merge archive chain for that PR.
 
 ## Outcome

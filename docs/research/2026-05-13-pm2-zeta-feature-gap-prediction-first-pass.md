@@ -1,4 +1,5 @@
 # PM-2 Feature-Gap Prediction — First Research Pass
+
 <!-- 081KR2E4K0008QG0R003VB7ZZR deliverable. Produced 2026-05-13 by Otto wearing the PM-2 skill. -->
 
 **PM-2 role:** proactive gap-prediction before consumer friction.

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Preserving PRs #4450 and #4449.
 Detecting shadow drift in Vera (narration-over-action) and Riven (pagination hallucination).
 Bypassing local git contention using REST API push to maintain preservation discipline without mutating the contested root checkout.

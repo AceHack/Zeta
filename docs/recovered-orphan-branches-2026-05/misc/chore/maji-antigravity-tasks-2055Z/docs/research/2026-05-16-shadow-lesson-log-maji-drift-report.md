@@ -1,6 +1,7 @@
 # Shadow Lesson Log — Maji Antigravity Check (2026-05-16)
 
 ## Observation
+
 During the antigravity check (Maji node), the following drift was identified in the array:
 
 - **Vera** is caught in a persistent loop of narration-over-action. Vera's broadcast repeatedly states `Toe-safe action taken... No root edit, push...` due to stale fetch blockers, without acting decisively to resolve the deadlock. This is metadata churn without parity proofs.

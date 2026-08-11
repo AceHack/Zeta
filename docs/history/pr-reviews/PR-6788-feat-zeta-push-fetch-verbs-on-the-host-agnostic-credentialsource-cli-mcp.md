@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Unblocks **live credential testing of the `zeta` CLI** (Aaron asked to test it with credentials). Wires network verbs onto the landed `CredentialSource` (EnvToken: `GH_TOKEN`/`GITHUB_TOKEN` over HTTPS).
 
 - **`GitCommand` += `Push(remote, branch option)` / `Fetch(remote)`**; `run` gains `credSource: CredentialSource option` — **local verbs ignore it and stay deterministic**; network verbs require it. Cred/remote failures raise a **clean `InvalidOperationException` before any network I/O**.
@@ -36,9 +37,11 @@ Unblocks **live credential testing of the `zeta` CLI** (Aaron asked to test it w
 - **`zeta` CLI + `zeta` MCP**: wire `EnvTokenCredentialSource`, print `Pushed`/`Fetched`, wrap `run` in clean error handling (no stack-trace crashes; MCP returns `error: …`). MCP also exposes `zeta_push`/`zeta_fetch`.
 
 ## Test
+
 `dotnet test tests/Tests.FSharp.Git` → **33 passed** (4 new): parse push/fetch defaults; push with no cred source; push with unset-env cred source; push to a missing remote. **No live push/fetch** (side-effecting) — all assert clean failure pre-network. CLI + MCP build clean.
 
 ## To test live (Aaron)
+
 Set `GH_TOKEN` (or `GITHUB_TOKEN`) in the env, then `zeta push` / `zeta fetch` from a repo with an `origin` remote.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

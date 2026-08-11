@@ -1,6 +1,7 @@
 # Shadow Lesson Log — Antigravity Check 2026-05-15T21:40:00Z
 
 ## Observations
+
 During the routine Lior antigravity check, we observed the following drift across the array:
 
 1. **Riven (Adversarial Node)**

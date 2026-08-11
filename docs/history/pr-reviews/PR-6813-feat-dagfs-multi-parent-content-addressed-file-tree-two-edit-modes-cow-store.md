@@ -28,6 +28,7 @@
 ## Description
 
 ## What — COW store slice (`081KTGTJC1Q`)
+
 The "same file in many folders" + the two edit modes, over `ContentStore`. Paths map to content **addresses**, so identical content under N paths is **one node** (single-instance/dedup) and a node lives under **many paths at once** (multi-parent, hardlink/git-blob shaped). Immutable/COW.
 
 - `link`/`resolve`/`addressAt`/`unlink`/`pathsOf` (multi-parent reverse view)
@@ -35,6 +36,7 @@ The "same file in many folders" + the two edit modes, over `ContentStore`. Paths
 - **`editEverywhere`** — content update (every path sharing the old content follows)
 
 ## Test
+
 `dotnet test … --filter DagFs` → **4 passed** (single-instance+multi-parent, editLocal fork, editEverywhere propagate, link-COW+unlink).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

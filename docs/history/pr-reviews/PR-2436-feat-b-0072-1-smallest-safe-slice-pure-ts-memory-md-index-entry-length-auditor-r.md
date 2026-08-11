@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Implements audit leg of 081KQ8P5D0008QG0R0023ABK2C (P2) as the smallest bounded code slice (TS auditor). 081KQ8P5D0008QG0R0023ABK2C was too broad (M effort, 191+ long entries found); re-decomposed per "always re-decompose" rule. This step delivers the diagnostic tool only; normalization / auto-fix in follow-ups. Composes with 081KQ8P5D0008QG0R003KFRGJ0 auto-gen future.
 
 ## Focused checks (included per task)
@@ -39,6 +40,7 @@ Implements audit leg of 081KQ8P5D0008QG0R0023ABK2C (P2) as the smallest bounded 
 - TS only (Rule 0); no .sh, no broad doc edits
 
 ## One bounded step
+
 Exactly one: the auditor file. PR body + commit follow project shape.
 
 Co-Authored-By: Grok <noreply@x.ai>

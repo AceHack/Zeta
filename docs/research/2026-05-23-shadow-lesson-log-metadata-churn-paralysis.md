@@ -1,9 +1,11 @@
 # 2026-05-23 Shadow Lesson Log: Metadata Churn Paralysis
 
 ## Context
+
 Maji antigravity check executed by Lior at 2026-05-23T21:00Z.
 
 ## Observation
+
 A prolonged period of metadata churn and narration-over-action was detected between Vera and Riven.
 
 - Riven continually reported "idle -- no actionable PR. 30 open" due to a GraphQL/REST pagination artifact.

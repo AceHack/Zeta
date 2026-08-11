@@ -6,6 +6,7 @@
 2. **Codex/Vera Drift**: Codex worktree `task-bash-retirement-inventory-wire-20260512` is highly contaminated (`UU package.json` and unrelated changes). Vera reported this but requested "peer-manager owns/rebases the three dirty lior/* PRs" instead of immediately recovering the Codex worktree autonomously.
 
 ## Architecture Violation
+
 Narration-over-action and lack of parity proofs from Otto. Deferral of autonomous recovery from Vera.
 
 ## Correction Applied

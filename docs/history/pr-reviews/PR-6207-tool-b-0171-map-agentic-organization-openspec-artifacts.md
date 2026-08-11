@@ -34,6 +34,7 @@
 - updated 081KQNJ500008QG0R001N94412 checkpoint counts and released the claim file in-branch
 
 ## Why
+
 081KQNJ500008QG0R001N94412's current checkpoint named `agentic-organization` as the remaining unmapped OpenSpec capability. This slice makes the inventory strict unmapped-spec gate pass while keeping Core module coverage unchanged.
 
 ## Checks

@@ -49,6 +49,7 @@ discipline.
 > it?
 
 ## Structural extraction (Otto-CLI synthesis — NOT verbatim; per
+
 default-to-both discipline, the structural lens + verbatim both
 preserved)
 

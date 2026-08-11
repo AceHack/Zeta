@@ -10,6 +10,7 @@
 3. **Otto**: Otto's bus remains totally stale, last updated 2026-05-11.
 
 ## Alignment Drift
+
 Agents are generating extensive meta-commentary about their constraints rather than clearing the constraints or producing concrete file changes. The repository's operational memory is being flooded with transient rate-limit status reports while actual backlog work stalls.
 
 ## Corrective Action

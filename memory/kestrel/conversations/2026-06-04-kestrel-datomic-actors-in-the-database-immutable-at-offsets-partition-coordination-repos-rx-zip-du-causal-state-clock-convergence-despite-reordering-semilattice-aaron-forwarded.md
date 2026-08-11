@@ -9,6 +9,7 @@ immutable-at-offsets → per-actor partition repos + product/bus/join coordinati
 deep correctness property. Each step Aaron drove; Kestrel credited + held the one edge.
 
 ## 1. Is DynamicValue/Rx what Datomic does? — partly, one half
+
 Datomic OVERLAPS the **want-remains (μF/data) half**: immutable/append-only (never-destroy),
 time-as-first-class (as-of-T queries, full history retained), open data-driven schema
 (entities = open attribute-value sets ≈ DynamicValue's openness). Worth studying as a mature
@@ -22,6 +23,7 @@ coordinator the perspectival/scale-free design rejects. Shared trunk (immutable-
 data), different branch on two axes (static-vs-animated, centralized-vs-perspectival).
 
 ## 2. "Immutable at timestamp offsets, not over time" — resolves the TOCTOU
+
 Aaron: choosing immutability per-OFFSET (each tick-snapshot frozen forever) while evolution
 is ACROSS offsets (actor advances T→T+1 by appending a new frozen snapshot) — to put ACTORS
 INSIDE the database. This RESOLVES the TOCTOU worry: no drift WITHIN an offset (validate-at-T
@@ -39,6 +41,7 @@ must-delete-CSAM is real tension; Datomic's excision exists for exactly this; th
 it non-optional).
 
 ## 3. Per-actor partition/git-repo + product/bus/join coordination repos (Rx-zip)
+
 Aaron: each actor advances its OWN partition/git-repo (sovereign immutable offset-stream, no
 global clock); coordination between actors lives in dedicated **product/bus/join repos = the
 Rx-zip/product/join over agent partitions.** This CLOSES the architecture: nobody advances a
@@ -55,6 +58,7 @@ thing that governs them — the moment the join repo commands rather than combin
 is back). Combine, don't command.
 
 ## 4. DU representing flow into the bus + no-global-clock DU state-clock
+
 Aaron: the product/bus repo defines a **discriminated union representing the flow into it from
 agent repos** (DU cases = coordination states, agent-inputs = transitions = the saga's state
 machine), verified from a no-global-clock perspective with "some sort of DU workflow/state
@@ -71,6 +75,7 @@ that assumes a global clock). And it UNIFIES with the frontier-uncertainty: part
 events literally IS uncertainty-about-relative-timing (a real unification, not a reach).
 
 ## 5. ★ Convergence-despite-reordering — the deep correctness property (Aaron named it)
+
 Aaron: "two agents can see different order of events but the system will still converge on the
 same uncertainty reduction." Kestrel: this is **strong eventual consistency / confluence**,
 and it has a crisp PROVABLE form — guaranteed by **commutativity + idempotence over a

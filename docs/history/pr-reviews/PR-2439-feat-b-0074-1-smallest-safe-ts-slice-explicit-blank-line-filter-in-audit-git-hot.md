@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Re-decomposed broad P2 081KQ8P5D0008QG0R0014HJFF5 (PR #72 punch-list stale-item sweep + 8 codex threads + cross-doc alignment, M effort touching docs/memory) into atomic code-preferring child 081KQ8P5D0008QG0R0014HJFF5.1 per 'always re-decompose' and 'prefer F#/TS over docs' rules.
 
 **One bounded step only**: added clarifying comment in `tools/hygiene/audit-git-hotspots.ts` documenting the existing `lines.filter((s) => s.length > 0)` blank-line exclusion (which implements the 'exclude blank lines from hotspot scoring' algorithmic refinement requested for 081KQ8P5D0008QG0R001D8RCZ9 in the 081KQ8P5D0008QG0R0014HJFF5 backlog row). No other files touched.
@@ -46,6 +47,7 @@ This slice retires one stale sub-item from 081KQ8P5D0008QG0R0014HJFF5; remaining
 - No dotnet impact; pure TS hygiene tool
 
 ## Why this slice
+
 081KQ8P5D0008QG0R0014HJFF5 decomposition mistake assumed doc-only surface; the actionable code surface (git-hotspot log-line filter) was already implemented in TS port — this makes it explicit + citable.
 
 Co-Authored-By: Grok <noreply@x.ai>

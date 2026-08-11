@@ -222,6 +222,7 @@ weaken the discipline → increase accidental-bioweapon
 probability.
 
 ### 5. The 4th control structure (theology) IS the
+
 substrate-deep bioweapon prevention
 
 The 4th control structure (theology/spirituality) provides

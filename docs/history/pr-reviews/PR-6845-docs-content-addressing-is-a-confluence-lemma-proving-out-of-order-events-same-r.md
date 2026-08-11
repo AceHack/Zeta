@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron 2026-06-07
+
 > the content-merge "dedups across strangers / ancestry-free" property "is going to come in handy on proof that proves out-of-order events end up with same results."
 
 Captured the **confluence / order-independence** proof scaffold. Content-addressing supplies **canonical idempotence**: the same datum reordered / duplicated / from any origin hashes to the same node → no double-count, no order-divergence. With:

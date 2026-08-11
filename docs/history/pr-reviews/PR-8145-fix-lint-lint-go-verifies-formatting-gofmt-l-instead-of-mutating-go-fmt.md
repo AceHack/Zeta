@@ -39,6 +39,7 @@ The Go lint ran `go fmt ./...`, which **rewrites files in place and returns 0** 
 - **`src/Core.Go/mixin/{mixin.go,mixin_test.go}`**: apply the formatting the old check had been silently re-applying each run (the real drift from #8115's Go side, never committed gofmt-clean).
 
 ## Verified
+
 `preflight --quick` passes all 9 checks (gofmt -l clean + golangci 0 issues for Go).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

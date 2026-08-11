@@ -34,12 +34,15 @@ Seventh step of the cross-language Ace trust core (after slice 8 SHA-256, 8.1 ca
 Spec: `docs/agendas/ace-package-manager/2026-06-03-ace-slice8.6-verifyindex-gate-golden-vectors-design.md` (in this PR).
 
 ### Scope — fixture-only
+
 `verifyIndex` is already a named export with unit tests (`registry-remote.test.ts`). **No extraction, no code change.** It's a pure function of explicit inputs (`now` is a parameter), so the full policy — including freshness — is deterministic and vectorable.
 
 ### The five ordered checks
+
 pinned-key (`signature.key_id == remote.key_id`) → signature (`verifyIndexSignature`, composes 8.4) → anti-rollback (`sequence ≥ high-water`) → future-skew (`issued − now ≤ 300000 ms`) → staleness (`now − issued ≤ max_staleness_days`, default 30d, skipped when `offline`).
 
 ### Contract = verdict + stable gate-class (not the English reason)
+
 A non-TS Ace words messages differently, so the contract is the **verdict** + **which gate fired**. `expected_gate ∈ {ok, pinned-key, signature:{unsupported-algo|untrusted-key|bad-signature}, rollback, future-skew, stale}`; the oracle maps `verifyIndex`'s free-text `reason` → class via documented substrings.
 
 ### Fixture (`tests/cross-verification/verify-index-gate/`)
@@ -48,9 +51,11 @@ A non-TS Ace words messages differently, so the contract is the **verdict** + **
 - `cross-verify.ts` — TS oracle runs the real `verifyIndex`, maps reason→gate-class, asserts verdict + gate; writes `ts-output.json`; exits non-zero on mismatch. **Auto-discovered by `cross-verify-all.ts` → 8/8.**
 
 ### Non-tautology
+
 A **Python five-check re-implementation** (key_id compare · ed25519 verify via `cryptography` · sequence compare · future-skew & staleness arithmetic with the real constants `300000` ms / `30`d · same order) authored every `expected_ok` + `expected_gate`; the TS oracle (real `verifyIndex`) reproduces them with **0 mismatches** — two separate policy implementations agreeing. Fixed keypair reused from 8.4 (`ed25519:0dbe5a2385bc2af4`); signatures are over each case's actual content (rollback/freshness cases carry valid sigs over their varied `sequence`/`issued_at`).
 
 ### Canonical-gate status
+
 Stays **TS-only + proof-owed → not canonical yet**.
 
 ### Gates (all green locally)

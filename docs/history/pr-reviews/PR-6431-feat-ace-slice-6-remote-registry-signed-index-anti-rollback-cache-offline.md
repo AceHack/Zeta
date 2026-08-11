@@ -44,6 +44,7 @@ Slice 6 of the Ace package manager — **remote registry** (081KT07NV0008QG0R000
 - Per-package hash-pin + signature gate **unchanged** — index trust is additive (defends availability + version-selection where the per-package pin can't).
 
 ### Deferred (sub-rows to file post-merge)
+
 Mirror/failover; incremental/paginated index; full TUF role-separation; `ace registry publish` tooling; per-registry key rotation.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

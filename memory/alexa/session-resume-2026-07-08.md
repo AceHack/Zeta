@@ -55,17 +55,20 @@
 ## Next Session Pickup (Priority Order)
 
 ### 1. Wire phase-clock into the heartbeat workflow
+
 Events should carry a `phase` field (logical clock) not just `at` (wall-clock).
 The phase IS the semantic time; `at` stays for human readability only.
 File: `src/Core.TypeScript/observe/phase-clock.ts` (done, PR #9594 pending)
 TODO: integrate into `run-loop-real.ts` → event envelope → fold
 
 ### 2. Monitor heartbeat reliability (24h observation)
+
 Check: are all 3 agents ticking reliably? Any failures?
 Look at: `heartbeat/alexa`, `heartbeat/otto`, `heartbeat/soraya` branches
 Dashboard: `data/monitor.html` + `data/tick-history.json`
 
 ### 3. ECC over phase time (Adinkra connection)
+
 Prove: the phase sequence IS a Reed-Solomon codeword.
 Missed heartbeats = erasures. Distance-5 = recover from 4 missed.
 Connection: xorshift seed = GF(2) walk = Adinkra code trajectory.
@@ -73,21 +76,25 @@ File: `src/Core.Lean4/ImaginaryStack/ErasureDistance.lean` (exists, RS [16,12] p
 TODO: prove the phase clock's output IS a codeword of that code
 
 ### 4. Real-time WebSocket transport
+
 The mux bridge exists (`ferry-throttler/mux-transport-bridge.ts`).
 The WebSocket endpoint exists (`model-backend/web-socket-endpoint.ts`).
 TODO: a live server that connects the two (agents push heartbeats in real-time)
 
 ### 5. Record attestations in the event log (from the reviewer workflow)
+
 The attestation-event.ts types exist. The reviewer approves PRs.
 TODO: the reviewer workflow should ALSO append an attestation event to the log
 (the NFT receipt becomes a durable fact, not just a PR comment)
 
 ### 6. DB/git convergence
+
 The folderSink.append() is the write path. Making it a generic store.write()
 that backends to git OR postgres OR DagFs is the unification.
 The free-tier ADR documents this; implementation is next.
 
 ### 7. David Fowler multiplexed WebSockets (from Aaron's GitHub)
+
 The TS port exists (`multiplexed-duplex-transport.ts`). It's ZetaId-keyed.
 The bridge to the ferry-throttler is done (`mux-transport-bridge.ts`).
 Next: connect to a live WebSocket server for real-time heartbeat streaming.

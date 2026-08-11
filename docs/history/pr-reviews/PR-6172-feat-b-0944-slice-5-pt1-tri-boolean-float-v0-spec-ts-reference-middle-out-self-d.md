@@ -30,6 +30,7 @@
 Slice 5 = the tri-boolean **float** — the hard, novel slice. The 081KSV2WD0008QG0R00051XS0N row says *"spec firming required before impl,"* so this lands the **spec firming + a TS reference (executable spec)**. F#/C#/Rust parity (slice 5 pt2) waits for your ratification of the layout.
 
 ## Spec (proposed v0 — `docs/research/...tri-boolean-float-v0-spec...`)
+
 **Middle-out, self-describing.** Layout `[ high value | decoder | low value ]`, read middle-out: the **middle decoder selects how the outer ends decode**. v0 decoder semantics: `mode` = radix-point position → decoded number = `intOf(high ++ low) / 2^mode` (self-describing precision — *same end bits, different magnitude depending on the middle*). Built **from the digital-qubit cell** (slices 1–4): every trit is a `Tri`.
 
 **Tri-valued (the load-bearing novelty):**
@@ -41,6 +42,7 @@ Slice 5 = the tri-boolean **float** — the hard, novel slice. The 081KSV2WD0008
 `measure`/`cooperate` + `Result<number, FloatFeedback>` mirror the tri-boolean discipline + monad-propagation.
 
 ## TS reference (`src/Core.TypeScript/tri-boolean-float/`)
+
 `decode` (middle-out), `measure`, `cooperate`, `isHeld`, `fromValue` (canonical smallest-mode encode), `fromTrits`. **Verified: `bun test` 8/8** (round-trip; middle-decodes-ends; value-superposed; interpretation-superposed; decoder-N-dominates; cooperate-preserves; not-representable; canonical-mode).
 
 ## 6 OPEN decisions surfaced for your ratification

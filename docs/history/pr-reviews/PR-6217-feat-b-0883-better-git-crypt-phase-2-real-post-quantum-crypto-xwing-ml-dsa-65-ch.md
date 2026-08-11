@@ -41,23 +41,28 @@ Wires the v1 type scaffold (`types.ts`) to actual post-quantum primitives in new
 - `contentNonce` added to `FileEnvelope` (memo schema `content_nonce`)
 
 ### Empirical API correction (runtime = the oracle)
+
 A probe against the **installed** packages caught two errors in the v1 design memo's pseudocode before they reached code:
 
 - memo's `chacha20poly1305(key).encrypt(nonce, pt)` **fails** on `@noble/ciphers@2.2.0` → corrected to `chacha20poly1305(key, nonce).encrypt(pt)`
 - memo's 3-arg `ml_dsa65.sign(msg, sk, context)` **fails** → 2-arg `sign(msg, sk)`; domain-separation `ctx` lives inside the signed CBOR instead
 
 ### Tests — 51 pass / 0 fail
+
 23 new `crypto.test.ts`: keygen sizes, single + multi-recipient round-trip, empty + 8 KiB binary payloads, all encrypt/decrypt `TFeedback` failure modes (EmptyRecipientSet, SenderNotInRecipientSet, RecipientKeyInvalid, SeedSourceNotAvailable, RecipientNotInEnvelope, KemFailure, SignatureInvalid on tampered ciphertext/signature/wrong-key), and on-disk CBOR encode/decode round-trip + determinism.
 
 typecheck clean (CI gate); eslint clean; prettier clean.
 
 ### Deps (pinned current-latest per dep-pin-search-first-authority, verified 2026-05-31)
+
 `@noble/post-quantum@0.6.1` · `@noble/ciphers@2.2.0` · `@noble/hashes@2.2.0` · `cborg@5.1.1`
 
 ### ⚠️ crypto-don't-rush gate (operator decision, README §"Phase 2 operator decisions")
+
 This lands the **library + round-trip tests only** — it is **not wired to any real secret** (no recipients.json, no git textconv, no real-data flow). Per the operator's gate, **KATs against Noble's published vectors + formal-verification + security-ops review of the envelope & key-handling are REQUIRED before this holds anything real.** Those are tracked follow-ups; do not use for real secrets until they're done.
 
 ### Still deferred (post-Phase-2)
+
 git textconv filter · recipient management (`.zeta-crypt/recipients.json` + rotation) · multi-cipher hedge (081KSNY2Z0008QG0R002ZAVMEK) · metadata encryption (081KSNY2Z0008QG0R0020KXAPS)
 
 Unblocks **081KSNY2Z0008QG0R0011XCT94** (zflash USB-bound crypto integration) + **081KSNY2Z0008QG0R0030V5ZVS** (agent private encrypted state).

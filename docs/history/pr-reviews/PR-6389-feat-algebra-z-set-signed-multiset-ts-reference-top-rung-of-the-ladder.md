@@ -39,6 +39,7 @@ Adds **oracle #1** for the Z-set, completing the design of the algebra ladder **
 - Like the Bag (unlike the G-Set), `union` is **not idempotent**.
 
 ### Matches the existing F# engine
+
 Targets the semantics of the existing `src/Core/ZSet.fs` (ascending `(key, weight)` run, consolidate duplicates, drop zero-weighted), so the F# twin joins the shared `golden-vectors.json` directly; C#/Rust follow.
 
 ### Files

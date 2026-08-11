@@ -34,6 +34,7 @@
 - regenerates docs/BACKLOG.md so 081KR2E4K0008QG0R002FSPPQR closed status matches the generated index
 
 ## Why
+
 #2079 merged before its non-required failed checks could block auto-merge. This follow-up repairs the two failed surfaces without touching the contested root checkout.
 
 ## Verification

@@ -30,6 +30,7 @@
 Comprehensive tests for everything added during the 2026-06-07 platform bring-up, so a fresh install is provably correct. Three layers:
 
 ### 1. NixOS VM boot test — `nixos/tests/k3s-control-plane-platform-fixes.nix`
+
 Wired into `flake.nix` checks (run: `nix build .#checks.x86_64-linux.k3s-control-plane-platform-fixes -L`). Boots the **real** control-plane modules in QEMU and asserts **every node-level fix is live** — these are the exact things that broke a fresh install:
 
 - **rpfilter OFF** — no `nixos-fw-rpfilter` mangle DROP (the pod→host black-hole that killed DNS)
@@ -40,9 +41,11 @@ Wired into `flake.nix` checks (run: `nix build .#checks.x86_64-linux.k3s-control
 Mirrors the existing `k3s-cluster-init.nix`; hermetic.
 
 ### 2. FAT12 injection logic — `tools/fat12-lib.ts` + `tools/fat12-lib.test.ts`  ✅ 12 tests pass
+
 The FAT12/VFAT-LFN byte logic behind the Windows raw key injection, extracted to a pure importable lib and unit-tested. Pins the write/read symmetry the installer relies on to read `zeta-authorized-keys.pub` off the ESP — with the **live-flash checksum `0x4b` as a known-value anchor**, plus nibble-packing, LFN round-trips, and on-disk ordering.
 
 ### 3. k8s manifest structure — `tools/k8s-manifests.test.ts`  ✅ 7 tests pass
+
 Every manifest has `apiVersion`+`kind`; the session-added apps (headlamp, cilium-lb-ipam, agent-memory, gmod) reference paths + include files that **exist** and carry the right objects (Longhorn PVCs, `LoadBalancer` on 27015, the Cilium LB CRs).
 
 **The 19 TS tests were run against a clean checkout of `main` — all pass.** The NixOS VM test runs in CI / via `nix build` (not run on the live cluster node, to avoid straining it).

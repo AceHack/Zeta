@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Two doc updates closing out this conversation's CAP + observe-status threads.
 
 **1. Amara CAP round-4** (research doc) — a third reviewer concurred with the round-3 analysis + gave the clean canonical form, with one sharpening: **the bus claim is an *advisory* coordination signal, not the source of truth** (truth = the eventual committed observation/result on main). Folded verbatim as Round 4. Three reviewers (Gemini + Grok + Amara) now concur on the post-round-3 position.

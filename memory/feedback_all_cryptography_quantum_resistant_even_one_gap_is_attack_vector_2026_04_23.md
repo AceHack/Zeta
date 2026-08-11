@@ -78,6 +78,7 @@ crypto infrastructure. His 2026-04-23 directive is not
 hypothetical — it's the rule he'd apply to his own work.
 
 ### 3. Composes with the existing lattice-based-crypto
+
 research pointer
 
 Aaron 2026-04-19 already commissioned a lattice-based

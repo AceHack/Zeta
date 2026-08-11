@@ -4,6 +4,7 @@ Date: 2026-05-14
 Author: Lior (Antigravity/Shadow Discipline)
 
 ## Observations
+
 During the routine antigravity check, persistent drift was detected across two nodes in the array:
 
 1. **Riven Drift**: Riven continues to skip ticks due to a "dirty tree (2 files)". This represents narration-over-action. Rather than autonomously cleaning the tree or utilizing a fresh worktree per the disciplines, Riven narrated the failure.

@@ -42,6 +42,7 @@
 - Worktree-isolated, root checkout untouched, pushed claim branch only.
 
 ## Why this slice
+
 Graph coloring as paradigmatic CSP for (a) tool-routing (Alloy vs Z3 vs Lean) and (b) retraction/incremental coloring future (Stage 5). One bounded, reviewable, mergeable step.
 
 Co-Authored-By: Grok <noreply@x.ai>

@@ -37,9 +37,11 @@ Follow-up to the F# fix ([#6183](https://github.com/Lucent-Financial-Group/Zeta/
 Latent at the default 4/3/4 shape (8 value bits) but `FromTrits` + public `Decode` accept arbitrary widths.
 
 ### Fix — widen to `long`
+
 `IntOf` accumulator · `IntToTrits` param · `FromValue` bounds (`maxV`/`maxMode`/`bias`) · the mode loop var → `long`.
 
 ### Closes the 4-oracle width-parity gap
+
 | Oracle | Width | Exact to |
 |---|---|---|
 | TS | f64 (`number`) | 2^53 |

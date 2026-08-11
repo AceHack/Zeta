@@ -49,6 +49,7 @@ Source-of-truth SQL authored in `inventory/sql/` for the owner to run in the Sup
 PROGRESS.md will be updated (Phase 0b → `[x]` with evidence; Phase 1 stays `[ ]` until proofs land).
 
 ## Phase 2 — Auth + roles
+
 Planned next on this branch after Phase 1's gate passes: email/password sign-in (SIGN-IN form only — no sign-up/create-account/reset), `getUser()`-verified trust, role via `current_user_role()` single-source, sign-out clears session + DOM/memory. Proofs (a) Viewer edit refused by DB, (b) RLS role per user, (c) sign-out clears rendered data.
 
 https://claude.ai/code/session_011CojXdZyNjq4449qBWGYJX

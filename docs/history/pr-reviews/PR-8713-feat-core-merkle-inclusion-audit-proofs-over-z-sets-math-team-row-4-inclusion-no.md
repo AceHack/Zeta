@@ -42,6 +42,7 @@ Discharges the **inclusion + no-third-party-forge** leg of math-team handoff **r
 - **Determinism**, **single-leaf** (empty path), **third-party** (verify sees only proof+root), and **retraction-native** — a `+1/−1` net-zero entry leaves the support and has no proof (DBSP/Z-set correction semantics, idempotency #6).
 
 ## Honest scope
+
 Structure proven; the digest's collision-resistance is the **named crypto premise** (XxHash128 is non-cryptographic — swap to BLAKE3 for Byzantine integrity, per `Merkle.fs`). **BP-16**: this FsCheck leg pairs with the existing Z3 root-determines-leaves proof. **Follow-up (not in this PR):** the 4-language byte-locked golden vectors *for proofs* (the Rust/TS `golden-vectors-merkle.json` cover roots today).
 
 Build: Core `0 warnings / 0 errors`; suite 9/9. Anchor: Merkle, CRYPTO 1987 (audit paths).

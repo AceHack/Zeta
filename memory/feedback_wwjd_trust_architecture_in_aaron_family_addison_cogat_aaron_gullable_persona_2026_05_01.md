@@ -66,6 +66,7 @@ observed violation at 16, lattice operational), without
 elaboration on incident specifics.
 
 ### 4. Addison's cogAT scores — methodology-independent external
+
    assessment
 
 Aaron 2026-05-01: *"Addison has almost perfect scores and score

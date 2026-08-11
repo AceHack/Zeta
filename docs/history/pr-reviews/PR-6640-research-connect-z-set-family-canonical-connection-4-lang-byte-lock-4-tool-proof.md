@@ -32,9 +32,11 @@
 The directive was "Z-set family to 4 langs next." **Search-first** (per *"for any proof search first, we have a lot of disconnected proofs"*) found the Z-set family is **already 4-language** (F#/C#/Rust/TS with cross-verify tests reading `golden-vectors.json`) **and already proven across four tools** — just **disconnected**. So this is the *connection*, not a port.
 
 ### Consensus axis — met (4-lang byte-lock + cross-verify tests + seed)
+
 F# / C# / Rust / TS impls, each cross-verified against `src/Core.TypeScript/z-set/golden-vectors.json`.
 
 ### Proof axis — met, four tools
+
 | Claim | FsCheck | Z3 | Lean | TLA |
 |---|---|---|---|---|
 | Abelian group | ✅ 6 laws | ⚠️ 2 of 6 | ✅ general over `G` | ✅ 9 invariants |
@@ -42,9 +44,11 @@ F# / C# / Rust / TS impls, each cross-verified against `src/Core.TypeScript/z-se
 | DBSP `z⁻¹/I/D`, `D∘I=id`, chain rule | ✅ C13 | ✅ C13 | ✅ `DbspChainRule` | ✅ |
 
 ### The concrete disconnection caught
+
 **`D∘I=id` is proven 3× independently** — Lean `chain_rule_id_corollary : D (I s) = s` (already on main) + C13 FsCheck + C13 Z3 (re-proved this session **without knowing the Lean proof existed**). Cross-tool agreement is the BP-16 ideal, but it was invisible — now connected. (This *is* the "disconnected proofs" you flagged.)
 
 ### Conclusion
+
 Z-set meets the canonical bar **more completely than DynamicValue/ZetaId** (adds Z3 + Lean + TLA to FsCheck + byte-lock) → **lead canonical candidate**, pending Soraya ratification + the registry marker.
 
 ### Honest gaps

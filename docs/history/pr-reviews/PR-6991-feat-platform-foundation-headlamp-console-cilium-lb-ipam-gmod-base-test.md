@@ -30,17 +30,21 @@
 First build executing **PLATFORM-ARCHITECTURE.md §7** — Headlamp (visibility), Cilium LB-IPAM (external IPs), and the GMod base test. All ArgoCD apps under `k8s/applications/`. **All 8 manifests pass schema validation** — the Cilium CRs were validated *server-side* against the deployed CRDs.
 
 ### `headlamp/`
+
 CNCF top-down cluster console — the near-term **Zeta Portal**: pods / PVCs / services / CRDs cluster-wide, logs + exec. `ClusterIP` for now (`kubectl port-forward`); OIDC + Cilium Gateway later.
 
 ### `cilium-lb-ipam/`
+
 `CiliumLoadBalancerIPPool` + `CiliumL2AnnouncementPolicy` so `Service type=LoadBalancer` gets a real external IP — **the MetalLB slot, done the Cilium-native way** (servicelb is disabled; MetalLB would fight Cilium). Pool `192.168.1.240–.250` + `en*/eth*` L2 announce — **⚠️ adjust to the real network**.
 
 ### `game-hosting/gmod/` — Garry's Mod base test
+
 StatefulSet (SteamCMD app **4020** install → `srcds`) + **Longhorn PVC** (world/addons = the FTP root) + **SFTP sidecar** (key-based) + **LoadBalancer Service on 27015**. RCON password is **runtime-generated into the volume** (no secret in git). This single hand-written instance is the template the `GameServer` CRD will stamp out per server.
 
 > **Scaffold note:** schema-valid, but the GMod image / `srcds` 32-bit runtime / sidecar permissions need **live validation on a healthy cluster** (post-reinstall).
 
 ### Next (per the plan)
+
 KubeVirt (operator + CDI + `nixos/modules/kubevirt-node.nix`) and the `GameServer` CRD + controller (templating this GMod instance per tenant).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

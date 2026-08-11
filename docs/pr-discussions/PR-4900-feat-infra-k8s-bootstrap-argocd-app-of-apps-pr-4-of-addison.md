@@ -25,6 +25,7 @@ PR 4 of Addison's NixOS-AI-cluster bootstrap plan. Lands the Kubernetes substrat
 ## File map
 
 ### `infra/k8s/bootstrap/` — K3S auto-applies (via `services.k3s.manifests`)
+
 | File | Purpose |
 |---|---|
 | `argocd-namespace.yaml` | Namespace `argocd` |
@@ -32,6 +33,7 @@ PR 4 of Addison's NixOS-AI-cluster bootstrap plan. Lands the Kubernetes substrat
 | `initial-orleans.yaml` | Minimal Orleans StatefulSet (`replicas: 0` until silo image published); namespace + RBAC + headless silo svc + client gateway svc |
 
 ### `infra/k8s/applications/` — ArgoCD watches recursively
+
 | File | Purpose |
 |---|---|
 | `root-application.yaml` | App-of-Apps root; selects `Application.yaml` at any depth |

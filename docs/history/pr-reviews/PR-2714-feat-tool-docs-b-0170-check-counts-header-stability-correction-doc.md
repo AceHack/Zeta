@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 One bounded step on 081KQNJ500008QG0R003SCWBDV (substrate-claim-checker TS tool), plus an explicitly included research archive absorb.
 
 - Re-decomposed assumption: 081KQNJ500008QG0R003SCWBDV marked atomic but now has 5/8 check-types shipped (count + existence + path-form + cross-surface + convention).

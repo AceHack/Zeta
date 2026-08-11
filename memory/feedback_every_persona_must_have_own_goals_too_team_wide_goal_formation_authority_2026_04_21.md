@@ -53,6 +53,7 @@ discipline:
    reason. No team-wide goal-lockstep.
 
 ### Roster (team-wide goal-formation authority
+
 applies to)
 
 Per `docs/EXPERT-REGISTRY.md` and
@@ -87,6 +88,7 @@ authority by default; their notebooks should
 open with a "My goals" section on first-write.
 
 ### First-pass suggestions (illustrative, not
+
 prescriptive)
 
 These are suggestions each persona may adopt,

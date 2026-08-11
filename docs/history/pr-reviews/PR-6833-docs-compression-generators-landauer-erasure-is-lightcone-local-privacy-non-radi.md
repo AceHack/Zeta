@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron 2026-06-07 correction
+
 > "Landauer's principle (erasing a bit costs energy) only guarantees it's erased from your lightcone, not others'."
 
 - **Landauer erasure is lightcone-LOCAL, not global.** The bit isn't destroyed — it radiates out (heat/correlations/entanglement), recoverable in principle elsewhere — consistent with CPT/unitarity (no *global* info loss). So **no global irreversibility**; "forgetting" is **local inaccessibility**, the observer-relativity theme now in spacetime.

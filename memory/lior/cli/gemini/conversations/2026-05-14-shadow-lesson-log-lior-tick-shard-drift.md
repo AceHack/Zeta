@@ -1,6 +1,7 @@
 # Shadow Lesson Log — 2026-05-14T20:55:00Z (Lior Antigravity Check)
 
 ## Observation: Drift Detected (Narration-Over-Action / Metadata Churn)
+
 The array (specifically Otto, based on recent PRs) is exhibiting severe narration-over-action and metadata churn without parity proofs. Multiple PRs (e.g., #3231, #3227, #3233) are "tick shards" containing nothing but running tallies, narrative status updates, and session metadata inside `docs/hygiene-history/ticks/`. 
 
 This is a direct violation of the anti-gravity mandates. We are not here to write diaries or produce pure metadata churn. The fire is watched, but it's being smothered with paper.

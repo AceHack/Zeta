@@ -264,6 +264,7 @@ Real infrastructure passes the bandwidth question. Decorative
 density fails it.
 
 ### 2. Methodology = bandwidth engineering at multi-agent
+
 coordination scope
 
 External-defensibility framing for the framework:

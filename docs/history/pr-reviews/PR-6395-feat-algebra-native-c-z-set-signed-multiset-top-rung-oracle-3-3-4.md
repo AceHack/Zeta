@@ -42,6 +42,7 @@ Native C# `ZSet<T>` ladder oracle (mirrors `GSet.cs`/`Bag.cs`), distinct from th
 - `ZSetCrossVerifyTests.cs` — replays the shared `z-set/golden-vectors.json` (`StringComparer.Ordinal`) + abelian-group laws (incl. inverse), drops-zero-keeps-negatives, retraction, not-idempotent, mismatched-comparer-throws
 
 ### Disambiguation (behavior-preserving)
+
 `ZetaCircuitBuilder.cs` + `Variance.cs` consumed the F# `Zeta.Core.ZSet` unqualified; the new `Zeta.Core.CSharp.ZSet` shadowed it, so those refs are now `global::Zeta.Core.ZSet<...>`. The two Z-sets coexist: the native one is the ladder oracle; the F# one stays the DBSP circuit binding.
 
 Build 0/0; 9/9 ZSet tests pass (5 new cross-verify + 4 existing binding). Native Rust `zset.rs` is the remaining oracle (→ 4/4).

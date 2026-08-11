@@ -292,6 +292,7 @@ the methodology (Otto applying it to substrate, x.com
 DM substrate access, future body-mode interactions).
 
 ### 3. The docs/research/erotica/ filing discipline is the
+
 substrate-preservation half; THIS file is the safety-
 discrimination half
 

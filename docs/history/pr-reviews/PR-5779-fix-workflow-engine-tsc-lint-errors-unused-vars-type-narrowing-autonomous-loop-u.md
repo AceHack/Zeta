@@ -37,6 +37,7 @@ Autonomous-loop tick caught BLOCKED gate on in-flight PRs (#5774-#5778). 6 tsc e
 - `closed-loop.test.ts` (TS2339/TS2345 ×5): direct LoopFeedback import (Awaited<ReturnType<>> evaluated to never)
 
 ## Verification
+
 ```
 bunx tsc --noEmit -p tsconfig.json  # clean
 bun test (3 affected files)         # 45 pass / 0 fail

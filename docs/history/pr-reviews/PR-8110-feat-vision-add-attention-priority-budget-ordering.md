@@ -34,6 +34,7 @@
 - Add tests proving high attention boards first without changing `Inference.Best`, and negative attention returns typed feedback.
 
 ## Why
+
 This codifies the rule we want for self-budgeting: attention and gravity change ordering, not arithmetic truth. The byte/time/uncertainty tank remains honest, so high-priority futures still backpressure when they do not fit.
 
 ## Validation

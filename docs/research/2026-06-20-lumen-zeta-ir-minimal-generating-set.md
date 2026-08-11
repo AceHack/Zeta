@@ -28,6 +28,7 @@ The six op-families reduce to exactly **four** core operations. The minimal gene
 Two ops from the earlier versions are completely redundant, subsumed by the later parallel-reuse ops.
 
 #### 1. `xorshr s` reduces to `xshrxor [s]`
+
 This was already explicit in the v3 widening logic (`ZetaIrV3.ofV2Op`).
 
 - `xorshr s` denotes $z \mapsto z \oplus (z \gg s)$
@@ -35,6 +36,7 @@ This was already explicit in the v3 widening logic (`ZetaIrV3.ofV2Op`).
 - **Proof:** Trivial equivalence.
 
 #### 2. `rotl r` reduces to `xrotxor [0, r]`
+
 This is the hidden collapse. A v2 `rotl r` replaces the accumulator with its rotation. A v3 `xrotxor` XORs rotations back into the accumulator.
 
 - `rotl r` denotes $z \mapsto \text{rotl}(z, r)$

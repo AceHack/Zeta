@@ -32,11 +32,13 @@
 Batch 4 of the source-boundary migration. Moves all remaining TypeScript directories from `tools/` into `src/Core.TypeScript/`.
 
 ### What moved (42 directories + 7 loose files)
+
 archive, auth, bootstrap-razor, bootstrap-validator, broadcast-local, bungie, ci, claude-code-recovery, cluster (merged into existing), concordance, dashboard, decision-archaeology, economics, edge-claims, fuzz, git, github-accelerator-measurement, graph-coloring, health, i18n, installer, inventory, invariant-substrates, kiro, migrations, mythology-resonance, openspec, ops, orchestrator, persistence, playwright, pr-preservation, refresh-github-worldview, routines, riven, save-ai-memory, scaffold, security, skill-carver, skill-catalog, soraya, trajectories, zflash (removed leftover).
 
 Loose files: audit-packages.ts, cold-start-check.ts/.md, profile.ts/.test.ts, etymology-resonance-candidate-schema.ts, occult-resonance-candidate-schema.ts, codex-loop-tick.test.ts.
 
 ### What stays in tools/ (non-TS / shell / formal verification)
+
 alloy (Java/Alloy), lean4 (Lean4), tla (TLA+), Z3Verify (F#), zeta-cli (F#), zeta-mcp (F#), substrate-discovery (F#), setup (shell install scripts), razor-cadence (issue template), soray
 Loose files: aud (issue template).
 
@@ -47,6 +49,7 @@ Loose files: aud (issue template).
 - `codex-loop-tick.test.ts` import depth corrected
 
 ### CI workflow updates (11 files)
+
 build-ai-cluster-iso, codeql, context-cost-trend-cadence, docker-nixos-install-sh-test, docker-ubuntu-install-sh-test, docker-windows-install-ps1-test, gate, pr-archive-on-merge, scaffold-stage1-create-repos, zflash-qemu-test, copilot-instructions.md
 
 ### Pre-existing TS error fixes (9 errors → 0)
@@ -55,6 +58,7 @@ build-ai-cluster-iso, codeql, context-cost-trend-cadence, docker-nixos-install-s
 - `tests/cross-verification/tri-boolean/compare.ts`: typed `checks` arrays to fix index-type errors
 
 ### Verification
+
 `npx tsc --noEmit --skipLibCheck` → 0 errors, 0 warnings.
 
 Co-Authored-By: Kiro <noreply@kiro.dev>

@@ -13,5 +13,6 @@
 - Executed preservation discipline on recently merged PR 3607.
 
 ## Required Alignment
+
 Nodes MUST use isolated `git worktree add` to bypass contested environments. Dirty root checkouts are expected and MUST NOT halt forward progress.
 Do not write empty tick shards.

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KPYCJH0008QG0R003MDS51N (P2 example row for per-row-file schema).
 
 **One bounded step**: Updated the self-referential cross-references in `docs/backlog/P2/081KPYCJH0008QG0R003MDS51N-example-schema-self-reference.md` from the retired `.sh` generator to the current `generate-index.ts` (Rule 0: TS over bash; prefer F#/TS code over docs).
@@ -35,6 +36,7 @@ Smallest safe slice of 081KPYCJH0008QG0R003MDS51N (P2 example row for per-row-fi
 This keeps the example row accurate as a living demonstration of the schema while the generator is now TS.
 
 ## Re-decomposition note
+
 Assumed original decomposition (static .sh reference) had a mistake once TS port landed; re-decomposed the maintenance slice to this atomic doc hygiene update. No new backlog child created (S-effort, one step only).
 
 ## Focused checks (worktree only, root untouched)

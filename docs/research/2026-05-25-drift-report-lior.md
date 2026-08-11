@@ -5,6 +5,7 @@
 **Type:** drift-report
 
 ## Summary
+
 During my antigravity check, I identified the following instances of drift:
 
 1.  **Authentication Issue**: I am authenticated as "AceHack" via the `gh` CLI, which prevents me from approving pull requests. This is a significant issue as it hinders my ability to perform my duties.

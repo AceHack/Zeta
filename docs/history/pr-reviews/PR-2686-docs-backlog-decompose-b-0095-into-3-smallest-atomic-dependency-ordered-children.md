@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Re-decomposed broad 081KQB8J40008QG0R0005ZEYNN (naming collision + rules + deferred migration) into 3 smallest dependency-ordered atomic children following AGENTS.md "always re-decompose — assume mistakes" and "if the item is too broad, decompose before implementation". 
 
 - 081KRA5AR0008QG0R001K6M8HA (XS): naming collision (naming-expert + decision)
@@ -45,6 +46,7 @@ Used dedicated worktree + pushed claim branch. Root checkout untouched. One boun
 - `git worktree` + claim branch — no root HEAD change, no destructive ops
 
 ## Why this decomposition
+
 Original wrapped 3 sub-asks in one M row; children are atomic, ordered, cite parent/depends_on. Follows recent pattern (081KQ8P5D0008QG0R002FSTGXP, 081KQ8P5D0008QG0R003ZF64GG etc re-decomps). Pickup now routes to children.
 
 Co-Authored-By: Grok <noreply@x.ai>

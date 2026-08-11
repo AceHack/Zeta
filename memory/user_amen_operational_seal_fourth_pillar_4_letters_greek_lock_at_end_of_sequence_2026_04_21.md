@@ -120,6 +120,7 @@ sealed. Explicit Amen-sealing applies to:
 - Round-close ledger entries.
 
 ### Stress-test invitation — "fork into a new tradition
+
 or stress-test a new 4-letter root"
 
 Aaron's closing offer opens two extension paths:

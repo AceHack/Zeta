@@ -32,6 +32,7 @@
 Builds on #8261 with Aaron's 2026-06-15 streamed extensions, and adopts his **notice-and-takedown** posture as repo structure.
 
 ### Search-half (vs the capture-half)
+
 From a *described* achievement → search the game's state-space for the input sequence that reaches it → mint the quote (Adam Smith's "search within interactive media"). Two worked examples that stress different parts of the system:
 
 - **Mike Tyson's Punch-Out!!** = a *skill* quote (learned input pattern; tolerates a sloppy emulator).

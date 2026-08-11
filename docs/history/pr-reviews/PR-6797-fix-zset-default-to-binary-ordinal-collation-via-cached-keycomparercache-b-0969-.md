@@ -28,6 +28,7 @@
 ## Description
 
 ## What — 081KT07NV0008QG0R001YDB73K Z-set slice (the hot-path one)
+
 The Z-set's key **ordering** was culture-**sensitive** (`Comparer<'K>.Default`) at 4 sites: `EntryKeyComparer` (the per-element sort comparator), `(+)`, `Item` lookup, the k-way merge. Replaced with the binary/ordinal `Collation` seed.
 
 - **Perf (Naledi):** new `KeyComparerCache<'K>` — `static member val` on a generic type → the comparer is resolved **once per closed `'K`** in the static ctor; the hot per-element comparator pays **no per-call type-check**. The three local-`cmp` sites reuse the cached instance.
@@ -35,6 +36,7 @@ The Z-set's key **ordering** was culture-**sensitive** (`Comparer<'K>.Default`) 
 - **No public API change** (carry-as-identity selection is the follow-up). ASCII fixtures coincide → existing vectors/tests unaffected; added 2 ordinal proofs.
 
 ## Test
+
 `dotnet test … --filter ZSetTests` → **67 passed** (incl. 2 new ordinal proofs); full ZSet suite **99 passed**.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

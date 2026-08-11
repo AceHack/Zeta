@@ -39,6 +39,7 @@
 - `git diff --check origin/main...HEAD`
 
 ## Notes
+
 The archived review data records two unresolved Copilot review threads on the launchd checklist follow-up. That is now durable substrate for the next actionable follow-up.
 
 ## Outcome

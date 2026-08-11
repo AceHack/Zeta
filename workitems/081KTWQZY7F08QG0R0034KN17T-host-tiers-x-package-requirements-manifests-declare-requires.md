@@ -58,6 +58,7 @@ resolver. Prior art in-repo: one-liner-tools.sh ZETA_INSTALL_FULL opt-in (a 2-ti
 - Unify with db/capabilities resolver wiring (one cap/support vocabulary across setup + runtime).
 
 ## Slice 3 (Aaron: "do the mise k8s split too… addison and max and every cluster to have full…
+
 we want to test full")
 
 - `.mise.full.toml` — the k8s set (k3d/kind/kubectl/helm/kubeconform) at the SAME pins, merged

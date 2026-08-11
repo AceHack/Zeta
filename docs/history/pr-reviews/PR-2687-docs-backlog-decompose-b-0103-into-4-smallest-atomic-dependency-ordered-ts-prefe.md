@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Decomposed broad 081KQB8J40008QG0R003XNATZJ (P2 unified lint) into 4 smallest atomic P3 child rows:
 
 - 081KQB8J40008QG0R003XNATZJ.1: rule + boundary + claim table extraction (TS schema, S)
@@ -54,6 +55,7 @@ Re-decomp per "assume mistakes" rule; original bundled too much + bash bias. Now
 Composes with 081KQB8J40008QG0R003VMCFWB/081KQB8J40008QG0R002PEP2A2 (now subsumed children).
 
 ## Next
+
 After merge, pick 081KQB8J40008QG0R003XNATZJ.1 (buildable now).
 
 Co-Authored-By: Grok <noreply@x.ai>

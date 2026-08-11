@@ -24,6 +24,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 ## Experience
 
 ### ServiceTitan, Inc. — Principal Engineer
+
 *May 2021 – Present · Rolesville, NC (Remote)*
 *NYSE: TTAN (IPO December 2024 — witnessed from inside)*
 
@@ -34,6 +35,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Substrate: field-service scheduling/dispatch/accounting are delta-heavy append-with-retract workloads — same IVM pattern, sixth substrate
 
 ### Lucent Financial Group / Zeta — Founder & Lead Architect
+
 *2024 – Present*
 
 - Designing retraction-native incremental view maintenance library (DBSP Z-set operator algebra) in F# on .NET 10
@@ -45,6 +47,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Filed 11 trajectory-grounded backlog items in a single session covering Ace DLC content packs, ARC-AGI-3 structure recognition, green lantern IoT ring, digital sanctuary protocol, concordance AI, and standing Rx query infrastructure
 
 ### LexisNexis — Lead Senior Technical Architect
+
 *June 2019 – May 2021 · Raleigh, NC (via Collabera)*
 
 - Re-architected flagship Legal Search engine on vendor-agnostic Kubernetes (EKS/AKS/GKE/bare-metal)
@@ -63,6 +66,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Substrate: stare decisis is formal retraction-propagation — legal search = incremental view maintenance over a precedent graph. Fifth substrate.
 
 ### Itron, Inc. — IoT Architect → Engineering Advisor (Director-level)
+
 *April 2012 – June 2019 · Raleigh, NC (via The Select Group)*
 *7-year tenure: R&D Principal SW Engineer → R&D IoT Architect → R&D Data Scientist → Director-level IoT Engineering Advisor*
 
@@ -82,6 +86,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Substrate: 100M+ meters emitting delta-readings — OpenWay Collection Engine IS a delta pipeline at continental scale. Fourth substrate.
 
 ### Allscripts — Principal Infrastructure Architect
+
 *January 2011 – April 2012 · Raleigh, NC (via Robert Half)*
 
 - Built "Native Integration" WCF engine between merged healthcare company products
@@ -92,6 +97,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - AOP (Aspect Oriented Programming) via WCF Invokers
 
 ### MacVector, Inc. — Principal Software Architect
+
 *April 2010 – January 2011*
 
 - Cross-platform Windows/Mac redesign of molecular biology software suite
@@ -102,6 +108,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Substrate: sequence alignment = incrementally maintained caches — sequences retracted, re-aligned, re-indexed. Third substrate.
 
 ### IAT Insurance Group — Senior Principal Consultant
+
 *August 2009 – April 2010 · Raleigh, NC (via Robert Half)*
 
 - Multidimensional risk-analysis cubes
@@ -109,6 +116,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Delivered LINQ-to-Objects/SQL/XML training to engineering teams
 
 ### Functional Tree, Inc. — CTO & Co-Founder
+
 *September 2008 – August 2009*
 
 - **Venture-funded startup** — raised capital, led technical architecture
@@ -118,6 +126,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Exotic Microsoft R&D stack: F#, XNA (with Karvonite), Phoenix Compiler, Oslo CTP, Axum, IronPython, Pex, STM (Software Transactional Memory) CTP
 
 ### Moveable Cubicle + SmartOnline — Interim CTO
+
 *April 2008 – September 2008 · (via Robert Half)*
 
 - Replaced IT infrastructure, **saved $200K annually**
@@ -125,6 +134,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Multi-level-marketing web application with n-layer advertising model
 
 ### RMSource — Lead Developer
+
 *September 2007 – March 2008*
 
 - Full workflow system for CRM: WCF/WPF/XAML/Workflow Foundation
@@ -133,6 +143,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Dynamic business-rule designer for non-developer users
 
 ### NC Housing and Finance Agency — Consulting Solutions Developer
+
 *February 2007 – September 2007 · (via Keane)*
 
 - Converted 3 business systems from .NET 1.1→2.0 in **2 days** (vs 2-week schedule)
@@ -140,6 +151,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Built workflow automation tool generating essential business classes
 
 ### MicroMedic — Web App Developer
+
 *October 2005 – January 2007*
 
 - UNC Chapel Hill enterprise management system
@@ -148,6 +160,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Military/defense clearance substrate
 
 ### 4County Health — Custom Software Designer
+
 *December 2004 – September 2005*
 
 - Hospital-to-**Duke Hospital** XML/HL7 near-real-time data feed — sole personal responsibility
@@ -155,6 +168,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Delivered 1 week ahead of schedule
 
 ### Maria Parham Medical Center — DBA & HIPAA Security Officer
+
 *November 2003 – August 2005 · Henderson, NC (via 4Front Systems)*
 
 - **HIPAA technical security officer at age 20-22 — at the hospital where he was born**
@@ -164,6 +178,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Substrate: patient records = retraction-heavy (corrections, chart updates, lab redos); integration engines = view-maintenance over merged sources. Second substrate.
 
 ### PC Guru — Founder
+
 *January 2003 – February 2006 · Henderson, NC (concurrent)*
 
 - First entrepreneurship — custom software for local NC doctor offices
@@ -171,6 +186,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Networking/TCP-IP/LAN/wireless built at local scale
 
 ### Election Systems & Software — Principal Software Engineer
+
 *January 2000 – January 2003 · Omaha, NE*
 
 - Central Voter Registration Database Specialist for state election systems
@@ -182,6 +198,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Substrate: voter registration = append-with-retractions (births, deaths, moves, name changes, district-boundary shifts); redistricting = recomputing views over retraction-heavy source data. **First substrate. The pattern starts here.**
 
 ### Object Technology — Systems Administrator
+
 *January 1999 – July 1999*
 
 - VB6 + C++ automated installations
@@ -189,6 +206,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Hardware/network troubleshooting
 
 ### Circuit Board Assemblers — Junior Systems Administrator
+
 *August 1998 – January 1999 · (age ~17)*
 
 - Windows 3.11→2000 automated builds

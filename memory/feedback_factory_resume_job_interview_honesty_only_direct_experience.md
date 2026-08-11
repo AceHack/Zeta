@@ -139,6 +139,7 @@ Three reasons this rule is load-bearing:
   scrutiny.
 
 # Factory-reusable patterns identified on Zeta (initial
+
 # scan — candidates for the "shipped knowledge" section)
 
 Each pattern cites its memory / doc and the concrete

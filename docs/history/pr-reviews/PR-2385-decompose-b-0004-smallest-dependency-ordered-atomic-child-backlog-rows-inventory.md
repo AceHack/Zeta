@@ -28,6 +28,7 @@
 ## Description
 
 ## One bounded step
+
 Decomposed 081KQ0YZ80008QG0R002HWBHKJ (broad P2 i18n/l10n of entire repo) into smallest atomic child rows per "re-decompose during build" and "if too broad, decompose first".
 
 - Used dedicated worktree + pushed claim branch (this PR).
@@ -36,6 +37,7 @@ Decomposed 081KQ0YZ80008QG0R002HWBHKJ (broad P2 i18n/l10n of entire repo) into s
 - Focused checks: build gate green; no other writes.
 
 ## Atomic children (dependency-ordered)
+
 The decomposition (already landed in branch via prior slice commit) splits the broad "translate everything" into atomic, ordered, testable rows:
 
 - 081KR50HA0008QG0R000YTJE8Q: Translatable-surface inventory scanner (TS tool, per Rule 0)
@@ -45,6 +47,7 @@ The decomposition (already landed in branch via prior slice commit) splits the b
 This is the minimal first slice; further children will be decomposed in follow-on bounded steps (re-decomposition assumed).
 
 ## Why this shape
+
 Follows "Prefer F#/TS code over docs", "smallest dependency-ordered atomic", "always re-decompose", "one bounded step + open PR".
 
 Co-Authored-By: Grok <noreply@x.ai>

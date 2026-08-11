@@ -64,11 +64,15 @@ zflash
 # → hostname stays 'control-plane'; ssh zeta@control-plane.local
 
 # Multi-node, one short flag per USB
+
 zflash --host pikachu      # → ssh zeta@pikachu.local
 zflash --host charizard    # → ssh zeta@charizard.local
 zflash --host bulbasaur    # → ssh zeta@bulbasaur.local
+
 # All three install from .#control-plane role-stack
+
 # each gets unique hostname + mDNS announcement; zero flake explosion
+
 \`\`\`
 
 ## Out of scope (filed separately as 081KSGS9H0008QG0R000EDNTY5)

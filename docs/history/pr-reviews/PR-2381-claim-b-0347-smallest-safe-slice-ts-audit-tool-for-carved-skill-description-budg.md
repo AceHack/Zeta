@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Smallest safe slice of 081KR50HA0008QG0R002ZNFQBZ (P1, broad M-effort "carve 200+ skill descriptions").
 Re-decomposed on assumption that "atomic" label was mistake: instead of touching 242 files, deliver a focused TS diagnostic tool (Rule 0 compliant) as the entry point. Tool lives at `tools/skill-carver/audit-descriptions.ts`, emits JSON report of description lengths vs 120-char target.
 

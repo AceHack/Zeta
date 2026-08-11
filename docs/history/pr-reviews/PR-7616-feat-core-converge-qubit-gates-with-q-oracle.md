@@ -34,6 +34,7 @@
 - add BenchmarkDotNet quantum observable benchmarks for Q# treaty JSON ingress, F# gate sweeps, CHSH sweeps, and Mach-Zehnder merge sweeps
 
 ## Independence shape
+
 Each language stays independent: Q# owns the oracle fixture, and F# consumes the committed JSON treaty with F#/.NET only. The benchmarks measure Zeta F# observable paths plus treaty-ingress cost; they do not call QDK/Python/TypeScript at benchmark time.
 
 ## Validation

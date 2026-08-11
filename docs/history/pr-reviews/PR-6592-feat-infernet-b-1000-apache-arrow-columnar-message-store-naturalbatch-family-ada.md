@@ -32,6 +32,7 @@
 Aaron: *"add arrows to all our primitives for in memory columnar store bit efficent message passing of state."* First + most-inevitable increment: the **message types** (what BP/EP passes) as an Arrow columnar store.
 
 ### The key idea
+
 Store a batch of N messages as **struct-of-arrays in natural parameters**. In natural params message **product = column-wise vector ADD** and **divide = column-wise SUBTRACT** for *every* family — contiguous, SIMD-friendly, and bit-exact equivalent to the scalar `Message` ops. The columns are Apache Arrow `DoubleArray`s → zero-copy, cross-language, the in-memory columnar store (composes `ArrowSerializer`; Apache.Arrow 23.0.0 already a dep).
 
 ### `src/Bayesian/MessageBatch.fs`
@@ -41,6 +42,7 @@ Store a batch of N messages as **struct-of-arrays in natural parameters**. In na
 - `ofMessages`/`toMessages`, `toRecordBatch`/`ofRecordBatch` (Arrow `DoubleArray` columns).
 
 ### Tests (`MessageBatch.Tests.fs` — 6/6)
+
 **batched product = scalar product element-wise, per family** (Gaussian; Beta → conjugate posterior `Beta(7,4)` via α-1 columns; Bernoulli via log-odds) — the columnar store is bit-exact to the algebra · batched divide inverts product (EP cavity) · `NaturalBatch` round-trips through an Arrow `RecordBatch` · pack/unpack identity + Dim/Count.
 
 ### Next

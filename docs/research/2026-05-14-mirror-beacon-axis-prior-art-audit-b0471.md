@@ -5,6 +5,7 @@
 **Related row:** 081KRHWGX0008QG0R002VV6DTS
 
 ## Purpose
+
 Collect and verify existing Axis-2 (Mirror/Beacon) substrate to ensure 081KRHWGX0008QG0R002DP6AZN (classification matrix) and 081KRHWGX0008QG0R0031EGYA7 (promotion gate protocol) are grounded in stable, consistent prior art. 
 
 ## Surfaces Audited

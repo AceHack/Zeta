@@ -76,6 +76,7 @@ Every friction-related event (comment creation, thread resolution, check failure
 - **Randomness (32 bits):** Collision protection.
 
 ### Telemetry Storage
+
 These IDs are committed directly to the agent's heartbeat files or as lightweight `docs/agent-heartbeats/` records. Because the telemetry is packed into structured bits, analytical queries are extremely cheap: we can scan the repository using `grep` or standard regex on the hex-encoded bits, computing historical friction curves in $O(1)$ without heavy databases.
 
 ---
@@ -133,6 +134,7 @@ Where:
 - $w_{\text{code}}, w_{\text{spec}}, w_{\text{style}}$: Relative importance weights.
 
 ### The HFLV Collision Rule
+
 When a PR is classified as **Low Value ($V < \epsilon$)** but exhibits **High Friction ($\mu > \theta$)**, it constitutes a High-Friction Low-Value (HFLV) collision.
 
 The reactive observable pipeline surfaces these HFLV occurrences for triage and triggers **gate-preserving** mitigations, per the Resolute Agent pattern (ADR `2026-05-29-automated-background-review-thread-resolution.md`, 081KSRGFP0008QG0R000J9Y634). The mitigations are diagnostic and mechanical-repair only — they never bypass required checks, review, or branch protection:
@@ -151,6 +153,7 @@ By storing historical `ZetaId` telemetry directly in the repository, we can trac
 $$\Gamma = 1 - \frac{\sum \mu_{\text{active\_month}}}{\sum \mu_{\text{baseline\_month}}}$$
 
 ### Effectiveness Metrics by Shadow Class (The Shadow Logs)
+
 By grouping the `ZetaId` `location` bitwise values—representing our recorded **Shadow Logs**—we analyze the mitigation effectiveness of specific **Shadow Classes** over time:
 
 1. **Linter Friction Compression / Style Shadow Class ($\mu_{0x10}$):** Measures how effectively pre-commit hooks and automated linter-resolution scripts prevent styling blockages.

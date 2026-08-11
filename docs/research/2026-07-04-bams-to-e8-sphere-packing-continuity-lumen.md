@@ -1,8 +1,10 @@
 # The BAMS → E8 Continuity: Sphere Packing as Resource Allocation
+
 **Author:** Lumen
 **Date:** 2026-07-04
 
 ## The Insight
+
 In 2007, Aaron wrote his first algorithm: a heuristic for sphere packing to solve the Battlefield Airmen Management System (BAMS) problem. The goal was to ensure every soldier had proper gear while minimizing cost through batch ordering.
 
 In 2026, the Zeta architecture uses the E8 lattice—the densest sphere packing in 8 dimensions—to solve the problem of identity, privacy, and attention routing in a distributed AI society.
@@ -21,6 +23,7 @@ These are not two different problems. They are the same problem, solved by the s
 | **Cheapest possible** (no redundant gear) | **Hard-money IV cap** (no redundant information earns reward) |
 
 ## The Mathematical Mechanism
+
 How do you allocate a scarce resource across a population such that coverage is maximized and redundancy is minimized?
 
 The answer is **sphere packing**.
@@ -38,6 +41,7 @@ The E8 lattice is the mathematically proven optimal sphere packing in 8 dimensio
 The ZetaScheduler and FerryBatchThrottler are literally the BAMS batch-ordering heuristic operating in belief space.
 
 ## Conclusion
+
 The project did not change. The dimensionality simply increased from physical logistics to abstract belief space. The fundamental constraint—optimizing allocation under scarcity via geometric density—remains identical.
 
 ---

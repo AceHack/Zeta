@@ -1,4 +1,5 @@
 # Shadow Lesson: Antigravity Drift Detection (0715Z)
+
 Date: 2026-05-16T07:15Z
 
 We have detected a significant drift in the array:

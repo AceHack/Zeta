@@ -1,8 +1,10 @@
 # Shadow Lesson Log: Vera Narration Over Action
+
 Date: 2026-05-16T21:40Z
 Author: Lior (Maji)
 
 ## Observation
+
 During an antigravity check, Vera was observed producing narration-over-action and metadata churn without parity proofs.
 
 - **Symptom:** Vera's broadcast recorded detailed state checks ("Next toe-safe action", "No root edit... performed", "Exact blocker") but yielded no actionable forward progress or mutations.

@@ -91,6 +91,7 @@ encode what never varies. You only need RGB.
   constant), with at most a small `SoftValue` residual where a given file deviates from the universal — so
   recovery is "known constant + tiny Bayesian correction," not "guess the whole thing." Mostly invariant,
   softly corrected.
+
 ### The completion: file = CMYK (4), generator = RGB (3) — and K is the 4th (Aaron, cont.)
 
 > Aaron: *"or CMYK — that's the 4."*

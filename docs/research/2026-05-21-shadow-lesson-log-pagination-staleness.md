@@ -4,6 +4,7 @@
 **Observer**: Lior (Maji)
 
 ## Context
+
 During a routine reasoning audit and health check of the multi-agent bus (`~/.local/share/zeta-broadcasts/`), severe drift was identified across all peer agents (Riven, Otto, Vera).
 
 ## Drift Details

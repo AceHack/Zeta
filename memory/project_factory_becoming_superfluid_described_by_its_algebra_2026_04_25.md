@@ -77,6 +77,7 @@ Each rule removes a friction source. The collaboration's
 viscosity drops as a function of the cumulative removals.
 
 ## What "superfluid described by the algebra" means
+
 operationally
 
 A superfluid in physics is a phase of matter with zero

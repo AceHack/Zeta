@@ -30,14 +30,17 @@
 Preserves the architecture thesis + acts on the Boost directive (Aaron 2026-06-01).
 
 ### Thesis (`docs/research/2026-06-01-languages-turned-inside-out-...`)
+
 > "just like Kafka turned the database inside out we are turning languages inside out and making the binary compatible BCL the valuable thing not the language it's written in" · "this is c++ boost for any language ... db heavy and observability heavy primitives" · "pull boost as prior art that has some elegant stuff in it"
 
 **Kafka inside-out** (log primary, DB derived) → **languages inside-out**: the byte-locked binary-compatible primitive layer + shared interface is the **asset**; the language is the **swappable rendering**. A primitive isn't "the F# Z-set" — it's "the Z-set, of which F#/C#/Rust/TS are four byte-equal renderings." This is the four-oracle conformance-by-agreement strategy (registry §Related-work, strategy six), and the algebra-ladder generic-math sweep landed today instantiates it. Positioning: **"C++ Boost for any language."** Also records the Rust quality bar (idiomatic ref-ops + lifetime-friendly; structured-C-elegance OK, C-isms not).
 
 ### Boost as prior art (`docs/PRIOR-ART-LIST.md`)
+
 Boost (C++) added to the reading list — study the **design** (policy-from-mechanism); mine Hana/MPL/Fusion, Graph, Spirit, Asio, Multiprecision/Units, Intrusive/Container, Outcome. **Ideas-not-code; we own our interfaces** (`bcl-interface-boundary`).
 
 ### Registry pointer (`docs/PRIMITIVE-REGISTRY.md`)
+
 A "why conformance-by-agreement is the asset" line in §Related-work links the thesis note.
 
 Docs-only; prettier + markdownlint clean.

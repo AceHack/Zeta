@@ -38,6 +38,7 @@ Runs `tools/setup/install.sh` inside a **real WSL2 `Ubuntu-24.04` on a `windows-
 Exercises what the Docker-Linux lane **can't**: real WSL kernel, `/mnt` interop, systemd-absent quirks, and native-clone `+x` preservation.
 
 ### Validated locally first (your "b then a")
+
 A clean-room `Ubuntu-24.04` distro ran the **full graph end-to-end** on 2026-05-31: routing → `linux.sh` → apt → mise + all runtimes (dotnet 10.0.203 / python 3.14.5 / java 26.0.1 / bun 1.3.14 / uv / node / actionlint / shellcheck / semgrep) → uv tools (ruff) → elan/Lean → dotnet-stryker + fsharp-analyzers → TLA+/Alloy jars → ollama + `qwen2.5:0.5b` → "Install complete". Runs the FULL install.sh incl. the local-LLM primitive (matches `docker-ubuntu-install-sh-test`).
 
 ### Design notes
@@ -47,6 +48,7 @@ A clean-room `Ubuntu-24.04` distro ran the **full graph end-to-end** on 2026-05-
 - **Paths-gated** (`tools/setup/**`, `.mise.toml`, this workflow) → fires only on install-substrate PRs.
 
 ### Validation
+
 This PR adds the workflow, which is in its own paths filter — so **the WSL job runs on this very PR**, validating the workflow on a real `windows-2025` runner end-to-end. Holding merge until that run is green (not false-greening an unvalidated shield, per `automated-tests-are-the-shield`).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

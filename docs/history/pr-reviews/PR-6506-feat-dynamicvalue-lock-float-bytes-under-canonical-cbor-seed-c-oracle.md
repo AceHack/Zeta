@@ -36,12 +36,15 @@ Locks the two cases canonical JSON deferred — **Float** and **Bytes** — unde
 - **Tests** (16 green): `FloatMatchesRfc8949AppendixA` re-anchors the float logic against the RFC directly; `CSharpCborEncoderAgreesWithSeed` replays all 42 vectors; Inf/-Inf/NaN/-0.0 facts.
 
 ## Float (RFC 8949 §4.2.2 shortest-float)
+
 float16 if it round-trips exactly → else float32 → else float64. `NaN → 0xf97e00`; ±0 and ±Inf sign-preserved. Verified against Appendix A: `100000.0→fa47c35000`, `1e300→fb7e37e43c8800759c`, `-4.1→fbc010666666666666`, subnormal `f90001`, etc.
 
 ## Deliberate deviation from RFC §4.2.1
+
 `Object` map keys stay in **insertion order, NOT bytewise-sorted** — `Object` is order-significant, so the §4.2.1 key-sort would be lossy / non-bijective (the same call v1 made for canonical JSON).
 
 ## Sequencing
+
 First of the four CBOR oracles (one authors, others replay): **C# here; F#/Rust/TS replay the same seed next.**
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

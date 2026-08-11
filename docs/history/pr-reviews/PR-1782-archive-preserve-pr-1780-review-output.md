@@ -49,6 +49,7 @@
 - GitHub status API reported Pull Requests, Actions, API Requests, and Webhooks operational before auto-merge arming.
 
 ## Notes
+
 PR #1780 merged cleanly and its archive workflow generated `docs/history/pr-reviews/PR-1780-archive-preserve-pr-1778-review-output.md`, then failed only when pushing directly to `main` under repository rules. This PR routes that generated archive through the required PR path.
 
 ## Outcome

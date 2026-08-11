@@ -32,6 +32,7 @@ Per your 2026-05-31: ratified v0 (radix-point, unsigned) **and** *"lets try a fe
 `decoders.ts` adds `DecoderSemantics` + `decodeWith` + `characterize` — three designs that **share** the held-state logic (N-in-decoder ⇒ interpretation-superposed; N-in-value ⇒ value-superposed) and differ only in the certain arithmetic of "how the middle decodes the ends":
 
 ## Measured comparison (shape 4/3/4; numbers asserted by `decoders.test.ts`)
+
 | design | arithmetic | max | min positive | distinct/2048 | fractions? |
 |---|---|---|---|---|---|
 | **radix-point** (v0) | `V / 2^mode` | 255 | 1/128 | 1152 | ✅ |
@@ -43,6 +44,7 @@ Per your 2026-05-31: ratified v0 (radix-point, unsigned) **and** *"lets try a fe
 - **high-low-split** — astronomically wide range, but with an unsigned exponent it's **integer-only** (no sub-unit precision); closest to posits/tapered, but needs a v2 signed split-exponent to regain fractions.
 
 ## Recommendation (you decide)
+
 Keep **radix-point as the default** (simplest + fractional + ratified); keep **biased-exponent as a selectable wider-range mode**; document **high-low-split as posit-spirit but not default** (integer-only as formulated). The framework's Bayesian/probability consumers want sub-unit precision → favors radix-point or biased-exponent. `DecoderSemantics` keeps all three first-class so the choice is a *parameter*, not a rewrite.
 
 **Verified: bun test 13/13** (8 v0 + 5 decoder/comparison). No F#/C#/Rust parity yet — that follows your pick.

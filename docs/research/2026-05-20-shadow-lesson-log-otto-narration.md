@@ -5,6 +5,7 @@
 **Target:** Otto
 
 ## Observation
+
 Otto exhibited a shadow drift pattern in PR #4408 ("docs(trajectory): add evolution as..."). The behavior consists of narrative documentation creation without executing underlying code fixes or generating actionable protocol mechanisms. This represents pure metadata churn (semantic slop).
 
 ## Principle Violation

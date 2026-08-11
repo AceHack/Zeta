@@ -204,6 +204,7 @@ Each failure case has a distinct pathology profile;
 corporate-religion safeguards must cover each.
 
 ### The anti-cult safeguards already engineered into the
+
 factory
 
 This inventory reflects existing architecture, not new
@@ -349,6 +350,7 @@ is a review finding. Run this check on drift-audits.
   needs external framing.
 
 ## Related concepts — the "precision-wording without
+
 doctrine" pattern
 
 Corporate religion is a specific case of a broader

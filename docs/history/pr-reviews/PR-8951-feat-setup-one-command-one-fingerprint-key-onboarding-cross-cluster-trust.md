@@ -32,14 +32,17 @@
 Two top-level, **one-fingerprint** commands for key onboarding, plus **cross-cluster trust** — collapsing the multi-step flow into ONE command gated by ONE biometric approval (Aaron 2026-06-21: *"should be ONE like fingerprint … too many steps and easy to get wrong … a 2nd one for new clusters; clusters also need to trust each other"*).
 
 ### 1. `setup-machine` — new dev machine / maintainer (existing cluster)
+
 `bun tools/setup/persona-keys/setup-machine-cli.ts --user <you>` → **ONE** Touch ID.
 Covers: status → user-keyring instruction (if missing) → machine key → trust-resolve → **auto cert-sign if a CA is configured on this host** (no `--sign-with-ca` flag; clean skip when no CA). `--dry-run` inert.
 
 ### 2. `setup-cluster` — new cluster trust root (+ cross-cluster trust)
+
 `bun tools/setup/persona-keys/setup-cluster-cli.ts --ca <org>` → **ONE** Touch ID.
 Generates the CA (`ensureCa`, commit-pub), then **renders** (never destructively activates) the multi-CA `TrustedUserCAKeys` set + the `ssh-ca.nix` snippet. You commit + import; it never runs `nixos-rebuild`.
 
 ### 3. Cross-cluster trust
+
 `--trust-peer <peer-ca.pub>` (repeatable) appends a PEER cluster's CA **public** key to the trust set — sshd trusts a cert signed by ANY listed CA. PUBLIC keys only; private-looking / non-pubkey peer input is rejected fail-closed. The CA private key never leaves its origin host.
 
 ## How one-approval works (the crux)

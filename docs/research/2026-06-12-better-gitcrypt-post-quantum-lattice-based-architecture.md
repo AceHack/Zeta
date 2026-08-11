@@ -20,6 +20,7 @@ This document proposes the architecture for a Zeta-native, post-quantum, retract
 ## 2. Resolving the 2026-04-21 Rejections
 
 ### 2.1. Access Revocation via Epoch-Based Key Rotation (Retraction-Native)
+
 The original `git-crypt` does not support revocation: once a user possesses the shared symmetric key, they can decrypt all historical and future versions of files until a costly, history-rewriting key rotation occurs.
 
 **Better Git-Crypt Solution:**
@@ -29,6 +30,7 @@ The original `git-crypt` does not support revocation: once a user possesses the 
 * **Unidirectional History Isolation**: Past epochs remain locked under their respective historical keys. Combined with **081KSGS9H0008QG0R0006F4BGX Thermal Forgetting**, the private keys for older epochs can be deliberately discarded ("forgotten") after a set retention period, rendering historical ciphertext mathematically undecryptable even if a key from a later epoch is compromised.
 
 ### 2.2. Diff-Readable Encrypted Content
+
 Standard encryption turns text files into single-block binary blobs, producing useless git diffs during PR reviews.
 
 **Better Git-Crypt Solution:**
@@ -38,6 +40,7 @@ Standard encryption turns text files into single-block binary blobs, producing u
 * **Visual Diffing**: Reviewers can see structural changes (e.g., a new config parameter added or removed) while secret values remain secure, preventing review-gate blindspots.
 
 ### 2.3. Post-Quantum Lattice Cryptography
+
 Legacy systems rely on classical RSA or ECC, which are vulnerable to Shor's algorithm.
 
 **Better Git-Crypt Solution:**

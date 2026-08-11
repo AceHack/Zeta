@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Decomposed broad P2 081KQ8P5D0008QG0R0002TN22C (cadenced lost-substrate recovery audit across worktrees + orphans + closed-not-merged PRs + aged drafts) into 4 smallest dependency-ordered atomic child rows, all S-effort pure-TS survey modules (Rule 0 + prefer TS over docs).
 
 **Dependency order:**
@@ -40,6 +41,7 @@ Decomposed broad P2 081KQ8P5D0008QG0R0002TN22C (cadenced lost-substrate recovery
 Each child is a single-file TS tool implementing the 3-bucket (ALREADY-COVERED/NEEDS-RECOVERY/OBSOLETE) + JSON+md output, ready for cadence wiring later.
 
 ## One bounded step
+
 Exactly as required: dedicated worktree + pushed claim branch (no root checkout touched), decomp only, PR opened. Re-decomp applied (assumed mistakes in original broad scope).
 
 ## Focused checks (included per rules)

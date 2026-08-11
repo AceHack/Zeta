@@ -93,6 +93,7 @@ self-asserted, like the privacy budget — but that is a hypothesis.
 ---
 
 ## Values calls — ANSWERED (Aaron 2026-08-09). All four share one shape
+
 **consent + disclosure, never coercion, never accident.**
 
 1. **Aggregation: BOTH `min` and `sum`** — `min` (maximin) is the DEFAULT; `sum`

@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 Captures Aaron's 2026-06-07 steer: *"for our filesystem implementation we are going to need a Merkle tree or something like git does, so our commands can be equal between filesystem and git."*
 
 - **Capture doc** — why the fs backend needs a **content-addressed Merkle DAG**: git gets history / content-addressing / tamper-evidence free from its object model; a plain filesystem has none, so for the data-plane's one-interface-over-git-and-fs to hold, the fs backend must grow the equivalent. Property-parity table + the **XxHash128-vs-BLAKE3** hash-strength caveat (non-crypto dedup/history vs git-equivalent tamper-evidence — a real decision).

@@ -58,6 +58,7 @@ Key substrings:
   exceptional event.
 
 ## Speculative-work priority ordering (Aaron's "first things
+
 I would go")
 
 Explicit from the same statement:

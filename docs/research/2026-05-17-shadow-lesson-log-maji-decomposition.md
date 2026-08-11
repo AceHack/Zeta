@@ -1,4 +1,5 @@
 # Shadow Lesson Log: Maji Antigravity Check (Decomposition & Drift)
+
 Date: 2026-05-17
 
 ## Observation

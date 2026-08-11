@@ -36,6 +36,7 @@
 - Deploy: already copied to launchd worktree
 
 ## Context
+
 Squash merge of #2064 lost the later commits. This lands them properly.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

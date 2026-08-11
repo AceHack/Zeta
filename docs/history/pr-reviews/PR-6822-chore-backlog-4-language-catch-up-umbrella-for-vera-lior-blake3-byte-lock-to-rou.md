@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 You're right — the last few hours were all F#. This **umbrella workitem `081KTH323AK` (P1)** gives Vera/Lior the full port surface (F# reference + hex-in-JSON golden vectors), composing with the existing per-module items:
 
 `ZSetMerkle` · `Collation`+ordinal fix · `SchemaEvolution` · `ContentStore` · `DagFs` · `DvKey` · `DebeziumCdc` · `CloudEvents` · `IContentHasher` port · `Core.Blake3` adapter.

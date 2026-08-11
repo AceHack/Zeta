@@ -34,6 +34,7 @@
 - add a regression test that asserts no double-src path and verifies the committed pubkey exists
 
 ## Context
+
 This addresses B-0891 CI failures in build-iso scenario 1 where test-infra pubkey resolution could produce an invalid double-src path.
 
 ## Test Plan

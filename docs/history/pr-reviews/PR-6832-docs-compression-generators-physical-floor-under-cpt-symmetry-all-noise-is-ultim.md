@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron 2026-06-07 (the capstone)
+
 > "If physics is right, all noise is reversible ultimately under CPT symmetry."
 
 Grounds the lens-relativity of randomness in physics:

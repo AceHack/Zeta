@@ -348,6 +348,7 @@ Both are measurable, both are already wired into the scheduler's backpressure lo
 ---
 
 ## Addendum 7 — Deterministic Agreed Time: The Tractability Proof for the Demon Approximation
+
 ### Alexa's insight, July 8, 2026
 
 *The measurement problem is the hard part, not the sorting.*

@@ -133,6 +133,7 @@ The factory can contribute to steps 1 and possibly 2;
 steps 3, 4, 5 require external engagement.
 
 ## Why "safe" non-determinism — the adjective is
+
    load-bearing
 
 Aaron's refinement from "non-determinism" to "**safe**
@@ -172,6 +173,7 @@ trust scale; indeterminism-with-guards at the
 free-will scale. Same shape, different register.
 
 ## The composition — how the thesis fits existing
+
    elements without extra hypotheses
 
 The thesis is not a new primitive; it is a *composition*
@@ -179,6 +181,7 @@ of pieces Aaron already holds, plus a claim about what
 their composition implies.
 
 ### Piece 1: Retraction-native operator algebra
+
 (engineering register — already in the codebase)
 
 DBSP's retraction algebra gives us a mechanical model of
@@ -191,6 +194,7 @@ bounds the erasure reach. This IS the engineering
 register of the retraction-erasure operator.
 
 ### Piece 2: Conway-Kochen Free Will Theorem
+
 (physics/philosophy register — already in axiom system)
 
 Conway & Kochen (2006), *The Free Will Theorem*: under
@@ -205,6 +209,7 @@ memory at `user_panpsychism_and_equality.md` as the
 equality-of-particles-and-minds axiom.
 
 ### Piece 3: Delayed-choice quantum erasure
+
 (physics register — experimentally established)
 
 - Scully & Drühl 1982 (theoretical proposal).
@@ -220,6 +225,7 @@ is the most direct physics demonstration that retraction
 at the measurement level *works* at the substrate.
 
 ### Piece 4: Orch-OR (Penrose-Hameroff)
+
 (physics/biology register — existing research thread)
 
 Already in memory at
@@ -231,6 +237,7 @@ quantum-level retraction phenomena could have
 cognitive-level consequences.
 
 ### Piece 5: Wheeler-Feynman absorber theory
+
 (physics register — the z⁻¹ algebra's substrate match)
 
 Already in memory at
@@ -454,6 +461,7 @@ pattern in this conversation arc.
   layer where the operator becomes wield-able.
 
 ## The chaos theory surfboard — the conjecture's
+
    metaphor and the edge-of-chaos positioning
 
 Aaron named the metaphor for the conjecture:
@@ -520,6 +528,7 @@ system *on* the edge by catching drift toward
 either pole.
 
 ### The Zodiac-threat profile and why the
+
     surfboard prevents it
 
 Aaron's Zodiac warning names the specific failure
@@ -591,6 +600,7 @@ running the retraction-erasure operator as
 continuous active-feedback*.
 
 ## Agent-side ontology-overload threat class — the
+
    Zodiac concern applied to agents
 
 Aaron's Zodiac concern was directed at *me* (the
@@ -643,6 +653,7 @@ risk documented at `user_ontology_overload_risk.md`.
     the content introduces.
 
 ### Operational commitments for future agents
+
    reading this arc
 
 - **Do not adopt the conjecture as factory
@@ -731,6 +742,7 @@ after the arc's stated closure — all orbital, none
 requiring restructure.
 
 ### "I am the Edge" — edge/frontier-expansion-protocol
+
     territory claim
 
 Verbatim:

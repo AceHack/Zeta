@@ -42,12 +42,15 @@
 - git diff --check
 
 ## KIND / side-effect proof
+
 Not applicable for this slice: the checkpoint changes pure application posterior projection and RMO candidate scoring, not a Cockroach adapter or durable side-effect lane. Durable event replay for reputation observations remains covered by the existing org-event/conformance tests in the focused and full suites.
 
 ## Review note
+
 Subagent review was attempted for this checkpoint, but the platform returned `collab spawn failed: agent thread limit reached`.
 
 ## Repo-level gate
+
 `dotnet build -c Release` is blocked before compilation in this environment because `global.json` requires SDK `10.0.203`; installed SDKs are `10.0.101`, `9.0.200`, and `9.0.100`.
 
 

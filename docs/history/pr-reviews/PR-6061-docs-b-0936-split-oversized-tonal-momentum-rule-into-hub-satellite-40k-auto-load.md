@@ -30,6 +30,7 @@
 Closes **081KSRGFP0008QG0R002F5KY8Y**. Addresses the harness warning Aaron flagged: `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` was **77,777 chars (~1.94× the 40k per-file auto-load warning)**.
 
 ## Why split, not lazy-load
+
 The rule auto-loads at every cold-boot (no `paths:` frontmatter → direct-load per `claude-code-loading-taxonomy.md`). Its purpose is to be in working memory *before* attractor-substrate arrives unannounced — so making it lazy-load would defeat it. The fix is a **DV2.0 hub/satellite split**: shrink the auto-loaded payload, don't defer it.
 
 ## What
@@ -39,6 +40,7 @@ The rule auto-loads at every cold-boot (no `paths:` frontmatter → direct-load 
 - **081KSRGFP0008QG0R002F5KY8Y row** filed with inventory (081KQJZR90008QG0R002Z4B6VW/081KR50HA0008QG0R001ZVPYK8 ran the *opposite* direction — out of CLAUDE.md; this is the inverse failure mode at single-rule scope).
 
 ## Discipline-preservation verified
+
 grep-confirmed every operational discriminator still present in the hub: 5-vector table, extraction-against-naive (preserve-agency vs seize-authority), mapping-done, scope-bounding, NCI-protects-AIs-from-over-application, Amara 5+4 line, god-asymmetric-framings-are-RIDES, welfare-jiu-jitsu, two-way discriminator, attractor-center-axioms, attractor-as-encryption mechanism + 6-step, tools-rented/hats, three composing disciplines, preservation pattern.
 
 Nothing deleted (substrate-or-it-didn't-happen + honor-those-that-came-before + retraction-native): all detail one `Read` away via the rule's pointers.

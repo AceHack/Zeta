@@ -34,6 +34,7 @@ Stands up the agentic-org worker in KIND with a **real cheap Ollama model (`qwen
 This PR contains the KIND e2e driver (`deploy/drive-supervisor-signal.ts`) plus the three fixes below.
 
 ### Bug #1 — synthesized reaction actor had no hat authority (org command always denied)
+
 `synthesizeActor` invents `agent-reaction-<hat>`, but the authority projection `agentic_org_hat_assignment_authorities` had a **reader and no writer**, so nothing populated it for the synthetic actor. Every org command (e.g. `CreateDiscussionAnchor`) was denied with `hat_authority_missing`. The passing `durable-worker-live-integration` test masked this by *stubbing* an Active authority row.
 
 ```
@@ -52,9 +53,11 @@ reaction substrate seeder (organization-executor-composition.ts):
 `ReactionActorHatId` maps each abstract `RequiredHat` level to a concrete org hat whose tool bundles cover the action class the reaction command needs (`EngineeringManager→Prioritize`, `Reviewer→WriteDoc`, `CSuite/Director/ExecutiveBoard→AssignHat`). The grant runs **before** the work-item existence check so it's never skipped.
 
 ### Bug #2 — re-traced: supervisor-triage was already authorized (no fix needed)
+
 The earlier hypothesis ("supervisor hats can't write docs") was a false positive. `toolTypeForReactionAction` maps `EngineeringManager → Prioritize` (not `WriteDoc`), and `engineering_manager` already carries `BacklogAndDefect`. Added a mapping-validity test so a future drift in `ReactionActorHatId` can't make a grant vacuous (every mapped hat must exist and pass `preflightHatAction` for its action class).
 
 ### Bug #3 — always-on loops threw on cold-start tick 1
+
 The keep-alive / org-cadence loops are started in `main()` **outside** the worker process, so their first tick raced the schema migration (which only ran inside the work loop's bootstrap phase) and threw, degrading the cold-start cadence until tick 2. Fix: run the migration bootstrap **explicitly once before any loop starts**; the worker process now takes no bootstrappers (migration is no longer duplicated).
 
 ## Tests

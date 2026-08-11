@@ -30,12 +30,15 @@
 Follow-up to #6516 addressing a Codex P2 review thread.
 
 ## Problem
+
 The TS decoder's input is `number[]` — the C#/F#/Rust oracles take `byte[]`/`Vec<u8>` which enforce 0..255 at the type level, but JS can't. A caller passing a non-integer/out-of-range element (e.g. `[0x18, 1.5]`) reached `BigInt(1.5)` and threw a `RangeError`, escaping the documented **never-throws** contract.
 
 ## Fix
+
 Validate every element is an integer in 0..255 at the `fromCanonicalCbor` boundary; a non-byte element cannot be canonical CBOR → `NonCanonical`, returned as a `DecodeResult` (not thrown). **No new `DecodeError` variant** — the cross-oracle error set stays identical (this is a TS-only boundary concern the type-safe oracles don't have).
 
 ## Test
+
 Rejects `[0x18, 1.5]` / `NaN` / `Infinity` / `256` / `-1` as `NonCanonical` without throwing. **90 TS tests pass; tsc/eslint/prettier clean.**
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

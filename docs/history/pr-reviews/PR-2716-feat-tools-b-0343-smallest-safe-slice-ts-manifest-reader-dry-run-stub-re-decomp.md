@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 One bounded step for 081KR2E4K0008QG0R002JW751Y (P1, parent 081KQTPYE0008QG0R00392KABJ): minimal TS stub at `tools/bootstrap-razor/seed-test-repo.ts`.
 
 - Implements manifest reader + `--dry-run` + `--help` only (no gh api, no repo create, no mutation).
@@ -43,9 +44,11 @@ One bounded step for 081KR2E4K0008QG0R002JW751Y (P1, parent 081KQTPYE0008QG0R003
 - (tsconfig single-file tsc skipped; runtime + Bun type ok)
 
 ## Why this slice
+
 081KR2E4K0008QG0R002JW751Y ACs were M-broad; this is the atomic reader/dry-run surface that unblocks follow-up (gh + idempotency + create) without risk.
 
 ## Next
+
 Follow-up child row for gh integration once this lands.
 
 Co-Authored-By: Grok <noreply@x.ai>

@@ -28,11 +28,13 @@
 ## Description
 
 ## What
+
 Bridges `DynamicValue` (which is `NoComparison`) into the data plane: **`DvKey`** wraps a value with its **canonical CBOR bytes** (`DynamicValue.toCanonicalCbor`) and orders/compares by those bytes (ordinal lexicographic — **exact, no hash-collision risk**). The canonical bytes also **are the content address** (hash them for `ContentStore`/Merkle), so row identity is consistent end-to-end.
 
 Now real self-describing rows flow through `ZSet`/`IndexedZSet`/`DebeziumCdc`: a Debezium update of a DynamicValue row = retract-old + insert-new as a Z-set delta.
 
 ## Test
+
 `dotnet test … --filter DvKey` → **3 passed** (equal/distinct keys + hash consistency, DvKey as ZSet key, Debezium events over DynamicValue rows → Z-set deltas end-to-end).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

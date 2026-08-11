@@ -34,6 +34,7 @@
 - prevent the C# CodeQL leg from exhausting anonymous GitHub API quota while fetching release metadata
 
 ## Root cause
+
 The latest main CodeQL run failed in the C# leg before analysis. `./tools/setup/install.sh` invoked `mise install` without any GitHub token in the environment, so mise/aqua used anonymous release metadata calls and hit the 60/hr GitHub API limit.
 
 ## Validation

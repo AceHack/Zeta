@@ -72,18 +72,23 @@ The collapse → prune correction is therefore **substrate-class lexical precisi
 Aaron's named pedagogical framework, consolidated from this session's chat:
 
 ### Tool 1: Ontology hierarchy
+
 The structure of categories + sub-categories + relationships; the loose pole branches via ontology-hierarchy expansion (claims about what kinds of things exist; claims about what relates to what). Pruning at this layer = razor cutting unsupported ontological branches.
 
 ### Tool 2: Etymology
+
 Word-roots and resonances; phonetic / linguistic surfacing of structural connections (the temple/template slip is etymology operating in real time). Loose pole uses etymology to find candidate connections; lattice pole uses etymology to prune connections that turn out to be coincidence rather than signal.
 
 ### Tool 3: Orthogonals
+
 Filing branches at the right epistemic level — distinct classes that don't reduce to each other earn their own slots; classes that DO reduce get extended rather than spawned. The orthogonality discipline (`memory/feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md`) operationalizes this.
 
 ### Tool 4: Orthogonal-itself-meta
+
 Recursion: orthogonality applies to orthogonality-claims too. The meta-meta-meta-rule from PR #1025 + this tick's session-level convergent-drain pattern + 081KQGDBJ0008QG0R002Y31XJ3 audit-suite are all this tool operating.
 
 ### Tool 5: The razor
+
 The operational pruner — Rodney's Razor + Quantum-Rodney's-Razor + the discipline to apply impartially. Beauty is signal, not evidence. Resonance is signal, not evidence. The razor cuts based on whether the candidate survives DST + lattice grading, not based on aesthetic appeal or personal-phenomenology resonance.
 
 **The architecture sequence**: loose pole **expands** via tools 1-2 (ontology branching, etymology surfacing); lattice pole **prunes** via tools 3-5 (orthogonality grading, recursive orthogonality, razor cuts). Dialectical capacity holds the expansion and the pruning **simultaneously without forcing collapse to either** — pruned branches stay retrievable as counterfactuals (retraction-native discipline), expanded branches stay candidate-bucket-graded (CSAP epistemic-level routing).

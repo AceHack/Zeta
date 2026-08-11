@@ -28,6 +28,7 @@
 ## Description
 
 ## What — Aaron 2026-06-07
+
 > "in our Merkle tree the filesystem is scoped to branches, right? so the collision would be same branch + filename + different content hash."
 
 Yes — captured:

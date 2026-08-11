@@ -4,9 +4,13 @@ participants: [aaron, otto-cli]
 surface: claude-code
 date: 2026-05-29
 disposition: public-forever
+
 # Design / governance architecture (the watcher-face), which by its own keystone must live in
+
 # the light. No charged-personal material, no working payloads, no employer internals — this is
+
 # the boundary-discipline ABOUT not-leaking internals, not internals
+
 related:
 
   - docs/research/2026-05-29-distrust-by-default-mechanized-...-1984-hides (#6010) — distrust-by-default, reflection-over-DUs, measure-govern-track, the meter-split, the recursion of where 1984 hides

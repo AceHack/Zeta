@@ -28,6 +28,7 @@
 ## Description
 
 ## What — first code slice of the Evolution extension (`081KTGYQ3A5`)
+
 Builds the **down direction** on the existing `SchemaEvolution` seed (081KSRGFP0008QG0R001Y6RTY9) — the zero-downtime rollback path.
 
 - **`Migration` gains `Down: (DynamicValue -> DynamicValue) option`** — `None` = **non-invertible** (rollback needs compensation, not an inverse).
@@ -39,6 +40,7 @@ Builds the **down direction** on the existing `SchemaEvolution` seed (081KSRGFP0
 - `SchemaRegistry` migrations carry `Down = None` for now (deriving per-op inverses from the `FieldOp` list is the next slice).
 
 ## Test
+
 `dotnet test … --filter SchemaEvolution|SchemaRegistry` → **18 passed** (4 new: lossless add/rename round-trips, lossy-remove names-the-loss, non-invertible errors).
 
 Greenfield API change (the `Down` field); existing `Migration` construction updated to the smart constructors.

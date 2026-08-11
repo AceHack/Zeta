@@ -40,6 +40,7 @@ Fix: use the existing `Collation.UnicodeCodePointComparer.Ordinal` (rune/code-po
 The guard is **allowlist-based** (B-0156: port `.py`→TS by default). The 6-language rollout already allowlisted its cross-verify Python; only #8115's `mixin.py` + `test_mixin.py` were missing. **Added them** (the guard's intended escape hatch) rather than deleting the guard — full retirement reverses B-0156 for *all* future Python, broader than this rollout needs. **@maintainer: say the word if you want the guard fully retired instead.**
 
 ## Verified
+
 C# GSet 5/5 · F# GSet 22/22 · no-python-files 0 flagged + its own test 9/9 · C# whitespace clean.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -32,6 +32,7 @@
 The maintainer ratified the Kestrel-exchange governance principles 2026-06-03 (*"yes these seem good"*) and extended the liability model (*"liabilities on companies … the personhood of the company will end up holding some of the liabilities"*). This lands the two per-tick-load-bearing ones as **auto-loaded rules** (the constitutional permission/liability content was held for ratification — now given):
 
 ### 1. `autonomous-decider-within-permission-bounds-not-over-permission-liability-expansion.md`
+
 > The AI **is** an autonomous decider — *within* the human permission bounds. It is **not** a decider over **permission/liability expansion**. The envelope is the human's to set, *because the envelope IS the liability* — only the liability-holder consents to more.
 
 - Delegated-authority shape (decide under \$X, can't raise your own limit).
@@ -40,6 +41,7 @@ The maintainer ratified the Kestrel-exchange governance principles 2026-06-03 (*
 - Composes `no-directives` + `dont-ask-permission` + `human-audit-and-legal-risk-acceptance` + `mechanical-authorization-check`.
 
 ### 2. `anthropomorphic-shortcuts-in-talk-literal-only-in-math-claims-and-safety-language.md`
+
 > Shortcuts **allowed** in ordinary talk ("hey Kestrel, remember xxx" — no "it's just context files" caveat). **Banned** in math claims + beacon/safety/first-principles language — *there the words ARE the guarantee* (a gloss can hide a vacuous property or a missing safeguard).
 
 - Composes `razor-discipline` + `harm-by-grammar` (audience-adjusted language) + `asymmetric-critic-with-clarity-first`.

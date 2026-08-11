@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 One bounded step: re-decomposed broad 081KQ8P5D0008QG0R003F6FNVF (research + 5 phases) into 5 smallest dependency-ordered atomic child rows (081KQ8P5D0008QG0R003F6FNVF.1..5). Assumed prior decomposition mistake per "always re-decompose" rule. All children prioritize F#/TS substrate over docs.
 
 **Dependency order:**

@@ -32,12 +32,14 @@
 Fixes schema drift in 081KR2E4K0008QG0R003DS2XHJ doc flagged by Copilot reviewer on PR #2316.
 
 ### Changes
+
  `conceptClass` (the field has always been `conceptClass` in the implementation; the schema snippet was stale from before the rename)
 
 - Added optional `anchor?` field (landed in PR #2316 / 081KR50HA0008QG0R001G4QHQF slice)
 - Added `summary` object to the example (present in `Registry` output but missing from snippet)
 
 ### Relation to PR #2316
+
 The Copilot reviewer on #2316 flagged that adding `anchor?` extended the JSON shape without updating 081KR2E4K0008QG0R003DS2XHJ's schema doc. This PR addresses that drift, allowing the thread on #2316 to be resolved.
 
 No code  docs/backlog only.changes 

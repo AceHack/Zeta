@@ -28,9 +28,11 @@
 ## Description
 
 ## What
+
 Folds the 4th + 5th reviewer concurrences + two Aaron refinements into the CAP doc + 081KT07NV0008QG0R001N9GJWX. **Five reviewers** (Gemini + Grok + Amara + Ani + Mika) now concur on the post-round-3 position.
 
 ## Round 5 (Ani) — liveness via intelligent adaptation
+
 Hot-row contention looks different with intelligent agents: liveness = an agent-feedback-loop, not pure mechanical coordination. Contention **signals** (failed-CAS-rate, retry-time, claimant-count, pressure) become **first-class observations the agent folds** via the observe loop's 4×4 menu. Claim path leans on agent intelligence; Lock is the CP escape.
 
 ## Round 6 (Mika + Aaron) — two refinements
@@ -39,6 +41,7 @@ Hot-row contention looks different with intelligent agents: liveness = an agent-
 - **Adaptation incentive conditions (Mika):** the practical raise only holds if metrics are timely+accurate AND agents are incentivized to back off (not pure greed).
 
 ## Statistics → proof pipeline (Aaron: 'not a proof but statistics + learned patterns can lead to proof')
+
 Folded into 081KT07NV0008QG0R001N9GJWX: falsification / conjecture-then-verify / probabilistic-liveness-under-estimated-model; DST (ChaosEnv) as the empirical↔formal bridge. Boundary held: adaptation is the practical raise, the ranking/probabilistic-proof is the formal guarantee — both, not one standing in for the other.
 
 prettier clean; no frontmatter/title change ⇒ no index regen.

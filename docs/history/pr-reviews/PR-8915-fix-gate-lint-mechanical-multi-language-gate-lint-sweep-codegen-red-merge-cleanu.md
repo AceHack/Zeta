@@ -40,6 +40,7 @@ Mechanical multi-language gate-lint sweep. The codegen trajectory landed several
 | **lint(bash hygiene)** | Added `tools/setup/common/qdk.sh` to the retained-shell inventory + `setup/bootstrap` category. | guard OK (setup/bootstrap 24, host-service 2, nixos 3) |
 
 ### The bash file decision (judgment, per the brief)
+
 `qdk.sh` is the modern Q# Development Kit (qsharp 1.x pip package) installer, added with **#8909** alongside the existing `quantum.sh`. It is a legitimate pre-Bun setup-edge installer whose inventory/allowlist entry was simply **missed at merge** — not a stray/scratch script. Correct fix is to **retain it** (add to the allowlist), not delete it.
 
 ## NOT fixed — flagged, not stubbed

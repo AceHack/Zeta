@@ -39,12 +39,15 @@ This is the concrete companion to the **falsifiable good-citizen test** both rev
 - External PRs merged / period · time-to-first-contribution per harvested dependency · relationship breadth
 
 ## Strategy
+
 Small, genuinely-useful contributions first (foot-in-the-door → trust → larger contributions). Prior art stays visible.
 
 ## Grounded in real evidence (not zero-base)
+
 mise dotnet plugin (already contributed) · .NET analyzer ecosystem (Meziantou/Sonar/G-Research/Ionide — we depend on these in-tree) · Feldera DBSP / Apache Arrow / FASTER relationships · 081KQTPYE0008QG0R0004H9ZB8 (F# UoM upstream) · 081KQ0YZ80008QG0R001V1PMC0 (BP primitives upstream) · AceHack GitHub history.
 
 ## Composes / distinct
+
 Composes with 081KSXN940008QG0R001V8NBDV (inbound contribution graph) + attention-as-currency rule. **Distinct from** `docs/UPSTREAM-RHYTHM.md` (internal fork↔upstream cadence) — this adds the *external* contribute-back axis. Whys stated newcomer-challengeable (no-dogma discipline).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -19,6 +19,7 @@ findings files. Future Daya runs write here directly under the
 `skills:` contract.
 
 ---
+
 ## Round 44 — pointer-integrity audit on `docs/FACTORY-HYGIENE.md` — 2026-04-20
 
 First exercise of row #25 (pointer-integrity audit) on the file

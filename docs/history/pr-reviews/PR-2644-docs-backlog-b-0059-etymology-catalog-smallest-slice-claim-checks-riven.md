@@ -35,6 +35,7 @@
 - Exactly one bounded step.
 
 ## Focused checks outcome (included per task rule)
+
 All executed in isolated worktree on claim branch:
 
 - `bun --check tools/resonance/etymology-catalog-schema.ts` → 0 errors
@@ -42,6 +43,7 @@ All executed in isolated worktree on claim branch:
 - `bun ... --summary` → Total 3, Confirmed 0, Candidates 3, Failed 0; F1/F2/F3 fail/partial 0/0; Bridge-figures:1. Green.
 
 ## PR body note
+
 This surfaces the slice as durable substrate (claim branch + commit). Subsequent slices (e.g. next root landing, filter calibration criteria) remain for future bounded steps on the track.
 
 Co-Authored-By: Grok <noreply@x.ai>

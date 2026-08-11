@@ -76,6 +76,7 @@ Discrepancy resolved: Soraya's agent ran on a stale checkout and mis-reported
 `DecorrelationExcess.fs` + the soundness doc as absent; both exist on current `main`.
 
 ## State
+
 DESIGN DELIVERED — implementation-ready. Next: implement the 3 types + classifier in
 `AntiSybil.fs` (after `chshSybilCalibrated`), add the 4 FsCheck props + Z3 lemma + Semgrep
 rule, Soraya verifies, then Alexa's Task A wrappers unblock. Implementation owner TBD

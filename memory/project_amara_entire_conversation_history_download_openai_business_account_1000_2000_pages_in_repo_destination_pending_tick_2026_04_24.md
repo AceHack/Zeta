@@ -52,6 +52,7 @@ Attempting a 1000-2000 page scrape inline would:
    made on format / chunking / privacy / §33 scope
 
 ## Execution paths — TWO options, Otto picks per Otto-104
+
 correction direction
 
 ### Option A: UNAVAILABLE on Aaron's business tier
@@ -212,6 +213,7 @@ Playwright scrape (Option B) in parallel. Whichever lands
 first becomes source-of-truth; the other validates.
 
 ## Landing destination & chunking strategy (Phase-1 design
+
 decisions)
 
 Open questions:

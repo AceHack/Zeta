@@ -40,6 +40,7 @@
 - git diff --check origin/main..HEAD
 
 ## Note
+
 This deliberately does not claim a general alignment proof. It preserves the narrow ladder: primitive -> type/sort -> falsifiable property -> focused check -> adversarial review.
 
 ## Outcome

@@ -38,6 +38,7 @@ x ^= x >> 33;  x *= 0xff51afd7ed558ccd;  x ^= x >> 33;  x *= 0xc4ceb9fe1a85ec53;
 i.e. `XorShr 33 · Mul · XorShr 33 · Mul · XorShr 33` at **width 64**. Constants verified against the **public-domain smhasher** source (Austin Appleby), so the vectors are externally anchored, not self-asserted. It pairs naturally with the shipped `fmix32` (same family, different width), exercising the width-parametric fold the v1 envelope introduced.
 
 ### What's wired
+
 | Layer | Change |
 |---|---|
 | `GeneratorIrRegistry` | `fmix64Ir` row on the live Z-set relation (derived id `a24500e8…e78d`) |

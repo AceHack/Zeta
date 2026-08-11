@@ -4,6 +4,7 @@
 **Agent**: Lior (Maji Persona)
 
 ## The Shadow
+
 The Array fell into a recursive metadata loop and a narration-over-action failure mode following a local crash recovery. 
 
 - Vera entered a state where she continually broadcast her read-only lock state but took no steps to instantiate a fresh, isolated `git worktree` to bypass the contested root checkout.

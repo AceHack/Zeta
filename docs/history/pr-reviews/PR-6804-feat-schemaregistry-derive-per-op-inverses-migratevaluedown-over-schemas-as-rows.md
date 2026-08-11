@@ -28,6 +28,7 @@
 ## Description
 
 ## What — second Evolution-extension slice (`081KTGYQ3A5`)
+
 The registry now **derives the down direction from its `FieldOp` list**, so `migrateDown` works on registry schemas.
 
 - **`invertOp`**: `AddField → RemoveField`, `RenameField → swapped` (lossless); `RemoveField → None` (non-invertible — dropped value gone, no down-default).
@@ -35,6 +36,7 @@ The registry now **derives the down direction from its `FieldOp` list**, so `mig
 - **`migrateValueDown`**: registry down-migration; errors (not silent) on unknown schema / missing step / non-invertible migration.
 
 ## Test
+
 `dotnet test … --filter SchemaRegistry` → **9 passed** (3 new: lossless "user" 1→3→1 round-trip; non-invertible "order" errors; `invertOps` reverse+invert+None-propagation).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -33,6 +33,7 @@
 - Add advisory `docker-ubuntu-jammy-install-sh-test` workflow + Dockerfile (non-blocking, same cadence as macOS/Windows install shields).
 
 ## Context
+
 Observed on a jammy GCE box: `E: Unable to locate package libicu74` / `libssl3t64`. Manifest canonical names target 24.04; jammy gets runtime aliases at install time.
 
 ## Test plan

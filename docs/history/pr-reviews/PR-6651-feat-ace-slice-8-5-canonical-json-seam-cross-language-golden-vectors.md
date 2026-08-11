@@ -34,6 +34,7 @@ Sixth step of the cross-language Ace trust core (after slice 8 SHA-256, 8.1 cano
 Spec: `docs/agendas/ace-package-manager/2026-06-03-ace-slice8.5-canonical-json-golden-vectors-design.md` (in this PR).
 
 ### Scope — the seam delta only
+
 `canonical.ts` is a seam over the project's shared, already-4-language-byte-locked `canonicalJson` (`dynamic-value/golden-vectors*.json`). This slice vectors **only the delta `toTagged` adds**: code-unit key sort · safe-integer-only · lone-surrogate reject · array-order preserved. **Fixture-only — no extraction, no code change, no unit-test change** (`canonical.test.ts` already covers the unit behaviour).
 
 ### Fixture (`tests/cross-verification/canonical-json/`)
@@ -43,9 +44,11 @@ Spec: `docs/agendas/ace-package-manager/2026-06-03-ace-slice8.5-canonical-json-g
 - `cross-verify.ts` — TS oracle asserts `canonicalBytes == expected_canonical_json` **and** `sha256(bytes) == expected_sha256` for canonical, `throws + substring` for invalid; writes `ts-output.json`; exits non-zero on mismatch. **Auto-discovered by `cross-verify-all.ts` → 7/7.**
 
 ### Non-tautology
+
 `expected_canonical_json` + `expected_sha256` were authored by **Python** `json.dumps(sort_keys=True, ensure_ascii=False, separators=(",",":"))` + `hashlib.sha256`; the TS oracle (Ace `canonicalJson` + `node:crypto`) reproduces them with **0 mismatches** — genuine cross-language agreement, Python's JSON impl being wholly separate from Ace's. Non-JSON-representable rejects (NaN/Infinity/bigint/symbol/function/undefined-omit) stay **unit-only** — a JSON parser in any language can't yield them.
 
 ### Canonical-gate status
+
 The Ace seam stays **TS-only + proof-owed → not canonical yet** (the shared primitive underneath is 4-lang; the seam's `toTagged` rules are TS-only until a non-TS Ace implements them).
 
 ### Gates (all green locally)

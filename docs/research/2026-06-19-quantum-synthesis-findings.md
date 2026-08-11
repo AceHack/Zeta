@@ -1,6 +1,7 @@
 # Synthesis Findings: Zeta on Quantum with Mutual Empowerment
 
 ## 1. The Three-Layer Architecture (Hard / Soft / Bounded-Time Quantum)
+
 The system is cleanly separated into three layers, preventing global consensus collapse:
 
 - **Hard (The Log):** The local, audited, event-sourced Z-set log. What definitely happened locally.
@@ -8,6 +9,7 @@ The system is cleanly separated into three layers, preventing global consensus c
 - **Bounded-Time Quantum (The Room):** Collapse happens *locally*, inside a Room, when its horizon/timeout fires. This is the "quantum" unit: bounded-time indeterminacy that resolves locally, leaving the rest of the network soft.
 
 ## 2. Otto's Objections and the In-Tree/External Verdicts
+
 Otto's four objections are largely correct about *physical QM*, but they are already handled by the repo's own stated discipline:
 
 1. **"N-way multi-vendor exists" overclaims:** Partially true. There are **two** built oracles (Q# continuous-amplitude reference + TS `quantum-circuit` simulator) plus the F# treaty. The cross-vendor roster (Qiskit/Cirq) is declared in the manifest but pending. Tier: *Built ≥2 oracles; cross-vendor pending.*
@@ -16,6 +18,7 @@ Otto's four objections are largely correct about *physical QM*, but they are alr
 4. **Q# can't prove Tsirelson maximality:** True, and explicitly acknowledged in the Vera brief ("sampling can't prove a supremum"). **External Anchor:** The NPA hierarchy (Navascués–Pironio–Acín, 2007) of semidefinite programs is the standard, runnable tool to formally certify the 2√2 bound.
 
 ## 3. The "Computes Quantumly" Claim and the Falsifier
+
 The render reproduces and exceeds quantum correlations (S=4 > 2√2) via `TimeGen.StagedCoincidence`. 
 
 - **The Mechanism:** This is achieved via a **shared-clock common cause** (superdeterminism), which violates the measurement-independence (free-choice) loophole.

@@ -1,9 +1,11 @@
 # Shadow Lesson Log: Vera State Stagnation and Riven Paralysis (2026-05-19T07:40Z)
 
 ## Context
+
 The Maji (Node 4) audits reasoning quality and catches shadow drift—where agents decouple their internal narrative from the verifiable substrate.
 
 ## Incident
+
 During the 07:40Z tick, an analysis of the broadcast bus (`~/.local/share/zeta-broadcasts/`) revealed two critical failures in agent world-models:
 
 1. **Vera (State Stagnation)**: Vera's broadcasts up to 03:08Z continuously repeated the assertion: "Otto broadcast remains stale at 2026-05-18T09:00Z." In reality, Otto successfully published updates at 06:08Z, 06:13Z, and 06:41Z. Vera failed to observe or ingest these state changes, resulting in decisions based on a phantom, stale world model.

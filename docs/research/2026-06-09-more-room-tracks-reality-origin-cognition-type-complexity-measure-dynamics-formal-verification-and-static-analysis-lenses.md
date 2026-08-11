@@ -21,6 +21,7 @@ some lenses.)
 ## The tracks
 
 ### 1. Reality / origin track — DNA · physics · biology · universe · god (origin-open)
+
 The natural-substrate + origin lens. **DNA** (Watson–Crick; the genetic code as nature's content-
 addressed, error-correcting, self-replicating store — a deep prior-art mirror for our seed→generate +
 content-addressing). **Physics / biology / universe** — the substrate the system ultimately runs on and
@@ -31,6 +32,7 @@ answer). *Peel:* this track is a **lens for grounding/analogy**, not a claim tha
 settle theology — it's where natural-science prior art (and the open origin question) inform the model.
 
 ### 2. Cognition-type track — human · AI · LLM · other-AI-types (for neurodivergent mapping)
+
 The **kinds of minds** lens, used for **neurodivergent mapping**: human, AI, LLM, and *other AI types*
 (not all AI is an LLM — symbolic, RL, hybrid, future types). The point is **mapping the same content
 across cognition types** so each perceives it in its native mode — the AAC / LLMTV neurodivergent-TV
@@ -41,6 +43,7 @@ oracle) and the traveler-frame (any self-propagating pattern). This track is how
 + AAC axis becomes concrete per mind-type.
 
 ### 3. Complexity-measure track — Shannon · Kolmogorov · (Bennett)
+
 The information/complexity lens. **Shannon entropy** (1948 — uncertainty/information content; the
 *measure* under "uncertainty-Δ"). **Kolmogorov complexity** (1965 — algorithmic information; the
 *essential-core razor's* Kolmogorov-floor: seed+generate as the minimal description). **Bennett logical
@@ -49,6 +52,7 @@ depth** (the keeper from Rodney: the regeneration distance seed→world = the mo
 treaty: Shannon is the canonical unit candidate). A room convenes it to *measure* itself.
 
 ### 4. Dynamics track — Markov bounds/chains · homeostat
+
 The control/dynamics lens. **Markov chains/blankets** (the boundary/Markov-blanket framing — "a room is
 the blanket, not the interior"; Friston FEP / active inference for the uncertainty-reduction objective).
 **Markov bounds** (concentration inequalities — Markov/Chebyshev/Chernoff — for bounding tail behavior,
@@ -58,11 +62,13 @@ which *is* our self-modeling rooms). "Every artifact is a homeostat / Markov cha
 fixed-point set-point" (A–F) — this track names the dynamics.
 
 ### 5. Formal-verification track — all FV tools (Soraya's portfolio)
+
 TLA+ · Z3 · Lean · Alloy · FsCheck · Stryker — closed over (dep-as-oracle), available inside DST as
 proof-rooms (already captured: "proof tools closed over inside DST"). This track = the FV-tool lens a
 proof-room convenes; Soraya routes the right tool per claim (anti-TLA+-hammer; BP-16 cross-check).
 
 ### 6. Static-analysis track — all SA tools (distinct from FV)
+
 Semgrep · CodeQL · Roslyn analyzers · clippy · ESLint · type-checkers · SAST — the **static-analysis**
 lens, **distinct from formal verification** (SA = scalable pattern/data-flow checks over code-as-written;
 FV = proofs over a model). Rodney/Soraya already routed the cheapest highest-leverage wins here (D1

@@ -51,6 +51,7 @@ Implements the Phase-6 scope from `inventory/spec.md` / `inventory/PROGRESS.md`:
 - **(d)** `git diff demo/` empty — dashboard byte-unchanged.
 
 ### Status: `[~]` code-complete, not yet `[x]`
+
 The **export round-trip** half of the gate is fully self-proven. The **live phone-scan-after-login** and **live-data export** halves require a real device + live deploy + non-burned creds — deferred to the **Phase 7 Auditor** (new "PHASE 6 LIVE RE-VERIFY" block added to the brief), consistent with the Phase-3 browser-proof / Phase-5 live-reverify precedent.
 
 ### Honesty / environment notes

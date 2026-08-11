@@ -34,12 +34,15 @@ The **last ladder rung**. TS has no operator overloading, so the dotnet-numerics
 - `monoid(compareK, compareV)` · `abelianGroup(compareK, compareV)` · `concatAll(compareK, compareV, is)` — factories take **both** comparers (the per-key value-`ZSet` merge needs `compareV`). **NOT `INumber`** — the ring product is the bilinear `join`, surfaced separately.
 
 ### Verification (CI gates)
+
 `tsc --noEmit -p tsconfig.json` **clean** · `prettier --check` **clean** (both) · `bun test` **18/18** (13 original + 5 new). *(Repo-wide `eslint .` from a fresh worktree floods on config-resolution and isn't CI-representative; the added factories + tests have zero non-null assertions and mirror the merged file's style.)*
 
 ### Tests (+5)
+
 `monoid` concat == add + empty identity · `abelianGroup` invert == neg, subtract == sub, IS-A Monoid · inverse `concat(a, invert(a)) == empty` and `subtract(a, a) == empty` · concat **NOT** idempotent (doubles) · `concatAll` folds with key-empties-out drop (`[]` ⇒ empty).
 
 ### 🏁 Completes the algebra-ladder generic-math sweep
+
 IndexedZSet: F# #6485 · C# #6486 · Rust #6489 · **TS (this)**. With Z-set (#6480–#6483) done, **every rung (G-Set · Bag · Z-set · IndexedZSet) now carries the dotnet-shaped generic-math interface in all four languages.**
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

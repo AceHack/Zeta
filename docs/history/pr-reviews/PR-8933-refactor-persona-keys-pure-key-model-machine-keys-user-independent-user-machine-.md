@@ -32,6 +32,7 @@
 **Security-class — DO NOT auto-merge; left OPEN for Otto's verify-gate.**
 
 ### The correction (Aaron 2026-06-21)
+
 The previous `machine.ts` minted a HYBRID `user@machine` device key filed under
 `maintainers/<user>/machines/`, conflating user+machine and scaling **O(users × machines)**.
 The correct model is **pure keys + certs**, scaling **O(users + machines)**:
@@ -50,6 +51,7 @@ The correct model is **pure keys + certs**, scaling **O(users + machines)**:
 - Tests updated for the pure shape: no `user@` in the label, registration under `machines/`, pairing ONLY in the cert. Fail-closed biometric tests preserved.
 
 ### The onboard publish decision (user-key vs omitted)
+
 **Omitted**, by design. The user keyring (`keyring-public.json`) holds an `ssh_fingerprint`, not a usable `.pub` SSH line; the real user pubkey is seed-derived and seed custody is the operator's (the orchestrator never touches the seed). Forcing a publish would either need seed access (invariant violation) or invent a non-existent artifact. A user publishes their own keyring key via `publish-cli.ts --key <user-pub>`.
 
 ### Verification

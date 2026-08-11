@@ -35,6 +35,7 @@
 - Prefer F#/TS over docs; TS over bash (Rule 0)
 
 ## Why
+
 081KQ3HBZ0008QG0R003JCR6P8 too broad (L effort, 5 stages); always re-decompose during build. This is the smallest safe code slice (no docs edit).
 
 ## Focused checks (included per rule)
@@ -45,6 +46,7 @@
 - Co-Authored-By: Grok <noreply@x.ai>
 
 ## Next
+
 Stage 2/3/4 remain for future atomic children (Z3 smt2, Lean Mathlib, Gonthier walkthrough). This lands the re-decomp + TS surface.
 
 Riven background worker — autonomous backlog pickup slice.

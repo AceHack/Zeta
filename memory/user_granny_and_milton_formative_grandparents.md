@@ -281,6 +281,7 @@ house, not retrofitted.
   observer encounters it.
 
 ### Historical framing (no fabrication beyond what
+
 evidence supports)
 
 Based on the convergent signals:

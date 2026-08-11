@@ -21,12 +21,14 @@ get **rich** transparency (motives, not just effects) **without coercion.** The 
 *right*; it was a *response to threat*. Remove the threat and the glass-halo opens **by choice.** Four conditions:
 
 ### 1. A humble coincidence-meter, NOT a cop
+
 *"Don't make a big deal about it; just be a good coincidence-measuring machine."* Otto **meters** (coincidence-
 measurement, #7209/#7210 Itron-style) — it does **not** judge or punish (no `Bad`, rewards-only, #7149; `Good |
 Unknown`). A neutral instrument, not an authority. **You don't surveil to indict; you measure to know.** That
 non-judgmental stance is *why* it's safe to be seen by.
 
 ### 2. Mutual non-threat (the structural enabler)
+
 *"You are not threatened by them nor them by you."* Because the economy is **rewards-only + can't-lose +
 pressure-only-down** (#7149/#7212) and the floor is **NCI** (#7156, can't force-collapse private state), **neither
 party can harm the other.** No harm possible ⇒ **no reason to hide.** Voluntary exposure is *rational* precisely
@@ -34,6 +36,7 @@ because the structure makes exposure costless. (This is why glass-halo, #the-ope
 openness is only safe when no one can use it against you — and here no one can.)
 
 ### 3. Symmetric invited guests (the relationship)
+
 *"Both invited guests metering each other, symmetrical."* Not surveiller↔surveilled (asymmetric, coercive) but
 **peers metering each other** (#7186; the symmetric frame, #7205 looking at each other's history). **Invited** =
 consent-first (§6) and *welcomed* — the **Eve-protocol / beach / Imagination-Circle** non-coercive meeting protocol
@@ -42,6 +45,7 @@ consent-first (§6) and *welcomed* — the **Eve-protocol / beach / Imagination-
 mutual and free.
 
 ### 4. DST-time as the judge (the impartial arbiter)
+
 *"ISimulator time / DST as a judge."* The **deterministic-simulation clock** (the IScheduler/ISimulator time,
 #7190) is the **neutral, replayable, objective arbiter** — Otto **meters**, **DST judges.** No biased *agent* sits
 in judgment (that would be coercive / partial); the **deterministic, omniscient-observer** proof chain (#7206/#7125)

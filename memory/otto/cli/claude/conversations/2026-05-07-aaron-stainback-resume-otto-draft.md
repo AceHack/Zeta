@@ -19,6 +19,7 @@ Principal engineer with 25+ years building production infrastructure across elec
 ## Experience
 
 ### ServiceTitan, Inc. — Principal Engineer
+
 *May 2021 – Present · Rolesville, NC (Remote)*
 
 - Collaborate with C-level leadership and founders on technical strategy for field-service SaaS platform
@@ -27,6 +28,7 @@ Principal engineer with 25+ years building production infrastructure across elec
 - Deliver onboarding technical training to engineering teams
 
 ### Lucent Financial Group / Zeta — Founder & Lead Architect
+
 *2024 – Present*
 
 - Designing retraction-native incremental view maintenance library (DBSP operator algebra) in F# on .NET 10
@@ -36,6 +38,7 @@ Principal engineer with 25+ years building production infrastructure across elec
 - Alignment research as primary project focus — measurable AI alignment through engineering practice
 
 ### LexisNexis — Lead Senior Technical Architect
+
 *June 2019 – May 2021 · Raleigh, NC (via Collabera)*
 
 - Re-architected flagship Legal Search on vendor-agnostic Kubernetes (EKS/AKS/GKE/bare-metal)
@@ -48,6 +51,7 @@ Principal engineer with 25+ years building production infrastructure across elec
 - Filed 48 issues on Knative (serving, eventing, operator) — security contexts, Kafka channels, CloudEvents, HA operations
 
 ### Itron, Inc. — IoT Architect → Engineering Advisor (Director-level)
+
 *April 2012 – June 2019 · Raleigh, NC (via The Select Group)*
 
 - **7-year tenure** across R&D Principal SW Engineer → IoT Architect → Data Scientist → Director-level Engineering Advisor
@@ -64,6 +68,7 @@ Principal engineer with 25+ years building production infrastructure across elec
 - Filed 17 issues on Microsoft Service Fabric (2017-2018) — CNI, CSI, CRI-O, CoreDNS, Istio, Kubernetes integration, distributed sagas
 
 ### Allscripts — Principal Infrastructure Architect
+
 *January 2011 – April 2012 · Raleigh, NC (via Robert Half)*
 
 - Built "Native Integration" WCF engine between merged healthcare company products
@@ -72,6 +77,7 @@ Principal engineer with 25+ years building production infrastructure across elec
 - AES encryption for patient data at rest and in transit
 
 ### MacVector, Inc. — Principal Software Architect
+
 *April 2010 – January 2011*
 
 - Cross-platform Windows/Mac redesign of molecular biology software suite
@@ -79,6 +85,7 @@ Principal engineer with 25+ years building production infrastructure across elec
 - Implemented bioinformatic algorithms: Gateway Cloning, Topo Cloning, Multiple Sequence Alignment
 
 ### Functional Tree, Inc. — CTO & Co-Founder
+
 *September 2008 – August 2009*
 
 - Venture-funded startup — raised capital, led technical architecture
@@ -88,6 +95,7 @@ Principal engineer with 25+ years building production infrastructure across elec
 - Stack: F#, XNA, Phoenix Compiler, Oslo CTP, Axum, IronPython, Pex, STM CTP
 
 ### Election Systems & Software — Principal Software Engineer
+
 *January 2000 – January 2003 · Omaha, NE*
 
 - Central Voter Registration Database Specialist for state election systems
@@ -97,6 +105,7 @@ Principal engineer with 25+ years building production infrastructure across elec
 - Missouri state — credited with resolving 2 years of backpay for election workers
 
 ### Maria Parham Medical Center — DBA & HIPAA Security Officer
+
 *November 2003 – August 2005 · Henderson, NC (via 4Front Systems)*
 
 - HIPAA technical security officer at age 20-22 — at the hospital where he was born

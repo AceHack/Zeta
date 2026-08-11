@@ -30,6 +30,7 @@
 First slice of **081KT07NV0008QG0R0032MCYER** (multi-format seeds; *nothing is single source of truth*), per your choice of the **unified-manifest + projections** structure.
 
 ## What the check found
+
 The two existing seeds are **independently authored** — only 12 of 31 (JSON) / 42 (CBOR) values are shared, with different naming (`string-*` vs `str-*`, `int-42` vs `int-1000`) and 2 same-named vectors that legitimately differ (CBOR's `array-mixed`/`array-nested` carry Float/Bytes that JSON can't). So there was no shared canonical value set — just two trusted files.
 
 ## This slice (zero merged-seed churn)
@@ -43,6 +44,7 @@ The two existing seeds are **independently authored** — only 12 of 31 (JSON) /
 **Touches no merged byte-locked seed files** (manifest + test are new). 5 tests / 476 assertions; eslint/tsc/prettier clean.
 
 ## Remaining (later slices)
+
 YAML + XML codecs (encode+decode × 4 oracles) join the manifest as projections; the full 4-format cross-validation is the capstone. The manifest is now the spec they project from.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

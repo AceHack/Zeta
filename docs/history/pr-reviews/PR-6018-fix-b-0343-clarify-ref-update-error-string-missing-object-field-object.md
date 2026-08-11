@@ -36,6 +36,7 @@ Carries forward a valid Copilot review finding from the redundant-closed PR #601
 - Copilot's error-string clarity finding was filed on #6017 (the closed copy) and never carried to the canonical version.
 
 ## Change
+
 Line 818: `"ref-update response missing object \`object\`"` → `"ref-update response missing object field \`object\`"`.
 
 The original read ambiguously as "missing object object". The reword matches the sibling parsers' `"missing string <field>"` phrasing and makes malformed-response logs easier to interpret.

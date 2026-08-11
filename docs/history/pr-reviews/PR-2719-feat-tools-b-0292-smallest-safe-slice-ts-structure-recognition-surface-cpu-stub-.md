@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Claim + verify smallest safe slice of 081KR2E4K0008QG0R001ZZ5XXF (P1): local GPU inference surface for concordance structure recognition.
 
 **One bounded step only** (per task rules): dedicated worktree + pushed claim branch before any write; TS-only (no bash); claim file + focused checks; no root checkout touched; no broad changes.

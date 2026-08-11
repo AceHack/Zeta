@@ -24,6 +24,7 @@ This message promotes the third Ouroboros layer from
 concrete architectural direction with a named moat.
 
 # The core design — two layers, two different
+
 # invariants
 
 ## Layer A — Consensus substrate (immutable, idempotent blocks)
@@ -47,6 +48,7 @@ every transaction, every contract call, every
 retraction, in the order they were finalised.
 
 ## Layer B — Contract semantics (retractable where
+
 ## opt-in)
 
 Contracts can be written with **retractable

@@ -41,6 +41,7 @@
 - `git status` in worktree confirmed single-file change before commit.
 
 ## Next (after this PR)
+
 Children 081KR50HA0008QG0R001CNS20T.1 etc will implement the TS-first test harness skeleton.
 
 ## Meta

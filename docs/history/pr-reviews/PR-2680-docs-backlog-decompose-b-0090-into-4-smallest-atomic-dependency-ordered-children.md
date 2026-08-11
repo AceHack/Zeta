@@ -57,6 +57,7 @@
 - Build gate + focused checks in body.
 
 ## Next
+
 After merge, each child becomes independently claimable. Parent now decomposed.
 
 Co-Authored-By: Grok <noreply@x.ai>
