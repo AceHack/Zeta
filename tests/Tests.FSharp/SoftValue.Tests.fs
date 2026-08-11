@@ -212,3 +212,52 @@ let ``sensor fusion: combine two sensors then multi-objective snap`` () =
     let s2 = (SV.ofWeighted [ cand 0, 0.4; cand 1, 0.6 ]).Value
     let fused = (SV.combine s1 s2).Value // ∝ (0.28, 0.18) → cand 0 wins the fused belief
     Assert.Equal(Some(cand 0), SV.snap (SV.weighted [ SV.posterior, 1.0 ]) fused)
+
+// ═══════════════════════════════════════════════════════════════════
+// NOT IDEMPOTENT — correct as Bayes, and a redelivery hazard the honesty guard misses.
+//
+// `combine` is commutative, associative and order-independent (proven above), and this module's
+// docstring says so. What it is NOT is IDEMPOTENT: `combine a a` sharpens `a`, because it is
+// `observe` with `a` as its own likelihood.
+//
+// AS BAYESIAN SEMANTICS THAT IS CORRECT and must not be "fixed": two INDEPENDENT observations of
+// the same likelihood SHOULD sharpen. The docstring is careful to scope its claim to
+// independent evidence, and it is right to.
+//
+// THE HAZARD IS DELIVERY, NOT SEMANTICS. Over a store-and-forward or retransmitting transport, the
+// SAME observation arriving twice is indistinguishable here from two independent ones, and it
+// sharpens. That sits in direct tension with this module's stated honesty property — "the seed
+// never invents certainty it doesn't have" — because the existing guard covers certainty fabricated
+// by CONTRADICTION (a likelihood that zeroes every candidate returns `None`) and does NOT cover
+// certainty fabricated by DUPLICATION.
+//
+// Order-independence does not help: the defect is in MULTIPLICITY, not order. The fix is the one
+// discipline #6 prescribes — a natural dedup key on the evidence, applied by the caller, since no
+// non-idempotent operator can supply one.
+//
+// REACHABILITY, recorded rather than assumed (2026-08-11): SoftValue has 8+ live callers, unlike
+// `BeliefConvergence` which has none — so this is on a live surface. But no sampled caller was
+// observed folding evidence off a redelivering transport, and no idempotence property existed in
+// any of the five SoftValue test files. Whether any live path can actually redeliver is OPEN and
+// is the question to answer before pricing this as a bug rather than a hazard.
+
+[<Fact>]
+let ``combine is NOT idempotent — self-combination sharpens (correct Bayes, redelivery hazard)`` () =
+    let a = (SV.ofWeighted [ cand 0, 0.5; cand 1, 0.3; cand 2, 0.2 ]).Value
+    let doubled = (SV.combine a a).Value
+    Assert.False(sameDist a doubled)
+    // And the direction is sharpening: the leading candidate gains confidence it did not earn from
+    // any new evidence. That is precisely "inventing certainty it doesn't have", by duplication.
+    Assert.True(SV.confidence doubled > SV.confidence a)
+
+[<Fact>]
+let ``the honesty guard covers CONTRADICTION but not DUPLICATION`` () =
+    let a = (SV.ofWeighted [ cand 0, 0.5; cand 1, 0.5 ]).Value
+    // Contradiction IS guarded: a likelihood zeroing every candidate yields None, never a fabricated value.
+    Assert.True((SV.observe (fun _ -> 0.0) a).IsNone)
+    // Duplication is NOT: re-observing the same likelihood silently sharpens instead of refusing.
+    let l (d: DynamicValue) = if d = cand 0 then 2.0 else 1.0
+    let once = (SV.observe l a).Value
+    let twice = (SV.observe l once).Value
+    Assert.False(sameDist once twice)
+    Assert.True(SV.confidence twice > SV.confidence once)
