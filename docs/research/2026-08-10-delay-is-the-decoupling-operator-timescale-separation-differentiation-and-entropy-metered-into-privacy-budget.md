@@ -297,6 +297,64 @@ Note the sibling result: §3's mechanism and §1a's requirement are the same obj
 The per-replica entropy source that makes differentiation possible is the metered crossing that
 credits budget. Differentiation and standing are paid for out of the same ledger.
 
+## 3c. The finding that changes what to BUILD — non-commutativity is the differentiating agent
+
+Everything above is diagnosis. This is the part that redirects work, and it comes from the
+biology anchor being corrected rather than confirmed.
+
+**The correction.** Allopatric speciation does not say *isolation causes differentiation*. It
+says isolation removes the **homogenising** term (gene flow), and the causal work is done by
+drift, local selection, and above all **epistasis** — the Dobzhansky–Muller mechanism, where
+allele `A` (fixed in one population) and allele `B` (fixed in the other) are each harmless alone
+and lethal together. That is a **non-commutative, state-dependent interaction term**.
+
+So the anchor was reached for correctly and read backwards:
+
+> **Non-commutativity in the fold is the differentiating agent. Delay only stops the commutative
+> merge from erasing it.**
+
+**And this closes with §2c as a no-go rather than a tension.** The commutative-fold ↔ unitarity
+correspondence turns out to be exact, not a rhyme: unitarity ⇒ every invariant subspace has an
+invariant complement ⇒ `Ext¹ = 0` ⇒ every extension splits. A commutative, order-insensitive
+fold gives the same thing — every partition heals, path-independently. But `Ext¹ = 0` says
+**nothing non-trivial can be built**, and a persistent difference *is* a non-split extension.
+
+> **Semisimplicity buys reconcilability by forbidding structure.** "Delay produces persistent
+> differentiation" and "the fold is commutative so merges always heal" are the same parameter at
+> two values. You cannot have both on one operator.
+
+That is the CRDT trade in cohomological dress: convergence means path-independence, and
+path-independence means no history.
+
+**What follows for the build, stated so it is actionable:**
+
+1. **Differentiation requires holonomy.** Path-dependence of the fold *is* a curvature, and
+   curvature is exactly the obstruction to a trivial splitting. Want differentiation? You need
+   non-zero curvature — and then reconciliation needs an **explicit correction term** (a
+   cocycle), not a hope that the merge will work out.
+2. **The shape that works is two-timescale, not one fold.** Slow commutative accumulation *plus*
+   a fast state-dependent operator. That has a genuine `ε`, a genuine slow manifold, and real
+   Fenichel theory behind it — where a single commutative fold has none, because pointwise
+   multiplication is a free accumulator with no relaxation rate and therefore no `λ₂` at all.
+   On the current fold, **delay is a no-op up to latency**: transient difference, permanent
+   identity. Free precisely because it is inert.
+3. **The absorbing zero is the counterexample to watch, and it is the wrong kind of
+   differentiation.** It is the one place the current fold differentiates permanently, and it
+   does so by destroying information rather than carrying any (pinned in
+   `tests/Tests.FSharp/BeliefConvergence.Tests.fs`, commit `f056dceda`, with reachability
+   recorded: no non-test callers today, but zero likelihoods are already generated).
+
+**A methodological consequence worth keeping separately.** A delay is an infinite-derivative
+operator — `e^{−τ∂ₜ} = 1 − τ∂ₜ + (τ²/2)∂ₜ² − ⋯` — so a delayed system's state space is genuinely
+infinite-dimensional and collapses to `ℝⁿ` only at `τ = 0`. The limit is **singular**, therefore:
+
+> A property verified under a synchrony assumption does **not** transfer to small `τ > 0` by
+> continuity. Uniformity in `τ` has to be proven, not inherited — so a model checked at `τ = 0`
+> yields no bound at `τ > 0`.
+
+That is checkable against our existing formal work today, and it is the kind of false green this
+session has been closing all day.
+
 ## 4. What the three observations are, together
 
 - **§1** supplies the hypothesis the compressed claim was missing — the mechanism by which
