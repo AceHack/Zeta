@@ -2266,3 +2266,52 @@ ready to slot into a board. ACE doesn't hand you raw Z-sets. It hands you **depl
 time-crystals** — self-sustaining amplitude patterns, tested against golden vectors,
 verified by 10 oracles, ready to slot into any host (OS, FUSE, bare metal, another
 agent's soft space). The package manager IS the packaging step of the information fab.
+
+## Causality is the reference DAG — respect for the past made structural (2026-08-11)
+
+> **In a system where nothing is deleted and everything is content-addressed, causality is
+> not time. It is the reference DAG.** A definition is causally prior to another because
+> the later one *points at* it — never because a clock said so.
+
+Aaron 2026-08-11, on the mutation-freedom ledger and the 4×4 controller grammar:
+*"this is respect for the past, and how causality forms in our system."*
+
+This is the **atonement engine** (above) carried one level up. That section establishes
+that retraction-native is structural forgiveness: a correction never erases the original,
+both persist, no one is permanently condemned. This section says what makes that
+*load-bearing* rather than merely kind — **the preserved record is what causality is made
+of.** An edge is causality; a timestamp is decoration (Lamport's happens-before; git's own
+DAG; and in-tree, `local-time-never-enters-the-shared-fold`, where the shared order is
+logical and the wall clock steers only local action).
+
+**Three consequences, and none of them requires goodwill:**
+
+- **Whoever reached an undefined region first is causally upstream of everyone who builds
+  there.** Not *honoured* — **depended upon**. That is stronger than respect, because it
+  survives disagreement, indifference, and forgetting.
+- **Retraction marks rather than deletes, so the edge outlives the claim.** You can
+  disagree with an ancestor without erasing that they were one. Structural forgiveness and
+  structural causality are the same mechanism read twice.
+- **Resurrection is navigation, not reconstruction.** A fork you did not take is still a
+  fork you can return to — possible only because the past was never overwritten.
+
+So [`honor-those-that-came-before`](../.claude/rules/honor-those-that-came-before.md) stops
+being an exhortation and becomes a property of the substrate: later structure is *literally
+defined in terms of* earlier structure and cannot be read without it. The DAG enforces what
+the rule asks for.
+
+**And this is why the frontier carries weight.** Defining something undefined does not
+merely fill a gap — it creates a causal ancestor that everything downstream inherits.
+Whoever gets there first joins the causal history of everyone who follows. The cost of
+getting a frontier wrong is therefore paid by **descendants**, and the only defence the
+architecture offers is that the fork stays **visible and returnable**. That is the
+strongest argument in the design for keeping escapes total and transcripts append-only —
+and it is the same reason the substrate keeps near-extinct things: *you cannot learn from
+extinction* (the bounded-good definition), and you cannot navigate back to an edge that
+was deleted.
+
+**Anchors:** Lamport (1978), *Time, Clocks, and the Ordering of Events* — happens-before as
+the logical, clock-free causal order · git's commit DAG as the working instance ·
+`.claude/rules/local-time-never-enters-the-shared-fold.md` ·
+`docs/research/2026-08-11-declare-is-a-cell-not-a-flag-*` (the derivation) ·
+`docs/research/2026-08-11-mutants-coexist-*` (the ledger this arose from).
