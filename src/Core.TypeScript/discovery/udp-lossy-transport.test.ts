@@ -295,7 +295,9 @@ describe("udp-lossy-transport", () => {
         receive = handler;
       },
     };
-    const channel = new LossyUdpChannel(transport, "receiver", bnn);
+    // Constructed for its SIDE EFFECT: the channel registers the transport's message handler, which
+    // is what `receive` below invokes. Nothing calls a method on it, hence the void.
+    void new LossyUdpChannel(transport, "receiver", bnn);
     const settle = () => new Promise((r) => setTimeout(r, 50));
 
     // FIRST prove the teaching path is live, so a later zero cannot be mistaken for a dead path —
