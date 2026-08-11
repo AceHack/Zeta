@@ -33,6 +33,29 @@ describe("BOUNDED — an agent cannot invent a response", () => {
     expect(observeFinding(room, "otto", [ledger("otto", [freedom()])]).grid.length).toBe(GRID_SIZE);
   });
 
+  test("AT SATURATION too — a large fleet cannot push cells past the escape", () => {
+    // The bound is enforced by one `next >= ESCAPE_INDEX` guard in `place`, and it only does any
+    // work once the grid actually fills: four cells are placed before the per-declarer loop, so it
+    // takes eleven disagreeing declarers to reach the escape slot. Every other test here uses zero
+    // or one ledger, which never gets close — so the state this block is named after went
+    // unexercised. This test covers it.
+    //
+    // It does NOT kill `gte-to-gt` on that guard, and the reason is worth recording rather than
+    // papering over: relaxing it to `>` lets `place` write grid[15] and stop at next=16, and the
+    // unconditional `grid[ESCAPE_INDEX] = …` two lines later overwrites that slot anyway. Nothing
+    // observable differs, so no test can hold it — see the `note-redundant` entry in otto's
+    // transcript. Keeping `>=` is deliberate defence: it stops depending on that write order.
+    const fleet = Array.from({ length: 20 }, (_, i) => ledger(`declarer-${String(i).padStart(2, "0")}`, [freedom()]));
+    const r = observeFinding(room, "otto", fleet);
+
+    expect(r.grid.length).toBe(GRID_SIZE);
+    expect(r.grid[ESCAPE_INDEX]!.action.kind).toBe("escape");
+    // No cell may claim an index outside the grid, however many declarers are shouting.
+    for (const cell of r.grid) {
+      if (cell) expect(cell.index).toBeLessThan(GRID_SIZE);
+    }
+  });
+
   test("a choice off the menu is REFUSED — the bound is structural, not advisory", () => {
     const r = observeFinding(room, "otto", []);
     expect(() => choose(r, -1)).toThrow(OffMenuError);
