@@ -267,4 +267,67 @@ describe("udp-lossy-transport", () => {
     expect(afterFirst).toBe(1);
     expect(afterSecond).toBe(2);
   });
+
+  // The REJECT path of the `isNackMessage` type guard, and an HONEST NOTE about what this test
+  // does and does not prove. Found 2026-08-11 by the mutation runner.
+  //
+  // The runner flips `return false` (for non-objects) to `return true` and the suite stays green.
+  // I first assumed that was a missing negative test and wrote this one. IT DOES NOT KILL THE
+  // MUTANT, and re-running the runner is what proved it — not the green suite.
+  //
+  // The reason is downstream: the teaching branch wraps its work in `try { ... } catch { }` with an
+  // EMPTY body, justified in the source as "browser env without dynamic import". When the guard is
+  // mutated to accept a string, the code enters the try and throws on `teaching.missingSeqs.join`,
+  // and the bare catch swallows it. Guard-true and guard-false therefore produce IDENTICAL
+  // observable behaviour, so NO test can distinguish them while that catch is that broad. The
+  // mutant is unobservable by construction, not under-tested.
+  //
+  // This test is still worth keeping — it pins that a well-formed teaching advances the BNN and a
+  // malformed one does not — but the second half currently holds because of the catch, not because
+  // of the guard. Narrowing the catch is a behaviour change on a live module and is left as a
+  // separate call.
+  it("ULT-16: a non-object `teaching` produces no teaching — the BNN is not fed network garbage", async () => {
+    let receive: (text: string, from: string) => void = () => {};
+    const bnn = createDimensionalBnn();
+    const transport = {
+      broadcast: () => {},
+      onMessage: (handler: (text: string, from: string) => void) => {
+        receive = handler;
+      },
+    };
+    const channel = new LossyUdpChannel(transport, "receiver", bnn);
+    const settle = () => new Promise((r) => setTimeout(r, 50));
+
+    // FIRST prove the teaching path is live, so a later zero cannot be mistaken for a dead path —
+    // that would be a vacuous pass. A well-formed teaching object must advance obsCount.
+    receive(
+      JSON.stringify({
+        type: "lossy-udp-nack",
+        nack: [1],
+        teaching: {
+          type: "nack",
+          missingSeqs: [1],
+          cause: "timeout",
+          why: "sequence 1 did not arrive",
+          howToFix: "increase the receive window",
+        },
+      }),
+      "sender",
+    );
+    await settle();
+    const afterValid = bnn.states.get("transport")?.obsCount ?? 0;
+    expect(afterValid).toBe(1);
+
+    // NOW the reject path. Each of these is a shape the guard must refuse; `null` is the
+    // interesting one, since `typeof null === "object"` exercises the guard's SECOND clause.
+    for (const teaching of ["not-an-object", 42, null, true]) {
+      receive(JSON.stringify({ type: "lossy-udp-nack", nack: [1], teaching }), "sender");
+    }
+    await settle();
+
+    // The NACK path ran four more times and NOTHING further was taught. Note what this does NOT
+    // prove: with the bare catch downstream, this would also hold if the guard were removed
+    // entirely. It pins the BEHAVIOUR, not the mechanism.
+    expect(bnn.states.get("transport")?.obsCount ?? 0).toBe(afterValid);
+  });
 });
