@@ -293,6 +293,26 @@ invariant to establish is that a net-positive regime exists: parameters where
 functions in real arithmetic — SMT-shaped — and a solver can return *no such regime* rather
 than running forever. That is the cheapest decisive experiment in this file.
 
+**RUN 2026-08-10 — `tools/Z3Verify/privacy-budget-net-positive-regime-lemma.smt2`.** The
+regime exists and **always closes**, unconditionally:
+
+- **Exists** (`sat`, by concrete witness): with a saturating `b` and linear `eps`, disclosure
+  can pay. The mechanism is not dead on arrival.
+- **Closes** (`unsat`, the result): `b` is bounded above by the secret's entropy (Shannon)
+  while `eps` composes without bound (Dwork et al.), so beyond some `K` every further
+  disclosure is net-negative. **Repricing moves `K`; it cannot remove it.**
+- **No re-entry**: *unresolved* — first encoding refuted (it omitted the `net(0)=0` anchor,
+  so net was free to start negative and rise), second timed out. Cited as neither.
+
+The operational consequence is an **anti-farming result stronger than the volume argument**.
+That crediting *volume* is self-mintable is the data-processing inequality, already proved
+sorry-free in `src/Core.Lean4/Lean4/DecorrelationDpi.lean`. This is sharper: **even honest
+re-disclosure of the same fact stops paying.** The mechanism self-limits against a truthful
+farmer, not only a lying one — so the budget is sustainable only under *genuine novelty*,
+surviving across secrets and never within one. Which is the threshold rhyme again: what is
+bounded is the sustained earning *rate* from one source, and the bound is a crossing point
+rather than a quota.
+
 Note the sibling result: §3's mechanism and §1a's requirement are the same object seen twice.
 The per-replica entropy source that makes differentiation possible is the metered crossing that
 credits budget. Differentiation and standing are paid for out of the same ledger.
