@@ -155,4 +155,18 @@ describe("renderGrammar16 — first-session overlay (slice 4)", () => {
   it("leadSlot highlights slot 4 while first-session pending", () => {
     expect(leadSlot(PENDING)).toBe(SLOT.ACCEPT);
   });
+
+  // The steady state of every established node: the session EXISTS but is finished. `pending` already
+  // implies a session exists, so the `firstSessionPending && world.nodeSession` guard only earns its
+  // keep here — a completed session must hand slot 4 back to real work instead of replaying the
+  // first-login overlay forever. Until this test, and-to-or on that guard was indistinguishable.
+  it("a COMPLETED session releases slot 4 back to the backlog", () => {
+    const done: World = {
+      backlog: [item({ id: "081KQB8J40008QG0R002PEP2A2", title: "ready work", ready: true })],
+      nodeSession: { ...defaultNodeSession(), complete: true },
+    };
+    const accept = slotOf(renderGrammar16(done), SLOT.ACCEPT);
+    expect(accept.firstSessionSubMenu).toBeUndefined();
+    expect(accept.label).toContain("ready work");
+  });
 });

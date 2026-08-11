@@ -48,6 +48,42 @@ describe("BOUNDED — an agent cannot invent a response", () => {
     expect(kinds).toContain("write-test");
     expect(kinds).toContain("defer");
     expect(kinds).toContain("escape");
+    expect(kinds).toContain("note-redundant");
+  });
+});
+
+// Found by running the thing: the first live finding was neither under-specified nor free-by-design.
+// A guard masked by an identical guard cannot be held by any test AND is not a freedom — so both
+// anticipated cells were wrong answers, in opposite directions. This cell reads the IMPLEMENTATION.
+describe("REDUNDANT — the third reading, orthogonal to the other two", () => {
+  test("it is offered even when the dimension is already declared free by me", () => {
+    // Declaring a freedom is a claim about the spec; it cannot settle whether the code is redundant.
+    const r = observeFinding(room, "otto", [ledger("otto", [freedom()])]);
+    const kinds = r.grid.filter((c) => c).map((c) => c!.action.kind);
+    expect(kinds).toContain("note-redundant");
+    expect(kinds).toContain("supersede-mine"); // and it does not displace the declared-free actions
+  });
+
+  test("it requires a reason — 'redundant' with no why is indistinguishable from silence", () => {
+    const r = observeFinding(room, "otto", []);
+    const idx = r.grid.findIndex((c) => c?.action.kind === "note-redundant");
+    const declared: unknown[] = [];
+    const appended: unknown[] = [];
+    const deps = {
+      declare: (f: unknown) => void declared.push(f),
+      supersede: () => {},
+      append: (e: unknown) => void appended.push(e),
+      now: () => "2026-08-11T12:00:00.000Z",
+    };
+
+    expect(() => execute(r, "otto", idx, "  ", deps)).toThrow(ReasonRequiredError);
+    expect(appended.length).toBe(0);
+
+    const entry = execute(r, "otto", idx, " masked by the guard on the next line ", deps);
+    expect((entry.action as { reason: string }).reason).toBe("masked by the guard on the next line");
+    // Recorded, but it grants NOTHING — a claim to be checked is not a freedom to be honoured.
+    expect(declared.length).toBe(0);
+    expect(appended.length).toBe(1);
   });
 });
 

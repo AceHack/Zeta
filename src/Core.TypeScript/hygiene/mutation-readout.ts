@@ -72,6 +72,12 @@ export function roomOf(f: Finding): FindingRoom {
 export type CellAction =
   | { readonly kind: "declare-free"; readonly reason: string }
   | { readonly kind: "write-test" }
+  /**
+   * A reading of the IMPLEMENTATION, not of the specification — orthogonal to the other two, which
+   * is why it needs its own cell. When a guard is masked by another guard deciding the same thing,
+   * no test can hold it and no freedom honestly describes it. See the mutants-coexist research §3a.
+   */
+  | { readonly kind: "note-redundant"; readonly reason: string }
   | { readonly kind: "supersede-mine"; readonly reason: string }
   | { readonly kind: "defer" }
   | { readonly kind: "read-declarer"; readonly declarer: string }
@@ -136,6 +142,12 @@ export function observeFinding(
     place("write the test", { kind: "write-test" });
     rules.push("mine=undeclared -> declare + write-test offered");
   }
+
+  // Offered in BOTH branches: this judges the code, not the spec, so it stays available whether or
+  // not the dimension is already declared free. An indistinguishable mutant that resists both of the
+  // readings above is usually evidence about the implementation.
+  place("record: the guard looks redundant", { kind: "note-redundant", reason: "" });
+  rules.push("redundant=always_offered");
 
   place("defer, explicitly", { kind: "defer" });
 
@@ -288,10 +300,16 @@ export function execute(
   // Carry the operator-supplied reason into the action, so the transcript records WHY and not just
   // WHICH. The grid's placeholder reason is empty by construction — the menu cannot know it.
   let action: CellAction = chosen;
-  if (chosen.kind === "declare-free" || chosen.kind === "supersede-mine") {
+  if (
+    chosen.kind === "declare-free" ||
+    chosen.kind === "supersede-mine" ||
+    // Writes no ledger, but it is still a CLAIM about the code that a later reader must be able to
+    // check — "redundant" with no reason is indistinguishable from silence.
+    chosen.kind === "note-redundant"
+  ) {
     if (reason.trim() === "") {
       throw new ReasonRequiredError(
-        `cell ${index} (${chosen.kind}) changes the ledger and requires a reason — ` +
+        `cell ${index} (${chosen.kind}) records a judgement and requires a reason — ` +
           `an undecidable call recorded without one is a mute button`,
       );
     }
@@ -305,7 +323,8 @@ export function execute(
     case "supersede-mine":
       deps.supersede(readout.room, action.reason);
       break;
-    // write-test, defer, read-declarer, escape and undefined-cell change no ledger state. They are
+    // write-test, note-redundant, defer, read-declarer, escape and undefined-cell change no ledger
+    // state — note-redundant deliberately so: it is a claim to be checked, not a grant. They are
     // still APPENDED: "I looked and chose to do nothing here" is a fact worth keeping, and it is
     // what distinguishes a deferred finding from an ignored one.
     default:

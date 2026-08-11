@@ -53,13 +53,14 @@ export function renderGrammar16(world: World): readonly RenderedMenuSlot[] {
   const find = (...kinds: NextAction["kind"][]): NextAction | undefined =>
     menu.find((a) => kinds.includes(a.kind));
 
-  const firstSessionPending = isFirstSessionPending(world);
-  const firstSessionLead = firstSessionPending && world.nodeSession
-    ? firstSessionOracle(world.nodeSession)
-    : undefined;
-  const firstSessionMenu = firstSessionPending && world.nodeSession
-    ? buildFirstSessionMenu(world.nodeSession)
-    : undefined;
+  // ONE condition, named once. This was previously a conjunction of `firstSessionPending` with
+  // `world.nodeSession` spelled at two sites and re-conjoined at a third — but
+  // `isFirstSessionPending` already implies the session exists, so two of the three guards were
+  // restatements of the first. A redundant guard is unobservable by construction: flipping it
+  // changes nothing another guard was not already deciding, so no test can ever hold it. (Located by
+  // the mutation runner — `and-to-or` here read INDISTINGUISHABLE UNDER SUITE, and the cause was the
+  // duplication, not a coverage gap.)
+  const firstSession = isFirstSessionPending(world) ? world.nodeSession : undefined;
 
   const work = find("do_item", "decompose"); // slot 4 — the primary act
   const editGrammar = find("edit_grammar"); // slot 7 — rail-change exit
@@ -71,11 +72,11 @@ export function renderGrammar16(world: World): readonly RenderedMenuSlot[] {
   );
 
   const overrides: Readonly<Record<number, SlotOverride>> = {
-    [SLOT.ACCEPT]: firstSessionLead && firstSessionMenu
+    [SLOT.ACCEPT]: firstSession
       ? {
-          label: firstSessionLabel(firstSessionLead),
+          label: firstSessionLabel(firstSessionOracle(firstSession)),
           availability: T,
-          firstSessionSubMenu: firstSessionMenu,
+          firstSessionSubMenu: buildFirstSessionMenu(firstSession),
         }
       : work
         ? { label: actionLabel(work), availability: T }

@@ -121,6 +121,43 @@ wasted work *and* it trains readers to ignore the report. The metric stops being
 becomes **unexplained survivors** — which converges to zero as knowledge accumulates, instead of
 oscillating forever.
 
+### 3a. A THIRD reading, found by running it: the code is redundant
+
+*(Added 2026-08-11 from the first live finding on `grammar-16-render.ts`.)*
+
+§1 offers two readings — **under-specified** (write the test) and **unconstrained by design**
+(declare it free). The first real finding was neither, and the gap matters because both of the
+anticipated responses would have been wrong:
+
+> **redundant** — the mutated guard is *masked* by another guard that decides the same thing.
+
+Concretely: `firstSessionPending && world.nodeSession` appeared at two sites and was re-conjoined at
+a third, but `isFirstSessionPending` **already implies** the session exists. Flipping the first
+conjunction changed a local value that the third site's surviving guard then discarded. So the
+mutant was indistinguishable — and would have stayed indistinguishable under *any* test, because
+nothing observable depended on it.
+
+Both anticipated responses fail here, in opposite directions:
+
+- **Write the test** — impossible. I wrote one first; it passed against the mutant. A test cannot
+  hold a guard that decides nothing. (The green suite did not reveal this; re-running the runner did.)
+- **Declare it free** — dishonest. Nothing about the *specification* is free. Filing it would have
+  memoised a duplication as a permanent degree of freedom, which is precisely the "registry is just
+  a mute button" failure §6 names as the falsifier to watch.
+
+The correct response is a **third action: remove the redundancy**, which converts an unobservable
+dimension into an observable one. After collapsing the three guards to one named condition, the
+test that previously could not fail now fails when the guard is dropped — verified by re-running the
+mutation, not by the suite going green.
+
+This is worth having in the grammar because it is diagnostically *stronger* than either alternative:
+an indistinguishable mutant that resists both readings is evidence about the **code**, not about the
+tests or the spec. A guard no test can hold is usually a guard that is not doing anything.
+
+**Consequence for the readout:** the three responses are not a partition of one axis. Under-specified
+and free-by-design are readings of the *specification*; redundant is a reading of the *implementation*
+— which is why no amount of test-writing or declaring reaches it.
+
 ## 4. This is the shared-unfold argument again, one level down
 
 Today's decorrelation result: the shared generator is a **common cause** everyone agrees on without
