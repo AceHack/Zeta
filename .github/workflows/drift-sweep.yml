@@ -190,11 +190,19 @@ jobs:
         # goes through the registry-change discipline.
         run: bun src/Core.TypeScript/hygiene/drift-genome.ts
 
+      - name: Run one generation in shadow (selection over drift genomes)
+        # society-evolution's loop, drift edition: current + 16 seeded
+        # mutants scored by replaying THIS ledger under candidate budgets
+        # (leak vs alarm objective); ranked population published. Seed =
+        # latest tick — reproducible exploration each tick. Adoption of a
+        # winner remains a registry consent act.
+        run: bun src/Core.TypeScript/hygiene/drift-evolution.ts
+
       - name: Commit and push the tick event (and any SLO filings)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/drift-events docs/letters workitems data/drift-mtth.json data/drift-genome.json
+          git add docs/drift-events docs/letters workitems data/drift-mtth.json data/drift-genome.json data/drift-evolution.json
           if git diff --cached --quiet; then
             echo "Nothing staged — no tick recorded."
           else
