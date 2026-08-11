@@ -192,6 +192,16 @@ module TwoTimescaleFold =
     /// the produced `SharedEvidence`. The dedup key is derived from the replica identity and the
     /// *logical* step count — reproducible by any node, never from a local clock — so two nodes
     /// receiving this evidence key it identically and the shared merge stays idempotent.
+    ///
+    /// **PRECONDITION — `ReplicaId` must be globally unique, and violating it FAILS SILENTLY.**
+    /// Two replicas sharing an id project the same key at the same logical step, so the shared layer
+    /// dedups genuinely-different evidence as one and discards the later piece with no error. That is
+    /// the cost of buying idempotence with a natural key: the key must actually be natural. Pinned by
+    /// ``PRECONDITION: a dedup-key COLLISION silently merges distinct evidence`` — found when a test
+    /// helper reused one id across two replicas and the schedule-free property broke.
+    ///
+    /// Callers minting `ReplicaId` should draw it from an identity that cannot be minted freely
+    /// (`AntiSybil`'s distinct entropy sources are the in-tree example), not from a local counter.
     let project (st: LocalState) : SharedEvidence * Crossing =
         let id = String.Format(Globalization.CultureInfo.InvariantCulture, "{0}#{1}", st.ReplicaId, st.Sharpenings)
 

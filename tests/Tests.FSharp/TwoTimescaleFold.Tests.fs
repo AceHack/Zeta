@@ -173,6 +173,95 @@ let ``the log preserves the PATH that the join destroys`` () =
     Assert.Equal<int64[]>(TTF.replay [ d1; d2 ] v, TTF.replay [ d2; d1 ] v) // same endpoint...
     Assert.NotEqual<TTF.Delta list>([ d1; d2 ], [ d2; d1 ]) // ...different, retained, path
 
+// ── DST: the module CLAIMS replayability, so the claim gets a check ────────────────────────────
+//
+// `IEntropySource` exists so "DST can replay it exactly" (TwoTimescaleFold.fs:131). That claim
+// shipped with nothing enforcing it, which is the same claim-not-matched-to-check pattern this
+// session has been closing elsewhere. These tests close it here.
+
+/// A seeded, ambient-free source — the realistic form. No clock, no Random(), no thread-pool read;
+/// the seed is the entire state, which is what makes a run reproducible from it.
+type private SeededSource(seed: uint64) =
+    let mutable s = seed
+
+    interface TTF.IEntropySource with
+        member _.Next(bound: int) =
+            // SplitMix64-shaped step: deterministic, seed-determined, no ambient input.
+            s <- s + 0x9E3779B97F4A7C15UL
+            let mutable z = s
+            z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
+            z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
+            z <- z ^^^ (z >>> 31)
+            int (z % uint64 bound)
+
+/// NOTE the replica id parameter. An earlier version of this helper hardcoded "r", so two
+/// *different* replicas both projected to the key "r#5" — a dedup-key COLLISION that silently
+/// merged distinct evidence and made the schedule-free test fail. The design was right; the helper
+/// violated a precondition the module had not stated. It states it now, and
+/// ``a dedup-key COLLISION silently merges distinct evidence`` below pins the consequence.
+let private runLocalAs (replicaId: string) (seed: uint64) (steps: int) : TTF.LocalState =
+    let src = SeededSource(seed) :> TTF.IEntropySource
+    [ 1..steps ] |> List.fold (fun st _ -> TTF.localStep src st) (TTF.emptyLocal replicaId dim)
+
+let private runLocal (seed: uint64) (steps: int) : TTF.LocalState = runLocalAs "r" seed steps
+
+[<Fact>]
+let ``DST: the same seed replays byte-identically across independent runs`` () =
+    let a = runLocal 42UL 25
+    let b = runLocal 42UL 25
+    Assert.Equal<int64[]>(a.Local, b.Local)
+    Assert.Equal(a.Sharpenings, b.Sharpenings)
+
+[<Fact>]
+let ``DST ANTI-VACUITY: a different seed gives a different trajectory`` () =
+    // Without this, the replay test above would pass for a constant function — the strongest way for
+    // a determinism claim to be true and worthless.
+    let a = runLocal 42UL 25
+    let b = runLocal 43UL 25
+    Assert.NotEqual<int64[]>(a.Local, b.Local)
+
+[<Fact>]
+let ``DST: the WHOLE system is a function of (seed, evidence set) — schedule-free`` () =
+    // The strong property this two-layer design is for: nothing depends on the delivery schedule.
+    // The local layer is entropy-determined, and the shared layer is a function of the evidence SET,
+    // so replaying from (seed, set) reproduces both layers with no record of ordering or timing.
+    let r1 = runLocalAs "r1" 7UL 5
+    let r2 = runLocalAs "r2" 9UL 5
+    let e1, _ = TTF.project r1
+    let e2, _ = TTF.project r2
+
+    // Same inputs, three different delivery schedules — including redelivery.
+    let s1 = TTF.applyAll [ e1; e2 ] (TTF.emptyShared dim)
+    let s2 = TTF.applyAll [ e2; e1 ] (TTF.emptyShared dim)
+    let s3 = TTF.applyAll [ e2; e2; e1; e1; e2 ] (TTF.emptyShared dim)
+    Assert.Equal<int64[]>(s1.Belief, s2.Belief)
+    Assert.Equal<int64[]>(s1.Belief, s3.Belief)
+
+    // And the whole thing reproduces from the seeds alone.
+    let e1', _ = TTF.project (runLocalAs "r1" 7UL 5)
+    let e2', _ = TTF.project (runLocalAs "r2" 9UL 5)
+    let replayed = TTF.applyAll [ e1'; e2' ] (TTF.emptyShared dim)
+    Assert.Equal<int64[]>(s1.Belief, replayed.Belief)
+    Assert.Equal<Set<string>>(s1.Applied, replayed.Applied)
+
+[<Fact>]
+let ``PRECONDITION: a dedup-key COLLISION silently merges distinct evidence`` () =
+    // Found by the schedule-free test failing above, and pinned because the failure mode is SILENT.
+    // Two replicas sharing an id project the same key at the same logical step, so the shared layer
+    // dedups them as one — the second piece of evidence is discarded with no error. Replica-id
+    // uniqueness is therefore a REAL precondition of the design, not a naming nicety.
+    let a = runLocalAs "same" 7UL 5
+    let b = runLocalAs "same" 9UL 5
+    let ea, _ = TTF.project a
+    let eb, _ = TTF.project b
+
+    Assert.NotEqual<int64[]>(ea.Likelihood, eb.Likelihood) // genuinely different evidence...
+    Assert.Equal(ea.Id, eb.Id) // ...colliding on one key
+
+    let folded = TTF.applyAll [ ea; eb ] (TTF.emptyShared dim)
+    Assert.Equal(1, folded.Applied.Count) // only ONE survived
+    Assert.Equal<int64[]>((TTF.apply ea (TTF.emptyShared dim)).Belief, folded.Belief) // and it was the first
+
 // ── metering: claims about delay carry a number ────────────────────────────────────────────────
 
 [<Fact>]
