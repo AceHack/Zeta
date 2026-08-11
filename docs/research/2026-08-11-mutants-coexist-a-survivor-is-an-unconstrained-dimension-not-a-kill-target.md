@@ -142,8 +142,26 @@ Same intent, two legitimate expressions — a surviving mutant at the treaty lev
    re-running is free — the same discipline #6 applied here.
 3. **Report only unexplained survivors**, plus newly-constrained dimensions (registry entries whose
    mutant now dies).
-4. **Keep the comment-mutation carve-out** already in the file; it is the first registry entry, just
-   currently hardcoded.
+4. **Keep the comment-mutation carve-out hardcoded — it is NOT a registry entry.**
+   *(Corrected 2026-08-11 during implementation; this item originally called it "the first registry
+   entry, just currently hardcoded", and that was wrong in a way worth naming.)*
+
+   Mutating a comment yields a **semantically identical program**. That is a fact about the mutation
+   *operator*, true in every declarer's model of the code, and no honest reading disagrees with it.
+   A declared freedom is the opposite kind of thing: a per-declarer **judgement** that a real
+   semantic difference does not matter.
+
+   Filing the comment case in the ledger would demote a universal truth to an opinion someone could
+   contest, and would force every declarer to re-declare it independently — noise, and a category
+   error. Two distinct kinds:
+
+   | | what it is | who can disagree |
+   |---|---|---|
+   | **equivalent by construction** (comment mutation) | a property of the *operator* | nobody — it is not a mutant |
+   | **declared free** | a reading of the *specification* | any declarer, legitimately |
+
+   Same fact-versus-verdict boundary the whole file is about, one level down: some things are facts
+   about the mechanism, not readings of the spec, and the ledger is only for the second.
 5. **Rename the vocabulary** to match — the runner's own docstring can keep its history, but the
    emitted facts should not carry a verdict.
 
