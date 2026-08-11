@@ -1,3 +1,4 @@
+import React from "react";
 /**
  * OracleRaceMode.tsx — Multi-Oracle Race Mode
  *
@@ -239,6 +240,14 @@ export default function OracleRaceMode() {
   // Teaching NACK log: last 5 NACKs from the UDP transport layer (simulated in browser)
   const [nackLog, setNackLog] = useState<Array<{
     cause: string; howToFix: string; lossRate: number; ts: number;
+    // TemperatureReadout from batch-heat-bridge (mirrors Vera's Heat.fs TemperatureBand)
+    temperatureReadout?: {
+      temperaturePpm: number;
+      band: "cold" | "warm" | "hot" | "critical";
+      heatPpm: number;
+      uncertaintyPpm: number;
+      source: string;
+    };
   }>>([]);
   const [showNackLog, setShowNackLog] = useState(false);
   const [erasureHeat, setErasureHeat] = useState<{ accounted: number; unaccounted: number; total: number } | null>(null);
@@ -540,12 +549,26 @@ export default function OracleRaceMode() {
       "check CRC — possible bit flip",
       "increase heartbeat interval",
     ];
-    const simNacks = Array.from({ length: 3 }, (_, i) => ({
-      cause: causes[i % 3] ?? "congestion",
-      howToFix: fixes[i % 3] ?? "reduce send rate",
-      lossRate: Math.random() * 0.15,
-      ts: Date.now() - (2 - i) * 1200,
-    }));
+    // Simulate TemperatureReadout from batch-heat-bridge (mirrors Vera's Heat.fs)
+    // In production this comes from SendOutcome.temperatureReadout in network-transport.ts
+    const simBands: Array<"cold" | "warm" | "hot" | "critical"> = ["warm", "hot", "cold"];
+    const simNacks = Array.from({ length: 3 }, (_, i) => {
+      const band = simBands[i % 3] ?? "cold";
+      const ppm = band === "cold" ? 0 : band === "warm" ? 200_000 : band === "hot" ? 500_000 : 800_000;
+      return {
+        cause: causes[i % 3] ?? "congestion",
+        howToFix: fixes[i % 3] ?? "reduce send rate",
+        lossRate: Math.random() * 0.15,
+        ts: Date.now() - (2 - i) * 1200,
+        temperatureReadout: {
+          temperaturePpm: ppm,
+          band,
+          heatPpm: Math.round(ppm * 0.8),
+          uncertaintyPpm: Math.round(ppm * 0.1),
+          source: `batch-frame-sim-${i}`,
+        },
+      };
+    });
     setNackLog(simNacks);
     // Compute erasureHeat: accounted vs unaccounted bare erasures
     // Simulated: 1 accounted (bounded-forget TTL), 1 unaccounted (unexpected drop)
@@ -1361,12 +1384,46 @@ export default function OracleRaceMode() {
                 </thead>
                 <tbody>
                   {nackLog.map((nack, i) => (
-                    <tr key={i} style={{ borderTop: "1px solid rgba(239,68,68,0.1)" }}>
-                      <td style={{ padding: "2px 4px", color: "#64748b" }}>{new Date(nack.ts).toLocaleTimeString()}</td>
-                      <td style={{ padding: "2px 4px", color: "#ef4444" }}>{nack.cause}</td>
-                      <td style={{ padding: "2px 4px", color: "#94a3b8" }}>{nack.howToFix}</td>
-                      <td style={{ padding: "2px 4px", textAlign: "right", color: nack.lossRate > 0.1 ? "#ef4444" : "#22c55e" }}>{(nack.lossRate * 100).toFixed(1)}%</td>
-                    </tr>
+                    <React.Fragment key={i}>
+                      <tr style={{ borderTop: "1px solid rgba(239,68,68,0.1)" }}>
+                        <td style={{ padding: "2px 4px", color: "#64748b" }}>{new Date(nack.ts).toLocaleTimeString()}</td>
+                        <td style={{ padding: "2px 4px", color: "#ef4444" }}>{nack.cause}</td>
+                        <td style={{ padding: "2px 4px", color: "#94a3b8" }}>{nack.howToFix}</td>
+                        <td style={{ padding: "2px 4px", textAlign: "right", color: nack.lossRate > 0.1 ? "#ef4444" : "#22c55e" }}>{(nack.lossRate * 100).toFixed(1)}%</td>
+                      </tr>
+                      {nack.temperatureReadout && (
+                        <tr style={{ background: "rgba(0,0,0,0.15)" }}>
+                          <td colSpan={4} style={{ padding: "2px 8px 3px 12px" }}>
+                            {/* TemperatureReadout detail row — mirrors Vera's Heat.fs TemperatureBand */}
+                            <span style={{
+                              fontSize: "0.48rem", fontFamily: "monospace",
+                              color: nack.temperatureReadout.band === "cold" ? "#22c55e"
+                                : nack.temperatureReadout.band === "warm" ? "#eab308"
+                                : nack.temperatureReadout.band === "hot" ? "#f97316"
+                                : "#ef4444",
+                              display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center",
+                            }}>
+                              <span>
+                                {nack.temperatureReadout.band === "cold" ? "❄" : nack.temperatureReadout.band === "warm" ? "🌡" : nack.temperatureReadout.band === "hot" ? "🔥" : "🚨"}
+                                {" "}{nack.temperatureReadout.band.toUpperCase()}
+                              </span>
+                              <span style={{ color: "#64748b" }}>
+                                temp={nack.temperatureReadout.temperaturePpm.toLocaleString()} ppm
+                              </span>
+                              <span style={{ color: "#64748b" }}>
+                                heat={nack.temperatureReadout.heatPpm.toLocaleString()} ppm
+                              </span>
+                              <span style={{ color: "#475569" }}>
+                                ±{nack.temperatureReadout.uncertaintyPpm.toLocaleString()} ppm
+                              </span>
+                              <span style={{ color: "#334155", fontSize: "0.44rem" }}>
+                                src={nack.temperatureReadout.source}
+                              </span>
+                            </span>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>
