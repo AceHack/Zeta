@@ -309,11 +309,15 @@ export default function OracleRaceMode() {
   } | null>(null);
   // Prior convergence: mean µ across priorHints dimensions over last 10 evolution events
   const [priorConvHistory, setPriorConvHistory] = useState<Array<{ generation: number; meanMu: number }>>([]);
-  const [heatAuditLog, setHeatAuditLog] = useState<Array<{ generation: number; meanMu: number; heatTrend: string; at: string }>>([]);
+  const [heatAuditLog, setHeatAuditLog] = useState<Array<{ generation: number; meanMu: number; heatTrend: string; at: string; band?: string; transportMu?: number }>>([]);
   // Merged BNN posteriors from GitHub society priorHints (EP bidirectional update)
   const [mergedPosteriors, setMergedPosteriors] = useState<Array<{ dimension: string; mu: number; sigma2: number }>>([]);
   const [showFmz, setShowFmz] = useState(false);
   // Live agent badge: fetch latest agent event timestamps from GitHub
+  const [heartbeatPat, setHeartbeatPat] = useState<string>(() => {
+    try { return localStorage.getItem("zeta-gh-pat") ?? ""; } catch { return ""; }
+  });
+  const [heartbeatStatus, setHeartbeatStatus] = useState<"idle" | "triggering" | "ok" | "error">("idle");
   const [agentBadge, setAgentBadge] = useState<{
     liveCount: number;
     agents: Array<{ id: string; lastAt: string; ageMinutes: number }>;
@@ -533,7 +537,16 @@ export default function OracleRaceMode() {
               : transportMu < 0.4 ? "↓ recovering"
               : "→ stable"
             );
-            return { generation: gen, meanMu, heatTrend, at };
+            // Extract band and transportMu from heatReadout if present
+            const band = heatReadoutField && typeof heatReadoutField === "object"
+              && typeof (heatReadoutField as Record<string, unknown>)["band"] === "string"
+              ? (heatReadoutField as Record<string, unknown>)["band"] as string
+              : undefined;
+            const transportMuFromEvent = heatReadoutField && typeof heatReadoutField === "object"
+              && typeof (heatReadoutField as Record<string, unknown>)["transportMu"] === "number"
+              ? (heatReadoutField as Record<string, unknown>)["transportMu"] as number
+              : transportMu;
+            return { generation: gen, meanMu, heatTrend, at, band, transportMu: transportMuFromEvent };
           })
           .filter(pt => pt.meanMu > 0)
           .sort((a, b) => a.generation - b.generation);
@@ -1079,8 +1092,39 @@ export default function OracleRaceMode() {
           fontFamily: "monospace",
           fontSize: "0.65rem",
         }}>
-          <div style={{ color: "#6ee7b7", fontWeight: "bold", marginBottom: "0.2rem" }}>
-            🌱 GitHub Agent Society (live from Zeta main)
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.2rem" }}>
+            <span style={{ color: "#6ee7b7", fontWeight: "bold" }}>🌱 GitHub Agent Society (live from Zeta main)</span>
+            <button
+              title="Trigger a manual society heartbeat via GitHub API (requires a PAT with workflow scope)"
+              onClick={() => {
+                const pat = heartbeatPat || window.prompt("Enter GitHub PAT (workflow scope):", "") || "";
+                if (!pat) return;
+                try { localStorage.setItem("zeta-gh-pat", pat); } catch { /* ignore */ }
+                setHeartbeatPat(pat);
+                setHeartbeatStatus("triggering");
+                fetch("https://api.github.com/repos/Lucent-Financial-Group/Zeta/actions/workflows/society-heartbeat.yml/dispatches", {
+                  method: "POST",
+                  headers: { Authorization: `Bearer ${pat}`, "Content-Type": "application/json", Accept: "application/vnd.github+json" },
+                  body: JSON.stringify({ ref: "main" }),
+                })
+                  .then(r => {
+                    if (r.ok || r.status === 204) { setHeartbeatStatus("ok"); setTimeout(() => setHeartbeatStatus("idle"), 5000); }
+                    else { setHeartbeatStatus("error"); setTimeout(() => setHeartbeatStatus("idle"), 5000); }
+                  })
+                  .catch(() => { setHeartbeatStatus("error"); setTimeout(() => setHeartbeatStatus("idle"), 5000); });
+              }}
+              style={{
+                fontSize: "0.5rem", padding: "0.1rem 0.3rem", cursor: "pointer",
+                background: heartbeatStatus === "ok" ? "rgba(16,185,129,0.15)"
+                  : heartbeatStatus === "error" ? "rgba(239,68,68,0.15)"
+                  : heartbeatStatus === "triggering" ? "rgba(234,179,8,0.15)"
+                  : "rgba(255,255,255,0.05)",
+                border: `1px solid ${heartbeatStatus === "ok" ? "#10b981" : heartbeatStatus === "error" ? "#ef4444" : heartbeatStatus === "triggering" ? "#eab308" : "#334155"}`,
+                borderRadius: 3,
+                color: heartbeatStatus === "ok" ? "#6ee7b7" : heartbeatStatus === "error" ? "#fca5a5" : heartbeatStatus === "triggering" ? "#fde047" : "#94a3b8",
+              }}>
+              {heartbeatStatus === "ok" ? "✓ triggered" : heartbeatStatus === "error" ? "✗ failed" : heartbeatStatus === "triggering" ? "⏳ triggering…" : "⚡ trigger heartbeat"}
+            </button>
           </div>
           <div style={{ color: "#d1fae5" }}>
             Generation <span style={{ color: "#10b981", fontWeight: "bold" }}>{githubSociety.generation}</span>
@@ -1133,7 +1177,22 @@ export default function OracleRaceMode() {
                 <text x="2" y="8" fill="#065f46" fontSize="5">mean µ</text>
                 <text x="2" y="27" fill="#065f46" fontSize="5">gen {priorConvHistory[0]?.generation ?? 0}</text>
                 <text x="198" y="27" fill="#065f46" fontSize="5" textAnchor="end">gen {priorConvHistory[priorConvHistory.length-1]?.generation ?? 0}</text>
+                {/* transportMu line — orange dashed, from heatAuditLog */}
+                {heatAuditLog.length > 1 && heatAuditLog.map((pt, i) => {
+                  if (i === 0) return null;
+                  const prev = heatAuditLog[i - 1]!;
+                  const x1 = ((i-1)/Math.max(1,heatAuditLog.length-1))*196+2;
+                  const x2 = (i/Math.max(1,heatAuditLog.length-1))*196+2;
+                  const y1 = 26-(prev.transportMu ?? 0.5)*22;
+                  const y2 = 26-(pt.transportMu ?? 0.5)*22;
+                  return <line key={"t"+i} x1={x1} y1={y1} x2={x2} y2={y2}
+                    stroke="#f97316" strokeWidth="1" strokeDasharray="2 2" opacity="0.7" />;
+                })}
+                <text x="100" y="8" fill="#7c2d12" fontSize="5" textAnchor="middle">transport µ</text>
               </svg>
+              <div style={{ fontSize: "0.4rem", color: "#334155", marginTop: "0.05rem" }}>
+                — mean µ (teal) · - - transport µ (orange)
+              </div>
             </div>
           )}
           {/* Merged BNN posteriors from GitHub society priorHints (next step 2) */}
@@ -1170,7 +1229,7 @@ export default function OracleRaceMode() {
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.5rem", fontFamily: "monospace" }}>
             <thead>
               <tr>
-                {["gen", "mean µ", "heat trend", "at"].map(h => (
+                {["gen", "mean µ", "band", "heat trend", "at"].map(h => (
                   <th key={h} style={{ textAlign: "left", color: "#334155", padding: "0.05rem 0.3rem",
                     borderBottom: "1px solid rgba(16,185,129,0.15)" }}>{h}</th>
                 ))}
@@ -1182,6 +1241,13 @@ export default function OracleRaceMode() {
                   <td style={{ padding: "0.05rem 0.3rem", color: "#94a3b8" }}>{row.generation}</td>
                   <td style={{ padding: "0.05rem 0.3rem", color: row.meanMu > 0.5 ? "#fca5a5" : "#6ee7b7" }}>
                     {row.meanMu.toFixed(3)}
+                  </td>
+                  <td style={{ padding: "0.05rem 0.3rem",
+                    color: row.band === "critical" ? "#ef4444"
+                      : row.band === "hot" ? "#f97316"
+                      : row.band === "warm" ? "#eab308"
+                      : "#22c55e" }}>
+                    {row.band ?? "—"}
                   </td>
                   <td style={{ padding: "0.05rem 0.3rem",
                     color: row.heatTrend === "↑ warming" ? "#f97316"
