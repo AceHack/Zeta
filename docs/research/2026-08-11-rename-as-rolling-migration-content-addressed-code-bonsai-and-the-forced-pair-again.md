@@ -77,6 +77,48 @@ So `DynamicValue` is the self-description of **data at rest**, and Bonsai is the
 **computation in flight**. They are duals in exactly the Rx sense, one meta-level up: each is the
 reflective form of one side of the `IEnumerable`⇄`IObservable` pair.
 
+### The formal name for it: **μF and νF** (Aaron, confirming intent)
+
+> *"earlier you said i took Meijer's concepts and applied them to the meta level — this is exactly
+> what i was trying to do, his μF and νF."*
+
+Stated as designed intent rather than a correspondence noticed afterwards, and it names the structure
+precisely. For a functor `F`:
+
+- **`μF`** — the **initial algebra**, least fixed point. Finite, inductive data. Consumed by a
+  **catamorphism** (fold). The `IEnumerable` / *what remains* side.
+- **`νF`** — the **terminal coalgebra**, greatest fixed point. Potentially infinite, coinductive
+  process. Produced by an **anamorphism** (unfold). The `IObservable` / *what acts* side.
+
+Meijer's duality **is** the `μ`/`ν` duality; Rx is its programming-language surface.
+
+**`DynamicValue` is literally a `μF`.** Its case set — `Null | Bool | Int | Float | String | Bytes |
+Array of DV | Object of (string × DV)` — is the initial algebra of exactly that shape functor. Not
+"like" one.
+
+**And Bonsai is the sharp part, because it is not simply the `νF`.** A `νF` is potentially infinite,
+so it cannot be serialised, shipped, stored or diffed. What Bonsai serialises is a **finite `μ`
+description of a potentially-infinite `ν` process** — an expression tree that *denotes* a standing
+query. That is precisely why it can be versioned and content-addressed at all, and it is the bridge
+between the two sides rather than one of them:
+
+> **You cannot store a `νF`. You can store its `μ` generator, and unfold it on arrival.**
+
+Which is this repo's own
+[`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)
+in categorical dress: keep the finite generator, produce the behaviour. The rule and the Rx lineage
+turn out to be the same statement about `μ` and `ν`, reached from two directions.
+
+**Where the soft regime lands:** `SoftValue` is a normalised distribution over `DynamicValue`
+candidates — a **measure on `μF`**. The soft regime is probability over the initial algebra, which is
+why its `observe` is a fold-shaped Bayesian update and why the idempotence question bites there and
+not on the `ν` side.
+
+Anchors: **Meijer, Fokkinga & Paterson**, *Functional Programming with Bananas, Lenses, Envelopes and
+Barbed Wire* (1991) — cata/ana and the `μ`/`ν` pair; **Hagino** (categorical datatypes);
+**Rutten**, *Universal Coalgebra* (2000); **Jacobs**, *Introduction to Coalgebra*; **Turi & Plotkin**
+(bialgebraic semantics — the algebra/coalgebra interaction Bonsai's bridge sits on).
+
 **Two consequences worth having.** First, this is why a self-modelling database needs *both* — reflect
 over the rows and you get self-describing data; reflect over the queries and you get self-describing
 computation; a stored procedure is the place they must meet. That is exactly the **ying-yang** in
