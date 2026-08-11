@@ -1,10 +1,12 @@
 {
   "version": 1,
-  "generatedAtIso": "2026-08-10T19:25:49.825Z",
-  "commit": "9040e04d",
+  "generatedAtIso": "2026-08-11T02:31:43.010Z",
+  "commit": "1935db25",
   "totals": {
-    "findings": 0,
-    "bySeverity": {}
+    "findings": 3,
+    "bySeverity": {
+      "failing": 3
+    }
   },
   "territories": [
     {
@@ -34,8 +36,42 @@
         {
           "id": "main-failures",
           "name": "main — recent runs",
-          "summary": "All of the last 40 runs on main concluded green.",
-          "findings": []
+          "summary": "3 of the last 40 runs on main failed.",
+          "findings": [
+            {
+              "id": "ci:31451449824",
+              "title": "udp-lossy-tests",
+              "severity": "failing",
+              "locus": "59e108e62 — 2026-08-11 02:08",
+              "evidence": [
+                "spec: check CircuitRegistration's liveness in CI — the theorem now ha…",
+                "run id 31451449824"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:31451449857",
+              "title": "gate",
+              "severity": "failing",
+              "locus": "59e108e62 — 2026-08-11 02:08",
+              "evidence": [
+                "spec: check CircuitRegistration's liveness in CI — the theorem now ha…",
+                "run id 31451449857"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:31451374488",
+              "title": "udp-lossy-tests",
+              "severity": "failing",
+              "locus": "209441a49 — 2026-08-11 02:06",
+              "evidence": [
+                "research: circuits compose as a traced PROP — and the spec already en…",
+                "run id 31451374488"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            }
+          ]
         }
       ]
     }
