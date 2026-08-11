@@ -32,6 +32,31 @@ value. Detection is measurement; measurement is not a sentence.
 - One-way inference still holds where it applies (convicts, never acquits) —
   that is a soundness property of the *fact*, orthogonal to its moral reading.
 
+## The functional half — recognising sameness is not assigning identity
+
+Aaron 2026-08-11: *"this is exactly dual use — recognising sameness is not identity,
+they are two different functions."*
+
+The rule above guards the **moral** conflation (a detector's fact read as a verdict).
+This guards the **functional** one, and it bites in ordinary engineering with no
+morality in sight:
+
+> A mechanism that **recognises sameness** is not a mechanism that **assigns
+> identity**. Sameness-detection answers *"were these two the same source?"*;
+> identity-assignment answers *"what is this source called?"* Conflating them
+> silently repurposes a distinctness *proof* as an identity *provider*.
+
+Caught live (2026-08-11): `TwoTimescaleFold.project` needs a globally unique, stable
+`ReplicaId`, and its first docstring said to draw one from `AntiSybil`'s distinct
+sources. But `AntiSybil.SourceOf` numbers components `0 .. DistinctCount-1`
+**per invocation, over one batch** — the same physical source can be numbered
+differently next time. Neither stable nor global. Following that advice would have
+produced silently-merged evidence under a colliding dedup key.
+
+**The division of labour:** *mint* identity from something non-mintable and
+content-addressed (the drift stream itself); *check* it with the detector, which can
+prove two names are secretly one source and can never tell you what to call them.
+
 ## Pointers
 
 - `src/Core/CoordinationSpectrum.fs` — the worked example (`SpectrumMatch` neutral;

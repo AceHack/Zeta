@@ -297,6 +297,7 @@
     <Compile Include="SybilBftProgress.fs" />
     <Compile Include="ForgerRace.fs" />
     <Compile Include="SymmetricEndurance.fs" />
+    <Compile Include="EnduranceFold.fs" />
     <Compile Include="PhasorEndurance.fs" />
     <Compile Include="CoincidenceClock.fs" />
     <Compile Include="BitAdinkra.fs" />
