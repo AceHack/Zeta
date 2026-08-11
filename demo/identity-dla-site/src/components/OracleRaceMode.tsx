@@ -240,6 +240,7 @@ export default function OracleRaceMode() {
   const [elapsed, setElapsed] = useState(0);
   const stopRef = useRef(false);
   const [showSeedLog, setShowSeedLog] = useState(false);
+  const [heatRestored, setHeatRestored] = useState<number[] | null>(null); // weights from URL hash
   const [seedCopied, setSeedCopied] = useState(false);
   const [urlCopied, setUrlCopied] = useState(false);
   const [compareResults, setCompareResults] = useState<OracleResult[] | null>(null);
@@ -337,6 +338,7 @@ export default function OracleRaceMode() {
         : avgWeight >= 0.4 ? 500_000
         : 800_000;
       setHeatHistory(prev => prev.length === 0 ? [approxPpm] : prev);
+      setHeatRestored(restoredWeights); // show notice in seed log
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -920,6 +922,31 @@ export default function OracleRaceMode() {
                         onClick={() => {
                           try { localStorage.removeItem("zeta-heat-history"); } catch { /* ignore */ }
                           setHeatHistory([]);
+                          setHeatRestored(null);
+                          // Re-run NACK simulation with cold-start weights (shows AIMD ramp-up from scratch)
+                          setNackLog([]);
+                          setErasureHeat(null);
+                          setTimeout(() => {
+                            // Trigger a fresh cold-start NACK simulation after state clears
+                            const coldCauses = ["congestion", "timeout", "congestion"];
+                            const coldFixes = ["reduce send rate", "retry with backoff", "reduce send rate"];
+                            const coldNacks = Array.from({ length: 3 }, (_, i) => ({
+                              cause: coldCauses[i % 3] ?? "congestion",
+                              howToFix: coldFixes[i % 3] ?? "reduce send rate",
+                              lossRate: Math.random() * 0.05, // cold-start: low loss rate
+                              ts: Date.now() - (2 - i) * 800,
+                              temperatureReadout: {
+                                temperaturePpm: 0, // cold start — all weights at 1.0
+                                band: "cold" as const,
+                                heatPpm: 0,
+                                uncertaintyPpm: 0,
+                                source: `batch-frame-reset-${i}`,
+                              },
+                            }));
+                            setNackLog(coldNacks);
+                            setHeatHistory([0, 0, 0]); // cold ramp-up baseline
+                            try { localStorage.setItem("zeta-heat-history", JSON.stringify([0, 0, 0])); } catch { /* ignore */ }
+                          }, 50);
                         }}
                         style={{
                           background: "rgba(16,185,129,0.1)", border: "1px solid #065f46",
@@ -1152,6 +1179,21 @@ export default function OracleRaceMode() {
               <div style={{ color: "#64748b", marginBottom: "0.25rem" }}>
                 Seed log — reproduce any oracle by running DLA with this seed, N={N_RACE}, 128×128 grid, xorshift32 PRNG, circle spawn, 4-dir walk:
               </div>
+              {heatRestored && (
+                <div style={{
+                  marginBottom: "0.4rem", padding: "0.2rem 0.5rem",
+                  background: "rgba(16,185,129,0.08)", border: "1px solid #065f46",
+                  borderRadius: 3, fontSize: "0.55rem", color: "#6ee7b7", fontFamily: "monospace",
+                }}>
+                  🌡 heat state restored from shared URL —
+                  {" "}[{heatRestored.map((w, i) => (
+                    <span key={i} style={{ color: w >= 0.9 ? "#22c55e" : w >= 0.5 ? "#eab308" : w >= 0.2 ? "#f97316" : "#ef4444" }}>
+                      {["bro","ws","udp","ret","git"][i]}:{(w*100).toFixed(0)}%{i < 4 ? " " : ""}
+                    </span>
+                  ))}]
+                  {" "}— transport health captured at share time
+                </div>
+              )}
               <button
                 onClick={() => {
                   const payload = JSON.stringify(
@@ -1293,7 +1335,12 @@ export default function OracleRaceMode() {
                 const speed = convSpeeds.find(c => c.id === r.id);
                 return `${r.id},${ORACLE_NAMES[r.id-1] ?? ""},0x${r.seed.toString(16).padStart(8,"0")},${r.seed},${r.done ? r.df.toFixed(4) : ""},${speed?.crossed ? speed.n : ""}`;
               }).join("\n");
-              const blob = new Blob([header + rows], { type: "text/csv" });
+              // Append heat state footer row
+              const lastPpmCsv = heatHistory[heatHistory.length - 1] ?? 0;
+              const baseWCsv = lastPpmCsv === 0 ? 1.0 : lastPpmCsv > 666_666 ? 0.1 : lastPpmCsv > 333_333 ? 0.5 : 0.75;
+              const hwRowCsv = [0,1,2,3,4].map(i => Math.max(0.05, Math.min(1.0, baseWCsv - i * 0.02)).toFixed(2)).join(",");
+              const heatFooter = `\n# heat_state_at_export: broadcast=${hwRowCsv.split(",")[0]},ws=${hwRowCsv.split(",")[1]},udp=${hwRowCsv.split(",")[2]},ret=${hwRowCsv.split(",")[3]},git=${hwRowCsv.split(",")[4]}`;
+              const blob = new Blob([header + rows + heatFooter], { type: "text/csv" });
               const a = document.createElement("a");
               a.href = URL.createObjectURL(blob);
               a.download = `dla-race-${Date.now()}.csv`;
