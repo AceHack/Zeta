@@ -1,9 +1,11 @@
 //! ZetaId V1 bit layout — mirrors `src/Core.FSharp.ZetaId/BitLayout.fs`,
 //! `src/Core.CSharp.ZetaId/`, and `src/Core.TypeScript/zeta-id/`. 128 bits total,
-//! with reserved bits at offset 69 (1 bit, between Chromosome and Category) and
-//! offsets 32–34 (3 bits, between Location and Randomness):
+//! with reserved bits at offset 69 (1 bit, between Chromosome and Category),
+//! offset 64 (1 bit, between Category and Authority — the ex-Firefly bit, removed
+//! NO-SHIFT so every field kept its offset), and offsets 32–34 (3 bits, between
+//! Location and Randomness):
 //!
-//! `5 + 48 + 5 + 1(rsv) + 4 + 1 + 5 + 8 + 8 + 8 + 3(rsv) + 32 = 128`.
+//! `5 + 48 + 5 + 1(rsv) + 4 + 1(rsv) + 5 + 8 + 8 + 8 + 3(rsv) + 32 = 128`.
 //!
 //! Offsets are LSB-0. Read a field with `(value >> offset) & ((1 << width) - 1)`.
 
@@ -27,8 +29,6 @@ pub struct BitLayout {
     pub chromosome: BitField,
     /// Category — 4 bits (Observation/Emission/.../Bus=6/...).
     pub category: BitField,
-    /// Firefly — 1 bit.
-    pub firefly: BitField,
     /// Authority — 5 bits.
     pub authority: BitField,
     /// Persona — 8 bits.
@@ -85,10 +85,9 @@ impl BitLayout {
                 offset: CATEGORY_OFFSET.0,
                 width: CATEGORY_WIDTH.0,
             },
-            firefly: BitField {
-                offset: FIREFLY_OFFSET.0,
-                width: FIREFLY_WIDTH.0,
-            },
+            // Bit 64 is RESERVED (the ex-Firefly bit). Removed NO-SHIFT: nothing
+            // below it moved up, so Category stays at 65 and everything above it
+            // keeps its offset. Do not allocate this bit without a layout version bump.
             authority: BitField {
                 offset: AUTHORITY_OFFSET.0,
                 width: AUTHORITY_WIDTH.0,
@@ -144,11 +143,7 @@ impl BitLayout {
             width: AUTHORITY_WIDTH.0,
         }; // 59..64
         o += AUTHORITY_WIDTH.0;
-        let firefly = BitField {
-            offset: o,
-            width: FIREFLY_WIDTH.0,
-        }; // 64
-        o += FIREFLY_WIDTH.0;
+        o += 1; // reserved bit 64 (the ex-Firefly bit; removed NO-SHIFT)
         let category = BitField {
             offset: o,
             width: CATEGORY_WIDTH.0,
@@ -174,7 +169,6 @@ impl BitLayout {
             timestamp,
             chromosome,
             category,
-            firefly,
             authority,
             persona,
             momentum,
@@ -209,15 +203,17 @@ mod tests {
             + l.timestamp.width
             + l.chromosome.width
             + l.category.width
-            + l.firefly.width
             + l.authority.width
             + l.persona.width
             + l.momentum.width
             + l.location.width
             + l.randomness.width;
-        // 4 reserved bits (1 at offset 69 + 3 at offsets 32..34) are unallocated.
-        assert_eq!(used + 4, 128);
+        // 5 reserved bits (1 at offset 69 + 1 at offset 64 + 3 at offsets 32..34)
+        // are unallocated. Bit 64 is the ex-Firefly bit, freed NO-SHIFT.
+        assert_eq!(used + 5, 128);
         assert_eq!(l.total_bits, 128);
+        // Named fields occupy 123 of the 128 bits.
+        assert_eq!(used, 123);
     }
 
     #[test]
@@ -227,7 +223,7 @@ mod tests {
         assert_eq!((l.timestamp.offset, l.timestamp.width), (75, 48));
         assert_eq!((l.chromosome.offset, l.chromosome.width), (70, 5));
         assert_eq!((l.category.offset, l.category.width), (65, 4));
-        assert_eq!((l.firefly.offset, l.firefly.width), (64, 1));
+        // Bit 64 is reserved (ex-Firefly) — no field claims it; Category stays at 65.
         assert_eq!((l.authority.offset, l.authority.width), (59, 5));
         assert_eq!((l.persona.offset, l.persona.width), (51, 8));
         assert_eq!((l.momentum.offset, l.momentum.width), (43, 8));

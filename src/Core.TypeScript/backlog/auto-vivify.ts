@@ -17,7 +17,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSy
 import { dirname, join, normalize, relative, basename } from "node:path";
 import { pack, DEFAULT_ENV } from "../zeta-id/zeta-id";
 import { format } from "../zeta-id/encoding";
-import { Category, Chromosome, Firefly, type ZetaObservation } from "../zeta-id/types";
+import { Category, Chromosome, type ZetaObservation } from "../zeta-id/types";
 
 const REPO_ROOT = normalize(join(__dirname, "..", "..", ".."));
 const SCAN_SURFACES = ["workitems", "db"];
@@ -131,7 +131,6 @@ function mintWorkItemZetaId(): string {
     timestamp: Date.now() as any,
     chromosome: Chromosome.MetaCoherence,
     category: Category.WorkItem,
-    firefly: Firefly.NoDirective,
     authority: { type: "Standard" },
     persona: 0 as any,
     momentum: { type: "Normal" },

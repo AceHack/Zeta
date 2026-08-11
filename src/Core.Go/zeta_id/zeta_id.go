@@ -43,7 +43,6 @@ type ZetaObservation struct {
 	Timestamp  uint64
 	Chromosome uint8
 	Category   uint8
-	Firefly    uint8
 	Authority  Authority
 	Persona    uint8
 	Momentum   Momentum
@@ -148,12 +147,20 @@ type BitField struct {
 	Width  uint
 }
 
+// Every offset below comes straight from the generated constants — this literal
+// never advances a running offset, so removing a field cannot shift its
+// neighbours. Named-field widths sum to 123; the other 5 bits are RESERVED.
+// Bit 64 is one of them: it held the 1-bit Firefly field until 2026-08-11, when
+// it was reclaimed NO-SHIFT (Category stays at 65, Chromosome at 70, Timestamp
+// at 75, Version at 123). Pack must leave it zero and Unpack must ignore it;
+// writing it in V1 is an unversioned schema break.
+// See docs/zeta-id-v1-layout.yaml `reserved_bits`.
 var BitLayout = struct {
 	Version    BitField
 	Timestamp  BitField
 	Chromosome BitField
 	Category   BitField
-	Firefly    BitField
+	// (bit 64 — RESERVED, formerly Firefly; deliberately no BitField here)
 	Authority  BitField
 	Persona    BitField
 	Momentum   BitField
@@ -167,7 +174,6 @@ var BitLayout = struct {
 	Timestamp:  BitField{Offset: uint(TimestampOffset), Width: uint(TimestampWidth)},
 	Chromosome: BitField{Offset: uint(ChromosomeOffset), Width: uint(ChromosomeWidth)},
 	Category:   BitField{Offset: uint(CategoryOffset), Width: uint(CategoryWidth)},
-	Firefly:    BitField{Offset: uint(FireflyOffset), Width: uint(FireflyWidth)},
 	Authority:  BitField{Offset: uint(AuthorityOffset), Width: uint(AuthorityWidth)},
 	Persona:    BitField{Offset: uint(PersonaOffset), Width: uint(PersonaWidth)},
 	Momentum:   BitField{Offset: uint(MomentumOffset), Width: uint(MomentumWidth)},
@@ -206,9 +212,6 @@ func Pack(obs ZetaObservation, env SimulationEnvironment) (*big.Int, error) {
 	if obs.Category >= 9 {
 		return nil, errors.New("ZetaObservation.Category must be < 9")
 	}
-	if obs.Firefly > 1 {
-		return nil, fmt.Errorf("firefly %d exceeds 1-bit range", obs.Firefly)
-	}
 
 	authByte, err := AuthorityToByte(obs.Authority)
 	if err != nil {
@@ -224,7 +227,7 @@ func Pack(obs ZetaObservation, env SimulationEnvironment) (*big.Int, error) {
 	setBits(id, BitLayout.Timestamp, obs.Timestamp)
 	setBits(id, BitLayout.Chromosome, uint64(obs.Chromosome))
 	setBits(id, BitLayout.Category, uint64(obs.Category))
-	setBits(id, BitLayout.Firefly, uint64(obs.Firefly))
+	// bit 64 is RESERVED (formerly Firefly) — never written, stays zero
 	setBits(id, BitLayout.Authority, uint64(authByte))
 	setBits(id, BitLayout.Persona, uint64(obs.Persona))
 	setBits(id, BitLayout.Momentum, uint64(momByte))
@@ -241,7 +244,7 @@ func Unpack(id *big.Int) ZetaObservation {
 	timestamp := getBits(id, BitLayout.Timestamp)
 	chromosome := uint8(getBits(id, BitLayout.Chromosome))
 	category := uint8(getBits(id, BitLayout.Category))
-	firefly := uint8(getBits(id, BitLayout.Firefly))
+	// bit 64 is RESERVED (formerly Firefly) — ignored on read
 	authByte := uint8(getBits(id, BitLayout.Authority))
 	persona := uint8(getBits(id, BitLayout.Persona))
 	momByte := uint8(getBits(id, BitLayout.Momentum))
@@ -252,7 +255,6 @@ func Unpack(id *big.Int) ZetaObservation {
 		Timestamp:  timestamp,
 		Chromosome: chromosome,
 		Category:   category,
-		Firefly:    firefly,
 		Authority:  AuthorityFromByte(authByte),
 		Persona:    persona,
 		Momentum:   MomentumFromByte(momByte),

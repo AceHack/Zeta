@@ -28,8 +28,6 @@ public static class GeneratedBitLayout
     public static readonly Bits ChromosomeWidth = new Bits(5);
     public static readonly Bits CategoryOffset = new Bits(65);
     public static readonly Bits CategoryWidth = new Bits(4);
-    public static readonly Bits FireflyOffset = new Bits(64);
-    public static readonly Bits FireflyWidth = new Bits(1);
     public static readonly Bits AuthorityOffset = new Bits(59);
     public static readonly Bits AuthorityWidth = new Bits(5);
     public static readonly Bits PersonaOffset = new Bits(51);

@@ -34,13 +34,6 @@ fields:
     enum_ref: registry/categories.yaml
     required: true
 
-  - name: Firefly
-    offset: 64
-    width: 1
-    type: enum
-    enum_ref: registry/firefly-cases.yaml
-    description: "V1 case-of-one: NoDirective = 1. Kept as enum for V2+ evolution."
-    required: true
 
   - name: Authority
     offset: 59
@@ -81,18 +74,41 @@ fields:
     description: "Safe 32-bit window. 64-bit randomness in earlier versions corrupted higher fields (empirically caught by round-trip test)."
 
 reserved_bits:
-  # Sum of named field widths = 124. Total bits = 128. Difference = 4 reserved bits
+  # Sum of named field widths = 123. Total bits = 128. Difference = 5 reserved bits
   # at the offsets below. Pack() leaves them zero; Unpack() ignores them. Reserved
   # bits are V2+ evolution surface (e.g., signature-version stripe, parity bit,
-  # confidentiality flag, or a 4-bit extension to one of the existing fields).
+  # confidentiality flag, or an extension to one of the existing fields).
   # Touching them in V1 is an unversioned schema break.
   - offset: 32
     width: 3
     note: "Gap between Randomness end (bit 31) and Location start (bit 35)"
+  - offset: 64
+    width: 1
+    note: >-
+      Former Firefly bit, reclaimed 2026-08-11 (no-shift: no other field moved).
+      Firefly was a declared case-of-one (`NoDirective = 1`), i.e. it encoded an
+      INVARIANT rather than a variable — a bit that can never vary carries zero
+      information, and the no-directives principle is enforced by governance, not
+      by a wire bit. It was also already incoherent in practice: TypeScript writers
+      emitted 1 while `ReticulumLink.fs` emitted 0, and C#'s enum had no zero member
+      at all, so unpacking such an id produced an undeclared value with no error.
+      NOTE for reclaimers: this bit is NOT adjacent to Randomness (0-31), so it
+      cannot widen the entropy field without a relocation. If more entropy is ever
+      needed (e.g. birthday collisions at volume), the 3 reserved bits at offset 32
+      sit directly above Randomness and are the natural candidate.
+
+      CAUTION — bit 64 has a SECOND, legitimate meaning that no generated constant covers.
+      For categories >= 9 (ContentAddress and the generic payload layouts) the codec does NOT
+      use the observation field layout: `packGeneric`/`unpackGeneric` spread payload across
+      bits 0..64 and 69..122, so a generic ZetaId DOES write bit 64 and that is correct.
+      "Reserved" here means the OBSERVATION pack path leaves it zero; unpack must still accept
+      it set, which is why the `max-128` cross-verification vector is deliberately all-ones and
+      was NOT altered by this reclamation. Do not "fix" the generic layout into agreement with
+      the observation layout — they are different layouts sharing one 128-bit word.
   - offset: 69
     width: 1
     note: "Gap between Category end (bit 68) and Chromosome start (bit 70)"
 
 # Sanity check (for spec readers):
-#   5 + 48 + 5 + 4 + 1 + 5 + 8 + 8 + 8 + 32 = 124 named-field bits
-#   124 + 4 reserved = 128 total_bits
+#   5 + 48 + 5 + 4 + 5 + 8 + 8 + 8 + 32 = 123 named-field bits
+#   123 + 5 reserved = 128 total_bits

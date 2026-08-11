@@ -302,7 +302,7 @@ layout = its own spec: uniqueness, time-ordering, recursive extensibility, optim
 bit-use). Not one monolithic proof.
 ⇒ keys are **128 bits** (confirmed in `BitLayout.fs`: `TotalBits = 128`, `UInt128`
 codec — the V1 layout is `Version(5)|Timestamp(48 ms)|Chromosome(5)|rsvd|
-Category(4)|Firefly(1)|Authority(5)|Persona(8)|Momentum(8)|Location(8)|rsvd|
+Category(4)|rsvd(1)|Authority(5)|Persona(8)|Momentum(8)|Location(8)|rsvd|
 Randomness(32)`). The Timestamp(48) IS the time-ordered prefix = the embedded
 clock. **Many key types** partition the bit-space, to be guarded by **F#
 units-of-measure** so wrong-key-type code won't compile and a proof scoped to one

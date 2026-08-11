@@ -7,7 +7,6 @@ const fixedObservation: ZetaObservation = {
   timestamp: 1747780809123 as any,
   chromosome: 7,
   category: 0,
-  firefly: 1,
   authority: { type: "HumanVerified" },
   persona: 1,
   momentum: { type: "High" },
@@ -22,11 +21,46 @@ test("ZetaId round-trips all fields correctly", () => {
   expect(result.timestamp).toBe(fixedObservation.timestamp);
   expect(result.chromosome).toBe(fixedObservation.chromosome);
   expect(result.category).toBe(fixedObservation.category);
-  expect(result.firefly).toBe(fixedObservation.firefly);
   expect(result.persona).toBe(fixedObservation.persona);
   expect(result.location).toBe(fixedObservation.location);
   expect(result.authority).toEqual(fixedObservation.authority);
   expect(result.momentum).toEqual(fixedObservation.momentum);
+});
+
+// Bit 64 is RESERVED. It held the 1-bit Firefly field until it was reclaimed NO-SHIFT on
+// 2026-08-11 (bit 64 freed; NO other field moved). Nothing else pins the newly-reserved bit:
+// a round-trip test cannot see it, because a bit no field reads round-trips vacuously. These
+// two tests are the only thing standing between a stray write to bit 64 and a silent
+// cross-oracle byte-lock break.
+test("bit 64 is RESERVED (ex-Firefly): pack NEVER writes it", () => {
+  const cases: ZetaObservation[] = [
+    fixedObservation,
+    { ...fixedObservation, category: 8, chromosome: 0, momentum: { type: "Critical" } },
+    { ...fixedObservation, timestamp: 0 as any, chromosome: 0, category: 0, persona: 0 as any, location: 0 as any, authority: { type: "Raw", value: 31 }, momentum: { type: "Raw", value: 255 } },
+    { ...fixedObservation, timestamp: ((1n << 48n) - 1n) as any, chromosome: 31 as any, category: 8, persona: 255 as any, location: 255 as any, authority: { type: "Raw", value: 31 }, momentum: { type: "Raw", value: 255 } },
+  ];
+  for (const obs of cases) {
+    const id = pack(obs, DETERMINISTIC_ENV);
+    expect((id >> 64n) & 1n).toBe(0n);
+  }
+});
+
+// NO-SHIFT guard: Firefly's removal must not have moved any field above bit 64. Pinning the
+// offsets directly catches a re-pack of the layout that a round-trip test would happily accept
+// (pack and unpack would agree with each other while disagreeing with the other five oracles).
+test("NO-SHIFT: fields above bit 64 keep their offsets (Category 65, Chromosome 70, Timestamp 75, Version 123)", () => {
+  const obs: ZetaObservation = {
+    ...fixedObservation,
+    version: 1,
+    timestamp: 1747780809123 as any,
+    chromosome: 7,
+    category: 8,
+  };
+  const id = pack(obs, DETERMINISTIC_ENV);
+  expect(Number((id >> 65n) & 0xfn)).toBe(8);          // category  @65 w4
+  expect(Number((id >> 70n) & 0x1fn)).toBe(7);         // chromosome @70 w5
+  expect((id >> 75n) & ((1n << 48n) - 1n)).toBe(1747780809123n); // timestamp @75 w48
+  expect(Number((id >> 123n) & 0x1fn)).toBe(1);        // version   @123 w5
 });
 
 import { packPayload, unpackPayload } from "./zeta-id";

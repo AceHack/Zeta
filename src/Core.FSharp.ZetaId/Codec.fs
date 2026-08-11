@@ -47,7 +47,6 @@ module ZetaIdCodec =
         validateEnumField (byte obs.Version)    5 "Version"
         validateEnumField (byte obs.Chromosome) 5 "Chromosome"
         validateEnumField (byte obs.Category)   4 "Category"
-        validateEnumField (byte obs.Firefly)    1 "Firefly"
 
         if byte obs.Category >= 9uy then
             raise (System.ArgumentOutOfRangeException(
@@ -92,7 +91,6 @@ module ZetaIdCodec =
         id <- setBits id layout.Timestamp  (uint64 (int64 obs.Timestamp))
         id <- setBits id layout.Chromosome (uint64 (byte obs.Chromosome))
         id <- setBits id layout.Category   (uint64 (byte obs.Category))
-        id <- setBits id layout.Firefly    (uint64 (byte obs.Firefly))
         id <- setBits id layout.Authority  (uint64 (Authority.toByte obs.Authority))
         id <- setBits id layout.Persona    (uint64 (byte obs.Persona))
         id <- setBits id layout.Momentum   (uint64 (Momentum.toByte obs.Momentum))
@@ -113,7 +111,6 @@ module ZetaIdCodec =
             Timestamp  = LanguagePrimitives.Int64WithMeasure<ms> (int64 (getBits id layout.Timestamp))
             Chromosome = LanguagePrimitives.EnumOfValue<byte, Chromosome>  (toByte layout.Chromosome)
             Category   = LanguagePrimitives.EnumOfValue<byte, Category>    (toByte layout.Category)
-            Firefly    = LanguagePrimitives.EnumOfValue<byte, Firefly>     (toByte layout.Firefly)
             Authority  = Authority.fromByte (toByte layout.Authority)
             Persona    = LanguagePrimitives.EnumOfValue<byte, Persona>     (toByte layout.Persona)
             Momentum   = Momentum.fromByte  (toByte layout.Momentum)

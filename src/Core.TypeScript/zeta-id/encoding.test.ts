@@ -128,7 +128,7 @@ test("canonical vectors: pack → hex + base32 are stable and consistent", () =>
       note: "v1 / financial-integrity / observation / human-verified / high",
       obs: {
         version: 1, timestamp: 1747780809123 as any, chromosome: 7, category: 0,
-        firefly: 1, authority: { type: "HumanVerified" }, persona: 1,
+        authority: { type: "HumanVerified" }, persona: 1,
         momentum: { type: "High" }, location: 1,
       },
     },
@@ -136,7 +136,7 @@ test("canonical vectors: pack → hex + base32 are stable and consistent", () =>
       note: "v1 / meta-coherence / workitem / standard / normal (081KSXN940008QG0R002FWR9B2 WorkItem)",
       obs: {
         version: 1, timestamp: 1749200000000 as any, chromosome: 0, category: 8,
-        firefly: 1, authority: { type: "Standard" }, persona: 2,
+        authority: { type: "Standard" }, persona: 2,
         momentum: { type: "Normal" }, location: 2,
       },
     },
@@ -151,12 +151,14 @@ test("canonical vectors: pack → hex + base32 are stable and consistent", () =>
     // canonical form is stable + filename-safe
     expect(b32).toHaveLength(ZETAID_BASE32_LEN);
     expect(isCanonical(b32)).toBe(true);
+    // bit 64 is RESERVED (ex-Firefly, reclaimed NO-SHIFT 2026-08-11) — must be zero in every vector
+    expect((id >> 64n) & 1n).toBe(0n);
   }
 });
 
 test("two ids minted close in time sort by time (the workitems/ ls-ordering guarantee)", () => {
   const base: ZetaObservation = {
-    version: 1, timestamp: 0 as any, chromosome: 0, category: 8, firefly: 1,
+    version: 1, timestamp: 0 as any, chromosome: 0, category: 8,
     authority: { type: "Standard" }, persona: 1, momentum: { type: "Normal" }, location: 1,
   };
   const earlier = pack({ ...base, timestamp: 1749200000000 as any }, DEFAULT_ENV);

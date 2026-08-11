@@ -156,7 +156,6 @@ describe("buildHeartbeatObservation", () => {
     if ("error" in args) throw new Error(args.error);
     const obs = buildHeartbeatObservation(args, 1234567890);
     expect((obs as any).category).toBe(3);
-    expect((obs as any).firefly).toBe(1);
     expect((obs as any).version).toBe(1);
     expect((obs as any).persona).toBe(2);
   });
@@ -204,7 +203,7 @@ describe("renderHeartbeat", () => {
     expect(body).toContain("persona-slot: 2");
     expect(body).toContain("named-dep: \"PR #5450 CI\"");
     expect(body).toContain("parent-pr: 5450");
-    expect(body).toContain("firefly: NoDirective");
+    expect(body).not.toContain("firefly");  // bit 64 reclaimed NO-SHIFT 2026-08-11
   });
 
   it("omits optional fields when not provided", () => {

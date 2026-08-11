@@ -4,7 +4,7 @@
  */
 import { pack, type SimulationEnvironment } from "../zeta-id/zeta-id";
 import { format } from "../zeta-id/encoding";
-import { Category, Chromosome, Firefly, type ZetaObservation } from "../zeta-id/types";
+import { Category, Chromosome, type ZetaObservation } from "../zeta-id/types";
 
 const M64 = 0xffffffffffffffffn;
 const FALLBACK_BASE = Date.UTC(2026, 0, 1);
@@ -42,7 +42,6 @@ export function legacyZetaIdFromBId(bId: string, createdMs: number): string {
     timestamp: createdMs as ZetaObservation["timestamp"],
     chromosome: Chromosome.MetaCoherence,
     category: Category.WorkItem,
-    firefly: Firefly.NoDirective,
     authority: { type: "Standard" },
     persona: 0 as ZetaObservation["persona"],
     momentum: { type: "Normal" },

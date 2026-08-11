@@ -38,6 +38,28 @@ describe("multiplexed-duplex-transport — ZetaId-keyed channels", () => {
     expect(a).not.toBe(b); // unique discriminator
   });
 
+  // BYTE-LOCK the minted key. `categoryOf(a) === Category.Channel` alone passes for a whole family of
+  // wrong ids (any stray bit outside the category nibble is invisible to it), so pin the RAW id: Version=1
+  // @123, Category.Channel=11 @65, discriminator in the low 48 bits, and NOTHING else set. The `16` nibble
+  // pair is the load-bearing part — bit 64 is RESERVED (it held the 1-bit Firefly field until it was
+  // reclaimed NO-SHIFT on 2026-08-11); if anything re-wrote it these would read `17`.
+  test("minted channel id is byte-locked: version+category+discriminator only, reserved bit 64 is ZERO", () => {
+    expect(toHex(mintChannelId(1n))).toBe("08000000000000160000000000000001");
+    expect(toHex(mintChannelId(2n))).toBe("08000000000000160000000000000002");
+
+    // Explicit, independent of the hex spelling: bit 64 must be 0 for every minted id.
+    for (const seq of [0n, 1n, 2n, 7n, 0xffffffffffffn]) {
+      expect((mintChannelId(seq) >> 64n) & 1n).toBe(0n);
+    }
+  });
+
+  // NO-SHIFT guard: Firefly's removal moved nothing. Category must still decode from bit 65.
+  test("NO-SHIFT: Category still lives at bit 65", () => {
+    const id = mintChannelId(3n);
+    expect(Number((id >> 65n) & 0xfn)).toBe(Category.Channel);
+    expect(categoryOf(id)).toBe(Number((id >> 65n) & 0xfn));
+  });
+
   test("two channels multiplex over one transport with no cross-talk; peer sees them on accepted", async () => {
     const [epA, epB] = localDuplexPair<MuxFrame, never>();
     const client = multiplexedDuplexTransport<string, string>(epA);

@@ -46,7 +46,6 @@ let private genObs : Gen<ZetaObservation> =
                   Gen.elements [ 0L; 281474976710655L ] ] // 0 .. 2^48-1 (48-bit field)
         let! chromo = Gen.choose (0, 31) |> Gen.map byte   // 5-bit
         let! cat = Gen.choose (0, 8) |> Gen.map byte       // 4-bit (0..8 for observations)
-        let! ff = Gen.elements [ Firefly.Off; Firefly.On ]  // 1-bit
         let! auth =
             Gen.elements
                 [ Authority.HumanVerified; Authority.TrustedAgent; Authority.Standard
@@ -67,7 +66,6 @@ let private genObs : Gen<ZetaObservation> =
               Timestamp = LanguagePrimitives.Int64WithMeasure<ms> ts
               Chromosome = LanguagePrimitives.EnumOfValue<byte, Chromosome> chromo
               Category = LanguagePrimitives.EnumOfValue<byte, Category> cat
-              Firefly = ff
               Authority = auth
               Persona = LanguagePrimitives.EnumOfValue<byte, Persona> pers
               Momentum = mom

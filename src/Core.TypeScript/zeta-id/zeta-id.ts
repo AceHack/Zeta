@@ -86,7 +86,7 @@ export function pack(obs: ZetaObservation, env: SimulationEnvironment): ZetaId {
   bits = setBits(bits, BIT_MASKS.timestamp.offset, BIT_MASKS.timestamp.width, BigInt(obs.timestamp));
   bits = setBits(bits, BIT_MASKS.chromosome.offset, BIT_MASKS.chromosome.width, BigInt(obs.chromosome));
   bits = setBits(bits, BIT_MASKS.category.offset, BIT_MASKS.category.width, BigInt(obs.category));
-  bits = setBits(bits, BIT_MASKS.firefly.offset, BIT_MASKS.firefly.width, BigInt(obs.firefly));
+  // bit 64 is RESERVED (formerly Firefly, reclaimed NO-SHIFT 2026-08-11) — never written, stays zero
   bits = setBits(bits, BIT_MASKS.persona.offset, BIT_MASKS.persona.width, BigInt(obs.persona));
   bits = setBits(bits, BIT_MASKS.location.offset, BIT_MASKS.location.width, BigInt(obs.location));
 
@@ -129,8 +129,8 @@ export function unpack(id: ZetaId): ZetaObservation {
   const timestamp = Number(getBits(id, BIT_MASKS.timestamp.offset, BIT_MASKS.timestamp.width)) as any;
   const chromosome = Number(getBits(id, BIT_MASKS.chromosome.offset, BIT_MASKS.chromosome.width));
   const category = Number(getBits(id, BIT_MASKS.category.offset, BIT_MASKS.category.width));
-  const firefly = Number(getBits(id, BIT_MASKS.firefly.offset, BIT_MASKS.firefly.width));
-  const persona = Number(getBits(id, BIT_MASKS.persona.offset, BIT_MASKS.persona.width));
+  // bit 64 is RESERVED (formerly Firefly) — ignored on read
+  const persona =Number(getBits(id, BIT_MASKS.persona.offset, BIT_MASKS.persona.width));
   const location = Number(getBits(id, BIT_MASKS.location.offset, BIT_MASKS.location.width));
 
   const authValue = Number(getBits(id, BIT_MASKS.authority.offset, BIT_MASKS.authority.width));
@@ -144,7 +144,6 @@ export function unpack(id: ZetaId): ZetaObservation {
     timestamp,
     chromosome: chromosome as any,
     category: category as any,
-    firefly: firefly as any,
     authority,
     persona: persona as any,
     momentum,

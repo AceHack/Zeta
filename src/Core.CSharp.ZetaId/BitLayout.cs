@@ -6,7 +6,6 @@ public sealed class BitLayout
     public (Bits Offset, Bits Width) Timestamp { get; }
     public (Bits Offset, Bits Width) Chromosome { get; }
     public (Bits Offset, Bits Width) Category { get; }
-    public (Bits Offset, Bits Width) Firefly { get; }
     public (Bits Offset, Bits Width) Authority { get; }
     public (Bits Offset, Bits Width) Persona { get; }
     public (Bits Offset, Bits Width) Momentum { get; }
@@ -19,7 +18,6 @@ public sealed class BitLayout
         (Bits, Bits) timestamp,
         (Bits, Bits) chromosome,
         (Bits, Bits) category,
-        (Bits, Bits) firefly,
         (Bits, Bits) authority,
         (Bits, Bits) persona,
         (Bits, Bits) momentum,
@@ -30,7 +28,6 @@ public sealed class BitLayout
         Timestamp = timestamp;
         Chromosome = chromosome;
         Category = category;
-        Firefly = firefly;
         Authority = authority;
         Persona = persona;
         Momentum = momentum;
@@ -63,13 +60,13 @@ public sealed class BitLayout
 
         // Spec: docs/zeta-id-v1-layout.yaml reserved_bits — 1 bit at offset 69
         // (between Chromosome and Category), 3 bits at offsets 32-34 (between
-        // Location and Randomness). Total: 5+48+5+1+4+1+5+8+8+8+3+32 = 128.
+        // Location and Randomness). Reserved: bit 69, bit 64 (former Firefly, reclaimed 2026-08-11), bits 32-34. Total: 5+48+5+1+4+1+5+8+8+8+3+32 = 128.
         var version = Next(GeneratedBitLayout.VersionWidth);     // bits 123-127
         var timestamp = Next(GeneratedBitLayout.TimestampWidth);    // bits 75-122
         var chromosome = Next(GeneratedBitLayout.ChromosomeWidth);     // bits 70-74
         Skip(new Bits(1));                      // reserved bit 69
         var category = Next(GeneratedBitLayout.CategoryWidth);     // bits 65-68
-        var firefly = Next(GeneratedBitLayout.FireflyWidth);     // bit 64
+        Skip(new Bits(1));                      // reserved bit 64 (former Firefly; NO-SHIFT reclaim)
         var authority = Next(GeneratedBitLayout.AuthorityWidth);     // bits 59-63
         var persona = Next(GeneratedBitLayout.PersonaWidth);     // bits 51-58
         var momentum = Next(GeneratedBitLayout.MomentumWidth);     // bits 43-50
@@ -81,7 +78,6 @@ public sealed class BitLayout
             timestamp,
             chromosome,
             category,
-            firefly,
             authority,
             persona,
             momentum,
@@ -113,7 +109,7 @@ public sealed class BitLayout
         var momentum = Next(GeneratedBitLayout.MomentumWidth);     // bits 43-50
         var persona = Next(GeneratedBitLayout.PersonaWidth);     // bits 51-58
         var authority = Next(GeneratedBitLayout.AuthorityWidth);     // bits 59-63
-        var firefly = Next(GeneratedBitLayout.FireflyWidth);     // bit 64
+        Skip(new Bits(1));                      // reserved bit 64 (former Firefly; NO-SHIFT reclaim)
         var category = Next(GeneratedBitLayout.CategoryWidth);     // bits 65-68
         Skip(new Bits(1));                      // reserved bit 69
         var chromosome = Next(GeneratedBitLayout.ChromosomeWidth);     // bits 70-74
@@ -125,7 +121,6 @@ public sealed class BitLayout
             timestamp,
             chromosome,
             category,
-            firefly,
             authority,
             persona,
             momentum,

@@ -8,8 +8,8 @@
 //!
 //! Faithful-port notes vs the F#/C#/TS oracles:
 //!
-//! - **Open-vocabulary fields** (version/chromosome/category/firefly/persona/
-//!   location) are modeled as `u8` with named constants, not closed enums. The
+//! - **Open-vocabulary fields** (version/chromosome/category/persona/location)
+//!   are modeled as `u8` with named constants, not closed enums. The
 //!   other oracles use `EnumOfValue`-style byte enums where the named cases are
 //!   *contract vocabulary* but ANY in-range byte is a valid value. A closed Rust
 //!   enum would reject unnamed in-range bytes the other oracles accept, breaking
@@ -66,14 +66,6 @@ pub mod category {
     pub const SPAWN: u8 = 7;
     /// Planning umbrella (tasks + bugs; B-xxxxx → ZetaId migration).
     pub const WORK_ITEM: u8 = 8;
-}
-
-/// Named Firefly vocabulary (1-bit field).
-pub mod firefly {
-    /// Off.
-    pub const OFF: u8 = 0;
-    /// On.
-    pub const ON: u8 = 1;
 }
 
 /// Named Persona vocabulary (8-bit field; any byte 0..=255 is valid).
@@ -306,8 +298,6 @@ pub struct ZetaObservation {
     pub chromosome: u8,
     /// Category (4-bit). See [`category`].
     pub category: u8,
-    /// Firefly (1-bit). See [`firefly`].
-    pub firefly: u8,
     /// Authority (5-bit).
     pub authority: Authority,
     /// Persona (8-bit). See [`persona`].

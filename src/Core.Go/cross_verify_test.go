@@ -255,6 +255,95 @@ func TestCrossVerifyTriBoolean(t *testing.T) {
 	}
 }
 
+// saturatingEnv returns all-ones so the randomness mask itself is exercised;
+// nothing an environment supplies may reach a reserved bit.
+type saturatingEnv struct{}
+
+func (saturatingEnv) NextInt64() int64 { return -1 } // all 64 bits set
+
+// TestZetaIdBit64IsReservedAndAlwaysZero pins the bit that held the 1-bit
+// Firefly field until it was reclaimed NO-SHIFT. Nothing else pins the
+// newly-reserved bit, so pin it here: Pack must never write it, whatever the
+// observation. Saturating every named field is the strongest form of the check
+// — if any field's width or offset ever grows into bit 64, this fails.
+func TestZetaIdBit64IsReservedAndAlwaysZero(t *testing.T) {
+	saturated := zeta_id.ZetaObservation{
+		Version:    31,
+		Timestamp:  (1 << 48) - 1,
+		Chromosome: 31,
+		Category:   8, // max allowed (Pack rejects >= 9)
+		Authority:  zeta_id.Authority{Type: zeta_id.AuthorityHumanVerified},
+		Persona:    255,
+		Momentum:   zeta_id.Momentum{Type: zeta_id.MomentumCritical},
+		Location:   255,
+	}
+	zeroed := zeta_id.ZetaObservation{
+		Authority: zeta_id.Authority{Type: zeta_id.AuthoritySimulated},
+		Momentum:  zeta_id.Momentum{Type: zeta_id.MomentumBackground},
+	}
+
+	envs := []zeta_id.SimulationEnvironment{zeta_id.DeterministicEnv{}, saturatingEnv{}}
+	for _, env := range envs {
+		for _, obs := range []zeta_id.ZetaObservation{saturated, zeroed} {
+			packed, err := zeta_id.Pack(obs, env)
+			if err != nil {
+				t.Fatalf("failed to pack: %v", err)
+			}
+			if packed.Bit(64) != 0 {
+				t.Fatalf("bit 64 is RESERVED and must pack as zero, got id %s", zeta_id.ToHex(packed))
+			}
+		}
+	}
+
+	// A stray bit 64 on the wire must not disturb any named field either.
+	clean, err := zeta_id.Pack(saturated, zeta_id.DeterministicEnv{})
+	if err != nil {
+		t.Fatalf("failed to pack: %v", err)
+	}
+	dirty := new(big.Int).SetBit(clean, 64, 1)
+	if zeta_id.Unpack(dirty) != zeta_id.Unpack(clean) {
+		t.Fatal("a set reserved bit 64 must be ignored by Unpack")
+	}
+}
+
+// TestZetaIdLayoutNoShift — Firefly's removal was NO-SHIFT: no field above bit
+// 64 may move.
+func TestZetaIdLayoutNoShift(t *testing.T) {
+	for _, c := range []struct {
+		name string
+		got  uint
+		want uint
+	}{
+		{"Category", zeta_id.BitLayout.Category.Offset, 65},
+		{"Chromosome", zeta_id.BitLayout.Chromosome.Offset, 70},
+		{"Timestamp", zeta_id.BitLayout.Timestamp.Offset, 75},
+		{"Version", zeta_id.BitLayout.Version.Offset, 123},
+	} {
+		if c.got != c.want {
+			t.Errorf("%s offset moved: got %d, want %d", c.name, c.got, c.want)
+		}
+	}
+
+	named := []zeta_id.BitField{
+		zeta_id.BitLayout.Version,
+		zeta_id.BitLayout.Timestamp,
+		zeta_id.BitLayout.Chromosome,
+		zeta_id.BitLayout.Category,
+		zeta_id.BitLayout.Authority,
+		zeta_id.BitLayout.Persona,
+		zeta_id.BitLayout.Momentum,
+		zeta_id.BitLayout.Location,
+		zeta_id.BitLayout.Randomness,
+	}
+	total := uint(0)
+	for _, f := range named {
+		total += f.Width
+	}
+	if total != 123 { // 123 named + 5 reserved = 128
+		t.Errorf("named-field bits: got %d, want 123", total)
+	}
+}
+
 type ZetaIdVector struct {
 	Id                string  `yaml:"id"`
 	Type              *string `yaml:"type"`
@@ -263,7 +352,6 @@ type ZetaIdVector struct {
 	Timestamp         uint64  `yaml:"timestamp"`
 	Chromosome        uint8   `yaml:"chromosome"`
 	Category          uint8   `yaml:"category"`
-	Firefly           uint8   `yaml:"firefly"`
 	AuthorityType     string  `yaml:"authority_type"`
 	AuthorityRaw      *uint8  `yaml:"authority_raw"`
 	Persona           uint8   `yaml:"persona"`
@@ -294,7 +382,6 @@ func observationsEqual(a, b zeta_id.ZetaObservation) bool {
 		a.Timestamp == b.Timestamp &&
 		a.Chromosome == b.Chromosome &&
 		a.Category == b.Category &&
-		a.Firefly == b.Firefly &&
 		a.Authority.Type == b.Authority.Type &&
 		aAuthVal == bAuthVal &&
 		a.Persona == b.Persona &&
@@ -360,7 +447,6 @@ func TestCrossVerifyZetaId(t *testing.T) {
 				Timestamp:  v.Timestamp,
 				Chromosome: v.Chromosome,
 				Category:   v.Category,
-				Firefly:    v.Firefly,
 				Authority:  zeta_id.Authority{Type: zeta_id.AuthorityType(v.AuthorityType), Value: authRaw},
 				Persona:    v.Persona,
 				Momentum:   zeta_id.Momentum{Type: zeta_id.MomentumType(v.MomentumType), Value: momRaw},
@@ -396,7 +482,6 @@ func TestCrossVerifyZetaId(t *testing.T) {
 				Timestamp:  v.Timestamp,
 				Chromosome: v.Chromosome,
 				Category:   v.Category,
-				Firefly:    v.Firefly,
 				Authority:  zeta_id.Authority{Type: zeta_id.AuthorityType(v.AuthorityType), Value: authRaw},
 				Persona:    v.Persona,
 				Momentum:   zeta_id.Momentum{Type: zeta_id.MomentumType(v.MomentumType), Value: momRaw},

@@ -39,11 +39,6 @@ type Category =
     | Channel = 11uy   // multiplexed four-corner duplex channel over one transport (ZetaId-keyed; Aaron 2026-07-04)
     | Extended = 15uy   // reserved escape marker for wider extension categories
 
-/// Firefly bit — 1 bit. Mirrors `src/Core.CSharp.ZetaId/Firefly.cs`.
-type Firefly =
-    | Off = 0uy
-    | On = 1uy
-
 /// Persona field — 8 bits. Mirrors `src/Core.CSharp.ZetaId/Persona.cs`.
 type Persona =
     | HumanMaintainer = 1uy
@@ -189,7 +184,6 @@ type ZetaObservation = {
     Timestamp: int64<ms>
     Chromosome: Chromosome
     Category: Category
-    Firefly: Firefly
     Authority: Authority
     Persona: Persona
     Momentum: Momentum

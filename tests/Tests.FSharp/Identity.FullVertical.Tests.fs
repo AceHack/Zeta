@@ -50,7 +50,6 @@ let private obsToDynamic (o: ZetaObservation) : DynamicValue =
           "timestamp", DynamicValue.Int(int64 o.Timestamp)
           "chromosome", DynamicValue.Int(int64 (byte o.Chromosome))
           "category", DynamicValue.Int(int64 (byte o.Category))
-          "firefly", DynamicValue.Int(int64 (byte o.Firefly))
           "authority", DynamicValue.Int(int64 (Authority.toByte o.Authority))
           "persona", DynamicValue.Int(int64 (byte o.Persona))
           "momentum", DynamicValue.Int(int64 (Momentum.toByte o.Momentum))
@@ -68,15 +67,14 @@ let private dynamicToObs (dv: DynamicValue) : ZetaObservation option =
             match Map.tryFind k m with
             | Some(DynamicValue.Int i) -> Some i
             | _ -> None
-        match getB "version", getI "timestamp", getB "chromosome", getB "category", getB "firefly",
+        match getB "version", getI "timestamp", getB "chromosome", getB "category",
               getB "authority", getB "persona", getB "momentum", getB "location" with
-        | Some ver, Some ts, Some chr, Some cat, Some ff, Some auth, Some per, Some mom, Some loc ->
+        | Some ver, Some ts, Some chr, Some cat, Some auth, Some per, Some mom, Some loc ->
             Some
                 { Version = LanguagePrimitives.EnumOfValue ver
                   Timestamp = LanguagePrimitives.Int64WithMeasure<ms> ts
                   Chromosome = LanguagePrimitives.EnumOfValue chr
                   Category = LanguagePrimitives.EnumOfValue cat
-                  Firefly = LanguagePrimitives.EnumOfValue ff
                   Authority = Authority.fromByte auth
                   Persona = LanguagePrimitives.EnumOfValue per
                   Momentum = Momentum.fromByte mom
@@ -93,7 +91,6 @@ let private genObs : Gen<ZetaObservation> =
             Gen.elements
                 [ Category.Observation; Category.Emission; Category.Workflow; Category.Heartbeat
                   Category.Bus; Category.Spawn; Category.WorkItem ]
-        let! ff = Gen.elements [ Firefly.Off; Firefly.On ]
         let! auth =
             Gen.elements
                 [ Authority.HumanVerified; Authority.TrustedAgent; Authority.Standard
@@ -110,7 +107,6 @@ let private genObs : Gen<ZetaObservation> =
               Timestamp = LanguagePrimitives.Int64WithMeasure<ms> ts
               Chromosome = chr
               Category = cat
-              Firefly = ff
               Authority = auth
               Persona = per
               Momentum = mom
@@ -194,7 +190,6 @@ let ``Identity × carrier: a fixed observation round-trips through every format`
           Timestamp = LanguagePrimitives.Int64WithMeasure<ms> 1700000000000L
           Chromosome = Chromosome.MetaCoherence
           Category = Category.Heartbeat
-          Firefly = Firefly.On
           Authority = Authority.TrustedAgent
           Persona = Persona.FireflyCoherence
           Momentum = Momentum.Elevated

@@ -24,27 +24,31 @@
 import { type DuplexEndpoint, type Frame, type FourCornerWire, fourCornerOverDuplex } from "./duplex-transport.ts";
 import { Category, type ZetaId } from "../zeta-id/types.ts";
 import { fromHex, toHex } from "../zeta-id/encoding.ts";
+import { BIT_MASKS } from "../zeta-id/zeta-id.gen.ts";
 
-// Bit offsets from docs/zeta-id-v1-layout.yaml (Version @123 w5, Category @65 w4, Firefly @64 w1).
-const VERSION_OFFSET = 123n;
-const CATEGORY_OFFSET = 65n;
-const FIREFLY_OFFSET = 64n;
+// Bit offsets come from the GENERATED layout (zeta-id.gen.ts, itself generated from
+// docs/zeta-id-v1-layout.yaml) — never hand-copied, so a layout change cannot silently
+// desync this transport key. Bit 64 is RESERVED (formerly the 1-bit Firefly field,
+// reclaimed NO-SHIFT 2026-08-11): nothing here writes it, so it packs as zero.
+const VERSION_OFFSET = BIT_MASKS.version.offset;
+const CATEGORY_OFFSET = BIT_MASKS.category.offset;
+const CATEGORY_MASK = (1n << BIT_MASKS.category.width) - 1n;
 const DISCRIMINATOR_BITS = 48n;
 
-/// Mint a channel ZetaId: Version=1, Category=Channel, Firefly=NoDirective(1), + a unique discriminator in
-/// the low bits. This is a TRANSPORT KEY, not a fully-populated observation id — the semantically-load-bearing
-/// fields are Version+Category+Firefly (so the far side decodes `Category.Channel` and knows it's a channel);
-/// the discriminator makes it unique. `seq` supplies the uniqueness (a monotonic counter — deterministic, no
-/// ambient clock/RNG, DST-friendly; a production mint can put a timestamp there instead).
+/// Mint a channel ZetaId: Version=1, Category=Channel, + a unique discriminator in the low bits. This is a
+/// TRANSPORT KEY, not a fully-populated observation id — the semantically-load-bearing fields are
+/// Version+Category (so the far side decodes `Category.Channel` and knows it's a channel); the discriminator
+/// makes it unique. `seq` supplies the uniqueness (a monotonic counter — deterministic, no ambient clock/RNG,
+/// DST-friendly; a production mint can put a timestamp there instead).
 export function mintChannelId(seq: bigint): ZetaId {
   const discriminator = seq & ((1n << DISCRIMINATOR_BITS) - 1n);
-  const id = (1n << VERSION_OFFSET) | (BigInt(Category.Channel) << CATEGORY_OFFSET) | (1n << FIREFLY_OFFSET) | discriminator;
+  const id = (1n << VERSION_OFFSET) | (BigInt(Category.Channel) << CATEGORY_OFFSET) | discriminator;
   return id as ZetaId;
 }
 
 /// Read the `Category` nibble out of a ZetaId (so a receiver can confirm `Category.Channel` before opening).
 export function categoryOf(id: ZetaId): number {
-  return Number((id >> CATEGORY_OFFSET) & 0xfn);
+  return Number((id >> CATEGORY_OFFSET) & CATEGORY_MASK);
 }
 
 /// The multiplex envelope on the physical wire: the channel key (ZetaId hex) + the inner four-corner frame.

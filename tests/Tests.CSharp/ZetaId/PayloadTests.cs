@@ -10,7 +10,6 @@ public class PayloadTests
         Timestamp: 1747780809123L,
         Chromosome: Chromosome.FinancialIntegrity,
         Category: Category.Observation,
-        Firefly: Firefly.NoDirective,
         Authority: new Authority.HumanVerified(),
         Persona: (Persona)1,
         Momentum: new Momentum.High(),

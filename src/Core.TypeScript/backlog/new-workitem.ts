@@ -32,7 +32,7 @@ import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { pack, DEFAULT_ENV } from "../zeta-id/zeta-id";
 import { format } from "../zeta-id/encoding";
-import { Category, Chromosome, Firefly, type ZetaObservation } from "../zeta-id/types";
+import { Category, Chromosome, type ZetaObservation } from "../zeta-id/types";
 import { makeCreatedEvent, mintWorkItemEventIdHex } from "../work-items/types";
 import { writeEvent, maybeGitPushEvent, type WriteResult } from "../work-items/publish";
 
@@ -110,7 +110,6 @@ export function mintWorkItem(spec: NewWorkItemSpec, env: WorkItemEnv): MintedWor
     timestamp: nowMs as ZetaObservation["timestamp"],
     chromosome: Chromosome.MetaCoherence, // planning lives in the meta-coherence chromosome
     category: Category.WorkItem,
-    firefly: Firefly.NoDirective, // no-directives ethos
     authority: { type: "Standard" },
     persona: (spec.persona ?? 0) as ZetaObservation["persona"],
     momentum: { type: "Normal" },

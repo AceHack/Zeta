@@ -34,8 +34,9 @@ export type ZetaIdPayload =
   | { readonly type: "ContentAddress"; readonly version: IdVersion; readonly payload: bigint }
   | { readonly type: "Generic"; readonly version: IdVersion; readonly category: Category; readonly payload: bigint };
 
-export const Firefly = { NoDirective: 1 } as const;
-export type Firefly = (typeof Firefly)[keyof typeof Firefly];
+// Bit 64 is RESERVED (formerly the 1-bit Firefly field, reclaimed 2026-08-11).
+// The removal was NO-SHIFT: Category stays at 65, Chromosome at 70, Timestamp at
+// 75, Version at 123. Nothing writes bit 64 — it must pack as zero.
 
 export const Persona = {
   Aaron: 1,
@@ -70,7 +71,6 @@ export interface ZetaObservation {
   readonly timestamp: Milliseconds;
   readonly chromosome: Chromosome;
   readonly category: Category;
-  readonly firefly: Firefly;
   readonly authority: Authority;
   readonly persona: Persona;
   readonly momentum: Momentum;
@@ -82,7 +82,6 @@ export const ZETA_OBSERVATION_KEYS = [
   "timestamp",
   "chromosome",
   "category",
-  "firefly",
   "authority",
   "persona",
   "momentum",

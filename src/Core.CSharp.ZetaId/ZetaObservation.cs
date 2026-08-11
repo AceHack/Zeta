@@ -5,7 +5,6 @@ public readonly record struct ZetaObservation(
     long Timestamp,
     Chromosome Chromosome,
     Category Category,
-    Firefly Firefly,
     Authority Authority,
     Persona Persona,
     Momentum Momentum,

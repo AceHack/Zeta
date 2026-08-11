@@ -61,7 +61,6 @@ module ReticulumLink =
               Timestamp = tsMs
               Chromosome = Chromosome.MetaCoherence
               Category = Category.Bus
-              Firefly = Firefly.Off
               Authority = Authority.Simulated
               Persona = Persona.FireflyCoherence
               Momentum = Momentum.Background

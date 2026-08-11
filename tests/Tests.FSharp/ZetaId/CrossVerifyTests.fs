@@ -19,7 +19,6 @@ type FlatVector = {
     Timestamp: int64
     Chromosome: int
     Category: int
-    Firefly: int
     AuthorityType: string
     AuthorityRaw: Nullable<int>
     Persona: int
@@ -80,7 +79,6 @@ let private toFlatVector (idx: int) (item: YamlValue) : FlatVector =
         Timestamp     = asInt64   (field m "timestamp" ctx)      (ctx + ".timestamp")
         Chromosome    = asInt     (field m "chromosome" ctx)     (ctx + ".chromosome")
         Category      = asInt     (field m "category" ctx)       (ctx + ".category")
-        Firefly       = asInt     (field m "firefly" ctx)        (ctx + ".firefly")
         AuthorityType = asStr     (field m "authority_type" ctx) (ctx + ".authority_type")
         AuthorityRaw  = asIntOrNull (field m "authority_raw" ctx) (ctx + ".authority_raw")
         Persona       = asInt     (field m "persona" ctx)        (ctx + ".persona")
@@ -138,7 +136,6 @@ let private toObservation (v: FlatVector) : ZetaObservation =
         Timestamp  = LanguagePrimitives.Int64WithMeasure<ms> v.Timestamp
         Chromosome = LanguagePrimitives.EnumOfValue<byte, Chromosome>  (checkByte v.Chromosome "Chromosome")
         Category   = LanguagePrimitives.EnumOfValue<byte, Category>    (checkByte v.Category "Category")
-        Firefly    = LanguagePrimitives.EnumOfValue<byte, Firefly>     (checkByte v.Firefly "Firefly")
         Authority  = toAuthority v
         Persona    = LanguagePrimitives.EnumOfValue<byte, Persona>     (checkByte v.Persona "Persona")
         Momentum   = toMomentum v

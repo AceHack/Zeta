@@ -104,7 +104,6 @@ pub fn pack(obs: &ZetaObservation, env: &dyn SimulationEnvironment) -> Result<u1
     validate_enum_field(obs.version, 5, "version")?;
     validate_enum_field(obs.chromosome, 5, "chromosome")?;
     validate_enum_field(obs.category, 4, "category")?;
-    validate_enum_field(obs.firefly, 1, "firefly")?;
     // persona + location are full 8-bit fields — every u8 is valid; no check needed.
 
     // Re-validate Raw cases at pack time (the enum variants are public; a caller can
@@ -130,7 +129,7 @@ pub fn pack(obs: &ZetaObservation, env: &dyn SimulationEnvironment) -> Result<u1
     id = set_bits(id, layout.timestamp, obs.timestamp);
     id = set_bits(id, layout.chromosome, u64::from(obs.chromosome));
     id = set_bits(id, layout.category, u64::from(obs.category));
-    id = set_bits(id, layout.firefly, u64::from(obs.firefly));
+    // Bit 64 is RESERVED (ex-Firefly, freed NO-SHIFT) — deliberately left zero.
     id = set_bits(id, layout.authority, u64::from(obs.authority.to_byte()));
     id = set_bits(id, layout.persona, u64::from(obs.persona));
     id = set_bits(id, layout.momentum, u64::from(obs.momentum.to_byte()));
@@ -153,7 +152,6 @@ pub fn unpack(id: u128) -> ZetaObservation {
         timestamp: get_bits(id, l.timestamp),
         chromosome: get_bits(id, l.chromosome) as u8,
         category: get_bits(id, l.category) as u8,
-        firefly: get_bits(id, l.firefly) as u8,
         authority: Authority::from_byte(get_bits(id, l.authority) as u8),
         persona: get_bits(id, l.persona) as u8,
         momentum: Momentum::from_byte(get_bits(id, l.momentum) as u8),
@@ -264,7 +262,10 @@ pub fn is_canonical(s: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{DeterministicEnv, VERSION_V1, category, chromosome, firefly, location, persona};
+    use crate::{DeterministicEnv, VERSION_V1, category, chromosome, location, persona};
+
+    /// LSB-0 index of the reserved (ex-Firefly) bit. Nothing may write it.
+    const RESERVED_BIT_64: u32 = 64;
 
     fn human_verified_obs() -> ZetaObservation {
         ZetaObservation {
@@ -272,7 +273,6 @@ mod tests {
             timestamp: 1_747_780_809_123,
             chromosome: chromosome::FINANCIAL_INTEGRITY,
             category: category::OBSERVATION,
-            firefly: firefly::ON,
             authority: Authority::HumanVerified,
             persona: persona::HUMAN_MAINTAINER,
             momentum: Momentum::Normal,
@@ -283,7 +283,64 @@ mod tests {
     #[test]
     fn pack_matches_known_vector_hex() {
         let id = pack(&human_verified_obs(), &DeterministicEnv).expect("pack");
-        assert_eq!(to_hex(id), "080cb77ed58d19c1f80b000800000000");
+        assert_eq!(to_hex(id), "080cb77ed58d19c0f80b000800000000");
+    }
+
+    /// Bit 64 is RESERVED (the ex-Firefly bit, freed NO-SHIFT). Nothing may write
+    /// it: `pack` must leave it zero for every observation, whatever the field
+    /// values. Without this a future writer could quietly start using the bit and
+    /// silently break cross-oracle hex parity.
+    #[test]
+    fn pack_leaves_reserved_bit_64_zero() {
+        let mut obs = human_verified_obs();
+        for category_value in 0u8..16 {
+            for chromosome_value in [0u8, 1, 31] {
+                for authority in [
+                    Authority::HumanVerified,
+                    Authority::Simulated,
+                    Authority::Raw(0),
+                ] {
+                    obs.category = category_value;
+                    obs.chromosome = chromosome_value;
+                    obs.authority = authority;
+                    obs.persona = 255;
+                    obs.momentum = Momentum::Critical;
+                    obs.location = 255;
+                    obs.timestamp = MAX_TIMESTAMP;
+                    let id = pack(&obs, &DeterministicEnv).expect("pack");
+                    assert_eq!(
+                        (id >> RESERVED_BIT_64) & 1,
+                        0,
+                        "reserved bit 64 must stay zero (category={category_value}, chromosome={chromosome_value})"
+                    );
+                }
+            }
+        }
+    }
+
+    /// The reserved bit is not merely unwritten — it is unclaimed: no field's
+    /// [offset, offset+width) range covers bit 64.
+    #[test]
+    fn no_field_claims_reserved_bit_64() {
+        let l = BitLayout::default();
+        for f in [
+            l.version,
+            l.timestamp,
+            l.chromosome,
+            l.category,
+            l.authority,
+            l.persona,
+            l.momentum,
+            l.location,
+            l.randomness,
+        ] {
+            assert!(
+                RESERVED_BIT_64 < f.offset || RESERVED_BIT_64 >= f.offset + f.width,
+                "field at offset {} width {} claims reserved bit 64",
+                f.offset,
+                f.width
+            );
+        }
     }
 
     #[test]
@@ -300,7 +357,6 @@ mod tests {
             timestamp: 0,
             chromosome: chromosome::META_COHERENCE,
             category: category::OBSERVATION,
-            firefly: firefly::ON,
             authority: Authority::Raw(0),
             persona: persona::HUMAN_MAINTAINER,
             momentum: Momentum::Raw(255),

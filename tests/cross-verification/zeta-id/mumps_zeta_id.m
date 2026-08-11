@@ -1,17 +1,20 @@
 ZETAID ; MUMPS routine to pack a ZetaObservation into a 128-bit ZetaId
- ; Input variables: VER, TS, CHR, CAT, FF, AUTH, PER, MOM, LOC, RAND
+ ; Input variables: VER, TS, CHR, CAT, AUTH, PER, MOM, LOC, RAND
  ; Output variables: HEX, CROCK
  ;
  ; Bounded DST tick, 4x4x5-lang byte-locked.
  ; Bounded to standard ANSI MUMPS integer/float precision limits by splitting
  ; the 128-bit word into four 32-bit unsigned words (W3, W2, W1, W0).
  ;
-PACK(VER,TS,CHR,CAT,FF,AUTH,PER,MOM,LOC,RAND)
+PACK(VER,TS,CHR,CAT,AUTH,PER,MOM,LOC,RAND)
  NEW W3,W2,W1,W0,H3,H2,H1,H0,C
  ; W3 (bits 96..127): (version * 2^27) + (timestamp \ 2^21)
  SET W3=(VER*134217728)+(TS\2097152)
- ; W2 (bits 64..95): ((timestamp # 2^21) * 2^11) + (chromosome * 2^6) + (category * 2^1) + firefly
- SET W2=((TS#2097152)*2048)+(CHR*64)+(CAT*2)+FF
+ ; W2 (bits 64..95): ((timestamp # 2^21) * 2^11) + (chromosome * 2^6) + (category * 2^1)
+ ; Bit 64 (the W2 unit place) is RESERVED: it held the 1-bit Firefly field until it was
+ ; reclaimed NO-SHIFT on 2026-08-11. Removal was NO-SHIFT, so category KEEPS its *2 weight
+ ; (bit 65) and every term above it is unchanged; the freed bit is simply never added.
+ SET W2=((TS#2097152)*2048)+(CHR*64)+(CAT*2)
  ; W1 (bits 32..63): (authority * 2^27) + (persona * 2^19) + (momentum * 2^11) + (location * 2^3)
  SET W1=(AUTH*134217728)+(PER*524288)+(MOM*2048)+(LOC*8)
  ; W0 (bits 0..31): randomness

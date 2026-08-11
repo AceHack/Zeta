@@ -10,7 +10,6 @@ interface FlatVector {
   timestamp: number;
   chromosome: number;
   category: number;
-  firefly: number;
   authority_type: string;
   authority_raw: number | null;
   persona: number;
@@ -70,7 +69,8 @@ function yamlValueToFlatVectors(root: YamlValue): FlatVector[] {
       timestamp: asNum(field(m, "timestamp", ctx), `${ctx}.timestamp`),
       chromosome: asNum(field(m, "chromosome", ctx), `${ctx}.chromosome`),
       category: asNum(field(m, "category", ctx), `${ctx}.category`),
-      firefly: asNum(field(m, "firefly", ctx), `${ctx}.firefly`),
+      // NOTE: `firefly:` may still be present in the fixture; bit 64 is RESERVED
+      // (ex-Firefly, reclaimed NO-SHIFT 2026-08-11) and is deliberately not read.
       authority_type: asStr(field(m, "authority_type", ctx), `${ctx}.authority_type`),
       authority_raw: asNumOrNull(field(m, "authority_raw", ctx), `${ctx}.authority_raw`),
       persona: asNum(field(m, "persona", ctx), `${ctx}.persona`),
@@ -106,7 +106,6 @@ function toObservation(v: FlatVector): ZetaObservation {
     timestamp: v.timestamp as any,
     chromosome: v.chromosome as any,
     category: v.category as any,
-    firefly: v.firefly as any,
     authority: toAuthority(v),
     persona: v.persona as any,
     momentum: toMomentum(v),

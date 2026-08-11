@@ -54,7 +54,6 @@ public class BitLayoutAgreementTests
         Assert.Equal(td.Momentum, bu.Momentum);
         Assert.Equal(td.Persona, bu.Persona);
         Assert.Equal(td.Authority, bu.Authority);
-        Assert.Equal(td.Firefly, bu.Firefly);
         Assert.Equal(td.Category, bu.Category);
         Assert.Equal(td.Chromosome, bu.Chromosome);
         Assert.Equal(td.Timestamp, bu.Timestamp);

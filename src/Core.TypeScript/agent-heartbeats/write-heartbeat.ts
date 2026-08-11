@@ -269,14 +269,13 @@ export function pushHeartbeatViaRest(
   return { error: `ref update exhausted ${maxRetries} retries` };
 }
 
-/** Build the ZetaObservation for a heartbeat (category=Heartbeat=3, firefly=NoDirective=1, version=1). */
+/** Build the ZetaObservation for a heartbeat (category=Heartbeat=3, version=1). */
 export function buildHeartbeatObservation(args: Args, timestampMs: number): ZetaObservation {
   return {
     version: 1,
     timestamp: timestampMs as ZetaObservation["timestamp"],
     chromosome: args.chromosome,
     category: 3,  // Heartbeat per registry/categories.yaml
-    firefly: 1,   // NoDirective per registry/firefly-cases.yaml V1 case-of-one
     authority: { type: args.authority },
     persona: args.personaSlot,
     momentum: { type: args.momentum },
@@ -312,7 +311,6 @@ export function renderHeartbeat(args: Args, idHex: string, timestampMs: number):
     `momentum: ${args.momentum}`,
     `chromosome: ${args.chromosome}`,
     `location: ${args.location}`,
-    `firefly: NoDirective`,
     `disposition: ${args.disposition}`,
   ];
   if (args.namedDep) lines.push(`named-dep: ${JSON.stringify(args.namedDep)}`);

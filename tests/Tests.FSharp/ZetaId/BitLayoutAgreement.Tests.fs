@@ -52,7 +52,6 @@ let ``the two paths agree field-by-field — so a failure names WHICH field drif
           "Momentum", td.Momentum, bu.Momentum
           "Persona", td.Persona, bu.Persona
           "Authority", td.Authority, bu.Authority
-          "Firefly", td.Firefly, bu.Firefly
           "Category", td.Category, bu.Category
           "Chromosome", td.Chromosome, bu.Chromosome
           "Timestamp", td.Timestamp, bu.Timestamp
@@ -62,3 +61,60 @@ let ``the two paths agree field-by-field — so a failure names WHICH field drif
         // Parenthesised deliberately: in argument position F# parses a bare `a = b` as a NAMED
         // ARGUMENT rather than an equality test (error FS0691) — a quietly wrong-shaped assertion.
         Assert.True((a = b), sprintf "field %s disagrees between TopDown and BottomUp: %A vs %A" name a b)
+
+// ── the reclaimed bit: nothing else pins it ────────────────────────────────────────────────────
+//
+// Bit 64 was the Firefly field until 2026-08-11 and is now RESERVED (no-shift: no other field
+// moved). The property tests that used to exercise it were `Gen.elements [Firefly.Off; Firefly.On]`
+// — deleting the field made them simply stop generating it, so they went green while proving
+// NOTHING about the reclaimed bit. Without an explicit assertion, a future writer could quietly
+// start using bit 64 and no test in the tree would notice.
+
+[<Fact>]
+let ``pack leaves the reclaimed bit 64 ZERO for every category`` () =
+    let baseObs: ZetaObservation =
+        { Version = IdVersion.V1
+          Timestamp = LanguagePrimitives.Int64WithMeasure<ms> 1747780809123L
+          Chromosome = Chromosome.MetaCoherence
+          Category = Category.Observation
+          Authority = Authority.Simulated
+          Persona = Persona.HumanMaintainer
+          Momentum = Momentum.Normal
+          Location = Location.EastUsVa }
+
+    // Categories 0..8 only — 9+ use the ContentAddress / generic layout and `pack` rejects them
+    // here by design (a first draft included Channel=11 and was correctly refused by the codec).
+    for cat in [ Category.Observation; Category.Emission; Category.Workflow; Category.Heartbeat
+                 Category.Batch; Category.FrictionTelemetry; Category.Bus; Category.Spawn
+                 Category.WorkItem ] do
+        // Saturating env: all 64 randomness bits set, so the mask is genuinely exercised.
+        let env = { new ISimulationEnvironment with member _.NextInt64() = -1L }
+        let id = ZetaIdCodec.pack { baseObs with Category = cat } env
+        let bit64 = (id >>> 64) &&& System.UInt128.One
+        Assert.Equal(System.UInt128.Zero, bit64)
+
+[<Fact>]
+let ``no field claims bit 64 — the reserved slot is genuinely unallocated`` () =
+    let l = BitLayout.Default
+
+    let fields =
+        [ "Randomness", l.Randomness; "Location", l.Location; "Momentum", l.Momentum
+          "Persona", l.Persona; "Authority", l.Authority; "Category", l.Category
+          "Chromosome", l.Chromosome; "Timestamp", l.Timestamp; "Version", l.Version ]
+
+    for name, f in fields do
+        let covers = f.Offset <= 64 && 64 < f.Offset + f.Width
+        Assert.True(not covers, sprintf "field %s covers reserved bit 64 (offset %d width %d)" name f.Offset f.Width)
+
+[<Fact>]
+let ``NO-SHIFT is preserved: every field above the reclaimed bit kept its offset`` () =
+    // The whole point of the no-shift reclaim. If any of these moved, the wire format changed.
+    let l = BitLayout.Default
+    Assert.Equal(65, l.Category.Offset)
+    Assert.Equal(70, l.Chromosome.Offset)
+    Assert.Equal(75, l.Timestamp.Offset)
+    Assert.Equal(123, l.Version.Offset)
+    // ... and the fields below it are untouched too.
+    Assert.Equal(0, l.Randomness.Offset)
+    Assert.Equal(35, l.Location.Offset)
+    Assert.Equal(59, l.Authority.Offset)

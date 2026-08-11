@@ -8,7 +8,6 @@ export const BIT_MASKS = {
   timestamp: { offset: makeBits(75n), width: makeBits(48n) },
   chromosome: { offset: makeBits(70n), width: makeBits(5n) },
   category: { offset: makeBits(65n), width: makeBits(4n) },
-  firefly: { offset: makeBits(64n), width: makeBits(1n) },
   authority: { offset: makeBits(59n), width: makeBits(5n) },
   persona: { offset: makeBits(51n), width: makeBits(8n) },
   momentum: { offset: makeBits(43n), width: makeBits(8n) },

@@ -199,7 +199,6 @@ fn cross_verify_matches_shared_vectors() {
                     timestamp: field(rec, "timestamp").parse().expect("timestamp u64"),
                     chromosome: u8_field(rec, "chromosome"),
                     category: u8_field(rec, "category"),
-                    firefly: u8_field(rec, "firefly"),
                     authority: authority_from(
                         field(rec, "authority_type"),
                         opt_u8_field(rec, "authority_raw"),
@@ -237,7 +236,6 @@ fn cross_verify_matches_shared_vectors() {
                     timestamp: field(rec, "timestamp").parse().expect("timestamp u64"),
                     chromosome: u8_field(rec, "chromosome"),
                     category: u8_field(rec, "category"),
-                    firefly: u8_field(rec, "firefly"),
                     authority: authority_from(
                         field(rec, "authority_type"),
                         opt_u8_field(rec, "authority_raw"),

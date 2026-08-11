@@ -55,7 +55,6 @@ class ZetaObservation:
         timestamp: int,
         chromosome: int,
         category: int,
-        firefly: int,
         authority: Authority,
         persona: int,
         momentum: Momentum,
@@ -65,7 +64,6 @@ class ZetaObservation:
         self.timestamp = timestamp
         self.chromosome = chromosome
         self.category = category
-        self.firefly = firefly
         self.authority = authority
         self.persona = persona
         self.momentum = momentum
@@ -79,7 +77,6 @@ class ZetaObservation:
             and self.timestamp == other.timestamp
             and self.chromosome == other.chromosome
             and self.category == other.category
-            and self.firefly == other.firefly
             and self.authority == other.authority
             and self.persona == other.persona
             and self.momentum == other.momentum
@@ -89,7 +86,7 @@ class ZetaObservation:
     def __repr__(self) -> str:
         return (
             f"ZetaObservation(version={self.version!r}, timestamp={self.timestamp!r}, "
-            f"chromosome={self.chromosome!r}, category={self.category!r}, firefly={self.firefly!r}, "
+            f"chromosome={self.chromosome!r}, category={self.category!r}, "
             f"authority={self.authority!r}, persona={self.persona!r}, momentum={self.momentum!r}, "
             f"location={self.location!r})"
         )
@@ -101,11 +98,19 @@ class BitField(NamedTuple):
 
 
 class BitLayout:
+    # Every offset below comes straight from the generated constants — this class
+    # never advances a running offset, so removing a field cannot shift its
+    # neighbours. Named-field widths sum to 123; the other 5 bits are RESERVED.
+    # Bit 64 is one of them: it held the 1-bit Firefly field until 2026-08-11,
+    # when it was reclaimed NO-SHIFT (Category stays at 65, Chromosome at 70,
+    # Timestamp at 75, Version at 123). pack() must leave it zero and unpack()
+    # must ignore it; writing it in V1 is an unversioned schema break.
+    # See docs/zeta-id-v1-layout.yaml `reserved_bits`.
     version = BitField(gen.VERSION_OFFSET, gen.VERSION_WIDTH)
     timestamp = BitField(gen.TIMESTAMP_OFFSET, gen.TIMESTAMP_WIDTH)
     chromosome = BitField(gen.CHROMOSOME_OFFSET, gen.CHROMOSOME_WIDTH)
     category = BitField(gen.CATEGORY_OFFSET, gen.CATEGORY_WIDTH)
-    firefly = BitField(gen.FIREFLY_OFFSET, gen.FIREFLY_WIDTH)
+    # (bit 64 — RESERVED, formerly Firefly; deliberately no BitField here)
     authority = BitField(gen.AUTHORITY_OFFSET, gen.AUTHORITY_WIDTH)
     persona = BitField(gen.PERSONA_OFFSET, gen.PERSONA_WIDTH)
     momentum = BitField(gen.MOMENTUM_OFFSET, gen.MOMENTUM_WIDTH)
@@ -152,8 +157,6 @@ def pack(obs: ZetaObservation, env: SimulationEnvironment = DEFAULT_ENV) -> int:
         raise ValueError(f"category {obs.category} exceeds 4-bit range")
     if obs.category >= 9:
         raise ValueError("ZetaObservation.category must be < 9")
-    if obs.firefly > 1:
-        raise ValueError(f"firefly {obs.firefly} exceeds 1-bit range")
 
     # Authority mapping
     if obs.authority.type == "Raw":
@@ -186,7 +189,7 @@ def pack(obs: ZetaObservation, env: SimulationEnvironment = DEFAULT_ENV) -> int:
     bits = set_bits(bits, BitLayout.timestamp, obs.timestamp)
     bits = set_bits(bits, BitLayout.chromosome, obs.chromosome)
     bits = set_bits(bits, BitLayout.category, obs.category)
-    bits = set_bits(bits, BitLayout.firefly, obs.firefly)
+    # bit 64 is RESERVED (formerly Firefly) — never written, stays zero
     bits = set_bits(bits, BitLayout.authority, auth_byte)
     bits = set_bits(bits, BitLayout.persona, obs.persona)
     bits = set_bits(bits, BitLayout.momentum, mom_byte)
@@ -203,7 +206,7 @@ def unpack(id_val: int) -> ZetaObservation:
     timestamp = get_bits(id_val, BitLayout.timestamp)
     chromosome = get_bits(id_val, BitLayout.chromosome)
     category = get_bits(id_val, BitLayout.category)
-    firefly = get_bits(id_val, BitLayout.firefly)
+    # bit 64 is RESERVED (formerly Firefly) — ignored on read
     auth_byte = get_bits(id_val, BitLayout.authority)
     persona = get_bits(id_val, BitLayout.persona)
     mom_byte = get_bits(id_val, BitLayout.momentum)
@@ -228,7 +231,6 @@ def unpack(id_val: int) -> ZetaObservation:
         timestamp=timestamp,
         chromosome=chromosome,
         category=category,
-        firefly=firefly,
         authority=authority,
         persona=persona,
         momentum=momentum,

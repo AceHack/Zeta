@@ -12,14 +12,14 @@ type LayoutDirection =
 /// the number of bits the field occupies. Reading: `(value >> offset) & ((1 << width) - 1)`.
 type BitField = { Offset: int; Width: int }
 
-/// Full ZetaId bit layout. 128 bits total; reserved bits at offset 69 (1 bit)
-/// and offsets 32-34 (3 bits). Total: 5+48+5+1+4+1+5+8+8+8+3+32 = 128.
+/// Full ZetaId bit layout. 128 bits total; reserved bits at offset 69 (1 bit),
+/// offset 64 (1 bit, the former Firefly slot reclaimed 2026-08-11) and offsets
+/// 32-34 (3 bits). Total: 5+48+5+1+4+1+5+8+8+8+3+32 = 128.
 type BitLayout = {
     Version: BitField
     Timestamp: BitField
     Chromosome: BitField
     Category: BitField
-    Firefly: BitField
     Authority: BitField
     Persona: BitField
     Momentum: BitField
@@ -49,7 +49,7 @@ module BitLayout =
         let chromosome = next GeneratedBitLayout.ChromosomeWidth     // bits 70-74
         skip 1<bit>                   // reserved bit 69
         let category   = next GeneratedBitLayout.CategoryWidth       // bits 65-68
-        let firefly    = next GeneratedBitLayout.FireflyWidth        // bit 64
+        skip 1<bit>                   // reserved bit 64 (former Firefly; NO-SHIFT reclaim)
         let authority  = next GeneratedBitLayout.AuthorityWidth      // bits 59-63
         let persona    = next GeneratedBitLayout.PersonaWidth        // bits 51-58
         let momentum   = next GeneratedBitLayout.MomentumWidth       // bits 43-50
@@ -60,7 +60,6 @@ module BitLayout =
             Timestamp = timestamp
             Chromosome = chromosome
             Category = category
-            Firefly = firefly
             Authority = authority
             Persona = persona
             Momentum = momentum
@@ -89,7 +88,7 @@ module BitLayout =
         let momentum   = next GeneratedBitLayout.MomentumWidth       // bits 43-50
         let persona    = next GeneratedBitLayout.PersonaWidth       // bits 51-58
         let authority  = next GeneratedBitLayout.AuthorityWidth       // bits 59-63
-        let firefly    = next GeneratedBitLayout.FireflyWidth       // bit 64
+        skip 1<bit>                   // reserved bit 64 (former Firefly; NO-SHIFT reclaim)
         let category   = next GeneratedBitLayout.CategoryWidth       // bits 65-68
         skip 1<bit>                   // reserved bit 69
         let chromosome = next GeneratedBitLayout.ChromosomeWidth       // bits 70-74
@@ -100,7 +99,6 @@ module BitLayout =
             Timestamp = timestamp
             Chromosome = chromosome
             Category = category
-            Firefly = firefly
             Authority = authority
             Persona = persona
             Momentum = momentum

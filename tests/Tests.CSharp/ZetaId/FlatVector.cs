@@ -14,7 +14,6 @@ public sealed class FlatVector
 
     public int Category { get; set; }
 
-    public int Firefly { get; set; }
 
     public string AuthorityType { get; set; } = string.Empty;
 

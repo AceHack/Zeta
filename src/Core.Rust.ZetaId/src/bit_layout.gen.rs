@@ -34,10 +34,6 @@ pub const CHROMOSOME_WIDTH: Bits = Bits(5);
 pub const CATEGORY_OFFSET: Bits = Bits(65);
 /// Bit width of the Category field.
 pub const CATEGORY_WIDTH: Bits = Bits(4);
-/// Bit offset of the Firefly field.
-pub const FIREFLY_OFFSET: Bits = Bits(64);
-/// Bit width of the Firefly field.
-pub const FIREFLY_WIDTH: Bits = Bits(1);
 /// Bit offset of the Authority field.
 pub const AUTHORITY_OFFSET: Bits = Bits(59);
 /// Bit width of the Authority field.

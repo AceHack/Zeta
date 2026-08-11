@@ -13,8 +13,6 @@ const (
 	ChromosomeWidth  Bits = 5
 	CategoryOffset   Bits = 65
 	CategoryWidth    Bits = 4
-	FireflyOffset    Bits = 64
-	FireflyWidth     Bits = 1
 	AuthorityOffset  Bits = 59
 	AuthorityWidth   Bits = 5
 	PersonaOffset    Bits = 51

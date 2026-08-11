@@ -185,7 +185,6 @@ def test_cross_verify_zeta_id():
             and a.timestamp == b.timestamp
             and a.chromosome == b.chromosome
             and a.category == b.category
-            and a.firefly == b.firefly
             and a.authority.type == b.authority.type
             and a_auth_val == b_auth_val
             and a.persona == b.persona
@@ -236,7 +235,6 @@ def test_cross_verify_zeta_id():
                 timestamp=v["timestamp"],
                 chromosome=v["chromosome"],
                 category=v["category"],
-                firefly=v["firefly"],
                 authority=zeta_id.Authority(type_=v["authority_type"], value=auth_val),
                 persona=v["persona"],
                 momentum=zeta_id.Momentum(type_=v["momentum_type"], value=mom_val),
@@ -267,7 +265,6 @@ def test_cross_verify_zeta_id():
                 timestamp=v["timestamp"],
                 chromosome=v["chromosome"],
                 category=v["category"],
-                firefly=v["firefly"],
                 authority=zeta_id.Authority(type_=v["authority_type"], value=auth_val),
                 persona=v["persona"],
                 momentum=zeta_id.Momentum(type_=v["momentum_type"], value=mom_val),
@@ -301,6 +298,68 @@ def test_cross_verify_zeta_id():
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(out_map, f, indent=2, sort_keys=True)
         f.write("\n")
+
+
+def test_zeta_id_bit64_is_reserved_and_always_zero():
+    """Bit 64 held the 1-bit Firefly field until it was reclaimed NO-SHIFT.
+
+    Nothing else pins the newly-reserved bit, so pin it here: pack() must never
+    write it, whatever the observation. Saturating every named field is the
+    strongest form of the check — if any field's width or offset ever grows into
+    bit 64, this fails.
+    """
+    saturated = zeta_id.ZetaObservation(
+        version=31,
+        timestamp=(1 << 48) - 1,
+        chromosome=31,
+        category=8,  # max allowed (pack rejects >= 9)
+        authority=zeta_id.Authority(type_="HumanVerified"),
+        persona=255,
+        momentum=zeta_id.Momentum(type_="Critical"),
+        location=255,
+    )
+    for env in (zeta_id.DETERMINISTIC_ENV, zeta_id.DEFAULT_ENV):
+        for obs in (
+            saturated,
+            zeta_id.ZetaObservation(
+                version=0,
+                timestamp=0,
+                chromosome=0,
+                category=0,
+                authority=zeta_id.Authority(type_="Simulated"),
+                persona=0,
+                momentum=zeta_id.Momentum(type_="Background"),
+                location=0,
+            ),
+        ):
+            packed = zeta_id.pack(obs, env)
+            assert (packed >> 64) & 1 == 0, "bit 64 is RESERVED and must pack as zero"
+
+    # A stray bit 64 on the wire must not disturb any named field either.
+    clean = zeta_id.pack(saturated, zeta_id.DETERMINISTIC_ENV)
+    assert zeta_id.unpack(clean | (1 << 64)) == zeta_id.unpack(clean)
+
+
+def test_zeta_id_layout_no_shift():
+    """Firefly's removal was NO-SHIFT: no field above bit 64 may move."""
+    assert zeta_id.BitLayout.category.offset == 65
+    assert zeta_id.BitLayout.chromosome.offset == 70
+    assert zeta_id.BitLayout.timestamp.offset == 75
+    assert zeta_id.BitLayout.version.offset == 123
+    assert not hasattr(zeta_id.BitLayout, "firefly")
+
+    named = [
+        zeta_id.BitLayout.version,
+        zeta_id.BitLayout.timestamp,
+        zeta_id.BitLayout.chromosome,
+        zeta_id.BitLayout.category,
+        zeta_id.BitLayout.authority,
+        zeta_id.BitLayout.persona,
+        zeta_id.BitLayout.momentum,
+        zeta_id.BitLayout.location,
+        zeta_id.BitLayout.randomness,
+    ]
+    assert sum(f.width for f in named) == 123  # 123 named + 5 reserved = 128
 
 
 def test_zeta_id_canonicality():
