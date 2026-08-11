@@ -66,7 +66,7 @@
  * parties other than us. We inherit the distribution rather than building it.
  */
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 /** Where the per-declarer ledgers live, relative to the repo root. */
@@ -219,4 +219,39 @@ export function viewOf(
   const contested = declaringCount > 0 && declaringCount < ledgers.length;
 
   return { mine, othersDeclaring, contested };
+}
+
+/**
+ * Where decision transcripts live — one append-only JSONL per declarer.
+ *
+ * Separate from the freedom ledger on purpose (DV2.0 #8): the ledger holds CURRENT claims and
+ * changes slowly; the transcript holds every FORK and grows with decisions. Different change rates,
+ * different substrates. Per-declarer for the same lock-free reason.
+ */
+export const TRANSCRIPT_DIR = "db/mutation-transcript";
+
+function transcriptPath(root: string, declarer: string): string {
+  if (!/^[A-Za-z0-9._-]+$/.test(declarer)) {
+    throw new Error(`mutation-transcript: refusing unsafe declarer name ${JSON.stringify(declarer)}`);
+  }
+  return join(root, TRANSCRIPT_DIR, `${declarer}.jsonl`);
+}
+
+/**
+ * Append one decision. JSONL because it is append-only by construction — a rewrite of the whole
+ * file would be a chance to lose a fork, and forks are the thing this exists to keep.
+ */
+export function appendTranscript(root: string, declarer: string, entry: unknown): void {
+  mkdirSync(join(root, TRANSCRIPT_DIR), { recursive: true });
+  appendFileSync(transcriptPath(root, declarer), `${JSON.stringify(entry)}\n`);
+}
+
+/** Read a declarer's decisions. Missing file = no decisions yet, never an error. */
+export function readTranscript(root: string, declarer: string): readonly unknown[] {
+  const p = transcriptPath(root, declarer);
+  if (!existsSync(p)) return [];
+  return readFileSync(p, "utf8")
+    .split("\n")
+    .filter((l) => l.trim() !== "")
+    .map((l) => JSON.parse(l) as unknown);
 }

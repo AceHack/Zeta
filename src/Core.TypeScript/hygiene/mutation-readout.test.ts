@@ -6,7 +6,9 @@ import {
   OffMenuError,
   choose,
   escapeProfile,
+  ReasonRequiredError,
   escapeTo,
+  execute,
   observeFinding,
   recordChoice,
   type Readout,
@@ -166,5 +168,84 @@ describe("the FRONTIER MAP — two numbers, deliberately not one", () => {
       intoDefined: 0,
       intoUndefined: 0,
     });
+  });
+});
+
+describe("EXECUTE — the only writer, and it demands a reason where it matters", () => {
+  const deps = () => {
+    const declared: unknown[] = [];
+    const retracted: unknown[] = [];
+    const appended: unknown[] = [];
+    return {
+      declared,
+      retracted,
+      appended,
+      d: {
+        declare: (f: unknown) => void declared.push(f),
+        retract: (r: unknown, why: string) => void retracted.push({ r, why }),
+        append: (e: unknown) => void appended.push(e),
+        now: () => "2026-08-11T12:00:00.000Z", // injected, never ambient — the entry must replay
+      },
+    };
+  };
+
+  test("declare-free writes the ledger and appends, carrying the REASON into the record", () => {
+    const r = observeFinding(room, "otto", []);
+    const t = deps();
+    const idx = r.grid.findIndex((c) => c?.action.kind === "declare-free");
+    const entry = execute(r, "otto", idx, "  boundary is free  ", t.d);
+
+    expect(t.declared.length).toBe(1);
+    expect((t.declared[0] as { reason: string }).reason).toBe("boundary is free"); // trimmed
+    expect((t.declared[0] as { declaredAt: string }).declaredAt).toBe("2026-08-11T12:00:00.000Z");
+    expect(t.appended.length).toBe(1);
+    // The transcript records WHY, not just WHICH.
+    expect((entry.action as { reason: string }).reason).toBe("boundary is free");
+  });
+
+  test("a reasonless declare is REFUSED before it reaches the ledger", () => {
+    const r = observeFinding(room, "otto", []);
+    const t = deps();
+    const idx = r.grid.findIndex((c) => c?.action.kind === "declare-free");
+    expect(() => execute(r, "otto", idx, "   ", t.d)).toThrow(ReasonRequiredError);
+    expect(t.declared.length).toBe(0);
+    expect(t.appended.length).toBe(0); // nothing recorded either — the refusal is total
+  });
+
+  test("retract-mine also requires a reason — an unexplained withdrawal is not a record", () => {
+    const r = observeFinding(room, "otto", [ledger("otto", [freedom()])]);
+    const t = deps();
+    const idx = r.grid.findIndex((c) => c?.action.kind === "retract-mine");
+    expect(() => execute(r, "otto", idx, "", t.d)).toThrow(ReasonRequiredError);
+    execute(r, "otto", idx, "turned out to matter", t.d);
+    expect(t.retracted.length).toBe(1);
+  });
+
+  test("DEFER changes no ledger state but IS appended — deferred is not ignored", () => {
+    const r = observeFinding(room, "otto", []);
+    const t = deps();
+    const idx = r.grid.findIndex((c) => c?.action.kind === "defer");
+    execute(r, "otto", idx, "", t.d);
+    expect(t.declared.length).toBe(0);
+    expect(t.retracted.length).toBe(0);
+    // "I looked and chose to do nothing here" is a fact worth keeping.
+    expect(t.appended.length).toBe(1);
+  });
+
+  test("choosing an UNDEFINED cell is executable and recorded — the frontier is reachable", () => {
+    const r = observeFinding(room, "otto", []);
+    const t = deps();
+    const empty = r.grid.findIndex((c, i) => c === undefined && i < ESCAPE_INDEX);
+    const entry = execute(r, "otto", empty, "", t.d);
+    expect(entry.action.kind).toBe("undefined-cell");
+    expect(t.appended.length).toBe(1);
+  });
+
+  test("execute is the ONLY writer — observe and choose stay pure", () => {
+    const r = observeFinding(room, "otto", []);
+    const t = deps();
+    choose(r, 0);
+    observeFinding(room, "otto", []);
+    expect(t.declared.length + t.retracted.length + t.appended.length).toBe(0);
   });
 });

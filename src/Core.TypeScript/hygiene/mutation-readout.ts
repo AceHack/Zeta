@@ -253,3 +253,66 @@ export function escapeProfile(entries: readonly TranscriptEntry[]): EscapeProfil
   }
   return { intoDefined, intoUndefined };
 }
+
+/**
+ * Execute a chosen cell and produce the transcript entry.
+ *
+ * `execute` is deliberately the ONLY writer: `observeFinding` and `choose` are pure, so the whole
+ * decision replays from `(room, declarer, ledgers, index)` and the side effect happens in exactly
+ * one place. That is what makes the loop `observe -> choose -> execute -> append` rather than a
+ * function that quietly writes while it looks.
+ *
+ * A `reason` is REQUIRED for the two cells that change the ledger. An undecidable call recorded
+ * without a stated reason is a mute button, and the ledger already refuses one — this refuses it
+ * earlier, where the message can name the cell.
+ */
+export interface ExecuteDeps {
+  readonly declare: (f: Freedom) => void;
+  readonly retract: (room: FindingRoom, reason: string) => void;
+  readonly append: (entry: TranscriptEntry) => void;
+  /** Injected, never ambient — the entry must replay under DST. */
+  readonly now: () => string;
+}
+
+export class ReasonRequiredError extends Error {}
+
+export function execute(
+  readout: Readout,
+  declarer: string,
+  index: number,
+  reason: string,
+  deps: ExecuteDeps,
+): TranscriptEntry {
+  const chosen = choose(readout, index);
+
+  // Carry the operator-supplied reason into the action, so the transcript records WHY and not just
+  // WHICH. The grid's placeholder reason is empty by construction — the menu cannot know it.
+  let action: CellAction = chosen;
+  if (chosen.kind === "declare-free" || chosen.kind === "retract-mine") {
+    if (reason.trim() === "") {
+      throw new ReasonRequiredError(
+        `cell ${index} (${chosen.kind}) changes the ledger and requires a reason — ` +
+          `an undecidable call recorded without one is a mute button`,
+      );
+    }
+    action = { ...chosen, reason: reason.trim() };
+  }
+
+  switch (action.kind) {
+    case "declare-free":
+      deps.declare({ ...readout.room, reason: action.reason, declaredAt: deps.now() });
+      break;
+    case "retract-mine":
+      deps.retract(readout.room, action.reason);
+      break;
+    // write-test, defer, read-declarer, escape and undefined-cell change no ledger state. They are
+    // still APPENDED: "I looked and chose to do nothing here" is a fact worth keeping, and it is
+    // what distinguishes a deferred finding from an ignored one.
+    default:
+      break;
+  }
+
+  const entry = recordChoice(readout, declarer, index, action);
+  deps.append(entry);
+  return entry;
+}

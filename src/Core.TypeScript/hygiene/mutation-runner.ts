@@ -40,13 +40,20 @@
  *
  * Usage:
  *   bun mutation-runner.ts --agent otto --tick 42 [--since 6h] [--dry-run]
+ *   bun mutation-runner.ts --agent otto --tick 42 --choose 0 --reason "why"   (act on the menu)
  */
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
-import { loadAllLedgers, viewOf } from "./mutation-freedoms";
-import { ESCAPE_INDEX, observeFinding, roomOf } from "./mutation-readout";
+import {
+  appendTranscript,
+  declareFreedom,
+  loadAllLedgers,
+  retractFreedom,
+  viewOf,
+} from "./mutation-freedoms";
+import { ESCAPE_INDEX, execute, observeFinding, roomOf } from "./mutation-readout";
 
 /** A single mechanical edit. `find` must be a literal so application is exact and reversible. */
 export interface Mutation {
@@ -327,10 +334,31 @@ function main(): void {
           : ""),
     );
 
-    // The bounded action grammar for this finding. Printed rather than executed: the response is a
-    // CELL, not a flag, and an agent picks one — it cannot invent a response, and the menu it was
-    // shown is reconstructible from `rules` so the choice replays.
+    // The bounded action grammar for this finding. The response is a CELL, not a flag: an agent
+    // cannot invent a response, and the menu it was shown is reconstructible from `rules` so the
+    // choice replays.
     const readout = observeFinding(roomOf(finding), agent, ledgers);
+
+    // `--choose N [--reason "..."]` executes one cell. This is NOT the free-text `--declare` the
+    // design rejected: the index must name a cell on a menu that was deterministically built, so
+    // the action is bounded even though the judgement behind it is not.
+    const chooseArg = argValue("--choose");
+    if (chooseArg !== undefined) {
+      const idx = Number(chooseArg);
+      const entry = execute(readout, agent, idx, argValue("--reason") ?? "", {
+        declare: (f) => declareFreedom(root, agent, f),
+        retract: (r, why) => retractFreedom(root, agent, r, why),
+        append: (e) => appendTranscript(root, agent, e),
+        now: () => new Date().toISOString(),
+      });
+      console.error(
+        `\n[mutation] chose [${idx}] ${entry.action.kind} — appended ${entry.address.slice(0, 16)}…\n` +
+          `  The FORK is recorded, not just the destination: ${entry.offered.filter(Boolean).length} cells were offered.\n`,
+      );
+      // Still a finding this tick — choosing does not make it green. The next run sees the ledger.
+      process.exit(3);
+    }
+
     console.error(`  ── what you may do (4x4 controller grammar, ${ESCAPE_INDEX + 1} cells) ──`);
     for (const cell of readout.grid) {
       if (cell) console.error(`    [${String(cell.index).padStart(2)}] ${cell.label}`);
