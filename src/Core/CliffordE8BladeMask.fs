@@ -199,3 +199,191 @@ module CliffordE8BladeMask =
             let mutable scalar = true
             for i in 1..7 do if aaRev.[i] <> 0 then scalar <- false
             scalar)
+
+    // ── Public blade-mask product surface (Parts III–IV law tests) ───────────
+    /// The blade-mask geometric product, exposed for the law tests.
+    let gpBlades (x : int[]) (y : int[]) : int[] = gp x y
+
+    /// The blade-mask reverse, exposed for the law tests.
+    let revBlades (x : int[]) : int[] = rev x
+
+    // ── Part II: the fragment group (TS golden: order 16 ≅ D₄×C₂ profile) ────
+    type FragmentGroupResult = {
+        GeneratorCount  : int
+        Order           : int
+        OrderHistogram  : (int * int) list
+        CenterSize      : int
+        CommutatorCount : int
+    }
+
+    /// Close the versor-normed sandwich permutations under composition.
+    /// TS golden (Part II, 2026-08-09): 32 generators inducing a group of
+    /// order 16, element orders {1:1, 2:11, 4:4} (11 involutions — the
+    /// invariant profile of D₄ × C₂ among order-16 groups), center 4,
+    /// commutator subgroup of order 2.
+    let fragmentGroup () : FragmentGroupResult =
+        let roots = e8Roots ()
+        let idx = System.Collections.Generic.Dictionary<string, int>()
+        roots |> Array.iteri (fun i r -> idx.[System.String.Join(",", r)] <- i)
+        let gens = System.Collections.Generic.List<int[]>()
+        for a in roots do
+            let aRev = rev a
+            let aa = gp a aRev
+            let mutable isScalar = true
+            for i in 1..7 do if aa.[i] <> 0 then isScalar <- false
+            if isScalar then
+                let perm = Array.zeroCreate roots.Length
+                let mutable ok = true
+                roots |> Array.iteri (fun k x ->
+                    if ok then
+                        let s = gp (gp a x) aRev
+                        if s |> Array.forall (fun v -> v % 4 = 0) then
+                            let img = s |> Array.map (fun v -> -v / 4)
+                            match idx.TryGetValue(System.String.Join(",", img)) with
+                            | true, j -> perm.[k] <- j
+                            | false, _ -> ok <- false
+                        else ok <- false)
+                if ok then gens.Add perm
+        let n = roots.Length
+        let identity = Array.init n (fun i -> i)
+        let keyOf (p : int[]) = System.String.Join(",", p)
+        let idKey = keyOf identity
+        let seen = System.Collections.Generic.Dictionary<string, int[]>()
+        seen.[idKey] <- identity
+        let mutable frontier = [ identity ]
+        while not (List.isEmpty frontier) do
+            let next = System.Collections.Generic.List<int[]>()
+            for perm in frontier do
+                for g in gens do
+                    let q = perm |> Array.map (fun i -> g.[i])
+                    let k = keyOf q
+                    if not (seen.ContainsKey k) then
+                        seen.[k] <- q
+                        next.Add q
+            frontier <- next |> Seq.toList
+        let elems = seen.Values |> Seq.toArray
+        let orderOf (perm : int[]) : int =
+            let mutable q = Array.copy perm
+            let mutable ord = 1
+            while keyOf q <> idKey do
+                q <- q |> Array.map (fun i -> perm.[i])
+                ord <- ord + 1
+            ord
+        let hist = System.Collections.Generic.Dictionary<int, int>()
+        for e in elems do
+            let o = orderOf e
+            hist.[o] <- (if hist.ContainsKey o then hist.[o] else 0) + 1
+        let mutable center = 0
+        for z in elems do
+            let mutable central = true
+            for g in gens do
+                if central then
+                    for i in 0 .. n - 1 do
+                        if z.[g.[i]] <> g.[z.[i]] then central <- false
+            if central then center <- center + 1
+        let invert (perm : int[]) : int[] =
+            let q = Array.zeroCreate perm.Length
+            perm |> Array.iteri (fun i pi -> q.[pi] <- i)
+            q
+        let comms = System.Collections.Generic.HashSet<string>()
+        for a in gens do
+            for b in gens do
+                let ai = invert a
+                let bi = invert b
+                comms.Add(keyOf (identity |> Array.map (fun i -> ai.[bi.[a.[b.[i]]]]))) |> ignore
+        {   GeneratorCount  = gens.Count
+            Order           = seen.Count
+            OrderHistogram  = hist |> Seq.map (fun kv -> kv.Key, kv.Value) |> Seq.sortBy fst |> Seq.toList
+            CenterSize      = center
+            CommutatorCount = comms.Count }
+
+    // ── Part II: quantization strata by support ──────────────────────────────
+    /// Preservation-count histogram per support label (" [versor]"-tagged
+    /// when A·Ã is scalar). TS golden: {0,3,4,7}/{1,2,5,6} split 240-versor /
+    /// 128; Cl(2,0)-signature pairs split 64 / 0; the eight generic weight-4
+    /// supports preserve nothing.
+    let strataBySupport () : (string * (int * int) list) list =
+        let roots = e8Roots ()
+        let rootSet = System.Collections.Generic.HashSet<string>(
+                          roots |> Array.map (fun r -> System.String.Join(",", r)))
+        let strata = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<int, int>>()
+        for a in roots do
+            let aRev = rev a
+            let aa = gp a aRev
+            let mutable isVersor = true
+            for i in 1..7 do if aa.[i] <> 0 then isVersor <- false
+            let mutable cnt = 0
+            for x in roots do
+                let s = gp (gp a x) aRev
+                if s |> Array.forall (fun v -> v % 4 = 0) then
+                    let img = s |> Array.map (fun v -> -v / 4)
+                    if rootSet.Contains(System.String.Join(",", img)) then cnt <- cnt + 1
+            let nonzero = [| for i in 0..7 do if a.[i] <> 0 then yield i |]
+            let label = System.String.Join("+", nonzero) + (if isVersor then " [versor]" else "")
+            let m =
+                match strata.TryGetValue label with
+                | true, existing -> existing
+                | false, _ ->
+                    let d = System.Collections.Generic.Dictionary<int, int>()
+                    strata.[label] <- d
+                    d
+            m.[cnt] <- (if m.ContainsKey cnt then m.[cnt] else 0) + 1
+        strata
+        |> Seq.sortBy (fun kv -> kv.Key)
+        |> Seq.map (fun kv ->
+            kv.Key, kv.Value |> Seq.map (fun e -> e.Key, e.Value) |> Seq.sortBy fst |> Seq.toList)
+        |> Seq.toList
+
+    // ── Part IV: the complete tier law over the 208 non-versors ──────────────
+    /// TS golden (Part IV, 2026-08-10): for every non-versor A — (1) no even
+    /// root survives; (2) surviving weight-4 families are complete (all 16
+    /// signs); (3) the family map is total: I-closed-pair supports keep the 8
+    /// generic families, Cl(2,0)-pair supports keep the 4 aligned families
+    /// outside their own pair or nothing, generic supports keep nothing.
+    /// Returns (nonVersorsChecked, violations) — golden (208, 0).
+    let tierLawViolations () : int * int =
+        let roots = e8Roots ()
+        let rootSet = System.Collections.Generic.HashSet<string>(
+                          roots |> Array.map (fun r -> System.String.Join(",", r)))
+        let supportOf (r : int[]) =
+            System.String.Join(",", [| for i in 0..7 do if r.[i] <> 0 then yield i |])
+        let pairs = [ ("0,3,4,7", "1,2,5,6"); ("0,1,4,5", "2,3,6,7"); ("0,2,4,6", "1,3,5,7") ]
+        let aligned = pairs |> List.collect (fun (p, q) -> [ p; q ]) |> Set.ofList
+        let h1pair = Set.ofList [ "0,3,4,7"; "1,2,5,6" ]
+        let mutable checkedCount = 0
+        let mutable violations = 0
+        for a in roots do
+            let aRev = rev a
+            let aa = gp a aRev
+            let mutable isScalar = true
+            for i in 1..7 do if aa.[i] <> 0 then isScalar <- false
+            if not isScalar then
+                checkedCount <- checkedCount + 1
+                let families = System.Collections.Generic.Dictionary<string, int>()
+                let mutable evenSurvivors = 0
+                for x in roots do
+                    let s = gp (gp a x) aRev
+                    if s |> Array.forall (fun v -> v % 4 = 0) then
+                        let img = s |> Array.map (fun v -> -v / 4)
+                        if rootSet.Contains(System.String.Join(",", img)) then
+                            let sx = supportOf x
+                            if not (sx.Contains ",") then evenSurvivors <- evenSurvivors + 1
+                            else families.[sx] <- (if families.ContainsKey sx then families.[sx] else 0) + 1
+                let clause1 = evenSurvivors = 0
+                let clause2 = families |> Seq.forall (fun kv -> kv.Value = 16)
+                let sA = supportOf a
+                let names = families.Keys |> Seq.toList
+                let clause3 =
+                    if h1pair.Contains sA then
+                        names.Length = 8 && names |> List.forall (fun f -> not (aligned.Contains f))
+                    elif aligned.Contains sA then
+                        let ownSet =
+                            pairs
+                            |> List.pick (fun (p, q) -> if p = sA || q = sA then Some (Set.ofList [ p; q ]) else None)
+                        List.isEmpty names
+                        || (names.Length = 4
+                            && names |> List.forall (fun f -> aligned.Contains f && not (ownSet.Contains f)))
+                    else List.isEmpty names
+                if not (clause1 && clause2 && clause3) then violations <- violations + 1
+        (checkedCount, violations)
+

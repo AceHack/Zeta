@@ -246,3 +246,107 @@ let ``LI-2: the 16 non-singleton versor-normed roots come from the two I-closed 
         |> Array.distinct
         |> Array.sort
     Assert.Equal<string[]>([|"0+3+4+7"; "1+2+5+6"|], supports)
+
+// ── Parts II–IV (081KZN5THZ908QG0R002PVHHAQ): the F# oracle extends past the
+// Part I measurement to the fragment group, the quantization strata, and the
+// versor/tier laws. Golden values banked from the TS oracle (Parts II–IV,
+// 2026-08-09/10); disagreement = broken byte-lock.
+
+[<Fact>]
+let ``BM2-1: the 32 versor-normed sandwiches generate a group of order 16 (D4 x C2 invariant profile)`` () =
+    let g = CliffordE8BladeMask.fragmentGroup ()
+    Assert.Equal(32, g.GeneratorCount)
+    Assert.Equal(16, g.Order)
+    // 11 involutions occurs in no other group of order 16
+    Assert.Equal<(int * int) list>([ (1, 1); (2, 11); (4, 4) ], g.OrderHistogram)
+    Assert.Equal(4, g.CenterSize)
+    Assert.Equal(2, g.CommutatorCount)
+
+[<Fact>]
+let ``BM2-2: quantization strata follow subalgebra signature (I-closed pair 240/128)`` () =
+    let strata = CliffordE8BladeMask.strataBySupport () |> Map.ofList
+    Assert.Equal<(int * int) list>([ (240, 8) ], strata.["0+3+4+7 [versor]"])
+    Assert.Equal<(int * int) list>([ (128, 8) ], strata.["0+3+4+7"])
+    Assert.Equal<(int * int) list>([ (240, 8) ], strata.["1+2+5+6 [versor]"])
+    Assert.Equal<(int * int) list>([ (128, 8) ], strata.["1+2+5+6"])
+
+[<Fact>]
+let ``BM2-3: Cl(2,0)-signature pairs split 64/0 with no versors; generic supports preserve nothing`` () =
+    let strata = CliffordE8BladeMask.strataBySupport () |> Map.ofList
+    for label in [ "0+1+4+5"; "0+2+4+6"; "1+3+5+7"; "2+3+6+7" ] do
+        Assert.Equal<(int * int) list>([ (0, 8); (64, 8) ], strata.[label])
+    for label in [ "0+1+2+7"; "0+1+3+6"; "0+2+3+5"; "0+5+6+7"
+                   "1+2+3+4"; "1+4+6+7"; "2+4+5+7"; "3+4+5+6" ] do
+        Assert.Equal<(int * int) list>([ (0, 16) ], strata.[label])
+
+let private isScalarMv (v : int[]) =
+    let mutable ok = true
+    for i in 1..7 do if v.[i] <> 0 then ok <- false
+    ok
+
+[<Fact>]
+let ``BM3-1 (L1): on the I-closed supports, versor iff d0*d3 = -(d1*d2) — the parity law`` () =
+    for support in [ [| 0; 3; 4; 7 |]; [| 1; 2; 5; 6 |] ] do
+        for s in 0..15 do
+            let a = Array.zeroCreate 8
+            support |> Array.iteri (fun k m -> a.[m] <- if (s >>> k) &&& 1 = 1 then -1 else 1)
+            let d = support |> Array.map (fun m -> a.[m])
+            let parity = d.[0] * d.[3] = -(d.[1] * d.[2])
+            let aa = CliffordE8BladeMask.gpBlades a (CliffordE8BladeMask.revBlades a)
+            Assert.Equal(parity, isScalarMv aa)
+
+[<Fact>]
+let ``BM3-2 (L1b): Cl(2,0)-signature supports admit NO versors, residue on the support masks`` () =
+    for support in [ [| 0; 1; 4; 5 |]; [| 0; 2; 4; 6 |] ] do
+        for s in 0..15 do
+            let a = Array.zeroCreate 8
+            support |> Array.iteri (fun k m -> a.[m] <- if (s >>> k) &&& 1 = 1 then -1 else 1)
+            let aa = CliffordE8BladeMask.gpBlades a (CliffordE8BladeMask.revBlades a)
+            Assert.False(isScalarMv aa)
+            for i in 1..7 do
+                if aa.[i] <> 0 then Assert.True(Array.contains i support && i <> 0)
+
+[<Fact>]
+let ``BM3-3 (L2): every versor-normed sandwich is a signed monomial map on the 8 blades`` () =
+    for a in CliffordE8BladeMask.versorNormedRoots () do
+        let aRev = CliffordE8BladeMask.revBlades a
+        for m in 0..7 do
+            let blade = Array.init 8 (fun i -> if i = m then 1 else 0)
+            let s = CliffordE8BladeMask.gpBlades (CliffordE8BladeMask.gpBlades a blade) aRev
+            Assert.True(s |> Array.forall (fun v -> v % 4 = 0))
+            let img = s |> Array.map (fun v -> -v / 4)
+            let nz = [| for i in 0..7 do if img.[i] <> 0 then yield (i, img.[i]) |]
+            Assert.Equal(1, nz.Length)
+            Assert.Equal(1, abs (snd nz.[0]))
+
+[<Fact>]
+let ``BM3-4 (L3): every induced support permutation is an automorphism of the [8,4] code`` () =
+    let roots = CliffordE8BladeMask.e8Roots ()
+    let cwSupports =
+        roots
+        |> Array.filter (fun r -> r |> Array.forall (fun v -> abs v <= 1))
+        |> Array.map (fun r -> [| for i in 0..7 do if r.[i] <> 0 then yield i |] |> Array.toList)
+        |> Array.map (List.sort >> List.map string >> String.concat ",")
+        |> Set.ofArray
+    for a in CliffordE8BladeMask.versorNormedRoots () do
+        let aRev = CliffordE8BladeMask.revBlades a
+        let perm =
+            [| for m in 0..7 ->
+                 let blade = Array.init 8 (fun i -> if i = m then 1 else 0)
+                 let s = CliffordE8BladeMask.gpBlades (CliffordE8BladeMask.gpBlades a blade) aRev
+                 s |> Array.findIndex (fun v -> v <> 0) |]
+        for cs in cwSupports do
+            let mapped =
+                cs.Split(',')
+                |> Array.map (fun t -> perm.[int t])
+                |> Array.sort
+                |> Array.map string
+                |> String.concat ","
+            Assert.True(cwSupports.Contains mapped)
+
+[<Fact>]
+let ``BM4-1: the complete tier law holds over all 208 non-versors (zero violations)`` () =
+    let checkedCount, violations = CliffordE8BladeMask.tierLawViolations ()
+    Assert.Equal(208, checkedCount)
+    Assert.Equal(0, violations)
+

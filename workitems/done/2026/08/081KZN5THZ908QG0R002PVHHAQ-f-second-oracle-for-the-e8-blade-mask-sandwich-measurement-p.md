@@ -1,11 +1,12 @@
 ---
 id: 081KZN5THZ908QG0R002PVHHAQ
 type: task
-state: backlog
+state: done
 priority: P2
 slug: f-second-oracle-for-the-e8-blade-mask-sandwich-measurement-p
 title: "F# second oracle for the E8 blade-mask sandwich measurement (Parts I-IV golden numbers)"
 created: 2026-08-10T06:30:09.641Z
+completed: 2026-08-11T02:45:16.708Z
 depends_on: []
 composes_with: []
 ---
