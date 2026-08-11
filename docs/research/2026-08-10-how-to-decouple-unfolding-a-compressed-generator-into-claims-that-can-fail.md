@@ -87,6 +87,22 @@ first arrow ≠ domain of the second. Relabelling arrow types does not make a no
 composable; what it does is make the non-composability *visible*, which is the real value.
 Independently confirms the standing "a Y, not a chain" verdict by a second route.
 
+**Correction, entered the same day the audit landed — the Y verdict is about the `Cl(3,0)`
+bridge, NOT about Clifford's relation to E8 in this repo.** Both reviewers predicted the Clifford
+leg was decoration and that a `t`-deformation of `Cl3` would show the E8 leg indifferent to the
+quadratic form. The first half is right and provable without the deformation: `CliffordE8Bridge`
+never invokes the geometric product, so it is `t`-independent *by construction* (pinned in
+`tests/Tests.FSharp/CliffordE8Bridge.Tests.fs`). The second half is wrong at repo scope —
+**`src/Core/CliffordE8Roots.fs` already implements the versor construction** (Clifford reflection
+`−n x n` generating E8, after Dechant), with an acceptance gate requiring exactly 240 roots,
+closure under reflection, and set-equality with the in-tree roots, and **that gate is green**
+(`tests/Tests.FSharp/Formal/CliffordE8Roots.Tests.fs`). Route (B) is built, not aspirational.
+
+So the honest statement is narrower than "the middle arrow is decoration": the `Cl(3,0)` bridge is
+a relabeling and is not the generating construction — which is exactly what its own docstring's
+route-(B) note says — while a *different* Clifford algebra does the generating work elsewhere in
+the tree. Recorded because the earlier framing here understated what is already proven.
+
 ### 2a. Where the small parameter lives — the answer to §6's metering test
 
 This is the sharpest result of the review, and it is Aaron's point made exact: *the parameter
