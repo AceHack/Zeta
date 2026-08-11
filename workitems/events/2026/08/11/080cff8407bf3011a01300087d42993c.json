@@ -1,0 +1,14 @@
+{
+  "id": "080cff8407bf3011a01300087d42993c",
+  "at": "2026-08-11T11:06:51.750Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZR81XZ508QG0R000NZB8MQ",
+    "type": "task",
+    "title": "BNN inference over DynamicValue/SoftValue — from shape negotiation to meta-code and specialized codegen",
+    "slug": "bnn-inference-over-dynamicvalue-softvalue-from-shape-negotia",
+    "priority": "P2",
+    "filename": "081KZR81XZ508QG0R000NZB8MQ-bnn-inference-over-dynamicvalue-softvalue-from-shape-negotia.md"
+  }
+}
