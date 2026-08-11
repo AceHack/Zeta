@@ -100,8 +100,8 @@ shared ontology-stream, the lightlike). Grounded in the beacon synthesis
 | Semgrep | Trial | 12 | 12 rules; runs externally |
 | CodeQL | Trial | 34 | `.github/workflows/codeql.yml` landed (GitHub-default); tuning drift tracked in codeql-expert skill |
 | Stryker.NET | Trial | 10 | Mutation testing config shipped |
-| Alloy | Assess | 10 | `tools/alloy/specs/Spine.als` |
-| Lean 4 + Mathlib | Assess | 10 | Stub proof `proofs/lean/ChainRule.lean`; full proof 2-week P2 |
+| Alloy | Trial | 10 | 6 specs in `src/Core.Alloy/` (`specs/Spine.als` et al.) + `tools/alloy/alloy.jar` + `tests/Tests.FSharp/Formal/Alloy.Runner.Tests.fs`. Live code path, no CI wiring yet — hence Trial, not Adopt |
+| Lean 4 + Mathlib | Adopt | 10 | 26 `.lean` files under `src/Core.Lean4/Lean4/` (+ `Privacy/`, `Safety/`, `ImaginaryStack/`) on Mathlib `v4.30.0-rc1`, gated by `.github/workflows/lean-proof.yml` |
 | pytm (threats-as-code) | Assess | 15 | P0 in BACKLOG |
 | OWASP Threat Dragon | Assess | 15 | Visual fallback |
 | Microsoft Threat Modeling Tool | Hold | 15 | Windows-only; parallels-only workflow |

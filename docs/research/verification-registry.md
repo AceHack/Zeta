@@ -28,7 +28,7 @@ because <one-line>.`
 
 ## `Spine.als` *(LSM Spine structural model — Alloy)*
 
-- **Artifact.** `tools/alloy/specs/Spine.als` (Alloy structural model of the LSM Spine; checked via Alloy Analyzer). Authored 2026-06-12.
+- **Artifact.** `src/Core.Alloy/specs/Spine.als` (Alloy structural model of the LSM Spine; checked via Alloy Analyzer). Authored 2026-06-12. *(Path corrected 2026-08-10 — the row pointed at `tools/alloy/specs/Spine.als`, which does not exist; the specs live under `src/Core.Alloy/`. This registry is the ground-truth map for `verification-drift-auditor`, and that skill has no missing-artifact branch, so a dead row is a silently-skipped audit rather than a loud failure.)*
 - **Internal correctness target.** `Zeta.Core.Spine` in `src/Core/Spine.fs`.
 - **Internal correctness claim.** LSM Spine structural correctness: levels have unique indices, batches point back to their origin level, batch sizes are non-negative, and level total size conforms to the size-doubling constraint. Admits valid instances (existential sanity check SAT) under bounded scope (up to 8 Batch, 4 Level, 7 Int).
 - **Spec-vs-implementation alignment.** Alloy model represents structural state statically: `Level` (with integer level index, and a set of `Batch`), `Batch` (with size and origin level). Fact constraints mirror the implementation invariants: level index uniqueness, batch membership, and size doubling cap. The F# implementation achieves this dynamically: each level `i` holds at most one `ZSet` whose count (size) is bounded by the capacity, and cascading merges combine two batches of level `i` into a single batch at `i+1`.

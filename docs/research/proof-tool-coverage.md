@@ -7,6 +7,18 @@ bug classes our stack currently misses.
 
 Scope is `Zeta.Core` (F#) with its C# shim. Audit date: 2026-04-17.
 
+> **STALE — do not read as current state (banner added 2026-08-10).** This is a
+> dated snapshot and its findings are kept as the record of 2026-04-17, not
+> corrected in place. At least the Lean and Alloy sections have been overtaken:
+> the file describes `proofs/lean/ChainRule.lean` as a stub and asks for a CI job
+> running `lake build` in `proofs/lean/` (§6) — that directory does not exist, and
+> the actual state is 26 `.lean` files under `src/Core.Lean4/Lean4/` on Mathlib
+> `v4.30.0-rc1`, already gated by `.github/workflows/lean-proof.yml`. It also cites
+> `tools/alloy/specs/Spine.als` as the only Alloy model; there are 6 `.als` files
+> under `src/Core.Alloy/`. Current rings live in
+> [`docs/TECH-RADAR.md`](../TECH-RADAR.md); current artifact paths live in
+> [`verification-registry.md`](verification-registry.md).
+
 ---
 
 ## 1. Z3 / SMT — state & expansion
