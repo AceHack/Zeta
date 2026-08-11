@@ -54,7 +54,37 @@ The header states two properties:
 > consensus is reached."*
 
 Neither is what the spec checks. Four distinct defects, each verified by reading the source and
-the config rather than inferred:
+the config rather than inferred — and §2b is now confirmed by **execution and mutation**, added
+below after the original write-up.
+
+### (0) EXECUTED 2026-08-10 — the green is real, and it survives deleting the protocol
+
+The original audit argued §2b from a counting argument and left open whether TLC actually runs
+this spec. Both questions are now settled empirically.
+
+**TLC does run it, and the green is not a silent skip.** `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs`
+carries ``TLC validates BftConsensus``, and it passed in 801 ms. That timing was initially
+suspicious — `assertSpecValid` *"skips silently"* under several conditions (no `.cfg`, missing
+jar, non-Linux CI, non-x64, slim runner), and a silent skip reports as **Passed**, not Skipped.
+Running TLC directly on the spec took **0.828 s**, matching. So the runner genuinely executes it;
+the skip suspicion was wrong and is recorded as such.
+
+**The model check is exhaustive.** TLC reports *"Model checking completed. No error has been
+found"* — **982 states generated, 99 distinct, complete state graph to depth 6, 0 states left on
+queue.** The whole reachable space is explored. This is a real, complete, passing verification.
+
+**And the mutation test shows it verifies nothing about the protocol.** Removing the quorum guard
+from `Decide` — so that *any* node may decide *any* value at *any* time, with no quorum
+whatsoever — leaves TLC still reporting **"No error has been found"**, now over **1270 states
+generated, 243 distinct**. The state count changing 99 → 243 confirms the mutation genuinely
+altered the model rather than being ignored.
+
+> **A deliberately broken consensus protocol passes this spec's safety check unchanged.** That is
+> the counting argument in §2b, demonstrated rather than asserted: the invariant constrains the
+> *state representation*, not the protocol. It is the strongest available evidence that this green
+> is vacuous, and it is reproducible in under a second.
+
+(Mutation performed in a scratch copy; the in-tree spec is untouched.)
 
 ### (a) The stated safety goal is not expressible in the model
 
