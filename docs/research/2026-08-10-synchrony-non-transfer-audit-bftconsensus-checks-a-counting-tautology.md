@@ -212,6 +212,7 @@ Its scoping comment is genuinely good and should survive any rewrite: it says th
 correct separation of concerns. The defect is in the properties, not the framing.
 
 ## 3. Disposition — **REPAIRED 2026-08-11** (this section was "not repaired"; it is now stale as
+
 written and is updated rather than left to mislead)
 
 Operator authorised the repair (*"BftConsensus we should start repairing this if it needs"*), and
