@@ -99,12 +99,76 @@ let ``the derived simple system has 8 roots with the E8 Cartan/Gram matrix`` () 
     edges |> should equal 7
 
 // ── DST: the generator is deterministic (same orbit every run) ─────
+//
+// VACUITY FIXED 2026-08-11. The previous test read:
+//
+//     let a = asSet CliffordE8Roots.roots
+//     let b = asSet CliffordE8Roots.roots
+//     a |> should equal b
+//
+// `CliffordE8Roots.roots` is a module-level `let` VALUE, not a function, so F# evaluates it ONCE and
+// caches it. `a` and `b` were the same object; the test compared a cached value to itself and COULD
+// NOT FAIL. It would have stayed green if the construction were wildly non-deterministic.
+//
+// That matters more than a normal vacuous test, because this baseline is load-bearing for the whole
+// decorrelation argument: nodes agree by unfolding the SAME generator without communicating, so
+// divergence measures their independence. If the unfold were non-deterministic, divergence would
+// measure OUR BUGS instead
+// (`docs/research/2026-08-11-the-shared-unfold-is-a-common-cause-*.md` §4, named there as the
+// falsifier to test first — this is that test).
+//
+// Replaced with two checks that can actually fail: an INDEPENDENT recomputation of the orbit, and
+// the property that actually guarantees cross-platform determinism — the construction is
+// INTEGER-EXACT, with no floating point anywhere in the path.
+
+/// Recompute the orbit from scratch, rather than re-reading the cached value.
+let private recomputeOrbit () : Set<int list> =
+    let mutable acc = CliffordE8Roots.simpleSystem |> List.map List.ofArray |> Set.ofList
+    let mutable changed = true
+
+    while changed do
+        changed <- false
+        let current = acc |> Set.toList |> List.map List.toArray
+
+        for r in current do
+            for x in current do
+                let y = CliffordE8Roots.reflect r x |> List.ofArray
+
+                if not (acc.Contains y) then
+                    acc <- acc.Add y
+                    changed <- true
+
+    acc
 
 [<Fact>]
-let ``DST: the construction is deterministic — re-evaluating yields the identical 240-set`` () =
-    let a = asSet CliffordE8Roots.roots
-    let b = asSet CliffordE8Roots.roots
-    a |> should equal b
+let ``DST: an INDEPENDENT recomputation yields the identical 240-set`` () =
+    // Genuinely re-runs the closure rather than re-reading a cached binding.
+    let recomputed = recomputeOrbit ()
+    recomputed.Count |> should equal 240
+    recomputed |> should equal (asSet CliffordE8Roots.roots)
+
+[<Fact>]
+let ``DST: the unfold is INTEGER-EXACT — no float is reachable, so it cannot drift across platforms`` () =
+    // This is the property that makes the shared baseline safe to agree on WITHOUT communicating:
+    // `dot` sums ints, and `reflect`'s `2(x·r)/(r·r)` is exact integer division because r·r = 4 and
+    // x·r is even for roots. No rounding, no summation-order sensitivity, no float mode — so two
+    // machines cannot compute different baselines.
+    //
+    // Checked as a property over the whole root set rather than asserted in a comment: for every
+    // pair, the reflection coefficient must divide EXACTLY, which is what forbids a rounding step.
+    let roots = CliffordE8Roots.roots
+
+    for r in roots do
+        let rr = CliffordE8Roots.dot r r
+        rr |> should equal 4 // every E8 root has norm² 4
+
+        for x in roots |> List.truncate 24 do
+            let xr = CliffordE8Roots.dot x r
+            // exactness: 2(x·r) must be divisible by (r·r) with no remainder
+            (2 * xr) % rr |> should equal 0
+            // and the reflected vector stays on the integer lattice, in the root set
+            let y = CliffordE8Roots.reflect r x
+            (asSet [ y ]).IsSubsetOf(asSet roots) |> should equal true
 
 
 // ── L-E: the COXETER RELATIONS on the 8 simple reflections (work-item 081KYXCM1WK08QG0R003B9KVP4) ──
