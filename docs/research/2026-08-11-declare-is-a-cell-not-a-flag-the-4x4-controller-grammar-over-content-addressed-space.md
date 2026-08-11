@@ -83,6 +83,35 @@ there.* And the ledger's preservation rule (retraction marks, never deletes) is 
 transcript's: a fork you did not take is still a fork you can return to. **Resurrection is navigation,
 not reconstruction.**
 
+## 3a. Cell 16 is the escape — bounded at every level, unbounded in the limit
+
+Aaron 2026-08-11, answering the "16 cells is enough" falsifier directly: *"cell 16 is a meta
+extension to probably 256 choices, and 256 extends to 65,536 — with one bit you get it, it can
+expand if needed."*
+
+The last cell is not an action. It is **escape to a wider grid**:
+
+```
+16  ->  256  ->  65,536   (each level squares; one cell per level pays for the next)
+```
+
+**This repo already ships exactly that pattern**, which is why it is the right answer rather than a
+clever one: `Category.Extended = 15uy // reserved escape marker for wider extension categories`
+(`src/Core.FSharp.ZetaId/Types.fs:40`), alongside `Authority`'s and `Momentum`'s `Raw` escapes. A
+bounded named vocabulary plus one declared way out is already the house style for every enum on the
+wire.
+
+**And it converts the falsifier's failure mode from silent to loud, which is the whole point.** The
+danger I named was that an agent whose honest response fits no cell picks the *nearest* cell, and the
+grammar quietly suppresses judgement. With an escape cell it does not have to: it takes the escape,
+**and taking the escape is a recorded act**. So "the grammar was too narrow here" stops being an
+invisible mis-fit and becomes a countable event — escape frequency is a direct measurement of whether
+the action grammar needs widening, per room, per finding type.
+
+That is the same move as the rest of the design: do not prevent the thing you cannot bound, *observe*
+it. The bound stays real at every level (you can never take an action off the current menu), and the
+cost of admitting you need more is exactly one cell.
+
 ## 4. The cost, since it is not free
 
 Per the ledger's own bound: growth must track **distinct disagreements**, not ticks. A transcript of
@@ -93,10 +122,12 @@ watch here too.
 
 ## 5. Falsifiers
 
-- **"16 cells is enough"** — refuted by an honest response to a finding that does not fit any cell
-  and is not a composition of cells. Then the grammar is too narrow and is suppressing judgement
-  rather than shaping it. **This is the one to watch**, because the failure mode is silent: an agent
-  picks the nearest cell rather than the right action.
+- **"16 cells is enough"** — **answered by §3a rather than left open**: cell 16 is an escape to a
+  wider grid, so the grammar is never too narrow, and taking the escape is recorded. The falsifier
+  therefore changes shape: it is now refuted if agents take the escape *frequently* and the grid is
+  never widened in response — that would mean the escape had become a dumping ground and the
+  measurement was being ignored, which is the silent failure returning by another door. **Watch the
+  escape rate, not the fit.**
 - **"Unchosen branches remain reachable"** — refuted if reconstructing an alternative branch requires
   anything the transcript did not record, i.e. if the adventure is only replayable forward.
 - **"This is not just a flag with extra steps"** — refuted if every readout in practice offers the
