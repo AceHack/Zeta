@@ -76,7 +76,15 @@ Next ==
   \/ \E t \in Threads: FinishConnect(t)
   \/ Build
 
+\* Fairness. WF on Build alone is NOT enough (audit 2026-08-10): the finisher actions had no
+\* fairness, so a thread could enter "registering" and park there forever, leaving Build's
+\* guard (\A t: pending[t] = "idle") permanently false. Build was then never CONTINUOUSLY
+\* enabled, weak fairness on it was vacuously satisfied, and BuildCompletes was VIOLATED.
+\* Adding WF on the finishers models the real contract — a thread that begins a registration
+\* or a connect returns from it — and makes the stated theorem true (verified: TLC, 3538
+\* distinct states, no error). This is a completed fairness set, not a weakened claim.
 Spec == Init /\ [][Next]_vars /\ WF_vars(Build)
+         /\ \A t \in Threads: WF_vars(FinishRegister(t)) /\ WF_vars(FinishConnect(t))
 
 \* Safety: no operator is registered after Build committed.
 NoRegisterAfterBuild ==
@@ -98,28 +106,27 @@ ConnectAtMostOnce ==
 
 \* Liveness: Build eventually runs.
 \*
-\* REFUTED 2026-08-10 — DO NOT RELY ON THIS. Adding `PROPERTY BuildCompletes` to the .cfg
-\* (sound here: this cfg has no CONSTRAINT, so the constraint-corrupts-fairness problem
-\* that PredictiveLookahead.cfg documents does not apply) and running TLC gives:
+\* AUDIT 2026-08-10 — was VIOLATED under the original fairness, now HOLDS. History kept
+\* because the failure is instructive and the property is still not machine-checked here.
+\*
+\* Under the original `Spec == ... /\ WF_vars(Build)` alone, adding `PROPERTY BuildCompletes`
+\* to the .cfg (sound: this cfg has no CONSTRAINT, so the constraint-corrupts-fairness
+\* problem PredictiveLookahead.cfg documents does not apply) gave:
 \*     Error: Temporal property BuildCompletes was violated.
-\*     10415 states generated, 3538 distinct states found
+\* Cause: the FINISHER actions carried no fairness, so a thread could park in "registering"
+\* forever, Build's guard never held, and WF on Build was vacuously satisfied. Completing
+\* the fairness set (see `Spec` below) makes it hold — verified, 3538 distinct states, no
+\* error. So the theorem was true and the spec under-specified its fairness.
 \*
-\* The diagnosis is NOT misplaced fairness. `Spec` uses WF_vars(Build) — per-action weak
-\* fairness, the stronger and correct pattern. Weak fairness only fires on CONTINUOUS
-\* enablement, so a behaviour in which Build is repeatedly disabled never triggers it. The
-\* original parenthetical ("we always have weak fairness on it") was true and did not yield
-\* the conclusion; it has been removed rather than left to mislead.
-\*
-\* The honest form is CONDITIONAL — eventually built GIVEN Build remains enabled — which is
-\* a semantic change to the claim and is therefore left to this spec's owner rather than
-\* made here. Audit + counter-example:
-\* docs/research/2026-08-10-synchrony-non-transfer-audit-bftconsensus-checks-a-counting-tautology.md §2e
+\* STILL NOT CHECKED IN CI: BuildCompletes is not in CircuitRegistration.cfg, so nothing
+\* enforces this. Adding `PROPERTY BuildCompletes` is sound here and would close it.
+\* Audit: docs/research/2026-08-10-synchrony-non-transfer-audit-bftconsensus-checks-a-counting-tautology.md §2e
 BuildCompletes == <>built
 
 THEOREM Spec => [](TypeOK /\ NoRegisterAfterBuild)
 THEOREM Spec => ConnectAtMostOnce
-\* REFUTED — see the note above. Kept rather than deleted because removing another author's
-\* theorem is their call; marked because leaving a refuted claim unmarked is not an option.
-\* Note TLAPS does not run on this file, so none of these THEOREMs is machine-checked.
+\* Was refuted under the original fairness set; holds under the completed one (see above).
+\* Note TLAPS does not run on this file, so none of these THEOREMs is machine-checked — the
+\* evidence for this one is a TLC run that the .cfg does not currently perform.
 THEOREM Spec => BuildCompletes
 ====
