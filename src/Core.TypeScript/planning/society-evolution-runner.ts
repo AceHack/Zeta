@@ -26,6 +26,7 @@ const ALL_DIMENSIONS: readonly ErrorDimension[] = [
   "transport", "toolchain", "calibration", "unknown",
 ] as const;
 import type { PriorHint } from "../protocol/batch-teaching-envelope";
+import { batchTemperatureBand } from "../protocol/batch-heat-bridge";
 import { founderGenome } from "./agent-genome";
 import type { CalibrationPosterior } from "./calibration-ledger";
 
@@ -139,10 +140,35 @@ async function main(): Promise<number> {
     // Receivers call ZetaTransportCell.mergePriorHints(event.priorHints) to update their BNNs
     priorHints,
   };
+  // ── Heat readout: wire transport dimension posterior → TemperatureBand ────────
+  // The transport dimension's BNN posterior (mu) is a proxy for transport error rate.
+  // We convert it to a TemperatureBand using the same thresholds as Vera's Heat.fs:
+  //   cold (0 ppm) → warm (333k ppm) → hot (666k ppm) → critical (1M ppm)
+  // This is the bridge between the BNN learning layer and the heat accounting layer.
+  const transportPosterior = dimensionPosterior(bnn, "transport");
+  // Map mu [0,1] → ppm [0, 1_000_000]: higher mu = more transport errors = more heat
+  const transportPpm = Math.round(transportPosterior.mu * 1_000_000);
+  // Use a synthetic BatchTeachingEnvelope summary to get the TemperatureBand
+  // BatchSummary.unaccountedHeat = number of unaccounted bare erasures (not ppm)
+  // We use transportMu as a proxy: mu > 0.5 → 1 unaccounted erasure out of 1 item
+  const heatBand = batchTemperatureBand({
+    failedItems: transportPosterior.mu > 0.1 ? 1 : 0,
+    unaccountedHeat: transportPosterior.mu > 0.5 ? 1 : 0,
+  });
+  const heatReadout = {
+    band: heatBand,
+    transportMu: transportPosterior.mu,
+    transportPpm,
+    robustnessWeight: transportPosterior.robustnessWeight,
+    trend: transportPosterior.mu > 0.6 ? "↑ warming"
+      : transportPosterior.mu < 0.4 ? "↓ recovering"
+      : "→ stable",
+  };
+  console.log(`[society] heat readout: band=${heatBand} transportMu=${transportPosterior.mu.toFixed(3)} trend=${heatReadout.trend}`);
 
   try {
     mkdirSync(args.eventDir, { recursive: true });
-    writeFileSync(join(args.eventDir, `${eventId}.json`), JSON.stringify(event, null, 2));
+    writeFileSync(join(args.eventDir, `${eventId}.json`), JSON.stringify({ ...event, heatReadout }, null, 2));
     console.log(`[society] wrote evolution event ${eventId}`);
   } catch (err) {
     console.warn(`[society] could not write event: ${err instanceof Error ? err.message : String(err)}`);

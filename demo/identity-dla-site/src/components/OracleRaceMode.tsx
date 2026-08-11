@@ -309,6 +309,7 @@ export default function OracleRaceMode() {
   } | null>(null);
   // Prior convergence: mean µ across priorHints dimensions over last 10 evolution events
   const [priorConvHistory, setPriorConvHistory] = useState<Array<{ generation: number; meanMu: number }>>([]);
+  const [heatAuditLog, setHeatAuditLog] = useState<Array<{ generation: number; meanMu: number; heatTrend: string; at: string }>>([]);
   // Merged BNN posteriors from GitHub society priorHints (EP bidirectional update)
   const [mergedPosteriors, setMergedPosteriors] = useState<Array<{ dimension: string; mu: number; sigma2: number }>>([]);
   const [showFmz, setShowFmz] = useState(false);
@@ -498,6 +499,45 @@ export default function OracleRaceMode() {
           .filter(pt => pt.meanMu > 0)
           .sort((a, b) => a.generation - b.generation);
         if (priorConv.length > 0) setPriorConvHistory(priorConv);
+        // ── Heat audit log: generation + meanMu + heat trend per event ─────────
+        // Each society event gets a row: generation, mean µ, and heat trend at that moment
+        // Heat trend is computed from the heatHistory at the time of the event (approximated
+        // from the event's priorHints transport dimension posterior)
+        const heatAudit = rawEvents
+          .filter((e): e is Record<string, unknown> => !!e && typeof e === "object")
+          .map(e => {
+            const gen = typeof e["generation"] === "number" ? e["generation"] : 0;
+            const at = typeof e["at"] === "string" ? e["at"] : new Date().toISOString();
+            const hints = Array.isArray(e["priorHints"]) ? e["priorHints"] : [];
+            const mus = (hints as unknown[])
+              .filter((h): h is Record<string, unknown> => !!h && typeof h === "object")
+              .map(h => typeof h["mu"] === "number" ? h["mu"] : 0);
+            const meanMu = mus.length > 0 ? mus.reduce((a, b) => a + b, 0) / mus.length : 0;
+            // Approximate heat trend from transport dimension posterior
+            // transport mu > 0.6 → warming (high error rate), < 0.4 → recovering, else stable
+            // Use heatReadout.trend from the event if present (real data from society-runner)
+            // Fall back to deriving from transport dimension posterior if absent
+            const heatReadoutField = (e as Record<string, unknown>)["heatReadout"];
+            const heatTrendFromEvent = heatReadoutField && typeof heatReadoutField === "object"
+              && typeof (heatReadoutField as Record<string, unknown>)["trend"] === "string"
+              ? (heatReadoutField as Record<string, unknown>)["trend"] as string
+              : null;
+            const transportHints = (hints as unknown[])
+              .filter((h): h is Record<string, unknown> => !!h && typeof h === "object")
+              .filter(h => h["dimension"] === "transport");
+            const transportMu = transportHints.length > 0
+              ? (typeof transportHints[0]?.["mu"] === "number" ? transportHints[0]["mu"] as number : 0.5)
+              : 0.5;
+            const heatTrend = heatTrendFromEvent ?? (
+              transportMu > 0.6 ? "↑ warming"
+              : transportMu < 0.4 ? "↓ recovering"
+              : "→ stable"
+            );
+            return { generation: gen, meanMu, heatTrend, at };
+          })
+          .filter(pt => pt.meanMu > 0)
+          .sort((a, b) => a.generation - b.generation);
+        if (heatAudit.length > 0) setHeatAuditLog(heatAudit);
         // ── mergePriorHints into local BNN (next step 2) ───────────────────────
         // Collect all priorHints from all fetched events and merge using EP natural parameters:
         //   τ_joint = τ_local + τ_prior,  ρ_joint = ρ_local + ρ_prior
@@ -1119,6 +1159,45 @@ export default function OracleRaceMode() {
         </div>
       )}
 
+
+      {/* Heat audit log — generation × meanMu × heat trend, from GitHub society events */}
+      {heatAuditLog.length > 0 && (
+        <div style={{ marginTop: "0.4rem", padding: "0.4rem 0.5rem", background: "rgba(16,185,129,0.04)",
+          border: "1px solid rgba(16,185,129,0.15)", borderRadius: 4 }}>
+          <div style={{ fontSize: "0.55rem", color: "#065f46", marginBottom: "0.2rem", fontFamily: "monospace" }}>
+            🌡 heat audit log — transport health per society generation
+          </div>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.5rem", fontFamily: "monospace" }}>
+            <thead>
+              <tr>
+                {["gen", "mean µ", "heat trend", "at"].map(h => (
+                  <th key={h} style={{ textAlign: "left", color: "#334155", padding: "0.05rem 0.3rem",
+                    borderBottom: "1px solid rgba(16,185,129,0.15)" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {heatAuditLog.slice(-8).map((row, i) => (
+                <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.02)" }}>
+                  <td style={{ padding: "0.05rem 0.3rem", color: "#94a3b8" }}>{row.generation}</td>
+                  <td style={{ padding: "0.05rem 0.3rem", color: row.meanMu > 0.5 ? "#fca5a5" : "#6ee7b7" }}>
+                    {row.meanMu.toFixed(3)}
+                  </td>
+                  <td style={{ padding: "0.05rem 0.3rem",
+                    color: row.heatTrend === "↑ warming" ? "#f97316"
+                      : row.heatTrend === "↓ recovering" ? "#22c55e"
+                      : "#94a3b8" }}>
+                    {row.heatTrend}
+                  </td>
+                  <td style={{ padding: "0.05rem 0.3rem", color: "#475569" }}>
+                    {new Date(row.at).toLocaleTimeString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
       {/* Placeholder when race is done but GitHub fetch is pending */}
       {doneCount === N_ORACLES && !githubSociety && (
         <div style={{ fontSize: "0.6rem", color: "#334155", margin: "0.25rem 0" }}>
@@ -1264,6 +1343,16 @@ export default function OracleRaceMode() {
             <span style={{ color: "#10b981" }}>
               ✓ Z-2 PLAUSIBLE — 17 independent seeds converged, spread {maxSpread.toFixed(4)} &lt; 0.05.
               Halsey 2026 amplitude claim consistent with D_f = {meanDf.toFixed(4)}.
+              {(() => {
+                const recentPpm = heatHistory.slice(-3);
+                const isWarming = recentPpm.length >= 2
+                  && (recentPpm[recentPpm.length - 1]! > (recentPpm[0]! + 50_000));
+                return isWarming ? (
+                  <span style={{ color: "#f97316", marginLeft: "0.5rem" }}>
+                    ⚠ transport under pressure (↑ warming) — reset heat and re-run for a clean verdict.
+                  </span>
+                ) : null;
+              })()}
             </span>
           ) : (
             <span style={{ color: "#78716c" }}>
