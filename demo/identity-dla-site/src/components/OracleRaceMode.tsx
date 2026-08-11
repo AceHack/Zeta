@@ -241,6 +241,7 @@ export default function OracleRaceMode() {
   const stopRef = useRef(false);
   const [showSeedLog, setShowSeedLog] = useState(false);
   const [heatRestored, setHeatRestored] = useState<number[] | null>(null); // weights from URL hash
+  const [nackColdFlash, setNackColdFlash] = useState(false); // brief green flash after reset-heat
   const [seedCopied, setSeedCopied] = useState(false);
   const [urlCopied, setUrlCopied] = useState(false);
   const [compareResults, setCompareResults] = useState<OracleResult[] | null>(null);
@@ -356,6 +357,12 @@ export default function OracleRaceMode() {
     stopRef.current = false;
     setElapsed(0);
     const startTime = Date.now();
+    // Reset heat state at race start — each race begins with clean transport weights
+    // so stale heat from a previous run doesn't affect the new verdict panel
+    try { localStorage.removeItem("zeta-heat-history"); } catch { /* ignore */ }
+    setHeatHistory([]);
+    setHeatRestored(null);
+    setNackColdFlash(false);
     // If we have a previous completed run, save it for comparison
     if (results.length === N_ORACLES && results.every(r => r.done)) {
       setCompareResults([...results]);
@@ -926,6 +933,8 @@ export default function OracleRaceMode() {
                           // Re-run NACK simulation with cold-start weights (shows AIMD ramp-up from scratch)
                           setNackLog([]);
                           setErasureHeat(null);
+                          setNackColdFlash(true);
+                          setTimeout(() => setNackColdFlash(false), 2000); // flash for 2s
                           setTimeout(() => {
                             // Trigger a fresh cold-start NACK simulation after state clears
                             const coldCauses = ["congestion", "timeout", "congestion"];
@@ -1339,7 +1348,13 @@ export default function OracleRaceMode() {
               const lastPpmCsv = heatHistory[heatHistory.length - 1] ?? 0;
               const baseWCsv = lastPpmCsv === 0 ? 1.0 : lastPpmCsv > 666_666 ? 0.1 : lastPpmCsv > 333_333 ? 0.5 : 0.75;
               const hwRowCsv = [0,1,2,3,4].map(i => Math.max(0.05, Math.min(1.0, baseWCsv - i * 0.02)).toFixed(2)).join(",");
-              const heatFooter = `\n# heat_state_at_export: broadcast=${hwRowCsv.split(",")[0]},ws=${hwRowCsv.split(",")[1]},udp=${hwRowCsv.split(",")[2]},ret=${hwRowCsv.split(",")[3]},git=${hwRowCsv.split(",")[4]}`;
+              // Compute heat trend from last 3 heatHistory values
+              const recentPpm = heatHistory.slice(-3);
+              const heatTrend = recentPpm.length < 2 ? "→ stable"
+                : recentPpm[recentPpm.length - 1]! > (recentPpm[0]! + 50_000) ? "↑ warming"
+                : recentPpm[recentPpm.length - 1]! < (recentPpm[0]! - 50_000) ? "↓ recovering"
+                : "→ stable";
+              const heatFooter = `\n# heat_state_at_export: broadcast=${hwRowCsv.split(",")[0]},ws=${hwRowCsv.split(",")[1]},udp=${hwRowCsv.split(",")[2]},ret=${hwRowCsv.split(",")[3]},git=${hwRowCsv.split(",")[4]},trend=${heatTrend}`;
               const blob = new Blob([header + rows + heatFooter], { type: "text/csv" });
               const a = document.createElement("a");
               a.href = URL.createObjectURL(blob);
@@ -1524,7 +1539,13 @@ export default function OracleRaceMode() {
       {nackLog.length > 0 && (
         <div style={{ marginTop: "0.5rem", padding: "0.6rem", background: "rgba(239,68,68,0.05)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 6 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
-            <strong style={{ color: "#ef4444", fontSize: "0.65rem" }}>🔴 Teaching NACK Log</strong>
+            <strong style={{
+              color: nackColdFlash ? "#22c55e" : "#ef4444",
+              fontSize: "0.65rem",
+              transition: "color 0.3s ease",
+            }}>
+              {nackColdFlash ? "✓ cold start — AIMD reset" : "🔴 Teaching NACK Log"}
+            </strong>
             {erasureHeat && (
               <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
                 <span style={{ fontSize: "0.55rem", color: "#64748b" }}>Unaccounted heat:</span>
