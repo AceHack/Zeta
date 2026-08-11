@@ -7,7 +7,7 @@ existing signatures against the amended text)
 ## What is being asked
 
 The Persona × Cell Identity Treaty is now ON MAIN
-([`docs/research/2026-07-03-persona-cell-identity-treaty-dv2-hub-satellite-spiffe-alignment-proposed.md`](../research/2026-07-03-persona-cell-identity-treaty-dv2-hub-satellite-spiffe-alignment-proposed.md),
+(`docs/research/2026-07-03-persona-cell-identity-treaty-dv2-hub-satellite-spiffe-alignment-proposed.md` <!-- STALE-REF: ../research/2026-07-03-persona-cell-identity-treaty-dv2-hub-satellite-spiffe-alignment-proposed.md -->,
 landed via #9550). It carries **proposed amendment A1 — the hub has no parent
 key**: persona is the root key of every identity-indexed store; no attribute
 (role/hat, cell, surface, model, runtime, trust tier) may ever appear as a

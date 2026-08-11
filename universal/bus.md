@@ -6,7 +6,7 @@
 > lives at root **`/bus`**. Interface ⇄ data split: `universal/bus` = the interface, `/bus` = the data.
 
 A candidate **bit + compiler oracle** surface (bit-perfect + compiler-invariant = collaboration-grade).
-See [`universal/README.md`](README.md) and [`/bus`](../bus/README.md).
+See [`universal/README.md`](README.md) and `/bus` <!-- STALE-REF: ../bus/README.md -->.
 
 ## Noninterference contract (manifesto §13)
 

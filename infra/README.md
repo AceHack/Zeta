@@ -84,7 +84,7 @@ nixos-install --flake /mnt/etc/zeta#<host>
 ```
 
 Where `<host>` is one of `control-plane`, `worker-gpu-01`, `worker-gpu-02`,
-or any future host declared in [`/flake.nix`](../flake.nix) `nixosConfigurations`.
+or any future host declared in `/flake.nix` <!-- STALE-REF: ../flake.nix --> `nixosConfigurations`.
 
 ## Bootstrap order (what the cluster does on first boot)
 

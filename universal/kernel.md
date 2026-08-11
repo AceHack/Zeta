@@ -48,8 +48,8 @@ caught the same day: `dot` must zero-extend ragged vectors, not min-truncate, or
 >= testing `vᵀKv ≥ 0` on a sampled Gram matrix. Anyone may use these words here knowing exactly what they
 >mean; that is a declared tribe, not hidden lore.
 
-Reference implementation: [`src/Core/LinguisticSeed.fs`](../src/Core/LinguisticSeed.fs) (the closure +
+Reference implementation: `src/Core/LinguisticSeed.fs` <!-- STALE-REF: ../src/Core/LinguisticSeed.fs --> (the closure +
 `kernel { }` CE — the CE is an F# vehicle, NOT part of this universal shape) · instances:
-[`src/Core/Salon.fs`](../src/Core/Salon.fs) (`jaccardKernel`/`seedPack`),
-[`src/Core/ConformalGA.fs`](../src/Core/ConformalGA.fs) (`rbfKernel`/`memoryPack`).
+`src/Core/Salon.fs` <!-- STALE-REF: ../src/Core/Salon.fs --> (`jaccardKernel`/`seedPack`),
+`src/Core/ConformalGA.fs` <!-- STALE-REF: ../src/Core/ConformalGA.fs --> (`rbfKernel`/`memoryPack`).
 See [`universal/README.md`](README.md) and `docs/backlog/P3/081KQTPYE0008QG0R0028V263Z-*.md` (the originating synthesis).

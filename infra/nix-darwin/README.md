@@ -29,7 +29,7 @@ nix run nix-darwin/nix-darwin-24.11#darwin-rebuild -- switch \
 What it does:
 
 - Installs the `nix-darwin` module system on this Mac
-- Applies [`configuration.nix`](configuration.nix) which:
+- Applies `configuration.nix` <!-- STALE-REF: configuration.nix --> which:
   - Enables `nix-command` + flakes globally
   - Trusts the `admin` group (macOS) for Nix operations via `trusted-users = @admin`
   - Configures the public Nix caches (cache.nixos.org, nix-community)
@@ -71,7 +71,7 @@ That picks up newer linux-builder VM images + any nixpkgs bumps.
 | `error: builder for ... failed` on linux-builder dispatch | `sudo launchctl kickstart -k system/org.nixos.linux-builder` |
 | Rosetta x86_64 binaries seg-fault inside the VM | Update macOS — older Rosetta builds had VM bugs |
 | `permission denied` on /nix/store | You're not in the `admin` group (macOS), or `trusted-users = ["@admin"]` didn't apply. Re-run `darwin-rebuild switch` |
-| VM uses all your RAM | Lower `memorySize` in [`configuration.nix`](configuration.nix) and re-apply |
+| VM uses all your RAM | Lower `memorySize` in `configuration.nix` <!-- STALE-REF: configuration.nix --> and re-apply |
 
 ## What this is NOT
 
@@ -80,6 +80,6 @@ That picks up newer linux-builder VM images + any nixpkgs bumps.
   or not any maintainer has nix-darwin set up. This is purely a
   workstation convenience for building the ISO locally.
 - **NOT a replacement for the CI build.** The
-  [`build-ai-cluster-iso.yml`](../../.github/workflows/build-ai-cluster-iso.yml)
+  `build-ai-cluster-iso.yml` <!-- STALE-REF: ../../.github/workflows/build-ai-cluster-iso.yml -->
   workflow stays the source of truth for "this PR's ISO" — local
   builds are for iteration, not for distribution.

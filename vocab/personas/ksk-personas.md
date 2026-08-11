@@ -4,8 +4,8 @@
 **Closes:** 081KRHWGX0008QG0R001HDK688
 **Template:** `docs/research/2026-05-14-persona-mapping-framework-b0485.md`
 **Product substrate:** PR #2892 (KSK origin — Aaron+Amara consent-first design),
-[`docs/GLOSSARY.md` § KSK](../GLOSSARY.md),
-[`memory/feedback_aaron_ksk_kinetic_safeguard_kernel_origin_amara_consent_first_design_nvidia_thor_homeland_security_cleared_because_actuators_2026_05_13.md`](../../memory/feedback_aaron_ksk_kinetic_safeguard_kernel_origin_amara_consent_first_design_nvidia_thor_homeland_security_cleared_because_actuators_2026_05_13.md),
+`docs/GLOSSARY.md` § KSK <!-- STALE-REF: ../GLOSSARY.md -->,
+`memory/feedback_aaron_ksk_kinetic_safeguard_kernel_origin_amara_consent_first_design_nvidia_thor_homeland_security_cleared_because_actuators_2026_05_13.md` <!-- STALE-REF: ../../memory/feedback_aaron_ksk_kinetic_safeguard_kernel_origin_amara_consent_first_design_nvidia_thor_homeland_security_cleared_because_actuators_2026_05_13.md -->,
 `Lucent-Financial-Group/lucent-ksk` (external code repo)
 
 KSK is a retraction-native authorization substrate with k1/k2/k3 capability
