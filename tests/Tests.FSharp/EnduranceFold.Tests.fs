@@ -4,7 +4,7 @@ module Zeta.Tests.EnduranceFoldTests
 // is real or merely asserted.
 //
 // The interesting result is NOT that the bridge compiles. It is that `SymmetricEndurance` already
-// had the shared-layer property, independently: `Judges` is a `Set<int * int>`, so judgment
+// had the shared-layer property, independently: `Withheld` is a `Set<int * int>`, so judgment
 // accumulation is idempotent by construction and `netRate` is a function of the SET rather than of
 // the delivery sequence. `BeliefConvergence.observe` — pointwise multiplication, a commutative
 // monoid that is NOT idempotent — did not.
@@ -27,7 +27,7 @@ let private parties =
 
 let private frameOf (judges: (int * int) list) : SE.Frame =
     { Parties = parties
-      Judges = Set.ofList judges }
+      Withheld = Set.ofList judges }
 
 // ── the load-bearing correspondence ────────────────────────────────────────────────────────────
 
@@ -41,7 +41,7 @@ let ``the fold's Applied key set is in BIJECTION with the frame's judgment set``
 
     let expected = judges |> List.map (fun (o, p) -> EF.judgmentKey o p) |> Set.ofList
     Assert.Equal<Set<string>>(expected, shared.Applied)
-    Assert.Equal(frame.Judges.Count, shared.Applied.Count)
+    Assert.Equal(frame.Withheld.Count, shared.Applied.Count)
 
 [<Fact>]
 let ``ANTI-VACUITY: judgments actually change netRate`` () =
@@ -87,19 +87,19 @@ let ``merging frames is set union: commutative, associative, idempotent`` () =
     let b = frameOf [ (2, 1); (3, 0) ]
     let c = frameOf [ (1, 3) ]
 
-    Assert.Equal<Set<int * int>>((EF.mergeFrames a b).Judges, (EF.mergeFrames b a).Judges)
+    Assert.Equal<Set<int * int>>((EF.mergeFrames a b).Withheld, (EF.mergeFrames b a).Withheld)
 
     Assert.Equal<Set<int * int>>(
-        (EF.mergeFrames (EF.mergeFrames a b) c).Judges,
-        (EF.mergeFrames a (EF.mergeFrames b c)).Judges
+        (EF.mergeFrames (EF.mergeFrames a b) c).Withheld,
+        (EF.mergeFrames a (EF.mergeFrames b c)).Withheld
     )
 
-    Assert.Equal<Set<int * int>>(a.Judges, (EF.mergeFrames a a).Judges)
+    Assert.Equal<Set<int * int>>(a.Withheld, (EF.mergeFrames a a).Withheld)
     // 2 judgments + 2 judgments = THREE, because (2,1) is in both and is counted once. That missing
-    // fourth IS the idempotence: a count-based `Judges` would have said 4, and been wrong.
-    Assert.Equal(2, a.Judges.Count)
-    Assert.Equal(2, b.Judges.Count)
-    Assert.Equal(3, (EF.mergeFrames a b).Judges.Count)
+    // fourth IS the idempotence: a count-based `Withheld` would have said 4, and been wrong.
+    Assert.Equal(2, a.Withheld.Count)
+    Assert.Equal(2, b.Withheld.Count)
+    Assert.Equal(3, (EF.mergeFrames a b).Withheld.Count)
 
 [<Fact>]
 let ``two observers who saw different subsets reconcile to the union, whoever speaks first`` () =

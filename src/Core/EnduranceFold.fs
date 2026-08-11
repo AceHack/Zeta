@@ -7,7 +7,7 @@ namespace Zeta.Core
 ///
 /// ## What the correspondence establishes
 ///
-/// `SymmetricEndurance.Frame` holds `Judges : Set<int * int>` — perspective-relative
+/// `SymmetricEndurance.Frame` holds `Withheld : Set<int * int>` — perspective-relative
 /// `(observer, observed)` pairs. Being a **Set** rather than a count means judgment accumulation is
 /// **idempotent by construction**: casting the same judgment twice is a no-op, and `netRate` is a
 /// function of the set rather than of the delivery sequence.
@@ -64,13 +64,13 @@ module EnduranceFold =
     /// `Set` iteration is ordered by F#'s structural comparison, so this is deterministic (DST §7) —
     /// but nothing downstream may depend on that order, and the tests assert it does not.
     let projectFrame (dim: int) (frame: SymmetricEndurance.Frame) : TwoTimescaleFold.SharedEvidence list =
-        frame.Judges
+        frame.Withheld
         |> Set.toList
         |> List.map (fun (observer, observed) -> judgmentEvidence dim observer observed)
 
     /// Fold a frame's judgments through the shared layer.
     ///
-    /// **The load-bearing claim:** the resulting `Applied` key set is in bijection with `frame.Judges`,
+    /// **The load-bearing claim:** the resulting `Applied` key set is in bijection with `frame.Withheld`,
     /// so the fold's join-semilattice *is* the frame's judgment set under another name. Pinned in
     /// `EnduranceFold.Tests.fs`.
     let sharedOf (dim: int) (frame: SymmetricEndurance.Frame) : TwoTimescaleFold.SharedBelief =
@@ -83,7 +83,7 @@ module EnduranceFold =
     /// taken from `a`; merging frames over different party sets is out of scope and callers should not
     /// assume it is meaningful.
     let mergeFrames (a: SymmetricEndurance.Frame) (b: SymmetricEndurance.Frame) : SymmetricEndurance.Frame =
-        { a with Judges = Set.union a.Judges b.Judges }
+        { a with Withheld = Set.union a.Withheld b.Withheld }
 
     /// A judgment as a **group** element — the retraction half of the forced pair.
     ///

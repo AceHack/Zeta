@@ -9,13 +9,13 @@ let private party id rate = { Id = id; HeartbeatRate = rate }
 // A 3-peer frame: two agents (0,1) and time/clock (2) — all peers, no substrate.
 let private threePeer judges =
     { Parties = [ party 0 1.0; party 1 1.0; clockParty 2 1.0 ]
-      Judges = Set.ofList judges }
+      Withheld = Set.ofList judges }
 
 [<Fact>]
 let ``mutual judgment with equal heartbeats balances — equal net rates (both roles)`` () =
     let f = threePeer [ (0, 1); (1, 0) ] // A and B each judge the other; symmetric
     Assert.Equal(netRate f (party 0 1.0), netRate f (party 1 1.0))
-    Assert.True(mutuallyJudge f 0 1)
+    Assert.True(mutuallyWithheld f 0 1)
 
 [<Fact>]
 let ``time is a peer: a forging clock is caught and collapses like anyone`` () =
@@ -29,7 +29,7 @@ let ``time is a peer: a forging clock is caught and collapses like anyone`` () =
 [<Fact>]
 let ``isBalanced rejects treating time as an outside substrate (one-way target)`` () =
     // Judging id 9 (NOT in Parties) = treating something as an external substrate ⇒ unbalanced.
-    let unbalanced = { Parties = [ party 0 1.0; party 1 1.0 ]; Judges = Set.ofList [ (0, 9); (1, 9) ] }
+    let unbalanced = { Parties = [ party 0 1.0; party 1 1.0 ]; Withheld = Set.ofList [ (0, 9); (1, 9) ] }
     Assert.False(isBalanced unbalanced)
     // Bring time INTO the peer set ⇒ balanced.
     let balanced = threePeer [ (0, 2); (1, 2) ]
@@ -39,7 +39,7 @@ let ``isBalanced rejects treating time as an outside substrate (one-way target)`
 let ``society kills the forger: more peers judging ⇒ deeper collapse`` () =
     let big =
         { Parties = [ for i in 0..5 -> party i 1.0 ]
-          Judges = Set.ofList [ for o in 1..5 -> (o, 0) ] } // all 5 others judge party 0
+          Withheld = Set.ofList [ for o in 1..5 -> (o, 0) ] } // all 5 others judge party 0
     Assert.Equal(-4.0, netRate big (party 0 1.0)) // 1 heartbeat - 5 penalties
     Assert.True(collapses big (party 0 1.0))
 
@@ -83,7 +83,7 @@ let ``a ticking clock peer is judged and collapses like any forger`` () =
     // Two agents judge the ticking clock as forging (e.g. it faked ticks); clock earns 1/tick but takes -2.
     let f =
         { Parties = [ party 0 1.0; party 1 1.0; tickingClock 2 ]
-          Judges = Set.ofList [ (0, 2); (1, 2) ] }
+          Withheld = Set.ofList [ (0, 2); (1, 2) ] }
     Assert.True(collapses f (tickingClock 2)) // net 1 - 2 = -1
     Assert.True(isBalanced f)
 

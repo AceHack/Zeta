@@ -16,12 +16,28 @@ namespace Zeta.Core
 /// "2-v-1-on-the-clock" framing (agents attack a target-only clock) is the unbalanced version. `isBalanced`
 /// rejects referencing time (or anyone) as an outsider — it must be *in* `Parties`.
 ///
-/// **The mechanism.** Judgments are **perspective-relative**: `Judges` holds `(observer, observed)` pairs
-/// where the observer, *from its own frame*, detects the observed forging (bad progress vs good) and casts a
-/// `-1` (a Z-set retraction) on its identity. Each party accrues `+HeartbeatRate` from its own clock and loses
-/// `1` per observer that judges it. Genuine party: judged by few/none → claim grows. Forger: judged by all →
-/// reputation collapses (*"society kills the forger"*). Pre-society = a lone observer (one `-1`); society =
-/// every peer judging.
+/// **The mechanism, stated as the neutral fact it measures** (renamed 2026-08-11 — Aaron: *"is judgement too
+/// strong of a word? does a judgement indicate good or bad or just some sort of observation of self claim of
+/// other?"* It was too strong; see
+/// `docs/research/2026-08-11-judgement-is-too-strong-the-neutral-fact-is-withheld-corroboration-of-a-claim.md`):
+///
+/// `Withheld` holds `(observer, subject)` pairs meaning **observer `o` withholds corroboration of `subject`'s
+/// self-claim, from `o`'s own frame**. It is a statement about ONE CLAIM from ONE VANTAGE — not a finding about
+/// a party, and not an assertion that the world is any particular way. Each party accrues `+HeartbeatRate` from
+/// its own clock and loses `1` per non-corroborating observer, so what the mechanism prices is the **breadth of
+/// non-corroboration**, which is a measured fact.
+///
+/// **Both readings are real, and the substrate picks neither** (`dual-use-detection-is-neutral-oracle-decides`):
+/// *adversarial* — the observer saw bad progress and declines to vouch; sustained across observers the claim
+/// collapses (*"society kills the forger"*, the reading this module was originally written in). *Benign* —
+/// incompatible frames: different histories, no overlapping observation window, an honest disagreement about
+/// what happened. **Two honest parties can decline to corroborate each other.** The asymmetry that keeps this
+/// sound is that collapse requires MANY withholders, so a single incompatible frame is cheap while a
+/// broadly-unvouchable claim is expensive.
+///
+/// **Silence is neutral, and that is load-bearing.** Only explicit pairs count, so a party nobody can observe —
+/// partitioned, occluded, newly arrived — accrues no penalty at all. Absence of corroboration is never treated
+/// as evidence against.
 ///
 /// **Why this keeps NCI (Non-Coercion Invariant).** A `-1` is cast on **observable forging evidence** (a
 /// state-independent test), not by coercively overriding state — non-coercive side of the de Finetti boundary
@@ -37,11 +53,12 @@ module SymmetricEndurance =
     /// A participant — agent OR clock; no role baked in. `HeartbeatRate` = genuine self-claim growth per tick.
     type Party = { Id: int; HeartbeatRate: float }
 
-    /// The frame. `Judges` = perspective-relative `(observer, observed)` pairs: observer casts a `-1` on
-    /// observed (from observer's frame). Every party is both a potential observer and observed.
+    /// The frame. `Withheld` = perspective-relative `(observer, subject)` pairs: observer withholds
+    /// corroboration of subject's self-claim, from the observer's own frame. Every party is both a potential
+    /// observer and a potential subject. Membership is the fact; what it *means* is the caller's oracle.
     type Frame =
         { Parties: Party list
-          Judges: Set<int * int> }
+          Withheld: Set<int * int> }
 
     let private idSet (frame: Frame) : Set<int> =
         frame.Parties |> List.map (fun p -> p.Id) |> Set.ofList
@@ -94,7 +111,7 @@ module SymmetricEndurance =
             | SharedClock -> [ { Id = n; HeartbeatRate = List.sum agentRates } ] // animates all agents → Σrates (double when n=2, equal rates)
             | SeparateClocks -> [ for i in 0 .. n - 1 -> tickingClock (n + i) ] // each animates 1 → even
         { Parties = agents @ clocks
-          Judges = Set.empty }
+          Withheld = Set.empty }
 
     /// Total actor count (agents + clocks). 2 agents: `SeparateClocks` ⇒ 4, `SharedClock` ⇒ 3.
     let actorCount (frame: Frame) : int = List.length frame.Parties
@@ -138,7 +155,7 @@ module SymmetricEndurance =
             | OneClockOneTick -> [ { Id = n; HeartbeatRate = fastest } ] // constructive: paced to fastest; = shared rate when aligned
             | TwoClocksOneTick -> [ for i in 0 .. n - 1 -> { Id = n + i; HeartbeatRate = agentRates.[i] } ] // one clock per agent at its rate
         { Parties = agents @ clocks
-          Judges = Set.empty }
+          Withheld = Set.empty }
 
     /// Total clock-work per tick (sum of clock rates) under a regime, given per-agent `agentRates` — the "what
     /// falls out" comparator. `OneClockTwoTicks` = `Σrates`; `OneClockOneTick` = `max rates` (constructive —
@@ -180,14 +197,15 @@ module SymmetricEndurance =
     /// regime once you account for the sine-wave phase, not just rate alignment.
     let constructiveClockWork (deltaPhi: float) : float = 2.0 - phaseOverlap deltaPhi
 
-    /// How many *other* parties judge `q` as forging (each casts `-1`). Self-judgment (`o = q`) never counts.
-    let penaltyAgainst (frame: Frame) (q: int) : int =
-        frame.Judges |> Set.filter (fun (o, p) -> p = q && o <> q) |> Set.count
+    /// How many *other* parties withhold corroboration of `q`'s claim (each `-1`). Self-reference (`o = q`)
+    /// never counts — you cannot vouch for yourself, and you cannot decline to.
+    let withheldAgainst (frame: Frame) (q: int) : int =
+        frame.Withheld |> Set.filter (fun (o, p) -> p = q && o <> q) |> Set.count
 
     /// `p`'s net identity-claim rate per tick: `+HeartbeatRate` minus the `-1`s cast on it. The SAME rule for
     /// every party (incl. the clock) — that is the weight-free core.
     let netRate (frame: Frame) (p: Party) : float =
-        p.HeartbeatRate - float (penaltyAgainst frame p.Id)
+        p.HeartbeatRate - float (withheldAgainst frame p.Id)
 
     /// `p`'s claim magnitude at `tick` (floors at 0 — a collapsed claim doesn't go negative).
     let claimAt (frame: Frame) (p: Party) (tick: int) : float =
@@ -197,25 +215,26 @@ module SymmetricEndurance =
     let survives (frame: Frame) (p: Party) : bool = netRate frame p > 0.0
     let collapses (frame: Frame) (p: Party) : bool = netRate frame p <= 0.0
 
-    /// The parties observer `o` judges as forging, from `o`'s frame (its `-1` targets). Each traveler is a
-    /// defender in its own frame; these are its forger-suspects.
-    let judgedBy (frame: Frame) (o: int) : Set<int> =
-        frame.Judges |> Set.filter (fun (x, _) -> x = o) |> Set.map snd
+    /// The parties whose claims observer `o` declines to corroborate, from `o`'s frame. Whether that is
+    /// suspicion or merely an incompatible vantage is not decided here.
+    let withheldBy (frame: Frame) (o: int) : Set<int> =
+        frame.Withheld |> Set.filter (fun (x, _) -> x = o) |> Set.map snd
 
-    /// A and B each judge the other — "from either traveler's perspective it balances because they are both"
-    /// (each is defender-in-own-frame and forger-suspect-in-the-other's). The atom of perspective-symmetry.
-    let mutuallyJudge (frame: Frame) (a: int) (b: int) : bool =
-        frame.Judges.Contains(a, b) && frame.Judges.Contains(b, a)
+    /// A and B each withhold corroboration of the other — *"from either traveler's perspective it balances
+    /// because they are both"* (Aaron). The atom of perspective-symmetry, and the shape that mutual
+    /// non-corroboration takes whether the cause is suspicion or simply two irreconcilable frames.
+    let mutuallyWithheld (frame: Frame) (a: int) (b: int) : bool =
+        frame.Withheld.Contains(a, b) && frame.Withheld.Contains(b, a)
 
     /// **Balanced (weight-free) ⟺ every judgment is between listed peers** (`observer ≠ observed`, both in
     /// `Parties`). Referencing a party not in `Parties` — e.g. treating *time* as an external substrate the
     /// agents attack one-way — is the unbalance Aaron warns of: time (and everyone) must be a peer in the set.
     let isBalanced (frame: Frame) : bool =
         let s = idSet frame
-        frame.Judges |> Set.forall (fun (o, p) -> o <> p && Set.contains o s && Set.contains p s)
+        frame.Withheld |> Set.forall (fun (o, p) -> o <> p && Set.contains o s && Set.contains p s)
 
     /// Weight-free under relabel: a party's fate depends only on `(HeartbeatRate, #judgments-against-it)`,
-    /// never on which `Id` it wears. Verifies by swapping two parties' ids (and rewriting `Judges` to follow)
+    /// never on which `Id` it wears. Verifies by swapping two parties' ids (and rewriting `Withheld` to follow)
     /// and confirming each one's net rate is unchanged.
     let isWeightFreeUnderRelabel (frame: Frame) : bool =
         match frame.Parties with
@@ -228,7 +247,7 @@ module SymmetricEndurance =
                 { Parties =
                     frame.Parties
                     |> List.map (fun p -> { p with Id = swapId p.Id })
-                  Judges = frame.Judges |> Set.map (fun (o, p) -> swapId o, swapId p) }
+                  Withheld = frame.Withheld |> Set.map (fun (o, p) -> swapId o, swapId p) }
             netRate frame a = netRate swapped { a with Id = b.Id }
             && netRate frame b = netRate swapped { b with Id = a.Id }
         | _ -> true
