@@ -43,8 +43,21 @@ module AntiSybil =
             let frac = float agree / float n
             abs (2.0 * frac - 1.0)
 
-    /// Verdict of an anti-Sybil run over a set of claimed identities (indexed by position in the input).
-    type SybilVerdict =
+    /// **Readout** of a distinctness run over a set of claimed identities (indexed by position in the input).
+    ///
+    /// Renamed from `SybilVerdict` 2026-08-11 (Aaron: *"not have the intent in the name"*). Every field here
+    /// was already a neutral fact — counts and a component map — while the type name carried both the attack
+    /// (*Sybil*) and the reading (*Verdict*). The container was named for a conclusion its own contents
+    /// refuse to draw, which is the defect `dual-use-detection-is-neutral-oracle-decides` names.
+    ///
+    /// Note what was deliberately NOT renamed: `AntiSybil` and `antiSybil` name what the mechanism
+    /// **withstands**, the same way "forgery-resistance" does in `EntropyFloorLift.lean`. That is a property
+    /// of a mechanism, not a sentence passed on a party — and the distinction is the whole line. What this
+    /// readout reports is *how many genuinely-distinct sources the claims required*; whether that is a
+    /// forger, a reunion, or an instrument mis-scoped is the caller's oracle to decide. Sibling precedent in
+    /// this same module: `LoopholeFlags`, which already documents having deliberately no
+    /// `IsGenuine` / `IsForgery` field.
+    type DistinctnessReadout =
         { /// Number of claimed identities (input streams).
           ClaimedCount: int
           /// Number of genuinely-distinct entropy sources detected (connected components). The **forgery-cost
@@ -62,7 +75,7 @@ module AntiSybil =
     /// **The guarantee:** an adversary emitting `streams` from `s` independent sources yields
     /// `DistinctCount ≤ s` — it cannot be seen as more distinct identities than it had sources (exact reuse ⇒
     /// `correlation = 1 ≥ threshold` ⇒ collapsed). Deterministic (DST §7).
-    let antiSybil (threshold: float) (streams: int list list) : SybilVerdict =
+    let antiSybil (threshold: float) (streams: int list list) : DistinctnessReadout =
         let k = List.length streams
         let arr = List.toArray streams
         // Union-find over claimed indices.
@@ -163,7 +176,7 @@ module AntiSybil =
     /// the calibrated gate is routed work (Soraya batch 2; BUGS.md). Until it
     /// lands, callers own the margin: pass `threshold = 2 + ε`, never bare 2.0,
     /// when false collapse has consequences.
-    let chshSybil (threshold: float) (streams: ChshRound list list) : SybilVerdict =
+    let chshSybil (threshold: float) (streams: ChshRound list list) : DistinctnessReadout =
         let k = List.length streams
         let arr = List.toArray streams
         let parent = Array.init k id
@@ -367,7 +380,7 @@ module AntiSybil =
     /// conservative than i.i.d.", NOT "fully sound" — dependence beyond the HAC bandwidth can still evade.
     /// The stationarity-gated variant is `chshSybilAutocorrCalibrated` (opt-in — it needs a tol choice);
     /// this default is the parameter-free margin swap only.
-    let chshSybilCalibrated (delta: float) (streams: ChshRound list list) : SybilVerdict =
+    let chshSybilCalibrated (delta: float) (streams: ChshRound list list) : DistinctnessReadout =
         let k = List.length streams
         let arr = List.toArray streams
         let parent = Array.init k id
@@ -403,7 +416,7 @@ module AntiSybil =
     /// honest-but-autocorrelated identities, never add new ones. Same one-way inference (convicts sameness,
     /// never acquits) and determinism (DST §7). `stationarityTol` in `[0, 2]` (product means live in
     /// `[-1, 1]`); a smaller tol downgrades more aggressively.
-    let chshSybilAutocorrCalibrated (delta: float) (stationarityTol: float) (streams: ChshRound list list) : SybilVerdict =
+    let chshSybilAutocorrCalibrated (delta: float) (stationarityTol: float) (streams: ChshRound list list) : DistinctnessReadout =
         let k = List.length streams
         let arr = List.toArray streams
         let parent = Array.init k id
