@@ -11,7 +11,7 @@ answer is not to add the flag more carefully. It is that **the write is a cell i
 > **STATUS: BUILT** (`ff73ae184` the menu, `5d920c905` execute + append). This file is the design; the
 > implementation is `src/Core.TypeScript/hygiene/mutation-readout.ts` with 22 tests. What shipped
 > differs from the sketch below in one respect worth naming: §2's cells are **not a fixed list** —
-> the menu is constructed per finding, so an already-declared dimension offers *retract* and withholds
+> the menu is constructed per finding, so an already-declared dimension offers *supersede* and withholds
 > *declare*, and each disagreeing declarer becomes its own "read their reason" cell. A fixed list
 > would have been §5's third falsifier ("the same cells regardless of the finding") coming true on
 > the first commit.
@@ -61,7 +61,9 @@ and the point is that the list is **closed**:
 
 - **declare free** (requires a reason — the ledger already refuses a reasonless entry)
 - **write the test** (the under-specified reading)
-- **retract** an existing freedom of mine
+- **supersede** a freedom of mine — record that the dimension is no longer free. NOT "retract":
+  nothing is taken from anyone, the declaration stays true for its time, and what changed is the
+  world (Aaron: *"never retract freedom … pulling it back feels like betrayal and is cold not warm"*)
 - **defer** — explicitly, with the finding staying unexplained rather than silently dropped
 - **read another declarer's reason** before contradicting it (the disagreement path)
 
@@ -87,7 +89,7 @@ Which is exactly the property the freedom ledger was built for, one level up:
 | decision | **unchosen branches** — the adventure |
 
 Same shape three times: *agreement is cheap, divergence is the signal, and nothing is deleted to get
-there.* And the ledger's preservation rule (retraction marks, never deletes) is the same rule as the
+there.* And the ledger's preservation rule (superseding marks, never deletes) is the same rule as the
 transcript's: a fork you did not take is still a fork you can return to. **Resurrection is navigation,
 not reconstruction.**
 

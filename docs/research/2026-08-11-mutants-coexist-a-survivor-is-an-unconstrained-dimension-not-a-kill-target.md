@@ -45,6 +45,13 @@ measurement; measurement is not a sentence.
 | **under-specified** | the behaviour matters and nothing constrains it | write the test |
 | **unconstrained by design** | the behaviour is genuinely free — an equivalent mutant, or a degree of freedom nobody needs pinned | **record it as a declared freedom** |
 
+> **Two senses of "retraction", do not merge them.** The runner's *"retraction over prevention"*
+> above is the Z-set / drift-and-heal sense — correct after the fact rather than block before it —
+> and it is right. It is NOT the same as retracting a freedom, which this design refuses outright:
+> a declared freedom is **superseded** when the world changes, never pulled back
+> (`mutation-freedoms.ts`; Aaron 2026-08-11). Same word, two senses, and the collision is worth
+> naming because the first is a virtue and the second would be a betrayal.
+
 ## 2. Why the dual-use here is *forced*, not merely tasteful
 
 This is the part that makes the reframe more than a rename: **deciding whether a surviving mutant is
