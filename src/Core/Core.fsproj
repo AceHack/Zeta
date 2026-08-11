@@ -114,6 +114,7 @@
     <Compile Include="UncertainClock.fs" />
     <Compile Include="Curve.fs" />
     <Compile Include="BeliefConvergence.fs" />
+    <Compile Include="TwoTimescaleFold.fs" />
     <Compile Include="PontryaginDuality.fs" />
     <Compile Include="OrbitEquivariance.fs" />
     <Compile Include="LyapunovContraction.fs" />

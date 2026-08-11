@@ -251,6 +251,7 @@
     <Compile Include="QuantumArith.ByteLock.Tests.fs" />
     <Compile Include="E8Lattice.Tests.fs" />
     <Compile Include="CliffordE8Bridge.Tests.fs" />
+    <Compile Include="TwoTimescaleFold.Tests.fs" />
     <Compile Include="MoneyVelocityOracle.Tests.fs" />
     <Compile Include="IcosahedralH3.Tests.fs" />
     <Compile Include="DashedWalk.Tests.fs" />
