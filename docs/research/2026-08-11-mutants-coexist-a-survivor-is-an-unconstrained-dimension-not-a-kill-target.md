@@ -56,6 +56,44 @@ oracle attach meaning. The dual-use structure is not a stylistic preference here
 undecidability leaves available. A boolean `survived` is a claim the runner is provably not entitled
 to make.
 
+### 2a. The precedent: Microsoft shipped an undecidable classifier as a REQUIRED gate
+
+Aaron 2026-08-11: *"this is the halting problem — Microsoft has best heuristics for this in their
+driver signing program. Rodney's Razor, and our Zeta scheduler pruning future branches based on time
+and space Big-O, is my answer."*
+
+Checked, and the precedent is sharper than the analogy needed. Microsoft's **Static Driver Verifier**
+runs **SLAM** — predicate abstraction plus **CEGAR** (counterexample-guided abstraction refinement),
+Ball & Rajamani — over third-party C drivers. Three facts from their own SLAM2 paper:
+
+1. **They never solved the undecidability.** The paper states plainly that "the underlying problem
+   CEGAR is trying to solve is undecidable" and that CEGAR "has **no termination guarantee**."
+2. **They bounded resources and reported honestly.** "If it runs out of time or memory then the last
+   counterexample generated is provably a false alarm" — resource exhaustion is surfaced as an
+   unresolved result, not dressed up as a verdict.
+3. **They drove the false-alarm rate down, and that is what made it gate-able.** SLAM1 reported
+   **25.7%** false alarms; SLAM2 got under **4%** for WDM drivers — and that reduction is what "made
+   it possible for SDV 2.0 to be applied as an automatic and **required quality gate** for Windows 7
+   device drivers."
+
+> **The transferable rule: an undecidable classifier becomes shippable not when it becomes correct,
+> but when its false-alarm rate crosses a threshold and running out of budget is reported as
+> *unresolved* rather than as a verdict.**
+
+**Aaron's answer is the termination half**, and it is the part SLAM leaves to engineering: Rodney's
+Razor (essential vs accidental — do not search branches that cannot matter) and the scheduler's
+pruning of future branches by time/space complexity. That is precisely the resource bound that makes
+an unbounded search terminate with an honest "unresolved".
+
+**And §3's registry is the false-alarm half.** SLAM went from 25.7% to <4% by better abstraction; we
+get there by **memoising the classification** — every declared free dimension permanently removes a
+recurring false alarm. Same metric, different lever, and it is measurable per tick.
+
+One boundary this precedent also draws, and it is worth respecting: SDV became a **required gate only
+after** the false-alarm rate fell under 4%. Our own drift-and-heal ADR says detectors report and never
+gate. Those agree — the mutation runner should stay a report until unexplained survivors are rare,
+and the registry is what would earn it the right to be anything more.
+
 ## 3. "Mutants should coexist" is the mechanism, not the sentiment
 
 Aaron's phrasing supplies the design. Keep the survivors — in a **registry of declared free
@@ -127,6 +165,15 @@ Same intent, two legitimate expressions — a surviving mutant at the treaty lev
 - **Offutt** — the equivalent mutant problem in practice; why mutation scores are not comparable
   across projects without it.
 - **Jia & Harman** — mutation testing survey; the cost/decidability landscape.
+- **Ball & Rajamani**, SLAM / **Static Driver Verifier**; **SLAM2: Static Driver Verification with
+  Under 4% False Alarms** (FMCAD 2010) — the industrial precedent in §2a: CEGAR + predicate
+  abstraction, undecidable and non-terminating by admission, shipped as a required Windows 7 gate
+  once false alarms fell from 25.7% to <4%.
+  <https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/slam-slam2_fmcad2010_final.pdf>
+- **Clarke, Grumberg, Jha, Lu & Veith** — counterexample-guided abstraction refinement (CEGAR), the
+  technique SLAM applies.
+- **Rodney's Razor** (in-tree persona/rule) + the Zeta scheduler's complexity-bounded branch pruning
+  — Aaron's termination bound, the half SLAM leaves to engineering.
 
 ## 8. Pointers
 
