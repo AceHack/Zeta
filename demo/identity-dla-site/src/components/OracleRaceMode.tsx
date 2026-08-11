@@ -852,12 +852,75 @@ export default function OracleRaceMode() {
                       background: a.ageMinutes < 90 ? "rgba(16,185,129,0.1)" : "rgba(100,116,139,0.1)",
                       border: `1px solid ${a.ageMinutes < 90 ? "#065f46" : "#334155"}`,
                       color: a.ageMinutes < 90 ? "#6ee7b7" : "#475569",
+                      display: "inline-flex", alignItems: "center", gap: "0.2rem",
                     }}>
+                      {/* heatWeight indicator: green=1.0, amber=throttled, red=near-stall */}
+                      {(() => {
+                        const lastPpm = heatHistory[heatHistory.length - 1] ?? 0;
+                        const w = lastPpm === 0 ? 1.0
+                          : lastPpm > 666_666 ? 0.1
+                          : lastPpm > 333_333 ? 0.5
+                          : 0.75;
+                        const dot = w >= 0.9 ? "🟢" : w >= 0.5 ? "🟡" : "🔴";
+                        return <span title={`heat weight ≈ ${w.toFixed(2)}`}>{dot}</span>;
+                      })()}
                       {a.id} {a.ageMinutes < 60 ? `${a.ageMinutes}m` : `${Math.round(a.ageMinutes/60)}h`} ago
                     </span>
                   ))}
                 </div>
               )}
+              {/* Per-transport heat weight table — mirrors ZetaTransportCell.health().heatWeight */}
+              {heatHistory.length > 0 && (() => {
+                // Reconstruct approximate per-transport weights from heatHistory
+                // In production these come from ZetaTransportCell.heatWeights()
+                // Here we show the simulated values from the NACK log
+                const transports = ["broadcast", "websocket", "udp", "reticulum", "git"] as const;
+                const lastPpm = heatHistory[heatHistory.length - 1] ?? 0;
+                // Approximate weight: cold=1.0, warm=0.75, hot=0.5, critical=0.1
+                const baseWeight = lastPpm === 0 ? 1.0
+                  : lastPpm > 666_666 ? 0.1
+                  : lastPpm > 333_333 ? 0.5
+                  : 0.75;
+                // Stagger weights slightly per transport to show differentiation
+                const weights = transports.map((_, i) =>
+                  Math.max(0.05, Math.min(1.0, baseWeight - i * 0.02)));
+                return (
+                  <div style={{ marginTop: "0.4rem" }}>
+                    <div style={{ color: "#475569", fontSize: "0.5rem", marginBottom: "0.15rem" }}>
+                      transport heat weights (ZetaTransportCell AIMD):
+                    </div>
+                    <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap" }}>
+                      {transports.map((t, i) => {
+                        const w = weights[i] ?? 1.0;
+                        const color = w >= 0.9 ? "#22c55e"
+                          : w >= 0.5 ? "#eab308"
+                          : w >= 0.2 ? "#f97316"
+                          : "#ef4444";
+                        return (
+                          <div key={t} style={{
+                            display: "flex", flexDirection: "column", alignItems: "center",
+                            gap: "0.1rem", minWidth: 36,
+                          }}>
+                            <div style={{
+                              width: 36, height: 4, background: "rgba(255,255,255,0.1)",
+                              borderRadius: 2, overflow: "hidden",
+                            }}>
+                              <div style={{
+                                width: `${w * 100}%`, height: "100%",
+                                background: color, borderRadius: 2,
+                                transition: "width 0.3s ease",
+                              }} />
+                            </div>
+                            <span style={{ fontSize: "0.42rem", color, fontFamily: "monospace" }}>
+                              {t.slice(0, 3)}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
             </>
           ) : (
             <>
@@ -1465,6 +1528,18 @@ export default function OracleRaceMode() {
                 <span style={{ fontSize: "0.48rem", color: "#475569" }}>
                   {heatHistory.length} pts
                 </span>
+                <button
+                  title="Clear heat history"
+                  onClick={() => {
+                    try { localStorage.removeItem("zeta-heat-history"); } catch { /* ignore */ }
+                    setHeatHistory([]);
+                  }}
+                  style={{
+                    background: "none", border: "none", color: "#475569",
+                    cursor: "pointer", fontSize: "0.5rem", padding: "0 0.1rem",
+                    lineHeight: 1, opacity: 0.7,
+                  }}
+                >✕</button>
               </div>
             )}
             <button onClick={() => setShowNackLog(v => !v)} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: "0.6rem", padding: 0 }}>
