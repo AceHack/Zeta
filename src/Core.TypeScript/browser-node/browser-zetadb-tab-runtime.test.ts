@@ -73,6 +73,40 @@ function start(
 }
 
 describe("browser ZetaDB tab runtime", () => {
+  // The identifier length boundary. `isIdentifier` accepts 1..1024, and NOTHING exercised 1024 —
+  // found 2026-08-11 by the mutation runner's first genuine execution (the step had been a no-op in
+  // CI since it shipped). Flipping `<=` to `<` there rejected exactly-1024 and the whole suite
+  // stayed green, so a stated numeric contract had zero boundary coverage: the classic off-by-one
+  // surface. These two tests pin both sides, so the mutant now dies.
+  const startWith = (id: string) =>
+    startBrowserZetaDbTabRuntime({
+      databaseNodeId: id,
+      executorId: "tab-a",
+      limits,
+      admission: createInMemoryBrowserExecutionAdmission(),
+      outbox: createOutbox(),
+      execute: () =>
+        Promise.resolve({
+          ok: false,
+          feedback: { severity: "heat", code: "database-read-failed", detail: "unused" },
+        }),
+      observe: () => ({ ok: true }),
+      observeOutbox: () => ({ ok: true }),
+      publishInvalidation: () => ({ ok: true }),
+    });
+
+  test("an identifier of EXACTLY the 1024 limit is accepted — the bound is inclusive", () => {
+    const started = startWith("x".repeat(1024));
+    expect(started.ok).toBe(true);
+  });
+
+  test("an identifier one character OVER the limit is rejected", () => {
+    const started = startWith("x".repeat(1025));
+    expect(started.ok).toBe(false);
+    if (started.ok) throw new Error("expected 1025 chars to be refused");
+    expect(started.feedback.code).toBe("database-tab-configuration-invalid");
+  });
+
   test("rejects a missing execution admission port as typed configuration feedback", () => {
     const started = startBrowserZetaDbTabRuntime({
       databaseNodeId: "database-a",
