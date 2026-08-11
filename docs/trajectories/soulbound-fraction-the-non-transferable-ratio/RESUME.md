@@ -2,8 +2,8 @@
 
 Status: **active trajectory**; OPERATOR-INITIATED (Aaron 2026-08-10)
 Last refreshed: 2026-08-10
-Current blocker: none — the parameter is stated and the measurement is specified
-Next concrete action: instrument the **lower bound** (§4a) — the point at which standing becomes purchasable — since it is the only bound with a possible closed-form answer
+Current blocker: none — lower bound DERIVED (§4a, 2026-08-10); the upper bound remains empirical
+Next concrete action: the **upper bound** (§4b) — instrument fork rate against soulbound fraction, since §4a is now closed and the ceiling is the only bound still uncharacterised. Standing guard from §4a: watch the voting path for any stake-proportional weight term; if one appears, `s > 2/3` binds immediately
 Evidence links: `src/Core/AntiSybil.fs` · `src/Core/SybilBft*.fs` · `.claude/rules/privacy-budget-is-hard-money-earned-by-others.md` · `docs/trajectories/local-trust-view-decentralized-identity/RESUME.md` · `docs/research/2026-08-10-the-threshold-rhyme-*`
 
 ---
@@ -86,19 +86,61 @@ rescues it.
 
 ## 4. How to actually find it
 
-### 4a. Lower bound — the only one with a possible closed form (NEXT ACTION)
+### 4a. Lower bound — DERIVED 2026-08-10. Closed form exists, and it dissolves the question
 
 Sybil resistance holds while `cost(acquire standing) > benefit(standing)`. If a fraction
 `s` of standing is non-transferable, an attacker must **earn** that fraction rather than
-buy it, and earning costs elapsed participation that cannot be parallelised with money.
+buy it. The question was whether a threshold falls out of the same style of proof that
+gives `f < n/3`. **It does — and the answer depends entirely on a modelling choice, which
+is the result.**
 
-That is a BFT-shaped argument, and it is the reason this bound might be *derived* rather
-than tuned. `AntiSybil.fs` and `SybilBft*.fs` are the existing substrate; the question is
-whether a threshold falls out of the same style of proof that gives `f < n/3`.
+**Regime B — stake-weighted voting (the regime the §0 parameter implicitly assumes).**
+Let voting weight be proportional to standing, of which fraction `s` is non-transferable.
+An adversary who buys *all* purchasable standing controls fraction `(1 − s)`. BFT safety
+survives only while the adversary holds less than a third:
 
-**Test for abruptness while doing it.** If resistance collapses sharply below some `s`,
-that is a percolation-style transition and you need margin above it. If it degrades
-smoothly, you can run closer to the edge.
+```
+(1 − s) < 1/3     ⟺     s > 2/3
+```
+
+So the closed form is **`s > 2/3`** — the soulbound fraction required for *money alone* to
+be unable to break safety. That is **not** near 10%; it is ~6.7× Aaron's estimate.
+
+**Regime A — one-source-one-vote (what the repo ACTUALLY implements).** Verified in source:
+`SybilBft.tally` collapses claims to distinct entropy sources via `AntiSybil`, then
+`maxFaults d = ⌊(d−1)/3⌋` and `quorumSize f = 2f+1` count **sources, not stake**. Grep finds
+no stake- or weight-proportional term anywhere in the voting path. So voting weight is
+**not purchasable at any price**: the credential is a physical drift signature, and money
+buys none of it. The `(1 − s)` term does not exist, and the inequality never binds.
+
+**The result, and it vindicates §3 with a derivation rather than an assertion.** The two
+regimes are not competing estimates of one number — they are the *same* trade priced under
+two different classifications:
+
+| | voting standing | economic standing | soulbound fraction of VALUE |
+|---|---|---|---|
+| Regime B (stake-weighted) | purchasable | purchasable | must exceed **2/3**, or money breaks safety |
+| Regime A (this repo) | **non-purchasable by construction** | fully liquid | can be **low** — 10% is not obviously wrong |
+
+> **`s > 2/3` is the price of getting the classification wrong.** Let money buy votes at all
+> and you need two-thirds of everything soulbound. Make the voting credential categorically
+> non-transferable — physical distinctness, not a stake — and the fraction of *value* that
+> must be soulbound drops to whatever identity and attestation actually weigh.
+
+So **10% is not refuted**; it answers a different question (fraction of *value*), and the
+2/3 figure answers the *voting-weight* question that Regime A never asks. §3's standing
+claim — "the classification dominates the number" — is now derived, not asserted.
+
+**Falsifier, and it is sharp and cheap to watch:** if voting weight is ever made
+stake-proportional anywhere in the substrate, `s > 2/3` binds *immediately* and the low
+estimate becomes unsafe. Guard: grep the voting path for any weight term. Today there is
+none, and that is load-bearing rather than incidental.
+
+**Abruptness: it is a step, not a slope.** The bound is a strict inequality against a
+constant, so in Regime B resistance does not degrade smoothly — it holds until `s` reaches
+2/3 and fails below. Percolation-style margin is therefore required *if* Regime B is ever
+entered; in Regime A the question is void. **Remaining open:** the *upper* bound (§4b) is
+untouched by this and remains empirical.
 
 ### 4b. Upper bound — empirical, and measured by exit
 
