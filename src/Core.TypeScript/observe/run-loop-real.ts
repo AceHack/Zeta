@@ -49,6 +49,7 @@ import {
 } from "./participant";
 import { PersonaSummoner } from "../peer-call/summon";
 import { createPhaseClock, stampPhase, type PhaseClock } from "./phase-clock";
+import { createRSAccumulator } from "./rs-phase-accumulator";
 
 interface CliArgs {
   by: string;
@@ -317,6 +318,40 @@ async function main(): Promise<number> {
   // The clock ticked because the event landed. These are not three things — they're one.
   const phase = stampPhase(phaseClock);
   console.log(`[phase] tick ${phase.phase} (derived: ${phase.derived}) — append IS tick IS measurement`);
+
+  // 4b. RS ECC accumulator: every 12 ticks, emit a recoverable block.
+  // The accumulator bridges per-tick stamps to per-block RS codewords.
+  // On emission, the block is logged (and could be written to data/rs-blocks.json
+  // or pushed over the realtime channel for peer verification).
+  // PERSISTENCE: the accumulator's partial buffer is saved between ticks so blocks
+  // span multiple run-loop invocations (each invocation is ONE tick).
+  const rsBufferPath = require("node:path").join(args.eventDir, `.rs-buffer-${args.by}.json`);
+  const rsResumeBuffer = (() => {
+    try {
+      const raw = JSON.parse(require("node:fs").readFileSync(rsBufferPath, "utf-8"));
+      if (Array.isArray(raw.buffer) && Number.isSafeInteger(raw.seq)) {
+        return { resumeBuffer: raw.buffer, startSeq: raw.seq };
+      }
+    } catch { /* no saved buffer — fresh start */ }
+    return undefined;
+  })();
+  const rsAccumulator = createRSAccumulator(rsResumeBuffer);
+  const rsResult = rsAccumulator.push(phase);
+  if (rsResult.emitted) {
+    console.log(
+      `[rs-ecc] block #${rsResult.block.blockSeq} emitted: phases ${rsResult.block.startPhase}–${rsResult.block.endPhase}, ` +
+        `${rsResult.block.coded.length} coded symbols (4 erasures recoverable)`,
+    );
+  } else {
+    console.log(`[rs-ecc] buffered ${rsResult.buffered}/12 toward next block`);
+  }
+  // Save the buffer state for the next tick
+  try {
+    require("node:fs").writeFileSync(rsBufferPath, JSON.stringify({
+      buffer: rsAccumulator.buffer,
+      seq: rsAccumulator.emittedCount,
+    }));
+  } catch { /* non-fatal — the block will just restart next time */ }
 
   if (!result.ok) {
     console.error(
