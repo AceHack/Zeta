@@ -30,7 +30,7 @@
  */
 
 import type { PhaseStamp } from "./phase-clock";
-import { encodePhaseBlock, K, N } from "./rs-phase-codec";
+import { encodePhaseBlock, K } from "./rs-phase-codec";
 
 // ═══ Types ════════════════════════════════════════════════════════════════════
 

@@ -118,7 +118,10 @@ function decodeRaceHash(hash: string): { seed: number; df: number }[] | null {
   const m = hash.match(/[#&]race=([^&]*)/);
   if (!m || !m[1]) return null;
   try {
-    const entries = decodeURIComponent(m[1]).split(",");
+    const decoded_str = decodeURIComponent(m[1]);
+    // Strip optional &hw=... suffix before parsing seed:df pairs
+    const seedSection = decoded_str.split("&hw=")[0] ?? decoded_str;
+    const entries = seedSection.split(",");
     const decoded = entries.map(e => {
       const [seedHex, dfStr] = e.split(":");
       const seed = parseInt(seedHex ?? "0", 16);
@@ -127,6 +130,17 @@ function decodeRaceHash(hash: string): { seed: number; df: number }[] | null {
     });
     if (decoded.length !== 17 || decoded.some(e => isNaN(e.seed) || isNaN(e.df))) return null;
     return decoded;
+  } catch { return null; }
+}
+/** Extract heat weights from a #race=...&hw=... URL hash (returns null if absent). */
+function decodeHeatWeightsFromHash(hash: string): number[] | null {
+  const m = hash.match(/[#&]race=[^&]*&hw=([^&]*)/);
+  if (!m || !m[1]) return null;
+  try {
+    const decoded_str = decodeURIComponent(m[1]);
+    const weights = decoded_str.split(",").map(Number);
+    if (weights.length !== 5 || weights.some(isNaN)) return null;
+    return weights;
   } catch { return null; }
 }
 
@@ -312,6 +326,17 @@ export default function OracleRaceMode() {
       }));
       setResults(restored);
       setShowSeedLog(true); // auto-open seed log when restoring from URL
+    }
+    // Also restore heat weights from URL hash if present
+    const restoredWeights = decodeHeatWeightsFromHash(window.location.hash);
+    if (restoredWeights) {
+      // Convert weights back to approximate ppm values for heatHistory
+      const avgWeight = restoredWeights.reduce((s, w) => s + w, 0) / restoredWeights.length;
+      const approxPpm = avgWeight >= 0.9 ? 0
+        : avgWeight >= 0.7 ? 200_000
+        : avgWeight >= 0.4 ? 500_000
+        : 800_000;
+      setHeatHistory(prev => prev.length === 0 ? [approxPpm] : prev);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -886,8 +911,23 @@ export default function OracleRaceMode() {
                   Math.max(0.05, Math.min(1.0, baseWeight - i * 0.02)));
                 return (
                   <div style={{ marginTop: "0.4rem" }}>
-                    <div style={{ color: "#475569", fontSize: "0.5rem", marginBottom: "0.15rem" }}>
-                      transport heat weights (ZetaTransportCell AIMD):
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.15rem" }}>
+                      <span style={{ color: "#475569", fontSize: "0.5rem" }}>
+                        transport heat weights (ZetaTransportCell AIMD):
+                      </span>
+                      <button
+                        title="Reset all heat weights to 1.0 (full throughput)"
+                        onClick={() => {
+                          try { localStorage.removeItem("zeta-heat-history"); } catch { /* ignore */ }
+                          setHeatHistory([]);
+                        }}
+                        style={{
+                          background: "rgba(16,185,129,0.1)", border: "1px solid #065f46",
+                          color: "#10b981", cursor: "pointer", fontSize: "0.45rem",
+                          padding: "0.05rem 0.3rem", borderRadius: 2, lineHeight: 1.4,
+                          fontFamily: "monospace",
+                        }}
+                      >↺ reset heat</button>
                     </div>
                     <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap" }}>
                       {transports.map((t, i) => {
@@ -912,6 +952,7 @@ export default function OracleRaceMode() {
                               borderRadius: 2, overflow: "hidden",
                             }}>
                               <div
+                                key={`${t}-${nackLog.length}`}
                                 className={animClass}
                                 style={{
                                   width: `${w * 100}%`, height: "100%",
@@ -1227,8 +1268,13 @@ export default function OracleRaceMode() {
         <div style={{ marginTop: "0.5rem", display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
           <button
             onClick={() => {
-              // Encode seeds and D_f values as a compact URL hash for sharing
-              const payload = results.map(r => `${r.seed.toString(16).padStart(8,"0")}:${r.df.toFixed(4)}`).join(",");
+              // Encode seeds, D_f values, and heat weights as a compact URL hash for sharing
+              const seedPart = results.map(r => `${r.seed.toString(16).padStart(8,"0")}:${r.df.toFixed(4)}`).join(",");
+              // Append heat weights as a compact suffix: &hw=w0,w1,...,w4 (2dp each)
+              const lastPpm = heatHistory[heatHistory.length - 1] ?? 0;
+              const baseW = lastPpm === 0 ? 1.0 : lastPpm > 666_666 ? 0.1 : lastPpm > 333_333 ? 0.5 : 0.75;
+              const hwPart = [0,1,2,3,4].map(i => Math.max(0.05, Math.min(1.0, baseW - i * 0.02)).toFixed(2)).join(",");
+              const payload = `${seedPart}&hw=${hwPart}`;
               const url = `${window.location.origin}${window.location.pathname}#race=${encodeURIComponent(payload)}`;
               void navigator.clipboard.writeText(url).then(() => {
                 setUrlCopied(true);
