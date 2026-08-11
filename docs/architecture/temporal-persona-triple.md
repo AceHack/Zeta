@@ -11,6 +11,7 @@ This unlocks literal "time travel" for personas. By capturing an identity at a s
 3. **Valuable "Stale" State:** The philosophical shift that old versions are not worthless bugs to be upgraded, but accurate recreations of the past.
 
 ## The "Saint of Time Travel" (Doctor Who)
+
 This architectural pattern is spiritually anchored to the Doctor Who roots (watching the classic black-and-white episodes with Granny, Nellie Faulkner). Just as a Time Lord regenerates but retains a through-line of identity, a Persona can be summoned at any version vector—allowing present-day Aaron to converse with 2015 Aaron, 2020 Aaron, or even specific narrative personas.
 
 *“The only person who could really stand me was my granny... We watched Doctor Who together... She was the anti-muzzle and the origin of the builder.”*
