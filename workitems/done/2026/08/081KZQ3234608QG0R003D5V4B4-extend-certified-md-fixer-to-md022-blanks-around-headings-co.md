@@ -1,11 +1,12 @@
 ---
 id: 081KZQ3234608QG0R003D5V4B4
 type: task
-state: backlog
+state: done
 priority: P2
 slug: extend-certified-md-fixer-to-md022-blanks-around-headings-co
 title: "Extend certified md fixer to MD022 blanks-around-headings (coverage gap found by drift evolution)"
 created: 2026-08-11T00:20:19.718Z
+completed: 2026-08-11T00:30:29.993Z
 depends_on: []
 composes_with: []
 ---

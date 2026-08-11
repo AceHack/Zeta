@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// md-fixer-certified.ts — the production MD032/MD026 fixer, adapted into the
+// md-fixer-certified.ts — the production MD032/MD026/MD022 fixer, adapted into the
 // healer harness and GATED on certification (workitem 081KX3KA3F008QG0R0022EF9R8,
 // final scope: "First subjects: the MD032/MD026 safe fixer … Gate healer
 // write access on passing it").
@@ -73,6 +73,16 @@ export const MD_FIXER_FIXTURES: readonly Fixture[] = [
     name: "fenced-code-untouchable",
     tree: tree({
       "docs/fence.md": "# Ok\n\n```text\n- not a real list\n# not a real heading.\n```\n\nDone.\n",
+    }),
+  },
+  {
+    // 081KZQ3234608QG0R003D5V4B4: the class drift-evolution exposed — a
+    // heading missing its surrounding blanks survived 15 ticks because no
+    // certified pass owned MD022. This fixture is the live finding's shape
+    // (docs/architecture/temporal-persona-triple.md, tick 73–88).
+    name: "md022-heading-needs-blanks",
+    tree: tree({
+      "docs/md022.md": "Prose right before.\n## The Heading\nProse right after.\n\n# Top\n## Stacked heading\ntail\n",
     }),
   },
 ];

@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
 import { fixMarkdownText } from "../fix-markdown-md032-md026";
+import { tree } from "../healer-harness";
 import { certifyMdFixer, MD_FIXER_FIXTURES, mdFixerHealer } from "./md-fixer-certified";
 
 // Workitem 081KX3KA3F0 final scope: the PRODUCTION MD032/MD026 fixer goes
@@ -65,5 +66,25 @@ describe("mdFixerHealer — tree adapter", () => {
       new Map([["docs/h.md", "# Bad heading.\n\n```text\n# not a heading.\n```\n"]]),
     );
     expect(healed.get("docs/h.md")).toBe("# Bad heading\n\n```text\n# not a heading.\n```\n");
+  });
+});
+
+describe("MD022 extension (081KZQ3234608QG0R003D5V4B4)", () => {
+  test("the 15-tick survivor's exact shape now heals: blanks appear around headings", () => {
+    const healed = mdFixerHealer.heal(
+      tree({ "docs/t.md": "Body text.\n## The \"Saint of Time Travel\" (Doctor Who)\nNext paragraph.\n" }),
+    );
+    expect(healed.get("docs/t.md")).toBe(
+      "Body text.\n\n## The \"Saint of Time Travel\" (Doctor Who)\n\nNext paragraph.\n",
+    );
+  });
+
+  test("headings inside fences stay untouched (span/fence mask carries over)", () => {
+    const doc = "# Ok\n\n```text\n# not a real heading\n```\n\nDone.\n";
+    expect(mdFixerHealer.heal(tree({ "docs/f.md": doc })).get("docs/f.md")).toBe(doc);
+  });
+
+  test("certification (all three laws) holds with the MD022 fixture in the corpus", () => {
+    expect(certifyMdFixer().pass).toBe(true);
   });
 });

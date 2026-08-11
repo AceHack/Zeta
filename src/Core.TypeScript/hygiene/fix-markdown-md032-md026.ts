@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
-// fix-markdown-md032-md026.ts — mechanical fix for two markdownlint
-// violations:
+// fix-markdown-md032-md026.ts — mechanical fix for three markdownlint
+// violations (MD022 added 2026-08-11 per 081KZQ323, the coverage gap the
+// drift-evolution loop exposed):
 //
 // - MD032 (blanks-around-lists): inserts blank lines before/after list
 //   blocks where they're missing
@@ -388,11 +389,43 @@ function fixMd026(text: string): string {
     .join("\n");
 }
 
-/** The pure composed production transform (MD032 then MD026), exported so
- * the healer harness certifies the EXACT function the write path applies
- * (081KX3KA3F0: certified path == applied path, no adapter drift). */
+// Insert blank lines around ATX headings (MD022). Skips untouchable
+// regions (fences, frontmatter, inline-span continuations — the same
+// classifyLines mask as MD032, so the 2026-07-08 span class stays safe).
+// Extension per workitem 081KZQ3234608QG0R003D5V4B4: the drift-evolution
+// loop's first live generation exposed MD022 as a measured axis without a
+// corrector (a finding survived 15 ticks); this closes the gap.
+function fixMd022(text: string): string {
+  const lines = text.split("\n");
+  const inside = classifyLines(lines);
+  const out: string[] = [];
+  const outInside: boolean[] = [];
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
+    if (line === undefined) continue;
+    const isHeading = !inside[i] && /^#{1,6}\s/.test(line);
+    const prev = out.at(-1);
+    const prevInside = outInside.at(-1) ?? false;
+    if (isHeading && prev !== undefined && prev.trim() !== "" && !prevInside) {
+      out.push("");
+      outInside.push(false);
+    }
+    out.push(line);
+    outInside.push(inside[i] ?? false);
+    const nxt = lines[i + 1];
+    if (isHeading && nxt !== undefined && nxt.trim() !== "") {
+      out.push("");
+      outInside.push(false);
+    }
+  }
+  return out.join("\n");
+}
+
+/** The pure composed production transform (MD032, MD022, then MD026),
+ * exported so the healer harness certifies the EXACT function the write
+ * path applies (081KX3KA3F0: certified path == applied path). */
 export function fixMarkdownText(text: string): string {
-  return fixMd026(fixMd032(text));
+  return fixMd026(fixMd022(fixMd032(text)));
 }
 
 // Apply both fixes to a file. Returns a discriminated-union result.
