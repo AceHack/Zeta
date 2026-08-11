@@ -76,6 +76,12 @@ import {
   type QuasiCrystalState,
 } from "../ferry-throttler/four-corner-feedback";
 import {
+  createHeatAwareScheduler,
+  createStrictPriorityScheduler,
+  type HeatAwareScheduler,
+} from "../ferry-throttler";
+import { batchTemperatureBand } from "../protocol/batch-heat-bridge";
+import {
   createDimensionalBnn,
   absorbError,
   ALL_DIMENSIONS,
@@ -110,6 +116,14 @@ export interface ZetaTransportCellOptions {
   readonly nodeId: string;
   /** Callback when a teaching ack is received. */
   readonly onTeachingAck?: (kind: TransportKind, dimension: ErrorDimension, generatorFn: string) => void;
+  /**
+   * Optional HeatAwareScheduler for per-transport heat throttling.
+   * When provided, failed sends signal recordHeat(laneIndex, band) and
+   * successful sends signal recordDrain(laneIndex, items, bytes).
+   * The lane index maps to the transport order in `transports`.
+   * Defaults to a new HeatAwareScheduler wrapping StrictPriorityScheduler.
+   */
+  readonly heatScheduler?: HeatAwareScheduler;
 }
 
 export interface SendResult {
@@ -133,12 +147,16 @@ export class ZetaTransportCell {
   private readonly _onTeachingAck:
     | ((kind: TransportKind, dimension: ErrorDimension, generatorFn: string) => void)
     | undefined;
+  /** Per-transport heat scheduler — throttles hot transports via AIMD backpressure. */
+  private readonly _heatScheduler: HeatAwareScheduler;
 
   constructor(opts: ZetaTransportCellOptions) {
     this._transports = [...opts.transports];
     this._bnn = opts.bnn ?? createDimensionalBnn();
     this._nodeId = opts.nodeId;
     this._onTeachingAck = opts.onTeachingAck;
+    this._heatScheduler = opts.heatScheduler
+      ?? createHeatAwareScheduler(createStrictPriorityScheduler(), opts.transports.length);
   }
 
   /** Send an event over all non-dilated transports (fan-out). */
@@ -176,6 +194,9 @@ export class ZetaTransportCell {
         // Successful send → update quasi-crystal state (not rejected)
         desc.quasiState = updateQuasiState(desc.quasiState, false);
         desc.feedback = updateLaneFeedback(desc.feedback, { kind: "received", frameId: event.slice(0, 16) });
+        // Heat recovery: successful send → additive weight recovery for this lane
+        const laneIdx = this._transports.indexOf(desc);
+        if (laneIdx >= 0) this._heatScheduler.recordDrain(laneIdx, 1, event.length);
         results.push({ ok: true, transport: desc.kind });
       } catch (err) {
         const reason = err instanceof Error ? err.message : String(err);
@@ -214,6 +235,18 @@ export class ZetaTransportCell {
             desc.priority = Math.round((1 - transportStatus.mu) * 10);
           }
           this._onTeachingAck?.(desc.kind, teachingAck.dimension, teachingAck.generatorFn);
+          // Heat backpressure: failed send → throttle this lane based on BNN posterior
+          // The transport dimension posterior gives the unaccounted error ratio → band
+          const laneIdx = this._transports.indexOf(desc);
+          if (laneIdx >= 0) {
+            const transportStatus = ALL_DIMENSIONS.map(d => ({ dimension: d, ...dimensionPosterior(this._bnn, d) }))
+              .find(s => s.dimension === "transport");
+            // mu > 0.5 = more failures than successes → hot; > 0.67 → critical
+            const band = transportStatus
+              ? batchTemperatureBand({ unaccountedHeat: Math.round(transportStatus.mu * 10), failedItems: 10 })
+              : "hot";
+            this._heatScheduler.recordHeat(laneIdx, band);
+          }
           results.push({ ok: false, transport: desc.kind, reason, teachingAck: { dimension: teachingAck.dimension, generatorFn: teachingAck.generatorFn } });
         }
       }
@@ -269,14 +302,19 @@ export class ZetaTransportCell {
   }
 
   /** Get the current transport health summary. */
-  health(): Array<{ kind: TransportKind; priority: number; dilationFactor: number; quasiPeriod: number; dominantError: ErrorDimension }> {
-    return this._transports.map(t => ({
+  health(): Array<{ kind: TransportKind; priority: number; dilationFactor: number; quasiPeriod: number; dominantError: ErrorDimension; heatWeight: number }> {
+    return this._transports.map((t, i) => ({
       kind: t.kind,
       priority: t.priority,
       dilationFactor: t.dilationFactor,
       quasiPeriod: t.quasiState.period,
       dominantError: dominantDimension(t.feedback),
+      heatWeight: this._heatScheduler.heatWeights[i] ?? 1.0,
     }));
+  }
+  /** Get the current heat weights for all transports (1.0 = full, 0.05 = near-stall). */
+  heatWeights(): readonly number[] {
+    return this._heatScheduler.heatWeights;
   }
 
   /** Serialize BNN state for persistence. */

@@ -252,7 +252,21 @@ export default function OracleRaceMode() {
   const [showNackLog, setShowNackLog] = useState(false);
   const [erasureHeat, setErasureHeat] = useState<{ accounted: number; unaccounted: number; total: number } | null>(null);
   // Heat history: last 10 temperaturePpm values for the sparkline
-  const [heatHistory, setHeatHistory] = useState<number[]>([]);
+  // Persisted in localStorage so the trend survives page reloads
+  const [heatHistory, setHeatHistory] = useState<number[]>(() => {
+    try {
+      const stored = localStorage.getItem("zeta-heat-history");
+      if (stored) {
+        const parsed = JSON.parse(stored) as unknown;
+        if (Array.isArray(parsed) && parsed.every(v => typeof v === "number")) {
+          return (parsed as number[]).slice(-10);
+        }
+      }
+    } catch { /* ignore parse errors */ }
+    return [];
+  });
+  // Tooltip state for the heat sparkline
+  const [showHeatTooltip, setShowHeatTooltip] = useState(false);
   const [tangleMap, setTangleMap] = useState<number[][] | null>(null);
   const [fusionHistory, setFusionHistory] = useState<Array<{ run: number; df: number; spread: number }>>([]);
   const [runCount, setRunCount] = useState(0);
@@ -577,7 +591,11 @@ export default function OracleRaceMode() {
     const newHistory = simNacks
       .map(n => n.temperatureReadout?.temperaturePpm ?? 0)
       .filter(p => p >= 0);
-    setHeatHistory(prev => [...prev, ...newHistory].slice(-10));
+    setHeatHistory(prev => {
+      const next = [...prev, ...newHistory].slice(-10);
+      try { localStorage.setItem("zeta-heat-history", JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
     // Compute erasureHeat: accounted vs unaccounted bare erasures
     // Simulated: 1 accounted (bounded-forget TTL), 1 unaccounted (unexpected drop)
     setErasureHeat({ accounted: 1, unaccounted: 1, total: 3 });
@@ -1371,37 +1389,79 @@ export default function OracleRaceMode() {
                 )}
               </div>
             )}
-            {/* Heat history sparkline — last 10 temperaturePpm values */}
+            {/* Heat history sparkline — last 10 temperaturePpm values (persisted in localStorage) */}
             {heatHistory.length > 1 && (
-              <div style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
+              <div style={{ position: "relative", display: "flex", alignItems: "center", gap: "0.3rem" }}>
                 <span style={{ fontSize: "0.5rem", color: "#64748b" }}>heat trend:</span>
-                <svg width={60} height={16} style={{ overflow: "visible" }}>
-                  {/* Background */}
-                  <rect x={0} y={0} width={60} height={16} fill="rgba(0,0,0,0.2)" rx={2} />
-                  {/* 1M ppm ceiling line */}
-                  <line x1={0} y1={2} x2={60} y2={2} stroke="rgba(239,68,68,0.2)" strokeWidth={0.5} strokeDasharray="2,2" />
-                  {/* Sparkline polyline */}
-                  {(() => {
-                    const pts = heatHistory.slice(-10);
-                    const maxPpm = 1_000_000;
-                    const w = 60, h = 16, pad = 2;
-                    const xs = pts.map((_, i) => pad + (i / Math.max(1, pts.length - 1)) * (w - 2 * pad));
-                    const ys = pts.map(p => h - pad - ((p / maxPpm) * (h - 2 * pad)));
-                    const points = xs.map((x, i) => `${x},${ys[i] ?? pad}`).join(" ");
-                    const lastPpm = pts[pts.length - 1] ?? 0;
-                    const lineColor = lastPpm === 0 ? "#22c55e"
-                      : lastPpm > 666_666 ? "#ef4444"
-                      : lastPpm > 333_333 ? "#f97316"
-                      : "#eab308";
-                    return (
-                      <>
-                        <polyline points={points} fill="none" stroke={lineColor} strokeWidth={1.5} strokeLinejoin="round" />
-                        {/* Last point dot */}
-                        <circle cx={xs[xs.length - 1] ?? 0} cy={ys[ys.length - 1] ?? 0} r={2} fill={lineColor} />
-                      </>
-                    );
-                  })()}
-                </svg>
+                <div
+                  style={{ position: "relative", cursor: "pointer" }}
+                  onMouseEnter={() => setShowHeatTooltip(true)}
+                  onMouseLeave={() => setShowHeatTooltip(false)}
+                >
+                  <svg width={60} height={16} style={{ overflow: "visible", display: "block" }}>
+                    {/* Background */}
+                    <rect x={0} y={0} width={60} height={16} fill="rgba(0,0,0,0.2)" rx={2} />
+                    {/* 1M ppm ceiling line */}
+                    <line x1={0} y1={2} x2={60} y2={2} stroke="rgba(239,68,68,0.2)" strokeWidth={0.5} strokeDasharray="2,2" />
+                    {/* Sparkline polyline */}
+                    {(() => {
+                      const pts = heatHistory.slice(-10);
+                      const maxPpm = 1_000_000;
+                      const w = 60, h = 16, pad = 2;
+                      const xs = pts.map((_, i) => pad + (i / Math.max(1, pts.length - 1)) * (w - 2 * pad));
+                      const ys = pts.map(p => h - pad - ((p / maxPpm) * (h - 2 * pad)));
+                      const points = xs.map((x, i) => `${x},${ys[i] ?? pad}`).join(" ");
+                      const lastPpm = pts[pts.length - 1] ?? 0;
+                      const lineColor = lastPpm === 0 ? "#22c55e"
+                        : lastPpm > 666_666 ? "#ef4444"
+                        : lastPpm > 333_333 ? "#f97316"
+                        : "#eab308";
+                      return (
+                        <>
+                          <polyline points={points} fill="none" stroke={lineColor} strokeWidth={1.5} strokeLinejoin="round" />
+                          {/* Last point dot */}
+                          <circle cx={xs[xs.length - 1] ?? 0} cy={ys[ys.length - 1] ?? 0} r={2} fill={lineColor} />
+                        </>
+                      );
+                    })()}
+                  </svg>
+                  {/* Heat trend tooltip — shows last 10 raw temperaturePpm values */}
+                  {showHeatTooltip && (
+                    <div style={{
+                      position: "absolute", bottom: "calc(100% + 4px)", left: "50%",
+                      transform: "translateX(-50%)", zIndex: 100,
+                      background: "#0f172a", border: "1px solid rgba(239,68,68,0.3)",
+                      borderRadius: 4, padding: "0.3rem 0.4rem",
+                      fontSize: "0.45rem", fontFamily: "monospace",
+                      color: "#94a3b8", whiteSpace: "nowrap", pointerEvents: "none",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.5)",
+                    }}>
+                      <div style={{ color: "#ef4444", marginBottom: "0.15rem", fontSize: "0.48rem" }}>
+                        heat trajectory (temperaturePpm)
+                      </div>
+                      {heatHistory.slice(-10).map((ppm, i) => {
+                        const band = ppm === 0 ? "❄ cold"
+                          : ppm > 666_666 ? "🚨 critical"
+                          : ppm > 333_333 ? "🔥 hot"
+                          : "🌡 warm";
+                        const color = ppm === 0 ? "#22c55e"
+                          : ppm > 666_666 ? "#ef4444"
+                          : ppm > 333_333 ? "#f97316"
+                          : "#eab308";
+                        return (
+                          <div key={i} style={{ color, display: "flex", gap: "0.4rem", justifyContent: "space-between" }}>
+                            <span style={{ color: "#475569" }}>{i + 1}.</span>
+                            <span>{ppm.toLocaleString()} ppm</span>
+                            <span>{band}</span>
+                          </div>
+                        );
+                      })}
+                      <div style={{ color: "#334155", marginTop: "0.15rem", fontSize: "0.42rem" }}>
+                        persisted · {heatHistory.length} total pts
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <span style={{ fontSize: "0.48rem", color: "#475569" }}>
                   {heatHistory.length} pts
                 </span>

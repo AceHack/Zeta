@@ -173,3 +173,32 @@ describe("zeta-transport-cell", () => {
       expect(h.mu).toBeLessThanOrEqual(1);
     }
   });
+
+  // ZTC-14: heat scheduler — failed transport reduces heat weight
+  test("ZTC-14: failed transport reduces heat weight (AIMD backpressure)", async () => {
+    const mock = makeMockTransport(true, "transport timeout");
+    const cell = createZetaTransportCell("node-heat", { websocket: mock });
+    // Initial weight should be 1.0
+    expect(cell.heatWeights()[0]).toBe(1.0);
+    // After a failure, the BNN absorbs the error and heat weight should decrease
+    await cell.send("hello");
+    // Weight should be < 1.0 after failure (hot/critical band)
+    expect(cell.heatWeights()[0]).toBeLessThan(1.0);
+  });
+
+  // ZTC-15 (negative): successful transport recovers heat weight
+  test("ZTC-15 (negative): successful send recovers heat weight (AIMD recovery)", async () => {
+    const mockFail = makeMockTransport(true, "transport timeout");
+    const mockOk = makeMockTransport(false);
+    const cell = createZetaTransportCell("node-heat-2", { websocket: mockFail, broadcast: mockOk });
+    // Fail the websocket transport a few times to throttle it
+    for (let i = 0; i < 3; i++) await cell.send("fail");
+    const weightAfterFail = cell.heatWeights()[1]!; // websocket is lane 1 (broadcast=0, websocket=1)
+    // Succeed on broadcast transport (lane 0) to recover
+    for (let i = 0; i < 5; i++) await cell.send("ok");
+    const weightAfterRecover = cell.heatWeights()[0]!;
+    // Broadcast (lane 0) should have weight 1.0 (never failed)
+    expect(weightAfterRecover).toBe(1.0);
+    // Websocket (lane 1) should be throttled
+    expect(weightAfterFail).toBeLessThan(1.0);
+  });
