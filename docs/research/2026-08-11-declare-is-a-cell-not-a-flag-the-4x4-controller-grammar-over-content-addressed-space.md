@@ -112,6 +112,47 @@ That is the same move as the rest of the design: do not prevent the thing you ca
 it. The bound stays real at every level (you can never take an action off the current menu), and the
 cost of admitting you need more is exactly one cell.
 
+### 3b. The transition is total; the destination need not be
+
+Aaron 2026-08-11: *"escape to the next level is always well defined, but the next level itself might
+not be well defined — like the Fortnite Save the World mode in beta."* And then: *"if you escape to a
+level that is not well defined, you can help define it."*
+
+Those two sentences are the whole design, and the first is a distinction worth stating carefully:
+
+- **The escape is a TOTAL function.** Cell 16 always works. Taking it is safe, defined, and recorded,
+  at every level, with no precondition.
+- **The level it opens may be PARTIAL.** Some cells populated, some empty, the whole region possibly
+  never "finished" — Save the World has been reachable and playable and in beta for years. The door
+  is complete; the room behind it is not.
+
+The escape therefore promises exactly one thing and does not overpromise: *you can always get there*.
+It does **not** promise a fully-enumerated 256-cell grammar waiting on the other side, and pretending
+otherwise would be the same overclaim this repo keeps catching elsewhere.
+
+**And the second sentence turns that from a limitation into the growth mechanism.** An agent that
+escapes into undefined space is not stranded and has not hit an error — **it is the one who defines
+that space**. The grammar is not designed in advance and then handed down; it is *generated from
+use*, by whoever first needed a cell that did not exist.
+
+That is `only-the-irreducible-is-primitive-generate-the-rest` at the interface layer: do not hardcode
+65,536 cells nobody has needed. Keep the escape irreducible and total, and let the levels be filled in
+by the agents who actually reach them — the free space is opened by the escape, and defining a cell is
+declaring a relation on it.
+
+**So the escape rate stops being only a warning signal and becomes a frontier map.** Two different
+readings, and they want to be distinguished rather than summed:
+
+| escape lands in | what it means |
+|---|---|
+| a **defined** cell of the wider level | the vocabulary was too narrow; widen the visible menu |
+| an **undefined** region | this is the frontier — the system is growing here, and the escaper is the definer |
+
+High escape into undefined regions is not a defect report. It is a map of where the specification is
+still being written, which is precisely the *"accurate map of how our common system works"* — and it
+is the same differentiation story once more: the undefined region is where new structure emerges, and
+whoever gets there first shapes it.
+
 ## 4. The cost, since it is not free
 
 Per the ledger's own bound: growth must track **distinct disagreements**, not ticks. A transcript of
@@ -127,7 +168,9 @@ watch here too.
   therefore changes shape: it is now refuted if agents take the escape *frequently* and the grid is
   never widened in response — that would mean the escape had become a dumping ground and the
   measurement was being ignored, which is the silent failure returning by another door. **Watch the
-  escape rate, not the fit.**
+  escape rate, not the fit** — and per §3b, split it by whether the escape landed in a defined cell
+  (vocabulary too narrow) or an undefined region (the frontier, where the escaper becomes a definer).
+  Summing those two into one number would hide the distinction that makes the metric useful.
 - **"Unchosen branches remain reachable"** — refuted if reconstructing an alternative branch requires
   anything the transcript did not record, i.e. if the adventure is only replayable forward.
 - **"This is not just a flag with extra steps"** — refuted if every readout in practice offers the
