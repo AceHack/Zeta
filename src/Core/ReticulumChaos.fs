@@ -13,6 +13,22 @@ type NetworkChaosPolicy =
     | DelayJitter   = 2
     | DhtChurn      = 4
     | Partitioning  = 8
+    /// **Redelivery — added 2026-08-11 to close a gap that would have produced a false green.**
+    ///
+    /// The four faults above are loss, delay, churn and partition. Every one of them is survived by
+    /// a merge that is merely **commutative**, which is why the existing corpus looks healthy. The
+    /// fault that is NOT survived by commutativity is **duplication**: a non-idempotent fold — such
+    /// as the multiplicative Bayesian `observe` in `SoftValue` and `BeliefConvergence` — counts a
+    /// redelivered message as fresh evidence and sharpens, manufacturing certainty no observation
+    /// supports.
+    ///
+    /// So a harness that models drop/delay/churn/partition and not duplication cannot ever surface
+    /// the one failure mode those folds actually have. Its green would mean "we tested the four
+    /// faults our design already handles". Redelivery is ordinary over a store-and-forward,
+    /// opportunistically-retransmitting transport, which Reticulum is.
+    ///
+    /// Opt-in, like every other flag: unset leaves existing behaviour byte-identical.
+    | DuplicatePackets = 16
 
 /// The state of the simulated network chaos environment.
 type NetworkChaosState =
@@ -108,17 +124,28 @@ module ReticulumChaos =
                 let pkt = { From = from; To = toD; Payload = payload; At = s.Now }
                 let nextScheduler = Scheduler.step s
 
+                // 3. Probabilistic REDELIVERY — the fault the other four cannot express.
+                // Drop, delay, churn and partition are all survived by a merely COMMUTATIVE merge.
+                // Duplication is not: a non-idempotent fold counts the second copy as fresh evidence.
+                let copies, dupRng =
+                    if (policy &&& NetworkChaosPolicy.DuplicatePackets) = NetworkChaosPolicy.DuplicatePackets then
+                        let roll, nR = splitMix finalRng
+                        let prob = (float (uint64 roll &&& 0xFFFF_FFFFUL)) / 4294967295.0
+                        (if prob < 0.10 then [ pkt; pkt ] else [ pkt ]), nR
+                    else
+                        [ pkt ], finalRng
+
                 if delay > 0L then
                     let deliveryTime = Versionstamp.ofInt64 (s.Now.Version + delay)
-                    let delayedList = state.DelayedPackets @ [ (pkt, deliveryTime) ]
+                    let delayedList = state.DelayedPackets @ (copies |> List.map (fun p -> (p, deliveryTime)))
                     { state with
                         DelayedPackets = delayedList
-                        RngState = finalRng }, nextScheduler
+                        RngState = dupRng }, nextScheduler
                 else
-                    let nextMedium = { state.Medium with InFlight = state.Medium.InFlight @ [ pkt ] }
+                    let nextMedium = { state.Medium with InFlight = state.Medium.InFlight @ copies }
                     { state with
                         Medium = nextMedium
-                        RngState = finalRng }, nextScheduler
+                        RngState = dupRng }, nextScheduler
 
     /// Drain packets addressed to a destination.
     let deliver (d: Destination) (state: NetworkChaosState) : Packet list * NetworkChaosState =

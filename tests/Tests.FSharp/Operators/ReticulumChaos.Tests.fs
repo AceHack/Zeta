@@ -154,3 +154,51 @@ let ``Reticulum chaos DhtChurn deterministically churns peer announcements`` () 
     // Reachability should have churned (both true and false occurred)
     Assert.Contains(true, trace1)
     Assert.Contains(false, trace1)
+
+// ── DuplicatePackets: the fault the other four cannot express ──────────────────────────────────
+//
+// Drop, delay, churn and partition are all survived by a merely COMMUTATIVE merge, which is why the
+// existing corpus looks healthy. Duplication is not: a non-idempotent fold — the multiplicative
+// Bayesian `observe` in SoftValue and BeliefConvergence — counts a redelivered message as fresh
+// evidence and sharpens, manufacturing certainty no observation supports. A harness that models the
+// other four and not this one cannot surface that failure mode at all.
+
+[<Fact>]
+let ``DuplicatePackets actually redelivers — the fault is exercised, not merely declared`` () =
+    let s0 = Scheduler.fromSeed 100L
+    let a = ReticulumLink.mint s0.Now 0xA11L Location.EastUsVa
+    let b = ReticulumLink.mint s0.Now 0xB22L Location.WestEurope
+
+    // Send many packets; with a 10% duplication roll at least one must arrive twice. Deterministic
+    // (splitMix over a fixed seed), so this is a fixed outcome and not a flake.
+    let rec pump i (st: NetworkChaosState) (sch: Scheduler) =
+        if i = 0 then st
+        else
+            let nSt, nSch = ReticulumChaos.send a b "e" sch NetworkChaosPolicy.DuplicatePackets st
+            pump (i - 1) nSt nSch
+
+    let state = ReticulumChaos.create Map.empty 777L |> ReticulumChaos.announce a |> ReticulumChaos.announce b
+    let final = pump 40 state s0
+    let delivered, _ = ReticulumChaos.deliver b final
+
+    Assert.True(
+        List.length delivered > 40,
+        sprintf "expected redelivery to produce MORE than the 40 sends; got %d" (List.length delivered))
+
+[<Fact>]
+let ``the policy is opt-in — without the flag, sends are delivered exactly once`` () =
+    // Guards the addition against changing existing behaviour: every other policy path must remain
+    // byte-identical, or the new fault would be silently rewriting the meaning of old green runs.
+    let s0 = Scheduler.fromSeed 100L
+    let a = ReticulumLink.mint s0.Now 0xA11L Location.EastUsVa
+    let b = ReticulumLink.mint s0.Now 0xB22L Location.WestEurope
+
+    let rec pump i (st: NetworkChaosState) (sch: Scheduler) =
+        if i = 0 then st
+        else
+            let nSt, nSch = ReticulumChaos.send a b "e" sch NetworkChaosPolicy.None st
+            pump (i - 1) nSt nSch
+
+    let state = ReticulumChaos.create Map.empty 777L |> ReticulumChaos.announce a |> ReticulumChaos.announce b
+    let delivered, _ = ReticulumChaos.deliver b (pump 40 state s0)
+    Assert.Equal(40, List.length delivered)
