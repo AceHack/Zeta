@@ -3,7 +3,7 @@
 Status: **active trajectory**; OPERATOR-INITIATED (Aaron 2026-08-10)
 Last refreshed: 2026-08-10
 Current blocker: none — lower bound DERIVED (§4a, 2026-08-10); the upper bound remains empirical
-Next concrete action: the **upper bound** (§4b) — instrument fork rate against soulbound fraction, since §4a is now closed and the ceiling is the only bound still uncharacterised. Standing guard from §4a: watch the voting path for any stake-proportional weight term; if one appears, `s > 2/3` binds immediately
+Next concrete action: measure the **acquisition curve for distinct entropy sources** (§4b, reformulated 2026-08-10) — the exit cost in this design is standing up `d ≥ 3f+1` distinct sources, and the real ceiling dial is `AntiSybil`'s correlation `threshold`, not a soulbound fraction (which does not exist in `src/` and, per §4a, should not). Standing guard from §4a: watch the voting path for any stake-proportional weight term; if one appears, `s > 2/3` binds immediately
 Evidence links: `src/Core/AntiSybil.fs` · `src/Core/SybilBft*.fs` · `.claude/rules/privacy-budget-is-hard-money-earned-by-others.md` · `docs/trajectories/local-trust-view-decentralized-identity/RESUME.md` · `docs/research/2026-08-10-the-threshold-rhyme-*`
 
 ---
@@ -142,13 +142,51 @@ constant, so in Regime B resistance does not degrade smoothly — it holds until
 entered; in Regime A the question is void. **Remaining open:** the *upper* bound (§4b) is
 untouched by this and remains empirical.
 
-### 4b. Upper bound — empirical, and measured by exit
+### 4b. Upper bound — REFORMULATED 2026-08-10, because the original was not runnable
 
-Instrument **fork rate against soulbound fraction**. Hirschman: cheap exit is what
-disciplines concentration. If raising the soulbound fraction measurably suppresses forking,
-the ceiling has been found — the society has become a trap, whatever else it has become.
+**Original plan:** instrument **fork rate against soulbound fraction** — if raising `s`
+measurably suppresses forking, the ceiling has been found (Hirschman: cheap exit is what
+disciplines concentration).
 
-This is measurable in our own fleet, since forking is something agents actually do.
+**Why it cannot be run as written.** Checked 2026-08-10: `soulbound` / `nonTransferable` /
+`non_transferable` appear **nowhere in `src/`** — zero hits. There is no `s` to vary, so the
+independent variable of the proposed experiment does not exist. This is not an
+implementation gap to fill; **§4a explains why it should not exist.** In Regime A the
+non-transferability is *categorical* (the voting credential is a physical drift signature),
+not *fractional*. "Vary `s` and watch fork rate" presupposes Regime B — the stake-weighted
+design we deliberately do not implement.
+
+**The reformulation, which follows from §4a rather than replacing it.** In Regime A the
+ceiling question is not *how much* is soulbound but **what the categorical credential costs
+to re-establish**. A fork must stand up its own quorum of *distinct entropy sources*
+(`SybilBft` counts sources, not stake), so:
+
+> **Exit cost = the cost of establishing enough distinct entropy sources to reach
+> `d ≥ 3f+1` in the fork.** That is a hardware/identity cost, not a forfeited stake — and it
+> is the thing that could make the society a trap.
+
+This is the honest upper-bound question for the design we actually have, and it is
+measurable without inventing an `s` dial:
+
+1. **The floor is derivable, not empirical.** A viable fork needs `d ≥ 3f+1` distinct
+   sources — minimum `d = 4` for `f = 1`, from `maxFaults d = ⌊(d−1)/3⌋`. So exit has a
+   *hard, computable* minimum: four independent clocks. That number is the ceiling's units.
+2. **The empirical half is the acquisition curve** — how hard it is to obtain distinct
+   sources that `AntiSybil.antiSybil` will not collapse. If distinctness is cheap, exit is
+   cheap and the trap risk is low. If `AntiSybil`'s threshold is strict enough that honest
+   new sources get collapsed as correlated, **exit becomes expensive by accident** — and
+   that, not any fraction, is where this design would become a trap.
+3. **Which makes the real ceiling parameter `AntiSybil`'s correlation `threshold`.** It is
+   already a live tunable in the code, and it sits on the same detection/length curve the
+   module's own peel names. Raising it to resist sybils tightens exit; lowering it to ease
+   exit admits sybils. **That is the actual upper/lower tension for this substrate**, and it
+   is a real dial, unlike `s`.
+
+**Falsifier:** if the exit cost turns out to be dominated by something other than
+source-distinctness (reputation carried in attestations, say), then §4b is measuring the
+wrong quantity and the ceiling lives elsewhere.
+
+**Hirschman still applies** — the reformulation changes what is measured, not why.
 
 ### 4c. The base case, stated so it is not mistaken for failure
 
