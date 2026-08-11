@@ -31,6 +31,8 @@ export type BrowserExecutionAdmissionResult<T> =
 /** Admit at most one finite operation for a resource without waiting for another owner. */
 export interface BrowserExecutionAdmissionPort {
   tryRun<T>(resourceId: string, operation: () => Promise<T>): Promise<BrowserExecutionAdmissionResult<T>>;
+  /** Queue recovery work until the current finite owner releases; no clock or timeout is introduced. */
+  runWhenAvailable?<T>(resourceId: string, operation: () => Promise<T>): Promise<BrowserExecutionAdmissionResult<T>>;
 }
 
 export type BrowserExecutionAdmissionPortResult =
@@ -71,15 +73,41 @@ export function isBrowserExecutionResourceId(value: unknown): value is string {
 /** Deterministic single-realm adapter used by tests and hosts without cross-context locking. */
 export function createInMemoryBrowserExecutionAdmission(): BrowserExecutionAdmissionPort {
   const active = new Set<string>();
+  const waiters = new Map<string, (() => void)[]>();
 
-  return {
-    tryRun: async <T>(resourceId: string, operation: () => Promise<T>): Promise<BrowserExecutionAdmissionResult<T>> => {
-      if (!isBrowserExecutionResourceId(resourceId)) {
-        return browserExecutionAdmissionFailed(
+  const release = (resourceId: string): void => {
+    const queued = waiters.get(resourceId);
+    const next = queued?.shift();
+    if (next !== undefined) {
+      next();
+      if (queued?.length === 0) waiters.delete(resourceId);
+      return;
+    }
+    active.delete(resourceId);
+  };
+  const acquire = (resourceId: string): Promise<void> => {
+    if (!active.has(resourceId)) {
+      active.add(resourceId);
+      return Promise.resolve();
+    }
+    return new Promise((resolve) => {
+      const queued = waiters.get(resourceId) ?? [];
+      queued.push(resolve);
+      waiters.set(resourceId, queued);
+    });
+  };
+  const invalidResource = <T>(resourceId: string): BrowserExecutionAdmissionResult<T> | null =>
+    isBrowserExecutionResourceId(resourceId)
+      ? null
+      : browserExecutionAdmissionFailed(
           "execution-admission-configuration-invalid",
           "Execution admission resource identifiers must contain 1 to 1024 printable characters.",
         );
-      }
+
+  return {
+    tryRun: async <T>(resourceId: string, operation: () => Promise<T>): Promise<BrowserExecutionAdmissionResult<T>> => {
+      const invalid = invalidResource<T>(resourceId);
+      if (invalid !== null) return invalid;
       if (active.has(resourceId)) return browserExecutionBusy(resourceId);
 
       active.add(resourceId);
@@ -91,7 +119,25 @@ export function createInMemoryBrowserExecutionAdmission(): BrowserExecutionAdmis
           `The admitted operation for ${resourceId} rejected.`,
         );
       } finally {
-        active.delete(resourceId);
+        release(resourceId);
+      }
+    },
+    runWhenAvailable: async <T>(
+      resourceId: string,
+      operation: () => Promise<T>,
+    ): Promise<BrowserExecutionAdmissionResult<T>> => {
+      const invalid = invalidResource<T>(resourceId);
+      if (invalid !== null) return invalid;
+      await acquire(resourceId);
+      try {
+        return browserExecutionAdmitted(resourceId, await operation());
+      } catch {
+        return browserExecutionAdmissionFailed(
+          "execution-admission-request-failed",
+          `The admitted operation for ${resourceId} rejected.`,
+        );
+      } finally {
+        release(resourceId);
       }
     },
   };

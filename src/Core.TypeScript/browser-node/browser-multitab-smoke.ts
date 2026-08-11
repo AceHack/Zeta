@@ -1,11 +1,13 @@
 import { resolve } from "node:path";
-import { chromium, type Browser, type Page } from "playwright";
+import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
 import type { DarkHallBrowserDurableFeedback } from "../darkhall-ui/darkhall-browser-durable-runtime";
+import type { DarkHallDatabaseReadout } from "../darkhall-ui/darkhall-database-readout";
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { BrowserMultitabFixtureApi, BrowserMultitabFixtureReadout } from "./browser-multitab-fixture";
 import type { ZetaDbTickReadout } from "../zetadb/zeta-db-node";
+import type { BrowserDatabaseIntentReadout } from "./browser-database-intent-outbox";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v8" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v9" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -121,6 +123,12 @@ export interface BrowserMultitabSmokeTranscript {
   };
   readonly afterRetraction: {
     readonly pageD: BrowserMultitabPageObservation;
+  };
+  readonly intentRecovery: {
+    readonly recovered: DarkHallDatabaseReadout;
+    readonly secondRecovery: null;
+    readonly outbox: BrowserDatabaseIntentReadout;
+    readonly finalRead: ZetaDbTickReadout;
   };
 }
 
@@ -246,7 +254,10 @@ async function observe(page: Page): Promise<BrowserMultitabPageObservation> {
 
 async function waitForReady(page: Page): Promise<void> {
   await page.waitForFunction(
-    "() => Boolean(globalThis.__zetaBrowserSmoke && globalThis.ZetaMesh && navigator.serviceWorker.controller)",
+    () => {
+      const root = globalThis as unknown as Partial<BrowserSmokeGlobal>;
+      return Boolean(root.__zetaBrowserSmoke && root.ZetaMesh && globalThis.navigator.serviceWorker.controller);
+    },
     undefined,
     { timeout: timeoutMs },
   );
@@ -291,13 +302,12 @@ async function installServiceWorker(page: Page, url: string): Promise<true> {
 
 async function waitForTwoPages(page: Page): Promise<void> {
   await page.waitForFunction(
-    `() => {
-      const source = globalThis.__zetaBrowserSmoke?.read();
-      const iris = globalThis.ZetaMesh?.snapshot();
-      return source?.ok === true &&
-        source.value.host.coordinator.liveness.liveTabIds.length === 2 &&
-        iris?.tabs === 2;
-    }`,
+    () => {
+      const root = globalThis as unknown as Partial<BrowserSmokeGlobal>;
+      const source = root.__zetaBrowserSmoke?.read();
+      const iris = root.ZetaMesh?.snapshot();
+      return source?.ok === true && source.value.host.coordinator.liveness.liveTabIds.length === 2 && iris?.tabs === 2;
+    },
     undefined,
     { timeout: timeoutMs },
   );
@@ -305,14 +315,17 @@ async function waitForTwoPages(page: Page): Promise<void> {
 
 async function waitForSurvivor(page: Page): Promise<void> {
   await page.waitForFunction(
-    `() => {
-      const source = globalThis.__zetaBrowserSmoke?.read();
-      const iris = globalThis.ZetaMesh?.snapshot();
-      return source?.ok === true &&
+    () => {
+      const root = globalThis as unknown as Partial<BrowserSmokeGlobal>;
+      const source = root.__zetaBrowserSmoke?.read();
+      const iris = root.ZetaMesh?.snapshot();
+      return (
+        source?.ok === true &&
         source.value.host.coordinator.liveness.liveTabIds.join(",") === "tab-a" &&
         source.value.host.coordinator.liveness.darkTabIds.includes("tab-b") &&
-        iris?.tabs === 1;
-    }`,
+        iris?.tabs === 1
+      );
+    },
     undefined,
     { timeout: timeoutMs },
   );
@@ -320,55 +333,160 @@ async function waitForSurvivor(page: Page): Promise<void> {
 
 async function waitForCheckpoint(page: Page, revision: number | null): Promise<void> {
   await page.waitForFunction(
-    `() => {
-      const source = globalThis.__zetaBrowserSmoke?.read();
-      return source?.ok === true &&
-        source.value.checkpoint.currentRevision === ${revision === null ? "null" : String(revision)} &&
-        source.value.host.coordinator.liveness.checkpoint === ${JSON.stringify(revision === null ? "none" : "durable")};
-    }`,
-    undefined,
+    (expectedRevision) => {
+      const root = globalThis as unknown as Partial<BrowserSmokeGlobal>;
+      const source = root.__zetaBrowserSmoke?.read();
+      return (
+        source?.ok === true &&
+        source.value.checkpoint.currentRevision === expectedRevision &&
+        source.value.host.coordinator.liveness.checkpoint === (expectedRevision === null ? "none" : "durable")
+      );
+    },
+    revision,
     { timeout: timeoutMs },
   );
 }
 
 async function waitForDatabase(page: Page, executorId: string, revision: number): Promise<void> {
   await page.waitForFunction(
-    `() => {
-      const source = globalThis.__zetaBrowserSmoke?.read();
-      return source?.ok === true &&
-        source.value.database?.executorId === ${JSON.stringify(executorId)} &&
-        source.value.database?.revision === ${String(revision)};
-    }`,
-    undefined,
+    (expected) => {
+      const root = globalThis as unknown as Partial<BrowserSmokeGlobal>;
+      const source = root.__zetaBrowserSmoke?.read();
+      return (
+        source?.ok === true &&
+        source.value.database?.executorId === expected.executorId &&
+        source.value.database.revision === expected.revision
+      );
+    },
+    { executorId, revision },
     { timeout: timeoutMs },
   );
 }
 
 async function waitForSinglePage(page: Page, tabId: string): Promise<void> {
   await page.waitForFunction(
-    `() => {
-      const source = globalThis.__zetaBrowserSmoke?.read();
-      const iris = globalThis.ZetaMesh?.snapshot();
-      return source?.ok === true &&
-        source.value.host.coordinator.liveness.liveTabIds.join(",") === ${JSON.stringify(tabId)} &&
+    (expectedTabId) => {
+      const root = globalThis as unknown as Partial<BrowserSmokeGlobal>;
+      const source = root.__zetaBrowserSmoke?.read();
+      const iris = root.ZetaMesh?.snapshot();
+      return (
+        source?.ok === true &&
+        source.value.host.coordinator.liveness.liveTabIds.join(",") === expectedTabId &&
         source.value.host.coordinator.tabs.length === 1 &&
-        iris?.tabs === 1;
-    }`,
+        iris?.tabs === 1
+      );
+    },
+    tabId,
+    { timeout: timeoutMs },
+  );
+}
+
+async function runIntentRecoveryProof(
+  context: BrowserContext,
+  baseUrl: string,
+): Promise<BrowserMultitabSmokeTranscript["intentRecovery"]> {
+  const survivor = await context.newPage();
+  const writer = await context.newPage();
+  await survivor.addInitScript(initIrisId("iris-intent-survivor"));
+  await writer.addInitScript(initIrisId("iris-intent-writer"));
+  const shared = "node=intent-recovery&channel=zeta-intent-recovery";
+  await Promise.all([
+    survivor.goto(`${baseUrl}?${shared}&tab=tab-a&sequence=600`),
+    writer.goto(`${baseUrl}?${shared}&tab=tab-b&sequence=700&holdDatabase=1`),
+  ]);
+  await Promise.all([waitForReady(survivor), waitForReady(writer)]);
+  await Promise.all([
+    survivor.evaluate("globalThis.ZetaMesh.announce()"),
+    writer.evaluate("globalThis.ZetaMesh.announce()"),
+  ]);
+  await Promise.all([waitForTwoPages(survivor), waitForTwoPages(writer)]);
+
+  await writer.evaluate(() => {
+    const root = globalThis as unknown as BrowserSmokeGlobal;
+    void root.__zetaBrowserSmoke.databaseTick([
+      { eventId: "intent-recovery/score", rowKey: "game/score", payload: "42", weight: 1 },
+    ]);
+  });
+  await writer.waitForFunction(
+    async () => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      if (!root.__zetaBrowserSmoke.databaseExecutionHeld()) return false;
+      const outbox = await root.__zetaBrowserSmoke.readDatabaseOutbox();
+      return outbox.ok && outbox.value.pending === 1 && outbox.value.intents[0]?.intentId === "intent-recovery/score";
+    },
     undefined,
     { timeout: timeoutMs },
   );
+
+  await writer.evaluate(() => {
+    const root = globalThis as unknown as BrowserSmokeGlobal;
+    root.ZetaMesh.destroy();
+    globalThis.dispatchEvent(new Event("pagehide"));
+  });
+  await writer.close();
+  await waitForSurvivor(survivor);
+  try {
+    await waitForDatabase(survivor, "tab-a", 1);
+  } catch (error) {
+    const diagnostic = await survivor.evaluate(async () => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      const lockManager = (
+        globalThis as unknown as {
+          readonly navigator: { readonly locks: { query(): Promise<unknown> } };
+        }
+      ).navigator.locks;
+      return {
+        page: root.__zetaBrowserSmoke.read(),
+        outbox: await root.__zetaBrowserSmoke.readDatabaseOutbox(),
+        locks: await lockManager.query(),
+        recovery: root.document
+          .querySelector("[data-database-outbox-recovery]")
+          ?.getAttribute("data-database-outbox-recovery"),
+      };
+    });
+    throw new Error(`${errorDetail(error)}; survivor=${JSON.stringify(diagnostic)}`);
+  }
+  const recoverySnapshot = await survivor.evaluate(async () => {
+    const root = globalThis as unknown as BrowserSmokeGlobal;
+    const before = root.__zetaBrowserSmoke.read();
+    const outbox = await root.__zetaBrowserSmoke.readDatabaseOutbox();
+    const secondRecovery = await root.__zetaBrowserSmoke.recoverDatabaseIntents();
+    const after = root.__zetaBrowserSmoke.read();
+    return { before, outbox, secondRecovery, after };
+  });
+  const recoveredReadout = recoverySnapshot.before;
+  if (!recoveredReadout.ok) throw new Error(`Surviving intent recovery failed: ${recoveredReadout.feedback.detail}`);
+  const recovered = recoveredReadout.value.database;
+  if (recovered === null) {
+    throw new Error(`Surviving intent recovery produced no database readout: ${JSON.stringify(recoverySnapshot)}`);
+  }
+  const { secondRecovery } = recoverySnapshot;
+  if (!secondRecovery.ok) throw new Error(`Second intent recovery failed: ${secondRecovery.feedback.detail}`);
+  if (secondRecovery.value !== null) throw new Error("Second intent recovery executed already-completed work.");
+  const { outbox } = recoverySnapshot;
+  if (!outbox.ok) throw new Error(`Intent outbox read failed: ${outbox.feedback.detail}`);
+  const finalRead = await survivor.evaluate(async () => {
+    const root = globalThis as unknown as BrowserSmokeGlobal;
+    return root.__zetaBrowserSmoke.databaseTick([]);
+  });
+  if (!finalRead.ok) throw new Error(`Recovered database read failed: ${finalRead.feedback.detail}`);
+
+  await survivor.evaluate(() => {
+    const root = globalThis as unknown as BrowserSmokeGlobal;
+    root.__zetaBrowserSmoke.stop();
+    root.ZetaMesh.destroy();
+  });
+  await survivor.close();
+  return { recovered, secondRecovery: null, outbox: outbox.value, finalRead: finalRead.value };
 }
 
 function sourceHost(observation: BrowserMultitabPageObservation): BrowserLifecycleHostReadout | null {
   return observation.source.ok ? observation.source.value.host : null;
 }
 
-function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonly string[] {
+function validateInitialPages(transcript: BrowserMultitabSmokeTranscript, failures: string[]): void {
   const beforeA = sourceHost(transcript.beforeStop.pageA);
   const beforeB = sourceHost(transcript.beforeStop.pageB);
-  const afterA = sourceHost(transcript.afterStop.pageA);
-  const failures: string[] = [];
-
   if (beforeA?.coordinator.liveness.continuity !== "multi-tab")
     failures.push("source page A did not see multi-tab continuity");
   if (beforeB?.coordinator.liveness.continuity !== "multi-tab")
@@ -390,13 +508,16 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
     failures.push("page B did not commit the expected database row as the first executor");
   }
   if (
-    transcript.databaseHandoff.pageBAfterWrite.source.ok !== true ||
+    !transcript.databaseHandoff.pageBAfterWrite.source.ok ||
     transcript.databaseHandoff.pageBAfterWrite.source.value.database?.executorId !== "tab-b" ||
     transcript.databaseHandoff.pageBAfterWrite.rendered.databaseExecutor !== "tab-b" ||
     transcript.databaseHandoff.pageBAfterWrite.rendered.databaseRows[0]?.rowKey !== "game/score"
   ) {
     failures.push("page B did not render its committed database readout");
   }
+}
+
+function validateCrossTabCheckpoint(transcript: BrowserMultitabSmokeTranscript, failures: string[]): void {
   if (transcript.crossTabCheckpoint.savedRevision !== 250)
     failures.push("page A did not persist cross-tab checkpoint revision 250");
   if (transcript.crossTabCheckpoint.pageBAfterSave.source.ok) {
@@ -425,6 +546,10 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
   }
   if (!transcript.stoppedPageB.stopped || transcript.stoppedPageB.state !== "dark")
     failures.push("page B source host did not stop dark");
+}
+
+function validateSurvivingPage(transcript: BrowserMultitabSmokeTranscript, failures: string[]): void {
+  const afterA = sourceHost(transcript.afterStop.pageA);
   if (
     transcript.databaseHandoff.survivor.executorId !== "tab-a" ||
     transcript.databaseHandoff.survivor.revision !== 1 ||
@@ -433,7 +558,7 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
   ) {
     failures.push("page A did not recover the database row after executor handoff");
   }
-  if (afterA?.coordinator.liveness.continuity !== "single-tab" || afterA.coordinator.liveness.zetaAlive !== true) {
+  if (afterA?.coordinator.liveness.continuity !== "single-tab" || !afterA.coordinator.liveness.zetaAlive) {
     failures.push("source page A did not remain live as a single tab");
   }
   if (!afterA?.coordinator.liveness.darkTabIds.includes("tab-b"))
@@ -452,6 +577,9 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
   ) {
     failures.push("page A did not render itself as the surviving database executor");
   }
+}
+
+function validateSavedCheckpoint(transcript: BrowserMultitabSmokeTranscript, failures: string[]): void {
   if (transcript.checkpoint.savedRevision !== 300) failures.push("page A did not persist checkpoint revision 300");
   if (transcript.checkpoint.payloadBytes <= 0) failures.push("page A persisted an empty room checkpoint payload");
   if (
@@ -464,6 +592,9 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
   }
   if (transcript.checkpoint.staleWrite.code !== "checkpoint-revision-conflict")
     failures.push("the checkpoint store did not reject a stale revision");
+}
+
+function validateCheckpointRestart(transcript: BrowserMultitabSmokeTranscript, failures: string[]): void {
   if (transcript.afterRestart.pageC.source.ok) {
     const recovered = transcript.afterRestart.pageC.source.value;
     if (recovered.checkpoint.recoveredRevision !== 300 || recovered.checkpoint.currentRevision !== 300)
@@ -486,6 +617,9 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
     failures.push("page C did not start after checkpoint recovery");
   }
   if (transcript.afterRestart.pageC.iris.tabs !== 1) failures.push("Iris page C did not restart as one live tab");
+}
+
+function validateCheckpointRetraction(transcript: BrowserMultitabSmokeTranscript, failures: string[]): void {
   if (transcript.retraction.staleDelete.code !== "checkpoint-revision-conflict")
     failures.push("the checkpoint store did not reject a stale removal revision");
   if (!transcript.retraction.removed) failures.push("the checkpoint store did not retract revision 300");
@@ -502,7 +636,43 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
   } else {
     failures.push("page D did not start after checkpoint retraction");
   }
+}
 
+function validateIntentRecovery(transcript: BrowserMultitabSmokeTranscript, failures: string[]): void {
+  if (
+    transcript.intentRecovery.recovered.executorId !== "tab-a" ||
+    transcript.intentRecovery.recovered.revision !== 1 ||
+    transcript.intentRecovery.recovered.accepted !== 1 ||
+    transcript.intentRecovery.recovered.duplicates !== 0 ||
+    transcript.intentRecovery.recovered.rows.find((row) => row.rowKey === "game/score")?.payload !== "42"
+  ) {
+    failures.push("the surviving page did not commit the persisted writer intent exactly once");
+  }
+  if (
+    transcript.intentRecovery.outbox.pending !== 0 ||
+    transcript.intentRecovery.outbox.refused !== 0 ||
+    transcript.intentRecovery.outbox.intents.length !== 0
+  ) {
+    failures.push("the surviving page did not clear the completed durable intent");
+  }
+  if (
+    transcript.intentRecovery.finalRead.revision !== 1 ||
+    transcript.intentRecovery.finalRead.accepted !== 0 ||
+    transcript.intentRecovery.finalRead.rows.find((row) => row.rowKey === "game/score")?.payload !== "42"
+  ) {
+    failures.push("the post-recovery database read did not retain exactly one committed revision");
+  }
+}
+
+function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonly string[] {
+  const failures: string[] = [];
+  validateInitialPages(transcript, failures);
+  validateCrossTabCheckpoint(transcript, failures);
+  validateSurvivingPage(transcript, failures);
+  validateSavedCheckpoint(transcript, failures);
+  validateCheckpointRestart(transcript, failures);
+  validateCheckpointRetraction(transcript, failures);
+  validateIntentRecovery(transcript, failures);
   return failures;
 }
 
@@ -719,7 +889,18 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     await pageD.evaluate("globalThis.ZetaMesh.announce()");
     await waitForSinglePage(pageD, "tab-d");
 
-    stage = "validate final cold restart";
+    stage = "observe final cold restart";
+    const pageDAfterRetraction = await observe(pageD);
+    await pageD.evaluate(() => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      root.__zetaBrowserSmoke.stop();
+      root.ZetaMesh.destroy();
+    });
+    await pageD.close();
+
+    stage = "recover persisted intent after writer page closes";
+    const intentRecovery = await runIntentRecoveryProof(context, baseUrl);
+    stage = "validate final transcript";
     const transcript: BrowserMultitabSmokeTranscript = {
       schema: BROWSER_MULTITAB_SMOKE_SCHEMA,
       transport: { kind: "service-worker", controlledBeforeRooms },
@@ -741,16 +922,11 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
       stoppedPageA: stoppedA.value,
       afterRestart: { pageC: pageCAfterRestart },
       retraction: retraction.value,
-      afterRetraction: { pageD: await observe(pageD) },
+      afterRetraction: { pageD: pageDAfterRetraction },
+      intentRecovery,
     };
     const failures = validateTranscript(transcript);
     if (failures.length > 0) return failed("assertion-failed", failures.join("; "));
-    await pageD.evaluate(() => {
-      const root = globalThis as unknown as BrowserSmokeGlobal;
-      root.__zetaBrowserSmoke.stop();
-      root.ZetaMesh.destroy();
-    });
-    await pageD.close();
     return { ok: true, value: transcript };
   } catch (error) {
     return failed("smoke-failed", `${stage}: ${errorDetail(error)}`);

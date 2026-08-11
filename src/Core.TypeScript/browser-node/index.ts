@@ -150,6 +150,40 @@ export {
 export { createNativeBrowserExecutionAdmission } from "./browser-web-lock-execution-admission";
 
 export {
+  BROWSER_DATABASE_INTENT_LEDGER_SCHEMA,
+  BROWSER_DATABASE_INTENT_READOUT_SCHEMA,
+  BROWSER_DATABASE_INTENT_SCHEMA,
+  browserDatabaseIntentFailed,
+  browserDatabaseIntentReadout,
+  copyBrowserDatabaseIntent,
+  copyBrowserDatabaseIntentLedger,
+  createInMemoryBrowserDatabaseIntentOutbox,
+  decideBrowserDatabaseIntentCompletion,
+  decideBrowserDatabaseIntentEnqueue,
+  decideBrowserDatabaseIntentRefusal,
+  emptyBrowserDatabaseIntentLedger,
+  validateBrowserDatabaseIntent,
+  validateBrowserDatabaseIntentDraft,
+  validateBrowserDatabaseIntentLedger,
+  validateBrowserDatabaseIntentLimits,
+  type BrowserDatabaseIntentDraft,
+  type BrowserDatabaseIntentFeedback,
+  type BrowserDatabaseIntentLedger,
+  type BrowserDatabaseIntentLedgerDecision,
+  type BrowserDatabaseIntentLimits,
+  type BrowserDatabaseIntentOutboxPort,
+  type BrowserDatabaseIntentReadout,
+  type BrowserDatabaseIntentRecord,
+  type BrowserDatabaseIntentRefusal,
+  type BrowserDatabaseIntentResult,
+} from "./browser-database-intent-outbox";
+
+export {
+  openNativeIndexedDbDatabaseIntentOutbox,
+  type NativeIndexedDbDatabaseIntentOutboxOptions,
+} from "./browser-indexeddb-database-intent-outbox";
+
+export {
   BROWSER_ZETA_DB_WAKE_RESPONSE_SCHEMA,
   BROWSER_ZETA_DB_WAKE_SCHEMA,
   handleBrowserZetaDbWakeMessage,

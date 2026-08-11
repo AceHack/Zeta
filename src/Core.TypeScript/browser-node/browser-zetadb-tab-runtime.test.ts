@@ -1,13 +1,30 @@
 import { describe, expect, test } from "bun:test";
-import type { ZetaDbTickReadout, ZetaDbTickRequest } from "../zetadb/zeta-db-node";
+import {
+  createInMemoryZetaDbImagePort,
+  runZetaDbNodeTick,
+  type ZetaDbTickReadout,
+  type ZetaDbTickRequest,
+} from "../zetadb/zeta-db-node";
 import {
   browserExecutionAdmitted,
+  browserExecutionBusy,
   createInMemoryBrowserExecutionAdmission,
   type BrowserExecutionAdmissionPort,
 } from "./browser-execution-admission";
+import {
+  createInMemoryBrowserDatabaseIntentOutbox,
+  type BrowserDatabaseIntentOutboxPort,
+} from "./browser-database-intent-outbox";
 import { startBrowserZetaDbTabRuntime, type BrowserZetaDbTabExecutor } from "./browser-zetadb-tab-runtime";
 
 const limits = { maxDeltas: 8, maxEntries: 16, maxCheckpointBytes: 16 * 1024 };
+const outboxLimits = { maxIntents: 16, maxLedgerBytes: 64 * 1024 };
+
+function createOutbox(): BrowserDatabaseIntentOutboxPort {
+  const created = createInMemoryBrowserDatabaseIntentOutbox(outboxLimits);
+  if (!created.ok) throw new Error(created.feedback.detail);
+  return created.value;
+}
 
 function readout(request: ZetaDbTickRequest, revision: number): ZetaDbTickReadout {
   return {
@@ -29,6 +46,7 @@ function start(
   execute: BrowserZetaDbTabExecutor,
   admission: BrowserExecutionAdmissionPort = createInMemoryBrowserExecutionAdmission(),
   executorId = "tab-a",
+  outbox: BrowserDatabaseIntentOutboxPort = createOutbox(),
 ) {
   const observed: ZetaDbTickReadout[] = [];
   const published: { readonly databaseNodeId: string; readonly revision: number }[] = [];
@@ -37,11 +55,13 @@ function start(
     executorId,
     limits,
     admission,
+    outbox,
     execute,
     observe: (value) => {
       observed.push(value);
       return { ok: true };
     },
+    observeOutbox: () => ({ ok: true }),
     publishInvalidation: (databaseNodeId, revision) => {
       published.push({ databaseNodeId, revision });
       return { ok: true };
@@ -59,12 +79,14 @@ describe("browser ZetaDB tab runtime", () => {
       executorId: "tab-a",
       limits,
       admission: undefined as never,
+      outbox: createOutbox(),
       execute: () =>
         Promise.resolve({
           ok: false,
           feedback: { severity: "heat", code: "database-read-failed", detail: "unused" },
         }),
       observe: () => ({ ok: true }),
+      observeOutbox: () => ({ ok: true }),
       publishInvalidation: () => ({ ok: true }),
     });
 
@@ -73,7 +95,8 @@ describe("browser ZetaDB tab runtime", () => {
       feedback: {
         severity: "heat",
         code: "database-tab-configuration-invalid",
-        detail: "A browser database tab runtime requires identifiers and positive safe-integer tick budgets.",
+        detail:
+          "A browser database tab runtime requires identifiers, positive safe-integer tick budgets, admission, and an intent outbox.",
       },
     });
   });
@@ -116,6 +139,7 @@ describe("browser ZetaDB tab runtime", () => {
       runtime.receiveInvalidation({ sourceTabId: "tab-d", databaseNodeId: "another/database", revision: 9 }),
     ).toEqual({ ok: true, value: null });
 
+    expect(await runtime.recoverPending()).toEqual({ ok: true, value: null });
     expect(await runtime.drainInvalidations()).toMatchObject({ ok: true, value: { revision: 2, accepted: 0 } });
     expect(requests).toHaveLength(1);
     expect(requests[0]?.deltas).toEqual([]);
@@ -148,8 +172,10 @@ describe("browser ZetaDB tab runtime", () => {
         executorId: "tab-a",
         limits,
         admission: createInMemoryBrowserExecutionAdmission(),
+        outbox: createOutbox(),
         execute: () => Promise.resolve({ ok: true, value: {} as never }),
         observe: () => ({ ok: true }),
+        observeOutbox: () => ({ ok: true }),
         publishInvalidation: () => ({ ok: true }),
       }),
     ).toMatchObject({ ok: false, feedback: { code: "database-tab-configuration-invalid" } });
@@ -169,12 +195,14 @@ describe("browser ZetaDB tab runtime", () => {
       executorId: "tab-a",
       limits,
       admission: createInMemoryBrowserExecutionAdmission(),
+      outbox: createOutbox(),
       execute: (request) => {
         const tick = readout(request, 3);
         requestTicks.push(tick);
         return Promise.resolve({ ok: true, value: tick });
       },
       observe: () => ({ ok: true }),
+      observeOutbox: () => ({ ok: true }),
       publishInvalidation: () => {
         throw new Error("channel rejected");
       },
@@ -190,6 +218,7 @@ describe("browser ZetaDB tab runtime", () => {
 
   test("backpressures a competing tab and admits it after the finite owner releases", async () => {
     const admission = createInMemoryBrowserExecutionAdmission();
+    const outbox = createOutbox();
     let release: (() => void) | undefined;
     const first = start(
       async (request) => {
@@ -200,8 +229,14 @@ describe("browser ZetaDB tab runtime", () => {
       },
       admission,
       "tab-a",
+      outbox,
     );
-    const second = start((request) => Promise.resolve({ ok: true, value: readout(request, 2) }), admission, "tab-b");
+    const second = start(
+      (request) => Promise.resolve({ ok: true, value: readout(request, 2) }),
+      admission,
+      "tab-b",
+      outbox,
+    );
 
     const delta = { eventId: "event/held", rowKey: "game/score", payload: "1", weight: 1 } as const;
     const held = first.runtime.tick([delta]);
@@ -254,5 +289,90 @@ describe("browser ZetaDB tab runtime", () => {
       feedback: { code: "database-revision-conflict" },
     });
     expect(revision).toBe(1);
+  });
+
+  test("persists a mutation before admission and leaves it pending when the database is busy", async () => {
+    const outbox = createOutbox();
+    const busyAdmission: BrowserExecutionAdmissionPort = {
+      tryRun: (resourceId) => Promise.resolve(browserExecutionBusy(resourceId)),
+    };
+    const { runtime } = start(() => Promise.reject(new Error("must not execute")), busyAdmission, "tab-a", outbox);
+
+    expect(
+      await runtime.tick([{ eventId: "event/pending", rowKey: "game/score", payload: "7", weight: 1 }]),
+    ).toMatchObject({
+      ok: false,
+      feedback: { severity: "backpressure", code: "database-tab-execution-backpressured" },
+    });
+    expect(await runtime.readOutbox()).toMatchObject({
+      ok: true,
+      value: { pending: 1, refused: 0, intents: [{ intentId: "event/pending", sequence: 0, status: "pending" }] },
+    });
+  });
+
+  test("lets a replacement runtime recover a thrown mutation exactly once", async () => {
+    const outbox = createOutbox();
+    const first = start(
+      () => Promise.reject(new Error("tab disappeared")),
+      createInMemoryBrowserExecutionAdmission(),
+      "tab-a",
+      outbox,
+    );
+    const delta = { eventId: "event/recover", rowKey: "game/score", payload: "11", weight: 1 } as const;
+    expect(await first.runtime.tick([delta])).toMatchObject({
+      ok: false,
+      feedback: { code: "database-tab-executor-threw" },
+    });
+
+    const image = createInMemoryZetaDbImagePort();
+    const second = start(
+      (request) => runZetaDbNodeTick(image, request),
+      createInMemoryBrowserExecutionAdmission(),
+      "tab-b",
+      outbox,
+    );
+    expect(await second.runtime.recoverPending()).toMatchObject({
+      ok: true,
+      value: { revision: 1, accepted: 1, duplicates: 0 },
+    });
+    expect(await second.runtime.recoverPending()).toEqual({ ok: true, value: null });
+    expect(await second.runtime.tick([])).toMatchObject({
+      ok: true,
+      value: { revision: 1, rows: [{ rowKey: "game/score", payload: "11", weight: 1 }] },
+    });
+    expect(await second.runtime.readOutbox()).toMatchObject({ ok: true, value: { pending: 0, refused: 0 } });
+  });
+
+  test("retains deterministic compare-and-swap refusal without blocking later recovery", async () => {
+    const outbox = createOutbox();
+    const image = createInMemoryZetaDbImagePort();
+    const { runtime } = start(
+      (request) => runZetaDbNodeTick(image, request),
+      createInMemoryBrowserExecutionAdmission(),
+      "tab-a",
+      outbox,
+    );
+    expect(
+      await runtime.tick([{ eventId: "event/base", rowKey: "game/score", payload: "1", weight: 1 }]),
+    ).toMatchObject({ ok: true, value: { revision: 1 } });
+
+    expect(
+      await runtime.compareAndSwap(0, [{ eventId: "event/stale", rowKey: "game/score", payload: "2", weight: 1 }]),
+    ).toMatchObject({ ok: false, feedback: { code: "database-revision-conflict" } });
+    expect(await runtime.readOutbox()).toMatchObject({
+      ok: true,
+      value: {
+        pending: 0,
+        refused: 1,
+        intents: [
+          {
+            intentId: "event/stale",
+            status: "refused",
+            refusal: { severity: "backpressure", code: "database-revision-conflict" },
+          },
+        ],
+      },
+    });
+    expect(await runtime.recoverPending()).toEqual({ ok: true, value: null });
   });
 });

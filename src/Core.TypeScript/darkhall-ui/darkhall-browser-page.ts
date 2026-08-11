@@ -1,9 +1,18 @@
 import { probeBrowserRuntime, type BrowserRuntimeProbeReadout } from "../browser-node/browser-runtime-probe";
-import type { BrowserLifecycleHostReadout } from "../browser-node/browser-lifecycle-host";
+import type { BrowserLifecycleHostReadout, BrowserReadoutSinkResult } from "../browser-node/browser-lifecycle-host";
 import type { BrowserServiceWorkerRegistrationReadout } from "../browser-node/browser-service-worker-registration";
 import type { BrowserTabTransportReadout } from "../browser-node/browser-tab-channel-selector";
-import type { BrowserDatabaseInvalidation } from "../browser-node/browser-tab-coordinator";
+import type {
+  BrowserDatabaseInvalidation,
+  BrowserTabCoordinatorReadout,
+} from "../browser-node/browser-tab-coordinator";
 import type { BrowserExecutionAdmissionPort } from "../browser-node/browser-execution-admission";
+import type {
+  BrowserDatabaseIntentLimits,
+  BrowserDatabaseIntentOutboxPort,
+  BrowserDatabaseIntentReadout,
+} from "../browser-node/browser-database-intent-outbox";
+import { openNativeIndexedDbDatabaseIntentOutbox } from "../browser-node/browser-indexeddb-database-intent-outbox";
 import { createNativeBrowserExecutionAdmission } from "../browser-node/browser-web-lock-execution-admission";
 import { runBrowserZetaDbWake } from "../browser-node/browser-zetadb-image-port";
 import {
@@ -135,6 +144,10 @@ export interface NativeDarkHallBrowserPageOptions {
   readonly databaseStoreName?: string;
   readonly databaseLimits?: ZetaDbTickLimits;
   readonly databaseExecutionAdmission?: BrowserExecutionAdmissionPort;
+  readonly databaseIntentOutbox?: BrowserDatabaseIntentOutboxPort;
+  readonly databaseIntentDatabaseName?: string;
+  readonly databaseIntentStoreName?: string;
+  readonly databaseIntentLimits?: BrowserDatabaseIntentLimits;
   readonly databaseExecutor?: BrowserZetaDbTabExecutor;
   readonly maxControllerInputInFlight?: number;
   readonly rowCommandEditorMountId?: string;
@@ -153,6 +166,11 @@ interface NativePageContext {
   readonly document: unknown;
   readonly parameters: URLSearchParams;
   readonly mintTabId: () => string | null;
+}
+
+interface PagePeerDarkRecovery {
+  readonly onTabReadout: (readout: BrowserTabCoordinatorReadout) => BrowserReadoutSinkResult<null>;
+  readonly install: (database: BrowserZetaDbTabRuntime) => void;
 }
 
 export const DARK_HALL_BROWSER_PAGE_TRANSCRIPT: RoomRunTranscript = {
@@ -345,6 +363,7 @@ function pwaOptions(
   tabId: string,
   sequence: number,
   onDatabaseInvalidated: (invalidation: BrowserDatabaseInvalidation) => void,
+  onTabReadout: (readout: BrowserTabCoordinatorReadout) => BrowserReadoutSinkResult<null>,
 ): DarkHallBrowserPwaOptions {
   const scope = options.serviceWorkerScope ?? "./";
   return {
@@ -360,6 +379,7 @@ function pwaOptions(
     capabilities: runtime.capabilities,
     checkpoint: "none",
     onDatabaseInvalidated,
+    onTabReadout,
     serviceWorker: {
       scriptUrl: options.serviceWorkerScriptUrl ?? "./sw.js",
       scope,
@@ -371,6 +391,11 @@ const defaultDatabaseLimits: ZetaDbTickLimits = {
   maxDeltas: 16,
   maxEntries: 64,
   maxCheckpointBytes: 64 * 1024,
+};
+
+const defaultDatabaseIntentLimits: BrowserDatabaseIntentLimits = {
+  maxIntents: 64,
+  maxLedgerBytes: 256 * 1024,
 };
 
 function selectPageDatabaseAdmission(
@@ -388,6 +413,81 @@ function selectPageDatabaseAdmission(
     `${nativeAdmission.feedback.code}: ${nativeAdmission.feedback.detail}`,
     nativeAdmission.feedback.severity,
   );
+}
+
+async function selectPageDatabaseIntentOutbox(
+  options: NativeDarkHallBrowserPageOptions,
+  root: unknown,
+  context: NativePageContext,
+): Promise<DarkHallBrowserPageResult<BrowserDatabaseIntentOutboxPort>> {
+  if (options.databaseIntentOutbox !== undefined) return succeeded(options.databaseIntentOutbox);
+
+  const native = await openNativeIndexedDbDatabaseIntentOutbox(root, {
+    databaseName: options.databaseIntentDatabaseName ?? `${options.databaseName ?? "zeta-browser-node"}-intents`,
+    storeName: options.databaseIntentStoreName ?? "database-intents",
+    limits: options.databaseIntentLimits ?? defaultDatabaseIntentLimits,
+  });
+  if (native.ok) return succeeded(native.value);
+  context.mount.setStatus(pageStatusFromSeverity(native.feedback.severity), "page-database-start-failed");
+  return failed(
+    "page-database-start-failed",
+    `${native.feedback.code}: ${native.feedback.detail}`,
+    native.feedback.severity,
+  );
+}
+
+function observePageDatabaseOutbox(
+  context: NativePageContext,
+  readout: BrowserDatabaseIntentReadout,
+): { readonly ok: true } | { readonly ok: false; readonly feedback: DarkHallBrowserPageFeedback } {
+  const attributes = [
+    ["data-database-outbox-admission", readout.admission],
+    ["data-database-outbox-pending", readout.pending.toString()],
+    ["data-database-outbox-refused", readout.refused.toString()],
+    ["data-database-outbox-bytes", readout.ledgerBytes.toString()],
+  ] as const;
+  for (const [name, value] of attributes) {
+    if (!context.mount.setAttribute(name, value)) {
+      return {
+        ok: false,
+        feedback: {
+          severity: "heat",
+          code: "page-status-update-failed",
+          detail: `The browser refused database outbox attribute ${name}.`,
+        },
+      };
+    }
+  }
+  return { ok: true };
+}
+
+function createPagePeerDarkRecovery(context: NativePageContext, localTabId: string): PagePeerDarkRecovery {
+  let database: BrowserZetaDbTabRuntime | null = null;
+  let pending = false;
+  let darkFingerprint = "[]";
+  const schedule = (): void => {
+    if (database === null) {
+      pending = true;
+      return;
+    }
+    pending = false;
+    void database.recoverPending().then((result) => {
+      context.mount.setAttribute("data-database-outbox-recovery", result.ok ? "complete" : result.feedback.severity);
+    });
+  };
+  return {
+    onTabReadout: (readout) => {
+      const nextFingerprint = JSON.stringify(readout.liveness.darkTabIds.filter((tabId) => tabId !== localTabId));
+      if (nextFingerprint === darkFingerprint) return { ok: true, value: null };
+      darkFingerprint = nextFingerprint;
+      if (nextFingerprint !== "[]") schedule();
+      return { ok: true, value: null };
+    },
+    install: (runtime) => {
+      database = runtime;
+      if (pending) schedule();
+    },
+  };
 }
 
 interface NativePageConfiguration {
@@ -504,6 +604,7 @@ async function startPagePwa(
   runtime: BrowserRuntimeProbeReadout,
   transcript: RoomRunTranscript,
   onDatabaseInvalidated: (invalidation: BrowserDatabaseInvalidation) => void,
+  onTabReadout: (readout: BrowserTabCoordinatorReadout) => BrowserReadoutSinkResult<null>,
 ): Promise<DarkHallBrowserPageResult<DarkHallBrowserPwaRuntime>> {
   const { context, root, nodeId, tabId, sequence } = configuration;
   if (!context.mount.setStatus("starting")) {
@@ -513,7 +614,17 @@ async function startPagePwa(
   let started;
   try {
     started = await startNativeDarkHallPwa(
-      pwaOptions({ ...options, transcript }, root, context, runtime, nodeId, tabId, sequence, onDatabaseInvalidated),
+      pwaOptions(
+        { ...options, transcript },
+        root,
+        context,
+        runtime,
+        nodeId,
+        tabId,
+        sequence,
+        onDatabaseInvalidated,
+        onTabReadout,
+      ),
     );
   } catch {
     context.mount.setStatus("heat", "page-start-threw");
@@ -525,6 +636,27 @@ async function startPagePwa(
   return failed("page-start-failed", `${started.feedback.code}: ${started.feedback.detail}`, started.feedback.severity);
 }
 
+async function startPageEdges(
+  options: NativeDarkHallBrowserPageOptions,
+  configuration: NativePageConfiguration,
+  runtime: BrowserRuntimeProbeReadout,
+  transcript: RoomRunTranscript,
+  onDatabaseInvalidated: (invalidation: BrowserDatabaseInvalidation) => void,
+  onTabReadout: (readout: BrowserTabCoordinatorReadout) => BrowserReadoutSinkResult<null>,
+): Promise<
+  DarkHallBrowserPageResult<{
+    readonly pwa: DarkHallBrowserPwaRuntime;
+    readonly outbox: BrowserDatabaseIntentOutboxPort;
+  }>
+> {
+  const pwa = await startPagePwa(options, configuration, runtime, transcript, onDatabaseInvalidated, onTabReadout);
+  if (!pwa.ok) return pwa;
+  const outbox = await selectPageDatabaseIntentOutbox(options, configuration.root, configuration.context);
+  if (outbox.ok) return succeeded({ pwa: pwa.value, outbox: outbox.value });
+  pwa.value.browser.host.stop();
+  return outbox;
+}
+
 async function hydratePageDatabase(
   context: NativePageContext,
   pwa: DarkHallBrowserPwaRuntime,
@@ -533,6 +665,17 @@ async function hydratePageDatabase(
   receiveDatabaseInvalidation: (invalidation: BrowserDatabaseInvalidation) => void,
   observedDatabase: () => DarkHallDatabaseReadout | null,
 ): Promise<DarkHallBrowserPageResult<DarkHallDatabaseReadout>> {
+  const recovered = await database.recoverPending();
+  if (!recovered.ok) {
+    return databaseFailure(
+      context,
+      pwa,
+      database,
+      "page-database-hydration-failed",
+      `${recovered.feedback.code}: ${recovered.feedback.detail}`,
+      recovered.feedback.severity,
+    );
+  }
   const hydrated = await database.tick([]);
   if (!hydrated.ok) {
     return databaseFailure(
@@ -594,6 +737,7 @@ export async function startNativeDarkHallBrowserPage(
   let selectedControllerCell: number | null = null;
   const controllerTranscript = (): RoomRunTranscript =>
     controllerTranscriptWithState(suppliedTranscript, editorReady, replaceReady, selectedControllerCell);
+  const peerDarkRecovery = createPagePeerDarkRecovery(context, tabId);
 
   let receiveDatabaseInvalidation: ((invalidation: BrowserDatabaseInvalidation) => void) | null = null;
   let startupDatabaseInvalidation: BrowserDatabaseInvalidation | null = null;
@@ -612,16 +756,17 @@ export async function startNativeDarkHallBrowserPage(
   };
 
   const runtimeProbe = probeBrowserRuntime(root);
-  const pwaResult = await startPagePwa(
+  const edges = await startPageEdges(
     options,
     configuration.value,
     runtimeProbe,
     controllerTranscript(),
     onDatabaseInvalidated,
+    peerDarkRecovery.onTabReadout,
   );
-  if (!pwaResult.ok) return pwaResult;
+  if (!edges.ok) return edges;
 
-  const pwa: DarkHallBrowserPwaRuntime = pwaResult.value;
+  const { pwa, outbox } = edges.value;
   let latestDatabase: DarkHallDatabaseReadout | null = null;
   const observedDatabase = (): DarkHallDatabaseReadout | null => latestDatabase;
   let latestController: DarkHallBrowserDatabaseControllerReadout | null = null;
@@ -630,6 +775,7 @@ export async function startNativeDarkHallBrowserPage(
     executorId: tabId,
     limits: databaseLimits,
     admission: databaseExecutionAdmission,
+    outbox,
     execute:
       options.databaseExecutor ??
       ((request) =>
@@ -655,10 +801,12 @@ export async function startNativeDarkHallBrowserPage(
             },
           };
     },
+    observeOutbox: (readout) => observePageDatabaseOutbox(context, readout),
     publishInvalidation: (nextDatabaseNodeId, revision) =>
       pwa.browser.host.publishDatabaseInvalidation(nextDatabaseNodeId, revision),
   });
   if (!databaseStarted.ok) {
+    outbox.close();
     return databaseFailure(
       context,
       pwa,
@@ -669,6 +817,7 @@ export async function startNativeDarkHallBrowserPage(
     );
   }
   const database = databaseStarted.value;
+  peerDarkRecovery.install(database);
   receiveDatabaseInvalidation = (invalidation) => {
     database.receiveInvalidation(invalidation);
   };
@@ -975,7 +1124,7 @@ export function renderDarkHallBrowserNodeDocument(): string {
     '<body data-browser-page="active">',
     '<nav class="zeta-room-nav"><a href="./">&larr; static room</a><span>active browser node</span></nav>',
     renderDarkHallBrowserRowCommandEditorHtml(),
-    `<main id="${DARK_HALL_BROWSER_PAGE_MOUNT_ID}" data-pwa-status="starting" aria-live="polite">`,
+    `<main id="${DARK_HALL_BROWSER_PAGE_MOUNT_ID}" data-pwa-status="starting" data-database-outbox-admission="open" data-database-outbox-pending="0" data-database-outbox-refused="0" data-database-outbox-bytes="0" data-database-outbox-recovery="idle" aria-live="polite">`,
     renderDarkHallRoomHtml(DARK_HALL_BROWSER_PAGE_TRANSCRIPT),
     "</main>",
     '<noscript><nav class="zeta-room-nav"><a href="./">static room</a></nav></noscript>',

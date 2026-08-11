@@ -14,7 +14,7 @@ import {
   type BrowserTabChannelSelection,
   type BrowserTabTransportReadout,
 } from "../browser-node/browser-tab-channel-selector";
-import type { BrowserTabChannel } from "../browser-node/browser-tab-coordinator";
+import type { BrowserTabChannel, BrowserTabCoordinatorReadout } from "../browser-node/browser-tab-coordinator";
 import { createDarkHallBrowserTabSink, createNativeDarkHallRoomMount } from "./darkhall-browser-tab-sink";
 import type { DarkHallDatabaseReadout } from "./darkhall-database-readout";
 import type { RoomRunTranscript } from "./darkhall-room";
@@ -44,6 +44,7 @@ export interface DarkHallBrowserBootstrapOptions extends Omit<BrowserLifecycleHo
   readonly transcript: RoomRunTranscript;
   readonly mount: unknown;
   readonly root?: unknown;
+  readonly onTabReadout?: (readout: BrowserTabCoordinatorReadout) => BrowserReadoutSinkResult<null>;
 }
 
 export interface DarkHallBrowserRuntime {
@@ -84,6 +85,7 @@ export function startNativeDarkHallBrowser(
     channelName,
     channel: suppliedChannel,
     transcript,
+    onTabReadout,
     ...hostOptions
   } = options;
   const root = suppliedRoot === undefined ? globalThis : suppliedRoot;
@@ -131,12 +133,21 @@ export function startNativeDarkHallBrowser(
   const channel: BrowserTabChannelSelection = selection.value;
 
   const sink = createDarkHallBrowserTabSink(transcript, mount.value, channel.readout);
+  const observedSink =
+    onTabReadout === undefined
+      ? sink
+      : {
+          write: (readout: BrowserTabCoordinatorReadout) => {
+            const rendered = sink.write(readout);
+            return rendered.ok ? onTabReadout(readout) : rendered;
+          },
+        };
   const host = startBrowserLifecycleHost(
     { ...hostOptions, initialState: initialState(visibility.value) },
     channel.channel,
     lifecycle.value,
     sequence.value,
-    sink,
+    observedSink,
   );
   if (!host.ok) {
     const cleanup = channel.channel.close();

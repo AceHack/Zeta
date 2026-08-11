@@ -8,7 +8,7 @@ interface TestLock {
 }
 
 interface TestLockOptions {
-  readonly ifAvailable: boolean;
+  readonly ifAvailable?: boolean;
   readonly mode: "exclusive";
 }
 
@@ -69,10 +69,18 @@ describe("native browser execution admission", () => {
         value: 7,
       },
     });
+    expect(await port.runWhenAvailable?.("database/browser-global", () => Promise.resolve(8))).toMatchObject({
+      ok: true,
+      value: { status: "admitted", value: 8 },
+    });
     expect(locks.requests).toEqual([
       {
         name: "zeta:database/browser-global",
         options: { ifAvailable: true, mode: "exclusive" },
+      },
+      {
+        name: "zeta:database/browser-global",
+        options: { mode: "exclusive" },
       },
     ]);
   });

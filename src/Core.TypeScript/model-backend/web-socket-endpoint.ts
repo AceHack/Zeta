@@ -48,23 +48,53 @@ export interface FrameCodec<TN, TF> {
   decode(data: string): Frame<TN, TF> | null;
 }
 
+const BIGINT_WIRE_TAG = "zeta.bigint.v1";
+
+function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function taggedBigIntReplacer(_key: string, value: unknown): unknown {
+  return typeof value === "bigint" ? { [BIGINT_WIRE_TAG]: value.toString() } : value;
+}
+
+function taggedBigIntReviver(_key: string, value: unknown): unknown {
+  if (!isRecord(value) || Object.keys(value).length !== 1) return value;
+  const encoded = value[BIGINT_WIRE_TAG];
+  return typeof encoded === "string" && /^-?(?:0|[1-9][0-9]*)$/.test(encoded) ? BigInt(encoded) : value;
+}
+
+function decodeJsonFrame<TN, TF>(
+  data: string,
+  reviver?: (key: string, value: unknown) => unknown,
+): Frame<TN, TF> | null {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(data, reviver);
+  } catch {
+    return null;
+  }
+  if (!isRecord(parsed)) return null;
+  const channel = parsed.channel;
+  return channel === "normal" || channel === "feedback" || channel === "close"
+    ? (parsed as unknown as Frame<TN, TF>)
+    : null;
+}
+
 /// The default JSON codec. Payloads must be JSON-serializable (the honest cost of a real wire). `decode`
 /// validates the `channel` tag and returns null otherwise — an unrecognized message never crashes inbound.
 export function jsonFrameCodec<TN, TF>(): FrameCodec<TN, TF> {
   return {
     encode: (frame) => JSON.stringify(frame),
-    decode: (data) => {
-      let parsed: unknown;
-      try {
-        parsed = JSON.parse(data);
-      } catch {
-        return null;
-      }
-      if (typeof parsed !== "object" || parsed === null) return null;
-      const ch = (parsed as { channel?: unknown }).channel;
-      if (ch === "normal" || ch === "feedback" || ch === "close") return parsed as Frame<TN, TF>;
-      return null;
-    },
+    decode: (data) => decodeJsonFrame<TN, TF>(data),
+  };
+}
+
+/** JSON frame codec for payloads that carry ZetaId or other bigint values. */
+export function taggedBigIntJsonFrameCodec<TN, TF>(): FrameCodec<TN, TF> {
+  return {
+    encode: (frame) => JSON.stringify(frame, taggedBigIntReplacer),
+    decode: (data) => decodeJsonFrame<TN, TF>(data, taggedBigIntReviver),
   };
 }
 
@@ -105,7 +135,10 @@ function asyncQueue<T>() {
 
 /// A `DuplexEndpoint` over an injected `DuplexSocket`: send encodes+ships a frame (a `close` frame also
 /// closes the socket); inbound decodes incoming messages and yields frames until the socket closes.
-export function webSocketEndpoint<TN, TF>(socket: DuplexSocket, codec: FrameCodec<TN, TF> = jsonFrameCodec<TN, TF>()): DuplexEndpoint<TN, TF> {
+export function webSocketEndpoint<TN, TF>(
+  socket: DuplexSocket,
+  codec: FrameCodec<TN, TF> = jsonFrameCodec<TN, TF>(),
+): DuplexEndpoint<TN, TF> {
   const q = asyncQueue<Frame<TN, TF>>();
   socket.onMessage((data) => {
     const frame = codec.decode(data);

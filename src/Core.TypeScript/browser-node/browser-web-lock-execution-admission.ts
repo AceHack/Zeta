@@ -47,6 +47,52 @@ function admissionMatches<T>(value: unknown, resourceId: string): value is Brows
   );
 }
 
+async function runNativeBrowserLock<T>(
+  request: UnknownMethod,
+  lockManager: unknown,
+  resourceId: string,
+  operation: () => Promise<T>,
+  wait: boolean,
+): Promise<BrowserExecutionAdmissionResult<T>> {
+  if (!isBrowserExecutionResourceId(resourceId)) {
+    return browserExecutionAdmissionFailed(
+      "execution-admission-configuration-invalid",
+      "Execution admission resource identifiers must contain 1 to 1024 printable characters.",
+    );
+  }
+
+  const lockName = `zeta:${resourceId}`;
+  const options = wait ? { mode: "exclusive" } : { ifAvailable: true, mode: "exclusive" };
+  try {
+    const requested = Reflect.apply(request, lockManager, [
+      lockName,
+      options,
+      async (lock: unknown): Promise<BrowserExecutionAdmissionResult<T>> => {
+        if (lock === null) return browserExecutionBusy(resourceId);
+        if (!lockMatches(lock, lockName)) {
+          return browserExecutionAdmissionFailed(
+            "execution-admission-invalid",
+            `The browser returned invalid lock evidence for ${resourceId}.`,
+          );
+        }
+        return browserExecutionAdmitted(resourceId, await operation());
+      },
+    ]);
+    const result = await Promise.resolve(requested);
+    return admissionMatches<T>(result, resourceId)
+      ? result
+      : browserExecutionAdmissionFailed(
+          "execution-admission-invalid",
+          `The browser returned an invalid admission result for ${resourceId}.`,
+        );
+  } catch (error) {
+    return browserExecutionAdmissionFailed(
+      "execution-admission-request-failed",
+      `The browser lock request for ${resourceId} failed: ${errorDetail(error)}`,
+    );
+  }
+}
+
 /** Build the native cross-tab adapter without exposing Web Locks to the database core. */
 export function createNativeBrowserExecutionAdmission(root: unknown): BrowserExecutionAdmissionPortResult {
   if (!isRecord(root)) {
@@ -86,47 +132,10 @@ export function createNativeBrowserExecutionAdmission(root: unknown): BrowserExe
   return {
     ok: true,
     value: {
-      tryRun: async <T>(
-        resourceId: string,
-        operation: () => Promise<T>,
-      ): Promise<BrowserExecutionAdmissionResult<T>> => {
-        if (!isBrowserExecutionResourceId(resourceId)) {
-          return browserExecutionAdmissionFailed(
-            "execution-admission-configuration-invalid",
-            "Execution admission resource identifiers must contain 1 to 1024 printable characters.",
-          );
-        }
-
-        const lockName = `zeta:${resourceId}`;
-        try {
-          const requested = Reflect.apply(request, lockManager, [
-            lockName,
-            { ifAvailable: true, mode: "exclusive" },
-            async (lock: unknown): Promise<BrowserExecutionAdmissionResult<T>> => {
-              if (lock === null) return browserExecutionBusy(resourceId);
-              if (!lockMatches(lock, lockName)) {
-                return browserExecutionAdmissionFailed(
-                  "execution-admission-invalid",
-                  `The browser returned invalid lock evidence for ${resourceId}.`,
-                );
-              }
-              return browserExecutionAdmitted(resourceId, await operation());
-            },
-          ]);
-          const result = await Promise.resolve(requested);
-          return admissionMatches<T>(result, resourceId)
-            ? result
-            : browserExecutionAdmissionFailed(
-                "execution-admission-invalid",
-                `The browser returned an invalid admission result for ${resourceId}.`,
-              );
-        } catch (error) {
-          return browserExecutionAdmissionFailed(
-            "execution-admission-request-failed",
-            `The browser lock request for ${resourceId} failed: ${errorDetail(error)}`,
-          );
-        }
-      },
+      tryRun: <T>(resourceId: string, operation: () => Promise<T>) =>
+        runNativeBrowserLock(request, lockManager, resourceId, operation, false),
+      runWhenAvailable: <T>(resourceId: string, operation: () => Promise<T>) =>
+        runNativeBrowserLock(request, lockManager, resourceId, operation, true),
     },
   };
 }

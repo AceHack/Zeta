@@ -111,14 +111,16 @@ function response(body: string, contentType: string): Response {
 
 async function waitForReady(page: Page): Promise<void> {
   await page.waitForFunction(
-    `() => {
-      const started = globalThis.__zetaDarkHallPage;
+    () => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
       if (started?.ok !== true) return false;
       const readout = started.value.read();
-      return readout.registration.status === "controlled" &&
+      return (
+        readout.registration.status === "controlled" &&
         readout.transport.selected === "service-worker" &&
-        readout.database.revision >= 0;
-    }`,
+        readout.database.revision >= 0
+      );
+    },
     undefined,
     { timeout: timeoutMs },
   );
@@ -126,13 +128,15 @@ async function waitForReady(page: Page): Promise<void> {
 
 async function waitForDatabase(page: Page, revision: number, payload: string): Promise<void> {
   await page.waitForFunction(
-    `([expectedRevision, expectedPayload]) => {
-      const started = globalThis.__zetaDarkHallPage;
+    ([expectedRevision, expectedPayload]) => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
       if (started?.ok !== true) return false;
       const database = started.value.read().database;
-      return database.revision === expectedRevision &&
-        database.rows.some((row) => row.rowKey === "game/score" && row.payload === expectedPayload && row.weight === 1);
-    }`,
+      return (
+        database.revision === expectedRevision &&
+        database.rows.some((row) => row.rowKey === "game/score" && row.payload === expectedPayload && row.weight === 1)
+      );
+    },
     [revision, payload],
     { timeout: timeoutMs },
   );
@@ -140,12 +144,12 @@ async function waitForDatabase(page: Page, revision: number, payload: string): P
 
 async function waitForDatabaseWithoutScore(page: Page, revision: number): Promise<void> {
   await page.waitForFunction(
-    `expectedRevision => {
-      const started = globalThis.__zetaDarkHallPage;
+    (expectedRevision) => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
       if (started?.ok !== true) return false;
       const database = started.value.read().database;
       return database.revision === expectedRevision && !database.rows.some((row) => row.rowKey === "game/score");
-    }`,
+    },
     revision,
     { timeout: timeoutMs },
   );
@@ -153,11 +157,12 @@ async function waitForDatabaseWithoutScore(page: Page, revision: number): Promis
 
 async function waitForTwoTabs(page: Page): Promise<void> {
   await page.waitForFunction(
-    `() => {
-      const started = globalThis.__zetaDarkHallPage;
-      return started?.ok === true &&
-        started.value.read().host.coordinator.liveness.liveTabIds.join(",") === "tab-a,tab-b";
-    }`,
+    () => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      return (
+        started?.ok === true && started.value.read().host.coordinator.liveness.liveTabIds.join(",") === "tab-a,tab-b"
+      );
+    },
     undefined,
     { timeout: timeoutMs },
   );
@@ -165,12 +170,14 @@ async function waitForTwoTabs(page: Page): Promise<void> {
 
 async function waitForSurvivor(page: Page): Promise<void> {
   await page.waitForFunction(
-    `() => {
-      const started = globalThis.__zetaDarkHallPage;
-      return started?.ok === true &&
+    () => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      return (
+        started?.ok === true &&
         started.value.read().host.coordinator.liveness.liveTabIds.join(",") === "tab-a" &&
-        started.value.read().host.coordinator.liveness.darkTabIds.includes("tab-b");
-    }`,
+        started.value.read().host.coordinator.liveness.darkTabIds.includes("tab-b")
+      );
+    },
     undefined,
     { timeout: timeoutMs },
   );
@@ -178,12 +185,13 @@ async function waitForSurvivor(page: Page): Promise<void> {
 
 async function waitForControllerInput(page: Page, source: "keyboard" | "pointer", cell: number): Promise<void> {
   await page.waitForFunction(
-    `([expectedSource, expectedCell]) => {
-      const started = globalThis.__zetaDarkHallPage;
+    ([expectedSource, expectedCell]) => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
       if (started?.ok !== true) return false;
       const input = started.value.read().input;
-      return input.accepted >= 1 && input.last?.source === expectedSource && input.last.cell === expectedCell;
-    }`,
+      const last = input.last;
+      return input.accepted >= 1 && last !== null && last.source === expectedSource && last.cell === expectedCell;
+    },
     [source, cell],
     { timeout: timeoutMs },
   );
@@ -504,8 +512,10 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
     await pageB.fill("[data-row-command-payload]", "9000");
     await pageB.fill("[data-row-command-magnitude]", "1");
     await pageB.waitForFunction(
-      `() => globalThis.__zetaDarkHallPage?.ok === true &&
-        globalThis.__zetaDarkHallPage.value.read().editor.validity === "ready"`,
+      () => {
+        const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+        return started?.ok === true && started.value.read().editor.validity === "ready";
+      },
       undefined,
       { timeout: timeoutMs },
     );
@@ -517,8 +527,10 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
     await pageB.fill("[data-row-command-payload]", "unselected");
     await pageB.fill("[data-row-command-magnitude]", "7");
     await pageB.waitForFunction(
-      `() => globalThis.__zetaDarkHallPage?.ok === true &&
-        globalThis.__zetaDarkHallPage.value.read().editor.validity === "incomplete"`,
+      () => {
+        const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+        return started?.ok === true && started.value.read().editor.validity === "incomplete";
+      },
       undefined,
       { timeout: timeoutMs },
     );

@@ -1,4 +1,8 @@
 import { describe, expect, test } from "bun:test";
+import {
+  createInMemoryBrowserDatabaseIntentOutbox,
+  type BrowserDatabaseIntentOutboxPort,
+} from "../browser-node/browser-database-intent-outbox";
 import { BROWSER_TAB_COORDINATOR_SCHEMA, type BrowserTabChannelMessage } from "../browser-node/browser-tab-coordinator";
 import { SLOT } from "../observe/grammar-16";
 import type { ZetaDbTickReadout, ZetaDbTickRequest } from "../zetadb/zeta-db-node";
@@ -229,6 +233,12 @@ function databaseExecutor(
   return Promise.resolve({ ok: true, value: databaseReadout(request) });
 }
 
+function databaseIntentOutbox(): BrowserDatabaseIntentOutboxPort {
+  const created = createInMemoryBrowserDatabaseIntentOutbox({ maxIntents: 16, maxLedgerBytes: 64 * 1024 });
+  if (!created.ok) throw new Error(created.feedback.detail);
+  return created.value;
+}
+
 async function waitFor(predicate: () => boolean): Promise<void> {
   for (let attempt = 0; attempt < 100; attempt += 1) {
     if (predicate()) return;
@@ -243,6 +253,7 @@ describe("Dark Hall active browser page", () => {
     const requests: ZetaDbTickRequest[] = [];
     const started = await startNativeDarkHallBrowserPage({
       root,
+      databaseIntentOutbox: databaseIntentOutbox(),
       databaseExecutor: (request) => {
         requests.push(request);
         return databaseExecutor(request);
@@ -315,6 +326,9 @@ describe("Dark Hall active browser page", () => {
     expect(root.mount.attributes.get("data-pwa-registration")).toBe("controlled");
     expect(root.mount.attributes.get("data-browser-transport")).toBe("service-worker");
     expect(root.mount.attributes.get("data-browser-tab")).toBe("tab-a");
+    expect(root.mount.attributes.get("data-database-outbox-admission")).toBe("open");
+    expect(root.mount.attributes.get("data-database-outbox-pending")).toBe("0");
+    expect(root.mount.attributes.get("data-database-outbox-refused")).toBe("0");
     expect(root.mount.innerHTML).toContain('data-browser-local-tab="tab-a"');
     expect(root.mount.innerHTML).toContain('data-database-revision="7"');
     expect(root.mount.innerHTML).toContain("game/score");
@@ -455,10 +469,95 @@ describe("Dark Hall active browser page", () => {
     expect(root.editor.listeners.get("input")?.size ?? 0).toBe(0);
   });
 
+  test("recovers durable pending database work before the first hydration read", async () => {
+    const root = new NativeBrowserRoot();
+    const outbox = databaseIntentOutbox();
+    const enqueued = await outbox.enqueue({
+      databaseNodeId: "zeta-darkhall-browser-node:database",
+      intentId: "event/recovered",
+      expectedRevision: null,
+      deltas: [{ eventId: "event/recovered", rowKey: "game/score", payload: "17", weight: 1 }],
+    });
+    expect(enqueued.ok).toBe(true);
+    const requests: ZetaDbTickRequest[] = [];
+
+    const started = await startNativeDarkHallBrowserPage({
+      root,
+      databaseIntentOutbox: outbox,
+      databaseExecutor: (request) => {
+        requests.push(request);
+        return Promise.resolve({ ok: true, value: databaseReadout(request, 1, "17") });
+      },
+    });
+
+    expect(started).toMatchObject({ ok: true, value: {} });
+    expect(requests).toHaveLength(2);
+    expect(requests[0]).toMatchObject({
+      requireComplete: true,
+      deltas: [{ eventId: "event/recovered", rowKey: "game/score", payload: "17", weight: 1 }],
+    });
+    expect(requests[1]?.deltas).toEqual([]);
+    expect(root.mount.attributes.get("data-database-outbox-pending")).toBe("0");
+    expect(root.mount.attributes.get("data-database-outbox-refused")).toBe("0");
+    if (started.ok) expect(started.value.stop().ok).toBe(true);
+  });
+
+  test("recovers pending database work when a peer tab becomes dark", async () => {
+    const root = new NativeBrowserRoot();
+    const outbox = databaseIntentOutbox();
+    const requests: ZetaDbTickRequest[] = [];
+    const started = await startNativeDarkHallBrowserPage({
+      root,
+      databaseIntentOutbox: outbox,
+      databaseExecutor: (request) => {
+        requests.push(request);
+        return Promise.resolve({ ok: true, value: databaseReadout(request, request.deltas.length > 0 ? 1 : 0, "23") });
+      },
+    });
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+    const enqueued = await outbox.enqueue({
+      databaseNodeId: "zeta-darkhall-browser-node:database",
+      intentId: "event/peer-dark",
+      expectedRevision: null,
+      deltas: [{ eventId: "event/peer-dark", rowKey: "game/score", payload: "23", weight: 1 }],
+    });
+    expect(enqueued.ok).toBe(true);
+
+    root.serviceWorker.dispatch({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: "zeta-darkhall-browser-node",
+      kind: "presence",
+      presence: { tabId: "tab-b", sequence: 1, state: "foreground" },
+    });
+    root.serviceWorker.dispatch({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: "zeta-darkhall-browser-node",
+      kind: "presence",
+      presence: { tabId: "tab-b", sequence: 2, state: "dark" },
+    });
+    await waitFor(() => requests.length === 2);
+    await waitFor(() => root.mount.attributes.get("data-database-outbox-recovery") === "complete");
+
+    expect(requests[1]).toMatchObject({
+      requireComplete: true,
+      deltas: [{ eventId: "event/peer-dark", rowKey: "game/score", payload: "23", weight: 1 }],
+    });
+    expect(await outbox.read("zeta-darkhall-browser-node:database")).toMatchObject({
+      ok: true,
+      value: { pending: 0, refused: 0 },
+    });
+    expect(started.value.stop().ok).toBe(true);
+  });
+
   test("mints a per-tab identity when the active URL does not provide one", async () => {
     const root = new NativeBrowserRoot();
     root.location.search = "";
-    const started = await startNativeDarkHallBrowserPage({ root, databaseExecutor });
+    const started = await startNativeDarkHallBrowserPage({
+      root,
+      databaseIntentOutbox: databaseIntentOutbox(),
+      databaseExecutor,
+    });
 
     expect(started).toMatchObject({ ok: true, value: {} });
     if (started.ok) {
@@ -471,6 +570,7 @@ describe("Dark Hall active browser page", () => {
     const root = new NativeBrowserRoot();
     const result = await startNativeDarkHallBrowserPage({
       root,
+      databaseIntentOutbox: databaseIntentOutbox(),
       databaseExecutor: () =>
         Promise.resolve({
           ok: false,
@@ -517,6 +617,7 @@ describe("Dark Hall active browser page", () => {
     const hydrationGate: { release?: () => void } = {};
     const starting = startNativeDarkHallBrowserPage({
       root,
+      databaseIntentOutbox: databaseIntentOutbox(),
       databaseExecutor: (request) => {
         requests.push(request);
         if (requests.length > 1) {

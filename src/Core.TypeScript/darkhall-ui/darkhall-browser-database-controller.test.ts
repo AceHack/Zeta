@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { createInMemoryBrowserExecutionAdmission } from "../browser-node/browser-execution-admission";
+import { createInMemoryBrowserDatabaseIntentOutbox } from "../browser-node/browser-database-intent-outbox";
 import {
   createInMemoryZetaDbImagePort,
   runZetaDbNodeTick,
@@ -164,13 +165,18 @@ describe("Dark Hall browser database controller", () => {
 
   test("backpressures stale replacement without a partial retraction", async () => {
     const port = createInMemoryZetaDbImagePort();
+    const outbox = createInMemoryBrowserDatabaseIntentOutbox({ maxIntents: 16, maxLedgerBytes: 64 * 1024 });
+    expect(outbox.ok).toBe(true);
+    if (!outbox.ok) return;
     const runtimeStarted = startBrowserZetaDbTabRuntime({
       databaseNodeId: "database-a",
       executorId: "tab-a",
       limits: { maxDeltas: 8, maxEntries: 32, maxCheckpointBytes: 32 * 1024 },
       admission: createInMemoryBrowserExecutionAdmission(),
+      outbox: outbox.value,
       execute: (request) => runZetaDbNodeTick(port, request),
       observe: () => ({ ok: true }),
+      observeOutbox: () => ({ ok: true }),
       publishInvalidation: () => ({ ok: true }),
     });
     expect(runtimeStarted.ok).toBe(true);

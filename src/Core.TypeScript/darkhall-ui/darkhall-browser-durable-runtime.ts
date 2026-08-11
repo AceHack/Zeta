@@ -261,6 +261,7 @@ function bootstrapOptions(
     root: options.root,
     mount: options.mount,
     channelName: options.channelName,
+    ...(options.channel === undefined ? {} : { channel: options.channel }),
     nodeId: options.nodeId,
     tabId: options.tabId,
     initialSequence: options.initialSequence,
@@ -270,6 +271,7 @@ function bootstrapOptions(
     checkpoint,
     transcript,
     onCheckpointInvalidated,
+    ...(options.onTabReadout === undefined ? {} : { onTabReadout: options.onTabReadout }),
     ...(options.onDatabaseInvalidated === undefined ? {} : { onDatabaseInvalidated: options.onDatabaseInvalidated }),
   };
 }

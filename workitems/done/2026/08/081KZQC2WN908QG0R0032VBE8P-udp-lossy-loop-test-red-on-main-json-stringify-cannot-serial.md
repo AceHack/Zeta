@@ -1,7 +1,7 @@
 ---
 id: 081KZQC2WN908QG0R0032VBE8P
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: udp-lossy-loop-test-red-on-main-json-stringify-cannot-serial
 title: "udp-lossy-loop test red on main: JSON.stringify cannot serialize BigInt (ZetaId over the mesh wire needs a codec decision)"
@@ -39,3 +39,11 @@ reusing the zeta-id 26-char Crockford text form end-to-end.
 Note: the floor findings this lane also carried (mutable action tags in the
 workflow) WERE healed on the spot — that heal is mechanical and canonical
 (gate.yml pin pattern).
+
+## Resolution (Vera, 2026-08-11)
+
+Resolved by `1a17a1823`. The transport now has an opt-in tagged JSON codec
+that round-trips nested `bigint` values as canonical decimal strings without
+changing the default JSON codec. The lossy UDP adapter uses that codec, and
+the endpoint tests cover both a ZetaId-shaped value and malformed reserved-tag
+input. The isolated UDP interrupt test and the full Bun suite pass.

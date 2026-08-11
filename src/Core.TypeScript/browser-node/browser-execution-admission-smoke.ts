@@ -58,9 +58,12 @@ function htmlDocument(): string {
 }
 
 async function waitForReady(page: Page): Promise<void> {
-  await page.waitForFunction(`() => globalThis.__zetaBrowserExecutionAdmission?.read().status === "ready"`, undefined, {
-    timeout: timeoutMs,
-  });
+  await page.waitForFunction(
+    () =>
+      (globalThis as unknown as BrowserAdmissionSmokeGlobal).__zetaBrowserExecutionAdmission?.read().status === "ready",
+    undefined,
+    { timeout: timeoutMs },
+  );
 }
 
 async function run(page: Page, value: string): Promise<BrowserExecutionAdmissionResult<string>> {
@@ -130,7 +133,9 @@ export async function runBrowserExecutionAdmissionSmoke(): Promise<BrowserExecut
       api.hold();
     });
     await pageA.waitForFunction(
-      `() => globalThis.__zetaBrowserExecutionAdmission?.read().status === "holding"`,
+      () =>
+        (globalThis as unknown as BrowserAdmissionSmokeGlobal).__zetaBrowserExecutionAdmission?.read().status ===
+        "holding",
       undefined,
       { timeout: timeoutMs },
     );

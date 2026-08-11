@@ -9,6 +9,7 @@ import { encodeBrowserRoomCheckpoint } from "../browser-node/browser-room-checkp
 import { BROWSER_NODE_SCHEMA } from "../browser-node/browser-node";
 import {
   BROWSER_TAB_COORDINATOR_SCHEMA,
+  type BrowserTabChannel,
   type BrowserCheckpointInvalidation,
   type BrowserTabCoordinatorReadout,
 } from "../browser-node/browser-tab-coordinator";
@@ -255,6 +256,26 @@ function checkpointRecord(revision: number, transcript: RoomRunTranscript): Brow
 }
 
 describe("durable Dark Hall browser runtime", () => {
+  test("forwards the injected channel and tab observer through the durable boundary", async () => {
+    const channel: BrowserTabChannel = {
+      publish: () => ({ ok: true, value: null }),
+      subscribe: () => ({
+        ok: true,
+        value: { unsubscribe: () => ({ ok: true, value: null }) },
+      }),
+      close: () => ({ ok: true, value: null }),
+    };
+    const onTabReadout = () => ({ ok: true as const, value: null });
+    const port = new MemoryCheckpointPort();
+    const starter = createStarter();
+
+    const started = await startDurableDarkHallBrowser({ ...options(), channel, onTabReadout }, port, starter.start);
+
+    expect(started.ok).toBe(true);
+    expect(starter.starts[0]?.channel).toBe(channel);
+    expect(starter.starts[0]?.onTabReadout).toBe(onTabReadout);
+  });
+
   test("starts cold, checkpoints an advanced transcript, and retracts to the initial room", async () => {
     const port = new MemoryCheckpointPort();
     const starter = createStarter();

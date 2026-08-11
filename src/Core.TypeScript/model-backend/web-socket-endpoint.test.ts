@@ -1,6 +1,13 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { fourCornerOverDuplex } from "./duplex-transport.ts";
-import { type DuplexSocket, fakeDuplexSocketPair, jsonFrameCodec, platformWebSocket, webSocketEndpoint } from "./web-socket-endpoint.ts";
+import {
+  type DuplexSocket,
+  fakeDuplexSocketPair,
+  jsonFrameCodec,
+  platformWebSocket,
+  taggedBigIntJsonFrameCodec,
+  webSocketEndpoint,
+} from "./web-socket-endpoint.ts";
 
 // DUPLEXENDPOINT OVER A REAL WEBSOCKET (shadow*, Aaron 2026-07-04 "wire it over a real WebSocket — just one
 // of our many transports"). Anchored to AceHack/MultiplexedWebSockets. Proofs:
@@ -26,6 +33,21 @@ describe("web-socket-endpoint — codec + fake socket", () => {
     expect(codec.decode(enc)).toEqual({ channel: "normal", payload: "hi" });
     expect(codec.decode("not json")).toBeNull();
     expect(codec.decode(JSON.stringify({ channel: "bogus" }))).toBeNull();
+  });
+
+  test("tagged bigint codec round-trips nested ZetaId-shaped payloads", () => {
+    const codec = taggedBigIntJsonFrameCodec<{ readonly traveler: { readonly id: bigint } }, never>();
+    const frame = { channel: "normal", payload: { traveler: { id: 1n << 127n } } } as const;
+
+    expect(codec.decode(codec.encode(frame))).toEqual(frame);
+    expect(
+      taggedBigIntJsonFrameCodec<unknown, never>().decode(
+        '{"channel":"normal","payload":{"zeta.bigint.v1":"not-an-integer"}}',
+      ),
+    ).toEqual({
+      channel: "normal",
+      payload: { "zeta.bigint.v1": "not-an-integer" },
+    });
   });
 
   test("four corners light over the fake socket pair (serialize→cross→deserialize)", async () => {
@@ -91,7 +113,8 @@ const server = Bun.serve<undefined>({
     message(ws, msg) {
       const frame = jsonFrameCodec<string, string>().decode(String(msg));
       // On a normal frame, reply with a feedback frame — proving the return corner over a real wire.
-      if (frame?.channel === "normal") ws.send(JSON.stringify({ channel: "feedback", payload: `ack:${frame.payload}` }));
+      if (frame?.channel === "normal")
+        ws.send(JSON.stringify({ channel: "feedback", payload: `ack:${frame.payload}` }));
     },
   },
 });
@@ -105,12 +128,20 @@ describe("web-socket-endpoint — REAL ws:// loopback", () => {
   test("a normal frame crosses a real WebSocket; the peer's feedback frame returns on feedbackIn", async () => {
     const ws = new WebSocket(url);
     await new Promise<void>((resolve, reject) => {
-      ws.addEventListener("open", () => {
-        resolve();
-      }, { once: true });
-      ws.addEventListener("error", () => {
-        reject(new Error("ws connection error"));
-      }, { once: true });
+      ws.addEventListener(
+        "open",
+        () => {
+          resolve();
+        },
+        { once: true },
+      );
+      ws.addEventListener(
+        "error",
+        () => {
+          reject(new Error("ws connection error"));
+        },
+        { once: true },
+      );
     });
     const wire = fourCornerOverDuplex(webSocketEndpoint<string, string>(platformWebSocket(ws)));
     await wire.sendNormal("ping");
