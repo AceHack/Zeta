@@ -46,6 +46,7 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { loadAllLedgers, viewOf } from "./mutation-freedoms";
+import { ESCAPE_INDEX, observeFinding, roomOf } from "./mutation-readout";
 
 /** A single mechanical edit. `find` must be a literal so application is exact and reversible. */
 export interface Mutation {
@@ -324,6 +325,19 @@ function main(): void {
             `  That is not an error — it means the specification is genuinely ambiguous here, which\n` +
             `  is worth knowing. Read their reason before writing a test that contradicts it.\n`
           : ""),
+    );
+
+    // The bounded action grammar for this finding. Printed rather than executed: the response is a
+    // CELL, not a flag, and an agent picks one — it cannot invent a response, and the menu it was
+    // shown is reconstructible from `rules` so the choice replays.
+    const readout = observeFinding(roomOf(finding), agent, ledgers);
+    console.error(`  ── what you may do (4x4 controller grammar, ${ESCAPE_INDEX + 1} cells) ──`);
+    for (const cell of readout.grid) {
+      if (cell) console.error(`    [${String(cell.index).padStart(2)}] ${cell.label}`);
+    }
+    console.error(
+      `    (empty slots are UNDEFINED, not forbidden — choosing one is how the grammar grows)\n` +
+        `    rules: ${readout.rulesApplied.join(" ")}\n`,
     );
     process.exit(3);
   }
