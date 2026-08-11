@@ -1,0 +1,106 @@
+{
+  "id": "society-msoeipuv",
+  "at": "2026-08-11T08:31:31.687Z",
+  "by": "society",
+  "kind": "evolution",
+  "generation": 1,
+  "agents": [
+    {
+      "id": "alexa",
+      "fitness": 0.3364210835908158,
+      "generation": 0
+    },
+    {
+      "id": "otto",
+      "fitness": 0.33134562520548144,
+      "generation": 0
+    },
+    {
+      "id": "gen1-0",
+      "fitness": 0,
+      "generation": 2
+    },
+    {
+      "id": "gen1-1",
+      "fitness": 0,
+      "generation": 2
+    }
+  ],
+  "meanFitness": 0.16694167719907432,
+  "fitnessSpread": 0.3364210835908158,
+  "geneticDiversity": 9.832150669324458,
+  "priorHints": [
+    {
+      "dimension": "schema",
+      "mu": 0,
+      "sigma2": 1,
+      "robustnessWeight": 1,
+      "obsCount": 0,
+      "senderZid": "society-runner"
+    },
+    {
+      "dimension": "type",
+      "mu": 0,
+      "sigma2": 1,
+      "robustnessWeight": 1,
+      "obsCount": 0,
+      "senderZid": "society-runner"
+    },
+    {
+      "dimension": "range",
+      "mu": 0,
+      "sigma2": 1,
+      "robustnessWeight": 1,
+      "obsCount": 0,
+      "senderZid": "society-runner"
+    },
+    {
+      "dimension": "constraint",
+      "mu": 0,
+      "sigma2": 1,
+      "robustnessWeight": 1,
+      "obsCount": 0,
+      "senderZid": "society-runner"
+    },
+    {
+      "dimension": "auth",
+      "mu": 0,
+      "sigma2": 1,
+      "robustnessWeight": 1,
+      "obsCount": 0,
+      "senderZid": "society-runner"
+    },
+    {
+      "dimension": "transport",
+      "mu": 0,
+      "sigma2": 1,
+      "robustnessWeight": 1,
+      "obsCount": 0,
+      "senderZid": "society-runner"
+    },
+    {
+      "dimension": "toolchain",
+      "mu": 0,
+      "sigma2": 1,
+      "robustnessWeight": 1,
+      "obsCount": 0,
+      "senderZid": "society-runner"
+    },
+    {
+      "dimension": "calibration",
+      "mu": 0,
+      "sigma2": 1,
+      "robustnessWeight": 1,
+      "obsCount": 0,
+      "senderZid": "society-runner"
+    },
+    {
+      "dimension": "unknown",
+      "mu": 0,
+      "sigma2": 1,
+      "robustnessWeight": 1,
+      "obsCount": 0,
+      "senderZid": "society-runner"
+    }
+  ]
+}
