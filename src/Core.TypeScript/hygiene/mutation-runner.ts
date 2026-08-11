@@ -45,6 +45,7 @@
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
+import { loadAllLedgers, viewOf } from "./mutation-freedoms";
 
 /** A single mechanical edit. `find` must be a literal so application is exact and reversible. */
 export interface Mutation {
@@ -150,11 +151,31 @@ export function pairWithTests(files: readonly string[], root: string): readonly 
   return out;
 }
 
+/**
+ * The NEUTRAL FACT the runner observes. Deliberately NOT `survived: boolean`.
+ *
+ * A boolean collapses a dual-use observation into one bit and picks the adversarial reading in the
+ * name. What the runner actually establishes is whether the suite could TELL THE VARIANTS APART —
+ * and whether that indistinguishability is a gap or a declared freedom is UNDECIDABLE in general
+ * (Budd & Angluin 1982). The runner is therefore not entitled to a verdict; it reports the fact and
+ * a declarer attaches the reading (`mutation-freedoms.ts`).
+ */
+export type Distinguishability =
+  /** The suite separated the variant from the baseline — it constrains this behaviour. */
+  | { readonly kind: "distinguished-by-suite" }
+  /** The suite could NOT separate them. Gap or freedom is the caller's oracle to decide. */
+  | { readonly kind: "indistinguishable-under-suite" };
+
 export interface Finding {
   readonly source: string;
   readonly test: string;
   readonly mutation: string;
-  readonly survived: boolean;
+  readonly distinguishability: Distinguishability;
+}
+
+/** Convenience predicate. Reads as the fact, not as a body count. */
+export function isIndistinguishable(f: Finding): boolean {
+  return f.distinguishability.kind === "indistinguishable-under-suite";
 }
 
 /**
@@ -175,8 +196,15 @@ export function runMutant(root: string, target: Target, m: Mutation): Finding {
       encoding: "utf8",
       timeout: 120_000,
     });
-    // Survived = the suite still passed with the code deliberately broken. That is the finding.
-    return { source: target.source, test: target.test, mutation: m.name, survived: r.status === 0 };
+    // The suite passing with the code deliberately changed means it could not tell the two apart.
+    // That is the FACT. Whether it is a gap or a freedom is not decided here.
+    return {
+      source: target.source,
+      test: target.test,
+      mutation: m.name,
+      distinguishability:
+        r.status === 0 ? { kind: "indistinguishable-under-suite" } : { kind: "distinguished-by-suite" },
+    };
   } finally {
     writeFileSync(srcPath, original);
   }
@@ -254,20 +282,72 @@ function main(): void {
 
   const finding = runMutant(root, target, mutation);
 
-  if (finding.survived) {
+  // The declarer's OWN view decides what is reportable — two agents may legitimately disagree
+  // about whether a dimension is a gap or a freedom, and that disagreement is preserved rather
+  // than averaged away (`mutation-freedoms.ts`).
+  const ledgers = loadAllLedgers(root);
+  const view = viewOf(ledgers, agent, {
+    source: finding.source,
+    test: finding.test,
+    mutation: finding.mutation,
+  });
+
+  if (isIndistinguishable(finding)) {
+    if (view.mine) {
+      // Coexisting: a dimension this declarer has already called free. Silent by design — the
+      // per-tick drift correction is that KNOWN freedoms stop costing attention, so what remains
+      // in the report is only what is genuinely unexplained.
+      console.log(
+        `[mutation] ~ indistinguishable, and DECLARED FREE by ${agent} — coexisting, not a finding.\n` +
+          `  ${finding.source} :: ${finding.test} :: ${finding.mutation}\n` +
+          `  reason: ${view.mine.reason}` +
+          (view.contested
+            ? `\n  NOTE: contested — other declarers do not all agree this is free.`
+            : ""),
+      );
+      return;
+    }
+
     console.error(
-      `\n[mutation] ✗ SURVIVING MUTANT — the suite PASSED with the code deliberately broken.\n` +
+      `\n[mutation] ✗ INDISTINGUISHABLE UNDER SUITE — and not declared free by ${agent}.\n` +
         `  file:     ${finding.source}\n` +
         `  suite:    ${finding.test}\n` +
         `  mutation: ${finding.mutation}\n\n` +
-        `  This is a FACT, not a judgement: ${finding.test} cannot distinguish the real\n` +
-        `  implementation from a broken one on this line. The test does not cover what it\n` +
-        `  appears to cover. Fix the test, then re-run and confirm it goes red.\n`,
+        `  This is a FACT, not a verdict: ${finding.test} cannot separate the real implementation\n` +
+        `  from this variant. Deciding whether that is a TEST GAP or a genuine DEGREE OF FREEDOM is\n` +
+        `  undecidable in general (Budd & Angluin 1982), so the runner does not decide it.\n\n` +
+        `  Two honest responses:\n` +
+        `    - under-specified   -> write the test, re-run, confirm it goes red;\n` +
+        `    - free by design    -> declare it in db/mutation-freedoms/${agent}.json with a REASON.\n` +
+        (view.othersDeclaring.length > 0
+          ? `\n  DISAGREEMENT: ${view.othersDeclaring.join(", ")} already declare this dimension free.\n` +
+            `  That is not an error — it means the specification is genuinely ambiguous here, which\n` +
+            `  is worth knowing. Read their reason before writing a test that contradicts it.\n`
+          : ""),
     );
     process.exit(3);
   }
 
-  console.log(`[mutation] ✓ killed — ${target.test} caught ${mutation.name}. The test does its job.`);
+  // Distinguished. Normally unremarkable — EXCEPT where someone declared this dimension free, in
+  // which case the specification just got TIGHTER and that is a finding today invisible.
+  if (view.mine || view.othersDeclaring.length > 0) {
+    const holders = [...(view.mine ? [agent] : []), ...view.othersDeclaring].join(", ");
+    console.error(
+      `\n[mutation] ! SPECIFICATION TIGHTENED — a dimension declared FREE is now constrained.\n` +
+        `  file:     ${finding.source}\n` +
+        `  suite:    ${finding.test}\n` +
+        `  mutation: ${finding.mutation}\n` +
+        `  declared free by: ${holders}\n\n` +
+        `  The suite now separates a variant that was previously believed unconstrained. Either a\n` +
+        `  test was added deliberately — retract the freedom, giving a reason — or a test began\n` +
+        `  constraining something by accident, which is drift in the other direction.\n`,
+    );
+    process.exit(4);
+  }
+
+  console.log(
+    `[mutation] ✓ distinguished — ${target.test} separates ${mutation.name}. The suite constrains this.`,
+  );
 }
 
 if (import.meta.main) main();

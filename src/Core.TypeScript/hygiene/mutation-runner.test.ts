@@ -106,10 +106,10 @@ describe("the runner discriminates — both directions proven", () => {
     });
     const finding = runMutant(root, { source: "m.ts", test: "m.test.ts" },
       { name: "gte-to-gt", find: " >= ", replace: " > " });
-    expect(finding.survived).toBe(false);
+    expect(finding.distinguishability.kind).toBe("distinguished-by-suite");
   });
 
-  test("NEGATIVE CONTROL: a vacuous test lets the mutant SURVIVE", () => {
+  test("NEGATIVE CONTROL: a vacuous test leaves the variant INDISTINGUISHABLE", () => {
     const root = scratch({
       "m.ts": SRC,
       // Never exercises the boundary — the exact shape of the real Shiva sweep test that
@@ -121,7 +121,7 @@ describe("the runner discriminates — both directions proven", () => {
     });
     const finding = runMutant(root, { source: "m.ts", test: "m.test.ts" },
       { name: "gte-to-gt", find: " >= ", replace: " > " });
-    expect(finding.survived).toBe(true);
+    expect(finding.distinguishability.kind).toBe("indistinguishable-under-suite");
   });
 });
 

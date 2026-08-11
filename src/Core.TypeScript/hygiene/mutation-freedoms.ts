@@ -1,0 +1,222 @@
+/**
+ * mutation-freedoms.ts — the declared-freedom ledger behind the mutation runner.
+ *
+ * ─────────────────────────────────────────────────────────────────────────────────────────────
+ * WHY THIS EXISTS
+ *
+ * A surviving mutant is a NEUTRAL FACT: the suite cannot distinguish this variant from the
+ * baseline. It has two honest readings and the mechanism must not pick between them —
+ *
+ *   under-specified        the behaviour matters and nothing constrains it  -> write the test
+ *   unconstrained by design  the behaviour is genuinely free                -> declare it here
+ *
+ * and the choice is UNDECIDABLE in general (Budd & Angluin 1982, the equivalent-mutant problem).
+ * So the runner cannot emit a verdict, ever. It emits the fact; a declarer attaches the reading.
+ *
+ * ## Why the ledger is PER-DECLARER and not one global list (Aaron 2026-08-11)
+ *
+ * *"this also is what builds the rainbow — the disagreement about what IS drift, this is where all
+ * the personalities emerge."*
+ *
+ * Two agents can look at the same surviving mutant and honestly disagree about whether it is a
+ * gap or a freedom, because they hold different models of what the code is FOR. A single global
+ * registry would force one answer and erase exactly the differentiation that disagreement
+ * produces. So each declarer keeps its own file and the runner reports **relative to the caller's
+ * own view** — the same shape as `verifySignedStamp` checking against the verifier's OWN roster,
+ * where two verifiers legitimately reach different verdicts on identical input.
+ *
+ * Disagreement is therefore not an error state to resolve. It is **surfaced as a finding in its
+ * own right**, because a dimension some declarers call free and others call a gap is a dimension
+ * whose specification is genuinely ambiguous — which is worth knowing and is invisible today.
+ *
+ * ## Why one file per declarer
+ *
+ * Lock-free by construction (#2): two agents declaring in the same tick touch different files and
+ * cannot conflict. Idempotent by natural key (#6): re-declaring the same dimension is an upsert,
+ * so a replayed tick costs nothing. DV2.0 (#8): the ledger changes at a different rate than the
+ * runner, so it lives in its own substrate.
+ *
+ * ## The cost bound, stated rather than assumed (Aaron 2026-08-11)
+ *
+ * *"our content-based addressing makes this possible as long as we can afford or scheme the cost of
+ * all the addresses we know to be copied to every local traveler/entity."*
+ *
+ * Preservation is not free. This ledger is append-only in spirit — retracted entries are kept, never
+ * deleted — so it only ever grows, and if every traveler holds every declarer's ledger the total is
+ * `declarers x dimensions`, forever.
+ *
+ * Two things make that affordable, and both are design obligations rather than happy accidents:
+ *
+ *   1. **Content-addressing dedups.** Identical entries across declarers are identical content and
+ *      cost storage once, so unanimity is nearly free and only genuine DISAGREEMENT costs — which
+ *      is the right thing to pay for, since disagreement is the signal.
+ *   2. **Bounded reach, not crawling.** A traveler needs the ledgers it actually consults, not all of
+ *      them. `loadAllLedgers` reads one directory today because the fleet is small; at scale it must
+ *      become a bounded query over declarers the caller has reason to consult, exactly as the
+ *      local-trust-view work refuses to crawl.
+ *
+ * So the growth is bounded by (distinct disagreements) rather than (ticks), which is the property to
+ * hold on to. If ledgers ever grow with TIME rather than with disagreement, something has started
+ * recording noise and the cost model has been broken — that is the thing to watch for.
+ *
+ * And the economic half (Aaron): *"git and Linus's history and other free/open source makes this much
+ * easier, because many powerful companies subsidise open source."* Being git-native is not just
+ * convenient here — "every local traveler holds a full copy" IS what a clone is, so the replication
+ * model this ledger needs already exists, is proven at planetary scale, and is largely paid for by
+ * parties other than us. We inherit the distribution rather than building it.
+ */
+
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+
+/** Where the per-declarer ledgers live, relative to the repo root. */
+export const FREEDOMS_DIR = "db/mutation-freedoms";
+
+/**
+ * One declared degree of freedom.
+ *
+ * The natural key is `(source, test, mutation)` — the same triple the runner already produces —
+ * which is what makes re-declaration an upsert rather than a duplicate.
+ */
+export interface Freedom {
+  readonly source: string;
+  readonly test: string;
+  readonly mutation: string;
+  /** WHY this dimension is free. Required: an undecidable call with no stated reason is a mute button. */
+  readonly reason: string;
+  readonly declaredAt: string;
+  /**
+   * Set when a declarer withdraws the claim. **The entry is MARKED, never deleted** (Aaron
+   * 2026-08-11: *"i like to preserve almost extinct things or resurrect them"*).
+   *
+   * Deleting would destroy the record that this dimension was once considered free, and that record
+   * is the interesting part — it is how a specification's history stays readable, and it is what
+   * makes RESURRECTION possible rather than rediscovery from scratch. Manifesto §5, memory
+   * preservation, applied to a ledger: an identity transition never silently destroys memory.
+   *
+   * A retracted freedom does NOT suppress a survivor — it is inert for reporting and live for
+   * history.
+   */
+  readonly retractedAt?: string;
+  /** Why it was withdrawn. Same discipline as `reason`: an unexplained retraction is not a record. */
+  readonly retractedReason?: string;
+}
+
+/** Live = currently claimed. A retracted entry is history, not a mute button. */
+export function isLive(f: Freedom): boolean {
+  return f.retractedAt === undefined;
+}
+
+/** Natural key. Deliberately not including the declarer — the same dimension across declarers is the same dimension. */
+export function freedomKey(f: { source: string; test: string; mutation: string }): string {
+  return `${f.source}::${f.test}::${f.mutation}`;
+}
+
+export interface DeclarerLedger {
+  readonly declarer: string;
+  readonly freedoms: readonly Freedom[];
+}
+
+function ledgerPath(root: string, declarer: string): string {
+  // Declarer names come from --agent and land in a path, so constrain them rather than trusting.
+  if (!/^[A-Za-z0-9._-]+$/.test(declarer)) {
+    throw new Error(`mutation-freedoms: refusing unsafe declarer name ${JSON.stringify(declarer)}`);
+  }
+  return join(root, FREEDOMS_DIR, `${declarer}.json`);
+}
+
+/** Read one declarer's ledger. A missing file is an EMPTY ledger, never an error — most agents have none. */
+export function loadLedger(root: string, declarer: string): DeclarerLedger {
+  const p = ledgerPath(root, declarer);
+  if (!existsSync(p)) return { declarer, freedoms: [] };
+  const parsed = JSON.parse(readFileSync(p, "utf8")) as { freedoms?: Freedom[] };
+  return { declarer, freedoms: parsed.freedoms ?? [] };
+}
+
+/** Read every declarer's ledger — needed to see DISAGREEMENT, which is a finding rather than an error. */
+export function loadAllLedgers(root: string): readonly DeclarerLedger[] {
+  const dir = join(root, FREEDOMS_DIR);
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => f.endsWith(".json"))
+    .map((f) => loadLedger(root, f.slice(0, -".json".length)))
+    .sort((a, b) => (a.declarer < b.declarer ? -1 : a.declarer > b.declarer ? 1 : 0));
+}
+
+/**
+ * Upsert by natural key — idempotent, so replaying a tick is free.
+ *
+ * Entries are written sorted by key so the file is a stable diff: a ledger that reorders itself on
+ * every write would make the git history unreadable and defeat the point of a git-native ledger.
+ */
+export function declareFreedom(root: string, declarer: string, f: Freedom): DeclarerLedger {
+  const current = loadLedger(root, declarer);
+  const key = freedomKey(f);
+  const kept = current.freedoms.filter((x) => freedomKey(x) !== key);
+  const next = [...kept, f].sort((a, b) => (freedomKey(a) < freedomKey(b) ? -1 : 1));
+  const dir = join(root, FREEDOMS_DIR);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(ledgerPath(root, declarer), `${JSON.stringify({ declarer, freedoms: next }, null, 2)}\n`);
+  return { declarer, freedoms: next };
+}
+
+/**
+ * Withdraw a claim WITHOUT losing it.
+ *
+ * Marks the entry retracted in place. There is deliberately no delete: a dimension that was once
+ * declared free and is not any more is exactly the kind of near-extinct record worth keeping, and
+ * re-declaring it later is a resurrection with its own history rather than a fresh guess.
+ */
+export function retractFreedom(
+  root: string,
+  declarer: string,
+  target: { source: string; test: string; mutation: string },
+  reason: string,
+): DeclarerLedger {
+  const current = loadLedger(root, declarer);
+  const key = freedomKey(target);
+  const next = current.freedoms.map((f) =>
+    freedomKey(f) === key && isLive(f)
+      ? { ...f, retractedAt: new Date().toISOString(), retractedReason: reason }
+      : f,
+  );
+  mkdirSync(join(root, FREEDOMS_DIR), { recursive: true });
+  writeFileSync(ledgerPath(root, declarer), `${JSON.stringify({ declarer, freedoms: next }, null, 2)}\n`);
+  return { declarer, freedoms: next };
+}
+
+/**
+ * What every declarer thinks about ONE dimension.
+ *
+ * `mine` is the caller's own view and is the one that decides whether a survivor is reportable.
+ * `others` exists so disagreement is visible rather than silently averaged away.
+ */
+export interface FreedomView {
+  readonly mine: Freedom | undefined;
+  readonly othersDeclaring: readonly string[];
+  /** True when SOME declarers call this free and others do not — the specification is ambiguous here. */
+  readonly contested: boolean;
+}
+
+export function viewOf(
+  ledgers: readonly DeclarerLedger[],
+  me: string,
+  target: { source: string; test: string; mutation: string },
+): FreedomView {
+  const key = freedomKey(target);
+  // Only LIVE declarations count toward suppression; retracted ones are history.
+  const mine = ledgers
+    .find((l) => l.declarer === me)
+    ?.freedoms.find((f) => freedomKey(f) === key && isLive(f));
+  const othersDeclaring = ledgers
+    .filter((l) => l.declarer !== me && l.freedoms.some((f) => freedomKey(f) === key && isLive(f)))
+    .map((l) => l.declarer);
+
+  // Contested = at least one declarer calls it free and at least one ledger-holding declarer does
+  // not. A declarer with no opinion is NOT a dissent — silence is not a verdict, which is the same
+  // discipline `SymmetricEndurance` follows (absence of corroboration is not evidence against).
+  const declaringCount = othersDeclaring.length + (mine ? 1 : 0);
+  const contested = declaringCount > 0 && declaringCount < ledgers.length;
+
+  return { mine, othersDeclaring, contested };
+}
