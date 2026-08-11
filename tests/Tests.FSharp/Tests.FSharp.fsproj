@@ -632,6 +632,7 @@
     <!-- ZetaId/ — F# peer oracle cross-verify (matches TS + C# canonical hex) -->
     <Compile Include="ZetaId/CrossVerifyTests.fs" />
     <Compile Include="ZetaId/Canonical.Tests.fs" />
+    <Compile Include="ZetaId/BitLayoutAgreement.Tests.fs" />
     <Compile Include="Yaml/ReaderTests.fs" />
     <Compile Include="Yaml/CrossVerifyTests.fs" />
     <Compile Include="Yaml/EncoderRoundTripTests.fs" />
