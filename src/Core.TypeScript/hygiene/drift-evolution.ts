@@ -18,9 +18,17 @@
 //                budget, one filing: cost += ALARM_WEIGHT. Tight budgets
 //                cry wolf here.
 // Total cost minimized ⇒ shadowFitness = −cost. The ridge between the two
-// is what selection climbs. (Shadow v1 uses the candidate's static budgets
-// — defaultBudgetTicks + explicit BD001 — not the adaptive rule, which is
-// itself history-dependent; noted as the v2 refinement.)
+// is what selection climbs.
+//
+// SHADOW V2 (2026-08-11): the replay computes each tick's budget via the
+// LIVE adaptive rule — a running fold of heal durations gives the class's
+// MTTH *as measured up to that tick*, and budget = max(floorTicks,
+// ceil(multiplier × runningMtth)) once healedCount ≥ minHeals (explicit
+// BD001 still wins; evidence-poor classes ride defaultBudgetTicks). Same
+// semantics as drift-ledger's sloLimit, folded incrementally. This wakes
+// the r/g/b channels (multiplier, min_heals, floor): under v1's static
+// budgets those three mutated invisibly — selection could not feel them.
+// Now every one of the seven genome channels faces the objective.
 
 import { writeFileSync } from "node:fs";
 
@@ -35,19 +43,41 @@ import { readLedger, type SweepEvent } from "./drift-ledger.ts";
 
 export const ALARM_WEIGHT = 3; // one filing costs three tick-units of leak
 
-function budgetFor(rule: string, p: DriftPhenotype): number {
-  return rule === "BD001" ? p.bd001BudgetTicks : p.defaultBudgetTicks;
+interface HealStats {
+  count: number;
+  totalTicks: number;
 }
 
-/** Replay the ledger under a candidate's budgets. Pure over (events, p). */
+/** The LIVE adaptive rule (drift-ledger sloLimit semantics) over the
+ * running heal statistics at this point of the replay. */
+export function budgetAt(rule: string, p: DriftPhenotype, healed: ReadonlyMap<string, HealStats>): number {
+  if (rule === "BD001") return p.bd001BudgetTicks; // explicit always wins
+  const h = healed.get(rule);
+  if (h !== undefined && h.count >= p.adaptiveMinHeals) {
+    return Math.max(p.adaptiveFloorTicks, Math.ceil(p.adaptiveMultiplier * (h.totalTicks / h.count)));
+  }
+  return p.defaultBudgetTicks;
+}
+
+/** Replay the ledger under a candidate's budgets — v2: the budget at each
+ * tick is the ADAPTIVE one, from heal durations folded up to that tick.
+ * Pure over (events, p); sweep order is canonical (sorted by tick), so the
+ * fold is order-independent over the same event SET. */
 export function shadowCost(events: readonly SweepEvent[], p: DriftPhenotype): number {
   const sweeps = [...events].sort((a, b) => a.tick - b.tick);
   const birth = new Map<string, { tick: number; rule: string; alarmed: boolean }>();
+  const healed = new Map<string, HealStats>();
   let cost = 0;
   for (const sweep of sweeps) {
     const present = new Set(sweep.findings.map((f) => JSON.stringify([f.path, f.rule])));
-    for (const [key] of [...birth]) {
-      if (!present.has(key)) birth.delete(key); // healed
+    for (const [key, b] of [...birth]) {
+      if (!present.has(key)) {
+        const h = healed.get(b.rule) ?? { count: 0, totalTicks: 0 };
+        h.count += 1;
+        h.totalTicks += sweep.tick - b.tick; // same duration foldMtth banks
+        healed.set(b.rule, h);
+        birth.delete(key); // healed
+      }
     }
     for (const f of sweep.findings) {
       const key = JSON.stringify([f.path, f.rule]);
@@ -55,7 +85,7 @@ export function shadowCost(events: readonly SweepEvent[], p: DriftPhenotype): nu
     }
     for (const b of birth.values()) {
       const age = sweep.tick - b.tick;
-      const budget = budgetFor(b.rule, p);
+      const budget = budgetAt(b.rule, p, healed);
       if (age > budget) {
         cost += age - budget; // leak: living beyond tolerance, per tick
         if (!b.alarmed) {

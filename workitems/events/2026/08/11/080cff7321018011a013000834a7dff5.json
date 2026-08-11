@@ -1,0 +1,14 @@
+{
+  "id": "080cff7321018011a013000834a7dff5",
+  "at": "2026-08-11T01:16:07.088Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZQ6881G08QG0R003PPKR8B",
+    "type": "task",
+    "title": "Shadow v2: drift-evolution replays the adaptive SLO rule so all seven genome channels feel selection",
+    "slug": "shadow-v2-drift-evolution-replays-the-adaptive-slo-rule-so-a",
+    "priority": "P2",
+    "filename": "081KZQ6881G08QG0R003PPKR8B-shadow-v2-drift-evolution-replays-the-adaptive-slo-rule-so-a.md"
+  }
+}
