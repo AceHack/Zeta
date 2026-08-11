@@ -896,6 +896,12 @@ export default function OracleRaceMode() {
                           : w >= 0.5 ? "#eab308"
                           : w >= 0.2 ? "#f97316"
                           : "#ef4444";
+                        // Animation class based on weight level:
+                        // critical (≤0.1) → rapid flash; hot (≤0.5) → shrink pulse; recovering (>0.9) → glow
+                        const animClass = w <= 0.1 ? "heat-bar-critical"
+                          : w <= 0.5 ? "heat-bar-shrink"
+                          : w >= 0.95 ? "heat-bar-recover"
+                          : "";
                         return (
                           <div key={t} style={{
                             display: "flex", flexDirection: "column", alignItems: "center",
@@ -905,14 +911,18 @@ export default function OracleRaceMode() {
                               width: 36, height: 4, background: "rgba(255,255,255,0.1)",
                               borderRadius: 2, overflow: "hidden",
                             }}>
-                              <div style={{
-                                width: `${w * 100}%`, height: "100%",
-                                background: color, borderRadius: 2,
-                                transition: "width 0.3s ease",
-                              }} />
+                              <div
+                                className={animClass}
+                                style={{
+                                  width: `${w * 100}%`, height: "100%",
+                                  background: color, borderRadius: 2,
+                                  transition: "width 0.5s cubic-bezier(0.23,1,0.32,1), background 0.3s ease",
+                                  transformOrigin: "left center",
+                                }}
+                              />
                             </div>
                             <span style={{ fontSize: "0.42rem", color, fontFamily: "monospace" }}>
-                              {t.slice(0, 3)}
+                              {t.slice(0, 3)} <span style={{ opacity: 0.6 }}>{(w * 100).toFixed(0)}%</span>
                             </span>
                           </div>
                         );

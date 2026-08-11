@@ -17,7 +17,7 @@ import {
   polyEval, lagrangeInterpolate,
   encode, decode, extractInfo,
   encodePhaseBlock, recoverPhaseBlock,
-  K, N, PARITY, EVAL_POINTS,
+  K, N,
 } from "./rs-phase-codec";
 
 // ─── GF(17) Arithmetic ───────────────────────────────────────────────────────

@@ -207,7 +207,7 @@ export function decode(
   for (let i = 0; i < N; i++) {
     const r = received[i];
     if (r !== null) {
-      points.push({ x: EVAL_POINTS[i]!, y: mod(r.value) });
+      points.push({ x: EVAL_POINTS[i]!, y: mod(r!.value) });
     }
   }
 

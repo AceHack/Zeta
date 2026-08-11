@@ -66,6 +66,12 @@ export interface HeatAwareScheduler extends DrainScheduler {
    * cold/warm → no change; hot → ×0.5; critical → ×0.1.
    */
   recordHeat(laneIndex: number, band: TemperatureBand): void;
+  /**
+   * Reset all lane weights to 1.0 (full throughput).
+   * Useful after a transport outage clears or for testing.
+   * Also resets skip counters to 0.
+   */
+  resetHeat(): void;
   /** Current heat weights (1.0 = full throughput, 0.05 = near-stall). */
   readonly heatWeights: readonly number[];
 }
@@ -131,6 +137,16 @@ class HeatAwareSchedulerImpl implements HeatAwareScheduler {
       this._weights[laneIndex] = Math.min(1.0, current + RECOVERY_STEP);
     }
     this._base.recordDrain(laneIndex, batchSize, batchBytes);
+  }
+  /**
+   * Reset all lane weights to 1.0 and skip counters to 0.
+   * Call after a transport outage clears, or in tests to start from a known state.
+   */
+  resetHeat(): void {
+    for (let i = 0; i < this._weights.length; i++) {
+      this._weights[i] = 1.0;
+      this._skipCounters[i] = 0;
+    }
   }
 }
 

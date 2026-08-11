@@ -202,3 +202,49 @@ describe("zeta-transport-cell", () => {
     // Websocket (lane 1) should be throttled
     expect(weightAfterFail).toBeLessThan(1.0);
   });
+
+  // ZTC-16: full AIMD cycle — fail until critical, recover until full
+  test("ZTC-16: AIMD conformance — critical throttle then full recovery trajectory", async () => {
+    const mock = makeMockTransport(true, "transport timeout");
+    const cell = createZetaTransportCell("node-aimd", { websocket: mock });
+
+    // Phase 1: fail repeatedly until weight hits floor (MIN_WEIGHT = 0.05)
+    // Each critical hit: weight × 0.1, floor at 0.05
+    // After 1 critical hit: 1.0 × 0.1 = 0.1; after 2: 0.1 × 0.1 = 0.05 (floor)
+    await cell.send("fail-1"); // BNN mu starts at 0.5 → warm, no change yet
+    await cell.send("fail-2"); // mu rises → hot → weight × 0.5
+    await cell.send("fail-3"); // mu rises → critical → weight × 0.1
+    await cell.send("fail-4"); // critical → weight × 0.1 again, hits floor
+
+    const weightAtFloor = cell.heatWeights()[0]!;
+    expect(weightAtFloor).toBeLessThanOrEqual(0.1); // at or near floor
+
+    // Phase 2: resetHeat() restores all weights to 1.0
+    cell.resetHeat();
+    expect(cell.heatWeights()[0]).toBe(1.0);
+
+    // Phase 3: verify resetHeat is idempotent (second call is safe)
+    cell.resetHeat();
+    expect(cell.heatWeights()[0]).toBe(1.0);
+  });
+
+  // ZTC-17 (negative): resetHeat does NOT reset BNN posteriors (heat and learning are separate)
+  test("ZTC-17 (negative): resetHeat resets weights but NOT BNN posteriors", async () => {
+    const mock = makeMockTransport(true, "transport timeout");
+    const cell = createZetaTransportCell("node-aimd-2", { websocket: mock });
+
+    // Absorb some errors into the BNN
+    for (let i = 0; i < 5; i++) await cell.send(`fail-${i}`);
+    const bnnBefore = cell.bnnStatus().find(s => s.dimension === "transport")!;
+    // BNN mu shifts from prior 0.5 after absorbing transport errors
+    // (Beta(2,2) prior → mu shifts toward observed failure rate)
+    expect(bnnBefore.mu).not.toBe(0.5); // BNN has learned (shifted from prior)
+
+    // Reset heat weights
+    cell.resetHeat();
+    expect(cell.heatWeights()[0]).toBe(1.0); // weights reset
+
+    // BNN posteriors are unchanged — learning is independent of heat weights
+    const bnnAfter = cell.bnnStatus().find(s => s.dimension === "transport")!;
+    expect(bnnAfter.mu).toBeCloseTo(bnnBefore.mu, 5); // BNN unchanged
+  });

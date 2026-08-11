@@ -93,3 +93,25 @@
     .container { padding-left: 2rem; padding-right: 2rem; max-width: 1280px; }
   }
 }
+
+/* ── Heat bar animations (ZetaTransportCell AIMD) ─────────────────────────── */
+@keyframes heat-bar-shrink {
+  0%   { opacity: 1; }
+  30%  { opacity: 0.4; transform: scaleX(0.95); }
+  100% { opacity: 1; transform: scaleX(1); }
+}
+@keyframes heat-bar-recover {
+  0%   { opacity: 0.6; }
+  50%  { opacity: 1; filter: brightness(1.4); }
+  100% { opacity: 1; filter: brightness(1); }
+}
+@keyframes heat-bar-critical {
+  0%   { opacity: 1; }
+  25%  { opacity: 0.2; }
+  50%  { opacity: 1; }
+  75%  { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+.heat-bar-shrink  { animation: heat-bar-shrink  0.4s ease-out; }
+.heat-bar-recover { animation: heat-bar-recover 0.6s ease-out; }
+.heat-bar-critical { animation: heat-bar-critical 0.8s ease-in-out; }

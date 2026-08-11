@@ -317,6 +317,14 @@ export class ZetaTransportCell {
     return this._heatScheduler.heatWeights;
   }
 
+  /**
+   * Reset all transport heat weights to 1.0 (full throughput) and skip counters to 0.
+   * Call after a transport outage clears, or in tests to start from a known state.
+   */
+  resetHeat(): void {
+    this._heatScheduler.resetHeat();
+  }
+
   /** Serialize BNN state for persistence. */
   serializeBnn(): string {
     return JSON.stringify(this.bnnStatus());
