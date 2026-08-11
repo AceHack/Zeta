@@ -1,5 +1,5 @@
 {
-  "latestTick": 80,
+  "latestTick": 81,
   "classes": [
     {
       "rule": "BD001",
@@ -20,7 +20,7 @@
       "healedCount": 2,
       "mtthTicks": 1,
       "openCount": 1,
-      "oldestOpenAgeTicks": 9
+      "oldestOpenAgeTicks": 10
     },
     {
       "rule": "MD032",
