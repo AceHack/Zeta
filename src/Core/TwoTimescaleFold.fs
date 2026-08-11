@@ -200,8 +200,22 @@ module TwoTimescaleFold =
     /// ``PRECONDITION: a dedup-key COLLISION silently merges distinct evidence`` — found when a test
     /// helper reused one id across two replicas and the schedule-free property broke.
     ///
-    /// Callers minting `ReplicaId` should draw it from an identity that cannot be minted freely
-    /// (`AntiSybil`'s distinct entropy sources are the in-tree example), not from a local counter.
+    /// **Where a correct `ReplicaId` comes from — corrected 2026-08-10, because the first version of
+    /// this note pointed at the wrong thing.** It said to draw the id from `AntiSybil`'s distinct
+    /// entropy sources. That is wrong in exactly the direction that causes the silent collision above:
+    /// `AntiSybil.SourceOf` maps a claimed-identity index to a component id in `0 .. DistinctCount-1`,
+    /// and those components are canonicalised **per invocation, over one batch of streams**. The same
+    /// physical source can be numbered differently in a different batch, so it is neither stable nor
+    /// globally unique — precisely the two properties this precondition needs.
+    ///
+    /// The right division of labour:
+    ///
+    ///   * **Mint** the id by content-addressing the source's own drift stream. That is stable across
+    ///     invocations, globally unique when the stream is, and non-mintable because the drift cannot
+    ///     be forged — the property `AntiSybil`'s own claim rests on.
+    ///   * **Check** it with `AntiSybil`, which is a *detector*, not a *namer*: it proves how many
+    ///     genuinely-distinct sources a set of claims required (the forgery-cost floor), so it can
+    ///     tell you two ids are secretly one source. It cannot tell you what to call them.
     let project (st: LocalState) : SharedEvidence * Crossing =
         let id = String.Format(Globalization.CultureInfo.InvariantCulture, "{0}#{1}", st.ReplicaId, st.Sharpenings)
 
