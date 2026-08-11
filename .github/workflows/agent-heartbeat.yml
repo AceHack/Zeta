@@ -208,6 +208,14 @@ jobs:
           #   exit 3  indistinguishable AND undeclared  -> the finding
           #   exit 4  SPECIFICATION TIGHTENED           -> a mutant now dies in a dimension someone
           #                                               declared free; drift in the other direction
+          #   exit 5  UNRESOLVED                        -> the run established NOTHING and says so
+          #                                               rather than guessing (SLAM's rule). Either
+          #                                               the baseline suite was already red, or the
+          #                                               mutant exited 0 without running the tests
+          #                                               (a CLI-entrypoint guard flipped to `||`
+          #                                               makes importing the module call
+          #                                               process.exit(0) — zero tests, exit 0).
+          #                                               NOT a finding and NOT a clean bill.
           # Both are annotated ::warning:: by the runner. Until 2026-08-11 the only annotation was on
           # the "no files matched" edge case, so this comment's old claim that the warning "keeps the
           # finding loud" was false for the case it cared about — the finding sat in log output.
@@ -245,10 +253,12 @@ jobs:
 
           # Surface the readout in the run UI, not only in scrollback. The menu is the actionable
           # part — a finding nobody can act on is a finding nobody acts on.
-          if [ "$RC" = "3" ] || [ "$RC" = "4" ]; then
+          if [ "$RC" = "3" ] || [ "$RC" = "4" ] || [ "$RC" = "5" ]; then
             {
               if [ "$RC" = "4" ]; then
                 echo "### mutation ($AGENT, tick $TICK) — SPECIFICATION TIGHTENED"
+              elif [ "$RC" = "5" ]; then
+                echo "### mutation ($AGENT, tick $TICK) — UNRESOLVED (no signal)"
               else
                 echo "### mutation ($AGENT, tick $TICK) — indistinguishable under suite"
               fi
@@ -257,7 +267,13 @@ jobs:
               echo "$OUT"
               echo '```'
               echo ""
-              echo "Act with: \`bun src/Core.TypeScript/hygiene/mutation-runner.ts --agent $AGENT --tick $TICK --choose <cell> --reason \"...\"\`"
+              # An unresolved run has no menu to act on — offering a cell there would invite a
+              # judgement about a dimension nothing was actually measured on.
+              if [ "$RC" != "5" ]; then
+                echo "Act with: \`bun src/Core.TypeScript/hygiene/mutation-runner.ts --agent $AGENT --tick $TICK --choose <cell> --reason \"...\"\`"
+              else
+                echo "Nothing to choose: fix the suite (or why it cannot run) and the next tick answers."
+              fi
             } >> "$GITHUB_STEP_SUMMARY"
           fi
           exit 0

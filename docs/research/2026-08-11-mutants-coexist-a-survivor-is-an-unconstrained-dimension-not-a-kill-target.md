@@ -158,6 +158,56 @@ tests or the spec. A guard no test can hold is usually a guard that is not doing
 and free-by-design are readings of the *specification*; redundant is a reading of the *implementation*
 — which is why no amount of test-writing or declaring reaches it.
 
+### 3b. The oracle itself was unsound — exit code 0 conflated three situations
+
+*(Added 2026-08-11 from the second live finding, on `hygiene/drift-genome.ts`.)*
+
+§2a took one rule from SLAM: **running out of what you need is reported as *unresolved*, never dressed
+up as a verdict.** We cited it and then did not implement it. The runner's entire oracle was one line:
+
+```ts
+r.status === 0 ? indistinguishable : distinguished
+```
+
+The second live finding showed that exit code 0 conflates three different situations, and the runner
+was confidently reporting a verdict in two of them.
+
+**The case that surfaced it.** `drift-genome.ts` guards its CLI the usual way:
+
+```ts
+const invokedDirectly = typeof process.argv[1] === "string" && /drift-genome\.(?:ts|js)$/.test(process.argv[1]);
+if (invokedDirectly) { /* … */ process.exit(0); }
+```
+
+Flip that conjunction to a disjunction and the first disjunct is **true under the test runner**
+(`argv[1]` is the runner's path, which is a string). The test file imports the module, so importing
+it *executed the CLI* — it wrote a file and called `process.exit(0)`. Measured: **zero tests ran,
+exit code 0.** The runner scored that as INDISTINGUISHABLE UNDER SUITE — a finding lodged against
+tests that never got the chance to execute.
+
+**The second conflation, found while fixing the first:** if the suite is **already red** before any
+mutation, the mutant's non-zero exit reads as `distinguished-by-suite` — the runner crediting the
+tests for catching a difference they never detected. Same unsound oracle, opposite direction, and it
+inflates the good news rather than the bad.
+
+| suite state under mutation | old verdict | honest reading |
+|---|---|---|
+| ran fully, all passed | indistinguishable | **indistinguishable** ✓ |
+| ran fully, something failed | distinguished | **distinguished** ✓ |
+| never ran, exited 0 | indistinguishable ✗ | **unresolved** |
+| was already failing at baseline | distinguished ✗ | **unresolved** |
+
+**The fix** is the rule we had already written down: a third `Distinguishability` variant,
+`unresolved { why }`, plus a **baseline run on unmutated source** before the mutant. Exit 0 becomes
+necessary but not sufficient — the mutant must also execute at least as many tests as the baseline.
+Cost is one extra run of a single test file per tick. Exit code 5 in CI, with no action menu offered,
+because there is no measured dimension to declare anything about.
+
+**The lesson worth keeping is not about exit codes.** Both live findings so far were defects in the
+*detector*, not in the code it examined — and both were found by **running it against real code**,
+never by reading it. §6's falsifier list should be read in that light: the thing most likely to be
+wrong is the instrument.
+
 ## 4. This is the shared-unfold argument again, one level down
 
 Today's decorrelation result: the shared generator is a **common cause** everyone agrees on without

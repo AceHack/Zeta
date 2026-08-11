@@ -125,6 +125,67 @@ describe("the runner discriminates — both directions proven", () => {
   });
 });
 
+// Exit code 0 was the whole oracle until 2026-08-11, and it conflates three different situations.
+// Both cases below produced a CONFIDENT WRONG ANSWER before the baseline run was added, and both
+// were found by running the runner against real repo code rather than by reading it.
+describe("UNRESOLVED — a run that establishes nothing must say so (SLAM's rule)", () => {
+  const unresolvedWhy = (f: { distinguishability: { kind: string; why?: string } }) =>
+    f.distinguishability.kind === "unresolved" ? f.distinguishability.why! : "";
+
+  test("a suite that EXITS 0 WITHOUT RUNNING is not a suite that agreed", () => {
+    // The real drift-genome.ts shape: a CLI entrypoint guard. Flipping `&&` to `||` makes the guard
+    // true under the test runner (argv[1] is a string), so IMPORTING the module runs the CLI and
+    // calls process.exit(0). Zero tests run, exit code 0 — which the old oracle scored as
+    // "indistinguishable under suite", i.e. a finding against tests that never got to execute.
+    const root = scratch({
+      "m.ts":
+        `export const value = 1;\n` +
+        `const invokedDirectly = typeof process.argv[1] === "string" && /nope\\.ts$/.test(process.argv[1]);\n` +
+        `if (invokedDirectly) { process.exit(0); }\n`,
+      "m.test.ts":
+        `import { test, expect } from "bun:test";\n` +
+        `import { value } from "./m";\n` +
+        `test("value", () => { expect(value).toBe(1); });\n`,
+    });
+    const finding = runMutant(root, { source: "m.ts", test: "m.test.ts" },
+      { name: "and-to-or", find: " && ", replace: " || " });
+
+    expect(finding.distinguishability.kind).toBe("unresolved");
+    expect(unresolvedWhy(finding)).toContain("did not run to completion");
+  });
+
+  test("an ALREADY-RED baseline cannot credit the tests for catching anything", () => {
+    // Without a baseline, the mutant's non-zero exit reads as "distinguished by suite" — the runner
+    // claiming the tests constrain a behaviour when in fact they were failing the whole time.
+    const root = scratch({
+      "m.ts": `export function atLeast(a: number, b: number): boolean {\n  return a >= b;\n}\n`,
+      "m.test.ts":
+        `import { test, expect } from "bun:test";\n` +
+        `import { atLeast } from "./m";\n` +
+        `test("already failing", () => { expect(atLeast(1, 2)).toBe(true); });\n`,
+    });
+    const finding = runMutant(root, { source: "m.ts", test: "m.test.ts" },
+      { name: "gte-to-gt", find: " >= ", replace: " > " });
+
+    expect(finding.distinguishability.kind).toBe("unresolved");
+    expect(unresolvedWhy(finding)).toContain("ALREADY failing");
+  });
+
+  test("the source is still restored when the baseline short-circuits", () => {
+    const src = `export function atLeast(a: number, b: number): boolean {\n  return a >= b;\n}\n`;
+    const root = scratch({
+      "m.ts": src,
+      "m.test.ts":
+        `import { test, expect } from "bun:test";\n` +
+        `import { atLeast } from "./m";\n` +
+        `test("already failing", () => { expect(atLeast(1, 2)).toBe(true); });\n`,
+    });
+    runMutant(root, { source: "m.ts", test: "m.test.ts" },
+      { name: "gte-to-gt", find: " >= ", replace: " > " });
+    expect(readFileSync(join(root, "m.ts"), "utf8")).toBe(src);
+  });
+});
+
 describe("the file is ALWAYS restored", () => {
   test("restored after a normal run", () => {
     const root = scratch({

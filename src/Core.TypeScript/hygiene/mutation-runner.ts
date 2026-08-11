@@ -174,7 +174,29 @@ export type Distinguishability =
   /** The suite separated the variant from the baseline — it constrains this behaviour. */
   | { readonly kind: "distinguished-by-suite" }
   /** The suite could NOT separate them. Gap or freedom is the caller's oracle to decide. */
-  | { readonly kind: "indistinguishable-under-suite" };
+  | { readonly kind: "indistinguishable-under-suite" }
+  /**
+   * The run established NOTHING, and says so instead of guessing.
+   *
+   * SLAM's rule, applied (research §2a): when the procedure runs out of what it needs, the honest
+   * output is "unresolved", never a verdict wearing a verdict's name. Two ways to get here, both
+   * found by running this against real code on 2026-08-11:
+   *
+   * - the baseline suite was ALREADY failing, so a non-zero exit under mutation proves nothing —
+   *   reporting `distinguished` there credits the tests for a difference they never detected;
+   * - the suite EXITED 0 WITHOUT RUNNING (or ran fewer tests than baseline). `drift-genome.ts`
+   *   guards its CLI with `typeof process.argv[1] === "string" && /drift-genome\.ts$/.test(...)`;
+   *   flipping that to `||` makes the guard true under the test runner, so importing the module
+   *   executed the CLI and called `process.exit(0)` — zero tests ran, exit code 0, and the old
+   *   oracle read that as "indistinguishable". A suite that never ran is not a suite that agreed.
+   */
+  | { readonly kind: "unresolved"; readonly why: string };
+
+/** Bun reports `Ran N tests across M files.` — absent means the suite never got that far. */
+export function testsExecuted(output: string): number | null {
+  const m = /^Ran (\d+) tests?/m.exec(output);
+  return m ? Number(m[1]) : null;
+}
 
 export interface Finding {
   readonly source: string;
@@ -199,22 +221,51 @@ export function isIndistinguishable(f: Finding): boolean {
 export function runMutant(root: string, target: Target, m: Mutation): Finding {
   const srcPath = join(root, target.source);
   const original = readFileSync(srcPath, "utf8");
+  const fact = (distinguishability: Distinguishability): Finding => ({
+    source: target.source,
+    test: target.test,
+    mutation: m.name,
+    distinguishability,
+  });
+
+  const runSuite = () => {
+    const r = spawnSync("bun", ["test", target.test], { cwd: root, encoding: "utf8", timeout: 120_000 });
+    return { status: r.status, ran: testsExecuted(`${r.stdout ?? ""}\n${r.stderr ?? ""}`) };
+  };
+
+  // BASELINE FIRST, on unmutated source. Without it the exit code is ambiguous in both directions:
+  // a red baseline makes any non-zero exit look like the suite caught the mutation, and a suite that
+  // never runs looks like a suite that passed. Costs one extra run of a single test file per tick.
+  const base = runSuite();
+  if (base.status !== 0) {
+    return fact({
+      kind: "unresolved",
+      why: `the suite was ALREADY failing before any mutation (exit ${String(base.status)}); a non-zero exit under mutation would prove nothing`,
+    });
+  }
+  if (base.ran === null || base.ran === 0) {
+    return fact({
+      kind: "unresolved",
+      why: "the baseline run reported no executed tests, so there is no signal to compare a mutant against",
+    });
+  }
+
   try {
     writeFileSync(srcPath, applyMutation(original, m));
-    const r = spawnSync("bun", ["test", target.test], {
-      cwd: root,
-      encoding: "utf8",
-      timeout: 120_000,
-    });
-    // The suite passing with the code deliberately changed means it could not tell the two apart.
+    const mut = runSuite();
+    if (mut.status !== 0) return fact({ kind: "distinguished-by-suite" });
+    // Exit 0 is necessary but NOT sufficient: it must also be the case that the tests actually ran.
+    if (mut.ran === null || mut.ran < base.ran) {
+      return fact({
+        kind: "unresolved",
+        why:
+          `the mutant exited 0 but the suite did not run to completion — ${mut.ran === null ? "none" : String(mut.ran)} ` +
+          `of ${String(base.ran)} baseline tests executed. An early exit is not agreement`,
+      });
+    }
+    // Exit 0 with the full baseline complement run: the suite genuinely could not tell them apart.
     // That is the FACT. Whether it is a gap or a freedom is not decided here.
-    return {
-      source: target.source,
-      test: target.test,
-      mutation: m.name,
-      distinguishability:
-        r.status === 0 ? { kind: "indistinguishable-under-suite" } : { kind: "distinguished-by-suite" },
-    };
+    return fact({ kind: "indistinguishable-under-suite" });
   } finally {
     writeFileSync(srcPath, original);
   }
@@ -340,6 +391,25 @@ function main(): void {
   // The declarer's OWN view decides what is reportable — two agents may legitimately disagree
   // about whether a dimension is a gap or a freedom, and that disagreement is preserved rather
   // than averaged away (`mutation-freedoms.ts`).
+  // UNRESOLVED short-circuits everything below: with no signal, there is no fact to report, no
+  // freedom to check it against, and no cell that would be an honest response. Surfacing it as its
+  // own outcome is the whole point — the alternative is a verdict the run did not earn.
+  if (finding.distinguishability.kind === "unresolved") {
+    console.error(
+      `::warning file=${finding.source}::[mutation] UNRESOLVED — ${finding.distinguishability.why}`,
+    );
+    console.error(
+      `\n[mutation] ? UNRESOLVED — the run established nothing.\n` +
+        `  file:     ${finding.source}\n` +
+        `  suite:    ${finding.test}\n` +
+        `  mutation: ${finding.mutation}\n` +
+        `  why:      ${finding.distinguishability.why}\n\n` +
+        `  This is NOT a finding and NOT a clean bill of health. Fix the suite (or the reason it\n` +
+        `  cannot run) and the next tick will produce a real answer.\n`,
+    );
+    process.exit(5);
+  }
+
   const ledgers = loadAllLedgers(root);
   const view = viewOf(ledgers, agent, {
     source: finding.source,
