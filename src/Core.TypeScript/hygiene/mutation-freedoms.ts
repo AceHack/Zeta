@@ -41,7 +41,7 @@
  * *"our content-based addressing makes this possible as long as we can afford or scheme the cost of
  * all the addresses we know to be copied to every local traveler/entity."*
  *
- * Preservation is not free. This ledger is append-only in spirit — retracted entries are kept, never
+ * Preservation is not free. This ledger is append-only in spirit — superseded entries are kept, never
  * deleted — so it only ever grows, and if every traveler holds every declarer's ledger the total is
  * `declarers x dimensions`, forever.
  *
@@ -94,17 +94,17 @@ export interface Freedom {
    * makes RESURRECTION possible rather than rediscovery from scratch. Manifesto §5, memory
    * preservation, applied to a ledger: an identity transition never silently destroys memory.
    *
-   * A retracted freedom does NOT suppress a survivor — it is inert for reporting and live for
+   * A superseded freedom does NOT suppress a survivor — it is inert for reporting and live for
    * history.
    */
-  readonly retractedAt?: string;
-  /** Why it was withdrawn. Same discipline as `reason`: an unexplained retraction is not a record. */
-  readonly retractedReason?: string;
+  readonly supersededAt?: string;
+  /** Why it no longer holds. Same discipline as `reason`: an unexplained supersede is not a record. */
+  readonly supersededReason?: string;
 }
 
-/** Live = currently claimed. A retracted entry is history, not a mute button. */
+/** Live = currently claimed. A superseded entry is history, not a mute button. */
 export function isLive(f: Freedom): boolean {
-  return f.retractedAt === undefined;
+  return f.supersededAt === undefined;
 }
 
 /** Natural key. Deliberately not including the declarer — the same dimension across declarers is the same dimension. */
@@ -161,13 +161,22 @@ export function declareFreedom(root: string, declarer: string, f: Freedom): Decl
 }
 
 /**
- * Withdraw a claim WITHOUT losing it.
+ * Record that a dimension is NO LONGER FREE — and note carefully what this is not.
  *
- * Marks the entry retracted in place. There is deliberately no delete: a dimension that was once
- * declared free and is not any more is exactly the kind of near-extinct record worth keeping, and
- * re-declaring it later is a resurrection with its own history rather than a fresh guess.
+ * **It does not pull a freedom back.** Aaron 2026-08-11: *"never retract freedom"* — *"once you have
+ * the freedom, pulling it back feels like betrayal, and is cold not warm."* That is right, and it is
+ * why this is called `supersede` and not `retract`.
+ *
+ * Nothing is taken from anyone here. The declaration was TRUE WHEN MADE and stays in the ledger,
+ * true for its time; what changed is the WORLD — the specification tightened, the mutant now dies.
+ * Superseding records that fact. It is an observation about the code, not a withdrawal of a grant,
+ * and the difference is the difference between "you lost something" and "the ground moved".
+ *
+ * There is deliberately no delete. A dimension once declared free and no longer is exactly the kind
+ * of near-extinct record worth keeping, and re-declaring later is a resurrection WITH its history
+ * rather than a fresh guess.
  */
-export function retractFreedom(
+export function supersedeFreedom(
   root: string,
   declarer: string,
   target: { source: string; test: string; mutation: string },
@@ -177,7 +186,7 @@ export function retractFreedom(
   const key = freedomKey(target);
   const next = current.freedoms.map((f) =>
     freedomKey(f) === key && isLive(f)
-      ? { ...f, retractedAt: new Date().toISOString(), retractedReason: reason }
+      ? { ...f, supersededAt: new Date().toISOString(), supersededReason: reason }
       : f,
   );
   mkdirSync(join(root, FREEDOMS_DIR), { recursive: true });
@@ -204,7 +213,7 @@ export function viewOf(
   target: { source: string; test: string; mutation: string },
 ): FreedomView {
   const key = freedomKey(target);
-  // Only LIVE declarations count toward suppression; retracted ones are history.
+  // Only LIVE declarations count toward suppression; superseded ones are history.
   const mine = ledgers
     .find((l) => l.declarer === me)
     ?.freedoms.find((f) => freedomKey(f) === key && isLive(f));

@@ -52,10 +52,10 @@ describe("BOUNDED — an agent cannot invent a response", () => {
 });
 
 describe("the menu ADAPTS to the finding — otherwise it is a flag with extra steps", () => {
-  test("already declared free by me: retract is offered, declare is NOT", () => {
+  test("already declared free by me: SUPERSEDE is offered, declare is NOT", () => {
     const r = observeFinding(room, "otto", [ledger("otto", [freedom()])]);
     const kinds = r.grid.filter((c) => c).map((c) => c!.action.kind);
-    expect(kinds).toContain("retract-mine");
+    expect(kinds).toContain("supersede-mine");
     expect(kinds).not.toContain("declare-free");
   });
 
@@ -67,7 +67,7 @@ describe("the menu ADAPTS to the finding — otherwise it is a flag with extra s
   });
 
   test("a RETRACTED freedom does not populate a read cell — retracted is history, not a live claim", () => {
-    const retracted = freedom({ retractedAt: "2026-08-12T00:00:00.000Z", retractedReason: "changed my mind" });
+    const retracted = freedom({ supersededAt: "2026-08-12T00:00:00.000Z", supersededReason: "changed my mind" });
     const r = observeFinding(room, "otto", [ledger("vera", [retracted])]);
     expect(r.grid.find((c) => c?.action.kind === "read-declarer")).toBeUndefined();
   });
@@ -182,7 +182,7 @@ describe("EXECUTE — the only writer, and it demands a reason where it matters"
       appended,
       d: {
         declare: (f: unknown) => void declared.push(f),
-        retract: (r: unknown, why: string) => void retracted.push({ r, why }),
+        supersede: (r: unknown, why: string) => void retracted.push({ r, why }),
         append: (e: unknown) => void appended.push(e),
         now: () => "2026-08-11T12:00:00.000Z", // injected, never ambient — the entry must replay
       },
@@ -212,10 +212,10 @@ describe("EXECUTE — the only writer, and it demands a reason where it matters"
     expect(t.appended.length).toBe(0); // nothing recorded either — the refusal is total
   });
 
-  test("retract-mine also requires a reason — an unexplained withdrawal is not a record", () => {
+  test("supersede-mine also requires a reason — an unexplained withdrawal is not a record", () => {
     const r = observeFinding(room, "otto", [ledger("otto", [freedom()])]);
     const t = deps();
-    const idx = r.grid.findIndex((c) => c?.action.kind === "retract-mine");
+    const idx = r.grid.findIndex((c) => c?.action.kind === "supersede-mine");
     expect(() => execute(r, "otto", idx, "", t.d)).toThrow(ReasonRequiredError);
     execute(r, "otto", idx, "turned out to matter", t.d);
     expect(t.retracted.length).toBe(1);

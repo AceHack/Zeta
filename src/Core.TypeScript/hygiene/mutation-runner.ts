@@ -52,7 +52,7 @@ import {
   appendTranscript,
   declareFreedom,
   loadAllLedgers,
-  retractFreedom,
+  supersedeFreedom,
   viewOf,
 } from "./mutation-freedoms";
 import { ESCAPE_INDEX, execute, observeFinding, roomOf } from "./mutation-readout";
@@ -272,7 +272,7 @@ function main(): void {
 
     const entry = execute(readoutNow, agent, Number(chooseNow), argValue("--reason") ?? "", {
       declare: (f) => declareFreedom(root, agent, f),
-      retract: (r, why) => retractFreedom(root, agent, r, why),
+      supersede: (r, why) => supersedeFreedom(root, agent, r, why),
       append: (e) => appendTranscript(root, agent, e),
       now: () => new Date().toISOString(),
     });
@@ -394,7 +394,7 @@ function main(): void {
       const idx = Number(chooseArg);
       const entry = execute(readout, agent, idx, argValue("--reason") ?? "", {
         declare: (f) => declareFreedom(root, agent, f),
-        retract: (r, why) => retractFreedom(root, agent, r, why),
+        supersede: (r, why) => supersedeFreedom(root, agent, r, why),
         append: (e) => appendTranscript(root, agent, e),
         now: () => new Date().toISOString(),
       });

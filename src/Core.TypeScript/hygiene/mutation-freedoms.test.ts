@@ -8,7 +8,7 @@ import {
   isLive,
   loadAllLedgers,
   loadLedger,
-  retractFreedom,
+  supersedeFreedom,
   viewOf,
   type Freedom,
 } from "./mutation-freedoms";
@@ -49,31 +49,32 @@ describe("idempotence — replaying a tick must be free", () => {
 });
 
 describe("preservation — near-extinct records are kept, not deleted", () => {
-  test("retraction MARKS the entry; the record survives so it can be resurrected", () => {
+  test("superseding MARKS the entry; the record survives so it can be resurrected", () => {
     const root = scratch();
     declareFreedom(root, "otto", mk());
-    const after = retractFreedom(root, "otto", dim, "turned out to matter");
+    const after = supersedeFreedom(root, "otto", dim, "turned out to matter");
 
     // Still there — this is the point. Deleting would destroy the fact that it was once free.
     expect(after.freedoms.length).toBe(1);
     expect(isLive(after.freedoms[0]!)).toBe(false);
-    expect(after.freedoms[0]!.retractedReason).toBe("turned out to matter");
-    // ... and the original reason is preserved alongside the retraction, not overwritten.
+    expect(after.freedoms[0]!.supersededReason).toBe("turned out to matter");
+    // ... and the original reason is preserved alongside it, not overwritten. The declaration stays
+    // TRUE FOR ITS TIME; what changed is the world, not the grant.
     expect(after.freedoms[0]!.reason).toBe("boundary is genuinely unconstrained here");
   });
 
-  test("a retracted freedom no longer SUPPRESSES — inert for reporting, live for history", () => {
+  test("a superseded freedom no longer SUPPRESSES — inert for reporting, live for history", () => {
     const root = scratch();
     declareFreedom(root, "otto", mk());
-    retractFreedom(root, "otto", dim, "no longer free");
+    supersedeFreedom(root, "otto", dim, "no longer free");
     const view = viewOf(loadAllLedgers(root), "otto", dim);
     expect(view.mine).toBeUndefined();
   });
 
-  test("RESURRECTION: re-declaring after retraction makes it live again", () => {
+  test("RESURRECTION: re-declaring after superseding makes it live again", () => {
     const root = scratch();
     declareFreedom(root, "otto", mk());
-    retractFreedom(root, "otto", dim, "mistake");
+    supersedeFreedom(root, "otto", dim, "mistake");
     const after = declareFreedom(root, "otto", mk({ reason: "free after all", declaredAt: "2026-09-01T00:00:00.000Z" }));
     expect(after.freedoms.length).toBe(1);
     expect(isLive(after.freedoms[0]!)).toBe(true);

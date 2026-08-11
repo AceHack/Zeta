@@ -6,7 +6,9 @@
       "test": "src/Core.TypeScript/discovery/udp-lossy-transport.test.ts",
       "mutation": "false-to-true",
       "reason": "UNOBSERVABLE, not under-tested: the teaching branch wraps its work in a bare 'try { ... } catch { }' with an empty body (udp-lossy-transport.ts, justified in-source as 'browser env without dynamic import'). With the guard mutated to accept a non-object, the code enters the try and throws on teaching.missingSeqs.join(...), and the bare catch swallows it — so guard-true and guard-false produce IDENTICAL observable behaviour. No test can distinguish them while that catch is that broad. Verified 2026-08-11 by writing the negative test (ULT-16) and re-running the runner: the mutant SURVIVED the test. Retract this freedom if the catch is ever narrowed — at that point the guard becomes observable and this becomes a genuine test gap.",
-      "declaredAt": "2026-08-11T13:06:21.077Z"
+      "declaredAt": "2026-08-11T13:06:21.077Z",
+      "supersededAt": "2026-08-11T13:18:49.087Z",
+      "supersededReason": "Superseded by the world changing, not withdrawn. The bare 'try { } catch { }' was narrowed on 2026-08-11 so only the dynamic import is guarded; everything after it now runs unguarded. The freedom's own stated condition has therefore been met — it said 'retract if the catch is ever narrowed' — and the mutant is now OBSERVABLE, confirmed by the runner reporting SPECIFICATION TIGHTENED on the same target. The original declaration was true when made and remains in this ledger, true for its time; what changed is the code, not the grant."
     }
   ]
 }

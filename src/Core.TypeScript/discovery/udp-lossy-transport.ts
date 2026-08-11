@@ -522,30 +522,45 @@ export class LossyUdpChannel {
       // Absorb teaching error into DimensionalBnn if available
       if (this.bnn && isNackMessage(envelope.teaching)) {
         const teaching = envelope.teaching;
-        // Import absorbError lazily to avoid circular deps in browser environments
+
+        // NARROWED 2026-08-11. This was one `try { ...everything... } catch { }` with an EMPTY
+        // body, justified by the comment as "browser env without dynamic import" — but it caught
+        // ALL failures, not the one it named. The consequence was found by the mutation runner:
+        // with `isNackMessage` mutated to accept a non-object, the code entered the try, threw on
+        // `teaching.missingSeqs.join(...)`, and the bare catch swallowed it — so accepting garbage
+        // and rejecting it produced IDENTICAL observable behaviour, and no test could tell them
+        // apart. A guard whose failure is invisible is not a guard.
+        //
+        // Now only the DYNAMIC IMPORT is guarded, which is the failure the comment actually meant.
+        // Everything after it runs unguarded: a malformed teaching payload that slips past the type
+        // guard now surfaces instead of being absorbed into silence.
+        let absorb: typeof import("../planning/error-bnn-bridge").absorbError;
+        let mkEnv: typeof import("../protocol/error-envelope").teachingError;
         try {
-          const { absorbError: absorb } = await import("../planning/error-bnn-bridge");
-          const { teachingError: mkEnv } = await import("../protocol/error-envelope");
-          const corrId = `nack:${this.myZid}:${Date.now()}`;
-          const retractable =
-            teaching.retractableBeliefId === undefined ? {} : { retractableBeliefId: teaching.retractableBeliefId };
-          const errEnv = mkEnv(
-            corrId,
-            {
-              what: `missing seqs: ${teaching.missingSeqs.join(",")}`,
-              why: teaching.why,
-              howToFix: teaching.howToFix,
-              dimension: "transport",
-              severity: envelope.nack.length > 3 ? "error" : "warn",
-              ...retractable,
-            },
-            new Date().toISOString(),
-          );
-          absorb(this.bnn, errEnv);
-          for (const h of this.envelopeHandlers) h(errEnv);
+          ({ absorbError: absorb } = await import("../planning/error-bnn-bridge"));
+          ({ teachingError: mkEnv } = await import("../protocol/error-envelope"));
         } catch {
-          /* browser env without dynamic import */
+          /* browser env without dynamic import — the ONLY failure this catch is for */
+          return;
         }
+
+        const corrId = `nack:${this.myZid}:${Date.now()}`;
+        const retractable =
+          teaching.retractableBeliefId === undefined ? {} : { retractableBeliefId: teaching.retractableBeliefId };
+        const errEnv = mkEnv(
+          corrId,
+          {
+            what: `missing seqs: ${teaching.missingSeqs.join(",")}`,
+            why: teaching.why,
+            howToFix: teaching.howToFix,
+            dimension: "transport",
+            severity: envelope.nack.length > 3 ? "error" : "warn",
+          ...retractable,
+          },
+          new Date().toISOString(),
+        );
+        absorb(this.bnn, errEnv);
+        for (const h of this.envelopeHandlers) h(errEnv);
       }
       return;
     }

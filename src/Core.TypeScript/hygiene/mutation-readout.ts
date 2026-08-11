@@ -72,7 +72,7 @@ export function roomOf(f: Finding): FindingRoom {
 export type CellAction =
   | { readonly kind: "declare-free"; readonly reason: string }
   | { readonly kind: "write-test" }
-  | { readonly kind: "retract-mine"; readonly reason: string }
+  | { readonly kind: "supersede-mine"; readonly reason: string }
   | { readonly kind: "defer" }
   | { readonly kind: "read-declarer"; readonly declarer: string }
   | { readonly kind: "escape" }
@@ -111,7 +111,7 @@ export function observeFinding(
   level = 0,
 ): Readout {
   const key = freedomKey(room);
-  const live = (f: Freedom) => f.retractedAt === undefined;
+  const live = (f: Freedom) => f.supersededAt === undefined;
   const mine = ledgers.find((l) => l.declarer === me)?.freedoms.find((f) => freedomKey(f) === key && live(f));
   const others = ledgers
     .filter((l) => l.declarer !== me && l.freedoms.some((f) => freedomKey(f) === key && live(f)))
@@ -129,8 +129,8 @@ export function observeFinding(
 
   if (mine) {
     // Already declared free by me: the useful actions are to withdraw or to leave it alone.
-    place("retract my freedom", { kind: "retract-mine", reason: "" });
-    rules.push("mine=declared -> retract offered, declare withheld");
+    place("record: no longer free (supersede mine)", { kind: "supersede-mine", reason: "" });
+    rules.push("mine=declared -> supersede offered, declare withheld");
   } else {
     place("declare free (reason required)", { kind: "declare-free", reason: "" });
     place("write the test", { kind: "write-test" });
@@ -268,7 +268,7 @@ export function escapeProfile(entries: readonly TranscriptEntry[]): EscapeProfil
  */
 export interface ExecuteDeps {
   readonly declare: (f: Freedom) => void;
-  readonly retract: (room: FindingRoom, reason: string) => void;
+  readonly supersede: (room: FindingRoom, reason: string) => void;
   readonly append: (entry: TranscriptEntry) => void;
   /** Injected, never ambient — the entry must replay under DST. */
   readonly now: () => string;
@@ -288,7 +288,7 @@ export function execute(
   // Carry the operator-supplied reason into the action, so the transcript records WHY and not just
   // WHICH. The grid's placeholder reason is empty by construction — the menu cannot know it.
   let action: CellAction = chosen;
-  if (chosen.kind === "declare-free" || chosen.kind === "retract-mine") {
+  if (chosen.kind === "declare-free" || chosen.kind === "supersede-mine") {
     if (reason.trim() === "") {
       throw new ReasonRequiredError(
         `cell ${index} (${chosen.kind}) changes the ledger and requires a reason — ` +
@@ -302,8 +302,8 @@ export function execute(
     case "declare-free":
       deps.declare({ ...readout.room, reason: action.reason, declaredAt: deps.now() });
       break;
-    case "retract-mine":
-      deps.retract(readout.room, action.reason);
+    case "supersede-mine":
+      deps.supersede(readout.room, action.reason);
       break;
     // write-test, defer, read-declarer, escape and undefined-cell change no ledger state. They are
     // still APPENDED: "I looked and chose to do nothing here" is a fact worth keeping, and it is
