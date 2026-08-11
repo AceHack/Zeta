@@ -181,9 +181,24 @@ is right. The inference is wrong: **weak fairness fires only on *continuous* ena
 behaviour in which `Build` is repeatedly disabled never triggers it. The parenthetical *"we always
 have weak fairness on it"* is true and does not yield *"Build eventually runs."*
 
-So this is a stronger defect than (d)-style defined-but-unchecked: **the prose asserts a
-conclusion the model refutes.** As with `BftConsensus`, the two `THEOREM` lines carry no proofs
-and TLAPS does not run on this file.
+**Correction to this section, same day: it is not merely prose.** Line 104 states
+
+```
+THEOREM Spec => BuildCompletes
+```
+
+so the spec asserts the refuted property as a **theorem**, not as a comment. TLAPS does not run
+on this file, so nothing ever checked it — a stated theorem that the model checker disproves.
+That is materially worse than the "defined but unchecked" framing this section originally used,
+and worse than (d): `DecisionStable` is merely unverified, whereas this one is **false**.
+
+**Annotated in place, not repaired.** `CircuitRegistration.tla` now carries the counter-example,
+the fairness diagnosis, and a `REFUTED` marker on the theorem. The misleading parenthetical was
+removed. The theorem line itself is **kept**: deleting another author's theorem is their call,
+while leaving a refuted claim unmarked is not an option. The honest fix — restating it in
+conditional form (eventually built *given* `Build` remains enabled) — is a semantic change to the
+claim and is left to the owner. The TLC runner test still passes (670 ms); the annotation is
+comment-only and changes no model behaviour.
 
 Fix options, both cheap: state the honest conditional form (eventually-built *given* `Build`
 remains enabled) and check that, or scope liveness out explicitly in the `PredictiveLookahead`

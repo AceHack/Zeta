@@ -96,10 +96,30 @@ ConnectAtMostOnce ==
   [][ \A op \in 1..MaxOps:
         feedbackConnected[op] => feedbackConnected'[op] ]_vars
 
-\* Liveness: Build eventually runs (we always have weak fairness on it).
+\* Liveness: Build eventually runs.
+\*
+\* REFUTED 2026-08-10 — DO NOT RELY ON THIS. Adding `PROPERTY BuildCompletes` to the .cfg
+\* (sound here: this cfg has no CONSTRAINT, so the constraint-corrupts-fairness problem
+\* that PredictiveLookahead.cfg documents does not apply) and running TLC gives:
+\*     Error: Temporal property BuildCompletes was violated.
+\*     10415 states generated, 3538 distinct states found
+\*
+\* The diagnosis is NOT misplaced fairness. `Spec` uses WF_vars(Build) — per-action weak
+\* fairness, the stronger and correct pattern. Weak fairness only fires on CONTINUOUS
+\* enablement, so a behaviour in which Build is repeatedly disabled never triggers it. The
+\* original parenthetical ("we always have weak fairness on it") was true and did not yield
+\* the conclusion; it has been removed rather than left to mislead.
+\*
+\* The honest form is CONDITIONAL — eventually built GIVEN Build remains enabled — which is
+\* a semantic change to the claim and is therefore left to this spec's owner rather than
+\* made here. Audit + counter-example:
+\* docs/research/2026-08-10-synchrony-non-transfer-audit-bftconsensus-checks-a-counting-tautology.md §2e
 BuildCompletes == <>built
 
 THEOREM Spec => [](TypeOK /\ NoRegisterAfterBuild)
 THEOREM Spec => ConnectAtMostOnce
+\* REFUTED — see the note above. Kept rather than deleted because removing another author's
+\* theorem is their call; marked because leaving a refuted claim unmarked is not an option.
+\* Note TLAPS does not run on this file, so none of these THEOREMs is machine-checked.
 THEOREM Spec => BuildCompletes
 ====
