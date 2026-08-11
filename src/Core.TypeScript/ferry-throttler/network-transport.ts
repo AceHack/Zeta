@@ -42,7 +42,8 @@ import {
   type BatchTeachingEnvelope,
 } from "../protocol/batch-teaching-envelope";
 import type { ErrorDimension, ErrorSeverity } from "../protocol/error-envelope";
-import { batchTemperatureReadout as _batchTemperatureReadout, batchHeatLabel, type TemperatureReadout } from "../protocol/batch-heat-bridge";
+import { batchTemperatureReadout as _batchTemperatureReadout, batchHeatLabel, batchTemperatureBand, type TemperatureReadout, type TemperatureBand } from "../protocol/batch-heat-bridge";
+import type { HeatAwareScheduler } from "./heat-aware-scheduler";
 
 export type { TemperatureReadout };
 // Re-export for consumers that want to compute readouts from envelopes
@@ -148,6 +149,18 @@ export interface FerryNetworkAdapterOptions {
   readonly nodeId: string;
   /** Frame id generator (default: monotone counter). */
   readonly mintFrameId?: () => string;
+  /**
+   * Optional HeatAwareScheduler to receive heat signals from failed batches.
+   * When present, a failed send with a BatchTeachingEnvelope calls
+   * scheduler.recordHeat(laneIndex, band) so the scheduler throttles hot lanes.
+   * This closes the loop: SendOutcome.temperatureReadout → scheduler backpressure.
+   */
+  readonly heatScheduler?: HeatAwareScheduler;
+  /**
+   * Lane index for this adapter (used with heatScheduler).
+   * Defaults to 0 when heatScheduler is provided without an explicit index.
+   */
+  readonly laneIndex?: number;
 }
 
 /**
@@ -191,6 +204,15 @@ export function createNetworkProcessBatch<T>(
       const env = outcome.batchTeachingEnvelope;
       const heatLabel = env ? batchHeatLabel(env.summary) : "unknown";
       console.error(`[ferry-network] send failed: ${outcome.reason} (batch ${frame.id}, ${frame.count} items, heat=${heatLabel})`);
+      // ── Heat backpressure: signal the scheduler so it throttles this lane ──
+      // This closes the loop: SendOutcome.temperatureReadout → HeatAwareScheduler
+      if (opts.heatScheduler && env) {
+        const band: TemperatureBand = batchTemperatureBand(env.summary);
+        opts.heatScheduler.recordHeat(opts.laneIndex ?? 0, band);
+      }
+    } else if (opts.heatScheduler) {
+      // Successful send → additive recovery for this lane
+      opts.heatScheduler.recordDrain(opts.laneIndex ?? 0, items.length, frame.payload.length);
     }
   };
 }

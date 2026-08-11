@@ -14,6 +14,9 @@ import {
   fakeNetworkTransport,
   type BatchFrame,
 } from "./network-transport";
+import { createHeatAwareScheduler } from "./heat-aware-scheduler";
+import { createStrictPriorityScheduler } from "./drain-scheduler";
+import { makeBatchEnvelope, makeBatchItemCell } from "../protocol/batch-teaching-envelope";
 
 describe("network-transport — ferry batch → wire frame", () => {
   test("one batch = one network frame (the anti-Nagle property)", async () => {
@@ -179,5 +182,85 @@ describe("createReticulumProcessBatch — mesh broadcast adapter", () => {
 
     const frame = JSON.parse(broadcasts[0]!) as BatchFrame;
     expect(frame.entropy).toEqual({ state: 2, heat: 0 });
+  });
+});
+
+// ─── HeatAwareScheduler wiring ──────────────────────────────────────────────
+describe("network-transport — HeatAwareScheduler wiring", () => {
+  test("failed batch with hot envelope calls recordHeat on the scheduler", async () => {
+    // 2 unaccounted out of 3 failed items → 66.7% → hot band
+    const hotEnvelope = makeBatchEnvelope({
+      batchFrameId: "frame-hot-1",
+      correlationId: "corr-1",
+      totalItems: 3,
+      errors: [
+        makeBatchItemCell({ itemId: "i1", generatorFn: "g1", dimension: "transport", severity: "error", reason: "drop", what: "i1" }),
+        makeBatchItemCell({ itemId: "i2", generatorFn: "g2", dimension: "transport", severity: "error", reason: "drop", what: "i2" }),
+      ],
+    });
+    const transport = fakeNetworkTransport({
+      ok: false,
+      reason: "congestion",
+      batchTeachingEnvelope: hotEnvelope,
+    });
+    const scheduler = createHeatAwareScheduler(createStrictPriorityScheduler(), 2);
+    const processBatch = createNetworkProcessBatch<number>(
+      { transport, nodeId: "node-heat-1", heatScheduler: scheduler, laneIndex: 0 },
+      (items) => JSON.stringify(items),
+    );
+    expect(scheduler.heatWeights[0]).toBe(1.0); // before: full weight
+    await processBatch([1, 2, 3]);
+    // After failure with hot envelope: lane 0 should be throttled
+    expect(scheduler.heatWeights[0]).toBeLessThan(1.0);
+  });
+
+  test("FAULT INJECTION: cold envelope (all accounted) does NOT throttle the lane", async () => {
+    // All erasures are accounted (TTL-bounded-forget) → cold band → no throttle
+    const coldEnvelope = makeBatchEnvelope({
+      batchFrameId: "frame-cold-1",
+      correlationId: "corr-2",
+      totalItems: 3,
+      errors: [
+        makeBatchItemCell({ itemId: "i1", generatorFn: "g1", dimension: "transport", severity: "error", reason: "drop", what: "i1", accountedReason: "TTL-bounded-forget" }),
+      ],
+    });
+    const transport = fakeNetworkTransport({
+      ok: false,
+      reason: "timeout",
+      batchTeachingEnvelope: coldEnvelope,
+    });
+    const scheduler = createHeatAwareScheduler(createStrictPriorityScheduler(), 2);
+    const processBatch = createNetworkProcessBatch<number>(
+      { transport, nodeId: "node-heat-2", heatScheduler: scheduler, laneIndex: 0 },
+      (items) => JSON.stringify(items),
+    );
+    await processBatch([1, 2, 3]);
+    // Cold band (all accounted) → weight unchanged
+    expect(scheduler.heatWeights[0]).toBe(1.0);
+  });
+
+  test("successful send calls recordDrain (additive recovery)", async () => {
+    const transport = fakeNetworkTransport({ ok: true, acked: true });
+    const scheduler = createHeatAwareScheduler(createStrictPriorityScheduler(), 2);
+    // Pre-throttle lane 0
+    scheduler.recordHeat(0, "hot");
+    expect(scheduler.heatWeights[0]).toBeLessThan(1.0);
+    const processBatch = createNetworkProcessBatch<number>(
+      { transport, nodeId: "node-heat-3", heatScheduler: scheduler, laneIndex: 0 },
+      (items) => JSON.stringify(items),
+    );
+    await processBatch([1, 2]);
+    // Successful send → recovery step applied
+    expect(scheduler.heatWeights[0]).toBeGreaterThan(0.5); // HOT_FACTOR + RECOVERY_STEP
+  });
+
+  test("no heatScheduler → no-op (backward compatible)", async () => {
+    const transport = fakeNetworkTransport({ ok: false, reason: "err" });
+    const processBatch = createNetworkProcessBatch<number>(
+      { transport, nodeId: "node-heat-4" }, // no heatScheduler
+      (items) => JSON.stringify(items),
+    );
+    // Should not throw
+    await expect(processBatch([1])).resolves.toBeUndefined();
   });
 });
