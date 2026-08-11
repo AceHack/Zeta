@@ -41,6 +41,8 @@
  * Usage:
  *   bun mutation-runner.ts --agent otto --tick 42 [--since 6h] [--dry-run]
  *   bun mutation-runner.ts --agent otto --tick 42 --choose 0 --reason "why"   (act on the menu)
+ *   bun mutation-runner.ts --agent otto --room "src/a.ts::src/a.test.ts::false-to-true" \
+ *       --choose 0 --reason "why"                                            (act on a dimension you did not roll)
  */
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
@@ -233,6 +235,51 @@ function main(): void {
   if (!Number.isFinite(tick)) {
     console.error("[mutation] FATAL: --tick must be a number (it seeds deterministic selection).");
     process.exit(1);
+  }
+
+  // `--room source::test::mutation` — act on a dimension you did NOT personally roll.
+  //
+  // Selection is deterministic from (agent, tick), which is what makes the fleet cover different
+  // files with zero coordination. But it also meant a declarer could only ever respond to its OWN
+  // roll: a finding learned from another agent, a review, or a previous tick was unreachable, and
+  // the only ways to record a judgement about it were to write another agent's ledger (putting
+  // words in their view) or to hand-edit JSON (bypassing the menu entirely). Both are worse than
+  // the flag this design replaced.
+  //
+  // This does NOT reintroduce the unbounded write path: the readout is still built the same way,
+  // the choice is still a CELL, the reason is still required, and the entry is still appended.
+  // Only the target becomes explicit instead of tick-derived.
+  const roomArg = argValue("--room");
+  if (roomArg !== undefined) {
+    const parts = roomArg.split("::");
+    if (parts.length !== 3 || parts.some((p) => p.trim() === "")) {
+      console.error(`[mutation] FATAL: --room must be "source::test::mutation" (got ${JSON.stringify(roomArg)})`);
+      process.exit(1);
+    }
+    const [source, test, mutationName] = parts as [string, string, string];
+    const ledgersNow = loadAllLedgers(root);
+    const readoutNow = observeFinding({ source, test, mutation: mutationName }, agent, ledgersNow);
+
+    const chooseNow = argValue("--choose");
+    if (chooseNow === undefined) {
+      console.error(`[mutation] ${agent}: ${source} :: ${test} :: ${mutationName}`);
+      for (const cell of readoutNow.grid) {
+        if (cell) console.error(`    [${String(cell.index).padStart(2)}] ${cell.label}`);
+      }
+      console.error(`    rules: ${readoutNow.rulesApplied.join(" ")}`);
+      process.exit(0);
+    }
+
+    const entry = execute(readoutNow, agent, Number(chooseNow), argValue("--reason") ?? "", {
+      declare: (f) => declareFreedom(root, agent, f),
+      retract: (r, why) => retractFreedom(root, agent, r, why),
+      append: (e) => appendTranscript(root, agent, e),
+      now: () => new Date().toISOString(),
+    });
+    console.error(
+      `[mutation] ${agent} chose [${chooseNow}] ${entry.action.kind} on ${source} — appended ${entry.address.slice(0, 16)}…`,
+    );
+    process.exit(0);
   }
 
   // Recently-changed files only: mutation-test what just landed, where detection latency matters
