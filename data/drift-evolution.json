@@ -1,58 +1,44 @@
 {
-  "tick": 120,
+  "tick": 121,
   "populationSize": 17,
-  "currentRank": 12,
+  "currentRank": 8,
   "top": [
     {
-      "genomeHex": "#211300",
+      "genomeHex": "#3a001f",
       "phenotype": {
-        "adaptiveMultiplier": 1.03125,
-        "adaptiveMinHeals": 19,
-        "adaptiveFloorTicks": 1,
-        "defaultBudgetTicks": 31,
+        "adaptiveMultiplier": 1.8125,
+        "adaptiveMinHeals": 1,
+        "adaptiveFloorTicks": 31,
+        "defaultBudgetTicks": 30,
         "bd001BudgetTicks": 1,
-        "retractionTriggerTicks": 22,
+        "retractionTriggerTicks": 21,
         "healerAxes": 7
       },
       "shadowFitness": 0,
       "parent": "drift-gen0"
     },
     {
-      "genomeHex": "#270d12",
+      "genomeHex": "#59100f",
       "phenotype": {
-        "adaptiveMultiplier": 1.21875,
-        "adaptiveMinHeals": 13,
-        "adaptiveFloorTicks": 18,
-        "defaultBudgetTicks": 20,
-        "bd001BudgetTicks": 16,
-        "retractionTriggerTicks": 20,
-        "healerAxes": 7
-      },
-      "shadowFitness": 0,
-      "parent": "drift-gen0"
-    },
-    {
-      "genomeHex": "#2f2700",
-      "phenotype": {
-        "adaptiveMultiplier": 1.46875,
-        "adaptiveMinHeals": 39,
-        "adaptiveFloorTicks": 1,
-        "defaultBudgetTicks": 28,
+        "adaptiveMultiplier": 2.78125,
+        "adaptiveMinHeals": 16,
+        "adaptiveFloorTicks": 15,
+        "defaultBudgetTicks": 24,
         "bd001BudgetTicks": 1,
-        "retractionTriggerTicks": 2,
+        "retractionTriggerTicks": 27,
         "healerAxes": 7
       },
       "shadowFitness": 0,
       "parent": "drift-gen0"
     },
     {
-      "genomeHex": "#481500",
+      "genomeHex": "#641413",
       "phenotype": {
-        "adaptiveMultiplier": 2.25,
-        "adaptiveMinHeals": 21,
-        "adaptiveFloorTicks": 1,
-        "defaultBudgetTicks": 28,
-        "bd001BudgetTicks": 13,
+        "adaptiveMultiplier": 3.125,
+        "adaptiveMinHeals": 20,
+        "adaptiveFloorTicks": 19,
+        "defaultBudgetTicks": 41,
+        "bd001BudgetTicks": 1,
         "retractionTriggerTicks": 1,
         "healerAxes": 7
       },
@@ -60,17 +46,31 @@
       "parent": "drift-gen0"
     },
     {
-      "genomeHex": "#541900",
+      "genomeHex": "#4f001f",
       "phenotype": {
-        "adaptiveMultiplier": 2.625,
-        "adaptiveMinHeals": 25,
-        "adaptiveFloorTicks": 1,
-        "defaultBudgetTicks": 22,
-        "bd001BudgetTicks": 1,
-        "retractionTriggerTicks": 34,
+        "adaptiveMultiplier": 2.46875,
+        "adaptiveMinHeals": 1,
+        "adaptiveFloorTicks": 31,
+        "defaultBudgetTicks": 1,
+        "bd001BudgetTicks": 11,
+        "retractionTriggerTicks": 1,
         "healerAxes": 7
       },
-      "shadowFitness": 0,
+      "shadowFitness": -6,
+      "parent": "drift-gen0"
+    },
+    {
+      "genomeHex": "#2a000d",
+      "phenotype": {
+        "adaptiveMultiplier": 1.3125,
+        "adaptiveMinHeals": 1,
+        "adaptiveFloorTicks": 13,
+        "defaultBudgetTicks": 1,
+        "bd001BudgetTicks": 1,
+        "retractionTriggerTicks": 5,
+        "healerAxes": 7
+      },
+      "shadowFitness": -12,
       "parent": "drift-gen0"
     }
   ]
