@@ -215,13 +215,25 @@ jobs:
           # Runs BEFORE the push per the ordering rule below. It writes nothing unless `--choose` is
           # passed (it is not, here): runMutant restores the file in a `finally`, including when the
           # suite cannot run at all.
-          # --since MUST be a git approxidate string. "24h" is NOT one: git silently matches nothing
-          # rather than erroring, so this step was a COMPLETE NO-OP from the day it shipped — every
-          # tick the runner's own guard printed "returned NO FILES AT ALL" and did nothing. Measured
-          # 2026-08-11 on this repo: `--since 24h` -> 0 files, `--since "24 hours ago"` -> 1691.
+          # --since must be a git approxidate string git can actually parse, and "24h" is a TRAP.
+          # This step was a COMPLETE NO-OP from the day it shipped: every tick the runner's own
+          # guard printed "returned NO FILES AT ALL" and did nothing.
+          #
+          # The precise failure, measured on this repo 2026-08-11 (an earlier version of this
+          # comment said short forms were invalid in general, which is WRONG and would have
+          # invited "fixing" the working `--since 7d` on the archive step below):
+          #     24h            ->    0 commits   <- 24 overflows the HOUR field
+          #     1h             -> 1239 commits
+          #     2h             -> 1095 commits
+          #     7d             ->  809 commits
+          #     24.hours       ->  334 commits
+          #     "24 hours ago" ->  334 commits
+          # So `Nh` works for N <= 23 and silently means something else at 24. It is a BOUNDARY,
+          # not a format-category error. Use the unambiguous long form here.
+          #
           # The standing job that finds tests which cannot fail was itself unable to fail, which is
-          # precisely the defect class it exists to catch. The guard was right and loud for months;
-          # nobody acted on it. Do not "tidy" this back to a short form.
+          # precisely the defect class it exists to catch — and its guard was right and loud for
+          # months while nobody acted on it. A loud warning nobody reads is not detection.
           TICK=$(git rev-list --count HEAD)
           echo "[mutation] $AGENT tick=$TICK — observing one mutant"
           set +e
