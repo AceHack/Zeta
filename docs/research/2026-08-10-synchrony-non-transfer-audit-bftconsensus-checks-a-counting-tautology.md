@@ -211,28 +211,65 @@ Its scoping comment is genuinely good and should survive any rewrite: it says th
 (the bond curve), and that these are *"two different proofs for two different threats."* That is
 correct separation of concerns. The defect is in the properties, not the framing.
 
-## 3. Disposition
+## 3. Disposition — **REPAIRED 2026-08-11** (this section was "not repaired"; it is now stale as
+written and is updated rather than left to mislead)
 
-Recorded, **not repaired**. Rewriting a BFT spec — introducing a message/network model, making
-`decided` per-node, adding partial-synchrony assumptions and a conditional liveness property — is
-design work with real judgement in it, not a mechanical fix, and it belongs with whoever owns the
-consensus surface rather than with an autonomous tick.
+Operator authorised the repair (*"BftConsensus we should start repairing this if it needs"*), and
+items 1, 2 and 4 below are done, plus a defect this audit missed. **The decisive evidence is that
+the mutation this audit used to prove vacuity now fails the spec:**
 
-**What a repair would have to do, in priority order:**
+| deleting the quorum guard from `Decide` | result |
+|---|---|
+| before the repair | *"No error has been found"* — 1270 states, 243 distinct |
+| after the repair | **"Invariant SafetyInvariant is violated"** — caught in 154 states |
 
-1. Make `decided` a per-node function so the advertised safety property becomes *expressible*.
-2. Then `NoConflictingQuorum` stops being pigeonhole, because two nodes deciding differently
-   becomes a reachable shape to exclude.
-3. Add a message/network variable so quorum is computed over *received* votes rather than global
-   ones — without it, no delay-related property can even be stated.
-4. Either check `DecisionStable`, or delete it.
-5. Either state liveness as conditional on a partial-synchrony assumption and check it, or scope it
-   out explicitly in the `PredictiveLookahead` style. The current header is the only unacceptable
-   option.
+What landed:
 
-**Falsifier for this audit itself:** exhibit a reachable state of `BftConsensus.tla` violating
-`NoConflictingQuorum` under `Nodes = {otto, vera, riven, lior}`, `MaxFaulty = 1`. If one exists the
-tautology claim in §2b is wrong. (Predicted: none, by the counting argument.)
+- **`decided` is per-node**, so `Agreement` — *no two honest nodes commit different values* — is
+  finally expressible, and it is the load-bearing checked invariant.
+- **It is not pigeonhole.** The argument for why `Agreement` holds is now a *protocol* argument: a
+  value reaching quorum `2F+1` has ≥ `F+1` honest voters, honest votes are write-once, and
+  `N ≥ 3F+1` leaves too few nodes for a second value ever to reach quorum.
+- **A defect this audit did not find:** there was **no Byzantine node set**. `ByzantineVote(n, v)`
+  was quantified over *all* nodes, so every node could equivocate while the spec claimed a one-fault
+  bound — `MaxFaulty` only ever fed `QuorumSize`. `Byzantine` is now a constant bounded by `ASSUME`,
+  verified load-bearing (setting it to all four nodes fails the assumption outright).
+- **`DecisionStable` (item 4) is resolved by deletion**, with the reason recorded in the spec:
+  finality is enforced structurally by `Decide`'s `decided[n] = "none"` guard, and *"never revised"*
+  is a claim about a **transition** that no state predicate can express.
+- **`NoConflictingQuorum` is retained but demoted**, with a note that it must never again be the
+  only thing checked.
+
+**Still open, and deliberately so:** item 3 (the message/network model) and item 5 (liveness under a
+stated partial-synchrony assumption). Both are genuine modelling decisions rather than mechanical
+fixes. Liveness is now *scoped out explicitly* in the `PredictiveLookahead.cfg` style rather than
+advertised in prose, which was the actual defect §2c named.
+
+**One thing worth recording about the repair itself:** a first draft asserted decision finality as
+`votes[decided[n]] = votes[decided[n]]` — a tautology *and* a type error. That is this audit's own
+defect class reintroduced by its own auditor, caught before it shipped. The failure mode is not
+rare, and it is not something being the auditor protects you from.
+
+**The original repair plan, kept for the record:**
+
+1. ✅ **DONE** — make `decided` a per-node function so the advertised safety property becomes
+   *expressible*.
+2. ✅ **DONE** — then `NoConflictingQuorum` stops being the only check, because two nodes deciding
+   differently becomes a reachable shape to exclude (`Agreement`).
+3. ⬜ **OPEN** — add a message/network variable so quorum is computed over *received* votes rather
+   than global ones. Without it no delay-related property can even be stated, and the spec remains a
+   synchronous shared-memory model. This is the substantial remaining piece.
+4. ✅ **DONE** — `DecisionStable` deleted, with the reason recorded: finality is structural, and a
+   state predicate cannot express a claim about a transition.
+5. ⬜ **PARTIALLY** — liveness is now scoped out *explicitly* rather than advertised in prose, which
+   removes the defect. Stating it conditionally on partial synchrony and checking it still requires
+   item 3 first.
+
+**Falsifier for this audit itself:** exhibit a reachable state of the **pre-repair**
+`BftConsensus.tla` violating `NoConflictingQuorum` under `Nodes = {otto, vera, riven, lior}`,
+`MaxFaulty = 1`. If one existed the tautology claim in §2b would be wrong. (Predicted: none, by the
+counting argument — and the mutation test in §(0) settled it the other way, by showing the invariant
+survives deleting the protocol entirely, which is stronger than never being violated.)
 
 ## 4. Anchors
 
