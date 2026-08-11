@@ -27,7 +27,13 @@ to my own detector) showed the rule is mostly wrong:
 | `SpineAsyncProtocol` | mismatch | **fine** | same technique — `InvFlushTerminates` |
 | `PredictiveLookahead` | mismatch | **exemplary** | see below |
 | `BftConsensus` | mismatch | **REAL** | §2 |
-| 4 others | mismatch | not individually verified | assume the same base rate until checked |
+| `BpExactOnTree` | mismatch | **fine** | "TERMINATES under the bounded round cap" describes the *model*; 0 temporal operators |
+| `NciUnbounded` | mismatch | **fine** | its liveness mention cross-references `NciLiveness`, a *different* spec |
+| `DictionaryStripedCAS` | mismatch | **fine** | prose intent only; 0 genuine temporal operators |
+| `CircuitRegistration` | mismatch | **REAL** | §2e — defined, unchecked, and **violated** |
+
+**Sweep completed 2026-08-10** (the four rows above were "not individually verified" in the first
+write-up; that gap is now closed). Final tally: **9 flagged → 2 real, 7 false positives.**
 
 `PredictiveLookahead.cfg` deserves quoting as the standard: it records that liveness is
 *deliberately* unchecked, that mixing a state `CONSTRAINT` with a liveness `PROPERTY` is **unsound
@@ -35,7 +41,19 @@ in TLC** (the constraint creates artificial sinks that corrupt fairness), and th
 bounded model `EventualCommit` is **VIOLATED**. That is the opposite of a false green — it is a
 spec that refuses to bank a result it knows would be spurious.
 
-> **So the detector is NOT shipped.** A ~1-in-9 precision rule that fires on healthy specs would
+**My detector failed in three distinct ways, which is the calibration worth keeping:**
+
+1. **Prose mention ≠ claim.** `PermanentHarmHorizon` scopes liveness out explicitly;
+   `RecursiveSignedSemiNaive`, `SpineAsyncProtocol` and `BpExactOnTree` encode termination as a
+   bounded invariant on purpose; `NciUnbounded` cross-references a *different* spec.
+2. **Symbol matching hit the wrong symbol.** Counting `<>` as a temporal operator matched `<<>>`
+   — the empty-sequence literal. `DictionaryStripedCAS` looked like it had 7 liveness definitions
+   and has **zero**; `CircuitRegistration` looked like 2 and has **one**.
+3. **A model citizen is indistinguishable from a defect by counting.** `PredictiveLookahead`
+   *defines* liveness properties and documents precisely why it declines to check them — which no
+   count can tell apart from silently ignoring them.
+
+> **So the detector is NOT shipped.** A 2-in-9 precision rule that fires on healthy specs would
 > manufacture exactly the noise this session has been removing. Recorded here as a measured
 > negative result: "prose mentions liveness + no `PROPERTY`" does not discriminate, because the
 > two legitimate patterns — *scoping liveness out explicitly* and *encoding it as a bounded
@@ -134,6 +152,42 @@ DecisionStable == decided # "none" => [][decided' = decided]_vars
 Defined in the module, absent from `BftConsensus.cfg`, which lists only `INVARIANT SafetyInvariant`.
 Also `THEOREM Spec => []SafetyInvariant` is stated with no proof, and TLAPS is run on
 `NciSafetyProofs` / `NciNonUrgencyProofs`, not on this file.
+
+### (e) SECOND REAL HIT — `CircuitRegistration`'s claimed liveness is FALSE, not merely unchecked
+
+Found closing the sweep. `src/Core.TLA/specs/CircuitRegistration.tla:99` states:
+
+```
+\* Liveness: Build eventually runs (we always have weak fairness on it).
+BuildCompletes == <>built
+```
+
+`CircuitRegistration.cfg` checks only `INVARIANT Safety`, and — unlike `PredictiveLookahead` — it
+records no reason for the omission. So the property is defined and silently unchecked.
+
+**Adding it is sound here, and it fails.** The cfg carries no `CONSTRAINT`, so the
+constraint-corrupts-fairness unsoundness does not apply. Adding `PROPERTY BuildCompletes` in a
+scratch copy and running TLC gives:
+
+```
+Error: Temporal property BuildCompletes was violated.
+10415 states generated, 3538 distinct states found
+```
+
+**The diagnosis is not weak fairness in the wrong place.** `Spec == Init /\ [][Next]_vars /\
+WF_vars(Build)` uses *per-action* weak fairness on `Build` — the stronger, correct pattern, and
+the one `PredictiveLookahead`'s note recommends over whole-relation `WF_vars(Next)`. The fairness
+is right. The inference is wrong: **weak fairness fires only on *continuous* enablement**, so a
+behaviour in which `Build` is repeatedly disabled never triggers it. The parenthetical *"we always
+have weak fairness on it"* is true and does not yield *"Build eventually runs."*
+
+So this is a stronger defect than (d)-style defined-but-unchecked: **the prose asserts a
+conclusion the model refutes.** As with `BftConsensus`, the two `THEOREM` lines carry no proofs
+and TLAPS does not run on this file.
+
+Fix options, both cheap: state the honest conditional form (eventually-built *given* `Build`
+remains enabled) and check that, or scope liveness out explicitly in the `PredictiveLookahead`
+style. Silently keeping a comment the model refutes is the one unacceptable option.
 
 ### What the spec does honestly, and should keep credit for
 
