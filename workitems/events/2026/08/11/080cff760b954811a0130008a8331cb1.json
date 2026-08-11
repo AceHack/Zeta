@@ -1,0 +1,14 @@
+{
+  "id": "080cff760b954811a0130008a8331cb1",
+  "at": "2026-08-11T02:58:03.049Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZQC2WN908QG0R0032VBE8P",
+    "type": "bug",
+    "title": "udp-lossy-loop test red on main: JSON.stringify cannot serialize BigInt (ZetaId over the mesh wire needs a codec decision)",
+    "slug": "udp-lossy-loop-test-red-on-main-json-stringify-cannot-serial",
+    "priority": "P2",
+    "filename": "081KZQC2WN908QG0R0032VBE8P-udp-lossy-loop-test-red-on-main-json-stringify-cannot-serial.md"
+  }
+}
