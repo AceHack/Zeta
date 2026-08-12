@@ -63,6 +63,42 @@ describe("rs-block-reader", () => {
     }
   });
 
+  test("queryPhase: the FIRST phase of a block is inside it", () => {
+    // The containment check is `phase >= startPhase && phase <= endPhase`, and every other query
+    // here sits comfortably in the middle (startPhase 10, phase 15), where `>=` and `>` agree.
+    // The block's first phase is the only value that separates them — and recovering the first
+    // phase of a block is an ordinary read, not an edge case. Relax that guard and the reader
+    // answers "not covered by any block" for data it is holding. Found by the mutation runner
+    // (otto, tick 11248: gte-to-gt was INDISTINGUISHABLE UNDER SUITE).
+    const path = setup([makeBlock("alexa", 0, 10)]);
+    const idx = loadBlockIndex(path);
+    const result = queryPhase(idx, { agent: "alexa", phase: 10 });
+
+    expect(result.found).toBe(true);
+    if (result.found) {
+      expect(result.positionInBlock).toBe(0);
+    }
+  });
+
+  test("queryPhase: the LAST phase of a block is inside it", () => {
+    // The other end of the same range check, equally unexercised.
+    const path = setup([makeBlock("alexa", 0, 10)]);
+    const idx = loadBlockIndex(path);
+    const result = queryPhase(idx, { agent: "alexa", phase: 10 + K - 1 });
+
+    expect(result.found).toBe(true);
+    if (result.found) {
+      expect(result.positionInBlock).toBe(K - 1);
+    }
+  });
+
+  test("queryPhase: one phase BELOW a block is outside it", () => {
+    // Pins the boundary from the other side, so the range cannot be widened without notice either.
+    const path = setup([makeBlock("alexa", 0, 10)]);
+    const idx = loadBlockIndex(path);
+    expect(queryPhase(idx, { agent: "alexa", phase: 9 }).found).toBe(false);
+  });
+
   test("queryPhase: not found for wrong agent", () => {
     const path = setup([makeBlock("alexa", 0, 0)]);
     const idx = loadBlockIndex(path);
