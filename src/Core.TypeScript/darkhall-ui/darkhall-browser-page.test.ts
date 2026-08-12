@@ -3,6 +3,7 @@ import {
   createInMemoryBrowserDatabaseIntentOutbox,
   type BrowserDatabaseIntentOutboxPort,
 } from "../browser-node/browser-database-intent-outbox";
+import type { BrowserDatabaseReceiptArchivePort } from "../browser-node/browser-database-receipt-archive";
 import { BROWSER_TAB_COORDINATOR_SCHEMA, type BrowserTabChannelMessage } from "../browser-node/browser-tab-coordinator";
 import { SLOT } from "../observe/grammar-16";
 import type { ZetaDbTickReadout, ZetaDbTickRequest } from "../zetadb/zeta-db-node";
@@ -243,6 +244,24 @@ function databaseIntentOutbox(): BrowserDatabaseIntentOutboxPort {
   return created.value;
 }
 
+function databaseReceiptArchive(): BrowserDatabaseReceiptArchivePort {
+  return {
+    archive: (receipt) =>
+      Promise.resolve({
+        ok: true,
+        value: {
+          schema: "zeta.browser-database-receipt-archive-ack.v1",
+          archiveNodeId: `${receipt.databaseNodeId}:receipts`,
+          databaseNodeId: receipt.databaseNodeId,
+          intentId: receipt.intentId,
+          sequence: receipt.sequence,
+          archiveRevision: receipt.sequence + 1,
+          disposition: "stored",
+        },
+      }),
+  };
+}
+
 async function waitFor(predicate: () => boolean): Promise<void> {
   for (let attempt = 0; attempt < 100; attempt += 1) {
     if (predicate()) return;
@@ -258,6 +277,7 @@ describe("Dark Hall active browser page", () => {
     const started = await startNativeDarkHallBrowserPage({
       root,
       databaseIntentOutbox: databaseIntentOutbox(),
+      databaseReceiptArchive: databaseReceiptArchive(),
       databaseExecutor: (request) => {
         requests.push(request);
         return databaseExecutor(request);
@@ -477,9 +497,9 @@ describe("Dark Hall active browser page", () => {
         duplicates: 0,
       },
     });
-    expect(root.mount.attributes.get("data-database-outbox-latest-status")).toBe("settled");
-    expect(root.mount.attributes.get("data-database-outbox-latest-intent")).toBe("tab-a/row-command/1");
-    expect(root.mount.attributes.get("data-database-outbox-latest-revision")).toBe("8");
+    expect(root.mount.attributes.get("data-database-outbox-latest-status")).toBe("none");
+    expect(root.mount.attributes.get("data-database-outbox-latest-intent")).toBe("none");
+    expect(root.mount.attributes.get("data-database-outbox-latest-revision")).toBe("none");
 
     root.serviceWorker.dispatch({
       schema: BROWSER_TAB_COORDINATOR_SCHEMA,
@@ -529,6 +549,7 @@ describe("Dark Hall active browser page", () => {
     const started = await startNativeDarkHallBrowserPage({
       root,
       databaseIntentOutbox: outbox,
+      databaseReceiptArchive: databaseReceiptArchive(),
       databaseExecutor: (request) => {
         requests.push(request);
         return Promise.resolve({ ok: true, value: databaseReadout(request, 1, "17") });
@@ -544,10 +565,10 @@ describe("Dark Hall active browser page", () => {
     expect(requests[1]?.deltas).toEqual([]);
     expect(root.mount.attributes.get("data-database-outbox-queued")).toBe("0");
     expect(root.mount.attributes.get("data-database-outbox-executing")).toBe("0");
-    expect(root.mount.attributes.get("data-database-outbox-settled")).toBe("1");
+    expect(root.mount.attributes.get("data-database-outbox-settled")).toBe("0");
     expect(root.mount.attributes.get("data-database-outbox-refused")).toBe("0");
-    expect(root.mount.attributes.get("data-database-outbox-latest-intent")).toBe("event/recovered");
-    expect(root.mount.attributes.get("data-database-outbox-latest-revision")).toBe("1");
+    expect(root.mount.attributes.get("data-database-outbox-latest-intent")).toBe("none");
+    expect(root.mount.attributes.get("data-database-outbox-latest-revision")).toBe("none");
     if (started.ok) expect(started.value.stop().ok).toBe(true);
   });
 
@@ -558,6 +579,7 @@ describe("Dark Hall active browser page", () => {
     const started = await startNativeDarkHallBrowserPage({
       root,
       databaseIntentOutbox: outbox,
+      databaseReceiptArchive: databaseReceiptArchive(),
       databaseExecutor: (request) => {
         requests.push(request);
         return Promise.resolve({ ok: true, value: databaseReadout(request, request.deltas.length > 0 ? 1 : 0, "23") });
@@ -594,7 +616,7 @@ describe("Dark Hall active browser page", () => {
     });
     expect(await outbox.read("zeta-darkhall-browser-node:database")).toMatchObject({
       ok: true,
-      value: { queued: 0, executing: 0, settled: 1, refused: 0 },
+      value: { queued: 0, executing: 0, settled: 0, refused: 0 },
     });
     expect(started.value.stop().ok).toBe(true);
   });
@@ -605,6 +627,7 @@ describe("Dark Hall active browser page", () => {
     const started = await startNativeDarkHallBrowserPage({
       root,
       databaseIntentOutbox: databaseIntentOutbox(),
+      databaseReceiptArchive: databaseReceiptArchive(),
       databaseExecutor,
     });
 
@@ -667,6 +690,7 @@ describe("Dark Hall active browser page", () => {
     const starting = startNativeDarkHallBrowserPage({
       root,
       databaseIntentOutbox: databaseIntentOutbox(),
+      databaseReceiptArchive: databaseReceiptArchive(),
       databaseExecutor: (request) => {
         requests.push(request);
         if (requests.length > 1) {
@@ -732,6 +756,7 @@ describe("Dark Hall active browser page", () => {
     const result = await startNativeDarkHallBrowserPage({
       root,
       databaseIntentOutbox: databaseIntentOutbox(),
+      databaseReceiptArchive: databaseReceiptArchive(),
       databaseExecutor,
     });
     expect(result.ok).toBe(true);

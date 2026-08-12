@@ -13,6 +13,11 @@ import type {
   BrowserDatabaseIntentOutboxPort,
   BrowserDatabaseIntentReadout,
 } from "../browser-node/browser-database-intent-outbox";
+import {
+  createZetaDbBrowserDatabaseReceiptArchive,
+  type BrowserDatabaseReceiptArchiveExecutor,
+  type BrowserDatabaseReceiptArchivePort,
+} from "../browser-node/browser-database-receipt-archive";
 import { openNativeIndexedDbDatabaseIntentOutbox } from "../browser-node/browser-indexeddb-database-intent-outbox";
 import { createNativeBrowserExecutionAdmission } from "../browser-node/browser-web-lock-execution-admission";
 import { runBrowserZetaDbWake } from "../browser-node/browser-zetadb-image-port";
@@ -149,6 +154,10 @@ export interface NativeDarkHallBrowserPageOptions {
   readonly databaseIntentDatabaseName?: string;
   readonly databaseIntentStoreName?: string;
   readonly databaseIntentLimits?: BrowserDatabaseIntentLimits;
+  readonly databaseReceiptArchive?: BrowserDatabaseReceiptArchivePort;
+  readonly databaseReceiptArchiveNodeId?: string;
+  readonly databaseReceiptArchiveLimits?: ZetaDbTickLimits;
+  readonly databaseReceiptArchiveExecutor?: BrowserDatabaseReceiptArchiveExecutor;
   readonly databaseExecutor?: BrowserZetaDbTabExecutor;
   readonly maxControllerInputInFlight?: number;
   readonly rowCommandEditorMountId?: string;
@@ -402,6 +411,12 @@ const defaultDatabaseIntentLimits: BrowserDatabaseIntentLimits = {
   maxLedgerBytes: 256 * 1024,
 };
 
+const defaultDatabaseReceiptArchiveLimits: ZetaDbTickLimits = {
+  maxDeltas: 1,
+  maxEntries: 256,
+  maxCheckpointBytes: 256 * 1024,
+};
+
 function selectPageDatabaseAdmission(
   options: NativeDarkHallBrowserPageOptions,
   root: unknown,
@@ -437,6 +452,45 @@ async function selectPageDatabaseIntentOutbox(
     "page-database-start-failed",
     `${native.feedback.code}: ${native.feedback.detail}`,
     native.feedback.severity,
+  );
+}
+
+function selectPageDatabaseReceiptArchive(
+  options: NativeDarkHallBrowserPageOptions,
+  configuration: NativePageConfiguration,
+): DarkHallBrowserPageResult<BrowserDatabaseReceiptArchivePort> {
+  if (options.databaseReceiptArchive !== undefined) return succeeded(options.databaseReceiptArchive);
+  const archiveNodeId = identifier(
+    options.databaseReceiptArchiveNodeId ?? null,
+    `${configuration.databaseNodeId}:receipts`,
+  );
+  if (!archiveNodeId.ok) return archiveNodeId;
+  const archive = createZetaDbBrowserDatabaseReceiptArchive({
+    sourceDatabaseNodeId: configuration.databaseNodeId,
+    archiveNodeId: archiveNodeId.value,
+    executorId: configuration.tabId,
+    limits: options.databaseReceiptArchiveLimits ?? defaultDatabaseReceiptArchiveLimits,
+    execute:
+      options.databaseReceiptArchiveExecutor ??
+      ((request) =>
+        runBrowserZetaDbWake(
+          configuration.root,
+          {
+            databaseName: options.databaseName ?? "zeta-browser-node",
+            storeName: options.databaseStoreName ?? "database-images",
+          },
+          request,
+        )),
+  });
+  if (archive.ok) return succeeded(archive.value);
+  configuration.context.mount.setStatus(
+    pageStatusFromSeverity(archive.feedback.severity),
+    "page-database-start-failed",
+  );
+  return failed(
+    "page-database-start-failed",
+    `${archive.feedback.code}: ${archive.feedback.detail}`,
+    archive.feedback.severity,
   );
 }
 
@@ -659,6 +713,7 @@ async function startPageEdges(
   DarkHallBrowserPageResult<{
     readonly pwa: DarkHallBrowserPwaRuntime;
     readonly outbox: BrowserDatabaseIntentOutboxPort;
+    readonly receiptArchive: BrowserDatabaseReceiptArchivePort;
   }>
 > {
   const pwa = await startPagePwa(
@@ -672,9 +727,17 @@ async function startPageEdges(
   );
   if (!pwa.ok) return pwa;
   const outbox = await selectPageDatabaseIntentOutbox(options, configuration.root, configuration.context);
-  if (outbox.ok) return succeeded({ pwa: pwa.value, outbox: outbox.value });
+  if (!outbox.ok) {
+    pwa.value.browser.host.stop();
+    return outbox;
+  }
+  const receiptArchive = selectPageDatabaseReceiptArchive(options, configuration);
+  if (receiptArchive.ok) {
+    return succeeded({ pwa: pwa.value, outbox: outbox.value, receiptArchive: receiptArchive.value });
+  }
+  outbox.value.close();
   pwa.value.browser.host.stop();
-  return outbox;
+  return receiptArchive;
 }
 
 async function hydratePageDatabase(
@@ -798,7 +861,7 @@ export async function startNativeDarkHallBrowserPage(
   );
   if (!edges.ok) return edges;
 
-  const { pwa, outbox } = edges.value;
+  const { pwa, outbox, receiptArchive } = edges.value;
   let latestDatabase: DarkHallDatabaseReadout | null = null;
   const observedDatabase = (): DarkHallDatabaseReadout | null => latestDatabase;
   let latestController: DarkHallBrowserDatabaseControllerReadout | null = null;
@@ -808,6 +871,7 @@ export async function startNativeDarkHallBrowserPage(
     limits: databaseLimits,
     admission: databaseExecutionAdmission,
     outbox,
+    receiptArchive,
     execute:
       options.databaseExecutor ??
       ((request) =>

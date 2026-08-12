@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { createInMemoryBrowserExecutionAdmission } from "../browser-node/browser-execution-admission";
 import { createInMemoryBrowserDatabaseIntentOutbox } from "../browser-node/browser-database-intent-outbox";
+import { createZetaDbBrowserDatabaseReceiptArchive } from "../browser-node/browser-database-receipt-archive";
 import {
   createInMemoryZetaDbImagePort,
   runZetaDbNodeTick,
@@ -172,12 +173,23 @@ describe("Dark Hall browser database controller", () => {
     });
     expect(outbox.ok).toBe(true);
     if (!outbox.ok) return;
+    const archivePort = createInMemoryZetaDbImagePort();
+    const archive = createZetaDbBrowserDatabaseReceiptArchive({
+      sourceDatabaseNodeId: "database-a",
+      archiveNodeId: "database-a:receipts",
+      executorId: "tab-a",
+      limits: { maxDeltas: 1, maxEntries: 32, maxCheckpointBytes: 32 * 1024 },
+      execute: (request) => runZetaDbNodeTick(archivePort, request),
+    });
+    expect(archive.ok).toBe(true);
+    if (!archive.ok) return;
     const runtimeStarted = startBrowserZetaDbTabRuntime({
       databaseNodeId: "database-a",
       executorId: "tab-a",
       limits: { maxDeltas: 8, maxEntries: 32, maxCheckpointBytes: 32 * 1024 },
       admission: createInMemoryBrowserExecutionAdmission(),
       outbox: outbox.value,
+      receiptArchive: archive.value,
       execute: (request) => runZetaDbNodeTick(port, request),
       observe: () => ({ ok: true }),
       observeOutbox: () => ({ ok: true }),

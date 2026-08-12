@@ -7,6 +7,10 @@ import { zetaDbTickToDarkHallDatabaseReadout } from "../darkhall-ui/darkhall-dat
 import type { BrowserCheckpointRecord } from "./browser-checkpoint-port";
 import type { BrowserExecutionAdmissionFeedback } from "./browser-execution-admission";
 import type { BrowserDatabaseIntentFeedback, BrowserDatabaseIntentReadout } from "./browser-database-intent-outbox";
+import {
+  createZetaDbBrowserDatabaseReceiptArchive,
+  type BrowserDatabaseReceiptArchiveFeedback,
+} from "./browser-database-receipt-archive";
 import { openNativeIndexedDbDatabaseIntentOutbox } from "./browser-indexeddb-database-intent-outbox";
 import type { BrowserLifecycleHostReadout, BrowserReadoutSinkResult } from "./browser-lifecycle-host";
 import { createNativeServiceWorkerTabChannel } from "./browser-service-worker-channel";
@@ -21,11 +25,12 @@ import {
 } from "./browser-zetadb-tab-runtime";
 import type { BrowserDatabaseInvalidation, BrowserTabCoordinatorReadout } from "./browser-tab-coordinator";
 
-export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v5" as const;
+export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v6" as const;
 
 type BrowserMultitabFeedback =
   | DarkHallBrowserDurableFeedback
   | BrowserDatabaseIntentFeedback
+  | BrowserDatabaseReceiptArchiveFeedback
   | BrowserExecutionAdmissionFeedback
   | BrowserZetaDbTabFeedback
   | ZetaDbFeedback;
@@ -83,6 +88,7 @@ export interface BrowserMultitabFixtureApi {
   databaseTick(deltas: readonly ZetaDbDelta[]): Promise<BrowserMultitabDatabaseResult>;
   databaseExecutionHeld(): boolean;
   readDatabaseOutbox(): Promise<BrowserMultitabDatabaseOutboxResult>;
+  readDatabaseReceiptArchive(): Promise<BrowserMultitabDatabaseResult>;
   recoverDatabaseIntents(): Promise<BrowserMultitabDatabaseRecoveryResult>;
   drainDatabaseInvalidations(): Promise<BrowserMultitabDatabaseResult>;
   stop(): BrowserMultitabFixtureStopResult;
@@ -249,6 +255,7 @@ if (!started.ok) {
     databaseTick: () => Promise.resolve(failure),
     databaseExecutionHeld: () => false,
     readDatabaseOutbox: () => Promise.resolve(failure),
+    readDatabaseReceiptArchive: () => Promise.resolve(failure),
     recoverDatabaseIntents: () => Promise.resolve(failure),
     drainDatabaseInvalidations: () => Promise.resolve(failure),
     stop: () => failure,
@@ -267,31 +274,46 @@ if (!started.ok) {
   } else if (!databaseIntentOutbox.ok) {
     databaseRuntime = databaseIntentOutbox;
   } else {
-    databaseRuntime = startBrowserZetaDbTabRuntime({
-      databaseNodeId,
+    const receiptArchive = createZetaDbBrowserDatabaseReceiptArchive({
+      sourceDatabaseNodeId: databaseNodeId,
+      archiveNodeId: `${databaseNodeId}:receipts`,
       executorId: tabId,
-      limits: { maxDeltas: 16, maxEntries: 64, maxCheckpointBytes: 64 * 1024 },
-      admission: databaseAdmission.value,
-      outbox: databaseIntentOutbox.value,
-      execute: async (request) => {
-        if (holdDatabaseExecution && request.deltas.length > 0) {
-          databaseExecutionHeld = true;
-          await new Promise<never>(() => {
-            // Closing this page releases the browser lock while the durable intent remains.
-          });
-        }
-        return runBrowserZetaDbWake(
+      limits: { maxDeltas: 1, maxEntries: 128, maxCheckpointBytes: 128 * 1024 },
+      execute: (request) =>
+        runBrowserZetaDbWake(
           globalThis,
           { databaseName: "zeta-browser-smoke-node", storeName: "database-images" },
           request,
-        );
-      },
-      observe: (tick) => runtime.updateDatabaseReadout(zetaDbTickToDarkHallDatabaseReadout(tick)),
-      observeOutbox: () => ({ ok: true }),
-      publishInvalidation: (nextDatabaseNodeId, revision) =>
-        runtime.publishDatabaseInvalidation(nextDatabaseNodeId, revision),
-      publishExecutionReceipt: (receipt) => runtime.publishDatabaseExecutionReceipt(receipt),
+        ),
     });
+    databaseRuntime = receiptArchive.ok
+      ? startBrowserZetaDbTabRuntime({
+          databaseNodeId,
+          executorId: tabId,
+          limits: { maxDeltas: 16, maxEntries: 64, maxCheckpointBytes: 64 * 1024 },
+          admission: databaseAdmission.value,
+          outbox: databaseIntentOutbox.value,
+          receiptArchive: receiptArchive.value,
+          execute: async (request) => {
+            if (holdDatabaseExecution && request.deltas.length > 0) {
+              databaseExecutionHeld = true;
+              await new Promise<never>(() => {
+                // Closing this page releases the browser lock while the durable intent remains.
+              });
+            }
+            return runBrowserZetaDbWake(
+              globalThis,
+              { databaseName: "zeta-browser-smoke-node", storeName: "database-images" },
+              request,
+            );
+          },
+          observe: (tick) => runtime.updateDatabaseReadout(zetaDbTickToDarkHallDatabaseReadout(tick)),
+          observeOutbox: () => ({ ok: true }),
+          publishInvalidation: (nextDatabaseNodeId, revision) =>
+            runtime.publishDatabaseInvalidation(nextDatabaseNodeId, revision),
+          publishExecutionReceipt: (receipt) => runtime.publishDatabaseExecutionReceipt(receipt),
+        })
+      : receiptArchive;
   }
   if (!databaseRuntime.ok) {
     const failure: BrowserMultitabFixtureFailure = databaseRuntime;
@@ -303,6 +325,7 @@ if (!started.ok) {
       databaseTick: () => Promise.resolve(failure),
       databaseExecutionHeld: () => false,
       readDatabaseOutbox: () => Promise.resolve(failure),
+      readDatabaseReceiptArchive: () => Promise.resolve(failure),
       recoverDatabaseIntents: () => Promise.resolve(failure),
       drainDatabaseInvalidations: () => Promise.resolve(failure),
       stop: () => failure,
@@ -328,6 +351,18 @@ if (!started.ok) {
       databaseTick: (deltas) => database.tick(deltas),
       databaseExecutionHeld: () => databaseExecutionHeld,
       readDatabaseOutbox: () => database.readOutbox(),
+      readDatabaseReceiptArchive: () =>
+        runBrowserZetaDbWake(
+          globalThis,
+          { databaseName: "zeta-browser-smoke-node", storeName: "database-images" },
+          {
+            nodeId: `${databaseNodeId}:receipts`,
+            executorId: tabId,
+            executorKind: "browser-tab",
+            deltas: [],
+            limits: { maxDeltas: 1, maxEntries: 128, maxCheckpointBytes: 128 * 1024 },
+          },
+        ),
       recoverDatabaseIntents: () => database.recoverPending(),
       drainDatabaseInvalidations: async () => {
         const drained = await database.drainInvalidations();

@@ -240,6 +240,49 @@ describe("browser database intent outbox", () => {
     });
   });
 
+  test("releases receipt capacity only for an exact idempotent archive acknowledgement", async () => {
+    const opened = createInMemoryBrowserDatabaseIntentOutbox({
+      maxIntents: 3,
+      maxReceipts: 1,
+      maxLedgerBytes: 4096,
+    });
+    if (!opened.ok) throw new Error("test setup failed");
+    const enqueued = await opened.value.enqueue(draft("event/a"));
+    if (!enqueued.ok) throw new Error("test enqueue failed");
+    await opened.value.begin("browser/global", enqueued.value.intentId, enqueued.value.sequence);
+    const settled = await opened.value.settle(
+      "browser/global",
+      enqueued.value.intentId,
+      enqueued.value.sequence,
+      tick(),
+    );
+    if (!settled.ok) throw new Error("test settlement failed");
+    const receipt = settled.value.receipts[0];
+    if (receipt === undefined) throw new Error("test receipt missing");
+
+    expect(await opened.value.acknowledgeArchive({ ...receipt, revision: 2 })).toMatchObject({
+      ok: false,
+      feedback: { code: "intent-conflict" },
+    });
+    expect(await opened.value.enqueue(draft("event/b"))).toMatchObject({
+      ok: false,
+      feedback: { severity: "backpressure", code: "intent-capacity-exhausted" },
+    });
+
+    expect(await opened.value.acknowledgeArchive(receipt)).toMatchObject({
+      ok: true,
+      value: { settled: 0, receipts: [], admission: "open" },
+    });
+    expect(await opened.value.acknowledgeArchive(receipt)).toMatchObject({
+      ok: true,
+      value: { settled: 0, receipts: [] },
+    });
+    expect(await opened.value.enqueue(draft("event/b"))).toMatchObject({
+      ok: true,
+      value: { intentId: "event/b", sequence: 1 },
+    });
+  });
+
   test("migrates the legacy pending ledger without inventing receipts", () => {
     expect(
       validateBrowserDatabaseIntentLedger({

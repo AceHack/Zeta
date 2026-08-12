@@ -7,7 +7,7 @@ import type { BrowserMultitabFixtureApi, BrowserMultitabFixtureReadout } from ".
 import type { ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 import type { BrowserDatabaseIntentReadout } from "./browser-database-intent-outbox";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v9" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v10" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -128,6 +128,7 @@ export interface BrowserMultitabSmokeTranscript {
     readonly recovered: DarkHallDatabaseReadout;
     readonly secondRecovery: null;
     readonly outbox: BrowserDatabaseIntentReadout;
+    readonly archive: ZetaDbTickReadout;
     readonly finalRead: ZetaDbTickReadout;
   };
 }
@@ -165,6 +166,18 @@ function failed(code: BrowserMultitabSmokeFeedback["code"], detail: string): Bro
 
 function errorDetail(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
+}
+
+function parseJsonRecord(payload: string | undefined): Readonly<Record<string, unknown>> | null {
+  if (payload === undefined) return null;
+  try {
+    const parsed: unknown = JSON.parse(payload) as unknown;
+    return parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as Readonly<Record<string, unknown>>)
+      : null;
+  } catch {
+    return null;
+  }
 }
 
 async function buildFixture(): Promise<
@@ -444,15 +457,16 @@ async function runIntentRecoveryProof(
           ?.getAttribute("data-database-outbox-recovery"),
       };
     });
-    throw new Error(`${errorDetail(error)}; survivor=${JSON.stringify(diagnostic)}`);
+    throw new Error(`${errorDetail(error)}; survivor=${JSON.stringify(diagnostic)}`, { cause: error });
   }
   const recoverySnapshot = await survivor.evaluate(async () => {
     const root = globalThis as unknown as BrowserSmokeGlobal;
     const before = root.__zetaBrowserSmoke.read();
     const outbox = await root.__zetaBrowserSmoke.readDatabaseOutbox();
+    const archive = await root.__zetaBrowserSmoke.readDatabaseReceiptArchive();
     const secondRecovery = await root.__zetaBrowserSmoke.recoverDatabaseIntents();
     const after = root.__zetaBrowserSmoke.read();
-    return { before, outbox, secondRecovery, after };
+    return { before, outbox, archive, secondRecovery, after };
   });
   const recoveredReadout = recoverySnapshot.before;
   if (!recoveredReadout.ok) throw new Error(`Surviving intent recovery failed: ${recoveredReadout.feedback.detail}`);
@@ -465,6 +479,8 @@ async function runIntentRecoveryProof(
   if (secondRecovery.value !== null) throw new Error("Second intent recovery executed already-completed work.");
   const { outbox } = recoverySnapshot;
   if (!outbox.ok) throw new Error(`Intent outbox read failed: ${outbox.feedback.detail}`);
+  const { archive } = recoverySnapshot;
+  if (!archive.ok) throw new Error(`Receipt archive read failed: ${archive.feedback.detail}`);
   const finalRead = await survivor.evaluate(async () => {
     const root = globalThis as unknown as BrowserSmokeGlobal;
     return root.__zetaBrowserSmoke.databaseTick([]);
@@ -477,7 +493,13 @@ async function runIntentRecoveryProof(
     root.ZetaMesh.destroy();
   });
   await survivor.close();
-  return { recovered, secondRecovery: null, outbox: outbox.value, finalRead: finalRead.value };
+  return {
+    recovered,
+    secondRecovery: null,
+    outbox: outbox.value,
+    archive: archive.value,
+    finalRead: finalRead.value,
+  };
 }
 
 function sourceHost(observation: BrowserMultitabPageObservation): BrowserLifecycleHostReadout | null {
@@ -651,12 +673,24 @@ function validateIntentRecovery(transcript: BrowserMultitabSmokeTranscript, fail
   if (
     transcript.intentRecovery.outbox.queued !== 0 ||
     transcript.intentRecovery.outbox.executing !== 0 ||
-    transcript.intentRecovery.outbox.settled !== 1 ||
+    transcript.intentRecovery.outbox.settled !== 0 ||
     transcript.intentRecovery.outbox.refused !== 0 ||
     transcript.intentRecovery.outbox.intents.length !== 0 ||
-    transcript.intentRecovery.outbox.receipts[0]?.intentId !== "intent-recovery/score"
+    transcript.intentRecovery.outbox.receipts.length !== 0
   ) {
-    failures.push("the surviving page did not transfer the durable intent into a settled receipt");
+    failures.push("the surviving page did not release the locally archived execution receipt");
+  }
+  const archiveRow = transcript.intentRecovery.archive.rows.find((row) => row.rowKey === "execution-receipt/0");
+  const archivedReceipt = parseJsonRecord(archiveRow?.payload);
+  if (
+    transcript.intentRecovery.archive.nodeId !== "intent-recovery:database:receipts" ||
+    transcript.intentRecovery.archive.revision !== 1 ||
+    archiveRow?.weight !== 1 ||
+    archivedReceipt?.databaseNodeId !== "intent-recovery:database" ||
+    archivedReceipt.intentId !== "intent-recovery/score" ||
+    archivedReceipt.revision !== 1
+  ) {
+    failures.push("the surviving page did not retain the exact execution receipt in its archive node");
   }
   if (
     transcript.intentRecovery.finalRead.revision !== 1 ||

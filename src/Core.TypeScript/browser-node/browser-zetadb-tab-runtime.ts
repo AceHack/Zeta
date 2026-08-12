@@ -13,6 +13,10 @@ import type {
   BrowserDatabaseIntentReadout,
   BrowserDatabaseIntentRecord,
 } from "./browser-database-intent-outbox";
+import type {
+  BrowserDatabaseReceiptArchiveFeedback,
+  BrowserDatabaseReceiptArchivePort,
+} from "./browser-database-receipt-archive";
 import type { BrowserExecutionAdmissionPort } from "./browser-execution-admission";
 import type { BrowserDatabaseInvalidation } from "./browser-tab-coordinator";
 
@@ -28,6 +32,7 @@ export interface BrowserZetaDbTabFeedback {
     | "database-tab-observer-failed"
     | "database-tab-outbox-observer-failed"
     | "database-tab-publish-failed"
+    | "database-tab-receipt-archive-failed"
     | "database-tab-receipt-publish-failed"
     | "database-tab-stopped";
   readonly detail: string;
@@ -52,6 +57,7 @@ export interface BrowserZetaDbTabRuntimeOptions {
   readonly limits: ZetaDbTickLimits;
   readonly admission: BrowserExecutionAdmissionPort;
   readonly outbox: BrowserDatabaseIntentOutboxPort;
+  readonly receiptArchive: BrowserDatabaseReceiptArchivePort;
   readonly execute: BrowserZetaDbTabExecutor;
   readonly observe: (readout: ZetaDbTickReadout) => BrowserZetaDbTabEdgeResult;
   readonly observeOutbox: (readout: BrowserDatabaseIntentReadout) => BrowserZetaDbTabEdgeResult;
@@ -103,6 +109,10 @@ function isIdentifier(value: unknown): value is string {
   return typeof value === "string" && value.length > 0 && value.length <= 1024;
 }
 
+function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
 function isRevision(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
 }
@@ -121,7 +131,11 @@ function isExecutionAdmissionPort(value: unknown): value is BrowserExecutionAdmi
 }
 
 function isIntentOutboxPort(value: unknown): value is BrowserDatabaseIntentOutboxPort {
-  return hasMethods(value, ["enqueue", "read", "begin", "settle", "refuse", "close"]);
+  return hasMethods(value, ["enqueue", "read", "begin", "settle", "acknowledgeArchive", "refuse", "close"]);
+}
+
+function isReceiptArchivePort(value: unknown): value is BrowserDatabaseReceiptArchivePort {
+  return hasMethods(value, ["archive"]);
 }
 
 function validLimits(limits: ZetaDbTickLimits): boolean {
@@ -148,6 +162,10 @@ function edgeFailure(
 
 function intentFailure(feedback: BrowserDatabaseIntentFeedback): BrowserZetaDbTabResult<never> {
   return failed("database-tab-intent-failed", `${feedback.code}: ${feedback.detail}`, feedback.severity);
+}
+
+function receiptArchiveFailure(feedback: BrowserDatabaseReceiptArchiveFeedback): BrowserZetaDbTabResult<never> {
+  return failed("database-tab-receipt-archive-failed", `${feedback.code}: ${feedback.detail}`, feedback.severity);
 }
 
 function observeOutbox(
@@ -273,6 +291,68 @@ function publishExecutionReceipt(
   }
 }
 
+function acknowledgementMatchesReceipt(acknowledgement: unknown, receipt: BrowserDatabaseExecutionReceipt): boolean {
+  return (
+    isRecord(acknowledgement) &&
+    acknowledgement.schema === "zeta.browser-database-receipt-archive-ack.v1" &&
+    isIdentifier(acknowledgement.archiveNodeId) &&
+    acknowledgement.databaseNodeId === receipt.databaseNodeId &&
+    acknowledgement.intentId === receipt.intentId &&
+    acknowledgement.sequence === receipt.sequence &&
+    isRevision(acknowledgement.archiveRevision) &&
+    (acknowledgement.disposition === "stored" || acknowledgement.disposition === "duplicate")
+  );
+}
+
+async function archiveAndAcknowledgeReceipt(
+  options: BrowserZetaDbTabRuntimeOptions,
+  receipt: BrowserDatabaseExecutionReceipt,
+): Promise<BrowserZetaDbTabResult<BrowserDatabaseIntentReadout>> {
+  let archived;
+  try {
+    archived = await options.receiptArchive.archive(receipt);
+  } catch {
+    return failed(
+      "database-tab-receipt-archive-failed",
+      "The injected receipt archive threw before acknowledging durable persistence.",
+    );
+  }
+  if (!archived.ok) return receiptArchiveFailure(archived.feedback);
+  if (!acknowledgementMatchesReceipt(archived.value, receipt)) {
+    return failed(
+      "database-tab-receipt-archive-failed",
+      `The receipt archive acknowledgement did not exactly match ${receipt.intentId}.`,
+    );
+  }
+
+  let acknowledged;
+  try {
+    acknowledged = await options.outbox.acknowledgeArchive(receipt);
+  } catch {
+    return failed(
+      "database-tab-intent-failed",
+      `The durable outbox threw while releasing archived receipt ${receipt.intentId}.`,
+    );
+  }
+  return acknowledged.ok ? observeOutbox(options, acknowledged.value) : intentFailure(acknowledged.feedback);
+}
+
+async function archiveRetainedReceipts(
+  options: BrowserZetaDbTabRuntimeOptions,
+): Promise<BrowserZetaDbTabResult<BrowserDatabaseIntentReadout>> {
+  const current = await readAndObserveOutbox(options);
+  if (!current.ok) return current;
+  let readout = current.value;
+  for (const receipt of current.value.receipts) {
+    const acknowledged = await archiveAndAcknowledgeReceipt(options, receipt);
+    if (!acknowledged.ok) return acknowledged;
+    readout = acknowledged.value;
+    const published = publishExecutionReceipt(options, receipt);
+    if (!published.ok) return published;
+  }
+  return succeeded(readout);
+}
+
 async function executePendingIntent(
   options: BrowserZetaDbTabRuntimeOptions,
   state: RuntimeState,
@@ -295,6 +375,8 @@ async function executePendingIntent(
   const settled = await settleIntent(options, begun.value, outcome.result.value);
   if (!settled.ok) return settled;
   const edged = applyTickEdges(options, state, outcome.result.value);
+  const archived = await archiveAndAcknowledgeReceipt(options, settled.value);
+  if (!archived.ok) return archived;
   const receiptPublished = publishExecutionReceipt(options, settled.value);
   if (!edged.ok) return edged;
   return receiptPublished.ok ? succeeded(edged.value) : receiptPublished;
@@ -335,7 +417,7 @@ async function drainPendingIntents(
   state: RuntimeState,
   targetIntentId: string | null,
 ): Promise<BrowserZetaDbTabResult<DrainReadout>> {
-  const outbox = await readAndObserveOutbox(options);
+  const outbox = await archiveRetainedReceipts(options);
   if (!outbox.ok) return outbox;
   const targetRecord =
     targetIntentId === null ? undefined : outbox.value.intents.find((intent) => intent.intentId === targetIntentId);
@@ -437,11 +519,12 @@ export function startBrowserZetaDbTabRuntime(
     !isIdentifier(options.executorId) ||
     !validLimits(options.limits) ||
     !isExecutionAdmissionPort(options.admission) ||
-    !isIntentOutboxPort(options.outbox)
+    !isIntentOutboxPort(options.outbox) ||
+    !isReceiptArchivePort(options.receiptArchive)
   ) {
     return failed(
       "database-tab-configuration-invalid",
-      "A browser database tab runtime requires identifiers, positive safe-integer tick budgets, admission, and an intent outbox.",
+      "A browser database tab runtime requires identifiers, positive safe-integer tick budgets, admission, an intent outbox, and a receipt archive.",
     );
   }
 
@@ -468,6 +551,8 @@ export function startBrowserZetaDbTabRuntime(
     deltas: readonly ZetaDbDelta[],
   ): Promise<BrowserZetaDbTabResult<ZetaDbTickReadout | null>> => {
     if (deltas.length === 0) return executeRead(options, state, null, expectedRevision);
+    const archived = await archiveRetainedReceipts(options);
+    if (!archived.ok) return archived;
     const first = deltas[0];
     if (first === undefined) {
       return failed("database-tab-configuration-invalid", "A database mutation requires at least one delta.");
@@ -512,9 +597,9 @@ export function startBrowserZetaDbTabRuntime(
     readOutbox: () => readAndObserveOutbox(options),
     recoverPending: async () => {
       const result = await schedule(async () => {
-        const current = await readAndObserveOutbox(options);
-        if (!current.ok) return current;
-        if (current.value.queued + current.value.executing === 0) return succeeded(null);
+        const archived = await archiveRetainedReceipts(options);
+        if (!archived.ok) return archived;
+        if (archived.value.queued + archived.value.executing === 0) return succeeded(null);
         const drained = await admitDrain(options, state, null, true);
         return drained.ok ? succeeded(drained.value.lastTick) : drained;
       });

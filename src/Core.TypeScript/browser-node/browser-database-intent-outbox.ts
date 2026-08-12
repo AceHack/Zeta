@@ -103,6 +103,9 @@ export interface BrowserDatabaseIntentOutboxPort {
     sequence: number,
     tick: ZetaDbTickReadout,
   ): Promise<BrowserDatabaseIntentResult<BrowserDatabaseIntentReadout>>;
+  acknowledgeArchive(
+    receipt: BrowserDatabaseExecutionReceipt,
+  ): Promise<BrowserDatabaseIntentResult<BrowserDatabaseIntentReadout>>;
   refuse(
     databaseNodeId: string,
     intentId: string,
@@ -383,6 +386,94 @@ export function emptyBrowserDatabaseIntentLedger(
   });
 }
 
+interface ValidatedIntentRecords {
+  readonly intents: readonly BrowserDatabaseIntentRecord[];
+  readonly intentIds: ReadonlySet<string>;
+  readonly sequences: ReadonlySet<number>;
+}
+
+function validateIntentRecords(
+  databaseNodeId: string,
+  nextSequence: number,
+  candidates: readonly unknown[],
+): BrowserDatabaseIntentResult<ValidatedIntentRecords> {
+  const intents: BrowserDatabaseIntentRecord[] = [];
+  const intentIds = new Set<string>();
+  const sequences = new Set<number>();
+  let previousSequence = -1;
+  for (const candidate of candidates) {
+    const intent = validateBrowserDatabaseIntent(candidate);
+    if (!intent.ok) return intent;
+    if (intent.value.databaseNodeId !== databaseNodeId) {
+      return browserDatabaseIntentFailed("intent-record-invalid", "An intent ledger contains another database node.");
+    }
+    if (
+      intentIds.has(intent.value.intentId) ||
+      sequences.has(intent.value.sequence) ||
+      intent.value.sequence <= previousSequence
+    ) {
+      return browserDatabaseIntentFailed(
+        "intent-record-invalid",
+        "An intent ledger must contain unique identifiers in strictly increasing sequence order.",
+      );
+    }
+    if (intent.value.sequence >= nextSequence) {
+      return browserDatabaseIntentFailed(
+        "intent-record-invalid",
+        "An intent ledger next sequence must be greater than every retained intent sequence.",
+      );
+    }
+    intentIds.add(intent.value.intentId);
+    sequences.add(intent.value.sequence);
+    previousSequence = intent.value.sequence;
+    intents.push(intent.value);
+  }
+  return succeeded({ intents, intentIds, sequences });
+}
+
+function validateReceiptRecords(
+  databaseNodeId: string,
+  nextSequence: number,
+  candidates: readonly unknown[],
+  retained: ValidatedIntentRecords,
+): BrowserDatabaseIntentResult<readonly BrowserDatabaseExecutionReceipt[]> {
+  const receipts: BrowserDatabaseExecutionReceipt[] = [];
+  const intentIds = new Set(retained.intentIds);
+  const sequences = new Set(retained.sequences);
+  let previousSequence = -1;
+  for (const candidate of candidates) {
+    const receipt = validateBrowserDatabaseExecutionReceipt(candidate);
+    if (!receipt.ok) return receipt;
+    if (receipt.value.databaseNodeId !== databaseNodeId) {
+      return browserDatabaseIntentFailed(
+        "intent-record-invalid",
+        "An intent ledger contains another database node receipt.",
+      );
+    }
+    if (
+      intentIds.has(receipt.value.intentId) ||
+      sequences.has(receipt.value.sequence) ||
+      receipt.value.sequence <= previousSequence
+    ) {
+      return browserDatabaseIntentFailed(
+        "intent-record-invalid",
+        "An intent ledger must contain unique receipt identities in strictly increasing sequence order.",
+      );
+    }
+    if (receipt.value.sequence >= nextSequence) {
+      return browserDatabaseIntentFailed(
+        "intent-record-invalid",
+        "An intent ledger next sequence must be greater than every retained receipt sequence.",
+      );
+    }
+    intentIds.add(receipt.value.intentId);
+    sequences.add(receipt.value.sequence);
+    previousSequence = receipt.value.sequence;
+    receipts.push(receipt.value);
+  }
+  return succeeded(receipts);
+}
+
 export function validateBrowserDatabaseIntentLedger(
   value: unknown,
 ): BrowserDatabaseIntentResult<BrowserDatabaseIntentLedger> {
@@ -400,75 +491,21 @@ export function validateBrowserDatabaseIntentLedger(
       "A browser database intent ledger requires the current schema, node identity, sequence, and intent list.",
     );
   }
-  const intents: BrowserDatabaseIntentRecord[] = [];
-  const intentIds = new Set<string>();
-  const sequences = new Set<number>();
-  let previousSequence = -1;
-  for (const candidate of value.intents) {
-    const intent = validateBrowserDatabaseIntent(candidate);
-    if (!intent.ok) return intent;
-    if (intent.value.databaseNodeId !== value.databaseNodeId) {
-      return browserDatabaseIntentFailed("intent-record-invalid", "An intent ledger contains another database node.");
-    }
-    if (
-      intentIds.has(intent.value.intentId) ||
-      sequences.has(intent.value.sequence) ||
-      intent.value.sequence <= previousSequence
-    ) {
-      return browserDatabaseIntentFailed(
-        "intent-record-invalid",
-        "An intent ledger must contain unique identifiers in strictly increasing sequence order.",
-      );
-    }
-    if (intent.value.sequence >= value.nextSequence) {
-      return browserDatabaseIntentFailed(
-        "intent-record-invalid",
-        "An intent ledger next sequence must be greater than every retained intent sequence.",
-      );
-    }
-    intentIds.add(intent.value.intentId);
-    sequences.add(intent.value.sequence);
-    previousSequence = intent.value.sequence;
-    intents.push(intent.value);
-  }
-  const receipts: BrowserDatabaseExecutionReceipt[] = [];
-  let previousReceiptSequence = -1;
-  for (const candidate of value.receipts ?? []) {
-    const receipt = validateBrowserDatabaseExecutionReceipt(candidate);
-    if (!receipt.ok) return receipt;
-    if (receipt.value.databaseNodeId !== value.databaseNodeId) {
-      return browserDatabaseIntentFailed(
-        "intent-record-invalid",
-        "An intent ledger contains another database node receipt.",
-      );
-    }
-    if (
-      intentIds.has(receipt.value.intentId) ||
-      sequences.has(receipt.value.sequence) ||
-      receipt.value.sequence <= previousReceiptSequence
-    ) {
-      return browserDatabaseIntentFailed(
-        "intent-record-invalid",
-        "An intent ledger must contain unique receipt identities in strictly increasing sequence order.",
-      );
-    }
-    if (receipt.value.sequence >= value.nextSequence) {
-      return browserDatabaseIntentFailed(
-        "intent-record-invalid",
-        "An intent ledger next sequence must be greater than every retained receipt sequence.",
-      );
-    }
-    intentIds.add(receipt.value.intentId);
-    sequences.add(receipt.value.sequence);
-    previousReceiptSequence = receipt.value.sequence;
-    receipts.push(receipt.value);
-  }
+  const intents = validateIntentRecords(value.databaseNodeId, value.nextSequence, value.intents);
+  if (!intents.ok) return intents;
+  const receipts = validateReceiptRecords(
+    value.databaseNodeId,
+    value.nextSequence,
+    value.receipts ?? [],
+    intents.value,
+  );
+  if (!receipts.ok) return receipts;
   return succeeded({
     schema: BROWSER_DATABASE_INTENT_LEDGER_SCHEMA,
     databaseNodeId: value.databaseNodeId,
     nextSequence: value.nextSequence,
-    intents,
-    receipts,
+    intents: intents.value.intents,
+    receipts: receipts.value,
   });
 }
 
@@ -739,6 +776,20 @@ function receiptMatchesTick(receipt: BrowserDatabaseExecutionReceipt, tickValue:
   );
 }
 
+function sameExecutionReceipt(left: BrowserDatabaseExecutionReceipt, right: BrowserDatabaseExecutionReceipt): boolean {
+  return (
+    left.databaseNodeId === right.databaseNodeId &&
+    left.intentId === right.intentId &&
+    left.sequence === right.sequence &&
+    left.executorId === right.executorId &&
+    left.executorKind === right.executorKind &&
+    left.revision === right.revision &&
+    left.accepted === right.accepted &&
+    left.duplicates === right.duplicates &&
+    left.deltaCount === right.deltaCount
+  );
+}
+
 export function decideBrowserDatabaseIntentSettlement(
   existingValue: unknown,
   databaseNodeId: unknown,
@@ -800,6 +851,28 @@ export function decideBrowserDatabaseIntentSettlement(
     );
   }
   return succeeded({ ledger, value: receipt.value });
+}
+
+export function decideBrowserDatabaseReceiptArchiveAcknowledgement(
+  existingValue: unknown,
+  receiptValue: unknown,
+): BrowserDatabaseIntentResult<BrowserDatabaseIntentLedger> {
+  const receipt = validateBrowserDatabaseExecutionReceipt(receiptValue);
+  if (!receipt.ok) return receipt;
+  const existing = currentLedger(existingValue, receipt.value.databaseNodeId);
+  if (!existing.ok) return existing;
+  const retained = existing.value.receipts.find((candidate) => candidate.intentId === receipt.value.intentId);
+  if (retained === undefined) return succeeded(existing.value);
+  if (!sameExecutionReceipt(retained, receipt.value)) {
+    return browserDatabaseIntentFailed(
+      "intent-conflict",
+      `Archive acknowledgement for ${receipt.value.intentId} does not match its retained execution receipt.`,
+    );
+  }
+  return succeeded({
+    ...existing.value,
+    receipts: existing.value.receipts.filter((candidate) => candidate.intentId !== receipt.value.intentId),
+  });
 }
 
 export function decideBrowserDatabaseIntentRefusal(
@@ -886,6 +959,14 @@ export function createInMemoryBrowserDatabaseIntentOutbox(
       if (!decision.ok) return Promise.resolve(decision);
       store(decision.value.ledger);
       return Promise.resolve(readout(decision.value.ledger));
+    },
+    acknowledgeArchive: (receipt) => {
+      const ledger = readLedger(receipt.databaseNodeId);
+      if (!ledger.ok) return Promise.resolve(ledger);
+      const decision = decideBrowserDatabaseReceiptArchiveAcknowledgement(ledger.value, receipt);
+      if (!decision.ok) return Promise.resolve(decision);
+      store(decision.value);
+      return Promise.resolve(readout(decision.value));
     },
     refuse: (databaseNodeId, intentId, sequence, refusal) => {
       const ledger = readLedger(databaseNodeId);

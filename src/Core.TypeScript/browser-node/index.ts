@@ -191,6 +191,17 @@ export {
 } from "./browser-indexeddb-database-intent-outbox";
 
 export {
+  BROWSER_DATABASE_RECEIPT_ARCHIVE_ACK_SCHEMA,
+  createZetaDbBrowserDatabaseReceiptArchive,
+  type BrowserDatabaseReceiptArchiveAcknowledgement,
+  type BrowserDatabaseReceiptArchiveExecutor,
+  type BrowserDatabaseReceiptArchiveFeedback,
+  type BrowserDatabaseReceiptArchivePort,
+  type BrowserDatabaseReceiptArchiveResult,
+  type ZetaDbBrowserDatabaseReceiptArchiveOptions,
+} from "./browser-database-receipt-archive";
+
+export {
   BROWSER_ZETA_DB_WAKE_RESPONSE_SCHEMA,
   BROWSER_ZETA_DB_WAKE_SCHEMA,
   handleBrowserZetaDbWakeMessage,

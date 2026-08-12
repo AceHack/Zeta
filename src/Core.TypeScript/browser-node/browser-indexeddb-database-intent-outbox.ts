@@ -5,12 +5,14 @@ import {
   copyBrowserDatabaseIntentLedger,
   decideBrowserDatabaseIntentBegin,
   decideBrowserDatabaseIntentEnqueue,
+  decideBrowserDatabaseReceiptArchiveAcknowledgement,
   decideBrowserDatabaseIntentRefusal,
   decideBrowserDatabaseIntentSettlement,
   emptyBrowserDatabaseIntentLedger,
   validateBrowserDatabaseIntentLedger,
   validateBrowserDatabaseIntentLimits,
   type BrowserDatabaseIntentDraft,
+  type BrowserDatabaseExecutionReceipt,
   type BrowserDatabaseIntentFeedback,
   type BrowserDatabaseIntentLedger,
   type BrowserDatabaseIntentLimits,
@@ -400,6 +402,15 @@ class NativeIndexedDbDatabaseIntentOutbox implements BrowserDatabaseIntentOutbox
         this.limits,
       );
       return decision.ok ? this.readoutDecision(decision.value.ledger) : decision;
+    });
+  }
+
+  public acknowledgeArchive(
+    receipt: BrowserDatabaseExecutionReceipt,
+  ): Promise<BrowserDatabaseIntentResult<BrowserDatabaseIntentReadout>> {
+    return this.mutate(receipt.databaseNodeId, (existing) => {
+      const decision = decideBrowserDatabaseReceiptArchiveAcknowledgement(existing, receipt);
+      return decision.ok ? this.readoutDecision(decision.value) : decision;
     });
   }
 

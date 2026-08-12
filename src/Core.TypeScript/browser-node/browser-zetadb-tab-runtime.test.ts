@@ -16,6 +16,10 @@ import {
   type BrowserDatabaseExecutionReceipt,
   type BrowserDatabaseIntentOutboxPort,
 } from "./browser-database-intent-outbox";
+import {
+  createZetaDbBrowserDatabaseReceiptArchive,
+  type BrowserDatabaseReceiptArchivePort,
+} from "./browser-database-receipt-archive";
 import { startBrowserZetaDbTabRuntime, type BrowserZetaDbTabExecutor } from "./browser-zetadb-tab-runtime";
 
 const limits = { maxDeltas: 8, maxEntries: 16, maxCheckpointBytes: 16 * 1024 };
@@ -23,6 +27,19 @@ const outboxLimits = { maxIntents: 16, maxReceipts: 64, maxLedgerBytes: 64 * 102
 
 function createOutbox(): BrowserDatabaseIntentOutboxPort {
   const created = createInMemoryBrowserDatabaseIntentOutbox(outboxLimits);
+  if (!created.ok) throw new Error(created.feedback.detail);
+  return created.value;
+}
+
+function createReceiptArchive(databaseNodeId = "browser/global"): BrowserDatabaseReceiptArchivePort {
+  const image = createInMemoryZetaDbImagePort();
+  const created = createZetaDbBrowserDatabaseReceiptArchive({
+    sourceDatabaseNodeId: databaseNodeId,
+    archiveNodeId: databaseNodeId === "receipt-archive" ? "receipt-archive-2" : "receipt-archive",
+    executorId: "receipt-archive",
+    limits: { maxDeltas: 1, maxEntries: 64, maxCheckpointBytes: 64 * 1024 },
+    execute: (request) => runZetaDbNodeTick(image, request),
+  });
   if (!created.ok) throw new Error(created.feedback.detail);
   return created.value;
 }
@@ -48,6 +65,7 @@ function start(
   admission: BrowserExecutionAdmissionPort = createInMemoryBrowserExecutionAdmission(),
   executorId = "tab-a",
   outbox: BrowserDatabaseIntentOutboxPort = createOutbox(),
+  receiptArchive: BrowserDatabaseReceiptArchivePort = createReceiptArchive(),
 ) {
   const observed: ZetaDbTickReadout[] = [];
   const published: { readonly databaseNodeId: string; readonly revision: number }[] = [];
@@ -58,6 +76,7 @@ function start(
     limits,
     admission,
     outbox,
+    receiptArchive,
     execute,
     observe: (value) => {
       observed.push(value);
@@ -91,6 +110,7 @@ describe("browser ZetaDB tab runtime", () => {
       limits,
       admission: createInMemoryBrowserExecutionAdmission(),
       outbox: createOutbox(),
+      receiptArchive: { archive: () => Promise.reject(new Error("unused")) },
       execute: () =>
         Promise.resolve({
           ok: false,
@@ -121,6 +141,7 @@ describe("browser ZetaDB tab runtime", () => {
       limits,
       admission: undefined as never,
       outbox: createOutbox(),
+      receiptArchive: createReceiptArchive("database-a"),
       execute: () =>
         Promise.resolve({
           ok: false,
@@ -138,7 +159,7 @@ describe("browser ZetaDB tab runtime", () => {
         severity: "heat",
         code: "database-tab-configuration-invalid",
         detail:
-          "A browser database tab runtime requires identifiers, positive safe-integer tick budgets, admission, and an intent outbox.",
+          "A browser database tab runtime requires identifiers, positive safe-integer tick budgets, admission, an intent outbox, and a receipt archive.",
       },
     });
   });
@@ -230,6 +251,7 @@ describe("browser ZetaDB tab runtime", () => {
         limits,
         admission: createInMemoryBrowserExecutionAdmission(),
         outbox: createOutbox(),
+        receiptArchive: createReceiptArchive(),
         execute: () => Promise.resolve({ ok: true, value: {} as never }),
         observe: () => ({ ok: true }),
         observeOutbox: () => ({ ok: true }),
@@ -255,6 +277,7 @@ describe("browser ZetaDB tab runtime", () => {
       limits,
       admission: createInMemoryBrowserExecutionAdmission(),
       outbox,
+      receiptArchive: createReceiptArchive(),
       execute: (request) => {
         const tick = readout(request, 3);
         requestTicks.push(tick);
@@ -276,11 +299,11 @@ describe("browser ZetaDB tab runtime", () => {
     expect(requestTicks).toHaveLength(1);
     expect(await outbox.read("browser/global")).toMatchObject({
       ok: true,
-      value: { queued: 0, executing: 0, settled: 1 },
+      value: { queued: 0, executing: 0, settled: 0 },
     });
   });
 
-  test("reports a receipt publication failure after retaining the durable receipt", async () => {
+  test("reports a receipt publication failure after archiving and releasing the local receipt", async () => {
     const outbox = createOutbox();
     const started = startBrowserZetaDbTabRuntime({
       databaseNodeId: "browser/global",
@@ -288,6 +311,7 @@ describe("browser ZetaDB tab runtime", () => {
       limits,
       admission: createInMemoryBrowserExecutionAdmission(),
       outbox,
+      receiptArchive: createReceiptArchive(),
       execute: (request) => Promise.resolve({ ok: true, value: readout(request, 4) }),
       observe: () => ({ ok: true }),
       observeOutbox: () => ({ ok: true }),
@@ -303,7 +327,111 @@ describe("browser ZetaDB tab runtime", () => {
     ).toMatchObject({ ok: false, feedback: { code: "database-tab-receipt-publish-failed" } });
     expect(await outbox.read("browser/global")).toMatchObject({
       ok: true,
-      value: { queued: 0, executing: 0, settled: 1, receipts: [{ intentId: "event/4", revision: 4 }] },
+      value: { queued: 0, executing: 0, settled: 0, receipts: [] },
+    });
+  });
+
+  test("retains a committed receipt when the archive applies typed backpressure", async () => {
+    const outbox = createOutbox();
+    const archive: BrowserDatabaseReceiptArchivePort = {
+      archive: () =>
+        Promise.resolve({
+          ok: false,
+          feedback: {
+            severity: "backpressure",
+            code: "database-capacity-exhausted",
+            detail: "receipt archive is full",
+          },
+        }),
+    };
+    const { runtime, observed, receipts } = start(
+      (request) => Promise.resolve({ ok: true, value: readout(request, 5) }),
+      createInMemoryBrowserExecutionAdmission(),
+      "tab-a",
+      outbox,
+      archive,
+    );
+
+    expect(
+      await runtime.tick([{ eventId: "event/archive-full", rowKey: "row/5", payload: "five", weight: 1 }]),
+    ).toMatchObject({
+      ok: false,
+      feedback: { severity: "backpressure", code: "database-tab-receipt-archive-failed" },
+    });
+    expect(observed).toHaveLength(1);
+    expect(receipts).toEqual([]);
+    expect(await outbox.read("browser/global")).toMatchObject({
+      ok: true,
+      value: { queued: 0, executing: 0, settled: 1, receipts: [{ intentId: "event/archive-full" }] },
+    });
+  });
+
+  test("replays an archived receipt without re-executing its committed database mutation", async () => {
+    const outbox = createOutbox();
+    const applicationImage = createInMemoryZetaDbImagePort();
+    const archiveImage = createInMemoryZetaDbImagePort();
+    const archiveTicks: ZetaDbTickReadout[] = [];
+    const createdArchive = createZetaDbBrowserDatabaseReceiptArchive({
+      sourceDatabaseNodeId: "browser/global",
+      archiveNodeId: "browser/global:receipts",
+      executorId: "receipt-archive",
+      limits: { maxDeltas: 1, maxEntries: 64, maxCheckpointBytes: 64 * 1024 },
+      execute: async (request) => {
+        const result = await runZetaDbNodeTick(archiveImage, request);
+        if (result.ok) archiveTicks.push(result.value);
+        return result;
+      },
+    });
+    if (!createdArchive.ok) throw new Error(createdArchive.feedback.detail);
+    let interruptAcknowledgement = true;
+    const interruptedOutbox: BrowserDatabaseIntentOutboxPort = {
+      ...outbox,
+      acknowledgeArchive: (receipt) => {
+        if (!interruptAcknowledgement) return outbox.acknowledgeArchive(receipt);
+        interruptAcknowledgement = false;
+        return Promise.resolve({
+          ok: false,
+          feedback: { severity: "heat", code: "intent-write-failed", detail: "tab closed before local release" },
+        });
+      },
+    };
+    let applicationExecutions = 0;
+    const execute = (request: ZetaDbTickRequest) => {
+      applicationExecutions += 1;
+      return runZetaDbNodeTick(applicationImage, request);
+    };
+    const first = start(
+      execute,
+      createInMemoryBrowserExecutionAdmission(),
+      "tab-a",
+      interruptedOutbox,
+      createdArchive.value,
+    );
+
+    expect(
+      await first.runtime.tick([{ eventId: "event/interrupted", rowKey: "game/score", payload: "8", weight: 1 }]),
+    ).toMatchObject({ ok: false, feedback: { code: "database-tab-intent-failed" } });
+    expect(await outbox.read("browser/global")).toMatchObject({
+      ok: true,
+      value: { settled: 1, receipts: [{ intentId: "event/interrupted" }] },
+    });
+
+    const replacement = start(
+      execute,
+      createInMemoryBrowserExecutionAdmission(),
+      "tab-b",
+      outbox,
+      createdArchive.value,
+    );
+    expect(await replacement.runtime.recoverPending()).toEqual({ ok: true, value: null });
+    expect(applicationExecutions).toBe(1);
+    expect(archiveTicks.map((tick) => ({ accepted: tick.accepted, duplicates: tick.duplicates }))).toEqual([
+      { accepted: 1, duplicates: 0 },
+      { accepted: 0, duplicates: 1 },
+    ]);
+    expect(await replacement.runtime.readOutbox()).toMatchObject({
+      ok: true,
+      value: { queued: 0, executing: 0, settled: 0, receipts: [] },
     });
   });
 
@@ -438,7 +566,7 @@ describe("browser ZetaDB tab runtime", () => {
     });
     expect(await second.runtime.readOutbox()).toMatchObject({
       ok: true,
-      value: { queued: 0, executing: 0, settled: 1, refused: 0 },
+      value: { queued: 0, executing: 0, settled: 0, refused: 0 },
     });
   });
 
@@ -463,7 +591,7 @@ describe("browser ZetaDB tab runtime", () => {
       value: {
         queued: 0,
         executing: 0,
-        settled: 1,
+        settled: 0,
         refused: 1,
         intents: [
           {
