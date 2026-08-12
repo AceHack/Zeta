@@ -23,9 +23,12 @@
 //     tick resets the streak).
 //   - The proposed phenotype = the tick-winners' argmax when re-scored
 //     on the FULL history (deterministic tie-break by genome hex).
-//   - At-most-once per phenotype: the letter is keyed by genome hex and
-//     written with the "wx" flag — a declined proposal is never nagged;
-//     a DIFFERENT winner may propose later.
+//   - At-most-once per phenotype: the letter is keyed by the CANONICAL
+//     genome hex — toHex(encode(decode(genome))), the gen(gen)==gen
+//     fixed point — so two raw genomes decoding to the same lawful
+//     phenotype share one key (decode clamps; raw hexes can differ).
+//     Written with the "wx" flag: a declined proposal is never nagged;
+//     a DIFFERENT phenotype may propose later.
 //
 // Wired into drift-sweep.yml after the shadow generation; the letter and
 // data/drift-proposal.json ride the tick's bookkeeping commit.
@@ -33,7 +36,7 @@
 import { writeFileSync } from "node:fs";
 
 import { generation, lcg, shadowCost, type Candidate } from "./drift-evolution.ts";
-import { type DriftPhenotype } from "./drift-genome.ts";
+import { encodeDriftGenome, toHex, type DriftPhenotype } from "./drift-genome.ts";
 import { readLedger, type SweepEvent } from "./drift-ledger.ts";
 
 export const DEFAULT_STREAK_TICKS = 6; // K: consecutive losing ticks before a proposal
@@ -116,6 +119,12 @@ export function evaluateProposal(
 /** The registry diff the phenotype implies — rendered as the exact YAML the
  * roster would apply to registry/drift-slo.yaml on assent. Text only; this
  * module never touches the registry. */
+/** The at-most-once letter key: canonical hex of the phenotype (encode of
+ * the decode — clamped channels collapse to one representative). */
+export function canonicalHexOf(p: DriftPhenotype): string {
+  return toHex(encodeDriftGenome(p));
+}
+
 export function renderRegistryPatch(p: DriftPhenotype): string {
   return [
     "defaults:",
@@ -194,7 +203,7 @@ if (invokedDirectly) {
     `drift-proposer: tick ${String(ev.latestTick)} — losing streak ${String(ev.streak)}/${String(DEFAULT_STREAK_TICKS)}${ev.fires ? " → PROPOSAL FIRES" : ""}`,
   );
   if (ev.fires && ev.winner !== null) {
-    const path = `docs/letters/to-roster-drift-genome-proposal-${ev.winner.genomeHex.replace("#", "")}.md`;
+    const path = `docs/letters/to-roster-drift-genome-proposal-${canonicalHexOf(ev.winner.phenotype).replace("#", "")}.md`;
     try {
       writeFileSync(path, renderProposalLetter(ev), { flag: "wx" });
       console.log(`drift-proposer: wrote ${path}`);

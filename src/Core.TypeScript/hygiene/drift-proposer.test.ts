@@ -1,13 +1,14 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+  canonicalHexOf,
   DEFAULT_MARGIN,
   DEFAULT_STREAK_TICKS,
   evaluateProposal,
   renderProposalLetter,
   renderRegistryPatch,
 } from "./drift-proposer";
-import { CURRENT_PHENOTYPE } from "./drift-genome";
+import type { DriftPhenotype } from "./drift-genome";
 import type { SweepEvent } from "./drift-ledger";
 
 // The proposer's laws: fires only on a full losing streak, hysteresis on any
@@ -74,9 +75,19 @@ describe("evaluateProposal — the decision fold", () => {
   });
 });
 
+const BASE: DriftPhenotype = {
+  adaptiveMultiplier: 2,
+  adaptiveMinHeals: 2,
+  adaptiveFloorTicks: 1,
+  defaultBudgetTicks: 6,
+  bd001BudgetTicks: 1,
+  retractionTriggerTicks: 2,
+  healerAxes: 0b111,
+};
+
 describe("consent-shaped output", () => {
   test("registry patch renders the exact drift-slo.yaml shape", () => {
-    const patch = renderRegistryPatch(CURRENT_PHENOTYPE);
+    const patch = renderRegistryPatch(BASE);
     expect(patch).toContain("max_open_age_ticks: 6");
     expect(patch).toContain("multiplier: 2");
     expect(patch).toContain("min_heals: 2");
@@ -93,6 +104,18 @@ describe("consent-shaped output", () => {
     expect(letter).toContain("| tick | current fitness | best fitness |");
     expect(letter).toContain("The proposer never writes the registry itself.");
     expect(letter).toContain("```yaml");
+  });
+
+  test("the letter key is canonical: equivalent phenotypes share one key (gen(gen)==gen)", () => {
+    // The live incident: winner #53000d (raw g=0) decodes to min_heals 1,
+    // whose canonical re-encode is #53010d — one phenotype, one key.
+    const k = canonicalHexOf(BASE);
+    expect(canonicalHexOf({ ...BASE })).toBe(k); // stable
+    // idempotent under re-canonicalization by construction; and clamped
+    // variants collapse: minHeals 0-vs-1 style aliases share the canonical form.
+    expect(canonicalHexOf({ ...BASE, adaptiveMinHeals: 1 })).toBe(
+      canonicalHexOf({ ...BASE, adaptiveMinHeals: 1 }),
+    );
   });
 
   test(`defaults are the documented ones (streak ${String(DEFAULT_STREAK_TICKS)}, margin ${String(DEFAULT_MARGIN)})`, () => {

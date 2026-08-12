@@ -41,3 +41,18 @@ Assent = apply the YAML above to `registry/drift-slo.yaml` in a commit
 citing this letter. Decline = leave the registry as is; this phenotype will
 not be re-proposed (letters are keyed by genome hex). A different winner may
 propose later. The proposer never writes the registry itself.
+
+## Disposition — ADOPTED (2026-08-12)
+
+Operator consent, verbatim (Aaron, cowork session, 2026-08-12): "okay
+please continue i consent."
+
+Applied to `registry/drift-slo.yaml` in the commit citing this letter:
+defaults 6 → 1, adaptive multiplier 2 → 2.59375, min_heals 2 → 1,
+floor_ticks 1 → 13; BD001 explicit budget unchanged at 1; LD001 and all
+non-genome registry content untouched. `CURRENT_PHENOTYPE` (the genome
+mirror in `drift-genome.ts`) updated in lockstep — the shadow loop now
+measures #53000d as current and will argue with THESE dials from the next
+tick. The at-most-once key stands: #53000d will not be proposed again;
+evolution's next letter, if any, will be a different phenotype earning a
+new streak against this one.

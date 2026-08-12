@@ -19,10 +19,10 @@
 // ledger-shaped signal a generational loop selects on.
 //
 // Channel map (0–255 each; decode clamps keep every phenotype lawful):
-//   r → adaptive multiplier ×32   (current 2   → 64)
-//   g → adaptive min_heals        (current 2)
-//   b → adaptive floor_ticks      (current 1)
-//   c → default max_open_age_ticks (current 6)
+//   r → adaptive multiplier ×32   (current 2.59375 → 83)
+//   g → adaptive min_heals        (current 1)
+//   b → adaptive floor_ticks      (current 13)
+//   c → default max_open_age_ticks (current 1)
 //   m → BD001 explicit budget      (current 1)
 //   y → retraction trigger ticks   (current 2)
 //   k → healer-axis bitmask        (current 0b111 = md ⊕ memory ⊕ retraction)
@@ -58,11 +58,16 @@ export interface DriftPhenotype {
   readonly healerAxes: number; // bitmask: 1 md, 2 memory, 4 retraction
 }
 
+// MIRROR of registry/drift-slo.yaml (+ actuator/healer wiring) — update in
+// lockstep with any consented registry change. Adopted phenotype #53000d,
+// 2026-08-12: the evolution loop's first consented proposal (letter
+// docs/letters/to-roster-drift-genome-proposal-53000d.md; operator consent
+// Aaron 2026-08-12).
 export const CURRENT_PHENOTYPE: DriftPhenotype = {
-  adaptiveMultiplier: 2,
-  adaptiveMinHeals: 2,
-  adaptiveFloorTicks: 1,
-  defaultBudgetTicks: 6,
+  adaptiveMultiplier: 2.59375,
+  adaptiveMinHeals: 1,
+  adaptiveFloorTicks: 13,
+  defaultBudgetTicks: 1,
   bd001BudgetTicks: 1,
   retractionTriggerTicks: 2,
   healerAxes: 0b111,

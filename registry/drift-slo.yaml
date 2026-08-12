@@ -16,10 +16,20 @@
 # treat changes like any registry change (PR + review; the floor
 # registry's consent discipline is the sibling precedent).
 
+# ADOPTED PHENOTYPE #53000d (2026-08-12) — the drift-evolution loop's first
+# consented proposal: docs/letters/to-roster-drift-genome-proposal-53000d.md
+# (proposer fired at tick 184, streak 6/6, margin ~28; operator consent
+# Aaron 2026-08-12: "okay please continue i consent"). Shape: unknown
+# classes alarm FAST (default 1 — file work after one tick of unexplained
+# drift), while classes with ANY measured heal evidence earn generous
+# floors (min_heals 1, floor 13) scaled by their own pace (multiplier
+# 2.59375). Evolution proposes, the society disposes — this edit is the
+# disposition, not the proposer's act.
+
 defaults:
-  # ~24 hours at the 4-hour cadence — the fallback for classes without
-  # measured evidence.
-  max_open_age_ticks: 6
+  # One tick of tolerance for classes without measured evidence: unknown
+  # drift alarms fast; evidence buys latitude (see adaptive below).
+  max_open_age_ticks: 1
 
 # Gyroscope closure (2026-08-10): once a class has min_heals of measured
 # evidence, its budget derives from its OWN demonstrated MTTH —
@@ -27,9 +37,9 @@ defaults:
 # overrides always win. A "leak" is thereby drift outliving the fleet's
 # own proven pace, not an arbitrary constant.
 adaptive:
-  multiplier: 2
-  min_heals: 2
-  floor_ticks: 1
+  multiplier: 2.59375
+  min_heals: 1
+  floor_ticks: 13
 
 # Per-rule overrides (tighter or looser than the default), e.g.:
 #   MD022:
