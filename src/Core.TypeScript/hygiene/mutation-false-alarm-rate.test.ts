@@ -1,10 +1,14 @@
 import { describe, expect, test } from "bun:test";
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import type { DeclarerLedger, Freedom } from "./mutation-freedoms";
 import type { TranscriptEntry } from "./mutation-readout";
 import {
   MIN_SAMPLE,
   falseAlarmReadout,
   formatReadout,
+  readFalseAlarmReadout,
   resolutionOf,
 } from "./mutation-false-alarm-rate";
 import { makeFinding, type FindingRecord } from "./mutation-findings";
@@ -231,5 +235,41 @@ describe("the caveat travels WITH the number", () => {
     expect(r.resolved).toBe(0);
     expect(r.falseAlarmRate).toBeNull();
     expect(r.frontier).toEqual({ intoDefined: 0, intoUndefined: 0 });
+  });
+});
+
+// Everything above drives the PURE core directly, which means the transcript FILTER on the read
+// path was never exercised — a real gap the mutation runner caught (soraya, tick 11240:
+// `false-to-true` on `isTranscriptEntry` was INDISTINGUISHABLE UNDER SUITE). A metric whose whole
+// job is honest measurement must not be derailed by one bad line in its own input.
+describe("READ PATH — a malformed transcript line is skipped, not counted and not fatal", () => {
+  const seed = (lines: string[]): string => {
+    const root = mkdtempSync(join(tmpdir(), "fa-read-"));
+    mkdirSync(join(root, "db/mutation-transcript"), { recursive: true });
+    writeFileSync(join(root, "db/mutation-transcript/otto.jsonl"), lines.map((l) => `${l}\n`).join(""));
+    return root;
+  };
+
+  const good = (kind: string) =>
+    JSON.stringify({ room, declarer: "otto", level: 0, chosenIndex: 0, action: { kind }, offered: [], rulesApplied: [], address: `a-${kind}` });
+
+  test("a JSON null line cannot be mistaken for an entry", () => {
+    // `null` is `typeof "object"`, so a guard that only checked the typeof would admit it and then
+    // throw reading `.action`. Counting it — or crashing on it — are both worse than ignoring it.
+    const r = readFalseAlarmReadout(seed([good("write-test"), "null", good("declare-free")]));
+    expect(r.resolved).toBe(2);
+    expect(r.counts["real-gap"]).toBe(1);
+    expect(r.counts["declared-free"]).toBe(1);
+  });
+
+  test("primitives, arrays and entries missing `action` are all rejected", () => {
+    const r = readFalseAlarmReadout(seed([good("write-test"), '"a string"', "42", "[]", "{}", '{"action":null}', '{"action":{}}']));
+    expect(r.resolved).toBe(1); // only the well-formed line survives
+  });
+
+  test("an entirely malformed transcript yields an empty readout rather than throwing", () => {
+    const r = readFalseAlarmReadout(seed(["null", "7", '"x"']));
+    expect(r.resolved).toBe(0);
+    expect(r.falseAlarmRate).toBeNull();
   });
 });
