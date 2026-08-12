@@ -493,7 +493,7 @@ triumvirate. This conversation extends the source-set:
   ($15K, AMD + NVIDIA + Apple silicon, livestreamed).
 
 Routes to extension of
-[`memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md`](../../memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md)
+`memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md` <!-- STALE-REF: ../../memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md -->
 (landed via #1607) — Ziskind + Hotz join the source-set.
 
 ## Razor cuts at absorption (already-cut + new cuts)
@@ -644,7 +644,7 @@ review):
 - **Planned-B-NNNN (P3)**: Speculative cascades + Gemma 4 +
   diffusion-TPU stacking-the-wins composition analysis
 - **Planned extension to
-  [`memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md`](../../memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md)**:
+  `memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md` <!-- STALE-REF: ../../memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md -->**:
   add Alex Ziskind (@AZisk) + George Hotz (tiny corp / tinybox)
   to the source-set
 

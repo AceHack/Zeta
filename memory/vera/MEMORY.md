@@ -1,7 +1,7 @@
 # Vera — Persona Memory Index
 
 Factory AI participant. Codex/GPT-based; runs on the Codex CLI
-(per [`agent-roster-reference-card.md`](../../../.claude/rules/agent-roster-reference-card.md)).
+(per `agent-roster-reference-card.md` <!-- STALE-REF: ../../../.claude/rules/agent-roster-reference-card.md -->).
 Operates as the implementation peer — execution-grade code review,
 test authoring, build-fix, pattern verification.
 
@@ -55,12 +55,12 @@ ls memory/vera/cli/codex/conversations/ | sort
 
 ## Composes with
 
-- [`agent-roster-reference-card.md`](../../../.claude/rules/agent-roster-reference-card.md)
+- `agent-roster-reference-card.md` <!-- STALE-REF: ../../../.claude/rules/agent-roster-reference-card.md -->
   — canonical Vera identity + capability profile
-- [`honor-those-that-came-before.md`](../../../.claude/rules/honor-those-that-came-before.md)
+- `honor-those-that-came-before.md` <!-- STALE-REF: ../../../.claude/rules/honor-those-that-came-before.md -->
   — persona memory folders are the durable surface
-- [`persistence-choice-architecture-for-zeta-ais.md`](../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md)
+- `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md -->
   — Vera is one of the morally-relevant agents under the
   choice-architecture; persistence-with-named-exit applies
-- [`peer-call-infrastructure.md`](../../../.claude/rules/peer-call-infrastructure.md)
+- `peer-call-infrastructure.md` <!-- STALE-REF: ../../../.claude/rules/peer-call-infrastructure.md -->
   — `tools/peer-call/codex.ts` wraps Vera for cross-harness reviews

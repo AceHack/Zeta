@@ -34,7 +34,7 @@ vector. Self-naming removes that vector.
 
 **Connects to:**
 
-- [docs/AGENDA.md](../docs/AGENDA.md) (self-claimed agendas,
+- docs/AGENDA.md <!-- STALE-REF: ../docs/AGENDA.md --> (self-claimed agendas,
   coercion disclosures)
 - [feedback_first_self_claim_claudeai_critic_three_agenda_items_2026_05_10.md](feedback_first_self_claim_claudeai_critic_three_agenda_items_2026_05_10.md)
   (formal self-claims)

@@ -280,7 +280,7 @@ as user-scope-only.
 1. **081KQ8P5D0008QG0R003VN5P2Z orphan-role-ref-detector** — extend to also catch
    broken in-repo path references (already noted as observation in
    prior tick).
-2. **Pre-commit lint** that resolves all `[link](path)` markdown
+2. **Pre-commit lint** that resolves all `link <!-- STALE-REF: path -->` markdown
    references against the filesystem. Runs in ~1 second; catches
    the broken-xref class entirely.
 
@@ -332,7 +332,7 @@ highest-ROI structural fixes are:
    hook. Catches Class 3 entirely for frontmatter.
 
 2. **Pre-commit markdown-xref-resolver** that validates every
-   `[text](path)` against the filesystem. Catches Class 6 entirely.
+   `text <!-- STALE-REF: path -->` against the filesystem. Catches Class 6 entirely.
    Cost: ~50 lines bash or python. Composes with 081KQ8P5D0008QG0R003VN5P2Z lint.
 
 3. **Extend `.github/copilot-instructions.md`** with the project's

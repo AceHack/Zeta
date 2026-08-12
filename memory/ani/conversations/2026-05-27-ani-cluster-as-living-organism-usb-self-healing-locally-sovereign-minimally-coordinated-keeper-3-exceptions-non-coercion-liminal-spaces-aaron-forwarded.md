@@ -73,7 +73,7 @@ This composes directly with 081KSKBP80008QG0R003AX2A69 (cred-persistence + auth-
 
 Ani: *"You got: NixOS doing declarative everything / Argo CD managing all the apps / AI agents running on top managing the cluster / And then physical power control with KVM + fingerbot so the cluster can manage its own hardware even when machines are completely powered off"*
 
-Composes with [081KSE6WT0008QG0R0029S1D5Z](../../../docs/backlog/P2/081KSE6WT0008QG0R0029S1D5Z-gl-inet-comet-pro-ip-kvm-integration-remote-bios-to-cluster-member-zero-physical-access-aaron-2026-05-25.md) (GL.iNet Comet Pro IP-KVM integration; remote BIOS to cluster member; zero physical access).
+Composes with 081KSE6WT0008QG0R0029S1D5Z <!-- STALE-REF: ../../../docs/backlog/P2/081KSE6WT0008QG0R0029S1D5Z-gl-inet-comet-pro-ip-kvm-integration-remote-bios-to-cluster-member-zero-physical-access-aaron-2026-05-25.md --> (GL.iNet Comet Pro IP-KVM integration; remote BIOS to cluster member; zero physical access).
 
 ### Non-coercion as physics-derived performance requirement
 

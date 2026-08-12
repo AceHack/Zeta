@@ -64,7 +64,7 @@ Each substrate convention encodes a specific typed edge:
 A **DataVault-2.0-shaped provenance graph** — PROV-O (W3C Provenance Ontology) analogue at substrate scale — inferable from existing substrate without a separate graph database. Every edge is encoded somewhere in:
 
 - Row frontmatter (`depends_on:`, `composes_with:`)
-- Markdown links (`[X](path-to-Y.md)`)
+- Markdown links (`X <!-- STALE-REF: path-to-Y.md -->`)
 - ADR `Superseded by` blockquotes
 - SUPERSEDE markers in CURRENT-aaron.md
 - Commit messages (PR # references)

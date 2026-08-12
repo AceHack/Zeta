@@ -71,7 +71,7 @@ advisory ("refresh now" hint, input not control).
 *"That change is what fixes the banker-bot class of errors — it's an observation, not an authorization."*
 The observed's urgency is an **observation** (a source may attach it; grants zero authority), NEVER an
 **authorization** (the right to force our action). This is precisely
-[`.claude/rules/no-directives.md`](../../.claude/rules/no-directives.md)'s **source ≠ authorization**
+`.claude/rules/no-directives.md` <!-- STALE-REF: ../../.claude/rules/no-directives.md -->'s **source ≠ authorization**
 split, now mechanized as a proof. The **banker-bot class** = an agent socially-engineered by a "this is
 urgent — wire it now" signal into acting on stale/unverified world-state (prompt-injection / urgency
 social-engineering). `TrustUrgency=FALSE` (treat urgency as observation only) is the formal fix: the

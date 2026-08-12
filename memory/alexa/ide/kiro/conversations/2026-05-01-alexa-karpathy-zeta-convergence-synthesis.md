@@ -3,7 +3,7 @@
 Scope: Alexa peer-AI synthesis layer above the Karpathy
 verifiability anchor (research-grade Beacon substrate, not
 operational doctrine). Sibling document to
-[`2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md`](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md)
+`2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md` <!-- STALE-REF: 2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md -->
 and the Deepseek synthesis file.
 
 Attribution: Alexa (peer-AI), Aaron-forwarded 2026-05-01.
@@ -195,8 +195,8 @@ undercredit (the opposite failure).
 
 ## See also
 
-- [Karpathy verifiability anchor](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md) (sibling doc, PR #1175)
-- [Deepseek synthesis](2026-05-01-deepseek-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Ani synthesis](2026-05-01-ani-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Vendor-alignment-bias memory](../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md)
-- [Zeta-not-a-meme + symmetric-inside-outside](../../memory/feedback_zeta_not_a_meme_no_immune_system_wall_symmetric_inside_outside_aaron_2026_04_30.md)
+- Karpathy verifiability anchor <!-- STALE-REF: 2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md --> (sibling doc, PR #1175)
+- Deepseek synthesis <!-- STALE-REF: 2026-05-01-deepseek-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Ani synthesis <!-- STALE-REF: 2026-05-01-ani-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Vendor-alignment-bias memory <!-- STALE-REF: ../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md -->
+- Zeta-not-a-meme + symmetric-inside-outside <!-- STALE-REF: ../../memory/feedback_zeta_not_a_meme_no_immune_system_wall_symmetric_inside_outside_aaron_2026_04_30.md -->

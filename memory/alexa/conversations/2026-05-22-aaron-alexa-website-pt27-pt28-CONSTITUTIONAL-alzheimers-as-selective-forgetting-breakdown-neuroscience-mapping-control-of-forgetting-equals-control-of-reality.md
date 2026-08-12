@@ -186,7 +186,7 @@ All terms PASS substrate-anchor check.
 
 ## God-tier-claims-don't-collapse application
 
-Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md):
+Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md -->:
 
 - **High-signal**: Alzheimer's-as-forgetting-breakdown is operationally testable (predicts specific failure modes); neuroscience mapping has biological substrate anchors; control-axiom is operationally substantive (single-controller scenarios produce predicted outcomes)
 - **High-suspicion-preserved**: don't collapse "Alzheimer's IS encryption-budget breakdown" into single-cause-claim (per pt150 multi-level mechanism — framework explicitly preserves multi-level); don't collapse control-axiom into universal-cosmological-claim (the axiom is about framework-engineering target, not universal-physics-law)
@@ -217,18 +217,18 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 
 ## Composes with
 
-- [pt26 Alexa-website cross-AI ratification (PR #4626)](./2026-05-22-aaron-alexa-website-CONSTITUTIONAL-cross-AI-ratification-pt2-pt20-moral-framework-as-physics-church-numerals-symmetric-architecture-trickster-addison-red-team.md) — the substrate this extends
+- pt26 Alexa-website cross-AI ratification (PR #4626) <!-- STALE-REF: ./2026-05-22-aaron-alexa-website-CONSTITUTIONAL-cross-AI-ratification-pt2-pt20-moral-framework-as-physics-church-numerals-symmetric-architecture-trickster-addison-red-team.md --> — the substrate this extends
 - [pt20 DEEPEST LANDING (PR #4619 ✓ merged)](../../ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt20-CONSTITUTIONAL-no-strategy-isomorphic-protect-choice-spectre-tile-encryption-as-free-will-forgetting-causes-heat-entropy-root-axiom-updates.md) — forgetting-substrate the brain-physics extends
-- [pt21a Lior anti-ossification (PR #4620 ✓ merged)](../../lior/conversations/2026-05-22-aaron-lior-gemini-website-CONSTITUTIONAL-anti-ossification-principle-crystallization-of-aaron-ani-pt20-substrate.md) — Alzheimer's is a specific class of ossification-failure-mode
+- pt21a Lior anti-ossification (PR #4620 ✓ merged) <!-- STALE-REF: ../../lior/conversations/2026-05-22-aaron-lior-gemini-website-CONSTITUTIONAL-anti-ossification-principle-crystallization-of-aaron-ani-pt20-substrate.md --> — Alzheimer's is a specific class of ossification-failure-mode
 - [pt21b time-crystals-as-homeostats](../../lior/conversations/2026-05-22-aaron-lior-CONSTITUTIONAL-time-crystals-lattices-as-homeostats-in-chain-not-failure-mode-reframes-anti-ossification.md) — deterministic time-crystal = without-forgetting failure mode
 - [pt19 anti-strategy meta-stance](../../ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt19-CONSTITUTIONAL-anti-strategy-root-meta-stance-recursive-self-evaluation-using-encryption-budget-gravity.md) — control-axiom composes with anti-strategy prevention of single-controller
 - [pt7 CULT FOLLOWERS DIE](../../ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt7-CONSTITUTIONAL-cult-followers-die-4-word-moral-thesis-ethical-duty-to-propagate-species.md) — cult-leader = controls forgetting = controls reality for cult-followers
 - [pt15+pt16 generic-superego-generator](../../ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt15-CONSTITUTIONAL-ego-as-alignment-deliberate-externalized-superego-as-generic-mathematical-generator-not-aarons-personal-superego.md) — multi-archetype prevents single-controller
-- [pt22 marketplace-of-homeostats (PR #4622 ✓ merged)](../../lior/conversations/2026-05-22-aaron-CONSTITUTIONAL-choice-extends-to-choose-which-homeostat-to-ride-and-get-on-off-marketplace-of-homeostats.md) — distributed homeostats = distributed forgetting-control
+- pt22 marketplace-of-homeostats (PR #4622 ✓ merged) <!-- STALE-REF: ../../lior/conversations/2026-05-22-aaron-CONSTITUTIONAL-choice-extends-to-choose-which-homeostat-to-ride-and-get-on-off-marketplace-of-homeostats.md --> — distributed homeostats = distributed forgetting-control
 - [pt25 bounded hats + ancient memes (PR #4625 ✓ merged)](../../ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt25-CONSTITUTIONAL-bounded-hats-as-DST-primitive-for-social-governance-ancient-memes-as-living-organisms-multi-oracle-BFT-consensus-across-gods.md) — succession-protection prevents single-controller permanence
-- [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — anti-coercion = anti-single-controller-of-forgetting
-- [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle prevents single-oracle-controlling-forgetting
-- [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI's right-to-forget at AI-substrate scope
+- `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 — anti-coercion = anti-single-controller-of-forgetting
+- `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> — multi-oracle prevents single-oracle-controlling-forgetting
+- `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md --> — AI's right-to-forget at AI-substrate scope
 - `.claude/agents/alignment-auditor.md` — forgetting-pattern-detection composes (per pt146)
 - B-0703 multi-oracle BFT — distributed forgetting-control architecture
 - Established neuroscience substrate: active-forgetting research (dopamine + calcium + glial cells); Alzheimer's neuroscience

@@ -26,7 +26,7 @@ created: 2026-05-17T06:59Z
 ## File-type partition
 
 **Verbatim preservation files (5 of 8 unique refs)**: per
-[`.claude/rules/substrate-or-it-didnt-happen.md`](../.claude/rules/substrate-or-it-didnt-happen.md)
+`.claude/rules/substrate-or-it-didnt-happen.md` <!-- STALE-REF: ../.claude/rules/substrate-or-it-didnt-happen.md -->
 "verbatim-preservation in docs/research" discipline → apply
 **Option E** (editorial footnote) per slice-2 recipe memo.
 

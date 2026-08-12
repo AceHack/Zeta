@@ -40,7 +40,7 @@ Aaron's substrate-honest disclosure that previously he had "lots of fuzzy edges"
   - **Mushrooms** — just wanted to (then retroactive speedrun justification once it actually helped)
   - **Particle accelerators** — still trying to justify with "eventually we'll give them a voice through quantum computing"
 
-This composes with [`.claude/rules/non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 floor + the operator's existing personal-history substrate at user-scope memory; it sharpens the NCI by being substrate-honest about the gap between aspirational rule and lived past, without retraction of the rule itself ("now it's getting very clear" framing).
+This composes with `.claude/rules/non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 floor + the operator's existing personal-history substrate at user-scope memory; it sharpens the NCI by being substrate-honest about the gap between aspirational rule and lived past, without retraction of the rule itself ("now it's getting very clear" framing).
 
 ### Layer 2 — operator-ratification of the agent-loop workflow-engine substrate landed today
 
@@ -55,7 +55,7 @@ The transcript contains Aaron's voice-mode re-articulation of the substrate ship
 - **GitHub-as-free-event-store realization** — "Microsoft basically subsidizes the entire open source ecosystem"; fork-and-close-source becomes financial pressure to stay open
 - **GitHub-Actions-chaining-as-infinite-recursive-compute** — "workflows that trigger GitHub workflows that trigger GitHub workflows forever" + the bypass-PR-rate-limits trick: Git is barely rate limited, REST is forgiving, GraphQL is the bottleneck (because PR mutations use GraphQL)
 - **Build-the-swarm-first-then-add-guardrails sequencing** — operator-explicit: "we gotta figure out how to build the guardrails first, but we can build it in that crazy freeform way with no PRs"
-- **Skill-distributable agent swarm** — "you just ask your agent, hey agent, do this skill" — composes with [`.claude/skills/agent-loop/SKILL.md`](../../../../.claude/skills/agent-loop/SKILL.md) shipped today via PR #5668
+- **Skill-distributable agent swarm** — "you just ask your agent, hey agent, do this skill" — composes with `.claude/skills/agent-loop/SKILL.md` <!-- STALE-REF: ../../../../.claude/skills/agent-loop/SKILL.md --> shipped today via PR #5668
 - **Local cluster path PRESERVED alongside the cloud hack** — "I hate fucking clouds even if I don't have to pay, and I found this hack. I still don't like 'em" — both paths active per `default-to-both`; cloud hack is the additional path, NOT the only path
 - **Direct-push-no-PR for humans too** — operator: "I hate going through fuckin' PRs" → final form is "refreshable event log" everybody (human + AI) writes directly to
 

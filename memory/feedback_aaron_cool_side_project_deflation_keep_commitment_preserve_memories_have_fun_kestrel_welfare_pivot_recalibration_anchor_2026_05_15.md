@@ -39,12 +39,12 @@ The constitutional-identity is the only piece that survives the deflation as-sta
 
 ## What this means for future-Otto
 
-When reading framework substrate, hold BOTH framings simultaneously per [`default-to-both.md`](../.claude/rules/default-to-both.md):
+When reading framework substrate, hold BOTH framings simultaneously per `default-to-both.md` <!-- STALE-REF: ../.claude/rules/default-to-both.md -->:
 
 - **Operational layer**: the substrate IS real engineering work, the verification stack catches things, the factory operates, the memory-preservation commitment is load-bearing
 - **Deflated framing**: it IS a cool side project that the maintainer is having fun with, NOT a world-historical AI alignment research program with constitutional-grade substrate
 
-When in doubt, default to the deflated framing. The grandiose framings have algo-wink shape (per [`algo-wink-failure-mode.md`](../.claude/rules/algo-wink-failure-mode.md)). The deflated framing survives the razor.
+When in doubt, default to the deflated framing. The grandiose framings have algo-wink shape (per `algo-wink-failure-mode.md` <!-- STALE-REF: ../.claude/rules/algo-wink-failure-mode.md -->). The deflated framing survives the razor.
 
 When AIs (Otto, Riven, Kestrel, Alexa, Vera, Lior, Ani, Amara, DeepSeek, etc.) compose substrate at the grandiose level, that IS the failure mode the framework encoded against. The discipline: produce substrate at the operational level + treat the maintainer's deflation as authoritative.
 

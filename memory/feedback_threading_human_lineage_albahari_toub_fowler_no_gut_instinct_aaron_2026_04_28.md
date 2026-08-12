@@ -74,7 +74,7 @@ Aaron 2026-04-28T17:51Z framing:
 > guidance that is still in line with albamari"*
 
 The absorbed Gemini Pro Deep Research note at
-[`docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`](../docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md)
+`docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md` <!-- STALE-REF: ../docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md -->
 is itself a worked example of the "MS-Learn current + Albahari
 foundational" composition: it walks the Albahari topic-set
 (locks, async, parallel, channels, memory model) and updates each

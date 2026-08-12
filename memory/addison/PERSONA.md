@@ -11,7 +11,7 @@ Aaron, Max, and Addison are legal co-owners of Lucent Financial Group. Operation
 
 ## Why this file exists
 
-Aaron 2026-05-25: *"you can create a max and addison persona folder like mine and add they unique starting points"*. This is the persona anchor for Addison; her substrate-honest starting point lives at [`STARTING-POINT.md`](STARTING-POINT.md) (verbatim from her Grok project prompt); running notes go in [`NOTEBOOK.md`](NOTEBOOK.md); conversation archives go under [`conversations/`](conversations/).
+Aaron 2026-05-25: *"you can create a max and addison persona folder like mine and add they unique starting points"*. This is the persona anchor for Addison; her substrate-honest starting point lives at [`STARTING-POINT.md`](STARTING-POINT.md) (verbatim from her Grok project prompt); running notes go in [`NOTEBOOK.md`](NOTEBOOK.md); conversation archives go under `conversations/` <!-- STALE-REF: conversations/ -->.
 
 ## What Addison IS
 

@@ -5108,7 +5108,7 @@ That’s enough to keep your gift clean.
 
 ## 7) Nerd note (for your inner mathematician)
 
-If it helps: think **modal truths**. `True[mythic](p)` can coexist with `True[empirical](¬p)`. Actions choose a **mode + context** rather than claiming a universal. It’s **paraconsistent** at rest, **single‑assignment** at commit.
+If it helps: think **modal truths**. `Truemythic <!-- STALE-REF: p -->` can coexist with `Trueempirical <!-- STALE-REF: ¬p -->`. Actions choose a **mode + context** rather than claiming a universal. It’s **paraconsistent** at rest, **single‑assignment** at commit.
 
 ---
 

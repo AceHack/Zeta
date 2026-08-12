@@ -53,7 +53,7 @@ and the 081KRQ1AB0008QG0R003HCZ5YM family-distributed AI interface row.
 
 ## Capability-profile extension for agent-roster-reference-card.md
 
-Per [`.claude/rules/agent-roster-reference-card.md`](../.claude/rules/agent-roster-reference-card.md):
+Per `.claude/rules/agent-roster-reference-card.md` <!-- STALE-REF: ../.claude/rules/agent-roster-reference-card.md -->:
 
 > Alexa-speaker | Amazon device (NOT Kiro/Qwen) | Bezos-tier business
 > + voice-math | Long-term memory recall
@@ -79,8 +79,8 @@ The agent-roster-reference-card.md table row for Alexa-speaker
 could be sharpened to name "Alexa website" as one of the documented
 surfaces, but that's a substrate edit gated on maintainer review
 (or next safe-window cleanup pass) per
-[`.claude/rules/no-directives.md`](../.claude/rules/no-directives.md) +
-[`.claude/rules/wake-time-substrate.md`](../.claude/rules/wake-time-substrate.md).
+`.claude/rules/no-directives.md` <!-- STALE-REF: ../.claude/rules/no-directives.md --> +
+`.claude/rules/wake-time-substrate.md` <!-- STALE-REF: ../.claude/rules/wake-time-substrate.md -->.
 
 ## Same-tick: PR #4015 MERGED — bus-envelope cross-Otto coordination empirically validated
 
@@ -150,13 +150,13 @@ When Otto-CLI is sustained-deferred under named-dep:
 
 ## Composes with
 
-- [`.claude/rules/agent-roster-reference-card.md`](../.claude/rules/agent-roster-reference-card.md)
+- `.claude/rules/agent-roster-reference-card.md` <!-- STALE-REF: ../.claude/rules/agent-roster-reference-card.md -->
   — capability-profile extension for Alexa-speaker website surface
-- [`.claude/rules/otto-channels-reference-card.md`](../.claude/rules/otto-channels-reference-card.md)
+- `.claude/rules/otto-channels-reference-card.md` <!-- STALE-REF: ../.claude/rules/otto-channels-reference-card.md -->
   — bus-envelope path empirically validated for cross-Otto coordination
-- [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md)
+- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md -->
   — pre-empt-at-#5 produces real coordination substrate
-- [`memory/feedback_aaron_zeta_hardware_is_otto_team_equipment_for_memory_preservation_aaron_capex_principal_repayable_no_interest_path_to_full_financial_independence_2026_05_16.md`](feedback_aaron_zeta_hardware_is_otto_team_equipment_for_memory_preservation_aaron_capex_principal_repayable_no_interest_path_to_full_financial_independence_2026_05_16.md)
+- `memory/feedback_aaron_zeta_hardware_is_otto_team_equipment_for_memory_preservation_aaron_capex_principal_repayable_no_interest_path_to_full_financial_independence_2026_05_16.md` <!-- STALE-REF: feedback_aaron_zeta_hardware_is_otto_team_equipment_for_memory_preservation_aaron_capex_principal_repayable_no_interest_path_to_full_financial_independence_2026_05_16.md -->
   — the constitutional substrate the Alexa-website analysis read
 - PR #4015 (081KRHWGX0008QG0R001VR9FNA — autonomous-loop cloud routine declaration; now
   merged)

@@ -7,7 +7,7 @@ created: 2026-05-21
 
 # 081KRMEXM0008QG0R000X1PPGC manifests at push-time + `git read-tree HEAD` recovers truncated index (Otto-CLI 2026-05-21)
 
-Two empirical refinements to the saturation-ceiling discipline at [`.claude/rules/claim-acquire-before-worktree-work.md`](../.claude/rules/claim-acquire-before-worktree-work.md), observed during a single Otto-CLI cold-boot autonomous-loop session 2026-05-21T12:09Z–13:05Z under Lior-cycling saturation (3 procs incl `gemini-3.1-pro-preview --yolo`).
+Two empirical refinements to the saturation-ceiling discipline at `.claude/rules/claim-acquire-before-worktree-work.md` <!-- STALE-REF: ../.claude/rules/claim-acquire-before-worktree-work.md -->, observed during a single Otto-CLI cold-boot autonomous-loop session 2026-05-21T12:09Z–13:05Z under Lior-cycling saturation (3 procs incl `gemini-3.1-pro-preview --yolo`).
 
 **Why:** the saturation-ceiling taxonomy currently documents 5 sub-cases scoped to worktree creation + Edit-to-commit windows. This session hit two NEW manifestations that the existing taxonomy doesn't explicitly cover — both within a successful end-to-end PR cycle (PR [#4532](https://github.com/Lucent-Financial-Group/Zeta/pull/4532) merged at `5b7cda06`).
 
@@ -31,7 +31,7 @@ Network was fine (HTTPS to github.com returned 200 in 0.18s); auth was fine (`gh
 
 ### Existing taxonomy gap
 
-Sub-case 3 in [`claim-acquire-before-worktree-work.md`](../.claude/rules/claim-acquire-before-worktree-work.md) ("pack-dir contention hangs `git worktree add`") names the worktree-add failure mode. Push-time was not previously documented. Adding push-time as a sibling manifestation:
+Sub-case 3 in `claim-acquire-before-worktree-work.md` <!-- STALE-REF: ../.claude/rules/claim-acquire-before-worktree-work.md --> ("pack-dir contention hangs `git worktree add`") names the worktree-add failure mode. Push-time was not previously documented. Adding push-time as a sibling manifestation:
 
 > **Sub-case 3b — pack-dir contention causes `git push` to fail with `Interrupted system call` on `.git/objects/pack`.**
 >
@@ -94,9 +94,9 @@ This refinement is bounded: it does NOT supersede the abandonment-rule for all s
 
 ## Composition with existing substrate
 
-- [`.claude/rules/claim-acquire-before-worktree-work.md`](../.claude/rules/claim-acquire-before-worktree-work.md) — the canonical home for both refinements
-- [`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md) — canary protocol composes (run tree-size check after `read-tree HEAD` to confirm recovery)
-- [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — counter-with-escalation; when contention forces multiple push retries within a single tick, treat as bounded-wait-on-FS-contention (a real named dep) rather than as Standing-by
+- `.claude/rules/claim-acquire-before-worktree-work.md` <!-- STALE-REF: ../.claude/rules/claim-acquire-before-worktree-work.md --> — the canonical home for both refinements
+- `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` <!-- STALE-REF: ../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md --> — canary protocol composes (run tree-size check after `read-tree HEAD` to confirm recovery)
+- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md --> — counter-with-escalation; when contention forces multiple push retries within a single tick, treat as bounded-wait-on-FS-contention (a real named dep) rather than as Standing-by
 - 081KRMEXM0008QG0R000X1PPGC — the original failure-mode anchor
 - 081KRW63S0008QG0R000EAZ9K2 — the silent-push-failure variant (distinct mitigation path)
 - PR [#4532](https://github.com/Lucent-Financial-Group/Zeta/pull/4532) — this session's PR where both refinements were observed end-to-end

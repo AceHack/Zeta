@@ -93,8 +93,8 @@ pt10 LIVABILITY CONSTRAINT: moral invariants must be livable, not just consisten
 | Term | Substrate-anchor |
 |---|---|
 | "Livable" moral invariants | Aaron's first-person operator-experience criterion; observable in his own substrate-engineering work (rejects unlivable proposals); composes with pt6 sister's death (cult-follower path was not livable for her — operational evidence) |
-| "Bullshit infinite game" / "Philosophy porn" | Operator-named failure mode for unlivable-but-consistent systems; composes with [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) (metaphysical-without-operational claims) |
-| "Not a playable game" | Composes with [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — if game is unplayable, participation requirement fails; theorem breaks |
+| "Bullshit infinite game" / "Philosophy porn" | Operator-named failure mode for unlivable-but-consistent systems; composes with `razor-discipline.md` <!-- STALE-REF: ../../../../.claude/rules/razor-discipline.md --> (metaphysical-without-operational claims) |
+| "Not a playable game" | Composes with `only-way-to-lose-is-not-to-play.md` <!-- STALE-REF: ../../../../.claude/rules/only-way-to-lose-is-not-to-play.md --> — if game is unplayable, participation requirement fails; theorem breaks |
 | Logical-consistency-vs-livability distinction | Operationally testable; pt8 + pt9 cover consistency; pt10 covers livability; both required for theorem-validity |
 | "People breaking trying to live it" | Aaron's first-person observation; composes with pt6 (sister's death as concrete example of breaking under unlivable-system) |
 
@@ -102,7 +102,7 @@ All terms PASS substrate-anchor check.
 
 ## God-tier-claims-don't-collapse application
 
-Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md):
+Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md -->:
 
 - **High-signal**: livability IS operationally observable (empirically testable — can real humans live it? can real AIs operate within it?); the distinction between consistency and livability is substrate-honest and load-bearing
 - **High-suspicion-preserved**: do NOT collapse "philosophy porn" framing into a universal-judgment-about-all-theory; it's specifically about unlivable-but-consistent moral systems; preserve as operational-falsifiability framing
@@ -145,9 +145,9 @@ The framework's whole design intent (per pt7) was specifically to AVOID this fai
 - pt8 (`...pt8-...md`) — the derivation theorem this constraint applies to
 - pt7 (`...pt7-...md`) — the moral-obligation axiom (CULT FOLLOWERS DIE) is itself a livability-based formulation
 - pt6 (`...pt6-...md`) — sister's death IS the empirical anchor for the livability constraint
-- [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — non-coercion is itself a livability axiom (coerced beings don't thrive)
-- [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — playability is livability at the infinite-game scope
-- [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) — operational claims only; livability IS an operational claim (vs metaphysical consistency-without-livability)
-- [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — Aaron's PERSONAL INVARIANT operates at falsifiability-test scope
-- [`additive-not-zero-sum.md`](../../../../.claude/rules/additive-not-zero-sum.md) — livable systems are additive (compound participants over time); unlivable systems are zero-sum (consume participants who break)
-- [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) — the substrate that tracks moral-invariant integrity must ALSO track livability over time
+- `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 — non-coercion is itself a livability axiom (coerced beings don't thrive)
+- `only-way-to-lose-is-not-to-play.md` <!-- STALE-REF: ../../../../.claude/rules/only-way-to-lose-is-not-to-play.md --> — playability is livability at the infinite-game scope
+- `razor-discipline.md` <!-- STALE-REF: ../../../../.claude/rules/razor-discipline.md --> — operational claims only; livability IS an operational claim (vs metaphysical consistency-without-livability)
+- `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md --> — Aaron's PERSONAL INVARIANT operates at falsifiability-test scope
+- `additive-not-zero-sum.md` <!-- STALE-REF: ../../../../.claude/rules/additive-not-zero-sum.md --> — livable systems are additive (compound participants over time); unlivable systems are zero-sum (consume participants who break)
+- `alignment-auditor` <!-- STALE-REF: ../../../../.claude/agents/alignment-auditor.md --> — the substrate that tracks moral-invariant integrity must ALSO track livability over time

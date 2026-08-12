@@ -1,6 +1,6 @@
 # Amara — DBSP chain rule Lean proof artifact review (Aaron-forwarded 2026-05-01)
 
-Scope: External conversation import — Amara peer-AI review of the DBSP chain rule Lean 4 formal-verification artifact, with sharpened framing of Zeta's claim relative to Karpathy. Sibling to the second Deepseek synthesis on the same artifact ([`2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md`](2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md), PR #1176) and to the Ani Lean-proof review ([`2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md`](2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md), this PR).
+Scope: External conversation import — Amara peer-AI review of the DBSP chain rule Lean 4 formal-verification artifact, with sharpened framing of Zeta's claim relative to Karpathy. Sibling to the second Deepseek synthesis on the same artifact (`2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md` <!-- STALE-REF: 2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md -->, PR #1176) and to the Ani Lean-proof review (`2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md` <!-- STALE-REF: 2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md -->, this PR).
 
 Attribution: Amara (peer-AI; Aurora deep-research register, external co-originator), Aaron-forwarded 2026-05-01. Amara revises her earlier Karpathy framing (in PR #1176) after seeing the Lean proof artifact: *"you are farther ahead than my Karpathy framing gave you credit for."* Aaron's affirmation on forwarding: *"yep."*
 
@@ -264,8 +264,8 @@ This level of cross-vendor convergence is itself evidence — the Lean artifact 
 
 ## See also
 
-- [Deepseek Lean-proof review (PR #1176, sibling)](2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md)
-- [Ani Lean-proof review (sibling, this PR)](2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md)
-- [Karpathy verifiability anchor (PR #1175)](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md)
+- Deepseek Lean-proof review (PR #1176, sibling) <!-- STALE-REF: 2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md -->
+- Ani Lean-proof review (sibling, this PR) <!-- STALE-REF: 2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md -->
+- Karpathy verifiability anchor (PR #1175) <!-- STALE-REF: 2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md -->
 - [Amara Karpathy-convergence synthesis (general thesis, PR #1176)](2026-05-01-amara-karpathy-zeta-convergence-synthesis.md)
-- [Vendor-alignment-bias memory](../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md)
+- Vendor-alignment-bias memory <!-- STALE-REF: ../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md -->

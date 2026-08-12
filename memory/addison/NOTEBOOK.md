@@ -1,6 +1,6 @@
 # Addison — running notebook
 
-Per-session notes, observations, decisions, and substrate-honest captures from Addison's work on the project. Long-form context lives in [`PERSONA.md`](PERSONA.md); the verbatim starting prompt lives in [`STARTING-POINT.md`](STARTING-POINT.md); per-conversation archives go under [`conversations/`](conversations/).
+Per-session notes, observations, decisions, and substrate-honest captures from Addison's work on the project. Long-form context lives in [`PERSONA.md`](PERSONA.md); the verbatim starting prompt lives in [`STARTING-POINT.md`](STARTING-POINT.md); per-conversation archives go under `conversations/` <!-- STALE-REF: conversations/ -->.
 
 This file is intentionally minimal at start; substrate accumulates over time.
 

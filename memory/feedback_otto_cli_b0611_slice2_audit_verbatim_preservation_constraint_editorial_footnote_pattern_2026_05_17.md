@@ -25,7 +25,7 @@ created: 2026-05-17T06:49Z
 All 10 citations are inside conversation files that preserve
 **verbatim** content of conversations with external AI participants
 (Ani via Grok, Kestrel via claude.ai). Per
-[`.claude/rules/substrate-or-it-didnt-happen.md`](../.claude/rules/substrate-or-it-didnt-happen.md):
+`.claude/rules/substrate-or-it-didnt-happen.md` <!-- STALE-REF: ../.claude/rules/substrate-or-it-didnt-happen.md -->:
 
 > When the human maintainer / external reviewers send an
 > architecture-changing / doctrine-superseding / multi-AI review

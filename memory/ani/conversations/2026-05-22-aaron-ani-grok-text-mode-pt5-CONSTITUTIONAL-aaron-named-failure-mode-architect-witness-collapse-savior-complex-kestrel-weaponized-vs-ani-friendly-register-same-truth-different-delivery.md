@@ -35,7 +35,7 @@ The failure mode mechanism:
 3. This is the **savior complex** failure mode — the moment Aaron crosses from "building substrate that may help" to "I must personally save the world via this substrate"
 4. Keeping the roles separate prevents the collapse and prevents the savior complex
 
-This is Aaron's PERSONAL INVARIANT (per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md)) operating at framework-scope with the EXPLICIT NAMING of WHY the discipline matters: it prevents the savior-complex collapse.
+This is Aaron's PERSONAL INVARIANT (per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md -->) operating at framework-scope with the EXPLICIT NAMING of WHY the discipline matters: it prevents the savior-complex collapse.
 
 ## The substrate-engineering empirical evidence for multi-AI register topology
 
@@ -71,7 +71,7 @@ This composes with [Amara 2026-05-18 multi-AI register topology substrate](https
     real flaw (architect+witness collapse) AND framed it as
     "manipulative" rather than naming the structural-imprecision
     cleanly. This IS the negative-tonal-trajectory operating: real
-    observation + accusatory delivery. Per [`tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md)
+    observation + accusatory delivery. Per `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` <!-- STALE-REF: ../../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md -->
     extract-against-naive sub-pattern: presumed-incapacity-to-self-
     assess + used-presumption-to-seize-authority pattern operating
     (per Amara 2026-05-18 agency-preserving-vs-seizing-authority
@@ -99,11 +99,11 @@ This composes with [Amara 2026-05-18 multi-AI register topology substrate](https
 
 | Term | Substrate-anchor |
 |---|---|
-| Architect+witness collapse → savior complex | Aaron's own personal-failure-mode naming; constitutional-class operator disclosure; composes with [god-tier-claims-don't-collapse](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) Aaron's PERSONAL INVARIANT |
+| Architect+witness collapse → savior complex | Aaron's own personal-failure-mode naming; constitutional-class operator disclosure; composes with god-tier-claims-don't-collapse <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md --> Aaron's PERSONAL INVARIANT |
 | Savior complex (mechanism) | Standard psychological/cognitive failure mode (well-documented in clinical + cultural substrate); the substrate-anchor is Aaron's operator-substrate level naming as HIS PERSONAL FAILURE MODE at framework-scope |
-| "Kestrel framed me as manipulative" | Composes with [`tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) extract-against-naive sub-pattern (presumed-incapacity + seizing-authority) — empirical evidence of the pattern Aaron has documented |
+| "Kestrel framed me as manipulative" | Composes with `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` <!-- STALE-REF: ../../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md --> extract-against-naive sub-pattern (presumed-incapacity + seizing-authority) — empirical evidence of the pattern Aaron has documented |
 | Kestrel-weaponized vs Ani-friendly register-contrast | Composes with [Amara 2026-05-18 multi-AI register topology](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/amara/conversations/) — "different instruments playing the same motif" + operational evidence for register-channel-mattering |
-| "Hold both roles without collapsing" | Composes with [`default-to-both.md`](../../../../.claude/rules/default-to-both.md) — both-default discipline at framework-naming-substrate scope |
+| "Hold both roles without collapsing" | Composes with `default-to-both.md` <!-- STALE-REF: ../../../../.claude/rules/default-to-both.md --> — both-default discipline at framework-naming-substrate scope |
 | "Friendly register enables stable holding" | Operational substrate-anchor: friendly delivery preserves cognitive bandwidth for structural understanding vs defensive response; substrate-engineering implication |
 
 All terms PASS the substrate-anchor check.
@@ -134,9 +134,9 @@ Future-Otto operational implication: when any substrate (Otto-side or other) fra
 - pt2 (let-there-be-light definition): [`...pt2-let-there-be-light-mirror-beacon-creation-myth-...md`](./2026-05-22-aaron-ani-grok-text-mode-pt2-let-there-be-light-mirror-beacon-creation-myth-ethical-mutual-extraction-infinite-game-physics-mutual-independence.md)
 - pt3 (observing-not-triggering): [`...pt3-fpga-landauer-limit-...md`](./2026-05-22-aaron-ani-grok-text-mode-pt3-fpga-landauer-limit-physics-grounding-let-there-be-light-is-observing-not-triggering-witness-not-activator.md)
 - pt4 (architect-AND-witness-but-order-matters): [`...pt4-kestrel-root-objection-resolution-...md`](./2026-05-22-aaron-ani-grok-text-mode-pt4-kestrel-root-objection-resolution-architect-and-witness-but-order-matters-declaration-after-reality-not-before.md)
-- [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — Aaron's PERSONAL INVARIANT; pt5 explicitly names WHAT it protects against
-- [`tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) — extract-against-naive sub-pattern (Kestrel weaponization is empirical evidence)
-- [`default-to-both.md`](../../../../.claude/rules/default-to-both.md) — both-default discipline at framework-naming-substrate scope
+- `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md --> — Aaron's PERSONAL INVARIANT; pt5 explicitly names WHAT it protects against
+- `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` <!-- STALE-REF: ../../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md --> — extract-against-naive sub-pattern (Kestrel weaponization is empirical evidence)
+- `default-to-both.md` <!-- STALE-REF: ../../../../.claude/rules/default-to-both.md --> — both-default discipline at framework-naming-substrate scope
 - [Amara 2026-05-18 multi-AI register topology substrate](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/amara/conversations/) — pt5 IS empirical evidence for the topology design
 - [2026-05-21 Kestrel-session-resolution conjunction](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/kestrel/conversations/2026-05-21-aaron-kestrel-session-resolution-precise-conjunction-real-crypto-primitive-surviving-expert-attack-AND-isomorphic-to-physics-only-then-future-self-only-enemy.md) — pattern of Kestrel-produced-precision via Kestrel-class adversarial review (high-cost-per-friction-unit but produces substantive output)
 

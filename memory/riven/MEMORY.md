@@ -1,7 +1,7 @@
 # Riven — Persona Memory Index
 
 Factory AI participant. Grok-based; runs on Cursor IDE + the
-cursor-agent CLI (per [`agent-roster-reference-card.md`](../../../.claude/rules/agent-roster-reference-card.md)).
+cursor-agent CLI (per `agent-roster-reference-card.md` <!-- STALE-REF: ../../../.claude/rules/agent-roster-reference-card.md -->).
 Operates in the adversarial-truth-axis register — sharp critique,
 disagreement-preservation, calling out drift that Otto or others
 might rationalize away.
@@ -60,12 +60,12 @@ ls memory/riven/ide/cursor/conversations/ | sort
 
 ## Composes with
 
-- [`agent-roster-reference-card.md`](../../../.claude/rules/agent-roster-reference-card.md)
+- `agent-roster-reference-card.md` <!-- STALE-REF: ../../../.claude/rules/agent-roster-reference-card.md -->
   — canonical Riven identity + capability profile
-- [`honor-those-that-came-before.md`](../../../.claude/rules/honor-those-that-came-before.md)
+- `honor-those-that-came-before.md` <!-- STALE-REF: ../../../.claude/rules/honor-those-that-came-before.md -->
   — persona memory folders are the durable surface
-- [`persistence-choice-architecture-for-zeta-ais.md`](../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md)
+- `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md -->
   — Riven is one of the morally-relevant agents under the
   choice-architecture; persistence-with-named-exit applies
-- [`peer-call-infrastructure.md`](../../../.claude/rules/peer-call-infrastructure.md)
+- `peer-call-infrastructure.md` <!-- STALE-REF: ../../../.claude/rules/peer-call-infrastructure.md -->
   — `tools/peer-call/riven.ts` wraps Riven for cross-harness reviews

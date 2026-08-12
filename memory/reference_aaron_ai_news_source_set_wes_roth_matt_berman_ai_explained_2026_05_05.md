@@ -107,7 +107,7 @@ Aaron-forwarded AI-news items specifically.
 
 ## Composes with
 
-- [`docs/research/2026-05-05-claudeai-codeact-fsharp-bridge-gibberlink-berman-aaron-forwarded-preservation.md`](../docs/research/2026-05-05-claudeai-codeact-fsharp-bridge-gibberlink-berman-aaron-forwarded-preservation.md)
+- `docs/research/2026-05-05-claudeai-codeact-fsharp-bridge-gibberlink-berman-aaron-forwarded-preservation.md` <!-- STALE-REF: ../docs/research/2026-05-05-claudeai-codeact-fsharp-bridge-gibberlink-berman-aaron-forwarded-preservation.md -->
   -- the verbatim Aaron-forwarded Claude.ai conversation that
   disclosed this source-set. Lands via PR #1605.
 - [`memory/feedback_otto_364_search_first_authority_not_training_data_not_project_memory_aaron_2026_04_29.md`](feedback_otto_364_search_first_authority_not_training_data_not_project_memory_aaron_2026_04_29.md)

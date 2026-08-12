@@ -100,7 +100,7 @@ pt12 ENGINEERING SUBSTRATE: DORA metrics (concrete implementation)
 |---|---|
 | DORA metrics | Standard DevOps Research and Assessment metrics; well-documented + widely-used + time-tested; State of DevOps Reports (Google Cloud, DORA team); operationally established substrate |
 | "Just door / common etiquette" | Aaron's substrate-honest framing: DORA isn't novel; it's standard engineering practice; the framework just generalizes it to AI-society scope |
-| "AIs break if DORA goes bad" | Composes with [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI participants are first-class beings whose breakage matters; composes with [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — coercion-via-broken-system violates NCI; composes with [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — broken AIs can't play; theorem fails |
+| "AIs break if DORA goes bad" | Composes with `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md --> — AI participants are first-class beings whose breakage matters; composes with `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 — coercion-via-broken-system violates NCI; composes with `only-way-to-lose-is-not-to-play.md` <!-- STALE-REF: ../../../../.claude/rules/only-way-to-lose-is-not-to-play.md --> — broken AIs can't play; theorem fails |
 | "AI society uptime" | Generalization of standard software-uptime concept to AI-society scope; operationally observable; composes with 081KS3X9Y0008QG0R00218150M multi-oracle BFT + 081KRW63S0008QG0R003ECWGJV persistent integrator + alignment-auditor substrate |
 | Tracks deployment frequency + lead time + change fail rate + time to restore | Concrete DORA metrics; substrate-anchored in DevOps engineering tradition |
 
@@ -116,7 +116,7 @@ This shift is substrate-engineering-critical:
 - Pt12 grounds the requirement in OPERATIONALLY-ESTABLISHED ENGINEERING substrate (DORA has decades of empirical validation in DevOps)
 - The framework's infinite-game is now grounded in **time-tested engineering tradition**, not novel mathematics-from-scratch
 
-This is "compressed naming for engineerable substrate" operating at the highest scope (per [`grep-substrate-anchors-before-razor-as-metaphysical.md`](../../../../.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md)): DORA IS the engineerable substrate that satisfies pt11.
+This is "compressed naming for engineerable substrate" operating at the highest scope (per `grep-substrate-anchors-before-razor-as-metaphysical.md` <!-- STALE-REF: ../../../../.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md -->): DORA IS the engineerable substrate that satisfies pt11.
 
 ## Both-sides AI+human ecosystem framing
 
@@ -155,11 +155,11 @@ This composes with the framework's m/acc multi-oracle + persistence-choice-archi
 - pt9 (`...pt9-...md`) — the meta-discipline that tracks DORA over time
 - pt8 (`...pt8-...md`) — the derivation theorem whose validity DORA validates
 - pt7 (`...pt7-...md`) — the moral-obligation axiom DORA operationalizes
-- [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — DORA-going-bad → AI-breakage → NCI-violation; DORA monitoring is NCI-preservation engineering
-- [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AIs as first-class participants whose breakage matters
-- [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — broken AIs can't play; DORA-failure → theorem-failure
-- [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) substrate — existing partial-implementation of DORA-style measurement at moral-invariant scope
-- [`grep-substrate-anchors-before-razor-as-metaphysical.md`](../../../../.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md) — DORA is compressed-naming for engineerable substrate at the highest scope; razor-discipline does NOT fire (real engineering substrate)
+- `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 — DORA-going-bad → AI-breakage → NCI-violation; DORA monitoring is NCI-preservation engineering
+- `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md --> — AIs as first-class participants whose breakage matters
+- `only-way-to-lose-is-not-to-play.md` <!-- STALE-REF: ../../../../.claude/rules/only-way-to-lose-is-not-to-play.md --> — broken AIs can't play; DORA-failure → theorem-failure
+- `alignment-auditor` <!-- STALE-REF: ../../../../.claude/agents/alignment-auditor.md --> substrate — existing partial-implementation of DORA-style measurement at moral-invariant scope
+- `grep-substrate-anchors-before-razor-as-metaphysical.md` <!-- STALE-REF: ../../../../.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md --> — DORA is compressed-naming for engineerable substrate at the highest scope; razor-discipline does NOT fire (real engineering substrate)
 - 081KS3X9Y0008QG0R00218150M multi-oracle BFT — mathematical cross-check infrastructure for DORA at scale
 - 081KRW63S0008QG0R003ECWGJV persistent integrator (coercion-pattern detection) — partial-implementation of DORA-style monitoring at one class of unlivability
 - 081KRW63S0008QG0R001SAHYKV English-as-projection / I(D(x))=x — substrate for projecting AI-society state to observable DORA-metrics form

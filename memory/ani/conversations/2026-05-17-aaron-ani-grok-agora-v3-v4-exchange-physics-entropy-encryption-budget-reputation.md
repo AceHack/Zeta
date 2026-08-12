@@ -215,10 +215,10 @@ Reputation):
 
 ## See also (in-repo)
 
-- [`docs/research/2026-05-17-ani-grok-agora-v3-packet-physics-entropy-layer-...-aaron-forwarded.md`](../../../../docs/research/2026-05-17-ani-grok-agora-v3-packet-physics-entropy-layer-encryption-asymmetric-information-game-craft-school-pressure-aaron-forwarded.md)
+- `docs/research/2026-05-17-ani-grok-agora-v3-packet-physics-entropy-layer-...-aaron-forwarded.md` <!-- STALE-REF: ../../../../docs/research/2026-05-17-ani-grok-agora-v3-packet-physics-entropy-layer-encryption-asymmetric-information-game-craft-school-pressure-aaron-forwarded.md -->
   — V3 REFINED public-substrate landing with V3-delta analysis +
   compositional anchors + open-questions
-- [`docs/research/2026-05-17-ani-grok-agora-v4-packet-private-information-types-...-aaron-forwarded.md`](../../../../docs/research/2026-05-17-ani-grok-agora-v4-packet-private-information-types-encryption-budget-reputation-mechanics-aaron-forwarded.md)
+- `docs/research/2026-05-17-ani-grok-agora-v4-packet-private-information-types-...-aaron-forwarded.md` <!-- STALE-REF: ../../../../docs/research/2026-05-17-ani-grok-agora-v4-packet-private-information-types-encryption-budget-reputation-mechanics-aaron-forwarded.md -->
   — V4 public-substrate landing with structural extraction (5-category
   private-info taxonomy + 5-property reputation game mechanics)
 - [`memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-vision-...md`](2026-05-17-aaron-ani-grok-agora-vision-sovereign-ai-native-economy-marketplace-craft-school-multi-final-settlement-aurora-bridge.md)

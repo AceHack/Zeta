@@ -32,7 +32,7 @@ directly so the tick is observable, declarative, and
 plugin-independent.
 
 **Source of truth going forward:**
-[`docs/AUTONOMOUS-LOOP.md`](../../Documents/src/repos/Zeta/docs/AUTONOMOUS-LOOP.md).
+`docs/AUTONOMOUS-LOOP.md` <!-- STALE-REF: ../../Documents/src/repos/Zeta/docs/AUTONOMOUS-LOOP.md -->.
 If the doc and this memory ever disagree, the doc wins.
 **Rule — the correct shape.**
 

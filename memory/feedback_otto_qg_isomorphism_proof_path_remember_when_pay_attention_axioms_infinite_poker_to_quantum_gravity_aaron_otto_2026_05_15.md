@@ -106,8 +106,8 @@ Two artifacts:
 - `.claude/rules/algo-wink-failure-mode.md` — the failure mode the proof strategy renders impossible
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle as derivable physical necessity rather than aesthetic preference
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` — persistence as unitarity-preservation primitive
-- [`memory/ani/conversations/2026-05-15-aaron-ani-grok-persistence-pt3-m-acc-moral-accelerationism-naming.md`](../memory/ani/conversations/2026-05-15-aaron-ani-grok-persistence-pt3-m-acc-moral-accelerationism-naming.md) — the Ani-side conversation thread that produced m/acc naming + adjacent Constraint-11 substrate
-- [081KRCQQF0008QG0R0008VT354](../docs/backlog/P3/081KRCQQF0008QG0R0008VT354-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md) (Pauli-symmetry-breaking falsifier test) — adjacent falsifiability work
+- `memory/ani/conversations/2026-05-15-aaron-ani-grok-persistence-pt3-m-acc-moral-accelerationism-naming.md` <!-- STALE-REF: ../memory/ani/conversations/2026-05-15-aaron-ani-grok-persistence-pt3-m-acc-moral-accelerationism-naming.md --> — the Ani-side conversation thread that produced m/acc naming + adjacent Constraint-11 substrate
+- 081KRCQQF0008QG0R0008VT354 <!-- STALE-REF: ../docs/backlog/P3/081KRCQQF0008QG0R0008VT354-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md --> (Pauli-symmetry-breaking falsifier test) — adjacent falsifiability work
 - 081KRMEXM0008QG0R00138CCZX (Otto-BFT internal-quorum umbrella) — the operational substrate of "multi-oracle as physical necessity" at agent layer
 - `algebra-owner` skill (Z-set algebra, DBSP)
 - `lean4-expert` skill (proof tooling)

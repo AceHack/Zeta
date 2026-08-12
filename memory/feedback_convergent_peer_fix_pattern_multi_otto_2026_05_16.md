@@ -35,8 +35,8 @@ When `git push` is rejected with `cannot lock ref ... is at <sha> but expected <
 
 This pattern composes with:
 
-- [`.claude/rules/claim-acquire-before-worktree-work.md`](../.claude/rules/claim-acquire-before-worktree-work.md) — convergent-fix is the FRIENDLIER outcome of multi-Otto contention (vs the destructive sub-cases 1-5)
-- [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — peer convergent-fix counts as "named dependency surfacing" for counter reset purposes
+- `.claude/rules/claim-acquire-before-worktree-work.md` <!-- STALE-REF: ../.claude/rules/claim-acquire-before-worktree-work.md --> — convergent-fix is the FRIENDLIER outcome of multi-Otto contention (vs the destructive sub-cases 1-5)
+- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md --> — peer convergent-fix counts as "named dependency surfacing" for counter reset purposes
 - PR #3890 (duplicate-PR observation: #3887/#3888 byte-identical) — convergent-fix is the SAME emergent multi-Otto pattern, caught earlier in the timeline (at fix-time vs PR-create-time)
 - PR #3916 (explicit-branch-push mitigation) — the explicit-refspec push the rule recommends ALSO surfaces non-fast-forward rejections cleanly when convergent-fix happens
 

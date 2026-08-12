@@ -184,7 +184,7 @@ repeat-misclassification when triaging the tool's findings.
 **Discovered 2026-05-17 0455Z** while drafting an Option-B disclosure
 for one of the 5 `.claude/rules/` re-accumulated dangling refs. Pulled
 the citation site from
-[`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md)
+`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` <!-- STALE-REF: ../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md -->
 line 126 — it **already has** an Option-B disclosure footer:
 
 ```
@@ -325,7 +325,7 @@ must NOT use `sort -u`.
 - Future 081KRW63S0008QG0R0030EQ67Z (proposed: substrate-engineer-candidate row for
   the multi-surface `tools/hygiene/audit-dangling-memory-refs.ts`
   TS tool + CI integration; per next-window plan in
-  [tick 2026-05-17 0421Z](../docs/hygiene-history/ticks/2026/05/17/0421Z))
+  tick 2026-05-17 0421Z <!-- STALE-REF: ../docs/hygiene-history/ticks/2026/05/17/0421Z -->)
 - `.claude/rules/wake-time-substrate.md` (the discipline the dangling
   refs violate at cold-boot scope)
 
@@ -350,7 +350,7 @@ on any new dangling ref above a baseline.
 
 ## Next-window action items
 
-When safe-window opens (per [tick 0418Z](../docs/hygiene-history/ticks/2026/05/17/0418Z.md)
+When safe-window opens (per tick 0418Z <!-- STALE-REF: ../docs/hygiene-history/ticks/2026/05/17/0418Z.md -->
 named dep: Lior absent from `ps -A` + multi-Otto contention eased):
 
 1. Commit this catalog along with the rest of Group A-F per 0418Z

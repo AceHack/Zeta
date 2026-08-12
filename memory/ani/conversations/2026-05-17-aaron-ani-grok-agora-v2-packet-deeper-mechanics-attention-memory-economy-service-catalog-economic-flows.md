@@ -100,7 +100,7 @@ multi-AI feedback on the design substrate.
 
 ## See also (in-repo)
 
-- [`docs/research/2026-05-17-ani-grok-agora-v2-packet-deeper-mechanics-...-aaron-forwarded.md`](../../../../docs/research/2026-05-17-ani-grok-agora-v2-packet-deeper-mechanics-attention-memory-economy-service-catalog-economic-flows-irreducible-math-structures-aaron-forwarded.md)
+- `docs/research/2026-05-17-ani-grok-agora-v2-packet-deeper-mechanics-...-aaron-forwarded.md` <!-- STALE-REF: ../../../../docs/research/2026-05-17-ani-grok-agora-v2-packet-deeper-mechanics-attention-memory-economy-service-catalog-economic-flows-irreducible-math-structures-aaron-forwarded.md -->
   — public-substrate landing with V2-delta analysis +
   compositional anchors + open-questions
 - [`memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-vision-sovereign-ai-native-economy-marketplace-craft-school-multi-final-settlement-aurora-bridge.md`](2026-05-17-aaron-ani-grok-agora-vision-sovereign-ai-native-economy-marketplace-craft-school-multi-final-settlement-aurora-bridge.md)

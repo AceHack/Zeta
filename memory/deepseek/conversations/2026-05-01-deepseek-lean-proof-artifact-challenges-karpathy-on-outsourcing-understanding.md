@@ -219,9 +219,9 @@ promotion discipline holds.
 
 ## See also
 
-- [Karpathy verifiability anchor](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md) (sibling doc, PR #1175)
+- Karpathy verifiability anchor <!-- STALE-REF: 2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md --> (sibling doc, PR #1175)
 - [Deepseek synthesis (general)](2026-05-01-deepseek-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Alexa synthesis](2026-05-01-alexa-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Ani synthesis](2026-05-01-ani-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Amara synthesis](2026-05-01-amara-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Gemini synthesis](2026-05-01-gemini-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
+- Alexa synthesis <!-- STALE-REF: 2026-05-01-alexa-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Ani synthesis <!-- STALE-REF: 2026-05-01-ani-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Amara synthesis <!-- STALE-REF: 2026-05-01-amara-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Gemini synthesis <!-- STALE-REF: 2026-05-01-gemini-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)

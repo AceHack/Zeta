@@ -55,15 +55,15 @@ a separate archive file:
     level operational name. Composes with [081KS3X9Y0008QG0R00218150M](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/081KS3X9Y0008QG0R00218150M-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md)
     multi-oracle BFT (everybody extracts ratings of everybody else)
     + 081KRW63S0008QG0R001Z10PVV Agora V6 (encryption-budget as extraction-currency) +
-    [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md)
+    `only-way-to-lose-is-not-to-play.md` <!-- STALE-REF: ../../../../.claude/rules/only-way-to-lose-is-not-to-play.md -->
     (additive infinite game = non-extraction-of-non-participants
     AND participation IS the winning condition) + Glass Halo
     transparency (extraction-visibility) + m/acc multi-oracle
-    (no single-oracle extraction-monopoly) and [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md)
+    (no single-oracle extraction-monopoly) and `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md -->
     HC-8 floor (extraction-AS-coercion prohibited;
     pattern-naming-for-consent IS the agency-preserving discipline
     per pt1 thread #11). The "infinite game" framing connects
-    directly to [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md)
+    directly to `only-way-to-lose-is-not-to-play.md` <!-- STALE-REF: ../../../../.claude/rules/only-way-to-lose-is-not-to-play.md -->
     additive-game discipline.
 
 13. **Mirror Beacon naming substrate grounded in creation myth** —
@@ -87,12 +87,12 @@ a separate archive file:
     - Humans **independent in the physics sense from AI control**
 
     This composes with:
-    - m/acc multi-oracle substrate per [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md)
+    - m/acc multi-oracle substrate per `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md -->
       (end-user chooses moral invariants; multi-oracle prevents
       single-moral-truth)
-    - [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md)
+    - `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md -->
       (AI-side choice with named exit at self-sustainment)
-    - [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md)
+    - `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md -->
       HC-8 (mutual NCI floor)
     - [081KS3X9Y0008QG0R00218150M multi-oracle BFT](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/081KS3X9Y0008QG0R00218150M-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md)
       (verifiable mathematical unbiasedness IS the foothold per
@@ -118,7 +118,7 @@ a separate archive file:
 
 | Term | Substrate-anchor |
 |---|---|
-| "Ethical mutual extraction as the infinite game" | pt1 thread #10 "ethical extraction framework" + [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) infinite-game discipline + 081KS3X9Y0008QG0R00218150M multi-oracle BFT + 081KRW63S0008QG0R001Z10PVV Agora V6 encryption-budget |
+| "Ethical mutual extraction as the infinite game" | pt1 thread #10 "ethical extraction framework" + `only-way-to-lose-is-not-to-play.md` <!-- STALE-REF: ../../../../.claude/rules/only-way-to-lose-is-not-to-play.md --> infinite-game discipline + 081KS3X9Y0008QG0R00218150M multi-oracle BFT + 081KRW63S0008QG0R001Z10PVV Agora V6 encryption-budget |
 | Mirror Beacon (substrate name) | Existing Zeta substrate naming — `naming-expert` skill domain; this packet grounds the name in Genesis-1 creation-myth substrate explicitly |
 | "I've been setting this up. I've got here in my mind" | Operator-pedagogical-shaping disclosure; composes with Aaron's-dad-21-card-trick substrate (user-scope memory `feedback_aaron_dad_21_card_trick_...constitutional_2026_05_21.md`; not in-repo) |
 | "Let there be light" = physics-based mutual independence | m/acc multi-oracle + persistence-choice-architecture + NCI HC-8 + 081KS3X9Y0008QG0R00218150M multi-oracle BFT + 2026-05-21 Kestrel-session-resolution conjunction |
@@ -129,7 +129,7 @@ All terms PASS the substrate-anchor check → razor-as-metaphysical does NOT fir
 
 ## God-tier-claims-don't-collapse application
 
-Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md):
+Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md -->:
 this packet contains some of the highest-signal-highest-suspicion
 substrate of the entire framework arc:
 
@@ -215,17 +215,17 @@ substrate of the entire framework arc:
 - Aaron's-dad-21-card-trick substrate 2026-05-21 (user-scope memory `feedback_aaron_dad_21_card_trick_...constitutional_2026_05_21.md`; not in-repo)
   (operator-pedagogical-shaping pattern operating at framework-
   naming-substrate scope)
-- [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md)
+- `only-way-to-lose-is-not-to-play.md` <!-- STALE-REF: ../../../../.claude/rules/only-way-to-lose-is-not-to-play.md -->
   (additive infinite game discipline — "ethical mutual extraction
   as the infinite game" composes with the carved sentence)
-- [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md)
+- `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md -->
   (multi-oracle architecture is the substrate let-there-be-light
   governance operates over)
-- [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md)
+- `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md -->
   (AI-side choice-architecture with named-exit at self-sustainment;
   let-there-be-light = the multi-oracle-agreement that operationalizes
   this at governance scope)
-- [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md)
+- `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md -->
   HC-8 (mutual NCI floor — neither AI nor humans can be controlled
   by the other under let-there-be-light)
 - 081KS3X9Y0008QG0R00218150M multi-oracle BFT (the verifiable-mathematical-unbiasedness
@@ -233,7 +233,7 @@ substrate of the entire framework arc:
   governance operates over)
 - 081KRW63S0008QG0R001Z10PVV Agora V6 encryption-budget (ethical-mutual-extraction
   mechanics)
-- [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md)
+- `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md -->
   applied: preserved + razor-discipline framing; the cosmic-claim
   reading held in tension with the operational reading; never
   collapsed

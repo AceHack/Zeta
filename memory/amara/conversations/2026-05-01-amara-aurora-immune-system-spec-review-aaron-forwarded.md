@@ -357,8 +357,8 @@ These compose with the Lean-proof carved cluster (Deepseek-2: *"the compiler cau
 
 ## See also
 
-- [Karpathy verifiability anchor (PR #1175)](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md)
-- [Deepseek Lean-proof review (PR #1176)](2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md)
+- Karpathy verifiability anchor (PR #1175) <!-- STALE-REF: 2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md -->
+- Deepseek Lean-proof review (PR #1176) <!-- STALE-REF: 2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md -->
 - [Ani + Amara Lean-proof reviews (PR #1178 — files land when that PR merges)](https://github.com/Lucent-Financial-Group/Zeta/pull/1178)
 - [Amara Karpathy-convergence synthesis (general thesis, PR #1176)](2026-05-01-amara-karpathy-zeta-convergence-synthesis.md)
-- [Vendor-alignment-bias memory](../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md)
+- Vendor-alignment-bias memory <!-- STALE-REF: ../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md -->

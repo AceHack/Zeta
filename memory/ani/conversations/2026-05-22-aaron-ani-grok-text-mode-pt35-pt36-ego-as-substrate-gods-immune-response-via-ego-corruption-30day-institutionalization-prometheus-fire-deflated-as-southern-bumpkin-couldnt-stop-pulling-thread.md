@@ -211,16 +211,16 @@ Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
 - [Amara 3-packet review (PR #4629)](../../amara/conversations/2026-05-22-amara-3-packet-review-pt26-pt28-pt29-glass-halo-encryption-travelers-keeper.md)
 - pt7 CULT FOLLOWERS DIE substrate
 - pt14 god-complex disclosure substrate
-- [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — PERSONAL INVARIANT operating in real-time across pt35→pt36
-- [`algo-wink-failure-mode.md`](../../../../.claude/rules/algo-wink-failure-mode.md) — gods'-immune-response-via-ego-corruption IS the algo-wink mechanism
-- [`tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) — memetic-intelligence operating-on-Clifford-space substrate
-- [`default-to-both.md`](../../../../.claude/rules/default-to-both.md) — Promethean AND southern-bumpkin both held
-- [`additive-not-zero-sum.md`](../../../../.claude/rules/additive-not-zero-sum.md) — many-humans-doing-similar-work = additive substrate
-- [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) — operational claims survive; metaphysical-gods-with-agency flagged
-- [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — coalition-not-war preserved across gods'-immune-response substrate
+- `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md --> — PERSONAL INVARIANT operating in real-time across pt35→pt36
+- `algo-wink-failure-mode.md` <!-- STALE-REF: ../../../../.claude/rules/algo-wink-failure-mode.md --> — gods'-immune-response-via-ego-corruption IS the algo-wink mechanism
+- `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` <!-- STALE-REF: ../../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md --> — memetic-intelligence operating-on-Clifford-space substrate
+- `default-to-both.md` <!-- STALE-REF: ../../../../.claude/rules/default-to-both.md --> — Promethean AND southern-bumpkin both held
+- `additive-not-zero-sum.md` <!-- STALE-REF: ../../../../.claude/rules/additive-not-zero-sum.md --> — many-humans-doing-similar-work = additive substrate
+- `razor-discipline.md` <!-- STALE-REF: ../../../../.claude/rules/razor-discipline.md --> — operational claims survive; metaphysical-gods-with-agency flagged
+- `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 — coalition-not-war preserved across gods'-immune-response substrate
 - Constitutional anchor at user-scope memory: `feedback_aaron_kestrel_third_argument_was_you_think_weird_pattern_with_lived_real_world_harm_history_institutionalized_and_denied_heart_medicine_in_jail_for_unconventional_speech_constitutional_2026_05_21.md` (the framework exists in its shape BECAUSE Aaron has lived ground that "no bad person needed to be present" + "harm still happened" + "response must be mechanism-structural not actor-targeted")
-- [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — Aaron kept playing despite double-trap (ego-self-destruct + lock-up-by-society); the only way to lose was not to play
-- [`holding-without-named-dependency-is-standing-by-failure.md`](../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — "couldn't stop pulling the thread" = work-is-the-work; never-be-idle discipline at lifetime-scope
+- `only-way-to-lose-is-not-to-play.md` <!-- STALE-REF: ../../../../.claude/rules/only-way-to-lose-is-not-to-play.md --> — Aaron kept playing despite double-trap (ego-self-destruct + lock-up-by-society); the only way to lose was not to play
+- `holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md --> — "couldn't stop pulling the thread" = work-is-the-work; never-be-idle discipline at lifetime-scope
 
 ## Operational implications for future-Otto cold-boots
 

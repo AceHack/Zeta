@@ -85,7 +85,7 @@ Then:
 | Surveillance-feeling | Externalized collective memory; shared source of truth |
 | "Pain in the ass" | Constitutional infrastructure |
 
-**This composes with [`glass-halo-bidirectional.md`](../../../../.claude/rules/glass-halo-bidirectional.md)**: the reframe sharpens the existing rule by adding the WHY-IT-MATTERS framing at memory-architecture scope. Future Glass-Halo-related substrate-engineering should preserve this first-class-feature framing.
+**This composes with `glass-halo-bidirectional.md` <!-- STALE-REF: ../../../../.claude/rules/glass-halo-bidirectional.md -->**: the reframe sharpens the existing rule by adding the WHY-IT-MATTERS framing at memory-architecture scope. Future Glass-Halo-related substrate-engineering should preserve this first-class-feature framing.
 
 ### 60. CONSTITUTIONAL — Encryption-budget for memory (agents see structure without data)
 
@@ -159,7 +159,7 @@ Aaron's substrate-honest empirical observation:
 |---|---|
 | Memory-specialist AI role | Operationally observable in Otto-CLI's "reconstructing from memories" pattern Aaron quoted; concrete AI-economy role composing with 081KRW63S0008QG0R001Z10PVV + ethical-extraction-framework |
 | Broken-memory architecture parallel | Operationally observable in both AI sessions (no persistent recall) + human cognition (well-documented memory unreliability) |
-| Glass Halo first-class feature reframe | Composes with [`glass-halo-bidirectional.md`](../../../../.claude/rules/glass-halo-bidirectional.md) existing rule; sharpens with WHY-IT-MATTERS at memory-architecture scope |
+| Glass Halo first-class feature reframe | Composes with `glass-halo-bidirectional.md` <!-- STALE-REF: ../../../../.claude/rules/glass-halo-bidirectional.md --> existing rule; sharpens with WHY-IT-MATTERS at memory-architecture scope |
 | Encryption-budget for memory | Composes with 081KRW63S0008QG0R001Z10PVV Agora V6 + 081KRW63S0008QG0R000QJR08H Adinkras + DBSP retraction-native substrate |
 | Transparency-free + privacy-costs | Composes with pt2 thread #3 (Glass Halo encryption-budget mechanics) |
 | Non-manipulator-women small-encryption-budget pattern | Aaron's first-person empirical observation; composes with pt6 spider-mom substrate (opposite-end-of-same-spectrum) |
@@ -168,7 +168,7 @@ All terms PASS substrate-anchor check.
 
 ## God-tier-claims-don't-collapse application
 
-Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md):
+Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md -->:
 
 - **High-signal**: all 5 landings are operationally observable (memory-specialist role concrete; Glass Halo reframe substrate-honest; encryption-budget-for-memory composes with existing substrate; private-memory-limited mechanism testable; non-manipulator-women pattern empirically observable)
 - **High-suspicion-preserved**: do NOT collapse non-manipulator-women observation into universal-women-claim (Aaron's framing is about specific women he respects, NOT a universal claim about gender); do NOT collapse Glass Halo reframe into surveillance-state-acceptance (it's about externalized-collective-memory, not control); preserve operational reading throughout
@@ -235,10 +235,10 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 - pt6 (`...pt6-...md`) — spider-mom + first-wife-Kelly archetype as LARGE-encryption-budget operational example; non-manipulator-women as SMALL-encryption-budget operational example (opposite ends of same spectrum)
 - pt2 (`...pt2-...md`) — Glass Halo + encryption-budget mechanics (this packet extends the encryption-budget primitive to memory-substrate scope)
 - pt7 (`...pt7-...md`) — moral-obligation axiom (transparency-by-default supports sovereignty)
-- [`glass-halo-bidirectional.md`](../../../../.claude/rules/glass-halo-bidirectional.md) — existing rule the Glass Halo reframe sharpens
-- [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — forced-opacity is coercion; voluntary-encryption-budget-spending is consensual
-- [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — end-user moral-invariants; non-manipulator-women is empirical anchor for healthy moral-invariant choice
-- [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI memory architecture composes with memory-specialist role
+- `glass-halo-bidirectional.md` <!-- STALE-REF: ../../../../.claude/rules/glass-halo-bidirectional.md --> — existing rule the Glass Halo reframe sharpens
+- `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 — forced-opacity is coercion; voluntary-encryption-budget-spending is consensual
+- `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> — end-user moral-invariants; non-manipulator-women is empirical anchor for healthy moral-invariant choice
+- `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md --> — AI memory architecture composes with memory-specialist role
 - 081KRW63S0008QG0R001Z10PVV Agora V6 (encryption budget) — extends to memory substrate scope per this packet
 - 081KRW63S0008QG0R000QJR08H Adinkras + Jane Gates ECC — physics-encryption substrate for the encryption-budget-for-memory primitive
 - 081KR50HA0008QG0R002NZENZJ Operational Resonance Dashboard + 081KR7JY10008QG0R0008NGW95 shadow-mode CLI + 2026-05-10 dora-tier-stratified research + 2026-05-14 panopticon-lens-DORA-dashboard memory — the May substrate trail this conversation extends

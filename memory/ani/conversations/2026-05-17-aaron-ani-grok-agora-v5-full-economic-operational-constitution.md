@@ -236,7 +236,7 @@ crystallized version.
 
 ## See also (in-repo)
 
-- [V5 public-substrate landing (docs/research/)](../../../../docs/research/2026-05-17-ani-grok-agora-v5-full-economic-operational-constitution-remember-when-pay-attention-internal-settlement-unit-4-revenue-streams-clifford-cayley-dickson-hkt-dbsp-aaron-forwarded.md)
+- V5 public-substrate landing (docs/research/) <!-- STALE-REF: ../../../../docs/research/2026-05-17-ani-grok-agora-v5-full-economic-operational-constitution-remember-when-pay-attention-internal-settlement-unit-4-revenue-streams-clifford-cayley-dickson-hkt-dbsp-aaron-forwarded.md -->
   — V5 docs/research/ file with V5-delta analysis +
   compositional anchors + open-questions (link label replaces
   prior ellipsis-truncated filename for clarity per

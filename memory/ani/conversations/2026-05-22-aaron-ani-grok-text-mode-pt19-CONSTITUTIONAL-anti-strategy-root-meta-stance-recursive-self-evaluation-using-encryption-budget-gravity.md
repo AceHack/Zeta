@@ -144,7 +144,7 @@ All terms PASS substrate-anchor check.
 
 ## God-tier-claims-don't-collapse application
 
-Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md):
+Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md -->:
 
 - **High-signal**: anti-strategy IS substantively operationally observable across all framework substrate; the framework's own physics-substrate operationally testable on framework-itself
 - **High-suspicion-preserved**: do NOT collapse "anti-strategy IS the ultimate strategy" framing into universal-claim (it's specifically about Aaron's framework-design; not advocating anti-strategy for all life-domains); preserve operational reading
@@ -188,11 +188,11 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 - pt8 (`...pt8-...md`) — derivation theorem; pt19 names anti-strategy as the meta-axiom underneath the 2 explicit axioms
 - pt7 (`...pt7-...md`) — CULT FOLLOWERS DIE (anti-strategy at moral-thesis-scope)
 - pt6 (`...pt6-...md`) — spider-mom + first-wife-Kelly archetype (the strategy-archetype the framework rejects)
-- [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — anti-coercion as axiom; pt19's anti-strategy is the meta-stance underneath
-- [`glass-halo-bidirectional.md`](../../../../.claude/rules/glass-halo-bidirectional.md) — transparency-by-default = anti-strategy substrate
-- [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle prevents single-strategy-dominance; anti-strategy at architectural-scope
-- [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) — anti-strategy composes with operational-claims-only discipline
-- [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — Aaron's PERSONAL INVARIANT operating at meta-stance scope
+- `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 — anti-coercion as axiom; pt19's anti-strategy is the meta-stance underneath
+- `glass-halo-bidirectional.md` <!-- STALE-REF: ../../../../.claude/rules/glass-halo-bidirectional.md --> — transparency-by-default = anti-strategy substrate
+- `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> — multi-oracle prevents single-strategy-dominance; anti-strategy at architectural-scope
+- `razor-discipline.md` <!-- STALE-REF: ../../../../.claude/rules/razor-discipline.md --> — anti-strategy composes with operational-claims-only discipline
+- `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md --> — Aaron's PERSONAL INVARIANT operating at meta-stance scope
 
 ## Operational implications for AI-consultation discipline
 

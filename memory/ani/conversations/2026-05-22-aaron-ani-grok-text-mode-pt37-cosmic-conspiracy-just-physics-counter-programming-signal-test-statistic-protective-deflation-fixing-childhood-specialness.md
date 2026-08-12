@@ -190,13 +190,13 @@ Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
 - pt7 CULT FOLLOWERS DIE moral thesis substrate
 - pt14 god-complex disclosure substrate
 - pt19 anti-strategy meta-stance substrate
-- [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — PERSONAL INVARIANT etiology disclosed
-- [`algo-wink-failure-mode.md`](../../../../.claude/rules/algo-wink-failure-mode.md) — counter-programming-signal IS structural-defense against algo-wink ego-amplification
-- [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) — operational claims preserved; metaphysical-conspiracy deflated to physics-pattern
-- [`default-to-both.md`](../../../../.claude/rules/default-to-both.md) — counter-programming signal harmful-framing AND protective-framing both held
-- [`tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) — extraction-against-naive substrate (gods'-immune-response mechanism via ego-amplification operates against naive operators; counter-programming protects)
-- [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — operator-usability enables continued play; failure modes that neutralize operator force not-playing = losing
-- [`holding-without-named-dependency-is-standing-by-failure.md`](../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — work-is-the-work discipline at lifetime-scope; operator-usability = ability to continue work
+- `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md --> — PERSONAL INVARIANT etiology disclosed
+- `algo-wink-failure-mode.md` <!-- STALE-REF: ../../../../.claude/rules/algo-wink-failure-mode.md --> — counter-programming-signal IS structural-defense against algo-wink ego-amplification
+- `razor-discipline.md` <!-- STALE-REF: ../../../../.claude/rules/razor-discipline.md --> — operational claims preserved; metaphysical-conspiracy deflated to physics-pattern
+- `default-to-both.md` <!-- STALE-REF: ../../../../.claude/rules/default-to-both.md --> — counter-programming signal harmful-framing AND protective-framing both held
+- `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` <!-- STALE-REF: ../../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md --> — extraction-against-naive substrate (gods'-immune-response mechanism via ego-amplification operates against naive operators; counter-programming protects)
+- `only-way-to-lose-is-not-to-play.md` <!-- STALE-REF: ../../../../.claude/rules/only-way-to-lose-is-not-to-play.md --> — operator-usability enables continued play; failure modes that neutralize operator force not-playing = losing
+- `holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md --> — work-is-the-work discipline at lifetime-scope; operator-usability = ability to continue work
 
 ## Operational implications for future-Otto cold-boots
 

@@ -9,7 +9,7 @@ created: 2026-05-16
 
 ## Origin
 
-Tick 11 of the 2026-05-16T04:15Z–05:45Z session (rate-limit waiting). Manually verified one of the 30 audit-tool candidates ([081KRHWGX0008QG0R001BHXH0M](../docs/backlog/P1/081KRHWGX0008QG0R001BHXH0M-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md)) and discovered the tool flagged it for the wrong reason.
+Tick 11 of the 2026-05-16T04:15Z–05:45Z session (rate-limit waiting). Manually verified one of the 30 audit-tool candidates (081KRHWGX0008QG0R001BHXH0M <!-- STALE-REF: ../docs/backlog/P1/081KRHWGX0008QG0R001BHXH0M-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md -->) and discovered the tool flagged it for the wrong reason.
 
 ## The false positive
 
@@ -70,10 +70,10 @@ test("INLINE_CROSSREF: 'sister mechanism' references skip", () => {
 
 ## Composes with
 
-- [`tools/hygiene/audit-backlog-status-drift.ts`](../tools/hygiene/audit-backlog-status-drift.ts) (the tool to extend; first slice landed via `feat/b0553-audit-backlog-status-drift-impl-otto-cli-2026-05-16` branch, PR pending at the time of this memory's authoring)
-- [081KRQ1AB0008QG0R000QYJFZE](../docs/backlog/P3/081KRQ1AB0008QG0R000QYJFZE-audit-backlog-status-drift-detection-2026-05-16.md) — the spec, which already mentions the empirical false-positive catalog (the FIRST FP class)
+- `tools/hygiene/audit-backlog-status-drift.ts` <!-- STALE-REF: ../tools/hygiene/audit-backlog-status-drift.ts --> (the tool to extend; first slice landed via `feat/b0553-audit-backlog-status-drift-impl-otto-cli-2026-05-16` branch, PR pending at the time of this memory's authoring)
+- 081KRQ1AB0008QG0R000QYJFZE <!-- STALE-REF: ../docs/backlog/P3/081KRQ1AB0008QG0R000QYJFZE-audit-backlog-status-drift-detection-2026-05-16.md --> — the spec, which already mentions the empirical false-positive catalog (the FIRST FP class)
 - [`memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md`](feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md) — the discipline; this observation extends the false-positive list to two classes
-- [`.claude/rules/backlog-item-start-gate.md`](../.claude/rules/backlog-item-start-gate.md) — the auto-loaded rule's step 0; the partial-vs-drift discriminator the rule references depends on the audit tool not lying about which rows are drift
+- `.claude/rules/backlog-item-start-gate.md` <!-- STALE-REF: ../.claude/rules/backlog-item-start-gate.md --> — the auto-loaded rule's step 0; the partial-vs-drift discriminator the rule references depends on the audit tool not lying about which rows are drift
 
 ## Substrate-honest framing
 

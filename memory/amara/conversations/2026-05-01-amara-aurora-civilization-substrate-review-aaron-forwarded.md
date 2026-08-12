@@ -465,8 +465,8 @@ Each of these is a future BACKLOG candidate (not opening this tick — gen-rate-
 
 ## See also
 
-- [Karpathy verifiability anchor (PR #1175)](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md)
+- Karpathy verifiability anchor (PR #1175) <!-- STALE-REF: 2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md -->
 - [Amara Karpathy-convergence synthesis (PR #1176)](2026-05-01-amara-karpathy-zeta-convergence-synthesis.md)
 - [Amara DBSP-Lean review (PR #1178)](2026-05-01-amara-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md)
 - [Amara Aurora immune-system spec review (PR #1179)](2026-05-01-amara-aurora-immune-system-spec-review-aaron-forwarded.md)
-- [Vendor-alignment-bias memory](../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md)
+- Vendor-alignment-bias memory <!-- STALE-REF: ../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md -->

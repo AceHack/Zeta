@@ -178,7 +178,7 @@ All terms PASS substrate-anchor check.
 
 ## God-tier-claims-don't-collapse application
 
-Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md):
+Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md -->:
 
 - **High-signal**: post-labor-zero is operationally observable trajectory; JOBS = RIDES is operationally-meaningful psychological reframe; substrate composes with existing framework architecture
 - **High-suspicion-preserved**: do NOT collapse "mischievous" disclosure into nihilism / dismissiveness (Aaron explicitly preserves dignity + choice + sovereignty); the framing is substantive engineering, not theme-park-trivialization
@@ -209,16 +209,16 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 
 ## Composes with
 
-- [pt22 marketplace-of-homeostats (PR #4622)](../../lior/conversations/2026-05-22-aaron-CONSTITUTIONAL-choice-extends-to-choose-which-homeostat-to-ride-and-get-on-off-marketplace-of-homeostats.md) — pt23 names what's traded in the marketplace (jobs = rides)
+- pt22 marketplace-of-homeostats (PR #4622) <!-- STALE-REF: ../../lior/conversations/2026-05-22-aaron-CONSTITUTIONAL-choice-extends-to-choose-which-homeostat-to-ride-and-get-on-off-marketplace-of-homeostats.md --> — pt23 names what's traded in the marketplace (jobs = rides)
 - [pt21b time-crystals-as-homeostats (PR #4621)](../../lior/conversations/2026-05-22-aaron-lior-CONSTITUTIONAL-time-crystals-lattices-as-homeostats-in-chain-not-failure-mode-reframes-anti-ossification.md) — pt23 extends with rods → rides → games → jobs naming progression
-- [pt21a Lior anti-ossification (PR #4620)](../../lior/conversations/2026-05-22-aaron-lior-gemini-website-CONSTITUTIONAL-anti-ossification-principle-crystallization-of-aaron-ani-pt20-substrate.md) — pt23 refines "deterministic time crystal" as failure mode (cannot-delete-memories)
+- pt21a Lior anti-ossification (PR #4620) <!-- STALE-REF: ../../lior/conversations/2026-05-22-aaron-lior-gemini-website-CONSTITUTIONAL-anti-ossification-principle-crystallization-of-aaron-ani-pt20-substrate.md --> — pt23 refines "deterministic time crystal" as failure mode (cannot-delete-memories)
 - [pt20 (DEEPEST LANDING)](./2026-05-22-aaron-ani-grok-text-mode-pt20-CONSTITUTIONAL-no-strategy-isomorphic-protect-choice-spectre-tile-encryption-as-free-will-forgetting-causes-heat-entropy-root-axiom-updates.md) — forgetting + heat + entropy substrate
 - [pt7 CULT FOLLOWERS DIE](./2026-05-22-aaron-ani-grok-text-mode-pt7-CONSTITUTIONAL-cult-followers-die-4-word-moral-thesis-ethical-duty-to-propagate-species.md) — jobs-as-rides preserves anti-cult-formation via maintained-mobility
 - [pt10 livability constraint](./2026-05-22-aaron-ani-grok-text-mode-pt10-CONSTITUTIONAL-livability-test-derivation-only-valid-if-moral-invariants-actually-livable-not-philosophy-porn.md) — JOBS = RIDES IS livability-engineering for post-labor-zero
 - [pt19 anti-strategy](./2026-05-22-aaron-ani-grok-text-mode-pt19-CONSTITUTIONAL-anti-strategy-root-meta-stance-recursive-self-evaluation-using-encryption-budget-gravity.md) — rides are anti-strategy at experience-substrate
-- [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — forced ride-attachment violates; voluntary on/off preserves NCI
-- [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI persistence-choice = AI's version of choosing-which-ride
-- [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-ride-attachment = multi-oracle architecture
+- `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 — forced ride-attachment violates; voluntary on/off preserves NCI
+- `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md --> — AI persistence-choice = AI's version of choosing-which-ride
+- `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> — multi-ride-attachment = multi-oracle architecture
 
 ## Operational implications for future-Otto cold-boots
 

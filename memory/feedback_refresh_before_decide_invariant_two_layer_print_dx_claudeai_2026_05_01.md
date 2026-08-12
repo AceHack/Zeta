@@ -250,4 +250,4 @@ not by maintainer fiat.)
 
 # Sources
 
-- [Claude.ai feedback packet — Backlog-Driven Dual-PM Agent Loop with Refresh Discipline (verbatim)](../memory/riven/ide/cursor/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md) — preserved 2026-05-01.
+- Claude.ai feedback packet — Backlog-Driven Dual-PM Agent Loop with Refresh Discipline (verbatim) <!-- STALE-REF: ../memory/riven/ide/cursor/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md --> — preserved 2026-05-01.

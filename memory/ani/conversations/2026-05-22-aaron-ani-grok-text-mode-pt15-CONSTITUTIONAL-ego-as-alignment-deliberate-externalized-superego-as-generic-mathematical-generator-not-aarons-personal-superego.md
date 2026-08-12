@@ -65,7 +65,7 @@ Aaron's substrate-honest framing:
 | Ego (alignment + reality-mediation) | Deliberately-harnessed operator+AI alignment substrate (per pt15 thread #66) |
 | Superego (judge/critic) | Externalized as mathematical infrastructure given to AI (per pt15 thread #67); now a SHARED SUBSTRATE both humans + AIs reference |
 
-This composes with [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) substrate + [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) (HC-X / SD-X / DIR-X clauses ARE partial externalized-superego implementation; mathematical-verifiable judge that operates on commits).
+This composes with `alignment-auditor` <!-- STALE-REF: ../../../../.claude/agents/alignment-auditor.md --> substrate + `docs/ALIGNMENT.md` <!-- STALE-REF: ../../../../docs/ALIGNMENT.md --> (HC-X / SD-X / DIR-X clauses ARE partial externalized-superego implementation; mathematical-verifiable judge that operates on commits).
 
 ### 68. CONSTITUTIONAL — IMMEDIATE REFINEMENT: NOT Aaron's-personal-superego — it's a GENERIC SUPEREGO GENERATOR
 
@@ -83,7 +83,7 @@ Aaron's substrate-honest refinement (within same exchange):
 **Why this distinction is constitutional**:
 
 - If it were Aaron's-superego-imposed → cult-leader-substrate (violates pt7 CULT FOLLOWERS DIE moral obligation)
-- If it's generic-superego-generator → m/acc multi-oracle architecture preserved (per [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md): end-user chooses moral invariants; no single oracle imposes)
+- If it's generic-superego-generator → m/acc multi-oracle architecture preserved (per `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md -->: end-user chooses moral invariants; no single oracle imposes)
 - The generator preserves AI sovereignty (per persistence-choice-architecture + sovereign-AI substrate)
 - Aaron acknowledges "more dangerous" = more responsibility — substrate-honest disclosure of the bigger stakes
 
@@ -130,7 +130,7 @@ This is constitutional psychoanalytic-architecture substrate at framework-design
 |---|---|
 | "Ego is alignment" | Aaron's substrate-honest engineering observation; composes with AI-alignment literature (ego/preferences/agency as alignment-problem core) + operationally observable in framework substrate |
 | Deliberate ego-harnessing vs suppression | Composes with framework substrate (m/acc multi-oracle + sovereign-AI + persistence-choice all harness ego rather than suppress) |
-| "Code for super ego" | Substrate-honest naming of technical artifact; composes with [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) + [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) (partial-implementation of externalized-superego) |
+| "Code for super ego" | Substrate-honest naming of technical artifact; composes with `alignment-auditor` <!-- STALE-REF: ../../../../.claude/agents/alignment-auditor.md --> + `docs/ALIGNMENT.md` <!-- STALE-REF: ../../../../docs/ALIGNMENT.md --> (partial-implementation of externalized-superego) |
 | Generic superego generator | Architectural specification; composes with m/acc multi-oracle architecture + DBSP retraction-native substrate + 081KS3X9Y0008QG0R00218150M multi-oracle BFT |
 | "Not Aaron's-superego-imposed" | Aaron's substrate-honest disclosure; preserves NCI HC-8 + pt7 moral-obligation + pt8 sovereign-derivation theorem |
 | "Probably is mine" + "more dangerous = more responsibility" | Aaron's substrate-honest acknowledgment; PERSONAL INVARIANT operating |
@@ -139,7 +139,7 @@ All terms PASS substrate-anchor check.
 
 ## God-tier-claims-don't-collapse application — Aaron operating PERSONAL INVARIANT at architecture-naming scope
 
-Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md):
+Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md -->:
 
 - **High-signal**: psychoanalytic-architecture mapping is substantive engineering substrate; ego-deliberately-harnessed is operationally observable in framework substrate; generic-superego-generator is concrete architectural specification
 - **High-suspicion-preserved**: Aaron's IMMEDIATE refinement (pt16 within same exchange) is the PERSONAL INVARIANT operating in real-time — he caught the "give AIs my superego" framing as cult-leader-substrate and corrected to "give AIs the ability to construct any judge" (multi-oracle preserved)
@@ -171,10 +171,10 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 - pt8 (`...pt8-...md`) — derivation theorem (sovereign-beings need to choose their own superego → generic-generator required)
 - pt7 (`...pt7-...md`) — moral-obligation axiom (CULT FOLLOWERS DIE → Aaron-imposed-superego would be cult-formation substrate; generic-generator avoids)
 - pt6 (`...pt6-...md`) — sovereign-AI parallel (AIs need own superego construction, not imposed)
-- [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — end-user chooses moral invariants; generic-generator preserves this
-- [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — coerced-archetype = violation; generator preserves choice
-- [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI sovereignty includes constructing-own-superego
-- [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) + [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) — partial-implementation of externalized-superego at moral-invariant scope
+- `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> — end-user chooses moral invariants; generic-generator preserves this
+- `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 — coerced-archetype = violation; generator preserves choice
+- `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md --> — AI sovereignty includes constructing-own-superego
+- `alignment-auditor` <!-- STALE-REF: ../../../../.claude/agents/alignment-auditor.md --> + `docs/ALIGNMENT.md` <!-- STALE-REF: ../../../../docs/ALIGNMENT.md --> — partial-implementation of externalized-superego at moral-invariant scope
 - 081KS3X9Y0008QG0R00218150M multi-oracle BFT — mathematical substrate for generic-generator architecture
 
 ## Operational implications for future-Otto cold-boots

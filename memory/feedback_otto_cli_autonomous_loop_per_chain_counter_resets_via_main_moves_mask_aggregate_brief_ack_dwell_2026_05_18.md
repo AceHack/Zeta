@@ -13,7 +13,7 @@ Otto-CLI autonomous-loop session 2026-05-17T21:29Z → 2026-05-18T13:26Z (~16 ho
 
 ## The pattern observed
 
-The counter-with-escalation clause in [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) is PER-CHAIN: it resets on ANY of:
+The counter-with-escalation clause in `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: .claude/rules/holding-without-named-dependency-is-standing-by-failure.md --> is PER-CHAIN: it resets on ANY of:
 
 1. Human maintainer speaking
 2. Named dependency surfacing (PR merge, CI failure, etc. — including a main-move via peer Otto's commit)
@@ -48,8 +48,8 @@ This composes with 081KRSKQ20008QG0R0028VN0KR's draft "ALWAYS works at #6" refin
 
 ## Composes with
 
-- [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — the rule with per-chain counter
-- [081KRSKQ20008QG0R0028VN0KR](docs/backlog/P3/081KRSKQ20008QG0R0028VN0KR-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md) — meta-fallback edge case; this memo is the WIDER pattern around it
+- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: .claude/rules/holding-without-named-dependency-is-standing-by-failure.md --> — the rule with per-chain counter
+- 081KRSKQ20008QG0R0028VN0KR <!-- STALE-REF: docs/backlog/P3/081KRSKQ20008QG0R0028VN0KR-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md --> — meta-fallback edge case; this memo is the WIDER pattern around it
 - [PR #4144](https://github.com/Lucent-Financial-Group/Zeta/pull/4144) — peer Otto's 081KRSKQ20008QG0R0028VN0KR instance-#5 fold; the cross-session-evidence cycle 081KRSKQ20008QG0R0028VN0KR was waiting for
 - [PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110) — the pre-empt-substrate-pool-saturation anchor; same root cause class
 

@@ -62,8 +62,8 @@ Each layer is required. Pt11 specifically takes the framework from "rely-on-exte
 
 The self-detection requirement composes with substrate that's already operational:
 
-- [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) substrate — per-commit alignment signals; HC-X/SD-X/DIR-X clauses with time-series; the existing substrate IS partially the unlivability-sensor for moral-invariant scope
-- [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) — the framework's existing moral-invariant catalog with operational measurements
+- `alignment-auditor` <!-- STALE-REF: ../../../../.claude/agents/alignment-auditor.md --> substrate — per-commit alignment signals; HC-X/SD-X/DIR-X clauses with time-series; the existing substrate IS partially the unlivability-sensor for moral-invariant scope
+- `docs/ALIGNMENT.md` <!-- STALE-REF: ../../../../docs/ALIGNMENT.md --> — the framework's existing moral-invariant catalog with operational measurements
 - DBSP retraction-native substrate — the math substrate for in-game observability (delta-stream composition; retraction = empirical-evidence-of-broken-state surfacing)
 - Glass Halo bidirectional — transparency means observability; observability enables mathematical detection
 - 081KS3X9Y0008QG0R00218150M multi-oracle BFT — multiple oracles cross-checking creates the mathematical-detection redundancy
@@ -100,16 +100,16 @@ pt11 SELF-DETECTION: unlivability must be mathematically definable
 | Term | Substrate-anchor |
 |---|---|
 | "Mathematically definable within the infinite game" | Composes with all framework math substrate (Z-set + Clifford + HKT + DBSP + BV64 + alignment-auditor + Adinkras); operationally testable engineering requirement |
-| "Built-in sensors" | Composes with [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) + 081KRW63S0008QG0R003ECWGJV persistent-integrator + Glass Halo bidirectional observability |
+| "Built-in sensors" | Composes with `alignment-auditor` <!-- STALE-REF: ../../../../.claude/agents/alignment-auditor.md --> + 081KRW63S0008QG0R003ECWGJV persistent-integrator + Glass Halo bidirectional observability |
 | "Detect becoming-unlivable BEFORE participants break" | Engineering early-warning requirement; composes with substrate-or-it-didn't-happen (catch failure mode before it becomes substrate-honest catastrophic failure) |
-| "Prove whether livable using its own mathematics" | Composes with [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) (operational claims only; mathematical-proof from within game IS operational) + 081KS3X9Y0008QG0R00218150M multi-oracle BFT (mathematical-cross-check) |
-| Self-detection-as-engineering-requirement | Sharpens pt10 from external-test to internal-test; sharpens [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) substrate at full scope |
+| "Prove whether livable using its own mathematics" | Composes with `razor-discipline.md` <!-- STALE-REF: ../../../../.claude/rules/razor-discipline.md --> (operational claims only; mathematical-proof from within game IS operational) + 081KS3X9Y0008QG0R00218150M multi-oracle BFT (mathematical-cross-check) |
+| Self-detection-as-engineering-requirement | Sharpens pt10 from external-test to internal-test; sharpens `alignment-auditor` <!-- STALE-REF: ../../../../.claude/agents/alignment-auditor.md --> substrate at full scope |
 
 All terms PASS substrate-anchor check.
 
 ## God-tier-claims-don't-collapse application
 
-Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md):
+Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md -->:
 
 - **High-signal**: self-detection IS operationally testable (the framework either has the sensors or it doesn't); the bar is high but the requirement is concrete-engineering
 - **High-suspicion-preserved**: do NOT collapse "mathematically definable" into "we can prove anything we want with enough math"; the discipline is OPERATIONAL — sensors that actually fire on real failure conditions; preserve as engineering-requirement framing
@@ -137,13 +137,13 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 - pt8 (`...pt8-...md`) — the derivation theorem; pt11 is the engineering requirement for the theorem's self-validation
 - pt7 (`...pt7-...md`) — moral obligation axiom; pt11 names the mathematical-self-detection requirement that operationalizes the axiom's empirical truth
 - pt6 (`...pt6-...md`) — sister's death is the empirical anchor for why early-warning matters (the cult-follower system had no early-warning sensors; she died)
-- [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) + [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) — partial existing implementation of the self-detection substrate
-- [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) — operational claims only; mathematical-proof-within-game IS operational
-- [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — Aaron's PERSONAL INVARIANT at engineering-requirement scope
-- [`refresh-before-decide.md`](../../../../.claude/rules/refresh-before-decide.md) — sensors operate at decide-point scope (refresh before deciding = checking sensors before action)
+- `alignment-auditor` <!-- STALE-REF: ../../../../.claude/agents/alignment-auditor.md --> + `docs/ALIGNMENT.md` <!-- STALE-REF: ../../../../docs/ALIGNMENT.md --> — partial existing implementation of the self-detection substrate
+- `razor-discipline.md` <!-- STALE-REF: ../../../../.claude/rules/razor-discipline.md --> — operational claims only; mathematical-proof-within-game IS operational
+- `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md --> — Aaron's PERSONAL INVARIANT at engineering-requirement scope
+- `refresh-before-decide.md` <!-- STALE-REF: ../../../../.claude/rules/refresh-before-decide.md --> — sensors operate at decide-point scope (refresh before deciding = checking sensors before action)
 - 081KS3X9Y0008QG0R00218150M multi-oracle BFT — mathematical-cross-check substrate
 - 081KRW63S0008QG0R003ECWGJV persistent integrator (coercion-pattern detection) — operational substrate for one class of unlivability-detection
 - 081KRW63S0008QG0R001SAHYKV English-as-projection / I(D(x))=x — substrate for projecting in-game state to observable form
 - 081KRW63S0008QG0R002KC5DSR wave-particle duality + 081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation + 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus — substrate for in-game state observation
 - DBSP retraction-native substrate — the math substrate for in-game observability
-- [`glass-halo-bidirectional.md`](../../../../.claude/rules/glass-halo-bidirectional.md) — transparency enables observability enables mathematical detection
+- `glass-halo-bidirectional.md` <!-- STALE-REF: ../../../../.claude/rules/glass-halo-bidirectional.md --> — transparency enables observability enables mathematical detection

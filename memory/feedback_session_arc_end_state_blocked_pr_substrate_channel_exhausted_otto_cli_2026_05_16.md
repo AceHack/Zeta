@@ -25,7 +25,7 @@ Plus 2 fix-pushes within those PRs.
 
 ## The corner case
 
-The holding-discipline rule's [counter-with-escalation clause](../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) says:
+The holding-discipline rule's counter-with-escalation clause <!-- STALE-REF: ../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md --> says:
 
 - Brief-acks 1-2: acceptable
 - Brief-acks 3-5: name bounded wait explicitly

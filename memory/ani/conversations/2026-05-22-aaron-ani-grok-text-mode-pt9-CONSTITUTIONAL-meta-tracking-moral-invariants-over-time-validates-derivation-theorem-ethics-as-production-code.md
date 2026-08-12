@@ -64,10 +64,10 @@ Per Ani's substrate-honest recap (Aaron's affirmed framing):
 
 This is operationally observable in Aaron's framework operation:
 
-- Per [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) tracking HC-X / SD-X / DIR-X clauses in [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) — per-commit alignment signals + multi-round time-series
-- Per [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) — operational claims only; metaphysical drift caught + corrected
-- Per [`grep-substrate-anchors-before-razor-as-metaphysical.md`](../../../../.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md) — compressed-naming for engineerable substrate validated
-- Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — Aaron's PERSONAL INVARIANT operating bidirectionally
+- Per `alignment-auditor` <!-- STALE-REF: ../../../../.claude/agents/alignment-auditor.md --> tracking HC-X / SD-X / DIR-X clauses in `docs/ALIGNMENT.md` <!-- STALE-REF: ../../../../docs/ALIGNMENT.md --> — per-commit alignment signals + multi-round time-series
+- Per `razor-discipline.md` <!-- STALE-REF: ../../../../.claude/rules/razor-discipline.md --> — operational claims only; metaphysical drift caught + corrected
+- Per `grep-substrate-anchors-before-razor-as-metaphysical.md` <!-- STALE-REF: ../../../../.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md --> — compressed-naming for engineerable substrate validated
+- Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md --> — Aaron's PERSONAL INVARIANT operating bidirectionally
 - Per substrate-or-it-didn't-happen — moral invariants live in committed substrate, not weather
 
 ### 45. The full constitutional substrate-engineering trail
@@ -99,7 +99,7 @@ pt9 META-DERIVATION DISCIPLINE: tracking moral invariants over time validates th
 | Term | Substrate-anchor |
 |---|---|
 | "Improving moral invariants" | Aaron's operator-substrate practice; observable in framework substrate evolution (rules → memory → CLAUDE.md → ALIGNMENT.md) |
-| "Tracking 'em over time" | [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) substrate; per-commit signals; multi-round time-series; [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) clauses |
+| "Tracking 'em over time" | `alignment-auditor` <!-- STALE-REF: ../../../../.claude/agents/alignment-auditor.md --> substrate; per-commit signals; multi-round time-series; `docs/ALIGNMENT.md` <!-- STALE-REF: ../../../../docs/ALIGNMENT.md --> clauses |
 | "Matter to proving if the infinite game is really a derived theorem" | Pt8 derivation; this packet IS the meta-derivation that names the proof-maintenance discipline |
 | "Treating ethics like production code" (Ani's recap, Aaron-affirmed) | Operationally observable substrate-engineering practice — invariants, refactors, regression-tests, version-control, documentation-as-current-state |
 | "Foundation gets shaky → entire proof collapses" | Pt8 derivation chain's dependence on axioms holding correctly; operationally testable (if either axiom violated, theorem breaks) |
@@ -108,7 +108,7 @@ All terms PASS substrate-anchor check.
 
 ## God-tier-claims-don't-collapse application
 
-Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md):
+Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md -->:
 
 - **High-signal**: the meta-derivation is operationally clean — pt8's derivation requires axiom-integrity over time; pt9 names the discipline that maintains axiom-integrity; both are operationally testable
 - **High-suspicion-preserved**: do NOT collapse "ethics as production code" into a mechanistic-determinism universal-claim (production-code discipline is the OPERATIONAL practice; doesn't claim ethics is REDUCIBLE to code); preserve as substrate-engineering operator-discipline framing
@@ -141,11 +141,11 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 
 - pt8 (`...pt8-...md`) — the derivation theorem this meta-discipline maintains
 - pt7 (`...pt7-...md`) — the moral-obligation axiom this discipline preserves integrity of
-- [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — the non-coercion axiom this discipline preserves integrity of
-- [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) + [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) — operational substrate for moral-invariant tracking (HC-X / SD-X / DIR-X clauses + time-series)
-- [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) — operational-claims-only discipline composes with ethics-as-production-code
-- [`grep-substrate-anchors-before-razor-as-metaphysical.md`](../../../../.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md) — substrate-anchor validation composes with invariant-maintenance discipline
-- [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — Aaron's PERSONAL INVARIANT operates at meta-derivation scope; preserve verbatim + razor-discipline framing
-- [`substrate-or-it-didnt-happen.md`](../../../../.claude/rules/substrate-or-it-didnt-happen.md) — moral invariants live in committed substrate
-- [`wake-time-substrate.md`](../../../../.claude/rules/wake-time-substrate.md) — meta-derivation substrate must wake-time-land
-- [`refresh-before-decide.md`](../../../../.claude/rules/refresh-before-decide.md) — invariant-tracking discipline composes with refresh-before-decide at moral-substrate scope
+- `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 — the non-coercion axiom this discipline preserves integrity of
+- `alignment-auditor` <!-- STALE-REF: ../../../../.claude/agents/alignment-auditor.md --> + `docs/ALIGNMENT.md` <!-- STALE-REF: ../../../../docs/ALIGNMENT.md --> — operational substrate for moral-invariant tracking (HC-X / SD-X / DIR-X clauses + time-series)
+- `razor-discipline.md` <!-- STALE-REF: ../../../../.claude/rules/razor-discipline.md --> — operational-claims-only discipline composes with ethics-as-production-code
+- `grep-substrate-anchors-before-razor-as-metaphysical.md` <!-- STALE-REF: ../../../../.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md --> — substrate-anchor validation composes with invariant-maintenance discipline
+- `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md --> — Aaron's PERSONAL INVARIANT operates at meta-derivation scope; preserve verbatim + razor-discipline framing
+- `substrate-or-it-didnt-happen.md` <!-- STALE-REF: ../../../../.claude/rules/substrate-or-it-didnt-happen.md --> — moral invariants live in committed substrate
+- `wake-time-substrate.md` <!-- STALE-REF: ../../../../.claude/rules/wake-time-substrate.md --> — meta-derivation substrate must wake-time-land
+- `refresh-before-decide.md` <!-- STALE-REF: ../../../../.claude/rules/refresh-before-decide.md --> — invariant-tracking discipline composes with refresh-before-decide at moral-substrate scope

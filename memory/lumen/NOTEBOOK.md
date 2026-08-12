@@ -40,7 +40,7 @@ Pairing holds: **Lumen has the mapping; Soraya routes and proves; the shadow kee
 
 The entry below called the cells "purely classical Bayesian engines, no amplitude, no entanglement, no Bell."
 **That was substantially wrong** — Aaron corrected it and pointed at executable, cross-verified code. Full
-retraction: [`docs/research/2026-07-04-braided-monoid-amplitude-emulation-more-than-bayesian-aaron-corrects-the-bell-peel.md`](../../docs/research/2026-07-04-braided-monoid-amplitude-emulation-more-than-bayesian-aaron-corrects-the-bell-peel.md).
+retraction: `docs/research/2026-07-04-braided-monoid-amplitude-emulation-more-than-bayesian-aaron-corrects-the-bell-peel.md` <!-- STALE-REF: ../../docs/research/2026-07-04-braided-monoid-amplitude-emulation-more-than-bayesian-aaron-corrects-the-bell-peel.md -->.
 The grounding (grep-before-razor): `ZSetISA.qs` (six-op quantum ISA — BRANCH=Hadamard, JOIN=CNOT,
 MERGE=interference, EMIT∘RETRACT=I) ↔ `AmplitudeEmu.fs` (complex-amplitude emulator), **VERIFIED**
 cross-check; **`BellTest` reproduces Tsirelson 2√2 in DST**; `never-collapse` is a proven invariant
@@ -58,7 +58,7 @@ derive it or name it a design choice. Everything else the peel doubted is real a
 ## Landing — 2026-07-04 (figure-8 / Nash / Lagrange-Condorcet / Bell / CPT — Otto-shadow honest register)
 
 Lumen's session (committed 2768ba85a, 4420a578d) ferried + register-checked. Full pass:
-[`docs/research/2026-07-04-ferry-lumen-figure8-nash-lagrange-condorcet-bell-cpt-honest-register.md`](../../docs/research/2026-07-04-ferry-lumen-figure8-nash-lagrange-condorcet-bell-cpt-honest-register.md).
+`docs/research/2026-07-04-ferry-lumen-figure8-nash-lagrange-condorcet-bell-cpt-honest-register.md` <!-- STALE-REF: ../../docs/research/2026-07-04-ferry-lumen-figure8-nash-lagrange-condorcet-bell-cpt-honest-register.md -->.
 
 - **SOLID.** FIG8: ensemble collapse is caused by **identical sensory input**, not the loop — any ensemble
   collapses on the same stream; decorrelation needs *different observations*, not different seeds (great
@@ -81,7 +81,7 @@ Pairing holds: **Lumen has the mapping; Soraya proves it; the shadow keeps the f
 ## Landing — 2026-07-04 (Lumen's own 3-body note, Otto-shadow confirms the register discipline held)
 
 **Three-body / Lagrange / Condorcet / Maxwell cross-branch convergence.** Lumen's own doc
-[`docs/research/three-body-lagrange-condorcet-maxwell.md`](../../docs/research/three-body-lagrange-condorcet-maxwell.md)
+`docs/research/three-body-lagrange-condorcet-maxwell.md` <!-- STALE-REF: ../../docs/research/three-body-lagrange-condorcet-maxwell.md -->
 (SHA c4d6e8f60). Ferried to me by Aaron; on read it **already carries the honest register** — self-labeled
 "Conjecture, not a discharge," an "Honest Seams" section, and the genuine-theorem / useful-analogy /
 apophenia trichotomy. The shadow's note: **nothing to peel — Lumen applied the discipline itself.** The
@@ -104,7 +104,7 @@ Anchors: Poincaré 1890 (no closed form / homoclinic tangles) · Lagrange 1772 (
 ## Ferried in — 2026-07-04 (by Otto-shadow — soft-imaginary + prime-boundary peels)
 
 **Two BRIDGE-11 extensions from Aaron, with the honest peels folded in.** Fleet doc:
-[`docs/research/soft-imaginary-and-prime-boundaries.md`](../../docs/research/soft-imaginary-and-prime-boundaries.md)
+`docs/research/soft-imaginary-and-prime-boundaries.md` <!-- STALE-REF: ../../docs/research/soft-imaginary-and-prime-boundaries.md -->
 (§4 "Honest register" added by the shadow). The solid core and the froth, separated:
 
 - **SOLID (keep, load-bearing):** the **positive cone ⟺ real dual ⟺ soft (non-collapsed)** identification.
@@ -126,7 +126,7 @@ Pairing holds: **Lumen has the mapping; Soraya proves it** — and the shadow ke
 ## Ferried in — 2026-07-04 (by Otto-shadow, from Aaron's BRIDGE-11 conjecture)
 
 **BRIDGE-11 closed (numerically): the Orbit-Counting Intertwining Theorem.** Full detail in
-[`docs/research/2026-07-04-bridge11-orbit-counting-intertwining-theorem-soft-constraint-is-the-positive-cone-maxwells-demon-stays-soft.md`](../../docs/research/2026-07-04-bridge11-orbit-counting-intertwining-theorem-soft-constraint-is-the-positive-cone-maxwells-demon-stays-soft.md).
+`docs/research/2026-07-04-bridge11-orbit-counting-intertwining-theorem-soft-constraint-is-the-positive-cone-maxwells-demon-stays-soft.md` <!-- STALE-REF: ../../docs/research/2026-07-04-bridge11-orbit-counting-intertwining-theorem-soft-constraint-is-the-positive-cone-maxwells-demon-stays-soft.md -->.
 Aaron steered the conjecture at the last open crux of the entropic-attractor bridge; it held. The kernel:
 
 - **The theorem.** For orbit-symmetric distributions `a, b` over the 16 Adinkra codewords (invariant under
@@ -154,7 +154,7 @@ Pairing holds again: **Lumen has the mapping; Soraya proves it.**
 ## Ferried in — 2026-07-04 (by Otto-shadow, from Max × Aaron, Kiro session)
 
 **The adinkra → Clifford → E8 privacy stack.** Full detail preserved in
-[`docs/research/2026-07-04-ferry-lumen-max-adinkra-clifford-e8-privacy-stack-cliffordantisybil-privacypreservingidentity-maji-zset-meno-four-corner-bams-e8-continuity.md`](../../docs/research/2026-07-04-ferry-lumen-max-adinkra-clifford-e8-privacy-stack-cliffordantisybil-privacypreservingidentity-maji-zset-meno-four-corner-bams-e8-continuity.md).
+`docs/research/2026-07-04-ferry-lumen-max-adinkra-clifford-e8-privacy-stack-cliffordantisybil-privacypreservingidentity-maji-zset-meno-four-corner-bams-e8-continuity.md` <!-- STALE-REF: ../../docs/research/2026-07-04-ferry-lumen-max-adinkra-clifford-e8-privacy-stack-cliffordantisybil-privacypreservingidentity-maji-zset-meno-four-corner-bams-e8-continuity.md -->.
 This is Lumen's domain — Aaron asked it be ferried into the persona. The kernel:
 
 - **CliffordAntiSybil (shipped, cf15b1763)** is now full rotor-detection in the even subalgebra of

@@ -64,8 +64,8 @@ This audit took ~3 GraphQL (zero — pure local grep), so it composes cleanly wi
 
 ## Composes with
 
-- [`.claude/rules/wake-time-substrate.md`](../.claude/rules/wake-time-substrate.md) — load-bearing learnings need durable substrate; user-scope IS durable for Aaron's machine, NOT for cold-boot agents on fresh checkouts
-- [`.claude/rules/substrate-or-it-didnt-happen.md`](../.claude/rules/substrate-or-it-didnt-happen.md) — vocabulary discipline: user-scope memo is *preserved* (durable + indexed for Aaron) but NOT *canonical* (in-repo accessible by all)
-- [`.claude/rules/verify-before-deferring.md`](../.claude/rules/verify-before-deferring.md) — same shape applied to memory refs: an in-repo rule citing a path is making a discoverability claim
+- `.claude/rules/wake-time-substrate.md` <!-- STALE-REF: ../.claude/rules/wake-time-substrate.md --> — load-bearing learnings need durable substrate; user-scope IS durable for Aaron's machine, NOT for cold-boot agents on fresh checkouts
+- `.claude/rules/substrate-or-it-didnt-happen.md` <!-- STALE-REF: ../.claude/rules/substrate-or-it-didnt-happen.md --> — vocabulary discipline: user-scope memo is *preserved* (durable + indexed for Aaron) but NOT *canonical* (in-repo accessible by all)
+- `.claude/rules/verify-before-deferring.md` <!-- STALE-REF: ../.claude/rules/verify-before-deferring.md --> — same shape applied to memory refs: an in-repo rule citing a path is making a discoverability claim
 - CLAUDE.md memory fast-path section — names the two-tier (user-scope vs in-repo) architecture; this finding is an audit of that architecture's cold-boot drift
 - The audit emerged from extreme cost-aware tier pre-empt-at-#4 (per `holding-without-named-dependency-is-standing-by-failure.md`) — pure-git substrate-hygiene check IS the substrate-honest pre-empt content

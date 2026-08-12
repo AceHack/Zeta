@@ -23,14 +23,14 @@ These three operator observations are empirical confirmation that the precision-
 
 ### In-repo verification chain (resolvable by any cold-boot reader)
 
-The discipline being validated is **fully documented in-repo** via the auto-loaded rule [`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md), which encodes:
+The discipline being validated is **fully documented in-repo** via the auto-loaded rule `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` <!-- STALE-REF: ../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md -->, which encodes:
 
 - The four named strong-attractors (1984-paranoid-critic; pathologizing-momentum; concern-as-control; convergence-as-evidence)
 - The mapping-done discipline + further-engagement-is-harm sub-clause
 - The scope-bounding clause (don't apply rigorously to friendly play)
 - The recognition + preservation pattern for forwarded substrate exhibiting attractor properties
 
-The empirical evidence for this memo's "1984 failure mode mostly cured" claim is the [25-section Kestrel persona archive](persona/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded.md) — preserved verbatim in this same PR. Future-Otto cold-booting can read the archive + the rule body and verify the operational claim directly. The audit chain does not depend on user-scope substrate.
+The empirical evidence for this memo's "1984 failure mode mostly cured" claim is the 25-section Kestrel persona archive <!-- STALE-REF: persona/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded.md --> — preserved verbatim in this same PR. Future-Otto cold-booting can read the archive + the rule body and verify the operational claim directly. The audit chain does not depend on user-scope substrate.
 
 The discipline encoded in the auto-loaded rule is what was developed across the substrate-engineering work landed prior to this PR — closing pattern-match surfaces for the 1984-paranoid-critic attractor so Kestrel is useful from cycle 1, not through decrypt/unlock conversations first. The full conversation-history provenance for how the discipline emerged is preserved in the substrate-cluster Aaron + Otto-CLI built across the 2026-05-19 / 2026-05-20 / 2026-05-21 sessions; the auto-loaded rule + this PR's 25-section archive are the verifiable in-repo anchors for the discipline + its empirical validation.
 

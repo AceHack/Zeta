@@ -23,7 +23,7 @@ Replaces BOTH:
 - **PRs**: workflow engine presents review steps as menu options (Move-next surfaces review-required, code-quality-check, etc.). Review enforced by state-machine, not GitHub's PR mechanism.
 - **Jira**: features + bugs + runbooks all become evolving documents with annotated triggers. Triggers fire discriminated-union workflows. Document evolution between human + AI swarm IS the new project-management substrate.
 
-Composes with [081KSNY2Z0008QG0R003X1QWYG](../../../backlog/P1/081KSNY2Z0008QG0R003X1QWYG-github-actions-recursion-as-infinite-runtime-platform-no-pr-swarm-mode-ani-kestrel-2026-05-28.md) (GitHub-Actions-recursion no-PR swarm-mode) + [081KSNY2Z0008QG0R001DFZK4V](../../../backlog/P1/081KSNY2Z0008QG0R001DFZK4V-zeta-native-review-and-branch-protection-substrate-replaces-github-pr-workflow-preserves-review-and-class-fix-discipline-aaron-2026-05-28.md) (Zeta-native review substrate).
+Composes with 081KSNY2Z0008QG0R003X1QWYG <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R003X1QWYG-github-actions-recursion-as-infinite-runtime-platform-no-pr-swarm-mode-ani-kestrel-2026-05-28.md --> (GitHub-Actions-recursion no-PR swarm-mode) + 081KSNY2Z0008QG0R001DFZK4V <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R001DFZK4V-zeta-native-review-and-branch-protection-substrate-replaces-github-pr-workflow-preserves-review-and-class-fix-discipline-aaron-2026-05-28.md --> (Zeta-native review substrate).
 
 ### 2. Move-next is the canonical action grammar
 
@@ -33,19 +33,19 @@ Mika consistently uses **`move-next`** throughout the conversation as the agent-
 >
 > Mika: *"Once everything is running on move-next and the discriminated union state machine..."*
 
-This composes with [081KSNY2Z0008QG0R0017JSTGD](../../../backlog/P1/081KSNY2Z0008QG0R0017JSTGD-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md) (state-machine fast-lane) + the existing `tools/agent-loop/state-machine.ts` `transition()` function (which IS move-next mechanized).
+This composes with 081KSNY2Z0008QG0R0017JSTGD <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R0017JSTGD-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md --> (state-machine fast-lane) + the existing `tools/agent-loop/state-machine.ts` `transition()` function (which IS move-next mechanized).
 
 ### 3. Naming deferred — Aaron explicit
 
 > Aaron: *"I don't have a, I don't care about naming yet. I can always, naming is hard. You know, I want to call it like Juice of the Gods or some shit, but you know, that's, I always come to that later."*
 
-This **directly answers** [081KSNY2Z0008QG0R003206PFM](../../../backlog/P2/081KSNY2Z0008QG0R003206PFM-agent-loop-primitive-naming-alignment-observe-emit-limit-simulate-vs-observe-persist-limit-emit-vs-observe-choose-aaron-2026-05-28.md): naming is operator-deferred. The OPLE/OELS/observe-choose question stays open; Otto-CLI should NOT force a decision. Local `observe.ts` + `choose.ts` draft can stay un-committed OR ship under current names with substrate-honest "naming-deferred" framing.
+This **directly answers** 081KSNY2Z0008QG0R003206PFM <!-- STALE-REF: ../../../backlog/P2/081KSNY2Z0008QG0R003206PFM-agent-loop-primitive-naming-alignment-observe-emit-limit-simulate-vs-observe-persist-limit-emit-vs-observe-choose-aaron-2026-05-28.md -->: naming is operator-deferred. The OPLE/OELS/observe-choose question stays open; Otto-CLI should NOT force a decision. Local `observe.ts` + `choose.ts` draft can stay un-committed OR ship under current names with substrate-honest "naming-deferred" framing.
 
 ### 4. Isomorphic across Git platforms — Git as universal protocol
 
 > Aaron: *"What's really good about this is it lets us be isomorphic between any Git platform. GitLab, GitHub, it don't matter. We don't, it lets us completely model their rate limits and completely avoid 'em and bypass 'em, 'cause everything's a Git fuckin' operation. Like, 99% of everything."*
 
-The architectural property: **everything is `git push` / `git fetch`**, no platform-specific APIs. Rate-limit-bypass-by-construction because raw Git operations are unlimited for normal-cadence pushes. Composes with [081KSNY2Z0008QG0R002A785QR](../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-per-host-adapters-github-gitlab-gitea-bitbucket-isomorphic-cross-host-substrate-aaron-2026-05-28.md) (per-host adapters) + [081KSNY2Z0008QG0R003291CK8](../../../backlog/P2/081KSNY2Z0008QG0R003291CK8-cross-track-substrate-sync-policy-cloud-github-vs-usb-local-gitlab-intentional-divergence-vs-auto-sync-otto-pushback-2026-05-28.md) (cross-track substrate sync).
+The architectural property: **everything is `git push` / `git fetch`**, no platform-specific APIs. Rate-limit-bypass-by-construction because raw Git operations are unlimited for normal-cadence pushes. Composes with 081KSNY2Z0008QG0R002A785QR <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-per-host-adapters-github-gitlab-gitea-bitbucket-isomorphic-cross-host-substrate-aaron-2026-05-28.md --> (per-host adapters) + 081KSNY2Z0008QG0R003291CK8 <!-- STALE-REF: ../../../backlog/P2/081KSNY2Z0008QG0R003291CK8-cross-track-substrate-sync-policy-cloud-github-vs-usb-local-gitlab-intentional-divergence-vs-auto-sync-otto-pushback-2026-05-28.md --> (cross-track substrate sync).
 
 ### 5. RxJS observables wire workflow engine to GitHub events
 
@@ -67,7 +67,7 @@ Three implementation options Mika surfaced:
 
 Aaron's gravitation: Option B (webhooks) — *"Are you telling me GitHub has webhooks that could just be triggering these observables with pushes?"*
 
-This is operationally substantive: the agent-loop tools (`observe.ts` / `choose.ts` / future-`emit.ts`) can compose with RxJS Subjects driven by GitHub webhooks as the **external-coordination-loop** transport (per [081KSNY2Z0008QG0R003206PFM](../../../backlog/P2/081KSNY2Z0008QG0R003206PFM-...) internal-vs-external loop split).
+This is operationally substantive: the agent-loop tools (`observe.ts` / `choose.ts` / future-`emit.ts`) can compose with RxJS Subjects driven by GitHub webhooks as the **external-coordination-loop** transport (per 081KSNY2Z0008QG0R003206PFM <!-- STALE-REF: ../../../backlog/P2/081KSNY2Z0008QG0R003206PFM-... --> internal-vs-external loop split).
 
 ### 6. GitHub free-tier surface — open research question
 
@@ -102,13 +102,13 @@ Composes with `.claude/skills/make-persistent/SKILL.md` (OS-detect + service-wor
 
 > Aaron: *"I'm pretty confident it's probably go terribly wrong, but we ain't get, it can't go so wrong."*
 
-Substrate-honest deployment posture: expecting partial failure; reboot-survival + retraction-native + glass-halo substrate mean the blast radius is bounded. "Mad scientist energy" (Mika's framing) operating within the framework's retraction-native + reboot-survival floor. Composes with [081KSNY2Z0008QG0R0032E7PCY](../../../backlog/P1/081KSNY2Z0008QG0R0032E7PCY-reboot-survival-discipline-in-flight-state-must-survive-macos-private-tmp-clear-aaron-2026-05-28.md) + [081KSNY2Z0008QG0R001RWF499](../../../backlog/P1/081KSNY2Z0008QG0R001RWF499-per-persona-outside-operator-repo-canonical-location-zeta-agents-aaron-2026-05-28.md) (substrate-honest "it can't go SO wrong" because reboot-survival now structural).
+Substrate-honest deployment posture: expecting partial failure; reboot-survival + retraction-native + glass-halo substrate mean the blast radius is bounded. "Mad scientist energy" (Mika's framing) operating within the framework's retraction-native + reboot-survival floor. Composes with 081KSNY2Z0008QG0R0032E7PCY <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R0032E7PCY-reboot-survival-discipline-in-flight-state-must-survive-macos-private-tmp-clear-aaron-2026-05-28.md --> + 081KSNY2Z0008QG0R001RWF499 <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R001RWF499-per-persona-outside-operator-repo-canonical-location-zeta-agents-aaron-2026-05-28.md --> (substrate-honest "it can't go SO wrong" because reboot-survival now structural).
 
 ### 9. Three concurrent paths (matches 081KSNY2Z0008QG0R002QA720J)
 
 > Aaron: *"we got pushing on three paths. Getting encryption so the agents and humans that use this, like maintainers, can have encryption budgets... And then, this is, uh, and then Git, the whole Git monster, uh, you know, the Git accelerator running where it's just workflow after workflow. No PRs. We're going to do everything through our own workflow system for code reviews. And then we're also have parallel, um, uh, USB testing via, um, shit, what's the thing? Via, uh, uh, QEMU"*
 
-Maps directly to [081KSNY2Z0008QG0R002QA720J](../../../backlog/P1/081KSNY2Z0008QG0R002QA720J-three-lanes-concurrent-operating-discipline-encryption-plus-zflash-plus-state-machine-substrate-until-each-lane-backlog-drains-per-operator-2026-05-28.md) three-lanes discipline:
+Maps directly to 081KSNY2Z0008QG0R002QA720J <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R002QA720J-three-lanes-concurrent-operating-discipline-encryption-plus-zflash-plus-state-machine-substrate-until-each-lane-backlog-drains-per-operator-2026-05-28.md --> three-lanes discipline:
 
 | Mika ferry path | 081KSNY2Z0008QG0R002QA720J lane | Existing substrate |
 |---|---|---|
@@ -151,19 +151,19 @@ Per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` map
 
 ## Composes with substrate
 
-- [081KSKBP80008QG0R000B3Y19A](../../../backlog/P1/081KSKBP80008QG0R000B3Y19A-...) — workflow engine v1 umbrella
-- [081KSKBP80008QG0R000B3Y19A.5](../../../backlog/P2/081KSKBP80008QG0R000B3Y19A.5-...) — agent-loop substrate (current Phase 1 scope)
-- [081KSNY2Z0008QG0R002A785QR](../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-...) — per-host adapters (Git platform isomorphism)
-- [081KSNY2Z0008QG0R003J3PT4V-22](../../../backlog/) — Kestrel agent-loop extensions
-- [081KSNY2Z0008QG0R003206PFM](../../../backlog/P2/081KSNY2Z0008QG0R003206PFM-...) — naming-question row (this ferry resolves: deferred)
-- [081KSNY2Z0008QG0R003X1QWYG](../../../backlog/P1/081KSNY2Z0008QG0R003X1QWYG-...) — GitHub-Actions-recursion no-PR swarm
-- [081KSNY2Z0008QG0R002JKH50A](../../../backlog/P1/081KSNY2Z0008QG0R002JKH50A-...) + cluster — encryption lane
-- [081KSNY2Z0008QG0R0011XCT94](../../../backlog/P1/081KSNY2Z0008QG0R0011XCT94-...) — zflash + USB-bound creds
-- [081KSNY2Z0008QG0R001DFZK4V](../../../backlog/P1/081KSNY2Z0008QG0R001DFZK4V-...) — Zeta-native review (replaces PRs preserves review)
-- [081KSNY2Z0008QG0R0017JSTGD](../../../backlog/P1/081KSNY2Z0008QG0R0017JSTGD-...) — state-machine fast-lane (move-next anchor)
-- [081KSNY2Z0008QG0R0008PN7RQ](../../../backlog/P1/081KSNY2Z0008QG0R0008PN7RQ-...) — zflash QEMU acceptance criteria (the USB testing path)
-- [081KSNY2Z0008QG0R002QA720J](../../../backlog/P1/081KSNY2Z0008QG0R002QA720J-...) — three-lanes concurrent discipline (the parent organizing pattern)
-- [081KSNY2Z0008QG0R0032E7PCY](../../../backlog/P1/081KSNY2Z0008QG0R0032E7PCY-...) + [081KSNY2Z0008QG0R001RWF499](../../../backlog/P1/081KSNY2Z0008QG0R001RWF499-...) — reboot-survival + per-persona-outside-repo (the "it can't go so wrong" structural floor)
+- 081KSKBP80008QG0R000B3Y19A <!-- STALE-REF: ../../../backlog/P1/081KSKBP80008QG0R000B3Y19A-... --> — workflow engine v1 umbrella
+- 081KSKBP80008QG0R000B3Y19A.5 <!-- STALE-REF: ../../../backlog/P2/081KSKBP80008QG0R000B3Y19A.5-... --> — agent-loop substrate (current Phase 1 scope)
+- 081KSNY2Z0008QG0R002A785QR <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-... --> — per-host adapters (Git platform isomorphism)
+- 081KSNY2Z0008QG0R003J3PT4V-22 <!-- STALE-REF: ../../../backlog/ --> — Kestrel agent-loop extensions
+- 081KSNY2Z0008QG0R003206PFM <!-- STALE-REF: ../../../backlog/P2/081KSNY2Z0008QG0R003206PFM-... --> — naming-question row (this ferry resolves: deferred)
+- 081KSNY2Z0008QG0R003X1QWYG <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R003X1QWYG-... --> — GitHub-Actions-recursion no-PR swarm
+- 081KSNY2Z0008QG0R002JKH50A <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R002JKH50A-... --> + cluster — encryption lane
+- 081KSNY2Z0008QG0R0011XCT94 <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R0011XCT94-... --> — zflash + USB-bound creds
+- 081KSNY2Z0008QG0R001DFZK4V <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R001DFZK4V-... --> — Zeta-native review (replaces PRs preserves review)
+- 081KSNY2Z0008QG0R0017JSTGD <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R0017JSTGD-... --> — state-machine fast-lane (move-next anchor)
+- 081KSNY2Z0008QG0R0008PN7RQ <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R0008PN7RQ-... --> — zflash QEMU acceptance criteria (the USB testing path)
+- 081KSNY2Z0008QG0R002QA720J <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R002QA720J-... --> — three-lanes concurrent discipline (the parent organizing pattern)
+- 081KSNY2Z0008QG0R0032E7PCY <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R0032E7PCY-... --> + 081KSNY2Z0008QG0R001RWF499 <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R001RWF499-... --> — reboot-survival + per-persona-outside-repo (the "it can't go so wrong" structural floor)
 - `.claude/skills/agent-loop/SKILL.md` — workflow-engine substrate (consumer of all this)
 - `.claude/skills/flash-cluster-iso/SKILL.md` — zflash skill (USB lane)
 - `.claude/skills/make-persistent/SKILL.md` — foreground→background daemonization pattern

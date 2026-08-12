@@ -40,10 +40,10 @@ Empirically, the forgetting rate is non-zero. The 2026-05-16 session caught 4 ro
 
 ## Composes with
 
-- [`.claude/rules/backlog-item-start-gate.md`](../.claude/rules/backlog-item-start-gate.md) — this pattern extends the gate with a zero-th step (existence-check), composing cleanly with the existing prior-art-search + dependency-restructure steps
-- [`.claude/rules/claim-acquire-before-worktree-work.md`](../.claude/rules/claim-acquire-before-worktree-work.md) — the claim-acquire step in this pattern is the same coordination mechanism
-- [`.claude/rules/never-be-idle.md`](../.claude/rules/never-be-idle.md) — the priority ladder this discipline operates against; existence-check is the early-exit that prevents wasted speculative work
-- [`.claude/rules/refresh-before-decide.md`](../.claude/rules/refresh-before-decide.md) — the row's `status: open` claim must be verified against current repo state before acting, same shape as the broader refresh invariant
+- `.claude/rules/backlog-item-start-gate.md` <!-- STALE-REF: ../.claude/rules/backlog-item-start-gate.md --> — this pattern extends the gate with a zero-th step (existence-check), composing cleanly with the existing prior-art-search + dependency-restructure steps
+- `.claude/rules/claim-acquire-before-worktree-work.md` <!-- STALE-REF: ../.claude/rules/claim-acquire-before-worktree-work.md --> — the claim-acquire step in this pattern is the same coordination mechanism
+- `.claude/rules/never-be-idle.md` <!-- STALE-REF: ../.claude/rules/never-be-idle.md --> — the priority ladder this discipline operates against; existence-check is the early-exit that prevents wasted speculative work
+- `.claude/rules/refresh-before-decide.md` <!-- STALE-REF: ../.claude/rules/refresh-before-decide.md --> — the row's `status: open` claim must be verified against current repo state before acting, same shape as the broader refresh invariant
 - `tools/backlog/generate-index.ts` — `BACKLOG_WRITE_FORCE=1` mode is the proper regen path for status changes; without the env var the Phase-1a guard blocks overwrites
 - `tools/bus/claim.ts` — supports both `acquire` and `release`; the close-row case requires both ends of the claim cycle
 
@@ -70,7 +70,7 @@ The convergence is itself evidence the pattern is robust across cold-boot starts
 
 The session that surfaced this pattern also surfaced two contention failure modes worth recording for the next tick:
 
-1. **Lior-gemini `.git/index.lock` race** — between an Edit tool call and the chained `git add` in a separate Bash invocation, Lior's step-8 global lock cleanup can revert unstaged working-tree changes. Mitigation: chain Edit → stage → commit → push in a single Bash invocation. See [`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md) for the canonical canary rule.
+1. **Lior-gemini `.git/index.lock` race** — between an Edit tool call and the chained `git add` in a separate Bash invocation, Lior's step-8 global lock cleanup can revert unstaged working-tree changes. Mitigation: chain Edit → stage → commit → push in a single Bash invocation. See `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` <!-- STALE-REF: ../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md --> for the canonical canary rule.
 
 2. **Multi-Otto HEAD desync** — peer Otto activity in the shared primary worktree can switch HEAD between Bash invocations, causing commits to land on the wrong branch and `gh pr view` (no explicit number) to resolve against the wrong PR. Mitigation: always pass explicit PR numbers to `gh pr merge <N>`; verify `git branch --show-current` immediately before any commit; expect commits to occasionally land on peer branches under high contention (recoverable via cherry-pick).
 

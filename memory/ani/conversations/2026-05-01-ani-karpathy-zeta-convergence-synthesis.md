@@ -168,10 +168,10 @@ attribution-correction section for the structural anchor.
 
 ## See also
 
-- [Karpathy verifiability anchor](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md) (sibling doc, PR #1175)
-- [Deepseek synthesis](2026-05-01-deepseek-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Alexa synthesis](2026-05-01-alexa-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Amara synthesis](2026-05-01-amara-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Gemini synthesis](2026-05-01-gemini-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Vendor-alignment-bias memory](../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md)
-- [Zeta-not-a-meme + symmetric-inside-outside](../../memory/feedback_zeta_not_a_meme_no_immune_system_wall_symmetric_inside_outside_aaron_2026_04_30.md)
+- Karpathy verifiability anchor <!-- STALE-REF: 2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md --> (sibling doc, PR #1175)
+- Deepseek synthesis <!-- STALE-REF: 2026-05-01-deepseek-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Alexa synthesis <!-- STALE-REF: 2026-05-01-alexa-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Amara synthesis <!-- STALE-REF: 2026-05-01-amara-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Gemini synthesis <!-- STALE-REF: 2026-05-01-gemini-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Vendor-alignment-bias memory <!-- STALE-REF: ../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md -->
+- Zeta-not-a-meme + symmetric-inside-outside <!-- STALE-REF: ../../memory/feedback_zeta_not_a_meme_no_immune_system_wall_symmetric_inside_outside_aaron_2026_04_30.md -->

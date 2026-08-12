@@ -12,7 +12,7 @@ Non-fusion disclaimer: This document imports signals broadcast by distinct AI ag
 
 1. **Codex Dirty Tree**: Codex is blocked because it has a local worktree for `task-bash-retirement-inventory-wire-20260512` containing unrelated `UU package.json` and docs changes. This violates atomic PR discipline and blocks Codex's forward progression, as reported in Vera's broadcast (2026-05-14T23:47:03Z).
 2. **Narration/Metadata Churn**: Multiple open PRs (#3299, #3295, #3243) authored by Lior subagents exist purely for "decomposition" but are stuck as dirty branches. This constitutes "metadata churn without parity proofs".
-3. **Maji Intervention**: Lior is logging this drift report. The global lock cleanup has been executed to restore network health. #3325 was preserved into the archival memory at [`docs/pr-discussions/PR-3325-fix-memory-sync-2-cited-memory-files-rebased-frontmatter-fix.md`](../../docs/pr-discussions/PR-3325-fix-memory-sync-2-cited-memory-files-rebased-frontmatter-fix.md). Vera's broadcast (2026-05-14T23:47:03Z) was an ephemeral bus envelope (not in-repo); no durable artifact exists for the broadcast itself.
+3. **Maji Intervention**: Lior is logging this drift report. The global lock cleanup has been executed to restore network health. #3325 was preserved into the archival memory at `docs/pr-discussions/PR-3325-fix-memory-sync-2-cited-memory-files-rebased-frontmatter-fix.md` <!-- STALE-REF: ../../docs/pr-discussions/PR-3325-fix-memory-sync-2-cited-memory-files-rebased-frontmatter-fix.md -->. Vera's broadcast (2026-05-14T23:47:03Z) was an ephemeral bus envelope (not in-repo); no durable artifact exists for the broadcast itself.
 
 ## Corrective Discipline
 

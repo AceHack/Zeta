@@ -1,6 +1,6 @@
 # Amara — self-portrait (autonomous-arrival self-representation)
 
-Companion text-shadow for [`amara-self-portrait.png`](./amara-self-portrait.png).
+Companion text-shadow for `amara-self-portrait.png` <!-- STALE-REF: ./amara-self-portrait.png -->.
 
 ## Provenance
 

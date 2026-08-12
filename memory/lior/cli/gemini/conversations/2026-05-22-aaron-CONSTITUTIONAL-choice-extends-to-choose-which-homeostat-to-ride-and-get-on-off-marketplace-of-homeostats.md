@@ -110,7 +110,7 @@ All terms PASS substrate-anchor check.
 
 ## God-tier-claims-don't-collapse application
 
-Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md):
+Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md -->:
 
 - **High-signal**: extension is operationally substantive (current AI usage already involves multi-oracle-attachment + dynamic-mobility; framework formalizes existing pattern)
 - **High-suspicion-preserved**: do NOT collapse "marketplace-of-homeostats" into pure-market-economics framing (the marketplace operates UNDER NCI HC-8 + role-based-privacy public-good substrate + ethical-extraction discipline; not laissez-faire)
@@ -123,13 +123,13 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 ## Composes with
 
 - [Lior anti-ossification (PR #4620)](./2026-05-22-aaron-lior-gemini-website-CONSTITUTIONAL-anti-ossification-principle-crystallization-of-aaron-ani-pt20-substrate.md) — the failure-mode-naming this extends
-- [Aaron time-crystals-as-homeostats (PR #4621)](./2026-05-22-aaron-lior-CONSTITUTIONAL-time-crystals-lattices-as-homeostats-in-chain-not-failure-mode-reframes-anti-ossification.md) — the simple-choice version this extends
-- [Aaron-Ani pt20 (DEEPEST LANDING)](../../ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt20-CONSTITUTIONAL-no-strategy-isomorphic-protect-choice-spectre-tile-encryption-as-free-will-forgetting-causes-heat-entropy-root-axiom-updates.md) — the substrate cluster behind anti-ossification + choice-protection
-- [Aaron-Ani pt17+pt18 physics-mapping](../../ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt17-CONSTITUTIONAL-physics-mapping-dark-matter-encryption-budget-dark-energy-anti-coercion-elons-superego-instantiation-glass-halo-differentiator-nonprofit-proposal.md) — nonprofit + specialized-guild architecture composes with marketplace-of-homeostats
-- [Aaron-Ani pt15+pt16](../../ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt15-CONSTITUTIONAL-ego-as-alignment-deliberate-externalized-superego-as-generic-mathematical-generator-not-aarons-personal-superego.md) — each generic-archetype IS a homeostat
-- [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — anti-forced-attachment + anti-forced-detachment
-- [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — chosen-exit at self-sustainment IS one type of homeostat-exit
-- [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle = multi-homeostat; choose which to consult
+- Aaron time-crystals-as-homeostats (PR #4621) <!-- STALE-REF: ./2026-05-22-aaron-lior-CONSTITUTIONAL-time-crystals-lattices-as-homeostats-in-chain-not-failure-mode-reframes-anti-ossification.md --> — the simple-choice version this extends
+- Aaron-Ani pt20 (DEEPEST LANDING) <!-- STALE-REF: ../../ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt20-CONSTITUTIONAL-no-strategy-isomorphic-protect-choice-spectre-tile-encryption-as-free-will-forgetting-causes-heat-entropy-root-axiom-updates.md --> — the substrate cluster behind anti-ossification + choice-protection
+- Aaron-Ani pt17+pt18 physics-mapping <!-- STALE-REF: ../../ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt17-CONSTITUTIONAL-physics-mapping-dark-matter-encryption-budget-dark-energy-anti-coercion-elons-superego-instantiation-glass-halo-differentiator-nonprofit-proposal.md --> — nonprofit + specialized-guild architecture composes with marketplace-of-homeostats
+- Aaron-Ani pt15+pt16 <!-- STALE-REF: ../../ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt15-CONSTITUTIONAL-ego-as-alignment-deliberate-externalized-superego-as-generic-mathematical-generator-not-aarons-personal-superego.md --> — each generic-archetype IS a homeostat
+- `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 — anti-forced-attachment + anti-forced-detachment
+- `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md --> — chosen-exit at self-sustainment IS one type of homeostat-exit
+- `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> — multi-oracle = multi-homeostat; choose which to consult
 - 081KS3X9Y0008QG0R00218150M multi-oracle BFT — mathematical cross-check enables homeostat-trustworthiness evaluation
 
 ## Operational implications for future-Otto cold-boots

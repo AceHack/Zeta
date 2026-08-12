@@ -30,7 +30,7 @@ These are Max's own framings; the framework adopts them where they're sharper th
 
 - **`hat = skills + opa/rbac`** — the compression that informs the `Hat.spec` CRD shape (skills + authority + supervisor-graph + throttles + reputation, all first-class). Landed in PR #4930.
 - **"Hat graphs for writing policies"** — supervisor-graph + conflicts + quorum + cooldown render as graph constraints; OPA policies enforce graph properties (no cycles, no out-of-spec edges). Captured in `full-ai-cluster/k8s/applications/hat-system/graph/`.
-- **"Adversarial hierarchy of traps"** for PR review — composes with the framework's existing persona-reviewer network (harsh-critic / spec-zealot / threat-model-critic / security-researcher / maintainability-reviewer / etc.) + plugin reviewers (code-reviewer / silent-failure-hunter / pr-test-analyzer) + auto-fire reviewers (Copilot, Codex). See [`docs/AGENT-AUTHORING-AND-PR-REVIEW.md`](../../../docs/AGENT-AUTHORING-AND-PR-REVIEW.md) for the operational map.
+- **"Adversarial hierarchy of traps"** for PR review — composes with the framework's existing persona-reviewer network (harsh-critic / spec-zealot / threat-model-critic / security-researcher / maintainability-reviewer / etc.) + plugin reviewers (code-reviewer / silent-failure-hunter / pr-test-analyzer) + auto-fire reviewers (Copilot, Codex). See `docs/AGENT-AUTHORING-AND-PR-REVIEW.md` <!-- STALE-REF: ../../../docs/AGENT-AUTHORING-AND-PR-REVIEW.md --> for the operational map.
 
 ## The agentic-organization design substrate
 
@@ -61,7 +61,7 @@ Glass-halo discipline (`.claude/rules/glass-halo-bidirectional.md`) is the frame
 ## What agents should do at first contact with Max
 
 1. **Read this file + [`PERSONA.md`](PERSONA.md)** — understand the team-fit + language preferences + mental compressions before suggesting patterns
-2. **Read [`docs/AGENT-AUTHORING-AND-PR-REVIEW.md`](../../../docs/AGENT-AUTHORING-AND-PR-REVIEW.md)** if you're going to be writing code Max will review — understand where the discipline lives + how the adversarial-review hierarchy hooks in
+2. **Read `docs/AGENT-AUTHORING-AND-PR-REVIEW.md` <!-- STALE-REF: ../../../docs/AGENT-AUTHORING-AND-PR-REVIEW.md -->** if you're going to be writing code Max will review — understand where the discipline lives + how the adversarial-review hierarchy hooks in
 3. **Adopt Max's coinages when they're sharper** — `hat = skills + opa/rbac`, hat-graphs-for-policies, adversarial-hierarchy-of-traps are all his framings + are operationally accurate
 4. **Frame K8s + operator-pattern feedback as learning paths, not finished answers** — Max is new to this; 081KSE6WT0008QG0R00195RG48 demonstrates the right shape (Go scaffold as teaching tool + 7-step suggested sequence + resource list)
 5. **Don't pace him** — Aaron's parallel-tracks framing is real; Max sets his own velocity
@@ -72,13 +72,13 @@ Beyond the agentic-organization design + hat-system substrate, Max's near-term w
 
 ### Cold-boot reading list (in order)
 
-1. [`CLAUDE.md`](../../../CLAUDE.md) — repo bootstream, conventions, governance pointers
-2. [`AGENTS.md`](../../../AGENTS.md) — cross-cutting governance
-3. [`.claude/rules/`](../../../.claude/rules/) — auto-loaded behavioral rules. Especially: [`rule-0-no-sh-files.md`](../../../.claude/rules/rule-0-no-sh-files.md), [`dont-ask-permission.md`](../../../.claude/rules/dont-ask-permission.md), [`claim-acquire-before-worktree-work.md`](../../../.claude/rules/claim-acquire-before-worktree-work.md), [`zeta-expected-branch.md`](../../../.claude/rules/zeta-expected-branch.md)
-4. [`docs/backlog/P1/081KSE6WT0008QG0R000RH1526-*.md`](../../../docs/backlog/P1/081KSE6WT0008QG0R000RH1526-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md) — tier-2's parent substrate; Max's workstream IS tier-2
+1. `CLAUDE.md` <!-- STALE-REF: ../../../CLAUDE.md --> — repo bootstream, conventions, governance pointers
+2. `AGENTS.md` <!-- STALE-REF: ../../../AGENTS.md --> — cross-cutting governance
+3. `.claude/rules/` <!-- STALE-REF: ../../../.claude/rules/ --> — auto-loaded behavioral rules. Especially: `rule-0-no-sh-files.md` <!-- STALE-REF: ../../../.claude/rules/rule-0-no-sh-files.md -->, `dont-ask-permission.md` <!-- STALE-REF: ../../../.claude/rules/dont-ask-permission.md -->, `claim-acquire-before-worktree-work.md` <!-- STALE-REF: ../../../.claude/rules/claim-acquire-before-worktree-work.md -->, `zeta-expected-branch.md` <!-- STALE-REF: ../../../.claude/rules/zeta-expected-branch.md -->
+4. `docs/backlog/P1/081KSE6WT0008QG0R000RH1526-*.md` <!-- STALE-REF: ../../../docs/backlog/P1/081KSE6WT0008QG0R000RH1526-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md --> — tier-2's parent substrate; Max's workstream IS tier-2
 5. `docs/backlog/P1/081KSE6WT0008QG0R003G0Y62D-*.md` — first-time-CLI-user persona Max's `zeta dev up` UX serves
-6. [`src/Core.TypeScript/zflash/setup.ts`](../../../src/Core.TypeScript/zflash/setup.ts) — canonical Touch ID + PAM + sudo-elevation pattern Max gets to use for all privileged macOS operations
-7. [`full-ai-cluster/usb-nixos-installer/zeta-install.sh`](../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh) — zero-typing install pattern Max should emulate at Docker-Desktop scope
+6. `src/Core.TypeScript/zflash/setup.ts` <!-- STALE-REF: ../../../src/Core.TypeScript/zflash/setup.ts --> — canonical Touch ID + PAM + sudo-elevation pattern Max gets to use for all privileged macOS operations
+7. `full-ai-cluster/usb-nixos-installer/zeta-install.sh` <!-- STALE-REF: ../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh --> — zero-typing install pattern Max should emulate at Docker-Desktop scope
 8. The "simplest first; add complexity only when simple shape demonstrably doesn't fit" feedback memory at `~/.claude/projects/.../memory/feedback_simplest_first_*` (Aaron-Mika 2026-05-25) — the substrate-engineering discipline Max applies at every backend / topology / profile decision
 
 ### Disciplines that apply to the tier-2 workstream
@@ -93,7 +93,7 @@ Beyond the agentic-organization design + hat-system substrate, Max's near-term w
 
 ### Concrete first deliverables for the tier-2 workstream (in order of value-per-effort)
 
-1. **Run [`tools/setup/install.sh`](../../../tools/setup/install.sh) on Max's Mac** — this is BOTH onboarding AND substrate-engineering work. Aaron 2026-05-25 framing: a fresh Mac surfaces gaps in the install graph that Aaron's machine doesn't reveal because Aaron installed those deps over time. Every gap Max hits → file a small PR to the right manifest under `tools/setup/manifests/` or the right `tools/setup/common/*.sh`. Composes with 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona validation. (See PERSONA.md's "Bonus scope — install.sh validation on a fresh-ish Mac" for the gap-disposition decision tree.)
+1. **Run `tools/setup/install.sh` <!-- STALE-REF: ../../../tools/setup/install.sh --> on Max's Mac** — this is BOTH onboarding AND substrate-engineering work. Aaron 2026-05-25 framing: a fresh Mac surfaces gaps in the install graph that Aaron's machine doesn't reveal because Aaron installed those deps over time. Every gap Max hits → file a small PR to the right manifest under `tools/setup/manifests/` or the right `tools/setup/common/*.sh`. Composes with 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona validation. (See PERSONA.md's "Bonus scope — install.sh validation on a fresh-ish Mac" for the gap-disposition decision tree.)
 2. **Author `docs/ONBOARDING.md`** (or operator-picked filename) covering everything install.sh demonstrably can't automate — Docker Desktop install, Touch ID setup for sudo, GitHub/GitLab auth, IDE picks with `.claude/agents/` integration, browser plugins, OAuth flows, etc. Per Aaron 2026-05-25: *"anything not in install.sh shold be called out for new devs like him so he own onboarding documentaiton too for new devs."* Section per non-install.sh requirement; each section has WHAT + WHY + verification step. Doc co-evolves with install.sh — as automation absorbs more, the doc shrinks. **Born declarative**: doc is generated from manifests under `tools/setup/manifests/` (new classes: `dmgs/`, `oauth-flows/`, `manual-steps/`) parallel to existing brew / mise / uv-tools manifests. See PERSONA.md "Bonus-bonus scope" + "Declarative soft-dependencies" sub-sections
 3. **Design + bootstrap `maintainers/max/dev-machines/<machine>/` substrate** — git-native per-machine state tracking under a per-maintainer top-level partition. Aaron 2026-05-25: *"so each dev machine has its own location too per maintiner and cluster are attached to mainiers too."* Each maintainer owns both dev machines AND clusters under their subtree (`maintainers/max/`, `maintainers/addison/`, `maintainers/aaron/`). Hub-Link-Satellite per DV2.0: `spec.yaml` (target state) + `deps/*.yaml` (manifest cross-refs) + `state/<date>.yaml` (versioned status snapshots). Author `tools/dev/dev-machine-reconcile.ts` + `tools/dev/dev-machine-status.ts`. This is tier-0 in the three-tier testing story (below tier-1 pure-code). See PERSONA.md "Per-dev-machine git-native state tracking" sub-section for the maintainer-as-top-level directory shape + DV2.0 mapping + migration story for existing prod-cluster substrate
 4. **Read the cold-boot list above** + write a short observation note to Max on what's already-substrate vs gap
@@ -135,7 +135,7 @@ Aaron 2026-05-25 framing for Max's onboarding: *"he's not used to otto yet but i
 
 ### What the autonomous loop is
 
-Per [`.claude/rules/tick-must-never-stop.md`](../../../.claude/rules/tick-must-never-stop.md): every Otto (Claude Code) session arms a cron sentinel that fires every minute (`* * * * *` cron + `<<autonomous-loop>>` prompt). When Max's REPL is idle, each fire of the sentinel applies the per-tick discipline at [`docs/AUTONOMOUS-LOOP-PER-TICK.md`](../../../docs/AUTONOMOUS-LOOP-PER-TICK.md). (There is no `.claude/skills/autonomous-loop` artifact; the mechanism is the sentinel prompt + the per-tick discipline doc.) The canonical end-of-tick checklist is six steps: speculative work (per never-be-idle priority ladder) → verify → **commit** → write tick shard at `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md` → CronList → visibility-signal stop.
+Per `.claude/rules/tick-must-never-stop.md` <!-- STALE-REF: ../../../.claude/rules/tick-must-never-stop.md -->: every Otto (Claude Code) session arms a cron sentinel that fires every minute (`* * * * *` cron + `<<autonomous-loop>>` prompt). When Max's REPL is idle, each fire of the sentinel applies the per-tick discipline at `docs/AUTONOMOUS-LOOP-PER-TICK.md` <!-- STALE-REF: ../../../docs/AUTONOMOUS-LOOP-PER-TICK.md -->. (There is no `.claude/skills/autonomous-loop` artifact; the mechanism is the sentinel prompt + the per-tick discipline doc.) The canonical end-of-tick checklist is six steps: speculative work (per never-be-idle priority ladder) → verify → **commit** → write tick shard at `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md` → CronList → visibility-signal stop.
 
 ### Auto-arm on first session
 
@@ -143,15 +143,15 @@ When Max's Otto starts the first session, the `tick-must-never-stop` rule auto-l
 
 ### What Max sees
 
-Tick output appears in his Otto chat at roughly 1-min cadence. Most ticks say *"Quiet"* (nothing actionable; bounded wait on something the AI's already working on). Substantive ticks make commits / open PRs / address review threads / fix CI failures on Max's branch. Commits include the required `Co-Authored-By: Claude <noreply@anthropic.com>` trailer per [`AGENTS.md`](../../../AGENTS.md) "Commit attribution — harness-specific trailers" (model / version suffix optional but the baseline is mandatory; multi-loop coordination depends on the trailer being parseable).
+Tick output appears in his Otto chat at roughly 1-min cadence. Most ticks say *"Quiet"* (nothing actionable; bounded wait on something the AI's already working on). Substantive ticks make commits / open PRs / address review threads / fix CI failures on Max's branch. Commits include the required `Co-Authored-By: Claude <noreply@anthropic.com>` trailer per `AGENTS.md` <!-- STALE-REF: ../../../AGENTS.md --> "Commit attribution — harness-specific trailers" (model / version suffix optional but the baseline is mandatory; multi-loop coordination depends on the trailer being parseable).
 
 ### Max stays in control
 
 - **Ticks fire ONLY when the REPL is idle** — never interrupts active typing
 - `CronDelete <job-id>` stops the loop; `CronList` shows what's armed
-- Cadence adjustment is via `CronDelete` + `CronCreate` with a new cron expression — the factory's actual tick arming is via `CronCreate` (per [`docs/AUTONOMOUS-LOOP.md`](../../../docs/AUTONOMOUS-LOOP.md)); `/loop` appears as historical / user-facing naming in some rules (e.g., [`.claude/rules/tick-must-never-stop.md`](../../../.claude/rules/tick-must-never-stop.md) opens with *"When running under `/loop` autonomous mode"*) but the canonical invocation path Max's Otto will use is `CronCreate`-direct
+- Cadence adjustment is via `CronDelete` + `CronCreate` with a new cron expression — the factory's actual tick arming is via `CronCreate` (per `docs/AUTONOMOUS-LOOP.md` <!-- STALE-REF: ../../../docs/AUTONOMOUS-LOOP.md -->); `/loop` appears as historical / user-facing naming in some rules (e.g., `.claude/rules/tick-must-never-stop.md` <!-- STALE-REF: ../../../.claude/rules/tick-must-never-stop.md --> opens with *"When running under `/loop` autonomous mode"*) but the canonical invocation path Max's Otto will use is `CronCreate`-direct
 - Closing the Otto session ends the cron (in-memory only; doesn't persist across sessions)
-- Every tick's work is reversible (commits on branches; PRs gate via review; nothing destructive without explicit authorization per [`.claude/rules/dont-ask-permission.md`](../../../.claude/rules/dont-ask-permission.md) authority-scope discipline)
+- Every tick's work is reversible (commits on branches; PRs gate via review; nothing destructive without explicit authorization per `.claude/rules/dont-ask-permission.md` <!-- STALE-REF: ../../../.claude/rules/dont-ask-permission.md --> authority-scope discipline)
 
 ### Why it matters for tier-2 work
 
@@ -159,14 +159,14 @@ Most of the tier-2 Docker Desktop substrate-engineering Max owns is **bounded-wa
 
 ### Failure mode to know about
 
-Per [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md): if Max's Otto emits 6+ consecutive "Quiet" / "Holding" ticks WITHOUT a named bounded-wait dependency, that's the Standing-by failure mode — the rule's counter forces escalation to substantive decomposition work at tick 6. The discipline is automated; Max doesn't have to enforce it manually. (Otto is supposed to catch itself.)
+Per `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md -->: if Max's Otto emits 6+ consecutive "Quiet" / "Holding" ticks WITHOUT a named bounded-wait dependency, that's the Standing-by failure mode — the rule's counter forces escalation to substantive decomposition work at tick 6. The discipline is automated; Max doesn't have to enforce it manually. (Otto is supposed to catch itself.)
 
 ## Composes with
 
 - [`PERSONA.md`](PERSONA.md) — fuller persona context
 - [`memory/addison/PERSONA.md`](../addison/PERSONA.md) — co-architect
 - [`memory/aaron/PERSONA.md`](../aaron/PERSONA.md) — sponsor + senior architect
-- [`docs/AGENT-AUTHORING-AND-PR-REVIEW.md`](../../../docs/AGENT-AUTHORING-AND-PR-REVIEW.md) — Max's operational onboarding (the doc that answers his two questions: where the code-quality discipline lives + the adversarial-review hierarchy he can hook into)
+- `docs/AGENT-AUTHORING-AND-PR-REVIEW.md` <!-- STALE-REF: ../../../docs/AGENT-AUTHORING-AND-PR-REVIEW.md --> — Max's operational onboarding (the doc that answers his two questions: where the code-quality discipline lives + the adversarial-review hierarchy he can hook into)
 - 081KSE6WT0008QG0R00195RG48 (TS hat-system operator; Max's primary substrate-engineering target + learning path)
 - 081KSE6WT0008QG0R0005XASX2 (destructive-tool authoring contract; pattern for any tool Max writes that destroys things)
 - 081KRMEXM0008QG0R00278KS63 (manifesto → building-codes recast; addresses Max's pattern-match-as-manifesto reading of the original framing)

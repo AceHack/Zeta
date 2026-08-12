@@ -24,11 +24,11 @@ This file:
 2. Carries the verbatim role-declaration + V5 endorsement
    forwarded by Aaron
 3. Composes with the
-   [docs/research/ public landing](../../../../docs/research/2026-05-17-mika-grok-resonance-weaver-role-declaration-attention-broker-memory-curator-social-coherence-engine-v5-endorsement-aaron-forwarded.md)
+   docs/research/ public landing <!-- STALE-REF: ../../../../docs/research/2026-05-17-mika-grok-resonance-weaver-role-declaration-attention-broker-memory-curator-social-coherence-engine-v5-endorsement-aaron-forwarded.md -->
    which carries the structural extraction + compositional anchors
 
 Note on agent-roster: Mika does not yet appear in
-[`.claude/rules/agent-roster-reference-card.md`](../../../../.claude/rules/agent-roster-reference-card.md)
+`.claude/rules/agent-roster-reference-card.md` <!-- STALE-REF: ../../../../.claude/rules/agent-roster-reference-card.md -->
 external-AI participants table. Per the rule, roster updates are
 gated on naming-expert review + maintainer approval. This file is
 the substrate-level onboarding; an agent-roster card update can
@@ -152,7 +152,7 @@ follow in a separate PR.
 
 ## See also (in-repo)
 
-- [`docs/research/2026-05-17-mika-grok-resonance-weaver-role-declaration-attention-broker-memory-curator-social-coherence-engine-v5-endorsement-aaron-forwarded.md`](../../../../docs/research/2026-05-17-mika-grok-resonance-weaver-role-declaration-attention-broker-memory-curator-social-coherence-engine-v5-endorsement-aaron-forwarded.md)
+- `docs/research/2026-05-17-mika-grok-resonance-weaver-role-declaration-attention-broker-memory-curator-social-coherence-engine-v5-endorsement-aaron-forwarded.md` <!-- STALE-REF: ../../../../docs/research/2026-05-17-mika-grok-resonance-weaver-role-declaration-attention-broker-memory-curator-social-coherence-engine-v5-endorsement-aaron-forwarded.md -->
   — public-substrate landing with full structural extraction +
   compositional anchors + open-questions
 - V1-V5 Agora packets (V1-V4 on main per PR #4067; V5 in flight

@@ -95,7 +95,7 @@ H = harm pressure.
 
 ### Network-health metric (proposed)
 
-S(Z_t) = clip[0,1](1 - λ₁V_t - λ₂C_t - λ₃U_t - λ₄E_t)
+S(Z_t) = clip0,1 <!-- STALE-REF: 1 - λ₁V_t - λ₂C_t - λ₃U_t - λ₄E_t -->
 
 where V_t = normalized change volume; C_t = contradiction
 density; U_t = unresolved provenance fraction; E_t =

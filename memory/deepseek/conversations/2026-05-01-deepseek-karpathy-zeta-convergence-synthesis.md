@@ -3,7 +3,7 @@
 Scope: Deepseek peer-AI synthesis layer above the Karpathy
 verifiability anchor (research-grade Beacon substrate, not
 operational doctrine). Sibling document to
-[`2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md`](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md).
+`2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md` <!-- STALE-REF: 2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md -->.
 
 Attribution: Deepseek (peer-AI), Aaron-forwarded 2026-05-01.
 Triggered by Aaron's preceding forward of the Karpathy *"From Vibe
@@ -221,6 +221,6 @@ through the normal substrate channel.
 
 ## See also
 
-- [Karpathy verifiability anchor](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md) (sibling doc, PR #1175)
-- [Vendor-alignment-bias memory](../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md)
-- [Substrate-or-it-didn't-happen (Otto-363)](../../memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md)
+- Karpathy verifiability anchor <!-- STALE-REF: 2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md --> (sibling doc, PR #1175)
+- Vendor-alignment-bias memory <!-- STALE-REF: ../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md -->
+- Substrate-or-it-didn't-happen (Otto-363) <!-- STALE-REF: ../../memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md -->

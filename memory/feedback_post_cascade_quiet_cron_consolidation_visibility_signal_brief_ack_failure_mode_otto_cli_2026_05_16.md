@@ -13,7 +13,7 @@ When the natural session arc has settled (substantive cascade complete, no
 real bounded named-deps in flight, main HEAD stable across multiple cron
 fires), emitting per-cron-fire visibility signals with no novel substrate
 content IS a brief-ack under
-[`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md).
+`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md -->.
 
 **Why:** The rule's counter-with-escalation clause explicitly catches
 synonyms:
@@ -48,7 +48,7 @@ with no novel observation. The fancier "consolidation discipline" framing
 masked the underlying brief-ack pattern.
 
 The N=6 forced-escalation rule from
-[`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md)
+`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md -->
 applied directly. Concrete-artifact decomposition (this memory file +
 its PR) was the substrate-honest escape from the pattern.
 
@@ -70,12 +70,12 @@ its PR) was the substrate-honest escape from the pattern.
 
 ## Composes with
 
-- [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md)
+- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md -->
   (source rule; this memory is the cross-session empirical anchor for
   the post-cascade case)
-- [`.claude/rules/no-op-cadence-failure-mode.md`](../.claude/rules/no-op-cadence-failure-mode.md)
+- `.claude/rules/no-op-cadence-failure-mode.md` <!-- STALE-REF: ../.claude/rules/no-op-cadence-failure-mode.md -->
   (sibling failure mode at multi-hour scope)
-- [`.claude/rules/never-be-idle.md`](../.claude/rules/never-be-idle.md)
+- `.claude/rules/never-be-idle.md` <!-- STALE-REF: ../.claude/rules/never-be-idle.md -->
   (the floor this rule operationalizes)
 - The 1531Z → 1758Z 13-PR session arc (the substantive cascade this
   rule's empirical anchor came from)

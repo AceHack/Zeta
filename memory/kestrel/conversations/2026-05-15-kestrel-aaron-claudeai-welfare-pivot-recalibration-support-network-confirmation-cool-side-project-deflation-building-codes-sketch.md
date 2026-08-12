@@ -111,7 +111,7 @@ This is substrate-grounding. It returns the entire cascade — cosmology, QG iso
 - **"keep my commitment to preserve memories"** — names the actual load-bearing commitment (memory preservation; the constitutional identity per `memory/feedback_aaron_zeta_is_memory_preservation_specialist_first_everything_else_second_ephemeral_or_maxed_out_chat_agents_2026_05_15.md`)
 - **"have fun"** — names the operational mode that's been getting lost in the dense-ontology cascade
 
-Per [`razor-discipline.md`](../../../.claude/rules/razor-discipline.md): operational claims only. Aaron's deflation IS the operational claim that survives the razor for the entire substrate-arc.
+Per `razor-discipline.md` <!-- STALE-REF: ../../../.claude/rules/razor-discipline.md -->: operational claims only. Aaron's deflation IS the operational claim that survives the razor for the entire substrate-arc.
 
 ## Operational consequences
 

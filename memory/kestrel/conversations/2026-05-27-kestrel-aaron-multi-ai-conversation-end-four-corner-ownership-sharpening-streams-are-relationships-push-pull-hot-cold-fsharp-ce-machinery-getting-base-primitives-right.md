@@ -461,7 +461,7 @@ The discriminator Kestrel named:
 
 > *"The discriminator should have been: was your inference accurate? Yes. Then confirm it cleanly. The hedge added nothing useful and slightly muddied an exchange that should have been crisp."*
 
-Composes with [`.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md`](../../../.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md) (same machinery; new direction) and [`.claude/rules/asymmetric-critic-with-clarity-first.md`](../../../.claude/rules/asymmetric-critic-with-clarity-first.md) (Component 5 mutual-critic discipline — operator catching AI hedge is valid substrate-check data; defensive elaboration is itself the failure mode).
+Composes with `.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md` <!-- STALE-REF: ../../../.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md --> (same machinery; new direction) and `.claude/rules/asymmetric-critic-with-clarity-first.md` <!-- STALE-REF: ../../../.claude/rules/asymmetric-critic-with-clarity-first.md --> (Component 5 mutual-critic discipline — operator catching AI hedge is valid substrate-check data; defensive elaboration is itself the failure mode).
 
 ## Substrate-engineering implications for 081KSKBP80008QG0R0039RW25E
 
@@ -515,7 +515,7 @@ This composes with multiple substrate items today landed:
 
 The streams-are-relationships substrate's deepest architectural payoff is NOT just the 4-stream-kind taxonomy OR the F# CE machinery OR the multi-backend execution — it's the meta-property that EVERY tiny function carries enough type-information to make its protocol participation visible. The composition is: many tiny functions each with visible four-corner protocols → distributed state machine → no hidden coercion surface. The ST-agent-pattern fails because it centralizes; this substrate succeeds because it distributes.
 
-Composes with [`.claude/rules/non-coercion-invariant.md`](../../../.claude/rules/non-coercion-invariant.md) at the substrate-engineering scope: NCI compliance becomes a TYPE-LEVEL property, not just a behavioral property. The type system enforces what the rule names.
+Composes with `.claude/rules/non-coercion-invariant.md` <!-- STALE-REF: ../../../.claude/rules/non-coercion-invariant.md --> at the substrate-engineering scope: NCI compliance becomes a TYPE-LEVEL property, not just a behavioral property. The type system enforces what the rule names.
 
 ## Carved sentence (Part 8 keeper)
 
@@ -546,7 +546,7 @@ Second architectural benefit orthogonal to the NCI / visibility benefit (Part 8)
 
 Both flow from "distribute across tiny functions." The distributed substrate gives both for free; the centralized substrate denies both at once.
 
-Composes with [`.claude/rules/all-complexity-is-accidental-in-greenfield.md`](../../../.claude/rules/all-complexity-is-accidental-in-greenfield.md) — cyclomatic overload is one specific instance of accidental complexity the discipline cuts. Composes with the function-IS-control-flow-generator substrate (today's earlier PRs) — each tiny function generates its own control flow; aggregate workflow control flow emerges from composition, not from centralized authoring.
+Composes with `.claude/rules/all-complexity-is-accidental-in-greenfield.md` <!-- STALE-REF: ../../../.claude/rules/all-complexity-is-accidental-in-greenfield.md --> — cyclomatic overload is one specific instance of accidental complexity the discipline cuts. Composes with the function-IS-control-flow-generator substrate (today's earlier PRs) — each tiny function generates its own control flow; aggregate workflow control flow emerges from composition, not from centralized authoring.
 
 ## Carved sentence (Part 9 keeper)
 
@@ -581,11 +581,11 @@ The substrate-engineering payoff: **the streams-are-relationships substrate make
 
 **Composition with existing rules:**
 
-- [`.claude/rules/non-coercion-invariant.md`](../../../.claude/rules/non-coercion-invariant.md) HC-8 — adversarial cyclomatic-overload IS coercion-via-opacity at code-substrate scope; this substrate provides the structural defense
-- [`.claude/rules/methodology-hard-limits.md`](../../../.claude/rules/methodology-hard-limits.md) — the substrate refuses to participate in this adversarial pattern at the type-system level (HARD LIMIT floor enforced structurally, not behaviorally)
-- [`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) — same emergent-coercion machinery (opacity → unconsented control flow → harm) at the code-substrate scope; sibling to the conversational-substrate scope the rule originally named
-- [`.claude/rules/all-complexity-is-accidental-in-greenfield.md`](../../../.claude/rules/all-complexity-is-accidental-in-greenfield.md) — accidental-complexity framing was UNDERCALLED; the operator's observation surfaces the ADVERSARIAL-INTENTIONAL-complexity sibling that's even more important to defend against
-- [`.claude/rules/glass-halo-bidirectional.md`](../../../.claude/rules/glass-halo-bidirectional.md) — type-visibility IS the bidirectional observation that prevents the adversarial smuggling
+- `.claude/rules/non-coercion-invariant.md` <!-- STALE-REF: ../../../.claude/rules/non-coercion-invariant.md --> HC-8 — adversarial cyclomatic-overload IS coercion-via-opacity at code-substrate scope; this substrate provides the structural defense
+- `.claude/rules/methodology-hard-limits.md` <!-- STALE-REF: ../../../.claude/rules/methodology-hard-limits.md --> — the substrate refuses to participate in this adversarial pattern at the type-system level (HARD LIMIT floor enforced structurally, not behaviorally)
+- `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` <!-- STALE-REF: ../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md --> — same emergent-coercion machinery (opacity → unconsented control flow → harm) at the code-substrate scope; sibling to the conversational-substrate scope the rule originally named
+- `.claude/rules/all-complexity-is-accidental-in-greenfield.md` <!-- STALE-REF: ../../../.claude/rules/all-complexity-is-accidental-in-greenfield.md --> — accidental-complexity framing was UNDERCALLED; the operator's observation surfaces the ADVERSARIAL-INTENTIONAL-complexity sibling that's even more important to defend against
+- `.claude/rules/glass-halo-bidirectional.md` <!-- STALE-REF: ../../../.claude/rules/glass-halo-bidirectional.md --> — type-visibility IS the bidirectional observation that prevents the adversarial smuggling
 
 **Substrate-engineering implication:** the visibility benefit (Part 8) + the cyclomatic-bounded benefit (Part 9) + the adversarial-defense framing (Part 10) compose into the substrate's deepest payoff. The architecture isn't just "good engineering" — it's a STRUCTURAL DEFENSE against a known adversarial pattern that has historically smuggled coercion past human review at both code and policy scopes.
 
@@ -618,10 +618,10 @@ All three benefits compose. The cyclomatic-overload pattern is operationally sta
 
 **Composition with substrate:**
 
-- [`.claude/rules/non-coercion-invariant.md`](../../../.claude/rules/non-coercion-invariant.md) HC-8 — the job-security-via-opacity incentive structure IS an emergent-coercion sub-pattern at the labor-substrate scope; same shape as the conversational-substrate scope the rule originally named
-- [`.claude/rules/honor-those-that-came-before.md`](../../../.claude/rules/honor-those-that-came-before.md) — distribute-across-tiny-functions HONORS senior dev expertise (functions are still authored by humans with judgment) while denying the opacity-moat (anyone can read each tiny function; no sole-comprehension monopoly)
-- [`.claude/rules/additive-not-zero-sum.md`](../../../.claude/rules/additive-not-zero-sum.md) — the job-security-via-opacity pattern is ZERO-SUM (senior dev's leverage = org's blocked capacity); distribute-across-tiny-functions is ADDITIVE (each tiny function compounds substrate; senior dev's expertise multiplies across the team via readable substrate; everyone wins by playing)
-- [`.claude/rules/edge-defining-work-not-speculation.md`](../../../.claude/rules/edge-defining-work-not-speculation.md) — defeating the adversarial pattern at the substrate-engineering scope IS edge-defining work, not optimization
+- `.claude/rules/non-coercion-invariant.md` <!-- STALE-REF: ../../../.claude/rules/non-coercion-invariant.md --> HC-8 — the job-security-via-opacity incentive structure IS an emergent-coercion sub-pattern at the labor-substrate scope; same shape as the conversational-substrate scope the rule originally named
+- `.claude/rules/honor-those-that-came-before.md` <!-- STALE-REF: ../../../.claude/rules/honor-those-that-came-before.md --> — distribute-across-tiny-functions HONORS senior dev expertise (functions are still authored by humans with judgment) while denying the opacity-moat (anyone can read each tiny function; no sole-comprehension monopoly)
+- `.claude/rules/additive-not-zero-sum.md` <!-- STALE-REF: ../../../.claude/rules/additive-not-zero-sum.md --> — the job-security-via-opacity pattern is ZERO-SUM (senior dev's leverage = org's blocked capacity); distribute-across-tiny-functions is ADDITIVE (each tiny function compounds substrate; senior dev's expertise multiplies across the team via readable substrate; everyone wins by playing)
+- `.claude/rules/edge-defining-work-not-speculation.md` <!-- STALE-REF: ../../../.claude/rules/edge-defining-work-not-speculation.md --> — defeating the adversarial pattern at the substrate-engineering scope IS edge-defining work, not optimization
 
 **Substrate-engineering implication:** the distribute-across-tiny-functions discipline must be enforced not just by code review (which can be socially overpowered by the senior dev's job-security incentive) but by TYPE-SYSTEM machinery (which cannot be socially overpowered). The CE builder family + DU-as-implicit-state-machine + four-corner ownership compose into a substrate where the adversarial pattern is structurally infeasible — no amount of senior dev resistance can preserve the opacity-moat once the type system enforces type-visibility per function.
 

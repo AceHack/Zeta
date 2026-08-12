@@ -27,7 +27,7 @@ The chain:
 3. Second workflow listens to `on: repository_dispatch` with specific type
 4. Second workflow is where RxJS observables live + `move-next` runs
 
-**Validates the everything-in-GitHub degenerate plan.** Removes the need for external infrastructure (no server / Cloudflare Worker / always-on endpoint). Composes with [081KSNY2Z0008QG0R003X1QWYG](../../../backlog/P1/081KSNY2Z0008QG0R003X1QWYG-...) (GitHub-Actions-recursion infinite-runtime no-PR swarm).
+**Validates the everything-in-GitHub degenerate plan.** Removes the need for external infrastructure (no server / Cloudflare Worker / always-on endpoint). Composes with 081KSNY2Z0008QG0R003X1QWYG <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R003X1QWYG-... --> (GitHub-Actions-recursion infinite-runtime no-PR swarm).
 
 ### 13. `paths:` filter is the coarse query mechanism over file system
 
@@ -64,7 +64,7 @@ review/
   ...
 ```
 
-Each `review/<surface>/` gets its own workflow that fires via `paths:` filter. Composes with [081KSNY2Z0008QG0R001DFZK4V](../../../backlog/P1/081KSNY2Z0008QG0R001DFZK4V-...) (Zeta-native review substrate).
+Each `review/<surface>/` gets its own workflow that fires via `paths:` filter. Composes with 081KSNY2Z0008QG0R001DFZK4V <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R001DFZK4V-... --> (Zeta-native review substrate).
 
 ### 15. Three workflow layers (the architecture, named)
 
@@ -131,7 +131,7 @@ Because everything is free (GitHub public repos: unlimited Actions minutes; unli
 - **Mindshare**: whose ideas spread furthest inside the swarm
 - **Influence**: which persona's playbooks shape project direction most
 
-Composes with [081KRW63S0008QG0R000QJR08H](../../../backlog/P2/081KRW63S0008QG0R000QJR08H-...) (participation-economy substrate; the attention economy IS the participation economy at workflow-engine scope) + [081KRW63S0008QG0R001Z10PVV](../../../backlog/) (reputation-weighted encryption budget = attention-translated-to-private-substrate-budget).
+Composes with 081KRW63S0008QG0R000QJR08H <!-- STALE-REF: ../../../backlog/P2/081KRW63S0008QG0R000QJR08H-... --> (participation-economy substrate; the attention economy IS the participation economy at workflow-engine scope) + 081KRW63S0008QG0R001Z10PVV <!-- STALE-REF: ../../../backlog/ --> (reputation-weighted encryption budget = attention-translated-to-private-substrate-budget).
 
 ### 21. move-next as equalizer — can starve over-spawners of meaningful work
 
@@ -163,7 +163,7 @@ Two-version architecture:
 
 | Version | Substrate | Properties |
 |---|---|---|
-| **F#+.NET clean** | Local event store + Rx observables | Push-based where possible; clean; deterministic; aligned with [081KRFA460008QG0R0018SN61J](../../../backlog/P3/081KRFA460008QG0R0018SN61J-...) F# fork |
+| **F#+.NET clean** | Local event store + Rx observables | Push-based where possible; clean; deterministic; aligned with 081KRFA460008QG0R0018SN61J <!-- STALE-REF: ../../../backlog/P3/081KRFA460008QG0R0018SN61J-... --> F# fork |
 | **GitHub degenerate mirror** | Workflows-as-spawning + git-as-event-store + repository_dispatch | Free; isomorphic across Git platforms; approximates the clean version |
 
 Both serve same architecture at different deployment scopes. F# is the canonical contract (per agent-loop SKILL.md "v3 substrate (F# DU canonical contract in src/Core.FSharp/WorkflowEngine/) lands per 081KSKBP80008QG0R000B3Y19A.1").
@@ -215,7 +215,7 @@ Authority is intrinsic to the playbook; combines with trust-propagation-through-
 
 > Aaron: *"the big one... DORA benchmarks because that's how we claim autonomy."*
 
-Phase 2 IS the autonomy proof for [081KSNY2Z0008QG0R000HENSVM](../../../backlog/P1/081KSNY2Z0008QG0R000HENSVM-...) DORA-mandate substrate. When agent-consensus can grant authority autonomously, the system has achieved measurable autonomy at the DORA-metric scope. Composes with [081KS3X9Y0008QG0R00218150M](../../../backlog/P3/081KS3X9Y0008QG0R00218150M-...) multi-oracle BFT (agent-consensus mechanism).
+Phase 2 IS the autonomy proof for 081KSNY2Z0008QG0R000HENSVM <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R000HENSVM-... --> DORA-mandate substrate. When agent-consensus can grant authority autonomously, the system has achieved measurable autonomy at the DORA-metric scope. Composes with 081KS3X9Y0008QG0R00218150M <!-- STALE-REF: ../../../backlog/P3/081KS3X9Y0008QG0R00218150M-... --> multi-oracle BFT (agent-consensus mechanism).
 
 > Aaron: *"corporations ain't gonna do that for five years."*
 
@@ -238,7 +238,7 @@ Five-year horizon for corporate Phase-2 adoption is operator-explicit; Phase 1 i
 
 All harnesses boot into the same workflow engine → same `move-next` decisions → same playbook authority gate → fair cross-harness comparison. The workflow engine IS the benchmark.
 
-Composes with [081KSNY2Z0008QG0R002A785QR](../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-...) (per-host adapters) + [081KSNY2Z0008QG0R0004ZF85W](../../../backlog/P2/081KSNY2Z0008QG0R0004ZF85W-...) (heterogeneous auto-reviewer ensemble; audit diversity without correlated blind spots).
+Composes with 081KSNY2Z0008QG0R002A785QR <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-... --> (per-host adapters) + 081KSNY2Z0008QG0R0004ZF85W <!-- STALE-REF: ../../../backlog/P2/081KSNY2Z0008QG0R0004ZF85W-... --> (heterogeneous auto-reviewer ensemble; audit diversity without correlated blind spots).
 
 ## What Otto-CLI does with this ferry
 
@@ -250,14 +250,14 @@ Composes with [081KSNY2Z0008QG0R002A785QR](../../../backlog/P1/081KSNY2Z0008QG0R
 
 ## Composes with substrate (additions to ferry #1's list)
 
-- [081KRW63S0008QG0R000QJR08H](../../../backlog/P2/081KRW63S0008QG0R000QJR08H-...) — participation-economy substrate (attention-economy IS this at workflow scope)
-- [081KRW63S0008QG0R003TX8MG5](../../../backlog/) — Knights Guild + Constitution-Class (Phase-2 agent-consensus authority gating substrate)
-- [081KRW63S0008QG0R001Z10PVV](../../../backlog/) — reputation-weighted encryption budget (attention → private substrate translation)
-- [081KS3X9Y0008QG0R00218150M](../../../backlog/P3/081KS3X9Y0008QG0R00218150M-...) — multi-oracle BFT (agent-consensus mechanism for Phase 2 authority)
-- [081KSNY2Z0008QG0R0004ZF85W](../../../backlog/P2/081KSNY2Z0008QG0R0004ZF85W-...) — heterogeneous auto-reviewer ensemble (composes with isomorphic-harness-benchmark)
-- [081KSNY2Z0008QG0R000HENSVM](../../../backlog/P1/081KSNY2Z0008QG0R000HENSVM-...) — DORA mandate (the autonomy-claim Phase 2 enables)
-- [081KRFA460008QG0R0018SN61J](../../../backlog/P3/081KRFA460008QG0R0018SN61J-...) — F# fork (canonical clean version per ferry #2 §23)
-- [081KSNY2Z0008QG0R002A785QR](../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-...) — per-host adapters (cross-platform isomorphism; ferry #2 §28 isomorphic-harness same shape)
+- 081KRW63S0008QG0R000QJR08H <!-- STALE-REF: ../../../backlog/P2/081KRW63S0008QG0R000QJR08H-... --> — participation-economy substrate (attention-economy IS this at workflow scope)
+- 081KRW63S0008QG0R003TX8MG5 <!-- STALE-REF: ../../../backlog/ --> — Knights Guild + Constitution-Class (Phase-2 agent-consensus authority gating substrate)
+- 081KRW63S0008QG0R001Z10PVV <!-- STALE-REF: ../../../backlog/ --> — reputation-weighted encryption budget (attention → private substrate translation)
+- 081KS3X9Y0008QG0R00218150M <!-- STALE-REF: ../../../backlog/P3/081KS3X9Y0008QG0R00218150M-... --> — multi-oracle BFT (agent-consensus mechanism for Phase 2 authority)
+- 081KSNY2Z0008QG0R0004ZF85W <!-- STALE-REF: ../../../backlog/P2/081KSNY2Z0008QG0R0004ZF85W-... --> — heterogeneous auto-reviewer ensemble (composes with isomorphic-harness-benchmark)
+- 081KSNY2Z0008QG0R000HENSVM <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R000HENSVM-... --> — DORA mandate (the autonomy-claim Phase 2 enables)
+- 081KRFA460008QG0R0018SN61J <!-- STALE-REF: ../../../backlog/P3/081KRFA460008QG0R0018SN61J-... --> — F# fork (canonical clean version per ferry #2 §23)
+- 081KSNY2Z0008QG0R002A785QR <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-... --> — per-host adapters (cross-platform isomorphism; ferry #2 §28 isomorphic-harness same shape)
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` "Tools rented not owned + Hats form in the in-between + Sorting Hat" (2026-05-22 operator substrate) — ferry #2 §17 hat-swap fluidity composes
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — agent-society emergent governance IS multi-oracle at workflow scope
 - `.claude/rules/mechanical-authorization-check.md` — trust-calculus propagation through spawning IS authorization-source filter operating at workflow-spawning scope

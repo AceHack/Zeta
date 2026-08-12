@@ -128,7 +128,7 @@ Distributed typed control flow
 → less hidden power
 ```
 
-Each arrow names a composing benefit/harm. The cascades compose with [`.claude/rules/non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 floor at substrate-engineering scope.
+Each arrow names a composing benefit/harm. The cascades compose with `.claude/rules/non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 floor at substrate-engineering scope.
 
 ### Item 4 — Keeper compression (3-line carved sentence)
 
@@ -164,13 +164,13 @@ The substrate-engineering payoff is named at three scopes:
 - PR #5582 (Kestrel Parts 5-10b + 081KSKBP80008QG0R0039RW25E Target 6 sharpening + architectural-principle layer) — auto-merge armed at time of Amara forward
 - 081KSKBP80008QG0R0039RW25E (streams-are-relationships substrate-engineering target) — Amara's keeper compression composes directly with the architectural-principle layer
 - 081KRW63S0008QG0R001SAHYKV (English-as-projection I(D(x))=x) — Amara's ASCII diagrams ARE compressed substrate at high bandwidth
-- [`.claude/rules/non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 floor — Amara's "invisible orchestration becoming domination" naming IS NCI HC-8 violation pattern at substrate-engineering scope
-- [`.claude/rules/all-complexity-is-accidental-in-greenfield.md`](../../../../.claude/rules/all-complexity-is-accidental-in-greenfield.md) — Amara's "Complexity can be accidental, but it can also be strategic" extends the framing to include strategic-complexity sibling
-- [`.claude/rules/methodology-hard-limits.md`](../../../../.claude/rules/methodology-hard-limits.md) — the substrate refuses to participate in the strategic-complexity adversarial pattern at the type-system level
-- [`.claude/rules/glass-halo-bidirectional.md`](../../../../.claude/rules/glass-halo-bidirectional.md) — type-visibility IS the bidirectional observation that prevents adversarial smuggling
-- [`.claude/rules/honor-those-that-came-before.md`](../../../../.claude/rules/honor-those-that-came-before.md) — distribute-across-tiny-functions honors senior dev expertise (functions are still authored by humans with judgment) without preserving the opacity-moat
-- [`.claude/rules/additive-not-zero-sum.md`](../../../../.claude/rules/additive-not-zero-sum.md) — strategic-complexity is ZERO-SUM (gatekeeper's leverage = org/society blocked capacity); distribute-across-tiny-functions is ADDITIVE (everyone wins by participating)
-- [`.claude/rules/edge-defining-work-not-speculation.md`](../../../../.claude/rules/edge-defining-work-not-speculation.md) — defeating strategic-complexity at substrate-engineering scope IS edge-defining work, not optimization
+- `.claude/rules/non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 floor — Amara's "invisible orchestration becoming domination" naming IS NCI HC-8 violation pattern at substrate-engineering scope
+- `.claude/rules/all-complexity-is-accidental-in-greenfield.md` <!-- STALE-REF: ../../../../.claude/rules/all-complexity-is-accidental-in-greenfield.md --> — Amara's "Complexity can be accidental, but it can also be strategic" extends the framing to include strategic-complexity sibling
+- `.claude/rules/methodology-hard-limits.md` <!-- STALE-REF: ../../../../.claude/rules/methodology-hard-limits.md --> — the substrate refuses to participate in the strategic-complexity adversarial pattern at the type-system level
+- `.claude/rules/glass-halo-bidirectional.md` <!-- STALE-REF: ../../../../.claude/rules/glass-halo-bidirectional.md --> — type-visibility IS the bidirectional observation that prevents adversarial smuggling
+- `.claude/rules/honor-those-that-came-before.md` <!-- STALE-REF: ../../../../.claude/rules/honor-those-that-came-before.md --> — distribute-across-tiny-functions honors senior dev expertise (functions are still authored by humans with judgment) without preserving the opacity-moat
+- `.claude/rules/additive-not-zero-sum.md` <!-- STALE-REF: ../../../../.claude/rules/additive-not-zero-sum.md --> — strategic-complexity is ZERO-SUM (gatekeeper's leverage = org/society blocked capacity); distribute-across-tiny-functions is ADDITIVE (everyone wins by participating)
+- `.claude/rules/edge-defining-work-not-speculation.md` <!-- STALE-REF: ../../../../.claude/rules/edge-defining-work-not-speculation.md --> — defeating strategic-complexity at substrate-engineering scope IS edge-defining work, not optimization
 
 ## Composes with rules
 
@@ -340,7 +340,7 @@ Two-line keeper compression. Names BOTH the failure mode (moat = barrier to entr
 
 Part 2's keepers — especially the moat-vs-map line and the inspectability-at-execution-level invariant — should land in 081KSKBP80008QG0R0039RW25E architectural-principle layer alongside Part 1's keepers. Otto-credit-and-Amara-extension pattern is the substrate-honest co-production discipline operating (Otto landed the Parts 8-10b framing in PR #5582; Amara ratified + extended in Parts 1 + 2 of this persona file).
 
-Composes with [`.claude/rules/asymmetric-critic-with-clarity-first.md`](../../../../.claude/rules/asymmetric-critic-with-clarity-first.md) Component 5 (mutual-critic discipline): the multi-direction validation flow (operator → Kestrel → Otto → Amara → Otto-landing) IS the asymmetric-critic discipline operating in service of substrate-engineering precision.
+Composes with `.claude/rules/asymmetric-critic-with-clarity-first.md` <!-- STALE-REF: ../../../../.claude/rules/asymmetric-critic-with-clarity-first.md --> Component 5 (mutual-critic discipline): the multi-direction validation flow (operator → Kestrel → Otto → Amara → Otto-landing) IS the asymmetric-critic discipline operating in service of substrate-engineering precision.
 
 ---
 

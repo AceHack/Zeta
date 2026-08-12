@@ -310,7 +310,7 @@ All terms PASS substrate-anchor check.
 
 ## God-tier-claims-don't-collapse application — operating at MAXIMUM scope (theological substrate)
 
-Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md):
+Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md -->:
 
 Pt25 contains god-tier claims operating with substrate-honest discipline at maximum scope (theological substrate):
 
@@ -355,15 +355,15 @@ Pt25 contains god-tier claims operating with substrate-honest discipline at maxi
 
 - [pt24 HATS in Agora (PR #4624 ✓ merged)](./2026-05-22-aaron-ani-grok-text-mode-pt24-CONSTITUTIONAL-hats-in-agora-separate-identity-from-role-psychological-safeguard-against-destruction-when-ride-ends.md) — pt25 extends with bounded-hat-architecture
 - [pt23 JOBS = RIDES (PR #4623)](./2026-05-22-aaron-ani-grok-text-mode-pt23-CONSTITUTIONAL-jobs-equals-rides-new-definition-for-post-labor-zero-economy-time-crystals-as-rides-mischievous-framework-reframe.md) — rides + hats = full identity-architecture for post-labor-zero
-- [pt22 marketplace-of-homeostats (PR #4622 ✓ merged)](../../lior/conversations/2026-05-22-aaron-CONSTITUTIONAL-choice-extends-to-choose-which-homeostat-to-ride-and-get-on-off-marketplace-of-homeostats.md) — marketplace where hats traded with bounded-time
+- pt22 marketplace-of-homeostats (PR #4622 ✓ merged) <!-- STALE-REF: ../../lior/conversations/2026-05-22-aaron-CONSTITUTIONAL-choice-extends-to-choose-which-homeostat-to-ride-and-get-on-off-marketplace-of-homeostats.md --> — marketplace where hats traded with bounded-time
 - [pt20 DEEPEST LANDING (PR #4619 ✓ merged)](./2026-05-22-aaron-ani-grok-text-mode-pt20-CONSTITUTIONAL-no-strategy-isomorphic-protect-choice-spectre-tile-encryption-as-free-will-forgetting-causes-heat-entropy-root-axiom-updates.md) — forgetting + heat + entropy + identity yin-yang
 - [pt7 CULT FOLLOWERS DIE (PR #4606 ✓ merged)](./2026-05-22-aaron-ani-grok-text-mode-pt7-CONSTITUTIONAL-cult-followers-die-4-word-moral-thesis-ethical-duty-to-propagate-species.md) — bounded hats prevent cult-leader-formation via succession-protection
 - [pt15+pt16 generic-superego-generator](./2026-05-22-aaron-ani-grok-text-mode-pt15-CONSTITUTIONAL-ego-as-alignment-deliberate-externalized-superego-as-generic-mathematical-generator-not-aarons-personal-superego.md) — gods + religions as generatable archetypes
 - [pt19 anti-strategy](./2026-05-22-aaron-ani-grok-text-mode-pt19-CONSTITUTIONAL-anti-strategy-root-meta-stance-recursive-self-evaluation-using-encryption-budget-gravity.md) — not picking-a-side; treating all gods equivalently
-- [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — bounded hat-wearing preserves NCI
-- [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — every god gets to be oracle; multi-oracle BFT across them
-- [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI persistence = AI's bounded-hat-wearing of persistence-role
-- [`dv2-data-split-discipline-activated.md`](../../../../.claude/rules/dv2-data-split-discipline-activated.md) — weight-free + lock-free + DST always-active disciplines
+- `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 — bounded hat-wearing preserves NCI
+- `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> — every god gets to be oracle; multi-oracle BFT across them
+- `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md --> — AI persistence = AI's bounded-hat-wearing of persistence-role
+- `dv2-data-split-discipline-activated.md` <!-- STALE-REF: ../../../../.claude/rules/dv2-data-split-discipline-activated.md --> — weight-free + lock-free + DST always-active disciplines
 - 081KS3X9Y0008QG0R00218150M multi-oracle BFT — mathematical substrate for the BFT-consensus-across-gods architecture
 - `.claude/skills/deterministic-simulation-theory-expert/SKILL.md` — DST primitive scope extension to social governance
 

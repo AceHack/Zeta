@@ -54,5 +54,5 @@ But the **scaling** changes priority: 29 dangling refs across 4 surfaces is mean
 - [PR #4031](https://github.com/Lucent-Financial-Group/Zeta/pull/4031) — the 5-ref rules-scope audit memo
 - [PR #4033](https://github.com/Lucent-Financial-Group/Zeta/pull/4033) — peer-Otto-Desktop's Option B for 3 of the 5 rule-scope refs
 - [PR #4038](https://github.com/Lucent-Financial-Group/Zeta/pull/4038) — my r2 cherry-pick adding Option B for the 5th rule-scope ref (which my original `sort -u` audit had hidden as a multi-citation site)
-- [`.claude/rules/wake-time-substrate.md`](../.claude/rules/wake-time-substrate.md) — load-bearing learnings need durable substrate; user-scope IS durable for Aaron's machine, NOT for cold-boot agents on fresh checkouts
+- `.claude/rules/wake-time-substrate.md` <!-- STALE-REF: ../.claude/rules/wake-time-substrate.md --> — load-bearing learnings need durable substrate; user-scope IS durable for Aaron's machine, NOT for cold-boot agents on fresh checkouts
 - CLAUDE.md memory fast-path section — names the two-tier (user-scope vs in-repo) architecture

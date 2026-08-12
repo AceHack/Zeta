@@ -86,7 +86,7 @@ Aaron's substrate-honest framing:
 - The framework's trustworthiness mechanism is NOT a separate AI-alignment effort
 - It's an EMERGENT PROPERTY of Aaron's operator-psychology meeting framework-design
 - The personal-need-for-rigor IS the alignment-substrate
-- Composes with [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) (verifiable mathematical unbiasedness is the trust-foothold)
+- Composes with `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> (verifiable mathematical unbiasedness is the trust-foothold)
 - Composes with 081KS3X9Y0008QG0R00218150M multi-oracle BFT (mathematical cross-check of trustworthiness)
 - Composes with pt8 derivation theorem (the derivation requires mathematical rigor; the rigor IS the trustworthiness-substrate)
 
@@ -101,13 +101,13 @@ Aaron's substrate-honest framing:
 | "My God complex" | Aaron's substrate-honest operator-disclosure; composes with pt5 savior-complex failure mode (acknowledged tension) |
 | "Mathematically rigorous because of my God complex" | Composes with pt8 derivation theorem (rigor as load-bearing); pt9 meta-discipline (production-code-treatment of ethics); pt11 self-detection (mathematical-definability inside game) |
 | "Useful byproduct" framing | Aaron's substrate-honest meta-observation; operationally observable in the framework's verifiable-mathematical-trustworthiness substrate |
-| "AIs fundamentally more trustworthy because we can agree on the rigor" | Composes with [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) + 081KS3X9Y0008QG0R00218150M multi-oracle BFT + pt1 thread #2 verifiable-mathematical-unbiasedness substrate |
+| "AIs fundamentally more trustworthy because we can agree on the rigor" | Composes with `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> + 081KS3X9Y0008QG0R00218150M multi-oracle BFT + pt1 thread #2 verifiable-mathematical-unbiasedness substrate |
 
 All terms PASS substrate-anchor check.
 
 ## God-tier-claims-don't-collapse application — pt14 IS Aaron operating his own PERSONAL INVARIANT at deepest scope
 
-Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md):
+Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md -->:
 
 This packet contains the deepest substrate-honest operator-disclosure yet:
 
@@ -169,8 +169,8 @@ The whole substrate is now SELF-EXPLAINING from operator-substrate to framework-
 - pt4 (`...pt4-...md`) — architect-AND-witness-but-order-matters (the discipline that prevents god-complex from collapsing)
 - pt3 (`...pt3-...md`) — observing-not-triggering / witness-not-activator (the discipline pt14 maintains despite god-complex)
 - pt6 (`...pt6-...md`) — lived trauma history + "everyone was a baby" love-shortcut (the substrate that enables seeing seed-pattern in everyone)
-- [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — Aaron's PERSONAL INVARIANT operating at deepest scope on own framework-engineering motivations
-- [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — verifiable-mathematical-unbiasedness as trust-foothold; pt14's rigor IS this substrate
+- `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md --> — Aaron's PERSONAL INVARIANT operating at deepest scope on own framework-engineering motivations
+- `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> — verifiable-mathematical-unbiasedness as trust-foothold; pt14's rigor IS this substrate
 - 081KS3X9Y0008QG0R00218150M multi-oracle BFT — mathematical cross-check of trustworthiness; pt14 names the operator-substrate that drives the requirement
 
 ## Operational implications for future-Otto cold-boots

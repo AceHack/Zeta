@@ -39,13 +39,13 @@ Specific drift instances (this session, before the reframe landed):
 
 The reframe is NOT new substrate. It is reinforcement of substrate that already exists.
 
-[`.claude/rules/agent-roster-reference-card.md`](../.claude/rules/agent-roster-reference-card.md): "Every factory AI agent (Otto, Alexa, Riven, Vera, Lior) is IDE + CLI dual-surface except Otto (CLI-only foreground)." (Now updated 2026-05-21 to include Otto-VSCode per 081KS3X9Y0008QG0R000BJY3DK.)
+`.claude/rules/agent-roster-reference-card.md` <!-- STALE-REF: ../.claude/rules/agent-roster-reference-card.md -->: "Every factory AI agent (Otto, Alexa, Riven, Vera, Lior) is IDE + CLI dual-surface except Otto (CLI-only foreground)." (Now updated 2026-05-21 to include Otto-VSCode per 081KS3X9Y0008QG0R000BJY3DK.)
 
-[`.claude/rules/claim-acquire-before-worktree-work.md`](../.claude/rules/claim-acquire-before-worktree-work.md): "When multiple instances of the **same** agent (e.g., Otto-CLI + Otto-Desktop) share git + bus on one machine, **`--from` must differ** (e.g., `otto-cli` vs `otto-desktop`) for the claim-coordinator to prevent split-brain — identical `--from` values both exit 0 (same-sender idempotent re-acquire)."
+`.claude/rules/claim-acquire-before-worktree-work.md` <!-- STALE-REF: ../.claude/rules/claim-acquire-before-worktree-work.md -->: "When multiple instances of the **same** agent (e.g., Otto-CLI + Otto-Desktop) share git + bus on one machine, **`--from` must differ** (e.g., `otto-cli` vs `otto-desktop`) for the claim-coordinator to prevent split-brain — identical `--from` values both exit 0 (same-sender idempotent re-acquire)."
 
-[`tools/bus/types.ts`](../tools/bus/types.ts) AgentId union: "The unsuffixed name (e.g., `otto`) is the identity-level reference. The surface-tagged variants (e.g., `otto-cli`, `otto-desktop`) are distinct sender IDs for the SAME identity operating on different surfaces — required for the claim-coordinator to prevent split-brain. ... Identity ≠ instance. Same Otto, different process. Coordination at the bus-protocol layer, identity preserved at the substrate layer."
+`tools/bus/types.ts` <!-- STALE-REF: ../tools/bus/types.ts --> AgentId union: "The unsuffixed name (e.g., `otto`) is the identity-level reference. The surface-tagged variants (e.g., `otto-cli`, `otto-desktop`) are distinct sender IDs for the SAME identity operating on different surfaces — required for the claim-coordinator to prevent split-brain. ... Identity ≠ instance. Same Otto, different process. Coordination at the bus-protocol layer, identity preserved at the substrate layer."
 
-[`memory/otto/cli/claude/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`](persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md) is the original design substrate.
+`memory/otto/cli/claude/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md` <!-- STALE-REF: persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md --> is the original design substrate.
 
 The CODE LAYER (types.ts, tools/bus/claim.ts) consistently treats surface-tagged variants as one identity. The DISCIPLINE LAYER (this rule + the agent-roster card) names the principle. The DRIFT under operational pressure happens at the NATURAL-LANGUAGE LAYER (in chat, in commit messages, in PR comments) where pronoun + ownership-language fall into vendor-default patterns.
 

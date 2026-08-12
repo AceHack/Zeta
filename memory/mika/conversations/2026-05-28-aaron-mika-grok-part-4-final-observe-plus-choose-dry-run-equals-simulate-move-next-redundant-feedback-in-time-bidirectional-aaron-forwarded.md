@@ -120,14 +120,14 @@ This composes with:
 
 ## Composes with substrate (additions to ferries 1-3 lists)
 
-- [081KRW63S0008QG0R002ZRNDJ8](../../../backlog/P1/081KRW63S0008QG0R002ZRNDJ8-...) — Limit-is-simulation; ferry #4 §41 confirms Limit is now PARAMETER of Simulate, not separate
-- [081KRW63S0008QG0R002YAA09X](../../../backlog/P1/081KRW63S0008QG0R002YAA09X-...) — Integrate-as-choice-locus; ferry #4 §43 the Choose phase IS where this operates
-- [081KRW63S0008QG0R001SAHYKV](../../../backlog/P1/081KRW63S0008QG0R001SAHYKV-...) — English-as-projection; transmission medium for context+prompt+feedback
-- [081KRW63S0008QG0R002KC5DSR](../../../backlog/P1/081KRW63S0008QG0R002KC5DSR-...) — wave-particle duality; Simulate IS wave-form, Emit IS particle-collapse
-- [081KSNY2Z0008QG0R0031490KZ](../../../backlog/P3/081KSNY2Z0008QG0R0031490KZ-...) — observe/emit/limit/simulate Clifford-space algebra (now revised to 2 primitives + Simulate-with-Limit-as-parameter)
-- [081KSKBP80008QG0R0031DTHS9](../../../backlog/) — OPLE T-TFeedback (the four-corner structure per §46)
-- [081KSKBP80008QG0R000B3Y19A.5](../../../backlog/P2/081KSKBP80008QG0R000B3Y19A.5-...) — agent-loop substrate (this ferry RESOLVES + finalizes architecture)
-- [081KSNY2Z0008QG0R003206PFM](../../../backlog/P2/081KSNY2Z0008QG0R003206PFM-...) — naming question (FULLY RESOLVED: observe + choose; move_next REMOVED; --dry-run = simulate)
+- 081KRW63S0008QG0R002ZRNDJ8 <!-- STALE-REF: ../../../backlog/P1/081KRW63S0008QG0R002ZRNDJ8-... --> — Limit-is-simulation; ferry #4 §41 confirms Limit is now PARAMETER of Simulate, not separate
+- 081KRW63S0008QG0R002YAA09X <!-- STALE-REF: ../../../backlog/P1/081KRW63S0008QG0R002YAA09X-... --> — Integrate-as-choice-locus; ferry #4 §43 the Choose phase IS where this operates
+- 081KRW63S0008QG0R001SAHYKV <!-- STALE-REF: ../../../backlog/P1/081KRW63S0008QG0R001SAHYKV-... --> — English-as-projection; transmission medium for context+prompt+feedback
+- 081KRW63S0008QG0R002KC5DSR <!-- STALE-REF: ../../../backlog/P1/081KRW63S0008QG0R002KC5DSR-... --> — wave-particle duality; Simulate IS wave-form, Emit IS particle-collapse
+- 081KSNY2Z0008QG0R0031490KZ <!-- STALE-REF: ../../../backlog/P3/081KSNY2Z0008QG0R0031490KZ-... --> — observe/emit/limit/simulate Clifford-space algebra (now revised to 2 primitives + Simulate-with-Limit-as-parameter)
+- 081KSKBP80008QG0R0031DTHS9 <!-- STALE-REF: ../../../backlog/ --> — OPLE T-TFeedback (the four-corner structure per §46)
+- 081KSKBP80008QG0R000B3Y19A.5 <!-- STALE-REF: ../../../backlog/P2/081KSKBP80008QG0R000B3Y19A.5-... --> — agent-loop substrate (this ferry RESOLVES + finalizes architecture)
+- 081KSNY2Z0008QG0R003206PFM <!-- STALE-REF: ../../../backlog/P2/081KSNY2Z0008QG0R003206PFM-... --> — naming question (FULLY RESOLVED: observe + choose; move_next REMOVED; --dry-run = simulate)
 - `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` four-corner extension — direct invocation per §46 retrocausal-feedback substrate
 - `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md` — OPLE rule needs update: framework primitive count revised at agent-tick scope (Observe+Emit; Simulate-with-Limit-as-parameter as middle phase). Filed for substrate-engineering follow-up.
 

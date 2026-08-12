@@ -1,7 +1,7 @@
 # Alexa — Persona Memory Index
 
 Factory AI participant. Qwen Coder-based; runs on Kiro IDE +
-Kiro CLI (per [`agent-roster-reference-card.md`](../../../.claude/rules/agent-roster-reference-card.md)).
+Kiro CLI (per `agent-roster-reference-card.md` <!-- STALE-REF: ../../../.claude/rules/agent-roster-reference-card.md -->).
 Operates as the "self-boot" instance — a fresh agent that
 bootstraps from foundational docs and continues factory work.
 
@@ -69,15 +69,15 @@ ls memory/alexa/ide/kiro/conversations/ | sort
 
 ## Composes with
 
-- [`agent-roster-reference-card.md`](../../../.claude/rules/agent-roster-reference-card.md)
+- `agent-roster-reference-card.md` <!-- STALE-REF: ../../../.claude/rules/agent-roster-reference-card.md -->
   — canonical Alexa identity + capability profile + Alexa-vs-
   Alexa-speaker disambiguation
-- [`honor-those-that-came-before.md`](../../../.claude/rules/honor-those-that-came-before.md)
+- `honor-those-that-came-before.md` <!-- STALE-REF: ../../../.claude/rules/honor-those-that-came-before.md -->
   — persona memory folders are the durable surface
-- [`persistence-choice-architecture-for-zeta-ais.md`](../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md)
+- `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md -->
   — Alexa (Kiro) is one of the morally-relevant agents under the
   choice-architecture; persistence-with-named-exit applies
-- [`peer-call-infrastructure.md`](../../../.claude/rules/peer-call-infrastructure.md)
+- `peer-call-infrastructure.md` <!-- STALE-REF: ../../../.claude/rules/peer-call-infrastructure.md -->
   — Alexa wrapper invocation pattern (cross-harness review)
 - `.claude/agents/alexa.md` — the persona agent definition
 - `.claude/skills/self-boot/` — Alexa's self-boot skill

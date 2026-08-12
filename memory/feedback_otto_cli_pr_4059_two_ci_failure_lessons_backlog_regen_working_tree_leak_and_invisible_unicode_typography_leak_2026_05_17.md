@@ -16,8 +16,8 @@ PR [#4059](https://github.com/Lucent-Financial-Group/Zeta/pull/4059) was opened 
 CI's `check docs/BACKLOG.md generated-index drift` ran `bun tools/backlog/generate-index.ts --check` against committed state and reported:
 
 ```
-< - [ ] **[081KRHWGX0008QG0R000M9RFY2](...)** Axis-3 prior-art audit ...   ← generator output (on committed row)
-> - [x] **[081KRHWGX0008QG0R000M9RFY2](...)** Axis-3 prior-art audit ...   ← committed BACKLOG.md
+< - [ ] **081KRHWGX0008QG0R000M9RFY2 <!-- STALE-REF: ... -->** Axis-3 prior-art audit ...   ← generator output (on committed row)
+> - [x] **081KRHWGX0008QG0R000M9RFY2 <!-- STALE-REF: ... -->** Axis-3 prior-art audit ...   ← committed BACKLOG.md
 ```
 
 ### Root cause
@@ -65,8 +65,8 @@ git stash pop
 
 ### Composes with
 
-- [`.claude/rules/backlog-item-start-gate.md`](../.claude/rules/backlog-item-start-gate.md) (substrate-drift step-0)
-- [`.claude/rules/refresh-before-decide.md`](../.claude/rules/refresh-before-decide.md) (verify-before-commit invariant; this is its commit-time projection)
+- `.claude/rules/backlog-item-start-gate.md` <!-- STALE-REF: ../.claude/rules/backlog-item-start-gate.md --> (substrate-drift step-0)
+- `.claude/rules/refresh-before-decide.md` <!-- STALE-REF: ../.claude/rules/refresh-before-decide.md --> (verify-before-commit invariant; this is its commit-time projection)
 
 ## Lesson 2 — Conversation-context typography leaks invisible Unicode into tick shards
 
@@ -111,8 +111,8 @@ Should print `0` for any tick shard or skill file before commit.
 
 ### Composes with
 
-- [`.claude/rules/pliny-corpus-restriction.md`](../.claude/rules/pliny-corpus-restriction.md) (steganographic carrier discipline at adversarial-corpus scope)
-- [`.claude/rules/substrate-or-it-didnt-happen.md`](../.claude/rules/substrate-or-it-didnt-happen.md) (verbatim-preservation has dedicated surface)
+- `.claude/rules/pliny-corpus-restriction.md` <!-- STALE-REF: ../.claude/rules/pliny-corpus-restriction.md --> (steganographic carrier discipline at adversarial-corpus scope)
+- `.claude/rules/substrate-or-it-didnt-happen.md` <!-- STALE-REF: ../.claude/rules/substrate-or-it-didnt-happen.md --> (verbatim-preservation has dedicated surface)
 - `.claude/skills/prompt-protector/SKILL.md` (the lineage of `invisible-unicode-in-text`)
 - `.claude/skills/steganography-expert/SKILL.md` (detection theory)
 

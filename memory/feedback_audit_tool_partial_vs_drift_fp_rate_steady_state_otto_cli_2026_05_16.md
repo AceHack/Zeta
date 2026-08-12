@@ -56,10 +56,10 @@ This would reduce ~75% of the manual partial-vs-drift work to "skim the auto-cla
 - [`memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md`](feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md) — the foundational discipline
 - [`memory/feedback_substrate_drift_catch_full_session_arc_infrastructure_eats_itself_otto_cli_2026_05_16.md`](feedback_substrate_drift_catch_full_session_arc_infrastructure_eats_itself_otto_cli_2026_05_16.md) — the session-cap arc memory
 - [`memory/feedback_audit_backlog_status_drift_second_false_positive_class_inline_composes_with_otto_cli_2026_05_16.md`](feedback_audit_backlog_status_drift_second_false_positive_class_inline_composes_with_otto_cli_2026_05_16.md) — earlier FP class catalog
-- [`.claude/rules/backlog-item-start-gate.md`](../.claude/rules/backlog-item-start-gate.md) — the discriminator the audit tool depends on
-- [081KRQ1AB0008QG0R000QYJFZE](../docs/backlog/P3/081KRQ1AB0008QG0R000QYJFZE-audit-backlog-status-drift-detection-2026-05-16.md) — audit-tool spec
-- [081KRQ1AB0008QG0R003DYANMC](../docs/backlog/P3/081KRQ1AB0008QG0R003DYANMC-audit-backlog-status-drift-quality-improvements-2026-05-16.md) — 4 quality slices follow-up
-- [`tools/hygiene/audit-backlog-status-drift.ts`](../tools/hygiene/audit-backlog-status-drift.ts) — the audit tool
+- `.claude/rules/backlog-item-start-gate.md` <!-- STALE-REF: ../.claude/rules/backlog-item-start-gate.md --> — the discriminator the audit tool depends on
+- 081KRQ1AB0008QG0R000QYJFZE <!-- STALE-REF: ../docs/backlog/P3/081KRQ1AB0008QG0R000QYJFZE-audit-backlog-status-drift-detection-2026-05-16.md --> — audit-tool spec
+- 081KRQ1AB0008QG0R003DYANMC <!-- STALE-REF: ../docs/backlog/P3/081KRQ1AB0008QG0R003DYANMC-audit-backlog-status-drift-quality-improvements-2026-05-16.md --> — 4 quality slices follow-up
+- `tools/hygiene/audit-backlog-status-drift.ts` <!-- STALE-REF: ../tools/hygiene/audit-backlog-status-drift.ts --> — the audit tool
 
 ## Origin tick
 

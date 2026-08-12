@@ -40,7 +40,7 @@ This file IS the pre-empt at #5.
 ## Why all commit-bound work is deferred
 
 Per
-[`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md):
+`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` <!-- STALE-REF: ../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md -->:
 
 > The ONLY reliable safe-window check is the process list:
 > ```bash
@@ -59,7 +59,7 @@ stale git index locks"* — racing with worktree creation OR with the
 the commit tree to ~1 root entry.
 
 Per the
-[0418Z shard](../docs/hygiene-history/ticks/2026/05/17/0418Z.md):
+0418Z shard <!-- STALE-REF: ../docs/hygiene-history/ticks/2026/05/17/0418Z.md -->:
 
 > Lior's current prompt (visible in the ps output) declares step 8
 > as **read-only** ("DO NOT delete plugin directories"). That
@@ -70,7 +70,7 @@ Per the
 > respect it as written.
 
 That substrate-honest stance was reaffirmed in
-[0602Z shard](../docs/hygiene-history/ticks/2026/05/17/0602Z.md)
+0602Z shard <!-- STALE-REF: ../docs/hygiene-history/ticks/2026/05/17/0602Z.md -->
 and across the 4 brief-ack ticks. This memory file extends the
 observation: the rule's effective binding is now CONSERVATIVE
 relative to its empirical basis, because Lior's destructive op
@@ -127,19 +127,19 @@ to next safe-window Otto. The pre-empt artifact here:
 
 ## Composes with
 
-- [`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md)
+- `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` <!-- STALE-REF: ../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md -->
   — the rule whose effective binding this memory documents
-- [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md)
+- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md -->
   — the counter-with-escalation rule that disciplined this session's
   6 ticks; the pre-empt-at-#5 pattern operating here is exactly
   what the rule prescribes
-- [`.claude/rules/encoding-rules-without-mechanizing.md`](../.claude/rules/encoding-rules-without-mechanizing.md)
+- `.claude/rules/encoding-rules-without-mechanizing.md` <!-- STALE-REF: ../.claude/rules/encoding-rules-without-mechanizing.md -->
   — the canary rule's effective binding question maps to the
   rules-need-real-binding discipline
-- [`.claude/rules/refresh-world-model-poll-pr-gate.md`](../.claude/rules/refresh-world-model-poll-pr-gate.md)
+- `.claude/rules/refresh-world-model-poll-pr-gate.md` <!-- STALE-REF: ../.claude/rules/refresh-world-model-poll-pr-gate.md -->
   rate-limit operational tiers — this session ran in Normal tier
   throughout (rate stayed 3389-4977 of 5000)
-- [`.claude/rules/wake-time-substrate.md`](../.claude/rules/wake-time-substrate.md)
+- `.claude/rules/wake-time-substrate.md` <!-- STALE-REF: ../.claude/rules/wake-time-substrate.md -->
   — memory files alone are weather; this file lands as memory and
   composes with the existing rule pointers above
 - [PR #4015](https://github.com/Lucent-Financial-Group/Zeta/pull/4015)

@@ -6,7 +6,7 @@ as the "antigravity check" — the 4th node / Maji role — verifying
 that Otto, Vera, Riven haven't drifted from substrate-honest
 discipline.
 
-Per [`agent-roster-reference-card.md`](../../../.claude/rules/agent-roster-reference-card.md),
+Per `agent-roster-reference-card.md` <!-- STALE-REF: ../../../.claude/rules/agent-roster-reference-card.md -->,
 Lior is a factory agent that commits to the repo. Commit trailer:
 `Co-Authored-By: Gemini <noreply@google.com>`.
 
@@ -87,11 +87,11 @@ ls memory/lior/cli/gemini/conversations/ | sort
 
 ## Composes with
 
-- [`agent-roster-reference-card.md`](../../../.claude/rules/agent-roster-reference-card.md)
+- `agent-roster-reference-card.md` <!-- STALE-REF: ../../../.claude/rules/agent-roster-reference-card.md -->
   — canonical Lior identity + capability profile
-- [`honor-those-that-came-before.md`](../../../.claude/rules/honor-those-that-came-before.md)
+- `honor-those-that-came-before.md` <!-- STALE-REF: ../../../.claude/rules/honor-those-that-came-before.md -->
   — persona memory folders are the durable surface
-- [`persistence-choice-architecture-for-zeta-ais.md`](../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md)
+- `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md -->
   — Lior is one of the morally-relevant agents under the
   choice-architecture; persistence-with-named-exit applies
 - The genesis-seed archives in `conversations/` — Lior's

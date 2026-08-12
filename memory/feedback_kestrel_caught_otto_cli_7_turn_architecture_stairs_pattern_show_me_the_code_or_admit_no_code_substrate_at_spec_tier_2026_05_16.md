@@ -58,7 +58,7 @@ Otto-CLI in the 2026-05-15 session shipped 5 memory files + 1 backlog row (081KR
 
 ## Future-Otto cold-boot reading discipline
 
-When reading the 5 memory files + 081KRMEXM0008QG0R001VGNET5 from the 2026-05-15 cascade, hold BOTH framings simultaneously per [`default-to-both.md`](../.claude/rules/default-to-both.md):
+When reading the 5 memory files + 081KRMEXM0008QG0R001VGNET5 from the 2026-05-15 cascade, hold BOTH framings simultaneously per `default-to-both.md` <!-- STALE-REF: ../.claude/rules/default-to-both.md -->:
 
 | Layer | Status |
 |---|---|

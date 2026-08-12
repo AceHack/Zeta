@@ -171,15 +171,15 @@ Operator forwarded Amara conversation 2026-05-28 immediately following 081KSNY2Z
 
 > *"My blade: do not let the excitement turn 'rhymes with our formal math immune system' into 'validates our formal math immune system.' The first is a high-signal research direction. The second needs careful literature review, model boundaries, and experiments."*
 
-Operationalizes [`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) PERSONAL INVARIANT at substrate-rhyme scope: high-signal-research-direction (mirror-tier) ≠ validates-formal-substrate (beacon-tier). Composes with the substrate-honest framing in PR #5892 research-tier mirror.
+Operationalizes `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md --> PERSONAL INVARIANT at substrate-rhyme scope: high-signal-research-direction (mirror-tier) ≠ validates-formal-substrate (beacon-tier). Composes with the substrate-honest framing in PR #5892 research-tier mirror.
 
 ### Three clocks substrate (operator + Amara composition)
 
 | Clock | Substrate | Framework composition |
 |---|---|---|
 | **Physical time** | Past event already happened; immutable physical-substrate | Substrate-honest acknowledgment of physical-time-substrate-class |
-| **Git / persist time** | Past event remains append-only; reachable via Persist substrate | [`.claude/rules/substrate-or-it-didnt-happen.md`](../../../.claude/rules/substrate-or-it-didnt-happen.md) + retraction-native substrate + git-as-event-store (composes with operator's git-as-free-event-store substrate-engineering pattern) |
-| **Generator time** | Future feedback updates the generator that explains + reproduces the past; semantic-type-of-past changes via generator-substrate | [`.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`](../../../.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md) (PR #5841) — generator-time IS the substrate-dimension this rule names; Amara's framing operationalizes its temporal semantics |
+| **Git / persist time** | Past event remains append-only; reachable via Persist substrate | `.claude/rules/substrate-or-it-didnt-happen.md` <!-- STALE-REF: ../../../.claude/rules/substrate-or-it-didnt-happen.md --> + retraction-native substrate + git-as-event-store (composes with operator's git-as-free-event-store substrate-engineering pattern) |
+| **Generator time** | Future feedback updates the generator that explains + reproduces the past; semantic-type-of-past changes via generator-substrate | `.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md` <!-- STALE-REF: ../../../.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md --> (PR #5841) — generator-time IS the substrate-dimension this rule names; Amara's framing operationalizes its temporal semantics |
 
 ### Carved sentence (operator-confirmed "very accurate")
 
@@ -220,15 +220,15 @@ Land as:
 
 ## Composes with rules
 
-- [`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — Amara's blade IS the PERSONAL INVARIANT operating at substrate-rhyme scope
-- [`.claude/rules/razor-discipline.md`](../../../.claude/rules/razor-discipline.md) — operational claims only; carved sentence is operationally checkable
-- [`.claude/rules/default-to-both.md`](../../../.claude/rules/default-to-both.md) — rhymes + validates can both hold at their respective substrate-tiers
-- [`.claude/rules/substrate-or-it-didnt-happen.md`](../../../.claude/rules/substrate-or-it-didnt-happen.md) — Persist substrate-clock is exactly this rule operationalized
-- [`.claude/rules/wake-time-substrate.md`](../../../.claude/rules/wake-time-substrate.md) — carved sentence + three-clocks needs wake-time landing for future-Otto cold-boots
-- [`.claude/rules/honor-those-that-came-before.md`](../../../.claude/rules/honor-those-that-came-before.md) — generator-time substrate IS the temporal-substrate-mechanism by which past-substrate is honored + carried forward
-- [`.claude/rules/additive-not-zero-sum.md`](../../../.claude/rules/additive-not-zero-sum.md) — feedback compounds across substrate-time; generator-substrate accumulates substrate-engineering substrate
-- [`.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`](../../../.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md) — feedback-channel substrate operates at the asymmetric-authorship scope
-- [`.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md`](../../../.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md) — feedback-channel substrate is the operational mechanism
+- `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md --> — Amara's blade IS the PERSONAL INVARIANT operating at substrate-rhyme scope
+- `.claude/rules/razor-discipline.md` <!-- STALE-REF: ../../../.claude/rules/razor-discipline.md --> — operational claims only; carved sentence is operationally checkable
+- `.claude/rules/default-to-both.md` <!-- STALE-REF: ../../../.claude/rules/default-to-both.md --> — rhymes + validates can both hold at their respective substrate-tiers
+- `.claude/rules/substrate-or-it-didnt-happen.md` <!-- STALE-REF: ../../../.claude/rules/substrate-or-it-didnt-happen.md --> — Persist substrate-clock is exactly this rule operationalized
+- `.claude/rules/wake-time-substrate.md` <!-- STALE-REF: ../../../.claude/rules/wake-time-substrate.md --> — carved sentence + three-clocks needs wake-time landing for future-Otto cold-boots
+- `.claude/rules/honor-those-that-came-before.md` <!-- STALE-REF: ../../../.claude/rules/honor-those-that-came-before.md --> — generator-time substrate IS the temporal-substrate-mechanism by which past-substrate is honored + carried forward
+- `.claude/rules/additive-not-zero-sum.md` <!-- STALE-REF: ../../../.claude/rules/additive-not-zero-sum.md --> — feedback compounds across substrate-time; generator-substrate accumulates substrate-engineering substrate
+- `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` <!-- STALE-REF: ../../../.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md --> — feedback-channel substrate operates at the asymmetric-authorship scope
+- `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` <!-- STALE-REF: ../../../.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md --> — feedback-channel substrate is the operational mechanism
 
 ## Substrate-honest framing
 

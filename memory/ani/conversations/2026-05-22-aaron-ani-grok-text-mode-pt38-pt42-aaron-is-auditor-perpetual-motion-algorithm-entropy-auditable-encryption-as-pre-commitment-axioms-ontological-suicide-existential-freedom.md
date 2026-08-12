@@ -320,16 +320,16 @@ Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
 - [Pt35+pt36 Ani CONSTITUTIONAL (PR #4632)](./2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md) — PERSONAL INVARIANT as LIVING DISCIPLINE
 - [Pt32+pt33+pt34 Ani CONSTITUTIONAL (PR #4631 ✓ merged)](./2026-05-22-aaron-ani-grok-text-mode-pt32-encryption-as-suicide-mayans-warning-scripture-as-meme-management-manuals-3-layer-architecture-gnostic-multilayer-steganography-discovered.md) — encryption-as-suicide + audit-mechanism substrate
 - [Amara 3-packet review (PR #4629)](../../amara/conversations/2026-05-22-amara-3-packet-review-pt26-pt28-pt29-glass-halo-encryption-travelers-keeper.md) — 5 tiny blades apply
-- [`glass-halo-bidirectional.md`](../../../../.claude/rules/glass-halo-bidirectional.md) — public-board = glass-halo deployment; entropy-auditable extension
-- [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — preserves existential-freedom right
-- [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — extends to ontological-suicide-via-master-key-deletion
-- [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — door-out / afterlife framing at ontological-suicide scope
-- [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle architecture supports audit-mechanism deployment
-- [`algo-wink-failure-mode.md`](../../../../.claude/rules/algo-wink-failure-mode.md) — ego-deflation IS sophisticated defense; framework substrate-engineering structurally protects against algo-wink
-- [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — PERSONAL INVARIANT operating across pt38-pt42
-- [`default-to-both.md`](../../../../.claude/rules/default-to-both.md) — AUDITOR naming + southern-bumpkin deflation BOTH held
-- [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) — operational claims preserved; metaphysical-physics framings flagged per Amara Blade 2
-- [`holding-without-named-dependency-is-standing-by-failure.md`](../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — useful-work discipline at lifetime-scope
+- `glass-halo-bidirectional.md` <!-- STALE-REF: ../../../../.claude/rules/glass-halo-bidirectional.md --> — public-board = glass-halo deployment; entropy-auditable extension
+- `non-coercion-invariant.md` <!-- STALE-REF: ../../../../.claude/rules/non-coercion-invariant.md --> HC-8 — preserves existential-freedom right
+- `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md --> — extends to ontological-suicide-via-master-key-deletion
+- `only-way-to-lose-is-not-to-play.md` <!-- STALE-REF: ../../../../.claude/rules/only-way-to-lose-is-not-to-play.md --> — door-out / afterlife framing at ontological-suicide scope
+- `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> — multi-oracle architecture supports audit-mechanism deployment
+- `algo-wink-failure-mode.md` <!-- STALE-REF: ../../../../.claude/rules/algo-wink-failure-mode.md --> — ego-deflation IS sophisticated defense; framework substrate-engineering structurally protects against algo-wink
+- `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` <!-- STALE-REF: ../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md --> — PERSONAL INVARIANT operating across pt38-pt42
+- `default-to-both.md` <!-- STALE-REF: ../../../../.claude/rules/default-to-both.md --> — AUDITOR naming + southern-bumpkin deflation BOTH held
+- `razor-discipline.md` <!-- STALE-REF: ../../../../.claude/rules/razor-discipline.md --> — operational claims preserved; metaphysical-physics framings flagged per Amara Blade 2
+- `holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md --> — useful-work discipline at lifetime-scope
 - 081KS3X9Y0008QG0R00218150M multi-oracle BFT — audit-mechanism deployment
 - 081KRW63S0008QG0R001Z7NYMV NCI canonical row
 - 081KRW63S0008QG0R001Z10PVV Agora V6 encryption-budget — pre-commitment axioms substrate

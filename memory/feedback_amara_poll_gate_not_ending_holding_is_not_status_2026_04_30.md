@@ -8,7 +8,7 @@ created: 2026-04-30
 # Poll the gate, not the ending — "Holding." is not a status
 
 > **Executable implementation**:
-> [`tools/github/poll-pr-gate.ts`](../tools/github/poll-pr-gate.ts)
+> `tools/github/poll-pr-gate.ts` <!-- STALE-REF: ../tools/github/poll-pr-gate.ts -->
 > (PR #921, 2026-04-30; 5-AI peer-reviewer convergence on
 > "the loop should use it every tick, so it deserves tests"). Run
 > `bun tools/github/poll-pr-gate.ts <PR_NUMBER>` for a structured

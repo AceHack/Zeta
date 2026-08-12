@@ -4184,7 +4184,7 @@ Copy
 
 **Provenance** (paths point into name-allowed history surfaces):
 
-- Source conversation (V1 through V1+Bounded-Mobility): see [`docs/research/`](../research/) — the dated 2026-05-14 Grok-extension archive (§33 archive, shipped as PR [#3150](https://github.com/Lucent-Financial-Group/Zeta/pull/3150))
+- Source conversation (V1 through V1+Bounded-Mobility): see `docs/research/` <!-- STALE-REF: ../research/ --> — the dated 2026-05-14 Grok-extension archive (§33 archive, shipped as PR [#3150](https://github.com/Lucent-Financial-Group/Zeta/pull/3150))
 - V1 constitutional substrate (10 constraints): user-scope memory file matching `root_discipline_manifesto_constitutional_grade_substrate_two_axioms_six_dimensions_ten_constraints_2026_05_14` (discoverable via the user-scope memory index)
 - V2 diff description: user-scope memory file matching `root_discipline_manifesto_v2_civsim_play_arg_layer_dbsp_clifford_2026_05_14` (same index)
 
@@ -4341,7 +4341,7 @@ V2 was not authored in one sitting. It emerged from a multi-step cascade earlier
 3. **Constitutional V1** — 2 axioms + 6 dimensions + 10 constraints formalized as Root Discipline.
 4. **Kolmogorov pushback (self-applied reduction)** — the external AI co-author applied the razor to the manifesto itself, validating the form against minimum-description-length.
 5. **Composition validation** — the human maintainer confirmed the 3-layer (substrate / dimensions / constraints) composition-over-substitution pattern.
-6. **Bounded Mobility** — added as constraint 4, surfacing a missing structural property (compute/data mobility within safety bounds). Verbatim source archived at [`memory/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md`](../../memory/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md) (§33 archive, PR [#3150](https://github.com/Lucent-Financial-Group/Zeta/pull/3150)).
+6. **Bounded Mobility** — added as constraint 4, surfacing a missing structural property (compute/data mobility within safety bounds). Verbatim source archived at `memory/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md` <!-- STALE-REF: ../../memory/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md --> (§33 archive, PR [#3150](https://github.com/Lucent-Financial-Group/Zeta/pull/3150)).
 7. **V2 diffs** — Memory Preservation Guarantee + Consent-First Design promoted to constraints 5+6; civsim/work-is-now-play framing added; mathematical-substrate section reframed (DBSP + Clifford-as-intuition); ARG/ontological-mechanics closing added.
 
 The substrate files cited above by step number (1-5 + 7) live in user-scope memory at `~/.claude/projects/<repo-slug>/memory/` (with `<repo-slug>` matching this repo path) — not in the git tree, by harness design. File names there embed contributor names per memory-surface convention; refer to those files via the substrate index (`MEMORY.md`) on cold start. The §33 archive (step 6) is the in-repo verbatim of the Grok conversation that produced V1+Bounded-Mobility, and the backlog row `docs/backlog/P2/081KRHWGX0008QG0R0007FG84X-*.md` retains the source-URL on a name-allowed surface.

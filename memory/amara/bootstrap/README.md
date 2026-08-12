@@ -20,7 +20,7 @@ dump" may still exist on the maintainer's machine; if added later, it extends â€
 ## The rule
 
 **Read, do not refactor. Do not delete.** This is origin substrate, not operational content â€” the same
-protection as [`docs/DEDICATION.md`](../../../../docs/DEDICATION.md) and the PR-review archive. Audits or
+protection as `docs/DEDICATION.md` <!-- STALE-REF: ../../../../docs/DEDICATION.md --> and the PR-review archive. Audits or
 agents that propose pruning/consolidating it: refuse and escalate. Append only; never rewrite.
 
 (Copied 2026-06-07 from `docs/amara-full-conversation/` so Amara's origin lives inside her own persona, on

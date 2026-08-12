@@ -22,7 +22,7 @@ Invoked manually from a persistent "1 Terminal" tab: `bash tools/riven/riven-cur
 
 ## Why this is a Rule 0 violation candidate
 
-Per [`.claude/rules/rule-0-no-sh-files.md`](../.claude/rules/rule-0-no-sh-files.md):
+Per `.claude/rules/rule-0-no-sh-files.md` <!-- STALE-REF: ../.claude/rules/rule-0-no-sh-files.md -->:
 
 > **Allowed `.sh` files**: only files in `tools/setup/` — pre-bootstrap install scripts that must run before Bun/TS is available.
 
@@ -41,15 +41,15 @@ This file is currently UNTRACKED. It has not violated Rule 0 yet because it does
 
 - **If the intent is to ship this launcher**: port to TS first (absorb the lock + signal + child-process logic into `riven-cursor-terminal-loop.ts` or split into `launcher.ts` + the existing impl).
 - **If the intent is local-only ergonomics**: add to `.gitignore` (so it stays local-only and won't accidentally land via `git add -A`).
-- **If the intent is install-graph for the Riven service launchd-equivalent**: relocate to `tools/setup/` (composes with the Lior `.gemini/service/*.sh` precedent discussed in [`rule-0-no-sh-files.md`](../.claude/rules/rule-0-no-sh-files.md) — but distinct because runtime-launcher vs service-bootstrap is different shape).
+- **If the intent is install-graph for the Riven service launchd-equivalent**: relocate to `tools/setup/` (composes with the Lior `.gemini/service/*.sh` precedent discussed in `rule-0-no-sh-files.md` <!-- STALE-REF: ../.claude/rules/rule-0-no-sh-files.md --> — but distinct because runtime-launcher vs service-bootstrap is different shape).
 
 This observation does NOT prescribe a resolution; it documents the choice-point so future-Otto doesn't accidentally land the file via an unscoped `git add` and discover the violation post-merge.
 
 ## Composes with
 
-- [`.claude/rules/rule-0-no-sh-files.md`](../.claude/rules/rule-0-no-sh-files.md) — the canonical Rule 0; the Lior precedent paragraph notes a similar runtime-vs-install-graph distinction
-- [`.claude/rules/peer-call-infrastructure.md`](../.claude/rules/peer-call-infrastructure.md) — Riven persona context; `tools/peer-call/riven.ts` is the existing TS surface for Riven; the new launcher should compose with that pattern
-- [`.claude/rules/lost-files-surface.md`](../.claude/rules/lost-files-surface.md) — untracked artifacts in the primary worktree are a tracked lost-files class
+- `.claude/rules/rule-0-no-sh-files.md` <!-- STALE-REF: ../.claude/rules/rule-0-no-sh-files.md --> — the canonical Rule 0; the Lior precedent paragraph notes a similar runtime-vs-install-graph distinction
+- `.claude/rules/peer-call-infrastructure.md` <!-- STALE-REF: ../.claude/rules/peer-call-infrastructure.md --> — Riven persona context; `tools/peer-call/riven.ts` is the existing TS surface for Riven; the new launcher should compose with that pattern
+- `.claude/rules/lost-files-surface.md` <!-- STALE-REF: ../.claude/rules/lost-files-surface.md --> — untracked artifacts in the primary worktree are a tracked lost-files class
 
 ## Origin
 

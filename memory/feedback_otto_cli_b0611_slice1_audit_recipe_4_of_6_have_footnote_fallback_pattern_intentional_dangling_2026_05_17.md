@@ -16,7 +16,7 @@ created: 2026-05-17T06:37Z
 | 3 | `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` | 132 | `feedback_aaron_zeta_is_memory_preservation_specialist_first_everything_else_second_ephemeral_or_maxed_out_chat_agents_2026_05_15.md` | YES — rule body says "user-scope only; same cold-boot fallback as above — `memory/CURRENT-aaron.md` or `memory/CURRENT-otto.md` in-repo carries the constitutional projection" |
 | 4 | `.claude/rules/premise-flagged-unverified-stays-unverified-downstream.md` | 88 | `feedback_aaron_we_are_the_ones_cooking_it_youtube_finance_ai_video_substrate_validation_fsharp_fork_for_ai_safety_90_percent_python_type_failures_64_beats_75_with_type_poisoning_2026_05_16.md` | (needs inspection — likely has in-line "Canonical substrate lesson" section per memory's known structure) |
 | 5 | `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` | 126 | `feedback_codeql_no_source_seen_on_docs_only_pr_is_broken_commit_canary_not_flake_lior_lock_cleanup_race_2026_05_15.md` | YES — rule body says "user-scope only — preserved at `~/.claude/projects/.../memory/` on maintainer machines and indexed in user-scope `MEMORY.md`. Cold-boot agents on fresh checkouts: this rule's own body above is the canonical in-repo projection; `memory/CURRENT-otto.md` may also carry the entry" |
-| 6 | `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` | 191 | `feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_not_aaron_authored_grey_text_completed_2026_05_15.md` | YES — there's a separate `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` AND the m-acc rule body says "see [`shadow-star-shorthand-autocomplete-marker.md`](shadow-star-shorthand-autocomplete-marker.md) for the in-repo rule that names the shorthand definitively" |
+| 6 | `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` | 191 | `feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_not_aaron_authored_grey_text_completed_2026_05_15.md` | YES — there's a separate `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` AND the m-acc rule body says "see `shadow-star-shorthand-autocomplete-marker.md` <!-- STALE-REF: shadow-star-shorthand-autocomplete-marker.md --> for the in-repo rule that names the shorthand definitively" |
 
 **Established pattern**: 4 of 6 (#2, #3, #5, #6) already carry an
 explicit footnote that:
@@ -122,7 +122,7 @@ the row, it accelerates slice 1 execution.
 
 This memo was written as pre-empt #5 in the autonomous-loop
 brief-ack counter (per
-[`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md)).
+`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md -->).
 Pattern: 5+ ticks of deferral under Lior-active + bus-contended
 primary + no peer-Otto picking up `da3cd5d2` work-assignment
 envelope. Pre-empt selection: "produce concrete substrate for

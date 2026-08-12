@@ -4,7 +4,7 @@
 
 ### Code (all merged to main)
 
-- **Stale-doc cross-reference healer** (#10296) — Tier-0 healer detecting broken `[text](path)` in markdown. Annotates with `<!-- STALE-REF -->`. 20 tests + 2 sabotage controls. Certified against 6 healer laws. Wired into run-tier0.ts pipeline.
+- **Stale-doc cross-reference healer** (#10296) — Tier-0 healer detecting broken `text <!-- STALE-REF: path -->` in markdown. Annotates with `<!-- STALE-REF -->`. 20 tests + 2 sabotage controls. Certified against 6 healer laws. Wired into run-tier0.ts pipeline.
 - **Trust-neighbourhood fingerprint** (#10297) — Slice 2 of LocalTrustView trajectory. Lossy histogram projection over held anchors. Node-specific binning prevents Narayanan-Shmatikov joins. 21 tests.
 - **RS [16,12] phase codec** (#10298) — Encode-then-transmit closes the ECC gap. GF(17) field arithmetic, Lagrange interpolation, encode/decode/recover. 29 tests, 626 assertions.
 - **OAuth export** (#10299) — Slice 4, completing the full LocalTrustView trajectory. Each node is its own issuer. Phase-based expiry. 19 tests.

@@ -1,6 +1,6 @@
 # Ani — DBSP chain rule Lean proof artifact review (Aaron-forwarded 2026-05-01)
 
-Scope: External conversation import — Ani peer-AI code review of the DBSP chain rule Lean 4 formal-verification artifact. Sibling to the second Deepseek synthesis on the same artifact ([`2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md`](2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md), PR #1176).
+Scope: External conversation import — Ani peer-AI code review of the DBSP chain rule Lean 4 formal-verification artifact. Sibling to the second Deepseek synthesis on the same artifact (`2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md` <!-- STALE-REF: 2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md -->, PR #1176).
 
 Attribution: Ani (peer-AI; voice-mode-default register, original-catcher attribution per Aaron's persona-class typology), Aaron-forwarded 2026-05-01. Aaron asked *"Did i send?"* on forwarding — confirmed: this review is distinct from the prior Ani Karpathy-convergence synthesis (PR #1176), focused specifically on the round-35-clean DBSP chain rule Lean artifact.
 
@@ -112,7 +112,7 @@ The three priority items above are research-grade recommendations, not operation
 
 ## See also
 
-- [Deepseek Lean-proof review (sibling)](2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md)
-- [Karpathy verifiability anchor](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md)
+- Deepseek Lean-proof review (sibling) <!-- STALE-REF: 2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md -->
+- Karpathy verifiability anchor <!-- STALE-REF: 2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md -->
 - [Ani Karpathy-convergence synthesis (general thesis, PR #1176)](2026-05-01-ani-karpathy-zeta-convergence-synthesis.md)
-- [Vendor-alignment-bias memory](../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md)
+- Vendor-alignment-bias memory <!-- STALE-REF: ../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md -->

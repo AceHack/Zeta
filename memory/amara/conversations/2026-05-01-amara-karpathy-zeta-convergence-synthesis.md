@@ -424,9 +424,9 @@ than either alone.
 
 ## See also
 
-- [Karpathy verifiability anchor](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md) (sibling doc, PR #1175)
-- [Deepseek synthesis](2026-05-01-deepseek-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Alexa synthesis](2026-05-01-alexa-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Ani synthesis](2026-05-01-ani-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Gemini synthesis](2026-05-01-gemini-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [081KQGDBJ0008QG0R003H0G5YQ refresh-github-worldview backlog row](../backlog/P1/081KQGDBJ0008QG0R003H0G5YQ-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md)
+- Karpathy verifiability anchor <!-- STALE-REF: 2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md --> (sibling doc, PR #1175)
+- Deepseek synthesis <!-- STALE-REF: 2026-05-01-deepseek-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Alexa synthesis <!-- STALE-REF: 2026-05-01-alexa-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Ani synthesis <!-- STALE-REF: 2026-05-01-ani-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Gemini synthesis <!-- STALE-REF: 2026-05-01-gemini-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- 081KQGDBJ0008QG0R003H0G5YQ refresh-github-worldview backlog row <!-- STALE-REF: ../backlog/P1/081KQGDBJ0008QG0R003H0G5YQ-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md -->

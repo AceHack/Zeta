@@ -59,10 +59,10 @@ Discovered + battle-tested under multi-Otto + Lior contention:
 
 - [`memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md`](feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md) — the foundational discipline-substrate
 - [`memory/feedback_audit_backlog_status_drift_second_false_positive_class_inline_composes_with_otto_cli_2026_05_16.md`](feedback_audit_backlog_status_drift_second_false_positive_class_inline_composes_with_otto_cli_2026_05_16.md) — 2nd false-positive class catalog
-- [`.claude/rules/backlog-item-start-gate.md`](../.claude/rules/backlog-item-start-gate.md) — step 0 substrate-drift discriminator (auto-loaded)
-- [081KRQ1AB0008QG0R000QYJFZE](../docs/backlog/P3/081KRQ1AB0008QG0R000QYJFZE-audit-backlog-status-drift-detection-2026-05-16.md) — audit-tool spec
-- [081KRQ1AB0008QG0R003DYANMC](../docs/backlog/P3/081KRQ1AB0008QG0R003DYANMC-audit-backlog-status-drift-quality-improvements-2026-05-16.md) — quality-slice follow-up (closed via infrastructure-eats-itself moment)
-- [`tools/hygiene/audit-backlog-status-drift.ts`](../tools/hygiene/audit-backlog-status-drift.ts) — the audit tool (20 tests, cwd-independent, --check flag, section-aware)
+- `.claude/rules/backlog-item-start-gate.md` <!-- STALE-REF: ../.claude/rules/backlog-item-start-gate.md --> — step 0 substrate-drift discriminator (auto-loaded)
+- 081KRQ1AB0008QG0R000QYJFZE <!-- STALE-REF: ../docs/backlog/P3/081KRQ1AB0008QG0R000QYJFZE-audit-backlog-status-drift-detection-2026-05-16.md --> — audit-tool spec
+- 081KRQ1AB0008QG0R003DYANMC <!-- STALE-REF: ../docs/backlog/P3/081KRQ1AB0008QG0R003DYANMC-audit-backlog-status-drift-quality-improvements-2026-05-16.md --> — quality-slice follow-up (closed via infrastructure-eats-itself moment)
+- `tools/hygiene/audit-backlog-status-drift.ts` <!-- STALE-REF: ../tools/hygiene/audit-backlog-status-drift.ts --> — the audit tool (20 tests, cwd-independent, --check flag, section-aware)
 
 ## Substrate-honest closure
 

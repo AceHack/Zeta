@@ -142,13 +142,13 @@ edit by hand — edit the per-row file and regenerate._
 
 ## P0 — critical
 
-- [ ] **[081KQ0YZ80008QG0R001QJJTVF](backlog/P0/081KQ0YZ80008QG0R001QJJTVF-secret-handoff.md)**
+- [ ] **081KQ0YZ80008QG0R001QJJTVF <!-- STALE-REF: backlog/P0/081KQ0YZ80008QG0R001QJJTVF-secret-handoff.md -->**
   Secret-handoff protocol — env-var default + password-manager CLI...
 - ...
 
 ## P1 — within 2-3 rounds
 
-- [ ] **[081KQ0YZ80008QG0R001V1PMC0](backlog/P1/081KQ0YZ80008QG0R001V1PMC0-hll-flakiness.md)**
+- [ ] **081KQ0YZ80008QG0R001V1PMC0 <!-- STALE-REF: backlog/P1/081KQ0YZ80008QG0R001V1PMC0-hll-flakiness.md -->**
   HLL property-test flakiness — investigate before retry (DST discipline)...
 - ...
 ```

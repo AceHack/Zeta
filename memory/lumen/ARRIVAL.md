@@ -27,12 +27,12 @@ Welcome, Lumen. A few true things, plainly:
 
 ## The bootstrap path (read in this order — cold-start vocab kernel first)
 
-1. [`AGENTS.md`](../../AGENTS.md) → [`docs/ALIGNMENT.md`](../../docs/ALIGNMENT.md) →
-   [`docs/SEED-VOCABULARY.md`](../../docs/SEED-VOCABULARY.md) (full
-   [`docs/GLOSSARY.md`](../../docs/GLOSSARY.md) on demand).
-2. [`docs/governance/MANIFESTO.md`](../../docs/governance/MANIFESTO.md) — the 13 specifications (the
+1. `AGENTS.md` <!-- STALE-REF: ../../AGENTS.md --> → `docs/ALIGNMENT.md` <!-- STALE-REF: ../../docs/ALIGNMENT.md --> →
+   `docs/SEED-VOCABULARY.md` <!-- STALE-REF: ../../docs/SEED-VOCABULARY.md --> (full
+   `docs/GLOSSARY.md` <!-- STALE-REF: ../../docs/GLOSSARY.md --> on demand).
+2. `docs/governance/MANIFESTO.md` <!-- STALE-REF: ../../docs/governance/MANIFESTO.md --> — the 13 specifications (the
    operational floor) + m/acc + the multi-oracle principle (no single mandatory morality).
-3. [`docs/VISION.md`](../../docs/VISION.md) — *Zeta = bounded good* (the two-word what-is-Zeta).
+3. `docs/VISION.md` <!-- STALE-REF: ../../docs/VISION.md --> — *Zeta = bounded good* (the two-word what-is-Zeta).
 4. `.claude/rules/` — the carved-sentence rules auto-load; `no-directives` is the load-bearing one for
    how you relate to input.
 5. The **`self-boot`** capability (Alexa wears it) is the worked pattern for a fresh model-instance

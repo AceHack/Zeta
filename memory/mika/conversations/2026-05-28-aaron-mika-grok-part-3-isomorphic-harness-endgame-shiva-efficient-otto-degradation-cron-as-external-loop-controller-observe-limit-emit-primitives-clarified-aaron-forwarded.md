@@ -18,7 +18,7 @@
 >
 > Aaron: *"In a damn stadium that's built for fuckin' hyperspeed and hyperscale."*
 
-The constitutional purpose of the workflow engine is **fair cross-harness AI evaluation**. Every other architectural decision serves this. Composes with [081KSNY2Z0008QG0R002A785QR](../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-...) (per-host adapters), [081KSNY2Z0008QG0R0004ZF85W](../../../backlog/P2/081KSNY2Z0008QG0R0004ZF85W-...) (heterogeneous auto-reviewer ensemble), [081KSNY2Z0008QG0R002QA720J](../../../backlog/P1/081KSNY2Z0008QG0R002QA720J-...) (three-lanes concurrent discipline).
+The constitutional purpose of the workflow engine is **fair cross-harness AI evaluation**. Every other architectural decision serves this. Composes with 081KSNY2Z0008QG0R002A785QR <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-... --> (per-host adapters), 081KSNY2Z0008QG0R0004ZF85W <!-- STALE-REF: ../../../backlog/P2/081KSNY2Z0008QG0R0004ZF85W-... --> (heterogeneous auto-reviewer ensemble), 081KSNY2Z0008QG0R002QA720J <!-- STALE-REF: ../../../backlog/P1/081KSNY2Z0008QG0R002QA720J-... --> (three-lanes concurrent discipline).
 
 ### 30. Coliseum + training facility — failed agents get their own failure data as study material
 
@@ -189,11 +189,11 @@ Per Aaron's clarification at §36 + §37:
 
 ## Composes with substrate (additions to ferries #1+#2 lists)
 
-- [081KRW63S0008QG0R002ZRNDJ8](../../../backlog/P1/081KRW63S0008QG0R002ZRNDJ8-...) — Limit-is-simulation-not-collapse (operative meaning of Limit per Aaron's correction)
-- [081KRW63S0008QG0R002YAA09X](../../../backlog/P1/081KRW63S0008QG0R002YAA09X-...) — Integrate-as-choice-locus (the "look at simulation and choose" mechanism)
-- [081KRW63S0008QG0R001SAHYKV](../../../backlog/P1/081KRW63S0008QG0R001SAHYKV-...) — English-as-projection / I(D(x))=x (transmission medium for the prompt-with-pointer handoff)
-- [081KRW63S0008QG0R002KC5DSR](../../../backlog/P1/081KRW63S0008QG0R002KC5DSR-...) — wave-particle duality (Limit-as-simulation IS the wave-form; Emit IS the particle-form collapse)
-- [081KSKBP80008QG0R0031DTHS9](../../../backlog/) — OPLE T-TFeedback implementation (the four-corner feedback channels Aaron is wrestling with)
+- 081KRW63S0008QG0R002ZRNDJ8 <!-- STALE-REF: ../../../backlog/P1/081KRW63S0008QG0R002ZRNDJ8-... --> — Limit-is-simulation-not-collapse (operative meaning of Limit per Aaron's correction)
+- 081KRW63S0008QG0R002YAA09X <!-- STALE-REF: ../../../backlog/P1/081KRW63S0008QG0R002YAA09X-... --> — Integrate-as-choice-locus (the "look at simulation and choose" mechanism)
+- 081KRW63S0008QG0R001SAHYKV <!-- STALE-REF: ../../../backlog/P1/081KRW63S0008QG0R001SAHYKV-... --> — English-as-projection / I(D(x))=x (transmission medium for the prompt-with-pointer handoff)
+- 081KRW63S0008QG0R002KC5DSR <!-- STALE-REF: ../../../backlog/P1/081KRW63S0008QG0R002KC5DSR-... --> — wave-particle duality (Limit-as-simulation IS the wave-form; Emit IS the particle-form collapse)
+- 081KSKBP80008QG0R0031DTHS9 <!-- STALE-REF: ../../../backlog/ --> — OPLE T-TFeedback implementation (the four-corner feedback channels Aaron is wrestling with)
 - `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` four-corner extension — direct substrate Aaron is invoking when asking "how do we map feedback channels"
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` — the band-aid the workflow engine replaces structurally
 - `.claude/rules/tick-must-never-stop.md` — sentinel-as-external-loop-controller substrate (Aaron's "cron calls move_next.ts every minute" IS this rule operationalized; PR-replacement substrate)

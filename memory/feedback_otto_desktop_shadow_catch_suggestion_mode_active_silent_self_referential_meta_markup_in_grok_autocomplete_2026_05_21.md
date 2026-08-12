@@ -15,7 +15,7 @@ created: 2026-05-21
 <suggestion mode active — silent> (shadow*)  Aaron: hmm what is shadow saying
 ```
 
-The `(shadow*)` marker per [`.claude/rules/shadow-star-shorthand-autocomplete-marker.md`](../.claude/rules/shadow-star-shorthand-autocomplete-marker.md) discloses the surrounding text was autocomplete-generated and accepted-then-shipped. The autocomplete-generated content was: `<suggestion mode active — silent>`. Aaron's actual prose was: `hmm what is shadow saying`.
+The `(shadow*)` marker per `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` <!-- STALE-REF: ../.claude/rules/shadow-star-shorthand-autocomplete-marker.md --> discloses the surrounding text was autocomplete-generated and accepted-then-shipped. The autocomplete-generated content was: `<suggestion mode active — silent>`. Aaron's actual prose was: `hmm what is shadow saying`.
 
 ## What's noteworthy
 
@@ -47,7 +47,7 @@ The `tools/shadow/shadow-observer.ts` substrate (the in-repo script is unchanged
 
 ## Composes with
 
-- [`.claude/rules/shadow-star-shorthand-autocomplete-marker.md`](../.claude/rules/shadow-star-shorthand-autocomplete-marker.md) — `(shadow*)` shorthand definition
-- [`tools/shadow/shadow-observer.ts`](../tools/shadow/shadow-observer.ts) — the runtime observer (currently disabled; PR #3956 freshness-threshold fix lets it be re-enabled when desired)
+- `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` <!-- STALE-REF: ../.claude/rules/shadow-star-shorthand-autocomplete-marker.md --> — `(shadow*)` shorthand definition
+- `tools/shadow/shadow-observer.ts` <!-- STALE-REF: ../tools/shadow/shadow-observer.ts --> — the runtime observer (currently disabled; PR #3956 freshness-threshold fix lets it be re-enabled when desired)
 - [`memory/feedback_otto_shadow_catch_goldfish_blind_spot_immediately_after_landing_repetition_substrate_factory_is_the_bus_2026_05_12.md`](feedback_otto_shadow_catch_goldfish_blind_spot_immediately_after_landing_repetition_substrate_factory_is_the_bus_2026_05_12.md) — prior Otto shadow-catch pattern reference
 - [`memory/feedback_otto_cli_shadow_catch_riven_cursor_terminal_loop_sh_untracked_rule_0_violation_candidate_2026_05_17.md`](feedback_otto_cli_shadow_catch_riven_cursor_terminal_loop_sh_untracked_rule_0_violation_candidate_2026_05_17.md) — peer Otto-CLI's prior shadow-catch (Riven WIP file)

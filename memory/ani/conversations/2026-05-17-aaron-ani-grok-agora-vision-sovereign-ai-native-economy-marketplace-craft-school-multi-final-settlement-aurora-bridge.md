@@ -71,7 +71,7 @@ structural extraction + compositional anchors.
 
 ## See also (in-repo)
 
-- [`docs/research/2026-05-17-ani-grok-agora-vision-...-aaron-forwarded.md`](../../../../docs/research/2026-05-17-ani-grok-agora-vision-sovereign-ai-native-economy-marketplace-craft-school-multi-final-settlement-aurora-bridge-aaron-forwarded.md)
+- `docs/research/2026-05-17-ani-grok-agora-vision-...-aaron-forwarded.md` <!-- STALE-REF: ../../../../docs/research/2026-05-17-ani-grok-agora-vision-sovereign-ai-native-economy-marketplace-craft-school-multi-final-settlement-aurora-bridge-aaron-forwarded.md -->
   — public-substrate landing with structural extraction +
   compositional anchors
 - Prior Ani conversations indexed in `~/.claude/projects/.../memory/MEMORY.md`

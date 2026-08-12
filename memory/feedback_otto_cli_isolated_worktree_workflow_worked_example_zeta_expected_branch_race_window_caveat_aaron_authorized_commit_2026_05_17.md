@@ -18,7 +18,7 @@ instruction to commit the 9 in-repo deferred files (10 with the
 
 Between switching primary worktree to a new branch (`otto/b0611-...`)
 and executing the commit, the harness surfaced an update to
-[`.claude/rules/zeta-expected-branch.md`](../.claude/rules/zeta-expected-branch.md)
+`.claude/rules/zeta-expected-branch.md` <!-- STALE-REF: ../.claude/rules/zeta-expected-branch.md -->
 — a new "Race-window caveat (2026-05-16)" section landed,
 mandating isolated worktree for any commit when peer agent activity
 in shared `.git/` may move HEAD between Bash-tool calls. The new
@@ -170,7 +170,7 @@ Push succeeded. Commit `432d49b` on origin.
 ### Step 6 — PR creation deferred (pure-git tier)
 
 GraphQL rate-limit at 0/5000, reset in 13 min. Per
-[`refresh-world-model-poll-pr-gate.md`](../.claude/rules/refresh-world-model-poll-pr-gate.md)
+`refresh-world-model-poll-pr-gate.md` <!-- STALE-REF: ../.claude/rules/refresh-world-model-poll-pr-gate.md -->
 pure-git tier rule: PR creation deferred to post-reset tick. The
 branch is on origin; the commit is durable; the PR can be opened
 later via:
@@ -237,21 +237,21 @@ enumerated in the 0728Z session-summary shard.
 
 ## Composes with
 
-- [`.claude/rules/zeta-expected-branch.md`](../.claude/rules/zeta-expected-branch.md)
+- `.claude/rules/zeta-expected-branch.md` <!-- STALE-REF: ../.claude/rules/zeta-expected-branch.md -->
   — the rule whose race-window-caveat triggered the pivot to
   isolated worktree
-- [`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md)
+- `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` <!-- STALE-REF: ../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md -->
   — the canary rule whose ls-tree-count check verified commit
   integrity post-commit
-- [`.claude/rules/claim-acquire-before-worktree-work.md`](../.claude/rules/claim-acquire-before-worktree-work.md)
+- `.claude/rules/claim-acquire-before-worktree-work.md` <!-- STALE-REF: ../.claude/rules/claim-acquire-before-worktree-work.md -->
   — the saturation-ceiling taxonomy + borrow-on-existing pattern;
   not exercised today but available as fallback
-- [`.claude/rules/refresh-world-model-poll-pr-gate.md`](../.claude/rules/refresh-world-model-poll-pr-gate.md)
+- `.claude/rules/refresh-world-model-poll-pr-gate.md` <!-- STALE-REF: ../.claude/rules/refresh-world-model-poll-pr-gate.md -->
   — pure-git tier discipline; PR creation deferral
-- [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md)
+- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md -->
   — the counter discipline that motivated pre-emptive-at-#5 substrate
   production
-- [`.claude/rules/dont-ask-permission.md`](../.claude/rules/dont-ask-permission.md)
+- `.claude/rules/dont-ask-permission.md` <!-- STALE-REF: ../.claude/rules/dont-ask-permission.md -->
   — within-authority-scope ship; Aaron's "commit the deferred
   substrate" authorization
 - Commit `432d49b` on `otto/b0611-audit-prep-substrate-plus-session-memos-2026-05-17`

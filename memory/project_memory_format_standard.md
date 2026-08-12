@@ -205,7 +205,7 @@ pointers):
 Each entry in `MEMORY.md` follows the pattern:
 
 ```markdown
-- [Title](filename.md) — one-line hook
+- Title <!-- STALE-REF: filename.md --> — one-line hook
 ```
 
 - Under 150 characters per line.
