@@ -198,11 +198,19 @@ jobs:
         # winner remains a registry consent act.
         run: bun src/Core.TypeScript/hygiene/drift-evolution.ts
 
+      - name: Evaluate the proposer (persistent dominance -> consent letter)
+        # 081KZSRBBAM: when the current genome has been strictly dominated
+        # for K consecutive ticks, an at-most-once letter (keyed by genome
+        # hex) lands in docs/letters/ carrying the registry diff + evidence.
+        # Evolution proposes; the society disposes — this NEVER edits the
+        # registry. Status published to data/drift-proposal.json every tick.
+        run: bun src/Core.TypeScript/hygiene/drift-proposer.ts
+
       - name: Commit and push the tick event (and any SLO filings)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/drift-events docs/letters workitems data/drift-mtth.json data/drift-genome.json data/drift-evolution.json
+          git add docs/drift-events docs/letters workitems data/drift-mtth.json data/drift-genome.json data/drift-evolution.json data/drift-proposal.json
           if git diff --cached --quiet; then
             echo "Nothing staged — no tick recorded."
           else

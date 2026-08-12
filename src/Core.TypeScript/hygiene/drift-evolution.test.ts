@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
 import { CURRENT_PHENOTYPE } from "./drift-genome";
-import { ALARM_WEIGHT, budgetAt, generation, lcg, shadowCost } from "./drift-evolution";
+import { ALARM_WEIGHT, budgetAt, generation, lcg, shadowCost, TOLERANCE_RENT } from "./drift-evolution";
 import type { SweepEvent } from "./drift-ledger";
 
 // Generational selection in shadow — the objective's shape and the loop's
@@ -20,27 +20,37 @@ const drift = (bornTick: number, healTick: number, rule = "MD022"): SweepEvent[]
   return out;
 };
 
-describe("shadowCost — the leak/alarm objective", () => {
-  test("drift healed within budget costs nothing", () => {
-    expect(shadowCost(drift(1, 3), { ...CURRENT_PHENOTYPE, defaultBudgetTicks: 6 })).toBe(0);
+describe("shadowCost — the rent/leak/alarm objective (v3)", () => {
+  test("within-budget drift costs exactly the rent on its tolerance", () => {
+    // born 1, healed 3 → open at ticks 1,2; budget 6 → rent 2·(6·RENT), nothing else
+    expect(shadowCost(drift(1, 3), { ...CURRENT_PHENOTYPE, defaultBudgetTicks: 6 })).toBe(2 * 6 * TOLERANCE_RENT);
   });
 
-  test("drift living beyond budget pays the filing plus per-tick leak", () => {
-    // born 1, healed 10 → ages 0..8; budget 6 → over at ages 7,8 (leak 1+2) + one alarm
+  test("drift living beyond budget pays rent + per-tick leak + the filing", () => {
+    // open ticks 1..9 (rent 9·6·RENT); ages 7,8 over budget 6 (leak 1+2) + one alarm
     const cost = shadowCost(drift(1, 10), { ...CURRENT_PHENOTYPE, defaultBudgetTicks: 6 });
-    expect(cost).toBe(1 + 2 + ALARM_WEIGHT);
+    expect(cost).toBe(9 * 6 * TOLERANCE_RENT + 1 + 2 + ALARM_WEIGHT);
   });
 
   test("too-tight budgets cry wolf: same history, budget 1 costs more alarms+leak", () => {
-    const loose = shadowCost(drift(1, 10), { ...CURRENT_PHENOTYPE, defaultBudgetTicks: 6 });
+    const calibrated = shadowCost(drift(1, 10), { ...CURRENT_PHENOTYPE, defaultBudgetTicks: 6 });
     const tight = shadowCost(drift(1, 10), { ...CURRENT_PHENOTYPE, defaultBudgetTicks: 1 });
-    expect(tight).toBeGreaterThan(loose);
+    expect(tight).toBeGreaterThan(calibrated);
+  });
+
+  test("THE V3 POINT: budget = ∞ is no longer optimal — the optimum is interior", () => {
+    // straggler heals at age 10 (born 1, healed 11): the calibrated budget
+    // beats BOTH the too-tight and the maximal one, strictly.
+    const at = (b: number): number => shadowCost(drift(1, 11), { ...CURRENT_PHENOTYPE, defaultBudgetTicks: b });
+    expect(at(10)).toBeLessThan(at(2)); // tight pays leak + alarm
+    expect(at(10)).toBeLessThan(at(44)); // loose pays rent on unused tolerance
+    expect(at(10)).toBeLessThan(at(255)); // and the walls only get worse
   });
 
   test("BD001 uses its explicit budget, not the default", () => {
-    // born 1, healed 4 → ages 0..2; bd budget 1 → over at age 2 (leak 1) + alarm
+    // open ticks 1..3 (rent 3·1·RENT); age 2 over budget 1 (leak 1) + alarm
     const cost = shadowCost(drift(1, 4, "BD001"), { ...CURRENT_PHENOTYPE, bd001BudgetTicks: 1, defaultBudgetTicks: 6 });
-    expect(cost).toBe(1 + ALARM_WEIGHT);
+    expect(cost).toBe(3 * 1 * TOLERANCE_RENT + 1 + ALARM_WEIGHT);
   });
 
   test("pure and order-independent over the same event set", () => {
@@ -85,13 +95,16 @@ describe("shadow v2 — the adaptive rule is replayed, not the static budget", (
   test("earned evidence tightens the budget mid-replay: the slow third drift now costs", () => {
     // multiplier 2 × running MTTH 1 → budget 2 (floor 1). Ages 3,4 leak 1+2; one alarm.
     const p = { ...CURRENT_PHENOTYPE, adaptiveMultiplier: 2, adaptiveMinHeals: 2, adaptiveFloorTicks: 1, defaultBudgetTicks: 6 };
-    expect(shadowCost(adaptiveHistory(), p)).toBe(1 + 2 + ALARM_WEIGHT);
+    // rent: 2 pre-evidence ticks at budget 6, 5 tightened ticks at budget 2;
+    // ages 3,4 over the earned budget 2 → leak 1+2 + one alarm.
+    expect(shadowCost(adaptiveHistory(), p)).toBe(2 * (6 * TOLERANCE_RENT) + 5 * (2 * TOLERANCE_RENT) + 1 + 2 + ALARM_WEIGHT);
   });
 
   test("static default 6 would have tolerated it — v1 semantics cost zero here", () => {
-    // Same history, min_heals gate NOT met (needs 3): stays on default 6 → 0.
+    // Same history, min_heals gate NOT met (needs 3): stays on default 6 —
+    // no leak, no alarm; only the rent on 7 open ticks of budget-6 tolerance.
     const p = { ...CURRENT_PHENOTYPE, adaptiveMinHeals: 3, defaultBudgetTicks: 6 };
-    expect(shadowCost(adaptiveHistory(), p)).toBe(0);
+    expect(shadowCost(adaptiveHistory(), p)).toBe(7 * (6 * TOLERANCE_RENT));
   });
 
   test("floor clamps the adaptive budget from below (live sloLimit semantics)", () => {
@@ -110,7 +123,8 @@ describe("shadow v2 — the adaptive rule is replayed, not the static budget", (
     const tight = shadowCost(adaptiveHistory(), { ...CURRENT_PHENOTYPE, adaptiveMultiplier: 2 });
     const loose = shadowCost(adaptiveHistory(), { ...CURRENT_PHENOTYPE, adaptiveMultiplier: 8 });
     expect(tight).toBeGreaterThan(loose); // mult 8 → budget 8 tolerates the slow heal
-    expect(loose).toBe(0);
+    // loose pays only rent: 2 ticks of budget-6 + 5 ticks of earned budget-8
+    expect(loose).toBe(2 * (6 * TOLERANCE_RENT) + 5 * (8 * TOLERANCE_RENT));
   });
 
   test("g and b channels visible too: min_heals gates, floor loosens", () => {

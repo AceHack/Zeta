@@ -11,14 +11,24 @@
 // disposes.
 //
 // The shadow objective (pure over the event history, DST-deterministic):
-//   leak cost  — for every tick a class's oldest open finding lives BEYOND
-//                the candidate's budget, cost += (age − budget). Loose
-//                budgets bleed here.
-//   alarm cost — each time a class's age FIRST crosses the candidate's
-//                budget, one filing: cost += ALARM_WEIGHT. Tight budgets
-//                cry wolf here.
-// Total cost minimized ⇒ shadowFitness = −cost. The ridge between the two
-// is what selection climbs.
+//   rent cost  — every tick a finding is open, the candidate pays
+//                TOLERANCE_RENT x its budget for that class: standing
+//                tolerance is accepted risk, paid for whether used or not.
+//                Loose budgets bleed here, strictly.
+//   leak cost  — every tick the finding lives BEYOND budget costs
+//                (age − budget): a budget the fleet can't meet.
+//   alarm cost — the first budget crossing files once: ALARM_WEIGHT.
+//                Tight budgets cry wolf here.
+// Total cost minimized ⇒ shadowFitness = −cost, with a STRICT interior
+// optimum just above the class's demonstrated heal age: alarm stragglers
+// promptly, and don't hold tolerance you don't need.
+//
+// OBJECTIVE V3 (2026-08-12): v2's two terms BOTH fell as budgets loosened —
+// "budget = ∞" was weakly optimal on every history, so shadow selection
+// could only ever counsel loosening (found by the proposer's law tests
+// before any bad proposal shipped; every bug has economic value). Rent on
+// extended tolerance is the counter-pressure that makes the ridge real;
+// 1/8 is exact in binary, keeping every cost an exact float (DST byte-lock).
 //
 // SHADOW V2 (2026-08-11): the replay computes each tick's budget via the
 // LIVE adaptive rule — a running fold of heal durations gives the class's
@@ -42,6 +52,7 @@ import {
 import { readLedger, type SweepEvent } from "./drift-ledger.ts";
 
 export const ALARM_WEIGHT = 3; // one filing costs three tick-units of leak
+export const TOLERANCE_RENT = 0.125; // per open-finding tick: rent on the budget extended (1/8, exact in binary)
 
 interface HealStats {
   count: number;
@@ -86,6 +97,7 @@ export function shadowCost(events: readonly SweepEvent[], p: DriftPhenotype): nu
     for (const b of birth.values()) {
       const age = sweep.tick - b.tick;
       const budget = budgetAt(b.rule, p, healed);
+      cost += TOLERANCE_RENT * budget; // rent on the tolerance being extended
       if (age > budget) {
         cost += age - budget; // leak: living beyond tolerance, per tick
         if (!b.alarmed) {

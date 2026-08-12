@@ -1,0 +1,14 @@
+{
+  "id": "080cff9c2d6aa011a0130008f7ebaf7d",
+  "at": "2026-08-12T01:10:51.988Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZSRBBAM08QG0R0028VJJ5E",
+    "type": "task",
+    "title": "Drift-genome proposer: persistent shadow dominance emits an at-most-once consent letter with the registry diff",
+    "slug": "drift-genome-proposer-persistent-shadow-dominance-emits-an-a",
+    "priority": "P2",
+    "filename": "081KZSRBBAM08QG0R0028VJJ5E-drift-genome-proposer-persistent-shadow-dominance-emits-an-a.md"
+  }
+}
