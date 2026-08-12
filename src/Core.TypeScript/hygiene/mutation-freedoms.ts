@@ -255,6 +255,25 @@ export function appendTranscript(root: string, declarer: string, entry: unknown)
   appendFileSync(transcriptPath(root, declarer), `${JSON.stringify(entry)}\n`);
 }
 
+/**
+ * Append a decision ONLY if that exact decision is not already recorded, keyed by its content
+ * address. Returns whether a line was written.
+ *
+ * Idempotency here is load-bearing rather than tidy: the transcript is the NUMERATOR and
+ * denominator of `resolutionCoverage`, so a decision appended twice silently inflates `resolved`
+ * and deflates the false-alarm rate computed from it. Any caller that can run more than once over
+ * the same fix — a re-run, a retried job, a developer checking their work twice — must use this
+ * rather than `appendTranscript`.
+ */
+export function appendTranscriptOnce(root: string, declarer: string, entry: { readonly address: string }): boolean {
+  const already = readTranscript(root, declarer).some(
+    (e) => typeof e === "object" && e !== null && (e as { address?: unknown }).address === entry.address,
+  );
+  if (already) return false;
+  appendTranscript(root, declarer, entry);
+  return true;
+}
+
 /** Read a declarer's decisions. Missing file = no decisions yet, never an error. */
 export function readTranscript(root: string, declarer: string): readonly unknown[] {
   const p = transcriptPath(root, declarer);

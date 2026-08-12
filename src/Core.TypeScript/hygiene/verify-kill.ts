@@ -37,6 +37,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { MUTATIONS, isApplicable, runMutant, type Mutation } from "./mutation-runner";
+import { appendTranscriptOnce, loadAllLedgers } from "./mutation-freedoms";
+import { observeFinding, recordChoice } from "./mutation-readout";
 
 export type VerifyOutcome =
   /** The suite separates baseline from mutant — the fix bites. */
@@ -138,6 +140,41 @@ export function formatOutcome(o: VerifyOutcome, source: string, test: string, mu
   }
 }
 
+/**
+ * Record a PROVEN kill as a `write-test` resolution.
+ *
+ * This closes the hole that made `resolutionCoverage` useless: findings accumulate per tick, but
+ * resolutions only ever landed as PRs, so the coverage ratio would have read near-zero forever and
+ * the false-alarm rate stayed permanently (and correctly) withheld. The fix is not a new discipline
+ * to remember — it is that the moment a kill is PROVEN is exactly the moment the resolution is
+ * known, so the tool that proves it records it.
+ *
+ * Only on `killed`. A still-alive mutant has resolved nothing, and recording it would assert a
+ * judgement the run did not earn.
+ *
+ * Idempotent by content address: re-running `verify-kill --record` over the same fix appends
+ * nothing, because a duplicated resolution would inflate the numerator of the metric it feeds.
+ */
+export function recordKill(
+  root: string,
+  declarer: string,
+  room: { readonly source: string; readonly test: string; readonly mutation: string },
+): { readonly recorded: boolean; readonly reason: string } {
+  const readout = observeFinding(room, declarer, loadAllLedgers(root));
+  const idx = readout.grid.findIndex((c) => c?.action.kind === "write-test");
+  if (idx < 0) {
+    // The menu adapts to the finding; if this declarer already declared the dimension free, the
+    // write-test cell is withheld. Saying so beats silently recording nothing.
+    return { recorded: false, reason: "no write-test cell on this menu (already declared free by this declarer?)" };
+  }
+  const entry = recordChoice(readout, declarer, idx, { kind: "write-test" });
+  const wrote = appendTranscriptOnce(root, declarer, entry);
+  return {
+    recorded: wrote,
+    reason: wrote ? `recorded write-test resolution ${entry.address.slice(0, 16)}…` : "already recorded — idempotent, nothing appended",
+  };
+}
+
 function argValue(flag: string): string | undefined {
   const i = process.argv.indexOf(flag);
   return i >= 0 ? process.argv[i + 1] : undefined;
@@ -161,5 +198,18 @@ if (invokedDirectly) {
     run: (r, t, m) => runMutant(r, t, m).distinguishability,
   });
   console.error(formatOutcome(outcome, source, test, mutation));
+
+  // `--record` writes the resolution ONLY for a proven kill. Deliberately opt-in: a read-only
+  // verification must stay read-only unless the caller asks for the write.
+  if (process.argv.includes("--record") && outcome.kind === "killed") {
+    const declarer = argValue("--declarer");
+    if (declarer === undefined) {
+      console.error(`  --record needs --declarer <name>; nothing recorded`);
+      process.exit(2);
+    }
+    const r = recordKill(root, declarer, { source, test, mutation });
+    console.error(`  ${r.reason}`);
+  }
+
   process.exit(exitCodeFor(outcome));
 }

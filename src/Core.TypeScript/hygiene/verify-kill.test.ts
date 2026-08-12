@@ -1,5 +1,9 @@
 import { describe, expect, test } from "bun:test";
-import { exitCodeFor, formatOutcome, mutationByName, verifyKill } from "./verify-kill";
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { exitCodeFor, formatOutcome, mutationByName, recordKill, verifyKill } from "./verify-kill";
+import { readTranscript } from "./mutation-freedoms";
 import type { Mutation } from "./mutation-runner";
 
 // This module exists because the "did it actually die?" check was a habit rather than a mechanism,
@@ -119,5 +123,48 @@ describe("the readout says what to do next", () => {
   test("mutationByName resolves the real catalogue", () => {
     expect(mutationByName("gte-to-gt")?.find).toBe(" >= ");
     expect(mutationByName("nope")).toBeUndefined();
+  });
+});
+
+// Recording a PROVEN kill is what makes `resolutionCoverage` computable at all. Findings accrue
+// every tick; before this, resolutions only landed as PRs, so coverage read near-zero forever and
+// the false-alarm rate stayed permanently withheld. These tests defend the two properties that
+// make the recorded number trustworthy: it is idempotent, and it only records what was proven.
+describe("RECORDING a proven kill — the numerator must not be inflatable", () => {
+  const room = { source: "a.ts", test: "a.test.ts", mutation: "gte-to-gt" };
+  const scratch = () => mkdtempSync(join(tmpdir(), "vk-record-"));
+
+  test("a kill is recorded as a write-test resolution", () => {
+    const root = scratch();
+    const r = recordKill(root, "otto", room);
+    expect(r.recorded).toBe(true);
+
+    const entries = readTranscript(root, "otto") as { action: { kind: string } }[];
+    expect(entries).toHaveLength(1);
+    expect(entries[0]!.action.kind).toBe("write-test");
+  });
+
+  test("IDEMPOTENT — recording the same kill twice appends nothing", () => {
+    // A duplicated resolution silently inflates `resolved` and deflates the false-alarm rate
+    // computed from it. Re-running verification over the same fix is a normal thing to do.
+    const root = scratch();
+    expect(recordKill(root, "otto", room).recorded).toBe(true);
+    expect(recordKill(root, "otto", room).recorded).toBe(false);
+    expect(readTranscript(root, "otto")).toHaveLength(1);
+  });
+
+  test("a DIFFERENT dimension is a different resolution", () => {
+    const root = scratch();
+    recordKill(root, "otto", room);
+    recordKill(root, "otto", { ...room, mutation: "and-to-or" });
+    expect(readTranscript(root, "otto")).toHaveLength(2);
+  });
+
+  test("each declarer records into their own transcript", () => {
+    const root = scratch();
+    recordKill(root, "otto", room);
+    recordKill(root, "vera", room);
+    expect(readTranscript(root, "otto")).toHaveLength(1);
+    expect(readTranscript(root, "vera")).toHaveLength(1);
   });
 });
