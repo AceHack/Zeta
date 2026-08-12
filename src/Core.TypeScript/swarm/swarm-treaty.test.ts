@@ -1,8 +1,6 @@
 import { expect, test } from "bun:test";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { SwarmController } from "./swarm-controller";
-import type { NextAction } from "../observe/observe";
 
 const transcriptPath = path.join(import.meta.dir, "swarm-treaty-transcript.json");
 const treaty = JSON.parse(fs.readFileSync(transcriptPath, "utf-8"));

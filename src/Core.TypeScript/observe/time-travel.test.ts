@@ -1,10 +1,9 @@
 import { expect, test } from "bun:test";
-import { simulate, World } from "./observe";
-import { BacklogItem } from "./backlog";
+import { simulate, type World, type BacklogItem } from "./observe";
 
 test("Time Travel (Z-Set Retraction)", () => {
-  const itemA: BacklogItem = { id: "task_A", title: "Task A", ready: true, ambiguous: false, gridData: [] };
-  const itemB: BacklogItem = { id: "task_B", title: "Task B", ready: true, ambiguous: false, gridData: [] };
+  const itemA: BacklogItem = { id: "task_A", title: "Task A", ready: true, ambiguous: false };
+  const itemB: BacklogItem = { id: "task_B", title: "Task B", ready: true, ambiguous: false };
   
   let world: World = {
     mode: "work",

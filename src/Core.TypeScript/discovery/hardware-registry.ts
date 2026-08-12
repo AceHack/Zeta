@@ -27,7 +27,7 @@ export class HardwareRegistry {
       loopback: true
     });
 
-    this.transport.onMessage((text: string, from: string) => {
+    this.transport.onMessage((text: string, _from: string) => {
       try {
         const beacon = JSON.parse(text);
         if (beacon && beacon.type === "hw_beacon") {

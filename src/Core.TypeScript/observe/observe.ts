@@ -571,12 +571,17 @@ export function simulate(world: World, action: NextAction): World {
     case "decompose": {
       // ambiguity dissolves: the ambiguous item → ready, unambiguous children.
       let children: BacklogItem[];
+      // `gridData` is optional and the project runs `exactOptionalPropertyTypes`, so writing
+      // `gridData: undefined` is NOT the same as leaving it out — the first asserts "present and
+      // undefined". Spread it conditionally so an item without grid data produces children
+      // without the key, which is what the parent actually had.
+      const inheritedGrid = action.item.gridData !== undefined ? { gridData: action.item.gridData } : {};
       if (action.subTasks && action.subTasks.length > 0) {
-        children = action.subTasks.map((t, idx) => ({ id: `${action.item.id}.${idx + 1}`, title: t, ready: true, ambiguous: false, gridData: action.item.gridData }));
+        children = action.subTasks.map((t, idx) => ({ id: `${action.item.id}.${idx + 1}`, title: t, ready: true, ambiguous: false, ...inheritedGrid }));
       } else {
         children = [
-          { id: `${action.item.id}.1`, title: `${action.item.title} (part 1)`, ready: true, ambiguous: false, gridData: action.item.gridData },
-          { id: `${action.item.id}.2`, title: `${action.item.title} (part 2)`, ready: true, ambiguous: false, gridData: action.item.gridData },
+          { id: `${action.item.id}.1`, title: `${action.item.title} (part 1)`, ready: true, ambiguous: false, ...inheritedGrid },
+          { id: `${action.item.id}.2`, title: `${action.item.title} (part 2)`, ready: true, ambiguous: false, ...inheritedGrid },
         ];
       }
       return {

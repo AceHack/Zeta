@@ -10,14 +10,19 @@ export function findShapes(grid: Grid): Shape[] {
   const shapes: Shape[] = [];
   const rows = grid.length;
   if (rows === 0) return shapes;
-  const cols = grid[0].length;
+  // Bound through a local: under `noUncheckedIndexedAccess` every `grid[i]` is `Row | undefined`,
+  // and a ragged grid is a real input here, not a hypothetical.
+  const firstRow = grid[0];
+  if (firstRow === undefined) return shapes;
+  const cols = firstRow.length;
   
   const visited = new Set<string>();
   let shapeCount = 0;
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      const color = grid[r][c];
+      const color = grid[r]?.[c];
+      if (color === undefined) continue; // ragged row — nothing to grow a shape from
       // By convention in ARC, 0 is often background, but shapes can be any color. 
       // For simplicity in finding contiguous blocks of ANY color > 0:
       if (color === 0) continue; 
@@ -43,7 +48,7 @@ export function findShapes(grid: Grid): Shape[] {
         for (const n of neighbors) {
           if (n.r >= 0 && n.r < rows && n.c >= 0 && n.c < cols) {
             const nKey = `${n.r},${n.c}`;
-            if (!visited.has(nKey) && grid[n.r][n.c] === color) {
+            if (!visited.has(nKey) && grid[n.r]?.[n.c] === color) {
               visited.add(nKey);
               queue.push(n);
             }
@@ -67,7 +72,8 @@ export function recolorShape(grid: Grid, shapeId: string, newColor: number): Gri
   // Clone grid
   const newGrid = grid.map(row => [...row]);
   for (const p of shape.points) {
-    newGrid[p.r][p.c] = newColor;
+    const row = newGrid[p.r];
+    if (row !== undefined) row[p.c] = newColor;
   }
   return newGrid;
 }
@@ -78,12 +84,13 @@ export function translateShape(grid: Grid, shapeId: string, dr: number, dc: numb
   if (!shape) return grid;
 
   const rows = grid.length;
-  const cols = grid[0].length;
+  const cols = grid[0]?.length ?? 0;
   const newGrid = grid.map(row => [...row]);
 
   // Erase old position
   for (const p of shape.points) {
-    newGrid[p.r][p.c] = 0; // Assuming 0 is background
+    const row = newGrid[p.r];
+    if (row !== undefined) row[p.c] = 0; // Assuming 0 is background
   }
 
   // Draw new position (if within bounds)
@@ -91,7 +98,8 @@ export function translateShape(grid: Grid, shapeId: string, dr: number, dc: numb
     const nr = p.r + dr;
     const nc = p.c + dc;
     if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
-      newGrid[nr][nc] = shape.color;
+      const row = newGrid[nr];
+      if (row !== undefined) row[nc] = shape.color;
     }
   }
   
@@ -106,12 +114,16 @@ export function rotateGrid(grid: Grid, degrees: 90 | 180 | 270): Grid {
   
   for (let k = 0; k < rotations; k++) {
     const rows = current.length;
-    const cols = current[0].length;
+    const firstRow = current[0];
+    if (firstRow === undefined) break;
+    const cols = firstRow.length;
     const newGrid: number[][] = Array.from({ length: cols }, () => Array(rows).fill(0));
     
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        newGrid[c][rows - 1 - r] = current[r][c];
+        const value = current[r]?.[c];
+        const target = newGrid[c];
+        if (value !== undefined && target !== undefined) target[rows - 1 - r] = value;
       }
     }
     current = newGrid;

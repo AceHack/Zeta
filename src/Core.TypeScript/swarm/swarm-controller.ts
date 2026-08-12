@@ -19,9 +19,12 @@ import { HardwareRegistry } from "../discovery/hardware-registry";
 export interface UdpMeshNode {
   send: (data: Buffer) => void;
 }
-function createLossyUdpMesh(size: number, dropRate: number): UdpMeshNode[] {
+// Both parameters are part of the intended shape and unused by this stub: the mesh does not yet
+// drop anything, and the stub sink discards what it is handed. Named with `_` so the signature
+// still documents the contract without asserting behaviour the stub does not have.
+function createLossyUdpMesh(size: number, _dropRate: number): UdpMeshNode[] {
   return Array.from({ length: size }, () => ({
-    send: (data: Buffer) => { /* dummy */ }
+    send: (_data: Buffer) => { /* dummy */ }
   }));
 }
 
@@ -107,12 +110,17 @@ export class SwarmController {
       chosenBy = composer.role.name;
     }
     // 3. Pilot gets default right of way for execution
-    else if (pilot && pilot.action.kind !== "pass") {
+    // NOTE: this was `pilot.action.kind !== "pass"`, but "pass" is not a member of
+    // NextAction["kind"] — the comparison was ALWAYS true and excluded nothing. Reduced to the
+    // behaviour it actually had, rather than inventing the abstention it was reaching for. If
+    // roles should be able to abstain, that needs a real `pass` action in the union.
+    else if (pilot) {
       chosenAction = pilot.action;
       chosenBy = pilot.role.name;
     }
     // 4. Cartographer explores if idle
-    else if (cartographer && cartographer.action.kind !== "pass") {
+    // Same vacuous "pass" comparison as above; same reduction.
+    else if (cartographer) {
       chosenAction = cartographer.action;
       chosenBy = cartographer.role.name;
     }
@@ -234,7 +242,7 @@ async function main() {
   await swarm.init(0.0); // 0% drop rate for local test
   
   let world: World = {
-    mode: "idle",
+    // `mode` is optional and documented as "absent = unset", which is what "idle" meant here.
     backlog: [],
     history: [],
     cartography: { scopeLevel: 0, timeOffset: 0 }

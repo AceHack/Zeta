@@ -20,7 +20,7 @@ try {
   const registry = require("../service/persona-registry");
   getPersona = registry.getPersona;
 } catch {
-  getPersona = (name: string) => null;
+  getPersona = (_name: string) => null;
 }
 
 function run(cmd: string, args: readonly string[], cwd?: string) {

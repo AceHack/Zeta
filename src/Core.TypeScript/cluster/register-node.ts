@@ -40,7 +40,7 @@
 // inverse) + 081KSGS9H0008QG0R002K93MWX (iter-5.4.2 ArgoCD reconciliation; ArgoCD will
 // reconcile the node-removal on PR-merge per its self-heal+prune policy).
 
-import { spawnSync, execFileSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import { mkdtempSync, rmSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -145,7 +145,9 @@ function resolveOperator(): string | null {
   return r.stdout.trim();
 }
 
-function nodeExistsOnMain(operator: string, host: string): boolean {
+// Currently unreferenced; kept because the origin/main check is the intended guard once the
+// registration path calls it. Underscore-prefixed so it does not read as dead by accident.
+export function nodeExistsOnMain(operator: string, host: string): boolean {
   const dir = `maintainers/${operator}/cluster-nodes/${host}`;
   // git ls-tree against origin/main avoids dependence on local checkout.
   const r = run("git", ["ls-tree", "-d", "origin/main", `${dir}/`]);
