@@ -104,3 +104,23 @@ that backends to git OR postgres OR DagFs is the unification.
 - Distinguishability, not survivorship (equivalent-mutant detection is undecidable)
 - note-redundant is a third reading the original mutation design missed
 - Re-run the runner to confirm a fix (never trust the green suite)
+
+
+## Addendum — Additional PRs Merged (continued session)
+
+- **Session resume + connectivity in vault-state + mutation convergence** (#10312)
+- **RS blocks persisted to data/rs-blocks.jsonl** (#10314)
+- **Batch heal: docs/research** (#10315) — 124 files
+- **Batch heal: memory/** (#10322) — 119 files
+- **Convergence CLI in heartbeat + RS verifier + heal src/ scaffolds** (#10333)
+- **RS verifier in CI + escape-profile readout + heal 10 src/ files** (#10334)
+- **Heal src/ observe/peer-call/ferry-throttler** (#10335) — 3 files
+- **RS block reader + session update** (this PR) — query API for historical phase data, 10 tests
+
+### Final Session Statistics
+
+- **18 PRs merged** (including this one)
+- **116 new tests** across 8 modules
+- **280 documentation files healed** (stale cross-references annotated)
+- **2 trajectories completed** (LocalTrustView all 5 slices, ECC pipeline end-to-end)
+- **New CI steps**: RS block verification, mutation convergence measurement, escape-profile readout
