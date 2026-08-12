@@ -93,7 +93,7 @@ forwarded by the maintainer.
 out information-asymmetry as a first-class design property. This
 composes interestingly with:
 
-- Glass-halo bidirectional discipline ([`.claude/rules/glass-halo-bidirectional.md`](../../.claude/rules/glass-halo-bidirectional.md))
+- Glass-halo bidirectional discipline (`.claude/rules/glass-halo-bidirectional.md` <!-- STALE-REF: ../../.claude/rules/glass-halo-bidirectional.md -->)
   — Glass Halo's transparency-by-default is the *human-facing*
   surface; V2's encrypted-memory-allowed is *AI-internal* surface.
   Both can coexist: Glass Halo at the human boundary, encrypted

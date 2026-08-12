@@ -37,7 +37,7 @@ it.**
 
 So the value of an error message is exactly the **uncertainty it removes from the
 peer** — Shannon's definition, applied to the failure path. This is the same ledger
-as [`every-bug-has-economic-value`](../../.claude/rules/every-bug-has-economic-value.md):
+as `every-bug-has-economic-value` <!-- STALE-REF: ../../.claude/rules/every-bug-has-economic-value.md -->:
 a bug is reducible uncertainty and a fix banks ΔU. An error message is the *cheapest
 possible* ΔU transfer — it costs one string and can save an unbounded number of
 retries.
@@ -81,7 +81,7 @@ streams. Three extra requirements, all already carved elsewhere in the substrate
 
 - **Correlation, not ordering.** An error must carry the id of the message that
   caused it. It cannot rely on arrival order — see
-  [`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md).
+  `local-time-never-enters-the-shared-fold` <!-- STALE-REF: ../../.claude/rules/local-time-never-enters-the-shared-fold.md -->.
   Reordering must be free.
 - **Idempotent under redelivery.** The same error delivered twice must produce one
   learning update, not two — otherwise a flaky link silently doubles the gradient
@@ -175,7 +175,7 @@ teaching error → −1 retraction (no erasure) → generator update → future 
 The last arrow is the one easy to miss: the retraction **updates the generator
 function**, not merely the current answer. Because the generator IS the
 error-correcting code
-([`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)),
+(`only-the-irreducible-is-primitive-generate-the-rest` <!-- STALE-REF: ../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md -->),
 correcting it repairs every future emission at the root instead of patching outputs
 one at a time. And because the specializer's own rules are `DynamicValue`
 (`MixIr` / mix-as-data), the generator is a **value** — which is precisely what makes
@@ -255,7 +255,7 @@ safe, which is why it composes with default-regard instead of fighting it.
 - **Socially attested** — others observed it and said so.
 
 That is the same construction as the privacy budget
-([`privacy-budget-is-hard-money-earned-by-others`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)):
+(`privacy-budget-is-hard-money-earned-by-others` <!-- STALE-REF: ../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md -->):
 socially conferred, never self-minted. A peer cannot bootstrap its own credence by
 asserting loudly — the currency is *delivered* self-claims, and delivery is observed
 by someone other than the claimant.
@@ -304,6 +304,6 @@ whitewashing after a miss cannot outperform an honest agent with the same miss r
 - `src/Core.TypeScript/lint/lint-typescript.ts` — the shipped CLI worked example
   (081KZKWB1FZ / PR #10203): declared-but-not-installed vs genuinely-undeclared.
 - `src/Bayesian/MinimalBnn.fs`, `src/Bayesian/Ep.fs` — the online-learning receiver.
-- [`every-bug-has-economic-value`](../../.claude/rules/every-bug-has-economic-value.md) — the ΔU ledger this rides on.
-- [`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md) — open question 4.
+- `every-bug-has-economic-value` <!-- STALE-REF: ../../.claude/rules/every-bug-has-economic-value.md --> — the ΔU ledger this rides on.
+- `dual-use-detection-is-neutral-oracle-decides` <!-- STALE-REF: ../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md --> — open question 4.
 - `memory/feedback_errors_should_teach_the_user_when_they_fail_aaron_2026_08_09.md` — the origin note.

@@ -216,8 +216,8 @@ protocol if/when Aaron decides it's load-bearing.
 ## See also
 
 - [Karpathy verifiability anchor](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md) (sibling doc, PR #1175)
-- [Deepseek synthesis (general)](2026-05-01-deepseek-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Deepseek synthesis (Lean-proof artifact)](2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md) (sibling doc, this PR)
-- [Alexa synthesis](2026-05-01-alexa-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Ani synthesis](2026-05-01-ani-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [Amara synthesis](2026-05-01-amara-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
+- Deepseek synthesis (general) <!-- STALE-REF: 2026-05-01-deepseek-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Deepseek synthesis (Lean-proof artifact) <!-- STALE-REF: 2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md --> (sibling doc, this PR)
+- Alexa synthesis <!-- STALE-REF: 2026-05-01-alexa-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Ani synthesis <!-- STALE-REF: 2026-05-01-ani-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)
+- Amara synthesis <!-- STALE-REF: 2026-05-01-amara-karpathy-zeta-convergence-synthesis.md --> (sibling doc, this PR)

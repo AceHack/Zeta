@@ -214,7 +214,7 @@ this is implemented.
   answered values calls, and the `τ` this settles.
 - Workitem `081KZKYDJ9Q` — `empowermentBound`; Soraya's P0s (missing `τ`, units error,
   cross-aggregator comparison).
-- [`manifesto-13-specifications`](../../.claude/rules/manifesto-13-specifications.md) — §6 consent-first, §11 Multi-Oracle / default moral regard.
-- [`privacy-budget-is-hard-money-earned-by-others`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md) — the sibling "socially conferred, never self-minted" structure the capacity question may need.
+- `manifesto-13-specifications` <!-- STALE-REF: ../../.claude/rules/manifesto-13-specifications.md --> — §6 consent-first, §11 Multi-Oracle / default moral regard.
+- `privacy-budget-is-hard-money-earned-by-others` <!-- STALE-REF: ../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md --> — the sibling "socially conferred, never self-minted" structure the capacity question may need.
 - `docs/research/2026-08-09-errors-teach-both-sides-…-aaron.md` — "teaching is
   unconditional; belief is earned" (the same shape: unconditional floor, earned latitude).

@@ -119,7 +119,7 @@ Aaron: *"This is all how Itron worked and their mesh network"* — then, decisiv
 here is not reaching for external prior art that Zeta borrows from at arm's length. Wi-SUN FAN
 descends from the Itron/Cisco Riva mesh, and the maintainer of this repository wrote production code
 for it and sat in the rooms where the standard was defined. Per
-[`anchor-to-human-prior-art.md`](../../.claude/rules/anchor-to-human-prior-art.md) — *name the human
+`anchor-to-human-prior-art.md` <!-- STALE-REF: ../../.claude/rules/anchor-to-human-prior-art.md --> — *name the human
 who did it* — the human is **Aaron Stainback**, and the "prior art" is upstream of him rather than
 foreign to him.
 

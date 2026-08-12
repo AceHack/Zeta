@@ -20,7 +20,7 @@ Circuits compose two ways, and both must be modelled or the algebra is wrong:
 A category with both, where objects are **wire counts** (natural numbers, `m → n`) and the
 symmetry lets wires cross, is a **PROP** (PROducts and Permutations category) — Mac Lane 1965.
 That is the standard home for "many different circuits, combined", and it is already an anchored
-term here: [`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)
+term here: `only-the-irreducible-is-primitive-generate-the-rest` <!-- STALE-REF: ../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md -->
 cites Mac Lane (monoidal categories / PROPs), May (operads), and Joyal–Street (braided / string
 diagrams).
 
@@ -104,8 +104,8 @@ each claim here names how it fails:
 
 - `src/Core.TLA/specs/CircuitRegistration.tla` — the spec; its liveness fairness was completed
   2026-08-10 (see `docs/research/2026-08-10-synchrony-non-transfer-audit-*` §2e)
-- [`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)
+- `only-the-irreducible-is-primitive-generate-the-rest` <!-- STALE-REF: ../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md -->
   — free object → earned quotient; a PROP presented by generators-and-relations is exactly that
   shape, and the free traced PROP is the generator here
-- [`interfaces-free-classes-earned-under-rules`](../../.claude/rules/interfaces-free-classes-earned-under-rules.md)
+- `interfaces-free-classes-earned-under-rules` <!-- STALE-REF: ../../.claude/rules/interfaces-free-classes-earned-under-rules.md -->
   — the type-level sibling: the free structure is free, the quotient is earned

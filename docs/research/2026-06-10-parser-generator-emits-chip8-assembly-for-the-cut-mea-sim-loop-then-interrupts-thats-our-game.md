@@ -10,7 +10,7 @@
 
 ## The build
 
-The `cut mea sim` curried loop (the [`clis/`](../../clis/) verb family) gets a **runnable target**: a
+The `cut mea sim` curried loop (the `clis/` <!-- STALE-REF: ../../clis/ --> verb family) gets a **runnable target**: a
 **parser generator** compiles it down to **CHIP-8 assembly**, and **interrupts** make it interactive —
 the result is **the game** (the CHIP-8-class VM that *is* `sim`).
 
@@ -22,9 +22,9 @@ the result is **the game** (the CHIP-8-class VM that *is* `sim`).
 **interface definitions** are the source the generator reads, not concrete classes. F# **interfaces**
 (abstract members only; no class, no instance state) are the **pure boundary**: nothing to reflect over
 but the *shape*, so the generator emits asm from the interface contract directly. This is exactly the
-[`universal/`](../../universal/) discipline (**interfaces = universal shapes**) and Core-pure
+`universal/` <!-- STALE-REF: ../../universal/ --> discipline (**interfaces = universal shapes**) and Core-pure
 (Result-over-exception, no hidden class state). The loop's verbs (`sim`/`mea`/`cut`) are **interface
-members**; `cut mea sim` (curried) is interface composition; the generator ([`gen/`](../../gen/)) turns
+members**; `cut mea sim` (curried) is interface composition; the generator (`gen/` <!-- STALE-REF: ../../gen/ -->) turns
 those pure interfaces into CHIP-8 opcodes. No class state ⇒ DST-deterministic ⇒ byte-lockable across
 the four oracles.
 
@@ -47,7 +47,7 @@ byte-lock across the four oracles, DST-replayable, the common-ground emulator fl
 
 CHIP-8 has **timers** (delay + sound, 60Hz) — the seed of **interrupts**. Tying interrupts in makes the
 loop **interactive / reactive**: an interrupt fires an action mid-loop. This is exactly
-[`triggers/`](../../triggers/) (**act-on-condition**) and the finalizer's `ReKick` — the interrupt *is*
+`triggers/` <!-- STALE-REF: ../../triggers/ --> (**act-on-condition**) and the finalizer's `ReKick` — the interrupt *is*
 a trigger. With interrupts wired, the `cut mea sim` loop becomes a **playable game**: input/timer
 interrupts drive the loop; `sim` renders (ray-traced ZetaId), `mea`/`cut` commit, interrupts steer.
 (The Cheat-Engine lineage: triggers / conditional breakpoints are interrupts on the running game —
@@ -71,8 +71,8 @@ richer target can come later.
 
 ## Ties / routing
 
-[`clis/`](../../clis/) (the `cut mea sim` loop being compiled) · [`triggers/`](../../triggers/) +
-[`hooks/`](../../hooks/) (interrupts = act-on-condition = the Cheat-Engine hook) · [`sims/`](../../sims/)
+`clis/` <!-- STALE-REF: ../../clis/ --> (the `cut mea sim` loop being compiled) · `triggers/` <!-- STALE-REF: ../../triggers/ --> +
+`hooks/` <!-- STALE-REF: ../../hooks/ --> (interrupts = act-on-condition = the Cheat-Engine hook) · `sims/` <!-- STALE-REF: ../../sims/ -->
 (the game = the sim) · the F#-CLI discussion (FParsec/Argu as the parser generator) ·
 `docs/research/2026-06-10-filesystem-is-the-startup-merkledag-and-the-sim-mea-cut-cli-triad-macvector-for-dna.md`
 (CHIP-8 = the VM; the triad). **Routes to:** the Core team (parser generator + CHIP-8 codegen +

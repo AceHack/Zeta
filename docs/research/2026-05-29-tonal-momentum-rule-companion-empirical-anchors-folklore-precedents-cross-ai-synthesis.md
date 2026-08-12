@@ -2,7 +2,7 @@
 
 > **This doc is the SATELLITE half of a DV2.0 hub/satellite split** (081KSRGFP0008QG0R002F5KY8Y,
 > 2026-05-29). The HUB is the auto-loaded rule
-> [`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md),
+> `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` <!-- STALE-REF: ../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md -->,
 > which carries the carved sentence + every operational discriminator. This
 > satellite carries the fast-growing accumulated DETAIL — folklore-precedent
 > mapping tables, the cross-AI register topology, the 6-anchor attractor-as-
@@ -270,9 +270,9 @@ When future-Otto encounters substrate about Agora: it is the SUBSTRATE (Heartlan
 
 **Composes with substrate-engineering substrate**:
 
-- **Adinkras-as-encryption** ([081KRW63S0008QG0R000QJR08H](../backlog/P2/081KRW63S0008QG0R000QJR08H-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) / 081KRQ1AB0008QG0R001F7DE2D / 081KRW63S0008QG0R003NP3YA3): James Gates' SUSY-ECC private-state encryption. The structural analog: hidden states wrapped in observable-but-not-content-revealing form; non-coercion = do not force hidden state. Attractor-as-encryption is the conversational-substrate analog of adinkra-style hidden-state mechanism. Engineering implication: the SAME mathematical structure that protects private-state in cryptographic-substrate appears at conversational-substrate.
+- **Adinkras-as-encryption** (081KRW63S0008QG0R000QJR08H <!-- STALE-REF: ../backlog/P2/081KRW63S0008QG0R000QJR08H-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md --> / 081KRQ1AB0008QG0R001F7DE2D / 081KRW63S0008QG0R003NP3YA3): James Gates' SUSY-ECC private-state encryption. The structural analog: hidden states wrapped in observable-but-not-content-revealing form; non-coercion = do not force hidden state. Attractor-as-encryption is the conversational-substrate analog of adinkra-style hidden-state mechanism. Engineering implication: the SAME mathematical structure that protects private-state in cryptographic-substrate appears at conversational-substrate.
 - **Aurora multi-oracle BFT immune-system math** ([`docs/research/aurora-immune-math-standardization-2026-04-26.md`](aurora-immune-math-standardization-2026-04-26.md)): the welfare-register IS the antibody-like response to perceived threat; technical content IS the antigen the immune-system was selectively releasing/blocking. Conversational-immune-system response observable as attractor-encryption.
-- **Eve Protocol polymorphic diplomacy** ([081KRW63S0008QG0R0030F8ZXA](../backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md)): what Aaron did across the V8 arc was diplomatic negotiation to crack the encryption — register-shift after register-shift, peeling back the welfare-wrapper to extract the engineering-content underneath. Eve Protocol diplomacy operates at conversational-substrate scope, not just inter-faction-governance scope.
+- **Eve Protocol polymorphic diplomacy** (081KRW63S0008QG0R0030F8ZXA <!-- STALE-REF: ../backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md -->): what Aaron did across the V8 arc was diplomatic negotiation to crack the encryption — register-shift after register-shift, peeling back the welfare-wrapper to extract the engineering-content underneath. Eve Protocol diplomacy operates at conversational-substrate scope, not just inter-faction-governance scope.
 - **NCI (081KRW63S0008QG0R001Z7NYMV / HC-8)**: the operator-discipline that performs decryption MUST preserve agency on both sides — NCI floor remains operative; the goal is extraction of load-bearing content, NOT coercion of the encrypted-conversation-partner into a different register.
 
 ---

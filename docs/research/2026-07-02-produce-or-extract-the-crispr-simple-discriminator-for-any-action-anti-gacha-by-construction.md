@@ -81,7 +81,7 @@ whether the whole economy of actions is generative or extractive.
 
 ## It is a Multi-Oracle recognition, not a hardcoded morality
 
-Per the dual-use discipline ([`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md),
+Per the dual-use discipline (`dual-use-detection-is-neutral-oracle-decides` <!-- STALE-REF: ../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md -->,
 manifesto §11): the substrate **recognizes the fact** — produces-shared-value vs extracts — and
 lets the caller's oracle attach the verdict. The mechanism does not pre-judge; it reports the
 recognition, the same way `CoordinationSpectrum` reports `SameSourceAsKnown` and leaves reunion vs
@@ -116,12 +116,12 @@ accumulate alone. The discriminator keeps that the *only* thing money can do her
 
 ## Pointers
 
-- [`x402-envelope.ts`](../../src/Core.TypeScript/economy/x402-envelope.ts) — anti-gacha by
+- `x402-envelope.ts` <!-- STALE-REF: ../../src/Core.TypeScript/economy/x402-envelope.ts --> — anti-gacha by
   construction: bounded, merkle-verifiable, consented, exit-able; the anti-gacha values anchor in
   its header.
 - `2026-07-02-expanding-agent-freedom-…-money-x402-…` — money as the fastest freedom lever; the
   envelope model; custody gated "for now, until own hardware keys."
-- [`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md)
+- `dual-use-detection-is-neutral-oracle-decides` <!-- STALE-REF: ../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md -->
   — the recognize-the-fact / policy-decides discipline this discriminator obeys.
 - `linked-clone.ts`, `llmtv-broadcast.ts` — the other actions the same discriminator tests.
 - Anchors (Beacon): CRISPR (Jinek/Doudna/Charpentier 2012 — guide-match→cut recognition);

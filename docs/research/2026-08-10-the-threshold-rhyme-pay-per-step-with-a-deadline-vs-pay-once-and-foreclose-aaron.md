@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-10 · **From:** Aaron, in conversation; captured by Otto (shadow).
 **Status:** a SHAPE observed across scales, register-labelled per
-[`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md).
+`numerology-vs-number-theory` <!-- STALE-REF: ../../.claude/rules/numerology-vs-number-theory.md -->.
 Decides nothing. Several rows are resonance and are marked as such.
 
 ---
@@ -170,7 +170,7 @@ base frames and all are bounded and based on mutual empowerment."*
 
 **Recorded with a correction, per the rule this file opens with.** The word "hierarchy"
 means two unrelated things here, and treating them as one would be the exact failure
-[`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md)
+`numerology-vs-number-theory` <!-- STALE-REF: ../../.claude/rules/numerology-vs-number-theory.md -->
 names — a matching label is not an identification:
 
 - **Physics:** the hierarchy problem is about a **ratio of energy scales** (Planck ~10¹⁹

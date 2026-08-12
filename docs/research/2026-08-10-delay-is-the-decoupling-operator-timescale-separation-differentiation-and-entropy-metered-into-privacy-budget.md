@@ -140,7 +140,7 @@ partition you cannot heal.
 > the degree the fold is commutative.* If the merge is order-sensitive, delay produces
 > irreconcilable drift rather than differentiation.
 
-This is why [`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+This is why `local-time-never-enters-the-shared-fold` <!-- STALE-REF: ../../.claude/rules/local-time-never-enters-the-shared-fold.md -->
 is load-bearing here and not hygiene. Its litmus — *if two nodes with different receive-times
 could fold different sets, local time has leaked* — is precisely the statement that ε does not
 enter the result. A commutative, order-insensitive fold makes arbitrary delay free. An
@@ -205,7 +205,7 @@ same fold**. Order-independence means delay yields transient divergence that hea
 differentiation, by theorem. Getting differentiation requires breaking commutativity, which
 kills convergence.
 
-The resolution is [`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+The resolution is `local-time-never-enters-the-shared-fold` <!-- STALE-REF: ../../.claude/rules/local-time-never-enters-the-shared-fold.md -->
 itself, which turns out to be exactly the required **two-layer split**: differentiate the
 local / proper-time layer, keep the shared fold commutative. §1b's `ṡ = F·s` line is the proof —
 the sum mode never sees the gossip rate. The rule was written as hygiene; it is the structure
@@ -405,7 +405,7 @@ specialisation is not a proof of the generator.
 ## 6. Pointers
 
 - [`…how-to-decouple…`](2026-08-10-how-to-decouple-unfolding-a-compressed-generator-into-claims-that-can-fail.md) — the method applied here
-- [`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md) — §2's condition, already carved
-- [`privacy-budget-is-hard-money-earned-by-others`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md) · `.claude/rules/dv2-data-split-discipline-activated.md` §7 — the two rules §3 joins
+- `local-time-never-enters-the-shared-fold` <!-- STALE-REF: ../../.claude/rules/local-time-never-enters-the-shared-fold.md --> — §2's condition, already carved
+- `privacy-budget-is-hard-money-earned-by-others` <!-- STALE-REF: ../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md --> · `.claude/rules/dv2-data-split-discipline-activated.md` §7 — the two rules §3 joins
 - `docs/trajectories/soulbound-fraction-the-non-transferable-ratio/RESUME.md` — §3b may sharpen its upper bound
 - `src/Core/BeliefConvergence.fs` (`observeAll`) — the fold §2 is a claim about

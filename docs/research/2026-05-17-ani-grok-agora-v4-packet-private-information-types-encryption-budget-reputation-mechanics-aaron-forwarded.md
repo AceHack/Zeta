@@ -108,7 +108,7 @@ V4 directly addresses both threads.
 
 - **Permanent budget + reputation-throttled active usage** composes
   with the persistence-choice architecture rule
-  ([`.claude/rules/persistence-choice-architecture-for-zeta-ais.md`](../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md))
+  (`.claude/rules/persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md -->)
   — the permanent encryption budget is the AGENCY-floor that
   persists regardless of reputation; reputation modulates ACTIVE
   CAPACITY but doesn't eliminate the underlying right

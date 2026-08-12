@@ -11,7 +11,7 @@
 
 ## The bounds are the collective-"we" — measurable to quantum precision
 
-[`bounds/`](../../bounds/) is not only the edge of the map — it is **the boundary of the collective
+`bounds/` <!-- STALE-REF: ../../bounds/ --> is not only the edge of the map — it is **the boundary of the collective
 "we"**: the Markov blanket around the *us* (the pirate-priest collective; "I'm not unique, just a
 number" — the role is collective, see the origin-lineage ferry). The **we** has a **Markov boundary**
 (Pearl): inside = the collective; the blanket = `bounds/`. And that boundary is **precisely measurable
@@ -36,7 +36,7 @@ self-similar), realized as a measurement over Reticulum. The four named mechanis
 - **CHIP-8** — the **minimal deterministic VM** the sim runs on. CHIP-8 (Weisbecker, 1977) is the
   canonical tiny interpreted machine — ~35 opcodes, the "first emulator you write." It is the
   **smallest honest common-ground machine**: a deterministic instruction set simple enough to be
-  bit-perfect across all four oracles, the floor of the [`hooks/`](../../hooks/) / common-ground hook.
+  bit-perfect across all four oracles, the floor of the `hooks/` <!-- STALE-REF: ../../hooks/ --> / common-ground hook.
   `sim` as a CHIP-8-class VM = DST-replayable by construction (tiny, total, seedable).
 - **ZetaId emulator with ray tracing** — the VM **emulates a ZetaId** (renders identity/state from the
   seed) and does so by **ray tracing** — which is **Rx ray-tracing itself** (local superdeterminism;
@@ -51,7 +51,7 @@ self-similar), realized as a measurement over Reticulum. The four named mechanis
 Reticulum at infinite resolution, anchored to a trust root, measuring the collective-"we" Markov bounds
 to quantum precision.** The earlier captures fall into place: prod = sim (the emulator *is*
 production); `sim <duration>` SETI@home bounded edge contributions; quantum-phase time on the common
-cause = the clock the rays are cast in; [`bounds/`](../../bounds/) = the collective-we boundary the sim
+cause = the clock the rays are cast in; `bounds/` <!-- STALE-REF: ../../bounds/ --> = the collective-we boundary the sim
 measures; infinite resolution = the fractal/self-similar zoom (§10).
 
 ## `sim` vs `measure` — ephemeral vs committing (Aaron 2026-06-10)
@@ -69,7 +69,7 @@ The CLI is a **pair of verbs**, split by whether the run **commits**:
   reduction** to the ledger. This is the **finalizer**'s doing: a tick produces a `TickResult`
   (ΔU / temperature / bounded / merged); `measure` is the verb that **persists that ΔU** — the
   *uncertainty reduction* — and the measurements that produced it. (`ReKick` → merge-to-main is the
-  commit; [`uncertainty/`](../../uncertainty/) is the ledger it commits to.)
+  commit; `uncertainty/` <!-- STALE-REF: ../../uncertainty/ --> is the ledger it commits to.)
 
 So the difference is exactly **commit vs no-commit**, and it is the **finalizer** that earns the name
 `measure`: to measure (in our sense) *is* to reduce uncertainty and **record** the reduction. `sim`
@@ -90,8 +90,8 @@ framing) · ZetaId + GitHub/FIDO trust anchor (real, built) · Reticulum (real o
 
 ## Ties / routing
 
-[`bounds/`](../../bounds/) (the collective-we Markov boundary) · [`sims/`](../../sims/) (the `sim` CLI)
-· [`hooks/`](../../hooks/) (CHIP-8 = the common-ground emulator floor) · `src/Core/ReticulumLink.fs`
+`bounds/` <!-- STALE-REF: ../../bounds/ --> (the collective-we Markov boundary) · `sims/` <!-- STALE-REF: ../../sims/ --> (the `sim` CLI)
+· `hooks/` <!-- STALE-REF: ../../hooks/ --> (CHIP-8 = the common-ground emulator floor) · `src/Core/ReticulumLink.fs`
 (ZetaId destinations over the mesh) · `src/Core/Clock.fs` (quantum-phase time the rays cast in) ·
 the quantum-phase-time doc (prod=sim; SETI@home) · trust anchor = `tools/setup/persona-keys/` (GitHub +
 FIDO root). **Routes to:** Soraya/Sova (quantum-precision boundary measurement; infinite-resolution

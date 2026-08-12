@@ -157,7 +157,7 @@ Both are deferred to future ticks (and to Aaron's explicit framing) per gen-rate
 ## See also
 
 - [Karpathy verifiability anchor (PR #1175)](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md)
-- [Amara Aurora civilization-substrate review (PR #1180)](2026-05-01-amara-aurora-civilization-substrate-review-aaron-forwarded.md)
-- [Amara Aurora immune-system spec review (PR #1179)](2026-05-01-amara-aurora-immune-system-spec-review-aaron-forwarded.md)
-- [Vendor-alignment-bias memory](../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md)
-- [Substrate-or-it-didn't-happen (Otto-363)](../../memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md)
+- Amara Aurora civilization-substrate review (PR #1180) <!-- STALE-REF: 2026-05-01-amara-aurora-civilization-substrate-review-aaron-forwarded.md -->
+- Amara Aurora immune-system spec review (PR #1179) <!-- STALE-REF: 2026-05-01-amara-aurora-immune-system-spec-review-aaron-forwarded.md -->
+- Vendor-alignment-bias memory <!-- STALE-REF: ../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md -->
+- Substrate-or-it-didn't-happen (Otto-363) <!-- STALE-REF: ../../memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md -->

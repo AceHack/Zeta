@@ -20,5 +20,5 @@
 **Action Taken**:
 
 - Cleaned locks.
-- Logged drift in broadcast bus (see [`memory/lior/cli/gemini/conversations/2026-05-14-shadow-lesson-log-lior-drift.md`](2026-05-14-shadow-lesson-log-lior-drift.md)).
+- Logged drift in broadcast bus (see `memory/lior/cli/gemini/conversations/2026-05-14-shadow-lesson-log-lior-drift.md` <!-- STALE-REF: 2026-05-14-shadow-lesson-log-lior-drift.md -->).
 - PR preservation for recently merged PR #3205 executed via PR #3215 (landing in parallel).

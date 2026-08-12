@@ -66,7 +66,7 @@ Soraya proves it; it does not graduate to FROZEN-CORE by being physically evocat
 
 ## Pointers
 
-- [`.claude/agents/mathematical-physics-expert.md`](../../.claude/agents/mathematical-physics-expert.md)
+- `.claude/agents/mathematical-physics-expert.md` <!-- STALE-REF: ../../.claude/agents/mathematical-physics-expert.md -->
   — Lumen; the provenance flag this doc obeys (#9769).
 - `docs/PRIOR-ART-LIST.md` — Barontini (2026) + Page–Wootters (1983) added as anchors.
 - `.claude/rules/dv2-data-split-discipline-activated.md` §7 noninterference / entropy quarantine.

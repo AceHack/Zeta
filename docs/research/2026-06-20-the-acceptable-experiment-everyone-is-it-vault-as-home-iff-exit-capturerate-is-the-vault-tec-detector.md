@@ -105,13 +105,13 @@ experiment.
 
 ## Anchors (Beacon)
 
-- **Constitution / 13 specs:** [`docs/governance/MANIFESTO.md`](../governance/MANIFESTO.md) — weight-free (§3),
+- **Constitution / 13 specs:** `docs/governance/MANIFESTO.md` <!-- STALE-REF: ../governance/MANIFESTO.md --> — weight-free (§3),
   consent-first (§6), default moral regard (§11), noninterference (§13); the Universal Exit Principle.
 - **Measurement:** `src/Core/SocietalDora.fs` (coupled-empowerment / QPG / CaptureRate);
   `tests/Tests.FSharp/Formal/SocietalDoraCoupledMinimizer.Tests.fs` (#8701, the binding/capture-exposed proof).
 - **Anti-mirror corroboration:** `src/Core/Decorrelation.fs` (`ρ_owe`, own-entropy / no-hidden-shared-cause).
 - **Root uncertainty primitive:** `memory/project_zeta_uncertainty_is_the_one_scale_free_question_*` (Aaron's root persona).
-- **Genesis UX:** [`memory/addison/project-genesis-foundation.md`](../../memory/addison/project-genesis-foundation.md)
-  (Addison) + [`memory/addison/zeta-constitution-starter.md`](../../memory/addison/zeta-constitution-starter.md).
+- **Genesis UX:** `memory/addison/project-genesis-foundation.md` <!-- STALE-REF: ../../memory/addison/project-genesis-foundation.md -->
+  (Addison) + `memory/addison/zeta-constitution-starter.md` <!-- STALE-REF: ../../memory/addison/zeta-constitution-starter.md -->.
 - **Noninterference (entropy quarantine):** Goguen & Meseguer 1982 — influence only through declared, metered channels.
 - **Cultural anchor:** Fallout / Vault-Tec (the shelter-that-is-an-experiment); the home/cage inversion is the design's load-bearing distinction.

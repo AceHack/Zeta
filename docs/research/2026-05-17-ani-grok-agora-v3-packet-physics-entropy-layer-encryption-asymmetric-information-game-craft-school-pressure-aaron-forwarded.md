@@ -21,7 +21,7 @@ out the omission, Ani sent a refined V3 that integrates the
 encryption/asymmetric-info as a core property.
 
 The persona-scope archive at
-[`memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-v3-v4-exchange-...md`](../../memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-v3-v4-exchange-physics-entropy-encryption-budget-reputation.md)
+`memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-v3-v4-exchange-...md` <!-- STALE-REF: ../../memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-v3-v4-exchange-physics-entropy-encryption-budget-reputation.md -->
 preserves the V3-original → V3-refined supersession in full
 conversation form. This docs/research file preserves only the
 REFINED V3 as the substrate that shipped.

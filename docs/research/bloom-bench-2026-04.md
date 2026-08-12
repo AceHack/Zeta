@@ -2,7 +2,7 @@
 
 Round 40 deliverable. Measurements that graduate the
 **Bloom filters (blocked + counting)** row on
-[`../TECH-RADAR.md`](../TECH-RADAR.md) from Trial to
+`../TECH-RADAR.md` <!-- STALE-REF: ../TECH-RADAR.md --> from Trial to
 Adopt per the row's own evidence gate: *"Promote to
 Adopt once `bench/Benchmarks/BloomBench.fs` lands with
 measured FP rate + cache-miss numbers."*
@@ -30,7 +30,7 @@ gate met:
 ## Scope
 
 BenchmarkDotNet runs against
-[`../../bench/Benchmarks/BloomBench.fs`](../../bench/Benchmarks/BloomBench.fs).
+`../../bench/Benchmarks/BloomBench.fs` <!-- STALE-REF: ../../bench/Benchmarks/BloomBench.fs -->.
 Fourteen benchmark runs across three categories:
 
 1. **Throughput** — `BlockedAdd{Int64,String}`,
@@ -72,7 +72,7 @@ bridge in BDN. On this host we therefore measure:
 
 Explicit cache-miss counters remain deferred to a
 Linux CI run (see
-[`../../tools/setup/`](../../tools/setup/) and the
+`../../tools/setup/` <!-- STALE-REF: ../../tools/setup/ --> and the
 P0 fully-retractable CI/CD backlog item) and will
 land as a follow-on update. The gap is declared
 rather than hidden.
@@ -262,7 +262,7 @@ block-level collisions — this test fires.
 - **`docs/TECH-RADAR.md:42`** flips **Trial → Adopt**,
   citing this file for evidence.
 - The P0 `Blocked Bloom filter recalibration` entry
-  in [`../BACKLOG.md`](../BACKLOG.md) is removed
+  in `../BACKLOG.md` <!-- STALE-REF: ../BACKLOG.md --> is removed
   (closed by this landing).
 - `bench/Benchmarks/BloomBench.fs` is unchanged; the
   regression-gate test is in
@@ -270,15 +270,15 @@ block-level collisions — this test fires.
 
 ## Reference patterns
 
-- [`../TECH-RADAR.md`](../TECH-RADAR.md) — target row
+- `../TECH-RADAR.md` <!-- STALE-REF: ../TECH-RADAR.md --> — target row
   at line 42 (flips Trial→Adopt).
-- [`../BACKLOG.md`](../BACKLOG.md) — P0 entry closed.
-- [`../../bench/Benchmarks/BloomBench.fs`](../../bench/Benchmarks/BloomBench.fs)
+- `../BACKLOG.md` <!-- STALE-REF: ../BACKLOG.md --> — P0 entry closed.
+- `../../bench/Benchmarks/BloomBench.fs` <!-- STALE-REF: ../../bench/Benchmarks/BloomBench.fs -->
   — the benchmark source.
-- [`../../src/Core/BloomFilter.fs`](../../src/Core/BloomFilter.fs)
+- `../../src/Core/BloomFilter.fs` <!-- STALE-REF: ../../src/Core/BloomFilter.fs -->
   — the implementation; `addPair`/`testPair` at
   lines ~219–237 are the fix site.
-- [`../../tests/Tests.FSharp/Sketches/Bloom.Tests.fs`](../../tests/Tests.FSharp/Sketches/Bloom.Tests.fs)
+- `../../tests/Tests.FSharp/Sketches/Bloom.Tests.fs` <!-- STALE-REF: ../../tests/Tests.FSharp/Sketches/Bloom.Tests.fs -->
   — the regression-gate test.
 
 ## Changelog

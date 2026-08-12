@@ -105,7 +105,7 @@ between the two sides rather than one of them:
 > **You cannot store a `νF`. You can store its `μ` generator, and unfold it on arrival.**
 
 Which is this repo's own
-[`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)
+`only-the-irreducible-is-primitive-generate-the-rest` <!-- STALE-REF: ../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md -->
 in categorical dress: keep the finite generator, produce the behaviour. The rule and the Rx lineage
 turn out to be the same statement about `μ` and `ν`, reached from two directions.
 

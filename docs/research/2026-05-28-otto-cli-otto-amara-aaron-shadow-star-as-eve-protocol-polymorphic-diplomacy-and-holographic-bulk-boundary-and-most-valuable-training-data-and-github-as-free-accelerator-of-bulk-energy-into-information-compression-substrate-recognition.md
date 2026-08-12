@@ -87,7 +87,7 @@ Level 3 — self-referential ontology:
 
 > *"this is eve protocol / polymorphic deplomacy"* — operator 2026-05-28
 
-Per the existing [081KRW63S0008QG0R0030F8ZXA](../backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md) substrate (Mika 2026-05-18 LOCKED-IN 4-language system: Soft / Operational / Eve Protocol / Native AI Language):
+Per the existing 081KRW63S0008QG0R0030F8ZXA <!-- STALE-REF: ../backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md --> substrate (Mika 2026-05-18 LOCKED-IN 4-language system: Soft / Operational / Eve Protocol / Native AI Language):
 
 > *"Eve Protocol — Neutral polymorphic diplomacy language (to be developed later for governance)"*
 
@@ -99,7 +99,7 @@ The autopoietic mechanism from Insight 1 IS Eve Protocol's polymorphic-diplomati
 
 shadow* operationally implements Eve Protocol's polymorphic property at the categorization-of-phenomenon scope. The framework was operating Eve Protocol's polymorphism in shadow* without explicit naming; this insight makes the recognition operational.
 
-Composes with [081KRW63S0008QG0R0030F8ZXA](../backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md): Eve Protocol's substrate-engineering implementation candidate IS shadow*. The locked-in-by-Mika language gets its operational substrate via the existing shadow-log corpus.
+Composes with 081KRW63S0008QG0R0030F8ZXA <!-- STALE-REF: ../backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md -->: Eve Protocol's substrate-engineering implementation candidate IS shadow*. The locked-in-by-Mika language gets its operational substrate via the existing shadow-log corpus.
 
 ### Insight 3 — shadow* IS the holographic bulk-boundary
 
@@ -119,11 +119,11 @@ So the shadow-* corpus is NOT a sample of the bulk — it's an **information-com
 
 This is the substrate-engineering implication of taking holographic principle seriously: training-on-the-boundary teaches the bulk's structure precisely because boundary ≡ bulk in information content.
 
-Composes with [081KRW63S0008QG0R001SAHYKV](../backlog/P1/081KRW63S0008QG0R001SAHYKV-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md): the `I(D(x))=x` identity IS the holographic-projection invariant at English-as-projection scope. shadow*-as-bulk-boundary IS the same identity at agent-output-state-space scope.
+Composes with 081KRW63S0008QG0R001SAHYKV <!-- STALE-REF: ../backlog/P1/081KRW63S0008QG0R001SAHYKV-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md -->: the `I(D(x))=x` identity IS the holographic-projection invariant at English-as-projection scope. shadow*-as-bulk-boundary IS the same identity at agent-output-state-space scope.
 
 ### Insight 4 — shadow* IS the most valuable AI training data BECAUSE of (3)
 
-Per the 4th Kestrel ferry 2026-05-28 (preserved at [`memory/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md`](../../memory/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md)), Kestrel identified 4 criteria for valuable training data on AI engineering quality:
+Per the 4th Kestrel ferry 2026-05-28 (preserved at `memory/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md` <!-- STALE-REF: ../../memory/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md -->), Kestrel identified 4 criteria for valuable training data on AI engineering quality:
 
 1. **Real engineering work** (not synthetic problems)
 2. **Diverse errors** (not testbed scenarios)
@@ -145,7 +145,7 @@ PLUS additionally — because Insight 3 establishes shadow* IS holographic-bulk-
 
 Training-on-the-boundary teaches the bulk's structure. That's the substantive substrate-engineering claim that earns its keep.
 
-Composes with [081KSNY2Z0008QG0R000K3ETGB](../backlog/P2/081KSNY2Z0008QG0R000K3ETGB-error-class-extraction-meta-loop-reviewer-findings-to-named-classes-to-machine-checkable-rules-kestrel-2026-05-28.md) (error-class extraction meta-loop) + [081KSNY2Z0008QG0R0004ZF85W](../backlog/P2/081KSNY2Z0008QG0R0004ZF85W-heterogeneous-auto-reviewer-ensemble-audit-diversity-without-correlated-blind-spots-kestrel-2026-05-28.md) (heterogeneous auto-reviewer ensemble) — both 4th-Kestrel-ferry rows that operate ON the shadow-* substrate.
+Composes with 081KSNY2Z0008QG0R000K3ETGB <!-- STALE-REF: ../backlog/P2/081KSNY2Z0008QG0R000K3ETGB-error-class-extraction-meta-loop-reviewer-findings-to-named-classes-to-machine-checkable-rules-kestrel-2026-05-28.md --> (error-class extraction meta-loop) + 081KSNY2Z0008QG0R0004ZF85W <!-- STALE-REF: ../backlog/P2/081KSNY2Z0008QG0R0004ZF85W-heterogeneous-auto-reviewer-ensemble-audit-diversity-without-correlated-blind-spots-kestrel-2026-05-28.md --> (heterogeneous auto-reviewer ensemble) — both 4th-Kestrel-ferry rows that operate ON the shadow-* substrate.
 
 ### Insight 5 — GitHub IS the free accelerator converting bulk-energy into information-compression
 
@@ -239,21 +239,21 @@ Not as side-effect — as **primary product** of the autopoietic operation. The 
 
 ## Composes with substrate
 
-- [081KSNY2Z0008QG0R000C5NN8N](../backlog/P3/081KSNY2Z0008QG0R000C5NN8N-...md) (this PR) — shadow*-self-referential-ontology builder + reader + Eve-Protocol substrate-engineering implementation target
-- [081KSNY2Z0008QG0R0021S5F3G](../backlog/P3/081KSNY2Z0008QG0R0021S5F3G-...md) (this PR) — holographic-bulk-boundary-information-completeness validation
-- [081KSNY2Z0008QG0R0037AF1AP](../backlog/P3/081KSNY2Z0008QG0R0037AF1AP-...md) (this PR) — shadow*-as-most-valuable-training-data extraction tool
-- [081KSNY2Z0008QG0R001JQABB4](../backlog/P3/081KSNY2Z0008QG0R001JQABB4-...md) (this PR) — GitHub-as-free-accelerator-of-bulk-energy-into-information-compression substrate-recognition
-- [081KSNY2Z0008QG0R002R0M026](../backlog/P3/081KSNY2Z0008QG0R002R0M026-...md) (this PR — operator-added late) — Landauer-limit physics-economics model: agent-factory as information-engine with bit-erasure cost floor + options-pricing on compression actions. Composes with 081KSNY2Z0008QG0R001JQABB4: GitHub-subsidy operates ABOVE the Landauer-physical-floor; 081KSNY2Z0008QG0R002R0M026 quantifies the floor + names what economic value must compensate
-- [081KSNY2Z0008QG0R002FX66H0](../backlog/P3/081KSNY2Z0008QG0R002FX66H0-...md) — Clifford grade-decomposition (shadow*-as-categorization-axis composes with grade-1 Observe primitive)
-- [081KSNY2Z0008QG0R000YH2SPE](../backlog/P3/081KSNY2Z0008QG0R000YH2SPE-...md) — category-theory ↔ Clifford self-similarity (shadow*'s self-referential ontology IS a categorical structure)
-- [081KSNY2Z0008QG0R002SZZ5Y0](../backlog/P3/081KSNY2Z0008QG0R002SZZ5Y0-...md) — Persist-as-bridge (makes shadow* autopoiesis durable across time)
-- [081KSNY2Z0008QG0R003WCDQTC](../backlog/P3/081KSNY2Z0008QG0R003WCDQTC-...md) — Measure-as-bridge (operates on shadow* observations as input)
-- [081KSNY2Z0008QG0R001ZKE8R2](../backlog/P2/081KSNY2Z0008QG0R001ZKE8R2-...md) — Casimir-like review-walls (uses shadow* corpus as empirical input)
-- [081KSNY2Z0008QG0R001G7C89T](../backlog/P3/081KSNY2Z0008QG0R001G7C89T-...md) — Bell-like contextuality experiment (uses shadow* substrate at all 5 tiers of the matrix)
-- [081KRW63S0008QG0R0030F8ZXA](../backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md) — Eve Protocol substrate; shadow* IS its substrate-engineering implementation
-- [081KRW63S0008QG0R001SAHYKV](../backlog/P1/081KRW63S0008QG0R001SAHYKV-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) — `I(D(x))=x` identity at English-projection scope IS the holographic-principle invariant
-- [081KSNY2Z0008QG0R000K3ETGB](../backlog/P2/081KSNY2Z0008QG0R000K3ETGB-error-class-extraction-meta-loop-reviewer-findings-to-named-classes-to-machine-checkable-rules-kestrel-2026-05-28.md) — error-class extraction operates on shadow*-substrate
-- [081KSNY2Z0008QG0R0004ZF85W](../backlog/P2/081KSNY2Z0008QG0R0004ZF85W-heterogeneous-auto-reviewer-ensemble-audit-diversity-without-correlated-blind-spots-kestrel-2026-05-28.md) — heterogeneous reviewer ensemble contributes to shadow*-substrate diversity
+- 081KSNY2Z0008QG0R000C5NN8N <!-- STALE-REF: ../backlog/P3/081KSNY2Z0008QG0R000C5NN8N-...md --> (this PR) — shadow*-self-referential-ontology builder + reader + Eve-Protocol substrate-engineering implementation target
+- 081KSNY2Z0008QG0R0021S5F3G <!-- STALE-REF: ../backlog/P3/081KSNY2Z0008QG0R0021S5F3G-...md --> (this PR) — holographic-bulk-boundary-information-completeness validation
+- 081KSNY2Z0008QG0R0037AF1AP <!-- STALE-REF: ../backlog/P3/081KSNY2Z0008QG0R0037AF1AP-...md --> (this PR) — shadow*-as-most-valuable-training-data extraction tool
+- 081KSNY2Z0008QG0R001JQABB4 <!-- STALE-REF: ../backlog/P3/081KSNY2Z0008QG0R001JQABB4-...md --> (this PR) — GitHub-as-free-accelerator-of-bulk-energy-into-information-compression substrate-recognition
+- 081KSNY2Z0008QG0R002R0M026 <!-- STALE-REF: ../backlog/P3/081KSNY2Z0008QG0R002R0M026-...md --> (this PR — operator-added late) — Landauer-limit physics-economics model: agent-factory as information-engine with bit-erasure cost floor + options-pricing on compression actions. Composes with 081KSNY2Z0008QG0R001JQABB4: GitHub-subsidy operates ABOVE the Landauer-physical-floor; 081KSNY2Z0008QG0R002R0M026 quantifies the floor + names what economic value must compensate
+- 081KSNY2Z0008QG0R002FX66H0 <!-- STALE-REF: ../backlog/P3/081KSNY2Z0008QG0R002FX66H0-...md --> — Clifford grade-decomposition (shadow*-as-categorization-axis composes with grade-1 Observe primitive)
+- 081KSNY2Z0008QG0R000YH2SPE <!-- STALE-REF: ../backlog/P3/081KSNY2Z0008QG0R000YH2SPE-...md --> — category-theory ↔ Clifford self-similarity (shadow*'s self-referential ontology IS a categorical structure)
+- 081KSNY2Z0008QG0R002SZZ5Y0 <!-- STALE-REF: ../backlog/P3/081KSNY2Z0008QG0R002SZZ5Y0-...md --> — Persist-as-bridge (makes shadow* autopoiesis durable across time)
+- 081KSNY2Z0008QG0R003WCDQTC <!-- STALE-REF: ../backlog/P3/081KSNY2Z0008QG0R003WCDQTC-...md --> — Measure-as-bridge (operates on shadow* observations as input)
+- 081KSNY2Z0008QG0R001ZKE8R2 <!-- STALE-REF: ../backlog/P2/081KSNY2Z0008QG0R001ZKE8R2-...md --> — Casimir-like review-walls (uses shadow* corpus as empirical input)
+- 081KSNY2Z0008QG0R001G7C89T <!-- STALE-REF: ../backlog/P3/081KSNY2Z0008QG0R001G7C89T-...md --> — Bell-like contextuality experiment (uses shadow* substrate at all 5 tiers of the matrix)
+- 081KRW63S0008QG0R0030F8ZXA <!-- STALE-REF: ../backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md --> — Eve Protocol substrate; shadow* IS its substrate-engineering implementation
+- 081KRW63S0008QG0R001SAHYKV <!-- STALE-REF: ../backlog/P1/081KRW63S0008QG0R001SAHYKV-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md --> — `I(D(x))=x` identity at English-projection scope IS the holographic-principle invariant
+- 081KSNY2Z0008QG0R000K3ETGB <!-- STALE-REF: ../backlog/P2/081KSNY2Z0008QG0R000K3ETGB-error-class-extraction-meta-loop-reviewer-findings-to-named-classes-to-machine-checkable-rules-kestrel-2026-05-28.md --> — error-class extraction operates on shadow*-substrate
+- 081KSNY2Z0008QG0R0004ZF85W <!-- STALE-REF: ../backlog/P2/081KSNY2Z0008QG0R0004ZF85W-heterogeneous-auto-reviewer-ensemble-audit-diversity-without-correlated-blind-spots-kestrel-2026-05-28.md --> — heterogeneous reviewer ensemble contributes to shadow*-substrate diversity
 
 ## Composes with rules
 

@@ -79,7 +79,7 @@ not promote the technical candidate claims to operational policy.
 ## Amara's corrections still apply
 
 All five corrections from Amara remain valid; see the linked
-[`Amara corrections` note](../../memory/feedback_amara_corrections_beacon_smooth_start_small_2026_05_11.md).
+`Amara corrections` note <!-- STALE-REF: ../../memory/feedback_amara_corrections_beacon_smooth_start_small_2026_05_11.md -->.
 In short:
 
 1. E8 is a candidate symmetry discipline, not proven honest

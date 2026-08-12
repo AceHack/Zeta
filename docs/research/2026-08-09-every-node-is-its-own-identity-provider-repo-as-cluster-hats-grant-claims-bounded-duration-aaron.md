@@ -197,7 +197,7 @@ attesting again.
   which is what distinguishes attestation from signature-as-formality.
 
 **The tension worth naming, and its resolution.** The carved rule
-[`privacy-budget-is-hard-money-earned-by-others`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)
+`privacy-budget-is-hard-money-earned-by-others` <!-- STALE-REF: ../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md -->
 says the budget *"can be earned … but it **cannot be taken away**."* Staking-and-losing
 looks like it violates that. It does not, once three things are distinguished:
 

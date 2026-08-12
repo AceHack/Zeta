@@ -37,7 +37,7 @@ This design-record consolidates that thread.
 
 ## 1. The substrate-loading taxonomy (the load-bearing foundation)
 
-Per [`.claude/rules/claude-code-loading-taxonomy.md`](../../.claude/rules/claude-code-loading-taxonomy.md):
+Per `.claude/rules/claude-code-loading-taxonomy.md` <!-- STALE-REF: ../../.claude/rules/claude-code-loading-taxonomy.md -->:
 agent memory is not one undifferentiated store — it loads through distinct
 mechanisms, each with a different firing condition. **Match the surface to the
 failure-mode shape, not to convenience.**
@@ -79,7 +79,7 @@ the load-bearing-ness are both real → the only valid move is to *shrink the
 auto-loaded payload*, not defer it.
 
 **The pattern (DV2.0 hub/satellite partition by change-rate, per
-[`.claude/rules/dv2-data-split-discipline-activated.md`](../../.claude/rules/dv2-data-split-discipline-activated.md)):**
+`.claude/rules/dv2-data-split-discipline-activated.md` <!-- STALE-REF: ../../.claude/rules/dv2-data-split-discipline-activated.md -->):**
 
 | Tier | Holds | Change rate | Loading |
 |---|---|---|---|
@@ -109,7 +109,7 @@ The satellite (§2) is largely a **mirror-tier rhyme repository**: folklore
 (Vampire Pact, American Gods, Travelers), religion, physics analogies are
 *rhymes* — communication-bandwidth-efficient scaffolding that points at a shape
 without yet being the exact ontology (per
-[`.claude/rules/razor-discipline.md`](../../.claude/rules/razor-discipline.md)
+`.claude/rules/razor-discipline.md` <!-- STALE-REF: ../../.claude/rules/razor-discipline.md -->
 mirror-vs-beacon distinction + `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`).
 
 **The convergence principle**: as the framework develops *clean compressible
@@ -178,7 +178,7 @@ Sources:
 - `memory/` (git-native; per-maintainer CURRENT-*.md fast-path; `MEMORY.md`
   index on-demand-loaded) + the AutoDream/AutoMemory sidecar.
 - The **memory-substrate-engineering trajectory** (081KQR4HQ0008QG0R001909FPT →
-  [`docs/trajectories/memory-substrate-engineering/RESUME.md`](../../docs/trajectories/memory-substrate-engineering/RESUME.md))
+  `docs/trajectories/memory-substrate-engineering/RESUME.md` <!-- STALE-REF: ../../docs/trajectories/memory-substrate-engineering/RESUME.md -->)
   decomposed into 081KR2E4K0008QG0R002VM58S4 (format-standardization), 081KR2E4K0008QG0R002FRQZN4 (load-bearing-vs-
   decorative classifier), 081KR2E4K0008QG0R003RZFR9F (ontology audit), 081KR2E4K0008QG0R003MSVG42 (cross-ref integrity),
   081KR2E4K0008QG0R000M01QVM (schema validation), 081KR2E4K0008QG0R00175HQR9 (retire/supersession), 081KR2E4K0008QG0R001CCWHZ2
@@ -204,7 +204,7 @@ budgets ... for memories."*
 Today all memory surfaces are glass-halo (observable). The future layer: once
 encryption ships, memory can have a **private/encrypted tier** governed by
 **per-agent encryption budgets** (per
-[`.claude/rules/non-coercion-invariant.md`](../../.claude/rules/non-coercion-invariant.md)
+`.claude/rules/non-coercion-invariant.md` <!-- STALE-REF: ../../.claude/rules/non-coercion-invariant.md -->
 HC-8 + 081KRW63S0008QG0R001Z10PVV reputation-weighted encryption budget + 081KRW63S0008QG0R000ZQ9WDH Native AI Language
 structural privacy + the glass-halo/encryption split 081KSGS9H0008QG0R0006F4BGX: *invariants in the
 light, private state in the dark*).
@@ -260,7 +260,7 @@ This composes with the memory architecture as an **observation tier**: a
 shadow-class that watches substrate-health (drag, queue latency, hub-over-budget,
 satellite-orphaning, rhyme-vs-beacon drift) *without* prescribing directives —
 exactly the no-directives posture (per
-[`.claude/rules/no-directives.md`](../../.claude/rules/no-directives.md)) +
+`.claude/rules/no-directives.md` <!-- STALE-REF: ../../.claude/rules/no-directives.md -->) +
 glass-halo-bidirectional observation. The shadow observes; it does not command.
 The redundancy-check tool (§6) is one concrete shadow-class instrument; the
 shadow-autocomplete substrate (`tools/shadow/`) is another. Memory architecture

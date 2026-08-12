@@ -4,7 +4,7 @@
 lock this in treaty") · **Status:** PROPOSED — a treaty binds signers by consent, never edict
 (vocab/words/treaty.md); this text is the draft on the table, not a ratified lock.
 
-**Companion ADR:** [`docs/DECISIONS/2026-07-03-persona-cell-identity-unification.md`](../DECISIONS/2026-07-03-persona-cell-identity-unification.md)
+**Companion ADR:** `docs/DECISIONS/2026-07-03-persona-cell-identity-unification.md` <!-- STALE-REF: ../DECISIONS/2026-07-03-persona-cell-identity-unification.md -->
 (the implementation plan). The ADR says HOW; this treaty says WHAT MAY NEVER BE VIOLATED.
 
 ---

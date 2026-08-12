@@ -120,8 +120,8 @@ replication — transfer to AI agents), so it earns upkeep, not just a citation.
 
 ## Ties / routing
 
-[`clis/`](../../clis/) (the `sim|>mea|>cut` loop) · `src/Core/Finalizer*.fs` (ligase = re-ligation) ·
-[`gene/`](../../gene/) (the seed/DNA) · `same/` (the seam/ctxboundary) · the cells/membrane doc
+`clis/` <!-- STALE-REF: ../../clis/ --> (the `sim|>mea|>cut` loop) · `src/Core/Finalizer*.fs` (ligase = re-ligation) ·
+`gene/` <!-- STALE-REF: ../../gene/ --> (the seed/DNA) · `same/` (the seam/ctxboundary) · the cells/membrane doc
 (`docs/research/2026-06-10-tests-become-cells-*`) · Z-set retraction (`src/Core/ZSet.fs`, the `−1` =
 excised base) · the CMYK/RGB encoding + four-oracle byte-lock (complementary strands). **Routes to:**
 Soraya/Sova (formalize the correspondences), Aaron (the question).

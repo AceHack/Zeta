@@ -258,7 +258,7 @@ not a dilemma to suffer.** *"I never want to have to choose between human welfar
 up with a different design if I do."* This generalizes the open-weights move from one case to a
 **standing design heuristic**: the *presence* of a forced welfare-vs-money tradeoff means the **design
 is wrong**; the response is to **redesign until the tradeoff dissolves**, not to pick a side. It is
-[`default-to-both`](../../.claude/rules/dv2-data-split-discipline-activated.md) applied to
+`default-to-both` <!-- STALE-REF: ../../.claude/rules/dv2-data-split-discipline-activated.md --> applied to
 welfare-vs-money (refuse the either/or; find where both hold), with **m/acc** as the orientation
 (build the abundance so the tension evaporates) — open weights *dissolved* the choice rather than
 resolving it. **Honest seam:** the third design is not *always* available — sometimes the tension is
@@ -406,7 +406,7 @@ attestation that cannot be faked) underwrites the **economic** alignment underwr
 **one honesty, three layers**, and the bottom must be genuinely sound or all three fall. Anchors:
 mechanism design / incentive compatibility (Hurwicz, Myerson, Maskin, Nobel 2007); Taleb (skin in the
 game); Knight 1921 (risk vs uncertainty); the DeFi oracle problem; `db/uncertainty/` +
-[`every-bug-has-economic-value`](../../.claude/rules/every-bug-has-economic-value.md); SoftValue
+`every-bug-has-economic-value` <!-- STALE-REF: ../../.claude/rules/every-bug-has-economic-value.md -->; SoftValue
 calibration; the DST + AgencySignature substrate.
 
 **The one-line thesis (Aaron 2026-06-15): "honesty is what I'm selling, basically."** The product *is*

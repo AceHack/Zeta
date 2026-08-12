@@ -8,7 +8,7 @@ the GitHub API. **Revise to "verified" status after the
 Playwright login to console.x.ai unblocks the xAI API key and
 the CLI is installed locally per the factory's
 absorb-and-contribute discipline** (see
-[`memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`](../../memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md)
+`memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md` <!-- STALE-REF: ../../memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md -->
 in the maintainer's auto-memory — out-of-repo, maintainer
 context only).
 
@@ -192,7 +192,7 @@ absorb-and-contribute discipline**:
   broken.
 
 Both PRs are targets the factory can land under
-[`GOVERNANCE.md §23`](../../GOVERNANCE.md) (upstream-contribution
+`GOVERNANCE.md §23` <!-- STALE-REF: ../../GOVERNANCE.md --> (upstream-contribution
 workflow). AI-coauthor trailer mandatory; body prose
 transparent about AI authorship; maintainer-facing copy per
 the maintainer's standing authorization in

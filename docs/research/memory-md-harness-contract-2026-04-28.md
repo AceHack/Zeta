@@ -40,13 +40,13 @@ The harness has been silently truncating us since the index passed line 200. The
 The harness's memory-extraction subsystem writes new memory pointers in a strict shape, and the at-wake injection assumes that shape. From observed behavior plus the harness's own author-time guidance:
 
 - Each pointer is **one line** per memory file.
-- Pointer format is `- [Title](file.md) — hook` (a Markdown link followed by a hook-phrase separated by an em-dash).
+- Pointer format is `- Title <!-- STALE-REF: file.md --> — hook` (a Markdown link followed by a hook-phrase separated by an em-dash).
 - Pointers should stay **concise** — roughly under 150 characters per line is a practical target so that more pointers fit within the line and byte caps.
 - `MEMORY.md` itself **does not carry frontmatter** (frontmatter belongs in the per-memory `*.md` files).
 
 Three load-bearing constraints follow from this:
 
-1. **One line per memory file** with the format `- [Title](file.md) — hook`.
+1. **One line per memory file** with the format `- Title <!-- STALE-REF: file.md --> — hook`.
 2. **Keep each line concise** so the index remains scannable and survives the truncation window; ~150 characters is a practical target.
 3. **No frontmatter on MEMORY.md itself.**
 
@@ -86,7 +86,7 @@ Author `tools/memory/generate-memory-index.sh` modelled on `tools/backlog/genera
 
 - Walk `memory/*.md` (excluding `memory/MEMORY.md` itself).
 - For each file, parse frontmatter, extract `name:` + `description:`.
-- Emit one line per file: `- [{name}](filename.md) — {description-truncated-to-fit-150-chars}`.
+- Emit one line per file: `- {name} <!-- STALE-REF: filename.md --> — {description-truncated-to-fit-150-chars}`.
 - Sort by frontmatter `created:` field descending (newest first), with the existing per-row `- [...]` format preserved.
 - **Cap output at 195 lines** (5-line headroom under the 200-line truncation).
 - Pre-commit hook regenerates on any `memory/*.md` add or modify.
@@ -109,7 +109,7 @@ Whenever the bare-marker-compatible feature flag flips on (whether by Anthropic'
 
 A bare marker file would:
 
-- **Break the harness's expected pointer format.** The memory-extraction flow writes pointers in `- [Title](file.md) — hook` shape and expects to find them. A bare marker has no pointers.
+- **Break the harness's expected pointer format.** The memory-extraction flow writes pointers in `- Title <!-- STALE-REF: file.md --> — hook` shape and expects to find them. A bare marker has no pointers.
 - **Lose the at-wake quick-scan service** without compensating mechanism (assuming the bare-marker-compatible feature flag is OFF, which is the default).
 - **Look like a regression** to the harness — `MEMORY.md` goes from "informative index" to "no information," and at-wake context becomes empty for the first ~200-line slot.
 
@@ -155,7 +155,7 @@ grep -v '^-\s\[' memory/MEMORY.md | grep -v '^\s*$' | grep -v '^#' | grep -v '^>
 **Expected signal:** the remaining non-blank, non-header, non-blockquote
 lines should be the preamble markers (`[AutoDream last run: ...]`, the
 fast-path `📌` lines, and the `> **Stack-vs-heap** …` blockquote).
-Any line that looks like in-line prose rather than a `- [Title](file.md) — hook`
+Any line that looks like in-line prose rather than a `- Title <!-- STALE-REF: file.md --> — hook`
 entry indicates a deviation from the harness's expected format.
 
 ### Step 3 — Confirm the reindexer honours the format contract
@@ -173,7 +173,7 @@ bun tools/memory/reindex-memory-md.ts --check
   index; run `bun tools/memory/reindex-memory-md.ts` to reconcile.
 
 This step confirms that the regeneration tool, which already encodes the
-harness's format contract (`- [**name**](file.md) — description`), can
+harness's format contract (`- **name** <!-- STALE-REF: file.md --> — description`), can
 serve as the canonical formatter. Future maintainers who question the
 format can inspect `tools/memory/reindex-memory-md.ts::renderIndex()` —
 that function IS the format specification.
@@ -211,7 +211,7 @@ A bare-marker `MEMORY.md` such as:
 Memory files live under `memory/`. Read frontmatter `description:` of each.
 ```
 
-produces zero `- [Title](file.md) — hook` lines. The harness's
+produces zero `- Title <!-- STALE-REF: file.md --> — hook` lines. The harness's
 memory-extraction flow depends on those pointer lines to surface available
 memories at session-start. Running Step 3 (`--check`) after replacing
 `MEMORY.md` with a bare marker would show `STALE`, confirming that the
@@ -232,7 +232,7 @@ harness format contract is violated. *Do not run this destructively on
 
 ### Constraints for Q1 AutoDream/AutoMemory
 
-1. **MEMORY.md must remain an index of `- [Title](file.md) — hook` lines** —
+1. **MEMORY.md must remain an index of `- Title <!-- STALE-REF: file.md --> — hook` lines** —
    AutoDream reads this format and writes it back in the same shape.
    A bare marker would break AutoDream's write-back.
 2. **AutoDream is flag-gated as of 2026-04-28** — the consolidation

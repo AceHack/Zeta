@@ -19,7 +19,7 @@ separates inside from outside. This unifies several threads that were circling t
   effects **in** (the DI-injected `IEffects` — real I/O in prod, null in DST), and the committed
   **delta out** (the `cut`/`mea` residue the finalizer merges to `main`). Inside the cell: the
   `sim |> mea |> cut` loop. Outside: everything else. The membrane is the `same/` **ctxboundary** /
-  [`bounds/`](../../bounds/) Markov boundary made cellular.
+  `bounds/` <!-- STALE-REF: ../../bounds/ --> Markov boundary made cellular.
 - **mea reads at the membrane.** To `measure` is to read the cell **at its boundary** (the ΔU); the
   strict boundary is *what makes the cell measurable* — a leaky boundary has no well-defined reading.
 
@@ -69,7 +69,7 @@ to net vs disk. (FDB does exactly this: per-subsystem fault/latency injection. M
 
 **These are PARAMETERS OF THE ROOM (Aaron 2026-06-10).** DI here *is* parametrization: supplying the
 room its `IEffects` (`net` null/real, `disk` null/real, …) is **passing it parameters** — the same
-parameter set as seed, duration, required [`hats/`](../../hats/), and the society-model knobs (the
+parameter set as seed, duration, required `hats/` <!-- STALE-REF: ../../hats/ -->, and the society-model knobs (the
 board-room parametrization). The room is a **function of its parameters**; "inject the effects" =
 "supply the room's I/O parameters." So `sim` never detects its context — the **runner sets the room's
 parameters** (including which crossings are live), and the room runs as the pure function of them. This
@@ -93,7 +93,7 @@ The strictness is not aesthetic — it is what makes the substrate work:
   agents need isolated worktrees = cells with strict boundaries; the DoP ferries each own their cell).
 - **Composability → superorganism** — strict-boundaried cells **compose**: many cells (tests) combine
   into the organism (the substrate). **C. elegans** cells combine into a *super-deterministic
-  superorganism* (filmed); the **collective-we** ([`bounds/`](../../bounds/)) is the organism's
+  superorganism* (filmed); the **collective-we** (`bounds/` <!-- STALE-REF: ../../bounds/ -->) is the organism's
   boundary; **S=4** is the cells phase-locked across the shared cause. Strict cell + strict cell →
   coherent organism; leaky cells → no organism.
 
@@ -106,7 +106,7 @@ The cell/room is **Maxwell's demon doing physics accounting.** The demon's move:
 (`mea`) and then **writes the uncertainty change (ΔU) to the ledger** — measurement is not free
 (Szilard: a measurement has an information/entropy cost; Landauer: erasure has a thermodynamic cost),
 so the demon must **account** for it. The room *is* that accountant: every measurement's
-uncertainty-reduction is **posted to the ledger** ([`ledgers/`](../../ledgers/) — the uncertainty
+uncertainty-reduction is **posted to the ledger** (`ledgers/` <!-- STALE-REF: ../../ledgers/ --> — the uncertainty
 ledger specifically). The ledger is the demon's book of accounts; the membrane is where it reads.
 
 - **mea → post ΔU.** `mea(sim)` measures at the membrane and commits the ΔU to the (uncertainty-scoped)
@@ -128,7 +128,7 @@ unit whose ΔU posted to the ledger *is* its value (ties every-bug-has-economic-
 measured uncertainty reduction, banked). The substrate's work is the set of rooms.
 
 - **Rooms require hats.** A room **declares the capabilities it needs** — its required
-  [`hats/`](../../hats/) (the persona/capability hats; cf. the `hat-system` CRD in
+  `hats/` <!-- STALE-REF: ../../hats/ --> (the persona/capability hats; cf. the `hat-system` CRD in
   `full-ai-cluster/k8s/applications/hat-system` — `hat`/`hatpolicy`/`hatswap`). A crypto room requires
   the security/PKI hat; a math room requires the formal-verification hat; etc. The room's hat
   requirement is part of its definition (what skill the work needs).
@@ -159,8 +159,8 @@ real formal anchor (Friston) to develop with the math team, not yet a built theo
 
 ## Ties / routing
 
-[`bounds/`](../../bounds/) (the Markov boundary / collective-we membrane) · `src/Core/Finalizer*.fs`
-(test = tick = cell) · `src/Core/Sim.fs` + [`clis/`](../../clis/) (the `sim |> mea |> cut` loop inside
+`bounds/` <!-- STALE-REF: ../../bounds/ --> (the Markov boundary / collective-we membrane) · `src/Core/Finalizer*.fs`
+(test = tick = cell) · `src/Core/Sim.fs` + `clis/` <!-- STALE-REF: ../../clis/ --> (the `sim |> mea |> cut` loop inside
 the cell) · `same/` (the ctxboundary = membrane) · `Skadium.fs`/`DarkHall.fs` (the Henderson cells) ·
 the worktree-isolation rule (cells don't race) · C. elegans superorganism · S=4 (cells phase-locked).
 **Routes to:** Soraya/Sova (formalize cell = Markov-blanket via Friston), Aaron (the synthesis).

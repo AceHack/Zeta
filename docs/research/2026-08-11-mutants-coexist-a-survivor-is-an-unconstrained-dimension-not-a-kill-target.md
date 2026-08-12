@@ -290,7 +290,7 @@ Same intent, two legitimate expressions — a surviving mutant at the treaty lev
 ## 8. Pointers
 
 - `src/Core.TypeScript/hygiene/mutation-runner.ts` — the subject; §0 records what must not be lost
-- [`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md)
+- `dual-use-detection-is-neutral-oracle-decides` <!-- STALE-REF: ../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md -->
   — the rule, third application today
 - [`…judgement-is-too-strong…`](2026-08-11-judgement-is-too-strong-the-neutral-fact-is-withheld-corroboration-of-a-claim.md)
   — the same correction on `SymmetricEndurance`

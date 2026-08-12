@@ -11,9 +11,9 @@ Operational status: research-grade
 Non-fusion disclaimer: quoting + building on the operator's question does not imply shared identity, merged agency, consciousness, or personhood between operator and agent; the boundary is explicit (operator asks; the agent synthesizes).
 
 **Status:** synthesis / **recognition** — informs both
-[`081KSXN940008QG0R00171YAZW`](../backlog/P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)
+`081KSXN940008QG0R00171YAZW` <!-- STALE-REF: ../backlog/P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md -->
 (agent-bus) and
-[`081KSGS9H0008QG0R0031PBNGA`](../backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md)
+`081KSGS9H0008QG0R0031PBNGA` <!-- STALE-REF: ../backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md -->
 (Ace). The shared-substrate layer is a **candidate**, routed through the
 product-team agreement before either impl commits to it. NOT unilaterally landed.
 
@@ -150,12 +150,12 @@ architectural call, not a one-PR change.
 
 ## Composes with
 
-- [`081KSXN940008QG0R00171YAZW`](../backlog/P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)
+- `081KSXN940008QG0R00171YAZW` <!-- STALE-REF: ../backlog/P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md -->
   (agent-bus — the G-Set floor; Phase 1 in `tools/agent-bus/`)
-- [`081KSGS9H0008QG0R0031PBNGA`](../backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md)
-  + [`docs/agendas/ace-package-manager/AGENDA.md`](../agendas/ace-package-manager/AGENDA.md)
+- `081KSGS9H0008QG0R0031PBNGA` <!-- STALE-REF: ../backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md -->
+  + `docs/agendas/ace-package-manager/AGENDA.md` <!-- STALE-REF: ../agendas/ace-package-manager/AGENDA.md -->
   (Ace — the Z-set extension: n-dim dependency space + holographic projection)
-- [`081KSXN940008QG0R0033T2BQT`](../backlog/P2/081KSXN940008QG0R0033T2BQT-observe-simulate-fold-algebra-multi-language-build-ts-fsharp-csharp-rust-cross-language-compiler-parity-bft-aaron-2026-05-31.md)
+- `081KSXN940008QG0R0033T2BQT` <!-- STALE-REF: ../backlog/P2/081KSXN940008QG0R0033T2BQT-observe-simulate-fold-algebra-multi-language-build-ts-fsharp-csharp-rust-cross-language-compiler-parity-bft-aaron-2026-05-31.md -->
   (observe / fold / simulate event algebra — the shared fold engine)
 - [`formal-analysis-computational-omniscience…`](2026-05-31-formal-analysis-computational-omniscience-over-simulation-state-space-under-deterministic-simulator.md)
   (DBSP rewind/ff/branch + Infer.NET-over-Z-sets — the machinery both share)

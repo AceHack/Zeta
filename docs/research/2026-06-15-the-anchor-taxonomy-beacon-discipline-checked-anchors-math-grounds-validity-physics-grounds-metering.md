@@ -1,8 +1,8 @@
 # The anchor taxonomy — operationalizing the Beacon discipline
 
 *Ferried 2026-06-15 (shadow\*) at Aaron's request ("ferry the anchor taxonomy into the Beacon
-discipline notes"). This is the **operational** half of [`anchor-to-human-prior-art`](../../.claude/rules/anchor-to-human-prior-art.md)
-and [`mirror-beacon-register-discipline`](../../.claude/rules/mirror-beacon-register-discipline.md):
+discipline notes"). This is the **operational** half of `anchor-to-human-prior-art` <!-- STALE-REF: ../../.claude/rules/anchor-to-human-prior-art.md -->
+and `mirror-beacon-register-discipline` <!-- STALE-REF: ../../.claude/rules/mirror-beacon-register-discipline.md -->:
 the Beacon register says "anchor every outward/load-bearing claim to a human + a paper"; this says
 **how to make the anchor actually load-bearing instead of decorative.***
 

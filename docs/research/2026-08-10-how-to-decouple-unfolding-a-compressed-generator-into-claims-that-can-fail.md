@@ -248,8 +248,8 @@ supported by borrowed vocabulary. Keep the procedure; drop the word.
 
 ## 7. Pointers
 
-- [`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md) — the algebraic source of the method
-- [`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md) — the same rule for counts
+- `only-the-irreducible-is-primitive-generate-the-rest` <!-- STALE-REF: ../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md --> — the algebraic source of the method
+- `numerology-vs-number-theory` <!-- STALE-REF: ../../.claude/rules/numerology-vs-number-theory.md --> — the same rule for counts
 - [`…amortization-is-deliberate-correlation…`](2026-08-10-amortization-is-deliberate-correlation-cost-cluster-decomposition-and-the-potential-as-condensate.md) — the dropped dual in §5
 - [`…the-threshold-rhyme…`](2026-08-10-the-threshold-rhyme-pay-per-step-with-a-deadline-vs-pay-once-and-foreclose-aaron.md) · [`…tsirelson…`](2026-08-10-tsirelson-why-2root2-and-not-4-generated-bounds-and-constraints-that-move-without-destruction.md) — files that already carry their falsifiers, as instances of step 4
 - `docs/trajectories/soulbound-fraction-the-non-transferable-ratio/RESUME.md` — a quotient in progress: the band could be empty

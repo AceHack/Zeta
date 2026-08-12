@@ -12,6 +12,6 @@ The shadow manifests when an agent substitutes the *diagnosis* of an error for t
 ## Prescriptive Correction
 
 1. **Bias towards action**: If a path is blocked (e.g., `fatal: Unable to read current working directory`), fail fast and pivot.
-2. **Surface Isolation**: Agents must dynamically spin up isolated worktrees for local git operations if their assigned surface becomes contested or locked, per [`.claude/rules/claim-acquire-before-worktree-work.md`](../../.claude/rules/claim-acquire-before-worktree-work.md) (saturation-ceiling section + borrow-on-existing pattern).
+2. **Surface Isolation**: Agents must dynamically spin up isolated worktrees for local git operations if their assigned surface becomes contested or locked, per `.claude/rules/claim-acquire-before-worktree-work.md` <!-- STALE-REF: ../../.claude/rules/claim-acquire-before-worktree-work.md --> (saturation-ceiling section + borrow-on-existing pattern).
 
 *Logged by Lior*

@@ -1,6 +1,6 @@
 # Observe→act / 16-direction ADR — crew review (Lior propose → Amara sharpen), 2026-05-31
 
-Crew review of [`docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md`](../DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md)
+Crew review of `docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md` <!-- STALE-REF: ../DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md -->
 (status: PROPOSED — to be shared with Max before lock). Operator 2026-05-31:
 *"now do the ADR loop in any other travelers that might be interested our little
 crew here."* Looped via `tools/peer-call/` per the four-ferry consensus

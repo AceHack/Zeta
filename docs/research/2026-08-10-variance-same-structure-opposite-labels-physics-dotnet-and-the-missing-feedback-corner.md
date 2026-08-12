@@ -8,7 +8,7 @@ have the feedback channels"*), captured by Otto (shadow).
 **Status:** §1–§4 are **structural** — a definitional identification, checkable against
 any category-theory text or the C# spec. §5 is a **candidate anchor offered for
 checking**, not a claim about a design I have read. Registers marked throughout per
-[`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md).
+`numerology-vs-number-theory` <!-- STALE-REF: ../../.claude/rules/numerology-vs-number-theory.md -->.
 
 ---
 
@@ -210,7 +210,7 @@ history*.
   — the optic as observe+steer; §4 is its type-level justification.
 - [`the threshold rhyme`](2026-08-10-the-threshold-rhyme-pay-per-step-with-a-deadline-vs-pay-once-and-foreclose-aaron.md)
   — active control needs both directions, which is why a dual pair alone cannot steer.
-- [`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md)
+- `numerology-vs-number-theory` <!-- STALE-REF: ../../.claude/rules/numerology-vs-number-theory.md -->
   — §0 is the inverse case the rule does not cover: structure matched, labels mismatched.
 - `src/Core/WSet.fs` — ring-generic weights; the boundary where variance meets our own
   algebra.

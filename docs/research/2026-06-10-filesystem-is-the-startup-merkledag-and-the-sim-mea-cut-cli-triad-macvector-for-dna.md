@@ -24,7 +24,7 @@ IPFS). Consequences:
 - **Why all the root folders had to land on `main`.** `same/`, `boards/`, `shapes/`, `sims/`,
   `bounds/`, `hygiene/`, `gene/`, … are **DAG nodes loaded into memory at boot**. They are addressable
   substrate, not scaffolding — which is why each must exist exactly and be on `main`.
-- **Navigation = walking the DAG.** The [`bounds/`](../../bounds/) "Xbox-dashboard navigation" is
+- **Navigation = walking the DAG.** The `bounds/` <!-- STALE-REF: ../../bounds/ --> "Xbox-dashboard navigation" is
   literally **traversing the in-memory MerkleDAG**; out-of-bounds = off the DAG.
 - **Disciplines:** content-addressed ⇒ **idempotent** (#6: same tree → same root) and **DST-replayable**
   (#4: the root hash pins the world); hub/satellite (#5 DV2.0: stable folder hubs, fast-changing leaf
@@ -34,7 +34,7 @@ IPFS). Consequences:
 
 The CLI is **three short verbs**, the same shape as the **MacVector** DNA toolset ("almost"):
 **MacVector** (the molecular-biology suite — sequence analysis, assays, restriction-enzyme cloning).
-The filesystem-MerkleDAG is the **sequence** (the DNA — fitting that [`gene/`](../../gene/) is a root);
+The filesystem-MerkleDAG is the **sequence** (the DNA — fitting that `gene/` <!-- STALE-REF: ../../gene/ --> is a root);
 the triad operates on it:
 
 - **`sim`** = **simulate.** Ephemeral; runs the deterministic simulation (the CHIP-8-class ZetaId
@@ -49,7 +49,7 @@ the triad operates on it:
   (composition), or a `mea { ... }` **computation expression** that wraps a `sim` and **commits** on
   return. `mea = commit ∘ sim`: same engine, `mea` is the HOF/CE that **lifts** the ephemeral `sim` into
   the committing world (the monad's `return`/bind), banking the **uncertainty reduction** (finalizer ΔU)
-  to the [`uncertainty/`](../../uncertainty/) ledger. The **assay** — read the sequence and *record* it.
+  to the `uncertainty/` <!-- STALE-REF: ../../uncertainty/ --> ledger. The **assay** — read the sequence and *record* it.
   (Ties the earlier F# CLI question: the CE/HOF is exactly the "monadic, closed, over Markov boundaries"
   shape — `sim` is the inner value, `mea` the committing lift.) The DI seam swaps **new external I/O**:
   the Core-pure + injected `CommandRunner`/`IRuntimeEffects` seam in `FinalizerRuntimeLive` — **DST
@@ -157,7 +157,7 @@ and **subtractive vs additive** (ink-permanent vs light-transient). Two encoding
 solid when it must persist (the genome on `main`), soft when it's exploratory light (a `sim`). *(Peel:
 CMYK/RGB are the real color models — subtractive 4-channel print vs additive 3-channel light; their
 mapping to solid/committed vs soft/ephemeral and to K=key=null is the framing, to formalize. Ties the
-[`grey/`](../../grey/) · [`gray/`](../../gray/) folders and the contrast-pair "3D walls".)*
+`grey/` <!-- STALE-REF: ../../grey/ --> · `gray/` <!-- STALE-REF: ../../gray/ --> folders and the contrast-pair "3D walls".)*
 
 ## Honest scope / peels
 
@@ -170,8 +170,8 @@ literal being the content-addressed tree + its read/measure/edit verbs.
 
 ## Ties / routing
 
-[`gene/`](../../gene/) (the DNA/sequence) · [`sims/`](../../sims/) (the triad's home) ·
-[`bounds/`](../../bounds/) (navigation = DAG walk) · [`uncertainty/`](../../uncertainty/) (`mea` commits
+`gene/` <!-- STALE-REF: ../../gene/ --> (the DNA/sequence) · `sims/` <!-- STALE-REF: ../../sims/ --> (the triad's home) ·
+`bounds/` <!-- STALE-REF: ../../bounds/ --> (navigation = DAG walk) · `uncertainty/` <!-- STALE-REF: ../../uncertainty/ --> (`mea` commits
 ΔU here) · `same/` (the `ctxboundary` = a cut site / Markov boundary) · git object model / IPFS (the
 MerkleDAG prior art). **Routes to:** Dejan/Core (the compiler + `sim`/`mea`/`cut` boot loading the FS
 MerkleDAG; the three entrypoints), Soraya/Sova (the DAG-root-as-world-pin formalization), Aaron.

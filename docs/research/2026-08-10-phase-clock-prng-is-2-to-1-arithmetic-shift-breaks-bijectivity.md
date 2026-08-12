@@ -189,7 +189,7 @@ per-traveler differentiation — that assumption is weaker than it looks, by exa
 one bit.
 
 This is also a live instance of the sibling rule in
-[`.claude/rules/numerology-vs-number-theory.md`](../../.claude/rules/numerology-vs-number-theory.md):
+`.claude/rules/numerology-vs-number-theory.md` <!-- STALE-REF: ../../.claude/rules/numerology-vs-number-theory.md -->:
 "xorshift32 is a well-known good PRNG" is a citation about a *different map* than the
 one in the file. The name matched; the object did not.
 
@@ -231,9 +231,9 @@ assert all(prod(s) == prod(s ^ 0xfc001fff) for s in range(0, 1 << 20))
 - `src/Core.TypeScript/observe/phase-clock.ts:99` — the production map.
 - `src/Core.TypeScript/observe/xorshift-minimal-poly.test.ts` — the header now
   records the divergence and that its sequence is not the phase clock's output.
-- [`docs/letters/to-soraya-xorshift-mod17-in-rscode-is-false-not-merely-unproven.md`](../letters/to-soraya-xorshift-mod17-in-rscode-is-false-not-merely-unproven.md)
+- `docs/letters/to-soraya-xorshift-mod17-in-rscode-is-false-not-merely-unproven.md` <!-- STALE-REF: ../letters/to-soraya-xorshift-mod17-in-rscode-is-false-not-merely-unproven.md -->
   — the routing that surfaced the divergence.
-- [`.claude/rules/anchor-to-human-prior-art.md`](../../.claude/rules/anchor-to-human-prior-art.md)
+- `.claude/rules/anchor-to-human-prior-art.md` <!-- STALE-REF: ../../.claude/rules/anchor-to-human-prior-art.md -->
   — an anchor must be *checked*, not merely cited; this is the failure mode.
 - Anchor: G. Marsaglia, *Xorshift RNGs*, J. Statistical Software 8(14), 2003 — the
   result that applies to the `>>>` variant and not to the shipped one.

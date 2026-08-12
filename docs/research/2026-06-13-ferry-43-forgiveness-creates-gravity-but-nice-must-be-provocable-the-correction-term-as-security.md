@@ -284,7 +284,7 @@ provocability budget spent on the one thing that must never be defected on.
   domestication — costly correction at species scale; this ferry is its game-theoretic core)
 - Disciplines: signed weights / Z-sets (`src/Core/ZSet.fs`) · noninterference §13 (metered
   crossing, not ambient grudge) · idempotency #6 (forgive-once, replay-safe) ·
-  [`every-bug-has-economic-value.md`](../../.claude/rules/every-bug-has-economic-value.md)
+  `every-bug-has-economic-value.md` <!-- STALE-REF: ../../.claude/rules/every-bug-has-economic-value.md -->
   (Ostrom + mechanism design already anchored there — the correction-term economy)
 - BFT layer (§7): `src/Core/Consensus.fs` (3f+1 quorum) · `src/Core/SybilBft.fs` +
   `src/Core/AntiSybil.fs` (distinct-entropy-source quorum; equivocation-catch) ·

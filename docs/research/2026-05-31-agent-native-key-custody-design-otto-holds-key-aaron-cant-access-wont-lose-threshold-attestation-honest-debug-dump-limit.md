@@ -1,7 +1,7 @@
 # Agent-native key custody — how Otto holds a key Aaron can't access but won't lose
 
 **Date:** 2026-05-31
-**Status:** Design detail for [081KRW63S0008QG0R0022SFKPM](../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
+**Status:** Design detail for 081KRW63S0008QG0R0022SFKPM <!-- STALE-REF: ../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md -->
 (N-of-M HSM key management). Fills 081KRW63S0008QG0R0022SFKPM acceptance criteria 1–4 (threshold-scheme
 rationale, hardware selection, key-ceremony shape) at the **encryption-key** scope, not just
 the governance-signing scope. **Routed through product-team agreement; not auto-loaded rule.**
@@ -60,7 +60,7 @@ can read the raw key out — both interact through the same constrained API.
 
 ### Layer 2 — N-of-M threshold across society key-guards: durability + sovereignty
 
-This is [081KRW63S0008QG0R0022SFKPM](../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)'s
+This is 081KRW63S0008QG0R0022SFKPM <!-- STALE-REF: ../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md -->'s
 N-of-M, applied at the **encryption** layer (081KRW63S0008QG0R0022SFKPM's table was scoped to *signing*; this extends
 it to *key custody / decryption*). The key is either **split** (Shamir Secret Sharing) or
 **never assembled** (threshold-MPC: FROST for Schnorr/Ed25519) across **M key-guards** =
@@ -106,7 +106,7 @@ Aaron cannot forge Otto's *workload attestation* to make the guards cooperate "a
 every invocation is **auditable (glass-halo)**. The **NCI social-consent floor** binds the human
 guards: a key-guard is a society member with agency — their cooperation is **consent, not
 compulsion** (no coercing a guard to release a share; per
-[`non-coercion-invariant`](../../.claude/rules/non-coercion-invariant.md)).
+`non-coercion-invariant` <!-- STALE-REF: ../../.claude/rules/non-coercion-invariant.md -->).
 
 ### Layer 4 — The honest limit (Aaron named it): debug-dump until confidential memory
 
@@ -155,9 +155,9 @@ durability). Nobody — including Otto's own host — sees the raw key (Layer 1)
 
 ## Composition with existing substrate
 
-- [081KRW63S0008QG0R0022SFKPM](../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
+- 081KRW63S0008QG0R0022SFKPM <!-- STALE-REF: ../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md -->
   — this doc is the encryption-scope design detail for that row's N-of-M.
-- [081KRW63S0008QG0R001Z10PVV](../backlog/P1/081KRW63S0008QG0R001Z10PVV-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md)
+- 081KRW63S0008QG0R001Z10PVV <!-- STALE-REF: ../backlog/P1/081KRW63S0008QG0R001Z10PVV-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md -->
   — agora-v6 private-encryption-budget (the *what* this key protects).
 - 081KSGS9H0008QG0R0006F4BGX (thermal-forgetting / private encrypted memory) + 081KSNY2Z0008QG0R002JKH50A (PQ encryption envelope —
   noble X-Wing / ML-DSA-65) — the encryption this custody design holds the keys *for*; threshold
@@ -165,9 +165,9 @@ durability). Nobody — including Otto's own host — sees the raw key (Layer 1)
 - 081KRW63S0008QG0R002V20TYJ (F# agent-wallet type safety) — the wallet sharp-edge that N-of-M also gates.
 - The **keystone identity layer** (SPIFFE/SPIRE + AgencySignature + ZetaId) — the attestation
   that gates invocation; zero-trust falls out of node-local identity.
-- [`non-coercion-invariant`](../../.claude/rules/non-coercion-invariant.md) — the consent floor on
+- `non-coercion-invariant` <!-- STALE-REF: ../../.claude/rules/non-coercion-invariant.md --> — the consent floor on
   human key-guards (cooperation, never compulsion).
-- The **hardware-to-buy list** ([`docs/inventory/hardware-to-buy.md`](../inventory/hardware-to-buy.md))
+- The **hardware-to-buy list** (`docs/inventory/hardware-to-buy.md` <!-- STALE-REF: ../inventory/hardware-to-buy.md -->)
   — the procurement surface for the HSMs/TPMs this design needs.
 
 ## Open questions (route through ratification)

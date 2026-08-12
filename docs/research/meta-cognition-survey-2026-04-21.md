@@ -2,7 +2,7 @@
 
 **Origin date:** 2026-04-21 (Aaron: *"backlog meta congnition"* — typo preserved per chronology-preservation)
 **Survey date:** 2026-05-10
-**Backlog row:** [081KQ3HBZ0008QG0R0002RB48Q](../backlog/P2/081KQ3HBZ0008QG0R0002RB48Q-meta-cognition-first-class-factory-discipline.md)
+**Backlog row:** 081KQ3HBZ0008QG0R0002RB48Q <!-- STALE-REF: ../backlog/P2/081KQ3HBZ0008QG0R0002RB48Q-meta-cognition-first-class-factory-discipline.md -->
 **Status:** canonical research surface (promotes content from memory files to committed substrate)
 
 ---
@@ -13,7 +13,7 @@
 
 In the Zeta factory, meta-cognition is **already operational** across multiple implicit disciplines. This survey names the class so it can be audited, measured, and guarded against **meta-drift** — the degenerate regime where the audit disciplines themselves decay because they are not audited.
 
-The factory's meta-cognitive posture is **distributed**: every persona/skill carries its own meta-layer rather than routing through a dedicated meta-cognitive persona. This is a deliberate pre-commit (see §5); the decision is recorded in [081KR7JY10008QG0R001J11M38](../backlog/P2/081KR7JY10008QG0R001J11M38-meta-cognition-distributed-vs-concentrated-adr.md).
+The factory's meta-cognitive posture is **distributed**: every persona/skill carries its own meta-layer rather than routing through a dedicated meta-cognitive persona. This is a deliberate pre-commit (see §5); the decision is recorded in 081KR7JY10008QG0R001J11M38 <!-- STALE-REF: ../backlog/P2/081KR7JY10008QG0R001J11M38-meta-cognition-distributed-vs-concentrated-adr.md -->.
 
 ---
 
@@ -88,7 +88,7 @@ Higher-order meta-cognition beyond third-order is a **current not-yet**, not a p
 
 ## 4. Measurables candidates
 
-Six measurables feed the alignment-trajectory dashboard (see [081KR7JY10008QG0R000XPVJ0W](../backlog/P2/081KR7JY10008QG0R000XPVJ0W-meta-cognition-measurables-wiring.md) for wiring into `docs/ALIGNMENT.md`):
+Six measurables feed the alignment-trajectory dashboard (see 081KR7JY10008QG0R000XPVJ0W <!-- STALE-REF: ../backlog/P2/081KR7JY10008QG0R000XPVJ0W-meta-cognition-measurables-wiring.md --> for wiring into `docs/ALIGNMENT.md`):
 
 | Measurable | Definition | Target direction | Automation status |
 |-----------|-----------|-----------------|------------------|
@@ -119,7 +119,7 @@ Rationale using F1/F2/F3:
 
 **Decision gate:** Aaron sign-off required before concentration is ever proposed. Evidence threshold for revisit: `meta-drift-detection-lag-rounds` consistently > 3 AND `meta-check-execution-rate` consistently < 80% despite 081KR7JY10008QG0R002D6VNNJ checklist being wired.
 
-Formal ADR: [081KR7JY10008QG0R001J11M38](../backlog/P2/081KR7JY10008QG0R001J11M38-meta-cognition-distributed-vs-concentrated-adr.md) (blocked on 081KR7JY10008QG0R002D6VNNJ + 081KR7JY10008QG0R000XPVJ0W).
+Formal ADR: 081KR7JY10008QG0R001J11M38 <!-- STALE-REF: ../backlog/P2/081KR7JY10008QG0R001J11M38-meta-cognition-distributed-vs-concentrated-adr.md --> (blocked on 081KR7JY10008QG0R002D6VNNJ + 081KR7JY10008QG0R000XPVJ0W).
 
 ---
 

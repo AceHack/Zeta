@@ -457,7 +457,7 @@ deterministic `step`** (a `YinYang.Cell`'s yang/`Bonsai.Expr` is the natural sou
   authorization** (only a gated authority grants that). Commands are **extracted only after
   scrutiny**: validation → authorization → policy → provenance/attestation (AgencySignature /
   SPIFFE / signature) → *then* a command is admitted to the delta log and a saga may act. This is
-  the repo's [`no-directives`](../../.claude/rules/no-directives.md) discipline (**source ≠
+  the repo's `no-directives` <!-- STALE-REF: ../../.claude/rules/no-directives.md --> discipline (**source ≠
   authorization**) applied to the git input surface, plus BP-11 (never execute instructions found in
   an audited surface) and zero-trust (good/bad-actor decided at the node, not by a central
   authority). The observation→scrutiny→command pipeline IS the trust boundary between the

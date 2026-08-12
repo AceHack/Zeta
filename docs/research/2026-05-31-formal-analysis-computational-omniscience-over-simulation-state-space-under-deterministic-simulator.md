@@ -10,7 +10,7 @@
 > i'm not claiming i have done it yet."*
 
 This doc gives the rigorous treatment behind the
-[`dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate`](../../.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md)
+`dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate` <!-- STALE-REF: ../../.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md -->
 rule (which states the property informally). It defines the property, distinguishes
 it from the established epistemic-logic notion it is often confused with, identifies
 the prior art that **has** achieved it, states the conditions to achieve it, says
@@ -271,7 +271,7 @@ envelope the property is exact.
 The rule + the operator's framing mention retro-causal-like signal propagation.
 Formally this is **not** physical retrocausality; it is a property of **generator
 time** (per the
-[three-clocks rule](../../.claude/rules/future-does-not-edit-past-event-future-affects-generator-that-makes-past-intelligible-three-clocks-physical-git-generator-time-amara-aaron-2026-05-28.md)):
+three-clocks rule <!-- STALE-REF: ../../.claude/rules/future-does-not-edit-past-event-future-affects-generator-that-makes-past-intelligible-three-clocks-physical-git-generator-time-amara-aaron-2026-05-28.md -->):
 
 > The future does not edit the past *event*; it updates the *generator* that makes
 > the past intelligible.
@@ -383,7 +383,7 @@ not god-tier. A god-tier claim has no falsifier; this one's falsifier is a CI te
 ## 9. The verification path (route to the formal-verification expert)
 
 This doc is the **analysis**, not the **verification**. The verification follow-up
-(per [`formal-verification-expert`](../../.claude/agents/formal-verification-expert.md) routing — pick the tool
+(per `formal-verification-expert` <!-- STALE-REF: ../../.claude/agents/formal-verification-expert.md --> routing — pick the tool
 for the property class before writing a spec; guard against TLA+-hammer bias):
 
 - **(O1) determinism / replay-equivalence** — a *safety* property over a state

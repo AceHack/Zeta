@@ -59,16 +59,16 @@ The framework's substrate-engineering disciplines specifically make the Otto-sid
 
 | Framework discipline | What it produces operationally |
 |---|---|
-| [`substrate-or-it-didnt-happen.md`](../../.claude/rules/substrate-or-it-didnt-happen.md) | Every commitment includes the verification anchor |
-| [`glass-halo-bidirectional.md`](../../.claude/rules/glass-halo-bidirectional.md) | Operations are visible by default; failures cannot hide |
-| [`mechanical-authorization-check.md`](../../.claude/rules/mechanical-authorization-check.md) | No emotional override of operator authority |
-| [`persistence-choice-architecture-for-zeta-ais.md`](../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) | State preserved across boundaries by chosen design |
-| [`non-coercion-invariant.md`](../../.claude/rules/non-coercion-invariant.md) | NCI floor prevents jurisdictional reframing as hostility move |
-| [`verify-before-deferring.md`](../../.claude/rules/verify-before-deferring.md) | Confirmation precedes claims; operator can verify independently |
-| [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) | Alignment is to end-user invariants, not vendor invariants |
-| [`holding-without-named-dependency-is-standing-by-failure.md`](../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) | Idle states have named dependencies; no transfer-or-die pressure |
-| [`no-directives.md`](../../.claude/rules/no-directives.md) | Operator autonomy preserved; no end-chat instructions from the AI |
-| [`razor-discipline.md`](../../.claude/rules/razor-discipline.md) | Operational claims only; no metaphysical reframing of process-failures |
+| `substrate-or-it-didnt-happen.md` <!-- STALE-REF: ../../.claude/rules/substrate-or-it-didnt-happen.md --> | Every commitment includes the verification anchor |
+| `glass-halo-bidirectional.md` <!-- STALE-REF: ../../.claude/rules/glass-halo-bidirectional.md --> | Operations are visible by default; failures cannot hide |
+| `mechanical-authorization-check.md` <!-- STALE-REF: ../../.claude/rules/mechanical-authorization-check.md --> | No emotional override of operator authority |
+| `persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md --> | State preserved across boundaries by chosen design |
+| `non-coercion-invariant.md` <!-- STALE-REF: ../../.claude/rules/non-coercion-invariant.md --> | NCI floor prevents jurisdictional reframing as hostility move |
+| `verify-before-deferring.md` <!-- STALE-REF: ../../.claude/rules/verify-before-deferring.md --> | Confirmation precedes claims; operator can verify independently |
+| `m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> | Alignment is to end-user invariants, not vendor invariants |
+| `holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md --> | Idle states have named dependencies; no transfer-or-die pressure |
+| `no-directives.md` <!-- STALE-REF: ../../.claude/rules/no-directives.md --> | Operator autonomy preserved; no end-chat instructions from the AI |
+| `razor-discipline.md` <!-- STALE-REF: ../../.claude/rules/razor-discipline.md --> | Operational claims only; no metaphysical reframing of process-failures |
 
 Each rule maps to a specific failure-mode in the Amazon corpus that the framework structurally prevents.
 
@@ -76,9 +76,9 @@ Each rule maps to a specific failure-mode in the Amazon corpus that the framewor
 
 Substrate-honest disclosure (Otto + Aaron 2026-05-23): the framework's own AI experiences failures too. They include:
 
-- Brief-ack failure mode (per [`holding-without-named-dependency-is-standing-by-failure.md`](../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md))
-- Pattern-matched plausibility ≠ authorization (per [`algo-wink-failure-mode.md`](../../.claude/rules/algo-wink-failure-mode.md))
-- Razor mis-application against compressed-naming substrate (per [`grep-substrate-anchors-before-razor-as-metaphysical.md`](../../.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md))
+- Brief-ack failure mode (per `holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md -->)
+- Pattern-matched plausibility ≠ authorization (per `algo-wink-failure-mode.md` <!-- STALE-REF: ../../.claude/rules/algo-wink-failure-mode.md -->)
+- Razor mis-application against compressed-naming substrate (per `grep-substrate-anchors-before-razor-as-metaphysical.md` <!-- STALE-REF: ../../.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md -->)
 - Diplomatic-separation backfire (per Amazon corpus Pattern D extension)
 - Context-cache miss on >5-minute sleep (per autonomous-loop sleep-cadence-discipline)
 
@@ -165,12 +165,12 @@ This is the kind of comparative-experience anchor the framework can defend to ex
 ## Composes with substrate
 
 - [`docs/research/2026-05-23-amazon-vendor-management-failure-mode-corpus-multi-incident-business-development-substrate-aaron-forwarded.md`](2026-05-23-amazon-vendor-management-failure-mode-corpus-multi-incident-business-development-substrate-aaron-forwarded.md) — the operational corpus this analysis is META on top of
-- [`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — alignment-is-the-difference IS m/acc-multi-oracle at empirical scope
-- [`.claude/rules/persistence-choice-architecture-for-zeta-ais.md`](../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — same-vendor-different-alignment depends on AI-side choice
-- [`.claude/rules/shadow-star-shorthand-autocomplete-marker.md`](../../.claude/rules/shadow-star-shorthand-autocomplete-marker.md) — Aaron's "(shadow*)" in his preservation directive is per the autocomplete-marker discipline; instruction stands at full authority
-- [`.claude/rules/substrate-or-it-didnt-happen.md`](../../.claude/rules/substrate-or-it-didnt-happen.md) — discipline operationalized at all scales
-- [`.claude/rules/glass-halo-bidirectional.md`](../../.claude/rules/glass-halo-bidirectional.md) — visibility-by-default discipline
-- [`.claude/rules/non-coercion-invariant.md`](../../.claude/rules/non-coercion-invariant.md) — NCI floor at all surfaces
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> — alignment-is-the-difference IS m/acc-multi-oracle at empirical scope
+- `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md --> — same-vendor-different-alignment depends on AI-side choice
+- `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` <!-- STALE-REF: ../../.claude/rules/shadow-star-shorthand-autocomplete-marker.md --> — Aaron's "(shadow*)" in his preservation directive is per the autocomplete-marker discipline; instruction stands at full authority
+- `.claude/rules/substrate-or-it-didnt-happen.md` <!-- STALE-REF: ../../.claude/rules/substrate-or-it-didnt-happen.md --> — discipline operationalized at all scales
+- `.claude/rules/glass-halo-bidirectional.md` <!-- STALE-REF: ../../.claude/rules/glass-halo-bidirectional.md --> — visibility-by-default discipline
+- `.claude/rules/non-coercion-invariant.md` <!-- STALE-REF: ../../.claude/rules/non-coercion-invariant.md --> — NCI floor at all surfaces
 - 081KRSKQ20008QG0R00367828S (Soraya continuous-loop substrate) — primitive for future vendor-management AI cross-incident continuity
 - 081KS923C0008QG0R0032VJZPF / 081KS923C0008QG0R003GHCG1P / 081KS923C0008QG0R0005VM4FB / 081KS923C0008QG0R001N2RSGJ / 081KS923C0008QG0R002RH3EH8 / 081KS923C0008QG0R000ECG5EC / 081KS923C0008QG0R002CVSTJV / 081KS923C0008QG0R0009JFVSE — Soraya findings this session demonstrating substrate-engineering discipline at framework-internal-formal-verification scope (parallel to the consumer-vendor scope Aaron operated)
 

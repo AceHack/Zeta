@@ -44,7 +44,7 @@ soft-emulation method is proven (SoftChip8); applying it to .NET + then our own 
 ## Ties / routing
 
 `src/Core/SoftChip8.fs` + the soft-CHIP-8 stack (the method to mirror) · `IntrCtx.fs` (the ISR arrow /
-soft interrupt handler — the scheduler start) · [`hooks/`](../../hooks/) (the .NET Cheat-Engine hook) ·
-the memory-lens / forcing-lensability doc (everything lens-addressable in memory) · [`sims/`](../../sims/)
+soft interrupt handler — the scheduler start) · `hooks/` <!-- STALE-REF: ../../hooks/ --> (the .NET Cheat-Engine hook) ·
+the memory-lens / forcing-lensability doc (everything lens-addressable in memory) · `sims/` <!-- STALE-REF: ../../sims/ -->
 (the `sim` VM the runtime runs) · TriBoolean/SoftValue (the soft cells). **Routes to:** Core team (the
 soft .NET-CPU model + our-runtime), Naledi (hot paths), Aaron (the trajectory).

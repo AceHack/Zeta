@@ -329,12 +329,12 @@ as "pluggable" without naming the gate on the plug.
 
 ## Relevant paths
 
-- [`docs/aurora/2026-04-23-amara-aurora-aligned-ksk-design-7th-ferry.md`](../aurora/2026-04-23-amara-aurora-aligned-ksk-design-7th-ferry.md)
+- `docs/aurora/2026-04-23-amara-aurora-aligned-ksk-design-7th-ferry.md` <!-- STALE-REF: ../aurora/2026-04-23-amara-aurora-aligned-ksk-design-7th-ferry.md -->
   — reviewed source.
 - [`docs/research/aminata-threat-model-5th-ferry-governance-edits-2026-04-23.md`](aminata-threat-model-5th-ferry-governance-edits-2026-04-23.md)
   — prior-pass precedent (governance-edit proposals).
-- [`docs/ALIGNMENT.md`](../ALIGNMENT.md) SD-9 — carrier-
+- `docs/ALIGNMENT.md` <!-- STALE-REF: ../ALIGNMENT.md --> SD-9 — carrier-
   laundering-aware framing this pass composes with.
-- [`docs/DRIFT-TAXONOMY.md`](../DRIFT-TAXONOMY.md) pattern 5
+- `docs/DRIFT-TAXONOMY.md` <!-- STALE-REF: ../DRIFT-TAXONOMY.md --> pattern 5
   (truth-confirmation-from-agreement) — operational
   companion for the `V(c)` carrier-aware fix.

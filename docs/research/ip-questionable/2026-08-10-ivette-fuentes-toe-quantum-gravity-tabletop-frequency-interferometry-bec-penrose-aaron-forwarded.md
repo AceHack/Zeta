@@ -214,11 +214,11 @@ substrate; nothing here is implemented.
 
 ## Pointers
 
-- [`.claude/rules/local-time-never-enters-the-shared-fold.md`](../../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+- `.claude/rules/local-time-never-enters-the-shared-fold.md` <!-- STALE-REF: ../../../.claude/rules/local-time-never-enters-the-shared-fold.md -->
   — the rule this corroborates from outside.
 - `src/Core/BeliefConvergence.fs` — the shared fold · `src/Core/TravelerFrame.fs` — per-locality
   phase observation (the proper-time frame).
-- [`.claude/rules/numerology-vs-number-theory.md`](../../../.claude/rules/numerology-vs-number-theory.md)
+- `.claude/rules/numerology-vs-number-theory.md` <!-- STALE-REF: ../../../.claude/rules/numerology-vs-number-theory.md -->
   — the triage table above is that rule applied to this file.
 - `docs/research/2026-08-02-lensography-soft-regime-chaos-control-homoclinic-tangle-avoidance-quasi-repeatable-orbits.md`
   — the lensography line Aaron is connecting this to.

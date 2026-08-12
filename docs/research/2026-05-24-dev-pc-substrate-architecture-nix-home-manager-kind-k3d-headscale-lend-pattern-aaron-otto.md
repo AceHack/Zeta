@@ -170,13 +170,13 @@ All 6 layers come from the same Nix flake repo as the cluster substrate. One sou
 
 - [`docs/research/2026-05-24-cluster-bare-metal-substrate-architecture-nixos-no-hypervisor-argo-cd-aaron-otto.md`](2026-05-24-cluster-bare-metal-substrate-architecture-nixos-no-hypervisor-argo-cd-aaron-otto.md) — **sibling architecture archive** (cluster substrate); both archives combined describe the full ecosystem
 - [`docs/research/2026-05-24-addison-consent-pattern-observation-not-fact-discipline-aaron-otto.md`](2026-05-24-addison-consent-pattern-observation-not-fact-discipline-aaron-otto.md) — Addison consent discipline applied here (first-name-only + observation-framing for any future Addison-substrate contributions)
-- [`.claude/rules/substrate-or-it-didnt-happen.md`](../../.claude/rules/substrate-or-it-didnt-happen.md) — applied at dev-PC config scope (Home Manager makes substrate)
-- [`.claude/rules/razor-discipline.md`](../../.claude/rules/razor-discipline.md) — operational claims only (each architecture choice has stated reasoning + lightweight-first justification)
-- [`.claude/rules/non-coercion-invariant.md`](../../.claude/rules/non-coercion-invariant.md) — NCI floor: dev PC owners revoke lending at any time
-- [`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — dev PCs operate under different moral invariants than cluster (operator-mutable vs DST); architecture preserves both
-- [`.claude/rules/additive-not-zero-sum.md`](../../.claude/rules/additive-not-zero-sum.md) — cluster + dev PCs compose additively from one flake
-- [`.claude/rules/shadow-star-shorthand-autocomplete-marker.md`](../../.claude/rules/shadow-star-shorthand-autocomplete-marker.md) — Aaron's "(shadow*)" in confirmation observed per the autocomplete-marker discipline
-- [`.claude/rules/bandwidth-served-falsifier.md`](../../.claude/rules/bandwidth-served-falsifier.md) — each layer's bandwidth served explicitly named
+- `.claude/rules/substrate-or-it-didnt-happen.md` <!-- STALE-REF: ../../.claude/rules/substrate-or-it-didnt-happen.md --> — applied at dev-PC config scope (Home Manager makes substrate)
+- `.claude/rules/razor-discipline.md` <!-- STALE-REF: ../../.claude/rules/razor-discipline.md --> — operational claims only (each architecture choice has stated reasoning + lightweight-first justification)
+- `.claude/rules/non-coercion-invariant.md` <!-- STALE-REF: ../../.claude/rules/non-coercion-invariant.md --> — NCI floor: dev PC owners revoke lending at any time
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> — dev PCs operate under different moral invariants than cluster (operator-mutable vs DST); architecture preserves both
+- `.claude/rules/additive-not-zero-sum.md` <!-- STALE-REF: ../../.claude/rules/additive-not-zero-sum.md --> — cluster + dev PCs compose additively from one flake
+- `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` <!-- STALE-REF: ../../.claude/rules/shadow-star-shorthand-autocomplete-marker.md --> — Aaron's "(shadow*)" in confirmation observed per the autocomplete-marker discipline
+- `.claude/rules/bandwidth-served-falsifier.md` <!-- STALE-REF: ../../.claude/rules/bandwidth-served-falsifier.md --> — each layer's bandwidth served explicitly named
 
 ## Substrate-honest framing
 

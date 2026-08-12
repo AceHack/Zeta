@@ -1,6 +1,6 @@
 # /db — the repo *is* the database; root is the standard handful; everything earns promotion out of /db
 
-Aaron 2026-06-11 (expanding [081KTQD8A0008QG0R0030HWMZV](../backlog/P2/081KTQD8A0008QG0R0030HWMZV-root-declutter-for-dx-max-db-folder-grouping-plus-max-adopts-interfaces-rx-verbs-2026-06-10.md)):
+Aaron 2026-06-11 (expanding 081KTQD8A0008QG0R0030HWMZV <!-- STALE-REF: ../backlog/P2/081KTQD8A0008QG0R0030HWMZV-root-declutter-for-dx-max-db-folder-grouping-plus-max-adopts-interfaces-rx-verbs-2026-06-10.md -->):
 
 > "We need a plan to make Max happy — push this into a `/db` folder or something over time and clean up
 > root. **Everything at root has to earn its promotion out of `/db`** other than `/src`, `/tests`,
@@ -72,7 +72,7 @@ Do it **incrementally** ("over time" — Aaron), lowest-risk first, each stage i
 
 ## Pointers
 
-- [081KTQD8A0008QG0R0030HWMZV](../backlog/P2/081KTQD8A0008QG0R0030HWMZV-root-declutter-for-dx-max-db-folder-grouping-plus-max-adopts-interfaces-rx-verbs-2026-06-10.md) — the DX finding this plan operationalizes (acceptance gate unchanged: Bodhi audit + Aaron/Max sign-off).
+- 081KTQD8A0008QG0R0030HWMZV <!-- STALE-REF: ../backlog/P2/081KTQD8A0008QG0R0030HWMZV-root-declutter-for-dx-max-db-folder-grouping-plus-max-adopts-interfaces-rx-verbs-2026-06-10.md --> — the DX finding this plan operationalizes (acceptance gate unchanged: Bodhi audit + Aaron/Max sign-off).
 - `.claude/rules/dv2-data-split-discipline-activated.md` — DV2.0 (root=hub, /db=satellite) is the lens.
 - 081KTQD8A0008QG0R0005EFYPV — `tools/` is the pre-source host shield (why it earns root, not /db).
 - 081KRFA460008QG0R001H98EXJ..0427 — repo-split / DV2.0 topology lineage.

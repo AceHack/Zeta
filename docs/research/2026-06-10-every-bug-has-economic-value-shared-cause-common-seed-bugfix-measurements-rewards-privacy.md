@@ -16,7 +16,7 @@
   shame economy of bugs: here a bug is an **opportunity priced in**, like a bug bounty made native.)
 - **A bug-fix is a `measure`.** Fixing a bug is exactly the **`measure`** verb (not ephemeral `sim`):
   it **commits the measurement and the uncertainty reduction** (the finalizer's ΔU) to the
-  [`uncertainty/`](../../uncertainty/) ledger. The fix's *value* = the **ΔU it banks** (how much
+  `uncertainty/` <!-- STALE-REF: ../../uncertainty/ --> ledger. The fix's *value* = the **ΔU it banks** (how much
   uncertainty it removed). Bigger reduction → more value. The ledger is the books.
 - **The shared cause is the common seed.** Why a fix is valuable *to everyone*, not just locally: all
   agents/runs share **one common-cause seed** (ZetaId; quantum-phase time; S=4 superdeterministic
@@ -51,7 +51,7 @@ uncertainty against the common cause is *the* productive act, so it is *the* rew
 
 ## Ties / routing
 
-[`uncertainty/`](../../uncertainty/) (the ledger fixes commit ΔU to) · [`sims/`](../../sims/) (`measure`
+`uncertainty/` <!-- STALE-REF: ../../uncertainty/ --> (the ledger fixes commit ΔU to) · `sims/` <!-- STALE-REF: ../../sims/ --> (`measure`
 commits; `sim` is ephemeral) · `BUGS.md` (the bug inventory — now priced) · the privacy-is-a-launch-gate
 research · proof-of-entropy / S=4 common-cause leverage · the finalizer (ΔU = the value unit).
 **Routes to:** Soraya/Sova (formalize the ΔU→value→reward mechanism + payout), Aaron (the economics).

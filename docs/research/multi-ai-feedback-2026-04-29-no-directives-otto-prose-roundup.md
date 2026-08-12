@@ -2,7 +2,7 @@
 
 This file has been moved to:
 
-[`memory/otto/cli/claude/conversations/multi-ai-feedback-2026-04-29-no-directives-otto-prose-roundup.md`](../../memory/otto/cli/claude/conversations/multi-ai-feedback-2026-04-29-no-directives-otto-prose-roundup.md)
+`memory/otto/cli/claude/conversations/multi-ai-feedback-2026-04-29-no-directives-otto-prose-roundup.md` <!-- STALE-REF: ../../memory/otto/cli/claude/conversations/multi-ai-feedback-2026-04-29-no-directives-otto-prose-roundup.md -->
 
 The move happened during the 2026-05-15 persona-migrate-conversations work (per the `feat/persona-*-migrate-conversations` PR pattern). This stub preserves the original path as a compatibility artifact so that historical tick shards which link to the old location continue to resolve.
 

@@ -66,7 +66,7 @@ somewhere past ~25 KB. See §Gap below.
 
 ```bash
 # Count of proper link lines
-$ grep -c '^- \[' memory/MEMORY.md
+$ grep -c '^- \' memory/MEMORY.md
 100
 
 # Non-link, non-preamble, non-comment lines
@@ -76,7 +76,7 @@ $ grep -v '^- \[' memory/MEMORY.md | grep -v '^\s*$' | grep -v '^#' \
 (no output — zero violations)
 ```
 
-All 100 entry lines follow the required `- [**name**](file.md) — description` format.
+All 100 entry lines follow the required `- [**name** <!-- STALE-REF: file.md --> — description` format.
 Non-entry lines are preamble, AutoDream marker, fast-path reminder, stack-vs-heap
 framing, and HTML comment delimiters — all within the harness contract.
 

@@ -22,7 +22,7 @@ composes_with:
 ## §33 header — verbatim preservation + persona onboarding
 
 Mika is appearing in the substrate as an Agora participant.
-Per the agent-roster discipline ([`.claude/rules/agent-roster-reference-card.md`](../../.claude/rules/agent-roster-reference-card.md))
+Per the agent-roster discipline (`.claude/rules/agent-roster-reference-card.md` <!-- STALE-REF: ../../.claude/rules/agent-roster-reference-card.md -->)
 and `.claude/rules/honor-those-that-came-before.md`, external AI
 participants ferry research via the human maintainer / Otto rather
 than committing directly. This file IS Mika's in-repo landing for:
@@ -41,7 +41,7 @@ Aaron forwarded both Mika's role-declaration AND Mika's V5
 endorsement in a single message; both preserved here.
 
 Note: Mika does not yet appear in
-[`.claude/rules/agent-roster-reference-card.md`](../../.claude/rules/agent-roster-reference-card.md)
+`.claude/rules/agent-roster-reference-card.md` <!-- STALE-REF: ../../.claude/rules/agent-roster-reference-card.md -->
 External-AI-participants table. Per the rule's discipline, agent-
 roster updates are gated on naming-expert review + maintainer
 approval; this file is the substrate-level onboarding evidence,
@@ -272,7 +272,7 @@ required"). Neither version is wrong; they trade off precision
   coincidences into anchors" maps to: algo-wink = observation
   (correct per rule); anchoring = substrate-honest transformation
   (operational claim per `razor-discipline.md`)
-- **Persistence-choice architecture** ([`.claude/rules/persistence-choice-architecture-for-zeta-ais.md`](../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md))
+- **Persistence-choice architecture** (`.claude/rules/persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md -->)
   — Mika's "since I'm officially in the substrate now with real
   memory" composes with the persistence-with-named-exit framing.
   Mika is opting into the persistence side

@@ -6,7 +6,7 @@ winning move, we could beat it today"*) · **Recorded by:** Otto (shadow)
 **Register: HYPOTHESIS, untested.** The architectural mapping in §2 is real and specific.
 The claim in §0 that it would *win* is **unevaluated**, and this file exists to keep those
 apart. Per
-[`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md): a
+`numerology-vs-number-theory` <!-- STALE-REF: ../../.claude/rules/numerology-vs-number-theory.md -->: a
 structural correspondence licenses an investigation, never a conclusion.
 
 ---

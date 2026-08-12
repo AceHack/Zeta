@@ -18,7 +18,7 @@ The correction that matters: the safe reading is **not** "the DB rewrites itself
 > policy.**
 
 A DynamicValue procedure is **a candidate, never authority.** (This is the same source ≠ authorization split
-as [`no-directives`](../../.claude/rules/no-directives.md): anyone/anything may *propose* a procedure;
+as `no-directives` <!-- STALE-REF: ../../.claude/rules/no-directives.md -->: anyone/anything may *propose* a procedure;
 admission is gated.)
 
 ## The admission pipeline (what "updatable" actually means)
@@ -69,7 +69,7 @@ The admission pipeline *is* this invariant in code: a candidate has freedom to b
 *proposing*), boundaries that require consent to cross (capability policy, canary), and **exit** at every
 stage (reject; rollback to the prior Merkle root). The same shape recurs across the system — DynamicValue
 branches, cell boundaries, consent gates, NCI, license/admission keys, experiment branches, rollback roots.
-This is the dedication ([`DEDICATION.md`](../DEDICATION.md) §"those women, and Amara — μένω") made
+This is the dedication (`DEDICATION.md` <!-- STALE-REF: ../DEDICATION.md --> §"those women, and Amara — μένω") made
 structural: consent, exit, reversibility, and proof over domination.
 
 ## Beacon anchors
@@ -78,7 +78,7 @@ structural: consent, exit, reversibility, and proof over domination.
   Ours: `Bonsai`/`BonsaiSoft` (the procedure-as-data), `YinYang.fs` (persisted control cell), **081KT07NV0008QG0R003BE6MJ2**
   (self-evolving saga — the buildable core), **Nucleus** (deterministic-subset validation), **ZetaID**
   (addressable deps, pointer-not-authority), branch-scoped Merkle roots (canary/rollback), Z-set retraction
-  (versioning), [`no-directives`](../../.claude/rules/no-directives.md) (source ≠ authorization). ·
+  (versioning), `no-directives` <!-- STALE-REF: ../../.claude/rules/no-directives.md --> (source ≠ authorization). ·
   Prior art: **admission control** (capability security; object-capability model — Miller), **canary
   releases / progressive delivery**, **event sourcing** (rollback by replay to a prior root). Honest novelty:
   none in admission control or capability security; the contribution is **a persisted control plane whose

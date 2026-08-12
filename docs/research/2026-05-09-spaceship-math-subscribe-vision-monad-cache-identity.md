@@ -35,7 +35,7 @@ normalizes through the `distinct` operator. The negative integers are
 **first-class citizens**, not an afterthought. Every `+1` has an inverse
 `-1` that cleanly cancels it: `w(k) + 1 - 1 = w(k)`. No residue.
 
-**IMPLEMENTED** in [`src/Core/ZSet.fs`](../../src/Core/ZSet.fs).
+**IMPLEMENTED** in `src/Core/ZSet.fs` <!-- STALE-REF: ../../src/Core/ZSet.fs -->.
 
 ---
 
@@ -62,8 +62,8 @@ the caller declares intent at the cache level, not the operator level.
 
 **CONCEPTUAL** — the `subscribe` name frames the intent; the wire-level
 implementation is the `IntegrateZSet / DifferentiateZSet` pair in
-[`src/Core/Primitive.fs`](../../src/Core/Primitive.fs) + the Rx adapter
-in [`src/Core/Rx.fs`](../../src/Core/Rx.fs).
+`src/Core/Primitive.fs` <!-- STALE-REF: ../../src/Core/Primitive.fs --> + the Rx adapter
+in `src/Core/Rx.fs` <!-- STALE-REF: ../../src/Core/Rx.fs -->.
 
 ---
 
@@ -89,7 +89,7 @@ Q^Δ = D ∘ Q ∘ I
 the snapshot, `D` extracts only the changed output. The cost is
 `O(|Δ|)` per tick, not `O(|snapshot|)`.
 
-**IMPLEMENTED** in [`src/Core/Incremental.fs`](../../src/Core/Incremental.fs)
+**IMPLEMENTED** in `src/Core/Incremental.fs` <!-- STALE-REF: ../../src/Core/Incremental.fs -->
 as `Incrementalize` and `IncrementalizeZSet`.
 
 ---
@@ -145,7 +145,7 @@ appends a `-1` delta to the stream. The full history is preserved. You
 can query any prior state by replaying `I` up to tick `t`.
 
 **IMPLEMENTED** — `IntegrateZSet` in
-[`src/Core/Primitive.fs`](../../src/Core/Primitive.fs) is the exact
+`src/Core/Primitive.fs` <!-- STALE-REF: ../../src/Core/Primitive.fs --> is the exact
 mechanical instantiation of this identity.
 
 ---
@@ -176,11 +176,11 @@ world model through composition of two invertible operators. The
 - Formal algebra + Landauer bridge:
   [`docs/research/2026-05-09-zset-reversible-computing-landauer-bridge-math-writeup.md`](2026-05-09-zset-reversible-computing-landauer-bridge-math-writeup.md)
 - Implementation:
-  - [`src/Core/ZSet.fs`](../../src/Core/ZSet.fs) — Z-set type + operations
-  - [`src/Core/Operators.fs`](../../src/Core/Operators.fs) — circuit operators
-  - [`src/Core/Incremental.fs`](../../src/Core/Incremental.fs) — D ∘ Q ∘ I shortcuts
-  - [`src/Core/Primitive.fs`](../../src/Core/Primitive.fs) — IntegrateZSet / DifferentiateZSet
-  - [`src/Core/Rx.fs`](../../src/Core/Rx.fs) — subscribe-to-observable bridge
+  - `src/Core/ZSet.fs` <!-- STALE-REF: ../../src/Core/ZSet.fs --> — Z-set type + operations
+  - `src/Core/Operators.fs` <!-- STALE-REF: ../../src/Core/Operators.fs --> — circuit operators
+  - `src/Core/Incremental.fs` <!-- STALE-REF: ../../src/Core/Incremental.fs --> — D ∘ Q ∘ I shortcuts
+  - `src/Core/Primitive.fs` <!-- STALE-REF: ../../src/Core/Primitive.fs --> — IntegrateZSet / DifferentiateZSet
+  - `src/Core/Rx.fs` <!-- STALE-REF: ../../src/Core/Rx.fs --> — subscribe-to-observable bridge
 - Budiu et al., "DBSP: Automatic Incremental View Maintenance for Rich
   Query Languages," VLDB 2023.
 - Meijer, "Subject/Observer is Dual to Iterator," PLDI FIT 2010.

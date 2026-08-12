@@ -39,7 +39,7 @@ Principle (substitutability = the floor property); design-by-contract (Meyer,
 "theorems for free" (Wadler 1989 — the type *is* a theorem); functor/monad laws
 (Mac Lane; Milewski CTFP — an interface = its laws); property-based testing
 (Claessen–Hughes QuickCheck → FsCheck — encode the laws, test them). In-repo:
-[`interfaces-free-classes-earned-under-rules`](../../.claude/rules/interfaces-free-classes-earned-under-rules.md)
+`interfaces-free-classes-earned-under-rules` <!-- STALE-REF: ../../.claude/rules/interfaces-free-classes-earned-under-rules.md -->
 (interfaces = the *rules of the game*; a class is an earned quotient), build = verify,
 the type-design discipline (invariants), the 4-language byte-lock.
 
@@ -66,8 +66,8 @@ the boundary that keeps host terms out so *we* own the interface, not the host. 
 host noun leaking past the adapter (a `pullRequestId` field on the port) is the smell
 — rename to the owned term (`changeSetId` / `projectionRef`).
 
-**Anchors:** [`anchor-to-human-prior-art`](../../.claude/rules/anchor-to-human-prior-art.md)
-(every term ties to a human + source); [`mirror-beacon-register-discipline`](../../.claude/rules/mirror-beacon-register-discipline.md)
+**Anchors:** `anchor-to-human-prior-art` <!-- STALE-REF: ../../.claude/rules/anchor-to-human-prior-art.md -->
+(every term ties to a human + source); `mirror-beacon-register-discipline` <!-- STALE-REF: ../../.claude/rules/mirror-beacon-register-discipline.md -->
 (prefer the externally-standard term); glossary discipline; CSLib (CS vocabulary
 anchor); Cockburn (hexagonal — the port owns the vocabulary); the in-repo
 `bcl-interface-boundary` / "we own our interfaces" discipline.

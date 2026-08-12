@@ -16,7 +16,7 @@ Scope is `Zeta.Core` (F#) with its C# shim. Audit date: 2026-04-17.
 > `v4.30.0-rc1`, already gated by `.github/workflows/lean-proof.yml`. It also cites
 > `tools/alloy/specs/Spine.als` as the only Alloy model; there are 6 `.als` files
 > under `src/Core.Alloy/`. Current rings live in
-> [`docs/TECH-RADAR.md`](../TECH-RADAR.md); current artifact paths live in
+> `docs/TECH-RADAR.md` <!-- STALE-REF: ../TECH-RADAR.md -->; current artifact paths live in
 > [`verification-registry.md`](verification-registry.md).
 
 ---

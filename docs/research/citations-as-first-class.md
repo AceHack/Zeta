@@ -480,7 +480,7 @@ Landed 2026-04-20 (Round 39, Top-3 #3). A minimal
 `bash`-only scanner that parses two prose-citation
 patterns:
 
-- **Pattern A — markdown link `[text](path)`** — resolved
+- **Pattern A — markdown link `text <!-- STALE-REF: path -->`** — resolved
   relative to the subject's directory first (markdown
   convention), then repo-root as fallback.
 - **Pattern B — backtick file ref `` `path/to/file.ext` ``** —

@@ -100,7 +100,7 @@ the precedence chain — environments with global overrides at
 reasons unrelated to the repo's `AGENTS.md` content. The relevant
 lines of `CLAUDE.md`:
 
-> 1. **[`AGENTS.md`](../../AGENTS.md)** — the universal
+> 1. **`AGENTS.md` <!-- STALE-REF: ../../AGENTS.md -->** — the universal
 >    onboarding handbook. Pre-v1 status, the three
 >    load-bearing values, how to treat contributions,
 >    the build-and-test gate, code-style pointers,

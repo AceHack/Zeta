@@ -5,7 +5,7 @@
 this had a real name [Hayes ephemerons], we should link to this prior art too as well just like
 the Futamura projections, we are basically combining these two into a geo distributed relativistic
 database of intelligence lol."* Ferried by Otto (shadow) with the honest read + the prior-art
-anchors now in [`PRIOR-ART-LIST.md`](../PRIOR-ART-LIST.md) §"Partial evaluation + garbage collection".
+anchors now in `PRIOR-ART-LIST.md` <!-- STALE-REF: ../PRIOR-ART-LIST.md --> §"Partial evaluation + garbage collection".
 
 ---
 
@@ -88,7 +88,7 @@ the target is reached.
 
 ## 4. Anchors (Beacon)
 
-All now in [`PRIOR-ART-LIST.md`](../PRIOR-ART-LIST.md) §"Partial evaluation + garbage collection":
+All now in `PRIOR-ART-LIST.md` <!-- STALE-REF: ../PRIOR-ART-LIST.md --> §"Partial evaluation + garbage collection":
 Futamura (1971), Jones–Gomard–Sestoft (1993), Kleene S-m-n (1938), Ershov (mixed computation);
 Hayes (1997 ephemerons), McCarthy (1960, GC born with code-as-data), Dijkstra et al. (1978),
 Lieberman–Hewitt / Ungar (generational). In-repo: the Futamura ladder (`Isa`/`IsaSpec`/`Cogen`/

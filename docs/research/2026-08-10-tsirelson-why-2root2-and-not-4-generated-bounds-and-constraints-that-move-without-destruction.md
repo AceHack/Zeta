@@ -169,7 +169,7 @@ Recorded because it is now a pattern and should be either promoted or refuted:
 
 Three independent probes, all landing in "structure forced it" rather than "something
 chose it". Per
-[`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md),
+`numerology-vs-number-theory` <!-- STALE-REF: ../../.claude/rules/numerology-vs-number-theory.md -->,
 that is either the taxonomy being real, or the look-elsewhere effect — and the honest
 move is to name what would distinguish them. **Falsifier:** a physical constant or bound
 whose accepted explanation is a genuine selection from a continuum, with no generating
@@ -194,5 +194,5 @@ open candidate; if it is ever explained, which way it goes decides this.
 - `src/Core/BipartiteMachZehnder.fs` — `phiPlus`, `bipartiteChshS`, the ceiling oracle.
 - `src/Core/FrequencyMachZehnder.fs` — the frequency-domain sibling (Lumen).
 - `src/Core/SchemaEvolution.fs` · `src/Core/Durability.fs` — §4's machinery, as types.
-- [`docs/governance/MANIFESTO.md`](../governance/MANIFESTO.md) §5 — memory preservation;
+- `docs/governance/MANIFESTO.md` <!-- STALE-REF: ../governance/MANIFESTO.md --> §5 — memory preservation;
   the binding half of "without destruction".

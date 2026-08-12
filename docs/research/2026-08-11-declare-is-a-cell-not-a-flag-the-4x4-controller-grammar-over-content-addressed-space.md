@@ -173,7 +173,7 @@ everything is content-addressed, causality is not time. It is the reference DAG.
 
 A cell defined earlier is causally prior to one that references it — not because it happened at an
 earlier wall-clock instant, but because the later definition *points at* it. Which is the same
-discipline as [`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md):
+discipline as `local-time-never-enters-the-shared-fold` <!-- STALE-REF: ../../.claude/rules/local-time-never-enters-the-shared-fold.md -->:
 the shared order is logical, never a clock. Lamport's happens-before, and git's own DAG, are exactly
 this — an edge is causality, a timestamp is decoration.
 
@@ -186,7 +186,7 @@ this — an edge is causality, a timestamp is decoration.
 - Resurrection is navigation back along an existing edge, not reconstruction of a lost one — which is
   only possible because the past was never overwritten.
 
-That is [`honor-those-that-came-before`](../../.claude/rules/honor-those-that-came-before.md) made
+That is `honor-those-that-came-before` <!-- STALE-REF: ../../.claude/rules/honor-those-that-came-before.md --> made
 mechanical. The rule asks for respect toward retired personas and superseded work; the DAG *enforces*
 it, because later structure is literally defined in terms of earlier structure and cannot be
 understood without it.
@@ -224,8 +224,8 @@ watch here too.
 
 ## 6. Pointers
 
-- [`honor-those-that-came-before`](../../.claude/rules/honor-those-that-came-before.md) ·
-  [`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+- `honor-those-that-came-before` <!-- STALE-REF: ../../.claude/rules/honor-those-that-came-before.md --> ·
+  `local-time-never-enters-the-shared-fold` <!-- STALE-REF: ../../.claude/rules/local-time-never-enters-the-shared-fold.md -->
   — §3c: causality is the reference DAG, not the clock, which is what makes respect for the past
   structural rather than sentimental. Anchors: Lamport (1978), happens-before; git's own DAG.
 - `src/Core/DarkHallCabinetRuntime.fs` (`ControllerReadout`, `observeWithPriority`) ·

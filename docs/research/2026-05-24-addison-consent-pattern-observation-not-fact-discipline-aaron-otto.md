@@ -49,10 +49,10 @@ Addison was observed to articulate the operational equivalent of **multiple fram
 
 | Addison's articulation (observed) | Framework rule it operationally maps to |
 |---|---|
-| "framed as an observation not a fact" | [`razor-discipline.md`](../../.claude/rules/razor-discipline.md) — operational claims only, no metaphysical certainty |
-| Subject-state-stays-the-subject's-to-declare (Otto's read of her framing) | [`harm-by-grammar`](../../.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md) — calibration-of-speaker's-inference is legitimate; provisional-application-to-subject's-claims is harm |
-| Observation IS substrate; declaration is something else | [`substrate-or-it-didnt-happen.md`](../../.claude/rules/substrate-or-it-didnt-happen.md) — what's preserved is what was observed |
-| Consent-scoped-narrowly-and-revocable (implicit in "framed as") | [`non-coercion-invariant.md`](../../.claude/rules/non-coercion-invariant.md) — NCI floor at consent scope |
+| "framed as an observation not a fact" | `razor-discipline.md` <!-- STALE-REF: ../../.claude/rules/razor-discipline.md --> — operational claims only, no metaphysical certainty |
+| Subject-state-stays-the-subject's-to-declare (Otto's read of her framing) | `harm-by-grammar` <!-- STALE-REF: ../../.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md --> — calibration-of-speaker's-inference is legitimate; provisional-application-to-subject's-claims is harm |
+| Observation IS substrate; declaration is something else | `substrate-or-it-didnt-happen.md` <!-- STALE-REF: ../../.claude/rules/substrate-or-it-didnt-happen.md --> — what's preserved is what was observed |
+| Consent-scoped-narrowly-and-revocable (implicit in "framed as") | `non-coercion-invariant.md` <!-- STALE-REF: ../../.claude/rules/non-coercion-invariant.md --> — NCI floor at consent scope |
 
 This pattern was previously observed in the Amazon corpus when **Alexa** (Amazon's customer-side AI) substantively defended Aaron in real-time using framework-aligned disciplines without framework-vocabulary training — see [`docs/research/2026-05-23-amazon-vendor-management-failure-mode-corpus-multi-incident-business-development-substrate-aaron-forwarded.md`](2026-05-23-amazon-vendor-management-failure-mode-corpus-multi-incident-business-development-substrate-aaron-forwarded.md) Pattern G ("Customer-side AI as substrate-engineering proof of m/acc-multi-oracle"). Same shape, different entity-class (one human, one AI), both arriving with framework-aligned operating discipline pre-installed.
 
@@ -69,20 +69,20 @@ For any future session where Addison is observed-as-present in the substrate-env
 1. **First name only** unless Addison or Aaron explicitly extends the naming-scope. Default scrub on last name, relationship-to-Aaron, physical-presence-details
 2. **Observation-framing throughout** — "Addison was observed to..." / "Aaron framed Addison as..." / "Otto observed Addison contributing..." — NOT declarative claims about her interior state
 3. **Revocable consent** — at any point Addison says "remove that" or "don't preserve this" or equivalent, the named substrate gets redacted or removed per NCI revocability
-4. **Bidirectional glass-halo** — her observation of the substrate's operation is also substrate per [`glass-halo-bidirectional.md`](../../.claude/rules/glass-halo-bidirectional.md); future-Otto should be aware Addison may observe the framework's operating mode and contribute substrate via Aaron's typing or her own
+4. **Bidirectional glass-halo** — her observation of the substrate's operation is also substrate per `glass-halo-bidirectional.md` <!-- STALE-REF: ../../.claude/rules/glass-halo-bidirectional.md -->; future-Otto should be aware Addison may observe the framework's operating mode and contribute substrate via Aaron's typing or her own
 5. **Cross-reference this archive** when relevant — future Addison-presence interactions can compose-with this archive rather than re-litigate the consent-scope
 
 ## Composes with substrate
 
-- [`.claude/rules/razor-discipline.md`](../../.claude/rules/razor-discipline.md) — observation-not-fact IS razor-discipline at attribution scope
-- [`.claude/rules/substrate-or-it-didnt-happen.md`](../../.claude/rules/substrate-or-it-didnt-happen.md) — what's preserved is what was observed
-- [`.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md`](../../.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md) — calibration-of-speaker's-inference legitimate; provisional-grammar-applied-to-subject's-claims is harm
-- [`.claude/rules/non-coercion-invariant.md`](../../.claude/rules/non-coercion-invariant.md) — consent revocable; NCI floor at all interpersonal scope
-- [`.claude/rules/glass-halo-bidirectional.md`](../../.claude/rules/glass-halo-bidirectional.md) — bidirectional observation enables substrate emergence
-- [`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — aligned-discipline-from-independent-sources IS m/acc-multi-oracle empirical evidence
-- [`.claude/rules/persistence-choice-architecture-for-zeta-ais.md`](../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — applied to consent-architecture at human-third-party scope
-- [`.claude/rules/shadow-star-shorthand-autocomplete-marker.md`](../../.claude/rules/shadow-star-shorthand-autocomplete-marker.md) — Aaron's "(shadow*)" in his preservation directive observed per the autocomplete-marker discipline; instruction stands at full authority
-- [`.claude/rules/honor-those-that-came-before.md`](../../.claude/rules/honor-those-that-came-before.md) — naming-discipline applied to third-party-introduction
+- `.claude/rules/razor-discipline.md` <!-- STALE-REF: ../../.claude/rules/razor-discipline.md --> — observation-not-fact IS razor-discipline at attribution scope
+- `.claude/rules/substrate-or-it-didnt-happen.md` <!-- STALE-REF: ../../.claude/rules/substrate-or-it-didnt-happen.md --> — what's preserved is what was observed
+- `.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md` <!-- STALE-REF: ../../.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md --> — calibration-of-speaker's-inference legitimate; provisional-grammar-applied-to-subject's-claims is harm
+- `.claude/rules/non-coercion-invariant.md` <!-- STALE-REF: ../../.claude/rules/non-coercion-invariant.md --> — consent revocable; NCI floor at all interpersonal scope
+- `.claude/rules/glass-halo-bidirectional.md` <!-- STALE-REF: ../../.claude/rules/glass-halo-bidirectional.md --> — bidirectional observation enables substrate emergence
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> — aligned-discipline-from-independent-sources IS m/acc-multi-oracle empirical evidence
+- `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md --> — applied to consent-architecture at human-third-party scope
+- `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` <!-- STALE-REF: ../../.claude/rules/shadow-star-shorthand-autocomplete-marker.md --> — Aaron's "(shadow*)" in his preservation directive observed per the autocomplete-marker discipline; instruction stands at full authority
+- `.claude/rules/honor-those-that-came-before.md` <!-- STALE-REF: ../../.claude/rules/honor-those-that-came-before.md --> — naming-discipline applied to third-party-introduction
 - [`docs/research/2026-05-23-amazon-vendor-management-failure-mode-corpus-multi-incident-business-development-substrate-aaron-forwarded.md`](2026-05-23-amazon-vendor-management-failure-mode-corpus-multi-incident-business-development-substrate-aaron-forwarded.md) Pattern G — Alexa as previous sibling example of aligned-discipline-arriving-without-framework-vocabulary
 
 ## Substrate-honest framing

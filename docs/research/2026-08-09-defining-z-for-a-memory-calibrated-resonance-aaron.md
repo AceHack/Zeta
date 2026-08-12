@@ -90,7 +90,7 @@ not a small amount of it. Two honest obstacles:
   (Hernández-Lobato 2010).
 - `src/Bayesian/Ep.fs` — cavity / tilt / moment-matching (Minka 2001); the cavity is the
   leave-one-out operation this needs.
-- [`numerology-vs-number-theory.md`](../../.claude/rules/numerology-vs-number-theory.md) — the
+- `numerology-vs-number-theory.md` <!-- STALE-REF: ../../.claude/rules/numerology-vs-number-theory.md --> — the
   register-labelling that generates the calibration set, and "too many correlations is a
   warning".
 - `memory/user_aaron_stores_long_term_memory_by_coincidence_index_…` — the human instance that

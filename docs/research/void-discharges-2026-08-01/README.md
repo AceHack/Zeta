@@ -2,7 +2,7 @@
 
 > **Do not cite anything in this directory as proof of anything.**
 > Every file here was written to "discharge" a conjecture in
-> [`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md`](../../FROZEN-CORE-AND-CONJECTURE-REGISTER.md).
+> `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` <!-- STALE-REF: ../../FROZEN-CORE-AND-CONJECTURE-REGISTER.md -->.
 > All six discharges were reviewed on 2026-08-01 and **none of them met §A's bar**. The
 > conjectures were demoted §A → §B. The code is retained, unexecutable, so the record is
 > auditable — not because it demonstrates anything.
@@ -54,7 +54,7 @@ is integrated anywhere in it.
 
 `1/(3√2) ≈ 0.2357` appears throughout this work labelled "the Tsirelson bound" or "the quantum
 correlation ceiling". **It is neither.** Tsirelson's bound is `S ≤ 2√2 ≈ 2.828` on the CHSH
-*correlator* — implemented correctly at [`src/Core/Tsirelson.fs`](../../../src/Core/Tsirelson.fs)
+*correlator* — implemented correctly at `src/Core/Tsirelson.fs` <!-- STALE-REF: ../../../src/Core/Tsirelson.fs -->
 (`S² = 8` in exact integer arithmetic) and `src/Core/BellTest.fs`. There is **no Tsirelson bound
 on a correlation coefficient**, and quantum correlations are not capped at 0.2357.
 

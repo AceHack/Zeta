@@ -157,7 +157,7 @@ Both deferred.
 ## See also
 
 - [Claude.ai BFT-multi-source succession (PR #1181, immediate predecessor)](2026-05-01-claudeai-bft-multi-source-succession-and-grading-bottleneck-aaron-forwarded.md)
-- [Amara Aurora civilization-substrate review (PR #1180)](2026-05-01-amara-aurora-civilization-substrate-review-aaron-forwarded.md)
-- [Amara Aurora immune-system spec review (PR #1179)](2026-05-01-amara-aurora-immune-system-spec-review-aaron-forwarded.md)
+- Amara Aurora civilization-substrate review (PR #1180) <!-- STALE-REF: 2026-05-01-amara-aurora-civilization-substrate-review-aaron-forwarded.md -->
+- Amara Aurora immune-system spec review (PR #1179) <!-- STALE-REF: 2026-05-01-amara-aurora-immune-system-spec-review-aaron-forwarded.md -->
 - [Karpathy verifiability anchor (PR #1175)](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md)
-- [Vendor-alignment-bias memory](../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md)
+- Vendor-alignment-bias memory <!-- STALE-REF: ../../memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md -->

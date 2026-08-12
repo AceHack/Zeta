@@ -288,16 +288,16 @@ the oracle substrate ships.
 
 ## Relevant paths
 
-- [`docs/research/provenance-aware-bullshit-detector-2026-04-23.md`](provenance-aware-bullshit-detector-2026-04-23.md)
+- `docs/research/provenance-aware-bullshit-detector-2026-04-23.md` <!-- STALE-REF: provenance-aware-bullshit-detector-2026-04-23.md -->
   (under review, PR #282).
 - [`docs/research/semantic-canonicalization-and-provenance-aware-retrieval-2026-04-23.md`](semantic-canonicalization-and-provenance-aware-retrieval-2026-04-23.md)
   (spine the detector composes on; PR #280).
 - [`docs/research/aminata-threat-model-7th-ferry-oracle-rules-2026-04-23.md`](aminata-threat-model-7th-ferry-oracle-rules-2026-04-23.md)
   (Otto-90 prior pass; three CRITICAL concerns whose
   write-time integration this pass evaluates).
-- [`docs/ALIGNMENT.md`](../ALIGNMENT.md) SD-9 — the soft
+- `docs/ALIGNMENT.md` <!-- STALE-REF: ../ALIGNMENT.md --> SD-9 — the soft
   default this detector mechanises; the cross-detector
   collusion CRITICAL flags a meta-layer SD-9 violation.
-- [`docs/DRIFT-TAXONOMY.md`](../DRIFT-TAXONOMY.md)
+- `docs/DRIFT-TAXONOMY.md` <!-- STALE-REF: ../DRIFT-TAXONOMY.md -->
   pattern 5 — real-time diagnostic the detector aims to
   mechanise.

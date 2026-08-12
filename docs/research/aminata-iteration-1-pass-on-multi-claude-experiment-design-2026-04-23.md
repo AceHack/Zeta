@@ -330,7 +330,7 @@ for stage (b) and mark them as stage-(c)-or-(d) concerns.
   (prior pass this session)
 - [`docs/research/aminata-threat-model-7th-ferry-oracle-rules-2026-04-23.md`](aminata-threat-model-7th-ferry-oracle-rules-2026-04-23.md)
   (prior pass this session; header-format reference)
-- [`docs/AUTONOMOUS-LOOP.md`](../AUTONOMOUS-LOOP.md)
+- `docs/AUTONOMOUS-LOOP.md` <!-- STALE-REF: ../AUTONOMOUS-LOOP.md -->
   (relevant for cron-multiplicity finding)
-- [`CLAUDE.md`](../../CLAUDE.md) (honor-those-that-came-
+- `CLAUDE.md` <!-- STALE-REF: ../../CLAUDE.md --> (honor-those-that-came-
   before — retired-persona collision finding)

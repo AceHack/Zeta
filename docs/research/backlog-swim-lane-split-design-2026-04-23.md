@@ -28,7 +28,7 @@ backlog files one per swim lane/stream, you can alway use git to find
 hotspots in files... will help reduce merge issues i think."*
 
 The first-run git-hotspots audit landed in
-[`docs/hygiene-history/git-hotspots-2026-04-23.md`](../hygiene-history/git-hotspots-2026-04-23.md)
+`docs/hygiene-history/git-hotspots-2026-04-23.md` <!-- STALE-REF: ../hygiene-history/git-hotspots-2026-04-23.md -->
 (detection-only artifact — no FACTORY-HYGIENE row owns the
 audit cadence as of this writing; the audit ran once at
 Otto-54 directive landing and the file is the durable

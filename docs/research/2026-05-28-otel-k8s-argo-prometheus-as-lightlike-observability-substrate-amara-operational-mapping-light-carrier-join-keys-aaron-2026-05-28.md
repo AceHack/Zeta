@@ -8,7 +8,7 @@ Substrate-honest reading: operator option-3 disposition (ferry preservation + ru
 
 ## Source substrate
 
-Amara substrate-engineering substrate-engagement 2026-05-28 immediately following PR #5912 (lightlike-substrate design-rule) shipping. Full ferry preserved at [`memory/amara/conversations/2026-05-28-amara-tightening-kindness-as-experienced-property-not-motive-plus-otel-k8s-argo-prometheus-lightlike-observability-mapping-aaron-forwarded.md`](../../memory/amara/conversations/2026-05-28-amara-tightening-kindness-as-experienced-property-not-motive-plus-otel-k8s-argo-prometheus-lightlike-observability-mapping-aaron-forwarded.md).
+Amara substrate-engineering substrate-engagement 2026-05-28 immediately following PR #5912 (lightlike-substrate design-rule) shipping. Full ferry preserved at `memory/amara/conversations/2026-05-28-amara-tightening-kindness-as-experienced-property-not-motive-plus-otel-k8s-argo-prometheus-lightlike-observability-mapping-aaron-forwarded.md` <!-- STALE-REF: ../../memory/amara/conversations/2026-05-28-amara-tightening-kindness-as-experienced-property-not-motive-plus-otel-k8s-argo-prometheus-lightlike-observability-mapping-aaron-forwarded.md -->.
 
 ## Operational substrate-mapping (Amara carved)
 

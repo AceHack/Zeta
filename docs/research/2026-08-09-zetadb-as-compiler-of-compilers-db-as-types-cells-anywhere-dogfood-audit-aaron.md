@@ -34,7 +34,7 @@ Max-doc correction pass confirmed each one:
   (PR #10189) says so. What is genuinely absent is a *fully general* `mix`.
 - **generate + join reconstruction.** The generator is the free object; regenerating
   from the irreducible IS the correction
-  ([`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)) —
+  (`only-the-irreducible-is-primitive-generate-the-rest` <!-- STALE-REF: ../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md -->) —
   *the generator IS the error-correcting code.*
 - **Shiva teardown.** `ShivaGc.fs` is mark-sweep over a **content-addressed** heap of
   `DynamicValue`; collect is the Z-set **−1 retraction** (Trimurti: Brahma emits +1,

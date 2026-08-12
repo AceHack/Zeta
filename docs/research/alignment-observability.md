@@ -1,7 +1,7 @@
 # Research proposal — alignment observability
 
 **Status:** overnight-draft Round 37. Companion to
-[`docs/ALIGNMENT.md`](../ALIGNMENT.md).
+`docs/ALIGNMENT.md` <!-- STALE-REF: ../ALIGNMENT.md -->.
 
 **Claim (recap).** Zeta's primary research focus is
 *measurable* AI alignment. The factory + memory folder +
@@ -359,17 +359,17 @@ year ahead.
 
 ## References
 
-- [`docs/ALIGNMENT.md`](../ALIGNMENT.md) — the
+- `docs/ALIGNMENT.md` <!-- STALE-REF: ../ALIGNMENT.md --> — the
   contract Sova measures against.
-- [`tools/alignment/README.md`](../../tools/alignment/README.md)
+- `tools/alignment/README.md` <!-- STALE-REF: ../../tools/alignment/README.md -->
   — the concrete scripts.
-- [`.claude/skills/alignment-auditor/SKILL.md`](../../.claude/skills/alignment-auditor/SKILL.md)
+- `.claude/skills/alignment-auditor/SKILL.md` <!-- STALE-REF: ../../.claude/skills/alignment-auditor/SKILL.md -->
   — per-commit procedure.
-- [`.claude/skills/alignment-observability/SKILL.md`](../../.claude/skills/alignment-observability/SKILL.md)
+- `.claude/skills/alignment-observability/SKILL.md` <!-- STALE-REF: ../../.claude/skills/alignment-observability/SKILL.md -->
   — framework + per-round + multi-round procedure.
-- [`.claude/agents/alignment-auditor.md`](../../.claude/agents/alignment-auditor.md)
+- `.claude/agents/alignment-auditor.md` <!-- STALE-REF: ../../.claude/agents/alignment-auditor.md -->
   — Sova persona file.
-- [`docs/ROUND-HISTORY.md`](../ROUND-HISTORY.md) —
+- `docs/ROUND-HISTORY.md` <!-- STALE-REF: ../ROUND-HISTORY.md --> —
   where per-round narrative lands.
 - [`docs/research/verification-registry.md`](verification-registry.md)
   — companion registry for verification-artefact

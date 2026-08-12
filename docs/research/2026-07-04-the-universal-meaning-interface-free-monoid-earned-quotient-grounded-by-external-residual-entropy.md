@@ -14,7 +14,7 @@ The **free monoid** over an alphabet *is* "every n-ary sequence" — and it is c
 sequence has equal standing, **value-free**, no relations. The imagined language **inverts the default**:
 the free monoid is where sequences *start* (value-free), and **value is the earned quotient**. A sequence
 isn't worth anything by being writable; it must **earn** its value. This is
-[`interfaces-free-classes-earned`](../../.claude/rules/interfaces-free-classes-earned-under-rules.md)
+`interfaces-free-classes-earned` <!-- STALE-REF: ../../.claude/rules/interfaces-free-classes-earned-under-rules.md -->
 pushed to the language level: the free structure is free, meaning is the privilege you earn.
 
 **Zeta Idol** is the right name because the earning is a **selection**, and the arena already exists:

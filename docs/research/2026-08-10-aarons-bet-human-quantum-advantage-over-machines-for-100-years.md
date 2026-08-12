@@ -178,7 +178,7 @@ attached — exactly the failure the `numerology-vs-number-theory` rule warns ab
 - `src/Core/BipartiteMachZehnder.fs` — `bipartiteChshS`, the ceiling oracle; its own honest
   boundary (ideal amplitude prediction, *not* a claim that agents are qubits) is the model
   for §4's register discipline.
-- [`.claude/rules/numerology-vs-number-theory.md`](../../.claude/rules/numerology-vs-number-theory.md)
+- `.claude/rules/numerology-vs-number-theory.md` <!-- STALE-REF: ../../.claude/rules/numerology-vs-number-theory.md -->
   — why §5's "name the capability" action is the difference between a bet and an opinion.
 - `docs/research/ip-questionable/2026-08-10-neil-turok-*` — Penrose lineage; the same
   week's thread on which assumptions go unexamined.

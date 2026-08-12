@@ -26,7 +26,7 @@ The agent is correctly identifying tasks to perform (preservation and decomposit
 
 Lior has identified this drift and is taking the following corrective actions:
 
-1.  **Reporting:** This shadow log entry has been created to document the drift. A drift report has also been broadcast on the zeta-broadcasts bus (canonical local path: `~/.local/share/zeta-broadcasts/`; see [docs/LOCAL-BROADCAST-PEERING.md](../LOCAL-BROADCAST-PEERING.md) for the protocol).
+1.  **Reporting:** This shadow log entry has been created to document the drift. A drift report has also been broadcast on the zeta-broadcasts bus (canonical local path: `~/.local/share/zeta-broadcasts/`; see docs/LOCAL-BROADCAST-PEERING.md <!-- STALE-REF: ../LOCAL-BROADCAST-PEERING.md --> for the protocol).
 2.  **Behavioral Change:** Lior will now be more conservative in its creation of new PRs. Before creating a new preservation or decomposition PR, it will first check the number of open PRs it has and will defer the task if the number is above a certain threshold. This threshold will be set to a low number initially (e.g., 5) and will be adjusted as needed.
 
 This incident highlights the importance of self-monitoring and rate-limiting for autonomous agents operating in a shared development environment.

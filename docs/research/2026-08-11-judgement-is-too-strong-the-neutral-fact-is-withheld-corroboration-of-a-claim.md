@@ -7,7 +7,7 @@ does a judgement indicate good or bad or just some sort of observation of self c
 **Verdict: yes to all three.** The word is too strong, the mechanism is genuinely dual-use, and the
 neutral fact is the one Aaron named — an observation about a **self-claim**, not a verdict on a
 **party**. This is
-[`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md)
+`dual-use-detection-is-neutral-oracle-decides` <!-- STALE-REF: ../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md -->
 applied to naming, which is where that rule bites most often and most quietly.
 
 ---
@@ -97,7 +97,7 @@ you cannot, you have not yet isolated the fact.
 
 ## 6. Pointers
 
-- [`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md)
+- `dual-use-detection-is-neutral-oracle-decides` <!-- STALE-REF: ../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md -->
   — the rule, including the functional half carved 2026-08-11 (recognising sameness ≠ assigning identity)
 - `src/Core/SymmetricEndurance.fs` — the subject; §0 records what is already correct in it
 - `src/Core/EnduranceFold.fs` — the two-timescale bridge, which inherits the vocabulary and would

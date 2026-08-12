@@ -133,8 +133,8 @@ ownership; the esoteric framing is not a physics anchor. Routes the formalizatio
 
 ## Ties / routing
 
-`src/Core/PolarityFilter.fs` (the meaning-lens / polarization filter) · [`hooks/`](../../hooks/) (the
-.NET Cheat-Engine hook — lensing live memory) · [`sims/`](../../sims/) + the CHIP-8 `sim` VM · the
+`src/Core/PolarityFilter.fs` (the meaning-lens / polarization filter) · `hooks/` <!-- STALE-REF: ../../hooks/ --> (the
+.NET Cheat-Engine hook — lensing live memory) · `sims/` <!-- STALE-REF: ../../sims/ --> + the CHIP-8 `sim` VM · the
 MerkleDAG / content-addressing (stable address = durable lens) · the antecedent-tracing / Cheat-Engine
 debug praxis (`docs/research/2026-06-10-zetamax-*` — find-what-writes) · the CMYK/RGB color encoding
 (the codec the meaning-lens decodes). **Routes to:** Soraya/Sova (optic laws), Naledi (memory-lens

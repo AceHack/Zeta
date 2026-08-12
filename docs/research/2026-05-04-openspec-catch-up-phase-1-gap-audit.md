@@ -7,7 +7,7 @@ recommended catch-up sequence for Phase 2 of 081KQNJ500008QG0R001N94412.
 
 Attribution: authored by the autonomous-loop session 2026-05-04 against
 maintainer Aaron's 2026-05-03 verbatim ask preserved in
-[`docs/backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`](../backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md):
+`docs/backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md` <!-- STALE-REF: ../backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md -->:
 *"openspec which we are way behind on, that's suppsed to be our source
 of truth lol, if we were to delete everying other than it"*.
 
@@ -395,8 +395,8 @@ will likely do everything eventually"*.
 
 ## 7. Cross-references
 
-- 081KQNJ500008QG0R001N94412 row: [`docs/backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`](../backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md)
-- OpenSpec README: [`openspec/README.md`](../../openspec/README.md)
+- 081KQNJ500008QG0R001N94412 row: `docs/backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md` <!-- STALE-REF: ../backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md -->
+- OpenSpec README: `openspec/README.md` <!-- STALE-REF: ../../openspec/README.md -->
 - Modified-OpenSpec workflow lineage (no archive, no change-history): see openspec/README.md lines 52-80
 - Spec-zealot (drift detection on existing capabilities): `.claude/skills/spec-zealot/SKILL.md`
 - Openspec-expert (authoring discipline for new capabilities): `.claude/skills/openspec-expert/SKILL.md`

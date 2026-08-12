@@ -102,12 +102,12 @@ Three node classes via NixOS per-node-class modules from one flake:
 - [`docs/research/2026-05-23-amazon-vendor-management-failure-mode-corpus-multi-incident-business-development-substrate-aaron-forwarded.md`](2026-05-23-amazon-vendor-management-failure-mode-corpus-multi-incident-business-development-substrate-aaron-forwarded.md) — m/acc-multi-oracle pattern G empirical anchor; same architecture principle applied at vendor-management AI scope
 - [`docs/research/2026-05-23-ai-context-failures-vs-vendor-management-failures-alignment-is-the-difference-aaron-otto.md`](2026-05-23-ai-context-failures-vs-vendor-management-failures-alignment-is-the-difference-aaron-otto.md) — alignment-is-the-difference framing applied at substrate layer
 - [`docs/research/2026-05-24-addison-consent-pattern-observation-not-fact-discipline-aaron-otto.md`](2026-05-24-addison-consent-pattern-observation-not-fact-discipline-aaron-otto.md) — same observation-not-fact discipline preserved here (Otto authored recommendations; Aaron made decisions)
-- [`.claude/rules/substrate-or-it-didnt-happen.md`](../../.claude/rules/substrate-or-it-didnt-happen.md) — applied at architecture-decision scope (this document IS the substrate)
-- [`.claude/rules/razor-discipline.md`](../../.claude/rules/razor-discipline.md) — operational claims only (each architecture choice has stated reasoning)
-- [`.claude/rules/bandwidth-served-falsifier.md`](../../.claude/rules/bandwidth-served-falsifier.md) — each layer justified by bandwidth served
-- [`.claude/rules/additive-not-zero-sum.md`](../../.claude/rules/additive-not-zero-sum.md) — additive layer-by-layer composition
-- [`.claude/rules/dv2-data-split-discipline-activated.md`](../../.claude/rules/dv2-data-split-discipline-activated.md) — heterogeneous-node-class architecture maps to DV2.0 partition-by-change-rate (OS modules stable; per-node-class config volatile)
-- [`.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`](../../.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md) — NixOS = F#-anchor-equivalent at OS layer (declarative + reproducible + composable)
+- `.claude/rules/substrate-or-it-didnt-happen.md` <!-- STALE-REF: ../../.claude/rules/substrate-or-it-didnt-happen.md --> — applied at architecture-decision scope (this document IS the substrate)
+- `.claude/rules/razor-discipline.md` <!-- STALE-REF: ../../.claude/rules/razor-discipline.md --> — operational claims only (each architecture choice has stated reasoning)
+- `.claude/rules/bandwidth-served-falsifier.md` <!-- STALE-REF: ../../.claude/rules/bandwidth-served-falsifier.md --> — each layer justified by bandwidth served
+- `.claude/rules/additive-not-zero-sum.md` <!-- STALE-REF: ../../.claude/rules/additive-not-zero-sum.md --> — additive layer-by-layer composition
+- `.claude/rules/dv2-data-split-discipline-activated.md` <!-- STALE-REF: ../../.claude/rules/dv2-data-split-discipline-activated.md --> — heterogeneous-node-class architecture maps to DV2.0 partition-by-change-rate (OS modules stable; per-node-class config volatile)
+- `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` <!-- STALE-REF: ../../.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md --> — NixOS = F#-anchor-equivalent at OS layer (declarative + reproducible + composable)
 
 ## Substrate-honest framing
 

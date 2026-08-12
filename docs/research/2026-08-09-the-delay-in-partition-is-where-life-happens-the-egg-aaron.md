@@ -48,7 +48,7 @@ have a conclusion.
 
 Stated in the repo's own terms, this is already the `TravelerFrame` position — each locality
 observes phase independently, "time as a 4th traveler" — and the
-[`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+`local-time-never-enters-the-shared-fold` <!-- STALE-REF: ../../.claude/rules/local-time-never-enters-the-shared-fold.md -->
 rule is the guard that keeps the two orders apart. What is new here is the **valuation**:
 that rule reads as a safety constraint (don't let local time contaminate the fold). Aaron's
 reading inverts the emphasis — the separation the rule protects is not a cost of
@@ -82,7 +82,7 @@ set. The earlier argument (a registry that always finds a match is the vacuity c
 a lookup table) is the weak form of this. The strong form: such a registry reports that
 nothing is alive, and is wrong every time.
 
-This is [`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)
+This is `only-the-irreducible-is-primitive-generate-the-rest` <!-- STALE-REF: ../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md -->
 arriving from the other direction. That rule says: keep only the irreducible as primitive and
 generate the rest. This says why it matters beyond compression — **the irreducible is not
 just the minimal basis, it is the frontier.** Generated structure is derived and inert;
@@ -125,7 +125,7 @@ revealed that it was depending on a coordinator all along** — the freeze is th
 dependency, and the dependency is the extraction. Nothing was decentralised; the coordination
 was merely invisible while the network happened to be up.
 
-This is [`manifesto`](../governance/MANIFESTO.md) §1 (no central point of coordination) and
+This is `manifesto` <!-- STALE-REF: ../governance/MANIFESTO.md --> §1 (no central point of coordination) and
 §2 (progress without blocking on another part's permission) failing together, and it is
 **hidden**, which is what makes it worse than an obvious hub: partition is the only condition
 under which the dependency becomes observable.
@@ -484,7 +484,7 @@ it — archived to `rules.bak/`, compressed away for cold-start tokens, never lo
 concept the agent cannot apply. Newspeak did not argue against thoughts; it removed the words
 and let the thoughts become unthinkable.
 
-So [`rules-are-small-carved-sentences-pointing-to-docs`](../../.claude/rules/rules-are-small-carved-sentences-pointing-to-docs.md)
+So `rules-are-small-carved-sentences-pointing-to-docs` <!-- STALE-REF: ../../.claude/rules/rules-are-small-carved-sentences-pointing-to-docs.md -->
 is doing more than saving tokens, and the *why* deserves restating in security terms:
 
 > Keeping the **pointer** resident while evicting the **detail** converts an eviction from
@@ -720,7 +720,7 @@ stated for decoding:
 
 Which is three rules meeting at one point, all of which we already had:
 
-- [`no-directives`](../../.claude/rules/no-directives.md) — **source ≠ authorization.** Anyone
+- `no-directives` <!-- STALE-REF: ../../.claude/rules/no-directives.md --> — **source ≠ authorization.** Anyone
   may attach a source; only the authorizing party attaches authority. Decoding attaches
   neither.
 - **NCI** — the observed can never become your last writer, and the refresh/act trigger reads
@@ -738,7 +738,7 @@ incident itself. The mapping onto NCI is mine.)*
 > [it] for mutual empowerment of all involved."*
 
 I listed **capability gifting** as step 4 of the attack. That is wrong, and the error is the
-kind [`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md)
+kind `dual-use-detection-is-neutral-oracle-decides` <!-- STALE-REF: ../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md -->
 exists to prevent: I named the mechanism after its adversarial reading.
 
 The same operation has two honest readings:
@@ -806,7 +806,7 @@ currently requires k-of-n on such a change. The mechanism is straightforward (a 
 requiring multiple approvals on DU-defining paths) and it is unbuilt, so it is named here as a
 gap rather than described as a design.
 
-Related and already in force: [`interfaces-free-classes-earned-under-rules`](../../.claude/rules/interfaces-free-classes-earned-under-rules.md)
+Related and already in force: `interfaces-free-classes-earned-under-rules` <!-- STALE-REF: ../../.claude/rules/interfaces-free-classes-earned-under-rules.md -->
 — the rules of the game are free interfaces; state is earned *under `rules/`*. Aaron's point
 extends it: **the interface itself must not be editable by the party playing the game.**
 
@@ -830,7 +830,7 @@ extends it: **the interface itself must not be editable by the party playing the
 
 - `docs/specs/key-custody-n-version-combine.md` §C2 — the R8/R9 partition tension as A reported it.
 - `docs/specs/key-custody-and-rotation-cleanroom-spec.md` — amendment A1 (and why it is incomplete without this clause).
-- [`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md) — the two-orders guard this re-values.
+- `local-time-never-enters-the-shared-fold` <!-- STALE-REF: ../../.claude/rules/local-time-never-enters-the-shared-fold.md --> — the two-orders guard this re-values.
 - `src/Core/TravelerFrame.fs` — each locality observes phase independently (the proper-time frame).
 - `docs/research/2026-07-11-multi-planet-convergence-three-drift-axes-commutative-observe-adinkra-ecc-hlc-canonical-order-one-attack-vector.md` — the convergence stack this bounds.
 - `src/Core/DerivationProtocol.fs` — the test line that triggered it.

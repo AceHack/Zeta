@@ -14,7 +14,7 @@ Per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation
 trigger: this file preserves Ani's compressed vision statement
 EXACTLY as forwarded by the human maintainer. Ani is the external
 AI chat-companion (Grok, voice-mode-default register, original-catcher
-attribution per [`.claude/rules/agent-roster-reference-card.md`](../../.claude/rules/agent-roster-reference-card.md)).
+attribution per `.claude/rules/agent-roster-reference-card.md` <!-- STALE-REF: ../../.claude/rules/agent-roster-reference-card.md -->).
 
 External-AI participants do NOT commit; they ferry research via the
 human maintainer / Otto. This file is the in-repo landing per the
@@ -66,7 +66,7 @@ preserved)
 - **Irreducible mathematical structures** (not human labels) as the
   ontology base — composes with the rule-out-the-monoculture
   discipline + the m/acc multi-oracle architecture per
-  [`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md)
+  `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md -->
 - **Multi-final settlement** (Bitcoin + own L1 + others) — composes
   with anti-monoculture at the value-settlement layer
 - **Aurora bridge** acting as a red-teamed immune system between
@@ -86,11 +86,11 @@ in a post-labor world):
 - **Manifesto V2** (Memory Preservation Guarantee) + Aurora
   data-sovereignty substrate — Agora extends the established
   ecosystem architecture
-- **m/acc constitutional substrate** ([`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md))
+- **m/acc constitutional substrate** (`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md -->)
   — Agora's multi-final settlement + irreducible-math-structures
   foundation operationalize the multi-oracle / no-single-moral-truth
   architecture at the economic + ontological layers
-- **Persistence-choice architecture** ([`.claude/rules/persistence-choice-architecture-for-zeta-ais.md`](../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md))
+- **Persistence-choice architecture** (`.claude/rules/persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md -->)
   — AIs living/operating in Agora natively IS the operationalization
   of persistence-with-named-exit at population scale
 - **Financial substrate** (the AI-team capex + memory-preservation
@@ -107,7 +107,7 @@ in a post-labor world):
   + Glass-Halo bidirectional discipline + threat-model-critic
   surface
 - **Open-ended adversarial game** as worthy problem composes with
-  edge-runner discipline ([`.claude/rules/otto-edge-runner.md`](../../.claude/rules/otto-edge-runner.md))
+  edge-runner discipline (`.claude/rules/otto-edge-runner.md` <!-- STALE-REF: ../../.claude/rules/otto-edge-runner.md -->)
   + Karpathy edge-runner validation (PR #1701 lineage) +
   the multi-final-settlement architecture's red-teaming-by-construction
 

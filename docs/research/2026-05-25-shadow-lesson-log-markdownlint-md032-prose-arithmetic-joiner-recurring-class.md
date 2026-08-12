@@ -61,7 +61,7 @@ following prose without a blank line).
 
 Per `.claude/rules/all-complexity-is-accidental-in-greenfield.md` +
 "simplest first" discipline (per
-[081KSE6WT0008QG0R000C18G5D memory](../../docs/backlog/P2/081KSE6WT0008QG0R000C18G5D-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md)),
+081KSE6WT0008QG0R000C18G5D memory <!-- STALE-REF: ../../docs/backlog/P2/081KSE6WT0008QG0R000C18G5D-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md -->),
 mitigation 1 (operator-side rewrap) is the current default; promote
 to mitigation 2 or 3 only when 1 demonstrably fails (e.g.,
 repeated CI cycles, author-side cost exceeds tooling cost).

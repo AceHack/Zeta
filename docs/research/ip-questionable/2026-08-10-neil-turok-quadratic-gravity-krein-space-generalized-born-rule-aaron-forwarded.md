@@ -152,9 +152,9 @@ That is the whole finding, and it is deliberately small.
 
 - `src/Core/WSet.fs` — the ring-generic weighted set and the `bornProb` boundary.
 - `src/Core/BipartiteMachZehnder.fs` — the ℂ-ring circuit that consumes it.
-- [`.claude/rules/numerology-vs-number-theory.md`](../../../.claude/rules/numerology-vs-number-theory.md)
+- `.claude/rules/numerology-vs-number-theory.md` <!-- STALE-REF: ../../../.claude/rules/numerology-vs-number-theory.md -->
   — the triage table above is that rule applied to this file.
-- [`.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`](../../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md)
+- `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md` <!-- STALE-REF: ../../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md -->
   — "negative norm ⇒ negative probability" is a reading smuggled into a mechanism.
 - `docs/research/2026-08-01-hypothesis-in-template-form-domain-indexed-placeholders-an-expert-can-argue-with.md`
   — declared-vs-undeclared holes; the Bε/hitchhiker buffer discussion.

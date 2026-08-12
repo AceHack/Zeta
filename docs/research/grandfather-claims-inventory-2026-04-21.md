@@ -2,7 +2,7 @@
 
 **Date:** 2026-04-21 (round 41, late).
 **Owner:** Architect (Kenji) commissions; this is the one-time inventory named in v2 Closure C-P0-1.
-**Source ADR:** [`docs/DECISIONS/2026-04-21-router-coherence-v2.md`](../DECISIONS/2026-04-21-router-coherence-v2.md) §"Closure C-P0-1 (scopes the grandfather clause — v1-P0-1)".
+**Source ADR:** `docs/DECISIONS/2026-04-21-router-coherence-v2.md` <!-- STALE-REF: ../DECISIONS/2026-04-21-router-coherence-v2.md --> §"Closure C-P0-1 (scopes the grandfather clause — v1-P0-1)".
 **Discharge cadence:** one pre-ADR claim per round thereafter until the inventory is empty, tracked via a `docs/BACKLOG.md` P2 entry created alongside this doc (see §Discharge queue below).
 
 ## What this is (and is not)

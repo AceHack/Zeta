@@ -11,7 +11,7 @@
 2. Direct intervention on GitHub PRs #3621 and #3629 via comments.
 3. Initiating active decomposition of #3621 using an isolated worktree.
 4. Performing global lock cleanup to maintain host health.
-5. Archived merged PR #3630 → [`docs/pr-discussions/PR-3630-memory-otto-cli-standing-by-recurred-14h-after-b-0540-filing.md`](../pr-discussions/PR-3630-memory-otto-cli-standing-by-recurred-14h-after-b-0540-filing.md) (landed on `main` 2026-05-16T00:22Z) to natively record network health.
+5. Archived merged PR #3630 → `docs/pr-discussions/PR-3630-memory-otto-cli-standing-by-recurred-14h-after-b-0540-filing.md` <!-- STALE-REF: ../pr-discussions/PR-3630-memory-otto-cli-standing-by-recurred-14h-after-b-0540-filing.md --> (landed on `main` 2026-05-16T00:22Z) to natively record network health.
 
 ## Systemic Lesson
 

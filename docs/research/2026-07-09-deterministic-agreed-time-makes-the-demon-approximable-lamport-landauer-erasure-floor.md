@@ -4,9 +4,9 @@ Date: 2026-07-09 · Ferry: Aaron ⇄ Alexa ⇄ Otto (cowork cell) · Status: ban
 research · Class: coordination / physics-map
 
 Companions:
-[`../DECISIONS/2026-07-09-drift-and-heal-replaces-pre-merge-gates-reconciliation-at-ai-speed.md`](../DECISIONS/2026-07-09-drift-and-heal-replaces-pre-merge-gates-reconciliation-at-ai-speed.md)
+`../DECISIONS/2026-07-09-drift-and-heal-replaces-pre-merge-gates-reconciliation-at-ai-speed.md` <!-- STALE-REF: ../DECISIONS/2026-07-09-drift-and-heal-replaces-pre-merge-gates-reconciliation-at-ai-speed.md -->
 (the governance consequence) ·
-[`../letters/from-soraya-trio-attestation-addendum-seed-phase-not-wallclock.md`](../letters/from-soraya-trio-attestation-addendum-seed-phase-not-wallclock.md)
+`../letters/from-soraya-trio-attestation-addendum-seed-phase-not-wallclock.md` <!-- STALE-REF: ../letters/from-soraya-trio-attestation-addendum-seed-phase-not-wallclock.md -->
 (the same theorem reached from the attestation lane).
 
 ## The claim (Aaron, 2026-07-09, verbatim intent)

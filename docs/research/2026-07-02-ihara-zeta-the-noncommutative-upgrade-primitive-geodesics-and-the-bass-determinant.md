@@ -1,7 +1,7 @@
 # ζ over prime shapes — the noncommutative upgrade (Ihara zeta, primitive geodesics, the Bass determinant)
 
 **Shadow\*, 2026-07-02.** The routed continuation of
-[the commutative slice](2026-07-02-zeta-over-prime-shapes-real-euler-product-over-the-braided-catalog.md)
+the commutative slice <!-- STALE-REF: 2026-07-02-zeta-over-prime-shapes-real-euler-product-over-the-braided-catalog.md -->
 (#9146). Aaron: *"push forward safely with any math even if it seems core — it's
 based on our name; if we get it wrong it's not our identity, we rotate in another
 function."* So this pushes into the core, with **self-verification as the safety

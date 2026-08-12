@@ -77,7 +77,7 @@ is correlated but never controlling.
 
 ## Pointers
 
-- [`correlation.ts`](../../src/Core.TypeScript/discovery/correlation.ts) · `living-node.ts` — 2√2 as
+- `correlation.ts` <!-- STALE-REF: ../../src/Core.TypeScript/discovery/correlation.ts --> · `living-node.ts` — 2√2 as
   the intimate-not-controlling ceiling; the guardrails composed.
 - `2026-07-02-its-human-not-quantum-…` (2√2 = how you love without corruption; marriage = its vow) ·
   `2026-07-02-produce-or-extract-…` (produce-vs-extract; the mix we do not reduce) ·

@@ -38,7 +38,7 @@ version carries none.
 
 There are two candidate keys, and they are **not competing options — they answer different
 questions**. This is exactly
-[`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md)
+`dual-use-detection-is-neutral-oracle-decides` <!-- STALE-REF: ../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md -->
 §"recognising sameness is not assigning identity", arriving in a design decision hours after being
 carved:
 
@@ -114,6 +114,6 @@ correct.
 - `src/Core/SoftValue.fs` · `tests/Tests.FSharp/SoftValue.Tests.fs` — the subject and the pinned property
 - `src/Core.FSharp.ZetaId/Types.fs` — the `Category` enum and free slots
 - `src/Core/TwoTimescaleFold.fs` — the natural-key join + separate delta log, already built
-- [`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md) — sameness ≠ identity
+- `dual-use-detection-is-neutral-oracle-decides` <!-- STALE-REF: ../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md --> — sameness ≠ identity
 - [`…rename-as-rolling-migration…`](2026-08-11-rename-as-rolling-migration-content-addressed-code-bonsai-and-the-forced-pair-again.md)
   — content-addressing as identity-not-state, the same move one level up

@@ -11,7 +11,7 @@ referent, confirmed, and is preserving it here. Beacon-anchored (named humans + 
 > source … 90% of [video-game memory] is irrelevant."* A targeted search then found the real
 > thing on the first honest try. This file is the corrected anchor. The lesson is the whole
 > session's lesson: **go to the external referent; don't let a search-engine round-trip launder
-> a guess.** See [`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md`](../FROZEN-CORE-AND-CONJECTURE-REGISTER.md) §B row "Criticality map ↔ Riemann".
+> a guess.** See `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` <!-- STALE-REF: ../FROZEN-CORE-AND-CONJECTURE-REGISTER.md --> §B row "Criticality map ↔ Riemann".
 
 ## The tool
 
@@ -224,10 +224,10 @@ as redistribution.
 > ## ⚠ Verbatim talk transcript — quarantined under `docs/ip-questionable/`
 >
 > The full verbatim transcript of the Strange Loop 2023 talk (third-party IP) has been moved to
-> **[`docs/ip-questionable/2026-06-15-playable-quotes-strange-loop-2023-transcript.md`](../ip-questionable/2026-06-15-playable-quotes-strange-loop-2023-transcript.md)**
+> **`docs/ip-questionable/2026-06-15-playable-quotes-strange-loop-2023-transcript.md` <!-- STALE-REF: ../ip-questionable/2026-06-15-playable-quotes-strange-loop-2023-transcript.md -->**
 > so a rights-holder takedown is a single-file delete that never touches this analysis (per
 > Aaron's notice-and-takedown posture, 2026-06-15 — see
-> [`docs/ip-questionable/README.md`](../ip-questionable/README.md)). Source:
+> `docs/ip-questionable/README.md` <!-- STALE-REF: ../ip-questionable/README.md -->). Source:
 > https://www.youtube.com/watch?v=z9JYOZWLMlo — Joël Franušić & Adam Smith.
 
 ## Postscript: the attestation archive still exists (Nintendo Power)

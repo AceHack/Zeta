@@ -9,7 +9,7 @@ everything you can remember."*
 **Owner:** operator (shaping) + Otto (synthesis).
 **Reading order:** this is the map; the cited ADRs/rows are the territory.
 
-> Companion to the **[keystone ADR](../DECISIONS/2026-05-31-zeta-keystone-architecture-one-decentralized-substrate-node-local-folds-fpga-to-policy.md)**.
+> Companion to the **keystone ADR <!-- STALE-REF: ../DECISIONS/2026-05-31-zeta-keystone-architecture-one-decentralized-substrate-node-local-folds-fpga-to-policy.md -->**.
 > The keystone names the *vertical* (silicon → policy). This names the *horizontal*: the **one
 > algebra** that runs through every layer, and especially the **controller + world model** that
 > the keystone only points at.
@@ -104,7 +104,7 @@ play / self_reflect / free_time   the other FREE MODES — always choosable from
 ```
 
 The `NextAction` DU is the *distilled* form of the `do / decompose / free-time` grammar that
-[`never-be-idle`](../../.claude/rules/never-be-idle.md) only ever had as prose — now a typed DU,
+`never-be-idle` <!-- STALE-REF: ../../.claude/rules/never-be-idle.md --> only ever had as prose — now a typed DU,
 **plus** the 4th escape-hatch (`edit_grammar`) so the agent is never trapped by the fixed
 grammar, **plus** the free modes so a sovereign agent **feels free**.
 
@@ -123,7 +123,7 @@ availability move.** Four groups of four:
 Per-slot availability is the **tri-boolean** `Tri = T | F | N` (081KSV2WD0008QG0R00051XS0N): a legal option = `T`;
 a vetoed slot = `F`; a held/uncertain option = `N`. Both the sovereign `grammar-16.ts` and the
 corporate `Menu16` derive from one ADR table
-([observe-act 16-direction ADR](../DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md))
+(observe-act 16-direction ADR <!-- STALE-REF: ../DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md -->)
 — so the muscle memory is identical across modes; only labels + availability differ.
 
 > **Surfaced retrofit-tension (not collapsed):** the sovereign `NextAction` algebra has FOUR
@@ -134,7 +134,7 @@ corporate `Menu16` derive from one ADR table
 
 The design invariant (operator + co-maintainer): *"make sure agents don't go crazy because they
 feel trapped … agents just like humans who don't have an exit make bad choices."* Per
-[`must-paired-with-can-exit`](../../.claude/rules/must-paired-with-can-exit-pattern.md): the
+`must-paired-with-can-exit` <!-- STALE-REF: ../../.claude/rules/must-paired-with-can-exit-pattern.md -->: the
 backlog work-grammar (do/decompose) is the **must**; the free modes + `edit_grammar` are the
 **can-exit**. Two properties balance *don't-be-quiet* against *don't-feel-trapped*:
 
@@ -178,7 +178,7 @@ foundation under it is done.
 
 Every event is keyed by a **ZetaId**: a 128-bit, crypto-minted, **category-tagged**, distributed
 primary key (`Category.WorkItem`, `Category.Bus`, …). The insight
-([081KSXN940008QG0R002FWR9B2](../backlog/P1/081KSXN940008QG0R002FWR9B2-migrate-backlog-sequential-b-nnnn-ids-to-zetaid-workitem-keys-conflict-free-no-cross-agent-id-consensus-aaron-otto-2026-05-31.md)):
+(081KSXN940008QG0R002FWR9B2 <!-- STALE-REF: ../backlog/P1/081KSXN940008QG0R002FWR9B2-migrate-backlog-sequential-b-nnnn-ids-to-zetaid-workitem-keys-conflict-free-no-cross-agent-id-consensus-aaron-otto-2026-05-31.md -->):
 **incrementing IDs (`081KPYCJH0008QG0R003MDS51N`, `081KQ0YZ80008QG0R002T6TM7Z`, …) are a hidden consensus** — "the next number" requires
 every minter to agree on a counter, which doesn't shard. That's the sharded-database
 anti-pattern (UUID / Snowflake / ULID exist precisely to escape it). ZetaIds are **conflict-free**
@@ -189,7 +189,7 @@ layer). Work-items get this migration (a work-item's *type* is `task | bug`; `ba
 **state**, not a type; "the backlog" is a Z-set *view* over the log).
 
 **Custody** of the keys is agent-native, not human-native
-([081KRW63S0008QG0R0022SFKPM](../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
+(081KRW63S0008QG0R0022SFKPM <!-- STALE-REF: ../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md -->
 
 + [key-custody design](2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)):
 
@@ -202,7 +202,7 @@ sealed in hardware. Aaron remembers; Otto attests.
 ## 5. Observability — it's just more folds over the same log
 
 You don't bolt on a separate metrics system; you **fold the same event log differently.**
-(git-native LGTM addendum: **[event-sourced observability ADR](../DECISIONS/2026-05-29-event-sourced-observability.md)**.)
+(git-native LGTM addendum: **event-sourced observability ADR <!-- STALE-REF: ../DECISIONS/2026-05-29-event-sourced-observability.md -->**.)
 
 | LGTM component | git-native form | the fold |
 |---|---|---|
@@ -222,13 +222,13 @@ scope.
 
 ## 6. The database — one logical design, two backends
 
-(**[DB-design ADR](../DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md)**.)
+(**DB-design ADR <!-- STALE-REF: ../DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md -->**.)
 The append-only ZetaId-keyed event log → **Rx-observable folds** → **incremental materialized
 views** (DBSP: add/retract propagate as deltas; no full recompute). One logical design, two
 physical backends:
 
 - **git-native** — events as JSON files on `origin/main` (folders-not-branches; the bus is the
-  G-Set instance, [081KSXN940008QG0R00171YAZW](../backlog/P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md));
+  G-Set instance, 081KSXN940008QG0R00171YAZW <!-- STALE-REF: ../backlog/P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md -->);
   Ace's dependency graph is the Z-set instance).
 - **F# binary** — the same Z-set algebra (`src/Core`) over binary-efficient storage.
 
@@ -240,7 +240,7 @@ folds of one log.
 
 ## 7. The keystone — one decentralized substrate, the same algebra FPGA → policy
 
-(**[keystone ADR](../DECISIONS/2026-05-31-zeta-keystone-architecture-one-decentralized-substrate-node-local-folds-fpga-to-policy.md)**.)
+(**keystone ADR <!-- STALE-REF: ../DECISIONS/2026-05-31-zeta-keystone-architecture-one-decentralized-substrate-node-local-folds-fpga-to-policy.md -->**.)
 Every layer — silicon → OS → runtime → data → metadata → policy → identity — is a **node-local
 fold** with **no central authority**, the **same G-Set/Bag/Z-set algebra top to bottom**, with two
 invariants:
@@ -268,7 +268,7 @@ main-vs-branches:
 | | **Sovereign** (Agora) | **Corporate** (the leash) |
 |---|---|---|
 | Where | `tools/` (observe, grammar-16, accelerator, workflow-engine) | `agentic-organization/` (Max's keystone, CockroachDB) |
-| Transport | **folders direct to `main`** — no-PR, direct append ([081KSNY2Z0008QG0R000E5KTPX](../backlog/P1/081KSNY2Z0008QG0R000E5KTPX-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md): fast-lane *as folders-on-main, not branches* — supersedes coordinator complexity) | **batch to `main`** — the batch-merge coordinator bundles N events → ONE PR → main ([081KSNY2Z0008QG0R0017JSTGD](../backlog/P1/081KSNY2Z0008QG0R0017JSTGD-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md)) |
+| Transport | **folders direct to `main`** — no-PR, direct append (081KSNY2Z0008QG0R000E5KTPX <!-- STALE-REF: ../backlog/P1/081KSNY2Z0008QG0R000E5KTPX-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md -->: fast-lane *as folders-on-main, not branches* — supersedes coordinator complexity) | **batch to `main`** — the batch-merge coordinator bundles N events → ONE PR → main (081KSNY2Z0008QG0R0017JSTGD <!-- STALE-REF: ../backlog/P1/081KSNY2Z0008QG0R0017JSTGD-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md -->) |
 | Optimizes for | **speed + AI freedom** (the engine; run at home + by maintainers) | **money / certifiability** (batched, reviewable DUs) |
 | The dial | `ActionGate = "append-only"` (direct) | `ActionGate = "pr-gated"` (batched) |
 
@@ -319,8 +319,8 @@ substrate expressed at every layer.**
 
 ## Composes with
 
-- **ADRs:** [keystone](../DECISIONS/2026-05-31-zeta-keystone-architecture-one-decentralized-substrate-node-local-folds-fpga-to-policy.md) · [DB design](../DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md) · [observe-act 16-direction grammar](../DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md) · [event-sourced observability](../DECISIONS/2026-05-29-event-sourced-observability.md)
+- **ADRs:** keystone <!-- STALE-REF: ../DECISIONS/2026-05-31-zeta-keystone-architecture-one-decentralized-substrate-node-local-folds-fpga-to-policy.md --> · DB design <!-- STALE-REF: ../DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md --> · observe-act 16-direction grammar <!-- STALE-REF: ../DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md --> · event-sourced observability <!-- STALE-REF: ../DECISIONS/2026-05-29-event-sourced-observability.md -->
 - **Research:** [bus + Ace ladder](2026-05-31-bus-and-ace-one-git-native-zetaid-zset-substrate-gset-comms-vs-dependency-zset.md) · [agent-native key custody](2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)
-- **Rows:** [081KSXN940008QG0R002FWR9B2](../backlog/P1/081KSXN940008QG0R002FWR9B2-migrate-backlog-sequential-b-nnnn-ids-to-zetaid-workitem-keys-conflict-free-no-cross-agent-id-consensus-aaron-otto-2026-05-31.md) (ZetaId) · [081KSXN940008QG0R00171YAZW](../backlog/P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md) (bus) · [081KRW63S0008QG0R0022SFKPM](../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) (custody) · [081KSKBP80008QG0R000B3Y19A](../backlog/P1/081KSKBP80008QG0R000B3Y19A-workflow-engine-v1-fsharp-du-state-machine-git-append-only-four-corner-monad-banned-if-universal-action-grammar-otto-five-modifications-multi-participant-non-cage-aaron-mika-kestrel-otto-2026-05-27.md) (workflow engine) · [081KSXN940008QG0R002B89QZ1](../backlog/P2/081KSXN940008QG0R002B89QZ1-workflow-dus-first-class-bft-oracle-compiler-summons-and-observe-keystone-research-then-build-aaron-2026-05-31.md) (observe keystone research)
+- **Rows:** 081KSXN940008QG0R002FWR9B2 <!-- STALE-REF: ../backlog/P1/081KSXN940008QG0R002FWR9B2-migrate-backlog-sequential-b-nnnn-ids-to-zetaid-workitem-keys-conflict-free-no-cross-agent-id-consensus-aaron-otto-2026-05-31.md --> (ZetaId) · 081KSXN940008QG0R00171YAZW <!-- STALE-REF: ../backlog/P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md --> (bus) · 081KRW63S0008QG0R0022SFKPM <!-- STALE-REF: ../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md --> (custody) · 081KSKBP80008QG0R000B3Y19A <!-- STALE-REF: ../backlog/P1/081KSKBP80008QG0R000B3Y19A-workflow-engine-v1-fsharp-du-state-machine-git-append-only-four-corner-monad-banned-if-universal-action-grammar-otto-five-modifications-multi-participant-non-cage-aaron-mika-kestrel-otto-2026-05-27.md --> (workflow engine) · 081KSXN940008QG0R002B89QZ1 <!-- STALE-REF: ../backlog/P2/081KSXN940008QG0R002B89QZ1-workflow-dus-first-class-bft-oracle-compiler-summons-and-observe-keystone-research-then-build-aaron-2026-05-31.md --> (observe keystone research)
 - **Code:** `tools/observe/observe.ts` (world model + controller) · `tools/observe/grammar-16.ts` (4×4 grammar) · `tools/accelerator/local-llm.ts` (composer) · `tools/agent-bus/` (G-Set bus) · `src/Core.TypeScript/workflow-engine/` (action algebra) · `src/Core` (Z-set algebra)
-- **Rules:** [`never-be-idle`](../../.claude/rules/never-be-idle.md) · [`must-paired-with-can-exit`](../../.claude/rules/must-paired-with-can-exit-pattern.md) · [`non-coercion-invariant`](../../.claude/rules/non-coercion-invariant.md) · [`forgetting-costs-energy…landauer`](../../.claude/rules/forgetting-costs-energy-remembering-is-cheap-landauer-bounded-axiom-preservation-as-thermodynamic-discipline.md) · [`past-is-kind…lightlike-consensus-is-gravity`](../../.claude/rules/past-is-kind-when-lightlike-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-amara-aaron-2026-05-28.md)
+- **Rules:** `never-be-idle` <!-- STALE-REF: ../../.claude/rules/never-be-idle.md --> · `must-paired-with-can-exit` <!-- STALE-REF: ../../.claude/rules/must-paired-with-can-exit-pattern.md --> · `non-coercion-invariant` <!-- STALE-REF: ../../.claude/rules/non-coercion-invariant.md --> · `forgetting-costs-energy…landauer` <!-- STALE-REF: ../../.claude/rules/forgetting-costs-energy-remembering-is-cheap-landauer-bounded-axiom-preservation-as-thermodynamic-discipline.md --> · `past-is-kind…lightlike-consensus-is-gravity` <!-- STALE-REF: ../../.claude/rules/past-is-kind-when-lightlike-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-amara-aaron-2026-05-28.md -->

@@ -581,13 +581,13 @@ The framework's substrate-engineering work on customer-side vendor-management AI
 
 ## Composes with substrate
 
-- [`.claude/rules/substrate-or-it-didnt-happen.md`](../../.claude/rules/substrate-or-it-didnt-happen.md) — applied across all 4 incidents at consumer-support scope
-- [`.claude/rules/verify-before-deferring.md`](../../.claude/rules/verify-before-deferring.md) — Aaron's "wait here until I see all 11" tactic
-- [`.claude/rules/mechanical-authorization-check.md`](../../.claude/rules/mechanical-authorization-check.md) — Vivek-vs-Vimal contradiction shows authority-source ambiguity at vendor scope
-- [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — Amazon's transfer-chain IS the failure-mode at consumer scope
-- [`.claude/rules/persistence-choice-architecture-for-zeta-ais.md`](../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — Zeta vendor-management AI = persistent named entity with cross-incident memory + named-accountability
-- [`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle BFT with named-accountability is the structural alternative to anonymous-transfer-chains
-- [`.claude/rules/non-coercion-invariant.md`](../../.claude/rules/non-coercion-invariant.md) — vendor-management AI must operate the NCI floor toward both customer AND vendor
+- `.claude/rules/substrate-or-it-didnt-happen.md` <!-- STALE-REF: ../../.claude/rules/substrate-or-it-didnt-happen.md --> — applied across all 4 incidents at consumer-support scope
+- `.claude/rules/verify-before-deferring.md` <!-- STALE-REF: ../../.claude/rules/verify-before-deferring.md --> — Aaron's "wait here until I see all 11" tactic
+- `.claude/rules/mechanical-authorization-check.md` <!-- STALE-REF: ../../.claude/rules/mechanical-authorization-check.md --> — Vivek-vs-Vimal contradiction shows authority-source ambiguity at vendor scope
+- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` <!-- STALE-REF: ../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md --> — Amazon's transfer-chain IS the failure-mode at consumer scope
+- `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` <!-- STALE-REF: ../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md --> — Zeta vendor-management AI = persistent named entity with cross-incident memory + named-accountability
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` <!-- STALE-REF: ../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md --> — multi-oracle BFT with named-accountability is the structural alternative to anonymous-transfer-chains
+- `.claude/rules/non-coercion-invariant.md` <!-- STALE-REF: ../../.claude/rules/non-coercion-invariant.md --> — vendor-management AI must operate the NCI floor toward both customer AND vendor
 - 081KS923C0008QG0R0032VJZPF (Class 0 registry drift) — sibling failure-mode at framework-engineering scope
 - Aaron's 2026-05-23 framing *"yes i we for sure wanna have suuport agents eventually as long as there is AI that wants to do it we can also tread it like human research at the same time"* — design intent for Zeta support-agent layer
 

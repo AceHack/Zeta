@@ -127,7 +127,7 @@ So the design constraint, stated before anyone implements it:
 A peer that declares more can be empowered more precisely — which is an *incentive*
 to disclose, and must therefore never become a *requirement* to disclose. The
 role-split already carved in
-[`privacy-budget-is-hard-money-earned-by-others`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)
+`privacy-budget-is-hard-money-earned-by-others` <!-- STALE-REF: ../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md -->
 is the right shape: required-for-role parts are broadcast by choosing the role;
 personal parts stay frosted at no cost to standing.
 
@@ -252,8 +252,8 @@ tension in a new place, and it should be decided deliberately rather than by def
 - `src/Core.TypeScript/planning/calibration-ledger.ts` — the two shipped bounds,
   and the "calibration ≠ competence" distinction this must not erode.
 - `src/Core/TravelerRankLedger.fs` — the posterior `(μ, σ²)` the bounds read.
-- [`manifesto-13-specifications`](../../.claude/rules/manifesto-13-specifications.md) — §6 consent-first, §11 Multi-Oracle / default regard, §13 noninterference.
-- [`privacy-budget-is-hard-money-earned-by-others`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md) — why declared-not-inferred is a hard constraint.
+- `manifesto-13-specifications` <!-- STALE-REF: ../../.claude/rules/manifesto-13-specifications.md --> — §6 consent-first, §11 Multi-Oracle / default regard, §13 noninterference.
+- `privacy-budget-is-hard-money-earned-by-others` <!-- STALE-REF: ../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md --> — why declared-not-inferred is a hard constraint.
 - `docs/research/2026-08-09-errors-teach-both-sides-…-aaron.md` — the sibling ferry
   ("teaching is unconditional; belief is earned") whose belief-weighting this reuses.
 - Anchors: Klyubin/Polani/Nehaniv 2005 (empowerment); Salge & Polani 2017

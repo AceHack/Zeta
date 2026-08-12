@@ -289,16 +289,16 @@ review and DP-NNN evidence record are the named next gates.
 
 ## Relevant paths
 
-- [`docs/aurora/2026-04-23-amara-zeta-ksk-aurora-validation-5th-ferry.md`](../aurora/2026-04-23-amara-zeta-ksk-aurora-validation-5th-ferry.md)
+- `docs/aurora/2026-04-23-amara-zeta-ksk-aurora-validation-5th-ferry.md` <!-- STALE-REF: ../aurora/2026-04-23-amara-zeta-ksk-aurora-validation-5th-ferry.md -->
   (on branch `aurora/absorb-amara-5th-ferry-zeta-ksk-aurora-validation`,
   not yet on main — PR #235).
 - `GOVERNANCE.md` §26 (research-doc-lifecycle), §31
   (copilot-instructions-audit), §32 (alignment-contract)
   — composition-check references.
-- [`docs/ALIGNMENT.md`](../ALIGNMENT.md) SD-1..SD-8, HC-3,
+- `docs/ALIGNMENT.md` <!-- STALE-REF: ../ALIGNMENT.md --> SD-1..SD-8, HC-3,
   DIR-5 — composition-check references.
-- [`CLAUDE.md`](../../CLAUDE.md) — meta-rule *"Rules do not
+- `CLAUDE.md` <!-- STALE-REF: ../../CLAUDE.md --> — meta-rule *"Rules do not
   live in this file"*.
-- [`docs/DRIFT-TAXONOMY.md`](../DRIFT-TAXONOMY.md) — PR #238,
+- `docs/DRIFT-TAXONOMY.md` <!-- STALE-REF: ../DRIFT-TAXONOMY.md --> — PR #238,
   auto-merge armed; this review follows the same promotion
   pattern for the 4 governance edits.

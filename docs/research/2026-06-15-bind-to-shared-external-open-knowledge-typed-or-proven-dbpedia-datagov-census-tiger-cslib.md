@@ -11,7 +11,7 @@
 > **Don't re-invent shared knowledge — bind to the anchored external open graph,
 > through a binding that makes it checkable (typed via a type-provider, or proven via
 > a library dependency).** This is the **Beacon discipline as architecture**
-> ([`anchor-to-human-prior-art`](../../.claude/rules/anchor-to-human-prior-art.md)):
+> (`anchor-to-human-prior-art` <!-- STALE-REF: ../../.claude/rules/anchor-to-human-prior-art.md -->):
 > stand on named external substrate, not factory coinage.
 
 The binding is what makes it Zeta-safe: a **type provider** turns an open data graph

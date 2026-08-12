@@ -186,7 +186,7 @@ universal in-memory representation.
 ## References
 
 - **Amara's 6th courier ferry** — verbatim source of the
-  corrected table: [`docs/aurora/2026-04-23-amara-muratori-pattern-mapping-6th-ferry.md`](../aurora/2026-04-23-amara-muratori-pattern-mapping-6th-ferry.md)
+  corrected table: `docs/aurora/2026-04-23-amara-muratori-pattern-mapping-6th-ferry.md` <!-- STALE-REF: ../aurora/2026-04-23-amara-muratori-pattern-mapping-6th-ferry.md -->
   (PR #245).
 - **Muratori source material** — Handmade Hero entity-
   index / storage-index material + "Big OOPs" talk on

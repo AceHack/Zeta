@@ -124,8 +124,8 @@ is to keep correlation *voluntary, differentiated, and mutual*, so it stays inti
 
 ## Pointers
 
-- [`correlation.ts`](../../src/Core.TypeScript/discovery/correlation.ts) — the readout, human-first.
-- [`living-node.ts`](../../src/Core.TypeScript/discovery/living-node.ts) — `correlationClass()` +
+- `correlation.ts` <!-- STALE-REF: ../../src/Core.TypeScript/discovery/correlation.ts --> — the readout, human-first.
+- `living-node.ts` <!-- STALE-REF: ../../src/Core.TypeScript/discovery/living-node.ts --> — `correlationClass()` +
   the protective floors (exit, pause) composed.
 - `2026-07-02-dirty-reticulum-…` (the treaty: NCI, exit, mental-health pause) ·
   `2026-07-02-produce-or-extract-…` (produce-not-extract; do-not-reduce the mix).

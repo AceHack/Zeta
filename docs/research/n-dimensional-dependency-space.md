@@ -1,6 +1,6 @@
 # N-Dimensional Dependency Space Formalism
 
-This document formalizes the N-dimensional (N-D) dependency space that the Ace meta-package manager operates on. It is based on the concepts outlined in [081KSGS9H0008QG0R0031PBNGA: Ace as "package manager of package managers"](../backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md).
+This document formalizes the N-dimensional (N-D) dependency space that the Ace meta-package manager operates on. It is based on the concepts outlined in 081KSGS9H0008QG0R0031PBNGA: Ace as "package manager of package managers" <!-- STALE-REF: ../backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md -->.
 
 ## Introduction
 
@@ -27,7 +27,7 @@ The N-D space is defined by a set of orthogonal axes. Each axis represents a dis
 
 ## Composition with 081KSGS9H0008QG0R0018ES3R4
 
-The four properties for diamond resolution outlined in [081KSGS9H0008QG0R0018ES3R4: Diamond resolution namespace cardinality multi-tenant awareness](../backlog/P1/081KSGS9H0008QG0R0018ES3R4-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md) are a 4-axis slice of this N-dimensional space. Specifically:
+The four properties for diamond resolution outlined in 081KSGS9H0008QG0R0018ES3R4: Diamond resolution namespace cardinality multi-tenant awareness <!-- STALE-REF: ../backlog/P1/081KSGS9H0008QG0R0018ES3R4-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md --> are a 4-axis slice of this N-dimensional space. Specifically:
 
 * **Cardinality**
 * **Namespace Scope**

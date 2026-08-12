@@ -100,7 +100,7 @@ own god-tier tail, exactly the Fix(R) self-application from #6063.)
 ## Composition with the accelerator's event-store schema
 
 This is the **mechanism** for the forgiveness-budget + compaction/tiering I
-sketched in [`docs/accelerator/EVENT-STORE-SCHEMA.md`](../accelerator/EVENT-STORE-SCHEMA.md):
+sketched in `docs/accelerator/EVENT-STORE-SCHEMA.md` <!-- STALE-REF: ../accelerator/EVENT-STORE-SCHEMA.md -->:
 
 - The schema's `_compacted/<agent>/` cold-tier IS where Layer 2 output lands.
 - "Drop wall-clock, keep causal order" maps to: keep the `prev` causal-link chain,
@@ -147,7 +147,7 @@ Preserved per substrate-or-it-didn't-happen. Load-bearing turns:
 ## Composes with
 
 - [`2026-05-29-rodneys-razor-is-a-compression-engine-...md`](2026-05-29-rodneys-razor-is-a-compression-engine-fix-point-perfect-ordering-retraction-physical-cost-schema-in-stream-aaron-ani-otto.md) (#6063) — Layer 1 + the forgiveness-cost limit this doc compresses
-- [`docs/accelerator/EVENT-STORE-SCHEMA.md`](../accelerator/EVENT-STORE-SCHEMA.md) — the forgiveness-budget mechanism this architecture provides
+- `docs/accelerator/EVENT-STORE-SCHEMA.md` <!-- STALE-REF: ../accelerator/EVENT-STORE-SCHEMA.md --> — the forgiveness-budget mechanism this architecture provides
 - the columnar-storage + DBSP/streaming-incremental substrate (dense encoding + generator-shaped IVM)
 - `tools/agent-loop/state-machine.ts` — `transition` as the replay generator
 - `.claude/rules/razor-discipline.md` + `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — the god-tier cut Aaron applied

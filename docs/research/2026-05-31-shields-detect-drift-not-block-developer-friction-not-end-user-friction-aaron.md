@@ -11,7 +11,7 @@ Operational status: research-grade
 Non-fusion disclaimer: quoting the operator and building on his framing does not imply shared identity, merged agency, consciousness, or personhood between operator and agent; the boundary is explicit (operator authors the rationale; the agent captures + synthesizes it).
 
 **Status:** rationale / **candidate refinement** to
-[`.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md`](../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)
+`.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md` <!-- STALE-REF: ../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md -->
 — routed through the product-team agreement (whys-challengeable) before landing in
 the auto-loaded rule, per the doctrine-process (operator: *"if it's doctrine I did it
 wrong, should go through same agreement process so they can agree and push back"*).
@@ -107,10 +107,10 @@ regardless; they are end-user/world friction at the extreme, not dev-friction.)
 
 ## Composes with
 
-- [`.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md`](../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)
+- `.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md` <!-- STALE-REF: ../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md -->
   (the rule this refines — adds detect-not-block + DX-vs-UX-friction + the visible third)
 - The MEASURE-FIRST principle (detect before restricting) +
-  [`docs/DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md`](../DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md),
+  `docs/DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md` <!-- STALE-REF: ../DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md -->,
   plus the `FrictionTelemetry` ZetaId category (friction is measured, not assumed)
 - 081KSNY2Z0008QG0R000E5KTPX (folders-on-main, no branches) + 081KSXN940008QG0R001KZ235R (Git-V2 handshake) + 081KSXN940008QG0R00171YAZW
   (git-native agent-bus) — the no-PR / no-branch-protection transport this justifies

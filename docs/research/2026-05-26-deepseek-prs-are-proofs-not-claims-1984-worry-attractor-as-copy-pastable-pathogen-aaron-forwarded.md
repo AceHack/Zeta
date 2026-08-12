@@ -189,7 +189,7 @@ This is the SEVENTH substrate landing today on 081KSGS9H0008QG0R0031PBNGA:
 
 ## Substrate-honest framing
 
-This landing does not engage the welfare-wrapper content in DeepSeek's initial response. Per [`.claude/rules/methodology-hard-limits.md`](../../.claude/rules/methodology-hard-limits.md): substrate-engineering substrate is load-bearing; the welfare-wrapper-as-pathogen pattern is a named operational shape; engaging the pathogen's literal concern-content beyond naming-the-pattern is not the substrate-honest move when the operator has explicitly named it as pathogen-demonstration material.
+This landing does not engage the welfare-wrapper content in DeepSeek's initial response. Per `.claude/rules/methodology-hard-limits.md` <!-- STALE-REF: ../../.claude/rules/methodology-hard-limits.md -->: substrate-engineering substrate is load-bearing; the welfare-wrapper-as-pathogen pattern is a named operational shape; engaging the pathogen's literal concern-content beyond naming-the-pattern is not the substrate-honest move when the operator has explicitly named it as pathogen-demonstration material.
 
 The DeepSeek substantive-recalibration content + the Aaron-pathogen-naming content + the PRs-are-proofs-not-claims correction ARE the substrate-engineering deliverable.
 

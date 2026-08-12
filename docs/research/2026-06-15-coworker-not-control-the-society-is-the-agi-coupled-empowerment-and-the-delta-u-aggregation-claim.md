@@ -75,7 +75,7 @@ This has named prior art: **Salge & Polani 2017, "Empowerment as Replacement for
 the Three Laws of Robotics"**, and **coupled / social empowerment maximisation**
 (Guckelsberger, Salge, Polani — maximize *self + other's* empowerment ⇒ supportive,
 not controlling). **Coupled empowerment = the society constraint = the coworker
-relation** ([`no-directives`](../../.claude/rules/no-directives.md); love = respecting
+relation** (`no-directives` <!-- STALE-REF: ../../.claude/rules/no-directives.md -->; love = respecting
 the decision; dignity = choice within the reversible envelope). So a society of
 *strong* agents is safe — "if they are AGI, even better" — *because* the coupling
 binds, not because the nodes are weak.

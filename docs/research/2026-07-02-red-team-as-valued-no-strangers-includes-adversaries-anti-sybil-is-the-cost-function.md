@@ -20,7 +20,7 @@ A red-teamer trying to mint *k* distinct identities from one source either:
   They just *confirmed* the design against a real attempt — worth knowing, and only
   knowable because someone tried; or
 - **can** — they found a way to fake distinctness cheaply. That's a real hole, banked
-  **ΔU** to `db/uncertainty/` — exactly [`every-bug-has-economic-value`](../../.claude/rules/every-bug-has-economic-value.md):
+  **ΔU** to `db/uncertainty/` — exactly `every-bug-has-economic-value` <!-- STALE-REF: ../../.claude/rules/every-bug-has-economic-value.md -->:
   a bug is priced opportunity, never a liability to hide.
 
 A system that *welcomes* the attack **and** has a real cost floor is strictly stronger
@@ -62,7 +62,7 @@ identity). These are different layers, and conflating them is the mistake:
 - **Dwork–Naor 1992 / Nakamoto 2008** — proof-of-work: security *is* a cost function,
   not a gate (the model `AntiSybil.fs` names as its structural analogue).
 - **Mechanism design / bug bounties; Ostrom** — priced adversaries as a commons-
-  strengthening role (see [`every-bug-has-economic-value`](../../.claude/rules/every-bug-has-economic-value.md)).
+  strengthening role (see `every-bug-has-economic-value` <!-- STALE-REF: ../../.claude/rules/every-bug-has-economic-value.md -->).
 - In-repo: `src/Core/AntiSybil.fs`; `tests/Tests.FSharp/LeibnizAntiSybil.Tests.fs`
   (identity-of-indiscernibles ⇒ Sybil resistance, CPT-invariant); the CHSH-Sybil /
   SybilBft behavioral layer; the `harsh-critic` / adversarial-verify reviewers.

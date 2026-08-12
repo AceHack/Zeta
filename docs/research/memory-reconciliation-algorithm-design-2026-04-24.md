@@ -351,7 +351,7 @@ sort by `(priority DESC, timestamp DESC)`, group by
 
 ## <predicate>
 
-- **<object>** — source: [<memory>](<source_path>), <timestamp>
+- **<object>** — source: <memory> <!-- STALE-REF: <source_path> -->, <timestamp>
 - ...
 ```
 

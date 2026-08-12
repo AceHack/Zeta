@@ -2,7 +2,7 @@
 
 **Status:** research-grade. Do not treat as operational
 policy. **Superseded-for-operational-use 2026-04-23 (Otto-79)**
-by [`docs/DRIFT-TAXONOMY.md`](../DRIFT-TAXONOMY.md) per Amara's
+by `docs/DRIFT-TAXONOMY.md` <!-- STALE-REF: ../DRIFT-TAXONOMY.md --> per Amara's
 5th-ferry Artifact A recommendation. This file is retained as
 staging-substrate: the operational file is the policy; this
 file is the provenance of how the taxonomy arrived. Do not
