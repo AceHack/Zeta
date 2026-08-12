@@ -116,15 +116,15 @@ export function evaluateProposal(
   return { latestTick, streak, fires, winner, perTick };
 }
 
-/** The registry diff the phenotype implies — rendered as the exact YAML the
- * roster would apply to registry/drift-slo.yaml on assent. Text only; this
- * module never touches the registry. */
 /** The at-most-once letter key: canonical hex of the phenotype (encode of
  * the decode — clamped channels collapse to one representative). */
 export function canonicalHexOf(p: DriftPhenotype): string {
   return toHex(encodeDriftGenome(p));
 }
 
+/** The registry diff the phenotype implies — rendered as the exact YAML the
+ * roster would apply to registry/drift-slo.yaml on assent. Text only; this
+ * module never touches the registry. */
 export function renderRegistryPatch(p: DriftPhenotype): string {
   return [
     "defaults:",

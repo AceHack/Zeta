@@ -93,6 +93,11 @@ footer code { color: var(--dim); }
   .card, .panel { transition: border-color 200ms ease; }
   .card:hover, .panel:hover { border-color: var(--faint); }
 }
+.evo-row { display: flex; align-items: center; gap: 0.6rem; padding: 0.34rem 0; font-size: 0.82rem; }
+.evo-label { color: var(--dim); min-width: 6.2rem; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.swatch { width: 0.85rem; height: 0.85rem; border-radius: 3px; border: 1px solid var(--line); display: inline-block; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.78rem; }
+.fit-pos { color: #7BD88F; } .fit-neg { color: #FF9E64; }
 </style>
 </head>
 <body>
@@ -116,6 +121,17 @@ footer code { color: var(--dim); }
   </div>
 </div>
 
+<div class="row">
+  <div class="panel">
+    <h2>Evolution <span class="note" id="evonote"></span></h2>
+    <div id="evolution"><p class="empty">Loading genome data…</p></div>
+  </div>
+  <div class="panel">
+    <h2>Proposer <span class="note" id="propnote"></span></h2>
+    <div id="proposer"><p class="empty">Loading proposal status…</p></div>
+  </div>
+</div>
+
 <div class="panel">
   <h2>Recent activity</h2>
   <div id="timeline"><p class="empty">Loading tick history…</p></div>
@@ -125,6 +141,9 @@ footer code { color: var(--dim); }
   Data: <code>data/tick-history.json</code> (append-only observe ledger) ·
   <code>data/drift-mtth.json</code> (drift-sweep MTTH fold, tick-indexed — the
   drift-and-heal ADR's measurement surface) ·
+  <code>data/drift-genome.json</code> + <code>data/drift-evolution.json</code> +
+  <code>data/drift-proposal.json</code> (the gyroscope's genome, its shadow
+  generation, and the consent proposer — evolution proposes, society disposes) ·
   Git is the database · Pages is the API · Tabs are the nodes
 </footer>
 
@@ -262,8 +281,49 @@ async function loadDrift() {
   }).join("");
 }
 
-load(); loadDrift();
-setInterval(load, 60000); setInterval(loadDrift, 60000);
+async function loadEvolution() {
+  const evoEl = document.getElementById("evolution");
+  const propEl = document.getElementById("proposer");
+  const [g, e, p] = await Promise.all([
+    fetchFirst(["drift-genome.json", "../data/drift-genome.json"]),
+    fetchFirst(["drift-evolution.json", "../data/drift-evolution.json"]),
+    fetchFirst(["drift-proposal.json", "../data/drift-proposal.json"]),
+  ]);
+  if (!g) {
+    evoEl.innerHTML = `<p class="empty">No genome data yet — the drift-sweep writes it each tick.</p>`;
+  } else {
+    const ph = g.phenotype || {};
+    const fitCls = g.fitness >= 0 ? "fit-pos" : "fit-neg";
+    document.getElementById("evonote").textContent =
+      `tick ${g.tick}` + (e ? ` · rank ${e.currentRank}/${e.populationSize} in shadow` : "");
+    const best = e && e.top && e.top[0] ? e.top[0] : null;
+    evoEl.innerHTML = `
+      <div class="evo-row"><span class="evo-label">genome</span>
+        <span class="swatch" style="background:${g.genomeHex}"></span>
+        <span class="mono">${g.genomeHex}</span><span class="chip">gen ${g.generation}</span>
+        <span class="mono ${fitCls}">fitness ${g.fitness >= 0 ? "+" : ""}${g.fitness}</span></div>
+      <div class="evo-row"><span class="evo-label">dials</span>
+        <span class="mono">default ${ph.defaultBudgetTicks}t · mult ${ph.adaptiveMultiplier} · min heals ${ph.adaptiveMinHeals} · floor ${ph.adaptiveFloorTicks}t · BD001 ${ph.bd001BudgetTicks}t</span></div>
+      ${best ? `<div class="evo-row"><span class="evo-label">shadow best</span>
+        <span class="swatch" style="background:${best.genomeHex}"></span>
+        <span class="mono">${best.genomeHex} · fitness ${best.shadowFitness}</span></div>` : ""}`;
+  }
+  if (!p) {
+    propEl.innerHTML = `<p class="empty">No proposal data yet.</p>`;
+  } else {
+    document.getElementById("propnote").textContent = `tick ${p.latestTick}`;
+    const letters = "https://github.com/Lucent-Financial-Group/Zeta/tree/main/docs/letters";
+    propEl.innerHTML = p.fires
+      ? `<div class="evo-row"><span class="chip alert">PROPOSAL OPEN</span>
+           <span>winner <span class="mono">${p.winnerHex}</span> — streak ${p.streak} ticks.
+           <a href="${letters}" style="color:var(--dim)">Consent letter in docs/letters</a></span></div>`
+      : `<div class="evo-row"><span class="chip live">quiet</span>
+           <span>losing streak ${p.streak} — evolution has no standing objection to the current dials.</span></div>`;
+  }
+}
+
+load(); loadDrift(); loadEvolution();
+setInterval(load, 60000); setInterval(loadDrift, 60000); setInterval(loadEvolution, 60000);
 </script>
 </body>
 </html>
