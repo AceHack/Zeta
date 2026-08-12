@@ -22,6 +22,7 @@ if (!existsSync(pnpm)) {
 }
 
 run(pnpm, ["install", "--frozen-lockfile"], siteRoot);
+run(pnpm, ["check"], siteRoot);
 run(pnpm, ["exec", "vite", "build", "--config", "vite.config.pages.ts"], siteRoot);
 
 if (!existsSync(builtSite)) throw new Error("teaching error: Race Mode Vite build produced no Pages artifact");

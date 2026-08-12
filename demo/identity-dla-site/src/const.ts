@@ -1,4 +1,7 @@
-export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+// GitHub Pages is intentionally read-only and has no Manus session backend.
+// These exports preserve template compatibility without importing server-only state.
+export const COOKIE_NAME = "identity-dla-static";
+export const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
 
 // Generate login URL at runtime so redirect URI reflects the current origin.
 export const getLoginUrl = () => {
