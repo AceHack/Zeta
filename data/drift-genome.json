@@ -1,13 +1,13 @@
 {
-  "genomeHex": "#400201",
+  "genomeHex": "#53010d",
   "generation": 0,
-  "tick": 187,
+  "tick": 188,
   "fitness": 3.105,
   "phenotype": {
-    "adaptiveMultiplier": 2,
-    "adaptiveMinHeals": 2,
-    "adaptiveFloorTicks": 1,
-    "defaultBudgetTicks": 6,
+    "adaptiveMultiplier": 2.59375,
+    "adaptiveMinHeals": 1,
+    "adaptiveFloorTicks": 13,
+    "defaultBudgetTicks": 1,
     "bd001BudgetTicks": 1,
     "retractionTriggerTicks": 2,
     "healerAxes": 7
