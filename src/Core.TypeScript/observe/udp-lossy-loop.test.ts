@@ -1,5 +1,4 @@
 import { describe, expect, test } from "bun:test";
-import { type DuplexEndpoint, type Frame } from "../model-backend/duplex-transport.ts";
 import { multiplexedDuplexTransport, type MuxFrame } from "../model-backend/multiplexed-duplex-transport.ts";
 import {
   type PersonaFrame,

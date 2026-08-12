@@ -244,10 +244,10 @@ export function deserializeConfig(json: string): PriorityFerryThrottlerConfig {
     }
     const lane: LaneConfig = {
       priority: l["priority"] as number,
-      maxBatchSize: typeof l["maxBatchSize"] === "number" ? (l["maxBatchSize"] as number) : undefined,
-      maxBatchBytes: typeof l["maxBatchBytes"] === "number" ? (l["maxBatchBytes"] as number) : undefined,
-      maxQueueSize: typeof l["maxQueueSize"] === "number" ? (l["maxQueueSize"] as number) : undefined,
-      weight: typeof l["weight"] === "number" ? (l["weight"] as number) : undefined,
+      ...(typeof l["maxBatchSize"] === "number" ? { maxBatchSize: (l["maxBatchSize"] as number) } : {}),
+      ...(typeof l["maxBatchBytes"] === "number" ? { maxBatchBytes: (l["maxBatchBytes"] as number) } : {}),
+      ...(typeof l["maxQueueSize"] === "number" ? { maxQueueSize: (l["maxQueueSize"] as number) } : {}),
+      ...(typeof l["weight"] === "number" ? { weight: (l["weight"] as number) } : {}),
     };
     lanes.push(lane);
   }
@@ -287,7 +287,7 @@ export function deserializeConfig(json: string): PriorityFerryThrottlerConfig {
   const config: PriorityFerryThrottlerConfig = {
     maxDegreeOfParallelism: obj["maxDegreeOfParallelism"] as number,
     defaultMaxBatchSize: obj["defaultMaxBatchSize"] as number,
-    defaultMaxBatchBytes: typeof obj["defaultMaxBatchBytes"] === "number" ? (obj["defaultMaxBatchBytes"] as number) : undefined,
+    ...(typeof obj["defaultMaxBatchBytes"] === "number" ? { defaultMaxBatchBytes: (obj["defaultMaxBatchBytes"] as number) } : {}),
     lanes,
     defaultPriority: obj["defaultPriority"] as number,
     drainingPolicy,
