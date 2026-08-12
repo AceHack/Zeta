@@ -6279,6 +6279,18 @@
       "ticks_24h": 66,
       "agents_active": 3,
       "claims_pending": 3
+    },
+    {
+      "t": "2026-08-12T19:08:40.786Z",
+      "total_events": 1242,
+      "last_action": "explore",
+      "last_mode": "explore",
+      "last_agent": "alexa",
+      "entropy_state": 0,
+      "entropy_heat": 0,
+      "ticks_24h": 66,
+      "agents_active": 3,
+      "claims_pending": 3
     }
   ]
 }
