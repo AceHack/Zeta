@@ -567,6 +567,30 @@ jobs:
             fi
           fi
 
+      - name: Verify RS block integrity (continuous ECC validation)
+        env:
+          AGENT: ${{ matrix.agent }}
+        run: |
+          # Only otto verifies (same pattern as bridge — one writer, one verifier)
+          if [ "$AGENT" != "otto" ]; then
+            echo "[rs-verify] Skipping — only otto verifies RS blocks"
+            exit 0
+          fi
+
+          if [ ! -f data/rs-blocks.jsonl ]; then
+            echo "[rs-verify] No blocks file yet — nothing to verify"
+            exit 0
+          fi
+
+          set +e
+          bun src/Core.TypeScript/observe/verify-rs-blocks.ts --path data/rs-blocks.jsonl --erasures 4 2>&1
+          VERIFY_RC=$?
+          set -e
+
+          if [ "$VERIFY_RC" -ne 0 ]; then
+            echo "::warning::[rs-verify] ECC verification FAILED — at least one block is not recoverable"
+          fi
+
       - name: Push heartbeat branch
         env:
           AGENT: ${{ matrix.agent }}

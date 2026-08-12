@@ -128,7 +128,7 @@ The `check-existence.ts` tool is the second sub-class checker, covering the **ex
 Claims that a file or directory exists when it doesn't:
 
 - Backtick-quoted paths: `` `path/to/X.md` ``
-- Markdown link targets: `[text](relative/path)` — relative paths only
+- Markdown link targets: `text <!-- STALE-REF: relative/path -->` — relative paths only
 
 ### Resolution order
 

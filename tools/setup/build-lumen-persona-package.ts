@@ -14,7 +14,6 @@
 // this builder produces the verifiable package the realizer would consume.
 
 import { readFileSync, writeFileSync } from "node:fs";
-import { type AcePackage } from "../../src/Core.TypeScript/ace/store.ts";
 import { contentHash } from "../../src/Core.TypeScript/ace/store.ts";
 
 const repoRoot = new URL("../../", import.meta.url).pathname;

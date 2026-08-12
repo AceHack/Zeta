@@ -10,7 +10,6 @@
 // tautology. Run from this directory: `bun cross-verify.ts`.
 import { createPublicKey } from "node:crypto";
 import { signIndex, verifyIndexSignature, canonicalIndexBytes, type IndexSignableContent } from "../../../src/Core.TypeScript/ace/index-signature.ts";
-import { type TrustEntry, type AceSignature } from "../../../src/Core.TypeScript/ace/signing.ts";
 
 interface CanonVec { id: string; content: IndexSignableContent; expected_canonical_json: string; }
 interface EnvVec { id: string; private_pem: string; content: IndexSignableContent; expected_key_id: string; expected_sig: string; expected_canonical_json: string; }

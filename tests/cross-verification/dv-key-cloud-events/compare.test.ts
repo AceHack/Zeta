@@ -1,7 +1,6 @@
 import { describe, test, expect } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { type Tagged } from "../../../src/Core.TypeScript/dynamic-value/types";
 import { DvKey } from "../../../src/Core.TypeScript/dynamic-value/dv-key";
 import { canonicalCbor } from "../../../src/Core.TypeScript/dynamic-value/cbor";
 import { canonicalJson } from "../../../src/Core.TypeScript/dynamic-value/json";

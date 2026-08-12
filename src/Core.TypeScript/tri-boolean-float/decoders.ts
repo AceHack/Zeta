@@ -9,8 +9,6 @@
 // this is additive exploration. Comparison + recommendation:
 //   docs/research/2026-05-31-tri-boolean-float-decoder-semantics-comparison-radix-point-biased-exponent-high-low-split-aaron-otto.md
 
-import { type Tri } from "../tri-boolean";
-import { type TriFloat, type DecodeResult, type FloatShape } from "./types";
 
 /** The three candidate decoder semantics for "how the middle decodes the ends." */
 export type DecoderSemantics =

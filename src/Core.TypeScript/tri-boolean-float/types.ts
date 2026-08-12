@@ -13,7 +13,6 @@
 // and mode = intOf(decoder). N in a value trit => value-superposed; N in a decoder trit =>
 // interpretation-superposed -- the qubit property at the interpretation level.
 
-import { type Tri } from "../tri-boolean";
 
 /** Field widths of a tri-boolean float (trits per field). */
 export interface FloatShape {

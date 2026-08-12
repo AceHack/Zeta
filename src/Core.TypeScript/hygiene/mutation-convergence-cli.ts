@@ -24,6 +24,19 @@ function main(): void {
     const line = formatConvergence(snapshot);
     console.log(line);
 
+    // Per-tick escape profile detail (intoDefined vs intoUndefined)
+    if (snapshot.totalEntries > 0) {
+      const definedPct = snapshot.totalEntries > 0
+        ? ((snapshot.escapeIntoDefined / snapshot.totalEntries) * 100).toFixed(1)
+        : "0.0";
+      const undefinedPct = snapshot.totalEntries > 0
+        ? ((snapshot.escapeIntoUndefined / snapshot.totalEntries) * 100).toFixed(1)
+        : "0.0";
+      console.log(
+        `[escape-profile] intoDefined=${definedPct}% (grammar too narrow) intoUndefined=${undefinedPct}% (system growing)`,
+      );
+    }
+
     // Emit as a GitHub annotation so it's visible in the step summary
     if (snapshot.converging) {
       console.log(`::notice::${line}`);
