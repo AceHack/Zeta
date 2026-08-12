@@ -151,6 +151,53 @@ const N_ORACLES = 17;
 // GitHub Pages remains the primary interface. This separate protected harness
 // holds the GitHub App key server-side; the static page never sees a credential.
 const GITHUB_APP_HARNESS_ORIGIN = "https://idspace-dla-6faa9bmi.manus.space";
+const SOCIETY_EVIDENCE_RAW_ROOT = "https://raw.githubusercontent.com/Lucent-Financial-Group/Zeta/main/docs/observe-events";
+
+type SocietyIndexEntry = {
+  id: string;
+  at: string;
+  file: string;
+  eventDigest: string;
+  previousDigest: string;
+  chainDigest: string;
+  sourceRevision?: string;
+};
+
+type SocietyEventIndex = {
+  schema: string;
+  eventCount: number;
+  headDigest: string;
+  events: SocietyIndexEntry[];
+};
+
+async function sha256Browser(text: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(digest)).map(byte => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function isSha256(value: unknown): value is string {
+  return typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
+}
+
+async function verifySocietyReplayIndex(index: SocietyEventIndex): Promise<void> {
+  if (index.schema !== "zeta.society.event-index/v1") throw new Error("unknown society index schema");
+  if (!Array.isArray(index.events) || index.eventCount !== index.events.length) throw new Error("manifest count mismatch");
+  let previousDigest = "0".repeat(64);
+  const ids = new Set<string>();
+  for (const entry of index.events) {
+    if (!entry.id || !entry.file || !isSha256(entry.eventDigest) || !isSha256(entry.previousDigest) || !isSha256(entry.chainDigest)) {
+      throw new Error("malformed evidence entry");
+    }
+    if (ids.has(entry.id) || entry.previousDigest !== previousDigest) throw new Error("broken evidence chain");
+    const expected = await sha256Browser(JSON.stringify([
+      entry.previousDigest, entry.id, entry.at, entry.file, entry.eventDigest, entry.sourceRevision ?? null,
+    ]));
+    if (entry.chainDigest !== expected) throw new Error("chain digest mismatch");
+    ids.add(entry.id);
+    previousDigest = entry.chainDigest;
+  }
+  if (index.headDigest !== previousDigest) throw new Error("manifest head mismatch");
+}
 
 // Oracle names (same as the cross-oracle chart in OracleRGBA)
 const ORACLE_NAMES = [
@@ -325,6 +372,16 @@ export default function OracleRaceMode() {
     agents: Array<{ id: string; lastAt: string; ageMinutes: number }>;
     status: "live" | "stale" | "offline" | "loading";
   } | null>(null);
+  const [societyReplay, setSocietyReplay] = useState<{
+    status: "idle" | "verified" | "legacy" | "failed";
+    indexedCount: number;
+    checkedCount: number;
+    headDigest?: string;
+    message: string;
+  }>({ status: "idle", indexedCount: 0, checkedCount: 0, message: "awaiting committed evidence" });
+  const [replayEntries, setReplayEntries] = useState<Array<{
+    id: string; at: string; generation: number; chainDigest: string; valid: boolean;
+  }>>([]);
 
   // On mount: decode #race=... hash if present and populate seed log
   useEffect(() => {
@@ -481,17 +538,37 @@ export default function OracleRaceMode() {
         setAgentBadge({ liveCount, agents, status });
       })
       .catch(() => { /* non-fatal */ });
-    fetch("https://api.github.com/repos/Lucent-Financial-Group/Zeta/contents/docs/observe-events?ref=main")
-      .then(r => r.json())
-      .then((files: unknown) => {
-        if (!Array.isArray(files)) return undefined;
-        const societyFiles = (files as Array<{ name: string; download_url: string }>)
-          .filter(f => f.name.startsWith("society-"))
-          .sort((a, b) => b.name.localeCompare(a.name));
-        const latest = societyFiles[0];
-        if (!latest) return undefined;
-        const toFetch = societyFiles.slice(0, 10);
-        return Promise.all(toFetch.map(f => fetch(f.download_url).then(r => r.json())));
+    fetch(`${SOCIETY_EVIDENCE_RAW_ROOT}/society-index.json`, { cache: "no-store" })
+      .then(async response => {
+        if (response.status === 404) {
+          setSocietyReplay({ status: "legacy", indexedCount: 0, checkedCount: 0, message: "awaiting first indexed heartbeat" });
+          setReplayEntries([]);
+          return undefined;
+        }
+        if (!response.ok) throw new Error(`manifest fetch HTTP ${response.status}`);
+        const index = await response.json() as SocietyEventIndex;
+        await verifySocietyReplayIndex(index);
+        const newest = index.events.slice(-10);
+        const loaded = await Promise.all(newest.map(async entry => {
+          const eventResponse = await fetch(`${SOCIETY_EVIDENCE_RAW_ROOT}/${encodeURIComponent(entry.file)}`, { cache: "no-store" });
+          if (!eventResponse.ok) throw new Error(`missing evidence ${entry.file}`);
+          const eventText = await eventResponse.text();
+          if (await sha256Browser(eventText) !== entry.eventDigest) throw new Error(`event digest mismatch: ${entry.file}`);
+          const event = JSON.parse(eventText) as Record<string, unknown>;
+          return { entry, event };
+        }));
+        setReplayEntries(loaded.map(({ entry, event }) => ({
+          id: entry.id,
+          at: entry.at,
+          generation: typeof event["generation"] === "number" ? event["generation"] : 0,
+          chainDigest: entry.chainDigest,
+          valid: true,
+        })));
+        setSocietyReplay({
+          status: "verified", indexedCount: index.eventCount, checkedCount: loaded.length,
+          headDigest: index.headDigest, message: "hash chain and loaded committed event bytes agree",
+        });
+        return loaded.map(({ event }) => event);
       })
       .then((events: unknown) => {
         if (!Array.isArray(events) || events.length === 0) return;
@@ -599,7 +676,13 @@ export default function OracleRaceMode() {
           setMergedPosteriors(merged);
         }
       })
-      .catch(() => { /* non-fatal — GitHub API may be rate-limited */ });
+      .catch((error: unknown) => {
+        setReplayEntries([]);
+        setSocietyReplay({
+          status: "failed", indexedCount: 0, checkedCount: 0,
+          message: error instanceof Error ? error.message : "replay verification failed",
+        });
+      });
   }, [results]);
 
   const doneCount = results.filter(r => r.done).length;
@@ -1235,6 +1318,33 @@ export default function OracleRaceMode() {
               </div>
             </div>
           )}
+          <div style={{ marginTop: "0.3rem", padding: "0.25rem 0.35rem", borderRadius: 3,
+            background: societyReplay.status === "verified" ? "rgba(16,185,129,0.08)"
+              : societyReplay.status === "failed" ? "rgba(239,68,68,0.08)" : "rgba(148,163,184,0.05)",
+            border: `1px solid ${societyReplay.status === "verified" ? "#065f46" : societyReplay.status === "failed" ? "#7f1d1d" : "#334155"}` }}>
+            <div style={{ fontSize: "0.52rem", color: societyReplay.status === "verified" ? "#6ee7b7"
+              : societyReplay.status === "failed" ? "#fca5a5" : "#94a3b8", fontWeight: "bold" }}>
+              {societyReplay.status === "verified" ? "✓ Society Replay — committed evidence verified"
+                : societyReplay.status === "failed" ? "✗ Society Replay — verification failed"
+                : societyReplay.status === "legacy" ? "◌ Society Replay — index pending"
+                : "◌ Society Replay — loading committed evidence"}
+            </div>
+            <div style={{ fontSize: "0.45rem", color: "#64748b", marginTop: "0.08rem" }}>
+              {societyReplay.message}
+              {societyReplay.status === "verified" && ` · ${societyReplay.checkedCount}/${societyReplay.indexedCount} newest event bytes checked · head ${societyReplay.headDigest?.slice(0, 12)}`}
+            </div>
+            {replayEntries.length > 0 && (
+              <div style={{ marginTop: "0.2rem", display: "grid", gridTemplateColumns: "26px 1fr 70px 42px", gap: "0.12rem 0.28rem", alignItems: "center", fontSize: "0.42rem" }}>
+                <span style={{ color: "#334155" }}>gen</span><span style={{ color: "#334155" }}>indexed event</span><span style={{ color: "#334155" }}>chain</span><span style={{ color: "#334155" }}>bytes</span>
+                {replayEntries.map(entry => <React.Fragment key={entry.id}>
+                  <span style={{ color: "#94a3b8" }}>{entry.generation}</span>
+                  <span title={entry.id} style={{ color: "#cbd5e1", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{entry.id}</span>
+                  <span title={entry.chainDigest} style={{ color: "#64748b" }}>{entry.chainDigest.slice(0, 10)}</span>
+                  <span style={{ color: entry.valid ? "#6ee7b7" : "#fca5a5" }}>{entry.valid ? "✓ sha256" : "✗ fail"}</span>
+                </React.Fragment>)}
+              </div>
+            )}
+          </div>
         </div>
       )}
 

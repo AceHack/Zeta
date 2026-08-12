@@ -29,6 +29,7 @@ import type { PriorHint } from "../protocol/batch-teaching-envelope";
 import { batchTemperatureBand } from "../protocol/batch-heat-bridge";
 import { founderGenome } from "./agent-genome";
 import type { CalibrationPosterior } from "./calibration-ledger";
+import { writeSocietyEventEvidence } from "./society-event-index";
 
 interface CliArgs {
   eventDir: string;
@@ -168,7 +169,17 @@ async function main(): Promise<number> {
 
   try {
     mkdirSync(args.eventDir, { recursive: true });
-    writeFileSync(join(args.eventDir, `${eventId}.json`), JSON.stringify({ ...event, heatReadout }, null, 2));
+    const eventFile = `${eventId}.json`;
+    const eventText = `${JSON.stringify({ ...event, heatReadout }, null, 2)}\n`;
+    writeFileSync(join(args.eventDir, eventFile), eventText);
+    const index = writeSocietyEventEvidence(args.eventDir, {
+      id: eventId,
+      at: event.at,
+      file: eventFile,
+      eventText,
+      ...(process.env.GITHUB_SHA ? { sourceRevision: process.env.GITHUB_SHA } : {}),
+    });
+    console.log(`[society] indexed ${eventId}: ${index.eventCount} committed evidence entries`);
     console.log(`[society] wrote evolution event ${eventId}`);
   } catch (err) {
     console.warn(`[society] could not write event: ${err instanceof Error ? err.message : String(err)}`);
