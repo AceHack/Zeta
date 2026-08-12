@@ -677,7 +677,20 @@ export function simulate(world: World, action: NextAction): World {
       }
       
       if (consecutiveRetracts >= 3) {
-        // Guard hit: ignore the retraction.
+        // Guard hit. ANNOUNCE the refusal — a silent `return world` is indistinguishable from a
+        // retraction that simply had nothing to undo, and that ambiguity is how a bare `|| true`
+        // kept a dead CI job invisible for months in this repo.
+        //
+        // Announced rather than APPENDED, and the reason is load-bearing: the counter above walks
+        // BACKWARD over trailing `retract_time` entries and stops at the first entry of any other
+        // type. Recording a refusal in the ledger would therefore break that trailing run, reset
+        // the count to zero, and re-arm the very thrash this guard exists to stop. The refusal is
+        // real, but it must not become an event.
+        console.warn(
+          `[observe] retract_time REFUSED — ${String(consecutiveRetracts)} consecutive retractions ` +
+            `already recorded with no forward action between them. The ledger is intact; make a ` +
+            `forward move before undoing again.`,
+        );
         return world;
       }
 
