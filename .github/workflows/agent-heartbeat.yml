@@ -370,12 +370,24 @@ jobs:
               print(f'[cadence] {agent}: fewer than 2 events — cannot measure yet')
               sys.exit(0)
           from datetime import datetime
-          t1 = datetime.fromisoformat(rows[-1].replace('Z', '+00:00'))
-          t0 = datetime.fromisoformat(rows[-2].replace('Z', '+00:00'))
-          gap = (t1 - t0).total_seconds()
+          ts = [datetime.fromisoformat(r.replace('Z', '+00:00')) for r in rows]
+          gaps = [(b - a).total_seconds() for a, b in zip(ts, ts[1:]) if (b - a).total_seconds() > 0]
           declared = 900
+          gap = gaps[-1] if gaps else 0
           ratio = declared / gap if gap > 0 else 0
           print(f'[cadence] {agent}: gap={int(gap)}s ({gap/60:.1f}min) declared=900s ({declared/60:.0f}min) actual={ratio:.1%} of target')
+          # SUSTAINED drift, not just the last gap. One late tick is weather; a median that sits far
+          # from the declared cadence is climate, and only the second is worth acting on. Measured
+          # over a window so a single outlier can neither raise nor silence the alarm.
+          window = gaps[-10:]
+          if len(window) >= 3:
+              srt = sorted(window)
+              med = srt[len(srt)//2] if len(srt) % 2 else (srt[len(srt)//2 - 1] + srt[len(srt)//2]) / 2
+              drift = med / declared if declared else 0
+              over = sum(1 for g in window if g > 2 * declared)
+              print(f'[cadence] {agent}: DRIFT over last {len(window)} ticks — median={med/60:.1f}min vs declared {declared/60:.0f}min = {drift:.1f}x slower; {over}/{len(window)} over 2x')
+              if drift >= 2:
+                  print(f'::warning::[cadence] {agent}: SUSTAINED drift — median {med/60:.1f}min against a declared {declared/60:.0f}min ({drift:.1f}x). The declared cadence is not what the society actually runs at; every per-tick rate means something other than it says.')
           if gap > 1800:
               print(f'::warning::[cadence] {agent}: {gap/60:.0f}min since its last tick, over 2x the declared 15min. Running at {ratio:.0%} of target.')
           " || echo "::warning::[cadence] measurement failed (non-fatal — but the cadence is now UNMEASURED, which is the condition this step exists to prevent)"
