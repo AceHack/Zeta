@@ -1119,7 +1119,7 @@ export default function OracleRaceMode() {
               title="Connect the protected GitHub App or trigger the heartbeat without exposing a token to this page"
               onClick={() => {
                 setHeartbeatStatus("connecting");
-                const controlUrl = new URL("/api/github-app/control", GITHUB_APP_HARNESS_ORIGIN);
+                const controlUrl = new URL("/api/github-app/connect", GITHUB_APP_HARNESS_ORIGIN);
                 controlUrl.searchParams.set("returnTo", window.location.origin);
                 const controlWindow = window.open(controlUrl.toString(), "zeta-github-app", "popup=yes,width=640,height=620");
                 if (!controlWindow) {
