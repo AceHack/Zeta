@@ -21,6 +21,7 @@
 // - .claude/rules/monad-propagation (Result<T, GitLabFeedback> shape)
 
 import { registerLifetimePair, type ComposedKey, type LifetimeState, type StandardVerdict } from "./world.js";
+import { type GitWorld } from "./git-world.js";
 
 // ─────────────────────────────────────────────────────────────────────
 // GitLab forge-specific lifetime types

@@ -40,6 +40,8 @@ import {
  * instance are inherited via GiteaResourceBudget (constructed by
  * buildCodebergWorld below).
  */
+import { type GitWorld } from "./git-world.js";
+
 export interface CodebergWorld extends Omit<GiteaWorld, "forgeSpecialization"> {
   readonly forgeSpecialization: "codeberg"; // narrower than gitea
   readonly hostingPolicy: "non-commercial-eu-sovereign";

@@ -9,6 +9,7 @@
 // bytes -> expected_sig; sha256(SPKI-DER)[:16] -> expected_key_id), so no layer is a TS-vs-TS
 // tautology. Run from this directory: `bun cross-verify.ts`.
 import { createPublicKey } from "node:crypto";
+import { type TrustEntry, type AceSignature } from "../../../src/Core.TypeScript/ace/signing.ts";
 import { signIndex, verifyIndexSignature, canonicalIndexBytes, type IndexSignableContent } from "../../../src/Core.TypeScript/ace/index-signature.ts";
 
 interface CanonVec { id: string; content: IndexSignableContent; expected_canonical_json: string; }

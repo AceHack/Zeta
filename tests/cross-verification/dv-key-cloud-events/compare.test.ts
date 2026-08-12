@@ -1,4 +1,5 @@
 import { describe, test, expect } from "bun:test";
+import { type Tagged } from "../../../src/Core.TypeScript/dynamic-value/types";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { DvKey } from "../../../src/Core.TypeScript/dynamic-value/dv-key";

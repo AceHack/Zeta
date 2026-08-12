@@ -6,6 +6,7 @@
  */
 
 import { deriveKeyring } from "./derive.js";
+import { type VaultCaConfig } from "./ca-vault.js";
 
 export interface RotationPlan {
   user: string;

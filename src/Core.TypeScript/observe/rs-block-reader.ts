@@ -12,7 +12,7 @@
  */
 
 import { readFileSync } from "node:fs";
-import { extractInfo, recoverPhaseBlock, N, K } from "./rs-phase-codec";
+import { extractInfo, N, K } from "./rs-phase-codec";
 
 // ═══ Types ════════════════════════════════════════════════════════════════════
 

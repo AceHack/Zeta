@@ -11,6 +11,7 @@
 // independently in its own test, so agreement-with-canonical here = byte-lock.
 
 import { readFileSync } from "node:fs";
+import { type Tagged } from "../../../src/Core.TypeScript/dynamic-value/types";
 import { join } from "node:path";
 import { DvKey } from "../../../src/Core.TypeScript/dynamic-value/dv-key";
 import { canonicalCbor } from "../../../src/Core.TypeScript/dynamic-value/cbor";

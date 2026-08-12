@@ -6,7 +6,7 @@ import { describe, test, expect, afterAll } from "bun:test";
 import { writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { loadBlockIndex, queryPhase, latestBlocks, phaseCoverage, summarize } from "./rs-block-reader";
-import { encode, K, N } from "./rs-phase-codec";
+import { encode, K } from "./rs-phase-codec";
 
 const TMP = join(import.meta.dir, ".test-rs-reader-tmp");
 

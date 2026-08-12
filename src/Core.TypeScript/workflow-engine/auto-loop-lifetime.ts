@@ -1,3 +1,5 @@
+import { type LifetimeState, type StandardVerdict } from "./world";
+
 // src/Core.TypeScript/workflow-engine/auto-loop-lifetime.ts
 //
 // AutoLoopLifetime — substrate-naming substrate-engineering substrate
