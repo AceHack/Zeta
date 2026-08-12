@@ -546,11 +546,22 @@ export function simulate(world: World, action: NextAction): World {
       return world.operator ? { ...world, operator: { ...world.operator, pendingMessage: false } } : world;
     case "do_item":
       // the item is done → it leaves the backlog.
-      return { 
-        ...world, 
-        backlog: world.backlog.filter((i) => i.id !== action.item.id), 
+      //
+      // NO WALL-CLOCK TIMESTAMP HERE. An ambient clock inside the fold is entropy entering
+      // through an undeclared channel (§13 noninterference), and it broke the property this whole
+      // system is named for: `observe.test.ts` "THE event-sourcing property — the loop's event log
+      // folds back to the loop's final state" failed on a ONE MILLISECOND difference (…675 vs
+      // …676) between folding the same log twice. State stopped being a projection of the log.
+      //
+      // The ledger's ORDER already carries the causality the fold uses; wall-clock time adds
+      // nothing it reads. If a timestamp is ever genuinely needed here, INJECT it the way
+      // `hygiene/mutation-readout.ts` takes `now: () => string` as a dependency, so the entry
+      // still replays.
+      return {
+        ...world,
+        backlog: world.backlog.filter((i) => i.id !== action.item.id),
         mode: "work",
-        history: [...(world.history || []), { type: "do_item", item: action.item, evaluation: action.evaluation, timestamp: Date.now() }]
+        history: [...(world.history || []), { type: "do_item", item: action.item, evaluation: action.evaluation }]
       };
     case "self_claim":
       // self-claim recorded (in event log via append). Item stays in backlog — the claim
@@ -640,10 +651,12 @@ export function simulate(world: World, action: NextAction): World {
         restoredBacklog = [targetItem, ...world.backlog];
       }
 
-      return { 
-        ...world, 
+      return {
+        ...world,
         backlog: restoredBacklog,
-        history: [...hist, { type: "retract_time", item: targetItem, timestamp: Date.now() }],
+        // Clock-free for the same reason as `do_item` above — a retraction that records WHEN it
+        // happened cannot be replayed into the same state.
+        history: [...hist, { type: "retract_time", item: targetItem }],
         cartography: { 
           ...world.cartography, 
           scopeLevel: world.cartography?.scopeLevel ?? 0,
