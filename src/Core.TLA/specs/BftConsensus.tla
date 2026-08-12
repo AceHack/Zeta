@@ -151,6 +151,60 @@ Next ==
 
 Spec == Init /\ [][Next]_vars
 
+(* ══ LIVENESS (repair item 5), and the assumption is STATED, not smuggled ══
+
+   The 2026-08-10 audit's §2c defect was liveness claimed in prose and present nowhere. The
+   fix is not to assert a stronger property — it is to state the weakest TRUE one, together
+   with the assumption it needs, and then check both.
+
+   THE ASSUMPTION. `Fairness` is this spec's stand-in for partial synchrony: every sent
+   honest vote is EVENTUALLY delivered (no permanent loss on that path), and a node that can
+   decide eventually does. It is deliberately weak — no bound on delay is claimed, only
+   eventual delivery, which is what FLP (1985) requires you to assume to get termination at
+   all. Note `DeliverByzantine` gets NO fairness: an adversary is never obliged to send.
+
+   WHAT IS *NOT* TRUE HERE, recorded because asserting it is the tempting error. Unconditional
+   termination — "every honest node eventually decides" — is FALSE in this spec, and not by
+   an oversight in the model. TLC's counterexample, with honest nodes additionally forced to
+   vote so the refutation is not the trivial "nobody voted":
+
+       votes = [otto |-> "merge", vera |-> "reject", riven |-> "merge", lior |-> "none"]
+
+   The honest nodes split 2-1. The MINORITY value can be carried by at most its one honest
+   voter plus the F Byzantine nodes — 2 senders, never the quorum of 3 — so vera can never
+   decide, and there is no leader, round, view change or timeout to move it off `reject`.
+   Note what the majority value does: `merge` DOES reach quorum at riven, which commits. So
+   the shape is not "nobody decides", it is SOME honest nodes decide and one never can —
+   precisely the partial-decision shape that safety permits and liveness forbids.
+
+   (An earlier draft of this comment said "neither value reaches quorum 3". That was reasoned
+   rather than measured, and the counterexample above refutes it: the Byzantine node cannot
+   lift BOTH values, but it can and does lift one. Corrected against the trace.)
+
+   This is a ONE-SHOT VOTING model, and one-shot voting genuinely does not terminate from a
+   split. A real protocol buys unconditional termination with view changes; claiming it here
+   would be the audit's own defect, committed knowingly.
+
+   So the honest form is CONDITIONAL, and it is checked: if the honest nodes do agree on a
+   value, they all eventually commit it. That is a real liveness claim — it rules out the
+   protocol stalling when there is nothing to stall over — and it is falsifiable, which is
+   the property the audit actually cared about. *)
+Fairness ==
+    /\ \A r, s \in Nodes : WF_vars(DeliverHonest(r, s))
+    /\ \A n \in Nodes, v \in Values : WF_vars(Decide(n, v))
+
+FairSpec == Spec /\ Fairness
+
+AllHonestVoted(v) == \A n \in Honest : votes[n] = v
+AllHonestDecided == \A n \in Honest : decided[n] # "none"
+
+(* Once the honest nodes have all cast the same value, every honest node commits. The
+   antecedent is stable (honest votes are write-once), so this is not vacuous by evaporation
+   of its own hypothesis — a failure mode worth naming, since a `~>` whose left side can be
+   un-satisfied is easy to mistake for a proof. *)
+ConditionalTermination ==
+    \A v \in Values : AllHonestVoted(v) ~> AllHonestDecided
+
 (* ══ SAFETY: the property the header always advertised, now actually expressible ══
    No two HONEST nodes commit different values. Byzantine nodes may "decide" anything —
    excluding them is not weakening the claim, it is what the claim has always meant.

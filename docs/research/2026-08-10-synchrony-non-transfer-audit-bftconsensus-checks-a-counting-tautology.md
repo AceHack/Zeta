@@ -261,9 +261,8 @@ rare, and it is not something being the auditor protects you from.
 3. ✅ **DONE 2026-08-11** — see §3a below.
 4. ✅ **DONE** — `DecisionStable` deleted, with the reason recorded: finality is structural, and a
    state predicate cannot express a claim about a transition.
-5. ⬜ **PARTIALLY** — liveness is now scoped out *explicitly* rather than advertised in prose, which
-   removes the defect. Stating it conditionally on partial synchrony and checking it required item 3
-   first; item 3 is done, so this is the next piece rather than a blocked one.
+5. ✅ **DONE 2026-08-11** — liveness is now *checked*, in the only form this spec is entitled to.
+   See §3b below.
 
 ### 3a. Item 3 — the network model (landed 2026-08-11)
 
@@ -305,6 +304,55 @@ distinct states, which is the cost of having a network at all).
 `MaxFaulty = 1`. If one existed the tautology claim in §2b would be wrong. (Predicted: none, by the
 counting argument — and the mutation test in §(0) settled it the other way, by showing the invariant
 survives deleting the protocol entirely, which is stronger than never being violated.)
+
+### 3b. Item 5 — liveness, checked in the only form the spec is entitled to (2026-08-11)
+
+§2c's defect was liveness **claimed in prose and present nowhere**. The fix is not to assert a
+stronger property — it is to state the weakest *true* one together with the assumption it needs, and
+then check both.
+
+**The assumption, stated rather than smuggled.** `Fairness` is this spec's stand-in for partial
+synchrony: every sent honest vote is *eventually* delivered, and a node that can decide eventually
+does. Deliberately weak — no bound on delay is claimed, only eventual delivery, which is what FLP
+(1985) requires you to assume to get termination at all. `DeliverByzantine` gets **no** fairness: an
+adversary is never obliged to send.
+
+**What is checked.** `ConditionalTermination`: once the honest nodes have all cast the same value,
+every honest node commits. **HOLDS** — exhaustive, 4,665,495 distinct states, 0 left on queue,
+11min 14s. The antecedent is stable (honest votes are write-once), so it is not vacuous by
+evaporation of its own hypothesis — a `~>` whose left side can be un-satisfied is easy to mistake
+for a proof.
+
+**What is NOT claimed, and why — this is the part that took the work.** Unconditional termination is
+**false** here. Both refutations were run:
+
+| mutation | result |
+|---|---|
+| drop `WF` on `DeliverHonest` | `ConditionalTermination` **violated** — so the fairness assumption is load-bearing, not decoration |
+| assert `<>AllHonestDecided` | `UnconditionalTermination` **violated** |
+
+**The second one is where a plausible claim nearly shipped.** TLC's first counterexample was the
+*trivial* one — no honest node ever votes, since `CastVote` carries no fairness. That refutes the
+property but is not an interesting reason. Re-running with fairness added to `CastVote`, so honest
+nodes must vote, still violated it, and *that* trace is the real mechanism:
+
+```
+votes = [otto |-> "merge", vera |-> "reject", riven |-> "merge", lior |-> "none"]
+```
+
+A 2-1 honest split. The minority value can be carried by at most its one honest voter plus the `F`
+Byzantine nodes — 2 senders, never the quorum of 3 — so vera can never decide, and there is no view
+change to move it. **`merge`, meanwhile, does reach quorum at riven, which commits.** So the shape
+is not "nobody decides"; it is *some honest nodes decide and one never can* — exactly the
+partial-decision shape safety permits and liveness forbids.
+
+A first draft of the spec comment asserted "neither value reaches quorum 3". That was reasoned
+rather than measured, and the trace refutes it: the Byzantine node cannot lift *both* values, but it
+can and does lift one. Corrected against the counterexample before shipping — the same
+claim-not-matched-to-check class this audit exists to catch, caught this time by insisting on the
+trace instead of the verdict.
+
+Liveness runs separately (`BftLiveness.cfg`) because temporal checking costs ~14x the safety pass.
 
 ## 4. Anchors
 
