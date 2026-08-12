@@ -29,7 +29,7 @@ function parseIdentity(file: string, text: string): EventIdentity {
 
 export function rebuildSocietyEventIndex(eventDir: string, sourceRevision?: string): SocietyEventIndex {
   const evidence = readdirSync(eventDir)
-    .filter(file => /^society-[a-z0-9]+\.json$/.test(file))
+    .filter(file => file !== SOCIETY_EVENT_INDEX_FILE && /^society-[a-z0-9]+\.json$/.test(file))
     .map(file => {
       const text = readFileSync(join(eventDir, file), "utf8");
       return { file, text, ...parseIdentity(file, text) };

@@ -32,4 +32,13 @@ describe("SocietyEventIndexRebuild", () => {
     writeFileSync(join(dir, "society-bad.json"), "{not-json}");
     expect(() => rebuildSocietyEventIndex(dir)).toThrow("teaching error");
   });
+
+  test("SEIR-3: a prior society-index manifest is not misread as a society event during rebuild", () => {
+    const dir = workspace();
+    writeFileSync(join(dir, "society-one.json"), event("society-one", "2026-08-12T01:00:00.000Z"));
+    rebuildSocietyEventIndex(dir);
+    const rebuilt = rebuildSocietyEventIndex(dir);
+    expect(rebuilt.eventCount).toBe(1);
+    expect(rebuilt.events[0]!.id).toBe("society-one");
+  });
 });
