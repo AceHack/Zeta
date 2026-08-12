@@ -155,9 +155,41 @@ export interface World {
   readonly nodeSession?: NodeSessionState;
   /** Cartography state: current spatial focus and time-resolution. */
   readonly cartography?: { readonly focusId?: string; readonly scopeLevel: number; readonly timeOffset: number };
-  /** Event history ledger */
-  readonly history?: any[];
+  /**
+   * The time-travel LEDGER — LOCAL BOOKKEEPING, deliberately OUTSIDE the
+   * four-oracle treaty (see `golden-vectors.ts` §"the treaty surface"). It is the
+   * undo-stack `retract_time` reads to know which `do_item` to reverse; it is not
+   * the event log (the log is the `NextAction[]` handed to `fold`, of which this
+   * is a strictly lossy 2-of-14-kinds copy).
+   *
+   * §5 memory preservation / Z-set discipline: append-only. A retraction APPENDS a
+   * `retract_time` entry (the −1); it never pops the `do_item` (the +1).
+   */
+  readonly history?: readonly HistoryEvent[];
 }
+
+/** KPI attached to a `do_item` (ARC-AGI grid scoring). */
+export interface ItemEvaluation {
+  accuracy: number;
+  diffPixels: number;
+  totalPixels: number;
+}
+
+/**
+ * A ledger entry — a closed union, NOT `any[]`. `retract_time`'s reducer branches
+ * on `type`, so an unchecked string literal there was the fold's correctness
+ * resting on a typo; the discriminant makes the illegal entry unrepresentable.
+ * `evaluation` is declared (as `undefined`) on the retract branch so the property
+ * is total across the union while remaining impossible to populate there.
+ */
+export type HistoryEvent =
+  | { readonly type: "do_item"; readonly item: BacklogItem; readonly evaluation?: ItemEvaluation }
+  | {
+      readonly type: "retract_time";
+      /** The `do_item` this reverses — `null` when there was nothing left to reverse. */
+      readonly item: BacklogItem | null;
+      readonly evaluation?: undefined;
+    };
 
 /** Forge host state snapshot, populated by the async path in run-loop-real.ts. */
 export interface ForgeState {
@@ -238,7 +270,7 @@ function freeModeAction(mode: FreeMode): NextAction {
 export type NextAction =
   | { kind: "preserve_ferry"; reason: string } // operator ferried verbatim → save it (durability-first; outranks all)
   | { kind: "respond_to_operator"; reason: string } // operator spoke → engage (highest-signal source)
-  | { kind: "do_item"; item: BacklogItem; evaluation?: { accuracy: number; diffPixels: number; totalPixels: number } } // work: pick a ready item (OFFERED, not forced)
+  | { kind: "do_item"; item: BacklogItem; evaluation?: ItemEvaluation } // work: pick a ready item (OFFERED, not forced)
   | { kind: "decompose"; item: BacklogItem; subTasks?: string[] } // work: decompose-to-dissolve-ambiguity (OFFERED, not forced)
   | { kind: "self_claim"; item: BacklogItem; deadline: number } // VOLUNTARY commitment: "I will deliver this by tick T" (NCI: never forced)
   | { kind: "explore"; reason: string } // FREE MODE: self-directed making (forward motion; the empty-backlog default)
@@ -496,7 +528,10 @@ function describeWorld(world: World): string {
   }
   if (world.history && world.history.length > 0) {
     const recent = world.history.slice(-3); // Show last 3 events
-    const histLines = recent.map(h => `- ${h.type} on item ${h.item?.id}${h.evaluation ? ` (KPI: ${h.evaluation.accuracy.toFixed(2)}%)` : ''}`);
+    const histLines = recent.map((h) => {
+      const kpi = h.evaluation ? ` (KPI: ${h.evaluation.accuracy.toFixed(2)}%)` : "";
+      return `- ${h.type} on item ${h.item?.id ?? "(none)"}${kpi}`;
+    });
     parts.push(`Event History:\n${histLines.join("\n")}`);
   }
 
@@ -544,7 +579,7 @@ export function simulate(world: World, action: NextAction): World {
       return world.operator ? { ...world, operator: { ...world.operator, pendingFerry: false } } : world;
     case "respond_to_operator":
       return world.operator ? { ...world, operator: { ...world.operator, pendingMessage: false } } : world;
-    case "do_item":
+    case "do_item": {
       // the item is done → it leaves the backlog.
       //
       // NO WALL-CLOCK TIMESTAMP HERE. An ambient clock inside the fold is entropy entering
@@ -557,12 +592,22 @@ export function simulate(world: World, action: NextAction): World {
       // nothing it reads. If a timestamp is ever genuinely needed here, INJECT it the way
       // `hygiene/mutation-readout.ts` takes `now: () => string` as a dependency, so the entry
       // still replays.
+      //
+      // The entry OMITS `evaluation` when there is none rather than carrying an
+      // explicit `undefined`: absent ≠ present-and-undefined once this shape has to
+      // survive a JSON round-trip, and `exactOptionalPropertyTypes` makes the
+      // distinction the type system's business rather than a convention.
+      const entry: HistoryEvent =
+        action.evaluation === undefined
+          ? { type: "do_item", item: action.item }
+          : { type: "do_item", item: action.item, evaluation: action.evaluation };
       return {
         ...world,
         backlog: world.backlog.filter((i) => i.id !== action.item.id),
         mode: "work",
-        history: [...(world.history || []), { type: "do_item", item: action.item, evaluation: action.evaluation }]
+        history: [...(world.history ?? []), entry],
       };
+    }
     case "self_claim":
       // self-claim recorded (in event log via append). Item stays in backlog — the claim
       // is a commitment to deliver, not delivery itself. Mode → work (the agent is committing
@@ -627,7 +672,7 @@ export function simulate(world: World, action: NextAction): World {
       // Thrash Guard: Limit consecutive retracts to prevent a confused model from dumping the ledger.
       let consecutiveRetracts = 0;
       for (let i = hist.length - 1; i >= 0; i--) {
-        if (hist[i].type === "retract_time") consecutiveRetracts++;
+        if (hist[i]?.type === "retract_time") consecutiveRetracts++;
         else break;
       }
       
@@ -636,15 +681,19 @@ export function simulate(world: World, action: NextAction): World {
         return world;
       }
 
-      let targetItem = null;
+      let targetItem: BacklogItem | null = null;
       let balance = 0;
-      
-      // Z-set fold: Scan backwards to find the last *unretracted* do_item
+
+      // Z-set fold: Scan backwards to find the last *unretracted* do_item.
+      // `balance` only ever becomes positive on a `do_item` entry (retractions
+      // decrement), so `targetItem` is always a do_item's item — the DU makes that
+      // readable instead of load-bearing-by-accident.
       for (let i = hist.length - 1; i >= 0; i--) {
         const e = hist[i];
+        if (e === undefined) continue;
         if (e.type === "retract_time") balance--;
-        else if (e.type === "do_item") balance++;
-        
+        else balance++;
+
         if (balance > 0) {
           targetItem = e.item;
           break;

@@ -24,7 +24,60 @@
 
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { fold, replay, type BacklogItem, type NextAction, type World } from "./observe";
+import { fold, replay, type BacklogItem, type Mode, type NextAction, type OperatorChannel, type World } from "./observe";
+
+// ─── the treaty surface — what the four oracles actually agree ON ──────────────
+//
+// `World` (observe.ts) is the TS runtime's state type and it GROWS: time-travel
+// added `history`, cartography added `cartography`, the cred adventure added
+// `nodeSession`. The CONFORMANCE surface must not grow with it by accident — a
+// field that silently enters the lock is a treaty change wearing a bug fix's
+// clothes, and the three other oracles would stay green while going out of
+// conformance (their parsers read three keys and ignore the rest). So the treaty
+// is stated EXPLICITLY here, as a projection, and the boundary guards in
+// golden-vectors.test.ts go red if it drifts in either direction.
+//
+// WHY `history` IS OUT (081KZT1X8G2087G0R000FYEWSE records what putting it IN takes):
+//   1. Its only reader is `retract_time`, which exists in NO other oracle — F#,
+//      C#, and Rust each implement exactly the NINE core kinds. Locking a field
+//      no other oracle can exercise is cargo-cult conformance.
+//   2. It is a strictly LOSSY copy (2 of 14 action kinds) of the `events` array
+//      that is already in the fixture as the fold's INPUT. Locking a lossy
+//      duplicate of the input as expected output adds no discriminating power —
+//      it cannot fail in any way `events` does not already fail.
+// The ledger is local bookkeeping (the undo stack), not a shared contract. When
+// `retract_time`/`replay_time` land in the other oracles the ledger acquires a
+// reader, and promoting it becomes a versioned treaty change with teeth.
+
+/**
+ * The exact `World` fields the TS/F#/C#/Rust conformance covers. Kept in sync with
+ * what the other oracles parse: `parseWorld` in tests/Tests.FSharp/Observe/GoldenVectors.Tests.fs,
+ * `parse_world` in src/Core.Rust.Observe/src/observe_json.rs, and the C# reader in
+ * tests/Tests.CSharp/Observe/GoldenVectorsTests.cs — all three read backlog +
+ * operator + mode, and nothing else.
+ */
+export interface TreatyWorld {
+  readonly backlog: readonly BacklogItem[];
+  readonly operator?: OperatorChannel;
+  readonly mode?: Mode;
+}
+
+/** The treaty's field set, as DATA — the boundary guards assert the emitted JSON matches it. */
+export const TREATY_WORLD_FIELDS = ["backlog", "operator", "mode"] as const;
+
+/**
+ * Project a runtime `World` onto the treaty surface. Absent optionals stay ABSENT
+ * (not present-and-undefined), so the emitted JSON is exactly the shape the other
+ * oracles' parsers expect. Adding a field to `World` can no longer change the
+ * fixture; promoting one INTO the treaty is a deliberate edit to this function.
+ */
+export function toTreatyWorld(world: World): TreatyWorld {
+  return {
+    backlog: world.backlog,
+    ...(world.operator === undefined ? {} : { operator: world.operator }),
+    ...(world.mode === undefined ? {} : { mode: world.mode }),
+  };
+}
 
 const it = (id: string, ready: boolean, ambiguous: boolean, needsNewAction = false): BacklogItem => ({
   id,
@@ -65,10 +118,10 @@ export const GOLDEN_EVENTS: readonly NextAction[] = [
 /** The full conformance fixture: scenario + the states the reference fold/replay produce. */
 export interface GoldenVectors {
   readonly description: string;
-  readonly initialWorld: World;
+  readonly initialWorld: TreatyWorld;
   readonly events: readonly NextAction[];
-  readonly expectedFinalState: World;
-  readonly expectedReplayStates: readonly World[];
+  readonly expectedFinalState: TreatyWorld;
+  readonly expectedReplayStates: readonly TreatyWorld[];
 }
 
 /** Compute the fixture from the canonical scenario via the reference fold/replay. */
@@ -77,10 +130,10 @@ export function generateGoldenVectors(): GoldenVectors {
     description:
       "observe/simulate/fold cross-language conformance (081KSXN940008QG0R0033T2BQT). Every impl replays `events` over " +
       "`initialWorld` and must value-match `expectedFinalState` + `expectedReplayStates`.",
-    initialWorld: GOLDEN_INITIAL,
+    initialWorld: toTreatyWorld(GOLDEN_INITIAL),
     events: GOLDEN_EVENTS,
-    expectedFinalState: fold(GOLDEN_INITIAL, GOLDEN_EVENTS),
-    expectedReplayStates: replay(GOLDEN_INITIAL, GOLDEN_EVENTS),
+    expectedFinalState: toTreatyWorld(fold(GOLDEN_INITIAL, GOLDEN_EVENTS)),
+    expectedReplayStates: replay(GOLDEN_INITIAL, GOLDEN_EVENTS).map(toTreatyWorld),
   };
 }
 

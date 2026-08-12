@@ -77,9 +77,12 @@ async function main() {
   }
 
   // 6. Aggregate KPI
-  const evaluations = world.history
-    ?.filter(h => h.type === "do_item" && h.evaluation)
-    .map(h => h.evaluation) || [];
+  // flatMap, not filter+map: `World.history` is a discriminated union now
+  // (was `any[]`), and `filter` does not narrow — the narrowing has to happen
+  // where the value is produced.
+  const evaluations = (world.history ?? []).flatMap((h) =>
+    h.type === "do_item" && h.evaluation ? [h.evaluation] : [],
+  );
   
   if (evaluations.length > 0) {
     const avgAccuracy = evaluations.reduce((sum, ev) => sum + ev.accuracy, 0) / evaluations.length;

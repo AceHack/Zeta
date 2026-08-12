@@ -1,0 +1,14 @@
+{
+  "id": "080cffa0f5101810a01300082482cfeb",
+  "at": "2026-08-12T03:57:56.099Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZT1X8G2087G0R000FYEWSE",
+    "type": "task",
+    "title": "Promote the observe time-travel ledger (World.history) into the four-oracle treaty",
+    "slug": "promote-the-observe-time-travel-ledger-world-history-into-th",
+    "priority": "P2",
+    "filename": "081KZT1X8G2087G0R000FYEWSE-promote-the-observe-time-travel-ledger-world-history-into-th.md"
+  }
+}
