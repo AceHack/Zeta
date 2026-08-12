@@ -10,7 +10,6 @@
 // extension) + 081KSNY2Z0008QG0R002A785QR (per-host adapters target).
 
 import { registerLifetimePair, type ComposedKey, type LifetimeState, type StandardVerdict } from "./world.js";
-import { type GitWorld } from "./git-world.js";
 
 export interface GiteaPrLifetime extends LifetimeState {
   readonly kind: "draft" | "open" | "approved" | "merged" | "closed";

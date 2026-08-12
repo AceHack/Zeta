@@ -5,7 +5,7 @@ Thank you for your interest in civsim!
 ## Quick start
 
 1. Read [`README.md`](README.md) for project context.
-2. Read [`LICENSE`](LICENSE) — this is a public repo with an honor-system license.
+2. Read `LICENSE` <!-- STALE-REF: LICENSE --> — this is a public repo with an honor-system license.
 3. Open an issue or draft PR describing what you want to change.
 
 ## What to work on
@@ -20,7 +20,7 @@ Civsim is **fork-friendly**. If you fork to build your own simulation, the
 only ask is the mutual-privacy clause: keep what you want private, as we do —
 no structural strategic advantage to either side.
 
-See [`LICENSE`](LICENSE) for the full text.
+See `LICENSE` <!-- STALE-REF: LICENSE --> for the full text.
 
 ## Code of conduct
 

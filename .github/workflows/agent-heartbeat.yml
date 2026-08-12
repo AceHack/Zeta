@@ -297,6 +297,17 @@ jobs:
             echo "::warning::[false-alarm] metric failed rc=$FA_RC — the convergence trend is going unmeasured"
           fi
 
+          # Registry-level convergence: escape rate + freedom churn.
+          # Complementary to the per-tick false-alarm-rate above — this measures the LEDGER shape
+          # (are declarations sticking? is the grammar sufficient?) rather than per-finding accuracy.
+          set +e
+          bun src/Core.TypeScript/hygiene/mutation-convergence-cli.ts --repo-root .
+          CONV_RC=$?
+          set -e
+          if [ "$CONV_RC" -ne 0 ]; then
+            echo "::warning::[convergence] measurement failed rc=$CONV_RC — registry health is unmeasured"
+          fi
+
           # STAGE db/ — this is what makes the metric mean anything (Aaron 2026-08-12).
           #
           # The runner now records EVERY observation to db/mutation-findings/<agent>.jsonl, not just

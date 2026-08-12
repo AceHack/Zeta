@@ -23,7 +23,6 @@
 // - PR #5775 GitWorld + per-host adapters (GitHubWorld for PR-state scanning)
 // - PR #5774 world.ts (dispatchInWorld + StandardVerdict)
 
-import { type LifetimeState, type StandardVerdict } from "./world";
 
 // ─────────────────────────────────────────────────────────────────────
 // AutoLoopLifetime — the loop's state machine

@@ -15,7 +15,6 @@
 // 081KSNY2Z0008QG0R002A785QR (per-host adapters target).
 
 import { registerLifetimePair, type ComposedKey, type LifetimeState, type StandardVerdict } from "./world.js";
-import { type GitWorld } from "./git-world.js";
 
 /**
  * Email-patch lifetime (Sourcehut-native; analog of PR/MR but qualitatively

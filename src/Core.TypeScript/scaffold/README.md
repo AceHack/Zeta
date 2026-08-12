@@ -2,7 +2,7 @@
 
 Governance-file templates and a dry-run TypeScript tool for creating the
 `LFG/Forge` and `LFG/ace` repos with the full best-practice checklist
-from [ADR 2026-04-22](../../docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md).
+from ADR 2026-04-22 <!-- STALE-REF: ../../docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md -->.
 
 ## Usage
 

@@ -5,9 +5,9 @@ Slash commands: `.claude/commands/`; persona agents: `.claude/agents/`.
 
 ## 1. Orient
 
-Read: [`AGENTS.md`](AGENTS.md) → [`docs/ALIGNMENT.md`](docs/ALIGNMENT.md) →
-[`docs/GLOSSARY.md`](docs/GLOSSARY.md) → [`GOVERNANCE.md`](GOVERNANCE.md).
-Check [`docs/WONT-DO.md`](docs/WONT-DO.md) before proposing work.
+Read: [`AGENTS.md`](AGENTS.md) → `docs/ALIGNMENT.md` <!-- STALE-REF: docs/ALIGNMENT.md --> →
+`docs/GLOSSARY.md` <!-- STALE-REF: docs/GLOSSARY.md --> → [`GOVERNANCE.md`](GOVERNANCE.md).
+Check `docs/WONT-DO.md` <!-- STALE-REF: docs/WONT-DO.md --> before proposing work.
 
 > **Day-one note**: `docs/ALIGNMENT.md`, `docs/GLOSSARY.md`, and
 > `docs/WONT-DO.md` are populated during Stage 2 migration from Zeta.

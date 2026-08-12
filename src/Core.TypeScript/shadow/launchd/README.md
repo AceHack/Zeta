@@ -2,7 +2,7 @@
 
 The shadow observation loop needs a durable tick source. This directory provides the macOS launchd LaunchAgent template (Path A — durable, survives reboots).
 
-For lighter-weight alternatives + composition shape, see [`.claude/rules/shadow-star-shorthand-autocomplete-marker.md`](../../../.claude/rules/shadow-star-shorthand-autocomplete-marker.md) + [`tools/shadow/README.md`](../README.md).
+For lighter-weight alternatives + composition shape, see `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` <!-- STALE-REF: ../../../.claude/rules/shadow-star-shorthand-autocomplete-marker.md --> + [`tools/shadow/README.md`](../README.md).
 
 ## What this does
 

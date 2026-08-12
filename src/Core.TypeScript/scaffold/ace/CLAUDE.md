@@ -5,7 +5,7 @@ Rules auto-load from `.claude/rules/`; skills load on demand from `.claude/skill
 ## 1. Orient
 
 Read: [`AGENTS.md`](AGENTS.md) → [`GOVERNANCE.md`](GOVERNANCE.md).
-Check [`docs/WONT-DO.md`](docs/WONT-DO.md) before proposing work.
+Check `docs/WONT-DO.md` <!-- STALE-REF: docs/WONT-DO.md --> before proposing work.
 
 ## 2. Refresh
 

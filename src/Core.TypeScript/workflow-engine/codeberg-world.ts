@@ -21,7 +21,6 @@ import {
   type GiteaResourceBudget,
   type GiteaWorld,
 } from "./gitea-world.js";
-import { type GitWorld } from "./git-world.js";
 
 /**
  * CodebergWorld — Codeberg-specific specialization of GiteaWorld.

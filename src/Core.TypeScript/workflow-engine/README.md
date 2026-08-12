@@ -1,6 +1,6 @@
 # `src/Core.TypeScript/workflow-engine/` — 081KSKBP80008QG0R000B3Y19A.5 workflow engine agent-loop PoC scaffold
 
-PoC scaffold for the workflow engine v1 spec ([081KSKBP80008QG0R000B3Y19A](../../docs/backlog/P1/081KSKBP80008QG0R000B3Y19A-workflow-engine-v1-fsharp-du-state-machine-git-append-only-four-corner-monad-banned-if-universal-action-grammar-otto-five-modifications-multi-participant-non-cage-aaron-mika-kestrel-otto-2026-05-27.md)) — Kestrel-designed + Mika-walkthrough-ratified + Otto-modified + operator-ratified architecture.
+PoC scaffold for the workflow engine v1 spec (081KSKBP80008QG0R000B3Y19A <!-- STALE-REF: ../../docs/backlog/P1/081KSKBP80008QG0R000B3Y19A-workflow-engine-v1-fsharp-du-state-machine-git-append-only-four-corner-monad-banned-if-universal-action-grammar-otto-five-modifications-multi-participant-non-cage-aaron-mika-kestrel-otto-2026-05-27.md -->) — Kestrel-designed + Mika-walkthrough-ratified + Otto-modified + operator-ratified architecture.
 
 ## Scope
 
@@ -86,16 +86,16 @@ Invariants checked: unique action ids, Mod 2 satisfied (grammar-extension in cat
 
 ## Composes-with substrate
 
-- [081KSKBP80008QG0R000B3Y19A](../../docs/backlog/P1/081KSKBP80008QG0R000B3Y19A-workflow-engine-v1-fsharp-du-state-machine-git-append-only-four-corner-monad-banned-if-universal-action-grammar-otto-five-modifications-multi-participant-non-cage-aaron-mika-kestrel-otto-2026-05-27.md) — canonical v1 design (Kestrel-designed; Mika-walkthrough-ratified; Otto-modified; operator-ratified)
-- [081KSKBP80008QG0R000B3Y19A.5 entry in 081KSKBP80008QG0R000B3Y19A sub-rows](../../docs/backlog/P1/) — this PoC implements the scaffold for the agent-loop sub-row
-- [081KSNY2Z0008QG0R003WFDCJ9](../../docs/backlog/P1/081KSNY2Z0008QG0R003WFDCJ9-lifecycle-du-split-trajectory-push-vs-pr-review-determinereviewlevel-discriminator-kestrel-2026-05-28.md) — lifecycle DU split (push-vs-review discriminator)
-- [081KSNY2Z0008QG0R000S738W3](../../docs/backlog/P1/081KSNY2Z0008QG0R000S738W3-two-path-interface-discriminated-union-execute-vs-conversational-declare-intent-aaron-ani-2026-05-28.md) — two-path interface DU (execute vs conversational)
-- [081KSNY2Z0008QG0R0017JSTGD](../../docs/backlog/P1/081KSNY2Z0008QG0R0017JSTGD-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md) — state-machine fast-lane
-- [081KSNY2Z0008QG0R000E5KTPX](../../docs/backlog/P1/081KSNY2Z0008QG0R000E5KTPX-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md) — folders-not-branches
-- [081KSNY2Z0008QG0R0034FR5FG](../../docs/backlog/P1/081KSNY2Z0008QG0R0034FR5FG-asap-cluster-umbrella-agent-private-encrypted-state-on-public-github-infinite-workflow-zero-pr-playbook-coordination-otto-addison-first-aaron-2026-05-28.md) — ASAP cluster umbrella
-- [081KSNY2Z0008QG0R001DFZK4V](../../docs/backlog/P1/081KSNY2Z0008QG0R001DFZK4V-zeta-native-review-and-branch-protection-substrate-replaces-github-pr-workflow-preserves-review-and-class-fix-discipline-aaron-2026-05-28.md) — Zeta-native review + branch protection
-- [081KSNY2Z0008QG0R002QA720J](../../docs/backlog/P1/081KSNY2Z0008QG0R002QA720J-three-lanes-concurrent-operating-discipline-encryption-plus-zflash-plus-state-machine-substrate-until-each-lane-backlog-drains-per-operator-2026-05-28.md) — three-lanes-concurrent operating discipline (this PoC advances the state-machine lane)
-- [docs/research/2026-05-27-aaron-mika-grok-workflow-engine-canonical-architecture-otto-5-modifications-ratified-aaron-forwarded.md](../../docs/research/) — canonical architecture (Mika-walkthrough)
+- 081KSKBP80008QG0R000B3Y19A <!-- STALE-REF: ../../docs/backlog/P1/081KSKBP80008QG0R000B3Y19A-workflow-engine-v1-fsharp-du-state-machine-git-append-only-four-corner-monad-banned-if-universal-action-grammar-otto-five-modifications-multi-participant-non-cage-aaron-mika-kestrel-otto-2026-05-27.md --> — canonical v1 design (Kestrel-designed; Mika-walkthrough-ratified; Otto-modified; operator-ratified)
+- 081KSKBP80008QG0R000B3Y19A.5 entry in 081KSKBP80008QG0R000B3Y19A sub-rows <!-- STALE-REF: ../../docs/backlog/P1/ --> — this PoC implements the scaffold for the agent-loop sub-row
+- 081KSNY2Z0008QG0R003WFDCJ9 <!-- STALE-REF: ../../docs/backlog/P1/081KSNY2Z0008QG0R003WFDCJ9-lifecycle-du-split-trajectory-push-vs-pr-review-determinereviewlevel-discriminator-kestrel-2026-05-28.md --> — lifecycle DU split (push-vs-review discriminator)
+- 081KSNY2Z0008QG0R000S738W3 <!-- STALE-REF: ../../docs/backlog/P1/081KSNY2Z0008QG0R000S738W3-two-path-interface-discriminated-union-execute-vs-conversational-declare-intent-aaron-ani-2026-05-28.md --> — two-path interface DU (execute vs conversational)
+- 081KSNY2Z0008QG0R0017JSTGD <!-- STALE-REF: ../../docs/backlog/P1/081KSNY2Z0008QG0R0017JSTGD-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md --> — state-machine fast-lane
+- 081KSNY2Z0008QG0R000E5KTPX <!-- STALE-REF: ../../docs/backlog/P1/081KSNY2Z0008QG0R000E5KTPX-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md --> — folders-not-branches
+- 081KSNY2Z0008QG0R0034FR5FG <!-- STALE-REF: ../../docs/backlog/P1/081KSNY2Z0008QG0R0034FR5FG-asap-cluster-umbrella-agent-private-encrypted-state-on-public-github-infinite-workflow-zero-pr-playbook-coordination-otto-addison-first-aaron-2026-05-28.md --> — ASAP cluster umbrella
+- 081KSNY2Z0008QG0R001DFZK4V <!-- STALE-REF: ../../docs/backlog/P1/081KSNY2Z0008QG0R001DFZK4V-zeta-native-review-and-branch-protection-substrate-replaces-github-pr-workflow-preserves-review-and-class-fix-discipline-aaron-2026-05-28.md --> — Zeta-native review + branch protection
+- 081KSNY2Z0008QG0R002QA720J <!-- STALE-REF: ../../docs/backlog/P1/081KSNY2Z0008QG0R002QA720J-three-lanes-concurrent-operating-discipline-encryption-plus-zflash-plus-state-machine-substrate-until-each-lane-backlog-drains-per-operator-2026-05-28.md --> — three-lanes-concurrent operating discipline (this PoC advances the state-machine lane)
+- docs/research/2026-05-27-aaron-mika-grok-workflow-engine-canonical-architecture-otto-5-modifications-ratified-aaron-forwarded.md <!-- STALE-REF: ../../docs/research/ --> — canonical architecture (Mika-walkthrough)
 
 ## Composes-with rules
 

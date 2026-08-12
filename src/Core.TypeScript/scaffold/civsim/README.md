@@ -25,7 +25,7 @@ Civsim is explicitly **fork-friendly**. If you fork, the only ask is the
 mutual-privacy clause in the license: keep what you want private, as we keep
 what we want private — no structural strategic advantage to either side.
 
-See [`LICENSE`](LICENSE) for the full honor-system text.
+See `LICENSE` <!-- STALE-REF: LICENSE --> for the full honor-system text.
 
 ## Factory connection
 
@@ -39,4 +39,4 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## License
 
-Honor-system public license — see [`LICENSE`](LICENSE).
+Honor-system public license — see `LICENSE` <!-- STALE-REF: LICENSE -->.
