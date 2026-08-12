@@ -283,7 +283,19 @@ jobs:
           # reconstructed later. It WITHHOLDS the rate below MIN_SAMPLE and says why, and it marks
           # itself NOT SLAM-comparable: a finding fixed by opening a PR leaves no transcript entry,
           # and this job never stages db/, so per-tick findings are recorded nowhere. Read-only.
-          bun src/Core.TypeScript/hygiene/mutation-false-alarm-rate.ts || true
+          #
+          # NOT `|| true`. The first version of this step used one, which is the exact pattern §207
+          # above records as the reason the mutation step sat dead for months: a bare `|| true`
+          # turns "this never ran" and "this ran and found nothing" into the same silent output.
+          # Reporting must never fail the tick, so the RC is still swallowed for exit purposes —
+          # but it is ANNOUNCED first, because an unannounced swallow is how the last one hid.
+          set +e
+          bun src/Core.TypeScript/hygiene/mutation-false-alarm-rate.ts
+          FA_RC=$?
+          set -e
+          if [ "$FA_RC" -ne 0 ]; then
+            echo "::warning::[false-alarm] metric failed rc=$FA_RC — the convergence trend is going unmeasured"
+          fi
           exit 0
 
       - name: Measure cadence (declared vs actual — detect silent degradation)
