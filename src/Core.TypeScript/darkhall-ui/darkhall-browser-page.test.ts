@@ -719,6 +719,31 @@ describe("Dark Hall active browser page", () => {
     expect(root.mount.innerHTML).toBe("standing room");
   });
 
+  test("ACCEPTS an explicit sequence of 0 — the boundary the other cases step over", async () => {
+    // `initialSequence` guards with `sequence >= 0`, and 0 is the only value that separates
+    // that from `> 0`. The suite exercised 12 (accepted) and -1 (refused), both of which stay
+    // on the same side under either guard; omitting the query parameter does not reach the
+    // check at all, since a null value returns 0 early. So a fresh page — sequence 0 is the
+    // legitimate STARTING value — could have been rejected as "not a non-negative safe
+    // integer" with nothing to notice. Found by the mutation runner (gte-to-gt, tick 11223).
+    const root = new NativeBrowserRoot();
+    root.location.search = "?tab=tab-a&sequence=0";
+
+    const result = await startNativeDarkHallBrowserPage({
+      root,
+      databaseIntentOutbox: databaseIntentOutbox(),
+      databaseExecutor,
+    });
+    expect(result.ok).toBe(true);
+    expect(root.serviceWorker.messages.filter((message) => message.kind === "presence")).toContainEqual({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: "zeta-darkhall-browser-node",
+      kind: "presence",
+      presence: { tabId: "tab-a", sequence: 0, state: "foreground" },
+    });
+    if (result.ok) expect(result.value.stop().ok).toBe(true);
+  });
+
   test("refuses a missing mount without touching the worker edge", async () => {
     const root = new NativeBrowserRoot();
 
