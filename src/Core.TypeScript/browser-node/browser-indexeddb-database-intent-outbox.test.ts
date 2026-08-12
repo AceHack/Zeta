@@ -4,7 +4,7 @@ import { openNativeIndexedDbDatabaseIntentOutbox } from "./browser-indexeddb-dat
 const options = {
   databaseName: "zeta-intents",
   storeName: "intent-ledgers",
-  limits: { maxIntents: 16, maxLedgerBytes: 64 * 1024 },
+  limits: { maxIntents: 16, maxReceipts: 64, maxLedgerBytes: 64 * 1024 },
 } as const;
 
 describe("browser IndexedDB database intent outbox", () => {

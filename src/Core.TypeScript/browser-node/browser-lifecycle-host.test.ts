@@ -262,6 +262,33 @@ describe("browser lifecycle host", () => {
       invalidation: { sourceTabId: "tab-a", databaseNodeId: "llmtv-room-a:database", revision: 22 },
     });
 
+    expect(
+      host.publishDatabaseExecutionReceipt({
+        databaseNodeId: "llmtv-room-a:database",
+        intentId: "event/score",
+        sequence: 3,
+        status: "settled",
+        revision: 22,
+        accepted: 1,
+        duplicates: 0,
+      }),
+    ).toMatchObject({ ok: true });
+    expect(channel.published.at(-1)).toEqual({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: "llmtv-room-a",
+      kind: "database-execution-receipt",
+      receipt: {
+        sourceTabId: "tab-a",
+        databaseNodeId: "llmtv-room-a:database",
+        intentId: "event/score",
+        sequence: 3,
+        status: "settled",
+        revision: 22,
+        accepted: 1,
+        duplicates: 0,
+      },
+    });
+
     expect(host.stop().ok).toBe(true);
     expect(host.publishCheckpointInvalidation("removed", 21)).toMatchObject({
       ok: false,
@@ -271,6 +298,17 @@ describe("browser lifecycle host", () => {
       ok: false,
       feedback: { code: "host-stopped" },
     });
+    expect(
+      host.publishDatabaseExecutionReceipt({
+        databaseNodeId: "llmtv-room-a:database",
+        intentId: "event/score",
+        sequence: 3,
+        status: "settled",
+        revision: 22,
+        accepted: 1,
+        duplicates: 0,
+      }),
+    ).toMatchObject({ ok: false, feedback: { code: "host-stopped" } });
   });
 
   test("backpressures rather than wrapping an exhausted sequence", () => {

@@ -20,6 +20,7 @@ import type { BrowserLifecycleHostFeedback, BrowserLifecycleHostReadout } from "
 import type { BrowserCheckpoint } from "../browser-node/browser-node";
 import type {
   BrowserCheckpointInvalidation,
+  BrowserDatabaseExecutionReceiptNotice,
   BrowserDatabaseInvalidation,
 } from "../browser-node/browser-tab-coordinator";
 import type { DarkHallDatabaseReadout } from "./darkhall-database-readout";
@@ -108,6 +109,9 @@ export interface DarkHallBrowserDurableRuntime {
   publishDatabaseInvalidation(
     databaseNodeId: BrowserDatabaseInvalidation["databaseNodeId"],
     revision: number,
+  ): DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>;
+  publishDatabaseExecutionReceipt(
+    receipt: Omit<BrowserDatabaseExecutionReceiptNotice, "sourceTabId">,
   ): DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>;
   stop(): DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>;
 }
@@ -273,6 +277,9 @@ function bootstrapOptions(
     onCheckpointInvalidated,
     ...(options.onTabReadout === undefined ? {} : { onTabReadout: options.onTabReadout }),
     ...(options.onDatabaseInvalidated === undefined ? {} : { onDatabaseInvalidated: options.onDatabaseInvalidated }),
+    ...(options.onDatabaseExecutionReceipt === undefined
+      ? {}
+      : { onDatabaseExecutionReceipt: options.onDatabaseExecutionReceipt }),
   };
 }
 
@@ -599,6 +606,21 @@ export async function startDurableDarkHallBrowser(
         return published.ok ? succeeded(read()) : failed("browser-runtime", published.feedback);
       } catch {
         return thrown("browser-runtime", "browser-runtime-operation-threw", "publishing database invalidation");
+      }
+    },
+    publishDatabaseExecutionReceipt: (receipt) => {
+      if (finalized) {
+        return failed("browser-runtime", {
+          severity: "heat",
+          code: "host-stopped",
+          detail: "The durable browser room runtime has already stopped.",
+        });
+      }
+      try {
+        const published = browserRuntime.host.publishDatabaseExecutionReceipt(receipt);
+        return published.ok ? succeeded(read()) : failed("browser-runtime", published.feedback);
+      } catch {
+        return thrown("browser-runtime", "browser-runtime-operation-threw", "publishing database execution receipt");
       }
     },
     stop: () => {

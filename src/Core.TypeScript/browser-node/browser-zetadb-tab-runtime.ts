@@ -8,6 +8,7 @@ import type {
 } from "../zetadb/zeta-db-node";
 import type {
   BrowserDatabaseIntentFeedback,
+  BrowserDatabaseExecutionReceipt,
   BrowserDatabaseIntentOutboxPort,
   BrowserDatabaseIntentReadout,
   BrowserDatabaseIntentRecord,
@@ -27,6 +28,7 @@ export interface BrowserZetaDbTabFeedback {
     | "database-tab-observer-failed"
     | "database-tab-outbox-observer-failed"
     | "database-tab-publish-failed"
+    | "database-tab-receipt-publish-failed"
     | "database-tab-stopped";
   readonly detail: string;
 }
@@ -54,6 +56,7 @@ export interface BrowserZetaDbTabRuntimeOptions {
   readonly observe: (readout: ZetaDbTickReadout) => BrowserZetaDbTabEdgeResult;
   readonly observeOutbox: (readout: BrowserDatabaseIntentReadout) => BrowserZetaDbTabEdgeResult;
   readonly publishInvalidation: (databaseNodeId: string, revision: number) => BrowserZetaDbTabEdgeResult;
+  readonly publishExecutionReceipt: (receipt: BrowserDatabaseExecutionReceipt) => BrowserZetaDbTabEdgeResult;
 }
 
 export interface BrowserZetaDbTabRuntime {
@@ -118,7 +121,7 @@ function isExecutionAdmissionPort(value: unknown): value is BrowserExecutionAdmi
 }
 
 function isIntentOutboxPort(value: unknown): value is BrowserDatabaseIntentOutboxPort {
-  return hasMethods(value, ["enqueue", "read", "complete", "refuse", "close"]);
+  return hasMethods(value, ["enqueue", "read", "begin", "settle", "refuse", "close"]);
 }
 
 function validLimits(limits: ZetaDbTickLimits): boolean {
@@ -133,7 +136,11 @@ function validLimits(limits: ZetaDbTickLimits): boolean {
 }
 
 function edgeFailure(
-  code: "database-tab-observer-failed" | "database-tab-outbox-observer-failed" | "database-tab-publish-failed",
+  code:
+    | "database-tab-observer-failed"
+    | "database-tab-outbox-observer-failed"
+    | "database-tab-publish-failed"
+    | "database-tab-receipt-publish-failed",
   edge: Extract<BrowserZetaDbTabEdgeResult, { readonly ok: false }>,
 ): BrowserZetaDbTabResult<never> {
   return failed(code, `${edge.feedback.code}: ${edge.feedback.detail}`, edge.feedback.severity);
@@ -234,12 +241,36 @@ async function refuseIntent(
   return refused.ok ? observeOutbox(options, refused.value) : intentFailure(refused.feedback);
 }
 
-async function completeIntent(
+async function settleIntent(
   options: BrowserZetaDbTabRuntimeOptions,
   intent: BrowserDatabaseIntentRecord,
-): Promise<BrowserZetaDbTabResult<BrowserDatabaseIntentReadout>> {
-  const completed = await options.outbox.complete(options.databaseNodeId, intent.intentId, intent.sequence);
-  return completed.ok ? observeOutbox(options, completed.value) : intentFailure(completed.feedback);
+  tick: ZetaDbTickReadout,
+): Promise<BrowserZetaDbTabResult<BrowserDatabaseExecutionReceipt>> {
+  const settled = await options.outbox.settle(options.databaseNodeId, intent.intentId, intent.sequence, tick);
+  if (!settled.ok) return intentFailure(settled.feedback);
+  const observed = observeOutbox(options, settled.value);
+  if (!observed.ok) return observed;
+  const receipt = observed.value.receipts.find(
+    (candidate) => candidate.intentId === intent.intentId && candidate.sequence === intent.sequence,
+  );
+  return receipt === undefined
+    ? failed("database-tab-intent-failed", `Settled intent ${intent.intentId} produced no durable receipt.`)
+    : succeeded(receipt);
+}
+
+function publishExecutionReceipt(
+  options: BrowserZetaDbTabRuntimeOptions,
+  receipt: BrowserDatabaseExecutionReceipt,
+): BrowserZetaDbTabResult<null> {
+  try {
+    const published = options.publishExecutionReceipt(receipt);
+    return published.ok ? succeeded(null) : edgeFailure("database-tab-receipt-publish-failed", published);
+  } catch {
+    return failed(
+      "database-tab-receipt-publish-failed",
+      "The injected database execution receipt publisher threw after durable settlement.",
+    );
+  }
 }
 
 async function executePendingIntent(
@@ -247,7 +278,11 @@ async function executePendingIntent(
   state: RuntimeState,
   intent: BrowserDatabaseIntentRecord,
 ): Promise<BrowserZetaDbTabResult<ZetaDbTickReadout | null>> {
-  const outcome = await captureExecutor(options, requestForIntent(options, intent));
+  const begun = await options.outbox.begin(options.databaseNodeId, intent.intentId, intent.sequence);
+  if (!begun.ok) return intentFailure(begun.feedback);
+  const visible = await readAndObserveOutbox(options);
+  if (!visible.ok) return visible;
+  const outcome = await captureExecutor(options, requestForIntent(options, begun.value));
   if (outcome.kind === "threw") {
     return failed("database-tab-executor-threw", "The injected browser database executor threw during a finite tick.");
   }
@@ -257,10 +292,12 @@ async function executePendingIntent(
     return refused.ok ? outcome.result : refused;
   }
 
+  const settled = await settleIntent(options, begun.value, outcome.result.value);
+  if (!settled.ok) return settled;
   const edged = applyTickEdges(options, state, outcome.result.value);
+  const receiptPublished = publishExecutionReceipt(options, settled.value);
   if (!edged.ok) return edged;
-  const completed = await completeIntent(options, intent);
-  return completed.ok ? succeeded(edged.value) : completed;
+  return receiptPublished.ok ? succeeded(edged.value) : receiptPublished;
 }
 
 function refusedTarget(intent: BrowserDatabaseIntentRecord): BrowserZetaDbTabResult<never> {
@@ -306,7 +343,7 @@ async function drainPendingIntents(
 
   let drained: DrainReadout = { lastTick: null, target: null };
   for (const intent of outbox.value.intents) {
-    if (intent.status !== "pending") continue;
+    if (intent.status !== "queued" && intent.status !== "executing") continue;
     const next = await advanceDrain(options, state, targetIntentId, drained, intent);
     if (!next.ok) return next;
     drained = next.value;
@@ -477,7 +514,7 @@ export function startBrowserZetaDbTabRuntime(
       const result = await schedule(async () => {
         const current = await readAndObserveOutbox(options);
         if (!current.ok) return current;
-        if (current.value.pending === 0) return succeeded(null);
+        if (current.value.queued + current.value.executing === 0) return succeeded(null);
         const drained = await admitDrain(options, state, null, true);
         return drained.ok ? succeeded(drained.value.lastTick) : drained;
       });

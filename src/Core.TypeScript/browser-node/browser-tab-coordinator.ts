@@ -10,7 +10,7 @@ import {
   type BrowserTabState,
 } from "./browser-node";
 
-export const BROWSER_TAB_COORDINATOR_SCHEMA = "zeta.browser-tab-coordinator.v3" as const;
+export const BROWSER_TAB_COORDINATOR_SCHEMA = "zeta.browser-tab-coordinator.v4" as const;
 
 export interface BrowserTabPresenceMessage {
   readonly schema: typeof BROWSER_TAB_COORDINATOR_SCHEMA;
@@ -55,11 +55,30 @@ export interface BrowserDatabaseInvalidationMessage {
   readonly invalidation: BrowserDatabaseInvalidation;
 }
 
+export interface BrowserDatabaseExecutionReceiptNotice {
+  readonly sourceTabId: string;
+  readonly databaseNodeId: string;
+  readonly intentId: string;
+  readonly sequence: number;
+  readonly status: "settled";
+  readonly revision: number;
+  readonly accepted: number;
+  readonly duplicates: number;
+}
+
+export interface BrowserDatabaseExecutionReceiptMessage {
+  readonly schema: typeof BROWSER_TAB_COORDINATOR_SCHEMA;
+  readonly nodeId: string;
+  readonly kind: "database-execution-receipt";
+  readonly receipt: BrowserDatabaseExecutionReceiptNotice;
+}
+
 export type BrowserTabChannelMessage =
   | BrowserTabPresenceMessage
   | BrowserTabProbeMessage
   | BrowserCheckpointInvalidationMessage
-  | BrowserDatabaseInvalidationMessage;
+  | BrowserDatabaseInvalidationMessage
+  | BrowserDatabaseExecutionReceiptMessage;
 
 export interface BrowserTabCoordinatorFeedback {
   readonly severity: "backpressure" | "heat";
@@ -91,6 +110,7 @@ export interface BrowserTabCoordinatorFeedback {
     | "readout-observer-failed"
     | "checkpoint-invalidation-observer-failed"
     | "database-invalidation-observer-failed"
+    | "database-receipt-observer-failed"
     | "coordinator-configuration-invalid"
     | "coordinator-stopped";
   readonly detail: string;
@@ -122,6 +142,7 @@ export interface BrowserTabCoordinatorOptions {
   readonly onReadout?: (readout: BrowserTabCoordinatorReadout) => void;
   readonly onCheckpointInvalidated?: (invalidation: BrowserCheckpointInvalidation) => void;
   readonly onDatabaseInvalidated?: (invalidation: BrowserDatabaseInvalidation) => void;
+  readonly onDatabaseExecutionReceipt?: (receipt: BrowserDatabaseExecutionReceiptNotice) => void;
 }
 
 export interface BrowserTabCoordinatorReadout {
@@ -149,6 +170,10 @@ export interface BrowserTabCoordinator {
   publishDatabaseInvalidation(
     databaseNodeId: string,
     revision: number,
+  ): BrowserTabOperationResult<BrowserTabCoordinatorReadout>;
+  /** Broadcast compact execution evidence; database rows remain in the database port. */
+  publishDatabaseExecutionReceipt(
+    receipt: Omit<BrowserDatabaseExecutionReceiptNotice, "sourceTabId">,
   ): BrowserTabOperationResult<BrowserTabCoordinatorReadout>;
   stop(sequence: number): BrowserTabOperationResult<BrowserTabCoordinatorReadout>;
 }
@@ -189,7 +214,8 @@ export function decodeBrowserTabChannelMessage(value: unknown): BrowserTabOperat
     (value.kind !== "presence" &&
       value.kind !== "probe" &&
       value.kind !== "checkpoint-invalidated" &&
-      value.kind !== "database-invalidated")
+      value.kind !== "database-invalidated" &&
+      value.kind !== "database-execution-receipt")
   ) {
     return failed("tab-message-invalid", "A browser tab channel message did not match the coordinator schema.");
   }
@@ -248,6 +274,38 @@ export function decodeBrowserTabChannelMessage(value: unknown): BrowserTabOperat
         sourceTabId: invalidation.sourceTabId,
         databaseNodeId: invalidation.databaseNodeId,
         revision: invalidation.revision,
+      },
+    });
+  }
+
+  if (value.kind === "database-execution-receipt") {
+    const receipt = value.receipt;
+    if (
+      !isRecord(receipt) ||
+      !isIdentifier(receipt.sourceTabId) ||
+      !isIdentifier(receipt.databaseNodeId) ||
+      !isIdentifier(receipt.intentId) ||
+      !isSequence(receipt.sequence) ||
+      receipt.status !== "settled" ||
+      !isSequence(receipt.revision) ||
+      !isSequence(receipt.accepted) ||
+      !isSequence(receipt.duplicates)
+    ) {
+      return failed("tab-message-invalid", "A database execution receipt carried invalid finite evidence.");
+    }
+    return succeeded({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: value.nodeId,
+      kind: "database-execution-receipt",
+      receipt: {
+        sourceTabId: receipt.sourceTabId,
+        databaseNodeId: receipt.databaseNodeId,
+        intentId: receipt.intentId,
+        sequence: receipt.sequence,
+        status: "settled",
+        revision: receipt.revision,
+        accepted: receipt.accepted,
+        duplicates: receipt.duplicates,
       },
     });
   }
@@ -317,6 +375,19 @@ function databaseInvalidationMessage(
   };
 }
 
+function databaseExecutionReceiptMessage(
+  nodeId: string,
+  sourceTabId: string,
+  receipt: Omit<BrowserDatabaseExecutionReceiptNotice, "sourceTabId">,
+): BrowserDatabaseExecutionReceiptMessage {
+  return {
+    schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+    nodeId,
+    kind: "database-execution-receipt",
+    receipt: { ...receipt, sourceTabId },
+  };
+}
+
 function validateOptions(options: BrowserTabCoordinatorOptions): BrowserTabOperationResult<null> {
   if (!isIdentifier(options.nodeId) || !isIdentifier(options.tabId)) {
     return failed("coordinator-configuration-invalid", "Node and tab identifiers must be non-empty strings.");
@@ -357,6 +428,7 @@ export function startBrowserTabCoordinator(
   let observerFailure: BrowserTabCoordinatorFeedback | null = null;
   let checkpointObserverFailure: BrowserTabCoordinatorFeedback | null = null;
   let databaseObserverFailure: BrowserTabCoordinatorFeedback | null = null;
+  let databaseReceiptObserverFailure: BrowserTabCoordinatorFeedback | null = null;
 
   const project = (eventFeedback: readonly BrowserTabCoordinatorFeedback[] = []): BrowserTabCoordinatorReadout => {
     const node = planBrowserNode({
@@ -378,6 +450,7 @@ export function startBrowserTabCoordinator(
         ...(observerFailure === null ? [] : [observerFailure]),
         ...(checkpointObserverFailure === null ? [] : [checkpointObserverFailure]),
         ...(databaseObserverFailure === null ? [] : [databaseObserverFailure]),
+        ...(databaseReceiptObserverFailure === null ? [] : [databaseReceiptObserverFailure]),
         ...eventFeedback,
       ],
     };
@@ -477,6 +550,29 @@ export function startBrowserTabCoordinator(
           severity: "heat",
           code: "database-invalidation-observer-failed",
           detail: "The injected database invalidation observer threw; channel delivery continued.",
+        };
+        notify(project());
+      }
+      return;
+    }
+
+    if (message.kind === "database-execution-receipt") {
+      if (message.receipt.sourceTabId === options.tabId) {
+        const collision = failed(
+          "tab-id-collision",
+          `Another channel participant published database receipt evidence for locally owned tab ${options.tabId}.`,
+        );
+        if (!collision.ok) notify(project([collision.feedback]));
+        return;
+      }
+      if (options.onDatabaseExecutionReceipt === undefined) return;
+      try {
+        options.onDatabaseExecutionReceipt(message.receipt);
+      } catch {
+        databaseReceiptObserverFailure = {
+          severity: "heat",
+          code: "database-receipt-observer-failed",
+          detail: "The injected database receipt observer threw; channel delivery continued.",
         };
         notify(project());
       }
@@ -621,6 +717,27 @@ export function startBrowserTabCoordinator(
         );
       }
       const published = publish(databaseInvalidationMessage(options.nodeId, options.tabId, databaseNodeId, revision));
+      if (!published.ok) return published;
+      return succeeded(project());
+    },
+    publishDatabaseExecutionReceipt: (receipt) => {
+      const running = ensureRunning();
+      if (!running.ok) return running;
+      if (
+        !isIdentifier(receipt.databaseNodeId) ||
+        !isIdentifier(receipt.intentId) ||
+        !isSequence(receipt.sequence) ||
+        receipt.status !== "settled" ||
+        !isSequence(receipt.revision) ||
+        !isSequence(receipt.accepted) ||
+        !isSequence(receipt.duplicates)
+      ) {
+        return failed(
+          "coordinator-configuration-invalid",
+          "A database execution receipt requires bounded identity, sequence, revision, and result counts.",
+        );
+      }
+      const published = publish(databaseExecutionReceiptMessage(options.nodeId, options.tabId, receipt));
       if (!published.ok) return published;
       return succeeded(project());
     },

@@ -259,7 +259,7 @@ if (!started.ok) {
   const databaseIntentOutbox = await openNativeIndexedDbDatabaseIntentOutbox(globalThis, {
     databaseName: "zeta-browser-smoke-intents",
     storeName: "database-intents",
-    limits: { maxIntents: 32, maxLedgerBytes: 128 * 1024 },
+    limits: { maxIntents: 32, maxReceipts: 128, maxLedgerBytes: 128 * 1024 },
   });
   let databaseRuntime;
   if (!databaseAdmission.ok) {
@@ -290,6 +290,7 @@ if (!started.ok) {
       observeOutbox: () => ({ ok: true }),
       publishInvalidation: (nextDatabaseNodeId, revision) =>
         runtime.publishDatabaseInvalidation(nextDatabaseNodeId, revision),
+      publishExecutionReceipt: (receipt) => runtime.publishDatabaseExecutionReceipt(receipt),
     });
   }
   if (!databaseRuntime.ok) {

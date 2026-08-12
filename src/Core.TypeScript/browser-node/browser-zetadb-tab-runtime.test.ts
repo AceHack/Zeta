@@ -13,12 +13,13 @@ import {
 } from "./browser-execution-admission";
 import {
   createInMemoryBrowserDatabaseIntentOutbox,
+  type BrowserDatabaseExecutionReceipt,
   type BrowserDatabaseIntentOutboxPort,
 } from "./browser-database-intent-outbox";
 import { startBrowserZetaDbTabRuntime, type BrowserZetaDbTabExecutor } from "./browser-zetadb-tab-runtime";
 
 const limits = { maxDeltas: 8, maxEntries: 16, maxCheckpointBytes: 16 * 1024 };
-const outboxLimits = { maxIntents: 16, maxLedgerBytes: 64 * 1024 };
+const outboxLimits = { maxIntents: 16, maxReceipts: 64, maxLedgerBytes: 64 * 1024 };
 
 function createOutbox(): BrowserDatabaseIntentOutboxPort {
   const created = createInMemoryBrowserDatabaseIntentOutbox(outboxLimits);
@@ -50,6 +51,7 @@ function start(
 ) {
   const observed: ZetaDbTickReadout[] = [];
   const published: { readonly databaseNodeId: string; readonly revision: number }[] = [];
+  const receipts: BrowserDatabaseExecutionReceipt[] = [];
   const started = startBrowserZetaDbTabRuntime({
     databaseNodeId: "browser/global",
     executorId,
@@ -66,10 +68,14 @@ function start(
       published.push({ databaseNodeId, revision });
       return { ok: true };
     },
+    publishExecutionReceipt: (receipt) => {
+      receipts.push(receipt);
+      return { ok: true };
+    },
   });
   expect(started.ok).toBe(true);
   if (!started.ok) throw new Error(started.feedback.detail);
-  return { runtime: started.value, observed, published };
+  return { runtime: started.value, observed, published, receipts };
 }
 
 describe("browser ZetaDB tab runtime", () => {
@@ -93,6 +99,7 @@ describe("browser ZetaDB tab runtime", () => {
       observe: () => ({ ok: true }),
       observeOutbox: () => ({ ok: true }),
       publishInvalidation: () => ({ ok: true }),
+      publishExecutionReceipt: () => ({ ok: true }),
     });
 
   test("an identifier of EXACTLY the 1024 limit is accepted — the bound is inclusive", () => {
@@ -122,6 +129,7 @@ describe("browser ZetaDB tab runtime", () => {
       observe: () => ({ ok: true }),
       observeOutbox: () => ({ ok: true }),
       publishInvalidation: () => ({ ok: true }),
+      publishExecutionReceipt: () => ({ ok: true }),
     });
 
     expect(started).toEqual({
@@ -137,7 +145,7 @@ describe("browser ZetaDB tab runtime", () => {
 
   test("publishes accepted local writes and renders their finite tick", async () => {
     const requests: ZetaDbTickRequest[] = [];
-    const { runtime, observed, published } = start((request) => {
+    const { runtime, observed, published, receipts } = start((request) => {
       requests.push(request);
       return Promise.resolve({ ok: true, value: readout(request, 1) });
     });
@@ -148,6 +156,21 @@ describe("browser ZetaDB tab runtime", () => {
     expect(requests[0]).toMatchObject({ nodeId: "browser/global", executorId: "tab-a", executorKind: "browser-tab" });
     expect(observed).toHaveLength(1);
     expect(published).toEqual([{ databaseNodeId: "browser/global", revision: 1 }]);
+    expect(receipts).toEqual([
+      {
+        schema: "zeta.browser-database-execution-receipt.v1",
+        databaseNodeId: "browser/global",
+        intentId: "score-9000",
+        sequence: 0,
+        status: "settled",
+        executorId: "tab-a",
+        executorKind: "browser-tab",
+        revision: 1,
+        accepted: 1,
+        duplicates: 0,
+        deltaCount: 1,
+      },
+    ]);
   });
 
   test("serializes peer rereads, coalesces stale revisions, and never republishes them", async () => {
@@ -211,6 +234,7 @@ describe("browser ZetaDB tab runtime", () => {
         observe: () => ({ ok: true }),
         observeOutbox: () => ({ ok: true }),
         publishInvalidation: () => ({ ok: true }),
+        publishExecutionReceipt: () => ({ ok: true }),
       }),
     ).toMatchObject({ ok: false, feedback: { code: "database-tab-configuration-invalid" } });
 
@@ -224,12 +248,13 @@ describe("browser ZetaDB tab runtime", () => {
 
   test("reports a thrown publication edge after retaining the committed readout", async () => {
     const requestTicks: ZetaDbTickReadout[] = [];
+    const outbox = createOutbox();
     const started = startBrowserZetaDbTabRuntime({
       databaseNodeId: "browser/global",
       executorId: "tab-a",
       limits,
       admission: createInMemoryBrowserExecutionAdmission(),
-      outbox: createOutbox(),
+      outbox,
       execute: (request) => {
         const tick = readout(request, 3);
         requestTicks.push(tick);
@@ -240,6 +265,7 @@ describe("browser ZetaDB tab runtime", () => {
       publishInvalidation: () => {
         throw new Error("channel rejected");
       },
+      publishExecutionReceipt: () => ({ ok: true }),
     });
     expect(started.ok).toBe(true);
     if (!started.ok) return;
@@ -248,6 +274,37 @@ describe("browser ZetaDB tab runtime", () => {
       await started.value.tick([{ eventId: "event/3", rowKey: "row/3", payload: "three", weight: 1 }]),
     ).toMatchObject({ ok: false, feedback: { code: "database-tab-publish-failed" } });
     expect(requestTicks).toHaveLength(1);
+    expect(await outbox.read("browser/global")).toMatchObject({
+      ok: true,
+      value: { queued: 0, executing: 0, settled: 1 },
+    });
+  });
+
+  test("reports a receipt publication failure after retaining the durable receipt", async () => {
+    const outbox = createOutbox();
+    const started = startBrowserZetaDbTabRuntime({
+      databaseNodeId: "browser/global",
+      executorId: "tab-a",
+      limits,
+      admission: createInMemoryBrowserExecutionAdmission(),
+      outbox,
+      execute: (request) => Promise.resolve({ ok: true, value: readout(request, 4) }),
+      observe: () => ({ ok: true }),
+      observeOutbox: () => ({ ok: true }),
+      publishInvalidation: () => ({ ok: true }),
+      publishExecutionReceipt: () => {
+        throw new Error("receipt channel rejected");
+      },
+    });
+    if (!started.ok) throw new Error(started.feedback.detail);
+
+    expect(
+      await started.value.tick([{ eventId: "event/4", rowKey: "row/4", payload: "four", weight: 1 }]),
+    ).toMatchObject({ ok: false, feedback: { code: "database-tab-receipt-publish-failed" } });
+    expect(await outbox.read("browser/global")).toMatchObject({
+      ok: true,
+      value: { queued: 0, executing: 0, settled: 1, receipts: [{ intentId: "event/4", revision: 4 }] },
+    });
   });
 
   test("backpressures a competing tab and admits it after the finite owner releases", async () => {
@@ -283,7 +340,7 @@ describe("browser ZetaDB tab runtime", () => {
 
     release?.();
     expect(await held).toMatchObject({ ok: true, value: { executorId: "tab-a", revision: 1 } });
-    expect(await second.runtime.tick([delta])).toMatchObject({
+    expect(await second.runtime.tick([{ ...delta, eventId: "event/after" }])).toMatchObject({
       ok: true,
       value: { executorId: "tab-b", revision: 2 },
     });
@@ -325,7 +382,7 @@ describe("browser ZetaDB tab runtime", () => {
     expect(revision).toBe(1);
   });
 
-  test("persists a mutation before admission and leaves it pending when the database is busy", async () => {
+  test("persists a mutation before admission and leaves it queued when the database is busy", async () => {
     const outbox = createOutbox();
     const busyAdmission: BrowserExecutionAdmissionPort = {
       tryRun: (resourceId) => Promise.resolve(browserExecutionBusy(resourceId)),
@@ -340,7 +397,12 @@ describe("browser ZetaDB tab runtime", () => {
     });
     expect(await runtime.readOutbox()).toMatchObject({
       ok: true,
-      value: { pending: 1, refused: 0, intents: [{ intentId: "event/pending", sequence: 0, status: "pending" }] },
+      value: {
+        queued: 1,
+        executing: 0,
+        refused: 0,
+        intents: [{ intentId: "event/pending", sequence: 0, status: "queued" }],
+      },
     });
   });
 
@@ -374,7 +436,10 @@ describe("browser ZetaDB tab runtime", () => {
       ok: true,
       value: { revision: 1, rows: [{ rowKey: "game/score", payload: "11", weight: 1 }] },
     });
-    expect(await second.runtime.readOutbox()).toMatchObject({ ok: true, value: { pending: 0, refused: 0 } });
+    expect(await second.runtime.readOutbox()).toMatchObject({
+      ok: true,
+      value: { queued: 0, executing: 0, settled: 1, refused: 0 },
+    });
   });
 
   test("retains deterministic compare-and-swap refusal without blocking later recovery", async () => {
@@ -396,7 +461,9 @@ describe("browser ZetaDB tab runtime", () => {
     expect(await runtime.readOutbox()).toMatchObject({
       ok: true,
       value: {
-        pending: 0,
+        queued: 0,
+        executing: 0,
+        settled: 1,
         refused: 1,
         intents: [
           {

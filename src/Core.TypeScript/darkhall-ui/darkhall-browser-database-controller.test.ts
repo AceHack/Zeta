@@ -165,7 +165,11 @@ describe("Dark Hall browser database controller", () => {
 
   test("backpressures stale replacement without a partial retraction", async () => {
     const port = createInMemoryZetaDbImagePort();
-    const outbox = createInMemoryBrowserDatabaseIntentOutbox({ maxIntents: 16, maxLedgerBytes: 64 * 1024 });
+    const outbox = createInMemoryBrowserDatabaseIntentOutbox({
+      maxIntents: 16,
+      maxReceipts: 64,
+      maxLedgerBytes: 64 * 1024,
+    });
     expect(outbox.ok).toBe(true);
     if (!outbox.ok) return;
     const runtimeStarted = startBrowserZetaDbTabRuntime({
@@ -178,6 +182,7 @@ describe("Dark Hall browser database controller", () => {
       observe: () => ({ ok: true }),
       observeOutbox: () => ({ ok: true }),
       publishInvalidation: () => ({ ok: true }),
+      publishExecutionReceipt: () => ({ ok: true }),
     });
     expect(runtimeStarted.ok).toBe(true);
     if (!runtimeStarted.ok) return;

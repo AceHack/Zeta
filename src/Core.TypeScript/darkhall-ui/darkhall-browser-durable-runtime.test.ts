@@ -206,6 +206,7 @@ function createStarter(
       return { ok: true, value: host.read() };
     },
     publishDatabaseInvalidation: () => ({ ok: true, value: host.read() }),
+    publishDatabaseExecutionReceipt: () => ({ ok: true, value: host.read() }),
     stop: () => {
       stopped = true;
       return { ok: true, value: hostReadout(true) };

@@ -412,7 +412,7 @@ async function runIntentRecoveryProof(
       const root = globalThis as unknown as BrowserSmokeGlobal;
       if (!root.__zetaBrowserSmoke.databaseExecutionHeld()) return false;
       const outbox = await root.__zetaBrowserSmoke.readDatabaseOutbox();
-      return outbox.ok && outbox.value.pending === 1 && outbox.value.intents[0]?.intentId === "intent-recovery/score";
+      return outbox.ok && outbox.value.executing === 1 && outbox.value.intents[0]?.intentId === "intent-recovery/score";
     },
     undefined,
     { timeout: timeoutMs },
@@ -649,11 +649,14 @@ function validateIntentRecovery(transcript: BrowserMultitabSmokeTranscript, fail
     failures.push("the surviving page did not commit the persisted writer intent exactly once");
   }
   if (
-    transcript.intentRecovery.outbox.pending !== 0 ||
+    transcript.intentRecovery.outbox.queued !== 0 ||
+    transcript.intentRecovery.outbox.executing !== 0 ||
+    transcript.intentRecovery.outbox.settled !== 1 ||
     transcript.intentRecovery.outbox.refused !== 0 ||
-    transcript.intentRecovery.outbox.intents.length !== 0
+    transcript.intentRecovery.outbox.intents.length !== 0 ||
+    transcript.intentRecovery.outbox.receipts[0]?.intentId !== "intent-recovery/score"
   ) {
-    failures.push("the surviving page did not clear the completed durable intent");
+    failures.push("the surviving page did not transfer the durable intent into a settled receipt");
   }
   if (
     transcript.intentRecovery.finalRead.revision !== 1 ||

@@ -3,9 +3,10 @@ import {
   browserDatabaseIntentReadout,
   copyBrowserDatabaseIntent,
   copyBrowserDatabaseIntentLedger,
-  decideBrowserDatabaseIntentCompletion,
+  decideBrowserDatabaseIntentBegin,
   decideBrowserDatabaseIntentEnqueue,
   decideBrowserDatabaseIntentRefusal,
+  decideBrowserDatabaseIntentSettlement,
   emptyBrowserDatabaseIntentLedger,
   validateBrowserDatabaseIntentLedger,
   validateBrowserDatabaseIntentLimits,
@@ -19,6 +20,7 @@ import {
   type BrowserDatabaseIntentRefusal,
   type BrowserDatabaseIntentResult,
 } from "./browser-database-intent-outbox";
+import type { ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 
 export interface NativeIndexedDbDatabaseIntentOutboxOptions {
   readonly databaseName: string;
@@ -177,7 +179,7 @@ class NativeIndexedDbDatabaseIntentOutbox implements BrowserDatabaseIntentOutbox
     this.limits = limits;
   }
 
-  private begin(
+  private beginTransaction(
     mode: "readonly" | "readwrite",
     code: "intent-read-failed" | "intent-write-failed",
   ): BrowserDatabaseIntentResult<NativeTransactionScope> {
@@ -201,7 +203,7 @@ class NativeIndexedDbDatabaseIntentOutbox implements BrowserDatabaseIntentOutbox
   public read(databaseNodeId: string): Promise<BrowserDatabaseIntentResult<BrowserDatabaseIntentReadout>> {
     const empty = emptyBrowserDatabaseIntentLedger(databaseNodeId);
     if (!empty.ok) return Promise.resolve(empty);
-    const started = this.begin("readonly", "intent-read-failed");
+    const started = this.beginTransaction("readonly", "intent-read-failed");
     if (!started.ok) return Promise.resolve(started);
     const { transaction, store } = started.value;
 
@@ -262,7 +264,7 @@ class NativeIndexedDbDatabaseIntentOutbox implements BrowserDatabaseIntentOutbox
     databaseNodeId: string,
     decide: (existing: unknown) => BrowserDatabaseIntentResult<LedgerMutation<T>>,
   ): Promise<BrowserDatabaseIntentResult<T>> {
-    const started = this.begin("readwrite", "intent-write-failed");
+    const started = this.beginTransaction("readwrite", "intent-write-failed");
     if (!started.ok) return Promise.resolve(started);
     const { transaction, store } = started.value;
 
@@ -369,13 +371,34 @@ class NativeIndexedDbDatabaseIntentOutbox implements BrowserDatabaseIntentOutbox
     });
   }
 
-  public complete(
+  public begin(
     databaseNodeId: string,
     intentId: string,
     sequence: number,
+  ): Promise<BrowserDatabaseIntentResult<BrowserDatabaseIntentRecord>> {
+    return this.mutate(databaseNodeId, (existing) => {
+      const decision = decideBrowserDatabaseIntentBegin(existing, databaseNodeId, intentId, sequence, this.limits);
+      return decision.ok
+        ? succeeded({ ledger: decision.value.ledger, value: copyBrowserDatabaseIntent(decision.value.value) })
+        : decision;
+    });
+  }
+
+  public settle(
+    databaseNodeId: string,
+    intentId: string,
+    sequence: number,
+    tick: ZetaDbTickReadout,
   ): Promise<BrowserDatabaseIntentResult<BrowserDatabaseIntentReadout>> {
     return this.mutate(databaseNodeId, (existing) => {
-      const decision = decideBrowserDatabaseIntentCompletion(existing, databaseNodeId, intentId, sequence);
+      const decision = decideBrowserDatabaseIntentSettlement(
+        existing,
+        databaseNodeId,
+        intentId,
+        sequence,
+        tick,
+        this.limits,
+      );
       return decision.ok ? this.readoutDecision(decision.value.ledger) : decision;
     });
   }

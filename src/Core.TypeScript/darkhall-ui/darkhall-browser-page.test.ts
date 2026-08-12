@@ -234,7 +234,11 @@ function databaseExecutor(
 }
 
 function databaseIntentOutbox(): BrowserDatabaseIntentOutboxPort {
-  const created = createInMemoryBrowserDatabaseIntentOutbox({ maxIntents: 16, maxLedgerBytes: 64 * 1024 });
+  const created = createInMemoryBrowserDatabaseIntentOutbox({
+    maxIntents: 16,
+    maxReceipts: 64,
+    maxLedgerBytes: 64 * 1024,
+  });
   if (!created.ok) throw new Error(created.feedback.detail);
   return created.value;
 }
@@ -327,8 +331,11 @@ describe("Dark Hall active browser page", () => {
     expect(root.mount.attributes.get("data-browser-transport")).toBe("service-worker");
     expect(root.mount.attributes.get("data-browser-tab")).toBe("tab-a");
     expect(root.mount.attributes.get("data-database-outbox-admission")).toBe("open");
-    expect(root.mount.attributes.get("data-database-outbox-pending")).toBe("0");
+    expect(root.mount.attributes.get("data-database-outbox-queued")).toBe("0");
+    expect(root.mount.attributes.get("data-database-outbox-executing")).toBe("0");
+    expect(root.mount.attributes.get("data-database-outbox-settled")).toBe("0");
     expect(root.mount.attributes.get("data-database-outbox-refused")).toBe("0");
+    expect(root.mount.attributes.get("data-database-outbox-latest-status")).toBe("none");
     expect(root.mount.innerHTML).toContain('data-browser-local-tab="tab-a"');
     expect(root.mount.innerHTML).toContain('data-database-revision="7"');
     expect(root.mount.innerHTML).toContain("game/score");
@@ -455,6 +462,44 @@ describe("Dark Hall active browser page", () => {
         revision: 8,
       },
     });
+    expect(root.serviceWorker.messages).toContainEqual({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: "zeta-darkhall-browser-node",
+      kind: "database-execution-receipt",
+      receipt: {
+        sourceTabId: "tab-a",
+        databaseNodeId: "zeta-darkhall-browser-node:database",
+        intentId: "tab-a/row-command/1",
+        sequence: 1,
+        status: "settled",
+        revision: 8,
+        accepted: 1,
+        duplicates: 0,
+      },
+    });
+    expect(root.mount.attributes.get("data-database-outbox-latest-status")).toBe("settled");
+    expect(root.mount.attributes.get("data-database-outbox-latest-intent")).toBe("tab-a/row-command/1");
+    expect(root.mount.attributes.get("data-database-outbox-latest-revision")).toBe("8");
+
+    root.serviceWorker.dispatch({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: "zeta-darkhall-browser-node",
+      kind: "database-execution-receipt",
+      receipt: {
+        sourceTabId: "tab-b",
+        databaseNodeId: "zeta-darkhall-browser-node:database",
+        intentId: "tab-b/row-command/4",
+        sequence: 4,
+        status: "settled",
+        revision: 9,
+        accepted: 0,
+        duplicates: 1,
+      },
+    });
+    expect(root.mount.attributes.get("data-database-peer-receipt-status")).toBe("settled");
+    expect(root.mount.attributes.get("data-database-peer-receipt-intent")).toBe("tab-b/row-command/4");
+    expect(root.mount.attributes.get("data-database-peer-receipt-revision")).toBe("9");
+    expect(root.mount.attributes.get("data-database-peer-receipt-source")).toBe("tab-b");
 
     expect(started.value.stop()).toMatchObject({ ok: true, value: { status: "stopped" } });
     expect(root.mount.attributes.get("data-pwa-status")).toBe("stopped");
@@ -497,8 +542,12 @@ describe("Dark Hall active browser page", () => {
       deltas: [{ eventId: "event/recovered", rowKey: "game/score", payload: "17", weight: 1 }],
     });
     expect(requests[1]?.deltas).toEqual([]);
-    expect(root.mount.attributes.get("data-database-outbox-pending")).toBe("0");
+    expect(root.mount.attributes.get("data-database-outbox-queued")).toBe("0");
+    expect(root.mount.attributes.get("data-database-outbox-executing")).toBe("0");
+    expect(root.mount.attributes.get("data-database-outbox-settled")).toBe("1");
     expect(root.mount.attributes.get("data-database-outbox-refused")).toBe("0");
+    expect(root.mount.attributes.get("data-database-outbox-latest-intent")).toBe("event/recovered");
+    expect(root.mount.attributes.get("data-database-outbox-latest-revision")).toBe("1");
     if (started.ok) expect(started.value.stop().ok).toBe(true);
   });
 
@@ -545,7 +594,7 @@ describe("Dark Hall active browser page", () => {
     });
     expect(await outbox.read("zeta-darkhall-browser-node:database")).toMatchObject({
       ok: true,
-      value: { pending: 0, refused: 0 },
+      value: { queued: 0, executing: 0, settled: 1, refused: 0 },
     });
     expect(started.value.stop().ok).toBe(true);
   });

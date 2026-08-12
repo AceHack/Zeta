@@ -5,6 +5,7 @@ import {
   type BrowserTabChannel,
   type BrowserTabChannelMessage,
   type BrowserCheckpointInvalidation,
+  type BrowserDatabaseExecutionReceiptNotice,
   type BrowserDatabaseInvalidation,
   type BrowserTabCoordinator,
   type BrowserTabCoordinatorOptions,
@@ -82,6 +83,7 @@ function options(
   onReadout?: (readout: BrowserTabCoordinatorReadout) => void,
   onCheckpointInvalidated?: (invalidation: BrowserCheckpointInvalidation) => void,
   onDatabaseInvalidated?: (invalidation: BrowserDatabaseInvalidation) => void,
+  onDatabaseExecutionReceipt?: (receipt: BrowserDatabaseExecutionReceiptNotice) => void,
 ): BrowserTabCoordinatorOptions {
   return {
     nodeId: "llmtv-room-a",
@@ -94,6 +96,7 @@ function options(
     ...(onReadout === undefined ? {} : { onReadout }),
     ...(onCheckpointInvalidated === undefined ? {} : { onCheckpointInvalidated }),
     ...(onDatabaseInvalidated === undefined ? {} : { onDatabaseInvalidated }),
+    ...(onDatabaseExecutionReceipt === undefined ? {} : { onDatabaseExecutionReceipt }),
   };
 }
 
@@ -295,6 +298,52 @@ describe("browser tab coordinator", () => {
       ok: false,
       feedback: { code: "coordinator-configuration-invalid" },
     });
+    expect(tabA.stop(2).ok).toBe(true);
+    expect(tabB.stop(2).ok).toBe(true);
+  });
+
+  test("broadcasts compact settled receipts without database rows", () => {
+    const bus = new FakeBus();
+    const localReceipts: BrowserDatabaseExecutionReceiptNotice[] = [];
+    const peerReceipts: BrowserDatabaseExecutionReceiptNotice[] = [];
+    const tabA = started(
+      startBrowserTabCoordinator(
+        options("tab-a", undefined, undefined, undefined, (value) => localReceipts.push(value)),
+        bus.connect(),
+      ),
+    );
+    const tabB = started(
+      startBrowserTabCoordinator(
+        options("tab-b", undefined, undefined, undefined, (value) => peerReceipts.push(value)),
+        bus.connect(),
+      ),
+    );
+
+    const callerReceipt = {
+      sourceTabId: "spoofed-tab",
+      databaseNodeId: "llmtv-room-a:database",
+      intentId: "event/score",
+      sequence: 4,
+      status: "settled" as const,
+      revision: 12,
+      accepted: 1,
+      duplicates: 0,
+    };
+    expect(tabA.publishDatabaseExecutionReceipt(callerReceipt).ok).toBe(true);
+    expect(localReceipts).toEqual([]);
+    expect(peerReceipts).toEqual([
+      {
+        sourceTabId: "tab-a",
+        databaseNodeId: "llmtv-room-a:database",
+        intentId: "event/score",
+        sequence: 4,
+        status: "settled",
+        revision: 12,
+        accepted: 1,
+        duplicates: 0,
+      },
+    ]);
+    expect(JSON.stringify(peerReceipts)).not.toContain("rows");
     expect(tabA.stop(2).ok).toBe(true);
     expect(tabB.stop(2).ok).toBe(true);
   });

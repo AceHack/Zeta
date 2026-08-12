@@ -1,11 +1,16 @@
-import type { ZetaDbDelta } from "../zetadb/zeta-db-node";
+import type { ZetaDbDelta, ZetaDbExecutorKind, ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 
-export const BROWSER_DATABASE_INTENT_SCHEMA = "zeta.browser-database-intent.v1" as const;
-export const BROWSER_DATABASE_INTENT_LEDGER_SCHEMA = "zeta.browser-database-intent-ledger.v1" as const;
-export const BROWSER_DATABASE_INTENT_READOUT_SCHEMA = "zeta.browser-database-intent-readout.v1" as const;
+export const BROWSER_DATABASE_INTENT_SCHEMA = "zeta.browser-database-intent.v2" as const;
+export const BROWSER_DATABASE_EXECUTION_RECEIPT_SCHEMA = "zeta.browser-database-execution-receipt.v1" as const;
+export const BROWSER_DATABASE_INTENT_LEDGER_SCHEMA = "zeta.browser-database-intent-ledger.v2" as const;
+export const BROWSER_DATABASE_INTENT_READOUT_SCHEMA = "zeta.browser-database-intent-readout.v2" as const;
+
+const LEGACY_BROWSER_DATABASE_INTENT_SCHEMA = "zeta.browser-database-intent.v1";
+const LEGACY_BROWSER_DATABASE_INTENT_LEDGER_SCHEMA = "zeta.browser-database-intent-ledger.v1";
 
 export interface BrowserDatabaseIntentLimits {
   readonly maxIntents: number;
+  readonly maxReceipts: number;
   readonly maxLedgerBytes: number;
 }
 
@@ -25,8 +30,22 @@ export interface BrowserDatabaseIntentRefusal {
 export interface BrowserDatabaseIntentRecord extends BrowserDatabaseIntentDraft {
   readonly schema: typeof BROWSER_DATABASE_INTENT_SCHEMA;
   readonly sequence: number;
-  readonly status: "pending" | "refused";
+  readonly status: "queued" | "executing" | "refused";
   readonly refusal: BrowserDatabaseIntentRefusal | null;
+}
+
+export interface BrowserDatabaseExecutionReceipt {
+  readonly schema: typeof BROWSER_DATABASE_EXECUTION_RECEIPT_SCHEMA;
+  readonly databaseNodeId: string;
+  readonly intentId: string;
+  readonly sequence: number;
+  readonly status: "settled";
+  readonly executorId: string;
+  readonly executorKind: ZetaDbExecutorKind;
+  readonly revision: number;
+  readonly accepted: number;
+  readonly duplicates: number;
+  readonly deltaCount: number;
 }
 
 export interface BrowserDatabaseIntentLedger {
@@ -34,6 +53,7 @@ export interface BrowserDatabaseIntentLedger {
   readonly databaseNodeId: string;
   readonly nextSequence: number;
   readonly intents: readonly BrowserDatabaseIntentRecord[];
+  readonly receipts: readonly BrowserDatabaseExecutionReceipt[];
 }
 
 export interface BrowserDatabaseIntentReadout {
@@ -42,9 +62,12 @@ export interface BrowserDatabaseIntentReadout {
   readonly admission: "open" | "backpressured";
   readonly nextSequence: number;
   readonly ledgerBytes: number;
-  readonly pending: number;
+  readonly queued: number;
+  readonly executing: number;
+  readonly settled: number;
   readonly refused: number;
   readonly intents: readonly BrowserDatabaseIntentRecord[];
+  readonly receipts: readonly BrowserDatabaseExecutionReceipt[];
 }
 
 export interface BrowserDatabaseIntentFeedback {
@@ -69,10 +92,16 @@ export type BrowserDatabaseIntentResult<T> =
 export interface BrowserDatabaseIntentOutboxPort {
   enqueue(draft: BrowserDatabaseIntentDraft): Promise<BrowserDatabaseIntentResult<BrowserDatabaseIntentRecord>>;
   read(databaseNodeId: string): Promise<BrowserDatabaseIntentResult<BrowserDatabaseIntentReadout>>;
-  complete(
+  begin(
     databaseNodeId: string,
     intentId: string,
     sequence: number,
+  ): Promise<BrowserDatabaseIntentResult<BrowserDatabaseIntentRecord>>;
+  settle(
+    databaseNodeId: string,
+    intentId: string,
+    sequence: number,
+    tick: ZetaDbTickReadout,
   ): Promise<BrowserDatabaseIntentResult<BrowserDatabaseIntentReadout>>;
   refuse(
     databaseNodeId: string,
@@ -128,6 +157,16 @@ function isExpectedRevision(value: unknown): value is number | null {
   return value === null || isSequence(value);
 }
 
+const EXECUTOR_KINDS: ReadonlySet<string> = new Set([
+  "browser-tab",
+  "dedicated-worker",
+  "shared-worker",
+  "service-worker-event",
+  "local-process",
+  "cloud-process",
+  "github-actions",
+]);
+
 export function validateBrowserDatabaseIntentLimits(
   value: unknown,
 ): BrowserDatabaseIntentResult<BrowserDatabaseIntentLimits> {
@@ -136,16 +175,23 @@ export function validateBrowserDatabaseIntentLimits(
     typeof value.maxIntents !== "number" ||
     !Number.isSafeInteger(value.maxIntents) ||
     value.maxIntents < 1 ||
+    typeof value.maxReceipts !== "number" ||
+    !Number.isSafeInteger(value.maxReceipts) ||
+    value.maxReceipts < 1 ||
     typeof value.maxLedgerBytes !== "number" ||
     !Number.isSafeInteger(value.maxLedgerBytes) ||
     value.maxLedgerBytes < 1
   ) {
     return browserDatabaseIntentFailed(
       "intent-configuration-invalid",
-      "A browser database intent outbox requires positive safe-integer intent and byte budgets.",
+      "A browser database intent outbox requires positive safe-integer intent, receipt, and byte budgets.",
     );
   }
-  return succeeded({ maxIntents: value.maxIntents, maxLedgerBytes: value.maxLedgerBytes });
+  return succeeded({
+    maxIntents: value.maxIntents,
+    maxReceipts: value.maxReceipts,
+    maxLedgerBytes: value.maxLedgerBytes,
+  });
 }
 
 function copyDelta(delta: ZetaDbDelta): ZetaDbDelta {
@@ -160,8 +206,18 @@ export function copyBrowserDatabaseIntent(record: BrowserDatabaseIntentRecord): 
   return { ...record, deltas: record.deltas.map(copyDelta), refusal: copyRefusal(record.refusal) };
 }
 
+export function copyBrowserDatabaseExecutionReceipt(
+  receipt: BrowserDatabaseExecutionReceipt,
+): BrowserDatabaseExecutionReceipt {
+  return { ...receipt };
+}
+
 export function copyBrowserDatabaseIntentLedger(ledger: BrowserDatabaseIntentLedger): BrowserDatabaseIntentLedger {
-  return { ...ledger, intents: ledger.intents.map(copyBrowserDatabaseIntent) };
+  return {
+    ...ledger,
+    intents: ledger.intents.map(copyBrowserDatabaseIntent),
+    receipts: ledger.receipts.map(copyBrowserDatabaseExecutionReceipt),
+  };
 }
 
 function validateDelta(value: unknown): BrowserDatabaseIntentResult<ZetaDbDelta> {
@@ -231,7 +287,11 @@ export function validateBrowserDatabaseIntentDraft(
 export function validateBrowserDatabaseIntent(
   value: unknown,
 ): BrowserDatabaseIntentResult<BrowserDatabaseIntentRecord> {
-  if (!isRecord(value) || value.schema !== BROWSER_DATABASE_INTENT_SCHEMA || !isSequence(value.sequence)) {
+  if (
+    !isRecord(value) ||
+    (value.schema !== BROWSER_DATABASE_INTENT_SCHEMA && value.schema !== LEGACY_BROWSER_DATABASE_INTENT_SCHEMA) ||
+    !isSequence(value.sequence)
+  ) {
     return browserDatabaseIntentFailed(
       "intent-record-invalid",
       "A stored browser database intent requires the current schema and a safe sequence.",
@@ -239,7 +299,8 @@ export function validateBrowserDatabaseIntent(
   }
   const draft = validateBrowserDatabaseIntentDraft(value);
   if (!draft.ok) return draft;
-  if (value.status !== "pending" && value.status !== "refused") {
+  const status = value.status === "pending" ? "queued" : value.status;
+  if (status !== "queued" && status !== "executing" && status !== "refused") {
     return browserDatabaseIntentFailed(
       "intent-record-invalid",
       "A stored browser database intent has an unknown status.",
@@ -248,20 +309,59 @@ export function validateBrowserDatabaseIntent(
   const refusal = validateRefusal(value.refusal);
   if (!refusal.ok) return refusal;
   if (
-    (value.status === "pending" && refusal.value !== null) ||
-    (value.status === "refused" && refusal.value === null)
+    ((status === "queued" || status === "executing") && refusal.value !== null) ||
+    (status === "refused" && refusal.value === null)
   ) {
     return browserDatabaseIntentFailed(
       "intent-record-invalid",
-      "A pending intent cannot carry refusal feedback and a refused intent must carry it.",
+      "A queued or executing intent cannot carry refusal feedback and a refused intent must carry it.",
     );
   }
   return succeeded({
     schema: BROWSER_DATABASE_INTENT_SCHEMA,
     ...draft.value,
     sequence: value.sequence,
-    status: value.status,
+    status,
     refusal: refusal.value,
+  });
+}
+
+export function validateBrowserDatabaseExecutionReceipt(
+  value: unknown,
+): BrowserDatabaseIntentResult<BrowserDatabaseExecutionReceipt> {
+  if (
+    !isRecord(value) ||
+    value.schema !== BROWSER_DATABASE_EXECUTION_RECEIPT_SCHEMA ||
+    !isIdentifier(value.databaseNodeId) ||
+    !isIdentifier(value.intentId) ||
+    !isSequence(value.sequence) ||
+    value.status !== "settled" ||
+    !isIdentifier(value.executorId) ||
+    typeof value.executorKind !== "string" ||
+    !EXECUTOR_KINDS.has(value.executorKind) ||
+    !isSequence(value.revision) ||
+    !isSequence(value.accepted) ||
+    !isSequence(value.duplicates) ||
+    !isSequence(value.deltaCount) ||
+    value.accepted + value.duplicates !== value.deltaCount
+  ) {
+    return browserDatabaseIntentFailed(
+      "intent-record-invalid",
+      "A settled database execution receipt requires bounded identity, executor, revision, and complete delta counts.",
+    );
+  }
+  return succeeded({
+    schema: BROWSER_DATABASE_EXECUTION_RECEIPT_SCHEMA,
+    databaseNodeId: value.databaseNodeId,
+    intentId: value.intentId,
+    sequence: value.sequence,
+    status: "settled",
+    executorId: value.executorId,
+    executorKind: value.executorKind as ZetaDbExecutorKind,
+    revision: value.revision,
+    accepted: value.accepted,
+    duplicates: value.duplicates,
+    deltaCount: value.deltaCount,
   });
 }
 
@@ -279,6 +379,7 @@ export function emptyBrowserDatabaseIntentLedger(
     databaseNodeId,
     nextSequence: 0,
     intents: [],
+    receipts: [],
   });
 }
 
@@ -287,10 +388,12 @@ export function validateBrowserDatabaseIntentLedger(
 ): BrowserDatabaseIntentResult<BrowserDatabaseIntentLedger> {
   if (
     !isRecord(value) ||
-    value.schema !== BROWSER_DATABASE_INTENT_LEDGER_SCHEMA ||
+    (value.schema !== BROWSER_DATABASE_INTENT_LEDGER_SCHEMA &&
+      value.schema !== LEGACY_BROWSER_DATABASE_INTENT_LEDGER_SCHEMA) ||
     !isIdentifier(value.databaseNodeId) ||
     !isSequence(value.nextSequence) ||
-    !Array.isArray(value.intents)
+    !Array.isArray(value.intents) ||
+    (value.receipts !== undefined && !Array.isArray(value.receipts))
   ) {
     return browserDatabaseIntentFailed(
       "intent-record-invalid",
@@ -299,6 +402,7 @@ export function validateBrowserDatabaseIntentLedger(
   }
   const intents: BrowserDatabaseIntentRecord[] = [];
   const intentIds = new Set<string>();
+  const sequences = new Set<number>();
   let previousSequence = -1;
   for (const candidate of value.intents) {
     const intent = validateBrowserDatabaseIntent(candidate);
@@ -306,7 +410,11 @@ export function validateBrowserDatabaseIntentLedger(
     if (intent.value.databaseNodeId !== value.databaseNodeId) {
       return browserDatabaseIntentFailed("intent-record-invalid", "An intent ledger contains another database node.");
     }
-    if (intentIds.has(intent.value.intentId) || intent.value.sequence <= previousSequence) {
+    if (
+      intentIds.has(intent.value.intentId) ||
+      sequences.has(intent.value.sequence) ||
+      intent.value.sequence <= previousSequence
+    ) {
       return browserDatabaseIntentFailed(
         "intent-record-invalid",
         "An intent ledger must contain unique identifiers in strictly increasing sequence order.",
@@ -319,14 +427,48 @@ export function validateBrowserDatabaseIntentLedger(
       );
     }
     intentIds.add(intent.value.intentId);
+    sequences.add(intent.value.sequence);
     previousSequence = intent.value.sequence;
     intents.push(intent.value);
+  }
+  const receipts: BrowserDatabaseExecutionReceipt[] = [];
+  let previousReceiptSequence = -1;
+  for (const candidate of value.receipts ?? []) {
+    const receipt = validateBrowserDatabaseExecutionReceipt(candidate);
+    if (!receipt.ok) return receipt;
+    if (receipt.value.databaseNodeId !== value.databaseNodeId) {
+      return browserDatabaseIntentFailed(
+        "intent-record-invalid",
+        "An intent ledger contains another database node receipt.",
+      );
+    }
+    if (
+      intentIds.has(receipt.value.intentId) ||
+      sequences.has(receipt.value.sequence) ||
+      receipt.value.sequence <= previousReceiptSequence
+    ) {
+      return browserDatabaseIntentFailed(
+        "intent-record-invalid",
+        "An intent ledger must contain unique receipt identities in strictly increasing sequence order.",
+      );
+    }
+    if (receipt.value.sequence >= value.nextSequence) {
+      return browserDatabaseIntentFailed(
+        "intent-record-invalid",
+        "An intent ledger next sequence must be greater than every retained receipt sequence.",
+      );
+    }
+    intentIds.add(receipt.value.intentId);
+    sequences.add(receipt.value.sequence);
+    previousReceiptSequence = receipt.value.sequence;
+    receipts.push(receipt.value);
   }
   return succeeded({
     schema: BROWSER_DATABASE_INTENT_LEDGER_SCHEMA,
     databaseNodeId: value.databaseNodeId,
     nextSequence: value.nextSequence,
     intents,
+    receipts,
   });
 }
 
@@ -358,6 +500,10 @@ function ledgerBytes(ledger: BrowserDatabaseIntentLedger): number {
   return new TextEncoder().encode(JSON.stringify(ledger)).byteLength;
 }
 
+function activeIntentCount(ledger: BrowserDatabaseIntentLedger): number {
+  return ledger.intents.filter((intent) => intent.status === "queued" || intent.status === "executing").length;
+}
+
 export function browserDatabaseIntentReadout(
   ledgerValue: unknown,
   limitsValue: unknown,
@@ -368,20 +514,26 @@ export function browserDatabaseIntentReadout(
   if (!limits.ok) return limits;
   const bytes = ledgerBytes(ledger.value);
   const refused = ledger.value.intents.filter((intent) => intent.status === "refused").length;
+  const queued = ledger.value.intents.filter((intent) => intent.status === "queued").length;
+  const executing = ledger.value.intents.filter((intent) => intent.status === "executing").length;
   return succeeded({
     schema: BROWSER_DATABASE_INTENT_READOUT_SCHEMA,
     databaseNodeId: ledger.value.databaseNodeId,
     admission:
       ledger.value.intents.length >= limits.value.maxIntents ||
+      ledger.value.receipts.length + activeIntentCount(ledger.value) >= limits.value.maxReceipts ||
       bytes >= limits.value.maxLedgerBytes ||
       ledger.value.nextSequence === Number.MAX_SAFE_INTEGER
         ? "backpressured"
         : "open",
     nextSequence: ledger.value.nextSequence,
     ledgerBytes: bytes,
-    pending: ledger.value.intents.length - refused,
+    queued,
+    executing,
+    settled: ledger.value.receipts.length,
     refused,
     intents: ledger.value.intents.map(copyBrowserDatabaseIntent),
+    receipts: ledger.value.receipts.map(copyBrowserDatabaseExecutionReceipt),
   });
 }
 
@@ -417,6 +569,21 @@ export function decideBrowserDatabaseIntentEnqueue(
           `Intent identifier ${draft.value.intentId} already names different work.`,
         );
   }
+  const settled = existing.value.receipts.find((receipt) => receipt.intentId === draft.value.intentId);
+  if (settled !== undefined) {
+    return browserDatabaseIntentFailed(
+      "intent-conflict",
+      `Intent identifier ${draft.value.intentId} is already represented by settled receipt ${settled.sequence.toString()}.`,
+    );
+  }
+  const reservedReceipts = existing.value.receipts.length + activeIntentCount(existing.value);
+  if (reservedReceipts >= limits.value.maxReceipts) {
+    return browserDatabaseIntentFailed(
+      "intent-capacity-exhausted",
+      `The outbox retained or reserved ${reservedReceipts.toString()} receipts and will not erase history to admit another intent.`,
+      "backpressure",
+    );
+  }
   if (existing.value.intents.length >= limits.value.maxIntents) {
     return browserDatabaseIntentFailed(
       "intent-capacity-exhausted",
@@ -435,7 +602,7 @@ export function decideBrowserDatabaseIntentEnqueue(
     schema: BROWSER_DATABASE_INTENT_SCHEMA,
     ...draft.value,
     sequence: existing.value.nextSequence,
-    status: "pending",
+    status: "queued",
     refusal: null,
   };
   const ledger: BrowserDatabaseIntentLedger = {
@@ -475,24 +642,164 @@ function retainedIntent(
       );
 }
 
-export function decideBrowserDatabaseIntentCompletion(
+export function decideBrowserDatabaseIntentBegin(
   existingValue: unknown,
   databaseNodeId: unknown,
   intentId: unknown,
   sequence: unknown,
-): BrowserDatabaseIntentResult<BrowserDatabaseIntentLedgerDecision<BrowserDatabaseIntentLedger>> {
+  limitsValue: unknown,
+): BrowserDatabaseIntentResult<BrowserDatabaseIntentLedgerDecision<BrowserDatabaseIntentRecord>> {
   if (!isIdentifier(databaseNodeId)) {
-    return browserDatabaseIntentFailed("intent-record-invalid", "Intent completion requires a database node.");
+    return browserDatabaseIntentFailed("intent-record-invalid", "Intent execution requires a database node.");
   }
+  const limits = validateBrowserDatabaseIntentLimits(limitsValue);
+  if (!limits.ok) return limits;
   const existing = currentLedger(existingValue, databaseNodeId);
   if (!existing.ok) return existing;
   const intent = retainedIntent(existing.value, intentId, sequence);
   if (!intent.ok) return intent;
-  const ledger =
-    intent.value === null
-      ? existing.value
-      : { ...existing.value, intents: existing.value.intents.filter((candidate) => candidate.intentId !== intentId) };
-  return succeeded({ ledger, value: ledger });
+  if (intent.value === null) {
+    return browserDatabaseIntentFailed("intent-conflict", `Intent ${String(intentId)} is not retained for execution.`);
+  }
+  if (intent.value.status === "refused") {
+    return browserDatabaseIntentFailed(
+      "intent-conflict",
+      `Refused intent ${intent.value.intentId} cannot begin execution.`,
+    );
+  }
+  const executing: BrowserDatabaseIntentRecord = { ...intent.value, status: "executing" };
+  const ledger: BrowserDatabaseIntentLedger = {
+    ...existing.value,
+    intents: existing.value.intents.map((candidate) =>
+      candidate.intentId === executing.intentId ? executing : candidate,
+    ),
+  };
+  const bytes = ledgerBytes(ledger);
+  if (bytes > limits.value.maxLedgerBytes) {
+    return browserDatabaseIntentFailed(
+      "intent-capacity-exhausted",
+      `The executing intent ledger needs ${bytes.toString()} bytes; the no-forget budget is ${limits.value.maxLedgerBytes.toString()} bytes.`,
+      "backpressure",
+    );
+  }
+  return succeeded({ ledger, value: executing });
+}
+
+function executionReceipt(
+  intent: BrowserDatabaseIntentRecord,
+  tickValue: unknown,
+): BrowserDatabaseIntentResult<BrowserDatabaseExecutionReceipt> {
+  if (
+    !isRecord(tickValue) ||
+    tickValue.schema !== "zeta.db.tick.v1" ||
+    tickValue.nodeId !== intent.databaseNodeId ||
+    !isIdentifier(tickValue.executorId) ||
+    typeof tickValue.executorKind !== "string" ||
+    !EXECUTOR_KINDS.has(tickValue.executorKind) ||
+    !isSequence(tickValue.revision) ||
+    tickValue.admission !== "complete" ||
+    !isSequence(tickValue.accepted) ||
+    !isSequence(tickValue.duplicates) ||
+    !isSequence(tickValue.nextDeltaIndex) ||
+    tickValue.nextDeltaIndex !== intent.deltas.length ||
+    tickValue.accepted + tickValue.duplicates !== intent.deltas.length
+  ) {
+    return browserDatabaseIntentFailed(
+      "intent-record-invalid",
+      "Intent settlement requires a complete database tick for the same node and delta batch.",
+    );
+  }
+  return succeeded({
+    schema: BROWSER_DATABASE_EXECUTION_RECEIPT_SCHEMA,
+    databaseNodeId: intent.databaseNodeId,
+    intentId: intent.intentId,
+    sequence: intent.sequence,
+    status: "settled",
+    executorId: tickValue.executorId,
+    executorKind: tickValue.executorKind as ZetaDbExecutorKind,
+    revision: tickValue.revision,
+    accepted: tickValue.accepted,
+    duplicates: tickValue.duplicates,
+    deltaCount: intent.deltas.length,
+  });
+}
+
+function receiptMatchesTick(receipt: BrowserDatabaseExecutionReceipt, tickValue: unknown): boolean {
+  return (
+    isRecord(tickValue) &&
+    tickValue.schema === "zeta.db.tick.v1" &&
+    tickValue.nodeId === receipt.databaseNodeId &&
+    tickValue.executorId === receipt.executorId &&
+    tickValue.executorKind === receipt.executorKind &&
+    tickValue.revision === receipt.revision &&
+    tickValue.admission === "complete" &&
+    tickValue.accepted === receipt.accepted &&
+    tickValue.duplicates === receipt.duplicates &&
+    tickValue.nextDeltaIndex === receipt.deltaCount
+  );
+}
+
+export function decideBrowserDatabaseIntentSettlement(
+  existingValue: unknown,
+  databaseNodeId: unknown,
+  intentId: unknown,
+  sequence: unknown,
+  tickValue: unknown,
+  limitsValue: unknown,
+): BrowserDatabaseIntentResult<BrowserDatabaseIntentLedgerDecision<BrowserDatabaseExecutionReceipt>> {
+  if (!isIdentifier(databaseNodeId)) {
+    return browserDatabaseIntentFailed("intent-record-invalid", "Intent settlement requires a database node.");
+  }
+  const limits = validateBrowserDatabaseIntentLimits(limitsValue);
+  if (!limits.ok) return limits;
+  const existing = currentLedger(existingValue, databaseNodeId);
+  if (!existing.ok) return existing;
+  const intent = retainedIntent(existing.value, intentId, sequence);
+  if (!intent.ok) return intent;
+  if (intent.value === null) {
+    const retained = existing.value.receipts.find((candidate) => candidate.intentId === intentId);
+    if (retained === undefined) {
+      return browserDatabaseIntentFailed(
+        "intent-conflict",
+        `Intent ${String(intentId)} is not retained for settlement.`,
+      );
+    }
+    return retained.sequence === sequence && receiptMatchesTick(retained, tickValue)
+      ? succeeded({ ledger: existing.value, value: retained })
+      : browserDatabaseIntentFailed(
+          "intent-conflict",
+          `Intent identifier ${String(intentId)} does not match its settled execution receipt.`,
+        );
+  }
+  if (intent.value.status !== "executing") {
+    return browserDatabaseIntentFailed(
+      "intent-conflict",
+      `Intent ${intent.value.intentId} must be executing before it can settle.`,
+    );
+  }
+  if (existing.value.receipts.length >= limits.value.maxReceipts) {
+    return browserDatabaseIntentFailed(
+      "intent-capacity-exhausted",
+      `The outbox retained ${existing.value.receipts.length.toString()} receipts and will not erase one to settle another.`,
+      "backpressure",
+    );
+  }
+  const receipt = executionReceipt(intent.value, tickValue);
+  if (!receipt.ok) return receipt;
+  const ledger: BrowserDatabaseIntentLedger = {
+    ...existing.value,
+    intents: existing.value.intents.filter((candidate) => candidate.intentId !== intentId),
+    receipts: [...existing.value.receipts, receipt.value].sort((left, right) => left.sequence - right.sequence),
+  };
+  const bytes = ledgerBytes(ledger);
+  if (bytes > limits.value.maxLedgerBytes) {
+    return browserDatabaseIntentFailed(
+      "intent-capacity-exhausted",
+      `The settled intent ledger needs ${bytes.toString()} bytes; the no-forget budget is ${limits.value.maxLedgerBytes.toString()} bytes.`,
+      "backpressure",
+    );
+  }
+  return succeeded({ ledger, value: receipt.value });
 }
 
 export function decideBrowserDatabaseIntentRefusal(
@@ -557,10 +864,25 @@ export function createInMemoryBrowserDatabaseIntentOutbox(
       const ledger = readLedger(databaseNodeId);
       return Promise.resolve(ledger.ok ? readout(ledger.value) : ledger);
     },
-    complete: (databaseNodeId, intentId, sequence) => {
+    begin: (databaseNodeId, intentId, sequence) => {
       const ledger = readLedger(databaseNodeId);
       if (!ledger.ok) return Promise.resolve(ledger);
-      const decision = decideBrowserDatabaseIntentCompletion(ledger.value, databaseNodeId, intentId, sequence);
+      const decision = decideBrowserDatabaseIntentBegin(ledger.value, databaseNodeId, intentId, sequence, limits.value);
+      if (!decision.ok) return Promise.resolve(decision);
+      store(decision.value.ledger);
+      return Promise.resolve(succeeded(copyBrowserDatabaseIntent(decision.value.value)));
+    },
+    settle: (databaseNodeId, intentId, sequence, tick) => {
+      const ledger = readLedger(databaseNodeId);
+      if (!ledger.ok) return Promise.resolve(ledger);
+      const decision = decideBrowserDatabaseIntentSettlement(
+        ledger.value,
+        databaseNodeId,
+        intentId,
+        sequence,
+        tick,
+        limits.value,
+      );
       if (!decision.ok) return Promise.resolve(decision);
       store(decision.value.ledger);
       return Promise.resolve(readout(decision.value.ledger));
