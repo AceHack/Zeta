@@ -1,0 +1,16 @@
+{
+  "name": "Zeta Society Heartbeat",
+  "description": "Private GitHub App that can dispatch the Zeta society heartbeat workflow only.",
+  "url": "https://idspace-dla-6faa9bmi.manus.space",
+  "redirect_url": "https://idspace-dla-6faa9bmi.manus.space/api/github-app/manifest/callback",
+  "setup_url": "https://idspace-dla-6faa9bmi.manus.space/api/github-app/control",
+  "public": false,
+  "request_oauth_on_install": false,
+  "hook_attributes": {
+    "active": false
+  },
+  "default_permissions": {
+    "actions": "write"
+  },
+  "default_events": []
+}

@@ -148,6 +148,9 @@ const GRID = 128;  // smaller grid for parallel runs
 const GRID2 = GRID * GRID;
 const N_RACE = 8000; // walkers per oracle — enough for spread < 0.05 verdict
 const N_ORACLES = 17;
+// GitHub Pages remains the primary interface. This separate protected harness
+// holds the GitHub App key server-side; the static page never sees a credential.
+const GITHUB_APP_HARNESS_ORIGIN = "https://idspace-dla-6faa9bmi.manus.space";
 
 // Oracle names (same as the cross-oracle chart in OracleRGBA)
 const ORACLE_NAMES = [
@@ -313,11 +316,10 @@ export default function OracleRaceMode() {
   // Merged BNN posteriors from GitHub society priorHints (EP bidirectional update)
   const [mergedPosteriors, setMergedPosteriors] = useState<Array<{ dimension: string; mu: number; sigma2: number }>>([]);
   const [showFmz, setShowFmz] = useState(false);
-  // Live agent badge: fetch latest agent event timestamps from GitHub
-  const [heartbeatPat, setHeartbeatPat] = useState<string>(() => {
-    try { return localStorage.getItem("zeta-gh-pat") ?? ""; } catch { return ""; }
-  });
-  const [heartbeatStatus, setHeartbeatStatus] = useState<"idle" | "triggering" | "ok" | "error">("idle");
+  // The static GitHub Pages client opens the protected harness in a popup. It
+  // receives only a small status message via postMessage—never a GitHub token.
+  const [heartbeatStatus, setHeartbeatStatus] = useState<"idle" | "connecting" | "connected" | "triggered" | "error">("idle");
+  const [heartbeatMessage, setHeartbeatMessage] = useState("");
   const [agentBadge, setAgentBadge] = useState<{
     liveCount: number;
     agents: Array<{ id: string; lastAt: string; ageMinutes: number }>;
@@ -325,6 +327,25 @@ export default function OracleRaceMode() {
   } | null>(null);
 
   // On mount: decode #race=... hash if present and populate seed log
+  useEffect(() => {
+    // Remove the legacy browser token if an earlier version stored one.
+    try { localStorage.removeItem("zeta-gh-pat"); } catch { /* storage unavailable */ }
+
+    const receiveHarnessMessage = (event: MessageEvent<unknown>) => {
+      if (event.origin !== GITHUB_APP_HARNESS_ORIGIN || !event.data || typeof event.data !== "object") return;
+      const message = event.data as { source?: string; status?: string; message?: string };
+      if (message.source !== "zeta-github-app") return;
+      const status = message.status === "triggered" ? "triggered"
+        : message.status === "connected" ? "connected"
+        : "error";
+      setHeartbeatStatus(status);
+      setHeartbeatMessage(message.message ?? "");
+      window.setTimeout(() => setHeartbeatStatus("idle"), 8_000);
+    };
+    window.addEventListener("message", receiveHarnessMessage);
+    return () => window.removeEventListener("message", receiveHarnessMessage);
+  }, []);
+
   useEffect(() => {
     const decoded = decodeRaceHash(window.location.hash);
     if (decoded && results.length === 0) {
@@ -1095,37 +1116,36 @@ export default function OracleRaceMode() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.2rem" }}>
             <span style={{ color: "#6ee7b7", fontWeight: "bold" }}>🌱 GitHub Agent Society (live from Zeta main)</span>
             <button
-              title="Trigger a manual society heartbeat via GitHub API (requires a PAT with workflow scope)"
+              title="Connect the protected GitHub App or trigger the heartbeat without exposing a token to this page"
               onClick={() => {
-                const pat = heartbeatPat || window.prompt("Enter GitHub PAT (workflow scope):", "") || "";
-                if (!pat) return;
-                try { localStorage.setItem("zeta-gh-pat", pat); } catch { /* ignore */ }
-                setHeartbeatPat(pat);
-                setHeartbeatStatus("triggering");
-                fetch("https://api.github.com/repos/Lucent-Financial-Group/Zeta/actions/workflows/society-heartbeat.yml/dispatches", {
-                  method: "POST",
-                  headers: { Authorization: `Bearer ${pat}`, "Content-Type": "application/json", Accept: "application/vnd.github+json" },
-                  body: JSON.stringify({ ref: "main" }),
-                })
-                  .then(r => {
-                    if (r.ok || r.status === 204) { setHeartbeatStatus("ok"); setTimeout(() => setHeartbeatStatus("idle"), 5000); }
-                    else { setHeartbeatStatus("error"); setTimeout(() => setHeartbeatStatus("idle"), 5000); }
-                  })
-                  .catch(() => { setHeartbeatStatus("error"); setTimeout(() => setHeartbeatStatus("idle"), 5000); });
+                setHeartbeatStatus("connecting");
+                const controlUrl = new URL("/api/github-app/control", GITHUB_APP_HARNESS_ORIGIN);
+                controlUrl.searchParams.set("returnTo", window.location.origin);
+                const controlWindow = window.open(controlUrl.toString(), "zeta-github-app", "popup=yes,width=640,height=620");
+                if (!controlWindow) {
+                  setHeartbeatStatus("error");
+                  setHeartbeatMessage("The browser blocked the authorization window. Allow popups and try again.");
+                  window.setTimeout(() => setHeartbeatStatus("idle"), 8_000);
+                }
               }}
               style={{
                 fontSize: "0.5rem", padding: "0.1rem 0.3rem", cursor: "pointer",
-                background: heartbeatStatus === "ok" ? "rgba(16,185,129,0.15)"
+                background: heartbeatStatus === "connected" || heartbeatStatus === "triggered" ? "rgba(16,185,129,0.15)"
                   : heartbeatStatus === "error" ? "rgba(239,68,68,0.15)"
-                  : heartbeatStatus === "triggering" ? "rgba(234,179,8,0.15)"
+                  : heartbeatStatus === "connecting" ? "rgba(234,179,8,0.15)"
                   : "rgba(255,255,255,0.05)",
-                border: `1px solid ${heartbeatStatus === "ok" ? "#10b981" : heartbeatStatus === "error" ? "#ef4444" : heartbeatStatus === "triggering" ? "#eab308" : "#334155"}`,
+                border: `1px solid ${heartbeatStatus === "connected" || heartbeatStatus === "triggered" ? "#10b981" : heartbeatStatus === "error" ? "#ef4444" : heartbeatStatus === "connecting" ? "#eab308" : "#334155"}`,
                 borderRadius: 3,
-                color: heartbeatStatus === "ok" ? "#6ee7b7" : heartbeatStatus === "error" ? "#fca5a5" : heartbeatStatus === "triggering" ? "#fde047" : "#94a3b8",
+                color: heartbeatStatus === "connected" || heartbeatStatus === "triggered" ? "#6ee7b7" : heartbeatStatus === "error" ? "#fca5a5" : heartbeatStatus === "connecting" ? "#fde047" : "#94a3b8",
               }}>
-              {heartbeatStatus === "ok" ? "✓ triggered" : heartbeatStatus === "error" ? "✗ failed" : heartbeatStatus === "triggering" ? "⏳ triggering…" : "⚡ trigger heartbeat"}
+              {heartbeatStatus === "triggered" ? "✓ triggered" : heartbeatStatus === "connected" ? "✓ GitHub connected" : heartbeatStatus === "error" ? "✗ connection failed" : heartbeatStatus === "connecting" ? "⏳ connecting…" : "⚡ connect GitHub"}
             </button>
           </div>
+          {heartbeatMessage && heartbeatStatus !== "idle" && (
+            <div style={{ color: heartbeatStatus === "error" ? "#fca5a5" : "#94a3b8", fontSize: "0.5rem", marginBottom: "0.2rem" }}>
+              {heartbeatMessage}
+            </div>
+          )}
           <div style={{ color: "#d1fae5" }}>
             Generation <span style={{ color: "#10b981", fontWeight: "bold" }}>{githubSociety.generation}</span>
             {" · "}Mean fitness <span style={{ color: "#10b981", fontWeight: "bold" }}>{githubSociety.meanFitness.toFixed(4)}</span>
