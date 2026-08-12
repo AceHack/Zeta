@@ -45,6 +45,8 @@
     "**/BenchmarkDotNet.Artifacts/**",
     "**/TestResults/**",
     "**/artifacts/**",
+    "dist",
+    "dist/**",
     "**/bin/**",
     "**/obj/**",
     "**/.lake/**",
