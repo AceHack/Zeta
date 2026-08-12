@@ -87,6 +87,18 @@ describe("HeatAwareScheduler — heat weights", () => {
     expect(() => s.recordHeat(99, "hot")).not.toThrow();
     expect(s.heatWeights).toEqual([1.0, 1.0]); // unchanged
   });
+
+  it("laneIndex EXACTLY at the lane count is out of range — the boundary, not merely far outside", () => {
+    // -1 and 99 above are comfortably outside and stay rejected even by an off-by-one guard, so
+    // they cannot hold `laneIndex >= length`. Index === laneCount is the single value that does:
+    // relax the guard to `>` and recordHeat writes _weights[2] on a 2-lane scheduler, GROWING the
+    // weight array past the lane count and silently inventing a lane the base scheduler will never
+    // be asked about. Found by the mutation runner (gte-to-gt, tick 11189).
+    const s = createHeatAwareScheduler(createStrictPriorityScheduler(), 2);
+    s.recordHeat(2, "critical");
+    expect(s.heatWeights.length).toBe(2);
+    expect(s.heatWeights).toEqual([1.0, 1.0]);
+  });
 });
 
 describe("HeatAwareScheduler — selection frequency (observable throttle)", () => {
