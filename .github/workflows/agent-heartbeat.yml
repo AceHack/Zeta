@@ -370,7 +370,15 @@ jobs:
               print(f'[cadence] {agent}: fewer than 2 events — cannot measure yet')
               sys.exit(0)
           from datetime import datetime
-          ts = [datetime.fromisoformat(r.replace('Z', '+00:00')) for r in rows]
+          # SORT BY TIMESTAMP, not by filename. The comment above says name order is chronological
+          # because ZetaIds are time-ordered — that was verified once and is no longer true. One
+          # event is named with the HEX OF ITS OWN JSON (7b22... = '{"attestor"...'), which sorts
+          # after every ZetaId (7b > 08) while carrying a timestamp three days earlier. On real data
+          # that produced a gap of MINUS 59.6 hours and 'actual=0.0% of target' — a measurement
+          # confidently reporting the opposite of the truth, which is the exact failure this step's
+          # own comments say it was rewritten to avoid. Sorting on the value we actually measure is
+          # robust to however the files come to be named.
+          ts = sorted(datetime.fromisoformat(r.replace('Z', '+00:00')) for r in rows)
           gaps = [(b - a).total_seconds() for a, b in zip(ts, ts[1:]) if (b - a).total_seconds() > 0]
           declared = 900
           gap = gaps[-1] if gaps else 0
