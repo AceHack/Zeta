@@ -275,3 +275,11 @@ full-ai-cluster/portal/web/.ds-css/
 # + the pinned cubical clone, and banned from the tree per
 # .claude/rules/no-binary-in-proof-lineage.md (verification artifacts are text).
 src/Core.Agda/_build/
+
+# The ARC-AGI dataset is a LOCAL CLONE, not a submodule. `fe38a2a8e` committed it as a bare
+# gitlink (mode 160000) with no `.gitmodules` entry — there is no `.gitmodules` in this repo at
+# all — so every submodule-aware checkout died on
+#   fatal: No url found for submodule path 'data/ARC-AGI' in .gitmodules
+# and took `gate (required)` down with it. `arc-harness.ts` states the intent plainly:
+# "Ensure 'data/ARC-AGI' is cloned." Ignored so it cannot be re-added by accident.
+data/ARC-AGI/
