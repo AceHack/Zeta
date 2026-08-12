@@ -1,10 +1,12 @@
 {
   "version": 1,
-  "generatedAtIso": "2026-08-12T13:53:11.794Z",
-  "commit": "2f697c9c",
+  "generatedAtIso": "2026-08-12T18:40:49.516Z",
+  "commit": "1ce3530a",
   "totals": {
-    "findings": 0,
-    "bySeverity": {}
+    "findings": 8,
+    "bySeverity": {
+      "failing": 8
+    }
   },
   "territories": [
     {
@@ -34,8 +36,97 @@
         {
           "id": "main-failures",
           "name": "main — recent runs",
-          "summary": "All of the last 40 runs on main concluded green.",
-          "findings": []
+          "summary": "8 of the last 40 runs on main failed.",
+          "findings": [
+            {
+              "id": "ci:31628380813",
+              "title": "Deploy to GitHub Pages",
+              "severity": "failing",
+              "locus": "1ce3530ad — 2026-08-12 18:35",
+              "evidence": [
+                "Deploy to GitHub Pages",
+                "run id 31628380813"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:31627562223",
+              "title": "drift-sweep",
+              "severity": "failing",
+              "locus": "fd3be0b2a — 2026-08-12 18:25",
+              "evidence": [
+                "drift-sweep",
+                "run id 31627562223"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:31625063461",
+              "title": "drift-sweep",
+              "severity": "failing",
+              "locus": "973e1265b — 2026-08-12 17:55",
+              "evidence": [
+                "drift-sweep",
+                "run id 31625063461"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:31624702801",
+              "title": "Automatic Dependency Submission (NuGet)",
+              "severity": "failing",
+              "locus": "345721cde — 2026-08-12 17:51",
+              "evidence": [
+                "Automatic Dependency Submission (NuGet)",
+                "run id 31624702801"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:31624606073",
+              "title": "agent-heartbeat",
+              "severity": "failing",
+              "locus": "4ef966983 — 2026-08-12 17:50",
+              "evidence": [
+                "agent-heartbeat",
+                "run id 31624606073"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:31623396267",
+              "title": "tick-metrics",
+              "severity": "failing",
+              "locus": "4ef966983 — 2026-08-12 17:35",
+              "evidence": [
+                "tick-metrics",
+                "run id 31623396267"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:31622634709",
+              "title": "drift-sweep",
+              "severity": "failing",
+              "locus": "4ef966983 — 2026-08-12 17:26",
+              "evidence": [
+                "drift-sweep",
+                "run id 31622634709"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:31622321199",
+              "title": "society-heartbeat",
+              "severity": "failing",
+              "locus": "4ef966983 — 2026-08-12 17:22",
+              "evidence": [
+                "society-heartbeat",
+                "run id 31622321199"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            }
+          ]
         }
       ]
     }
