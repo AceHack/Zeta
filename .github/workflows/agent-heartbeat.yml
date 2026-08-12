@@ -296,6 +296,28 @@ jobs:
           if [ "$FA_RC" -ne 0 ]; then
             echo "::warning::[false-alarm] metric failed rc=$FA_RC — the convergence trend is going unmeasured"
           fi
+
+          # STAGE db/ — this is what makes the metric mean anything (Aaron 2026-08-12).
+          #
+          # The runner now records EVERY observation to db/mutation-findings/<agent>.jsonl, not just
+          # the ones somebody chose a cell on. Without committing it the write lands in a checkout
+          # that is thrown away, and the false-alarm rate can only ever be false/RESOLVED — a
+          # voluntary, biased sample. With it, `alarmsReported` is the real population.
+          #
+          # Scoped to db/ EXACTLY, never `git add -A`: the same rule §159 states for the healer.
+          # One line per agent per tick, and the append is idempotent by content address, so a
+          # re-run of a tick adds nothing and produces an empty diff rather than a duplicate.
+          git add db/mutation-findings/ || true
+          if git diff --cached --quiet; then
+            echo "[mutation] no new findings to record"
+          else
+            git commit --no-verify -q -m "findings($AGENT): tick $TICK mutation observation
+
+          Denominator for the false-alarm rate — every observation, not just resolved ones.
+          Idempotent by content address; a re-run of this tick appends nothing.
+
+          Co-Authored-By: Kiro <noreply@kiro.dev>"
+          fi
           exit 0
 
       - name: Measure cadence (declared vs actual — detect silent degradation)

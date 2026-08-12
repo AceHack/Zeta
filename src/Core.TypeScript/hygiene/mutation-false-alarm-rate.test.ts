@@ -7,6 +7,7 @@ import {
   formatReadout,
   resolutionOf,
 } from "./mutation-false-alarm-rate";
+import { makeFinding, type FindingRecord } from "./mutation-findings";
 
 // The metric that would eventually earn the runner the right to be more than a report. Its whole
 // value is in being HONEST about a small, biased sample — a confident percentage here would be the
@@ -36,6 +37,19 @@ const freedom = (over: Partial<Freedom> = {}): Freedom => ({
   ...over,
 });
 const ledger = (declarer: string, freedoms: Freedom[]): DeclarerLedger => ({ declarer, freedoms });
+
+/** `n` distinct alarms — the recorded population a rate is a fraction of. */
+const alarms = (n: number): FindingRecord[] =>
+  Array.from({ length: n }, (_, i) =>
+    makeFinding({
+      source: `s${String(i)}.ts`,
+      test: `s${String(i)}.test.ts`,
+      mutation: "gte-to-gt",
+      agent: "otto",
+      tick: 1,
+      outcome: "indistinguishable",
+    }),
+  );
 
 describe("classification — what a cell says about the ALARM, not about the code", () => {
   test("write-test is the only TRUE alarm", () => {
@@ -104,6 +118,7 @@ describe("the rate is WITHHELD on a small sample, not guessed", () => {
     const at = falseAlarmReadout(
       [...many("declare-free", 5), ...many("write-test", MIN_SAMPLE - 5)],
       [],
+      alarms(MIN_SAMPLE),
     );
     expect(at.resolved).toBe(MIN_SAMPLE);
     expect(at.falseAlarmRate).toBeCloseTo(5 / MIN_SAMPLE, 10);
@@ -112,6 +127,7 @@ describe("the rate is WITHHELD on a small sample, not guessed", () => {
     const below = falseAlarmReadout(
       [...many("declare-free", 5), ...many("write-test", MIN_SAMPLE - 6)],
       [],
+      alarms(MIN_SAMPLE),
     );
     expect(below.resolved).toBe(MIN_SAMPLE - 1);
     expect(below.falseAlarmRate).toBeNull();
@@ -121,9 +137,49 @@ describe("the rate is WITHHELD on a small sample, not guessed", () => {
     const r = falseAlarmReadout(
       [...many("declare-free", 6), ...many("note-redundant", 4), ...many("write-test", 10)],
       [],
+      alarms(MIN_SAMPLE),
     );
     expect(r.falseAlarms).toBe(10);
     expect(r.falseAlarmRate).toBeCloseTo(0.5, 10);
+  });
+});
+
+describe("COVERAGE — recording the population does not make the resolved subset fair", () => {
+  test("a big sample over a much bigger alarm population is still withheld", () => {
+    // The trap this guards: once findings are recorded it is tempting to treat the rate as earned.
+    // But an unresolved alarm is still an alarm nobody classified, so 25 resolutions out of 500
+    // alarms describes the 25 — and whoever resolved them chose which.
+    const r = falseAlarmReadout([...many("write-test", 20), ...many("declare-free", 5)], [], alarms(500));
+    expect(r.resolved).toBe(25);
+    expect(r.alarmsReported).toBe(500);
+    expect(r.falseAlarmRate).toBeNull();
+    expect(r.withheld).toContain("insufficient coverage");
+    expect(r.slamComparable).toBe(false);
+  });
+
+  test("both withholding reasons are reported SEPARATELY — different problems, different fixes", () => {
+    // "too few" is fixed by resolving more; "too unrepresentative" by resolving a fairer slice.
+    // One merged message would hide which is biting.
+    const r = falseAlarmReadout(many("write-test", 2), [], alarms(500));
+    expect(r.withheld).toContain("insufficient sample");
+    expect(r.withheld).toContain("insufficient coverage");
+  });
+
+  test("enough sample AND enough coverage makes it SLAM-comparable", () => {
+    const r = falseAlarmReadout([...many("write-test", 18), ...many("declare-free", 2)], [], alarms(20));
+    expect(r.resolutionCoverage).toBeCloseTo(1, 10);
+    expect(r.falseAlarmRate).toBeCloseTo(0.1, 10);
+    expect(r.slamComparable).toBe(true);
+    expect(r.coverage).toBe("reports-recorded");
+  });
+
+  test("with no findings recorded the readout says so rather than implying full coverage", () => {
+    const r = falseAlarmReadout(many("write-test", 50), [], []);
+    expect(r.alarmsReported).toBe(0);
+    expect(r.resolutionCoverage).toBeNull();
+    expect(r.coverage).toBe("resolutions-only");
+    expect(r.slamComparable).toBe(false);
+    expect(r.withheld).toContain("no alarms recorded");
   });
 });
 

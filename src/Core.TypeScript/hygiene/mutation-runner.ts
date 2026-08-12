@@ -56,6 +56,7 @@ import {
   viewOf,
 } from "./mutation-freedoms";
 import { ESCAPE_INDEX, execute, observeFinding, roomOf } from "./mutation-readout";
+import { appendFinding, makeFinding, type FindingOutcome } from "./mutation-findings";
 
 /** A single mechanical edit. `find` must be a literal so application is exact and reversible. */
 export interface Mutation {
@@ -387,6 +388,29 @@ function main(): void {
   }
 
   const finding = runMutant(root, target, mutation);
+
+  // RECORD THE OBSERVATION, whatever it was. This is the DENOMINATOR: without it the false-alarm
+  // rate can only be false/RESOLVED, and resolution is voluntary — a biased sample by construction.
+  // Recorded for all three outcomes, including `distinguished`, because "the suite did its job" is
+  // exactly the population an alarm rate is a fraction OF. Idempotent by content address, so a
+  // re-run of the same tick collapses instead of inflating the denominator.
+  const outcome: FindingOutcome =
+    finding.distinguishability.kind === "unresolved"
+      ? "unresolved"
+      : finding.distinguishability.kind === "indistinguishable-under-suite"
+        ? "indistinguishable"
+        : "distinguished";
+  appendFinding(
+    root,
+    makeFinding({
+      source: finding.source,
+      test: finding.test,
+      mutation: finding.mutation,
+      agent,
+      tick,
+      outcome,
+    }),
+  );
 
   // The declarer's OWN view decides what is reportable — two agents may legitimately disagree
   // about whether a dimension is a gap or a freedom, and that disagreement is preserved rather
