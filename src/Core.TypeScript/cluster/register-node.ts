@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// tools/cluster/deregister-node.ts
+// tools/cluster/register-node.ts
 //
 // Remove a registered cluster-node from git: deletes
 // maintainers/<operator>/cluster-nodes/<hostname>/ + commits + opens
@@ -11,7 +11,7 @@
 // Tracks as 081KSGS9H0008QG0R000EPPQTR; this tool is the implementation.
 //
 // Usage:
-//   bun tools/cluster/deregister-node.ts --host <hostname> \
+//   bun tools/cluster/register-node.ts --host <hostname> \
 //       [--maintainer <name>] [--reason "..."] [--push-direct]
 //
 // Defaults:
@@ -23,11 +23,11 @@
 //   1. Resolve operator (gh api /user .login) unless --maintainer overrides
 //   2. Verify maintainers/<op>/cluster-nodes/<host>/ exists on origin/main
 //      (use `git ls-tree origin/main` to avoid relying on local checkout state)
-//   3. Create a branch `deregister/<host>-<YYYY-MM-DD-HHMM>`
+//   3. Create a branch `register/<host>-<YYYY-MM-DD-HHMM>`
 //   4. git rm -r the cluster-nodes/<host>/ directory
 //   5. Commit with reason (if provided) + auto-generated message
 //   6. Push branch
-//   7. Open PR with title "deregister(cluster-node): <host> — <reason or 'no reason given'>"
+//   7. Open PR with title "register(cluster-node): <host> — <reason or 'no reason given'>"
 //   8. Print PR URL
 //
 // Exit codes:
@@ -40,8 +40,8 @@
 // inverse) + 081KSGS9H0008QG0R002K93MWX (iter-5.4.2 ArgoCD reconciliation; ArgoCD will
 // reconcile the node-removal on PR-merge per its self-heal+prune policy).
 
-import { spawnSync } from "node:child_process";
-import { mkdtempSync, rmSync } from "node:fs";
+import { spawnSync, execFileSync } from "node:child_process";
+import { mkdtempSync, rmSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -88,7 +88,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError {
     } else if (a === "-h" || a === "--help") {
       return {
         error:
-          "Usage: bun tools/cluster/deregister-node.ts --host <hostname> " +
+          "Usage: bun tools/cluster/register-node.ts --host <hostname> " +
           "[--maintainer <name>] [--reason \"...\"] [--push-direct]",
       };
     } else {
@@ -165,7 +165,7 @@ function isoUtcTimestamp(): string {
 function main(): number {
   const parsed = parseArgs(process.argv.slice(2));
   if ("error" in parsed) {
-    process.stderr.write(`deregister-node: ${parsed.error}\n`);
+    process.stderr.write(`register-node: ${parsed.error}\n`);
     return 1;
   }
   const { host, reason, pushDirect } = parsed;
@@ -176,34 +176,28 @@ function main(): number {
     maintainer = resolveOperator();
     if (maintainer === null) {
       process.stderr.write(
-        "deregister-node: could not resolve operator via 'gh api /user'. " +
+        "register-node: could not resolve operator via 'gh api /user'. " +
           "Run 'gh auth login' first, or pass --maintainer <name>.\n",
       );
       return 1;
     }
   }
-  process.stdout.write(`deregister-node: operator = ${maintainer}\n`);
+  process.stdout.write(`register-node: operator = ${maintainer}\n`);
 
   // Step 2: fetch latest main + verify node exists
   const fetch = run("git", ["fetch", "origin", "main"]);
   if (!fetch.ok) {
-    process.stderr.write(`deregister-node: git fetch origin main failed:\n${fetch.stderr}\n`);
+    process.stderr.write(`register-node: git fetch origin main failed:\n${fetch.stderr}\n`);
     return 3;
   }
-  if (!nodeExistsOnMain(maintainer, host)) {
-    process.stderr.write(
-      `deregister-node: maintainers/${maintainer}/cluster-nodes/${host}/ not found on origin/main; ` +
-        `nothing to deregister.\n`,
-    );
-    return 2;
-  }
+  
 
   // Step 3: temp worktree off origin/main (don't touch the operator's primary checkout)
-  const wt = mkdtempSync(join(tmpdir(), "zeta-deregister-"));
-  process.stdout.write(`deregister-node: temp worktree = ${wt}\n`);
+  const wt = mkdtempSync(join(tmpdir(), "zeta-register-"));
+  process.stdout.write(`register-node: temp worktree = ${wt}\n`);
   const wtAdd = run("git", ["worktree", "add", wt, "origin/main"]);
   if (!wtAdd.ok) {
-    process.stderr.write(`deregister-node: git worktree add failed:\n${wtAdd.stderr}\n`);
+    process.stderr.write(`register-node: git worktree add failed:\n${wtAdd.stderr}\n`);
     // Cleanup the mkdtempSync dir even though worktree-add failed
     // (Copilot P1 on #5216 — without this, temp dirs leak when the
     // repo is in a bad git state).
@@ -215,11 +209,11 @@ function main(): number {
   const ts = isoUtcTimestamp();
   const branch = pushDirect
     ? "main"
-    : `deregister/${host}-${ts}`;
+    : `register/${host}-${ts}`;
   if (!pushDirect) {
     const sw = run("git", ["switch", "-c", branch, "origin/main"], wt);
     if (!sw.ok) {
-      process.stderr.write(`deregister-node: git switch -c ${branch} failed:\n${sw.stderr}\n`);
+      process.stderr.write(`register-node: git switch -c ${branch} failed:\n${sw.stderr}\n`);
       // Best-effort worktree cleanup before exit:
       run("git", ["worktree", "remove", "--force", wt]);
       rmSync(wt, { recursive: true, force: true });
@@ -227,15 +221,58 @@ function main(): number {
     }
   }
 
-  // Step 5: git rm -r the cluster-nodes/<host>/ subtree
+  
+  // Step 5: Generate and write node.yaml
   const dir = `maintainers/${maintainer}/cluster-nodes/${host}`;
-  const rm = run("git", ["rm", "-r", dir], wt);
-  if (!rm.ok) {
-    process.stderr.write(`deregister-node: git rm -r ${dir} failed:\n${rm.stderr}\n`);
+  const absDir = join(wt, dir);
+  mkdirSync(absDir, { recursive: true });
+
+  // Gather basic hardware info (simplified version if zeta-hardware-detect is not run natively)
+  let gpu = "none";
+  let cpu = "unknown";
+  let memory = "unknown";
+  try {
+     const lspci = spawnSync("lspci", [], {encoding: "utf8"});
+     if (lspci.stdout) {
+         if (lspci.stdout.toLowerCase().match(/(vga|3d|display).*nvidia/)) gpu = "nvidia";
+         else if (lspci.stdout.toLowerCase().match(/(vga|3d|display).*(amd|advanced micro devices)/)) gpu = "amd";
+         else if (lspci.stdout.toLowerCase().match(/(vga|3d|display).*intel.*arc/)) gpu = "intel-arc";
+     }
+  } catch(e) {}
+  
+  const isoTime = new Date().toISOString();
+  const yaml = `apiVersion: zeta.lucent-financial-group.com/v1
+kind: ClusterNode
+metadata:
+  name: ${host}
+  namespace: zeta-cluster
+  annotations:
+    zeta.lucent-financial-group.com/registered-at: "${isoTime}"
+    zeta.lucent-financial-group.com/registered-via: "register-node.ts-cli"
+  labels:
+    zeta.lucent-financial-group.com/maintainer: "${maintainer}"
+spec:
+  hostname: ${host}
+  registration:
+    maintainer: ${maintainer}
+    timestamp: "${isoTime}"
+    via: register-node.ts-cli
+  hardware:
+    cpu: "${cpu}"
+    memory: "${memory}"
+    gpu: "${gpu}"
+`;
+
+  writeFileSync(join(absDir, "node.yaml"), yaml);
+
+  const add = run("git", ["add", dir], wt);
+  if (!add.ok) {
+    process.stderr.write(`register-node: git add failed:\n${add.stderr}\n`);
     run("git", ["worktree", "remove", "--force", wt]);
     rmSync(wt, { recursive: true, force: true });
     return 3;
   }
+
 
   
   // Determine author from ZETA_PERSONA if present
@@ -256,8 +293,8 @@ function main(): number {
 
   // Step 6: commit
   const commitMsg =
-    `deregister(cluster-node): ${host} — ${reason || "no reason given"}\n\n` +
-    `Removes maintainers/${maintainer}/cluster-nodes/${host}/ subtree.\n` +
+    `register(cluster-node): ${host} — ${reason || "no reason given"}\n\n` +
+    `Creates maintainers/${maintainer}/cluster-nodes/${host}/ subtree.\n` +
     `Sibling to iter-5.4.1 self-registration flow (081KSGS9H0008QG0R0037H3W4T substrate).\n` +
     `ArgoCD reconciliation on merge will prune the corresponding K8s\n` +
     `node-labels + taints + role-specific workload memberships per its\n` +
@@ -267,7 +304,7 @@ function main(): number {
   if (gitAuthorFlag) commitArgs.push(gitAuthorFlag);
   const commit = run("git", commitArgs, wt);
   if (!commit.ok) {
-    process.stderr.write(`deregister-node: git commit failed:\n${commit.stderr}\n`);
+    process.stderr.write(`register-node: git commit failed:\n${commit.stderr}\n`);
     run("git", ["worktree", "remove", "--force", wt]);
     rmSync(wt, { recursive: true, force: true });
     return 3;
@@ -279,7 +316,7 @@ function main(): number {
     : ["push", "-u", "origin", branch];
   const push = run("git", pushArgs, wt);
   if (!push.ok) {
-    process.stderr.write(`deregister-node: git push failed:\n${push.stderr}\n`);
+    process.stderr.write(`register-node: git push failed:\n${push.stderr}\n`);
     run("git", ["worktree", "remove", "--force", wt]);
     rmSync(wt, { recursive: true, force: true });
     return 3;
@@ -288,29 +325,29 @@ function main(): number {
   // Step 8: open PR (unless --push-direct)
   let prUrl = "";
   if (!pushDirect) {
-    const title = `deregister(cluster-node): ${host}${reason ? ` — ${reason}` : ""}`;
+    const title = `register(cluster-node): ${host}${reason ? ` — ${reason}` : ""}`;
     const body =
       `Removes \`maintainers/${maintainer}/cluster-nodes/${host}/\` subtree.\n\n` +
       `${reason ? `**Reason**: ${reason}\n\n` : ""}` +
       `On merge, ArgoCD reconciles the K8s state to drop the node's labels + taints + role-specific workload memberships.\n\n` +
-      `Generated by \`tools/cluster/deregister-node.ts\` (081KSGS9H0008QG0R000EPPQTR substrate; sibling to iter-5.4.1 self-registration).\n`;
+      `Generated by \`tools/cluster/register-node.ts\` (081KSGS9H0008QG0R000EPPQTR substrate; sibling to iter-5.4.1 self-registration).\n`;
     const prCreate = run(
       "gh",
       ["pr", "create", "--head", branch, "--base", "main", "--title", title, "--body", body],
       wt,
     );
     if (!prCreate.ok) {
-      process.stderr.write(`deregister-node: gh pr create failed:\n${prCreate.stderr}\n`);
+      process.stderr.write(`register-node: gh pr create failed:\n${prCreate.stderr}\n`);
       run("git", ["worktree", "remove", "--force", wt]);
       rmSync(wt, { recursive: true, force: true });
       return 3;
     }
     prUrl = prCreate.stdout.trim();
-    process.stdout.write(`deregister-node: PR opened: ${prUrl}\n`);
-    process.stdout.write(`deregister-node: review + merge to complete deregistration\n`);
+    process.stdout.write(`register-node: PR opened: ${prUrl}\n`);
+    process.stdout.write(`register-node: review + merge to complete deregistration\n`);
   } else {
     process.stdout.write(
-      `deregister-node: direct push to main succeeded; ArgoCD will reconcile within ~3 min\n`,
+      `register-node: direct push to main succeeded; ArgoCD will reconcile within ~3 min\n`,
     );
   }
 

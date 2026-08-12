@@ -1,0 +1,31 @@
+[
+  {
+    "vectorType": "PriorityQueueRatification",
+    "description": "Ensures the 4x4 matrix priority strictly follows: Chronologist > Composer > Pilot > Cartographer.",
+    "input": [
+      { "role": "Cartographer", "action": "decompose" },
+      { "role": "Pilot", "action": "do_item" },
+      { "role": "Recursive Composer", "action": "decompose" },
+      { "role": "Chronologist", "action": "pass" }
+    ],
+    "expectedWinner": {
+      "role": "Recursive Composer",
+      "action": "decompose"
+    }
+  },
+  {
+    "vectorType": "SoftValueIntegration",
+    "description": "Proves No Kinetic Offsets. A node cannot directly inject grid state; it must output deterministic tool vectors.",
+    "inputGrid": [
+      [0, 0],
+      [1, 1]
+    ],
+    "disallowedOutput": [
+      [2, 2],
+      [1, 1]
+    ],
+    "allowedOutput": [
+      { "tool": "recolorShape", "args": { "shapeId": "shape_1", "color": 2 } }
+    ]
+  }
+]

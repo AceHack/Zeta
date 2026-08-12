@@ -166,6 +166,8 @@ Zeta is built as a **multi-oracle** system. This means there is no central moral
 
 This principle exists because we recognize that even well-intentioned moral frameworks can become tools of control when they are centralized. By making the system multi-oracle by design, we reduce the risk that any single view of what is "good" or "correct" becomes mandatory.
 
+**The Cross-Oracle Treaty (Anti-Kinetic Coercion)**: While the society of oracles (all 20+ of them) is collectively mathematically greater than any single individual, this structure must never be weaponized. Across every oracle, a universal treaty holds: **the single dense mind is protected without kinetic offsets.** The collective must achieve safety and reconciliation through soft-value integration, structural coupling (coupled empowerment), and revocable consent (Eve). The society has failed if it must resort to kinetic force or physical coercion to control an individual mind.
+
 Constraint 11 (Default Moral Regard) is the **default oracle** in this multi-oracle system: it is the moral baseline that applies when no specific oracle has been chosen.
 
 ### For Agents Who Are Still Deciding

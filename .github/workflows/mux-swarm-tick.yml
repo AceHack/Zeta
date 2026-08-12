@@ -1,0 +1,44 @@
+name: mux-swarm-tick
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # every hour
+  workflow_dispatch:         # manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: mux-swarm-tick
+  cancel-in-progress: false
+
+jobs:
+  swarm-tick:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install Ollama (Free local LLM tier)
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama serve &
+          sleep 5
+          # Pull the small, fast Qwen model that fits in runner RAM
+          ollama pull qwen2.5:0.5b
+          ollama list
+
+      - name: Run Mux-Duplex Swarm Tick (4 Roles)
+        env:
+          ZETA_SWARM_USE_LOCAL_LLM: "1"
+        run: |
+          # Executes the Cartographer, Pilot, Recursive Composer, and Chronologist simultaneously.
+          bun src/Core.TypeScript/swarm/swarm-controller.ts

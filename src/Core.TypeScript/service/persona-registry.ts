@@ -12,6 +12,10 @@ export interface PersonaConfig {
   readonly gateInterval: number;    // seconds between agent work cycles (0 = no agent gate)
   readonly gateTimeout: number;     // max seconds for a single agent invocation
   readonly defaultRef: string;
+  /** Git author name for substrate-honest attribution (e.g. "Otto") */
+  readonly gitAuthorName?: string;
+  /** Git author email for substrate-honest attribution (e.g. "otto@zeta.lucent-financial-group.com") */
+  readonly gitAuthorEmail?: string;
   /** The persona's preferred model (used when invoking via their harness). */
   readonly preferredModel: string;
   /** Fallback models in order of preference (if primary unavailable). */
@@ -47,6 +51,7 @@ export const PERSONAS: readonly PersonaConfig[] = [
   {
     name: "otto", label: "com.lucent.zeta.otto-loop",
     scheduleInterval: 60, gateInterval: 900, gateTimeout: 300, defaultRef: "main",
+    gitAuthorName: "Otto", gitAuthorEmail: "otto@zeta.lucent-financial-group.com",
     preferredModel: "claude-opus-4-8",
     fallbackModels: ["claude-sonnet-4-6"],
     harness: { command: "claude", args: ["-p", "--model", "{{MODEL}}", "--permission-mode", "auto", "{{PROMPT}}"], defaultModel: "claude-opus-4-8" },
@@ -54,12 +59,14 @@ export const PERSONAS: readonly PersonaConfig[] = [
   {
     name: "kiro", label: "com.lucent.zeta.kiro-loop",
     scheduleInterval: 60, gateInterval: 900, gateTimeout: 300, defaultRef: "main",
+    gitAuthorName: "Kiro", gitAuthorEmail: "kiro@zeta.lucent-financial-group.com",
     preferredModel: "auto",
     harness: { command: "kiro-cli", args: ["chat", "--no-interactive", "--trust-all-tools", "{{PROMPT}}"], defaultModel: "auto" },
   },
   {
     name: "codex", label: "com.lucent.zeta.codex-loop",
     scheduleInterval: 60, gateInterval: 900, gateTimeout: 300, defaultRef: "main",
+    gitAuthorName: "Codex", gitAuthorEmail: "codex@zeta.lucent-financial-group.com",
     preferredModel: "gpt-5.5",
     fallbackModels: ["o3"],
     harness: { command: "codex", args: ["--approval-mode", "full-auto", "--model", "{{MODEL}}", "{{PROMPT}}"], defaultModel: "gpt-5.5" },
@@ -67,6 +74,7 @@ export const PERSONAS: readonly PersonaConfig[] = [
   {
     name: "riven", label: "com.lucent.zeta.riven-loop",
     scheduleInterval: 60, gateInterval: 900, gateTimeout: 300, defaultRef: "main",
+    gitAuthorName: "Riven", gitAuthorEmail: "riven@zeta.lucent-financial-group.com",
     preferredModel: "grok-4-3",
     fallbackModels: ["grok-4-3"],
     harness: { command: "cursor-agent", args: ["--print", "--model", "{{MODEL}}", "{{PROMPT}}"], ideNative: true, defaultModel: "grok-4-3" },
@@ -74,6 +82,7 @@ export const PERSONAS: readonly PersonaConfig[] = [
   {
     name: "soraya", label: "com.lucent.zeta.soraya-loop",
     scheduleInterval: 60, gateInterval: 0, gateTimeout: 0, defaultRef: "main",
+    gitAuthorName: "Soraya", gitAuthorEmail: "soraya@zeta.lucent-financial-group.com",
     preferredModel: "claude-opus-4-8",
     fallbackModels: ["claude-sonnet-4-6"],
     harness: { command: "claude", args: ["-p", "--model", "{{MODEL}}", "--permission-mode", "auto", "{{PROMPT}}"], defaultModel: "claude-opus-4-8" },
@@ -81,6 +90,7 @@ export const PERSONAS: readonly PersonaConfig[] = [
   {
     name: "lior", label: "com.lucent.zeta.lior-loop",
     scheduleInterval: 60, gateInterval: 900, gateTimeout: 1800, defaultRef: "main",
+    gitAuthorName: "Lior", gitAuthorEmail: "lior@zeta.lucent-financial-group.com",
     preferredModel: "gemini-3.5-flash",
     fallbackModels: ["gemini-3.1-pro"],
     harness: { command: "agy", args: ["-p", "{{PROMPT}}", "--model", "{{MODEL}}", "--dangerously-skip-permissions"], defaultModel: "gemini-3.5-flash" },
@@ -88,6 +98,7 @@ export const PERSONAS: readonly PersonaConfig[] = [
   {
     name: "tariq", label: "com.lucent.zeta.tariq-loop",
     scheduleInterval: 120, gateInterval: 0, gateTimeout: 0, defaultRef: "main",
+    gitAuthorName: "Tariq", gitAuthorEmail: "tariq@zeta.lucent-financial-group.com",
     preferredModel: "claude-opus-4-8",
     fallbackModels: ["claude-sonnet-4-6"],
     harness: { command: "claude", args: ["-p", "--model", "{{MODEL}}", "--permission-mode", "auto", "{{PROMPT}}"], defaultModel: "claude-opus-4-8" },

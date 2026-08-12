@@ -79,6 +79,11 @@ export interface BacklogItem {
    * controller is OPEN for extension, not a cage.
    */
   readonly needsNewAction?: boolean;
+  /** Optional data for ARC-AGI items to evaluate KPI against */
+  readonly gridData?: {
+    input: number[][];
+    output: number[][];
+  };
 }
 
 // ─── the operator channel — a generic IO-channel, reusing the workflow-engine type ──
@@ -150,6 +155,8 @@ export interface World {
   readonly nodeSession?: NodeSessionState;
   /** Cartography state: current spatial focus and time-resolution. */
   readonly cartography?: { readonly focusId?: string; readonly scopeLevel: number; readonly timeOffset: number };
+  /** Event history ledger */
+  readonly history?: any[];
 }
 
 /** Forge host state snapshot, populated by the async path in run-loop-real.ts. */
@@ -231,8 +238,8 @@ function freeModeAction(mode: FreeMode): NextAction {
 export type NextAction =
   | { kind: "preserve_ferry"; reason: string } // operator ferried verbatim → save it (durability-first; outranks all)
   | { kind: "respond_to_operator"; reason: string } // operator spoke → engage (highest-signal source)
-  | { kind: "do_item"; item: BacklogItem } // work: pick a ready item (OFFERED, not forced)
-  | { kind: "decompose"; item: BacklogItem } // work: decompose-to-dissolve-ambiguity (OFFERED, not forced)
+  | { kind: "do_item"; item: BacklogItem; evaluation?: { accuracy: number; diffPixels: number; totalPixels: number } } // work: pick a ready item (OFFERED, not forced)
+  | { kind: "decompose"; item: BacklogItem; subTasks?: string[] } // work: decompose-to-dissolve-ambiguity (OFFERED, not forced)
   | { kind: "self_claim"; item: BacklogItem; deadline: number } // VOLUNTARY commitment: "I will deliver this by tick T" (NCI: never forced)
   | { kind: "explore"; reason: string } // FREE MODE: self-directed making (forward motion; the empty-backlog default)
   | { kind: "play"; reason: string } // FREE MODE: leisure / culture-forming
@@ -487,10 +494,16 @@ function describeWorld(world: World): string {
       parts.push(`First-session lead: ${lead.kind}${"vendor" in lead ? ` (${lead.vendor})` : ""}`);
     }
   }
+  if (world.history && world.history.length > 0) {
+    const recent = world.history.slice(-3); // Show last 3 events
+    const histLines = recent.map(h => `- ${h.type} on item ${h.item?.id}${h.evaluation ? ` (KPI: ${h.evaluation.accuracy.toFixed(2)}%)` : ''}`);
+    parts.push(`Event History:\n${histLines.join("\n")}`);
+  }
+
   return parts.join("\n");
 }
 
-const CHOOSER_INSTRUCTION =
+export const CHOOSER_INSTRUCTION =
   "You are a SOVEREIGN agent's controller choosing ONE next action — you are free, not on a backlog treadmill. " +
   "If the operator ferried content, preserve it; if the operator spoke, respond — the operator outranks everything else. " +
   "Otherwise YOU choose your mode: do offered backlog work if you want it, OR explore (self-directed making), play, " +
@@ -503,12 +516,12 @@ const CHOOSER_INSTRUCTION =
  * reference oracle. On model failure, `chooseIndex` reports `fallback` and we
  * return the pure oracle's pick explicitly (degrade-toward-correct).
  */
-export async function observeWithLlm(world: World, backend: ModelBackend): Promise<NextAction> {
+export async function observeWithLlm(world: World, backend: ModelBackend, instructionOverride?: string): Promise<NextAction> {
   const menu = buildMenu(world);
   const result = await chooseIndex(backend, {
     context: describeWorld(world),
     options: menu.map(actionLabel),
-    instruction: CHOOSER_INSTRUCTION,
+    instruction: instructionOverride ?? CHOOSER_INSTRUCTION,
   });
   if (result.fallback) return observe(world); // model failed → oracle default
   return menu[result.index] ?? observe(world);
@@ -533,18 +546,28 @@ export function simulate(world: World, action: NextAction): World {
       return world.operator ? { ...world, operator: { ...world.operator, pendingMessage: false } } : world;
     case "do_item":
       // the item is done → it leaves the backlog.
-      return { ...world, backlog: world.backlog.filter((i) => i.id !== action.item.id), mode: "work" };
+      return { 
+        ...world, 
+        backlog: world.backlog.filter((i) => i.id !== action.item.id), 
+        mode: "work",
+        history: [...(world.history || []), { type: "do_item", item: action.item, evaluation: action.evaluation, timestamp: Date.now() }]
+      };
     case "self_claim":
       // self-claim recorded (in event log via append). Item stays in backlog — the claim
       // is a commitment to deliver, not delivery itself. Mode → work (the agent is committing
       // to do the work, so they're in work mode).
       return { ...world, mode: "work" };
     case "decompose": {
-      // ambiguity dissolves: the ambiguous item → two ready, unambiguous children.
-      const children: BacklogItem[] = [
-        { id: `${action.item.id}.1`, title: `${action.item.title} (part 1)`, ready: true, ambiguous: false },
-        { id: `${action.item.id}.2`, title: `${action.item.title} (part 2)`, ready: true, ambiguous: false },
-      ];
+      // ambiguity dissolves: the ambiguous item → ready, unambiguous children.
+      let children: BacklogItem[];
+      if (action.subTasks && action.subTasks.length > 0) {
+        children = action.subTasks.map((t, idx) => ({ id: `${action.item.id}.${idx + 1}`, title: t, ready: true, ambiguous: false, gridData: action.item.gridData }));
+      } else {
+        children = [
+          { id: `${action.item.id}.1`, title: `${action.item.title} (part 1)`, ready: true, ambiguous: false, gridData: action.item.gridData },
+          { id: `${action.item.id}.2`, title: `${action.item.title} (part 2)`, ready: true, ambiguous: false, gridData: action.item.gridData },
+        ];
+      }
       return {
         ...world,
         backlog: world.backlog.flatMap((i) => (i.id === action.item.id ? children : [i])),
@@ -582,15 +605,52 @@ export function simulate(world: World, action: NextAction): World {
           timeOffset: world.cartography?.timeOffset ?? 0 
         } 
       };
-    case "retract_time":
+    case "retract_time": {
+      const hist = world.history || [];
+      
+      // Thrash Guard: Limit consecutive retracts to prevent a confused model from dumping the ledger.
+      let consecutiveRetracts = 0;
+      for (let i = hist.length - 1; i >= 0; i--) {
+        if (hist[i].type === "retract_time") consecutiveRetracts++;
+        else break;
+      }
+      
+      if (consecutiveRetracts >= 3) {
+        // Guard hit: ignore the retraction.
+        return world;
+      }
+
+      let targetItem = null;
+      let balance = 0;
+      
+      // Z-set fold: Scan backwards to find the last *unretracted* do_item
+      for (let i = hist.length - 1; i >= 0; i--) {
+        const e = hist[i];
+        if (e.type === "retract_time") balance--;
+        else if (e.type === "do_item") balance++;
+        
+        if (balance > 0) {
+          targetItem = e.item;
+          break;
+        }
+      }
+
+      let restoredBacklog = world.backlog;
+      if (targetItem) {
+        restoredBacklog = [targetItem, ...world.backlog];
+      }
+
       return { 
         ...world, 
+        backlog: restoredBacklog,
+        history: [...hist, { type: "retract_time", item: targetItem, timestamp: Date.now() }],
         cartography: { 
           ...world.cartography, 
           scopeLevel: world.cartography?.scopeLevel ?? 0,
           timeOffset: (world.cartography?.timeOffset ?? 0) - 1 
         } 
       };
+    }
     case "replay_time":
       return { 
         ...world, 
