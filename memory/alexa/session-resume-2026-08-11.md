@@ -53,6 +53,7 @@ The xorshift theorem was retracted (proven false). The engineering answer: IMPOS
 ## Mutation Runner Status (from Otto, 2026-08-11)
 
 The old "hunt" framing is replaced by neutral Distinguishability:
+
 - `distinguished-by-suite` / `indistinguishable-under-suite` / `unresolved`
 - No survived/killed language
 - Per-declarer freedom ledger: `db/mutation-freedoms/<declarer>.json`
@@ -62,26 +63,33 @@ The old "hunt" framing is replaced by neutral Distinguishability:
 ## Next Session Pickup (Priority Order)
 
 ### 1. Wire connectivity metric into vault-state-bridge
+
 Add connectivity snapshot to the Economy vault's output. The data is computed;
 it just needs to flow into `data/vault-state.json` for the settlement page.
 
 ### 2. Encode phase blocks into event envelopes
+
 The RS accumulator emits blocks but they're only logged. Next: write the block
 into the event's `rs_block` field so peers can verify/recover from the G-set.
 
 ### 3. Continue batch healing stale refs
+
 - docs/research: 119 files (needs controlled batching)
 - memory/: 118 files (needs controlled batching)
+
 Total remaining: ~1144 files
 
 ### 4. Measure false-alarm rate on mutation freedoms
+
 `escapeProfile` (intoDefined vs intoUndefined) is implemented but nothing reads it.
 Implement per-tick measurement to track whether the registry converges or is just muting.
 
 ### 5. World-model-convergence trajectory
+
 Open RESUME.md with work available. Check what's specified.
 
 ### 6. DB/git convergence
+
 The folderSink.append() is the write path. Making it a generic store.write()
 that backends to git OR postgres OR DagFs is the unification.
 
