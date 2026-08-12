@@ -276,6 +276,14 @@ jobs:
               fi
             } >> "$GITHUB_STEP_SUMMARY"
           fi
+
+          # The metric that would eventually earn this runner the right to be more than a report.
+          # SDV became a REQUIRED Windows 7 gate when its false-alarm rate fell 25.7% -> <4%, not
+          # when it became correct. Printed every tick so the trend is visible rather than
+          # reconstructed later. It WITHHOLDS the rate below MIN_SAMPLE and says why, and it marks
+          # itself NOT SLAM-comparable: a finding fixed by opening a PR leaves no transcript entry,
+          # and this job never stages db/, so per-tick findings are recorded nowhere. Read-only.
+          bun src/Core.TypeScript/hygiene/mutation-false-alarm-rate.ts || true
           exit 0
 
       - name: Measure cadence (declared vs actual — detect silent degradation)
