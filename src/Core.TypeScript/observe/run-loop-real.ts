@@ -342,6 +342,22 @@ async function main(): Promise<number> {
       `[rs-ecc] block #${rsResult.block.blockSeq} emitted: phases ${rsResult.block.startPhase}–${rsResult.block.endPhase}, ` +
         `${rsResult.block.coded.length} coded symbols (4 erasures recoverable)`,
     );
+    // Persist the emitted block to data/rs-blocks.jsonl (append-only ledger).
+    // Peers can read this file to recover missed phases via Lagrange interpolation.
+    // The file lives under data/ (served by Pages) so it's publicly readable.
+    try {
+      const blocksPath = require("node:path").join(args.repoRoot, "data", "rs-blocks.jsonl");
+      const blockRecord = JSON.stringify({
+        agent: args.by,
+        seq: rsResult.block.blockSeq,
+        startPhase: rsResult.block.startPhase,
+        endPhase: rsResult.block.endPhase,
+        coded: rsResult.block.coded,
+        emittedAt: new Date().toISOString(),
+      });
+      require("node:fs").appendFileSync(blocksPath, blockRecord + "\n");
+      console.log(`[rs-ecc] appended to data/rs-blocks.jsonl`);
+    } catch { /* non-fatal — block still logged, just not persisted */ }
   } else {
     console.log(`[rs-ecc] buffered ${rsResult.buffered}/12 toward next block`);
   }
