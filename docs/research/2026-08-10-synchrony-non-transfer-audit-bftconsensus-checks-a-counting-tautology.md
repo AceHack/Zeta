@@ -241,10 +241,11 @@ What landed:
 - **`NoConflictingQuorum` is retained but demoted**, with a note that it must never again be the
   only thing checked.
 
-**Still open, and deliberately so:** item 3 (the message/network model) and item 5 (liveness under a
-stated partial-synchrony assumption). Both are genuine modelling decisions rather than mechanical
-fixes. Liveness is now *scoped out explicitly* in the `PredictiveLookahead.cfg` style rather than
-advertised in prose, which was the actual defect §2c named.
+**Still open, and deliberately so:** item 5 (liveness under a stated partial-synchrony assumption).
+Item 3 was its blocker and is now done (§3a), so liveness is *next* rather than impossible — it
+still needs a partial-synchrony assumption the spec does not yet state plus fairness on the
+`Deliver` actions. Liveness remains *scoped out explicitly* in the `PredictiveLookahead.cfg` style
+rather than advertised in prose, which was the actual defect §2c named.
 
 **One thing worth recording about the repair itself:** a first draft asserted decision finality as
 `votes[decided[n]] = votes[decided[n]]` — a tautology *and* a type error. That is this audit's own
@@ -257,14 +258,47 @@ rare, and it is not something being the auditor protects you from.
    *expressible*.
 2. ✅ **DONE** — then `NoConflictingQuorum` stops being the only check, because two nodes deciding
    differently becomes a reachable shape to exclude (`Agreement`).
-3. ⬜ **OPEN** — add a message/network variable so quorum is computed over *received* votes rather
-   than global ones. Without it no delay-related property can even be stated, and the spec remains a
-   synchronous shared-memory model. This is the substantial remaining piece.
+3. ✅ **DONE 2026-08-11** — see §3a below.
 4. ✅ **DONE** — `DecisionStable` deleted, with the reason recorded: finality is structural, and a
    state predicate cannot express a claim about a transition.
 5. ⬜ **PARTIALLY** — liveness is now scoped out *explicitly* rather than advertised in prose, which
-   removes the defect. Stating it conditionally on partial synchrony and checking it still requires
-   item 3 first.
+   removes the defect. Stating it conditionally on partial synchrony and checking it required item 3
+   first; item 3 is done, so this is the next piece rather than a blocked one.
+
+### 3a. Item 3 — the network model (landed 2026-08-11)
+
+`rcvd[n][s]` is what node `n` has actually received from `s`. Quorum is computed per node over that,
+and delivery is a separate action that is **never forced** — arbitrary delay, reordering and
+permanent loss are all reachable, so a partition is now a *sayable* shape rather than an unmodelled
+one. Two modelling points carry the weight:
+
+- **Equivocation is per recipient.** A Byzantine node may tell otto `merge` and vera `reject`. This
+  is strictly stronger than a broadcast adversary, and it is the case that makes per-node views
+  matter at all — the old `ByzantineVote` could only "change its vote over time", which no honest
+  node could observe differently.
+- **Quorum counts distinct senders, never messages.** Counting messages would let one equivocating
+  node fill a quorum by itself, which is the classic modelling error in this shape.
+
+It also made a new invariant statable — **`NoDecisionWithoutReceipt`**: a commitment is justified by
+the evidence *that node holds*. Under the old global `HasQuorum` this was a tautology, because the
+guard and the invariant would have read the same function.
+
+**Falsifiability, measured — this audit's own lesson applied to its own repair.** A green invariant
+proves nothing until it has been shown it *can* go red. Each was mutated and re-run against the
+shipped config (N=4, F=1, `Byzantine = {"lior"}`):
+
+| mutation | result |
+|---|---|
+| delete `Decide`'s quorum guard | `SafetyInvariant` **violated** |
+| revert `Decide` to a global quorum | `NoDecisionWithoutReceipt` **violated** — and `Agreement` stayed **green** |
+| drop honest write-once in `CastVote` | `Agreement` **violated** |
+
+The middle row is the one worth keeping. It shows the network model *earned* a check the pre-repair
+spec could not have failed — which is exactly the complaint §2b made about `NoConflictingQuorum` —
+and that the new invariant is not redundant with `Agreement`.
+
+Clean run is exhaustive: **4,665,495 distinct states, 0 left on queue, depth 24, ~47s** (up from 531
+distinct states, which is the cost of having a network at all).
 
 **Falsifier for this audit itself:** exhibit a reachable state of the **pre-repair**
 `BftConsensus.tla` violating `NoConflictingQuorum` under `Nodes = {otto, vera, riven, lior}`,
