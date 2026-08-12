@@ -1,0 +1,1 @@
+{"source":"src/Core.TypeScript/hygiene/mutation-freedoms.ts","test":"src/Core.TypeScript/hygiene/mutation-freedoms.test.ts","mutation":"plus-to-minus","agent":"otto","tick":11240,"outcome":"distinguished","address":"2eb91fa97569b0ef5681a10aca25f23bd0462b1012da5451e681d97b0d9fbde3"}
