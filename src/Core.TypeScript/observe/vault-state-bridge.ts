@@ -9,6 +9,8 @@
  * No color in output. No precomputed state adjectives. Timestamps only.
  */
 
+import { computeConnectivity } from "./connectivity-metric";
+
 // ═══ Input Types (what we read) ═══════════════════════════════════════════════
 
 export interface ObserveEvent {
@@ -69,6 +71,8 @@ export interface VaultState {
   readonly total_events_read: number;
   readonly max_phase: number | null;  // highest phase seen across all events (null = no phase stamps yet)
   readonly vaults: readonly VaultSnapshot[];
+  /** Per-agent connectivity derived from attestation events (optional — omitted when no attestations). */
+  readonly connectivity?: readonly { agent_id: string; connectivity: number; reciprocity: number }[];
 }
 
 export interface VaultSnapshot {
@@ -258,6 +262,10 @@ export function buildVaultState(input: BridgeInput): VaultState {
     buildEconomyVault(events, agentLatest, reputations, nowMs),
   ];
 
+  // Compute per-agent connectivity from attestation events
+  const connectivitySnapshots = computeConnectivity(events, { agents: [...AGENTS], nowMs });
+  const hasAttestations = connectivitySnapshots.some((c) => c.attestations_received > 0 || c.attestations_given > 0);
+
   return {
     schema: "zeta.vault-state.v1",
     status: globalStatus,
@@ -272,6 +280,13 @@ export function buildVaultState(input: BridgeInput): VaultState {
       ? events.reduce((max, e) => e.phase?.phase != null && e.phase.phase > max ? e.phase.phase : max, -1)
       : null,
     vaults,
+    ...(hasAttestations ? {
+      connectivity: connectivitySnapshots.map((c) => ({
+        agent_id: c.agent_id,
+        connectivity: c.connectivity,
+        reciprocity: c.reciprocity,
+      })),
+    } : {}),
   };
 }
 
