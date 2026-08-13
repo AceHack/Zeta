@@ -20,6 +20,7 @@ import React from "react";
  */
 
 import OracleWorm from "./OracleWorm";
+import PasskeyProposalPanel from "./PasskeyProposalPanel";
 import { useEffect, useRef, useState, useCallback } from "react";
 
 // ── FrequencyMachZehnder in-browser implementation ────────────────────────────
@@ -1184,6 +1185,8 @@ export default function OracleRaceMode() {
         )}
       </div>
     )}
+
+      <PasskeyProposalPanel />
 
       {/* GitHub Society Panel — shows the latest society evolution event from the Zeta repo */}
       {doneCount === N_ORACLES && githubSociety && (
