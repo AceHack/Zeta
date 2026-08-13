@@ -75,3 +75,51 @@ that is deliberate, and the failure is the signal the fix landed.
 - Sibling defects from the same run: `081KZYN3B79087G0R0014ZKE3C` (erasure capability),
   `081KZYN3D53087G0R0036XZSYM` (spurious NACKs under reordering — the input that drives *this*
   controller to its floor with no packet loss at all)
+
+---
+
+## ⚠ ORDERING WARNING — this defect is LATENT. Do NOT fix it first. (2026-08-13)
+
+Measured by the bandwidth-delay-product harness (`udp-bdp-link.ts`, PR #10440). Read that research doc
+before touching this item.
+
+**`gapMs` is computed and never read.** `LossyUdpChannel.flushBlock` broadcasts all 8 packets of a
+block in a tight loop and calls `onSend` after each; it **never consults `gapMs`**. Repo-wide, `gapMs`
+is written in `updateAimd` and read only by `updateAimd` itself and two unit-test assertions — by **no
+send path anywhere**. **CHECKED**, pinned by `UBL-14`.
+
+So the shipped transport has **no rate control at all**. The AIMD controller is an open-loop estimator
+whose output is discarded, and this window bug is therefore **latent**: it produces a wrong number that
+nothing acts on.
+
+### Why fixing it first is actively harmful
+
+Wiring the pacing — or repairing the estimator so its output becomes trustworthy enough to wire —
+**activates** the erasure-vs-congestion conflation before the signals are separated. Measured cost,
+relative to each arm's own clean-channel throughput, with congestion **structurally zero** (asserted,
+`UBL-10`):
+
+| corruption | shipped (open-loop) | AIMD paced |
+|---|---|---|
+| 2% | 0.981 | **0.139** |
+| 10% | 0.905 | **0.010** |
+
+**7.1× worse than a corruption-blind sender at 2% loss; 90× worse at 10%** — with no congestion
+anywhere. One spurious backoff costs **4016 s ≈ 66.9 minutes** of recovery on a clean link (the
+simulator matches an independent closed form to 0.0%).
+
+There is also a hard ceiling that no estimator fix reaches: `MIN_GAP_MS = 1` caps any link at
+**1000 pkt/s**, which is a 16.8% utilisation ceiling at C=5000.
+
+### The correct order
+
+1. **`081KZYQ8KNB087G0R000G8QPRE` (P1) — separate the loss signals.** Erasure-loss and congestion-loss
+   must be distinguishable before any controller acts on either. RFC 4653 names the class.
+2. Then this item (the estimator window).
+3. Then `081KZYQ8Q9V087G0R0013XR3ZX` (wire `gapMs`, and the 1000 pkt/s ceiling).
+
+**The control that keeps this honest:** under loss that genuinely *is* congestion, two paced flows reach
+**Jain 0.973 at 79% utilisation**. The controller is not broken *as a congestion controller* — it fails
+specifically when the loss is not congestion. That is why the fix is signal separation and not threshold
+tuning: no threshold distinguishes 5% corruption from 5% congestion when the estimator does not carry
+the distinction.
