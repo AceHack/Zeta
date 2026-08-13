@@ -87,7 +87,13 @@ const BODY_ROW_LINK = new RegExp(`\\[(${ROW_ID_PREFIX})\\]\\(([^)]+)\\)`, "g");
 const BACKLOG_ROW_FILE = new RegExp(`^${ROW_ID_PREFIX}-[^/]+\\.md$`);
 const SAME_DIR_ROW_HREF = new RegExp(`^${ROW_ID_PREFIX}-[^/]+\\.md$`);
 const FRONTMATTER_KEY = /^[A-Za-z_]\w*$/;
-const SORT_ORDINAL = (a: string, b: string) => a.localeCompare(b);
+// ORDINAL, as the name says. `localeCompare` is culture-SENSITIVE: its result depends on the
+// runtime locale and ICU build, so the same input can sort differently on two machines. Both
+// call sites below order ZetaId row-ids whose sorted output is compared across runs, so a
+// locale-dependent order is a determinism bug waiting for a different ICU build. `<`/`>` on
+// strings is UTF-16 code-unit order — ordinal, and identical everywhere.
+// See `.claude/rules/culture-invariant-by-default.md`.
+const SORT_ORDINAL = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
 
 function requireArg(argv: string[], index: number, flag: string): string {
     const value = argv[index + 1];
