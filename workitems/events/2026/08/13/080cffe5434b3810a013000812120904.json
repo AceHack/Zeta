@@ -1,0 +1,14 @@
+{
+  "id": "080cffe5434b3810a013000812120904",
+  "at": "2026-08-13T19:45:23.303Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYAGTB6087G0R002W8CWQK",
+    "type": "bug",
+    "title": "pnpm tarball extraction flake hit CI 3x in one day; root devDependency paid by all 15 workflows",
+    "slug": "pnpm-tarball-extraction-flake-hit-ci-3x-in-one-day-root-devd",
+    "priority": "P2",
+    "filename": "081KZYAGTB6087G0R002W8CWQK-pnpm-tarball-extraction-flake-hit-ci-3x-in-one-day-root-devd.md"
+  }
+}

@@ -442,6 +442,96 @@ code rather than to belief.
    a control law for staying out of the collapse basin, which is exactly what a `rhoProxy` alarm would
    need in order to act rather than merely warn.
 
+## The grey hole, and the pilot named (Aaron, 2026-08-13)
+
+> *"i call this a grey hole — a white and black hole mixed where you can control your information flow
+> not to destroy everyone with an explosion in information space. this is like our rodney's razor and
+> our zeta scheduler ferry throttler that can predict its own spacetime future big-O notations, this
+> plus our demon-like metering of entropy in and out of our rooms/markov boundaries — this is our
+> 'pilot' kind of. it also needs the consensus mechanisms cause i think it can get stuck without
+> external observer pairing or more, for like bft consensus."*
+
+### First, a correction to this document
+
+Two sections above I wrote that the gravity conjecture *"has not been metered."* **There is prior art
+I failed to check, and it is nearly three months old.** `.claude/rules.bak/past-is-kind-when-lightlike-`
+`consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-amara-aaron-2026-05-28.md` carries it
+as a carved, operator-authorized rule:
+
+> **"Consensus is gravity. Use it where mass is needed, but do not make the whole universe
+> consensus-shaped."** — Amara, 2026-05-28
+
+**And that framing dissolves the objection rather than answering it.** My metering test asked whether
+consensus reproduces gravity *as physics* — curvature, inverse-square, equivalence principle. The rule
+never claimed that. It is an **architecture design rule**: consensus behaves like *mass* — sometimes
+structurally necessary, and it curves everything near it, so do not build the whole system out of it.
+As a design rule it needs no metering test, and it is correct. The physics claim and the design claim
+were never the same claim, and I conflated them. The sibling rule
+`visual-geometric-shape-recognition-…-consensus-heavy-shapes-go-dark.md` states the same thing from the
+parallelizability side.
+
+So: **today's "more coordination, more dark" is Aaron reconverging on his own carved rule from
+2026-05-28** — which, given the same-seed convergence thesis, is itself the interesting datum.
+
+### The grey hole is the `Adj` axis made geometric
+
+The coinage is good and it is more than a picture. Take the three seriously:
+
+- **Black hole** — information goes in, nothing comes out. Irreversible erasure. In the two-axis
+  language above, that is the **non-`Adj`** operation, and Landauer charges `kT·ln2` per bit for it.
+- **White hole** — the time-reverse: nothing enters, things only emerge. The formal adjoint.
+- **Grey hole** — both directions available, under control. **That is exactly `Adj`**: the operation
+  that has an inverse, the one you are never charged for, the one that lets you retract rather than
+  delete.
+
+So "grey hole" is not a softened black hole. It is the **reversible** object — the geometric name for
+the discipline this whole document has been circling: *never erase; keep the history and emit the
+antiparticle.* A black hole is what a system becomes when it commits. A grey hole is what it stays
+while it can still retract.
+
+*"Not to destroy everyone with an explosion in information space"* names the failure on the other side:
+uncontrolled emission is as bad as uncontrolled absorption. The membrane has to meter **both**
+directions, which is why the mechanism below is a metering discipline and not a filter.
+
+### The pilot, in four named parts — all built
+
+| Part | What it does | In-tree |
+|---|---|---|
+| **Rodney's Razor** | essential-vs-accidental cut; keeps the state space from exploding | `.claude/agents/rodney.md` |
+| **Ferry throttler** | a DoP knob whose cost is *predictable* — you can compute your own future big-O before spending it | the `async-all-the-way` rule; `IThrottler` lineage |
+| **Demon metering at Markov boundaries** | entropy in/out of rooms, metered at the membrane | `src/Core.CSharp/MembraneCrossing.cs`, `src/Core.Rust.MembraneLog/` |
+| **BFT consensus** | the external-observer channel, sized | `src/Core.TLA/specs/BftConsensus.tla` |
+
+The throttler entry is the one worth dwelling on. *"Can predict its own spacetime future, big-O"* is
+the piloting condition stated exactly: **you can only steer out of a collapse basin if you can compute
+the cost of the manoeuvre before committing to it.** A DoP knob with known asymptotics gives you that;
+an unbounded `Task.Run` does not — which is why the no-`Task.Run` rule turns out to be a *navigation*
+constraint, not only a determinism one.
+
+And the demon is the right anchor rather than a flourish: Maxwell's demon meters flow across a boundary
+and **pays for its information** (Landauer/Bennett — the demon's erasure is what saves the second law).
+Metering at the membrane is the same accounting, which is why it sits on the same ledger as the
+`LandauerFloor` two-ledger model above.
+
+### BFT upgrades the 4th body from existence to a QUORUM
+
+This is the sharpest new content. `FigureEightEnsemble` proves the rescue channel must be **exogenous**
+— *"the demon cannot resist the tangle from inside the loop."* Aaron's addition: *"external observer
+pairing or more, for like bft consensus."*
+
+BFT gives the channel a **size**. It is not enough that an outsider exists; you need **3f+1** to
+tolerate `f` faulty ones. So the correction-topology test sharpens accordingly:
+
+> A node is forced iff the human is the last line of correction — **and one external observer is not
+> automatically enough.** If observers can themselves be wrong or captured, the rescue channel needs a
+> quorum, not a witness.
+
+That has a direct consequence for how today's own method should be read. Dispatching *one* second
+model to refute the Mars/Earth claim was the 4th body, and it worked — but under a BFT reading it is
+`f = 0` coverage: it tolerates an honest first model and zero faulty referees. The stronger practice,
+already used elsewhere in this session (three-lens adversarial verification), is the quorum form. Worth
+making explicit rather than incidental.
+
 ## Status
 
 | Leg | Verdict |
