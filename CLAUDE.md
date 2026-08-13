@@ -55,7 +55,14 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
   are razored (cooling-period, disposition-shaping bar). Full: `memory/feedback_thoughts_free_actions_razored_*`.
 - **Heartbeat-via-commit = externalized idle counter** — "Quiet."/"Holding." with no commit in the
   prior tick window AND no named dependency IS the standing-by failure (the narrative self-counter is
-  unreliable; externalize it via `git log --since="2min ago" origin/main`). Every commit carries the
+  unreliable; externalize it via
+  `git log --since="2min ago" origin/main 'refs/remotes/origin/heartbeat/*'`). **Include the
+  `heartbeat/*` refs**: telemetry lanes no longer push to `main` (ruleset "CI Gate" requires
+  `gate (required)` at push time, no bypass actors), they park on `heartbeat/*` and flush via PR.
+  Reading `origin/main` alone now under-reports liveness by up to a flush interval — and an
+  under-report here reads as the standing-by failure, i.e. a check that did not run looking like
+  one that passed. Fetch first: `git fetch origin '+refs/heads/heartbeat/*:refs/remotes/origin/heartbeat/*'`.
+  Every commit carries the
   AgencySignature v1 trailer (10 fields + `Co-authored-by:`); audit via
   `bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts`.
   Full: `.claude/rules.bak/holding-without-named-dependency-is-standing-by-failure.md`;

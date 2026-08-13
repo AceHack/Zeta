@@ -1,0 +1,12 @@
+{
+  "agents_active": 1,
+  "claims_pending": 0,
+  "entropy_heat": 0,
+  "entropy_state": 0,
+  "last_action": "decompose",
+  "last_agent": "alexa",
+  "last_mode": "work",
+  "t": "2026-08-01T12:40:06.367Z",
+  "ticks_24h": 1,
+  "total_events": 8
+}
