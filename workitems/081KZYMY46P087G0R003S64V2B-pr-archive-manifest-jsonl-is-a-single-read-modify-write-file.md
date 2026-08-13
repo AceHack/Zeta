@@ -81,3 +81,47 @@ cleanup is the quiet-failure shape this repo already refuses elsewhere.
   STANDING KNOWLEDGE, not page-checked.**
 - In-repo prior art (checked, these are ours): `data/tick-shards/` sharding, `workitems/events/`
   ZetaId-keyed event files, `src/Core.TypeScript/ace/build-graph.ts` `derive` + drift gate.
+
+---
+
+## CORRECTION — the "3 malformed lines" claim in this item is FALSE (2026-08-13, same day)
+
+This work-item asserted, twice, that `manifest.jsonl` carried **3 pre-existing malformed lines**
+(PRs 6247, 6521, 7865) and made "surface them, never silently drop them" an acceptance criterion.
+
+**That is wrong. CHECKED: all 6340 lines parse.** So do all of them in every prior revision of the file
+(verified independently during the migration, PR #10427).
+
+The three named PRs are exactly — and only — the entries whose `title` contains a backslash escape or a
+control character:
+
+- 6247: `test(ci): option B — relocate docker dat…`
+- 6521: `fix(DynamicValue): C# JSON \uXXXX uses A…`
+- 7865: `fix(setup): skip idle \nSkipping NuGet pa…`
+
+They round-trip byte-for-byte.
+
+### Root cause of the false finding — and it is the second instance the same day
+
+The detection ran each line through `echo "$l" | jq` in **zsh**, where `echo` **interprets backslash
+escapes by default**. `\u` and `\n` inside the JSON string values were expanded *before* `jq` parsed
+them, corrupting well-formed lines at the measuring instrument rather than in the data.
+
+Earlier the same day, the same bug — zsh `echo` expanding escapes inside these same JSON lines —
+produced a phantom 7-line discrepancy in a manifest line count, and sent an autonomous tick chasing
+corruption that did not exist.
+
+**The lesson, stated so it is reusable:** do not parse or count structured text through `echo` in a
+shell pipeline. Read the file directly (`python3`, `jq -c . < file`, `bun`) so no shell builtin sits
+between the bytes and the parser. A measuring instrument that mutates its input produces findings about
+the instrument.
+
+### What stands
+
+The **defect this item files is unaffected** — the read-modify-write conflict storm is real, measured,
+and was fixed in #10427. Only the migration-hazard subsection was wrong.
+
+The quarantine sidecar (`docs/github/prs/unparseable.jsonl`) shipped anyway and is still worth having:
+it is now empty, and the next genuinely unreadable line lands there with its reason and line number
+instead of vanishing. A regression test pins the three escape-carrying titles so they cannot be
+"cleaned up" by a future pass that repeats this mistake.
