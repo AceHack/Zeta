@@ -155,7 +155,30 @@ jobs:
       - name: Commit and open archive PR
         if: steps.diff.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # PR CREATION RUNS AS A PAT, NOT AS ACTIONS — this is the whole fix.
+          #
+          # The enterprise forbids the Actions identity from creating pull requests
+          # (`409: The enterprise does not allow GitHub Actions to create or approve pull
+          # requests`, reproduced against the repo API on 2026-08-13). That restriction is on the
+          # IDENTITY, not the operation: a fine-grained PAT authenticates as its owner and is not
+          # subject to it. So the archive PR opens, and the branch stops orphaning at the source.
+          #
+          # This is what 1,229 orphaned `automation/pr-archive-*` branches cost — ~3.5 MB of
+          # PR-review substrate stranded off main, the FOURTH such accumulation (~4,049 drained in
+          # #6879, 1,132 in #8043, 16 in #9059, 1,229 in #10346). Each previous round drained the
+          # symptom; this closes the generator.
+          #
+          # SCOPE: ZETA_PR_ARCHIVE_TOKEN carries `pull_requests: write` + `metadata: read` ONLY.
+          # It deliberately does NOT carry `contents: write` — the branch push below is
+          # authenticated by actions/checkout's persisted GITHUB_TOKEN credentials and already
+          # works — nor `actions`, which belongs to ZETA_SOCIETY_DISPATCH_TOKEN. Two secrets, two
+          # authorities: neither can do the other's job if either leaks.
+          #
+          # FALLBACK: if the secret is absent the expression yields GITHUB_TOKEN, `gh pr create`
+          # fails the same way it does today, and `is-pr-create-policy-denial.ts` catches it and
+          # exits green with the branch pushed. Removing the secret degrades to the OLD behaviour
+          # rather than turning the job red.
+          GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           RUN_ID: ${{ github.run_id }}
