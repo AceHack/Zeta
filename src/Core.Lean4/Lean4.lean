@@ -14,6 +14,7 @@ import Lean4.GenGenFixpoint
 import Lean4.GenSelfApplication
 import Lean4.CostRecurrence
 import Lean4.LandauerFloor
+import Lean4.LightTimeAsymmetry
 import Lean4.CayleyDicksonDoublyEven
 import Lean4.BridgeFunctor
 import Lean4.NormalizerCorrect

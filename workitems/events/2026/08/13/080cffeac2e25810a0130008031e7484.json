@@ -1,0 +1,14 @@
+{
+  "id": "080cffeac2e25810a0130008031e7484",
+  "at": "2026-08-13T22:57:34.283Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYNGQ29087G0R000F5N6H6",
+    "type": "task",
+    "title": "Replace OrbitalAsymmetryBudget 1.2 multiplier with a named delta_model; adopt the proved ephemeris-free constant envelope",
+    "slug": "replace-orbitalasymmetrybudget-1-2-multiplier-with-a-named-d",
+    "priority": "P2",
+    "filename": "081KZYNGQ29087G0R000F5N6H6-replace-orbitalasymmetrybudget-1-2-multiplier-with-a-named-d.md"
+  }
+}
