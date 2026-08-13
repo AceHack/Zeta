@@ -6567,6 +6567,18 @@
       "ticks_24h": 72,
       "agents_active": 3,
       "claims_pending": 3
+    },
+    {
+      "t": "2026-08-13T09:39:56.124Z",
+      "total_events": 1285,
+      "last_action": "explore",
+      "last_mode": "explore",
+      "last_agent": "soraya",
+      "entropy_state": 0,
+      "entropy_heat": 0,
+      "ticks_24h": 75,
+      "agents_active": 3,
+      "claims_pending": 3
     }
   ]
 }
