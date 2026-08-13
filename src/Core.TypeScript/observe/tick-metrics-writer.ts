@@ -3,8 +3,12 @@
  * tick-metrics-writer.ts — compute observe loop metrics and record them as a shard.
  *
  * Reads the event log (docs/observe-events/*.json), computes aggregate metrics, writes
- * the frame as its OWN file under data/tick-shards/YYYY/MM/DD/, then regenerates the
- * derived rollup data/tick-history.json from the whole shard set.
+ * the frame as its OWN file at data/tick-shards/YYYY/MM/DD/<zetaid>.json, then regenerates
+ * the derived rollup data/tick-history.json from the whole shard set.
+ *
+ * The filename is an `Observation`-category ZetaId minted purely from the frame's content —
+ * see ./tick-shards.ts for why the universal pointer system owns this key and why the mint
+ * takes no entropy.
  *
  * The shards are the ledger; data/tick-history.json is a bounded, DERIVED view of them,
  * kept at its original path and shape so the Pages dashboard (data/monitor.html) reads it

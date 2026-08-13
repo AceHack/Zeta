@@ -8,9 +8,16 @@
  * exploding its frames into shards would silently discard history the moment the bound
  * kicked in. This script is that explosion, run once at migration time.
  *
- * Safe to re-run: `shardPathFor` derives the path from a digest of the frame content, so
+ * Safe to re-run: `shardPathFor` derives BOTH halves of the path from the frame itself —
+ * the date directory from the frame's `t`, and the filename from the frame's ZetaId, which
+ * is in turn a pure function of that same `t` plus a digest of the content. So
  * re-backfilling an already-backfilled frame rewrites the same bytes at the same path
- * (discipline #6 — apply-N-times == apply-once).
+ * (discipline #6 — apply-N-times == apply-once), and the id a historical frame receives is
+ * the id it would have received when it was first written — no mint time is invented.
+ *
+ * This is also the migration path for a naming change: delete the shard tree, re-run, and
+ * every frame is re-keyed with its content preserved byte-for-byte (used 2026-08-13 to move
+ * from the ad-hoc `<HHMMSSmmm>-<sha256[0:8]>` names to ZetaId names).
  *
  * Usage:
  *   bun src/Core.TypeScript/observe/backfill-tick-shards.ts [--dry-run]
