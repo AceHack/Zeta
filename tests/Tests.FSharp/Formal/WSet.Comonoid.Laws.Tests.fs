@@ -225,3 +225,68 @@ let ``ℂ corner: copy Δ ≠ clone s⊗s for a superposition (no-cloning)`` () 
     Assert.NotEqual<WSet.WSet<int * int, Complex>>(diagonal, clone)
     // discard (Born-normalisable total) still well-defined on the ℂ corner:
     Assert.True(isZeroC (c.Add(WSet.discard c s, c.Negate(Doubled.make (2.0 / sqrt 2.0) 0.0))))
+
+// ═══════════════════════════════════════════════════════════════════
+// (2c) THE Rel CORNER — Boolean (∨,∧) semiring (081KYXE4W8808…)
+// ═══════════════════════════════════════════════════════════════════
+// A `WSet<'K, bool>` is a SUBSET of 'K; `apply` is relational composition.
+// The rung split makes this corner TYPE-LEGAL on the linear/comonoid ops
+// (`#ISemiring` floor) while `negate`/trace stay compiler-refused (no
+// additive inverse for ∨ — correcting a Boolean belief is re-derivation,
+// not un-emission). Same discriminator, Rel-flavoured: a deterministic
+// TOTAL arr is a comonoid hom; a nondeterministic relation fails
+// copy-naturality (cross pairs); a PARTIAL relation fails discard-
+// naturality (mass drops to false). Plus the Rel-specific fact ℤ cannot
+// show: duplicate emission is INVISIBLE (∨ idempotent), so the branching
+// map does NOT double the discarded mass here — the failure mode moves
+// from doubling to dropping.
+// ═══════════════════════════════════════════════════════════════════
+
+let private relRing : ISemiring<bool> = BoolOrSemiring.Instance
+let private isZeroB (b: bool) = not b
+let private consolB<'K when 'K: comparison> (s: WSet.WSet<'K, bool>) = WSet.consolidate relRing isZeroB s
+
+[<Fact>]
+let ``Rel corner: comonoid laws hold over (∨,∧)`` () =
+    let s : WSet.WSet<int, bool> = [ 0, true; 2, true; 2, true; 4, true ] // {0,2,4} with a duplicate emission
+    let sc = consolB s
+    // duplicate emission is invisible: ∨ is idempotent
+    sc |> should equal ([ 0, true; 2, true; 4, true ] : WSet.WSet<int, bool>)
+    // counitality: marginalising one leg of Δ gives the set back
+    let dd = WSet.copy sc
+    (dd |> List.map (fun ((_, y), w) -> y, w) |> consolB) |> should equal sc
+    (dd |> List.map (fun ((x, _), w) -> x, w) |> consolB) |> should equal sc
+    // cocommutativity: the diagonal is symmetric
+    (dd |> List.map (fun ((x, y), w) -> (y, x), w) |> consolB) |> should equal (consolB dd)
+    // discard = "is the set non-empty" (the all-ones covector over ∨)
+    WSet.discard relRing sc |> should equal true
+    WSet.discard relRing (consolB ([] : WSet.WSet<int, bool>)) |> should equal false
+
+[<Fact>]
+let ``Rel corner discriminator: total-deterministic is a comonoid hom; nondeterministic and partial are not`` () =
+    let s : WSet.WSet<int, bool> = [ 0, true; 1, true ]
+    let applyB op x = WSet.apply relRing op x
+    let copyLHS op x = applyB op x |> WSet.copy |> consolB
+    let copyRHS op x =
+        WSet.copy x
+        |> List.collect (fun ((k1, k2), w) ->
+            WSet.tensor relRing (op k1) (op k2) |> List.map (fun (kk, w2) -> kk, relRing.Mul(w, w2)))
+        |> consolB
+    // (+) a total deterministic function IS copy- and discard-natural
+    let detB : int -> WSet.WSet<int, bool> = fun k -> [ k + 10, true ]
+    copyLHS detB s |> should equal (copyRHS detB s)
+    WSet.discard relRing (applyB detB s) |> should equal (WSet.discard relRing s)
+    // (−) a NONDETERMINISTIC relation (k ↦ {100, 200}) fails copy-naturality:
+    // the RHS carries the cross pairs (100,200)/(200,100) the diagonal cannot.
+    let branchB : int -> WSet.WSet<int, bool> = fun _ -> [ 100, true; 200, true ]
+    copyLHS branchB s |> should equal ([ (100, 100), true; (200, 200), true ] : WSet.WSet<int * int, bool>)
+    copyRHS branchB s
+    |> should equal ([ (100, 100), true; (100, 200), true; (200, 100), true; (200, 200), true ] : WSet.WSet<int * int, bool>)
+    // ...but does NOT double the discarded mass (∨ idempotent) — the Rel-specific
+    // contrast to the ℤ corner's doubling witness above.
+    WSet.discard relRing (applyB branchB s) |> should equal (WSet.discard relRing s)
+    // (−) a PARTIAL relation (undefined on every key) fails discard-naturality:
+    // the mass drops from true (non-empty) to false (empty).
+    let partialB : int -> WSet.WSet<int, bool> = fun _ -> []
+    WSet.discard relRing s |> should equal true
+    WSet.discard relRing (applyB partialB s) |> should equal false

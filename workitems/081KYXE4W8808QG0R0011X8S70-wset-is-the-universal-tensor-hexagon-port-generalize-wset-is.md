@@ -52,3 +52,47 @@ section). Confirmed by Soraya's hexagon validation.
 Aji–McEliece 2000 (GDL); Fritz 2020 / Cho–Jacobs 2019 / Fox 1976 (comonoid strata); Joyal–Street–Verity
 1996 (traced monoidal = the four-corner trace). Composes-with `081KYXE4W7D08QG0R00256B56A` (IcosahedralH3 —
 the visual shape of this algebra).
+
+## STATUS — increment 3 LANDED (2026-08-13, Otto): rung split + Rel corner + the LEAN CERT. Work-item stays OPEN
+
+Start-gate audit first: increments 1–2 (+adjacent) were further along than the row
+implied — copy Δ / discard ! / tensor / arr + the ℤ law pack + discriminator
+(#9816), FourCornerTrace (#9824), Meno.Bind fix (#9827), and the E8 demotion +
+`rootMvs` honest-scope correction (Soraya route-(B), 2026-08-01) are ALL on main.
+Landed today, the three open legs:
+
+1. **Rung honesty split on `WSet`** (deliverable 1's missing half): the linear +
+   comonoid ops (`consolidate`/`apply`/`tensor`/`discard`) now take `#ISemiring`
+   (Add/Mul/Zero/One — all they consume), so the INVERSE-FREE corners of the
+   hexagon type-check; `negate` + the whole `FourCornerTrace` demand `#IRing` —
+   retraction IS the additive inverse, so the compiler (not a runtime throw)
+   refuses the trace off the ring corners. Zero ripple: all existing consumers
+   pass `IStarRing` instances which subsume both rungs.
+2. **The Bool/Rel corner** (deliverable 2's missing adapter): `BoolOrSemiring`
+   in `Semiring.fs` — lawful (∨,∧) commutative semiring, SEMIRING-ONLY on the
+   IntervalRing precedent (`true` has no additive inverse; GF(2)/XOR is a
+   different structure — parity, not reachability; the docstring keeps them
+   apart). Law-pack block added: comonoid laws over (∨,∧); the discriminator
+   Rel-flavoured (total-deterministic = comonoid hom; NONDETERMINISTIC fails
+   copy-naturality via cross pairs; PARTIAL fails discard-naturality via
+   mass-drop); and the Rel-specific witness ℤ cannot show — ∨-idempotence makes
+   duplicate emission invisible, so branching does NOT double discarded mass
+   (the failure mode moves from doubling to dropping).
+3. **The Lean half of the two-tool proof** (the verification section's Lean leg):
+   `src/Core.Lean4/Lean4/ZSetCopyComonoid.lean` — ZSet as `K →₀ ℤ`;
+   `Coalgebra ℤ (K →₀ ℤ)` + `IsCocomm` via Mathlib `Finsupp.instCoalgebra`
+   (coassoc/counital/cocommutative = instance fields, nothing re-proved by hand);
+   `comul_single` (Δ IS the diagonal `single k 1 ⊗ single k w`), `counit_single`
+   (ε reads the weight), `counit_eq_total` (ε = Σ weights = `WSet.discard`, by
+   `Finsupp.induction_linear`). No `sorry`, nothing axiomatized; the GDL
+   one-circuit/N-semirings unifier stays a documented conjecture as specified.
+   **`lake build` green: full project 8294 jobs, both default targets.**
+
+Full .NET suite 4,898 F# + C#/Bayesian green (whole-solution run).
+
+STILL OPEN on this row: the ℝ≥0-normalized Markov adapter as a first-class corner
+(currently a law-pack witness, not an adapter type); wiring the trace through
+`FourCorner.fs`'s C₄ phase object explicitly (deliverable 3's remaining half);
+`CliffordE8Roots.rootMvs` retirement decision (081KYXCM1WK's versor route);
+`MenoBraided` composition audit. Coordinate with the silicon-alife braid-bridge
+trajectory before closing.

@@ -129,3 +129,42 @@ type IntervalRing =
 module IntervalRing =
     /// Singleton instance — reuse rather than allocate.
     let Instance : ISemiring<IntervalWeight> = IntervalRing()
+
+
+// ═══════════════════════════════════════════════════════════════════
+// BOOLEAN OR-SEMIRING  (𝔹, ∨, ∧)  — the Rel corner of the hexagon
+// ═══════════════════════════════════════════════════════════════════
+
+/// The Boolean semiring `(𝔹, ∨, ∧, false, true)` — the **Rel corner** of the
+/// Markov/CD hexagon (081KYXE4W8808QG0R0011X8S70): a `WSet<'K, bool>` is a
+/// SUBSET of 'K (weight = membership), `WSet.apply` is relational composition,
+/// `WSet.tensor` the relational product, and the GDL circuit becomes
+/// reachability (Aji–McEliece 2000's Boolean instantiation).
+///
+/// **Semiring ONLY — deliberately, lawfully (the `IntervalRing` precedent).**
+/// `∨` is idempotent (`true ∨ true = true`), so `true` has no additive
+/// inverse: nothing `x` satisfies `true ∨ x = false`. A ring rung is
+/// mathematically unreachable for `(∨, ∧)` — which is exactly why the
+/// retraction/trace (`WSet.negate`, `FourCornerTrace`) demands `#IRing` and
+/// the compiler refuses this corner: correcting a Boolean belief is
+/// re-derivation, not un-emission. (GF(2) — Bool with XOR — IS a ring, but a
+/// different structure: parity-of-paths, not reachability. Don't conflate.)
+///
+/// Distributivity, annihilation, and commutativity all hold (`∧` over `∨`;
+/// `false ∧ x = false`), so this is a LAWFUL commutative semiring — witnessed
+/// in `SemiringRing.Laws.Tests.fs`'s Boolean block. Idempotent addition also
+/// makes it the simplest naturally-occurring example of a semiring where
+/// duplicate emission is invisible (`w ∨ w = w`) — the Rel-corner contrast to
+/// ℤ's doubling, witnessed in the comonoid law pack.
+[<Struct>]
+type BoolOrSemiring =
+    interface ISemiring<bool> with
+        member _.Zero = false
+        member _.One = true
+        member _.Add(a, b) = a || b
+        member _.Mul(a, b) = a && b
+
+[<RequireQualifiedAccess>]
+module BoolOrSemiring =
+    /// Boxed singleton for instance-passing call sites.
+    let Instance : ISemiring<bool> = BoolOrSemiring()

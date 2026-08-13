@@ -28,6 +28,14 @@ open Zeta.Core.Abstractions
 /// ring-parameterized consolidation. `ZSet` remains the optimized ℤ workhorse; `WSet` is where
 /// the rings MEET (and the cross-oracle demos live). Float-weighted rings consolidate with an
 /// epsilon `isZero` the CALLER supplies — exact cancellation is the ring's business, not ours.
+///
+/// **Rung honesty (081KYXE4W88, the hexagon port):** each operation demands exactly the algebra it
+/// consumes. The LINEAR ops + the comonoid (`consolidate`/`apply`/`tensor`/`discard`) sit on the
+/// SEMIRING floor (`#ISemiring` — Add/Mul/Zero/One only), so the inverse-free corners of the
+/// hexagon (Boolean/Rel via `BoolOrSemiring`, tropical, normalized-Markov) instantiate them
+/// type-legally. `negate` and the whole `FourCornerTrace` demand `#IRing` — retraction IS the
+/// additive inverse, so the trace exists exactly on the ring corners (ℤ, ℂ) and the compiler,
+/// not a runtime throw, refuses it elsewhere.
 [<RequireQualifiedAccess>]
 module WSet =
 
@@ -36,7 +44,7 @@ module WSet =
 
     /// Consolidate: sum weights per key under the ring's Add; drop keys whose total isZero.
     /// THIS is where interference/retraction happens — opposite weights annihilate here.
-    let consolidate (ring: IStarRing<'W>) (isZero: 'W -> bool) (s: WSet<'K, 'W>) : WSet<'K, 'W> =
+    let consolidate (ring: #ISemiring<'W>) (isZero: 'W -> bool) (s: WSet<'K, 'W>) : WSet<'K, 'W> =
         s
         |> List.groupBy fst
         |> List.map (fun (k, ws) -> k, ws |> List.map snd |> List.fold (fun a w -> ring.Add(a, w)) ring.Zero)
@@ -45,7 +53,7 @@ module WSet =
 
     /// The linear-operator application (a matrix row per key): each key maps to a WSet of
     /// successors; incoming weight multiplies through (ring.Mul). 'W-linear by construction.
-    let apply (ring: IStarRing<'W>) (op: 'K -> WSet<'K, 'W>) (s: WSet<'K, 'W>) : WSet<'K, 'W> =
+    let apply (ring: #ISemiring<'W>) (op: 'K -> WSet<'K, 'W>) (s: WSet<'K, 'W>) : WSet<'K, 'W> =
         s |> List.collect (fun (k, w) -> op k |> List.map (fun (k2, w2) -> k2, ring.Mul(w, w2)))
 
     /// Pointwise sum (concatenate; consolidate at your boundary of choice).
@@ -79,13 +87,13 @@ module WSet =
     /// **discard ! : WSet<'K,'W> → 'W** — the comonoid counit ε: the sum of all weights (the
     /// all-ones covector applied to the 'W-vector), landing in the monoidal unit `I = 'W`.
     /// Uses only the additive monoid (Add / Zero).
-    let discard (ring: IStarRing<'W>) (s: WSet<'K, 'W>) : 'W =
+    let discard (ring: #ISemiring<'W>) (s: WSet<'K, 'W>) : 'W =
         s |> List.fold (fun acc (_, w) -> ring.Add(acc, w)) ring.Zero
 
     /// The monoidal tensor ⊗ (Kronecker): `(a ⊗ b)[(ka,kb)] = a[ka]·b[kb]`. Generalises
     /// `ZSet.cartesian` to any '*'-ring; the bifunctor the comonoid laws are stated against
     /// (`Δ_B ∘ f = (f ⊗ f) ∘ Δ_A` is copy-naturality).
-    let tensor (ring: IStarRing<'W>) (a: WSet<'A, 'W>) (b: WSet<'B, 'W>) : WSet<'A * 'B, 'W> =
+    let tensor (ring: #ISemiring<'W>) (a: WSet<'A, 'W>) (b: WSet<'B, 'W>) : WSet<'A * 'B, 'W> =
         a |> List.collect (fun (ka, wa) -> b |> List.map (fun (kb, wb) -> (ka, kb), ring.Mul(wa, wb)))
 
     /// Deterministic re-keying `arr g` — the cartesian (Fox) morphism: a single-key image per
@@ -99,7 +107,7 @@ module WSet =
     /// `IRing` it is the same additive inverse, so `plus s (negate ring s) |> consolidate` is
     /// the empty set in EVERY corner. This is the operator the four-corner trace bends back
     /// around the loop — see `FourCornerTrace` below.
-    let negate (ring: IStarRing<'W>) (s: WSet<'K, 'W>) : WSet<'K, 'W> =
+    let negate (ring: #IRing<'W>) (s: WSet<'K, 'W>) : WSet<'K, 'W> =
         s |> List.map (fun (k, w) -> k, ring.Negate w)
 
 /// **FourCornerTrace — the trace of the traced monoidal category, over `WSet`**
@@ -152,7 +160,7 @@ module FourCornerTrace =
     /// invariant `Emitted = consolidate (gen interpretation history)` holds from turn zero (an
     /// opener that emitted nothing would leave the first retraction unmatched).
     let start
-        (ring: IStarRing<'W>)
+        (ring: #IRing<'W>)
         (isZero: 'W -> bool)
         (gen: Generator<'H, 'I, 'K, 'W>)
         (history: 'H)
@@ -165,7 +173,7 @@ module FourCornerTrace =
     /// Rows the reinterpretation did not touch cancel exactly (`w + (−w) = 0`) and are dropped; what
     /// survives is precisely the retractions of superseded rows and the new emissions.
     let delta
-        (ring: IStarRing<'W>)
+        (ring: #IRing<'W>)
         (isZero: 'W -> bool)
         (gen: Generator<'H, 'I, 'K, 'W>)
         (history: 'H)
@@ -185,7 +193,7 @@ module FourCornerTrace =
     /// stale rows. It follows that the emission is a pure function of the final interpretation
     /// (path-independent), and that replaying an idempotent feedback emits an empty delta.
     let step
-        (ring: IStarRing<'W>)
+        (ring: #IRing<'W>)
         (isZero: 'W -> bool)
         (gen: Generator<'H, 'I, 'K, 'W>)
         (update: 'I -> 'F -> 'I)
@@ -201,7 +209,7 @@ module FourCornerTrace =
     /// Run a whole feedback sequence through the loop, keeping every emitted delta in order.
     /// Deterministic (a left fold over the given order): DST replays it byte-identically.
     let fold
-        (ring: IStarRing<'W>)
+        (ring: #IRing<'W>)
         (isZero: 'W -> bool)
         (gen: Generator<'H, 'I, 'K, 'W>)
         (update: 'I -> 'F -> 'I)
