@@ -99,18 +99,14 @@ theorem gen_self_application_unbounded_vacuous
     ∃ selfCode : IrTerm, ∀ t, decode (eval selfCode (encode t)) = gen t :=
   absurd ⟨encode, decode, hcodec⟩ no_total_uint64_codec
 
--- ═══ The self-code is itself a gen-fixpoint (the quine is its own canon) ════════
-
-/-- The constructive `selfCode` is a fixpoint of `gen`: the self-reproducing term is
-    already in canonical form, so `gen selfCode = selfCode`. The quine lives exactly
-    where `gen_fixpoint_iff_image` says fixpoints live — in the image of `gen`. -/
-theorem selfCode_gen_fixpoint : gen selfCode = selfCode := rfl
 
 -- ═══ Verification ═════════════════════════════════════════════════════════════
--- SORRY-FREE. `no_total_uint64_codec` (the bound-forcing impossibility),
--- `gen_self_application_unbounded_vacuous` (the original signature shown vacuous),
--- and `selfCode_gen_fixpoint` are all closed. The genuine, non-vacuous quine is
--- `GenGenFixpoint.gen_self_application`.
+-- SORRY-FREE. `no_total_uint64_codec` (the bound-forcing impossibility) and
+-- `gen_self_application_unbounded_vacuous` (the original signature shown vacuous)
+-- are both closed. The genuine, non-vacuous quine is
+-- `GenGenFixpoint.gen_self_application_exists_codec`; the self-code fixpoint is
+-- `GenGenFixpoint.canonTerm_fixed`.
+#print axioms no_total_uint64_codec
 -- Run: lake build Lean4.GenSelfApplication
 -- Expected: NO warnings, NO errors = oracle passes.
 

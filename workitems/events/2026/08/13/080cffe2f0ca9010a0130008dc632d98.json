@@ -1,0 +1,14 @@
+{
+  "id": "080cffe2f0ca9010a0130008dc632d98",
+  "at": "2026-08-13T18:24:13.138Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZY5W6AJ087G0R003EE7PY6",
+    "type": "bug",
+    "title": "OrbitalAsymmetryBudget: ephemeris phase-wrong, delta-max not conservative (54x), occlusion unrepresented",
+    "slug": "orbitalasymmetrybudget-ephemeris-phase-wrong-delta-max-not-c",
+    "priority": "P2",
+    "filename": "081KZY5W6AJ087G0R003EE7PY6-orbitalasymmetrybudget-ephemeris-phase-wrong-delta-max-not-c.md"
+  }
+}
