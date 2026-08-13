@@ -62,6 +62,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # FULL history. The retraction actuator walks `git rev-list greenHead..redHead` over
+          # arbitrary commits, and actions/checkout defaults to a depth-1 clone in which those SHAs
+          # do not exist — `fatal: Invalid revision range`. The `git fetch origin main` below does
+          # NOT deepen a shallow clone, so it cannot rescue this. Six other workflows in this repo
+          # already set `fetch-depth: 0` for the same reason; this one was the exception.
+          fetch-depth: 0
 
       - name: Sync to origin tip (event-driven ticks race pushes)
         # The checkout is pinned to the TRIGGERING commit, which can predate
