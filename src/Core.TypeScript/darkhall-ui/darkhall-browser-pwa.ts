@@ -10,6 +10,14 @@ import {
   type DarkHallBrowserRuntime,
 } from "./darkhall-browser-bootstrap";
 
+export {
+  createNativeBrowserDatabaseReceiptBroadcastReceiver,
+  createNativeBrowserDatabaseReceiptBroadcastTransport,
+  type BrowserDatabaseReceiptBroadcastReadout,
+  type BrowserDatabaseReceiptBroadcastReceiverHost,
+  type BrowserDatabaseReceiptBroadcastTransport,
+} from "../browser-node/browser-database-receipt-broadcast-channel";
+
 export const DARK_HALL_BROWSER_PWA_SCHEMA = "zeta.darkhall.browser-pwa.v1" as const;
 
 export interface DarkHallBrowserPwaOptions extends DarkHallBrowserBootstrapOptions {

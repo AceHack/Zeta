@@ -8,6 +8,10 @@ import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { BrowserServiceWorkerRegistrationReadout } from "./browser-service-worker-registration";
 import type { BrowserTabTransportReadout } from "./browser-tab-channel-selector";
 import type { BrowserDatabaseReceiptHandoffReadout } from "./browser-database-receipt-handoff";
+import type {
+  BrowserDatabaseReceiptBroadcastReadout,
+  BrowserDatabaseReceiptBroadcastReceiverHost,
+} from "./browser-database-receipt-broadcast-channel";
 import { buildBrowserPwaAssets } from "./browser-pwa-build";
 import type { DarkHallDatabaseReadout } from "../darkhall-ui/darkhall-database-readout";
 import type { DarkHallBrowserDatabaseControllerReadout } from "../darkhall-ui/darkhall-browser-database-controller";
@@ -15,7 +19,7 @@ import type { DarkHallBrowserControllerInputReadout } from "../darkhall-ui/darkh
 import type { DarkHallBrowserDatabaseRowSelectionReadout } from "../darkhall-ui/darkhall-browser-database-row-selection";
 import type { DarkHallBrowserRowCommandEditorReadout } from "../darkhall-ui/darkhall-browser-row-command-editor";
 
-export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v7" as const;
+export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v8" as const;
 
 interface BrowserPwaPageReadout {
   readonly registration: BrowserServiceWorkerRegistrationReadout;
@@ -63,6 +67,10 @@ interface BrowserPwaPageGlobal {
     | { readonly ok: false; readonly feedback: { readonly detail: string } };
 }
 
+interface BrowserReceiptBroadcastGlobal {
+  readonly __zetaReceiptBroadcastReceiver?: BrowserDatabaseReceiptBroadcastReceiverHost;
+}
+
 export interface BrowserPwaSmokeTranscript {
   readonly schema: typeof BROWSER_PWA_SMOKE_SCHEMA;
   readonly beforeStop: {
@@ -85,6 +93,11 @@ export interface BrowserPwaSmokeTranscript {
   readonly controllerInput: {
     readonly pointer: DarkHallBrowserControllerInputReadout;
     readonly keyboard: DarkHallBrowserControllerInputReadout;
+  };
+  readonly receiptBroadcast: {
+    readonly response: readonly number[];
+    readonly sender: BrowserDatabaseReceiptBroadcastReadout;
+    readonly receiver: BrowserDatabaseReceiptBroadcastReadout;
   };
 }
 
@@ -504,6 +517,22 @@ function validateReceiptHandoff(transcript: BrowserPwaSmokeTranscript, failures:
   }
 }
 
+function validateReceiptBroadcast(transcript: BrowserPwaSmokeTranscript, failures: string[]): void {
+  if (
+    transcript.receiptBroadcast.response.join(",") !== "3,2,1" ||
+    transcript.receiptBroadcast.sender.status !== "complete" ||
+    transcript.receiptBroadcast.sender.lastSequence !== 900 ||
+    transcript.receiptBroadcast.sender.inFlight !== 0 ||
+    transcript.receiptBroadcast.receiver.status !== "complete" ||
+    transcript.receiptBroadcast.receiver.lastSequence !== 900 ||
+    transcript.receiptBroadcast.receiver.inFlight !== 0
+  ) {
+    failures.push(
+      `two Chromium pages did not complete the native receipt byte exchange: ${JSON.stringify(transcript.receiptBroadcast)}`,
+    );
+  }
+}
+
 function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
   const failures: string[] = [];
   validateStartingPages(transcript, failures);
@@ -511,6 +540,7 @@ function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
   validateDatabaseCommands(transcript, failures);
   validateHydration(transcript, failures);
   validateReceiptHandoff(transcript, failures);
+  validateReceiptBroadcast(transcript, failures);
   return failures;
 }
 
@@ -523,8 +553,9 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
   try {
     const built = await buildBrowserPwaAssets({ outDir });
     if (!built.ok) return failed("build-failed", built.error);
-    const [workerSource, pageEntrySource, pageHtml, manifest, stylesheet] = await Promise.all([
+    const [workerSource, runtimeSource, pageEntrySource, pageHtml, manifest, stylesheet] = await Promise.all([
       Bun.file(built.value.workerPath).text(),
+      Bun.file(built.value.runtimePath).text(),
       Bun.file(built.value.pageEntryPath).text(),
       Bun.file(built.value.pagePath).text(),
       Bun.file(built.value.manifestPath).text(),
@@ -538,6 +569,7 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
         if (pathname === "/" || pathname === "/node.html") return response(pageHtml, "text/html; charset=utf-8");
         if (pathname === "/darkhall-browser-page.js")
           return response(pageEntrySource, "text/javascript; charset=utf-8");
+        if (pathname === "/darkhall-browser-pwa.js") return response(runtimeSource, "text/javascript; charset=utf-8");
         if (pathname === "/sw.js") return response(workerSource, "text/javascript; charset=utf-8");
         if (pathname === "/room.css") return response(stylesheet, "text/css; charset=utf-8");
         if (pathname === "/manifest.webmanifest") return response(manifest, "application/manifest+json");
@@ -574,6 +606,54 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
       dispatchEvent(new PageTransitionEvent("pageshow", { persisted: true }));
     });
     await Promise.all([waitForTwoTabs(pageA), waitForTwoTabs(pageB)]);
+
+    stage = "exchange receipt bytes over native BroadcastChannel";
+    await pageA.evaluate(async () => {
+      const modulePath = "./darkhall-browser-pwa.js";
+      const api = (await import(modulePath)) as typeof import("../darkhall-ui/darkhall-browser-pwa");
+      const created = api.createNativeBrowserDatabaseReceiptBroadcastReceiver({
+        root: globalThis,
+        channelName: "zeta.receipts.chromium-smoke",
+        peerId: "browser/tab-a",
+        sourcePeerId: "browser/tab-b",
+        receiver: {
+          receive: (payload) => Promise.resolve({ ok: true, value: new Uint8Array([...payload].reverse()) }),
+          read: () => {
+            throw new Error("The Chromium byte fixture has no protocol readout.");
+          },
+        },
+        limits: { maxRequestPayloadBytes: 1024, maxResponsePayloadBytes: 1024, maxInFlight: 1 },
+      });
+      if (!created.ok) throw new Error(`${created.feedback.code}: ${created.feedback.detail}`);
+      Reflect.set(globalThis, "__zetaReceiptBroadcastReceiver", created.value);
+    });
+    const receiptBroadcastSender = await pageB.evaluate(async () => {
+      const modulePath = "./darkhall-browser-pwa.js";
+      const api = (await import(modulePath)) as typeof import("../darkhall-ui/darkhall-browser-pwa");
+      const created = api.createNativeBrowserDatabaseReceiptBroadcastTransport({
+        root: globalThis,
+        channelName: "zeta.receipts.chromium-smoke",
+        sourcePeerId: "browser/tab-b",
+        targetPeerId: "browser/tab-a",
+        initialSequence: 900,
+        limits: { maxRequestPayloadBytes: 1024, maxResponsePayloadBytes: 1024, maxInFlight: 1 },
+      });
+      if (!created.ok) throw new Error(`${created.feedback.code}: ${created.feedback.detail}`);
+      const exchanged = await created.value.exchange(new Uint8Array([1, 2, 3]));
+      if (!exchanged.ok) throw new Error(`${exchanged.feedback.code}: ${exchanged.feedback.detail}`);
+      const sender = created.value.read();
+      const closed = created.value.close();
+      if (!closed.ok) throw new Error(`${closed.feedback.code}: ${closed.feedback.detail}`);
+      return { response: Array.from(exchanged.value), sender };
+    });
+    const receiptBroadcastReceiver = await pageA.evaluate(() => {
+      const host = (globalThis as unknown as BrowserReceiptBroadcastGlobal).__zetaReceiptBroadcastReceiver;
+      if (host === undefined) throw new Error("Page A did not retain its receipt BroadcastChannel host.");
+      const receiver = host.read();
+      const closed = host.close();
+      if (!closed.ok) throw new Error(`${closed.feedback.code}: ${closed.feedback.detail}`);
+      return receiver;
+    });
 
     stage = "route pointer and keyboard controller input";
     await pageB.click('[data-action-id="darkhall.database.inspect"]');
@@ -711,6 +791,11 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
         successorReceiptHandoff,
       },
       controllerInput: { pointer: pointerInput, keyboard: keyboardInput },
+      receiptBroadcast: {
+        response: receiptBroadcastSender.response,
+        sender: receiptBroadcastSender.sender,
+        receiver: receiptBroadcastReceiver,
+      },
     };
     const failures = validate(transcript);
     if (failures.length > 0) return failed("assertion-failed", failures.join("; "));
