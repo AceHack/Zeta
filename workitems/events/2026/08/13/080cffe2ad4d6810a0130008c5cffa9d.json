@@ -1,0 +1,14 @@
+{
+  "id": "080cffe2ad4d6810a0130008c5cffa9d",
+  "at": "2026-08-13T18:15:00.269Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZY5BADC087G0R00309CMXY",
+    "type": "bug",
+    "title": "GenSelfApplication.lean does not compile and has escaped every check since 2026-06-21",
+    "slug": "genselfapplication-lean-does-not-compile-and-has-escaped-eve",
+    "priority": "P2",
+    "filename": "081KZY5BADC087G0R00309CMXY-genselfapplication-lean-does-not-compile-and-has-escaped-eve.md"
+  }
+}

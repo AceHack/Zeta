@@ -25,3 +25,16 @@ import Lean4.YamlCodec
 import Lean4.Bonsai
 import Lean4.AdjCtlOrthogonality
 import Lean4.CliffordReflectionE8
+import Lean4.MenoBraidedRMatrix
+
+-- KNOWINGLY EXCLUDED, and said out loud so the omission is visible:
+--   Lean4.GenSelfApplication — does NOT compile.
+--     `Lean4/GenSelfApplication.lean:107:47: Unknown identifier 'selfCode'`
+--   `selfCode` is bound existentially at :99 and then referenced as a free
+--   definition at :107; no `def selfCode` exists. The file's own footer claims
+--   "SORRY-FREE ... Expected: NO warnings, NO errors = oracle passes" — it has
+--   never been run. It entered via #8883 (2026-06-21, "recover orphaned session
+--   artifacts") and has sat outside every check since, exactly like the
+--   ImaginaryStack incident recorded in lakefile.toml.
+--   Importing it here would redden the build, so it stays out UNTIL someone
+--   supplies the missing `selfCode` term — but it stays out NAMED, not silently.

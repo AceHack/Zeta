@@ -138,4 +138,91 @@ theorem braidR_not_symmetric_perm3 :
   exact braidR_not_involutive_of_not_commute hcomm
     (congrFun h (Equiv.swap (0 : Fin 3) 1, Equiv.swap (1 : Fin 3) 2))
 
+/-! ## Part 4 — the missing certificate: `braidR` actually satisfies Yang–Baxter.
+
+THE GAP THIS CLOSES.  Parts 0–3 prove `braidR` is a *bijection* that is *not involutive* — i.e.
+"not symmetric".  They never prove it is a **braiding** at all.  The word "Yang–Baxter" appeared
+in this file only in prose (the header and the `braidR` docstring), and the sole in-tree evidence
+was one `[<Fact>]` on three fixed words in
+`tests/Tests.FSharp/BraidR.SectionA24.ConformanceGate.Tests.fs` — a single point, no generator.
+`tests/Tests.FSharp/BraidRepYangBaxter.Tests.fs`, despite its name, exercises SWAP / CNOT /
+Kauffman–Lomonaco and never touches `braidR`.
+
+So the load-bearing half of "braided, not symmetric" rested on a name rather than a proof: a check
+that did not run, wearing the name of one that did.  This part states it and discharges it.
+
+The braid relation on `V ⊗ V ⊗ V` (modelled as `G × G × G`) is `R₁₂ R₂₃ R₁₂ = R₂₃ R₁₂ R₂₃`, the
+set-theoretic Yang–Baxter equation.  For the conjugation rack `x ▷ y = x·y·x⁻¹` it holds because
+`▷` is **self-distributive** (Joyce 1982; Fenn–Rourke 1992): a rack is *defined* as a set-theoretic
+YB solution, and conjugation is the motivating example. -/
+
+/-- `R` acting on the first two tensor factors of `V ⊗ V ⊗ V`. -/
+def braidR12 {G : Type*} [Group G] : G × G × G → G × G × G :=
+  fun p => (p.1 * p.2.1 * p.1⁻¹, p.1, p.2.2)
+
+/-- `R` acting on the last two tensor factors of `V ⊗ V ⊗ V`. -/
+def braidR23 {G : Type*} [Group G] : G × G × G → G × G × G :=
+  fun p => (p.1, p.2.1 * p.2.2 * p.2.1⁻¹, p.2.1)
+
+/-- **The Yang–Baxter / braid relation for `braidR`** — `R₁₂ ∘ R₂₃ ∘ R₁₂ = R₂₃ ∘ R₁₂ ∘ R₂₃`.
+
+    Both sides agree definitionally in the second and third coordinates (`x·y·x⁻¹` and `x`); the
+    first coordinate is exactly self-distributivity of conjugation,
+    `(x ▷ y) ▷ (x ▷ z) = x ▷ (y ▷ z)`, since both reduce to `x·y·z·y⁻¹·x⁻¹`.
+
+    Together with `braidR_not_symmetric_perm3` this is the full earning: `braidR` **is** a braiding
+    (this theorem) and is **not** a symmetry (Part 3). -/
+theorem braidR_yangBaxter {G : Type*} [Group G] (x y z : G) :
+    braidR12 (braidR23 (braidR12 (x, y, z))) = braidR23 (braidR12 (braidR23 (x, y, z))) := by
+  simp only [braidR12, braidR23, Prod.mk.injEq, and_true]
+  group
+
+/-- The same statement as an equality of maps, which is the form a braiding axiom takes. -/
+theorem braidR_yangBaxter_eq {G : Type*} [Group G] :
+    braidR12 ∘ braidR23 ∘ braidR12 = (braidR23 ∘ braidR12 ∘ braidR23 : G × G × G → G × G × G) := by
+  funext p
+  obtain ⟨x, y, z⟩ := p
+  exact braidR_yangBaxter x y z
+
+/-- Self-distributivity of conjugation, stated on its own — the rack axiom that makes the
+    conjugation operator a set-theoretic Yang–Baxter solution (Joyce 1982; Fenn–Rourke 1992). -/
+theorem conj_selfDistrib {G : Type*} [Group G] (x y z : G) :
+    (x * y * x⁻¹) * (x * z * x⁻¹) * (x * y * x⁻¹)⁻¹ = x * (y * z * y⁻¹) * x⁻¹ := by
+  group
+
+/-! ## Part 5 — negative control: the braid relation actually DISCRIMINATES.
+
+A theorem that is true but vacuous is worth nothing, and this file has already been burned once by
+a name standing in for a proof.  Two guards, both machine-checked:
+
+  * `braidR_yangBaxter` is **not** closed by `rfl` — verified separately; the equation needs the
+    group axioms, so it carries content rather than unfolding definitionally.
+  * a MUTANT that replaces conjugation `x·y·x⁻¹` with plain multiplication `x·y` — not a rack —
+    is **rejected** by the same equation (`mut_not_yangBaxter`).  So passing YBE is evidence about
+    `braidR` specifically, not a property any similar-shaped operator would enjoy.
+
+`braidR_yangBaxter_perm3_exhaustive` then re-derives the positive case by exhaustive evaluation
+over all 216 triples of S₃, independently of the `group` tactic — two routes to the same fact. -/
+
+/-- Mutant of `braidR12`: conjugation `x·y·x⁻¹` weakened to multiplication `x·y`. -/
+def mutR12 {G : Type*} [Group G] : G × G × G → G × G × G := fun p => (p.1 * p.2.1, p.1, p.2.2)
+
+/-- Mutant of `braidR23`, likewise. -/
+def mutR23 {G : Type*} [Group G] : G × G × G → G × G × G := fun p => (p.1, p.2.1 * p.2.2, p.2.1)
+
+/-- **Negative control.**  The multiplication mutant does NOT satisfy the braid relation, so
+    `braidR_yangBaxter` is a discriminating fact about the conjugation rack and not a triviality
+    satisfied by any operator of that shape. -/
+theorem mut_not_yangBaxter : ¬ (∀ x y z : Equiv.Perm (Fin 3),
+    mutR12 (mutR23 (mutR12 (x, y, z))) = mutR23 (mutR12 (mutR23 (x, y, z)))) := by
+  decide
+
+set_option maxRecDepth 40000 in
+/-- **Second, independent route to the positive case.**  Exhaustive evaluation over all 216 triples
+    of `S₃`, using no algebraic tactic — a cross-check on `braidR_yangBaxter`, which is proved
+    abstractly by `group`.  If the two ever disagree, one of them is wrong. -/
+theorem braidR_yangBaxter_perm3_exhaustive : ∀ x y z : Equiv.Perm (Fin 3),
+    braidR12 (braidR23 (braidR12 (x, y, z))) = braidR23 (braidR12 (braidR23 (x, y, z))) := by
+  decide
+
 end Zeta.MenoBraided
