@@ -93,10 +93,46 @@ jobs:
             # ff-only push: HEAD = head_sha + heal. Succeeds iff head_branch is
             # still at head_sha; if the branch moved since produce the non-ff push
             # is rejected and we skip (next push re-triggers) — never force.
-            if git push origin "HEAD:${HEAD_BRANCH}"; then
-              echo "Heal applied + pushed to ${HEAD_BRANCH}."
+            # HEAL THE TRUNK, NEVER SOMEONE ELSE'S BRANCH.
+            #
+            # Pushing to a PR branch starts a loop that blocks the PR it was trying to help:
+            # the bot push is a `synchronize` event, which re-triggers the PR workflows with
+            # `triggering_actor = github-actions[bot]`, and GitHub parks bot-triggered runs as
+            # `action_required`. With a required status check that run never reports, so the PR
+            # sits BLOCKED until a human approves a workflow by hand. Observed on PR #10346:
+            # gate passed at 16:08, the heal pushed at 16:13, and the PR was stuck behind an
+            # unapproved run from that moment on. Every markdown-touching PR would do this.
+            #
+            # It is also a rewrite of the author's branch that nobody asked for. On a PR the
+            # honest output is a REPORT the author can apply; on main there is no author to
+            # surprise, so the heal lands directly.
+            if [ "${HEAD_BRANCH}" = "main" ]; then
+              if git push origin "HEAD:${HEAD_BRANCH}"; then
+                echo "Heal applied + pushed to ${HEAD_BRANCH}."
+              else
+                echo "head_branch moved since produce — non-ff push rejected; skipping (next push re-triggers)." >&2
+              fi
             else
-              echo "head_branch moved since produce — non-ff push rejected; skipping (next push re-triggers)." >&2
+              # Not silence: the finding is still surfaced, it just does not seize the branch.
+              {
+                echo "### Markdown heal available (not pushed)"
+                echo
+                echo "Branch \`${HEAD_BRANCH}\` is not \`main\`, so this heal is REPORTED rather than pushed —"
+                echo "a bot push here would re-trigger the PR workflows as \`action_required\` and block the PR."
+                echo
+                echo "Apply locally with:"
+                echo
+                echo '```'
+                echo "git ls-files '*.md' | bun src/Core.TypeScript/hygiene/healers/md-heal-scope.ts | xargs bun src/Core.TypeScript/hygiene/healers/md-fixer-certified.ts"
+                echo '```'
+                echo
+                echo "Diff that would have been applied:"
+                echo
+                echo '```diff'
+                git --no-pager diff --cached | head -200
+                echo '```'
+              } >> "$GITHUB_STEP_SUMMARY"
+              echo "::notice title=Markdown heal available::Reported for ${HEAD_BRANCH}; not pushed (see job summary)."
             fi
           else
             echo "Patch did not apply to its base (unexpected) — skipping." >&2
