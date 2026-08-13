@@ -9,6 +9,7 @@
     "tally:substrates": "bun ./tools/invariant-substrates/tally.ts",
     "build-graph:affected": "bun ./src/Core.TypeScript/ace/build-graph.ts affected",
     "build-graph:derive": "bun ./src/Core.TypeScript/ace/build-graph.ts derive",
+    "build-graph:quorum": "bun ./src/Core.TypeScript/ace/build-graph.ts quorum",
     "generate:transcript": "bun ./src/Core.QSharp.ReferenceOracle/generate-treaty-transcript.ts",
     "lint:typescript": "bun ./src/Core.TypeScript/lint/lint-typescript.ts",
     "lint:markdown": "markdownlint-cli2",

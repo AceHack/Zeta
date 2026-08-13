@@ -6,7 +6,7 @@
 // escalates instead of vanishing.
 
 import { expect, test, describe } from "bun:test";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   matchGlob,
@@ -29,10 +29,30 @@ import {
   parseCargoPathDeps,
   resolveRelative,
   GRAPH_PATH,
+  quorumSize,
+  tierRank,
+  maxTier,
+  globSpecificity,
+  finestTargetsCovering,
+  consumerClosure,
+  requiredQuorumForTargets,
+  requiredQuorumForChange,
+  computeQuorums,
+  TIER_FAULT_MODEL,
+  EVIDENCE_RULES,
+  DEFAULT_TIER,
+  oracleOutputReviewerClass,
   type BuildGraph,
+  type QuorumTier,
+  type RequiredQuorum,
 } from "./build-graph";
 
 const REPO_ROOT = join(import.meta.dir, "..", "..", "..");
+
+/** A target's quorum, written the short way for the toy fixtures. */
+function toyQuorum(tier: QuorumTier, reviewerClasses: readonly string[] = ["reviewer:t"]): RequiredQuorum {
+  return { tier, faultModel: TIER_FAULT_MODEL[tier], reviewerClasses, evidence: [] };
+}
 
 /** A tiny hand-built graph — the semantics tests read against this, not the repo. */
 const TOY: BuildGraph = {
@@ -40,10 +60,42 @@ const TOY: BuildGraph = {
   always: ["ci/**", "toolchain.lock"],
   inert: ["notes/**"],
   targets: [
-    { id: "a", kind: "t", sources: ["a/**"], dependsOn: [], legs: ["gate/a"], origin: "declared" },
-    { id: "b", kind: "t", sources: ["b/**"], dependsOn: ["a"], legs: ["gate/b"], origin: "declared" },
-    { id: "c", kind: "t", sources: ["c/**"], dependsOn: ["b"], legs: ["gate/b"], origin: "declared" },
-    { id: "d", kind: "t", sources: ["d/**"], dependsOn: [], legs: [], origin: "declared" },
+    {
+      id: "a",
+      kind: "t",
+      sources: ["a/**"],
+      dependsOn: [],
+      legs: ["gate/a"],
+      origin: "declared",
+      requiredQuorum: toyQuorum("T3", ["reviewer:rust"]),
+    },
+    {
+      id: "b",
+      kind: "t",
+      sources: ["b/**"],
+      dependsOn: ["a"],
+      legs: ["gate/b"],
+      origin: "declared",
+      requiredQuorum: toyQuorum("T1", ["reviewer:fsharp"]),
+    },
+    {
+      id: "c",
+      kind: "t",
+      sources: ["c/**"],
+      dependsOn: ["b"],
+      legs: ["gate/b"],
+      origin: "declared",
+      requiredQuorum: toyQuorum("T2"),
+    },
+    {
+      id: "d",
+      kind: "t",
+      sources: ["d/**"],
+      dependsOn: [],
+      legs: [],
+      origin: "declared",
+      requiredQuorum: toyQuorum("T1"),
+    },
   ],
 };
 
@@ -130,11 +182,29 @@ describe("reverse closure — dirty flows toward consumers", () => {
       always: [],
       inert: [],
       targets: [
-        { id: "x", kind: "t", sources: ["x/**"], dependsOn: ["y"], legs: [], origin: "declared" },
-        { id: "y", kind: "t", sources: ["y/**"], dependsOn: ["x"], legs: [], origin: "declared" },
+        {
+          id: "x",
+          kind: "t",
+          sources: ["x/**"],
+          dependsOn: ["y"],
+          legs: [],
+          origin: "declared",
+          requiredQuorum: toyQuorum("T1"),
+        },
+        {
+          id: "y",
+          kind: "t",
+          sources: ["y/**"],
+          dependsOn: ["x"],
+          legs: [],
+          origin: "declared",
+          requiredQuorum: toyQuorum("T1"),
+        },
       ],
     };
     expect(reverseClosure(cyclic, ["x"])).toEqual(["x", "y"]);
+    // The evidence walk uses the same edges and must not hang either.
+    expect(consumerClosure(cyclic, "x")).toEqual(["y"]);
   });
 });
 
@@ -422,5 +492,326 @@ describe("the checked-in repo graph", () => {
       const d = affectedTargets(graph, changed);
       expect({ changed, problems: verifyCoverage(graph, d) }).toEqual({ changed, problems: [] });
     }
+  });
+});
+
+// ── Required quorum ──────────────────────────────────────────────────────
+//
+// The safety-critical tests here are "aggregation is monotone" and "the drift
+// gate covers the quorum". The rest is arithmetic; those two are the properties
+// an attacker — or an impatient agent — would go after.
+
+describe("fault model — a count is never separable from what it survives", () => {
+  test("quorumSize is the ONLY route to a number, and it is exact", () => {
+    expect(quorumSize({ faultClass: "none", f: 0 })).toBe(1);
+    expect(quorumSize({ faultClass: "omission", f: 0 })).toBe(1);
+    expect(quorumSize({ faultClass: "omission", f: 1 })).toBe(2);
+    expect(quorumSize({ faultClass: "omission", f: 2 })).toBe(3);
+    // 3f+1 — Pease/Shostak/Lamport 1980, PBFT 1999.
+    expect(quorumSize({ faultClass: "byzantine", f: 1 })).toBe(4);
+    expect(quorumSize({ faultClass: "byzantine", f: 2 })).toBe(7);
+  });
+
+  test("a corrupt f can never yield a fractional or negative requirement", () => {
+    for (const f of [-5, -1, 0.5, 1.9, Number.NaN]) {
+      const n = quorumSize({ faultClass: "byzantine", f });
+      expect({ f, integer: Number.isInteger(n), atLeastOne: n >= 1 }).toEqual({ f, integer: true, atLeastOne: true });
+    }
+  });
+
+  test("`none` is a WITNESS and says so — it is not a one-member quorum", () => {
+    // vocab/words/quorum.md exists precisely so these two are not confused.
+    expect(TIER_FAULT_MODEL.T0).toEqual({ faultClass: "none", f: 0 });
+    expect(quorumSize(TIER_FAULT_MODEL.T0)).toBe(1);
+  });
+
+  test("tier order is total, and size is monotone in it", () => {
+    const ascending: readonly (readonly [QuorumTier, QuorumTier])[] = [
+      ["T0", "T1"],
+      ["T1", "T2"],
+      ["T2", "T3"],
+    ];
+    for (const [lo, hi] of ascending) {
+      expect(tierRank(hi)).toBeGreaterThan(tierRank(lo));
+      expect(quorumSize(TIER_FAULT_MODEL[hi])).toBeGreaterThanOrEqual(quorumSize(TIER_FAULT_MODEL[lo]));
+      expect(maxTier(lo, hi)).toBe(hi);
+      expect(maxTier(hi, lo)).toBe(hi);
+    }
+  });
+
+  test("only the cross-oracle tier claims a Byzantine model", () => {
+    // 3f+1 is proved about AGREEMENT. It is used for the one tier whose verdict
+    // genuinely is an agreement claim across independent oracles; applying it to
+    // "did you read the diff" would be borrowing an anchor's authority.
+    expect(TIER_FAULT_MODEL.T3.faultClass).toBe("byzantine");
+    expect(TIER_FAULT_MODEL.T1.faultClass).toBe("omission");
+    expect(TIER_FAULT_MODEL.T2.faultClass).toBe("omission");
+  });
+});
+
+describe("quorum aggregation — max, and why not the others", () => {
+  test("max over the affected targets", () => {
+    expect(requiredQuorumForTargets(TOY, ["b"]).tier).toBe("T1");
+    expect(requiredQuorumForTargets(TOY, ["b", "c"]).tier).toBe("T2");
+    expect(requiredQuorumForTargets(TOY, ["a", "b", "c", "d"]).tier).toBe("T3");
+    expect(requiredQuorumForTargets(TOY, ["a", "b", "c", "d"]).size).toBe(4);
+  });
+
+  test("MONOTONE: adding files can never lower the requirement", () => {
+    // The security property. Averaging fails it, which is why averaging is not
+    // an option: bundle one byte-locked edit with ninety trivial ones and the
+    // mean — hence the gate — falls exactly when the change got broader.
+    const high = requiredQuorumForTargets(TOY, ["a"]);
+    for (const extra of [["b"], ["c"], ["d"], ["b", "c", "d"]]) {
+      const wider = requiredQuorumForTargets(TOY, ["a", ...extra]);
+      expect({ extra, ok: wider.size >= high.size && tierRank(wider.tier) >= tierRank(high.tier) }).toEqual({
+        extra,
+        ok: true,
+      });
+    }
+    // The number an "average" would have produced, pinned so the temptation is
+    // visible rather than theoretical.
+    const sizes = ["a", "b", "c", "d"].map((id) => requiredQuorumForTargets(TOY, [id]).size);
+    const mean = Math.trunc(sizes.reduce((x, y) => x + y, 0) / sizes.length);
+    expect(mean).toBeLessThan(requiredQuorumForTargets(TOY, ["a", "b", "c", "d"]).size);
+  });
+
+  test("NOT sum: reviewers are not consumed per target", () => {
+    const all = requiredQuorumForTargets(TOY, ["a", "b", "c", "d"]);
+    const summed = ["a", "b", "c", "d"].reduce((n, id) => n + requiredQuorumForTargets(TOY, [id]).size, 0);
+    expect(all.size).toBeLessThan(summed);
+    expect(all.size).toBe(quorumSize(TIER_FAULT_MODEL.T3));
+  });
+
+  test("reviewer classes UNION — 'different reviewers per language' is a union", () => {
+    expect(requiredQuorumForTargets(TOY, ["a", "b"]).reviewerClasses).toEqual(["reviewer:fsharp", "reviewer:rust"]);
+  });
+
+  test("an empty affected set is a WITNESS, never zero observers", () => {
+    const q = requiredQuorumForTargets(TOY, []);
+    expect({ tier: q.tier, faultClass: q.faultModel.faultClass, size: q.size }).toEqual({
+      tier: "T0",
+      faultClass: "none",
+      size: 1,
+    });
+  });
+
+  test("`drivenBy` names the targets accountable for the tier", () => {
+    expect(requiredQuorumForTargets(TOY, ["a", "b", "c"]).drivenBy).toEqual(["a"]);
+  });
+
+  test("unknown paths escalate to full, and full carries the max tier — no special case", () => {
+    const d = affectedTargets(TOY, ["totally/unmapped.bin"]);
+    expect(d.mode).toBe("full");
+    expect(requiredQuorumForChange(TOY, d).tier).toBe("T3");
+  });
+
+  test("a declared-inert change gets a witness, not a quorum", () => {
+    const d = affectedTargets(TOY, ["notes/thoughts.md"]);
+    expect(d.mode).toBe("selective");
+    expect(requiredQuorumForChange(TOY, d).size).toBe(1);
+  });
+
+  test("ids not in the graph are ignored rather than silently sizing the quorum", () => {
+    expect(requiredQuorumForTargets(TOY, ["nope"]).tier).toBe("T0");
+    expect(requiredQuorumForTargets(TOY, ["nope", "c"]).tier).toBe("T2");
+  });
+});
+
+describe("evidence attribution", () => {
+  test("consumerClosure walks dependsOn upward, not downward", () => {
+    // a is consumed by b, b by c. Evidence must reach a from c and must NOT
+    // reach c from a — otherwise every sample app inherits the tier of the
+    // library it links, which is the bug this direction was chosen to avoid.
+    expect(consumerClosure(TOY, "a")).toEqual(["b", "c"]);
+    expect(consumerClosure(TOY, "c")).toEqual([]);
+    expect(consumerClosure(TOY, "d")).toEqual([]);
+  });
+
+  test("glob specificity counts leading literal segments", () => {
+    expect(globSpecificity("**/*.md")).toBe(0);
+    expect(globSpecificity("**")).toBe(0);
+    expect(globSpecificity("src/Core.Rust.Merkle/**")).toBe(2);
+    expect(globSpecificity("tests/cross-verification/**")).toBe(2);
+    expect(globSpecificity("src/Core.TypeScript/ace/**")).toBe(3);
+    // A repo-wide extension glob loses to any path-scoped one — that is the
+    // whole point of the ranking.
+    expect(globSpecificity("**/*.ts")).toBeLessThan(globSpecificity("tests/cross-verification/**"));
+  });
+
+  test("evidence attaches to the finest covering target only", () => {
+    const g: BuildGraph = {
+      version: 1,
+      always: [],
+      inert: [],
+      targets: [
+        {
+          id: "lint",
+          kind: "t",
+          sources: ["**/*.md"],
+          dependsOn: [],
+          legs: [],
+          origin: "declared",
+          requiredQuorum: toyQuorum("T1"),
+        },
+        {
+          id: "harness",
+          kind: "t",
+          sources: ["tests/x/**"],
+          dependsOn: [],
+          legs: [],
+          origin: "declared",
+          requiredQuorum: toyQuorum("T1"),
+        },
+      ],
+    };
+    expect(finestTargetsCovering(g, "tests/x/README.md")).toEqual(["harness"]);
+    // No path-scoped target covers this one, so the lint leg IS the finest
+    // thing covering it and does own the evidence.
+    expect(finestTargetsCovering(g, "docs/other.md")).toEqual(["lint"]);
+  });
+
+  test("oracle-output filenames name their reviewer class, and an unknown one is LOUD", () => {
+    expect(oracleOutputReviewerClass("tests/cross-verification/zset/fsharp-output.json")).toBe("reviewer:fsharp");
+    expect(oracleOutputReviewerClass("tests/cross-verification/zset/cs-output.json")).toBe("reviewer:csharp");
+    // A new oracle language must show up in the derived JSON, never silently
+    // narrow the reviewer set — the same stance as unknown→full, one level up.
+    expect(oracleOutputReviewerClass("tests/cross-verification/zset/zig-output.json")).toBe("reviewer:unknown:zig");
+    expect(oracleOutputReviewerClass("src/Core/Foo.fs")).toBe("");
+  });
+
+  test("every evidence rule is a path pattern with a tier above the floor", () => {
+    for (const r of EVIDENCE_RULES) {
+      expect({ id: r.id, paths: r.paths.length > 0, above: tierRank(r.tier) > tierRank(DEFAULT_TIER) }).toEqual({
+        id: r.id,
+        paths: true,
+        above: true,
+      });
+    }
+  });
+});
+
+describe("the checked-in repo graph — quorum", () => {
+  const graph = loadGraph(REPO_ROOT);
+
+  test("EVERY target carries a fault model consistent with its tier", () => {
+    for (const t of graph.targets) {
+      expect({ id: t.id, model: t.requiredQuorum.faultModel }).toEqual({
+        id: t.id,
+        model: TIER_FAULT_MODEL[t.requiredQuorum.tier],
+      });
+    }
+  });
+
+  test("EVERY target names at least one reviewer class", () => {
+    for (const t of graph.targets) {
+      expect({ id: t.id, named: t.requiredQuorum.reviewerClasses.length > 0 }).toEqual({ id: t.id, named: true });
+    }
+  });
+
+  test("a tier above the floor always carries the evidence that put it there", () => {
+    // The auditability property: no target is elevated by assertion.
+    for (const t of graph.targets) {
+      if (tierRank(t.requiredQuorum.tier) <= tierRank(DEFAULT_TIER)) continue;
+      expect({ id: t.id, evidenced: t.requiredQuorum.evidence.length > 0 }).toEqual({ id: t.id, evidenced: true });
+    }
+  });
+
+  test("every recorded witness file still exists — evidence rots loudly", () => {
+    for (const t of graph.targets) {
+      for (const e of t.requiredQuorum.evidence) {
+        expect({ id: t.id, witness: e.witness, exists: existsSync(join(REPO_ROOT, e.witness)) }).toEqual({
+          id: t.id,
+          witness: e.witness,
+          exists: true,
+        });
+      }
+    }
+  });
+
+  test(".NET targets are split by LANGUAGE, not lumped as one toolchain", () => {
+    // Aaron: "likely we want different reviewers per language." `dotnet` is a
+    // toolchain; F# and C# are what a reviewer actually reads.
+    const dotnet = graph.targets.filter((t) => t.kind === "dotnet");
+    expect(dotnet.length).toBeGreaterThan(0);
+    for (const t of dotnet) {
+      expect({ id: t.id, classes: t.requiredQuorum.reviewerClasses }).not.toEqual({
+        id: t.id,
+        classes: ["reviewer:dotnet"],
+      });
+    }
+  });
+
+  test("the tiers DISCRIMINATE — this is not a constant wearing a function's clothes", () => {
+    const tiers = new Set(graph.targets.map((t) => t.requiredQuorum.tier));
+    expect(tiers.size).toBeGreaterThanOrEqual(3);
+    for (const tier of tiers) {
+      const n = graph.targets.filter((t) => t.requiredQuorum.tier === tier).length;
+      expect({ tier, swallowsTheGraph: n * 5 > graph.targets.length * 4 }).toEqual({ tier, swallowsTheGraph: false });
+    }
+  });
+
+  test("worked cases: the tier matches evidence a reader can go and open", () => {
+    const byId = new Map(graph.targets.map((t) => [t.id, t] as const));
+    // A Rust crate with single-oracle golden vectors and no cross-verify.
+    expect(byId.get("rust:src/Core.Rust.Braid")?.requiredQuorum.tier).toBe("T2");
+    // The N-oracle byte-lock harness itself.
+    expect(byId.get("ts:cross-verification")?.requiredQuorum.tier).toBe("T3");
+    // A sample app: consumed by nothing, so no byte-lock runs when it changes.
+    expect(byId.get("dotnet:samples/CrmSample")?.requiredQuorum.tier).toBe("T1");
+    // The harness declares its own oracles by filename, so its reviewer set is
+    // derived from the tree rather than guessed.
+    const harness = byId.get("ts:cross-verification")?.requiredQuorum.reviewerClasses ?? [];
+    expect(harness).toContain("reviewer:rust");
+    expect(harness).toContain("reviewer:fsharp");
+    expect(harness).toContain("reviewer:csharp");
+  });
+
+  test("a real byte-lock change demands the Byzantine quorum", () => {
+    const q = requiredQuorumForChange(
+      graph,
+      affectedTargets(graph, ["src/Core.Rust.Merkle/tests/golden-vectors-merkle.json"]),
+    );
+    expect({ tier: q.tier, size: q.size }).toEqual({ tier: "T3", size: 4 });
+    expect(q.reviewerClasses).toContain("reviewer:rust");
+  });
+
+  test("a sample-app change does NOT", () => {
+    const q = requiredQuorumForChange(graph, affectedTargets(graph, ["samples/CrmSample/Program.fs"]));
+    expect({ tier: q.tier, size: q.size }).toEqual({ tier: "T1", size: 2 });
+  });
+
+  test("DRIFT GATE: a hand-edited tier contradicting the derivation fails derive", () => {
+    // The same guard the declared edges already get. Pick a target the
+    // derivation does NOT place at T3 and hand-promote it.
+    const victim = graph.targets.find((t) => t.requiredQuorum.tier !== "T3");
+    expect(victim).toBeDefined();
+    const tampered: BuildGraph = {
+      ...graph,
+      targets: graph.targets.map((t) =>
+        t.id === victim?.id
+          ? { ...t, requiredQuorum: { ...t.requiredQuorum, tier: "T3", faultModel: TIER_FAULT_MODEL.T3 } }
+          : t,
+      ),
+    };
+    expect(graphsEqual(deriveGraph(REPO_ROOT, tampered), tampered)).toBe(false);
+    // ...and the untampered graph is in sync, so the gate is not simply always red.
+    expect(graphsEqual(deriveGraph(REPO_ROOT, graph), graph)).toBe(true);
+  });
+
+  test("DRIFT GATE: a hand-invented reviewer class fails derive", () => {
+    const tampered: BuildGraph = {
+      ...graph,
+      targets: graph.targets.map((t, i) =>
+        i === 0 ? { ...t, requiredQuorum: { ...t.requiredQuorum, reviewerClasses: ["reviewer:whoever-is-free"] } } : t,
+      ),
+    };
+    expect(graphsEqual(deriveGraph(REPO_ROOT, tampered), tampered)).toBe(false);
+  });
+
+  test("derivation is DETERMINISTIC — same tree, same quorums, every run", () => {
+    const a = computeQuorums(REPO_ROOT, graph);
+    const b = computeQuorums(REPO_ROOT, graph);
+    expect(JSON.stringify([...a.entries()])).toBe(JSON.stringify([...b.entries()]));
   });
 });

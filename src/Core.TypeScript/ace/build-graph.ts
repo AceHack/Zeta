@@ -15,6 +15,29 @@
 // graph; building a target = its reachable subgraph), Nixpkgs (one defined
 // expression graph, carve a subset).
 //
+// THE VERIFICATION-COST IDENTITY (why `requiredQuorum` lives on the same row as
+// `sources`, and why the churn heatmap is its other half):
+//
+//   ongoing verification cost of a path  ==  change frequency  ×  quorum size
+//
+// Both factors are per-path, so the product is per-path — which turns "where
+// should we split this module?" from taste into arithmetic. A file that is
+// rewritten weekly AND sits behind a 4-agent Byzantine quorum costs ~4x the
+// review of a weekly file behind a 2-agent one, every week, forever. That
+// product is the thing worth minimising, and there are only two ways to move it:
+// change the code less, or make less of the change land on a high-tier path
+// (split the byte-locked surface away from the churning one, distribute the
+// functionality across files so a typical edit touches fewer high-tier targets).
+//
+// This file supplies the SECOND factor exactly. The first factor — commit churn
+// per path — has NO tooling in this repo as of 2026-08-13 (CHECKED: no
+// hotspot/heatmap tool in-tree). Until it exists the identity is only half
+// computable, so the split decisions Aaron wants to drive off it stay judgement
+// calls. Aaron 2026-08-13: *"we can use heatmaps of changes to find hotspots in
+// code/repo — those are areas that likely need some splitting and reduction on
+// quorum size if possible."* The heatmap is a named PREREQUISITE — a separate
+// piece of work, not a deferred edit hiding in this file.
+//
 // Two halves:
 //   1. DERIVE — the graph's edges come from what the repo ALREADY declares
 //      (.fsproj/.csproj <ProjectReference>, Cargo.toml `path =` deps,
@@ -42,6 +65,7 @@
 // collation throughout — `ordinalCompare`, never `localeCompare`
 // (.claude/rules/culture-invariant-by-default.md).
 
+import { execFileSync } from "node:child_process";
 import { readFileSync, readdirSync, existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -49,6 +73,86 @@ import { join } from "node:path";
 
 /** How a target's row got into the graph. */
 export type TargetOrigin = "declared" | "derived";
+
+/**
+ * How many members a quorum needs is a function of WHAT IT MUST SURVIVE. The
+ * tiers below name the fault, and `quorumSize` turns the fault into the count —
+ * there is no path to a number that skips the model.
+ *
+ *  - `none`      — not a quorum at all. One observer, zero faults tolerated.
+ *                  This is `vocab/words/witness.md`, named honestly so a witness
+ *                  can never be mistaken for a quorum by reading the JSON.
+ *  - `omission`  — a member may FAIL TO NOTICE (unavailable, timed out,
+ *                  inattentive, out of depth) but never asserts a falsehood.
+ *                  `f + 1` members: at least one non-faulty reviewer remains,
+ *                  and one honest "this is broken" is decisive, because a defect
+ *                  found is a defect. Requires the merge policy to let a single
+ *                  member's finding block — a majority vote over findings would
+ *                  break this sizing.
+ *  - `byzantine` — a member may ASSERT A FALSE VERDICT (captured, hallucinating,
+ *                  or confidently wrong about bytes it did not actually compare).
+ *                  `3f + 1` members. Anchor: Pease, Shostak & Lamport, *Reaching
+ *                  Agreement in the Presence of Faults* (JACM 1980); Castro &
+ *                  Liskov, *Practical Byzantine Fault Tolerance* (OSDI 1999).
+ */
+export type FaultClass = "none" | "omission" | "byzantine";
+
+export interface FaultModel {
+  readonly faultClass: FaultClass;
+  /** Faults tolerated. Non-negative integer — no floats anywhere in this file. */
+  readonly f: number;
+}
+
+/**
+ * The quorum tiers, ordered. `tierRank` is the total order; `TIER_FAULT_MODEL`
+ * is the policy that maps each tier to what it must survive.
+ */
+export type QuorumTier = "T0" | "T1" | "T2" | "T3";
+
+/** What kind of repo evidence put a target in its tier. */
+export type EvidenceKind = "golden-vector" | "cross-oracle" | "treaty-transcript";
+
+/**
+ * One reason a target sits where it does. Recorded per target so the tier is
+ * AUDITABLE — you can open the named `witness` file and see the golden vectors
+ * for yourself, rather than trusting a number somebody typed.
+ */
+export interface QuorumEvidence {
+  /** `EVIDENCE_RULES` id that fired. */
+  readonly rule: string;
+  readonly kind: EvidenceKind;
+  /** Ordinal-least repo path that matched the rule — the checkable "why". */
+  readonly witness: string;
+  /** How many paths under `holder` matched this rule. */
+  readonly count: number;
+  /**
+   * Target id whose `sources` contain `witness`. Equal to the owning target's
+   * own id when the evidence is DIRECT; a different id when the evidence was
+   * inherited across a `dependsOn` edge (see `computeQuorums`).
+   */
+  readonly holder: string;
+}
+
+/**
+ * The required quorum for changes to one target.
+ *
+ * DELIBERATELY CARRIES NO SIZE FIELD. `vocab/words/quorum.md`: *"every 'get an
+ * outside opinion' is a witness claim until it names f."* A bare count is
+ * exactly that unnamed claim, so the schema makes one unrepresentable — the
+ * only way to a number is `quorumSize(requiredQuorum.faultModel)`.
+ */
+export interface RequiredQuorum {
+  readonly tier: QuorumTier;
+  readonly faultModel: FaultModel;
+  /**
+   * Reviewer CLASSES, never agent names — binding a class to a roster is the
+   * roster's job, not the graph's. Aaron 2026-08-13: *"likely we want different
+   * reviewers per language."* Ordinal-sorted, deduplicated.
+   */
+  readonly reviewerClasses: readonly string[];
+  /** Empty means the T1 floor applies: no byte-lock evidence found. */
+  readonly evidence: readonly QuorumEvidence[];
+}
 
 export interface BuildTarget {
   /** Stable id, `<kind>:<path-or-name>`. Ordinal-sorted in the file. */
@@ -62,6 +166,13 @@ export interface BuildTarget {
   /** CI legs that actually run this target today (`workflow/job`). */
   readonly legs: readonly string[];
   readonly origin: TargetOrigin;
+  /**
+   * How many agents must verify a change to this target, and against what
+   * fault model. DERIVED from repo evidence by `computeQuorums` for EVERY
+   * target — declared rows included — so `derive` is a drift gate on the
+   * quorum exactly as it is on the edges.
+   */
+  readonly requiredQuorum: RequiredQuorum;
 }
 
 export interface BuildGraph {
@@ -427,7 +538,331 @@ export function verifyCoverage(graph: BuildGraph, d: AffectedDecision): readonly
   return problems;
 }
 
+// ── Required quorum: policy ──────────────────────────────────────────────
+//
+// Aaron 2026-08-13, answering "how many reviewers?": *"the quorum size will be
+// PATH DEPENDENT — like golden vectors and byte-locked treaties will require
+// more reviews, and likely we want different reviewers per language."* So the
+// answer is a function over this graph, not a constant, and the two signals he
+// named are both discoverable in the tree (see `EVIDENCE_RULES`).
+//
+// STATUS OF EACH PIECE — the honest split:
+//   CHECKED  — which tier a target lands in. Derived from file paths that exist
+//              (~140 golden-vector files, ~385 cross-verify files, 16 treaty
+//              transcripts), re-derived on every `derive`, drift-gated.
+//   PROPOSED — the `f` chosen for each tier below, and the choice of fault
+//              CLASS per tier. The ORDER (T3 > T2 > T1) follows from Aaron's
+//              framing; the exact numbers are policy and are meant to be moved
+//              once real agent-review data exists. They live in one table so
+//              moving them is a one-line diff with a visible blast radius.
+
+/**
+ * Members required, from the fault model. The ONLY way to a number.
+ *
+ * `omission` ⇒ f+1 — survive f members that fail to notice.
+ * `byzantine` ⇒ 3f+1 — survive f members that assert a falsehood, under
+ * asynchrony (Pease–Shostak–Lamport 1980; PBFT 1999).
+ *
+ * Total and integer-exact: `f` is truncated and floored at 0, so a corrupt
+ * model can never produce a fractional or negative requirement.
+ */
+export function quorumSize(m: FaultModel): number {
+  const t = Math.trunc(m.f);
+  // NaN/Infinity fall back to f=0 rather than propagating: a corrupt model must
+  // yield the SMALLEST honest requirement it can still name (one observer), not
+  // a NaN that every `>=` comparison silently passes.
+  const f = Number.isFinite(t) ? Math.max(0, t) : 0;
+  if (m.faultClass === "none") return 1;
+  if (m.faultClass === "byzantine") return 3 * f + 1;
+  return f + 1;
+}
+
+/**
+ * Tier → fault model. PROPOSED policy; see the status note above.
+ *
+ * T0 — a change that reaches no build target at all (declared-inert paths).
+ *      A single non-author observer. Named `none` rather than `omission, f=0`
+ *      so the JSON never disguises a witness as a small quorum.
+ * T1 — ordinary code with no byte-lock evidence. Two independent reviewers:
+ *      tolerate one that misses the defect.
+ * T2 — carries golden vectors for ONE oracle. The vectors themselves arbitrate
+ *      (bytes match or they do not), so a reviewer cannot manufacture agreement
+ *      — the realistic fault is failing to notice that locked bytes moved.
+ *      Omission, f=2 ⇒ 3.
+ * T3 — carries a CROSS-ORACLE byte-lock or a ratified treaty transcript. Here
+ *      the verdict is an AGREEMENT claim across independent implementations,
+ *      and a member asserting "the oracles agree" without having compared them
+ *      manufactures consensus — a Byzantine fault by definition, not an
+ *      omission. Byzantine, f=1 ⇒ 4. This is also the only tier where the
+ *      3f+1 anchor is being used for the thing it was proved about.
+ */
+export const TIER_FAULT_MODEL: Readonly<Record<QuorumTier, FaultModel>> = {
+  T0: { faultClass: "none", f: 0 },
+  T1: { faultClass: "omission", f: 1 },
+  T2: { faultClass: "omission", f: 2 },
+  T3: { faultClass: "byzantine", f: 1 },
+};
+
+/** Total order on tiers. Size is monotone in rank, by construction of the table above. */
+export function tierRank(t: QuorumTier): number {
+  if (t === "T0") return 0;
+  if (t === "T1") return 1;
+  if (t === "T2") return 2;
+  return 3;
+}
+
+export function maxTier(a: QuorumTier, b: QuorumTier): QuorumTier {
+  return tierRank(a) >= tierRank(b) ? a : b;
+}
+
+/** The floor for any target that builds anything at all. */
+export const DEFAULT_TIER: QuorumTier = "T1";
+
+export interface EvidenceRule {
+  readonly id: string;
+  readonly kind: EvidenceKind;
+  readonly tier: QuorumTier;
+  /** Globs, matched by the same `matchGlob` the sources use. Ordinal, case-exact. */
+  readonly paths: readonly string[];
+}
+
+/**
+ * The evidence that raises a target above the T1 floor.
+ *
+ * Every rule is a PATH pattern, not a content grep. That is deliberate: a grep
+ * for "treaty" hits ~30 files of prose commentary in `src/` where the word is
+ * Mirror-register shorthand, which would derive a principled-looking tier from
+ * noise. Path evidence is mechanical, stable under rewording, and each hit
+ * names a file a reviewer can open.
+ *
+ * The table is meant to GROW — Aaron: *"there will likely have rules emerge
+ * over time on how to split different areas."* Adding a signal is one row here
+ * plus a re-derive; nothing else changes. Candidate next rows, deliberately NOT
+ * added today because Aaron did not name them and each needs its own argument:
+ * `legs: []` (a target with no CI leg has no mechanical check at all, so the
+ * quorum is its only evidence) and crypto/keyring surfaces.
+ */
+export const EVIDENCE_RULES: readonly EvidenceRule[] = [
+  {
+    // Aaron: "golden vectors ... will require more reviews". Locked bytes for a
+    // single oracle: `.claude/rules/no-binary-in-proof-lineage.md` keeps them
+    // text, so a reviewer can actually diff them.
+    id: "golden-vectors",
+    kind: "golden-vector",
+    tier: "T2",
+    paths: [
+      "**/golden-vectors*",
+      "**/golden_vectors*",
+      "**/*-golden.*",
+      "**/*_golden.*",
+      "**/*.golden.*",
+      "**/_golden/**",
+      "**/golden/**",
+    ],
+  },
+  {
+    // The N-oracle byte-lock: the same computation implemented in several
+    // languages and required to produce identical bytes. Breaking it is a
+    // cross-language divergence, which is why it outranks a single-oracle lock.
+    id: "cross-oracle-bytelock",
+    kind: "cross-oracle",
+    tier: "T3",
+    paths: [
+      "tests/cross-verification/**",
+      "**/*cross_verify*",
+      "**/*cross-verify*",
+      "**/*CrossVerify*",
+      "**/*CrossVerification*",
+    ],
+  },
+  {
+    // Aaron: "byte-locked treaties". A treaty transcript is a ratified
+    // agreement artifact — `db/shapes/cartridges/*.lines` records the ratifying
+    // parties, and these files are the byte-locked half of that record.
+    //
+    // Deliberately matches the RECORD and its assertions, not every file with
+    // "treaty" in the name: `src/Core/MarkdownTreaty.fs` and
+    // `QuantumObservableTreaty.fs` are implementations of a treaty-shaped
+    // feature, not ratified transcripts, and letting a naming coincidence set
+    // a Byzantine tier is how a derivation stops meaning anything.
+    id: "treaty-transcript",
+    kind: "treaty-transcript",
+    tier: "T3",
+    paths: ["**/*treaty-transcript*", "**/*-treaty.json", "**/*-treaty.test.*", "**/*Treaty.Tests.*"],
+  },
+];
+
+// ── Required quorum: reviewer classes ────────────────────────────────────
+
+/**
+ * Toolchain kind → reviewer class. `dotnet` is deliberately absent: it is a
+ * toolchain, not a language, and Aaron asked for per-LANGUAGE reviewers — so
+ * .NET targets are split into F# and C# by their project-file extension in
+ * `reviewerClassesForTarget` (CHECKED 2026-08-13: 27 `.fsproj` dirs, 28
+ * `.csproj` dirs, zero dirs carrying both).
+ */
+const KIND_REVIEWER_CLASS: Readonly<Record<string, string>> = {
+  agda: "reviewer:agda",
+  alloy: "reviewer:alloy",
+  assemblyscript: "reviewer:assemblyscript",
+  go: "reviewer:go",
+  lean: "reviewer:lean4",
+  markdown: "reviewer:markdown",
+  python: "reviewer:python",
+  qsharp: "reviewer:qsharp",
+  rust: "reviewer:rust",
+  shell: "reviewer:shell",
+  tla: "reviewer:tlaplus",
+  typescript: "reviewer:typescript",
+};
+
+/**
+ * `tests/cross-verification/<noun>/<lang>-output.json` — the harness declares
+ * its own participating oracles by filename, so the reviewer set for a
+ * cross-verification change is DERIVED from the tree rather than guessed.
+ * CHECKED 2026-08-13: 97 such files, all under `tests/cross-verification/`,
+ * exactly these seven prefixes.
+ */
+const ORACLE_OUTPUT_REVIEWER_CLASS: Readonly<Record<string, string>> = {
+  cs: "reviewer:csharp",
+  fsharp: "reviewer:fsharp",
+  go: "reviewer:go",
+  mumps: "reviewer:mumps",
+  python: "reviewer:python",
+  rust: "reviewer:rust",
+  ts: "reviewer:typescript",
+};
+
+const ORACLE_OUTPUT_SUFFIX = "-output.json";
+
+/**
+ * Reviewer class named by an oracle-output filename, or `""` for a path that is
+ * not one. An UNRECOGNISED language prefix yields `reviewer:unknown:<prefix>`
+ * rather than nothing: a new oracle language must show up loudly in the derived
+ * JSON, never silently narrow the reviewer set. Same stance as unknown→full.
+ */
+export function oracleOutputReviewerClass(path: string): string {
+  const base = path.slice(path.lastIndexOf("/") + 1);
+  if (!base.endsWith(ORACLE_OUTPUT_SUFFIX)) return "";
+  const lang = base.slice(0, base.length - ORACLE_OUTPUT_SUFFIX.length);
+  if (lang === "") return "";
+  return ORACLE_OUTPUT_REVIEWER_CLASS[lang] ?? `reviewer:unknown:${lang}`;
+}
+
+function dotnetReviewerClasses(root: string, targetId: string): readonly string[] {
+  const dir = targetId.slice(targetId.indexOf(":") + 1);
+  const abs = join(root, dir);
+  if (!existsSync(abs)) return ["reviewer:dotnet"];
+  const out = new Set<string>();
+  for (const f of readdirSync(abs)) {
+    if (f.endsWith(".fsproj")) out.add("reviewer:fsharp");
+    else if (f.endsWith(".csproj")) out.add("reviewer:csharp");
+  }
+  // A .NET target with no project file at all is a graph bug, not a free pass:
+  // name the toolchain so the requirement is non-empty and visibly coarse.
+  if (out.size === 0) out.add("reviewer:dotnet");
+  const arr = [...out];
+  arr.sort(ordinalCompare);
+  return arr;
+}
+
+// ── Required quorum: query ───────────────────────────────────────────────
+
+export interface QuorumRequirement {
+  readonly tier: QuorumTier;
+  readonly faultModel: FaultModel;
+  /** `quorumSize(faultModel)`, materialised for the caller. */
+  readonly size: number;
+  readonly reviewerClasses: readonly string[];
+  /** The affected targets that actually set the tier — the accountable rows. */
+  readonly drivenBy: readonly string[];
+  readonly reason: string;
+}
+
+function quorumOf(
+  tier: QuorumTier,
+  classes: readonly string[],
+  drivenBy: readonly string[],
+  reason: string,
+): QuorumRequirement {
+  const faultModel = TIER_FAULT_MODEL[tier];
+  return { tier, faultModel, size: quorumSize(faultModel), reviewerClasses: classes, drivenBy, reason };
+}
+
+/**
+ * The quorum required to verify a change that affects `ids`.
+ *
+ * AGGREGATION IS **MAX**, and the alternatives are not close:
+ *
+ *  - **max is safe and is the only monotone choice.** A quorum is a FLOOR
+ *    ("at least this many witnesses, tolerating this fault"), and one review
+ *    session covers the whole change — so satisfying the largest floor
+ *    satisfies every smaller one simultaneously. Monotonicity is the security
+ *    property: adding a file to a change can only raise the requirement, never
+ *    lower it.
+ *  - **sum is nonsense.** Reviewers are not consumed per target. The same four
+ *    agents reviewing a change that touches fifty T3 targets satisfy all fifty
+ *    floors; summing would demand two hundred agents for one change and make
+ *    large-but-shallow changes unmergeable.
+ *  - **average is DANGEROUS — it is a live dilution attack.** Averaging is
+ *    non-monotone: bundle one byte-locked treaty edit with ninety trivial
+ *    T1 files and the mean falls, so the requirement DROPS exactly when the
+ *    change got broader. An attacker (or an impatient agent) lowers the gate by
+ *    adding noise. There is a regression test pinning this.
+ *
+ * Reviewer classes UNION rather than max — a change spanning F# and Rust needs
+ * both, and "different reviewers per language" is precisely a union.
+ *
+ * An EMPTY affected set is T0, a witness: a docs-only change still gets one
+ * non-author observer, never zero. Note the caller normally hands this
+ * `AffectedDecision.affected`, and an unknown path has already forced that to
+ * every target — so unknown escalates to the max tier with no special case here.
+ */
+export function requiredQuorumForTargets(graph: BuildGraph, ids: readonly string[]): QuorumRequirement {
+  const byId = new Map(graph.targets.map((t) => [t.id, t] as const));
+  const classes = new Set<string>();
+  let tier: QuorumTier = "T0";
+  const seen: string[] = [];
+  for (const id of ids) {
+    const t = byId.get(id);
+    if (t === undefined) continue;
+    seen.push(id);
+    tier = maxTier(tier, t.requiredQuorum.tier);
+    for (const c of t.requiredQuorum.reviewerClasses) classes.add(c);
+  }
+  if (seen.length === 0) {
+    return quorumOf("T0", [], [], "no build target affected — a witness, not a quorum");
+  }
+  const drivenBy = seen.filter((id) => byId.get(id)?.requiredQuorum.tier === tier);
+  drivenBy.sort(ordinalCompare);
+  const sortedClasses = [...classes];
+  sortedClasses.sort(ordinalCompare);
+  const model = TIER_FAULT_MODEL[tier];
+  const reason =
+    `max tier ${tier} over ${String(seen.length)} affected target(s), set by ${String(drivenBy.length)}; ` +
+    `${model.faultClass} fault model tolerating f=${String(model.f)}`;
+  return quorumOf(tier, sortedClasses, drivenBy, reason);
+}
+
+/** The same query, driven straight off an `affectedTargets` decision. */
+export function requiredQuorumForChange(graph: BuildGraph, d: AffectedDecision): QuorumRequirement {
+  return requiredQuorumForTargets(graph, d.affected);
+}
+
 // ── Derivation from what the repo already declares (edge I/O) ────────────
+
+/**
+ * What a freshly-derived row carries until `applyQuorums` overwrites it. Never
+ * survives into the checked-in JSON — `deriveGraph` always ends with the real
+ * computation — but it keeps `requiredQuorum` NON-OPTIONAL on `BuildTarget`, so
+ * a target with no fault model is unrepresentable rather than merely unusual.
+ */
+const PLACEHOLDER_QUORUM: RequiredQuorum = {
+  tier: DEFAULT_TIER,
+  faultModel: TIER_FAULT_MODEL[DEFAULT_TIER],
+  reviewerClasses: [],
+  evidence: [],
+};
 
 function listDirs(root: string, rel: string): readonly string[] {
   const abs = join(root, rel);
@@ -525,6 +960,7 @@ function deriveDotnetTargets(root: string): readonly BuildTarget[] {
       // real and are what a finer-grained build would carve on.
       legs: ["gate/build-and-test"],
       origin: "derived",
+      requiredQuorum: PLACEHOLDER_QUORUM,
     });
   }
   return out;
@@ -546,6 +982,7 @@ function deriveRustTargets(root: string): readonly BuildTarget[] {
       // coverage gap honestly rather than implying coverage that does not exist.
       legs: rel === "src/Core.Rust.Observe" ? ["gate/full-verify"] : [],
       origin: "derived",
+      requiredQuorum: PLACEHOLDER_QUORUM,
     });
   }
   return out;
@@ -564,6 +1001,7 @@ function deriveLeanTargets(root: string): readonly BuildTarget[] {
       // Core.Lean4.Cslib is explicitly opt-in and not on the main gate.
       legs: rel === "src/Core.Lean4" ? ["lean-proof/build"] : [],
       origin: "derived",
+      requiredQuorum: PLACEHOLDER_QUORUM,
     });
   }
   return out;
@@ -572,6 +1010,10 @@ function deriveLeanTargets(root: string): readonly BuildTarget[] {
 /**
  * Derive the `origin: "derived"` targets from the repo's own manifests.
  * Reads only declared edges — invents nothing.
+ *
+ * The `requiredQuorum` on each row here is a PLACEHOLDER: `applyQuorums`
+ * recomputes it for every target, declared and derived alike, as the last step
+ * of `deriveGraph`. Nothing downstream should read the placeholder.
  */
 export function deriveTargets(root: string): readonly BuildTarget[] {
   const targets = [...deriveDotnetTargets(root), ...deriveRustTargets(root), ...deriveLeanTargets(root)];
@@ -579,11 +1021,309 @@ export function deriveTargets(root: string): readonly BuildTarget[] {
   return targets;
 }
 
-/** Regenerate the graph: declared rows preserved verbatim, derived rows replaced. */
+// ── Quorum derivation (edge I/O) ─────────────────────────────────────────
+
+/**
+ * The repo's TRACKED file set, ordinal-sorted.
+ *
+ * Deliberately `git ls-files` and not a directory walk. The quorum is content
+ * that lands in a byte-compared JSON and is enforced by a drift gate, so its
+ * input must be identical on every machine — and a walk of the working tree
+ * picks up build outputs, caches and untracked scratch, which differ per
+ * checkout and would make `derive` fail spuriously (or, worse, silently change
+ * a tier). The tracked set is the same everywhere.
+ *
+ * Throws on failure rather than returning empty: an empty file list would
+ * silently demote every target to the T1 floor, which is precisely the
+ * "a skipped check looks like a passed check" failure this graph exists to
+ * prevent.
+ */
+export function trackedFiles(root: string): readonly string[] {
+  let raw: string;
+  try {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    raw = execFileSync("git", ["-C", root, "ls-files", "-z"], {
+      encoding: "utf8",
+      maxBuffer: 256 * 1024 * 1024,
+    });
+  } catch (err) {
+    throw new Error(`quorum derivation needs the tracked file list and \`git ls-files\` failed in ${root}`, {
+      cause: err,
+    });
+  }
+  const out: string[] = [];
+  for (const line of raw.split("\0")) {
+    const t = line.trim();
+    if (t !== "") out.push(normalizePath(t));
+  }
+  out.sort(ordinalCompare);
+  return out;
+}
+
+/**
+ * Order on evidence for the same rule, used to pick ONE canonical entry so the
+ * derived JSON does not depend on iteration order. Direct evidence beats
+ * inherited; then ordinal-least witness path; then ordinal-least holder.
+ */
+function compareEvidence(selfId: string, a: QuorumEvidence, b: QuorumEvidence): number {
+  const aDirect = a.holder === selfId ? 0 : 1;
+  const bDirect = b.holder === selfId ? 0 : 1;
+  if (aDirect !== bDirect) return aDirect - bDirect;
+  const byWitness = ordinalCompare(a.witness, b.witness);
+  if (byWitness !== 0) return byWitness;
+  return ordinalCompare(a.holder, b.holder);
+}
+
+/**
+ * Everything that transitively CONSUMES `id` — the targets whose own build
+ * breaks when `id` changes. This is `reverseClosure` restated per-target and
+ * without the seed itself, and it is the direction evidence must travel: see
+ * `computeQuorums`.
+ */
+export function consumerClosure(graph: BuildGraph, id: string): readonly string[] {
+  const consumers = new Map<string, string[]>();
+  for (const t of graph.targets) {
+    for (const d of t.dependsOn) {
+      const list = consumers.get(d) ?? [];
+      list.push(t.id);
+      consumers.set(d, list);
+    }
+  }
+  const out = new Set<string>();
+  const stack = [...(consumers.get(id) ?? [])];
+  while (stack.length > 0) {
+    const next = stack.pop();
+    if (next === undefined || out.has(next)) continue;
+    out.add(next);
+    for (const c of consumers.get(next) ?? []) stack.push(c);
+  }
+  out.delete(id);
+  const arr = [...out];
+  arr.sort(ordinalCompare);
+  return arr;
+}
+
+/** Direct evidence: rules that fire on files matching a target's own `sources`. */
+function directEvidence(
+  graph: BuildGraph,
+  files: readonly string[],
+): ReadonlyMap<string, ReadonlyMap<string, QuorumEvidence>> {
+  const out = new Map<string, Map<string, QuorumEvidence>>();
+  // Pre-filter: only files that trip at least one rule can matter, which keeps
+  // the target cross-product small (~500 files, not ~30k).
+  const hits: { readonly path: string; readonly rule: EvidenceRule }[] = [];
+  for (const path of files) {
+    // A DECLARED-INERT path drives no build, so it cannot be build-verification
+    // evidence — however suggestive its name. Without this, `docs/history/
+    // pr-reviews/PR-…-cross-verify….md` would put the markdown-lint leg
+    // (`sources: **/*.md`) into the Byzantine tier, making every documentation
+    // edit cost four reviewers on the strength of a filename.
+    if (matchesAny(graph.inert, path)) continue;
+    for (const rule of EVIDENCE_RULES) {
+      if (matchesAny(rule.paths, path)) hits.push({ path, rule });
+    }
+  }
+  for (const { path, rule } of hits) {
+    for (const t of finestTargetsCovering(graph, path)) {
+      const per = out.get(t) ?? new Map<string, QuorumEvidence>();
+      out.set(t, per);
+      const prev = per.get(rule.id);
+      const next: QuorumEvidence = {
+        rule: rule.id,
+        kind: rule.kind,
+        witness: path,
+        count: (prev?.count ?? 0) + 1,
+        holder: t,
+      };
+      // Keep the ordinal-least witness, but accumulate the count over all hits.
+      if (prev === undefined || ordinalCompare(path, prev.witness) < 0) per.set(rule.id, next);
+      else per.set(rule.id, { ...prev, count: next.count });
+    }
+  }
+  return out;
+}
+
+/**
+ * How path-scoped a glob is: the number of leading segments containing no
+ * wildcard. `src/Core.TypeScript/ace/**` → 3, `tests/cross-verification/**` and
+ * `src/Core.Rust.Merkle/**` → 2, `**` and `**\/*.md` → 0.
+ */
+export function globSpecificity(pattern: string): number {
+  let n = 0;
+  for (const seg of pattern.split("/")) {
+    if (seg.includes("*")) break;
+    n++;
+  }
+  return n;
+}
+
+/**
+ * The targets that own a path's EVIDENCE: those covering it with the most
+ * path-scoped glob, ordinal-sorted.
+ *
+ * Evidence attaches to the FINEST covering target, not to every covering
+ * target. A repo-wide extension glob is a lint leg — `leg:markdown` is
+ * `**\/*.md` and `ts:repo` is `**\/*.ts` — and a lint leg is not the artifact a
+ * byte-lock protects. Without this rule the single file
+ * `tests/cross-verification/zeta-id/README.md` puts EVERY markdown edit in the
+ * repo into the Byzantine tier, which is over-review, and over-review is
+ * ignored review.
+ *
+ * Note what this does NOT do: when no path-scoped target covers a file, the
+ * repo-wide leg is genuinely the finest thing that covers it and does inherit
+ * the tier. That is not a leak, it is the graph reporting that the tree has no
+ * target at that granularity — see `ts:repo` in the report.
+ */
+export function finestTargetsCovering(graph: BuildGraph, path: string): readonly string[] {
+  let best = -1;
+  const out: string[] = [];
+  for (const t of graph.targets) {
+    let spec = -1;
+    for (const s of t.sources) {
+      if (matchGlob(s, path)) spec = Math.max(spec, globSpecificity(s));
+    }
+    if (spec < 0 || spec < best) continue;
+    if (spec > best) {
+      best = spec;
+      out.length = 0;
+    }
+    out.push(t.id);
+  }
+  out.sort(ordinalCompare);
+  return out;
+}
+
+/**
+ * Compute every target's `RequiredQuorum` from the tracked tree.
+ *
+ * EVIDENCE FLOWS TO A TARGET FROM ITS CONSUMERS — the SAME direction dirt
+ * flows, which is what makes it sound. `reverseClosure` says: if Y changes, X
+ * must rebuild. Read that as evidence and it says: if consumer X's own sources
+ * hold the byte-lock vectors, then a change to Y is CHECKED AGAINST those
+ * vectors, so Y is a byte-locked path and must be reviewed as one. Without it,
+ * every .NET oracle library reads as untested, because the .NET byte-lock
+ * vectors live in the test projects rather than beside the code.
+ *
+ * The opposite direction is the tempting bug and was written first here: taking
+ * evidence from a target's DEPENDENCIES makes every benchmark and sample app
+ * inherit `src/Core`'s tier, which is exactly wrong — nothing byte-locked runs
+ * when `samples/CrmSample` changes, because nothing consumes it. A quorum that
+ * demands four Byzantine-tolerant reviewers for a sample edit is over-review,
+ * and over-review is ignored review.
+ *
+ * KNOWN COARSENESS, stated rather than hidden: propagation is only as
+ * fine-grained as the targets. `dotnet:tests/Tests.FSharp` is a single target
+ * holding 30 cross-verify files, so every project it references inherits T3 —
+ * including projects no byte-lock actually touches. This errs toward MORE
+ * review, which is the safe direction and the same stance as unknown→full, but
+ * it is over-approximation and should tighten if .NET test targets are ever
+ * split per-assembly.
+ */
+export function computeQuorums(root: string, graph: BuildGraph): ReadonlyMap<string, RequiredQuorum> {
+  const files = trackedFiles(root);
+  const direct = directEvidence(graph, files);
+  const byId = new Map(graph.targets.map((x) => [x.id, x] as const));
+  const out = new Map<string, RequiredQuorum>();
+
+  for (const t of graph.targets) {
+    const merged = mergeEvidence(graph, direct, t.id);
+    const evidence = [...merged.values()];
+    evidence.sort((a, b) => ordinalCompare(a.rule, b.rule));
+    const tier = tierFromEvidence(evidence);
+    const reviewerClasses = reviewerClassesFor(root, byId, files, t, evidence);
+    out.set(t.id, { tier, faultModel: TIER_FAULT_MODEL[tier], reviewerClasses, evidence });
+  }
+  return out;
+}
+
+/** A target's own evidence, plus whatever its consumers' evidence covers it. */
+function mergeEvidence(
+  graph: BuildGraph,
+  direct: ReadonlyMap<string, ReadonlyMap<string, QuorumEvidence>>,
+  id: string,
+): ReadonlyMap<string, QuorumEvidence> {
+  const merged = new Map<string, QuorumEvidence>();
+  for (const [ruleId, ev] of direct.get(id) ?? []) merged.set(ruleId, ev);
+  for (const consumerId of consumerClosure(graph, id)) {
+    for (const [ruleId, ev] of direct.get(consumerId) ?? []) {
+      const prev = merged.get(ruleId);
+      if (prev === undefined || compareEvidence(id, ev, prev) < 0) merged.set(ruleId, ev);
+    }
+  }
+  return merged;
+}
+
+/** The maximum tier any fired rule asserts, floored at `DEFAULT_TIER`. */
+function tierFromEvidence(evidence: readonly QuorumEvidence[]): QuorumTier {
+  const ruleById = new Map(EVIDENCE_RULES.map((r) => [r.id, r] as const));
+  let tier: QuorumTier = DEFAULT_TIER;
+  for (const e of evidence) {
+    const rule = ruleById.get(e.rule);
+    if (rule !== undefined) tier = maxTier(tier, rule.tier);
+  }
+  return tier;
+}
+
+/** The language class(es) a target's own code is written in. */
+function languageClassesOf(root: string, t: BuildTarget): readonly string[] {
+  if (t.kind === "dotnet") return dotnetReviewerClasses(root, t.id);
+  return [KIND_REVIEWER_CLASS[t.kind] ?? `reviewer:unknown:${t.kind}`];
+}
+
+function reviewerClassesFor(
+  root: string,
+  byId: ReadonlyMap<string, BuildTarget>,
+  files: readonly string[],
+  t: BuildTarget,
+  evidence: readonly QuorumEvidence[],
+): readonly string[] {
+  const classes = new Set<string>(languageClassesOf(root, t));
+  // A target whose sources contain the cross-verification harness's own
+  // per-language output files needs a reviewer for each language named there.
+  for (const path of files) {
+    if (!matchesAny(t.sources, path)) continue;
+    const cls = oracleOutputReviewerClass(path);
+    if (cls !== "") classes.add(cls);
+  }
+  // Evidence inherited across an edge carries its holder's language too: if the
+  // C# test project is what byte-locks this library, a C# reviewer is
+  // implicated even when the library itself is F#.
+  for (const ev of evidence) {
+    if (ev.holder === t.id) continue;
+    const holder = byId.get(ev.holder);
+    if (holder !== undefined) for (const c of languageClassesOf(root, holder)) classes.add(c);
+  }
+  const arr = [...classes];
+  arr.sort(ordinalCompare);
+  return arr;
+}
+
+/** Replace every target's `requiredQuorum` with the freshly derived one. */
+export function applyQuorums(root: string, graph: BuildGraph): BuildGraph {
+  const quorums = computeQuorums(root, graph);
+  const targets = graph.targets.map((t) => ({
+    ...t,
+    requiredQuorum: quorums.get(t.id) ?? {
+      tier: DEFAULT_TIER,
+      faultModel: TIER_FAULT_MODEL[DEFAULT_TIER],
+      reviewerClasses: [],
+      evidence: [],
+    },
+  }));
+  targets.sort(byTargetId);
+  return { version: graph.version, always: graph.always, inert: graph.inert, targets };
+}
+
+/**
+ * Regenerate the graph: declared rows preserved verbatim EXCEPT their
+ * `requiredQuorum`, which is derived for every row so a hand-edited quorum
+ * contradicts the derivation and fails the drift gate — exactly as a
+ * hand-edited edge does.
+ */
 export function deriveGraph(root: string, base: BuildGraph): BuildGraph {
   const merged = [...base.targets.filter((t) => t.origin === "declared"), ...deriveTargets(root)];
   merged.sort(byTargetId);
-  return { version: base.version, always: base.always, inert: base.inert, targets: merged };
+  return applyQuorums(root, { version: base.version, always: base.always, inert: base.inert, targets: merged });
 }
 
 export const GRAPH_PATH = "src/Core.TypeScript/ace/build-graph.json";
@@ -624,8 +1364,12 @@ function usage(): string {
     "      Regenerate the derived rows from the repo's own manifests.",
     "      Default exits 1 on drift (CI gate); --write updates the file.",
     "",
+    "  quorum [--changed <file>] [--json]",
+    "      Read the changed-file set and print the required verification quorum:",
+    "      tier, fault model, member count, and the reviewer classes needed.",
+    "",
     "  explain <path>",
-    "      Show how one path classifies.",
+    "      Show how one path classifies, and the quorum each matched target needs.",
   ].join("\n");
 }
 
@@ -662,6 +1406,28 @@ function runDerive(root: string, write: boolean): number {
       `Run: bun src/Core.TypeScript/ace/build-graph.ts derive --write`,
   );
   return 1;
+}
+
+function printQuorum(q: QuorumRequirement): void {
+  console.log(`tier:      ${q.tier}`);
+  console.log(`fault:     ${q.faultModel.faultClass}, f=${String(q.faultModel.f)}`);
+  console.log(`members:   ${String(q.size)}`);
+  console.log(`reviewers: ${q.reviewerClasses.join(", ") || "(none)"}`);
+  console.log(`reason:    ${q.reason}`);
+  for (const id of q.drivenBy) console.log(`  ! ${id}`);
+}
+
+async function runQuorum(graph: BuildGraph, argv: readonly string[]): Promise<number> {
+  const changed = await readChanged(flag(argv, "--changed"));
+  // No `forceFull` here on purpose: a SAMPLED full BUILD is a build-cost policy
+  // and must not silently inflate the review requirement. The graph's own
+  // escalations (always-globs, unknown paths) still apply, and those genuinely
+  // do widen what a reviewer is accountable for.
+  const decision = affectedTargets(graph, changed);
+  const q = requiredQuorumForChange(graph, decision);
+  if (argv.includes("--json")) console.log(JSON.stringify({ decision, quorum: q }, null, 2));
+  else printQuorum(q);
+  return 0;
 }
 
 function printDecision(d: AffectedDecision): void {
@@ -706,10 +1472,14 @@ export async function main(argv: readonly string[], root: string): Promise<numbe
       console.error("explain needs a path");
       return 1;
     }
-    console.log(JSON.stringify(classifyPath(graph, p), null, 2));
+    const c = classifyPath(graph, p);
+    const quorum =
+      c.kind === "target" ? requiredQuorumForTargets(graph, c.targets) : requiredQuorumForTargets(graph, []);
+    console.log(JSON.stringify({ ...c, quorum }, null, 2));
     return 0;
   }
   if (cmd === "affected") return runAffected(graph, argv);
+  if (cmd === "quorum") return runQuorum(graph, argv);
 
   console.error(usage());
   return 1;

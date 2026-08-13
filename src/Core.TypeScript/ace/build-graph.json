@@ -42,7 +42,16 @@
       "sources": ["bench/Benchmarks/**"],
       "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.CSharp.Bonsai", "dotnet:src/Core.FSharp.Git"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:bench/Feldera.Bench",
@@ -50,7 +59,16 @@
       "sources": ["bench/Feldera.Bench/**"],
       "dependsOn": ["dotnet:src/Core"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:samples/CrmSample",
@@ -58,7 +76,16 @@
       "sources": ["samples/CrmSample/**"],
       "dependsOn": ["dotnet:src/Core"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:samples/Demo",
@@ -66,7 +93,16 @@
       "sources": ["samples/Demo/**"],
       "dependsOn": ["dotnet:src/Core"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:samples/FactoryDemo.Api.CSharp",
@@ -74,7 +110,16 @@
       "sources": ["samples/FactoryDemo.Api.CSharp/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:samples/FactoryDemo.Api.FSharp",
@@ -82,7 +127,16 @@
       "sources": ["samples/FactoryDemo.Api.FSharp/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:samples/QuickStart",
@@ -90,7 +144,16 @@
       "sources": ["samples/QuickStart/**"],
       "dependsOn": ["dotnet:src/Core.CSharp"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:src/Bayesian",
@@ -98,7 +161,31 @@
       "sources": ["src/Bayesian/**"],
       "dependsOn": ["dotnet:src/Core"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp", "reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core",
@@ -106,7 +193,38 @@
       "sources": ["src/Core/**"],
       "dependsOn": ["dotnet:src/Core.Abstractions", "dotnet:src/Core.FSharp.Yaml", "dotnet:src/Core.FSharp.ZetaId"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp", "reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          },
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core/golden-vectors-deltacodec.json",
+            "count": 1,
+            "holder": "dotnet:src/Core"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.Abstractions",
@@ -114,7 +232,38 @@
       "sources": ["src/Core.Abstractions/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp", "reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          },
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core/golden-vectors-deltacodec.json",
+            "count": 1,
+            "holder": "dotnet:src/Core"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp",
@@ -122,7 +271,31 @@
       "sources": ["src/Core.CSharp/**"],
       "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.CSharp.DynamicValue"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp", "reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.AceCanonical",
@@ -130,7 +303,24 @@
       "sources": ["src/Core.CSharp.AceCanonical/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.Blake3",
@@ -138,7 +328,24 @@
       "sources": ["src/Core.CSharp.Blake3/**"],
       "dependsOn": ["dotnet:src/Core"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.Bonsai",
@@ -146,7 +353,24 @@
       "sources": ["src/Core.CSharp.Bonsai/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.ByteCost",
@@ -154,7 +378,24 @@
       "sources": ["src/Core.CSharp.ByteCost/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.Clock",
@@ -162,7 +403,24 @@
       "sources": ["src/Core.CSharp.Clock/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.DynamicValue",
@@ -170,7 +428,31 @@
       "sources": ["src/Core.CSharp.DynamicValue/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.Yaml"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp", "reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.Mediator",
@@ -178,7 +460,31 @@
       "sources": ["src/Core.CSharp.Mediator/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp", "reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 30,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.Mediator.Handlers",
@@ -192,7 +498,16 @@
         "dotnet:src/Core.CSharp.Merkle"
       ],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.Merkle",
@@ -200,7 +515,31 @@
       "sources": ["src/Core.CSharp.Merkle/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp", "reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.Metric",
@@ -208,7 +547,31 @@
       "sources": ["src/Core.CSharp.Metric/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp", "reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 30,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.Observe",
@@ -216,7 +579,24 @@
       "sources": ["src/Core.CSharp.Observe/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.RangeSet",
@@ -224,7 +604,24 @@
       "sources": ["src/Core.CSharp.RangeSet/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.Resume",
@@ -232,7 +629,24 @@
       "sources": ["src/Core.CSharp.Resume/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.Bonsai"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.SchemaEvolution",
@@ -240,7 +654,16 @@
       "sources": ["src/Core.CSharp.SchemaEvolution/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.Sha256",
@@ -248,7 +671,24 @@
       "sources": ["src/Core.CSharp.Sha256/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.TriBoolean",
@@ -256,7 +696,24 @@
       "sources": ["src/Core.CSharp.TriBoolean/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.TypeProvider",
@@ -264,7 +721,16 @@
       "sources": ["src/Core.CSharp.TypeProvider/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.Yaml",
@@ -272,7 +738,31 @@
       "sources": ["src/Core.CSharp.Yaml/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp", "reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.CSharp.ZetaId",
@@ -280,7 +770,24 @@
       "sources": ["src/Core.CSharp.ZetaId/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.FSharp.AceCanonical",
@@ -288,7 +795,31 @@
       "sources": ["src/Core.FSharp.AceCanonical/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 30,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.FSharp.Blake3",
@@ -296,7 +827,31 @@
       "sources": ["src/Core.FSharp.Blake3/**"],
       "dependsOn": ["dotnet:src/Core"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 30,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.FSharp.Cli",
@@ -304,7 +859,31 @@
       "sources": ["src/Core.FSharp.Cli/**"],
       "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.FSharp.Git"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 30,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.FSharp.Git",
@@ -312,7 +891,31 @@
       "sources": ["src/Core.FSharp.Git/**"],
       "dependsOn": ["dotnet:src/Core"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 30,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.FSharp.Mcp",
@@ -320,7 +923,16 @@
       "sources": ["src/Core.FSharp.Mcp/**"],
       "dependsOn": ["dotnet:src/Core.FSharp.Git"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:src/Core.FSharp.Mediator",
@@ -328,7 +940,31 @@
       "sources": ["src/Core.FSharp.Mediator/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.Mediator"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 30,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.FSharp.Observe",
@@ -336,7 +972,31 @@
       "sources": ["src/Core.FSharp.Observe/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 30,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.FSharp.ObserveBridge",
@@ -344,7 +1004,31 @@
       "sources": ["src/Core.FSharp.ObserveBridge/**"],
       "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.FSharp.Observe"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 30,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.FSharp.Sha256",
@@ -352,7 +1036,31 @@
       "sources": ["src/Core.FSharp.Sha256/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 30,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.FSharp.SubstrateDiscovery",
@@ -360,7 +1068,16 @@
       "sources": ["src/Core.FSharp.SubstrateDiscovery/**"],
       "dependsOn": ["dotnet:src/Core"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:src/Core.FSharp.TriBoolean",
@@ -368,7 +1085,31 @@
       "sources": ["src/Core.FSharp.TriBoolean/**"],
       "dependsOn": ["dotnet:src/Core"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 30,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.FSharp.Yaml",
@@ -376,7 +1117,38 @@
       "sources": ["src/Core.FSharp.Yaml/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp", "reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          },
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core/golden-vectors-deltacodec.json",
+            "count": 1,
+            "holder": "dotnet:src/Core"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/Core.FSharp.Z3Verify",
@@ -384,7 +1156,16 @@
       "sources": ["src/Core.FSharp.Z3Verify/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:src/Core.FSharp.ZetaId",
@@ -392,7 +1173,38 @@
       "sources": ["src/Core.FSharp.ZetaId/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp", "reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          },
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core/golden-vectors-deltacodec.json",
+            "count": 1,
+            "holder": "dotnet:src/Core"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:src/SwarmRunner",
@@ -400,7 +1212,16 @@
       "sources": ["src/SwarmRunner/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:src/Zeta.Generators",
@@ -408,7 +1229,24 @@
       "sources": ["src/Zeta.Generators/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:tests/Bayesian.Tests",
@@ -416,7 +1254,16 @@
       "sources": ["tests/Bayesian.Tests/**"],
       "dependsOn": ["dotnet:src/Bayesian", "dotnet:src/Core"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:tests/Core.CSharp.Mediator.Tests",
@@ -428,7 +1275,16 @@
         "dotnet:tests/Core.FSharp.Mediator.Fixtures"
       ],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:tests/Core.CSharp.Tests",
@@ -436,7 +1292,16 @@
       "sources": ["tests/Core.CSharp.Tests/**"],
       "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.CSharp", "dotnet:src/Core.CSharp.DynamicValue"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:tests/Core.FSharp.Mediator.Fixtures",
@@ -444,7 +1309,16 @@
       "sources": ["tests/Core.FSharp.Mediator.Fixtures/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.Mediator"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:tests/Tests.CSharp",
@@ -471,7 +1345,24 @@
         "dotnet:src/Zeta.Generators"
       ],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.CSharp/Algebra/BagCrossVerifyTests.cs",
+            "count": 35,
+            "holder": "dotnet:tests/Tests.CSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:tests/Tests.CSharp.TypeProvider",
@@ -479,7 +1370,16 @@
       "sources": ["tests/Tests.CSharp.TypeProvider/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.TypeProvider"],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:csharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:tests/Tests.FSharp",
@@ -503,7 +1403,31 @@
         "dotnet:src/Core.FSharp.ZetaId"
       ],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 30,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 4,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
     },
     {
       "id": "dotnet:tests/Tests.FSharp.Git",
@@ -516,7 +1440,16 @@
         "dotnet:src/Core.FSharp.ObserveBridge"
       ],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": []
+      }
     },
     {
       "id": "dotnet:vocab",
@@ -524,7 +1457,16 @@
       "sources": ["vocab/**"],
       "dependsOn": [],
       "legs": ["gate/build-and-test"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": []
+      }
     },
     {
       "id": "lean:src/Core.Lean4",
@@ -532,7 +1474,16 @@
       "sources": ["src/Core.Lean4/**"],
       "dependsOn": [],
       "legs": ["lean-proof/build"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:lean4"],
+        "evidence": []
+      }
     },
     {
       "id": "lean:src/Core.Lean4.Cslib",
@@ -540,7 +1491,16 @@
       "sources": ["src/Core.Lean4.Cslib/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:lean4"],
+        "evidence": []
+      }
     },
     {
       "id": "leg:markdown",
@@ -548,7 +1508,16 @@
       "sources": ["**/*.md"],
       "dependsOn": [],
       "legs": ["gate/lint-markdown"],
-      "origin": "declared"
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:markdown"],
+        "evidence": []
+      }
     },
     {
       "id": "leg:shell",
@@ -556,7 +1525,16 @@
       "sources": ["**/*.sh", "**/*.bash"],
       "dependsOn": [],
       "legs": ["gate/lint-shell"],
-      "origin": "declared"
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:shell"],
+        "evidence": []
+      }
     },
     {
       "id": "rust:src/Core.Rust.AceCanonical",
@@ -564,7 +1542,24 @@
       "sources": ["src/Core.Rust.AceCanonical/**"],
       "dependsOn": ["rust:src/Core.Rust.DynamicValue"],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Rust.AceCanonical/tests/cross_verify.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.AceCanonical"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Algebra",
@@ -572,7 +1567,24 @@
       "sources": ["src/Core.Rust.Algebra/**"],
       "dependsOn": ["rust:src/Core.Rust.Merkle", "rust:src/Core.Rust.Sha256", "rust:src/Core.Rust.Yaml"],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Rust.Algebra/tests/bag_cross_verify.rs",
+            "count": 6,
+            "holder": "rust:src/Core.Rust.Algebra"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Blake3",
@@ -580,7 +1592,24 @@
       "sources": ["src/Core.Rust.Blake3/**"],
       "dependsOn": ["rust:src/Core.Rust.Merkle", "rust:src/Core.Rust.Yaml"],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Rust.Blake3/tests/cross_verify.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.Blake3"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Bonsai",
@@ -588,7 +1617,24 @@
       "sources": ["src/Core.Rust.Bonsai/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Rust.Bonsai/tests/bonsai_cross_verify.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.Bonsai"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Braid",
@@ -596,7 +1642,24 @@
       "sources": ["src/Core.Rust.Braid/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.Braid/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.Braid"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.ByteCost",
@@ -604,7 +1667,24 @@
       "sources": ["src/Core.Rust.ByteCost/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.ByteCost/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.ByteCost"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Chip9",
@@ -612,7 +1692,24 @@
       "sources": ["src/Core.Rust.Chip9/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.Chip9/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.Chip9"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Clock",
@@ -620,7 +1717,24 @@
       "sources": ["src/Core.Rust.Clock/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.Clock/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.Clock"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Consensus",
@@ -628,7 +1742,24 @@
       "sources": ["src/Core.Rust.Consensus/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.Consensus/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.Consensus"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.ConsistentHash",
@@ -636,7 +1767,24 @@
       "sources": ["src/Core.Rust.ConsistentHash/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.ConsistentHash/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.ConsistentHash"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Crc32c",
@@ -644,7 +1792,24 @@
       "sources": ["src/Core.Rust.Crc32c/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.Crc32c/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.Crc32c"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Curve",
@@ -652,7 +1817,24 @@
       "sources": ["src/Core.Rust.Curve/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.Curve/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.Curve"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Durability",
@@ -660,7 +1842,24 @@
       "sources": ["src/Core.Rust.Durability/**"],
       "dependsOn": ["rust:src/Core.Rust.Algebra", "rust:src/Core.Rust.DynamicValue"],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Rust.Durability/tests/durability_cross_verify.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.Durability"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.DynamicValue",
@@ -668,7 +1867,24 @@
       "sources": ["src/Core.Rust.DynamicValue/**"],
       "dependsOn": ["rust:src/Core.Rust.Yaml"],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Rust.DynamicValue/tests/cbor_cross_verify.rs",
+            "count": 8,
+            "holder": "rust:src/Core.Rust.DynamicValue"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.FastCdc",
@@ -676,7 +1892,24 @@
       "sources": ["src/Core.Rust.FastCdc/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.FastCdc/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.FastCdc"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.FourCorner",
@@ -684,7 +1917,24 @@
       "sources": ["src/Core.Rust.FourCorner/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.FourCorner/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.FourCorner"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.FrameDelta",
@@ -692,7 +1942,24 @@
       "sources": ["src/Core.Rust.FrameDelta/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.FrameDelta/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.FrameDelta"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.MembraneLog",
@@ -700,7 +1967,24 @@
       "sources": ["src/Core.Rust.MembraneLog/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.MembraneLog/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.MembraneLog"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Merkle",
@@ -708,7 +1992,31 @@
       "sources": ["src/Core.Rust.Merkle/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Rust.Algebra/tests/bag_cross_verify.rs",
+            "count": 6,
+            "holder": "rust:src/Core.Rust.Algebra"
+          },
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.Merkle/tests/golden-vectors-merkle-proofs.json",
+            "count": 4,
+            "holder": "rust:src/Core.Rust.Merkle"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.MeshPong",
@@ -716,7 +2024,24 @@
       "sources": ["src/Core.Rust.MeshPong/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.MeshPong/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.MeshPong"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Metric",
@@ -724,7 +2049,24 @@
       "sources": ["src/Core.Rust.Metric/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.Metric/tests/golden-vectors-bloom.json",
+            "count": 3,
+            "holder": "rust:src/Core.Rust.Metric"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Mixin",
@@ -732,7 +2074,16 @@
       "sources": ["src/Core.Rust.Mixin/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": []
+      }
     },
     {
       "id": "rust:src/Core.Rust.Observe",
@@ -740,7 +2091,24 @@
       "sources": ["src/Core.Rust.Observe/**"],
       "dependsOn": [],
       "legs": ["gate/full-verify"],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.Observe/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.Observe"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.ProbabilitySemiring",
@@ -748,7 +2116,24 @@
       "sources": ["src/Core.Rust.ProbabilitySemiring/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.ProbabilitySemiring/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.ProbabilitySemiring"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.RangeSet",
@@ -756,7 +2141,24 @@
       "sources": ["src/Core.Rust.RangeSet/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Rust.RangeSet/tests/range_set_cross_verify.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.RangeSet"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Resume",
@@ -764,7 +2166,24 @@
       "sources": ["src/Core.Rust.Resume/**"],
       "dependsOn": ["rust:src/Core.Rust.Bonsai"],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Rust.Resume/tests/resume_cross_verify.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.Resume"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.SchemaEvolution",
@@ -772,7 +2191,16 @@
       "sources": ["src/Core.Rust.SchemaEvolution/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": []
+      }
     },
     {
       "id": "rust:src/Core.Rust.Sha256",
@@ -780,7 +2208,24 @@
       "sources": ["src/Core.Rust.Sha256/**"],
       "dependsOn": ["rust:src/Core.Rust.Yaml"],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Rust.Sha256/tests/cross_verify.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.Sha256"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.SoftValue",
@@ -788,7 +2233,24 @@
       "sources": ["src/Core.Rust.SoftValue/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.SoftValue/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.SoftValue"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.SplitMix64",
@@ -796,7 +2258,24 @@
       "sources": ["src/Core.Rust.SplitMix64/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.SplitMix64/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.SplitMix64"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.TravelerFrame",
@@ -804,7 +2283,24 @@
       "sources": ["src/Core.Rust.TravelerFrame/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.TravelerFrame/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.TravelerFrame"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.TriBoolean",
@@ -812,7 +2308,24 @@
       "sources": ["src/Core.Rust.TriBoolean/**"],
       "dependsOn": ["rust:src/Core.Rust.Yaml"],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Rust.TriBoolean/tests/cross_verify.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.TriBoolean"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.UncertainClock",
@@ -820,7 +2333,24 @@
       "sources": ["src/Core.Rust.UncertainClock/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.UncertainClock/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.UncertainClock"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Watermark",
@@ -828,7 +2358,24 @@
       "sources": ["src/Core.Rust.Watermark/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T2",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 2
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Rust.Watermark/tests/golden_vectors.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.Watermark"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.Yaml",
@@ -836,7 +2383,24 @@
       "sources": ["src/Core.Rust.Yaml/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Rust.Yaml/tests/cross_verify.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.Yaml"
+          }
+        ]
+      }
     },
     {
       "id": "rust:src/Core.Rust.ZetaId",
@@ -844,7 +2408,24 @@
       "sources": ["src/Core.Rust.ZetaId/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "derived"
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:rust"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Rust.ZetaId/tests/cross_verify.rs",
+            "count": 1,
+            "holder": "rust:src/Core.Rust.ZetaId"
+          }
+        ]
+      }
     },
     {
       "id": "tool:alloy",
@@ -852,7 +2433,16 @@
       "sources": ["src/Core.Alloy/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "declared"
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:alloy"],
+        "evidence": []
+      }
     },
     {
       "id": "tool:tla",
@@ -860,7 +2450,16 @@
       "sources": ["src/Core.TLA/**"],
       "dependsOn": [],
       "legs": ["tlaps-proof/tlaps"],
-      "origin": "declared"
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:tlaplus"],
+        "evidence": []
+      }
     },
     {
       "id": "tool:wasm-dla",
@@ -868,7 +2467,16 @@
       "sources": ["src/wasm-dla/**"],
       "dependsOn": [],
       "legs": ["bytelock/bytelock"],
-      "origin": "declared"
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:assemblyscript"],
+        "evidence": []
+      }
     },
     {
       "id": "ts:ace",
@@ -876,7 +2484,16 @@
       "sources": ["src/Core.TypeScript/ace/**"],
       "dependsOn": [],
       "legs": ["gate/cross-verify", "gate/lint-typescript"],
-      "origin": "declared"
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:typescript"],
+        "evidence": []
+      }
     },
     {
       "id": "ts:cross-verification",
@@ -884,7 +2501,39 @@
       "sources": ["tests/cross-verification/**"],
       "dependsOn": [],
       "legs": ["gate/cross-verify", "gate/full-verify", "gate/lint-typescript"],
-      "origin": "declared"
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": [
+          "reviewer:csharp",
+          "reviewer:fsharp",
+          "reviewer:go",
+          "reviewer:mumps",
+          "reviewer:python",
+          "reviewer:rust",
+          "reviewer:typescript"
+        ],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/cross-verification/_golden/zeta-ir-v4.golden.json",
+            "count": 281,
+            "holder": "ts:cross-verification"
+          },
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "tests/cross-verification/_golden/zeta-ir-v4.golden.json",
+            "count": 4,
+            "holder": "ts:cross-verification"
+          }
+        ]
+      }
     },
     {
       "id": "ts:hygiene",
@@ -892,7 +2541,16 @@
       "sources": ["src/Core.TypeScript/hygiene/**"],
       "dependsOn": [],
       "legs": ["gate/lint-bash-retirement-inventory", "gate/lint-typescript"],
-      "origin": "declared"
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:typescript"],
+        "evidence": []
+      }
     },
     {
       "id": "ts:repo",
@@ -900,7 +2558,38 @@
       "sources": ["**/*.ts", "**/*.tsx"],
       "dependsOn": [],
       "legs": ["gate/lint-typescript"],
-      "origin": "declared"
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:typescript"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.TypeScript/blake3/cross-verify.ts",
+            "count": 10,
+            "holder": "ts:repo"
+          },
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.TypeScript/braid/golden-vectors.test.ts",
+            "count": 25,
+            "holder": "ts:repo"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "src/Core.TypeScript/quantum-observable/quantum-treaty-transcript.test.ts",
+            "count": 3,
+            "holder": "ts:repo"
+          }
+        ]
+      }
     },
     {
       "id": "unit:agda",
@@ -908,7 +2597,16 @@
       "sources": ["src/Core.Agda/**"],
       "dependsOn": [],
       "legs": [],
-      "origin": "declared"
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:agda"],
+        "evidence": []
+      }
     },
     {
       "id": "unit:go",
@@ -916,7 +2614,31 @@
       "sources": ["src/Core.Go/**"],
       "dependsOn": [],
       "legs": ["gate/full-verify", "gate/lint-go"],
-      "origin": "declared"
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:go"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Go/cross_verify_test.go",
+            "count": 2,
+            "holder": "unit:go"
+          },
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Go/schema_evolution_golden.go",
+            "count": 1,
+            "holder": "unit:go"
+          }
+        ]
+      }
     },
     {
       "id": "unit:python",
@@ -924,7 +2646,31 @@
       "sources": ["src/Core.Python/**"],
       "dependsOn": [],
       "legs": ["gate/full-verify", "gate/lint-python"],
-      "origin": "declared"
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:python"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "src/Core.Python/tests/test_cross_verify.py",
+            "count": 1,
+            "holder": "unit:python"
+          },
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.Python/schema_evolution_golden.py",
+            "count": 1,
+            "holder": "unit:python"
+          }
+        ]
+      }
     },
     {
       "id": "unit:qsharp",
@@ -932,7 +2678,31 @@
       "sources": ["src/Core.QSharp.ReferenceOracle/**"],
       "dependsOn": [],
       "legs": ["gate/cross-verify"],
-      "origin": "declared"
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:qsharp"],
+        "evidence": [
+          {
+            "rule": "golden-vectors",
+            "kind": "golden-vector",
+            "witness": "src/Core.QSharp.ReferenceOracle/generate-qsharp-golden.py",
+            "count": 3,
+            "holder": "unit:qsharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "src/Core.QSharp.ReferenceOracle/generate-treaty-transcript.ts",
+            "count": 3,
+            "holder": "unit:qsharp"
+          }
+        ]
+      }
     }
   ]
 }
