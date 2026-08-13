@@ -255,7 +255,9 @@ async function main() {
 }
 
 if (import.meta.main) {
-  main().catch(e => {
+  main().then((code) => {
+    process.exit(code);
+  }).catch(e => {
     console.error(e);
     process.exit(1);
   });

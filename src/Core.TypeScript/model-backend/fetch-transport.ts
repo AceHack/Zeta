@@ -40,21 +40,44 @@ async function* readerChunks(reader: ReadableStreamDefaultReader<Uint8Array> | u
   }
 }
 
-/// The real transport over `fetch`. `fetchImpl` is injectable (defaults to global fetch) so the wiring
-/// itself stays testable and the module has no hard global dependency.
-export function fetchTransport(fetchImpl: typeof fetch = fetch): HttpTransport {
+export function fetchTransport(fetchImpl: typeof fetch = fetch, timeoutMs: number = 900_000): HttpTransport {
   return {
     async post(url, headers, body) {
-      const res = await fetchImpl(url, { method: "POST", headers: { ...headers }, body });
-      return { status: res.status, body: await res.text() };
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+      try {
+        const res = await fetchImpl(url, { method: "POST", headers: { ...headers }, body, signal: ctrl.signal });
+        return { status: res.status, body: await res.text() };
+      } finally {
+        clearTimeout(timer);
+      }
     },
     async get(url, headers) {
-      const res = await fetchImpl(url, { method: "GET", headers: { ...headers } });
-      return { status: res.status, body: await res.text() };
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+      try {
+        const res = await fetchImpl(url, { method: "GET", headers: { ...headers }, signal: ctrl.signal });
+        return { status: res.status, body: await res.text() };
+      } finally {
+        clearTimeout(timer);
+      }
     },
     async postStream(url, headers, body): Promise<StreamResponse> {
-      const res = await fetchImpl(url, { method: "POST", headers: { ...headers }, body });
-      return { status: res.status, lines: toLines(readerChunks(res.body?.getReader())) };
+      // For streams, we bound the *initial connection*, but the stream itself might stay open.
+      // We pass the signal so if the request hangs before headers, it aborts.
+      // We do not clear the timer if the stream takes longer, but we might want to let the consumer handle stream aborts.
+      // For now, bounding the fetch promise resolves the immediate unbounded-hang issue.
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+      try {
+        const res = await fetchImpl(url, { method: "POST", headers: { ...headers }, body, signal: ctrl.signal });
+        // NOTE: we clear the connection-establishment timer, but the stream is now alive.
+        clearTimeout(timer);
+        return { status: res.status, lines: toLines(readerChunks(res.body?.getReader())) };
+      } catch (e) {
+        clearTimeout(timer);
+        throw e;
+      }
     },
   };
 }
