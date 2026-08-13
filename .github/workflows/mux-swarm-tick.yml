@@ -16,6 +16,15 @@ concurrency:
 jobs:
   swarm-tick:
     runs-on: ubuntu-22.04
+    # BOUNDED. Without this the job inherits GitHub's 6-hour default, and this one HANGS every
+    # time: 28 of the last 30 runs were cancelled and NONE has ever succeeded. The hang is in the
+    # final step — a run observed sitting in "Run Mux-Duplex Swarm Tick" for 2h37m — after which
+    # the next hourly tick queues behind it (concurrency group, cancel-in-progress: false) and is
+    # itself cancelled when the one after that arrives.
+    #
+    # Cancelled is NOT failure, which is exactly why this never showed up as red while burning a
+    # runner every hour. The timeout does not fix the hang; it makes the hang REPORT itself.
+    timeout-minutes: 15
     steps:
       - name: Check out repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
