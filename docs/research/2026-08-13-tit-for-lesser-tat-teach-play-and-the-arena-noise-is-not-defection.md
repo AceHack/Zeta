@@ -148,3 +148,213 @@ al. 2013** (ALE); RFC 4653 (the transport-side statement of the same non-congest
 **All CITED FROM STANDING KNOWLEDGE, not re-opened and page-checked** — per the checked-anchor doctrine
 that bar is not met here. The Nowak & Sigmund and Press & Dyson results are the two that should be
 verified first, since the argument leans on them hardest.
+
+---
+
+## Addendum — the claim is a SOCIETY claim, and adversarial teaching is a required game class (Aaron, 2026-08-13)
+
+> i use the term arena in two differet ways, i didn't not meen for them to be the same i could have said
+> regiems for the differnt types of resources to weager or put up as colleteral
+
+> also we beat any opponent buy having a better society with no perminiate hierarcy that knows how to
+> specilize for any task temporarliy and at scale its not just one agent it's the 1000 brains. also for
+> teaching the wrong lessons we need to have advesaril games on this where this deliberty happens this
+> is a jail break resistant program, it should be similar to our homoclinical tangle we already have but
+> in a slighly different regieme and maybe with differnt factors
+
+### Open item 1 is closed: two arenas, deliberately different
+
+The wagering "two arenas" are **regimes** — classes of resource that may be wagered or posted as
+collateral (memory storage, attention, tick sources, encryption budget). The game Arena is a tournament
+substrate. Not the same object, and "regimes" is the better word for the first; adopted here.
+
+### The Press & Dyson objection was aimed at the wrong target
+
+Section 4 above raised zero-determinant / extortionate strategies (Press & Dyson 2012) against the
+"beat any agent" claim. Aaron's answer is not a dodge — **it changes the entity the claim is about**,
+and the change is precisely responsive.
+
+P&D's theorem concerns strategies that dominate any **evolutionary opponent**: an opponent that adapts
+its play by some update rule. The extortionate advantage is *derived from* the opponent's adaptation —
+the extortioner sets a linear payoff relation and lets the opponent's own optimisation walk it into the
+worse corner. And the known weakness on the other side is symmetric: **ZD strategies do poorly against
+opponents that do not adapt, and against generous ones.**
+
+A society with **no permanent hierarchy** that can **temporarily specialise** is not one evolutionary
+agent. It is a population that can *choose the strategy class it presents*, per opponent, per match. So
+the counter to an extortioner is available and mechanical: **detect the extortion, dispatch a
+non-adapter.** ZD's dominance requires an adaptation rule to exploit; a specialist assigned to hold a
+fixed line supplies none. The very property the theorem needs is the one the society can withhold at
+will.
+
+**PROPOSED, and it should be tested rather than believed** — I have not re-derived P&D's preconditions,
+and the argument stands or falls on exactly what "evolutionary opponent" quantifies over. But it is the
+right shape of answer, and it converts a literature objection into an **Arena experiment**: seed an
+extortionate ZD player and measure whether a specialising society detects and neutralises it, and at
+what cost.
+
+**The honest cost, stated up front:** this counter is a *detection* problem before it is a strategy
+problem. The society must recognise it is facing an extortioner, and detection latency is paid in
+exploited rounds. So "beats any agent" becomes "beats any agent, at a cost bounded by detection
+latency" — which is a weaker but *checkable* claim, and a much better one to build an Arena to test.
+Note also that this is the same shape as everything else this session: a controller that cannot
+distinguish what it faces responds wrongly. Here the distinction is *extortion vs honest play*, and
+naming it is again the whole fix.
+
+**Anchor**: the 1000-brains framing is Hawkins' Thousand Brains Theory, and it is already in-tree —
+`src/Bayesian/ThousandBrains.fs`, `ThousandBrainsCron.fs`. "No permanent hierarchy" is manifesto §3
+(weight-free): no permanent or irreversible authority, because weight creates capture. The society
+design is not new here; what is new is using it as the *answer to a game-theoretic domination result*.
+
+### Adversarial teaching — a required game class, and the teaching channel is currently unmetered
+
+The body above noted the teaching NACK's `why` field is inferred from an unreliable estimator, and
+called a wrong lesson worse than no lesson. Aaron's point is stronger and it is a **security** point:
+wrong lessons must be assumed **deliberate**, and games in which an adversary teaches falsely are a
+required part of the Arena, not an afterthought.
+
+That reclassifies the teaching channel. `howToFix` proposes a **generator** — new behaviour for the
+receiver to adopt. A channel that ships behaviour is an **influence channel**, and under §13
+noninterference influence must enter only through *declared, metered* doors. Today it is declared but
+**unmetered**: nothing bounds how much a peer may steer another peer, and nothing scores whether a
+teacher's past lessons proved good. That is the gap, stated as a gap.
+
+Two anchors this connects to, both already in-repo: `KeptClaimOracle.fs` (did a claim hold?) is the
+natural scorer for teacher reliability, and the reputation must be *earned by outcome*, matching the
+socially-conferred structure of privacy budget rather than being self-asserted.
+
+### The regime distinction Aaron is drawing — same geometry, different cause
+
+*"similar to our homoclinical tangle we already have but in a slightly different regime and maybe with
+different factors."* Reading this concretely:
+
+- **`FigureEightEnsemble`** models **accidental** convergence: a closed mutual-update loop where beliefs
+  spiral to a fixed point and collapse (`rhoProxy → 1`, the groupthink spiral), and whose own header
+  states the structural verdict — *the demon cannot resist the tangle from inside the loop; it needs an
+  external observer.*
+- **Adversarial teaching** is **induced** convergence: the same collapse, but steered toward an
+  *attacker-chosen* fixed point by a participant inside the loop.
+
+**Same geometry, different cause** — which is exactly why it is a different regime rather than a
+different mechanism, and why the existing instrument is the right starting point. `rhoProxy` should
+detect both, because both raise correlation; it cannot by itself say *why*. Per
+`dual-use-detection-is-neutral-oracle-decides.md`, that is correct behaviour: report the neutral fact
+(convergence is occurring, at rate X, toward point P) and let policy read accident vs attack. And the
+tangle's own conclusion tells you what separates them — **an external observer**, which is the witness
+argument arriving for the third time today from a third direction.
+
+**The jailbreak-resistance framing is the right one** and worth stating precisely: a program is
+jailbreak-resistant when an adversary *inside* the interaction cannot steer it to a chosen fixed point.
+That is a property of the loop's geometry, not of any filter on the messages — which is why the
+homoclinic apparatus is the right tool and a content classifier is not.
+
+### Open (revised)
+
+1. ~~Is this Arena the same as the two arenas?~~ **Closed** — different; the wagering ones are *regimes*.
+2. Test generosity-scales-with-noise in the BDP harness. (unchanged, still the cheapest validation)
+3. **Restate the claim as "beats any agent at a cost bounded by detection latency"** and build the Arena
+   to measure that bound, with a seeded extortionate ZD player as the first adversary.
+4. `why` must stop being inferred from AIMD state. (unchanged, now also a security prerequisite)
+5. **Meter the teaching channel.** Bound how much one peer may steer another; score teachers by outcome
+   (`KeptClaimOracle`); make a teacher's reliability earned rather than asserted.
+6. **Build the adversarial-teaching regime** on the `FigureEightEnsemble` apparatus: induced rather than
+   accidental convergence, with the attacker inside the loop and the external observer as the defence.
+
+---
+
+## Addendum 2 — TAS is a capability class, not cheating; the label is the contract (Aaron, 2026-08-13)
+
+> also we can cheat to beat any score on anything and reverse engineer the inputs to get there this gives
+> us a real advantage that speed runners and tool assisted runners have and we would just be giving to
+> the AI too but whould need to be labeled honestly when those techniques are used very just raw pixel
+> data or pxel plus memory, etc...
+
+This is a design decision about the Arena, and it goes the *opposite* way to how the RL field resolved
+the identical problem — deliberately, and I think correctly.
+
+### The field forbade it; Aaron labels it
+
+The Arcade Learning Environment shipped deterministic, which let agents memorise open-loop action
+sequences rather than learn policies — i.e. do exactly what a tool-assisted speedrun does. **Machado et
+al. 2018** (*Revisiting the Arcade Learning Environment*) is the canonical response: it introduced
+**sticky actions** specifically to break trajectory memorisation, and argued for protocol transparency in
+reporting. The field's answer was to **remove the capability** so that comparisons stay meaningful.
+
+Aaron's answer is to **keep the capability and label it**. The speedrunning community solved it this way
+decades ago and the norm is well-tested: a run is not invalid for using glitches — it is invalid for
+using them *in a category that forbids them*. **The category label is the contract.** TAS and RTA are
+both legitimate; they are simply not comparable, and nobody pretends otherwise.
+
+Labelling is the better choice here for a reason specific to this project: removing the capability makes
+the benchmark *less* informative, because reverse-engineering inputs to reach a target state is a real
+skill we actually want measured. Forbidding it measures policy-learning only; labelling it measures both
+and keeps them separable.
+
+### What is actually being labelled — the observation/actuation channel
+
+The honest taxonomy is not "cheating vs not," it is **which channels the participant read and wrote**:
+
+| class | reads | notes |
+|---|---|---|
+| pixels-only | framebuffer | the ALE-style default |
+| pixels + RAM | framebuffer + emulator memory | Aaron's "pixel plus memory" |
+| RAM-only | emulator memory | |
+| full emulator state | + registers, PC, timers | |
+| save-state search | + rewind/branch | the TAS primitive |
+| input solving | inverse: target state → input sequence | "reverse engineer the inputs" |
+
+Each is a distinct capability class, and **a score is meaningless without its class**. Comparing a
+pixels-only score to an input-solved score is not a close call — it is a category error, in the precise
+sense that the two numbers measure different things.
+
+Worth naming what the last row is, because "cheat" undersells it: solving for an input sequence that
+reaches a target state **is model-based planning with a perfect model**. The emulator *is* the world
+model. That places it directly on the Craik 1943 world-model line already load-bearing in this repo, and
+means a TAS is not an exploit of the Arena — it is the Arena's world model being used at full fidelity.
+Denying it would be denying the participant its model, which is a strange thing to do in a benchmark
+about intelligence.
+
+### Why this is exactly the inclusive-design commitment, not a tension with it
+
+The body above read "inclusive design of digital intelligence" as *an Arena that privileges no
+participant class's interaction bandwidth*. Labelling is what makes that real. Human tool-assisted
+runners already have memory access, frame-perfect input, and save-state search. **Granting the AI the
+same channels while forbidding nothing, and requiring only that the channel be declared, is the
+inclusive option**; forbidding the AI what a human TAS tool routinely does would be the opposite.
+
+### The honest counter — a self-asserted label is worth nothing
+
+This is where the design needs work before it is built, and it is the same failure that has recurred all
+day: **an unverified declaration is a check that did not run.** In an adversarial tournament, capability
+labels are precisely what a participant lies about — claim pixels-only, read RAM, post an
+incomparable score against honest competitors.
+
+The good news is that this one is **mechanically attestable rather than socially attested**, which makes
+it stronger than most claims in this system: **the emulator knows what was read.** The Arena should
+*observe* the channels a participant touched and derive the label, never ask for it. That is
+`build-graph.ts`'s `derive`-don't-declare pattern applied to tournament categories, and it turns the
+honest-labelling norm from an ethic into a measurement.
+
+Corollary worth stating: this makes the emulator a **metering surface** in the §13 noninterference sense
+— every channel crossing observed and recorded. The Arena gets capability accounting for free from the
+same mechanism that runs the game, provided it is designed in from the start rather than bolted on. It
+is much harder to add later.
+
+### Open (added)
+
+7. **Derive the capability label from observed channel access; never accept a self-declaration.** The
+   emulator is the natural metering point and this is cheap if designed in, expensive if retrofitted.
+8. Decide whether cross-class comparison is *presented* at all, or whether the Arena refuses to rank
+   across classes the way speedrun boards keep TAS and RTA on separate tables. Refusing is the honest
+   default; ranking across classes needs an argument.
+
+### Anchors (added)
+
+**Machado, Bellemare, Talvitie, Veness, Hausknecht & Bowling 2018** (*Revisiting the ALE*, JAIR) — sticky
+actions and evaluation-protocol transparency; the field's forbid-it answer, and the paper to read before
+choosing label-it. **Craik 1943** (*The Nature of Explanation*) — the world-model line the emulator-as-model
+argument sits on, already load-bearing in this repo. Speedrunning category conventions (TAS vs RTA, any%
+vs glitchless) — community prior art, no single citation, and honest to say so.
+
+**Both cited from standing knowledge, not page-checked.** Machado et al. is the one to verify first,
+since the argument uses it as the contrast case.
