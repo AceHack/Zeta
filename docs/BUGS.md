@@ -35,7 +35,22 @@ tempted to ship.
 
 ## P0 — ship-blockers
 
-*None currently.*
+### `LossyUdpChannel` builds an unbounded NACK list from an attacker-controlled `seq` and broadcasts it
+
+- **Site:** `src/Core.TypeScript/discovery/udp-lossy-transport.ts:576-604` (`handleIncoming`)
+- **Found:** 2026-08-13 by Mateo (security-researcher), research sweep over PR #10417
+- **Severity:** P0 (security — unauthenticated remote DoS + mesh broadcast amplification)
+- **Symptom:** `for (let s = this.expectedSeq; s < header.seq; s++) missing.push(s)` is unbounded
+  over a peer-supplied `readUInt32BE` field, and the resulting NACK is **broadcast**. Measured at
+  a bounded `seq = 5e6`: one **70-byte** inbound packet produced a **236 MB** outbound broadcast
+  (**3,380,956x** amplification) and **929 ms** of blocking single-threaded work; the field permits
+  859x that. `expectedSeq` also latches via `Math.max`, permanently desynchronising the receiver.
+  No authentication on the data path — the `zid` check is echo suppression, not identity.
+- **Fix:** cap the emitted `missingSeqs` at a block or two (the only consumer uses `nack.length`);
+  reject out-of-range `blockPos` and implausible `seq` jumps at decode; unicast the NACK to the
+  peer that revealed the gap instead of broadcasting it.
+- **Who:** Kenji (architect). Work-item `081KZYP1S96087G0R002G8XQZP`; analysis in
+  `docs/research/2026-08-13-lossy-transport-calibration-audit-gilbert-elliott-is-uncalibrated-corruption-is-untested-and-aimd-conflates-erasure-with-congestion.md` section 5.1.
 
 ---
 
