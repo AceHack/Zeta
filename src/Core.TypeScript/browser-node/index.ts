@@ -290,6 +290,20 @@ export {
 } from "./browser-database-receipt-peer-selection";
 
 export {
+  BROWSER_DATABASE_RECEIPT_PEER_HOST_SCHEMA,
+  startBrowserDatabaseReceiptPeerHost,
+  startNativeBrowserDatabaseReceiptPeerHost,
+  type BrowserDatabaseReceiptPeerHost,
+  type BrowserDatabaseReceiptPeerHostFeedback,
+  type BrowserDatabaseReceiptPeerHostOptions,
+  type BrowserDatabaseReceiptPeerHostReadout,
+  type BrowserDatabaseReceiptPeerHostResult,
+  type BrowserDatabaseReceiptPeerLinkFactory,
+  type BrowserDatabaseReceiptPeerLinkPort,
+  type NativeBrowserDatabaseReceiptPeerHostOptions,
+} from "./browser-database-receipt-peer-host";
+
+export {
   BROWSER_ZETA_DB_WAKE_RESPONSE_SCHEMA,
   BROWSER_ZETA_DB_WAKE_SCHEMA,
   handleBrowserZetaDbWakeMessage,
