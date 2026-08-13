@@ -145,7 +145,8 @@ let ``group-commit segment log truncates torn trailing record on recovery`` () =
          let dlog = log :> IDeltaLog<int>
          dlog.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask().Wait()
          dlog.AppendAsync(ZSet.ofKeys [ 2 ], empty, ct).AsTask().Wait())
-        let segment = Path.Combine(dir, "delta.segment")
+        // Post-rollover naming: the active segment carries its first seq in the name.
+        let segment = Directory.GetFiles(dir, "delta-*.segment") |> Array.exactlyOne
         let before = FileInfo(segment).Length
         // Scope the torn-write handle so it is DISPOSED before recovery reopens the segment. On Windows the
         // share modes are enforced strictly: a still-open `FileShare.Read` write handle blocks the recovery's
@@ -280,3 +281,95 @@ let ``recovery invariant holds over a long deterministic add/retract sequence`` 
                 DiskDeltaLog<int>(dir, CborEntryCodec<int>(keyEnc, keyDec)) :> IDeltaLog<int>, snap).Result
         recovered.Consolidate() |> should equal (live.Consolidate())
         recovered.AppliedSeq |> should equal 200L)
+
+
+// ═══════════════════════════════════════════════════════════════════
+// Segment rollover + physical truncation (081KTF9T0E4 / 081KTF48J3V):
+// the active segment rolls at maxSegmentBytes; TruncateAsync deletes
+// whole sealed segments the snapshot has absorbed; coverage is derived
+// from segment NAMES alone; sealed-segment anomalies are loud.
+// ═══════════════════════════════════════════════════════════════════
+
+/// ~100-byte records + a 300-byte cap ⇒ a roll roughly every 3 appends.
+let private smallSegCfg = { FerryThrottlerConfig.deterministic with MaxBatchSize = 1 }
+
+[<Fact>]
+let ``active segment ROLLS at the byte cap; replay stitches all segments in order`` () =
+    withDir "gcdl-roll" (fun dir ->
+        (use log = new GroupCommitDiskDeltaLog<int>(dir, FixedBytesEntryCodec 100, smallSegCfg, maxSegmentBytes = 300L)
+         let dlog = log :> IDeltaLog<int>
+         for i in 1 .. 10 do dlog.AppendAsync(ZSet.ofKeys [ i ], empty, ct).AsTask().Wait())
+        Directory.GetFiles(dir, "delta-*.segment").Length |> should be (greaterThan 1)
+        // A fresh instance stitches the segments back into one ordered log.
+        use reopened = new GroupCommitDiskDeltaLog<int>(dir, FixedBytesEntryCodec 100, smallSegCfg, maxSegmentBytes = 300L)
+        (reopened :> IDeltaLog<int>).ReplayAsync(0L, ct).AsTask().Result
+        |> Array.map _.Seq |> should equal [| 1L .. 10L |])
+
+[<Fact>]
+let ``TruncateAsync physically deletes sealed segments the snapshot absorbed — never the active one`` () =
+    withDir "gcdl-truncate" (fun dir ->
+        use log = new GroupCommitDiskDeltaLog<int>(dir, FixedBytesEntryCodec 100, smallSegCfg, maxSegmentBytes = 300L)
+        let dlog = log :> IDeltaLog<int>
+        for i in 1 .. 12 do dlog.AppendAsync(ZSet.ofKeys [ i ], empty, ct).AsTask().Wait()
+        let before = Directory.GetFiles(dir, "delta-*.segment").Length
+        before |> should be (greaterThan 2)
+        dlog.TruncateAsync(7L, ct).AsTask().Wait()
+        let after = Directory.GetFiles(dir, "delta-*.segment")
+        after.Length |> should be (lessThan before)
+        // Correctness: everything past the truncation point is still replayable...
+        dlog.ReplayAsync(7L, ct).AsTask().Result |> Array.map _.Seq |> should equal [| 8L .. 12L |]
+        // ...and the ACTIVE segment survives even a truncate past the high-water mark.
+        dlog.TruncateAsync(1000L, ct).AsTask().Wait()
+        Directory.GetFiles(dir, "delta-*.segment").Length |> should equal 1)
+
+[<Fact>]
+let ``truncated log + snapshot still recovers the exact state across a fresh instance`` () =
+    withDir "gcdl-truncate-recover" (fun dir ->
+        let store = InMemorySnapshotStore<int>() :> ISnapshotStore<int>
+        let liveState =
+            use log1 = new GroupCommitDiskDeltaLog<int>(dir, CborEntryCodec<int>(keyEnc, keyDec), smallSegCfg, maxSegmentBytes = 200L)
+            let s = RecoverableSpine.create (log1 :> IDeltaLog<int>) store
+            s.AutoSnapshotEvery <- 4 // snapshot + TruncateAsync every 4 commits ⇒ sealed segments get GC'd
+            for i in 1 .. 15 do s.CommitAsync(if i % 3 = 0 then ZSet.neg (ZSet.ofKeys [ i % 5 ]) else ZSet.ofKeys [ i % 5 ]).Wait()
+            s.Consolidate()
+        use log2 = new GroupCommitDiskDeltaLog<int>(dir, CborEntryCodec<int>(keyEnc, keyDec), smallSegCfg, maxSegmentBytes = 200L)
+        let recovered = RecoverableSpine<int>.RecoverAsync(log2 :> IDeltaLog<int>, store).Result
+        recovered.Consolidate() |> should equal liveState
+        recovered.AppliedSeq |> should equal 15L)
+
+[<Fact>]
+let ``a pre-rollover delta.segment is honoured as the FIRST segment — in-place upgrade, no migration`` () =
+    withDir "gcdl-legacy" (fun dir ->
+        // Write via the current backend, then RENAME its (single) segment to the
+        // legacy fixed name — byte-identical to a dir written by the v1 backend.
+        (use log = new GroupCommitDiskDeltaLog<int>(dir, FixedBytesEntryCodec 100, smallSegCfg)
+         let dlog = log :> IDeltaLog<int>
+         for i in 1 .. 3 do dlog.AppendAsync(ZSet.ofKeys [ i ], empty, ct).AsTask().Wait())
+        let seg = Directory.GetFiles(dir, "delta-*.segment") |> Array.exactlyOne
+        File.Move(seg, Path.Combine(dir, "delta.segment"))
+        // A fresh instance reads the legacy segment, continues the sequence, and
+        // rolls onward into numbered segments.
+        use reopened = new GroupCommitDiskDeltaLog<int>(dir, FixedBytesEntryCodec 100, smallSegCfg, maxSegmentBytes = 150L)
+        let dlog = reopened :> IDeltaLog<int>
+        dlog.HighWater |> should equal 3L
+        for i in 4 .. 6 do dlog.AppendAsync(ZSet.ofKeys [ i ], empty, ct).AsTask().Wait()
+        dlog.ReplayAsync(0L, ct).AsTask().Result |> Array.map _.Seq |> should equal [| 1L .. 6L |]
+        // Truncation past the legacy coverage deletes the legacy file too.
+        dlog.TruncateAsync(5L, ct).AsTask().Wait()
+        File.Exists(Path.Combine(dir, "delta.segment")) |> should equal false
+        dlog.ReplayAsync(0L, ct).AsTask().Result |> Array.map _.Seq |> should equal [| 6L |])
+
+[<Fact>]
+let ``an anomaly inside a SEALED segment is CORRUPTION — loud, never truncated`` () =
+    withDir "gcdl-sealed-corrupt" (fun dir ->
+        (use log = new GroupCommitDiskDeltaLog<int>(dir, FixedBytesEntryCodec 100, smallSegCfg, maxSegmentBytes = 150L)
+         let dlog = log :> IDeltaLog<int>
+         for i in 1 .. 6 do dlog.AppendAsync(ZSet.ofKeys [ i ], empty, ct).AsTask().Wait())
+        let segs = Directory.GetFiles(dir, "delta-*.segment") |> Array.sort
+        segs.Length |> should be (greaterThan 1)
+        // Append garbage to a SEALED (non-last) segment — a torn "tail" where no
+        // torn tail can legitimately exist.
+        (use fs = new FileStream(segs.[0], FileMode.Append, FileAccess.Write, FileShare.Read)
+         fs.Write([| 0xDEuy; 0xADuy; 0xBEuy |], 0, 3))
+        (fun () -> new GroupCommitDiskDeltaLog<int>(dir, FixedBytesEntryCodec 100, smallSegCfg, maxSegmentBytes = 150L) |> ignore)
+        |> should throw typeof<System.InvalidOperationException>)

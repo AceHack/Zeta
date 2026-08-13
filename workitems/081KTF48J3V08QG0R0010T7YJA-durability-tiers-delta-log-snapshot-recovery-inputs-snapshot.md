@@ -74,3 +74,32 @@ Vera follow-on: group-commit via FerryThrottler now exists as
 `GroupCommitDiskDeltaLog<'K>` (segment + CRC32C + one `Flush(true)` per byte-aware
 boat). Remaining: segment rollover/compaction, parent-dir fsync where relevant,
 stable snapshot addressing, then tier model.
+
+## Progress (Otto, 2026-08-13) — increment 5 (tier model) + segment truncation landed
+
+Start-gate audit first (verify-then-claim): the "discovered gap" above is STALE —
+stable snapshot addressing already exists on main (`SnapshotStore.fs`:
+`DiskSnapshotStore` with stable `snapshot-{seq:020}.snap` names + atomic
+`LATEST.json` manifest + dir-fsync; `RecoverableSpine.RecoverAsync` reads the
+manifest, cross-restart snapshot+tail proven in tests), and
+`DiskAsyncBackingStore` spills are content-addressed (`spine-<merkle>.json`),
+not GUID-prefixed. Parent-dir fsync (inc 6) is present on all three write
+paths. What was genuinely open and landed today:
+
+- **Increment 5 — the tier model** (`src/Core/DurabilityTier.fs`): the §7
+  locked decisions as code. `Durable`/`Derived`/`Ephemeral` joined at
+  registration; leaves DECLARE (Durable|Ephemeral; a Derived leaf is rejected
+  as the contradiction it is); internal relations AUTO-CLASSIFY (Derived when
+  every direct input survives; Ephemeral through a NAMED lost input — recorded,
+  never silent); override-UPWARD allowed (declare-Durable = snapshot instead of
+  recompute, sound because durable persistence is self-contained);
+  override-DOWNWARD rejected; the **upward-closed invariant** enforced at
+  classification with the violating edge named, and proven as an FsCheck
+  property over random DAGs. Generated **tier manifest** (`ztiermanifest/1`,
+  canonical bytes, golden-locked) = §7's audit-via-manifest decision.
+  Circuit/stream-group registration WIRING is the follow-up (the classifier is
+  pure and takes the registration graph as data).
+- **Segment rollover + physical truncation** (081KTF9T0E4's remaining half) —
+  see that row's progress note.
+
+Full suite 4,896 green.

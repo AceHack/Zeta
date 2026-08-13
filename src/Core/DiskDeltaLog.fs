@@ -118,30 +118,87 @@ type DiskDeltaLog<'K when 'K : comparison>
 
 /// Segment-backed `IDeltaLog` with group-commit fsync. Unlike
 /// `DiskDeltaLog`, which writes one file per entry for audit/git-native
-/// inspectability, this hot-path backend appends framed records to one segment
-/// file and routes appends through `FerryThrottler<'TItem,'TResult>`. Each ferry
+/// inspectability, this hot-path backend appends framed records to segment
+/// files and routes appends through `FerryThrottler<'TItem,'TResult>`. Each ferry
 /// boat writes N records then performs one `Flush(true)` before completing the N
-/// caller tasks. This v1 backend is a single-segment writer, so
+/// caller tasks. Single-WRITER (one active segment at a time), so
 /// `MaxDegreeOfParallelism` must be 1; segment sharding/striping is a later
 /// scale-out backend, not an implicit behavior here.
+///
+/// **Segment rollover + physical truncation** (081KTF9T0E4 / 081KTF48J3V —
+/// the increment the v1 no-op `TruncateAsync` named next): segments are named
+/// `delta-{firstSeq:020}.segment` (the first record's sequence — so a
+/// segment's coverage is `[itsFirstSeq, nextSegment.firstSeq)`, derivable
+/// from names alone, no index file to drift). The ACTIVE (last) segment
+/// rolls when it reaches `maxSegmentBytes`: the next boat seals it and opens
+/// a new segment named by that boat's first sequence. `TruncateAsync(seq)`
+/// then physically deletes whole SEALED segments whose coverage lies at or
+/// below `seq` (the snapshot has absorbed them) — the active segment is
+/// never deleted. Classic WAL segment GC (ARIES; SQLite WAL; Kafka log
+/// segments). A pre-rollover `delta.segment` is honoured as the FIRST
+/// segment (sorted before every numbered one), so existing dirs upgrade in
+/// place with no migration step.
 ///
 /// Record frame:
 /// `[len:int32-LE][crc32c:uint32-LE][payload]`, where payload is
 /// `[seq:int64-LE][capLen:int32-LE][capturedJson][deltaLen:int32-LE][deltaBytes]`.
-/// Recovery scans from the start, ignores/truncates a torn trailing record, and
-/// fails loudly for non-trailing CRC corruption.
+/// Recovery scans segments in order. Torn-write handling is POSITIONAL: only
+/// the ACTIVE segment can carry a torn trailing record (every sealed segment
+/// was flushed through by its final boat before the roll), so a torn tail
+/// there is truncated/ignored — but ANY anomaly inside a SEALED segment is
+/// genuine corruption and fails loudly, as does non-trailing CRC corruption
+/// anywhere.
 [<Sealed>]
 type GroupCommitDiskDeltaLog<'K when 'K : comparison>
     (dir: string,
      entryCodec: IEntryCodec<'K>,
      ?config: FerryThrottlerConfig,
-     ?maxBatchBytes: int) =
+     ?maxBatchBytes: int,
+     ?maxSegmentBytes: int64) =
 
     let root = Path.GetFullPath dir
     do FileSystem.Current.CreateDirectory root
 
-    let segmentPath = Path.Combine(root, "delta.segment")
+    /// Roll threshold for the active segment. The default favours few large
+    /// segments; tests dial it down to force rollover.
+    let segmentCap = defaultArg maxSegmentBytes (64L * 1024L * 1024L)
+
+    let legacySegmentPath = Path.Combine(root, "delta.segment")
+    let segmentNameFor (firstSeq: int64) = Path.Combine(root, sprintf "delta-%020d.segment" firstSeq)
+
+    /// Discover segments in coverage order: the legacy unnumbered segment (if
+    /// present) FIRST — it predates rollover, so it holds the earliest
+    /// sequences (sentinel key 0; real sequences start at 1) — then the
+    /// numbered segments by their embedded first-sequence.
+    let discoverSegments () : ResizeArray<struct (int64 * string)> =
+        let found = ResizeArray<struct (int64 * string)>()
+        if FileSystem.Current.Exists legacySegmentPath then
+            found.Add(struct (0L, legacySegmentPath))
+        FileSystem.Current.GetFiles(root, "delta-*.segment")
+        |> Array.choose (fun p ->
+            let stem = Path.GetFileNameWithoutExtension p          // delta-{seq:020}
+            match Int64.TryParse(stem.AsSpan(6)) with
+            | true, v -> Some(struct (v, p))
+            | _ -> None)
+        |> Array.sortBy (fun (struct (s, _)) -> s)
+        |> found.AddRange
+        found
+
     let gate = obj ()
+    // Segment list + active-segment size, guarded by `gate` (the ferry is the
+    // single writer, but TruncateAsync and recovery scans run off-boat).
+    let segments = discoverSegments ()
+    let segmentLength (path: string) : int64 =
+        if not (FileSystem.Current.Exists path) then 0L
+        else
+            use fs = FileSystem.Current.OpenFile(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+            fs.Length
+
+    let mutable activeSize =
+        if segments.Count = 0 then 0L
+        else
+            let struct (_, last) = segments.[segments.Count - 1]
+            segmentLength last
 
     let baseConfig =
         match config with
@@ -174,64 +231,99 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
 
     let decodePayload (payload: byte[]) : DeltaLogEntry<'K> = entryCodec.Decode payload
 
-    let scanEntries (truncateTrailingTornWrite: bool) : DeltaLogEntry<'K>[] =
-        if not (FileSystem.Current.Exists segmentPath) then
+    /// Scan one segment. `sealed'` segments admit NO anomaly (their final boat
+    /// flushed through before the roll — a torn tail there is corruption, loud);
+    /// the active segment's torn TRAILING record is truncated (`ReadWrite`
+    /// recovery scan) or ignored (read-only live replay). Non-trailing CRC
+    /// corruption is loud everywhere.
+    let scanSegment (path: string) (sealed': bool) (truncateTrailingTornWrite: bool) : DeltaLogEntry<'K>[] =
+        if not (FileSystem.Current.Exists path) then
             [||]
         else
             let access = if truncateTrailingTornWrite then FileAccess.ReadWrite else FileAccess.Read
-            use fs: Stream = FileSystem.Current.OpenFile(segmentPath, FileMode.Open, access, FileShare.ReadWrite)
+            use fs: Stream = FileSystem.Current.OpenFile(path, FileMode.Open, access, FileShare.ReadWrite)
             use br = new BinaryReader(fs)
             let entries = ResizeArray<DeltaLogEntry<'K>>()
+            let name = Path.GetFileName path
+            let torn (recordStart: int64) (what: string) =
+                if sealed' then
+                    invalidOp $"GroupCommitDiskDeltaLog: {what} at byte {recordStart} in SEALED segment {name} — corruption (a torn write can only trail the active segment)."
+                elif truncateTrailingTornWrite then
+                    fs.SetLength recordStart
             let mutable scanning = true
             while scanning do
                 let recordStart = fs.Position
                 if fs.Length - fs.Position = 0L then
                     scanning <- false
                 elif fs.Length - fs.Position < 8L then
-                    if truncateTrailingTornWrite then
-                        fs.SetLength recordStart
+                    torn recordStart "short record header"
                     scanning <- false
                 else
                     let len = br.ReadInt32()
                     let expectedCrc = br.ReadUInt32()
                     if len < 0 then
-                        invalidOp $"GroupCommitDiskDeltaLog: negative record length {len} at byte {recordStart}."
+                        invalidOp $"GroupCommitDiskDeltaLog: negative record length {len} at byte {recordStart} in {name}."
                     elif fs.Length - fs.Position < int64 len then
-                        if truncateTrailingTornWrite then
-                            fs.SetLength recordStart
+                        torn recordStart "short record body"
                         scanning <- false
                     else
                         let payload = br.ReadBytes len
                         let actualCrc = HardwareCrc.Crc32C(ReadOnlySpan payload)
                         if actualCrc <> expectedCrc then
-                            if fs.Position = fs.Length then
-                                if truncateTrailingTornWrite then
-                                    fs.SetLength recordStart
+                            if fs.Position = fs.Length && not sealed' then
+                                torn recordStart "trailing CRC mismatch"
                                 scanning <- false
                             else
                                 invalidOp
-                                    $"GroupCommitDiskDeltaLog: CRC mismatch at byte {recordStart} (expected 0x{expectedCrc:X8}, got 0x{actualCrc:X8})."
+                                    $"GroupCommitDiskDeltaLog: CRC mismatch at byte {recordStart} in {name} (expected 0x{expectedCrc:X8}, got 0x{actualCrc:X8})."
                         else
                             entries.Add(decodePayload payload)
             entries.ToArray()
 
+    /// Scan every segment in coverage order. Only the LAST is active.
+    let scanEntries (truncateTrailingTornWrite: bool) : DeltaLogEntry<'K>[] =
+        let segs = lock gate (fun () -> segments.ToArray())
+        [| for i in 0 .. segs.Length - 1 do
+               let struct (_, path) = segs.[i]
+               yield! scanSegment path (i < segs.Length - 1) (truncateTrailingTornWrite && i = segs.Length - 1) |]
+
     let mutable nextSeq =
         let recovered = scanEntries true
+        // The recovery scan may have truncated a torn tail — re-read the active size.
+        (if segments.Count > 0 then
+             let struct (_, last) = segments.[segments.Count - 1]
+             activeSize <- segmentLength last)
         if recovered.Length = 0 then 0L else recovered |> Array.maxBy _.Seq |> _.Seq
 
     let appendBoat (boat: ReadOnlyMemory<GroupCommitDeltaAppendRequest>) (ct: CancellationToken) : Task<int64 array> =
         task {
-            let createdSegment = not (FileSystem.Current.Exists segmentPath)
-            use fs: Stream = FileSystem.Current.OpenFile(segmentPath, FileMode.Append, FileAccess.Write, FileShare.Read)
+            // Roll decision at boat start: no segment yet, or the active one has
+            // reached the cap — open a new segment named by this boat's first
+            // sequence (so names alone encode coverage). Under `gate`: the ferry
+            // is the only writer, but TruncateAsync reads the list concurrently.
+            let struct (segPath, createdSegment) =
+                lock gate (fun () ->
+                    if segments.Count = 0 || activeSize >= segmentCap then
+                        let path = segmentNameFor boat.Span.[0].Seq
+                        segments.Add(struct (boat.Span.[0].Seq, path))
+                        activeSize <- 0L
+                        struct (path, true)
+                    else
+                        let struct (_, last) = segments.[segments.Count - 1]
+                        struct (last, not (FileSystem.Current.Exists last)))
+            use fs: Stream = FileSystem.Current.OpenFile(segPath, FileMode.Append, FileAccess.Write, FileShare.Read)
+            let mutable written = 0L
             for i in 0 .. boat.Length - 1 do
                 let req = boat.Span.[i]
                 do! fs.WriteAsync(ReadOnlyMemory req.Record, ct).AsTask()
+                written <- written + int64 req.Record.Length
             do! fs.FlushAsync ct
             match fs with
             | :? FileStream as fileStream -> fileStream.Flush(flushToDisk = true)
             | _ -> fs.Flush()
             if createdSegment then
                 FileSync.fsyncDir root
+            lock gate (fun () -> activeSize <- activeSize + written)
             return [| for i in 0 .. boat.Length - 1 -> boat.Span.[i].Seq |]
         }
 
@@ -259,10 +351,32 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
 
         member _.HighWater = lock gate (fun () -> nextSeq)
 
-        member _.TruncateAsync(_throughSeqInclusive, _ct) =
-            // Segment compaction/rollover is the next perf-tier increment. Recovery
-            // and callers already pass `fromSeqExclusive`, so the correctness
-            // invariant does not depend on physical deletion in this v1 backend.
+        member _.TruncateAsync(throughSeqInclusive, _ct) =
+            // Physically drop whole SEALED segments fully absorbed by the
+            // snapshot: sealed segment i covers [firstSeq(i), firstSeq(i+1)),
+            // derivable from names alone. The ACTIVE (last) segment is never
+            // deleted — logical filtering (`ReplayAsync(fromSeqExclusive)`)
+            // continues to mask any absorbed prefix it still holds.
+            let toDelete =
+                lock gate (fun () ->
+                    let dead = ResizeArray<string>()
+                    // Walk sealed segments from the front; stop at the first survivor
+                    // (coverage is monotone, so nothing after it can be dead either).
+                    let mutable stop = false
+                    while not stop && segments.Count > 1 do
+                        let struct (_, path) = segments.[0]
+                        let struct (nextFirst, _) = segments.[1]
+                        if nextFirst - 1L <= throughSeqInclusive then
+                            dead.Add path
+                            segments.RemoveAt 0
+                        else
+                            stop <- true
+                    dead)
+            for p in toDelete do
+                try
+                    if FileSystem.Current.Exists p then FileSystem.Current.Delete p
+                with ex ->
+                    Console.Error.WriteLine $"GroupCommitDiskDeltaLog.TruncateAsync: Delete %s{p} failed: %s{ex.Message}"
             ValueTask.CompletedTask
 
     interface IDisposable with

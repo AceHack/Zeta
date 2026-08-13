@@ -44,3 +44,30 @@ Anchor: classic WAL (ARIES); SQLite WAL; segment+CRC is standard.
 CRC32C-framed records, fresh-instance recovery, and torn trailing record
 truncation. Remaining: segment rollover/compaction so physical `TruncateAsync`
 can reclaim bytes instead of relying only on `ReplayAsync(fromSeqExclusive)`.
+
+## Progress (Otto, 2026-08-13) — segment rollover + physical truncation landed
+
+`GroupCommitDiskDeltaLog` now rolls segments and physically reclaims bytes
+(the v1 no-op `TruncateAsync` is gone):
+
+- Segments named `delta-{firstSeq:020}.segment` — coverage `[firstSeq,
+  next.firstSeq)` is derivable from NAMES alone, no index file to drift. The
+  active segment rolls when it reaches `maxSegmentBytes` (ctor knob, default
+  64 MiB); the next boat seals it and opens a segment named by that boat's
+  first sequence.
+- `TruncateAsync(seq)` deletes whole SEALED segments fully absorbed by the
+  snapshot (ARIES/SQLite-WAL/Kafka segment GC); the active segment is never
+  deleted (logical `ReplayAsync(fromSeqExclusive)` filtering still masks any
+  absorbed prefix it holds).
+- Torn-write handling is now POSITIONAL: only the ACTIVE segment can carry a
+  torn trailing record (every sealed segment was flushed through by its final
+  boat before the roll) — a torn tail there truncates on recovery as before,
+  but ANY anomaly inside a SEALED segment fails loudly as corruption.
+- A pre-rollover `delta.segment` is honoured as the FIRST segment (in-place
+  upgrade, no migration step); truncation past its coverage deletes it too.
+- End-to-end: RecoverableSpine with `AutoSnapshotEvery` now gets real byte
+  reclamation (snapshot → truncate → sealed segments deleted → fresh-instance
+  recovery still exact). 5 new tests; full suite 4,896 green.
+
+Remaining on this row: the Naledi append-throughput benchmark comparing the
+two disk logs before either becomes the default.

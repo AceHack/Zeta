@@ -131,6 +131,7 @@
     <Compile Include="ZAtom.fs" />
     <Compile Include="ZPlan.fs" />
     <Compile Include="SchemaLogCodec.fs" />
+    <Compile Include="DurabilityTier.fs" />
     <Compile Include="SchemaRegistry.fs" />
     <Compile Include="EvolutionWindow.fs" />
     <Compile Include="Protobuf.fs" />
