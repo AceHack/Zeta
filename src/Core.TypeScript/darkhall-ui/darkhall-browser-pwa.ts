@@ -18,6 +18,12 @@ export {
   type BrowserDatabaseReceiptBroadcastTransport,
 } from "../browser-node/browser-database-receipt-broadcast-channel";
 
+export {
+  createNativeBrowserDatabaseReceiptBroadcastPeerLink,
+  type BrowserDatabaseReceiptBroadcastPeerLinkReadout,
+  type BrowserDatabaseReceiptBroadcastPeerLinkRuntime,
+} from "../browser-node/browser-database-receipt-broadcast-peer-link";
+
 export const DARK_HALL_BROWSER_PWA_SCHEMA = "zeta.darkhall.browser-pwa.v1" as const;
 
 export interface DarkHallBrowserPwaOptions extends DarkHallBrowserBootstrapOptions {

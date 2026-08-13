@@ -8,10 +8,7 @@ import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { BrowserServiceWorkerRegistrationReadout } from "./browser-service-worker-registration";
 import type { BrowserTabTransportReadout } from "./browser-tab-channel-selector";
 import type { BrowserDatabaseReceiptHandoffReadout } from "./browser-database-receipt-handoff";
-import type {
-  BrowserDatabaseReceiptBroadcastReadout,
-  BrowserDatabaseReceiptBroadcastReceiverHost,
-} from "./browser-database-receipt-broadcast-channel";
+import type { BrowserDatabaseReceiptBroadcastPeerLinkReadout } from "./browser-database-receipt-broadcast-peer-link";
 import { buildBrowserPwaAssets } from "./browser-pwa-build";
 import type { DarkHallDatabaseReadout } from "../darkhall-ui/darkhall-database-readout";
 import type { DarkHallBrowserDatabaseControllerReadout } from "../darkhall-ui/darkhall-browser-database-controller";
@@ -19,7 +16,7 @@ import type { DarkHallBrowserControllerInputReadout } from "../darkhall-ui/darkh
 import type { DarkHallBrowserDatabaseRowSelectionReadout } from "../darkhall-ui/darkhall-browser-database-row-selection";
 import type { DarkHallBrowserRowCommandEditorReadout } from "../darkhall-ui/darkhall-browser-row-command-editor";
 
-export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v8" as const;
+export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v9" as const;
 
 interface BrowserPwaPageReadout {
   readonly registration: BrowserServiceWorkerRegistrationReadout;
@@ -27,6 +24,7 @@ interface BrowserPwaPageReadout {
   readonly host: BrowserLifecycleHostReadout;
   readonly database: DarkHallDatabaseReadout;
   readonly receiptHandoff: BrowserDatabaseReceiptHandoffReadout | null;
+  readonly receiptPeer: BrowserDatabaseReceiptBroadcastPeerLinkReadout | null;
   readonly editor: DarkHallBrowserRowCommandEditorReadout;
   readonly selection: DarkHallBrowserDatabaseRowSelectionReadout;
   readonly input: DarkHallBrowserControllerInputReadout;
@@ -50,25 +48,37 @@ interface BrowserPwaPageGlobal {
             readonly host: BrowserLifecycleHostReadout;
             readonly database: DarkHallDatabaseReadout;
             readonly receiptHandoff: BrowserDatabaseReceiptHandoffReadout | null;
+            readonly receiptPeer: BrowserDatabaseReceiptBroadcastPeerLinkReadout | null;
             readonly controller: DarkHallBrowserDatabaseControllerReadout | null;
             readonly editor: DarkHallBrowserRowCommandEditorReadout;
             readonly selection: DarkHallBrowserDatabaseRowSelectionReadout;
             readonly input: DarkHallBrowserControllerInputReadout;
           };
-          dispatchController(command: {
-            readonly kind: "emit";
-            readonly eventId: string;
-            readonly rowKey: string;
-            readonly payload: string;
-          }): Promise<{ readonly ok: boolean; readonly feedback?: { readonly detail: string } }>;
+          dispatchController(
+            command:
+              | { readonly kind: "refresh" }
+              | {
+                  readonly kind: "emit";
+                  readonly eventId: string;
+                  readonly rowKey: string;
+                  readonly payload: string;
+                }
+              | {
+                  readonly kind: "retract";
+                  readonly eventId: string;
+                  readonly rowKey: string;
+                  readonly payload: string;
+                  readonly magnitude: number;
+                },
+          ): Promise<{
+            readonly ok: boolean;
+            readonly value?: DarkHallBrowserDatabaseControllerReadout;
+            readonly feedback?: { readonly detail: string };
+          }>;
           stop(): unknown;
         };
       }
     | { readonly ok: false; readonly feedback: { readonly detail: string } };
-}
-
-interface BrowserReceiptBroadcastGlobal {
-  readonly __zetaReceiptBroadcastReceiver?: BrowserDatabaseReceiptBroadcastReceiverHost;
 }
 
 export interface BrowserPwaSmokeTranscript {
@@ -85,6 +95,7 @@ export interface BrowserPwaSmokeTranscript {
     readonly retractionCommand: DarkHallBrowserDatabaseControllerReadout;
     readonly writerEditor: DarkHallBrowserRowCommandEditorReadout;
     readonly writerSelection: DarkHallBrowserDatabaseRowSelectionReadout;
+    readonly writerReceiptPeer: BrowserDatabaseReceiptBroadcastPeerLinkReadout;
     readonly peerAfterWrite: BrowserPwaPageReadout;
     readonly freshPage: BrowserPwaPageReadout;
     readonly completedReceiptHandoff: BrowserDatabaseReceiptHandoffReadout;
@@ -93,11 +104,6 @@ export interface BrowserPwaSmokeTranscript {
   readonly controllerInput: {
     readonly pointer: DarkHallBrowserControllerInputReadout;
     readonly keyboard: DarkHallBrowserControllerInputReadout;
-  };
-  readonly receiptBroadcast: {
-    readonly response: readonly number[];
-    readonly sender: BrowserDatabaseReceiptBroadcastReadout;
-    readonly receiver: BrowserDatabaseReceiptBroadcastReadout;
   };
 }
 
@@ -190,39 +196,87 @@ async function waitForDatabaseWithoutScore(page: Page, revision: number): Promis
   );
 }
 
-async function completeReceiptGeneration(page: Page, firstRevision: number, finalRevision: number): Promise<void> {
+async function completeReceiptGeneration(
+  page: Page,
+  firstRevision: number,
+  finalRevision: number,
+  expectedReceiptCount: number,
+): Promise<void> {
   await page.evaluate(
     async ({ first, final }: { readonly first: number; readonly final: number }) => {
       const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
       if (started?.ok !== true) throw new Error("The page did not expose its active runtime.");
       for (let revision = first; revision <= final; revision += 1) {
-        const result = await started.value.dispatchController({
-          kind: "emit",
-          eventId: `browser-smoke/receipt-handoff/${revision.toString()}`,
-          rowKey: "game/score",
-          payload: "9000",
-        });
+        const result = await started.value.dispatchController(
+          revision === final
+            ? {
+                kind: "retract",
+                eventId: `browser-smoke/receipt-handoff/${revision.toString()}`,
+                rowKey: "browser-smoke/receipt-load",
+                payload: "transient",
+                magnitude: final - first,
+              }
+            : {
+                kind: "emit",
+                eventId: `browser-smoke/receipt-handoff/${revision.toString()}`,
+                rowKey: "browser-smoke/receipt-load",
+                payload: "transient",
+              },
+        );
         if (!result.ok)
           throw new Error(result.feedback?.detail ?? `Receipt generation failed at ${revision.toString()}.`);
       }
     },
     { first: firstRevision, final: finalRevision },
   );
-  await page.waitForFunction(
-    (revision) => {
+  try {
+    await page.waitForFunction(
+      ({ revision, expectedReceipts }: { readonly revision: number; readonly expectedReceipts: number }) => {
+        const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+        if (started?.ok !== true) return false;
+        const readout = started.value.read();
+        return (
+          readout.database.revision === revision &&
+          readout.receiptHandoff?.status === "complete" &&
+          readout.receiptHandoff.releasedReceipts === expectedReceipts &&
+          readout.receiptHandoff.retainedReceipts === 0
+        );
+      },
+      { revision: finalRevision, expectedReceipts: expectedReceiptCount },
+      { timeout: timeoutMs },
+    );
+  } catch (error) {
+    const readout = await page.evaluate(() => {
       const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
-      if (started?.ok !== true) return false;
-      const readout = started.value.read();
-      return (
-        readout.database.revision === revision &&
-        readout.receiptHandoff?.status === "complete" &&
-        readout.receiptHandoff.releasedReceipts === revision &&
-        readout.receiptHandoff.retainedReceipts === 0
-      );
-    },
-    finalRevision,
-    { timeout: timeoutMs },
-  );
+      return started?.ok === true ? started.value.read() : started;
+    });
+    throw new Error(`Receipt generation did not settle: ${detail(error)}; readout=${JSON.stringify(readout)}`);
+  }
+}
+
+async function waitForReceivedReceiptGeneration(page: Page, expectedReceiptCount: number): Promise<void> {
+  try {
+    await page.waitForFunction(
+      (expectedReceipts) => {
+        const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+        if (started?.ok !== true) return false;
+        const receiptPeer = started.value.read().receiptPeer;
+        return (
+          receiptPeer?.status === "complete" &&
+          receiptPeer.inboundPeer.receiptCount === expectedReceipts &&
+          receiptPeer.inboundTransport.inFlight === 0
+        );
+      },
+      expectedReceiptCount,
+      { timeout: timeoutMs },
+    );
+  } catch (error) {
+    const readout = await page.evaluate(() => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      return started?.ok === true ? started.value.read().receiptPeer : started;
+    });
+    throw new Error(`Receipt peer did not settle: ${detail(error)}; readout=${JSON.stringify(readout)}`);
+  }
 }
 
 async function waitForTwoTabs(page: Page): Promise<void> {
@@ -348,6 +402,7 @@ async function observe(page: Page, pageName: string): Promise<BrowserPwaPageRead
           host: readout.host,
           database: readout.database,
           receiptHandoff: readout.receiptHandoff,
+          receiptPeer: readout.receiptPeer,
           editor: readout.editor,
           selection: readout.selection,
           input: readout.input,
@@ -388,6 +443,9 @@ function validateStartingPage(pageName: string, page: BrowserPwaPageReadout, fai
   }
   if (page.selection.status !== "live" || page.selection.selected !== 0) {
     failures.push(`${pageName} did not expose a cold live row selection surface`);
+  }
+  if (page.receiptPeer?.status !== "idle") {
+    failures.push(`${pageName} did not expose an idle addressed receipt peer`);
   }
   if (page.host.coordinator.liveness.liveTabIds.join(",") !== "tab-a,tab-b") {
     failures.push(`${pageName} did not observe both tabs`);
@@ -480,15 +538,15 @@ function validateHydration(transcript: BrowserPwaSmokeTranscript, failures: stri
     ["peer page A", transcript.database.peerAfterWrite, "tab-a"],
     ["fresh page C", transcript.database.freshPage, "tab-c"],
   ] as const) {
-    if (page.database.revision !== 3 || page.database.executorId !== executorId) {
+    if (page.database.revision !== 64 || page.database.executorId !== executorId) {
       failures.push(
-        `${pageName} did not read revision 3 through its own browser-tab executor: ${JSON.stringify(page.database)}`,
+        `${pageName} did not read revision 64 through its own browser-tab executor: ${JSON.stringify(page.database)}`,
       );
     }
     if (!page.database.rows.some((row) => row.rowKey === "game/score" && row.payload === "9000" && row.weight === 1)) {
       failures.push(`${pageName} did not reconstruct the persisted score row: ${JSON.stringify(page.database.rows)}`);
     }
-    if (page.renderedDatabaseRevision !== "3" || page.renderedDatabaseRows[0]?.payload !== "9000") {
+    if (page.renderedDatabaseRevision !== "64" || page.renderedDatabaseRows[0]?.payload !== "9000") {
       failures.push(
         `${pageName} did not render the reconstructed database row: revision=${String(page.renderedDatabaseRevision)} rows=${JSON.stringify(page.renderedDatabaseRows)}`,
       );
@@ -500,6 +558,23 @@ function validateHydration(transcript: BrowserPwaSmokeTranscript, failures: stri
 }
 
 function validateReceiptHandoff(transcript: BrowserPwaSmokeTranscript, failures: string[]): void {
+  const sender = transcript.database.writerReceiptPeer;
+  const receiver = transcript.database.peerAfterWrite.receiptPeer;
+  if (
+    sender.status !== "complete" ||
+    sender.handoff.releasedReceipts !== 64 ||
+    sender.outboundPeer.receiptCount !== 64 ||
+    sender.outboundTransport.inFlight !== 0 ||
+    receiver === null ||
+    receiver.status !== "complete" ||
+    receiver.inboundPeer.receiptCount !== 64 ||
+    receiver.inboundTransport.inFlight !== 0 ||
+    sender.handoff.contentHash !== receiver.inboundPeer.contentHash
+  ) {
+    failures.push(
+      `the live pages did not automatically hand off one addressed receipt generation: ${JSON.stringify({ sender, receiver })}`,
+    );
+  }
   const completed = transcript.database.completedReceiptHandoff;
   if (
     completed.status !== "complete" ||
@@ -517,22 +592,6 @@ function validateReceiptHandoff(transcript: BrowserPwaSmokeTranscript, failures:
   }
 }
 
-function validateReceiptBroadcast(transcript: BrowserPwaSmokeTranscript, failures: string[]): void {
-  if (
-    transcript.receiptBroadcast.response.join(",") !== "3,2,1" ||
-    transcript.receiptBroadcast.sender.status !== "complete" ||
-    transcript.receiptBroadcast.sender.lastSequence !== 900 ||
-    transcript.receiptBroadcast.sender.inFlight !== 0 ||
-    transcript.receiptBroadcast.receiver.status !== "complete" ||
-    transcript.receiptBroadcast.receiver.lastSequence !== 900 ||
-    transcript.receiptBroadcast.receiver.inFlight !== 0
-  ) {
-    failures.push(
-      `two Chromium pages did not complete the native receipt byte exchange: ${JSON.stringify(transcript.receiptBroadcast)}`,
-    );
-  }
-}
-
 function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
   const failures: string[] = [];
   validateStartingPages(transcript, failures);
@@ -540,7 +599,6 @@ function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
   validateDatabaseCommands(transcript, failures);
   validateHydration(transcript, failures);
   validateReceiptHandoff(transcript, failures);
-  validateReceiptBroadcast(transcript, failures);
   return failures;
 }
 
@@ -591,8 +649,8 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
     const [pageA, pageB] = await Promise.all([context.newPage(), context.newPage()]);
     const baseUrl = `http://127.0.0.1:${String(server.port)}/node.html`;
     await Promise.all([
-      pageA.goto(`${baseUrl}?tab=tab-a&sequence=100`),
-      pageB.goto(`${baseUrl}?tab=tab-b&sequence=200`),
+      pageA.goto(`${baseUrl}?tab=tab-a&sequence=100&receipt-peer=tab-b&receipt-minimum=64`),
+      pageB.goto(`${baseUrl}?tab=tab-b&sequence=200&receipt-peer=tab-a&receipt-minimum=64`),
     ]);
     await Promise.all([waitForReady(pageA), waitForReady(pageB)]);
 
@@ -606,54 +664,6 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
       dispatchEvent(new PageTransitionEvent("pageshow", { persisted: true }));
     });
     await Promise.all([waitForTwoTabs(pageA), waitForTwoTabs(pageB)]);
-
-    stage = "exchange receipt bytes over native BroadcastChannel";
-    await pageA.evaluate(async () => {
-      const modulePath = "./darkhall-browser-pwa.js";
-      const api = (await import(modulePath)) as typeof import("../darkhall-ui/darkhall-browser-pwa");
-      const created = api.createNativeBrowserDatabaseReceiptBroadcastReceiver({
-        root: globalThis,
-        channelName: "zeta.receipts.chromium-smoke",
-        peerId: "browser/tab-a",
-        sourcePeerId: "browser/tab-b",
-        receiver: {
-          receive: (payload) => Promise.resolve({ ok: true, value: new Uint8Array([...payload].reverse()) }),
-          read: () => {
-            throw new Error("The Chromium byte fixture has no protocol readout.");
-          },
-        },
-        limits: { maxRequestPayloadBytes: 1024, maxResponsePayloadBytes: 1024, maxInFlight: 1 },
-      });
-      if (!created.ok) throw new Error(`${created.feedback.code}: ${created.feedback.detail}`);
-      Reflect.set(globalThis, "__zetaReceiptBroadcastReceiver", created.value);
-    });
-    const receiptBroadcastSender = await pageB.evaluate(async () => {
-      const modulePath = "./darkhall-browser-pwa.js";
-      const api = (await import(modulePath)) as typeof import("../darkhall-ui/darkhall-browser-pwa");
-      const created = api.createNativeBrowserDatabaseReceiptBroadcastTransport({
-        root: globalThis,
-        channelName: "zeta.receipts.chromium-smoke",
-        sourcePeerId: "browser/tab-b",
-        targetPeerId: "browser/tab-a",
-        initialSequence: 900,
-        limits: { maxRequestPayloadBytes: 1024, maxResponsePayloadBytes: 1024, maxInFlight: 1 },
-      });
-      if (!created.ok) throw new Error(`${created.feedback.code}: ${created.feedback.detail}`);
-      const exchanged = await created.value.exchange(new Uint8Array([1, 2, 3]));
-      if (!exchanged.ok) throw new Error(`${exchanged.feedback.code}: ${exchanged.feedback.detail}`);
-      const sender = created.value.read();
-      const closed = created.value.close();
-      if (!closed.ok) throw new Error(`${closed.feedback.code}: ${closed.feedback.detail}`);
-      return { response: Array.from(exchanged.value), sender };
-    });
-    const receiptBroadcastReceiver = await pageA.evaluate(() => {
-      const host = (globalThis as unknown as BrowserReceiptBroadcastGlobal).__zetaReceiptBroadcastReceiver;
-      if (host === undefined) throw new Error("Page A did not retain its receipt BroadcastChannel host.");
-      const receiver = host.read();
-      const closed = host.close();
-      if (!closed.ok) throw new Error(`${closed.feedback.code}: ${closed.feedback.detail}`);
-      return receiver;
-    });
 
     stage = "route pointer and keyboard controller input";
     await pageB.click('[data-action-id="darkhall.database.inspect"]');
@@ -712,9 +722,34 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
       if (started?.ok !== true) throw new Error("Page B did not expose its active runtime.");
       const readout = started.value.read();
       if (readout.controller === null) throw new Error("Page B did not expose its final emit readout.");
-      return { controller: readout.controller, editor: readout.editor, selection: readout.selection };
+      if (readout.receiptPeer === null) throw new Error("Page B did not expose its addressed receipt peer.");
+      return {
+        controller: readout.controller,
+        editor: readout.editor,
+        selection: readout.selection,
+        receiptPeer: readout.receiptPeer,
+      };
     });
-    await waitForDatabase(pageA, 3, "9000");
+    stage = "complete one addressed receipt generation";
+    await completeReceiptGeneration(pageB, 4, 64, 64);
+    const writerReceiptPeer = await pageB.evaluate(() => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok !== true) throw new Error("Page B did not expose its active runtime.");
+      const receiptPeer = started.value.read().receiptPeer;
+      if (receiptPeer === null) throw new Error("Page B did not expose its addressed receipt peer.");
+      return receiptPeer;
+    });
+    stage = "observe addressed receipt generation";
+    await waitForReceivedReceiptGeneration(pageA, 64);
+    stage = "refresh peer database after receipt generation";
+    const peerRefresh = await pageA.evaluate(async () => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok !== true) throw new Error("Page A did not expose its active runtime.");
+      return started.value.dispatchController({ kind: "refresh" });
+    });
+    if (!peerRefresh.ok || peerRefresh.value?.database.revision !== 64) {
+      throw new Error(`Page A did not refresh revision 64: ${JSON.stringify(peerRefresh)}`);
+    }
     const peerAfterWrite = await observe(pageA, "page A after peer database write");
 
     stage = "stop second page";
@@ -745,18 +780,9 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
     const pageC = await context.newPage();
     await pageC.goto(`${baseUrl}?tab=tab-c&sequence=300`);
     await waitForReady(pageC);
-    await waitForDatabase(pageC, 3, "9000");
+    await waitForDatabase(pageC, 64, "9000");
     const freshPage = await observe(pageC, "fresh page C");
-
-    stage = "complete one bounded receipt generation";
-    await completeReceiptGeneration(pageC, 4, 64);
-    const completedReceiptHandoff = await pageC.evaluate(() => {
-      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
-      if (started?.ok !== true) throw new Error("Page C did not expose its active runtime.");
-      const readout = started.value.read().receiptHandoff;
-      if (readout === null) throw new Error("Page C did not expose receipt handoff pressure.");
-      return readout;
-    });
+    const completedReceiptHandoff = writerReceiptPeer.handoff;
     await pageC.evaluate(() => {
       const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
       if (started?.ok === true) started.value.stop();
@@ -785,17 +811,13 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
         retractionCommand,
         writerEditor: writerState.editor,
         writerSelection: writerState.selection,
+        writerReceiptPeer,
         peerAfterWrite,
         freshPage,
         completedReceiptHandoff,
         successorReceiptHandoff,
       },
       controllerInput: { pointer: pointerInput, keyboard: keyboardInput },
-      receiptBroadcast: {
-        response: receiptBroadcastSender.response,
-        sender: receiptBroadcastSender.sender,
-        receiver: receiptBroadcastReceiver,
-      },
     };
     const failures = validate(transcript);
     if (failures.length > 0) return failed("assertion-failed", failures.join("; "));

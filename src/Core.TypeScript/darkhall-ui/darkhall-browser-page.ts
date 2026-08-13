@@ -27,6 +27,12 @@ import {
   type BrowserDatabaseReceiptHandoffReadout,
   type BrowserDatabaseReceiptHandoffRuntime,
 } from "../browser-node/browser-database-receipt-handoff";
+import {
+  createNativeBrowserDatabaseReceiptBroadcastPeerLink,
+  type BrowserDatabaseReceiptBroadcastPeerLinkLimits,
+  type BrowserDatabaseReceiptBroadcastPeerLinkReadout,
+  type BrowserDatabaseReceiptBroadcastPeerLinkRuntime,
+} from "../browser-node/browser-database-receipt-broadcast-peer-link";
 import { openNativeIndexedDbDatabaseIntentOutbox } from "../browser-node/browser-indexeddb-database-intent-outbox";
 import { createNativeBrowserExecutionAdmission } from "../browser-node/browser-web-lock-execution-admission";
 import {
@@ -81,7 +87,7 @@ import {
 } from "./darkhall-browser-database-row-selection";
 import { renderDarkHallRoomHtml, type RoomRunTranscript } from "./darkhall-room";
 
-export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v8" as const;
+export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v9" as const;
 export const DARK_HALL_BROWSER_PAGE_GLOBAL = "__zetaDarkHallPage" as const;
 export const DARK_HALL_BROWSER_PAGE_MOUNT_ID = "darkhall-room" as const;
 
@@ -101,6 +107,7 @@ export interface DarkHallBrowserPageFeedback {
     | "page-database-start-failed"
     | "page-database-hydration-failed"
     | "page-database-stop-failed"
+    | "page-database-receipt-peer-stop-failed"
     | "page-editor-start-failed"
     | "page-editor-stop-failed"
     | "page-selection-start-failed"
@@ -127,6 +134,7 @@ export interface DarkHallBrowserPageReadout {
   readonly host: BrowserLifecycleHostReadout;
   readonly database: DarkHallDatabaseReadout;
   readonly receiptHandoff: BrowserDatabaseReceiptHandoffReadout | null;
+  readonly receiptPeer: BrowserDatabaseReceiptBroadcastPeerLinkReadout | null;
   readonly controller: DarkHallBrowserDatabaseControllerReadout | null;
   readonly editor: DarkHallBrowserRowCommandEditorReadout;
   readonly selection: DarkHallBrowserDatabaseRowSelectionReadout;
@@ -177,6 +185,10 @@ export interface NativeDarkHallBrowserPageOptions {
   readonly databaseReceiptHandoffLimits?: BrowserDatabaseReceiptHandoffLimits;
   readonly databaseReceiptHandoffTargetLimits?: ZetaDbTickLimits;
   readonly databaseReceiptHandoffTargetExecutor?: BrowserDatabaseReceiptArchiveExecutor;
+  readonly databaseReceiptPeerId?: string;
+  readonly databaseReceiptPeerChannelName?: string;
+  readonly databaseReceiptPeerInitialSequence?: number;
+  readonly databaseReceiptPeerLimits?: BrowserDatabaseReceiptBroadcastPeerLinkLimits;
   readonly databaseExecutor?: BrowserZetaDbTabExecutor;
   readonly maxControllerInputInFlight?: number;
   readonly rowCommandEditorMountId?: string;
@@ -205,7 +217,7 @@ interface PagePeerDarkRecovery {
 export const DARK_HALL_BROWSER_PAGE_TRANSCRIPT: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
   roomName: "dark hall browser node",
-  seed: "browser-page-v8",
+  seed: "browser-page-v9",
   generatedBy: "darkhall-browser-page",
   controller: DARK_HALL_BROWSER_DATABASE_ACTIONS.map((action) => ({
     cell: action.cell,
@@ -448,6 +460,20 @@ const defaultDatabaseReceiptHandoffTargetLimits: ZetaDbTickLimits = {
   maxCheckpointBytes: 16 * 1024 * 1024,
 };
 
+const defaultDatabaseReceiptPeerLimits: BrowserDatabaseReceiptBroadcastPeerLinkLimits = {
+  handoff: defaultDatabaseReceiptHandoffLimits,
+  peer: {
+    maxReceipts: 256,
+    maxRequestBytes: 512 * 1024,
+    maxResponseBytes: 32 * 1024,
+  },
+  broadcast: {
+    maxRequestPayloadBytes: 512 * 1024,
+    maxResponsePayloadBytes: 32 * 1024,
+    maxInFlight: 1,
+  },
+};
+
 function selectPageDatabaseAdmission(
   options: NativeDarkHallBrowserPageOptions,
   root: unknown,
@@ -533,13 +559,81 @@ function pageReceiptHandoffFailure(
   return failed("page-database-start-failed", `${feedback.code}: ${feedback.detail}`, feedback.severity);
 }
 
+interface PageDatabaseReceiptHandoffSelection {
+  readonly runtime: BrowserDatabaseReceiptHandoffRuntime | null;
+  readonly peer: BrowserDatabaseReceiptBroadcastPeerLinkRuntime | null;
+}
+
+function pageReceiptPeerId(
+  options: NativeDarkHallBrowserPageOptions,
+  configuration: NativePageConfiguration,
+): DarkHallBrowserPageResult<string | null> {
+  const selected = configuration.context.parameters.get("receipt-peer") ?? options.databaseReceiptPeerId ?? null;
+  if (selected === null) return succeeded(null);
+  const peerId = identifier(selected, "");
+  if (!peerId.ok) return peerId;
+  return peerId.value === configuration.tabId
+    ? failed("page-configuration-invalid", "A browser receipt peer must differ from the local tab identity.")
+    : succeeded(peerId.value);
+}
+
+function pageReceiptPeerInitialSequence(
+  options: NativeDarkHallBrowserPageOptions,
+  configuration: NativePageConfiguration,
+): DarkHallBrowserPageResult<number> {
+  const parameter = configuration.context.parameters.get("receipt-sequence");
+  if (parameter !== null) return initialSequence(parameter);
+  const selected = options.databaseReceiptPeerInitialSequence ?? configuration.sequence;
+  return Number.isSafeInteger(selected) && selected >= 0
+    ? succeeded(selected)
+    : failed("page-configuration-invalid", "The receipt peer sequence must be a non-negative safe integer.");
+}
+
+function pageReceiptPeerLimits(
+  options: NativeDarkHallBrowserPageOptions,
+  configuration: NativePageConfiguration,
+): DarkHallBrowserPageResult<BrowserDatabaseReceiptBroadcastPeerLinkLimits> {
+  const limits = options.databaseReceiptPeerLimits ?? defaultDatabaseReceiptPeerLimits;
+  const parameter = configuration.context.parameters.get("receipt-minimum");
+  if (parameter === null) return succeeded(limits);
+  const minimumReceipts = Number(parameter);
+  if (
+    !Number.isSafeInteger(minimumReceipts) ||
+    minimumReceipts < 1 ||
+    minimumReceipts > limits.handoff.maxReceipts
+  ) {
+    return failed(
+      "page-configuration-invalid",
+      "The receipt peer minimum must be a positive safe integer within the handoff receipt budget.",
+    );
+  }
+  return succeeded({
+    ...limits,
+    handoff: { ...limits.handoff, minimumReceipts },
+  });
+}
+
 function selectPageDatabaseReceiptHandoff(
   options: NativeDarkHallBrowserPageOptions,
   configuration: NativePageConfiguration,
-): DarkHallBrowserPageResult<BrowserDatabaseReceiptHandoffRuntime | null> {
-  if (options.databaseReceiptHandoff !== undefined) return succeeded(options.databaseReceiptHandoff);
+): DarkHallBrowserPageResult<PageDatabaseReceiptHandoffSelection> {
+  const peerId = pageReceiptPeerId(options, configuration);
+  if (!peerId.ok) return peerId;
+  if (options.databaseReceiptHandoff !== undefined) {
+    return peerId.value === null
+      ? succeeded({ runtime: options.databaseReceiptHandoff, peer: null })
+      : failed(
+          "page-configuration-invalid",
+          "An injected receipt handoff runtime cannot also select a native receipt peer.",
+        );
+  }
   if (options.databaseReceiptArchive !== undefined || options.databaseReceiptArchiveExecutor !== undefined) {
-    return succeeded(null);
+    return peerId.value === null
+      ? succeeded({ runtime: null, peer: null })
+      : failed(
+          "page-configuration-invalid",
+          "A native receipt peer requires the page-owned receipt archive maintenance boundary.",
+        );
   }
 
   const archiveNodeId = identifier(
@@ -581,6 +675,35 @@ function selectPageDatabaseReceiptHandoff(
   });
   if (!downstream.ok) return pageReceiptHandoffFailure(configuration, downstream.feedback);
 
+  if (peerId.value !== null) {
+    const sequence = pageReceiptPeerInitialSequence(options, configuration);
+    if (!sequence.ok) return sequence;
+    const limits = pageReceiptPeerLimits(options, configuration);
+    if (!limits.ok) return limits;
+    const channelName = identifier(
+      options.databaseReceiptPeerChannelName ?? null,
+      `${options.channelName ?? "zeta-darkhall-browser-page"}:receipt-handoff`,
+    );
+    if (!channelName.ok) return channelName;
+    const peer = createNativeBrowserDatabaseReceiptBroadcastPeerLink({
+      root: configuration.root,
+      channelName: channelName.value,
+      localPeerId: configuration.tabId,
+      remotePeerId: peerId.value,
+      initialSequence: sequence.value,
+      databaseNodeId: configuration.databaseNodeId,
+      archiveNodeId: archiveNodeId.value,
+      targetNodeId: targetNodeId.value,
+      archive: maintenance.value,
+      downstream: downstream.value,
+      hasher,
+      limits: limits.value,
+    });
+    return peer.ok
+      ? succeeded({ runtime: peer.value.handoff, peer: peer.value })
+      : pageReceiptHandoffFailure(configuration, peer.feedback);
+  }
+
   const runtime = createBrowserDatabaseReceiptHandoffRuntime({
     databaseNodeId: configuration.databaseNodeId,
     archiveNodeId: archiveNodeId.value,
@@ -590,7 +713,9 @@ function selectPageDatabaseReceiptHandoff(
     hasher,
     limits: options.databaseReceiptHandoffLimits ?? defaultDatabaseReceiptHandoffLimits,
   });
-  return runtime.ok ? succeeded(runtime.value) : pageReceiptHandoffFailure(configuration, runtime.feedback);
+  return runtime.ok
+    ? succeeded({ runtime: runtime.value, peer: null })
+    : pageReceiptHandoffFailure(configuration, runtime.feedback);
 }
 
 function observePageDatabaseOutbox(
@@ -849,6 +974,7 @@ async function startPageEdges(
     readonly outbox: BrowserDatabaseIntentOutboxPort;
     readonly receiptArchive: BrowserDatabaseReceiptArchivePort;
     readonly receiptHandoff: BrowserDatabaseReceiptHandoffRuntime | null;
+    readonly receiptPeer: BrowserDatabaseReceiptBroadcastPeerLinkRuntime | null;
   }>
 > {
   const pwa = await startPagePwa(
@@ -882,7 +1008,8 @@ async function startPageEdges(
     pwa: pwa.value,
     outbox: outbox.value,
     receiptArchive: receiptArchive.value,
-    receiptHandoff: receiptHandoff.value,
+    receiptHandoff: receiptHandoff.value.runtime,
+    receiptPeer: receiptHandoff.value.peer,
   });
 }
 
@@ -1007,7 +1134,7 @@ export async function startNativeDarkHallBrowserPage(
   );
   if (!edges.ok) return edges;
 
-  const { pwa, outbox, receiptArchive, receiptHandoff } = edges.value;
+  const { pwa, outbox, receiptArchive, receiptHandoff, receiptPeer } = edges.value;
   let latestDatabase: DarkHallDatabaseReadout | null = null;
   const observedDatabase = (): DarkHallDatabaseReadout | null => latestDatabase;
   let latestController: DarkHallBrowserDatabaseControllerReadout | null = null;
@@ -1060,6 +1187,7 @@ export async function startNativeDarkHallBrowserPage(
       }),
   });
   if (!databaseStarted.ok) {
+    receiptPeer?.close();
     outbox.close();
     return databaseFailure(
       context,
@@ -1084,7 +1212,10 @@ export async function startNativeDarkHallBrowserPage(
     receiveDatabaseInvalidation,
     observedDatabase,
   );
-  if (!hydration.ok) return hydration;
+  if (!hydration.ok) {
+    receiptPeer?.close();
+    return hydration;
+  }
   const hydratedDatabase = hydration.value;
   const controllerStarted = startDarkHallBrowserDatabaseController({
     databaseNodeId,
@@ -1114,6 +1245,7 @@ export async function startNativeDarkHallBrowserPage(
     },
   });
   if (!controllerStarted.ok) {
+    receiptPeer?.close();
     return databaseFailure(
       context,
       pwa,
@@ -1148,6 +1280,7 @@ export async function startNativeDarkHallBrowserPage(
     },
   });
   if (!editorStarted.ok) {
+    receiptPeer?.close();
     controller.stop();
     database.stop();
     pwa.browser.host.stop();
@@ -1201,6 +1334,7 @@ export async function startNativeDarkHallBrowserPage(
     },
   });
   if (!selectionStarted.ok) {
+    receiptPeer?.close();
     editor.stop();
     controller.stop();
     database.stop();
@@ -1242,6 +1376,7 @@ export async function startNativeDarkHallBrowserPage(
     },
   });
   if (!inputStarted.ok) {
+    receiptPeer?.close();
     selection.stop();
     editor.stop();
     controller.stop();
@@ -1263,6 +1398,7 @@ export async function startNativeDarkHallBrowserPage(
     !context.mount.setAttribute("data-browser-transport", pwa.browser.transport.selected) ||
     !context.mount.setAttribute("data-browser-tab", tabId)
   ) {
+    receiptPeer?.close();
     input.stop();
     selection.stop();
     editor.stop();
@@ -1283,6 +1419,7 @@ export async function startNativeDarkHallBrowserPage(
     host: pwa.browser.host.read(),
     database: latestDatabase ?? hydratedDatabase,
     receiptHandoff: database.readReceiptHandoff(),
+    receiptPeer: receiptPeer?.read() ?? null,
     controller: latestController,
     editor: editor.read(),
     selection: selection.read(),
@@ -1297,6 +1434,7 @@ export async function startNativeDarkHallBrowserPage(
     stop: () => {
       const inputStopped = input.stop();
       if (!inputStopped.ok) {
+        receiptPeer?.close();
         context.mount.setStatus(inputPageStatus(inputStopped.feedback.severity), inputStopped.feedback.code);
         return failed(
           "page-input-stop-failed",
@@ -1306,6 +1444,7 @@ export async function startNativeDarkHallBrowserPage(
       }
       const selectionStopped = selection.stop();
       if (!selectionStopped.ok) {
+        receiptPeer?.close();
         context.mount.setStatus(inputPageStatus(selectionStopped.feedback.severity), selectionStopped.feedback.code);
         return failed(
           "page-selection-stop-failed",
@@ -1315,6 +1454,7 @@ export async function startNativeDarkHallBrowserPage(
       }
       const editorStopped = editor.stop();
       if (!editorStopped.ok) {
+        receiptPeer?.close();
         context.mount.setStatus(inputPageStatus(editorStopped.feedback.severity), editorStopped.feedback.code);
         return failed(
           "page-editor-stop-failed",
@@ -1324,6 +1464,7 @@ export async function startNativeDarkHallBrowserPage(
       }
       const controllerStopped = controller.stop();
       if (!controllerStopped.ok) {
+        receiptPeer?.close();
         context.mount.setStatus(
           pageStatusFromSeverity(controllerStopped.feedback.severity),
           controllerStopped.feedback.code,
@@ -1336,6 +1477,7 @@ export async function startNativeDarkHallBrowserPage(
       }
       const databaseStopped = database.stop();
       if (!databaseStopped.ok) {
+        receiptPeer?.close();
         context.mount.setStatus(
           pageStatusFromSeverity(databaseStopped.feedback.severity),
           databaseStopped.feedback.code,
@@ -1344,6 +1486,18 @@ export async function startNativeDarkHallBrowserPage(
           "page-database-stop-failed",
           `${databaseStopped.feedback.code}: ${databaseStopped.feedback.detail}`,
           databaseStopped.feedback.severity,
+        );
+      }
+      const receiptPeerStopped = receiptPeer?.close();
+      if (receiptPeerStopped !== undefined && !receiptPeerStopped.ok) {
+        context.mount.setStatus(
+          pageStatusFromSeverity(receiptPeerStopped.feedback.severity),
+          receiptPeerStopped.feedback.code,
+        );
+        return failed(
+          "page-database-receipt-peer-stop-failed",
+          `${receiptPeerStopped.feedback.code}: ${receiptPeerStopped.feedback.detail}`,
+          receiptPeerStopped.feedback.severity,
         );
       }
       const stopped = pwa.browser.host.stop();

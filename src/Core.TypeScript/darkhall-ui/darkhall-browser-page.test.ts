@@ -743,6 +743,26 @@ describe("Dark Hall active browser page", () => {
     expect(root.mount.innerHTML).toBe("standing room");
   });
 
+  test("refuses a receipt peer that aliases the local tab", async () => {
+    const root = new NativeBrowserRoot();
+    root.location.search = "?tab=tab-a&sequence=12&receipt-peer=tab-a";
+
+    const result = await startNativeDarkHallBrowserPage({
+      root,
+      databaseIntentOutbox: databaseIntentOutbox(),
+      databaseReceiptArchive: databaseReceiptArchive(),
+      databaseExecutor,
+    });
+
+    expect(result).toMatchObject({
+      ok: false,
+      feedback: {
+        code: "page-configuration-invalid",
+        detail: "A browser receipt peer must differ from the local tab identity.",
+      },
+    });
+  });
+
   test("ACCEPTS an explicit sequence of 0 — the boundary the other cases step over", async () => {
     // `initialSequence` guards with `sequence >= 0`, and 0 is the only value that separates
     // that from `> 0`. The suite exercised 12 (accepted) and -1 (refused), both of which stay

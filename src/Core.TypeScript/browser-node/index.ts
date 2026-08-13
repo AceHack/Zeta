@@ -271,6 +271,16 @@ export {
 } from "./browser-database-receipt-broadcast-channel";
 
 export {
+  BROWSER_DATABASE_RECEIPT_BROADCAST_PEER_LINK_SCHEMA,
+  createNativeBrowserDatabaseReceiptBroadcastPeerLink,
+  type BrowserDatabaseReceiptBroadcastPeerLinkLimits,
+  type BrowserDatabaseReceiptBroadcastPeerLinkOptions,
+  type BrowserDatabaseReceiptBroadcastPeerLinkReadout,
+  type BrowserDatabaseReceiptBroadcastPeerLinkResult,
+  type BrowserDatabaseReceiptBroadcastPeerLinkRuntime,
+} from "./browser-database-receipt-broadcast-peer-link";
+
+export {
   BROWSER_ZETA_DB_WAKE_RESPONSE_SCHEMA,
   BROWSER_ZETA_DB_WAKE_SCHEMA,
   handleBrowserZetaDbWakeMessage,
