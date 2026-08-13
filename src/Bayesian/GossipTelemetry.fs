@@ -125,9 +125,20 @@ module GossipTelemetry =
             match orbitalLink with
             | None -> BusRegime.regimeOfTerrestrial meter deadlineMs
             | Some link ->
-                let jd = OrbitalAsymmetryBudget.unixMsToJd
-                            (System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds())
-                let delta = OrbitalAsymmetryBudget.deltaMaxMs link.LocalBody link.RemoteBody jd
+                // Use the link's OWN epoch, never the wall clock. `OrbitalLink.ObservationJd`
+                // exists to carry the moment the geometry was observed, and both sibling call
+                // sites in ReticulumBusMeter.fs (lines 69, 102) already read it — this was the
+                // one place that substituted `DateTimeOffset.UtcNow`, silently discarding the
+                // caller's epoch and making a pure-looking verdict depend on when it was asked.
+                //
+                // That is §13 noninterference: entropy enters only through declared channels.
+                // The consequence was measured, not theorised — GT-OI-2/GT-OI-4 pinned
+                // ObservationJd = 2459580.5 (δ_max = 107ms) while the function computed δ_max at
+                // "now": 53ms on 2026-08-12 and 52ms on 2026-08-13. The assertion needs
+                // bestOneWay ≤ tightDeadline + δ, i.e. 959774 ≤ 959721 + δ, so δ = 53 passed by
+                // exactly ONE MILLISECOND and δ = 52 failed. The tests did not regress; they
+                // EXPIRED, which is why they flipped green→red with no diff in the source.
+                let delta = OrbitalAsymmetryBudget.deltaMaxMs link.LocalBody link.RemoteBody link.ObservationJd
                 BusRegime.regimeOf meter deadlineMs (int delta)
 
     /// Combine the local snapshot's view with the salon's for a society verdict about a
@@ -163,9 +174,9 @@ module GossipTelemetry =
         match orbitalLink with
         | None -> BusRegime.regimeOfTerrestrial combined deadlineMs
         | Some link ->
-            let jd = OrbitalAsymmetryBudget.unixMsToJd
-                        (System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds())
-            let delta = OrbitalAsymmetryBudget.deltaMaxMs link.LocalBody link.RemoteBody jd
+            // Same fix as `regimeOfPairOrbital` above: honour the link's epoch, not the wall
+            // clock. This is the site behind GT-OI-4's failure, the twin of GT-OI-2's.
+            let delta = OrbitalAsymmetryBudget.deltaMaxMs link.LocalBody link.RemoteBody link.ObservationJd
             BusRegime.regimeOf combined deadlineMs (int delta)
 
     /// PRUNE — bounded salon memory, monotone-safe. Only the minimum RTT per pair ever affects
