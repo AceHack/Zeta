@@ -1,0 +1,14 @@
+{
+  "id": "080cffe686871810a01300080a98bed0",
+  "at": "2026-08-13T20:29:31.235Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYD1M71087G0R0022GS3ZH",
+    "type": "bug",
+    "title": "support.js postMessage handler has no origin check — 14 org pages, matters when login lands",
+    "slug": "support-js-postmessage-handler-has-no-origin-check-14-org-pa",
+    "priority": "P2",
+    "filename": "081KZYD1M71087G0R0022GS3ZH-support-js-postmessage-handler-has-no-origin-check-14-org-pa.md"
+  }
+}
