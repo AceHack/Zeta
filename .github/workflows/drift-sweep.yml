@@ -161,7 +161,12 @@ jobs:
         # converges at MTTH ~ 1 tick, continuously. Additive pattern: each
         # new certified healer = one more stabilized axis.
         run: |
-          mapfile -t files < <(git ls-files '*.md')
+          # SCOPE FIRST. `git ls-files '*.md'` is every tracked markdown file in the repo, and the
+          # healer used to receive it whole — including paths `.markdownlint-cli2.jsonc` explicitly
+          # excludes. On 2026-08-13 that rewrote 414 preserved PR-review archives with an MD032 fix,
+          # the exact rule the config names as violating their verbatim contract. The ignore list
+          # existed and was simply never consulted on the path that could write.
+          mapfile -t files < <(git ls-files '*.md' | bun src/Core.TypeScript/hygiene/healers/md-heal-scope.ts)
           if [ "${#files[@]}" -gt 0 ]; then
             bun src/Core.TypeScript/hygiene/healers/md-fixer-certified.ts "${files[@]}"
             git add -u -- '*.md'
