@@ -1,10 +1,18 @@
 #!/usr/bin/env bun
 /**
- * tick-metrics-writer.ts — compute observe loop metrics and append to the ledger.
+ * tick-metrics-writer.ts — compute observe loop metrics and record them as a shard.
  *
- * Reads the event log (docs/observe-events/*.json), computes aggregate metrics,
- * and appends a frame to data/tick-history.json. The file IS the ledger — append-only,
- * served by GitHub Pages, fetched same-origin by the dashboard.
+ * Reads the event log (docs/observe-events/*.json), computes aggregate metrics, writes
+ * the frame as its OWN file at data/tick-shards/YYYY/MM/DD/<zetaid>.json, then regenerates
+ * the derived rollup data/tick-history.json from the whole shard set.
+ *
+ * The filename is an `Observation`-category ZetaId minted purely from the frame's content —
+ * see ./tick-shards.ts for why the universal pointer system owns this key and why the mint
+ * takes no entropy.
+ *
+ * The shards are the ledger; data/tick-history.json is a bounded, DERIVED view of them,
+ * kept at its original path and shape so the Pages dashboard (data/monitor.html) reads it
+ * unchanged. See ./tick-shards.ts for why the ledger stopped being one mutable file.
  *
  * Called by .github/workflows/tick-metrics.yml on every push to main + schedule.
  *
@@ -16,45 +24,18 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
+import {
+  buildRollup,
+  loadAllShards,
+  writeShard,
+  type MetricsFrame,
+} from "./tick-shards";
+
 const REPO_ROOT = process.cwd();
 const EVENT_DIR = join(REPO_ROOT, "docs", "observe-events");
+const SHARD_ROOT = join(REPO_ROOT, "data", "tick-shards");
 const HISTORY_FILE = join(REPO_ROOT, "data", "tick-history.json");
 const LATEST_FILE = join(REPO_ROOT, "data", "tick-latest.json");
-
-interface MetricsFrame {
-  readonly t: string; // ISO-8601 timestamp
-  readonly total_events: number;
-  readonly last_action: string;
-  readonly last_mode: string;
-  readonly last_agent: string;
-  readonly entropy_state: number;
-  readonly entropy_heat: number;
-  readonly ticks_24h: number;
-  readonly agents_active: number;
-  readonly claims_pending: number;
-}
-
-interface HistoryLedger {
-  readonly provenance: { readonly generator: string; readonly mock: boolean };
-  readonly frames: readonly MetricsFrame[];
-}
-
-function loadHistory(): HistoryLedger {
-  if (!existsSync(HISTORY_FILE)) {
-    return {
-      provenance: { generator: "tick-metrics-writer.ts", mock: false },
-      frames: [],
-    };
-  }
-  try {
-    return JSON.parse(readFileSync(HISTORY_FILE, "utf-8")) as HistoryLedger;
-  } catch {
-    return {
-      provenance: { generator: "tick-metrics-writer.ts", mock: false },
-      frames: [],
-    };
-  }
-}
 
 function readEventEnvelopes(): Array<{ id: string; at: string; by: string; action: { kind: string }; entropy?: { entropy_state: number; entropy_heat: number } }> {
   const dir = EVENT_DIR;
@@ -107,22 +88,27 @@ function computeFrame(): MetricsFrame {
 }
 
 function main(): void {
-  const history = loadHistory();
   const frame = computeFrame();
 
-  // Append the frame
-  const updated: HistoryLedger = {
-    ...history,
-    provenance: { generator: "tick-metrics-writer.ts", mock: false },
-    frames: [...history.frames, frame],
-  };
+  // The frame lands as its own file. No other writer can pick this path, so there is
+  // nothing to coordinate and nothing to conflict — the merge is set union.
+  const shardPath = writeShard(frame, SHARD_ROOT);
 
-  // Write both files
+  // The rollup is DERIVED: rebuilt from the whole shard set every run, never appended
+  // to. That is what makes a conflict on it recoverable without a hand-merge — union the
+  // shards and regenerate. It is also bounded, so the served file stops growing while the
+  // archive keeps everything.
+  const allFrames = loadAllShards(SHARD_ROOT);
+  const rollup = buildRollup(allFrames, allFrames.length);
+
   mkdirSync(join(REPO_ROOT, "data"), { recursive: true });
-  writeFileSync(HISTORY_FILE, JSON.stringify(updated, null, 2) + "\n");
+  writeFileSync(HISTORY_FILE, JSON.stringify(rollup, null, 2) + "\n");
   writeFileSync(LATEST_FILE, JSON.stringify(frame, null, 2) + "\n");
 
-  console.log(`[tick-metrics] Appended frame #${updated.frames.length}`);
+  console.log(`[tick-metrics] Wrote shard ${shardPath.replace(REPO_ROOT + "/", "")}`);
+  console.log(
+    `[tick-metrics] Rollup rebuilt: ${rollup.frames.length} of ${allFrames.length} frames served`,
+  );
   console.log(`  t: ${frame.t}`);
   console.log(`  total_events: ${frame.total_events}`);
   console.log(`  last_action: ${frame.last_action}`);

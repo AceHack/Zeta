@@ -138,7 +138,10 @@ footer code { color: var(--dim); }
 </div>
 
 <footer>
-  Data: <code>data/tick-history.json</code> (append-only observe ledger) ·
+  Data: <code>data/tick-history.json</code> (derived rollup — the ledger itself is the
+  per-write shard set under <code>data/tick-shards/YYYY/MM/DD/</code>; this file is
+  rebuilt from those shards on every run and bounded to the most recent frames, so a
+  static page still has a single URL to fetch) ·
   <code>data/drift-mtth.json</code> (drift-sweep MTTH fold, tick-indexed — the
   drift-and-heal ADR's measurement surface) ·
   <code>data/drift-genome.json</code> + <code>data/drift-evolution.json</code> +
