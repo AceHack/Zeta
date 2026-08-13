@@ -1,16 +1,28 @@
-# Tick metrics writer — appends observe loop metrics to the Pages-served ledger.
+# Tick metrics writer — records observe loop metrics for the Pages-served dashboard.
 #
 # Runs on every push to main (each merge = a potential tick event landing)
-# and on a 15-minute schedule (catch ticks that landed via direct push).
+# and on a 15-minute schedule (catch ticks that landed via another lane).
 #
-# Reads: docs/observe-events/*.json (the durable event log)
-# Writes: data/tick-history.json (the append-only metrics ledger)
+# Reads:  docs/observe-events/*.json (the durable event log)
+# Writes: data/tick-shards/YYYY/MM/DD/<HHMMSSmmm>-<hash>.json (the ledger — one file
+#         per write, so no two writers ever touch the same path)
+#         data/tick-history.json + data/tick-latest.json (DERIVED, bounded rollups)
 # Served by: GitHub Pages at /data/tick-history.json (same-origin fetch)
 #
 # The data contract (from the design handoff):
-#   Frame shape: { t, action, mode, agent, entropy_state, entropy_heat, duration_ms }
-#   The file IS the ledger. Append-only. CI never deletes frames.
-#   Pages auto-deploys on push → readers see fresh data on next fetch.
+#   Frame shape: { t, total_events, last_action, last_mode, last_agent, entropy_state,
+#                  entropy_heat, ticks_24h, agents_active, claims_pending }
+#   The SHARD SET is the ledger. Append-only. CI never deletes shards.
+#   data/tick-history.json is a pure function of the shards, regenerated each run and
+#   bounded — a static page cannot list a directory, so it needs one file to fetch.
+#
+# HOW IT LANDS ON MAIN. It does not push to main. Ruleset "CI Gate" (16134995) makes
+# `gate (required)` a required status check on main with `bypass_actors: []`, and a
+# required check is evaluated at PUSH time against the pushed tip — so a commit that has
+# never been through a check run is rejected before any check could start. That is
+# intended and is not to be weakened. Instead the frame is parked on the ungated staging
+# branch `heartbeat/tick-metrics` and flushed via a PR with squash auto-merge armed.
+# See src/Core.TypeScript/forge-host/github/flush-via-staging.ts.
 
 name: tick-metrics
 
@@ -24,7 +36,15 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write  # needs write to commit the metrics frame
+  contents: write       # push the staging branch
+  pull-requests: write  # open/arm the flush PR
+
+# One writer per lane. Without this, the push trigger and the 15-minute schedule can
+# overlap and race each other onto the same staging ref. The shard store makes the DATA
+# conflict-free; this makes the REF handling conflict-free too.
+concurrency:
+  group: tick-metrics-flush
+  cancel-in-progress: false
 
 jobs:
   append-metrics:
@@ -42,28 +62,34 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Compute and append metrics frame
-        run: bun src/Core.TypeScript/observe/tick-metrics-writer.ts
-
-      - name: Commit and push if changed
+      - name: Configure committer
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/tick-history.json data/tick-latest.json
-          if git diff --cached --quiet; then
-            echo "No new metrics to commit."
-          else
-            git commit -m "metrics: append tick frame [skip ci]"
-            # Rebase before pushing. This job runs every 15 minutes and appends to
-            # data/tick-*.json; the fleet pushes to main continuously, so a bare
-            # `git push` loses the race and fails non-fast-forward — which is exactly
-            # what happened on 8b4273ca9 (run 31428773872). Not a code failure: the
-            # frame was computed correctly and simply could not land.
-            #
-            # Rebase rather than merge: this lane only ever appends generated metric
-            # frames, so a merge commit here is pure noise. Matches lockfile-healer.yml
-            # and drift-sweep.yml, which already do this; tick-metrics was the one
-            # commit-back workflow still pushing bare.
-            git pull --rebase --autostash origin main
-            git push origin HEAD:main
-          fi
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # Start from main, then union in anything still parked on the staging branch from a
+      # previous run whose flush PR has not landed yet. Without this, a slow PR plus a
+      # fast schedule would let each run force-push over the last run's unlanded frame.
+      - name: Prepare staging working tree
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane tick-metrics
+
+      - name: Compute metrics frame and rebuild rollup
+        run: bun src/Core.TypeScript/observe/tick-metrics-writer.ts
+
+      # NOTE for future editors: the flush commit message must NOT carry `[skip ci]`.
+      # It becomes the PR head, and a CI-skip token there stops `gate` from ever running,
+      # so the required check never reports and the PR hangs unmergeable forever. The old
+      # message had `[skip ci]` because it was pushed straight at main, where it was
+      # harmless. flush-via-staging.ts refuses a skip token rather than open a dead PR.
+      - name: Flush to main via staging branch + PR
+        env:
+          # The enterprise forbids the Actions identity from creating pull requests, so a
+          # fine-grained PAT is required here (same constraint and same fallback ladder as
+          # pr-archive-on-merge.yml). Without one the frame still parks safely on the
+          # staging branch and the job reports the reason.
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane tick-metrics \
+            --paths data/tick-shards data/tick-history.json data/tick-latest.json \
+            --message "metrics: append tick frame"

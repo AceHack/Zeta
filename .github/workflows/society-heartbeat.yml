@@ -26,7 +26,8 @@ on:
   workflow_dispatch:         # manual trigger for testing
 
 permissions:
-  contents: write
+  contents: write       # push the staging branch
+  pull-requests: write  # open/arm the flush PR
 
 concurrency:
   group: society-heartbeat
@@ -53,6 +54,17 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Configure committer
+        run: |
+          git config user.name "society[bot]"
+          git config user.email "society[bot]@users.noreply.github.com"
+
+      # docs/observe-events/ is ALREADY per-event ZetaId-keyed — one file per event, no
+      # two writers on one path. There is nothing to shard here; the union of the staging
+      # branch and main is a plain G-Set union (commutative, idempotent).
+      - name: Prepare staging working tree
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane society
+
       - name: Run society evolution tick
         env:
           # Optional: set ZETA_REALTIME_URL in repo secrets to push evolution
@@ -67,21 +79,21 @@ jobs:
             --generations 1 \
             2>&1 | tail -10 || echo "[society] evolution tick failed (non-fatal)"
 
-      - name: Commit evolution event
+      # Lands via the ungated `heartbeat/society` staging branch + a squash-auto-merge PR,
+      # not a direct push: ruleset "CI Gate" requires `gate (required)` on main at push
+      # time with no bypass actors. Events are never lost if the PR is slow — they sit on
+      # the staging branch and the next tick carries them plus any new ones.
+      - name: Flush evolution events to main via staging branch + PR
+        env:
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "society[bot]"
-          git config user.email "society[bot]@users.noreply.github.com"
-          git add docs/observe-events/ || true
-          if git diff --cached --quiet; then
-            echo "[society] no new evolution events to commit"
-          else
-            git commit --no-verify -m "society: evolution tick $(date -u +%Y-%m-%dT%H:%M:%SZ)
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane society \
+            --paths docs/observe-events \
+            --message "society: evolution tick $(date -u +%Y-%m-%dT%H:%M:%SZ)
 
           Autonomous evolutionary loop: score → select → crossover → mutate → replace.
           Transport: Git (gitSalonTransport). One generation per tick.
 
           Co-Authored-By: Kiro <noreply@kiro.dev>"
-            git pull --rebase origin main
-            git push origin main
-          fi
 

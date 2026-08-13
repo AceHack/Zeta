@@ -203,6 +203,20 @@ jobs:
           #   .github/ISSUE_TEMPLATE, .github/PULL_REQUEST_TEMPLATE — text only
           #   .gitignore / .gitattributes — text only
           #   *.txt / LICENSE — text only
+          #   data/**       — generated telemetry served by Pages (tick shards + rollups,
+          #                   drift / vault ledgers). NOT a build input: no .fs / .fsproj /
+          #                   .cs / test file in the repo reads anything under data/
+          #                   (verified 2026-08-13). Added when the telemetry lanes moved
+          #                   off direct pushes to main onto flush PRs — every frame now
+          #                   arrives as a PR, and running the full F# matrix on a JSON
+          #                   frame that cannot affect it would saturate the queue for no
+          #                   signal.
+          #   demo/red/red-state.json — same: a regenerated dashboard snapshot.
+          #
+          # This narrows what the heavy STEPS run on; it does not narrow the gate. The
+          # `gate (required)` check still runs and still reports on these PRs, and every
+          # lint (semgrep included) is untouched. A diff touching code alongside data still
+          # flips code=true — the allowlist is per-file, not per-PR.
           #
           # Anything else (incl. src/**, tests/**, tools/**, *.fs, *.fsproj,
           # *.csproj, .github/workflows/**, global.json, Directory.Packages.props,
@@ -212,6 +226,8 @@ jobs:
             [ -z "${f}" ] && continue
             case "${f}" in
               docs/*|memory/*|openspec/*|.claude/*|.github/ISSUE_TEMPLATE/*|.github/PULL_REQUEST_TEMPLATE.md|.github/copilot-instructions.md)
+                ;;
+              data/*|demo/red/red-state.json)
                 ;;
               .gitignore|.gitattributes|LICENSE|*.txt)
                 ;;

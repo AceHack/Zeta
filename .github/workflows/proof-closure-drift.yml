@@ -58,7 +58,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 6
     permissions:
-      contents: write
+      contents: write       # push the staging branch
+      pull-requests: write  # open/arm the flush PR
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -66,26 +67,35 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
+      - name: Configure committer
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # red-state.json is a regenerated SNAPSHOT, not an accumulating ledger — it carries
+      # {version, generatedAtIso, commit, totals, territories} recomputed from scratch on
+      # every run. So there is nothing to shard and nothing to union semantically:
+      # latest-wins is the correct resolution, which is exactly what `prepare` gives here.
+      - name: Prepare staging working tree
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane red-state
+
       - name: Collect red state
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bun src/Core.TypeScript/hygiene/collect-red-state.ts --ci
 
-      - name: Commit if changed
+      # No `[skip ci]` in this message — it becomes the PR head, and a skip token there
+      # would stop `gate` running, leaving the PR permanently unmergeable. Direct push to
+      # main is no longer possible: ruleset "CI Gate" requires `gate (required)` at push
+      # time with no bypass actors, by design.
+      - name: Flush to main via staging branch + PR
+        env:
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          if git diff --quiet -- demo/red/red-state.json; then
-            echo "red-state unchanged; nothing to commit."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add demo/red/red-state.json
-          git commit -m "chore(red-state): refresh dashboard data [skip ci]"
-          # Rebase rather than merge: the fleet pushes to main constantly, and a
-          # merge commit here would be noise in a lane that only ever appends one
-          # regenerated file.
-          git pull --rebase --autostash origin main
-          git push origin HEAD:main
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane red-state \
+            --paths demo/red/red-state.json \
+            --message "chore(red-state): refresh dashboard data"
 
   audit:
     name: Proof-closure claim audit
