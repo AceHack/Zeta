@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { join, resolve } from "node:path";
-import { runPathForkRuntime, runRetentionRuntime } from "./run";
+import { exitCodeForResults, isPassing, runPathForkRuntime, runRetentionRuntime, type ScenarioResult } from "./run";
 import type { Qcow2RetentionExecutionStep, QemuCommand, QemuCommandExecution } from "./qemu-state";
 
 const SCRIPT = join(import.meta.dir, "run.ts");
@@ -236,6 +236,69 @@ describe("081KSNY2Z0008QG0R0008PN7RQ test-harness dispatcher", () => {
     } else {
       throw new Error("expected path-fork execution success");
     }
+  });
+
+  // --- exit-code truth rule: only "passed" is green -----------------------
+  // Regression guard for the false-green class: run.ts used to count only
+  // "failed" + "scaffolded" as non-zero, so `--all` exited 0 while silently
+  // omitting cluster-joining — scenario 5 of 5 — as "skipped".
+
+  function scenarioResult(id: ScenarioResult["id"], status: ScenarioResult["status"]): ScenarioResult {
+    return { id, status };
+  }
+
+  test("a skipped scenario is not a pass", () => {
+    expect(isPassing(scenarioResult("cluster-joining", "skipped"))).toBe(false);
+    expect(isPassing(scenarioResult("cluster-joining", "scaffolded"))).toBe(false);
+    expect(isPassing(scenarioResult("cluster-joining", "failed"))).toBe(false);
+    expect(isPassing(scenarioResult("cluster-joining", "passed"))).toBe(true);
+  });
+
+  test("exit code is 0 only when every executed scenario passed", () => {
+    expect(exitCodeForResults([scenarioResult("initial-format", "passed")])).toBe(0);
+    expect(
+      exitCodeForResults([
+        scenarioResult("initial-format", "passed"),
+        scenarioResult("boot-cluster-up", "passed"),
+        scenarioResult("reformat-with-retention", "passed"),
+        scenarioResult("reformat-from-scratch", "passed"),
+        scenarioResult("cluster-joining", "passed"),
+      ]),
+    ).toBe(0);
+  });
+
+  test("exit code is 1 when a scenario is skipped, even if all others passed", () => {
+    expect(
+      exitCodeForResults([
+        scenarioResult("initial-format", "passed"),
+        scenarioResult("boot-cluster-up", "passed"),
+        scenarioResult("reformat-with-retention", "passed"),
+        scenarioResult("reformat-from-scratch", "passed"),
+        scenarioResult("cluster-joining", "skipped"),
+      ]),
+    ).toBe(1);
+    expect(exitCodeForResults([scenarioResult("cluster-joining", "scaffolded")])).toBe(1);
+    expect(exitCodeForResults([scenarioResult("initial-format", "failed")])).toBe(1);
+  });
+
+  test("--scenario cluster-joining exits non-zero and says out loud that it did not run", () => {
+    const result = run("--scenario", "cluster-joining", "/tmp/nonexistent.iso");
+    expect(result.exitCode).toBe(1);
+    const parsed = JSON.parse(result.stdout);
+    expect(parsed.results[0].id).toBe("cluster-joining");
+    expect(parsed.results[0].status).toBe("skipped");
+    expect(parsed.results[0].message).toContain("NOT RUN");
+    expect(parsed.summary.skipped).toBe(1);
+    expect(parsed.summary.nonPassing).toBe(1);
+    expect(result.stderr).toContain("cluster-joining=skipped");
+  });
+
+  test("--dry-run still exits 0 — it claims only that the plan is well-formed", () => {
+    const result = run("--dry-run");
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toBe("");
+    const parsed = JSON.parse(result.stdout);
+    expect(parsed.targets).toHaveLength(5);
   });
 
   test("retention runtime stays failed when QEMU output does not prove retention", () => {

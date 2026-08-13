@@ -22,17 +22,20 @@
  *                 (ZFLASH_QEMU_RETENTION_EXECUTE=1 to execute)
  *               - reformat-from-scratch → runPathForkRuntime
  *                 (ZFLASH_QEMU_PATH_FORK_EXECUTE=1 to execute)
- *               - cluster-joining → skipped (multi-VM pending)
- *   --all       Run all 5 scenarios in orderIndex order; gate failures
- *               skip dependent scenarios.
+ *               - cluster-joining → skipped, which is NOT a pass (multi-VM pending)
+ *   --all       Run all 5 scenarios in orderIndex order; a non-passing
+ *               scenario skips the scenarios it gates.
  *
  * Output:
  *   JSON-structured per-scenario result to stdout
  *   Human-readable summary to stderr
  *
  * Exit codes:
- *   0  all requested runnable scenarios passed; --list/--dry-run succeeded
- *   1  one or more requested scenarios FAILED
+ *   0  --list / --dry-run succeeded (the plan is well-formed), OR every
+ *      executed scenario PASSED
+ *   1  one or more executed scenarios did not pass — failed, scaffolded, OR
+ *      skipped. A skipped scenario is a check that did not run; reporting it
+ *      as green would be a check that implies more than it tested.
  *   2  usage error OR scenario-definition invariant violation
  *
  * Per .claude/rules/rule-0-no-sh-files.md (TS-first for cross-platform DST).
@@ -794,11 +797,22 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
       return runComposingScenario(scenario, isoPath);
     case "scaffolded":
       if (scenario.id === "cluster-joining") {
+        // NOT a pass — `skipped` names what happened (nothing ran) and the
+        // exit code now says so. multi-vm.ts already has a planner and an
+        // injected executor, but its boot args carry only per-VM
+        // `-netdev user` (SLIRP NAT, no shared bridge) and
+        // executeMultiVMRuntimePlan boots the VMs serially, so an
+        // "execution" here could not observe a real join. Wiring the
+        // dispatch before that is fixed would manufacture exactly the false
+        // green this status refuses to give.
         return {
           id: "cluster-joining",
           status: "skipped",
           message:
-            "multi-VM QEMU orchestration not yet automated in CI — validates via extensions.ts design spec + operator-collaborative USB join",
+            "NOT RUN (counts as non-passing): multi-VM QEMU orchestration not yet automated — " +
+            "multi-vm.ts plans a shared-bridge topology that buildQemuSystemBootArgs does not emit, " +
+            "and executeMultiVMRuntimePlan boots the VMs serially; validates today only via " +
+            "extensions.ts design spec + operator-collaborative USB join",
         };
       }
       return reportScaffolded(scenario);
@@ -811,7 +825,33 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
   }
 }
 
+/**
+ * Exit-code truth rule: ONLY `"passed"` is green.
+ *
+ * `"skipped"` — a scenario the harness declined to run — is NOT a pass. The
+ * dispatcher used to count only `"failed"` and `"scaffolded"` as non-zero, so
+ * `--all` exited 0 while silently omitting `cluster-joining`: a full-matrix
+ * run reported green having never run a fifth of the matrix. That is the same
+ * defect class `.github/workflows/zflash-harness-lint.yml` confesses one level
+ * up ("a green check that implies more than it tested is worse than no
+ * check"). `"scaffolded"` and `"failed"` are likewise non-zero.
+ *
+ * This governs EXECUTION modes only (`--scenario` / `--all`). `--list` and
+ * `--dry-run` never execute a scenario, never produce a `ScenarioResult`, and
+ * legitimately exit 0 on a valid plan: they claim only "this plan is
+ * well-formed", which is exactly what they checked.
+ */
+export function isPassing(result: ScenarioResult): boolean {
+  return result.status === "passed";
+}
+
+/** 0 iff EVERY executed scenario passed; 1 otherwise. See {@link isPassing}. */
+export function exitCodeForResults(results: readonly ScenarioResult[]): number {
+  return results.every(isPassing) ? 0 : 1;
+}
+
 function emitResults(results: ReadonlyArray<ScenarioResult>): void {
+  const nonPassing = results.filter((r) => !isPassing(r));
   console.log(
     JSON.stringify(
       {
@@ -822,6 +862,10 @@ function emitResults(results: ReadonlyArray<ScenarioResult>): void {
           failed: results.filter((r) => r.status === "failed").length,
           scaffolded: results.filter((r) => r.status === "scaffolded").length,
           skipped: results.filter((r) => r.status === "skipped").length,
+          // Everything the exit code refuses to call green, counted where a
+          // reader of the JSON sees it — so the summary cannot imply more
+          // than the run tested either.
+          nonPassing: nonPassing.length,
         },
         results,
       },
@@ -829,6 +873,13 @@ function emitResults(results: ReadonlyArray<ScenarioResult>): void {
       2,
     ),
   );
+  if (nonPassing.length > 0) {
+    const detail = nonPassing.map((r) => `${r.id}=${r.status}`).join(", ");
+    console.error(
+      `081KSNY2Z0008QG0R0008PN7RQ: ${String(nonPassing.length)} of ${String(results.length)} scenario(s) did not pass — ${detail}. ` +
+        "A scenario that did not run is not a scenario that passed; exiting non-zero.",
+    );
+  }
 }
 
 function main(argv: ReadonlyArray<string>): number {
@@ -859,7 +910,7 @@ function main(argv: ReadonlyArray<string>): number {
       }
       const result = runScenario(parsed.scenarioId, parsed.isoPath);
       emitResults([result]);
-      return result.status === "failed" || result.status === "scaffolded" ? 1 : 0;
+      return exitCodeForResults([result]);
     }
     case "all": {
       if (!parsed.isoPath) {
@@ -868,25 +919,28 @@ function main(argv: ReadonlyArray<string>): number {
       }
       const sorted = [...SCENARIOS].sort((a, b) => a.orderIndex - b.orderIndex);
       const results: ScenarioResult[] = [];
-      const failedIds = new Set<ScenarioId>();
+      // Gating keys off NON-PASSING, not just "failed": a scenario that never
+      // ran cannot vouch for the scenarios it gates, so it skips them too.
+      const nonPassingIds = new Set<ScenarioId>();
       for (const scenario of sorted) {
-        const gatedBy = sorted.find((g) => g.gates.includes(scenario.id) && failedIds.has(g.id));
+        const gatedBy = sorted.find((g) => g.gates.includes(scenario.id) && nonPassingIds.has(g.id));
         if (gatedBy) {
           results.push({
             id: scenario.id,
             status: "skipped",
-            message: `gated by failed scenario: ${gatedBy.id}`,
+            message: `gated by non-passing scenario: ${gatedBy.id}`,
           });
+          nonPassingIds.add(scenario.id);
           continue;
         }
         const result = runScenario(scenario.id, parsed.isoPath);
         results.push(result);
-        if (result.status === "failed" || result.status === "scaffolded") {
-          failedIds.add(scenario.id);
+        if (!isPassing(result)) {
+          nonPassingIds.add(scenario.id);
         }
       }
       emitResults(results);
-      return failedIds.size > 0 ? 1 : 0;
+      return exitCodeForResults(results);
     }
   }
 }
