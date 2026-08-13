@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "generatedAtIso": "2026-08-13T06:53:34.195Z",
-  "commit": "f2282b6b",
+  "generatedAtIso": "2026-08-13T12:38:56.164Z",
+  "commit": "ea1136cd",
   "totals": {
-    "findings": 2,
+    "findings": 3,
     "bySeverity": {
-      "failing": 2
+      "failing": 3
     }
   },
   "territories": [
@@ -36,27 +36,38 @@
         {
           "id": "main-failures",
           "name": "main — recent runs",
-          "summary": "2 of the last 40 runs on main failed.",
+          "summary": "3 of the last 40 runs on main failed.",
           "findings": [
             {
-              "id": "ci:31674661492",
+              "id": "ci:31699940675",
               "title": "drift-sweep",
               "severity": "failing",
-              "locus": "999dcfb89 — 2026-08-13 06:39",
+              "locus": "9028c58b1 — 2026-08-13 12:25",
               "evidence": [
                 "drift-sweep",
-                "run id 31674661492"
+                "run id 31699940675"
               ],
               "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
             },
             {
-              "id": "ci:31671134919",
+              "id": "ci:31697560479",
               "title": "drift-sweep",
               "severity": "failing",
-              "locus": "47a3db403 — 2026-08-13 05:40",
+              "locus": "f8c0c1750 — 2026-08-13 11:54",
               "evidence": [
                 "drift-sweep",
-                "run id 31671134919"
+                "run id 31697560479"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:31695287832",
+              "title": "drift-sweep",
+              "severity": "failing",
+              "locus": "8ca070177 — 2026-08-13 11:23",
+              "evidence": [
+                "drift-sweep",
+                "run id 31695287832"
               ],
               "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
             }
