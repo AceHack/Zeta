@@ -281,6 +281,15 @@ export {
 } from "./browser-database-receipt-broadcast-peer-link";
 
 export {
+  BROWSER_DATABASE_RECEIPT_PEER_SELECTION_SCHEMA,
+  selectBrowserDatabaseReceiptPeer,
+  type BrowserDatabaseReceiptPeerSelectionFeedback,
+  type BrowserDatabaseReceiptPeerSelectionOptions,
+  type BrowserDatabaseReceiptPeerSelectionReadout,
+  type BrowserDatabaseReceiptPeerSelectionResult,
+} from "./browser-database-receipt-peer-selection";
+
+export {
   BROWSER_ZETA_DB_WAKE_RESPONSE_SCHEMA,
   BROWSER_ZETA_DB_WAKE_SCHEMA,
   handleBrowserZetaDbWakeMessage,
