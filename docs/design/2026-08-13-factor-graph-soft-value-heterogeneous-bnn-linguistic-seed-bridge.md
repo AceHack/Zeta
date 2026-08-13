@@ -49,7 +49,7 @@ genuinely unsolved item here.
 | ANTLR `.g4` ingest | `src/Core/Antlr4Import.fs` | Imports the open grammar corpus into the IR |
 | Normalised finite-support distribution over `DynamicValue` | `src/Core/SoftValue.fs` | Giry monad; `combine` is a commutative partial monoid; `snap` is the one sanctioned exit |
 | Real-weight branch ensemble | `src/Core/SoftEmu.fs` | Classical mixture, no merge, no interference |
-| **Complex**-amplitude ensemble | `src/Core/AmplitudeEmu.fs` | `merge` **sums** amplitudes; `bornProb` is `|z|²`; the only place amplitudes become probabilities |
+| **Complex**-amplitude ensemble | `src/Core/AmplitudeEmu.fs` | `merge` **sums** amplitudes; `bornProb` is `\|z\|²`; the only place amplitudes become probabilities |
 | Action alphabet as Boolean lattice; ⊤ ≠ superposition | `src/Core/ActionGrammar.fs` | The distinction is explicit and load-bearing |
 | Controller-in-superposition | `src/Core/SoftController.fs` | `inputSuperposition : Frame -> (bool[] * float) list`, **uniform priors**, with the header noting "a real controller model would weight by likelihood" |
 | Excess-correlation instrument over a permutation null | `src/Core/DecorrelationExcess.fs` | **Statistic-agnostic and observable-generic** (`'o`, `stat : 'o -> 'o -> float`); one-way verdict (convicts, never acquits) |
@@ -82,7 +82,7 @@ two, and they live on different algebras.
 |---|---|---|---|---|
 | `Gaussian` message | `{ PrecisionMean: float; Precision: float }` | **product** = add natural params | no (unnormalised); may be **improper** (`τ ≤ 0`) by design, that is the EP cavity | continuous ℝ |
 | `SoftValue` | `(DynamicValue * float) list`, weights > 0 summing to 1 | **product then renormalise** (`combine`) | yes, by invariant | finite discrete |
-| `AmplitudeEmu.Amp` | `(Frame * Complex) list` | **sum** of amplitudes for identical frames (`merge`) | only via `normalize` on `Σ|z|²` | finite discrete, complex |
+| `AmplitudeEmu.Amp` | `(Frame * Complex) list` | **sum** of amplitudes for identical frames (`merge`) | only via `normalize` on `Σ\|z\|²` | finite discrete, complex |
 
 ### 2.1 The genuine conversion (cheap — build it)
 
