@@ -1,0 +1,14 @@
+{
+  "id": "080cffea8d675010a01300087693e3d0",
+  "at": "2026-08-13T22:50:16.170Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYN3B79087G0R0014ZKE3C",
+    "type": "bug",
+    "title": "recoverAdinkraErasure uses 1 of the 3 erasures the 8,4,4 code can correct; shipped goodput is dominated by the XOR 7-of-8 fallback",
+    "slug": "recoveradinkraerasure-uses-1-of-the-3-erasures-the-8-4-4-cod",
+    "priority": "P2",
+    "filename": "081KZYN3B79087G0R0014ZKE3C-recoveradinkraerasure-uses-1-of-the-3-erasures-the-8-4-4-cod.md"
+  }
+}

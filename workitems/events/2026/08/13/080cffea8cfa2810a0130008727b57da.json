@@ -1,0 +1,14 @@
+{
+  "id": "080cffea8cfa2810a0130008727b57da",
+  "at": "2026-08-13T22:50:12.677Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYN37T4087G0R00181THA4",
+    "type": "bug",
+    "title": "AIMD loss estimator resets its window on every NACK, so it measures 1-per-packets-since-last-NACK and saturates at MAX_GAP above ~1% loss",
+    "slug": "aimd-loss-estimator-resets-its-window-on-every-nack-so-it-me",
+    "priority": "P2",
+    "filename": "081KZYN37T4087G0R00181THA4-aimd-loss-estimator-resets-its-window-on-every-nack-so-it-me.md"
+  }
+}
