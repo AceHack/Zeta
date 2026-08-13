@@ -1,0 +1,17 @@
+[
+  {
+    "module": "AxiomAudit",
+    "reason": "Diagnostic script, not a library module: its whole body is `#print axioms` commands run by hand (`lake env lean AxiomAudit.lean`). Importing it into a root would emit audit output on every build.",
+    "workitem": ""
+  },
+  {
+    "module": "CheckUInt64",
+    "reason": "Standalone bitvector-decision check run on demand (`Std.Tactic.BVDecide`); slow and not a dependency of any proof. Kept out of the default build deliberately.",
+    "workitem": ""
+  },
+  {
+    "module": "ImaginaryStack.ToyModel",
+    "reason": "NAMESPACE COLLISION, verified 2026-08-13: importing it alongside ImaginaryStack.ErasureDistance fails with `environment already contains 'F'` \u2014 both declare a top-level `F`. Wiring it in requires namespacing one of them, a real edit rather than a config change. NOTE: it is NOT unchecked \u2014 .github/workflows/lean-proof.yml type-checks it with a dedicated `lake env lean ImaginaryStack/ToyModel.lean` step.",
+    "workitem": "081KZY5BADC087G0R00309CMXY"
+  }
+]

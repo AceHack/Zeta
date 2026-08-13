@@ -112,6 +112,28 @@ jobs:
         working-directory: src/Core.Lean4
         run: lake exe cache get
 
+      - name: Set up bun (for the orphan guard)
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+        with:
+          bun-version: latest
+
+      - name: Guard — no Lean module may escape the build silently
+        working-directory: .
+        # Runs BEFORE the build so a failure names the cause rather than showing a
+        # green build over unchecked proofs. Three times a .lean file has sat outside
+        # `lake build` because nothing imported it, and each time the escaped file was
+        # broken (ImaginaryStack 2026-08-10: compile error + a `sorry` on a false
+        # theorem; MenoBraidedRMatrix and GenSelfApplication 2026-08-13). Deliberate
+        # exclusions stay legal — they go in src/Core.Lean4/ORPHANS.json with a reason.
+        run: bun src/Core.TypeScript/hygiene/lean-orphan-modules.ts
+
+      # 16 per-file `lake env lean <module>.lean` steps were removed here 2026-08-13.
+      # Every one of them re-type-checked a module that `lake build` below already
+      # compiles, now that Gen/Privacy/Safety are declared libs and in defaultTargets.
+      # They were hand-maintained coverage standing in for the build graph — the graph
+      # does it structurally, and `lean-orphan-modules.ts` above now proves nothing has
+      # slipped out of it. ImaginaryStack/ToyModel keeps its own step: a namespace
+      # collision with ErasureDistance keeps it out of the graph deliberately.
       - name: Build Lean package root
         # Lean4.lean imports the machine-checked codec modules
         # (DynamicValue, JsonCodec, CborCodec, YamlCodec) and the
@@ -121,133 +143,12 @@ jobs:
         working-directory: src/Core.Lean4
         run: lake build
 
-      - name: Type-check DbspChainRule.lean
-        # Silence on success = pass. Any error / warning fails the
-        # build per Lean's exit code. Per the verification-registry
-        # rows for chain_rule_proposition_3_2 + Dop_LTI_commute:
-        # this is the gate that converts both rows from A-grade-
-        # hand-run to A-grade-with-CI.
-        working-directory: src/Core.Lean4
-        run: lake env lean Lean4/DbspChainRule.lean
-
       - name: Type-check ImaginaryStack/ToyModel.lean
         # The Adinkra-as-generator / bulk-from-boundary toy lemma. Its `sorry`
         # placeholders were discharged 2026-06-05; this step keeps it honest
         # (type-checks the proof on every PR that touches src/Core.Lean4/**).
         working-directory: src/Core.Lean4
         run: lake env lean ImaginaryStack/ToyModel.lean
-
-      - name: Type-check ImaginaryStack/ErasureDistance.lean
-        # The erasure-correction principle (distance ⇒ any <d erasures correctable)
-        # and its 16/12/5 specialisation — the QECC strengthening on top of ToyModel.
-        working-directory: src/Core.Lean4
-        run: lake env lean ImaginaryStack/ErasureDistance.lean
-
-      - name: Type-check ImaginaryStack/PhaseClockErasure.lean
-        # Added 2026-08-10. This file was in NEITHER list, and `ImaginaryStack` had no
-        # root module and was not a default target — so it was unbuildable, unimportable,
-        # and invisible to every check. It held a hard compile error AND a `sorry` on a
-        # FALSE theorem (`xorshift_mod17_in_rsCode`, since withdrawn: the 16 values
-        # interpolate to degree 15, not < 12). Both surviving theorems verified sorry-free.
-        working-directory: src/Core.Lean4
-        run: lake env lean ImaginaryStack/PhaseClockErasure.lean
-
-      - name: Type-check Lean4/SchemaEvolution.lean
-        # Added 2026-08-10 (previously unaudited). `disjoint_deltas_commute` carries a
-        # DECLARED research-target `sorry`; type-checking keeps the statements well-typed
-        # and the audit below gates the two closed theorems.
-        working-directory: src/Core.Lean4
-        run: lake env lean Lean4/SchemaEvolution.lean
-
-      - name: Type-check Lean4/FinDataProcessing.lean
-        # Added 2026-08-10 (previously unaudited). Two declarations carry `sorryAx` by the
-        # file's own honest accounting; the audit below gates the 13 that do not.
-        working-directory: src/Core.Lean4
-        run: lake env lean Lean4/FinDataProcessing.lean
-
-      - name: Type-check Privacy/IdentityForcesPrivacy.lean
-        # The privacy-from-identity necessity theorem (Leibniz identity-of-indiscernibles): under public
-        # convergence, persistent distinction must live in private state. Pure Lean (no Mathlib).
-        working-directory: src/Core.Lean4
-        run: lake env lean Privacy/IdentityForcesPrivacy.lean
-
-      - name: Type-check Privacy/UnboundedNeedsInfinitePrivacy.lean
-        # 081KT7YW00008QG0R001DGZQKM rung-3 (Soraya-routed): the pigeonhole/unboundedness theorem — a deterministic
-        # no-external-input system on a FINITE state space must repeat, so genuinely unbounded novelty
-        # (an injective orbit) forces an INFINITE state space; with a finite converged commons, that
-        # infinite differentiation must live in PRIVATE state. The honest DST↔proof boundary: DST can
-        # only fail to refute unboundedness; Lean proves "unbounded ⇒ infinite private state".
-        working-directory: src/Core.Lean4
-        run: lake env lean Privacy/UnboundedNeedsInfinitePrivacy.lean
-
-      - name: Type-check Safety/ChildFloor.lean
-        # The child-floor / inspect-before-execute invariant (Bridge D execution layer, Soraya-routed
-        # to Lean): a DENIED effect is never executed at ANY RunWork depth — an Agent cannot get a
-        # gated/child-floor-class effect executed by *proposing* it (source ≠ authorization, structural).
-        # Cross-checked empirically by tests/Tests.FSharp/Formal/ChildFloorCrossVerify.Tests.fs (BP-16).
-        working-directory: src/Core.Lean4
-        run: lake env lean Safety/ChildFloor.lean
-
-      - name: Type-check Safety/Bifurcation.lean
-        # Bifurcation / split-brain reconciliation CONVERGENCE (Face-1, Soraya-routed to Lean as a
-        # corollary of the proven CRDT/G-Set floor): a join-semilattice merge is order-independent +
-        # absorbing, so two split cells converge to the same state. The CONSERVATION face (partition /
-        # no-double-spend / divvy-liveness) is the interleaving property in src/Core.TLA/specs/Bifurcation.tla.
-        working-directory: src/Core.Lean4
-        run: lake env lean Safety/Bifurcation.lean
-
-      - name: Type-check Safety/NonRegisterCollapse.lean
-        # Non-register-collapse (Facet-2, algebraic; workitem 081KTFFFQ1C — long stuck at §B, unblocked
-        # by Aaron's weight-free reframe + Soraya-routed): under commons convergence (the proven CRDT
-        # join) two travelers' distinct STANDING registers survive the merge untouched — consensus
-        # cannot collapse two registers into one. A standalone corollary of the same Leibniz-
-        # indiscernibles argument as Privacy/IdentityForcesPrivacy.private_is_persistent_locus. The
-        # CONSERVATION/no-capture face (no foreign permanent weighting) is src/Core.TLA/specs/NonRegisterCollapse.tla.
-        working-directory: src/Core.Lean4
-        run: lake env lean Safety/NonRegisterCollapse.lean
-
-      - name: Type-check Lean4/GenGenFixpoint.lean
-        # Homoiconic code generator fixpoint: gen(gen) = gen. Stated and proved
-        # sorry-free except for the self-application quine.
-        working-directory: src/Core.Lean4
-        run: lake env lean Lean4/GenGenFixpoint.lean
-
-      - name: Type-check Lean4/CayleyDicksonDoublyEven.lean
-        # Cayley-Dickson doubling preserves the doubly-even self-dual invariant.
-        # sorry-free.
-        working-directory: src/Core.Lean4
-        run: lake env lean Lean4/CayleyDicksonDoublyEven.lean
-
-      - name: Type-check Lean4/BridgeFunctor.lean
-        # Functorial relationship between CD doubling and geometric reflection.
-        # sorry-free.
-        working-directory: src/Core.Lean4
-        run: lake env lean Lean4/BridgeFunctor.lean
-
-      - name: Type-check Lean4/CanonicalizerCorrect.lean
-        # ZetaIrCanonicalizer algebraic fusions (Mul-Mul, Add-Add, Mul-Add-Mul,
-        # Mul-Add-Add, identity/zero elimination, XRotXor) preserve denotation
-        # over UInt64. sorry-free.
-        working-directory: src/Core.Lean4
-        run: lake env lean Lean4/CanonicalizerCorrect.lean
-
-      - name: Type-check Lean4/CostRecurrence.lean
-        # Consolidate cost spike step 5 (Soraya routing): the universal recurrence
-        # T(n)=n(n-1)/2 (the induction Z3 cannot do, companion to the #8952 ground
-        # envelope) + the lax-monoidal cost coherence cell over the (min,+) tropical
-        # semiring. sorry-free.
-        working-directory: src/Core.Lean4
-        run: lake env lean Lean4/CostRecurrence.lean
-
-      - name: Type-check Lean4/LandauerFloor.lean
-        # Landauer floor as a metered cost contract (Kiro -> Soraya, 2026-07-03):
-        # the two-ledger (state/heat) model formalizing entropy-tracker.ts —
-        # second law (total non-decreasing), Landauer floor (heat grows by
-        # exactly k per measure), Bennett reversibility (Adj-only = zero heat),
-        # and the predictive advantage (larger erasure window => less excess).
-        # Core-only (no Mathlib import), Nat arithmetic. sorry-free.
-        working-directory: src/Core.Lean4
-        run: lake env lean Lean4/LandauerFloor.lean
 
       - name: Guard — Lean research proofs are sorry-free (axiom audit)
         # `lake env lean` only WARNS on `sorry` (exit 0), so type-check alone

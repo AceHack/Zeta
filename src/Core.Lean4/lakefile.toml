@@ -6,7 +6,12 @@ keywords = ["math"]
 # reached it and `import ImaginaryStack.*` could not resolve. PhaseClockErasure.lean
 # therefore sat outside every check — and turned out to hold a hard compile error
 # AND a `sorry` on a false theorem, neither of which anything could see.
-defaultTargets = ["Lean4", "ImaginaryStack"]
+# Gen / Privacy / Safety joined 2026-08-13 (081KZY5BADC087G0R00309CMXY). They had no
+# lean_lib and no root module at all, so `lake build` never reached ANY of them — six
+# proof modules including the child-floor safety invariant and the split-brain
+# reconciliation convergence proof sat outside every check. Same failure as
+# ImaginaryStack below. `lean-orphan-modules.ts` now fails the build on a silent orphan.
+defaultTargets = ["Lean4", "ImaginaryStack", "Gen", "Privacy", "Safety"]
 
 [leanOptions]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`
@@ -24,3 +29,12 @@ name = "Lean4"
 
 [[lean_lib]]
 name = "ImaginaryStack"
+
+[[lean_lib]]
+name = "Gen"
+
+[[lean_lib]]
+name = "Privacy"
+
+[[lean_lib]]
+name = "Safety"
