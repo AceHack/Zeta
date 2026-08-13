@@ -55,7 +55,7 @@ module Meno =
         MenoArrow (fun zsetAC -> 
             // Z-linear (Kronecker) tensor of morphisms: for each basis pair (a,c) of weight w,
             // emit w*(f{a} (x) g{c}) and sum -- the bilinear extension of (a (x) c) |-> f(a) (x) g(c).
-            // Assumes f,g Z-linear (true for arr/id/compose). NB the Cartesian (x) makes the category
+            // Assumes f,g Z-linear (true for arr/id/compose). NB the Kronecker (x) makes the category
             // SYMMETRIC monoidal (Mod_Z) -- so braid below is the swap, not a genuine braid.
             let mutable acc : ZSet<'b * 'd> = ZSet.empty
             let span = zsetAC.AsSpan()
@@ -67,7 +67,7 @@ module Meno =
 
     /// Braiding map c_{A,B} : A(x)B -> B(x)A (worldlines crossing).
     /// **HONEST TIER: this is the SYMMETRIC braiding (the swap), sigma^2=id -- NOT a genuine braid.**
-    /// The Cartesian tensor above induces symmetric-monoidal (Mod_Z) structure, for which the swap is
+    /// The Kronecker tensor above induces symmetric-monoidal (Mod_Z) structure, for which the swap is
     /// the correct braiding. A genuine braided category (sigma^2 != id, the Braid.fs crossing) needs an
     /// R-matrix / Yang-Baxter operator as the braiding -- a separate build. Do NOT FsCheck coherence
     /// against this swap and call it "braided": symmetric => hexagons hold trivially (false-green).
@@ -82,10 +82,11 @@ module Meno =
             ZSet.map f zsetA
         )
 
-    // --- Monoidal coherence data (associator + unitors) — needed to STATE the hexagons; a Cartesian ⊗
+    // --- Monoidal coherence data (associator + unitors) — needed to STATE the hexagons; a Kronecker ⊗
     //     is strict-coherent up to these canonical tuple-rearrangement isos (pentagon/triangle hold). ---
 
-    /// Monoidal unit I — the ZSet on the single-element `unit` type (the terminal object of the Cartesian ⊗).
+    /// Monoidal unit I — the ZSet on the single-element `unit` type. NOT terminal: Hom(Z[X], Z) = Z^X is
+      /// not a singleton (the terminal object of Mod_Z is the zero module, `ZSet.empty`).
     let unitObject : ZSet<unit> = ZSet.singleton () 1L
 
     /// Associator α : (A⊗B)⊗C → A⊗(B⊗C) — reassociate left-nested to right-nested tuples (natural iso).

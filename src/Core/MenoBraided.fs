@@ -3,8 +3,14 @@ namespace Zeta.Core
 /// **`MenoBraided` — the GENUINE (non-symmetric) braiding for Meno: the conjugation-rack Yang–Baxter
 /// operator, the ℤ-linear shadow of Braid's Artin action (shadow*, per Soraya's spec 2026-07-31).**
 ///
-/// `Meno.tensor` makes the category SYMMETRIC monoidal (a Cartesian/Kronecker ⊗ is forced-symmetric by a
-/// theorem), so `Meno.braid` (the tuple swap) is a *correct symmetric* braiding — σ²=id. It is NOT
+/// `Meno.tensor` equips the category with a symmetric structure via the tuple swap — but NOT because a
+/// theorem forces it. CORRECTED 2026-08-13: `⊗_Kronecker` is **not cartesian**, so Mathlib's
+/// `Subsingleton (SymmetricCategory C)` (which requires `CartesianMonoidalCategory`) does not apply and
+/// the category admits many braidings. Two independent refutations: (1) `⊗` is not the categorical
+/// product — in Mod_ℤ that is the biproduct `⊕ = ℤ[X ⊔ Y]` of rank |X|+|Y|, while `Meno.tensor` gives
+/// `ℤ[X × Y]` of rank |X|·|Y| (|X|=|Y|=1: 1 vs 2). (2) `unitObject` is not terminal —
+/// `Hom(ℤ[X], ℤ) = ℤ^X`, a singleton only when X is empty. See `Meno.fs:34`, which already said this
+/// ("CD category, NOT cartesian") while four other comments in the same file contradicted it., so `Meno.braid` (the tuple swap) is a *correct symmetric* braiding — σ²=id. It is NOT
 /// "unearned braiding"; it is genuinely the symmetry. A genuine BRAID needs EXTRA DATA the tensor cannot
 /// supply: a Yang–Baxter operator R with **R²≠id**. Over the free-group-word object V = ℤ[Fₙ]
 /// (`Braid.Word`), the integer / float-free / byte-lockable choice is the **conjugation-rack** solution
