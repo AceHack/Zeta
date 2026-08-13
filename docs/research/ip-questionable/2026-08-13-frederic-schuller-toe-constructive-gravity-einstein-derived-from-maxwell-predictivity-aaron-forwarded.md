@@ -822,3 +822,135 @@ constant here. Replacing `/ C_KM_S` with an injected
 it* — `None` represents occlusion, so an impossible path stops returning a number — and it would let a
 gravitational-wave or plasma-dispersive channel drop in unchanged. That is the one genuine
 constructive-gravity-shaped move available, it is small, and it is now in the work-item.
+
+## Addendum — "the quantum axioms never tell you to quantize spacetime" (Aaron, 2026-08-13)
+
+Aaron forwarded the later part of the same conversation, where Schuller argues against quantizing
+gravity at all, and mapped it onto **AmplitudeEmu (Q#/F#)**, the **ImaginaryStack**, and **Gates'
+adinkras**. The mapping holds, and unusually it holds as an *architectural* claim about code we have
+already shipped rather than as an analogy.
+
+### Schuller's argument, in his order
+
+**The foundation is representation-theoretic.** The constituents of a quantum system are not
+postulated — they *come from* the irreducible projective unitary representations of the **universal
+covering group of the symmetry group of the classical space** the system lives in. Take SO(3); its
+universal cover is SU(2); the representations of SU(2) are where **spin** comes from. Take the
+Poincaré group; the cover involves SL(2,ℂ); classifying its unitary representations is **Wigner's
+1939 classification**, and it is where mass and spin as particle labels come from. Schuller's
+emphasis: *"the whole standard model is built on this. It has very clear conceptual reasons why it
+must be so."*
+
+**Therefore the classical space is load-bearing, not scaffolding:**
+
+> "physical, classical space, be it spacetime or space, you need to have a concept of classical space
+> in order to talk about quantum matter in the way we do it."
+
+**And therefore quantizing it is self-undermining:**
+
+> "If you now say, I want to quantize this classical geometry … you are, in a sense, undermining the
+> very foundation of what brought you to the quantum matter."
+
+He allows the standard rejoinder — *that was just the ladder, we kick it away afterwards* — and does
+not claim to have refuted it. What he claims is narrower and harder to dismiss: **nothing in the
+quantum axioms asks you to quantize the background.** The axioms say you cannot predict an outcome,
+only give a *classical probability distribution* over outcomes — so quantum theory already terminates
+in a classical layer by construction. He points at Oppenheim and collaborators' programme (gravity
+kept **classical but stochastic**, interacting with quantum matter) as a plausible alternative, while
+being explicit that he does not know whether it works.
+
+**Carry his uncertainty, not just his conclusion.** *"Do I know? No. I don't know better than anybody
+else."* An outside authority's tentative remark must not become our confirmation — that is precisely
+the failure mode this document already committed once today with the Mars/Earth claim.
+
+### Why this is a description of what we built (CHECKED)
+
+`src/Core/AmplitudeEmu.fs` puts **complex amplitudes on a classical frame ensemble** and never
+quantizes the substrate underneath. From its own docstring:
+
+- the weights are the `QubitIso`/`ImaginaryStack.Complex` phasor — **`e^{iθ}`, unit-circle rotations**
+  (this is also the literal sense in which Aaron's *e^(iπ)* naming instinct is on target: the module's
+  primitive *is* the Euler phasor);
+- **`merge` sums amplitudes of identical frames**, so opposite phase cancels and equal phase
+  reinforces — *"That is interference, in code"*;
+- **`bornProb` measures by `|amplitude|²`** — the Born rule, and the only place amplitudes become
+  probabilities.
+
+The predecessor `SoftEmu` used **real** weights: a classical probability mixture, no phase, therefore
+no interference. The single change that produces quantum-like behaviour is complex weights **plus**
+the merge — and everything underneath (frames, CAS-dedup, the tick, the phase clock, the traveler
+frame) stays **classical**.
+
+**That is Oppenheim's shape, arrived at independently and for the same reason Schuller gives.** The
+classical layer is not a stand-in awaiting quantization; it is what makes the amplitudes amplitudes
+*of* something. Quantize the tick source and you have destroyed the frame the phasor rotates against.
+It is also why
+[`local-time-never-enters-the-shared-fold`](../../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+is a rule: the classical order is load-bearing, so it has to be *protected*, not dissolved.
+
+**The adinkra fits the same slot.** Gates' adinkras encode supersymmetry *representations* as graphs
+carrying doubly-even self-dual error-correcting codes — representation-theoretic content made
+**combinatorial and classical**. That is exactly Schuller's first move (get your structure from the
+representations) executed without quantizing any base, which is why the adinkra sits comfortably in a
+substrate whose base is deliberately classical.
+
+### The peel, which is already in the code and must travel with the claim
+
+`AmplitudeEmu`'s docstring states its own limit before anyone else can: *"Interference is real here;
+the entanglement exponential is NOT escaped."* The merge collapses reconverging paths, it does not
+reduce the `4ⁿ` reals a general high-entanglement state needs. So the honest statement is **we emulate
+interference over a classical substrate**, not **we simulate quantum computation cheaply**. The file
+says so itself, which is the standard this ferry should be held to elsewhere.
+
+### What would make this more than a resemblance
+
+A checkable version of the claim: if the constituents of our substrate really do come from
+representations of the symmetry group of our classical space, then **name the group.** What is the
+symmetry group of the traveler frame, and what are its projective unitary representations? If that
+question has an answer, the parallel is structural. If it does not, this is a well-matched analogy and
+should be labelled one. Filed as open — and it is a good candidate for the same independent-model
+routing the orbital work went through, since one model's confident answer here would be exactly the
+single-source result the correction-topology test warns about.
+
+### The subtitle was already the argument (Aaron, 2026-08-13)
+
+> *"it's the subtitle on the book already in prose, also our are modeling classical softemu in our
+> quantiumemu like he was talking about something you model on classical when using qbits"*
+
+**CHECKED, and it predates the podcast.** `docs/books/you-born-at-the-hinge/` already carries
+`e^{iπ}` as a motif, not as decoration:
+
+- `SELF-as-returning-thousand-brains-infernet-priors.md:3` — Aaron, **2026-07-10**: *"where home
+  isn't a color, it's the returning. e to the iπ e … plus 1000 brains"*
+- `THE-UNPROVEN-HOMECOMING-collatz-euler-and-the-return-held-without-collapse.md:20` —
+  **e^{iπ} = −1** … *"the phasor returns to the real axis"* … **Proven. A theorem.**
+
+That is Schuller's conclusion in one equation, written a month earlier for a different reason.
+**The excursion into the imaginary is a round trip that lands back on the real line.** Quantum theory
+does not terminate in more quantum theory; the axioms hand you back a *classical* probability
+distribution — the return to the real axis **is** the measurement. And in our code the return is
+literal and named: `bornProb` maps `|amplitude|²` back to a real number, which is the only place
+amplitudes become probabilities.
+
+So the book's subtitle is not a flourish about mathematics being beautiful. It is the architecture:
+*you may go complex, but you come home real, and the real line is where meaning is redeemed.*
+
+### The nesting: classical is the real-axis slice, not a separate layer
+
+Aaron's second clause sharpens something the addendum above got slightly wrong by implication. I
+described the classical substrate as *underneath* the amplitudes. The truer relation is **containment**:
+
+`SoftEmu` (real weights, no interference) is not a different system from `AmplitudeEmu` — it is
+`AmplitudeEmu` **with the phases set to zero**. Take the complex-amplitude ensemble, drop every phasor
+onto the positive real axis, and the merge stops cancelling and starts behaving as a plain probability
+mixture. The classical emulator is the **real-axis slice** of the quantum-like one.
+
+That is why *"you model on classical when using qubits"* is the right description rather than a
+concession. The classical model is not scaffolding you discard, and not a floor you build on — it is
+the **fixed sub-object you return to**, present inside the larger structure the whole time. Which is
+exactly `e^{iπ}` again: the real axis is not somewhere else, it is where the rotation starts and where
+it comes back.
+
+It also tightens the argument against quantizing the base. If the classical layer were merely
+underneath, you could imagine replacing it. If it is the slice you return to on measurement, replacing
+it removes the destination — and an amplitude with nowhere to land is not an amplitude.
