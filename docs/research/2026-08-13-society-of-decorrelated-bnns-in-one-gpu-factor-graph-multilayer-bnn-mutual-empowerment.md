@@ -133,3 +133,103 @@ the structural sources of correlation are maximal and only the measured sources 
    sizing number for the single-GPU target.
 3. Whether the precision-ablation score and Klyubin-style channel-capacity empowerment coincide, and
    under what conditions.
+
+---
+
+## Addendum 2 — allopatric speciation is the right anchor, and it comes with a number (Aaron, 2026-08-13)
+
+On the Delay-Decorrelation reading above — that separating societies across a slow link closes the
+`LoopholeFlags.Locality` gap co-residence opens, so slow links buy independence — Aaron:
+
+> this is very true, this is like different contenents in darwins theory of speciecs or whatever, this
+> is where speciation will come from for digital entities i think
+
+This is a **Beacon anchor**, not a flourish, and naming it correctly gets us something the metaphor
+alone would not: an existing quantitative theory with a threshold in it.
+
+### The mapping
+
+The mechanism is **allopatric speciation** — divergence caused by geographic isolation reducing gene
+flow (Darwin 1859 on the Galápagos; formalised by Mayr 1942, *Systematics and the Origin of Species*,
+where the biological species concept and geographic speciation are set out). Parapatric and sympatric
+speciation are the contrasting cases: divergence under partial or zero spatial separation.
+
+| Population genetics | Here |
+|---|---|
+| Geographic barrier (ocean, mountain range) | High-latency / low-bandwidth link |
+| Gene flow (migration rate) | Message-passing rate between societies |
+| Reduced gene flow → drift → divergence | Fewer active edges → decorrelation → distinct lineages |
+| Panmictic population (free interbreeding) | Fully-connected `SocietyNetwork`, one GPU |
+| Subdivided population with limited migration | `SparseSocietyNetwork` across a slow link |
+
+Note the mapping is *structural*, not decorative: `AttentionRouter` literally sets the migration rate,
+because `ActiveEdges` per round **is** the gene-flow term.
+
+### The number this buys — and it is testable
+
+Population genetics has a classical threshold: **one migrant per generation** (`Nm ≈ 1`) is roughly
+enough to prevent divergence by drift between subpopulations — below it they diverge, above it they
+homogenise (Sewall Wright 1931, *Evolution in Mendelian Populations*; the `F_ST ≈ 1/(1+4Nm)` relation).
+That is a *sharp, low* threshold: it takes remarkably little migration to keep populations identical.
+
+**CONJECTURE, and the most valuable thing in this addendum:** if the mapping holds, there is a
+critical inter-society message rate below which societies decorrelate and above which they converge to
+one effective agent — and the rule's surprising smallness predicts that the boundary sits at a
+*low* edge-activity rate, i.e. that **it is easy to accidentally homogenise a society by over-connecting
+it.** Not proven, not verified, and the transfer of a population-genetics constant to a belief-propagation
+network is exactly the sort of physics-as-metaphor the metering test exists to catch. But it is
+**falsifiable in-tree**: sweep the router's edge-activity rate against `DecorrelationExcess` /
+`mutualEmpowermentScore` and look for a knee. If there is no knee, the analogy is decorative and should
+be dropped.
+
+### Why this matters beyond taxonomy — Wright's shifting balance
+
+Wright's *shifting balance theory* (1932) argues that a population **subdivided with limited
+migration** explores a rugged fitness landscape better than one large freely-mixing population: demes
+drift to different local optima, and occasional migration spreads the winners. If that transfers, it is
+the population-genetics argument for **exactly this architecture** — a society of decorrelated agents
+over one large model — and it predicts the optimum at **intermediate** migration: neither isolated
+(no sharing) nor fully connected (no diversity). Which is what `AttentionRouter`'s per-round
+sparsification already does, arrived at from the other direction.
+
+Honest caveat: shifting balance is **contested** in biology — Coyne, Barton & Turelli (1997) argue the
+conditions for it are rarely met in nature. That does not weaken it here, and the reason is worth
+stating: we are not claiming it describes biology, we are borrowing a *mechanism design*. Its
+biological contestedness is about whether nature satisfies its preconditions; a substrate can be
+**built** to satisfy them. But the contest must be cited, or we would be leaning on a settled-sounding
+result that is not settled.
+
+### What it means for the loophole reading
+
+If speciation is the frame, then `LoopholeFlags.Locality` closing under delay is not merely a
+statistical convenience — it is the **isolating mechanism**. And the accompanying honesty holds: the
+CHSH oracle convicts correlation and never certifies independence (`AntiSybil.fs:166`), so "these
+societies have speciated" is never provable, only "no pair convicted at margin ε over n rounds." The
+biological frame agrees with that asymmetry, incidentally — species boundaries are diagnosed by failure
+to interbreed, not proven by success at not doing so.
+
+### Anchors (Beacon)
+
+- Darwin, *On the Origin of Species* (1859) — geographic isolation and divergence.
+- **Mayr, *Systematics and the Origin of Species* (1942)** — the canonical formalisation of allopatric
+  speciation; the correct citation for "different continents", better than Darwin alone.
+- **Wright, *Evolution in Mendelian Populations* (Genetics, 1931)** — `F_ST`, drift, the one-migrant-per-generation
+  result. This is the anchor carrying the number.
+- Wright (1932) — shifting balance; **Coyne, Barton & Turelli, *A critique of Sewall Wright's shifting
+  balance theory of evolution* (Evolution, 1997)** — the contest, cited so the claim is not laundered.
+
+**All four CITED FROM STANDING KNOWLEDGE, not re-opened and page-checked.** Per the checked-anchor
+doctrine that bar is not met; the `F_ST ≈ 1/(1+4Nm)` form in particular should be verified against
+Wright before anything is built on it.
+
+### Open
+
+1. Sweep edge-activity rate vs `DecorrelationExcess` and look for the knee. Settles whether the
+   analogy is load-bearing or decorative. **This is the cheap experiment and it should be run first.**
+2. Does `mutualEmpowermentScore` peak at intermediate connectivity? Shifting balance predicts yes;
+   the body's finding (redundant agents score zero) predicts the same from the other end. Two
+   independent routes to one prediction is worth testing.
+3. If societies do speciate, what is the *reunion* semantics when the link improves? The repo already
+   holds the neutral-fact discipline for this (`dual-use-detection-is-neutral-oracle-decides.md`:
+   REUNION vs SYBIL from one mechanism) — speciation gives it a second honest reading, and merging two
+   diverged societies is a real operation someone will need.
