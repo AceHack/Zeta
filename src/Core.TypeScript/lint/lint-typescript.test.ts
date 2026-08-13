@@ -9,7 +9,11 @@
 // The load-bearing test is the NEGATIVE one: the guard must never be able to
 // swallow a genuine missing-module error.
 import { describe, expect, it } from "bun:test";
-import { missingInstalledDeps, packageBaseName } from "./lint-typescript.ts";
+import {
+  missingInstalledDeps,
+  packageBaseName,
+  TYPESCRIPT_COMPILER_COMMAND,
+} from "./lint-typescript.ts";
 
 const tsc2307 = (specifier: string) =>
   `src/foo.ts(6,51): error TS2307: Cannot find module '${specifier}' or its corresponding type declarations.`;
@@ -23,6 +27,18 @@ describe("packageBaseName", () => {
   it("strips subpaths from unscoped packages", () => {
     expect(packageBaseName("playwright")).toBe("playwright");
     expect(packageBaseName("playwright/test")).toBe("playwright");
+  });
+});
+
+describe("TypeScript compiler runtime", () => {
+  it("executes the checked-in compiler under Bun without the Node-shebang launcher", () => {
+    expect(TYPESCRIPT_COMPILER_COMMAND).toEqual([
+      "bun",
+      "node_modules/typescript/bin/tsc",
+      "--noEmit",
+      "-p",
+      "tsconfig.json",
+    ]);
   });
 });
 

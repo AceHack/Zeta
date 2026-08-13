@@ -104,8 +104,18 @@ interface Step {
   readonly cmd: readonly [string, ...string[]];
 }
 
+// `bun x tsc` follows TypeScript's Node shebang. Execute the checked-in compiler
+// entry point with Bun directly so type checking stays on the repository runtime.
+export const TYPESCRIPT_COMPILER_COMMAND: readonly [string, ...string[]] = [
+  "bun",
+  "node_modules/typescript/bin/tsc",
+  "--noEmit",
+  "-p",
+  "tsconfig.json",
+];
+
 const STEPS: readonly Step[] = [
-  { label: "TypeScript type check: tsc", cmd: ["bun", "x", "tsc", "--noEmit", "-p", "tsconfig.json"] },
+  { label: "TypeScript type check: tsc", cmd: TYPESCRIPT_COMPILER_COMMAND },
 ];
 
 function run(step: Step): boolean {
