@@ -14,12 +14,12 @@ open global.Xunit
 
 // ═══════════════════════════════════════════════════════════════════
 // TLC model-checker runner — shells out to `java -cp tla2tools.jar
-// tlc2.TLC <SpecName>` for each `tools/tla/specs/*.tla` we want to
+// tlc2.TLC <SpecName>` for each `src/Core.TLA/specs/*.tla` we want to
 // validate. Treats spec-check output as a test assertion: parse
 // error or invariant violation → fail.
 //
 // Gracefully no-ops when the toolchain isn't configured (no `java`
-// on PATH, no `tools/tla/tla2tools.jar`) so local dev machines and
+// on PATH, no `src/Core.TLA/tla2tools.jar`) so local dev machines and
 // CI-runners that haven't invoked `tools/setup/install.sh` still
 // get a green `dotnet test`. Matches the AlloyRunnerTests shape.
 //
@@ -38,7 +38,7 @@ open global.Xunit
 /// xunit collection name — any test type decorated with
 /// `[<Collection("TLC")>]` runs serially with every other member
 /// of the collection. Use this for every TLC test type that reads
-/// or writes files under `tools/tla/specs/`.
+/// or writes files under `src/Core.TLA/specs/`.
 [<CollectionDefinition("TLC", DisableParallelization = true)>]
 type TlcTestCollection () = class end
 
@@ -69,6 +69,21 @@ let private specsPath = Path.Combine(repoRoot, "src", "Core.TLA", "specs")
 // F# module-level xUnit facts can still be scheduled concurrently despite the
 // collection annotation above. Keep the external JVM boundary serialized too.
 let private tlcProcessGate = new SemaphoreSlim(1, 1)
+
+
+let private tlcJvmArguments (isMacArm64: bool) (errorFilePath: string) =
+    [ "-Xms64m"
+      "-Xmx1g"
+      "-XX:+UseSerialGC"
+      if isMacArm64 then "-XX:-UseTypeSpeculation"
+      $"-XX:ErrorFile={errorFilePath}" ]
+
+
+let private currentPlatformIsMacArm64 () =
+    System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
+        System.Runtime.InteropServices.OSPlatform.OSX)
+    && System.Runtime.InteropServices.RuntimeInformation.OSArchitecture =
+       System.Runtime.InteropServices.Architecture.Arm64
 
 
 let private which (exe: string) : string option =
@@ -139,13 +154,12 @@ let private runTlcUnlocked (specName: string) : int * string =
     let psi = ProcessStartInfo()
     psi.FileName <- "java"
     psi.WorkingDirectory <- specsPath
-    // These test models are small. Bound each JVM and use the simplest
-    // collector: OpenJDK 26 on macOS/aarch64 has crashed in both G1 remset
-    // rebuild and ParallelGC promotion while running this suite.
-    psi.ArgumentList.Add "-Xms64m"
-    psi.ArgumentList.Add "-Xmx1g"
-    psi.ArgumentList.Add "-XX:+UseSerialGC"
-    psi.ArgumentList.Add $"-XX:ErrorFile={errorFilePath}"
+    // OpenJDK 26 on macOS/aarch64 has crashed in G1, ParallelGC, and C2
+    // type-speculation cleanup while running this suite. Keep the bounded
+    // SerialGC policy and disable only the observed C2 optimization there;
+    // C1-only is materially slower on the largest model.
+    for argument in tlcJvmArguments (currentPlatformIsMacArm64 ()) errorFilePath do
+        psi.ArgumentList.Add argument
     psi.ArgumentList.Add "-cp"
     psi.ArgumentList.Add tlaJarPath
     psi.ArgumentList.Add "tlc2.TLC"
@@ -177,6 +191,23 @@ let private runTlc (specName: string) : int * string =
     tlcProcessGate.Wait()
     try runTlcUnlocked specName
     finally tlcProcessGate.Release() |> ignore
+
+
+[<Fact>]
+let ``TLC JVM policy excludes C2 type speculation only on macOS arm64`` () =
+    tlcJvmArguments true "error.log"
+    |> should equal
+        [ "-Xms64m"
+          "-Xmx1g"
+          "-XX:+UseSerialGC"
+          "-XX:-UseTypeSpeculation"
+          "-XX:ErrorFile=error.log" ]
+    tlcJvmArguments false "error.log"
+    |> should equal
+        [ "-Xms64m"
+          "-Xmx1g"
+          "-XX:+UseSerialGC"
+          "-XX:ErrorFile=error.log" ]
 
 
 /// The smoke test — proves Java + tla2tools.jar + `.tla`/`.cfg`
@@ -285,7 +316,7 @@ let ``TLC validates InfoTheoreticSharder`` () =
 let ``TLC validates RecursiveCountingLFP`` () =
     // Proves the Gupta-Mumick-Subrahmanian counting claim at every
     // tick of the LFP unfolding: closure[k] = paths[k] for every key.
-    // Uses the successor-chain body model from tools/tla/specs/RecursiveCountingLFP.tla.
+    // Uses the successor-chain body model from src/Core.TLA/specs/RecursiveCountingLFP.tla.
     assertSpecValid "RecursiveCountingLFP"
 
 

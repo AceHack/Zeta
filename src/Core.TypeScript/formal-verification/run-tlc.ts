@@ -1,27 +1,23 @@
 #!/usr/bin/env bun
 // run-tlc.ts — TS wrapper for TLA+/TLC model-checker invocation.
 //
-// Phase 1 of 081KQNJ500008QG0R003EKJ8B5: replace `tests/Tests.FSharp/Formal/
-// Tlc.Runner.Tests.fs` with a direct shell wrapper. The F# version
-// was an xunit-test wrapper around shelling out to TLC; no F#
-// operator-algebra logic was involved. This TS file is the natural
-// shape: detect toolchain, shell to TLC, parse output, exit
-// accordingly.
+// Source-owned command-line sibling of the xUnit TLC runner: detects the
+// toolchain, invokes TLC, parses output, and returns orthogonal exit codes.
 //
 // Usage:
-//   bun tools/formal-verification/run-tlc.ts <SpecName>
-//     Runs TLC on tools/tla/specs/<SpecName>.tla with the matching
+//   bun src/Core.TypeScript/formal-verification/run-tlc.ts <SpecName>
+//     Runs TLC on src/Core.TLA/specs/<SpecName>.tla with the matching
 //     .cfg.
 //
-//   bun tools/formal-verification/run-tlc.ts --all
+//   bun src/Core.TypeScript/formal-verification/run-tlc.ts --all
 //     Run TLC on every spec with a committed .cfg file under
-//     tools/tla/specs/. Treats a missing paired .tla file as drift.
+//     src/Core.TLA/specs/. Treats a missing paired .tla file as drift.
 //     Per-failure stdout-tail printed for CI triage.
 //
-//   bun tools/formal-verification/run-tlc.ts --list
+//   bun src/Core.TypeScript/formal-verification/run-tlc.ts --list
 //     List every .cfg-backed spec that --all will run.
 //
-//   bun tools/formal-verification/run-tlc.ts --check-toolchain
+//   bun src/Core.TypeScript/formal-verification/run-tlc.ts --check-toolchain
 //     Useful for CI gating + dev-local diagnostics.
 //
 // Exit codes (orthogonal — each code has one semantic):
@@ -38,7 +34,7 @@
 //     spec is runnable by TLC, so --all discovers cfg-backed specs.
 //   - Trace-file cleanup matches the F# version's behavior:
 //     <SpecName>_TTrace_*.tla, <SpecName>_TTrace_*.bin, MC*.tla
-//   - working directory set to tools/tla/specs so TLC resolves
+//   - working directory set to src/Core.TLA/specs so TLC resolves
 //     module names by file lookup
 
 import { readdirSync, statSync, unlinkSync } from "node:fs";
@@ -143,6 +139,23 @@ interface Toolchain {
   readonly javaPath: string;
 }
 
+/**
+ * Keep TLC inside the same bounded JVM policy as the .NET test runner.
+ * OpenJDK 26 on macOS/aarch64 has crashed in C2 type-speculation cleanup
+ * after a model completed, so that one platform retains C2 but disables the
+ * failing optimization instead of paying the much larger C1-only cost.
+ */
+export function tlcJvmArguments(
+  platform: NodeJS.Platform = process.platform,
+  architecture: string = process.arch,
+): readonly string[] {
+  const arguments_ = ["-Xms64m", "-Xmx1g", "-XX:+UseSerialGC"];
+  if (platform === "darwin" && architecture === "arm64") {
+    arguments_.push("-XX:-UseTypeSpeculation");
+  }
+  return arguments_;
+}
+
 function checkToolchain(root: string): Toolchain | null {
   const tlaJarPath = join(root, "src", "Core.TLA", "tla2tools.jar");
   const specsPath = join(root, "src", "Core.TLA", "specs");
@@ -199,7 +212,7 @@ function runTlc(toolchain: Toolchain, specName: string): TlcResult {
   for (let attempt = 1; attempt <= MAX_JVM_ATTEMPTS; attempt++) {
     const result = spawnSync(
       toolchain.javaPath,
-      ["-cp", toolchain.tlaJarPath, "tlc2.TLC", specName],
+      [...tlcJvmArguments(), "-cp", toolchain.tlaJarPath, "tlc2.TLC", specName],
       {
         cwd: toolchain.specsPath,
         encoding: "utf8",
@@ -325,7 +338,7 @@ function runAll(toolchain: Toolchain): ExitCode {
   if (failureDetails.length > 0) {
     process.stderr.write("\n--- failure details ---\n");
     for (const fd of failureDetails) {
-      process.stderr.write(`\n[${fd.spec}] (rerun with: bun tools/formal-verification/run-tlc.ts ${fd.spec})\n`);
+      process.stderr.write(`\n[${fd.spec}] (rerun with: bun src/Core.TypeScript/formal-verification/run-tlc.ts ${fd.spec})\n`);
       const tail = fd.result.stdout.split("\n").slice(-30).join("\n");
       process.stderr.write(tail);
       if (!tail.endsWith("\n")) process.stderr.write("\n");
@@ -349,10 +362,10 @@ function main(argv: readonly string[]): ExitCode {
 
   if (argv.length === 0 || argv[0] === "--help" || argv[0] === "-h") {
     process.stdout.write("Usage:\n");
-    process.stdout.write("  bun tools/formal-verification/run-tlc.ts <SpecName>\n");
-    process.stdout.write("  bun tools/formal-verification/run-tlc.ts --all\n");
-    process.stdout.write("  bun tools/formal-verification/run-tlc.ts --list\n");
-    process.stdout.write("  bun tools/formal-verification/run-tlc.ts --check-toolchain\n");
+    process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlc.ts <SpecName>\n");
+    process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlc.ts --all\n");
+    process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlc.ts --list\n");
+    process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlc.ts --check-toolchain\n");
     return 0;
   }
 
