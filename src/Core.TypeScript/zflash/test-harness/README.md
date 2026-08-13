@@ -29,10 +29,10 @@ assumptions include both x86_64 and ARM64/aarch64 hardware.
 
 | #   | Scenario                                  | Status                 | Composes-with                                                                                                    |
 | --- | ----------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| 1   | Initial format (USB-bake from zero)       | composes-with-existing | `tools/ci/qemu-boot-test.ts` + `tools/ci/audit-installer-iso-content.ts`                                         |
-| 2   | Initial boot + agent start path           | composes-with-existing | `tools/ci/qemu-full-install-test.ts` (081KSGS9H0008QG0R0011BC7T2 Slice 1); K8s/ArgoCD health is external integration coverage        |
-| 3   | Reformat WITH key + selection retention   | scaffolded             | 081KSE6WT0008QG0R003WZAQKV Touch ID + 081KSKBP80008QG0R003AX2A69 USB-bound creds; same cluster/node identity retained (requires QEMU state preservation) |
-| 4   | Reformat from scratch (wipe + fresh keys) | scaffolded             | 081KSKBP80008QG0R003AX2A69 USB-bound creds + 081KSNY2Z0008QG0R0011XCT94 PQ git-crypt; new cluster/node identity (requires test-harness path-fork)        |
+| 1   | Initial format (USB-bake from zero)       | composes-with-existing | `src/Core.TypeScript/ci/qemu-boot-test.ts` + `src/Core.TypeScript/ci/audit-installer-iso-content.ts`                                         |
+| 2   | Initial boot + agent start path           | composes-with-existing | `src/Core.TypeScript/ci/qemu-full-install-test.ts` (081KSGS9H0008QG0R0011BC7T2 Slice 1); K8s/ArgoCD health is external integration coverage        |
+| 3   | Reformat WITH key + selection retention   | composes-with-existing             | 081KSE6WT0008QG0R003WZAQKV Touch ID + 081KSKBP80008QG0R003AX2A69 USB-bound creds; same cluster/node identity retained (requires QEMU state preservation) |
+| 4   | Reformat from scratch (wipe + fresh keys) | composes-with-existing             | 081KSKBP80008QG0R003AX2A69 USB-bound creds + 081KSNY2Z0008QG0R0011XCT94 PQ git-crypt; new cluster/node identity (requires test-harness path-fork)        |
 | 5   | Cluster joining (new node)                | scaffolded             | 081KSGS9H0008QG0R0011BC7T2 cluster-auto-join + 081KSKBP80008QG0R003ETGS01 cred-picker (requires multi-VM QEMU orchestration)                           |
 
 ## CLI
@@ -153,11 +153,11 @@ When a scenario transitions to composes-with-existing:
 
 ## Composes-with substrate
 
-- `tools/ci/qemu-full-install-test.ts` <!-- STALE-REF: ../../../../tools/ci/qemu-full-install-test.ts --> — 081KSGS9H0008QG0R0011BC7T2 Slice 1 starter; existing QEMU full-install harness
-- `tools/ci/qemu-boot-test.ts` <!-- STALE-REF: ../../../../tools/ci/qemu-boot-test.ts --> — cascade #5 boot smoke-test
+- `src/Core.TypeScript/ci/qemu-full-install-test.ts` <!-- STALE-REF: ../../../../src/Core.TypeScript/ci/qemu-full-install-test.ts --> — 081KSGS9H0008QG0R0011BC7T2 Slice 1 starter; existing QEMU full-install harness
+- `src/Core.TypeScript/ci/qemu-boot-test.ts` <!-- STALE-REF: ../../../../src/Core.TypeScript/ci/qemu-boot-test.ts --> — cascade #5 boot smoke-test
 - [`qemu-state.ts`](qemu-state.ts) — scenario 3 qcow2 disk bootstrap + snapshot/restart command planner
 - [`path-fork.ts`](path-fork.ts) — scenario 4 migrate-vs-fresh path-fork command planner
-- `tools/ci/audit-installer-iso-content.ts` <!-- STALE-REF: ../../../../tools/ci/audit-installer-iso-content.ts --> — cascade #4 ISO content audit
+- `src/Core.TypeScript/ci/audit-installer-iso-content.ts` <!-- STALE-REF: ../../../../src/Core.TypeScript/ci/audit-installer-iso-content.ts --> — cascade #4 ISO content audit
 - [`src/Core.TypeScript/zflash/cli.ts`](../cli.ts) — the zflash CLI under test
 - [`src/Core.TypeScript/zflash/lib.ts`](../lib.ts) — library substrate
 - `docs/runbooks/zflash-end-to-end.md` <!-- STALE-REF: ../../../../docs/runbooks/zflash-end-to-end.md --> — operator-facing runbook

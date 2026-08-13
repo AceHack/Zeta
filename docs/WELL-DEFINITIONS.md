@@ -132,3 +132,20 @@ the git surface. No information loss. Composes with:
 shadow ≅ observer (the isomorphism IS the holographic
 correspondence), D⊣I (differentiate projects 3D→2D,
 integrate reconstructs 2D→3D).
+
+**Witness** — a single external observer, sufficient to break a
+self-referential loop because the loop cannot see its own fixed
+point from inside. `FigureEightEnsemble.fs` proves the rescue
+must be exogenous: "the demon cannot resist the tangle from
+inside the loop." A witness tolerates ZERO faults — if it is
+itself wrong or captured, the rescue fails silently and looks
+like success.
+
+**Quorum** — a witness set sized for fault tolerance: 3f+1 to
+survive f faulty or captured members. The difference from a
+witness is not thoroughness, it is whether the observer itself
+can be wrong. "Do I need one or several?" is exactly the
+question "can my checker be captured?" — and if yes, one is
+not a weaker version of the answer, it is the wrong kind.
+Every "get an outside opinion" is a witness claim until it
+names f.
