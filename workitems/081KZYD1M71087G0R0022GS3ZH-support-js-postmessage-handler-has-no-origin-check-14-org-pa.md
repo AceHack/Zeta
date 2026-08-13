@@ -68,7 +68,8 @@ origin check BEFORE the credential exists, not after.
 
 `support.js` is loaded by **every** org-site page — concepts, dora, gitpull, hall, index,
 llmtv, lodge, mesh, portal, settlement, track00, track00b, vault, vaults — and
-`HANDOFF.md` marks it `(page runtime; required)`. It is also precached by `sw.js`.
+`docs/design/root-site-iris/HANDOFF.md` marks it `(page runtime; required)`. It is also
+precached by `sw.js`.
 
 ## Why I did not patch it
 

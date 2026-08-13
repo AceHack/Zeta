@@ -1129,26 +1129,26 @@ and page-checked — attribution reliable, any paraphrase of content unverified 
 volume confirms it. The checked-anchor bar (`anchor-to-human-prior-art.md`) is therefore *not yet met*;
 recorded so the debt is visible rather than implied.
 
-- **P. Kenneth Seidelmann (ed.) (1992) — _Explanatory Supplement to the Astronomical Almanac_
+- **P. Kenneth Seidelmann (ed.) (1992) — *Explanatory Supplement to the Astronomical Almanac*
   (University Science Books)** — the standard reduction from **orbital elements to ecliptic
   coordinates**: the `R_z(Ω) R_x(i) R_z(ω)` perifocal rotation sequence, and the frame / time-scale /
   epoch conventions a golden vector must record to mean anything. This is what makes "the code skipped
   Ω and ω" a **defect against a published standard** rather than a modelling preference (defect D1).
-- **Carl D. Murray & Stanley F. Dermott (1999) — _Solar System Dynamics_ (Cambridge University Press),
+- **Carl D. Murray & Stanley F. Dermott (1999) — *Solar System Dynamics* (Cambridge University Press),
   ch. 2** — the **two-body Kepler element → state transformation** that both the shipped F# and the
   independent TypeScript checker implement. Also the anchor for its honest *limit*: mean elements are
   a two-body approximation, which is why a fix cannot be certified against a model of the same class
   that produced the defect.
 - **Ryan S. Park, William M. Folkner, James G. Williams & Dale H. Boggs (2021) — "The JPL Planetary
-  and Lunar Ephemerides DE440 and DE441" (_Astronomical Journal_ 161:105)** — the **golden-vector
+  and Lunar Ephemerides DE440 and DE441" (*Astronomical Journal* 161:105)** — the **golden-vector
   source**. JPL Horizons serves states numerically integrated from DE440/441, not from mean elements.
   This is the citation for why "obtain Horizons vectors" is a real blocking prerequisite and not
   procedural caution: it names what *ephemeris truth* means here and who computed it.
   API surface: <https://ssd-api.jpl.nasa.gov/doc/horizons.html>.
 - **Robert D. Reasenberg, Irwin I. Shapiro et al. (1979) — "Viking relativity experiment:
-  verification of signal retardation by solar gravity" (_Astrophysical Journal Letters_ 234:L219)** —
+  verification of signal retardation by solar gravity" (*Astrophysical Journal Letters* 234:L219)** —
   the measured **magnitude of the Shapiro delay** on an Earth–Mars path near solar conjunction
   (~0.1% agreement with GR). This is the anchor that lets "Shapiro delay is not the dominant error"
   be a **metered** claim rather than an assumption — it supplies the number the orbital-asymmetry
   term is compared against. Underlying effect: **Irwin I. Shapiro (1964) — "Fourth Test of General
-  Relativity" (_Physical Review Letters_ 13:789)**.
+  Relativity" (*Physical Review Letters* 13:789)**.
