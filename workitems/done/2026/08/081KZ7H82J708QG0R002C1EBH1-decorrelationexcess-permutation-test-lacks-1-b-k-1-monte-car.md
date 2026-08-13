@@ -1,7 +1,7 @@
 ---
 id: 081KZ7H82J708QG0R002C1EBH1
 type: bug
-state: backlog
+state: closed
 priority: P1
 slug: decorrelationexcess-permutation-test-lacks-1-b-k-1-monte-car
 title: "DecorrelationExcess permutation test lacks (1+b)/(k+1) Monte-Carlo correction — false-conviction rate exceeds delta at small k"
@@ -99,3 +99,14 @@ OWN null = `a_i` re-paired with random B's); rewired `DecorrelationExcessFusion.
 against its per-slot null instead of the shared pooled null. Added a falsifier reproducing Soraya's exact
 witness. MI paths untouched (clean). **Rides the same verify-gate: NOT auto-merged; Soraya's cross-check
 backs the approach; needs Aaron's sign-off to land.**
+
+## CLOSED 2026-08-13 (Otto verify-then-claim audit)
+
+Start-gate audit found the entire DoD landed on main while the row sat in
+backlog state: #10052 (calibrated `(1+b)/(k+1)` p-value, `permutationPValue` +
+`classifyByPValue`, merged with Aaron sign-off) and #10065 (per-slot null
+`permutationNullPerSlot`, Claim-3 heterogeneous-pooling fix, Soraya-verified).
+Verified against source 2026-08-13: all five fusion consumers classify via
+`classifyByPValue`; `fuse` uses the per-slot null; the k∈{1,5,19,50} falsifier
+and Soraya's exact 30-pair witness are in the suite and green (full run
+2026-08-13, 5,665 tests). Nothing remains; the row was stale, not the fix.
