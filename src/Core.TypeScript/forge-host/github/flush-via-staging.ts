@@ -5,7 +5,10 @@
  * WHY THIS EXISTS
  * ---------------
  * Ruleset "CI Gate" (16134995) makes `gate (required)` a required status check on
- * `~DEFAULT_BRANCH` with `bypass_actors: []`. A required status check is evaluated at
+ * `~DEFAULT_BRANCH`. (As of 2026-08-13 its `bypass_actors` is no longer empty: repo admins
+ * may bypass on PR MERGE only — never on direct push — added because a PR touching
+ * `.github/workflows/**` never gets `gate` scheduled and was otherwise unmergeable. The
+ * direct-push path this module exists to avoid is still fully gated.) A required status check is evaluated at
  * PUSH time against the pushed tip, so a commit that has never been through a check
  * run is rejected before any check could start:
  *
