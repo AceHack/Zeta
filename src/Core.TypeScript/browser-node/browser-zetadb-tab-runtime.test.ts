@@ -20,6 +20,10 @@ import {
   createZetaDbBrowserDatabaseReceiptArchive,
   type BrowserDatabaseReceiptArchivePort,
 } from "./browser-database-receipt-archive";
+import type {
+  BrowserDatabaseReceiptHandoffReadout,
+  BrowserDatabaseReceiptHandoffRuntime,
+} from "./browser-database-receipt-handoff";
 import { startBrowserZetaDbTabRuntime, type BrowserZetaDbTabExecutor } from "./browser-zetadb-tab-runtime";
 
 const limits = { maxDeltas: 8, maxEntries: 16, maxCheckpointBytes: 16 * 1024 };
@@ -66,10 +70,12 @@ function start(
   executorId = "tab-a",
   outbox: BrowserDatabaseIntentOutboxPort = createOutbox(),
   receiptArchive: BrowserDatabaseReceiptArchivePort = createReceiptArchive(),
+  receiptHandoff?: BrowserDatabaseReceiptHandoffRuntime,
 ) {
   const observed: ZetaDbTickReadout[] = [];
   const published: { readonly databaseNodeId: string; readonly revision: number }[] = [];
   const receipts: BrowserDatabaseExecutionReceipt[] = [];
+  const handoffs: BrowserDatabaseReceiptHandoffReadout[] = [];
   const started = startBrowserZetaDbTabRuntime({
     databaseNodeId: "browser/global",
     executorId,
@@ -77,12 +83,17 @@ function start(
     admission,
     outbox,
     receiptArchive,
+    ...(receiptHandoff === undefined ? {} : { receiptHandoff }),
     execute,
     observe: (value) => {
       observed.push(value);
       return { ok: true };
     },
     observeOutbox: () => ({ ok: true }),
+    observeReceiptHandoff: (readout) => {
+      handoffs.push(readout);
+      return { ok: true };
+    },
     publishInvalidation: (databaseNodeId, revision) => {
       published.push({ databaseNodeId, revision });
       return { ok: true };
@@ -94,7 +105,7 @@ function start(
   });
   expect(started.ok).toBe(true);
   if (!started.ok) throw new Error(started.feedback.detail);
-  return { runtime: started.value, observed, published, receipts };
+  return { runtime: started.value, observed, published, receipts, handoffs };
 }
 
 describe("browser ZetaDB tab runtime", () => {
@@ -192,6 +203,53 @@ describe("browser ZetaDB tab runtime", () => {
         deltaCount: 1,
       },
     ]);
+  });
+
+  test("runs bounded receipt maintenance around a mutation and exposes its latest readout", async () => {
+    const idle: BrowserDatabaseReceiptHandoffReadout = {
+      schema: "zeta.browser-database-receipt-handoff-readout.v1",
+      status: "idle",
+      databaseNodeId: "browser/global",
+      archiveNodeId: "browser/global:receipts",
+      targetNodeId: "browser/global:durable",
+      archiveRevision: 0,
+      retainedReceipts: 0,
+      releasedReceipts: 0,
+      receiptPayloadBytes: 0,
+      highWaterSequence: null,
+      contentHash: null,
+      disposition: null,
+      feedback: null,
+    };
+    let latest = idle;
+    let calls = 0;
+    const receiptHandoff: BrowserDatabaseReceiptHandoffRuntime = {
+      handoff: () => {
+        calls += 1;
+        latest = calls < 2 ? idle : { ...idle, status: "complete", releasedReceipts: 1, highWaterSequence: 0 };
+        return Promise.resolve({ ok: true, value: latest });
+      },
+      read: () => latest,
+    };
+    const { runtime, handoffs } = start(
+      (request) => Promise.resolve({ ok: true, value: readout(request, 1) }),
+      createInMemoryBrowserExecutionAdmission(),
+      "tab-a",
+      createOutbox(),
+      createReceiptArchive(),
+      receiptHandoff,
+    );
+
+    expect(
+      await runtime.tick([{ eventId: "event/handoff", rowKey: "game/score", payload: "12", weight: 1 }]),
+    ).toMatchObject({ ok: true, value: { revision: 1 } });
+    expect(calls).toBe(2);
+    expect(handoffs.map((readout) => readout.status)).toEqual(["idle", "complete"]);
+    expect(runtime.readReceiptHandoff()).toMatchObject({ status: "complete", releasedReceipts: 1 });
+    expect(await runtime.handoffReceipts()).toMatchObject({
+      ok: true,
+      value: { status: "complete", releasedReceipts: 1 },
+    });
   });
 
   test("serializes peer rereads, coalesces stale revisions, and never republishes them", async () => {

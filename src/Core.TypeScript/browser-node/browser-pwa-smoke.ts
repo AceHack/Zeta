@@ -7,6 +7,7 @@ import { chromium, type Browser, type Page } from "playwright";
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { BrowserServiceWorkerRegistrationReadout } from "./browser-service-worker-registration";
 import type { BrowserTabTransportReadout } from "./browser-tab-channel-selector";
+import type { BrowserDatabaseReceiptHandoffReadout } from "./browser-database-receipt-handoff";
 import { buildBrowserPwaAssets } from "./browser-pwa-build";
 import type { DarkHallDatabaseReadout } from "../darkhall-ui/darkhall-database-readout";
 import type { DarkHallBrowserDatabaseControllerReadout } from "../darkhall-ui/darkhall-browser-database-controller";
@@ -14,13 +15,14 @@ import type { DarkHallBrowserControllerInputReadout } from "../darkhall-ui/darkh
 import type { DarkHallBrowserDatabaseRowSelectionReadout } from "../darkhall-ui/darkhall-browser-database-row-selection";
 import type { DarkHallBrowserRowCommandEditorReadout } from "../darkhall-ui/darkhall-browser-row-command-editor";
 
-export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v6" as const;
+export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v7" as const;
 
 interface BrowserPwaPageReadout {
   readonly registration: BrowserServiceWorkerRegistrationReadout;
   readonly transport: BrowserTabTransportReadout;
   readonly host: BrowserLifecycleHostReadout;
   readonly database: DarkHallDatabaseReadout;
+  readonly receiptHandoff: BrowserDatabaseReceiptHandoffReadout | null;
   readonly editor: DarkHallBrowserRowCommandEditorReadout;
   readonly selection: DarkHallBrowserDatabaseRowSelectionReadout;
   readonly input: DarkHallBrowserControllerInputReadout;
@@ -43,11 +45,18 @@ interface BrowserPwaPageGlobal {
             readonly transport: BrowserTabTransportReadout;
             readonly host: BrowserLifecycleHostReadout;
             readonly database: DarkHallDatabaseReadout;
+            readonly receiptHandoff: BrowserDatabaseReceiptHandoffReadout | null;
             readonly controller: DarkHallBrowserDatabaseControllerReadout | null;
             readonly editor: DarkHallBrowserRowCommandEditorReadout;
             readonly selection: DarkHallBrowserDatabaseRowSelectionReadout;
             readonly input: DarkHallBrowserControllerInputReadout;
           };
+          dispatchController(command: {
+            readonly kind: "emit";
+            readonly eventId: string;
+            readonly rowKey: string;
+            readonly payload: string;
+          }): Promise<{ readonly ok: boolean; readonly feedback?: { readonly detail: string } }>;
           stop(): unknown;
         };
       }
@@ -70,6 +79,8 @@ export interface BrowserPwaSmokeTranscript {
     readonly writerSelection: DarkHallBrowserDatabaseRowSelectionReadout;
     readonly peerAfterWrite: BrowserPwaPageReadout;
     readonly freshPage: BrowserPwaPageReadout;
+    readonly completedReceiptHandoff: BrowserDatabaseReceiptHandoffReadout;
+    readonly successorReceiptHandoff: BrowserDatabaseReceiptHandoffReadout;
   };
   readonly controllerInput: {
     readonly pointer: DarkHallBrowserControllerInputReadout;
@@ -142,6 +153,17 @@ async function waitForDatabase(page: Page, revision: number, payload: string): P
   );
 }
 
+async function waitForDatabaseRevision(page: Page, revision: number): Promise<void> {
+  await page.waitForFunction(
+    (expectedRevision) => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      return started?.ok === true && started.value.read().database.revision === expectedRevision;
+    },
+    revision,
+    { timeout: timeoutMs },
+  );
+}
+
 async function waitForDatabaseWithoutScore(page: Page, revision: number): Promise<void> {
   await page.waitForFunction(
     (expectedRevision) => {
@@ -151,6 +173,41 @@ async function waitForDatabaseWithoutScore(page: Page, revision: number): Promis
       return database.revision === expectedRevision && !database.rows.some((row) => row.rowKey === "game/score");
     },
     revision,
+    { timeout: timeoutMs },
+  );
+}
+
+async function completeReceiptGeneration(page: Page, firstRevision: number, finalRevision: number): Promise<void> {
+  await page.evaluate(
+    async ({ first, final }: { readonly first: number; readonly final: number }) => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok !== true) throw new Error("The page did not expose its active runtime.");
+      for (let revision = first; revision <= final; revision += 1) {
+        const result = await started.value.dispatchController({
+          kind: "emit",
+          eventId: `browser-smoke/receipt-handoff/${revision.toString()}`,
+          rowKey: "game/score",
+          payload: "9000",
+        });
+        if (!result.ok)
+          throw new Error(result.feedback?.detail ?? `Receipt generation failed at ${revision.toString()}.`);
+      }
+    },
+    { first: firstRevision, final: finalRevision },
+  );
+  await page.waitForFunction(
+    (revision) => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok !== true) return false;
+      const readout = started.value.read();
+      return (
+        readout.database.revision === revision &&
+        readout.receiptHandoff?.status === "complete" &&
+        readout.receiptHandoff.releasedReceipts === revision &&
+        readout.receiptHandoff.retainedReceipts === 0
+      );
+    },
+    finalRevision,
     { timeout: timeoutMs },
   );
 }
@@ -277,6 +334,7 @@ async function observe(page: Page, pageName: string): Promise<BrowserPwaPageRead
           transport: readout.transport,
           host: readout.host,
           database: readout.database,
+          receiptHandoff: readout.receiptHandoff,
           editor: readout.editor,
           selection: readout.selection,
           input: readout.input,
@@ -428,12 +486,31 @@ function validateHydration(transcript: BrowserPwaSmokeTranscript, failures: stri
   }
 }
 
+function validateReceiptHandoff(transcript: BrowserPwaSmokeTranscript, failures: string[]): void {
+  const completed = transcript.database.completedReceiptHandoff;
+  if (
+    completed.status !== "complete" ||
+    completed.releasedReceipts !== 64 ||
+    completed.retainedReceipts !== 0 ||
+    completed.highWaterSequence !== 63 ||
+    completed.disposition !== "stored" ||
+    !/^blake3:[0-9a-f]{64}$/.test(completed.contentHash ?? "")
+  ) {
+    failures.push(`the browser did not complete one content-addressed receipt handoff: ${JSON.stringify(completed)}`);
+  }
+  const successor = transcript.database.successorReceiptHandoff;
+  if (successor.status !== "idle" || successor.retainedReceipts !== 0 || successor.releasedReceipts !== 0) {
+    failures.push(`a successor page did not observe an empty local receipt archive: ${JSON.stringify(successor)}`);
+  }
+}
+
 function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
   const failures: string[] = [];
   validateStartingPages(transcript, failures);
   validateContinuityAndInput(transcript, failures);
   validateDatabaseCommands(transcript, failures);
   validateHydration(transcript, failures);
+  validateReceiptHandoff(transcript, failures);
   return failures;
 }
 
@@ -591,6 +668,34 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
     await waitForDatabase(pageC, 3, "9000");
     const freshPage = await observe(pageC, "fresh page C");
 
+    stage = "complete one bounded receipt generation";
+    await completeReceiptGeneration(pageC, 4, 64);
+    const completedReceiptHandoff = await pageC.evaluate(() => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok !== true) throw new Error("Page C did not expose its active runtime.");
+      const readout = started.value.read().receiptHandoff;
+      if (readout === null) throw new Error("Page C did not expose receipt handoff pressure.");
+      return readout;
+    });
+    await pageC.evaluate(() => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok === true) started.value.stop();
+    });
+    await pageC.close();
+
+    stage = "verify receipt archive reclamation from a successor page";
+    const pageD = await context.newPage();
+    await pageD.goto(`${baseUrl}?tab=tab-d&sequence=400`);
+    await waitForReady(pageD);
+    await waitForDatabaseRevision(pageD, 64);
+    const successorReceiptHandoff = await pageD.evaluate(() => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok !== true) throw new Error("Page D did not expose its active runtime.");
+      const readout = started.value.read().receiptHandoff;
+      if (readout === null) throw new Error("Page D did not expose receipt handoff pressure.");
+      return readout;
+    });
+
     const transcript: BrowserPwaSmokeTranscript = {
       schema: BROWSER_PWA_SMOKE_SCHEMA,
       beforeStop: { pageA: beforeA, pageB: beforeB },
@@ -602,12 +707,14 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
         writerSelection: writerState.selection,
         peerAfterWrite,
         freshPage,
+        completedReceiptHandoff,
+        successorReceiptHandoff,
       },
       controllerInput: { pointer: pointerInput, keyboard: keyboardInput },
     };
     const failures = validate(transcript);
     if (failures.length > 0) return failed("assertion-failed", failures.join("; "));
-    await pageC.evaluate(() => {
+    await pageD.evaluate(() => {
       const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
       if (started?.ok === true) started.value.stop();
     });

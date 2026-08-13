@@ -1,4 +1,5 @@
 import { probeBrowserRuntime, type BrowserRuntimeProbeReadout } from "../browser-node/browser-runtime-probe";
+import { ContentHash256 } from "../blake3/blake3";
 import type { BrowserLifecycleHostReadout, BrowserReadoutSinkResult } from "../browser-node/browser-lifecycle-host";
 import type { BrowserServiceWorkerRegistrationReadout } from "../browser-node/browser-service-worker-registration";
 import type { BrowserTabTransportReadout } from "../browser-node/browser-tab-channel-selector";
@@ -18,9 +19,21 @@ import {
   type BrowserDatabaseReceiptArchiveExecutor,
   type BrowserDatabaseReceiptArchivePort,
 } from "../browser-node/browser-database-receipt-archive";
+import {
+  createBrowserDatabaseReceiptHandoffRuntime,
+  createZetaDbBrowserDatabaseReceiptArchiveMaintenance,
+  createZetaDbBrowserDatabaseReceiptHandoff,
+  type BrowserDatabaseReceiptHandoffLimits,
+  type BrowserDatabaseReceiptHandoffReadout,
+  type BrowserDatabaseReceiptHandoffRuntime,
+} from "../browser-node/browser-database-receipt-handoff";
 import { openNativeIndexedDbDatabaseIntentOutbox } from "../browser-node/browser-indexeddb-database-intent-outbox";
 import { createNativeBrowserExecutionAdmission } from "../browser-node/browser-web-lock-execution-admission";
-import { runBrowserZetaDbWake } from "../browser-node/browser-zetadb-image-port";
+import {
+  loadBrowserZetaDbImage,
+  runBrowserZetaDbWake,
+  saveBrowserZetaDbImage,
+} from "../browser-node/browser-zetadb-image-port";
 import {
   startBrowserZetaDbTabRuntime,
   type BrowserZetaDbTabExecutor,
@@ -68,7 +81,7 @@ import {
 } from "./darkhall-browser-database-row-selection";
 import { renderDarkHallRoomHtml, type RoomRunTranscript } from "./darkhall-room";
 
-export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v7" as const;
+export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v8" as const;
 export const DARK_HALL_BROWSER_PAGE_GLOBAL = "__zetaDarkHallPage" as const;
 export const DARK_HALL_BROWSER_PAGE_MOUNT_ID = "darkhall-room" as const;
 
@@ -113,6 +126,7 @@ export interface DarkHallBrowserPageReadout {
   readonly transport: BrowserTabTransportReadout;
   readonly host: BrowserLifecycleHostReadout;
   readonly database: DarkHallDatabaseReadout;
+  readonly receiptHandoff: BrowserDatabaseReceiptHandoffReadout | null;
   readonly controller: DarkHallBrowserDatabaseControllerReadout | null;
   readonly editor: DarkHallBrowserRowCommandEditorReadout;
   readonly selection: DarkHallBrowserDatabaseRowSelectionReadout;
@@ -158,6 +172,11 @@ export interface NativeDarkHallBrowserPageOptions {
   readonly databaseReceiptArchiveNodeId?: string;
   readonly databaseReceiptArchiveLimits?: ZetaDbTickLimits;
   readonly databaseReceiptArchiveExecutor?: BrowserDatabaseReceiptArchiveExecutor;
+  readonly databaseReceiptHandoff?: BrowserDatabaseReceiptHandoffRuntime;
+  readonly databaseReceiptHandoffTargetNodeId?: string;
+  readonly databaseReceiptHandoffLimits?: BrowserDatabaseReceiptHandoffLimits;
+  readonly databaseReceiptHandoffTargetLimits?: ZetaDbTickLimits;
+  readonly databaseReceiptHandoffTargetExecutor?: BrowserDatabaseReceiptArchiveExecutor;
   readonly databaseExecutor?: BrowserZetaDbTabExecutor;
   readonly maxControllerInputInFlight?: number;
   readonly rowCommandEditorMountId?: string;
@@ -186,7 +205,7 @@ interface PagePeerDarkRecovery {
 export const DARK_HALL_BROWSER_PAGE_TRANSCRIPT: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
   roomName: "dark hall browser node",
-  seed: "browser-page-v7",
+  seed: "browser-page-v8",
   generatedBy: "darkhall-browser-page",
   controller: DARK_HALL_BROWSER_DATABASE_ACTIONS.map((action) => ({
     cell: action.cell,
@@ -417,6 +436,18 @@ const defaultDatabaseReceiptArchiveLimits: ZetaDbTickLimits = {
   maxCheckpointBytes: 256 * 1024,
 };
 
+const defaultDatabaseReceiptHandoffLimits: BrowserDatabaseReceiptHandoffLimits = {
+  minimumReceipts: 64,
+  maxReceipts: 256,
+  maxBatchBytes: 256 * 1024,
+};
+
+const defaultDatabaseReceiptHandoffTargetLimits: ZetaDbTickLimits = {
+  maxDeltas: 1,
+  maxEntries: 1024,
+  maxCheckpointBytes: 16 * 1024 * 1024,
+};
+
 function selectPageDatabaseAdmission(
   options: NativeDarkHallBrowserPageOptions,
   root: unknown,
@@ -494,6 +525,74 @@ function selectPageDatabaseReceiptArchive(
   );
 }
 
+function pageReceiptHandoffFailure(
+  configuration: NativePageConfiguration,
+  feedback: { readonly severity: "backpressure" | "heat"; readonly code: string; readonly detail: string },
+): DarkHallBrowserPageResult<never> {
+  configuration.context.mount.setStatus(pageStatusFromSeverity(feedback.severity), "page-database-start-failed");
+  return failed("page-database-start-failed", `${feedback.code}: ${feedback.detail}`, feedback.severity);
+}
+
+function selectPageDatabaseReceiptHandoff(
+  options: NativeDarkHallBrowserPageOptions,
+  configuration: NativePageConfiguration,
+): DarkHallBrowserPageResult<BrowserDatabaseReceiptHandoffRuntime | null> {
+  if (options.databaseReceiptHandoff !== undefined) return succeeded(options.databaseReceiptHandoff);
+  if (options.databaseReceiptArchive !== undefined || options.databaseReceiptArchiveExecutor !== undefined) {
+    return succeeded(null);
+  }
+
+  const archiveNodeId = identifier(
+    options.databaseReceiptArchiveNodeId ?? null,
+    `${configuration.databaseNodeId}:receipts`,
+  );
+  if (!archiveNodeId.ok) return archiveNodeId;
+  const targetNodeId = identifier(
+    options.databaseReceiptHandoffTargetNodeId ?? null,
+    `${configuration.databaseNodeId}:receipt-batches`,
+  );
+  if (!targetNodeId.ok) return targetNodeId;
+  const imageOptions = {
+    databaseName: options.databaseName ?? "zeta-browser-node",
+    storeName: options.databaseStoreName ?? "database-images",
+  };
+  const archiveLimits = options.databaseReceiptArchiveLimits ?? defaultDatabaseReceiptArchiveLimits;
+  const maintenance = createZetaDbBrowserDatabaseReceiptArchiveMaintenance({
+    sourceDatabaseNodeId: configuration.databaseNodeId,
+    archiveNodeId: archiveNodeId.value,
+    executorId: configuration.tabId,
+    limits: archiveLimits,
+    load: (nodeId) => loadBrowserZetaDbImage(configuration.root, imageOptions, nodeId),
+    save: (replacement) => saveBrowserZetaDbImage(configuration.root, imageOptions, replacement),
+  });
+  if (!maintenance.ok) return pageReceiptHandoffFailure(configuration, maintenance.feedback);
+
+  const hasher = { hash: (payload: Uint8Array) => `blake3:${ContentHash256.ofBytes(payload).toHex()}` };
+  const downstream = createZetaDbBrowserDatabaseReceiptHandoff({
+    sourceDatabaseNodeId: configuration.databaseNodeId,
+    sourceArchiveNodeId: archiveNodeId.value,
+    targetNodeId: targetNodeId.value,
+    executorId: configuration.tabId,
+    limits: options.databaseReceiptHandoffTargetLimits ?? defaultDatabaseReceiptHandoffTargetLimits,
+    hasher,
+    execute:
+      options.databaseReceiptHandoffTargetExecutor ??
+      ((request) => runBrowserZetaDbWake(configuration.root, imageOptions, request)),
+  });
+  if (!downstream.ok) return pageReceiptHandoffFailure(configuration, downstream.feedback);
+
+  const runtime = createBrowserDatabaseReceiptHandoffRuntime({
+    databaseNodeId: configuration.databaseNodeId,
+    archiveNodeId: archiveNodeId.value,
+    targetNodeId: targetNodeId.value,
+    archive: maintenance.value,
+    downstream: downstream.value,
+    hasher,
+    limits: options.databaseReceiptHandoffLimits ?? defaultDatabaseReceiptHandoffLimits,
+  });
+  return runtime.ok ? succeeded(runtime.value) : pageReceiptHandoffFailure(configuration, runtime.feedback);
+}
+
 function observePageDatabaseOutbox(
   context: NativePageContext,
   readout: BrowserDatabaseIntentReadout,
@@ -522,6 +621,41 @@ function observePageDatabaseOutbox(
     }
   }
   return { ok: true };
+}
+
+function observePageDatabaseReceiptHandoff(
+  context: NativePageContext,
+  readout: BrowserDatabaseReceiptHandoffReadout,
+): { readonly ok: true } | { readonly ok: false; readonly feedback: DarkHallBrowserPageFeedback } {
+  const attributes = [
+    ["data-database-receipt-handoff-status", readout.status],
+    ["data-database-receipt-handoff-target", readout.targetNodeId],
+    ["data-database-receipt-handoff-retained", readout.retainedReceipts.toString()],
+    ["data-database-receipt-handoff-released", readout.releasedReceipts.toString()],
+    ["data-database-receipt-handoff-bytes", readout.receiptPayloadBytes.toString()],
+    ["data-database-receipt-handoff-high-water", readout.highWaterSequence?.toString() ?? "none"],
+    ["data-database-receipt-handoff-hash", readout.contentHash ?? "none"],
+    ["data-database-receipt-handoff-feedback", readout.feedback?.code ?? "none"],
+  ] as const;
+  for (const [name, value] of attributes) {
+    if (!context.mount.setAttribute(name, value)) {
+      return {
+        ok: false,
+        feedback: {
+          severity: "heat",
+          code: "page-status-update-failed",
+          detail: `The browser refused database receipt handoff attribute ${name}.`,
+        },
+      };
+    }
+  }
+  return { ok: true };
+}
+
+function optionalReceiptHandoff(receiptHandoff: BrowserDatabaseReceiptHandoffRuntime | null): {
+  readonly receiptHandoff?: BrowserDatabaseReceiptHandoffRuntime;
+} {
+  return receiptHandoff === null ? {} : { receiptHandoff };
 }
 
 function createPagePeerDarkRecovery(context: NativePageContext, localTabId: string): PagePeerDarkRecovery {
@@ -714,6 +848,7 @@ async function startPageEdges(
     readonly pwa: DarkHallBrowserPwaRuntime;
     readonly outbox: BrowserDatabaseIntentOutboxPort;
     readonly receiptArchive: BrowserDatabaseReceiptArchivePort;
+    readonly receiptHandoff: BrowserDatabaseReceiptHandoffRuntime | null;
   }>
 > {
   const pwa = await startPagePwa(
@@ -732,12 +867,23 @@ async function startPageEdges(
     return outbox;
   }
   const receiptArchive = selectPageDatabaseReceiptArchive(options, configuration);
-  if (receiptArchive.ok) {
-    return succeeded({ pwa: pwa.value, outbox: outbox.value, receiptArchive: receiptArchive.value });
+  if (!receiptArchive.ok) {
+    outbox.value.close();
+    pwa.value.browser.host.stop();
+    return receiptArchive;
   }
-  outbox.value.close();
-  pwa.value.browser.host.stop();
-  return receiptArchive;
+  const receiptHandoff = selectPageDatabaseReceiptHandoff(options, configuration);
+  if (!receiptHandoff.ok) {
+    outbox.value.close();
+    pwa.value.browser.host.stop();
+    return receiptHandoff;
+  }
+  return succeeded({
+    pwa: pwa.value,
+    outbox: outbox.value,
+    receiptArchive: receiptArchive.value,
+    receiptHandoff: receiptHandoff.value,
+  });
 }
 
 async function hydratePageDatabase(
@@ -861,7 +1007,7 @@ export async function startNativeDarkHallBrowserPage(
   );
   if (!edges.ok) return edges;
 
-  const { pwa, outbox, receiptArchive } = edges.value;
+  const { pwa, outbox, receiptArchive, receiptHandoff } = edges.value;
   let latestDatabase: DarkHallDatabaseReadout | null = null;
   const observedDatabase = (): DarkHallDatabaseReadout | null => latestDatabase;
   let latestController: DarkHallBrowserDatabaseControllerReadout | null = null;
@@ -872,6 +1018,7 @@ export async function startNativeDarkHallBrowserPage(
     admission: databaseExecutionAdmission,
     outbox,
     receiptArchive,
+    ...optionalReceiptHandoff(receiptHandoff),
     execute:
       options.databaseExecutor ??
       ((request) =>
@@ -898,6 +1045,7 @@ export async function startNativeDarkHallBrowserPage(
           };
     },
     observeOutbox: (readout) => observePageDatabaseOutbox(context, readout),
+    observeReceiptHandoff: (readout) => observePageDatabaseReceiptHandoff(context, readout),
     publishInvalidation: (nextDatabaseNodeId, revision) =>
       pwa.browser.host.publishDatabaseInvalidation(nextDatabaseNodeId, revision),
     publishExecutionReceipt: (receipt) =>
@@ -1134,6 +1282,7 @@ export async function startNativeDarkHallBrowserPage(
     transport: pwa.browser.transport,
     host: pwa.browser.host.read(),
     database: latestDatabase ?? hydratedDatabase,
+    receiptHandoff: database.readReceiptHandoff(),
     controller: latestController,
     editor: editor.read(),
     selection: selection.read(),

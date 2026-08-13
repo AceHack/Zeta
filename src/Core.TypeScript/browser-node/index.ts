@@ -116,7 +116,9 @@ export {
 
 export {
   createBrowserZetaDbImagePort,
+  loadBrowserZetaDbImage,
   openBrowserZetaDbImagePort,
+  saveBrowserZetaDbImage,
   runBrowserZetaDbWake,
 } from "./browser-zetadb-image-port";
 
@@ -200,6 +202,34 @@ export {
   type BrowserDatabaseReceiptArchiveResult,
   type ZetaDbBrowserDatabaseReceiptArchiveOptions,
 } from "./browser-database-receipt-archive";
+
+export {
+  BROWSER_DATABASE_RECEIPT_ARCHIVE_SNAPSHOT_SCHEMA,
+  BROWSER_DATABASE_RECEIPT_HANDOFF_ACK_SCHEMA,
+  BROWSER_DATABASE_RECEIPT_HANDOFF_BATCH_SCHEMA,
+  BROWSER_DATABASE_RECEIPT_HANDOFF_READOUT_SCHEMA,
+  createBrowserDatabaseReceiptHandoffRuntime,
+  createZetaDbBrowserDatabaseReceiptArchiveMaintenance,
+  createZetaDbBrowserDatabaseReceiptHandoff,
+  encodeBrowserDatabaseReceiptHandoffBody,
+  type BrowserDatabaseReceiptArchiveMaintenancePort,
+  type BrowserDatabaseReceiptArchiveCompactor,
+  type BrowserDatabaseReceiptArchiveLoader,
+  type BrowserDatabaseReceiptArchiveSnapshot,
+  type BrowserDatabaseReceiptBatchHasher,
+  type BrowserDatabaseReceiptHandoffAcknowledgement,
+  type BrowserDatabaseReceiptHandoffBatch,
+  type BrowserDatabaseReceiptHandoffBody,
+  type BrowserDatabaseReceiptHandoffFeedback,
+  type BrowserDatabaseReceiptHandoffLimits,
+  type BrowserDatabaseReceiptHandoffOptions,
+  type BrowserDatabaseReceiptHandoffPort,
+  type BrowserDatabaseReceiptHandoffReadout,
+  type BrowserDatabaseReceiptHandoffResult,
+  type BrowserDatabaseReceiptHandoffRuntime,
+  type ZetaDbBrowserDatabaseReceiptArchiveMaintenanceOptions,
+  type ZetaDbBrowserDatabaseReceiptHandoffOptions,
+} from "./browser-database-receipt-handoff";
 
 export {
   BROWSER_ZETA_DB_WAKE_RESPONSE_SCHEMA,

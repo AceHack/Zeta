@@ -17,6 +17,11 @@ import type {
   BrowserDatabaseReceiptArchiveFeedback,
   BrowserDatabaseReceiptArchivePort,
 } from "./browser-database-receipt-archive";
+import type {
+  BrowserDatabaseReceiptHandoffFeedback,
+  BrowserDatabaseReceiptHandoffReadout,
+  BrowserDatabaseReceiptHandoffRuntime,
+} from "./browser-database-receipt-handoff";
 import type { BrowserExecutionAdmissionPort } from "./browser-execution-admission";
 import type { BrowserDatabaseInvalidation } from "./browser-tab-coordinator";
 
@@ -33,6 +38,8 @@ export interface BrowserZetaDbTabFeedback {
     | "database-tab-outbox-observer-failed"
     | "database-tab-publish-failed"
     | "database-tab-receipt-archive-failed"
+    | "database-tab-receipt-handoff-failed"
+    | "database-tab-receipt-handoff-observer-failed"
     | "database-tab-receipt-publish-failed"
     | "database-tab-stopped";
   readonly detail: string;
@@ -58,9 +65,11 @@ export interface BrowserZetaDbTabRuntimeOptions {
   readonly admission: BrowserExecutionAdmissionPort;
   readonly outbox: BrowserDatabaseIntentOutboxPort;
   readonly receiptArchive: BrowserDatabaseReceiptArchivePort;
+  readonly receiptHandoff?: BrowserDatabaseReceiptHandoffRuntime;
   readonly execute: BrowserZetaDbTabExecutor;
   readonly observe: (readout: ZetaDbTickReadout) => BrowserZetaDbTabEdgeResult;
   readonly observeOutbox: (readout: BrowserDatabaseIntentReadout) => BrowserZetaDbTabEdgeResult;
+  readonly observeReceiptHandoff?: (readout: BrowserDatabaseReceiptHandoffReadout) => BrowserZetaDbTabEdgeResult;
   readonly publishInvalidation: (databaseNodeId: string, revision: number) => BrowserZetaDbTabEdgeResult;
   readonly publishExecutionReceipt: (receipt: BrowserDatabaseExecutionReceipt) => BrowserZetaDbTabEdgeResult;
 }
@@ -72,6 +81,8 @@ export interface BrowserZetaDbTabRuntime {
     deltas: readonly ZetaDbDelta[],
   ): Promise<BrowserZetaDbTabResult<ZetaDbTickReadout>>;
   readOutbox(): Promise<BrowserZetaDbTabResult<BrowserDatabaseIntentReadout>>;
+  handoffReceipts(): Promise<BrowserZetaDbTabResult<BrowserDatabaseReceiptHandoffReadout | null>>;
+  readReceiptHandoff(): BrowserDatabaseReceiptHandoffReadout | null;
   recoverPending(): Promise<BrowserZetaDbTabResult<ZetaDbTickReadout | null>>;
   receiveInvalidation(invalidation: BrowserDatabaseInvalidation): BrowserZetaDbTabResult<null>;
   drainInvalidations(): Promise<BrowserZetaDbTabResult<ZetaDbTickReadout | null>>;
@@ -138,6 +149,10 @@ function isReceiptArchivePort(value: unknown): value is BrowserDatabaseReceiptAr
   return hasMethods(value, ["archive"]);
 }
 
+function isReceiptHandoffRuntime(value: unknown): value is BrowserDatabaseReceiptHandoffRuntime {
+  return hasMethods(value, ["handoff", "read"]);
+}
+
 function validLimits(limits: ZetaDbTickLimits): boolean {
   return (
     Number.isSafeInteger(limits.maxDeltas) &&
@@ -166,6 +181,46 @@ function intentFailure(feedback: BrowserDatabaseIntentFeedback): BrowserZetaDbTa
 
 function receiptArchiveFailure(feedback: BrowserDatabaseReceiptArchiveFeedback): BrowserZetaDbTabResult<never> {
   return failed("database-tab-receipt-archive-failed", `${feedback.code}: ${feedback.detail}`, feedback.severity);
+}
+
+function receiptHandoffFailure(feedback: BrowserDatabaseReceiptHandoffFeedback): BrowserZetaDbTabResult<never> {
+  return failed("database-tab-receipt-handoff-failed", `${feedback.code}: ${feedback.detail}`, feedback.severity);
+}
+
+async function attemptReceiptHandoff(
+  options: BrowserZetaDbTabRuntimeOptions,
+): Promise<BrowserZetaDbTabResult<BrowserDatabaseReceiptHandoffReadout | null>> {
+  if (options.receiptHandoff === undefined) return succeeded(null);
+  let handed;
+  try {
+    handed = await options.receiptHandoff.handoff();
+  } catch {
+    return failed(
+      "database-tab-receipt-handoff-failed",
+      "The injected receipt handoff runtime threw during bounded archive maintenance.",
+    );
+  }
+
+  const readout = handed.ok ? handed.value : options.receiptHandoff.read();
+  if (options.observeReceiptHandoff !== undefined) {
+    let observed;
+    try {
+      observed = options.observeReceiptHandoff(readout);
+    } catch {
+      return failed(
+        "database-tab-receipt-handoff-observer-failed",
+        "The injected receipt handoff observer threw while publishing bounded archive pressure.",
+      );
+    }
+    if (!observed.ok) {
+      return failed(
+        "database-tab-receipt-handoff-observer-failed",
+        `${observed.feedback.code}: ${observed.feedback.detail}`,
+        observed.feedback.severity,
+      );
+    }
+  }
+  return handed.ok ? succeeded(readout) : receiptHandoffFailure(handed.feedback);
 }
 
 function observeOutbox(
@@ -379,7 +434,9 @@ async function executePendingIntent(
   if (!archived.ok) return archived;
   const receiptPublished = publishExecutionReceipt(options, settled.value);
   if (!edged.ok) return edged;
-  return receiptPublished.ok ? succeeded(edged.value) : receiptPublished;
+  if (!receiptPublished.ok) return receiptPublished;
+  const handed = await attemptReceiptHandoff(options);
+  return handed.ok ? succeeded(edged.value) : handed;
 }
 
 function refusedTarget(intent: BrowserDatabaseIntentRecord): BrowserZetaDbTabResult<never> {
@@ -419,6 +476,8 @@ async function drainPendingIntents(
 ): Promise<BrowserZetaDbTabResult<DrainReadout>> {
   const outbox = await archiveRetainedReceipts(options);
   if (!outbox.ok) return outbox;
+  const handed = await attemptReceiptHandoff(options);
+  if (!handed.ok) return handed;
   const targetRecord =
     targetIntentId === null ? undefined : outbox.value.intents.find((intent) => intent.intentId === targetIntentId);
   if (targetRecord?.status === "refused") return refusedTarget(targetRecord);
@@ -520,7 +579,9 @@ export function startBrowserZetaDbTabRuntime(
     !validLimits(options.limits) ||
     !isExecutionAdmissionPort(options.admission) ||
     !isIntentOutboxPort(options.outbox) ||
-    !isReceiptArchivePort(options.receiptArchive)
+    !isReceiptArchivePort(options.receiptArchive) ||
+    (options.receiptHandoff !== undefined && !isReceiptHandoffRuntime(options.receiptHandoff)) ||
+    (options.observeReceiptHandoff !== undefined && typeof options.observeReceiptHandoff !== "function")
   ) {
     return failed(
       "database-tab-configuration-invalid",
@@ -551,8 +612,6 @@ export function startBrowserZetaDbTabRuntime(
     deltas: readonly ZetaDbDelta[],
   ): Promise<BrowserZetaDbTabResult<ZetaDbTickReadout | null>> => {
     if (deltas.length === 0) return executeRead(options, state, null, expectedRevision);
-    const archived = await archiveRetainedReceipts(options);
-    if (!archived.ok) return archived;
     const first = deltas[0];
     if (first === undefined) {
       return failed("database-tab-configuration-invalid", "A database mutation requires at least one delta.");
@@ -595,10 +654,21 @@ export function startBrowserZetaDbTabRuntime(
         : succeeded(result.value);
     },
     readOutbox: () => readAndObserveOutbox(options),
+    handoffReceipts: async () => {
+      const result = await schedule(async () => {
+        const handed = await attemptReceiptHandoff(options);
+        return handed.ok ? succeeded(null) : handed;
+      });
+      if (!result.ok) return result;
+      return succeeded(options.receiptHandoff?.read() ?? null);
+    },
+    readReceiptHandoff: () => options.receiptHandoff?.read() ?? null,
     recoverPending: async () => {
       const result = await schedule(async () => {
         const archived = await archiveRetainedReceipts(options);
         if (!archived.ok) return archived;
+        const handed = await attemptReceiptHandoff(options);
+        if (!handed.ok) return handed;
         if (archived.value.queued + archived.value.executing === 0) return succeeded(null);
         const drained = await admitDrain(options, state, null, true);
         return drained.ok ? succeeded(drained.value.lastTick) : drained;

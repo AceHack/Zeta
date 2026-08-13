@@ -33,6 +33,25 @@ function mapCheckpointFeedback(
   };
 }
 
+/** Load one browser-backed image without exposing the checkpoint adapter to database callers. */
+export async function loadBrowserZetaDbImage(
+  root: unknown,
+  options: NativeIndexedDbCheckpointOptions,
+  nodeId: string,
+): Promise<ZetaDbResult<ZetaDbImageRecord | null>> {
+  const opened = await openNativeIndexedDbCheckpointPort(root, options);
+  if (!opened.ok) {
+    return {
+      ok: false,
+      feedback: { severity: opened.feedback.severity, code: "database-read-failed", detail: opened.feedback.detail },
+    };
+  }
+  const loaded = mapRecordResult(await opened.value.load(nodeId), "read");
+  const closed = opened.value.close();
+  if (loaded.ok && !closed.ok) return mapCheckpointFeedback(closed.feedback, "read");
+  return loaded;
+}
+
 function mapRecordResult(
   result: BrowserCheckpointResult<{
     readonly nodeId: string;
@@ -114,4 +133,24 @@ export async function runBrowserZetaDbWake(
   const closed = opened.value.close();
   if (result.ok && !closed.ok) return closed;
   return result;
+}
+
+/** Save one browser-backed image and preserve the checkpoint adapter's revision conflict. */
+export async function saveBrowserZetaDbImage(
+  root: unknown,
+  options: NativeIndexedDbCheckpointOptions,
+  record: ZetaDbImageRecord,
+): Promise<ZetaDbResult<ZetaDbImageRecord>> {
+  const opened = await openNativeIndexedDbCheckpointPort(root, options);
+  if (!opened.ok) {
+    return {
+      ok: false,
+      feedback: { severity: opened.feedback.severity, code: "database-write-failed", detail: opened.feedback.detail },
+    };
+  }
+  const port = createBrowserZetaDbImagePort(opened.value);
+  const saved = await port.save(record);
+  const closed = opened.value.close();
+  if (saved.ok && !closed.ok) return mapCheckpointFeedback(closed.feedback, "write");
+  return saved;
 }
