@@ -5,7 +5,10 @@
  * negative controls (2+ erasures → unrecoverable).
  */
 import { describe, it, expect } from "bun:test";
+import fc from "fast-check";
 import {
+  MAX_NACK_GAP,
+  type DesyncEvent,
   computeAdinkraParity,
   recoverAdinkraErasure,
   buildSenderBlock,
@@ -331,5 +334,169 @@ describe("udp-lossy-transport", () => {
     // prove: with the bare catch downstream, this would also hold if the guard were removed
     // entirely. It pins the BEHAVIOUR, not the mechanism.
     expect(bnn.states.get("transport")?.obsCount ?? 0).toBe(afterValid);
+  });
+
+  // ── ULT-17..21: NACK amplification (workitem 081KZYP1S96087G0R002G8XQZP, BUGS.md P0) ──────
+  //
+  // MEASURED ON THE UNFIXED CODE, on this machine, before the fix landed:
+  //
+  //   seq=8        in=74B  out=527B        amp=7.1x        elapsed=0.7ms
+  //   seq=64       in=74B  out=2483B       amp=33.6x       elapsed=0.1ms
+  //   seq=65       in=74B  out=2518B       amp=34.0x       elapsed=0.0ms
+  //   seq=5000000  in=74B  out=246666953B  amp=3333337.2x  elapsed=537.2ms
+  //
+  // The last row is the defect: a single unauthenticated packet turned into a 246 MB BROADCAST.
+  // `header.seq` is `readUInt32BE`, so 4294967295 is reachable — 859x the probed value.
+  //
+  // What these tests do NOT claim: the fix does not make the module non-amplifying. The 33.6x
+  // row is IN-WINDOW and still stands after the fix; bounding the gap bounds the reflector, it
+  // does not remove it. ULT-19 pins that number so it cannot grow unnoticed.
+
+  /** A receiver wired to count what it emits. Returns the harness, not a channel, because every
+   *  assertion below is about the OUTBOUND side. */
+  function makeProbe(): {
+    deliver: (seq: number, opts?: { blockSeq?: number; blockPos?: number }) => number;
+    outBytes: () => number;
+    broadcasts: () => string[];
+    desyncs: () => DesyncEvent[];
+  } {
+    let receive: (text: string, from: string) => void = () => {};
+    const sent: string[] = [];
+    const desyncs: DesyncEvent[] = [];
+    const transport = {
+      broadcast: (text: string) => {
+        sent.push(text);
+      },
+      onMessage: (handler: (text: string, from: string) => void) => {
+        receive = handler;
+      },
+    };
+    const channel = new LossyUdpChannel(transport, "receiver");
+    channel.onDesync((e) => desyncs.push(e));
+    return {
+      // Returns the INBOUND byte count, so the caller can compute a real amplification ratio.
+      deliver: (seq, opts = {}) => {
+        const pkt = encodePacket(
+          {
+            seq,
+            blockSeq: opts.blockSeq ?? 0,
+            blockPos: opts.blockPos ?? 0,
+            isData: true,
+            payloadLen: 4,
+          },
+          new Uint8Array([1, 2, 3, 4]),
+        );
+        const wire = JSON.stringify({ type: "lossy-udp", zid: "attacker", pkt: pkt.toString("base64") });
+        receive(wire, "attacker");
+        return Buffer.byteLength(wire, "utf8");
+      },
+      outBytes: () => sent.reduce((n, t) => n + Buffer.byteLength(t, "utf8"), 0),
+      broadcasts: () => sent,
+      desyncs: () => desyncs,
+    };
+  }
+
+  /** Derived ceiling on one NACK envelope, NOT a chosen round number: the message carries at
+   *  most `MAX_NACK_GAP` sequence numbers, and each appears three times — once in `nack`, once
+   *  in `teaching.missingSeqs`, and once inside a `received:seq=N:zid=Z` belief id. A u32 seq is
+   *  ≤ 10 digits and this test's zid is 8 chars, so one seq costs < 64 bytes; 64 * 64 = 4 KiB,
+   *  plus a fixed envelope. 8 KiB is that with slack, and it is ~30000x below the defect. */
+  const NACK_ENVELOPE_CEILING_BYTES = 8 * 1024;
+
+  it("ULT-17 (property): no single packet, at any u32 header value, provokes an unbounded reply", async () => {
+    // The property the defect violated, stated over the whole input domain rather than at one
+    // value — because the defect is "any sufficiently large u32", not one specific seq.
+    // Seeded so a failure replays exactly (DST, manifesto §7).
+    let sawANack = false;
+    await fc.assert(
+      fc.asyncProperty(
+        fc.integer({ min: 0, max: 0xffffffff }),
+        fc.integer({ min: 0, max: 0xffffffff }),
+        fc.integer({ min: 0, max: 0xff }),
+        async (seq, blockSeq, blockPos) => {
+          const probe = makeProbe();
+          const inBytes = probe.deliver(seq, { blockSeq, blockPos });
+          await Promise.resolve();
+
+          expect(probe.outBytes()).toBeLessThanOrEqual(NACK_ENVELOPE_CEILING_BYTES);
+          expect(probe.broadcasts().length).toBeLessThanOrEqual(1);
+          for (const text of probe.broadcasts()) {
+            const parsed = JSON.parse(text) as { nack?: number[]; teaching?: { missingSeqs?: number[] } };
+            sawANack = true;
+            // The tight invariant. The byte ceiling above is a consequence of this one.
+            expect(parsed.nack?.length ?? 0).toBeLessThanOrEqual(MAX_NACK_GAP);
+            expect(parsed.teaching?.missingSeqs?.length ?? 0).toBeLessThanOrEqual(MAX_NACK_GAP);
+          }
+          // Amplification is bounded by a constant, so it cannot scale with the claimed seq.
+          expect(probe.outBytes() / inBytes).toBeLessThan(NACK_ENVELOPE_CEILING_BYTES / inBytes);
+        },
+      ),
+      { numRuns: 300, seed: 0x5eed },
+    );
+    // ANTI-VACUITY: a channel that never NACKs would satisfy every assertion above. At least one
+    // generated seq must have reached the NACK path for this property to mean anything.
+    expect(sawANack).toBe(true);
+  });
+
+  it("ULT-18: the filed reproduction — seq=5e6 and seq=2^32-1 emit nothing and return promptly", () => {
+    for (const seq of [5_000_000, 0xffffffff]) {
+      const probe = makeProbe();
+      const started = performance.now();
+      probe.deliver(seq);
+      const elapsed = performance.now() - started;
+
+      expect(probe.outBytes()).toBe(0); // was 246,666,953 bytes at seq=5e6
+      expect(probe.desyncs().length).toBe(1);
+      // A smoke bound on the 537 ms of blocking work, not a benchmark: the fixed path allocates
+      // nothing proportional to `seq`, so it completes in microseconds on any machine. Generous
+      // enough not to be flaky, tight enough that a reintroduced O(seq) loop fails it.
+      expect(elapsed).toBeLessThan(250);
+    }
+  });
+
+  it("ULT-19: the bound is the retention window — at the boundary a full, untruncated NACK is sent", () => {
+    // BOTH SIDES of the boundary, because a bound tested on one side is not tested.
+    // At exactly MAX_NACK_GAP the receiver still holds the blocks, so it enumerates every
+    // missing seq — no truncation, no partial list presented as a complete one.
+    const atBound = makeProbe();
+    const inBytes = atBound.deliver(MAX_NACK_GAP);
+    expect(atBound.broadcasts().length).toBe(1);
+    const parsed = JSON.parse(atBound.broadcasts()[0]!) as { nack: number[] };
+    expect(parsed.nack.length).toBe(MAX_NACK_GAP);
+    expect(parsed.nack).toEqual(Array.from({ length: MAX_NACK_GAP }, (_, i) => i)); // exact, complete
+    expect(atBound.desyncs().length).toBe(0);
+
+    // PINNED MEASUREMENT, not a derived bound: 33.6x was the in-window amplification measured on
+    // the unfixed code at this same seq, and the fix does not change it. It is asserted so that
+    // growth in the NACK envelope shows up as a failing test rather than as a bigger reflector.
+    expect(atBound.outBytes() / inBytes).toBeLessThan(40);
+
+    // One past the boundary: the receiver would be speaking about blocks it no longer holds.
+    const pastBound = makeProbe();
+    pastBound.deliver(MAX_NACK_GAP + 1);
+    expect(pastBound.broadcasts().length).toBe(0);
+    expect(pastBound.desyncs()).toEqual([
+      { expectedSeq: 0, observedSeq: MAX_NACK_GAP + 1, gap: MAX_NACK_GAP + 1, maxNackGap: MAX_NACK_GAP },
+    ]);
+  });
+
+  it("ULT-20: an in-window gap still reports every missing sequence — the signal is not degraded", () => {
+    // The regression this fix could plausibly have caused. Ordinary loss must be reported
+    // exactly as before: complete list, right values, right order.
+    const probe = makeProbe();
+    probe.deliver(0); // establish sync
+    probe.deliver(5); // seqs 1,2,3,4 missing
+    expect(probe.desyncs().length).toBe(0);
+    const nacks = probe.broadcasts().map((t) => (JSON.parse(t) as { nack: number[] }).nack);
+    expect(nacks).toEqual([[1, 2, 3, 4]]);
+  });
+
+  it("ULT-21 (§12 idempotency): replaying the oversized packet N times has the effect of once", () => {
+    const probe = makeProbe();
+    for (let i = 0; i < 5; i++) probe.deliver(1_000_000);
+    // The first delivery resynchronises `expectedSeq`; the replays find no gap. Emitting nothing
+    // five times is the same as emitting nothing once, and the local report fires once.
+    expect(probe.outBytes()).toBe(0);
+    expect(probe.desyncs().length).toBe(1);
   });
 });

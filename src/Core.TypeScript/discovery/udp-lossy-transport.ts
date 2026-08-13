@@ -33,7 +33,12 @@
  *     broadcast storms on WiFi mesh. Same principle as the bat's duty cycle.
  *
  * ### Sequence numbers + NACK
- *   - Each packet has a sequence number. The receiver sends a NACK for any gap.
+ *   - Each packet has a sequence number. The receiver sends a NACK for any gap it can still
+ *     speak to — that is, a gap of at most `MAX_NACK_GAP` (= the receiver's retention window).
+ *   - A WIDER gap is reported as a local `DesyncEvent` and nothing is sent. The sequence field
+ *     is peer-controlled and unauthenticated, and the NACK is broadcast, so an unbounded
+ *     response is a mesh amplification vector (measured at 3,333,337x before this bound).
+ *     Beyond the retention window the receiver also has no state to base a claim on.
  *   - NACKs update the loss estimate (not for immediate retransmit — ECC handles that).
  *   - The sender uses NACKs to adjust the inter-packet gap via AIMD.
  *
@@ -43,6 +48,14 @@
  *   - For higher erasure rates, use a larger code (e.g. [16,8,4] or [32,16,4]).
  *   - The NACK mechanism assumes the NACK channel itself is reliable (e.g. TCP for NACKs,
  *     UDP for data). If NACKs are also lossy, the loss estimate is noisy but still useful.
+ *   - The data path is UNAUTHENTICATED: `envelope.zid` is echo suppression, not identity.
+ *     Bounding the NACK caps the amplification, it does not remove it — an in-window gap still
+ *     costs a broadcast, measured at 33.6x the inbound packet at the bound. Reducing that
+ *     further needs a unicast reply to the peer that revealed the gap, which this transport
+ *     interface cannot express (it exposes `broadcast` only). Named, not silently accepted.
+ *   - Losing more than `MAX_NACK_GAP` consecutive packets produces NO congestion signal. The
+ *     single `expectedSeq` is shared across every peer on a broadcast transport, so a wide gap
+ *     is not attributable to a sender in the first place; per-peer sequence state is the fix.
  *
  * ## Connection to the Adinkra physics
  *   - The [8,4,4] code is the concrete Adinkra code from AdinkraCode.fs.
@@ -86,6 +99,25 @@ const LOSS_WINDOW = 64; // sliding window for loss estimation (packets)
 // Gossip debounce jitter window (ms)
 const JITTER_MIN_MS = 50;
 const JITTER_MAX_MS = 200;
+
+// ── Receiver retention window, and the NACK gap bound derived from it ─────────────────────
+/** How many blocks the receiver retains before evicting (see `handleIncoming` cleanup).
+ *  Was a bare `8` inline; named here because MAX_NACK_GAP is derived from it, and a
+ *  derivation that points at a literal is two magic numbers agreeing by luck. */
+const RECV_BLOCK_WINDOW = 8;
+
+/** The widest sequence gap the receiver can still say anything true about.
+ *
+ *  DERIVATION (not a chosen constant): the receiver holds `RECV_BLOCK_WINDOW` blocks of
+ *  `BLOCK_TOTAL` packets. A packet older than that has been evicted, so it can neither be
+ *  recovered by the [8,4,4] code nor placed in a retained block — the receiver has no state
+ *  about it and nothing it reports about it is a measurement. `LOSS_WINDOW` arrives at the
+ *  same 64 independently: the AIMD estimator divides NACKs by at most `LOSS_WINDOW` sends,
+ *  so a single gap wider than that yields `lossRate > 1`, which is not a rate.
+ *
+ *  Both derivations are of the *receiver's own memory*, which is the only thing that bounds
+ *  what it may honestly claim. If either constant moves, this moves with it. */
+export const MAX_NACK_GAP = RECV_BLOCK_WINDOW * BLOCK_TOTAL;
 
 // ── GF(2) arithmetic ──────────────────────────────────────────────────────────────────────
 
@@ -253,6 +285,26 @@ function isNackMessage(value: unknown): value is NackMessage {
     typeof candidate.howToFix === "string" &&
     (candidate.retractableBeliefId === undefined || typeof candidate.retractableBeliefId === "string")
   );
+}
+
+/**
+ * A sequence gap too wide to be loss the receiver can speak to — reported LOCALLY, never sent.
+ *
+ * Emitted when `observedSeq - expectedSeq > MAX_NACK_GAP`. It is deliberately NOT a wire
+ * message: every byte this module emits in response to an unauthenticated packet is an
+ * amplification factor, and a reflector that answers "you are desynchronised" is still a
+ * reflector. The observation is real, so it is surfaced — to the local operator, via
+ * `onDesync`, where it costs the mesh nothing.
+ */
+export interface DesyncEvent {
+  /** The next sequence number the receiver was expecting. */
+  readonly expectedSeq: number;
+  /** The sequence number the packet claimed. Peer-controlled — treat as a claim, not a fact. */
+  readonly observedSeq: number;
+  /** `observedSeq - expectedSeq`. Not a loss count: see `DesyncEvent`'s doc on why. */
+  readonly gap: number;
+  /** The bound that was exceeded, so a consumer can see the threshold that produced this. */
+  readonly maxNackGap: number;
 }
 
 /** Sequence-only NACK represented by the compact binary codec. */
@@ -428,6 +480,7 @@ export class LossyUdpChannel {
   private dataHandlers: Array<(payload: Uint8Array) => void> = [];
   private lossHandlers: Array<(rate: number) => void> = [];
   private envelopeHandlers: Array<(envelope: ErrorEnvelope) => void> = [];
+  private desyncHandlers: Array<(event: DesyncEvent) => void> = [];
   /** Optional DimensionalBnn — absorbs teaching NACKs as EP observations. */
   private bnn: DimensionalBnn | null = null;
 
@@ -471,6 +524,10 @@ export class LossyUdpChannel {
   /** Called when a teaching NACK envelope is emitted (for logging / UI). */
   onEnvelope(h: (envelope: ErrorEnvelope) => void): void {
     this.envelopeHandlers.push(h);
+  }
+  /** Called when a sequence gap exceeds `MAX_NACK_GAP` — local only, nothing is sent. */
+  onDesync(h: (event: DesyncEvent) => void): void {
+    this.desyncHandlers.push(h);
   }
 
   private flushBlock(): void {
@@ -572,8 +629,39 @@ export class LossyUdpChannel {
     if (!decoded) return;
 
     const { header, payload } = decoded;
-    // Check for sequence gaps → send NACK
-    if (header.seq > this.expectedSeq) {
+    // Check for sequence gaps → send NACK.
+    //
+    // SECURITY (fixed 2026-08-13, workitem 081KZYP1S96087G0R002G8XQZP, docs/BUGS.md P0):
+    // `header.seq` is `readUInt32BE` of an unauthenticated packet — the `zid` check above is
+    // echo suppression, not identity. This loop used to run to `header.seq` unbounded, and the
+    // resulting NACK was BROADCAST. Measured on the unfixed code, one 74-byte packet claiming
+    // `seq = 5e6` produced a 246,666,953-byte broadcast (3,333,337x amplification, 537 ms of
+    // blocking single-threaded work); the u32 field permits 859x more.
+    //
+    // The bound is MAX_NACK_GAP, derived from the receiver's own retention window (see its
+    // definition). A gap wider than that is NOT reported as loss — see the desync branch.
+    const gap = header.seq - this.expectedSeq;
+    if (gap > MAX_NACK_GAP) {
+      // DESYNC, not loss. Beyond its retention window the receiver cannot distinguish "the
+      // sender emitted these and they were lost" from "the sender was quiet", "another peer's
+      // stream interleaved" (one global `expectedSeq` counts every peer), or "this packet is
+      // lying". Emitting `gap` missing sequence numbers would therefore MANUFACTURE a
+      // measurement, which is the same defect as truncating the list and calling it complete —
+      // so the honest report is that synchronisation was lost, and it is made LOCALLY.
+      //
+      // Named cost: a genuine burst that loses more than MAX_NACK_GAP consecutive packets no
+      // longer signals the sender at all. That is a real regression in the heavy-loss case,
+      // and it is not fixable here: with one `expectedSeq` shared across all peers on a
+      // broadcast transport, the wide-gap case is not measurable in the first place. The fix is
+      // per-peer sequence state — filed separately, not bundled into a security patch.
+      const event: DesyncEvent = {
+        expectedSeq: this.expectedSeq,
+        observedSeq: header.seq,
+        gap,
+        maxNackGap: MAX_NACK_GAP,
+      };
+      for (const h of this.desyncHandlers) h(event);
+    } else if (gap > 0) {
       const missing: number[] = [];
       for (let s = this.expectedSeq; s < header.seq; s++) missing.push(s);
       if (missing.length > 0) {
@@ -619,9 +707,10 @@ export class LossyUdpChannel {
           for (const h of this.dataHandlers) h(dp);
         }
       }
-      // Clean up old blocks (keep last 8)
+      // Clean up old blocks (keep last RECV_BLOCK_WINDOW). This retention window is what
+      // MAX_NACK_GAP is derived from — the two must not drift apart, hence the shared constant.
       const keys = [...this.recvBlocks.keys()].sort((a, b) => a - b);
-      for (const k of keys.slice(0, Math.max(0, keys.length - 8))) {
+      for (const k of keys.slice(0, Math.max(0, keys.length - RECV_BLOCK_WINDOW))) {
         this.recvBlocks.delete(k);
       }
     }

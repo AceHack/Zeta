@@ -1,0 +1,14 @@
+{
+  "id": "080cffebcb3c3010a01300088f6c5a93",
+  "at": "2026-08-13T23:33:39.846Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYQJSW5087G0R001YD83TV",
+    "type": "bug",
+    "title": "One global expectedSeq across all peers on a broadcast transport: a single spoofed seq latches it via Math.max, and wide gaps are unattributable, so per-peer sequence state is the fix",
+    "slug": "one-global-expectedseq-across-all-peers-on-a-broadcast-trans",
+    "priority": "P2",
+    "filename": "081KZYQJSW5087G0R001YD83TV-one-global-expectedseq-across-all-peers-on-a-broadcast-trans.md"
+  }
+}

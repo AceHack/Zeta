@@ -35,26 +35,30 @@ tempted to ship.
 
 ## P0 — ship-blockers
 
-### `LossyUdpChannel` builds an unbounded NACK list from an attacker-controlled `seq` and broadcasts it
-
-- **Site:** `src/Core.TypeScript/discovery/udp-lossy-transport.ts:576-604` (`handleIncoming`)
-- **Found:** 2026-08-13 by Mateo (security-researcher), research sweep over PR #10417
-- **Severity:** P0 (security — unauthenticated remote DoS + mesh broadcast amplification)
-- **Symptom:** `for (let s = this.expectedSeq; s < header.seq; s++) missing.push(s)` is unbounded
-  over a peer-supplied `readUInt32BE` field, and the resulting NACK is **broadcast**. Measured at
-  a bounded `seq = 5e6`: one **70-byte** inbound packet produced a **236 MB** outbound broadcast
-  (**3,380,956x** amplification) and **929 ms** of blocking single-threaded work; the field permits
-  859x that. `expectedSeq` also latches via `Math.max`, permanently desynchronising the receiver.
-  No authentication on the data path — the `zid` check is echo suppression, not identity.
-- **Fix:** cap the emitted `missingSeqs` at a block or two (the only consumer uses `nack.length`);
-  reject out-of-range `blockPos` and implausible `seq` jumps at decode; unicast the NACK to the
-  peer that revealed the gap instead of broadcasting it.
-- **Who:** Kenji (architect). Work-item `081KZYP1S96087G0R002G8XQZP`; analysis in
-  `docs/research/2026-08-13-lossy-transport-calibration-audit-gilbert-elliott-is-uncalibrated-corruption-is-untested-and-aimd-conflates-erasure-with-congestion.md` section 5.1.
+*None currently.* (The `LossyUdpChannel` NACK amplification entry was fixed 2026-08-13 — bounded by
+`MAX_NACK_GAP`, work-item `081KZYP1S96087G0R002G8XQZP`. Its **unfixed residual** did not vanish with
+it and is filed below as its own P1/P2 rows, not folded into a completed item.)
 
 ---
 
 ## P1 — serious
+
+### `LossyUdpChannel` retains a `ReceiverBlock` per attacker-chosen `blockSeq` forever
+
+- **Site:** `src/Core.TypeScript/discovery/udp-lossy-transport.ts` (`handleIncoming`, `recvBlocks`)
+- **Found:** 2026-08-13 by the shadow, while fixing the NACK amplification P0 (a different defect on
+  the same receive path — the *state* side rather than the *reply* side)
+- **Severity:** P1 (security — unauthenticated remote memory exhaustion, no ceiling, never freed)
+- **Symptom:** a `ReceiverBlock` is created for every unseen `header.blockSeq` (`readUInt32BE`,
+  4.29e9 distinct keys), but eviction lives **inside `if (recovered)`** — so packets that never
+  complete a block never trigger cleanup. **MEASURED:** 200,000 packets (82 MB inbound) retained
+  200,000 blocks and grew RSS by **279,134,208 bytes** — **3.40x**, 1,396 bytes per packet, zero
+  evicted. This also fires without an attacker: unrecoverable blocks under heavy loss are exactly
+  the blocks that never clean themselves up.
+- **Fix:** evict on every packet rather than only on a recovered block, and cap `recvBlocks.size` at
+  `RECV_BLOCK_WINDOW` — retaining older blocks is already useless to the [8,4,4] decoder. Range-check
+  `blockPos` to `0..7` at the same time (verified harmless today, by accident, not by design).
+- **Who:** Kenji (architect). Work-item `081KZYQJPNG087G0R002B9E9S1`.
 
 ### Discovery-beacon wire is unsigned — spoof / poison / forged-evict (bus, shadow*)
 
@@ -310,6 +314,22 @@ carrying the same class of claim with no authenticity layer at all.
 ---
 
 ## P2 — nice to have
+
+### `LossyUdpChannel` has one global `expectedSeq` across all peers on a broadcast transport
+
+- **Site:** `src/Core.TypeScript/discovery/udp-lossy-transport.ts` (`expectedSeq`, `handleIncoming`)
+- **Found:** 2026-08-13 by Mateo (security-researcher) as the second half of the NACK amplification
+  P0; re-filed by the shadow as its own row when the first half was fixed without it
+- **Severity:** P2 (loss-signal availability — no amplification, no memory growth, data still flows)
+- **Symptom:** `expectedSeq = Math.max(expectedSeq, header.seq + 1)` never decreases, so one spoofed
+  `seq = 4294967295` pins it at the ceiling and no honest peer opens a gap again — NACK generation
+  is dead for the life of the channel. Related: one counter across interleaved senders means a wide
+  gap is not attributable to anyone, which is why the amplification fix reports a local desync
+  instead of a NACK past `MAX_NACK_GAP` — and why a >64-packet burst now yields no congestion signal.
+- **Fix:** per-peer sequence state. Two one-line mitigations (bounded advance; corroborate-before-
+  adopt) were tried on paper and rejected with reasons in the work-item — neither is clearly better
+  than the status quo, so this needs its own design rather than a line inside a security patch.
+- **Who:** Kenji (architect). Work-item `081KZYQJSW5087G0R001YD83TV`.
 
 ### Z3LawsTests cross-check flakes when CVC5 fails to run (build-and-test intermittent)
 
