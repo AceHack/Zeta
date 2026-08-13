@@ -351,11 +351,26 @@ module SchemaLog =
     [<CompiledName "Empty">]
     let empty: SchemaLog = []
 
+    /// **Streamed** redelivery collapse: distinct on the WHOLE event (id
+    /// AND op), first occurrence wins, order preserved — identical
+    /// semantics to `dedupe`, but LAZY with O(distinct) memory instead of
+    /// materialising the log (the "eventual streamed form" the Q40 STATUS
+    /// named open: an append-only log outgrows any list). One law pins the
+    /// pair together in SchemaZ.Tests.fs: `dedupe = List.ofSeq ∘ dedupeStream`.
+    [<CompiledName "DedupeStream">]
+    let dedupeStream (log: SchemaEvent seq) : SchemaEvent seq =
+        seq {
+            let seen = System.Collections.Generic.HashSet<SchemaEvent>()
+            for e in log do
+                if seen.Add e then yield e
+        }
+
     /// Collapse redeliveries: distinct on the WHOLE event (id AND op),
     /// first occurrence wins, order preserved. Deterministic, so DST
     /// replays it; set-semantics, so it is itself idempotent + commutative.
+    /// Materialised form of `dedupeStream`.
     [<CompiledName "Dedupe">]
-    let dedupe (log: SchemaEvent seq) : SchemaLog = log |> List.ofSeq |> List.distinct
+    let dedupe (log: SchemaEvent seq) : SchemaLog = log |> dedupeStream |> List.ofSeq
 
     /// Fold a log into a schema WITHOUT deduplication — the raw ℤ sum of
     /// every event's delta. Honest about at-least-once transports: a
@@ -372,9 +387,11 @@ module SchemaLog =
 
     /// THE current schema: dedupe by event identity, then fold. Redelivery-safe
     /// and order-independent — the two properties a replicated log needs.
+    /// Streams (`dedupeStream` feeds the fold directly): one pass, O(distinct)
+    /// dedupe state, the log itself never materialised.
     [<CompiledName "CurrentFrom">]
     let currentFrom (start: SchemaZ) (log: SchemaEvent seq) : SchemaZ =
-        foldRawFrom start (dedupe log)
+        foldRawFrom start (dedupeStream log)
 
     /// `currentFrom` from the empty schema — the live schema of a log.
     [<CompiledName "Current">]

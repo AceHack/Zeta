@@ -39,3 +39,26 @@ not the eventual streamed form.
 
 Downstream: this fold is also the primitive for the zetadb-native identity plane (work-item
 081KYXQ3SZN08QG0R002X3DTQM) — grant +1 / revoke −1, no central authority.
+
+## STATUS — increment 2 LANDED (2026-08-13): persistence + streamed dedupe + golden vectors. Work-item stays OPEN
+
+Shipped: `src/Core/SchemaLogCodec.fs` — canonical v1 text persistence for the
+event log (the log IS the schema, so this is the schema's durable form):
+versioned sentinel (`zschemalog/1`, a decoder never guesses), injective
+escaping (arbitrary ordinal names/ids carried, never a carved-out "safe"
+subset), deterministic byte-for-byte encode, all-or-nothing decode with 1-based
+line numbers on every offence. GOLDEN VECTORS locked as literals in
+`SchemaLogCodec.Tests.fs` (exact-bytes both directions, adversarial
+separators-in-names row included) — the strings other oracles (C#/TS/Rust)
+replay for parity. Plus `SchemaLog.dedupeStream` (the "eventual streamed form"
+named open in increment 1): lazy, O(distinct) memory, first-occurrence-wins;
+`dedupe = List.ofSeq ∘ dedupeStream` pinned as a law; `currentFrom` now folds
+the stream directly (log never materialised); laziness proven against an
+infinite redelivery stream. 14 tests. Full F# suite 4881 green.
+`ZPlan.validateAgainstLogs` (sibling increment, same day) wires the log into
+the stored-proc surface: plan validation reads the schema FOLD.
+
+STILL OPEN: cross-oracle parity casts (C#/TS/Rust decoders replaying the locked
+vectors — the F# reference + vectors now exist); wiring into the zetadb
+stored-proc surface proper (the plan gate is the first consumer); binary/
+compressed transport layering if size ever warrants it.
