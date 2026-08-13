@@ -1,0 +1,12 @@
+{
+  "pr_number": 8235,
+  "archive_path": "docs/history/pr-reviews/PR-8235-docs-register-b-row-reliable-decorrelated-selection-loop-multi-agent-nci.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T02:14:35.558Z",
+  "schema_version": "v1",
+  "commit_sha": "6a507fa91b90f5f91d4fc7d71f2999223bfea061",
+  "title": "docs(register): §B row — reliable decorrelated-selection loop (multi-agent + NCI)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T02:14:13Z",
+  "head_ref": "otto/sb-decorrelated-selection-loop"
+}

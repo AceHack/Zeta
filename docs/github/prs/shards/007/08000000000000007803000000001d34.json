@@ -1,0 +1,12 @@
+{
+  "pr_number": 7476,
+  "archive_path": "docs/history/pr-reviews/PR-7476-fix-cluster-shadow-network-plane-reticulum-headscale-self-hosted-not-saas-tailsc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T08:29:33.895Z",
+  "schema_version": "v1",
+  "commit_sha": "653f99d9ec19a7a1659888b519c325f16662dbeb",
+  "title": "fix(cluster)+shadow: network plane = Reticulum + Headscale (self-hosted), not SaaS Tailscale",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T08:29:09Z",
+  "head_ref": "shadow-reticulum-headscale-network-plane"
+}

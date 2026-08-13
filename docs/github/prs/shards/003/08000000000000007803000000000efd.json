@@ -1,0 +1,12 @@
+{
+  "pr_number": 3837,
+  "archive_path": "docs/history/pr-reviews/PR-3837-shard-tick-2026-05-16t08-58z-post-reset-batch-fired-4-prs-slow-cadence-cycle-clo.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T09:05:30.824Z",
+  "schema_version": "v1",
+  "commit_sha": "655e561f8ed058091baf3bc7751557d7ce734cbd",
+  "title": "shard(tick): 2026-05-16T08:58Z — post-reset batch fired (4 PRs); slow-cadence cycle closed",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T09:05:16Z",
+  "head_ref": "shard/tick-0858z-otto-cli-2026-05-16"
+}

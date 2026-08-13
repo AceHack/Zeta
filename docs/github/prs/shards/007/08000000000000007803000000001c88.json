@@ -1,0 +1,12 @@
+{
+  "pr_number": 7304,
+  "archive_path": "docs/history/pr-reviews/PR-7304-docs-research-the-compiler-is-the-most-trusted-traveler-compile-time-intelligenc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:54:00.729Z",
+  "schema_version": "v1",
+  "commit_sha": "c4b0f8c65d262c184d253ae0bba7fc42e2337f8a",
+  "title": "docs(research): the compiler is the most-trusted traveler — compile-time intelligence to speak English (not error codes), easing the 4-oracle treaty",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:53:36Z",
+  "head_ref": "otto/compiler-most-trusted-traveler-compile-time-intelligence-english-eases-4-oracle-treaty"
+}

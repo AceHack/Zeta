@@ -1,0 +1,12 @@
+{
+  "pr_number": 2109,
+  "archive_path": "docs/history/pr-reviews/PR-2109-docs-add-autonomous-backlog-pickup-trajectory.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T17:38:55.440Z",
+  "schema_version": "v1",
+  "commit_sha": "670e2e1be7565d67bfca6473fde15be57fe89f7c",
+  "title": "docs: add autonomous backlog pickup trajectory",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T17:38:33Z",
+  "head_ref": "claim/factory-trajectory-autonomous-backlog-pickup"
+}

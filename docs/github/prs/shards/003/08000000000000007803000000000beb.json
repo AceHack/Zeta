@@ -1,0 +1,12 @@
+{
+  "pr_number": 3051,
+  "archive_path": "docs/history/pr-reviews/PR-3051-tools-mark-codex-loop-headless-provenance.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T22:55:41.206Z",
+  "schema_version": "v1",
+  "commit_sha": "e2c306e18da1d663802402931e3598db45e4afdf",
+  "title": "tools: mark Codex loop headless provenance",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T22:55:20Z",
+  "head_ref": "claim/codex-loop-origin-marker-20260513"
+}

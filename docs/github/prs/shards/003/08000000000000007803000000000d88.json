@@ -1,0 +1,12 @@
+{
+  "pr_number": 3464,
+  "archive_path": "docs/history/pr-reviews/PR-3464-shard-tick-1301z-pr-3462-3463-armed-pre-merge-eval-window.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T12:58:10.202Z",
+  "schema_version": "v1",
+  "commit_sha": "770bbd05a392d112e73c5fba85b261e5f488970d",
+  "title": "shard(tick): 1301Z — PR #3462 + #3463 armed; pre-merge eval window",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T12:57:53Z",
+  "head_ref": "shard/tick-1301z-otto-cli-2026-05-15"
+}

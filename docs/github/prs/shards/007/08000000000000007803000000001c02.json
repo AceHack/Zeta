@@ -1,0 +1,12 @@
+{
+  "pr_number": 7170,
+  "archive_path": "docs/history/pr-reviews/PR-7170-feat-portal-professional-cloud-ui-react-tailwind-shadcn.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:50:59.458Z",
+  "schema_version": "v1",
+  "commit_sha": "f1bccfd9811538cc51f03a0d9eb97a17fa27a393",
+  "title": "feat(portal): professional cloud UI — React + Tailwind + shadcn",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:50:40Z",
+  "head_ref": "feat/portal-react-ui"
+}

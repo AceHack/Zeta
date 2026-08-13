@@ -1,0 +1,12 @@
+{
+  "pr_number": 8381,
+  "archive_path": "docs/history/pr-reviews/PR-8381-docs-society-9a-the-duality-ctm-isociety-the-two-faces-of-the-membrane.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:44:19.620Z",
+  "schema_version": "v1",
+  "commit_sha": "1600894e398525a39e0331ac68e0b3eebc488f8d",
+  "title": "docs(society): §9a the duality — CTM ⊣ ISociety (the two faces of the membrane)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:43:49Z",
+  "head_ref": "docs/ctm-isociety-duality"
+}

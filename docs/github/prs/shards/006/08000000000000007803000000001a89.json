@@ -1,0 +1,12 @@
+{
+  "pr_number": 6793,
+  "archive_path": "docs/history/pr-reviews/PR-6793-docs-b-0969-frame-comparer-strategy-as-database-collation-selection-catalog-defa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T11:17:38.028Z",
+  "schema_version": "v1",
+  "commit_sha": "9dc2736243b0d84a6ca7949f5711b1e8ca8deb34",
+  "title": "docs(B-0969): frame comparer strategy as database collation selection (catalog + default)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T11:17:19Z",
+  "head_ref": "docs/b0969-collation-selection-framing"
+}

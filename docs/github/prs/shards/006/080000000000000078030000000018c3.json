@@ -1,0 +1,12 @@
+{
+  "pr_number": 6339,
+  "archive_path": "docs/history/pr-reviews/PR-6339-docs-b-0959-4-reporting-insights-view-columnar-materialized-view-over-everything.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T04:34:00.914Z",
+  "schema_version": "v1",
+  "commit_sha": "3fddda1226f2bbb6e99078f6cd4ce891b2aeedbe",
+  "title": "docs(B-0959 §4): reporting/insights view — columnar materialized view over everything",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T04:33:38Z",
+  "head_ref": "otto-cli/b0959-reporting-db-note-2026-06-01"
+}

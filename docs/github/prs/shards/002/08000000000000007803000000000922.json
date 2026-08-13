@@ -1,0 +1,25 @@
+{
+  "pr_number": 2338,
+  "archive_path": "docs/history/pr-reviews/PR-2338-docs-b-0004-smallest-atomic-children-inventory-scanner-glossary-anchors.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_j0IO",
+    "comment:PRRC_kwDOSF9kNM6_j0VM",
+    "comment:PRRC_kwDOSF9kNM6_j0VQ",
+    "comment:PRRC_kwDOSF9kNM6_j0VV",
+    "comment:PRRC_kwDOSF9kNM6_j0Va",
+    "comment:PRRC_kwDOSF9kNM6_j0Ve",
+    "thread:PRRT_kwDOSF9kNM6A2dFI",
+    "thread:PRRT_kwDOSF9kNM6A2dQC",
+    "thread:PRRT_kwDOSF9kNM6A2dQG",
+    "thread:PRRT_kwDOSF9kNM6A2dQL",
+    "thread:PRRT_kwDOSF9kNM6A2dQQ",
+    "thread:PRRT_kwDOSF9kNM6A2dQU"
+  ],
+  "fetched_at": "2026-05-09T20:21:52.903Z",
+  "schema_version": "v1",
+  "commit_sha": "35a3bbebeb495baf14d76ea063ebf09bb3cfe0a0",
+  "title": "docs(B-0004): smallest atomic children — inventory scanner + glossary anchors",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T20:21:38Z",
+  "head_ref": "claim/b0004-decompose-repo-translation-smallest-slice-riven-2026-05-09"
+}

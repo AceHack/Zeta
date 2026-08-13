@@ -1,0 +1,12 @@
+{
+  "pr_number": 7145,
+  "archive_path": "docs/history/pr-reviews/PR-7145-docs-research-nci-non-coercion-bounds-the-uncertainty-reduction-engine-without-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:18:22.690Z",
+  "schema_version": "v1",
+  "commit_sha": "79ade7b56c75bb5d01aac3360d42f8c5d0a4caff",
+  "title": "docs(research): NCI (non-coercion) bounds the uncertainty-reduction engine (without it = pathological)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:18:04Z",
+  "head_ref": "otto/research-nci-non-coercion-bounds-uncertainty-reduction-engine"
+}

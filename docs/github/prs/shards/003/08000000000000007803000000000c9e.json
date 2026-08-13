@@ -1,0 +1,17 @@
+{
+  "pr_number": 3230,
+  "archive_path": "docs/history/pr-reviews/PR-3230-feat-workflow-add-stale-worktrees-self-test-job-to-factory-hygiene-audit-cadence.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BXYH9",
+    "comment:PRRC_kwDOSF9kNM7BXYIl",
+    "thread:PRRT_kwDOSF9kNM6CLtvp",
+    "thread:PRRT_kwDOSF9kNM6CLtwG"
+  ],
+  "fetched_at": "2026-05-14T20:42:45.759Z",
+  "schema_version": "v1",
+  "commit_sha": "d0b2b1c22efd2ed7f7256a464c55f884ed0ed9ac",
+  "title": "feat(workflow): add stale-worktrees self-test job to factory-hygiene-audit-cadence",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:42:27Z",
+  "head_ref": "feat/factory-hygiene-add-worktrees-job-otto-cli-2026-05-14-v2"
+}

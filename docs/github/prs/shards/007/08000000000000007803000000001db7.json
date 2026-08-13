@@ -1,0 +1,12 @@
+{
+  "pr_number": 7607,
+  "archive_path": "docs/history/pr-reviews/PR-7607-feat-core-softchip8flux-flux-metered-speculation-input-as-a-membrane-crossing.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T05:35:19.769Z",
+  "schema_version": "v1",
+  "commit_sha": "ebd8479ea9f7ecc2dcbce57b16054feeef74328d",
+  "title": "feat(core): SoftChip8Flux — flux-metered speculation + input as a membrane crossing",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T05:34:54Z",
+  "head_ref": "shadow-flux-metered-speculation"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6398,
+  "archive_path": "docs/history/pr-reviews/PR-6398-docs-registry-itron-extensibility-collection-threading-primitives-object-pool-ra.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T10:47:26.744Z",
+  "schema_version": "v1",
+  "commit_sha": "41f1b5e5361eeff52b664e4df3b91615d02668d0",
+  "title": "docs(registry): Itron.Extensibility collection/threading primitives — object-pool + RAII lock-scopes (skip AsyncCollection → BCL Channels)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T10:47:07Z",
+  "head_ref": "otto-cli/registry-itron-pools-locks-2026-06-01"
+}

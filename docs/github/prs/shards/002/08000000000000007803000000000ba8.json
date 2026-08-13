@@ -1,0 +1,19 @@
+{
+  "pr_number": 2984,
+  "archive_path": "docs/history/pr-reviews/PR-2984-chore-backlog-close-b-0431-slice-3-shipped-in-2983-all-criteria-verified.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AvX_K",
+    "comment:PRRC_kwDOSF9kNM7AvX_s",
+    "comment:PRRC_kwDOSF9kNM7AvXeH",
+    "thread:PRRT_kwDOSF9kNM6BueJO",
+    "thread:PRRT_kwDOSF9kNM6Bueh0",
+    "thread:PRRT_kwDOSF9kNM6Bueha"
+  ],
+  "fetched_at": "2026-05-13T11:11:05.366Z",
+  "schema_version": "v1",
+  "commit_sha": "584e60ce95d5b6d4c8a44e069f242d34d741e8d4",
+  "title": "chore(backlog): close B-0431 — slice-3 shipped in #2983, all criteria verified",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T11:10:44Z",
+  "head_ref": "chore/b-0431-close-backlog-item"
+}

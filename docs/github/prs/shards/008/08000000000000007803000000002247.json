@@ -1,0 +1,12 @@
+{
+  "pr_number": 8775,
+  "archive_path": "docs/history/pr-reviews/PR-8775-docs-research-amend-metaspace-ferry-the-door-model-doors-13-metered-channels.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T21:25:53.799Z",
+  "schema_version": "v1",
+  "commit_sha": "2cd6309bdacc3a947d0c215c67ead2117c76a5ef",
+  "title": "docs(research): amend metaspace ferry — the door model (doors = #13 metered channels)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T21:25:29Z",
+  "head_ref": "otto/amend-metaspace-door-model"
+}

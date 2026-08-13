@@ -1,0 +1,23 @@
+{
+  "pr_number": 2751,
+  "archive_path": "docs/history/pr-reviews/PR-2751-feat-seo-b-0234-dashboard-seo-meta-tags.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AC7FT",
+    "comment:PRRC_kwDOSF9kNM7AC7G9",
+    "comment:PRRC_kwDOSF9kNM7AC7GG",
+    "comment:PRRC_kwDOSF9kNM7AC7Ga",
+    "comment:PRRC_kwDOSF9kNM7ADGRz",
+    "thread:PRRT_kwDOSF9kNM6BN3h8",
+    "thread:PRRT_kwDOSF9kNM6BN3ha",
+    "thread:PRRT_kwDOSF9kNM6BN3iM",
+    "thread:PRRT_kwDOSF9kNM6BN3ii",
+    "thread:PRRT_kwDOSF9kNM6BN_0U"
+  ],
+  "fetched_at": "2026-05-11T20:54:26.239Z",
+  "schema_version": "v1",
+  "commit_sha": "5fec787d819b73497d42e54d1b988b25c0150bcc",
+  "title": "feat(seo): B-0234 dashboard SEO meta tags",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T20:54:05Z",
+  "head_ref": "feat/b-0234-dashboard-seo-meta-tags"
+}

@@ -1,0 +1,29 @@
+{
+  "pr_number": 2690,
+  "archive_path": "docs/history/pr-reviews/PR-2690-docs-backlog-decompose-b-0112-into-3-smallest-atomic-dependency-ordered-children.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_2jxN",
+    "comment:PRRC_kwDOSF9kNM6_2jxR",
+    "comment:PRRC_kwDOSF9kNM6_2mR6",
+    "comment:PRRC_kwDOSF9kNM6_2mRD",
+    "comment:PRRC_kwDOSF9kNM6_2mSO",
+    "comment:PRRC_kwDOSF9kNM6_2mSs",
+    "comment:PRRC_kwDOSF9kNM6_2mTJ",
+    "comment:PRRC_kwDOSF9kNM6_2mTb",
+    "thread:PRRT_kwDOSF9kNM6BEsmP",
+    "thread:PRRT_kwDOSF9kNM6BEsmT",
+    "thread:PRRT_kwDOSF9kNM6BEud0",
+    "thread:PRRT_kwDOSF9kNM6BEue9",
+    "thread:PRRT_kwDOSF9kNM6BEueX",
+    "thread:PRRT_kwDOSF9kNM6BEuem",
+    "thread:PRRT_kwDOSF9kNM6BEufV",
+    "thread:PRRT_kwDOSF9kNM6BEufj"
+  ],
+  "fetched_at": "2026-05-11T12:16:43.400Z",
+  "schema_version": "v1",
+  "commit_sha": "6e694be894e794d5c3320608ea3a755599ab865b",
+  "title": "docs(backlog): decompose B-0112 into 3 smallest atomic dependency-ordered children (re-decomp, one bounded step)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T12:16:25Z",
+  "head_ref": "claim/b0108-immune-system-upgrades-decompose-smallest-atomic-children-riven-2026-05-11"
+}

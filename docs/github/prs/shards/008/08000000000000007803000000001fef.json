@@ -1,0 +1,12 @@
+{
+  "pr_number": 8175,
+  "archive_path": "docs/history/pr-reviews/PR-8175-fix-scenario-2-ci-hang-at-iter-5-3-non-tty-password-prompt.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T12:57:11.773Z",
+  "schema_version": "v1",
+  "commit_sha": "b52b356e6ddcb73f84f16e6319693212b3f21028",
+  "title": "Fix scenario 2 CI hang at iter-5.3 non-TTY password prompt",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T12:56:48Z",
+  "head_ref": "riven/iter53-nontty-ci-skip"
+}

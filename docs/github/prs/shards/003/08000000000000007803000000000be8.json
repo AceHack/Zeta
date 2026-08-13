@@ -1,0 +1,17 @@
+{
+  "pr_number": 3048,
+  "archive_path": "docs/history/pr-reviews/PR-3048-docs-rules-rule-0-mark-the-3-legacy-hygiene-sh-violations-as-cleared.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A_jgC",
+    "comment:PRRC_kwDOSF9kNM7A_jgT",
+    "thread:PRRT_kwDOSF9kNM6B6Rhl",
+    "thread:PRRT_kwDOSF9kNM6B6Rhx"
+  ],
+  "fetched_at": "2026-05-13T22:49:15.306Z",
+  "schema_version": "v1",
+  "commit_sha": "93501c4f81d5c0fc5367bc95b39d0cb513ef17e6",
+  "title": "docs(rules): Rule 0 — mark the 3 legacy hygiene .sh violations as cleared",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T22:49:00Z",
+  "head_ref": "fix/rule-0-update-stale-legacy-violations-2026-05-13"
+}

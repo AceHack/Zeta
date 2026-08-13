@@ -1,0 +1,12 @@
+{
+  "pr_number": 7508,
+  "archive_path": "docs/history/pr-reviews/PR-7508-docs-clis-correct-f-loop-notation-pipe-sim-to-mea-to-cut-left-assoc-juxtapositio.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T20:47:33.441Z",
+  "schema_version": "v1",
+  "commit_sha": "7b46f7cf1d3053fe410204150f24235631bd7d0d",
+  "title": "docs(clis): correct F# loop notation — pipe sim to mea to cut (left-assoc; juxtaposition is not nesting)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T20:47:11Z",
+  "head_ref": "shadow-correct-cut-mea-sim-pipe-notation"
+}

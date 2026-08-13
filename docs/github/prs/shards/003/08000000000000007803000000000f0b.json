@@ -1,0 +1,12 @@
+{
+  "pr_number": 3851,
+  "archive_path": "docs/history/pr-reviews/PR-3851-shard-tick-2026-05-16t10-03z-taxonomy-reconciliation-fp-2-vs-class-2-family-scop.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T10:12:07.189Z",
+  "schema_version": "v1",
+  "commit_sha": "3e19d0cd714c99ae72343a6591c308efbfb7f599",
+  "title": "shard(tick): 2026-05-16T10:03Z — taxonomy reconciliation (FP-2 vs class #2 family-scope)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:11:49Z",
+  "head_ref": "shard/tick-1003z-otto-cli-2026-05-16"
+}

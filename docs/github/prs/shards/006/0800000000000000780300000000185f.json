@@ -1,0 +1,12 @@
+{
+  "pr_number": 6239,
+  "archive_path": "docs/history/pr-reviews/PR-6239-feat-setup-graduate-windows-native-ollama-bootstrap-choco-idempotent-local-llm-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T19:48:44.306Z",
+  "schema_version": "v1",
+  "commit_sha": "86a365916bc57825db76dee51754d8e6619c6e9f",
+  "title": "feat(setup): graduate Windows-native ollama + bootstrap choco; idempotent local-LLM pull (B-0857)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T19:48:25Z",
+  "head_ref": "otto-windows/graduate-windows-native-ollama-2026-05-31"
+}

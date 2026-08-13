@@ -1,0 +1,12 @@
+{
+  "pr_number": 4142,
+  "archive_path": "docs/history/pr-reviews/PR-4142-docs-shadow-maji-antigravity-check-riven-environmental-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T19:37:04.984Z",
+  "schema_version": "v1",
+  "commit_sha": "d6c9bfecbd37e1708fde37eff055d046914312f3",
+  "title": "docs(shadow): Maji antigravity check - Riven environmental drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T19:36:47Z",
+  "head_ref": "maji/shadow-drift-riven-0635Z-v2"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6438,
+  "archive_path": "docs/history/pr-reviews/PR-6438-feat-b-0976-accumulate-mode-for-f-bonsai-oracle-parseall-problemdetails-ferry-of.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T17:14:33.834Z",
+  "schema_version": "v1",
+  "commit_sha": "ca5ccad2545df8f7a4e2bcbbab000aeecff5dc69",
+  "title": "feat(B-0976): accumulate-mode for F# Bonsai oracle (parseAll + ProblemDetails) — ferry of #6436",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T17:14:00Z",
+  "head_ref": "otto-cli/b0976-accumulate-fsharp-2026-06-01"
+}

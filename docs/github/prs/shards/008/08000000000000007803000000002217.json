@@ -1,0 +1,15 @@
+{
+  "pr_number": 8727,
+  "archive_path": "docs/history/pr-reviews/PR-8727-feat-core-mint-darkhall-heat-continuations.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7NYDkD",
+    "thread:PRRT_kwDOSF9kNM6K-O-n"
+  ],
+  "fetched_at": "2026-06-20T07:42:16.665Z",
+  "schema_version": "v1",
+  "commit_sha": "ca8d4ad77d782d80d63a715364640520d42da97e",
+  "title": "feat(core): mint darkhall heat continuations",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T07:41:47Z",
+  "head_ref": "codex/darkhall-heat-continuation"
+}

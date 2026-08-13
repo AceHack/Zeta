@@ -1,0 +1,15 @@
+{
+  "pr_number": 5855,
+  "archive_path": "docs/history/pr-reviews/PR-5855-docs-research-add-shadow-log-for-otto-pr-5854.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F1JgS",
+    "thread:PRRT_kwDOSF9kNM6Fc3nc"
+  ],
+  "fetched_at": "2026-05-28T16:11:20.956Z",
+  "schema_version": "v1",
+  "commit_sha": "b74349d1070185cf2dd93dd3d0f031b1ac03a1af",
+  "title": "docs(research): Add shadow log for Otto PR #5854",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T16:10:59Z",
+  "head_ref": "lior/shadow-log-otto-5854"
+}

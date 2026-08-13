@@ -1,0 +1,12 @@
+{
+  "pr_number": 6892,
+  "archive_path": "docs/history/pr-reviews/PR-6892-docs-research-universal-action-grammar-xbox-controller-ties-into-the-geospatial-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T18:57:20.879Z",
+  "schema_version": "v1",
+  "commit_sha": "69287c4c62557f487d78b24d027047d3a4bf2905",
+  "title": "docs(research): universal action grammar (Xbox controller) ties into the geospatial network map — location-contextual actions",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T18:57:00Z",
+  "head_ref": "otto/action-grammar-ties-into-geospatial-network-capture"
+}

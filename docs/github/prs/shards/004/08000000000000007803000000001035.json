@@ -1,0 +1,16 @@
+{
+  "pr_number": 4149,
+  "archive_path": "docs/history/pr-reviews/PR-4149-feat-codex-loop-tick-add-b-0615-push-hang-awareness-timeout-discipline-to-vera-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CR6OJ",
+    "comment:PRRC_kwDOSF9kNM7CTQ7p",
+    "thread:PRRT_kwDOSF9kNM6C2zg1"
+  ],
+  "fetched_at": "2026-05-18T17:03:57.300Z",
+  "schema_version": "v1",
+  "commit_sha": "7c06fd1b81e179d2e36bea52dbc2735de4f60047",
+  "title": "feat(codex-loop-tick): add B-0615 push-hang awareness + timeout discipline to Vera's spawned prompt",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T17:03:39Z",
+  "head_ref": "otto-cli/codex-loop-tick-b0615-push-hang-awareness-2026-05-18-1400z"
+}

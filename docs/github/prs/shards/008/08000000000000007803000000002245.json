@@ -1,0 +1,12 @@
+{
+  "pr_number": 8773,
+  "archive_path": "docs/history/pr-reviews/PR-8773-docs-research-ferry-metaspace-navigation-physics-engine-2d-viewport-over-3d-clif.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T21:13:18.030Z",
+  "schema_version": "v1",
+  "commit_sha": "e0e232242b10d2a6c4af32a57d60638e11b0e14c",
+  "title": "docs(research): ferry — metaspace navigation + physics engine (2D viewport over 3D Clifford frame)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T21:12:50Z",
+  "head_ref": "otto/ferry-metaspace-navigation"
+}

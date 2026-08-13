@@ -1,0 +1,12 @@
+{
+  "pr_number": 3009,
+  "archive_path": "docs/history/pr-reviews/PR-3009-docs-launch-zeta-twitter-launch-live-acehack00-canonical-event-substrate-2026-05.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T17:54:18.166Z",
+  "schema_version": "v1",
+  "commit_sha": "a0d2b6bc81eba10734ce170379201755997e5517",
+  "title": "docs(launch): Zeta Twitter launch — LIVE @AceHack00 (canonical event substrate; 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T17:53:54Z",
+  "head_ref": "aaron-zeta-twitter-launch-live-2026-05-13"
+}

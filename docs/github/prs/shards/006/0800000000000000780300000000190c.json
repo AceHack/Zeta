@@ -1,0 +1,12 @@
+{
+  "pr_number": 6412,
+  "archive_path": "docs/history/pr-reviews/PR-6412-docs-ace-slice-5-4-lockfile-ergonomics-design-spec.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T12:10:45.057Z",
+  "schema_version": "v1",
+  "commit_sha": "2db899b03f2b5699c28afc28ccc66409e83de298",
+  "title": "docs(ace): slice 5.4 lockfile ergonomics design spec",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T12:10:23Z",
+  "head_ref": "otto-windows/ace-slice5.4-lockfile-ergonomics-2026-06-01"
+}

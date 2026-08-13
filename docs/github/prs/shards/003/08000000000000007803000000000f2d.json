@@ -1,0 +1,16 @@
+{
+  "pr_number": 3885,
+  "archive_path": "docs/history/pr-reviews/PR-3885-docs-archive-lior-preservation-3882-3875-3873.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B4xRo",
+    "comment:PRRC_kwDOSF9kNM7B67X7",
+    "thread:PRRT_kwDOSF9kNM6Cj7BM"
+  ],
+  "fetched_at": "2026-05-16T20:54:22.905Z",
+  "schema_version": "v1",
+  "commit_sha": "a190ad068c86c6ee91f09ff8540f6261d2fb3d5b",
+  "title": "docs(archive): Lior preservation 3882, 3875, 3873",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T20:54:04Z",
+  "head_ref": "lior/preserve-3882-3875-3873"
+}

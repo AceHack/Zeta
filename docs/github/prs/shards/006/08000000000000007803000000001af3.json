@@ -1,0 +1,12 @@
+{
+  "pr_number": 6899,
+  "archive_path": "docs/history/pr-reviews/PR-6899-docs-research-post-mortem-pattern-preservation-is-consent-gated-the-line-is-cons.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T19:56:47.569Z",
+  "schema_version": "v1",
+  "commit_sha": "dda9ffed8685b793ac44bfe93d707935f05764cd",
+  "title": "docs(research): post-mortem pattern preservation is consent-gated — the line is consent, not metaphysics",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T19:56:27Z",
+  "head_ref": "otto/post-mortem-pattern-preservation-is-consent-gated"
+}

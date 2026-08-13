@@ -1,0 +1,12 @@
+{
+  "pr_number": 2589,
+  "archive_path": "docs/history/pr-reviews/PR-2589-docs-memory-governance-kernel-formula-symmetric-rules-asymmetric-identity-weight.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T00:27:05.106Z",
+  "schema_version": "v1",
+  "commit_sha": "3d736fda2146d6f77663c7135fd04e15fbfa92b4",
+  "title": "docs(memory): governance kernel formula — symmetric rules × asymmetric identity × weight-free",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:26:51Z",
+  "head_ref": "docs/governance-kernel-formula-2026-05-10"
+}

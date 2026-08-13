@@ -1,0 +1,12 @@
+{
+  "pr_number": 7973,
+  "archive_path": "docs/history/pr-reviews/PR-7973-docs-research-shadow-ferry-18-9-rx-dynamicvalue-as-the-two-halves-meijer-chris-k.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:07:39.865Z",
+  "schema_version": "v1",
+  "commit_sha": "f43cf41c60cc091b51ebb5f4ce891af9e1a267b9",
+  "title": "docs(research)+shadow: ferry 18 §9 — Rx/DynamicValue as the two halves; Meijer & Chris King; the data/codata duality (bifree point)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:07:10Z",
+  "head_ref": "shadow/ferry-18-s9-meijer-king-duals"
+}

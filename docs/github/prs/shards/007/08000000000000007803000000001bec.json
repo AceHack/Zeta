@@ -1,0 +1,12 @@
+{
+  "pr_number": 7148,
+  "archive_path": "docs/history/pr-reviews/PR-7148-feat-core-persona-private-state-moe-over-hats-flags-enum-identity-overfitting-le.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:31:57.278Z",
+  "schema_version": "v1",
+  "commit_sha": "5500a38faccb332192bc403041f2dd16265a2a92",
+  "title": "feat(core): Persona private state + MoE-over-hats + flags-enum identity + overfitting lever",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:31:39Z",
+  "head_ref": "otto/persona-private-state-moe-hats-flags-enum-identity-overfitting-lever"
+}

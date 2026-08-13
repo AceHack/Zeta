@@ -1,0 +1,12 @@
+{
+  "pr_number": 6734,
+  "archive_path": "docs/history/pr-reviews/PR-6734-docs-roadmap-memory-operating-principle-every-input-code-proof-treaty-seed-backl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:04:40.644Z",
+  "schema_version": "v1",
+  "commit_sha": "dccdab1c665ec236dfed2505e4e5198907684701",
+  "title": "docs(roadmap)+memory: operating principle — every input → code|proof|treaty-seed|backlog",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:04:17Z",
+  "head_ref": "otto/roadmap-operating-principle-triage"
+}

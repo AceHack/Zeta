@@ -1,0 +1,12 @@
+{
+  "pr_number": 7419,
+  "archive_path": "docs/history/pr-reviews/PR-7419-feat-vocab-add-keys-canonical-home-for-key-concepts-types-vocabulary-not-key-mat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:41:55.505Z",
+  "schema_version": "v1",
+  "commit_sha": "7ec1acf514b61832b8bb9c2ffecf485566fb83da",
+  "title": "feat(vocab): add keys/ — canonical home for key concepts/types (vocabulary, NOT key material)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:41:34Z",
+  "head_ref": "otto/keys-folder-vocab-key-concepts-not-material"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 6163,
+  "archive_path": "docs/history/pr-reviews/PR-6163-backlog-b-0946-filesystem-dsl-as-f-computation-expression-fuse-backend-dst-at-mi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gc01L",
+    "thread:PRRT_kwDOSF9kNM6F5yzF"
+  ],
+  "fetched_at": "2026-05-30T23:18:07.995Z",
+  "schema_version": "v1",
+  "commit_sha": "0041f14e980c908ae532080ac8ba0161954c3753",
+  "title": "backlog(B-0946): filesystem DSL as F# computation expression + FUSE backend + DST-at-millions-of-nodes (summonable-BFT + CRDTs)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T23:17:45Z",
+  "head_ref": "otto/b0946-filesystem-dsl-ce-fuse-dst-millions-2026-05-30"
+}

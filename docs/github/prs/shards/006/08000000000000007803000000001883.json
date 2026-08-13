@@ -1,0 +1,12 @@
+{
+  "pr_number": 6275,
+  "archive_path": "docs/history/pr-reviews/PR-6275-wire-observe-act-control-plane-rate-limits.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T23:29:35.245Z",
+  "schema_version": "v1",
+  "commit_sha": "7c1bb3fbdc46485ced8a1c2b6b9a6a22836d15cc",
+  "title": "Wire observe-act control-plane rate limits",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T23:29:12Z",
+  "head_ref": "codex/agentic-org-secret-scope-controls"
+}

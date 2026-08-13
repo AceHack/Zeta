@@ -1,0 +1,27 @@
+{
+  "pr_number": 6173,
+  "archive_path": "docs/history/pr-reviews/PR-6173-feat-b-0944-slice-5-tri-boolean-float-decoder-semantics-exploration-3-designs-co.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GdM8-",
+    "comment:PRRC_kwDOSF9kNM7GdMKl",
+    "comment:PRRC_kwDOSF9kNM7GdMKm",
+    "comment:PRRC_kwDOSF9kNM7GdMQL",
+    "comment:PRRC_kwDOSF9kNM7GdMQV",
+    "comment:PRRC_kwDOSF9kNM7GdMQX",
+    "comment:PRRC_kwDOSF9kNM7GdOGF",
+    "thread:PRRT_kwDOSF9kNM6F6E9A",
+    "thread:PRRT_kwDOSF9kNM6F6E9C",
+    "thread:PRRT_kwDOSF9kNM6F6FBL",
+    "thread:PRRT_kwDOSF9kNM6F6FBV",
+    "thread:PRRT_kwDOSF9kNM6F6FBX",
+    "thread:PRRT_kwDOSF9kNM6F6Flk",
+    "thread:PRRT_kwDOSF9kNM6F6GhI"
+  ],
+  "fetched_at": "2026-05-31T01:21:15.757Z",
+  "schema_version": "v1",
+  "commit_sha": "81986b1fe8d5bd2dba308b4ff1ec7d5cbbc00739",
+  "title": "feat(B-0944 slice 5): tri-boolean float decoder-semantics exploration (3 designs compared; 13/13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T01:20:56Z",
+  "head_ref": "otto-cli/b0944-slice5-float-decoder-exploration-2026-05-31"
+}

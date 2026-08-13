@@ -1,0 +1,12 @@
+{
+  "pr_number": 6837,
+  "archive_path": "docs/history/pr-reviews/PR-6837-docs-orleans-actors-on-the-git-native-bus-sequential-pointer-arrival-order-canon.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:23:34.443Z",
+  "schema_version": "v1",
+  "commit_sha": "a76e25d4383d9fbd307a1bcc89bb24664a253134",
+  "title": "docs: Orleans actors on the git-native bus — sequential pointer, arrival-order canonical, no retraction",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:23:15Z",
+  "head_ref": "capture/orleans-actors-on-git-native-bus-sequential-pointer"
+}

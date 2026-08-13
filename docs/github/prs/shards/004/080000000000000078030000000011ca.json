@@ -1,0 +1,12 @@
+{
+  "pr_number": 4554,
+  "archive_path": "docs/history/pr-reviews/PR-4554-fix-lior-add-execution-timeout-to-background-tick-runner.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T16:48:09.059Z",
+  "schema_version": "v1",
+  "commit_sha": "397c1c73f5a97a3ab63fb2d22e7f9ab03cbce4c6",
+  "title": "fix(lior): add execution timeout to background tick runner",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T16:47:48Z",
+  "head_ref": "lior/fix-loop-timeout"
+}

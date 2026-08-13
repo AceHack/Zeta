@@ -1,0 +1,19 @@
+{
+  "pr_number": 4048,
+  "archive_path": "docs/history/pr-reviews/PR-4048-memory-otto-cli-isolated-worktree-workflow-worked-example-under-zeta-expected-br.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B-FbL",
+    "comment:PRRC_kwDOSF9kNM7B-GCM",
+    "comment:PRRC_kwDOSF9kNM7B-GCf",
+    "thread:PRRT_kwDOSF9kNM6CoA15",
+    "thread:PRRT_kwDOSF9kNM6CoA2M",
+    "thread:PRRT_kwDOSF9kNM6CoAaP"
+  ],
+  "fetched_at": "2026-05-17T08:29:19.024Z",
+  "schema_version": "v1",
+  "commit_sha": "a1d0ec3eeb0d78ad25cc681597d02965016027bb",
+  "title": "memory(otto-cli): isolated-worktree workflow worked example under zeta-expected-branch race-window caveat",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T08:29:00Z",
+  "head_ref": "otto/worked-example-isolated-worktree-workflow-2026-05-17"
+}

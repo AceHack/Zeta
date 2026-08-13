@@ -1,0 +1,12 @@
+{
+  "pr_number": 3546,
+  "archive_path": "docs/history/pr-reviews/PR-3546-shard-tick-1820z-b-0533-slice-a-poc-merged-peer-otto-worktree-contention-rescue.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T18:29:37.214Z",
+  "schema_version": "v1",
+  "commit_sha": "4209db3791164e686755b192f2a9250570439315",
+  "title": "shard(tick): 1820Z — B-0533 Slice A POC merged; peer-Otto worktree-contention rescue",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:29:17Z",
+  "head_ref": "shard/tick-1820z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8113,
+  "archive_path": "docs/history/pr-reviews/PR-8113-fix-lint-blank-line-before-list-in-kiro-unified-loop-service-design-md032.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:03:27.867Z",
+  "schema_version": "v1",
+  "commit_sha": "4bd38ec867fa75fc19aee08f90880672bbfdacb0",
+  "title": "fix(lint): blank line before list in kiro unified-loop-service design (MD032)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:03:03Z",
+  "head_ref": "otto/fix-kiro-spec-markdownlint"
+}

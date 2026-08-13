@@ -1,0 +1,12 @@
+{
+  "pr_number": 7903,
+  "archive_path": "docs/history/pr-reviews/PR-7903-fix-ace-clear-main-gate-strictness.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T12:14:07.954Z",
+  "schema_version": "v1",
+  "commit_sha": "736c227d9ed5f3d27aa560e7555c2bc4eb8f7692",
+  "title": "fix(ace): clear main gate strictness",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T12:13:39Z",
+  "head_ref": "codex/fix-main-ace-markdown-gate"
+}

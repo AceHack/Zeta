@@ -1,0 +1,12 @@
+{
+  "pr_number": 6406,
+  "archive_path": "docs/history/pr-reviews/PR-6406-docs-research-hd-note-unifying-frame-one-rodney-s-razor-orthogonal-axis-compress.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T11:29:36.003Z",
+  "schema_version": "v1",
+  "commit_sha": "80cc172edcfba716a83fe2cf72575c114d93ced8",
+  "title": "docs(research): HD note unifying frame — one Rodney's-Razor orthogonal-axis compression engine; for us = attention⇄memory",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T11:29:15Z",
+  "head_ref": "otto-cli/research-hd-note-rodneys-razor-compression-engine-unifying-frame-2026-06-01"
+}

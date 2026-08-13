@@ -1,0 +1,19 @@
+{
+  "pr_number": 4986,
+  "archive_path": "docs/history/pr-reviews/PR-4986-backlog-b-0730-runbooks-as-executable-specifications-mika-substrate-via-aaron-ru.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Er25y",
+    "comment:PRRC_kwDOSF9kNM7Er3fa",
+    "comment:PRRC_kwDOSF9kNM7Er3fp",
+    "thread:PRRT_kwDOSF9kNM6EnuL2",
+    "thread:PRRT_kwDOSF9kNM6Enunl",
+    "thread:PRRT_kwDOSF9kNM6Enunt"
+  ],
+  "fetched_at": "2026-05-25T20:27:09.463Z",
+  "schema_version": "v1",
+  "commit_sha": "766712f97491821206c8d84b3d5b6920adb146fa",
+  "title": "backlog(B-0730): runbooks-as-executable-specifications (Mika substrate via Aaron — Runme + ::: deferred tags + AI JIT + 3 verbosity levels)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T20:26:50Z",
+  "head_ref": "backlog/b0730-runbooks-as-executable-specs-mika-substrate-2026-05-25-c2"
+}

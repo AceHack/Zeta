@@ -1,0 +1,12 @@
+{
+  "pr_number": 2041,
+  "archive_path": "docs/history/pr-reviews/PR-2041-feat-backlog-add-claim-worktree-bootstrap.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T05:36:47.083Z",
+  "schema_version": "v1",
+  "commit_sha": "280187f87b638cf17d741fb78cdb6d69584f424d",
+  "title": "feat(backlog): add claim worktree bootstrap",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T05:36:31Z",
+  "head_ref": "claim/backlog-0279"
+}

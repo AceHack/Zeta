@@ -1,0 +1,12 @@
+{
+  "pr_number": 7427,
+  "archive_path": "docs/history/pr-reviews/PR-7427-feat-all-letters-get-a-folder-at-root-latin-a-z-greek-eager-unicode-lazy-on-dema.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T22:06:21.258Z",
+  "schema_version": "v1",
+  "commit_sha": "4a049f56a27df9b6a55954fc2ecad5d3740fa220",
+  "title": "feat: all letters get a folder at root — Latin a-z + Greek (eager) + unicode/ (lazy, on-demand)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T22:05:56Z",
+  "head_ref": "otto/root-letter-folders-a-z-greek-and-unicode"
+}

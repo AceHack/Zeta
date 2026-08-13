@@ -1,0 +1,12 @@
+{
+  "pr_number": 8367,
+  "archive_path": "docs/history/pr-reviews/PR-8367-docs-register-d-this-register-is-the-society-s-law-registry-the-promotion-pipeli.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T23:54:17.736Z",
+  "schema_version": "v1",
+  "commit_sha": "3ce01b1422b5c44bafad62c6dfd0129765ce9e51",
+  "title": "docs(register): §D — this register IS the society's law registry; the promotion pipeline (math team = the gate)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T23:53:55Z",
+  "head_ref": "docs/registry-promotion-pipeline-section-d"
+}

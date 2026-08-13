@@ -1,0 +1,19 @@
+{
+  "pr_number": 4532,
+  "archive_path": "docs/history/pr-reviews/PR-4532-docs-tick-shard-2026-05-21-1212z-cold-boot-sentinel-re-arm-lior-saturation-obser.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Dkuhq",
+    "comment:PRRC_kwDOSF9kNM7DkyB4",
+    "comment:PRRC_kwDOSF9kNM7DkyBF",
+    "thread:PRRT_kwDOSF9kNM6DzDHT",
+    "thread:PRRT_kwDOSF9kNM6DzFu8",
+    "thread:PRRT_kwDOSF9kNM6DzFvZ"
+  ],
+  "fetched_at": "2026-05-21T13:02:12.839Z",
+  "schema_version": "v1",
+  "commit_sha": "5b7cda0675ac779975140eb0d8b43ea3c75b6b60",
+  "title": "docs(tick-shard): 2026-05-21 1212Z cold-boot — sentinel re-arm + Lior-saturation observation + index-recovery refinement",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T13:01:44Z",
+  "head_ref": "otto/cold-boot-shard-1212z-2026-05-21-8359"
+}

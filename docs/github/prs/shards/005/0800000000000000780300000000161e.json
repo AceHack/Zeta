@@ -1,0 +1,12 @@
+{
+  "pr_number": 5662,
+  "archive_path": "docs/history/pr-reviews/PR-5662-feat-b-0866-26-b-0869-9-b-0870-9-10-whole-company-ai-evangelism-multi-pr-multi-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T00:57:31.983Z",
+  "schema_version": "v1",
+  "commit_sha": "9715b136e3f9dc42bbb68c21649c500dec8c6487",
+  "title": "feat(B-0866.26 + B-0869.9 + B-0870.9-10): whole-company AI-evangelism + multi-PR/multi-agent orchestration as concrete 24-months-ahead definition (operator 2026-05-28 ratifications)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T00:57:09Z",
+  "head_ref": "feat/b-0866-26-plus-b0869-9-plus-b0870-9-whole-company-ai-evangelism-conditional-on-dora-aaron-2026-05-28"
+}

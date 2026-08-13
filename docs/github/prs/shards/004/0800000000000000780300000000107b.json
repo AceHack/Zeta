@@ -1,0 +1,19 @@
+{
+  "pr_number": 4219,
+  "archive_path": "docs/history/pr-reviews/PR-4219-shards-2115z-2140z-6-followup-tick-shards-lint-fixed-v2-supersedes-4217.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CdE-k",
+    "comment:PRRC_kwDOSF9kNM7CdE_g",
+    "comment:PRRC_kwDOSF9kNM7CdFAO",
+    "thread:PRRT_kwDOSF9kNM6C-4wX",
+    "thread:PRRT_kwDOSF9kNM6C-4xI",
+    "thread:PRRT_kwDOSF9kNM6C-4xx"
+  ],
+  "fetched_at": "2026-05-18T22:46:35.064Z",
+  "schema_version": "v1",
+  "commit_sha": "8b30d9e5dcd5d9bda34039d15bb3a7bb801e0e12",
+  "title": "shards(2115Z-2140Z): 6 followup tick shards (lint-fixed v2; supersedes #4217)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:46:18Z",
+  "head_ref": "otto/2115z-batch-6-followup-shards-lint-fixed-v2-2026-05-18"
+}

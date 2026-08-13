@@ -1,0 +1,12 @@
+{
+  "pr_number": 6844,
+  "archive_path": "docs/history/pr-reviews/PR-6844-docs-fs-merkle-merge-wire-protocol-request-fs-metadata-response-streamed-missing.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:44:57.733Z",
+  "schema_version": "v1",
+  "commit_sha": "811fdfb5c5598f21219633d9fe6da8f025c6f2c9",
+  "title": "docs(fs-Merkle): merge wire protocol — request = fs metadata, response = streamed missing content",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:44:39Z",
+  "head_ref": "capture/merge-wire-protocol-manifest-then-stream-missing"
+}

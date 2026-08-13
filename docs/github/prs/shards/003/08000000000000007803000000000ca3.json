@@ -1,0 +1,12 @@
+{
+  "pr_number": 3235,
+  "archive_path": "docs/history/pr-reviews/PR-3235-feat-b-0488-ksk-kinetic-safeguard-kernel-persona-map.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T20:48:46.197Z",
+  "schema_version": "v1",
+  "commit_sha": "62247350acd33f010abb4e0ba58c2833c9acb326",
+  "title": "feat(b-0488): KSK (Kinetic Safeguard Kernel) persona map",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:48:18Z",
+  "head_ref": "otto/b0488-ksk-personas-2026-05-14"
+}

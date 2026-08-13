@@ -1,0 +1,23 @@
+{
+  "pr_number": 2747,
+  "archive_path": "docs/history/pr-reviews/PR-2747-feat-loop-step-4b-pr-archive-discipline-for-every-agent.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ACjaw",
+    "comment:PRRC_kwDOSF9kNM7ACmp2",
+    "comment:PRRC_kwDOSF9kNM7ACmqi",
+    "comment:PRRC_kwDOSF9kNM7ACmqz",
+    "comment:PRRC_kwDOSF9kNM7ACmrN",
+    "thread:PRRT_kwDOSF9kNM6BNl7V",
+    "thread:PRRT_kwDOSF9kNM6BNobl",
+    "thread:PRRT_kwDOSF9kNM6BNocG",
+    "thread:PRRT_kwDOSF9kNM6BNocV",
+    "thread:PRRT_kwDOSF9kNM6BNock"
+  ],
+  "fetched_at": "2026-05-11T20:30:39.688Z",
+  "schema_version": "v1",
+  "commit_sha": "6ba4fc2aa335e047b8f396aa51949e9d0ca8ea45",
+  "title": "feat(loop): step 4b — PR archive discipline for every agent",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T20:30:19Z",
+  "head_ref": "feat/pr-archive-in-loop-pattern-2026-05-11"
+}

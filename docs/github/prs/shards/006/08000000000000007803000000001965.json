@@ -1,0 +1,25 @@
+{
+  "pr_number": 6501,
+  "archive_path": "docs/history/pr-reviews/PR-6501-feat-yaml-yaml-port-forward-only-one-pass-reader-dom-on-top-4-oracle-registry-4-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G8ni-",
+    "comment:PRRC_kwDOSF9kNM7G8niz",
+    "comment:PRRC_kwDOSF9kNM7G8pRA",
+    "comment:PRRC_kwDOSF9kNM7G8pRL",
+    "comment:PRRC_kwDOSF9kNM7G8pRa",
+    "comment:PRRC_kwDOSF9kNM7G8pRp",
+    "thread:PRRT_kwDOSF9kNM6GRrd4",
+    "thread:PRRT_kwDOSF9kNM6GRrdw",
+    "thread:PRRT_kwDOSF9kNM6GRst7",
+    "thread:PRRT_kwDOSF9kNM6GRsty",
+    "thread:PRRT_kwDOSF9kNM6GRsuK",
+    "thread:PRRT_kwDOSF9kNM6GRsuT"
+  ],
+  "fetched_at": "2026-06-01T23:53:39.077Z",
+  "schema_version": "v1",
+  "commit_sha": "2e940151d59db82c3e08cfb43c3bd7ca0caf7a96",
+  "title": "feat(yaml): YAML port — forward-only one-pass reader + DOM-on-top, 4-oracle (registry ✅ 4/4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T23:53:18Z",
+  "head_ref": "otto-windows/yaml-port-impl-2026-06-01"
+}

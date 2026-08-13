@@ -1,0 +1,15 @@
+{
+  "pr_number": 6172,
+  "archive_path": "docs/history/pr-reviews/PR-6172-feat-b-0944-slice-5-pt1-tri-boolean-float-v0-spec-ts-reference-middle-out-self-d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GdKqR",
+    "thread:PRRT_kwDOSF9kNM6F6Due"
+  ],
+  "fetched_at": "2026-05-31T00:53:33.790Z",
+  "schema_version": "v1",
+  "commit_sha": "3a1b004aae38743d5d625164f2724271d066983b",
+  "title": "feat(B-0944 slice 5 pt1): tri-boolean float v0 spec + TS reference (middle-out, self-describing; 8/8)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T00:53:15Z",
+  "head_ref": "otto-cli/b0944-slice5-tri-boolean-float-v0-2026-05-30"
+}

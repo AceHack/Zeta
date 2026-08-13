@@ -1,0 +1,12 @@
+{
+  "pr_number": 7156,
+  "archive_path": "docs/history/pr-reviews/PR-7156-feat-core-diversity-bulletproof-nci-floor-theorem-collapse-proof-private-state-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:02:01.941Z",
+  "schema_version": "v1",
+  "commit_sha": "3ab751db89b7ed2f4ab35e5e566914b7ce251ff4",
+  "title": "feat(core): Diversity — bulletproof NCI-floor theorem (collapse proof + private-state diversity floor)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:01:38Z",
+  "head_ref": "otto/diversity-nci-floor-theorem-bulletproof-collapse-proof"
+}

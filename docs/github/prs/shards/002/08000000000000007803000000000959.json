@@ -1,0 +1,12 @@
+{
+  "pr_number": 2393,
+  "archive_path": "docs/history/pr-reviews/PR-2393-decompose-b-0033-re-decompose-into-10-smallest-dependency-ordered-atomic-child-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T02:02:07.056Z",
+  "schema_version": "v1",
+  "commit_sha": "e87ffa8ca344cc849dc04d353b3af7c90803162f",
+  "title": "decompose(B-0033): re-decompose into 10 smallest dependency-ordered atomic child rows (TS-first hooks)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T02:01:54Z",
+  "head_ref": "claim/b0033-otto-discipline-hooks-decompose-smallest-atomic-children-riven-2026-05-09"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 4455,
+  "archive_path": "docs/history/pr-reviews/PR-4455-docs-shadow-lior-anti-entropy-log-riven-pagination-hallucination-2305z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DXY3t",
+    "thread:PRRT_kwDOSF9kNM6DpM6F"
+  ],
+  "fetched_at": "2026-05-20T23:17:14.233Z",
+  "schema_version": "v1",
+  "commit_sha": "ef4f7052ecdfb0a58e34b9ba8afd326d96dfdfec",
+  "title": "docs(shadow): Lior anti-entropy log — Riven pagination hallucination 2305Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T23:16:53Z",
+  "head_ref": "lior/shadow-log-riven-2305Z"
+}

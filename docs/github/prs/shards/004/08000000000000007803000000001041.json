@@ -1,0 +1,25 @@
+{
+  "pr_number": 4161,
+  "archive_path": "docs/history/pr-reviews/PR-4161-backlog-mika-batch2-reland-6-rows-from-stale-dirty-pr-4153-b-0623-b-0624-b-0625-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CU8o6",
+    "comment:PRRC_kwDOSF9kNM7CU8pA",
+    "comment:PRRC_kwDOSF9kNM7CU8pH",
+    "comment:PRRC_kwDOSF9kNM7CUyjr",
+    "comment:PRRC_kwDOSF9kNM7CUys1",
+    "comment:PRRC_kwDOSF9kNM7CUys6",
+    "thread:PRRT_kwDOSF9kNM6C48UQ",
+    "thread:PRRT_kwDOSF9kNM6C48bL",
+    "thread:PRRT_kwDOSF9kNM6C48bP",
+    "thread:PRRT_kwDOSF9kNM6C5Dii",
+    "thread:PRRT_kwDOSF9kNM6C5Dim",
+    "thread:PRRT_kwDOSF9kNM6C5Dir"
+  ],
+  "fetched_at": "2026-05-18T16:03:34.995Z",
+  "schema_version": "v1",
+  "commit_sha": "2ccb73120486e276c7366299e2cd27066ff534f7",
+  "title": "backlog(mika-batch2-reland): 6 rows from stale-DIRTY PR #4153 (B-0623/B-0624/B-0625/B-0626/B-0627/B-0628)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T16:03:15Z",
+  "head_ref": "otto-cli/mika-batch2-reland-from-4153-2026-05-18-1146Z"
+}

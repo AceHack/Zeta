@@ -1,0 +1,12 @@
+{
+  "pr_number": 8473,
+  "archive_path": "docs/history/pr-reviews/PR-8473-docs-society-9j-correct-peel-representation-learning-is-ours-too-softvalue-dynam.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T07:28:49.114Z",
+  "schema_version": "v1",
+  "commit_sha": "0a16c346f952aefcf7af99941128cec879f2334f",
+  "title": "docs(society): §9j — correct peel: representation-learning is ours too = SoftValue→DynamicValue snap (not a gap)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T07:28:11Z",
+  "head_ref": "otto/softvalue-snap-is-representation-learning"
+}

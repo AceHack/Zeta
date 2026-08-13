@@ -1,0 +1,12 @@
+{
+  "pr_number": 6903,
+  "archive_path": "docs/history/pr-reviews/PR-6903-backlog-081kthtppcd-add-transport-channel-constraint-framing-reticulum-over-inte.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T20:09:56.272Z",
+  "schema_version": "v1",
+  "commit_sha": "3d2471a1bd44dbf872571da1180a74db7cdbde50",
+  "title": "backlog(081KTHTPPCD): add transport + channel-constraint framing (Reticulum over internet + 802.11s mesh)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T20:09:39Z",
+  "head_ref": "otto/128bit-workitem-reticulum-transport-channel-constraints"
+}

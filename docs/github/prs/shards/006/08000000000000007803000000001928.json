@@ -1,0 +1,15 @@
+{
+  "pr_number": 6440,
+  "archive_path": "docs/history/pr-reviews/PR-6440-feat-b-0976-c-bonsai-oracle-3-of-4-serialize-parse-accumulate-result-over-throw.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G1uPM",
+    "thread:PRRT_kwDOSF9kNM6GMmvZ"
+  ],
+  "fetched_at": "2026-06-01T17:25:08.429Z",
+  "schema_version": "v1",
+  "commit_sha": "1069d3019ae77f1092048739c019f2de9a504437",
+  "title": "feat(B-0976): C# Bonsai oracle (#3 of 4) — serialize/parse + accumulate, Result over throw",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T17:24:46Z",
+  "head_ref": "otto-cli/b0976-csharp-bonsai-oracle-2026-06-01"
+}

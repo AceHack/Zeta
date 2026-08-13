@@ -1,0 +1,12 @@
+{
+  "pr_number": 6960,
+  "archive_path": "docs/history/pr-reviews/PR-6960-docs-the-ace-file-is-a-universal-content-addressed-dockerfile-idempotent-layers-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T00:51:45.070Z",
+  "schema_version": "v1",
+  "commit_sha": "1ea4c7609156bcf75339182edbf0e06cc97a7310",
+  "title": "docs: the Ace file is a universal content-addressed 'Dockerfile' — idempotent layers, cross-OS patch sets",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T00:51:21Z",
+  "head_ref": "otto/ace-file-universal-content-addressed-dockerfile"
+}

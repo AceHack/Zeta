@@ -1,0 +1,12 @@
+{
+  "pr_number": 7857,
+  "archive_path": "docs/history/pr-reviews/PR-7857-feat-perf-pro-family-moves-to-src-core-typescript-perf-glass-side-lanes-trace-co.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T00:32:48.256Z",
+  "schema_version": "v1",
+  "commit_sha": "10b381c1df7ea392162c7509d411e23d30b88e76",
+  "title": "feat(perf): pro family moves to src — Core.TypeScript/perf glass-side lanes (trace, counters, gcdump)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T00:32:23Z",
+  "head_ref": "shadow-perf-to-src"
+}

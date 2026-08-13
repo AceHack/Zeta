@@ -1,0 +1,12 @@
+{
+  "pr_number": 8144,
+  "archive_path": "docs/history/pr-reviews/PR-8144-fix-cursor-wire-github-mcp-via-gh-token-document-auth-workaround.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T02:43:16.490Z",
+  "schema_version": "v1",
+  "commit_sha": "9c225bfa546615a4372db3b444f144a32370441c",
+  "title": "fix(cursor): wire GitHub MCP via gh token + document auth workaround",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T02:42:55Z",
+  "head_ref": "riven/cursor-github-mcp-auth-fix"
+}

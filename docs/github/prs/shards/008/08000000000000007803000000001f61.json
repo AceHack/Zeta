@@ -1,0 +1,12 @@
+{
+  "pr_number": 8033,
+  "archive_path": "docs/history/pr-reviews/PR-8033-feat-wire-preserve-ferry-respond-to-operator-into-execute.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T17:55:17.724Z",
+  "schema_version": "v1",
+  "commit_sha": "dd015bc4764d74409c52033a95eaa66f3a5c8635",
+  "title": "feat: wire preserve_ferry + respond_to_operator into execute()",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T17:54:44Z",
+  "head_ref": "kiro/wire-operator-channel"
+}

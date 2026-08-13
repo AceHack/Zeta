@@ -1,0 +1,25 @@
+{
+  "pr_number": 4568,
+  "archive_path": "docs/history/pr-reviews/PR-4568-backlog-b-0692-b-0693-b-0694-otto-vscode-8-pr-campaign-prs-6-7-8-push-based-mors.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DsqaM",
+    "comment:PRRC_kwDOSF9kNM7Dsr54",
+    "comment:PRRC_kwDOSF9kNM7Dsr7F",
+    "comment:PRRC_kwDOSF9kNM7Dsr7v",
+    "comment:PRRC_kwDOSF9kNM7Dtf3S",
+    "comment:PRRC_kwDOSF9kNM7Dtf3d",
+    "thread:PRRT_kwDOSF9kNM6D44IW",
+    "thread:PRRT_kwDOSF9kNM6D45L6",
+    "thread:PRRT_kwDOSF9kNM6D45Mw",
+    "thread:PRRT_kwDOSF9kNM6D45NP",
+    "thread:PRRT_kwDOSF9kNM6D5fD-",
+    "thread:PRRT_kwDOSF9kNM6D5fDz"
+  ],
+  "fetched_at": "2026-05-21T18:35:39.089Z",
+  "schema_version": "v1",
+  "commit_sha": "6cf6cf75c83f40244120beeb8951a1e3ea59cf77",
+  "title": "backlog(B-0692+B-0693+B-0694): Otto-VSCode 8-PR campaign PRs 6-7-8 — push-based + morsel + codegen capstone",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T18:35:12Z",
+  "head_ref": "backlog/b0692-b0694-otto-vscode-prs-6-7-8-push-morsel-codegen-2026-05-21"
+}

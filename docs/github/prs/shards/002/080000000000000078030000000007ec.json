@@ -1,0 +1,12 @@
+{
+  "pr_number": 2028,
+  "archive_path": "docs/history/pr-reviews/PR-2028-fix-wallet-land-b-0062-retraction-cancel-auth.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T04:15:08.480Z",
+  "schema_version": "v1",
+  "commit_sha": "be5d91f4efd7d2b9762fead82bb5fd772978e14b",
+  "title": "fix(wallet): land B-0062 retraction cancel auth",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T04:14:48Z",
+  "head_ref": "codex/b0062-retraction-cancel-auth"
+}

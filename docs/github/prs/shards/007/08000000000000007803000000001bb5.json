@@ -1,0 +1,12 @@
+{
+  "pr_number": 7093,
+  "archive_path": "docs/history/pr-reviews/PR-7093-feat-core-polarityfilter-ray-trace-polarity-filter-orientation-lens-finder-the-q.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T11:32:26.430Z",
+  "schema_version": "v1",
+  "commit_sha": "630de7e771682771d5a12298d4096cfca323b6e2",
+  "title": "feat(core): PolarityFilter — ray-trace polarity filter = orientation/lens finder (the qubit IS the filter)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T11:32:03Z",
+  "head_ref": "otto/polarity-filter-qubit-is-the-filter-orientation-lens-finder"
+}

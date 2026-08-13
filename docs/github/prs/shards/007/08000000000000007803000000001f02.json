@@ -1,0 +1,12 @@
+{
+  "pr_number": 7938,
+  "archive_path": "docs/history/pr-reviews/PR-7938-docs-research-shadow-ferry-13-beat-10-identity-as-resonant-frequency-kac-s-drum-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:47:22.274Z",
+  "schema_version": "v1",
+  "commit_sha": "d3ebdd8b2fa6cff2ecd8d7159e16d76232716428",
+  "title": "docs(research)+shadow: ferry 13 beat 10 — identity as resonant frequency (Kac's drum; the honest Tesla bound)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:46:55Z",
+  "head_ref": "shadow/ferry-13-beat-10-resonance"
+}

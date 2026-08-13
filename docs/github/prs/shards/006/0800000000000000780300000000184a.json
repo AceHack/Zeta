@@ -1,0 +1,12 @@
+{
+  "pr_number": 6218,
+  "archive_path": "docs/history/pr-reviews/PR-6218-feat-observe-simplest-4-button-autonomous-loop-controller-v0.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T16:40:03.268Z",
+  "schema_version": "v1",
+  "commit_sha": "14652a818fb0c703b2245ecf4735d23db553a767",
+  "title": "feat(observe): simplest 4-button autonomous-loop controller (v0)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T16:39:45Z",
+  "head_ref": "otto-cli/observe-simple-4button-2026-05-31"
+}

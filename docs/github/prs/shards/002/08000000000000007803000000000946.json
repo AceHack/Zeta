@@ -1,0 +1,17 @@
+{
+  "pr_number": 2374,
+  "archive_path": "docs/history/pr-reviews/PR-2374-chore-b-0029-decompose-funding-sources-into-7-dependency-ordered-atomic-children.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_knL7",
+    "comment:PRRC_kwDOSF9kNM6_knLw",
+    "thread:PRRT_kwDOSF9kNM6A3GbI",
+    "thread:PRRT_kwDOSF9kNM6A3GbQ"
+  ],
+  "fetched_at": "2026-05-09T23:42:45.826Z",
+  "schema_version": "v1",
+  "commit_sha": "a8a7c7c9b1803a32640241becc97849ea4f6ede0",
+  "title": "chore(B-0029): decompose funding-sources into 7 dependency-ordered atomic children",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T23:42:28Z",
+  "head_ref": "chore/decompose-b0029-funding-sources-2026-05-09"
+}

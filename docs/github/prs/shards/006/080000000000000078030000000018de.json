@@ -1,0 +1,17 @@
+{
+  "pr_number": 6366,
+  "archive_path": "docs/history/pr-reviews/PR-6366-docs-registry-fix-forward-g-set-tier-1-2-not-pure-tier-1-otel-behind-hexagonal-p.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GoZiI",
+    "comment:PRRC_kwDOSF9kNM7GoZjC",
+    "thread:PRRT_kwDOSF9kNM6GCoGE",
+    "thread:PRRT_kwDOSF9kNM6GCoGn"
+  ],
+  "fetched_at": "2026-06-01T07:50:35.923Z",
+  "schema_version": "v1",
+  "commit_sha": "1bfe8e0db0e416d82b394c4c5bf9452ccd09aebc",
+  "title": "docs(registry): fix-forward — G-Set Tier 1/2 (not pure Tier-1) + OTel-behind-hexagonal-port",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T07:50:15Z",
+  "head_ref": "otto-cli/registry-tier12-otel-fix-2026-06-01"
+}

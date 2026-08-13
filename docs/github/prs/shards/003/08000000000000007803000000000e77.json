@@ -1,0 +1,12 @@
+{
+  "pr_number": 3703,
+  "archive_path": "docs/history/pr-reviews/PR-3703-shard-tick-2026-05-16t03-16z-pr-3699-round-3-quality-3-real-findings-fixup-be399.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T03:21:59.263Z",
+  "schema_version": "v1",
+  "commit_sha": "7cbf8642ad098f559db76c70940278a763a717b8",
+  "title": "shard(tick): 2026-05-16T03:16Z — PR #3699 round-3 quality (3 real findings → fixup be3998f)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:21:32Z",
+  "head_ref": "shard/tick-0316z-otto-cli-2026-05-16"
+}

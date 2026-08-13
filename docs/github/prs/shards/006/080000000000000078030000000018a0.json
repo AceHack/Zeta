@@ -1,0 +1,12 @@
+{
+  "pr_number": 6304,
+  "archive_path": "docs/history/pr-reviews/PR-6304-docs-b-0634-agent-native-key-custody-design-hardware-to-buy-list-fpga-open-bitst.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T01:19:46.947Z",
+  "schema_version": "v1",
+  "commit_sha": "9b91cfff567a40e7a5ee52c85a557c8ee908415d",
+  "title": "docs(B-0634): agent-native key-custody design + hardware-to-buy list (FPGA open-bitstream + HSM/TPM)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T01:19:27Z",
+  "head_ref": "otto-cli/agent-key-custody-2026-05-31"
+}

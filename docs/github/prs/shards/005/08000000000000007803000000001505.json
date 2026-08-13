@@ -1,0 +1,12 @@
+{
+  "pr_number": 5381,
+  "archive_path": "docs/history/pr-reviews/PR-5381-docs-tick-2026-05-27t02-08z-otto-cli-cold-boot-first-2026-05-27-tick-shard-via-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T02:14:41.106Z",
+  "schema_version": "v1",
+  "commit_sha": "5e82251fc1ddc2c7a65e0abdfb3d156e00ea06c6",
+  "title": "docs(tick): 2026-05-27T02:08Z Otto-CLI cold-boot — first 2026-05-27 tick shard via isolated worktree",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T02:14:23Z",
+  "head_ref": "otto-cli/tick-0208z-cold-boot-2026-05-27"
+}

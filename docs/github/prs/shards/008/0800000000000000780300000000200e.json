@@ -1,0 +1,12 @@
+{
+  "pr_number": 8206,
+  "archive_path": "docs/history/pr-reviews/PR-8206-fix-bootstrap-spire-casubject-crds-longhorn-pre-upgrade-hook-deadlock.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T17:27:49.916Z",
+  "schema_version": "v1",
+  "commit_sha": "562a789e7825949dc9762e3978077d61b953618a",
+  "title": "fix(bootstrap): SPIRE caSubject+CRDs + Longhorn pre-upgrade-hook deadlock",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T17:27:26Z",
+  "head_ref": "fix/bootstrap-spire-longhorn"
+}

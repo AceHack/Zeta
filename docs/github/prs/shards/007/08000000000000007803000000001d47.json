@@ -1,0 +1,12 @@
+{
+  "pr_number": 7495,
+  "archive_path": "docs/history/pr-reviews/PR-7495-docs-correct-mea-sim-measures-nothing-without-i-o-was-a-statement-not-a-proof-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T09:57:00.314Z",
+  "schema_version": "v1",
+  "commit_sha": "8eecfdf3b2c7c124caa08275cb72fb3ee9f4c641",
+  "title": "docs(correct): 'mea(sim) measures nothing without I/O' was a statement not a proof — intrinsic persona entropy (git history -> reified types; recursive sim in compiler)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T09:56:37Z",
+  "head_ref": "shadow-correct-measures-nothing-overclaim-persona-entropy-git-history-reified-types"
+}

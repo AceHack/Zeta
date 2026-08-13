@@ -1,0 +1,12 @@
+{
+  "pr_number": 7553,
+  "archive_path": "docs/history/pr-reviews/PR-7553-docs-research-each-room-seed-extensions-parameters-ticks-to-its-bigfloat-plateau.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T00:18:46.501Z",
+  "schema_version": "v1",
+  "commit_sha": "8596b2439625099b81038f3988b8762a1068d345",
+  "title": "docs(research): each room = seed + extensions + parameters; ticks to its BigFloat plateau (Max's proof ⇄ code team converge)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T00:18:19Z",
+  "head_ref": "shadow-room-seed-extensions-parameters-bigfloat-plateau"
+}

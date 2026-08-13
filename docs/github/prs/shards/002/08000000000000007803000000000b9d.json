@@ -1,0 +1,12 @@
+{
+  "pr_number": 2973,
+  "archive_path": "docs/history/pr-reviews/PR-2973-feat-b-0402-shadow-observer-slice-1-polling-loop-once-flag-16-tests.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T08:02:18.268Z",
+  "schema_version": "v1",
+  "commit_sha": "7ffb1763369f7aff99e6c609d53406ec0e4ed417",
+  "title": "feat(B-0402): shadow observer slice 1 — polling loop, --once flag, 16 tests",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T08:02:01Z",
+  "head_ref": "feat/b-0402-shadow-observer-slice-1-polling-loop-tests"
+}

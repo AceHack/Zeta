@@ -1,0 +1,15 @@
+{
+  "pr_number": 5850,
+  "archive_path": "docs/history/pr-reviews/PR-5850-rule-clifford-algebra-underwater-experience-rotors-reveal-vortexes-fluid-dynamic.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F0zBF",
+    "thread:PRRT_kwDOSF9kNM6FcnYk"
+  ],
+  "fetched_at": "2026-05-28T15:44:37.436Z",
+  "schema_version": "v1",
+  "commit_sha": "c5643b1ad3b3c8063e1c644699ffe636df754df9",
+  "title": "rule(clifford-algebra-underwater-experience + rotors-reveal-vortexes + fluid-dynamics-substrate-experiences): Aaron's cognitive-architecture extension; multiple substrate-experiences distinguished by density/pressure/fluidity (Aaron 2026-05-28 shadow* authorization)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T15:44:13Z",
+  "head_ref": "otto-cli/rule-clifford-algebra-underwater-experience-rotors-reveal-vortexes-cognitive-architecture-extension-2026-05-28"
+}

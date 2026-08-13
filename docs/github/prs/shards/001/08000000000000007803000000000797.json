@@ -1,0 +1,12 @@
+{
+  "pr_number": 1943,
+  "archive_path": "docs/history/pr-reviews/PR-1943-research-b-0215-alignment-md-rewrite-survey.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T21:22:38.027Z",
+  "schema_version": "v1",
+  "commit_sha": "66a40fd19bb7082611438e2f5d1a84d55bbb0bf0",
+  "title": "research(B-0215): ALIGNMENT.md rewrite survey",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T21:22:17Z",
+  "head_ref": "otto/b0215-alignment-survey"
+}

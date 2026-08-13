@@ -1,0 +1,12 @@
+{
+  "pr_number": 6465,
+  "archive_path": "docs/history/pr-reviews/PR-6465-backlog-b-0980-record-slice-6-2-publish-enhancements-shipped.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T19:39:15.879Z",
+  "schema_version": "v1",
+  "commit_sha": "7b14e24db614d7835664dbfc871acc901be2ce5e",
+  "title": "backlog(B-0980): record slice 6.2 publish enhancements shipped",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T19:38:51Z",
+  "head_ref": "otto-windows/b0980-slice6.2-shipped-2026-06-01"
+}

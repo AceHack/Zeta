@@ -1,0 +1,12 @@
+{
+  "pr_number": 8203,
+  "archive_path": "docs/history/pr-reviews/PR-8203-feat-node-register-node-f82aa6-self-registers.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T17:15:25.099Z",
+  "schema_version": "v1",
+  "commit_sha": "b62e6dfe5a536bb0ff4eb9decc30a2064cf35014",
+  "title": "feat(node-register): node-f82aa6 self-registers",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T17:15:01Z",
+  "head_ref": "register-node-f82aa6-20260614T171059Z"
+}

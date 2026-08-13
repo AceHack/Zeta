@@ -1,0 +1,19 @@
+{
+  "pr_number": 2447,
+  "archive_path": "docs/history/pr-reviews/PR-2447-feat-b-0267-branch-safety-ruleset-live-migrate-3-safety-rules-from-default.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_m3qv",
+    "comment:PRRC_kwDOSF9kNM6_m3vN",
+    "comment:PRRC_kwDOSF9kNM6_m3vX",
+    "thread:PRRT_kwDOSF9kNM6A44Ag",
+    "thread:PRRT_kwDOSF9kNM6A44D4",
+    "thread:PRRT_kwDOSF9kNM6A44EA"
+  ],
+  "fetched_at": "2026-05-10T09:30:41.322Z",
+  "schema_version": "v1",
+  "commit_sha": "46568a3aa88b0588d85110f5cd759bd7e25c4c15",
+  "title": "feat(B-0267): Branch Safety ruleset live — migrate 3 safety rules from Default",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T09:30:27Z",
+  "head_ref": "feat/b0267-branch-safety-ruleset-live"
+}

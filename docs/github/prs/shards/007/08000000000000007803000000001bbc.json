@@ -1,0 +1,12 @@
+{
+  "pr_number": 7100,
+  "archive_path": "docs/history/pr-reviews/PR-7100-feat-core-softdrive-soft-drives-hard-via-control-interface-recursive-mpc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T12:24:46.661Z",
+  "schema_version": "v1",
+  "commit_sha": "e117062768b1aa81508ef814c97293167d5cdb55",
+  "title": "feat(core): SoftDrive — soft drives hard via control interface (recursive MPC)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T12:24:22Z",
+  "head_ref": "otto/softdrive-mpc-soft-plans-hard-commits-recursive-control"
+}

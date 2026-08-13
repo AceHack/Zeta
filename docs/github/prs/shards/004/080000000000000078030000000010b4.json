@@ -1,0 +1,12 @@
+{
+  "pr_number": 4276,
+  "archive_path": "docs/history/pr-reviews/PR-4276-rule-refresh-world-model-add-dotgit-saturation-tier-orthogonal-to-graphql-tier.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T00:05:51.434Z",
+  "schema_version": "v1",
+  "commit_sha": "93251d7fd6f4f0a9ee6a1792f2d42390067c5ce6",
+  "title": "rule(refresh-world-model): add Dotgit-saturation tier (orthogonal to GraphQL tier)",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T00:05:34Z",
+  "head_ref": "otto-cli/dotgit-saturation-rule-edit-via-rest-2026-05-19-0003z"
+}

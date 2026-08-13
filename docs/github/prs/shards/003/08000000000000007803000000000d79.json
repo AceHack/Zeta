@@ -1,0 +1,12 @@
+{
+  "pr_number": 3449,
+  "archive_path": "docs/history/pr-reviews/PR-3449-shard-tick-1205z-pr-3445-merged-routine.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T12:09:55.886Z",
+  "schema_version": "v1",
+  "commit_sha": "fb57e121aaf31f2274e8b44d53df61b91a565c57",
+  "title": "shard(tick): 1205Z — PR #3445 merged; routine",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T12:09:33Z",
+  "head_ref": "shard/tick-1205z-otto-cli-2026-05-15"
+}

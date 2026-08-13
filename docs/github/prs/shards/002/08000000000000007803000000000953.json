@@ -1,0 +1,31 @@
+{
+  "pr_number": 2387,
+  "archive_path": "docs/history/pr-reviews/PR-2387-decompose-b-0021-5-atomic-dependency-ordered-child-rows-for-aurora-econ-foundati.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_k6P9",
+    "comment:PRRC_kwDOSF9kNM6_k6QK",
+    "comment:PRRC_kwDOSF9kNM6_k6QT",
+    "comment:PRRC_kwDOSF9kNM6_k6QW",
+    "comment:PRRC_kwDOSF9kNM6_k6QY",
+    "comment:PRRC_kwDOSF9kNM6_k6Qa",
+    "comment:PRRC_kwDOSF9kNM6_k6Qd",
+    "comment:PRRC_kwDOSF9kNM6_k6Qf",
+    "comment:PRRC_kwDOSF9kNM6_k6Qj",
+    "thread:PRRT_kwDOSF9kNM6A3Vu4",
+    "thread:PRRT_kwDOSF9kNM6A3VvE",
+    "thread:PRRT_kwDOSF9kNM6A3VvL",
+    "thread:PRRT_kwDOSF9kNM6A3VvO",
+    "thread:PRRT_kwDOSF9kNM6A3VvQ",
+    "thread:PRRT_kwDOSF9kNM6A3VvR",
+    "thread:PRRT_kwDOSF9kNM6A3VvT",
+    "thread:PRRT_kwDOSF9kNM6A3VvV",
+    "thread:PRRT_kwDOSF9kNM6A3VvY"
+  ],
+  "fetched_at": "2026-05-10T01:09:58.900Z",
+  "schema_version": "v1",
+  "commit_sha": "7330b3310b74d8c486048d746213e557baaac040",
+  "title": "decompose(B-0021): 5 atomic dependency-ordered child rows for Aurora econ-foundation investigation",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T01:09:41Z",
+  "head_ref": "chore/close-b0021-decompose"
+}

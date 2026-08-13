@@ -1,0 +1,12 @@
+{
+  "pr_number": 6913,
+  "archive_path": "docs/history/pr-reviews/PR-6913-docs-wi-human-heartbeat-as-committed-agencysignature-privacy-preserving-cadence-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T20:51:41.082Z",
+  "schema_version": "v1",
+  "commit_sha": "0a97eb8a796215693b467ee185ab157f53db0e85",
+  "title": "docs+wi: human heartbeat as committed AgencySignature (privacy-preserving, cadence, zflash way)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T20:51:19Z",
+  "head_ref": "otto/human-heartbeat-agencysignature"
+}

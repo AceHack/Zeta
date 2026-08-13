@@ -1,0 +1,12 @@
+{
+  "pr_number": 6792,
+  "archive_path": "docs/history/pr-reviews/PR-6792-docs-capture-filesystem-is-git-apfs-like-merkle-dedup-greenfield-public-api-free.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T11:16:45.476Z",
+  "schema_version": "v1",
+  "commit_sha": "e3f06c0dbe353c9799f2e92088a7d87521bda3f1",
+  "title": "docs(capture): filesystem IS git (APFS-like Merkle + dedup) + greenfield public-API freedom",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T11:16:28Z",
+  "head_ref": "capture/fs-is-git-apfs-like-merkle-and-greenfield-api"
+}

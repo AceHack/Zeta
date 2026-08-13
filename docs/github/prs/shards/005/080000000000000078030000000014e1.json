@@ -1,0 +1,12 @@
+{
+  "pr_number": 5345,
+  "archive_path": "docs/history/pr-reviews/PR-5345-docs-backlog-b-0832-installer-nmtui-wifi-rescan-refresh-empirical-from-physical-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T23:00:39.584Z",
+  "schema_version": "v1",
+  "commit_sha": "f3564468394594800676e812dc1eac2f58a16a10",
+  "title": "docs(backlog): B-0832 — installer nmtui WiFi rescan/refresh (empirical from physical hardware-support test 2026-05-26; 20+ overlapping networks)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:00:21Z",
+  "head_ref": "otto/b-0832-nmtui-wifi-refresh-rescan-overlapping-networks-installer-first-boot-2026-05-26"
+}

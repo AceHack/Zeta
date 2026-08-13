@@ -1,0 +1,12 @@
+{
+  "pr_number": 8066,
+  "archive_path": "docs/history/pr-reviews/PR-8066-refactor-forge-host-consolidate-github-dirs-under-forge-host-github-r6-redo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T21:17:14.833Z",
+  "schema_version": "v1",
+  "commit_sha": "331d3eb1d4add1b49a7944a1482dbb4b46b341d7",
+  "title": "refactor(forge-host): consolidate GitHub dirs under forge-host/github/ (R6 redo)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T21:16:49Z",
+  "head_ref": "kiro/consolidate-github-dirs"
+}

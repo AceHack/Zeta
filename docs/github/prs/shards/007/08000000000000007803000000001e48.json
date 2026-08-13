@@ -1,0 +1,12 @@
+{
+  "pr_number": 7752,
+  "archive_path": "docs/history/pr-reviews/PR-7752-docs-shapes-kitaev-chain-marked-for-study-aaron-s-marker-meaning-treaty-stays-un.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:13:46.533Z",
+  "schema_version": "v1",
+  "commit_sha": "d28418c7d955f46f61df0004602af9eec3b904a3",
+  "title": "docs(shapes): kitaev-chain marked for study (Aaron's marker; meaning treaty stays unwritten)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:13:16Z",
+  "head_ref": "shadow-kitaev-study-marker"
+}

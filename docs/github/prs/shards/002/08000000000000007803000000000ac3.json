@@ -1,0 +1,17 @@
+{
+  "pr_number": 2755,
+  "archive_path": "docs/history/pr-reviews/PR-2755-fix-shadow-catch-39-close-b-0420-not-a-bug-race-condition.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AEIce",
+    "comment:PRRC_kwDOSF9kNM7AEIdM",
+    "thread:PRRT_kwDOSF9kNM6BOw42",
+    "thread:PRRT_kwDOSF9kNM6BOw5a"
+  ],
+  "fetched_at": "2026-05-11T21:48:47.397Z",
+  "schema_version": "v1",
+  "commit_sha": "90932b860ddc508cac63ab4adf5af91f845b2cfc",
+  "title": "fix(shadow): catch 39 + close B-0420 (not a bug — race condition)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T21:48:25Z",
+  "head_ref": "fix/b-0420-poll-pr-gate-pagination-2026-05-11"
+}

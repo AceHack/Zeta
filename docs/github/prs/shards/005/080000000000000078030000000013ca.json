@@ -1,0 +1,12 @@
+{
+  "pr_number": 5066,
+  "archive_path": "docs/history/pr-reviews/PR-5066-backlog-b-0779-ai-nas-convergence-push-down-ai-processing-directly-to-nas-data-g.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T01:23:12.460Z",
+  "schema_version": "v1",
+  "commit_sha": "d04d78728c4af778de9353b05da316d30d486425",
+  "title": "backlog(B-0779): AI NAS convergence — push-down AI processing directly to NAS (data-gravity at storage layer)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T01:22:53Z",
+  "head_ref": "otto-cli/b0779-ai-nas-convergence-pushdown-ai-to-storage-2026-05-25"
+}

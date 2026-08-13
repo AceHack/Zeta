@@ -1,0 +1,12 @@
+{
+  "pr_number": 7566,
+  "archive_path": "docs/history/pr-reviews/PR-7566-docs-research-decompiling-to-risc-rooms-are-the-cpu-s-micro-operations-real-time.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T01:51:50.877Z",
+  "schema_version": "v1",
+  "commit_sha": "6d20b3b8906a9b78786a3a21e1f6e9766de28b15",
+  "title": "docs(research): decompiling to RISC — rooms ARE the CPU's micro-operations; real-time branch detection",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T01:51:25Z",
+  "head_ref": "shadow-decompile-to-risc-rooms-are-microops"
+}

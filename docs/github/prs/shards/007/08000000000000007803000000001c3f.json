@@ -1,0 +1,12 @@
+{
+  "pr_number": 7231,
+  "archive_path": "docs/history/pr-reviews/PR-7231-docs-research-ferry-verbosity-is-mode-relative-some-hats-become-dials-temperatur.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T08:28:00.157Z",
+  "schema_version": "v1",
+  "commit_sha": "c5eee342684b8fda3bd757c5e9d257b487a30a64",
+  "title": "docs(research)+ferry: verbosity is mode-relative — some hats become dials (temperature); dials anchor to cores (4x4/2x2) in recursive towers bounded by the fixed-point registry",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T08:27:33Z",
+  "head_ref": "otto/research-verbosity-mode-relative-dials-cores-towers-registry"
+}

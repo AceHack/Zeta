@@ -1,0 +1,12 @@
+{
+  "pr_number": 7451,
+  "archive_path": "docs/history/pr-reviews/PR-7451-feat-workitems-shadow-p1-core-ux-dx-ax-room-3-universal-interfaces-as-bit-compil.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T04:48:30.388Z",
+  "schema_version": "v1",
+  "commit_sha": "f1d6a65c3ba31e319b508fedef3cc49e67330939",
+  "title": "feat(workitems)+shadow: P1 CORE UX/DX/AX room — 3 universal interfaces as bit+compiler oracle rooms + 4-lang merkle-DAG filesystem load",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T04:48:05Z",
+  "head_ref": "shadow-workitem-core-uxdxax-room"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 5653,
+  "archive_path": "docs/history/pr-reviews/PR-5653-fix-pr-preservation-stage-archive-outputs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fi0q1",
+    "thread:PRRT_kwDOSF9kNM6FPyVt"
+  ],
+  "fetched_at": "2026-05-27T22:57:10.872Z",
+  "schema_version": "v1",
+  "commit_sha": "f35a4509f37596e4da59f4d1ebd20a4312d162c5",
+  "title": "fix(pr-preservation): stage archive outputs",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T22:56:52Z",
+  "head_ref": "claim/codex-loop-pr-preservation-git-add-20260527"
+}

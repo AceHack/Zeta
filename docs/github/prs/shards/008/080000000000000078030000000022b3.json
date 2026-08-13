@@ -1,0 +1,12 @@
+{
+  "pr_number": 8883,
+  "archive_path": "docs/history/pr-reviews/PR-8883-chore-recover-orphaned-session-artifacts-rx-pipeline-fixes.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:27:30.501Z",
+  "schema_version": "v1",
+  "commit_sha": "212f2f44c6577617b0c16114af82fa8c5dc60424",
+  "title": "chore: recover orphaned session artifacts + Rx pipeline fixes",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:27:05Z",
+  "head_ref": "alexa/rx-emission"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 8659,
+  "archive_path": "docs/history/pr-reviews/PR-8659-codex-add-meta-cart-attention-ledger.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7NV2wq",
+    "comment:PRRC_kwDOSF9kNM7NWAMi",
+    "thread:PRRT_kwDOSF9kNM6K8mIR",
+    "thread:PRRT_kwDOSF9kNM6K8s4Z"
+  ],
+  "fetched_at": "2026-06-20T01:02:12.534Z",
+  "schema_version": "v1",
+  "commit_sha": "66ee601c3463222a8c0e1c87c1bb89377b5c368a",
+  "title": "[codex] add meta-cart attention ledger",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:01:48Z",
+  "head_ref": "codex/metacart-attention-ledger"
+}

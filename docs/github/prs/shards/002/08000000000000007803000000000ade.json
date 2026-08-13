@@ -1,0 +1,27 @@
+{
+  "pr_number": 2782,
+  "archive_path": "docs/history/pr-reviews/PR-2782-docs-memory-identity-fingerprint-filter-zeta-is-internal-civ-sim-made-externaliz.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AWcqE",
+    "comment:PRRC_kwDOSF9kNM7AYAkW",
+    "comment:PRRC_kwDOSF9kNM7AYAmA",
+    "comment:PRRC_kwDOSF9kNM7AjG4e",
+    "comment:PRRC_kwDOSF9kNM7AjHsN",
+    "comment:PRRC_kwDOSF9kNM7AjHsi",
+    "comment:PRRC_kwDOSF9kNM7AjbHb",
+    "thread:PRRT_kwDOSF9kNM6BcVE-",
+    "thread:PRRT_kwDOSF9kNM6BdfjK",
+    "thread:PRRT_kwDOSF9kNM6BdfkT",
+    "thread:PRRT_kwDOSF9kNM6Bl0NK",
+    "thread:PRRT_kwDOSF9kNM6Bll3V",
+    "thread:PRRT_kwDOSF9kNM6Bll3l",
+    "thread:PRRT_kwDOSF9kNM6BllRz"
+  ],
+  "fetched_at": "2026-05-12T23:45:44.566Z",
+  "schema_version": "v1",
+  "commit_sha": "1d307eb298cdac789cb5bbe8c445cfa347108170",
+  "title": "docs(memory): identity-fingerprint filter — Zeta is internal civ-sim MADE EXTERNALIZED",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T23:45:30Z",
+  "head_ref": "docs/aaron-identity-fingerprint-filter-per-person-scaffolding-tracker-2026-05-12"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6947,
+  "archive_path": "docs/history/pr-reviews/PR-6947-docs-externalization-applies-to-consenting-people-zeta-is-aaron-s-externalizatio.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T23:16:13.512Z",
+  "schema_version": "v1",
+  "commit_sha": "a35af8d562473165123674711567091e6857f07d",
+  "title": "docs: externalization applies to consenting people — Zeta is Aaron's externalization (consent-gated)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T23:15:55Z",
+  "head_ref": "otto/externalization-consenting-people-zeta-is-aarons-externalization"
+}

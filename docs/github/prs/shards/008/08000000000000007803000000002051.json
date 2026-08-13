@@ -1,0 +1,12 @@
+{
+  "pr_number": 8273,
+  "archive_path": "docs/history/pr-reviews/PR-8273-docs-least-action-aperiodic-schedule-oversight-placement-human-in-the-loop.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T06:39:36.640Z",
+  "schema_version": "v1",
+  "commit_sha": "e2f0cc2b88182ff05934eb2ca3e3c6e2b9ca9906",
+  "title": "docs: least-action + aperiodic-schedule oversight placement (human-in-the-loop)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T06:39:13Z",
+  "head_ref": "otto/least-action-aperiodic-oversight-placement"
+}

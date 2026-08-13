@@ -1,0 +1,12 @@
+{
+  "pr_number": 8047,
+  "archive_path": "docs/history/pr-reviews/PR-8047-fix-observe-point-parity-fixtures-at-source-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T19:27:02.440Z",
+  "schema_version": "v1",
+  "commit_sha": "b4b941da6771ac937f184e0b0cbaaa3663df6965",
+  "title": "fix(observe): point parity fixtures at source path",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T19:26:41Z",
+  "head_ref": "codex/observe-src-path-fallout"
+}

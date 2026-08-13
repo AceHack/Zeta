@@ -1,0 +1,16 @@
+{
+  "pr_number": 6081,
+  "archive_path": "docs/history/pr-reviews/PR-6081-docs-claims-retire-high-confidence-stale-claim-refs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GX0Wc",
+    "comment:PRRC_kwDOSF9kNM7GX2C3",
+    "thread:PRRT_kwDOSF9kNM6F17ah"
+  ],
+  "fetched_at": "2026-05-30T05:09:12.889Z",
+  "schema_version": "v1",
+  "commit_sha": "2a582bd31d14cbe869fe7c174089c5e8c659f6de",
+  "title": "docs(claims): retire high-confidence stale claim refs",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T05:08:53Z",
+  "head_ref": "claim/task-stale-claim-prune-high-confidence-20260530"
+}

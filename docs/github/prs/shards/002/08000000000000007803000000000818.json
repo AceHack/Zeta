@@ -1,0 +1,15 @@
+{
+  "pr_number": 2072,
+  "archive_path": "docs/history/pr-reviews/PR-2072-fix-b-0249-land-60s-interval-autonomous-pickup-re-decompose-preamble.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_QfAE",
+    "thread:PRRT_kwDOSF9kNM6AoA8j"
+  ],
+  "fetched_at": "2026-05-08T12:55:06.068Z",
+  "schema_version": "v1",
+  "commit_sha": "13e1bfbe92776fade632635cff860b3ad5dd2fc3",
+  "title": "fix(B-0249): land 60s interval + autonomous-pickup + re-decompose preamble",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T12:54:51Z",
+  "head_ref": "fix/claude-loop-60s-autonomous-pickup"
+}

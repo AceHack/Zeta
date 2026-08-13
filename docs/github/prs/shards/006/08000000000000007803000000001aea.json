@@ -1,0 +1,12 @@
+{
+  "pr_number": 6890,
+  "archive_path": "docs/history/pr-reviews/PR-6890-docs-research-adinkras-spread-across-network-topology-distributed-ecc-on-the-ray.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T18:52:43.237Z",
+  "schema_version": "v1",
+  "commit_sha": "5f154dfdb49a3582106cc182b342fda67f9b53c5",
+  "title": "docs(research): Adinkras spread across network topology — distributed ECC on the ray-traceable geospatial map",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T18:52:21Z",
+  "head_ref": "otto/adinkra-ecc-spread-across-network-topology-capture"
+}

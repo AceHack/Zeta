@@ -1,0 +1,12 @@
+{
+  "pr_number": 4899,
+  "archive_path": "docs/history/pr-reviews/PR-4899-feat-infra-per-host-configs-control-plane-worker-gpu-01-02-pr-3-of-addison-s-pla.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T02:32:55.084Z",
+  "schema_version": "v1",
+  "commit_sha": "e42034a46e7eb2398c62e5803057986f1ddeff75",
+  "title": "feat(infra): per-host configs control-plane + worker-gpu-01/02 (PR 3 of Addison's plan)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T02:32:35Z",
+  "head_ref": "feat/addison-per-host-configs-2026-05-24"
+}

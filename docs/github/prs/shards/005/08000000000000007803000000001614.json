@@ -1,0 +1,12 @@
+{
+  "pr_number": 5652,
+  "archive_path": "docs/history/pr-reviews/PR-5652-docs-hygiene-2026-05-27t22-08z-otto-cli-cold-boot-tick-shard-first-today.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T22:19:13.566Z",
+  "schema_version": "v1",
+  "commit_sha": "4ece6f293deabd32f7f39ad5715c4ca5f4aec4c6",
+  "title": "docs(hygiene): 2026-05-27T22:08Z Otto-CLI cold-boot tick shard — first today",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T22:18:56Z",
+  "head_ref": "otto-cli/cold-boot-2208z-2026-05-27"
+}

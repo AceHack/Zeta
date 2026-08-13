@@ -1,0 +1,12 @@
+{
+  "pr_number": 7136,
+  "archive_path": "docs/history/pr-reviews/PR-7136-feat-core-traversal-uncertainty-reduction-unit-cost-relevant-lenses-control-loop.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:45:48.274Z",
+  "schema_version": "v1",
+  "commit_sha": "1da54fb2dfae73cfdbb76ab876dd214d82c55a86",
+  "title": "feat(core): Traversal — uncertainty-reduction unit (cost + relevant lenses + control loop), scheduled by VOI",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:45:30Z",
+  "head_ref": "otto/traversal-uncertainty-reduction-unit-cost-lenses-voi-schedule"
+}

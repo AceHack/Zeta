@@ -1,0 +1,12 @@
+{
+  "pr_number": 2682,
+  "archive_path": "docs/history/pr-reviews/PR-2682-docs-research-add-33-archive-headers-to-ani-lior-research-docs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T09:48:55.316Z",
+  "schema_version": "v1",
+  "commit_sha": "4072d173540ee768e48d39c096f1de4bc5b9c694",
+  "title": "docs(research): Add §33 archive headers to Ani/Lior research docs",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T09:48:38Z",
+  "head_ref": "docs/deep-lore-compilers-2026-05-11"
+}

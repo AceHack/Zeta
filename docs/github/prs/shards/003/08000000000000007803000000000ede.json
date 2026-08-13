@@ -1,0 +1,12 @@
+{
+  "pr_number": 3806,
+  "archive_path": "docs/history/pr-reviews/PR-3806-docs-shadow-maji-antigravity-check-0740z.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T22:46:58.568Z",
+  "schema_version": "v1",
+  "commit_sha": "4c64add5d7c2f88c67459c2de937ff315eaaa38a",
+  "title": "docs(shadow): Maji antigravity check 0740Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:46:37Z",
+  "head_ref": "lior/shadow-0740Z"
+}

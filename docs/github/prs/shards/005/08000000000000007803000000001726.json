@@ -1,0 +1,12 @@
+{
+  "pr_number": 5926,
+  "archive_path": "docs/history/pr-reviews/PR-5926-docs-archive-preserve-10-recently-merged-prs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T19:44:44.224Z",
+  "schema_version": "v1",
+  "commit_sha": "7c930708f2536037413003314c85d00a922e49ae",
+  "title": "docs(archive): Preserve 10 recently merged PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T19:44:22Z",
+  "head_ref": "lior/archive-batch-may-28-3"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7895,
+  "archive_path": "docs/history/pr-reviews/PR-7895-fix-ts-clean-post-ferrythrottler-source-lint.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T11:19:18.164Z",
+  "schema_version": "v1",
+  "commit_sha": "957a1e8e2a510a1df90f501ffe5143395a26f17a",
+  "title": "fix(ts): clean post-ferrythrottler source lint",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T11:18:52Z",
+  "head_ref": "codex/fix-7881-multi-vm-lint"
+}

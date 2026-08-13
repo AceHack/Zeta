@@ -1,0 +1,12 @@
+{
+  "pr_number": 7868,
+  "archive_path": "docs/history/pr-reviews/PR-7868-feat-setup-mise-k8s-split-mise-full-toml-on-full-hosts-clusters-declare-full-ci-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T02:01:58.164Z",
+  "schema_version": "v1",
+  "commit_sha": "af34e8315c4a5f8524d41ce6be0f520485300798",
+  "title": "feat(setup): mise k8s split — .mise.full.toml on full hosts; clusters declare full; CI tests full (workitem 081KTWQZY7F slice 3)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T02:01:35Z",
+  "head_ref": "shadow-mise-k8s-split"
+}

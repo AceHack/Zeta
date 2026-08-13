@@ -1,0 +1,12 @@
+{
+  "pr_number": 7776,
+  "archive_path": "docs/history/pr-reviews/PR-7776-docs-trajectory-resume-greenfield-wave-7771-7775.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:01:37.539Z",
+  "schema_version": "v1",
+  "commit_sha": "5254ca0bba1ffec257ca66eb33329efba0d5c482",
+  "title": "docs(trajectory): RESUME greenfield wave (#7771..#7775)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:01:12Z",
+  "head_ref": "shadow-resume-fold-greenfield"
+}

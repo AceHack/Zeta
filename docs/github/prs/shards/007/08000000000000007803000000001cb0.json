@@ -1,0 +1,12 @@
+{
+  "pr_number": 7344,
+  "archive_path": "docs/history/pr-reviews/PR-7344-docs-research-two-test-runs-entangle-s-4-common-seed-in-the-mesh-summon-each-oth.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T17:10:27.130Z",
+  "schema_version": "v1",
+  "commit_sha": "720598aed058ff270bf92c0cf7658cbb5ecef70b",
+  "title": "docs(research): two test runs entangle (S=4 common-seed) in the mesh, summon each other, route via Reticulum to a holographic room homoiconic to reality — watchable on LLMTV (neurodivergent, humans AND LLMs)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T17:10:01Z",
+  "head_ref": "otto/two-test-runs-entangle-summon-route-reticulum-holographic-room-homoiconic-to-reality-llmtv"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8785,
+  "archive_path": "docs/history/pr-reviews/PR-8785-docs-design-preserve-addison-s-initial-genesis-prototype-as-a-design-reference-u.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T22:31:12.153Z",
+  "schema_version": "v1",
+  "commit_sha": "155295b75ef316fe3d1e2c77f51de9773d4199a4",
+  "title": "docs(design): preserve Addison's initial Genesis prototype as a design reference (unmodified)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T22:30:48Z",
+  "head_ref": "otto/addison-genesis-initial-design"
+}

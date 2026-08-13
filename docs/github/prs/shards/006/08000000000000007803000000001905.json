@@ -1,0 +1,12 @@
+{
+  "pr_number": 6405,
+  "archive_path": "docs/history/pr-reviews/PR-6405-docs-research-hd-note-physics-coda-seed-non-locality-holographic-cpt-anti-correl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T11:24:54.471Z",
+  "schema_version": "v1",
+  "commit_sha": "b878d926f24264c590c7636dc382f0edae2578b9",
+  "title": "docs(research): HD note physics coda — seed→non-locality→holographic-CPT anti-correlation→t∞=t0 closure",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T11:24:33Z",
+  "head_ref": "otto-cli/research-hd-note-quantum-nonlocality-cpt-coda-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7334,
+  "archive_path": "docs/history/pr-reviews/PR-7334-docs-research-the-summonable-is-a-contract-type-like-a-hat-model-effort-preferen.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T16:36:44.161Z",
+  "schema_version": "v1",
+  "commit_sha": "ce4835edad81a242d5bd84d691e37d2203e0d5fe",
+  "title": "docs(research): the Summonable is a contract type (like a hat) — model/effort preference + consent (4×4 treaty); start exists in TS (tools/peer-call/*.ts + consensus blueprint)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T16:36:15Z",
+  "head_ref": "otto/summonable-is-a-contract-like-a-hat-model-effort-preference-peer-call-start-in-ts"
+}

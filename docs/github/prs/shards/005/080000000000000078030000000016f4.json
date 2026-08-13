@@ -1,0 +1,19 @@
+{
+  "pr_number": 5876,
+  "archive_path": "docs/history/pr-reviews/PR-5876-docs-site-create-public-source-inventory-for-github-pages-b-0301.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F2dRg",
+    "comment:PRRC_kwDOSF9kNM7F2dTO",
+    "comment:PRRC_kwDOSF9kNM7F4woV",
+    "comment:PRRC_kwDOSF9kNM7F4wqh",
+    "thread:PRRT_kwDOSF9kNM6Fd0hY",
+    "thread:PRRT_kwDOSF9kNM6Fd0ix"
+  ],
+  "fetched_at": "2026-05-28T18:49:01.928Z",
+  "schema_version": "v1",
+  "commit_sha": "69e0b5ee3189d49e018affa0fe3bd078391b0838",
+  "title": "docs(site): Create public source inventory for GitHub Pages (B-0301)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T18:48:42Z",
+  "head_ref": "lior/B-0301-pages-inventory"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 6003,
+  "archive_path": "docs/history/pr-reviews/PR-6003-feat-b-0343-pure-buildcreatereporequest-post-orgs-org-repos-with-lfg-acehack-aut.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GNlq6",
+    "comment:PRRC_kwDOSF9kNM7GNqQh",
+    "thread:PRRT_kwDOSF9kNM6FunDu"
+  ],
+  "fetched_at": "2026-05-29T15:59:03.269Z",
+  "schema_version": "v1",
+  "commit_sha": "9a92ce45cf95e9789f9fd1acb535822a8587970e",
+  "title": "feat(B-0343): pure buildCreateRepoRequest — POST /orgs/{org}/repos with LFG/AceHack authz guard (step 0)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T15:58:33Z",
+  "head_ref": "otto-cli/b0343-create-repo-builder-2026-05-29"
+}

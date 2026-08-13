@@ -1,0 +1,12 @@
+{
+  "pr_number": 3251,
+  "archive_path": "docs/history/pr-reviews/PR-3251-shard-tick-2113z-duplicate-id-audit-class-mechanizes-2108z-deferred-candidate.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T21:21:17.060Z",
+  "schema_version": "v1",
+  "commit_sha": "d37631de8d7bc92884bb8d0426c39731736ba998",
+  "title": "shard(tick): 2113Z — duplicate-ID audit class (mechanizes 2108Z deferred candidate)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:20:56Z",
+  "head_ref": "shard/tick-2113Z-duplicate-id-audit-otto-cli-2026-05-14"
+}

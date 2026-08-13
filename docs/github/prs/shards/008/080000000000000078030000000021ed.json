@@ -1,0 +1,12 @@
+{
+  "pr_number": 8685,
+  "archive_path": "docs/history/pr-reviews/PR-8685-feat-core-demopipeline-the-whole-imdb-arc-as-one-dst-replayable-path-recorded-fe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T02:37:39.518Z",
+  "schema_version": "v1",
+  "commit_sha": "a8c09ca26202fdf6e6ce0c941e62bfde67c5e54e",
+  "title": "feat(core): DemoPipeline — the whole IMDb arc as one DST-replayable path (recorded fetch → dashboard + snapshot)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T02:37:08Z",
+  "head_ref": "otto/demo-pipeline-capstone-end-to-end"
+}

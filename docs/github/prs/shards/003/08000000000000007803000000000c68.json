@@ -1,0 +1,16 @@
+{
+  "pr_number": 3176,
+  "archive_path": "docs/history/pr-reviews/PR-3176-docs-archive-preserve-pr-3166.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BVB8T",
+    "comment:PRRC_kwDOSF9kNM7BVWNr",
+    "thread:PRRT_kwDOSF9kNM6CKAay"
+  ],
+  "fetched_at": "2026-05-14T19:00:45.424Z",
+  "schema_version": "v1",
+  "commit_sha": "8afdaafcc2dcc1c2ebd05b61ae69aaa5f82a507d",
+  "title": "docs(archive): preserve PR 3166",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:00:21Z",
+  "head_ref": "lior-preserve-3166"
+}

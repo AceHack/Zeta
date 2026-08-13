@@ -1,0 +1,12 @@
+{
+  "pr_number": 8044,
+  "archive_path": "docs/history/pr-reviews/PR-8044-data-pr-reviews-consume-trailing-pr-archive-branch-main-preserve-review-thread.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T18:49:01.801Z",
+  "schema_version": "v1",
+  "commit_sha": "783e45b8ba0e386f033604d00b3a19772310ea5e",
+  "title": "data(pr-reviews): consume trailing pr-archive branch -> main (preserve review thread)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T18:48:42Z",
+  "head_ref": "shadow/drain-pr-archives-trickle"
+}

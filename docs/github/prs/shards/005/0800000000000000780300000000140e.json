@@ -1,0 +1,12 @@
+{
+  "pr_number": 5134,
+  "archive_path": "docs/history/pr-reviews/PR-5134-rule-refresh-before-decide-extends-to-working-tree-reads-1008z-empirical-anchor-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T10:17:31.021Z",
+  "schema_version": "v1",
+  "commit_sha": "cd98323cdf17f13be3a13acf6fbb6dbc8350f21a",
+  "title": "rule: refresh-before-decide extends to working-tree reads — 1008Z empirical anchor caught phantom PR #5128 drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T10:17:10Z",
+  "head_ref": "otto-cli/refresh-extends-working-tree-reads-1008z-2026-05-26"
+}

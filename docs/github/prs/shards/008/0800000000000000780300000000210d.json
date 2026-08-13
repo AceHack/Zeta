@@ -1,0 +1,12 @@
+{
+  "pr_number": 8461,
+  "archive_path": "docs/history/pr-reviews/PR-8461-fix-phase-2-qemu-bootindex-virtio-blk-device-not-qcow2-drive.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T06:35:24.539Z",
+  "schema_version": "v1",
+  "commit_sha": "4cb55a09ea7aa79b5f6a7d31cadea70c3db87ea2",
+  "title": "Fix phase 2 QEMU bootindex: virtio-blk device not qcow2 drive",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T06:34:52Z",
+  "head_ref": "riven/qemu-bootindex-device"
+}

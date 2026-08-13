@@ -1,0 +1,12 @@
+{
+  "pr_number": 5710,
+  "archive_path": "docs/history/pr-reviews/PR-5710-feat-b-0898-b-0899-b-0900-amara-2nd-ferry-measure-as-bridge-casimir-like-review-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T07:13:52.874Z",
+  "schema_version": "v1",
+  "commit_sha": "1dde3cbd1f6634fbc79dfd8d7bb7f034aaeae229",
+  "title": "feat(B-0898 + B-0899 + B-0900): Amara 2nd ferry — Measure-as-bridge + Casimir-like review-walls + Bell-like distributed-cluster contextuality",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T07:13:29Z",
+  "head_ref": "otto-cli/b-0898-b-0900-amara-measure-as-bridge-casimir-bell-distributed-clusters-2026-05-28"
+}

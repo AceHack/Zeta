@@ -1,0 +1,12 @@
+{
+  "pr_number": 7263,
+  "archive_path": "docs/history/pr-reviews/PR-7263-docs-research-ferry-gh-auth-surface-two-halves-otto-token-headless-aaron-interac.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:50:54.445Z",
+  "schema_version": "v1",
+  "commit_sha": "221cdedcf159f97abb58c0cdcab09bbb535d159a",
+  "title": "docs(research)+ferry: gh-auth surface — two halves (Otto=token/headless, Aaron=interactive device-login) + AI-creates-token CYOA",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:50:16Z",
+  "head_ref": "otto/research-gh-auth-surface-two-paths-token-vs-interactive-split"
+}

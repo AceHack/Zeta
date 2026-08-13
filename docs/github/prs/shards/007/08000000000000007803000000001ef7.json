@@ -1,0 +1,12 @@
+{
+  "pr_number": 7927,
+  "archive_path": "docs/history/pr-reviews/PR-7927-docs-research-shadow-ferry-12-addendum-dbsp-priority-is-budiu-et-al-2022-23-inde.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:22:24.501Z",
+  "schema_version": "v1",
+  "commit_sha": "e7ac70b03b661c6f1103ef79821dd9f636959f45",
+  "title": "docs(research)+shadow: ferry 12 addendum — DBSP priority is Budiu et al. (2022/23); independent re-derivation as corroborating evidence",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:21:58Z",
+  "head_ref": "shadow/ferry-12-priority-addendum"
+}

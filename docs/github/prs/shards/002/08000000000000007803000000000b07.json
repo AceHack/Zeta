@@ -1,0 +1,17 @@
+{
+  "pr_number": 2823,
+  "archive_path": "docs/history/pr-reviews/PR-2823-docs-memory-divine-coincidence-architecture-derives-from-personal-coincidence-tr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Acuz4",
+    "comment:PRRC_kwDOSF9kNM7AdAY1",
+    "thread:PRRT_kwDOSF9kNM6Bg_X5",
+    "thread:PRRT_kwDOSF9kNM6BhMcH"
+  ],
+  "fetched_at": "2026-05-12T18:36:28.533Z",
+  "schema_version": "v1",
+  "commit_sha": "05d8d1d01d9e1ccfaadec32825e331f4a874040c",
+  "title": "docs(memory): divine-coincidence architecture derives from personal coincidence-tracking for memory traversal (quantum leaps backwards) + efficient use of what is already there (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:35:53Z",
+  "head_ref": "docs/aaron-divine-coincidence-architecture-derives-from-personal-coincidence-tracking-for-memory-traversal-quantum-leaps-backwards-2026-05-12"
+}

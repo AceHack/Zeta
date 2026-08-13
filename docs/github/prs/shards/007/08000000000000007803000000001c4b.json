@@ -1,0 +1,12 @@
+{
+  "pr_number": 7243,
+  "archive_path": "docs/history/pr-reviews/PR-7243-docs-research-ferry-tiny-model-v2-society-emu-observer-convergence-map-both-side.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T10:24:24.969Z",
+  "schema_version": "v1",
+  "commit_sha": "738c6edb2d4111e19e948d3096a133c2a6f0fe42",
+  "title": "docs(research)+ferry: tiny-model-v2 (society) ⊗ emu-observer convergence map — both sides, the exact gap, tied to the A–F shapes",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T10:24:02Z",
+  "head_ref": "otto/research-tiny-model-v2-emu-convergence-map-shape-tied"
+}

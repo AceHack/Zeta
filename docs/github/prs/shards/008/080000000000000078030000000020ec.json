@@ -1,0 +1,12 @@
+{
+  "pr_number": 8428,
+  "archive_path": "docs/history/pr-reviews/PR-8428-memory-project-ir-backends-corrections-emulators-already-backlogged-b-1028-b-092.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T03:27:21.126Z",
+  "schema_version": "v1",
+  "commit_sha": "477a0a7e70ac837aab1249ac411019478319de52",
+  "title": "memory(project): IR-backends corrections — emulators already backlogged (B-1028/B-0924…); IR has NO control flow (shader-friendly by construction)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T03:26:52Z",
+  "head_ref": "memory/ir-backends-corrections-backlog-and-no-control-flow"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7971,
+  "archive_path": "docs/history/pr-reviews/PR-7971-docs-research-shadow-ferry-21-the-fusion-vocabulary-mapped-to-the-f-interface-sh.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:55:13.982Z",
+  "schema_version": "v1",
+  "commit_sha": "450b8fae4a9284ac18308c64c022610313ddce56",
+  "title": "docs(research)+shadow: ferry 21 — the fusion vocabulary mapped to the F# interface shelf (most already exist; 3 gaps)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:54:41Z",
+  "head_ref": "shadow/interface-mapping"
+}

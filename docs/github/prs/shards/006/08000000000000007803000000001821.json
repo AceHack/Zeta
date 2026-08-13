@@ -1,0 +1,12 @@
+{
+  "pr_number": 6177,
+  "archive_path": "docs/history/pr-reviews/PR-6177-docs-inventory-phase-0a-working-agreement-spec-progress-no-app-code.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T01:51:05.724Z",
+  "schema_version": "v1",
+  "commit_sha": "10f6b949d0a7a40df5fe5116a03c084d98a5ad2c",
+  "title": "docs(inventory): Phase 0a — working agreement, spec, progress (no app code)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T01:50:44Z",
+  "head_ref": "claude/inventory-phase-0a-j63zR"
+}

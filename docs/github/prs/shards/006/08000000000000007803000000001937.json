@@ -1,0 +1,12 @@
+{
+  "pr_number": 6455,
+  "archive_path": "docs/history/pr-reviews/PR-6455-feat-range-set-rangeset-f-ferry-oracle-2-of-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T19:15:19.504Z",
+  "schema_version": "v1",
+  "commit_sha": "dca025243f4645b8e77c9b03dac9ed7e8a069f33",
+  "title": "feat(range-set): RangeSet F# ferry (oracle #2 of 4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T19:14:51Z",
+  "head_ref": "otto-cli/rangeset-fsharp-ferry-2026-06-01"
+}

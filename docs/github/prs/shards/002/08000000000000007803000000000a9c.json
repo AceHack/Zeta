@@ -1,0 +1,27 @@
+{
+  "pr_number": 2716,
+  "archive_path": "docs/history/pr-reviews/PR-2716-feat-tools-b-0343-smallest-safe-slice-ts-manifest-reader-dry-run-stub-re-decomp.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_7-8R",
+    "comment:PRRC_kwDOSF9kNM6_7-8Y",
+    "comment:PRRC_kwDOSF9kNM6_8C03",
+    "comment:PRRC_kwDOSF9kNM6_8C1i",
+    "comment:PRRC_kwDOSF9kNM6_8C2D",
+    "comment:PRRC_kwDOSF9kNM6_8C2n",
+    "comment:PRRC_kwDOSF9kNM6_8Cz1",
+    "thread:PRRT_kwDOSF9kNM6BIweM",
+    "thread:PRRT_kwDOSF9kNM6BIweS",
+    "thread:PRRT_kwDOSF9kNM6BIzcu",
+    "thread:PRRT_kwDOSF9kNM6BIzd0",
+    "thread:PRRT_kwDOSF9kNM6BIzdU",
+    "thread:PRRT_kwDOSF9kNM6BIzeO",
+    "thread:PRRT_kwDOSF9kNM6BIzer"
+  ],
+  "fetched_at": "2026-05-11T15:47:49.170Z",
+  "schema_version": "v1",
+  "commit_sha": "2720dd6437ec356b36921fcfedcc2360ced0ba07",
+  "title": "feat(tools): B-0343 smallest safe slice — TS manifest reader + dry-run stub (re-decomp)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T15:47:22Z",
+  "head_ref": "claim/b0343-test-repo-seeding-script-ts-smallest-slice-riven-2026-05-11"
+}

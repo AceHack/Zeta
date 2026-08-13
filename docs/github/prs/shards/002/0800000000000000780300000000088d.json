@@ -1,0 +1,15 @@
+{
+  "pr_number": 2189,
+  "archive_path": "docs/history/pr-reviews/PR-2189-feat-dual-background-agents-opus-sonnet-running-in-parallel.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_e0mF",
+    "thread:PRRT_kwDOSF9kNM6Aymsh"
+  ],
+  "fetched_at": "2026-05-09T05:25:04.914Z",
+  "schema_version": "v1",
+  "commit_sha": "192184d948b974f0fa1f034923d96db1dbc54a29",
+  "title": "feat: dual background agents — Opus + Sonnet running in parallel",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T05:24:51Z",
+  "head_ref": "feat/dual-background-agents-opus-sonnet"
+}

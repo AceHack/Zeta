@@ -1,0 +1,12 @@
+{
+  "pr_number": 6627,
+  "archive_path": "docs/history/pr-reviews/PR-6627-proof-b-1007-c5-c7-bp-exact-on-trees-termination-tla-tlc-ep-probit-moment-match-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T07:36:20.864Z",
+  "schema_version": "v1",
+  "commit_sha": "6340ce21a98077372018aee47fded85f84959ab7",
+  "title": "proof(B-1007 C5,C7): BP exact-on-trees + termination (TLA+/TLC) · EP probit moment-match over generated cavities (FsCheck)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T07:36:01Z",
+  "head_ref": "otto-cli/b1007-c5-c7-bp-exact-on-tree-tlc-and-ep-moment-match-fscheck-2026-06-03"
+}

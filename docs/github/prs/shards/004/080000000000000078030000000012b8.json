@@ -1,0 +1,12 @@
+{
+  "pr_number": 4792,
+  "archive_path": "docs/history/pr-reviews/PR-4792-docs-research-preserve-ai-context-failures-vs-vendor-management-failures-alignme.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T23:46:26.890Z",
+  "schema_version": "v1",
+  "commit_sha": "6f6ac08460eee5c84c4f1c59fd3d9ae3876c4498",
+  "title": "docs(research): preserve AI-context-failures-vs-vendor-management-failures alignment analysis (Aaron + Otto)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T23:46:09Z",
+  "head_ref": "otto/research-ai-vs-vendor-alignment-analysis-2026-05-23"
+}

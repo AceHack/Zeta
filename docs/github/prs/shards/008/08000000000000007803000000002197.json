@@ -1,0 +1,12 @@
+{
+  "pr_number": 8599,
+  "archive_path": "docs/history/pr-reviews/PR-8599-docs-vision-the-universal-substrate-polarity-filter-thesis.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T17:23:47.157Z",
+  "schema_version": "v1",
+  "commit_sha": "f7e7ac79441ac6c82556f3f08c541e0d54bf5235",
+  "title": "docs(vision): the universal substrate + polarity filter thesis",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T17:23:15Z",
+  "head_ref": "alexa/vision-lens-synthesis"
+}

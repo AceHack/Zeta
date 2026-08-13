@@ -1,0 +1,12 @@
+{
+  "pr_number": 7587,
+  "archive_path": "docs/history/pr-reviews/PR-7587-feat-core-the-dev-room-s-tick-the-hub-runs-its-rooms-on-the-one-soft-scheduler.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:40:56.246Z",
+  "schema_version": "v1",
+  "commit_sha": "d521028b47a4d3913d04e06dcd812574443d9f49",
+  "title": "feat(core): the dev room's TICK — the hub runs its rooms on the one soft scheduler",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:40:35Z",
+  "head_ref": "shadow-devroom-tick"
+}

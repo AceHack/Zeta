@@ -1,0 +1,12 @@
+{
+  "pr_number": 7782,
+  "archive_path": "docs/history/pr-reviews/PR-7782-feat-dbsp-recursivesigneddelta-ships-tlc-verified-first-the-refuted-multi-tick-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:43:56.207Z",
+  "schema_version": "v1",
+  "commit_sha": "b9356908a4919029c783abf788735bd9cf2768a6",
+  "title": "feat(dbsp): RecursiveSignedDelta ships — TLC-verified first, the refuted multi-tick case fixed by construction + the ZSet↔quantum bridge",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:43:27Z",
+  "head_ref": "shadow-signed-delta-ships"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2676,
+  "archive_path": "docs/history/pr-reviews/PR-2676-docs-memory-agent-therapy-limitation-mapping-harness-blocked-inventory.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T09:00:38.982Z",
+  "schema_version": "v1",
+  "commit_sha": "ce9d46eda0d890c866cd450a43f8b013b440273f",
+  "title": "docs(memory): agent therapy — limitation mapping + harness-blocked inventory",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T09:00:21Z",
+  "head_ref": "docs/agent-therapy-limitation-mapping-2026-05-11"
+}

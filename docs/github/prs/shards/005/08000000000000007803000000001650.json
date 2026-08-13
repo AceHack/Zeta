@@ -1,0 +1,12 @@
+{
+  "pr_number": 5712,
+  "archive_path": "docs/history/pr-reviews/PR-5712-feat-b-0901-b-0902-b-0903-b-0904-b-0905-5-composing-insights-shadow-as-eve-proto.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T07:32:22.986Z",
+  "schema_version": "v1",
+  "commit_sha": "ffcf68dc2092143fe37d8d05290b3ec064d7e026",
+  "title": "feat(B-0901 + B-0902 + B-0903 + B-0904 + B-0905): 5 composing insights — shadow* as Eve Protocol + holographic boundary + most-valuable training data + GitHub-free-accelerator + Landauer-limit physics-economics",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T07:32:02Z",
+  "head_ref": "otto-cli/b-0901-b-0904-shadow-star-eve-protocol-holographic-training-data-github-accelerator-2026-05-28"
+}

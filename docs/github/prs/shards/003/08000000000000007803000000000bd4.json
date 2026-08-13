@@ -1,0 +1,21 @@
+{
+  "pr_number": 3028,
+  "archive_path": "docs/history/pr-reviews/PR-3028-feat-scaffold-b-0424-8-add-bp-10-invisible-unicode-mutable-tag-rules-to-forge-ac.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A9q19",
+    "comment:PRRC_kwDOSF9kNM7A9q1h",
+    "comment:PRRC_kwDOSF9kNM7A9q2P",
+    "comment:PRRC_kwDOSF9kNM7A9qBG",
+    "thread:PRRT_kwDOSF9kNM6B43rE",
+    "thread:PRRT_kwDOSF9kNM6B44S1",
+    "thread:PRRT_kwDOSF9kNM6B44TI",
+    "thread:PRRT_kwDOSF9kNM6B44TW"
+  ],
+  "fetched_at": "2026-05-13T21:04:37.224Z",
+  "schema_version": "v1",
+  "commit_sha": "3952f27780d0cbf0b9771c3fc7b4645a6bc8caf2",
+  "title": "feat(scaffold): B-0424.8 — add BP-10 invisible-Unicode + mutable-tag rules to forge+ace scaffold templates",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T21:04:10Z",
+  "head_ref": "feat/scaffold-b0424-8-bp10-invisible-unicode-mutable-tag"
+}

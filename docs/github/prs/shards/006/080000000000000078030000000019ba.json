@@ -1,0 +1,12 @@
+{
+  "pr_number": 6586,
+  "archive_path": "docs/history/pr-reviews/PR-6586-docs-b-0999-research-domains-as-adapters-on-the-hex-core-interface-clifford-6-bi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T15:51:41.636Z",
+  "schema_version": "v1",
+  "commit_sha": "ab78d7741fd65f712af193132720bb8054903155",
+  "title": "docs(B-0999 + research): domains as adapters on the hex core interface — Clifford 6-bivector core; physics/biology/Girard-mimetic/cosmology/mythology adapters",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T15:51:04Z",
+  "head_ref": "otto-cli/b0999-domains-as-adapters-hex-core-2026-06-02"
+}

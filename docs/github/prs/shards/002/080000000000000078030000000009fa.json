@@ -1,0 +1,15 @@
+{
+  "pr_number": 2554,
+  "archive_path": "docs/history/pr-reviews/PR-2554-docs-research-claude-ai-asymmetric-critic-review-shadow-session-substrate-accret.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qgUj",
+    "thread:PRRT_kwDOSF9kNM6A7x9p"
+  ],
+  "fetched_at": "2026-05-10T22:04:06.819Z",
+  "schema_version": "v1",
+  "commit_sha": "3e4024531db324ee80b24937a91a1cee093dabf9",
+  "title": "docs(research): Claude.ai asymmetric critic review — shadow session substrate accretion",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T22:03:50Z",
+  "head_ref": "docs/claudeai-critic-review-2026-05-10"
+}

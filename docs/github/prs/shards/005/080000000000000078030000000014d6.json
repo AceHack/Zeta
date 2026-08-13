@@ -1,0 +1,12 @@
+{
+  "pr_number": 5334,
+  "archive_path": "docs/history/pr-reviews/PR-5334-docs-release-completed-codex-claim.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T22:18:06.790Z",
+  "schema_version": "v1",
+  "commit_sha": "f89fc4c8ccedf5b68a338e38fce4c2570e588747",
+  "title": "docs: release completed Codex claim",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T22:17:48Z",
+  "head_ref": "codex/release-completed-claim-5328-20260526"
+}

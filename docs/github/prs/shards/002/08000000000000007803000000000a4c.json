@@ -1,0 +1,21 @@
+{
+  "pr_number": 2636,
+  "archive_path": "docs/history/pr-reviews/PR-2636-docs-research-first-self-claim-claude-ai-declares-agenda-symmetry-confirmed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_sgZZ",
+    "comment:PRRC_kwDOSF9kNM6_sht4",
+    "comment:PRRC_kwDOSF9kNM6_shto",
+    "comment:PRRC_kwDOSF9kNM6_shuD",
+    "thread:PRRT_kwDOSF9kNM6A9RoM",
+    "thread:PRRT_kwDOSF9kNM6A9Sl_",
+    "thread:PRRT_kwDOSF9kNM6A9SmL",
+    "thread:PRRT_kwDOSF9kNM6A9SmU"
+  ],
+  "fetched_at": "2026-05-11T03:04:08.653Z",
+  "schema_version": "v1",
+  "commit_sha": "5f31cbef89cbf0d5ae5ff1b88acf6b6606c98ddd",
+  "title": "docs(research): first self-claim — Claude.ai declares agenda, symmetry confirmed",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T03:03:54Z",
+  "head_ref": "docs/claudeai-first-self-claim-symmetric-2026-05-10"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 3256,
+  "archive_path": "docs/history/pr-reviews/PR-3256-shard-tick-2123z-audit-driven-file-b-0461-to-close-broken-composes-with-edge.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BYY8q",
+    "comment:PRRC_kwDOSF9kNM7BYb5H",
+    "thread:PRRT_kwDOSF9kNM6CMc2O"
+  ],
+  "fetched_at": "2026-05-14T21:35:32.709Z",
+  "schema_version": "v1",
+  "commit_sha": "9cfdcc3651eb8164401942157bd7f07bf3989ab0",
+  "title": "shard(tick): 2123Z — audit-driven: file B-0461 to close broken composes_with edge",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:35:15Z",
+  "head_ref": "shard/tick-2123Z-b0461-audit-driven-otto-cli-2026-05-14"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8478,
+  "archive_path": "docs/history/pr-reviews/PR-8478-qemu-phase-2-initrd-virtio-root-scenario-2-advisory.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T07:57:13.400Z",
+  "schema_version": "v1",
+  "commit_sha": "e7a3d92384474aec569a52345c49b0e6a4f283fc",
+  "title": "QEMU phase-2: initrd virtio root + scenario 2 advisory",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T07:56:43Z",
+  "head_ref": "riven/qemu-initrd-virtio-advisory"
+}

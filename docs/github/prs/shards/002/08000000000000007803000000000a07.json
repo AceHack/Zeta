@@ -1,0 +1,17 @@
+{
+  "pr_number": 2567,
+  "archive_path": "docs/history/pr-reviews/PR-2567-docs-memory-kiro-false-failure-signal-shadow-sighting-during-codex.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qwB3",
+    "comment:PRRC_kwDOSF9kNM6_qwBw",
+    "thread:PRRT_kwDOSF9kNM6A7-Qd",
+    "thread:PRRT_kwDOSF9kNM6A7-Qj"
+  ],
+  "fetched_at": "2026-05-10T22:58:47.560Z",
+  "schema_version": "v1",
+  "commit_sha": "812c2729d379226254ba2fce695071e1c23d2371",
+  "title": "docs(memory): Kiro false failure signal + shadow sighting during Codex",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T22:58:30Z",
+  "head_ref": "docs/kiro-false-failure-shadow-sighting-2026-05-10"
+}

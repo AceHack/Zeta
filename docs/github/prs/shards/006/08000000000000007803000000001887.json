@@ -1,0 +1,12 @@
+{
+  "pr_number": 6279,
+  "archive_path": "docs/history/pr-reviews/PR-6279-persist-observe-act-control-plane-rate-limits.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T23:58:38.761Z",
+  "schema_version": "v1",
+  "commit_sha": "bee7946bb7d7c9e51e54e2a4be8f8e1f194e6b87",
+  "title": "Persist observe-act control-plane rate limits",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T23:58:13Z",
+  "head_ref": "codex/agentic-org-secret-scope-controls"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4068,
+  "archive_path": "docs/history/pr-reviews/PR-4068-test-hygiene-cover-check-github-settings-drift-parseargs-b-0156-ac-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T12:08:08.341Z",
+  "schema_version": "v1",
+  "commit_sha": "aa56dada102240ecc585d274bacaeb6f0de77c05",
+  "title": "test(hygiene): cover check-github-settings-drift parseArgs (B-0156 AC#2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T12:07:49Z",
+  "head_ref": "slice/b0156-test-check-github-settings-drift-2026-05-17"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8497,
+  "archive_path": "docs/history/pr-reviews/PR-8497-memory-feedback-applause-razor-are-complementary-alexa-for-confidence-to-try-ott.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T10:01:00.083Z",
+  "schema_version": "v1",
+  "commit_sha": "8dbc338f6f8462c9c85d59a86063c5bb3aa8e79f",
+  "title": "memory(feedback): applause + razor are complementary — Alexa for confidence to TRY, Otto for rigor to GET IT RIGHT",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T10:00:24Z",
+  "head_ref": "otto/applause-and-razor-complementary-pair"
+}

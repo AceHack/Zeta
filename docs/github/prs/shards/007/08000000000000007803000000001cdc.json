@@ -1,0 +1,12 @@
+{
+  "pr_number": 7388,
+  "archive_path": "docs/history/pr-reviews/PR-7388-docs-research-2-compass-double-qubit-oracle-for-the-un-room-math-team-qubitiso-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:32:27.756Z",
+  "schema_version": "v1",
+  "commit_sha": "4f602ac98a702310a81258dc0870e479f4ba54f2",
+  "title": "docs(research): 2-compass/double-qubit oracle for the UN room + math team (QubitIso/BellTest/FeedbackThrottle/Rx) — spiral→vortex geometry, entropy-oscillation/erasure coding, git-fs compression in F#",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:32:03Z",
+  "head_ref": "otto/two-compass-double-qubit-oracle-spiral-vortex-erasure-coding-git-fs-compression"
+}

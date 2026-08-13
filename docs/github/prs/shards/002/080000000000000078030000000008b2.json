@@ -1,0 +1,15 @@
+{
+  "pr_number": 2226,
+  "archive_path": "docs/history/pr-reviews/PR-2226-chore-add-guardrails-to-concept-index-ts.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fknT",
+    "thread:PRRT_kwDOSF9kNM6AzJzg"
+  ],
+  "fetched_at": "2026-05-09T07:23:53.896Z",
+  "schema_version": "v1",
+  "commit_sha": "a8d38b5c80587ec8f2b1e395b905a739cabf194a",
+  "title": "chore: add guardrails to concept-index.ts",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:23:38Z",
+  "head_ref": "fix/concept-index-guardrails"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5094,
+  "archive_path": "docs/history/pr-reviews/PR-5094-backlog-b-0771-re-land-audio-codecs-working-daw-ready-intel-npu-vpu-exposed-onnx.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T05:01:33.910Z",
+  "schema_version": "v1",
+  "commit_sha": "adb611e2ffd722cdb944c6fb6fc6ef8a2ce274f5",
+  "title": "backlog(B-0771): re-land audio codecs working (DAW-ready) + Intel NPU/VPU exposed + ONNX as operator contract",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:01:15Z",
+  "head_ref": "otto-cli/reland-b0771-0500z"
+}

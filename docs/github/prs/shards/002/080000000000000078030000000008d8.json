@@ -1,0 +1,19 @@
+{
+  "pr_number": 2264,
+  "archive_path": "docs/history/pr-reviews/PR-2264-chore-b-0317-close-backlog-item-auth-helper-already-implemented.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gZ3m",
+    "comment:PRRC_kwDOSF9kNM6_gZFE",
+    "comment:PRRC_kwDOSF9kNM6_gZFh",
+    "comment:PRRC_kwDOSF9kNM6_gZvb",
+    "thread:PRRT_kwDOSF9kNM6AzzzB",
+    "thread:PRRT_kwDOSF9kNM6AzzzT"
+  ],
+  "fetched_at": "2026-05-09T09:51:43.757Z",
+  "schema_version": "v1",
+  "commit_sha": "f8d0faa07b65dca46f42dab9d5173cf054dbc333",
+  "title": "chore(B-0317): close backlog item — auth helper already implemented",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:51:30Z",
+  "head_ref": "chore/b0317-close"
+}

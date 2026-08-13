@@ -1,0 +1,12 @@
+{
+  "pr_number": 3194,
+  "archive_path": "docs/history/pr-reviews/PR-3194-shard-tick-1908z-razor-cadence-batch-8-4-more-rules-17-17-live.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T19:14:56.491Z",
+  "schema_version": "v1",
+  "commit_sha": "fb50794080685b3977acfd9351a6319dd8cbf701",
+  "title": "shard(tick): 1908Z — razor-cadence batch 8 (4 more rules, 17/17 LIVE)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:14:31Z",
+  "head_ref": "shard/tick-1908Z-razor-cadence-batch8-otto-cli-2026-05-14"
+}

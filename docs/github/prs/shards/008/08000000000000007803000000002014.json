@@ -1,0 +1,12 @@
+{
+  "pr_number": 8212,
+  "archive_path": "docs/history/pr-reviews/PR-8212-test-ferry-seeded-dst-replay-for-ferrythrottler-same-seed-same-interleaving.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T20:30:50.012Z",
+  "schema_version": "v1",
+  "commit_sha": "c6192170bea9b85028ae47e721c54cb447cccb3a",
+  "title": "test(ferry): seeded DST replay for FerryThrottler — same seed ⇒ same interleaving",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T20:30:25Z",
+  "head_ref": "test-ferrythrottler-seeded-dst-replay"
+}

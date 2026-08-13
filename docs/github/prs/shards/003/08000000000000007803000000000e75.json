@@ -1,0 +1,12 @@
+{
+  "pr_number": 3701,
+  "archive_path": "docs/history/pr-reviews/PR-3701-shard-tick-2026-05-16t03-10z-baseline-mechanism-resolves-immutability-question-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T03:17:09.172Z",
+  "schema_version": "v1",
+  "commit_sha": "cd4a9bf54de5e318ee570c73c357fd97cc51fe96",
+  "title": "shard(tick): 2026-05-16T03:10Z — baseline mechanism resolves immutability question (PR #3699)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:16:50Z",
+  "head_ref": "shard/tick-0310z-otto-cli-2026-05-16"
+}

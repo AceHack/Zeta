@@ -1,0 +1,12 @@
+{
+  "pr_number": 6850,
+  "archive_path": "docs/history/pr-reviews/PR-6850-feat-globals-cach-mumps-hierarchical-global-primitive-multi-model-power-bi-captu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T15:14:53.693Z",
+  "schema_version": "v1",
+  "commit_sha": "ca173c56fb712341f18dfa70c34815657fbe8257",
+  "title": "feat(Globals): Caché/MUMPS hierarchical global primitive + multi-model/Power-BI capture",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T15:14:30Z",
+  "head_ref": "otto/cache-globals-multimodel-capture-and-primitive"
+}

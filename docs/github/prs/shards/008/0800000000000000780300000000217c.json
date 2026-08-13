@@ -1,0 +1,12 @@
+{
+  "pr_number": 8572,
+  "archive_path": "docs/history/pr-reviews/PR-8572-feat-splitmix64-go-python-oracles-to-full-6-language-parity.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T13:52:50.760Z",
+  "schema_version": "v1",
+  "commit_sha": "9d56e9c012887e013de138408190144c937eab0e",
+  "title": "feat: splitmix64 - go + python oracles to full 6-language parity",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T13:52:21Z",
+  "head_ref": "port-splitmix64-go-python"
+}

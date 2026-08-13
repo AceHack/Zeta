@@ -1,0 +1,12 @@
+{
+  "pr_number": 4283,
+  "archive_path": "docs/history/pr-reviews/PR-4283-shard-0015z-c-lior-keystone-mapping-landed-in-b-0668.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T00:19:38.754Z",
+  "schema_version": "v1",
+  "commit_sha": "d58a84085ddf801759653a72a8d00bf6338a7558",
+  "title": "shard(0015Z-c): Lior keystone mapping landed in B-0668",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T00:19:19Z",
+  "head_ref": "shard/tick-2026-05-19-0015z-c-lior-keystone-mapping-b-0668-extended-2026-05-19"
+}

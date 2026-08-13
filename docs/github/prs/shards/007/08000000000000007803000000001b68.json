@@ -1,0 +1,12 @@
+{
+  "pr_number": 7016,
+  "archive_path": "docs/history/pr-reviews/PR-7016-feat-core-interface-in-dynamicvalue-via-object-expression-native-vs-interpreted-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T04:48:32.945Z",
+  "schema_version": "v1",
+  "commit_sha": "fe42d0ceb301899eca42cc6cd75543c38d43d9db",
+  "title": "feat(core): interface in DynamicValue via object expression (native vs interpreted, one port); design: interface from joined/zipped stream queries",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T04:48:15Z",
+  "head_ref": "otto/interface-from-dynamicvalue-objexpr-and-joined-stream-queries"
+}

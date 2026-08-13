@@ -1,0 +1,12 @@
+{
+  "pr_number": 3515,
+  "archive_path": "docs/history/pr-reviews/PR-3515-fix-shard-1524z-correct-relative-link-depth-raw-output-mislabel.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T16:02:46.998Z",
+  "schema_version": "v1",
+  "commit_sha": "81456724dfc5af8c1f9fe384439f8645a018025a",
+  "title": "fix(shard-1524z): correct relative-link depth + raw-output mislabel",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T16:02:26Z",
+  "head_ref": "fix/shard-1524z-rel-links-otto-cli-2026-05-15"
+}

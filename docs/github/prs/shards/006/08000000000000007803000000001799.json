@@ -1,0 +1,12 @@
+{
+  "pr_number": 6041,
+  "archive_path": "docs/history/pr-reviews/PR-6041-feat-agentic-org-add-business-quality-gate-evaluations.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T20:19:36.598Z",
+  "schema_version": "v1",
+  "commit_sha": "614b94c1d2f87b39909b0eb4da13e4b86db4a93c",
+  "title": "feat(agentic-org): add business quality gate evaluations",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T20:19:10Z",
+  "head_ref": "codex/agentic-org-worker-entrypoint-hardening"
+}

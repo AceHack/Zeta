@@ -1,0 +1,15 @@
+{
+  "pr_number": 2709,
+  "archive_path": "docs/history/pr-reviews/PR-2709-feat-backlog-b-0409-wallet-immune-system-pouw-cc-vaccine-spread.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_6rzz",
+    "thread:PRRT_kwDOSF9kNM6BHx5l"
+  ],
+  "fetched_at": "2026-05-11T14:48:21.041Z",
+  "schema_version": "v1",
+  "commit_sha": "e1793776250efb5ea203bf01060a94e4082fd1a2",
+  "title": "feat(backlog): B-0409 wallet immune system — PoUW-CC + vaccine spread",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T14:48:00Z",
+  "head_ref": "feat/B-0409-wallet-immune-system-spec-2026-05-11"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8649,
+  "archive_path": "docs/history/pr-reviews/PR-8649-feat-core-adinkra-mirror-layer-one-the-8-4-4-doubly-even-self-dual-code-generato.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T23:50:53.607Z",
+  "schema_version": "v1",
+  "commit_sha": "2070ae628d924427e841e3c1c25b7341376c931d",
+  "title": "feat(core): adinkra mirror, layer one — the [8,4,4] doubly-even self-dual code (generator IS the ECC)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T23:50:25Z",
+  "head_ref": "otto/adinkra-mirror-layer-one"
+}

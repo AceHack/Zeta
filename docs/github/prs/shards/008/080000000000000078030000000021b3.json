@@ -1,0 +1,12 @@
+{
+  "pr_number": 8627,
+  "archive_path": "docs/history/pr-reviews/PR-8627-memory-zeta-ntp-utc-is-a-fool-s-game-leap-seconds-not-the-base-soft-phase-spacet.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T21:18:31.784Z",
+  "schema_version": "v1",
+  "commit_sha": "6315c45494c6c5ec489928c535b2d538be33e58b",
+  "title": "memory(zeta-ntp): UTC is a fool's game (leap seconds) — not the base; soft phase spacetime is",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T21:18:07Z",
+  "head_ref": "otto/utc-fools-game-leap-seconds-soft-phase-is-base"
+}

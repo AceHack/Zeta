@@ -1,0 +1,12 @@
+{
+  "pr_number": 3737,
+  "archive_path": "docs/history/pr-reviews/PR-3737-chore-b-0530-close-row-mechanization-shipped-via-pr-3375-second-drift-catch.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T04:37:45.990Z",
+  "schema_version": "v1",
+  "commit_sha": "33719ee0604cc07b1a5e8da0c37492bb105476f7",
+  "title": "chore(b-0530): close row — mechanization shipped via PR #3375 (second drift catch)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:37:30Z",
+  "head_ref": "chore/b0530-close-row-otto-cli-2026-05-16"
+}

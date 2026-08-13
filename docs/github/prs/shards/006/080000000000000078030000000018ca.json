@@ -1,0 +1,24 @@
+{
+  "pr_number": 6346,
+  "archive_path": "docs/history/pr-reviews/PR-6346-chore-setup-declare-podman-as-default-oci-container-runtime-brew-apt-windows.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gl3s-",
+    "comment:PRRC_kwDOSF9kNM7Gl4dF",
+    "comment:PRRC_kwDOSF9kNM7Gl4dZ",
+    "comment:PRRC_kwDOSF9kNM7Gl4dm",
+    "comment:PRRC_kwDOSF9kNM7Gl_x0",
+    "comment:PRRC_kwDOSF9kNM7GmCFI",
+    "thread:PRRT_kwDOSF9kNM6GA0_v",
+    "thread:PRRT_kwDOSF9kNM6GAu-Y",
+    "thread:PRRT_kwDOSF9kNM6GAvhN",
+    "thread:PRRT_kwDOSF9kNM6GAvhc",
+    "thread:PRRT_kwDOSF9kNM6GAvho"
+  ],
+  "fetched_at": "2026-06-01T05:34:24.698Z",
+  "schema_version": "v1",
+  "commit_sha": "23ec9cb04fa96dd700fea4d369223c47becc4245",
+  "title": "chore(setup): declare podman as default OCI container runtime (brew/apt/windows)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T05:34:01Z",
+  "head_ref": "otto-cli/podman-oci-deps-2026-06-01"
+}

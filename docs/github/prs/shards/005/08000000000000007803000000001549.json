@@ -1,0 +1,12 @@
+{
+  "pr_number": 5449,
+  "archive_path": "docs/history/pr-reviews/PR-5449-docs-b-0852-3-zeta-install-sh-step-6-77-cred-picker-integration-row-interactive-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T13:34:46.136Z",
+  "schema_version": "v1",
+  "commit_sha": "f675fb391a301b90547c7e68271b92c254cae7a0",
+  "title": "docs(B-0852.3): zeta-install.sh Step 6.77 cred-picker integration row — interactive bake-in + zflash CLI override (Aaron 2026-05-27 USB push)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T13:34:21Z",
+  "head_ref": "backlog/b-0852-3-cred-picker-integration-row-2026-05-27"
+}

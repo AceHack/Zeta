@@ -1,0 +1,12 @@
+{
+  "pr_number": 8488,
+  "archive_path": "docs/history/pr-reviews/PR-8488-fix-observe-restore-main-green-ts-lint-clear-11-tsc-errors-from-the-schema-evolu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T09:07:53.594Z",
+  "schema_version": "v1",
+  "commit_sha": "4fac9772a361b174fbc53c3f532f2b640060970b",
+  "title": "fix(observe): restore main-green TS lint — clear 11 tsc errors from the schema-evolution merges (#8458/#8487)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T09:07:21Z",
+  "head_ref": "otto/fix-main-red-ts-lint-observe-schema"
+}

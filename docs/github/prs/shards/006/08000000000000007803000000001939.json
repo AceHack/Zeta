@@ -1,0 +1,22 @@
+{
+  "pr_number": 6457,
+  "archive_path": "docs/history/pr-reviews/PR-6457-feat-range-set-rangeset-c-ferry-oracle-3-of-4.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G4E3P",
+    "comment:PRRC_kwDOSF9kNM7G4E3c",
+    "comment:PRRC_kwDOSF9kNM7G4FZK",
+    "comment:PRRC_kwDOSF9kNM7G4Mbi",
+    "comment:PRRC_kwDOSF9kNM7G4Mc3",
+    "comment:PRRC_kwDOSF9kNM7G4MeG",
+    "thread:PRRT_kwDOSF9kNM6GOWI6",
+    "thread:PRRT_kwDOSF9kNM6GOWIv",
+    "thread:PRRT_kwDOSF9kNM6GOWiZ"
+  ],
+  "fetched_at": "2026-06-01T19:28:53.092Z",
+  "schema_version": "v1",
+  "commit_sha": "a3832f11d4a010663791778f48ff9d5208fbd94d",
+  "title": "feat(range-set): RangeSet C# ferry (oracle #3 of 4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T19:28:26Z",
+  "head_ref": "otto-cli/rangeset-csharp-ferry-2026-06-01"
+}

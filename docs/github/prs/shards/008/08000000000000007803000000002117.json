@@ -1,0 +1,12 @@
+{
+  "pr_number": 8471,
+  "archive_path": "docs/history/pr-reviews/PR-8471-docs-society-9j-entropy-sybil-ratio-proof-is-built-tested-forgery-cost-floor-not.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T07:22:58.148Z",
+  "schema_version": "v1",
+  "commit_sha": "c3c9e65eb16e36ff12d5887f93443f729e877060",
+  "title": "docs(society): §9j — entropy-Sybil ratio proof is BUILT+TESTED (forgery-cost floor), not §B",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T07:22:31Z",
+  "head_ref": "otto/entropy-sybil-ratio-proof-built"
+}

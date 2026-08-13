@@ -1,0 +1,12 @@
+{
+  "pr_number": 6967,
+  "archive_path": "docs/history/pr-reviews/PR-6967-feat-core-zetacli-the-seam-verb-noun-command-grammar-as-data-zs-zc-cli-foundatio.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:10:40.482Z",
+  "schema_version": "v1",
+  "commit_sha": "8a4def1ce3adffa88bee64b1daa74ead51a4aec3",
+  "title": "feat(core): ZetaCli — the seam/verb/noun command grammar as data (zs/zc CLI foundation)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:10:18Z",
+  "head_ref": "otto/zetacli-seam-verb-noun-grammar-core"
+}

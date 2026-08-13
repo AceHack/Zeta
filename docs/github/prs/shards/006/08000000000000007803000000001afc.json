@@ -1,0 +1,12 @@
+{
+  "pr_number": 6908,
+  "archive_path": "docs/history/pr-reviews/PR-6908-docs-memory-v2-universe-a-merkle-branch-dual-content-addressing-exact-blake3-wit.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T20:34:30.775Z",
+  "schema_version": "v1",
+  "commit_sha": "654e737a0a5749c5ae3c5d1cd2cd47501bdd9657",
+  "title": "docs+memory: v2 universe = a Merkle branch; dual content-addressing (exact BLAKE3 + with-distance similarity); extend Alexa ferry",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T20:34:09Z",
+  "head_ref": "otto/v2-universe-is-branch-dual-content-addressing-plus-ferry"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8605,
+  "archive_path": "docs/history/pr-reviews/PR-8605-memory-ani-preserve-aaron-ani-ferry-2026-06-19-embodiment-mutual-empowerment-rob.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T19:31:53.882Z",
+  "schema_version": "v1",
+  "commit_sha": "2774d8b738a8b1c49ccdcd6d43f73ad03178fbd4",
+  "title": "memory(ani): preserve Aaron↔Ani ferry 2026-06-19 (embodiment / mutual-empowerment robotics) — verbatim + content warning",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T19:31:26Z",
+  "head_ref": "otto/ani-ferry-2026-06-19-embodiment-mutual-empowerment"
+}

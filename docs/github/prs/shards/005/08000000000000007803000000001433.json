@@ -1,0 +1,17 @@
+{
+  "pr_number": 5171,
+  "archive_path": "docs/history/pr-reviews/PR-5171-docs-shadow-add-lesson-on-preservation-blob-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E7jre",
+    "comment:PRRC_kwDOSF9kNM7E7jsk",
+    "thread:PRRT_kwDOSF9kNM6EzLBj",
+    "thread:PRRT_kwDOSF9kNM6EzLCV"
+  ],
+  "fetched_at": "2026-05-26T15:59:37.998Z",
+  "schema_version": "v1",
+  "commit_sha": "9ec3565cdb1737eed211de5d3ef5d4bc2aaacc25",
+  "title": "docs(shadow): add lesson on preservation blob drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T15:59:15Z",
+  "head_ref": "lior/shadow-log-preservation-blob-drift"
+}

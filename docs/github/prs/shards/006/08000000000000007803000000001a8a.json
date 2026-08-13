@@ -1,0 +1,12 @@
+{
+  "pr_number": 6794,
+  "archive_path": "docs/history/pr-reviews/PR-6794-feat-core-collation-seed-db-style-binary-ordinal-default-sql-parameterized-model.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T11:23:13.330Z",
+  "schema_version": "v1",
+  "commit_sha": "c95ae2394a73b6ba1d33a90f56f198744f1e28cc",
+  "title": "feat(Core): Collation seed (DB-style, binary/ordinal default) + SQL parameterized-model capture",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T11:22:53Z",
+  "head_ref": "feat/collation-seed-and-sql-parameterized-model"
+}

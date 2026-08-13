@@ -1,0 +1,12 @@
+{
+  "pr_number": 2592,
+  "archive_path": "docs/history/pr-reviews/PR-2592-docs-memory-ferry-protocol-whitfield-throttled-processor-itron-zeta-expansion.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T00:35:11.240Z",
+  "schema_version": "v1",
+  "commit_sha": "c63ec876a25b205bbf57344596af172edd18aca1",
+  "title": "docs(memory): ferry protocol — Whitfield Throttled Processor → Itron → Zeta expansion",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:34:56Z",
+  "head_ref": "docs/ferry-protocol-whitfield-2026-05-10"
+}

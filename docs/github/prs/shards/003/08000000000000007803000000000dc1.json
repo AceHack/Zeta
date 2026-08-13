@@ -1,0 +1,12 @@
+{
+  "pr_number": 3521,
+  "archive_path": "docs/history/pr-reviews/PR-3521-shard-tick-1629z-pr-3518-review-cycle-closed-b-0504-b-0505-also-flipped-b-0503-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T16:33:41.670Z",
+  "schema_version": "v1",
+  "commit_sha": "c8e6063f7208be6b0666a694e9cea31b3c3760ff",
+  "title": "shard(tick): 1629Z — PR #3518 review-cycle closed; B-0504 + B-0505 also flipped + B-0503 spec text reconciled",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T16:33:21Z",
+  "head_ref": "shard/tick-1626z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 5077,
+  "archive_path": "docs/history/pr-reviews/PR-5077-docs-maintainers-aaron-legal-entity-inventory-lucent-financial-group-freeborn-fl.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EwdQv",
+    "comment:PRRC_kwDOSF9kNM7EwdRC",
+    "comment:PRRC_kwDOSF9kNM7EwdRP",
+    "thread:PRRT_kwDOSF9kNM6ErFF-",
+    "thread:PRRT_kwDOSF9kNM6ErFFl",
+    "thread:PRRT_kwDOSF9kNM6ErFFy"
+  ],
+  "fetched_at": "2026-05-26T03:43:49.673Z",
+  "schema_version": "v1",
+  "commit_sha": "3eace3aebfd3b176ac4b67eddca41398a769d4d3",
+  "title": "docs(maintainers/aaron): legal-entity inventory — Lucent Financial Group + Freeborn Flower Co (Stage-3 risk-holder substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T03:43:32Z",
+  "head_ref": "otto-cli/maintainers-aaron-legal-entities-inventory-2026-05-25"
+}

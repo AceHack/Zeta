@@ -1,0 +1,33 @@
+{
+  "pr_number": 5216,
+  "archive_path": "docs/history/pr-reviews/PR-5216-feat-b-0814-backlog-b-0815-ts-deregister-node-tool-heartbeat-expiration-design-t.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FA4FG",
+    "comment:PRRC_kwDOSF9kNM7FA4Fq",
+    "comment:PRRC_kwDOSF9kNM7FA4G7",
+    "comment:PRRC_kwDOSF9kNM7FA4GD",
+    "comment:PRRC_kwDOSF9kNM7FA4Gg",
+    "comment:PRRC_kwDOSF9kNM7FA4HX",
+    "comment:PRRC_kwDOSF9kNM7FA4Hq",
+    "comment:PRRC_kwDOSF9kNM7FA4I8",
+    "comment:PRRC_kwDOSF9kNM7FA4IA",
+    "comment:PRRC_kwDOSF9kNM7FA4Ig",
+    "thread:PRRT_kwDOSF9kNM6E3Ds3",
+    "thread:PRRT_kwDOSF9kNM6E3DsJ",
+    "thread:PRRT_kwDOSF9kNM6E3Dsi",
+    "thread:PRRT_kwDOSF9kNM6E3Dt5",
+    "thread:PRRT_kwDOSF9kNM6E3DtM",
+    "thread:PRRT_kwDOSF9kNM6E3Dtd",
+    "thread:PRRT_kwDOSF9kNM6E3Dts",
+    "thread:PRRT_kwDOSF9kNM6E3Du4",
+    "thread:PRRT_kwDOSF9kNM6E3DuL",
+    "thread:PRRT_kwDOSF9kNM6E3Duj"
+  ],
+  "fetched_at": "2026-05-26T16:40:25.593Z",
+  "schema_version": "v1",
+  "commit_sha": "00420135762f85f0b146873aae9f9a2ba1bc951f",
+  "title": "feat(B-0814) + backlog(B-0815): TS deregister-node tool + heartbeat/expiration design — the maintainer 2026-05-26 dual ask",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T16:40:00Z",
+  "head_ref": "otto-cli/deregister-tool-plus-b0814-b0815-heartbeat-expiration-2026-05-26"
+}

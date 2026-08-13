@@ -1,0 +1,12 @@
+{
+  "pr_number": 5694,
+  "archive_path": "docs/history/pr-reviews/PR-5694-docs-b-0867-22-docs-playbooks-system-index-agent-loop-skill-md-cross-ref-b-0892-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T03:43:45.883Z",
+  "schema_version": "v1",
+  "commit_sha": "79c65845cc921dceef23ab13c926ac843e31b345",
+  "title": "docs(B-0867.22): docs/playbooks/ system index + agent-loop SKILL.md cross-ref (B-0892 state-machine lane)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T03:43:26Z",
+  "head_ref": "otto-cli/b0867-22-playbooks-readme-20260528-0339Z"
+}

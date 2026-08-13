@@ -1,0 +1,12 @@
+{
+  "pr_number": 6940,
+  "archive_path": "docs/history/pr-reviews/PR-6940-docs-ferry-ace-cross-package-manager-conflicts-are-compile-time-errors-shift-lef.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T23:03:39.400Z",
+  "schema_version": "v1",
+  "commit_sha": "a4d94a9c03f749a979e60c9fd840261ab2ab05f4",
+  "title": "docs+ferry: Ace cross-package-manager conflicts are compile-time errors (shift-left)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T23:03:16Z",
+  "head_ref": "otto/ace-cross-pm-compile-time-errors"
+}

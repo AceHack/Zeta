@@ -1,0 +1,12 @@
+{
+  "pr_number": 7879,
+  "archive_path": "docs/history/pr-reviews/PR-7879-docs-research-stonehenge-the-common-cause-seed-generator-phase-locking-without-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T10:11:54.746Z",
+  "schema_version": "v1",
+  "commit_sha": "d953de796037d271a4e3e6478cb9907cc291f126",
+  "title": "docs(research): Stonehenge = the common-cause seed generator — phase-locking without messages; the replay line as rendezvous",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:11:30Z",
+  "head_ref": "shadow-stonehenge-common-seed"
+}

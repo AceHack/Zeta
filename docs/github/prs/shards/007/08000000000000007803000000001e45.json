@@ -1,0 +1,12 @@
+{
+  "pr_number": 7749,
+  "archive_path": "docs/history/pr-reviews/PR-7749-fix-backlog-satisfy-markdownlint-for-quantum-viz-note.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:05:51.007Z",
+  "schema_version": "v1",
+  "commit_sha": "5ab288aac926c671ff9b710e34b89405df806e83",
+  "title": "fix(backlog): satisfy markdownlint for quantum viz note",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:05:20Z",
+  "head_ref": "codex/vera-fix-quantum-viz-backlog-md"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3656,
+  "archive_path": "docs/history/pr-reviews/PR-3656-kestrel-part8-9-aaron-100-conversations-addison-klein-bottle-decline-addison-dis.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T01:03:40.081Z",
+  "schema_version": "v1",
+  "commit_sha": "38d898fae3a4150827a9ba48d8d02c2d39d4d6dd",
+  "title": "kestrel(part8-9)+aaron(100-conversations+addison): Klein-bottle-decline + Addison disclosure + 100-conversations methodology",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T01:03:23Z",
+  "head_ref": "kestrel/part8-9-klein-bottle-decline-verification-pivot-addison-100-conversations-methodology-otto-cli-2026-05-16"
+}

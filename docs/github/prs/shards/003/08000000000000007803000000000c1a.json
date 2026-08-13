@@ -1,0 +1,16 @@
+{
+  "pr_number": 3098,
+  "archive_path": "docs/history/pr-reviews/PR-3098-docs-b-0258-document-ordering-formatting-contract-close-b-0258.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BEk2n",
+    "comment:PRRC_kwDOSF9kNM7BEtfh",
+    "thread:PRRT_kwDOSF9kNM6B92FH"
+  ],
+  "fetched_at": "2026-05-14T05:22:04.480Z",
+  "schema_version": "v1",
+  "commit_sha": "f0d3115d859ddccac1c8f200517d13b1c161f0f7",
+  "title": "docs(b-0258): document ordering/formatting contract; close B-0258",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T05:21:45Z",
+  "head_ref": "feat/b0258-document-ordering-formatting-2026-05-14"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8966,
+  "archive_path": "docs/history/pr-reviews/PR-8966-docs-ip-questionable-superfluid-is-a-product-name-mental-image-not-a-claim.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T17:01:33.079Z",
+  "schema_version": "v1",
+  "commit_sha": "22f30afe2a57783b61bfb714dd4a8ee9e5138e6a",
+  "title": "docs(ip-questionable): \"superfluid\" is a product name/mental image, not a claim",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T17:01:02Z",
+  "head_ref": "otto/ip-questionable-superfluid-is-product-name"
+}

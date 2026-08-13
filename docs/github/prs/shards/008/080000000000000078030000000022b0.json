@@ -1,0 +1,12 @@
+{
+  "pr_number": 8880,
+  "archive_path": "docs/history/pr-reviews/PR-8880-feat-gen-interface-codegen-ir-7-language-interface-emission.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:22:08.794Z",
+  "schema_version": "v1",
+  "commit_sha": "e404d5961a7b03de8e7e799ac978e740f85ea171",
+  "title": "feat(gen): interface codegen — IR → 7-language interface emission",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:21:41Z",
+  "head_ref": "alexa/interface-emission"
+}

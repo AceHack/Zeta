@@ -1,0 +1,19 @@
+{
+  "pr_number": 5476,
+  "archive_path": "docs/history/pr-reviews/PR-5476-feat-b-0852-4a-4d-nixos-module-zeta-creds-restore-nix-wire-into-cluster-common-n.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FYdY7",
+    "comment:PRRC_kwDOSF9kNM7FYdax",
+    "comment:PRRC_kwDOSF9kNM7FYdbf",
+    "thread:PRRT_kwDOSF9kNM6FIQZs",
+    "thread:PRRT_kwDOSF9kNM6FIQbH",
+    "thread:PRRT_kwDOSF9kNM6FIQbt"
+  ],
+  "fetched_at": "2026-05-27T14:40:31.034Z",
+  "schema_version": "v1",
+  "commit_sha": "fd0ca0c8b844c1103ae10fa3719c48bae6dd2c90",
+  "title": "feat(B-0852.4a+4d): NixOS module zeta-creds-restore.nix + wire into cluster common.nix imports — last gate for end-to-end USB cred-persistence test (Aaron 2026-05-27 USB priority)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T14:40:07Z",
+  "head_ref": "feat/b-0852-4a-4d-nixos-module-plus-common-nix-wire-2026-05-27"
+}

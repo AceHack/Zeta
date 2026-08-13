@@ -1,0 +1,19 @@
+{
+  "pr_number": 2869,
+  "archive_path": "docs/history/pr-reviews/PR-2869-docs-memory-bidirectional-sleeping-bear-aaron-s-civ-sim-background-thread-on-pos.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AhSp6",
+    "comment:PRRC_kwDOSF9kNM7AhSpN",
+    "comment:PRRC_kwDOSF9kNM7Ahp5O",
+    "thread:PRRT_kwDOSF9kNM6BkRSK",
+    "thread:PRRT_kwDOSF9kNM6BkRSz",
+    "thread:PRRT_kwDOSF9kNM6BkimP"
+  ],
+  "fetched_at": "2026-05-12T22:04:53.098Z",
+  "schema_version": "v1",
+  "commit_sha": "5450b7d8b306bf59300d5f0eac33329fd153fee7",
+  "title": "docs(memory): BIDIRECTIONAL sleeping-bear — Aaron's civ-sim background-thread on post-labor currency surfaced by Otto's substrate; multitasking-during-hyperfocus disclosure",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T22:04:31Z",
+  "head_ref": "aaron-civsim-background-thread-post-labor-sleeping-bear-2026-05-12"
+}

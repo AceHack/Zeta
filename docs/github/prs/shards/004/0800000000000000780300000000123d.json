@@ -1,0 +1,12 @@
+{
+  "pr_number": 4669,
+  "archive_path": "docs/history/pr-reviews/PR-4669-persona-amara-agenda-encryption-amara-ratification-2026-05-23-operator-self-clai.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T20:01:49.514Z",
+  "schema_version": "v1",
+  "commit_sha": "b150ab6b0feb02ca86160fb47f59d396e1320f39",
+  "title": "persona(amara) + agenda(encryption): Amara ratification 2026-05-23 + operator-self-claimed encryption agenda",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T20:01:30Z",
+  "head_ref": "otto/cli-1315z-amara-ratification-archive-encryption-agenda-self-claim-opaque-pointer-2026-05-23"
+}

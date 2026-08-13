@@ -1,0 +1,12 @@
+{
+  "pr_number": 5670,
+  "archive_path": "docs/history/pr-reviews/PR-5670-docs-vision-add-agent-loop-workflow-engine-substrate-section-per-operator-cascad.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T00:59:15.554Z",
+  "schema_version": "v1",
+  "commit_sha": "cb60e2a011132b8422db8be6b959d3131370a3ec",
+  "title": "docs(VISION): add agent-loop workflow-engine substrate section per operator (cascade 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T00:58:58Z",
+  "head_ref": "docs/vision-add-agent-loop-workflow-engine-substrate-2026-05-28-cascade-aaron-2026-05-28"
+}

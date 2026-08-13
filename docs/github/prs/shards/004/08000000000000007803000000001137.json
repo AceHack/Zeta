@@ -1,0 +1,12 @@
+{
+  "pr_number": 4407,
+  "archive_path": "docs/history/pr-reviews/PR-4407-docs-archive-maji-pr-preservation-1410z-4405-4403-4402.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-20T14:14:06.239Z",
+  "schema_version": "v1",
+  "commit_sha": "c76af70a9a4979da96afd622925e5293aac70ca1",
+  "title": "docs(archive): Maji PR preservation 1410Z (#4405, #4403, #4402)",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T14:13:35Z",
+  "head_ref": "maji/preserve-1410Z"
+}

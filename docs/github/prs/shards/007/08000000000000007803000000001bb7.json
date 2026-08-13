@@ -1,0 +1,12 @@
+{
+  "pr_number": 7095,
+  "archive_path": "docs/history/pr-reviews/PR-7095-feat-core-softemu-the-whole-chip-8-emulator-as-one-soft-value-cas-less-lockless-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T11:57:19.068Z",
+  "schema_version": "v1",
+  "commit_sha": "17a21a6ab0c934840b89877b802aee1f45859a5b",
+  "title": "feat(core): SoftEmu — the WHOLE CHIP-8 emulator as one soft value (CAS-less, lockless, purely soft)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T11:56:59Z",
+  "head_ref": "otto/softemu-whole-chip8-emulator-as-one-soft-value-casless-lockless"
+}

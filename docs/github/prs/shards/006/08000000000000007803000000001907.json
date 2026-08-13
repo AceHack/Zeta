@@ -1,0 +1,31 @@
+{
+  "pr_number": 6407,
+  "archive_path": "docs/history/pr-reviews/PR-6407-feat-hygiene-record-review-thread-observations.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GtTUs",
+    "comment:PRRC_kwDOSF9kNM7GtTUu",
+    "comment:PRRC_kwDOSF9kNM7GtXhK",
+    "comment:PRRC_kwDOSF9kNM7GtXiD",
+    "comment:PRRC_kwDOSF9kNM7GtXia",
+    "comment:PRRC_kwDOSF9kNM7GtjAC",
+    "comment:PRRC_kwDOSF9kNM7GtlAe",
+    "comment:PRRC_kwDOSF9kNM7GtlBM",
+    "comment:PRRC_kwDOSF9kNM7GtlBc",
+    "thread:PRRT_kwDOSF9kNM6GGTcv",
+    "thread:PRRT_kwDOSF9kNM6GGTcx",
+    "thread:PRRT_kwDOSF9kNM6GGWjE",
+    "thread:PRRT_kwDOSF9kNM6GGWj_",
+    "thread:PRRT_kwDOSF9kNM6GGWjs",
+    "thread:PRRT_kwDOSF9kNM6GGfL-",
+    "thread:PRRT_kwDOSF9kNM6GGgt-",
+    "thread:PRRT_kwDOSF9kNM6GGguk",
+    "thread:PRRT_kwDOSF9kNM6GGguw"
+  ],
+  "fetched_at": "2026-06-01T11:55:54.868Z",
+  "schema_version": "v1",
+  "commit_sha": "1f7e8acf95c7352946085b844e03b935e46ae759",
+  "title": "feat(hygiene): record review-thread observations",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T11:55:28Z",
+  "head_ref": "claim/codex-loop-b0164-1-review-observation-caller-20260531T232407Z"
+}

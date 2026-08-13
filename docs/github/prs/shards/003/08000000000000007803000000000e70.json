@@ -1,0 +1,21 @@
+{
+  "pr_number": 3696,
+  "archive_path": "docs/history/pr-reviews/PR-3696-feat-b-0170-4-seed-path-form-drift-fixture-regression-test.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1AAW",
+    "comment:PRRC_kwDOSF9kNM7B1AAe",
+    "comment:PRRC_kwDOSF9kNM7B1CZx",
+    "comment:PRRC_kwDOSF9kNM7B1CfR",
+    "comment:PRRC_kwDOSF9kNM7B1Ftf",
+    "comment:PRRC_kwDOSF9kNM7B1Fvj",
+    "thread:PRRT_kwDOSF9kNM6ChJDi",
+    "thread:PRRT_kwDOSF9kNM6ChJDo"
+  ],
+  "fetched_at": "2026-05-16T03:19:02.540Z",
+  "schema_version": "v1",
+  "commit_sha": "bd0d2fa35aa0d16519b97b679962ab7063a56ef8",
+  "title": "feat(B-0170.4): seed path-form-drift fixture + regression test",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:18:47Z",
+  "head_ref": "otto-cli/b0170-4-path-form-fixture-2026-05-16"
+}

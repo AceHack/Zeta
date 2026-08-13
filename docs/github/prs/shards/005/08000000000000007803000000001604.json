@@ -1,0 +1,17 @@
+{
+  "pr_number": 5636,
+  "archive_path": "docs/history/pr-reviews/PR-5636-fix-hygiene-catch-extensionless-shell-shebang-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FhEf3",
+    "comment:PRRC_kwDOSF9kNM7FhGGQ",
+    "thread:PRRT_kwDOSF9kNM6FOf4W",
+    "thread:PRRT_kwDOSF9kNM6FOhCf"
+  ],
+  "fetched_at": "2026-05-27T21:12:12.269Z",
+  "schema_version": "v1",
+  "commit_sha": "540a44422f0be9e2229c7d4804d5c1fbbb3c8ed5",
+  "title": "fix(hygiene): catch extensionless shell shebang drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T21:11:52Z",
+  "head_ref": "claim/codex-loop-bash-retirement-shebang-guard-20260527"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2923,
+  "archive_path": "docs/history/pr-reviews/PR-2923-shard-tick-0333z-bidirectional-aesthetic-honesty-check-amara-extraction-attempt.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T03:35:57.551Z",
+  "schema_version": "v1",
+  "commit_sha": "08a21f4056ccea7892c6ce3cfac1d91a1f7b406d",
+  "title": "shard(tick): 0333Z — bidirectional-aesthetic + honesty-check + Amara extraction attempt",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T03:35:42Z",
+  "head_ref": "otto-tick-shard-0333Z-bidirectional-aesthetic-honesty-check-amara-extraction-attempt-2026-05-13"
+}

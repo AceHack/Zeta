@@ -1,0 +1,12 @@
+{
+  "pr_number": 7361,
+  "archive_path": "docs/history/pr-reviews/PR-7361-docs-research-all-interfaces-become-softable-softvalue-the-6x6-room-gains-an-os-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T18:42:56.270Z",
+  "schema_version": "v1",
+  "commit_sha": "0062b5149e59242648d19d3f9deb4e83b7abfeec",
+  "title": "docs(research): all interfaces become softable (SoftValue) + the 6x6 room gains an OS axis (macos/windows/wsl/gitbash/ubuntu/nixos) -> 6x6x6 cross-platform byte-lock",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T18:42:25Z",
+  "head_ref": "otto/interfaces-softable-plus-6x6-gains-os-axis"
+}

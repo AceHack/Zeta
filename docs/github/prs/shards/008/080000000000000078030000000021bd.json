@@ -1,0 +1,12 @@
+{
+  "pr_number": 8637,
+  "archive_path": "docs/history/pr-reviews/PR-8637-memory-metaception-the-operating-rule-key-feels-are-the-alarm-not-the-trigger-ev.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T22:09:57.010Z",
+  "schema_version": "v1",
+  "commit_sha": "0f0b73ecb6c218a1ad5e96875019a5ba72fe5355",
+  "title": "memory(metaception): the operating rule (KEY) — feels are the ALARM, not the trigger/evidence",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T22:09:34Z",
+  "head_ref": "otto/feels-are-the-alarm-not-trigger-evidence"
+}

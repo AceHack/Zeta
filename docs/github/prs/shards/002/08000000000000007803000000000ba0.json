@@ -1,0 +1,12 @@
+{
+  "pr_number": 2976,
+  "archive_path": "docs/history/pr-reviews/PR-2976-chore-backlog-regenerate-backlog-md-index-b-0429-b-0430-added-b-0400-b-0421-clos.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T08:36:37.023Z",
+  "schema_version": "v1",
+  "commit_sha": "6c0515f06c31ca92c984d6d5f110d5d0d642a3c4",
+  "title": "chore(backlog): regenerate BACKLOG.md index — B-0429/B-0430 added, B-0400/B-0421 closed",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T08:36:14Z",
+  "head_ref": "fix/backlog-index-drift-after-b0402-2026-05-13"
+}

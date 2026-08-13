@@ -1,0 +1,12 @@
+{
+  "pr_number": 8338,
+  "archive_path": "docs/history/pr-reviews/PR-8338-feat-core-project-prediction-inference-into-room-horizon.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T21:11:04.272Z",
+  "schema_version": "v1",
+  "commit_sha": "5a921afe2cd680b2cf8636a879c2e5303247d044",
+  "title": "feat(core): project prediction inference into room horizon",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T21:10:39Z",
+  "head_ref": "codex/vision-scheduler-room-budget"
+}

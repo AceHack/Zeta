@@ -1,0 +1,12 @@
+{
+  "pr_number": 5969,
+  "archive_path": "docs/history/pr-reviews/PR-5969-docs-beacon-clifford-conjecture-iso-retract-git-straddles-the-invariant-is.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T10:04:58.312Z",
+  "schema_version": "v1",
+  "commit_sha": "d369b95e8cfe4ae08eff3094a95215ebcdc2a57d",
+  "title": "docs(beacon): Clifford conjecture iso → retract; Git straddles; the invariant is μένω",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T10:04:37Z",
+  "head_ref": "otto-cli/beacon-clifford-retract-meno-bridge-2026-05-29"
+}

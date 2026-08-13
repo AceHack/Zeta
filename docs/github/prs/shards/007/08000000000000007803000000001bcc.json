@@ -1,0 +1,12 @@
+{
+  "pr_number": 7116,
+  "archive_path": "docs/history/pr-reviews/PR-7116-docs-research-emulator-as-whole-stack-testbed-backward-plan-recovery-yin-soft-ev.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T22:34:12.238Z",
+  "schema_version": "v1",
+  "commit_sha": "a6275075319b904836b845812d50dcb1da63e208",
+  "title": "docs(research): emulator-as-whole-stack-testbed + backward plan recovery + yin soft-evolution monitor",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T22:33:53Z",
+  "head_ref": "otto/research-emulator-testbed-backward-plan-recovery-yin-evolution"
+}

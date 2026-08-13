@@ -1,0 +1,22 @@
+{
+  "pr_number": 3422,
+  "archive_path": "docs/history/pr-reviews/PR-3422-shard-tick-1056z-7th-error-class-wrong-mitigation-meta-error.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BlBwv",
+    "comment:PRRC_kwDOSF9kNM7BlBxx",
+    "comment:PRRC_kwDOSF9kNM7BlByb",
+    "comment:PRRC_kwDOSF9kNM7BlGI7",
+    "comment:PRRC_kwDOSF9kNM7BlGNf",
+    "comment:PRRC_kwDOSF9kNM7BlGTm",
+    "thread:PRRT_kwDOSF9kNM6CVeiA",
+    "thread:PRRT_kwDOSF9kNM6CVejA",
+    "thread:PRRT_kwDOSF9kNM6CVejd"
+  ],
+  "fetched_at": "2026-05-15T11:04:34.088Z",
+  "schema_version": "v1",
+  "commit_sha": "ac3be0fd27bd34798ad39a265c3e18aaf369da9f",
+  "title": "shard(tick): 1056Z — 7th error class (wrong-mitigation meta-error)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:04:17Z",
+  "head_ref": "shard/tick-1056z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7374,
+  "archive_path": "docs/history/pr-reviews/PR-7374-docs-research-room-protocol-llmmics-llmtv-shapes-alphabets-proof-ports-reservoir.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:22:59.926Z",
+  "schema_version": "v1",
+  "commit_sha": "195f5e6c919eb7c45f150128f0d1f87325424ce4",
+  "title": "docs(research): room protocol (LLMMics+LLMTV) + shapes/alphabets/proof/ports/reservoir-walls as travelers + the room IS the Imagination Circle + uncertainty-bracketed framework=governance=self-throttler",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:22:34Z",
+  "head_ref": "otto/room-protocol-shapes-alphabets-imagination-circle-uncertainty-self-throttler"
+}

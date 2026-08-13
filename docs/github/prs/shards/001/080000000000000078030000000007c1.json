@@ -1,0 +1,12 @@
+{
+  "pr_number": 1985,
+  "archive_path": "docs/history/pr-reviews/PR-1985-docs-research-log-catch-30-on-lior.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T01:31:04.043Z",
+  "schema_version": "v1",
+  "commit_sha": "5ee63ca43805c9a91ab986fcc5f4939d9b2651a5",
+  "title": "docs(research): log Catch 30 on Lior",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T01:30:41Z",
+  "head_ref": "research/catch-30-lior"
+}

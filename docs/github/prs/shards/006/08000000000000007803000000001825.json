@@ -1,0 +1,15 @@
+{
+  "pr_number": 6181,
+  "archive_path": "docs/history/pr-reviews/PR-6181-research-backlog-b-0948-workflow-dus-with-first-class-bft-oracle-compiler-summon.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GdRwe",
+    "thread:PRRT_kwDOSF9kNM6F6Jel"
+  ],
+  "fetched_at": "2026-05-31T01:32:01.214Z",
+  "schema_version": "v1",
+  "commit_sha": "0d2d7e01e1ce4dd10bb7204c3888871d6e88aca6",
+  "title": "research+backlog(B-0948): workflow DUs with first-class BFT oracle/compiler summons + observe.ts keystone",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T01:31:43Z",
+  "head_ref": "otto-cli/b0948-workflow-dus-bft-summons-observe-firstclass-2026-05-31"
+}

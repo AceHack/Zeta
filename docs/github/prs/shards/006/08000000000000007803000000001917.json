@@ -1,0 +1,12 @@
+{
+  "pr_number": 6423,
+  "archive_path": "docs/history/pr-reviews/PR-6423-docs-fold-df-correction-dapr-direction-durable-execution-backlog-into-the-sagas-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T15:29:43.462Z",
+  "schema_version": "v1",
+  "commit_sha": "5518a3fee3b61da7db1a67c4a6123ed899ebea94",
+  "title": "docs: fold DF correction + Dapr direction + durable-execution backlog into the sagas note",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T15:29:15Z",
+  "head_ref": "otto-cli/sagas-note-df-correction-dapr-2026-06-01"
+}

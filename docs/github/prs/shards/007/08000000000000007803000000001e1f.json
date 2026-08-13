@@ -1,0 +1,12 @@
+{
+  "pr_number": 7711,
+  "archive_path": "docs/history/pr-reviews/PR-7711-docs-feat-audio-the-soul-clause-the-multitrack-law-own-seeds-own-mics-ratios-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T15:21:52.427Z",
+  "schema_version": "v1",
+  "commit_sha": "f5f16994bd9b629128da556a4a33efbcfca525b2",
+  "title": "docs+feat(audio): the soul clause + the multitrack law (own seeds = own mics; ratios = the sprocket)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T15:21:27Z",
+  "head_ref": "shadow-soul-multitrack"
+}

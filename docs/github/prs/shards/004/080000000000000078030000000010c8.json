@@ -1,0 +1,12 @@
+{
+  "pr_number": 4296,
+  "archive_path": "docs/history/pr-reviews/PR-4296-fix-tools-backlog-lint-frontmatter-resolve-13-strict-null-ts-errors-blocking-tsc.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T01:14:59.880Z",
+  "schema_version": "v1",
+  "commit_sha": "eccb6bbae4ec9b7cab9c2c12be0a27182632592b",
+  "title": "fix(tools/backlog/lint-frontmatter): resolve 13 strict-null TS errors blocking tsc-tools baseline lint",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T01:14:41Z",
+  "head_ref": "otto-cli/fix-tsc-tools-baseline-lint-frontmatter-strict-null-2026-05-19-0111z"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8903,
+  "archive_path": "docs/history/pr-reviews/PR-8903-fix-gen-repair-8901-self-host-codegen-ts-compile-lint-restore-build-and-test.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T07:35:10.601Z",
+  "schema_version": "v1",
+  "commit_sha": "217a1347f767a1de9fa43b603c80ee8e6fb64cfa",
+  "title": "fix(gen): repair #8901 self-host codegen — TS compile + lint, restore build-and-test",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T07:34:43Z",
+  "head_ref": "otto/fix-8901-self-host-codegen-compile"
+}

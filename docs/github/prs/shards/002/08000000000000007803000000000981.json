@@ -1,0 +1,12 @@
+{
+  "pr_number": 2433,
+  "archive_path": "docs/history/pr-reviews/PR-2433-fix-backlog-index-add-b-0054-3-b-0054-10-child-rows-to-generated-backlog-md.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T07:34:25.889Z",
+  "schema_version": "v1",
+  "commit_sha": "ca094e235632383f902daf2d43bbf3199baa66e5",
+  "title": "fix(backlog-index): add B-0054.3–B-0054.10 child rows to generated BACKLOG.md",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T07:34:10Z",
+  "head_ref": "fix/backlog-index-b0054-child-rows-2026-05-10"
+}

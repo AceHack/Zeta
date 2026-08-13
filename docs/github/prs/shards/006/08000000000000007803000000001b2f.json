@@ -1,0 +1,12 @@
+{
+  "pr_number": 6959,
+  "archive_path": "docs/history/pr-reviews/PR-6959-docs-ace-ensure-noun-path-idempotent-by-default-cli-non-idempotent-needs-a-workf.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T00:49:12.220Z",
+  "schema_version": "v1",
+  "commit_sha": "a2ace97eb20d7a874330beee0f15bec23e1d5851",
+  "title": "docs: ace ensure <noun-path> — idempotent-by-default CLI; non-idempotent needs a workflow/DU",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T00:48:53Z",
+  "head_ref": "otto/ace-ensure-idempotent-default-non-idempotent-du-workflow"
+}

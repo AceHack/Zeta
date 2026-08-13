@@ -1,0 +1,17 @@
+{
+  "pr_number": 2930,
+  "archive_path": "docs/history/pr-reviews/PR-2930-docs-memory-distributed-maintainer-architecture-r-provider-sql-server-docker-pos.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AnL0Z",
+    "comment:PRRC_kwDOSF9kNM7AnL0t",
+    "thread:PRRT_kwDOSF9kNM6BogFD",
+    "thread:PRRT_kwDOSF9kNM6BogFQ"
+  ],
+  "fetched_at": "2026-05-13T04:27:10.725Z",
+  "schema_version": "v1",
+  "commit_sha": "edf4ce14ba9532b5794712cf87dfedaa096a4951",
+  "title": "docs(memory): distributed maintainer architecture — R Provider + SQL Server Docker + Postgres + any DB/bus local — end users get Zeta — dotnet stored procedures (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T04:26:52Z",
+  "head_ref": "aaron-distributed-maintainer-architecture-r-provider-sql-server-docker-postgres-any-db-bus-local-prototyping-end-users-get-zeta-2026-05-13"
+}

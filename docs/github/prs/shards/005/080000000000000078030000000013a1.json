@@ -1,0 +1,15 @@
+{
+  "pr_number": 5025,
+  "archive_path": "docs/history/pr-reviews/PR-5025-backlog-b-0753-add-noether-decomposition-land-via-pr-tracking-ticket.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Etb9N",
+    "thread:PRRT_kwDOSF9kNM6Eo5x8"
+  ],
+  "fetched_at": "2026-05-26T02:26:49.363Z",
+  "schema_version": "v1",
+  "commit_sha": "f8e7949ea2749cae34143e8f2f9fe5518b0e588a",
+  "title": "backlog(B-0753): add Noether decomposition land via PR tracking ticket",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T02:26:31Z",
+  "head_ref": "backlog/b0753-noether-decomposition-tracking"
+}

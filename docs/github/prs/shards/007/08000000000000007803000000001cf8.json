@@ -1,0 +1,12 @@
+{
+  "pr_number": 7416,
+  "archive_path": "docs/history/pr-reviews/PR-7416-refactor-vocab-shape-e-in-erik-meijer-currying-style-not-backtick-name-style-bas.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:26:05.813Z",
+  "schema_version": "v1",
+  "commit_sha": "5198001d375197c4f2c62f49d18b1060325d0845",
+  "title": "refactor(vocab): shape E in Erik Meijer currying style, not backtick-name style (basics first)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:25:39Z",
+  "head_ref": "otto/shape-e-meijer-currying-style-not-backtick"
+}

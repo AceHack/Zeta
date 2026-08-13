@@ -1,0 +1,33 @@
+{
+  "pr_number": 5362,
+  "archive_path": "docs/history/pr-reviews/PR-5362-hygiene-support-stale-worktree-audit-root-option.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FJ-cH",
+    "comment:PRRC_kwDOSF9kNM7FJ-cP",
+    "comment:PRRC_kwDOSF9kNM7FJ-cX",
+    "comment:PRRC_kwDOSF9kNM7FJ-cg",
+    "comment:PRRC_kwDOSF9kNM7FJ-cu",
+    "comment:PRRC_kwDOSF9kNM7FJuAL",
+    "comment:PRRC_kwDOSF9kNM7FJuAy",
+    "comment:PRRC_kwDOSF9kNM7FJuBG",
+    "comment:PRRC_kwDOSF9kNM7FKE5I",
+    "comment:PRRC_kwDOSF9kNM7FKLhv",
+    "thread:PRRT_kwDOSF9kNM6E90tv",
+    "thread:PRRT_kwDOSF9kNM6E9fS9",
+    "thread:PRRT_kwDOSF9kNM6E9fTd",
+    "thread:PRRT_kwDOSF9kNM6E9fTr",
+    "thread:PRRT_kwDOSF9kNM6E9rOY",
+    "thread:PRRT_kwDOSF9kNM6E9rOf",
+    "thread:PRRT_kwDOSF9kNM6E9rOl",
+    "thread:PRRT_kwDOSF9kNM6E9rOp",
+    "thread:PRRT_kwDOSF9kNM6E9rOv",
+    "thread:PRRT_kwDOSF9kNM6E9v3a"
+  ],
+  "fetched_at": "2026-05-27T01:04:55.954Z",
+  "schema_version": "v1",
+  "commit_sha": "f09c521b2dac13a434d10dbfa26cb5c7a3749edf",
+  "title": "hygiene: support stale worktree audit root option",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T01:04:35Z",
+  "head_ref": "claim/codex-loop-stale-worktree-root-option-20260527"
+}

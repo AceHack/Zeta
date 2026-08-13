@@ -1,0 +1,12 @@
+{
+  "pr_number": 8030,
+  "archive_path": "docs/history/pr-reviews/PR-8030-codex-feat-core-add-typed-io-boundary-over-fusion.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T17:47:04.884Z",
+  "schema_version": "v1",
+  "commit_sha": "4ffc62bc95d3256650c864850694082be2808490",
+  "title": "[codex] feat(core): add typed io boundary over fusion",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T17:46:41Z",
+  "head_ref": "codex/io-monad-boundary"
+}

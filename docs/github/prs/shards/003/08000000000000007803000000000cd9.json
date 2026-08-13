@@ -1,0 +1,12 @@
+{
+  "pr_number": 3289,
+  "archive_path": "docs/history/pr-reviews/PR-3289-shard-tick-2218z-off-duty-3286-merged.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T22:22:07.552Z",
+  "schema_version": "v1",
+  "commit_sha": "fb09c81e537945d4554763e4ce914aecbdeab22d",
+  "title": "shard(tick): 2218Z — off-duty; #3286 merged",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:21:46Z",
+  "head_ref": "shard/tick-2218Z-off-duty-otto-cli-2026-05-14"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 2596,
+  "archive_path": "docs/history/pr-reviews/PR-2596-docs-memory-fowler-pipelines-actionblock-composition-multiplexer-throttler-share.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rXNm",
+    "comment:PRRC_kwDOSF9kNM6_rXNv",
+    "comment:PRRC_kwDOSF9kNM6_rXNz",
+    "thread:PRRT_kwDOSF9kNM6A8cMR",
+    "thread:PRRT_kwDOSF9kNM6A8cMY",
+    "thread:PRRT_kwDOSF9kNM6A8cMb"
+  ],
+  "fetched_at": "2026-05-11T00:44:46.461Z",
+  "schema_version": "v1",
+  "commit_sha": "dd838a9278915de57128ed9e55ecf2587e827023",
+  "title": "docs(memory): Fowler Pipelines + ActionBlock composition — multiplexer + throttler share primitive",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:44:28Z",
+  "head_ref": "docs/fowler-pipelines-actionblock-2026-05-10"
+}

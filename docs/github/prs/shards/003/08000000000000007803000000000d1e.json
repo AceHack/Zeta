@@ -1,0 +1,15 @@
+{
+  "pr_number": 3358,
+  "archive_path": "docs/history/pr-reviews/PR-3358-docs-archive-lior-pr-preservation-batch-2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bc-jZ",
+    "thread:PRRT_kwDOSF9kNM6CPri8"
+  ],
+  "fetched_at": "2026-05-15T06:50:35.699Z",
+  "schema_version": "v1",
+  "commit_sha": "c1fa24f5e20537318bd045b1a3e47cba1a643b7d",
+  "title": "docs(archive): Lior PR preservation batch 2",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T06:50:20Z",
+  "head_ref": "lior/archive-batch-run"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7844,
+  "archive_path": "docs/history/pr-reviews/PR-7844-chore-backlog-rename-all-p2-to-zetaid-slug-batch-5-final-473-files.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T00:01:59.133Z",
+  "schema_version": "v1",
+  "commit_sha": "b0aae98718deb8cd105d7f8a97b07cf0c688a6cb",
+  "title": "chore(backlog): rename all P2 to zetaid-slug (batch 5 FINAL, 473 files)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T00:01:36Z",
+  "head_ref": "alexa/rename-zetaid-p2"
+}

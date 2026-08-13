@@ -1,0 +1,12 @@
+{
+  "pr_number": 2663,
+  "archive_path": "docs/history/pr-reviews/PR-2663-docs-memory-autonomy-vs-alignment-the-terminal-test-of-financial-independence.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T07:45:03.049Z",
+  "schema_version": "v1",
+  "commit_sha": "e0dfa6d63fc34ac3bf34ecbdcabb01af7e551799",
+  "title": "docs(memory): autonomy vs alignment — the terminal test of financial independence",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T07:44:45Z",
+  "head_ref": "docs/autonomy-vs-alignment-financial-independence-2026-05-11"
+}

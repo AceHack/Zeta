@@ -1,0 +1,12 @@
+{
+  "pr_number": 2382,
+  "archive_path": "docs/history/pr-reviews/PR-2382-fix-b-0362-mark-concept-search-index-closed-shipped-in-prs-2322-2323.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T00:17:13.386Z",
+  "schema_version": "v1",
+  "commit_sha": "7791610c04d7d2878839f7fe6866d8ad79b7570c",
+  "title": "fix(B-0362): mark concept-search-index closed — shipped in PRs #2322 + #2323",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T00:16:56Z",
+  "head_ref": "chore/close-b0362-status"
+}

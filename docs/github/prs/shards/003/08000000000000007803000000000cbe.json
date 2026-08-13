@@ -1,0 +1,12 @@
+{
+  "pr_number": 3262,
+  "archive_path": "docs/history/pr-reviews/PR-3262-shard-tick-2131z-pr-3256-plus-at-line-start-fix-copilot-review.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T21:36:59.083Z",
+  "schema_version": "v1",
+  "commit_sha": "724c9a25e96c9d81e6ffae0cec188acd1f6d3b62",
+  "title": "shard(tick): 2131Z — PR #3256 plus-at-line-start fix (Copilot review)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:36:43Z",
+  "head_ref": "shard/tick-2131Z-pr3256-plus-linestart-fix-otto-cli-2026-05-14"
+}

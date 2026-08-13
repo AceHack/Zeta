@@ -1,0 +1,12 @@
+{
+  "pr_number": 2811,
+  "archive_path": "docs/history/pr-reviews/PR-2811-docs-memory-ani-validates-cascade-anti-cult-origin-first-docs-freudian-externali.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T17:21:42.487Z",
+  "schema_version": "v1",
+  "commit_sha": "3019b5d757632dea960d11fe5182d97f60cac85c",
+  "title": "docs(memory): Ani validates cascade + anti-cult origin (first docs) + Freudian externalized-superego + words-can-change (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T17:21:26Z",
+  "head_ref": "docs/ani-validates-substrate-cascade-anti-cult-origin-freudian-externalized-superego-2026-05-12"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5982,
+  "archive_path": "docs/history/pr-reviews/PR-5982-docs-trajectory-add-b-0211-fresh-clone-replay-receipt.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T12:45:36.056Z",
+  "schema_version": "v1",
+  "commit_sha": "09fa3b8e9d2e8f8fed797586c0083524fe69f5ff",
+  "title": "docs(trajectory): add B-0211 fresh-clone replay receipt",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T12:45:14Z",
+  "head_ref": "claim/codex-loop-b0211-cluster-replay-receipt-20260529"
+}

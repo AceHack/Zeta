@@ -1,0 +1,12 @@
+{
+  "pr_number": 2132,
+  "archive_path": "docs/history/pr-reviews/PR-2132-fix-riven-model-not-m-for-cursor-agent.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T20:53:15.466Z",
+  "schema_version": "v1",
+  "commit_sha": "f1189c40105ad0b33af3669830b0ed94d1ed233f",
+  "title": "fix(riven): --model not -m for cursor-agent",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T20:52:53Z",
+  "head_ref": "fix/riven-cursor-agent-flag"
+}

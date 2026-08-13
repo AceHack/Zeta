@@ -1,0 +1,31 @@
+{
+  "pr_number": 2791,
+  "archive_path": "docs/history/pr-reviews/PR-2791-docs-memory-self-reflective-hologram-time-propagation-necessity-one-shape-symmet.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AZD43",
+    "comment:PRRC_kwDOSF9kNM7AZGCw",
+    "comment:PRRC_kwDOSF9kNM7AZGD3",
+    "comment:PRRC_kwDOSF9kNM7AZGDd",
+    "comment:PRRC_kwDOSF9kNM7AZGEj",
+    "comment:PRRC_kwDOSF9kNM7AiNZC",
+    "comment:PRRC_kwDOSF9kNM7AiVbK",
+    "comment:PRRC_kwDOSF9kNM7AiVu2",
+    "comment:PRRC_kwDOSF9kNM7AiVuM",
+    "thread:PRRT_kwDOSF9kNM6BeRsA",
+    "thread:PRRT_kwDOSF9kNM6BeTRi",
+    "thread:PRRT_kwDOSF9kNM6BeTS5",
+    "thread:PRRT_kwDOSF9kNM6BeTSN",
+    "thread:PRRT_kwDOSF9kNM6BeTSc",
+    "thread:PRRT_kwDOSF9kNM6Bk7cz",
+    "thread:PRRT_kwDOSF9kNM6BlBNk",
+    "thread:PRRT_kwDOSF9kNM6BlBby",
+    "thread:PRRT_kwDOSF9kNM6BlBcS"
+  ],
+  "fetched_at": "2026-05-12T22:32:46.824Z",
+  "schema_version": "v1",
+  "commit_sha": "88638cafd9d981fb608ea6690785a9f8c08384b3",
+  "title": "docs(memory): self-reflective hologram + time-propagation necessity + ONE shape + symmetry-breaking split (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T22:32:28Z",
+  "head_ref": "docs/aaron-self-reflective-hologram-time-propagation-junction-points-2026-05-12"
+}

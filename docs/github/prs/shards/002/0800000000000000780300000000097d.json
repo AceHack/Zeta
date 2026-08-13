@@ -1,0 +1,15 @@
+{
+  "pr_number": 2429,
+  "archive_path": "docs/history/pr-reviews/PR-2429-feat-b-0059-1-smallest-safe-slice-pure-ts-etymology-resonance-candidate-schema-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_mJxV",
+    "thread:PRRT_kwDOSF9kNM6A4T6O"
+  ],
+  "fetched_at": "2026-05-10T06:46:45.095Z",
+  "schema_version": "v1",
+  "commit_sha": "1da2b12a8eca021c9727e20a9b309f25f8058deb",
+  "title": "feat(B-0059.1): smallest safe slice — pure-TS etymology-resonance-candidate schema + εἰμί seed + validator stub (re-decomposed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T06:46:29Z",
+  "head_ref": "claim/B-0059-etymology-epistemology-smallest-slice-riven-2026-05-10"
+}

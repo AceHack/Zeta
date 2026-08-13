@@ -1,0 +1,12 @@
+{
+  "pr_number": 6297,
+  "archive_path": "docs/history/pr-reviews/PR-6297-harden-all-vetoed-observe-act-menus.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T00:52:15.215Z",
+  "schema_version": "v1",
+  "commit_sha": "8b318147ccb6e1a2d56766daca92c6f2ae3e4230",
+  "title": "Harden all-vetoed observe-act menus",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T00:51:57Z",
+  "head_ref": "codex/agentic-org-menu-meta-all-vetoed"
+}

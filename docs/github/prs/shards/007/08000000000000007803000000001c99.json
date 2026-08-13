@@ -1,0 +1,12 @@
+{
+  "pr_number": 7321,
+  "archive_path": "docs/history/pr-reviews/PR-7321-docs-research-mumps-globals-as-di-over-scopes-singleton-scoped-transient-lifecyc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:44:11.429Z",
+  "schema_version": "v1",
+  "commit_sha": "81bbcb351f7adbb274b04a11014c09c44cf7a430",
+  "title": "docs(research): MUMPS globals as DI over scopes (singleton/scoped/transient/lifecycle) + simulating Rust lifetimes in F#/C# (brand + rank-2 ST + lightweight HKT)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:43:46Z",
+  "head_ref": "otto/mumps-globals-as-di-over-scopes-rust-lifetimes-brand-rank2-hkt"
+}

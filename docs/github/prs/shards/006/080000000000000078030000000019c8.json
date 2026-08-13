@@ -1,0 +1,28 @@
+{
+  "pr_number": 6600,
+  "archive_path": "docs/history/pr-reviews/PR-6600-docs-b-1005-distributed-tensor-inference-over-sharded-factor-graphs-group-of-sha.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HQ-2y",
+    "comment:PRRC_kwDOSF9kNM7HQ-58",
+    "comment:PRRC_kwDOSF9kNM7HQ0Lo",
+    "comment:PRRC_kwDOSF9kNM7HQ1hW",
+    "comment:PRRC_kwDOSF9kNM7HQ1i4",
+    "comment:PRRC_kwDOSF9kNM7HQ2Kf",
+    "comment:PRRC_kwDOSF9kNM7HQ3YD",
+    "comment:PRRC_kwDOSF9kNM7HQ3cn",
+    "comment:PRRC_kwDOSF9kNM7HQ7K5",
+    "comment:PRRC_kwDOSF9kNM7HQ8eD",
+    "thread:PRRT_kwDOSF9kNM6GggyN",
+    "thread:PRRT_kwDOSF9kNM6GghxM",
+    "thread:PRRT_kwDOSF9kNM6GghyO",
+    "thread:PRRT_kwDOSF9kNM6Ggl-r",
+    "thread:PRRT_kwDOSF9kNM6Ggm7O"
+  ],
+  "fetched_at": "2026-06-02T17:21:42.983Z",
+  "schema_version": "v1",
+  "commit_sha": "bde7e62718b7f8fba3707b876bc4c9227d39c096",
+  "title": "docs(B-1005): distributed tensor inference over sharded factor graphs — group of shards IS the tensor; Bayesian marginalizes over fused implementations (Aaron + Prism)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T17:21:13Z",
+  "head_ref": "otto-cli/b1005-distributed-tensor-sharded-factor-graph-2026-06-02"
+}

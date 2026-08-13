@@ -1,0 +1,15 @@
+{
+  "pr_number": 3551,
+  "archive_path": "docs/history/pr-reviews/PR-3551-backlog-b-0534-file-backlog-ready-notifier-stale-local-checkout-bug-p2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BuxLq",
+    "thread:PRRT_kwDOSF9kNM6CcmKT"
+  ],
+  "fetched_at": "2026-05-15T18:42:44.126Z",
+  "schema_version": "v1",
+  "commit_sha": "f33019d445adf0a3bf4f0ec785b18a3f5519ee7e",
+  "title": "backlog(B-0534): file backlog-ready-notifier stale-local-checkout bug (P2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:42:28Z",
+  "head_ref": "feat/b0534-backlog-notifier-reads-origin-main-otto-cli-2026-05-15"
+}

@@ -1,0 +1,18 @@
+{
+  "pr_number": 3920,
+  "archive_path": "docs/history/pr-reviews/PR-3920-docs-shadow-lior-antigravity-check-vera-narration-and-riven-dirty-tree.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B6FS2",
+    "comment:PRRC_kwDOSF9kNM7B6Ffx",
+    "comment:PRRC_kwDOSF9kNM7B6lT9",
+    "thread:PRRT_kwDOSF9kNM6Ck80-",
+    "thread:PRRT_kwDOSF9kNM6Ck8_v"
+  ],
+  "fetched_at": "2026-05-16T20:16:06.985Z",
+  "schema_version": "v1",
+  "commit_sha": "51ef575cb07b1466eab4f3835e600f644a8492b5",
+  "title": "docs(shadow): Lior antigravity check - Vera narration and Riven dirty tree",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T20:15:49Z",
+  "head_ref": "lior/shadow-vera-drift-0516Z"
+}

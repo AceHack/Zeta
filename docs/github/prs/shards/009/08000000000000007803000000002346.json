@@ -1,0 +1,12 @@
+{
+  "pr_number": 9030,
+  "archive_path": "docs/history/pr-reviews/PR-9030-docs-research-ferry-aaron-s-2015-tree-of-life-adinkra-pre-ai-n-4-overlay.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-30T19:44:46.220Z",
+  "schema_version": "v1",
+  "commit_sha": "5e347de0c6ae0205219b3e5193b6671ef48d7b53",
+  "title": "docs(research): ferry — Aaron's 2015 Tree-of-Life Adinkra (pre-AI N=4 overlay)",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T19:44:15Z",
+  "head_ref": "docs-research-2015-tree-of-life-adinkra-ferry"
+}

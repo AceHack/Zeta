@@ -1,0 +1,12 @@
+{
+  "pr_number": 6303,
+  "archive_path": "docs/history/pr-reviews/PR-6303-authorize-observe-act-lifecycle-commands.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T01:19:28.031Z",
+  "schema_version": "v1",
+  "commit_sha": "549e0b99b13714ee3a0572a22383e3b88d1111e1",
+  "title": "Authorize observe-act lifecycle commands",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T01:19:06Z",
+  "head_ref": "codex/agentic-org-observe-command-authority"
+}

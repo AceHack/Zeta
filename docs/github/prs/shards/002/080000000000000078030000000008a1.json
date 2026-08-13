@@ -1,0 +1,31 @@
+{
+  "pr_number": 2209,
+  "archive_path": "docs/history/pr-reviews/PR-2209-fix-b-0335-address-copilot-p0-p1-p2-review-findings-post-merge-followup.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fTo2",
+    "comment:PRRC_kwDOSF9kNM6_fTo5",
+    "comment:PRRC_kwDOSF9kNM6_fUJH",
+    "comment:PRRC_kwDOSF9kNM6_fUJK",
+    "comment:PRRC_kwDOSF9kNM6_fUJM",
+    "comment:PRRC_kwDOSF9kNM6_fUJR",
+    "comment:PRRC_kwDOSF9kNM6_fUJZ",
+    "comment:PRRC_kwDOSF9kNM6_fWEm",
+    "comment:PRRC_kwDOSF9kNM6_fWEo",
+    "thread:PRRT_kwDOSF9kNM6Ay-8F",
+    "thread:PRRT_kwDOSF9kNM6Ay-8G",
+    "thread:PRRT_kwDOSF9kNM6Ay-8H",
+    "thread:PRRT_kwDOSF9kNM6Ay-8M",
+    "thread:PRRT_kwDOSF9kNM6Ay-8U",
+    "thread:PRRT_kwDOSF9kNM6Ay-ih",
+    "thread:PRRT_kwDOSF9kNM6Ay-ij",
+    "thread:PRRT_kwDOSF9kNM6AzAf2",
+    "thread:PRRT_kwDOSF9kNM6AzAf4"
+  ],
+  "fetched_at": "2026-05-09T06:53:34.184Z",
+  "schema_version": "v1",
+  "commit_sha": "87f92d792875c2339a6f98a0aa073d86d2f7c5d2",
+  "title": "fix(B-0335): address Copilot P0/P1/P2 review findings (post-merge followup)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:53:14Z",
+  "head_ref": "fix/b0335-copilot-followup"
+}

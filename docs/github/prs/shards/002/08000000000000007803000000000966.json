@@ -1,0 +1,17 @@
+{
+  "pr_number": 2406,
+  "archive_path": "docs/history/pr-reviews/PR-2406-feat-b-0046-2-smallest-safe-slice-yin-yang-composition-probe-ts-module-for-ammou.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lahg",
+    "comment:PRRC_kwDOSF9kNM6_lahh",
+    "thread:PRRT_kwDOSF9kNM6A3vh5",
+    "thread:PRRT_kwDOSF9kNM6A3vh6"
+  ],
+  "fetched_at": "2026-05-10T03:37:03.755Z",
+  "schema_version": "v1",
+  "commit_sha": "a327f14653250388de7f7d7a9f858adb5b80eb7f",
+  "title": "feat(B-0046.2): smallest safe slice — yin-yang composition probe TS module for Ammous candidate (re-decomposed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T03:36:47Z",
+  "head_ref": "claim/B-0046.2-yin-yang-probe-smallest-slice-riven-2026-05-09"
+}

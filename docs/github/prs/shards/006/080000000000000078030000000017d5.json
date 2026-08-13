@@ -1,0 +1,19 @@
+{
+  "pr_number": 6101,
+  "archive_path": "docs/history/pr-reviews/PR-6101-feat-b-0250-require-codex-claim-transition.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GZXh1",
+    "comment:PRRC_kwDOSF9kNM7GZXhs",
+    "comment:PRRC_kwDOSF9kNM7GZXhz",
+    "thread:PRRT_kwDOSF9kNM6F3F8_",
+    "thread:PRRT_kwDOSF9kNM6F3F9F",
+    "thread:PRRT_kwDOSF9kNM6F3F9H"
+  ],
+  "fetched_at": "2026-05-30T10:09:07.685Z",
+  "schema_version": "v1",
+  "commit_sha": "e4351676587b88ded5548c15e0c23a5f985a5630",
+  "title": "feat(B-0250): require Codex claim transition",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T10:08:48Z",
+  "head_ref": "claim/codex-loop-b0250-loop-run-claim-gate-20260530"
+}

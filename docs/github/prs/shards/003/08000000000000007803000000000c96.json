@@ -1,0 +1,12 @@
+{
+  "pr_number": 3222,
+  "archive_path": "docs/history/pr-reviews/PR-3222-shard-tick-2010z-b-0502-launchd-plist-branch-contamination-untangle-field-test.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T20:32:24.645Z",
+  "schema_version": "v1",
+  "commit_sha": "82edec570e7ee02b75900d669ca1e9a49b44f4aa",
+  "title": "shard(tick): 2010Z — B-0502 launchd plist + branch-contamination untangle field-test",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:32:03Z",
+  "head_ref": "shard/tick-2010Z-b0502-launchd-plist-untangle-otto-cli-2026-05-14"
+}

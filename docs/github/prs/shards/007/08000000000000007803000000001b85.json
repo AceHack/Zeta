@@ -1,0 +1,12 @@
+{
+  "pr_number": 7045,
+  "archive_path": "docs/history/pr-reviews/PR-7045-feat-core-antisybil-the-base-case-that-makes-clock-drift-identity-non-circular.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T07:06:31.495Z",
+  "schema_version": "v1",
+  "commit_sha": "3ccb4bd2d06ad38302759abcb7ed972a4dfb48f9",
+  "title": "feat(core): AntiSybil — the base case that makes clock-drift==identity non-circular",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T07:06:11Z",
+  "head_ref": "otto/anti-sybil-function-over-bitgan"
+}

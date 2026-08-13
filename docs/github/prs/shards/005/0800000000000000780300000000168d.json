@@ -1,0 +1,25 @@
+{
+  "pr_number": 5773,
+  "archive_path": "docs/history/pr-reviews/PR-5773-feat-b-0914-7-falcon-auto-research-doc-template-substrate-19-tests-pass-complete.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FvAV-",
+    "comment:PRRC_kwDOSF9kNM7FvAVN",
+    "comment:PRRC_kwDOSF9kNM7FwB1e",
+    "comment:PRRC_kwDOSF9kNM7FwB27",
+    "comment:PRRC_kwDOSF9kNM7FwB2g",
+    "comment:PRRC_kwDOSF9kNM7FwB3Y",
+    "thread:PRRT_kwDOSF9kNM6FYZqG",
+    "thread:PRRT_kwDOSF9kNM6FYZql",
+    "thread:PRRT_kwDOSF9kNM6FZJcv",
+    "thread:PRRT_kwDOSF9kNM6FZJd3",
+    "thread:PRRT_kwDOSF9kNM6FZJdj",
+    "thread:PRRT_kwDOSF9kNM6FZJeM"
+  ],
+  "fetched_at": "2026-05-28T12:22:36.259Z",
+  "schema_version": "v1",
+  "commit_sha": "c34959dda66bac9152e12129660c8f2d1fdaf770",
+  "title": "feat(B-0914.7): Falcon auto-research-doc template substrate; 19 tests pass — completes 7-of-7 B-0914 candidate substrate-engineering gap substrate",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T12:22:14Z",
+  "head_ref": "otto-cli/b-0914-7-falcon-auto-research-doc-template-generator-substrate-engineering-substrate-2026-05-28"
+}

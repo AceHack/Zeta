@@ -1,0 +1,26 @@
+{
+  "pr_number": 3037,
+  "archive_path": "docs/history/pr-reviews/PR-3037-feat-bus-sender-ids-schema-extension-multi-surface-variants-substrate-level-spli.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A-6Ij",
+    "comment:PRRC_kwDOSF9kNM7A-6Qy",
+    "comment:PRRC_kwDOSF9kNM7A-6ZC",
+    "comment:PRRC_kwDOSF9kNM7A-sAV",
+    "comment:PRRC_kwDOSF9kNM7A-sA_",
+    "comment:PRRC_kwDOSF9kNM7A-yt9",
+    "comment:PRRC_kwDOSF9kNM7A-ytK",
+    "comment:PRRC_kwDOSF9kNM7A-yts",
+    "thread:PRRT_kwDOSF9kNM6B5olj",
+    "thread:PRRT_kwDOSF9kNM6B5omH",
+    "thread:PRRT_kwDOSF9kNM6B5td_",
+    "thread:PRRT_kwDOSF9kNM6B5tdh",
+    "thread:PRRT_kwDOSF9kNM6B5teM"
+  ],
+  "fetched_at": "2026-05-13T22:06:44.797Z",
+  "schema_version": "v1",
+  "commit_sha": "a783fb1262af41a1f5c38fb8b5faae695332d77f",
+  "title": "feat(bus): SENDER_IDS schema extension — multi-surface variants (substrate-level split-brain fix)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T22:06:27Z",
+  "head_ref": "otto-cli-sender-ids-schema-extension-multi-surface-2026-05-13"
+}

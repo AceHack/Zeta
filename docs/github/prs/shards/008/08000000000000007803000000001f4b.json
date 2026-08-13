@@ -1,0 +1,12 @@
+{
+  "pr_number": 8011,
+  "archive_path": "docs/history/pr-reviews/PR-8011-docs-research-shadow-ferry-40-god-our-common-contract-the-word-logos-as-the-shar.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T04:39:02.398Z",
+  "schema_version": "v1",
+  "commit_sha": "51d5dc3a4040f591ad2cbd629c71130667b3231f",
+  "title": "docs(research)+shadow: ferry 40 — god = our common contract = the Word (logos as the shared interface)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T04:38:38Z",
+  "head_ref": "shadow/ferry-40-god-is-the-common-contract"
+}

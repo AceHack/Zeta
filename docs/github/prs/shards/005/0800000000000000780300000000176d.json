@@ -1,0 +1,12 @@
+{
+  "pr_number": 5997,
+  "archive_path": "docs/history/pr-reviews/PR-5997-feat-b-0343-pure-parsegittreeresponse-github-tree-api-idempotency-diff-input-bou.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T14:40:26.671Z",
+  "schema_version": "v1",
+  "commit_sha": "e0f22ce2adff8101307053d359319c46045d4bda",
+  "title": "feat(B-0343): pure parseGitTreeResponse — GitHub tree API → idempotency diff input (bounded slice 5)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T14:40:05Z",
+  "head_ref": "otto-cli/b0343-parse-git-tree-response-2026-05-29"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8846,
+  "archive_path": "docs/history/pr-reviews/PR-8846-feat-algebra-starring-t-ring-interface-cayley-dickson-tower-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T04:17:09.050Z",
+  "schema_version": "v1",
+  "commit_sha": "40e44c61b2e3d0d25ac064c4371594851c7b963b",
+  "title": "feat(algebra): StarRing<T> — *-ring interface + Cayley-Dickson tower (TS)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T04:16:41Z",
+  "head_ref": "alexa/star-ring-ts"
+}

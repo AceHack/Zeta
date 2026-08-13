@@ -1,0 +1,12 @@
+{
+  "pr_number": 4903,
+  "archive_path": "docs/history/pr-reviews/PR-4903-fix-installer-refresh-embedded-runbook-addison.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T03:01:44.958Z",
+  "schema_version": "v1",
+  "commit_sha": "24237782c1d3a3653ce1167c9bdb2c963f09de8a",
+  "title": "fix(installer): refresh embedded runbook (Addison)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T03:01:26Z",
+  "head_ref": "fix/addison-installer-runbook-stale-comment"
+}

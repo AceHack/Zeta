@@ -1,0 +1,12 @@
+{
+  "pr_number": 6815,
+  "archive_path": "docs/history/pr-reviews/PR-6815-feat-cloudevents-cncf-v1-0-envelope-over-dynamicvalue-dagfs-edit-convergence-pro.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:41:04.252Z",
+  "schema_version": "v1",
+  "commit_sha": "ec679a3ef51f940c0eef68517504f849550f80cd",
+  "title": "feat(CloudEvents): CNCF v1.0 envelope over DynamicValue + DagFs edit-convergence proof",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:40:45Z",
+  "head_ref": "feat/cloudevents-envelope-over-dynamicvalue"
+}

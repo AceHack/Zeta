@@ -1,0 +1,22 @@
+{
+  "pr_number": 2194,
+  "archive_path": "docs/history/pr-reviews/PR-2194-feat-b-0356-capture-token-usage-in-background-loop-ratings.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fEi5",
+    "comment:PRRC_kwDOSF9kNM6_fEiy",
+    "comment:PRRC_kwDOSF9kNM6_fEve",
+    "comment:PRRC_kwDOSF9kNM6_fFml",
+    "comment:PRRC_kwDOSF9kNM6_fFnj",
+    "comment:PRRC_kwDOSF9kNM6_fFpk",
+    "thread:PRRT_kwDOSF9kNM6Ayy2d",
+    "thread:PRRT_kwDOSF9kNM6Ayy2g",
+    "thread:PRRT_kwDOSF9kNM6AyzAl"
+  ],
+  "fetched_at": "2026-05-09T06:09:56.844Z",
+  "schema_version": "v1",
+  "commit_sha": "32c1af0fda48f73db7973184d868533742e75242",
+  "title": "feat(B-0356): capture token usage in background loop ratings",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:09:35Z",
+  "head_ref": "feat/b-0356-token-capture-in-ratings"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5680,
+  "archive_path": "docs/history/pr-reviews/PR-5680-backlog-asap-cluster-priority-rerank-bump-b-0874-b-0867-20-b-0867-21-to-p1-file-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T02:48:36.044Z",
+  "schema_version": "v1",
+  "commit_sha": "b72c58923f010cf1047a8cad1f93de1fb6b363a5",
+  "title": "backlog: ASAP cluster priority rerank — bump B-0874/B-0867.20/B-0867.21 to P1 + file B-0886 umbrella per operator AI-side-priority direction",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T02:48:16Z",
+  "head_ref": "backlog/asap-cluster-priority-rerank-b-0886-umbrella-otto-addison-public-github-infinite-workflow-private-state-2026-05-28"
+}

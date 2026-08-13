@@ -1,0 +1,12 @@
+{
+  "pr_number": 5329,
+  "archive_path": "docs/history/pr-reviews/PR-5329-fix-postmerge-5327-clarify-multi-turn-vs-zero-turn-terminology-split-3-pr-cleanu.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T21:46:05.968Z",
+  "schema_version": "v1",
+  "commit_sha": "f0613ee0e942d7f4262edb170eff84d101e2d042",
+  "title": "fix(postmerge-5327): clarify multi-turn vs zero-turn terminology + split 3-PR-cleanup + follow-up-fix-PR (Copilot 2 findings)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T21:45:46Z",
+  "head_ref": "otto-cli/postmerge-5327-fix-copilot-terminology-and-pr-count-2026-05-26"
+}

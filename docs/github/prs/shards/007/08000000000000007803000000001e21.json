@@ -1,0 +1,12 @@
+{
+  "pr_number": 7713,
+  "archive_path": "docs/history/pr-reviews/PR-7713-feat-audio-the-drop-in-law-seeds-dropped-mid-stream-land-in-phase-henderson-coun.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T15:30:40.731Z",
+  "schema_version": "v1",
+  "commit_sha": "a671e871c4a296e53bd460efff105515ac97d9f4",
+  "title": "feat(audio): THE DROP-IN LAW — seeds dropped mid-stream land in phase + Henderson Country Club grounds the cotillion anchor",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T15:29:57Z",
+  "head_ref": "shadow-dropin-henderson"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5399,
+  "archive_path": "docs/history/pr-reviews/PR-5399-docs-hygiene-tick-2026-05-27t04-08z-15-worktrees-15-local-branch-refs-cleaned.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T04:16:10.096Z",
+  "schema_version": "v1",
+  "commit_sha": "a54623522cdaa878fdd36eced283b607030a4293",
+  "title": "docs(hygiene): tick 2026-05-27T04:08Z — 15 worktrees + 15 local branch refs cleaned",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T04:15:51Z",
+  "head_ref": "shard/0408z-worktree-cleanup-15-removed-2026-05-27"
+}

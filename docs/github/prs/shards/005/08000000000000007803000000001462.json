@@ -1,0 +1,12 @@
+{
+  "pr_number": 5218,
+  "archive_path": "docs/history/pr-reviews/PR-5218-feat-b-0800-iter-6-0-bump-nixpkgs-nix-darwin-24-11-25-11-xantusia-current-stable.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T16:45:04.558Z",
+  "schema_version": "v1",
+  "commit_sha": "f2eda5798ebfb9856390d705a3b6d8efb0906f5e",
+  "title": "feat(B-0800 iter-6.0): bump nixpkgs + nix-darwin 24.11 → 25.11 'Xantusia' (current stable; EOL recovery)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T16:44:44Z",
+  "head_ref": "otto-cli/b0800-iter-6-0-bump-nixpkgs-24-11-to-25-11-xantusia-2026-05-26"
+}

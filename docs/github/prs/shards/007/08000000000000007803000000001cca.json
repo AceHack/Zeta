@@ -1,0 +1,12 @@
+{
+  "pr_number": 7370,
+  "archive_path": "docs/history/pr-reviews/PR-7370-docs-research-not-a-toymodel-anymore-graduated-to-realmodel-math-team-unlimited-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:11:35.177Z",
+  "schema_version": "v1",
+  "commit_sha": "1d35502b09c4041048b6af7f1425fccc8ffb8254",
+  "title": "docs(research): not a toymodel anymore — graduated to realmodel (math team unlimited rounds) + completeness-critic + temperature/frames/interfaces/maybe-classes as travelers",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:11:08Z",
+  "head_ref": "otto/graduated-to-realmodel-unlimited-rounds-completeness-critic-temperature-frames-interfaces-maybe-classes"
+}

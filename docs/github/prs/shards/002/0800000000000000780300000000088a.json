@@ -1,0 +1,19 @@
+{
+  "pr_number": 2186,
+  "archive_path": "docs/history/pr-reviews/PR-2186-docs-hardware-corruption-mapping-across-compilation-chain.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_etAL",
+    "comment:PRRC_kwDOSF9kNM6_etQb",
+    "comment:PRRC_kwDOSF9kNM6_evmS",
+    "comment:PRRC_kwDOSF9kNM6_evoX",
+    "thread:PRRT_kwDOSF9kNM6AyhAC",
+    "thread:PRRT_kwDOSF9kNM6AyhMf"
+  ],
+  "fetched_at": "2026-05-09T05:23:09.127Z",
+  "schema_version": "v1",
+  "commit_sha": "f38d194cc377e05bf7c1e4449ef43e12e45df4b2",
+  "title": "docs: hardware corruption mapping across compilation chain",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T05:22:45Z",
+  "head_ref": "docs/hardware-corruption-mapping"
+}

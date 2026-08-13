@@ -1,0 +1,25 @@
+{
+  "pr_number": 5775,
+  "archive_path": "docs/history/pr-reviews/PR-5775-feat-git-world-github-world-forge-specialization-hierarchy-substrate-aaron-2026-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FvGD0",
+    "comment:PRRC_kwDOSF9kNM7FvJOs",
+    "comment:PRRC_kwDOSF9kNM7FvJPf",
+    "comment:PRRC_kwDOSF9kNM7FvtBY",
+    "comment:PRRC_kwDOSF9kNM7FvtCI",
+    "comment:PRRC_kwDOSF9kNM7FvtCc",
+    "thread:PRRT_kwDOSF9kNM6FY6BR",
+    "thread:PRRT_kwDOSF9kNM6FY6By",
+    "thread:PRRT_kwDOSF9kNM6FY6CD",
+    "thread:PRRT_kwDOSF9kNM6FYdtk",
+    "thread:PRRT_kwDOSF9kNM6FYgD0",
+    "thread:PRRT_kwDOSF9kNM6FYgEi"
+  ],
+  "fetched_at": "2026-05-28T12:36:24.377Z",
+  "schema_version": "v1",
+  "commit_sha": "a853f4c32f66965beaa11d4ab8f1dc72326a79e1",
+  "title": "feat(git-world + github-world): forge-specialization hierarchy substrate (Aaron 2026-05-28 'git world + github specialization'); 16 tests pass",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T12:35:50Z",
+  "head_ref": "otto-cli/git-world-and-github-world-specialization-substrate-naming-hierarchy-aaron-2026-05-28"
+}

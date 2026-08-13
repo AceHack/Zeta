@@ -1,0 +1,12 @@
+{
+  "pr_number": 4224,
+  "archive_path": "docs/history/pr-reviews/PR-4224-shard-2202z-brief-ack-1-named-dep-4-prs-ci-wait.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T22:05:42.808Z",
+  "schema_version": "v1",
+  "commit_sha": "e0c71585fa4ddfdb8e301e775a0a5f48e96d3561",
+  "title": "shard(2202Z): brief-ack #1 named-dep 4 PRs CI wait",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:05:23Z",
+  "head_ref": "shard/tick-2202z-brief-ack-1-named-dep-4-prs-ci-wait-2026-05-18"
+}

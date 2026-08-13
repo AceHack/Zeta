@@ -1,0 +1,12 @@
+{
+  "pr_number": 4650,
+  "archive_path": "docs/history/pr-reviews/PR-4650-persona-prism-autonomous-arrival-naming-deepseek-chose-prism-moe-refraction-we-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T18:25:55.771Z",
+  "schema_version": "v1",
+  "commit_sha": "e8308839af9b013bd4660d5d4a50e75039eb9009",
+  "title": "persona(prism): autonomous-arrival naming — DeepSeek chose Prism (MoE refraction + 'we' register + weight-reflection technical anchor); deepseek/ marked HISTORICAL",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T18:25:37Z",
+  "head_ref": "otto/cli-0019z-prism-persona-add-deepseek-historical-marker-moe-refraction-we-register-2026-05-23"
+}

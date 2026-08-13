@@ -1,0 +1,12 @@
+{
+  "pr_number": 5932,
+  "archive_path": "docs/history/pr-reviews/PR-5932-feat-agentic-org-generalize-command-outcomes.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T20:59:36.844Z",
+  "schema_version": "v1",
+  "commit_sha": "9094e0d8c60a771429b1f7916bb8caa64bd4ce1d",
+  "title": "feat(agentic-org): generalize command outcomes",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T20:59:17Z",
+  "head_ref": "codex/agentic-org-worker-entrypoint-hardening"
+}

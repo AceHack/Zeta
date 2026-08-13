@@ -1,0 +1,17 @@
+{
+  "pr_number": 4909,
+  "archive_path": "docs/history/pr-reviews/PR-4909-shard-2026-05-25-0443z-20th-dotgit-anchor-7th-consecutive-0-stuck-proc-reading-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EdvUu",
+    "comment:PRRC_kwDOSF9kNM7EdvvK",
+    "thread:PRRT_kwDOSF9kNM6EdHEe",
+    "thread:PRRT_kwDOSF9kNM6EdHYQ"
+  ],
+  "fetched_at": "2026-05-25T06:22:02.477Z",
+  "schema_version": "v1",
+  "commit_sha": "e0b216375efd04f1014e56eafd1ee16b990c4a2a",
+  "title": "shard(2026-05-25/0443Z): 20th dotgit anchor — 7th consecutive 0-stuck-proc reading + cadence resumed (36min)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T06:21:44Z",
+  "head_ref": "shard/tick-0443z-otto-bg-worker-20th-dotgit-anchor-7th-clean-reading-2026-05-25"
+}

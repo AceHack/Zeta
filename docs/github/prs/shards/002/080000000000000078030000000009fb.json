@@ -1,0 +1,19 @@
+{
+  "pr_number": 2555,
+  "archive_path": "docs/history/pr-reviews/PR-2555-docs-memory-retraction-native-history-policy-no-deletion-label-not-alter.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qgp3",
+    "comment:PRRC_kwDOSF9kNM6_qgyo",
+    "comment:PRRC_kwDOSF9kNM6_qgyr",
+    "thread:PRRT_kwDOSF9kNM6A7yOb",
+    "thread:PRRT_kwDOSF9kNM6A7yWL",
+    "thread:PRRT_kwDOSF9kNM6A7yWN"
+  ],
+  "fetched_at": "2026-05-10T22:03:35.610Z",
+  "schema_version": "v1",
+  "commit_sha": "fefcd59cb1b159794cb7e794e7267ea39cc5e432",
+  "title": "docs(memory): retraction-native history policy — no deletion, label not alter",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T22:03:18Z",
+  "head_ref": "docs/retraction-native-history-policy-2026-05-10"
+}

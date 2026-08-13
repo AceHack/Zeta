@@ -1,0 +1,21 @@
+{
+  "pr_number": 6628,
+  "archive_path": "docs/history/pr-reviews/PR-6628-proof-b-1007-c4-message-marginal-is-a-monoid-homomorphism-list-message-one-fsche.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Hey3n",
+    "comment:PRRC_kwDOSF9kNM7HezO1",
+    "comment:PRRC_kwDOSF9kNM7HezPQ",
+    "comment:PRRC_kwDOSF9kNM7HezPb",
+    "thread:PRRT_kwDOSF9kNM6GqrOa",
+    "thread:PRRT_kwDOSF9kNM6Gqrf5",
+    "thread:PRRT_kwDOSF9kNM6Gqrf_",
+    "thread:PRRT_kwDOSF9kNM6Gqrfl"
+  ],
+  "fetched_at": "2026-06-03T07:46:19.699Z",
+  "schema_version": "v1",
+  "commit_sha": "3bd755926b618f57576bd0110f9a920778b9ea64",
+  "title": "proof(B-1007 C4): Message.marginal is a monoid homomorphism (list,@,[])→(message,*,One) — FsCheck",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T07:45:55Z",
+  "head_ref": "otto-cli/b1007-c4-marginal-fold-homomorphism-2026-06-03"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 6396,
+  "archive_path": "docs/history/pr-reviews/PR-6396-feat-algebra-native-rust-z-set-signed-multiset-top-rung-oracle-4-4-4.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gr5iY",
+    "comment:PRRC_kwDOSF9kNM7Gr6A1",
+    "thread:PRRT_kwDOSF9kNM6GFPZc",
+    "thread:PRRT_kwDOSF9kNM6GFPvC"
+  ],
+  "fetched_at": "2026-06-01T10:29:58.895Z",
+  "schema_version": "v1",
+  "commit_sha": "71a34c00a539ee8b8d87032517ca85de53f8acab",
+  "title": "feat(algebra): native Rust Z-set (signed multiset) — top rung, oracle #4 (4/4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T10:29:34Z",
+  "head_ref": "otto-cli/zset-rust-native-oracle4-2026-06-01"
+}

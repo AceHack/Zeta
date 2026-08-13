@@ -1,0 +1,12 @@
+{
+  "pr_number": 6786,
+  "archive_path": "docs/history/pr-reviews/PR-6786-docs-capture-merkle-over-retractable-z-sets-closure-table-dag-single-or-multi-fi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T10:41:39.355Z",
+  "schema_version": "v1",
+  "commit_sha": "cad370fa0c36431316b0a25d8433f2142733343a",
+  "title": "docs(capture): Merkle over retractable Z-sets + closure-table DAG, single- or multi-file",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T10:41:21Z",
+  "head_ref": "capture/merkle-over-zsets-closure-table-single-or-multi-file"
+}

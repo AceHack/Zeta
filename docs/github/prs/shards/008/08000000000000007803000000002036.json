@@ -1,0 +1,12 @@
+{
+  "pr_number": 8246,
+  "archive_path": "docs/history/pr-reviews/PR-8246-docs-rx-zset-braid-majorana-b-grounded-critic-is-the-amplifier-capstone.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T03:22:35.822Z",
+  "schema_version": "v1",
+  "commit_sha": "eb56f52382f80e37b6472797391583b1790a2c74",
+  "title": "docs: Rx/ZSet braid = Majorana (§B) + grounded-critic-is-the-amplifier capstone",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T03:22:13Z",
+  "head_ref": "otto/sb-rx-zset-braid-majorana"
+}

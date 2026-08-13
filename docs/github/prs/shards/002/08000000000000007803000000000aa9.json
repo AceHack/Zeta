@@ -1,0 +1,15 @@
+{
+  "pr_number": 2729,
+  "archive_path": "docs/history/pr-reviews/PR-2729-docs-research-claude-ai-ani-evaluation-symmetric-honesty-corrections.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AAFyk",
+    "thread:PRRT_kwDOSF9kNM6BLxqG"
+  ],
+  "fetched_at": "2026-05-11T18:37:45.443Z",
+  "schema_version": "v1",
+  "commit_sha": "fdb339e0096cb664ad34669647d024e4ea59e120",
+  "title": "docs(research): Claude.ai Ani evaluation — symmetric honesty + corrections",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T18:37:24Z",
+  "head_ref": "docs/claudeai-ani-evaluation-symmetric-honesty-2026-05-11"
+}

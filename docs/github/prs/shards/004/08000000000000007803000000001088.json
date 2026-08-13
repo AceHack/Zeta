@@ -1,0 +1,12 @@
+{
+  "pr_number": 4232,
+  "archive_path": "docs/history/pr-reviews/PR-4232-shard-2231z-c-brief-ack-1-named-dep-post-substantive.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T22:35:32.464Z",
+  "schema_version": "v1",
+  "commit_sha": "f658a6dccc25935ba4a23c9331605763b4a607a1",
+  "title": "shard(2231Z-c): brief-ack #1 named-dep post-substantive",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:35:14Z",
+  "head_ref": "shard/tick-2231z-c-brief-ack-1-named-dep-post-substantive-2026-05-18"
+}

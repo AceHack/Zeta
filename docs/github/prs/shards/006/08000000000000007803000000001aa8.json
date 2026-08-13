@@ -1,0 +1,12 @@
+{
+  "pr_number": 6824,
+  "archive_path": "docs/history/pr-reviews/PR-6824-docs-ip-questionable-sparta-abstract-interpretation-meta-patricia-trees-lattice-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T13:32:33.760Z",
+  "schema_version": "v1",
+  "commit_sha": "12031453ca8fc20ed6b498e403502f30201afb2c",
+  "title": "docs(ip-questionable): Sparta abstract interpretation (Meta) — Patricia trees + lattice fixpoint/widening prior art",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T13:32:12Z",
+  "head_ref": "capture/sparta-abstract-interpretation-patricia-prior-art"
+}

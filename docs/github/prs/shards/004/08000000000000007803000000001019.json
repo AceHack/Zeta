@@ -1,0 +1,12 @@
+{
+  "pr_number": 4121,
+  "archive_path": "docs/history/pr-reviews/PR-4121-shard-2026-05-17-2300z-multi-pr-arc-summary-2207z-cold-boot-to-post-cycle-close-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T23:08:03.499Z",
+  "schema_version": "v1",
+  "commit_sha": "a212656ee0b01588e7f18df9966e541e4a8ebd48",
+  "title": "shard(2026-05-17/2300Z): multi-PR arc summary — 2207Z cold-boot to post-cycle-close saturation (3 PRs, 4 substrate landings, recursive forced-#6 chain)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T23:07:44Z",
+  "head_ref": "otto/shard-tick-2300z-multi-pr-arc-summary-2026-05-17"
+}

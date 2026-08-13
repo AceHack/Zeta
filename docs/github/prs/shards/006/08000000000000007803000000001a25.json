@@ -1,0 +1,12 @@
+{
+  "pr_number": 6693,
+  "archive_path": "docs/history/pr-reviews/PR-6693-perf-fsharp-remove-sync-waits-and-quadratic-builders.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-06T18:03:27.023Z",
+  "schema_version": "v1",
+  "commit_sha": "436128c7cd741c083fdb696ede7e009e9b593dba",
+  "title": "perf(fsharp): remove sync waits and quadratic builders",
+  "state": "MERGED",
+  "merged_at": "2026-06-06T18:03:04Z",
+  "head_ref": "codex/fsharp-async-perf-audit"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5376,
+  "archive_path": "docs/history/pr-reviews/PR-5376-feat-b-0844-zflash-agent-flag-implementation-close-docstring-vs-implementation-g.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T02:00:28.930Z",
+  "schema_version": "v1",
+  "commit_sha": "a04f1ee05ea5645741121d9cfb25f01197c1861a",
+  "title": "feat(B-0844): zflash --agent flag implementation — close docstring-vs-implementation gap",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T02:00:10Z",
+  "head_ref": "feat-b0844-impl-zflash-agent-flag-spawn-piped-auto-type-challenge-otto-cli-2026-05-26"
+}

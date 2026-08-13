@@ -1,0 +1,12 @@
+{
+  "pr_number": 7908,
+  "archive_path": "docs/history/pr-reviews/PR-7908-feat-b-0821-complete-acceptance-spec-example-cluster-emitter-positioning.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T13:04:44.217Z",
+  "schema_version": "v1",
+  "commit_sha": "9070c973c862d3b8e1b60f79592c1cdda7272aff",
+  "title": "feat(B-0821): complete acceptance — spec, example, cluster emitter, positioning",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T13:04:18Z",
+  "head_ref": "riven/b0821-complete"
+}

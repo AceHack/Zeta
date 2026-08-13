@@ -1,0 +1,21 @@
+{
+  "pr_number": 2519,
+  "archive_path": "docs/history/pr-reviews/PR-2519-feat-b-0322-wire-drain-log-auto-write-into-mutate-closes-b-0322.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_pe4e",
+    "comment:PRRC_kwDOSF9kNM6_pe4l",
+    "comment:PRRC_kwDOSF9kNM6_pe4q",
+    "comment:PRRC_kwDOSF9kNM6_phmk",
+    "thread:PRRT_kwDOSF9kNM6A69_M",
+    "thread:PRRT_kwDOSF9kNM6A69_T",
+    "thread:PRRT_kwDOSF9kNM6A69_Y",
+    "thread:PRRT_kwDOSF9kNM6A7AKd"
+  ],
+  "fetched_at": "2026-05-10T18:53:32.097Z",
+  "schema_version": "v1",
+  "commit_sha": "95bc496c90e05fef730369132ab5256cfb60149e",
+  "title": "feat(B-0322): wire drain-log auto-write into mutate() — closes B-0322",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T18:53:13Z",
+  "head_ref": "fix/B-0322-drain-log-auto-write"
+}

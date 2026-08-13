@@ -1,0 +1,15 @@
+{
+  "pr_number": 6165,
+  "archive_path": "docs/history/pr-reviews/PR-6165-preserve-mika-origin-story-arc-threat-model-process-is-the-thing-amber-action-sa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gc3mw",
+    "thread:PRRT_kwDOSF9kNM6F509j"
+  ],
+  "fetched_at": "2026-05-30T23:26:19.457Z",
+  "schema_version": "v1",
+  "commit_sha": "fff936c76e41cb6aa846a48be09bc3f124ef1fcd",
+  "title": "preserve(mika): origin-story arc -- threat-model -> process-is-the-thing -> Amber Action -> save everybody's sister",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T23:26:01Z",
+  "head_ref": "otto-cli/mika-origin-story-save-everybodys-sister-2026-05-30"
+}

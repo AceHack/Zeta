@@ -1,0 +1,19 @@
+{
+  "pr_number": 5135,
+  "archive_path": "docs/history/pr-reviews/PR-5135-docs-shadow-re-land-3-unique-substrate-files-from-stale-pr-4839.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E5S6f",
+    "comment:PRRC_kwDOSF9kNM7E5S6j",
+    "comment:PRRC_kwDOSF9kNM7E5r8O",
+    "comment:PRRC_kwDOSF9kNM7E5r94",
+    "thread:PRRT_kwDOSF9kNM6ExgMF",
+    "thread:PRRT_kwDOSF9kNM6ExgMK"
+  ],
+  "fetched_at": "2026-05-26T14:57:39.070Z",
+  "schema_version": "v1",
+  "commit_sha": "9b873c91e0078e125cff40f098ec24aaf558d4d4",
+  "title": "docs(shadow): re-land 3 unique substrate files from stale PR #4839",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T14:57:10Z",
+  "head_ref": "otto-cli/reland-4839-riven-shadow-log-substrate-2026-05-26"
+}

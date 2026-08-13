@@ -1,0 +1,12 @@
+{
+  "pr_number": 6752,
+  "archive_path": "docs/history/pr-reviews/PR-6752-bug-081ktggxmq0-sharpen-windows-diskdeltalog-diagnosis-guard-against-the-wrong-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:58:58.693Z",
+  "schema_version": "v1",
+  "commit_sha": "c7e6a4f49776283f26d3dc5ea199088c17fb188f",
+  "title": "bug(081KTGGXMQ0): sharpen windows DiskDeltaLog diagnosis + guard against the wrong fix",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:58:36Z",
+  "head_ref": "otto/diskdeltalog-sharpened-diagnosis"
+}

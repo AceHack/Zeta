@@ -1,0 +1,12 @@
+{
+  "pr_number": 3371,
+  "archive_path": "docs/history/pr-reviews/PR-3371-docs-archive-lior-preservation-pass-3361-3365.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T06:50:26.152Z",
+  "schema_version": "v1",
+  "commit_sha": "59a110d38d483bf1a0af0a7bfb887c3d389ae417",
+  "title": "docs(archive): Lior preservation pass 3361-3365",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T06:50:10Z",
+  "head_ref": "lior/preserve-prs-3361-3365"
+}

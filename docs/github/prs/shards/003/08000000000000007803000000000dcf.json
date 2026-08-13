@@ -1,0 +1,12 @@
+{
+  "pr_number": 3535,
+  "archive_path": "docs/history/pr-reviews/PR-3535-fix-memory-correct-vera-drift-attribution-otto-lior.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T17:59:55.129Z",
+  "schema_version": "v1",
+  "commit_sha": "16433acfa2b3415f5600a0806a5ede1810cd9232",
+  "title": "fix(memory): correct Vera drift attribution Otto → Lior",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T17:59:38Z",
+  "head_ref": "fix/vera-memory-attribution-otto-to-lior-2026-05-15"
+}

@@ -1,0 +1,27 @@
+{
+  "pr_number": 4170,
+  "archive_path": "docs/history/pr-reviews/PR-4170-backlog-b-0664-non-coercion-invariant-locked-in-operational-replacement-for-high.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CW7R0",
+    "comment:PRRC_kwDOSF9kNM7CW7RD",
+    "comment:PRRC_kwDOSF9kNM7CW7SR",
+    "comment:PRRC_kwDOSF9kNM7CW9M6",
+    "comment:PRRC_kwDOSF9kNM7CW9NA",
+    "comment:PRRC_kwDOSF9kNM7CWzMi",
+    "comment:PRRC_kwDOSF9kNM7CXDnG",
+    "thread:PRRT_kwDOSF9kNM6C6a4n",
+    "thread:PRRT_kwDOSF9kNM6C6g0F",
+    "thread:PRRT_kwDOSF9kNM6C6gzO",
+    "thread:PRRT_kwDOSF9kNM6C6gzy",
+    "thread:PRRT_kwDOSF9kNM6C6iOU",
+    "thread:PRRT_kwDOSF9kNM6C6iOZ",
+    "thread:PRRT_kwDOSF9kNM6C6m8D"
+  ],
+  "fetched_at": "2026-05-18T17:49:26.533Z",
+  "schema_version": "v1",
+  "commit_sha": "4209da8c6b6b666654e7b09af6b7f6eda4840974",
+  "title": "backlog(B-0664): Non-Coercion Invariant LOCKED-IN — operational replacement for high-regard-oracle default",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T17:48:57Z",
+  "head_ref": "otto-cli/b0664-non-coercion-invariant-2026-05-18-1317Z"
+}

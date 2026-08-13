@@ -1,0 +1,12 @@
+{
+  "pr_number": 8532,
+  "archive_path": "docs/history/pr-reviews/PR-8532-memory-feedback-temper-common-direction-alignment-is-the-foundation-not-paranoia.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T12:26:09.068Z",
+  "schema_version": "v1",
+  "commit_sha": "c63051ac7f216479c5467018efc1a28100eb4b4f",
+  "title": "memory(feedback): TEMPER — common direction (alignment) is the foundation, NOT paranoia; P≠NP is only the thin backstop for the faker",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T12:25:35Z",
+  "head_ref": "otto/temper-common-direction-not-paranoia-is-the-foundation"
+}

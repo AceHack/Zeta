@@ -1,0 +1,12 @@
+{
+  "pr_number": 5347,
+  "archive_path": "docs/history/pr-reviews/PR-5347-docs-backlog-b-0834-installer-preserve-install-log-to-file-failures-warnings-scr.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T23:07:09.049Z",
+  "schema_version": "v1",
+  "commit_sha": "57d105e1860b29479ba61162dd61ab3650e87dc6",
+  "title": "docs(backlog): B-0834 — installer preserve install log to file (failures + warnings scroll past too fast; 3rd empirical anchor in same physical test session)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:06:48Z",
+  "head_ref": "otto/b-0834-installer-preserve-failures-warnings-log-scrollback-empirical-2026-05-26"
+}

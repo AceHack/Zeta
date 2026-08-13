@@ -1,0 +1,12 @@
+{
+  "pr_number": 6888,
+  "archive_path": "docs/history/pr-reviews/PR-6888-feat-floor-unify-cayley-dickson-towers-onto-the-floor-istarring-isemiring-retire.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T18:43:49.671Z",
+  "schema_version": "v1",
+  "commit_sha": "16d1de4b999c198ee0b189409271b666af40ee5c",
+  "title": "feat(floor): unify Cayley-Dickson towers onto the floor — IStarRing : ISemiring, retire IAlgebra",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T18:43:28Z",
+  "head_ref": "otto/cayley-unify-istarring-floor"
+}

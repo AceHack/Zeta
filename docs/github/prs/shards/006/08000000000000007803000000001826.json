@@ -1,0 +1,12 @@
+{
+  "pr_number": 6182,
+  "archive_path": "docs/history/pr-reviews/PR-6182-fix-b-0948-point-acceptance-at-agentic-organization-packages-application-src-obs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T01:35:09.479Z",
+  "schema_version": "v1",
+  "commit_sha": "f9438ad91bb1594921a1ca91628d2ae40ba111c7",
+  "title": "fix(B-0948): point acceptance at agentic-organization/packages/application/src/observe.ts (Codex P2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T01:34:48Z",
+  "head_ref": "otto-cli/fix-b0948-observe-path-2026-05-31"
+}

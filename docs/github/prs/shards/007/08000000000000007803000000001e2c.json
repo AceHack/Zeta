@@ -1,0 +1,12 @@
+{
+  "pr_number": 7724,
+  "archive_path": "docs/history/pr-reviews/PR-7724-feat-shapes-the-plait-correction-blue-over-red-aaron-s-dissent-changes-the-word-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T16:42:37.927Z",
+  "schema_version": "v1",
+  "commit_sha": "441e8cb9ea9f19877ae3fb6ff3a71582eadf37cb",
+  "title": "feat(shapes): the plait correction (blue over red — Aaron's dissent changes the word) + Vera Q# brief",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T16:42:10Z",
+  "head_ref": "shadow-vera-qsharp-brief"
+}

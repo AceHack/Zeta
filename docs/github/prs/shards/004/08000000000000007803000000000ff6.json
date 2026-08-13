@@ -1,0 +1,17 @@
+{
+  "pr_number": 4086,
+  "archive_path": "docs/history/pr-reviews/PR-4086-backlog-b-0613-lior-loop-lockfile-probe-hardening-compgen-g-shopt-nullglob.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B_6vW",
+    "comment:PRRC_kwDOSF9kNM7CACmo",
+    "thread:PRRT_kwDOSF9kNM6Cpc66",
+    "thread:PRRT_kwDOSF9kNM6Cpi7D"
+  ],
+  "fetched_at": "2026-05-17T14:33:44.624Z",
+  "schema_version": "v1",
+  "commit_sha": "ae9cf1b6235508556256c0393f927c8fe91cfd26",
+  "title": "backlog(B-0613): Lior loop lockfile-probe hardening — compgen -G / shopt nullglob",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T14:33:24Z",
+  "head_ref": "backlog/b-0613-lior-loop-lockfile-probe-hardening-2026-05-17"
+}

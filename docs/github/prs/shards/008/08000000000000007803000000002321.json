@@ -1,0 +1,12 @@
+{
+  "pr_number": 8993,
+  "archive_path": "docs/history/pr-reviews/PR-8993-feat-keys-register-aaron-acehacks-mac-studio-device-cert-n-m-corrected.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T20:05:49.405Z",
+  "schema_version": "v1",
+  "commit_sha": "4ea48e0fa005d7ed2f525c3cb46ae8fa9622de17",
+  "title": "feat(keys): register aaron×acehacks-mac-studio device cert (N+M corrected)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T20:05:20Z",
+  "head_ref": "otto/register-aaron-cert-nplusm"
+}

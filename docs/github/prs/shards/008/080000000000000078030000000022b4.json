@@ -1,0 +1,12 @@
+{
+  "pr_number": 8884,
+  "archive_path": "docs/history/pr-reviews/PR-8884-feat-gen-auto-harness-specialize-all-7-languages-1st-futamura-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:30:30.853Z",
+  "schema_version": "v1",
+  "commit_sha": "dd9d1cc146c246e9630d6a7ecc95c8ded81be681",
+  "title": "feat(gen): auto-harness + specialize all 7 languages (1st Futamura complete)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:30:03Z",
+  "head_ref": "alexa/auto-harness"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 2245,
+  "archive_path": "docs/history/pr-reviews/PR-2245-skill-commit-message-shape-add-heredoc-mechanics-b-0069.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gDB2",
+    "comment:PRRC_kwDOSF9kNM6_gDBk",
+    "comment:PRRC_kwDOSF9kNM6_gDBs",
+    "comment:PRRC_kwDOSF9kNM6_gDBx",
+    "thread:PRRT_kwDOSF9kNM6AziKd",
+    "thread:PRRT_kwDOSF9kNM6AziKi",
+    "thread:PRRT_kwDOSF9kNM6AziKn",
+    "thread:PRRT_kwDOSF9kNM6AziKr"
+  ],
+  "fetched_at": "2026-05-09T08:36:09.454Z",
+  "schema_version": "v1",
+  "commit_sha": "92e54533f6b1183f19e39fea110346908e6c05fe",
+  "title": "skill(commit-message-shape): add HEREDOC mechanics (B-0069)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T08:35:54Z",
+  "head_ref": "fix/b0069-heredoc-encoding"
+}

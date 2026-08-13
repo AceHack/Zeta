@@ -1,0 +1,12 @@
+{
+  "pr_number": 8767,
+  "archive_path": "docs/history/pr-reviews/PR-8767-feat-codegen-shared-zetaschema-json-single-source-ir-one-file-every-oracle.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T19:13:26.231Z",
+  "schema_version": "v1",
+  "commit_sha": "9c9b2e49de1f8531e4abcefcf0ae104c7e26ea4f",
+  "title": "feat(codegen): shared .zetaschema.json single-source IR — one file, every oracle",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T19:12:58Z",
+  "head_ref": "otto/shared-zetaschema-json"
+}

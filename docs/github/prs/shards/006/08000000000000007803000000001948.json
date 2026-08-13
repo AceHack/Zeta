@@ -1,0 +1,12 @@
+{
+  "pr_number": 6472,
+  "archive_path": "docs/history/pr-reviews/PR-6472-feat-bag-fsharp-generic-math-additive-monoid-surface-zero-on-f-bag.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T21:07:04.961Z",
+  "schema_version": "v1",
+  "commit_sha": "bdf8c0235920725f188c0baefff2363d1b44dc13",
+  "title": "feat(bag-fsharp): generic-math additive-monoid surface (Zero + (+)) on F# Bag",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T21:06:44Z",
+  "head_ref": "otto-cli/bag-generic-math-fsharp-2026-06-01"
+}

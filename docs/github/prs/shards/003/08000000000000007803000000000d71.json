@@ -1,0 +1,12 @@
+{
+  "pr_number": 3441,
+  "archive_path": "docs/history/pr-reviews/PR-3441-shard-tick-1143z-pr-3437-pr-3439-merged-copilot-hallucination-thread-resolved.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T11:48:23.817Z",
+  "schema_version": "v1",
+  "commit_sha": "d8190bb16f7601233eeee55cbb3d6770b411089b",
+  "title": "shard(tick): 1143Z — PR #3437 + PR #3439 merged; Copilot hallucination thread resolved",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:48:06Z",
+  "head_ref": "shard/tick-1143z-otto-cli-2026-05-15"
+}

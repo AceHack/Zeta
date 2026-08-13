@@ -1,0 +1,12 @@
+{
+  "pr_number": 6982,
+  "archive_path": "docs/history/pr-reviews/PR-6982-docs-loom-the-human-root-of-the-name-textile-mill-town-pc-guru.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:50:29.321Z",
+  "schema_version": "v1",
+  "commit_sha": "fe280425d7ebb9e889904103b47b4f5aa8c935a3",
+  "title": "docs: Loom — the human root of the name (textile mill town / PC Guru)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:50:12Z",
+  "head_ref": "otto/loom-human-root-pc-guru-lineage-line"
+}

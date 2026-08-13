@@ -1,0 +1,12 @@
+{
+  "pr_number": 4681,
+  "archive_path": "docs/history/pr-reviews/PR-4681-feat-b-0170-extend-check-self-recursive-ts-with-existence-topic-v0-9-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T21:52:43.292Z",
+  "schema_version": "v1",
+  "commit_sha": "4b16d82d5f20aa4609e9090a7b9b0c2d03782a23",
+  "title": "feat(B-0170): extend check-self-recursive.ts with `existence` topic (v0.9.1)",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T21:52:23Z",
+  "head_ref": "backlog/b-0170-self-recursive-existence-topic-2026-05-22"
+}

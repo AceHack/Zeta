@@ -1,0 +1,31 @@
+{
+  "pr_number": 2095,
+  "archive_path": "docs/history/pr-reviews/PR-2095-docs-add-vera-continuity-handoff.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_UZWG",
+    "comment:PRRC_kwDOSF9kNM6_UcRP",
+    "comment:PRRC_kwDOSF9kNM6_UcRt",
+    "comment:PRRC_kwDOSF9kNM6_UcSD",
+    "comment:PRRC_kwDOSF9kNM6_UcSV",
+    "comment:PRRC_kwDOSF9kNM6_UcSl",
+    "comment:PRRC_kwDOSF9kNM6_UcZW",
+    "comment:PRRC_kwDOSF9kNM6_UfUV",
+    "comment:PRRC_kwDOSF9kNM6_UfZM",
+    "comment:PRRC_kwDOSF9kNM6_Ufei",
+    "comment:PRRC_kwDOSF9kNM6_Uflo",
+    "comment:PRRC_kwDOSF9kNM6_UfqN",
+    "thread:PRRT_kwDOSF9kNM6Aq9Ei",
+    "thread:PRRT_kwDOSF9kNM6Aq_Rv",
+    "thread:PRRT_kwDOSF9kNM6Aq_SD",
+    "thread:PRRT_kwDOSF9kNM6Aq_SY",
+    "thread:PRRT_kwDOSF9kNM6Aq_Sm",
+    "thread:PRRT_kwDOSF9kNM6Aq_Sw"
+  ],
+  "fetched_at": "2026-05-08T16:02:03.696Z",
+  "schema_version": "v1",
+  "commit_sha": "79fc9e2e0f7a379a0fe7f8c74bde4f077fddff1e",
+  "title": "docs: add Vera continuity handoff",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T16:01:36Z",
+  "head_ref": "claim/vera-continuity-current"
+}

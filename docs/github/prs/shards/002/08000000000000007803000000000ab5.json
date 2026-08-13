@@ -1,0 +1,19 @@
+{
+  "pr_number": 2741,
+  "archive_path": "docs/history/pr-reviews/PR-2741-feat-backlog-b-0414-dashboard-v0-2-agent-json-dual-pm-perspectives.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ACBS5",
+    "comment:PRRC_kwDOSF9kNM7ACBSX",
+    "comment:PRRC_kwDOSF9kNM7ACBTU",
+    "thread:PRRT_kwDOSF9kNM6BNMA8",
+    "thread:PRRT_kwDOSF9kNM6BNMAi",
+    "thread:PRRT_kwDOSF9kNM6BNMBS"
+  ],
+  "fetched_at": "2026-05-11T20:03:37.396Z",
+  "schema_version": "v1",
+  "commit_sha": "91c5b94ff6dcdc77993e8b1c759a48c0cadd835e",
+  "title": "feat(backlog): B-0414 dashboard v0.2 — agent JSON + dual PM perspectives",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T20:03:19Z",
+  "head_ref": "feat/B-0414-dashboard-v02-enhancements-2026-05-11"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 3421,
+  "archive_path": "docs/history/pr-reviews/PR-3421-shard-tick-1053z-pr-3418-3419-merged.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bk64Q",
+    "comment:PRRC_kwDOSF9kNM7Bk6ow",
+    "comment:PRRC_kwDOSF9kNM7BlBU_",
+    "comment:PRRC_kwDOSF9kNM7BlBaB",
+    "thread:PRRT_kwDOSF9kNM6CVZ3n",
+    "thread:PRRT_kwDOSF9kNM6CVZsk"
+  ],
+  "fetched_at": "2026-05-15T11:01:43.134Z",
+  "schema_version": "v1",
+  "commit_sha": "8edf0fec355b9909919ac6aaf01b99f4fc37ff33",
+  "title": "shard(tick): 1053Z — PR #3418 + #3419 merged",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:01:24Z",
+  "head_ref": "shard/tick-1053z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6922,
+  "archive_path": "docs/history/pr-reviews/PR-6922-docs-wi-ferry-xml-banana-split-universal-n-tree-file-decomposition-file-cmyk-4-g.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T21:29:38.082Z",
+  "schema_version": "v1",
+  "commit_sha": "ea59f7abad7c0a5a7870197d62adaf372b16dd04",
+  "title": "docs+wi+ferry: XML banana-split + universal N-tree file decomposition (file=CMYK/4, generator=RGB/3, invariant 4th)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T21:29:19Z",
+  "head_ref": "otto/xml-banana-split-cmyk-rgb-tree-decomposition"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7159,
+  "archive_path": "docs/history/pr-reviews/PR-7159-feat-core-identitycapacity-identity-bits-of-uncertainty-qubits-complexity-self-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:09:45.843Z",
+  "schema_version": "v1",
+  "commit_sha": "718e04887323e080de22bb6e3053993428146a44",
+  "title": "feat(core): IdentityCapacity — identity = bits of uncertainty (qubits), complexity self-bound",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:09:23Z",
+  "head_ref": "otto/identitycapacity-bits-of-uncertainty-qubits-complexity-bound"
+}

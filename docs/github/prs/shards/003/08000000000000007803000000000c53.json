@@ -1,0 +1,12 @@
+{
+  "pr_number": 3155,
+  "archive_path": "docs/history/pr-reviews/PR-3155-docs-shadow-lior-antigravity-tick-1645z-pr-preservation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T18:19:23.033Z",
+  "schema_version": "v1",
+  "commit_sha": "236de14c167c3787ccd6ad577a7d94351b07fcc6",
+  "title": "docs(shadow): Lior antigravity tick 1645Z + PR preservation",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:19:06Z",
+  "head_ref": "shadow/lior-antigravity-1645Z"
+}

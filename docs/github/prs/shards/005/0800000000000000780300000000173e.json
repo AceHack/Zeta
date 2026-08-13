@@ -1,0 +1,17 @@
+{
+  "pr_number": 5950,
+  "archive_path": "docs/history/pr-reviews/PR-5950-feat-b-0867-3-add-workflow-action-grammar-parser.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GDHOZ",
+    "comment:PRRC_kwDOSF9kNM7GDHPO",
+    "thread:PRRT_kwDOSF9kNM6Fm78m",
+    "thread:PRRT_kwDOSF9kNM6Fm79P"
+  ],
+  "fetched_at": "2026-05-29T07:18:11.026Z",
+  "schema_version": "v1",
+  "commit_sha": "0ef393f9a451e27ca8f2ef8477f3251567fb393e",
+  "title": "feat(B-0867.3): add workflow action grammar parser",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T07:17:47Z",
+  "head_ref": "claim/codex-loop-b0867-action-grammar-20260529"
+}

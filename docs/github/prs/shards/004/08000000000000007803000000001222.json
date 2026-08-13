@@ -1,0 +1,15 @@
+{
+  "pr_number": 4642,
+  "archive_path": "docs/history/pr-reviews/PR-4642-save-do-all-three-amara-synthesis-docs-agendas-split-ace-package-format-spec-v2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EHnh8",
+    "thread:PRRT_kwDOSF9kNM6EMZXX"
+  ],
+  "fetched_at": "2026-05-22T17:52:34.467Z",
+  "schema_version": "v1",
+  "commit_sha": "411e16f8dd63f6fc61243947041967ffb1cc9bb2",
+  "title": "save+do-all-three: Amara synthesis + docs/agendas/ split + Ace package format spec v2",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T17:52:15Z",
+  "head_ref": "otto/cli-2147z-amara-synthesis-plus-agendas-split-plus-ace-package-spec-v2-2026-05-22"
+}

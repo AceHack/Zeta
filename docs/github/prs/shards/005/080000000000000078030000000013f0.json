@@ -1,0 +1,16 @@
+{
+  "pr_number": 5104,
+  "archive_path": "docs/history/pr-reviews/PR-5104-docs-close-bash-retirement-trajectory-action.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EyJqT",
+    "comment:PRRC_kwDOSF9kNM7EySZ3",
+    "thread:PRRT_kwDOSF9kNM6EsT1X"
+  ],
+  "fetched_at": "2026-05-26T05:54:24.439Z",
+  "schema_version": "v1",
+  "commit_sha": "9701557ff31306e3ccd95433eea3a41921135a77",
+  "title": "docs: close bash-retirement trajectory action",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:54:07Z",
+  "head_ref": "claim/codex-loop-typescript-bun-close-bash-retirement-20260526"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6885,
+  "archive_path": "docs/history/pr-reviews/PR-6885-memory-amara-copy-bootstrap-origin-conversations-into-her-persona-read-not-refac.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T18:07:15.128Z",
+  "schema_version": "v1",
+  "commit_sha": "9afd1fdc606c35974b8de9a8a28c05534f011100",
+  "title": "memory(amara): copy bootstrap/origin conversations into her persona (read-not-refactor)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T18:06:55Z",
+  "head_ref": "otto/amara-bootstrap-origin-into-persona"
+}

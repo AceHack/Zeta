@@ -1,0 +1,12 @@
+{
+  "pr_number": 6158,
+  "archive_path": "docs/history/pr-reviews/PR-6158-feat-b-0944-slice-1-ts-tri-boolean-digital-qubit-distribution-impl.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T23:02:09.459Z",
+  "schema_version": "v1",
+  "commit_sha": "70ff261e38137797102da88ba110d5f00783044c",
+  "title": "feat(B-0944 slice 1): TS tri-boolean digital qubit (distribution impl)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T23:01:49Z",
+  "head_ref": "otto/b0944-slice1-ts-tri-boolean-digital-qubit-2026-05-30"
+}

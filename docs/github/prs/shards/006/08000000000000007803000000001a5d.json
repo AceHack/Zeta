@@ -1,0 +1,12 @@
+{
+  "pr_number": 6749,
+  "archive_path": "docs/history/pr-reviews/PR-6749-bug-windows-diskdeltalog-scanentries-io-sharingviolation-on-torn-write-recovery-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:50:47.681Z",
+  "schema_version": "v1",
+  "commit_sha": "89b90a390249d841ce10f3f8daf77b2d35e61e9f",
+  "title": "bug: windows DiskDeltaLog scanEntries IO_SharingViolation on torn-write recovery (081KTGGXMQ0)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:50:27Z",
+  "head_ref": "otto/windows-diskdeltalog-sharing-violation-bug"
+}

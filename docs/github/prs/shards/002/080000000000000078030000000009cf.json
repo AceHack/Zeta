@@ -1,0 +1,31 @@
+{
+  "pr_number": 2511,
+  "archive_path": "docs/history/pr-reviews/PR-2511-research-b-0314-slice-2-external-anchors-bp-03-bp-07-bp-16.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_o7HQ",
+    "comment:PRRC_kwDOSF9kNM6_o7HS",
+    "comment:PRRC_kwDOSF9kNM6_o7X1",
+    "comment:PRRC_kwDOSF9kNM6_o7X6",
+    "comment:PRRC_kwDOSF9kNM6_o7Xu",
+    "comment:PRRC_kwDOSF9kNM6_o7Xy",
+    "comment:PRRC_kwDOSF9kNM6_o85A",
+    "comment:PRRC_kwDOSF9kNM6_o85W",
+    "comment:PRRC_kwDOSF9kNM6_o85_",
+    "comment:PRRC_kwDOSF9kNM6_o85p",
+    "comment:PRRC_kwDOSF9kNM6_o8zQ",
+    "comment:PRRC_kwDOSF9kNM6_o8zw",
+    "thread:PRRT_kwDOSF9kNM6A6hW4",
+    "thread:PRRT_kwDOSF9kNM6A6hW6",
+    "thread:PRRT_kwDOSF9kNM6A6hkD",
+    "thread:PRRT_kwDOSF9kNM6A6hkF",
+    "thread:PRRT_kwDOSF9kNM6A6hkG",
+    "thread:PRRT_kwDOSF9kNM6A6hkL"
+  ],
+  "fetched_at": "2026-05-10T16:44:19.740Z",
+  "schema_version": "v1",
+  "commit_sha": "2c3bd33adf739ab5776f91d904a9e32420a56b6d",
+  "title": "research(B-0314): slice-2 external anchors — BP-03, BP-07, BP-16",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T16:44:05Z",
+  "head_ref": "fix/B-0314-bp-nn-anchor-backfill-slice2"
+}

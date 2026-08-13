@@ -1,0 +1,12 @@
+{
+  "pr_number": 7182,
+  "archive_path": "docs/history/pr-reviews/PR-7182-build-setup-declaratively-lock-r-tectonic-into-install-manifests-cross-os-symmet.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T02:45:17.721Z",
+  "schema_version": "v1",
+  "commit_sha": "66da288f093179c9ddffd7b613e94e1c6e9801c5",
+  "title": "build(setup): declaratively lock R + tectonic into install manifests (cross-OS symmetric, cost-aware)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T02:44:57Z",
+  "head_ref": "otto/devops-declarative-r-tectonic-install-manifests"
+}

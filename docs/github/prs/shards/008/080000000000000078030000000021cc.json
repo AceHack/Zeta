@@ -1,0 +1,12 @@
+{
+  "pr_number": 8652,
+  "archive_path": "docs/history/pr-reviews/PR-8652-docs-resume-update-session-resume-state-part-3-uncertainty-cohomoiconic-adinkra-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T00:13:00.855Z",
+  "schema_version": "v1",
+  "commit_sha": "7acc763c75a466efee5c6c6ce59987f89fcd0b15",
+  "title": "docs(resume): update session resume state — part 3 (uncertainty/cohomoiconic/adinkra-unfold) + current open fronts",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T00:12:33Z",
+  "head_ref": "otto/resume-state-part3-update"
+}

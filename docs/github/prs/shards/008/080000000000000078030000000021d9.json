@@ -1,0 +1,12 @@
+{
+  "pr_number": 8665,
+  "archive_path": "docs/history/pr-reviews/PR-8665-codex-fix-ttlcache-determinism-lint-doc-token.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T01:19:44.308Z",
+  "schema_version": "v1",
+  "commit_sha": "2080bcdb1e91eebf1b8a493d7eae1018ee504b0a",
+  "title": "[codex] fix TtlCache determinism lint doc token",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:19:15Z",
+  "head_ref": "codex/ttlcache-determinism-doc"
+}

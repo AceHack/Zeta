@@ -1,0 +1,12 @@
+{
+  "pr_number": 2775,
+  "archive_path": "docs/history/pr-reviews/PR-2775-docs-memory-aaron-s-shadow-work-method-walking-in-circles-ai-makes-it-easier.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T13:38:12.436Z",
+  "schema_version": "v1",
+  "commit_sha": "6725b0b180f6b79fabda1d6922ecb1bf49904c82",
+  "title": "docs(memory): Aaron's shadow work method — walking in circles, AI makes it easier",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T13:37:05Z",
+  "head_ref": "docs/aaron-shadow-work-method-walking-circles-ai-easier-2026-05-12"
+}

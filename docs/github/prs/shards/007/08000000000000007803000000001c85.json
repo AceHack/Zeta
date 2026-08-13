@@ -1,0 +1,12 @@
+{
+  "pr_number": 7301,
+  "archive_path": "docs/history/pr-reviews/PR-7301-docs-research-the-essential-core-is-one-128-bit-seed-one-generate-even-generator.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:49:18.223Z",
+  "schema_version": "v1",
+  "commit_sha": "1dee7f41b79c27f0c5c2fbb64293f4627b26fb55",
+  "title": "docs(research): the essential core is one 128-bit seed + one generate — even generators and interfaces are accidental (Rodney's Razor)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:48:51Z",
+  "head_ref": "otto/essential-core-is-one-seed-plus-generate-rest-is-accidental-rodney-razor"
+}

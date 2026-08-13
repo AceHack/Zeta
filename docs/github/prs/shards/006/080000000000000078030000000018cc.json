@@ -1,0 +1,16 @@
+{
+  "pr_number": 6348,
+  "archive_path": "docs/history/pr-reviews/PR-6348-refactor-observe-b-0964-rename-actionfact-actionobservation-events-are-observati.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GmB8U",
+    "comment:PRRC_kwDOSF9kNM7GmCjZ",
+    "thread:PRRT_kwDOSF9kNM6GA2m5"
+  ],
+  "fetched_at": "2026-06-01T05:35:25.162Z",
+  "schema_version": "v1",
+  "commit_sha": "e3b0cdf1c320627373b12477c96a336afc4a0f91",
+  "title": "refactor(observe B-0964): rename ActionFact → ActionObservation (events are observations, not facts)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T05:35:04Z",
+  "head_ref": "otto-cli/b0964-rename-fact-to-observation-2026-06-01"
+}

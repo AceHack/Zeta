@@ -1,0 +1,12 @@
+{
+  "pr_number": 2975,
+  "archive_path": "docs/history/pr-reviews/PR-2975-feat-b-0402-shadow-observer-slice-2-detect-cmd-external-detector-27-tests-pass.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T08:29:03.858Z",
+  "schema_version": "v1",
+  "commit_sha": "7eb0d02d52b11652d68cb5036347033c75de3da3",
+  "title": "feat(B-0402): shadow observer slice 2 — --detect-cmd external detector, 27 tests pass",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T08:28:44Z",
+  "head_ref": "feat/b-0402-shadow-observer-slice-2-detect-cmd"
+}

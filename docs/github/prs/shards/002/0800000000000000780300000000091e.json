@@ -1,0 +1,12 @@
+{
+  "pr_number": 2334,
+  "archive_path": "docs/history/pr-reviews/PR-2334-release-clean-completed-b-0366-claim.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T19:35:44.603Z",
+  "schema_version": "v1",
+  "commit_sha": "2d8549d7fe22bdff4775c3e8221225c2fbf024a1",
+  "title": "release: clean completed B-0366 claim",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T19:35:27Z",
+  "head_ref": "claim/release-b0366-toffoli-claim-20260509"
+}

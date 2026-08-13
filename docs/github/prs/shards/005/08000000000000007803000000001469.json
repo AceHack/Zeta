@@ -1,0 +1,21 @@
+{
+  "pr_number": 5225,
+  "archive_path": "docs/history/pr-reviews/PR-5225-fix-b-0816-feat-b-0819-flux-helm-convergence-point-force-multiplier-ladder-ai-ru.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FBfEO",
+    "comment:PRRC_kwDOSF9kNM7FBfFH",
+    "comment:PRRC_kwDOSF9kNM7FBqw8",
+    "comment:PRRC_kwDOSF9kNM7FBqyA",
+    "thread:PRRT_kwDOSF9kNM6E3gNA",
+    "thread:PRRT_kwDOSF9kNM6E3gNp",
+    "thread:PRRT_kwDOSF9kNM6E3ouo",
+    "thread:PRRT_kwDOSF9kNM6E3ova"
+  ],
+  "fetched_at": "2026-05-26T17:13:58.959Z",
+  "schema_version": "v1",
+  "commit_sha": "0e662996128faa129272efcf0cf95b0c55d5c1f0",
+  "title": "fix(B-0816) + feat(B-0819): Flux/Helm convergence-point + force-multiplier ladder + AI-runbook substrate row (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:13:36Z",
+  "head_ref": "otto-cli/b0816-enrich-lexisnexis-github-use-case-cloud-agnostic-0-vendor-2026-05-26"
+}

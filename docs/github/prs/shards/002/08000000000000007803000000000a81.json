@@ -1,0 +1,31 @@
+{
+  "pr_number": 2689,
+  "archive_path": "docs/history/pr-reviews/PR-2689-docs-backlog-decompose-b-0108-into-3-smallest-atomic-dependency-ordered-children.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_1-9S",
+    "comment:PRRC_kwDOSF9kNM6_1-9c",
+    "comment:PRRC_kwDOSF9kNM6_2Dsa",
+    "comment:PRRC_kwDOSF9kNM6_2Dt3",
+    "comment:PRRC_kwDOSF9kNM6_2DtV",
+    "comment:PRRC_kwDOSF9kNM6_2Du2",
+    "comment:PRRC_kwDOSF9kNM6_2Dub",
+    "comment:PRRC_kwDOSF9kNM6_2Dvd",
+    "comment:PRRC_kwDOSF9kNM6_2JIQ",
+    "thread:PRRT_kwDOSF9kNM6BER1A",
+    "thread:PRRT_kwDOSF9kNM6BER1F",
+    "thread:PRRT_kwDOSF9kNM6BEVRe",
+    "thread:PRRT_kwDOSF9kNM6BEVSB",
+    "thread:PRRT_kwDOSF9kNM6BEVSb",
+    "thread:PRRT_kwDOSF9kNM6BEVSz",
+    "thread:PRRT_kwDOSF9kNM6BEVTI",
+    "thread:PRRT_kwDOSF9kNM6BEVTj",
+    "thread:PRRT_kwDOSF9kNM6BEZGg"
+  ],
+  "fetched_at": "2026-05-11T11:55:44.797Z",
+  "schema_version": "v1",
+  "commit_sha": "022493bb70c3a3cf17aa9abdb5da07949b761a83",
+  "title": "docs(backlog): decompose B-0108 into 3 smallest atomic dependency-ordered children (re-decomp, one bounded step)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T11:55:29Z",
+  "head_ref": "claim/b0108-immune-system-upgrades-decompose-smallest-atomic-children-riven-2026-05-11"
+}

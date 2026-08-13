@@ -1,0 +1,12 @@
+{
+  "pr_number": 8379,
+  "archive_path": "docs/history/pr-reviews/PR-8379-docs-society-1-universal-intentions-interface-fix-answer-protocol-to-rotating-al.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:40:06.239Z",
+  "schema_version": "v1",
+  "commit_sha": "5612fd31308e170479ff97e1020e0ca5120a5545",
+  "title": "docs(society): §1 universal intentions interface + fix answer-protocol to rotating alert-owner (DORA)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:39:34Z",
+  "head_ref": "docs/intentions-interface-and-alert-owner-rotation"
+}

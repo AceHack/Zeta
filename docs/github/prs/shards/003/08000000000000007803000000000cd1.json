@@ -1,0 +1,12 @@
+{
+  "pr_number": 3281,
+  "archive_path": "docs/history/pr-reviews/PR-3281-shard-tick-2204z-pr-3276-double-backtick-fix-aaron-off-duty-signal-observed.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T22:11:38.439Z",
+  "schema_version": "v1",
+  "commit_sha": "a3109d6a2d9dcc53559e8b81f4f94ec1fda9228c",
+  "title": "shard(tick): 2204Z — PR #3276 double-backtick fix + Aaron off-duty signal observed",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:11:23Z",
+  "head_ref": "shard/tick-2204Z-pr3276-double-backtick-fix-otto-cli-2026-05-14"
+}

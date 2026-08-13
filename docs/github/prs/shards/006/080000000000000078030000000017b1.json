@@ -1,0 +1,12 @@
+{
+  "pr_number": 6065,
+  "archive_path": "docs/history/pr-reviews/PR-6065-feat-health-feed-lane-runway-from-codex-loop-health.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T00:05:58.998Z",
+  "schema_version": "v1",
+  "commit_sha": "dc12d65525f7badca8f1cb5e0b600e9527c18074",
+  "title": "feat(health): feed lane runway from Codex loop health",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T00:05:35Z",
+  "head_ref": "claim/codex-loop-lane-runway-service-health-20260529"
+}

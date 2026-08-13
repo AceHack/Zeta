@@ -1,0 +1,19 @@
+{
+  "pr_number": 5320,
+  "archive_path": "docs/history/pr-reviews/PR-5320-cleanup-usb-pr-2-retire-legacy-installer-substrate-delete-infra-nixos-hosts-inst.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FGkIY",
+    "comment:PRRC_kwDOSF9kNM7FGkJU",
+    "comment:PRRC_kwDOSF9kNM7FGkJv",
+    "thread:PRRT_kwDOSF9kNM6E7Oqe",
+    "thread:PRRT_kwDOSF9kNM6E7OrJ",
+    "thread:PRRT_kwDOSF9kNM6E7Ora"
+  ],
+  "fetched_at": "2026-05-26T21:10:32.782Z",
+  "schema_version": "v1",
+  "commit_sha": "afbac2ccd6a684b3195d530dd5126f15f2cd7333",
+  "title": "cleanup(USB PR 2): retire legacy installer substrate — delete infra/nixos/hosts/installer/ + build-installer-iso.yml + update root flake; add B-0830 follow-up",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T21:10:08Z",
+  "head_ref": "otto-cli/usb-cleanup-pr2-investigation-infra-installer-workflow-consolidation-2026-05-26"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5121,
+  "archive_path": "docs/history/pr-reviews/PR-5121-fix-postmerge-5120-4-copilot-findings-drop-devshell-install-sh-auto-run-24-refra.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T07:31:56.556Z",
+  "schema_version": "v1",
+  "commit_sha": "5d9f8605a845baf7e9c847580df221c8380b4165",
+  "title": "fix(postmerge-5120): 4 Copilot findings — drop devShell install.sh auto-run + §24 reframe + workflow comment",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T07:31:38Z",
+  "head_ref": "otto-cli/postmerge-5120-fixfwd-4-copilot-2026-05-26"
+}

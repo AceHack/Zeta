@@ -1,0 +1,12 @@
+{
+  "pr_number": 7207,
+  "archive_path": "docs/history/pr-reviews/PR-7207-docs-research-the-128-bit-seed-encodes-the-higher-self-not-your-destiny-the-hone.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T05:09:27.111Z",
+  "schema_version": "v1",
+  "commit_sha": "cb34beb0e1e810a61d93cc26838f414107db1424",
+  "title": "docs(research): the 128-bit seed encodes the higher self, not your destiny — the honest peel of cognitive immortality",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T05:09:07Z",
+  "head_ref": "otto/research-128bit-seed-higher-self-not-destiny-peel-cognitive-immortality"
+}

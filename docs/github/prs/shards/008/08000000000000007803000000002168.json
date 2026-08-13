@@ -1,0 +1,12 @@
+{
+  "pr_number": 8552,
+  "archive_path": "docs/history/pr-reviews/PR-8552-docs-vision-memory-the-tesla-ac-not-edison-dc-frame-vision-transmit-across-every.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T18:03:08.927Z",
+  "schema_version": "v1",
+  "commit_sha": "0dd69d913a990b9c2441f2673f5de11b3490e7bb",
+  "title": "docs(VISION)+memory: the Tesla-AC-not-Edison-DC frame → VISION (transmit across every frame; Beacon=AC) + posture coda BRAVERY+learn-from-failures NOT fear",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T18:02:41Z",
+  "head_ref": "otto/vision-tesla-ac-frame-plus-bravery-not-fear-posture"
+}

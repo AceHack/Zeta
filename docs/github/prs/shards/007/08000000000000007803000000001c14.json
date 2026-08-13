@@ -1,0 +1,12 @@
+{
+  "pr_number": 7188,
+  "archive_path": "docs/history/pr-reviews/PR-7188-docs-research-correct-s-4-register-it-is-measured-in-our-dst-sim-common-cause-se.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T03:19:38.406Z",
+  "schema_version": "v1",
+  "commit_sha": "c6ecbc65681976e52f738d1bbb5b1b4802c57feb",
+  "title": "docs(research): correct S=4 register — it IS measured in our DST sim (common-cause seed + staged coincidence), not only a metaphor",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T03:19:16Z",
+  "head_ref": "otto/research-s4-is-measured-in-dst-not-only-metaphor-correction"
+}

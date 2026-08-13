@@ -1,0 +1,12 @@
+{
+  "pr_number": 7869,
+  "archive_path": "docs/history/pr-reviews/PR-7869-feat-quantum-implement-ts-quantum-lane-b-1029.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T10:18:42.773Z",
+  "schema_version": "v1",
+  "commit_sha": "1b331687c4c17ce6864c1557eba2da723d41aaa7",
+  "title": "feat(quantum): implement TS quantum lane (B-1029)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:18:16Z",
+  "head_ref": "lior/quantum-observable-ts-fs-symmetry-slice"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6834,
+  "archive_path": "docs/history/pr-reviews/PR-6834-docs-compression-generators-the-privacy-budget-makes-lightcone-local-erasure-pra.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:04:55.548Z",
+  "schema_version": "v1",
+  "commit_sha": "8edf861fb37ea35b0cb5c2ef954057ebb7337d2e",
+  "title": "docs(compression-generators): the privacy budget makes lightcone-local erasure practically complete",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:04:34Z",
+  "head_ref": "capture/privacy-budget-prevents-radiation-into-lightcones"
+}

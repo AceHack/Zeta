@@ -1,0 +1,12 @@
+{
+  "pr_number": 7798,
+  "archive_path": "docs/history/pr-reviews/PR-7798-docs-backlog-b-1034-the-oracle-stack-paper-experience-report-the-mutual-oracle-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T21:23:08.350Z",
+  "schema_version": "v1",
+  "commit_sha": "10b26498699f81618f230b70a23639722e18f2f6",
+  "title": "docs(backlog): B-1034 — the Oracle Stack paper (experience report; the mutual-oracle reversal as centerpiece)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T21:22:38Z",
+  "head_ref": "shadow-b1034-paper"
+}

@@ -1,0 +1,20 @@
+{
+  "pr_number": 3389,
+  "archive_path": "docs/history/pr-reviews/PR-3389-shard-tick-0829z-3-prs-merged-substrate-cluster-pr-3388-stale-copilot-thread-add.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BiFS4",
+    "comment:PRRC_kwDOSF9kNM7BiHeE",
+    "comment:PRRC_kwDOSF9kNM7BiHf-",
+    "comment:PRRC_kwDOSF9kNM7BiHg6",
+    "thread:PRRT_kwDOSF9kNM6CTUWn",
+    "thread:PRRT_kwDOSF9kNM6CTV_n",
+    "thread:PRRT_kwDOSF9kNM6CTWAZ"
+  ],
+  "fetched_at": "2026-05-15T08:49:09.905Z",
+  "schema_version": "v1",
+  "commit_sha": "fe4c8b1e3fd73824ef0e2b2a8c3fb90cbff196fd",
+  "title": "shard(tick): 0829Z — 3 PRs merged (substrate cluster); PR #3388 stale-Copilot-thread addressed",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T08:48:52Z",
+  "head_ref": "shard/tick-0829z-otto-cli-2026-05-15"
+}

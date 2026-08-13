@@ -1,0 +1,12 @@
+{
+  "pr_number": 5092,
+  "archive_path": "docs/history/pr-reviews/PR-5092-backlog-b-0770-re-land-gl-inet-comet-pro-ip-kvm-integration-remote-bios-to-clust.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T04:55:58.773Z",
+  "schema_version": "v1",
+  "commit_sha": "9834d10944a382c9335246a401027f3fd47cf356",
+  "title": "backlog(B-0770): re-land GL.iNet Comet Pro IP-KVM integration — remote BIOS-to-cluster-member; zero-physical-access bring-up + repair",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T04:55:41Z",
+  "head_ref": "otto-cli/reland-b0770-0454z"
+}

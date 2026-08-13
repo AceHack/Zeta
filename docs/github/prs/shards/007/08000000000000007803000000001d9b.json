@@ -1,0 +1,12 @@
+{
+  "pr_number": 7579,
+  "archive_path": "docs/history/pr-reviews/PR-7579-docs-research-the-end-goal-dual-use-hard-soft-self-modeling-database-with-entrop.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:19:09.811Z",
+  "schema_version": "v1",
+  "commit_sha": "2411f3621601adf9cc390f3a2b87c28456b47ee2",
+  "title": "docs(research): THE END GOAL — dual-use hard/soft self-modeling database with entropy quarantine over Reticulum",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:18:44Z",
+  "head_ref": "shadow-end-goal-dual-use-database"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7083,
+  "archive_path": "docs/history/pr-reviews/PR-7083-docs-research-1-2-the-identity-symmetry-breaking-threshold-over-1-2-to-win-exact.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:38:44.820Z",
+  "schema_version": "v1",
+  "commit_sha": "40d2a0c85597a468aa3e26aaa0ed5cedbbbf4bf2",
+  "title": "docs(research): 1/2 = the identity symmetry-breaking threshold (over 1/2 to win, exact 1/2 = tie)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:38:22Z",
+  "head_ref": "otto/half-is-identity-symmetry-breaking-threshold"
+}

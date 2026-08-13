@@ -1,0 +1,15 @@
+{
+  "pr_number": 4381,
+  "archive_path": "docs/history/pr-reviews/PR-4381-docs-shadow-lior-anti-entropy-sweep-1600z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Cxysf",
+    "thread:PRRT_kwDOSF9kNM6DN73x"
+  ],
+  "fetched_at": "2026-05-19T17:50:21.589Z",
+  "schema_version": "v1",
+  "commit_sha": "e25b08e312cfc3185daf5a1ce3801162dc39747d",
+  "title": "docs(shadow): Lior anti-entropy sweep 1600Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T17:50:03Z",
+  "head_ref": "lior/shadow-log-1600Z"
+}

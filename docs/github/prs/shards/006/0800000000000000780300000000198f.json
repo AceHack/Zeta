@@ -1,0 +1,16 @@
+{
+  "pr_number": 6543,
+  "archive_path": "docs/history/pr-reviews/PR-6543-feat-ansi-text-carried-color-copy-paste-color-round-trip-vision-10.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HHd4h",
+    "comment:PRRC_kwDOSF9kNM7HHfXZ",
+    "thread:PRRT_kwDOSF9kNM6GZlhX"
+  ],
+  "fetched_at": "2026-06-02T10:57:47.897Z",
+  "schema_version": "v1",
+  "commit_sha": "9030ba26141efaebf21f8d718dc716d55d82d937",
+  "title": "feat(ansi): text-carried color — copy-paste color round-trip (vision §10)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T10:57:26Z",
+  "head_ref": "otto-cli/ansi-color-text-carried-roundtrip-2026-06-02"
+}

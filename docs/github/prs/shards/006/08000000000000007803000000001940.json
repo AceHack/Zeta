@@ -1,0 +1,12 @@
+{
+  "pr_number": 6464,
+  "archive_path": "docs/history/pr-reviews/PR-6464-test-resume-assert-state-byte-lock-in-c-rust-oracles-completes-4-oracle-byte-loc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T19:39:41.940Z",
+  "schema_version": "v1",
+  "commit_sha": "0e28f06aced844f76cbbf5fd5bec033c25c78fef",
+  "title": "test(resume): assert STATE-BYTE lock in C# + Rust oracles (completes 4-oracle byte-lock)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T19:39:21Z",
+  "head_ref": "otto-cli/resume-csharp-rust-state-bytelock-2026-06-01"
+}

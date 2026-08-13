@@ -1,0 +1,31 @@
+{
+  "pr_number": 2356,
+  "archive_path": "docs/history/pr-reviews/PR-2356-docs-b-0023-decompose-quant-austrian-synthesis-into-8-dependency-ordered-atomic-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_kTYG",
+    "comment:PRRC_kwDOSF9kNM6_kTYO",
+    "comment:PRRC_kwDOSF9kNM6_kTYR",
+    "comment:PRRC_kwDOSF9kNM6_kTYU",
+    "comment:PRRC_kwDOSF9kNM6_kTYY",
+    "comment:PRRC_kwDOSF9kNM6_kTYb",
+    "comment:PRRC_kwDOSF9kNM6_kTYd",
+    "comment:PRRC_kwDOSF9kNM6_kTYf",
+    "comment:PRRC_kwDOSF9kNM6_kTYj",
+    "thread:PRRT_kwDOSF9kNM6A22PN",
+    "thread:PRRT_kwDOSF9kNM6A22PT",
+    "thread:PRRT_kwDOSF9kNM6A22PV",
+    "thread:PRRT_kwDOSF9kNM6A22PX",
+    "thread:PRRT_kwDOSF9kNM6A22Pa",
+    "thread:PRRT_kwDOSF9kNM6A22Pb",
+    "thread:PRRT_kwDOSF9kNM6A22Pd",
+    "thread:PRRT_kwDOSF9kNM6A22Pf",
+    "thread:PRRT_kwDOSF9kNM6A22Pi"
+  ],
+  "fetched_at": "2026-05-09T22:15:08.087Z",
+  "schema_version": "v1",
+  "commit_sha": "3d6b35d3de73fc04aff03869e7431dcb4fa6672e",
+  "title": "docs(B-0023): decompose quant × Austrian synthesis into 8 dependency-ordered atomic rows (B-0380–B-0387)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T22:14:53Z",
+  "head_ref": "chore/decompose-b0023-quant-austrian-synthesis"
+}

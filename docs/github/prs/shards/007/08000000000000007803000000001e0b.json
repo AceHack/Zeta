@@ -1,0 +1,12 @@
+{
+  "pr_number": 7691,
+  "archive_path": "docs/history/pr-reviews/PR-7691-fix-docs-satisfy-markdownlint-on-sakana-note.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:45:47.194Z",
+  "schema_version": "v1",
+  "commit_sha": "8a67dbd21571b5c0b115a1da3c050ab850f9dd1e",
+  "title": "fix(docs): satisfy markdownlint on sakana note",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:45:15Z",
+  "head_ref": "codex/vera-fix-sakana-markdownlint"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7084,
+  "archive_path": "docs/history/pr-reviews/PR-7084-feat-core-feedbackthrottle-finite-feedback-propagation-speed-caps-achievable-chs.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:46:52.107Z",
+  "schema_version": "v1",
+  "commit_sha": "3c5943062b4d8fb1744ddda44aadb6a20967b626",
+  "title": "feat(core): FeedbackThrottle — finite feedback-propagation speed caps achievable CHSH",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:46:30Z",
+  "head_ref": "otto/feedback-throttle-finite-propagation-caps-chsh"
+}

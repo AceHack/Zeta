@@ -1,0 +1,33 @@
+{
+  "pr_number": 5420,
+  "archive_path": "docs/history/pr-reviews/PR-5420-docs-b-0854-1-zeta-install-sh-step-state-machine-inventory-phase-0-substrate-for.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FPuQ-",
+    "comment:PRRC_kwDOSF9kNM7FPuR1",
+    "comment:PRRC_kwDOSF9kNM7FPuSN",
+    "comment:PRRC_kwDOSF9kNM7FPuSz",
+    "comment:PRRC_kwDOSF9kNM7FPuT0",
+    "comment:PRRC_kwDOSF9kNM7FPuTK",
+    "comment:PRRC_kwDOSF9kNM7FPuTj",
+    "comment:PRRC_kwDOSF9kNM7FPuUS",
+    "comment:PRRC_kwDOSF9kNM7FPuUn",
+    "comment:PRRC_kwDOSF9kNM7FPuVB",
+    "thread:PRRT_kwDOSF9kNM6FB1n8",
+    "thread:PRRT_kwDOSF9kNM6FB1o7",
+    "thread:PRRT_kwDOSF9kNM6FB1om",
+    "thread:PRRT_kwDOSF9kNM6FB1p8",
+    "thread:PRRT_kwDOSF9kNM6FB1pY",
+    "thread:PRRT_kwDOSF9kNM6FB1po",
+    "thread:PRRT_kwDOSF9kNM6FB1q-",
+    "thread:PRRT_kwDOSF9kNM6FB1qJ",
+    "thread:PRRT_kwDOSF9kNM6FB1qa",
+    "thread:PRRT_kwDOSF9kNM6FB1qt"
+  ],
+  "fetched_at": "2026-05-27T07:42:42.895Z",
+  "schema_version": "v1",
+  "commit_sha": "3d603fe2bace1fadb40f93822bfc2be38f3f9f90",
+  "title": "docs(B-0854.1): zeta-install.sh step-state-machine inventory — Phase 0 substrate for Ace migration trajectory (14 sub-steps; 12 declarative-input categories; substrate-anchor for B-0852/0853/0855/0856 cross-refs)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T07:42:24Z",
+  "head_ref": "docs/b-0854-1-zeta-install-step-state-machine-inventory"
+}

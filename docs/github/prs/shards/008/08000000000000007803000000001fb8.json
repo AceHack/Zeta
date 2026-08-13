@@ -1,0 +1,12 @@
+{
+  "pr_number": 8120,
+  "archive_path": "docs/history/pr-reviews/PR-8120-fix-csharp-strip-trailing-whitespace-in-mixin-cs-restore-main-green.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:23:05.529Z",
+  "schema_version": "v1",
+  "commit_sha": "21da7a54179373bbd852dd13ed06bc9fc9af898e",
+  "title": "fix(csharp): strip trailing whitespace in Mixin.cs (restore main-green)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:22:40Z",
+  "head_ref": "otto/fix-csharp-mixin-whitespace"
+}

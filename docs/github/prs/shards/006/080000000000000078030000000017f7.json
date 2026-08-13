@@ -1,0 +1,12 @@
+{
+  "pr_number": 6135,
+  "archive_path": "docs/history/pr-reviews/PR-6135-docs-consent-glass-halo-consent-record-scaffolding-identity-signature.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T17:30:26.044Z",
+  "schema_version": "v1",
+  "commit_sha": "fc4bcfecb5933d172c7abfe185252ab7eda164cb",
+  "title": "docs(consent): glass-halo consent-record scaffolding (identity=signature)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T17:30:08Z",
+  "head_ref": "otto/glass-halo-consent-record-scaffolding-2026-05-30"
+}

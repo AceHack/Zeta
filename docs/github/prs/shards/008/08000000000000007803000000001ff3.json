@@ -1,0 +1,12 @@
+{
+  "pr_number": 8179,
+  "archive_path": "docs/history/pr-reviews/PR-8179-docs-design-proposal-for-zeta-language-canonical-ir-compiler.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T13:10:56.310Z",
+  "schema_version": "v1",
+  "commit_sha": "0ea4b310a264b7b4147498af4a6b1e5ab13a2f3d",
+  "title": "docs: design proposal for Zeta Language & Canonical IR compiler",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T13:10:36Z",
+  "head_ref": "lior/compiler-design"
+}

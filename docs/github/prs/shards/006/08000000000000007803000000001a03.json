@@ -1,0 +1,18 @@
+{
+  "pr_number": 6659,
+  "archive_path": "docs/history/pr-reviews/PR-6659-docs-registry-three-bit-perfect-shapes-organizing-lens-small-base-framing.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Hj2Ly",
+    "comment:PRRC_kwDOSF9kNM7Hj9ZA",
+    "comment:PRRC_kwDOSF9kNM7HjcNo",
+    "thread:PRRT_kwDOSF9kNM6GuHW3",
+    "thread:PRRT_kwDOSF9kNM6GuavD"
+  ],
+  "fetched_at": "2026-06-03T11:33:07.034Z",
+  "schema_version": "v1",
+  "commit_sha": "4d600ff1dd8ec4a4a83f80d6f058133b2ec8597c",
+  "title": "docs(registry): three-bit-perfect-shapes organizing lens (small base framing)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T11:32:40Z",
+  "head_ref": "otto-cli/registry-three-bit-perfect-shapes-section-2026-06-03"
+}

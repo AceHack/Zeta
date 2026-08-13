@@ -1,0 +1,31 @@
+{
+  "pr_number": 2505,
+  "archive_path": "docs/history/pr-reviews/PR-2505-fix-b-0342-recreation-success-metrics-rubric-for-23-hour-test.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_ojcR",
+    "comment:PRRC_kwDOSF9kNM6_ojcd",
+    "comment:PRRC_kwDOSF9kNM6_ojcl",
+    "comment:PRRC_kwDOSF9kNM6_ojcs",
+    "comment:PRRC_kwDOSF9kNM6_okif",
+    "comment:PRRC_kwDOSF9kNM6_oklM",
+    "comment:PRRC_kwDOSF9kNM6_oknu",
+    "comment:PRRC_kwDOSF9kNM6_okp8",
+    "comment:PRRC_kwDOSF9kNM6_olZ3",
+    "comment:PRRC_kwDOSF9kNM6_olaD",
+    "comment:PRRC_kwDOSF9kNM6_olaP",
+    "thread:PRRT_kwDOSF9kNM6A6OrE",
+    "thread:PRRT_kwDOSF9kNM6A6OrN",
+    "thread:PRRT_kwDOSF9kNM6A6OrV",
+    "thread:PRRT_kwDOSF9kNM6A6Orc",
+    "thread:PRRT_kwDOSF9kNM6A6QS0",
+    "thread:PRRT_kwDOSF9kNM6A6QSp",
+    "thread:PRRT_kwDOSF9kNM6A6QTA"
+  ],
+  "fetched_at": "2026-05-10T15:44:05.016Z",
+  "schema_version": "v1",
+  "commit_sha": "22749bef164098c9ac5d86f5f008499f9a4a2ded",
+  "title": "fix(B-0342): recreation success metrics rubric for 23-hour test",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T15:43:45Z",
+  "head_ref": "fix/B-0342-recreation-success-metrics"
+}

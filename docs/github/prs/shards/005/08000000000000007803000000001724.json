@@ -1,0 +1,12 @@
+{
+  "pr_number": 5924,
+  "archive_path": "docs/history/pr-reviews/PR-5924-docs-coordination-add-remote-only-dry-run-replay-report.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T19:15:35.481Z",
+  "schema_version": "v1",
+  "commit_sha": "1a2f54cbb9e4d815d4c06fb09f9a173a9c1cebc3",
+  "title": "docs(coordination): add remote-only dry-run replay report",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T19:15:10Z",
+  "head_ref": "claim/codex-autonomous-loop-remote-dry-run-20260528"
+}

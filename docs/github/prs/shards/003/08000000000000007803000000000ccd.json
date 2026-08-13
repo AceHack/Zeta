@@ -1,0 +1,12 @@
+{
+  "pr_number": 3277,
+  "archive_path": "docs/history/pr-reviews/PR-3277-shard-tick-2202z-minimal-continuation-same-natural-rest-state-as-2158z.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T22:06:13.204Z",
+  "schema_version": "v1",
+  "commit_sha": "dcd8475513e6fbc0f55cd1f954749f9532acb423",
+  "title": "shard(tick): 2202Z — minimal continuation; same natural-rest state as 2158Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:05:51Z",
+  "head_ref": "shard/tick-2202Z-minimal-continuation-2-otto-cli-2026-05-14"
+}

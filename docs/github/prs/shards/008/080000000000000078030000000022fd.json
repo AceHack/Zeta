@@ -1,0 +1,12 @@
+{
+  "pr_number": 8957,
+  "archive_path": "docs/history/pr-reviews/PR-8957-feat-cost-lean-cost-recurrence-lax-monoidal-proofs-complexity-spike-step-5.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T12:16:15.887Z",
+  "schema_version": "v1",
+  "commit_sha": "e2ba336c28cfc0d5a32b48c4e0599f83182f9884",
+  "title": "feat(cost): Lean cost-recurrence + lax-monoidal proofs — complexity spike step 5",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T12:15:50Z",
+  "head_ref": "alexa/lean-handoff"
+}

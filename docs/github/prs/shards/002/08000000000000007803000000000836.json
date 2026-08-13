@@ -1,0 +1,22 @@
+{
+  "pr_number": 2102,
+  "archive_path": "docs/history/pr-reviews/PR-2102-feat-b-0058-alignment-clause-coverage-audit-tool.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_VY89",
+    "comment:PRRC_kwDOSF9kNM6_VY8I",
+    "comment:PRRC_kwDOSF9kNM6_VY8o",
+    "comment:PRRC_kwDOSF9kNM6_Vfh-",
+    "comment:PRRC_kwDOSF9kNM6_VfhA",
+    "comment:PRRC_kwDOSF9kNM6_Vfiz",
+    "thread:PRRT_kwDOSF9kNM6Arsd6",
+    "thread:PRRT_kwDOSF9kNM6ArseQ",
+    "thread:PRRT_kwDOSF9kNM6Arsed"
+  ],
+  "fetched_at": "2026-05-08T16:52:36.066Z",
+  "schema_version": "v1",
+  "commit_sha": "4c2374b133565997d83faddd644923461d9436f8",
+  "title": "feat(B-0058): alignment-clause coverage audit tool",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T16:52:14Z",
+  "head_ref": "b-0058/alignment-clause-coverage-audit"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6043,
+  "archive_path": "docs/history/pr-reviews/PR-6043-feat-b-0355-3-kiro-md-cross-harness-bootstrap-file-kiro-alexa.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T20:37:11.591Z",
+  "schema_version": "v1",
+  "commit_sha": "176a5bd50b4fd081c4b89b5ab244f8988f3a5acb",
+  "title": "feat(B-0355.3): KIRO.md cross-harness bootstrap file (Kiro/Alexa)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T20:36:49Z",
+  "head_ref": "backlog/b-0355.3-kiro-md-harness-bootstrap-2026-05-29"
+}

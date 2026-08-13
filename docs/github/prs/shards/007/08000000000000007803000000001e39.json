@@ -1,0 +1,12 @@
+{
+  "pr_number": 7737,
+  "archive_path": "docs/history/pr-reviews/PR-7737-feat-shapes-the-adinkra-cartridge-dashed-dialect-signs-as-ink-physics-real-candi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:27:59.692Z",
+  "schema_version": "v1",
+  "commit_sha": "d9f56c5141a250aaae1b08142e49a4b66ce192b7",
+  "title": "feat(shapes): the adinkra cartridge (dashed dialect — signs as ink) + physics-real candidates with the fit gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:27:30Z",
+  "head_ref": "shadow-adinkra-cartridge"
+}

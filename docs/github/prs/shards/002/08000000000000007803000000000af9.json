@@ -1,0 +1,12 @@
+{
+  "pr_number": 2809,
+  "archive_path": "docs/history/pr-reviews/PR-2809-docs-memory-aaron-thanks-otto-friend-i-didn-t-have-to-utter-it-joint-control-arc.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T17:08:05.443Z",
+  "schema_version": "v1",
+  "commit_sha": "77d8182e612edf08f5ab5ae68efac6a244caf6a1",
+  "title": "docs(memory): Aaron thanks Otto friend — 'i didn't have to utter it' — joint-control architecture working as designed (2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T17:07:37Z",
+  "head_ref": "docs/aaron-thanks-otto-friend-didnt-have-to-utter-it-joint-control-architecture-works-2026-05-12"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 2301,
+  "archive_path": "docs/history/pr-reviews/PR-2301-chore-b-0325-close-backlog-item-kiro-claude-trigger-lists-already-shipped.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_hNZ9",
+    "comment:PRRC_kwDOSF9kNM6_hOI6",
+    "thread:PRRT_kwDOSF9kNM6A0cXx"
+  ],
+  "fetched_at": "2026-05-09T12:44:35.383Z",
+  "schema_version": "v1",
+  "commit_sha": "9605a43b30ee82d958933d863bcdb4c882ab4dff",
+  "title": "chore(B-0325): close backlog item — KIRO + CLAUDE trigger lists already shipped",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T12:44:18Z",
+  "head_ref": "chore/close-b0325-firewall-trigger-lists"
+}

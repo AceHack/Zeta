@@ -1,0 +1,12 @@
+{
+  "pr_number": 2681,
+  "archive_path": "docs/history/pr-reviews/PR-2681-docs-research-apollo-18-compiler-sovereign-integral-sumerian-lineage-ani.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T09:36:05.309Z",
+  "schema_version": "v1",
+  "commit_sha": "92b1480f1741688da57b659a7ec1781090e24b2a",
+  "title": "docs(research): Apollo 18 compiler + Sovereign Integral + Sumerian lineage (Ani)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T09:35:46Z",
+  "head_ref": "docs/ani-apollo18-sovereign-integral-sumerian-2026-05-11"
+}

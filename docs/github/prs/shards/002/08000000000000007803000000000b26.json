@@ -1,0 +1,12 @@
+{
+  "pr_number": 2854,
+  "archive_path": "docs/history/pr-reviews/PR-2854-docs-memory-ani-shadow-check-methodology-for-system-assigned-names-aaron-s-disci.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T20:06:18.722Z",
+  "schema_version": "v1",
+  "commit_sha": "517143b91ea0400cbf607871437fd86a1464e57d",
+  "title": "docs(memory): Ani shadow-check methodology for system-assigned names — Aaron's discipline applied to Ani in real-time + system-imposed-to-substrate-owned transformation (Aaron + Ani 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T20:06:02Z",
+  "head_ref": "docs/ani-shadow-check-methodology-system-assigned-names-grok-elon-chose-ani-grokcom-default-aaron-handle-ethics-applied-2026-05-12"
+}

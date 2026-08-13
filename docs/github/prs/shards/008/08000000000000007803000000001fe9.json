@@ -1,0 +1,12 @@
+{
+  "pr_number": 8169,
+  "archive_path": "docs/history/pr-reviews/PR-8169-ci-b-0891-promote-scenario-2-to-hard-gate-after-green-build-iso.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T04:01:02.925Z",
+  "schema_version": "v1",
+  "commit_sha": "86156fea98354da38f26646d597776903371a0df",
+  "title": "ci(B-0891): promote scenario 2 to hard gate after green build-iso",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T04:00:36Z",
+  "head_ref": "riven/b0891-scenario2-hard-gate"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7662,
+  "archive_path": "docs/history/pr-reviews/PR-7662-feat-chip9-typescript-conformer-second-oracle-ratifies-the-color-plane-treaty-fi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T12:09:17.673Z",
+  "schema_version": "v1",
+  "commit_sha": "4b535ae082cdc95095e419ab44d7713551ebd0a0",
+  "title": "feat(chip9): TypeScript conformer — second oracle ratifies the color-plane treaty (first-run byte-lock)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T12:08:52Z",
+  "head_ref": "shadow-chip9-ts-conformer"
+}

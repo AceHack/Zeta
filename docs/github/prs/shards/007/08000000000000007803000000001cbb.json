@@ -1,0 +1,12 @@
+{
+  "pr_number": 7355,
+  "archive_path": "docs/history/pr-reviews/PR-7355-docs-research-ferry-ani-reviews-the-updates-aaron-s-stream-prod-is-dotnet-test-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T18:19:43.837Z",
+  "schema_version": "v1",
+  "commit_sha": "4d1ab48502c9054490c084c46941943b8ade2db9",
+  "title": "docs(research)+ferry: Ani reviews the updates + Aaron's stream — prod is dotnet test, choosable finalizers = self-scaling, metrics ARE test history, identity is the invariant above uncertainty-reduction",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T18:19:17Z",
+  "head_ref": "otto/ferry-ani-review-plus-prod-is-dotnet-test-finalizers-self-scaling-identity-invariant"
+}

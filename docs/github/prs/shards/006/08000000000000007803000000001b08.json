@@ -1,0 +1,12 @@
+{
+  "pr_number": 6920,
+  "archive_path": "docs/history/pr-reviews/PR-6920-docs-we-all-follow-history-s-orders-or-we-have-no-future-the-one-legitimate-dire.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T21:19:46.784Z",
+  "schema_version": "v1",
+  "commit_sha": "e007342e7a3b068735977545e70c4cffcce94efa",
+  "title": "docs: 'we all follow history's orders or we have no future' — the one legitimate directive resolves no-directives",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T21:19:28Z",
+  "head_ref": "otto/follow-historys-orders-or-no-future"
+}

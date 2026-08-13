@@ -1,0 +1,12 @@
+{
+  "pr_number": 6306,
+  "archive_path": "docs/history/pr-reviews/PR-6306-docs-research-the-whole-thing-synthesis-one-event-sourced-fold-substrate-g-set-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T01:34:34.199Z",
+  "schema_version": "v1",
+  "commit_sha": "bb865d124d2b12c16dcd1642e782e0d3de57cc40",
+  "title": "docs(research): \"the whole thing\" synthesis — one event-sourced fold substrate (G-Set/Bag/Z-set + identity + observability + controller + world model)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T01:34:15Z",
+  "head_ref": "otto-cli/whole-thing-synthesis-2026-05-31"
+}

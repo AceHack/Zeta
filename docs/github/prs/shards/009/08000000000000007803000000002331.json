@@ -1,0 +1,12 @@
+{
+  "pr_number": 9009,
+  "archive_path": "docs/history/pr-reviews/PR-9009-docs-research-durable-functions-as-the-db-code-on-z-sets-functions-rotate-like-k.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:13:43.319Z",
+  "schema_version": "v1",
+  "commit_sha": "9defc8d2a3c786b332dfafec0ff526bbe3aa8ed3",
+  "title": "docs(research): Durable Functions AS the DB — code on Z-sets, functions rotate like keys, Futamura gen/mix",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:13:17Z",
+  "head_ref": "otto/research-durable-functions-as-the-db"
+}

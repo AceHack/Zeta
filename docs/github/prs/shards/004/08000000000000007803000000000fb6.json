@@ -1,0 +1,12 @@
+{
+  "pr_number": 4022,
+  "archive_path": "docs/history/pr-reviews/PR-4022-fix-governance-financial-substrate-binding-disambiguation-per-amara-s-blade.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T02:23:05.835Z",
+  "schema_version": "v1",
+  "commit_sha": "184c48b27735e339ecf8205b3e640dc5b6812055",
+  "title": "fix(governance): financial-substrate 'binding' disambiguation per Amara's blade",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T02:22:39Z",
+  "head_ref": "fix/financial-substrate-amara-blade-operationally-binding-2026-05-16"
+}

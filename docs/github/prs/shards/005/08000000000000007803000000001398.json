@@ -1,0 +1,12 @@
+{
+  "pr_number": 5016,
+  "archive_path": "docs/history/pr-reviews/PR-5016-backlog-b-0748-research-kro-crossplane-koreo-kubevela-carvel-ack-kcc-aso-radius-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T22:39:13.683Z",
+  "schema_version": "v1",
+  "commit_sha": "4ae60353d9881bddfab3ccda7624971e63485f95",
+  "title": "backlog(B-0748)+research: kro+Crossplane+Koreo+KubeVela+Carvel+ACK/KCC/ASO+Radius+Terraform-Controller+Pulumi-K8s-Operator spectrum evaluation + verbatim research preservation (Aaron 2026-05-25)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T22:38:53Z",
+  "head_ref": "backlog/b0748-research-kro-crossplane-radius-terraform-pulumi-spectrum-aaron-2026-05-25"
+}

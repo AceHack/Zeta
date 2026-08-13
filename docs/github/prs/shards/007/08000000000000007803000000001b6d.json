@@ -1,0 +1,12 @@
+{
+  "pr_number": 7021,
+  "archive_path": "docs/history/pr-reviews/PR-7021-docs-has-anyone-done-all-of-it-consensus-as-fold-bayesian-symmetric-weave-frame-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T05:13:39.500Z",
+  "schema_version": "v1",
+  "commit_sha": "639780e537ee851496a288092ce05f2b2fb1b620",
+  "title": "docs: has anyone done all of it? consensus-as-fold (= Bayesian symmetric weave), frame-relative, 4-oracle-verified — strands vs the whole",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T05:13:21Z",
+  "head_ref": "otto/has-anyone-done-all-of-it-consensus-bayesian-weave-fold"
+}

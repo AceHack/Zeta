@@ -1,0 +1,12 @@
+{
+  "pr_number": 5916,
+  "archive_path": "docs/history/pr-reviews/PR-5916-feat-workflow-engine-integrate-today-s-du-cluster-b-0917-b-0918-b-0919-b-0920-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T18:14:22.784Z",
+  "schema_version": "v1",
+  "commit_sha": "acfec5929deb03b399393765a41dec1b60ccb80f",
+  "title": "feat(workflow-engine): integrate today's DU cluster (B-0917 + B-0918 + B-0919 + B-0920) into cli.ts via --list-du-cluster mode + du-cluster.ts TS substrate (state-machine lane push 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T18:14:02Z",
+  "head_ref": "otto-cli/state-machine-du-cluster-cli-integration-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 1851,
+  "archive_path": "docs/history/pr-reviews/PR-1851-research-arc-agi-3-chip-8-atari-dbsp-replay-algebra-correction.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T10:43:26.777Z",
+  "schema_version": "v1",
+  "commit_sha": "0e71a172ffed7f4fadf188b7f5457a0ad80c6d3f",
+  "title": "research: ARC-AGI-3 CHIP-8 Atari DBSP replay-algebra correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T09:51:42Z",
+  "head_ref": "claim/arcagi3-chip8-dbsp-replay-algebra"
+}

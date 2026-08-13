@@ -1,0 +1,31 @@
+{
+  "pr_number": 4814,
+  "archive_path": "docs/history/pr-reviews/PR-4814-shard-2026-05-24-0441z-25-pr-audit-8-blocked-prs-classified-zero-fps-across-5-fa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EVRl2",
+    "comment:PRRC_kwDOSF9kNM7EVRl5",
+    "comment:PRRC_kwDOSF9kNM7EVRv2",
+    "comment:PRRC_kwDOSF9kNM7EVRv5",
+    "comment:PRRC_kwDOSF9kNM7EWNUL",
+    "comment:PRRC_kwDOSF9kNM7EWWht",
+    "comment:PRRC_kwDOSF9kNM7EWXOb",
+    "comment:PRRC_kwDOSF9kNM7EWXOj",
+    "comment:PRRC_kwDOSF9kNM7EX-If",
+    "comment:PRRC_kwDOSF9kNM7EXjCt",
+    "thread:PRRT_kwDOSF9kNM6EWu6P",
+    "thread:PRRT_kwDOSF9kNM6EWu6U",
+    "thread:PRRT_kwDOSF9kNM6EWvBg",
+    "thread:PRRT_kwDOSF9kNM6EWvBj",
+    "thread:PRRT_kwDOSF9kNM6EXeD4",
+    "thread:PRRT_kwDOSF9kNM6EXls_",
+    "thread:PRRT_kwDOSF9kNM6EXltD",
+    "thread:PRRT_kwDOSF9kNM6EYdZ7"
+  ],
+  "fetched_at": "2026-05-24T13:05:33.905Z",
+  "schema_version": "v1",
+  "commit_sha": "ecb9c6d22675876dda07f7e9d9ea853b28fb4bda",
+  "title": "shard(2026-05-24/0441Z): 25-PR audit; 8 BLOCKED PRs classified; zero FPs across 5 failure classes",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T13:05:13Z",
+  "head_ref": "otto-cli/0441z-pr-triage-audit-cross-lane-classify"
+}

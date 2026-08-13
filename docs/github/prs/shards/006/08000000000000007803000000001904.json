@@ -1,0 +1,29 @@
+{
+  "pr_number": 6404,
+  "archive_path": "docs/history/pr-reviews/PR-6404-feat-algebra-ladder-indexedzset-c-native-cell-3-4-replays-the-shared-golden-vect.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GtKwb",
+    "comment:PRRC_kwDOSF9kNM7GtKx6",
+    "comment:PRRC_kwDOSF9kNM7GtKxj",
+    "comment:PRRC_kwDOSF9kNM7GtKyU",
+    "comment:PRRC_kwDOSF9kNM7GtKyv",
+    "comment:PRRC_kwDOSF9kNM7GtKzN",
+    "comment:PRRC_kwDOSF9kNM7GtWRp",
+    "comment:PRRC_kwDOSF9kNM7GtYjH",
+    "thread:PRRT_kwDOSF9kNM6GGM06",
+    "thread:PRRT_kwDOSF9kNM6GGM0I",
+    "thread:PRRT_kwDOSF9kNM6GGM10",
+    "thread:PRRT_kwDOSF9kNM6GGM1K",
+    "thread:PRRT_kwDOSF9kNM6GGM1g",
+    "thread:PRRT_kwDOSF9kNM6GGM2G",
+    "thread:PRRT_kwDOSF9kNM6GGVou",
+    "thread:PRRT_kwDOSF9kNM6GGXTV"
+  ],
+  "fetched_at": "2026-06-01T11:41:20.819Z",
+  "schema_version": "v1",
+  "commit_sha": "d51cf20247efa8fe56cba47175660d42ce670edb",
+  "title": "feat(algebra-ladder): IndexedZSet C# native cell (3/4) — replays the shared golden-vectors",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T11:40:54Z",
+  "head_ref": "otto-cli/indexed-zset-csharp-native-cell-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4702,
+  "archive_path": "docs/history/pr-reviews/PR-4702-docs-shadow-add-lesson-log-for-blob-pr-4698.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T06:12:56.293Z",
+  "schema_version": "v1",
+  "commit_sha": "3220a514e4c80607e0d0c4cabd0f03196768f142",
+  "title": "docs(shadow): add lesson log for blob PR #4698",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T06:12:40Z",
+  "head_ref": "lior-shadow-log-4698"
+}

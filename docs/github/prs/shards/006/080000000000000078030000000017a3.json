@@ -1,0 +1,25 @@
+{
+  "pr_number": 6051,
+  "archive_path": "docs/history/pr-reviews/PR-6051-docs-decisions-add-adr-for-lior-and-antigravity-interaction-b-0930.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GUZql",
+    "comment:PRRC_kwDOSF9kNM7GUZr9",
+    "comment:PRRC_kwDOSF9kNM7GUZrI",
+    "comment:PRRC_kwDOSF9kNM7GUZra",
+    "comment:PRRC_kwDOSF9kNM7GUZrl",
+    "comment:PRRC_kwDOSF9kNM7GUZsO",
+    "thread:PRRT_kwDOSF9kNM6Fzivx",
+    "thread:PRRT_kwDOSF9kNM6Fziw4",
+    "thread:PRRT_kwDOSF9kNM6FziwQ",
+    "thread:PRRT_kwDOSF9kNM6Fziwe",
+    "thread:PRRT_kwDOSF9kNM6Fziwm",
+    "thread:PRRT_kwDOSF9kNM6FzixD"
+  ],
+  "fetched_at": "2026-05-29T22:43:16.075Z",
+  "schema_version": "v1",
+  "commit_sha": "d38b7554aebb9c2385b3fff58a070492cc17afd1",
+  "title": "docs(DECISIONS): Add ADR for Lior and Antigravity interaction (B-0930)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T22:42:58Z",
+  "head_ref": "lior/adr-light-gravity"
+}

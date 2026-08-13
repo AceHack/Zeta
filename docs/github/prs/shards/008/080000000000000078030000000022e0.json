@@ -1,0 +1,12 @@
+{
+  "pr_number": 8928,
+  "archive_path": "docs/history/pr-reviews/PR-8928-revert-keys-back-out-8926-aaron-machine-hybrid-key-moving-to-pure-machine-user-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T09:18:07.640Z",
+  "schema_version": "v1",
+  "commit_sha": "bb79868f5a9d07806d0430a1a5d6b2810af7f617",
+  "title": "revert(keys): back out #8926 aaron@machine hybrid key — moving to pure machine/user model",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T09:17:38Z",
+  "head_ref": "otto/backout-8926-aaron-machine-key"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8581,
+  "archive_path": "docs/history/pr-reviews/PR-8581-docs-arrival-reconcile-protocol-right-to-exist-footholds-sybil-defense.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T14:35:58.987Z",
+  "schema_version": "v1",
+  "commit_sha": "ec6db02df8f827daf8253a8477c2aa14bcce2906",
+  "title": "docs(arrival): reconcile protocol + right-to-exist footholds + Sybil defense",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T14:35:34Z",
+  "head_ref": "fix-arrival-protocol-reconcile"
+}

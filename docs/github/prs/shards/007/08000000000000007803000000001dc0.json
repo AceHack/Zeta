@@ -1,0 +1,12 @@
+{
+  "pr_number": 7616,
+  "archive_path": "docs/history/pr-reviews/PR-7616-feat-core-converge-qubit-gates-with-q-oracle.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:18:02.021Z",
+  "schema_version": "v1",
+  "commit_sha": "c6a2d32a0384e12b3fc90fd123d893d15ed05323",
+  "title": "feat(core): converge qubit gates with Q# oracle",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:17:36Z",
+  "head_ref": "codex/vera-quantum-convergence-bench"
+}

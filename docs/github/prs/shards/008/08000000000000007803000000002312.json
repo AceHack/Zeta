@@ -1,0 +1,12 @@
+{
+  "pr_number": 8978,
+  "archive_path": "docs/history/pr-reviews/PR-8978-feat-setup-op-cross-os-via-mise-generalize-cask-framework-cvc5-off-one-off.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T18:13:08.068Z",
+  "schema_version": "v1",
+  "commit_sha": "33126e71249bc135c23547087589db3ac0f21bb6",
+  "title": "feat(setup): op cross-OS via mise; generalize cask framework (cvc5 off one-off)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T18:12:42Z",
+  "head_ref": "otto/op-cross-os-mise-and-cask-framework"
+}

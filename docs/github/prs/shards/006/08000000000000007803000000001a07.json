@@ -1,0 +1,17 @@
+{
+  "pr_number": 6663,
+  "archive_path": "docs/history/pr-reviews/PR-6663-feat-ace-slice-8-7-revoke-quarantine-mark-algebra-cross-language-golden-vectors.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Hjn0r",
+    "comment:PRRC_kwDOSF9kNM7Hjn1b",
+    "thread:PRRT_kwDOSF9kNM6GuQEh",
+    "thread:PRRT_kwDOSF9kNM6GuQFD"
+  ],
+  "fetched_at": "2026-06-03T11:17:14.810Z",
+  "schema_version": "v1",
+  "commit_sha": "6d7099bfa91e150c90f0dfd7409b09d8a6d580a3",
+  "title": "feat(ace): slice 8.7 — revoke/quarantine mark algebra cross-language golden vectors",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T11:16:52Z",
+  "head_ref": "otto-windows/ace-slice8.7-revoke-quarantine-vectors-2026-06-03"
+}

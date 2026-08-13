@@ -1,0 +1,12 @@
+{
+  "pr_number": 7431,
+  "archive_path": "docs/history/pr-reviews/PR-7431-chore-vocab-shadow-regenerate-stale-vocab-generated-fs-green-coredora-reify-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T22:28:37.524Z",
+  "schema_version": "v1",
+  "commit_sha": "50ce0c98c57da4a14cc8c837e06297b7fa64af14",
+  "title": "chore(vocab)+shadow: regenerate stale Vocab.Generated.fs — green CoreDORA reify gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T22:28:16Z",
+  "head_ref": "shadow-vocab-reify-regen"
+}

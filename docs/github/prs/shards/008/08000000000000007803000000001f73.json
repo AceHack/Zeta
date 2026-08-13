@@ -1,0 +1,12 @@
+{
+  "pr_number": 8051,
+  "archive_path": "docs/history/pr-reviews/PR-8051-codex-add-quantum-fusion-budget-bridge.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T20:53:40.938Z",
+  "schema_version": "v1",
+  "commit_sha": "391322498cefc6988967718263bec0c193134c93",
+  "title": "[codex] add quantum fusion budget bridge",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T20:53:14Z",
+  "head_ref": "codex/qsharp-bayesian-fusion-poc"
+}

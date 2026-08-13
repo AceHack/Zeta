@@ -1,0 +1,25 @@
+{
+  "pr_number": 5885,
+  "archive_path": "docs/history/pr-reviews/PR-5885-feat-openspec-add-retraction-native-semantics-spec-b-0171-3.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F243v",
+    "comment:PRRC_kwDOSF9kNM7F244h",
+    "comment:PRRC_kwDOSF9kNM7F244u",
+    "comment:PRRC_kwDOSF9kNM7F245O",
+    "comment:PRRC_kwDOSF9kNM7GA1Pl",
+    "comment:PRRC_kwDOSF9kNM7GA1Qn",
+    "comment:PRRC_kwDOSF9kNM7GA1Rj",
+    "comment:PRRC_kwDOSF9kNM7GA1SY",
+    "thread:PRRT_kwDOSF9kNM6FeIpe",
+    "thread:PRRT_kwDOSF9kNM6FeIqA",
+    "thread:PRRT_kwDOSF9kNM6FeIqK",
+    "thread:PRRT_kwDOSF9kNM6FeIqc"
+  ],
+  "fetched_at": "2026-05-29T04:23:39.354Z",
+  "schema_version": "v1",
+  "commit_sha": "932d289dd8b4e7305d30586f68992ce9f7fbb5bb",
+  "title": "feat(openspec): Add Retraction-Native Semantics spec (B-0171.3)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T04:23:18Z",
+  "head_ref": "lior/B-0171.3-retraction-spec"
+}

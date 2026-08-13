@@ -1,0 +1,12 @@
+{
+  "pr_number": 10360,
+  "archive_path": "docs/history/pr-reviews/PR-10360-ferry-schuller-on-not-quantizing-gravity-and-e-i-was-already-the-argument.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-13T19:22:43.973Z",
+  "schema_version": "v1",
+  "commit_sha": "fc396d422aacf6b5089a02e69efdd3ffc61e1293",
+  "title": "ferry: Schuller on not quantizing gravity — and e^{iπ} was already the argument",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T19:22:08Z",
+  "head_ref": "ferry-schuller-no-quantize"
+}

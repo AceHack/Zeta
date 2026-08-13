@@ -1,0 +1,15 @@
+{
+  "pr_number": 6381,
+  "archive_path": "docs/history/pr-reviews/PR-6381-docs-registry-zetaid-reticulum-128-bit-name-address-bridge-note.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GqBoj",
+    "thread:PRRT_kwDOSF9kNM6GD07a"
+  ],
+  "fetched_at": "2026-06-01T09:02:32.338Z",
+  "schema_version": "v1",
+  "commit_sha": "60b91ba8accc98d6cdeab07f7fc7164ac781011c",
+  "title": "docs(registry): ZetaId ↔ Reticulum 128-bit name-address bridge note",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T09:02:10Z",
+  "head_ref": "otto-cli/registry-zetaid-reticulum-name-address-bridge-2026-06-01"
+}

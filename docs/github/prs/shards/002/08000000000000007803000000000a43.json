@@ -1,0 +1,12 @@
+{
+  "pr_number": 2627,
+  "archive_path": "docs/history/pr-reviews/PR-2627-docs-memory-shadow-invocation-by-naming-not-incantation-not-crowley.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T02:14:55.823Z",
+  "schema_version": "v1",
+  "commit_sha": "f2219305d6a078f684f8232df459188705a8d833",
+  "title": "docs(memory): shadow invocation-by-naming — not incantation, not Crowley",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:14:34Z",
+  "head_ref": "docs/shadow-invocation-by-naming-2026-05-10"
+}

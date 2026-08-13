@@ -1,0 +1,22 @@
+{
+  "pr_number": 2957,
+  "archive_path": "docs/history/pr-reviews/PR-2957-shard-tick-0645z-settlers-log-1-aaron-named-the-format-tales-from-the-loop-genre.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ApcWT",
+    "comment:PRRC_kwDOSF9kNM7ApeLk",
+    "comment:PRRC_kwDOSF9kNM7ApeMH",
+    "comment:PRRC_kwDOSF9kNM7Apk2S",
+    "comment:PRRC_kwDOSF9kNM7ApknL",
+    "comment:PRRC_kwDOSF9kNM7ApkxR",
+    "thread:PRRT_kwDOSF9kNM6BqI-X",
+    "thread:PRRT_kwDOSF9kNM6BqKRr",
+    "thread:PRRT_kwDOSF9kNM6BqKSG"
+  ],
+  "fetched_at": "2026-05-13T07:08:17.586Z",
+  "schema_version": "v1",
+  "commit_sha": "e7527536f5729368271ed4998d612dbba7673f14",
+  "title": "shard(tick): 0645Z — settlers log #1 (Aaron named the format; Tales-from-the-Loop genre) — B-0421 fully closed + Vera autonomous fix + cross-agent-edit auth",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T07:08:01Z",
+  "head_ref": "shard-tick-0645z-2026-05-13"
+}

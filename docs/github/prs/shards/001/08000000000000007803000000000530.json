@@ -1,0 +1,28 @@
+{
+  "pr_number": 1328,
+  "archive_path": "docs/history/pr-reviews/PR-1328-feat-substrate-claim-checker-v0-6-0-gitignore-awareness-for-existence-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Z8Lg",
+    "comment:PRRC_kwDOSF9kNM69Z8eT",
+    "comment:PRRC_kwDOSF9kNM69Z8eX",
+    "comment:PRRC_kwDOSF9kNM69Z8eb",
+    "comment:PRRC_kwDOSF9kNM69Z8ec",
+    "comment:PRRC_kwDOSF9kNM69Z9w7",
+    "comment:PRRC_kwDOSF9kNM69Z9wO",
+    "comment:PRRC_kwDOSF9kNM69Z9wa",
+    "comment:PRRC_kwDOSF9kNM69Z9wo",
+    "comment:PRRC_kwDOSF9kNM69Z9xJ",
+    "thread:PRRT_kwDOSF9kNM5_KqC0",
+    "thread:PRRT_kwDOSF9kNM5_KqRj",
+    "thread:PRRT_kwDOSF9kNM5_KqRn",
+    "thread:PRRT_kwDOSF9kNM5_KqRr",
+    "thread:PRRT_kwDOSF9kNM5_KqRs"
+  ],
+  "fetched_at": "2026-05-06T01:27:33.311Z",
+  "schema_version": "v1",
+  "commit_sha": "ec1044614ea90862d55666293707cab16bfe1951",
+  "title": "feat(substrate-claim-checker): v0.6.0 — gitignore awareness for existence-drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T06:01:36Z",
+  "head_ref": "feat/substrate-claim-checker-v0-6-gitignore-aware-existence-drift-otto-2026-05-03"
+}

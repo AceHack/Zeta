@@ -1,0 +1,12 @@
+{
+  "pr_number": 1959,
+  "archive_path": "docs/history/pr-reviews/PR-1959-fix-b-0162-close-role-ref-check-mechanization-landed.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T22:29:16.400Z",
+  "schema_version": "v1",
+  "commit_sha": "2b668b15c015a2d4355faa20bbcc68cd106b15e6",
+  "title": "fix(B-0162): close — role-ref check mechanization landed",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T22:29:00Z",
+  "head_ref": "fix/b0162-close-mechanization-landed"
+}

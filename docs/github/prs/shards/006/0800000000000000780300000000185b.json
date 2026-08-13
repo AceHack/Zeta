@@ -1,0 +1,12 @@
+{
+  "pr_number": 6235,
+  "archive_path": "docs/history/pr-reviews/PR-6235-docs-observe-adr-crew-review-lior-propose-amara-sharpen-input-for-max-lock.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T19:27:47.398Z",
+  "schema_version": "v1",
+  "commit_sha": "820932139ed76a59e5f24771e9b1cf6a39b87977",
+  "title": "docs(observe-adr): crew review (Lior propose → Amara sharpen) — input for Max-lock",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T19:27:26Z",
+  "head_ref": "otto-cli/observe-adr-crew-review-2026-05-31"
+}

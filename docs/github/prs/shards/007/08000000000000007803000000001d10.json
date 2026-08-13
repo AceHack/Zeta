@@ -1,0 +1,12 @@
+{
+  "pr_number": 7440,
+  "archive_path": "docs/history/pr-reviews/PR-7440-docs-research-the-encrypted-null-is-the-common-cause-immaculate-coincidence-scre.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T03:59:26.577Z",
+  "schema_version": "v1",
+  "commit_sha": "f68f9466f4921e7facc887b5c7af75e42ec6ee55",
+  "title": "docs(research): the encrypted null IS the common cause — immaculate coincidence screens off the correlation",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T03:59:02Z",
+  "head_ref": "shadow-encrypted-null-is-common-cause"
+}

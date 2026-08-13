@@ -1,0 +1,12 @@
+{
+  "pr_number": 1827,
+  "archive_path": "docs/history/pr-reviews/PR-1827-archive-preserve-pr-1825-review-output.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T07:30:38.738Z",
+  "schema_version": "v1",
+  "commit_sha": "e94b609d1380f3a9b4ef8cc62357a6fcd099e78c",
+  "title": "archive: preserve PR 1825 review output",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T07:28:58Z",
+  "head_ref": "claim/archive-pr-1825-review-substrate"
+}

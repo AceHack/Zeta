@@ -1,0 +1,12 @@
+{
+  "pr_number": 6762,
+  "archive_path": "docs/history/pr-reviews/PR-6762-docs-architecture-service-discovery-built-in-net-aspire-inside-dynamicvalue-zeta.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T08:57:06.948Z",
+  "schema_version": "v1",
+  "commit_sha": "83eb7cc50d9eed75ff4e15551e6ef392a548c0ea",
+  "title": "docs(architecture): service discovery built in — '.NET Aspire inside DynamicValue' (ZetaID-resolved)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T08:56:46Z",
+  "head_ref": "otto/service-discovery-aspire-in-dynamicvalue"
+}

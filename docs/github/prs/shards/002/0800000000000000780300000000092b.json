@@ -1,0 +1,12 @@
+{
+  "pr_number": 2347,
+  "archive_path": "docs/history/pr-reviews/PR-2347-chore-b-0365-2-close-backlog-item-shadow-log-backfill-merged-in-pr-2339.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T21:12:54.718Z",
+  "schema_version": "v1",
+  "commit_sha": "0d203ea0d59fb2f177b7049bc6f4d5da1319c5da",
+  "title": "chore(B-0365.2): close backlog item — shadow log backfill merged in PR #2339",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T21:12:39Z",
+  "head_ref": "chore/close-b0365.2-backlog-item"
+}

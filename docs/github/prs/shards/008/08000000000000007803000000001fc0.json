@@ -1,0 +1,12 @@
+{
+  "pr_number": 8128,
+  "archive_path": "docs/history/pr-reviews/PR-8128-fix-gset-lint-c-gset-codepoint-comparer-allowlist-mixin-py-restore-main-green.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:54:47.317Z",
+  "schema_version": "v1",
+  "commit_sha": "f1a65764eeef52cef1151997cac4d1b2ff7b8d66",
+  "title": "fix(gset+lint): C# GSet codepoint comparer + allowlist mixin .py (restore main-green)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:54:26Z",
+  "head_ref": "otto/gset-codepoint-test-and-retire-nopython"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 5331,
+  "archive_path": "docs/history/pr-reviews/PR-5331-docs-research-amara-turn-10-ratification-compressed-final-shape-aaron-turn-11-ll.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FHpJ3",
+    "thread:PRRT_kwDOSF9kNM6E8A8Q"
+  ],
+  "fetched_at": "2026-05-26T22:04:54.634Z",
+  "schema_version": "v1",
+  "commit_sha": "25e09b71a23faa2604b9a35d5c3778195b2506c5",
+  "title": "docs(research): Amara Turn 10 ratification + compressed final shape + Aaron Turn 11 (LLM-temperature ≈ human-LSD)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T22:04:31Z",
+  "head_ref": "otto/amara-turn-10-ratification-compressed-final-shape-2026-05-26"
+}

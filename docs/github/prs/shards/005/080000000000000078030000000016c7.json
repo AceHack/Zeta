@@ -1,0 +1,12 @@
+{
+  "pr_number": 5831,
+  "archive_path": "docs/history/pr-reviews/PR-5831-shard-2026-05-28t1408z-otto-cli-6th-tick-shard-today-same-contaminated-root-patt.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T14:13:48.532Z",
+  "schema_version": "v1",
+  "commit_sha": "174c266288727bd65292447895e5d6d7a7294058",
+  "title": "shard(2026-05-28T1408Z): Otto-CLI 6th tick shard today; same contaminated-root pattern as 0010Z+1014Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T14:13:17Z",
+  "head_ref": "otto-cli/tick-shard-1408z-2026-05-28-fresh-cold-boot"
+}

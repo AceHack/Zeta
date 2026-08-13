@@ -1,0 +1,12 @@
+{
+  "pr_number": 4236,
+  "archive_path": "docs/history/pr-reviews/PR-4236-shard-2248z-c-pre-empt-at-2-4-copilot-findings-on-4231-addressed-via-4235.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T22:55:29.372Z",
+  "schema_version": "v1",
+  "commit_sha": "654000e830eca7332da4b08e8aabdd63bcff3faf",
+  "title": "shard(2248Z-c): pre-empt at #2 — 4 Copilot findings on #4231 addressed via #4235",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:55:12Z",
+  "head_ref": "shard/tick-2248z-c-pre-empt-2-4-copilot-findings-on-4231-fix-up-4235-2026-05-18"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 1854,
+  "archive_path": "docs/history/pr-reviews/PR-1854-fix-tighten-alexa-bootstrap-archive-boundaries.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T10:43:30.036Z",
+  "schema_version": "v1",
+  "commit_sha": "37b92e3e9e79e3cd0d92fb0b47d4486fed5f7605",
+  "title": "fix: tighten Alexa bootstrap archive boundaries",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T10:20:33Z",
+  "head_ref": "claim/alexa-bootstrap-archive-boundary-followup"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6946,
+  "archive_path": "docs/history/pr-reviews/PR-6946-docs-naming-collision-flag-our-ace-vs-nvidia-ace-avatar-cloud-engine-route-to-na.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T23:14:51.307Z",
+  "schema_version": "v1",
+  "commit_sha": "a171c798631b714cf2976312d2bebe92be17aff7",
+  "title": "docs: naming-collision FLAG — our 'Ace' vs NVIDIA ACE (Avatar Cloud Engine), route to naming review",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T23:14:30Z",
+  "head_ref": "otto/naming-collision-flag-ace-vs-nvidia-ace"
+}

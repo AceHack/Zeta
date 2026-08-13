@@ -1,0 +1,23 @@
+{
+  "pr_number": 3871,
+  "archive_path": "docs/history/pr-reviews/PR-3871-shard-tick-2026-05-16t12-07z-b-0206-class-2-sd-nested-self-doc-38-38-milestone.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B4ZAS",
+    "comment:PRRC_kwDOSF9kNM7B4ZjV",
+    "comment:PRRC_kwDOSF9kNM7B4ZjX",
+    "comment:PRRC_kwDOSF9kNM7B4ZjZ",
+    "comment:PRRC_kwDOSF9kNM7B4eL_",
+    "thread:PRRT_kwDOSF9kNM6Cjnrf",
+    "thread:PRRT_kwDOSF9kNM6CjoGw",
+    "thread:PRRT_kwDOSF9kNM6CjoGx",
+    "thread:PRRT_kwDOSF9kNM6CjoGz",
+    "thread:PRRT_kwDOSF9kNM6Cjr3d"
+  ],
+  "fetched_at": "2026-05-16T13:22:00.902Z",
+  "schema_version": "v1",
+  "commit_sha": "e6ee3831a30c1815b55749858e3fb626b360b62a",
+  "title": "shard(tick): 2026-05-16T12:07Z — B-0206 = class #2-SD (nested self-doc); 38/38 milestone",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T13:21:41Z",
+  "head_ref": "otto-cli-b0206-audit-2026-05-16-1207z"
+}

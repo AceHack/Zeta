@@ -1,0 +1,12 @@
+{
+  "pr_number": 7928,
+  "archive_path": "docs/history/pr-reviews/PR-7928-docs-research-ip-questionable-shadow-two-forwarded-transcripts-active-inference-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:27:52.377Z",
+  "schema_version": "v1",
+  "commit_sha": "c67d91f60142fbeddb8cd66c7fb9c76b0d6f682f",
+  "title": "docs(research/ip-questionable)+shadow: two forwarded transcripts — active inference + GGUF quantization (verbatim, routed)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:27:27Z",
+  "head_ref": "shadow/ip-q-active-inference-and-braid-kernel"
+}

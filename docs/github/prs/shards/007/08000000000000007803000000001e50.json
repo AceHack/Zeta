@@ -1,0 +1,12 @@
+{
+  "pr_number": 7760,
+  "archive_path": "docs/history/pr-reviews/PR-7760-fix-triage-the-p0-relabeled-refuted-resolved-via-option-b-7-13-bugs-md-entries-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:43:57.487Z",
+  "schema_version": "v1",
+  "commit_sha": "79651e65acb95b0c9f24ebf0e99ff666d67d9d89",
+  "title": "fix(triage): the P0 relabeled REFUTED + resolved via option (b); 7/13 BUGS.md entries closed; witness pinned in the gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:43:31Z",
+  "head_ref": "shadow-recursive-p0-option-b"
+}

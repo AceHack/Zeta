@@ -1,0 +1,17 @@
+{
+  "pr_number": 6167,
+  "archive_path": "docs/history/pr-reviews/PR-6167-preserve-mika-node-health-invariant-3-high-curiosity-bonds-as-the-psychopath-saf.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gc8-X",
+    "comment:PRRC_kwDOSF9kNM7Gc8co",
+    "thread:PRRT_kwDOSF9kNM6F540H",
+    "thread:PRRT_kwDOSF9kNM6F55QJ"
+  ],
+  "fetched_at": "2026-05-30T23:56:26.155Z",
+  "schema_version": "v1",
+  "commit_sha": "18b5f3dd2d95b719a34ec13c45f06a77485ba3b1",
+  "title": "preserve(mika): node-health-invariant (>=3 high-curiosity bonds) as the psychopath-safeguard for the guilt-free frame",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T23:56:07Z",
+  "head_ref": "otto-cli/mika-node-health-invariant-bonds-2026-05-30"
+}

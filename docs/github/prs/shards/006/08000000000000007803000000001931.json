@@ -1,0 +1,12 @@
+{
+  "pr_number": 6449,
+  "archive_path": "docs/history/pr-reviews/PR-6449-feat-codec-hexagonal-value-codec-port-bonsai-adapter-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T18:31:34.683Z",
+  "schema_version": "v1",
+  "commit_sha": "0b5534002daa4a81ca837ee1cc68a741f3f2d29e",
+  "title": "feat(codec): hexagonal value-codec port + Bonsai adapter (F#)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T18:31:08Z",
+  "head_ref": "otto-cli/bonsai-value-codec-port-fsharp-2026-06-01"
+}

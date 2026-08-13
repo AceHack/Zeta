@@ -1,0 +1,12 @@
+{
+  "pr_number": 5328,
+  "archive_path": "docs/history/pr-reviews/PR-5328-feat-cluster-inventory-port-capture-to-bun.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T22:02:58.936Z",
+  "schema_version": "v1",
+  "commit_sha": "179a8d26d8b0ec706a25fdee5420346a54522f6a",
+  "title": "feat(cluster-inventory): port capture to bun",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T22:02:36Z",
+  "head_ref": "claim/codex-loop-cluster-inventory-ts-bash-guard-20260526"
+}

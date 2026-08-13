@@ -1,0 +1,12 @@
+{
+  "pr_number": 6797,
+  "archive_path": "docs/history/pr-reviews/PR-6797-fix-zset-default-to-binary-ordinal-collation-via-cached-keycomparercache-b-0969-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T11:32:13.870Z",
+  "schema_version": "v1",
+  "commit_sha": "c1d0ec2db8f0a61a5f6db1e2e73ae93c81982981",
+  "title": "fix(ZSet): default to binary/ordinal collation via cached KeyComparerCache (B-0969 slice 2)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T11:31:52Z",
+  "head_ref": "fix/zset-ordinal-collation-b0969"
+}

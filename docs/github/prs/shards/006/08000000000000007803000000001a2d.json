@@ -1,0 +1,12 @@
+{
+  "pr_number": 6701,
+  "archive_path": "docs/history/pr-reviews/PR-6701-feat-core-durableyinyang-soft-remains-evolution-cell-holds-the-superposition-sna.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T01:41:14.456Z",
+  "schema_version": "v1",
+  "commit_sha": "0d47a2935298913f2496db15975c223e65d6561d",
+  "title": "feat(Core/DurableYinYang): soft-Remains evolution — cell holds the superposition, snaps only at read",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T01:40:51Z",
+  "head_ref": "otto/soft-remains-evolution"
+}

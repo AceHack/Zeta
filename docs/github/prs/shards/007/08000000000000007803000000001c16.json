@@ -1,0 +1,12 @@
+{
+  "pr_number": 7190,
+  "archive_path": "docs/history/pr-reviews/PR-7190-docs-research-extend-s-4-to-agents-hats-time-as-symmetric-identities-ischeduler-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T03:27:17.064Z",
+  "schema_version": "v1",
+  "commit_sha": "fb6e56a9378ceb922c6c819db4fd9d1503c6052b",
+  "title": "docs(research): extend S=4 to agents+hats+TIME as symmetric identities; IScheduler-generator under DST for real; S=4 iff one-seed-closure + no-signalling",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T03:26:58Z",
+  "head_ref": "otto/research-extend-s4-agents-hats-time-symmetric-identities-dst-for-real"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8858,
+  "archive_path": "docs/history/pr-reviews/PR-8858-fix-agentic-org-serialize-live-integration-suite-flaky-substrate-contention.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T14:51:55.707Z",
+  "schema_version": "v1",
+  "commit_sha": "4f2a30f97f24db7001391776d0689dc245e3e208",
+  "title": "fix(agentic-org): serialize live integration suite (flaky substrate contention)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T14:51:26Z",
+  "head_ref": "devin/1782016655-fix-live-integration-serial"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8078,
+  "archive_path": "docs/history/pr-reviews/PR-8078-chore-remove-5-superseded-dev-cluster-shell-scripts.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T22:09:05.863Z",
+  "schema_version": "v1",
+  "commit_sha": "bbb681e9776361d6994b488568945e22e18bc54b",
+  "title": "chore: remove 5 superseded dev-cluster shell scripts",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T22:08:43Z",
+  "head_ref": "kiro/remove-superseded-shell-scripts"
+}

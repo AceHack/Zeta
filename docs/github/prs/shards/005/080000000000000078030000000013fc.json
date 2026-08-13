@@ -1,0 +1,12 @@
+{
+  "pr_number": 5116,
+  "archive_path": "docs/history/pr-reviews/PR-5116-ci-installer-iso-source-substrate-audit-broaden-trigger-paths-catches-dropped-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T06:54:46.250Z",
+  "schema_version": "v1",
+  "commit_sha": "67ab88844b02f6b211d0aa0639afd7277c37eb70",
+  "title": "ci(installer-iso): source-substrate audit + broaden trigger paths — catches dropped iter-N modules before ~15min Nix build (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T06:54:25Z",
+  "head_ref": "otto-cli/ci-installer-substrate-audit-broaden-trigger-paths-2026-05-26"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2469,
+  "archive_path": "docs/history/pr-reviews/PR-2469-fix-b-0347-carve-21-over-length-skill-descriptions-to-150-chars.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T11:15:39.358Z",
+  "schema_version": "v1",
+  "commit_sha": "4ec30ea5d4c52f101367100e8996952637da1c3f",
+  "title": "fix(B-0347): carve 21 over-length skill descriptions to ≤150 chars",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T11:15:22Z",
+  "head_ref": "fix/B-0347-carved-skill-descriptions"
+}

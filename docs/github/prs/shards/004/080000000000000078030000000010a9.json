@@ -1,0 +1,12 @@
+{
+  "pr_number": 4265,
+  "archive_path": "docs/history/pr-reviews/PR-4265-shard-2344z-c-codex-p1-fix-on-4261-via-4264.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:48:21.839Z",
+  "schema_version": "v1",
+  "commit_sha": "e2f6a2cab2da97bad35f7ab4f61a1bd7cdb385a8",
+  "title": "shard(2344Z-c): Codex P1 fix on #4261 via #4264",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:48:03Z",
+  "head_ref": "shard/tick-2344z-c-codex-p1-fix-aaron-name-attribution-2026-05-18"
+}

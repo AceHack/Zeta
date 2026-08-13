@@ -1,0 +1,12 @@
+{
+  "pr_number": 7955,
+  "archive_path": "docs/history/pr-reviews/PR-7955-docs-research-shadow-ferry-17-addendum-vera-types-the-fuse-boundary-zset-a-gset-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:05:29.790Z",
+  "schema_version": "v1",
+  "commit_sha": "bccd947d5e29350126d0dcd0a1cb10d8fbb5828e",
+  "title": "docs(research)+shadow: ferry 17 addendum — Vera types the fuse boundary (ZSet<'a> -> GSet<'fused>; tryFuse as refusal)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:05:03Z",
+  "head_ref": "shadow/ferry-17-vera-fuse-signature"
+}

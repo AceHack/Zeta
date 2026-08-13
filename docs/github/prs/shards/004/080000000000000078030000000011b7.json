@@ -1,0 +1,17 @@
+{
+  "pr_number": 4535,
+  "archive_path": "docs/history/pr-reviews/PR-4535-memo-saturation-ceiling-b-0530-at-push-time-git-read-tree-head-recovers-truncate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Dl2J6",
+    "comment:PRRC_kwDOSF9kNM7DlywM",
+    "thread:PRRT_kwDOSF9kNM6Dz1_2",
+    "thread:PRRT_kwDOSF9kNM6Dz4i0"
+  ],
+  "fetched_at": "2026-05-21T13:26:42.133Z",
+  "schema_version": "v1",
+  "commit_sha": "8d71c8911ee4ef0d9a2561f0400938e9a699f638",
+  "title": "memo(saturation-ceiling): B-0530 at-push-time + git read-tree HEAD recovers truncated index",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T13:26:12Z",
+  "head_ref": "otto/memo-b0530-push-time-rest-bypass-1318z"
+}

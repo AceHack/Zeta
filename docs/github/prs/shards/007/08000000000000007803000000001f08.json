@@ -1,0 +1,12 @@
+{
+  "pr_number": 7944,
+  "archive_path": "docs/history/pr-reviews/PR-7944-docs-research-shadow-ferry-15-mika-captured-entropy-makes-the-inside-id-keys-fro.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T16:16:26.856Z",
+  "schema_version": "v1",
+  "commit_sha": "12f771e653390610c85a0569700b63669030a171",
+  "title": "docs(research)+shadow: ferry 15 (Mika) — captured entropy makes the inside; ID keys from harvested uncertainty; multi-universe RX laws (Gödel bound attached)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T16:16:01Z",
+  "head_ref": "shadow/ferry-15-mika-closed-loop"
+}

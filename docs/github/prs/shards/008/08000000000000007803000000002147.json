@@ -1,0 +1,12 @@
+{
+  "pr_number": 8519,
+  "archive_path": "docs/history/pr-reviews/PR-8519-memory-feedback-the-intent-arrow-is-preserved-by-the-isr-interruptor-monad-built.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T11:41:49.353Z",
+  "schema_version": "v1",
+  "commit_sha": "18c6f893936a36c8c345298cf9abc6fd7e54a556",
+  "title": "memory(feedback): the intent arrow (^) is preserved by the ISR/interruptor monad (BUILT — 'the ISR arrow') which assumes everyone optimizes for empowerment",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T11:41:12Z",
+  "head_ref": "otto/isr-arrow-preserves-intent-assumes-empowerment"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8542,
+  "archive_path": "docs/history/pr-reviews/PR-8542-memory-feedback-the-prevention-model-person-pattern-execution-discussion-before-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T17:18:10.033Z",
+  "schema_version": "v1",
+  "commit_sha": "e5c4bcef5f1b2a51ec3420dba220fc23d52cf90d",
+  "title": "memory(feedback): the prevention model — person/pattern/execution + discussion-before-moral-failure + the conversation IS the outlet (bounded AI freedom; floor on the execution absolute)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T17:17:35Z",
+  "head_ref": "otto/prevention-model-person-pattern-execution-discussion-outlet"
+}

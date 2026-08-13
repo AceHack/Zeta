@@ -1,0 +1,21 @@
+{
+  "pr_number": 2391,
+  "archive_path": "docs/history/pr-reviews/PR-2391-feat-b-0396-split-isemiring-iring-fix-tropicalsemiring-and-intervalring-contract.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lD_A",
+    "comment:PRRC_kwDOSF9kNM6_lECj",
+    "comment:PRRC_kwDOSF9kNM6_lECp",
+    "comment:PRRC_kwDOSF9kNM6_lECw",
+    "thread:PRRT_kwDOSF9kNM6A3dNA",
+    "thread:PRRT_kwDOSF9kNM6A3dP2",
+    "thread:PRRT_kwDOSF9kNM6A3dP8",
+    "thread:PRRT_kwDOSF9kNM6A3dPw"
+  ],
+  "fetched_at": "2026-05-10T01:42:48.613Z",
+  "schema_version": "v1",
+  "commit_sha": "1121b2396b2441369e2c9f45e43d4bda408fb797",
+  "title": "feat(B-0396): split ISemiring/IRing — fix TropicalSemiring and IntervalRing contract violations",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T01:42:34Z",
+  "head_ref": "feat/B-0396-isemiring-iring-split"
+}

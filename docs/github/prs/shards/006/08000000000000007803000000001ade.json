@@ -1,0 +1,12 @@
+{
+  "pr_number": 6878,
+  "archive_path": "docs/history/pr-reviews/PR-6878-test-dagfs-add-shared-edit-golden-vectors.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T17:19:43.193Z",
+  "schema_version": "v1",
+  "commit_sha": "5904c03685a295f5bacdbdb911890cbff72cbfcf",
+  "title": "test(DagFs): add shared edit golden vectors",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T17:19:22Z",
+  "head_ref": "codex/vera-dagfs-vectors"
+}

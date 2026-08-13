@@ -1,0 +1,12 @@
+{
+  "pr_number": 8378,
+  "archive_path": "docs/history/pr-reviews/PR-8378-docs-society-fusion-answer-protocol-observe-ts-router-triggers-alert-the-trigger.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:36:28.196Z",
+  "schema_version": "v1",
+  "commit_sha": "833885aa325b8fdc07f17139eea461a9c0941a12",
+  "title": "docs(society): fusion answer-protocol — observe.ts router + triggers, alert the trigger's owner",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:36:03Z",
+  "head_ref": "docs/fusion-answer-protocol-router-triggers"
+}

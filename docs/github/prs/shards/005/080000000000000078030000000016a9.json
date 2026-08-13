@@ -1,0 +1,12 @@
+{
+  "pr_number": 5801,
+  "archive_path": "docs/history/pr-reviews/PR-5801-feat-b-0867-15-gitlabworld-per-host-adapter-poc-first-per-host-extension-of-pr-5.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T12:59:33.257Z",
+  "schema_version": "v1",
+  "commit_sha": "be7e4d53efd544d2d7055d3cbf759f5dfa51d0cb",
+  "title": "feat(B-0867.15): GitLabWorld per-host adapter PoC — first per-host extension of PR #5775 GitWorld → GitHubWorld pattern; 19 tests pass",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T12:59:10Z",
+  "head_ref": "otto-cli/b-0867-15-gitlab-world-per-host-adapter-poc-extends-gitworld-githubworld-pattern-aaron-2026-05-28"
+}

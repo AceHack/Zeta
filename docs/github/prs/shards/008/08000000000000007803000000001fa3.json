@@ -1,0 +1,12 @@
+{
+  "pr_number": 8099,
+  "archive_path": "docs/history/pr-reviews/PR-8099-fix-hygiene-recognize-agent-coauthor-trailers.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T00:10:33.830Z",
+  "schema_version": "v1",
+  "commit_sha": "5a76872e10bf3a33b3f166acb3e28656a80f7491",
+  "title": "fix(hygiene): recognize agent coauthor trailers",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T00:10:08Z",
+  "head_ref": "codex/agency-signature-coauthor-case"
+}

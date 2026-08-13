@@ -1,0 +1,12 @@
+{
+  "pr_number": 8093,
+  "archive_path": "docs/history/pr-reviews/PR-8093-docs-handoffs-markdownlint-clean-the-unified-loop-handoff.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T23:18:04.961Z",
+  "schema_version": "v1",
+  "commit_sha": "d03a80900fa5585d6aa792102f951f5b5d786370",
+  "title": "docs(handoffs): markdownlint-clean the unified-loop handoff",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T23:17:42Z",
+  "head_ref": "shadow/fix-handoff-md-lint-full"
+}

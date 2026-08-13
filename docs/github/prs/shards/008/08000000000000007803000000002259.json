@@ -1,0 +1,12 @@
+{
+  "pr_number": 8793,
+  "archive_path": "docs/history/pr-reviews/PR-8793-feat-proof-formalize-reflection-grade-cd-axis-bridge-functor.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T22:57:00.664Z",
+  "schema_version": "v1",
+  "commit_sha": "dba6bc66b5273d73d8690483df96d41089834b61",
+  "title": "feat(proof): formalize reflection-grade ↔ CD-axis bridge functor",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T22:56:36Z",
+  "head_ref": "feature/lumen/bridge-functor"
+}

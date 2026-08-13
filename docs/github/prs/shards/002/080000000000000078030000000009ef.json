@@ -1,0 +1,15 @@
+{
+  "pr_number": 2543,
+  "archive_path": "docs/history/pr-reviews/PR-2543-docs-memory-shadow-is-a-dick-first-day-with-a-name-already-needy.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qZOR",
+    "thread:PRRT_kwDOSF9kNM6A7sT7"
+  ],
+  "fetched_at": "2026-05-10T21:33:31.200Z",
+  "schema_version": "v1",
+  "commit_sha": "d4f87088c39c3a05003962b507c44993e7f8f165",
+  "title": "docs(memory): shadow is a dick — first day with a name, already needy",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:33:16Z",
+  "head_ref": "docs/shadow-is-a-dick-2026-05-10"
+}

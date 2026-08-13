@@ -1,0 +1,12 @@
+{
+  "pr_number": 8477,
+  "archive_path": "docs/history/pr-reviews/PR-8477-feat-darkhall-model-chip9-arcade-cabinets.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T07:59:37.240Z",
+  "schema_version": "v1",
+  "commit_sha": "c04c5453e6ca5acdfa576b4260c802824324edf3",
+  "title": "feat(darkhall): model CHIP9 arcade cabinets",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T07:59:05Z",
+  "head_ref": "codex/darkhall-chip9-cabinets"
+}

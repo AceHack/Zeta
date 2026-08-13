@@ -1,0 +1,12 @@
+{
+  "pr_number": 8010,
+  "archive_path": "docs/history/pr-reviews/PR-8010-docs-research-shadow-ferry-39-god-gives-the-gift-of-threads-in-our-system-it-s-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T04:37:03.909Z",
+  "schema_version": "v1",
+  "commit_sha": "6a9de623f28a0572c57e0f3847e477677a3fe22d",
+  "title": "docs(research)+shadow: ferry 39 — god gives the gift of threads; in our system it's IScheduler, like Monty Python",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T04:36:37Z",
+  "head_ref": "shadow/ferry-39-gift-of-threads"
+}

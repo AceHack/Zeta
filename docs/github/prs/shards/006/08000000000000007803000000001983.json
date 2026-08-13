@@ -1,0 +1,15 @@
+{
+  "pr_number": 6531,
+  "archive_path": "docs/history/pr-reviews/PR-6531-research-fold-observe-emit-remainder-seed-persist-bulk-boundary-reversal-hologra.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HFb5l",
+    "thread:PRRT_kwDOSF9kNM6GYEt-"
+  ],
+  "fetched_at": "2026-06-02T09:23:45.832Z",
+  "schema_version": "v1",
+  "commit_sha": "cea0859cc31336ab39d826c693785eedbf8daf2b",
+  "title": "research: fold observe/emit→remainder/seed=Persist + bulk/boundary reversal (holographic) + uno into the canonical-form synthesis; DIO/DID grounding (Aaron 2026-06-02)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T09:23:21Z",
+  "head_ref": "otto-cli/fold-persist-bulk-boundary-uno-2026-06-02"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5722,
+  "archive_path": "docs/history/pr-reviews/PR-5722-feat-b-0913-triage-dup-id-groups-b-0865-b-0866-pre-existing-on-origin-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T08:38:39.327Z",
+  "schema_version": "v1",
+  "commit_sha": "4f0719a51286fbadbbf0222d0ae9ecf84f8669cb",
+  "title": "feat(B-0913): triage dup-ID groups B-0865 + B-0866 (pre-existing on origin/main)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T08:38:19Z",
+  "head_ref": "otto-cli/b-0913-dup-id-triage-b0865-b0866-aaron-otto-2026-05-28"
+}

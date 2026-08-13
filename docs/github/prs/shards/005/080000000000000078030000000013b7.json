@@ -1,0 +1,15 @@
+{
+  "pr_number": 5047,
+  "archive_path": "docs/history/pr-reviews/PR-5047-fix-b-0754-iter-2-empty-systemd-path-broke-clear-nmtui-ping-systemctl-on-real-ha.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EuEUr",
+    "thread:PRRT_kwDOSF9kNM6EpXVK"
+  ],
+  "fetched_at": "2026-05-26T00:22:22.984Z",
+  "schema_version": "v1",
+  "commit_sha": "aed30149991f8df414ad428b8af8eece9373f947",
+  "title": "fix(B-0754 iter-2): empty systemd PATH broke clear+nmtui+ping+systemctl on real hardware",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T00:22:03Z",
+  "head_ref": "otto-cli/b0754-fix-systemd-path-iter2-2026-05-25"
+}

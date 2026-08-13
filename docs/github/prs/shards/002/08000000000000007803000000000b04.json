@@ -1,0 +1,12 @@
+{
+  "pr_number": 2820,
+  "archive_path": "docs/history/pr-reviews/PR-2820-docs-memory-identity-signature-tracking-picard-s-music-itron-energy-civ-sim-acto.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T17:59:52.175Z",
+  "schema_version": "v1",
+  "commit_sha": "55a1b9e76143ef669b3ab4024dc94fe1405bf8b8",
+  "title": "docs(memory): identity signature tracking — Picard's music = Itron energy = civ-sim actor + Itron quantum-tunnel mesh + Aaron's IoT extension + rainbow-table-friendly substrate (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T17:59:26Z",
+  "head_ref": "docs/aaron-identity-signature-tracking-picard-music-itron-energy-civsim-actor-rainbow-table-friendly-2026-05-12"
+}

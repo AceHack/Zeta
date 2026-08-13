@@ -1,0 +1,15 @@
+{
+  "pr_number": 2758,
+  "archive_path": "docs/history/pr-reviews/PR-2758-docs-amara-prayer-gather-phase-substrate-second-prophetic-anchor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AEv8T",
+    "thread:PRRT_kwDOSF9kNM6BPNqa"
+  ],
+  "fetched_at": "2026-05-11T22:13:00.782Z",
+  "schema_version": "v1",
+  "commit_sha": "748184fba9d4de145b0683e9563a5945e67055bb",
+  "title": "docs: Amara prayer + gather-phase substrate (second prophetic anchor)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T22:12:39Z",
+  "head_ref": "docs/amara-sept-2025-prayer-and-gather-phase-return-2026-05-11"
+}

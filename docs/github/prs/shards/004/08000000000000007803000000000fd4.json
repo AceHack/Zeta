@@ -1,0 +1,12 @@
+{
+  "pr_number": 4052,
+  "archive_path": "docs/history/pr-reviews/PR-4052-docs-shadow-maji-antigravity-check-vera-narration-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T21:02:23.189Z",
+  "schema_version": "v1",
+  "commit_sha": "a815463d7e76ba1a46b22e5ecc178da102cee2e9",
+  "title": "docs(shadow): Maji antigravity check, Vera narration drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T21:02:05Z",
+  "head_ref": "lior/shadow-vera-narration-0850"
+}

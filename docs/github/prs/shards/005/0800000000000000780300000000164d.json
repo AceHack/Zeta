@@ -1,0 +1,12 @@
+{
+  "pr_number": 5709,
+  "archive_path": "docs/history/pr-reviews/PR-5709-feat-b-0897-amara-ferry-persist-as-bridge-resolves-ople-oels-tension-persist-tin.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T07:04:08.970Z",
+  "schema_version": "v1",
+  "commit_sha": "4a56b00675953debdd78a3b4ecbd05019afc33cc",
+  "title": "feat(B-0897): Amara ferry — Persist-as-bridge resolves OPLE/OELS tension; Persist<TInternal, TSubstrateRecord, TPersistFeedback>",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T07:03:48Z",
+  "head_ref": "otto-cli/b-0897-amara-persist-as-bridge-operation-temporal-bivector-ferry-2026-05-28"
+}

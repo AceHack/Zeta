@@ -1,0 +1,12 @@
+{
+  "pr_number": 8792,
+  "archive_path": "docs/history/pr-reviews/PR-8792-chore-wire-schemaevolution-into-build-graph-update-trajectory.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T22:55:53.632Z",
+  "schema_version": "v1",
+  "commit_sha": "14b71d72305900983b737130b766d73fc4f92d4c",
+  "title": "chore: wire SchemaEvolution into build graph + update trajectory",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T22:55:29Z",
+  "head_ref": "alexa/cleanup-wiring"
+}

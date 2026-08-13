@@ -1,0 +1,15 @@
+{
+  "pr_number": 3912,
+  "archive_path": "docs/history/pr-reviews/PR-3912-shard-tick-2026-05-16t16-44z-cascade-fully-complete-8-prs-1h-13m-recoverable-con.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B51jY",
+    "thread:PRRT_kwDOSF9kNM6Ckwmo"
+  ],
+  "fetched_at": "2026-05-16T16:58:53.698Z",
+  "schema_version": "v1",
+  "commit_sha": "4559db2d5aa7ab2aa6c5dd772c8b4b4de6fcff99",
+  "title": "shard(tick): 2026-05-16T16:44Z — cascade fully complete (8 PRs, 1h 13m); recoverable contamination Pattern 3",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T16:58:39Z",
+  "head_ref": "otto-cli-tick-shard-1644z-cascade-tail-complete-2026-05-16"
+}

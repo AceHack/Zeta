@@ -1,0 +1,19 @@
+{
+  "pr_number": 2384,
+  "archive_path": "docs/history/pr-reviews/PR-2384-claim-b-0001-close-example-schema-self-reference-row.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_k0BR",
+    "comment:PRRC_kwDOSF9kNM6_k0BZ",
+    "comment:PRRC_kwDOSF9kNM6_k0Bi",
+    "thread:PRRT_kwDOSF9kNM6A3QpO",
+    "thread:PRRT_kwDOSF9kNM6A3QpW",
+    "thread:PRRT_kwDOSF9kNM6A3Qpf"
+  ],
+  "fetched_at": "2026-05-10T00:38:25.757Z",
+  "schema_version": "v1",
+  "commit_sha": "1fb0e136c6f23654804df3da8b0fb7876ac6d3be",
+  "title": "claim(B-0001): close example schema self-reference row",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T00:38:11Z",
+  "head_ref": "claim/B-0001-close-example-schema-self-reference"
+}

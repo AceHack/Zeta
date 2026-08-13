@@ -1,0 +1,21 @@
+{
+  "pr_number": 6194,
+  "archive_path": "docs/history/pr-reviews/PR-6194-research-backlog-adr-work-ontology-bi-kimball-grounding-provenance-anchor-creato.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gdoco",
+    "comment:PRRC_kwDOSF9kNM7Gdod6",
+    "comment:PRRC_kwDOSF9kNM7GdoeB",
+    "comment:PRRC_kwDOSF9kNM7GdoeE",
+    "thread:PRRT_kwDOSF9kNM6F6byA",
+    "thread:PRRT_kwDOSF9kNM6F6by_",
+    "thread:PRRT_kwDOSF9kNM6F6bzE",
+    "thread:PRRT_kwDOSF9kNM6F6bzH"
+  ],
+  "fetched_at": "2026-05-31T03:37:57.674Z",
+  "schema_version": "v1",
+  "commit_sha": "98d2a6d9ade85bf9c8a531feef7ab944332ac557",
+  "title": "research+backlog+ADR: work-ontology BI/Kimball grounding + provenance anchor + creator-comp-not-DRM (PROPOSED, pending Aaron+Max)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T03:37:37Z",
+  "head_ref": "otto-cli/work-ontology-bi-kimball-provenance-anchor-creator-comp-2026-05-30"
+}

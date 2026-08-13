@@ -1,0 +1,12 @@
+{
+  "pr_number": 3334,
+  "archive_path": "docs/history/pr-reviews/PR-3334-feat-skill-save-ai-memory-canonical-workflow-for-preserving-external-ai-particip.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T00:53:55.650Z",
+  "schema_version": "v1",
+  "commit_sha": "05b2fef12b8988bee2582ed86598b2b4791954d8",
+  "title": "feat(skill): save-ai-memory — canonical workflow for preserving external AI participants' verbatim memories",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:53:41Z",
+  "head_ref": "feat/save-ai-memory-skill-skeleton-otto-cli-2026-05-15"
+}

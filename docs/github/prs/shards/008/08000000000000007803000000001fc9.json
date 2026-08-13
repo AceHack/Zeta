@@ -1,0 +1,12 @@
+{
+  "pr_number": 8137,
+  "archive_path": "docs/history/pr-reviews/PR-8137-fix-collation-enforce-invariant-culture-ordinal-collation-and-configureawait-fal.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T02:17:19.250Z",
+  "schema_version": "v1",
+  "commit_sha": "9031bc52fd6bf87385bfefa49ae8644933ddbe1c",
+  "title": "fix(collation): enforce invariant culture, ordinal collation, and ConfigureAwait(false) guidelines",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T02:16:55Z",
+  "head_ref": "lior/unified-loop-agent-gate"
+}

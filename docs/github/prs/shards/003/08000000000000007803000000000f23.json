@@ -1,0 +1,12 @@
+{
+  "pr_number": 3875,
+  "archive_path": "docs/history/pr-reviews/PR-3875-shard-tick-2026-05-16t12-53z-3rd-contamination-in-4-ticks-mid-tick-rate-reset.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T13:12:11.817Z",
+  "schema_version": "v1",
+  "commit_sha": "8fb95927633b623103669fdb13c7ffd9a7f3f015",
+  "title": "shard(tick): 2026-05-16T12:53Z — 3rd contamination in 4 ticks; mid-tick rate-reset",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T13:11:53Z",
+  "head_ref": "otto-cli-tick-2026-05-16-1253z"
+}

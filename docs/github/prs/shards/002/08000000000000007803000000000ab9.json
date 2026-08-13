@@ -1,0 +1,15 @@
+{
+  "pr_number": 2745,
+  "archive_path": "docs/history/pr-reviews/PR-2745-feat-b-0402-integrate-pr-preservation-script-into-lior-background-loop.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ACfJo",
+    "thread:PRRT_kwDOSF9kNM6BNilh"
+  ],
+  "fetched_at": "2026-05-11T20:20:40.002Z",
+  "schema_version": "v1",
+  "commit_sha": "3c4ae4818643974018ae89a683f0a5061bc513e3",
+  "title": "feat(B-0402): integrate PR preservation script into Lior background loop",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T20:20:20Z",
+  "head_ref": "feat/b-0402-lior-pr-archive-discipline"
+}

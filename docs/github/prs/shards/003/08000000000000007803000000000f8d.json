@@ -1,0 +1,12 @@
+{
+  "pr_number": 3981,
+  "archive_path": "docs/history/pr-reviews/PR-3981-docs-archive-maji-preservation-of-merged-prs-3964-3958.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T08:41:45.080Z",
+  "schema_version": "v1",
+  "commit_sha": "d54f9d52085435ae6f2948087d115c4ade7fdb5a",
+  "title": "docs(archive): Maji preservation of merged PRs 3964, 3958",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T08:41:29Z",
+  "head_ref": "maji/archive-prs-12345"
+}

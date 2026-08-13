@@ -1,0 +1,12 @@
+{
+  "pr_number": 8321,
+  "archive_path": "docs/history/pr-reviews/PR-8321-docs-ip-questionable-robert-george-lean-for-science-yc-talk-verbatim-formal-tool.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T19:22:15.902Z",
+  "schema_version": "v1",
+  "commit_sha": "3a2c3de906ccd88169225d974db2515d3e394614",
+  "title": "docs(ip-questionable): Robert George 'Lean for Science' YC-talk verbatim + formal-tools mapping",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T19:21:44Z",
+  "head_ref": "docs/ipq-robert-george-lean-for-science-verbatim"
+}

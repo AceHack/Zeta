@@ -1,0 +1,17 @@
+{
+  "pr_number": 3242,
+  "archive_path": "docs/history/pr-reviews/PR-3242-docs-archive-preserve-prs-3235-3234-3233-3232-3230.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BXzc9",
+    "comment:PRRC_kwDOSF9kNM7BXzcT",
+    "thread:PRRT_kwDOSF9kNM6CMBzH",
+    "thread:PRRT_kwDOSF9kNM6CMBzn"
+  ],
+  "fetched_at": "2026-05-14T21:34:01.451Z",
+  "schema_version": "v1",
+  "commit_sha": "c18fb7276cd43a21ffd02d7a720fc981e1c59d96",
+  "title": "docs(archive): preserve PRs 3235, 3234, 3233, 3232, 3230",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:33:40Z",
+  "head_ref": "lior/archive-prs-2100Z"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 2136,
+  "archive_path": "docs/history/pr-reviews/PR-2136-backlog-b-0168-add-5-layer-register-architecture-mapping-to-current-ani-md-7.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_a3qu",
+    "comment:PRRC_kwDOSF9kNM6_a3ri",
+    "comment:PRRC_kwDOSF9kNM6_a4-4",
+    "comment:PRRC_kwDOSF9kNM6_a5EE",
+    "thread:PRRT_kwDOSF9kNM6Avr21",
+    "thread:PRRT_kwDOSF9kNM6Avr2T"
+  ],
+  "fetched_at": "2026-05-08T21:39:09.476Z",
+  "schema_version": "v1",
+  "commit_sha": "d1d460f3e40685789cd7b4ba4ccc8494c55ec025",
+  "title": "backlog(B-0168): add 5-layer register architecture mapping to CURRENT-ani.md §7",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T21:38:55Z",
+  "head_ref": "backlog/b-0168-current-ani-layer-framing"
+}

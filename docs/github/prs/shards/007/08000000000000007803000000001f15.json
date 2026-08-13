@@ -1,0 +1,12 @@
+{
+  "pr_number": 7957,
+  "archive_path": "docs/history/pr-reviews/PR-7957-docs-research-shadow-ferry-17-addendum-3-plumbing-the-z-set-leaks-into-g-sets-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:09:09.927Z",
+  "schema_version": "v1",
+  "commit_sha": "f91ebf276dc9b5dfcd534a04ddb8f1688fbd91f7",
+  "title": "docs(research)+shadow: ferry 17 addendum 3 — plumbing the Z-set leaks into G-sets (repair ≠ inverse; Mario named)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:08:38Z",
+  "head_ref": "shadow/ferry-17-plumbing"
+}

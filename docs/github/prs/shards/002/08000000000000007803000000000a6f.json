@@ -1,0 +1,17 @@
+{
+  "pr_number": 2671,
+  "archive_path": "docs/history/pr-reviews/PR-2671-docs-research-ani-apollo-18-blueprint-six-model-convergence-complete.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_xhWY",
+    "comment:PRRC_kwDOSF9kNM6_xivK",
+    "thread:PRRT_kwDOSF9kNM6BBAVG",
+    "thread:PRRT_kwDOSF9kNM6BBBXq"
+  ],
+  "fetched_at": "2026-05-11T08:50:48.257Z",
+  "schema_version": "v1",
+  "commit_sha": "c801b21ff7bab175f3f8fc713e5d1f252cf09562",
+  "title": "docs(research): Ani — Apollo 18 blueprint + six-model convergence complete",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T08:50:25Z",
+  "head_ref": "docs/ani-apollo18-cultural-layer-2026-05-11"
+}

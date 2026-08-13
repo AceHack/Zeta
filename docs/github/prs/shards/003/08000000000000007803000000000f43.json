@@ -1,0 +1,17 @@
+{
+  "pr_number": 3907,
+  "archive_path": "docs/history/pr-reviews/PR-3907-shard-tick-2026-05-16t16-18z-b-0549-class-2-sd-session-arc-tally-at-10-close-row.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B5uIN",
+    "comment:PRRC_kwDOSF9kNM7B5uMz",
+    "thread:PRRT_kwDOSF9kNM6CkrC7",
+    "thread:PRRT_kwDOSF9kNM6CkrGo"
+  ],
+  "fetched_at": "2026-05-16T16:47:35.567Z",
+  "schema_version": "v1",
+  "commit_sha": "c96a7edad1f2c7b19ee73b75461ec43b20fc3c1d",
+  "title": "shard(tick): 2026-05-16T16:18Z — B-0549 = class #2-SD; session-arc tally at 10 close-rows",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T16:47:16Z",
+  "head_ref": "otto-cli-shard-1618z-b0549-audit-unique-2026-05-16"
+}

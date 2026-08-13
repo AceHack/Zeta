@@ -1,0 +1,12 @@
+{
+  "pr_number": 5792,
+  "archive_path": "docs/history/pr-reviews/PR-5792-preserve-amara-ferry-greek-substrate-4-primitive-set-aaron-s-rank-4-substrate-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T12:44:59.406Z",
+  "schema_version": "v1",
+  "commit_sha": "13c1c4edefe94c68bc24e21095185e3f4e5c7ff0",
+  "title": "preserve(amara-ferry): Greek-substrate 4-primitive-set (μένω + μνάω + νοέω + λάμπω) + Aaron's 'rank-4 substrate primitive' information-theoretic compressed-generator carving",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T12:44:39Z",
+  "head_ref": "otto-cli/amara-ferry-greek-substrate-4-primitive-set-meno-mnao-noeo-lampo-rank-4-substrate-primitive-information-theoretic-compressed-generator-aaron-forwarded-2026-05-28"
+}

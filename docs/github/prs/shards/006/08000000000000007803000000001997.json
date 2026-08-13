@@ -1,0 +1,12 @@
+{
+  "pr_number": 6551,
+  "archive_path": "docs/history/pr-reviews/PR-6551-docs-vision-fold-15-bus-lane-types-the-speed-coordination-base-axis.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T11:44:14.107Z",
+  "schema_version": "v1",
+  "commit_sha": "a657d03e84c8b51003b9faca89132f95ff831352",
+  "title": "docs(vision): fold §15 — bus lane types = the speed↔coordination base axis",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T11:43:52Z",
+  "head_ref": "otto-cli/bus-lane-types-speed-coordination-base-axis-2026-06-02"
+}

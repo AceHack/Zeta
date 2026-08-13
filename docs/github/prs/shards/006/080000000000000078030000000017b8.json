@@ -1,0 +1,22 @@
+{
+  "pr_number": 6072,
+  "archive_path": "docs/history/pr-reviews/PR-6072-feat-b-0164-1-reconciledivergenceshard-i-o-write-back-glue-for-dual-loop-ac-4-on.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GXD76",
+    "comment:PRRC_kwDOSF9kNM7GXEDi",
+    "comment:PRRC_kwDOSF9kNM7GXEDo",
+    "comment:PRRC_kwDOSF9kNM7GXFW3",
+    "comment:PRRC_kwDOSF9kNM7GXFXJ",
+    "comment:PRRC_kwDOSF9kNM7GXFXl",
+    "thread:PRRT_kwDOSF9kNM6F1aFy",
+    "thread:PRRT_kwDOSF9kNM6F1aL9",
+    "thread:PRRT_kwDOSF9kNM6F1aMA"
+  ],
+  "fetched_at": "2026-05-30T03:17:43.978Z",
+  "schema_version": "v1",
+  "commit_sha": "ab0265cc70278e949ea864fc5992cfa40870dc87",
+  "title": "feat(B-0164.1): reconcileDivergenceShard — I/O write-back glue for dual-loop AC #4 \"one action\"",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T03:17:26Z",
+  "head_ref": "otto-cli/b0164.1-reconcile-writeback-glue"
+}

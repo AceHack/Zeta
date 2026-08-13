@@ -1,0 +1,12 @@
+{
+  "pr_number": 4192,
+  "archive_path": "docs/history/pr-reviews/PR-4192-fix-33-header-position-compact-3-pre-existing-files-for-spec-compliance-all-4-la.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T19:50:48.897Z",
+  "schema_version": "v1",
+  "commit_sha": "758423604eb2e870742ccad746c41f7b7ec5db9e",
+  "title": "fix(§33-header-position): compact 3 pre-existing files for spec compliance (all 4 labels in first 20 lines)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T19:50:31Z",
+  "head_ref": "shard/section-33-header-position-spec-compliance-3-files-2026-05-18"
+}

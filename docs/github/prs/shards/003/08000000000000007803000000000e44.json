@@ -1,0 +1,17 @@
+{
+  "pr_number": 3652,
+  "archive_path": "docs/history/pr-reviews/PR-3652-shard-tick-0043z-pr-3650-closes-2-copilot-threads-on-3646.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B0So0",
+    "comment:PRRC_kwDOSF9kNM7B0Sox",
+    "thread:PRRT_kwDOSF9kNM6CgnsS",
+    "thread:PRRT_kwDOSF9kNM6CgnsV"
+  ],
+  "fetched_at": "2026-05-16T00:57:57.534Z",
+  "schema_version": "v1",
+  "commit_sha": "24eee65ab73ebe9b797ca5a04dcb265cc9ec8f11",
+  "title": "shard(tick): 0043Z — PR #3650 closes 2 Copilot threads on #3646",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:57:42Z",
+  "head_ref": "shard/tick-0043z-otto-cli-2026-05-16"
+}

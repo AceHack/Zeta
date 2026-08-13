@@ -1,0 +1,16 @@
+{
+  "pr_number": 5960,
+  "archive_path": "docs/history/pr-reviews/PR-5960-docs-decisions-add-adr-on-isolating-background-loop-runners-to-dedicated-workspa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GFEW3",
+    "comment:PRRC_kwDOSF9kNM7GFvO0",
+    "thread:PRRT_kwDOSF9kNM6FoWK8"
+  ],
+  "fetched_at": "2026-05-29T09:24:02.219Z",
+  "schema_version": "v1",
+  "commit_sha": "ac4f9415ab1647e1559e934ed2b8df84d8a505e2",
+  "title": "docs(decisions): Add ADR on isolating background loop runners to dedicated workspaces",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T09:23:40Z",
+  "head_ref": "lior/adr-isolate-background-loop-runners"
+}

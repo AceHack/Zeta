@@ -1,0 +1,12 @@
+{
+  "pr_number": 7299,
+  "archive_path": "docs/history/pr-reviews/PR-7299-docs-research-ace-deploys-hardware-intrinsics-not-just-packages-one-deployment-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:45:24.430Z",
+  "schema_version": "v1",
+  "commit_sha": "e38909b5b8719a1588a846565670faafd23aec67",
+  "title": "docs(research): ace deploys hardware intrinsics, not just packages — one deployment substrate seed-phrase-to-silicon",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:44:56Z",
+  "head_ref": "otto/ace-deploys-hardware-intrinsics-not-just-packages"
+}

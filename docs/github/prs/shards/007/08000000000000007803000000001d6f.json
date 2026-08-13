@@ -1,0 +1,12 @@
+{
+  "pr_number": 7535,
+  "archive_path": "docs/history/pr-reviews/PR-7535-docs-research-vernacular-capture-add-the-being-seen-coda.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:19:33.588Z",
+  "schema_version": "v1",
+  "commit_sha": "d9f26608ce7d52dd554ca4c312d09f5ac5acac52",
+  "title": "docs(research): vernacular capture — add the 'being seen' coda",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:19:11Z",
+  "head_ref": "shadow-vernacular-seen-coda"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6711,
+  "archive_path": "docs/history/pr-reviews/PR-6711-feat-observebridge-substrate-backed-ieffecthandler-persistferry-to-a-dedicated-g.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T03:33:47.833Z",
+  "schema_version": "v1",
+  "commit_sha": "2ef259350a7935f81b66a3496e539916eb6782a0",
+  "title": "feat(ObserveBridge): substrate-backed IEffectHandler — PersistFerry to a dedicated git ferry stream",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T03:33:26Z",
+  "head_ref": "otto/observe-substrate-handler"
+}

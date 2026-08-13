@@ -1,0 +1,19 @@
+{
+  "pr_number": 8561,
+  "archive_path": "docs/history/pr-reviews/PR-8561-feat-lean-formalize-dynamicvalue-yaml-ast-and-update-7-language-matrix.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7NL__O",
+    "comment:PRRC_kwDOSF9kNM7NL__S",
+    "comment:PRRC_kwDOSF9kNM7NMVqS",
+    "thread:PRRT_kwDOSF9kNM6K1PJn",
+    "thread:PRRT_kwDOSF9kNM6K1PJp",
+    "thread:PRRT_kwDOSF9kNM6K1fRO"
+  ],
+  "fetched_at": "2026-06-19T13:12:08.280Z",
+  "schema_version": "v1",
+  "commit_sha": "6644a482bd010a9a19b72186a419b72ea49b5ddf",
+  "title": "feat(lean): formalize DynamicValue YAML AST and update 7-language matrix",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T13:11:38Z",
+  "head_ref": "lior/proof-yaml-locks"
+}

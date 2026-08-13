@@ -1,0 +1,12 @@
+{
+  "pr_number": 7479,
+  "archive_path": "docs/history/pr-reviews/PR-7479-feat-folders-shadow-hooks-net-cheat-engine-hook-ladders-chutes-ground-uncertaint.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T08:41:40.821Z",
+  "schema_version": "v1",
+  "commit_sha": "3d2249bf2c2cdb27525c9c03fadea66056decba3",
+  "title": "feat(folders)+shadow: hooks/ (.NET Cheat-Engine hook) + ladders/ + chutes/ + ground/ + uncertainty/ (the ledger)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T08:41:13Z",
+  "head_ref": "shadow-hooks-ladders-chutes"
+}

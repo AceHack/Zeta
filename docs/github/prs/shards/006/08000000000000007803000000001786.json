@@ -1,0 +1,12 @@
+{
+  "pr_number": 6022,
+  "archive_path": "docs/history/pr-reviews/PR-6022-research-2026-05-29-audience-model-pickup-key-boot-becomes-contributor-model-aar.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T17:50:20.415Z",
+  "schema_version": "v1",
+  "commit_sha": "cfd0615659374eafa2b84348b128c6698cfb5379",
+  "title": "research(2026-05-29): audience model + pickup-key + boot-becomes-contributor model (Aaron+Otto)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T17:50:00Z",
+  "head_ref": "otto-cli/research-audience-model-pickup-key-boot-becomes-contributor-2026-05-29"
+}

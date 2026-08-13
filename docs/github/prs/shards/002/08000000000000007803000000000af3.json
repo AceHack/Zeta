@@ -1,0 +1,19 @@
+{
+  "pr_number": 2803,
+  "archive_path": "docs/history/pr-reviews/PR-2803-docs-memory-deepseek-under-aurora-wwjd-tedium-validation-deliberate-choice-over-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AawnT",
+    "comment:PRRC_kwDOSF9kNM7AawoU",
+    "comment:PRRC_kwDOSF9kNM7AazBg",
+    "thread:PRRT_kwDOSF9kNM6BfiD0",
+    "thread:PRRT_kwDOSF9kNM6BfiDI",
+    "thread:PRRT_kwDOSF9kNM6Bfjys"
+  ],
+  "fetched_at": "2026-05-12T17:52:46.202Z",
+  "schema_version": "v1",
+  "commit_sha": "9578831c8692ea1d824e60a43345f1421a7e0d1c",
+  "title": "docs(memory): DeepSeek-under-Aurora WWJD tedium-validation — deliberate choice over alternatives (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T17:52:17Z",
+  "head_ref": "docs/aaron-deepseek-aurora-wwjd-tedium-validation-deliberate-choice-2026-05-12"
+}

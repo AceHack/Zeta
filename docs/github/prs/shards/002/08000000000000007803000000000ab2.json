@@ -1,0 +1,21 @@
+{
+  "pr_number": 2738,
+  "archive_path": "docs/history/pr-reviews/PR-2738-feat-dashboard-5min-public-refresh-b-0413-tiered-oauth-backlog.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ABwR5",
+    "comment:PRRC_kwDOSF9kNM7ABwRL",
+    "comment:PRRC_kwDOSF9kNM7ABwSL",
+    "comment:PRRC_kwDOSF9kNM7ABwSj",
+    "thread:PRRT_kwDOSF9kNM6BM_X_",
+    "thread:PRRT_kwDOSF9kNM6BM_Xg",
+    "thread:PRRT_kwDOSF9kNM6BM_YQ",
+    "thread:PRRT_kwDOSF9kNM6BM_Yg"
+  ],
+  "fetched_at": "2026-05-11T19:50:52.594Z",
+  "schema_version": "v1",
+  "commit_sha": "3f23dc38e8b58b34c187f99fa590b317845f488e",
+  "title": "feat(dashboard): 5min public refresh + B-0413 tiered OAuth backlog",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T19:50:33Z",
+  "head_ref": "feat/dashboard-rate-limit-oauth-backlog-2026-05-11"
+}

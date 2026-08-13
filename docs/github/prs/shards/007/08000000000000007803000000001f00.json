@@ -1,0 +1,12 @@
+{
+  "pr_number": 7936,
+  "archive_path": "docs/history/pr-reviews/PR-7936-docs-research-shadow-ferry-13-beat-8-confirmation-the-identity-principle-falls-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:43:23.273Z",
+  "schema_version": "v1",
+  "commit_sha": "578ce4a227f340c8d7688a2a4d8be3e05197b993",
+  "title": "docs(research)+shadow: ferry 13 beat 8 confirmation — the identity principle falls out (derived, not designed)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:42:51Z",
+  "head_ref": "shadow/ferry-13-beat-8-confirmation"
+}

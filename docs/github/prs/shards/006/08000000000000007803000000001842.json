@@ -1,0 +1,12 @@
+{
+  "pr_number": 6210,
+  "archive_path": "docs/history/pr-reviews/PR-6210-docs-b-0171-mark-openspec-parent-decomposed.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T13:31:27.554Z",
+  "schema_version": "v1",
+  "commit_sha": "84425a2b616a1b7f0b8046b158fc737275c12058",
+  "title": "docs(B-0171): mark OpenSpec parent decomposed",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T13:31:09Z",
+  "head_ref": "claim/task-b0171-mark-decomposed-20260531"
+}

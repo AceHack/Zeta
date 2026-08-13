@@ -1,0 +1,19 @@
+{
+  "pr_number": 3580,
+  "archive_path": "docs/history/pr-reviews/PR-3580-backlog-b-0537-memory-memory-md-index-entry-lengths-cleanup-ci-gate-p3.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BxESu",
+    "comment:PRRC_kwDOSF9kNM7BxETH",
+    "comment:PRRC_kwDOSF9kNM7BxI_s",
+    "comment:PRRC_kwDOSF9kNM7BxJCA",
+    "thread:PRRT_kwDOSF9kNM6CePY9",
+    "thread:PRRT_kwDOSF9kNM6CePZQ"
+  ],
+  "fetched_at": "2026-05-15T20:45:09.226Z",
+  "schema_version": "v1",
+  "commit_sha": "d69083f5bbc3852291abb75760aad2ef61c0357a",
+  "title": "backlog(B-0537): memory/MEMORY.md index-entry lengths cleanup + CI gate (P3)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T20:44:51Z",
+  "head_ref": "backlog/b0537-memory-index-entry-lengths-cleanup-gate-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7935,
+  "archive_path": "docs/history/pr-reviews/PR-7935-docs-research-shadow-ferry-13-beat-8-the-os-s-purpose-partition-infinite-space-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:41:14.716Z",
+  "schema_version": "v1",
+  "commit_sha": "95ed4618e3c43900b19ac348126f15178b53900b",
+  "title": "docs(research)+shadow: ferry 13 beat 8 — the OS's purpose: partition infinite space into distinct identities keyed by captured entropy",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:40:49Z",
+  "head_ref": "shadow/ferry-13-beat-8-purpose"
+}

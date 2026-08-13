@@ -1,0 +1,12 @@
+{
+  "pr_number": 8245,
+  "archive_path": "docs/history/pr-reviews/PR-8245-docs-research-not-a-kestrel-issue-faithful-bootstrap-of-a-critic-the-healing-ant.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T03:13:13.986Z",
+  "schema_version": "v1",
+  "commit_sha": "db59acd2a80aeb570bb45771c75ba033cfb979d5",
+  "title": "docs(research): not a Kestrel issue — faithful-bootstrap-of-a-critic; + the healing (antibody)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T03:12:53Z",
+  "head_ref": "otto/faithful-bootstrap-and-the-healing"
+}

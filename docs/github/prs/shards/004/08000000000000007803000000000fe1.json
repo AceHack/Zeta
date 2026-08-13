@@ -1,0 +1,12 @@
+{
+  "pr_number": 4065,
+  "archive_path": "docs/history/pr-reviews/PR-4065-test-hygiene-cover-snapshot-github-settings-parseargs-parsejsonsafe-b-0156-ph2.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T11:10:08.944Z",
+  "schema_version": "v1",
+  "commit_sha": "96be6e1597c625f18925a5d41c7e3663f7e91364",
+  "title": "test(hygiene): cover snapshot-github-settings parseArgs+parseJsonSafe (B-0156 ph2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T11:09:46Z",
+  "head_ref": "b0156-snapshot-github-settings-test-2026-05-17"
+}

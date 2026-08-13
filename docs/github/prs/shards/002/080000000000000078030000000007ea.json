@@ -1,0 +1,12 @@
+{
+  "pr_number": 2026,
+  "archive_path": "docs/history/pr-reviews/PR-2026-fix-wallet-land-b-0062-monitor-signed-signal-slice.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T04:07:35.385Z",
+  "schema_version": "v1",
+  "commit_sha": "1f02fd046fa51913cfba4298002938c0fe594945",
+  "title": "fix(wallet): land B-0062 monitor-signed signal slice",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T04:07:15Z",
+  "head_ref": "codex/b0062-wallet-retraction-receipts"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7797,
+  "archive_path": "docs/history/pr-reviews/PR-7797-docs-trajectory-resume-hexagonal-wave-7790-7796.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T21:21:38.627Z",
+  "schema_version": "v1",
+  "commit_sha": "9066994b7eee50360320fb02e3d1a3610f07a271",
+  "title": "docs(trajectory): RESUME hexagonal wave (#7790..#7796)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T21:21:13Z",
+  "head_ref": "shadow-resume-fold-hexagonal"
+}

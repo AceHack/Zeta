@@ -1,0 +1,12 @@
+{
+  "pr_number": 3199,
+  "archive_path": "docs/history/pr-reviews/PR-3199-shard-tick-1918z-razor-cadence-batch-11-4-sparse-ref-rules-7-7-live.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T19:21:29.326Z",
+  "schema_version": "v1",
+  "commit_sha": "71de03ed3fe563710e408e7cba5718a234052e54",
+  "title": "shard(tick): 1918Z — razor-cadence batch 11 (4 sparse-ref rules, 7/7 LIVE)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:21:13Z",
+  "head_ref": "shard/tick-1918Z-razor-cadence-batch11-otto-cli-2026-05-14"
+}

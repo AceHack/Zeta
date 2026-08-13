@@ -1,0 +1,12 @@
+{
+  "pr_number": 8389,
+  "archive_path": "docs/history/pr-reviews/PR-8389-docs-society-10a-mutual-empowerment-is-the-engine-that-drives-grades-the-univers.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:04:21.922Z",
+  "schema_version": "v1",
+  "commit_sha": "1654781fd4eb9901959501c9421c2dc5774c1e76",
+  "title": "docs(society): §10a — mutual empowerment is the engine that drives + grades the universal interfaces",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:03:50Z",
+  "head_ref": "docs/empowerment-grades-interfaces"
+}

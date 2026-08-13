@@ -1,0 +1,12 @@
+{
+  "pr_number": 8844,
+  "archive_path": "docs/history/pr-reviews/PR-8844-feat-genesis-build-out-the-marketplace-vault-rooms-trade-hats-open-roles-board-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T03:45:00.327Z",
+  "schema_version": "v1",
+  "commit_sha": "57e1a0e0feacb14a513a5cd0b19e27f3a1d4b504",
+  "title": "feat(genesis): build out the Marketplace vault — rooms, trade hats, open-roles board, Data room, public Standing",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:44:31Z",
+  "head_ref": "claude/github-project-genesis-y44lc2"
+}

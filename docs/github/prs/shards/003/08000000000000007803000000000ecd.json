@@ -1,0 +1,12 @@
+{
+  "pr_number": 3789,
+  "archive_path": "docs/history/pr-reviews/PR-3789-shard-tick-2026-05-16t06-51z-otto-bg-worker-pure-git-tier-rate-floor-refinement.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T06:58:55.833Z",
+  "schema_version": "v1",
+  "commit_sha": "ac58bf7dd41b2b49e879891f8e3e1e28cc866328",
+  "title": "shard(tick): 2026-05-16T06:51Z otto-bg-worker — pure-git tier; rate-floor refinement",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T06:58:39Z",
+  "head_ref": "shard/tick-0651z-otto-bg-worker-2026-05-16"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8426,
+  "archive_path": "docs/history/pr-reviews/PR-8426-docs-prior-art-zork-eliza-z-machine-discriminated-unions-as-conversational-workf.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T03:21:21.842Z",
+  "schema_version": "v1",
+  "commit_sha": "da39be029ced04e6c89fdf55d8ba039dd738b70c",
+  "title": "docs(prior-art): Zork · ELIZA · Z-machine + discriminated-unions-as-conversational-workflows",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T03:20:58Z",
+  "head_ref": "docs/prior-art-zork-eliza-zmachine-du-workflows"
+}

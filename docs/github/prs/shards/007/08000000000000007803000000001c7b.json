@@ -1,0 +1,12 @@
+{
+  "pr_number": 7291,
+  "archive_path": "docs/history/pr-reviews/PR-7291-feat-trust-flush-aaron-addison-keyrings-to-the-one-seed-convention-human-trust-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:31:00.147Z",
+  "schema_version": "v1",
+  "commit_sha": "3cd71cb967b88d6ea09537b457491aba015d85bc",
+  "title": "feat(trust): flush Aaron + Addison keyrings to the one-seed convention (human trust-roots)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:30:35Z",
+  "head_ref": "otto/flush-aaron-addison-keyrings-to-convention-human-trust-roots"
+}

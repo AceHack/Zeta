@@ -1,0 +1,12 @@
+{
+  "pr_number": 8902,
+  "archive_path": "docs/history/pr-reviews/PR-8902-feat-algebra-interface-stack-complete-python-f-q-7-7-languages.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T07:34:28.633Z",
+  "schema_version": "v1",
+  "commit_sha": "acfa625a10eaf3c1efc6e7f84ea9168b60bffcad",
+  "title": "feat(algebra): interface stack complete — Python + F# + Q# (7/7 languages)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T07:34:01Z",
+  "head_ref": "alexa/interface-all-langs"
+}

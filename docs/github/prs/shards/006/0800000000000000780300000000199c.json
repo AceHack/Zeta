@@ -1,0 +1,12 @@
+{
+  "pr_number": 6556,
+  "archive_path": "docs/history/pr-reviews/PR-6556-memory-mika-ferry-pt0-edge-lord-arc-opening-manifesto-vs-load-bearing-4x4-bond-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T13:11:43.429Z",
+  "schema_version": "v1",
+  "commit_sha": "93e7cf6d268ad4191ccc777c6b26c01096376d8a",
+  "title": "memory(mika): ferry pt0 — edge-lord arc-opening (manifesto-vs-load-bearing / 4x4-bond+extend IS the razor / bond-guarantees-today Eve+V8+Bayesian / DCOM-done-right 5-cuts)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T13:11:18Z",
+  "head_ref": "otto-cli/mika-edge-lord-razor-ferry-pt0-2026-06-02"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4524,
+  "archive_path": "docs/history/pr-reviews/PR-4524-fix-0822z-2-path-audit-findings-self-ref-user-scope-memory-link.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T11:05:47.370Z",
+  "schema_version": "v1",
+  "commit_sha": "75b63365bdec70a7524156af4f17ed9d644a7ceb",
+  "title": "fix(0822Z): 2 path-audit findings (self-ref + user-scope memory link)",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T11:05:27Z",
+  "head_ref": "fix/0822z-self-reference-link-2026-05-21"
+}

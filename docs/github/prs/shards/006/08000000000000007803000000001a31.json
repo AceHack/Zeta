@@ -1,0 +1,12 @@
+{
+  "pr_number": 6705,
+  "archive_path": "docs/history/pr-reviews/PR-6705-feat-observebridge-bridge-b-the-observe-controller-loop-durable-on-the-git-db.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T02:05:32.387Z",
+  "schema_version": "v1",
+  "commit_sha": "d0b675a41dc02e8762bee7455b52ee12543472d4",
+  "title": "feat(ObserveBridge): Bridge B — the observe controller loop, durable on the git DB",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T02:05:11Z",
+  "head_ref": "otto/observe-bridge-b"
+}

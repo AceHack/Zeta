@@ -1,0 +1,12 @@
+{
+  "pr_number": 8955,
+  "archive_path": "docs/history/pr-reviews/PR-8955-feat-setup-setup-machine-realizes-a-missing-ca-instead-of-skipping-the-cert.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T12:06:53.880Z",
+  "schema_version": "v1",
+  "commit_sha": "3dbaa29902539974e07cd2ce7d58155b65dc12b6",
+  "title": "feat(setup): setup-machine realizes a missing CA instead of skipping the cert",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T12:06:27Z",
+  "head_ref": "otto/setup-machine-realize-ca"
+}

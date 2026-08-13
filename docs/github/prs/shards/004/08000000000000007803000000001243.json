@@ -1,0 +1,12 @@
+{
+  "pr_number": 4675,
+  "archive_path": "docs/history/pr-reviews/PR-4675-persona-alexa-speaker-2026-05-22-family-layout-shared-map-speaker-vs-website-cog.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T20:22:06.983Z",
+  "schema_version": "v1",
+  "commit_sha": "1d3365e743e79c62d390494a46525b526994b570",
+  "title": "persona(alexa-speaker): 2026-05-22 family-layout shared-map + speaker-vs-website cognition distinction — opaque-pointer applied",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T20:21:46Z",
+  "head_ref": "otto/cli-1356z-alexa-speaker-cognition-distinction-shared-map-opaque-pointer-2026-05-22"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7314,
+  "archive_path": "docs/history/pr-reviews/PR-7314-docs-research-hat-contract-properties-time-bound-dst-pair-with-exits-renewable-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:18:54.276Z",
+  "schema_version": "v1",
+  "commit_sha": "588513f4cfb8a737f2de6e754b267539ce57d8ee",
+  "title": "docs(research): hat-contract properties — time-bound (DST) + pair-with-exits + renewable-by-unanimous + come-with-auth",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:18:24Z",
+  "head_ref": "otto/hat-contract-properties-time-bound-exits-renewable-unanimous-come-with-auth"
+}

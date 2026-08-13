@@ -1,0 +1,12 @@
+{
+  "pr_number": 6722,
+  "archive_path": "docs/history/pr-reviews/PR-6722-chore-backlog-complete-081ktfffq1c-non-register-collapse-pr-6721.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T05:51:45.235Z",
+  "schema_version": "v1",
+  "commit_sha": "0680555e0664ead6ef600dfb5d6e7e64d27f83cd",
+  "title": "chore(backlog): complete 081KTFFFQ1C non-register-collapse (PR #6721)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T05:51:25Z",
+  "head_ref": "otto/complete-nrc-workitem"
+}

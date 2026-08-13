@@ -1,0 +1,15 @@
+{
+  "pr_number": 6550,
+  "archive_path": "docs/history/pr-reviews/PR-6550-docs-vision-fold-14-distributed-computational-omniscience-over-relativistic-zeta.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HIdKe",
+    "thread:PRRT_kwDOSF9kNM6GaUli"
+  ],
+  "fetched_at": "2026-06-02T11:41:35.319Z",
+  "schema_version": "v1",
+  "commit_sha": "33422a3bded56a8e4d0212f6f872edf90c4d828f",
+  "title": "docs(vision): fold §14 — distributed computational omniscience over relativistic zetaspace (relativistic bus = Fortnite Battle Bus)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T11:41:10Z",
+  "head_ref": "otto-cli/relativistic-bus-fortnite-omniscience-2026-06-02"
+}

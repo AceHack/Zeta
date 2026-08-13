@@ -1,0 +1,12 @@
+{
+  "pr_number": 2524,
+  "archive_path": "docs/history/pr-reviews/PR-2524-docs-b-0400-bounded-inter-agent-bus-review-request.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T19:17:41.956Z",
+  "schema_version": "v1",
+  "commit_sha": "1ec1254b45de0fc31db247b0066aef510bc30450",
+  "title": "docs(B-0400): bounded inter-agent bus review request",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T19:17:26Z",
+  "head_ref": "claim/backlog-0400-review-request-vera-20260510"
+}

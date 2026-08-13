@@ -1,0 +1,12 @@
+{
+  "pr_number": 8356,
+  "archive_path": "docs/history/pr-reviews/PR-8356-refactor-backlog-phase-2-migrate-depends-on-parent-children-composes-with-to-zet.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T22:55:21.869Z",
+  "schema_version": "v1",
+  "commit_sha": "d41cf6419d52fdaa8bf08fc7efd7e99548e77624",
+  "title": "refactor(backlog): Phase 2 — migrate depends_on/parent/children/composes_with to ZetaId",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T22:54:55Z",
+  "head_ref": "alexa/phase2-depends-on-zetaid"
+}

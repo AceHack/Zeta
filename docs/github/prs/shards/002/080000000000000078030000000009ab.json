@@ -1,0 +1,12 @@
+{
+  "pr_number": 2475,
+  "archive_path": "docs/history/pr-reviews/PR-2475-feat-b-0164-land-divergence-shard-schema-ac-4-of-dual-loop-attribution-protocol.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T11:54:05.752Z",
+  "schema_version": "v1",
+  "commit_sha": "47c3999437210067a458fe8a4754526595a84a20",
+  "title": "feat(B-0164): land divergence-shard schema — AC #4 of dual-loop attribution protocol",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T11:53:50Z",
+  "head_ref": "fix/B-0164-divergence-shard-schema"
+}

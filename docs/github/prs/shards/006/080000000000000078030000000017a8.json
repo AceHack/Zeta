@@ -1,0 +1,12 @@
+{
+  "pr_number": 6056,
+  "archive_path": "docs/history/pr-reviews/PR-6056-docs-research-land-pr-review-friction-report-biometric-touch-id-pam-adr-and-agen.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T22:53:59.286Z",
+  "schema_version": "v1",
+  "commit_sha": "d4a5691a8b71bea72c7a7be11523aec43927e44c",
+  "title": "docs(research): Land PR review friction report, biometric Touch ID PAM ADR, and agent skill (B-0872 & B-0737)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T22:53:41Z",
+  "head_ref": "lior/friction-report-observables"
+}

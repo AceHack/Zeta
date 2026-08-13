@@ -1,0 +1,12 @@
+{
+  "pr_number": 4046,
+  "archive_path": "docs/history/pr-reviews/PR-4046-backlog-b-0611-file-dangling-memory-refs-cleanup-row-4-slice-recipes-session-mem.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T08:11:09.391Z",
+  "schema_version": "v1",
+  "commit_sha": "de9693b39594f25620ad73c18d8c146ee3b62ee2",
+  "title": "backlog(B-0611): file dangling-memory-refs cleanup row + 4 slice recipes + session memos + 3 tick shards",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T08:10:52Z",
+  "head_ref": "otto/b0611-audit-prep-substrate-plus-session-memos-2026-05-17"
+}

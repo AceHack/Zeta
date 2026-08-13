@@ -1,0 +1,23 @@
+{
+  "pr_number": 5178,
+  "archive_path": "docs/history/pr-reviews/PR-5178-feat-ai-cluster-add-local-dev-cluster-bootstrap-from-4979.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E8K5_",
+    "comment:PRRC_kwDOSF9kNM7E8K7U",
+    "comment:PRRC_kwDOSF9kNM7E8K7_",
+    "comment:PRRC_kwDOSF9kNM7E8K80",
+    "comment:PRRC_kwDOSF9kNM7E8K9d",
+    "thread:PRRT_kwDOSF9kNM6EzoBf",
+    "thread:PRRT_kwDOSF9kNM6EzoCf",
+    "thread:PRRT_kwDOSF9kNM6EzoDB",
+    "thread:PRRT_kwDOSF9kNM6EzoDl",
+    "thread:PRRT_kwDOSF9kNM6EzoEI"
+  ],
+  "fetched_at": "2026-05-26T22:36:51.691Z",
+  "schema_version": "v1",
+  "commit_sha": "9c81c62319f4bc5a52ef3bfecd7ccf57f2fe04ec",
+  "title": "feat(ai-cluster): add local dev cluster bootstrap (from #4979)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T22:36:32Z",
+  "head_ref": "lior/decompose-4979-dev-cluster-manual-20260526134025"
+}

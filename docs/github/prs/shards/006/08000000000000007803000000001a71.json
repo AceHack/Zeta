@@ -1,0 +1,12 @@
+{
+  "pr_number": 6769,
+  "archive_path": "docs/history/pr-reviews/PR-6769-docs-architecture-the-unifying-frame-declarative-desired-state-all-the-way-up-ev.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T09:36:58.104Z",
+  "schema_version": "v1",
+  "commit_sha": "46ea70a112ff7b021104fedb1779140f697bd282",
+  "title": "docs(architecture): the unifying frame — declarative desired-state all the way up; everything is data (DynamicValue + ZetaID)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T09:36:37Z",
+  "head_ref": "otto/desired-state-all-the-way-up-everything-is-data"
+}

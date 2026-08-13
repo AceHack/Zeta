@@ -1,0 +1,15 @@
+{
+  "pr_number": 4352,
+  "archive_path": "docs/history/pr-reviews/PR-4352-docs-shadow-maji-anti-entropy-shadow-report-on-vera-stagnation-and-riven-paralys.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ck9Us",
+    "thread:PRRT_kwDOSF9kNM6DEjEL"
+  ],
+  "fetched_at": "2026-05-19T07:45:03.998Z",
+  "schema_version": "v1",
+  "commit_sha": "3aa6d969f4e148a1dc1bd596b9ea54e61f1d74b1",
+  "title": "docs(shadow): Maji anti-entropy shadow report on Vera stagnation and Riven paralysis",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T07:44:41Z",
+  "head_ref": "maji/shadow-drift-report-0740Z"
+}

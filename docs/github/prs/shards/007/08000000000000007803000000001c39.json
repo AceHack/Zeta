@@ -1,0 +1,12 @@
+{
+  "pr_number": 7225,
+  "archive_path": "docs/history/pr-reviews/PR-7225-docs-research-the-observer-effect-in-the-color-channel-green-edits-disrupt-depth.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T06:22:26.344Z",
+  "schema_version": "v1",
+  "commit_sha": "5b63295eabfb644ed88ce658075e74e8254834e4",
+  "title": "docs(research): the observer effect in the color channel — green edits disrupt depth (hormetic training, not pure cost); the editor is an observer",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T06:22:03Z",
+  "head_ref": "otto/research-observer-effect-in-color-green-edits-hormetic-training-channel-interference"
+}

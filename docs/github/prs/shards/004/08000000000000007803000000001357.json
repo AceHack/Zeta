@@ -1,0 +1,12 @@
+{
+  "pr_number": 4951,
+  "archive_path": "docs/history/pr-reviews/PR-4951-feat-ai-cluster-nfd-lstopo-zeta-install-helper-cluster-hardware-inventory.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T16:37:57.990Z",
+  "schema_version": "v1",
+  "commit_sha": "0fd14ecff0e93f3a089b7f1508f4a998393c7f62",
+  "title": "feat(ai-cluster): NFD + lstopo + zeta-install helper + cluster hardware inventory",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T16:37:41Z",
+  "head_ref": "feat/nfd-lstopo-hardware-inventory-2026-05-25-c2"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 6340,
+  "archive_path": "docs/history/pr-reviews/PR-6340-feat-observe-b-0958-end-to-end-closed-loop-integration-test-logic-level.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GlczS",
+    "comment:PRRC_kwDOSF9kNM7Glczh",
+    "thread:PRRT_kwDOSF9kNM6GAaxD",
+    "thread:PRRT_kwDOSF9kNM6GAaxQ"
+  ],
+  "fetched_at": "2026-06-01T04:47:32.824Z",
+  "schema_version": "v1",
+  "commit_sha": "589aac68afc200ff5ec289e58200652706a2e1d5",
+  "title": "feat(observe B-0958): end-to-end closed-loop integration test (logic-level)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T04:47:14Z",
+  "head_ref": "otto-cli/b0958-observe-closed-loop-test-2026-06-01"
+}

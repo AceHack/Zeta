@@ -1,0 +1,12 @@
+{
+  "pr_number": 5691,
+  "archive_path": "docs/history/pr-reviews/PR-5691-docs-runbooks-zflash-end-to-end-cp-1-cp-6-operator-runbook-with-demo-script-zfla.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T03:35:21.633Z",
+  "schema_version": "v1",
+  "commit_sha": "5be3dc36af939012643c205ae1dc93ac1c3e8890",
+  "title": "docs(runbooks): zflash end-to-end CP-1..CP-6 operator runbook with demo script — zflash lane Track C-T3 per B-0892",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T03:35:00Z",
+  "head_ref": "docs/runbook-zflash-end-to-end-cp-1-to-6-demo-walkthrough-zflash-lane-advance-per-b-0892-2026-05-28"
+}

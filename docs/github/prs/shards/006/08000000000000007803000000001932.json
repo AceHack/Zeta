@@ -1,0 +1,12 @@
+{
+  "pr_number": 6450,
+  "archive_path": "docs/history/pr-reviews/PR-6450-backlog-b-0980-close-ace-registry-publish-core-shipped-slice-6-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T18:34:58.946Z",
+  "schema_version": "v1",
+  "commit_sha": "01358642f1909c93a63e7cf19932ea6e993d5270",
+  "title": "backlog(B-0980): close — ace registry publish core shipped (slice 6.1)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T18:34:38Z",
+  "head_ref": "otto-windows/b0980-close-2026-06-01"
+}

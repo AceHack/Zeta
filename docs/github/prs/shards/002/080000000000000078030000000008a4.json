@@ -1,0 +1,12 @@
+{
+  "pr_number": 2212,
+  "archive_path": "docs/history/pr-reviews/PR-2212-docs-b-0333-add-supersession-discipline-to-memory-readme-md.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T07:00:42.974Z",
+  "schema_version": "v1",
+  "commit_sha": "c3ca3912a5ae9583e9b31f4b2caa25befe6b7248",
+  "title": "docs(B-0333): add supersession discipline to memory/README.md",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:00:26Z",
+  "head_ref": "fix/b0333-supersession-discipline"
+}

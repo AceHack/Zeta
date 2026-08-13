@@ -1,0 +1,12 @@
+{
+  "pr_number": 3328,
+  "archive_path": "docs/history/pr-reviews/PR-3328-docs-shadow-lior-antigravity-check-log-metadata-churn.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T04:29:57.504Z",
+  "schema_version": "v1",
+  "commit_sha": "9c0a021a09a752153c9fa06ebae9fdcb4fb07980",
+  "title": "docs(shadow): Lior antigravity check - log metadata churn",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T04:29:37Z",
+  "head_ref": "lior/shadow-log-update"
+}

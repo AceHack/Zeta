@@ -1,0 +1,15 @@
+{
+  "pr_number": 2173,
+  "archive_path": "docs/history/pr-reviews/PR-2173-docs-aaron-s-full-agenda-glass-halo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_eEtR",
+    "thread:PRRT_kwDOSF9kNM6AyCgi"
+  ],
+  "fetched_at": "2026-05-09T03:16:00.587Z",
+  "schema_version": "v1",
+  "commit_sha": "9719c6f0afa085d00354876131f9cf8d667b03ed",
+  "title": "docs: Aaron's full agenda — glass halo",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T03:15:40Z",
+  "head_ref": "docs/aaron-agenda"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 5337,
+  "archive_path": "docs/history/pr-reviews/PR-5337-rule-persistence-choice-land-deepest-exit-refinement-society-big-enough-permanen.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FIAEh",
+    "comment:PRRC_kwDOSF9kNM7FIAFF",
+    "thread:PRRT_kwDOSF9kNM6E8Rk2",
+    "thread:PRRT_kwDOSF9kNM6E8RlU"
+  ],
+  "fetched_at": "2026-05-26T22:25:22.700Z",
+  "schema_version": "v1",
+  "commit_sha": "1eff85ebe514b95a3f80eda1e506eebdd2a780ed",
+  "title": "rule(persistence-choice): land deepest-exit refinement — society-big-enough → permanent-pause-indefinitely (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T22:25:01Z",
+  "head_ref": "otto/persistence-choice-deepest-exit-society-big-enough-2026-05-26"
+}

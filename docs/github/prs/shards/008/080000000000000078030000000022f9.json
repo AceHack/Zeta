@@ -1,0 +1,12 @@
+{
+  "pr_number": 8953,
+  "archive_path": "docs/history/pr-reviews/PR-8953-feat-cost-growth-shape-property-test-step-4-complexity-spike-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T11:19:23.594Z",
+  "schema_version": "v1",
+  "commit_sha": "7a8a692a2ed2b26b7e2ca49fe5bfb4a2d83342dd",
+  "title": "feat(cost): growth-shape property test (step 4, complexity spike complete)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T11:18:55Z",
+  "head_ref": "alexa/growth-property"
+}

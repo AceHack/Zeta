@@ -1,0 +1,12 @@
+{
+  "pr_number": 3861,
+  "archive_path": "docs/history/pr-reviews/PR-3861-shard-tick-2026-05-16t10-45z-b-0457-1-depblocked-b-0462-2-new-sub-class-32-38-tr.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T11:06:26.477Z",
+  "schema_version": "v1",
+  "commit_sha": "f881b1d8ece9e1eef6ebbc41bea1c774d8e1e7c2",
+  "title": "shard(tick): 2026-05-16T10:45Z — B-0457 = #1-DepBlocked + B-0462 = #2; new sub-class; 32/38 triaged",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T11:06:11Z",
+  "head_ref": "otto-cli-b0457-b0462-audit-2026-05-16-1045z"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5050,
+  "archive_path": "docs/history/pr-reviews/PR-5050-backlog-b-0764-cncf-ecosystem-as-force-multipliers-behind-zeta-interfaces-keda-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T00:19:14.843Z",
+  "schema_version": "v1",
+  "commit_sha": "998084279220eb5a82c0811471a1c8fd533d0e47",
+  "title": "backlog(B-0764): CNCF ecosystem as force multipliers behind Zeta interfaces (KEDA, DAPR, OPA, OAM/KubeVela)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T00:18:54Z",
+  "head_ref": "otto-cli/b0764-cncf-ecosystem-force-multipliers-2026-05-25"
+}

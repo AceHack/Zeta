@@ -1,0 +1,12 @@
+{
+  "pr_number": 6819,
+  "archive_path": "docs/history/pr-reviews/PR-6819-docs-ip-questionable-hitchhiker-trees-greenberg-functional-fractal-b-prior-art-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:57:16.071Z",
+  "schema_version": "v1",
+  "commit_sha": "3877f6de76664e641ac35eaa8e3f04838ecdbf0c",
+  "title": "docs(ip-questionable): Hitchhiker trees (Greenberg) — functional fractal B+ prior art for the COW store",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:56:57Z",
+  "head_ref": "capture/hitchhiker-tree-prior-art-and-hashing-port"
+}

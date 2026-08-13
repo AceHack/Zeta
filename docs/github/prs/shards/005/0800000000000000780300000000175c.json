@@ -1,0 +1,12 @@
+{
+  "pr_number": 5980,
+  "archive_path": "docs/history/pr-reviews/PR-5980-docs-trajectory-sketch-b-0211-local-remote-cluster-protocol.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T12:14:59.544Z",
+  "schema_version": "v1",
+  "commit_sha": "e8541e60b18c73aed29dfc75837550437fa564b8",
+  "title": "docs(trajectory): sketch B-0211 local/remote cluster protocol",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T12:14:34Z",
+  "head_ref": "claim/codex-loop-b0211-local-remote-cluster-protocol-20260529"
+}

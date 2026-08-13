@@ -1,0 +1,17 @@
+{
+  "pr_number": 6267,
+  "archive_path": "docs/history/pr-reviews/PR-6267-docs-adr-observe-act-canonical-retrofit-corporate-menu16-retrofits-onto-canonica.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GjBm2",
+    "comment:PRRC_kwDOSF9kNM7GjBuO",
+    "thread:PRRT_kwDOSF9kNM6F-mqN",
+    "thread:PRRT_kwDOSF9kNM6F-mvG"
+  ],
+  "fetched_at": "2026-05-31T23:08:32.989Z",
+  "schema_version": "v1",
+  "commit_sha": "617f0e12b98a1d8c80ba0c751d94f3560e624e16",
+  "title": "docs(ADR): observe-act canonical-retrofit — corporate Menu16 retrofits onto canonical algebra; transport is the dial",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T23:08:10Z",
+  "head_ref": "otto-cli/observe-act-adr-canonical-retrofit-2026-05-31"
+}

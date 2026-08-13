@@ -1,0 +1,12 @@
+{
+  "pr_number": 8104,
+  "archive_path": "docs/history/pr-reviews/PR-8104-feat-mcp-zeta-flash-tool-fix-mcp-registration-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T00:27:07.195Z",
+  "schema_version": "v1",
+  "commit_sha": "225bd50ae27f5b209c7166335b7910f59d305ed3",
+  "title": "feat(mcp): zeta_flash tool + fix MCP registration path",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T00:26:46Z",
+  "head_ref": "riven/ci-flakehub-mcp-flash"
+}

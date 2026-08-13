@@ -1,0 +1,15 @@
+{
+  "pr_number": 6676,
+  "archive_path": "docs/history/pr-reviews/PR-6676-chore-move-all-auto-loaded-rules-to-rules-bak-to-reduce-cold-start-context.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ICdhV",
+    "thread:PRRT_kwDOSF9kNM6HEzyz"
+  ],
+  "fetched_at": "2026-06-04T12:50:48.464Z",
+  "schema_version": "v1",
+  "commit_sha": "7904cc4ddb8e8a78c8cba7a999f4ecc49b6441bc",
+  "title": "chore: move all auto-loaded rules to rules.bak to reduce cold-start context",
+  "state": "MERGED",
+  "merged_at": "2026-06-04T12:50:25Z",
+  "head_ref": "lior/gemini-to-agy-cli"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 6523,
+  "archive_path": "docs/history/pr-reviews/PR-6523-feat-b-0982-unified-canonical-value-manifest-cross-format-projection-harness-sli.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G-PWY",
+    "thread:PRRT_kwDOSF9kNM6GS1dl"
+  ],
+  "fetched_at": "2026-06-02T02:09:40.416Z",
+  "schema_version": "v1",
+  "commit_sha": "b42d565ecf5b623d96d33d5c2b95220af1d0fa52",
+  "title": "feat(B-0982): unified canonical value manifest + cross-format projection harness (slice 1)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T02:09:18Z",
+  "head_ref": "otto-cli/b0982-value-manifest-2026-06-01"
+}

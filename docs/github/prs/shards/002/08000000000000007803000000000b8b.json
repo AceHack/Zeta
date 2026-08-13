@@ -1,0 +1,12 @@
+{
+  "pr_number": 2955,
+  "archive_path": "docs/history/pr-reviews/PR-2955-docs-memory-cross-agent-edit-authorization-communicate-or-emergency-explain-afte.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T06:38:08.508Z",
+  "schema_version": "v1",
+  "commit_sha": "347e646fa2654bc69e11bf85ee9881ae2058bf20",
+  "title": "docs(memory): cross-agent-edit authorization — communicate OR emergency, explain afterwards (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T06:37:53Z",
+  "head_ref": "aaron-cross-agent-edit-authorization-communicate-or-emergency-explain-afterwards-2026-05-13"
+}

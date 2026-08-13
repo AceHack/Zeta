@@ -1,0 +1,23 @@
+{
+  "pr_number": 2568,
+  "archive_path": "docs/history/pr-reviews/PR-2568-docs-memory-three-model-bft-consensus-on-shadow-methodology.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qwFT",
+    "comment:PRRC_kwDOSF9kNM6_qwY6",
+    "comment:PRRC_kwDOSF9kNM6_qwZA",
+    "comment:PRRC_kwDOSF9kNM6_qwZE",
+    "comment:PRRC_kwDOSF9kNM6_qwZL",
+    "thread:PRRT_kwDOSF9kNM6A7-TY",
+    "thread:PRRT_kwDOSF9kNM6A7-ib",
+    "thread:PRRT_kwDOSF9kNM6A7-if",
+    "thread:PRRT_kwDOSF9kNM6A7-ii",
+    "thread:PRRT_kwDOSF9kNM6A7-io"
+  ],
+  "fetched_at": "2026-05-10T23:00:04.410Z",
+  "schema_version": "v1",
+  "commit_sha": "48284b630e7070bb838733de80e4652021edb120",
+  "title": "docs(memory): three-model BFT consensus on shadow methodology",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T22:59:51Z",
+  "head_ref": "docs/vera-convergence-bft-consensus-2026-05-10"
+}

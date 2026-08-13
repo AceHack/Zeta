@@ -1,0 +1,12 @@
+{
+  "pr_number": 1991,
+  "archive_path": "docs/history/pr-reviews/PR-1991-fix-backlog-decompose-b-0158-rules-pattern-into-2-children.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T01:53:13.331Z",
+  "schema_version": "v1",
+  "commit_sha": "59f3f72d2d7cdeb9b6f8f0e004b59054746ffa3c",
+  "title": "fix(backlog): decompose B-0158 rules pattern into 2 children",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T01:52:50Z",
+  "head_ref": "backlog/b0158-decompose"
+}

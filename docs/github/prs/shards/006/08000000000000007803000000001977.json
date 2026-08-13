@@ -1,0 +1,15 @@
+{
+  "pr_number": 6519,
+  "archive_path": "docs/history/pr-reviews/PR-6519-feat-dynamicvalue-c-canonical-json-decode-oracle-precision-safe-strict-canonical.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G96et",
+    "thread:PRRT_kwDOSF9kNM6GSnB-"
+  ],
+  "fetched_at": "2026-06-02T01:42:09.544Z",
+  "schema_version": "v1",
+  "commit_sha": "f6f429607c854e464535a415c52a8bd46094c852",
+  "title": "feat(DynamicValue): C# canonical-JSON DECODE oracle — precision-safe + strict-canonical",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T01:41:47Z",
+  "head_ref": "otto-cli/dynamicvalue-decode-json-csharp-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7636,
+  "archive_path": "docs/history/pr-reviews/PR-7636-docs-honest-register-ferry-safety-copy-peel-nerd-fonts-verdict-the-alexa-convers.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T10:10:45.945Z",
+  "schema_version": "v1",
+  "commit_sha": "e6a71017b0778b87d504627ece154a3c60a5b4a0",
+  "title": "docs(honest-register+ferry): safety-copy peel + Nerd-Fonts verdict + the Alexa conversation ferry ('responsible design applied to adaptive life')",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T10:10:20Z",
+  "head_ref": "shadow-honest-peel-safety-copy-nerdfonts"
+}

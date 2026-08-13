@@ -1,0 +1,12 @@
+{
+  "pr_number": 8803,
+  "archive_path": "docs/history/pr-reviews/PR-8803-docs-document-time-crystal-design-feedback-on-data-plane-plugin-determinism.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:28:29.297Z",
+  "schema_version": "v1",
+  "commit_sha": "56dd71cffdb3e52147670f2466cbed3950e3bb2f",
+  "title": "docs: document time crystal design feedback on data-plane plugin determinism",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:28:03Z",
+  "head_ref": "data-plane-plugin-determinism-crystal-note"
+}

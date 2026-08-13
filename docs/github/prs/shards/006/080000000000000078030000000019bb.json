@@ -1,0 +1,19 @@
+{
+  "pr_number": 6587,
+  "archive_path": "docs/history/pr-reviews/PR-6587-feat-seed-core-hex-core-slice-1-six-walls-atomic-vector-on-cayley-dickson.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HPEyN",
+    "comment:PRRC_kwDOSF9kNM7HPEyy",
+    "comment:PRRC_kwDOSF9kNM7HPEzI",
+    "thread:PRRT_kwDOSF9kNM6GfO63",
+    "thread:PRRT_kwDOSF9kNM6GfO6L",
+    "thread:PRRT_kwDOSF9kNM6GfO6m"
+  ],
+  "fetched_at": "2026-06-02T16:05:37.370Z",
+  "schema_version": "v1",
+  "commit_sha": "c0ab8d7fca8d0485b94ae7cbbec9669bebd447ac",
+  "title": "feat(seed-core): hex core slice 1 — six walls + atomic Vector on Cayley-Dickson ℂ",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T16:05:07Z",
+  "head_ref": "otto-cli/seed-core-hexcore-fsharp-first-slice-2026-06-02"
+}

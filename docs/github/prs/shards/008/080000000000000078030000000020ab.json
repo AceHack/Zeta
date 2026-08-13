@@ -1,0 +1,12 @@
+{
+  "pr_number": 8363,
+  "archive_path": "docs/history/pr-reviews/PR-8363-fix-memory-stop-the-persona-ferry-main-red-cluster-wire-broaden-reindex-hook-fix.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T23:40:24.791Z",
+  "schema_version": "v1",
+  "commit_sha": "33ca35ddf5eaccb449cd6a5340a60505f204b469",
+  "title": "fix(memory): stop the persona-ferry main-red cluster — wire+broaden reindex hook, fix stale skip-glob",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T23:39:51Z",
+  "head_ref": "fix/memory-reindex-hook-and-skip-glob"
+}

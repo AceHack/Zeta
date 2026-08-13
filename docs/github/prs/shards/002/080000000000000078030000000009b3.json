@@ -1,0 +1,12 @@
+{
+  "pr_number": 2483,
+  "archive_path": "docs/history/pr-reviews/PR-2483-docs-b-0164-finish-post-merge-decomposition-review-nits.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T12:25:09.838Z",
+  "schema_version": "v1",
+  "commit_sha": "bdf27a48f51b52c859e43ba7b19679aa0e1d5a00",
+  "title": "docs(B-0164): finish post-merge decomposition review nits",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T12:24:49Z",
+  "head_ref": "codex/B-0164-post-merge-review-nits"
+}

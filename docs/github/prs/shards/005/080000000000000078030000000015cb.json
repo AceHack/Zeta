@@ -1,0 +1,12 @@
+{
+  "pr_number": 5579,
+  "archive_path": "docs/history/pr-reviews/PR-5579-docs-rule-four-corner-ownership-extension-to-asymmetric-authorship-stream-observ.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T18:25:46.862Z",
+  "schema_version": "v1",
+  "commit_sha": "6b39c8ee5abceeb7b54c93532229d26d244eca53",
+  "title": "docs(rule): four-corner ownership extension to asymmetric-authorship — stream/observable context co-owned TInFeedback (operator 2026-05-27 scope-bounded)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:25:16Z",
+  "head_ref": "backlog/asymmetric-authorship-stream-observable-four-corner-coowned-tinfeedback-2026-05-27"
+}

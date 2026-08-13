@@ -1,0 +1,12 @@
+{
+  "pr_number": 7134,
+  "archive_path": "docs/history/pr-reviews/PR-7134-docs-research-world-state-clarity-cost-tiers-caching-ambient-cheap-expensive-inc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:39:57.831Z",
+  "schema_version": "v1",
+  "commit_sha": "da9f388e9f27729cffb5f4957b3ce625a1c62a45",
+  "title": "docs(research): world-state clarity cost tiers + caching (ambient/cheap/expensive, incremental)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:39:39Z",
+  "head_ref": "otto/research-world-state-clarity-cost-caching-tiers"
+}

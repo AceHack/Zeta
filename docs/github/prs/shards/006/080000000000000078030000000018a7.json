@@ -1,0 +1,12 @@
+{
+  "pr_number": 6311,
+  "archive_path": "docs/history/pr-reviews/PR-6311-wire-observe-act-history-request-slots.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T01:56:50.880Z",
+  "schema_version": "v1",
+  "commit_sha": "6eec26c4997884c19a4d4a16c27ab2f18bc393dc",
+  "title": "Wire observe-act history request slots",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T01:56:32Z",
+  "head_ref": "codex/agentic-org-history-request-slots"
+}

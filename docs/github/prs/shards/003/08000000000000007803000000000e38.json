@@ -1,0 +1,12 @@
+{
+  "pr_number": 3640,
+  "archive_path": "docs/history/pr-reviews/PR-3640-fix-pr-3635-3-copilot-threads-overflow-hint-covers-subdirs-2-long-description-sh.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T00:38:06.320Z",
+  "schema_version": "v1",
+  "commit_sha": "bb9554f4ddfad3b5a323c351a42fe5dc2dfa1285",
+  "title": "fix(pr-3635): 3 Copilot threads — overflow hint covers subdirs + 2 long-description shortenings + timestamp typo (supersedes PR #3635)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:37:47Z",
+  "head_ref": "fix/pr-3635-copilot-threads-memory-index-otto-cli-2026-05-16"
+}

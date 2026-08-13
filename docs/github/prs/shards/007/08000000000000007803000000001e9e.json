@@ -1,0 +1,12 @@
+{
+  "pr_number": 7838,
+  "archive_path": "docs/history/pr-reviews/PR-7838-feat-setup-cross-platform-dotnet-diagnostics-suite-in-the-install-manifest-trace.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T23:43:45.763Z",
+  "schema_version": "v1",
+  "commit_sha": "fa0fd91e80c639518ad9908ff942d07b9f8cbe4f",
+  "title": "feat(setup): cross-platform dotnet diagnostics suite in the install manifest (trace/counters/gcdump/dump/stack)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T23:43:19Z",
+  "head_ref": "shadow-dotnet-diag-tools"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8712,
+  "archive_path": "docs/history/pr-reviews/PR-8712-feat-core-generatorirregistry-livestream-zero-downtime-schema-evolution-via-exte.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T06:25:24.892Z",
+  "schema_version": "v1",
+  "commit_sha": "b0e36f8eec8e2c8079a1904757291e890acd6dfd",
+  "title": "feat(core): GeneratorIrRegistry.LiveStream — zero-downtime schema evolution via external channel feed",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T06:24:55Z",
+  "head_ref": "lumen/live-stream-external-feed"
+}

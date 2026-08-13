@@ -1,0 +1,12 @@
+{
+  "pr_number": 8817,
+  "archive_path": "docs/history/pr-reviews/PR-8817-fix-test-benport-exact-alloc-golden-80-48-restore-build-and-test-all-platforms.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T00:24:00.062Z",
+  "schema_version": "v1",
+  "commit_sha": "45de8200098133902d949be253094fd036134a8e",
+  "title": "fix(test): BenPort exact-alloc golden 80→48 — restore build-and-test (all platforms)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T00:23:32Z",
+  "head_ref": "otto/fix-benport-exact-alloc"
+}

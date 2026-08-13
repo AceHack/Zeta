@@ -1,0 +1,25 @@
+{
+  "pr_number": 2502,
+  "archive_path": "docs/history/pr-reviews/PR-2502-feat-b-0321-guarded-ui-mutation-helpers-with-authorization-before-after-snapshot.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_oMzv",
+    "comment:PRRC_kwDOSF9kNM6_oMzy",
+    "comment:PRRC_kwDOSF9kNM6_oNU2",
+    "comment:PRRC_kwDOSF9kNM6_oNU8",
+    "comment:PRRC_kwDOSF9kNM6_oNUt",
+    "comment:PRRC_kwDOSF9kNM6_oNVA",
+    "thread:PRRT_kwDOSF9kNM6A58XI",
+    "thread:PRRT_kwDOSF9kNM6A58XL",
+    "thread:PRRT_kwDOSF9kNM6A58xX",
+    "thread:PRRT_kwDOSF9kNM6A58xg",
+    "thread:PRRT_kwDOSF9kNM6A58xm",
+    "thread:PRRT_kwDOSF9kNM6A58xp"
+  ],
+  "fetched_at": "2026-05-10T14:27:53.988Z",
+  "schema_version": "v1",
+  "commit_sha": "304a6e661adabdb9c917302bd0ce87cef7b9ffec",
+  "title": "feat(B-0321): guarded UI mutation helpers with authorization + before/after snapshots",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T14:27:33Z",
+  "head_ref": "feat/B-0321-guarded-mutation-helpers-2026-05-10"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 3685,
+  "archive_path": "docs/history/pr-reviews/PR-3685-shard-tick-2026-05-16t02-26z-tsc-tools-cleared-via-pr-3684-3rd-of-3-drift-items.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B03ha",
+    "comment:PRRC_kwDOSF9kNM7B03he",
+    "comment:PRRC_kwDOSF9kNM7B03ho",
+    "thread:PRRT_kwDOSF9kNM6ChC14",
+    "thread:PRRT_kwDOSF9kNM6ChC1r",
+    "thread:PRRT_kwDOSF9kNM6ChC1v"
+  ],
+  "fetched_at": "2026-05-16T02:34:16.498Z",
+  "schema_version": "v1",
+  "commit_sha": "3517d339340e134ce0202256ad9cce839c5fcc6d",
+  "title": "shard(tick): 2026-05-16T02:26Z — tsc tools cleared via PR #3684 (3rd of 3 drift items)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T02:34:01Z",
+  "head_ref": "shard/tick-0226z-otto-cli-2026-05-16"
+}

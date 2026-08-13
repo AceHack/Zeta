@@ -1,0 +1,17 @@
+{
+  "pr_number": 1850,
+  "archive_path": "docs/history/pr-reviews/PR-1850-backlog-b-0243-osascript-chrome-browser-extraction-skill.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-wmJl",
+    "comment:PRRC_kwDOSF9kNM6-wmKH",
+    "thread:PRRT_kwDOSF9kNM6AQmBn",
+    "thread:PRRT_kwDOSF9kNM6AQmCB"
+  ],
+  "fetched_at": "2026-05-07T10:43:25.144Z",
+  "schema_version": "v1",
+  "commit_sha": "145729663041041e352e182066f15fe66a95dcba",
+  "title": "backlog(B-0243): osascript/Chrome browser extraction skill",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T09:41:03Z",
+  "head_ref": "backlog/b0243-osascript-chrome-extraction-skill"
+}

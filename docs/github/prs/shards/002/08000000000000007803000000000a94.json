@@ -1,0 +1,12 @@
+{
+  "pr_number": 2708,
+  "archive_path": "docs/history/pr-reviews/PR-2708-docs-research-vaccine-spread-hylomorphic-immunization-herd-immunity.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T14:45:21.244Z",
+  "schema_version": "v1",
+  "commit_sha": "7b0bbd7725ede7bb8f4c5fb1585ce2593e8c00e7",
+  "title": "docs(research): vaccine spread — hylomorphic immunization + herd immunity",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T14:44:55Z",
+  "head_ref": "docs/vaccine-spread-hylomorphic-2026-05-11"
+}

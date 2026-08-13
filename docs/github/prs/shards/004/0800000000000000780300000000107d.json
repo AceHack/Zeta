@@ -1,0 +1,17 @@
+{
+  "pr_number": 4221,
+  "archive_path": "docs/history/pr-reviews/PR-4221-shard-2153z-c-template-fix-shipped-via-4220.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CdP8k",
+    "comment:PRRC_kwDOSF9kNM7CdQf6",
+    "thread:PRRT_kwDOSF9kNM6C_A2s",
+    "thread:PRRT_kwDOSF9kNM6C_BRJ"
+  ],
+  "fetched_at": "2026-05-18T22:39:35.692Z",
+  "schema_version": "v1",
+  "commit_sha": "8ee9910195b1152ad1e398dd2498969f3a0748a6",
+  "title": "shard(2153Z-c): template-fix shipped via #4220",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:39:17Z",
+  "head_ref": "shard/tick-2153z-c-template-fix-shipped-collision-suffix-2026-05-18"
+}

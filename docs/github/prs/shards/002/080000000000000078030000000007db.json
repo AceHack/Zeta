@@ -1,0 +1,19 @@
+{
+  "pr_number": 2011,
+  "archive_path": "docs/history/pr-reviews/PR-2011-fix-backlog-decompose-b-0244-concordance-ai.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_F4Hp",
+    "comment:PRRC_kwDOSF9kNM6_F4ID",
+    "comment:PRRC_kwDOSF9kNM6_F4IP",
+    "thread:PRRT_kwDOSF9kNM6AgN0G",
+    "thread:PRRT_kwDOSF9kNM6AgN0c",
+    "thread:PRRT_kwDOSF9kNM6AgN0k"
+  ],
+  "fetched_at": "2026-05-08T02:51:56.931Z",
+  "schema_version": "v1",
+  "commit_sha": "f1ea4b13e1bd90686be999f6967658211f5c731a",
+  "title": "fix(backlog): decompose B-0244 Concordance AI",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:51:37Z",
+  "head_ref": "backlog/b0244-decompose"
+}

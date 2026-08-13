@@ -1,0 +1,12 @@
+{
+  "pr_number": 6085,
+  "archive_path": "docs/history/pr-reviews/PR-6085-test-health-satisfy-strict-coincidence-event-expectations.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T05:46:06.813Z",
+  "schema_version": "v1",
+  "commit_sha": "b26c8893312f46dc66ee75ff69b94c05e3db53ed",
+  "title": "test(health): satisfy strict coincidence event expectations",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T05:45:49Z",
+  "head_ref": "claim/codex-loop-b0250-event-window-tsc-fix-20260530"
+}

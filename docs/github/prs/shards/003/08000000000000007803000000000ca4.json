@@ -1,0 +1,19 @@
+{
+  "pr_number": 3236,
+  "archive_path": "docs/history/pr-reviews/PR-3236-docs-archive-preserve-recently-merged-prs-3233-3226.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BXlmH",
+    "comment:PRRC_kwDOSF9kNM7BXlmv",
+    "comment:PRRC_kwDOSF9kNM7BXr5s",
+    "comment:PRRC_kwDOSF9kNM7BXsDP",
+    "thread:PRRT_kwDOSF9kNM6CL3sM",
+    "thread:PRRT_kwDOSF9kNM6CL3so"
+  ],
+  "fetched_at": "2026-05-14T20:56:07.350Z",
+  "schema_version": "v1",
+  "commit_sha": "182ef0bc6d37e0ebd77ca5166b97703450a0cd7d",
+  "title": "docs(archive): preserve recently merged PRs 3233-3226",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:55:43Z",
+  "head_ref": "lior/preservation-discipline"
+}

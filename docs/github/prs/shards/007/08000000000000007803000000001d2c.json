@@ -1,0 +1,12 @@
+{
+  "pr_number": 7468,
+  "archive_path": "docs/history/pr-reviews/PR-7468-docs-research-zetamax-better-than-betamax-the-format-war-lesson-open-and-better-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T07:11:19.188Z",
+  "schema_version": "v1",
+  "commit_sha": "8d982ed5e730674d649a8e3beb7d1cbe214a37fc",
+  "title": "docs(research): zetamax — better than betamax + the format-war lesson (open-and-better, or become Betamax)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T07:10:50Z",
+  "head_ref": "shadow-zetamax"
+}

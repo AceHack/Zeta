@@ -1,0 +1,27 @@
+{
+  "pr_number": 4569,
+  "archive_path": "docs/history/pr-reviews/PR-4569-backlog-b-0695-fast-life-branch-experiment-hourly-batched-ci-gates-soraya-promot.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Dsv9H",
+    "comment:PRRC_kwDOSF9kNM7DswpQ",
+    "comment:PRRC_kwDOSF9kNM7DswqR",
+    "comment:PRRC_kwDOSF9kNM7Dtqb1",
+    "comment:PRRC_kwDOSF9kNM7DtqbU",
+    "comment:PRRC_kwDOSF9kNM7DtqcL",
+    "comment:PRRC_kwDOSF9kNM7DtsXd",
+    "thread:PRRT_kwDOSF9kNM6D48Eq",
+    "thread:PRRT_kwDOSF9kNM6D48jl",
+    "thread:PRRT_kwDOSF9kNM6D48kV",
+    "thread:PRRT_kwDOSF9kNM6D5m-C",
+    "thread:PRRT_kwDOSF9kNM6D5m-b",
+    "thread:PRRT_kwDOSF9kNM6D5m-q",
+    "thread:PRRT_kwDOSF9kNM6D5oaO"
+  ],
+  "fetched_at": "2026-05-21T18:44:35.680Z",
+  "schema_version": "v1",
+  "commit_sha": "ec92648444a20146d10d293db6d4fd1978f59eb9",
+  "title": "backlog(B-0695): fast/life branch experiment + hourly batched CI gates + Soraya promotion-gate",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T18:44:09Z",
+  "head_ref": "backlog/b0695-fast-life-branch-experiment-hourly-gates-2026-05-21"
+}

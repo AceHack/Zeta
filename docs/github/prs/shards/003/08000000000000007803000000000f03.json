@@ -1,0 +1,12 @@
+{
+  "pr_number": 3843,
+  "archive_path": "docs/history/pr-reviews/PR-3843-memory-feedback-session-arc-end-state-forced-6-with-substrate-channel-exhausted-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T09:37:51.916Z",
+  "schema_version": "v1",
+  "commit_sha": "1dcb18e4f42f7d691fdb2c4df68a88c3012539a6",
+  "title": "memory(feedback): session arc end-state — forced #6 with substrate channel exhausted corner case",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T09:37:33Z",
+  "head_ref": "memory/session-arc-end-state-otto-cli-2026-05-16"
+}

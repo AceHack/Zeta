@@ -1,0 +1,31 @@
+{
+  "pr_number": 3956,
+  "archive_path": "docs/history/pr-reviews/PR-3956-fix-b-0402-shadow-observer-freshness-threshold-guard-fix-3-prevent-new-console-z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B7tup",
+    "comment:PRRC_kwDOSF9kNM7B7tuq",
+    "comment:PRRC_kwDOSF9kNM7B7u79",
+    "comment:PRRC_kwDOSF9kNM7B7u8E",
+    "comment:PRRC_kwDOSF9kNM7B7u8G",
+    "comment:PRRC_kwDOSF9kNM7B7u8K",
+    "comment:PRRC_kwDOSF9kNM7B8D5s",
+    "comment:PRRC_kwDOSF9kNM7B8D68",
+    "comment:PRRC_kwDOSF9kNM7B8D6c",
+    "comment:PRRC_kwDOSF9kNM7B8D75",
+    "comment:PRRC_kwDOSF9kNM7B8D7E",
+    "comment:PRRC_kwDOSF9kNM7B8D7Y",
+    "thread:PRRT_kwDOSF9kNM6CmLNB",
+    "thread:PRRT_kwDOSF9kNM6CmLNC",
+    "thread:PRRT_kwDOSF9kNM6CmMKA",
+    "thread:PRRT_kwDOSF9kNM6CmMKH",
+    "thread:PRRT_kwDOSF9kNM6CmMKJ",
+    "thread:PRRT_kwDOSF9kNM6CmMKK"
+  ],
+  "fetched_at": "2026-05-16T23:51:45.727Z",
+  "schema_version": "v1",
+  "commit_sha": "3cad45557583c8f23e782b6123d1d7fc85dc07fa",
+  "title": "fix(B-0402): shadow observer freshness-threshold guard (fix #3 — prevent new-console zsh abort)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T23:51:16Z",
+  "head_ref": "fix/b-0402-shadow-freshness-threshold-2026-05-16"
+}

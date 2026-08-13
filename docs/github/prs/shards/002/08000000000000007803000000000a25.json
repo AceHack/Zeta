@@ -1,0 +1,12 @@
+{
+  "pr_number": 2597,
+  "archive_path": "docs/history/pr-reviews/PR-2597-docs-memory-blazor-samples-speech-stack-vosk-whisper-playht-twilio-predates-prov.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T00:50:11.237Z",
+  "schema_version": "v1",
+  "commit_sha": "b81ce874c54e8e603cb53f44646f0dfc998d1f4d",
+  "title": "docs(memory): blazor-samples speech stack — Vosk/Whisper/PlayHT/Twilio, predates providers",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:49:54Z",
+  "head_ref": "docs/blazor-speech-stack-2026-05-10"
+}

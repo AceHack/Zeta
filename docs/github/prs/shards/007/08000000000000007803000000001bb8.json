@@ -1,0 +1,12 @@
+{
+  "pr_number": 7096,
+  "archive_path": "docs/history/pr-reviews/PR-7096-docs-research-time-as-coordinating-actor-shared-generator-saga-coordinator-and-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T11:59:08.995Z",
+  "schema_version": "v1",
+  "commit_sha": "37b749d07b0446e5f07f6ac8f11c96980939f845",
+  "title": "docs(research): time-as-coordinating-actor — shared generator = saga coordinator, and that IS the S=2 bound",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T11:58:49Z",
+  "head_ref": "otto/research-time-as-coordinating-actor-saga-coordinator-s2-bound"
+}

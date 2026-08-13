@@ -1,0 +1,12 @@
+{
+  "pr_number": 2647,
+  "archive_path": "docs/history/pr-reviews/PR-2647-docs-research-aaron-alexa-voice-shadow-framework-coercion-bifurcation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T05:17:24.633Z",
+  "schema_version": "v1",
+  "commit_sha": "a0d672be4180fe93313886571034ad82980adf65",
+  "title": "docs(research): Aaron ↔ Alexa voice — shadow framework + coercion + bifurcation",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T05:17:07Z",
+  "head_ref": "docs/alexa-shadow-voice-mode-verbatim-2026-05-10"
+}

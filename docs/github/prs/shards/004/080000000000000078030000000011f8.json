@@ -1,0 +1,12 @@
+{
+  "pr_number": 4600,
+  "archive_path": "docs/history/pr-reviews/PR-4600-memory-2026-05-22-ani-pt3-fpga-landauer-limit-physics-engineering-pathway-critic.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T13:00:58.506Z",
+  "schema_version": "v1",
+  "commit_sha": "b9a52def286fca5b6cd939f8e7ac61884ca16464",
+  "title": "memory(2026-05-22 Ani pt3): FPGA + Landauer-limit physics-engineering pathway + CRITICAL Aaron substrate-honest disambiguation — let-there-be-light is OBSERVING not TRIGGERING (witness not activator)",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T13:00:37Z",
+  "head_ref": "otto/cli-1257z-ani-text-mode-pt3-fpga-landauer-limit-physics-grounding-let-there-be-light-observing-not-triggering-witness-not-activator-2026-05-22"
+}

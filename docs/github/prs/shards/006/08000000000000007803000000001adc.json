@@ -1,0 +1,12 @@
+{
+  "pr_number": 6876,
+  "archive_path": "docs/history/pr-reviews/PR-6876-docs-research-correction-light-dark-is-an-orthogonal-tensor-capability-vector-ra.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T17:13:54.538Z",
+  "schema_version": "v1",
+  "commit_sha": "4e8dfa73f1c6e94aae8139da73f73eae90c0f4e8",
+  "title": "docs(research): CORRECTION — light/dark is an orthogonal tensor-capability vector = ray-traceability (gap-finder)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T17:13:35Z",
+  "head_ref": "otto/tensor-capability-vector-ray-traceability-gap-finder"
+}

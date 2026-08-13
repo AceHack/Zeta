@@ -1,0 +1,12 @@
+{
+  "pr_number": 5095,
+  "archive_path": "docs/history/pr-reviews/PR-5095-backlog-b-0790-p1-zero-dev-machines-cluster-native-architecture-all-prs-from-clu.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T05:01:53.568Z",
+  "schema_version": "v1",
+  "commit_sha": "d295ffa78e53dfd5b3818ad3a3e4984d633c4b43",
+  "title": "backlog(B-0790 P1): zero-dev-machines cluster-native architecture — all PRs from cluster; voice as primary operator surface (end-state target)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:01:33Z",
+  "head_ref": "otto-cli/b0790-zero-dev-machines-cluster-native-voice-primary-2026-05-26"
+}

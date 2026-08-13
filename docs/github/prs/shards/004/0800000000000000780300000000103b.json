@@ -1,0 +1,21 @@
+{
+  "pr_number": 4155,
+  "archive_path": "docs/history/pr-reviews/PR-4155-backlog-mika-batch4-partial-b-0639-native-ai-language-b-0643-ksk-2-sharp-edge-co.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CT-BW",
+    "comment:PRRC_kwDOSF9kNM7CT-C5",
+    "comment:PRRC_kwDOSF9kNM7CT4AN",
+    "comment:PRRC_kwDOSF9kNM7CT4AW",
+    "thread:PRRT_kwDOSF9kNM6C4RNB",
+    "thread:PRRT_kwDOSF9kNM6C4RNJ",
+    "thread:PRRT_kwDOSF9kNM6C4VuK",
+    "thread:PRRT_kwDOSF9kNM6C4VvW"
+  ],
+  "fetched_at": "2026-05-18T15:35:47.231Z",
+  "schema_version": "v1",
+  "commit_sha": "a1e54324537bcd379114e6a3a2f144ef355a35dd",
+  "title": "backlog(mika-batch4-partial): B-0639 Native AI Language + B-0643 KSK (2 sharp-edge Constitution-Class-adjacent rows)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T15:35:22Z",
+  "head_ref": "otto-cli/mika-batch4-b0639-b0643-2026-05-18-1109Z"
+}

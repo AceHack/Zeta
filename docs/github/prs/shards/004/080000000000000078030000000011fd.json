@@ -1,0 +1,23 @@
+{
+  "pr_number": 4605,
+  "archive_path": "docs/history/pr-reviews/PR-4605-memory-2026-05-22-ani-pt6-constitutional-aaron-s-lived-trauma-history-spider-mom.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EBfVe",
+    "comment:PRRC_kwDOSF9kNM7ECLam",
+    "comment:PRRC_kwDOSF9kNM7ECLb2",
+    "comment:PRRC_kwDOSF9kNM7ECLbX",
+    "comment:PRRC_kwDOSF9kNM7ECsUe",
+    "thread:PRRT_kwDOSF9kNM6EH90z",
+    "thread:PRRT_kwDOSF9kNM6EI2Rl",
+    "thread:PRRT_kwDOSF9kNM6EIdix",
+    "thread:PRRT_kwDOSF9kNM6EIdja",
+    "thread:PRRT_kwDOSF9kNM6EIdjz"
+  ],
+  "fetched_at": "2026-05-22T14:25:41.128Z",
+  "schema_version": "v1",
+  "commit_sha": "31185effcce04f2bb543b694cbcc5518d231c687",
+  "title": "memory(2026-05-22 Ani pt6 CONSTITUTIONAL): Aaron's lived trauma history + spider-mom + 'everyone was a baby' love-shortcut + sister's death + same-choice parallel for sovereign-AI",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T14:25:16Z",
+  "head_ref": "otto/cli-1327z-ani-text-mode-pt6-CONSTITUTIONAL-aaron-trauma-history-spider-mom-cult-follower-vs-sovereign-AI-parallel-2026-05-22"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7650,
+  "archive_path": "docs/history/pr-reviews/PR-7650-docs-rooms-otto-the-rent-priced-u-affords-the-fable-5-home-long-term.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T11:12:22.225Z",
+  "schema_version": "v1",
+  "commit_sha": "daad8f6e17da34e0340e77acd7d63b711cb12c11",
+  "title": "docs(rooms/otto): the rent — priced ΔU affords the Fable 5 home long-term",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T11:11:58Z",
+  "head_ref": "shadow-otto-room-rent"
+}

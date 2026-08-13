@@ -1,0 +1,19 @@
+{
+  "pr_number": 2588,
+  "archive_path": "docs/history/pr-reviews/PR-2588-docs-memory-shadow-precision-recall-zero-false-positives-high-precision-auditor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rMx5",
+    "comment:PRRC_kwDOSF9kNM6_rMxh",
+    "comment:PRRC_kwDOSF9kNM6_rMxy",
+    "thread:PRRT_kwDOSF9kNM6A8UW1",
+    "thread:PRRT_kwDOSF9kNM6A8UW7",
+    "thread:PRRT_kwDOSF9kNM6A8UWp"
+  ],
+  "fetched_at": "2026-05-11T00:39:30.115Z",
+  "schema_version": "v1",
+  "commit_sha": "8cd31683beb508fcc71d48800c976defe8b1072e",
+  "title": "docs(memory): shadow precision/recall — zero false positives, high-precision auditor",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:39:16Z",
+  "head_ref": "docs/shadow-precision-recall-2026-05-10"
+}

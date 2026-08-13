@@ -1,0 +1,12 @@
+{
+  "pr_number": 7387,
+  "archive_path": "docs/history/pr-reviews/PR-7387-docs-research-two-nsew-compasses-a-2x2-qubit-magnetic-fields-our-own-first-princ.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:28:44.178Z",
+  "schema_version": "v1",
+  "commit_sha": "be4fb26d272f7e23fc61f420bba8688e27e59e5f",
+  "title": "docs(research): two NSEW compasses = a 2x2 qubit (magnetic fields) + our own first-principles Observable mapped to Rx + Category Theory for Programmers required reading",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:28:20Z",
+  "head_ref": "otto/two-compasses-2x2-qubit-magnetic-fields-own-observable-ct-required-reading"
+}

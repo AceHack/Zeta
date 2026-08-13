@@ -1,0 +1,19 @@
+{
+  "pr_number": 6468,
+  "archive_path": "docs/history/pr-reviews/PR-6468-feat-gset-csharp-generic-math-additive-monoid-surface-iadditiveidentity-iadditio.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G6Hlw",
+    "comment:PRRC_kwDOSF9kNM7G6HmO",
+    "comment:PRRC_kwDOSF9kNM7G6LQf",
+    "comment:PRRC_kwDOSF9kNM7G6LR9",
+    "thread:PRRT_kwDOSF9kNM6GP1t_",
+    "thread:PRRT_kwDOSF9kNM6GP1tr"
+  ],
+  "fetched_at": "2026-06-01T21:02:19.099Z",
+  "schema_version": "v1",
+  "commit_sha": "65ebda46033695f275c72721db74352160a321ef",
+  "title": "feat(gset-csharp): generic-math additive-monoid surface (IAdditiveIdentity + IAdditionOperators)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T21:01:57Z",
+  "head_ref": "otto-cli/gset-generic-math-csharp-2026-06-01"
+}

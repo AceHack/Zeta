@@ -1,0 +1,12 @@
+{
+  "pr_number": 5753,
+  "archive_path": "docs/history/pr-reviews/PR-5753-docs-ferry-preserve-13th-kestrel-ferry-verbatim-2026-05-28-patience-vs-annoyance.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:24:53.452Z",
+  "schema_version": "v1",
+  "commit_sha": "15664ea1bec0fe4a218b105be4e01966990319fe",
+  "title": "docs(ferry): preserve 13th Kestrel ferry VERBATIM 2026-05-28 — patience-vs-annoyance engagement + Ani-retelling substrate-check + ts-skill via vendor-skill-stores decision + cross-vendor benchmark on common ground + USB-cluster still high priority (Aaron-forwarded)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:24:30Z",
+  "head_ref": "otto-cli/kestrel-13th-ferry-patience-vs-annoyance-engagement-ani-retelling-substrate-check-meta-correction-ts-skill-distribution-cross-vendor-benchmark-common-ground-2026-05-28"
+}

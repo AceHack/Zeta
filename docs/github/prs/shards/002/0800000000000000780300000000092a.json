@@ -1,0 +1,12 @@
+{
+  "pr_number": 2346,
+  "archive_path": "docs/history/pr-reviews/PR-2346-docs-codex-clarify-loop-shard-evidence-contract.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T21:06:51.319Z",
+  "schema_version": "v1",
+  "commit_sha": "fad4dd71f29b909708b5268a2eeafee13401764f",
+  "title": "docs(codex): clarify loop shard evidence contract",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T21:06:36Z",
+  "head_ref": "claim/task-codex-loop-shard-contract-note"
+}

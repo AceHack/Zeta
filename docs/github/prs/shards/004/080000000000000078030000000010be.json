@@ -1,0 +1,12 @@
+{
+  "pr_number": 4286,
+  "archive_path": "docs/history/pr-reviews/PR-4286-shards-batch-0026z-c-0033z-c-soft-halt-period-batch-kestrel-critique-absorbed-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T00:37:26.837Z",
+  "schema_version": "v1",
+  "commit_sha": "f129d956d14193670605543e4f22a9aab46dcf55",
+  "title": "shards(batch 0026Z-c..0033Z-c): soft-halt-period batch — Kestrel critique absorbed; resume PR-per-tick with cost-aware batching",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T00:37:06Z",
+  "head_ref": "shards/batch-0026-0033z-c-soft-halt-period-2026-05-19"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 4499,
+  "archive_path": "docs/history/pr-reviews/PR-4499-docs-shadow-decompose-shadow-log-out-of-blob-4462.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DajCC",
+    "thread:PRRT_kwDOSF9kNM6Dri1h"
+  ],
+  "fetched_at": "2026-05-22T01:38:20.710Z",
+  "schema_version": "v1",
+  "commit_sha": "e5296edd7f5755bb708a044a3f9d6cc652719989",
+  "title": "docs(shadow): decompose shadow log out of blob 4462",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T01:37:59Z",
+  "head_ref": "lior/decompose-4462-shadow-drift"
+}

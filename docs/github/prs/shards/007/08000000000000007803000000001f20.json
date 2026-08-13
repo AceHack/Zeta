@@ -1,0 +1,12 @@
+{
+  "pr_number": 7968,
+  "archive_path": "docs/history/pr-reviews/PR-7968-docs-research-shadow-ferry-18-7-the-braid-as-temporal-shadow-of-the-adinkra-s-tw.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:46:05.309Z",
+  "schema_version": "v1",
+  "commit_sha": "aa5080722341f4dcc0a751f23f65f68e7605eab4",
+  "title": "docs(research)+shadow: ferry 18 §7 — the braid as temporal shadow of the adinkra's two halves (licensed by REPORT #5's span)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:45:41Z",
+  "head_ref": "shadow/ferry-18-s7-temporal-shadow"
+}

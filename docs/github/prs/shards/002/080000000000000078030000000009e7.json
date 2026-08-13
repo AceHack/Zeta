@@ -1,0 +1,29 @@
+{
+  "pr_number": 2535,
+  "archive_path": "docs/history/pr-reviews/PR-2535-feat-b-0401-static-github-pages-dashboard-v0-1-merge-velocity-agent-roster.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qKVH",
+    "comment:PRRC_kwDOSF9kNM6_qKVI",
+    "comment:PRRC_kwDOSF9kNM6_qKpY",
+    "comment:PRRC_kwDOSF9kNM6_qKpe",
+    "comment:PRRC_kwDOSF9kNM6_qKpi",
+    "comment:PRRC_kwDOSF9kNM6_qKpn",
+    "comment:PRRC_kwDOSF9kNM6_qKpp",
+    "comment:PRRC_kwDOSF9kNM6_qKps",
+    "thread:PRRT_kwDOSF9kNM6A7hOL",
+    "thread:PRRT_kwDOSF9kNM6A7hOM",
+    "thread:PRRT_kwDOSF9kNM6A7hd_",
+    "thread:PRRT_kwDOSF9kNM6A7heF",
+    "thread:PRRT_kwDOSF9kNM6A7heH",
+    "thread:PRRT_kwDOSF9kNM6A7heL",
+    "thread:PRRT_kwDOSF9kNM6A7heN",
+    "thread:PRRT_kwDOSF9kNM6A7heO"
+  ],
+  "fetched_at": "2026-05-10T21:03:37.420Z",
+  "schema_version": "v1",
+  "commit_sha": "8d486e9c0dc004a3c94735d3b4427b583ae9bc65",
+  "title": "feat(B-0401): static GitHub Pages dashboard v0.1 — merge velocity + agent roster",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:03:22Z",
+  "head_ref": "feat/demo-v1-static-dashboard-2026-05-10"
+}

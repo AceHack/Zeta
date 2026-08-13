@@ -1,0 +1,12 @@
+{
+  "pr_number": 6624,
+  "archive_path": "docs/history/pr-reviews/PR-6624-proof-b-1007-c2-c3-beta-bernoulli-message-products-are-commutative-groups-z3-fsc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T07:14:32.989Z",
+  "schema_version": "v1",
+  "commit_sha": "6b3049f815341b0175fe459d3ac9e750bc9f5b6d",
+  "title": "proof(B-1007 C2,C3): Beta + Bernoulli message products are commutative groups — Z3 + FsCheck",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T07:14:11Z",
+  "head_ref": "otto-cli/b1007-c2-c3-beta-bernoulli-group-proofs-2026-06-03"
+}

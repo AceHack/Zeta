@@ -1,0 +1,28 @@
+{
+  "pr_number": 5884,
+  "archive_path": "docs/history/pr-reviews/PR-5884-feat-openspec-add-tick-history-schema-spec-b-0171-2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F23dd",
+    "comment:PRRC_kwDOSF9kNM7F23e7",
+    "comment:PRRC_kwDOSF9kNM7F23ee",
+    "comment:PRRC_kwDOSF9kNM7F23f3",
+    "comment:PRRC_kwDOSF9kNM7F23fj",
+    "comment:PRRC_kwDOSF9kNM7GAlFl",
+    "comment:PRRC_kwDOSF9kNM7GAlG6",
+    "comment:PRRC_kwDOSF9kNM7GAlGJ",
+    "comment:PRRC_kwDOSF9kNM7GAlH7",
+    "comment:PRRC_kwDOSF9kNM7GAlHf",
+    "thread:PRRT_kwDOSF9kNM6FeHmj",
+    "thread:PRRT_kwDOSF9kNM6FeHnM",
+    "thread:PRRT_kwDOSF9kNM6FeHni",
+    "thread:PRRT_kwDOSF9kNM6FeHoD",
+    "thread:PRRT_kwDOSF9kNM6FeHoS"
+  ],
+  "fetched_at": "2026-05-29T03:58:39.504Z",
+  "schema_version": "v1",
+  "commit_sha": "c681868b364f60aacc35fc78af1fee96cb9a8eb2",
+  "title": "feat(openspec): Add Tick-History Schema spec (B-0171.2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T03:58:17Z",
+  "head_ref": "lior/B-0171.2-tick-spec"
+}

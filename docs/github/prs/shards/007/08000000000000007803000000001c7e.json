@@ -1,0 +1,12 @@
+{
+  "pr_number": 7294,
+  "archive_path": "docs/history/pr-reviews/PR-7294-feat-setup-keyring-critical-infra-byte-lock-golden-vectors-4lang-4serializer-poi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:35:40.601Z",
+  "schema_version": "v1",
+  "commit_sha": "edad0501d125e4d306f897e4e219df74305aae0d",
+  "title": "feat(setup): keyring critical-infra — byte-lock golden vectors (4lang×4serializer point of certainty) + key status + human anchor (GitHub+FIDO)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:35:16Z",
+  "head_ref": "otto/keyring-critical-infra-byte-lock-golden-vectors-key-status-human-anchor"
+}

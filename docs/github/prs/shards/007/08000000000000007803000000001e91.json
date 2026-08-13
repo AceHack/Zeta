@@ -1,0 +1,12 @@
+{
+  "pr_number": 7825,
+  "archive_path": "docs/history/pr-reviews/PR-7825-fix-shapes-consolidate-the-db-move-race-main-red-green-rune-iris-review-fixes.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:59:54.669Z",
+  "schema_version": "v1",
+  "commit_sha": "7aa70031683e5461486dabc8b6ba2d0044f10306",
+  "title": "fix(shapes): consolidate the db/ move race (main red→green) + Rune/Iris review fixes",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:59:31Z",
+  "head_ref": "shadow-shapes-db-consolidate"
+}

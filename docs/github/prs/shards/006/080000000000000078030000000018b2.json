@@ -1,0 +1,12 @@
+{
+  "pr_number": 6322,
+  "archive_path": "docs/history/pr-reviews/PR-6322-feat-b-0959-g-set-first-class-pair-f-ts-sovereign-db-master-checklist.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T03:03:18.838Z",
+  "schema_version": "v1",
+  "commit_sha": "2f30a27653b50e4985c68cfa855708610545bbb2",
+  "title": "feat(B-0959): G-Set first-class pair (F#+TS) + sovereign-DB master checklist",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T03:02:56Z",
+  "head_ref": "otto-cli/gset-first-class-pair-2026-05-31"
+}

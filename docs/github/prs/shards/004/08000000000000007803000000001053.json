@@ -1,0 +1,12 @@
+{
+  "pr_number": 4179,
+  "archive_path": "docs/history/pr-reviews/PR-4179-backlog-b0629-supersession-marker-by-b-0665-keeps-backlog-substrate-consistent.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T18:26:26.940Z",
+  "schema_version": "v1",
+  "commit_sha": "1a5e96d79ff13ef221b4848b71cc5f18c70d33fc",
+  "title": "backlog(b0629): supersession marker by B-0665 — keeps backlog substrate consistent",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T18:25:58Z",
+  "head_ref": "shard/b0629-supersession-marker-by-b0665-2026-05-18"
+}

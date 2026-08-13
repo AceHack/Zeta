@@ -1,0 +1,25 @@
+{
+  "pr_number": 2397,
+  "archive_path": "docs/history/pr-reviews/PR-2397-decompose-b-0037-re-decompose-into-7-atomic-children-ts-first-roots-retractible-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lLxE",
+    "comment:PRRC_kwDOSF9kNM6_lLxF",
+    "comment:PRRC_kwDOSF9kNM6_lMLZ",
+    "comment:PRRC_kwDOSF9kNM6_lMLb",
+    "comment:PRRC_kwDOSF9kNM6_lMLe",
+    "comment:PRRC_kwDOSF9kNM6_lMLg",
+    "thread:PRRT_kwDOSF9kNM6A3j5S",
+    "thread:PRRT_kwDOSF9kNM6A3j5T",
+    "thread:PRRT_kwDOSF9kNM6A3j5V",
+    "thread:PRRT_kwDOSF9kNM6A3j5X",
+    "thread:PRRT_kwDOSF9kNM6A3jkP",
+    "thread:PRRT_kwDOSF9kNM6A3jkQ"
+  ],
+  "fetched_at": "2026-05-10T02:29:32.044Z",
+  "schema_version": "v1",
+  "commit_sha": "2ce481ac10a933de304ec1c8c8caadfbfa7628ea",
+  "title": "decompose(B-0037): re-decompose into 7 atomic children (TS-first roots + retractible-ceiling emphasis)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T02:29:16Z",
+  "head_ref": "claim/b0037-decompose-meta-cognition-first-class-discipline-smallest-slice-riven-2026-05-09"
+}

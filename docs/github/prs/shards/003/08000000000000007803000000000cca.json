@@ -1,0 +1,12 @@
+{
+  "pr_number": 3274,
+  "archive_path": "docs/history/pr-reviews/PR-3274-fix-shard-2146z-convert-inline-grep-to-fenced-code-block-add-file-operands.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T21:57:08.706Z",
+  "schema_version": "v1",
+  "commit_sha": "6aed8c81d7cc41e3f9653d334339c5b20a3bc2f8",
+  "title": "fix(shard-2146Z): convert inline grep to fenced code block + add file operands",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:56:52Z",
+  "head_ref": "fix/shard-2146Z-grep-rendering-and-operands-otto-cli-2026-05-14"
+}

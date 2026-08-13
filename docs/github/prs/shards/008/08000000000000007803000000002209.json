@@ -1,0 +1,12 @@
+{
+  "pr_number": 8713,
+  "archive_path": "docs/history/pr-reviews/PR-8713-feat-core-merkle-inclusion-audit-proofs-over-z-sets-math-team-row-4-inclusion-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T06:31:05.467Z",
+  "schema_version": "v1",
+  "commit_sha": "61977bec572af2c3d3d98ac48b99c598fd3e2a26",
+  "title": "feat(core): Merkle inclusion (audit) proofs over Z-sets — math-team row 4 (inclusion + no-forge)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T06:30:40Z",
+  "head_ref": "otto/row4-merkle-inclusion-proofs"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8705,
+  "archive_path": "docs/history/pr-reviews/PR-8705-feat-core-schedule-darkhall-heat-readouts.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T05:54:00.636Z",
+  "schema_version": "v1",
+  "commit_sha": "5d9cb5d22982cf358f5db54941c0f7bd553bf437",
+  "title": "feat(core): schedule darkhall heat readouts",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T05:53:34Z",
+  "head_ref": "codex/darkhall-scheduler-heat-readout"
+}

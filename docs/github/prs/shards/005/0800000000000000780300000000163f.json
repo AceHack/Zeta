@@ -1,0 +1,12 @@
+{
+  "pr_number": 5695,
+  "archive_path": "docs/history/pr-reviews/PR-5695-fix-postmerge-5694-replace-persona-names-in-docs-playbooks-readme-md-with-role-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T03:47:53.641Z",
+  "schema_version": "v1",
+  "commit_sha": "0fd2ae16c8297a471233fe19ea6d185204c24148",
+  "title": "fix(postmerge-5694): replace persona names in docs/playbooks/README.md with role-refs",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T03:47:35Z",
+  "head_ref": "otto-cli/fix-5694-role-refs-20260528-0345Z"
+}

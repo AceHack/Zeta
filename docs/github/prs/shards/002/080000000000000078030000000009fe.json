@@ -1,0 +1,17 @@
+{
+  "pr_number": 2558,
+  "archive_path": "docs/history/pr-reviews/PR-2558-docs-research-dora-tier-stratified-metrics-mirror-beacon-promotion-pipeline.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qjEF",
+    "comment:PRRC_kwDOSF9kNM6_qjEK",
+    "thread:PRRT_kwDOSF9kNM6A70LF",
+    "thread:PRRT_kwDOSF9kNM6A70LJ"
+  ],
+  "fetched_at": "2026-05-10T22:10:11.899Z",
+  "schema_version": "v1",
+  "commit_sha": "dfbeaeed80fd9bd88ec02e8aa2050643139b4675",
+  "title": "docs(research): DORA tier-stratified metrics — mirror/beacon/promotion pipeline",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T22:09:58Z",
+  "head_ref": "docs/dora-tier-stratified-architecture-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6784,
+  "archive_path": "docs/history/pr-reviews/PR-6784-feat-core-git-pluggable-host-agnostic-credentialsource-command-surface-design-ca.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T10:37:02.147Z",
+  "schema_version": "v1",
+  "commit_sha": "100738047878e0bb51c9c782338db7bff594e104",
+  "title": "feat(Core.Git): pluggable host-agnostic CredentialSource + command-surface design capture",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T10:36:41Z",
+  "head_ref": "feat/credential-source-and-command-surface-capture"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8217,
+  "archive_path": "docs/history/pr-reviews/PR-8217-ci-gate-run-the-full-hygiene-unit-test-suite-close-the-per-pr-coverage-gap.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T21:20:46.952Z",
+  "schema_version": "v1",
+  "commit_sha": "3975ce6391a49f9ef51a918ce25c0644ab334249",
+  "title": "ci(gate): run the full hygiene unit-test suite (close the per-PR coverage gap)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T21:20:22Z",
+  "head_ref": "ci-gate-run-hygiene-unit-tests"
+}

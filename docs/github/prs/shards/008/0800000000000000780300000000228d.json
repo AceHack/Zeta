@@ -1,0 +1,12 @@
+{
+  "pr_number": 8845,
+  "archive_path": "docs/history/pr-reviews/PR-8845-docs-spec-soft-lane-codegen-numeric-interface-requirements-istarring.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T03:42:12.178Z",
+  "schema_version": "v1",
+  "commit_sha": "352ac385cfce1bf46493b89e48876a4a415cd1e3",
+  "title": "docs(spec): soft-lane codegen — numeric interface requirements (IStarRing)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:41:46Z",
+  "head_ref": "alexa/full-matrix"
+}

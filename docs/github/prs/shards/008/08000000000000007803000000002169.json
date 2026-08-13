@@ -1,0 +1,12 @@
+{
+  "pr_number": 8553,
+  "archive_path": "docs/history/pr-reviews/PR-8553-memory-feedback-zeta-in-a-nutshell-make-failures-visible-obvious-catch-undo-lear.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T18:07:22.354Z",
+  "schema_version": "v1",
+  "commit_sha": "177d0833aecc153c1ae7859b9cc3dfd2113caaa5",
+  "title": "memory(feedback): Zeta in a nutshell = make failures visible+obvious (catch→undo→learn→not-fear) + the arena optimizes for idea SURVIVAL not the CORRECT idea (can't learn from extinction)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T18:06:44Z",
+  "head_ref": "otto/arena-optimizes-idea-survival-not-correct-idea-plus-nutshell"
+}

@@ -1,0 +1,29 @@
+{
+  "pr_number": 2720,
+  "archive_path": "docs/history/pr-reviews/PR-2720-docs-backlog-b-0294-start-gate-proof-re-decomp-to-atomic-children-riven-one-boun.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_9bnM",
+    "comment:PRRC_kwDOSF9kNM6_9f03",
+    "comment:PRRC_kwDOSF9kNM6_9f0R",
+    "comment:PRRC_kwDOSF9kNM6_9f1O",
+    "comment:PRRC_kwDOSF9kNM6_9fxh",
+    "comment:PRRC_kwDOSF9kNM6_9fyq",
+    "comment:PRRC_kwDOSF9kNM6_9fzO",
+    "comment:PRRC_kwDOSF9kNM6_9fzs",
+    "thread:PRRT_kwDOSF9kNM6BJ02G",
+    "thread:PRRT_kwDOSF9kNM6BJ3-n",
+    "thread:PRRT_kwDOSF9kNM6BJ39s",
+    "thread:PRRT_kwDOSF9kNM6BJ3_8",
+    "thread:PRRT_kwDOSF9kNM6BJ3_G",
+    "thread:PRRT_kwDOSF9kNM6BJ3_f",
+    "thread:PRRT_kwDOSF9kNM6BJ4AZ",
+    "thread:PRRT_kwDOSF9kNM6BJ4As"
+  ],
+  "fetched_at": "2026-05-11T16:43:06.255Z",
+  "schema_version": "v1",
+  "commit_sha": "cab0dbd49a986066f4245d83cb81d80a783b4389",
+  "title": "docs(backlog): B-0294 start-gate proof + re-decomp to atomic children (riven one-bounded-slice)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T16:42:34Z",
+  "head_ref": "claim/b0294-coherence-ai-ksk-override-smallest-slice-riven-2026-05-11"
+}

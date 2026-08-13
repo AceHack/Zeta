@@ -1,0 +1,19 @@
+{
+  "pr_number": 3699,
+  "archive_path": "docs/history/pr-reviews/PR-3699-feat-audit-add-baseline-flag-initial-baseline-of-10-grandfathered-findings.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1FTJ",
+    "comment:PRRC_kwDOSF9kNM7B1FhR",
+    "comment:PRRC_kwDOSF9kNM7B1FhW",
+    "thread:PRRT_kwDOSF9kNM6ChM8c",
+    "thread:PRRT_kwDOSF9kNM6ChNG_",
+    "thread:PRRT_kwDOSF9kNM6ChNHE"
+  ],
+  "fetched_at": "2026-05-16T03:20:38.369Z",
+  "schema_version": "v1",
+  "commit_sha": "1496f72f96ec04c2e34ece3ea0a2b93a97b94068",
+  "title": "feat(audit): add --baseline flag + initial baseline of 10 grandfathered findings",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:20:19Z",
+  "head_ref": "feat/audit-baseline-mechanism-otto-cli-2026-05-16"
+}

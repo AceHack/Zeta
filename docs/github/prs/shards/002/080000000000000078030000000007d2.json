@@ -1,0 +1,17 @@
+{
+  "pr_number": 2002,
+  "archive_path": "docs/history/pr-reviews/PR-2002-fix-b-0268-close-canary-passed-claude-rules-auto-loads.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_FcBL",
+    "comment:PRRC_kwDOSF9kNM6_FcBV",
+    "thread:PRRT_kwDOSF9kNM6Af7R7",
+    "thread:PRRT_kwDOSF9kNM6Af7Rx"
+  ],
+  "fetched_at": "2026-05-08T02:26:17.062Z",
+  "schema_version": "v1",
+  "commit_sha": "053a1a040ae8c3da809b1db8a9575e23e2c07df9",
+  "title": "fix(B-0268): close — canary PASSED, .claude/rules/ auto-loads",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:25:54Z",
+  "head_ref": "feat/b0268-canary-test-rules-autoload"
+}

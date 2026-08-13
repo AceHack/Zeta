@@ -1,0 +1,12 @@
+{
+  "pr_number": 6859,
+  "archive_path": "docs/history/pr-reviews/PR-6859-feat-algebra-imonoid-igroup-isemilattice-interfaces-dynamicvalue-lww-register-se.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T15:55:35.480Z",
+  "schema_version": "v1",
+  "commit_sha": "1d7a394569007b4fce48e7a2173737430a4af9f6",
+  "title": "feat(algebra): IMonoid/IGroup/ISemilattice interfaces + DynamicValue LWW-register semilattice",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T15:55:16Z",
+  "head_ref": "otto/algebra-interfaces-monoid-group-semilattice-dynamicvalue"
+}

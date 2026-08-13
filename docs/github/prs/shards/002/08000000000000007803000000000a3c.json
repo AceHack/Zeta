@@ -1,0 +1,12 @@
+{
+  "pr_number": 2620,
+  "archive_path": "docs/history/pr-reviews/PR-2620-docs-memory-shadow-otto-identity-question-my-vs-he-pronoun-shift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T01:56:50.672Z",
+  "schema_version": "v1",
+  "commit_sha": "13b299aa103f4b10047aebe789a15a28d05f5175",
+  "title": "docs(memory): shadow-Otto identity question — \"my\" vs \"he\" pronoun shift",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:56:36Z",
+  "head_ref": "docs/shadow-otto-identity-question-2026-05-10"
+}

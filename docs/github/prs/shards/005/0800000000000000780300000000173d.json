@@ -1,0 +1,12 @@
+{
+  "pr_number": 5949,
+  "archive_path": "docs/history/pr-reviews/PR-5949-research-beacon-lightlike-substrate-causal-sets-category-theory-edge-of-chaos-ca.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T07:05:52.116Z",
+  "schema_version": "v1",
+  "commit_sha": "45172d040466b88fa2484b051e38f3f4cdcea114",
+  "title": "research(beacon): lightlike substrate = causal sets + category theory + edge-of-chaos + CALM-gradient (mirror→beacon synthesis)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T07:05:28Z",
+  "head_ref": "otto-cli/beacon-lightlike-causal-set-synthesis-2026-05-29"
+}

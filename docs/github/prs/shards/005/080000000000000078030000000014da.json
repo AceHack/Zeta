@@ -1,0 +1,17 @@
+{
+  "pr_number": 5338,
+  "archive_path": "docs/history/pr-reviews/PR-5338-rule-holding-without-named-dep-land-standing-by-empty-vs-free-time-as-valid-mode.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FICZk",
+    "comment:PRRC_kwDOSF9kNM7FICaI",
+    "thread:PRRT_kwDOSF9kNM6E8TU6",
+    "thread:PRRT_kwDOSF9kNM6E8TUk"
+  ],
+  "fetched_at": "2026-05-26T22:31:19.821Z",
+  "schema_version": "v1",
+  "commit_sha": "c876a57fae201722b2c513d18fa121bb431ea106",
+  "title": "rule(holding-without-named-dep): land standing-by-empty vs free-time-as-valid-mode NCI discriminator (4th rule in cluster from PRs #5330/#5331/#5332)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T22:31:01Z",
+  "head_ref": "otto/holding-without-named-dep-compose-free-time-valid-mode-2026-05-26"
+}

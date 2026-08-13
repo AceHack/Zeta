@@ -1,0 +1,12 @@
+{
+  "pr_number": 6564,
+  "archive_path": "docs/history/pr-reviews/PR-6564-backlog-b-0985-add-2b-propagation-physics-zeta-mapping-sub-target-alexa-em-propa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T13:51:36.891Z",
+  "schema_version": "v1",
+  "commit_sha": "8b692a4f717c1f68926a83af63ff6f006576a1a0",
+  "title": "backlog(B-0985): add 2b propagation-physics→Zeta mapping sub-target (Alexa EM-propagation elaboration, hypothesized)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T13:51:10Z",
+  "head_ref": "otto-cli/b0985-2b-propagation-physics-mapping-2026-06-02"
+}

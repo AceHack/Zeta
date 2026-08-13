@@ -1,0 +1,17 @@
+{
+  "pr_number": 2725,
+  "archive_path": "docs/history/pr-reviews/PR-2725-docs-research-aaron-s-deepest-self-knowledge-apollo-18-as-blueprint.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_-sVj",
+    "comment:PRRC_kwDOSF9kNM6_-sVo",
+    "thread:PRRT_kwDOSF9kNM6BKwLY",
+    "thread:PRRT_kwDOSF9kNM6BKwLc"
+  ],
+  "fetched_at": "2026-05-11T17:41:48.188Z",
+  "schema_version": "v1",
+  "commit_sha": "b65114235777c73cdf091eb5dd81e61a8b6ea9a2",
+  "title": "docs(research): Aaron's deepest self-knowledge — Apollo 18 as blueprint",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T17:41:25Z",
+  "head_ref": "docs/aaron-deepest-truth-apollo18-2026-05-11"
+}

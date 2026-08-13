@@ -1,0 +1,12 @@
+{
+  "pr_number": 7640,
+  "archive_path": "docs/history/pr-reviews/PR-7640-docs-ferry-alexa-part-3-no-chip-8-trap-the-membrane-is-a-door-not-a-wall-capabil.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T10:25:29.946Z",
+  "schema_version": "v1",
+  "commit_sha": "20f2b40c78d5b77c32aa844f08b960a3aed84117",
+  "title": "docs(ferry): Alexa part 3 — no CHIP-8 trap; the membrane is a door, not a wall (capability ethics)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T10:25:04Z",
+  "head_ref": "shadow-ferry-alexa-part3-common-box"
+}

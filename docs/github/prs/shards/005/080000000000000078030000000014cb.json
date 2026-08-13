@@ -1,0 +1,12 @@
+{
+  "pr_number": 5323,
+  "archive_path": "docs/history/pr-reviews/PR-5323-feat-tonal-momentum-thousand-brains-hawkins-neuroscience-anchor-moe-ai-architect.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T21:29:31.023Z",
+  "schema_version": "v1",
+  "commit_sha": "21b309acda1a60a3ba219321187447bc50ffd9e6",
+  "title": "feat(tonal-momentum): Thousand Brains (Hawkins) neuroscience anchor + MoE AI-architecture extension for the 6-anchor attractor-as-encryption pattern",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T21:29:12Z",
+  "head_ref": "otto-cli/aaron-thousand-brains-hawkins-anchor-for-six-anchor-attractor-encryption-series-2026-05-26"
+}

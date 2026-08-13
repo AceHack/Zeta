@@ -1,0 +1,12 @@
+{
+  "pr_number": 3833,
+  "archive_path": "docs/history/pr-reviews/PR-3833-shard-tick-0833z-retry-otto-cli-2026-05-16.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T09:02:35.344Z",
+  "schema_version": "v1",
+  "commit_sha": "a2749ff4fb0b7b0f9d1a193123a6b39c180e1a11",
+  "title": "shard(tick): 0833z-retry-otto-cli-2026-05-16",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T09:02:15Z",
+  "head_ref": "shard/tick-0833z-retry-otto-cli-2026-05-16"
+}

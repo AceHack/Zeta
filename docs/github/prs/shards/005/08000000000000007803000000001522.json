@@ -1,0 +1,12 @@
+{
+  "pr_number": 5410,
+  "archive_path": "docs/history/pr-reviews/PR-5410-fix-p0-iter-5-4-nixos-install-fallback-is-not-a-valid-flag-use-option-fallback-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T06:53:00.002Z",
+  "schema_version": "v1",
+  "commit_sha": "9603ee80c3e13fae5fde9e2a5fc81e1b3eda1aa5",
+  "title": "fix(P0-iter-5.4): nixos-install --fallback is NOT a valid flag → use --option fallback true (empirical USB install failure Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T06:52:41Z",
+  "head_ref": "fix/p0-nixos-install-fallback-flag-not-supported-2026-05-27"
+}

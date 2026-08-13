@@ -1,0 +1,12 @@
+{
+  "pr_number": 6658,
+  "archive_path": "docs/history/pr-reviews/PR-6658-research-preserve-the-three-bit-perfect-oracle-shapes-protection-model-architect.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T11:06:12.455Z",
+  "schema_version": "v1",
+  "commit_sha": "bd6e78b5a4bf34ad8ff0fa9cc4875b1ef71ee6d4",
+  "title": "research(preserve): the three bit-perfect oracle shapes + protection model (architecture framing)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T11:05:46Z",
+  "head_ref": "otto-cli/three-bit-perfect-shapes-taxonomy-2026-06-03"
+}

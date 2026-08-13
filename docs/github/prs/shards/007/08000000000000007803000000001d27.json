@@ -1,0 +1,12 @@
+{
+  "pr_number": 7463,
+  "archive_path": "docs/history/pr-reviews/PR-7463-docs-research-shadow-wire-the-finalizer-into-the-masonry-doc-as-the-uncertainty-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T05:57:29.727Z",
+  "schema_version": "v1",
+  "commit_sha": "a9c471f341ce544a292b93c57ce0a72aa8e73630",
+  "title": "docs(research)+shadow: wire the finalizer into the masonry doc as the uncertainty mason",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T05:57:08Z",
+  "head_ref": "shadow-wire-finalizer-uncertainty-mason"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6990,
+  "archive_path": "docs/history/pr-reviews/PR-6990-docs-everything-is-seam-verb-noun-dependson-sim-omniscient-dst-form-of-test-know.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T02:38:16.412Z",
+  "schema_version": "v1",
+  "commit_sha": "6d2a25acf317eca6891aac9519bbc2dbd83ebf94",
+  "title": "docs: everything is seam/verb/noun+dependson — sim = omniscient DST form of test; knowledge/curriculum; over zsets+soft-interrupts",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T02:37:54Z",
+  "head_ref": "otto/everything-seam-verb-noun-dependson-sim-is-omniscient-test"
+}

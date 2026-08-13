@@ -1,0 +1,12 @@
+{
+  "pr_number": 5917,
+  "archive_path": "docs/history/pr-reviews/PR-5917-feat-skills-zflash-overview-capability-skill-end-to-end-runbook-substrate-cluste.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T18:15:26.863Z",
+  "schema_version": "v1",
+  "commit_sha": "040c00113dc11e7e2cce441d3bb7a3f0e851962b",
+  "title": "feat(skills): zflash-overview capability skill — end-to-end runbook + substrate-cluster map (zflash lane Track C docs/skills push 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T18:15:01Z",
+  "head_ref": "otto-cli/zflash-overview-skill-2026-05-28"
+}

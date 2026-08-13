@@ -1,0 +1,17 @@
+{
+  "pr_number": 6591,
+  "archive_path": "docs/history/pr-reviews/PR-6591-feat-infernet-b-1000-slice-4-sum-product-bp-to-a-fixed-point-runtofixpoint-per-f.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HP3iI",
+    "comment:PRRC_kwDOSF9kNM7HQJS1",
+    "thread:PRRT_kwDOSF9kNM6Gf0a9",
+    "thread:PRRT_kwDOSF9kNM6GgBTB"
+  ],
+  "fetched_at": "2026-06-02T16:49:25.085Z",
+  "schema_version": "v1",
+  "commit_sha": "85b95811c51caa23a4af9bb2fb24d79bd05496c0",
+  "title": "feat(infernet B-1000 slice 4): sum-product BP to a fixed point — runToFixpoint + per-family message distance",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T16:49:02Z",
+  "head_ref": "otto-cli/b1000-slice4-bp-fixpoint-2026-06-02"
+}

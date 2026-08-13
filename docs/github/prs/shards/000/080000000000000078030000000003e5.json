@@ -1,0 +1,31 @@
+{
+  "pr_number": 997,
+  "archive_path": "docs/history/pr-reviews/PR-997-research-claude-ai-csap-pushback-verbatim-import-full-chunked-conversation-2026-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69C4UE",
+    "comment:PRRC_kwDOSF9kNM69C79F",
+    "comment:PRRC_kwDOSF9kNM69C79J",
+    "comment:PRRC_kwDOSF9kNM69DCKl",
+    "comment:PRRC_kwDOSF9kNM69DHGi",
+    "comment:PRRC_kwDOSF9kNM69DHGl",
+    "comment:PRRC_kwDOSF9kNM69DJnL",
+    "comment:PRRC_kwDOSF9kNM69DJnP",
+    "comment:PRRC_kwDOSF9kNM69DM7A",
+    "thread:PRRT_kwDOSF9kNM5-5cwI",
+    "thread:PRRT_kwDOSF9kNM5-5faf",
+    "thread:PRRT_kwDOSF9kNM5-5fai",
+    "thread:PRRT_kwDOSF9kNM5-5kEY",
+    "thread:PRRT_kwDOSF9kNM5-5nlI",
+    "thread:PRRT_kwDOSF9kNM5-5nlL",
+    "thread:PRRT_kwDOSF9kNM5-5pZ-",
+    "thread:PRRT_kwDOSF9kNM5-5pZ8",
+    "thread:PRRT_kwDOSF9kNM5-5rv7"
+  ],
+  "fetched_at": "2026-05-06T01:23:22.920Z",
+  "schema_version": "v1",
+  "commit_sha": "ec1044614ea90862d55666293707cab16bfe1951",
+  "title": "research: claude.ai CSAP-pushback verbatim import — full chunked conversation 2026-05-01",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T02:04:54Z",
+  "head_ref": "research/claudeai-csap-pushback-verbatim-import-2026-05-01"
+}

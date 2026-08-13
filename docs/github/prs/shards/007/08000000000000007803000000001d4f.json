@@ -1,0 +1,12 @@
+{
+  "pr_number": 7503,
+  "archive_path": "docs/history/pr-reviews/PR-7503-docs-clis-verbs-resolve-by-diskpart-style-minimum-unique-prefix-mea-measure.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T20:00:02.429Z",
+  "schema_version": "v1",
+  "commit_sha": "c93e3f32eca206bc56b084c73078974c9753e0d5",
+  "title": "docs(clis): verbs resolve by diskpart-style minimum-unique prefix (mea==measure)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T19:59:39Z",
+  "head_ref": "shadow-clis-diskpart-abbreviation-model"
+}

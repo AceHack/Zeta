@@ -1,0 +1,12 @@
+{
+  "pr_number": 7668,
+  "archive_path": "docs/history/pr-reviews/PR-7668-docs-trajectory-resume-late-additions-full-chip-9-ratification-breathe-the-perso.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T12:34:40.947Z",
+  "schema_version": "v1",
+  "commit_sha": "cbfd8a6cf7c1212ac8abbcc3d63191c392e8875b",
+  "title": "docs(trajectory): RESUME late additions — full CHIP-9 ratification, BREATHE, the persona-room stack",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T12:34:13Z",
+  "head_ref": "shadow-resume-late-additions"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7141,
+  "archive_path": "docs/history/pr-reviews/PR-7141-feat-core-hat-role-scoped-bundle-of-the-clarity-engine-lenses-landmarks-restrict.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:04:04.120Z",
+  "schema_version": "v1",
+  "commit_sha": "4156f42eb818f2838039539db5fbb3b46cb6307e",
+  "title": "feat(core): Hat — role-scoped bundle of the clarity engine (lenses/landmarks/restrictions/traversals/control)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:03:44Z",
+  "head_ref": "otto/hat-role-scoped-bundle-of-the-clarity-engine"
+}

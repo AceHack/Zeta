@@ -1,0 +1,12 @@
+{
+  "pr_number": 3724,
+  "archive_path": "docs/history/pr-reviews/PR-3724-fix-check-shard-before-push-skip-bullet-continuation-lines-in-md032-scan.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T04:06:04.179Z",
+  "schema_version": "v1",
+  "commit_sha": "340a701fddfa11128145a68cee0a8829467c2524",
+  "title": "fix(check-shard-before-push): skip bullet-continuation lines in MD032 scan",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:05:45Z",
+  "head_ref": "fix/checkmd032-bullet-continuation-otto-cli-2026-05-16"
+}

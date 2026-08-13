@@ -1,0 +1,12 @@
+{
+  "pr_number": 6972,
+  "archive_path": "docs/history/pr-reviews/PR-6972-docs-the-full-dep-graph-is-one-zeta-file-temple-of-everything-defined-not-calcul.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:19:38.262Z",
+  "schema_version": "v1",
+  "commit_sha": "ab09bd5276f1d4fbcd25439e45a4879c0fc1bca9",
+  "title": "docs: the full dep graph is ONE .zeta file (temple of everything) — defined not calculated; carve static subsets",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:19:21Z",
+  "head_ref": "otto/full-dep-graph-temple-of-everything-defined-not-calculated"
+}

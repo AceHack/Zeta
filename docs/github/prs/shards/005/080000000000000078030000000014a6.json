@@ -1,0 +1,15 @@
+{
+  "pr_number": 5286,
+  "archive_path": "docs/history/pr-reviews/PR-5286-feat-b-0824-parameter-and-function-selection-is-the-anti-entropy-function-for-su.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FEheh",
+    "thread:PRRT_kwDOSF9kNM6E5uIB"
+  ],
+  "fetched_at": "2026-05-26T19:20:56.620Z",
+  "schema_version": "v1",
+  "commit_sha": "991358a94e2c33cc0a875b32b7d619414a7d70cf",
+  "title": "feat(B-0824): parameter and function selection IS the anti-entropy function for sustaining distributed intelligence (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T19:20:31Z",
+  "head_ref": "otto-cli/B-0824-anti-entropy-selection-aaron-2026-05-26"
+}

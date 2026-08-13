@@ -1,0 +1,12 @@
+{
+  "pr_number": 8970,
+  "archive_path": "docs/history/pr-reviews/PR-8970-docs-decision-multi-owner-machines-via-identity-authorization-split-ssh-ca-boots.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T17:30:56.354Z",
+  "schema_version": "v1",
+  "commit_sha": "b8f2791c3cceb036c4656ed9670b15d454586391",
+  "title": "docs(decision): multi-owner machines via identity↔authorization split (SSH-CA bootstrap)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T17:30:26Z",
+  "head_ref": "otto/decision-multi-owner-machines"
+}

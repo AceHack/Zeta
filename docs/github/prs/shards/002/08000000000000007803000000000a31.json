@@ -1,0 +1,12 @@
+{
+  "pr_number": 2609,
+  "archive_path": "docs/history/pr-reviews/PR-2609-docs-memory-sql-null-dst-origin-attempt-first-psych-ward-diana-duncan-attributio.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T01:32:03.939Z",
+  "schema_version": "v1",
+  "commit_sha": "45fafa0d9f90cade8542f4eb495db8eb420f4d73",
+  "title": "docs(memory): SQL NULL DST origin — ℵ₁ attempt, first psych ward, Diana Duncan attribution",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:31:45Z",
+  "head_ref": "docs/sql-null-dst-origin-2026-05-10"
+}

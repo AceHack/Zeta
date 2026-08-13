@@ -1,0 +1,12 @@
+{
+  "pr_number": 4712,
+  "archive_path": "docs/history/pr-reviews/PR-4712-deps-bump-github-codeql-action-from-4-35-5-to-4-36-0-in-the-github-actions-minor.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T07:59:42.021Z",
+  "schema_version": "v1",
+  "commit_sha": "7807e010bb92c47d5affa29bf10591242f519ef1",
+  "title": "deps: bump github/codeql-action from 4.35.5 to 4.36.0 in the github-actions-minor-patch group",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T07:59:26Z",
+  "head_ref": "dependabot/github_actions/github-actions-minor-patch-754f0868f5"
+}

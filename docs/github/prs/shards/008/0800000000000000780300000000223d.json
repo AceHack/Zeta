@@ -1,0 +1,12 @@
+{
+  "pr_number": 8765,
+  "archive_path": "docs/history/pr-reviews/PR-8765-inventory-phase-7-auditor-brief-structural-check-for-main-rewinds-phase-content-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T19:34:52.485Z",
+  "schema_version": "v1",
+  "commit_sha": "753cb7a312d207008b300954fd06213451e99153",
+  "title": "Inventory: Phase 7 Auditor brief — structural check for main rewinds / phase-content presence",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T19:34:29Z",
+  "head_ref": "claude/festive-ritchie-NcXnW"
+}

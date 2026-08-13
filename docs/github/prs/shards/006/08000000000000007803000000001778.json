@@ -1,0 +1,12 @@
+{
+  "pr_number": 6008,
+  "archive_path": "docs/history/pr-reviews/PR-6008-feat-b-0343-pure-parsecreatereporesponse-create-repo-response-repo-url-branch-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T16:23:43.461Z",
+  "schema_version": "v1",
+  "commit_sha": "ca011b1405c742e108e10339853b34956d704e58",
+  "title": "feat(B-0343): pure parseCreateRepoResponse — create-repo response → repo URL + branch (read-side pair)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T16:23:19Z",
+  "head_ref": "otto-cli/b0343-parse-create-repo-response-2026-05-29"
+}

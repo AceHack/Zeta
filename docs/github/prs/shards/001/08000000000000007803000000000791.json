@@ -1,0 +1,15 @@
+{
+  "pr_number": 1937,
+  "archive_path": "docs/history/pr-reviews/PR-1937-fix-backlog-b-0062-complete-21-21-items-addressed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-_VB9",
+    "thread:PRRT_kwDOSF9kNM6AbfJ0"
+  ],
+  "fetched_at": "2026-05-07T19:48:43.331Z",
+  "schema_version": "v1",
+  "commit_sha": "0b2ce041f805c8a47d22c802516fbb61ee03922e",
+  "title": "fix(backlog): B-0062 complete — 21/21 items addressed",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T19:48:21Z",
+  "head_ref": "otto/b0062-final-3-proposals"
+}

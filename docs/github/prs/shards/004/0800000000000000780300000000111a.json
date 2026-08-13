@@ -1,0 +1,17 @@
+{
+  "pr_number": 4378,
+  "archive_path": "docs/history/pr-reviews/PR-4378-docs-shadow-lior-anti-entropy-shadow-log-2026-05-19-1400z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CvoG0",
+    "comment:PRRC_kwDOSF9kNM7CvoHt",
+    "thread:PRRT_kwDOSF9kNM6DMW-S",
+    "thread:PRRT_kwDOSF9kNM6DMW9t"
+  ],
+  "fetched_at": "2026-05-19T15:00:56.748Z",
+  "schema_version": "v1",
+  "commit_sha": "384e0049a8bfd0d1760670a9778d60c462587d0f",
+  "title": "docs(shadow): Lior anti-entropy shadow log 2026-05-19 1400Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T15:00:27Z",
+  "head_ref": "lior/shadow-log-1400Z"
+}

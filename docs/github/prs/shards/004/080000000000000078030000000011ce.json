@@ -1,0 +1,12 @@
+{
+  "pr_number": 4558,
+  "archive_path": "docs/history/pr-reviews/PR-4558-feat-core-pr-1-of-8-algebra-capability-tags-on-op-t-base-class.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T17:25:41.270Z",
+  "schema_version": "v1",
+  "commit_sha": "792948adbb1dc6fcea382fb8b736e18ab5db6e38",
+  "title": "feat(core): PR 1 of 8 — algebra capability tags on Op<'T> base class",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T17:25:21Z",
+  "head_ref": "feat/op-capability-tags-2026-05-21"
+}

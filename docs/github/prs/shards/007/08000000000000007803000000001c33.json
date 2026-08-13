@@ -1,0 +1,12 @@
+{
+  "pr_number": 7219,
+  "archive_path": "docs/history/pr-reviews/PR-7219-docs-research-the-human-lineage-of-the-zeta-way-shape-catalogs-letting-things-be.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T06:00:03.927Z",
+  "schema_version": "v1",
+  "commit_sha": "d724d6a09d62a43b2c2af78b317985d151eae7c7",
+  "title": "docs(research): the human lineage of the Zeta way — shape-catalogs + letting-things-be-with-a-good-reason",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T05:59:35Z",
+  "head_ref": "otto/research-human-lineage-zeta-way-shape-catalogs-letting-things-be"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8043,
+  "archive_path": "docs/history/pr-reviews/PR-8043-data-pr-reviews-consume-1132-orphaned-pr-archive-branches-main-preserve-review-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T18:43:13.966Z",
+  "schema_version": "v1",
+  "commit_sha": "57058cd3508b72fa2262559c936ab8f25cd8882b",
+  "title": "data(pr-reviews): consume 1132 orphaned pr-archive branches -> main (preserve review threads)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T18:42:44Z",
+  "head_ref": "shadow/drain-pr-archives-1132"
+}

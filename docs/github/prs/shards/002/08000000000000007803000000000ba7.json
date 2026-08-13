@@ -1,0 +1,15 @@
+{
+  "pr_number": 2983,
+  "archive_path": "docs/history/pr-reviews/PR-2983-feat-shadow-b-0431-slice-3-macos-grey-text-detection-via-osascript.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AvLJf",
+    "thread:PRRT_kwDOSF9kNM6BuVJq"
+  ],
+  "fetched_at": "2026-05-13T10:59:08.028Z",
+  "schema_version": "v1",
+  "commit_sha": "3bf22d378d7150a5cf4f6136f49cbd091f6745f3",
+  "title": "feat(shadow): B-0431 slice 3 — macOS grey-text detection via osascript",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T10:58:44Z",
+  "head_ref": "feat/b-0431-shadow-observer-slice-3-detect-script"
+}

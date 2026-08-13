@@ -1,0 +1,12 @@
+{
+  "pr_number": 7459,
+  "archive_path": "docs/history/pr-reviews/PR-7459-feat-universal-bus-shadow-universal-traveler-universal-bus-interfaces-bus-data-v.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T05:36:42.144Z",
+  "schema_version": "v1",
+  "commit_sha": "ccdb8b276cbc2978faecc7d91cf8e93f83b5862c",
+  "title": "feat(universal,bus)+shadow: Universal Traveler + Universal Bus interfaces; /bus (data) vs universal/bus (interface)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T05:36:21Z",
+  "head_ref": "shadow-bus-traveler-interfaces"
+}

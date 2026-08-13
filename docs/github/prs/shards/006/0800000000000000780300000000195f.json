@@ -1,0 +1,12 @@
+{
+  "pr_number": 6495,
+  "archive_path": "docs/history/pr-reviews/PR-6495-fix-core-dynamicvalue-f-empty-segment-default-immutablearray-conformance-follow-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T23:01:39.798Z",
+  "schema_version": "v1",
+  "commit_sha": "c7ec4ff7b7926f8d44965b05f17f0d094dc9c5ed",
+  "title": "fix(Core): DynamicValue F# — empty-segment + default-ImmutableArray conformance (follow-up to #6492)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T23:01:19Z",
+  "head_ref": "otto-cli/dynamic-value-fsharp-conformance-fixes-2026-06-01"
+}

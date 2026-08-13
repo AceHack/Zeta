@@ -1,0 +1,12 @@
+{
+  "pr_number": 7772,
+  "archive_path": "docs/history/pr-reviews/PR-7772-feat-quantum-add-f-observable-treaty.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:02:27.566Z",
+  "schema_version": "v1",
+  "commit_sha": "1f653d1389b0dac09f79786a5d713830d1f7adf9",
+  "title": "feat(quantum): add F# observable treaty",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:02:01Z",
+  "head_ref": "codex/qsharp-fsharp-treaty-transcript"
+}

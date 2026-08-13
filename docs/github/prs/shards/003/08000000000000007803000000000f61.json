@@ -1,0 +1,22 @@
+{
+  "pr_number": 3937,
+  "archive_path": "docs/history/pr-reviews/PR-3937-feat-routines-b-0507-and-b-0508-cloud-schedule-schema-definition.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B62cG",
+    "comment:PRRC_kwDOSF9kNM7B62ce",
+    "comment:PRRC_kwDOSF9kNM7B62dC",
+    "comment:PRRC_kwDOSF9kNM7B6zo2",
+    "comment:PRRC_kwDOSF9kNM7B6zo9",
+    "comment:PRRC_kwDOSF9kNM7B6zpA",
+    "thread:PRRT_kwDOSF9kNM6Clhw0",
+    "thread:PRRT_kwDOSF9kNM6Clhwt",
+    "thread:PRRT_kwDOSF9kNM6Clhwz"
+  ],
+  "fetched_at": "2026-05-16T20:42:55.914Z",
+  "schema_version": "v1",
+  "commit_sha": "73968120349ea55b1c8a6af0f5eaefdcca114d28",
+  "title": "feat(routines): B-0507 and B-0508 cloud-schedule schema definition",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T20:42:40Z",
+  "head_ref": "feat/b-0507-b-0508-cloud-routines-schema"
+}

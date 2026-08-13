@@ -1,0 +1,19 @@
+{
+  "pr_number": 3508,
+  "archive_path": "docs/history/pr-reviews/PR-3508-feat-manifesto-v2-1-constraint-11-default-oracle-m-acc-multi-oracle-partial-lock.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BqOl1",
+    "comment:PRRC_kwDOSF9kNM7BqOmo",
+    "comment:PRRC_kwDOSF9kNM7BqOnJ",
+    "thread:PRRT_kwDOSF9kNM6CZTt2",
+    "thread:PRRT_kwDOSF9kNM6CZTtP",
+    "thread:PRRT_kwDOSF9kNM6CZTuK"
+  ],
+  "fetched_at": "2026-05-15T15:16:14.374Z",
+  "schema_version": "v1",
+  "commit_sha": "660f4c9f88079363862b1c20d4024a28e0510d61",
+  "title": "feat(manifesto): V2.1 — Constraint 11 (Default Oracle) + m/acc + Multi-Oracle + partial-lock rename",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T15:15:55Z",
+  "head_ref": "fix/manifesto-shadow-lock-rename-partial-lock-otto-cli-2026-05-15"
+}

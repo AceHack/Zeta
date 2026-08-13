@@ -1,0 +1,12 @@
+{
+  "pr_number": 7102,
+  "archive_path": "docs/history/pr-reviews/PR-7102-feat-core-orbit-classify-t0-t-standing-solutions-fixed-time-crystal-time-quasicr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T12:32:56.157Z",
+  "schema_version": "v1",
+  "commit_sha": "18e79f4d9194d8ebf0f991a6ad68afb465eddadb",
+  "title": "feat(core): Orbit — classify t0=t∞ standing solutions: fixed / time-crystal / time-quasicrystal",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T12:32:37Z",
+  "head_ref": "otto/orbit-time-crystal-quasicrystal-standing-wave-classifier"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8700,
+  "archive_path": "docs/history/pr-reviews/PR-8700-test-formal-row-9-structural-leg-z-set-g-set-fusion-is-a-cvrdt-convergence.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T03:43:24.987Z",
+  "schema_version": "v1",
+  "commit_sha": "74bf8cb320b9b3af533f84c1f4dcef3f620aa2e3",
+  "title": "test(formal): row-9 structural leg — Z-set->G-set fusion is a CvRDT (convergence)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T03:43:00Z",
+  "head_ref": "otto-summoned/row9-gset-fusion-crdt-laws"
+}

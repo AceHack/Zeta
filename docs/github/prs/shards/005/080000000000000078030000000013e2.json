@@ -1,0 +1,12 @@
+{
+  "pr_number": 5090,
+  "archive_path": "docs/history/pr-reviews/PR-5090-backlog-b-0766-p1-re-land-slow-replace-all-dependencies-and-k8s-itself-with-bina.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T04:53:09.721Z",
+  "schema_version": "v1",
+  "commit_sha": "339fb0b74b28ffd8b7c753f996b9b5ecd63a5234",
+  "title": "backlog(B-0766 P1): re-land slow-replace all dependencies (and k8s itself) with binary-compatible Zeta-native F#/C#/Rust implementations",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T04:52:49Z",
+  "head_ref": "otto-cli/reland-b0766-0445z"
+}

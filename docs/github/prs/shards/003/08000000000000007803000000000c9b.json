@@ -1,0 +1,12 @@
+{
+  "pr_number": 3227,
+  "archive_path": "docs/history/pr-reviews/PR-3227-shard-tick-2026z-backlog-md-generated-index-drift-cleanup-b-0517-b-0518-b-0519.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T20:32:42.748Z",
+  "schema_version": "v1",
+  "commit_sha": "8b5934377b849ce8f46edf08f4f596871ced1612",
+  "title": "shard(tick): 2026Z — BACKLOG.md generated-index drift cleanup (B-0517/B-0518/B-0519)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:32:26Z",
+  "head_ref": "shard/tick-2026Z-backlog-regen-otto-cli-2026-05-14"
+}

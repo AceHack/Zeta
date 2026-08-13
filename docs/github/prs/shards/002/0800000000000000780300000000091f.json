@@ -1,0 +1,19 @@
+{
+  "pr_number": 2335,
+  "archive_path": "docs/history/pr-reviews/PR-2335-feat-b-0367-smallest-safe-slice-isemiring-w-interface-for-semiring-parameterized.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_jqCV",
+    "comment:PRRC_kwDOSF9kNM6_jqCc",
+    "comment:PRRC_kwDOSF9kNM6_jqCg",
+    "thread:PRRT_kwDOSF9kNM6A2VAP",
+    "thread:PRRT_kwDOSF9kNM6A2VAU",
+    "thread:PRRT_kwDOSF9kNM6A2VAX"
+  ],
+  "fetched_at": "2026-05-09T19:43:48.861Z",
+  "schema_version": "v1",
+  "commit_sha": "bf0990524c479627a9589021e4aecf2e73b32e65",
+  "title": "feat(B-0367): smallest safe slice — ISemiring<'W> interface for semiring-parameterized DBSP weights",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T19:43:33Z",
+  "head_ref": "claim/b0367-first-class-uncertainty-semiring-smallest-slice-riven-2026-05-09"
+}

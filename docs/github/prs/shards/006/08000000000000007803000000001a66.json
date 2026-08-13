@@ -1,0 +1,12 @@
+{
+  "pr_number": 6758,
+  "archive_path": "docs/history/pr-reviews/PR-6758-docs-architecture-cross-cell-du-coordination-class-admission-gate-tentative-laye.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T08:41:01.912Z",
+  "schema_version": "v1",
+  "commit_sha": "574546f00445096e1b8c3ea0b874170c3db4fbbe",
+  "title": "docs(architecture): cross-cell DU coordination-class admission gate + tentative layer names (Geode collision flagged)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T08:40:40Z",
+  "head_ref": "otto/coordination-class-gate-plus-tentative-names"
+}

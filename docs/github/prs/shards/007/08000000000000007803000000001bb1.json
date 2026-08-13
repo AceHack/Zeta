@@ -1,0 +1,12 @@
+{
+  "pr_number": 7089,
+  "archive_path": "docs/history/pr-reviews/PR-7089-feat-core-softcontroller-a-controller-in-superposition-collapse-to-best-learns-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T11:16:18.802Z",
+  "schema_version": "v1",
+  "commit_sha": "0473b85e4cae80d1438e29ec415e9bf3feccd2ca",
+  "title": "feat(core): SoftController — a controller in superposition; collapse-to-best learns the optimal input",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T11:15:54Z",
+  "head_ref": "otto/soft-controller-superposition-collapse-to-best"
+}

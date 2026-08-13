@@ -1,0 +1,15 @@
+{
+  "pr_number": 6511,
+  "archive_path": "docs/history/pr-reviews/PR-6511-docs-registry-dynamicvalue-float-bytes-locked-under-cbor-4-4-oracles-complete.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G9P66",
+    "thread:PRRT_kwDOSF9kNM6GSImb"
+  ],
+  "fetched_at": "2026-06-02T00:45:24.447Z",
+  "schema_version": "v1",
+  "commit_sha": "727fc985319ae759ddbf1ab11dc15971cbcc234c",
+  "title": "docs(registry): DynamicValue Float + Bytes LOCKED under CBOR — 4/4 oracles complete",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T00:45:05Z",
+  "head_ref": "otto-cli/dynamicvalue-cbor-registry-flip-2026-06-01"
+}

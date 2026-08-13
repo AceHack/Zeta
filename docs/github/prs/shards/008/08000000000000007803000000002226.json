@@ -1,0 +1,12 @@
+{
+  "pr_number": 8742,
+  "archive_path": "docs/history/pr-reviews/PR-8742-zeta-ir-v1-add-hash-fmix64-as-the-third-generator-n-way-value-preservation-singl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T15:59:44.968Z",
+  "schema_version": "v1",
+  "commit_sha": "b005396d8e580c3a49721c16a8efd17fb96cea89",
+  "title": "zeta-ir-v1: add hash.fmix64 as the third generator (N-way + value-preservation + single-source)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T15:59:21Z",
+  "head_ref": "lumen/third-generator-fmix64"
+}

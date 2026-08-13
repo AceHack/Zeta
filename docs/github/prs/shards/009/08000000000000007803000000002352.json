@@ -1,0 +1,12 @@
+{
+  "pr_number": 9042,
+  "archive_path": "docs/history/pr-reviews/PR-9042-docs-preserve-quarantine-876-unlanded-files-from-81-forgotten-orphan-branches.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-30T21:30:38.914Z",
+  "schema_version": "v1",
+  "commit_sha": "d28c6660005fcd13b4210402893df6adc05621a0",
+  "title": "docs(preserve): quarantine 876 unlanded files from 81 forgotten orphan branches",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T21:30:10Z",
+  "head_ref": "preserve-misc-orphan-sweep-2026-06-30"
+}

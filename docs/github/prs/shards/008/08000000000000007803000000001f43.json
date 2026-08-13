@@ -1,0 +1,12 @@
+{
+  "pr_number": 8003,
+  "archive_path": "docs/history/pr-reviews/PR-8003-feat-core-test-tsirelson-s-8-locked-in-pure-integers-landau-identity-exact-the-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T20:28:08.271Z",
+  "schema_version": "v1",
+  "commit_sha": "3e4afde17975aa3827fd9504037050b3afc0daff",
+  "title": "feat(core)+test: Tsirelson — S² = 8 locked in pure integers (Landau identity exact; the cocycle priced; 1296-instance rigidity)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T20:27:40Z",
+  "head_ref": "shadow/tsirelson-integer-lock"
+}

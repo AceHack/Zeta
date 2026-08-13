@@ -1,0 +1,12 @@
+{
+  "pr_number": 8013,
+  "archive_path": "docs/history/pr-reviews/PR-8013-feat-core-test-generatorcatalog-sql-over-the-generator-catalog-ferry-37-public-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T05:10:25.526Z",
+  "schema_version": "v1",
+  "commit_sha": "822f9fc92dd2f32874eecec0883686f8ad396b2f",
+  "title": "feat(core)+test: GeneratorCatalog — SQL over the generator catalog (ferry 37; public surface → Ilyana)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T05:09:57Z",
+  "head_ref": "shadow/generator-catalog-query"
+}

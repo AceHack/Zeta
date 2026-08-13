@@ -1,0 +1,12 @@
+{
+  "pr_number": 3856,
+  "archive_path": "docs/history/pr-reviews/PR-3856-shard-tick-2026-05-16t10-17z-b-0197-class-2-2-ready-sub-class-observation-28-38-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T10:27:22.689Z",
+  "schema_version": "v1",
+  "commit_sha": "4c4cd87ea267a636c330cc01ff18ab6c4f0972fe",
+  "title": "shard(tick): 2026-05-16T10:17Z — B-0197 = class #2 + #2-Ready sub-class observation; 28/38 triaged",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:27:06Z",
+  "head_ref": "otto-cli-b0197-audit-2026-05-16-1017z"
+}

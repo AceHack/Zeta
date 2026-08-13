@@ -1,0 +1,12 @@
+{
+  "pr_number": 6427,
+  "archive_path": "docs/history/pr-reviews/PR-6427-backlog-b-0976-self-evolving-saga-build-row-serialized-deferred-execution-resume.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T15:38:59.237Z",
+  "schema_version": "v1",
+  "commit_sha": "d12b3cb442d0019e6ee00cf79f35bfa901523ee4",
+  "title": "backlog(B-0976): self-evolving-saga build row — serialized deferred execution, resume-not-replay, Temporal-grade interface, rides the Z-set ladder",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T15:38:32Z",
+  "head_ref": "otto-cli/b0976-saga-build-row-2026-06-01"
+}

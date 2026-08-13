@@ -1,0 +1,25 @@
+{
+  "pr_number": 2407,
+  "archive_path": "docs/history/pr-reviews/PR-2407-feat-b-0048-1-alloy-3-coloring-stage-1-threecoloring-als-probe-with-k4-chromatic.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_laab",
+    "comment:PRRC_kwDOSF9kNM6_laac",
+    "comment:PRRC_kwDOSF9kNM6_laxE",
+    "comment:PRRC_kwDOSF9kNM6_laxL",
+    "comment:PRRC_kwDOSF9kNM6_laxP",
+    "comment:PRRC_kwDOSF9kNM6_laxS",
+    "thread:PRRT_kwDOSF9kNM6A3vcp",
+    "thread:PRRT_kwDOSF9kNM6A3vcq",
+    "thread:PRRT_kwDOSF9kNM6A3vuG",
+    "thread:PRRT_kwDOSF9kNM6A3vuL",
+    "thread:PRRT_kwDOSF9kNM6A3vuP",
+    "thread:PRRT_kwDOSF9kNM6A3vuS"
+  ],
+  "fetched_at": "2026-05-10T03:42:31.124Z",
+  "schema_version": "v1",
+  "commit_sha": "b3066379661241a5bb62a421b5b16af7c3b11aa0",
+  "title": "feat(B-0048.1): Alloy 3-coloring Stage 1 — ThreeColoring.als probe with K4 chromatic-number check",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T03:42:12Z",
+  "head_ref": "feat/B-0048.1-alloy-3-coloring-stage1"
+}

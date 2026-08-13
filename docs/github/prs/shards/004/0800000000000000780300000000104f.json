@@ -1,0 +1,19 @@
+{
+  "pr_number": 4175,
+  "archive_path": "docs/history/pr-reviews/PR-4175-research-33-discriminating-falsifier-attempt-for-b-0666-keystone-mirror-tier-hon.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CXfGK",
+    "comment:PRRC_kwDOSF9kNM7CXlQi",
+    "comment:PRRC_kwDOSF9kNM7CXlRL",
+    "thread:PRRT_kwDOSF9kNM6C67bx",
+    "thread:PRRT_kwDOSF9kNM6C6_2B",
+    "thread:PRRT_kwDOSF9kNM6C6_2f"
+  ],
+  "fetched_at": "2026-05-18T18:12:28.305Z",
+  "schema_version": "v1",
+  "commit_sha": "acb3838ce3c3fdc00c4095c1caf6c45b9acb4d69",
+  "title": "research(§33): discriminating-falsifier attempt for B-0666 KEYSTONE — mirror-tier honest result",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T18:11:57Z",
+  "head_ref": "shard/discriminating-falsifier-attempt-mirror-tier-2026-05-18"
+}

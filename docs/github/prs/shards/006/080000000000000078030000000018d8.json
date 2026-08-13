@@ -1,0 +1,12 @@
+{
+  "pr_number": 6360,
+  "archive_path": "docs/history/pr-reviews/PR-6360-feat-b-0959-g-set-rust-oracle-algebra-ladder-bottom-rung-3-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T06:54:47.768Z",
+  "schema_version": "v1",
+  "commit_sha": "c7119558a9676ec2bfc15e8b74bbd6c6364fcf83",
+  "title": "feat(B-0959): G-Set Rust oracle — algebra-ladder bottom rung (3/4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T06:54:28Z",
+  "head_ref": "otto-cli/algebra-gset-rust-2026-06-01"
+}

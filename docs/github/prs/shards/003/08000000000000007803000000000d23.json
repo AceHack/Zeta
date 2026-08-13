@@ -1,0 +1,15 @@
+{
+  "pr_number": 3363,
+  "archive_path": "docs/history/pr-reviews/PR-3363-shard-tick-0517z-bus-hygiene-b-0529-filed-restraint-discipline-on-b-0527-advisor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Beyq_",
+    "thread:PRRT_kwDOSF9kNM6CQ9S8"
+  ],
+  "fetched_at": "2026-05-15T05:24:38.969Z",
+  "schema_version": "v1",
+  "commit_sha": "60627b2d569e9d71c170950ee2d145e2c36f68c5",
+  "title": "shard(tick): 0517Z — bus hygiene + B-0529 filed + restraint discipline on B-0527 advisory",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T05:24:23Z",
+  "head_ref": "shard/tick-0517z-otto-cli-2026-05-15"
+}

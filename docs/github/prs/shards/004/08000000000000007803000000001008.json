@@ -1,0 +1,12 @@
+{
+  "pr_number": 4104,
+  "archive_path": "docs/history/pr-reviews/PR-4104-rules-blocked-green-ci-worked-example-for-2-finding-pre-fixed-cascade-pr-4097-an.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T21:45:55.095Z",
+  "schema_version": "v1",
+  "commit_sha": "ae9db10dd268be0f3a704694db67c37ca16a2e4b",
+  "title": "rules(blocked-green-ci): worked example for 2-finding pre-fixed cascade (PR #4097 anchor)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T21:45:39Z",
+  "head_ref": "rule-anchor/blocked-green-ci-stale-thread-2-finding-pattern-2026-05-17-2140z"
+}

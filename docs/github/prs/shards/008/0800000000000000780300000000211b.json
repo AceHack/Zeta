@@ -1,0 +1,12 @@
+{
+  "pr_number": 8475,
+  "archive_path": "docs/history/pr-reviews/PR-8475-docs-trajectory-world-model-convergence-resume-track-the-open-b-discharges-so-we.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T07:43:00.967Z",
+  "schema_version": "v1",
+  "commit_sha": "49b84ca2a3d80c958c8d630cefba994fbf372b8d",
+  "title": "docs(trajectory): world-model-convergence RESUME — track the open §B discharges so we push them forward",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T07:42:29Z",
+  "head_ref": "otto/trajectory-world-model-convergence"
+}

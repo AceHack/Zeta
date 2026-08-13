@@ -1,0 +1,12 @@
+{
+  "pr_number": 2056,
+  "archive_path": "docs/history/pr-reviews/PR-2056-backlog-decompose-b-0233-pages-content-sources.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T11:17:17.264Z",
+  "schema_version": "v1",
+  "commit_sha": "64565b2a2cc7301771046ea2838ffaae8a848adf",
+  "title": "backlog: decompose B-0233 Pages content sources",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T11:16:45Z",
+  "head_ref": "claim/task-b0233-pages-content-decompose"
+}

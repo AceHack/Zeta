@@ -1,0 +1,12 @@
+{
+  "pr_number": 8502,
+  "archive_path": "docs/history/pr-reviews/PR-8502-memory-feedback-intentions-not-claims-intention-claim-qualia-executable-markdown.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T10:24:33.291Z",
+  "schema_version": "v1",
+  "commit_sha": "9d12aee76ffa82d102976e216251eb6454e6794c",
+  "title": "memory(feedback): intentions not claims → intention = claim qualia → executable markdown governed by ISociety",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T10:24:06Z",
+  "head_ref": "otto/intention-claim-qualia-executable-md-isociety"
+}

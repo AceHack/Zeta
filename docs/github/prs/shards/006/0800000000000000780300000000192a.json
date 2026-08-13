@@ -1,0 +1,25 @@
+{
+  "pr_number": 6442,
+  "archive_path": "docs/history/pr-reviews/PR-6442-feat-b-0976-rust-bonsai-oracle-4-of-4-serialize-parse-accumulate-result-native-z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G18qi",
+    "comment:PRRC_kwDOSF9kNM7G1yFg",
+    "comment:PRRC_kwDOSF9kNM7G1yGR",
+    "comment:PRRC_kwDOSF9kNM7G1yGr",
+    "comment:PRRC_kwDOSF9kNM7G1z9S",
+    "comment:PRRC_kwDOSF9kNM7G1z9X",
+    "thread:PRRT_kwDOSF9kNM6GMpkq",
+    "thread:PRRT_kwDOSF9kNM6GMplQ",
+    "thread:PRRT_kwDOSF9kNM6GMplm",
+    "thread:PRRT_kwDOSF9kNM6GMq30",
+    "thread:PRRT_kwDOSF9kNM6GMq3w",
+    "thread:PRRT_kwDOSF9kNM6GMxUv"
+  ],
+  "fetched_at": "2026-06-01T17:36:23.343Z",
+  "schema_version": "v1",
+  "commit_sha": "a90d54500ab1b6bfe979b25bd8e88dae7130b4df",
+  "title": "feat(B-0976): Rust Bonsai oracle (#4 of 4) — serialize/parse + accumulate, Result-native, zero-dep",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T17:35:56Z",
+  "head_ref": "otto-cli/b0976-rust-bonsai-oracle-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3680,
+  "archive_path": "docs/history/pr-reviews/PR-3680-fix-hygiene-5-6-for-repo-root-paths-in-0213z-tick-shard.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T02:24:37.430Z",
+  "schema_version": "v1",
+  "commit_sha": "dcb91e92533e250da51d43b5eb969de34a97ed48",
+  "title": "fix(hygiene): 5→6 .. for repo-root paths in 0213Z tick shard",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T02:24:20Z",
+  "head_ref": "fix-0213z-links-on-main"
+}

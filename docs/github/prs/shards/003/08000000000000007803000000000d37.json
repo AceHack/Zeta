@@ -1,0 +1,12 @@
+{
+  "pr_number": 3383,
+  "archive_path": "docs/history/pr-reviews/PR-3383-shard-tick-0754z-pr-3380-merged-codex-p2-thread-on-pr-3379-addressed-bulk-fix-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T08:22:27.956Z",
+  "schema_version": "v1",
+  "commit_sha": "cc4ecb905e4917477d3711bf9d67532e23669c07",
+  "title": "shard(tick): 0754Z — PR #3380 merged; Codex P2 thread on PR #3379 addressed; bulk-fix PR #3382 opened",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T08:22:08Z",
+  "head_ref": "shard/tick-0754z-otto-cli-2026-05-15"
+}

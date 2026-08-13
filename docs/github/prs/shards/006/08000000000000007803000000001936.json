@@ -1,0 +1,12 @@
+{
+  "pr_number": 6454,
+  "archive_path": "docs/history/pr-reviews/PR-6454-feat-range-set-rangeset-ts-reference-oracle-1-sparse-int-set-in-compact-range-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T19:11:03.171Z",
+  "schema_version": "v1",
+  "commit_sha": "057a2b9a5f9cd33b10dfcc3a6be41673f4e1bf78",
+  "title": "feat(range-set): RangeSet TS reference (oracle #1) — sparse-int-set in compact range notation",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T19:10:42Z",
+  "head_ref": "otto-cli/rangeset-ts-reference-2026-06-01"
+}

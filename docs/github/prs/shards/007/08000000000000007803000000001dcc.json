@@ -1,0 +1,12 @@
+{
+  "pr_number": 7628,
+  "archive_path": "docs/history/pr-reviews/PR-7628-docs-universal-extension-interface-zork-z-machine-support-path-etch-a-sketch-lit.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:50:11.366Z",
+  "schema_version": "v1",
+  "commit_sha": "dd6145d7d626d53fa7d2a3381fa6ade6f8301bd3",
+  "title": "docs(universal): Extension Interface + ZORK/Z-machine support path + Etch-a-Sketch/Lite-Brite display lineage",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:49:47Z",
+  "head_ref": "shadow-zork-zmachine-extension-interface"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6954,
+  "archive_path": "docs/history/pr-reviews/PR-6954-feat-core-raytensor-f-impl-of-the-full-ray-traceable-capability-vector.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T00:33:39.271Z",
+  "schema_version": "v1",
+  "commit_sha": "f2c219706c977216c8a2871eee55737855c70217",
+  "title": "feat(core): RayTensor — F# impl of the full ray-traceable capability vector",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T00:33:17Z",
+  "head_ref": "otto/raytensor-fsharp-geospatial-raytraceable-impl"
+}

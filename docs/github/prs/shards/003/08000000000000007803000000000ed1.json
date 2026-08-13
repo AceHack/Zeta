@@ -1,0 +1,12 @@
+{
+  "pr_number": 3793,
+  "archive_path": "docs/history/pr-reviews/PR-3793-shard-tick-2026-05-16t06-47z-pure-git-tick-pr-deferred-to-post-reset.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T07:04:48.531Z",
+  "schema_version": "v1",
+  "commit_sha": "1ec404459a4e65d15f693244d8dc44b945f01de9",
+  "title": "shard(tick): 2026-05-16T06:47Z — pure-git tick; PR deferred to post-reset",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T07:04:30Z",
+  "head_ref": "shard/tick-0647z-otto-cli-2026-05-16"
+}

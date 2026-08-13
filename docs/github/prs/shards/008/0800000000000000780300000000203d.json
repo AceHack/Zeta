@@ -1,0 +1,12 @@
+{
+  "pr_number": 8253,
+  "archive_path": "docs/history/pr-reviews/PR-8253-docs-research-the-internal-core-a-reliability-and-amplification-weighted-capabil.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T04:03:07.387Z",
+  "schema_version": "v1",
+  "commit_sha": "8b69a1b96ce2e3a01ccf66a610bda380748e95a0",
+  "title": "docs(research): the internal core — a reliability- and amplification-weighted capability ledger",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T04:02:42Z",
+  "head_ref": "otto/capability-ledger-internal-core"
+}

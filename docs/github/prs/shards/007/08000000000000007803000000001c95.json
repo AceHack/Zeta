@@ -1,0 +1,12 @@
+{
+  "pr_number": 7317,
+  "archive_path": "docs/history/pr-reviews/PR-7317-docs-research-itron-ism-skms-crypto-architecture-lived-prior-art-reference-for-z.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:33:18.634Z",
+  "schema_version": "v1",
+  "commit_sha": "55492c4a3e47002141d3eb0816d431fe18c91547",
+  "title": "docs(research): Itron ISM/SKMS crypto architecture — lived prior-art reference for Zeta crypto-sovereignty (reference-not-copy)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:32:49Z",
+  "head_ref": "otto/itron-ism-skms-crypto-architecture-reference-prior-art"
+}

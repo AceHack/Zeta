@@ -1,0 +1,12 @@
+{
+  "pr_number": 6767,
+  "archive_path": "docs/history/pr-reviews/PR-6767-backlog-git-reach-punch-list-data-plane-command-spec-requirements-for-no-git-cli.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T09:26:03.292Z",
+  "schema_version": "v1",
+  "commit_sha": "40d69710b77014bfae58a2cbcde45dd2ab6d313b",
+  "title": "backlog: git-reach punch-list → data-plane command spec (requirements for no-git-CLI #1)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T09:25:40Z",
+  "head_ref": "otto/git-reach-punch-list-command-spec"
+}

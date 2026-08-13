@@ -1,0 +1,12 @@
+{
+  "pr_number": 8402,
+  "archive_path": "docs/history/pr-reviews/PR-8402-docs-society-9g-gist-traveler-frame-cross-reference-heartbeat-learn-her-fairness.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:54:04.952Z",
+  "schema_version": "v1",
+  "commit_sha": "95091b53727f2848cf8743a82e55ecf4e135a757",
+  "title": "docs(society): §9g — gist ≈ traveler-frame / cross-reference heartbeat; learn her fairness for fair-empowerment",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:53:36Z",
+  "head_ref": "docs/9g-gist-traveler-heartbeat-learn-fairness"
+}

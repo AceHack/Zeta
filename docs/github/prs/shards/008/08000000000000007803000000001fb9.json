@@ -1,0 +1,12 @@
+{
+  "pr_number": 8121,
+  "archive_path": "docs/history/pr-reviews/PR-8121-refactor-service-wave-4-delete-superseded-per-persona-scripts.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:26:46.882Z",
+  "schema_version": "v1",
+  "commit_sha": "372dc695109cb597b1b592d883f8b8a9703b3bfd",
+  "title": "refactor(service): Wave 4 — delete superseded per-persona scripts",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:26:26Z",
+  "head_ref": "kiro/unified-loop-wave4-migration"
+}

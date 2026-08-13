@@ -1,0 +1,17 @@
+{
+  "pr_number": 3888,
+  "archive_path": "docs/history/pr-reviews/PR-3888-feat-b-0037-2-implement-round-close-meta-check-template-close-4th-cycle-close-ro.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B4z0w",
+    "comment:PRRC_kwDOSF9kNM7B4z1t",
+    "thread:PRRT_kwDOSF9kNM6Cj9EC",
+    "thread:PRRT_kwDOSF9kNM6Cj9Ep"
+  ],
+  "fetched_at": "2026-05-16T13:56:35.895Z",
+  "schema_version": "v1",
+  "commit_sha": "5bf371be52c0ca37f574cb1f0ba39fa385621d4e",
+  "title": "feat(b-0037.2): implement round-close meta-check template + close (4th cycle close-row)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T13:56:19Z",
+  "head_ref": "otto-cli-b0037.2-impl-meta-check-template-2026-05-16-1341z"
+}

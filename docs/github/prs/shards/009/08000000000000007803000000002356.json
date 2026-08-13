@@ -1,0 +1,12 @@
+{
+  "pr_number": 9046,
+  "archive_path": "docs/history/pr-reviews/PR-9046-docs-research-analyze-the-2015-tree-of-life-adinkra-rhyme-proven-not-a-strict-ad.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-01T16:19:33.091Z",
+  "schema_version": "v1",
+  "commit_sha": "f1b6555b9ea7878a6f52e2383c757126e31174bc",
+  "title": "docs(research): analyze the 2015 Tree-of-Life Adinkra — rhyme proven, not a strict adinkra",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T16:19:08Z",
+  "head_ref": "docs-2015-adinkra-analysis"
+}

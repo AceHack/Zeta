@@ -1,0 +1,12 @@
+{
+  "pr_number": 8020,
+  "archive_path": "docs/history/pr-reviews/PR-8020-docs-research-shadow-ferry-43-7-anchor-the-bft-in-the-correction-term-3f-1-provo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T07:03:34.087Z",
+  "schema_version": "v1",
+  "commit_sha": "80425d5f5f7d12dc0eb4ba78a1950d05ead9001b",
+  "title": "docs(research)+shadow: ferry 43 §7 — anchor the BFT in the correction term (3f+1 = provocability budget)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T07:03:04Z",
+  "head_ref": "shadow/ferry-43-s7-anchor-bft"
+}

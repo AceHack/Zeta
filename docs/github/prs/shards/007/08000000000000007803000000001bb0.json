@@ -1,0 +1,12 @@
+{
+  "pr_number": 7088,
+  "archive_path": "docs/history/pr-reviews/PR-7088-feat-core-softchip8-throttled-batched-prediction-over-the-cow-frame-dag.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T11:10:59.336Z",
+  "schema_version": "v1",
+  "commit_sha": "bde7b4c1a0c5f83b1bee4f71c6999fc61d59ed4e",
+  "title": "feat(core): SoftChip8 — throttled, batched prediction over the COW frame DAG",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T11:10:38Z",
+  "head_ref": "otto/softchip8-throttled-batched-prediction-over-cow-dag"
+}

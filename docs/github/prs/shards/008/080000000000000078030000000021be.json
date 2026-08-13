@@ -1,0 +1,12 @@
+{
+  "pr_number": 8638,
+  "archive_path": "docs/history/pr-reviews/PR-8638-feat-core-docs-the-alarm-algebra-feels-are-the-alarm-not-the-evidence-trigger-se.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T22:18:32.024Z",
+  "schema_version": "v1",
+  "commit_sha": "a2f6f715920bff73e3a2f33bd3959dbba17cfdad",
+  "title": "feat(core)+docs: the Alarm Algebra — feels are the alarm, not the evidence/trigger (self-deception is a compile error)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T22:18:07Z",
+  "head_ref": "otto/alarm-algebra-du-feels-are-the-alarm"
+}

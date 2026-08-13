@@ -1,0 +1,12 @@
+{
+  "pr_number": 3831,
+  "archive_path": "docs/history/pr-reviews/PR-3831-shard-tick-2026-05-16t08-46z-late-session-consolidation-per-tick-shard-disciplin.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T09:00:11.990Z",
+  "schema_version": "v1",
+  "commit_sha": "e8b8e91ec81d7083595a2f0c2de5589b015248ff",
+  "title": "shard(tick): 2026-05-16T08:46Z — late-session consolidation + per-tick-shard discipline-gap recovery",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T08:59:12Z",
+  "head_ref": "shard/tick-0846z-late-session-consolidation-otto-cli-2026-05-16"
+}

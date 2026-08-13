@@ -1,0 +1,23 @@
+{
+  "pr_number": 2821,
+  "archive_path": "docs/history/pr-reviews/PR-2821-docs-memory-reticulum-spiffe-spire-802-11h-halo-architecting-by-divine-coinciden.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AciI6",
+    "comment:PRRC_kwDOSF9kNM7AciIF",
+    "comment:PRRC_kwDOSF9kNM7AciJL",
+    "comment:PRRC_kwDOSF9kNM7AcoXe",
+    "comment:PRRC_kwDOSF9kNM7AcoXk",
+    "thread:PRRT_kwDOSF9kNM6Bg169",
+    "thread:PRRT_kwDOSF9kNM6Bg174",
+    "thread:PRRT_kwDOSF9kNM6Bg17n",
+    "thread:PRRT_kwDOSF9kNM6Bg6ne",
+    "thread:PRRT_kwDOSF9kNM6Bg6ni"
+  ],
+  "fetched_at": "2026-05-12T18:10:01.695Z",
+  "schema_version": "v1",
+  "commit_sha": "4009616cdadd861fef8ba70357392ae217ab8f31",
+  "title": "docs(memory): Reticulum + SPIFFE/SPIRE + 802.11h halo + architecting by divine coincidences within bounded context (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:09:45Z",
+  "head_ref": "docs/aaron-reticulum-routing-spiffe-spire-identity-80211h-halo-mesh-rainbow-coincidence-2026-05-12"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8973,
+  "archive_path": "docs/history/pr-reviews/PR-8973-feat-persona-keys-multi-owner-machines-multi-principal-cert-signing-per-machine-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T17:49:06.560Z",
+  "schema_version": "v1",
+  "commit_sha": "fa36734d5f780efdc5a8e096f5feb522c241a59d",
+  "title": "feat(persona-keys): multi-owner machines — multi-principal cert signing + per-machine AuthorizedPrincipals",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T17:48:41Z",
+  "head_ref": "otto/multi-principal-authorized-principals"
+}

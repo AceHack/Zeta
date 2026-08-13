@@ -1,0 +1,19 @@
+{
+  "pr_number": 1987,
+  "archive_path": "docs/history/pr-reviews/PR-1987-docs-research-log-catch-31-on-otto.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_E0jY",
+    "comment:PRRC_kwDOSF9kNM6_E0jn",
+    "comment:PRRC_kwDOSF9kNM6_Ezgn",
+    "thread:PRRT_kwDOSF9kNM6AffmL",
+    "thread:PRRT_kwDOSF9kNM6AfgZf",
+    "thread:PRRT_kwDOSF9kNM6AfgZq"
+  ],
+  "fetched_at": "2026-05-08T01:51:17.651Z",
+  "schema_version": "v1",
+  "commit_sha": "993690778666685dd8358d117f7f8e512530c829",
+  "title": "docs(research): log Catch 31 on Otto",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T01:51:02Z",
+  "head_ref": "research/catch-31-otto"
+}

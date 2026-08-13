@@ -1,0 +1,12 @@
+{
+  "pr_number": 7659,
+  "archive_path": "docs/history/pr-reviews/PR-7659-feat-chip9-the-physics-library-s-first-stone-fix16-sub-pixel-clock-free-kernel-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T11:56:13.082Z",
+  "schema_version": "v1",
+  "commit_sha": "cdad93b87e50e49814b375cf8409677b8b809c56",
+  "title": "feat(chip9): the physics library's first stone — fix16 sub-pixel clock-free kernel + the five design laws",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T11:55:48Z",
+  "head_ref": "shadow-chip9-gfx-phys-library"
+}

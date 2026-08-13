@@ -1,0 +1,12 @@
+{
+  "pr_number": 6162,
+  "archive_path": "docs/history/pr-reviews/PR-6162-backlog-b-0945-declarative-microkernel-substrate-in-house-trust-gradient-compres.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T23:08:36.261Z",
+  "schema_version": "v1",
+  "commit_sha": "5b3d4704eed10cd4917ec72b502d4bfaf64a9414",
+  "title": "backlog(B-0945): declarative microkernel substrate (in-house) — trust-gradient + compression engine + Sequoia memory model, better than docker",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T23:08:16Z",
+  "head_ref": "otto/b0945-declarative-microkernel-substrate-2026-05-30"
+}

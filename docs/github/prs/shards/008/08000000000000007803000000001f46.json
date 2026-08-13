@@ -1,0 +1,12 @@
+{
+  "pr_number": 8006,
+  "archive_path": "docs/history/pr-reviews/PR-8006-docs-research-shadow-ferry-36-poker-tells-hidden-judgment-the-side-channel-nonin.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T04:23:31.417Z",
+  "schema_version": "v1",
+  "commit_sha": "316c2d550da0f763d9f3e5dde07341154e28596c",
+  "title": "docs(research)+shadow: ferry 36 — poker tells = hidden judgment (the side channel noninterference forbids); a childhood question closed",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T04:23:04Z",
+  "head_ref": "shadow/ferry-36-poker-tells"
+}

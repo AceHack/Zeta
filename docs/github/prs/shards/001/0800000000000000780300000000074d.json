@@ -1,0 +1,12 @@
+{
+  "pr_number": 1869,
+  "archive_path": "docs/history/pr-reviews/PR-1869-fix-align-b-0248-title-with-generated-backlog-index.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T12:54:40.537Z",
+  "schema_version": "v1",
+  "commit_sha": "519e222e5bdb139849423423599171260c23956f",
+  "title": "fix: align B-0248 title with generated backlog index",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T12:07:40Z",
+  "head_ref": "codex/fix-b0248-backlog-index-drift"
+}

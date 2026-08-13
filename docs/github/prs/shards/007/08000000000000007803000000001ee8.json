@@ -1,0 +1,12 @@
+{
+  "pr_number": 7912,
+  "archive_path": "docs/history/pr-reviews/PR-7912-feat-wire-do-item-explore-play-into-execute.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T13:53:14.722Z",
+  "schema_version": "v1",
+  "commit_sha": "ca1583664d478599f41794d8043e4147c17465e7",
+  "title": "feat: wire do_item + explore + play into execute()",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T13:52:49Z",
+  "head_ref": "kiro/wire-do-item-execute"
+}

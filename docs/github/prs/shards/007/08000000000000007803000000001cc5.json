@@ -1,0 +1,12 @@
+{
+  "pr_number": 7365,
+  "archive_path": "docs/history/pr-reviews/PR-7365-docs-research-what-the-tracks-are-oracle-voices-open-registry-solidground-is-a-v.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T18:58:43.971Z",
+  "schema_version": "v1",
+  "commit_sha": "e20612fda73c1ef8aa2ae974fc6c0cf7af1fd5e2",
+  "title": "docs(research): what the tracks ARE — oracle-voices + open registry + SolidGround-is-a-voice (hard within soft) + the nothing/everything-traveler paradox and its resolution",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T18:58:18Z",
+  "head_ref": "otto/what-the-tracks-are-oracle-voices-registry-nothing-everything-traveler-paradox"
+}

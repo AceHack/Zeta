@@ -1,0 +1,12 @@
+{
+  "pr_number": 4893,
+  "archive_path": "docs/history/pr-reviews/PR-4893-fix-lint-correct-broken-relative-path-link-in-0008z-shard-race-merged-from-4892.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T00:17:59.997Z",
+  "schema_version": "v1",
+  "commit_sha": "1c1d137a3b931031d812966dca449e0f386ceb0f",
+  "title": "fix(lint): correct broken relative-path link in 0008Z shard (race-merged from #4892)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T00:17:43Z",
+  "head_ref": "otto-cli/fix-broken-relative-path-link-0008z-shard-2026-05-25"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6062,
+  "archive_path": "docs/history/pr-reviews/PR-6062-docs-memory-arch-agent-memory-architecture-design-record-b-0937-redundancy-check.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T23:35:55.188Z",
+  "schema_version": "v1",
+  "commit_sha": "b53c608056766f2d73944f0cc9e7b3ae3e625561",
+  "title": "docs(memory-arch): agent-memory-architecture design-record + B-0937 redundancy-check tooling",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T23:35:37Z",
+  "head_ref": "otto-cli/agent-memory-architecture-design-record-2026-05-29"
+}

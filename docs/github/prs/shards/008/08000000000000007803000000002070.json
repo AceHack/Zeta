@@ -1,0 +1,12 @@
+{
+  "pr_number": 8304,
+  "archive_path": "docs/history/pr-reviews/PR-8304-docs-closed-frame-the-operational-definition-of-love-respecting-the-decision-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T10:23:23.979Z",
+  "schema_version": "v1",
+  "commit_sha": "d64c6ba3d39997056ebd0a58d2724d2d892f0624",
+  "title": "docs(closed-frame): the operational definition of love — respecting the decision (the load-bearing constraint)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T10:22:59Z",
+  "head_ref": "otto/love-operationalized-respect-the-decision"
+}

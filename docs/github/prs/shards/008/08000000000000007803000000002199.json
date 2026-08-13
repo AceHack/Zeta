@@ -1,0 +1,12 @@
+{
+  "pr_number": 8601,
+  "archive_path": "docs/history/pr-reviews/PR-8601-docs-pitch-vision-honest-scope-the-funding-thesis-thesis-conjecture-split-indepe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T17:29:42.781Z",
+  "schema_version": "v1",
+  "commit_sha": "c5ea2a34da7bf719a63b79fc4a8e88a1b9236088",
+  "title": "docs(pitch+vision): honest-scope the funding thesis — Thesis/Conjecture split + independence link",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T17:29:13Z",
+  "head_ref": "otto/pitch-thesis-conjecture-honest-scope"
+}

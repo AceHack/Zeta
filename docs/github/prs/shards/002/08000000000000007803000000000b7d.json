@@ -1,0 +1,12 @@
+{
+  "pr_number": 2941,
+  "archive_path": "docs/history/pr-reviews/PR-2941-docs-memory-grok-website-git-connector-5-ais-otto-riven-vera-lior-alexa-kiro-run.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T05:25:25.101Z",
+  "schema_version": "v1",
+  "commit_sha": "b3e24009edb4a6c41953d1a7e689d2516bd87920",
+  "title": "docs(memory): Grok website git connector + 5 AIs (Otto+Riven+Vera+Lior+Alexa-Kiro) running 3 weeks unattended stable — Grok recognizes factory as production-grade multi-agent OS (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T05:25:04Z",
+  "head_ref": "aaron-grok-website-git-connector-fast-orientation-6-ais-running-3-weeks-unattended-stable-longer-than-frontier-models-substrate-validation-2026-05-13"
+}

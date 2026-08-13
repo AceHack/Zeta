@@ -1,0 +1,12 @@
+{
+  "pr_number": 5852,
+  "archive_path": "docs/history/pr-reviews/PR-5852-docs-archive-preserve-pr-5845-discussion.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T17:09:12.952Z",
+  "schema_version": "v1",
+  "commit_sha": "3a7e325f5216c1ac9bea1aa519695d4182f222c4",
+  "title": "docs(archive): Preserve PR #5845 discussion",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T17:08:48Z",
+  "head_ref": "lior/archive-pr-5845"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6309,
+  "archive_path": "docs/history/pr-reviews/PR-6309-reserve-observe-act-slot-7-for-grammar-branch.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T01:45:44.157Z",
+  "schema_version": "v1",
+  "commit_sha": "9f1b995d7ba2ea21ff2e18e880ca1a0aab4503af",
+  "title": "Reserve observe-act slot 7 for grammar branch",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T01:45:26Z",
+  "head_ref": "codex/agentic-org-slot7-edit-grammar"
+}

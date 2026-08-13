@@ -1,0 +1,23 @@
+{
+  "pr_number": 6342,
+  "archive_path": "docs/history/pr-reviews/PR-6342-docs-b-0964-effectful-do-item-design-fact-event-envelope-injected-executor-just-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GlewW",
+    "comment:PRRC_kwDOSF9kNM7Glfo_",
+    "comment:PRRC_kwDOSF9kNM7Glfoz",
+    "comment:PRRC_kwDOSF9kNM7Glki7",
+    "comment:PRRC_kwDOSF9kNM7Glkii",
+    "thread:PRRT_kwDOSF9kNM6GAc6m",
+    "thread:PRRT_kwDOSF9kNM6GAc6s",
+    "thread:PRRT_kwDOSF9kNM6GAcQb",
+    "thread:PRRT_kwDOSF9kNM6GAgnT",
+    "thread:PRRT_kwDOSF9kNM6GAgnk"
+  ],
+  "fetched_at": "2026-06-01T05:03:17.606Z",
+  "schema_version": "v1",
+  "commit_sha": "12c395c28d5b390d8056c5e866a4bff50104eac8",
+  "title": "docs(B-0964): effectful do_item design — fact-event envelope + injected executor + just-bash sandbox surface",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T05:02:57Z",
+  "head_ref": "otto-cli/b0964-effectful-do-item-design-2026-06-01"
+}

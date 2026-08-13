@@ -1,0 +1,12 @@
+{
+  "pr_number": 4687,
+  "archive_path": "docs/history/pr-reviews/PR-4687-shard-tick-2215z-otto-cli-cold-boot-pr-4668-thread-triage.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T22:18:49.686Z",
+  "schema_version": "v1",
+  "commit_sha": "b8895da7ab0ca47e80a40e24ef381ca5adcc89ec",
+  "title": "shard(tick-2215z): Otto-CLI cold-boot PR #4668 thread triage",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T22:18:30Z",
+  "head_ref": "shard/tick-2215z-otto-cli-pr4668-thread-triage-2026-05-22"
+}

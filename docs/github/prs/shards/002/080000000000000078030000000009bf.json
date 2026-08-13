@@ -1,0 +1,15 @@
+{
+  "pr_number": 2495,
+  "archive_path": "docs/history/pr-reviews/PR-2495-fix-b-0315-prefix-glass-halo-arxiv-anchors.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_n_Hg",
+    "thread:PRRT_kwDOSF9kNM6A5xSD"
+  ],
+  "fetched_at": "2026-05-10T13:43:36.897Z",
+  "schema_version": "v1",
+  "commit_sha": "5a6366c336d5d2a8405de5d0b81cc9e42bd6d74c",
+  "title": "fix(B-0315): prefix Glass-Halo arXiv anchors",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T13:43:22Z",
+  "head_ref": "codex/b0315-arxiv-prefix-recovery"
+}

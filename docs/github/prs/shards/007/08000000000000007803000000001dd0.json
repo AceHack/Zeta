@@ -1,0 +1,12 @@
+{
+  "pr_number": 7632,
+  "archive_path": "docs/history/pr-reviews/PR-7632-feat-society-swarmboard-b-1026-slice-1-the-board-room-d-d-narrator-two-citizens-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:57:34.525Z",
+  "schema_version": "v1",
+  "commit_sha": "3fb984e88c56840a5ac63934815efb3042c44928",
+  "title": "feat(society): SwarmBoard — B-1026 slice 1: the board room + D&D narrator; two citizens meet at the hot cell (DST)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:57:11Z",
+  "head_ref": "shadow-swarm-board-slice1"
+}

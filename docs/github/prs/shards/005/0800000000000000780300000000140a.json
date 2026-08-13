@@ -1,0 +1,17 @@
+{
+  "pr_number": 5130,
+  "archive_path": "docs/history/pr-reviews/PR-5130-fix-b-0806-substrate-honest-correction-ace-agenda-already-encodes-package-manage.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E1bpD",
+    "comment:PRRC_kwDOSF9kNM7E1bpw",
+    "thread:PRRT_kwDOSF9kNM6EutKR",
+    "thread:PRRT_kwDOSF9kNM6EutKx"
+  ],
+  "fetched_at": "2026-05-26T08:33:21.077Z",
+  "schema_version": "v1",
+  "commit_sha": "ce560562cb60d3518b75e8af033a88c584e2938b",
+  "title": "fix(B-0806): substrate-honest correction — Ace agenda already encodes 'package manager of package managers'; B-0806 sits INSIDE Ace not parallel to it",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T08:32:59Z",
+  "head_ref": "otto-cli/b0806-ansible-gitops-crossplane-cross-os-2026-05-26"
+}

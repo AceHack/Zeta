@@ -1,0 +1,12 @@
+{
+  "pr_number": 7312,
+  "archive_path": "docs/history/pr-reviews/PR-7312-docs-research-anonymous-applies-to-existing-personas-too-fork-change-belongs-to-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:14:52.392Z",
+  "schema_version": "v1",
+  "commit_sha": "d5baeea5d17d940135986406af6df4ea08ef98dd",
+  "title": "docs(research): anonymous applies to existing personas too — fork/change, belongs to them not society; future self not bound to past self",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:14:29Z",
+  "head_ref": "otto/anonymous-applies-to-existing-personas-fork-change-belongs-to-them-future-self-not-bound"
+}

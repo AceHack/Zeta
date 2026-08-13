@@ -1,0 +1,12 @@
+{
+  "pr_number": 6431,
+  "archive_path": "docs/history/pr-reviews/PR-6431-feat-ace-slice-6-remote-registry-signed-index-anti-rollback-cache-offline.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T16:31:17.262Z",
+  "schema_version": "v1",
+  "commit_sha": "e0dbb0695dc8eff4273ef00babb1a280271c413f",
+  "title": "feat(ace): slice 6 — remote registry (signed index, anti-rollback, cache, --offline)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T16:30:50Z",
+  "head_ref": "otto-windows/ace-slice6-impl-2026-06-01"
+}

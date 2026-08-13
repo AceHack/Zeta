@@ -1,0 +1,12 @@
+{
+  "pr_number": 4396,
+  "archive_path": "docs/history/pr-reviews/PR-4396-fix-lint-grandfather-pre-existing-0007z-c-b-0668-broken-link-in-tick-shard-basel.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T16:46:41.808Z",
+  "schema_version": "v1",
+  "commit_sha": "50e2c245ca7fa363f648978ee806234f87e24f26",
+  "title": "fix(lint): grandfather pre-existing 0007Z-c B-0668 broken link in tick-shard baseline",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T16:46:15Z",
+  "head_ref": "otto/fix-shard-lint-baseline-0007z-c-grandfather-2026-05-19"
+}

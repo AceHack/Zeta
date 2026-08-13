@@ -1,0 +1,12 @@
+{
+  "pr_number": 4553,
+  "archive_path": "docs/history/pr-reviews/PR-4553-rule-agent-roster-card-lior-on-new-antigravity-ide-gemini-3-5-as-of-2026-05-21.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T16:44:31.101Z",
+  "schema_version": "v1",
+  "commit_sha": "daa010d45f6a9d879dc1af042d3b83f3875779bc",
+  "title": "rule(agent-roster-card): Lior on new Antigravity IDE + Gemini 3.5 as of 2026-05-21",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T16:44:12Z",
+  "head_ref": "rule/agent-roster-card-lior-on-antigravity-ide-new-gemini-35-2026-05-21"
+}

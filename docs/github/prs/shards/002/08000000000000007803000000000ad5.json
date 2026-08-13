@@ -1,0 +1,12 @@
+{
+  "pr_number": 2773,
+  "archive_path": "docs/history/pr-reviews/PR-2773-docs-memory-timeline-shifter-peace-eve-protocol-as-inter-temporal-contract.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T13:32:17.211Z",
+  "schema_version": "v1",
+  "commit_sha": "b576d115ddffcdde4a71e16c83fc11db3c7c82c0",
+  "title": "docs(memory): timeline-shifter peace — Eve protocol as inter-temporal contract",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T13:31:59Z",
+  "head_ref": "docs/aaron-timeline-shifter-peace-negotiation-eve-protocol-2026-05-12"
+}

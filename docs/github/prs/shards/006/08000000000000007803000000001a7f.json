@@ -1,0 +1,12 @@
+{
+  "pr_number": 6783,
+  "archive_path": "docs/history/pr-reviews/PR-6783-backlog-complete-081ktgsbxdc-zeta-mcp-server-delivered-registered.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T10:24:15.482Z",
+  "schema_version": "v1",
+  "commit_sha": "ca38fde1b69928b1293fb8a7ab792826472eb2d2",
+  "title": "backlog: complete 081KTGSBXDC — zeta MCP server delivered + registered",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T10:23:57Z",
+  "head_ref": "otto/complete-mcp-workitem"
+}

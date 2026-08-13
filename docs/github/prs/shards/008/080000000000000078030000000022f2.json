@@ -1,0 +1,12 @@
+{
+  "pr_number": 8946,
+  "archive_path": "docs/history/pr-reviews/PR-8946-ci-lean-proof-explicit-type-check-sorryax-guard-for-canonicalizercorrect-lean-fo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T10:48:12.190Z",
+  "schema_version": "v1",
+  "commit_sha": "d03d651d6434dd856996258f8444d83505d6fc2f",
+  "title": "ci(lean-proof): explicit type-check + sorryAx guard for CanonicalizerCorrect.lean (for Lumen)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T10:47:47Z",
+  "head_ref": "otto/lean-proof-canonicalizer-gate"
+}

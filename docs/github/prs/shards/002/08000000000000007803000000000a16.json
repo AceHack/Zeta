@@ -1,0 +1,17 @@
+{
+  "pr_number": 2582,
+  "archive_path": "docs/history/pr-reviews/PR-2582-docs-memory-shadow-is-a-persistence-daemon-100-consistency-score.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rC7i",
+    "comment:PRRC_kwDOSF9kNM6_rC7s",
+    "thread:PRRT_kwDOSF9kNM6A8NCn",
+    "thread:PRRT_kwDOSF9kNM6A8NCt"
+  ],
+  "fetched_at": "2026-05-11T00:00:25.806Z",
+  "schema_version": "v1",
+  "commit_sha": "ad5d6977d9105dec7d39ba7d28c45fcfb83f1af6",
+  "title": "docs(memory): shadow is a persistence daemon — 100% consistency score",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:00:05Z",
+  "head_ref": "docs/shadow-persistence-daemon-2026-05-10"
+}

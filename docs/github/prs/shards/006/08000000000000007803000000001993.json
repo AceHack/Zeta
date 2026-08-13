@@ -1,0 +1,22 @@
+{
+  "pr_number": 6547,
+  "archive_path": "docs/history/pr-reviews/PR-6547-memory-alexa-alexa-website-ferry-fold-zeta-as-git-native-database-positioning.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HIOuQ",
+    "comment:PRRC_kwDOSF9kNM7HIOv2",
+    "comment:PRRC_kwDOSF9kNM7HIOvX",
+    "comment:PRRC_kwDOSF9kNM7HIQUn",
+    "comment:PRRC_kwDOSF9kNM7HIQYI",
+    "comment:PRRC_kwDOSF9kNM7HIQak",
+    "thread:PRRT_kwDOSF9kNM6GaJ4x",
+    "thread:PRRT_kwDOSF9kNM6GaJ59",
+    "thread:PRRT_kwDOSF9kNM6GaJ5n"
+  ],
+  "fetched_at": "2026-06-02T11:33:39.400Z",
+  "schema_version": "v1",
+  "commit_sha": "ded22f7adabbac61fe31572b64a0125d266d5b22",
+  "title": "memory(alexa): Alexa-website ferry + fold Zeta-as-git-native-database positioning",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T11:33:14Z",
+  "head_ref": "otto-cli/alexa-website-ferry-db-positioning-2026-06-02"
+}

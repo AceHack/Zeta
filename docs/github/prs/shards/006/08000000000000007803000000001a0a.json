@@ -1,0 +1,12 @@
+{
+  "pr_number": 6666,
+  "archive_path": "docs/history/pr-reviews/PR-6666-docs-research-the-primitives-telos-common-ai-human-geometric-intuition-grounded-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T11:23:20.236Z",
+  "schema_version": "v1",
+  "commit_sha": "5d4a52511a751d8ab17593ec8c5d483b73715c6f",
+  "title": "docs(research): the primitives telos — common AI-human geometric intuition, grounded + provable, intuition-sessions first then prove",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T11:22:58Z",
+  "head_ref": "otto-cli/primitives-telos-common-ai-human-geometric-intuition-2026-06-03"
+}

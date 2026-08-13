@@ -1,0 +1,12 @@
+{
+  "pr_number": 4220,
+  "archive_path": "docs/history/pr-reviews/PR-4220-feat-tick-shard-template-md-prevents-recurring-path-depth-bug.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T21:56:51.353Z",
+  "schema_version": "v1",
+  "commit_sha": "b2dee65be1818045e61755f2e52156e920198908",
+  "title": "feat: tick-shard TEMPLATE.md prevents recurring path-depth bug",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T21:56:32Z",
+  "head_ref": "shard/tick-2153z-tick-shard-template-prevents-recurring-path-depth-bug-at-write-time-2026-05-18"
+}

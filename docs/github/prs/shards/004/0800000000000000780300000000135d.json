@@ -1,0 +1,12 @@
+{
+  "pr_number": 4957,
+  "archive_path": "docs/history/pr-reviews/PR-4957-docs-hygiene-tick-1707z-3-blocked-resolve-threads-prs-surfaced-post-1636z-cross-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T17:11:09.525Z",
+  "schema_version": "v1",
+  "commit_sha": "a7ad181c486bc20ac6057c4d62b368a25c39b34b",
+  "title": "docs(hygiene): tick 1707Z — 3 BLOCKED+resolve-threads PRs surfaced post-1636Z; cross-lane ai-cluster -c2 batch (audit-only, 4th precedent application)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T17:10:51Z",
+  "head_ref": "otto-bg-worker/1707z-shard-2026-05-25"
+}

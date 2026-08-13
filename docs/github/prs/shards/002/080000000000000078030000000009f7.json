@@ -1,0 +1,21 @@
+{
+  "pr_number": 2551,
+  "archive_path": "docs/history/pr-reviews/PR-2551-docs-memory-eve-protocol-diplomatic-shadow-agenda-mapping.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qcaf",
+    "comment:PRRC_kwDOSF9kNM6_qcpt",
+    "comment:PRRC_kwDOSF9kNM6_qcpx",
+    "comment:PRRC_kwDOSF9kNM6_qcpz",
+    "thread:PRRT_kwDOSF9kNM6A7u1f",
+    "thread:PRRT_kwDOSF9kNM6A7vAs",
+    "thread:PRRT_kwDOSF9kNM6A7vAw",
+    "thread:PRRT_kwDOSF9kNM6A7vAy"
+  ],
+  "fetched_at": "2026-05-10T21:50:45.897Z",
+  "schema_version": "v1",
+  "commit_sha": "6f66e100a4dc2835a8af49967ebb73e45f0a0a8f",
+  "title": "docs(memory): Eve protocol — diplomatic shadow agenda mapping",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:50:29Z",
+  "head_ref": "docs/eve-protocol-shadow-diplomacy-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7742,
+  "archive_path": "docs/history/pr-reviews/PR-7742-docs-trajectory-resume-math-team-wave-7736-7741.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:44:38.025Z",
+  "schema_version": "v1",
+  "commit_sha": "be0c2bd4f486f28faab330a924f3fcbfa82c816f",
+  "title": "docs(trajectory): RESUME math-team wave (#7736..#7741)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:44:10Z",
+  "head_ref": "shadow-resume-fold-7736-7741"
+}

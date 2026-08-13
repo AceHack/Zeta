@@ -1,0 +1,12 @@
+{
+  "pr_number": 8527,
+  "archive_path": "docs/history/pr-reviews/PR-8527-memory-feedback-consolidation-tesla-self-actualization-edison-safety-stack-them-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T12:11:54.942Z",
+  "schema_version": "v1",
+  "commit_sha": "a09c03948303692c9ce7f2172d60e801badbbc7e",
+  "title": "memory(feedback): consolidation — Tesla=self-actualization, Edison=safety; stack them (Maslow), not a rivalry; the floor lifts the peak (safety-FUD shadow flagged)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T12:11:19Z",
+  "head_ref": "otto/tesla-edison-consolidation-maslow-safety-floor-actualization-peak"
+}

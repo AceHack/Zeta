@@ -1,0 +1,25 @@
+{
+  "pr_number": 3129,
+  "archive_path": "docs/history/pr-reviews/PR-3129-decompose-b-0426-mirror-beacon-axis-4-atomic-child-rows-b-0471-b-0474.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BLjR1",
+    "comment:PRRC_kwDOSF9kNM7BLjRF",
+    "comment:PRRC_kwDOSF9kNM7BLjS3",
+    "comment:PRRC_kwDOSF9kNM7BLjSR",
+    "comment:PRRC_kwDOSF9kNM7BLjSn",
+    "comment:PRRC_kwDOSF9kNM7BLjTK",
+    "thread:PRRT_kwDOSF9kNM6CC_fa",
+    "thread:PRRT_kwDOSF9kNM6CC_g1",
+    "thread:PRRT_kwDOSF9kNM6CC_gC",
+    "thread:PRRT_kwDOSF9kNM6CC_gY",
+    "thread:PRRT_kwDOSF9kNM6CC_gp",
+    "thread:PRRT_kwDOSF9kNM6CC_hC"
+  ],
+  "fetched_at": "2026-05-14T11:40:33.919Z",
+  "schema_version": "v1",
+  "commit_sha": "db18266ca83079aa3697e5afa52decf7c54baea9",
+  "title": "decompose(b-0426): Mirror/Beacon axis — 4 atomic child rows B-0471..B-0474",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T11:40:14Z",
+  "head_ref": "feat/b-0426-decompose-mirror-beacon-axis"
+}

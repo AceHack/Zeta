@@ -1,0 +1,17 @@
+{
+  "pr_number": 6212,
+  "archive_path": "docs/history/pr-reviews/PR-6212-docs-b-0164-1-clarify-remaining-disagreement-wiring.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GgJ65",
+    "comment:PRRC_kwDOSF9kNM7GgJxU",
+    "thread:PRRT_kwDOSF9kNM6F8Zb8",
+    "thread:PRRT_kwDOSF9kNM6F8ZjV"
+  ],
+  "fetched_at": "2026-05-31T14:04:27.562Z",
+  "schema_version": "v1",
+  "commit_sha": "19587271c0a0bbc43868d8896cc41e4ff72abe2d",
+  "title": "docs(B-0164.1): clarify remaining disagreement wiring",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T14:04:04Z",
+  "head_ref": "claim/backlog-0164-1"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3747,
+  "archive_path": "docs/history/pr-reviews/PR-3747-shard-tick-2026-05-16t04-51z-row-close-gate-rule-extension-landed-rate-limit-rec.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T05:02:44.751Z",
+  "schema_version": "v1",
+  "commit_sha": "5a1f4e01e83b63607578366ce94aa0b6fd33d288",
+  "title": "shard(tick): 2026-05-16T04:51Z — row-close-gate rule extension landed; rate-limit recovery discipline",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T05:02:26Z",
+  "head_ref": "shard/tick-0451z-otto-cli-2026-05-16"
+}

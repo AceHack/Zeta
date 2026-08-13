@@ -1,0 +1,15 @@
+{
+  "pr_number": 8076,
+  "archive_path": "docs/history/pr-reviews/PR-8076-refactor-cluster-zflash-consolidate-clis-under-src-with-hexagonal-ports.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7LLD_Z",
+    "thread:PRRT_kwDOSF9kNM6JW7uZ"
+  ],
+  "fetched_at": "2026-06-13T22:15:22.193Z",
+  "schema_version": "v1",
+  "commit_sha": "02abbcfab886659175ed125f24e7780224437541",
+  "title": "refactor(cluster,zflash): consolidate CLIs under src with hexagonal ports",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T22:14:54Z",
+  "head_ref": "riven/dev-cluster-zflash-src-cleanup"
+}

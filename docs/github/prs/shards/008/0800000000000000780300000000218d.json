@@ -1,0 +1,12 @@
+{
+  "pr_number": 8589,
+  "archive_path": "docs/history/pr-reviews/PR-8589-fix-cross-verification-ts-strict-null-errors-in-the-n-way-harness-main-was-red.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T15:27:55.977Z",
+  "schema_version": "v1",
+  "commit_sha": "ab915c0e255c70cb834abb58164c256ee45d507c",
+  "title": "fix(cross-verification): TS strict-null errors in the N-way harness (main was red)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T15:27:29Z",
+  "head_ref": "otto/fix-nway-harness-tsc"
+}

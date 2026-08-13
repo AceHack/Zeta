@@ -1,0 +1,12 @@
+{
+  "pr_number": 7919,
+  "archive_path": "docs/history/pr-reviews/PR-7919-fix-core-docs-research-shadow-wset-provenance-dates-report-2-p2-ferry-8-fpga-lan.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T14:46:47.588Z",
+  "schema_version": "v1",
+  "commit_sha": "bb00e6f5d47b5bc81380c11b8d42cd7e4ce69fe8",
+  "title": "fix(core)+docs(research)+shadow: WSet provenance dates (REPORT #2 P2) + ferry 8 (FPGA + Landauer limit — the experimental lane)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T14:46:23Z",
+  "head_ref": "shadow/wset-provenance-and-ferry-8-landauer"
+}

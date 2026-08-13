@@ -1,0 +1,12 @@
+{
+  "pr_number": 7323,
+  "archive_path": "docs/history/pr-reviews/PR-7323-docs-research-zeta-doesn-t-need-rust-s-borrow-checker-f-immutability-gives-alias.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:48:29.089Z",
+  "schema_version": "v1",
+  "commit_sha": "2c9efe54e7f1bc1a24df4c24d312e2e26a44799b",
+  "title": "docs(research): Zeta doesn't need Rust's borrow checker — F# immutability gives aliasing free; mutation via single-writer/CRDT/CAS/consensus (pluggable in mumps like crypto)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:47:32Z",
+  "head_ref": "otto/zeta-doesnt-need-rust-borrow-checker-immutability-plus-mutation-discipline-consensus-plugin"
+}

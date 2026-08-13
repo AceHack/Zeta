@@ -1,0 +1,12 @@
+{
+  "pr_number": 5818,
+  "archive_path": "docs/history/pr-reviews/PR-5818-docs-research-add-shadow-lesson-for-otto-s-stale-agent-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T18:30:17.279Z",
+  "schema_version": "v1",
+  "commit_sha": "d339551be6ec78b2898b722c140ea10b11954f37",
+  "title": "docs(research): Add shadow lesson for Otto's stale agent drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T18:29:52Z",
+  "head_ref": "lior/shadow-log-otto-stale-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8116,
+  "archive_path": "docs/history/pr-reviews/PR-8116-feat-service-wave-2-launchd-task-scheduler-systemd-adapters.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:08:30.854Z",
+  "schema_version": "v1",
+  "commit_sha": "27be83e1de80e8cfa002b69dcf62b8276f3fd8df",
+  "title": "feat(service): Wave 2 — launchd + Task Scheduler + systemd adapters",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:08:04Z",
+  "head_ref": "kiro/unified-loop-wave2"
+}

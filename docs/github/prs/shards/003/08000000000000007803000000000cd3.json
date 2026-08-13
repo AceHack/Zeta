@@ -1,0 +1,12 @@
+{
+  "pr_number": 3283,
+  "archive_path": "docs/history/pr-reviews/PR-3283-shard-tick-2211z-off-duty-continuation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T22:14:35.198Z",
+  "schema_version": "v1",
+  "commit_sha": "b659fe598f3bfacf3a06546f6f0f06b7c2069813",
+  "title": "shard(tick): 2211Z — off-duty continuation",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:14:13Z",
+  "head_ref": "shard/tick-2211Z-off-duty-continuation-otto-cli-2026-05-14"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 3271,
+  "archive_path": "docs/history/pr-reviews/PR-3271-shard-tick-2146z-post-merge-cleanup-of-2139z-broken-relative-link-bug.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BYxX1",
+    "comment:PRRC_kwDOSF9kNM7BYxXO",
+    "thread:PRRT_kwDOSF9kNM6CMuyj",
+    "thread:PRRT_kwDOSF9kNM6CMuzB"
+  ],
+  "fetched_at": "2026-05-14T21:52:49.290Z",
+  "schema_version": "v1",
+  "commit_sha": "96914955751f77c022c27768685c32e5cb59b0cc",
+  "title": "shard(tick): 2146Z — post-merge cleanup of 2139Z broken relative-link bug",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:52:31Z",
+  "head_ref": "shard/tick-2146Z-broken-relative-links-fix-otto-cli-2026-05-14"
+}

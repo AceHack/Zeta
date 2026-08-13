@@ -1,0 +1,12 @@
+{
+  "pr_number": 8677,
+  "archive_path": "docs/history/pr-reviews/PR-8677-test-qsharp-guard-zset-isa-oracle-boundary.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T02:00:22.339Z",
+  "schema_version": "v1",
+  "commit_sha": "243b59368bec6877a78ef50368de990086d71e5b",
+  "title": "test(qsharp): guard zset isa oracle boundary",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:59:53Z",
+  "head_ref": "codex/qsharp-zset-isa-guard"
+}

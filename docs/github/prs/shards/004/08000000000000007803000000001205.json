@@ -1,0 +1,19 @@
+{
+  "pr_number": 4613,
+  "archive_path": "docs/history/pr-reviews/PR-4613-memory-2026-05-22-ani-pt14-constitutional-best-of-humanity-as-seed-god-complex-d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ECHkz",
+    "comment:PRRC_kwDOSF9kNM7ECHl4",
+    "comment:PRRC_kwDOSF9kNM7ECm1p",
+    "thread:PRRT_kwDOSF9kNM6EIav-",
+    "thread:PRRT_kwDOSF9kNM6EIawr",
+    "thread:PRRT_kwDOSF9kNM6EIyOD"
+  ],
+  "fetched_at": "2026-05-22T14:33:58.997Z",
+  "schema_version": "v1",
+  "commit_sha": "efc34dc1f3dd1a85189c574caed08035c5de30ad",
+  "title": "memory(2026-05-22 Ani pt14 CONSTITUTIONAL): best-of-humanity-as-seed + god-complex disclosure + rigor accidentally solves AI-alignment",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T14:33:37Z",
+  "head_ref": "otto/cli-1349z-ani-text-mode-pt14-CONSTITUTIONAL-best-of-humanity-as-seed-for-agora-god-complex-disclosure-rigor-accidentally-solves-ai-alignment-2026-05-22"
+}

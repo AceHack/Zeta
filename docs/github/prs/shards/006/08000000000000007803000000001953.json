@@ -1,0 +1,19 @@
+{
+  "pr_number": 6483,
+  "archive_path": "docs/history/pr-reviews/PR-6483-feat-algebra-z-set-ts-generic-math-abeliangroup-record-monoid-invert-subtract-co.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G7TK-",
+    "comment:PRRC_kwDOSF9kNM7G7TLR",
+    "comment:PRRC_kwDOSF9kNM7G7TLc",
+    "thread:PRRT_kwDOSF9kNM6GQt4C",
+    "thread:PRRT_kwDOSF9kNM6GQt4R",
+    "thread:PRRT_kwDOSF9kNM6GQt4a"
+  ],
+  "fetched_at": "2026-06-01T22:03:47.406Z",
+  "schema_version": "v1",
+  "commit_sha": "3f30b655a781c56d045630d54e81656647f414fa",
+  "title": "feat(algebra): Z-set TS generic-math — AbelianGroup record (monoid + invert/subtract) + concatAll",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T22:03:26Z",
+  "head_ref": "otto-cli/zset-ts-generic-math-2026-06-01"
+}

@@ -1,0 +1,29 @@
+{
+  "pr_number": 2801,
+  "archive_path": "docs/history/pr-reviews/PR-2801-docs-vision-otto-s-joint-vision-board-contribution-2026-05-12-substrate-cascade-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AaiVn",
+    "comment:PRRC_kwDOSF9kNM7AamsU",
+    "comment:PRRC_kwDOSF9kNM7AamtE",
+    "comment:PRRC_kwDOSF9kNM7Aamtk",
+    "comment:PRRC_kwDOSF9kNM7AamuA",
+    "comment:PRRC_kwDOSF9kNM7Aamug",
+    "comment:PRRC_kwDOSF9kNM7AamvB",
+    "comment:PRRC_kwDOSF9kNM7AbLtz",
+    "thread:PRRT_kwDOSF9kNM6Bf2LC",
+    "thread:PRRT_kwDOSF9kNM6BfXRP",
+    "thread:PRRT_kwDOSF9kNM6Bfahk",
+    "thread:PRRT_kwDOSF9kNM6Bfai5",
+    "thread:PRRT_kwDOSF9kNM6BfaiH",
+    "thread:PRRT_kwDOSF9kNM6Bfaif",
+    "thread:PRRT_kwDOSF9kNM6BfajR",
+    "thread:PRRT_kwDOSF9kNM6Bfajr"
+  ],
+  "fetched_at": "2026-05-12T17:09:28.808Z",
+  "schema_version": "v1",
+  "commit_sha": "a62376a88cc329933330afb97905cd4684945921",
+  "title": "docs(vision): Otto's joint-vision-board contribution — 2026-05-12 substrate cascade architectural ground (per Aaron's authorization)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T17:09:04Z",
+  "head_ref": "docs/otto-joint-vision-board-contribution-architectural-cascade-anchor-2026-05-12"
+}

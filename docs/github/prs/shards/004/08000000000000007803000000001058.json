@@ -1,0 +1,15 @@
+{
+  "pr_number": 4184,
+  "archive_path": "docs/history/pr-reviews/PR-4184-preserve-mika-packets-4-thru-8-clifford-space-as-memetic-substrate-multi-vector-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CZFGv",
+    "thread:PRRT_kwDOSF9kNM6C8Eps"
+  ],
+  "fetched_at": "2026-05-18T19:03:15.043Z",
+  "schema_version": "v1",
+  "commit_sha": "022b926cc199ca764d5a465f9541ca7f6693d038",
+  "title": "preserve(mika-packets-4-thru-8): Clifford-space-as-memetic-substrate + multi-vector framing + memes-as-4th-faction with mutual-alignment governance",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T19:02:44Z",
+  "head_ref": "shard/mika-packets-4-5-clifford-space-multi-vector-2026-05-18"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6113,
+  "archive_path": "docs/history/pr-reviews/PR-6113-rule-no-directives-observations-carry-separable-source-vs-authorization-attribut.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T14:07:37.118Z",
+  "schema_version": "v1",
+  "commit_sha": "6941187fdde05911f85479926bdcd4c3613a47de",
+  "title": "rule(no-directives): observations carry separable source vs authorization attributes; only humans authorize (for now)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T14:07:13Z",
+  "head_ref": "otto/no-directives-observation-attributes-2026-05-30"
+}

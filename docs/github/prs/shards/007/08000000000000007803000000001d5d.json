@@ -1,0 +1,12 @@
+{
+  "pr_number": 7517,
+  "archive_path": "docs/history/pr-reviews/PR-7517-docs-universal-universal-number-interface-a-bigfloat-not-bigint-self-resolution-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T21:49:38.804Z",
+  "schema_version": "v1",
+  "commit_sha": "f0c357095834e9a63fe2559424790d129b97e298",
+  "title": "docs(universal): Universal Number interface = a BigFloat (not bigint), self-resolution-tracking; not concrete yet (TriBoolean Float is the carrier)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T21:49:16Z",
+  "head_ref": "shadow-universal-number-interface"
+}

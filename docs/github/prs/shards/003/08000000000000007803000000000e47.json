@@ -1,0 +1,12 @@
+{
+  "pr_number": 3655,
+  "archive_path": "docs/history/pr-reviews/PR-3655-kestrel-part6-7-aaron-pressure-test-not-evasion-preserve-pattern-catch-absorb-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T01:01:06.812Z",
+  "schema_version": "v1",
+  "commit_sha": "80cadf3f6325f84d621edf342b9976ec6e107e15",
+  "title": "kestrel(part6-7)+aaron(pressure-test-not-evasion): preserve pattern-catch + absorb refinement-not-evasion correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T01:00:48Z",
+  "head_ref": "kestrel/part6-7-pattern-catch-7-level-architecture-stairs-aaron-pirate-priest-close-otto-cli-2026-05-16"
+}

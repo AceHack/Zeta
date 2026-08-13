@@ -1,0 +1,12 @@
+{
+  "pr_number": 6816,
+  "archive_path": "docs/history/pr-reviews/PR-6816-feat-dvkey-content-addressed-comparable-key-dynamicvalue-rows-through-zset-debez.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:44:23.508Z",
+  "schema_version": "v1",
+  "commit_sha": "9777c26dd057c423472ac879db22587f06fa7343",
+  "title": "feat(DvKey): content-addressed comparable key — DynamicValue rows through ZSet + DebeziumCdc",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:44:05Z",
+  "head_ref": "feat/dvkey-content-addressed-comparable-row"
+}

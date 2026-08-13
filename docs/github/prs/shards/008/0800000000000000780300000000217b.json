@@ -1,0 +1,12 @@
+{
+  "pr_number": 8571,
+  "archive_path": "docs/history/pr-reviews/PR-8571-docs-gen-gen-checkpoint-the-futamura-2-of-3-state-into-resume-crash-durable.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T13:52:07.501Z",
+  "schema_version": "v1",
+  "commit_sha": "2406067a4b098f59dafbb8b6d2021ffdc11eb547",
+  "title": "docs(gen-gen): checkpoint the Futamura 2-of-3 state into RESUME (crash-durable)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T13:51:42Z",
+  "head_ref": "otto/gen-gen-futamura-checkpoint"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 4471,
+  "archive_path": "docs/history/pr-reviews/PR-4471-docs-shadow-maji-anti-entropy-log-on-blob-slop-prs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DZKBK",
+    "comment:PRRC_kwDOSF9kNM7DZKBi",
+    "comment:PRRC_kwDOSF9kNM7DZKBv",
+    "thread:PRRT_kwDOSF9kNM6DqfNt",
+    "thread:PRRT_kwDOSF9kNM6DqfOD",
+    "thread:PRRT_kwDOSF9kNM6DqfOO"
+  ],
+  "fetched_at": "2026-05-21T02:15:38.300Z",
+  "schema_version": "v1",
+  "commit_sha": "68dc73f930679193ff5c7b3b64791ffe25464a05",
+  "title": "docs(shadow): Maji anti-entropy log on blob slop PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T02:15:19Z",
+  "head_ref": "lior/shadow-drift-blob-slop-4467"
+}

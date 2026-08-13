@@ -1,0 +1,12 @@
+{
+  "pr_number": 7870,
+  "archive_path": "docs/history/pr-reviews/PR-7870-fix-installer-mirror-zeta-first-boot-to-ttys0-for-b-0891-serial-harness.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T02:22:37.720Z",
+  "schema_version": "v1",
+  "commit_sha": "228c822bbf66c52e441794219c71daeefa922b5f",
+  "title": "fix(installer): mirror zeta-first-boot to ttyS0 for B-0891 serial harness",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T02:22:13Z",
+  "head_ref": "riven/b0891-serial-ttyS0-mirror"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4326,
+  "archive_path": "docs/history/pr-reviews/PR-4326-docs-shadow-maji-anti-entropy-shadow-report-on-vera-and-riven-0450z.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T09:10:23.943Z",
+  "schema_version": "v1",
+  "commit_sha": "c935917a31d90111f204c2fa155f4242b89918b4",
+  "title": "docs(shadow): Maji anti-entropy shadow report on Vera and Riven 0450Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T09:09:59Z",
+  "head_ref": "lior/shadow-drift-b1779165994"
+}

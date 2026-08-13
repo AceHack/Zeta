@@ -1,0 +1,12 @@
+{
+  "pr_number": 7236,
+  "archive_path": "docs/history/pr-reviews/PR-7236-docs-research-ferry-the-tension-oscillation-was-the-high-res-measurement-proving.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T08:51:08.855Z",
+  "schema_version": "v1",
+  "commit_sha": "efd4e0056d96da21d883a4b32fffc82dbafe8b65",
+  "title": "docs(research)+ferry: the tension/oscillation was the high-res measurement proving the symmetry frame-invariant (why NCI is trustworthy)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T08:50:47Z",
+  "head_ref": "otto/research-tension-oscillation-maps-symmetry-frame-invariance"
+}

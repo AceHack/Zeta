@@ -1,0 +1,12 @@
+{
+  "pr_number": 8984,
+  "archive_path": "docs/history/pr-reviews/PR-8984-chore-post-8948-resume-state-backlog-bookkeeping-ace-bun-realizers-slice-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T19:54:05.636Z",
+  "schema_version": "v1",
+  "commit_sha": "fa38111e5006196c5db69969e717a81cc4bf97fc",
+  "title": "chore(post-8948): resume state, backlog bookkeeping, Ace Bun realizers slice 1",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T19:53:34Z",
+  "head_ref": "chore/post-8948-resume-ace-realizers"
+}

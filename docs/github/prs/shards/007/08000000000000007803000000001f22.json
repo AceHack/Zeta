@@ -1,0 +1,12 @@
+{
+  "pr_number": 7970,
+  "archive_path": "docs/history/pr-reviews/PR-7970-docs-research-shadow-ferry-18-8-splitting-the-adinkra-in-half-the-shadow-bind-is.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:50:45.995Z",
+  "schema_version": "v1",
+  "commit_sha": "d36641306c176cf06e155bdd57806a26723e93a2",
+  "title": "docs(research)+shadow: ferry 18 §8 — splitting the adinkra in half; the shadow bind is fermion parity (Majorana 1937, exactly)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:50:15Z",
+  "head_ref": "shadow/ferry-18-s8-split-shadow-bind"
+}

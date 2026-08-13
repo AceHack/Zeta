@@ -1,0 +1,12 @@
+{
+  "pr_number": 3910,
+  "archive_path": "docs/history/pr-reviews/PR-3910-fix-rules-document-3-stale-armed-pr-resolution-patterns-in-blocked-green-ci-rule.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T17:07:32.797Z",
+  "schema_version": "v1",
+  "commit_sha": "4ea5089d92edafc591d59e2db1abeba08a2b1820",
+  "title": "fix(rules): document 3 stale-armed-PR resolution patterns in blocked-green-ci rule",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T17:07:17Z",
+  "head_ref": "otto-cli-stale-armed-resolution-clean-2026-05-16-1640z"
+}

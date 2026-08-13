@@ -1,0 +1,21 @@
+{
+  "pr_number": 3106,
+  "archive_path": "docs/history/pr-reviews/PR-3106-docs-backlog-decompose-b-0168-into-b-0168-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BF607",
+    "comment:PRRC_kwDOSF9kNM7BF60_",
+    "comment:PRRC_kwDOSF9kNM7BF7_K",
+    "comment:PRRC_kwDOSF9kNM7BF7_n",
+    "thread:PRRT_kwDOSF9kNM6B-0-o",
+    "thread:PRRT_kwDOSF9kNM6B-0-r",
+    "thread:PRRT_kwDOSF9kNM6B-12Y",
+    "thread:PRRT_kwDOSF9kNM6B-12y"
+  ],
+  "fetched_at": "2026-05-14T06:47:31.015Z",
+  "schema_version": "v1",
+  "commit_sha": "0312cbb3487026d4678eae19d7085d3a85ad7abf",
+  "title": "docs(backlog): decompose B-0168 into B-0168.1",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T06:47:14Z",
+  "head_ref": "lior/decompose-b0168"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2094,
+  "archive_path": "docs/history/pr-reviews/PR-2094-fix-b-0249-git-reset-hard-after-fetch-in-tick-script.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T15:50:54.529Z",
+  "schema_version": "v1",
+  "commit_sha": "f88db3c1494590cbc2196d9e2d9854035e0dea67",
+  "title": "fix(B-0249): git reset --hard after fetch in tick script",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T15:50:36Z",
+  "head_ref": "fix/loop-tick-reset-hard-after-fetch"
+}

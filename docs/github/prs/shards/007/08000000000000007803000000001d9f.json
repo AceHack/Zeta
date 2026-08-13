@@ -1,0 +1,12 @@
+{
+  "pr_number": 7583,
+  "archive_path": "docs/history/pr-reviews/PR-7583-fix-rules-remove-stale-manifesto-11-rule-rename-race-in-7582.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:29:16.260Z",
+  "schema_version": "v1",
+  "commit_sha": "a0e0ff9b2e502875e464f62aacb773cfc0b8f159",
+  "title": "fix(rules): remove stale manifesto-11 rule (rename race in #7582)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:28:53Z",
+  "head_ref": "shadow-remove-stale-manifesto11-rule"
+}

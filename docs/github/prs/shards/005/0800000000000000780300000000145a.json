@@ -1,0 +1,12 @@
+{
+  "pr_number": 5210,
+  "archive_path": "docs/history/pr-reviews/PR-5210-feat-iter-5-4-0-b-0794-homelab-gh-auth-login-operator-pubkey-copy-at-install-tim.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T16:23:19.975Z",
+  "schema_version": "v1",
+  "commit_sha": "e30b567e6a9d8ef7874f5bed0cb92765f9fdf369",
+  "title": "feat(iter-5.4.0 B-0794): homelab gh-auth-login + operator-pubkey copy at install time",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T16:22:56Z",
+  "head_ref": "otto-cli/iter-5-4-0-homelab-gh-auth-device-registration-pubkey-copy-2026-05-26"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6607,
+  "archive_path": "docs/history/pr-reviews/PR-6607-docs-b-1006-rule-tick-source-folds-to-the-algebra-axis-temporal-operator-algebra.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T17:47:37.481Z",
+  "schema_version": "v1",
+  "commit_sha": "659108239fdacdf04fe467a9d619eef31d8d697a",
+  "title": "docs(B-1006)+rule: tick-source folds to the algebra axis (temporal-operator algebra); save the minimal procedures as an auto-loaded rule (Aaron)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T17:47:13Z",
+  "head_ref": "otto-cli/b1006-ticksource-folds-to-algebra-plus-save-minimal-procedures-rule-2026-06-02"
+}

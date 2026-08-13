@@ -1,0 +1,25 @@
+{
+  "pr_number": 3582,
+  "archive_path": "docs/history/pr-reviews/PR-3582-shard-tick-2038z-quiet-checkpoint-3-row-filing-diminishing-returns.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BxLpj",
+    "comment:PRRC_kwDOSF9kNM7BxM27",
+    "comment:PRRC_kwDOSF9kNM7BxM2K",
+    "comment:PRRC_kwDOSF9kNM7BxM2k",
+    "comment:PRRC_kwDOSF9kNM7BxXTX",
+    "comment:PRRC_kwDOSF9kNM7BxXWU",
+    "comment:PRRC_kwDOSF9kNM7BxXac",
+    "comment:PRRC_kwDOSF9kNM7BxXdo",
+    "thread:PRRT_kwDOSF9kNM6CeUhp",
+    "thread:PRRT_kwDOSF9kNM6CeVbM",
+    "thread:PRRT_kwDOSF9kNM6CeVbe",
+    "thread:PRRT_kwDOSF9kNM6CeVbw"
+  ],
+  "fetched_at": "2026-05-15T20:56:36.835Z",
+  "schema_version": "v1",
+  "commit_sha": "31739165f1ab565c5efc33f5a8c0eda10b595ada",
+  "title": "shard(tick): 2038Z — quiet checkpoint #3; row-filing diminishing returns",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T20:56:17Z",
+  "head_ref": "shard/tick-2038z-otto-cli-2026-05-15"
+}

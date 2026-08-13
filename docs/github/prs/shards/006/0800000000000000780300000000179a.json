@@ -1,0 +1,12 @@
+{
+  "pr_number": 6042,
+  "archive_path": "docs/history/pr-reviews/PR-6042-feat-b-0355-2-cursor-md-cross-harness-bootstrap-file-cursor-riven.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T20:29:28.507Z",
+  "schema_version": "v1",
+  "commit_sha": "3248ed9c96afba5904522ad8376bd219495a375d",
+  "title": "feat(B-0355.2): CURSOR.md cross-harness bootstrap file (Cursor/Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T20:29:08Z",
+  "head_ref": "otto-cli/b0355-2-cursor-harness-bootstrap-2026-05-29"
+}

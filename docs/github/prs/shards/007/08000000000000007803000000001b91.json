@@ -1,0 +1,12 @@
+{
+  "pr_number": 7057,
+  "archive_path": "docs/history/pr-reviews/PR-7057-feat-core-phasorendurance-re-solve-on-the-imaginary-stack-bayesian-is-its-born-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T08:26:28.627Z",
+  "schema_version": "v1",
+  "commit_sha": "ff091d101c699bba214718d8219acd5b10660235",
+  "title": "feat(core): PhasorEndurance — re-solve on the imaginary stack; Bayesian is its (Born-rule) shadow",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T08:26:07Z",
+  "head_ref": "otto/phasor-endurance-unit-circle-bayesian-is-the-shadow"
+}

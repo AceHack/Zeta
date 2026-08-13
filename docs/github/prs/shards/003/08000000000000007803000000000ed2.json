@@ -1,0 +1,12 @@
+{
+  "pr_number": 3794,
+  "archive_path": "docs/history/pr-reviews/PR-3794-shard-tick-2026-05-16t06-53z-second-pure-git-tick-2-branches-deferred-to-post-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T07:03:59.933Z",
+  "schema_version": "v1",
+  "commit_sha": "a489d4398a70a5f6a1e74bb5fe9daebb897c550f",
+  "title": "shard(tick): 2026-05-16T06:53Z — second pure-git tick; 2 branches deferred to post-reset batch",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T07:03:41Z",
+  "head_ref": "shard/tick-0653z-otto-cli-2026-05-16"
+}

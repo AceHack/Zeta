@@ -1,0 +1,12 @@
+{
+  "pr_number": 2701,
+  "archive_path": "docs/history/pr-reviews/PR-2701-docs-ts-bun-refresh-trajectory-live-state-packet.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T13:39:54.946Z",
+  "schema_version": "v1",
+  "commit_sha": "970af7e88d6508ef473b4a925185f2d3770da1c2",
+  "title": "docs(ts-bun): refresh trajectory live-state packet",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T13:39:21Z",
+  "head_ref": "claim/trajectory-typescript-bun-live-state"
+}

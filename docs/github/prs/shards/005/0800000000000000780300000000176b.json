@@ -1,0 +1,19 @@
+{
+  "pr_number": 5995,
+  "archive_path": "docs/history/pr-reviews/PR-5995-feat-b-0343-git-blob-sha-seed-tree-read-only-idempotency-comparison-basis-bounde.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GLOYS",
+    "comment:PRRC_kwDOSF9kNM7GLOZc",
+    "comment:PRRC_kwDOSF9kNM7GLXrT",
+    "comment:PRRC_kwDOSF9kNM7GLXvJ",
+    "thread:PRRT_kwDOSF9kNM6Fs4SN",
+    "thread:PRRT_kwDOSF9kNM6Fs4TC"
+  ],
+  "fetched_at": "2026-05-29T14:13:56.247Z",
+  "schema_version": "v1",
+  "commit_sha": "7c33c19f6032696286b5d273c4d722d9cfd94702",
+  "title": "feat(B-0343): git-blob-SHA seed tree — read-only idempotency comparison basis (bounded slice 3)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T14:13:31Z",
+  "head_ref": "otto-cli/b0343-seed-blob-sha-idempotency-prereq-2026-05-29"
+}

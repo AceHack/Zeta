@@ -1,0 +1,12 @@
+{
+  "pr_number": 7598,
+  "archive_path": "docs/history/pr-reviews/PR-7598-docs-research-game-physics-over-reticulum-rollback-netcode-is-speculation-retrac.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T04:36:16.460Z",
+  "schema_version": "v1",
+  "commit_sha": "1f528b2ba3d6e0d0b41c2778801c2240daacddff",
+  "title": "docs(research): game physics over Reticulum — rollback netcode IS speculation + retraction",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T04:35:53Z",
+  "head_ref": "shadow-game-physics-over-reticulum"
+}

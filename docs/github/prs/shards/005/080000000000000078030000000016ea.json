@@ -1,0 +1,12 @@
+{
+  "pr_number": 5866,
+  "archive_path": "docs/history/pr-reviews/PR-5866-feat-b-0891-extend-substrate-engineering-substrate-primitives-for-scenarios-3-4-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T16:24:34.397Z",
+  "schema_version": "v1",
+  "commit_sha": "4c87bc16cb5b672159f0e8eabc39bf7265c552a7",
+  "title": "feat(B-0891 extend): substrate-engineering substrate primitives for scenarios 3/4/5 — design-spec-complete; PersistedKV + PathFork + MultiVMOrchestration DUs; 21 new tests pass (operator 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T16:24:09Z",
+  "head_ref": "otto-cli/b-0891-extend-zflash-5-scenarios-2026-05-28"
+}

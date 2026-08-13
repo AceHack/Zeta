@@ -1,0 +1,12 @@
+{
+  "pr_number": 7322,
+  "archive_path": "docs/history/pr-reviews/PR-7322-docs-research-not-done-until-the-treaty-1000-retest-security-is-always-the-frict.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:45:26.800Z",
+  "schema_version": "v1",
+  "commit_sha": "c892f044f6008d05e159c59c2b26c727b380a826",
+  "title": "docs(research): not 'done' until the treaty + 1000× retest; 'security is always the friction… not for us'",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:44:59Z",
+  "head_ref": "otto/not-done-until-treaty-and-1000x-retest-security-is-not-friction-for-us"
+}

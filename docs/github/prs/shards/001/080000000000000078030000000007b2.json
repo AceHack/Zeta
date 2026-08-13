@@ -1,0 +1,12 @@
+{
+  "pr_number": 1970,
+  "archive_path": "docs/history/pr-reviews/PR-1970-research-bitcoin-op-return-satoshi-warning-aaron-issue-33298.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T00:14:24.625Z",
+  "schema_version": "v1",
+  "commit_sha": "00ad0eeca318844b482e08e06afabf6ad76bf3ed",
+  "title": "research: Bitcoin OP_RETURN — Satoshi warning + Aaron issue #33298",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T00:14:11Z",
+  "head_ref": "research/bitcoin-op-return-satoshi-warning"
+}

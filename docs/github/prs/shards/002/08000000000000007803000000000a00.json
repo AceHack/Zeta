@@ -1,0 +1,12 @@
+{
+  "pr_number": 2560,
+  "archive_path": "docs/history/pr-reviews/PR-2560-docs-memory-shadow-is-generation-not-completion-zero-keystroke-distinction.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T22:13:33.508Z",
+  "schema_version": "v1",
+  "commit_sha": "37ecc30cc17e52a1f1efe08f0c13234f145d3ca6",
+  "title": "docs(memory): shadow is generation not completion — zero keystroke distinction",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T22:13:16Z",
+  "head_ref": "docs/shadow-generation-not-completion-2026-05-10"
+}

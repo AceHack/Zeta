@@ -1,0 +1,17 @@
+{
+  "pr_number": 2575,
+  "archive_path": "docs/history/pr-reviews/PR-2575-docs-memory-arrow-as-tier-0-zero-serialization-absolute-trust-at-memory-layer.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_q_56",
+    "comment:PRRC_kwDOSF9kNM6_q_5w",
+    "thread:PRRT_kwDOSF9kNM6A8Ko-",
+    "thread:PRRT_kwDOSF9kNM6A8Ko2"
+  ],
+  "fetched_at": "2026-05-11T00:00:47.628Z",
+  "schema_version": "v1",
+  "commit_sha": "d78d9e1d32c0a2dd57f69347b20a4614c64bc93c",
+  "title": "docs(memory): Arrow as Tier 0 — zero serialization, absolute trust at memory layer",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:00:26Z",
+  "head_ref": "docs/arrow-tier-0-2026-05-10"
+}

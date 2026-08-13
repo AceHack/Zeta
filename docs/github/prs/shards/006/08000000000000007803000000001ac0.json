@@ -1,0 +1,12 @@
+{
+  "pr_number": 6848,
+  "archive_path": "docs/history/pr-reviews/PR-6848-docs-ast-as-essence-canonical-form-not-necessarily-ast-bidirectional-roslyn-like.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:56:35.154Z",
+  "schema_version": "v1",
+  "commit_sha": "26a12e8a85f07f6fc3bf6ab496922b0f9737045c",
+  "title": "docs(ast-as-essence): canonical form (not necessarily AST) + bidirectional Roslyn-like translators",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:56:15Z",
+  "head_ref": "capture/zeta-canonical-style-bidirectional-translators"
+}

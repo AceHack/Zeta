@@ -1,0 +1,12 @@
+{
+  "pr_number": 7796,
+  "archive_path": "docs/history/pr-reviews/PR-7796-feat-inference-richer-case-families-theirs-tests-ours-caught-a-real-semantic-bug.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T21:20:11.245Z",
+  "schema_version": "v1",
+  "commit_sha": "4eb2bc32cd3f303ca17bce81e84f2e242f932b1f",
+  "title": "feat(inference): richer case families — theirs-tests-ours caught a real semantic bug; the loopy honesty case + the reversal (B-1033 closed)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T21:19:38Z",
+  "head_ref": "shadow-richer-cases"
+}

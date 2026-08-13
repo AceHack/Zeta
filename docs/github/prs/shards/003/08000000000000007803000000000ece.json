@@ -1,0 +1,19 @@
+{
+  "pr_number": 3790,
+  "archive_path": "docs/history/pr-reviews/PR-3790-feat-b-0557-slice-3-chdir-to-repo-root-via-git-rev-parse-cwd-independent.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B29DZ",
+    "comment:PRRC_kwDOSF9kNM7B29Di",
+    "comment:PRRC_kwDOSF9kNM7B3ESD",
+    "thread:PRRT_kwDOSF9kNM6CihFJ",
+    "thread:PRRT_kwDOSF9kNM6CihFP",
+    "thread:PRRT_kwDOSF9kNM6Cimic"
+  ],
+  "fetched_at": "2026-05-16T07:22:51.854Z",
+  "schema_version": "v1",
+  "commit_sha": "472024dc4a25179011d0bf4c43cf0e1640024a00",
+  "title": "feat(B-0557 slice 3): chdir to repo root via git rev-parse (cwd-independent)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T07:22:33Z",
+  "head_ref": "feat/b0557-slice-3-cwd-independent-otto-cli-2026-05-16"
+}

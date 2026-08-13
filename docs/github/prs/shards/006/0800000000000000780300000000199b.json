@@ -1,0 +1,12 @@
+{
+  "pr_number": 6555,
+  "archive_path": "docs/history/pr-reviews/PR-6555-memory-alexa-ferry-pt2-four-axis-coincidence-anchor-is-adinkras-gates-susy-ecc-g.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T13:06:27.453Z",
+  "schema_version": "v1",
+  "commit_sha": "26616ac7ce5e9dd25bb5bd34b88dc045a2504f85",
+  "title": "memory(alexa): ferry pt2 — four-axis coincidence-anchor IS Adinkras (Gates SUSY-ECC grounding) + Zeta-as-git-native-database + tick-source-liberation + society-meta-aware",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T13:06:00Z",
+  "head_ref": "otto-cli/alexa-website-adinkra-anchor-ferry-pt2-2026-06-02"
+}

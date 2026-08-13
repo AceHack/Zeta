@@ -1,0 +1,12 @@
+{
+  "pr_number": 7490,
+  "archive_path": "docs/history/pr-reviews/PR-7490-docs-rule-research-every-bug-has-economic-value-fix-measure-shared-cause-common-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T09:38:11.967Z",
+  "schema_version": "v1",
+  "commit_sha": "a2a67817a0b6a5ae3cf75e703151aa18461068da",
+  "title": "docs(rule)+research: every bug has economic value (fix = measure; shared cause = common seed; rewards/privacy)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T09:37:44Z",
+  "head_ref": "shadow-rule-every-bug-has-economic-value"
+}

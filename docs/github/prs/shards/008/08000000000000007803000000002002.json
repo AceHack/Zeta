@@ -1,0 +1,12 @@
+{
+  "pr_number": 8194,
+  "archive_path": "docs/history/pr-reviews/PR-8194-docs-research-the-complete-zeta-vision-synthesis.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T15:59:13.400Z",
+  "schema_version": "v1",
+  "commit_sha": "343025390ea412a68f0e80afaa9d35eb6bc168b7",
+  "title": "docs(research): the complete Zeta vision synthesis",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T15:58:52Z",
+  "head_ref": "otto/zeta-complete-vision-synthesis"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3058,
+  "archive_path": "docs/history/pr-reviews/PR-3058-fix-backlog-resolve-b-0090-x-id-collisions-renumber-riven-ts-series-1-4-5-8.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T23:38:04.657Z",
+  "schema_version": "v1",
+  "commit_sha": "199bc0ed3feb1bf52a593c77a5879e44d319ec91",
+  "title": "fix(backlog): resolve B-0090.x ID collisions — renumber Riven ts-* series .1-.4 → .5-.8",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T23:37:43Z",
+  "head_ref": "fix/b0090.x-id-collision-renumber-riven-to-0090.5-0090.8-2026-05-13"
+}

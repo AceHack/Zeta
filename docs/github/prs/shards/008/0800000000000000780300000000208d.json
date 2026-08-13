@@ -1,0 +1,12 @@
+{
+  "pr_number": 8333,
+  "archive_path": "docs/history/pr-reviews/PR-8333-feat-memory-well-formed-nested-surface-harness-layout-for-conversation-logs.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T20:51:18.254Z",
+  "schema_version": "v1",
+  "commit_sha": "93ecab95c761b077d1bef978c2c36716996f6442",
+  "title": "feat(memory): well-formed nested surface-harness layout for conversation logs",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T20:50:47Z",
+  "head_ref": "lior/memory-restructure"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7848,
+  "archive_path": "docs/history/pr-reviews/PR-7848-feat-quantum-observable-byte-lock-reticulum-delta-treaty.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T01:09:27.834Z",
+  "schema_version": "v1",
+  "commit_sha": "8c0cca0b2747c10a69a2cc1de875140c88bbbbdc",
+  "title": "feat(quantum-observable): byte-lock Reticulum delta treaty",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T01:08:56Z",
+  "head_ref": "codex/reticulum-quantum-delta-vectors"
+}

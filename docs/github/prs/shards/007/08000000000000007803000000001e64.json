@@ -1,0 +1,12 @@
+{
+  "pr_number": 7780,
+  "archive_path": "docs/history/pr-reviews/PR-7780-fix-backlog-regenerate-b-1031-index.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:33:09.403Z",
+  "schema_version": "v1",
+  "commit_sha": "2766c7093784e6221257f06be57ae689dbd94a3b",
+  "title": "fix(backlog): regenerate B-1031 index",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:32:45Z",
+  "head_ref": "codex/regenerate-backlog-b1031"
+}

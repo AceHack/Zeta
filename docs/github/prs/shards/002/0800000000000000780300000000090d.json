@@ -1,0 +1,12 @@
+{
+  "pr_number": 2317,
+  "archive_path": "docs/history/pr-reviews/PR-2317-feat-b-0361-anchor-field-in-concept-registry-non-fusion-pearl-4-partial-anchors.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T17:03:07.772Z",
+  "schema_version": "v1",
+  "commit_sha": "4c98893422ccc16afbdf01c7db9ba24312e450f1",
+  "title": "feat(B-0361): anchor field in concept-registry — non-fusion → Pearl + 4 partial anchors",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T17:02:51Z",
+  "head_ref": "claim/b0361-anchor-human-lineage-2026-05-09"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7368,
+  "archive_path": "docs/history/pr-reviews/PR-7368-docs-research-the-room-itself-is-a-traveler-shape-a-fork-clone-well-defined-by-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:06:55.404Z",
+  "schema_version": "v1",
+  "commit_sha": "51fa77ebd5f2184bf6bedd88384fbb524c82eedb",
+  "title": "docs(research): the room itself is a traveler (shape-A; fork/clone well-defined by content-addressing) + LLMTV is a traveler (the infrastructure seats itself)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:06:15Z",
+  "head_ref": "otto/the-room-is-a-traveler-in-itself-fork-clone-and-llmtv-is-a-traveler"
+}

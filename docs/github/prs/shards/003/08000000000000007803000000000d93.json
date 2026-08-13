@@ -1,0 +1,16 @@
+{
+  "pr_number": 3475,
+  "archive_path": "docs/history/pr-reviews/PR-3475-shard-tick-1321z-1-stale-thread-cleared-on-pr-3473-pr-3474-wait-ci.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bn5fh",
+    "comment:PRRC_kwDOSF9kNM7Bn96K",
+    "thread:PRRT_kwDOSF9kNM6CXmcs"
+  ],
+  "fetched_at": "2026-05-15T13:27:52.693Z",
+  "schema_version": "v1",
+  "commit_sha": "b289c1715abd7e87cdbe46376d2d59aba48d869f",
+  "title": "shard(tick): 1321Z — 1 stale thread cleared on PR #3473; PR #3474 wait-CI",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T13:27:29Z",
+  "head_ref": "shard/tick-1321z-otto-cli-2026-05-15"
+}

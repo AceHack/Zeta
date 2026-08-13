@@ -1,0 +1,12 @@
+{
+  "pr_number": 2241,
+  "archive_path": "docs/history/pr-reviews/PR-2241-feat-b-0308-b-0309-wire-mechanical-authorization-check-into-autonomous-loop-tick.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T08:22:03.174Z",
+  "schema_version": "v1",
+  "commit_sha": "1d71ff1808e48641a7367e083fc3f875b47ec474",
+  "title": "feat(B-0308/B-0309): wire mechanical authorization check into autonomous-loop tick-start",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T08:21:45Z",
+  "head_ref": "fix/b0308-b0309-mechanical-auth-check-loop-integration"
+}

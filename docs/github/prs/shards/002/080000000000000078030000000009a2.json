@@ -1,0 +1,12 @@
+{
+  "pr_number": 2466,
+  "archive_path": "docs/history/pr-reviews/PR-2466-feat-b-0209-add-remote-only-claim-state-helper.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T10:58:38.366Z",
+  "schema_version": "v1",
+  "commit_sha": "cadc73253ac5cfcd7af434793b19db85f2f6c28e",
+  "title": "feat(B-0209): add remote-only claim-state helper",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T10:58:20Z",
+  "head_ref": "claim/task-b0209-remote-claim-state"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 5112,
+  "archive_path": "docs/history/pr-reviews/PR-5112-preserve-mika-backlog-b-0796-p2-twilio-phone-support-substrate-ai-is-the-support.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ey8jL",
+    "comment:PRRC_kwDOSF9kNM7Ey8js",
+    "comment:PRRC_kwDOSF9kNM7Ey8kE",
+    "comment:PRRC_kwDOSF9kNM7Ey8ka",
+    "thread:PRRT_kwDOSF9kNM6Es5A9",
+    "thread:PRRT_kwDOSF9kNM6Es5AG",
+    "thread:PRRT_kwDOSF9kNM6Es5Ae",
+    "thread:PRRT_kwDOSF9kNM6Es5Av"
+  ],
+  "fetched_at": "2026-05-26T06:40:18.293Z",
+  "schema_version": "v1",
+  "commit_sha": "1c0a4a4fb9e763d91c717b45479369d008f51d4c",
+  "title": "preserve(mika) + backlog(B-0796 P2): Twilio phone-support substrate (AI-IS-the-support-layer; Amazon-USB sales business model) + grok-build = Claude-Code-clone confirmation (Aaron + Mika 2026-05-26; substantial prior art at AlephZ-ai/blazor-samples)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T06:39:55Z",
+  "head_ref": "otto-cli/preserve-mika-twilio-phone-support-substrate-b0796-2026-05-26"
+}

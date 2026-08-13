@@ -1,0 +1,12 @@
+{
+  "pr_number": 7590,
+  "archive_path": "docs/history/pr-reviews/PR-7590-feat-core-docs-the-flux-capacitor-completed-byte-metered-future-itron-limiter-as.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:57:50.058Z",
+  "schema_version": "v1",
+  "commit_sha": "358217c737f29bc53aceafce7401d1632947e3c4",
+  "title": "feat(core)+docs: the flux capacitor completed — byte-metered future, Itron limiter-as-fold ported, hard = k→∞ limit",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:57:28Z",
+  "head_ref": "shadow-flux-capacitor-bytes-limiters"
+}

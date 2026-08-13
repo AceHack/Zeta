@@ -1,0 +1,12 @@
+{
+  "pr_number": 5424,
+  "archive_path": "docs/history/pr-reviews/PR-5424-docs-b-0857-turn-4-5-6-framing-install-sh-ace-homelab-to-enterprise-spectrum-att.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T08:02:09.722Z",
+  "schema_version": "v1",
+  "commit_sha": "0b61405b56e7eae6596e474e2103b2e0b8f2277c",
+  "title": "docs(B-0857): Turn 4/5/6 framing — install.sh ≈ Ace + homelab-to-enterprise spectrum + attack-surface tempered (Aaron 2026-05-27 follow-up to #5423)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T08:01:50Z",
+  "head_ref": "backlog/b-0857-turn-4-5-6-framing-extensions-2026-05-27"
+}

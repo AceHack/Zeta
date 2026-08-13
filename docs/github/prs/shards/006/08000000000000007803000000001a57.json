@@ -1,0 +1,12 @@
+{
+  "pr_number": 6743,
+  "archive_path": "docs/history/pr-reviews/PR-6743-feat-log-081ktgd5jmd-c-oracle-for-deltalogentry-replays-golden-seed-byte-identic.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:37:54.239Z",
+  "schema_version": "v1",
+  "commit_sha": "c1c931c30124b77b22d5e0b61cc311bbda8fdfbf",
+  "title": "feat(Log/081KTGD5JMD): C# oracle for DeltaLogEntry — replays golden seed byte-identical (2/4 oracles)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:37:29Z",
+  "head_ref": "otto/log-entry-csharp-oracle"
+}

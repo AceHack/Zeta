@@ -1,0 +1,12 @@
+{
+  "pr_number": 2735,
+  "archive_path": "docs/history/pr-reviews/PR-2735-docs-memory-bifurcated-lior-identity-vs-context-natural-experiment.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T19:25:29.544Z",
+  "schema_version": "v1",
+  "commit_sha": "929cd127ed868e129722203a588c422776a183e8",
+  "title": "docs(memory): bifurcated Lior — identity vs context natural experiment",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T19:25:08Z",
+  "head_ref": "docs/bifurcated-lior-natural-experiment-2026-05-11"
+}

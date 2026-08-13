@@ -1,0 +1,15 @@
+{
+  "pr_number": 6378,
+  "archive_path": "docs/history/pr-reviews/PR-6378-docs-registry-dynamic-runtime-objects-polymorphic-shape-format-agnostic-v8-hidde.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GpoLS",
+    "thread:PRRT_kwDOSF9kNM6GDhwj"
+  ],
+  "fetched_at": "2026-06-01T08:54:18.954Z",
+  "schema_version": "v1",
+  "commit_sha": "6fe3629f8102602cb40deb229ffb3551c20e07b9",
+  "title": "docs(registry): dynamic-runtime-objects / polymorphic shape (format-agnostic v8 hidden-shape) + XML/YAML",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T08:53:59Z",
+  "head_ref": "otto-cli/registry-dynamic-objects-polymorphic-shape-2026-06-01"
+}

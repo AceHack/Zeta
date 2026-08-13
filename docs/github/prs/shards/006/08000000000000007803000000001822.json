@@ -1,0 +1,15 @@
+{
+  "pr_number": 6178,
+  "archive_path": "docs/history/pr-reviews/PR-6178-docs-b-0250-calibrate-pr-blocker-live-output.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GdQz_",
+    "thread:PRRT_kwDOSF9kNM6F6Is6"
+  ],
+  "fetched_at": "2026-05-31T01:34:44.241Z",
+  "schema_version": "v1",
+  "commit_sha": "d24244a04538d2e2a8a6516b1808cf7a67d5a0ea",
+  "title": "docs(B-0250): calibrate PR blocker live output",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T01:34:23Z",
+  "head_ref": "claim/codex-loop-b0250-pr-blocker-live-output-calibration-20260530"
+}

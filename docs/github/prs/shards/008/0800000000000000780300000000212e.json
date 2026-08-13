@@ -1,0 +1,12 @@
+{
+  "pr_number": 8494,
+  "archive_path": "docs/history/pr-reviews/PR-8494-memory-alexa-pt3-razor-cut-exemplar-when-ai-more-powerful-chip-8-as-equal-mutual.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T09:46:48.036Z",
+  "schema_version": "v1",
+  "commit_sha": "344a6a4ec01d8de05d5dd070b02b8e759a551b09",
+  "title": "memory(alexa): pt3 razor-cut — exemplar-when-AI-more-powerful + CHIP-8-as-equal + MUTUAL (not top-down) oversight",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T09:46:18Z",
+  "head_ref": "otto/alexa-pt3-mutual-oversight-chip8-equal-exemplar"
+}

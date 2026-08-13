@@ -1,0 +1,12 @@
+{
+  "pr_number": 2500,
+  "archive_path": "docs/history/pr-reviews/PR-2500-fix-b-0315-recover-slice-3-review-anchor-fixes.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T14:09:05.993Z",
+  "schema_version": "v1",
+  "commit_sha": "54235f3807e6a45f5fc56c0c5c1b46518c063dde",
+  "title": "fix(B-0315): recover slice 3 review anchor fixes",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T14:08:46Z",
+  "head_ref": "codex/pr2499-anchor-followup"
+}

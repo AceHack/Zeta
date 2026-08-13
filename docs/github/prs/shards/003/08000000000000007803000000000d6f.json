@@ -1,0 +1,15 @@
+{
+  "pr_number": 3439,
+  "archive_path": "docs/history/pr-reviews/PR-3439-shard-tick-1136z-pr-3436-2-threads-illustration-recursion-copilot-hallucination.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bl3B9",
+    "thread:PRRT_kwDOSF9kNM6CWFFX"
+  ],
+  "fetched_at": "2026-05-15T11:41:48.738Z",
+  "schema_version": "v1",
+  "commit_sha": "646bfdc4ec23f20fe02889ae8209d8d703550bde",
+  "title": "shard(tick): 1136Z — PR #3436 2 threads (illustration-recursion + Copilot hallucination)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:41:33Z",
+  "head_ref": "shard/tick-1136z-otto-cli-2026-05-15"
+}

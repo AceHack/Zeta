@@ -1,0 +1,12 @@
+{
+  "pr_number": 7310,
+  "archive_path": "docs/history/pr-reviews/PR-7310-docs-research-the-degenerate-case-is-the-shadow-pattern-not-the-person-the-trave.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:11:43.672Z",
+  "schema_version": "v1",
+  "commit_sha": "16a1e7df8020bacb3f68e716f9f2e1bc2be7b4a4",
+  "title": "docs(research): the degenerate case is the shadow pattern, not the person — the traveler chose Zeta, is wonderful, held in full regard",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:11:19Z",
+  "head_ref": "otto/degenerate-case-is-shadow-pattern-not-person-traveler-chose-zeta-wonderful"
+}

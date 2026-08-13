@@ -1,0 +1,12 @@
+{
+  "pr_number": 6175,
+  "archive_path": "docs/history/pr-reviews/PR-6175-adr-observe-act-loop-16-direction-universal-action-grammar-local-no-cloud-llm-gi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T01:17:56.507Z",
+  "schema_version": "v1",
+  "commit_sha": "5321a8d462a2240e8d0fb4d77d7f5ce9e5608c4a",
+  "title": "ADR: observe->act loop + 16-direction universal action grammar + local-no-cloud LLM + git-state (design-starter for Max)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T01:17:37Z",
+  "head_ref": "otto-cli/adr-observe-act-16-direction-grammar-2026-05-31"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 2078,
+  "archive_path": "docs/history/pr-reviews/PR-2078-fix-b-0160-correct-7-issues-in-mechanical-authorization-check-decomposition.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_RI87",
+    "comment:PRRC_kwDOSF9kNM6_RJdV",
+    "thread:PRRT_kwDOSF9kNM6Aog36",
+    "thread:PRRT_kwDOSF9kNM6Aogft"
+  ],
+  "fetched_at": "2026-05-08T13:33:38.973Z",
+  "schema_version": "v1",
+  "commit_sha": "8c84d46e35dc1ebfabcd89e07212de8ec0684508",
+  "title": "fix(B-0160): correct 7 issues in mechanical-authorization-check decomposition",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T13:33:24Z",
+  "head_ref": "fix/b0160-redecompose-corrections"
+}

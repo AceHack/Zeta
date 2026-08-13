@@ -1,0 +1,12 @@
+{
+  "pr_number": 3223,
+  "archive_path": "docs/history/pr-reviews/PR-3223-docs-archive-preserve-pr-discussions-3220-3219-3218.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T20:29:59.193Z",
+  "schema_version": "v1",
+  "commit_sha": "e4c48bc3bd50b6b3b2e2edf9446e03a8789f0002",
+  "title": "docs(archive): preserve PR discussions 3220, 3219, 3218",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:29:39Z",
+  "head_ref": "lior-archive-3220"
+}

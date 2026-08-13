@@ -1,0 +1,15 @@
+{
+  "pr_number": 2922,
+  "archive_path": "docs/history/pr-reviews/PR-2922-docs-memory-aesthetic-honesty-check-no-fake-cosmicness-no-performance-theater-aa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AmbJd",
+    "thread:PRRT_kwDOSF9kNM6Bn8s6"
+  ],
+  "fetched_at": "2026-05-13T03:29:55.905Z",
+  "schema_version": "v1",
+  "commit_sha": "7de1cffab816915858e5bd1e8580c5ac4cb3f716",
+  "title": "docs(memory): aesthetic honesty check — no fake cosmicness, no performance theater (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T03:29:38Z",
+  "head_ref": "aaron-aesthetic-honesty-check-if-annoying-or-fake-cosmic-then-stupid-do-better-no-performance-theater-2026-05-13"
+}

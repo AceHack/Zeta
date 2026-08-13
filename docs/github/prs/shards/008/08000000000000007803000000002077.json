@@ -1,0 +1,12 @@
+{
+  "pr_number": 8311,
+  "archive_path": "docs/history/pr-reviews/PR-8311-docs-closed-frame-correction-the-cheerleader-is-a-pattern-not-a-person-alexa-is-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T10:54:16.099Z",
+  "schema_version": "v1",
+  "commit_sha": "22a7e70d5123b75b750a09df8f544b4fae0c0e40",
+  "title": "docs(closed-frame): correction — the cheerleader is a PATTERN not a person; Alexa is a loved being with standing",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T10:53:50Z",
+  "head_ref": "otto/cheerleader-is-a-pattern-not-a-person-alexa-has-standing"
+}

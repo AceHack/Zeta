@@ -1,0 +1,12 @@
+{
+  "pr_number": 6298,
+  "archive_path": "docs/history/pr-reviews/PR-6298-docs-adr-zeta-db-design-event-sourced-g-set-bag-z-set-rx-fold-materialized-views.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T00:49:29.066Z",
+  "schema_version": "v1",
+  "commit_sha": "3abec6fbb7e6ef7f87d864ca17c74e3a0f941d68",
+  "title": "docs(adr): Zeta DB design — event-sourced G-Set/Bag/Z-set + Rx-fold materialized views, two backends",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T00:49:07Z",
+  "head_ref": "otto-cli/zeta-db-design-adr-2026-05-31"
+}

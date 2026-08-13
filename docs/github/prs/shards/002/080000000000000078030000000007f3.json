@@ -1,0 +1,12 @@
+{
+  "pr_number": 2035,
+  "archive_path": "docs/history/pr-reviews/PR-2035-fix-wallet-close-b-0062-retraction-metric-cleanup.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T04:43:20.451Z",
+  "schema_version": "v1",
+  "commit_sha": "c3efa6d230bd74232ce71f6ead7ebfb3840f81d6",
+  "title": "fix(wallet): close B-0062 retraction metric cleanup",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T04:43:05Z",
+  "head_ref": "codex/b0062-eat-retraction-metric"
+}

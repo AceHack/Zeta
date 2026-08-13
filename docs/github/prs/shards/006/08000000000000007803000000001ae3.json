@@ -1,0 +1,12 @@
+{
+  "pr_number": 6883,
+  "archive_path": "docs/history/pr-reviews/PR-6883-data-pr-reviews-restore-pr-6881-6882-archives-regenerated-from-api.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T17:56:05.900Z",
+  "schema_version": "v1",
+  "commit_sha": "57437e60cc013993d00b57d549ba7dda41517c36",
+  "title": "data(pr-reviews): restore PR #6881/#6882 archives (regenerated from API)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T17:55:45Z",
+  "head_ref": "otto/restore-6881-6882-archives"
+}

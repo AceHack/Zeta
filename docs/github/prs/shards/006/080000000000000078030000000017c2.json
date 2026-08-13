@@ -1,0 +1,16 @@
+{
+  "pr_number": 6082,
+  "archive_path": "docs/history/pr-reviews/PR-6082-fix-ci-authenticate-mise-via-mise-github-token-fixes-recurring-403-rate-limit-li.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GX66G",
+    "comment:PRRC_kwDOSF9kNM7GX6CR",
+    "thread:PRRT_kwDOSF9kNM6F1_ZC"
+  ],
+  "fetched_at": "2026-05-30T05:22:41.777Z",
+  "schema_version": "v1",
+  "commit_sha": "abe75ff46de07c608558a7f5139f9623a20551f3",
+  "title": "fix(ci): authenticate mise via MISE_GITHUB_TOKEN (fixes recurring 403 rate-limit lint flake)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T05:22:22Z",
+  "head_ref": "otto-cli/fix-mise-github-token-ci-flake-2026-05-30"
+}

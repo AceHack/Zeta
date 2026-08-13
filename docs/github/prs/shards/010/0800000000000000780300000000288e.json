@@ -1,0 +1,12 @@
+{
+  "pr_number": 10382,
+  "archive_path": "docs/history/pr-reviews/PR-10382-design-agents-verify-and-merge-the-replacement-for-prs-gates-and-branch-protecti.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-13T21:43:11.861Z",
+  "schema_version": "v1",
+  "commit_sha": "9b513b6804075938548eab6b577670a388427c34",
+  "title": "design: agents verify and merge — the replacement for PRs, gates and branch protection",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T21:42:36Z",
+  "head_ref": "design/agents-verify-and-merge"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3361,
+  "archive_path": "docs/history/pr-reviews/PR-3361-shard-tick-0503z-pr-3359-four-review-threads-addressed-recovery-worktree-borrowi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T05:18:35.194Z",
+  "schema_version": "v1",
+  "commit_sha": "21299d5be9fd498617aaa750ff0ff4fbd543bd7e",
+  "title": "shard(tick): 0503Z — PR #3359 four review threads addressed; recovery-worktree-borrowing 3x with peer-WIP preserved",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T05:18:16Z",
+  "head_ref": "shard/tick-0503z-otto-cli-2026-05-15"
+}

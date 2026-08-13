@@ -1,0 +1,12 @@
+{
+  "pr_number": 6417,
+  "archive_path": "docs/history/pr-reviews/PR-6417-docs-backlog-slice-5-4-close-out-b-0974-closed-b-0973-b-0975-progress.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T12:47:42.693Z",
+  "schema_version": "v1",
+  "commit_sha": "778439636404cc21e781e6b31984f452048c68f0",
+  "title": "docs(backlog): slice 5.4 close-out (B-0974 closed; B-0973/B-0975 progress)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T12:47:17Z",
+  "head_ref": "otto-windows/ace-slice5.4-backlog-bookkeeping-2026-06-01"
+}

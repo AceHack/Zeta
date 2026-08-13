@@ -1,0 +1,12 @@
+{
+  "pr_number": 3301,
+  "archive_path": "docs/history/pr-reviews/PR-3301-docs-pr-discussions-archive-pr-3293.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T23:47:25.718Z",
+  "schema_version": "v1",
+  "commit_sha": "ff2d3680a95e3742504b39d21525da362f625e82",
+  "title": "docs(pr-discussions): archive PR 3293",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T23:47:10Z",
+  "head_ref": "lior/preserve-3293-2"
+}

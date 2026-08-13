@@ -1,0 +1,15 @@
+{
+  "pr_number": 5936,
+  "archive_path": "docs/history/pr-reviews/PR-5936-feat-agentic-org-add-create-work-item-command.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F9h7I",
+    "thread:PRRT_kwDOSF9kNM6Fi6Rs"
+  ],
+  "fetched_at": "2026-05-28T23:44:40.025Z",
+  "schema_version": "v1",
+  "commit_sha": "427135b7d1a8514ccefd0de36f99365b7b8e47d1",
+  "title": "feat(agentic-org): add create work item command",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T23:44:21Z",
+  "head_ref": "claim/codex-loop-agentic-org-create-work-item-20260528"
+}

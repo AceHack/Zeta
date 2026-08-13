@@ -1,0 +1,29 @@
+{
+  "pr_number": 3126,
+  "archive_path": "docs/history/pr-reviews/PR-3126-feat-b-0469-civsim-repo-scaffolding-product-repo-create-repo-ts-extension.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BKbyH",
+    "comment:PRRC_kwDOSF9kNM7BKbyQ",
+    "comment:PRRC_kwDOSF9kNM7BKcXd",
+    "comment:PRRC_kwDOSF9kNM7BKcYL",
+    "comment:PRRC_kwDOSF9kNM7BKcYr",
+    "comment:PRRC_kwDOSF9kNM7BKcZR",
+    "comment:PRRC_kwDOSF9kNM7BKl5O",
+    "comment:PRRC_kwDOSF9kNM7BKl5U",
+    "thread:PRRT_kwDOSF9kNM6CCJM4",
+    "thread:PRRT_kwDOSF9kNM6CCJM9",
+    "thread:PRRT_kwDOSF9kNM6CCJo3",
+    "thread:PRRT_kwDOSF9kNM6CCJoT",
+    "thread:PRRT_kwDOSF9kNM6CCJp0",
+    "thread:PRRT_kwDOSF9kNM6CCJpU",
+    "thread:PRRT_kwDOSF9kNM6CCQx0",
+    "thread:PRRT_kwDOSF9kNM6CCQxx"
+  ],
+  "fetched_at": "2026-05-14T10:52:39.948Z",
+  "schema_version": "v1",
+  "commit_sha": "ce5c4101e9d3d78550215cc5ef8152cffb63b8cc",
+  "title": "feat(b-0469): civsim repo scaffolding — product-repo create-repo.ts extension",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T10:52:19Z",
+  "head_ref": "feat/b-0469-civsim-repo-scaffolding-2026-05-14"
+}

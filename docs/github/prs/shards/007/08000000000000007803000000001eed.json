@@ -1,0 +1,12 @@
+{
+  "pr_number": 7917,
+  "archive_path": "docs/history/pr-reviews/PR-7917-docs-research-math-report-2-budget-fusion-quantum-fusion-monoid-analogy-soft-max.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T14:32:44.662Z",
+  "schema_version": "v1",
+  "commit_sha": "490564c4fa8270b3e776695f4416f929ea24799d",
+  "title": "docs(research): math report #2 — budget-fusion ≟ quantum-fusion (monoid analogy; soft-max width theorem; week-proof lemma plan; honesty boundary)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T14:31:57Z",
+  "head_ref": "shadow-math-report-2"
+}

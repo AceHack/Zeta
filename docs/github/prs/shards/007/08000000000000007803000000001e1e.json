@@ -1,0 +1,12 @@
+{
+  "pr_number": 7710,
+  "archive_path": "docs/history/pr-reviews/PR-7710-feat-audio-hear-the-drift-predictive-maintenance-harmonize-without-sync-freestyl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T15:19:54.674Z",
+  "schema_version": "v1",
+  "commit_sha": "7d1f3c27ef5f5bb67a42c3e7e49d9d1a4b0a2e35",
+  "title": "feat(audio): hear the drift (predictive maintenance) + harmonize without sync + freestyle within the harmony",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T15:19:25Z",
+  "head_ref": "shadow-spectral-drift"
+}

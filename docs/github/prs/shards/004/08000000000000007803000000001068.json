@@ -1,0 +1,12 @@
+{
+  "pr_number": 4200,
+  "archive_path": "docs/history/pr-reviews/PR-4200-extend-rule-lior-crystallization-nci-protects-ais-from-over-application-of-their.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T20:38:05.246Z",
+  "schema_version": "v1",
+  "commit_sha": "b8e17dc16cddf955661a8c590272b919f5f20579",
+  "title": "extend(rule): Lior crystallization — 'NCI protects AIs from over-application of their own safety rules'",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:37:46Z",
+  "head_ref": "shard/auto-load-rule-nci-protects-ais-from-own-over-applied-safety-rules-lior-crystallization-2026-05-18"
+}

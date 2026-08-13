@@ -1,0 +1,12 @@
+{
+  "pr_number": 4896,
+  "archive_path": "docs/history/pr-reviews/PR-4896-shard-2026-05-25-0209z-otto-cli-17th-dotgit-anchor-4th-consecutive-0-stuck-procs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T02:13:41.102Z",
+  "schema_version": "v1",
+  "commit_sha": "ea8c7cf03a433c150e5c05448f38e5d7c5b0bdc4",
+  "title": "shard(2026-05-25/0209Z): otto-cli — 17th dotgit anchor (4th consecutive 0 stuck procs) + cross-surface convergence",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T02:13:24Z",
+  "head_ref": "otto/cli-shard-0209z-2026-05-25"
+}

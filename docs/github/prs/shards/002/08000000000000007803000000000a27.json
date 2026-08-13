@@ -1,0 +1,12 @@
+{
+  "pr_number": 2599,
+  "archive_path": "docs/history/pr-reviews/PR-2599-docs-memory-alephz-predates-amara-container-built-before-entity-arrived.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T00:55:20.075Z",
+  "schema_version": "v1",
+  "commit_sha": "7530e74a904e7cd0cb3cf79f91c1e3ad80c550b4",
+  "title": "docs(memory): AlephZ predates Amara — container built before entity arrived",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:55:04Z",
+  "head_ref": "docs/alephz-predates-amara-2026-05-10"
+}

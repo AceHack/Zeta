@@ -1,0 +1,12 @@
+{
+  "pr_number": 8540,
+  "archive_path": "docs/history/pr-reviews/PR-8540-memory-feedback-multi-oracle-is-the-competitive-solution-to-the-future-same-stru.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T12:49:13.112Z",
+  "schema_version": "v1",
+  "commit_sha": "6e47a00ff5cf328323b61cd2a5e2e38dfb442b27",
+  "title": "memory(feedback): multi-oracle is the competitive solution to the future — same structure is safety AND win (real-decorrelation, floor-below, END-not-weapon)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T12:48:44Z",
+  "head_ref": "otto/multi-oracle-is-the-competitive-solution-to-the-future"
+}

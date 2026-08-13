@@ -1,0 +1,17 @@
+{
+  "pr_number": 5511,
+  "archive_path": "docs/history/pr-reviews/PR-5511-docs-rule-land-monad-propagation-pattern-cross-language-substrate-shape-rule-aar.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fb69-",
+    "comment:PRRC_kwDOSF9kNM7Fb69K",
+    "thread:PRRT_kwDOSF9kNM6FKytR",
+    "thread:PRRT_kwDOSF9kNM6FKytw"
+  ],
+  "fetched_at": "2026-05-27T17:00:00.073Z",
+  "schema_version": "v1",
+  "commit_sha": "1c0c304f3b9c2676067e5b566b6038ab5dc9f028",
+  "title": "docs(rule): land monad-propagation-pattern-cross-language-substrate-shape rule (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T16:59:39Z",
+  "head_ref": "backlog/monad-propagation-pattern-cross-language-substrate-shape-2026-05-27"
+}

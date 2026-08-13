@@ -1,0 +1,12 @@
+{
+  "pr_number": 1931,
+  "archive_path": "docs/history/pr-reviews/PR-1931-backlog-capture-posterior-quorum-triangulation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T19:18:10.969Z",
+  "schema_version": "v1",
+  "commit_sha": "2bef2a6aa70e64608c66f88f2382c22fc1c324f9",
+  "title": "backlog: capture posterior quorum triangulation",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T19:17:46Z",
+  "head_ref": "codex/infernet-probabilistic-triangulation"
+}

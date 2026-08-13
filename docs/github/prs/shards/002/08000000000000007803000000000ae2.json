@@ -1,0 +1,27 @@
+{
+  "pr_number": 2786,
+  "archive_path": "docs/history/pr-reviews/PR-2786-hygiene-tick-1451z-architectural-substrate-cascade-pr-queue-drain.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AXtAP",
+    "comment:PRRC_kwDOSF9kNM7AXwSb",
+    "comment:PRRC_kwDOSF9kNM7AXwUa",
+    "comment:PRRC_kwDOSF9kNM7AYWHf",
+    "comment:PRRC_kwDOSF9kNM7AYWK9",
+    "comment:PRRC_kwDOSF9kNM7AYWMM",
+    "comment:PRRC_kwDOSF9kNM7AYdgB",
+    "thread:PRRT_kwDOSF9kNM6Bd04v",
+    "thread:PRRT_kwDOSF9kNM6BdQ_w",
+    "thread:PRRT_kwDOSF9kNM6BdTcq",
+    "thread:PRRT_kwDOSF9kNM6BdTeI",
+    "thread:PRRT_kwDOSF9kNM6Bdvke",
+    "thread:PRRT_kwDOSF9kNM6BdvnX",
+    "thread:PRRT_kwDOSF9kNM6Bdvoc"
+  ],
+  "fetched_at": "2026-05-12T15:23:30.551Z",
+  "schema_version": "v1",
+  "commit_sha": "f1c3bd66bb3bbd5a16761f3ec6cec9a027ef1169",
+  "title": "hygiene(tick): 1451Z — architectural substrate cascade + PR queue drain",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T15:23:00Z",
+  "head_ref": "hygiene/tick-2026-05-12-1451Z"
+}

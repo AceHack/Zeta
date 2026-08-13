@@ -1,0 +1,12 @@
+{
+  "pr_number": 6679,
+  "archive_path": "docs/history/pr-reviews/PR-6679-rules-skills-anchoring-discipline-no-directives-blueprint-pack-prototype.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-04T13:36:02.273Z",
+  "schema_version": "v1",
+  "commit_sha": "8e4ef3f7bc206a085d94a3f38a9d0e2ae8759057",
+  "title": "rules+skills: anchoring discipline, no-directives, blueprint-pack prototype",
+  "state": "MERGED",
+  "merged_at": "2026-06-04T13:35:34Z",
+  "head_ref": "rules/anchoring-and-no-directives"
+}

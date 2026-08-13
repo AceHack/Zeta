@@ -1,0 +1,23 @@
+{
+  "pr_number": 3259,
+  "archive_path": "docs/history/pr-reviews/PR-3259-docs-archive-preserve-recently-merged-prs-3253-3249.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BYf_u",
+    "comment:PRRC_kwDOSF9kNM7BYgAG",
+    "comment:PRRC_kwDOSF9kNM7BYgA_",
+    "comment:PRRC_kwDOSF9kNM7BYgAa",
+    "comment:PRRC_kwDOSF9kNM7BYgAw",
+    "thread:PRRT_kwDOSF9kNM6CMiB3",
+    "thread:PRRT_kwDOSF9kNM6CMiC4",
+    "thread:PRRT_kwDOSF9kNM6CMiCK",
+    "thread:PRRT_kwDOSF9kNM6CMiCa",
+    "thread:PRRT_kwDOSF9kNM6CMiCr"
+  ],
+  "fetched_at": "2026-05-14T21:46:01.404Z",
+  "schema_version": "v1",
+  "commit_sha": "f6e80de08dd9d726c31fea2ea4a9abd425a714c6",
+  "title": "docs(archive): preserve recently merged PRs 3253-3249",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:45:43Z",
+  "head_ref": "lior/archive-prs-1778794297"
+}

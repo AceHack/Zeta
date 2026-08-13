@@ -1,0 +1,12 @@
+{
+  "pr_number": 4820,
+  "archive_path": "docs/history/pr-reviews/PR-4820-shard-2026-05-24-1407z-dotgit-14th-observation-0-procs-first-time-in-27h49min-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-24T14:13:08.741Z",
+  "schema_version": "v1",
+  "commit_sha": "b12de7761de6efaeac1277cace4803fa285ae437",
+  "title": "shard(2026-05-24/1407Z): dotgit 14th-observation (0 procs first time in 27h49min) + repo-restoration confirmed",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T14:12:51Z",
+  "head_ref": "otto-cli/tick-1407z-dotgit-cycle-14th-observation-2026-05-24"
+}

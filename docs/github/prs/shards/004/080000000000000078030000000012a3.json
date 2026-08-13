@@ -1,0 +1,12 @@
+{
+  "pr_number": 4771,
+  "archive_path": "docs/history/pr-reviews/PR-4771-skill-alignment-observability-tune-s-populate-bp-rules-cited-per-aarav-round-44-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T21:24:11.047Z",
+  "schema_version": "v1",
+  "commit_sha": "e8f3fc909825be230af71a443ae06e676f917e24",
+  "title": "skill(alignment-observability): TUNE-S — populate bp_rules_cited per Aarav round 44 finding",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T21:23:55Z",
+  "head_ref": "otto/cli-aarav-r44-tune-s-alignment-observability-bp-rules-2026-05-23"
+}

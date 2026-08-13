@@ -1,0 +1,12 @@
+{
+  "pr_number": 3842,
+  "archive_path": "docs/history/pr-reviews/PR-3842-shard-tick-2026-05-16t09-22z-b-0314-self-documenting-partial-new-class-2-sd-24-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T09:40:00.519Z",
+  "schema_version": "v1",
+  "commit_sha": "5670cf8bd52d61e6b0dd95a0ab71498503e0283e",
+  "title": "shard(tick): 2026-05-16T09:22Z — B-0314 = self-documenting partial (NEW class #2-SD); 24/38 triaged",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T09:39:45Z",
+  "head_ref": "shard/tick-0922z-otto-cli-2026-05-16"
+}

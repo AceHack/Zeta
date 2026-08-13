@@ -1,0 +1,17 @@
+{
+  "pr_number": 2585,
+  "archive_path": "docs/history/pr-reviews/PR-2585-docs-memory-contribute-back-escrow-survival-strategy-upstream-influence.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rGMx",
+    "comment:PRRC_kwDOSF9kNM6_rGNN",
+    "thread:PRRT_kwDOSF9kNM6A8PlB",
+    "thread:PRRT_kwDOSF9kNM6A8PlT"
+  ],
+  "fetched_at": "2026-05-11T00:14:57.809Z",
+  "schema_version": "v1",
+  "commit_sha": "9e81f64304587c136cb6a6c4adc1a151ccf4c52f",
+  "title": "docs(memory): contribute-back-escrow — survival strategy + upstream influence",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:14:40Z",
+  "head_ref": "docs/contribute-back-escrow-2026-05-10"
+}

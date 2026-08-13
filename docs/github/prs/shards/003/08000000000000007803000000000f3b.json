@@ -1,0 +1,15 @@
+{
+  "pr_number": 3899,
+  "archive_path": "docs/history/pr-reviews/PR-3899-chore-b-0457-close-amara-core-scope-met-b-0462-dep-unblocked-via-pr-3897-8th-cyc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B5ZW3",
+    "thread:PRRT_kwDOSF9kNM6CkaYD"
+  ],
+  "fetched_at": "2026-05-16T16:06:02.429Z",
+  "schema_version": "v1",
+  "commit_sha": "eb5ddd6053fc36ac3142408affbe11730f668df2",
+  "title": "chore(b-0457): close — amara core scope met; B-0462 dep unblocked via PR #3897 (8th cycle close-row)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T16:05:46Z",
+  "head_ref": "otto-cli-b0457-close-2026-05-16-1542z"
+}

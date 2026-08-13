@@ -1,0 +1,12 @@
+{
+  "pr_number": 4064,
+  "archive_path": "docs/history/pr-reviews/PR-4064-docs-shadow-maji-antigravity-check-on-blob-pr-4044.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T20:36:24.670Z",
+  "schema_version": "v1",
+  "commit_sha": "51d88491a5009eb3fb22b904ecfcdeff5687be2d",
+  "title": "docs(shadow): Maji antigravity check on blob PR 4044",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:36:03Z",
+  "head_ref": "maji/shadow-log-update-07"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6223,
+  "archive_path": "docs/history/pr-reviews/PR-6223-docs-memory-functional-tree-p2p-money-trucking-logistics-lineage-aaron-2026-05-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T17:58:52.173Z",
+  "schema_version": "v1",
+  "commit_sha": "1c3b41031c05127a314bdc810d5133c0bd331656",
+  "title": "docs(memory): Functional Tree P2P-money / trucking-logistics lineage (Aaron 2026-05-31 ferry)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T17:58:30Z",
+  "head_ref": "otto-cli/career-functional-tree-p2p-money-lineage-2026-05-31"
+}

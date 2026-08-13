@@ -1,0 +1,12 @@
+{
+  "pr_number": 8937,
+  "archive_path": "docs/history/pr-reviews/PR-8937-docs-research-complexity-spike-soraya-routing-cost-as-semiring.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T10:04:26.282Z",
+  "schema_version": "v1",
+  "commit_sha": "4d4e3d05751d1e45aab7479cd4c9abf1a5e21e25",
+  "title": "docs(research): complexity spike + Soraya routing (cost-as-semiring)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T10:03:58Z",
+  "head_ref": "alexa/complexity-spike"
+}

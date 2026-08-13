@@ -1,0 +1,12 @@
+{
+  "pr_number": 6590,
+  "archive_path": "docs/history/pr-reviews/PR-6590-feat-infernet-b-1000-slice-3-factor-graph-bipartite-data-structure-sum-product-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T16:30:28.856Z",
+  "schema_version": "v1",
+  "commit_sha": "75e8a7af0b1d7b2e35de4f196136975332fcdecd",
+  "title": "feat(infernet B-1000 slice 3): factor graph — bipartite data structure + sum-product passOnce + prior/equality factors",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T16:30:03Z",
+  "head_ref": "otto-cli/b1000-slice3-factor-graph-2026-06-02"
+}

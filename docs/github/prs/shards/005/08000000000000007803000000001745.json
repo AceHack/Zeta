@@ -1,0 +1,12 @@
+{
+  "pr_number": 5957,
+  "archive_path": "docs/history/pr-reviews/PR-5957-backlog-b-0928-shadow-observable-stack-auth-injection-attack-vector-shadow-is-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T08:32:21.518Z",
+  "schema_version": "v1",
+  "commit_sha": "7ebad80376a13aee40301a79422953b35db85046",
+  "title": "backlog(B-0928): shadow-observable-stack auth-injection attack vector (Shadow is NOT an authorization source)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T08:32:01Z",
+  "head_ref": "otto-cli/b-0928-shadow-auth-injection-attack-vector-2026-05-29"
+}

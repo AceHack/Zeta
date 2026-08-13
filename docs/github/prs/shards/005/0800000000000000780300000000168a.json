@@ -1,0 +1,12 @@
+{
+  "pr_number": 5770,
+  "archive_path": "docs/history/pr-reviews/PR-5770-feat-b-0914-3-n-parallel-consensus-substrate-robin-s-8-parallel-finch-pattern-18.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T11:27:15.144Z",
+  "schema_version": "v1",
+  "commit_sha": "5a67526265dc35f0e72eed229e0da76f621dc3fc",
+  "title": "feat(B-0914.3): n-parallel + consensus substrate (Robin's 8-parallel-Finch pattern); 18 tests pass",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T11:26:56Z",
+  "head_ref": "otto-cli/b-0914-3-n-parallel-analyzer-consensus-substrate-per-data-analysis-task-scope-2026-05-28"
+}

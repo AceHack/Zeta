@@ -1,0 +1,12 @@
+{
+  "pr_number": 2480,
+  "archive_path": "docs/history/pr-reviews/PR-2480-feat-lior-add-global-lock-cleanup-coordinate-to-maji-hat.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T12:22:52.538Z",
+  "schema_version": "v1",
+  "commit_sha": "9e784423706b1d3b073958a422fb8b24f2631b90",
+  "title": "feat(Lior): add global lock cleanup coordinate to Maji hat",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T12:22:32Z",
+  "head_ref": "claim/lior-maji-lock-cleanup-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8912,
+  "archive_path": "docs/history/pr-reviews/PR-8912-lean-4-proof-of-normalizer-correctness.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T08:18:20.270Z",
+  "schema_version": "v1",
+  "commit_sha": "c18c335174daf664c190ee7592eafe77cfa47611",
+  "title": "Lean 4 proof of Normalizer correctness",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T08:17:51Z",
+  "head_ref": "feature/lumen-normalizer-lean-proof"
+}

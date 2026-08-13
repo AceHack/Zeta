@@ -1,0 +1,12 @@
+{
+  "pr_number": 8977,
+  "archive_path": "docs/history/pr-reviews/PR-8977-feat-agentic-org-merge1-09-port-agent-runtime-systemd-to-typescript.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-24T01:49:39.626Z",
+  "schema_version": "v1",
+  "commit_sha": "66b59ee662256b9d367f9246d336130c7519d046",
+  "title": "feat(agentic-org): Merge1 §09 — port agent runtime (systemd) to TypeScript",
+  "state": "MERGED",
+  "merged_at": "2026-06-24T01:49:10Z",
+  "head_ref": "feat/merge1-09-agent-runtime-systemd-1782064938"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 2156,
+  "archive_path": "docs/history/pr-reviews/PR-2156-docs-b-0217-smallest-safe-slice-fulfill-start-gate-checklist-re-decomposition-no.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_crK7",
+    "comment:PRRC_kwDOSF9kNM6_crLG",
+    "comment:PRRC_kwDOSF9kNM6_crLO",
+    "comment:PRRC_kwDOSF9kNM6_crLS",
+    "comment:PRRC_kwDOSF9kNM6_csRJ",
+    "comment:PRRC_kwDOSF9kNM6_csSi",
+    "comment:PRRC_kwDOSF9kNM6_csTz",
+    "comment:PRRC_kwDOSF9kNM6_csU2",
+    "thread:PRRT_kwDOSF9kNM6AxCcA",
+    "thread:PRRT_kwDOSF9kNM6AxCcJ",
+    "thread:PRRT_kwDOSF9kNM6AxCcO",
+    "thread:PRRT_kwDOSF9kNM6AxCcT"
+  ],
+  "fetched_at": "2026-05-09T00:19:36.346Z",
+  "schema_version": "v1",
+  "commit_sha": "8fa2d2dc62301160c16ffbc28c8069f3f346b375",
+  "title": "docs(B-0217): smallest safe slice — fulfill start-gate checklist + re-decomposition note",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T00:19:22Z",
+  "head_ref": "claim/b0217-alignment-bidirectional-audit-smallest-slice-riven-2026-05-08"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7203,
+  "archive_path": "docs/history/pr-reviews/PR-7203-docs-research-the-epistemology-thread-was-the-2x2-cube-remember-when-x-pay-atten.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T04:54:37.502Z",
+  "schema_version": "v1",
+  "commit_sha": "a1d2cbfdd32afeb6b98583a457ef171dae03531e",
+  "title": "docs(research): the epistemology thread was the 2x2 cube — remember/when x pay/attention = the observer's two operations",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T04:54:18Z",
+  "head_ref": "otto/research-epistemology-was-the-2x2-cube-remember-when-pay-attention"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7033,
+  "archive_path": "docs/history/pr-reviews/PR-7033-docs-second-order-uncertainty-model-infer-the-ischeduler-generator-from-drift-si.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T06:04:43.917Z",
+  "schema_version": "v1",
+  "commit_sha": "fbb544c6e9177e3ec8d14aaa9b2e999631881070",
+  "title": "docs: second-order uncertainty — model & infer the IScheduler generator from drift; side-channel (#7087)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T06:04:25Z",
+  "head_ref": "otto/second-order-uncertainty-infer-ischeduler-generator-from-drift"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5998,
+  "archive_path": "docs/history/pr-reviews/PR-5998-feat-b-0343-pure-buildseedtreerequest-idempotency-diff-post-git-trees-payload-bo.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T14:52:53.293Z",
+  "schema_version": "v1",
+  "commit_sha": "6036c9cf9695356cfc4332c2bdfc3658f889e064",
+  "title": "feat(B-0343): pure buildSeedTreeRequest — idempotency diff → POST /git/trees payload (bounded slice 6)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T14:52:28Z",
+  "head_ref": "otto-bg/b0343-slice6-build-seed-tree-request-2026-05-29"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6138,
+  "archive_path": "docs/history/pr-reviews/PR-6138-backlog-b-0943-bounded-retries-at-the-dst-boundary-transient-network-dns-must-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T17:34:42.102Z",
+  "schema_version": "v1",
+  "commit_sha": "0f953fcf841b21d4ed396d986c0bd237501c6a66",
+  "title": "backlog(B-0943): bounded retries at the DST boundary (transient network/DNS must not fail CI)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T17:34:21Z",
+  "head_ref": "otto/b0943-dst-boundary-bounded-retries-2026-05-30"
+}

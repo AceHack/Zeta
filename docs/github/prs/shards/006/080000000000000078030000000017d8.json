@@ -1,0 +1,16 @@
+{
+  "pr_number": 6104,
+  "archive_path": "docs/history/pr-reviews/PR-6104-docs-b-0250-record-post-increase-debug-calibration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GZ2DW",
+    "comment:PRRC_kwDOSF9kNM7GZ6-G",
+    "thread:PRRT_kwDOSF9kNM6F3c1e"
+  ],
+  "fetched_at": "2026-05-30T11:37:58.232Z",
+  "schema_version": "v1",
+  "commit_sha": "536c14cafdd0f84fadd09cc27d8c1a92ec2bc95c",
+  "title": "docs(B-0250): record post-increase debug calibration",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T11:37:39Z",
+  "head_ref": "claim/codex-loop-b0250-post-increase-debug-calibration-20260530"
+}

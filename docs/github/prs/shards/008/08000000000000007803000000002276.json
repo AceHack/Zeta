@@ -1,0 +1,25 @@
+{
+  "pr_number": 8822,
+  "archive_path": "docs/history/pr-reviews/PR-8822-add-github-gitlab-sign-in-to-project-genesis-identity-only.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7NgEHm",
+    "comment:PRRC_kwDOSF9kNM7NgEHo",
+    "comment:PRRC_kwDOSF9kNM7NgELO",
+    "comment:PRRC_kwDOSF9kNM7NgELS",
+    "comment:PRRC_kwDOSF9kNM7NgELV",
+    "comment:PRRC_kwDOSF9kNM7NgELZ",
+    "thread:PRRT_kwDOSF9kNM6LDpeR",
+    "thread:PRRT_kwDOSF9kNM6LDpeT",
+    "thread:PRRT_kwDOSF9kNM6LDphO",
+    "thread:PRRT_kwDOSF9kNM6LDphS",
+    "thread:PRRT_kwDOSF9kNM6LDphV",
+    "thread:PRRT_kwDOSF9kNM6LDphX"
+  ],
+  "fetched_at": "2026-06-21T03:10:08.377Z",
+  "schema_version": "v1",
+  "commit_sha": "240c55c746343e4e8a4180ca677212817be08191",
+  "title": "Add GitHub + GitLab sign-in to Project Genesis (identity-only)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:09:42Z",
+  "head_ref": "claude/genesis-github-pages-deploy-x6pgl9"
+}

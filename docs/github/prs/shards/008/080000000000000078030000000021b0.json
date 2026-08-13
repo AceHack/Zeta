@@ -1,0 +1,12 @@
+{
+  "pr_number": 8624,
+  "archive_path": "docs/history/pr-reviews/PR-8624-docs-research-nft-is-frozen-immutable-not-alive-snap-git-commit-dst-checkable-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T21:09:49.072Z",
+  "schema_version": "v1",
+  "commit_sha": "3be9e63a0682cd983728973e82c6e298d5833933",
+  "title": "docs(research): NFT is frozen/immutable/not-alive (snap = git-commit); DST-checkable not DST-live; animation line flagged for math team",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T21:09:21Z",
+  "head_ref": "otto/nft-immutable-snap-dst-checkable"
+}

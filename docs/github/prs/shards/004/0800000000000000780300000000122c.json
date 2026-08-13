@@ -1,0 +1,12 @@
+{
+  "pr_number": 4652,
+  "archive_path": "docs/history/pr-reviews/PR-4652-save-all-four-b-0706-zeta-on-orleans-kestrel-persona-archive-tools-rented-not-ow.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T18:50:36.877Z",
+  "schema_version": "v1",
+  "commit_sha": "a88d2a36fb3ea23ca0543b43e2ec2b29ca5c2526",
+  "title": "save-all-four: B-0706 Zeta-on-Orleans + Kestrel persona archive + tools-rented-not-owned + hats-form-in-the-in-between + Sorting Hat canonical",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T18:50:17Z",
+  "head_ref": "otto/cli-0210z-zeta-on-orleans-deployment-plus-tools-rented-not-owned-plus-hats-form-in-in-between-plus-sorting-hat-canonical-plus-kestrel-archive-2026-05-23"
+}

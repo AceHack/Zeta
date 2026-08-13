@@ -1,0 +1,12 @@
+{
+  "pr_number": 6606,
+  "archive_path": "docs/history/pr-reviews/PR-6606-docs-b-1006-codecs-are-an-algebra-codec-algebra-algebra-first-admission-procedur.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T17:43:00.551Z",
+  "schema_version": "v1",
+  "commit_sha": "f83b0362873d4ca88db4ffea0799b0e91f9e5c49",
+  "title": "docs(B-1006): codecs ARE an algebra (codec algebra); algebra-first admission procedure; registry is the ship gate (Aaron)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T17:42:30Z",
+  "head_ref": "otto-cli/b1006-codecs-are-algebra-decision-procedure-ship-gate-2026-06-02"
+}

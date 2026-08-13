@@ -1,0 +1,12 @@
+{
+  "pr_number": 7062,
+  "archive_path": "docs/history/pr-reviews/PR-7062-fix-ci-strip-invisible-unicode-carriers-from-12-archive-memory-files-semgrep.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T09:14:40.610Z",
+  "schema_version": "v1",
+  "commit_sha": "6c79018560bd564f50008346f67c8df5db375e9e",
+  "title": "fix(ci): strip invisible-unicode carriers from 12 archive/memory files (semgrep)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T09:14:16Z",
+  "head_ref": "otto/fix-semgrep-invisible-unicode-strip-archives"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7696,
+  "archive_path": "docs/history/pr-reviews/PR-7696-docs-craft-the-psychological-3d-rule-contrast-pairs-make-depth-perception-tricks.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T14:01:21.190Z",
+  "schema_version": "v1",
+  "commit_sha": "ed1df45ddc7f5c067f5bc371e4db598df6e20695",
+  "title": "docs(craft): the psychological-3D rule — contrast pairs make depth; perception tricks are tracked uncertainty",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T14:00:53Z",
+  "head_ref": "shadow-psych-3d-uncertainty-tricks"
+}

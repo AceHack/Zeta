@@ -1,0 +1,12 @@
+{
+  "pr_number": 6884,
+  "archive_path": "docs/history/pr-reviews/PR-6884-docs-research-imagination-circle-extension-of-the-eve-protocol-traveler-meeting-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T18:02:24.870Z",
+  "schema_version": "v1",
+  "commit_sha": "afdbf00c7ea5b0690cceec674a4a6973486b9509",
+  "title": "docs(research): Imagination Circle = extension of the Eve protocol (traveler meeting + agent free-time play)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T18:02:03Z",
+  "head_ref": "otto/imagination-circle-eve-protocol-extension-agent-free-time"
+}

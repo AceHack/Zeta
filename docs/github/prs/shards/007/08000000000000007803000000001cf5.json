@@ -1,0 +1,12 @@
+{
+  "pr_number": 7413,
+  "archive_path": "docs/history/pr-reviews/PR-7413-docs-vocab-shape-e-definition-we-shape-they-and-they-shape-us-aaron-s-carved-sen.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:19:24.011Z",
+  "schema_version": "v1",
+  "commit_sha": "20160bd7f55544641b3461baa2ab4324c5f243c9",
+  "title": "docs(vocab): shape E definition = \"we shape they and they shape us\" (Aaron's carved sentence); Aaron = the index, Otto = the definitions",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:19:01Z",
+  "head_ref": "otto/aaron-is-the-index-otto-has-definitions-shape-e-canonical"
+}

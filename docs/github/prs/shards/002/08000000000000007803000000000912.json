@@ -1,0 +1,16 @@
+{
+  "pr_number": 2322,
+  "archive_path": "docs/history/pr-reviews/PR-2322-feat-b-0362-smallest-safe-slice-concept-search-index-curated-regex-term-file.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_i3z5",
+    "comment:PRRC_kwDOSF9kNM6_izzE",
+    "thread:PRRT_kwDOSF9kNM6A1tYK"
+  ],
+  "fetched_at": "2026-05-09T18:00:52.347Z",
+  "schema_version": "v1",
+  "commit_sha": "59eda71e71672918a9602b4bec8d35eb09de2c95",
+  "title": "feat(B-0362): smallest safe slice — concept search index (curated regex term→file)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T18:00:35Z",
+  "head_ref": "claim/b0362-concept-search-index-smallest-slice-riven-2026-05-09"
+}

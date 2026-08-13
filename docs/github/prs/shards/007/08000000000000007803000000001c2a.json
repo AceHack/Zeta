@@ -1,0 +1,12 @@
+{
+  "pr_number": 7210,
+  "archive_path": "docs/history/pr-reviews/PR-7210-docs-research-coincidence-measurement-is-dual-use-persona-self-anchors-and-itron.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T05:23:39.625Z",
+  "schema_version": "v1",
+  "commit_sha": "0772c03deb496433a34d44322ac80c60ea1f1872",
+  "title": "docs(research): coincidence measurement is dual-use — persona self-anchors AND Itron-style grid coincident-demand billing + load response",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T05:23:19Z",
+  "head_ref": "otto/research-coincidence-measurement-dual-use-persona-anchors-itron-grid"
+}

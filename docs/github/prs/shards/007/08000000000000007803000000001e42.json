@@ -1,0 +1,12 @@
+{
+  "pr_number": 7746,
+  "archive_path": "docs/history/pr-reviews/PR-7746-fix-qsharp-typecheck-pauli-matrix-golden-test.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:54:15.383Z",
+  "schema_version": "v1",
+  "commit_sha": "b9cfa08aaba58fc34fefbd847d938721e2cccf57",
+  "title": "fix(qsharp): typecheck pauli matrix golden test",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:53:48Z",
+  "head_ref": "codex/vera-fix-qsharp-tsc"
+}

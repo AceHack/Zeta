@@ -1,0 +1,12 @@
+{
+  "pr_number": 2595,
+  "archive_path": "docs/history/pr-reviews/PR-2595-docs-memory-multiplexedwebsockets-flux-capacitor-b-0400-bus-transport-10x.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T00:41:53.522Z",
+  "schema_version": "v1",
+  "commit_sha": "3e072f950fe032fb332f14d9cd7ee448ce63ba22",
+  "title": "docs(memory): MultiplexedWebSockets + flux capacitor = B-0400 bus transport (10x)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:41:33Z",
+  "head_ref": "docs/mux-websockets-flux-capacitor-2026-05-10"
+}

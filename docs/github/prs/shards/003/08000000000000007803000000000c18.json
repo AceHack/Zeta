@@ -1,0 +1,22 @@
+{
+  "pr_number": 3096,
+  "archive_path": "docs/history/pr-reviews/PR-3096-chore-backlog-close-b-0145-pm-2-role-all-acs-met.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BD3-l",
+    "comment:PRRC_kwDOSF9kNM7BD5Fc",
+    "comment:PRRC_kwDOSF9kNM7BD5Fs",
+    "comment:PRRC_kwDOSF9kNM7BD8Lp",
+    "comment:PRRC_kwDOSF9kNM7BD8Qj",
+    "comment:PRRC_kwDOSF9kNM7BD8W9",
+    "thread:PRRT_kwDOSF9kNM6B9V1w",
+    "thread:PRRT_kwDOSF9kNM6B9WkE",
+    "thread:PRRT_kwDOSF9kNM6B9WkR"
+  ],
+  "fetched_at": "2026-05-14T04:20:06.129Z",
+  "schema_version": "v1",
+  "commit_sha": "5f323c161a0d3c8d8d257f48a0081a7da9abbe19",
+  "title": "chore(backlog): close B-0145 — PM-2 role all ACs met",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T04:19:47Z",
+  "head_ref": "feat/pm2-close-b0145-2026-05-14"
+}

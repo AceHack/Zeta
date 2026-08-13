@@ -1,0 +1,12 @@
+{
+  "pr_number": 8696,
+  "archive_path": "docs/history/pr-reviews/PR-8696-docs-handoff-mark-math-team-row-11-discharged-clifford-e8-reproduction-landed-86.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T03:08:47.089Z",
+  "schema_version": "v1",
+  "commit_sha": "5d3730ce29aa295623a0d9d88c599eca5e818fda",
+  "title": "docs(handoff): mark math-team row 11 DISCHARGED — Clifford→E8 reproduction landed (#8695, verified)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T03:08:22Z",
+  "head_ref": "otto/mathteam-row11-discharged"
+}

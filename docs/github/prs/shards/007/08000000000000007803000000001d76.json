@@ -1,0 +1,12 @@
+{
+  "pr_number": 7542,
+  "archive_path": "docs/history/pr-reviews/PR-7542-docs-craft-the-stump-dad-game-pedagogy-origin-the-one-sin-because-i-said-so-inte.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:38:33.860Z",
+  "schema_version": "v1",
+  "commit_sha": "3d4cf022d7210ad7908ad39d5dc7aef7597e8dd8",
+  "title": "docs(craft): the Stump Dad game (pedagogy origin) + the one sin (\"because I said so\") + interest-pays-dividends",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:38:13Z",
+  "head_ref": "shadow-craft-stump-dad-and-the-one-sin"
+}

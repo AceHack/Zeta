@@ -1,0 +1,19 @@
+{
+  "pr_number": 6203,
+  "archive_path": "docs/history/pr-reviews/PR-6203-feat-openspec-add-inventory-gate-enforcement.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GfBGJ",
+    "comment:PRRC_kwDOSF9kNM7GfBNa",
+    "comment:PRRC_kwDOSF9kNM7GfDNw",
+    "comment:PRRC_kwDOSF9kNM7GfDOM",
+    "thread:PRRT_kwDOSF9kNM6F7hKB",
+    "thread:PRRT_kwDOSF9kNM6F7hP1"
+  ],
+  "fetched_at": "2026-05-31T10:05:09.005Z",
+  "schema_version": "v1",
+  "commit_sha": "dae77fe4362275c40d4adfe3e45c73b5ea1572ee",
+  "title": "feat(openspec): add inventory gate enforcement",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T10:04:45Z",
+  "head_ref": "claim/codex-loop-b0171-openspec-inventory-gate-20260531"
+}

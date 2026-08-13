@@ -1,0 +1,19 @@
+{
+  "pr_number": 2653,
+  "archive_path": "docs/history/pr-reviews/PR-2653-docs-research-deepseek-hkt-inside-f-recursive-compile-time-gen.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_u5OZ",
+    "comment:PRRC_kwDOSF9kNM6_u5Ob",
+    "comment:PRRC_kwDOSF9kNM6_u7UU",
+    "thread:PRRT_kwDOSF9kNM6A_C6x",
+    "thread:PRRT_kwDOSF9kNM6A_C6z",
+    "thread:PRRT_kwDOSF9kNM6A_EbK"
+  ],
+  "fetched_at": "2026-05-11T06:38:36.073Z",
+  "schema_version": "v1",
+  "commit_sha": "db51cb59cf070724b67b3dc7a40d83070303dba1",
+  "title": "docs(research): DeepSeek — HKT inside F# + recursive compile-time gen",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T06:38:19Z",
+  "head_ref": "docs/deepseek-hkt-recursive-compile-time-2026-05-11"
+}

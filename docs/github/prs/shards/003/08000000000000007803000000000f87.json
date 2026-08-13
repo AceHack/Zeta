@@ -1,0 +1,16 @@
+{
+  "pr_number": 3975,
+  "archive_path": "docs/history/pr-reviews/PR-3975-docs-tick-2341z-otto-cli-background-worker-pr-3964-thread-resolution.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B8CXx",
+    "comment:PRRC_kwDOSF9kNM7B8HNe",
+    "thread:PRRT_kwDOSF9kNM6Cmbey"
+  ],
+  "fetched_at": "2026-05-17T00:07:33.870Z",
+  "schema_version": "v1",
+  "commit_sha": "63279a11a306345c70d135c2b45997ad642a3336",
+  "title": "docs(tick): 2341Z Otto-CLI background worker — PR #3964 thread resolution",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T00:07:14Z",
+  "head_ref": "worktree-gentle-imagining-squirrel"
+}

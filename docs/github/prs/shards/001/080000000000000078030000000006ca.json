@@ -1,0 +1,17 @@
+{
+  "pr_number": 1738,
+  "archive_path": "docs/history/pr-reviews/PR-1738-docs-seed-current-trajectory-surface-packet.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-kYgL",
+    "comment:PRRC_kwDOSF9kNM6-kYhA",
+    "thread:PRRT_kwDOSF9kNM6AHgNa",
+    "thread:PRRT_kwDOSF9kNM6AHgON"
+  ],
+  "fetched_at": "2026-05-06T21:31:44.180Z",
+  "schema_version": "v1",
+  "commit_sha": "6e179e43feff833458bfd16b0e8c8b9fa8fe81ee",
+  "title": "docs: seed current trajectory surface packet",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T20:14:09Z",
+  "head_ref": "claim/task-pr659-current-trajectory-packet"
+}

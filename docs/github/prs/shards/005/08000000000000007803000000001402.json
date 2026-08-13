@@ -1,0 +1,17 @@
+{
+  "pr_number": 5122,
+  "archive_path": "docs/history/pr-reviews/PR-5122-fix-postmerge-5121-2-copilot-findings-os-scope-shellhook-24-reframe.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E0PE2",
+    "comment:PRRC_kwDOSF9kNM7E0PF4",
+    "thread:PRRT_kwDOSF9kNM6Et1pS",
+    "thread:PRRT_kwDOSF9kNM6Et1qI"
+  ],
+  "fetched_at": "2026-05-26T07:41:45.248Z",
+  "schema_version": "v1",
+  "commit_sha": "ed6a7b8b9ba663ad76a23bcc6f007eba9abfc3ee",
+  "title": "fix(postmerge-5121): 2 Copilot findings — OS-scope shellHook + §24 reframe",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T07:41:26Z",
+  "head_ref": "otto-cli/postmerge-5121-fixfwd-2-copilot-2026-05-26"
+}

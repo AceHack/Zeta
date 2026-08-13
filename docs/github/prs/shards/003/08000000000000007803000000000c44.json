@@ -1,0 +1,19 @@
+{
+  "pr_number": 3140,
+  "archive_path": "docs/history/pr-reviews/PR-3140-fix-b-0437-address-copilot-p1-findings-from-pr-3138.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BQO1W",
+    "comment:PRRC_kwDOSF9kNM7BQO2J",
+    "comment:PRRC_kwDOSF9kNM7BQO2e",
+    "thread:PRRT_kwDOSF9kNM6CGdy8",
+    "thread:PRRT_kwDOSF9kNM6CGdzf",
+    "thread:PRRT_kwDOSF9kNM6CGdzu"
+  ],
+  "fetched_at": "2026-05-14T15:03:12.243Z",
+  "schema_version": "v1",
+  "commit_sha": "d48b2dc9cfc97a9617f7426e0162ec3cf3443f0b",
+  "title": "fix(b-0437): address Copilot P1 findings from PR #3138",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T15:02:44Z",
+  "head_ref": "fix/b-0437-copilot-threads-3138"
+}

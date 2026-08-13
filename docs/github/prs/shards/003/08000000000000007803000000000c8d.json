@@ -1,0 +1,16 @@
+{
+  "pr_number": 3213,
+  "archive_path": "docs/history/pr-reviews/PR-3213-shard-tick-1952z-day-close-summary-edge-runner-inclusion-preserved.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BWjSn",
+    "comment:PRRC_kwDOSF9kNM7BWtQh",
+    "thread:PRRT_kwDOSF9kNM6CLHXE"
+  ],
+  "fetched_at": "2026-05-14T20:03:53.473Z",
+  "schema_version": "v1",
+  "commit_sha": "cdf8f4093f9ddf235e4c42b947364258a9afb723",
+  "title": "shard(tick): 1952Z — day-close summary; edge-runner inclusion preserved",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:03:34Z",
+  "head_ref": "shard/tick-1952Z-day-close-summary-2026-05-14"
+}

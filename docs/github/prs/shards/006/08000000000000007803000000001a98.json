@@ -1,0 +1,12 @@
+{
+  "pr_number": 6808,
+  "archive_path": "docs/history/pr-reviews/PR-6808-docs-evolution-forward-projection-garbage-dump-lossless-rollback-for-lossy-remov.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:11:55.013Z",
+  "schema_version": "v1",
+  "commit_sha": "2df0e721dbda6faabb541f94a38d01a5ce947e46",
+  "title": "docs(Evolution): forward-projection garbage dump — lossless rollback for lossy removals",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:11:36Z",
+  "head_ref": "capture/forward-projection-garbage-dump-lossy-rollback"
+}

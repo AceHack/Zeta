@@ -1,0 +1,12 @@
+{
+  "pr_number": 6925,
+  "archive_path": "docs/history/pr-reviews/PR-6925-docs-wi-zetaid-pointer-to-external-content-reference-not-copy-musicbrainz-acoust.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T21:54:43.657Z",
+  "schema_version": "v1",
+  "commit_sha": "55e3f6dbbf35f90fd08fa6bbef29776ab33c035f",
+  "title": "docs+wi: ZetaId pointer to external content (reference-not-copy) — MusicBrainz/AcoustID + F# reified type provider",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T21:54:26Z",
+  "head_ref": "otto/zetaid-pointer-external-content-resolver"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8721,
+  "archive_path": "docs/history/pr-reviews/PR-8721-feat-merkle-typescript-oracle-leg-of-the-4-language-merkle-inclusion-proof-byte-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T06:59:22.967Z",
+  "schema_version": "v1",
+  "commit_sha": "7faeb0d4fd406b624c5b5b7fc0aece5e44fbba2a",
+  "title": "feat(merkle): TypeScript oracle leg of the 4-language Merkle inclusion-proof byte-lock",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T06:58:59Z",
+  "head_ref": "otto/merkle-proof-ts-leg"
+}

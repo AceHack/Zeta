@@ -1,0 +1,12 @@
+{
+  "pr_number": 8839,
+  "archive_path": "docs/history/pr-reviews/PR-8839-backlog-workitem-key-onboarding-ssh-ca-headscale-trust-pre-cluster-git-github-bo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T03:25:38.029Z",
+  "schema_version": "v1",
+  "commit_sha": "40cf1467808274f7c74625183d11f78314a6cd38",
+  "title": "backlog(workitem): key onboarding — SSH-CA + Headscale trust + pre-cluster git/GitHub bootstrap",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:25:13Z",
+  "head_ref": "otto/workitem-key-trust-distribution"
+}

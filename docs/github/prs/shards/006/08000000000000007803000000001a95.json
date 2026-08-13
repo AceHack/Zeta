@@ -1,0 +1,12 @@
+{
+  "pr_number": 6805,
+  "archive_path": "docs/history/pr-reviews/PR-6805-docs-evolution-backward-projection-constraint-expand-into-gated-on-contract-comp.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:05:16.451Z",
+  "schema_version": "v1",
+  "commit_sha": "fca07d1988e4e1b72815c05809fc352a75275789",
+  "title": "docs(Evolution): backward-projection constraint — expand-into gated on contract-complete",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:04:55Z",
+  "head_ref": "capture/backward-projection-constraint-expand-timing"
+}

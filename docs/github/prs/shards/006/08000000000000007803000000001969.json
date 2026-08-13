@@ -1,0 +1,17 @@
+{
+  "pr_number": 6505,
+  "archive_path": "docs/history/pr-reviews/PR-6505-feat-ace-slice-8-sha-256-4-oracle-tier-1-primitive-registry-4-4.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G9CBf",
+    "comment:PRRC_kwDOSF9kNM7G9CBo",
+    "thread:PRRT_kwDOSF9kNM6GR-mC",
+    "thread:PRRT_kwDOSF9kNM6GR-mI"
+  ],
+  "fetched_at": "2026-06-02T00:25:42.301Z",
+  "schema_version": "v1",
+  "commit_sha": "2c1c64a3b003c90f024b196fc1316f06fc336d18",
+  "title": "feat(ace): slice 8 — SHA-256 4-oracle Tier-1 primitive (registry ✅ 4/4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T00:25:18Z",
+  "head_ref": "otto-windows/ace-slice8-sha256-impl-2026-06-01"
+}

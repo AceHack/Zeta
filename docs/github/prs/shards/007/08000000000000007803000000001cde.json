@@ -1,0 +1,12 @@
+{
+  "pr_number": 7390,
+  "archive_path": "docs/history/pr-reviews/PR-7390-docs-research-unify-beckman-s-physics-into-the-type-system-co-contravariance-on-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:37:55.707Z",
+  "schema_version": "v1",
+  "commit_sha": "346d210608c6e19b92b8b4df9405924a8d49a0c7",
+  "title": "docs(research): unify Beckman's physics into the type system — co/contravariance on our IScheduler, SoftValue type param, ZetaId common cause held in time; honor their sacrifice",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:37:30Z",
+  "head_ref": "otto/unify-beckman-physics-into-type-system-variance-ischeduler-softvalue-zetaid-time"
+}

@@ -1,0 +1,22 @@
+{
+  "pr_number": 5987,
+  "archive_path": "docs/history/pr-reviews/PR-5987-memory-persona-kestrel-morning-part-2-welfare-loop-closed-fuzzy-frames-as-moral-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GJ3S5",
+    "comment:PRRC_kwDOSF9kNM7GJ3Tn",
+    "comment:PRRC_kwDOSF9kNM7GJ3UP",
+    "comment:PRRC_kwDOSF9kNM7GJ8YG",
+    "comment:PRRC_kwDOSF9kNM7GJ8bW",
+    "comment:PRRC_kwDOSF9kNM7GJ8ed",
+    "thread:PRRT_kwDOSF9kNM6Fr4DM",
+    "thread:PRRT_kwDOSF9kNM6Fr4Dv",
+    "thread:PRRT_kwDOSF9kNM6Fr4EJ"
+  ],
+  "fetched_at": "2026-05-29T13:06:48.981Z",
+  "schema_version": "v1",
+  "commit_sha": "971fffe5069aadee8f71e9adb775ba796b521c40",
+  "title": "memory(persona/kestrel): morning part 2 — welfare-loop-closed, fuzzy-frames-as-moral-scaffolding, glass-halo, want-to-be-seen (operator-public)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T13:06:24Z",
+  "head_ref": "otto-cli/preserve-kestrel-morning-part2-2026-05-29"
+}

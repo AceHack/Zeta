@@ -1,0 +1,33 @@
+{
+  "pr_number": 2507,
+  "archive_path": "docs/history/pr-reviews/PR-2507-feat-b-0343-smallest-ts-dry-run-slice-of-test-repo-seeding-script-manifest-reade.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_orx3",
+    "comment:PRRC_kwDOSF9kNM6_osQU",
+    "comment:PRRC_kwDOSF9kNM6_osQW",
+    "comment:PRRC_kwDOSF9kNM6_osQa",
+    "comment:PRRC_kwDOSF9kNM6_osQk",
+    "comment:PRRC_kwDOSF9kNM6_osQp",
+    "comment:PRRC_kwDOSF9kNM6_osQv",
+    "comment:PRRC_kwDOSF9kNM6_otlO",
+    "comment:PRRC_kwDOSF9kNM6_ouCD",
+    "comment:PRRC_kwDOSF9kNM6_ouCW",
+    "thread:PRRT_kwDOSF9kNM6A6V0C",
+    "thread:PRRT_kwDOSF9kNM6A6V0F",
+    "thread:PRRT_kwDOSF9kNM6A6V0K",
+    "thread:PRRT_kwDOSF9kNM6A6Vaf",
+    "thread:PRRT_kwDOSF9kNM6A6Vz0",
+    "thread:PRRT_kwDOSF9kNM6A6Vz2",
+    "thread:PRRT_kwDOSF9kNM6A6Vz6",
+    "thread:PRRT_kwDOSF9kNM6A6W3A",
+    "thread:PRRT_kwDOSF9kNM6A6XPG",
+    "thread:PRRT_kwDOSF9kNM6A6XPX"
+  ],
+  "fetched_at": "2026-05-10T16:10:04.351Z",
+  "schema_version": "v1",
+  "commit_sha": "7305bd1b22ccd785a9025369ea5335f0ead1a1fe",
+  "title": "feat(B-0343): smallest TS dry-run slice of test-repo seeding script (manifest reader + --dry-run)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T16:09:47Z",
+  "head_ref": "claim/b0343-test-repo-seeding-smallest-slice-riven-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8720,
+  "archive_path": "docs/history/pr-reviews/PR-8720-feat-core-merkle-inclusion-proof-rust-oracle-leg-replays-the-frozen-4-lang-treat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T06:58:45.777Z",
+  "schema_version": "v1",
+  "commit_sha": "4427f804368e02297afaa69434f2c35e5d75316e",
+  "title": "feat(core): Merkle inclusion-proof Rust oracle leg — replays the frozen 4-lang treaty byte-for-byte",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T06:58:19Z",
+  "head_ref": "otto/merkle-proof-rust-leg"
+}

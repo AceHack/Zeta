@@ -1,0 +1,15 @@
+{
+  "pr_number": 3487,
+  "archive_path": "docs/history/pr-reviews/PR-3487-shard-tick-1338z-cold-boot-otto-cli-catch-43-cron-defence-yielded-1336z-to-peer-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BoaXl",
+    "thread:PRRT_kwDOSF9kNM6CX-_s"
+  ],
+  "fetched_at": "2026-05-15T14:04:06.206Z",
+  "schema_version": "v1",
+  "commit_sha": "0cabc0855ee6e34e5b3e1fb64ac81017ce8c90f1",
+  "title": "shard(tick): 1338Z — cold-boot Otto-CLI; catch-43 cron defence; yielded 1336Z to peer Otto",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T14:03:44Z",
+  "head_ref": "shard/tick-1338z-otto-cli-cold-boot-2026-05-15"
+}

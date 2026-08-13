@@ -1,0 +1,21 @@
+{
+  "pr_number": 4205,
+  "archive_path": "docs/history/pr-reviews/PR-4205-rescue-hc-8-aaron-s-stranded-f0abf3e-non-coercion-invariant-alignment-floor-addi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CcBso",
+    "comment:PRRC_kwDOSF9kNM7CcBss",
+    "comment:PRRC_kwDOSF9kNM7CcC5F",
+    "comment:PRRC_kwDOSF9kNM7CcC5m",
+    "thread:PRRT_kwDOSF9kNM6C-JUV",
+    "thread:PRRT_kwDOSF9kNM6C-JUZ",
+    "thread:PRRT_kwDOSF9kNM6C-KL8",
+    "thread:PRRT_kwDOSF9kNM6C-KMU"
+  ],
+  "fetched_at": "2026-05-18T21:04:59.219Z",
+  "schema_version": "v1",
+  "commit_sha": "2df803c5d0c634b9800af2dd211b2b26c12cbf35",
+  "title": "rescue(HC-8): Aaron's stranded f0abf3e Non-Coercion Invariant alignment-floor addition",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T21:04:37Z",
+  "head_ref": "rescue/hc8-non-coercion-invariant-aaron-f0abf3e-stranded-2026-05-18"
+}

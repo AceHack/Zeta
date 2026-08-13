@@ -1,0 +1,12 @@
+{
+  "pr_number": 2644,
+  "archive_path": "docs/history/pr-reviews/PR-2644-docs-backlog-b-0059-etymology-catalog-smallest-slice-claim-checks-riven.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T04:38:20.402Z",
+  "schema_version": "v1",
+  "commit_sha": "4750fa2fbe42442a8e5673234e1aea8641977817",
+  "title": "docs(backlog): B-0059 etymology catalog smallest-slice claim + checks (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T04:38:04Z",
+  "head_ref": "claim/b0059-etymology-catalog-smallest-slice-riven-2026-05-11"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5704,
+  "archive_path": "docs/history/pr-reviews/PR-5704-backlog-b-0867-24-resolution-c-operator-ratified-pending-empirical-validation-vi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T05:35:22.792Z",
+  "schema_version": "v1",
+  "commit_sha": "140b3b2c56f76ed6c535fc7ac77020c2decf2b5d",
+  "title": "backlog(B-0867.24): Resolution C operator-ratified pending empirical validation via B-0867.25 (path-a landing)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T05:35:03Z",
+  "head_ref": "backlog/b-0867-24-ratify-resolution-c-pending-empirical-validation-2026-05-28"
+}

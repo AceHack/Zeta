@@ -1,0 +1,12 @@
+{
+  "pr_number": 6478,
+  "archive_path": "docs/history/pr-reviews/PR-6478-docs-research-preserve-kestrel-primitive-architecture-ferry-2026-06-01.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T21:40:21.024Z",
+  "schema_version": "v1",
+  "commit_sha": "c2280f03c17455a608e3840a7e482695b2c5673a",
+  "title": "docs(research): preserve Kestrel primitive-architecture ferry (2026-06-01)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T21:39:57Z",
+  "head_ref": "otto-cli/kestrel-ferry-primitive-arch-review-2026-06-01"
+}

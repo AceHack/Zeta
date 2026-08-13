@@ -1,0 +1,17 @@
+{
+  "pr_number": 3114,
+  "archive_path": "docs/history/pr-reviews/PR-3114-backlog-b-0424-mark-in-progress-slices-1-8-merged-apply-next-step-documented.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BHrWy",
+    "comment:PRRC_kwDOSF9kNM7BHrXV",
+    "thread:PRRT_kwDOSF9kNM6CAGaD",
+    "thread:PRRT_kwDOSF9kNM6CAGah"
+  ],
+  "fetched_at": "2026-05-14T08:16:40.588Z",
+  "schema_version": "v1",
+  "commit_sha": "50dec82b37b20bf2898c7b7d2ba38246cd31ed18",
+  "title": "backlog(b-0424): mark in-progress — slices 1-8 merged, --apply next-step documented",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T08:16:17Z",
+  "head_ref": "feat/b-0424-status-update-2026-05-14"
+}

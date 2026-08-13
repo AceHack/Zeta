@@ -1,0 +1,12 @@
+{
+  "pr_number": 7087,
+  "archive_path": "docs/history/pr-reviews/PR-7087-feat-core-chip8cow-chip-8-as-a-dag-of-copy-on-write-zset-frames.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T11:04:27.162Z",
+  "schema_version": "v1",
+  "commit_sha": "e7e426a28a3d049c789140d62f22271c141c1a87",
+  "title": "feat(core): Chip8Cow — CHIP-8 as a DAG of copy-on-write zset frames",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T11:04:05Z",
+  "head_ref": "otto/chip8-cow-dag-zset-frames-soft-evolution-foundation"
+}

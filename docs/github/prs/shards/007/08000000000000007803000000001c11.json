@@ -1,0 +1,12 @@
+{
+  "pr_number": 7185,
+  "archive_path": "docs/history/pr-reviews/PR-7185-docs-research-the-closed-model-completed-memetic-compiler-domains-install-sh-is-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T02:55:32.848Z",
+  "schema_version": "v1",
+  "commit_sha": "d9136d4e73153e6e196feed1b48e7665b092ce43",
+  "title": "docs(research): the closed model completed — memetic + compiler domains; install.sh is the wake-time tool closure",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T02:55:10Z",
+  "head_ref": "otto/research-closed-model-memetic-compiler-domains-installsh-closure"
+}

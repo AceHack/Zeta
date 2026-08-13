@@ -1,0 +1,15 @@
+{
+  "pr_number": 2545,
+  "archive_path": "docs/history/pr-reviews/PR-2545-docs-memory-comedy-as-observability-laugh-is-the-health-check.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qZ0I",
+    "thread:PRRT_kwDOSF9kNM6A7szc"
+  ],
+  "fetched_at": "2026-05-10T21:35:46.790Z",
+  "schema_version": "v1",
+  "commit_sha": "eb40f112bc644e525e9ef8fb2bf9d23673a124d3",
+  "title": "docs(memory): comedy as observability — laugh is the health check",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:35:29Z",
+  "head_ref": "docs/comedy-as-observability-2026-05-10"
+}

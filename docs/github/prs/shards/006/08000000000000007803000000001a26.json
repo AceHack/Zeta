@@ -1,0 +1,15 @@
+{
+  "pr_number": 6694,
+  "archive_path": "docs/history/pr-reviews/PR-6694-feat-core-add-result-returning-ferrythrottler-arity.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7IwALX",
+    "thread:PRRT_kwDOSF9kNM6HmCAd"
+  ],
+  "fetched_at": "2026-06-06T18:41:11.362Z",
+  "schema_version": "v1",
+  "commit_sha": "3e5c9c82911c2ead8b460e86dcbe8cb64eaf6436",
+  "title": "feat(Core): add result-returning FerryThrottler arity",
+  "state": "MERGED",
+  "merged_at": "2026-06-06T18:40:44Z",
+  "head_ref": "codex/ferry-throttler-results"
+}

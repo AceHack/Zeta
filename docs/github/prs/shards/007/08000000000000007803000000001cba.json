@@ -1,0 +1,12 @@
+{
+  "pr_number": 7354,
+  "archive_path": "docs/history/pr-reviews/PR-7354-ci-keyring-gate-dual-key-set-k3-keyring-4x4-serializer-byte-lock-in-the-keyring-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T18:06:02.618Z",
+  "schema_version": "v1",
+  "commit_sha": "6d89f267ef7c649e90cbf8378689a5c261ce82dc",
+  "title": "ci(keyring): gate dual-key set (K3) + keyring 4x4 serializer byte-lock in the keyring DST workflow",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T18:05:33Z",
+  "head_ref": "otto/gate-keyset-and-keyring-4x4-tests-in-ci-workflow"
+}

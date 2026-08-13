@@ -1,0 +1,12 @@
+{
+  "pr_number": 8125,
+  "archive_path": "docs/history/pr-reviews/PR-8125-feat-observe-wire-execute-full-autonomous-loop-closed.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:47:16.458Z",
+  "schema_version": "v1",
+  "commit_sha": "e490f8aeb73464105e72068b206d955f503db5e8",
+  "title": "feat(observe): wire execute() — full autonomous loop closed",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:46:54Z",
+  "head_ref": "kiro/observe-execute-wire"
+}

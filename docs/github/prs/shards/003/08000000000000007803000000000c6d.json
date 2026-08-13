@@ -1,0 +1,19 @@
+{
+  "pr_number": 3181,
+  "archive_path": "docs/history/pr-reviews/PR-3181-shard-tick-1846z-razor-cadence-batch-5-22-22-live-3-correctly-cleared-ci-infra-f.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BVR6z",
+    "comment:PRRC_kwDOSF9kNM7BVR7W",
+    "comment:PRRC_kwDOSF9kNM7BVR7p",
+    "thread:PRRT_kwDOSF9kNM6CKMFJ",
+    "thread:PRRT_kwDOSF9kNM6CKMFh",
+    "thread:PRRT_kwDOSF9kNM6CKMFv"
+  ],
+  "fetched_at": "2026-05-14T19:02:35.013Z",
+  "schema_version": "v1",
+  "commit_sha": "1a5d1b29ed5d8fc739369146198a45b8e0f1c3a3",
+  "title": "shard(tick): 1846Z — razor-cadence batch 5 (22/22 LIVE + 3 correctly-cleared) + CI infra-flake observed",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:02:10Z",
+  "head_ref": "shard/tick-1846Z-razor-cadence-batch5-2026-05-14"
+}

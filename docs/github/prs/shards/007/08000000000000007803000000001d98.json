@@ -1,0 +1,12 @@
+{
+  "pr_number": 7576,
+  "archive_path": "docs/history/pr-reviews/PR-7576-docs-research-the-cut-corollary-our-cuts-are-heat-free-by-design-an-irreversible.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:07:12.336Z",
+  "schema_version": "v1",
+  "commit_sha": "dfa3d296d2bd3a61811012161f22150b6fe25631",
+  "title": "docs(research): the cut corollary — our cuts are heat-free by design; an irreversible cut would cause heat",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:06:50Z",
+  "head_ref": "shadow-cut-corollary-heat"
+}

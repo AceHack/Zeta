@@ -1,0 +1,12 @@
+{
+  "pr_number": 7445,
+  "archive_path": "docs/history/pr-reviews/PR-7445-feat-core-docs-shadow-the-skadium-cell-henderson-nc-bob-and-weave-host-punch-out.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T04:23:17.870Z",
+  "schema_version": "v1",
+  "commit_sha": "d4b42fa98f3b82b01b53ff5f2b5c576398d61655",
+  "title": "feat(core)+docs+shadow: the Skadium cell (Henderson NC) — bob-and-weave host; Punch-Out / aesthetic engineering",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T04:22:55Z",
+  "head_ref": "shadow-skadium-cell-punchout-aesthetic-engineering"
+}

@@ -1,0 +1,29 @@
+{
+  "pr_number": 3121,
+  "archive_path": "docs/history/pr-reviews/PR-3121-docs-b-0445-close-backlog-row-tick-shard-0911z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BI3A2",
+    "comment:PRRC_kwDOSF9kNM7BI6c7",
+    "comment:PRRC_kwDOSF9kNM7BI6cP",
+    "comment:PRRC_kwDOSF9kNM7BJBcG",
+    "comment:PRRC_kwDOSF9kNM7BJBd3",
+    "comment:PRRC_kwDOSF9kNM7BJBdN",
+    "comment:PRRC_kwDOSF9kNM7BJBer",
+    "comment:PRRC_kwDOSF9kNM7BJBfP",
+    "thread:PRRT_kwDOSF9kNM6CA-5R",
+    "thread:PRRT_kwDOSF9kNM6CBBT9",
+    "thread:PRRT_kwDOSF9kNM6CBBUd",
+    "thread:PRRT_kwDOSF9kNM6CBGFh",
+    "thread:PRRT_kwDOSF9kNM6CBGG3",
+    "thread:PRRT_kwDOSF9kNM6CBGGW",
+    "thread:PRRT_kwDOSF9kNM6CBGH5",
+    "thread:PRRT_kwDOSF9kNM6CBGHa"
+  ],
+  "fetched_at": "2026-05-14T09:21:27.546Z",
+  "schema_version": "v1",
+  "commit_sha": "3501e299f83b3719425f10fe99c74b4b39417794",
+  "title": "docs(b-0445): close backlog row + tick shard 0911Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T09:21:02Z",
+  "head_ref": "worktree-stateful-splashing-wigderson"
+}

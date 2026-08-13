@@ -1,0 +1,19 @@
+{
+  "pr_number": 4770,
+  "archive_path": "docs/history/pr-reviews/PR-4770-notebook-aarav-round-44-bounded-spot-check-3-skills-1-actionable-finding-tune-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ETq86",
+    "comment:PRRC_kwDOSF9kNM7ETq8p",
+    "comment:PRRC_kwDOSF9kNM7ETq8z",
+    "thread:PRRT_kwDOSF9kNM6EVeLS",
+    "thread:PRRT_kwDOSF9kNM6EVeLb",
+    "thread:PRRT_kwDOSF9kNM6EVeLf"
+  ],
+  "fetched_at": "2026-05-23T21:15:18.203Z",
+  "schema_version": "v1",
+  "commit_sha": "2707afd43a1ef806c10202bedec2923cfb3e785a",
+  "title": "notebook(aarav round 44): bounded spot-check — 3 skills, 1 actionable finding (TUNE — S)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T21:14:58Z",
+  "head_ref": "otto/cli-aarav-notebook-round-44-bounded-spot-check-2026-05-23"
+}

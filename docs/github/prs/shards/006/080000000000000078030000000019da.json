@@ -1,0 +1,22 @@
+{
+  "pr_number": 6618,
+  "archive_path": "docs/history/pr-reviews/PR-6618-feat-b-0891-add-zflash-path-fork-runtime-plan.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HS5di",
+    "comment:PRRC_kwDOSF9kNM7HS5e6",
+    "comment:PRRC_kwDOSF9kNM7HS5ef",
+    "comment:PRRC_kwDOSF9kNM7HVGwN",
+    "comment:PRRC_kwDOSF9kNM7HVHDl",
+    "comment:PRRC_kwDOSF9kNM7HVHHT",
+    "thread:PRRT_kwDOSF9kNM6GiBe7",
+    "thread:PRRT_kwDOSF9kNM6GiBf7",
+    "thread:PRRT_kwDOSF9kNM6GiBfo"
+  ],
+  "fetched_at": "2026-06-02T20:26:18.623Z",
+  "schema_version": "v1",
+  "commit_sha": "075a17ef2528d5e41c25b13fbdca5f736ef21a14",
+  "title": "feat(B-0891): add zflash path-fork runtime plan",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T20:25:47Z",
+  "head_ref": "claim/codex-b0891-path-fork-plan-20260602T183033Z"
+}

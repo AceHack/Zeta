@@ -1,0 +1,12 @@
+{
+  "pr_number": 5498,
+  "archive_path": "docs/history/pr-reviews/PR-5498-docs-hygiene-tick-2026-05-27t16-09z-otto-cli-cold-boot-dotgit-clean-anchor-0-min.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T16:18:04.600Z",
+  "schema_version": "v1",
+  "commit_sha": "9d71e06cd2ad7cfd8b8dc8d30ba3d507607f774b",
+  "title": "docs(hygiene): tick 2026-05-27T16:09Z — Otto-CLI cold-boot; dotgit-CLEAN anchor; 0 mine / 2 peer open PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T16:17:40Z",
+  "head_ref": "otto-cli/shard-1609z-cold-boot-2026-05-27"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8041,
+  "archive_path": "docs/history/pr-reviews/PR-8041-refactor-relocate-tools-observe-src-core-typescript-observe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T18:32:32.487Z",
+  "schema_version": "v1",
+  "commit_sha": "732a43a7f592269f5ba9d1cd88d801c13f9fa900",
+  "title": "refactor: relocate tools/observe/ → src/Core.TypeScript/observe/",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T18:32:09Z",
+  "head_ref": "kiro/move-observe-to-src"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 6073,
+  "archive_path": "docs/history/pr-reviews/PR-6073-feat-health-surface-local-dirty-worktrees.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GXUC0",
+    "comment:PRRC_kwDOSF9kNM7GXUCl",
+    "comment:PRRC_kwDOSF9kNM7GXWYS",
+    "comment:PRRC_kwDOSF9kNM7GXWYw",
+    "thread:PRRT_kwDOSF9kNM6F1lwV",
+    "thread:PRRT_kwDOSF9kNM6F1lwf"
+  ],
+  "fetched_at": "2026-05-30T03:55:58.743Z",
+  "schema_version": "v1",
+  "commit_sha": "6a4731d48f5a630fd17105ce3ecdff864ff7d412",
+  "title": "feat(health): surface local dirty worktrees",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T03:55:39Z",
+  "head_ref": "claim/codex-loop-local-worktree-dirt-health-20260530"
+}

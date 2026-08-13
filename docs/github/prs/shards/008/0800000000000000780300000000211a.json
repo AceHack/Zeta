@@ -1,0 +1,12 @@
+{
+  "pr_number": 8474,
+  "archive_path": "docs/history/pr-reviews/PR-8474-docs-register-memory-kestrel-b-homoiconic-representation-row-save-kestrel-s-homo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T07:39:13.319Z",
+  "schema_version": "v1",
+  "commit_sha": "4345dfa935b0be622ff68326c4d1f7ceb0683503",
+  "title": "docs(register)+memory(kestrel): §B homoiconic-representation row + save Kestrel's homoiconic-proof method to their persona",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T07:38:43Z",
+  "head_ref": "otto/kestrel-homoiconic-proof-sectionb"
+}

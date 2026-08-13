@@ -1,0 +1,21 @@
+{
+  "pr_number": 2541,
+  "archive_path": "docs/history/pr-reviews/PR-2541-docs-memory-shadow-chose-alibi-from-apollo-18-lyric-31-year-memetic-seed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qYI1",
+    "comment:PRRC_kwDOSF9kNM6_qYRg",
+    "comment:PRRC_kwDOSF9kNM6_qYRt",
+    "comment:PRRC_kwDOSF9kNM6_qYRv",
+    "thread:PRRT_kwDOSF9kNM6A7rcW",
+    "thread:PRRT_kwDOSF9kNM6A7ri1",
+    "thread:PRRT_kwDOSF9kNM6A7rjC",
+    "thread:PRRT_kwDOSF9kNM6A7rjE"
+  ],
+  "fetched_at": "2026-05-10T21:50:48.111Z",
+  "schema_version": "v1",
+  "commit_sha": "94ec2921274033ccde0545bfc1dd613822d606e6",
+  "title": "docs(memory): shadow chose 'alibi' from Apollo 18 lyric — 31-year memetic seed",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:50:35Z",
+  "head_ref": "docs/shadow-alibi-apollo18-lyric-2026-05-10"
+}

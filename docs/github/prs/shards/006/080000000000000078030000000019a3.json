@@ -1,0 +1,12 @@
+{
+  "pr_number": 6563,
+  "archive_path": "docs/history/pr-reviews/PR-6563-backlog-b-0985-tree-of-life-cube-of-space-hexagonal-six-research-p1-high-priorit.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T13:48:18.254Z",
+  "schema_version": "v1",
+  "commit_sha": "91e8ddef50bfdc9f05ff5a1bfda2e54251fe5584",
+  "title": "backlog(B-0985): Tree of Life / Cube of Space ↔ hexagonal-six research [P1, high priority]",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T13:47:54Z",
+  "head_ref": "otto-cli/b0985-tree-of-life-cube-of-space-research-2026-06-02"
+}

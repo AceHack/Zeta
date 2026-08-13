@@ -1,0 +1,12 @@
+{
+  "pr_number": 6018,
+  "archive_path": "docs/history/pr-reviews/PR-6018-fix-b-0343-clarify-ref-update-error-string-missing-object-field-object.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T17:32:41.714Z",
+  "schema_version": "v1",
+  "commit_sha": "2185dc3edc4544e70749d20cc9cdd83079f65fde",
+  "title": "fix(B-0343): clarify ref-update error string — \"missing object field `object`\"",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T17:32:20Z",
+  "head_ref": "otto-cli/b0343-clarify-ref-update-error-string-2026-05-29"
+}

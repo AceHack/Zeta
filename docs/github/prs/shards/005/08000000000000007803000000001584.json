@@ -1,0 +1,12 @@
+{
+  "pr_number": 5508,
+  "archive_path": "docs/history/pr-reviews/PR-5508-docs-archive-preserve-pr-5507.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T17:16:27.398Z",
+  "schema_version": "v1",
+  "commit_sha": "c495498a54ef2153a7b2f9eb5d2ac35574eb1045",
+  "title": "docs(archive): Preserve PR #5507",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T17:16:03Z",
+  "head_ref": "lior/archive-5507"
+}

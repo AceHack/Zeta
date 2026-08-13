@@ -1,0 +1,15 @@
+{
+  "pr_number": 4907,
+  "archive_path": "docs/history/pr-reviews/PR-4907-fix-infra-pin-nix-darwin-to-nix-darwin-24-11-release-branch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EdH5v",
+    "thread:PRRT_kwDOSF9kNM6Ecq2H"
+  ],
+  "fetched_at": "2026-05-25T03:58:35.382Z",
+  "schema_version": "v1",
+  "commit_sha": "21a45f51a3d441172f04baeecc2c73a61906f79e",
+  "title": "fix(infra): pin nix-darwin to nix-darwin-24.11 release branch",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T03:58:16Z",
+  "head_ref": "fix/nix-darwin-pin-to-2411-release-branch"
+}

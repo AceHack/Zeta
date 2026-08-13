@@ -1,0 +1,12 @@
+{
+  "pr_number": 2215,
+  "archive_path": "docs/history/pr-reviews/PR-2215-feat-b-0310-add-concept-registry-extraction-tool.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T07:05:12.383Z",
+  "schema_version": "v1",
+  "commit_sha": "dffe0f063de7538be6cb5a8179f6dfcc2f0573ae",
+  "title": "feat(B-0310): add concept registry extraction tool",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:04:57Z",
+  "head_ref": "fix/b0310-concept-registry"
+}

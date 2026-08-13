@@ -1,0 +1,12 @@
+{
+  "pr_number": 2603,
+  "archive_path": "docs/history/pr-reviews/PR-2603-docs-memory-solo-coded-launchpad-all-prior-work-written-without-ai.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T01:04:54.407Z",
+  "schema_version": "v1",
+  "commit_sha": "7d2101a9eb7a739a6869709658242385ce554027",
+  "title": "docs(memory): solo-coded launchpad — all prior work written without AI",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:04:34Z",
+  "head_ref": "docs/solo-coded-launchpad-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5688,
+  "archive_path": "docs/history/pr-reviews/PR-5688-skill-flash-cluster-iso-add-path-c-native-agent-flag-bake-cred-future-state-zfla.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T03:29:25.718Z",
+  "schema_version": "v1",
+  "commit_sha": "5ed213d52e6adbfd5b068d3de12624788f9dcfa3",
+  "title": "skill(flash-cluster-iso): add Path C native --agent flag + --bake-cred future-state (zflash lane Track C-T1 per B-0892)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T03:29:04Z",
+  "head_ref": "skill/flash-cluster-iso-add-path-c-agent-flag-native-auto-type-per-b-0844-2026-05-28"
+}

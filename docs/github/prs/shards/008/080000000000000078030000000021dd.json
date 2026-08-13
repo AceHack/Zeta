@@ -1,0 +1,12 @@
+{
+  "pr_number": 8669,
+  "archive_path": "docs/history/pr-reviews/PR-8669-re-promote-b-0891-scenarios-3-4-to-hard-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T01:28:35.363Z",
+  "schema_version": "v1",
+  "commit_sha": "ce6fbda7de248197634f4a84e96d1937962dc293",
+  "title": "Re-promote B-0891 scenarios 3/4 to hard gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:28:07Z",
+  "head_ref": "promote/b0891-scenarios-3-4-hard-gate"
+}

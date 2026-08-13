@@ -1,0 +1,15 @@
+{
+  "pr_number": 2723,
+  "archive_path": "docs/history/pr-reviews/PR-2723-fix-b-0343-read-seed-manifest-in-dry-run.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_-jeB",
+    "thread:PRRT_kwDOSF9kNM6BKpl0"
+  ],
+  "fetched_at": "2026-05-11T17:26:34.975Z",
+  "schema_version": "v1",
+  "commit_sha": "47c2f034cd2f13a5e4ab57e07220034d69ea6511",
+  "title": "fix(B-0343): read seed manifest in dry-run",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T17:24:28Z",
+  "head_ref": "claim/b0343-seed-manifest-review-fix-vera-2026-05-11"
+}

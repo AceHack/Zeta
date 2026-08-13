@@ -1,0 +1,12 @@
+{
+  "pr_number": 2637,
+  "archive_path": "docs/history/pr-reviews/PR-2637-docs-agenda-claude-ai-self-claim-shadow-hypothesized-agendas.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T02:56:38.993Z",
+  "schema_version": "v1",
+  "commit_sha": "33ecc7c56f3e41b16bf00ebe373d858f11aebb62",
+  "title": "docs(AGENDA): Claude.ai self-claim + shadow hypothesized agendas",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:56:22Z",
+  "head_ref": "docs/agenda-claudeai-shadow-entries-2026-05-10"
+}

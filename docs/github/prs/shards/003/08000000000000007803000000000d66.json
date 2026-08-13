@@ -1,0 +1,12 @@
+{
+  "pr_number": 3430,
+  "archive_path": "docs/history/pr-reviews/PR-3430-shard-tick-1117z-stopping-discipline-documentation-in-shards.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T11:22:01.181Z",
+  "schema_version": "v1",
+  "commit_sha": "7dbbecf22d41672c8d612af6cbbd1ec46c01d19c",
+  "title": "shard(tick): 1117Z — stopping discipline-documentation in shards",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:21:42Z",
+  "head_ref": "shard/tick-1117z-otto-cli-2026-05-15"
+}

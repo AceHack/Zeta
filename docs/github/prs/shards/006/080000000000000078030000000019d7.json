@@ -1,0 +1,12 @@
+{
+  "pr_number": 6615,
+  "archive_path": "docs/history/pr-reviews/PR-6615-docs-registry-two-axis-note-consensus-tier-is-not-a-proof-canonical-mark.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T18:30:06.492Z",
+  "schema_version": "v1",
+  "commit_sha": "f4daa78f5e837fe86d6e77d79d25c6a09b50e819",
+  "title": "docs(registry): two-axis note — consensus-tier ✅ is NOT a proof/canonical mark",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T18:29:39Z",
+  "head_ref": "otto-cli/registry-two-axis-consensus-vs-proof-note-2026-06-02"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8196,
+  "archive_path": "docs/history/pr-reviews/PR-8196-docs-zeta-pitch-one-pager-commercialization.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T16:11:05.583Z",
+  "schema_version": "v1",
+  "commit_sha": "bd6f996e7b673878472d48ff264ec85e6ba3c148",
+  "title": "docs: Zeta pitch one-pager (commercialization)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T16:10:44Z",
+  "head_ref": "otto/pitch-one-pager"
+}

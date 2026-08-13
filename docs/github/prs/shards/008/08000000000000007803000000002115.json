@@ -1,0 +1,12 @@
+{
+  "pr_number": 8469,
+  "archive_path": "docs/history/pr-reviews/PR-8469-docs-society-9j-info-max-to-prevent-collapse-maps-to-two-of-ours-empowerment-is-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T07:16:47.565Z",
+  "schema_version": "v1",
+  "commit_sha": "859f82b77a99474af790ea0b941104fcdb2ac190",
+  "title": "docs(society): §9j — info-max-to-prevent-collapse maps to TWO of ours (empowerment IS info-max; anti-Sybil already does it)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T07:16:16Z",
+  "head_ref": "otto/infomax-empowerment-antisybil-convergence"
+}

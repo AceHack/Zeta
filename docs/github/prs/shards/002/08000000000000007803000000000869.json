@@ -1,0 +1,25 @@
+{
+  "pr_number": 2153,
+  "archive_path": "docs/history/pr-reviews/PR-2153-feat-b-0212-smallest-safe-slice-ephemeral-tmp-shadow-outlet-ts-helper-phase-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_cfiH",
+    "comment:PRRC_kwDOSF9kNM6_cgN5",
+    "comment:PRRC_kwDOSF9kNM6_cgO3",
+    "comment:PRRC_kwDOSF9kNM6_cgOc",
+    "comment:PRRC_kwDOSF9kNM6_cgOs",
+    "comment:PRRC_kwDOSF9kNM6_cgPD",
+    "thread:PRRT_kwDOSF9kNM6Aw5o6",
+    "thread:PRRT_kwDOSF9kNM6Aw6Is",
+    "thread:PRRT_kwDOSF9kNM6Aw6JJ",
+    "thread:PRRT_kwDOSF9kNM6Aw6JV",
+    "thread:PRRT_kwDOSF9kNM6Aw6Je",
+    "thread:PRRT_kwDOSF9kNM6Aw6Jo"
+  ],
+  "fetched_at": "2026-05-09T00:02:51.529Z",
+  "schema_version": "v1",
+  "commit_sha": "96749c62bf9936c08583d7f2e34607f9405102b7",
+  "title": "feat(B-0212): smallest safe slice — ephemeral /tmp shadow outlet TS helper (Phase 1)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T00:02:28Z",
+  "head_ref": "claim/b0212-shadow-outlet-tmp-ephemeral-slice-riven-2026-05-08"
+}

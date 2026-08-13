@@ -1,0 +1,15 @@
+{
+  "pr_number": 2369,
+  "archive_path": "docs/history/pr-reviews/PR-2369-fix-backlog-refresh-generated-index-after-pr-2367.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_khFG",
+    "thread:PRRT_kwDOSF9kNM6A3BaN"
+  ],
+  "fetched_at": "2026-05-09T23:09:52.125Z",
+  "schema_version": "v1",
+  "commit_sha": "0abfdc9c0ee6e473c97c16ccc2672d6a91de3377",
+  "title": "fix(backlog): refresh generated index after PR #2367",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T23:09:33Z",
+  "head_ref": "claim/backlog-index-b0357-b0365-b0373-vera"
+}

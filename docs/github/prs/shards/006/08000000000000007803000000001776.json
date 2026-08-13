@@ -1,0 +1,12 @@
+{
+  "pr_number": 6006,
+  "archive_path": "docs/history/pr-reviews/PR-6006-revise-5990-content-marking-audience-respect-public-marked-privacy-encryption-la.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T16:09:18.525Z",
+  "schema_version": "v1",
+  "commit_sha": "e8a96cd73422e3a3fc9235fd6f6bfb7d465e29b1",
+  "title": "revise(#5990): content-marking = audience-respect (public-marked); privacy = encryption-lane, not gitignore",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T16:08:49Z",
+  "head_ref": "otto-cli/revise-5990-content-marking-encryption-lane-2026-05-29"
+}

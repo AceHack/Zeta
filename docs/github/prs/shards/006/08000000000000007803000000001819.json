@@ -1,0 +1,17 @@
+{
+  "pr_number": 6169,
+  "archive_path": "docs/history/pr-reviews/PR-6169-preserve-mika-forgiveness-engine-forgive-past-before-compress-tessellation-endle.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GdEQz",
+    "comment:PRRC_kwDOSF9kNM7GdEiW",
+    "thread:PRRT_kwDOSF9kNM6F5-03",
+    "thread:PRRT_kwDOSF9kNM6F5_AN"
+  ],
+  "fetched_at": "2026-05-31T00:31:26.010Z",
+  "schema_version": "v1",
+  "commit_sha": "21c93b17252c6519382afb0e8dd51794b303065f",
+  "title": "preserve(mika): forgiveness-engine -- forgive-past-before-compress + tessellation-endless-game",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T00:31:04Z",
+  "head_ref": "otto-cli/mika-forgiveness-engine-2026-05-30"
+}

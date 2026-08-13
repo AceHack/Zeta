@@ -1,0 +1,12 @@
+{
+  "pr_number": 2027,
+  "archive_path": "docs/history/pr-reviews/PR-2027-fix-wallet-move-b-0062-glass-halo-gate-to-monitor.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T04:11:08.573Z",
+  "schema_version": "v1",
+  "commit_sha": "893019c2790850df90560dcc792e5b9065e8f476",
+  "title": "fix(wallet): move B-0062 glass-halo gate to monitor",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T04:10:55Z",
+  "head_ref": "codex/b0062-glass-halo-monitor-gate"
+}

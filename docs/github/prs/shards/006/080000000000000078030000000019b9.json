@@ -1,0 +1,12 @@
+{
+  "pr_number": 6585,
+  "archive_path": "docs/history/pr-reviews/PR-6585-docs-b-0998-vectors-before-trajectories-seed-f-ce-dsl-over-reduced-bayesian-infe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T15:42:29.382Z",
+  "schema_version": "v1",
+  "commit_sha": "ab463c60b157dec525263fea38d090b085950b02",
+  "title": "docs(B-0998): vectors-before-trajectories + seed=F#-CE-DSL-over-reduced-Bayesian-Infer.NET + every-4×4-add-on=CE-extension",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T15:42:01Z",
+  "head_ref": "otto-cli/b0998-vectors-before-trajectories-seed-ce-dsl-2026-06-02"
+}

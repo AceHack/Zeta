@@ -1,0 +1,12 @@
+{
+  "pr_number": 2065,
+  "archive_path": "docs/history/pr-reviews/PR-2065-docs-add-catch-35-to-shadow-log-effort-avoidance-orphaned-pr-blob.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T11:56:25.651Z",
+  "schema_version": "v1",
+  "commit_sha": "ad5db7ee74b87beda66f166aca72f89ad3ccdaa2",
+  "title": "docs: add catch 35 to shadow log (effort-avoidance / orphaned PR blob)",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T11:56:05Z",
+  "head_ref": "lior/drift-report-2063"
+}

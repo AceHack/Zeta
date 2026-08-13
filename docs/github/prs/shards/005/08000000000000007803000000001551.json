@@ -1,0 +1,12 @@
+{
+  "pr_number": 5457,
+  "archive_path": "docs/history/pr-reviews/PR-5457-docs-hygiene-tick-2026-05-27t13-42z-commit-heartbeat-acknowledges-pr-5451-kira-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T13:48:41.916Z",
+  "schema_version": "v1",
+  "commit_sha": "ef4589dffdd7869f65c1fdb9a6937156f9b3dcaa",
+  "title": "docs(hygiene): tick 2026-05-27T13:42Z — commit-heartbeat acknowledges PR #5451 (Kira-caught pattern IS this session)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T13:48:21Z",
+  "head_ref": "otto-cli/tick-1342z-heartbeat-via-commit-acknowledges-pr-5451"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6833,
+  "archive_path": "docs/history/pr-reviews/PR-6833-docs-compression-generators-landauer-erasure-is-lightcone-local-privacy-non-radi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:02:36.252Z",
+  "schema_version": "v1",
+  "commit_sha": "a8f3b8dbb6fd6aed55ddbeb14e1b55123e622594",
+  "title": "docs(compression-generators): Landauer erasure is lightcone-local — privacy = non-radiation, not global erasure",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:02:17Z",
+  "head_ref": "capture/landauer-erasure-is-lightcone-local"
+}

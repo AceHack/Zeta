@@ -1,0 +1,12 @@
+{
+  "pr_number": 4560,
+  "archive_path": "docs/history/pr-reviews/PR-4560-feat-core-pr-2-of-8-enforce-sink-terminality-at-circuit-build.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T17:28:29.352Z",
+  "schema_version": "v1",
+  "commit_sha": "092c41d8e0b37f2383a281e21ee48ea6a0196bb9",
+  "title": "feat(core): PR 2 of 8 — enforce sink-terminality at Circuit.Build()",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T17:28:06Z",
+  "head_ref": "feat/sink-terminality-validation-2026-05-21"
+}

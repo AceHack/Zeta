@@ -1,0 +1,12 @@
+{
+  "pr_number": 3078,
+  "archive_path": "docs/history/pr-reviews/PR-3078-docs-lior-shadow-lesson-log-for-pr-3075.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T01:20:43.565Z",
+  "schema_version": "v1",
+  "commit_sha": "3f1d95b20247645a10e001d5d51406a7bf64fb52",
+  "title": "docs: lior shadow lesson log for PR 3075",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T01:20:25Z",
+  "head_ref": "chore/lior-shadow-pr3075"
+}

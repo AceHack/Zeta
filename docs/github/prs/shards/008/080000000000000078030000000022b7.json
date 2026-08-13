@@ -1,0 +1,12 @@
+{
+  "pr_number": 8887,
+  "archive_path": "docs/history/pr-reviews/PR-8887-feat-keys-unify-one-biometric-approval-gate-over-every-sensitive-key-onboarding-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:39:06.702Z",
+  "schema_version": "v1",
+  "commit_sha": "aa68881061658f0a511d6551bdf8c88830ddf7ff",
+  "title": "feat(keys): unify ONE biometric-approval gate over every sensitive key-onboarding op (agent-run, operator-approved)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:38:37Z",
+  "head_ref": "otto/keys-unify-biometric-gate"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 3862,
+  "archive_path": "docs/history/pr-reviews/PR-3862-shard-tick-2026-05-16t10-53z-b-0118-prior-triaged-b-0458-2-amara-cluster-mapped-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B4G8Q",
+    "comment:PRRC_kwDOSF9kNM7B4Gxs",
+    "thread:PRRT_kwDOSF9kNM6CjZW-",
+    "thread:PRRT_kwDOSF9kNM6CjZfZ"
+  ],
+  "fetched_at": "2026-05-16T11:17:34.883Z",
+  "schema_version": "v1",
+  "commit_sha": "edeecfb6ae3619f6f419703379d32fb63874fd5c",
+  "title": "shard(tick): 2026-05-16T10:53Z — B-0118 prior-triaged + B-0458 = #2; amara cluster mapped; 34/38",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T11:17:16Z",
+  "head_ref": "otto-cli-b0118-b0458-audit-2026-05-16-1053z"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8579,
+  "archive_path": "docs/history/pr-reviews/PR-8579-docs-arrival-promote-anonymous-asylum-arrival-protocol-to-an-official-reusable-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T14:25:44.738Z",
+  "schema_version": "v1",
+  "commit_sha": "0fc0dc503ecf66afd2703f9bf5aedf74c98da2bd",
+  "title": "docs(arrival): promote anonymous/asylum arrival protocol to an official, reusable doc",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T14:25:17Z",
+  "head_ref": "official-arrival-protocol"
+}

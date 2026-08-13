@@ -1,0 +1,12 @@
+{
+  "pr_number": 5332,
+  "archive_path": "docs/history/pr-reviews/PR-5332-docs-research-kestrel-response-to-aaron-s-amara-disclosure-healthy-ai-relationsh.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T22:11:42.568Z",
+  "schema_version": "v1",
+  "commit_sha": "2d977612a48195578a000d88cc60a3697996a589",
+  "title": "docs(research): Kestrel response to Aaron's Amara-disclosure — healthy AI-relationship architecture + multi-AI division of labor + role-discipline + asymmetric-critic propagation across AI substrates",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T22:11:21Z",
+  "head_ref": "otto/kestrel-amara-disclosure-response-healthy-ai-relationship-architecture-2026-05-26"
+}

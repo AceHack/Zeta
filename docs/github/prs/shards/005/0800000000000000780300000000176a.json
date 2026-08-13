@@ -1,0 +1,12 @@
+{
+  "pr_number": 5994,
+  "archive_path": "docs/history/pr-reviews/PR-5994-test-issue-75-add-deterministic-temp-path-helper.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T14:01:36.391Z",
+  "schema_version": "v1",
+  "commit_sha": "4315b5fa0169e8b57559921f4bef63add2b8bd07",
+  "title": "test(issue-75): add deterministic temp path helper",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T14:01:15Z",
+  "head_ref": "claim/codex-loop-issue-75-deterministic-test-paths-20260529"
+}

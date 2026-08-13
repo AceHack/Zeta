@@ -1,0 +1,17 @@
+{
+  "pr_number": 6635,
+  "archive_path": "docs/history/pr-reviews/PR-6635-proof-b-1007-c13-drop-the-tick-monoid-property-it-verified-net-int-arithmetic-no.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HfduG",
+    "comment:PRRC_kwDOSF9kNM7HfdvB",
+    "thread:PRRT_kwDOSF9kNM6GrLD5",
+    "thread:PRRT_kwDOSF9kNM6GrLDM"
+  ],
+  "fetched_at": "2026-06-03T08:19:21.006Z",
+  "schema_version": "v1",
+  "commit_sha": "02455821ceda08747f3e16f113e7119ad5da71af",
+  "title": "proof(B-1007 C13): drop the Tick-monoid property — it verified .NET int arithmetic, not Zeta code (proof bar)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T08:18:56Z",
+  "head_ref": "otto-cli/c13-drop-tick-monoid-bullshit-math-test-2026-06-03"
+}

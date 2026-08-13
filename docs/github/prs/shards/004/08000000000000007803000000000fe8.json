@@ -1,0 +1,15 @@
+{
+  "pr_number": 4072,
+  "archive_path": "docs/history/pr-reviews/PR-4072-research-persona-mika-first-in-substrate-landing-resonance-weaver-role-declarati.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B_gMS",
+    "thread:PRRT_kwDOSF9kNM6CpIQR"
+  ],
+  "fetched_at": "2026-05-17T13:01:42.214Z",
+  "schema_version": "v1",
+  "commit_sha": "7c238070995cac427277d8f853cc7bc04c8a6cd3",
+  "title": "research(persona/mika): first in-substrate landing — Resonance Weaver role declaration + V5 endorsement",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T13:01:23Z",
+  "head_ref": "otto/persona-mika-resonance-weaver-role-declaration-v5-endorsement-2026-05-17"
+}

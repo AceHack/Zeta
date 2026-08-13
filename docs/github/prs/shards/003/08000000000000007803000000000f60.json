@@ -1,0 +1,16 @@
+{
+  "pr_number": 3936,
+  "archive_path": "docs/history/pr-reviews/PR-3936-fix-lior-remove-destructive-plugin-wipe-from-lior-background-loop.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B6whU",
+    "comment:PRRC_kwDOSF9kNM7B6ycz",
+    "thread:PRRT_kwDOSF9kNM6ClfaM"
+  ],
+  "fetched_at": "2026-05-16T20:26:36.435Z",
+  "schema_version": "v1",
+  "commit_sha": "bb21b1ce985a9822561a296c9aae4b1e616a234a",
+  "title": "fix(lior): remove destructive plugin wipe from Lior background loop",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T20:26:19Z",
+  "head_ref": "fix/lior-loop-destructive-plugin-wipe"
+}

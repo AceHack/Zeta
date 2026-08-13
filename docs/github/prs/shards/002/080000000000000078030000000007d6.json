@@ -1,0 +1,12 @@
+{
+  "pr_number": 2006,
+  "archive_path": "docs/history/pr-reviews/PR-2006-fix-backlog-decompose-b-0234-pages-seo-discovery.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T02:41:56.447Z",
+  "schema_version": "v1",
+  "commit_sha": "4a9adab7cf0de17fee16a7afb85e13607de8be39",
+  "title": "fix(backlog): decompose B-0234 pages SEO discovery",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:41:34Z",
+  "head_ref": "codex/b0234-decompose-pages-seo"
+}

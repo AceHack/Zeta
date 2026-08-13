@@ -1,0 +1,12 @@
+{
+  "pr_number": 5827,
+  "archive_path": "docs/history/pr-reviews/PR-5827-backlog-b-0918-walletlifetime-du-banker-bot-class-attack-impossibility-via-b-091.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T14:02:52.005Z",
+  "schema_version": "v1",
+  "commit_sha": "511e1a9af2533d819c1436116e265ea852b331bd",
+  "title": "backlog(B-0918): WalletLifetime DU + banker-bot-class-attack-impossibility via B-0917 F.5 + Soraya formal verification (Aaron 2026-05-28; orphan re-land from PR #5816 post-merge)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T14:02:26Z",
+  "head_ref": "otto-cli/b-0918-wallet-lifetime-banker-bot-impossibility-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8181,
+  "archive_path": "docs/history/pr-reviews/PR-8181-docs-research-zeta-language-ir-v2-capability-multiple-dispatch-f-host-c-contract.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T13:47:44.871Z",
+  "schema_version": "v1",
+  "commit_sha": "fc436681bdc785d4b4cad48bc5664cf62a92fb8a",
+  "title": "docs(research): Zeta Language & IR v2 — capability multiple-dispatch, F# host, C# contracts, self-hosting",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T13:47:17Z",
+  "head_ref": "otto/zeta-lang-ir-v2-design"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2030,
+  "archive_path": "docs/history/pr-reviews/PR-2030-fix-wallet-land-b-0062-second-agent-review-predicate.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T04:22:25.453Z",
+  "schema_version": "v1",
+  "commit_sha": "11f7276e9b4492d25b6ed0d90b9b4558b944fd1d",
+  "title": "fix(wallet): land B-0062 second-agent review predicate",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T04:22:09Z",
+  "head_ref": "codex/b0062-second-agent-review-predicate"
+}

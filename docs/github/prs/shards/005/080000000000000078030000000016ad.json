@@ -1,0 +1,25 @@
+{
+  "pr_number": 5805,
+  "archive_path": "docs/history/pr-reviews/PR-5805-feat-workflow-engine-autolooplifetime-poc-substrate-naming-substrate-for-otto-cl.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FxDcd",
+    "comment:PRRC_kwDOSF9kNM7FxDdK",
+    "comment:PRRC_kwDOSF9kNM7FxDdw",
+    "comment:PRRC_kwDOSF9kNM7FxDeS",
+    "comment:PRRC_kwDOSF9kNM7FxDer",
+    "comment:PRRC_kwDOSF9kNM7FxDfW",
+    "thread:PRRT_kwDOSF9kNM6FZ4-O",
+    "thread:PRRT_kwDOSF9kNM6FZ4-u",
+    "thread:PRRT_kwDOSF9kNM6FZ49r",
+    "thread:PRRT_kwDOSF9kNM6FZ4_-",
+    "thread:PRRT_kwDOSF9kNM6FZ4_H",
+    "thread:PRRT_kwDOSF9kNM6FZ4_d"
+  ],
+  "fetched_at": "2026-05-28T13:33:42.391Z",
+  "schema_version": "v1",
+  "commit_sha": "2a255cea2684c9f34f8c0869df2768e39ba8c131",
+  "title": "feat(workflow-engine): AutoLoopLifetime PoC — substrate-naming substrate for Otto-CLI foreground loop (dogfood workflow-engine on own tick-handler); 23 tests pass",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T13:33:18Z",
+  "head_ref": "otto-cli/b-0867-autoloop-lifecycle-poc-substrate-naming-substrate-dogfood-workflow-engine-on-otto-cli-foreground-loop-aaron-2026-05-28"
+}

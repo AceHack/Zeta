@@ -1,0 +1,19 @@
+{
+  "pr_number": 2656,
+  "archive_path": "docs/history/pr-reviews/PR-2656-docs-research-brief-to-don-syme-f-hkts-critical-for-ai-alignment.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_vHrC",
+    "comment:PRRC_kwDOSF9kNM6_vJ5Z",
+    "comment:PRRC_kwDOSF9kNM6_vJ6A",
+    "thread:PRRT_kwDOSF9kNM6A_Nk-",
+    "thread:PRRT_kwDOSF9kNM6A_PIB",
+    "thread:PRRT_kwDOSF9kNM6A_PIY"
+  ],
+  "fetched_at": "2026-05-11T06:48:37.731Z",
+  "schema_version": "v1",
+  "commit_sha": "9404ad0dc9904741ceb70f8d4b3f6f032959672d",
+  "title": "docs(research): brief to Don Syme — F# HKTs critical for AI alignment",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T06:48:16Z",
+  "head_ref": "docs/deepseek-don-syme-brief-python-dead-end-2026-05-11"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3950,
+  "archive_path": "docs/history/pr-reviews/PR-3950-backlog-b-0570-scarcity-tracker-for-shared-limited-resources.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T22:02:09.095Z",
+  "schema_version": "v1",
+  "commit_sha": "9a6e2d267f55e7fd9d73da696e3fbea9af4b7724",
+  "title": "backlog(B-0570): scarcity tracker for shared limited resources",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T22:01:50Z",
+  "head_ref": "feature/b-0570-scarcity-tracker-2026-05-16"
+}

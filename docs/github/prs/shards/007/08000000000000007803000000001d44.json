@@ -1,0 +1,12 @@
+{
+  "pr_number": 7492,
+  "archive_path": "docs/history/pr-reviews/PR-7492-docs-vision-runtime-vision-shapes-a-f-the-sim-mea-cut-substrate-over-the-startup.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T09:47:29.605Z",
+  "schema_version": "v1",
+  "commit_sha": "8ade22a2b0af965427f496333f0575db58872573",
+  "title": "docs(vision): runtime vision — shapes (A–F) + the sim/mea/cut substrate over the startup MerkleDAG",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T09:47:00Z",
+  "head_ref": "shadow-vision-shapes-and-sim-mea-cut-runtime"
+}

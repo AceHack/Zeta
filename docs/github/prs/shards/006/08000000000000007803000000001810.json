@@ -1,0 +1,19 @@
+{
+  "pr_number": 6160,
+  "archive_path": "docs/history/pr-reviews/PR-6160-memory-doctrine-attack-vector-proof-no-3rd-party-deps-depend-only-on-slow-vetted.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gcy-e",
+    "comment:PRRC_kwDOSF9kNM7Gcy-p",
+    "comment:PRRC_kwDOSF9kNM7Gcy0e",
+    "thread:PRRT_kwDOSF9kNM6F5xOx",
+    "thread:PRRT_kwDOSF9kNM6F5xXO",
+    "thread:PRRT_kwDOSF9kNM6F5xXX"
+  ],
+  "fetched_at": "2026-05-30T23:11:53.380Z",
+  "schema_version": "v1",
+  "commit_sha": "4a9b98709eac7448c0e817ff9f998c96b05c93bc",
+  "title": "memory(doctrine): attack-vector-proof — no 3rd-party deps, depend only on slow vetted core, rewrite deps in-house",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T23:11:32Z",
+  "head_ref": "otto/supply-chain-attack-vector-proof-doctrine-2026-05-30"
+}

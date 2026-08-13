@@ -1,0 +1,16 @@
+{
+  "pr_number": 4690,
+  "archive_path": "docs/history/pr-reviews/PR-4690-docs-archive-lior-preserves-recently-merged-prs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EL8sE",
+    "comment:PRRC_kwDOSF9kNM7EMmR0",
+    "thread:PRRT_kwDOSF9kNM6EPj42"
+  ],
+  "fetched_at": "2026-05-22T23:40:44.825Z",
+  "schema_version": "v1",
+  "commit_sha": "a4d48d35fb1b69fa13a142e01ff2789c507934d3",
+  "title": "docs(archive): Lior preserves recently merged PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T23:40:25Z",
+  "head_ref": "lior/archive-batch-20260522"
+}

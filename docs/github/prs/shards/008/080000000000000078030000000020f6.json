@@ -1,0 +1,12 @@
+{
+  "pr_number": 8438,
+  "archive_path": "docs/history/pr-reviews/PR-8438-memory-project-correct-pauli-to-hat-occupancy-one-persona-per-hat-governance-sta.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T04:20:13.541Z",
+  "schema_version": "v1",
+  "commit_sha": "b65e622640ab7eeab095cf59f920adfe8a86b932",
+  "title": "memory(project): correct Pauli to hat-occupancy (one persona per hat) + governance stance (uncapped growth, observe, reactive rules over an irreversible floor)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T04:19:44Z",
+  "head_ref": "memory/pauli-hat-occupancy-uncapped-growth-reactive-rules"
+}

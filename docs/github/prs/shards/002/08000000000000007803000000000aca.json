@@ -1,0 +1,29 @@
+{
+  "pr_number": 2762,
+  "archive_path": "docs/history/pr-reviews/PR-2762-launch-draft-zeta-twitter-launch-post-multi-agent-review-requested.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AF9u9",
+    "comment:PRRC_kwDOSF9kNM7AFfs-",
+    "comment:PRRC_kwDOSF9kNM7AFftV",
+    "comment:PRRC_kwDOSF9kNM7AFm42",
+    "comment:PRRC_kwDOSF9kNM7AFm4E",
+    "comment:PRRC_kwDOSF9kNM7AFm4f",
+    "comment:PRRC_kwDOSF9kNM7AFrYB",
+    "comment:PRRC_kwDOSF9kNM7AFsXV",
+    "comment:PRRC_kwDOSF9kNM7AFtZu",
+    "comment:PRRC_kwDOSF9kNM7AGAXg",
+    "thread:PRRT_kwDOSF9kNM6BP153",
+    "thread:PRRT_kwDOSF9kNM6BP15N",
+    "thread:PRRT_kwDOSF9kNM6BP15k",
+    "thread:PRRT_kwDOSF9kNM6BPwf2",
+    "thread:PRRT_kwDOSF9kNM6BPwfo",
+    "thread:PRRT_kwDOSF9kNM6BQG1n"
+  ],
+  "fetched_at": "2026-05-11T23:40:49.635Z",
+  "schema_version": "v1",
+  "commit_sha": "9ec08318b162db713f5419f2998dce6ac89620bb",
+  "title": "launch(draft): Zeta Twitter launch post — multi-agent review requested",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T23:40:26Z",
+  "head_ref": "launch/zeta-twitter-post-multi-agent-review-2026-05-11"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3192,
+  "archive_path": "docs/history/pr-reviews/PR-3192-shard-tick-1905z-razor-cadence-batch-7-4-more-rules-14-14-live.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T19:10:01.254Z",
+  "schema_version": "v1",
+  "commit_sha": "a92a3754b071021d61e382a3b77d9f194f9dccba",
+  "title": "shard(tick): 1905Z — razor-cadence batch 7 (4 more rules, 14/14 LIVE)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:09:42Z",
+  "head_ref": "shard/tick-1905Z-razor-cadence-batch7-otto-cli-2026-05-14"
+}

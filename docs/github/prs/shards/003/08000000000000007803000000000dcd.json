@@ -1,0 +1,12 @@
+{
+  "pr_number": 3533,
+  "archive_path": "docs/history/pr-reviews/PR-3533-shard-tick-1749z-post-merge-sweep-caught-codex-p2-on-pr-3513-dead-xref-fix-shipp.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T17:54:07.992Z",
+  "schema_version": "v1",
+  "commit_sha": "3c68a46060236f01e8eb714067f860e2e3d8049b",
+  "title": "shard(tick): 1749Z — post-merge sweep caught Codex P2 on PR #3513; dead-xref fix shipped",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T17:53:51Z",
+  "head_ref": "shard/tick-1749z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2426,
+  "archive_path": "docs/history/pr-reviews/PR-2426-feat-b-0057-1-esoteric-resonance-catalog-v0-typed-schema-4-seed-entries.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T06:11:36.255Z",
+  "schema_version": "v1",
+  "commit_sha": "84f2f1e8e0ab368ef5a22d2cae2544c528b74e46",
+  "title": "feat(B-0057.1): esoteric resonance catalog v0 — typed schema + 4 seed entries",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T06:11:19Z",
+  "head_ref": "feat/b-0057.1-esoteric-resonance-catalog-schema"
+}

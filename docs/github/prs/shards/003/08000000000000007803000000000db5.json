@@ -1,0 +1,12 @@
+{
+  "pr_number": 3509,
+  "archive_path": "docs/history/pr-reviews/PR-3509-shard-tick-1436z-post-summary-reentry-b-0442-b-0503-row-status-loose-end.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T15:00:06.284Z",
+  "schema_version": "v1",
+  "commit_sha": "7b882652e38fb230557189471ddfa06727fbdb51",
+  "title": "shard(tick): 1436Z — post-summary reentry; B-0442/B-0503 row-status loose-end",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T14:59:45Z",
+  "head_ref": "feat/shard-1436z-post-summary-otto-cli-2026-05-15"
+}

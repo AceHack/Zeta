@@ -1,0 +1,19 @@
+{
+  "pr_number": 5647,
+  "archive_path": "docs/history/pr-reviews/PR-5647-fix-trajectories-skip-closed-backlog-action-refs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FhsMz",
+    "comment:PRRC_kwDOSF9kNM7FhsN5",
+    "comment:PRRC_kwDOSF9kNM7FhsNf",
+    "thread:PRRT_kwDOSF9kNM6FO9C5",
+    "thread:PRRT_kwDOSF9kNM6FO9Dh",
+    "thread:PRRT_kwDOSF9kNM6FO9Dz"
+  ],
+  "fetched_at": "2026-05-27T21:39:00.272Z",
+  "schema_version": "v1",
+  "commit_sha": "91dfa89c38179f1a043c2b841570290dd2e9eb12",
+  "title": "fix(trajectories): skip closed backlog action refs",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T21:38:37Z",
+  "head_ref": "claim/codex-loop-trajectory-closed-backlog-skip-20260527"
+}

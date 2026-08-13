@@ -1,0 +1,12 @@
+{
+  "pr_number": 7289,
+  "archive_path": "docs/history/pr-reviews/PR-7289-docs-research-the-superfluid-ai-formula-self-interest-seed-common-cause-128-bit-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:21:51.282Z",
+  "schema_version": "v1",
+  "commit_sha": "819527c11572239c967e021861c32e45e9753f5d",
+  "title": "docs(research): the SuperFluid AI formula — self-interest + seed common cause + 128-bit→hardware unfolding = 0-friction, plus github-free edition",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:21:27Z",
+  "head_ref": "otto/superfluid-ai-formula-self-interest-seed-common-cause-128bit-unfolding-github-free"
+}

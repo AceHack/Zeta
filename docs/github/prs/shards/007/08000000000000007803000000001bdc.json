@@ -1,0 +1,12 @@
+{
+  "pr_number": 7132,
+  "archive_path": "docs/history/pr-reviews/PR-7132-docs-research-the-unsubjective-intrinsic-objective-liveness-empowerment-solid-gr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:35:24.807Z",
+  "schema_version": "v1",
+  "commit_sha": "de31239ddc52a033ed57da4e1864afbec412b2f7",
+  "title": "docs(research): the unsubjective intrinsic objective — liveness + empowerment + solid-ground gain (no RLHF)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:35:06Z",
+  "head_ref": "otto/research-unsubjective-intrinsic-objective-no-human-reinforcement"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4533,
+  "archive_path": "docs/history/pr-reviews/PR-4533-fix-tick-shard-paths-final-cleanup-2-file-fixes-trim-22-zombie-baseline-entries-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T12:51:41.205Z",
+  "schema_version": "v1",
+  "commit_sha": "5c0cd436b6ecfa6cc5740f04a1274b5aa8fc5719",
+  "title": "fix(tick-shard-paths): final cleanup — 2 file fixes + trim 22 zombie baseline entries (24 → 2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T12:51:10Z",
+  "head_ref": "fix/grandfathered-tick-shard-paths-1823z-2026-05-21"
+}

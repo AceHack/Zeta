@@ -1,0 +1,12 @@
+{
+  "pr_number": 3745,
+  "archive_path": "docs/history/pr-reviews/PR-3745-docs-tick-fix-pr-3741-shard-link.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T04:56:31.838Z",
+  "schema_version": "v1",
+  "commit_sha": "b0eb37edbb9c4bc9c86b360d739fb51193180339",
+  "title": "docs(tick): fix PR 3741 shard link",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:56:14Z",
+  "head_ref": "codex/pr3741-link-followup"
+}

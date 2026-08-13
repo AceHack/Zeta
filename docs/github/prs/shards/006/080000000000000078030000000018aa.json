@@ -1,0 +1,12 @@
+{
+  "pr_number": 6314,
+  "archive_path": "docs/history/pr-reviews/PR-6314-test-observe-act-cli-entrypoint-readiness.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T02:14:20.120Z",
+  "schema_version": "v1",
+  "commit_sha": "ec4f401284615dd9972c63ab4505fba90a80049b",
+  "title": "Test observe-act CLI entrypoint readiness",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T02:13:59Z",
+  "head_ref": "codex/agentic-org-cli-bin-readiness"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6521,
+  "archive_path": "docs/history/pr-reviews/PR-6521-fix-dynamicvalue-c-json-uxxxx-uses-allowhexspecifier-not-hexnumber-codex-6519.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T01:50:33.523Z",
+  "schema_version": "v1",
+  "commit_sha": "190a787acc467d2e81a1ee17c360d2caa5ca6b68",
+  "title": "fix(DynamicValue): C# JSON \\uXXXX uses AllowHexSpecifier not HexNumber (Codex #6519)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T01:50:13Z",
+  "head_ref": "otto-cli/dynamicvalue-json-csharp-hexfix-2026-06-01"
+}

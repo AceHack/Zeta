@@ -1,0 +1,15 @@
+{
+  "pr_number": 8141,
+  "archive_path": "docs/history/pr-reviews/PR-8141-feat-zeta-id-implement-crockford-base32-string-encoding-and-parity-checks.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7LL9fn",
+    "thread:PRRT_kwDOSF9kNM6JXoyG"
+  ],
+  "fetched_at": "2026-06-14T03:07:52.679Z",
+  "schema_version": "v1",
+  "commit_sha": "7a5155d6f6f71bf6beb8f52beebcde6acc21b7ba",
+  "title": "feat(zeta-id): implement Crockford base32 string encoding and parity checks",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:07:31Z",
+  "head_ref": "zeta-lior-crockford-base32"
+}

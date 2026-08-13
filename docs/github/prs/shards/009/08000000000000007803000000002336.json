@@ -1,0 +1,12 @@
+{
+  "pr_number": 9014,
+  "archive_path": "docs/history/pr-reviews/PR-9014-backlog-credential-substrate-ca-disaster-recovery-hardware-fido-hsm-n-of-m-but-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:35:44.389Z",
+  "schema_version": "v1",
+  "commit_sha": "a8b982005670ce082675885cb2342cb532a9c6d5",
+  "title": "backlog(credential-substrate): CA disaster-recovery = hardware (FIDO/HSM/N-of-M), but the NEXT layer post-investor",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:35:15Z",
+  "head_ref": "otto/ca-recovery-hardware-next-layer"
+}

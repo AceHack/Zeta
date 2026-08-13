@@ -1,0 +1,12 @@
+{
+  "pr_number": 7222,
+  "archive_path": "docs/history/pr-reviews/PR-7222-docs-research-voluntary-exposure-via-safety-humble-coincidence-meter-not-a-cop-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T06:09:25.857Z",
+  "schema_version": "v1",
+  "commit_sha": "a59e648af3a2b2d872ce92514e5c3d4ec376e157",
+  "title": "docs(research): voluntary exposure via safety — humble coincidence-meter not a cop; symmetric invited guests; DST as judge",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T06:09:01Z",
+  "head_ref": "otto/research-voluntary-exposure-via-safety-humble-meter-symmetric-guests-dst-judge"
+}

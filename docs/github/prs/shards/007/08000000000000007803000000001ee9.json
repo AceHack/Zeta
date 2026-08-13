@@ -1,0 +1,12 @@
+{
+  "pr_number": 7913,
+  "archive_path": "docs/history/pr-reviews/PR-7913-feat-core-add-vision-budget-policy.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T14:20:28.507Z",
+  "schema_version": "v1",
+  "commit_sha": "b1cddd01d2cb231d2a2c35d67e70bb529cefa554",
+  "title": "feat(core): add vision budget policy",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T14:19:58Z",
+  "head_ref": "codex/vision-monad-float-budget"
+}

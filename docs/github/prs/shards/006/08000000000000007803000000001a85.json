@@ -1,0 +1,12 @@
+{
+  "pr_number": 6789,
+  "archive_path": "docs/history/pr-reviews/PR-6789-feat-core-canonical-merkle-over-z-set-primitive-fs-merkle-backend-foundation.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T11:07:33.679Z",
+  "schema_version": "v1",
+  "commit_sha": "fcc19b86552f96bde924a3dfe208453e11f8332a",
+  "title": "feat(Core): canonical Merkle-over-Z-set primitive (fs-Merkle backend foundation)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T11:07:12Z",
+  "head_ref": "feat/zset-merkle-canonical-root"
+}

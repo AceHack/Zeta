@@ -1,0 +1,27 @@
+{
+  "pr_number": 2467,
+  "archive_path": "docs/history/pr-reviews/PR-2467-docs-memory-preserve-trust-then-verify-claim-and-case-study.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_nPpC",
+    "comment:PRRC_kwDOSF9kNM6_nQtN",
+    "comment:PRRC_kwDOSF9kNM6_nQtT",
+    "comment:PRRC_kwDOSF9kNM6_nQtX",
+    "comment:PRRC_kwDOSF9kNM6_nQtc",
+    "comment:PRRC_kwDOSF9kNM6_nQtg",
+    "comment:PRRC_kwDOSF9kNM6_nQtl",
+    "thread:PRRT_kwDOSF9kNM6A5LQz",
+    "thread:PRRT_kwDOSF9kNM6A5MG3",
+    "thread:PRRT_kwDOSF9kNM6A5MGj",
+    "thread:PRRT_kwDOSF9kNM6A5MGn",
+    "thread:PRRT_kwDOSF9kNM6A5MGq",
+    "thread:PRRT_kwDOSF9kNM6A5MGv",
+    "thread:PRRT_kwDOSF9kNM6A5MGz"
+  ],
+  "fetched_at": "2026-05-10T11:02:34.517Z",
+  "schema_version": "v1",
+  "commit_sha": "65e52d7721665af9f81ff02ac8d5768509d6149c",
+  "title": "docs(memory): preserve trust-then-verify claim and case study",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T11:02:17Z",
+  "head_ref": "docs/trust-then-verify-case-study-2026-05-10"
+}

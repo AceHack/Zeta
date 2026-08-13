@@ -1,0 +1,15 @@
+{
+  "pr_number": 3062,
+  "archive_path": "docs/history/pr-reviews/PR-3062-feat-lior-add-iterative-backlog-decomposition-rule-to-background-prompt.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BAFRo",
+    "thread:PRRT_kwDOSF9kNM6B6qCr"
+  ],
+  "fetched_at": "2026-05-13T23:34:20.662Z",
+  "schema_version": "v1",
+  "commit_sha": "fb19041a65f40875afb3eff0e0f1c45cf5742af8",
+  "title": "feat(lior): add iterative backlog decomposition rule to background prompt",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T23:34:05Z",
+  "head_ref": "fix/lior-loop-swallow-429-crash"
+}

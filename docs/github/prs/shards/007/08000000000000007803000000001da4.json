@@ -1,0 +1,12 @@
+{
+  "pr_number": 7588,
+  "archive_path": "docs/history/pr-reviews/PR-7588-feat-core-softthrottle-the-soft-flux-capacitor-gradient-tank-tied-into-the-sched.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:46:25.832Z",
+  "schema_version": "v1",
+  "commit_sha": "e4ebaf62d7b4ec75463c1671c46949808c5798a0",
+  "title": "feat(core): SoftThrottle — the soft flux capacitor (gradient + tank), tied into the scheduler",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:45:59Z",
+  "head_ref": "shadow-soft-throttle-flux-capacitor"
+}

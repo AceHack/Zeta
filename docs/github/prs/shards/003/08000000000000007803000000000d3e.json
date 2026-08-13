@@ -1,0 +1,25 @@
+{
+  "pr_number": 3390,
+  "archive_path": "docs/history/pr-reviews/PR-3390-feat-autonomous-loop-wire-cron-sentinel-mutex-into-step-1-refresh.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BiLOj",
+    "comment:PRRC_kwDOSF9kNM7BiM8l",
+    "comment:PRRC_kwDOSF9kNM7BiM9R",
+    "comment:PRRC_kwDOSF9kNM7BiM9k",
+    "comment:PRRC_kwDOSF9kNM7BjCs7",
+    "comment:PRRC_kwDOSF9kNM7BjDBM",
+    "comment:PRRC_kwDOSF9kNM7BjDN5",
+    "comment:PRRC_kwDOSF9kNM7BjDd7",
+    "thread:PRRT_kwDOSF9kNM6CTYvc",
+    "thread:PRRT_kwDOSF9kNM6CTaC3",
+    "thread:PRRT_kwDOSF9kNM6CTaCG",
+    "thread:PRRT_kwDOSF9kNM6CTaCm"
+  ],
+  "fetched_at": "2026-05-15T09:25:26.372Z",
+  "schema_version": "v1",
+  "commit_sha": "1f4b49e6f4f05ec47e098a4830aacf54ae1d05e0",
+  "title": "feat(autonomous-loop): wire cron-sentinel-mutex into Step 1 refresh",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T09:25:09Z",
+  "head_ref": "feat/wire-cron-sentinel-mutex-into-tick-discipline-otto-cli-2026-05-15"
+}

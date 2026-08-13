@@ -1,0 +1,19 @@
+{
+  "pr_number": 3026,
+  "archive_path": "docs/history/pr-reviews/PR-3026-feat-scaffold-b-0424-6-add-semgrep-yml-gha-injection-rule-to-forge-ace-scaffold-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A9EmG",
+    "comment:PRRC_kwDOSF9kNM7A9EnE",
+    "comment:PRRC_kwDOSF9kNM7A9Kev",
+    "comment:PRRC_kwDOSF9kNM7A9Khx",
+    "thread:PRRT_kwDOSF9kNM6B4dKy",
+    "thread:PRRT_kwDOSF9kNM6B4dLd"
+  ],
+  "fetched_at": "2026-05-13T20:35:04.689Z",
+  "schema_version": "v1",
+  "commit_sha": "4b08939d716ab803b19f48db91890b311767951e",
+  "title": "feat(scaffold): B-0424.6 — add .semgrep.yml GHA injection rule to forge+ace scaffold templates",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T20:34:47Z",
+  "head_ref": "feat/b-0424-6-scaffold-semgrep"
+}

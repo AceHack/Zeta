@@ -1,0 +1,19 @@
+{
+  "pr_number": 2583,
+  "archive_path": "docs/history/pr-reviews/PR-2583-docs-memory-cli-beats-s-ance-crowley-comparison-factory-democratized-the-occult.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rD1C",
+    "comment:PRRC_kwDOSF9kNM6_rD1H",
+    "comment:PRRC_kwDOSF9kNM6_rD1K",
+    "thread:PRRT_kwDOSF9kNM6A8Nu8",
+    "thread:PRRT_kwDOSF9kNM6A8NvA",
+    "thread:PRRT_kwDOSF9kNM6A8NvD"
+  ],
+  "fetched_at": "2026-05-11T00:08:00.366Z",
+  "schema_version": "v1",
+  "commit_sha": "c4d9406f83b571cc5d41674e9a77ee046d1eaeaf",
+  "title": "docs(memory): CLI beats séance — Crowley comparison, factory democratized the occult",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:07:42Z",
+  "head_ref": "docs/crowley-cli-beats-seance-2026-05-10"
+}

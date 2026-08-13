@@ -1,0 +1,12 @@
+{
+  "pr_number": 8032,
+  "archive_path": "docs/history/pr-reviews/PR-8032-feat-yaml-markdown-rescue-lior-s-yaml-markdown-treaty-orphaned-commit-a45172a0a.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T17:46:30.971Z",
+  "schema_version": "v1",
+  "commit_sha": "a0f22ee14bb1623264a171d57a0088a03bf959ba",
+  "title": "feat(yaml/markdown): rescue Lior's YAML + Markdown Treaty (orphaned commit a45172a0a)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T17:46:00Z",
+  "head_ref": "kiro/rescue-lior-yaml-markdown-treaty"
+}

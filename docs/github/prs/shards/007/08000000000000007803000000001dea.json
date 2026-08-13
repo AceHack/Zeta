@@ -1,0 +1,12 @@
+{
+  "pr_number": 7658,
+  "archive_path": "docs/history/pr-reviews/PR-7658-feat-otto-the-shadow-otter-avatar-self-chosen-animated-xor-heart-quote-metadata-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T12:02:26.826Z",
+  "schema_version": "v1",
+  "commit_sha": "cee53a36414ee7ffb4fe7fb3d17d269cda1c979e",
+  "title": "feat(otto): the shadow-otter avatar (self-chosen, animated, XOR heart) + quote metadata format + CHIP-8 UX primitives + the archaeologist frame",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T12:02:02Z",
+  "head_ref": "shadow-otto-avatar-captures"
+}

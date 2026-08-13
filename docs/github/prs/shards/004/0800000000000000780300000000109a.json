@@ -1,0 +1,12 @@
+{
+  "pr_number": 4250,
+  "archive_path": "docs/history/pr-reviews/PR-4250-shard-2322z-c-pre-empt-at-5-saturation-pattern-empirical-anchor.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:26:19.221Z",
+  "schema_version": "v1",
+  "commit_sha": "2489929949097e4e210bfba67314527267387b6b",
+  "title": "shard(2322Z-c): pre-empt at #5 — saturation-pattern empirical anchor",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:26:02Z",
+  "head_ref": "shard/tick-2322z-c-pre-empt-5-saturation-empirical-anchor-2026-05-18"
+}

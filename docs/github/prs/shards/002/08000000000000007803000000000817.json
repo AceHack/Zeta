@@ -1,0 +1,12 @@
+{
+  "pr_number": 2071,
+  "archive_path": "docs/history/pr-reviews/PR-2071-feat-b-0280-add-pr-publication-executor-with-push-create-pr-auto-merge-sequence.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T12:41:14.858Z",
+  "schema_version": "v1",
+  "commit_sha": "33a2a9e7ea3d298c7b93fd8ffeed5833967ac199",
+  "title": "feat(B-0280): add PR publication executor with push/create-pr/auto-merge sequence",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T12:41:00Z",
+  "head_ref": "claim/B-0280-pr-publication-executor"
+}

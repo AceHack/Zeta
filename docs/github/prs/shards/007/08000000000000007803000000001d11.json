@@ -1,0 +1,12 @@
+{
+  "pr_number": 7441,
+  "archive_path": "docs/history/pr-reviews/PR-7441-docs-research-quantum-topological-stability-over-reticulum-chip-8-as-bit-perfect.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T04:03:20.935Z",
+  "schema_version": "v1",
+  "commit_sha": "7fa57bbe0a69a9754df68c70a7aa54a0478ca878",
+  "title": "docs(research): quantum topological stability over Reticulum, Chip-8 as bit-perfect truth — naming capstone",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T04:02:59Z",
+  "head_ref": "shadow-quantum-topological-stability-capstone"
+}

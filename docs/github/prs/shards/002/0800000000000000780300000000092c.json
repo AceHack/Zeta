@@ -1,0 +1,23 @@
+{
+  "pr_number": 2348,
+  "archive_path": "docs/history/pr-reviews/PR-2348-docs-b-0018-re-decompose-into-smallest-dependency-ordered-atomic-children-riven.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_kD_2",
+    "comment:PRRC_kwDOSF9kNM6_kD_z",
+    "comment:PRRC_kwDOSF9kNM6_kEOk",
+    "comment:PRRC_kwDOSF9kNM6_kEOu",
+    "comment:PRRC_kwDOSF9kNM6_kEOz",
+    "thread:PRRT_kwDOSF9kNM6A2p_0",
+    "thread:PRRT_kwDOSF9kNM6A2p_o",
+    "thread:PRRT_kwDOSF9kNM6A2p_w",
+    "thread:PRRT_kwDOSF9kNM6A2pzj",
+    "thread:PRRT_kwDOSF9kNM6A2pzm"
+  ],
+  "fetched_at": "2026-05-09T21:18:16.752Z",
+  "schema_version": "v1",
+  "commit_sha": "eb92fe06ab63364cc49c89e33b541e13e618cf72",
+  "title": "docs(B-0018): re-decompose into smallest dependency-ordered atomic children (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T21:17:55Z",
+  "head_ref": "claim/b0018-agency-evidence-stress-test-decompose-smallest-atomic-children-riven-2026-05-09"
+}

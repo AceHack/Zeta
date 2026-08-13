@@ -1,0 +1,12 @@
+{
+  "pr_number": 6926,
+  "archive_path": "docs/history/pr-reviews/PR-6926-docs-resolver-crawler-must-respect-crawler-control-files-robots-txt-sitemap-x-ro.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T21:56:23.042Z",
+  "schema_version": "v1",
+  "commit_sha": "aecb1acbe80642975067165ebbfebb018b65e81b",
+  "title": "docs: resolver/crawler must respect crawler-control files (robots.txt/sitemap/X-Robots-Tag/ai.txt)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T21:56:04Z",
+  "head_ref": "otto/resolver-respect-robots-crawler-control"
+}

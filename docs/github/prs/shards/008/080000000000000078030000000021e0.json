@@ -1,0 +1,12 @@
+{
+  "pr_number": 8672,
+  "archive_path": "docs/history/pr-reviews/PR-8672-feat-core-export-room-horizon-heat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T01:37:41.207Z",
+  "schema_version": "v1",
+  "commit_sha": "25af0fe279d8c7da59274aef24c5703453ee7aa1",
+  "title": "feat(core): export room horizon heat",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:37:16Z",
+  "head_ref": "codex/room-horizon-heat-export"
+}

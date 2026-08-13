@@ -1,0 +1,17 @@
+{
+  "pr_number": 4097,
+  "archive_path": "docs/history/pr-reviews/PR-4097-fix-b-0613-correct-option-b-zsh-portability-claim-shopt-is-bash-only.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CALOY",
+    "comment:PRRC_kwDOSF9kNM7CALPn",
+    "thread:PRRT_kwDOSF9kNM6Cppvx",
+    "thread:PRRT_kwDOSF9kNM6Cppwe"
+  ],
+  "fetched_at": "2026-05-17T21:31:54.545Z",
+  "schema_version": "v1",
+  "commit_sha": "e1704a26a3961cc09d59afed3e1d87dd18b992c9",
+  "title": "fix(B-0613): correct Option B zsh portability claim (shopt is bash-only)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T21:31:33Z",
+  "head_ref": "otto/b0613-zsh-portability-followup-1443z"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6652,
+  "archive_path": "docs/history/pr-reviews/PR-6652-research-preserve-open-source-ethic-floor-governance-conflict-resolution-classes.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T10:40:43.956Z",
+  "schema_version": "v1",
+  "commit_sha": "2fce94664087deb4ca495a63e09863f68c0ef088",
+  "title": "research(preserve): open-source ethic + floor governance + conflict-resolution classes + jurisdiction-relative OPA federation + Nexus meta-jurisdiction (forwarded)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T10:40:22Z",
+  "head_ref": "otto-cli/preserve-federation-governance-substrate-2026-06-03"
+}

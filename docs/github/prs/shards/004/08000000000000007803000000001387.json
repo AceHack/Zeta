@@ -1,0 +1,15 @@
+{
+  "pr_number": 4999,
+  "archive_path": "docs/history/pr-reviews/PR-4999-chore-claude-settings-add-explicit-zflash-zflash-setup-permissions-aaron-authore.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EssME",
+    "thread:PRRT_kwDOSF9kNM6EoWVY"
+  ],
+  "fetched_at": "2026-05-25T22:12:37.515Z",
+  "schema_version": "v1",
+  "commit_sha": "b4f363a9a50fde03e47e5a4186973bed017fa801",
+  "title": "chore(.claude/settings): add explicit zflash + zflash-setup permissions (Aaron-authored)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T22:12:20Z",
+  "head_ref": "chore/zflash-explicit-permissions-aaron-2026-05-25"
+}

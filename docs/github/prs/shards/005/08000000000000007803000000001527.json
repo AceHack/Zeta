@@ -1,0 +1,15 @@
+{
+  "pr_number": 5415,
+  "archive_path": "docs/history/pr-reviews/PR-5415-docs-b-0852-phase-split-auth-method-placement-pat-at-zflash-time-interactive-at-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FPJUM",
+    "thread:PRRT_kwDOSF9kNM6FBaWh"
+  ],
+  "fetched_at": "2026-05-27T07:26:26.357Z",
+  "schema_version": "v1",
+  "commit_sha": "b66b2377882789ce11a9f9c26174767746572ec0",
+  "title": "docs(B-0852): phase-split auth-method placement — PAT at zflash time + interactive at setup time (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T07:26:02Z",
+  "head_ref": "docs/b-0852-zflash-vs-boot-phase-split-auth-method-aaron-2026-05-27"
+}

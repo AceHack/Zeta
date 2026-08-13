@@ -1,0 +1,12 @@
+{
+  "pr_number": 2240,
+  "archive_path": "docs/history/pr-reviews/PR-2240-docs-b-0365-add-fpga-infer-net-bp-ep-layers-to-fusion-ship.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T08:07:10.264Z",
+  "schema_version": "v1",
+  "commit_sha": "2224820a2b448756d428c723d1de7157838b431d",
+  "title": "docs(B-0365): add FPGA + Infer.NET BP/EP layers to Fusion Ship",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T08:06:55Z",
+  "head_ref": "docs/b0365-layer6-infernet-bpep"
+}

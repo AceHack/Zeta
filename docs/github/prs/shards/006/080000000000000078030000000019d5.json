@@ -1,0 +1,12 @@
+{
+  "pr_number": 6613,
+  "archive_path": "docs/history/pr-reviews/PR-6613-rules-formal-proof-first-proven-by-default-consensus-validation-canonical-homeos.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T18:26:00.709Z",
+  "schema_version": "v1",
+  "commit_sha": "a80b2eb9cb700129729b0f9357809f9050d21338",
+  "title": "rules: formal-proof-first / proven-by-default / consensus≠validation / canonical=homeostat-proven-from-seed / Ace-shields-the-core",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T18:25:32Z",
+  "head_ref": "otto-cli/formal-proof-first-proven-by-default-rule-2026-06-02"
+}

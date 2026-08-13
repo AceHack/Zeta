@@ -1,0 +1,12 @@
+{
+  "pr_number": 7847,
+  "archive_path": "docs/history/pr-reviews/PR-7847-chore-backlog-rename-last-2-stragglers-to-zetaid-slug.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T00:05:38.279Z",
+  "schema_version": "v1",
+  "commit_sha": "aa6b89890691a58065ed3b58c771c81f86306db2",
+  "title": "chore(backlog): rename last 2 stragglers to zetaid-slug",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T00:05:13Z",
+  "head_ref": "alexa/rename-final-2"
+}

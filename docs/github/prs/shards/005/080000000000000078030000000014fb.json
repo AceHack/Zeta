@@ -1,0 +1,12 @@
+{
+  "pr_number": 5371,
+  "archive_path": "docs/history/pr-reviews/PR-5371-docs-b-0842-universal-basis-decomposition-pattern-fft-shazam-itron-reservoir-zet.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T01:29:28.896Z",
+  "schema_version": "v1",
+  "commit_sha": "2206a8e1f4645e03769cae07b60160b7643f85e8",
+  "title": "docs(B-0842): universal basis-decomposition pattern (FFT + Shazam + Itron + reservoir + Zeta substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T01:29:12Z",
+  "head_ref": "docs-b0842-universal-basis-decomposition-pattern-fft-shazam-itron-reservoir-zeta-aaron-2026-05-26"
+}

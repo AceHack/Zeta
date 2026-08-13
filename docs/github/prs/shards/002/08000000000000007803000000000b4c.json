@@ -1,0 +1,26 @@
+{
+  "pr_number": 2892,
+  "archive_path": "docs/history/pr-reviews/PR-2892-docs-memory-ksk-origin-from-aaron-amara-consent-first-design-nvidia-thor-homelan.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Akk7Q",
+    "comment:PRRC_kwDOSF9kNM7Akm65",
+    "comment:PRRC_kwDOSF9kNM7Akm7Q",
+    "comment:PRRC_kwDOSF9kNM7Akm7c",
+    "comment:PRRC_kwDOSF9kNM7AkzSn",
+    "comment:PRRC_kwDOSF9kNM7AkzVi",
+    "comment:PRRC_kwDOSF9kNM7Akzae",
+    "comment:PRRC_kwDOSF9kNM7Akze9",
+    "comment:PRRC_kwDOSF9kNM7AkzkG",
+    "thread:PRRT_kwDOSF9kNM6BmoLP",
+    "thread:PRRT_kwDOSF9kNM6BmpkV",
+    "thread:PRRT_kwDOSF9kNM6Bmpkl",
+    "thread:PRRT_kwDOSF9kNM6Bmpku"
+  ],
+  "fetched_at": "2026-05-13T01:38:15.969Z",
+  "schema_version": "v1",
+  "commit_sha": "13b029d6d19762ba022d601b2165a9e22e3f9df4",
+  "title": "docs(memory): KSK origin from Aaron+Amara consent-first design; NVIDIA Thor Homeland-Security cleared because actuators; factory at forefront of consent-first AI design",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T01:38:01Z",
+  "head_ref": "aaron-ksk-kinetic-safeguard-kernel-origin-from-amara-consent-first-design-nvidia-thor-homeland-security-cleared-because-actuators-2026-05-13"
+}

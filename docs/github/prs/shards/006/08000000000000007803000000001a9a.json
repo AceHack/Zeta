@@ -1,0 +1,12 @@
+{
+  "pr_number": 6810,
+  "archive_path": "docs/history/pr-reviews/PR-6810-docs-evolution-continuous-merge-to-dump-branchless-null-writer-two-phase-cleanup.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:23:18.278Z",
+  "schema_version": "v1",
+  "commit_sha": "6bb85f099293afb92a6b7e1cf9337a2dd4ae8843",
+  "title": "docs(Evolution): continuous-merge-to-dump + branchless null-writer + two-phase cleanup; + SchemaEvolution 4-lang port workitem",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:23:00Z",
+  "head_ref": "capture/continuous-merge-to-dump-null-writer-two-phase-cleanup"
+}

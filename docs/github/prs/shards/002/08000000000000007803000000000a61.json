@@ -1,0 +1,15 @@
+{
+  "pr_number": 2657,
+  "archive_path": "docs/history/pr-reviews/PR-2657-docs-research-scala-oracle-kotlin-dead-end-ikvm-verification-strategy.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_vUa9",
+    "thread:PRRT_kwDOSF9kNM6A_XGw"
+  ],
+  "fetched_at": "2026-05-11T06:56:16.475Z",
+  "schema_version": "v1",
+  "commit_sha": "524a368f2cad3b78de519578116f66d2a602e9a9",
+  "title": "docs(research): Scala oracle + Kotlin dead end — IKVM verification strategy",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T06:55:55Z",
+  "head_ref": "docs/deepseek-scala-oracle-kotlin-dead-end-2026-05-11"
+}

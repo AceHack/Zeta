@@ -1,0 +1,19 @@
+{
+  "pr_number": 2461,
+  "archive_path": "docs/history/pr-reviews/PR-2461-fix-b-0086-re-decompose-into-atomic-child-rows-one-bounded-step.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_nIuV",
+    "comment:PRRC_kwDOSF9kNM6_nIuh",
+    "comment:PRRC_kwDOSF9kNM6_nIuj",
+    "thread:PRRT_kwDOSF9kNM6A5FwF",
+    "thread:PRRT_kwDOSF9kNM6A5FwN",
+    "thread:PRRT_kwDOSF9kNM6A5FwP"
+  ],
+  "fetched_at": "2026-05-10T10:46:57.852Z",
+  "schema_version": "v1",
+  "commit_sha": "e25dde195279bcd6e637079d7a0363e2c7453801",
+  "title": "fix(B-0086): re-decompose into atomic child rows (one bounded step)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T10:46:41Z",
+  "head_ref": "claim/B-0086-decompose-smallest-atomic-children-riven-2026-05-10"
+}

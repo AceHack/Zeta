@@ -1,0 +1,12 @@
+{
+  "pr_number": 3314,
+  "archive_path": "docs/history/pr-reviews/PR-3314-docs-pr-discussions-archive-pr-3306.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T00:20:44.806Z",
+  "schema_version": "v1",
+  "commit_sha": "8722c81cd72d56f1f281c7fa693cc5dea706db57",
+  "title": "docs(pr-discussions): archive PR 3306",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:20:27Z",
+  "head_ref": "lior/preserve-3306"
+}

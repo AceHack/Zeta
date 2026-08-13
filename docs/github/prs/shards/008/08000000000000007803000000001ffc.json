@@ -1,0 +1,12 @@
+{
+  "pr_number": 8188,
+  "archive_path": "docs/history/pr-reviews/PR-8188-docs-research-zeta-ir-v2-the-who-craft-school-carts-genzeta.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T14:43:32.600Z",
+  "schema_version": "v1",
+  "commit_sha": "d0e4e85e666c6c3d0baa3c82313f21c436673b77",
+  "title": "docs(research): Zeta IR v2 — the WHO (Craft School, carts, GenZeta)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T14:43:08Z",
+  "head_ref": "otto/zeta-lang-ir-v2-who-craft-school"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2523,
+  "archive_path": "docs/history/pr-reviews/PR-2523-feat-backlog-b-0401-demo-surface-circuit-breaker-hamiltonian-to-git-alignment-ui.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T19:05:14.527Z",
+  "schema_version": "v1",
+  "commit_sha": "14b64b9df0e31cb7875034f3192069a9ba20c209",
+  "title": "feat(backlog): B-0401 demo surface — circuit breaker + Hamiltonian-to-git + alignment UI",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T19:04:57Z",
+  "head_ref": "feat/b0401-demo-surface-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7909,
+  "archive_path": "docs/history/pr-reviews/PR-7909-fix-tsc-exactoptionalpropertytypes-on-deps-to-engine-config-unbreak-the-gate-thi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T13:24:35.968Z",
+  "schema_version": "v1",
+  "commit_sha": "ee4e94078861e68c5b6bf4bb83a1304386aca809",
+  "title": "fix(tsc): exactOptionalPropertyTypes on deps-to-engine-config — unbreak the gate (third strike of this class today)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T13:24:08Z",
+  "head_ref": "shadow-fix-deps-engine-tsc"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 3046,
+  "archive_path": "docs/history/pr-reviews/PR-3046-docs-backlog-b-0449-bg-services-slice-5-subscriber-agent-design-pass.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A_bvQ",
+    "thread:PRRT_kwDOSF9kNM6B6L75"
+  ],
+  "fetched_at": "2026-05-13T22:44:20.456Z",
+  "schema_version": "v1",
+  "commit_sha": "80771819c9af441a8e12c2faae1f1c756cfff314",
+  "title": "docs(backlog): B-0449 — bg-services slice 5 subscriber-agent design pass",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T22:44:06Z",
+  "head_ref": "docs-b0449-bg-services-slice-5-subscriber-agent-design-2026-05-13"
+}

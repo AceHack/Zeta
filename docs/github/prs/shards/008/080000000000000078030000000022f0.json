@@ -1,0 +1,12 @@
+{
+  "pr_number": 8944,
+  "archive_path": "docs/history/pr-reviews/PR-8944-feat-lean-certify-zetaircanonicalizer-fusion-preserves-denotation.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T10:36:27.874Z",
+  "schema_version": "v1",
+  "commit_sha": "7c7f54a956c17637cf0516816a065ff3efbf89fc",
+  "title": "feat(lean): certify ZetaIrCanonicalizer fusion preserves denotation",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T10:36:02Z",
+  "head_ref": "feature/lumen-canonicalizer-lean-proof"
+}

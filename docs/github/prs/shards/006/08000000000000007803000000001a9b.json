@@ -1,0 +1,12 @@
+{
+  "pr_number": 6811,
+  "archive_path": "docs/history/pr-reviews/PR-6811-feat-contentstore-content-addressed-single-instance-store-cow-merkle-dag-backend.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:27:12.187Z",
+  "schema_version": "v1",
+  "commit_sha": "20217b5dc6e9aa4c436919c5a4f03ad6262b31d4",
+  "title": "feat(ContentStore): content-addressed single-instance store — COW Merkle-DAG backend foundation",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:26:49Z",
+  "head_ref": "feat/content-store-foundation-cow-single-instance"
+}

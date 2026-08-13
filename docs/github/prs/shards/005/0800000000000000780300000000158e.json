@@ -1,0 +1,12 @@
+{
+  "pr_number": 5518,
+  "archive_path": "docs/history/pr-reviews/PR-5518-docs-rule-b-0862-ople-primitives-surface-t-and-tfeedback-constitutional-substrat.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T17:29:16.410Z",
+  "schema_version": "v1",
+  "commit_sha": "ff4acdfa7746b5967a72441289e1d907f27dc9e8",
+  "title": "docs(rule + B-0862): OPLE primitives surface T AND TFeedback — constitutional substrate-engineering extension to framework's CORE primitives (operator 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T17:26:02Z",
+  "head_ref": "backlog/ople-primitives-surface-t-tfeedback-not-just-t-2026-05-27"
+}

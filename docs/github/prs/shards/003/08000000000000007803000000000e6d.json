@@ -1,0 +1,12 @@
+{
+  "pr_number": 3693,
+  "archive_path": "docs/history/pr-reviews/PR-3693-shard-tick-2026-05-16t02-49z-tick-shard-relative-path-audit-shipped-pr-3692.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T02:56:00.207Z",
+  "schema_version": "v1",
+  "commit_sha": "4befb9a89a386c1fdefac098e7ca8a30dba4b1c0",
+  "title": "shard(tick): 2026-05-16T02:49Z — tick-shard relative-path audit shipped (PR #3692)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T02:55:44Z",
+  "head_ref": "shard/tick-0249z-otto-cli-2026-05-16"
+}

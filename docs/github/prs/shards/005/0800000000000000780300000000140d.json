@@ -1,0 +1,15 @@
+{
+  "pr_number": 5133,
+  "archive_path": "docs/history/pr-reviews/PR-5133-backlog-b-0811-re-land-of-b-0741-closed-prematurely-in-stale-pr-triage-ontology-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E10eR",
+    "thread:PRRT_kwDOSF9kNM6Eu-8-"
+  ],
+  "fetched_at": "2026-05-26T08:46:35.282Z",
+  "schema_version": "v1",
+  "commit_sha": "5defa8d3f9228157cff53f347b62f6e818cc708d",
+  "title": "backlog(B-0811): re-land of B-0741 (closed prematurely in stale-PR triage) — ontology+category negotiation; load-bearing for iter-7 (B-0806)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T08:46:13Z",
+  "head_ref": "otto-cli/reland-b0741-as-b0811-ontology-category-negotiation-2026-05-26"
+}

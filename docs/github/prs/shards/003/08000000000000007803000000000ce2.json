@@ -1,0 +1,15 @@
+{
+  "pr_number": 3298,
+  "archive_path": "docs/history/pr-reviews/PR-3298-docs-shadow-lior-antigravity-check-metadata-tick-churn-drift-report.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BaEwS",
+    "thread:PRRT_kwDOSF9kNM6CNqHX"
+  ],
+  "fetched_at": "2026-05-14T23:31:00.253Z",
+  "schema_version": "v1",
+  "commit_sha": "c370f39f7a00ead27b55291cc32e4ec4983b6d9f",
+  "title": "docs(shadow): Lior antigravity check - metadata tick churn drift report",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T23:30:44Z",
+  "head_ref": "lior/antigravity-tick-churn"
+}

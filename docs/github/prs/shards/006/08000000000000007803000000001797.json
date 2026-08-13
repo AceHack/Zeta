@@ -1,0 +1,12 @@
+{
+  "pr_number": 6039,
+  "archive_path": "docs/history/pr-reviews/PR-6039-docs-inventory-standing-query-trigger-surfaces.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T20:02:41.914Z",
+  "schema_version": "v1",
+  "commit_sha": "20302c6c7e74bc7ef6e3c3e6cfe514f2fa681323",
+  "title": "docs: inventory standing-query trigger surfaces",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T20:02:20Z",
+  "head_ref": "claim/codex-loop-standing-query-trigger-inventory-20260529"
+}

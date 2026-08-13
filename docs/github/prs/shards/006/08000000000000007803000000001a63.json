@@ -1,0 +1,12 @@
+{
+  "pr_number": 6755,
+  "archive_path": "docs/history/pr-reviews/PR-6755-docs-architecture-canonical-keeper-cell-cp-cross-cell-ap-eventual-c-default-saga.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T08:23:53.447Z",
+  "schema_version": "v1",
+  "commit_sha": "dd64aaea5320a040d9089f296101280c7bbec688",
+  "title": "docs(architecture): canonical keeper — cell CP / cross-cell AP-eventual-C default / saga CP-serialized-A fallback",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T08:23:31Z",
+  "head_ref": "otto/cap-canonical-keeper"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3568,
+  "archive_path": "docs/history/pr-reviews/PR-3568-shard-tick-1949z-b-0532-hard-error-slice-4-of-4-lint-cluster-siblings-in-flight.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T19:54:29.136Z",
+  "schema_version": "v1",
+  "commit_sha": "5409aafe328a02cc6c1666476ceb4d7b6054f59b",
+  "title": "shard(tick): 1949Z — B-0532 hard-error slice; 4 of 4 lint cluster siblings in-flight",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T19:54:09Z",
+  "head_ref": "shard/tick-1949z-otto-cli-2026-05-15"
+}

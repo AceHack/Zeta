@@ -1,0 +1,12 @@
+{
+  "pr_number": 5928,
+  "archive_path": "docs/history/pr-reviews/PR-5928-fix-claims-bound-remote-only-git-network-calls.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T20:22:35.195Z",
+  "schema_version": "v1",
+  "commit_sha": "a4bdce83da81966361599f59128b461aabcacf2a",
+  "title": "fix(claims): bound remote-only git network calls",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T20:22:12Z",
+  "head_ref": "claim/codex-loop-remote-only-state-timeout-20260528"
+}

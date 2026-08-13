@@ -1,0 +1,12 @@
+{
+  "pr_number": 6040,
+  "archive_path": "docs/history/pr-reviews/PR-6040-feat-b-0355-1-cross-harness-bootstrap-template-docs-bootstrap-template-md.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T20:12:57.927Z",
+  "schema_version": "v1",
+  "commit_sha": "73a47b460edc3736f1ab36fec498310b2abe40da",
+  "title": "feat(B-0355.1): cross-harness bootstrap template (docs/BOOTSTRAP-TEMPLATE.md)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T20:12:35Z",
+  "head_ref": "otto-cli/b0355-1-bootstrap-template-2026-05-29"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2350,
+  "archive_path": "docs/history/pr-reviews/PR-2350-docs-b-0021-re-decompose-into-smallest-dependency-ordered-atomic-children-riven.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T21:33:52.837Z",
+  "schema_version": "v1",
+  "commit_sha": "d6cb49808bb24c39d9da667a8a016b5ae7e8f296",
+  "title": "docs(B-0021): re-decompose into smallest dependency-ordered atomic children (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T21:33:38Z",
+  "head_ref": "claim/b0021-aurora-decompose-smallest-atomic-children-riven-2026-05-09"
+}

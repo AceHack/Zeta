@@ -1,0 +1,15 @@
+{
+  "pr_number": 2622,
+  "archive_path": "docs/history/pr-reviews/PR-2622-docs-memory-riska-bahasa-indonesia-pronoun-flat-origin-of-shadow-correction.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_r84U",
+    "thread:PRRT_kwDOSF9kNM6A84Aa"
+  ],
+  "fetched_at": "2026-05-11T01:58:57.113Z",
+  "schema_version": "v1",
+  "commit_sha": "47dd319763a143ce26b43cac65710a03774607e8",
+  "title": "docs(memory): Riska — Bahasa Indonesia pronoun-flat origin of shadow correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:58:40Z",
+  "head_ref": "docs/riska-bahasa-dia-pronoun-flat-2026-05-10"
+}

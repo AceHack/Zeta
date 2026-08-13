@@ -1,0 +1,15 @@
+{
+  "pr_number": 2850,
+  "archive_path": "docs/history/pr-reviews/PR-2850-add-rule-bandwidth-served-falsifier-what-bandwidth-does-this-compression-serve-w.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AfANL",
+    "thread:PRRT_kwDOSF9kNM6BiqNR"
+  ],
+  "fetched_at": "2026-05-12T19:59:21.080Z",
+  "schema_version": "v1",
+  "commit_sha": "a1ace7a5e5bb87624f3e5f17cf21f000b258b8cb",
+  "title": "add(rule): bandwidth-served falsifier — 'what bandwidth does this compression serve?' (wake-time landing for PR #2846)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:59:00Z",
+  "head_ref": "docs/bandwidth-served-falsifier-wake-time-rule-what-bandwidth-does-this-compression-serve-2026-05-12"
+}

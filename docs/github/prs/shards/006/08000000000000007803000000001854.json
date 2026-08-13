@@ -1,0 +1,29 @@
+{
+  "pr_number": 6228,
+  "archive_path": "docs/history/pr-reviews/PR-6228-feat-windows-tooling-git-bash-exec-install-ps1-b2-safe-search-grep-wrapper.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gh2A8",
+    "comment:PRRC_kwDOSF9kNM7Gh2BG",
+    "comment:PRRC_kwDOSF9kNM7Gh2BJ",
+    "comment:PRRC_kwDOSF9kNM7Ghv3I",
+    "comment:PRRC_kwDOSF9kNM7Ghv3K",
+    "comment:PRRC_kwDOSF9kNM7GhwnX",
+    "comment:PRRC_kwDOSF9kNM7Ghwni",
+    "comment:PRRC_kwDOSF9kNM7Ghwnk",
+    "thread:PRRT_kwDOSF9kNM6F9n1k",
+    "thread:PRRT_kwDOSF9kNM6F9n1s",
+    "thread:PRRT_kwDOSF9kNM6F9n1u",
+    "thread:PRRT_kwDOSF9kNM6F9nRL",
+    "thread:PRRT_kwDOSF9kNM6F9nRO",
+    "thread:PRRT_kwDOSF9kNM6F9r--",
+    "thread:PRRT_kwDOSF9kNM6F9r-1",
+    "thread:PRRT_kwDOSF9kNM6F9r-7"
+  ],
+  "fetched_at": "2026-05-31T19:15:25.945Z",
+  "schema_version": "v1",
+  "commit_sha": "fc21b1d62e15cfa3b59c8a7f1278e3a2a1a746e4",
+  "title": "feat(windows+tooling): git-bash exec->install.ps1 (b2) + safe-search grep wrapper",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T19:15:05Z",
+  "head_ref": "otto-windows/gitbash-exec-plus-grep-wrapper-2026-05-31"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3733,
+  "archive_path": "docs/history/pr-reviews/PR-3733-chore-b-0506-close-row-mechanization-shipped-via-pr-3225.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T04:27:43.124Z",
+  "schema_version": "v1",
+  "commit_sha": "8fa95e502f2f3e8461598a4a5f95aea5ebfabaea",
+  "title": "chore(b-0506): close row — mechanization shipped via PR #3225",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:27:25Z",
+  "head_ref": "chore/b0506-close-row-otto-cli-2026-05-16"
+}

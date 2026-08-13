@@ -1,0 +1,16 @@
+{
+  "pr_number": 3418,
+  "archive_path": "docs/history/pr-reviews/PR-3418-shard-tick-1043z-peer-otto-s-mutex-substrate-landed-pr-3414.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bktfg",
+    "comment:PRRC_kwDOSF9kNM7BkxZY",
+    "thread:PRRT_kwDOSF9kNM6CVQB5"
+  ],
+  "fetched_at": "2026-05-15T10:51:41.906Z",
+  "schema_version": "v1",
+  "commit_sha": "bd34b39e415b6d0e6dc2283edf9bea187ebdbd28",
+  "title": "shard(tick): 1043Z — peer-Otto's mutex substrate landed (PR #3414)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:51:25Z",
+  "head_ref": "shard/tick-1043z-otto-cli-2026-05-15"
+}

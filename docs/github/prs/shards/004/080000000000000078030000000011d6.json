@@ -1,0 +1,12 @@
+{
+  "pr_number": 4566,
+  "archive_path": "docs/history/pr-reviews/PR-4566-feat-core-pr-5-of-8-fusion-catalog-mapmap-filterfilter-mapfilter.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T17:38:53.963Z",
+  "schema_version": "v1",
+  "commit_sha": "8767d30552e39b14f8bf2121eefa2e8c8897aae8",
+  "title": "feat(core): PR 5 of 8 — Fusion catalog (MapMap / FilterFilter / MapFilter)",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T17:38:35Z",
+  "head_ref": "feat/fusion-catalog-expansion-2026-05-21"
+}

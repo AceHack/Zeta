@@ -1,0 +1,12 @@
+{
+  "pr_number": 7582,
+  "archive_path": "docs/history/pr-reviews/PR-7582-governance-promote-idempotency-12-noninterference-13-into-the-manifesto-v2-2-add.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:28:14.855Z",
+  "schema_version": "v1",
+  "commit_sha": "e43c428137ece92dca0930b5a6968b2d33adc3b4",
+  "title": "governance: promote Idempotency (§12) + Noninterference (§13) into the manifesto (V2.2 additive)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:27:53Z",
+  "head_ref": "shadow-manifesto-specs-12-13"
+}

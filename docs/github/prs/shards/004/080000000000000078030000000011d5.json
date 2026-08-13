@@ -1,0 +1,17 @@
+{
+  "pr_number": 4565,
+  "archive_path": "docs/history/pr-reviews/PR-4565-feat-b-0691-soraya-loop-tick-implementation-claude-code-pattern-max-opus-formal-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DsTGC",
+    "comment:PRRC_kwDOSF9kNM7DsTGH",
+    "thread:PRRT_kwDOSF9kNM6D4nSN",
+    "thread:PRRT_kwDOSF9kNM6D4nSS"
+  ],
+  "fetched_at": "2026-05-21T17:37:00.160Z",
+  "schema_version": "v1",
+  "commit_sha": "351a9a103942848e51292db990de17e0d8b8d8a3",
+  "title": "feat(B-0691): Soraya loop-tick implementation — Claude Code pattern + max Opus; formal-verification-result bus topic + soraya SENDER_ID",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T17:36:38Z",
+  "head_ref": "feat/b0691-soraya-loop-tick-formal-verification-implementation-2026-05-21"
+}

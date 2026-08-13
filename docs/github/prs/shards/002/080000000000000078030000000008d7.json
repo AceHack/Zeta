@@ -1,0 +1,12 @@
+{
+  "pr_number": 2263,
+  "archive_path": "docs/history/pr-reviews/PR-2263-fix-resolve-b-0357-id-collision.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T09:45:30.937Z",
+  "schema_version": "v1",
+  "commit_sha": "0400d94b95583b98c2a296353eb7387e1c1b5d93",
+  "title": "fix: resolve B-0357 ID collision",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:45:11Z",
+  "head_ref": "fix/b0357-id-collision"
+}

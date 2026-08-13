@@ -1,0 +1,12 @@
+{
+  "pr_number": 3105,
+  "archive_path": "docs/history/pr-reviews/PR-3105-docs-preserve-pr-discussions-3099-3103.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T06:47:43.061Z",
+  "schema_version": "v1",
+  "commit_sha": "cb7091f5e375f2abddfc8544532ab704a715a0a6",
+  "title": "docs: preserve PR discussions 3099-3103",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T06:47:19Z",
+  "head_ref": "lior/preserve-prs-3099-3103"
+}

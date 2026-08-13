@@ -1,0 +1,12 @@
+{
+  "pr_number": 8413,
+  "archive_path": "docs/history/pr-reviews/PR-8413-docs-routing-it-s-soft-schedulers-all-the-way-down-every-ihost-maps-back-to-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T02:33:05.904Z",
+  "schema_version": "v1",
+  "commit_sha": "9da48edba3026b5e7a5661b89970a7af87491c56",
+  "title": "docs(routing): it's soft-schedulers all the way down — every IHost maps back to the CHIP-8 ISR",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T02:32:42Z",
+  "head_ref": "docs/soft-schedulers-all-the-way-down"
+}

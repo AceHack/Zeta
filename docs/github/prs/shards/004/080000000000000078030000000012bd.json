@@ -1,0 +1,22 @@
+{
+  "pr_number": 4797,
+  "archive_path": "docs/history/pr-reviews/PR-4797-backlog-b-0718-file-soraya-round-61-forced-decomposition-audit-four-trigger-rout.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EUgJi",
+    "comment:PRRC_kwDOSF9kNM7EUgVl",
+    "comment:PRRC_kwDOSF9kNM7EUgVp",
+    "comment:PRRC_kwDOSF9kNM7EUgVt",
+    "comment:PRRC_kwDOSF9kNM7EUsyf",
+    "thread:PRRT_kwDOSF9kNM6EWITL",
+    "thread:PRRT_kwDOSF9kNM6EWIbs",
+    "thread:PRRT_kwDOSF9kNM6EWIbv",
+    "thread:PRRT_kwDOSF9kNM6EWIbx"
+  ],
+  "fetched_at": "2026-05-24T02:09:59.769Z",
+  "schema_version": "v1",
+  "commit_sha": "dacfb2affbd2d9b9fae557d89591d3ce491fc9ed",
+  "title": "backlog(B-0718): file Soraya round-61 forced-decomposition — audit four-trigger routing-tick framework",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T02:09:38Z",
+  "head_ref": "otto/soraya-round61-b0718-four-trigger-framework-audit-2026-05-23"
+}

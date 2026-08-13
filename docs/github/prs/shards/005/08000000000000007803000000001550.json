@@ -1,0 +1,12 @@
+{
+  "pr_number": 5456,
+  "archive_path": "docs/history/pr-reviews/PR-5456-docs-b-0858-agent-heartbeat-folder-direct-to-main-with-zetaid-collision-free-fil.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T13:54:17.382Z",
+  "schema_version": "v1",
+  "commit_sha": "4e9ea8c010bc2d782721129278bb938e03a748f1",
+  "title": "docs(B-0858): agent heartbeat folder direct-to-main with ZetaID-collision-free filenames — composes existing ZetaID + AgencySignature substrate (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T13:53:52Z",
+  "head_ref": "backlog/b-0858-agent-heartbeat-folder-zetaid-2026-05-27"
+}

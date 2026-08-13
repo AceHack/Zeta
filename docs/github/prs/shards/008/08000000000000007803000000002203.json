@@ -1,0 +1,12 @@
+{
+  "pr_number": 8707,
+  "archive_path": "docs/history/pr-reviews/PR-8707-feat-core-cl-3-0-as-comparison-free-istarring-math-team-row-10-clifford-leg.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T05:56:55.812Z",
+  "schema_version": "v1",
+  "commit_sha": "b665ce91a9f07389f52891c53aa9772cd21d6b98",
+  "title": "feat(core): Cl(3,0) as comparison-free IStarRing — math-team row 10 Clifford leg",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T05:56:33Z",
+  "head_ref": "otto/row10-clifford-starring"
+}

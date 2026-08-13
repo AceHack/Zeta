@@ -1,0 +1,17 @@
+{
+  "pr_number": 6196,
+  "archive_path": "docs/history/pr-reviews/PR-6196-docs-b-0250-calibrate-broadcast-blocker-live-output.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gdy2o",
+    "comment:PRRC_kwDOSF9kNM7Gdy2s",
+    "thread:PRRT_kwDOSF9kNM6F6j6q",
+    "thread:PRRT_kwDOSF9kNM6F6j6s"
+  ],
+  "fetched_at": "2026-05-31T04:20:43.169Z",
+  "schema_version": "v1",
+  "commit_sha": "3979b167cee784d8e486e95178e0012aabd98fab",
+  "title": "docs(B-0250): calibrate broadcast blocker live output",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T04:20:22Z",
+  "head_ref": "claim/task-b0250-broadcast-live-calibration-packet"
+}

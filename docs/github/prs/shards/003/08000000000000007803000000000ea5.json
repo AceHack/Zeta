@@ -1,0 +1,12 @@
+{
+  "pr_number": 3749,
+  "archive_path": "docs/history/pr-reviews/PR-3749-feat-b-0170-4-seed-cross-surface-drift-fixture-regression-test.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T05:03:32.817Z",
+  "schema_version": "v1",
+  "commit_sha": "36e60d2fce759d7b8fac315382b77630cfcc8fc0",
+  "title": "feat(B-0170.4): seed cross-surface-drift fixture + regression test",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T05:03:17Z",
+  "head_ref": "otto/b0170-4-cross-surface-fixture-2026-05-16"
+}

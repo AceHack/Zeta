@@ -1,0 +1,17 @@
+{
+  "pr_number": 5878,
+  "archive_path": "docs/history/pr-reviews/PR-5878-fix-hygiene-parse-env-option-shebang-operands.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F2hTK",
+    "comment:PRRC_kwDOSF9kNM7F2hTy",
+    "thread:PRRT_kwDOSF9kNM6Fd3XM",
+    "thread:PRRT_kwDOSF9kNM6Fd3Xo"
+  ],
+  "fetched_at": "2026-05-28T17:02:43.786Z",
+  "schema_version": "v1",
+  "commit_sha": "c23f70a66f0734bb25b5afdeaed4d4614410d7a8",
+  "title": "fix(hygiene): parse env option shebang operands",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T17:02:07Z",
+  "head_ref": "claim/codex-loop-bash-retirement-env-option-shebang-20260528"
+}

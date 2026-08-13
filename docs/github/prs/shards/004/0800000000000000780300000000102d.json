@@ -1,0 +1,12 @@
+{
+  "pr_number": 4141,
+  "archive_path": "docs/history/pr-reviews/PR-4141-docs-archive-maji-pr-preservation-4133.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T19:41:47.539Z",
+  "schema_version": "v1",
+  "commit_sha": "e65c13609ac5b1eb7b73da08072c575d835afe68",
+  "title": "docs(archive): Maji PR preservation #4133",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T19:41:27Z",
+  "head_ref": "maji/preserve-4133"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8264,
+  "archive_path": "docs/history/pr-reviews/PR-8264-docs-the-advertising-register-mad-men-applied-to-ai-closed-frame-doc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T05:23:24.593Z",
+  "schema_version": "v1",
+  "commit_sha": "c7d38d8ac94d38c63b69048742a3a7d9309507b3",
+  "title": "docs: the advertising register — Mad Men applied to AI (closed-frame doc)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T05:23:00Z",
+  "head_ref": "otto/mad-men-applied-to-ai-advertising-register"
+}

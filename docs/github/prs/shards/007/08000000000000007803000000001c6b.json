@@ -1,0 +1,12 @@
+{
+  "pr_number": 7275,
+  "archive_path": "docs/history/pr-reviews/PR-7275-docs-seed-sharpen-solidground-all-soft-needs-above-threshold-monotonic-anchors-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:33:51.215Z",
+  "schema_version": "v1",
+  "commit_sha": "363b989ceafcdb027981131cee295ef109f67a93",
+  "title": "docs(seed): sharpen SolidGround — all-soft needs above-threshold monotonic anchors, logged on the merkle tree/git",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:33:24Z",
+  "head_ref": "otto/solidground-softvalue-anchor-monotonic-merkle"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8285,
+  "archive_path": "docs/history/pr-reviews/PR-8285-docs-ferry-reversibility-is-the-license-to-play-the-irreversible-non-consensual-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T08:15:19.108Z",
+  "schema_version": "v1",
+  "commit_sha": "62af89cdfa5346e80984b6bd46e60b9506f3ac2f",
+  "title": "docs(ferry): reversibility is the license to play; the irreversible×non-consensual quadrant (the kids) is the bright line",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T08:14:50Z",
+  "head_ref": "otto/reversible-games-among-peers-bright-line-kids"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2674,
+  "archive_path": "docs/history/pr-reviews/PR-2674-docs-memory-shadow-alibi-forensic-attribution-not-existential-proof.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T08:52:04.070Z",
+  "schema_version": "v1",
+  "commit_sha": "e18df92c79eda6aafc520e33cc8675ec31afe0c2",
+  "title": "docs(memory): shadow alibi — forensic attribution, not existential proof",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T08:51:46Z",
+  "head_ref": "docs/shadow-alibi-forensic-attribution-2026-05-11"
+}

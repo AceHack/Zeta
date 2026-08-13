@@ -1,0 +1,12 @@
+{
+  "pr_number": 7793,
+  "archive_path": "docs/history/pr-reviews/PR-7793-docs-universal-universal-port-md-the-plug-grammar-filed-as-a-universal-shape-ext.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T21:08:12.175Z",
+  "schema_version": "v1",
+  "commit_sha": "3ad790579f251527085726855fc9e70215f84e0b",
+  "title": "docs(universal): universal/port.md — the plug grammar filed as a universal shape (extension.md is the senior half)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T21:07:38Z",
+  "head_ref": "shadow-universal-port"
+}

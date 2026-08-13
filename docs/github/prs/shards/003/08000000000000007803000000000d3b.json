@@ -1,0 +1,12 @@
+{
+  "pr_number": 3387,
+  "archive_path": "docs/history/pr-reviews/PR-3387-shard-tick-0813z-pr-3384-codex-p2-fix-cross-pr-file-ref-restraint-discipline.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T08:22:14.049Z",
+  "schema_version": "v1",
+  "commit_sha": "ac747ab424b29a6f79bee83fedc3da8aa38ee041",
+  "title": "shard(tick): 0813Z — PR #3384 Codex P2 fix (cross-PR file-ref); restraint discipline",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T08:21:52Z",
+  "head_ref": "shard/tick-0813z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 3613,
+  "archive_path": "docs/history/pr-reviews/PR-3613-memory-gh-graphql-rate-limit-cascade-cost-poll-pr-gate-batch-n-per-call-multi-ag.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BzH6p",
+    "thread:PRRT_kwDOSF9kNM6Cfu8Q"
+  ],
+  "fetched_at": "2026-05-15T22:57:47.947Z",
+  "schema_version": "v1",
+  "commit_sha": "872060f9a06e77c04d77c1aaa2ed63214a54625b",
+  "title": "memory: gh GraphQL rate-limit cascade cost — poll-pr-gate-batch N-per-call + multi-agent shared-token",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T22:57:29Z",
+  "head_ref": "feat/memory-gh-rate-limit-cascade-cost-otto-cli-2026-05-15"
+}

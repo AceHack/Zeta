@@ -1,0 +1,12 @@
+{
+  "pr_number": 5314,
+  "archive_path": "docs/history/pr-reviews/PR-5314-feat-b-0829-schemas-as-rows-cluster-fork-as-trust-boundary-f-type-providers-from.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T20:53:39.220Z",
+  "schema_version": "v1",
+  "commit_sha": "b67b4884720780c9f3e908581196f088cea4e6d4",
+  "title": "feat(B-0829): schemas-as-rows + cluster-fork-as-trust-boundary + F# type providers from live cluster (Kestrel + Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T20:53:15Z",
+  "head_ref": "otto-cli/B-0829-schemas-as-rows-cluster-fork-federation-type-providers-from-live-cluster-kestrel-2026-05-26"
+}

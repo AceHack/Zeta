@@ -1,0 +1,17 @@
+{
+  "pr_number": 3091,
+  "archive_path": "docs/history/pr-reviews/PR-3091-fix-check-md032-indented-blockquote-inside-list-item-body-is-not-a-list-terminat.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BDIFH",
+    "comment:PRRC_kwDOSF9kNM7BDIKJ",
+    "thread:PRRT_kwDOSF9kNM6B8zhm",
+    "thread:PRRT_kwDOSF9kNM6B8zlv"
+  ],
+  "fetched_at": "2026-05-14T03:14:21.350Z",
+  "schema_version": "v1",
+  "commit_sha": "c285255200fc0faff0b13489424579e00f0b10ec",
+  "title": "fix(check-md032): indented blockquote inside list-item body is NOT a list terminator (PR #3075 follow-up)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T03:14:07Z",
+  "head_ref": "fix/b0456-md032-blockquote-indent-false-positive-2026-05-14"
+}

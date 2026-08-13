@@ -1,0 +1,23 @@
+{
+  "pr_number": 3893,
+  "archive_path": "docs/history/pr-reviews/PR-3893-fix-b-0197-correct-dbsp-prop-3-5-theorem-3-3-misattribution-close-6th-cycle-clos.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B49p-",
+    "comment:PRRC_kwDOSF9kNM7B5DZE",
+    "comment:PRRC_kwDOSF9kNM7B5DZe",
+    "comment:PRRC_kwDOSF9kNM7B5KpW",
+    "comment:PRRC_kwDOSF9kNM7B5NW5",
+    "thread:PRRT_kwDOSF9kNM6CkEzK",
+    "thread:PRRT_kwDOSF9kNM6CkJSS",
+    "thread:PRRT_kwDOSF9kNM6CkJSu",
+    "thread:PRRT_kwDOSF9kNM6CkO2q",
+    "thread:PRRT_kwDOSF9kNM6CkRD-"
+  ],
+  "fetched_at": "2026-05-16T15:30:33.392Z",
+  "schema_version": "v1",
+  "commit_sha": "0e94bdbdd03192a65576e9dd6d388114999623b1",
+  "title": "fix(b-0197): correct DBSP Prop 3.5 → Theorem 3.3 misattribution + close (6th cycle close-row)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T15:30:16Z",
+  "head_ref": "otto-cli-b0197-impl-lean-prop-fix-2026-05-16-1412z"
+}

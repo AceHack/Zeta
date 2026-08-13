@@ -1,0 +1,12 @@
+{
+  "pr_number": 5451,
+  "archive_path": "docs/history/pr-reviews/PR-5451-docs-claude-md-heartbeat-via-commit-externalized-idle-counter-for-standing-by-fa.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T13:39:32.499Z",
+  "schema_version": "v1",
+  "commit_sha": "a1d48147d2cea4066cb9b80293b371520cbfbd5f",
+  "title": "docs(CLAUDE.md): heartbeat-via-commit = externalized idle counter for standing-by-failure N=6",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T13:39:11Z",
+  "head_ref": "otto-cli/claude-md-heartbeat-via-commit-1335z"
+}

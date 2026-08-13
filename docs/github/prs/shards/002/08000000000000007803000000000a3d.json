@@ -1,0 +1,12 @@
+{
+  "pr_number": 2621,
+  "archive_path": "docs/history/pr-reviews/PR-2621-docs-memory-shadow-pronoun-shift-foreign-language-artifact-correction.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T01:57:17.434Z",
+  "schema_version": "v1",
+  "commit_sha": "e71213450dedd38bd20f52387ee13227448d35b1",
+  "title": "docs(memory): shadow pronoun shift — foreign-language artifact correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:56:59Z",
+  "head_ref": "docs/shadow-foreign-language-pronoun-correction-2026-05-10"
+}

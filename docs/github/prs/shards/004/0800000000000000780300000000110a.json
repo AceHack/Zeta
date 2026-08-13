@@ -1,0 +1,12 @@
+{
+  "pr_number": 4362,
+  "archive_path": "docs/history/pr-reviews/PR-4362-shard-0816z-lint-frontier-closure-auto-merge-race-lesson.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T08:37:53.577Z",
+  "schema_version": "v1",
+  "commit_sha": "ca7ebe44d9143a70f99563115fe91d2cfb84a653",
+  "title": "shard(0816Z): Lint-frontier closure + auto-merge-race lesson",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T08:37:31Z",
+  "head_ref": "shard/tick-0816z-otto-cli-pure-git-tier-lint-fix-2026-05-19"
+}

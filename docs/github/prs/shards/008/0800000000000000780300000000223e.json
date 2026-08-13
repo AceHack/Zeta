@@ -1,0 +1,12 @@
+{
+  "pr_number": 8766,
+  "archive_path": "docs/history/pr-reviews/PR-8766-zeta-ir-v3-nasam-mixer-second-grammar-evolution-xrotxor-xshrxor.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T19:01:38.443Z",
+  "schema_version": "v1",
+  "commit_sha": "d7c7d6986bfd2004a963f812ff0f7fb3c2e57ce9",
+  "title": "zeta-ir-v3: nasam mixer — second grammar evolution (xrotxor/xshrxor)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T19:01:11Z",
+  "head_ref": "lumen/nasam-zeta-ir-v3"
+}

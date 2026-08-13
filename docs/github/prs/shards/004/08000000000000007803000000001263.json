@@ -1,0 +1,12 @@
+{
+  "pr_number": 4707,
+  "archive_path": "docs/history/pr-reviews/PR-4707-docs-shadow-add-lesson-log-for-pr-4059-drift-decomposed-from-4070-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T06:12:26.592Z",
+  "schema_version": "v1",
+  "commit_sha": "55f08dee16b466d38077fdb323d0b6a7f2e0c38f",
+  "title": "docs(shadow): add lesson log for PR 4059 drift (decomposed from #4070) - 2",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T06:12:06Z",
+  "head_ref": "lior-decompose-4070-shadow-log-6"
+}

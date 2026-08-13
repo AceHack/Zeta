@@ -1,0 +1,19 @@
+{
+  "pr_number": 2731,
+  "archive_path": "docs/history/pr-reviews/PR-2731-docs-backlog-re-decompose-b-0347-into-4-smallest-atomic-children-carved-sentence.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AAdP8",
+    "comment:PRRC_kwDOSF9kNM7AAdPb",
+    "comment:PRRC_kwDOSF9kNM7AAdQP",
+    "thread:PRRT_kwDOSF9kNM6BMCg2",
+    "thread:PRRT_kwDOSF9kNM6BMCgi",
+    "thread:PRRT_kwDOSF9kNM6BMChF"
+  ],
+  "fetched_at": "2026-05-11T19:02:42.982Z",
+  "schema_version": "v1",
+  "commit_sha": "b0d8d661b6c30ae984f4a1c01f8c11b317d7d428",
+  "title": "docs(backlog): re-decompose B-0347 into 4 smallest atomic children (carved-sentence routing budget, one bounded step) (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T19:02:21Z",
+  "head_ref": "claim/b0347-carved-sentence-skill-descriptions-routing-budget-smallest-slice-riven-2026-05-11"
+}

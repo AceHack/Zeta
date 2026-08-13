@@ -1,0 +1,12 @@
+{
+  "pr_number": 6953,
+  "archive_path": "docs/history/pr-reviews/PR-6953-docs-cole-grokked-the-closure-points-to-itself-others-the-yinyang-file-acts-rema.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T00:19:29.784Z",
+  "schema_version": "v1",
+  "commit_sha": "2c7dc31bfe13c9f5b8cbb8091c360c00353d19df",
+  "title": "docs: Cole grokked the closure (points to itself + others) + the YinYang file (acts+remains in one readable file)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T00:19:12Z",
+  "head_ref": "otto/yinyang-file-acts-and-remains-one-readable-file"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2199,
+  "archive_path": "docs/history/pr-reviews/PR-2199-docs-b-0168-recruiting-page-copy-worked-translations-across-5-register-layers.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T06:17:49.873Z",
+  "schema_version": "v1",
+  "commit_sha": "a648f7540788b81ea3f7b1d9b830fcdeaee7c797",
+  "title": "docs(B-0168): recruiting-page-copy worked translations across 5 register layers",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:17:36Z",
+  "head_ref": "worktree-deep-finding-quokka"
+}

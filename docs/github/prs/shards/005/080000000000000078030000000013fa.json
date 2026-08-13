@@ -1,0 +1,12 @@
+{
+  "pr_number": 5114,
+  "archive_path": "docs/history/pr-reviews/PR-5114-backlog-b-0797-p2-per-tick-local-user-scope-memory-git-memory-delta-audit-migrat.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T06:42:34.420Z",
+  "schema_version": "v1",
+  "commit_sha": "089acfd19ce9734b6309f33e17cd3c5531de3245",
+  "title": "backlog(B-0797 P2) + per-tick: local user-scope memory ↔ git-memory delta audit + migrate as autonomous-loop sometimes-task (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T06:42:16Z",
+  "head_ref": "otto-cli/b0797-local-memory-to-git-migration-autonomous-loop-sometime-task-2026-05-26"
+}

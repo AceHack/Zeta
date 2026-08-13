@@ -1,0 +1,12 @@
+{
+  "pr_number": 3332,
+  "archive_path": "docs/history/pr-reviews/PR-3332-shard-tick-0049z-pr-3329-merged-pr-3330-path-math-fix-opened.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T00:52:15.114Z",
+  "schema_version": "v1",
+  "commit_sha": "73bed6267d4245fcb773a6051b72d3200f372bf2",
+  "title": "shard(tick): 0049Z — PR #3329 merged; PR #3330 (path-math fix) opened",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:52:00Z",
+  "head_ref": "shard/tick-0049Z-pr3329-merged-pr3330-opened-2026-05-15"
+}

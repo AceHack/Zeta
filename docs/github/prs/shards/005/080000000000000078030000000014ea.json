@@ -1,0 +1,21 @@
+{
+  "pr_number": 5354,
+  "archive_path": "docs/history/pr-reviews/PR-5354-fix-b-0835-bug-1-hostname-injection-symlink-impure-so-flake-eval-reads-cluster-n.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FJB42",
+    "comment:PRRC_kwDOSF9kNM7FJB4I",
+    "comment:PRRC_kwDOSF9kNM7FJB4W",
+    "comment:PRRC_kwDOSF9kNM7FJB4i",
+    "thread:PRRT_kwDOSF9kNM6E9Ar1",
+    "thread:PRRT_kwDOSF9kNM6E9Ar_",
+    "thread:PRRT_kwDOSF9kNM6E9Arp",
+    "thread:PRRT_kwDOSF9kNM6E9AsP"
+  ],
+  "fetched_at": "2026-05-26T23:38:38.376Z",
+  "schema_version": "v1",
+  "commit_sha": "778225caa0a8dba2cc141e2b0c86a2dcf085580f",
+  "title": "fix(B-0835 Bug 1): hostname injection — symlink + --impure so flake eval reads cluster-node-id (same bug class as Bug 3b)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:38:19Z",
+  "head_ref": "otto/b-0835-bug-1-hostname-injected-path-symlink-impure-fix-2026-05-26"
+}

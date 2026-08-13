@@ -1,0 +1,29 @@
+{
+  "pr_number": 3379,
+  "archive_path": "docs/history/pr-reviews/PR-3379-shard-tick-0724z-pr-3377-merged-3376-transient-ci-re-run-b-0527-escalation-to-pr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bg1I0",
+    "comment:PRRC_kwDOSF9kNM7Bg1IK",
+    "comment:PRRC_kwDOSF9kNM7Bg1I_",
+    "comment:PRRC_kwDOSF9kNM7Bg1In",
+    "comment:PRRC_kwDOSF9kNM7Bg1JR",
+    "comment:PRRC_kwDOSF9kNM7BgyDl",
+    "comment:PRRC_kwDOSF9kNM7BgyDr",
+    "comment:PRRC_kwDOSF9kNM7BhSBA",
+    "thread:PRRT_kwDOSF9kNM6CSaIw",
+    "thread:PRRT_kwDOSF9kNM6CSaIz",
+    "thread:PRRT_kwDOSF9kNM6CSca8",
+    "thread:PRRT_kwDOSF9kNM6CScaK",
+    "thread:PRRT_kwDOSF9kNM6CScaf",
+    "thread:PRRT_kwDOSF9kNM6CScan",
+    "thread:PRRT_kwDOSF9kNM6CScay",
+    "thread:PRRT_kwDOSF9kNM6CSwWx"
+  ],
+  "fetched_at": "2026-05-15T09:45:09.495Z",
+  "schema_version": "v1",
+  "commit_sha": "29b6f1dde376afbc2f38c73edff0248c09b02629",
+  "title": "shard(tick): 0724Z — PR #3377 merged + #3376 transient CI re-run + B-0527 escalation to PR-comment channel",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T09:44:52Z",
+  "head_ref": "shard/tick-0724z-otto-cli-2026-05-15"
+}

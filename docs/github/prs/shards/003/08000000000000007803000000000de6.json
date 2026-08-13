@@ -1,0 +1,12 @@
+{
+  "pr_number": 3558,
+  "archive_path": "docs/history/pr-reviews/PR-3558-fix-rules-correct-2-real-stale-pointers-surfaced-by-audit-rule-cross-refs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T19:09:46.752Z",
+  "schema_version": "v1",
+  "commit_sha": "f656f4e632067d0b7c6d2d0d664f96058d7fdfa4",
+  "title": "fix(rules): correct 2 real stale pointers surfaced by audit-rule-cross-refs",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T19:09:26Z",
+  "head_ref": "fix/rules-stale-pointers-naming-expert-wwjd-keeps-grey-otto-cli-2026-05-15"
+}

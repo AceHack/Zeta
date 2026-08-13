@@ -1,0 +1,12 @@
+{
+  "pr_number": 2989,
+  "archive_path": "docs/history/pr-reviews/PR-2989-feat-toffoli-b-0366-2-1-toffolicircuit-type-wire-map-formal-model.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T12:50:25.474Z",
+  "schema_version": "v1",
+  "commit_sha": "003e4008d6706208938717345348325487e51c46",
+  "title": "feat(toffoli): B-0366.2.1 — ToffoliCircuit type + wire-map formal model",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T12:50:07Z",
+  "head_ref": "feat/b-0366-2-1-toffoli-circuit-wire-map"
+}

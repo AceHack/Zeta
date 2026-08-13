@@ -1,0 +1,16 @@
+{
+  "pr_number": 6195,
+  "archive_path": "docs/history/pr-reviews/PR-6195-preserve-merged-prs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gdp1T",
+    "comment:PRRC_kwDOSF9kNM7GdpFG",
+    "thread:PRRT_kwDOSF9kNM6F6cSO"
+  ],
+  "fetched_at": "2026-05-31T03:44:22.257Z",
+  "schema_version": "v1",
+  "commit_sha": "2986eefc9363fc9a95bbb936f7ebe05dd1eb28a1",
+  "title": "Preserve merged PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T03:43:59Z",
+  "head_ref": "lior/archive-pr-6191"
+}

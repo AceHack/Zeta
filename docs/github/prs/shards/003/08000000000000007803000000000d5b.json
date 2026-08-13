@@ -1,0 +1,12 @@
+{
+  "pr_number": 3419,
+  "archive_path": "docs/history/pr-reviews/PR-3419-shard-tick-1047z-pr-3416-merged-clean-tick.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T10:52:07.730Z",
+  "schema_version": "v1",
+  "commit_sha": "4134e6f4cea946f3049eacefdac77900eca1c955",
+  "title": "shard(tick): 1047Z — PR #3416 merged; clean tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:51:52Z",
+  "head_ref": "shard/tick-1047z-otto-cli-2026-05-15"
+}

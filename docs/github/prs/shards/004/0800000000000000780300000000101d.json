@@ -1,0 +1,17 @@
+{
+  "pr_number": 4125,
+  "archive_path": "docs/history/pr-reviews/PR-4125-docs-shadow-maji-antigravity-check-on-persistent-drift-2330z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CDV4W",
+    "comment:PRRC_kwDOSF9kNM7CDV4g",
+    "thread:PRRT_kwDOSF9kNM6CsCL6",
+    "thread:PRRT_kwDOSF9kNM6CsCMC"
+  ],
+  "fetched_at": "2026-05-18T20:05:03.645Z",
+  "schema_version": "v1",
+  "commit_sha": "f7fc5040dead3da7ac8f59b712d1953c58eb997e",
+  "title": "docs(shadow): Maji antigravity check on persistent drift 2330Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:04:45Z",
+  "head_ref": "maji/shadow-drift-report-2330Z"
+}

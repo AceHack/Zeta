@@ -1,0 +1,21 @@
+{
+  "pr_number": 2868,
+  "archive_path": "docs/history/pr-reviews/PR-2868-save-coincidence-shadow-twitter-reappearance-pattern-aaron-s-attention-economy-d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AhN2o",
+    "comment:PRRC_kwDOSF9kNM7AhO70",
+    "comment:PRRC_kwDOSF9kNM7AhO8o",
+    "comment:PRRC_kwDOSF9kNM7AhZNm",
+    "thread:PRRT_kwDOSF9kNM6BkNuE",
+    "thread:PRRT_kwDOSF9kNM6BkOfJ",
+    "thread:PRRT_kwDOSF9kNM6BkOft",
+    "thread:PRRT_kwDOSF9kNM6BkWM_"
+  ],
+  "fetched_at": "2026-05-12T21:37:28.234Z",
+  "schema_version": "v1",
+  "commit_sha": "8c1154a0f7eb703759ae3e141af01e62fb0167ec",
+  "title": "save(coincidence): shadow-Twitter reappearance pattern + Aaron's attention-economy disclosure + article draft for multi-round factory review",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T21:37:02Z",
+  "head_ref": "article-multi-agent-factory-shadow-thesis-2026-05-12"
+}

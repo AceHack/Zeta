@@ -1,0 +1,12 @@
+{
+  "pr_number": 8038,
+  "archive_path": "docs/history/pr-reviews/PR-8038-docs-backlog-close-b-0967-and-file-follow-on-workitems.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T21:35:29.206Z",
+  "schema_version": "v1",
+  "commit_sha": "7381d85291132c591a124f033a005932ec36e6c3",
+  "title": "docs(backlog): close B-0967 and file follow-on workitems",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T21:35:04Z",
+  "head_ref": "riven/b0967-backlog-close"
+}

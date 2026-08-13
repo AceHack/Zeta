@@ -1,0 +1,12 @@
+{
+  "pr_number": 2012,
+  "archive_path": "docs/history/pr-reviews/PR-2012-fix-backlog-repair-b-0247-metadata-after-merge.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T02:52:55.841Z",
+  "schema_version": "v1",
+  "commit_sha": "8a05fcae16ac33b0cf11941777d9e59a4bdb899f",
+  "title": "fix(backlog): repair B-0247 metadata after merge",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:52:33Z",
+  "head_ref": "codex/b0247-metadata-index-repair"
+}

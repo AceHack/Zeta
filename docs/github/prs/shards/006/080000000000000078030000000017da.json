@@ -1,0 +1,19 @@
+{
+  "pr_number": 6106,
+  "archive_path": "docs/history/pr-reviews/PR-6106-feat-b-0250-cluster-merge-burst-coincidence-events.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GaIWF",
+    "comment:PRRC_kwDOSF9kNM7GaIWM",
+    "comment:PRRC_kwDOSF9kNM7GaLWx",
+    "thread:PRRT_kwDOSF9kNM6F3r3Z",
+    "thread:PRRT_kwDOSF9kNM6F3r3d",
+    "thread:PRRT_kwDOSF9kNM6F3uUr"
+  ],
+  "fetched_at": "2026-05-30T12:49:22.557Z",
+  "schema_version": "v1",
+  "commit_sha": "93af5b904aea30dbfff6948fd22361fe2c3d3f1d",
+  "title": "feat(B-0250): cluster merge-burst coincidence events",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T12:49:01Z",
+  "head_ref": "claim/codex-loop-b0250-merge-burst-clustering-20260530"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8725,
+  "archive_path": "docs/history/pr-reviews/PR-8725-zeta-ir-v1-freeze-the-generator-ir-layout-face-3-unblock-prep.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T07:08:11.422Z",
+  "schema_version": "v1",
+  "commit_sha": "3d748f6ff726fb44dbb465a702b6ef22c0ca6cda",
+  "title": "zeta-ir-v1: freeze the generator-IR layout (Face-3 unblock prep)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T07:07:46Z",
+  "head_ref": "lumen/zeta-ir-v1-freeze"
+}

@@ -1,0 +1,31 @@
+{
+  "pr_number": 2959,
+  "archive_path": "docs/history/pr-reviews/PR-2959-feat-b-0400-bus-gate-integration-allactiveclaims-with-bus-claims-slice-5.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ap5fC",
+    "comment:PRRC_kwDOSF9kNM7ApjHd",
+    "comment:PRRC_kwDOSF9kNM7Apk3f",
+    "comment:PRRC_kwDOSF9kNM7Apk4Q",
+    "comment:PRRC_kwDOSF9kNM7Apk4u",
+    "comment:PRRC_kwDOSF9kNM7App7k",
+    "comment:PRRC_kwDOSF9kNM7App9Z",
+    "comment:PRRC_kwDOSF9kNM7App_z",
+    "comment:PRRC_kwDOSF9kNM7Apq4y",
+    "comment:PRRC_kwDOSF9kNM7ApqCs",
+    "comment:PRRC_kwDOSF9kNM7ApqVN",
+    "comment:PRRC_kwDOSF9kNM7Apqf0",
+    "comment:PRRC_kwDOSF9kNM7ApqsP",
+    "thread:PRRT_kwDOSF9kNM6BqNys",
+    "thread:PRRT_kwDOSF9kNM6BqPF4",
+    "thread:PRRT_kwDOSF9kNM6BqPG4",
+    "thread:PRRT_kwDOSF9kNM6BqPGg",
+    "thread:PRRT_kwDOSF9kNM6Bqdw3"
+  ],
+  "fetched_at": "2026-05-13T07:11:48.030Z",
+  "schema_version": "v1",
+  "commit_sha": "7c622dfa60f6960ab490c297d6c0e2b59bcb1ed5",
+  "title": "feat(B-0400): bus-gate integration — allActiveClaims + --with-bus-claims (slice 5)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T07:11:30Z",
+  "head_ref": "feat/b-0400-slice5-bus-gate-integration"
+}

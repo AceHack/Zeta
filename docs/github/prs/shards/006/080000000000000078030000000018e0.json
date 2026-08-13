@@ -1,0 +1,16 @@
+{
+  "pr_number": 6368,
+  "archive_path": "docs/history/pr-reviews/PR-6368-docs-invariant-culture-configureawait-default-b-0969-itron-primitive-concepts-wi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gomdw",
+    "comment:PRRC_kwDOSF9kNM7Gouzp",
+    "thread:PRRT_kwDOSF9kNM6GCxOA"
+  ],
+  "fetched_at": "2026-06-01T08:05:28.944Z",
+  "schema_version": "v1",
+  "commit_sha": "4c8f01294bc0df40d31ba1d5e2f2dd07cb2917cf",
+  "title": "docs: invariant-culture/ConfigureAwait default (B-0969) + Itron primitive concepts → wish list + CAP-per-layer research doc",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T08:05:05Z",
+  "head_ref": "otto-cli/itron-survey-invariant-culture-2026-06-01"
+}

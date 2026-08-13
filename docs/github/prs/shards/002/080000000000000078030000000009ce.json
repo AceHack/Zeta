@@ -1,0 +1,15 @@
+{
+  "pr_number": 2510,
+  "archive_path": "docs/history/pr-reviews/PR-2510-research-b-0313-slice-3-coverage-scanner-confirmation-backlog-close-riven.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_o7PU",
+    "thread:PRRT_kwDOSF9kNM6A6hdI"
+  ],
+  "fetched_at": "2026-05-10T16:37:41.083Z",
+  "schema_version": "v1",
+  "commit_sha": "135a069c0be060138b6cc26a36c8a800034fa461",
+  "title": "research(B-0313): slice-3 coverage scanner confirmation + backlog close (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T16:37:24Z",
+  "head_ref": "claim/b0313-otto-nn-anchor-coverage-slice3-riven-2026-05-10"
+}

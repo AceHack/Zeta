@@ -1,0 +1,12 @@
+{
+  "pr_number": 8399,
+  "archive_path": "docs/history/pr-reviews/PR-8399-docs-society-9f-correct-audio-is-built-chipaudio-audio-over-geometry-alljoyn-lin.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:42:17.596Z",
+  "schema_version": "v1",
+  "commit_sha": "e630bfbb419eef371b4bae5c4934ec18b7824799",
+  "title": "docs(society): §9f — correct (audio IS built: ChipAudio audio-over-geometry) + AllJoyn lineage, low-fi-retro, QPG over DPI",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:41:55Z",
+  "head_ref": "docs/9f-audio-built-alljoyn-lowfi-qpg"
+}

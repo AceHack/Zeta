@@ -1,0 +1,28 @@
+{
+  "pr_number": 2158,
+  "archive_path": "docs/history/pr-reviews/PR-2158-feat-b-0264-wire-refresh-worldview-ts-as-canonical-pre-decide-in-tick-checklist.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_c98q",
+    "comment:PRRC_kwDOSF9kNM6_c_O9",
+    "comment:PRRC_kwDOSF9kNM6_c_OR",
+    "comment:PRRC_kwDOSF9kNM6_c_Ol",
+    "comment:PRRC_kwDOSF9kNM6_c_PI",
+    "comment:PRRC_kwDOSF9kNM6_c_cm",
+    "comment:PRRC_kwDOSF9kNM6_dBi6",
+    "comment:PRRC_kwDOSF9kNM6_dBi8",
+    "comment:PRRC_kwDOSF9kNM6_dBi9",
+    "comment:PRRC_kwDOSF9kNM6_dBi_",
+    "thread:PRRT_kwDOSF9kNM6AxPlV",
+    "thread:PRRT_kwDOSF9kNM6AxQc1",
+    "thread:PRRT_kwDOSF9kNM6AxQcp",
+    "thread:PRRT_kwDOSF9kNM6AxQdA",
+    "thread:PRRT_kwDOSF9kNM6AxQdI"
+  ],
+  "fetched_at": "2026-05-09T00:50:27.158Z",
+  "schema_version": "v1",
+  "commit_sha": "0caaa513641125539f1dbeccc79f51702c69b314",
+  "title": "feat(B-0264): wire refresh-worldview.ts as canonical pre-decide in tick checklist",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T00:50:06Z",
+  "head_ref": "claim/B-0264-refresh-worldview-tick-integration"
+}

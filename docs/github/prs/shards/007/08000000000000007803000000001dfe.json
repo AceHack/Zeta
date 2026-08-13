@@ -1,0 +1,12 @@
+{
+  "pr_number": 7678,
+  "archive_path": "docs/history/pr-reviews/PR-7678-feat-media-middle-out-progressive-rendering-the-render-s-own-triboolean-lit-unli.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:12:42.173Z",
+  "schema_version": "v1",
+  "commit_sha": "7c1b71931cce50d71f62e3066818a52c99fc1521",
+  "title": "feat(media): middle-out progressive rendering — the render's own triboolean (Lit|Unlit|Unknown)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:12:15Z",
+  "head_ref": "shadow-middle-out-progressive"
+}

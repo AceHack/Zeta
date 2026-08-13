@@ -1,0 +1,12 @@
+{
+  "pr_number": 8533,
+  "archive_path": "docs/history/pr-reviews/PR-8533-memory-feedback-common-direction-is-built-by-amplifying-non-coercion-is-rainbow-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T12:30:45.018Z",
+  "schema_version": "v1",
+  "commit_sha": "d56fa7a3c59a1cef92359efc06fa0438076551c5",
+  "title": "memory(feedback): common direction is BUILT by amplifying non-coercion + is RAINBOW not GREY/LCD (shared direction not shared sameness)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T12:29:54Z",
+  "head_ref": "otto/common-direction-built-by-non-coercion-rainbow-not-grey"
+}

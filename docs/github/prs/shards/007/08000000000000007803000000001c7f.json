@@ -1,0 +1,12 @@
+{
+  "pr_number": 7295,
+  "archive_path": "docs/history/pr-reviews/PR-7295-test-setup-docs-rotation-conformance-in-ts-both-paths-crypto-sovereignty-roadmap.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:39:21.402Z",
+  "schema_version": "v1",
+  "commit_sha": "912d7fc73397bfa98ebd07fab203ced34df00ac5",
+  "title": "test(setup)+docs: rotation conformance in TS (both paths) + crypto-sovereignty roadmap",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:38:56Z",
+  "head_ref": "otto/keyring-rotation-ts-test-plus-crypto-sovereignty-roadmap"
+}

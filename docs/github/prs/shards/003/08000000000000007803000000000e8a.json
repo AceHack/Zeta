@@ -1,0 +1,15 @@
+{
+  "pr_number": 3722,
+  "archive_path": "docs/history/pr-reviews/PR-3722-shard-tick-2026-05-16t03-54z-verify-reviewer-findings-rule-extension-pr-3721.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1T8t",
+    "thread:PRRT_kwDOSF9kNM6ChX1O"
+  ],
+  "fetched_at": "2026-05-16T04:16:55.122Z",
+  "schema_version": "v1",
+  "commit_sha": "30f8f312ce4ae45332dbcf9db0b033d68bd1c1cd",
+  "title": "shard(tick): 2026-05-16T03:54Z — verify-reviewer-findings rule extension (PR #3721)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:16:38Z",
+  "head_ref": "shard/tick-0354z-otto-cli-2026-05-16"
+}

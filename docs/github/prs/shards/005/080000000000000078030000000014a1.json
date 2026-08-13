@@ -1,0 +1,12 @@
+{
+  "pr_number": 5281,
+  "archive_path": "docs/history/pr-reviews/PR-5281-feat-b-0824-amara-7-point-null-maybe-sql-discipline-3-examples-4-property-tests.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T19:00:14.273Z",
+  "schema_version": "v1",
+  "commit_sha": "63abeebc428db2ddb22025fd86892f86905f0b1c",
+  "title": "feat(B-0824): Amara 7-point NULL/Maybe SQL discipline + 3 examples + 4 property tests",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T18:59:54Z",
+  "head_ref": "otto-cli/B-0824-amara-null-maybe-discipline-2026-05-26"
+}

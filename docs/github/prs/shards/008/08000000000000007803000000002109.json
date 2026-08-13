@@ -1,0 +1,12 @@
+{
+  "pr_number": 8457,
+  "archive_path": "docs/history/pr-reviews/PR-8457-feat-core-add-source-owned-chip-cart-fixtures.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T06:16:06.349Z",
+  "schema_version": "v1",
+  "commit_sha": "c57c07d4095eb7b4dcbe88642154d030a61324b6",
+  "title": "feat(core): add source-owned CHIP cart fixtures",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T06:15:38Z",
+  "head_ref": "codex/cart-fixtures-chip9"
+}

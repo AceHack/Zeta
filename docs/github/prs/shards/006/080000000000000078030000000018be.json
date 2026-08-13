@@ -1,0 +1,12 @@
+{
+  "pr_number": 6334,
+  "archive_path": "docs/history/pr-reviews/PR-6334-docs-land-4-multi-agent-review-follow-ups-b-0959-0-corrections-b-0954-1-review-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T03:50:50.651Z",
+  "schema_version": "v1",
+  "commit_sha": "18ffe406031fabee1e865b6003c37b3961c45135",
+  "title": "docs: land 4 multi-agent-review follow-ups (B-0959 §0 corrections + B-0954.1 + review preservation)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T03:50:28Z",
+  "head_ref": "otto-cli/b0959-review-followups-2026-06-01"
+}

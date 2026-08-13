@@ -1,0 +1,33 @@
+{
+  "pr_number": 2085,
+  "archive_path": "docs/history/pr-reviews/PR-2085-fix-b-0306-preserve-pace-instruction-boundaries.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_S-kH",
+    "comment:PRRC_kwDOSF9kNM6_TA4G",
+    "comment:PRRC_kwDOSF9kNM6_TA4n",
+    "comment:PRRC_kwDOSF9kNM6_TA5A",
+    "comment:PRRC_kwDOSF9kNM6_TD_h",
+    "comment:PRRC_kwDOSF9kNM6_TMli",
+    "comment:PRRC_kwDOSF9kNM6_TMmC",
+    "comment:PRRC_kwDOSF9kNM6_TMmV",
+    "comment:PRRC_kwDOSF9kNM6_TOIa",
+    "comment:PRRC_kwDOSF9kNM6_TTiY",
+    "comment:PRRC_kwDOSF9kNM6_TTms",
+    "comment:PRRC_kwDOSF9kNM6_TTqK",
+    "thread:PRRT_kwDOSF9kNM6Ap5OR",
+    "thread:PRRT_kwDOSF9kNM6Ap6-P",
+    "thread:PRRT_kwDOSF9kNM6Ap6-g",
+    "thread:PRRT_kwDOSF9kNM6Ap692",
+    "thread:PRRT_kwDOSF9kNM6AqD2o",
+    "thread:PRRT_kwDOSF9kNM6AqD3C",
+    "thread:PRRT_kwDOSF9kNM6AqD3R",
+    "thread:PRRT_kwDOSF9kNM6AqFBg"
+  ],
+  "fetched_at": "2026-05-08T15:05:39.030Z",
+  "schema_version": "v1",
+  "commit_sha": "d4bbed6523796fef0b1409aed64a949a355f36ec",
+  "title": "fix(B-0306): preserve pace instruction boundaries",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T15:05:21Z",
+  "head_ref": "codex/pr2084-pace-extractor-followup"
+}

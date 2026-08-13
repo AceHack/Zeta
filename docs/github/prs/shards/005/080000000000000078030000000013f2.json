@@ -1,0 +1,12 @@
+{
+  "pr_number": 5106,
+  "archive_path": "docs/history/pr-reviews/PR-5106-backlog-b-0794-p1-node-self-registers-in-git-argocd-bring-up-of-k8s-apps-charts-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T05:49:26.705Z",
+  "schema_version": "v1",
+  "commit_sha": "68d5b1ca57025d70ceb60368912fede7439aec78",
+  "title": "backlog(B-0794 P1): node self-registers in git → ArgoCD bring-up of K8s + apps/charts; GitOps-native cluster substrate (Aaron 2026-05-26 architectural addition)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:49:09Z",
+  "head_ref": "otto-cli/b0794-node-self-registers-in-git-under-maintainers-dev-cluster-triggers-argocd-bringup-2026-05-26"
+}

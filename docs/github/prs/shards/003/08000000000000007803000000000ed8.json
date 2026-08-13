@@ -1,0 +1,12 @@
+{
+  "pr_number": 3800,
+  "archive_path": "docs/history/pr-reviews/PR-3800-chore-b-0159-close-row-multi-slice-children-all-closed-new-drift-sub-class-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T07:15:46.406Z",
+  "schema_version": "v1",
+  "commit_sha": "509eb0d449ae9e77d70e89293e28f0086990b817",
+  "title": "chore(b-0159): close row — multi-slice-children-all-closed (NEW drift sub-class #4)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T07:15:28Z",
+  "head_ref": "chore/b0159-status-section-partial-completion-otto-cli-2026-05-16"
+}

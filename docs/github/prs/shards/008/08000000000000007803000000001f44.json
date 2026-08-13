@@ -1,0 +1,12 @@
+{
+  "pr_number": 8004,
+  "archive_path": "docs/history/pr-reviews/PR-8004-docs-research-shadow-ferry-30-addendum-3d-survives-angles-unfolding-animations-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T21:24:23.073Z",
+  "schema_version": "v1",
+  "commit_sha": "667fb0a688845c86e19da498c0139eae9eaae72d",
+  "title": "docs(research)+shadow: ferry 30 addendum — 3D/survives-angles/unfolding-animations prose, explained by the day's own theorems",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T21:23:52Z",
+  "head_ref": "shadow/ferry-30-addendum-3d-text"
+}

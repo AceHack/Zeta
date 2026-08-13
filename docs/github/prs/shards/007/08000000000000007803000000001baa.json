@@ -1,0 +1,12 @@
+{
+  "pr_number": 7082,
+  "archive_path": "docs/history/pr-reviews/PR-7082-docs-research-two-spaces-2-2-meta-time-generator-vs-1-2-regular-inequality-born-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:37:23.345Z",
+  "schema_version": "v1",
+  "commit_sha": "b3cd20c9d18fd72b990d06ae378e3b77c732ef8f",
+  "title": "docs(research): two spaces — 2√2 (meta/time generator) vs 1/2 (regular inequality), Born maps between",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:37:02Z",
+  "head_ref": "otto/two-spaces-2sqrt2-generator-half-inequality-born-map"
+}

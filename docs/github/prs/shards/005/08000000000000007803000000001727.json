@@ -1,0 +1,12 @@
+{
+  "pr_number": 5927,
+  "archive_path": "docs/history/pr-reviews/PR-5927-docs-tick-2002z-cold-boot-tick-shard-catch-43-sentinel-re-arm-10h-gap-fill.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T20:09:01.502Z",
+  "schema_version": "v1",
+  "commit_sha": "2d07669b52d6c12d0a9227529ff725a19943f281",
+  "title": "docs(tick): 2002Z cold-boot tick shard + catch-43 sentinel re-arm + 10h gap-fill",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T20:08:40Z",
+  "head_ref": "otto-cli/tick-2002z-cold-boot-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7700,
+  "archive_path": "docs/history/pr-reviews/PR-7700-feat-media-the-lint-constants-need-why-what-rebindable-meta-dimensions-phase-tim.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T14:27:56.927Z",
+  "schema_version": "v1",
+  "commit_sha": "af34e99645563ae165394ad456bc18d40f1e76bc",
+  "title": "feat(media): the lint + constants need WHY/WHAT + rebindable meta-dimensions + phase-time-only",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T14:27:27Z",
+  "head_ref": "shadow-medialines-lint-constants"
+}

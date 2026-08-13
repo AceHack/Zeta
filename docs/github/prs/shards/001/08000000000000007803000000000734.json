@@ -1,0 +1,21 @@
+{
+  "pr_number": 1844,
+  "archive_path": "docs/history/pr-reviews/PR-1844-research-lior-arc-agi-3-full-stack-atari-dbsp-structure-recognizer-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-v-2m",
+    "comment:PRRC_kwDOSF9kNM6-v-3T",
+    "comment:PRRC_kwDOSF9kNM6-v8MS",
+    "comment:PRRC_kwDOSF9kNM6-v8MZ",
+    "thread:PRRT_kwDOSF9kNM6AQGxW",
+    "thread:PRRT_kwDOSF9kNM6AQGxb",
+    "thread:PRRT_kwDOSF9kNM6AQIzA",
+    "thread:PRRT_kwDOSF9kNM6AQIzl"
+  ],
+  "fetched_at": "2026-05-07T09:13:14.778Z",
+  "schema_version": "v1",
+  "commit_sha": "eb27c2bd704dd33258179a91007071b4ac267d27",
+  "title": "research: Lior ARC-AGI-3 full stack — Atari + DBSP + structure recognizer VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T09:10:41Z",
+  "head_ref": "research/lior-arc-agi-3-stack-visibility-next-step"
+}

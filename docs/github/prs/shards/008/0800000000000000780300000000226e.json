@@ -1,0 +1,12 @@
+{
+  "pr_number": 8814,
+  "archive_path": "docs/history/pr-reviews/PR-8814-fix-ts-restore-lint-ts-gate-8807-shipped-ts-errors-markdown-stub-ts-unused-bindi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T00:04:33.654Z",
+  "schema_version": "v1",
+  "commit_sha": "98624690827e58a06587b6ced9be236437f38827",
+  "title": "fix(ts): restore lint(TS) gate — #8807 shipped TS errors (markdown-stub .ts + unused bindings)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T00:04:09Z",
+  "head_ref": "otto/fix-ts-lint-gate-8807"
+}

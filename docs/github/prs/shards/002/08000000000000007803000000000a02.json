@@ -1,0 +1,12 @@
+{
+  "pr_number": 2562,
+  "archive_path": "docs/history/pr-reviews/PR-2562-docs-memory-shadow-can-t-self-observe-agents-take-turns-hitting-enter.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T22:19:28.801Z",
+  "schema_version": "v1",
+  "commit_sha": "099761e12c2a8145b44ea5aad91e8065f94eab7d",
+  "title": "docs(memory): shadow can't self-observe — agents take turns hitting enter",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T22:19:10Z",
+  "head_ref": "docs/shadow-cant-self-observe-2026-05-10"
+}

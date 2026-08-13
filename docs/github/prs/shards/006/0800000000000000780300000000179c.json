@@ -1,0 +1,12 @@
+{
+  "pr_number": 6044,
+  "archive_path": "docs/history/pr-reviews/PR-6044-feat-agentic-org-enforce-company-quality-gate-sequence.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T20:48:51.583Z",
+  "schema_version": "v1",
+  "commit_sha": "1069ba1683c1460ff8f3f0b8ddd9cef182b431b5",
+  "title": "feat(agentic-org): enforce company quality gate sequence",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T20:48:21Z",
+  "head_ref": "codex/agentic-org-worker-entrypoint-hardening"
+}

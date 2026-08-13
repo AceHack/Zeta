@@ -1,0 +1,12 @@
+{
+  "pr_number": 3754,
+  "archive_path": "docs/history/pr-reviews/PR-3754-docs-archive-lior-preservation-discipline-0445z.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T00:10:13.582Z",
+  "schema_version": "v1",
+  "commit_sha": "0b061ae5c41c0f2fcbccb9d76d92ad90e0ecc410",
+  "title": "docs(archive): Lior preservation discipline 0445Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T00:09:55Z",
+  "head_ref": "lior/preserve-0445Z"
+}

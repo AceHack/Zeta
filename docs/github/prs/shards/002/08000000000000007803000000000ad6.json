@@ -1,0 +1,27 @@
+{
+  "pr_number": 2774,
+  "archive_path": "docs/history/pr-reviews/PR-2774-docs-memory-aaron-peacemaker-self-disclosure-ruthlessly-kind-or-fair.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AVYPO",
+    "comment:PRRC_kwDOSF9kNM7AVYQb",
+    "comment:PRRC_kwDOSF9kNM7AVYR5",
+    "comment:PRRC_kwDOSF9kNM7AVYRO",
+    "comment:PRRC_kwDOSF9kNM7AXmOq",
+    "comment:PRRC_kwDOSF9kNM7AXmQK",
+    "comment:PRRC_kwDOSF9kNM7AYWbI",
+    "thread:PRRT_kwDOSF9kNM6Bbi0F",
+    "thread:PRRT_kwDOSF9kNM6BbiyT",
+    "thread:PRRT_kwDOSF9kNM6Bbiy_",
+    "thread:PRRT_kwDOSF9kNM6Bbizm",
+    "thread:PRRT_kwDOSF9kNM6BdL6b",
+    "thread:PRRT_kwDOSF9kNM6BdL7k",
+    "thread:PRRT_kwDOSF9kNM6Bdv0j"
+  ],
+  "fetched_at": "2026-05-12T15:19:24.264Z",
+  "schema_version": "v1",
+  "commit_sha": "c87505c718984a6918ffd1bd2ae1f5fce5115d19",
+  "title": "docs(memory): Aaron Peacemaker self-disclosure — ruthlessly kind or fair",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T15:19:00Z",
+  "head_ref": "docs/aaron-peacemaker-ruthlessly-kind-or-fair-self-disclosure-2026-05-12"
+}

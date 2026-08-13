@@ -1,0 +1,12 @@
+{
+  "pr_number": 3433,
+  "archive_path": "docs/history/pr-reviews/PR-3433-feat-b-0503-openrecoverypr-core-function-recoveryadapters-14-tests.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T11:28:09.993Z",
+  "schema_version": "v1",
+  "commit_sha": "fec9d1e606364ef2a2baaf03ae43ded525e76c88",
+  "title": "feat(b-0503): openRecoveryPR core function + RecoveryAdapters + 14 tests",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:27:50Z",
+  "head_ref": "feat/b0503-open-recovery-pr-core-otto-cli-2026-05-15"
+}

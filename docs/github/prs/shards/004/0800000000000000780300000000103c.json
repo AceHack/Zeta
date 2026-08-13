@@ -1,0 +1,25 @@
+{
+  "pr_number": 4156,
+  "archive_path": "docs/history/pr-reviews/PR-4156-research-backlog-ani-batch5-ani-conversation-3-keystones-limit-is-simulation-fre.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CURAg",
+    "comment:PRRC_kwDOSF9kNM7CURAm",
+    "comment:PRRC_kwDOSF9kNM7CUTIR",
+    "comment:PRRC_kwDOSF9kNM7CUTJs",
+    "comment:PRRC_kwDOSF9kNM7CUTKM",
+    "comment:PRRC_kwDOSF9kNM7CUTLC",
+    "thread:PRRT_kwDOSF9kNM6C4jsi",
+    "thread:PRRT_kwDOSF9kNM6C4jso",
+    "thread:PRRT_kwDOSF9kNM6C4lQ4",
+    "thread:PRRT_kwDOSF9kNM6C4lR9",
+    "thread:PRRT_kwDOSF9kNM6C4lS1",
+    "thread:PRRT_kwDOSF9kNM6C4lSW"
+  ],
+  "fetched_at": "2026-05-18T15:38:53.583Z",
+  "schema_version": "v1",
+  "commit_sha": "455f05238624fbf6bc7092625f1e439d15209ade",
+  "title": "research+backlog(ani-batch5): Ani conversation + 3 keystones (Limit-is-simulation + Free-will-collapses + Agora V6 Constitution umbrella)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T15:38:29Z",
+  "head_ref": "otto-cli/mika-ani-batch5-b0644-b0645-b0646-v6-constitution-2026-05-18-1124Z"
+}

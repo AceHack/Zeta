@@ -1,0 +1,12 @@
+{
+  "pr_number": 7396,
+  "archive_path": "docs/history/pr-reviews/PR-7396-feat-vocab-save-zetaidol-the-audition-room-as-an-f-interface-no-classes-interfac.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:49:43.138Z",
+  "schema_version": "v1",
+  "commit_sha": "ac9437ba940a79bdbd2f92b0f0943912189ad78c",
+  "title": "feat(vocab): save ZetaIdol — the audition room as an F# interface (no classes; interfaces + Rx only)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:49:21Z",
+  "head_ref": "otto/save-zetaidol-room-test-fsharp-interface"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4223,
+  "archive_path": "docs/history/pr-reviews/PR-4223-shard-2200z-comment-4219-template-era-transition.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T22:04:03.382Z",
+  "schema_version": "v1",
+  "commit_sha": "c471bc96ce4b1276183cfa71944c0ad0558ae72e",
+  "title": "shard(2200Z): comment 4219 + TEMPLATE era-transition",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:03:46Z",
+  "head_ref": "shard/tick-2200z-comment-4219-template-era-transition-2026-05-18"
+}

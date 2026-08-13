@@ -1,0 +1,12 @@
+{
+  "pr_number": 7235,
+  "archive_path": "docs/history/pr-reviews/PR-7235-docs-research-ferry-the-repelling-force-nci-anti-collapse-empathy-discovered-it-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T08:45:23.519Z",
+  "schema_version": "v1",
+  "commit_sha": "086341477f2e2d12978397420806bb1c4dd779b1",
+  "title": "docs(research)+ferry: the repelling force = NCI (anti-collapse) — empathy discovered it; pyramid shape + borders give LLMs geospatial reasoning",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T08:44:58Z",
+  "head_ref": "otto/research-repelling-force-NCI-anticollapse-pyramid-borders-geospatial"
+}

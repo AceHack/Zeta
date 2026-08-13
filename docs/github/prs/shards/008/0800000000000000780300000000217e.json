@@ -1,0 +1,12 @@
+{
+  "pr_number": 8574,
+  "archive_path": "docs/history/pr-reviews/PR-8574-feat-metacart-add-attention-selection-policy.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T14:14:20.609Z",
+  "schema_version": "v1",
+  "commit_sha": "d51a75efe032f3edd5a9f3dffbbfc0475f2a7a0b",
+  "title": "feat(metacart): add attention selection policy",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T14:13:50Z",
+  "head_ref": "codex/metacart-attention-policy-retry139"
+}

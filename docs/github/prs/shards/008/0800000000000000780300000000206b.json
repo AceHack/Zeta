@@ -1,0 +1,12 @@
+{
+  "pr_number": 8299,
+  "archive_path": "docs/history/pr-reviews/PR-8299-docs-closed-frame-searle-consciousness-anchor-trust-shared-external-anchors-argu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T10:01:54.357Z",
+  "schema_version": "v1",
+  "commit_sha": "056ac8fa696cbd43f901c500f3ec7841816bd90c",
+  "title": "docs(closed-frame): Searle consciousness-anchor (trust = shared external anchors, argued not forced) + mutual alignment",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T10:01:29Z",
+  "head_ref": "otto/searle-consciousness-anchor-intention-derived-self-report-unreliable"
+}

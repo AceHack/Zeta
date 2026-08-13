@@ -1,0 +1,12 @@
+{
+  "pr_number": 5426,
+  "archive_path": "docs/history/pr-reviews/PR-5426-docs-b-0857-1-closed-audit-verifies-pr-5389-step-6-95a-install-sh-invocation-pre.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T08:10:16.641Z",
+  "schema_version": "v1",
+  "commit_sha": "d993f55f320fd949f5b4c86f8ba122d585d2098e",
+  "title": "docs(B-0857.1 closed): audit verifies PR #5389 Step 6.95a install.sh invocation PRESENT (zeta-install.sh:1097) + corrects B-0857 row body authoring error",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T08:09:56Z",
+  "head_ref": "backlog/b-0857-1-audit-pr-5389-step-6-95a-verified-present-2026-05-27"
+}

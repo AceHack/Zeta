@@ -1,0 +1,12 @@
+{
+  "pr_number": 7759,
+  "archive_path": "docs/history/pr-reviews/PR-7759-docs-shapes-spiral-animation-ratified-perfect-stale-issue-count-pin-fixed.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:34:05.381Z",
+  "schema_version": "v1",
+  "commit_sha": "47d1f47a75cb00679e225c9e1df0cf52f067e90c",
+  "title": "docs(shapes): spiral + animation ratified ('perfect!!') + stale issue-count pin fixed",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:32:44Z",
+  "head_ref": "shadow-spiral-ratified"
+}

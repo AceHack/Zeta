@@ -1,0 +1,12 @@
+{
+  "pr_number": 8976,
+  "archive_path": "docs/history/pr-reviews/PR-8976-feat-setup-1password-in-desired-state-brew-cask-manifest-generic-cask-loop.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T18:01:30.957Z",
+  "schema_version": "v1",
+  "commit_sha": "834e18f084cc1e867cae3c10c704874631b71d57",
+  "title": "feat(setup): 1Password in desired-state — brew-cask manifest + generic cask loop",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T18:01:02Z",
+  "head_ref": "otto/deps-1password-cask"
+}

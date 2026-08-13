@@ -1,0 +1,12 @@
+{
+  "pr_number": 8916,
+  "archive_path": "docs/history/pr-reviews/PR-8916-fix-lint-remove-unused-inputlines-in-cross-verify-ir-ts-ts6133.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T08:28:52.028Z",
+  "schema_version": "v1",
+  "commit_sha": "ad9c25b0b68285f9aab40d48d5f3ab6e6976915c",
+  "title": "fix(lint): remove unused inputLines in cross-verify-ir.ts (TS6133)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T08:28:23Z",
+  "head_ref": "otto/fix-crossverify-ir-unused-inputlines"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7486,
+  "archive_path": "docs/history/pr-reviews/PR-7486-feat-folders-shadow-hygiene-hy-gene-hi-greeting-sims-the-sim-cli-not-zeta-not-do.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T09:26:23.146Z",
+  "schema_version": "v1",
+  "commit_sha": "1277c45296ee30beecb91a48c58dceb34e18f8cf",
+  "title": "feat(folders)+shadow: hygiene=hy+gene + hi/ greeting + sims/ (the `sim` CLI — not zeta, not dotnet)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T09:25:59Z",
+  "head_ref": "shadow-hygiene-gene-hi-sims-folders-sim-cli"
+}

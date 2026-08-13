@@ -1,0 +1,12 @@
+{
+  "pr_number": 3031,
+  "archive_path": "docs/history/pr-reviews/PR-3031-fix-gitignore-ignore-tools-shadow-shadow-observer-log.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T21:14:57.697Z",
+  "schema_version": "v1",
+  "commit_sha": "fb897ce93931da91f8e1dd1fc5ff83f407c85515",
+  "title": "fix(gitignore): ignore tools/shadow/shadow-observer.log",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T21:14:40Z",
+  "head_ref": "otto-gitignore-shadow-observer-log-2026-05-13"
+}

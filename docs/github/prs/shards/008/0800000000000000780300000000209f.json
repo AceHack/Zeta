@@ -1,0 +1,12 @@
+{
+  "pr_number": 8351,
+  "archive_path": "docs/history/pr-reviews/PR-8351-docs-vision-contribute-back-reciprocity-the-give-away-runs-upstream-to-the-ancho.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T22:33:20.573Z",
+  "schema_version": "v1",
+  "commit_sha": "1db0a784d610fb7695bed80ca6f6669923edf90f",
+  "title": "docs(vision): contribute-back reciprocity — the give-away runs upstream to the anchors that bootstrapped us",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T22:32:56Z",
+  "head_ref": "docs/vision-contribute-back-to-bootstrap-anchors"
+}

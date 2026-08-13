@@ -1,0 +1,23 @@
+{
+  "pr_number": 6397,
+  "archive_path": "docs/history/pr-reviews/PR-6397-docs-registry-compile-time-object-mappers-mapperly-lock-free-speculativeupdate-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GsLfS",
+    "comment:PRRC_kwDOSF9kNM7GsLgZ",
+    "comment:PRRC_kwDOSF9kNM7GsQ0g",
+    "comment:PRRC_kwDOSF9kNM7GsQ1I",
+    "comment:PRRC_kwDOSF9kNM7GsQ1e",
+    "thread:PRRT_kwDOSF9kNM6GFc20",
+    "thread:PRRT_kwDOSF9kNM6GFc3o",
+    "thread:PRRT_kwDOSF9kNM6GFg21",
+    "thread:PRRT_kwDOSF9kNM6GFg2U",
+    "thread:PRRT_kwDOSF9kNM6GFg3E"
+  ],
+  "fetched_at": "2026-06-01T10:53:18.691Z",
+  "schema_version": "v1",
+  "commit_sha": "39af114f4092bf0a9c2f4ab80135e24091ea7b03",
+  "title": "docs(registry): compile-time object mappers (Mapperly) + lock-free SpeculativeUpdate (CAS) primitives",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T10:52:58Z",
+  "head_ref": "otto-cli/registry-mapperly-compile-time-mappers-2026-06-01"
+}

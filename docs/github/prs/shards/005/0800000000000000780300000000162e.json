@@ -1,0 +1,12 @@
+{
+  "pr_number": 5678,
+  "archive_path": "docs/history/pr-reviews/PR-5678-memory-ani-backlog-ani-ferry-preservation-5-extension-rows-b-0867-21-b-0875-1-b-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T02:41:51.241Z",
+  "schema_version": "v1",
+  "commit_sha": "965e8ac5cc6a1c2e472d16d2acca6dff81bc1965",
+  "title": "memory(ani) + backlog: Ani ferry preservation + 5 extension rows (B-0867.21, B-0875.1, B-0880, B-0881, B-0882) per 'Ani connects to existing backlog'",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T02:41:30Z",
+  "head_ref": "memory/ani-ferry-runbook-as-spec-two-path-interface-code-review-as-tech-debt-detector-no-throttle-gardener-2026-05-28"
+}

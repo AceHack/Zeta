@@ -1,0 +1,12 @@
+{
+  "pr_number": 8562,
+  "archive_path": "docs/history/pr-reviews/PR-8562-test-aurora-e-fscheck-cross-check-of-permanentharmhorizon-tla-harmfloor.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T12:26:22.607Z",
+  "schema_version": "v1",
+  "commit_sha": "057c0f80c697445f88ea9a8d8efbcf578d3fde84",
+  "title": "test(aurora): (e) FsCheck cross-check of PermanentHarmHorizon.tla (HarmFloor)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T12:25:59Z",
+  "head_ref": "otto/aurora-e-harmhorizon-fscheck"
+}

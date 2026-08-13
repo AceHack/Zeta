@@ -1,0 +1,15 @@
+{
+  "pr_number": 5749,
+  "archive_path": "docs/history/pr-reviews/PR-5749-docs-rule-fix-fwd-xbox-controller-rule-pr-5746-add-missed-composes-with-substrat.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ftcpt",
+    "thread:PRRT_kwDOSF9kNM6FXSm8"
+  ],
+  "fetched_at": "2026-05-28T10:14:02.957Z",
+  "schema_version": "v1",
+  "commit_sha": "9f9f3d88a583daf0b79ce30ea06e35e5dfa7b499",
+  "title": "docs(rule): fix-fwd Xbox-controller rule (PR #5746) — add missed composes-with substrate (Mika 2026-05-27 walkthrough + Ani 2026-05-28 move-next-as-universal-action-grammar + B-0868 + B-0201) per operator catch",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:13:42Z",
+  "head_ref": "otto-cli/xbox-controller-rule-fix-fwd-compose-mika-ani-b0868-b0201-2026-05-28"
+}

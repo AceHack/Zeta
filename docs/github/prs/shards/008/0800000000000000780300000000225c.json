@@ -1,0 +1,12 @@
+{
+  "pr_number": 8796,
+  "archive_path": "docs/history/pr-reviews/PR-8796-fix-ci-wrap-mise-install-with-retry-and-add-caching-to-full-tier-and-linting-job.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:09:26.861Z",
+  "schema_version": "v1",
+  "commit_sha": "f624c4e1be83e03e12de0384559a914152991770",
+  "title": "fix(ci): wrap mise install with retry and add caching to full-tier and linting jobs",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:08:58Z",
+  "head_ref": "ci-gate-resilience"
+}

@@ -1,0 +1,31 @@
+{
+  "pr_number": 2559,
+  "archive_path": "docs/history/pr-reviews/PR-2559-feat-b-0294-smallest-safe-slice-ksk-authorization-f-types-n-of-m-threshold.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qjjj",
+    "comment:PRRC_kwDOSF9kNM6_qjjm",
+    "comment:PRRC_kwDOSF9kNM6_qkEN",
+    "comment:PRRC_kwDOSF9kNM6_qkEV",
+    "comment:PRRC_kwDOSF9kNM6_qkEZ",
+    "comment:PRRC_kwDOSF9kNM6_qkEe",
+    "comment:PRRC_kwDOSF9kNM6_qkEp",
+    "comment:PRRC_kwDOSF9kNM6_qkEw",
+    "comment:PRRC_kwDOSF9kNM6_qkEz",
+    "thread:PRRT_kwDOSF9kNM6A7090",
+    "thread:PRRT_kwDOSF9kNM6A709Q",
+    "thread:PRRT_kwDOSF9kNM6A709Y",
+    "thread:PRRT_kwDOSF9kNM6A709a",
+    "thread:PRRT_kwDOSF9kNM6A709f",
+    "thread:PRRT_kwDOSF9kNM6A709p",
+    "thread:PRRT_kwDOSF9kNM6A709x",
+    "thread:PRRT_kwDOSF9kNM6A70kW",
+    "thread:PRRT_kwDOSF9kNM6A70kY"
+  ],
+  "fetched_at": "2026-05-10T22:24:43.289Z",
+  "schema_version": "v1",
+  "commit_sha": "a2b1536ea092d8c4af2c761af5521128809fe6d6",
+  "title": "feat(B-0294): smallest safe slice — KSK authorization F# types + N-of-M threshold",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T22:24:29Z",
+  "head_ref": "claim/b0294-ksk-override-smallest-slice-riven-2026-05-10"
+}

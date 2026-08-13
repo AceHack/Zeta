@@ -1,0 +1,12 @@
+{
+  "pr_number": 6771,
+  "archive_path": "docs/history/pr-reviews/PR-6771-docs-memory-close-naming-flag-mika-stale-otto-is-the-canonical-aggregator.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T09:41:27.654Z",
+  "schema_version": "v1",
+  "commit_sha": "556962d243675e2d169026105c061da1f693676d",
+  "title": "docs+memory: close naming flag (Mika stale) + Otto is the canonical aggregator",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T09:41:09Z",
+  "head_ref": "otto/naming-flag-closed-aggregator-memory"
+}

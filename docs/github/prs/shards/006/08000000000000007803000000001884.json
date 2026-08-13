@@ -1,0 +1,25 @@
+{
+  "pr_number": 6276,
+  "archive_path": "docs/history/pr-reviews/PR-6276-research-formal-computational-omniscience-over-a-simulation-state-space-under-a-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GjKb9",
+    "comment:PRRC_kwDOSF9kNM7GjKbh",
+    "comment:PRRC_kwDOSF9kNM7GjKbx",
+    "comment:PRRC_kwDOSF9kNM7GjKcM",
+    "comment:PRRC_kwDOSF9kNM7GjKcY",
+    "comment:PRRC_kwDOSF9kNM7GjKch",
+    "thread:PRRT_kwDOSF9kNM6F-tG2",
+    "thread:PRRT_kwDOSF9kNM6F-tGo",
+    "thread:PRRT_kwDOSF9kNM6F-tHA",
+    "thread:PRRT_kwDOSF9kNM6F-tHN",
+    "thread:PRRT_kwDOSF9kNM6F-tHZ",
+    "thread:PRRT_kwDOSF9kNM6F-tHh"
+  ],
+  "fetched_at": "2026-05-31T23:35:58.433Z",
+  "schema_version": "v1",
+  "commit_sha": "347fde004ddf7b88f025bba5d86df197c2546a74",
+  "title": "research(formal): computational omniscience over a simulation state-space under a deterministic simulator",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T23:35:37Z",
+  "head_ref": "otto-cli/formal-analysis-computational-omniscience-2026-05-31"
+}

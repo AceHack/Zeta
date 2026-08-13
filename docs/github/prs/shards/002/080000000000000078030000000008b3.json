@@ -1,0 +1,12 @@
+{
+  "pr_number": 2227,
+  "archive_path": "docs/history/pr-reviews/PR-2227-docs-b-0363-git-native-full-text-inverted-index-backlog.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T07:23:45.154Z",
+  "schema_version": "v1",
+  "commit_sha": "929cdedf0b4631c43ad68445b99c58d69a11b838",
+  "title": "docs(B-0363): git-native full-text inverted index backlog",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:23:28Z",
+  "head_ref": "docs/b0363-git-native-fulltext-index"
+}

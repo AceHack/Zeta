@@ -1,0 +1,12 @@
+{
+  "pr_number": 8661,
+  "archive_path": "docs/history/pr-reviews/PR-8661-docs-memory-type-providers-high-leverage-cross-oracle-roslyn-nemerle-gates-garde.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T00:40:57.867Z",
+  "schema_version": "v1",
+  "commit_sha": "2dcb401df2e3223243678621d2382a072843c59e",
+  "title": "docs+memory: type providers = high-leverage cross-oracle (Roslyn/Nemerle); Gates Garden Algebra = Clifford = braided-monoidal shadow + the cart",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T00:40:33Z",
+  "head_ref": "otto/type-providers-cross-oracle-plus-garden-algebra-braided-monoidal"
+}

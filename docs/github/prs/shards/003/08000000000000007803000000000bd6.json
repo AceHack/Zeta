@@ -1,0 +1,19 @@
+{
+  "pr_number": 3030,
+  "archive_path": "docs/history/pr-reviews/PR-3030-docs-launch-otto-claude-desktop-tight-bootstream-variant-150-lines.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A-A24",
+    "comment:PRRC_kwDOSF9kNM7A-Aql",
+    "comment:PRRC_kwDOSF9kNM7A9-sf",
+    "comment:PRRC_kwDOSF9kNM7A99Vx",
+    "thread:PRRT_kwDOSF9kNM6B5GDq",
+    "thread:PRRT_kwDOSF9kNM6B5HEs"
+  ],
+  "fetched_at": "2026-05-13T21:16:30.753Z",
+  "schema_version": "v1",
+  "commit_sha": "9116dc480d19a6da90056ba7152582f53f03f498",
+  "title": "docs(launch): Otto Claude Desktop tight bootstream variant (~150 lines)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T21:16:08Z",
+  "head_ref": "otto-claude-desktop-tailored-bootstream-2026-05-13"
+}

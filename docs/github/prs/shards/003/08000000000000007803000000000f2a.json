@@ -1,0 +1,12 @@
+{
+  "pr_number": 3882,
+  "archive_path": "docs/history/pr-reviews/PR-3882-chore-b-0049-2-close-class-1-pure-drift-retry-mystery-schools-mithraic-stage-1-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T13:39:59.235Z",
+  "schema_version": "v1",
+  "commit_sha": "083b8154a18761c6cfef6a3264d262c8fd9b534d",
+  "title": "chore(b-0049.2): close (class #1 pure drift; retry) — Mystery schools Mithraic Stage-1 scaffold shipped 2026-05-10",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T13:39:44Z",
+  "head_ref": "otto-cli-b0049.2-close-retry-2026-05-16-1324z"
+}

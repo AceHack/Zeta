@@ -1,0 +1,12 @@
+{
+  "pr_number": 7418,
+  "archive_path": "docs/history/pr-reviews/PR-7418-docs-vocab-idea-folder-frames-to-debate-idea-when-uncertainty-is-your-event-stre.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:33:09.962Z",
+  "schema_version": "v1",
+  "commit_sha": "a59c6c300f729064f6f2bba46a0a24317d042be8",
+  "title": "docs+vocab: idea/ folder (frames to debate) + idea — when uncertainty is your event stream, DBSP streams it",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:32:45Z",
+  "head_ref": "otto/idea-folder-uncertainty-is-your-event-stream-dbsp-streams-it"
+}

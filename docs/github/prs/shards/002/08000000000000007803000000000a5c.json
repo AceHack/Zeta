@@ -1,0 +1,15 @@
+{
+  "pr_number": 2652,
+  "archive_path": "docs/history/pr-reviews/PR-2652-docs-research-deepseek-validates-uom-architecture-no-compiler-fork-prototype-fir.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_ulms",
+    "thread:PRRT_kwDOSF9kNM6A-0JH"
+  ],
+  "fetched_at": "2026-05-11T06:14:16.946Z",
+  "schema_version": "v1",
+  "commit_sha": "6e86351435e61a605d20c6e03411c6b7bc3e167c",
+  "title": "docs(research): DeepSeek validates UoM architecture — no compiler fork, prototype first",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T06:13:54Z",
+  "head_ref": "docs/deepseek-uom-validation-hkt-prototype-2026-05-11"
+}

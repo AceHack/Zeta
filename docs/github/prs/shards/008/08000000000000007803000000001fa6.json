@@ -1,0 +1,12 @@
+{
+  "pr_number": 8102,
+  "archive_path": "docs/history/pr-reviews/PR-8102-feat-ferry-background-ferry-replay-seam-injectable-synchronizationcontext-option.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T00:18:43.663Z",
+  "schema_version": "v1",
+  "commit_sha": "708a5de0dda0db7398f36d9af67eaeb89b9509c9",
+  "title": "feat(ferry): background-ferry replay seam — injectable SynchronizationContext (Option-A 4a)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T00:18:23Z",
+  "head_ref": "otto/ferrythrottler-bg-replay-syncctx-design"
+}

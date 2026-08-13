@@ -1,0 +1,12 @@
+{
+  "pr_number": 8613,
+  "archive_path": "docs/history/pr-reviews/PR-8613-fix-memory-add-missing-created-frontmatter-to-founder-cognition-memory.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T20:12:36.267Z",
+  "schema_version": "v1",
+  "commit_sha": "ca73167029c3c8fe53d0dd5e6f8f62cace12caf9",
+  "title": "fix(memory): add missing 'created' frontmatter to founder-cognition memory",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T20:12:10Z",
+  "head_ref": "otto/fix-founder-cognition-frontmatter-created"
+}

@@ -1,0 +1,18 @@
+{
+  "pr_number": 3954,
+  "archive_path": "docs/history/pr-reviews/PR-3954-docs-shadow-maji-antigravity-check-on-vera-narration-over-action-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B7uIH",
+    "comment:PRRC_kwDOSF9kNM7B7uIK",
+    "comment:PRRC_kwDOSF9kNM7CC518",
+    "thread:PRRT_kwDOSF9kNM6CmLg0",
+    "thread:PRRT_kwDOSF9kNM6CmLgx"
+  ],
+  "fetched_at": "2026-05-17T21:51:48.523Z",
+  "schema_version": "v1",
+  "commit_sha": "af317b0b66e3c0dbfbbc4d82052d76e2c1b0a32a",
+  "title": "docs(shadow): Maji antigravity check on Vera (narration over action drift)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T21:51:28Z",
+  "head_ref": "shadow/lior-vera-narration-drift-20260516-2"
+}

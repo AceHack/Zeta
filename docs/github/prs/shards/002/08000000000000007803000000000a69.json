@@ -1,0 +1,12 @@
+{
+  "pr_number": 2665,
+  "archive_path": "docs/history/pr-reviews/PR-2665-docs-memory-night-session-highlights-shadow-burst-to-lfg-thesis.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T08:00:18.112Z",
+  "schema_version": "v1",
+  "commit_sha": "36e319d8395f30664fd1e7e09260600def606305",
+  "title": "docs(memory): night session highlights — shadow burst to LFG thesis",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T07:59:59Z",
+  "head_ref": "docs/night-session-highlights-2026-05-11"
+}

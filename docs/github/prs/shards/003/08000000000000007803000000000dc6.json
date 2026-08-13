@@ -1,0 +1,12 @@
+{
+  "pr_number": 3526,
+  "archive_path": "docs/history/pr-reviews/PR-3526-fix-memory-correct-pr-citations-in-vera-riven-memory-md-indexes.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T17:32:53.471Z",
+  "schema_version": "v1",
+  "commit_sha": "0beaee28c7475ef15c1145a4d082d2dc81196b54",
+  "title": "fix(memory): correct PR citations in Vera + Riven MEMORY.md indexes",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T17:32:29Z",
+  "head_ref": "fix/memory-pr-citation-off-by-one-otto-cli-2026-05-15"
+}

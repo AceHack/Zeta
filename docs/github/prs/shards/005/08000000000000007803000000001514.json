@@ -1,0 +1,12 @@
+{
+  "pr_number": 5396,
+  "archive_path": "docs/history/pr-reviews/PR-5396-feat-b-0849-phase-2-github-actions-workflow-runs-docker-nixos-install-sh-test-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T04:05:37.403Z",
+  "schema_version": "v1",
+  "commit_sha": "5f53fb2b179dc2dae5e0b7a403ce8d83bb10b6a0",
+  "title": "feat(B-0849 Phase 2): GitHub Actions workflow runs Docker NixOS install.sh test on PRs touching install substrate",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T04:05:15Z",
+  "head_ref": "feat-b0849-2-docker-nixos-install-sh-test-github-actions-integration-2026-05-27-0440z"
+}

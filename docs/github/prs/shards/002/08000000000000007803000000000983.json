@@ -1,0 +1,19 @@
+{
+  "pr_number": 2435,
+  "archive_path": "docs/history/pr-reviews/PR-2435-chore-b-0351-extract-4-large-claude-md-bullets-to-claude-rules.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_maQW",
+    "comment:PRRC_kwDOSF9kNM6_maQc",
+    "comment:PRRC_kwDOSF9kNM6_maQe",
+    "thread:PRRT_kwDOSF9kNM6A4gvN",
+    "thread:PRRT_kwDOSF9kNM6A4gvS",
+    "thread:PRRT_kwDOSF9kNM6A4gvU"
+  ],
+  "fetched_at": "2026-05-10T07:45:10.173Z",
+  "schema_version": "v1",
+  "commit_sha": "845c3329bdbada37a2bd0ea9fe7187ff02548329",
+  "title": "chore(B-0351): extract 4 large CLAUDE.md bullets to .claude/rules/",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T07:44:52Z",
+  "head_ref": "chore/b0351-extract-4-bullets-to-rules"
+}

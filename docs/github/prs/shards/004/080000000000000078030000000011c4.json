@@ -1,0 +1,12 @@
+{
+  "pr_number": 4548,
+  "archive_path": "docs/history/pr-reviews/PR-4548-feat-core-fsharp-zetaid-f-implementation-as-3rd-peer-oracle-12-12-cross-verify-v.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T16:08:40.696Z",
+  "schema_version": "v1",
+  "commit_sha": "652af967a1ef00c9eef86ea6029c59298e0c53c2",
+  "title": "feat(core-fsharp-zetaid): F# implementation as 3rd peer oracle — 12/12 cross-verify vectors match TS+C# canonical hex",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T16:08:19Z",
+  "head_ref": "feat/core-fsharp-zetaid-third-peer-oracle-2026-05-21"
+}

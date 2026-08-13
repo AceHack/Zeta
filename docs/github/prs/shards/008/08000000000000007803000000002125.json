@@ -1,0 +1,12 @@
+{
+  "pr_number": 8485,
+  "archive_path": "docs/history/pr-reviews/PR-8485-feat-darkhall-add-observe-style-room-loop.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T08:47:48.357Z",
+  "schema_version": "v1",
+  "commit_sha": "7cb209f900a499f21184f3d8e57bd2dfae0047af",
+  "title": "feat(darkhall): add observe-style room loop",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T08:47:15Z",
+  "head_ref": "codex/darkhall-room-loop"
+}

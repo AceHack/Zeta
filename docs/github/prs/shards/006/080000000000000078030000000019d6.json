@@ -1,0 +1,17 @@
+{
+  "pr_number": 6614,
+  "archive_path": "docs/history/pr-reviews/PR-6614-docs-ace-slice-8-3-spec-ed25519-trust-core-golden-vectors-rfc-8032-key-id-ace-en.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HSj36",
+    "comment:PRRC_kwDOSF9kNM7HSj3B",
+    "thread:PRRT_kwDOSF9kNM6GhxjB",
+    "thread:PRRT_kwDOSF9kNM6Ghxjo"
+  ],
+  "fetched_at": "2026-06-02T18:29:42.926Z",
+  "schema_version": "v1",
+  "commit_sha": "2004dbd28431aefcd14ff6c88575f1172750d36c",
+  "title": "docs(ace): slice 8.3 spec — ed25519 trust-core golden vectors (RFC 8032 + key_id + Ace envelope)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T18:29:17Z",
+  "head_ref": "otto-windows/ace-slice8.3-ed25519-spec-2026-06-02"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2007,
+  "archive_path": "docs/history/pr-reviews/PR-2007-fix-backlog-decompose-b-0253-interloop-messaging.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T02:43:22.686Z",
+  "schema_version": "v1",
+  "commit_sha": "84b5278b84f446b6f524c1b27009ab1b417b5b26",
+  "title": "fix(backlog): decompose B-0253 interloop messaging",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:43:03Z",
+  "head_ref": "backlog/b0253-decompose"
+}

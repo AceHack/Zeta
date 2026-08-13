@@ -1,0 +1,16 @@
+{
+  "pr_number": 6470,
+  "archive_path": "docs/history/pr-reviews/PR-6470-feat-gset-ts-additive-monoid-surface-monoid-record-completes-g-set-generic-math-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G6QWF",
+    "comment:PRRC_kwDOSF9kNM7G6T7M",
+    "thread:PRRT_kwDOSF9kNM6GP8Hy"
+  ],
+  "fetched_at": "2026-06-01T21:08:09.755Z",
+  "schema_version": "v1",
+  "commit_sha": "61b6af251f6284f1c332f13ce0ecb1b045d4b23e",
+  "title": "feat(gset-ts): additive-monoid surface (Monoid record) — completes G-Set generic-math 4/4",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T21:07:45Z",
+  "head_ref": "otto-cli/gset-generic-math-ts-2026-06-01"
+}

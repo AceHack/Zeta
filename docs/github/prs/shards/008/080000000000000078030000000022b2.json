@@ -1,0 +1,12 @@
+{
+  "pr_number": 8882,
+  "archive_path": "docs/history/pr-reviews/PR-8882-feat-gen-rx-pipeline-emission-ir-as-observable-ts-python-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:25:01.021Z",
+  "schema_version": "v1",
+  "commit_sha": "a5845d74baa2121f2c77909f503fc7a9f78f64c1",
+  "title": "feat(gen): Rx pipeline emission — IR as observable (TS/Python/C#)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:24:35Z",
+  "head_ref": "alexa/rx-emission"
+}

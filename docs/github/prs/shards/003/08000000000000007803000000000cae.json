@@ -1,0 +1,15 @@
+{
+  "pr_number": 3246,
+  "archive_path": "docs/history/pr-reviews/PR-3246-shard-tick-2059z-pr-3239-copilot-thread-fix-end-anchored-plist-regex.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BX8Lh",
+    "thread:PRRT_kwDOSF9kNM6CMH9c"
+  ],
+  "fetched_at": "2026-05-14T21:14:53.501Z",
+  "schema_version": "v1",
+  "commit_sha": "20a528826fc9c22433e9c9927b946289de122a17",
+  "title": "shard(tick): 2059Z — PR #3239 Copilot thread fix (end-anchored plist regex)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:14:31Z",
+  "head_ref": "shard/tick-2059Z-pr3239-thread-fix-otto-cli-2026-05-14"
+}

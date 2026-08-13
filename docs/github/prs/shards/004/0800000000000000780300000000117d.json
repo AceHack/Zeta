@@ -1,0 +1,15 @@
+{
+  "pr_number": 4477,
+  "archive_path": "docs/history/pr-reviews/PR-4477-rule-backlog-item-start-gate-extend-substrate-drift-discriminator-to-orphaned-br.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DZgF0",
+    "thread:PRRT_kwDOSF9kNM6DqxTM"
+  ],
+  "fetched_at": "2026-05-21T02:13:52.716Z",
+  "schema_version": "v1",
+  "commit_sha": "2e01e6df9ab1ed3dcec9dccf9972a1594cd1c5b1",
+  "title": "rule(backlog-item-start-gate): extend substrate-drift discriminator to orphaned-branch scope",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T02:13:36Z",
+  "head_ref": "rule/backlog-item-start-gate-extend-substrate-drift-discriminator-to-orphaned-branch-scope-2026-05-21"
+}

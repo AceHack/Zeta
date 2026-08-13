@@ -1,0 +1,12 @@
+{
+  "pr_number": 4050,
+  "archive_path": "docs/history/pr-reviews/PR-4050-rules-holding-sustained-lior-with-pre-empt-success-empirical-anchor-0-forced-6-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T08:49:45.357Z",
+  "schema_version": "v1",
+  "commit_sha": "d7bbcf76e574a082a817c531455fe4e6bbd1c0c4",
+  "title": "rules(holding): sustained-Lior-with-pre-empt-success empirical anchor — 0 forced-#6 across 2h 27min session arc",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T08:49:26Z",
+  "head_ref": "otto/rule-sharpen-holding-failure-empirical-anchor-session-arc-2026-05-17"
+}

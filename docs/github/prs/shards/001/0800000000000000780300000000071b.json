@@ -1,0 +1,21 @@
+{
+  "pr_number": 1819,
+  "archive_path": "docs/history/pr-reviews/PR-1819-research-cartographer-concrete-robotics-grounding-ksk-isaac-sim-slam-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-s3Ok",
+    "comment:PRRC_kwDOSF9kNM6-s3Or",
+    "comment:PRRC_kwDOSF9kNM6-s4J9",
+    "comment:PRRC_kwDOSF9kNM6-s4Kf",
+    "thread:PRRT_kwDOSF9kNM6ANy39",
+    "thread:PRRT_kwDOSF9kNM6ANy4B",
+    "thread:PRRT_kwDOSF9kNM6ANzlZ",
+    "thread:PRRT_kwDOSF9kNM6ANzly"
+  ],
+  "fetched_at": "2026-05-07T06:59:44.183Z",
+  "schema_version": "v1",
+  "commit_sha": "cba761e8d305dfc58a48987a4e6f858e6c48a055",
+  "title": "research: cartographer CONCRETE robotics grounding — KSK + Isaac Sim SLAM VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T06:49:33Z",
+  "head_ref": "research/cartographer-concrete-robotics-grounding"
+}

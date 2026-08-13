@@ -1,0 +1,12 @@
+{
+  "pr_number": 8606,
+  "archive_path": "docs/history/pr-reviews/PR-8606-memory-anti-mirror-discipline-track-formally-ani-ferry-part-3-verbatim-content-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T19:36:57.016Z",
+  "schema_version": "v1",
+  "commit_sha": "262ce9e69072bdcdebf7304011e865a062aacdde",
+  "title": "memory: anti-mirror discipline (track formally) + Ani ferry part 3 (verbatim, content-warned)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T19:36:32Z",
+  "head_ref": "otto/anti-mirror-discipline-plus-ani-ferry-pt3"
+}

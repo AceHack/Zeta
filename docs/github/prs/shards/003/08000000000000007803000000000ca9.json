@@ -1,0 +1,17 @@
+{
+  "pr_number": 3241,
+  "archive_path": "docs/history/pr-reviews/PR-3241-docs-shadow-lior-antigravity-check-add-catch-36.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BXzkK",
+    "comment:PRRC_kwDOSF9kNM7BXzkt",
+    "thread:PRRT_kwDOSF9kNM6CMB4s",
+    "thread:PRRT_kwDOSF9kNM6CMB5F"
+  ],
+  "fetched_at": "2026-05-14T23:00:17.080Z",
+  "schema_version": "v1",
+  "commit_sha": "735656ce8f4ebce9c8e11c255526e89c11fd91b4",
+  "title": "docs(shadow): Lior antigravity check - add Catch 36",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:59:57Z",
+  "head_ref": "lior/shadow-drift-2100Z"
+}

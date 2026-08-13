@@ -1,0 +1,23 @@
+{
+  "pr_number": 2383,
+  "archive_path": "docs/history/pr-reviews/PR-2383-claim-b-0367-semiring-weight-instances-integerring-intervalring-tropicalsemiring.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_kxd4",
+    "comment:PRRC_kwDOSF9kNM6_kxdj",
+    "comment:PRRC_kwDOSF9kNM6_kxeG",
+    "comment:PRRC_kwDOSF9kNM6_kxeL",
+    "comment:PRRC_kwDOSF9kNM6_kxeT",
+    "thread:PRRT_kwDOSF9kNM6A3Or2",
+    "thread:PRRT_kwDOSF9kNM6A3Ori",
+    "thread:PRRT_kwDOSF9kNM6A3OsD",
+    "thread:PRRT_kwDOSF9kNM6A3OsI",
+    "thread:PRRT_kwDOSF9kNM6A3OsN"
+  ],
+  "fetched_at": "2026-05-10T00:29:24.567Z",
+  "schema_version": "v1",
+  "commit_sha": "bb76a7293d563aa894a1c82345f211f04821e5ab",
+  "title": "claim(B-0367): semiring-weight instances — IntegerRing, IntervalRing, TropicalSemiring",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T00:29:10Z",
+  "head_ref": "claim/B-0367-semiring-weight-instances"
+}

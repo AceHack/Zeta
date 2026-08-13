@@ -1,0 +1,12 @@
+{
+  "pr_number": 8590,
+  "archive_path": "docs/history/pr-reviews/PR-8590-feat-metacart-emit-policy-backpressure-heat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T15:48:21.605Z",
+  "schema_version": "v1",
+  "commit_sha": "d6c197f7f76044558f57ea7d16e96ca565befb15",
+  "title": "feat(metacart): emit policy backpressure heat",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T15:47:56Z",
+  "head_ref": "codex/metacart-policy-backpressure"
+}

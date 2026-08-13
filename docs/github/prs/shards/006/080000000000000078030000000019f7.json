@@ -1,0 +1,15 @@
+{
+  "pr_number": 6647,
+  "archive_path": "docs/history/pr-reviews/PR-6647-research-fix-multi-tower-note-reviewer-fixes-33-status-constructive-not-independ.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HhGpm",
+    "thread:PRRT_kwDOSF9kNM6GsYJ1"
+  ],
+  "fetched_at": "2026-06-03T09:26:04.869Z",
+  "schema_version": "v1",
+  "commit_sha": "23b1ed2f218f0d6511dd005078470a1823e2a2c1",
+  "title": "research(fix): multi-tower note reviewer fixes (§33 status + constructive-not-independent)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T09:25:42Z",
+  "head_ref": "otto-cli/multitower-note-reviewer-fixes-2026-06-03"
+}

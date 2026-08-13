@@ -1,0 +1,12 @@
+{
+  "pr_number": 2492,
+  "archive_path": "docs/history/pr-reviews/PR-2492-docs-memory-add-expungement-timeline-to-case-study.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T13:25:59.036Z",
+  "schema_version": "v1",
+  "commit_sha": "2f138e299f3a4e25b1adc35e7200ad78669bf72d",
+  "title": "docs(memory): add expungement timeline to case study",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T13:25:42Z",
+  "head_ref": "fix/case-study-expungement-update-2026-05-10"
+}

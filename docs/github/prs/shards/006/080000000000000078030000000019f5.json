@@ -1,0 +1,12 @@
+{
+  "pr_number": 6645,
+  "archive_path": "docs/history/pr-reviews/PR-6645-research-preserve-multi-tower-proofs-foundation-independence-aoc-hidden-dep-cons.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T09:22:17.820Z",
+  "schema_version": "v1",
+  "commit_sha": "b47a53851e85edb6598c20d304339a20273804f6",
+  "title": "research(preserve): multi-tower proofs + foundation-independence + AoC hidden-dep + constructive tower (forwarded)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T09:21:55Z",
+  "head_ref": "otto-cli/preserve-multi-tower-proofs-substrate-2026-06-03"
+}

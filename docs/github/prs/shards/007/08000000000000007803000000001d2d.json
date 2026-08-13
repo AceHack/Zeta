@@ -1,0 +1,12 @@
+{
+  "pr_number": 7469,
+  "archive_path": "docs/history/pr-reviews/PR-7469-docs-research-save-the-dolphin-coincidence-max-maximdolphin-the-riff-was-grounde.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T07:13:13.531Z",
+  "schema_version": "v1",
+  "commit_sha": "e4f13aea86d9b1877f2dbc85fb50b6ccee390ba5",
+  "title": "docs(research): save the dolphin coincidence — Max = maximdolphin (the riff was grounded)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T07:12:51Z",
+  "head_ref": "shadow-zetamax-dolphin-max-coincidence"
+}

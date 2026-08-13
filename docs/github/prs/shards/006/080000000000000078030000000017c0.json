@@ -1,0 +1,12 @@
+{
+  "pr_number": 6080,
+  "archive_path": "docs/history/pr-reviews/PR-6080-docs-research-fix-forward-dao-dio-did-in-max-onboarding-synthesis-correct-aaron-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T04:46:49.301Z",
+  "schema_version": "v1",
+  "commit_sha": "15acda94f7b9cca2a5be7e1e87a1051902418cca",
+  "title": "docs(research): fix-forward DAO → DIO/DID in Max-onboarding synthesis (correct Aaron's quote)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T04:46:31Z",
+  "head_ref": "otto-cli/fix-max-doc-dao-to-dio-2026-05-30"
+}

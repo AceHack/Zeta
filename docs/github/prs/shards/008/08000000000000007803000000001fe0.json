@@ -1,0 +1,12 @@
+{
+  "pr_number": 8160,
+  "archive_path": "docs/history/pr-reviews/PR-8160-fix-tsc-type-only-imports-in-z-set-merkle-restore-main-green.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:35:16.882Z",
+  "schema_version": "v1",
+  "commit_sha": "9415ea33f656ba3831df4595a895c7ec5cd0f945",
+  "title": "fix(tsc): type-only imports in z-set-merkle (restore main-green)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:34:57Z",
+  "head_ref": "otto/fix-tsc-zset-merkle-typeonly"
+}

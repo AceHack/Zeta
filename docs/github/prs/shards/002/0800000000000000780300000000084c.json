@@ -1,0 +1,12 @@
+{
+  "pr_number": 2124,
+  "archive_path": "docs/history/pr-reviews/PR-2124-fix-backlog-close-b-0126-2-unblock-b-0126-4-sync-index.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T19:58:21.657Z",
+  "schema_version": "v1",
+  "commit_sha": "c8b98c91df82edccd191ab8e5b6f9233ac943c14",
+  "title": "fix(backlog): close B-0126.2, unblock B-0126.4, sync index",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T19:57:59Z",
+  "head_ref": "fix/B-0126-backlog-status-drift"
+}

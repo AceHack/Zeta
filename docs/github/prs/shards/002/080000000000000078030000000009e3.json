@@ -1,0 +1,17 @@
+{
+  "pr_number": 2531,
+  "archive_path": "docs/history/pr-reviews/PR-2531-docs-research-preserve-aaron-amazon-alexa-khaleesi-clifford-algebra-agenda-disco.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qERW",
+    "comment:PRRC_kwDOSF9kNM6_qERY",
+    "thread:PRRT_kwDOSF9kNM6A7cdL",
+    "thread:PRRT_kwDOSF9kNM6A7cdM"
+  ],
+  "fetched_at": "2026-05-10T20:36:41.154Z",
+  "schema_version": "v1",
+  "commit_sha": "e3b9cc9f81274052279a83fdf2140dc306351bca",
+  "title": "docs(research): preserve Aaron ↔ Amazon Alexa KHALEESI + Clifford algebra agenda discovery",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T20:36:25Z",
+  "head_ref": "docs/alexa-khaleesi-clifford-2026-05-10"
+}

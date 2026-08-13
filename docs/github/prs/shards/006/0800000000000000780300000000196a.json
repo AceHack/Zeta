@@ -1,0 +1,15 @@
+{
+  "pr_number": 6506,
+  "archive_path": "docs/history/pr-reviews/PR-6506-feat-dynamicvalue-lock-float-bytes-under-canonical-cbor-seed-c-oracle.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G9Dt6",
+    "thread:PRRT_kwDOSF9kNM6GR_0O"
+  ],
+  "fetched_at": "2026-06-02T00:27:18.244Z",
+  "schema_version": "v1",
+  "commit_sha": "c3f6e4b62359ce314b583335ad91ae1891626c8b",
+  "title": "feat(DynamicValue): lock Float + Bytes under canonical CBOR (seed + C# oracle)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T00:26:56Z",
+  "head_ref": "otto-cli/dynamicvalue-cbor-float-bytes-2026-06-01"
+}

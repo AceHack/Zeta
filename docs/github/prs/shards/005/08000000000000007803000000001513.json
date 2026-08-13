@@ -1,0 +1,15 @@
+{
+  "pr_number": 5395,
+  "archive_path": "docs/history/pr-reviews/PR-5395-fix-postmerge-5394-build-iso-failure-zeta-ai-agent-nix-static-persona-registry-p.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FL4Bw",
+    "thread:PRRT_kwDOSF9kNM6E_DLU"
+  ],
+  "fetched_at": "2026-05-27T03:29:06.724Z",
+  "schema_version": "v1",
+  "commit_sha": "aa87218d22c3d5d6c621b86d5f4e37519f4b8ed1",
+  "title": "fix(postmerge-#5394 build-iso failure): zeta-ai-agent.nix static persona registry + per-persona enable.<name> booleans (was problematic submodule-as-option that NixOS module-merge couldn't handle)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T03:28:49Z",
+  "head_ref": "feat-b0850-3-zeta-ai-agent-parameterized-module-refactor-multi-vendor-scaffold-2026-05-27-0149z"
+}

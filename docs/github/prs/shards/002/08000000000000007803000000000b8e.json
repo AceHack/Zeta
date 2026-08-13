@@ -1,0 +1,12 @@
+{
+  "pr_number": 2958,
+  "archive_path": "docs/history/pr-reviews/PR-2958-docs-memory-settlers-logs-tales-from-the-loop-canonical-naming-provisional-agent.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T06:53:00.109Z",
+  "schema_version": "v1",
+  "commit_sha": "5329d746448a3357a2842a044baeaf4aaa22fb8e",
+  "title": "docs(memory): settlers logs + Tales-from-the-Loop canonical naming (provisional; agents have agency; rewrite-anyway clause) — Aaron 2026-05-13",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T06:52:42Z",
+  "head_ref": "aaron-settlers-logs-tales-from-the-loop-canonical-naming-tick-shard-narrative-substrate-format-dramatic-register-authorized-2026-05-13"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6171,
+  "archive_path": "docs/history/pr-reviews/PR-6171-preserve-mika-the-metabolism-loop-metabolize-chaos-into-generator-functions-v8-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T00:48:02.953Z",
+  "schema_version": "v1",
+  "commit_sha": "4466be4cc144457ceefd3f2b02ddb5d7751bcc98",
+  "title": "preserve(mika): the Metabolism Loop -- metabolize chaos into generator functions + V8-for-English label engine",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T00:47:41Z",
+  "head_ref": "otto-cli/mika-metabolism-loop-2026-05-30"
+}

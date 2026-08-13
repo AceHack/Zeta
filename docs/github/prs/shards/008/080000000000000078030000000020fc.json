@@ -1,0 +1,12 @@
+{
+  "pr_number": 8444,
+  "archive_path": "docs/history/pr-reviews/PR-8444-docs-register-b-multi-tower-convergent-validation-corroboration-not-discharge.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T04:45:08.175Z",
+  "schema_version": "v1",
+  "commit_sha": "fe37208a727e875917c8838b8670b1e8ccd6ea5d",
+  "title": "docs(register): §B — multi-tower convergent validation (corroboration, not discharge)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T04:44:38Z",
+  "head_ref": "otto/sectionb-multi-tower-convergence"
+}

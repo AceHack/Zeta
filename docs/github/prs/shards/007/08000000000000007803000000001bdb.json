@@ -1,0 +1,12 @@
+{
+  "pr_number": 7131,
+  "archive_path": "docs/history/pr-reviews/PR-7131-feat-core-solidground-navigable-landmarks-constants-monotonic-solid-ground-gain-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:32:50.865Z",
+  "schema_version": "v1",
+  "commit_sha": "a4b354aa7437f8eace71c67a6eba249f08593132",
+  "title": "feat(core): SolidGround — navigable landmarks (constants+monotonic) + solid-ground gain as lens quality",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:32:28Z",
+  "head_ref": "otto/solidground-navigable-landmarks-lens-quality-gain"
+}

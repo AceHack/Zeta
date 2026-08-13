@@ -1,0 +1,15 @@
+{
+  "pr_number": 6603,
+  "archive_path": "docs/history/pr-reviews/PR-6603-docs-b-1006-suspicion-audit-promote-tick-source-fold-event-index-rx-view-adapter.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HRPob",
+    "thread:PRRT_kwDOSF9kNM6Gg01t"
+  ],
+  "fetched_at": "2026-06-02T17:31:09.175Z",
+  "schema_version": "v1",
+  "commit_sha": "cc48c7b481a2877b00ab0027ee1a9f4efd39791b",
+  "title": "docs(B-1006): suspicion audit — promote tick-source; fold event-index; Rx=view+adapter; Bonsai=codec (Aaron authorized)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T17:30:41Z",
+  "head_ref": "otto-cli/b1006-suspicion-audit-2026-06-02"
+}

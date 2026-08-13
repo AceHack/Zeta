@@ -1,0 +1,17 @@
+{
+  "pr_number": 5263,
+  "archive_path": "docs/history/pr-reviews/PR-5263-fix-b-0823-suffix-pattern-match-for-nixpkgs-25-11-store-hashed-kernel-initrd-pat.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FCrcA",
+    "comment:PRRC_kwDOSF9kNM7FCrcq",
+    "thread:PRRT_kwDOSF9kNM6E4X6D",
+    "thread:PRRT_kwDOSF9kNM6E4X6i"
+  ],
+  "fetched_at": "2026-05-26T18:03:40.002Z",
+  "schema_version": "v1",
+  "commit_sha": "ac2e0c39c842736483edab6d4812caf8df0fbf06",
+  "title": "fix(B-0823): suffix-pattern match for nixpkgs 25.11 store-hashed kernel/initrd paths",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T18:03:19Z",
+  "head_ref": "otto-cli/b0823-iso-suffix-match-25-11-store-hashed-paths-2026-05-26"
+}

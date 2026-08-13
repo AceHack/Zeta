@@ -1,0 +1,12 @@
+{
+  "pr_number": 8780,
+  "archive_path": "docs/history/pr-reviews/PR-8780-feat-core-forcelayout-the-metaspace-physics-engine-force-directed-forces-metrics.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T22:08:15.056Z",
+  "schema_version": "v1",
+  "commit_sha": "a885cf49a8800ad30ff28e31131493ce7d7667f3",
+  "title": "feat(core): ForceLayout — the metaspace physics engine (force-directed, forces = metrics)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T22:07:51Z",
+  "head_ref": "otto/metaspace-force-layout"
+}

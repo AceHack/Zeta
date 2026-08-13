@@ -1,0 +1,12 @@
+{
+  "pr_number": 3755,
+  "archive_path": "docs/history/pr-reviews/PR-3755-shard-tick-2026-05-16t05-20z-brief-ack-2-pr-3746-not-actionable-threads-head-des.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T05:25:00.545Z",
+  "schema_version": "v1",
+  "commit_sha": "336162d15b0c65f263f4aee928eb0eb8b157d80b",
+  "title": "shard(tick): 2026-05-16T05:20Z — brief-ack #2; PR #3746 not-actionable threads + HEAD-desync caught live",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T05:24:42Z",
+  "head_ref": "shard/tick-0518z-otto-cli-2026-05-16"
+}

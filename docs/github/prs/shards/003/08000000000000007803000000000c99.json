@@ -1,0 +1,12 @@
+{
+  "pr_number": 3225,
+  "archive_path": "docs/history/pr-reviews/PR-3225-feat-b-0506-mechanize-stale-worktree-audit-audit-stale-worktrees-ts-clean-branch.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T20:29:51.801Z",
+  "schema_version": "v1",
+  "commit_sha": "a5bf4813a01c063b76ea290005b8a9226d5cae20",
+  "title": "feat(B-0506): mechanize stale-worktree audit — audit-stale-worktrees.ts (clean branch)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:29:29Z",
+  "head_ref": "feat/b-0506-audit-stale-worktrees-clean-otto-cli-2026-05-14"
+}

@@ -1,0 +1,22 @@
+{
+  "pr_number": 3174,
+  "archive_path": "docs/history/pr-reviews/PR-3174-shard-tick-1825z-razor-cadence-batch-3-finds-stale-pointer-cluster.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BU-i2",
+    "comment:PRRC_kwDOSF9kNM7BVAgc",
+    "comment:PRRC_kwDOSF9kNM7BVAhI",
+    "comment:PRRC_kwDOSF9kNM7BVE1g",
+    "comment:PRRC_kwDOSF9kNM7BVE5C",
+    "comment:PRRC_kwDOSF9kNM7BVE8Y",
+    "thread:PRRT_kwDOSF9kNM6CJ91_",
+    "thread:PRRT_kwDOSF9kNM6CJ_Uk",
+    "thread:PRRT_kwDOSF9kNM6CJ_VH"
+  ],
+  "fetched_at": "2026-05-14T18:56:28.133Z",
+  "schema_version": "v1",
+  "commit_sha": "19bff65df7cbf3136735cf15da5a36f30a67279b",
+  "title": "shard(tick): 1825Z — razor-cadence batch 3 finds STALE POINTER cluster",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:56:04Z",
+  "head_ref": "lior/decompose-shard-tick-1825Z"
+}

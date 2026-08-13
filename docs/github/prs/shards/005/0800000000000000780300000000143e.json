@@ -1,0 +1,12 @@
+{
+  "pr_number": 5182,
+  "archive_path": "docs/history/pr-reviews/PR-5182-tick-0526-1408z-otto-cli-cold-boot-visibility-shard-6h-gap-dotgit-recovered.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T14:13:47.703Z",
+  "schema_version": "v1",
+  "commit_sha": "bf93cde042b28cffa29eb5183bdb5b54588c419f",
+  "title": "tick(0526-1408Z): otto-cli cold-boot visibility shard (6h gap; dotgit recovered)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T14:13:19Z",
+  "head_ref": "otto-cli/tick-1408z-cold-boot-shard-2026-05-26"
+}

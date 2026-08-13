@@ -1,0 +1,12 @@
+{
+  "pr_number": 8827,
+  "archive_path": "docs/history/pr-reviews/PR-8827-fix-test-make-benport-exact-alloc-guard-debug-release-aware-80-48.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T02:15:08.051Z",
+  "schema_version": "v1",
+  "commit_sha": "f155a992b82a96f75d7d88a47f9c5ded2ffcf19d",
+  "title": "fix(test): make BenPort exact-alloc guard Debug/Release-aware (80/48)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T02:14:44Z",
+  "head_ref": "fix/lumen-benport-alloc-debug-release"
+}

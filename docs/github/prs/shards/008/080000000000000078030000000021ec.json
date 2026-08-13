@@ -1,0 +1,12 @@
+{
+  "pr_number": 8684,
+  "archive_path": "docs/history/pr-reviews/PR-8684-feat-cross-verify-splitmix64-generated-from-ir-oracle-reads-its-ir-from-a-dynami.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T02:23:46.712Z",
+  "schema_version": "v1",
+  "commit_sha": "f19b9882491b1de608402b02c7062846dcf3cbc6",
+  "title": "feat(cross-verify): SplitMix64 generated-from-ir oracle reads its IR from a DynamicValue row",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T02:23:23Z",
+  "head_ref": "feat/splitmix64-ir-as-dynamicvalue-row"
+}

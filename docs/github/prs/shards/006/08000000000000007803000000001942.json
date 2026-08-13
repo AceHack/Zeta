@@ -1,0 +1,17 @@
+{
+  "pr_number": 6466,
+  "archive_path": "docs/history/pr-reviews/PR-6466-docs-ace-slice-7-revocation-quarantine-design.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G51Ck",
+    "comment:PRRC_kwDOSF9kNM7G51DZ",
+    "thread:PRRT_kwDOSF9kNM6GPn4q",
+    "thread:PRRT_kwDOSF9kNM6GPn5X"
+  ],
+  "fetched_at": "2026-06-01T20:41:04.783Z",
+  "schema_version": "v1",
+  "commit_sha": "9164d810ab1e5fc599020b9ed1f9f4e0fa8fac1c",
+  "title": "docs(ace): slice 7 revocation/quarantine design",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T20:40:40Z",
+  "head_ref": "otto-windows/ace-slice7-spec-2026-06-01"
+}

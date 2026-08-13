@@ -1,0 +1,12 @@
+{
+  "pr_number": 8505,
+  "archive_path": "docs/history/pr-reviews/PR-8505-docs-memory-fairness-measurable-arena-fitness-metric-predictability-of-outcomes-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T10:40:32.365Z",
+  "schema_version": "v1",
+  "commit_sha": "82b786e7668d27d8059503ca9cd0bf1cbf9e8e37",
+  "title": "docs+memory(fairness): measurable arena-fitness metric = PREDICTABILITY of outcomes; + grace correction (meter=era-coupling, grace=composition)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T10:40:04Z",
+  "head_ref": "otto/measurable-fairness-metric-predictability"
+}

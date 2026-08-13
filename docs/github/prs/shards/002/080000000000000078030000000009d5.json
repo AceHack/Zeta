@@ -1,0 +1,15 @@
+{
+  "pr_number": 2517,
+  "archive_path": "docs/history/pr-reviews/PR-2517-research-b-0314-slice-6-external-anchors-bp-05-bp-06.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_pZLV",
+    "thread:PRRT_kwDOSF9kNM6A65Zl"
+  ],
+  "fetched_at": "2026-05-10T18:17:57.480Z",
+  "schema_version": "v1",
+  "commit_sha": "23312eca48e79873db52607c1b56abce1e187e50",
+  "title": "research(B-0314): slice-6 external anchors — BP-05, BP-06",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T18:17:43Z",
+  "head_ref": "fix/B-0314-bp-nn-anchor-backfill-slice6"
+}

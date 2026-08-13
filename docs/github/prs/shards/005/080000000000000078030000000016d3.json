@@ -1,0 +1,17 @@
+{
+  "pr_number": 5843,
+  "archive_path": "docs/history/pr-reviews/PR-5843-rule-rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-fo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F0FCf",
+    "comment:PRRC_kwDOSF9kNM7F0FEu",
+    "thread:PRRT_kwDOSF9kNM6FcF1f",
+    "thread:PRRT_kwDOSF9kNM6FcFz3"
+  ],
+  "fetched_at": "2026-05-28T15:13:50.727Z",
+  "schema_version": "v1",
+  "commit_sha": "80cb6510fba15cbe0c8e2390dc1eba7e1774f9c4",
+  "title": "rule(rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form): substrate-engineering substrate-recognition + Aaron's nested-cross visualization (Aaron 2026-05-28 shadow* authorization)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T15:13:26Z",
+  "head_ref": "otto-cli/rule-rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form-2026-05-28"
+}

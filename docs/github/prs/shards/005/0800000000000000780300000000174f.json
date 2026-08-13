@@ -1,0 +1,12 @@
+{
+  "pr_number": 5967,
+  "archive_path": "docs/history/pr-reviews/PR-5967-backlog-b-0930-schema-registry-over-dbsp-tech-radar-center-minimalist-essential-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T09:44:37.997Z",
+  "schema_version": "v1",
+  "commit_sha": "bc80489b93a9fc7f66461673aeb662506d63d8cf",
+  "title": "backlog(B-0930) schema-registry-over-DBSP + tech-radar center (minimalist essential core)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T09:44:14Z",
+  "head_ref": "otto-cli/b-0930-schema-registry-over-dbsp-plus-tech-radar-center-2026-05-29"
+}

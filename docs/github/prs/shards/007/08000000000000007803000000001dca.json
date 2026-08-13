@@ -1,0 +1,12 @@
+{
+  "pr_number": 7626,
+  "archive_path": "docs/history/pr-reviews/PR-7626-docs-vision-b-1025-universal-action-grammar-reversible-risc-isa-glass-blowing-me.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:47:15.752Z",
+  "schema_version": "v1",
+  "commit_sha": "afe770b93a535731e3fa79578e79f5f869225ab2",
+  "title": "docs(vision): B-1025 — universal action grammar + reversible RISC ISA, glass-blowing method; matrix: ISO already boots in QEMU",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:46:53Z",
+  "head_ref": "shadow-universal-action-grammar-isa"
+}

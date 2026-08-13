@@ -1,0 +1,12 @@
+{
+  "pr_number": 8226,
+  "archive_path": "docs/history/pr-reviews/PR-8226-fix-opa-exempt-zeta-platform-flowdent-from-gatekeeper.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T00:41:07.323Z",
+  "schema_version": "v1",
+  "commit_sha": "4bc8636a288cdb1d218cdc56c5e1d52ad62c9617",
+  "title": "fix(opa): exempt zeta-platform + flowdent from Gatekeeper",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T00:40:46Z",
+  "head_ref": "fix/gatekeeper-exempt-platform"
+}

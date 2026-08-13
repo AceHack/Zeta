@@ -1,0 +1,12 @@
+{
+  "pr_number": 6584,
+  "archive_path": "docs/history/pr-reviews/PR-6584-docs-b-0951-lior-ferry-extend-git-native-index-types-spatial-bloom-temporal-sema.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T15:38:52.051Z",
+  "schema_version": "v1",
+  "commit_sha": "a5a592147750d0e19d510370a07ad182f75fc831",
+  "title": "docs(B-0951 + lior-ferry): extend git-native index types (spatial/bloom/temporal/semantic/aggregation) + Lior combined-design vindication",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T15:38:22Z",
+  "head_ref": "otto-cli/b0951-additional-index-types-lior-ferry-2026-06-02"
+}

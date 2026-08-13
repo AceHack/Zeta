@@ -1,0 +1,22 @@
+{
+  "pr_number": 6021,
+  "archive_path": "docs/history/pr-reviews/PR-6021-docs-b-0883-phase-2-operator-decisions-easy-first-backlog-sequencing.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GP0gx",
+    "comment:PRRC_kwDOSF9kNM7GP0iq",
+    "comment:PRRC_kwDOSF9kNM7GP0kt",
+    "comment:PRRC_kwDOSF9kNM7GPuQH",
+    "comment:PRRC_kwDOSF9kNM7GPuQp",
+    "comment:PRRC_kwDOSF9kNM7GPuRC",
+    "thread:PRRT_kwDOSF9kNM6FwJ3z",
+    "thread:PRRT_kwDOSF9kNM6FwJ4J",
+    "thread:PRRT_kwDOSF9kNM6FwJ4c"
+  ],
+  "fetched_at": "2026-05-29T17:52:50.838Z",
+  "schema_version": "v1",
+  "commit_sha": "ac27af4bf0a51251ee9401a2c4e454ec8f223938",
+  "title": "docs(B-0883): Phase 2 operator decisions + easy-first/backlog sequencing",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T17:52:30Z",
+  "head_ref": "otto-cli/b0883-phase2-operator-decisions-easy-first-2026-05-29"
+}

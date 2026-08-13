@@ -1,0 +1,12 @@
+{
+  "pr_number": 3650,
+  "archive_path": "docs/history/pr-reviews/PR-3650-fix-pr-3646-2-copilot-p1-threads-toc-round-45-overstatement-caveats.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T00:49:56.974Z",
+  "schema_version": "v1",
+  "commit_sha": "840210f1c9b0b411ef635bac2dfbfb63cfb29319",
+  "title": "fix(pr-3646): 2 Copilot P1 threads — TOC + Round 45 overstatement caveats",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:49:39Z",
+  "head_ref": "fix/pr-3646-round-history-caveats-otto-cli-2026-05-16"
+}

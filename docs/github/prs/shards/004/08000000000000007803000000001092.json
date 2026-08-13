@@ -1,0 +1,12 @@
+{
+  "pr_number": 4242,
+  "archive_path": "docs/history/pr-reviews/PR-4242-shard-2305z-c-pre-empt-at-5-composes-with-reciprocity.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:09:06.144Z",
+  "schema_version": "v1",
+  "commit_sha": "d544d6cb61ee471fcf8b777164790b9439e19202",
+  "title": "shard(2305Z-c): pre-empt at #5 — composes_with reciprocity",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:08:49Z",
+  "head_ref": "shard/tick-2305z-c-pre-empt-5-composes-with-reciprocity-2026-05-18"
+}

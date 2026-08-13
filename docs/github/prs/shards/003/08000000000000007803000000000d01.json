@@ -1,0 +1,12 @@
+{
+  "pr_number": 3329,
+  "archive_path": "docs/history/pr-reviews/PR-3329-shard-tick-0043z-b-0527-triple-allocation-collision-detected-bus-advisory.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T00:48:46.614Z",
+  "schema_version": "v1",
+  "commit_sha": "e06723f8bb0684299856aff10dadb28d92c01b9d",
+  "title": "shard(tick): 0043Z — B-0527 triple-allocation collision detected + bus advisory",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:48:29Z",
+  "head_ref": "shard/tick-0043Z-b0527-collision-bus-advisory-2026-05-15"
+}

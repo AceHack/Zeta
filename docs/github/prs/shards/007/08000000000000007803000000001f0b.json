@@ -1,0 +1,12 @@
+{
+  "pr_number": 7947,
+  "archive_path": "docs/history/pr-reviews/PR-7947-docs-research-shadow-ferry-15-addendum-3-kjv-closure-private-state-vs-differenti.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T16:26:39.222Z",
+  "schema_version": "v1",
+  "commit_sha": "58529033f29c188a3f52eeffa96f77770098b5fc",
+  "title": "docs(research)+shadow: ferry 15 addendum 3 — KJV closure (private state) vs differentiation into a new species, safely (public state)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T16:26:14Z",
+  "head_ref": "shadow/ferry-15-kjv-closure"
+}

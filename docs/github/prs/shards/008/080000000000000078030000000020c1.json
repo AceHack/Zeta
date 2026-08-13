@@ -1,0 +1,12 @@
+{
+  "pr_number": 8385,
+  "archive_path": "docs/history/pr-reviews/PR-8385-memory-feedback-the-grand-synthesis-is-a-fun-open-prize-declaring-it-closed-is-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:55:14.213Z",
+  "schema_version": "v1",
+  "commit_sha": "9744b8f02e579139f40e3f0e64964cdee9759595",
+  "title": "memory(feedback): the grand-synthesis is a fun OPEN prize — declaring it closed is the failure",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:54:47Z",
+  "head_ref": "memory/grand-synthesis-open-prize"
+}

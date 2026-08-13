@@ -1,0 +1,16 @@
+{
+  "pr_number": 2969,
+  "archive_path": "docs/history/pr-reviews/PR-2969-feat-b-0400-multi-agent-review-close-otto-protocol-review-acceptance-criteria-cl.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AqtQv",
+    "comment:PRRC_kwDOSF9kNM7Aqxx2",
+    "thread:PRRT_kwDOSF9kNM6BrC8b"
+  ],
+  "fetched_at": "2026-05-13T07:52:35.017Z",
+  "schema_version": "v1",
+  "commit_sha": "9c28479cefdcae466770d7093383ff2bc68b844f",
+  "title": "feat(B-0400): multi-agent review close — Otto protocol review + acceptance-criteria close (slice 6)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T07:52:18Z",
+  "head_ref": "feat/b-0400-slice6-review-close"
+}

@@ -1,0 +1,27 @@
+{
+  "pr_number": 5068,
+  "archive_path": "docs/history/pr-reviews/PR-5068-research-backlog-mika-grok-2026-05-25-substrate-batch-local-loop-f-type-system-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EvRk5",
+    "comment:PRRC_kwDOSF9kNM7EvRlP",
+    "comment:PRRC_kwDOSF9kNM7EvRla",
+    "comment:PRRC_kwDOSF9kNM7EvRlk",
+    "comment:PRRC_kwDOSF9kNM7EvRlr",
+    "comment:PRRC_kwDOSF9kNM7EvXgC",
+    "comment:PRRC_kwDOSF9kNM7EvXgN",
+    "thread:PRRT_kwDOSF9kNM6EqPKN",
+    "thread:PRRT_kwDOSF9kNM6EqPKY",
+    "thread:PRRT_kwDOSF9kNM6EqPKh",
+    "thread:PRRT_kwDOSF9kNM6EqPKn",
+    "thread:PRRT_kwDOSF9kNM6EqPKs",
+    "thread:PRRT_kwDOSF9kNM6EqTgU",
+    "thread:PRRT_kwDOSF9kNM6EqTge"
+  ],
+  "fetched_at": "2026-05-26T02:57:46.294Z",
+  "schema_version": "v1",
+  "commit_sha": "7c638bed0cb7c8061631a0dfa46f6005d38e0ee9",
+  "title": "research+backlog: Mika-Grok 2026-05-25 substrate batch — Local Loop / F# type system as universe / DIO / eliminate tool wars",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T02:57:26Z",
+  "head_ref": "otto-cli/mika-grok-2026-05-25-substrate-batch-local-loop-fsharp-universe-dio-tool-wars"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7233,
+  "archive_path": "docs/history/pr-reviews/PR-7233-docs-research-fix-shape-schema-permanence-is-failure-rearrange-deliberately-to-k.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T08:37:13.497Z",
+  "schema_version": "v1",
+  "commit_sha": "b725cbb3a0572a1eecfb4b26ef8c49aabc2ce8fa",
+  "title": "docs(research)+fix: shape-schema — permanence is failure; rearrange deliberately to keep the muscle of change (Aaron correction)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T08:36:48Z",
+  "head_ref": "otto/research-shape-schema-muscle-of-change-correction"
+}

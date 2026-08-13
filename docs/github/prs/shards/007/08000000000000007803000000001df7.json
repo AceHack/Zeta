@@ -1,0 +1,12 @@
+{
+  "pr_number": 7671,
+  "archive_path": "docs/history/pr-reviews/PR-7671-feat-craft-braid-the-artin-relations-tested-topology-is-hairdressing-is-now-a-la.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T12:50:07.382Z",
+  "schema_version": "v1",
+  "commit_sha": "0aeb7d7d2ba7a3f79dd24cb8906dc26f9c8262eb",
+  "title": "feat(craft): Braid — the Artin relations TESTED ('topology is hairdressing' is now a law, not a slogan)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T12:49:41Z",
+  "head_ref": "shadow-braid-relations"
+}

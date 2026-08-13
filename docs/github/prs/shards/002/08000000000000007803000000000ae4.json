@@ -1,0 +1,15 @@
+{
+  "pr_number": 2788,
+  "archive_path": "docs/history/pr-reviews/PR-2788-fix-dashboard-ts18048-lastupdated-is-possibly-undefined.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AYn6I",
+    "thread:PRRT_kwDOSF9kNM6Bd8fs"
+  ],
+  "fetched_at": "2026-05-12T15:42:10.468Z",
+  "schema_version": "v1",
+  "commit_sha": "bad0f1aeb6544e681efe62d755e3fddd1faa35c0",
+  "title": "fix(dashboard): TS18048 'lastUpdated' is possibly 'undefined'",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T15:41:42Z",
+  "head_ref": "fix/build-break-tsc-lastUpdated"
+}

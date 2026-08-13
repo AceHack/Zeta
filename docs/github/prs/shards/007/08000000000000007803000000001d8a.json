@@ -1,0 +1,12 @@
+{
+  "pr_number": 7562,
+  "archive_path": "docs/history/pr-reviews/PR-7562-docs-research-four-corner-feedback-is-bidirectional-harmonic-oscillation-why-cay.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T00:43:39.787Z",
+  "schema_version": "v1",
+  "commit_sha": "6f33d887cb7587b7bfae8fb111cd8f08beb0c9a2",
+  "title": "docs(research): four-corner feedback is bidirectional -> harmonic oscillation (why Cayley-Dickson everywhere) + honest code-naming",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T00:43:17Z",
+  "head_ref": "shadow-bidirectional-feedback-harmonic-cayley-dickson"
+}

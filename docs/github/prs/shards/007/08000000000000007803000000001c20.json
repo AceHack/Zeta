@@ -1,0 +1,12 @@
+{
+  "pr_number": 7200,
+  "archive_path": "docs/history/pr-reviews/PR-7200-feat-portal-room-ai-chat-a-resource-sandboxed-persona-you-can-ask-to-do-things.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T03:57:16.054Z",
+  "schema_version": "v1",
+  "commit_sha": "1a36a16290149e68ef77f245a77261cffa9f97c7",
+  "title": "feat(portal): Room AI chat — a resource-sandboxed persona you can ask to do things",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T03:56:57Z",
+  "head_ref": "feat/portal-room-ai-chat"
+}

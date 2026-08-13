@@ -1,0 +1,12 @@
+{
+  "pr_number": 8159,
+  "archive_path": "docs/history/pr-reviews/PR-8159-feat-observe-heuristic-composer-l2-no-llm-for-ambiguous-menus.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:25:17.844Z",
+  "schema_version": "v1",
+  "commit_sha": "85d97238e7d6be8ce0f782bc03302e7a7761623c",
+  "title": "feat(observe): heuristic Composer (L2) — no LLM for ambiguous menus",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:24:54Z",
+  "head_ref": "kiro/composer-backend"
+}

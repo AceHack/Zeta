@@ -1,0 +1,12 @@
+{
+  "pr_number": 3915,
+  "archive_path": "docs/history/pr-reviews/PR-3915-shard-tick-2026-05-16t17-06z-settling-tick-pattern-3-class-1-reconciliation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T17:19:57.825Z",
+  "schema_version": "v1",
+  "commit_sha": "7dc0c75471a63100412ba17f55d956b96a552e0f",
+  "title": "shard(tick): 2026-05-16T17:06Z — settling tick; Pattern 3 ↔ class #1 reconciliation",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T17:19:36Z",
+  "head_ref": "otto-cli-tick-shard-1706z-session-settling-2026-05-16"
+}

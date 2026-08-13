@@ -1,0 +1,12 @@
+{
+  "pr_number": 8002,
+  "archive_path": "docs/history/pr-reviews/PR-8002-docs-research-shadow-ferry-35-the-gaming-trinity-plumbing-mirrors-light-repair-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T20:21:07.220Z",
+  "schema_version": "v1",
+  "commit_sha": "24b5527d35f45179e669eeb756fca1206eba5e4b",
+  "title": "docs(research)+shadow: ferry 35 — the gaming trinity (plumbing/mirrors/light = repair/projection/guidance)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T20:20:30Z",
+  "head_ref": "shadow/ferry-35-zelda-trilogy"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 6387,
+  "archive_path": "docs/history/pr-reviews/PR-6387-feat-algebra-c-bag-multiset-finishes-the-bag-rung-4-4.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gqtpr",
+    "comment:PRRC_kwDOSF9kNM7GquqO",
+    "comment:PRRC_kwDOSF9kNM7GrHAb",
+    "comment:PRRC_kwDOSF9kNM7GrHDI",
+    "thread:PRRT_kwDOSF9kNM6GEWBv",
+    "thread:PRRT_kwDOSF9kNM6GEWxv"
+  ],
+  "fetched_at": "2026-06-01T09:55:20.046Z",
+  "schema_version": "v1",
+  "commit_sha": "d39539a41c6a156dd70192c8e0ef07cb0f662092",
+  "title": "feat(algebra): C# Bag (multiset) — finishes the Bag rung 4/4",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T09:54:57Z",
+  "head_ref": "otto-cli/csharp-bag-algebra-ladder-2026-06-01"
+}

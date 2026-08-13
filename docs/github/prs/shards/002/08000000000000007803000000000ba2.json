@@ -1,0 +1,28 @@
+{
+  "pr_number": 2978,
+  "archive_path": "docs/history/pr-reviews/PR-2978-docs-launch-regenerate-zeta-launch-thread-with-receipts-and-review-fixes.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AsRjC",
+    "comment:PRRC_kwDOSF9kNM7AsRjN",
+    "comment:PRRC_kwDOSF9kNM7AsVZ9",
+    "comment:PRRC_kwDOSF9kNM7AsVZH",
+    "comment:PRRC_kwDOSF9kNM7AsVZn",
+    "comment:PRRC_kwDOSF9kNM7Asfrq",
+    "comment:PRRC_kwDOSF9kNM7AsgCn",
+    "comment:PRRC_kwDOSF9kNM7AsgMz",
+    "comment:PRRC_kwDOSF9kNM7AsgfS",
+    "comment:PRRC_kwDOSF9kNM7AsgfY",
+    "thread:PRRT_kwDOSF9kNM6BsMSF",
+    "thread:PRRT_kwDOSF9kNM6BsMSO",
+    "thread:PRRT_kwDOSF9kNM6BsPE_",
+    "thread:PRRT_kwDOSF9kNM6BsPEq",
+    "thread:PRRT_kwDOSF9kNM6BsPFO"
+  ],
+  "fetched_at": "2026-05-13T09:10:56.092Z",
+  "schema_version": "v1",
+  "commit_sha": "f0d8f03df37b387b6f0524b6c1129ed57d95c798",
+  "title": "docs(launch): regenerate Zeta launch thread with receipts and review fixes",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T09:10:36Z",
+  "head_ref": "launch-zeta-thread-rewrite-2026-05-13"
+}

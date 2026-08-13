@@ -1,0 +1,21 @@
+{
+  "pr_number": 6617,
+  "archive_path": "docs/history/pr-reviews/PR-6617-ci-soraya-standing-formal-coverage-cadence-soraya-on-cron.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HS4HS",
+    "comment:PRRC_kwDOSF9kNM7HS4IQ",
+    "comment:PRRC_kwDOSF9kNM7HS4Iv",
+    "comment:PRRC_kwDOSF9kNM7HSy1y",
+    "thread:PRRT_kwDOSF9kNM6Gh8rP",
+    "thread:PRRT_kwDOSF9kNM6GiAgw",
+    "thread:PRRT_kwDOSF9kNM6GiAha",
+    "thread:PRRT_kwDOSF9kNM6GiAhs"
+  ],
+  "fetched_at": "2026-06-02T18:49:53.311Z",
+  "schema_version": "v1",
+  "commit_sha": "e81d990683bd03694c1ea1042e4e6541163ee993",
+  "title": "ci(soraya): standing formal-coverage cadence — \"soraya on cron\"",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T18:49:26Z",
+  "head_ref": "otto-cli/soraya-formal-coverage-cadence-cron-2026-06-02"
+}

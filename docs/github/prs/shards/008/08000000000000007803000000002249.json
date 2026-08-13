@@ -1,0 +1,12 @@
+{
+  "pr_number": 8777,
+  "archive_path": "docs/history/pr-reviews/PR-8777-docs-research-correct-metaspace-visibility-open-by-default-glass-halo-privacy-is.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T21:36:58.408Z",
+  "schema_version": "v1",
+  "commit_sha": "9dce7b400216661a04a02c78ab7b5d824ba5d8db",
+  "title": "docs(research): correct metaspace visibility — open by default (glass halo), privacy is EARNED",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T21:36:35Z",
+  "head_ref": "otto/amend-metaspace-glass-halo-default-open"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 2166,
+  "archive_path": "docs/history/pr-reviews/PR-2166-fix-b-0272-address-rom-tool-review-nits.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_d2Ht",
+    "thread:PRRT_kwDOSF9kNM6Ax3fO"
+  ],
+  "fetched_at": "2026-05-09T02:32:06.645Z",
+  "schema_version": "v1",
+  "commit_sha": "47dea4d9fb3acc3858a686fde2666368a5cdd81f",
+  "title": "fix(B-0272): address ROM tool review nits",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T02:31:43Z",
+  "head_ref": "codex/b0272-rom-review-nits-followup"
+}

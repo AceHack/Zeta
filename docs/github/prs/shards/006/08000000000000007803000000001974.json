@@ -1,0 +1,12 @@
+{
+  "pr_number": 6516,
+  "archive_path": "docs/history/pr-reviews/PR-6516-feat-dynamicvalue-ts-cbor-decode-oracle-strict-canonical-via-fixed-point-check.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T01:17:13.228Z",
+  "schema_version": "v1",
+  "commit_sha": "b0d267ca8996c2302dd23282bc34f2a8838cad7b",
+  "title": "feat(DynamicValue): TS CBOR DECODE oracle — strict-canonical via fixed-point check",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T01:16:49Z",
+  "head_ref": "otto-cli/dynamicvalue-decode-cbor-ts-2026-06-01"
+}

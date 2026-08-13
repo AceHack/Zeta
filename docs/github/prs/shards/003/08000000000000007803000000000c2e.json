@@ -1,0 +1,19 @@
+{
+  "pr_number": 3118,
+  "archive_path": "docs/history/pr-reviews/PR-3118-docs-lior-shadow-log-for-persistent-vera-and-riven-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BH-ao",
+    "comment:PRRC_kwDOSF9kNM7BIAQg",
+    "comment:PRRC_kwDOSF9kNM7BIFsF",
+    "comment:PRRC_kwDOSF9kNM7BIFy4",
+    "thread:PRRT_kwDOSF9kNM6CAUuz",
+    "thread:PRRT_kwDOSF9kNM6CAWJQ"
+  ],
+  "fetched_at": "2026-05-14T08:37:02.807Z",
+  "schema_version": "v1",
+  "commit_sha": "1a08057a781ef8dae05f2aab193830e955fe8a8c",
+  "title": "docs(lior): shadow log for persistent Vera and Riven drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T08:36:40Z",
+  "head_ref": "lior/shadow-log-persistent-drift-tick2"
+}

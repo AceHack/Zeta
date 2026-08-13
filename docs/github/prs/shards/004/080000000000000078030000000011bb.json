@@ -1,0 +1,12 @@
+{
+  "pr_number": 4539,
+  "archive_path": "docs/history/pr-reviews/PR-4539-backlog-b-0686-tick-shard-immutability-ci-gate-proposal-p3-post-4534-substrate-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T14:03:54.004Z",
+  "schema_version": "v1",
+  "commit_sha": "7a8a47b552ce214683cb4b1912865f649e36d725",
+  "title": "backlog(B-0686): tick-shard immutability CI gate proposal (P3, post-#4534 substrate engineering)",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T14:03:31Z",
+  "head_ref": "backlog/b-0686-tick-shard-immutability-ci-gate-2026-05-21"
+}

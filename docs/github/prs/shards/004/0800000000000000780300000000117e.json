@@ -1,0 +1,12 @@
+{
+  "pr_number": 4478,
+  "archive_path": "docs/history/pr-reviews/PR-4478-docs-shard-0202z-close-0149z-orphan-branch-triage-full-file-verification.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T02:14:17.401Z",
+  "schema_version": "v1",
+  "commit_sha": "c369b2e59acb798d0bd9858dab772e7ac1cbc9bd",
+  "title": "docs(shard/0202Z): close 0149Z orphan-branch triage — full-file verification",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T02:14:00Z",
+  "head_ref": "shard/tick-0202z-orphan-branch-triage-closeout-otto-cli-2026-05-21"
+}

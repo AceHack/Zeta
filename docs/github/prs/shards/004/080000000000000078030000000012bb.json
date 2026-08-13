@@ -1,0 +1,17 @@
+{
+  "pr_number": 4795,
+  "archive_path": "docs/history/pr-reviews/PR-4795-backlog-b-0717-file-soraya-round-57-hand-off-lsm-spine-registry-rows-bp-16-cross.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EUUaS",
+    "comment:PRRC_kwDOSF9kNM7EUUaX",
+    "thread:PRRT_kwDOSF9kNM6EV_M5",
+    "thread:PRRT_kwDOSF9kNM6EV_M9"
+  ],
+  "fetched_at": "2026-05-24T00:21:07.163Z",
+  "schema_version": "v1",
+  "commit_sha": "46a028f94bccb08da291084d033f271d819d2f39",
+  "title": "backlog(B-0717): file Soraya round-57 hand-off — LSM Spine registry-rows + BP-16 cross-check pair",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T00:20:46Z",
+  "head_ref": "otto/soraya-round57-b0717-lsm-spine-registry-and-bp16-pair-2026-05-24"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 3404,
+  "archive_path": "docs/history/pr-reviews/PR-3404-shard-tick-0959z-pr-3402-templated-stale-pr-tbd-reply-first-n-1-count-discipline.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bj-vW",
+    "comment:PRRC_kwDOSF9kNM7Bj-yy",
+    "comment:PRRC_kwDOSF9kNM7Bj427",
+    "comment:PRRC_kwDOSF9kNM7Bj5RS",
+    "thread:PRRT_kwDOSF9kNM6CUoWZ",
+    "thread:PRRT_kwDOSF9kNM6CUoqn"
+  ],
+  "fetched_at": "2026-05-15T10:09:21.547Z",
+  "schema_version": "v1",
+  "commit_sha": "546b741b88952dc2c16aff855b3670c9a56c974c",
+  "title": "shard(tick): 0959Z — PR #3402 templated stale-(PR TBD) reply; first N+1 count discipline",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:08:58Z",
+  "head_ref": "shard/tick-0959z-otto-cli-2026-05-15"
+}

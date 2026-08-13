@@ -1,0 +1,19 @@
+{
+  "pr_number": 4429,
+  "archive_path": "docs/history/pr-reviews/PR-4429-feat-b-0600-reland-family-distributed-ai-interface-for-the-miner-fleet.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DOlkJ",
+    "comment:PRRC_kwDOSF9kNM7DOsJp",
+    "comment:PRRC_kwDOSF9kNM7DOsKz",
+    "thread:PRRT_kwDOSF9kNM6Di3K4",
+    "thread:PRRT_kwDOSF9kNM6Di3KH",
+    "thread:PRRT_kwDOSF9kNM6DiyOC"
+  ],
+  "fetched_at": "2026-05-21T01:51:40.997Z",
+  "schema_version": "v1",
+  "commit_sha": "e7d5739249f4bd5080ef7b39c99b1bd5af53f58a",
+  "title": "feat(B-0600): reland family-distributed AI interface for the miner fleet",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T01:51:18Z",
+  "head_ref": "lior/reland-b0600-4011"
+}

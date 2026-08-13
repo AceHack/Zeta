@@ -1,0 +1,12 @@
+{
+  "pr_number": 7066,
+  "archive_path": "docs/history/pr-reviews/PR-7066-docs-research-candidate-novelty-symmetric-two-stream-two-clock-rx-join-isomorphi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T09:34:37.542Z",
+  "schema_version": "v1",
+  "commit_sha": "4d3dfc3f731f6842a9bed38cf2cdccbc92588c24",
+  "title": "docs(research): CANDIDATE NOVELTY — symmetric two-stream/two-clock Rx join isomorphic to a qubit",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T09:34:17Z",
+  "head_ref": "otto/candidate-novelty-two-stream-two-clock-qubit-isomorphism"
+}

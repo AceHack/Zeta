@@ -1,0 +1,12 @@
+{
+  "pr_number": 3918,
+  "archive_path": "docs/history/pr-reviews/PR-3918-shard-tick-2026-05-16t17-18z-settled-no-novel-substrate-cron-continues.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T17:33:30.193Z",
+  "schema_version": "v1",
+  "commit_sha": "9ad4d91ed856ffbba3671f99c958743f4317c64c",
+  "title": "shard(tick): 2026-05-16T17:18Z — settled; no novel substrate; cron continues",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T17:33:14Z",
+  "head_ref": "otto-cli-tick-shard-1718z-settled-2026-05-16"
+}

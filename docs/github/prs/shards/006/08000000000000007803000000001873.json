@@ -1,0 +1,22 @@
+{
+  "pr_number": 6259,
+  "archive_path": "docs/history/pr-reviews/PR-6259-feat-b-0867-28-observe-fold-as-an-additive-monoid-c-system-numerics-f-native-zer.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Git7I",
+    "comment:PRRC_kwDOSF9kNM7Giuui",
+    "comment:PRRC_kwDOSF9kNM7GiuyE",
+    "comment:PRRC_kwDOSF9kNM7Giy4v",
+    "comment:PRRC_kwDOSF9kNM7Giz8l",
+    "comment:PRRC_kwDOSF9kNM7Gizc-",
+    "thread:PRRT_kwDOSF9kNM6F-XWw",
+    "thread:PRRT_kwDOSF9kNM6F-YDS",
+    "thread:PRRT_kwDOSF9kNM6F-bte"
+  ],
+  "fetched_at": "2026-05-31T22:20:07.968Z",
+  "schema_version": "v1",
+  "commit_sha": "8b3de2367034047ce0c5efbb46a6113ec9b6812d",
+  "title": "feat(B-0867.28): observe-fold as an additive monoid (C# System.Numerics + F# native Zero/(+)) — additive-monoidal only",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T22:19:45Z",
+  "head_ref": "feat/observe-fold-monoid-b0867-28-2026-05-31"
+}

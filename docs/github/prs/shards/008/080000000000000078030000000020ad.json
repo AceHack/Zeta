@@ -1,0 +1,12 @@
+{
+  "pr_number": 8365,
+  "archive_path": "docs/history/pr-reviews/PR-8365-memory-otto-ferry-the-reindex-hook-fix-learnings-generated-index-single-source-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T23:46:21.340Z",
+  "schema_version": "v1",
+  "commit_sha": "acb5d4478661be491782a42f484f4002d3debf90",
+  "title": "memory(otto): ferry the reindex-hook-fix learnings (generated-index single-source-of-truth)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T23:45:58Z",
+  "head_ref": "memory/otto-hook-fix-learnings"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3219,
+  "archive_path": "docs/history/pr-reviews/PR-3219-shard-tick-2015z-substrate-sanity-check-on-main-standing-by-self-correction.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T20:18:48.992Z",
+  "schema_version": "v1",
+  "commit_sha": "e54a56266d91f1c992a4f889d88ec48fb3fe21be",
+  "title": "shard(tick): 2015Z — substrate sanity-check on main (Standing-by self-correction)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:18:25Z",
+  "head_ref": "shard/tick-2015Z-sanity-check-substrate-otto-cli-2026-05-14"
+}

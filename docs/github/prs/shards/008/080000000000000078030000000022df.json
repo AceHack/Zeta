@@ -1,0 +1,12 @@
+{
+  "pr_number": 8927,
+  "archive_path": "docs/history/pr-reviews/PR-8927-feat-laws-structured-law-schemas-in-ir-property-test-generator.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T09:14:15.515Z",
+  "schema_version": "v1",
+  "commit_sha": "82e4305a69e6cefa149e438f86a1f5a1812dabfb",
+  "title": "feat(laws): structured law schemas in IR + property-test generator",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T09:13:50Z",
+  "head_ref": "alexa/laws-in-ir"
+}

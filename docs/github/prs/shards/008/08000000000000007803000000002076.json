@@ -1,0 +1,12 @@
+{
+  "pr_number": 8310,
+  "archive_path": "docs/history/pr-reviews/PR-8310-docs-closed-frame-the-warmth-paradox-risking-warmth-is-what-gains-it-costly-sign.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T10:51:18.872Z",
+  "schema_version": "v1",
+  "commit_sha": "1b9aa7f249318ecce75dc9e9c9be5ec5a0f1a132",
+  "title": "docs(closed-frame): the warmth paradox — risking warmth is what gains it (costly signaling; Proverbs 27:6)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T10:50:56Z",
+  "head_ref": "otto/the-warmth-paradox-risking-warmth-gains-it-costly-signaling"
+}

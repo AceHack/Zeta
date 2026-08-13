@@ -1,0 +1,12 @@
+{
+  "pr_number": 8593,
+  "archive_path": "docs/history/pr-reviews/PR-8593-docs-vision-the-through-line-independence-is-the-one-precondition-for-honesty-fo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T16:23:56.395Z",
+  "schema_version": "v1",
+  "commit_sha": "e3658e7861af133a794ab0ab1ffc5910f74e79a5",
+  "title": "docs(vision): the through-line — independence is the one precondition for honesty (four-windows fusion)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T16:23:32Z",
+  "head_ref": "otto/independence-through-line-vision-fusion"
+}

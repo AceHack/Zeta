@@ -1,0 +1,12 @@
+{
+  "pr_number": 6592,
+  "archive_path": "docs/history/pr-reviews/PR-6592-feat-infernet-b-1000-apache-arrow-columnar-message-store-naturalbatch-family-ada.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T16:38:29.043Z",
+  "schema_version": "v1",
+  "commit_sha": "20d4b88b056a558651d0d910b2e969363bd6a616",
+  "title": "feat(infernet B-1000): Apache Arrow columnar message store — NaturalBatch + family adapters + batched product/divide + RecordBatch",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T16:38:06Z",
+  "head_ref": "otto-cli/b1000-columnar-message-arrow-2026-06-02"
+}

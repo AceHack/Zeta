@@ -1,0 +1,15 @@
+{
+  "pr_number": 2403,
+  "archive_path": "docs/history/pr-reviews/PR-2403-feat-b-0045-2-biology-inaugural-wire-biology-stub-into-substrate-discovery-f-cod.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lW3B",
+    "thread:PRRT_kwDOSF9kNM6A3sj9"
+  ],
+  "fetched_at": "2026-05-10T03:19:52.981Z",
+  "schema_version": "v1",
+  "commit_sha": "f4b946c884b9a46811125b2373a2e69a725d4f7a",
+  "title": "feat(B-0045.2): biology inaugural — wire --biology stub into substrate-discovery (F# code slice)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T03:19:38Z",
+  "head_ref": "claim/B-0045-universal-sweep-smallest-slice-riven-2026-05-09"
+}

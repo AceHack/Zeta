@@ -1,0 +1,12 @@
+{
+  "pr_number": 8651,
+  "archive_path": "docs/history/pr-reviews/PR-8651-docs-memory-correction-adinkra-clifford-e8-unfold-status-cogen-mix-mix-mix-surfa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T00:08:51.330Z",
+  "schema_version": "v1",
+  "commit_sha": "765ae424e622fd1e30e963f1810ecbb043ca5857",
+  "title": "docs+memory(correction): adinkra→Clifford→E8 unfold status + cogen=mix(mix,mix) surface for Rx-on-soft-phase-spacetime (Cl3.fs exists)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T00:08:27Z",
+  "head_ref": "otto/adinkra-clifford-e8-unfold-status-cogen-rx-soft-phase-scoping"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10374,
+  "archive_path": "docs/history/pr-reviews/PR-10374-feat-browser-select-receipt-peers-deterministically.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-13T21:06:10.339Z",
+  "schema_version": "v1",
+  "commit_sha": "7fa6a0021705239cf29ca6c34a847b6413abb094",
+  "title": "feat(browser): select receipt peers deterministically",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T21:03:57Z",
+  "head_ref": "codex/browser-receipt-peer-selection"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5374,
+  "archive_path": "docs/history/pr-reviews/PR-5374-docs-b-0844-zflash-agent-flag-close-docstring-vs-implementation-gap-on-agent-dri.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T01:55:27.226Z",
+  "schema_version": "v1",
+  "commit_sha": "c84903bc1fa1c7558a1d8885d3c82cef7dcb7819",
+  "title": "docs(B-0844): zflash --agent flag — close docstring-vs-implementation gap on agent-driven mode",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T01:55:08Z",
+  "head_ref": "feat-b0844-zflash-agent-mode-pty-auto-type-challenge-otto-cli-2026-05-26"
+}

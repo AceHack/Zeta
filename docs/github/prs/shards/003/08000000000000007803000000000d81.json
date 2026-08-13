@@ -1,0 +1,16 @@
+{
+  "pr_number": 3457,
+  "archive_path": "docs/history/pr-reviews/PR-3457-shard-tick-1237z-2-stale-threads-cleared-pr-3455-3456-wait-ci.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BnB_f",
+    "comment:PRRC_kwDOSF9kNM7BnFLr",
+    "thread:PRRT_kwDOSF9kNM6CW81X"
+  ],
+  "fetched_at": "2026-05-15T12:44:34.817Z",
+  "schema_version": "v1",
+  "commit_sha": "661aac8dc84ddb936145e23e8212239f5bf20d41",
+  "title": "shard(tick): 1237Z — 2 stale threads cleared; PR #3455 + #3456 wait-CI",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T12:44:10Z",
+  "head_ref": "shard/tick-1237z-otto-cli-2026-05-15"
+}

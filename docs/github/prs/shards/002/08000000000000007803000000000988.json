@@ -1,0 +1,12 @@
+{
+  "pr_number": 2440,
+  "archive_path": "docs/history/pr-reviews/PR-2440-fix-b-0074-1-add-missing-memory-md-index-entry-for-kiro-cli-roster-memory.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T08:19:57.966Z",
+  "schema_version": "v1",
+  "commit_sha": "b0a890e8692d1cbc149118e89bf3bef839650ecb",
+  "title": "fix(B-0074.1): add missing MEMORY.md index entry for kiro-cli roster memory",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T08:19:40Z",
+  "head_ref": "fix/memory-md-kiro-paired-edit"
+}

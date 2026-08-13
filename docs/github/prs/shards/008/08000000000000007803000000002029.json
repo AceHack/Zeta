@@ -1,0 +1,12 @@
+{
+  "pr_number": 8233,
+  "archive_path": "docs/history/pr-reviews/PR-8233-docs-register-b-row-entropic-propagation-self-dual-code-attractor-macwilliams-ha.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T02:00:31.597Z",
+  "schema_version": "v1",
+  "commit_sha": "67828d525f01c56a3199fa62b083088111d2c62e",
+  "title": "docs(register): §B row — entropic propagation → self-dual code attractor (MacWilliams/Hadamard)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T02:00:05Z",
+  "head_ref": "otto/sb-entropic-attractor-conjecture"
+}

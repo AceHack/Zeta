@@ -1,0 +1,15 @@
+{
+  "pr_number": 2244,
+  "archive_path": "docs/history/pr-reviews/PR-2244-feat-b-0030-repo-aware-markdownlint-b-0126-4-retrospective.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gCCb",
+    "thread:PRRT_kwDOSF9kNM6AzhUQ"
+  ],
+  "fetched_at": "2026-05-09T08:32:48.825Z",
+  "schema_version": "v1",
+  "commit_sha": "88f286a9bd4eee06d192a3410d2693a36695bec7",
+  "title": "feat(B-0030): repo-aware markdownlint + B-0126.4 retrospective",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T08:32:32Z",
+  "head_ref": "fix/b0030-lint-md-ts-v2"
+}

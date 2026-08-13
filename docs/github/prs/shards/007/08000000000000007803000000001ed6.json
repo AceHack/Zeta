@@ -1,0 +1,12 @@
+{
+  "pr_number": 7894,
+  "archive_path": "docs/history/pr-reviews/PR-7894-feat-triboolean-ball-the-metric-register-behind-universalnumber-s-port-compariso.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T11:12:07.023Z",
+  "schema_version": "v1",
+  "commit_sha": "6471cde3014cf0e52c540fd3272cda9bc886c069",
+  "title": "feat(triboolean): Ball — the metric register behind UniversalNumber's port; comparisons return Tri (workitem 081KTWFYC9 done)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T11:11:39Z",
+  "head_ref": "shadow-ball-adapter"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6319,
+  "archive_path": "docs/history/pr-reviews/PR-6319-decay-stale-reputation-evidence.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T02:51:03.887Z",
+  "schema_version": "v1",
+  "commit_sha": "ae2894dcf3ed5024948581cdac231702a4b5bcfe",
+  "title": "Decay stale reputation evidence",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T02:50:45Z",
+  "head_ref": "codex/agentic-org-reputation-decay-floor"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 3027,
+  "archive_path": "docs/history/pr-reviews/PR-3027-feat-scaffold-b-0424-7-add-github-dependabot-yml-to-forge-ace-scaffold-templates.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A9cY5",
+    "thread:PRRT_kwDOSF9kNM6B4tuH"
+  ],
+  "fetched_at": "2026-05-13T20:43:43.085Z",
+  "schema_version": "v1",
+  "commit_sha": "95ca5d1702b44ffd8f7f1d2981f8c4125b033db3",
+  "title": "feat(scaffold): B-0424.7 — add .github/dependabot.yml to forge+ace scaffold templates",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T20:43:20Z",
+  "head_ref": "feat/scaffold-B-0424.7-dependabot-yml"
+}

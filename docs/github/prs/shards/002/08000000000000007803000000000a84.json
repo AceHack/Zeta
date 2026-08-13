@@ -1,0 +1,19 @@
+{
+  "pr_number": 2692,
+  "archive_path": "docs/history/pr-reviews/PR-2692-docs-backlog-re-decompose-b-0112-into-4-smallest-atomic-dependency-ordered-child.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_29cC",
+    "comment:PRRC_kwDOSF9kNM6_2__9",
+    "comment:PRRC_kwDOSF9kNM6_2__C",
+    "thread:PRRT_kwDOSF9kNM6BFADf",
+    "thread:PRRT_kwDOSF9kNM6BFB-A",
+    "thread:PRRT_kwDOSF9kNM6BFB9V"
+  ],
+  "fetched_at": "2026-05-11T12:28:43.017Z",
+  "schema_version": "v1",
+  "commit_sha": "ebe4e6923f979540139988e6bf4e30feb71ed1c9",
+  "title": "docs(backlog): re-decompose B-0112 into 4 smallest atomic dependency-ordered children (re-decomp, one bounded step)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T12:28:20Z",
+  "head_ref": "claim/b0112-decompose-smallest-atomic-children-riven-2026-05-11"
+}

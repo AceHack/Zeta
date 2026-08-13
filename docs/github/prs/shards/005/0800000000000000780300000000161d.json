@@ -1,0 +1,12 @@
+{
+  "pr_number": 5661,
+  "archive_path": "docs/history/pr-reviews/PR-5661-docs-hygiene-2026-05-28t00-10z-otto-cli-cold-boot-tick-first-today-s-tick-catch-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T00:15:32.299Z",
+  "schema_version": "v1",
+  "commit_sha": "b0dce00e42906f114f4c5e66e7fa5bf8441c64aa",
+  "title": "docs(hygiene): 2026-05-28T00:10Z Otto-CLI cold-boot tick — first today's tick + catch-43 sentinel re-arm + PR #5659 surface-uncertainty logged",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T00:15:12Z",
+  "head_ref": "otto-cli/tick-shard-0010z-first-2026-05-28-fresh-cold-boot-2026-05-28"
+}

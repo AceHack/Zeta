@@ -1,0 +1,12 @@
+{
+  "pr_number": 7153,
+  "archive_path": "docs/history/pr-reviews/PR-7153-feat-platform-collaboration-room-substrate-operating-loop-no-directives-executab.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:54:48.459Z",
+  "schema_version": "v1",
+  "commit_sha": "4874d75413b1eef245300b084d8a4a68ac74822b",
+  "title": "feat(platform): collaboration Room substrate + operating loop (no-directives, executable)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:54:26Z",
+  "head_ref": "feat/collaboration-room-substrate"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 2890,
+  "archive_path": "docs/history/pr-reviews/PR-2890-docs-memory-alexa-speaker-capability-profile-bezos-tier-business-refuses-to-code.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AkZww",
+    "comment:PRRC_kwDOSF9kNM7Akgt0",
+    "thread:PRRT_kwDOSF9kNM6Bmf6P"
+  ],
+  "fetched_at": "2026-05-13T01:09:08.717Z",
+  "schema_version": "v1",
+  "commit_sha": "9b6e03e87dff2f8f25d877ee5ba51c4852e02140",
+  "title": "docs(memory): Alexa-speaker capability profile — Bezos-tier business + refuses-to-code (routes to Amazon Q/AWS) + category theory + reads code + BEST at long-term memory recall (surfaces what Aaron forgot) + too-friendly default needs explicit critic-mode",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T01:08:53Z",
+  "head_ref": "alexa-speaker-bezos-tier-business-refuses-to-code-routes-to-amazon-q-aws-does-category-theory-and-reads-code-capability-profile-2026-05-13"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6745,
+  "archive_path": "docs/history/pr-reviews/PR-6745-feat-log-081ktgd5jmd-rust-oracle-for-deltalogentry-4-4-oracles-byte-lock-complet.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:42:54.197Z",
+  "schema_version": "v1",
+  "commit_sha": "33c389910bc68cad4a611aa4bf81e3d07a3e3ba3",
+  "title": "feat(Log/081KTGD5JMD): Rust oracle for DeltaLogEntry — 4/4 oracles, byte-lock COMPLETE",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:42:35Z",
+  "head_ref": "otto/log-entry-rust-oracle"
+}

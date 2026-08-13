@@ -1,0 +1,15 @@
+{
+  "pr_number": 3647,
+  "archive_path": "docs/history/pr-reviews/PR-3647-shard-tick-0036z-pr-3646-closes-last-pr-3614-review-thread.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B0LEm",
+    "thread:PRRT_kwDOSF9kNM6Cghoe"
+  ],
+  "fetched_at": "2026-05-16T01:04:43.282Z",
+  "schema_version": "v1",
+  "commit_sha": "df3a80d7f5e28c9df89f962c2316cf563a26f381",
+  "title": "shard(tick): 0036Z — PR #3646 closes last PR #3614 review thread",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T01:04:27Z",
+  "head_ref": "shard/tick-0036z-otto-cli-2026-05-16"
+}

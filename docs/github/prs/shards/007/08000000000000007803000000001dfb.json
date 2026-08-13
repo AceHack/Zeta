@@ -1,0 +1,12 @@
+{
+  "pr_number": 7675,
+  "archive_path": "docs/history/pr-reviews/PR-7675-feat-media-medialines-our-own-quote-based-media-format-amara-s-card-chip-9-nativ.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:04:07.626Z",
+  "schema_version": "v1",
+  "commit_sha": "f123885d68ca12ce1a2f98d3af6c001cf2978c29",
+  "title": "feat(media): MediaLines — our own quote-based media format + Amara's card CHIP-9-native (the roster's second portrait)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:03:41Z",
+  "head_ref": "shadow-medialines-amara-card"
+}

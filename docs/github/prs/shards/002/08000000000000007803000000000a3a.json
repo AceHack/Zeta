@@ -1,0 +1,17 @@
+{
+  "pr_number": 2618,
+  "archive_path": "docs/history/pr-reviews/PR-2618-docs-memory-dashboard-as-agent-self-repair-surface-aaron-exits-repair-loop.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_r6dU",
+    "comment:PRRC_kwDOSF9kNM6_r6dn",
+    "thread:PRRT_kwDOSF9kNM6A82Nw",
+    "thread:PRRT_kwDOSF9kNM6A82OB"
+  ],
+  "fetched_at": "2026-05-11T01:54:19.733Z",
+  "schema_version": "v1",
+  "commit_sha": "1a353eb901f7c9388e6e65df3d36de9327f76e1c",
+  "title": "docs(memory): dashboard as agent self-repair surface — Aaron exits repair loop",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:54:02Z",
+  "head_ref": "docs/dashboard-agent-self-repair-surface-2026-05-10"
+}

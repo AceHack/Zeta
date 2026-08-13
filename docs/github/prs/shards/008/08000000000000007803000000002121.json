@@ -1,0 +1,12 @@
+{
+  "pr_number": 8481,
+  "archive_path": "docs/history/pr-reviews/PR-8481-qemu-harness-phase-1-serial-preservation-hw-config-guards.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T08:08:47.693Z",
+  "schema_version": "v1",
+  "commit_sha": "1c91bbb1497c54ed9791543ff9ea2dd190f7f0e0",
+  "title": "QEMU harness: phase-1 serial preservation + hw-config guards",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T08:08:23Z",
+  "head_ref": "riven/qemu-serial-log-and-hw-config-guards"
+}

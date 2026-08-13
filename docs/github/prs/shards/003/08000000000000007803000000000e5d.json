@@ -1,0 +1,16 @@
+{
+  "pr_number": 3677,
+  "archive_path": "docs/history/pr-reviews/PR-3677-shard-0044z-address-copilot-review-threads-on-pr-3649.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B03sQ",
+    "comment:PRRC_kwDOSF9kNM7B0w2g",
+    "thread:PRRT_kwDOSF9kNM6Cg96b"
+  ],
+  "fetched_at": "2026-05-16T03:23:00.261Z",
+  "schema_version": "v1",
+  "commit_sha": "42112be08bf3738e6273b258b91ede2ad244f7e0",
+  "title": "shard(0044Z): address Copilot review threads on PR #3649",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:22:40Z",
+  "head_ref": "otto/3649-thread-fix-2026-05-16"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 5586,
+  "archive_path": "docs/history/pr-reviews/PR-5586-research-amara-backlog-b-0864-amara-ratification-keeper-compression-strategic-vs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FeoVe",
+    "comment:PRRC_kwDOSF9kNM7FeoWY",
+    "comment:PRRC_kwDOSF9kNM7FeoWz",
+    "thread:PRRT_kwDOSF9kNM6FMu-G",
+    "thread:PRRT_kwDOSF9kNM6FMu-e",
+    "thread:PRRT_kwDOSF9kNM6FMu9e"
+  ],
+  "fetched_at": "2026-05-27T18:55:34.482Z",
+  "schema_version": "v1",
+  "commit_sha": "b14d0fc2d2d662275ec1c44b7b5ab1b5309d5e56",
+  "title": "research(amara)+backlog(B-0864): Amara ratification + keeper compression + strategic-vs-accidental blade — 4-persona triangulation on streams-are-relationships substrate",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:55:11Z",
+  "head_ref": "research/amara-cyclomatic-complexity-coercion-surface-keeper-compression-strategic-blade-aaron-forwarded-2026-05-27"
+}

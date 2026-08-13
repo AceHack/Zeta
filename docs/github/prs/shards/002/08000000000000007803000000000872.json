@@ -1,0 +1,12 @@
+{
+  "pr_number": 2162,
+  "archive_path": "docs/history/pr-reviews/PR-2162-fix-pin-claude-p-w-to-service-worktree.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T01:44:26.957Z",
+  "schema_version": "v1",
+  "commit_sha": "f194edba9dc3d8623c685ac85307986072ddb908",
+  "title": "fix: pin claude -p -w to service worktree",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T01:44:12Z",
+  "head_ref": "fix/claude-loop-pin-worktree"
+}

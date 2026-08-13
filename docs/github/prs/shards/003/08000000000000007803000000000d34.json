@@ -1,0 +1,12 @@
+{
+  "pr_number": 3380,
+  "archive_path": "docs/history/pr-reviews/PR-3380-shard-tick-0729z-pr-3378-merged-3-copilot-fix-on-pr-3376-substrate-wide-rule-lin.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T07:38:19.980Z",
+  "schema_version": "v1",
+  "commit_sha": "151c8356588e7fdabc3feeddd6222e410ebd07d5",
+  "title": "shard(tick): 0729Z — PR #3378 merged; 3-Copilot fix on PR #3376; substrate-wide rule-link path-bug discovered",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T07:37:59Z",
+  "head_ref": "shard/tick-0729z-otto-cli-2026-05-15"
+}

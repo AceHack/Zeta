@@ -1,0 +1,12 @@
+{
+  "pr_number": 2023,
+  "archive_path": "docs/history/pr-reviews/PR-2023-research-b-0278-durable-computation-survey-8-systems.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T03:37:51.286Z",
+  "schema_version": "v1",
+  "commit_sha": "b4a2a7f3cd3fcb022a887f150651562c0ab103f6",
+  "title": "research(B-0278): durable computation survey — 8 systems",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T03:37:36Z",
+  "head_ref": "research/b0278-durable-computation-survey"
+}

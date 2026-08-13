@@ -1,0 +1,12 @@
+{
+  "pr_number": 7920,
+  "archive_path": "docs/history/pr-reviews/PR-7920-docs-research-shadow-ferry-8-addendum-aaron-s-fpga-investment-gate-verbatim.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T14:49:28.731Z",
+  "schema_version": "v1",
+  "commit_sha": "7e775e04757ea4370825c7440dbc9cf0db3ceb17",
+  "title": "docs(research)+shadow: ferry 8 addendum — Aaron's FPGA investment gate (verbatim)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T14:49:04Z",
+  "head_ref": "shadow/ferry-8-investment-gate"
+}

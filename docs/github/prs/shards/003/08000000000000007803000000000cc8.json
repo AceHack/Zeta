@@ -1,0 +1,12 @@
+{
+  "pr_number": 3272,
+  "archive_path": "docs/history/pr-reviews/PR-3272-docs-archive-preserve-pr-3264.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T22:04:21.400Z",
+  "schema_version": "v1",
+  "commit_sha": "6f59cb8a009ce7c5c5e2f01f56c340e96d2f3eab",
+  "title": "docs(archive): preserve PR 3264",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:04:06Z",
+  "head_ref": "lior/archive-3264"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 5123,
+  "archive_path": "docs/history/pr-reviews/PR-5123-backlog-iter-6-6-row-cluster-update-substrate-nixpkgs-24-11-25-11-autoupgrade-ku.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E0WOJ",
+    "comment:PRRC_kwDOSF9kNM7E0WOv",
+    "comment:PRRC_kwDOSF9kNM7E0WPL",
+    "comment:PRRC_kwDOSF9kNM7E0WPp",
+    "comment:PRRC_kwDOSF9kNM7E0WQG",
+    "thread:PRRT_kwDOSF9kNM6Et6-5",
+    "thread:PRRT_kwDOSF9kNM6Et6-Q",
+    "thread:PRRT_kwDOSF9kNM6Et6-n",
+    "thread:PRRT_kwDOSF9kNM6Et698",
+    "thread:PRRT_kwDOSF9kNM6Et69j"
+  ],
+  "fetched_at": "2026-05-26T07:46:19.633Z",
+  "schema_version": "v1",
+  "commit_sha": "c1fd188fb7da796d301c150f2f63efe07af45d8a",
+  "title": "backlog(iter-6): 6-row cluster-update substrate — nixpkgs 24.11→25.11 + autoUpgrade + kured + deploy-rs + runbook + ALL-deps capstone",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T07:45:58Z",
+  "head_ref": "otto-cli/iter6-cluster-update-backlog-cluster-2026-05-26"
+}

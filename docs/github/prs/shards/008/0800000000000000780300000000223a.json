@@ -1,0 +1,12 @@
+{
+  "pr_number": 8762,
+  "archive_path": "docs/history/pr-reviews/PR-8762-feat-ts-schema-codegen-typescript-leg-third-oracle-from-the-same-typeschema-ir.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T18:31:33.456Z",
+  "schema_version": "v1",
+  "commit_sha": "218029054c84bb5e76d05eda6b726e8a5e8e5517",
+  "title": "feat(ts): schema-codegen TypeScript leg — third oracle from the same TypeSchema IR",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T18:31:07Z",
+  "head_ref": "otto/ts-schema-codegen-leg"
+}

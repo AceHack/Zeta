@@ -1,0 +1,19 @@
+{
+  "pr_number": 5882,
+  "archive_path": "docs/history/pr-reviews/PR-5882-docs-research-create-openspec-catch-up-phase-1-audit-b-0171.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F2xKZ",
+    "comment:PRRC_kwDOSF9kNM7F2xLQ",
+    "comment:PRRC_kwDOSF9kNM7F2xLx",
+    "thread:PRRT_kwDOSF9kNM6FeC7y",
+    "thread:PRRT_kwDOSF9kNM6FeC8U",
+    "thread:PRRT_kwDOSF9kNM6FeC8s"
+  ],
+  "fetched_at": "2026-05-28T19:00:41.937Z",
+  "schema_version": "v1",
+  "commit_sha": "8a356c877b5dc0e80b82b5556b7558460c1afdec",
+  "title": "docs(research): Create OpenSpec catch-up Phase 1 audit (B-0171)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T19:00:17Z",
+  "head_ref": "lior/B-0171-openspec-phase1-audit"
+}

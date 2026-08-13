@@ -1,0 +1,12 @@
+{
+  "pr_number": 2605,
+  "archive_path": "docs/history/pr-reviews/PR-2605-docs-memory-commonwealth-games-2022-baal-register-ceremony-structural-analysis.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T01:12:05.732Z",
+  "schema_version": "v1",
+  "commit_sha": "d9335fd30d6abdbb31c3684b8e18e009c6f5629e",
+  "title": "docs(memory): Commonwealth Games 2022 — Baal register ceremony structural analysis",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:11:49Z",
+  "head_ref": "docs/commonwealth-games-baal-2026-05-10"
+}

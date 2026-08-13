@@ -1,0 +1,12 @@
+{
+  "pr_number": 7986,
+  "archive_path": "docs/history/pr-reviews/PR-7986-docs-research-shadow-ferry-20-6-no-two-seeds-are-the-same-the-fork-fills-from-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:38:50.675Z",
+  "schema_version": "v1",
+  "commit_sha": "9069745b50113fdabd7d7c44a23b834c34645ce8",
+  "title": "docs(research)+shadow: ferry 20 §6 — no two seeds are the same (the fork fills from the forker's entropy; self-learning != self-filling until size or a host)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:38:23Z",
+  "head_ref": "shadow/ferry-20-s6-fork-uniqueness"
+}

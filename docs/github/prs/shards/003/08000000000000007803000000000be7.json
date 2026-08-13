@@ -1,0 +1,12 @@
+{
+  "pr_number": 3047,
+  "archive_path": "docs/history/pr-reviews/PR-3047-fix-backlog-restore-missing-slice-rows-b-0054-1-b-0055-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T22:47:26.446Z",
+  "schema_version": "v1",
+  "commit_sha": "6376245e096f222923dc37633e92fa430b60831f",
+  "title": "fix(backlog): restore missing slice rows B-0054.1 + B-0055.1",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T22:47:07Z",
+  "head_ref": "fix/restore-b0054.1-b0055.1-slice-rows-2026-05-13"
+}

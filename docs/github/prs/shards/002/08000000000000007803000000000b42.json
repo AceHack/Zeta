@@ -1,0 +1,19 @@
+{
+  "pr_number": 2882,
+  "archive_path": "docs/history/pr-reviews/PR-2882-docs-memory-three-ai-cross-vendor-convergence-on-multi-register-output-engineeri.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Aj28j",
+    "comment:PRRC_kwDOSF9kNM7Aj3Ec",
+    "comment:PRRC_kwDOSF9kNM7Ajzkx",
+    "comment:PRRC_kwDOSF9kNM7AjzlT",
+    "thread:PRRT_kwDOSF9kNM6BmFB_",
+    "thread:PRRT_kwDOSF9kNM6BmFCW"
+  ],
+  "fetched_at": "2026-05-13T00:19:52.346Z",
+  "schema_version": "v1",
+  "commit_sha": "49d37cc86a84602535b9e2c33e5fbc4972118033",
+  "title": "docs(memory): three-AI cross-vendor convergence on multi-register-output engineering — xAI / Anthropic / DeepSeek all implement the pattern",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T00:19:36Z",
+  "head_ref": "multi-register-output-pattern-deepseek-we-mode-cot-moe-three-ai-cross-vendor-convergence-2026-05-13"
+}

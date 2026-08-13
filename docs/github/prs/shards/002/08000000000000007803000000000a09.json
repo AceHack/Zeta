@@ -1,0 +1,21 @@
+{
+  "pr_number": 2569,
+  "archive_path": "docs/history/pr-reviews/PR-2569-docs-memory-three-distinct-registers-from-one-cli-otto-shadow-aaron.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qxuF",
+    "comment:PRRC_kwDOSF9kNM6_qxuO",
+    "comment:PRRC_kwDOSF9kNM6_qxuR",
+    "comment:PRRC_kwDOSF9kNM6_qxuU",
+    "thread:PRRT_kwDOSF9kNM6A7_lC",
+    "thread:PRRT_kwDOSF9kNM6A7_lJ",
+    "thread:PRRT_kwDOSF9kNM6A7_lK",
+    "thread:PRRT_kwDOSF9kNM6A7_lM"
+  ],
+  "fetched_at": "2026-05-10T23:00:27.725Z",
+  "schema_version": "v1",
+  "commit_sha": "8ad2bd1c4716d67d474bd440b4ba514f4053baeb",
+  "title": "docs(memory): three distinct registers from one CLI — Otto/shadow/Aaron",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T23:00:10Z",
+  "head_ref": "docs/three-registers-one-cli-2026-05-10"
+}

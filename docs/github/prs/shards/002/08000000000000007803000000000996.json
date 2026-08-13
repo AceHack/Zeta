@@ -1,0 +1,21 @@
+{
+  "pr_number": 2454,
+  "archive_path": "docs/history/pr-reviews/PR-2454-fix-gate-codeql-403-sentinel-on-http-403-only-not-all-errors.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_m-YH",
+    "comment:PRRC_kwDOSF9kNM6_m-q4",
+    "comment:PRRC_kwDOSF9kNM6_m-qy",
+    "comment:PRRC_kwDOSF9kNM6_m-ui",
+    "thread:PRRT_kwDOSF9kNM6A49az",
+    "thread:PRRT_kwDOSF9kNM6A49qK",
+    "thread:PRRT_kwDOSF9kNM6A49qO",
+    "thread:PRRT_kwDOSF9kNM6A49tB"
+  ],
+  "fetched_at": "2026-05-10T09:57:18.550Z",
+  "schema_version": "v1",
+  "commit_sha": "81e2257534fce4e51fea68c8447fbdccd0d75c1e",
+  "title": "fix: gate codeql-403 sentinel on HTTP 403 only, not all errors",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T09:57:03Z",
+  "head_ref": "fix/codeql-403-gate-scope-only"
+}

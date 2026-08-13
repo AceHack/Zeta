@@ -1,0 +1,12 @@
+{
+  "pr_number": 7767,
+  "archive_path": "docs/history/pr-reviews/PR-7767-fix-round3-machine-physics-tear-down-live-bugs-closed-the-tautology-that-hid-a-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T19:32:13.476Z",
+  "schema_version": "v1",
+  "commit_sha": "2febfeee8c35c6a56b93b7464ac565a04d2c70ee",
+  "title": "fix(round3): machine/physics tear-down + live bugs closed + the tautology that hid a 2x audio overflow",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T19:31:35Z",
+  "head_ref": "shadow-round3-live-bugs"
+}

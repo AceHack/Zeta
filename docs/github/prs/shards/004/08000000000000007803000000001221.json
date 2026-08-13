@@ -1,0 +1,12 @@
+{
+  "pr_number": 4641,
+  "archive_path": "docs/history/pr-reviews/PR-4641-trajectory-ace-package-manager-polyglot-contents-proto-governance-hats-as-contro.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T17:45:06.240Z",
+  "schema_version": "v1",
+  "commit_sha": "c545a088d4cccb860baacb40d46337da14bba98f",
+  "title": "trajectory(ace-package-manager): polyglot contents + proto-governance + hats-as-controls + aperiodic-and-aporetic + Rx-persisted-bonsai for tension-preservation",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T17:44:44Z",
+  "head_ref": "otto/cli-2110z-ace-trajectory-polyglot-contents-proto-governance-hats-as-controls-aperiodic-and-aporetic-rx-persisted-bonsai-tension-preservation-2026-05-22"
+}

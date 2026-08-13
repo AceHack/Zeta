@@ -1,0 +1,12 @@
+{
+  "pr_number": 8108,
+  "archive_path": "docs/history/pr-reviews/PR-8108-feat-vision-add-prediction-inference-kernel.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T00:41:54.103Z",
+  "schema_version": "v1",
+  "commit_sha": "e65ebb77eb9a0dd3585ee8d6a8cfa2aa9a48ec80",
+  "title": "feat(vision): add prediction inference kernel",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T00:41:33Z",
+  "head_ref": "codex/vision-prediction-kernel"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3832,
+  "archive_path": "docs/history/pr-reviews/PR-3832-memory-feedback-saturation-ceiling-session-arc-4-pr-substrate-quartet-from-fresh.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T08:59:11.187Z",
+  "schema_version": "v1",
+  "commit_sha": "36cace51bc025e1a62ba135a1b43d5e41eabd30d",
+  "title": "memory(feedback): saturation-ceiling session arc — 4-PR substrate quartet from fresh-cold-boot Otto-CLI",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T08:58:53Z",
+  "head_ref": "memory/saturation-ceiling-session-arc-otto-cli-2026-05-16"
+}

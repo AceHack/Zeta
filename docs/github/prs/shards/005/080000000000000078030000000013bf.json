@@ -1,0 +1,12 @@
+{
+  "pr_number": 5055,
+  "archive_path": "docs/history/pr-reviews/PR-5055-backlog-b-0769-p1-vc-meta-playbook-control-structure-injection-around-capital-fl.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T00:29:08.914Z",
+  "schema_version": "v1",
+  "commit_sha": "333b34e3530e931a1b526d2e53f82354f5c75045",
+  "title": "backlog(B-0769 P1): VC meta-playbook — control-structure injection around capital flow + adj-EBITDA financial-engineering layer (substrate-honest variant)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T00:28:52Z",
+  "head_ref": "otto-cli/b0769-vc-meta-playbook-control-structure-injection-substrate-honest-2026-05-25"
+}

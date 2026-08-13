@@ -1,0 +1,15 @@
+{
+  "pr_number": 2724,
+  "archive_path": "docs/history/pr-reviews/PR-2724-feat-tools-b-0314-smallest-safe-slice-ts-bp-nn-anchor-helper-stub-re-decomp.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_-tLS",
+    "thread:PRRT_kwDOSF9kNM6BKwy6"
+  ],
+  "fetched_at": "2026-05-11T17:45:56.929Z",
+  "schema_version": "v1",
+  "commit_sha": "63a800bc268ca03514adb714f07d46f9873c5bb1",
+  "title": "feat(tools): B-0314 smallest safe slice — TS BP-NN anchor helper stub (re-decomp)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T17:45:35Z",
+  "head_ref": "claim/b0314-bp-nn-rule-anchor-backfill-slice10-riven-2026-05-11"
+}

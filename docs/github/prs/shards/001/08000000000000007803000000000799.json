@@ -1,0 +1,12 @@
+{
+  "pr_number": 1945,
+  "archive_path": "docs/history/pr-reviews/PR-1945-fix-backlog-reopen-premature-b-0062-closure.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T21:24:27.161Z",
+  "schema_version": "v1",
+  "commit_sha": "7b4043e0d0563dd77b5f235882398deb5fbf7d00",
+  "title": "fix(backlog): reopen premature B-0062 closure",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T21:24:13Z",
+  "head_ref": "codex/reopen-b0062-after-premature-close"
+}

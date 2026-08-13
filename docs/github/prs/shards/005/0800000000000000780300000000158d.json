@@ -1,0 +1,12 @@
+{
+  "pr_number": 5517,
+  "archive_path": "docs/history/pr-reviews/PR-5517-docs-research-preserve-aaron-forwarded-prism-deepseek-synthesis-of-2026-05-27-su.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T17:22:24.251Z",
+  "schema_version": "v1",
+  "commit_sha": "9a58237cf852bed3ce82b6d130ae737d0b11e06b",
+  "title": "docs(research): preserve Aaron-forwarded Prism/DeepSeek synthesis of 2026-05-27 substrate-engineering day (iterator/generator-asymmetry as canonical anti-pattern instance + cross-AI synthesis with Amara)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T17:22:01Z",
+  "head_ref": "research/prism-deepseek-day-substrate-synthesis-2026-05-27"
+}

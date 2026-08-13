@@ -1,0 +1,27 @@
+{
+  "pr_number": 5388,
+  "archive_path": "docs/history/pr-reviews/PR-5388-feat-iter-5-5-0-b-0848-phase-2-b-0835-bug-8-install-time-claude-code-interactive.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FLZ28",
+    "comment:PRRC_kwDOSF9kNM7FLZ35",
+    "comment:PRRC_kwDOSF9kNM7FLZ3b",
+    "comment:PRRC_kwDOSF9kNM7FLZ3j",
+    "comment:PRRC_kwDOSF9kNM7FLZ3v",
+    "comment:PRRC_kwDOSF9kNM7FLZ4E",
+    "comment:PRRC_kwDOSF9kNM7FLbLm",
+    "comment:PRRC_kwDOSF9kNM7FLbMz",
+    "thread:PRRT_kwDOSF9kNM6E-tT0",
+    "thread:PRRT_kwDOSF9kNM6E-tT9",
+    "thread:PRRT_kwDOSF9kNM6E-tTJ",
+    "thread:PRRT_kwDOSF9kNM6E-tTh",
+    "thread:PRRT_kwDOSF9kNM6E-tTp",
+    "thread:PRRT_kwDOSF9kNM6E-tUH"
+  ],
+  "fetched_at": "2026-05-27T02:48:41.981Z",
+  "schema_version": "v1",
+  "commit_sha": "cfc860fe9e9815bb0d192501c32caf5bdd936ab0",
+  "title": "feat(iter-5.5.0 B-0848 Phase 2 + B-0835 Bug 8): install-time claude-code + interactive claude login + gh+claude credential persistence + Zeta repo pre-clone — automatic on boot (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T02:48:21Z",
+  "head_ref": "feat-iter550-install-time-claude-code-credential-persistence-2026-05-26-2325z"
+}

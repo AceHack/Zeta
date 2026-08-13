@@ -1,0 +1,23 @@
+{
+  "pr_number": 2781,
+  "archive_path": "docs/history/pr-reviews/PR-2781-docs-memory-hkt-for-5-year-old-grand-unification-refused-plain-english-trajector.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AWP0N",
+    "comment:PRRC_kwDOSF9kNM7AWP2O",
+    "comment:PRRC_kwDOSF9kNM7AWPyw",
+    "comment:PRRC_kwDOSF9kNM7AX41W",
+    "comment:PRRC_kwDOSF9kNM7AYVTx",
+    "thread:PRRT_kwDOSF9kNM6BcLv3",
+    "thread:PRRT_kwDOSF9kNM6BcLw0",
+    "thread:PRRT_kwDOSF9kNM6BcLyk",
+    "thread:PRRT_kwDOSF9kNM6BdZwi",
+    "thread:PRRT_kwDOSF9kNM6Bdu_H"
+  ],
+  "fetched_at": "2026-05-12T16:04:38.004Z",
+  "schema_version": "v1",
+  "commit_sha": "e3690931167da1eabf5a21d71d4e7a1946d48c5e",
+  "title": "docs(memory): HKT for 5-year-old + grand unification refused + plain-English trajectories",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T16:04:11Z",
+  "head_ref": "docs/aaron-hkt-for-5-year-old-things-that-look-like-things-2026-05-12"
+}

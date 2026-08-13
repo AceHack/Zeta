@@ -1,0 +1,18 @@
+{
+  "pr_number": 6222,
+  "archive_path": "docs/history/pr-reviews/PR-6222-docs-research-itron-platform-workflow-chris-king-rehydrate-resume-model-git-nati.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GhciK",
+    "comment:PRRC_kwDOSF9kNM7GhciR",
+    "comment:PRRC_kwDOSF9kNM7Gheix",
+    "thread:PRRT_kwDOSF9kNM6F9Yx-",
+    "thread:PRRT_kwDOSF9kNM6F9Yx5"
+  ],
+  "fetched_at": "2026-05-31T17:51:58.837Z",
+  "schema_version": "v1",
+  "commit_sha": "875fafad0fec50d57d3eb40ad8f900cc7735e71e",
+  "title": "docs(research): Itron Platform.Workflow (Chris King) rehydrate-resume model + git-native mapping",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T17:51:40Z",
+  "head_ref": "otto-cli/itron-workflow-model-writeup-2026-05-31"
+}

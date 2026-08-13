@@ -1,0 +1,12 @@
+{
+  "pr_number": 7665,
+  "archive_path": "docs/history/pr-reviews/PR-7665-feat-cartridge-breathe-the-first-first-party-chip-9-cartridge-the-spec-speed-doc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T12:25:08.012Z",
+  "schema_version": "v1",
+  "commit_sha": "7ba1976a527517cbfaaa479ea144505ab2160351",
+  "title": "feat(cartridge): BREATHE — the first first-party CHIP-9 cartridge + the spec-speed doctrine",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T12:24:42Z",
+  "head_ref": "shadow-breathe-cartridge"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 6654,
+  "archive_path": "docs/history/pr-reviews/PR-6654-backlog-b-1012-b-1015-federation-governance-cluster-from-forwarded-session.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Hi7uG",
+    "comment:PRRC_kwDOSF9kNM7Hi7ux",
+    "thread:PRRT_kwDOSF9kNM6GtvB0",
+    "thread:PRRT_kwDOSF9kNM6GtvCS"
+  ],
+  "fetched_at": "2026-06-03T10:50:26.132Z",
+  "schema_version": "v1",
+  "commit_sha": "5e9ad79d5c263179551788151a68d6c5db057ae1",
+  "title": "backlog(B-1012..B-1015): federation/governance cluster from forwarded session",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T10:50:05Z",
+  "head_ref": "otto-cli/backlog-federation-governance-cluster-2026-06-03"
+}

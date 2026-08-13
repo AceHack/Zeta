@@ -1,0 +1,12 @@
+{
+  "pr_number": 6760,
+  "archive_path": "docs/history/pr-reviews/PR-6760-docs-architecture-names-decided-nucleus-geode-host-concern-zetaid-as-universal-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T08:49:16.069Z",
+  "schema_version": "v1",
+  "commit_sha": "f089bb519ed542725ab45560a44631952a2cc61f",
+  "title": "docs(architecture): names decided (Nucleus, Geode=host-concern) + ZetaID as universal cross-layer pointer",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T08:48:55Z",
+  "head_ref": "otto/names-decided-plus-zetaid-universal-pointer"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8077,
+  "archive_path": "docs/history/pr-reviews/PR-8077-feat-observe-oracle-picks-merge-ready-prs-via-forgestate.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T22:06:25.536Z",
+  "schema_version": "v1",
+  "commit_sha": "34d95d0bc410971615bf37b3ec234d5782040164",
+  "title": "feat(observe): oracle picks merge-ready PRs via ForgeState",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T22:06:05Z",
+  "head_ref": "kiro/observe-forge-state"
+}

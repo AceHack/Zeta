@@ -1,0 +1,12 @@
+{
+  "pr_number": 3204,
+  "archive_path": "docs/history/pr-reviews/PR-3204-chore-b-0517-shard-tick-1927z-razor-cadence-item-5-memory-md-bloat.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T19:35:05.652Z",
+  "schema_version": "v1",
+  "commit_sha": "86dc5d267cbcc5a9c1a29453f993dc3007d2a4d7",
+  "title": "chore(B-0517) + shard(tick): 1927Z — razor-cadence item 5 (MEMORY.md bloat)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:34:38Z",
+  "head_ref": "chore/b-0517-memory-md-index-bloat-audit-otto-cli-2026-05-14"
+}

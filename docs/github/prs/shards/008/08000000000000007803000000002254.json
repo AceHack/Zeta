@@ -1,0 +1,12 @@
+{
+  "pr_number": 8788,
+  "archive_path": "docs/history/pr-reviews/PR-8788-feat-core-doorgraph-rooms-connected-by-permission-gated-doors-the-vault-interior.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T22:49:25.068Z",
+  "schema_version": "v1",
+  "commit_sha": "1f555aa69c883ada9645ed63c27258742bebc68f",
+  "title": "feat(core): DoorGraph — rooms connected by permission-gated doors (the vault interior)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T22:48:59Z",
+  "head_ref": "otto/door-graph"
+}

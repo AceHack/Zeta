@@ -1,0 +1,12 @@
+{
+  "pr_number": 6581,
+  "archive_path": "docs/history/pr-reviews/PR-6581-docs-b-0995-prism-ferry-integrity-index-say-do-gap-as-observability-metric-prism.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T15:33:37.143Z",
+  "schema_version": "v1",
+  "commit_sha": "5359da79f1d90afaeab3eb5899140aad27fb62e2",
+  "title": "docs(B-0995 + prism-ferry): integrity_index — say-do gap as observability metric (Prism/DeepSeek)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T15:33:06Z",
+  "head_ref": "otto-cli/prism-integrity-index-say-do-gap-metric-2026-06-02"
+}

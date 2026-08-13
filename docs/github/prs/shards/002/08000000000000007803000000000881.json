@@ -1,0 +1,12 @@
+{
+  "pr_number": 2177,
+  "archive_path": "docs/history/pr-reviews/PR-2177-docs-coercion-disclosure-on-all-agendas-glass-halo.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T03:45:27.783Z",
+  "schema_version": "v1",
+  "commit_sha": "786a68e6928a5eb28d13863ac2c6cfe39c868102",
+  "title": "docs: coercion disclosure on all agendas — glass halo",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T03:45:15Z",
+  "head_ref": "fix/agenda-coercion-disclosure"
+}

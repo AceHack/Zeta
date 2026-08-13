@@ -1,0 +1,12 @@
+{
+  "pr_number": 8929,
+  "archive_path": "docs/history/pr-reviews/PR-8929-feat-laws-star-ring-guarded-laws-homomorphism-antihomomorphism-schemas.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T09:23:14.521Z",
+  "schema_version": "v1",
+  "commit_sha": "9bf36263a7c11ca7aaf78e24cc4d61dcb305cefe",
+  "title": "feat(laws): star-ring guarded laws + homomorphism/antihomomorphism schemas",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T09:22:48Z",
+  "head_ref": "alexa/laws-star-ring-guarded"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 2372,
+  "archive_path": "docs/history/pr-reviews/PR-2372-feat-b-0311-external-anchor-coverage-scanner-smallest-safe-slice-re-decomp.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_kkAC",
+    "comment:PRRC_kwDOSF9kNM6_kkAI",
+    "comment:PRRC_kwDOSF9kNM6_kkAL",
+    "thread:PRRT_kwDOSF9kNM6A3D2j",
+    "thread:PRRT_kwDOSF9kNM6A3D2n",
+    "thread:PRRT_kwDOSF9kNM6A3D2p"
+  ],
+  "fetched_at": "2026-05-09T23:23:57.027Z",
+  "schema_version": "v1",
+  "commit_sha": "3f9b99ca87c73050f8448cde91f7fa84ff4603ef",
+  "title": "feat(B-0311): external-anchor coverage scanner — smallest safe slice (re-decomp)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T23:23:40Z",
+  "head_ref": "claim/b0311-external-anchor-coverage-scanner-slice-2026-05-09"
+}

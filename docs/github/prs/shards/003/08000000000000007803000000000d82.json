@@ -1,0 +1,12 @@
+{
+  "pr_number": 3458,
+  "archive_path": "docs/history/pr-reviews/PR-3458-docs-b-0505-close-b-0442-slice-5-acceptance-document-auto-recover.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T12:43:15.691Z",
+  "schema_version": "v1",
+  "commit_sha": "d6821acf0c611f8ff2e114d72684f143d55b8310",
+  "title": "docs(b-0505): close B-0442 slice 5 acceptance + document --auto-recover",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T12:42:58Z",
+  "head_ref": "feat/b0505-docs-b0442-close-otto-cli-2026-05-15"
+}

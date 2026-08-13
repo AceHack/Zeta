@@ -1,0 +1,12 @@
+{
+  "pr_number": 8146,
+  "archive_path": "docs/history/pr-reviews/PR-8146-refactor-extract-codex-utils-shim-codex-bin-unified-service.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T02:51:22.132Z",
+  "schema_version": "v1",
+  "commit_sha": "fc7e3f567417127098c5f1fcba43a33430b3edd9",
+  "title": "refactor: extract codex utils + shim .codex/bin/ → unified service",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T02:50:58Z",
+  "head_ref": "kiro/extract-codex-utils"
+}

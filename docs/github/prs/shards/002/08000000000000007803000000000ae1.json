@@ -1,0 +1,27 @@
+{
+  "pr_number": 2785,
+  "archive_path": "docs/history/pr-reviews/PR-2785-docs-memory-stanford-parallel-language-cluster-hop-traversal-coincidences-as-qua.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AX2bB",
+    "comment:PRRC_kwDOSF9kNM7AX2bM",
+    "comment:PRRC_kwDOSF9kNM7AXd0l",
+    "comment:PRRC_kwDOSF9kNM7AXd1z",
+    "comment:PRRC_kwDOSF9kNM7AXd2F",
+    "comment:PRRC_kwDOSF9kNM7AXd2s",
+    "comment:PRRC_kwDOSF9kNM7AXd3S",
+    "thread:PRRT_kwDOSF9kNM6BdFhR",
+    "thread:PRRT_kwDOSF9kNM6BdFi4",
+    "thread:PRRT_kwDOSF9kNM6BdFiO",
+    "thread:PRRT_kwDOSF9kNM6BdFiY",
+    "thread:PRRT_kwDOSF9kNM6BdFjX",
+    "thread:PRRT_kwDOSF9kNM6BdX_B",
+    "thread:PRRT_kwDOSF9kNM6BdX_I"
+  ],
+  "fetched_at": "2026-05-12T15:33:00.624Z",
+  "schema_version": "v1",
+  "commit_sha": "f32073b4b9b681279f5a9ab11753e565ca1d2880",
+  "title": "docs(memory): Stanford parallel-language cluster + hop-traversal + coincidences as quantum tunnels (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T15:32:36Z",
+  "head_ref": "docs/aaron-stanford-parallel-language-cluster-sequoia-legion-sdm-2026-05-12"
+}

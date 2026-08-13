@@ -1,0 +1,12 @@
+{
+  "pr_number": 5585,
+  "archive_path": "docs/history/pr-reviews/PR-5585-docs-archive-batch-archive-of-9-prs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T01:12:42.469Z",
+  "schema_version": "v1",
+  "commit_sha": "d0948dd88ab6a23823c58c12418a92e7bf0336d6",
+  "title": "docs(archive): Batch archive of 9 PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T01:12:23Z",
+  "head_ref": "lior/batch-archive-2026-05-27-2"
+}

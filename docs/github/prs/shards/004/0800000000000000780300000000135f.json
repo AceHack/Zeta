@@ -1,0 +1,12 @@
+{
+  "pr_number": 4959,
+  "archive_path": "docs/history/pr-reviews/PR-4959-feat-tools-flash-usb-ts-safety-railed-dd-wrapper-for-the-ai-cluster-iso.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T17:23:11.905Z",
+  "schema_version": "v1",
+  "commit_sha": "900572bb7d7fc30bee8224ff2b5172b1c5df67d1",
+  "title": "feat(tools): flash-usb.ts — safety-railed dd wrapper for the AI-cluster ISO",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T17:22:51Z",
+  "head_ref": "feat/flash-usb-safety-rail-script-2026-05-25-c2"
+}

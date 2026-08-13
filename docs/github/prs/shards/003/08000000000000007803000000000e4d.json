@@ -1,0 +1,12 @@
+{
+  "pr_number": 3661,
+  "archive_path": "docs/history/pr-reviews/PR-3661-shard-tick-0059z-2-fixes-addressing-6-unresolved-threads-across-pr-3647-3652.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T01:09:18.143Z",
+  "schema_version": "v1",
+  "commit_sha": "9eb511acb329aa25d7a77008b8245675efe8b5e9",
+  "title": "shard(tick): 0059Z — 2 fixes addressing 6 unresolved threads across PR #3647 + #3652",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T01:09:02Z",
+  "head_ref": "shard/tick-0059z-otto-cli-2026-05-16"
+}

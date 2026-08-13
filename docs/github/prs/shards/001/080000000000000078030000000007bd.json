@@ -1,0 +1,15 @@
+{
+  "pr_number": 1981,
+  "archive_path": "docs/history/pr-reviews/PR-1981-fix-update-resume-with-lexisnexis-session-details.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_EYp_",
+    "thread:PRRT_kwDOSF9kNM6AfL6r"
+  ],
+  "fetched_at": "2026-05-08T01:13:17.111Z",
+  "schema_version": "v1",
+  "commit_sha": "366fa0996d4d304c90ed89c83a882cbe85174838",
+  "title": "fix: update resume with LexisNexis session details",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T01:12:58Z",
+  "head_ref": "fix/resume-lexisnexis-update"
+}

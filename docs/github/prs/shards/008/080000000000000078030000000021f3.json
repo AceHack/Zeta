@@ -1,0 +1,12 @@
+{
+  "pr_number": 8691,
+  "archive_path": "docs/history/pr-reviews/PR-8691-feat-core-entityfederations-wikidata-leg-to-federation-parity-with-the-imdb-co-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T02:51:53.146Z",
+  "schema_version": "v1",
+  "commit_sha": "65a33118fd31d6d69173101b074a9b472041d634",
+  "title": "feat(core): EntityFederations — Wikidata leg to federation parity with the IMDb co-star leg",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T02:51:26Z",
+  "head_ref": "otto/entity-federations-wikidata-parity"
+}

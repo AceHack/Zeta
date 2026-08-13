@@ -1,0 +1,15 @@
+{
+  "pr_number": 1930,
+  "archive_path": "docs/history/pr-reviews/PR-1930-fix-backlog-b-0062-classification-timing-no-contradiction-resolved.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6--oLK",
+    "thread:PRRT_kwDOSF9kNM6Aa935"
+  ],
+  "fetched_at": "2026-05-07T19:15:37.449Z",
+  "schema_version": "v1",
+  "commit_sha": "4c3f4acbc47a48aa2a35a9e671cc6e7413cdd66d",
+  "title": "fix(backlog): B-0062 classification timing — no contradiction (resolved)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T19:15:16Z",
+  "head_ref": "otto/b0062-classification-timing-resolved"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7201,
+  "archive_path": "docs/history/pr-reviews/PR-7201-docs-research-ip-questionable-new-scientist-black-holes-gravity-multiverse-marat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T04:49:17.757Z",
+  "schema_version": "v1",
+  "commit_sha": "fe1b703088927364eb044011dfe410f66f185397",
+  "title": "docs(research/ip-questionable): New Scientist black-holes/gravity/multiverse marathon — VERBATIM (Aaron-forwarded)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T04:48:58Z",
+  "head_ref": "otto/research-ip-questionable-newscientist-blackholes-gravity-multiverse-verbatim"
+}

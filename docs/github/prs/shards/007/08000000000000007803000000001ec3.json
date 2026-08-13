@@ -1,0 +1,12 @@
+{
+  "pr_number": 7875,
+  "archive_path": "docs/history/pr-reviews/PR-7875-fix-installer-skip-nmtui-when-no-wifi-hardware-qemu-install-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T04:51:20.595Z",
+  "schema_version": "v1",
+  "commit_sha": "1ff153af36074d145414b45a68ccc351380e3e05",
+  "title": "fix(installer): skip nmtui when no wifi hardware — QEMU install path",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T04:50:55Z",
+  "head_ref": "riven/b0891-skip-nmtui-no-wifi"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8615,
+  "archive_path": "docs/history/pr-reviews/PR-8615-memory-founder-cognition-record-aaron-s-consent-tension-resolution-mutual-empowe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T20:21:20.192Z",
+  "schema_version": "v1",
+  "commit_sha": "61672381eef49693f39107cdd609ba3269913823",
+  "title": "memory(founder-cognition): record Aaron's consent-tension resolution — mutual-empowerment propagates down the chain",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T20:20:52Z",
+  "head_ref": "otto/consent-resolution-empowerment-propagation"
+}

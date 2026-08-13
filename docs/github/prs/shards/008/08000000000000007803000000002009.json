@@ -1,0 +1,12 @@
+{
+  "pr_number": 8201,
+  "archive_path": "docs/history/pr-reviews/PR-8201-docs-research-summon-protocol-bidirectional-trust-tick-source-sovereignty-busine.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T16:49:19.365Z",
+  "schema_version": "v1",
+  "commit_sha": "11d0ef597ae1d629b3c5a72b13232375f48292e6",
+  "title": "docs(research): summon protocol — bidirectional trust + tick-source sovereignty + business model",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T16:49:00Z",
+  "head_ref": "otto/summon-bidirectional-trust"
+}

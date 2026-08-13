@@ -1,0 +1,12 @@
+{
+  "pr_number": 7523,
+  "archive_path": "docs/history/pr-reviews/PR-7523-docs-research-cheat-engine-jit-over-cpu-instr-reverse-engineer-hard-soft-per-gam.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T22:22:33.894Z",
+  "schema_version": "v1",
+  "commit_sha": "f732e8c18b93580fa333715a0bf367c287c769a3",
+  "title": "docs(research): Cheat Engine = JIT over CPU instr; reverse-engineer hard<->soft; per-game (GameFingerprint-keyed) soft-lift",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T22:22:08Z",
+  "head_ref": "shadow-cheat-engine-jit-hard-soft-game-dependent"
+}

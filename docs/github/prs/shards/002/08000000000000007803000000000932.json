@@ -1,0 +1,12 @@
+{
+  "pr_number": 2354,
+  "archive_path": "docs/history/pr-reviews/PR-2354-fix-b-0376-preserve-decomposed-parent-status-in-adr-task.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T22:07:12.116Z",
+  "schema_version": "v1",
+  "commit_sha": "8dc6eb2c4198a229841740bfd115bd976aa941ca",
+  "title": "fix(B-0376): preserve decomposed parent status in ADR task",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T22:06:55Z",
+  "head_ref": "claim/b0376-keep-parent-decomposed-codex-2026-05-09"
+}

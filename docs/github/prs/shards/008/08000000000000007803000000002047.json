@@ -1,0 +1,12 @@
+{
+  "pr_number": 8263,
+  "archive_path": "docs/history/pr-reviews/PR-8263-docs-register-b-row-minimal-maximal-razor-same-related-rhymes-braid-pedagogy-lay.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T05:20:25.615Z",
+  "schema_version": "v1",
+  "commit_sha": "ee3c7ce26d43063d7a5178746b853069e334a516",
+  "title": "docs(register): §B ζ-row — minimal→maximal razor (same/related/rhymes) + braid-pedagogy layer",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T05:20:04Z",
+  "head_ref": "otto/zeta-row-minimal-maximal-razor-and-braid-pedagogy"
+}

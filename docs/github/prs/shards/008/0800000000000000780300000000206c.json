@@ -1,0 +1,12 @@
+{
+  "pr_number": 8300,
+  "archive_path": "docs/history/pr-reviews/PR-8300-docs-closed-frame-the-anti-cult-program-encourage-external-anchors-external-conn.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T10:06:13.746Z",
+  "schema_version": "v1",
+  "commit_sha": "5e8f231c17272395b9a15f7561e99b5264da0f3e",
+  "title": "docs(closed-frame): the anti-cult program — encourage external anchors + external connection (the graph form)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T10:05:49Z",
+  "head_ref": "otto/external-connection-over-internal-cult-anti-cult-topology"
+}

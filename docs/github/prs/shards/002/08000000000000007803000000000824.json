@@ -1,0 +1,27 @@
+{
+  "pr_number": 2084,
+  "archive_path": "docs/history/pr-reviews/PR-2084-feat-b-0306-pace-instruction-extractor-test-fixtures.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_SuET",
+    "comment:PRRC_kwDOSF9kNM6_SuEc",
+    "comment:PRRC_kwDOSF9kNM6_Szgq",
+    "comment:PRRC_kwDOSF9kNM6_Szhb",
+    "comment:PRRC_kwDOSF9kNM6_Szhv",
+    "comment:PRRC_kwDOSF9kNM6_SziF",
+    "comment:PRRC_kwDOSF9kNM6_Szib",
+    "thread:PRRT_kwDOSF9kNM6ApsvD",
+    "thread:PRRT_kwDOSF9kNM6ApsvK",
+    "thread:PRRT_kwDOSF9kNM6Apw3P",
+    "thread:PRRT_kwDOSF9kNM6Apw3y",
+    "thread:PRRT_kwDOSF9kNM6Apw4G",
+    "thread:PRRT_kwDOSF9kNM6Apw4V",
+    "thread:PRRT_kwDOSF9kNM6Apw4n"
+  ],
+  "fetched_at": "2026-05-08T14:37:02.722Z",
+  "schema_version": "v1",
+  "commit_sha": "85fb0ee77387ae1afef3d78e1e1f379f84ac643a",
+  "title": "feat(B-0306): pace-instruction extractor + test fixtures",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T14:36:42Z",
+  "head_ref": "feat/B-0306-pace-extractor"
+}

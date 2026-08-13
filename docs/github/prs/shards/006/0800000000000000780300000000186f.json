@@ -1,0 +1,22 @@
+{
+  "pr_number": 6255,
+  "archive_path": "docs/history/pr-reviews/PR-6255-feat-observe-rust-observe-fold-algebra-oracle-4-hexagonal-json-port-completes-4-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GidC1",
+    "comment:PRRC_kwDOSF9kNM7GidC4",
+    "comment:PRRC_kwDOSF9kNM7GidC5",
+    "comment:PRRC_kwDOSF9kNM7GiffV",
+    "comment:PRRC_kwDOSF9kNM7GifgA",
+    "comment:PRRC_kwDOSF9kNM7Gifgi",
+    "thread:PRRT_kwDOSF9kNM6F-KEh",
+    "thread:PRRT_kwDOSF9kNM6F-KEk",
+    "thread:PRRT_kwDOSF9kNM6F-KEl"
+  ],
+  "fetched_at": "2026-05-31T21:05:42.399Z",
+  "schema_version": "v1",
+  "commit_sha": "4208790d0d2e165b1e6f9b08fa1eaf598fad2380",
+  "title": "feat(observe): Rust observe-fold algebra (oracle #4) + hexagonal JSON port — completes 4-of-4 cross-language agreement (B-0867.27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T21:05:24Z",
+  "head_ref": "feat/observe-rust-fold-parity-b0867-27-2026-05-31"
+}

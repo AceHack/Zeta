@@ -1,0 +1,16 @@
+{
+  "pr_number": 3712,
+  "archive_path": "docs/history/pr-reviews/PR-3712-docs-archive-lior-preserve-recently-merged-prs-0336z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1Mtd",
+    "comment:PRRC_kwDOSF9kNM7B1PVd",
+    "thread:PRRT_kwDOSF9kNM6ChSgH"
+  ],
+  "fetched_at": "2026-05-16T03:48:46.817Z",
+  "schema_version": "v1",
+  "commit_sha": "0c3178d7fe013d2fac4159b4b3e73bc346285951",
+  "title": "docs(archive): Lior preserve recently merged PRs 0336Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:48:31Z",
+  "head_ref": "lior/preserve-prs-0336Z"
+}

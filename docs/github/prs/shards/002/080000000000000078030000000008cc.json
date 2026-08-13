@@ -1,0 +1,19 @@
+{
+  "pr_number": 2252,
+  "archive_path": "docs/history/pr-reviews/PR-2252-docs-b-0126-4-meta-learning-retrospective.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gL0K",
+    "comment:PRRC_kwDOSF9kNM6_gL8Q",
+    "comment:PRRC_kwDOSF9kNM6_gL8V",
+    "thread:PRRT_kwDOSF9kNM6AzpQg",
+    "thread:PRRT_kwDOSF9kNM6AzpW-",
+    "thread:PRRT_kwDOSF9kNM6AzpW5"
+  ],
+  "fetched_at": "2026-05-09T09:08:07.944Z",
+  "schema_version": "v1",
+  "commit_sha": "b676f4372581a12e4c226b2de338f717a3be1743",
+  "title": "docs(B-0126.4): meta-learning retrospective",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:07:54Z",
+  "head_ref": "fix/b0126.4-retrospective-v2"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2873,
+  "archive_path": "docs/history/pr-reviews/PR-2873-fix-memory-index-2872-gpu-grain-memory.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T21:51:12.529Z",
+  "schema_version": "v1",
+  "commit_sha": "dff19624ecfbf5fe6839b2df8b10684968a696fe",
+  "title": "fix(memory): index #2872 GPU grain memory",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T21:50:53Z",
+  "head_ref": "codex/pr2872-memory-index-followup-2026-05-12"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 4421,
+  "archive_path": "docs/history/pr-reviews/PR-4421-docs-shadow-maji-anti-entropy-shadow-report-on-blob-pr-4383.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DNcZZ",
+    "thread:PRRT_kwDOSF9kNM6Dh7rq"
+  ],
+  "fetched_at": "2026-05-20T22:55:27.292Z",
+  "schema_version": "v1",
+  "commit_sha": "03bf55b88bf48b0088c5545a43dabd7545302835",
+  "title": "docs(shadow): Maji anti-entropy shadow report on blob PR 4383",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T22:55:07Z",
+  "head_ref": "maji/shadow-log-4383-blob"
+}

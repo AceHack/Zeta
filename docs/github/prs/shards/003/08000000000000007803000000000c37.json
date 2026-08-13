@@ -1,0 +1,19 @@
+{
+  "pr_number": 3127,
+  "archive_path": "docs/history/pr-reviews/PR-3127-feat-b-0469-execute-civsim-apply-lfg-civsim-live-b-0470-filed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BK-1i",
+    "comment:PRRC_kwDOSF9kNM7BK-2H",
+    "comment:PRRC_kwDOSF9kNM7BK-2g",
+    "thread:PRRT_kwDOSF9kNM6CCjv-",
+    "thread:PRRT_kwDOSF9kNM6CCjvk",
+    "thread:PRRT_kwDOSF9kNM6CCjwU"
+  ],
+  "fetched_at": "2026-05-14T11:09:03.847Z",
+  "schema_version": "v1",
+  "commit_sha": "174c6c664413e31f45c86bc64d04613e9a550d07",
+  "title": "feat(b-0469): execute civsim --apply — LFG/civsim live + B-0470 filed",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T11:08:44Z",
+  "head_ref": "feat/b-0469-civsim-repo-apply-2026-05-14"
+}

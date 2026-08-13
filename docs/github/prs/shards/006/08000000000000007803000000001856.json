@@ -1,0 +1,12 @@
+{
+  "pr_number": 6230,
+  "archive_path": "docs/history/pr-reviews/PR-6230-feat-zeta-id-register-batch-4-branch-mode-transport-mode-scope-the-b-0890-1-supe.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T18:44:56.232Z",
+  "schema_version": "v1",
+  "commit_sha": "eeb9424e54ac4a717af01c9332d7a4e6aa28495b",
+  "title": "feat(zeta-id): register Batch=4 (branch-mode transport) + mode-scope the B-0890.1 supersession",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T18:44:36Z",
+  "head_ref": "otto-cli/zetaid-batch-category-and-mode-scoped-supersession-2026-05-31"
+}

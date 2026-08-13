@@ -1,0 +1,12 @@
+{
+  "pr_number": 7932,
+  "archive_path": "docs/history/pr-reviews/PR-7932-docs-research-shadow-ferry-13-the-destination-stack-bnn-qnn-transformer-on-q-sta.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:34:57.070Z",
+  "schema_version": "v1",
+  "commit_sha": "fde9a348265d26e07dbd84f7918ab3ac3697199c",
+  "title": "docs(research)+shadow: ferry 13 — the destination stack (BNN/QNN transformer on Q#; starts at 0; training ≡ running = sim·mea·cut braid)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:34:30Z",
+  "head_ref": "shadow/ferry-13-bnn-qnn-transformer"
+}

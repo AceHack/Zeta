@@ -1,0 +1,12 @@
+{
+  "pr_number": 5693,
+  "archive_path": "docs/history/pr-reviews/PR-5693-docs-research-backlog-b-0883-v1-design-memo-4-operator-sharpening-rows-encryptio.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T03:39:46.303Z",
+  "schema_version": "v1",
+  "commit_sha": "32c4ee67c05c5e221d0353325385af17d36aba6d",
+  "title": "docs(research) + backlog: B-0883 v1 design memo + 4 operator sharpening rows (encryption lane + async-scatterbrains UX)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T03:39:26Z",
+  "head_ref": "docs/research-b-0883-v1-design-memo-extending-b-0883-1-with-locked-decisions-encryption-lane-advance-per-b-0892-2026-05-28"
+}

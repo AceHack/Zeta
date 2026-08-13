@@ -1,0 +1,12 @@
+{
+  "pr_number": 8620,
+  "archive_path": "docs/history/pr-reviews/PR-8620-memory-project-founding-design-frame-uncertainty-reduction-creates-irreducible-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T20:44:42.922Z",
+  "schema_version": "v1",
+  "commit_sha": "e99b0ae4526ef3b91965f22e2b8e743a2478d3f9",
+  "title": "memory(project): founding design frame — uncertainty reduction creates irreducible story arcs (= identity), the oscillation, coded into Zeta",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T20:44:18Z",
+  "head_ref": "otto/founding-design-frame-uncertainty-irreducible-arcs"
+}

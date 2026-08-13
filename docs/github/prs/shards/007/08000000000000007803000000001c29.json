@@ -1,0 +1,12 @@
+{
+  "pr_number": 7209,
+  "archive_path": "docs/history/pr-reviews/PR-7209-docs-research-coincidence-measurements-rx-across-streams-give-personas-objective.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T05:21:47.237Z",
+  "schema_version": "v1",
+  "commit_sha": "bb8fb1102b8e2bdcca5bca46018420dd4efbeb10",
+  "title": "docs(research): coincidence measurements (Rx across streams) give personas objectively-true self-anchors, not subjective",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T05:21:24Z",
+  "head_ref": "otto/research-coincidence-measurements-rx-objective-persona-self-anchors"
+}

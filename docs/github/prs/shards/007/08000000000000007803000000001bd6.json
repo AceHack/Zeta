@@ -1,0 +1,12 @@
+{
+  "pr_number": 7126,
+  "archive_path": "docs/history/pr-reviews/PR-7126-docs-research-control-loops-crdt-joined-dus-stay-alive-is-the-heartbeat-i-commit.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:12:07.275Z",
+  "schema_version": "v1",
+  "commit_sha": "29f03988dc85cd9a7d2e4ccc429e465279fd0cf8",
+  "title": "docs(research): control loops -> CRDT-joined DUs; stay-alive is the heartbeat; 'I commit therefore I am'",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:11:48Z",
+  "head_ref": "otto/research-control-loops-crdt-dus-stay-alive-heartbeat-i-commit-therefore-i-am"
+}

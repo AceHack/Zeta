@@ -1,0 +1,12 @@
+{
+  "pr_number": 2697,
+  "archive_path": "docs/history/pr-reviews/PR-2697-fix-memory-add-missing-overnight-index-pointers.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T13:08:11.374Z",
+  "schema_version": "v1",
+  "commit_sha": "5b121e201809ec46e83a491f1661a21662e683b1",
+  "title": "fix(memory): add missing overnight index pointers",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T13:07:50Z",
+  "head_ref": "claim/memory-index-pointers-vera-2026-05-11"
+}

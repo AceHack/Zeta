@@ -1,0 +1,12 @@
+{
+  "pr_number": 3385,
+  "archive_path": "docs/history/pr-reviews/PR-3385-shard-tick-0804z-pr-tbd-preempts-id-allocation-rule-update-pr-3384-opened.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T08:19:24.157Z",
+  "schema_version": "v1",
+  "commit_sha": "1e2fa0392ebeb51578864667497de6f7657ef65d",
+  "title": "shard(tick): 0804Z — (PR TBD) preempts; ID-allocation rule update PR #3384 opened",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T08:19:08Z",
+  "head_ref": "shard/tick-0804z-otto-cli-2026-05-15"
+}

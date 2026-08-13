@@ -1,0 +1,12 @@
+{
+  "pr_number": 6710,
+  "archive_path": "docs/history/pr-reviews/PR-6710-feat-observebridge-bridge-d-pure-the-execution-layer-effectsof-inspect-before-ex.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T03:24:43.586Z",
+  "schema_version": "v1",
+  "commit_sha": "4a2ea79df23bef1f4de7c448d7ac84f92b179c35",
+  "title": "feat(ObserveBridge): Bridge D (pure) — the execution layer (effectsOf + inspect-before-execute handler)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T03:24:23Z",
+  "head_ref": "otto/observe-bridge-d-pure"
+}

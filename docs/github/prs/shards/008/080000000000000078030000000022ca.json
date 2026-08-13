@@ -1,0 +1,12 @@
+{
+  "pr_number": 8906,
+  "archive_path": "docs/history/pr-reviews/PR-8906-feat-implement-verified-zetairnormalizer-to-lower-v4-ops-to-core-four.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T07:55:10.483Z",
+  "schema_version": "v1",
+  "commit_sha": "a5f27e73eb71fa4b45ce0d75d4e894e619812d47",
+  "title": "feat: implement verified ZetaIrNormalizer to lower v4 ops to core four",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T07:54:42Z",
+  "head_ref": "feature/lumen-normalizer"
+}

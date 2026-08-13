@@ -1,0 +1,12 @@
+{
+  "pr_number": 8869,
+  "archive_path": "docs/history/pr-reviews/PR-8869-feat-ir-zeta-ir-v2-isa-ops-branch-emit-retract-join-merge.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T05:35:00.557Z",
+  "schema_version": "v1",
+  "commit_sha": "55be43e09ede4a7a68919a0bc31eac5293e72034",
+  "title": "feat(ir): zeta-ir-v2 — ISA ops (branch/emit/retract/join/merge)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T05:34:36Z",
+  "head_ref": "alexa/ir-isa-ops"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 4823,
+  "archive_path": "docs/history/pr-reviews/PR-4823-fix-4735-remove-sensitive-information-and-fix-schema-errors.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EY8Ss",
+    "comment:PRRC_kwDOSF9kNM7EY8Xa",
+    "comment:PRRC_kwDOSF9kNM7EeA2j",
+    "comment:PRRC_kwDOSF9kNM7EeA88",
+    "comment:PRRC_kwDOSF9kNM7EeDIY",
+    "thread:PRRT_kwDOSF9kNM6EZetQ",
+    "thread:PRRT_kwDOSF9kNM6EZexH",
+    "thread:PRRT_kwDOSF9kNM6EdVqb"
+  ],
+  "fetched_at": "2026-05-25T06:50:59.943Z",
+  "schema_version": "v1",
+  "commit_sha": "43049490b21a3e3753f61f2588b4b9a4b080cb03",
+  "title": "fix(4735): remove sensitive information and fix schema errors",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T06:50:37Z",
+  "head_ref": "lior-fix-4735"
+}

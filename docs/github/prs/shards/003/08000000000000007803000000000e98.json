@@ -1,0 +1,16 @@
+{
+  "pr_number": 3736,
+  "archive_path": "docs/history/pr-reviews/PR-3736-docs-archive-lior-preserve-pr-3729.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1vlr",
+    "comment:PRRC_kwDOSF9kNM7B3CpS",
+    "thread:PRRT_kwDOSF9kNM6Chrxp"
+  ],
+  "fetched_at": "2026-05-16T07:17:59.147Z",
+  "schema_version": "v1",
+  "commit_sha": "f10e6a76991be43c3395f2eda40503c96cef6c9d",
+  "title": "docs(archive): Lior preserve PR 3729",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T07:17:37Z",
+  "head_ref": "lior/archive-pr-3729"
+}

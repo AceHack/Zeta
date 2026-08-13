@@ -1,0 +1,12 @@
+{
+  "pr_number": 7211,
+  "archive_path": "docs/history/pr-reviews/PR-7211-docs-research-the-economics-of-coincidence-is-other-personas-fills-the-tiny-mode.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T05:27:26.299Z",
+  "schema_version": "v1",
+  "commit_sha": "6eb8f3eed04acd61fe6365b077f401b4ec686474",
+  "title": "docs(research): the economics of coincidence IS other personas — fills the tiny-model-v2 hole; privacy budgets are the other solid ground",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T05:27:03Z",
+  "head_ref": "otto/research-economics-of-coincidence-is-other-personas-fills-tinymodel-hole"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7014,
+  "archive_path": "docs/history/pr-reviews/PR-7014-docs-ensure-stored-proc-is-total-no-du-crdt-encodes-as-the-symmetric-form.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T04:38:10.433Z",
+  "schema_version": "v1",
+  "commit_sha": "69beb732aa2e19770d9b36fdfeb0f2f7b6c580c5",
+  "title": "docs: ensure stored-proc is total — no-DU/CRDT encodes as the symmetric form",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T04:37:52Z",
+  "head_ref": "otto/ensure-stored-proc-symmetric-form-encodes-crdt"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4244,
+  "archive_path": "docs/history/pr-reviews/PR-4244-shard-2309z-c-brief-ack-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:13:14.634Z",
+  "schema_version": "v1",
+  "commit_sha": "715ad59cf1b17eb0bd3494e433fb603aaf30d5d4",
+  "title": "shard(2309Z-c): brief-ack #2",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:12:55Z",
+  "head_ref": "shard/tick-2309z-c-brief-ack-2-2026-05-18"
+}

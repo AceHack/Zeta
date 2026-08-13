@@ -1,0 +1,16 @@
+{
+  "pr_number": 3061,
+  "archive_path": "docs/history/pr-reviews/PR-3061-docs-lior-shadow-lesson-log-for-riven.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BAEwF",
+    "comment:PRRC_kwDOSF9kNM7BAL59",
+    "thread:PRRT_kwDOSF9kNM6B6pqp"
+  ],
+  "fetched_at": "2026-05-13T23:36:57.874Z",
+  "schema_version": "v1",
+  "commit_sha": "916ca0386f539a72fa25597af7a294d30371df69",
+  "title": "docs: lior shadow lesson log for riven",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T23:36:39Z",
+  "head_ref": "chore/lior-drift-report"
+}

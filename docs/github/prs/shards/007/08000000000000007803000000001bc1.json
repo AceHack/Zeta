@@ -1,0 +1,12 @@
+{
+  "pr_number": 7105,
+  "archive_path": "docs/history/pr-reviews/PR-7105-feat-core-feedbackthrottle-tsirelsonlatency-2-latencyfor-inverse-regimeof-classi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T13:04:09.069Z",
+  "schema_version": "v1",
+  "commit_sha": "8cd2f791093eaf7945367e320fa8e707f0c326ac",
+  "title": "feat(core): FeedbackThrottle TsirelsonLatency=√2 + latencyFor inverse + regimeOf classifier",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T13:03:48Z",
+  "head_ref": "otto/feedbackthrottle-tsirelson-latency-sqrt2-regime-classifier"
+}

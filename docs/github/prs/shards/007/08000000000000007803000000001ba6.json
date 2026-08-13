@@ -1,0 +1,12 @@
+{
+  "pr_number": 7078,
+  "archive_path": "docs/history/pr-reviews/PR-7078-docs-research-correct-cosmic-conspiracy-one-zetaid-unfolding-dissolves-it-fine-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:24:51.836Z",
+  "schema_version": "v1",
+  "commit_sha": "29e082a87aaf609d0554db88cf975692b0b2c5b1",
+  "title": "docs(research): correct 'cosmic conspiracy' — one ZetaId unfolding dissolves it; fine-tuning relocates to the generator",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:24:30Z",
+  "head_ref": "otto/superdeterminism-not-conspiracy-one-zetaid-unfolding-finetuning-relocates"
+}

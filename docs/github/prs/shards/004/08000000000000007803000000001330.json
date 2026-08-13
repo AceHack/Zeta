@@ -1,0 +1,12 @@
+{
+  "pr_number": 4912,
+  "archive_path": "docs/history/pr-reviews/PR-4912-feat-ai-cluster-istio-out-cert-manager-spire-trust-manager-eso-in-new-bootstrap-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T06:47:50.263Z",
+  "schema_version": "v1",
+  "commit_sha": "4217a2fe2f67d6c82e20dae687d2530fdee5ac09",
+  "title": "feat(ai-cluster): Istio out, cert-manager+SPIRE+Trust Manager+ESO in, new bootstrap order",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T06:47:30Z",
+  "head_ref": "ai-cluster-tweaks-istio-out-spire-in"
+}

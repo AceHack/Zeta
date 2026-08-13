@@ -1,0 +1,29 @@
+{
+  "pr_number": 4722,
+  "archive_path": "docs/history/pr-reviews/PR-4722-docs-archive-preserve-merged-pr-4714.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EQW2N",
+    "comment:PRRC_kwDOSF9kNM7EQW2U",
+    "comment:PRRC_kwDOSF9kNM7EQW2b",
+    "comment:PRRC_kwDOSF9kNM7EQW2d",
+    "comment:PRRC_kwDOSF9kNM7EQW2g",
+    "comment:PRRC_kwDOSF9kNM7EQW2h",
+    "comment:PRRC_kwDOSF9kNM7EQW2j",
+    "comment:PRRC_kwDOSF9kNM7EQW2p",
+    "thread:PRRT_kwDOSF9kNM6ES9h1",
+    "thread:PRRT_kwDOSF9kNM6ES9h7",
+    "thread:PRRT_kwDOSF9kNM6ES9iB",
+    "thread:PRRT_kwDOSF9kNM6ES9iC",
+    "thread:PRRT_kwDOSF9kNM6ES9iE",
+    "thread:PRRT_kwDOSF9kNM6ES9iF",
+    "thread:PRRT_kwDOSF9kNM6ES9iG",
+    "thread:PRRT_kwDOSF9kNM6ES9iL"
+  ],
+  "fetched_at": "2026-05-23T13:30:41.536Z",
+  "schema_version": "v1",
+  "commit_sha": "f0c3c3b1736a070e04f352adb1634548c080607f",
+  "title": "docs(archive): preserve merged PR #4714",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T13:30:24Z",
+  "head_ref": "lior-archive-4714"
+}

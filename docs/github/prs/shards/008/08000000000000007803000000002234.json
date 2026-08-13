@@ -1,0 +1,12 @@
+{
+  "pr_number": 8756,
+  "archive_path": "docs/history/pr-reviews/PR-8756-feat-core-add-modulo-gset-heat-policy.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T17:38:24.493Z",
+  "schema_version": "v1",
+  "commit_sha": "a0822cd20bd429fde59b4369d0d04ec254127760",
+  "title": "feat(core): add modulo gset heat policy",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T17:37:59Z",
+  "head_ref": "codex/modulo-gset-heat-policy"
+}

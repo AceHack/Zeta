@@ -1,0 +1,12 @@
+{
+  "pr_number": 7698,
+  "archive_path": "docs/history/pr-reviews/PR-7698-feat-play-meta-tier-correspondence-pong-chip-audio-git-speed-games-hear-see-one-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T14:22:37.186Z",
+  "schema_version": "v1",
+  "commit_sha": "903b3a82e2f357928b2b921f4eda3e3e04fea864",
+  "title": "feat(play): meta tier + correspondence pong + chip audio — git-speed games, hear/see one math, scale-free tuning",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T14:22:08Z",
+  "head_ref": "shadow-meta-control"
+}

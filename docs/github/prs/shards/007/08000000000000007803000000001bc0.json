@@ -1,0 +1,12 @@
+{
+  "pr_number": 7104,
+  "archive_path": "docs/history/pr-reviews/PR-7104-feat-core-actiongrammar-the-universal-action-algebra-grammar-of-the-4x4-controll.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T12:49:45.738Z",
+  "schema_version": "v1",
+  "commit_sha": "5a62dfbe8b3b956c0cff66fc3d34440ee3243edd",
+  "title": "feat(core): ActionGrammar — the universal action algebra/grammar of the 4x4 controller",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T12:49:21Z",
+  "head_ref": "otto/actiongrammar-universal-action-algebra-grammar-4x4-grid"
+}

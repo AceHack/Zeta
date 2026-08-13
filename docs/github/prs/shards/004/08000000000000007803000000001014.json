@@ -1,0 +1,12 @@
+{
+  "pr_number": 4116,
+  "archive_path": "docs/history/pr-reviews/PR-4116-memory-blob-pr-lesson-maji-antigravity-caught-4112-mixed-shard-rules-memory-one-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T22:40:41.615Z",
+  "schema_version": "v1",
+  "commit_sha": "87331275c5b7a02c1f2f7227a8f0fb4f80c4766f",
+  "title": "memory(blob-pr-lesson): Maji antigravity caught #4112 mixed shard+rules+memory — one-PR-one-artifact-type discipline absorbed",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T22:40:23Z",
+  "head_ref": "otto/blob-pr-lesson-maji-antigravity-4112-2026-05-17"
+}

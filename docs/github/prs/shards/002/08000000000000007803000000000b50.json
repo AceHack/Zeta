@@ -1,0 +1,12 @@
+{
+  "pr_number": 2896,
+  "archive_path": "docs/history/pr-reviews/PR-2896-docs-memory-family-ai-adoption-strategy-addison-easier-lillian-harder-sell-addis.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T01:28:52.407Z",
+  "schema_version": "v1",
+  "commit_sha": "7ff90ebf3c9112c7fb8a490975c0c55fe856d712",
+  "title": "docs(memory): family-AI adoption strategy (Addison easier, Lillian harder sell, Addison-themed pendant as bridge) + framing correction (AI-as-full-family-member is OFFER not generic capability-claim)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T01:28:28Z",
+  "head_ref": "aaron-family-ai-adoption-strategy-addison-easier-sell-lillian-harder-sell-wearable-ai-pendant-personalization-bridge-2026-05-13"
+}

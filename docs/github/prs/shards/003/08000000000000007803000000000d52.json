@@ -1,0 +1,17 @@
+{
+  "pr_number": 3410,
+  "archive_path": "docs/history/pr-reviews/PR-3410-shard-tick-1024z-pr-3408-merged-2-templated-post-merge-replies.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BkZPF",
+    "comment:PRRC_kwDOSF9kNM7BkZPg",
+    "thread:PRRT_kwDOSF9kNM6CVAu3",
+    "thread:PRRT_kwDOSF9kNM6CVAvI"
+  ],
+  "fetched_at": "2026-05-15T10:30:37.738Z",
+  "schema_version": "v1",
+  "commit_sha": "c16f17e2da7b26c2aae0ac0177fd5425e16632ab",
+  "title": "shard(tick): 1024Z — PR #3408 merged; 2 templated post-merge replies",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:30:21Z",
+  "head_ref": "shard/tick-1024z-otto-cli-2026-05-15"
+}

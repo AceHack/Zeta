@@ -1,0 +1,12 @@
+{
+  "pr_number": 3307,
+  "archive_path": "docs/history/pr-reviews/PR-3307-docs-rules-add-worktree-force-remove-guard-to-claim-acquire-rule.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T23:55:57.739Z",
+  "schema_version": "v1",
+  "commit_sha": "b24626e236addf00cf7f91f524ad266a71d4872a",
+  "title": "docs(rules): add worktree force-remove guard to claim-acquire rule",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T23:55:43Z",
+  "head_ref": "otto-claim-rule-worktree-force-remove-guard-2026-05-14"
+}

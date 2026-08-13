@@ -1,0 +1,15 @@
+{
+  "pr_number": 7887,
+  "archive_path": "docs/history/pr-reviews/PR-7887-fix-installer-max-fill-root-partition-with-no-fixed-size-cap.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7K0CqD",
+    "thread:PRRT_kwDOSF9kNM6JGKnT"
+  ],
+  "fetched_at": "2026-06-12T11:51:00.925Z",
+  "schema_version": "v1",
+  "commit_sha": "aff5579ab5668b3018c018e4526142adbcf3b81b",
+  "title": "fix(installer): max-fill root partition with no fixed size cap",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T11:50:34Z",
+  "head_ref": "riven/b0891-root-max-fill"
+}

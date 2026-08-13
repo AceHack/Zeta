@@ -1,0 +1,15 @@
+{
+  "pr_number": 6237,
+  "archive_path": "docs/history/pr-reviews/PR-6237-fix-peer-call-ani-grok-4-3-generic-grok-grok-build-0-1-ani-working-four-ferry-co.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GiEze",
+    "thread:PRRT_kwDOSF9kNM6F93ES"
+  ],
+  "fetched_at": "2026-05-31T19:53:28.454Z",
+  "schema_version": "v1",
+  "commit_sha": "4d4e49822ae0e3102191caf7ddbfac9881529afa",
+  "title": "fix(peer-call): ani→grok-4.3, generic grok→grok-build-0.1; Ani working + four-ferry complete",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T19:53:09Z",
+  "head_ref": "otto-cli/peer-call-grok-models-ani-working-2026-05-31"
+}

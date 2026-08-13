@@ -1,0 +1,16 @@
+{
+  "pr_number": 3406,
+  "archive_path": "docs/history/pr-reviews/PR-3406-shard-tick-1007z-3rd-off-by-one-count-error-count-by-empirical-query-or-drop-cou.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BkF1S",
+    "comment:PRRC_kwDOSF9kNM7BkKIO",
+    "thread:PRRT_kwDOSF9kNM6CUyJ4"
+  ],
+  "fetched_at": "2026-05-15T10:18:15.774Z",
+  "schema_version": "v1",
+  "commit_sha": "d34fa20bbed968b99d430971c68c3843e79ed34c",
+  "title": "shard(tick): 1007Z — 3rd off-by-one count error; count-by-empirical-query OR drop-count proposed",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:17:53Z",
+  "head_ref": "shard/tick-1007z-otto-cli-2026-05-15"
+}

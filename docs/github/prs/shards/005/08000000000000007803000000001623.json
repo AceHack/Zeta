@@ -1,0 +1,21 @@
+{
+  "pr_number": 5667,
+  "archive_path": "docs/history/pr-reviews/PR-5667-feat-b-0867-5-presspause-enteropenendedexploration-menu-options-jira-replacement.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fkf3L",
+    "comment:PRRC_kwDOSF9kNM7Fkf3Z",
+    "comment:PRRC_kwDOSF9kNM7Fkf3h",
+    "comment:PRRC_kwDOSF9kNM7Fkf3u",
+    "thread:PRRT_kwDOSF9kNM6FQ9A7",
+    "thread:PRRT_kwDOSF9kNM6FQ9Ax",
+    "thread:PRRT_kwDOSF9kNM6FQ9BA",
+    "thread:PRRT_kwDOSF9kNM6FQ9BN"
+  ],
+  "fetched_at": "2026-05-28T01:06:28.378Z",
+  "schema_version": "v1",
+  "commit_sha": "eaa50bf0646033bba500b7c719881d7e733d982a",
+  "title": "feat(B-0867.5+): PressPause + EnterOpenEndedExploration menu options + Jira-replacement framing (operator 2026-05-28 ratifications)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T01:06:06Z",
+  "head_ref": "feat/b-0867.5-press-pause-menu-option-conversational-ux-design-aaron-2026-05-28"
+}

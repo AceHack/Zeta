@@ -1,0 +1,12 @@
+{
+  "pr_number": 6974,
+  "archive_path": "docs/history/pr-reviews/PR-6974-docs-correction-to-6972-you-still-resolve-a-lockfile-iterated-over-the-template-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:23:02.889Z",
+  "schema_version": "v1",
+  "commit_sha": "3bd9f50885b16fcbe06d3372aa1bca1f248e0f09",
+  "title": "docs: correction to #6972 — you still resolve a lockfile, iterated over the template ∩ niche intersections",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:22:44Z",
+  "head_ref": "otto/still-resolve-lockfile-iterated-template-niche-intersections"
+}

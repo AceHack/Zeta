@@ -1,0 +1,22 @@
+{
+  "pr_number": 1811,
+  "archive_path": "docs/history/pr-reviews/PR-1811-fix-budget-add-jq-json-validation-before-every-argjson-site-b-0186.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-sD_E",
+    "comment:PRRC_kwDOSF9kNM6-sFi7",
+    "comment:PRRC_kwDOSF9kNM6-sGxU",
+    "comment:PRRC_kwDOSF9kNM6-sGyD",
+    "comment:PRRC_kwDOSF9kNM6-sI7X",
+    "comment:PRRC_kwDOSF9kNM6-sJBg",
+    "thread:PRRT_kwDOSF9kNM6ANLsY",
+    "thread:PRRT_kwDOSF9kNM6ANN8F",
+    "thread:PRRT_kwDOSF9kNM6ANN8n"
+  ],
+  "fetched_at": "2026-05-07T06:21:59.294Z",
+  "schema_version": "v1",
+  "commit_sha": "d9909afa82a60ace5b04905113d5ede661db2d70",
+  "title": "fix(budget): add jq JSON validation before every --argjson site (B-0186)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T06:17:50Z",
+  "head_ref": "fix/budget-snapshot-jq-argjson-validation"
+}

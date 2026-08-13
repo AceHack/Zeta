@@ -1,0 +1,12 @@
+{
+  "pr_number": 7680,
+  "archive_path": "docs/history/pr-reviews/PR-7680-feat-media-rotational-cayley-dickson-curve-generator-generatorregistry-zetaids-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:19:19.429Z",
+  "schema_version": "v1",
+  "commit_sha": "7edd3ad3786a857ab77ffae9ffe9131dd2dbbd59",
+  "title": "feat(media): rotational Cayley-Dickson curve generator + GeneratorRegistry (ZetaIds for generators) + Sakana NCA capture",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:18:53Z",
+  "head_ref": "shadow-nca-borders-cayley-generators"
+}

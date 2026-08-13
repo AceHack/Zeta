@@ -1,0 +1,12 @@
+{
+  "pr_number": 4900,
+  "archive_path": "docs/history/pr-reviews/PR-4900-feat-infra-k8s-bootstrap-argocd-app-of-apps-pr-4-of-addison-s-plan.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T02:35:43.288Z",
+  "schema_version": "v1",
+  "commit_sha": "29d271c7fcf6e25c799b663147678ebe887e7636",
+  "title": "feat(infra): k8s bootstrap + ArgoCD App-of-Apps (PR 4 of Addison's plan)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T02:35:23Z",
+  "head_ref": "feat/addison-k8s-bootstrap-argo-apps-2026-05-24"
+}

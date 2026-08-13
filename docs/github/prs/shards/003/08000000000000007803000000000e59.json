@@ -1,0 +1,15 @@
+{
+  "pr_number": 3673,
+  "archive_path": "docs/history/pr-reviews/PR-3673-b-0540-shipped-sharpen-holding-rule-with-n-6-counter-with-escalation-clause.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B0iZ0",
+    "thread:PRRT_kwDOSF9kNM6CgzqY"
+  ],
+  "fetched_at": "2026-05-16T01:56:00.863Z",
+  "schema_version": "v1",
+  "commit_sha": "aa51a443a65c6c1aacb09c785f6d1796f1f6ebfe",
+  "title": "B-0540 (shipped): sharpen holding rule with N≥6 counter-with-escalation clause",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T01:55:43Z",
+  "head_ref": "b0540-standing-by-counter-with-escalation-rule-sharpening-otto-cli-2026-05-16"
+}

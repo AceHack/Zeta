@@ -1,0 +1,12 @@
+{
+  "pr_number": 7001,
+  "archive_path": "docs/history/pr-reviews/PR-7001-docs-zs-zeta-shell-is-the-default-login-shell-ssh-and-console.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T03:19:58.098Z",
+  "schema_version": "v1",
+  "commit_sha": "c04dbf4bcf985e2013806d3a16e4eb4ef467fbce",
+  "title": "docs: zs (zeta shell) is the default login shell — SSH and console",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T03:19:36Z",
+  "head_ref": "otto/zs-default-login-shell-ssh-console"
+}

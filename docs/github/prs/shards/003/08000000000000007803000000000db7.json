@@ -1,0 +1,12 @@
+{
+  "pr_number": 3511,
+  "archive_path": "docs/history/pr-reviews/PR-3511-shard-tick-1524z-pr-3508-pr-3504-merged-peer-rebase-contention-caught.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T15:31:44.984Z",
+  "schema_version": "v1",
+  "commit_sha": "08e19c4b4f95815c04d25e8766d6b2c464a8b116",
+  "title": "shard(tick): 1524Z — PR #3508 + PR #3504 merged; peer-rebase contention caught",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T15:31:25Z",
+  "head_ref": "shard/tick-1524z-otto-cli-2026-05-15"
+}

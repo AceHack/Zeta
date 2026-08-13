@@ -1,0 +1,12 @@
+{
+  "pr_number": 7630,
+  "archive_path": "docs/history/pr-reviews/PR-7630-docs-hardware-nvidia-gpus-in-hand-and-ready-shader-rung-jumps-the-queue-matrix-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:52:14.998Z",
+  "schema_version": "v1",
+  "commit_sha": "8cef6d98aae9d1b2b44d6a2cce97e7dbff59cfb1",
+  "title": "docs(hardware): NVIDIA GPUs in hand and ready — shader rung jumps the queue (matrix + B-1025/B-1026)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:51:50Z",
+  "head_ref": "shadow-nvidia-ready-now"
+}

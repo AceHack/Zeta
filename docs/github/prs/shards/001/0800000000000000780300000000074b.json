@@ -1,0 +1,25 @@
+{
+  "pr_number": 1867,
+  "archive_path": "docs/history/pr-reviews/PR-1867-skill-mirror-sync-acehack-backup-mirror-refresh.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-zrR_",
+    "comment:PRRC_kwDOSF9kNM6-zu3p",
+    "comment:PRRC_kwDOSF9kNM6-zu4t",
+    "comment:PRRC_kwDOSF9kNM6-zu57",
+    "comment:PRRC_kwDOSF9kNM6-zu5X",
+    "comment:PRRC_kwDOSF9kNM6-zu6V",
+    "thread:PRRT_kwDOSF9kNM6AS5Av",
+    "thread:PRRT_kwDOSF9kNM6AS7ty",
+    "thread:PRRT_kwDOSF9kNM6AS7ur",
+    "thread:PRRT_kwDOSF9kNM6AS7vQ",
+    "thread:PRRT_kwDOSF9kNM6AS7vt",
+    "thread:PRRT_kwDOSF9kNM6AS7wD"
+  ],
+  "fetched_at": "2026-05-07T12:54:36.190Z",
+  "schema_version": "v1",
+  "commit_sha": "6a677e82e2a314a4a80e4f45e4ee009509edaab2",
+  "title": "skill: mirror-sync — AceHack backup mirror refresh",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T11:56:21Z",
+  "head_ref": "skill/mirror-sync-acehack"
+}

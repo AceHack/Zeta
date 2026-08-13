@@ -1,0 +1,12 @@
+{
+  "pr_number": 8797,
+  "archive_path": "docs/history/pr-reviews/PR-8797-fix-rust-add-missing-dev-deps-for-experience-cross-verify-serde-derive-sha256.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:12:04.126Z",
+  "schema_version": "v1",
+  "commit_sha": "460019fc63a4423b29cdbd8297b6add3e96690f5",
+  "title": "fix(rust): add missing dev-deps for experience_cross_verify (serde derive + sha256)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:11:40Z",
+  "head_ref": "otto/fix-rust-algebra-experience-deps"
+}

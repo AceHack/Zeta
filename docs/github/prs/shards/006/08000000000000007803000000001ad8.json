@@ -1,0 +1,12 @@
+{
+  "pr_number": 6872,
+  "archive_path": "docs/history/pr-reviews/PR-6872-docs-research-one-algebra-many-target-optimized-instances-branch-free-swap-dus-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T16:57:33.796Z",
+  "schema_version": "v1",
+  "commit_sha": "fc2d3fffdf5c71603f78d62712b56111252f1d33",
+  "title": "docs(research): one algebra, many target-optimized instances, branch-free swap; DUs are the in-between (CRDT/consensus)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T16:57:12Z",
+  "head_ref": "otto/one-algebra-many-instances-branch-free-du-crdt-consensus"
+}

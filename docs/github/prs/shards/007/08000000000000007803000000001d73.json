@@ -1,0 +1,12 @@
+{
+  "pr_number": 7539,
+  "archive_path": "docs/history/pr-reviews/PR-7539-docs-craft-pedagogy-principle-6-why-before-how-interest-funds-attention.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:31:45.267Z",
+  "schema_version": "v1",
+  "commit_sha": "eed88daff80d65b61e47851d5ede0b448552e075",
+  "title": "docs(craft): pedagogy principle #6 — WHY-before-HOW, interest funds attention",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:31:24Z",
+  "head_ref": "shadow-craft-pedagogy-why-before-how"
+}

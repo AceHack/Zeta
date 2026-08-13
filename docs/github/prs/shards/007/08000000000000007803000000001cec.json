@@ -1,0 +1,12 @@
+{
+  "pr_number": 7404,
+  "archive_path": "docs/history/pr-reviews/PR-7404-docs-research-soft-views-of-all-collations-and-parameters-at-once-on-llmtv-widen.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:03:38.337Z",
+  "schema_version": "v1",
+  "commit_sha": "357341f782c9df8480f8222b14f2a71957df9469",
+  "title": "docs(research): soft views of all collations and parameters at once, on LLMTV — widen SoftDashboard",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:03:10Z",
+  "head_ref": "otto/soft-views-all-collations-parameters-at-once-llmtv-softdashboard"
+}

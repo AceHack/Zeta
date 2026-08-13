@@ -1,0 +1,12 @@
+{
+  "pr_number": 3686,
+  "archive_path": "docs/history/pr-reviews/PR-3686-docs-archive-lior-preservation-check-2026-05-16t0240z.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T02:41:18.093Z",
+  "schema_version": "v1",
+  "commit_sha": "7e3807b818cb4021abe8e362773a8bfa0c2bb999",
+  "title": "docs(archive): Lior preservation check 2026-05-16T0240Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T02:41:01Z",
+  "head_ref": "lior/archive-prs-0240Z"
+}

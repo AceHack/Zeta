@@ -1,0 +1,12 @@
+{
+  "pr_number": 10354,
+  "archive_path": "docs/history/pr-reviews/PR-10354-feat-browser-carry-receipt-batches-across-tabs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-13T18:24:40.694Z",
+  "schema_version": "v1",
+  "commit_sha": "2519c0774635847ad6968140d81c473c250687c1",
+  "title": "feat(browser): carry receipt batches across tabs",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T18:23:55Z",
+  "head_ref": "codex/browser-receipt-broadcast-transport"
+}

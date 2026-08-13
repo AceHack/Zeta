@@ -1,0 +1,12 @@
+{
+  "pr_number": 7480,
+  "archive_path": "docs/history/pr-reviews/PR-7480-feat-escalator-shadow-escalator-lowering-competing-proof-towers-to-first-princip.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T08:46:00.281Z",
+  "schema_version": "v1",
+  "commit_sha": "124422d48d3ccee6bd5b165c2a34304d1ebb2022",
+  "title": "feat(escalator)+shadow: escalator/ — lowering competing proof towers to first principles (reverse tessellation; bob/weave/tie/??? )",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T08:45:36Z",
+  "head_ref": "shadow-escalator-folder"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7883,
+  "archive_path": "docs/history/pr-reviews/PR-7883-fix-installer-clamp-root-size-only-at-install-time-partition-step.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T10:25:46.805Z",
+  "schema_version": "v1",
+  "commit_sha": "ba65a09ed647ea6b5af38d280a0049a0057eb78c",
+  "title": "fix(installer): clamp root size only at install-time partition step",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:25:21Z",
+  "head_ref": "riven/b0891-root-size-at-partition"
+}

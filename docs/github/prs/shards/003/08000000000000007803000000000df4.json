@@ -1,0 +1,15 @@
+{
+  "pr_number": 3572,
+  "archive_path": "docs/history/pr-reviews/PR-3572-fix-otto-279-role-refs-not-persona-names-in-docs-surfaces-3-hits.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bwg5B",
+    "thread:PRRT_kwDOSF9kNM6Cd2Eh"
+  ],
+  "fetched_at": "2026-05-15T20:20:09.811Z",
+  "schema_version": "v1",
+  "commit_sha": "ff37db1be498cb5472e9301ea686e3dfbb171087",
+  "title": "fix(otto-279): role-refs not persona-names in docs/ surfaces (3 hits)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T20:19:51Z",
+  "head_ref": "fix/otto-279-role-refs-docs-otto-cli-2026-05-15"
+}

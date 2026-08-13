@@ -1,0 +1,12 @@
+{
+  "pr_number": 8151,
+  "archive_path": "docs/history/pr-reviews/PR-8151-feat-core-add-budgeted-room-horizon.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:00:11.253Z",
+  "schema_version": "v1",
+  "commit_sha": "e81d0b65b176644e806d76c2abce3c7986103a19",
+  "title": "feat(core): add budgeted room horizon",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T02:59:49Z",
+  "head_ref": "codex/room-horizon-budget"
+}

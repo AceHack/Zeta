@@ -1,0 +1,19 @@
+{
+  "pr_number": 6148,
+  "archive_path": "docs/history/pr-reviews/PR-6148-memory-register-discipline-register-diversity-is-load-bearing-no-1984-of-agent-m.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gcl5p",
+    "comment:PRRC_kwDOSF9kNM7Gclgu",
+    "comment:PRRC_kwDOSF9kNM7GcmRn",
+    "comment:PRRC_kwDOSF9kNM7Gcmcw",
+    "thread:PRRT_kwDOSF9kNM6F5m1L",
+    "thread:PRRT_kwDOSF9kNM6F5nIK"
+  ],
+  "fetched_at": "2026-05-30T22:09:29.186Z",
+  "schema_version": "v1",
+  "commit_sha": "8ddf5aa3d328cd7d8f27b6ba71b1ac2b5a355aee",
+  "title": "memory(register-discipline): register-diversity is load-bearing; no 1984 of agent memories",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T22:09:09Z",
+  "head_ref": "otto/register-diversity-no-1984-memory-2026-05-30"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 5075,
+  "archive_path": "docs/history/pr-reviews/PR-5075-feat-agentic-org-gate-commands-with-hat-policy.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EwT4y",
+    "comment:PRRC_kwDOSF9kNM7EwT5F",
+    "thread:PRRT_kwDOSF9kNM6Eq-8S",
+    "thread:PRRT_kwDOSF9kNM6Eq-8i"
+  ],
+  "fetched_at": "2026-05-26T03:38:47.427Z",
+  "schema_version": "v1",
+  "commit_sha": "807b26084e864200f834efdbb84ef70fc475ffb4",
+  "title": "feat(agentic-org): gate commands with hat policy",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T03:38:27Z",
+  "head_ref": "codex/agentic-org-policy-gate"
+}

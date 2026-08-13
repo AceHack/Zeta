@@ -1,0 +1,17 @@
+{
+  "pr_number": 5274,
+  "archive_path": "docs/history/pr-reviews/PR-5274-fix-4733-remove-sensitive-information-and-fix-schema-errors-rebased.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FDSh3",
+    "comment:PRRC_kwDOSF9kNM7FDSio",
+    "thread:PRRT_kwDOSF9kNM6E40tc",
+    "thread:PRRT_kwDOSF9kNM6E40uB"
+  ],
+  "fetched_at": "2026-05-26T19:12:50.627Z",
+  "schema_version": "v1",
+  "commit_sha": "36e5a68930c8f68bf2c7b370e43289c0eff712e0",
+  "title": "fix(4733): remove sensitive information and fix schema errors (rebased)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T19:12:21Z",
+  "head_ref": "lior/fix-4822-conflicts"
+}

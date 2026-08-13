@@ -1,0 +1,12 @@
+{
+  "pr_number": 2703,
+  "archive_path": "docs/history/pr-reviews/PR-2703-release-ts-bun-remove-stale-trajectory-claim.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T13:48:40.210Z",
+  "schema_version": "v1",
+  "commit_sha": "de9e89e6dedb9cebb992ed69f2bbf57044112fdd",
+  "title": "release(ts-bun): remove stale trajectory claim",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T13:48:19Z",
+  "head_ref": "claim/release-trajectory-typescript-bun-live-state"
+}

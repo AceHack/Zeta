@@ -1,0 +1,23 @@
+{
+  "pr_number": 1994,
+  "archive_path": "docs/history/pr-reviews/PR-1994-fix-backlog-decompose-b-0083-atari-rom-into-2-children.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_FCK-",
+    "comment:PRRC_kwDOSF9kNM6_FC_1",
+    "comment:PRRC_kwDOSF9kNM6_FC_N",
+    "comment:PRRC_kwDOSF9kNM6_FC__",
+    "comment:PRRC_kwDOSF9kNM6_FLoE",
+    "thread:PRRT_kwDOSF9kNM6AfqEZ",
+    "thread:PRRT_kwDOSF9kNM6AfqmQ",
+    "thread:PRRT_kwDOSF9kNM6Afqmq",
+    "thread:PRRT_kwDOSF9kNM6Afqmv",
+    "thread:PRRT_kwDOSF9kNM6AfwXN"
+  ],
+  "fetched_at": "2026-05-08T02:15:18.452Z",
+  "schema_version": "v1",
+  "commit_sha": "9a9cce0f1ddb422f34e71dbfd4613fd15b21322e",
+  "title": "fix(backlog): decompose B-0083 Atari ROM into 2 children",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:14:59Z",
+  "head_ref": "backlog/b0083-decompose"
+}

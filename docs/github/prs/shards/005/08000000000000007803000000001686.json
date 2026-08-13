@@ -1,0 +1,12 @@
+{
+  "pr_number": 5766,
+  "archive_path": "docs/history/pr-reviews/PR-5766-docs-b-0809-land-operator-refusal-pattern-for-classifier-bypass-deployment-reque.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T11:16:01.445Z",
+  "schema_version": "v1",
+  "commit_sha": "7f24e07b42105fd766dc898cc55cc5d0a97cb3bc",
+  "title": "docs(B-0809): land operator-refusal pattern for classifier-bypass deployment requests",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T11:15:35Z",
+  "head_ref": "otto-cli/b0809-operator-refusal-pattern-1108z"
+}

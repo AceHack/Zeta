@@ -1,0 +1,12 @@
+{
+  "pr_number": 7065,
+  "archive_path": "docs/history/pr-reviews/PR-7065-feat-core-forwardmomentum-identity-grows-via-hats-economic-pauli-exclusion-non-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T09:32:56.104Z",
+  "schema_version": "v1",
+  "commit_sha": "8f11443e254c5ec8b3bc430e0a7289c9493cda49",
+  "title": "feat(core): ForwardMomentum — identity grows via hats (economic, Pauli-exclusion, non-fungible)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T09:32:36Z",
+  "head_ref": "otto/forward-momentum-hats-economic-pauli-exclusion"
+}

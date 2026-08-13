@@ -1,0 +1,17 @@
+{
+  "pr_number": 5639,
+  "archive_path": "docs/history/pr-reviews/PR-5639-feat-b-0852-3c-flip-zeta-creds-picker-default-on-with-4-path-operator-opt-out-cl.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FhL7O",
+    "comment:PRRC_kwDOSF9kNM7FhL8N",
+    "thread:PRRT_kwDOSF9kNM6FOlav",
+    "thread:PRRT_kwDOSF9kNM6FOlbj"
+  ],
+  "fetched_at": "2026-05-27T21:00:12.997Z",
+  "schema_version": "v1",
+  "commit_sha": "bef1c17a46f35991afd0fd8648a97cac6def25f2",
+  "title": "feat(b-0852.3c): flip ZETA_CREDS_PICKER default-ON with 4-path operator-opt-out — closes precondition #1 (the 3-of-3 closer for cred-persistence picker)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T20:59:50Z",
+  "head_ref": "feat/b-0852.3c-flip-zeta-creds-picker-default-on-with-opt-out-2026-05-27"
+}

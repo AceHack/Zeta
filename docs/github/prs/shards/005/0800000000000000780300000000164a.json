@@ -1,0 +1,12 @@
+{
+  "pr_number": 5706,
+  "archive_path": "docs/history/pr-reviews/PR-5706-research-aaron-2026-05-28-ext-ts-monadic-flow-makes-the-walls-reflective-not-bra.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T05:49:14.892Z",
+  "schema_version": "v1",
+  "commit_sha": "930f1dc82ffa3e6a1e1af3330a06ee3c86924fcd",
+  "title": "research(aaron 2026-05-28 ext): TS-monadic-flow makes the walls reflective-not-branchy — extension to reservoir-walls + caustic-focus research doc",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T05:48:56Z",
+  "head_ref": "research/reservoir-walls-ts-monadic-flow-reflective-surface-extension-aaron-2026-05-28"
+}

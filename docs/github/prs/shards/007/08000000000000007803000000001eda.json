@@ -1,0 +1,12 @@
+{
+  "pr_number": 7898,
+  "archive_path": "docs/history/pr-reviews/PR-7898-feat-core-ledger-rung-2-capabilityledger-partition-drives-the-inference-ladder.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T11:36:06.673Z",
+  "schema_version": "v1",
+  "commit_sha": "23d66f4701ba9d74e050bbd3bc13f67f7dc723ea",
+  "title": "feat(core): ledger rung 2 — CapabilityLedger.partition drives the inference ladder",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T11:35:43Z",
+  "head_ref": "shadow-ladder-ledger-wiring"
+}

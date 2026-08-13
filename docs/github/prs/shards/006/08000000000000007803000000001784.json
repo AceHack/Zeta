@@ -1,0 +1,12 @@
+{
+  "pr_number": 6020,
+  "archive_path": "docs/history/pr-reviews/PR-6020-feat-b-0347-carve-7-skill-descriptions-over-the-150-char-acceptance-bar.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T17:41:15.874Z",
+  "schema_version": "v1",
+  "commit_sha": "eba99e7499e7ceecaf6331b5ece019fdf6977d33",
+  "title": "feat(B-0347): carve 7 skill descriptions over the 150-char acceptance bar",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T17:40:53Z",
+  "head_ref": "backlog/b-0347-carve-7-over-150-char-skill-descriptions-2026-05-29"
+}

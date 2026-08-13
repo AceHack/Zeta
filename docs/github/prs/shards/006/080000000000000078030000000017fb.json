@@ -1,0 +1,12 @@
+{
+  "pr_number": 6139,
+  "archive_path": "docs/history/pr-reviews/PR-6139-consent-glass-halo-aaron-s-signature-signature-acquisition-skill.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T17:42:22.739Z",
+  "schema_version": "v1",
+  "commit_sha": "3b42a3dcd1b124d0fdf37e469d58774f336fe47c",
+  "title": "consent(glass-halo): Aaron's signature + signature-acquisition skill",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T17:42:04Z",
+  "head_ref": "otto/aaron-glasshalo-signature-and-acquisition-skill-2026-05-30"
+}

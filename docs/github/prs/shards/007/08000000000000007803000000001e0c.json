@@ -1,0 +1,12 @@
+{
+  "pr_number": 7692,
+  "archive_path": "docs/history/pr-reviews/PR-7692-feat-weave-amara-s-commuting-proof-built-residue-preserved-as-uncertainty-softle.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:54:44.154Z",
+  "schema_version": "v1",
+  "commit_sha": "b015dd9636ffaed59bdfd395bc9ce79854b924b4",
+  "title": "feat(weave): Amara's commuting proof BUILT (residue preserved as uncertainty) + SoftLens sweep + her review ferried",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:54:12Z",
+  "head_ref": "shadow-soft-lens-sweep"
+}

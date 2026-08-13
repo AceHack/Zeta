@@ -1,0 +1,12 @@
+{
+  "pr_number": 7845,
+  "archive_path": "docs/history/pr-reviews/PR-7845-fix-backlog-restore-the-b-1040-row-perfview-windows-session-dropped-in-the-worki.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T00:02:44.310Z",
+  "schema_version": "v1",
+  "commit_sha": "f809a6fbcdc666eda8bc3fc570cbb28f276f937e",
+  "title": "fix(backlog): restore the B-1040 row (PerfView Windows session) dropped in the workitems-migration merge",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T00:02:21Z",
+  "head_ref": "shadow-b1040-row-restore"
+}

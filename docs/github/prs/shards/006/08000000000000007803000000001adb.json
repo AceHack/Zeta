@@ -1,0 +1,12 @@
+{
+  "pr_number": 6875,
+  "archive_path": "docs/history/pr-reviews/PR-6875-docs-research-greenfield-algebra-floor-design-unified-isemiring-istarring-light-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T17:10:19.599Z",
+  "schema_version": "v1",
+  "commit_sha": "bfa640e7c9aeae758c332241522413b0da805879",
+  "title": "docs(research): greenfield algebra-floor design — unified ISemiring/IStarRing + light/dark (tensor-representable) classification",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T17:09:54Z",
+  "head_ref": "otto/greenfield-algebra-floor-design-light-dark"
+}

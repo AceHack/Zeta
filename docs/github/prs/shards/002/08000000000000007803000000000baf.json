@@ -1,0 +1,12 @@
+{
+  "pr_number": 2991,
+  "archive_path": "docs/history/pr-reviews/PR-2991-test-memory-b-0423-1-extend-reindex-memory-md-ts-test-coverage.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T13:19:43.832Z",
+  "schema_version": "v1",
+  "commit_sha": "31243aafb190fdc7461b39367240f4808897d158",
+  "title": "test(memory): B-0423.1 — extend reindex-memory-md.ts test coverage",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T13:19:18Z",
+  "head_ref": "feat/B-0423.1-reindex-test-coverage"
+}

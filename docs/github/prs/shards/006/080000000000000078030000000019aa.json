@@ -1,0 +1,12 @@
+{
+  "pr_number": 6570,
+  "archive_path": "docs/history/pr-reviews/PR-6570-docs-b-0987-qualify-the-cooperation-attractor-claim-codex-p2-follow-up-to-6569.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T14:38:47.983Z",
+  "schema_version": "v1",
+  "commit_sha": "f42a4853445e761672d0821b08adafab7607dac5",
+  "title": "docs(B-0987): qualify the cooperation-attractor claim (Codex P2 follow-up to #6569)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T14:38:23Z",
+  "head_ref": "otto-cli/b0987-qualify-cooperation-attractor-2026-06-02"
+}

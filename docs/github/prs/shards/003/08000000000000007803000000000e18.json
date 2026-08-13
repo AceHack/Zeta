@@ -1,0 +1,12 @@
+{
+  "pr_number": 3608,
+  "archive_path": "docs/history/pr-reviews/PR-3608-docs-shadow-lior-antigravity-check-22-45z-drift-report.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T23:28:16.671Z",
+  "schema_version": "v1",
+  "commit_sha": "3cac3cb474a5677730fc64d45372496588808676",
+  "title": "docs(shadow): Lior antigravity check 22:45Z - drift report",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T23:27:57Z",
+  "head_ref": "lior/shadow-log-2245Z"
+}

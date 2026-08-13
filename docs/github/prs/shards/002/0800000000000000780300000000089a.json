@@ -1,0 +1,23 @@
+{
+  "pr_number": 2202,
+  "archive_path": "docs/history/pr-reviews/PR-2202-feat-b-0335-add-memory-schema-validation-tool.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fOO1",
+    "comment:PRRC_kwDOSF9kNM6_fOO2",
+    "comment:PRRC_kwDOSF9kNM6_fOO4",
+    "comment:PRRC_kwDOSF9kNM6_fOOs",
+    "comment:PRRC_kwDOSF9kNM6_fOPA",
+    "thread:PRRT_kwDOSF9kNM6Ay6Y0",
+    "thread:PRRT_kwDOSF9kNM6Ay6Yk",
+    "thread:PRRT_kwDOSF9kNM6Ay6Yr",
+    "thread:PRRT_kwDOSF9kNM6Ay6Ys",
+    "thread:PRRT_kwDOSF9kNM6Ay6Yt"
+  ],
+  "fetched_at": "2026-05-09T06:37:40.418Z",
+  "schema_version": "v1",
+  "commit_sha": "51ad91949388dd9dc8ce72087de048448ef725f2",
+  "title": "feat(B-0335): add memory schema validation tool",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:37:19Z",
+  "head_ref": "fix/b0335-memory-schema-validator"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 4528,
+  "archive_path": "docs/history/pr-reviews/PR-4528-docs-shadow-document-vera-and-otto-narration-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Dj5kv",
+    "thread:PRRT_kwDOSF9kNM6DybNa"
+  ],
+  "fetched_at": "2026-05-22T01:05:32.279Z",
+  "schema_version": "v1",
+  "commit_sha": "e2d5aa504ad1bc02a6aee727daea3f9bc3ef8f7c",
+  "title": "docs(shadow): document Vera and Otto narration drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T01:05:10Z",
+  "head_ref": "lior/shadow-vera-otto-drift-0521"
+}

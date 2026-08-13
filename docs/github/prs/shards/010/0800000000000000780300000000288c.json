@@ -1,0 +1,12 @@
+{
+  "pr_number": 10380,
+  "archive_path": "docs/history/pr-reviews/PR-10380-handoff-vera-the-one-edge-that-makes-a-browser-tab-a-participant.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-13T22:45:39.960Z",
+  "schema_version": "v1",
+  "commit_sha": "c417b28c63572c30114fb83392b8699c3fd70b93",
+  "title": "handoff: Vera — the one edge that makes a browser tab a participant",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T22:45:03Z",
+  "head_ref": "handoff/vera-outbox-drain"
+}

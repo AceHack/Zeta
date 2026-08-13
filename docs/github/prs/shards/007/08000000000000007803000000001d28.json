@@ -1,0 +1,12 @@
+{
+  "pr_number": 7464,
+  "archive_path": "docs/history/pr-reviews/PR-7464-feat-core-shadow-wire-the-finalizer-into-a-src-core-runtime-over-git-reticulum-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T06:04:16.074Z",
+  "schema_version": "v1",
+  "commit_sha": "8101f3a91100080404ea46347e3bb121c5c02a54",
+  "title": "feat(core)+shadow: wire the finalizer into a src/Core runtime over git + Reticulum (FinalizerRuntime)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T06:03:52Z",
+  "head_ref": "shadow-finalizer-runtime-git-reticulum"
+}

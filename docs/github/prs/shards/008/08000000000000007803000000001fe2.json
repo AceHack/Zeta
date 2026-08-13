@@ -1,0 +1,12 @@
+{
+  "pr_number": 8162,
+  "archive_path": "docs/history/pr-reviews/PR-8162-feat-observe-room-framework-enforced-scope-tick-surviving-state.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:43:38.126Z",
+  "schema_version": "v1",
+  "commit_sha": "aa83ce57cb7ee78de90e45ef3af96cc909fe4b03",
+  "title": "feat(observe): Room framework — enforced scope + tick-surviving state",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:43:12Z",
+  "head_ref": "kiro/room-framework"
+}

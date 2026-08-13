@@ -1,0 +1,19 @@
+{
+  "pr_number": 3092,
+  "archive_path": "docs/history/pr-reviews/PR-3092-chore-tick-0314z-shard-pr-3091-merged-b-0456-implementation-landed-hook-wiring-d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BDPl0",
+    "comment:PRRC_kwDOSF9kNM7BDPmC",
+    "comment:PRRC_kwDOSF9kNM7BDSQk",
+    "thread:PRRT_kwDOSF9kNM6B8481",
+    "thread:PRRT_kwDOSF9kNM6B848q",
+    "thread:PRRT_kwDOSF9kNM6B864s"
+  ],
+  "fetched_at": "2026-05-14T03:23:18.053Z",
+  "schema_version": "v1",
+  "commit_sha": "a58a6a5ad4482cad68984ba632ab7b13d2ca9a78",
+  "title": "chore(tick): 0314Z shard — PR #3091 MERGED; B-0456 implementation landed (hook wiring deferred)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T03:23:03Z",
+  "head_ref": "chore/tick-shard-0314z-pr3091-merged-2026-05-14"
+}

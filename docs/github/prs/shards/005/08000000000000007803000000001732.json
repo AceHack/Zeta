@@ -1,0 +1,12 @@
+{
+  "pr_number": 5938,
+  "archive_path": "docs/history/pr-reviews/PR-5938-docs-hygiene-history-0202z-cold-boot-tick-shard-catch-43-sentinel-re-arm.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T02:06:23.316Z",
+  "schema_version": "v1",
+  "commit_sha": "7d61431cbb605420c604dfc3a1b176d372e01470",
+  "title": "docs(hygiene-history): 0202Z cold-boot tick shard + catch-43 sentinel re-arm",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T02:06:04Z",
+  "head_ref": "otto-cli/tick-2026-05-29-0202z-cold-boot"
+}

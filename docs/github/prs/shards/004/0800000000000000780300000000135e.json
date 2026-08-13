@@ -1,0 +1,21 @@
+{
+  "pr_number": 4958,
+  "archive_path": "docs/history/pr-reviews/PR-4958-docs-add-agentic-organization-architecture.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EpxU-",
+    "comment:PRRC_kwDOSF9kNM7EpxUV",
+    "comment:PRRC_kwDOSF9kNM7EpxUq",
+    "comment:PRRC_kwDOSF9kNM7EpxVJ",
+    "thread:PRRT_kwDOSF9kNM6EmH_1",
+    "thread:PRRT_kwDOSF9kNM6EmH_N",
+    "thread:PRRT_kwDOSF9kNM6EmH_c",
+    "thread:PRRT_kwDOSF9kNM6EmH_s"
+  ],
+  "fetched_at": "2026-05-25T17:18:31.876Z",
+  "schema_version": "v1",
+  "commit_sha": "e6db6cfd1ecda569a1e33c4b87c3881bb81ad3f5",
+  "title": "docs: add agentic organization architecture",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T17:18:14Z",
+  "head_ref": "codex/agentic-organization-docs"
+}

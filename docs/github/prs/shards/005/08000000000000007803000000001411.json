@@ -1,0 +1,12 @@
+{
+  "pr_number": 5137,
+  "archive_path": "docs/history/pr-reviews/PR-5137-tick-1202z-cold-boot-empirical-anchor-github-actions-outage-10-57z.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T14:56:35.358Z",
+  "schema_version": "v1",
+  "commit_sha": "d02e3887fd4b4975ba0988325ad91fcfa2d1336f",
+  "title": "tick(1202Z): cold-boot empirical anchor — GitHub Actions outage 10:57Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T14:56:13Z",
+  "head_ref": "otto-cli/cold-boot-1202z-github-actions-outage-2026-05-26"
+}

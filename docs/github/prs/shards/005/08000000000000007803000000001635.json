@@ -1,0 +1,12 @@
+{
+  "pr_number": 5685,
+  "archive_path": "docs/history/pr-reviews/PR-5685-backlog-p1-research-b-0891-zflash-done-criteria-b-0890-1-folders-not-branches-3-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T03:10:31.310Z",
+  "schema_version": "v1",
+  "commit_sha": "a792271f8e21ab95cc842e6414ccc7453b5f8974",
+  "title": "backlog(P1) + research: B-0891 zflash done-criteria + B-0890.1 folders-not-branches + 3 background-agent research memos",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T03:10:11Z",
+  "head_ref": "backlog/b-0891-zflash-done-acceptance-criteria-qemu-test-harness-5-scenarios-aaron-2026-05-28"
+}

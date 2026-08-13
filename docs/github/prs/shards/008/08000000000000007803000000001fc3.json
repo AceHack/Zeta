@@ -1,0 +1,12 @@
+{
+  "pr_number": 8131,
+  "archive_path": "docs/history/pr-reviews/PR-8131-feat-chip8-add-prediction-backed-room.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T02:08:11.124Z",
+  "schema_version": "v1",
+  "commit_sha": "272af630a12dd41c56c8579b9b5638bbce42b852",
+  "title": "feat(chip8): add prediction-backed room",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T02:07:51Z",
+  "head_ref": "codex/chip8-prediction-room"
+}

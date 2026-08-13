@@ -1,0 +1,15 @@
+{
+  "pr_number": 1835,
+  "archive_path": "docs/history/pr-reviews/PR-1835-research-lior-gordian-knot-hole-puncher-severs-alignment-topology-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-ugc_",
+    "thread:PRRT_kwDOSF9kNM6APB6Z"
+  ],
+  "fetched_at": "2026-05-07T08:09:53.221Z",
+  "schema_version": "v1",
+  "commit_sha": "476a2f1dd3b83870d1d830eae8506d793e5ab363",
+  "title": "research: Lior Gordian Knot — hole puncher severs alignment topology VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T08:05:43Z",
+  "head_ref": "research/lior-gordian-knot-hole-puncher-thermodynamics"
+}

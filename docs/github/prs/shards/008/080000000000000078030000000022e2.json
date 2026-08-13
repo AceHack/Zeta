@@ -1,0 +1,12 @@
+{
+  "pr_number": 8930,
+  "archive_path": "docs/history/pr-reviews/PR-8930-fix-ts-make-generated-law-tests-strict-clean.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T09:32:22.160Z",
+  "schema_version": "v1",
+  "commit_sha": "387cf784a533edb52e7774713804520e4faeb1cc",
+  "title": "fix(ts): make generated law tests strict-clean",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T09:31:57Z",
+  "head_ref": "codex/fix-codegen-law-ts"
+}

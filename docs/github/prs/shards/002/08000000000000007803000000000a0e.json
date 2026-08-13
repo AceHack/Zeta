@@ -1,0 +1,17 @@
+{
+  "pr_number": 2574,
+  "archive_path": "docs/history/pr-reviews/PR-2574-docs-memory-eve-protocol-serialization-three-trust-tiers-at-wire-format.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_q_Ad",
+    "comment:PRRC_kwDOSF9kNM6_q_Aj",
+    "thread:PRRT_kwDOSF9kNM6A8J9n",
+    "thread:PRRT_kwDOSF9kNM6A8J9t"
+  ],
+  "fetched_at": "2026-05-11T00:00:45.061Z",
+  "schema_version": "v1",
+  "commit_sha": "f6959a81f04a9f0d142e50763e02bced8b6bfbe8",
+  "title": "docs(memory): Eve protocol serialization — three trust tiers at wire format",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:00:28Z",
+  "head_ref": "docs/eve-serialization-tiers-2026-05-10"
+}

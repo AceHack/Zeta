@@ -1,0 +1,12 @@
+{
+  "pr_number": 7135,
+  "archive_path": "docs/history/pr-reviews/PR-7135-docs-research-solid-ground-is-the-context-window-pointers-to-traversals-for-out-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:42:28.974Z",
+  "schema_version": "v1",
+  "commit_sha": "fc78b3f3dd6e576c23151f24d27643f65f7aa3cc",
+  "title": "docs(research): solid ground IS the context window (+ pointers to traversals for out-of-window uncertainty)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:42:09Z",
+  "head_ref": "otto/research-solid-ground-is-context-window-pointers-to-traversals"
+}

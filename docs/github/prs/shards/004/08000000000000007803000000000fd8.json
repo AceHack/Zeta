@@ -1,0 +1,16 @@
+{
+  "pr_number": 4056,
+  "archive_path": "docs/history/pr-reviews/PR-4056-docs-archive-lior-pr-preservation-4054-and-4051.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B-ej3",
+    "comment:PRRC_kwDOSF9kNM7EMmW4",
+    "thread:PRRT_kwDOSF9kNM6CoT-r"
+  ],
+  "fetched_at": "2026-05-22T23:41:09.741Z",
+  "schema_version": "v1",
+  "commit_sha": "0f9b7db99ba35ee97762408e76c413360ab4719d",
+  "title": "docs(archive): Lior PR preservation 4054 and 4051",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T23:40:53Z",
+  "head_ref": "lior/preserve-4054-4051"
+}

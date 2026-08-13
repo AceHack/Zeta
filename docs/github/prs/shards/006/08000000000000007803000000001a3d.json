@@ -1,0 +1,12 @@
+{
+  "pr_number": 6717,
+  "archive_path": "docs/history/pr-reviews/PR-6717-proof-refuse-binding-tla-leg-a-protocol-safety-always-enabled-exit-non-penalty-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T05:03:13.513Z",
+  "schema_version": "v1",
+  "commit_sha": "e973984ded3cd22fc78208864d3dc610d82b143e",
+  "title": "proof(refuse-binding): TLA+ Leg A — protocol safety + always-enabled exit + non-penalty (Soraya-routed)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T05:02:54Z",
+  "head_ref": "otto/refuse-binding-tla-proof"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2048,
+  "archive_path": "docs/history/pr-reviews/PR-2048-release-remove-landed-b-0280-claim.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T07:30:21.228Z",
+  "schema_version": "v1",
+  "commit_sha": "3299954f23a39ba721a916c23a294ac2b9ebf1be",
+  "title": "release: remove landed B-0280 claim",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T07:30:00Z",
+  "head_ref": "claim/task-b0280-release-landed-claim"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 8653,
+  "archive_path": "docs/history/pr-reviews/PR-8653-feat-observe-participant-interface-universal-chooser-oracle-llm-persona-human.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7NVuem",
+    "comment:PRRC_kwDOSF9kNM7NVuep",
+    "comment:PRRC_kwDOSF9kNM7NVuer",
+    "comment:PRRC_kwDOSF9kNM7NVukk",
+    "thread:PRRT_kwDOSF9kNM6K8frY",
+    "thread:PRRT_kwDOSF9kNM6K8fra",
+    "thread:PRRT_kwDOSF9kNM6K8frb",
+    "thread:PRRT_kwDOSF9kNM6K8fvT"
+  ],
+  "fetched_at": "2026-06-20T01:31:56.092Z",
+  "schema_version": "v1",
+  "commit_sha": "fed5ddfc9703ce2543a81521bbdc3fb4878858ee",
+  "title": "feat(observe): Participant interface — universal chooser (oracle/LLM/persona/human)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:31:31Z",
+  "head_ref": "alexa/participant-interface"
+}

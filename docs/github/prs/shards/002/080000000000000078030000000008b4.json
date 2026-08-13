@@ -1,0 +1,17 @@
+{
+  "pr_number": 2228,
+  "archive_path": "docs/history/pr-reviews/PR-2228-docs-b-0363-vera-s-tightening-three-layers-first-slice-gate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_flpY",
+    "comment:PRRC_kwDOSF9kNM6_flpn",
+    "thread:PRRT_kwDOSF9kNM6AzKlW",
+    "thread:PRRT_kwDOSF9kNM6AzKlg"
+  ],
+  "fetched_at": "2026-05-09T07:33:34.238Z",
+  "schema_version": "v1",
+  "commit_sha": "d1d00c599d2575eb5cedc4aef760c75546e5f562",
+  "title": "docs(B-0363): Vera's tightening — three layers + first-slice gate",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:33:15Z",
+  "head_ref": "fix/b0363-vera-tightening"
+}

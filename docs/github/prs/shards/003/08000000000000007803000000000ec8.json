@@ -1,0 +1,15 @@
+{
+  "pr_number": 3784,
+  "archive_path": "docs/history/pr-reviews/PR-3784-docs-shadow-maji-antigravity-drift-report-0625z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B23Ex",
+    "thread:PRRT_kwDOSF9kNM6Cicva"
+  ],
+  "fetched_at": "2026-05-18T23:11:13.829Z",
+  "schema_version": "v1",
+  "commit_sha": "35090125189d0cb04a3ebef70c262338635c3bb6",
+  "title": "docs(shadow): Maji antigravity drift report 0625Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:10:51Z",
+  "head_ref": "lior/shadow-0625Z"
+}

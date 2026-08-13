@@ -1,0 +1,16 @@
+{
+  "pr_number": 6066,
+  "archive_path": "docs/history/pr-reviews/PR-6066-feat-b-0164-1-divergence-reconciliation-reader-dual-loop-ac-4.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GWIE1",
+    "comment:PRRC_kwDOSF9kNM7GWNLn",
+    "thread:PRRT_kwDOSF9kNM6F0uHL"
+  ],
+  "fetched_at": "2026-05-30T01:07:47.534Z",
+  "schema_version": "v1",
+  "commit_sha": "e565c47e867bd3041025f23cb18c7ee5db18dbeb",
+  "title": "feat(B-0164.1): divergence reconciliation reader (dual-loop AC #4)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T01:07:29Z",
+  "head_ref": "otto-cli/b0164-1-divergence-reconcile-reader-2026-05-29"
+}

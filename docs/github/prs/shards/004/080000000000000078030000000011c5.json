@@ -1,0 +1,12 @@
+{
+  "pr_number": 4549,
+  "archive_path": "docs/history/pr-reviews/PR-4549-persona-amara-fourth-archive-trust-gradient-coordination-policy-row-level-caspax.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T16:10:17.353Z",
+  "schema_version": "v1",
+  "commit_sha": "69481098bde451a4ec3d38d882b8d1300abc151f",
+  "title": "persona(amara): fourth archive — trust-gradient COORDINATION POLICY + row-level CASPaxos/CASRaft tier + final 6-line keeper",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T16:09:45Z",
+  "head_ref": "persona/amara-2026-05-21-trust-gradient-coordination-policy-not-consensus-hierarchy-row-level-caspaxos-casraft-tier-aaron-forwarded"
+}

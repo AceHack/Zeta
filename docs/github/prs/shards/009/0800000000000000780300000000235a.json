@@ -1,0 +1,12 @@
+{
+  "pr_number": 9050,
+  "archive_path": "docs/history/pr-reviews/PR-9050-docs-preserve-promote-3-quarantine-keepers-family-ferry-2-rule-drafts-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-01T19:58:51.385Z",
+  "schema_version": "v1",
+  "commit_sha": "1ccee7a049775fcdb957fe2829264fea11b1c575",
+  "title": "docs(preserve): promote 3 quarantine keepers — family ferry + 2 rule drafts (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T19:58:30Z",
+  "head_ref": "otto/quarantine-promote-keepers-ferry-rules-2026-07"
+}

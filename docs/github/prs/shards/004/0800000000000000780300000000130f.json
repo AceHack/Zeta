@@ -1,0 +1,15 @@
+{
+  "pr_number": 4879,
+  "archive_path": "docs/history/pr-reviews/PR-4879-shard-2026-05-24-2206z-otto-vscode-bg-worker-pr-4869-merged-via-fp-thread-resolv.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ea7lv",
+    "thread:PRRT_kwDOSF9kNM6EbCe9"
+  ],
+  "fetched_at": "2026-05-24T22:41:35.096Z",
+  "schema_version": "v1",
+  "commit_sha": "21b1c09c3de145101ba279582bc3e30475b6822c",
+  "title": "shard(2026-05-24/2206Z): otto-vscode bg-worker — PR #4869 merged via FP-thread resolve (53→58 fleet)",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T22:41:14Z",
+  "head_ref": "shard/tick-2206z-otto-vscode-bg-worker-pr4869-fp-thread-resolve-merged-58-prs-2026-05-24"
+}

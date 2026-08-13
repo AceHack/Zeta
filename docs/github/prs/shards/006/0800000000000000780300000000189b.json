@@ -1,0 +1,12 @@
+{
+  "pr_number": 6299,
+  "archive_path": "docs/history/pr-reviews/PR-6299-constrain-observe-act-model-selector-output.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T01:07:16.613Z",
+  "schema_version": "v1",
+  "commit_sha": "2385463b4d810ac3cd935a476551e64cc7b4fb56",
+  "title": "Constrain observe-act model selector output",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T01:06:57Z",
+  "head_ref": "codex/agentic-org-constrained-selector"
+}

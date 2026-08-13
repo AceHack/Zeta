@@ -1,0 +1,12 @@
+{
+  "pr_number": 8763,
+  "archive_path": "docs/history/pr-reviews/PR-8763-codex-add-modulo-gset-ts-treaty.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T18:46:33.245Z",
+  "schema_version": "v1",
+  "commit_sha": "a3c6d7e4463c2c9bb2ad23bdf8c9b1044d44ea75",
+  "title": "[codex] add modulo gset ts treaty",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T18:46:09Z",
+  "head_ref": "codex/modulo-gset-ts-treaty"
+}

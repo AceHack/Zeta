@@ -1,0 +1,21 @@
+{
+  "pr_number": 5836,
+  "archive_path": "docs/history/pr-reviews/PR-5836-feat-workflow-engine-prreviewlifecycle-poc-decomposed-from-5825.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fy50T",
+    "comment:PRRC_kwDOSF9kNM7Fy50t",
+    "comment:PRRC_kwDOSF9kNM7Fy51T",
+    "comment:PRRC_kwDOSF9kNM7Fy5zP",
+    "thread:PRRT_kwDOSF9kNM6FbO3c",
+    "thread:PRRT_kwDOSF9kNM6FbO49",
+    "thread:PRRT_kwDOSF9kNM6FbO4N",
+    "thread:PRRT_kwDOSF9kNM6FbO4h"
+  ],
+  "fetched_at": "2026-05-29T00:17:45.257Z",
+  "schema_version": "v1",
+  "commit_sha": "f61f74e45915c55e15a6c7963669888823d5345b",
+  "title": "feat(workflow-engine): PrReviewLifecycle PoC (decomposed from #5825)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T00:17:24Z",
+  "head_ref": "lior/decompose-5825-review-lifecycle"
+}

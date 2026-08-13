@@ -1,0 +1,12 @@
+{
+  "pr_number": 7963,
+  "archive_path": "docs/history/pr-reviews/PR-7963-docs-research-shadow-ferry-19-addendum-the-singularity-with-a-budget-is-a-braid-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:31:51.473Z",
+  "schema_version": "v1",
+  "commit_sha": "b92f6a83e9bbfbd9d91fdd6743cfa7bb93c2575d",
+  "title": "docs(research)+shadow: ferry 19 addendum — the singularity with a budget is a braid (both readings adjudicated)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:31:27Z",
+  "head_ref": "shadow/ferry-19-singularity-addendum"
+}

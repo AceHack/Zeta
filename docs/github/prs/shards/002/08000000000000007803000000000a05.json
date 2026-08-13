@@ -1,0 +1,19 @@
+{
+  "pr_number": 2565,
+  "archive_path": "docs/history/pr-reviews/PR-2565-docs-memory-electron-ide-crash-pattern-cli-harnesses-more-stable.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qu-2",
+    "comment:PRRC_kwDOSF9kNM6_qu-e",
+    "comment:PRRC_kwDOSF9kNM6_qu-x",
+    "thread:PRRT_kwDOSF9kNM6A79Zb",
+    "thread:PRRT_kwDOSF9kNM6A79Zt",
+    "thread:PRRT_kwDOSF9kNM6A79Zx"
+  ],
+  "fetched_at": "2026-05-10T22:52:41.725Z",
+  "schema_version": "v1",
+  "commit_sha": "7e806fbc25746c3b82f8c32228c05b1e5b27c89c",
+  "title": "docs(memory): Electron IDE crash pattern — CLI harnesses more stable",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T22:52:09Z",
+  "head_ref": "docs/electron-crash-pattern-2026-05-10"
+}

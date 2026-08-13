@@ -1,0 +1,12 @@
+{
+  "pr_number": 7602,
+  "archive_path": "docs/history/pr-reviews/PR-7602-feat-ts-fourcorner-ts-conformer-third-oracle-byte-locked.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T04:53:08.590Z",
+  "schema_version": "v1",
+  "commit_sha": "bb04f27f9012baed9be47f67b5f426a3b47bc201",
+  "title": "feat(ts): FourCorner TS conformer — third oracle byte-locked",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T04:52:46Z",
+  "head_ref": "shadow-fourcorner-ts-conformer"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7272,
+  "archive_path": "docs/history/pr-reviews/PR-7272-feat-cold-boot-glossary-seed-vocabulary-kernel-carved-zeta-senses-cold-full-glos.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:21:33.329Z",
+  "schema_version": "v1",
+  "commit_sha": "c8b4073cb0287e35f3a6b104d2eb75bdcd77ef5f",
+  "title": "feat(cold-boot): GLOSSARY → Seed vocabulary kernel (carved Zeta senses cold, full glossary on-demand) — ~13.6k → small",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:21:10Z",
+  "head_ref": "otto/cold-boot-compress-glossary-seed-vocabulary-kernel"
+}

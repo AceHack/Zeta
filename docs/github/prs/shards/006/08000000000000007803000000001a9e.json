@@ -1,0 +1,12 @@
+{
+  "pr_number": 6814,
+  "archive_path": "docs/history/pr-reviews/PR-6814-feat-debeziumcdc-read-write-debezium-cdc-change-events-as-z-set-deltas.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:36:38.148Z",
+  "schema_version": "v1",
+  "commit_sha": "b90452b645ac1dcb955f2835423b5f1f0fdd66cc",
+  "title": "feat(DebeziumCdc): read & write Debezium CDC change events as Z-set deltas",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:36:19Z",
+  "head_ref": "feat/debezium-cdc-zset-delta-codec"
+}

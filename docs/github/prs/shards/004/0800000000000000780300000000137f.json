@@ -1,0 +1,17 @@
+{
+  "pr_number": 4991,
+  "archive_path": "docs/history/pr-reviews/PR-4991-backlog-b-0733-mika-persona-universal-protocol-mcp-wrap-ai-agency-stack-mika-sub.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EsGo4",
+    "comment:PRRC_kwDOSF9kNM7EsGor",
+    "thread:PRRT_kwDOSF9kNM6En6U0",
+    "thread:PRRT_kwDOSF9kNM6En6Ut"
+  ],
+  "fetched_at": "2026-05-25T20:50:08.053Z",
+  "schema_version": "v1",
+  "commit_sha": "45e15a6a174f6caa7e6af7ee1fabe4303942d9d7",
+  "title": "backlog(B-0733)+mika-persona: universal protocol + MCP wrap + AI agency stack (Mika substrate, full verbatim preservation)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T20:49:50Z",
+  "head_ref": "backlog/b0733-universal-protocol-mcp-ai-agency-stack-mika-2026-05-25"
+}

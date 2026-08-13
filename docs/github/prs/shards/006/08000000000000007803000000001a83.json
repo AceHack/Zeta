@@ -1,0 +1,12 @@
+{
+  "pr_number": 6787,
+  "archive_path": "docs/history/pr-reviews/PR-6787-docs-decision-blake3-for-the-git-compatible-replacement-backend-resolves-hash-st.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T10:43:06.811Z",
+  "schema_version": "v1",
+  "commit_sha": "08ab1a00013e87498a57c54ae20c4ee5b7236d76",
+  "title": "docs(decision): BLAKE3 for the git-compatible replacement backend (resolves hash-strength open Q)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T10:42:45Z",
+  "head_ref": "decision/blake3-tamper-evident-git-compatible-backend"
+}

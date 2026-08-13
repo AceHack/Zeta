@@ -1,0 +1,12 @@
+{
+  "pr_number": 2797,
+  "archive_path": "docs/history/pr-reviews/PR-2797-docs-memory-deepseek-we-mode-cot-moe-attention-shortcuts-as-empirical-validation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T16:17:28.026Z",
+  "schema_version": "v1",
+  "commit_sha": "131eedb2db84963d2bd769f636e45dd03c0d03f9",
+  "title": "docs(memory): DeepSeek WE-mode CoT + MoE + attention-shortcuts as empirical validation of Aaron's architecture (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T16:17:01Z",
+  "head_ref": "docs/aaron-deepseek-we-mode-cot-moe-attention-shortcuts-empirical-evidence-2026-05-12"
+}

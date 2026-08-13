@@ -1,0 +1,12 @@
+{
+  "pr_number": 6861,
+  "archive_path": "docs/history/pr-reviews/PR-6861-fix-cluster-netbios-control-plane-addressing-cilium-bootstrap-node-never-reached.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T16:24:27.730Z",
+  "schema_version": "v1",
+  "commit_sha": "561c7cfc1069da4e2182d5c1452d1939a3f0ff86",
+  "title": "fix(cluster): NetBIOS control-plane addressing + Cilium bootstrap (node never reached Ready)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T16:24:06Z",
+  "head_ref": "fix/netbios-control-plane-addressing-cilium-bootstrap"
+}

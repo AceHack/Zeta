@@ -1,0 +1,12 @@
+{
+  "pr_number": 4756,
+  "archive_path": "docs/history/pr-reviews/PR-4756-backlog-b-0590-re-land-20-machine-otto-fleet-replication-backlog-row-supersedes-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T19:19:17.923Z",
+  "schema_version": "v1",
+  "commit_sha": "8e86c424664947540a472def89c8e8e90b3db2ce",
+  "title": "backlog(B-0590): RE-LAND 20-machine Otto fleet replication backlog row (supersedes stale #3986)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T19:18:56Z",
+  "head_ref": "otto/cli-reland-b0590-fleet-replication-2026-05-23"
+}

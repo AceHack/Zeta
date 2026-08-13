@@ -1,0 +1,22 @@
+{
+  "pr_number": 4848,
+  "archive_path": "docs/history/pr-reviews/PR-4848-shard-2026-05-24-1804z-otto-vscode-bg-worker-pr-4799-merged-lior-lane-runtime-sc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EZ502",
+    "comment:PRRC_kwDOSF9kNM7EZ530",
+    "comment:PRRC_kwDOSF9kNM7EZ5yB",
+    "comment:PRRC_kwDOSF9kNM7EZyTR",
+    "comment:PRRC_kwDOSF9kNM7EZyTX",
+    "comment:PRRC_kwDOSF9kNM7EZyTa",
+    "thread:PRRT_kwDOSF9kNM6EaJG1",
+    "thread:PRRT_kwDOSF9kNM6EaJG6",
+    "thread:PRRT_kwDOSF9kNM6EaJG8"
+  ],
+  "fetched_at": "2026-05-24T18:36:41.071Z",
+  "schema_version": "v1",
+  "commit_sha": "27d1142904457bfd31cd7a701ce7de8aacf4e6ba",
+  "title": "shard(2026-05-24/1804Z): otto-vscode bg-worker — PR #4799 merged + Lior-lane runtime-script audit (38 open PRs)",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T18:36:24Z",
+  "head_ref": "otto-vscode/bg-worker-shard-1758z-2026-05-24"
+}

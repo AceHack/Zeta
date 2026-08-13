@@ -1,0 +1,12 @@
+{
+  "pr_number": 4397,
+  "archive_path": "docs/history/pr-reviews/PR-4397-land-b-0668-b-0669-v8-33-alexa-actuator-33-4-file-bundle-drives-lior-maji-decomp.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T17:14:58.735Z",
+  "schema_version": "v1",
+  "commit_sha": "bf3897bdcd80ecc4ad18269116c9f6747275ac05",
+  "title": "land(B-0668 + B-0669 + V8 §33 + alexa-actuator §33): 4-file bundle drives Lior/Maji decomposition chain to merge per Riven critique",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T17:14:38Z",
+  "head_ref": "otto/land-b0668-b0669-v8-archive-alexa-actuator-bundle-riven-critique-2026-05-19"
+}

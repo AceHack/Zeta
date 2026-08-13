@@ -1,0 +1,17 @@
+{
+  "pr_number": 3234,
+  "archive_path": "docs/history/pr-reviews/PR-3234-chore-b-0518-add-sharpenings-6-7-from-aaron-s-failure-mode-catch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BXci0",
+    "comment:PRRC_kwDOSF9kNM7BXciL",
+    "thread:PRRT_kwDOSF9kNM6CLw_D",
+    "thread:PRRT_kwDOSF9kNM6CLw_j"
+  ],
+  "fetched_at": "2026-05-14T20:46:17.991Z",
+  "schema_version": "v1",
+  "commit_sha": "a001f7cdd57c95f4b2d85142d5c9b5bc4db702ba",
+  "title": "chore(b-0518): add Sharpenings 6 + 7 from Aaron's '.' failure-mode catch",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:46:00Z",
+  "head_ref": "fix/b-0518-sharpen-with-aaron-period-failure-catch-2026-05-14"
+}

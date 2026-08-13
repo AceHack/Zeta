@@ -1,0 +1,16 @@
+{
+  "pr_number": 6384,
+  "archive_path": "docs/history/pr-reviews/PR-6384-docs-registry-chain-payment-agent-standards-roster-cardano-in-indexer.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GqTj3",
+    "comment:PRRC_kwDOSF9kNM7GqaXd",
+    "thread:PRRT_kwDOSF9kNM6GECZx"
+  ],
+  "fetched_at": "2026-06-01T09:22:40.548Z",
+  "schema_version": "v1",
+  "commit_sha": "156efad736e50e16294f8c38e5c644e4c3ecfd87",
+  "title": "docs(registry): chain/payment/agent standards roster + Cardano in indexer",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T09:22:14Z",
+  "head_ref": "otto-cli/registry-chain-payment-agent-standards-2026-06-01"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 4143,
+  "archive_path": "docs/history/pr-reviews/PR-4143-feat-b-0620-decompose-pr-4136-kestrel-aaron-conversation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CKLAM",
+    "comment:PRRC_kwDOSF9kNM7CKPFd",
+    "comment:PRRC_kwDOSF9kNM7CKPGN",
+    "thread:PRRT_kwDOSF9kNM6CxDLR",
+    "thread:PRRT_kwDOSF9kNM6CxGK8",
+    "thread:PRRT_kwDOSF9kNM6CxGLb"
+  ],
+  "fetched_at": "2026-05-18T20:18:52.043Z",
+  "schema_version": "v1",
+  "commit_sha": "a5d3b0a1b78a40c2b44a9f6581bd8db40eaf5767",
+  "title": "feat(B-0620): decompose PR 4136 - Kestrel-Aaron conversation",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:18:34Z",
+  "head_ref": "maji/decompose-4136-kestrel-v2"
+}

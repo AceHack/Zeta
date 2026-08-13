@@ -1,0 +1,12 @@
+{
+  "pr_number": 6987,
+  "archive_path": "docs/history/pr-reviews/PR-6987-docs-emulator-roms-are-zetaid-pointers-multiple-signature-dbs-are-resolver-oracl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T02:26:11.842Z",
+  "schema_version": "v1",
+  "commit_sha": "c8ee2d606afc1fa4f93077f39c0355c775a5a157",
+  "title": "docs: emulator ROMs are ZetaId pointers; multiple signature DBs are resolver oracles (reference-not-copy)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T02:25:54Z",
+  "head_ref": "otto/roms-are-zetaid-pointers-signature-db-oracles"
+}

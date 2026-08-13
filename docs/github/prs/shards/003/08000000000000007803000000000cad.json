@@ -1,0 +1,15 @@
+{
+  "pr_number": 3245,
+  "archive_path": "docs/history/pr-reviews/PR-3245-shard-tick-2055z-b-0488-row-close-out-after-pr-3235-merge.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BX3Dm",
+    "thread:PRRT_kwDOSF9kNM6CMETe"
+  ],
+  "fetched_at": "2026-05-14T21:09:32.294Z",
+  "schema_version": "v1",
+  "commit_sha": "10f35d76b26397001407b9b41d83cfcc6ead83af",
+  "title": "shard(tick): 2055Z — B-0488 row close-out after PR #3235 merge",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:09:12Z",
+  "head_ref": "shard/tick-2055Z-b0488-rowclose-otto-cli-2026-05-14"
+}

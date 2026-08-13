@@ -1,0 +1,12 @@
+{
+  "pr_number": 7744,
+  "archive_path": "docs/history/pr-reviews/PR-7744-feat-braid-spectral-brunnian-proven-at-the-braid-level-real-goertzel-writhe-pari.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:49:59.270Z",
+  "schema_version": "v1",
+  "commit_sha": "5521023e36860f8a5bb0ffa764acb1bc4c9f39df",
+  "title": "feat(braid+spectral): Brunnian proven at the braid level + real Goertzel + writhe-parity in code",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:49:24Z",
+  "head_ref": "shadow-hit-remaining-bugs"
+}

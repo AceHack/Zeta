@@ -1,0 +1,12 @@
+{
+  "pr_number": 6246,
+  "archive_path": "docs/history/pr-reviews/PR-6246-backlog-b-0867-27-observe-fold-algebra-in-ts-f-c-rust-compiler-parity-b-0944-pat.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T20:19:38.664Z",
+  "schema_version": "v1",
+  "commit_sha": "e57b4dc78ed82ac75784cb00025ee77033f41b8d",
+  "title": "backlog(B-0867.27): observe/fold algebra in TS/F#/C#/Rust + compiler-parity (B-0944 pattern)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T20:19:18Z",
+  "head_ref": "otto-cli/b0867-27-multilang-algebra-2026-05-31"
+}

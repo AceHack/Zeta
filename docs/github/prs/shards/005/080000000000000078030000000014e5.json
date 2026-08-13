@@ -1,0 +1,12 @@
+{
+  "pr_number": 5349,
+  "archive_path": "docs/history/pr-reviews/PR-5349-docs-backlog-fix-login-banner-b-0835-installer-config-bugs-cluster-core-post-boo.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T23:12:18.590Z",
+  "schema_version": "v1",
+  "commit_sha": "46a789d9cd9f24776728aa127684847d5c5c79f6",
+  "title": "docs(backlog) + fix(login-banner): B-0835 — installer config-bugs cluster (CORE: post-boot fully-operational chain without operator login; 5 sub-failures; CRITICAL self-reg didn't happen)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:11:53Z",
+  "head_ref": "otto/b-0835-installer-three-config-bugs-hostname-gh-auth-banner-password-empirical-2026-05-26"
+}

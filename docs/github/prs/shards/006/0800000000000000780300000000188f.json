@@ -1,0 +1,15 @@
+{
+  "pr_number": 6287,
+  "archive_path": "docs/history/pr-reviews/PR-6287-docs-research-add-the-g-set-bag-z-set-algebraic-ladder-to-the-bus-ace-synthesis.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GjXml",
+    "thread:PRRT_kwDOSF9kNM6F-3X_"
+  ],
+  "fetched_at": "2026-06-01T00:25:55.349Z",
+  "schema_version": "v1",
+  "commit_sha": "15cfe01f55e69d4746f5f02d964d6dd01384d4b0",
+  "title": "docs(research): add the G-Set/Bag/Z-set algebraic ladder to the bus↔Ace synthesis",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T00:25:35Z",
+  "head_ref": "otto-cli/bus-ace-gset-zset-ladder-2026-05-31"
+}

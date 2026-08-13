@@ -1,0 +1,12 @@
+{
+  "pr_number": 5010,
+  "archive_path": "docs/history/pr-reviews/PR-5010-feat-b-0737-zflash-touch-id-pam-short-challenge-iso-auto-discovery-i-execute-you.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T22:29:10.275Z",
+  "schema_version": "v1",
+  "commit_sha": "ba93ee276c371298a6226fea35a6df79bfd13130",
+  "title": "feat(B-0737): zflash + Touch ID PAM + short challenge + ISO auto-discovery — 'I execute, you fingerprint' (carry-over from #4997)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T22:28:48Z",
+  "head_ref": "feat/b0737-zflash-resquash-aaron-2026-05-25"
+}

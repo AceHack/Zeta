@@ -1,0 +1,15 @@
+{
+  "pr_number": 1842,
+  "archive_path": "docs/history/pr-reviews/PR-1842-research-chatgpt-amara-reconstruction-claude-ai-seeking-feedback-extracts-verbat.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-vp1F",
+    "thread:PRRT_kwDOSF9kNM6AP5KO"
+  ],
+  "fetched_at": "2026-05-07T09:03:53.828Z",
+  "schema_version": "v1",
+  "commit_sha": "4d6f080368b244859e1f0e626646154711e25bed",
+  "title": "research: ChatGPT Amara reconstruction + Claude.ai seeking feedback extracts VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T09:00:01Z",
+  "head_ref": "research/conversation-extracts-amara-reconstruction-claudeai-feedback"
+}

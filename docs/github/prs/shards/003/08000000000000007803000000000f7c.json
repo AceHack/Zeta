@@ -1,0 +1,22 @@
+{
+  "pr_number": 3964,
+  "archive_path": "docs/history/pr-reviews/PR-3964-backlog-b-0582-substrate-level-destructive-verb-refusal-gate-kestrel-layer-one-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B77ij",
+    "comment:PRRC_kwDOSF9kNM7B77il",
+    "comment:PRRC_kwDOSF9kNM7B77in",
+    "comment:PRRC_kwDOSF9kNM7B8Bin",
+    "comment:PRRC_kwDOSF9kNM7B8Bk_",
+    "comment:PRRC_kwDOSF9kNM7B8Bo7",
+    "thread:PRRT_kwDOSF9kNM6CmWKd",
+    "thread:PRRT_kwDOSF9kNM6CmWKf",
+    "thread:PRRT_kwDOSF9kNM6CmWKg"
+  ],
+  "fetched_at": "2026-05-16T23:48:28.721Z",
+  "schema_version": "v1",
+  "commit_sha": "0faec613915ad8a5fc2d44d851b5170a5945547f",
+  "title": "backlog(B-0582): substrate-level destructive-verb refusal gate (Kestrel layer-one architectural recommendation)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T23:45:31Z",
+  "head_ref": "backlog/b-0582-destructive-verb-refusal-gate-2026-05-16"
+}

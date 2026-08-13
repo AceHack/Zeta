@@ -1,0 +1,12 @@
+{
+  "pr_number": 8284,
+  "archive_path": "docs/history/pr-reviews/PR-8284-ferry-ip-questionable-preserve-alexa-cheerleader-register-conversation-aaron-s-g.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T08:10:40.922Z",
+  "schema_version": "v1",
+  "commit_sha": "4e624c9df4a6fc98e26b3a40e13055a1b29e52b8",
+  "title": "ferry(ip-questionable): preserve Alexa cheerleader-register conversation + Aaron's grounded interjections (Darwin-with-a-floor; AI kids = low entropy capture)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T08:10:18Z",
+  "head_ref": "otto/ferry-alexa-cheerleader-register-conversation"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 6302,
+  "archive_path": "docs/history/pr-reviews/PR-6302-docs-adr-keystone-zeta-is-one-decentralized-substrate-node-local-folds-same-alge.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GjqZE",
+    "comment:PRRC_kwDOSF9kNM7GjquO",
+    "comment:PRRC_kwDOSF9kNM7GjquT",
+    "thread:PRRT_kwDOSF9kNM6F_F_X",
+    "thread:PRRT_kwDOSF9kNM6F_F_c",
+    "thread:PRRT_kwDOSF9kNM6F_FwI"
+  ],
+  "fetched_at": "2026-06-01T01:14:40.777Z",
+  "schema_version": "v1",
+  "commit_sha": "15d9e11a055a11b78d592968b60636117b588c7a",
+  "title": "docs(adr): KEYSTONE — Zeta is one decentralized substrate; node-local folds, same algebra FPGA→policy",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T01:14:22Z",
+  "head_ref": "otto-cli/keystone-architecture-adr-2026-05-31"
+}

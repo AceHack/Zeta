@@ -1,0 +1,12 @@
+{
+  "pr_number": 4513,
+  "archive_path": "docs/history/pr-reviews/PR-4513-rule-canary-stale-index-lock-as-precursor-guard-7th-empirical-anchor.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T06:49:28.971Z",
+  "schema_version": "v1",
+  "commit_sha": "6c12454c0add43fc550cd99f6cb740f528998c67",
+  "title": "rule(canary): stale-index.lock-as-precursor guard + 7th empirical anchor",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T06:49:10Z",
+  "head_ref": "rule/canary-stale-index-lock-precursor-empirical-addition-2026-05-21"
+}

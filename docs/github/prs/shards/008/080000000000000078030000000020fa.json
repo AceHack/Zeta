@@ -1,0 +1,12 @@
+{
+  "pr_number": 8442,
+  "archive_path": "docs/history/pr-reviews/PR-8442-docs-society-9g-bis-blum-s-unpack-fused-meaning-awareness-maps-to-our-built-prim.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T04:37:45.479Z",
+  "schema_version": "v1",
+  "commit_sha": "02cb2c6d0a6ae8421eab521c67273c89f3b350ce",
+  "title": "docs(society): §9g-bis — Blum's unpack→fused-meaning→awareness maps to our built primitives",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T04:37:19Z",
+  "head_ref": "otto/ctm-unpack-fused-meaning-awareness"
+}

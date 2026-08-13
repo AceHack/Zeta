@@ -1,0 +1,12 @@
+{
+  "pr_number": 8218,
+  "archive_path": "docs/history/pr-reviews/PR-8218-docs-workitem-coordination-note-to-vera-on-the-two-remaining-task-run-sites.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T21:39:51.539Z",
+  "schema_version": "v1",
+  "commit_sha": "6c7fd3e52fe3251bc175b3c684468832576aafa1",
+  "title": "docs(workitem): coordination note to Vera on the two remaining Task.Run sites",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T21:39:30Z",
+  "head_ref": "coord-vera-taskrun-sites"
+}

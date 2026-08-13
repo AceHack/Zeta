@@ -1,0 +1,16 @@
+{
+  "pr_number": 3450,
+  "archive_path": "docs/history/pr-reviews/PR-3450-shard-tick-1208z-pr-3446-pr-3448-merged.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bmb5X",
+    "comment:PRRC_kwDOSF9kNM7BmeG9",
+    "thread:PRRT_kwDOSF9kNM6CWg8a"
+  ],
+  "fetched_at": "2026-05-15T12:15:06.377Z",
+  "schema_version": "v1",
+  "commit_sha": "1475302d286beb6131d9770a87825a3fe2ab009d",
+  "title": "shard(tick): 1208Z — PR #3446 + PR #3448 merged",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T12:14:49Z",
+  "head_ref": "shard/tick-1208z-otto-cli-2026-05-15"
+}

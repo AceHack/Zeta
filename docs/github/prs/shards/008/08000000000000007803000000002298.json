@@ -1,0 +1,12 @@
+{
+  "pr_number": 8856,
+  "archive_path": "docs/history/pr-reviews/PR-8856-fix-algebra-remove-duplicate-imports-unused-symbols-in-soft-mix-test-ts-red-lint.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T04:30:40.235Z",
+  "schema_version": "v1",
+  "commit_sha": "09cb0686d8e8d7fbd2568dcd8f20a1c8791a4bcc",
+  "title": "fix(algebra): remove duplicate imports + unused symbols in soft-mix.test.ts (red lint(TS) on main)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T04:30:13Z",
+  "head_ref": "devin/1782016130-fix-soft-mix-dup-imports"
+}

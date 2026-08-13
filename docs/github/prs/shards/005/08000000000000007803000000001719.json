@@ -1,0 +1,25 @@
+{
+  "pr_number": 5913,
+  "archive_path": "docs/history/pr-reviews/PR-5913-docs-backlog-decompose-b-0824-adding-b-0824-2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F361x",
+    "comment:PRRC_kwDOSF9kNM7F363C",
+    "comment:PRRC_kwDOSF9kNM7F363b",
+    "comment:PRRC_kwDOSF9kNM7F6KjW",
+    "comment:PRRC_kwDOSF9kNM7F6Kk1",
+    "comment:PRRC_kwDOSF9kNM7F6KkV",
+    "thread:PRRT_kwDOSF9kNM6Fe3--",
+    "thread:PRRT_kwDOSF9kNM6Fe3-D",
+    "thread:PRRT_kwDOSF9kNM6Fe3_N",
+    "thread:PRRT_kwDOSF9kNM6Fgdoq",
+    "thread:PRRT_kwDOSF9kNM6Fgdp0",
+    "thread:PRRT_kwDOSF9kNM6Fgdpc"
+  ],
+  "fetched_at": "2026-05-28T22:34:36.789Z",
+  "schema_version": "v1",
+  "commit_sha": "176440a2285cb2b409e0e68c9791f76d43ea5b4f",
+  "title": "docs(backlog): Decompose B-0824, adding B-0824.2",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T22:34:17Z",
+  "head_ref": "lior/decompose-B-0824"
+}

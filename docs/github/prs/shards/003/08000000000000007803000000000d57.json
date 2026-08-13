@@ -1,0 +1,19 @@
+{
+  "pr_number": 3415,
+  "archive_path": "docs/history/pr-reviews/PR-3415-shard-tick-1038z-pr-3411-3412-merged-clean-tick.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BkmVH",
+    "comment:PRRC_kwDOSF9kNM7BkmVx",
+    "comment:PRRC_kwDOSF9kNM7BkpnK",
+    "comment:PRRC_kwDOSF9kNM7Bkpph",
+    "thread:PRRT_kwDOSF9kNM6CVKnD",
+    "thread:PRRT_kwDOSF9kNM6CVKni"
+  ],
+  "fetched_at": "2026-05-15T10:47:48.321Z",
+  "schema_version": "v1",
+  "commit_sha": "25141cd02f7f0d385a9b873773e0426981913ef5",
+  "title": "shard(tick): 1038Z — PR #3411 + #3412 merged; clean tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:47:26Z",
+  "head_ref": "shard/tick-1038z-otto-cli-2026-05-15"
+}

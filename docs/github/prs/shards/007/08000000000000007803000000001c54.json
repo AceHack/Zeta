@@ -1,0 +1,12 @@
+{
+  "pr_number": 7252,
+  "archive_path": "docs/history/pr-reviews/PR-7252-docs-research-ferry-usb-4-audience-ux-iris-remember-creds-root-cause-rebind-ephe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:13:01.754Z",
+  "schema_version": "v1",
+  "commit_sha": "44e6913e2da0cf2539d56ae638eff42de16fa6d4",
+  "title": "docs(research)+ferry: USB 4-audience UX (Iris) + remember-creds root-cause (rebind ephemeral USB-UUID → stable HW key) + headless 60s cancel-window",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:12:36Z",
+  "head_ref": "otto/research-usb-4audience-ux-plus-remember-creds-rootcause-headless"
+}

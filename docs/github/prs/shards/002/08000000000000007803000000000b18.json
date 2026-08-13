@@ -1,0 +1,19 @@
+{
+  "pr_number": 2840,
+  "archive_path": "docs/history/pr-reviews/PR-2840-docs-memory-bootstream-is-self-unrolling-from-first-principles-5yr-derivability-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AeNDD",
+    "comment:PRRC_kwDOSF9kNM7AeNDz",
+    "comment:PRRC_kwDOSF9kNM7AeNEL",
+    "thread:PRRT_kwDOSF9kNM6BiE0Q",
+    "thread:PRRT_kwDOSF9kNM6BiE0i",
+    "thread:PRRT_kwDOSF9kNM6BiEzs"
+  ],
+  "fetched_at": "2026-05-12T19:26:14.146Z",
+  "schema_version": "v1",
+  "commit_sha": "e3b7c4aea0ac507596caa5ae34711edc4a452705",
+  "title": "docs(memory): bootstream is self-unrolling from first principles (5yr derivability) + HKT ontologies self-edit + F# computation expressions = operational anchor + dotnet build IS the sanity check (Aaron + claude.ai 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:25:56Z",
+  "head_ref": "docs/bootstream-five-year-old-derivability-hkt-self-editing-fsharp-computation-expressions-dotnet-build-sanity-check-2026-05-12"
+}

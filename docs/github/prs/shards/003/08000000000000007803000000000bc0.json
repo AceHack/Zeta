@@ -1,0 +1,23 @@
+{
+  "pr_number": 3008,
+  "archive_path": "docs/history/pr-reviews/PR-3008-feat-bg-b-0442-1-missed-substrate-detector-skeleton-completes-3-skeleton-mechani.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A5nWZ",
+    "comment:PRRC_kwDOSF9kNM7A5qd0",
+    "comment:PRRC_kwDOSF9kNM7A5qe1",
+    "comment:PRRC_kwDOSF9kNM7A5qeZ",
+    "comment:PRRC_kwDOSF9kNM7A5qfK",
+    "thread:PRRT_kwDOSF9kNM6B16IV",
+    "thread:PRRT_kwDOSF9kNM6B18cV",
+    "thread:PRRT_kwDOSF9kNM6B18cy",
+    "thread:PRRT_kwDOSF9kNM6B18dI",
+    "thread:PRRT_kwDOSF9kNM6B18dZ"
+  ],
+  "fetched_at": "2026-05-13T17:53:31.719Z",
+  "schema_version": "v1",
+  "commit_sha": "4395f68474d5d19a71961be7cfa662bc56d91c06",
+  "title": "feat(bg): B-0442.1 — missed-substrate detector skeleton (completes 3-skeleton mechanization suite)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T17:53:06Z",
+  "head_ref": "otto-b0442-1-missed-substrate-detector-skeleton-slice-1-impl-2026-05-13"
+}

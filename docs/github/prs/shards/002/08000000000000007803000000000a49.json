@@ -1,0 +1,23 @@
+{
+  "pr_number": 2633,
+  "archive_path": "docs/history/pr-reviews/PR-2633-feat-b-0042-7-bungie-priority-seed-harness-ts-stub-smallest-slice.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_sb-4",
+    "comment:PRRC_kwDOSF9kNM6_sb-j",
+    "comment:PRRC_kwDOSF9kNM6_sb-w",
+    "comment:PRRC_kwDOSF9kNM6_sbaH",
+    "comment:PRRC_kwDOSF9kNM6_sbaJ",
+    "thread:PRRT_kwDOSF9kNM6A9N4W",
+    "thread:PRRT_kwDOSF9kNM6A9N4Y",
+    "thread:PRRT_kwDOSF9kNM6A9OR8",
+    "thread:PRRT_kwDOSF9kNM6A9OSI",
+    "thread:PRRT_kwDOSF9kNM6A9OSO"
+  ],
+  "fetched_at": "2026-05-11T02:50:47.387Z",
+  "schema_version": "v1",
+  "commit_sha": "9b52014b980c831b58537f85bdffa0b36996207b",
+  "title": "feat(B-0042.7): bungie priority-seed harness TS stub (smallest slice)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:50:32Z",
+  "head_ref": "claim/b0042.7-bungie-priority-seed-harness-smallest-slice-riven-2026-05-10"
+}

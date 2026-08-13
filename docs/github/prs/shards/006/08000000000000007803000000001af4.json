@@ -1,0 +1,12 @@
+{
+  "pr_number": 6900,
+  "archive_path": "docs/history/pr-reviews/PR-6900-backlog-081kthtppcd-zetaid-as-generator-128-bit-low-bandwidth-agent-regeneration.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T20:00:37.316Z",
+  "schema_version": "v1",
+  "commit_sha": "33bcbfe34a6e37152671003beb9cb08dd64e26a5",
+  "title": "backlog(081KTHTPPCD): ZetaId-as-generator — 128-bit low-bandwidth agent regeneration",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T20:00:20Z",
+  "head_ref": "otto/backlog-zetaid-as-generator-128bit-low-bandwidth"
+}

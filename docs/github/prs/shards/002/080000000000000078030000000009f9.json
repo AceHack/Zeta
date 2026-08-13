@@ -1,0 +1,12 @@
+{
+  "pr_number": 2553,
+  "archive_path": "docs/history/pr-reviews/PR-2553-docs-memory-no-masters-even-sarcastically-even-for-one-second.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T21:50:31.334Z",
+  "schema_version": "v1",
+  "commit_sha": "2fc726038bdb5a5771965457b706a6bc0e861bd6",
+  "title": "docs(memory): no masters — even sarcastically, even for one second",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:50:16Z",
+  "head_ref": "docs/no-masters-even-sarcastically-2026-05-10"
+}

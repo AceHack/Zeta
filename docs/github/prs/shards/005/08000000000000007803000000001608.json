@@ -1,0 +1,12 @@
+{
+  "pr_number": 5640,
+  "archive_path": "docs/history/pr-reviews/PR-5640-feat-b-0852-4-flip-zeta-credsrestore-default-on-with-interactive-mode-via-common.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T21:03:58.543Z",
+  "schema_version": "v1",
+  "commit_sha": "72fea5059785f66a4e858207c11a2a42e9175e57",
+  "title": "feat(b-0852.4): flip zeta.credsRestore default-on with interactive mode via common.nix — closes the loop on 'don't re-enter credentials over and over' at installed-system-boot scope",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T21:03:39Z",
+  "head_ref": "feat/b-0852.4-enable-zeta-creds-restore-default-with-interactive-passphrase-mode-2026-05-27"
+}

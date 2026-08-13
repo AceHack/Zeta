@@ -1,0 +1,17 @@
+{
+  "pr_number": 2203,
+  "archive_path": "docs/history/pr-reviews/PR-2203-fix-formal-scope-agenda-z3-checks-to-set-algebra.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fOn8",
+    "comment:PRRC_kwDOSF9kNM6_fOoH",
+    "thread:PRRT_kwDOSF9kNM6Ay6s7",
+    "thread:PRRT_kwDOSF9kNM6Ay6tD"
+  ],
+  "fetched_at": "2026-05-09T06:52:04.379Z",
+  "schema_version": "v1",
+  "commit_sha": "837e696151ce7856b57e8b05f426bf35e1446980",
+  "title": "fix(formal): scope agenda Z3 checks to set algebra",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:51:43Z",
+  "head_ref": "codex/agenda-set-algebra-overclaim-correction"
+}

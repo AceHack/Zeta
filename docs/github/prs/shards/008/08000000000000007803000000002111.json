@@ -1,0 +1,12 @@
+{
+  "pr_number": 8465,
+  "archive_path": "docs/history/pr-reviews/PR-8465-docs-ip-questionable-yann-lecun-world-models-jepa-energy-based-models-verbatim-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T06:53:43.393Z",
+  "schema_version": "v1",
+  "commit_sha": "292fd81755a6ff053e368712bf60f7d363aac850",
+  "title": "docs(ip-questionable): Yann LeCun — World Models / JEPA / energy-based models (verbatim, Aaron-forwarded)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T06:53:13Z",
+  "head_ref": "otto/ipq-lecun-world-models-jepa"
+}

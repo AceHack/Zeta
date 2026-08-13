@@ -1,0 +1,12 @@
+{
+  "pr_number": 2396,
+  "archive_path": "docs/history/pr-reviews/PR-2396-feat-b-0033-2-pre-edit-hook-enforcing-recent-read-before-edit-otto-343.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T02:14:25.333Z",
+  "schema_version": "v1",
+  "commit_sha": "d09e40afc99e01c25c7f5cabc7d1a2eb6e920a21",
+  "title": "feat(B-0033.2): Pre-Edit hook enforcing recent-Read before Edit (Otto-343)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T02:14:07Z",
+  "head_ref": "feat/b-0033.2-pre-edit-recent-read-hook"
+}

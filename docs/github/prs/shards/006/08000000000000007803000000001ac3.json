@@ -1,0 +1,12 @@
+{
+  "pr_number": 6851,
+  "archive_path": "docs/history/pr-reviews/PR-6851-docs-research-ragged-sparse-tensors-are-dynamicvalue-softvalue-leaves-soft-tenso.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T15:18:19.180Z",
+  "schema_version": "v1",
+  "commit_sha": "0277bcef438fa60181410df8ce9b1e0117af3907",
+  "title": "docs(research): ragged sparse tensors ARE DynamicValue; SoftValue leaves = soft tensors",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T15:17:59Z",
+  "head_ref": "otto/soft-tensor-dynamicvalue-collapse-capture"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8210,
+  "archive_path": "docs/history/pr-reviews/PR-8210-fix-ci-upload-the-built-iso-even-when-the-flaky-qemu-full-install-gate-fails.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T19:38:36.950Z",
+  "schema_version": "v1",
+  "commit_sha": "e9c029070bbd86e0ff44780bf73e16f92625c6ca",
+  "title": "fix(ci): upload the built ISO even when the flaky QEMU full-install gate fails",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T19:38:17Z",
+  "head_ref": "fix/ci-iso-upload-survives-flaky-gate"
+}

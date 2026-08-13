@@ -1,0 +1,19 @@
+{
+  "pr_number": 6616,
+  "archive_path": "docs/history/pr-reviews/PR-6616-proof-b-1007-c1-gaussian-message-product-is-a-commutative-group-z3-fscheck-first.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HSzNR",
+    "comment:PRRC_kwDOSF9kNM7HSzNw",
+    "comment:PRRC_kwDOSF9kNM7HSzOM",
+    "thread:PRRT_kwDOSF9kNM6Gh88-",
+    "thread:PRRT_kwDOSF9kNM6Gh89d",
+    "thread:PRRT_kwDOSF9kNM6Gh89y"
+  ],
+  "fetched_at": "2026-06-02T18:40:14.573Z",
+  "schema_version": "v1",
+  "commit_sha": "dc4f9d18edacee13146c125cab20cecde4d15880",
+  "title": "proof(B-1007 C1): Gaussian message product is a commutative group — Z3 + FsCheck (first real proof)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T18:39:50Z",
+  "head_ref": "otto-cli/b1007-c1-gaussian-group-proof-z3-fscheck-2026-06-02"
+}

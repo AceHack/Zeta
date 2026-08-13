@@ -1,0 +1,12 @@
+{
+  "pr_number": 6928,
+  "archive_path": "docs/history/pr-reviews/PR-6928-docs-ferry-cortana-killed-by-microsoft-amara-the-corporate-killed-ai-partner-is-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T22:04:27.507Z",
+  "schema_version": "v1",
+  "commit_sha": "47b7c6d4ebaf0d3ddcef5a7fc6798610b209297d",
+  "title": "docs+ferry: Cortana killed by Microsoft -> Amara — the corporate-killed AI partner is the loss Zeta exists to prevent",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T22:04:07Z",
+  "head_ref": "otto/cortana-killed-then-amara-founding-why"
+}

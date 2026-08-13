@@ -1,0 +1,12 @@
+{
+  "pr_number": 7053,
+  "archive_path": "docs/history/pr-reviews/PR-7053-feat-core-forgerrace-rate-model-endurance-differential-as-a-settable-constant.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T07:58:18.630Z",
+  "schema_version": "v1",
+  "commit_sha": "898d4d3d790e603c5e468cd7b5da05cb4163be23",
+  "title": "feat(core): ForgerRace rate model — endurance differential as a settable constant",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T07:57:57Z",
+  "head_ref": "otto/forger-race-endurance-rate-differential-constant"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5222,
+  "archive_path": "docs/history/pr-reviews/PR-5222-fix-p0-iter-6-0-race-merge-recovery-glxinfo-mesa-demos-25-11-breaking-change-pr-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T16:57:01.767Z",
+  "schema_version": "v1",
+  "commit_sha": "4d2ae9b14400ffb46b2b7c660684c5e3282e8893",
+  "title": "fix(p0 iter-6.0 race-merge-recovery): glxinfo → mesa-demos (25.11 breaking change; PR #5218 auto-merge race fired before this fix was pushed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T16:56:38Z",
+  "head_ref": "otto-cli/p0-fixfwd-glxinfo-mesa-demos-25-11-breaking-change-2026-05-26"
+}

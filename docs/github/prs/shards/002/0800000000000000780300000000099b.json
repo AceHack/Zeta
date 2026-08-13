@@ -1,0 +1,12 @@
+{
+  "pr_number": 2459,
+  "archive_path": "docs/history/pr-reviews/PR-2459-fix-backlog-close-b-0160-parent-row.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T10:25:19.253Z",
+  "schema_version": "v1",
+  "commit_sha": "8936159dd1241790080bf47ac6c31d9e4a86e311",
+  "title": "fix(backlog): close B-0160 parent row",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T10:25:02Z",
+  "head_ref": "claim/b0160-close-mechanical-auth-parent-vera-2026-05-10"
+}

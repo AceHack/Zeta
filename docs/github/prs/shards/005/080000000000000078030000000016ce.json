@@ -1,0 +1,16 @@
+{
+  "pr_number": 5838,
+  "archive_path": "docs/history/pr-reviews/PR-5838-docs-backlog-decompose-b-0668-clean.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F-DPm",
+    "comment:PRRC_kwDOSF9kNM7Fy_hH",
+    "thread:PRRT_kwDOSF9kNM6FbS_4"
+  ],
+  "fetched_at": "2026-05-29T00:28:59.337Z",
+  "schema_version": "v1",
+  "commit_sha": "fe00ff82a12256149511e9fd2d8c62266c06e692",
+  "title": "docs(backlog): Decompose B-0668 (clean)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T00:28:38Z",
+  "head_ref": "lior/decompose-b-0668-clean"
+}

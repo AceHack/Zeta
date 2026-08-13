@@ -1,0 +1,12 @@
+{
+  "pr_number": 5700,
+  "archive_path": "docs/history/pr-reviews/PR-5700-memory-mika-2026-05-28-parts-1-4-final-degenerate-github-swarm-workflow-architec.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T05:13:14.668Z",
+  "schema_version": "v1",
+  "commit_sha": "ef0a85d02f50ffc05bde381a1ceb95e736c28982",
+  "title": "memory(mika 2026-05-28 parts 1-4 FINAL): degenerate GitHub swarm + workflow architecture LOCKED — observe + choose --dry-run = simulate; move_next REMOVED",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T05:12:54Z",
+  "head_ref": "otto-cli/mika-ferry-degenerate-swarm-parts-1-and-2-2026-05-28"
+}

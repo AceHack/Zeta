@@ -1,0 +1,12 @@
+{
+  "pr_number": 2031,
+  "archive_path": "docs/history/pr-reviews/PR-2031-fix-wallet-land-b-0062-preflight-terminal-states.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T04:28:24.310Z",
+  "schema_version": "v1",
+  "commit_sha": "365d66a3ed84527ed9172226b731b9f5d8d5ca6c",
+  "title": "fix(wallet): land B-0062 preflight terminal states",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T04:28:08Z",
+  "head_ref": "codex/b0062-preflight-terminal-state"
+}

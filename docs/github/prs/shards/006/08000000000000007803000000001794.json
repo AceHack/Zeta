@@ -1,0 +1,20 @@
+{
+  "pr_number": 6036,
+  "archive_path": "docs/history/pr-reviews/PR-6036-feat-b-0354-2-referenced-pointer-resolution-check-for-bootstrap-claude-md.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GR4-3",
+    "comment:PRRC_kwDOSF9kNM7GR5T5",
+    "comment:PRRC_kwDOSF9kNM7GR5TV",
+    "comment:PRRC_kwDOSF9kNM7GRqHG",
+    "thread:PRRT_kwDOSF9kNM6Fxj3n",
+    "thread:PRRT_kwDOSF9kNM6FxumL",
+    "thread:PRRT_kwDOSF9kNM6FxumZ"
+  ],
+  "fetched_at": "2026-05-29T19:47:55.590Z",
+  "schema_version": "v1",
+  "commit_sha": "1bfd57f0a7225f8d38c9feb858f448e0ddf5d23c",
+  "title": "feat(B-0354.2): referenced-pointer-resolution check for bootstrap CLAUDE.md",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T19:47:35Z",
+  "head_ref": "otto-cli/b0354-2-referenced-pointer-resolution-2026-05-29"
+}

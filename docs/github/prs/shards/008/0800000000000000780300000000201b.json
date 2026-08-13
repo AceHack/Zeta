@@ -1,0 +1,12 @@
+{
+  "pr_number": 8219,
+  "archive_path": "docs/history/pr-reviews/PR-8219-docs-workitem-concrete-spineasync-conversion-proposal-for-vera-coordination-upda.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T22:18:32.314Z",
+  "schema_version": "v1",
+  "commit_sha": "f60fa212688a7b2659cb18a7a455fffadbcad21b",
+  "title": "docs(workitem): concrete SpineAsync conversion proposal for Vera (coordination update 2)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T22:18:12Z",
+  "head_ref": "coord-vera-spineasync-concrete"
+}

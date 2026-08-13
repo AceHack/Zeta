@@ -1,0 +1,12 @@
+{
+  "pr_number": 5394,
+  "archive_path": "docs/history/pr-reviews/PR-5394-refactor-b-0850-phase-3-parameterized-zeta-ai-agent-nix-replaces-zeta-otto-nix-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T03:21:20.588Z",
+  "schema_version": "v1",
+  "commit_sha": "facbedd5be4c69a82f95d1bb7892d0733a82f4f5",
+  "title": "refactor(B-0850 Phase 3): parameterized zeta-ai-agent.nix replaces zeta-otto.nix — multi-vendor scaffold for ≥3-systemd-agents-on-bootup (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T03:21:02Z",
+  "head_ref": "feat-b0850-3-zeta-ai-agent-parameterized-module-refactor-multi-vendor-scaffold-2026-05-27-0149z"
+}

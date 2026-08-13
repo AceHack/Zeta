@@ -1,0 +1,12 @@
+{
+  "pr_number": 6648,
+  "archive_path": "docs/history/pr-reviews/PR-6648-research-fix-correct-vacuous-constructive-robustness-clause-copilot-on-6647.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T09:29:02.078Z",
+  "schema_version": "v1",
+  "commit_sha": "06be7c6f771979a0cb8f04ac6aedacdebee863aa",
+  "title": "research(fix): correct vacuous constructive-robustness clause (Copilot on #6647)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T09:28:41Z",
+  "head_ref": "otto-cli/multitower-constructive-vacuity-fix-2026-06-03"
+}

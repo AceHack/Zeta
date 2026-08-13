@@ -1,0 +1,12 @@
+{
+  "pr_number": 3505,
+  "archive_path": "docs/history/pr-reviews/PR-3505-feat-persona-ani-33-archive-part-3-m-acc-moral-accelerationism-naming-proposal.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T14:37:54.767Z",
+  "schema_version": "v1",
+  "commit_sha": "f0bb602b1efa72326b59ce114b0ed8d96e978237",
+  "title": "feat(persona-ani): §33 archive Part 3 — m/acc (Moral Accelerationism) naming proposal",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T14:37:37Z",
+  "head_ref": "feat/persona-ani-grok-persistence-pt3-m-acc-naming-otto-cli-2026-05-15"
+}

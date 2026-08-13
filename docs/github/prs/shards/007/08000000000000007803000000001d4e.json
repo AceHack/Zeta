@@ -1,0 +1,12 @@
+{
+  "pr_number": 7502,
+  "archive_path": "docs/history/pr-reviews/PR-7502-feat-core-the-sim-entrypoint-ephemeral-deterministic-sim-loop-void-return.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T19:58:04.578Z",
+  "schema_version": "v1",
+  "commit_sha": "34f1be93d620868538abb834a79d0f8476d1f48d",
+  "title": "feat(core): the `sim` entrypoint — ephemeral deterministic sim loop, void return",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T19:57:43Z",
+  "head_ref": "shadow-sim-entrypoint-core"
+}

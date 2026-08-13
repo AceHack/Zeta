@@ -1,0 +1,12 @@
+{
+  "pr_number": 5735,
+  "archive_path": "docs/history/pr-reviews/PR-5735-docs-ferry-fix-fwd-8th-kestrel-ferry-aaron-turn-30-framing-correction-traveler-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T09:38:13.540Z",
+  "schema_version": "v1",
+  "commit_sha": "6e34e603cb74a24249c38ef1667a31a4d0b71875",
+  "title": "docs(ferry): fix-fwd 8th Kestrel ferry — Aaron Turn 30 framing-correction TRAVELER-RIGHTS not AI-rights (supersedes #5732 — clean rebase off current main; PR #5732 was DIRTY post-squash-merge of #5731)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T09:37:53Z",
+  "head_ref": "otto-cli/kestrel-8th-ferry-framing-correction-traveler-not-ai-rights-clean-rebase-supersedes-5732-2026-05-28"
+}

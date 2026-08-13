@@ -1,0 +1,21 @@
+{
+  "pr_number": 6325,
+  "archive_path": "docs/history/pr-reviews/PR-6325-docs-b-0959-0-unbundled-engine-note-agent-partition-encrypted-home-bus-product-h.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GklYz",
+    "comment:PRRC_kwDOSF9kNM7GklZB",
+    "comment:PRRC_kwDOSF9kNM7Gkm32",
+    "comment:PRRC_kwDOSF9kNM7Gkm3B",
+    "comment:PRRC_kwDOSF9kNM7GknGu",
+    "thread:PRRT_kwDOSF9kNM6F_yFX",
+    "thread:PRRT_kwDOSF9kNM6F_yFk",
+    "thread:PRRT_kwDOSF9kNM6F_zZJ"
+  ],
+  "fetched_at": "2026-06-01T03:22:23.032Z",
+  "schema_version": "v1",
+  "commit_sha": "8ba0032457095e6c4879a40f0178667178ba2a38",
+  "title": "docs(B-0959 §0): unbundled-engine note + agent-partition / encrypted-home / bus-product-heartbeat topology",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T03:22:04Z",
+  "head_ref": "otto-cli/b0959-unbundled-engine-note-2026-05-31"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8717,
+  "archive_path": "docs/history/pr-reviews/PR-8717-docs-handoff-mark-math-team-row-3-owe-fscheck-cross-check-leg-discharged-8715-ve.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T06:39:01.972Z",
+  "schema_version": "v1",
+  "commit_sha": "d0dc12ce19df25340e532778bf0f6413295ef302",
+  "title": "docs(handoff): mark math-team row 3 ρ_owe FsCheck cross-check leg discharged (#8715, verified)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T06:38:36Z",
+  "head_ref": "otto/row3-handoff-discharge"
+}

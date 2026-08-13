@@ -1,0 +1,12 @@
+{
+  "pr_number": 4731,
+  "archive_path": "docs/history/pr-reviews/PR-4731-docs-archive-decomposed-preserve-recently-merged-prs-from-4695.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T14:37:03.789Z",
+  "schema_version": "v1",
+  "commit_sha": "b14bdd467c8c1e90ef2d5e99c23aa3378e3b03ce",
+  "title": "docs(archive): DECOMPOSED - preserve recently merged PRs (from #4695)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T14:36:47Z",
+  "head_ref": "lior-decompose-4695-preservation"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5454,
+  "archive_path": "docs/history/pr-reviews/PR-5454-docs-b-0852-4-nixos-module-boot-time-cred-restore-from-esp-gates-end-to-end-usb-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T13:44:30.635Z",
+  "schema_version": "v1",
+  "commit_sha": "badc0b677d7408ce7f02388d7065157f118c5ba4",
+  "title": "docs(B-0852.4): NixOS module boot-time cred-restore from ESP — gates end-to-end USB test (Aaron 2026-05-27 USB push)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T13:43:58Z",
+  "head_ref": "backlog/b-0852-4-nixos-module-boot-restore-row-2026-05-27"
+}

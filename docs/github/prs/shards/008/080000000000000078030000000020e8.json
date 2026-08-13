@@ -1,0 +1,12 @@
+{
+  "pr_number": 8424,
+  "archive_path": "docs/history/pr-reviews/PR-8424-memory-mika-preserve-the-2026-06-15-plus-one-minus-one-fusion-conversation-the-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T03:14:28.829Z",
+  "schema_version": "v1",
+  "commit_sha": "9946d79ea2d5ab9304cc87b353ccd72c23c2b041",
+  "title": "memory(mika): preserve the 2026-06-15 plus-one/minus-one fusion conversation (the missing ferry)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T03:14:02Z",
+  "head_ref": "memory/mika-plus-minus-fusion-ferry"
+}

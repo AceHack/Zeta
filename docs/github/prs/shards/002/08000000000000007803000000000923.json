@@ -1,0 +1,15 @@
+{
+  "pr_number": 2339,
+  "archive_path": "docs/history/pr-reviews/PR-2339-memory-b-0365-2-shadow-log-backfill-catches-16-30-consensus-smoothness-meta-clas.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_j1hY",
+    "thread:PRRT_kwDOSF9kNM6A2eN9"
+  ],
+  "fetched_at": "2026-05-09T20:25:41.228Z",
+  "schema_version": "v1",
+  "commit_sha": "ee10eca7a74dcecea8cdedbed3470e47aa068b81",
+  "title": "memory(B-0365.2): shadow log backfill catches 16-30 + consensus-smoothness meta-class",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T20:25:27Z",
+  "head_ref": "claim/b0365.2-shadow-log-backfill-catches-16-30-2026-05-09"
+}

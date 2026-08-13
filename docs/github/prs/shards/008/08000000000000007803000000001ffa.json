@@ -1,0 +1,12 @@
+{
+  "pr_number": 8186,
+  "archive_path": "docs/history/pr-reviews/PR-8186-fix-dst-workstealingruntime-async-disposable-drain-non-blocking-dispose.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T14:24:44.920Z",
+  "schema_version": "v1",
+  "commit_sha": "237f54c6aa6b588c14403efe5158eef87e7dd052",
+  "title": "fix(dst): WorkStealingRuntime async-disposable drain; non-blocking Dispose",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T14:24:19Z",
+  "head_ref": "otto/dst-workstealing-async-dispose"
+}

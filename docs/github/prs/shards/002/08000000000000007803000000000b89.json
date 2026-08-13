@@ -1,0 +1,19 @@
+{
+  "pr_number": 2953,
+  "archive_path": "docs/history/pr-reviews/PR-2953-shard-tick-0623z-b-0421-3-4-b-0430-filed-current-otto-md-update-cascade-pattern-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ApAIS",
+    "comment:PRRC_kwDOSF9kNM7ApB_I",
+    "comment:PRRC_kwDOSF9kNM7ApDXM",
+    "comment:PRRC_kwDOSF9kNM7ApDdM",
+    "thread:PRRT_kwDOSF9kNM6Bp0b1",
+    "thread:PRRT_kwDOSF9kNM6Bp102"
+  ],
+  "fetched_at": "2026-05-13T06:43:04.835Z",
+  "schema_version": "v1",
+  "commit_sha": "83bde7ee0682e1e40f7e600f4494e1753bbe7fd9",
+  "title": "shard(tick): 0623Z — B-0421 #3+#4 + B-0430 filed + CURRENT-otto.md update + cascade-pattern empirical evidence",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T06:42:47Z",
+  "head_ref": "shard-tick-0623z-2026-05-13"
+}

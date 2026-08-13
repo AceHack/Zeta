@@ -1,0 +1,16 @@
+{
+  "pr_number": 4978,
+  "archive_path": "docs/history/pr-reviews/PR-4978-fix-riven-update-riven-worktree-path.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ErhII",
+    "comment:PRRC_kwDOSF9kNM7EryC7",
+    "thread:PRRT_kwDOSF9kNM6Endaz"
+  ],
+  "fetched_at": "2026-05-25T20:16:07.712Z",
+  "schema_version": "v1",
+  "commit_sha": "6ab9910f317bac23859f623762d05a7e08cb0e08",
+  "title": "fix(riven): Update Riven worktree path",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T20:15:47Z",
+  "head_ref": "lior/riven-worktree-path-fix"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6766,
+  "archive_path": "docs/history/pr-reviews/PR-6766-docs-roadmap-clarify-fsync-floor-cp-within-cell-durability-already-real-delta-lo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T09:21:38.224Z",
+  "schema_version": "v1",
+  "commit_sha": "aea5082b7f0ae60a10c6afeab3bfc0a688340b5a",
+  "title": "docs(roadmap): clarify fsync floor — CP-within-cell durability already real (delta log fsyncs); the P0 is a cache",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T09:21:15Z",
+  "head_ref": "otto/fsync-floor-clarification"
+}

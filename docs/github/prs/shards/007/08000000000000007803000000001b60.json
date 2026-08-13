@@ -1,0 +1,12 @@
+{
+  "pr_number": 7008,
+  "archive_path": "docs/history/pr-reviews/PR-7008-docs-no-ddl-just-dml-on-metadata-tables.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T03:50:39.425Z",
+  "schema_version": "v1",
+  "commit_sha": "379112e5c990a82fac4cf66051586257891cf7ba",
+  "title": "docs: no DDL — just DML on metadata tables",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T03:50:21Z",
+  "head_ref": "otto/no-ddl-just-dml-on-metadata-tables"
+}

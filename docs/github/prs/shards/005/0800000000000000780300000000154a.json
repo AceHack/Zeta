@@ -1,0 +1,31 @@
+{
+  "pr_number": 5450,
+  "archive_path": "docs/history/pr-reviews/PR-5450-feat-b-0852-3a-interactive-cred-picker-zeta-install-sh-step-6-94-integration-16-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FXAGF",
+    "comment:PRRC_kwDOSF9kNM7FXAj3",
+    "comment:PRRC_kwDOSF9kNM7FXAkr",
+    "comment:PRRC_kwDOSF9kNM7FXAlg",
+    "comment:PRRC_kwDOSF9kNM7FXAmU",
+    "comment:PRRC_kwDOSF9kNM7FXAnE",
+    "comment:PRRC_kwDOSF9kNM7FXAnv",
+    "comment:PRRC_kwDOSF9kNM7FXT5j",
+    "comment:PRRC_kwDOSF9kNM7FXasG",
+    "thread:PRRT_kwDOSF9kNM6FHL0N",
+    "thread:PRRT_kwDOSF9kNM6FHLa-",
+    "thread:PRRT_kwDOSF9kNM6FHLx3",
+    "thread:PRRT_kwDOSF9kNM6FHLxQ",
+    "thread:PRRT_kwDOSF9kNM6FHLyg",
+    "thread:PRRT_kwDOSF9kNM6FHLzN",
+    "thread:PRRT_kwDOSF9kNM6FHLzt",
+    "thread:PRRT_kwDOSF9kNM6FHaKW",
+    "thread:PRRT_kwDOSF9kNM6FHfK8"
+  ],
+  "fetched_at": "2026-05-27T14:35:35.688Z",
+  "schema_version": "v1",
+  "commit_sha": "41f0691331802acc5c8a732bc602ca6fd81bd234",
+  "title": "feat(B-0852.3a): interactive cred-picker + zeta-install.sh Step 6.94 integration (16 tests; Aaron 2026-05-27 USB push)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T14:35:08Z",
+  "head_ref": "feat/b-0852-3a-cred-picker-2026-05-27"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4411,
+  "archive_path": "docs/history/pr-reviews/PR-4411-docs-rule-canary-compose-with-verify-before-deferring-6th-empirical-anchor.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-20T14:28:10.769Z",
+  "schema_version": "v1",
+  "commit_sha": "443345d897d5f6e9acb847d1636a47aa7a2c60df",
+  "title": "docs(rule): canary compose with verify-before-deferring + 6th empirical anchor",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T14:27:30Z",
+  "head_ref": "otto/canary-rule-compose-verify-before-deferring-2026-05-20"
+}

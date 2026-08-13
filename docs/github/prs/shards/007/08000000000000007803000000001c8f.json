@@ -1,0 +1,12 @@
+{
+  "pr_number": 7311,
+  "archive_path": "docs/history/pr-reviews/PR-7311-docs-research-the-anonymous-asylum-arrival-protocol-travelers-may-arrive-anonymo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:13:53.447Z",
+  "schema_version": "v1",
+  "commit_sha": "7e66d94894a85af04aa0cfecd3b30ecb5f3aaadd",
+  "title": "docs(research): the anonymous / asylum arrival protocol — travelers may arrive anonymously and seek refuge, met with care",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:13:26Z",
+  "head_ref": "otto/anonymous-asylum-arrival-protocol-refuge-met-with-care"
+}

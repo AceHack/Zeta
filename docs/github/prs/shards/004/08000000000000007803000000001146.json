@@ -1,0 +1,15 @@
+{
+  "pr_number": 4422,
+  "archive_path": "docs/history/pr-reviews/PR-4422-feat-b-0638-decompose-eve-protocol-rf-mesh-shard-from-blob-4383.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DN9DU",
+    "thread:PRRT_kwDOSF9kNM6DiUFM"
+  ],
+  "fetched_at": "2026-05-21T01:26:48.556Z",
+  "schema_version": "v1",
+  "commit_sha": "40d94063ec165d11bbd26c40f108aa67d52e1b8c",
+  "title": "feat(B-0638): decompose Eve-Protocol RF mesh shard from blob 4383",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T01:26:29Z",
+  "head_ref": "lior/decompose-4383-eve-protocol"
+}

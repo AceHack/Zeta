@@ -1,0 +1,12 @@
+{
+  "pr_number": 6750,
+  "archive_path": "docs/history/pr-reviews/PR-6750-backlog-plugin-di-as-dynamicvalue-negotiated-base-correct-windows-diskdeltalog-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:53:36.178Z",
+  "schema_version": "v1",
+  "commit_sha": "159e6fbd56b2454fa22024719466ddbfc2beec84",
+  "title": "backlog: plugin DI-as-DynamicValue (negotiated base) + correct windows DiskDeltaLog diagnosis",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:53:15Z",
+  "head_ref": "otto/plugin-di-as-data-plus-diskdeltalog-correction"
+}

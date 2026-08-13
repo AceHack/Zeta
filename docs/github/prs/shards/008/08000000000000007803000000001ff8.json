@@ -1,0 +1,12 @@
+{
+  "pr_number": 8184,
+  "archive_path": "docs/history/pr-reviews/PR-8184-fix-dst-ferrythrottler-async-disposable-drain-non-blocking-dispose-no-task-waita.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T14:15:21.599Z",
+  "schema_version": "v1",
+  "commit_sha": "2d5de33936e286a39762954f42e20b97adac5f5f",
+  "title": "fix(dst): FerryThrottler async-disposable drain; non-blocking Dispose (no Task.WaitAll)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T14:14:58Z",
+  "head_ref": "otto/dst-throttler-async-dispose"
+}

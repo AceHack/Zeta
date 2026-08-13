@@ -1,0 +1,12 @@
+{
+  "pr_number": 4194,
+  "archive_path": "docs/history/pr-reviews/PR-4194-backlog-b0644-b0635-sharpened-extended-markers-lint-schema-composes-with-backfil.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T20:06:25.893Z",
+  "schema_version": "v1",
+  "commit_sha": "3b9462ec7db225c5d48e5f3ded8202c4aede25d5",
+  "title": "backlog(b0644+b0635): sharpened/extended markers + lint schema + composes_with backfill",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:06:06Z",
+  "head_ref": "shard/b0644-b0635-sharpened-extended-by-b0665-markers-2026-05-18"
+}

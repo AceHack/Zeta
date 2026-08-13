@@ -1,0 +1,12 @@
+{
+  "pr_number": 8862,
+  "archive_path": "docs/history/pr-reviews/PR-8862-feat-algebra-starring-ports-c-rust-go-soft-lane-full-matrix.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T05:07:10.764Z",
+  "schema_version": "v1",
+  "commit_sha": "4f35b71d2e566c165c44b9a803e43a156b7e56de",
+  "title": "feat(algebra): StarRing ports — C#, Rust, Go (soft-lane full matrix)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T05:06:45Z",
+  "head_ref": "alexa/star-ring-ports"
+}

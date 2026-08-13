@@ -1,0 +1,12 @@
+{
+  "pr_number": 8841,
+  "archive_path": "docs/history/pr-reviews/PR-8841-genesis-zoom-to-look-inside-on-the-homepage-settlement.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T03:33:16.266Z",
+  "schema_version": "v1",
+  "commit_sha": "0fcbd961663b80fdb0a25a6331b4c185a19a3d5f",
+  "title": "genesis: zoom-to-look-inside on the homepage settlement",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:32:52Z",
+  "head_ref": "claude/homepage-zoom-visibility-jqvkwd"
+}

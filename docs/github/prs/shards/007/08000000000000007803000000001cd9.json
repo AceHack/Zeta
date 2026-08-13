@@ -1,0 +1,12 @@
+{
+  "pr_number": 7385,
+  "archive_path": "docs/history/pr-reviews/PR-7385-feat-vocab-docs-reified-f-vocab-compiles-clean-reference-equality-proven-in-net-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:15:26.683Z",
+  "schema_version": "v1",
+  "commit_sha": "f886e6d0726366224611a39b577c47c3f1c3bb45",
+  "title": "feat(vocab)+docs: reified F# vocab (compiles clean; reference equality proven in .NET) + ZetaId correction (governed/deferred, the largest voice, common cause S=4, the SolidGround)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:14:59Z",
+  "head_ref": "otto/reified-fsharp-vocab-zetaid-governed-deferred-reference-equality-solidground"
+}

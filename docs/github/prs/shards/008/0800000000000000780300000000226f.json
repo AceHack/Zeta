@@ -1,0 +1,12 @@
+{
+  "pr_number": 8815,
+  "archive_path": "docs/history/pr-reviews/PR-8815-phase-7-part-1-hardening-csp-lockdown-supabase-js-vendoring-anon-heartbeat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T00:25:19.900Z",
+  "schema_version": "v1",
+  "commit_sha": "b3d0e7216d74e9b036281c9b39c3804d89dc37b5",
+  "title": "Phase 7 Part 1 (Hardening): CSP lockdown, supabase-js vendoring, anon heartbeat",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T00:24:49Z",
+  "head_ref": "claude/phase-7-part-1-hardening-bj76d5"
+}

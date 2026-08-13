@@ -1,0 +1,12 @@
+{
+  "pr_number": 4952,
+  "archive_path": "docs/history/pr-reviews/PR-4952-docs-hygiene-tick-1636z-3rd-vacuous-task-condition-tick-today-47-prs-all-dirty-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T16:41:31.942Z",
+  "schema_version": "v1",
+  "commit_sha": "d43eef3754079f84d07dfdfeddb681814abec40e",
+  "title": "docs(hygiene): tick 1636Z — 3rd vacuous-task-condition tick today (47 PRs all DIRTY+cross-lane)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T16:41:12Z",
+  "head_ref": "otto-bg-worker/1636z-shard-2026-05-25"
+}

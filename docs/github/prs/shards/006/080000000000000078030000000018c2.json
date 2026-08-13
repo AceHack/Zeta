@@ -1,0 +1,24 @@
+{
+  "pr_number": 6338,
+  "archive_path": "docs/history/pr-reviews/PR-6338-docs-b-0962-phase-1-typed-claim-lock-events-multi-round-deadlock-livelock-review.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GlUi-",
+    "comment:PRRC_kwDOSF9kNM7GlUix",
+    "comment:PRRC_kwDOSF9kNM7GlUjE",
+    "comment:PRRC_kwDOSF9kNM7GlUjP",
+    "comment:PRRC_kwDOSF9kNM7GlUjY",
+    "comment:PRRC_kwDOSF9kNM7GlVq4",
+    "thread:PRRT_kwDOSF9kNM6GAUn6",
+    "thread:PRRT_kwDOSF9kNM6GAUnd",
+    "thread:PRRT_kwDOSF9kNM6GAUnp",
+    "thread:PRRT_kwDOSF9kNM6GAUnt",
+    "thread:PRRT_kwDOSF9kNM6GAUny"
+  ],
+  "fetched_at": "2026-06-01T04:30:43.010Z",
+  "schema_version": "v1",
+  "commit_sha": "91bbfbb5e8ec09e383d7d118690afa668e4bfc56",
+  "title": "docs(B-0962): Phase-1 typed Claim/Lock events + multi-round deadlock/livelock review",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T04:30:21Z",
+  "head_ref": "otto-cli/b0962-phase1-claim-lock-events-2026-06-01"
+}

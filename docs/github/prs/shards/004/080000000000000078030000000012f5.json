@@ -1,0 +1,28 @@
+{
+  "pr_number": 4853,
+  "archive_path": "docs/history/pr-reviews/PR-4853-shard-2026-05-24-1902z-otto-vscode-bg-worker-lior-lane-fleet-38-41-prs-lane-disc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EaC7d",
+    "comment:PRRC_kwDOSF9kNM7EaC7n",
+    "comment:PRRC_kwDOSF9kNM7EaJwr",
+    "comment:PRRC_kwDOSF9kNM7EaJwu",
+    "comment:PRRC_kwDOSF9kNM7EaJwy",
+    "comment:PRRC_kwDOSF9kNM7EaK83",
+    "comment:PRRC_kwDOSF9kNM7EaK8j",
+    "comment:PRRC_kwDOSF9kNM7EaK91",
+    "comment:PRRC_kwDOSF9kNM7EaK9I",
+    "comment:PRRC_kwDOSF9kNM7EaK9X",
+    "thread:PRRT_kwDOSF9kNM6EaWO_",
+    "thread:PRRT_kwDOSF9kNM6EaWPI",
+    "thread:PRRT_kwDOSF9kNM6EabwV",
+    "thread:PRRT_kwDOSF9kNM6EabwY",
+    "thread:PRRT_kwDOSF9kNM6Eabwb"
+  ],
+  "fetched_at": "2026-05-24T19:35:45.473Z",
+  "schema_version": "v1",
+  "commit_sha": "9e0514438e1a25cef96a0d7ac839d6a8515a0fc0",
+  "title": "shard(2026-05-24/1902Z): otto-vscode bg-worker — Lior-lane fleet 38→41 PRs + lane discipline re-applied",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T19:35:28Z",
+  "head_ref": "otto-vscode/tick-1902z-bg-worker"
+}

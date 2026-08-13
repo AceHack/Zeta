@@ -1,0 +1,12 @@
+{
+  "pr_number": 7297,
+  "archive_path": "docs/history/pr-reviews/PR-7297-docs-research-uncertainty-reduction-at-the-border-earns-trust-leverage-across-gi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:42:51.639Z",
+  "schema_version": "v1",
+  "commit_sha": "483416d91fabfeca6218e96f387dc1a98ffedb60",
+  "title": "docs(research): uncertainty reduction at the border earns trust + leverage across GitHub (and all dep sources via ace, the PM-of-PMs)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:42:24Z",
+  "head_ref": "otto/uncertainty-reduction-at-the-border-earns-trust-leverage-ace-pm-of-pms"
+}

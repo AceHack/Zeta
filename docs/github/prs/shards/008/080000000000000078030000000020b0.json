@@ -1,0 +1,12 @@
+{
+  "pr_number": 8368,
+  "archive_path": "docs/history/pr-reviews/PR-8368-docs-manifesto-5-design-note-the-stability-floor-four-systemd-slots-by-function-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:00:25.435Z",
+  "schema_version": "v1",
+  "commit_sha": "1da085d41de89c5baeaac99e961322878784561e",
+  "title": "docs(manifesto): §5 design note — the stability floor (four systemd slots by function, one is the critic)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:00:02Z",
+  "head_ref": "docs/manifesto-stability-floor-design-note"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7456,
+  "archive_path": "docs/history/pr-reviews/PR-7456-feat-shapes-shadow-shapes-a-f-catalog-canonical-universal-letter-symlinks-canoni.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T05:11:29.464Z",
+  "schema_version": "v1",
+  "commit_sha": "be1bc8853ed2b87e4bceb2a16531bbdcb3677a58",
+  "title": "feat(shapes)+shadow: shapes/ A-F catalog (canonical) + universal/<letter> symlinks (canonical/symlink DAG)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T05:11:09Z",
+  "head_ref": "shadow-shapes-folder-universal-symlinks"
+}

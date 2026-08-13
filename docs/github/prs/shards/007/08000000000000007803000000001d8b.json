@@ -1,0 +1,12 @@
+{
+  "pr_number": 7563,
+  "archive_path": "docs/history/pr-reviews/PR-7563-docs-research-nsew-falls-out-of-the-directed-2x2-the-compass-is-c4-1-i-1-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T00:55:04.893Z",
+  "schema_version": "v1",
+  "commit_sha": "43261cfc07a2815a4326b03546dcf8dee79c31a6",
+  "title": "docs(research): NSEW falls out of the directed 2x2 — the compass IS C4/{1,i,-1,-i}",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T00:54:43Z",
+  "head_ref": "shadow-nsew-four-roots-of-unity-directionality"
+}

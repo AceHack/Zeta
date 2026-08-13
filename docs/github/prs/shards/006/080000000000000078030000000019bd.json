@@ -1,0 +1,23 @@
+{
+  "pr_number": 6589,
+  "archive_path": "docs/history/pr-reviews/PR-6589-feat-infernet-b-1000-slice-2-message-algebra-exp-family-messages-combine-by-natu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HPgTq",
+    "comment:PRRC_kwDOSF9kNM7HPgU6",
+    "comment:PRRC_kwDOSF9kNM7HPgUg",
+    "comment:PRRC_kwDOSF9kNM7HPgV1",
+    "comment:PRRC_kwDOSF9kNM7HPgVc",
+    "thread:PRRT_kwDOSF9kNM6GfjPn",
+    "thread:PRRT_kwDOSF9kNM6GfjQU",
+    "thread:PRRT_kwDOSF9kNM6GfjQp",
+    "thread:PRRT_kwDOSF9kNM6GfjRC",
+    "thread:PRRT_kwDOSF9kNM6GfjRW"
+  ],
+  "fetched_at": "2026-06-02T16:24:26.343Z",
+  "schema_version": "v1",
+  "commit_sha": "9dfe41efb473e440e8e79c059242325651963199",
+  "title": "feat(infernet B-1000 slice 2): message algebra — exp-family messages combine by natural-param add (product) + EP cavity (divide)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T16:23:56Z",
+  "head_ref": "otto-cli/b1000-slice2-message-algebra-2026-06-02"
+}

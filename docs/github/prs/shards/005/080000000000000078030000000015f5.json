@@ -1,0 +1,17 @@
+{
+  "pr_number": 5621,
+  "archive_path": "docs/history/pr-reviews/PR-5621-fix-injection-points-kdf-chain-markdown-rendering-work-factor-not-entropy-wordin.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ffut3",
+    "comment:PRRC_kwDOSF9kNM7FfutQ",
+    "thread:PRRT_kwDOSF9kNM6FNhd3",
+    "thread:PRRT_kwDOSF9kNM6FNhdV"
+  ],
+  "fetched_at": "2026-05-27T19:50:34.379Z",
+  "schema_version": "v1",
+  "commit_sha": "8f7540fc18df910d437a8f178785da48fbe49c92",
+  "title": "fix(injection-points): KDF chain markdown rendering + work-factor-not-entropy wording (supersedes #5608)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T19:50:13Z",
+  "head_ref": "fix/pr-5608-markdown-rendering-entropy-wording-copilot-findings-2026-05-27"
+}

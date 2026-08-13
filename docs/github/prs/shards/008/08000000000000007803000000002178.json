@@ -1,0 +1,12 @@
+{
+  "pr_number": 8568,
+  "archive_path": "docs/history/pr-reviews/PR-8568-feat-toffoli-implement-z-set-join-circuit-model-and-verify-reversibility-laws.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T13:25:18.742Z",
+  "schema_version": "v1",
+  "commit_sha": "2751991d6f94dbb2e5ede7d535d93126ee7976d5",
+  "title": "feat(toffoli): implement Z-set join circuit model and verify reversibility laws",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T13:24:50Z",
+  "head_ref": "lior/proof-yaml-locks"
+}

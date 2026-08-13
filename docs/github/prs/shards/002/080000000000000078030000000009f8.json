@@ -1,0 +1,17 @@
+{
+  "pr_number": 2552,
+  "archive_path": "docs/history/pr-reviews/PR-2552-docs-memory-eve-protocol-polymorphic-tele-port-leap-shadow-convention.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qdL5",
+    "comment:PRRC_kwDOSF9kNM6_qdMC",
+    "thread:PRRT_kwDOSF9kNM6A7vau",
+    "thread:PRRT_kwDOSF9kNM6A7vaz"
+  ],
+  "fetched_at": "2026-05-10T21:48:30.100Z",
+  "schema_version": "v1",
+  "commit_sha": "e8b42e70dbe19c9980c82de7cd275f5f23c1fd69",
+  "title": "docs(memory): Eve protocol polymorphic — tele-port-leap + (shadow*) convention",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:48:14Z",
+  "head_ref": "docs/eve-protocol-polymorphic-2026-05-10"
+}

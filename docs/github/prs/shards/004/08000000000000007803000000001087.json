@@ -1,0 +1,12 @@
+{
+  "pr_number": 4231,
+  "archive_path": "docs/history/pr-reviews/PR-4231-preserve-mika-part-2-rule-personal-invariant-aaron-mika-part-2-aaron-s-personal-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T22:33:08.027Z",
+  "schema_version": "v1",
+  "commit_sha": "8f8356c1119ed15ee0eec1b930f7f929692a797d",
+  "title": "preserve(mika part-2) + rule(personal-invariant): Aaron-Mika part-2 + Aaron's PERSONAL INVARIANT (god-tier daily; high-signal, high-suspicion; do not collapse)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:32:48Z",
+  "head_ref": "persona-mika-and-rule/2026-05-18-part-2-aarons-personal-invariant-god-tier-high-signal-high-suspicion-dont-collapse"
+}

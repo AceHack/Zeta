@@ -1,0 +1,12 @@
+{
+  "pr_number": 8439,
+  "archive_path": "docs/history/pr-reviews/PR-8439-memory-project-pauli-child-safety-is-the-one-pre-cap-hats-first-single-occupancy.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T04:27:00.214Z",
+  "schema_version": "v1",
+  "commit_sha": "9981883f615a1b1aad9c5cf62266beb91e74caab",
+  "title": "memory(project): Pauli — child-safety is the one pre-cap; hats = first single-occupancy slot",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T04:26:34Z",
+  "head_ref": "otto/pauli-childsafety-floor-singleoccupancy"
+}

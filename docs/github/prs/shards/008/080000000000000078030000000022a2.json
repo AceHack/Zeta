@@ -1,0 +1,12 @@
+{
+  "pr_number": 8866,
+  "archive_path": "docs/history/pr-reviews/PR-8866-refactor-core-decouple-amplitudeemu-from-chip-8-generic-step-function.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T05:14:38.275Z",
+  "schema_version": "v1",
+  "commit_sha": "b327593e88b12b4d4522c60757c7e290bf23f10a",
+  "title": "refactor(core): decouple AmplitudeEmu from CHIP-8 — generic step function",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T05:14:14Z",
+  "head_ref": "alexa/decouple-amplitude-emu"
+}

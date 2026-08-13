@@ -1,0 +1,12 @@
+{
+  "pr_number": 7175,
+  "archive_path": "docs/history/pr-reviews/PR-7175-feat-portal-per-resource-management-console-metrics-logs-console-files-config-li.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T02:10:05.332Z",
+  "schema_version": "v1",
+  "commit_sha": "639d60c4ad5032061c79d5cc1ae25874a857b347",
+  "title": "feat(portal): per-resource management console — metrics, logs, console, files, config, lifecycle, memory",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T02:09:46Z",
+  "head_ref": "feat/portal-management-console"
+}

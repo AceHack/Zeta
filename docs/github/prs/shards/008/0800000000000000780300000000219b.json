@@ -1,0 +1,12 @@
+{
+  "pr_number": 8603,
+  "archive_path": "docs/history/pr-reviews/PR-8603-memory-feedback-dystopian-fiction-anti-consent-first-negative-anchor-design-by-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T17:41:28.360Z",
+  "schema_version": "v1",
+  "commit_sha": "984a4c9f6f4ac4fb6c4b7a2d9f0d585f826c4e50",
+  "title": "memory(feedback): dystopian fiction = anti-consent-first negative anchor (design by negation)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T17:41:04Z",
+  "head_ref": "otto/dystopia-negative-anchor"
+}

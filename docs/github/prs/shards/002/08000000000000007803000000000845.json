@@ -1,0 +1,19 @@
+{
+  "pr_number": 2117,
+  "archive_path": "docs/history/pr-reviews/PR-2117-feat-b-0126-1-add-ai-attribution-footer-for-agent-posted-pr-comments.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_X5Iu",
+    "comment:PRRC_kwDOSF9kNM6_X5JT",
+    "comment:PRRC_kwDOSF9kNM6_X5Jy",
+    "thread:PRRT_kwDOSF9kNM6Atgy3",
+    "thread:PRRT_kwDOSF9kNM6AtgzR",
+    "thread:PRRT_kwDOSF9kNM6Atgzs"
+  ],
+  "fetched_at": "2026-05-08T18:57:04.442Z",
+  "schema_version": "v1",
+  "commit_sha": "667e8209fb959ae14b30573d0fc484943c77b791",
+  "title": "feat(B-0126.1): add AI attribution footer for agent-posted PR comments",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T18:56:43Z",
+  "head_ref": "b-0126/ai-attribution-footer"
+}

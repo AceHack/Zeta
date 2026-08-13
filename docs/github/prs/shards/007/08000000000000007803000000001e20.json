@@ -1,0 +1,12 @@
+{
+  "pr_number": 7712,
+  "archive_path": "docs/history/pr-reviews/PR-7712-docs-anchors-cotillion-dancing-within-the-lines-of-coincidence-with-manners-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T15:22:55.505Z",
+  "schema_version": "v1",
+  "commit_sha": "92c9154959b83200405118535cab0e2837722b39",
+  "title": "docs(anchors): cotillion — dancing within the lines of coincidence, with manners (the harmony stack's lived anchor)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T15:22:28Z",
+  "head_ref": "shadow-cotillion-anchor"
+}

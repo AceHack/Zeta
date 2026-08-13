@@ -1,0 +1,12 @@
+{
+  "pr_number": 3407,
+  "archive_path": "docs/history/pr-reviews/PR-3407-shard-tick-1013z-pr-3405-merged-2-threads-first-full-option-b-application.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T10:19:13.588Z",
+  "schema_version": "v1",
+  "commit_sha": "58d0c7a8aa8b9861cd8b73ee1e08b06033c01935",
+  "title": "shard(tick): 1013Z — PR #3405 merged + 2 threads; first full Option B application",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:18:55Z",
+  "head_ref": "shard/tick-1013z-otto-cli-2026-05-15"
+}

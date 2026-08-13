@@ -1,0 +1,12 @@
+{
+  "pr_number": 7960,
+  "archive_path": "docs/history/pr-reviews/PR-7960-docs-research-shadow-ferry-18-5-the-adinkra-is-the-shadow-of-the-majorana-one-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:21:02.532Z",
+  "schema_version": "v1",
+  "commit_sha": "13ef97a808c0f4720eaf73e0b57e1a67d476dd75",
+  "title": "docs(research)+shadow: ferry 18 §5 — the adinkra is the shadow of the Majorana one, in math (projection, twice over)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:20:36Z",
+  "head_ref": "shadow/ferry-18-shadow-addendum"
+}

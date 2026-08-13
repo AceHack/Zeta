@@ -1,0 +1,12 @@
+{
+  "pr_number": 3544,
+  "archive_path": "docs/history/pr-reviews/PR-3544-fix-rules-glass-halo-bidirectional-deepseek-migration-xref-b-0533-slice-a-proof-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T18:22:09.711Z",
+  "schema_version": "v1",
+  "commit_sha": "892dbb48520343545c7ceedeb5c3861991156d7a",
+  "title": "fix(rules): glass-halo-bidirectional — DeepSeek migration xref (B-0533 Slice A proof-of-concept)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:21:46Z",
+  "head_ref": "fix/b0533-slice-a-lior-dead-xrefs-otto-cli-2026-05-15"
+}

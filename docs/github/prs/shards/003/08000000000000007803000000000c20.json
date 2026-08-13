@@ -1,0 +1,21 @@
+{
+  "pr_number": 3104,
+  "archive_path": "docs/history/pr-reviews/PR-3104-feat-b-0260-memory-md-cutover-parity-validation-670-670-covered.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BF2YS",
+    "comment:PRRC_kwDOSF9kNM7BF2ZA",
+    "comment:PRRC_kwDOSF9kNM7BFylK",
+    "comment:PRRC_kwDOSF9kNM7BFzuR",
+    "thread:PRRT_kwDOSF9kNM6B-u6X",
+    "thread:PRRT_kwDOSF9kNM6B-vya",
+    "thread:PRRT_kwDOSF9kNM6B-xyo",
+    "thread:PRRT_kwDOSF9kNM6B-xzJ"
+  ],
+  "fetched_at": "2026-05-14T06:41:37.792Z",
+  "schema_version": "v1",
+  "commit_sha": "a1d8c6308bf85e92159a162c36ca54fc6d6f5dcf",
+  "title": "feat(b-0260): MEMORY.md cutover parity validation — 670/670 covered",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T06:41:16Z",
+  "head_ref": "feat/b0260-memory-parity-2026-05-14"
+}

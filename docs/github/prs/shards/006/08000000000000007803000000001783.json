@@ -1,0 +1,12 @@
+{
+  "pr_number": 6019,
+  "archive_path": "docs/history/pr-reviews/PR-6019-research-2026-05-29-jester-guardian-irony-as-lens-the-perception-decision-archit.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T17:39:09.747Z",
+  "schema_version": "v1",
+  "commit_sha": "cbe010fb9db20a4090767928a48859a76580c1ab",
+  "title": "research(2026-05-29): jester/guardian/irony-as-lens — the perception-decision architecture (Aaron+Otto)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T17:38:49Z",
+  "head_ref": "otto-cli/research-jester-guardian-irony-as-lens-2026-05-29"
+}

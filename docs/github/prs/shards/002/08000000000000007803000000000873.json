@@ -1,0 +1,21 @@
+{
+  "pr_number": 2163,
+  "archive_path": "docs/history/pr-reviews/PR-2163-feat-b-0269-smallest-safe-slice-extract-never-be-idle-carved-sentence-to-claude-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_dd4L",
+    "comment:PRRC_kwDOSF9kNM6_ddb0",
+    "comment:PRRC_kwDOSF9kNM6_dhjM",
+    "comment:PRRC_kwDOSF9kNM6_dhjQ",
+    "thread:PRRT_kwDOSF9kNM6AxmC-",
+    "thread:PRRT_kwDOSF9kNM6AxmZl",
+    "thread:PRRT_kwDOSF9kNM6AxpVM",
+    "thread:PRRT_kwDOSF9kNM6AxpVP"
+  ],
+  "fetched_at": "2026-05-09T01:59:14.745Z",
+  "schema_version": "v1",
+  "commit_sha": "6966491c6996ab58243cca30c7ed025aced1c6f0",
+  "title": "feat(B-0269): smallest safe slice — extract Never-be-idle carved sentence to .claude/rules/",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T01:59:00Z",
+  "head_ref": "claim/b0269-extract-carved-smallest-slice-riven-2026-05-08"
+}

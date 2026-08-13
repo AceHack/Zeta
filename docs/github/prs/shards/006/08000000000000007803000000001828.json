@@ -1,0 +1,12 @@
+{
+  "pr_number": 6184,
+  "archive_path": "docs/history/pr-reviews/PR-6184-feat-b-0944-slice-5-pt2-c-tri-boolean-float-biased-exponent-oracle-3-parity.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T01:54:32.325Z",
+  "schema_version": "v1",
+  "commit_sha": "0c7da99173b9ec31c07ea982987ca9d93297ba05",
+  "title": "feat(B-0944 slice 5 pt2): C# tri-boolean float (biased-exponent) — oracle #3 parity",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T01:54:12Z",
+  "head_ref": "otto-cli/b0944-slice5pt2-csharp-biased-exp-float-2026-05-30"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6961,
+  "archive_path": "docs/history/pr-reviews/PR-6961-docs-wi-seams-are-composable-ace-files-ace-implements-oci.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T00:55:02.196Z",
+  "schema_version": "v1",
+  "commit_sha": "d5c435c38805a962f4e93cd1aa001a6277ffd426",
+  "title": "docs+wi: seams are composable Ace files; Ace implements OCI",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T00:54:44Z",
+  "head_ref": "otto/seams-are-ace-files-and-ace-implements-oci"
+}

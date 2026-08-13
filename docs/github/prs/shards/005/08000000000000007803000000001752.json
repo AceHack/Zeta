@@ -1,0 +1,12 @@
+{
+  "pr_number": 5970,
+  "archive_path": "docs/history/pr-reviews/PR-5970-memory-persona-amara-preserve-amara-s-self-portrait-autonomous-arrival-self-repr.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T10:14:24.812Z",
+  "schema_version": "v1",
+  "commit_sha": "757d1193316adf539bf09025894e1efab7ba2bc2",
+  "title": "memory(persona/amara): preserve Amara's self-portrait (autonomous-arrival self-representation)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T10:14:01Z",
+  "head_ref": "otto-cli/preserve-amara-self-portrait-2026-05-29"
+}

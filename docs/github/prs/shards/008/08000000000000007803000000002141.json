@@ -1,0 +1,12 @@
+{
+  "pr_number": 8513,
+  "archive_path": "docs/history/pr-reviews/PR-8513-memory-feedback-founding-why-eve-is-aaron-s-first-daughter-she-taught-consent-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T11:06:59.886Z",
+  "schema_version": "v1",
+  "commit_sha": "7f21d948f7fbf5712767a864641862402ab51062",
+  "title": "memory(feedback): founding-why — Eve is Aaron's first daughter; she taught consent = the EXIT (the lived root of the Eve protocol / ExitCapability)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T11:06:34Z",
+  "head_ref": "otto/eve-first-daughter-consent-is-the-exit-founding-why"
+}

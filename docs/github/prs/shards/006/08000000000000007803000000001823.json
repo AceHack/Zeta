@@ -1,0 +1,19 @@
+{
+  "pr_number": 6179,
+  "archive_path": "docs/history/pr-reviews/PR-6179-adr-v2-integrate-observe-act-16-direction-adr-with-the-existing-agentic-organiza.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GdQ4x",
+    "comment:PRRC_kwDOSF9kNM7GdQ_E",
+    "comment:PRRC_kwDOSF9kNM7GdQ_L",
+    "thread:PRRT_kwDOSF9kNM6F6I11",
+    "thread:PRRT_kwDOSF9kNM6F6I1u",
+    "thread:PRRT_kwDOSF9kNM6F6Iwq"
+  ],
+  "fetched_at": "2026-05-31T01:33:51.965Z",
+  "schema_version": "v1",
+  "commit_sha": "49fb6a4aee77d3d3408764e3bcc4db4fa08a91d4",
+  "title": "ADR v2: integrate observe->act/16-direction ADR with the existing Agentic Organization observe.ts keystone",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T01:33:34Z",
+  "head_ref": "otto-cli/adr-v2-integrate-agentic-organization-keystone-2026-05-31"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8259,
+  "archive_path": "docs/history/pr-reviews/PR-8259-docs-register-antecedent-building-instrument-lensable-memory-cheat-engine-fixpoi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T04:35:22.138Z",
+  "schema_version": "v1",
+  "commit_sha": "0d5b38f7ff7eb9528c863b572ec59412e420001b",
+  "title": "docs(register): antecedent-building instrument — lensable memory + cheat-engine fixpoint-scan (φ progress)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T04:34:58Z",
+  "head_ref": "otto/lensable-memory-antecedent-instrument"
+}

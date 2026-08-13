@@ -1,0 +1,12 @@
+{
+  "pr_number": 6285,
+  "archive_path": "docs/history/pr-reviews/PR-6285-feat-agentic-org-gate-incident-runbooks-with-human-approval.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T00:12:43.733Z",
+  "schema_version": "v1",
+  "commit_sha": "19cfd6009322f108221020d413ef322e56cd2e51",
+  "title": "feat(agentic-org): gate incident runbooks with human approval",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T00:12:25Z",
+  "head_ref": "codex/agentic-org-incident-runbook-human-gates"
+}

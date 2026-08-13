@@ -1,0 +1,12 @@
+{
+  "pr_number": 8871,
+  "archive_path": "docs/history/pr-reviews/PR-8871-proof-quine-discharge-gen-self-application-cardinality-boundary-sorry-free-8867.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T05:37:03.412Z",
+  "schema_version": "v1",
+  "commit_sha": "7a685166c6ab3513606ca81bc9bd760c435e82f2",
+  "title": "proof(quine): discharge gen_self_application — cardinality boundary, sorry-free (#8867)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T05:36:38Z",
+  "head_ref": "otto/quine-gen-self-application"
+}

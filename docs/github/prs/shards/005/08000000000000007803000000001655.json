@@ -1,0 +1,12 @@
+{
+  "pr_number": 5717,
+  "archive_path": "docs/history/pr-reviews/PR-5717-test-hygiene-cover-bash-retirement-out-of-order-render-output.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T08:16:21.243Z",
+  "schema_version": "v1",
+  "commit_sha": "f9f5328fd45373abe49657e388fcef7d5f2c20c6",
+  "title": "test(hygiene): cover bash-retirement out-of-order render output",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T08:15:55Z",
+  "head_ref": "claim/codex-loop-bash-retirement-order-render-test-20260528"
+}

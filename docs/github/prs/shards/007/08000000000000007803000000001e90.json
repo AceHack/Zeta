@@ -1,0 +1,12 @@
+{
+  "pr_number": 7824,
+  "archive_path": "docs/history/pr-reviews/PR-7824-fix-kiro-migrate-launchd-plist-to-isolated-clone-per-b-0751.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:57:42.585Z",
+  "schema_version": "v1",
+  "commit_sha": "31cf2fa0e999fd8f2eb0fd219bd7ae194da88125",
+  "title": "fix(kiro): migrate launchd plist to isolated clone per B-0751",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:57:16Z",
+  "head_ref": "alexa/plist-use-isolated-clone"
+}

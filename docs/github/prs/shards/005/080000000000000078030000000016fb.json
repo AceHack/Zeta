@@ -1,0 +1,29 @@
+{
+  "pr_number": 5883,
+  "archive_path": "docs/history/pr-reviews/PR-5883-feat-openspec-add-z-set-algebra-spec-b-0171-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F23eV",
+    "comment:PRRC_kwDOSF9kNM7F23fG",
+    "comment:PRRC_kwDOSF9kNM7F23fk",
+    "comment:PRRC_kwDOSF9kNM7F23gA",
+    "comment:PRRC_kwDOSF9kNM7F23gk",
+    "comment:PRRC_kwDOSF9kNM7F23hF",
+    "comment:PRRC_kwDOSF9kNM7F23hj",
+    "comment:PRRC_kwDOSF9kNM7F23iD",
+    "thread:PRRT_kwDOSF9kNM6FeHnH",
+    "thread:PRRT_kwDOSF9kNM6FeHnt",
+    "thread:PRRT_kwDOSF9kNM6FeHo0",
+    "thread:PRRT_kwDOSF9kNM6FeHoE",
+    "thread:PRRT_kwDOSF9kNM6FeHoX",
+    "thread:PRRT_kwDOSF9kNM6FeHp9",
+    "thread:PRRT_kwDOSF9kNM6FeHpP",
+    "thread:PRRT_kwDOSF9kNM6FeHpj"
+  ],
+  "fetched_at": "2026-05-29T02:49:58.918Z",
+  "schema_version": "v1",
+  "commit_sha": "af7323b818933e82fe78c006235611b0dac07100",
+  "title": "feat(openspec): Add Z-Set Algebra spec (B-0171.1)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T02:49:37Z",
+  "head_ref": "lior/B-0171.1-zset-spec"
+}

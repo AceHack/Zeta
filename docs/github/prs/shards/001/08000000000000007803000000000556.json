@@ -1,0 +1,31 @@
+{
+  "pr_number": 1366,
+  "archive_path": "docs/history/pr-reviews/PR-1366-tools-hygiene-ts-port-of-check-no-op-cadence-pattern-sh-aaron-2026-05-03-not-ts-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69aw17",
+    "comment:PRRC_kwDOSF9kNM69aw2D",
+    "comment:PRRC_kwDOSF9kNM69aw2F",
+    "comment:PRRC_kwDOSF9kNM69aw2K",
+    "comment:PRRC_kwDOSF9kNM69aw2S",
+    "comment:PRRC_kwDOSF9kNM69awVP",
+    "comment:PRRC_kwDOSF9kNM69ayj-",
+    "comment:PRRC_kwDOSF9kNM69ayjo",
+    "comment:PRRC_kwDOSF9kNM69aykn",
+    "comment:PRRC_kwDOSF9kNM69aylb",
+    "comment:PRRC_kwDOSF9kNM69aymD",
+    "comment:PRRC_kwDOSF9kNM69aymZ",
+    "thread:PRRT_kwDOSF9kNM5_LTAX",
+    "thread:PRRT_kwDOSF9kNM5_LTaH",
+    "thread:PRRT_kwDOSF9kNM5_LTaO",
+    "thread:PRRT_kwDOSF9kNM5_LTaQ",
+    "thread:PRRT_kwDOSF9kNM5_LTaU",
+    "thread:PRRT_kwDOSF9kNM5_LTaa"
+  ],
+  "fetched_at": "2026-05-06T01:26:50.947Z",
+  "schema_version": "v1",
+  "commit_sha": "ec1044614ea90862d55666293707cab16bfe1951",
+  "title": "tools(hygiene): TS port of check-no-op-cadence-pattern.sh (Aaron 2026-05-03 'not ts file?')",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T09:38:17Z",
+  "head_ref": "tools/hygiene-no-op-cadence-pattern-ts-port"
+}

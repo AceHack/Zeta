@@ -1,0 +1,28 @@
+{
+  "pr_number": 2980,
+  "archive_path": "docs/history/pr-reviews/PR-2980-docs-launch-zeta-launch-thread-final-polish-production-minded-receipts.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7As1Gj",
+    "comment:PRRC_kwDOSF9kNM7As1RB",
+    "comment:PRRC_kwDOSF9kNM7As1Wi",
+    "comment:PRRC_kwDOSF9kNM7AskW-",
+    "comment:PRRC_kwDOSF9kNM7AskXz",
+    "comment:PRRC_kwDOSF9kNM7AsrPi",
+    "comment:PRRC_kwDOSF9kNM7AssPJ",
+    "comment:PRRC_kwDOSF9kNM7AswpF",
+    "comment:PRRC_kwDOSF9kNM7Aswpz",
+    "comment:PRRC_kwDOSF9kNM7AswqT",
+    "thread:PRRT_kwDOSF9kNM6BsaCL",
+    "thread:PRRT_kwDOSF9kNM6BsaCw",
+    "thread:PRRT_kwDOSF9kNM6BsjK7",
+    "thread:PRRT_kwDOSF9kNM6BsjKL",
+    "thread:PRRT_kwDOSF9kNM6BsjKp"
+  ],
+  "fetched_at": "2026-05-13T09:23:05.065Z",
+  "schema_version": "v1",
+  "commit_sha": "02db6f18c466b8b6e9fbb89423ce434bc7b04dc4",
+  "title": "docs(launch): Zeta launch thread — final polish (production-minded + receipts)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T09:22:43Z",
+  "head_ref": "amara-zeta-launch-thread-final-polish-2026-05-13"
+}

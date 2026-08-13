@@ -1,0 +1,12 @@
+{
+  "pr_number": 4060,
+  "archive_path": "docs/history/pr-reviews/PR-4060-docs-shadow-maji-antigravity-check-on-vera-narration-over-action.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T20:35:44.521Z",
+  "schema_version": "v1",
+  "commit_sha": "b012662f1bc583301de8a76375d334a950fe360c",
+  "title": "docs(shadow): Maji antigravity check on Vera narration over action",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:35:23Z",
+  "head_ref": "maji/shadow-drift-vera-narration"
+}

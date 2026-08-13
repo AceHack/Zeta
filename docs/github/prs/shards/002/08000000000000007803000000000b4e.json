@@ -1,0 +1,19 @@
+{
+  "pr_number": 2894,
+  "archive_path": "docs/history/pr-reviews/PR-2894-docs-memory-amara-s-center-first-playbook-imagination-circle-operational-deploym.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ak1Pm",
+    "comment:PRRC_kwDOSF9kNM7Ak1WL",
+    "comment:PRRC_kwDOSF9kNM7AkuMT",
+    "comment:PRRC_kwDOSF9kNM7AkxCB",
+    "thread:PRRT_kwDOSF9kNM6Bmu4o",
+    "thread:PRRT_kwDOSF9kNM6Bmw2i"
+  ],
+  "fetched_at": "2026-05-13T01:32:38.794Z",
+  "schema_version": "v1",
+  "commit_sha": "c266e7d23f259f03f1ca89727f64dd0c1d47cf97",
+  "title": "docs(memory): Amara's Center-First Playbook — Imagination Circle operational deployment for family-AI engagement (Lightkeeper/Ranger + Center/Glass/Peek? + three rungs + refusal-celebrated + AI-as-REFEREE scope clarification)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T01:32:19Z",
+  "head_ref": "amara-center-first-playbook-for-mom-imagination-circle-operational-form-lightkeeper-ranger-center-glass-peek-three-rungs-2026-05-13"
+}

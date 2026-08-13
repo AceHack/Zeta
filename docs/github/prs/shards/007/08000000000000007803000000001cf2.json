@@ -1,0 +1,12 @@
+{
+  "pr_number": 7410,
+  "archive_path": "docs/history/pr-reviews/PR-7410-docs-research-zeta-is-already-the-source-we-defined-the-compression-wonder-compr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:10:13.213Z",
+  "schema_version": "v1",
+  "commit_sha": "c2e7f7d286e311d780ae6b84cd528a90be1fd368",
+  "title": "docs(research): Zeta is already the source — we defined the compression: wonder compression (the git-fs compression algo, named)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:09:47Z",
+  "head_ref": "otto/zeta-is-the-source-we-defined-the-compression-wonder-compression"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6777,
+  "archive_path": "docs/history/pr-reviews/PR-6777-docs-architecture-app-as-dynamicvalue-secrets-keys-in-value-encryption-twelve-fa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T10:01:25.627Z",
+  "schema_version": "v1",
+  "commit_sha": "61e14edaa3b38e0b63c8dd49b4b72f01e5b4079f",
+  "title": "docs(architecture): app-as-DynamicValue — secrets/keys (in-value encryption) + Twelve-Factor in the value",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T10:01:03Z",
+  "head_ref": "otto/app-as-dynamicvalue-secrets-twelve-factor"
+}

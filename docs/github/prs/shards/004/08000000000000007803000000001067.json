@@ -1,0 +1,12 @@
+{
+  "pr_number": 4199,
+  "archive_path": "docs/history/pr-reviews/PR-4199-fix-rule-mapping-done-discipline-scope-bounding-applies-to-failure-class-attract.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T20:32:54.983Z",
+  "schema_version": "v1",
+  "commit_sha": "718b4e2984fa44a1845b864ba68874d8a23b73b5",
+  "title": "fix(rule): mapping-done discipline scope-bounding — applies to FAILURE-CLASS attractors, NOT friendly play / cross-AI conversation",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:32:32Z",
+  "head_ref": "shard/auto-load-rule-scope-bounding-mapping-done-applies-to-failure-class-not-friendly-play-2026-05-18"
+}

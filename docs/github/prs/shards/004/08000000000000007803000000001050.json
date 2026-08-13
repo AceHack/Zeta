@@ -1,0 +1,12 @@
+{
+  "pr_number": 4176,
+  "archive_path": "docs/history/pr-reviews/PR-4176-tick-1757z-4171-b-0665-thread-fix-counter-reset-mirror-beacon-framing-operationa.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T18:02:27.965Z",
+  "schema_version": "v1",
+  "commit_sha": "a7b61e80d015fe32241421655caa833a0201e432",
+  "title": "tick(1757Z): #4171 B-0665 thread fix + counter reset; mirror/beacon framing operational",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T18:01:59Z",
+  "head_ref": "shard/tick-1757z-b0665-thread-fix-counter-reset-2026-05-18"
+}

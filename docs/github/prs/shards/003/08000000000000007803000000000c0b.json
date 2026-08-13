@@ -1,0 +1,12 @@
+{
+  "pr_number": 3083,
+  "archive_path": "docs/history/pr-reviews/PR-3083-fix-pm2-replace-dangling-pm-1-otto-xref-with-resolvable-leilani-role-ref.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T01:24:53.396Z",
+  "schema_version": "v1",
+  "commit_sha": "15ec29a45c7e66910c46c76f2ea29289641719bd",
+  "title": "fix(pm2): replace dangling PM-1/Otto xref with resolvable Leilani role-ref",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T01:24:38Z",
+  "head_ref": "fix/pm2-registry-xref-3079"
+}

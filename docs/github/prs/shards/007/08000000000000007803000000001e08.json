@@ -1,0 +1,12 @@
+{
+  "pr_number": 7688,
+  "archive_path": "docs/history/pr-reviews/PR-7688-feat-media-the-canonical-yin-yang-self-host-form-many-loops-sim-mea-cut-in-forma.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:42:22.171Z",
+  "schema_version": "v1",
+  "commit_sha": "d139d08420cc668f3e2d2ae7b501c6effcabc0c4",
+  "title": "feat(media): the canonical yin-yang self-host form — many loops, sim·mea·cut in-format, each file its own kernel composing multi-kernel",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:41:53Z",
+  "head_ref": "shadow-file-many-loops-sim-mea-cut"
+}

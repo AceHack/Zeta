@@ -1,0 +1,19 @@
+{
+  "pr_number": 3611,
+  "archive_path": "docs/history/pr-reviews/PR-3611-feat-b-0170-4-seed-eval-set-fixture-for-count-drift-regression-coverage.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BzHwJ",
+    "comment:PRRC_kwDOSF9kNM7BzIYh",
+    "comment:PRRC_kwDOSF9kNM7BzMfW",
+    "comment:PRRC_kwDOSF9kNM7BzMgi",
+    "thread:PRRT_kwDOSF9kNM6Cfu1M",
+    "thread:PRRT_kwDOSF9kNM6CfvTW"
+  ],
+  "fetched_at": "2026-05-15T23:07:35.238Z",
+  "schema_version": "v1",
+  "commit_sha": "f92bbd26e3595f6432efca4a78aac3a5b683d41a",
+  "title": "feat(B-0170.4): seed eval-set fixture for count-drift regression coverage",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T23:07:15Z",
+  "head_ref": "otto-cli/b0170-4-eval-set-fixture-2026-05-15"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 5034,
+  "archive_path": "docs/history/pr-reviews/PR-5034-backlog-b-0759-cluster-install-ux-audit-against-first-time-cli-user-persona-easi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EtyF1",
+    "comment:PRRC_kwDOSF9kNM7EtyGN",
+    "comment:PRRC_kwDOSF9kNM7EtyGb",
+    "comment:PRRC_kwDOSF9kNM7EtyGk",
+    "thread:PRRT_kwDOSF9kNM6EpJ-A",
+    "thread:PRRT_kwDOSF9kNM6EpJ93",
+    "thread:PRRT_kwDOSF9kNM6EpJ9a",
+    "thread:PRRT_kwDOSF9kNM6EpJ9t"
+  ],
+  "fetched_at": "2026-05-25T23:48:46.746Z",
+  "schema_version": "v1",
+  "commit_sha": "07fd41fedc13f25e49ba34f235e0be7f5e5cae2f",
+  "title": "backlog(B-0759): cluster-install UX audit against first-time-CLI-user persona — 'easier than Proxmox' bar + 3-node prod-ready inflection",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T23:48:30Z",
+  "head_ref": "otto-cli/b0759-cluster-install-ux-audit-first-time-cli-persona-2026-05-25"
+}

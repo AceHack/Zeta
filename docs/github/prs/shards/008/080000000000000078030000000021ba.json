@@ -1,0 +1,12 @@
+{
+  "pr_number": 8634,
+  "archive_path": "docs/history/pr-reviews/PR-8634-feat-core-demo-slice-1-societal-dora-health-dials-as-pure-svg-no-js-byte-lockabl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T21:53:58.036Z",
+  "schema_version": "v1",
+  "commit_sha": "b1314ccd5135fdb24a947b7ad0661013c5e38ff2",
+  "title": "feat(core): demo slice 1 — societal-DORA health dials as pure SVG (no JS, byte-lockable)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T21:53:31Z",
+  "head_ref": "otto/demo-slice1-societal-dora-svg"
+}

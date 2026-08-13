@@ -1,0 +1,17 @@
+{
+  "pr_number": 3356,
+  "archive_path": "docs/history/pr-reviews/PR-3356-shard-tick-0230z-multi-otto-contamination-caught-3339-3349-close-out.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BcduB",
+    "comment:PRRC_kwDOSF9kNM7BceqF",
+    "thread:PRRT_kwDOSF9kNM6CPWA3",
+    "thread:PRRT_kwDOSF9kNM6CPWmn"
+  ],
+  "fetched_at": "2026-05-15T02:57:32.810Z",
+  "schema_version": "v1",
+  "commit_sha": "dc115872275ac1a4c450c67b1a71e576ac625a2e",
+  "title": "shard(tick): 0230Z — multi-Otto contamination caught + #3339/#3349 close-out",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T02:57:14Z",
+  "head_ref": "shard/0230Z-multi-otto-contamination-otto-cli-2026-05-15"
+}

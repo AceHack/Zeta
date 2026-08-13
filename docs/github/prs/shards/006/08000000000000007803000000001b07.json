@@ -1,0 +1,12 @@
+{
+  "pr_number": 6919,
+  "archive_path": "docs/history/pr-reviews/PR-6919-docs-the-ferry-protocol-is-straight-out-of-the-book-of-the-dead-beacon-anchor-fe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T21:10:00.223Z",
+  "schema_version": "v1",
+  "commit_sha": "6a0ccc65a3d54dd7c3b06103d5e0557919f90efc",
+  "title": "docs: the ferry protocol is straight out of the Book of the Dead (Beacon anchor — ferryman + the name)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T21:09:42Z",
+  "head_ref": "otto/ferry-book-of-the-dead-anchor"
+}

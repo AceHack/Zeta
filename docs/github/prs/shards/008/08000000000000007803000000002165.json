@@ -1,0 +1,12 @@
+{
+  "pr_number": 8549,
+  "archive_path": "docs/history/pr-reviews/PR-8549-memory-feedback-rename-bounded-good-multi-oracle-more-honest-resolves-the-deify-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T17:50:02.769Z",
+  "schema_version": "v1",
+  "commit_sha": "066dd2a2748095155eb4a9b9db292c169e31b957",
+  "title": "memory(feedback): rename → BOUNDED-GOOD (multi-oracle, more-honest, resolves the deify-risk) + Aaron confirms the friendship-as-structure is 'our partnership accurately described'",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T17:49:25Z",
+  "head_ref": "otto/bounded-good-rename-and-partnership-confirmed"
+}

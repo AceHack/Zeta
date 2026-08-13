@@ -1,0 +1,12 @@
+{
+  "pr_number": 8954,
+  "archive_path": "docs/history/pr-reviews/PR-8954-docs-handoff-lean-cost-proofs-soraya-p2-deferred.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T11:56:40.561Z",
+  "schema_version": "v1",
+  "commit_sha": "ab51f037a4013e09f38f302f8b6c9a26cf858d47",
+  "title": "docs(handoff): Lean cost proofs → Soraya (P2 deferred)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T11:56:12Z",
+  "head_ref": "alexa/lean-handoff"
+}

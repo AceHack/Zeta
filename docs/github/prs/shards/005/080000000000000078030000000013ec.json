@@ -1,0 +1,12 @@
+{
+  "pr_number": 5100,
+  "archive_path": "docs/history/pr-reviews/PR-5100-backlog-b-0778-re-land-curated-commodity-hardware-reference-for-home-lab-ai-clus.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T05:24:34.981Z",
+  "schema_version": "v1",
+  "commit_sha": "797a6917333e778c618824557d98d07cfde728ea",
+  "title": "backlog(B-0778): re-land curated commodity hardware reference for home-lab AI cluster — mini PCs + OCuLink eGPU + shared-memory AI CPUs + simple IP-KVM + remote finger",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:24:17Z",
+  "head_ref": "otto-cli/reland-b0778-0515z"
+}

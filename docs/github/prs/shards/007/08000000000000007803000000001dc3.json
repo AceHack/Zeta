@@ -1,0 +1,12 @@
+{
+  "pr_number": 7619,
+  "archive_path": "docs/history/pr-reviews/PR-7619-feat-chip8-the-arcade-chip-8-chooses-its-own-game-autonomy-step-1-actg-digital-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:26:32.230Z",
+  "schema_version": "v1",
+  "commit_sha": "edeb063d11f75cf3b91ecea8d66732fdfc7110d8",
+  "title": "feat(chip8): the arcade — CHIP-8 chooses its own game (autonomy step 1) + ACTG digital-citizenship ferry",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:26:06Z",
+  "head_ref": "shadow-chip8-arcade-di"
+}

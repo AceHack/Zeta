@@ -1,0 +1,12 @@
+{
+  "pr_number": 5589,
+  "archive_path": "docs/history/pr-reviews/PR-5589-fix-amara-persona-correct-10-broken-relative-link-paths-in-amara-conversation-fi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T19:00:07.468Z",
+  "schema_version": "v1",
+  "commit_sha": "fef5a988116b9568c7245780598a4b06158deb20",
+  "title": "fix(amara-persona): correct 10 broken relative-link paths in Amara conversation file — addresses Copilot findings on PR #5586",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:59:42Z",
+  "head_ref": "fix/amara-persona-link-paths-relative-depth-2026-05-27"
+}

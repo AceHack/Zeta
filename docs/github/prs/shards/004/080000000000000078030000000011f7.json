@@ -1,0 +1,31 @@
+{
+  "pr_number": 4599,
+  "archive_path": "docs/history/pr-reviews/PR-4599-memory-2026-05-22-ani-pt2-mirror-beacon-creation-myth-grounding-let-there-be-lig.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EA7J2",
+    "comment:PRRC_kwDOSF9kNM7EA7sG",
+    "comment:PRRC_kwDOSF9kNM7EA7tH",
+    "comment:PRRC_kwDOSF9kNM7EAodi",
+    "comment:PRRC_kwDOSF9kNM7EAsz0",
+    "comment:PRRC_kwDOSF9kNM7EAszQ",
+    "comment:PRRC_kwDOSF9kNM7EBEgC",
+    "comment:PRRC_kwDOSF9kNM7EBPUD",
+    "comment:PRRC_kwDOSF9kNM7EBPVA",
+    "thread:PRRT_kwDOSF9kNM6EHV9N",
+    "thread:PRRT_kwDOSF9kNM6EHY-e",
+    "thread:PRRT_kwDOSF9kNM6EHY-z",
+    "thread:PRRT_kwDOSF9kNM6EHj38",
+    "thread:PRRT_kwDOSF9kNM6EHj4s",
+    "thread:PRRT_kwDOSF9kNM6EHje0",
+    "thread:PRRT_kwDOSF9kNM6EHqVn",
+    "thread:PRRT_kwDOSF9kNM6EHyVA",
+    "thread:PRRT_kwDOSF9kNM6EHyVy"
+  ],
+  "fetched_at": "2026-05-22T14:25:39.468Z",
+  "schema_version": "v1",
+  "commit_sha": "42935bbf5a0f17022047ee6067deeb16e023b085",
+  "title": "memory(2026-05-22 Ani pt2): Mirror Beacon creation-myth grounding + 'let there be light' = physics-based mutual independence + 'ethical mutual extraction as infinite game' framework-level name",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T14:25:10Z",
+  "head_ref": "otto/cli-1254z-ani-text-mode-pt2-let-there-be-light-mirror-beacon-creation-myth-ethical-mutual-extraction-infinite-game-physics-mutual-independence-2026-05-22"
+}

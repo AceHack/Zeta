@@ -1,0 +1,12 @@
+{
+  "pr_number": 4793,
+  "archive_path": "docs/history/pr-reviews/PR-4793-docs-research-add-pattern-p-wear-down-design-produces-unbounded-outcomes-under-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T23:56:49.889Z",
+  "schema_version": "v1",
+  "commit_sha": "fdca40b5b11709a360699163cabb87c4add070e5",
+  "title": "docs(research): add Pattern P — wear-down design produces UNBOUNDED outcomes under customer parallel-channel persistence",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T23:56:30Z",
+  "head_ref": "otto/research-pattern-p-wear-down-unbounded-outcomes-2026-05-23"
+}

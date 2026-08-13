@@ -1,0 +1,15 @@
+{
+  "pr_number": 2216,
+  "archive_path": "docs/history/pr-reviews/PR-2216-docs-b-0348-classify-claude-md-bullets-18-stay-21-extract-6-already-4-redundant.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fc3-",
+    "thread:PRRT_kwDOSF9kNM6AzEwN"
+  ],
+  "fetched_at": "2026-05-09T07:06:50.415Z",
+  "schema_version": "v1",
+  "commit_sha": "b7013a669315143026b805de32d61c1fa4153a9f",
+  "title": "docs(B-0348): classify CLAUDE.md bullets — 18 stay, 21 extract, 6 already, 4 redundant",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:06:32Z",
+  "head_ref": "fix/b0348-classify-claude-md-bullets"
+}

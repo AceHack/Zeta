@@ -1,0 +1,12 @@
+{
+  "pr_number": 6204,
+  "archive_path": "docs/history/pr-reviews/PR-6204-docs-openspec-refresh-b-0171-inventory-checkpoint.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T10:32:43.134Z",
+  "schema_version": "v1",
+  "commit_sha": "52663d9e72053335649628f52df184b14ca8fc3c",
+  "title": "docs(openspec): refresh B-0171 inventory checkpoint",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T10:32:24Z",
+  "head_ref": "claim/backlog-0171-openspec-smallest-slice-20260531"
+}

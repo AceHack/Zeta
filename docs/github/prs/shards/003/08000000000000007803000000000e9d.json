@@ -1,0 +1,15 @@
+{
+  "pr_number": 3741,
+  "archive_path": "docs/history/pr-reviews/PR-3741-shard-tick-2026-05-16t04-38z-3-tick-session-summary-5-prs-merged.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B10-c",
+    "thread:PRRT_kwDOSF9kNM6Chvf4"
+  ],
+  "fetched_at": "2026-05-16T04:44:20.949Z",
+  "schema_version": "v1",
+  "commit_sha": "d32f619a9a4106046bfff6db72316188ed49b695",
+  "title": "shard(tick): 2026-05-16T04:38Z — 3-tick session summary; 5 PRs merged",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:44:02Z",
+  "head_ref": "shard/tick-0436z-summary-otto-cli-2026-05-16"
+}

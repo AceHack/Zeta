@@ -1,0 +1,15 @@
+{
+  "pr_number": 3039,
+  "archive_path": "docs/history/pr-reviews/PR-3039-docs-backlog-b-0448-cloud-routines-integration-as-4th-catch-43-defence-layer.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A-0zm",
+    "thread:PRRT_kwDOSF9kNM6B5vCT"
+  ],
+  "fetched_at": "2026-05-13T21:58:10.421Z",
+  "schema_version": "v1",
+  "commit_sha": "4aac8db9011c2f5b1853dfc99934446636f7b028",
+  "title": "docs(backlog): B-0448 — Cloud Routines integration as 4th catch-43 defence layer",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T21:57:52Z",
+  "head_ref": "otto-b0448-cloud-routines-backlog-row-2026-05-13"
+}

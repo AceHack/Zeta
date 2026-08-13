@@ -1,0 +1,12 @@
+{
+  "pr_number": 5217,
+  "archive_path": "docs/history/pr-reviews/PR-5217-feat-b-0805-sub-target-1-audit-dep-currency-ts-dep-pin-inventory-tool.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T16:38:53.306Z",
+  "schema_version": "v1",
+  "commit_sha": "75f7edd172a2134dcc89156847e45c51e6d971d9",
+  "title": "feat(B-0805 sub-target 1): audit-dep-currency.ts — dep-pin inventory tool",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T16:38:33Z",
+  "head_ref": "otto-cli/b0805-sub1-audit-dep-currency-tool-2026-05-26"
+}

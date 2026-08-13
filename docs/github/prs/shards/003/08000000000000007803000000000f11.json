@@ -1,0 +1,12 @@
+{
+  "pr_number": 3857,
+  "archive_path": "docs/history/pr-reviews/PR-3857-shard-tick-2026-05-16t10-25z-otto-cli-session-natural-close-48-ticks-aligning-wi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T10:31:49.396Z",
+  "schema_version": "v1",
+  "commit_sha": "f690ea14ef80aa9f1767aa85250110f64c85cdba",
+  "title": "shard(tick): 2026-05-16T10:25Z — Otto-CLI session natural-close (48 ticks); aligning with peer PR #3853",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:31:30Z",
+  "head_ref": "shard/tick-1025z-session-close-otto-cli-2026-05-16"
+}

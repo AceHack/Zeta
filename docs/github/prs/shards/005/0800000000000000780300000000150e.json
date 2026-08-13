@@ -1,0 +1,12 @@
+{
+  "pr_number": 5390,
+  "archive_path": "docs/history/pr-reviews/PR-5390-feat-b-0849-docker-based-nixos-install-sh-test-harness-fast-iteration-30-sec-com.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T02:53:52.611Z",
+  "schema_version": "v1",
+  "commit_sha": "ab90d55b59296f2fae01f88561931c46caddb5c6",
+  "title": "feat(B-0849): docker-based NixOS install.sh test harness — fast iteration (~30 sec) complementing B-0831 QEMU full-install (~15 min); 'easy dockerfile' (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T02:53:30Z",
+  "head_ref": "feat-b0849-docker-nixos-install-sh-test-harness-fast-iteration-2026-05-26-2356z"
+}

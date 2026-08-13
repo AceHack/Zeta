@@ -1,0 +1,12 @@
+{
+  "pr_number": 6295,
+  "archive_path": "docs/history/pr-reviews/PR-6295-backlog-b-0955-migrate-tools-off-bun-only-apis-to-node-process-node-safe-baselin.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T00:42:31.246Z",
+  "schema_version": "v1",
+  "commit_sha": "17a8cd00b09c0ed6d331ced0301121f06612ff3a",
+  "title": "backlog(B-0955): migrate tools/ off Bun-only APIs to node:/process (Node-safe baseline)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T00:42:13Z",
+  "head_ref": "otto-cli/b0955-bun-node-migration-2026-05-31"
+}

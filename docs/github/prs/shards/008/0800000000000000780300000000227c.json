@@ -1,0 +1,12 @@
+{
+  "pr_number": 8828,
+  "archive_path": "docs/history/pr-reviews/PR-8828-chore-memory-regenerate-memory-md-index-restore-memory-index-drift-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T02:18:42.783Z",
+  "schema_version": "v1",
+  "commit_sha": "03fe6abbd5b8bfeead1fe225418c8c94f36e0ddb",
+  "title": "chore(memory): regenerate MEMORY.md index — restore memory-index-drift gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T02:18:15Z",
+  "head_ref": "otto/reindex-memory-md"
+}

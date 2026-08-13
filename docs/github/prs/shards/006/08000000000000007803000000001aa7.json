@@ -1,0 +1,12 @@
+{
+  "pr_number": 6823,
+  "archive_path": "docs/history/pr-reviews/PR-6823-test-integration-end-to-end-store-pipeline-debezium-cdc-z-set-contentstore-dagfs.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T13:12:27.045Z",
+  "schema_version": "v1",
+  "commit_sha": "bdf8437b23a35c8fa52eb23852775434fa2cbddc",
+  "title": "test(integration): end-to-end store pipeline — Debezium CDC → Z-set → ContentStore → DagFs → CloudEvents",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T13:12:07Z",
+  "head_ref": "test/store-pipeline-integration"
+}

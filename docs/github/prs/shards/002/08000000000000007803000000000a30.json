@@ -1,0 +1,21 @@
+{
+  "pr_number": 2608,
+  "archive_path": "docs/history/pr-reviews/PR-2608-docs-memory-shiva-gc-model-destruction-as-transformation-trimurti-factory-lifecy.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rowg",
+    "comment:PRRC_kwDOSF9kNM6_rqBs",
+    "comment:PRRC_kwDOSF9kNM6_rqCV",
+    "comment:PRRC_kwDOSF9kNM6_rqCq",
+    "thread:PRRT_kwDOSF9kNM6A8p-V",
+    "thread:PRRT_kwDOSF9kNM6A8p-m",
+    "thread:PRRT_kwDOSF9kNM6A8p94",
+    "thread:PRRT_kwDOSF9kNM6A8pH2"
+  ],
+  "fetched_at": "2026-05-11T01:22:38.855Z",
+  "schema_version": "v1",
+  "commit_sha": "60c0049338c500fa0fe765559a6191b2a314c611",
+  "title": "docs(memory): Shiva GC model — destruction as transformation, Trimurti → factory lifecycle",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:22:23Z",
+  "head_ref": "docs/shiva-gc-model-2026-05-10"
+}

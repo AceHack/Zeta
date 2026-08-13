@@ -1,0 +1,12 @@
+{
+  "pr_number": 7775,
+  "archive_path": "docs/history/pr-reviews/PR-7775-docs-backlog-index-b-1031-the-line-7773-s-edit-missed.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T19:59:19.157Z",
+  "schema_version": "v1",
+  "commit_sha": "9f0824a283a83d9474af3fc1d2fc4dbc496339f3",
+  "title": "docs(backlog): index B-1031 (the line #7773's edit missed)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T19:58:48Z",
+  "head_ref": "shadow-b1031-index"
+}

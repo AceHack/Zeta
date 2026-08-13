@@ -1,0 +1,12 @@
+{
+  "pr_number": 6473,
+  "archive_path": "docs/history/pr-reviews/PR-6473-feat-bag-csharp-generic-math-additive-monoid-surface-iadditiveidentity-iaddition.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T21:10:12.919Z",
+  "schema_version": "v1",
+  "commit_sha": "e6d7e34e9da42f572f489dcb58670dc31c3e42be",
+  "title": "feat(bag-csharp): generic-math additive-monoid surface (IAdditiveIdentity + IAdditionOperators)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T21:09:53Z",
+  "head_ref": "otto-cli/bag-generic-math-csharp-2026-06-01"
+}

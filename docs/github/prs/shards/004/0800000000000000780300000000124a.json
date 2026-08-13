@@ -1,0 +1,12 @@
+{
+  "pr_number": 4682,
+  "archive_path": "docs/history/pr-reviews/PR-4682-docs-archive-lior-preserves-pr-4639-decomposed-from-4679.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T23:11:09.989Z",
+  "schema_version": "v1",
+  "commit_sha": "4870bdf558757c96de6ca7285f0e3cf20161cdd2",
+  "title": "docs(archive): Lior preserves PR #4639 (decomposed from #4679)",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T23:10:51Z",
+  "head_ref": "lior/docs-archive-4639-decomposed"
+}

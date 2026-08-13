@@ -1,0 +1,17 @@
+{
+  "pr_number": 2155,
+  "archive_path": "docs/history/pr-reviews/PR-2155-refine-b-0217-tighten-bidirectional-alignment-clause.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_crE7",
+    "comment:PRRC_kwDOSF9kNM6_crEs",
+    "thread:PRRT_kwDOSF9kNM6AxCX1",
+    "thread:PRRT_kwDOSF9kNM6AxCXo"
+  ],
+  "fetched_at": "2026-05-09T00:18:55.285Z",
+  "schema_version": "v1",
+  "commit_sha": "83c120b01ca922aebcd498aab801ddb852ce665d",
+  "title": "refine(B-0217): tighten bidirectional alignment clause",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T00:18:39Z",
+  "head_ref": "b0217/bidirectional-clause-tighten"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7005,
+  "archive_path": "docs/history/pr-reviews/PR-7005-docs-everything-is-edges-in-one-graph-within-stream-push-down-vs-cross-stream-ji.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T03:50:50.890Z",
+  "schema_version": "v1",
+  "commit_sha": "43ed317ab948269da04f6adb34717fde3618e69e",
+  "title": "docs: everything is edges in one graph — within-stream=push-down vs cross-stream=JIT, combined into one",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T03:47:38Z",
+  "head_ref": "otto/everything-is-edges-in-one-graph-pushdown-vs-jit"
+}

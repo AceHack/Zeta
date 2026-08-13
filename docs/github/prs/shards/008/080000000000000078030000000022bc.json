@@ -1,0 +1,12 @@
+{
+  "pr_number": 8892,
+  "archive_path": "docs/history/pr-reviews/PR-8892-feat-algebra-weakref-specialization-cache-cogen-mix-mix-mix-as-memory-management.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:49:56.144Z",
+  "schema_version": "v1",
+  "commit_sha": "f781f2a653c2009d46e6e2b958abd431fa2914ea",
+  "title": "feat(algebra): WeakRef specialization cache (cogen=mix(mix,mix) as memory management)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:49:29Z",
+  "head_ref": "alexa/weakref-cache"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3124,
+  "archive_path": "docs/history/pr-reviews/PR-3124-research-b-0465-per-product-substrate-inventory-7-candidates-repo-ready-verdicts.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T09:49:04.954Z",
+  "schema_version": "v1",
+  "commit_sha": "73fe1a2acb4917afa0c1dd0f2dbe334ba49b4460",
+  "title": "research(b-0465): per-product substrate inventory — 7 candidates, repo-ready verdicts",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T09:48:50Z",
+  "head_ref": "feat/b-0465-product-repo-substrate-inventory-2026-05-14"
+}

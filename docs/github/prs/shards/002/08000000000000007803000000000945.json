@@ -1,0 +1,12 @@
+{
+  "pr_number": 2373,
+  "archive_path": "docs/history/pr-reviews/PR-2373-fix-b-0026-markdownlint-blanks-generalize-b-0026-3-platform-agnostic-refresh-ind.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T23:26:29.845Z",
+  "schema_version": "v1",
+  "commit_sha": "3aa9d2770c51ff8c7319048bdd997b308611393e",
+  "title": "fix(B-0026): markdownlint blanks, generalize B-0026.3 platform-agnostic, refresh index",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T23:26:15Z",
+  "head_ref": "chore/decompose-B-0026-embodiment-grounding"
+}

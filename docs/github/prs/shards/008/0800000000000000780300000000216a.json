@@ -1,0 +1,12 @@
+{
+  "pr_number": 8554,
+  "archive_path": "docs/history/pr-reviews/PR-8554-memory-feedback-keep-even-the-harmful-ideas-around-a-good-immune-system-prevents.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T18:09:53.472Z",
+  "schema_version": "v1",
+  "commit_sha": "5eb929687a29c9df063a163450e335483492b0f7",
+  "title": "memory(feedback): keep even the harmful ideas around — a GOOD immune system prevents INFECTION (gate execution, not exterminate ideas); inoculation beats extermination",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T18:09:08Z",
+  "head_ref": "otto/keep-harmful-ideas-immune-system-inoculation-beats-extermination"
+}

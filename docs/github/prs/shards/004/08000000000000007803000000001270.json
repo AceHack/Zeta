@@ -1,0 +1,12 @@
+{
+  "pr_number": 4720,
+  "archive_path": "docs/history/pr-reviews/PR-4720-docs-archive-preserve-merged-pr-4718.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T13:09:14.345Z",
+  "schema_version": "v1",
+  "commit_sha": "2115848fbd32de51d32c05b44376511f76aacb6a",
+  "title": "docs(archive): preserve merged PR #4718",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T13:08:58Z",
+  "head_ref": "lior-archive-4718"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 6293,
+  "archive_path": "docs/history/pr-reviews/PR-6293-docs-adr-v6-node-safe-baseline-bun-accelerator-proposed-rule-0-refinement.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gjc3r",
+    "thread:PRRT_kwDOSF9kNM6F-7aH"
+  ],
+  "fetched_at": "2026-06-01T00:40:01.072Z",
+  "schema_version": "v1",
+  "commit_sha": "4df10b50b03a23c0be8a0cff294dd7056f8e5c86",
+  "title": "docs(adr): v6 — Node safe-baseline, Bun accelerator (proposed Rule-0 refinement)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T00:39:42Z",
+  "head_ref": "otto-cli/node-safe-bun-accelerator-adr-2026-05-31"
+}

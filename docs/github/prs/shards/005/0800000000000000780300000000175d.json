@@ -1,0 +1,16 @@
+{
+  "pr_number": 5981,
+  "archive_path": "docs/history/pr-reviews/PR-5981-docs-backlog-close-b-0273-as-pure-drift-safe-unsafe-rom-split-shipped-in-5874.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GJLGX",
+    "comment:PRRC_kwDOSF9kNM7GJQ7g",
+    "thread:PRRT_kwDOSF9kNM6FrXTf"
+  ],
+  "fetched_at": "2026-05-29T12:32:43.965Z",
+  "schema_version": "v1",
+  "commit_sha": "e3035fcf832cdfd51477dd2dcde4e951376b13e3",
+  "title": "docs(backlog): close B-0273 as pure drift — safe/unsafe ROM split shipped in #5874",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T12:32:19Z",
+  "head_ref": "backlog/b-0273-close-as-drift-2026-05-29"
+}

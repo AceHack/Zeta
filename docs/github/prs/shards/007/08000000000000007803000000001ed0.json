@@ -1,0 +1,12 @@
+{
+  "pr_number": 7888,
+  "archive_path": "docs/history/pr-reviews/PR-7888-tool-b-0170-1-refine-semantic-equivalence-claim-checker-and-add-tests.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T10:34:49.456Z",
+  "schema_version": "v1",
+  "commit_sha": "d5da422f7ddd96a1c87e53c3dacdc927fbe43ea2",
+  "title": "tool(B-0170.1): refine semantic equivalence claim checker and add tests",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:34:24Z",
+  "head_ref": "lior/claim-checker-semantic-drift-B-0170.1"
+}

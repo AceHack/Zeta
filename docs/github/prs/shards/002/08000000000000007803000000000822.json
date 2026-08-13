@@ -1,0 +1,25 @@
+{
+  "pr_number": 2082,
+  "archive_path": "docs/history/pr-reviews/PR-2082-feat-b-0305-mechanical-authorization-check-skill-md.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_SCQM",
+    "comment:PRRC_kwDOSF9kNM6_SDrj",
+    "comment:PRRC_kwDOSF9kNM6_SDsT",
+    "comment:PRRC_kwDOSF9kNM6_SE8L",
+    "comment:PRRC_kwDOSF9kNM6_SGBN",
+    "comment:PRRC_kwDOSF9kNM6_SInd",
+    "comment:PRRC_kwDOSF9kNM6_SIp7",
+    "comment:PRRC_kwDOSF9kNM6_SJCo",
+    "comment:PRRC_kwDOSF9kNM6_SJG3",
+    "thread:PRRT_kwDOSF9kNM6ApLkR",
+    "thread:PRRT_kwDOSF9kNM6ApMoE",
+    "thread:PRRT_kwDOSF9kNM6ApMon"
+  ],
+  "fetched_at": "2026-05-08T14:09:53.028Z",
+  "schema_version": "v1",
+  "commit_sha": "8962b7b9c4d3354a5c035008421294eed0b43161",
+  "title": "feat(B-0305): mechanical-authorization-check SKILL.md",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T14:09:25Z",
+  "head_ref": "worktree-B-0305-mechanical-auth-check-skill"
+}

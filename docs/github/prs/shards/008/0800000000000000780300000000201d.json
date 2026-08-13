@@ -1,0 +1,12 @@
+{
+  "pr_number": 8221,
+  "archive_path": "docs/history/pr-reviews/PR-8221-fix-bootstrap-spire-installs-on-a-single-node-cluster-recommendations-off-single.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T22:44:16.575Z",
+  "schema_version": "v1",
+  "commit_sha": "ffd1d0d053f93d0d8e4f2d7f2059e885f72ee522",
+  "title": "fix(bootstrap): SPIRE installs on a single-node cluster (recommendations off + single-namespace + local-path)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T22:43:52Z",
+  "head_ref": "fix/spire-bootstrap-single-namespace"
+}

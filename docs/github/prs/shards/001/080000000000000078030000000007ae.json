@@ -1,0 +1,12 @@
+{
+  "pr_number": 1966,
+  "archive_path": "docs/history/pr-reviews/PR-1966-docs-b-0256-cite-microsoft-detours-as-verified-hook-tool.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T23:41:25.286Z",
+  "schema_version": "v1",
+  "commit_sha": "8b7e3d29b4f43eb101209899e92154cadeb7a243",
+  "title": "docs(B-0256): cite Microsoft Detours as verified hook tool",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T23:41:01Z",
+  "head_ref": "codex/b0256-detours-resolution-note"
+}

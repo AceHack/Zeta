@@ -1,0 +1,12 @@
+{
+  "pr_number": 4420,
+  "archive_path": "docs/history/pr-reviews/PR-4420-feat-hygiene-decompose-pr-4383-v8-razor-retractions-1612z-1614z.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-20T22:51:07.191Z",
+  "schema_version": "v1",
+  "commit_sha": "61a269d2f7436a45491442c61a0e180ac7788e1e",
+  "title": "feat(hygiene): decompose PR 4383 V8 razor retractions (1612Z, 1614Z)",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T22:50:47Z",
+  "head_ref": "maji/decompose-4383-v8-razor-new"
+}

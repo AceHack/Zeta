@@ -1,0 +1,12 @@
+{
+  "pr_number": 7189,
+  "archive_path": "docs/history/pr-reviews/PR-7189-fix-full-ai-cluster-green-the-red-gate-erasablesyntaxonly-exactoptionalpropertyt.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T03:24:10.104Z",
+  "schema_version": "v1",
+  "commit_sha": "d852767adb005547b05ad61b522063732eff3779",
+  "title": "fix(full-ai-cluster): green the red gate — erasableSyntaxOnly + exactOptionalPropertyTypes + unused + web-app exclude",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T03:23:46Z",
+  "head_ref": "otto/fix-red-gate-full-ai-cluster-tsc-erasable-exactoptional"
+}

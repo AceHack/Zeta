@@ -1,0 +1,15 @@
+{
+  "pr_number": 2086,
+  "archive_path": "docs/history/pr-reviews/PR-2086-fix-backlog-close-b-0306.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_S9Wx",
+    "thread:PRRT_kwDOSF9kNM6Ap4VP"
+  ],
+  "fetched_at": "2026-05-08T14:44:27.332Z",
+  "schema_version": "v1",
+  "commit_sha": "4855b9f809eacd9c289c8eab9025c0d1fae20b4e",
+  "title": "fix(backlog): close B-0306",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T14:44:03Z",
+  "head_ref": "fix/close-b0306"
+}

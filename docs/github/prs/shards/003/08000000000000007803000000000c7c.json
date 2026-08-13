@@ -1,0 +1,12 @@
+{
+  "pr_number": 3196,
+  "archive_path": "docs/history/pr-reviews/PR-3196-shard-tick-1916z-razor-cadence-batch-10-4-rules-10-10-live-80-milestone.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T19:19:47.683Z",
+  "schema_version": "v1",
+  "commit_sha": "4c9a31deb6a2b7d79dedd6c0daab503b5daf48e4",
+  "title": "shard(tick): 1916Z — razor-cadence batch 10 (4 rules, 10/10 LIVE) — 80% milestone",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:19:21Z",
+  "head_ref": "shard/tick-1916Z-razor-cadence-batch10-otto-cli-2026-05-14"
+}

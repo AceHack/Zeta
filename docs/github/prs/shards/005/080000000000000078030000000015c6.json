@@ -1,0 +1,12 @@
+{
+  "pr_number": 5574,
+  "archive_path": "docs/history/pr-reviews/PR-5574-docs-rule-add-scope-bounding-to-function-is-tiny-control-flow-generator-rule-clo.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T18:13:27.012Z",
+  "schema_version": "v1",
+  "commit_sha": "4c14a352b6ef821ba48da511c51e46d3623b653b",
+  "title": "docs(rule): add scope-bounding to function-is-tiny-control-flow-generator rule — closedness matters more than purity (operator 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:13:07Z",
+  "head_ref": "backlog/function-control-flow-generator-rule-add-closedness-scope-bounding-2026-05-27"
+}

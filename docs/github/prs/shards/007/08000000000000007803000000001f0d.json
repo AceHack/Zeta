@@ -1,0 +1,12 @@
+{
+  "pr_number": 7949,
+  "archive_path": "docs/history/pr-reviews/PR-7949-feat-braid-four-oracle-golden-vectors-artin-action-byte-locked-across-f-c-ts-rus.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T16:42:54.122Z",
+  "schema_version": "v1",
+  "commit_sha": "cd64300ee3e57b0f0531b62719943c9dd05fe95f",
+  "title": "feat(braid): four-oracle golden vectors — Artin action byte-locked across F#/C#/TS/Rust (REPORT #3 Round 1a complete)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T16:42:24Z",
+  "head_ref": "shadow/braid-four-oracle-golden-vectors"
+}

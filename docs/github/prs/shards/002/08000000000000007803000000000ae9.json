@@ -1,0 +1,25 @@
+{
+  "pr_number": 2793,
+  "archive_path": "docs/history/pr-reviews/PR-2793-docs-memory-bryan-johnson-as-human-anchor-parallel-transhumanist-track-with-ai-d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AZWUX",
+    "comment:PRRC_kwDOSF9kNM7AZWV6",
+    "comment:PRRC_kwDOSF9kNM7AZWVV",
+    "comment:PRRC_kwDOSF9kNM7AZWWb",
+    "comment:PRRC_kwDOSF9kNM7AZYo5",
+    "comment:PRRC_kwDOSF9kNM7AZYou",
+    "thread:PRRT_kwDOSF9kNM6BefYn",
+    "thread:PRRT_kwDOSF9kNM6BefZ5",
+    "thread:PRRT_kwDOSF9kNM6BefZZ",
+    "thread:PRRT_kwDOSF9kNM6BefaU",
+    "thread:PRRT_kwDOSF9kNM6BehHE",
+    "thread:PRRT_kwDOSF9kNM6BehHN"
+  ],
+  "fetched_at": "2026-05-12T18:53:13.372Z",
+  "schema_version": "v1",
+  "commit_sha": "185c717d6740ddb9781df8ea12dbf0f6f4c73497",
+  "title": "docs(memory): Bryan Johnson as human anchor — parallel transhumanist track with AI-decisioning (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:52:55Z",
+  "head_ref": "docs/aaron-human-anchor-bryan-johnson-biohacking-ai-decisioning-2026-05-12"
+}

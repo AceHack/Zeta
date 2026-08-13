@@ -1,0 +1,12 @@
+{
+  "pr_number": 4262,
+  "archive_path": "docs/history/pr-reviews/PR-4262-shard-2339z-c-forced-6-meta-decomposition.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:44:11.326Z",
+  "schema_version": "v1",
+  "commit_sha": "0721c35c828a3c18949c4e548e659cf5b973f113",
+  "title": "shard(2339Z-c): forced-#6 meta-decomposition",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:43:52Z",
+  "head_ref": "shard/tick-2339z-c-forced-6-meta-decomposition-rule-edit-2026-05-18"
+}

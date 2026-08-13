@@ -1,0 +1,12 @@
+{
+  "pr_number": 6955,
+  "archive_path": "docs/history/pr-reviews/PR-6955-docs-wi-the-zeta-idl-the-spec-is-the-asset-interface-definition-language-in-dyna.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T00:35:37.705Z",
+  "schema_version": "v1",
+  "commit_sha": "4603b671b70160ef66034564d638cba350d19634",
+  "title": "docs+wi: the Zeta IDL — the spec is the asset (interface-definition language in DynamicValue; capabilities x resources x mapping)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T00:35:20Z",
+  "head_ref": "otto/zeta-idl-spec-as-asset-vision-plan"
+}

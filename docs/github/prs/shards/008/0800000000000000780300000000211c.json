@@ -1,0 +1,12 @@
+{
+  "pr_number": 8476,
+  "archive_path": "docs/history/pr-reviews/PR-8476-formal-aurora-viktor-kira-re-confirm-both-v2-tla-specs-pass-apply-two-p2-doc-fix.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T07:52:15.300Z",
+  "schema_version": "v1",
+  "commit_sha": "02c778549806e9ad6970574ae5217041c22f01b5",
+  "title": "formal(aurora): Viktor+Kira RE-CONFIRM both v2 TLA+ specs PASS; apply two P2 doc-fixes; close the formal round",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T07:51:44Z",
+  "head_ref": "otto/aurora-tla-v2-reviewer-p2-fixes"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7736,
+  "archive_path": "docs/history/pr-reviews/PR-7736-docs-research-where-adinkras-sit-the-sign-register-s-organ-microsoft-uses-the-al.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:21:31.875Z",
+  "schema_version": "v1",
+  "commit_sha": "676e21f16e03d3e18f063d9a1bdb22ad6b80d94b",
+  "title": "docs(research): where adinkras sit — the sign register's organ; Microsoft uses the algebra, not the diagrams",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:20:55Z",
+  "head_ref": "shadow-adinkra-place"
+}

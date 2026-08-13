@@ -1,0 +1,17 @@
+{
+  "pr_number": 4122,
+  "archive_path": "docs/history/pr-reviews/PR-4122-backlog-b-0614-4-empirical-instances-candidate-rule-text-refinement-forced-6-rec.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CDRXF",
+    "comment:PRRC_kwDOSF9kNM7CDRXN",
+    "thread:PRRT_kwDOSF9kNM6Cr-ra",
+    "thread:PRRT_kwDOSF9kNM6Cr-rh"
+  ],
+  "fetched_at": "2026-05-17T23:30:12.325Z",
+  "schema_version": "v1",
+  "commit_sha": "68cbb4b7aa13cd71eb2b8791d696dddaefacdce4",
+  "title": "backlog(B-0614): 4 empirical instances + candidate rule-text refinement (forced-#6 recursive #2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T23:29:55Z",
+  "head_ref": "backlog/b0614-recursive-instance-2-same-session-2026-05-17-2303z"
+}

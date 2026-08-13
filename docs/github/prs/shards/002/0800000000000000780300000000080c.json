@@ -1,0 +1,33 @@
+{
+  "pr_number": 2060,
+  "archive_path": "docs/history/pr-reviews/PR-2060-fix-b-0156-port-tools-hygiene-sh-scripts-to-typescript.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_OqRO",
+    "comment:PRRC_kwDOSF9kNM6_OqRZ",
+    "comment:PRRC_kwDOSF9kNM6_OtSL",
+    "comment:PRRC_kwDOSF9kNM6_OtSQ",
+    "comment:PRRC_kwDOSF9kNM6_OxDr",
+    "comment:PRRC_kwDOSF9kNM6_OxEf",
+    "comment:PRRC_kwDOSF9kNM6_OxEx",
+    "comment:PRRC_kwDOSF9kNM6_OxFj",
+    "comment:PRRC_kwDOSF9kNM6_OxG9",
+    "comment:PRRC_kwDOSF9kNM6_OxGH",
+    "thread:PRRT_kwDOSF9kNM6Amovj",
+    "thread:PRRT_kwDOSF9kNM6Amovr",
+    "thread:PRRT_kwDOSF9kNM6AmrAk",
+    "thread:PRRT_kwDOSF9kNM6AmrAo",
+    "thread:PRRT_kwDOSF9kNM6Amt3i",
+    "thread:PRRT_kwDOSF9kNM6Amt4K",
+    "thread:PRRT_kwDOSF9kNM6Amt4Y",
+    "thread:PRRT_kwDOSF9kNM6Amt5B",
+    "thread:PRRT_kwDOSF9kNM6Amt5i",
+    "thread:PRRT_kwDOSF9kNM6Amt6O"
+  ],
+  "fetched_at": "2026-05-08T11:30:01.120Z",
+  "schema_version": "v1",
+  "commit_sha": "d5922a8471e1998c6555e0f10c10081e1db2bc64",
+  "title": "fix(B-0156): port tools/hygiene .sh scripts to TypeScript",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T11:29:40Z",
+  "head_ref": "worktree-agent-ad5b920e54e9066e4"
+}

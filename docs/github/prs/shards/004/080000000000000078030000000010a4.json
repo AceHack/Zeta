@@ -1,0 +1,12 @@
+{
+  "pr_number": 4260,
+  "archive_path": "docs/history/pr-reviews/PR-4260-shard-2337z-c-brief-ack-5-cycle-3-not-pre-empting-allowing-accumulation-to-6.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:41:38.323Z",
+  "schema_version": "v1",
+  "commit_sha": "7ba3ae46ce21b205eac2ffe780c0d0bd146670f4",
+  "title": "shard(2337Z-c): brief-ack #5 cycle-3 — NOT pre-empting; allowing accumulation to #6",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:41:20Z",
+  "head_ref": "shard/tick-2337z-c-brief-ack-5-allow-accumulation-2026-05-18"
+}

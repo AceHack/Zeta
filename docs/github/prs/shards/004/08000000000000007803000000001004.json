@@ -1,0 +1,12 @@
+{
+  "pr_number": 4100,
+  "archive_path": "docs/history/pr-reviews/PR-4100-shard-2026-05-17-2129z-pr-4097-merged-via-stale-thread-resolve.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T21:37:21.220Z",
+  "schema_version": "v1",
+  "commit_sha": "acc66fc80e9c59ca3ab1331e4c9514190ca049ae",
+  "title": "shard(2026-05-17/2129Z): PR #4097 merged via stale-thread resolve",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T21:37:04Z",
+  "head_ref": "shard/tick-2129z-pr4097-merged-via-thread-resolve-2026-05-17"
+}

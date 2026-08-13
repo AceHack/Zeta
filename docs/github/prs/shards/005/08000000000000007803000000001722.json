@@ -1,0 +1,12 @@
+{
+  "pr_number": 5922,
+  "archive_path": "docs/history/pr-reviews/PR-5922-rule-extend-tensor-substrate-scope-eigenvalue-substrate-is-lightlike-vs-dark-dis.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T19:01:00.445Z",
+  "schema_version": "v1",
+  "commit_sha": "43e9698aefb7267f3f1580df110d35a4821bc555",
+  "title": "rule extend: tensor-substrate scope — eigenvalue-substrate IS lightlike-vs-dark discriminator (operator 2026-05-28 substrate-recognition; \"rule extension (shadow*)\" disposition; follows PR #5921 merged 18:42:49Z)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T19:00:37Z",
+  "head_ref": "otto-cli/amara-tightening-otel-k8s-argo-prom-2026-05-28"
+}

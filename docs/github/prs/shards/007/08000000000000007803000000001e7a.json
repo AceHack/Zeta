@@ -1,0 +1,12 @@
+{
+  "pr_number": 7802,
+  "archive_path": "docs/history/pr-reviews/PR-7802-feat-sync-iblt-room-reconciliation-o-bp-peeled-honest-partial-rodney-s-razor-app.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T21:51:10.380Z",
+  "schema_version": "v1",
+  "commit_sha": "a409b005c20028ce1f78c54792e591961169ab1e",
+  "title": "feat(sync): IBLT room reconciliation (O(|Δ|), BP-peeled, honest Partial) + Rodney's razor applied",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T21:50:44Z",
+  "head_ref": "shadow-iblt-reconcile"
+}

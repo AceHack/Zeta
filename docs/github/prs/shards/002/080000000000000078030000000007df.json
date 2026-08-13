@@ -1,0 +1,12 @@
+{
+  "pr_number": 2015,
+  "archive_path": "docs/history/pr-reviews/PR-2015-fix-backlog-decompose-b-0235-pages-discovery.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T03:03:28.585Z",
+  "schema_version": "v1",
+  "commit_sha": "1636f314a4858e7fbbed90f7e70242dc82f422be",
+  "title": "fix(backlog): decompose B-0235 pages discovery",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T03:03:06Z",
+  "head_ref": "codex/b0235-decompose-pages-discovery"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 6445,
+  "archive_path": "docs/history/pr-reviews/PR-6445-inventory-phase-5-typed-dynamic-custom-fields-centerpiece.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HuVqS",
+    "thread:PRRT_kwDOSF9kNM6G2Htm"
+  ],
+  "fetched_at": "2026-06-03T20:27:04.963Z",
+  "schema_version": "v1",
+  "commit_sha": "31ea8bdd437ac85b20a863d9af2774806354ebf9",
+  "title": "Inventory: Phase 5 — Typed dynamic custom fields (CENTERPIECE)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T20:26:32Z",
+  "head_ref": "claude/festive-ritchie-NcXnW"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7529,
+  "archive_path": "docs/history/pr-reviews/PR-7529-feat-core-softscheduler-the-soft-ischeduler-on-the-isr-arrow-dop-1-deterministic.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T22:56:39.625Z",
+  "schema_version": "v1",
+  "commit_sha": "fa74de04b274e9f95f73b11e5163348fd219150e",
+  "title": "feat(core): SoftScheduler — the soft IScheduler on the ISR arrow (DoP=1 deterministic; injected source)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T22:56:16Z",
+  "head_ref": "shadow-soft-ischeduler-isr-arrow"
+}

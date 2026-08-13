@@ -1,0 +1,12 @@
+{
+  "pr_number": 3280,
+  "archive_path": "docs/history/pr-reviews/PR-3280-docs-research-shadow-session-close-off-duty-signaled-by-aaron-2026-05-14.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T22:10:46.837Z",
+  "schema_version": "v1",
+  "commit_sha": "0e716abae1e5cec2cf327d1606e3303201af62cc",
+  "title": "docs(research/shadow): session-close off-duty signaled by Aaron 2026-05-14",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:10:27Z",
+  "head_ref": "shard/2026-05-14-shadow-session-close-off-duty-aaron-signaled"
+}

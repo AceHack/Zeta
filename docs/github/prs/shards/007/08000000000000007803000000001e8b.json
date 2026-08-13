@@ -1,0 +1,12 @@
+{
+  "pr_number": 7819,
+  "archive_path": "docs/history/pr-reviews/PR-7819-feat-core-make-wset-feed-quantum-observable-rows.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:40:29.902Z",
+  "schema_version": "v1",
+  "commit_sha": "e25cace6f3fc5deeebf163119d90a5740394ff56",
+  "title": "feat(core): make WSet feed quantum observable rows",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:40:06Z",
+  "head_ref": "codex/wset-core-primitive"
+}

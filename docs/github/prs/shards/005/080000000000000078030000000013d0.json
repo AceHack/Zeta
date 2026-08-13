@@ -1,0 +1,12 @@
+{
+  "pr_number": 5072,
+  "archive_path": "docs/history/pr-reviews/PR-5072-fix-gemini-enforce-detached-worktree-and-clone-hygiene-in-background-loop.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T02:48:04.215Z",
+  "schema_version": "v1",
+  "commit_sha": "e989701f58614e35e8a89fd124bbc352dcfd33e5",
+  "title": "fix(gemini): enforce detached worktree and clone hygiene in background loop",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T02:47:42Z",
+  "head_ref": "lior/fix-loop-tick-hygiene"
+}

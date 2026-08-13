@@ -1,0 +1,12 @@
+{
+  "pr_number": 2765,
+  "archive_path": "docs/history/pr-reviews/PR-2765-docs-shadow-catch-43-cron-never-armed-background-loop-cadence-finding.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T13:05:42.686Z",
+  "schema_version": "v1",
+  "commit_sha": "12e149a5f1ad73731f6558199b0a8f55be9abe85",
+  "title": "docs(shadow): catch 43 — cron never armed; background-loop cadence finding",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T13:05:24Z",
+  "head_ref": "docs/catch-43-cron-never-armed-2026-05-12"
+}

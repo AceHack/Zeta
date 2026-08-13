@@ -1,0 +1,25 @@
+{
+  "pr_number": 1998,
+  "archive_path": "docs/history/pr-reviews/PR-1998-fix-backlog-b-0162-closed-row-mark-clean.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_FEhn",
+    "comment:PRRC_kwDOSF9kNM6_FHSw",
+    "comment:PRRC_kwDOSF9kNM6_FHTF",
+    "comment:PRRC_kwDOSF9kNM6_FHTW",
+    "comment:PRRC_kwDOSF9kNM6_FMzq",
+    "comment:PRRC_kwDOSF9kNM6_FRu2",
+    "thread:PRRT_kwDOSF9kNM6Af0dR",
+    "thread:PRRT_kwDOSF9kNM6AfrlB",
+    "thread:PRRT_kwDOSF9kNM6Aftc6",
+    "thread:PRRT_kwDOSF9kNM6Aftcp",
+    "thread:PRRT_kwDOSF9kNM6AftdG",
+    "thread:PRRT_kwDOSF9kNM6AfxK8"
+  ],
+  "fetched_at": "2026-05-08T02:21:22.223Z",
+  "schema_version": "v1",
+  "commit_sha": "41fab552c131428d849445f8b582645929d78982",
+  "title": "fix(backlog): B-0162 closed row mark clean",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:21:03Z",
+  "head_ref": "backlog/b0162-close-clean"
+}

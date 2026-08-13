@@ -1,0 +1,12 @@
+{
+  "pr_number": 6697,
+  "archive_path": "docs/history/pr-reviews/PR-6697-test-core-git-durablesaga-runs-durably-on-the-git-db-evolution-engine-5c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-06T23:29:42.568Z",
+  "schema_version": "v1",
+  "commit_sha": "14b27a25253cc7890e7c5308aa9e1b67f8337c8b",
+  "title": "test(Core.Git): DurableSaga runs durably on the git DB (evolution engine §5c)",
+  "state": "MERGED",
+  "merged_at": "2026-06-06T23:29:19Z",
+  "head_ref": "otto/saga-on-git-db"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 3073,
+  "archive_path": "docs/history/pr-reviews/PR-3073-fix-backlog-resolve-b-0409-3-way-collision-completes-b-0451-substrate-hygiene-sw.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BA-YB",
+    "comment:PRRC_kwDOSF9kNM7BA-Ya",
+    "comment:PRRC_kwDOSF9kNM7BA4o2",
+    "comment:PRRC_kwDOSF9kNM7BA5EC",
+    "comment:PRRC_kwDOSF9kNM7BA9Jj",
+    "comment:PRRC_kwDOSF9kNM7BA9Pb",
+    "comment:PRRC_kwDOSF9kNM7BA9Tf",
+    "thread:PRRT_kwDOSF9kNM6B7Nar",
+    "thread:PRRT_kwDOSF9kNM6B7Nut",
+    "thread:PRRT_kwDOSF9kNM6B7Qq0",
+    "thread:PRRT_kwDOSF9kNM6B7Rk4",
+    "thread:PRRT_kwDOSF9kNM6B7Rkj"
+  ],
+  "fetched_at": "2026-05-14T00:39:53.612Z",
+  "schema_version": "v1",
+  "commit_sha": "6794dfc3c0582b2f42b3575b07a6b74e30124ca0",
+  "title": "fix(backlog): resolve B-0409 3-way collision — completes B-0451 substrate-hygiene sweep",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T00:39:35Z",
+  "head_ref": "fix/b0409-3way-collision-renumber-amara-and-wallet-2026-05-14"
+}

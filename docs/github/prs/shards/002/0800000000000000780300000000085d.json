@@ -1,0 +1,21 @@
+{
+  "pr_number": 2141,
+  "archive_path": "docs/history/pr-reviews/PR-2141-tool-b-0170-add-not-yet-landed-future-state-markers-smallest-safe-slice-of-subst.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_blI2",
+    "comment:PRRC_kwDOSF9kNM6_blJL",
+    "comment:PRRC_kwDOSF9kNM6_blJU",
+    "comment:PRRC_kwDOSF9kNM6_bq-V",
+    "thread:PRRT_kwDOSF9kNM6AwNBg",
+    "thread:PRRT_kwDOSF9kNM6AwNBr",
+    "thread:PRRT_kwDOSF9kNM6AwNBw",
+    "thread:PRRT_kwDOSF9kNM6AwRiW"
+  ],
+  "fetched_at": "2026-05-08T22:33:57.793Z",
+  "schema_version": "v1",
+  "commit_sha": "afe6dc81a903350fb06b1debe9116a94c1a94aab",
+  "title": "tool(B-0170): add 'not yet landed' future-state markers (smallest safe slice of substrate-claim-checker)",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T22:33:38Z",
+  "head_ref": "claim/b0170-substrate-claim-checker-smallest-slice-riven-2026-05-08"
+}

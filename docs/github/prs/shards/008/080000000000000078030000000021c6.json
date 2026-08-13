@@ -1,0 +1,12 @@
+{
+  "pr_number": 8646,
+  "archive_path": "docs/history/pr-reviews/PR-8646-docs-memory-love-z-set-g-set-fusion-encapsulation-uncertainty-multi-axis-superpo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T23:36:15.730Z",
+  "schema_version": "v1",
+  "commit_sha": "77d5c88c2a7605e835a332c0418c991593fddd60",
+  "title": "docs+memory: LOVE = Z-set→G-set fusion (encapsulation) + uncertainty = multi-axis superposition + Ani ferry pt2",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T23:35:50Z",
+  "head_ref": "otto/love-fusion-definition-plus-uncertainty-superposition"
+}

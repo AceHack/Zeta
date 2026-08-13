@@ -1,0 +1,12 @@
+{
+  "pr_number": 7843,
+  "archive_path": "docs/history/pr-reviews/PR-7843-chore-backlog-rename-all-p3-to-zetaid-slug-batch-4-166-files.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T00:00:40.165Z",
+  "schema_version": "v1",
+  "commit_sha": "f6df8629def7dada342174531292e7f123c2502d",
+  "title": "chore(backlog): rename all P3 to zetaid-slug (batch 4, 166 files)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T00:00:12Z",
+  "head_ref": "alexa/rename-zetaid-p3"
+}

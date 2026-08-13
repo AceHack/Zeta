@@ -1,0 +1,12 @@
+{
+  "pr_number": 2152,
+  "archive_path": "docs/history/pr-reviews/PR-2152-decompose-b-0193-split-bootstrap-razor-into-8-atomic-child-rows.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T23:48:01.041Z",
+  "schema_version": "v1",
+  "commit_sha": "cce5845178832df8f4f7f3c82597bb39a560445a",
+  "title": "decompose(B-0193): split bootstrap-razor into 8 atomic child rows",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T23:47:44Z",
+  "head_ref": "claim/decompose-b0193"
+}

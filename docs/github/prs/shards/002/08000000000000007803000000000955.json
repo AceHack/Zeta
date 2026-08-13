@@ -1,0 +1,12 @@
+{
+  "pr_number": 2389,
+  "archive_path": "docs/history/pr-reviews/PR-2389-backlog-b-0396-isemiring-iring-interface-split-track-ring-axiom-contract-violati.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T01:21:23.115Z",
+  "schema_version": "v1",
+  "commit_sha": "3ab99cc67eea3ba8a9259d46b5c1695ad415e648",
+  "title": "backlog(B-0396): ISemiring/IRing interface split — track ring-axiom contract violations",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T01:21:08Z",
+  "head_ref": "backlog/b0396-isemiring-iring-interface-split-2026-05-10"
+}

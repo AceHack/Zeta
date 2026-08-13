@@ -1,0 +1,12 @@
+{
+  "pr_number": 6999,
+  "archive_path": "docs/history/pr-reviews/PR-6999-feat-zflash-save-wifi-install-answers-diagnosed-gap-3-level-install-mode-erase-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T03:17:50.891Z",
+  "schema_version": "v1",
+  "commit_sha": "ce1b7cb997e6d6cf0ee7a935cca4ef83e61b43e9",
+  "title": "feat(zflash): save WiFi + install-answers (diagnosed gap); 3-level install mode; erase-preserve; boot=heartbeat-to-git->k8s->argocd",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T03:17:26Z",
+  "head_ref": "otto/zflash-wifi-install-answers-three-level-erase-preserve"
+}

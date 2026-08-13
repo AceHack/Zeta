@@ -1,0 +1,17 @@
+{
+  "pr_number": 2711,
+  "archive_path": "docs/history/pr-reviews/PR-2711-docs-memory-amara-absorption-corrections-attacker-not-paid-bounty-membrane.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_7CWm",
+    "comment:PRRC_kwDOSF9kNM6_7GO0",
+    "thread:PRRT_kwDOSF9kNM6BICz4",
+    "thread:PRRT_kwDOSF9kNM6BIFw-"
+  ],
+  "fetched_at": "2026-05-11T15:04:43.671Z",
+  "schema_version": "v1",
+  "commit_sha": "3fb5b5da6c9aefd6d10b5abefcb011f4a0d5004f",
+  "title": "docs(memory): Amara absorption corrections — attacker not paid + bounty membrane",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T15:04:22Z",
+  "head_ref": "docs/amara-absorption-corrections-bounty-2026-05-11"
+}

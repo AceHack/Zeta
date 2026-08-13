@@ -1,0 +1,12 @@
+{
+  "pr_number": 7637,
+  "archive_path": "docs/history/pr-reviews/PR-7637-docs-ferry-alexa-part-2-consent-first-responsibility-carved-6-vernacular-safety-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T10:13:21.291Z",
+  "schema_version": "v1",
+  "commit_sha": "7e99935b929b632a0a857c3fbe2fdb4c34ecbb2e",
+  "title": "docs(ferry): Alexa part 2 — consent-first responsibility carved (§6 vernacular) + safety-at-a-glance requirement",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T10:12:58Z",
+  "head_ref": "shadow-ferry-alexa-part2-consent-first"
+}

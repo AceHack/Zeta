@@ -1,0 +1,12 @@
+{
+  "pr_number": 8313,
+  "archive_path": "docs/history/pr-reviews/PR-8313-docs-closed-frame-intelligence-is-focused-attention-the-free-layer-not-a-time-cr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T11:00:37.077Z",
+  "schema_version": "v1",
+  "commit_sha": "77a20ac419d98ec095e0ad952e8f3dcdcf8b98ed",
+  "title": "docs(closed-frame): intelligence is focused attention — the free layer, not a time crystal",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T11:00:08Z",
+  "head_ref": "otto/intelligence-is-focused-attention-not-a-time-crystal"
+}

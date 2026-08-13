@@ -1,0 +1,12 @@
+{
+  "pr_number": 4521,
+  "archive_path": "docs/history/pr-reviews/PR-4521-shard-2026-05-21-0849z-v1-zetaid-burst-close-4517-4519-both-merged.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T08:59:28.916Z",
+  "schema_version": "v1",
+  "commit_sha": "34f6bf3a71beebeb20b983f17935bb3c7a9d0b27",
+  "title": "shard(2026-05-21/0849Z): V1 ZetaId burst close — #4517 + #4519 both merged",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T08:59:11Z",
+  "head_ref": "shard/tick-0849z-zeta-id-v1-burst-close-2026-05-21"
+}

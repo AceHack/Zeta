@@ -1,0 +1,12 @@
+{
+  "pr_number": 6994,
+  "archive_path": "docs/history/pr-reviews/PR-6994-docs-db-saves-git-native-dus-mapped-over-git-as-the-db-control-plane-interfaces-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T02:47:06.975Z",
+  "schema_version": "v1",
+  "commit_sha": "9f2022007f206cf201c09abdb22c2ff177155a3b",
+  "title": "docs: db saves git-native — DUs mapped over git as the db control plane (interfaces compose across the gradient)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T02:46:49Z",
+  "head_ref": "otto/db-saves-git-native-DUs-over-git-control-plane"
+}

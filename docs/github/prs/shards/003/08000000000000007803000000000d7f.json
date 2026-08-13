@@ -1,0 +1,19 @@
+{
+  "pr_number": 3455,
+  "archive_path": "docs/history/pr-reviews/PR-3455-shard-tick-1228z-pr-3452-merged-pr-3453-p1-fixed-armed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bm-cd",
+    "comment:PRRC_kwDOSF9kNM7Bm-ge",
+    "comment:PRRC_kwDOSF9kNM7Bm7IN",
+    "comment:PRRC_kwDOSF9kNM7Bm7JV",
+    "thread:PRRT_kwDOSF9kNM6CW3uU",
+    "thread:PRRT_kwDOSF9kNM6CW3vF"
+  ],
+  "fetched_at": "2026-05-15T12:39:14.517Z",
+  "schema_version": "v1",
+  "commit_sha": "c5bdcd5868bc263c9a979a884a3ced8f4864e1b3",
+  "title": "shard(tick): 1228Z — PR #3452 merged; PR #3453 P1 fixed + armed",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T12:38:56Z",
+  "head_ref": "shard/tick-1228z-otto-cli-2026-05-15"
+}

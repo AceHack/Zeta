@@ -1,0 +1,12 @@
+{
+  "pr_number": 2379,
+  "archive_path": "docs/history/pr-reviews/PR-2379-fix-b-0168-mark-parent-worked-translations-criterion-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T23:55:27.055Z",
+  "schema_version": "v1",
+  "commit_sha": "5f36a4fcd19f8cc5227dbba8c16482253d515f3e",
+  "title": "fix(B-0168): mark parent worked-translations criterion complete",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T23:55:10Z",
+  "head_ref": "fix/B-0168-parent-checkbox-consistency"
+}

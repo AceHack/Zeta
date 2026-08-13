@@ -1,0 +1,25 @@
+{
+  "pr_number": 2092,
+  "archive_path": "docs/history/pr-reviews/PR-2092-docs-preserve-continuity-over-control-control-loop-frame.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_T1c7",
+    "comment:PRRC_kwDOSF9kNM6_T28z",
+    "comment:PRRC_kwDOSF9kNM6_T29l",
+    "comment:PRRC_kwDOSF9kNM6_T4dr",
+    "comment:PRRC_kwDOSF9kNM6_T5DV",
+    "comment:PRRC_kwDOSF9kNM6_T5HK",
+    "comment:PRRC_kwDOSF9kNM6_T6fQ",
+    "comment:PRRC_kwDOSF9kNM6_TyvQ",
+    "thread:PRRT_kwDOSF9kNM6AqgT4",
+    "thread:PRRT_kwDOSF9kNM6Aqjel",
+    "thread:PRRT_kwDOSF9kNM6AqjfL",
+    "thread:PRRT_kwDOSF9kNM6AqkoQ"
+  ],
+  "fetched_at": "2026-05-08T15:32:16.831Z",
+  "schema_version": "v1",
+  "commit_sha": "4eb2b35cd5590389c3327f8e06df3842c35df9f9",
+  "title": "docs: preserve continuity-over-control control-loop frame",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T15:31:50Z",
+  "head_ref": "claim/continuity-control-loop-autonomy"
+}

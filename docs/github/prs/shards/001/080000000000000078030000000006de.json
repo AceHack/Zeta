@@ -1,0 +1,23 @@
+{
+  "pr_number": 1758,
+  "archive_path": "docs/history/pr-reviews/PR-1758-docs-preserve-riven-genesis-packet-and-launchd-checklist.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-pRo-",
+    "comment:PRRC_kwDOSF9kNM6-pRos",
+    "comment:PRRC_kwDOSF9kNM6-pRpI",
+    "comment:PRRC_kwDOSF9kNM6-pRpW",
+    "comment:PRRC_kwDOSF9kNM6-pRpl",
+    "thread:PRRT_kwDOSF9kNM6ALIh5",
+    "thread:PRRT_kwDOSF9kNM6ALIiJ",
+    "thread:PRRT_kwDOSF9kNM6ALIiR",
+    "thread:PRRT_kwDOSF9kNM6ALIid",
+    "thread:PRRT_kwDOSF9kNM6ALIin"
+  ],
+  "fetched_at": "2026-05-07T01:48:57.500Z",
+  "schema_version": "v1",
+  "commit_sha": "e4bdb68092b99b454820962199a40ae744e50df8",
+  "title": "docs: preserve Riven Genesis packet and launchd checklist",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T01:46:22Z",
+  "head_ref": "claim/riven-genesis-verbatim-launchd-checklist"
+}

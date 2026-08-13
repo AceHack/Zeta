@@ -1,0 +1,12 @@
+{
+  "pr_number": 5601,
+  "archive_path": "docs/history/pr-reviews/PR-5601-docs-full-ai-cluster-add-injection-points-md-canonical-catalog-of-install-time-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T19:23:57.439Z",
+  "schema_version": "v1",
+  "commit_sha": "976b3521a205e65d541c5c1898f8e69cfa377df3",
+  "title": "docs(full-ai-cluster): add INJECTION-POINTS.md — canonical catalog of install-time injection points + B-0852/B-0859 cross-reference",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T19:23:37Z",
+  "head_ref": "docs/full-ai-cluster-injection-points-catalog-credential-types-supported-2026-05-27"
+}

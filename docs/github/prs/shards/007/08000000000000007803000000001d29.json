@@ -1,0 +1,12 @@
+{
+  "pr_number": 7465,
+  "archive_path": "docs/history/pr-reviews/PR-7465-feat-core-shadow-live-iruntimeeffects-real-git-merge-rns-safe-core-pure-seam-gat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T06:12:33.361Z",
+  "schema_version": "v1",
+  "commit_sha": "2d9c581220a7e31eb7a274234a8cc2ac24fcba3d",
+  "title": "feat(core)+shadow: live IRuntimeEffects (real git merge + RNS) — SAFE Core-pure seam, gated parts routed",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T06:12:12Z",
+  "head_ref": "shadow-finalizer-runtime-live-git-rns"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3935,
+  "archive_path": "docs/history/pr-reviews/PR-3935-rules-razor-premise-flagged-unverified-stays-unverified-downstream-auto-load.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T19:34:07.243Z",
+  "schema_version": "v1",
+  "commit_sha": "18021e14418f5ac1f6ce40a44cbee07a98273238",
+  "title": "rules(razor): premise-flagged-unverified-stays-unverified-downstream auto-load",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T19:33:52Z",
+  "head_ref": "chore/rule-premise-flagged-unverified-stays-unverified-downstream-otto-cli-2026-05-16-1916z"
+}

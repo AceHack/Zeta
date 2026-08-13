@@ -1,0 +1,12 @@
+{
+  "pr_number": 2160,
+  "archive_path": "docs/history/pr-reviews/PR-2160-feat-b-0267-branch-safety-ruleset-migration-script.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T01:24:22.084Z",
+  "schema_version": "v1",
+  "commit_sha": "95fbb0845bf31dfd2888cadb267ecad57e515bf2",
+  "title": "feat(B-0267): Branch Safety ruleset migration script",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T01:24:08Z",
+  "head_ref": "b0267-safety-ruleset"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7720,
+  "archive_path": "docs/history/pr-reviews/PR-7720-feat-shapes-acceptance-suite-no-shape-accepted-on-looks-bidirectional-svg-html-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T16:18:26.335Z",
+  "schema_version": "v1",
+  "commit_sha": "ae94e0faca44568a365d39743ec8aeb60a678f8e",
+  "title": "feat(shapes): acceptance suite (no shape accepted on looks) + bidirectional SVG/HTML treaty + Addison's buckyball + O-parametrized draws",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T16:18:02Z",
+  "head_ref": "shadow-shape-acceptance"
+}

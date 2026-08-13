@@ -1,0 +1,12 @@
+{
+  "pr_number": 6983,
+  "archive_path": "docs/history/pr-reviews/PR-6983-feat-core-zetacli-dependson-clause-context-model-grammar-graph-builder.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:56:44.587Z",
+  "schema_version": "v1",
+  "commit_sha": "0712370121bf41af5562264b6b219023100de9a8",
+  "title": "feat(core): ZetaCli — dependson clause + context model (grammar -> graph-builder)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:56:25Z",
+  "head_ref": "otto/zetacli-dependson-clause-and-context-model"
+}

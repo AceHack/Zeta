@@ -1,0 +1,12 @@
+{
+  "pr_number": 4664,
+  "archive_path": "docs/history/pr-reviews/PR-4664-persona-prism-ratification-archive-2026-05-23-operator-pipeline-pivot-to-local-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T19:56:50.641Z",
+  "schema_version": "v1",
+  "commit_sha": "bbf1d1cb090b44f895bd5de02cc443bee0ba5bc7",
+  "title": "persona(prism): ratification archive 2026-05-23 + operator pipeline-pivot to local-save — opaque-pointer applied",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T19:56:34Z",
+  "head_ref": "otto/cli-1305z-prism-ratification-archive-pipeline-pivot-opaque-pointer-2026-05-23"
+}

@@ -1,0 +1,31 @@
+{
+  "pr_number": 6500,
+  "archive_path": "docs/history/pr-reviews/PR-6500-feat-dynamicvalue-re-ground-f-against-the-seed-canonical-json-encoder-byte-lock-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G810E",
+    "comment:PRRC_kwDOSF9kNM7G81z2",
+    "comment:PRRC_kwDOSF9kNM7G81zo",
+    "comment:PRRC_kwDOSF9kNM7G8nV_",
+    "comment:PRRC_kwDOSF9kNM7G8nWE",
+    "comment:PRRC_kwDOSF9kNM7G8oe2",
+    "comment:PRRC_kwDOSF9kNM7G8oeT",
+    "comment:PRRC_kwDOSF9kNM7G8oeo",
+    "comment:PRRC_kwDOSF9kNM7G8wbx",
+    "thread:PRRT_kwDOSF9kNM6GR10E",
+    "thread:PRRT_kwDOSF9kNM6GR10P",
+    "thread:PRRT_kwDOSF9kNM6GR10b",
+    "thread:PRRT_kwDOSF9kNM6GRrUv",
+    "thread:PRRT_kwDOSF9kNM6GRrUz",
+    "thread:PRRT_kwDOSF9kNM6GRsI_",
+    "thread:PRRT_kwDOSF9kNM6GRsIw",
+    "thread:PRRT_kwDOSF9kNM6GRsJK",
+    "thread:PRRT_kwDOSF9kNM6GRx5x"
+  ],
+  "fetched_at": "2026-06-02T00:05:39.122Z",
+  "schema_version": "v1",
+  "commit_sha": "f77625d426a81809cc5fc14adb089276d5260cbd",
+  "title": "feat(DynamicValue): re-ground F# against the seed — canonical JSON encoder + byte-lock test",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T00:05:16Z",
+  "head_ref": "otto-cli/dynamicvalue-fsharp-reground-seed-2026-06-01"
+}

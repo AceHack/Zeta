@@ -1,0 +1,12 @@
+{
+  "pr_number": 7763,
+  "archive_path": "docs/history/pr-reviews/PR-7763-feat-qsharp-add-typescript-quantum-circuit-oracle.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:56:52.774Z",
+  "schema_version": "v1",
+  "commit_sha": "96b925682b056b7463b1e6581dfcfe73fe7cd8a4",
+  "title": "feat(qsharp): add TypeScript quantum-circuit oracle",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:56:24Z",
+  "head_ref": "codex/vera-integrate-ts-quantum-oracle"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3069,
+  "archive_path": "docs/history/pr-reviews/PR-3069-fix-backlog-resolve-b-0410-b-0411-collisions-renumber-amara-series-b-0457-b-0458.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T00:15:25.822Z",
+  "schema_version": "v1",
+  "commit_sha": "ed9284d2badb12aa29ddab796be87e4fc54501f3",
+  "title": "fix(backlog): resolve B-0410-B-0411 collisions — renumber amara series → B-0457-B-0458",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T00:15:04Z",
+  "head_ref": "fix/b0410-b0411-id-collision-renumber-amara-series-to-b0457-b0458-2026-05-14"
+}

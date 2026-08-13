@@ -1,0 +1,15 @@
+{
+  "pr_number": 3690,
+  "archive_path": "docs/history/pr-reviews/PR-3690-shard-tick-2026-05-16t02-40z-post-merge-triage-on-pr-3685-1-stale-1-false-1-real.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B07PT",
+    "thread:PRRT_kwDOSF9kNM6ChFjP"
+  ],
+  "fetched_at": "2026-05-16T03:23:21.788Z",
+  "schema_version": "v1",
+  "commit_sha": "2ba2c70b6f14e0c4bf220032498ca2afb9237005",
+  "title": "shard(tick): 2026-05-16T02:40Z — post-merge triage on PR #3685 (1 stale / 1 false / 1 real)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:23:06Z",
+  "head_ref": "shard/tick-0240z-otto-cli-2026-05-16"
+}

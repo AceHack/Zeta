@@ -1,0 +1,12 @@
+{
+  "pr_number": 1793,
+  "archive_path": "docs/history/pr-reviews/PR-1793-research-lior-micro-kernel-antigravity-ide-mapping-verbatim.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T05:12:40.698Z",
+  "schema_version": "v1",
+  "commit_sha": "05f6b41e1f5dec8ce92ab0c4efac2c9811c7cc5a",
+  "title": "research: Lior micro-kernel → Antigravity IDE mapping VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T04:46:18Z",
+  "head_ref": "research/lior-antigravity-ide-kernel-mapping-verbatim"
+}

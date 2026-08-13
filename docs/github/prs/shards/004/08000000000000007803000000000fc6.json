@@ -1,0 +1,12 @@
+{
+  "pr_number": 4038,
+  "archive_path": "docs/history/pr-reviews/PR-4038-docs-rules-option-b-disclosure-for-shadow-star-shorthand-citation-in-m-acc-rule-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T04:10:06.504Z",
+  "schema_version": "v1",
+  "commit_sha": "c39a2c6c314282a3430c2a6bf4e5710836a949e0",
+  "title": "docs(rules): Option B disclosure for shadow-star-shorthand citation in m-acc rule (r2; #4036 base-contamination fix)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T04:09:50Z",
+  "head_ref": "memo/m-acc-shadow-star-disclosure-r2-2026-05-17"
+}

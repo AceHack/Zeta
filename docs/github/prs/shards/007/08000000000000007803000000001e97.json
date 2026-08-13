@@ -1,0 +1,12 @@
+{
+  "pr_number": 7831,
+  "archive_path": "docs/history/pr-reviews/PR-7831-feat-b-0248-2-wire-cell-provisioning-into-install-sh-auto-on-usb-iso-boot.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T23:17:36.398Z",
+  "schema_version": "v1",
+  "commit_sha": "39e63771855ad258b94445d78cb25828371a1dd5",
+  "title": "feat(B-0248.2): wire cell provisioning into install.sh — auto on USB/ISO boot",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T23:17:08Z",
+  "head_ref": "alexa/wire-cells-into-install"
+}

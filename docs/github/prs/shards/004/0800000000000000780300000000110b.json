@@ -1,0 +1,12 @@
+{
+  "pr_number": 4363,
+  "archive_path": "docs/history/pr-reviews/PR-4363-shard-0826z-pure-git-tier-deferred-pr-queue-counter-cycle.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T08:38:32.541Z",
+  "schema_version": "v1",
+  "commit_sha": "277a0c7da5c6a51a6cd44313504b8ea816d82574",
+  "title": "shard(0826Z): Pure-git tier; deferred-PR queue + counter cycle",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T08:38:10Z",
+  "head_ref": "shard/tick-0826z-otto-cli-pure-git-deferred-pr-pattern-2026-05-19"
+}

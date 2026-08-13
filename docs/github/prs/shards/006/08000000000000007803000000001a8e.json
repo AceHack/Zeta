@@ -1,0 +1,12 @@
+{
+  "pr_number": 6798,
+  "archive_path": "docs/history/pr-reviews/PR-6798-docs-cow-database-testing-from-prod-capability-zetafs-naming-stack-amara.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T11:34:10.028Z",
+  "schema_version": "v1",
+  "commit_sha": "ca0fd481116e6cf5079cb73f1278c61869b9a0fe",
+  "title": "docs: COW database-testing-from-prod capability + ZetaFS naming stack (Amara)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T11:33:50Z",
+  "head_ref": "capture/cow-db-testing-from-prod-and-zetafs-naming-stack"
+}

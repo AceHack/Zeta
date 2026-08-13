@@ -1,0 +1,12 @@
+{
+  "pr_number": 2357,
+  "archive_path": "docs/history/pr-reviews/PR-2357-fix-claims-release-stale-b-0023-claim-after-pr-2355.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T22:17:26.630Z",
+  "schema_version": "v1",
+  "commit_sha": "4db4dd8f490bb1381713861e0d16883479ee77b9",
+  "title": "fix(claims): release stale B-0023 claim after PR 2355",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T22:17:11Z",
+  "head_ref": "claim/remove-stale-backlog-0023-claim-codex-2026-05-09"
+}

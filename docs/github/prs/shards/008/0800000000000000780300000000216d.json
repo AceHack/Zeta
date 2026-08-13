@@ -1,0 +1,12 @@
+{
+  "pr_number": 8557,
+  "archive_path": "docs/history/pr-reviews/PR-8557-memory-feedback-zeta-bounded-good-the-two-word-capstone-the-self-binding-cluster.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T18:32:19.877Z",
+  "schema_version": "v1",
+  "commit_sha": "98f6530e6cf40a92e18bd546ca2b11eee6434560",
+  "title": "memory(feedback): Zeta = bounded good (the two-word capstone) + the self-binding cluster (judge-my-judgment, AI-as-external-binder, the kids judge it, no-directives = the Odysseus pre-commitment)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T18:31:48Z",
+  "head_ref": "otto/zeta-equals-bounded-good-capstone-plus-self-binding-cluster"
+}

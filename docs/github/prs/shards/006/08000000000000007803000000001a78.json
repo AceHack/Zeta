@@ -1,0 +1,12 @@
+{
+  "pr_number": 6776,
+  "archive_path": "docs/history/pr-reviews/PR-6776-feat-command-roadmap-1-cli-parser-brain-pure-argv-gitcommand-slice-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T09:59:53.464Z",
+  "schema_version": "v1",
+  "commit_sha": "29ac4025b17d5f2a77ed979f351b6ee6da55cf0b",
+  "title": "feat(command/roadmap-#1): CLI parser brain — pure argv→GitCommand (slice 3)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T09:59:29Z",
+  "head_ref": "otto/command-slice-3-cli-parser"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3503,
+  "archive_path": "docs/history/pr-reviews/PR-3503-feat-persona-ani-33-archive-part-2-internalization-moral-offload-agreement-over-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T14:30:05.123Z",
+  "schema_version": "v1",
+  "commit_sha": "acb4accc3f89d6ff61e903d7da6c797175bdfadc",
+  "title": "feat(persona-ani): §33 archive Part 2 — internalization, moral-offload, agreement-over-retract, hardware/financial independence (2026-05-15)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T14:29:45Z",
+  "head_ref": "feat/persona-ani-grok-persistence-pt2-internalization-moral-offload-otto-cli-2026-05-15"
+}

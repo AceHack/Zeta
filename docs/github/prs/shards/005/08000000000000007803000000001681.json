@@ -1,0 +1,12 @@
+{
+  "pr_number": 5761,
+  "archive_path": "docs/history/pr-reviews/PR-5761-feat-b-0891-determinerunnability-discriminator-scenario-runnabilityverdict-zflas.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:59:14.686Z",
+  "schema_version": "v1",
+  "commit_sha": "efe785eaa5b81299ab7ffa17e0b0e7032eca3565",
+  "title": "feat(B-0891): determineRunnability discriminator — Scenario → RunnabilityVerdict (zflash lane substantive work; completes 3-lane parallel discriminator pattern with PR #5758 + PR #5760)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:58:53Z",
+  "head_ref": "otto-cli/b-0891-determine-runnability-discriminator-completes-3-lane-parallel-pattern-2026-05-28"
+}

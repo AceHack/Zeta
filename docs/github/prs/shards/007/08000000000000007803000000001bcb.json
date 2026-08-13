@@ -1,0 +1,12 @@
+{
+  "pr_number": 7115,
+  "archive_path": "docs/history/pr-reviews/PR-7115-docs-research-declarative-dep-closure-over-host-compiler-os-to-replace-the-os.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T22:28:47.867Z",
+  "schema_version": "v1",
+  "commit_sha": "fba37d13df4d7b0a704687d380a3c64e7312fc06",
+  "title": "docs(research): declarative dep closure over host->compiler->os to replace the OS",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T22:28:28Z",
+  "head_ref": "otto/spec-deps-closure-host-compiler-os-replace-the-os"
+}

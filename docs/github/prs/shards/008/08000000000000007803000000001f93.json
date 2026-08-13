@@ -1,0 +1,12 @@
+{
+  "pr_number": 8083,
+  "archive_path": "docs/history/pr-reviews/PR-8083-chore-backlog-regenerate-backlog-index-to-resolve-status-check-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T22:36:51.592Z",
+  "schema_version": "v1",
+  "commit_sha": "7964fabe537b3bffb3e5b7944fabf373050a97bb",
+  "title": "chore(backlog): regenerate backlog index to resolve status check drift",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T22:36:28Z",
+  "head_ref": "gemini/backlog-hygiene"
+}

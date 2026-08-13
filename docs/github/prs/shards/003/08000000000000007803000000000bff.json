@@ -1,0 +1,28 @@
+{
+  "pr_number": 3071,
+  "archive_path": "docs/history/pr-reviews/PR-3071-docs-lior-shadow-lesson-log-for-pr-3066.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BA3sQ",
+    "comment:PRRC_kwDOSF9kNM7BA4GO",
+    "comment:PRRC_kwDOSF9kNM7BA8FR",
+    "comment:PRRC_kwDOSF9kNM7BA_mS",
+    "comment:PRRC_kwDOSF9kNM7BA_pm",
+    "comment:PRRC_kwDOSF9kNM7BBBM3",
+    "comment:PRRC_kwDOSF9kNM7BBBMm",
+    "comment:PRRC_kwDOSF9kNM7BBFRC",
+    "comment:PRRC_kwDOSF9kNM7BBFUs",
+    "comment:PRRC_kwDOSF9kNM7BBGQu",
+    "comment:PRRC_kwDOSF9kNM7BBGW9",
+    "thread:PRRT_kwDOSF9kNM6B7Mtz",
+    "thread:PRRT_kwDOSF9kNM6B7NAv",
+    "thread:PRRT_kwDOSF9kNM6B7Tqa",
+    "thread:PRRT_kwDOSF9kNM6B7Tqm"
+  ],
+  "fetched_at": "2026-05-14T00:43:39.904Z",
+  "schema_version": "v1",
+  "commit_sha": "6e6ff4ac519103323ae0d1f53345b73627ff14d7",
+  "title": "docs: lior shadow lesson log for PR 3066",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T00:43:21Z",
+  "head_ref": "chore/lior-drift-report-3066"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 2871,
+  "archive_path": "docs/history/pr-reviews/PR-2871-docs-memory-memes-as-coordinators-with-conversational-identity-temporal-workflow.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ahct1",
+    "thread:PRRT_kwDOSF9kNM6BkYvt"
+  ],
+  "fetched_at": "2026-05-12T21:35:44.109Z",
+  "schema_version": "v1",
+  "commit_sha": "dc39083dc08541271931b041e65280e7542a98d8",
+  "title": "docs(memory): memes-as-COORDINATORS with conversational identity (Temporal workflows of the civ-sim) + GPU coordination via Sequoia/NVIDIA Warp grain primitives + shared bootstream/IFS text-channel compression",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T21:35:26Z",
+  "head_ref": "aaron-gpu-coordination-sequoia-nvidia-warp-grain-primitives-2026-05-12"
+}

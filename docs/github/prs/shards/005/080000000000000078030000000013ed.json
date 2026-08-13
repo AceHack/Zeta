@@ -1,0 +1,12 @@
+{
+  "pr_number": 5101,
+  "archive_path": "docs/history/pr-reviews/PR-5101-backlog-b-0791-p2-microsoft-vscode-native-not-anthropic-is-standardizing-multi-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T05:34:30.688Z",
+  "schema_version": "v1",
+  "commit_sha": "401f65cca9d9a147a558035c1b9e165682f31a6e",
+  "title": "backlog(B-0791 P2): Microsoft VSCode-native (NOT Anthropic) is standardizing multi-harness ontology across .claude/.kiro/.cursor/.gemini/.codex — IDE-platform-level external pull (Aaron 2026-05-26 surface intel + correction)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:34:10Z",
+  "head_ref": "otto-cli/b0791-vscode-extension-multi-harness-ontology-standardization-2026-05-26"
+}

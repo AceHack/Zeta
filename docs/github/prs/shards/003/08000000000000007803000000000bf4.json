@@ -1,0 +1,12 @@
+{
+  "pr_number": 3060,
+  "archive_path": "docs/history/pr-reviews/PR-3060-docs-archive-pr-2762.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T00:15:52.540Z",
+  "schema_version": "v1",
+  "commit_sha": "763bfd1eb08937a93bebc45d2202992a685af14d",
+  "title": "docs: archive PR 2762",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T00:15:31Z",
+  "head_ref": "chore/archive-pr-2762"
+}

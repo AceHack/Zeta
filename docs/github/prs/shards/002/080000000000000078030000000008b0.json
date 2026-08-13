@@ -1,0 +1,12 @@
+{
+  "pr_number": 2224,
+  "archive_path": "docs/history/pr-reviews/PR-2224-feat-b-0362-concept-search-index-materialized-regex-queries.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T07:20:02.846Z",
+  "schema_version": "v1",
+  "commit_sha": "863ec063a63f664586fcbf96f1f68e6439e3c0d8",
+  "title": "feat(B-0362): concept search index — materialized regex queries",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:19:46Z",
+  "head_ref": "feat/b0362-concept-search-index"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4033,
+  "archive_path": "docs/history/pr-reviews/PR-4033-docs-rules-option-b-disclosure-for-3-user-scope-memory-refs-audit-4031.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T03:28:28.116Z",
+  "schema_version": "v1",
+  "commit_sha": "9c0b5d66b7ae1545d669625806dad7d6fd1ebb34",
+  "title": "docs(rules): Option B disclosure for 3 user-scope memory refs (audit #4031)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T03:28:10Z",
+  "head_ref": "otto/fix-dangling-rule-memory-refs-r2-2026-05-17"
+}

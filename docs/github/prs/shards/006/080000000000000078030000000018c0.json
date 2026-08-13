@@ -1,0 +1,16 @@
+{
+  "pr_number": 6336,
+  "archive_path": "docs/history/pr-reviews/PR-6336-chore-backlog-regen-backlog-md-add-missing-b-0954-1-index-entry-drift-fix.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GlBCO",
+    "comment:PRRC_kwDOSF9kNM7GlC2L",
+    "thread:PRRT_kwDOSF9kNM6GAGqn"
+  ],
+  "fetched_at": "2026-06-01T04:03:34.140Z",
+  "schema_version": "v1",
+  "commit_sha": "9a9518a3d0fdb4f1430127935f398bdfda875c4b",
+  "title": "chore(backlog): regen BACKLOG.md — add missing B-0954.1 index entry (drift fix)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T04:03:11Z",
+  "head_ref": "otto-windows/backlog-index-drift-b0954.1-2026-06-01"
+}

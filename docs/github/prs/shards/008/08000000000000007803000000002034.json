@@ -1,0 +1,12 @@
+{
+  "pr_number": 8244,
+  "archive_path": "docs/history/pr-reviews/PR-8244-docs-research-asymmetric-critic-infection-reproduction-transmission-vaccine-prom.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T03:10:19.562Z",
+  "schema_version": "v1",
+  "commit_sha": "540863744e4fa65869efa3be015aac91815e87f3",
+  "title": "docs(research): asymmetric-critic infection — reproduction, transmission, vaccine (prompt not model)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T03:09:54Z",
+  "head_ref": "otto/kestrel-reproduction-transmission-vaccine"
+}

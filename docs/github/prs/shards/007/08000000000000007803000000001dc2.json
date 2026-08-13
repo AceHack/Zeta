@@ -1,0 +1,12 @@
+{
+  "pr_number": 7618,
+  "archive_path": "docs/history/pr-reviews/PR-7618-fix-docs-satisfy-markdown-ordered-list-lint.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:22:27.582Z",
+  "schema_version": "v1",
+  "commit_sha": "adbb6d62a1c9ec10137ebd4d56276b5226f0725d",
+  "title": "fix(docs): satisfy markdown ordered-list lint",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:22:03Z",
+  "head_ref": "codex/vera-fix-markdownlint-kernel"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 4203,
+  "archive_path": "docs/history/pr-reviews/PR-4203-extend-rule-amara-3-layer-governance-synthesis-total-productivity-capture-as-pre.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CboOx",
+    "thread:PRRT_kwDOSF9kNM6C93Qp"
+  ],
+  "fetched_at": "2026-05-18T20:51:11.314Z",
+  "schema_version": "v1",
+  "commit_sha": "695ccd9decb689954bff67d505b755592e935b43",
+  "title": "extend(rule): Amara 3-layer governance synthesis + total-productivity-capture as precise adversary + call-center-with-better-fonts negative-space",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:50:51Z",
+  "head_ref": "shard/auto-load-rule-amara-3-layer-synthesis-total-productivity-capture-call-center-with-better-fonts-2026-05-18"
+}

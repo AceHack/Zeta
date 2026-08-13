@@ -1,0 +1,12 @@
+{
+  "pr_number": 7393,
+  "archive_path": "docs/history/pr-reviews/PR-7393-docs-vocab-the-like-suffix-convention-any-xxx-like-term-is-a-candidate-word-for-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:41:13.783Z",
+  "schema_version": "v1",
+  "commit_sha": "0dc41fc558e9a1e321b8b95f230954e7283d7040",
+  "title": "docs(vocab): the -like suffix convention — any xxx-like term is a candidate word for a ZetaId (lives in like/)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:40:47Z",
+  "head_ref": "otto/like-suffix-convention-candidate-for-zetaid"
+}

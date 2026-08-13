@@ -1,0 +1,12 @@
+{
+  "pr_number": 6778,
+  "archive_path": "docs/history/pr-reviews/PR-6778-docs-confirm-the-8-fold-app-twelve-factor-app-aaron-close-the-name-flag.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T10:02:34.902Z",
+  "schema_version": "v1",
+  "commit_sha": "9b000385150d082d0041b7559338beb9f322a79a",
+  "title": "docs: confirm the '8-fold app' = Twelve-Factor App (Aaron) — close the name flag",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T10:02:15Z",
+  "head_ref": "otto/confirm-twelve-factor-app"
+}

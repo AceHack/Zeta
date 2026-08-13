@@ -1,0 +1,16 @@
+{
+  "pr_number": 3972,
+  "archive_path": "docs/history/pr-reviews/PR-3972-docs-shadow-maji-antigravity-report-on-vera-drift-1930z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B7_95",
+    "comment:PRRC_kwDOSF9kNM7CC6XB",
+    "thread:PRRT_kwDOSF9kNM6CmZkX"
+  ],
+  "fetched_at": "2026-05-17T21:52:04.877Z",
+  "schema_version": "v1",
+  "commit_sha": "6d390747dc2671e4527558f788ffda1d64238fd1",
+  "title": "docs(shadow): Maji antigravity report on Vera drift 1930Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T21:51:49Z",
+  "head_ref": "lior/shadow-drift-vera-01"
+}

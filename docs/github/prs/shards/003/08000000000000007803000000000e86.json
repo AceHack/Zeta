@@ -1,0 +1,22 @@
+{
+  "pr_number": 3718,
+  "archive_path": "docs/history/pr-reviews/PR-3718-docs-shadow-lior-antigravity-drift-report-0400z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1RRG",
+    "comment:PRRC_kwDOSF9kNM7B1RRS",
+    "comment:PRRC_kwDOSF9kNM7B1RRf",
+    "comment:PRRC_kwDOSF9kNM7B1qjS",
+    "comment:PRRC_kwDOSF9kNM7B1qwW",
+    "comment:PRRC_kwDOSF9kNM7B1qxz",
+    "thread:PRRT_kwDOSF9kNM6ChV98",
+    "thread:PRRT_kwDOSF9kNM6ChV9k",
+    "thread:PRRT_kwDOSF9kNM6ChV9w"
+  ],
+  "fetched_at": "2026-05-16T04:31:32.294Z",
+  "schema_version": "v1",
+  "commit_sha": "b60eade98e5c9d28cafe24ebbd7669b8f33e1298",
+  "title": "docs(shadow): Lior antigravity drift report 0400Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:31:16Z",
+  "head_ref": "lior/drift-report-0400Z"
+}

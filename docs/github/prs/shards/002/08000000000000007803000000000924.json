@@ -1,0 +1,12 @@
+{
+  "pr_number": 2340,
+  "archive_path": "docs/history/pr-reviews/PR-2340-chore-b-0365-2-fix-stale-memory-md-index-15-30-catches.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T20:29:01.914Z",
+  "schema_version": "v1",
+  "commit_sha": "040128f8dcbe0fa423c281efc19a1eb8e0fcbf56",
+  "title": "chore(B-0365.2): fix stale MEMORY.md index — 15→30 catches",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T20:28:45Z",
+  "head_ref": "fix/b0365.2-memory-md-paired-edit-followup"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3578,
+  "archive_path": "docs/history/pr-reviews/PR-3578-backlog-b-0536-orphan-ferry-ref-cleanup-audit-false-positive-on-filename-paths-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T20:30:48.987Z",
+  "schema_version": "v1",
+  "commit_sha": "fab41a0127d19a346a38bd3a2ff25854be98b5c2",
+  "title": "backlog(B-0536): orphan-ferry-ref cleanup + audit false-positive on filename paths (P3)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T20:30:29Z",
+  "head_ref": "backlog/b0536-orphan-ferry-ref-cleanup-and-audit-false-positives-otto-cli-2026-05-15"
+}

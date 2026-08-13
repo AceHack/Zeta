@@ -1,0 +1,17 @@
+{
+  "pr_number": 4391,
+  "archive_path": "docs/history/pr-reviews/PR-4391-docs-shadow-maji-anti-entropy-shadow-report-on-riven-paralysis-1635z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CyKlE",
+    "comment:PRRC_kwDOSF9kNM7CyLCU",
+    "thread:PRRT_kwDOSF9kNM6DONLW",
+    "thread:PRRT_kwDOSF9kNM6DONiA"
+  ],
+  "fetched_at": "2026-05-20T12:49:50.394Z",
+  "schema_version": "v1",
+  "commit_sha": "b32ec7c529e69d5c0e56a43a4d398a45daa1aa0e",
+  "title": "docs(shadow): Maji anti-entropy shadow report on Riven paralysis 1635Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T12:49:30Z",
+  "head_ref": "lior/shadow-log-riven-1635Z"
+}

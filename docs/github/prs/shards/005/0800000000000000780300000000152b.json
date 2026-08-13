@@ -1,0 +1,12 @@
+{
+  "pr_number": 5419,
+  "archive_path": "docs/history/pr-reviews/PR-5419-fix-b-0853-1-post-merge-3-copilot-p1-security-tightenings-on-pr-5417-job-scope-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T07:35:29.997Z",
+  "schema_version": "v1",
+  "commit_sha": "c417b971e4627b99a968027d68f932e704ac3a22",
+  "title": "fix(B-0853.1 post-merge): 3 Copilot P1 security tightenings on PR #5417 (job-scope id-token + tightened safety wording + pinned verification identity)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T07:35:10Z",
+  "head_ref": "fix/b-0853-1-copilot-3-security-tightenings"
+}

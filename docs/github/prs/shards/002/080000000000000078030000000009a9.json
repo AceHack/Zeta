@@ -1,0 +1,15 @@
+{
+  "pr_number": 2473,
+  "archive_path": "docs/history/pr-reviews/PR-2473-fix-b-0161-close-substrate-reshelf-row-razored-acs-all-done-free-zone-blocked-by.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_nbBm",
+    "thread:PRRT_kwDOSF9kNM6A5UVP"
+  ],
+  "fetched_at": "2026-05-10T11:42:30.039Z",
+  "schema_version": "v1",
+  "commit_sha": "605b32a04922d58e67bca347301f7c4f7dd555bc",
+  "title": "fix(B-0161): close substrate-reshelf row — razored ACs all done, free-zone blocked by B-0330",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T11:42:09Z",
+  "head_ref": "fix/B-0161-close-substrate-reshelf"
+}

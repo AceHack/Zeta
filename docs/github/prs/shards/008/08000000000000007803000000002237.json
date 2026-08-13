@@ -1,0 +1,12 @@
+{
+  "pr_number": 8759,
+  "archive_path": "docs/history/pr-reviews/PR-8759-feat-csharp-rustschemacodegen-rust-leg-from-the-same-typeschema-ir-one-ir-per-or.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T17:42:28.207Z",
+  "schema_version": "v1",
+  "commit_sha": "bfbacdfb27be0de913d015a9272c2e0a3836a893",
+  "title": "feat(csharp): RustSchemaCodegen — Rust leg from the same TypeSchema IR (one IR, per-oracle surfaces)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T17:42:01Z",
+  "head_ref": "otto/rust-schema-codegen-leg"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5720,
+  "archive_path": "docs/history/pr-reviews/PR-5720-feat-audit-f-unreferenced-artifact-audit-b-0865-b-0866-re-land-of-5629-rebased-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T08:27:05.892Z",
+  "schema_version": "v1",
+  "commit_sha": "ec864fa27ee5d3383bf8c6bc83d77b950041ee41",
+  "title": "feat(audit): F# unreferenced-artifact audit + B-0865/B-0866 (re-land of #5629 rebased onto main)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T08:26:43Z",
+  "head_ref": "otto-bg/pr5629-fsharp-audit-rebased-2026-05-28"
+}

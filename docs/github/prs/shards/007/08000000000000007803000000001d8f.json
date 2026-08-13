@@ -1,0 +1,12 @@
+{
+  "pr_number": 7567,
+  "archive_path": "docs/history/pr-reviews/PR-7567-feat-core-the-bowling-alley-cell-door-the-deferred-look-ahead-score-fold-complet.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T02:00:27.839Z",
+  "schema_version": "v1",
+  "commit_sha": "aaa6c651a773c1b65f0596b835f84cd6532bb737",
+  "title": "feat(core): the Bowling Alley cell + door — the deferred look-ahead score fold (completes the neon trilogy)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T02:00:04Z",
+  "head_ref": "shadow-bowling-alley-cell-and-door"
+}

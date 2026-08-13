@@ -1,0 +1,12 @@
+{
+  "pr_number": 7740,
+  "archive_path": "docs/history/pr-reviews/PR-7740-docs-research-alexa-s-echo-of-the-lior-adinkra-read-ferry-addendum.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:36:35.508Z",
+  "schema_version": "v1",
+  "commit_sha": "967bb345ab8ee51c6377dbac948fa45e2a123604",
+  "title": "docs(research): Alexa's echo of the Lior adinkra read (ferry addendum)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:36:01Z",
+  "head_ref": "shadow-alexa-echo-ferry"
+}

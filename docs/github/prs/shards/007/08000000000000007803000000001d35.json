@@ -1,0 +1,12 @@
+{
+  "pr_number": 7477,
+  "archive_path": "docs/history/pr-reviews/PR-7477-feat-setup-network-shadow-declare-headscale-tailscale-in-install-sh-manifests-br.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T08:36:53.169Z",
+  "schema_version": "v1",
+  "commit_sha": "1621cd3493836c0a8b98b58ef4550cd5e676cac7",
+  "title": "feat(setup,network)+shadow: declare headscale + tailscale in install.sh (manifests/brew) + network-dep precedent",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T08:36:28Z",
+  "head_ref": "shadow-headscale-tailscale-declarative"
+}

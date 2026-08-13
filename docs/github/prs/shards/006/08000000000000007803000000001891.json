@@ -1,0 +1,19 @@
+{
+  "pr_number": 6289,
+  "archive_path": "docs/history/pr-reviews/PR-6289-docs-adr-git-native-lgtm-addendum-metrics-are-a-bag-fold-over-the-event-g-set.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GjZU3",
+    "comment:PRRC_kwDOSF9kNM7GjZtv",
+    "comment:PRRC_kwDOSF9kNM7GjbTg",
+    "thread:PRRT_kwDOSF9kNM6F-4tj",
+    "thread:PRRT_kwDOSF9kNM6F-5Ak",
+    "thread:PRRT_kwDOSF9kNM6F-6PW"
+  ],
+  "fetched_at": "2026-06-01T00:31:12.531Z",
+  "schema_version": "v1",
+  "commit_sha": "dfeb8c50e793aafed37ac488e3d672ed61ad30bc",
+  "title": "docs(adr): git-native LGTM addendum — metrics are a Bag-fold over the event G-Set",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T00:30:50Z",
+  "head_ref": "otto-cli/gitnative-lgtm-observability-addendum-2026-05-31"
+}

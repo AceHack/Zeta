@@ -1,0 +1,12 @@
+{
+  "pr_number": 7603,
+  "archive_path": "docs/history/pr-reviews/PR-7603-feat-rust-fourcorner-rust-conformer-fourth-oracle-the-treaty-square-closes.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T04:57:20.886Z",
+  "schema_version": "v1",
+  "commit_sha": "9e41deb54a90bf4e31ab69ab6a4ab54427da96a9",
+  "title": "feat(rust): FourCorner Rust conformer — fourth oracle; the treaty square closes",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T04:56:58Z",
+  "head_ref": "shadow-fourcorner-rust-conformer"
+}

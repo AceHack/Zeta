@@ -1,0 +1,12 @@
+{
+  "pr_number": 8588,
+  "archive_path": "docs/history/pr-reviews/PR-8588-fix-b-0891-scenarios-3-4-qemu-harness-serial-markers.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T00:11:58.586Z",
+  "schema_version": "v1",
+  "commit_sha": "3df830a213539e704b8814231a6b150e4d397226",
+  "title": "Fix B-0891 scenarios 3/4 QEMU harness serial markers",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T00:11:33Z",
+  "head_ref": "fix/b0891-scenarios-3-4-harness-markers"
+}

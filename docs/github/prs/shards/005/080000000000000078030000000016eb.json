@@ -1,0 +1,12 @@
+{
+  "pr_number": 5867,
+  "archive_path": "docs/history/pr-reviews/PR-5867-docs-archive-preserve-prs-5865-and-5855.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T17:08:31.887Z",
+  "schema_version": "v1",
+  "commit_sha": "101c42d98b206a66034b67d81222a921ec45d54a",
+  "title": "docs(archive): Preserve PRs #5865 and #5855",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T17:08:11Z",
+  "head_ref": "lior/archive-prs-5865-5855"
+}

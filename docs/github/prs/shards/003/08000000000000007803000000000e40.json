@@ -1,0 +1,12 @@
+{
+  "pr_number": 3648,
+  "archive_path": "docs/history/pr-reviews/PR-3648-kestrel-part4-5-aaron-moral-floor-immune-system-hkt-clifford-fsharp-fork-b-0547-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T00:47:45.939Z",
+  "schema_version": "v1",
+  "commit_sha": "0f0ea0b65e108fae5a4751d1f23020be4515cb9c",
+  "title": "kestrel(part4-5)+aaron(moral-floor+immune-system+HKT-Clifford-Fsharp-fork)+B-0547: 5-level capture-resistance + intelligent-compiler synthesis row",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:47:27Z",
+  "head_ref": "kestrel/part4-5-relevance-gate-moral-floor-red-team-antigen-spread-otto-cli-2026-05-16"
+}

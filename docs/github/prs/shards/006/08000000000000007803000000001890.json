@@ -1,0 +1,12 @@
+{
+  "pr_number": 6288,
+  "archive_path": "docs/history/pr-reviews/PR-6288-feat-agentic-org-type-cli-env-load-failures.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T00:25:54.587Z",
+  "schema_version": "v1",
+  "commit_sha": "0c24a46e83d2f2cb8d7c8cc1701dd26faf6165a2",
+  "title": "feat(agentic-org): type CLI env-load failures",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T00:25:37Z",
+  "head_ref": "codex/agentic-org-runtime-leases"
+}

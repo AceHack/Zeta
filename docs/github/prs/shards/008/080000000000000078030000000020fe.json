@@ -1,0 +1,12 @@
+{
+  "pr_number": 8446,
+  "archive_path": "docs/history/pr-reviews/PR-8446-memory-mika-ferry-pt2-router-multiplicative-16-choice-social-contract-child-safe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T04:58:42.368Z",
+  "schema_version": "v1",
+  "commit_sha": "2d534acbed5acaa744218eeb3178974b5122f2b8",
+  "title": "memory(mika): ferry pt2 — router-multiplicative / 16-choice social contract / child-safety referent / immune-absorbs / knights-knaves-shaman arena",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T04:58:14Z",
+  "head_ref": "otto/mika-pt2-router-arena-immune-knaves-ferry"
+}

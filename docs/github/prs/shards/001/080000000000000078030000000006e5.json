@@ -1,0 +1,19 @@
+{
+  "pr_number": 1765,
+  "archive_path": "docs/history/pr-reviews/PR-1765-archive-preserve-pr-1764-review-output.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-ptS6",
+    "comment:PRRC_kwDOSF9kNM6-ptTL",
+    "comment:PRRC_kwDOSF9kNM6-pw2B",
+    "comment:PRRC_kwDOSF9kNM6-pw9V",
+    "thread:PRRT_kwDOSF9kNM6ALb19",
+    "thread:PRRT_kwDOSF9kNM6ALb1y"
+  ],
+  "fetched_at": "2026-05-07T02:33:21.614Z",
+  "schema_version": "v1",
+  "commit_sha": "f3b0d19058491e6ddf31241081d9aedb67440b45",
+  "title": "archive: preserve PR 1764 review output",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T02:30:27Z",
+  "head_ref": "claim/archive-pr-1764-review-substrate"
+}

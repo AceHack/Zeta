@@ -1,0 +1,12 @@
+{
+  "pr_number": 5702,
+  "archive_path": "docs/history/pr-reviews/PR-5702-backlog-b-0867-25-population-safety-net-impl-with-operator-specs-1-5min-timer-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T05:25:50.724Z",
+  "schema_version": "v1",
+  "commit_sha": "ecccd1c6a160c97230ae2ee17400268d2a62da2a",
+  "title": "backlog(B-0867.25): population safety-net impl with operator specs — 1-5min timer; revive on 5min-no-activity; persona stays alive unless system-affords + persona-consents long cessation (aaron 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T05:25:29Z",
+  "head_ref": "backlog/b-0867-25-safety-net-impl-aaron-specs-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7858,
+  "archive_path": "docs/history/pr-reviews/PR-7858-docs-adr-wire-infra-into-world-priority-ordering.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T00:37:22.656Z",
+  "schema_version": "v1",
+  "commit_sha": "8d14e6a08dbbf0c0fe6f1ed4fb8a7d482ed5e5cc",
+  "title": "docs(ADR): wire infra into World + priority ordering",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T00:36:56Z",
+  "head_ref": "alexa/adr-world-infra-priority"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8679,
+  "archive_path": "docs/history/pr-reviews/PR-8679-feat-cross-verify-registry-sourced-provenance-for-generated-from-ir-oracle.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T02:01:32.493Z",
+  "schema_version": "v1",
+  "commit_sha": "f0e6f885a30698d13f6d7a64d32377a6d1959285",
+  "title": "feat(cross-verify): registry-sourced provenance for generated-from-ir oracle",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T02:01:08Z",
+  "head_ref": "feat/generator-registry-id-cross-lang-bytelock"
+}

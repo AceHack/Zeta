@@ -1,0 +1,19 @@
+{
+  "pr_number": 3002,
+  "archive_path": "docs/history/pr-reviews/PR-3002-docs-backlog-b-0443-launch-substrate-carve-out-for-persona-naming-in-docs-launch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A4nW7",
+    "comment:PRRC_kwDOSF9kNM7A4nWH",
+    "comment:PRRC_kwDOSF9kNM7A4nXX",
+    "thread:PRRT_kwDOSF9kNM6B1Kvx",
+    "thread:PRRT_kwDOSF9kNM6B1Kwc",
+    "thread:PRRT_kwDOSF9kNM6B1Kwv"
+  ],
+  "fetched_at": "2026-05-13T16:57:39.561Z",
+  "schema_version": "v1",
+  "commit_sha": "9498f0314838d3346e463863893983627e6f3ddc",
+  "title": "docs(backlog): B-0443 — launch-substrate carve-out for persona naming in docs/launch/** (resolve recurring Copilot finding)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T16:57:08Z",
+  "head_ref": "otto-b0443-launch-substrate-persona-naming-carve-out-2026-05-13"
+}

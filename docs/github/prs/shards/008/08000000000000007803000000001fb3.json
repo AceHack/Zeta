@@ -1,0 +1,12 @@
+{
+  "pr_number": 8115,
+  "archive_path": "docs/history/pr-reviews/PR-8115-feat-mixin-implement-gc-safe-weak-keyed-mixin-tables-in-6-languages.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:07:51.961Z",
+  "schema_version": "v1",
+  "commit_sha": "fd636ca7130236437751f8b25329238e58865947",
+  "title": "feat(mixin): implement GC-safe weak-keyed mixin tables in 6 languages",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:07:28Z",
+  "head_ref": "gemini/gc-safe-mixin-state-tables"
+}

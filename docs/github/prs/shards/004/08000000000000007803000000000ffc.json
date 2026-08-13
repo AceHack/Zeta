@@ -1,0 +1,16 @@
+{
+  "pr_number": 4092,
+  "archive_path": "docs/history/pr-reviews/PR-4092-docs-archive-maji-pr-preservation-discipline-4091-4082.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CAELc",
+    "comment:PRRC_kwDOSF9kNM7CDLOh",
+    "thread:PRRT_kwDOSF9kNM6CpkLM"
+  ],
+  "fetched_at": "2026-05-17T22:48:03.898Z",
+  "schema_version": "v1",
+  "commit_sha": "48b03ef8f6fe2b54fd8e3bc0b377d788d8a2327c",
+  "title": "docs(archive): Maji PR preservation discipline 4091-4082",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T22:47:44Z",
+  "head_ref": "maji/archive-prs-4091-etc"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5132,
+  "archive_path": "docs/history/pr-reviews/PR-5132-fix-backlog-p0-renumber-4-peer-classifier-bypass-rows-b-0800-0803-b-0807-0810-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T08:35:26.898Z",
+  "schema_version": "v1",
+  "commit_sha": "f39ae80085748fc7d418d8775bdc15ffa022b3ee",
+  "title": "fix(backlog P0): renumber 4 peer classifier-bypass rows B-0800-0803 → B-0807-0810 — resolves ID-uniqueness lint failure",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T08:35:08Z",
+  "head_ref": "otto-cli/p0-fix-dup-ids-b0800-0803-renumber-peer-classifier-bypass-rows-2026-05-26"
+}

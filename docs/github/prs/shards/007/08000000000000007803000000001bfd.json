@@ -1,0 +1,12 @@
+{
+  "pr_number": 7165,
+  "archive_path": "docs/history/pr-reviews/PR-7165-feat-platform-durable-rooms-longhorn-backed-statefulset-room-service.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:32:31.878Z",
+  "schema_version": "v1",
+  "commit_sha": "0b870dd4d2fb7507d3c2588bccd6fbb8743d6c23",
+  "title": "feat(platform): durable Rooms — Longhorn-backed StatefulSet room-service",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:32:08Z",
+  "head_ref": "feat/durable-room-service"
+}

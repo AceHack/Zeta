@@ -1,0 +1,12 @@
+{
+  "pr_number": 3076,
+  "archive_path": "docs/history/pr-reviews/PR-3076-chore-tick-0052z-shard-pr-3074-reviewer-thread-fixes-landed-by-concurrent-tick.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T00:55:31.127Z",
+  "schema_version": "v1",
+  "commit_sha": "84128052c421d0a570a231ff71733e63c2073c59",
+  "title": "chore(tick): 0052Z shard — PR #3074 reviewer-thread fixes landed by concurrent tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T00:55:15Z",
+  "head_ref": "chore/tick-shard-0052z-2026-05-14"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8739,
+  "archive_path": "docs/history/pr-reviews/PR-8739-docs-handoff-phase-d-gen-gen-gen-research-math-team.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T15:45:50.556Z",
+  "schema_version": "v1",
+  "commit_sha": "362aef7bbef641750a17c820ce6f34b8d836649c",
+  "title": "docs(handoff): Phase D gen(gen)=gen research → math team",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T15:45:23Z",
+  "head_ref": "alexa/gen-phase-c"
+}

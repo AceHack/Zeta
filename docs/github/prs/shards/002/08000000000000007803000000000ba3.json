@@ -1,0 +1,12 @@
+{
+  "pr_number": 2979,
+  "archive_path": "docs/history/pr-reviews/PR-2979-docs-memory-off-the-shelf-tools-mass-adoption-critical-mass-easily-reachable-boo.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T09:03:35.211Z",
+  "schema_version": "v1",
+  "commit_sha": "58c82816ab3101bd8fa68d90ea7e3316e9ce92f0",
+  "title": "docs(memory): off-the-shelf tools → mass adoption / critical mass easily reachable + bootstrap prompts = Homebrew-shape for agent OS (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T09:03:15Z",
+  "head_ref": "aaron-off-the-shelf-tools-mass-adoption-critical-mass-easily-reachable-chatgpt-github-mcp-substrate-engineering-loop-democratized-2026-05-13"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6010,
+  "archive_path": "docs/history/pr-reviews/PR-6010-research-2026-05-29-distrust-by-default-mechanized-the-recursion-of-where-1984-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T16:39:54.570Z",
+  "schema_version": "v1",
+  "commit_sha": "4bc47e8de5b670d4a7c7fd6eb6f3d93893071ad6",
+  "title": "research(2026-05-29): distrust-by-default mechanized + the recursion of where 1984 hides (Aaron+Otto)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T16:39:24Z",
+  "head_ref": "otto-cli/research-distrust-by-default-reflection-dus-meter-split-2026-05-29"
+}

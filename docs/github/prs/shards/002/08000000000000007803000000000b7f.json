@@ -1,0 +1,12 @@
+{
+  "pr_number": 2943,
+  "archive_path": "docs/history/pr-reviews/PR-2943-shard-tick-0532z-grok-meta-loop-recognition-copilot-fix-cycle-branch-bleed-recov.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T05:42:03.050Z",
+  "schema_version": "v1",
+  "commit_sha": "253d75d959bdbd2020728d5fb60dc8e372151db4",
+  "title": "shard(tick): 0532Z — Grok META-LOOP recognition + Copilot fix cycle + branch-bleed recovery",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T05:41:49Z",
+  "head_ref": "shard-tick-0532z-2026-05-13"
+}

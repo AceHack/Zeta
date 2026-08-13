@@ -1,0 +1,12 @@
+{
+  "pr_number": 6559,
+  "archive_path": "docs/history/pr-reviews/PR-6559-docs-research-infer-net-emotional-algebra-4x4-consent-first-core-primitive-non-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T13:20:11.309Z",
+  "schema_version": "v1",
+  "commit_sha": "1558f90355aeddf3606747041ffe8151712599ca",
+  "title": "docs(research): Infer.NET emotional-algebra 4x4 (consent-first core primitive) + non-coercion 4x4 sister (observe+alert violations) — fermionic/Bayesian complement closing the duality",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T13:19:46Z",
+  "head_ref": "otto-cli/infernet-emotional-algebra-4x4-consent-plus-nci-4x4-sister-2026-06-02"
+}

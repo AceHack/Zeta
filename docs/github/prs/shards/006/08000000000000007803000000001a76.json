@@ -1,0 +1,12 @@
+{
+  "pr_number": 6774,
+  "archive_path": "docs/history/pr-reviews/PR-6774-feat-command-roadmap-1-git-ref-command-verbs-branch-checkout-commit-log-status-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T09:48:27.205Z",
+  "schema_version": "v1",
+  "commit_sha": "f1493eb556c5a55a0c18c13dbb8100b075b89698",
+  "title": "feat(command/roadmap-#1): git-ref command verbs — branch/checkout/commit/log/status (LibGit2Sharp, local)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T09:48:09Z",
+  "head_ref": "otto/command-core-slice-2-git-ref-verbs"
+}

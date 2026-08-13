@@ -1,0 +1,12 @@
+{
+  "pr_number": 6509,
+  "archive_path": "docs/history/pr-reviews/PR-6509-feat-dynamicvalue-rust-cbor-oracle-replays-the-seed-float-bytes-locked.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T00:38:01.570Z",
+  "schema_version": "v1",
+  "commit_sha": "08d24384f9d347f7893b08bbe16fc24bf7257d69",
+  "title": "feat(DynamicValue): Rust CBOR oracle replays the seed (Float + Bytes locked)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T00:37:42Z",
+  "head_ref": "otto-cli/dynamicvalue-cbor-rust-replay-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6639,
+  "archive_path": "docs/history/pr-reviews/PR-6639-rules-autonomy-within-bounds-anthropomorphic-register-split-maintainer-ratified-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T08:35:36.761Z",
+  "schema_version": "v1",
+  "commit_sha": "4c5d3cf800fec30f404c641b4b9d9546947f0042",
+  "title": "rules: autonomy-within-bounds + anthropomorphic register-split (maintainer-ratified Kestrel-exchange principles)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T08:35:15Z",
+  "head_ref": "otto-cli/governance-rules-autonomy-bounds-and-register-split-2026-06-03"
+}

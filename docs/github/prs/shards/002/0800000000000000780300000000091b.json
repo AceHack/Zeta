@@ -1,0 +1,15 @@
+{
+  "pr_number": 2331,
+  "archive_path": "docs/history/pr-reviews/PR-2331-feat-b-0365-decompose-nirvanic-fusion-ship-bundle-into-6-atomic-child-rows.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_jc-9",
+    "thread:PRRT_kwDOSF9kNM6A2LNM"
+  ],
+  "fetched_at": "2026-05-09T19:07:47.273Z",
+  "schema_version": "v1",
+  "commit_sha": "cdecf271cb59baaf674804710c7c3db807ae2fce",
+  "title": "feat(B-0365): decompose Nirvanic Fusion Ship bundle into 6 atomic child rows",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T19:07:31Z",
+  "head_ref": "worktree-twinkling-enchanting-flame"
+}

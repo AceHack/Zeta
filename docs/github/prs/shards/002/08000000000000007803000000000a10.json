@@ -1,0 +1,12 @@
+{
+  "pr_number": 2576,
+  "archive_path": "docs/history/pr-reviews/PR-2576-docs-memory-microkernel-as-trust-tier-router-arrow-ipc-itron-patent-at-os-level.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T23:50:37.261Z",
+  "schema_version": "v1",
+  "commit_sha": "ccae109a1eea95ccebbabc5e9dd7c2e93abc661b",
+  "title": "docs(memory): microkernel as trust-tier router — Arrow IPC + Itron patent at OS level",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T23:50:18Z",
+  "head_ref": "docs/microkernel-trust-router-2026-05-10"
+}

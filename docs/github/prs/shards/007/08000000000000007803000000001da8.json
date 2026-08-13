@@ -1,0 +1,12 @@
+{
+  "pr_number": 7592,
+  "archive_path": "docs/history/pr-reviews/PR-7592-feat-core-recordedsource-13-executable-softisr-softvalue-in-the-arrow-treaty-tri.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T04:16:20.551Z",
+  "schema_version": "v1",
+  "commit_sha": "22b4cf1d439de0cea0722aefe67785dc789dbc82",
+  "title": "feat(core): RecordedSource (§13 executable) + SoftIsr (SoftValue in the arrow) + treaty trigger fired",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T04:15:58Z",
+  "head_ref": "shadow-recorded-source-softisr-treaty-trigger"
+}

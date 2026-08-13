@@ -1,0 +1,12 @@
+{
+  "pr_number": 8996,
+  "archive_path": "docs/history/pr-reviews/PR-8996-docs-decision-endgame-adapter-zeta-s-own-db-as-first-class-pki.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T20:11:53.472Z",
+  "schema_version": "v1",
+  "commit_sha": "d751ec2b29e0f634863e500a7af5079c614afcb4",
+  "title": "docs(decision): endgame adapter — Zeta's own DB as first-class PKI",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T20:11:26Z",
+  "head_ref": "otto/hexagonal-db-as-first-class-pki"
+}

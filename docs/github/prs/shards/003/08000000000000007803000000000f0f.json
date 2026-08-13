@@ -1,0 +1,12 @@
+{
+  "pr_number": 3855,
+  "archive_path": "docs/history/pr-reviews/PR-3855-chore-b-0118-add-status-section-multi-row-class-4-candidate-umbrella-tool-shippe.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T10:28:09.973Z",
+  "schema_version": "v1",
+  "commit_sha": "0d64a70b57933a165243139aff72a4408cecede6",
+  "title": "chore(b-0118): add Status section — multi-row class-#4 candidate (umbrella tool shipped; children open)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:27:55Z",
+  "head_ref": "chore/b0118-close-row-otto-cli-2026-05-16"
+}

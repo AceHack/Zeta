@@ -1,0 +1,21 @@
+{
+  "pr_number": 5103,
+  "archive_path": "docs/history/pr-reviews/PR-5103-feat-b-0792-iter-5-1-5-2-self-contained-usb-nm-profile-persist-avahi-mdns-per-no.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EyJg1",
+    "comment:PRRC_kwDOSF9kNM7EyJhN",
+    "comment:PRRC_kwDOSF9kNM7EyJhg",
+    "comment:PRRC_kwDOSF9kNM7EyJhr",
+    "thread:PRRT_kwDOSF9kNM6EsTu3",
+    "thread:PRRT_kwDOSF9kNM6EsTui",
+    "thread:PRRT_kwDOSF9kNM6EsTvD",
+    "thread:PRRT_kwDOSF9kNM6EsTvL"
+  ],
+  "fetched_at": "2026-05-26T05:51:23.350Z",
+  "schema_version": "v1",
+  "commit_sha": "6ee3a29d1748702e30f08fc791714d54657179c4",
+  "title": "feat(B-0792 iter-5.1+5.2): self-contained USB — NM-profile persist + Avahi mDNS + per-node hostname injection (decouple from role-stack) (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:51:04Z",
+  "head_ref": "otto-cli/iter51-wifi-creds-injection-mdns-publishing-2026-05-26"
+}

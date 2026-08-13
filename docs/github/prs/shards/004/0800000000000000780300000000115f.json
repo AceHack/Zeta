@@ -1,0 +1,12 @@
+{
+  "pr_number": 4447,
+  "archive_path": "docs/history/pr-reviews/PR-4447-docs-archive-lior-pr-preservation-batch-4446-4442.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-20T19:25:18.249Z",
+  "schema_version": "v1",
+  "commit_sha": "07ae73b81c097618803d349672e298673d4b5388",
+  "title": "docs(archive): Lior PR preservation batch 4446, 4442",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T19:24:56Z",
+  "head_ref": "lior/preserve-batch-4446-4442"
+}

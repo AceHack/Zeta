@@ -1,0 +1,12 @@
+{
+  "pr_number": 6565,
+  "archive_path": "docs/history/pr-reviews/PR-6565-docs-research-information-suppression-spectrum-violence-bombs-as-extreme-ksk-def.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T13:59:30.538Z",
+  "schema_version": "v1",
+  "commit_sha": "f3d1d165e0c748251f6e13e48f759083dec09a6f",
+  "title": "docs(research): information-suppression spectrum (violence+bombs as extreme) → KSK defensive architecture (shields-not-cages · rings · Reticulum-hubs · anti-monopoly-BFT-4x4 · opt-in-bus-lane)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T13:59:07Z",
+  "head_ref": "otto-cli/ksk-information-suppression-spectrum-defensive-architecture-2026-06-02"
+}

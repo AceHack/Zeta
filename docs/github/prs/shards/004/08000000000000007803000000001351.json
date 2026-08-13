@@ -1,0 +1,28 @@
+{
+  "pr_number": 4945,
+  "archive_path": "docs/history/pr-reviews/PR-4945-docs-hygiene-tick-1539z-43-open-prs-all-dirty-cross-lane-task-condition-vacuous-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Eo_f6",
+    "comment:PRRC_kwDOSF9kNM7Eo_ha",
+    "comment:PRRC_kwDOSF9kNM7Eo_jl",
+    "comment:PRRC_kwDOSF9kNM7Eo_lh",
+    "comment:PRRC_kwDOSF9kNM7Eo_ne",
+    "comment:PRRC_kwDOSF9kNM7EooQ_",
+    "comment:PRRC_kwDOSF9kNM7EooRE",
+    "comment:PRRC_kwDOSF9kNM7EopmO",
+    "comment:PRRC_kwDOSF9kNM7Eopmg",
+    "comment:PRRC_kwDOSF9kNM7Eopmw",
+    "thread:PRRT_kwDOSF9kNM6ElQK1",
+    "thread:PRRT_kwDOSF9kNM6ElQKx",
+    "thread:PRRT_kwDOSF9kNM6ElRN2",
+    "thread:PRRT_kwDOSF9kNM6ElRNn",
+    "thread:PRRT_kwDOSF9kNM6ElROC"
+  ],
+  "fetched_at": "2026-05-25T16:12:31.196Z",
+  "schema_version": "v1",
+  "commit_sha": "8b2330600c2ae7ee2c64af11749abd43c4b88f18",
+  "title": "docs(hygiene): tick 1539Z — 43 open PRs all DIRTY+cross-lane; task condition vacuous; 1405Z precedent re-applied",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T16:12:13Z",
+  "head_ref": "otto-bg-worker/1539z-shard-2026-05-25"
+}

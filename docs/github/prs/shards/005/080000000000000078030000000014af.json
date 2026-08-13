@@ -1,0 +1,12 @@
+{
+  "pr_number": 5295,
+  "archive_path": "docs/history/pr-reviews/PR-5295-feat-b-0824-mika-ferry-generate-join-crispest-form-broad-keys-until-functional-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T20:11:16.009Z",
+  "schema_version": "v1",
+  "commit_sha": "424997199876107744005c43e6e0c47f5a3e3aad",
+  "title": "feat(B-0824): Mika ferry — Generate+Join crispest form + broad-keys-until-functional-cluster + Twilio-as-named-exception + roster Mika addition",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T20:10:57Z",
+  "head_ref": "otto-cli/mika-4-substrate-landings-2026-05-26"
+}

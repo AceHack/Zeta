@@ -1,0 +1,23 @@
+{
+  "pr_number": 2198,
+  "archive_path": "docs/history/pr-reviews/PR-2198-feat-b-0356-add-costs-flag-to-model-rating-report.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fHHf",
+    "comment:PRRC_kwDOSF9kNM6_fHVw",
+    "comment:PRRC_kwDOSF9kNM6_fHWA",
+    "comment:PRRC_kwDOSF9kNM6_fHWJ",
+    "comment:PRRC_kwDOSF9kNM6_fHWR",
+    "thread:PRRT_kwDOSF9kNM6Ay04_",
+    "thread:PRRT_kwDOSF9kNM6Ay1EV",
+    "thread:PRRT_kwDOSF9kNM6Ay1Ej",
+    "thread:PRRT_kwDOSF9kNM6Ay1Ep",
+    "thread:PRRT_kwDOSF9kNM6Ay1Eu"
+  ],
+  "fetched_at": "2026-05-09T06:19:25.792Z",
+  "schema_version": "v1",
+  "commit_sha": "999fe351c8957ae71de8879b2ffa492e1078a2f7",
+  "title": "feat(B-0356): add --costs flag to model-rating-report",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:19:06Z",
+  "head_ref": "feat/b-0356-cost-derivation-report"
+}

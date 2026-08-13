@@ -1,0 +1,12 @@
+{
+  "pr_number": 8811,
+  "archive_path": "docs/history/pr-reviews/PR-8811-feat-gen-phase-f-q-codegen-target-7-languages.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:49:01.533Z",
+  "schema_version": "v1",
+  "commit_sha": "81e920013953367d6e212a95e69490fceb20f5e1",
+  "title": "feat(gen): Phase F — Q# codegen target (7 languages)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:48:35Z",
+  "head_ref": "alexa/phase-f-qsharp"
+}

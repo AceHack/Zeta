@@ -1,0 +1,12 @@
+{
+  "pr_number": 8801,
+  "archive_path": "docs/history/pr-reviews/PR-8801-docs-handoff-book-rows-1-3-lean-structural-legs-machine-checked-verified-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:20:33.161Z",
+  "schema_version": "v1",
+  "commit_sha": "aa3399c165436bf00765ac23096c04ea02188dfb",
+  "title": "docs(handoff): book rows 1 + 3 Lean structural legs (machine-checked, verified on main)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:20:09Z",
+  "head_ref": "otto/book-lean-rows-1-3"
+}

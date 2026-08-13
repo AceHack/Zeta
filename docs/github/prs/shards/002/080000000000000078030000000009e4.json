@@ -1,0 +1,21 @@
+{
+  "pr_number": 2532,
+  "archive_path": "docs/history/pr-reviews/PR-2532-docs-research-update-khaleesi-clifford-conversation-bivector-agenda-signatures.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qHaR",
+    "comment:PRRC_kwDOSF9kNM6_qHaU",
+    "comment:PRRC_kwDOSF9kNM6_qHr5",
+    "comment:PRRC_kwDOSF9kNM6_qHrw",
+    "thread:PRRT_kwDOSF9kNM6A7e3j",
+    "thread:PRRT_kwDOSF9kNM6A7e3n",
+    "thread:PRRT_kwDOSF9kNM6A7fEb",
+    "thread:PRRT_kwDOSF9kNM6A7fEi"
+  ],
+  "fetched_at": "2026-05-10T21:17:47.789Z",
+  "schema_version": "v1",
+  "commit_sha": "8eb08fa18e49e14a8417d837d3987e89fedc1176",
+  "title": "docs(research): update KHALEESI/Clifford conversation — bivector agenda signatures",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:17:32Z",
+  "head_ref": "docs/alexa-khaleesi-clifford-updated-2026-05-10"
+}

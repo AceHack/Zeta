@@ -1,0 +1,15 @@
+{
+  "pr_number": 2448,
+  "archive_path": "docs/history/pr-reviews/PR-2448-fix-gracefully-skip-actions-permissions-403-in-github-settings-drift-check.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_m6Bj",
+    "thread:PRRT_kwDOSF9kNM6A4557"
+  ],
+  "fetched_at": "2026-05-10T09:39:39.134Z",
+  "schema_version": "v1",
+  "commit_sha": "89edd719feeca584d6e0c51166502f9a2a294032",
+  "title": "fix: gracefully skip actions/permissions 403 in GitHub settings drift check",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T09:39:25Z",
+  "head_ref": "fix/snapshot-drift-403-graceful"
+}

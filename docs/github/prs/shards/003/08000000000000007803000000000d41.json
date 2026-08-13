@@ -1,0 +1,18 @@
+{
+  "pr_number": 3393,
+  "archive_path": "docs/history/pr-reviews/PR-3393-shard-tick-0855z-pr-3389-merged-pr-3391-4-thread-fix-incl-major-mechanization-pr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bi0gH",
+    "comment:PRRC_kwDOSF9kNM7BinrM",
+    "comment:PRRC_kwDOSF9kNM7BioY7",
+    "thread:PRRT_kwDOSF9kNM6CTthD",
+    "thread:PRRT_kwDOSF9kNM6CTuCF"
+  ],
+  "fetched_at": "2026-05-15T09:13:31.365Z",
+  "schema_version": "v1",
+  "commit_sha": "8f4cb20fea99ac19d74dd6a462189f2a2c3de144",
+  "title": "shard(tick): 0855Z — PR #3389 merged; PR #3391 4-thread fix incl. major mechanization-proposal correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T09:13:13Z",
+  "head_ref": "shard/tick-0855z-otto-cli-2026-05-15"
+}

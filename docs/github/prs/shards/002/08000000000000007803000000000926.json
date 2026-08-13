@@ -1,0 +1,12 @@
+{
+  "pr_number": 2342,
+  "archive_path": "docs/history/pr-reviews/PR-2342-docs-b-0005-re-decompose-into-smallest-atomic-children-riven.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T20:36:12.687Z",
+  "schema_version": "v1",
+  "commit_sha": "b85924ea97a271de4ee9de0f68d21aa5f21071da",
+  "title": "docs(B-0005): re-decompose into smallest atomic children (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T20:35:59Z",
+  "head_ref": "claim/b0005-decompose-aurora-courier-split-riven-2026-05-09"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7702,
+  "archive_path": "docs/history/pr-reviews/PR-7702-feat-viz-ui-the-flux-capacitor-seen-soft-ramp-vs-hard-cliff-magnetic-type-feel-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T14:48:48.840Z",
+  "schema_version": "v1",
+  "commit_sha": "05d89f709e390ba381bd95c98f3e07946994d8d5",
+  "title": "feat(viz+ui): the flux capacitor SEEN (soft ramp vs hard cliff) + magnetic type-feel ports + shader shelf + A/V & feedback laws",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T14:48:16Z",
+  "head_ref": "shadow-flux-views"
+}

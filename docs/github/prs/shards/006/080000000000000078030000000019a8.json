@@ -1,0 +1,19 @@
+{
+  "pr_number": 6568,
+  "archive_path": "docs/history/pr-reviews/PR-6568-docs-primitive-registry-add-today-s-primitives-to-the-wish-list-hexagonal-six-co.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HMfpf",
+    "comment:PRRC_kwDOSF9kNM7HMfqw",
+    "comment:PRRC_kwDOSF9kNM7HMfrH",
+    "thread:PRRT_kwDOSF9kNM6GdUjV",
+    "thread:PRRT_kwDOSF9kNM6GdUkK",
+    "thread:PRRT_kwDOSF9kNM6GdUkZ"
+  ],
+  "fetched_at": "2026-06-02T14:30:26.442Z",
+  "schema_version": "v1",
+  "commit_sha": "0a0c719656130c35867680229e9b4b287d6caaf4",
+  "title": "docs(PRIMITIVE-REGISTRY): add today's primitives to the wish list (hexagonal-six · coincidence-anchor · anygit/git-v2=4×4-multi-oracle · bus-lanes · consent/NCI algebra · KSK defensive · state-remainder · entropy · edge/expansion-valve/aperiodic-tiling)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T14:29:59Z",
+  "head_ref": "otto-cli/primitive-registry-wishlist-today-primitives-2026-06-02"
+}

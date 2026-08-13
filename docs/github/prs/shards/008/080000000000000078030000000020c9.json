@@ -1,0 +1,12 @@
+{
+  "pr_number": 8393,
+  "archive_path": "docs/history/pr-reviews/PR-8393-docs-register-memory-ferry-the-root-compression-differentiate-the-infinite-with-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:20:51.508Z",
+  "schema_version": "v1",
+  "commit_sha": "709362f657c43d361ae44fb492a8c934b908272c",
+  "title": "docs(register)+memory: ferry the root compression (differentiate the infinite with identity; agree on what's useful to continue)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:20:28Z",
+  "head_ref": "docs/root-compression-to-register-and-memory"
+}

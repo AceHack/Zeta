@@ -1,0 +1,12 @@
+{
+  "pr_number": 7545,
+  "archive_path": "docs/history/pr-reviews/PR-7545-docs-clis-verb-map-verb-code-registry-six-in-code-floated-new-braid-tie-qubit-su.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:51:16.573Z",
+  "schema_version": "v1",
+  "commit_sha": "fa365de204391970f84af80030a5f9e0657c89c0",
+  "title": "docs(clis): VERB-MAP — verb→code registry (six in-code + floated + new braid/tie→qubit substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:50:51Z",
+  "head_ref": "shadow-verb-to-code-map"
+}

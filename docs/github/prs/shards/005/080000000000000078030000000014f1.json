@@ -1,0 +1,12 @@
+{
+  "pr_number": 5361,
+  "archive_path": "docs/history/pr-reviews/PR-5361-rule-draft-docs-b-0837-asymmetric-critic-with-clarity-first-draft-auto-loaded-ru.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T00:03:13.559Z",
+  "schema_version": "v1",
+  "commit_sha": "b88c99cfb4140b890bff979def2ba31cd898503e",
+  "title": "rule(draft) + docs(B-0837): asymmetric-critic-with-clarity-first DRAFT auto-loaded rule + Max/Addison committee-review backlog row",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T00:02:55Z",
+  "head_ref": "otto/asymmetric-critic-clarity-first-draft-rule-plus-b0837-committee-review-2026-05-26"
+}

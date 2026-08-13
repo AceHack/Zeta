@@ -1,0 +1,12 @@
+{
+  "pr_number": 3906,
+  "archive_path": "docs/history/pr-reviews/PR-3906-fix-shard-1547z-on-main-correct-relative-path-depth-unblock-pr-3898-lint.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T16:36:33.238Z",
+  "schema_version": "v1",
+  "commit_sha": "ba2732a858ee186630d74ef4d4623229168cd820",
+  "title": "fix(shard-1547z-on-main): correct relative-path depth — unblock PR #3898 lint",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T16:36:14Z",
+  "head_ref": "otto-cli-fix-1547z-paths-on-main-2026-05-16-1620z"
+}

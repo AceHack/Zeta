@@ -1,0 +1,17 @@
+{
+  "pr_number": 2563,
+  "archive_path": "docs/history/pr-reviews/PR-2563-docs-research-zeta-alignment-position-continuous-anchoring-at-scale.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qoB5",
+    "comment:PRRC_kwDOSF9kNM6_qoBr",
+    "thread:PRRT_kwDOSF9kNM6A74I6",
+    "thread:PRRT_kwDOSF9kNM6A74JF"
+  ],
+  "fetched_at": "2026-05-10T22:31:43.374Z",
+  "schema_version": "v1",
+  "commit_sha": "5bb489976dbe62ae24e48ead8e35cf5689747d96",
+  "title": "docs(research): Zeta alignment position — continuous anchoring at scale",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T22:31:27Z",
+  "head_ref": "docs/alignment-position-verification-review-2026-05-10"
+}

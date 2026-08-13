@@ -1,0 +1,12 @@
+{
+  "pr_number": 5364,
+  "archive_path": "docs/history/pr-reviews/PR-5364-fix-b-0835-bug-2a-2b-iter-5-4-install-gh-auth-setup-git-ssh-key-scope-discrimina.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T00:36:21.262Z",
+  "schema_version": "v1",
+  "commit_sha": "19d96171a42bfbd45767877a86cbfec86ae419bd",
+  "title": "fix(B-0835 Bug 2a + 2b): iter-5.4 install — gh auth setup-git + ssh-key scope discrimination",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T00:36:02Z",
+  "head_ref": "fix-b0835-bug2ab-gh-auth-setup-git-ssh-key-scope-handling-otto-cli-2026-05-26"
+}

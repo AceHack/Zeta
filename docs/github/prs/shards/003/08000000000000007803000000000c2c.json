@@ -1,0 +1,12 @@
+{
+  "pr_number": 3116,
+  "archive_path": "docs/history/pr-reviews/PR-3116-docs-lior-antigravity-check-shadow-log-for-vera-and-riven-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T08:17:45.669Z",
+  "schema_version": "v1",
+  "commit_sha": "d5880bd17e9ba6a780267fdc565540477b126263",
+  "title": "docs(lior): antigravity check - shadow log for Vera and Riven drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T08:17:19Z",
+  "head_ref": "lior/shadow-log-vera-riven-drift"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7051,
+  "archive_path": "docs/history/pr-reviews/PR-7051-feat-core-sybilbftprogress-observe-consensus-progress-per-sim-tick.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T07:47:05.371Z",
+  "schema_version": "v1",
+  "commit_sha": "d5ff34c457b956a43bf13ed1d2e066374f8feb5c",
+  "title": "feat(core): SybilBftProgress — observe consensus progress per sim tick",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T07:46:42Z",
+  "head_ref": "otto/sybil-bft-progress-per-tick-observable"
+}

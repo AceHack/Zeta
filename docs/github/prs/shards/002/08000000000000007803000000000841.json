@@ -1,0 +1,12 @@
+{
+  "pr_number": 2113,
+  "archive_path": "docs/history/pr-reviews/PR-2113-feat-b-0058-add-candidate-failure-honesty-audit.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T18:10:31.983Z",
+  "schema_version": "v1",
+  "commit_sha": "ad1963f9d665523943625c55dc8b1aa86f8a4df4",
+  "title": "feat(B-0058): add candidate-failure honesty audit",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T18:10:08Z",
+  "head_ref": "claim/task-b0058-candidate-failure-log"
+}

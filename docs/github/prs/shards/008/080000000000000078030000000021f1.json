@@ -1,0 +1,12 @@
+{
+  "pr_number": 8689,
+  "archive_path": "docs/history/pr-reviews/PR-8689-feat-installer-qemu-phase-3-first-session-serial-proof-s4.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T03:35:32.987Z",
+  "schema_version": "v1",
+  "commit_sha": "08ae84e28fb050369142abf41941fcc079c4a934",
+  "title": "feat(installer): QEMU phase-3 first-session serial proof (S4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T03:35:06Z",
+  "head_ref": "feat/qemu-phase3-first-session"
+}

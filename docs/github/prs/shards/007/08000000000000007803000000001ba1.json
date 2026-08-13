@@ -1,0 +1,12 @@
+{
+  "pr_number": 7073,
+  "archive_path": "docs/history/pr-reviews/PR-7073-docs-research-dst-timeline-ops-design-fork-zip-join-converge-rewind-ff-zip-join-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:11:58.675Z",
+  "schema_version": "v1",
+  "commit_sha": "2877844c290f9716d2a8440845946fbf346aa50b",
+  "title": "docs(research): DST timeline-ops design — fork/zip/join/converge/rewind/ff (zip≠join pinned)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:11:37Z",
+  "head_ref": "otto/dst-timeline-ops-design-fork-zip-join-converge"
+}

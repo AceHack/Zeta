@@ -1,0 +1,29 @@
+{
+  "pr_number": 4806,
+  "archive_path": "docs/history/pr-reviews/PR-4806-docs-research-add-pattern-r-vendor-neutral-accounting-achievable-via-customer-dr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EU0Sp",
+    "comment:PRRC_kwDOSF9kNM7EU0Sz",
+    "comment:PRRC_kwDOSF9kNM7EUjd2",
+    "comment:PRRC_kwDOSF9kNM7EUjd4",
+    "comment:PRRC_kwDOSF9kNM7EUjhk",
+    "comment:PRRC_kwDOSF9kNM7EUjhq",
+    "comment:PRRC_kwDOSF9kNM7EUjhs",
+    "comment:PRRC_kwDOSF9kNM7EUmzb",
+    "comment:PRRC_kwDOSF9kNM7EUmzf",
+    "thread:PRRT_kwDOSF9kNM6EWK-R",
+    "thread:PRRT_kwDOSF9kNM6EWK-W",
+    "thread:PRRT_kwDOSF9kNM6EWK-Y",
+    "thread:PRRT_kwDOSF9kNM6EWK7J",
+    "thread:PRRT_kwDOSF9kNM6EWK7K",
+    "thread:PRRT_kwDOSF9kNM6EWNn2",
+    "thread:PRRT_kwDOSF9kNM6EWNnz"
+  ],
+  "fetched_at": "2026-05-24T02:43:42.219Z",
+  "schema_version": "v1",
+  "commit_sha": "d2a181a1ce6fd5b88b9d9822e68cc6e65926db1d",
+  "title": "docs(research): add Pattern R — vendor-neutral accounting achievable via customer-driven balancing (Pattern P-Q resolution path)",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T02:43:23Z",
+  "head_ref": "otto/research-pattern-r-vendor-neutral-resolution-path-2026-05-24"
+}

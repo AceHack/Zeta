@@ -1,0 +1,12 @@
+{
+  "pr_number": 6788,
+  "archive_path": "docs/history/pr-reviews/PR-6788-feat-zeta-push-fetch-verbs-on-the-host-agnostic-credentialsource-cli-mcp.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T10:54:57.748Z",
+  "schema_version": "v1",
+  "commit_sha": "4ba5759071241f3a2fca2e510787dc7956aa3124",
+  "title": "feat(zeta): push + fetch verbs on the host-agnostic CredentialSource (CLI + MCP)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T10:54:35Z",
+  "head_ref": "feat/zeta-push-fetch-on-credentialsource"
+}

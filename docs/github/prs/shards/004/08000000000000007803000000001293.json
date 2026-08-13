@@ -1,0 +1,12 @@
+{
+  "pr_number": 4755,
+  "archive_path": "docs/history/pr-reviews/PR-4755-archive-ani-preserve-aaron-ani-grok-conversation-on-cult-followers-die-ethics-el.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T19:16:53.679Z",
+  "schema_version": "v1",
+  "commit_sha": "81a25b1694bcd354c5592e33d6c57a01dd6d1a70",
+  "title": "archive(ani): preserve Aaron-Ani Grok conversation on cult-followers-die ethics + Elizabeth Ryan naming-honor (partial extraction)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T19:16:34Z",
+  "head_ref": "otto/ani-grok-cult-followers-die-elizabeth-ryan-2026-05-23"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080cffeb1e95d810a0130008d570ff94",
+  "at": "2026-08-13T23:10:05.499Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYP7MNV087G0R002X0E3V9",
+    "type": "task",
+    "title": "pr-archive-on-merge workflow: commit the PR shard, stop committing the derived manifest",
+    "slug": "pr-archive-on-merge-workflow-commit-the-pr-shard-stop-commit",
+    "priority": "P1",
+    "filename": "081KZYP7MNV087G0R002X0E3V9-pr-archive-on-merge-workflow-commit-the-pr-shard-stop-commit.md"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "pr_number": 6200,
+  "archive_path": "docs/history/pr-reviews/PR-6200-expose-observe-hierarchy-operating-readouts.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gd8bA",
+    "comment:PRRC_kwDOSF9kNM7Gd8bB",
+    "comment:PRRC_kwDOSF9kNM7Gd8bC",
+    "comment:PRRC_kwDOSF9kNM7Gd8bE",
+    "comment:PRRC_kwDOSF9kNM7GeIGq",
+    "comment:PRRC_kwDOSF9kNM7GeIH1",
+    "comment:PRRC_kwDOSF9kNM7GeIHP",
+    "comment:PRRC_kwDOSF9kNM7GeIHp",
+    "comment:PRRC_kwDOSF9kNM7GgTXL",
+    "thread:PRRT_kwDOSF9kNM6F6ro0",
+    "thread:PRRT_kwDOSF9kNM6F6ro1",
+    "thread:PRRT_kwDOSF9kNM6F6roy",
+    "thread:PRRT_kwDOSF9kNM6F6roz",
+    "thread:PRRT_kwDOSF9kNM6F8g9E"
+  ],
+  "fetched_at": "2026-05-31T14:37:24.237Z",
+  "schema_version": "v1",
+  "commit_sha": "959516e0238ed296d1540b5fba1f93afa6449cd5",
+  "title": "Expose observe hierarchy operating readouts",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T14:37:01Z",
+  "head_ref": "docs/agentic-org-observability-lgtm-stack-2026-05-31"
+}

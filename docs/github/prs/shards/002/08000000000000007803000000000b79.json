@@ -1,0 +1,12 @@
+{
+  "pr_number": 2937,
+  "archive_path": "docs/history/pr-reviews/PR-2937-shard-tick-0453z-f-fork-architecture-cascade-complete-four-layers.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T04:56:44.907Z",
+  "schema_version": "v1",
+  "commit_sha": "9726d4a7aad5bae10aec72e4584c4e68ca90d68b",
+  "title": "shard(tick): 0453Z — F#-fork architecture cascade complete (four layers)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T04:56:27Z",
+  "head_ref": "otto-tick-shard-0453Z-fsharp-fork-architecture-cascade-six-pr-window-2026-05-13"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7110,
+  "archive_path": "docs/history/pr-reviews/PR-7110-feat-core-softactioncontroller-soft-value-as-controller-screen-renderer-viewer.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T22:07:24.669Z",
+  "schema_version": "v1",
+  "commit_sha": "c47b1244809e4219dda991534de657275b3a0641",
+  "title": "feat(core): SoftActionController (soft value AS controller) + screen renderer + viewer",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T22:07:05Z",
+  "head_ref": "otto/soft-controller-as-dynamicvalue-controller-plus-screen-renderer-viewer"
+}

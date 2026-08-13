@@ -1,0 +1,17 @@
+{
+  "pr_number": 1896,
+  "archive_path": "docs/history/pr-reviews/PR-1896-feat-core-checkpoint-interfaces-icheckpointable-icheckpointstore-b-0251.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-5QQb",
+    "comment:PRRC_kwDOSF9kNM6-5QQh",
+    "thread:PRRT_kwDOSF9kNM6AXDUo",
+    "thread:PRRT_kwDOSF9kNM6AXDUt"
+  ],
+  "fetched_at": "2026-05-07T15:33:33.636Z",
+  "schema_version": "v1",
+  "commit_sha": "93ac781cd2ce3e2729e25b1a55c9646c9d528265",
+  "title": "feat(core): Checkpoint interfaces — ICheckpointable + ICheckpointStore (B-0251)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T15:32:21Z",
+  "head_ref": "otto/checkpoint-interface-b0251"
+}

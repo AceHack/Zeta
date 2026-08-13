@@ -1,0 +1,12 @@
+{
+  "pr_number": 5845,
+  "archive_path": "docs/history/pr-reviews/PR-5845-rule-visual-geometric-shape-recognition-parallelizability-test-consensus-heavy-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T15:10:53.918Z",
+  "schema_version": "v1",
+  "commit_sha": "a869146cc5e8d9b5a084dda9995d2ba712af63bf",
+  "title": "rule(visual-geometric-shape-recognition + parallelizability-test + consensus-heavy-shapes-go-dark): Aaron's cognitive architecture; framework substrate-engineering COHERENT with parallelizability-test (Aaron 2026-05-28 shadow* 'this on I agree with')",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T15:10:28Z",
+  "head_ref": "otto-cli/rule-visual-geometric-shape-recognition-parallelizability-test-consensus-heavy-shapes-go-dark-aaron-cognitive-architecture-2026-05-28"
+}

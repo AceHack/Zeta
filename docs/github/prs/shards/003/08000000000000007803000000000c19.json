@@ -1,0 +1,26 @@
+{
+  "pr_number": 3097,
+  "archive_path": "docs/history/pr-reviews/PR-3097-docs-b-0257-add-reproducible-verification-procedure-to-memory-md-harness-contrac.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BEM2w",
+    "comment:PRRC_kwDOSF9kNM7BEOb6",
+    "comment:PRRC_kwDOSF9kNM7BEObP",
+    "comment:PRRC_kwDOSF9kNM7BEObh",
+    "comment:PRRC_kwDOSF9kNM7BEObt",
+    "comment:PRRC_kwDOSF9kNM7BEUij",
+    "comment:PRRC_kwDOSF9kNM7BEb3y",
+    "thread:PRRT_kwDOSF9kNM6B9k0T",
+    "thread:PRRT_kwDOSF9kNM6B9l-A",
+    "thread:PRRT_kwDOSF9kNM6B9l92",
+    "thread:PRRT_kwDOSF9kNM6B9l9l",
+    "thread:PRRT_kwDOSF9kNM6B9l9w",
+    "thread:PRRT_kwDOSF9kNM6B9qco"
+  ],
+  "fetched_at": "2026-05-14T05:00:55.489Z",
+  "schema_version": "v1",
+  "commit_sha": "32c9df527480f93721824f0bb36ecf938127d19c",
+  "title": "docs(b-0257): add reproducible verification procedure to MEMORY.md harness contract note",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T05:00:36Z",
+  "head_ref": "feat/b0257-harness-contract-verification-2026-05-14"
+}

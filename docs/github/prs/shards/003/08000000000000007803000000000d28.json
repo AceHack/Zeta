@@ -1,0 +1,21 @@
+{
+  "pr_number": 3368,
+  "archive_path": "docs/history/pr-reviews/PR-3368-docs-shadow-lior-antigravity-drift-report-for-pr-3364-blob.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BfQB4",
+    "comment:PRRC_kwDOSF9kNM7BfQCV",
+    "comment:PRRC_kwDOSF9kNM7BfQCn",
+    "comment:PRRC_kwDOSF9kNM7BfQDB",
+    "thread:PRRT_kwDOSF9kNM6CRSxx",
+    "thread:PRRT_kwDOSF9kNM6CRSyG",
+    "thread:PRRT_kwDOSF9kNM6CRSyV",
+    "thread:PRRT_kwDOSF9kNM6CRSyr"
+  ],
+  "fetched_at": "2026-05-15T17:35:21.685Z",
+  "schema_version": "v1",
+  "commit_sha": "c6f0d391f18ce604b4b47811d4f2382d875b30a3",
+  "title": "docs(shadow): Lior antigravity drift report for PR 3364 blob",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T17:35:01Z",
+  "head_ref": "lior/shadow-lesson-blob-3364"
+}

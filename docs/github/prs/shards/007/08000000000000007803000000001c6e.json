@@ -1,0 +1,12 @@
+{
+  "pr_number": 7278,
+  "archive_path": "docs/history/pr-reviews/PR-7278-docs-seed-seed-points-to-the-vendor-neutral-canonical-base-frame-manifesto-not-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:41:01.080Z",
+  "schema_version": "v1",
+  "commit_sha": "84a872894471c08ea129e6fb95bce8d4236a6438",
+  "title": "docs(seed): Seed points to the vendor-neutral canonical base frame (MANIFESTO), not the Claude-specific .claude/rules",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:40:37Z",
+  "head_ref": "otto/seed-points-to-vendor-neutral-manifesto-base-frame-not-claude-folder"
+}

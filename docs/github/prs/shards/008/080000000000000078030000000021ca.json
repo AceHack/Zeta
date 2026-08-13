@@ -1,0 +1,12 @@
+{
+  "pr_number": 8650,
+  "archive_path": "docs/history/pr-reviews/PR-8650-fix-core-memory-fold-adinkramirror-into-adinkracode-dedup-add-generator-is-ecc-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T00:03:15.341Z",
+  "schema_version": "v1",
+  "commit_sha": "837dc8d3a637cdf8fbf44a098fdbc9da41c613f3",
+  "title": "fix(core)+memory: fold AdinkraMirror into AdinkraCode (dedup), add generator-IS-ECC correction; Kestrel↔Futamura + Clifford/IStarRing scoping + source ferry",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T00:02:51Z",
+  "head_ref": "otto/consolidate-adinkramirror-into-adinkracode-kestrel-futamura"
+}

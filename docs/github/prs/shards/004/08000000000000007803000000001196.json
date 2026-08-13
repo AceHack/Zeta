@@ -1,0 +1,12 @@
+{
+  "pr_number": 4502,
+  "archive_path": "docs/history/pr-reviews/PR-4502-docs-shadow-maji-anti-entropy-log-on-pr-4383-decomposition.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T06:08:30.033Z",
+  "schema_version": "v1",
+  "commit_sha": "b55b906491c007c7889ea593f9f8fd117c15990e",
+  "title": "docs(shadow): Maji anti-entropy log on PR 4383 decomposition",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T06:08:13Z",
+  "head_ref": "maji/shadow-log-4383-blob-slop"
+}

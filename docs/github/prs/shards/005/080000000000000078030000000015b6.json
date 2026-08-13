@@ -1,0 +1,12 @@
+{
+  "pr_number": 5558,
+  "archive_path": "docs/history/pr-reviews/PR-5558-docs-b-0863-ace-package-manager-one-liner-curl-install-repository-for-fast-movin.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T18:00:34.528Z",
+  "schema_version": "v1",
+  "commit_sha": "52402f34366ce0b37b73d02b8fc254ed05aea1d8",
+  "title": "docs(B-0863): Ace package manager — one-liner curl-install repository for fast-moving tools (operator 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:00:13Z",
+  "head_ref": "backlog/b-0863-ace-package-manager-one-liner-curl-install-repository-fast-moving-tools-2026-05-27"
+}

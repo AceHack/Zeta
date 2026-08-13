@@ -1,0 +1,12 @@
+{
+  "pr_number": 8384,
+  "archive_path": "docs/history/pr-reviews/PR-8384-docs-society-9c-society-braided-operations-braided-free-monad-clifford-geometric.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:53:13.646Z",
+  "schema_version": "v1",
+  "commit_sha": "53abc33502d06180fb619253f3f624e68b98c3a6",
+  "title": "docs(society): §9c — society = braided operations (braided free monad; Clifford = geometric-intuition version)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:52:45Z",
+  "head_ref": "docs/society-braided-free-monad-clifford"
+}

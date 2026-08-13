@@ -1,0 +1,17 @@
+{
+  "pr_number": 6678,
+  "archive_path": "docs/history/pr-reviews/PR-6678-rules-re-activate-manifesto-disciplines-as-small-carved-sentence-rules.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7IC5-C",
+    "comment:PRRC_kwDOSF9kNM7IC5-L",
+    "thread:PRRT_kwDOSF9kNM6HFI8G",
+    "thread:PRRT_kwDOSF9kNM6HFI8P"
+  ],
+  "fetched_at": "2026-06-04T13:10:31.934Z",
+  "schema_version": "v1",
+  "commit_sha": "95d8bd225dcf260ac81958179a171bc9e39c4c90",
+  "title": "rules: re-activate manifesto disciplines as small carved-sentence rules",
+  "state": "MERGED",
+  "merged_at": "2026-06-04T13:10:04Z",
+  "head_ref": "rules/manifesto-disciplines-compressed"
+}

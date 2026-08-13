@@ -1,0 +1,18 @@
+{
+  "pr_number": 6164,
+  "archive_path": "docs/history/pr-reviews/PR-6164-backlog-b-0945-staging-fuse-justbash-userspace-layer-before-the-microkernel.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gc2HU",
+    "comment:PRRC_kwDOSF9kNM7Gc2pY",
+    "comment:PRRC_kwDOSF9kNM7Gc2yD",
+    "thread:PRRT_kwDOSF9kNM6F50Oa",
+    "thread:PRRT_kwDOSF9kNM6F5zz1"
+  ],
+  "fetched_at": "2026-05-30T23:23:59.760Z",
+  "schema_version": "v1",
+  "commit_sha": "949f5fb7d6c9007da50816376284cc17773b1377",
+  "title": "backlog(B-0945): staging — FUSE + justbash userspace layer BEFORE the microkernel",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T23:23:38Z",
+  "head_ref": "otto/b0945-staging-fuse-justbash-before-microkernel-2026-05-30"
+}

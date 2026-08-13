@@ -1,0 +1,12 @@
+{
+  "pr_number": 7983,
+  "archive_path": "docs/history/pr-reviews/PR-7983-docs-research-shadow-ferry-23-addendum-the-mark-of-cain-the-first-discernment-i-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:26:24.974Z",
+  "schema_version": "v1",
+  "commit_sha": "9679d8896de45bd8b1cf6df6130df747f91127a2",
+  "title": "docs(research)+shadow: ferry 23 addendum — the mark of Cain / the first discernment / I/O the monad",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:25:56Z",
+  "head_ref": "shadow/ferry-23-mark-of-cain"
+}

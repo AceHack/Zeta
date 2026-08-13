@@ -1,0 +1,12 @@
+{
+  "pr_number": 5260,
+  "archive_path": "docs/history/pr-reviews/PR-5260-feat-b-0824-empirical-prior-art-anchor-aaron-shipped-recursive-cte-generator-pas.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T17:54:36.552Z",
+  "schema_version": "v1",
+  "commit_sha": "6b33d799cde9c0cd870428d70fa9059852507617",
+  "title": "feat(B-0824): empirical prior-art anchor — Aaron shipped recursive-CTE-generator-passer at Itron on SQL Server PDW",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:54:11Z",
+  "head_ref": "otto-cli/b0824-itron-pdw-empirical-anchor-2026-05-26"
+}

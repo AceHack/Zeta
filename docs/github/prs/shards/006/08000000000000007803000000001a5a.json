@@ -1,0 +1,12 @@
+{
+  "pr_number": 6746,
+  "archive_path": "docs/history/pr-reviews/PR-6746-docs-roadmap-log-noun-byte-lock-complete-4-4-data-plane-proven-base-whole.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:44:01.946Z",
+  "schema_version": "v1",
+  "commit_sha": "96fb1254dbd6a51f5371e34679eb5ce6193d6c3e",
+  "title": "docs(roadmap): Log noun byte-lock COMPLETE (4/4) — data-plane proven base whole",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:43:39Z",
+  "head_ref": "otto/roadmap-log-noun-4of4-complete"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 4364,
+  "archive_path": "docs/history/pr-reviews/PR-4364-docs-shadow-maji-anti-entropy-sweep-0845z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CmqZn",
+    "comment:PRRC_kwDOSF9kNM7Cmqak",
+    "comment:PRRC_kwDOSF9kNM7CmqbD",
+    "comment:PRRC_kwDOSF9kNM7Cmqbm",
+    "comment:PRRC_kwDOSF9kNM7CmqcC",
+    "thread:PRRT_kwDOSF9kNM6DFx-J",
+    "thread:PRRT_kwDOSF9kNM6DFx-h",
+    "thread:PRRT_kwDOSF9kNM6DFx8l",
+    "thread:PRRT_kwDOSF9kNM6DFx9V",
+    "thread:PRRT_kwDOSF9kNM6DFx9t"
+  ],
+  "fetched_at": "2026-05-19T08:58:31.543Z",
+  "schema_version": "v1",
+  "commit_sha": "926b0d81c91307ab5dca835048724dec5bebfa07",
+  "title": "docs(shadow): Maji anti-entropy sweep (0845Z)",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T08:58:09Z",
+  "head_ref": "lior/anti-entropy-0845Z"
+}

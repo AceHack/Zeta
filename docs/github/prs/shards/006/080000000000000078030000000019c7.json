@@ -1,0 +1,25 @@
+{
+  "pr_number": 6599,
+  "archive_path": "docs/history/pr-reviews/PR-6599-feat-ace-slice-8-1-trust-core-consumes-shared-canonical-json-sorted-totagged-can.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HQn02",
+    "comment:PRRC_kwDOSF9kNM7HQsve",
+    "comment:PRRC_kwDOSF9kNM7HQswM",
+    "comment:PRRC_kwDOSF9kNM7HQsws",
+    "comment:PRRC_kwDOSF9kNM7HQsxI",
+    "comment:PRRC_kwDOSF9kNM7HQsxx",
+    "thread:PRRT_kwDOSF9kNM6GgX29",
+    "thread:PRRT_kwDOSF9kNM6GgbY0",
+    "thread:PRRT_kwDOSF9kNM6GgbZ_",
+    "thread:PRRT_kwDOSF9kNM6GgbZa",
+    "thread:PRRT_kwDOSF9kNM6GgbZs",
+    "thread:PRRT_kwDOSF9kNM6Ggbaf"
+  ],
+  "fetched_at": "2026-06-02T17:12:25.316Z",
+  "schema_version": "v1",
+  "commit_sha": "7419c468dfa4556c2a4c91a0d776b8ee33a2d657",
+  "title": "feat(ace): slice 8.1 — trust core consumes shared canonical-JSON (sorted toTagged + canonicalBytes)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T17:11:58Z",
+  "head_ref": "otto-windows/ace-slice8.1-impl-2026-06-02"
+}

@@ -1,0 +1,22 @@
+{
+  "pr_number": 3467,
+  "archive_path": "docs/history/pr-reviews/PR-3467-shard-tick-1301z-01-drift-recalibration-per-codex-p2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BngQX",
+    "comment:PRRC_kwDOSF9kNM7Bnijl",
+    "comment:PRRC_kwDOSF9kNM7BnikO",
+    "comment:PRRC_kwDOSF9kNM7BnnJp",
+    "comment:PRRC_kwDOSF9kNM7BnncR",
+    "comment:PRRC_kwDOSF9kNM7Bnngk",
+    "thread:PRRT_kwDOSF9kNM6CXTa-",
+    "thread:PRRT_kwDOSF9kNM6CXVMM",
+    "thread:PRRT_kwDOSF9kNM6CXVMt"
+  ],
+  "fetched_at": "2026-05-15T13:12:34.886Z",
+  "schema_version": "v1",
+  "commit_sha": "375a4cc86c59ee1a4e1d01faa5a043c3666049a0",
+  "title": "shard(tick): 1301Z-01 — drift recalibration per Codex P2",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T13:12:13Z",
+  "head_ref": "shard/tick-1301z-01-otto-cli-2026-05-15"
+}

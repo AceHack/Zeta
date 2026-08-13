@@ -1,0 +1,12 @@
+{
+  "pr_number": 7610,
+  "archive_path": "docs/history/pr-reviews/PR-7610-docs-universal-universal-kernel-interface-the-psd-kernel-convergence-carved-rodn.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T05:52:50.189Z",
+  "schema_version": "v1",
+  "commit_sha": "4304b430e7ab9ba7b3e9fd1f0330588e4fe2dbcc",
+  "title": "docs(universal): Universal Kernel Interface — the PSD-kernel convergence carved (Rodney-razored)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T05:52:24Z",
+  "head_ref": "shadow-universal-kernel"
+}

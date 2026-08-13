@@ -1,0 +1,28 @@
+{
+  "pr_number": 2982,
+  "archive_path": "docs/history/pr-reviews/PR-2982-chore-backlog-decompose-b-0402-into-atomic-child-rows-b-0431-b-0432-b-0433.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AtT5m",
+    "comment:PRRC_kwDOSF9kNM7AtXqR",
+    "comment:PRRC_kwDOSF9kNM7AtXrX",
+    "comment:PRRC_kwDOSF9kNM7AtXsO",
+    "comment:PRRC_kwDOSF9kNM7AtXtK",
+    "comment:PRRC_kwDOSF9kNM7AtYM9",
+    "comment:PRRC_kwDOSF9kNM7Atb1L",
+    "comment:PRRC_kwDOSF9kNM7Atb_N",
+    "comment:PRRC_kwDOSF9kNM7Atbkc",
+    "comment:PRRC_kwDOSF9kNM7Atbsz",
+    "thread:PRRT_kwDOSF9kNM6Bs80o",
+    "thread:PRRT_kwDOSF9kNM6Bs_hd",
+    "thread:PRRT_kwDOSF9kNM6Bs_i9",
+    "thread:PRRT_kwDOSF9kNM6Bs_iY",
+    "thread:PRRT_kwDOSF9kNM6Bs_jr"
+  ],
+  "fetched_at": "2026-05-13T09:46:40.100Z",
+  "schema_version": "v1",
+  "commit_sha": "5da3f3c91572d3a9d717cb295947e9d184aab970",
+  "title": "chore(backlog): decompose B-0402 into atomic child rows B-0431/B-0432/B-0433",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T09:46:19Z",
+  "head_ref": "feat/b-0402-shadow-observer-slice-3-detect-script"
+}

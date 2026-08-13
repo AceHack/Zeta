@@ -1,0 +1,12 @@
+{
+  "pr_number": 10349,
+  "archive_path": "docs/history/pr-reviews/PR-10349-archive-open-the-pr-as-a-pat-close-the-orphan-generator-at-the-source.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-13T17:52:42.105Z",
+  "schema_version": "v1",
+  "commit_sha": "31a736d7c09316ea5f086a684d2eee423d3be291",
+  "title": "archive: open the PR as a PAT — close the orphan generator at the source",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T17:52:10Z",
+  "head_ref": "archive-pr-uses-pat"
+}

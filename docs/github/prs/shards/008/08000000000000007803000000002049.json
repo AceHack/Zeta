@@ -1,0 +1,12 @@
+{
+  "pr_number": 8265,
+  "archive_path": "docs/history/pr-reviews/PR-8265-docs-boring-true-should-be-fun-like-the-carts-consent-is-the-discriminator.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T05:26:34.441Z",
+  "schema_version": "v1",
+  "commit_sha": "5a63de45e016d4027150f1ce4a9116a885e11af9",
+  "title": "docs: boring-true should be FUN like the carts — consent is the discriminator",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T05:26:09Z",
+  "head_ref": "otto/boring-show-fun-with-consent"
+}

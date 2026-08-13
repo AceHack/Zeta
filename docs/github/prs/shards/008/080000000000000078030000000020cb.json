@@ -1,0 +1,12 @@
+{
+  "pr_number": 8395,
+  "archive_path": "docs/history/pr-reviews/PR-8395-docs-society-9e-ctm-t-0-processor-types-map-onto-ours-our-oracles-are-homeostat-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:28:55.748Z",
+  "schema_version": "v1",
+  "commit_sha": "c42b9e73c6519de10f482699da7993922460122f",
+  "title": "docs(society): §9e — CTM T=0 processor types map onto ours; our oracles are homeostat chains",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:28:26Z",
+  "head_ref": "docs/ctm-processor-types-oracles-homeostat-chains"
+}

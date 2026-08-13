@@ -1,0 +1,12 @@
+{
+  "pr_number": 5455,
+  "archive_path": "docs/history/pr-reviews/PR-5455-fix-require-executable-gcc-path-in-docker-harness.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T13:47:51.832Z",
+  "schema_version": "v1",
+  "commit_sha": "e9de8477e89301f77fe91c1482d7a87c1d824512",
+  "title": "fix: require executable gcc path in Docker harness",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T13:47:27Z",
+  "head_ref": "claim/codex-docker-cc-path-executable-check-20260527"
+}

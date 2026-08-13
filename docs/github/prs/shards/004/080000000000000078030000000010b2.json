@@ -1,0 +1,12 @@
+{
+  "pr_number": 4274,
+  "archive_path": "docs/history/pr-reviews/PR-4274-fix-4270-rule-wording-skip-decision-shard-does-count-as-brief-ack-5.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T00:01:57.871Z",
+  "schema_version": "v1",
+  "commit_sha": "cef060a5a40c78f7b7da3e79f53b99ae87fe9156",
+  "title": "fix(4270): rule wording — skip-decision-shard does count as brief-ack #5",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T00:01:36Z",
+  "head_ref": "fix/4270-codex-rule-wording-inconsistency-skip-pre-empt-still-counts-as-brief-ack-2026-05-18"
+}

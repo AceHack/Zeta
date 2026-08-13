@@ -1,0 +1,19 @@
+{
+  "pr_number": 3258,
+  "archive_path": "docs/history/pr-reviews/PR-3258-shard-tick-2128z-audit-driven-loop-verification-session-running-tally-22-merged-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BYa4Y",
+    "comment:PRRC_kwDOSF9kNM7BYcox",
+    "comment:PRRC_kwDOSF9kNM7BYcpF",
+    "thread:PRRT_kwDOSF9kNM6CMeS8",
+    "thread:PRRT_kwDOSF9kNM6CMflX",
+    "thread:PRRT_kwDOSF9kNM6CMfll"
+  ],
+  "fetched_at": "2026-05-14T21:39:16.067Z",
+  "schema_version": "v1",
+  "commit_sha": "82ac77820d1cd014fc2895c13ace216f0ec62d4e",
+  "title": "shard(tick): 2128Z — audit-driven loop verification + session running tally (22 merged + 1 wait-ci)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:38:50Z",
+  "head_ref": "shard/tick-2128Z-session-running-tally-otto-cli-2026-05-14"
+}

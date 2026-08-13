@@ -1,0 +1,12 @@
+{
+  "pr_number": 4238,
+  "archive_path": "docs/history/pr-reviews/PR-4238-shard-2257z-c-brief-ack-2-named-dep.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:01:18.061Z",
+  "schema_version": "v1",
+  "commit_sha": "9ef497edbb9888621ca5a83f6af6e62260c41c50",
+  "title": "shard(2257Z-c): brief-ack #2 named-dep",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:00:59Z",
+  "head_ref": "shard/tick-2257z-c-brief-ack-2-named-dep-2026-05-18"
+}

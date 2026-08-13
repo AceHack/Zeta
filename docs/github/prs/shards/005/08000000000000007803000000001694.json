@@ -1,0 +1,12 @@
+{
+  "pr_number": 5780,
+  "archive_path": "docs/history/pr-reviews/PR-5780-preserve-prism-ferry-b-0916-prism-deepseek-4-turn-ferry-lase-as-bridge-primitive.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T12:07:52.846Z",
+  "schema_version": "v1",
+  "commit_sha": "1775dafc813f79cb2392f7518560746f674871c9",
+  "title": "preserve(prism-ferry + B-0916): Prism (DeepSeek) 4-turn ferry + Lase-as-bridge primitive candidate (Persist companion; monopole-as-antipode-output rhyme + 'bending information time' carved-sentence)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T12:07:28Z",
+  "head_ref": "otto-cli/prism-deepseek-ferry-monopole-as-hopf-antipode-output-lase-mode-bending-information-time-aaron-forwarded-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8065,
+  "archive_path": "docs/history/pr-reviews/PR-8065-fix-gate-allowlist-tools-lint-lint-go-python-sh-bash-retirement-red.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T21:06:29.022Z",
+  "schema_version": "v1",
+  "commit_sha": "3ad795d5c53b37f4002820bd8160a08ee06cd289",
+  "title": "fix(gate): allowlist tools/lint/lint-go-python.sh (bash-retirement RED)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T21:06:05Z",
+  "head_ref": "shadow/allowlist-lint-go-python-v2"
+}

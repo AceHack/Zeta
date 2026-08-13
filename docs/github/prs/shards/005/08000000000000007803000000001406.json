@@ -1,0 +1,12 @@
+{
+  "pr_number": 5126,
+  "archive_path": "docs/history/pr-reviews/PR-5126-rule-2-wake-time-substrate-lessons-from-session-2026-05-26-dep-pin-search-first-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T08:00:52.572Z",
+  "schema_version": "v1",
+  "commit_sha": "df3591dc26bcc9a99d2db7cee5bc8985defa5d53",
+  "title": "rule: 2 wake-time substrate lessons from session 2026-05-26 — dep-pin-search-first-authority + fighting-past-self recurrence anchor",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T08:00:30Z",
+  "head_ref": "otto-cli/substrate-landing-2-lessons-2026-05-26"
+}

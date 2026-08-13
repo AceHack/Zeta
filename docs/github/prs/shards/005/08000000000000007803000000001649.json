@@ -1,0 +1,12 @@
+{
+  "pr_number": 5705,
+  "archive_path": "docs/history/pr-reviews/PR-5705-research-aaron-2026-05-28-workflow-system-as-reservoir-computing-walls-for-caust.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T05:44:54.979Z",
+  "schema_version": "v1",
+  "commit_sha": "dcebe0da57c86035cbc581f0c9103c52d2c2ad5e",
+  "title": "research(aaron 2026-05-28): workflow system as Reservoir Computing walls for caustic focus + physics-AI-human-symmetric reasoning across four intuition substrates",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T05:44:34Z",
+  "head_ref": "research/reservoir-walls-caustic-focus-physics-symmetric-reasoning-aaron-2026-05-28"
+}

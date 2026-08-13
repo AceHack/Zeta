@@ -1,0 +1,12 @@
+{
+  "pr_number": 2188,
+  "archive_path": "docs/history/pr-reviews/PR-2188-chore-b-0347-carve-skill-descriptions-40-skills-opus-vs-sonnet-a-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T05:21:29.900Z",
+  "schema_version": "v1",
+  "commit_sha": "b851c1db2c23e2d75a94f4d1058058a25d5375cd",
+  "title": "chore(B-0347): carve skill descriptions — 40 skills, Opus vs Sonnet A/B",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T05:21:12Z",
+  "head_ref": "chore/b0347-carve-skill-descriptions-batch-1-2"
+}

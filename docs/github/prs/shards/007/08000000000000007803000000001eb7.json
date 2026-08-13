@@ -1,0 +1,12 @@
+{
+  "pr_number": 7863,
+  "archive_path": "docs/history/pr-reviews/PR-7863-fix-installer-mirror-zeta-first-boot-to-serial-console-for-b-0891-qemu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T01:29:28.637Z",
+  "schema_version": "v1",
+  "commit_sha": "c4683f429f9bc2cb6005802506711e1c0967b293",
+  "title": "fix(installer): mirror zeta-first-boot to serial console for B-0891 QEMU",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T01:29:06Z",
+  "head_ref": "riven/b0891-serial-console-mirror"
+}

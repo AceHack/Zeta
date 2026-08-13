@@ -1,0 +1,15 @@
+{
+  "pr_number": 4584,
+  "archive_path": "docs/history/pr-reviews/PR-4584-research-b-0623-adinkra-primer-for-non-physicists-zeta-substrate-context.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DyC44",
+    "thread:PRRT_kwDOSF9kNM6D8zzw"
+  ],
+  "fetched_at": "2026-05-21T22:16:48.708Z",
+  "schema_version": "v1",
+  "commit_sha": "dfb526ff708500867221e2b2766017111869f1c5",
+  "title": "research(B-0623): Adinkra primer for non-physicists — Zeta substrate context",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T22:16:31Z",
+  "head_ref": "research/adinkra-primer-non-physicists-2026-05-21"
+}

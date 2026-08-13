@@ -1,0 +1,12 @@
+{
+  "pr_number": 5892,
+  "archive_path": "docs/history/pr-reviews/PR-5892-research-c-elegans-tower-superorganism-perez-ding-2025-completes-three-layer-bio.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T17:29:30.027Z",
+  "schema_version": "v1",
+  "commit_sha": "dcae787607aace3fa413310c1cf059e85bd3ff7b",
+  "title": "research(c-elegans): tower-superorganism (Perez & Ding 2025) completes three-layer biological instantiation of framework's multi-oracle BFT formal-math — mirror-tier preservation (operator 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T17:29:09Z",
+  "head_ref": "otto-cli/b0926-tower-superorganism-celegans-2026-05-28"
+}

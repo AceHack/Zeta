@@ -1,0 +1,24 @@
+{
+  "pr_number": 3939,
+  "archive_path": "docs/history/pr-reviews/PR-3939-chore-b-0248-decompose-layer-3-host-loop-setup.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B7DNq",
+    "comment:PRRC_kwDOSF9kNM7B7DNx",
+    "comment:PRRC_kwDOSF9kNM7B7DdF",
+    "comment:PRRC_kwDOSF9kNM7EP4b9",
+    "comment:PRRC_kwDOSF9kNM7EQKHZ",
+    "comment:PRRC_kwDOSF9kNM7EQX1O",
+    "thread:PRRT_kwDOSF9kNM6CltCV",
+    "thread:PRRT_kwDOSF9kNM6CltCb",
+    "thread:PRRT_kwDOSF9kNM6CltNs",
+    "thread:PRRT_kwDOSF9kNM6ESlY1",
+    "thread:PRRT_kwDOSF9kNM6ESzZx"
+  ],
+  "fetched_at": "2026-05-23T11:11:21.162Z",
+  "schema_version": "v1",
+  "commit_sha": "c34971ef825aa75bf938c21c1668959aa277632e",
+  "title": "chore(b-0248): decompose layer 3 - host loop setup",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T11:11:03Z",
+  "head_ref": "lior/decompose-b0248-slice-3"
+}

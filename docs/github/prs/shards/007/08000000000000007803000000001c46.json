@@ -1,0 +1,12 @@
+{
+  "pr_number": 7238,
+  "archive_path": "docs/history/pr-reviews/PR-7238-docs-inventory-add-20a-smart-energy-monitor-for-goldmate-ups-ct-clamp-recommende.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T09:50:23.017Z",
+  "schema_version": "v1",
+  "commit_sha": "989851cffd6dc43d08f0d4aad413185f3d46992f",
+  "title": "docs(inventory): add 20A smart energy monitor for Goldmate UPS (CT-clamp recommended; 15A plugs ruled out)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T09:50:00Z",
+  "head_ref": "otto/inventory-add-20a-energy-monitor-goldmate-ups"
+}

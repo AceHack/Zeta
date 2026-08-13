@@ -1,0 +1,12 @@
+{
+  "pr_number": 6014,
+  "archive_path": "docs/history/pr-reviews/PR-6014-research-2026-05-29-consensus-backstop-reports-as-weblinks-the-from-above-meter-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T17:07:18.789Z",
+  "schema_version": "v1",
+  "commit_sha": "ec3e7173ac57df977d5621b0b867cdaed831d80f",
+  "title": "research(2026-05-29): consensus backstop + reports-as-weblinks + the from-above meter + the employer-IP boundary (Aaron+Otto)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T17:06:51Z",
+  "head_ref": "otto-cli/research-consensus-backstop-reports-weblinks-from-above-meter-employer-ip-boundary-2026-05-29"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8153,
+  "archive_path": "docs/history/pr-reviews/PR-8153-revert-cursor-drop-agent-home-mcp-bridge-boot-from-each-repo-s-cursor-mcp-json.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:06:42.173Z",
+  "schema_version": "v1",
+  "commit_sha": "ec40d65756ea7d579ae9bbf60528656b251ed9e1",
+  "title": "revert(cursor): drop agent-home MCP bridge — boot from each repo's .cursor/mcp.json",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:06:18Z",
+  "head_ref": "riven/revert-agent-home-mcp"
+}

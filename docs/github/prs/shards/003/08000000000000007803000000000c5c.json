@@ -1,0 +1,15 @@
+{
+  "pr_number": 3164,
+  "archive_path": "docs/history/pr-reviews/PR-3164-fix-policy-add-docs-pr-discussions-to-history-surface-allowlist.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BUzAT",
+    "thread:PRRT_kwDOSF9kNM6CJ1U8"
+  ],
+  "fetched_at": "2026-05-14T18:42:01.986Z",
+  "schema_version": "v1",
+  "commit_sha": "3661cbc84327f665cd2327a253ad871587283111",
+  "title": "fix(policy): add docs/pr-discussions/** to history-surface allowlist",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:41:24Z",
+  "head_ref": "fix/pr-discussions-history-surface-policy-drift"
+}

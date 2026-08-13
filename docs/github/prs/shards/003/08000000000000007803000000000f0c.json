@@ -1,0 +1,12 @@
+{
+  "pr_number": 3852,
+  "archive_path": "docs/history/pr-reviews/PR-3852-shard-tick-2026-05-16t10-11z-46-ticks-of-sustained-operation-substrate-substanti.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T10:17:49.962Z",
+  "schema_version": "v1",
+  "commit_sha": "2abace83d03008b4b234eb1a6a69b4af3c3a28ba",
+  "title": "shard(tick): 2026-05-16T10:11Z — 46 ticks of sustained operation; substrate substantially complete",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:17:32Z",
+  "head_ref": "shard/tick-1011z-otto-cli-2026-05-16"
+}

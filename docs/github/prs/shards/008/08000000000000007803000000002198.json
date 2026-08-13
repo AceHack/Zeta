@@ -1,0 +1,12 @@
+{
+  "pr_number": 8600,
+  "archive_path": "docs/history/pr-reviews/PR-8600-feat-cslib-tower-parallel-lean-v4-31-cslib-tower-built-green-a-untouched.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T17:12:38.839Z",
+  "schema_version": "v1",
+  "commit_sha": "c04b0b2ab722cda9ef07027daf0b98c7d08b01e7",
+  "title": "feat(cslib-tower): parallel Lean v4.31 + cslib tower (built green; §A untouched)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T17:12:13Z",
+  "head_ref": "otto/cslib-tower-v431"
+}

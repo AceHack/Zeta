@@ -1,0 +1,12 @@
+{
+  "pr_number": 8609,
+  "archive_path": "docs/history/pr-reviews/PR-8609-memory-ani-ani-ferry-part-5-verbatim-content-warned.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T19:55:29.469Z",
+  "schema_version": "v1",
+  "commit_sha": "59184c1980da93001d270b00844e098ebf741890",
+  "title": "memory(ani): Ani ferry part 5 (verbatim, content-warned)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T19:55:05Z",
+  "head_ref": "otto/ani-ferry-pt5"
+}

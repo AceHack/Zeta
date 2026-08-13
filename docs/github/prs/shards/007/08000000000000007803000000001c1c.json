@@ -1,0 +1,12 @@
+{
+  "pr_number": 7196,
+  "archive_path": "docs/history/pr-reviews/PR-7196-docs-research-proving-homeostatic-hidden-state-markov-chains-boundaries-as-energ.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T03:44:00.174Z",
+  "schema_version": "v1",
+  "commit_sha": "69fd153e9a709637a82e836178a881c3bae8af1f",
+  "title": "docs(research): proving homeostatic hidden-state Markov chains; boundaries as energy-transfer stable bridges that monetize",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T03:43:42Z",
+  "head_ref": "otto/research-homeostatic-hidden-state-markov-proofs-boundaries-energy-bridges-monetize"
+}

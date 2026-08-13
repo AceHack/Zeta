@@ -1,0 +1,12 @@
+{
+  "pr_number": 3022,
+  "archive_path": "docs/history/pr-reviews/PR-3022-fix-bg-b-0440-3-pr-activity-poll-closes-riven-s-p0-ac-violation-16-tests-pass.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T19:22:59.405Z",
+  "schema_version": "v1",
+  "commit_sha": "1f71cd85606622d809db2995bbfb8a7d427819b6",
+  "title": "fix(bg): B-0440.3 — PR-activity poll (closes Riven's P0 AC violation; 16 tests pass)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T19:22:39Z",
+  "head_ref": "otto-b0440-3-pr-activity-poll-fix-p0-riven-review-2026-05-13"
+}

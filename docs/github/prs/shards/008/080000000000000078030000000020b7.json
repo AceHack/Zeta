@@ -1,0 +1,12 @@
+{
+  "pr_number": 8375,
+  "archive_path": "docs/history/pr-reviews/PR-8375-memory-project-decentralized-identity-the-foundational-primitive-isociety-builds.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:26:53.242Z",
+  "schema_version": "v1",
+  "commit_sha": "ce3a4606544cb8caa9921f273e0c949e25b5b69f",
+  "title": "memory(project): decentralized identity — the foundational primitive ISociety builds on",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:26:24Z",
+  "head_ref": "memory/decentralized-identity-primitive"
+}

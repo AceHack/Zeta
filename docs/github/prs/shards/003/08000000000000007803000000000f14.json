@@ -1,0 +1,12 @@
+{
+  "pr_number": 3860,
+  "archive_path": "docs/history/pr-reviews/PR-3860-substrate-fenced-shell-transcript-hygiene-command-output-vs-derived-summary.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T10:51:49.313Z",
+  "schema_version": "v1",
+  "commit_sha": "11057e062dc3736b6c3d99228c34682b3df1c880",
+  "title": "substrate: fenced shell transcript hygiene — command output vs derived summary",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:51:29Z",
+  "head_ref": "otto-cli-fenced-transcript-hygiene-2026-05-16"
+}

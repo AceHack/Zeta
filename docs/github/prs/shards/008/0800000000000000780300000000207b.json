@@ -1,0 +1,12 @@
+{
+  "pr_number": 8315,
+  "archive_path": "docs/history/pr-reviews/PR-8315-docs-register-per-room-metering-vector-intelligence-per-sample-watt-as-a-recorde.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T18:35:20.977Z",
+  "schema_version": "v1",
+  "commit_sha": "5dd5d6da8226347439df7eccd77b0f1c0dc868b7",
+  "title": "docs(register): per-room metering vector — intelligence-per-sample/-watt as a recorded metric",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T18:34:58Z",
+  "head_ref": "docs/ferry-intelligence-per-watt-sample-metering-primitive"
+}

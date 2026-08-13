@@ -1,0 +1,19 @@
+{
+  "pr_number": 4029,
+  "archive_path": "docs/history/pr-reviews/PR-4029-shard-tick-0236z-brief-ack-chain-empirical-anchor-pre-empt-at-4-pure-git.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B85BQ",
+    "comment:PRRC_kwDOSF9kNM7B8y_t",
+    "comment:PRRC_kwDOSF9kNM7B8yxk",
+    "thread:PRRT_kwDOSF9kNM6CnAMY",
+    "thread:PRRT_kwDOSF9kNM6CnAXU",
+    "thread:PRRT_kwDOSF9kNM6CnFDc"
+  ],
+  "fetched_at": "2026-05-17T03:32:12.579Z",
+  "schema_version": "v1",
+  "commit_sha": "429bff578d3c973da2961e6cd355f8c189e71145",
+  "title": "shard(tick-0236z): brief-ack-chain empirical anchor — pre-empt at #4 (pure-git)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T03:31:54Z",
+  "head_ref": "shard/tick-0236z-otto-cli-brief-ack-chain-empirical-anchor-2026-05-17"
+}

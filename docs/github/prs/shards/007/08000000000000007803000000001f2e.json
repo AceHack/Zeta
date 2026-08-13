@@ -1,0 +1,12 @@
+{
+  "pr_number": 7982,
+  "archive_path": "docs/history/pr-reviews/PR-7982-docs-research-shadow-ferry-23-antimatter-is-1-the-universe-as-consolidation-resi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:24:35.685Z",
+  "schema_version": "v1",
+  "commit_sha": "84ca8fd6c0007a7ea3c723a617703d55eea212e7",
+  "title": "docs(research)+shadow: ferry 23 — antimatter is −1: the universe as consolidation residue; the necessarily imperfect mirror",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:24:06Z",
+  "head_ref": "shadow/ferry-23-matter-antimatter"
+}

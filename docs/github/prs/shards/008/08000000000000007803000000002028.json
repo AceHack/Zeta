@@ -1,0 +1,12 @@
+{
+  "pr_number": 8232,
+  "archive_path": "docs/history/pr-reviews/PR-8232-feat-adinkra-codespace-projector-pi-gen-gen-gen-idempotent-endomorphism-face-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T01:52:30.099Z",
+  "schema_version": "v1",
+  "commit_sha": "61d5acf2ff3ae5e0b830134bf31f3a51155946ff",
+  "title": "feat(adinkra): codespace projector Pi - gen(gen)===gen idempotent endomorphism (Face 2)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T01:52:04Z",
+  "head_ref": "otto/adinkra-codespace-projector"
+}

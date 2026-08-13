@@ -1,0 +1,12 @@
+{
+  "pr_number": 6735,
+  "archive_path": "docs/history/pr-reviews/PR-6735-feat-log-081ktgd5jmd-cross-language-golden-seed-for-deltalogentry-f-treaty-lock.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:09:02.564Z",
+  "schema_version": "v1",
+  "commit_sha": "6e1b2a5b48bdf21746f0e31746b7a6aa2262eac9",
+  "title": "feat(Log/081KTGD5JMD): cross-language golden seed for DeltaLogEntry + F# treaty lock",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:08:29Z",
+  "head_ref": "otto/log-entry-golden-seed-treaty"
+}

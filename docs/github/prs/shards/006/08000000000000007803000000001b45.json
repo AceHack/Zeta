@@ -1,0 +1,12 @@
+{
+  "pr_number": 6981,
+  "archive_path": "docs/history/pr-reviews/PR-6981-feat-flash-windows-removable-media-usb-flasher-raw-fat-key-injection.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:48:55.187Z",
+  "schema_version": "v1",
+  "commit_sha": "db4f8f274e8e6723305614adf39a650743edb45d",
+  "title": "feat(flash): Windows removable-media USB flasher + raw-FAT key injection",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:48:32Z",
+  "head_ref": "feat/windows-flasher-removable-media"
+}

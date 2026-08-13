@@ -1,0 +1,33 @@
+{
+  "pr_number": 5087,
+  "archive_path": "docs/history/pr-reviews/PR-5087-backlog-b-0763-re-land-cloud-native-plugins-fit-zeta-s-interface-shape-negotiati.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ExLvL",
+    "comment:PRRC_kwDOSF9kNM7ExLvg",
+    "comment:PRRC_kwDOSF9kNM7ExLvp",
+    "comment:PRRC_kwDOSF9kNM7ExTG4",
+    "comment:PRRC_kwDOSF9kNM7ExTGd",
+    "comment:PRRC_kwDOSF9kNM7ExTGr",
+    "comment:PRRC_kwDOSF9kNM7ExTHI",
+    "comment:PRRC_kwDOSF9kNM7ExYx2",
+    "comment:PRRC_kwDOSF9kNM7ExYxe",
+    "comment:PRRC_kwDOSF9kNM7ExYyC",
+    "thread:PRRT_kwDOSF9kNM6Erm-E",
+    "thread:PRRT_kwDOSF9kNM6Erm-M",
+    "thread:PRRT_kwDOSF9kNM6Erm90",
+    "thread:PRRT_kwDOSF9kNM6ErsZ2",
+    "thread:PRRT_kwDOSF9kNM6ErsZY",
+    "thread:PRRT_kwDOSF9kNM6ErsZh",
+    "thread:PRRT_kwDOSF9kNM6ErsZp",
+    "thread:PRRT_kwDOSF9kNM6Erwi1",
+    "thread:PRRT_kwDOSF9kNM6ErwiZ",
+    "thread:PRRT_kwDOSF9kNM6Erwiq"
+  ],
+  "fetched_at": "2026-05-26T05:04:15.209Z",
+  "schema_version": "v1",
+  "commit_sha": "4236a30481b1a236ede16b451780cfd0519cdc30",
+  "title": "backlog(B-0763): re-land cloud-native plugins fit Zeta's interface shape — negotiation high seat via vendor-swap",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:03:56Z",
+  "head_ref": "otto-cli/reland-b0763-0421z"
+}

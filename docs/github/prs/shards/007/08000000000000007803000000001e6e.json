@@ -1,0 +1,12 @@
+{
+  "pr_number": 7790,
+  "archive_path": "docs/history/pr-reviews/PR-7790-feat-inference-the-hexagonal-port-ships-iinferenceengine-ours-zeta-bayesian-infe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T21:02:49.416Z",
+  "schema_version": "v1",
+  "commit_sha": "c1d18643c24d1c9f3b78c88c736c26376a571865",
+  "title": "feat(inference): the hexagonal port ships — IInferenceEngine ours; Zeta.Bayesian + Infer.NET adapters; theirs tests ours, 1e-6 agreement",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T21:02:20Z",
+  "head_ref": "shadow-resume-fold-rings"
+}

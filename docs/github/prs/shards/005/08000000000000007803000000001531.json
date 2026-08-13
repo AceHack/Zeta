@@ -1,0 +1,12 @@
+{
+  "pr_number": 5425,
+  "archive_path": "docs/history/pr-reviews/PR-5425-feat-b-0852-2b-rebased-persist-restore-clis-composing-full-cred-persistence-stac.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T08:04:20.768Z",
+  "schema_version": "v1",
+  "commit_sha": "7828e863bba1fd5e8379de8e10804644c1cd4fdc",
+  "title": "feat(B-0852.2b rebased): persist + restore CLIs composing full cred-persistence stack (19 integration tests; replaces conflict-dirty #5422)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T08:04:01Z",
+  "head_ref": "feat/b-0852-2b-cli-rebased-2026-05-27"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 4757,
+  "archive_path": "docs/history/pr-reviews/PR-4757-backlog-b-0572-re-land-lfg-github-tier-decision-supersedes-stale-3952.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ETPCM",
+    "thread:PRRT_kwDOSF9kNM6EVICF"
+  ],
+  "fetched_at": "2026-05-23T19:26:30.048Z",
+  "schema_version": "v1",
+  "commit_sha": "82777ddce98999d5295f7457693f4e81f5d17449",
+  "title": "backlog(B-0572): RE-LAND LFG GitHub tier decision (supersedes stale #3952)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T19:26:10Z",
+  "head_ref": "otto/cli-reland-b0572-lfg-github-tier-2026-05-23"
+}

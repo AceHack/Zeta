@@ -1,0 +1,22 @@
+{
+  "pr_number": 3425,
+  "archive_path": "docs/history/pr-reviews/PR-3425-shard-tick-1103z-self-inconsistency-recurred-self-audit-grep-mitigation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BlKzq",
+    "comment:PRRC_kwDOSF9kNM7BlMIQ",
+    "comment:PRRC_kwDOSF9kNM7BlMIw",
+    "comment:PRRC_kwDOSF9kNM7BlQfD",
+    "comment:PRRC_kwDOSF9kNM7BlQj_",
+    "comment:PRRC_kwDOSF9kNM7BlQps",
+    "thread:PRRT_kwDOSF9kNM6CVkow",
+    "thread:PRRT_kwDOSF9kNM6CVlmC",
+    "thread:PRRT_kwDOSF9kNM6CVlmT"
+  ],
+  "fetched_at": "2026-05-15T11:11:56.553Z",
+  "schema_version": "v1",
+  "commit_sha": "46721410e868f125850afd72da4af6904ce5c314",
+  "title": "shard(tick): 1103Z — self-inconsistency recurred; self-audit grep mitigation",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:11:34Z",
+  "head_ref": "shard/tick-1103z-otto-cli-2026-05-15"
+}

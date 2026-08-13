@@ -1,0 +1,12 @@
+{
+  "pr_number": 4685,
+  "archive_path": "docs/history/pr-reviews/PR-4685-refactor-riven-update-riven-loop-tick-decomposed-from-4677.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T23:11:03.014Z",
+  "schema_version": "v1",
+  "commit_sha": "f83658956f6868d5e17a0988a06aa7f76318e2f1",
+  "title": "refactor(riven): update riven loop tick (decomposed from #4677)",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T23:10:43Z",
+  "head_ref": "lior/riven-loop-tick-update-decomposed-4"
+}

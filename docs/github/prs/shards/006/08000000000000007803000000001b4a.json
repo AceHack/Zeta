@@ -1,0 +1,12 @@
+{
+  "pr_number": 6986,
+  "archive_path": "docs/history/pr-reviews/PR-6986-feat-core-darkhall-the-cell-that-hosts-a-deterministic-emulator-the-arcade-runs-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T02:24:18.461Z",
+  "schema_version": "v1",
+  "commit_sha": "1d9c8715c106ba56f9abe798239473ccafcdc310",
+  "title": "feat(core): DarkHall — the cell that hosts a deterministic emulator (the arcade runs the games)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T02:24:00Z",
+  "head_ref": "otto/darkhall-cell-hosts-deterministic-emulator"
+}

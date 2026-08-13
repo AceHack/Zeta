@@ -1,0 +1,19 @@
+{
+  "pr_number": 2037,
+  "archive_path": "docs/history/pr-reviews/PR-2037-fix-ci-tolerate-archive-pr-creation-policy-denial.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_HO-j",
+    "comment:PRRC_kwDOSF9kNM6_HO-l",
+    "comment:PRRC_kwDOSF9kNM6_HQJS",
+    "thread:PRRT_kwDOSF9kNM6AhNa5",
+    "thread:PRRT_kwDOSF9kNM6AhNa7",
+    "thread:PRRT_kwDOSF9kNM6AhOTw"
+  ],
+  "fetched_at": "2026-05-08T04:56:39.043Z",
+  "schema_version": "v1",
+  "commit_sha": "12d48f2647b97ce5798c52ca8475572ca1db2419",
+  "title": "fix(ci): tolerate archive PR creation policy denial",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T04:56:21Z",
+  "head_ref": "codex/archive-pr-create-denied-success"
+}

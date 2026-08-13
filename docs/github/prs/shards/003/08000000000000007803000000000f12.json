@@ -1,0 +1,12 @@
+{
+  "pr_number": 3858,
+  "archive_path": "docs/history/pr-reviews/PR-3858-shard-tick-2026-05-16t10-27z-b-0049-2-class-1-pure-drift-close-aborted-1-ready-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T10:38:56.348Z",
+  "schema_version": "v1",
+  "commit_sha": "c32d3c8887d63700c42a5fa7e2e596891f9696ce",
+  "title": "shard(tick): 2026-05-16T10:27Z — B-0049.2 = class #1 (pure drift); close aborted; #1-Ready sub-class; 29/38",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:38:41Z",
+  "head_ref": "otto-cli-b0049.2-audit-2026-05-16-1029z"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4078,
+  "archive_path": "docs/history/pr-reviews/PR-4078-shard-2026-05-17-1317z-autonomous-loop-tick-pr-4059-thread-resolve-cascade-merge.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T13:28:49.290Z",
+  "schema_version": "v1",
+  "commit_sha": "8a6b186880334ac591427698c0b52a74ba495735",
+  "title": "shard(2026-05-17/1317Z): autonomous-loop tick — PR #4059 thread-resolve cascade → MERGED",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T13:28:34Z",
+  "head_ref": "shard/tick-1317z-pr4059-merged-2026-05-17"
+}

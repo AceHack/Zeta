@@ -1,0 +1,12 @@
+{
+  "pr_number": 8926,
+  "archive_path": "docs/history/pr-reviews/PR-8926-keys-register-aaron-s-acehacks-mac-studio-device-key-per-machine-public.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T09:12:22.286Z",
+  "schema_version": "v1",
+  "commit_sha": "6b484f560973e1cdd6d5c946d88b9ca77112b2e2",
+  "title": "keys(register): aaron's acehacks-mac-studio device key (per-machine, public)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T09:11:54Z",
+  "head_ref": "otto/register-aaron-mac-studio-device-key"
+}

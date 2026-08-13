@@ -1,0 +1,12 @@
+{
+  "pr_number": 3678,
+  "archive_path": "docs/history/pr-reviews/PR-3678-fix-hygiene-regen-docs-backlog-md-index-clear-generated-index-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T02:17:37.529Z",
+  "schema_version": "v1",
+  "commit_sha": "e08ee1d1d84e74eaec7e1d2f912039f3e1a5c7d6",
+  "title": "fix(hygiene): regen docs/BACKLOG.md index — clear generated-index drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T02:17:22Z",
+  "head_ref": "fix/backlog-md-generated-index-regen-otto-cli-2026-05-16"
+}

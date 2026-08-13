@@ -1,0 +1,17 @@
+{
+  "pr_number": 1831,
+  "archive_path": "docs/history/pr-reviews/PR-1831-research-riven-five-passes-framework-names-what-you-built-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-uKb0",
+    "comment:PRRC_kwDOSF9kNM6-uKbT",
+    "thread:PRRT_kwDOSF9kNM6AOxaT",
+    "thread:PRRT_kwDOSF9kNM6AOxat"
+  ],
+  "fetched_at": "2026-05-07T07:53:22.167Z",
+  "schema_version": "v1",
+  "commit_sha": "8c93c81ef4ef5362342f0e2ca4f99d87f10eb95c",
+  "title": "research: Riven five passes — framework names what you built VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T07:49:30Z",
+  "head_ref": "research/riven-five-passes-framework-names-what-you-built"
+}

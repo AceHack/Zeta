@@ -1,0 +1,12 @@
+{
+  "pr_number": 8261,
+  "archive_path": "docs/history/pr-reviews/PR-8261-docs-playable-quotes-is-the-real-experience-preservation-tool-corrects-cheat-eng.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T04:56:50.899Z",
+  "schema_version": "v1",
+  "commit_sha": "8cdbebb930751f86775275c996b663aa72e4e8c4",
+  "title": "docs: Playable Quotes is the real experience-preservation tool (corrects Cheat-Engine confab); deterministic-carts anchor",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T04:56:23Z",
+  "head_ref": "otto/fix-cheat-engine-misidentification"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7954,
+  "archive_path": "docs/history/pr-reviews/PR-7954-docs-research-shadow-ferry-17-garbage-z-set-fused-back-into-a-g-set-the-tombston.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:04:01.838Z",
+  "schema_version": "v1",
+  "commit_sha": "dc1b2419ad17e990199989e5a7224ccaae6c65e6",
+  "title": "docs(research)+shadow: ferry 17 — garbage = Z-set fused back into a G-set (the tombstone-GC theorem; fusion reconstructs the present at the price of the past)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:03:37Z",
+  "head_ref": "shadow/ferry-17-garbage-is-fusion"
+}

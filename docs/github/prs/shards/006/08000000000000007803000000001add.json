@@ -1,0 +1,12 @@
+{
+  "pr_number": 6877,
+  "archive_path": "docs/history/pr-reviews/PR-6877-docs-research-ray-traceability-capability-vector-gap-finder-lens-for-the-atari-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T17:15:41.007Z",
+  "schema_version": "v1",
+  "commit_sha": "b5634d1d3bd43d9a0c5af3155222c21c001534b3",
+  "title": "docs(research): ray-traceability capability vector = gap-finder/lens for the Atari-2600 emulator (B-0924) on the interrupt substrate (B-0917)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T17:15:21Z",
+  "head_ref": "otto/ray-traceability-lens-for-atari-emulator-b0924-b0917"
+}

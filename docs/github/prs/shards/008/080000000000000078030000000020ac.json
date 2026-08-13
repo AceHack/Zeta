@@ -1,0 +1,12 @@
+{
+  "pr_number": 8364,
+  "archive_path": "docs/history/pr-reviews/PR-8364-fix-ci-keep-low-memory-smoke-within-slim-runner-cap.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T23:49:22.300Z",
+  "schema_version": "v1",
+  "commit_sha": "5eeb93647cfa3485328611491f775bbed1cbc828",
+  "title": "fix(ci): keep low-memory smoke within slim runner cap",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T23:48:57Z",
+  "head_ref": "codex/low-memory-core-smoke"
+}

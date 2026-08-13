@@ -1,0 +1,12 @@
+{
+  "pr_number": 5211,
+  "archive_path": "docs/history/pr-reviews/PR-5211-backlog-b-0812-p1-iter-5-4-1-self-registration-commit-push-to-maintainers-operat.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T16:23:34.763Z",
+  "schema_version": "v1",
+  "commit_sha": "0882866099abb293a297858a7a9c009aaa1d1f4b",
+  "title": "backlog(B-0812 P1 iter-5.4.1): self-registration commit+push to maintainers/<operator>/cluster-nodes",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T16:23:14Z",
+  "head_ref": "otto-cli/b0812-iter-5-4-1-self-registration-commit-push-to-maintainers-cluster-nodes-2026-05-26"
+}

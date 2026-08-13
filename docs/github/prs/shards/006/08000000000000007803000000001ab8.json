@@ -1,0 +1,12 @@
+{
+  "pr_number": 6840,
+  "archive_path": "docs/history/pr-reviews/PR-6840-docs-team-dispatch-board-for-vera-lior-4-lang-4-serial-math-leg-others.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:35:45.053Z",
+  "schema_version": "v1",
+  "commit_sha": "fba6cabd48d246ac8fbf0a139b8a9e6183efe332",
+  "title": "docs: team dispatch board for Vera + Lior — 4-lang / 4-serial / math-leg / others",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:35:26Z",
+  "head_ref": "docs/team-dispatch-board-4lang-4serial-mathleg"
+}

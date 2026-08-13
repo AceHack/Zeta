@@ -1,0 +1,12 @@
+{
+  "pr_number": 2445,
+  "archive_path": "docs/history/pr-reviews/PR-2445-chore-b-0079-regenerate-backlog-md-b-0079-closed-status-x.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T09:07:35.733Z",
+  "schema_version": "v1",
+  "commit_sha": "6b00ff6db10dcf83069e8a94552199991883f1b8",
+  "title": "chore(B-0079): regenerate BACKLOG.md — B-0079 closed status → [x]",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T09:07:15Z",
+  "head_ref": "chore/B-0079-backlog-index-regen"
+}

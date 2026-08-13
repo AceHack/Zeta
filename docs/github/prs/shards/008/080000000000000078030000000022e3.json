@@ -1,0 +1,12 @@
+{
+  "pr_number": 8931,
+  "archive_path": "docs/history/pr-reviews/PR-8931-feat-laws-z3-obligation-generator-ci-proof-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T09:38:55.283Z",
+  "schema_version": "v1",
+  "commit_sha": "abad749e4e9c973e4c92294dc3d89c4de574a6bf",
+  "title": "feat(laws): Z3 obligation generator + CI proof gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T09:38:23Z",
+  "head_ref": "alexa/z3-law-obligations"
+}

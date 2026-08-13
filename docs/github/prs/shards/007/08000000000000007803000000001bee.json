@@ -1,0 +1,12 @@
+{
+  "pr_number": 7150,
+  "archive_path": "docs/history/pr-reviews/PR-7150-feat-core-privacyeconomy-good-bad-asymmetry-verdict-good-unknown-never-bad.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:41:38.863Z",
+  "schema_version": "v1",
+  "commit_sha": "3095f4864a52aaccac31231fe28b623bc464be09",
+  "title": "feat(core): PrivacyEconomy good/bad asymmetry — Verdict = Good | Unknown (never Bad)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:41:20Z",
+  "head_ref": "otto/privacy-economy-good-bad-asymmetry-verdict-good-or-unknown-never-bad"
+}

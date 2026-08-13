@@ -1,0 +1,12 @@
+{
+  "pr_number": 3400,
+  "archive_path": "docs/history/pr-reviews/PR-3400-shard-tick-0940z-pr-3398-stale-resolve-ci-runner-nudge-3379-3381.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T09:47:56.690Z",
+  "schema_version": "v1",
+  "commit_sha": "b946f6f645d908b4b27104d4f60fe0de269dd623",
+  "title": "shard(tick): 0940Z — PR #3398 stale resolve; CI runner nudge #3379 + #3381",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T09:47:39Z",
+  "head_ref": "shard/tick-0940z-otto-cli-2026-05-15"
+}

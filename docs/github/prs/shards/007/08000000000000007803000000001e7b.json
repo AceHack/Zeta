@@ -1,0 +1,12 @@
+{
+  "pr_number": 7803,
+  "archive_path": "docs/history/pr-reviews/PR-7803-docs-trajectory-resume-reconcile-wave-7798-7802.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T21:53:40.792Z",
+  "schema_version": "v1",
+  "commit_sha": "c25eb95113e1e81e2bed369515a7dc54d39b6bfa",
+  "title": "docs(trajectory): RESUME reconcile wave (#7798..#7802)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T21:53:14Z",
+  "head_ref": "shadow-resume-fold-reconcile"
+}

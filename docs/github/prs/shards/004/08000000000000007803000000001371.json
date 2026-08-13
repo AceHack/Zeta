@@ -1,0 +1,30 @@
+{
+  "pr_number": 4977,
+  "archive_path": "docs/history/pr-reviews/PR-4977-backlog-b-0729-obsidian-as-knowledge-graph-substrate-5-layer-adoption-wikilinks-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Erd7A",
+    "comment:PRRC_kwDOSF9kNM7Erd7O",
+    "comment:PRRC_kwDOSF9kNM7Erd7f",
+    "comment:PRRC_kwDOSF9kNM7EreJh",
+    "comment:PRRC_kwDOSF9kNM7ErfN7",
+    "comment:PRRC_kwDOSF9kNM7ErfQR",
+    "comment:PRRC_kwDOSF9kNM7ErfSG",
+    "comment:PRRC_kwDOSF9kNM7ErfTu",
+    "comment:PRRC_kwDOSF9kNM7Ergk1",
+    "comment:PRRC_kwDOSF9kNM7Erh1J",
+    "comment:PRRC_kwDOSF9kNM7ErjGs",
+    "thread:PRRT_kwDOSF9kNM6Ena65",
+    "thread:PRRT_kwDOSF9kNM6Ena6h",
+    "thread:PRRT_kwDOSF9kNM6Ena6t",
+    "thread:PRRT_kwDOSF9kNM6EnbFZ",
+    "thread:PRRT_kwDOSF9kNM6Enc-8",
+    "thread:PRRT_kwDOSF9kNM6Ene8d"
+  ],
+  "fetched_at": "2026-05-25T19:53:04.735Z",
+  "schema_version": "v1",
+  "commit_sha": "1808e6b9dc78f159f14fdb631ffbb19031e596dd",
+  "title": "backlog(B-0729): Obsidian as knowledge-graph substrate — 5-layer adoption (wikilinks + tags + callouts + Tasks + JSON-LD extractor)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T19:52:47Z",
+  "head_ref": "backlog/b0729-obsidian-knowledge-graph-substrate-2026-05-25-c2"
+}

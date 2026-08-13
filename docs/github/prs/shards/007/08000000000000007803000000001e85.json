@@ -1,0 +1,12 @@
+{
+  "pr_number": 7813,
+  "archive_path": "docs/history/pr-reviews/PR-7813-docs-backlog-b-1035-the-reticulum-only-io-clause-one-door-warm-cache-at-startup-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:17:26.749Z",
+  "schema_version": "v1",
+  "commit_sha": "c8ac668023aac5165af5b08c1e7346adb0db078e",
+  "title": "docs(backlog): B-1035 — the Reticulum-only IO clause (one door; warm cache at startup; sealed loops)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:17:03Z",
+  "head_ref": "shadow-b1035-reticulum-only"
+}

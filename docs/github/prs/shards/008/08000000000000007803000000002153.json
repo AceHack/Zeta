@@ -1,0 +1,12 @@
+{
+  "pr_number": 8531,
+  "archive_path": "docs/history/pr-reviews/PR-8531-memory-feedback-everything-past-the-child-safety-floor-is-hard-the-p-vs-np-front.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T12:22:35.561Z",
+  "schema_version": "v1",
+  "commit_sha": "11ad32a9935be13fc71b53d937f0434cb3104ae4",
+  "title": "memory(feedback): everything past the child-safety floor is hard — the P-vs-NP frontier; the security/economy rests on P≠NP (named premise)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T12:22:06Z",
+  "head_ref": "otto/past-the-floor-is-hard-p-vs-np-frontier-security-rests-on-p-neq-np"
+}

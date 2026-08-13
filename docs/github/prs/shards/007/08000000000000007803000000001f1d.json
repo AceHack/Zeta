@@ -1,0 +1,12 @@
+{
+  "pr_number": 7965,
+  "archive_path": "docs/history/pr-reviews/PR-7965-docs-research-shadow-report-5-reception-the-seed-is-its-own-interpretation-the-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:36:22.743Z",
+  "schema_version": "v1",
+  "commit_sha": "0b3060f2dbd52d7cf0417bd8782fa71c579ee514",
+  "title": "docs(research)+shadow: REPORT #5 reception — the seed is its own interpretation (the double-count was the homoiconicity theorem backwards)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:35:50Z",
+  "head_ref": "shadow/report-5-reception"
+}

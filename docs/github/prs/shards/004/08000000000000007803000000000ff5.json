@@ -1,0 +1,12 @@
+{
+  "pr_number": 4085,
+  "archive_path": "docs/history/pr-reviews/PR-4085-feat-b-0170-4-seed-convention-drift-fixture-regression-test.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T14:05:26.299Z",
+  "schema_version": "v1",
+  "commit_sha": "be0c93ea993d4b7d9507f821c101f847cbc5912e",
+  "title": "feat(B-0170.4): seed convention-drift fixture + regression test",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T14:05:10Z",
+  "head_ref": "feat/b-0170-convention-drift-fixture-2026-05-17"
+}

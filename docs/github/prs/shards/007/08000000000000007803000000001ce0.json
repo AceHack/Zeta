@@ -1,0 +1,12 @@
+{
+  "pr_number": 7392,
+  "archive_path": "docs/history/pr-reviews/PR-7392-feat-portal-blueprint-builder-agentic-manual-game-server-kb-unturned-gmod-arma-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:40:03.628Z",
+  "schema_version": "v1",
+  "commit_sha": "275c4e15484c2cedda76ee492d6b23b36ce9056f",
+  "title": "feat(portal): Blueprint Builder — agentic + manual, game-server KB (Unturned/GMod/Arma Reforger)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:39:34Z",
+  "head_ref": "feat/blueprint-builder"
+}

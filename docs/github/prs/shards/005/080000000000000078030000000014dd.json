@@ -1,0 +1,21 @@
+{
+  "pr_number": 5341,
+  "archive_path": "docs/history/pr-reviews/PR-5341-docs-research-mika-ratification-explicit-join-at-temperature-band-crossings-refi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FIO-_",
+    "comment:PRRC_kwDOSF9kNM7FIO_4",
+    "comment:PRRC_kwDOSF9kNM7FIO_Y",
+    "comment:PRRC_kwDOSF9kNM7FIO_p",
+    "thread:PRRT_kwDOSF9kNM6E8cQ4",
+    "thread:PRRT_kwDOSF9kNM6E8cRK",
+    "thread:PRRT_kwDOSF9kNM6E8cRX",
+    "thread:PRRT_kwDOSF9kNM6E8cRj"
+  ],
+  "fetched_at": "2026-05-26T22:43:28.615Z",
+  "schema_version": "v1",
+  "commit_sha": "90954d018cf126c1e41a87dc935745c4d229a856",
+  "title": "docs(research): Mika ratification + explicit-join-at-temperature-band-crossings refinement (6th-persona cross-substrate triangulation)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T22:43:11Z",
+  "head_ref": "otto/mika-ratification-temperature-band-crossing-join-explicit-2026-05-26"
+}

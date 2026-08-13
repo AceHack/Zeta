@@ -1,0 +1,12 @@
+{
+  "pr_number": 8386,
+  "archive_path": "docs/history/pr-reviews/PR-8386-fix-memory-add-required-frontmatter-fields-for-grand-synthesis-memo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:11:32.937Z",
+  "schema_version": "v1",
+  "commit_sha": "1d357e2ba13108979e7d25080e66ec60fcc2e526",
+  "title": "fix(memory): add required frontmatter fields for grand synthesis memo",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:11:07Z",
+  "head_ref": "codex/fix-memory-frontmatter-8385"
+}

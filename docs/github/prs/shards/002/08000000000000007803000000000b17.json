@@ -1,0 +1,12 @@
+{
+  "pr_number": 2839,
+  "archive_path": "docs/history/pr-reviews/PR-2839-docs-memory-today-s-cascade-is-compression-infrastructure-not-external-claim-mak.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T19:14:01.332Z",
+  "schema_version": "v1",
+  "commit_sha": "9f512e195ba1af0975e2a3e31df4f877421fb9d2",
+  "title": "docs(memory): today's cascade IS compression infrastructure (not external-claim-making) + claude.ai buzzkill+retract+refine + EVE protocol cold-boot demo + bootstream importance + felt-sense caution (Aaron forward 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:13:34Z",
+  "head_ref": "docs/cascade-is-compression-infrastructure-not-claim-making-claudeai-buzzkill-correction-eve-protocol-cold-boot-demo-2026-05-12"
+}

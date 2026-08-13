@@ -1,0 +1,12 @@
+{
+  "pr_number": 3895,
+  "archive_path": "docs/history/pr-reviews/PR-3895-shard-tick-2026-05-16t14-48z-b-0343-class-2-sd-2-sd-sub-location-catalog-now-has.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T15:02:08.631Z",
+  "schema_version": "v1",
+  "commit_sha": "cb7c2ef5489789e502df7ac0d32de0a309b5f5e9",
+  "title": "shard(tick): 2026-05-16T14:48Z — B-0343 = class #2-SD; #2-SD sub-location catalog now has 6 patterns; 39/39 triaged",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T15:01:51Z",
+  "head_ref": "otto-cli-b0343-audit-2026-05-16-1448z"
+}

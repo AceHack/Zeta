@@ -1,0 +1,12 @@
+{
+  "pr_number": 7962,
+  "archive_path": "docs/history/pr-reviews/PR-7962-docs-research-shadow-ferry-19-the-dispatch-protocol-is-eve-protocol-v8-hidden-sh.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:27:53.624Z",
+  "schema_version": "v1",
+  "commit_sha": "7905382d9ada02dcc89ab733aa3808c61afb1478",
+  "title": "docs(research)+shadow: ferry 19 — the dispatch protocol is Eve Protocol + v8 hidden-shape (verdicts as inline caches; stare decisis)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:27:29Z",
+  "head_ref": "shadow/ferry-19-dispatch-protocol"
+}

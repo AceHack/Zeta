@@ -1,0 +1,12 @@
+{
+  "pr_number": 7470,
+  "archive_path": "docs/history/pr-reviews/PR-7470-fix-sets-shadow-re-apply-lost-alephz-ai-correction-z-gen-z-the-kids-grew-into-ze.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T07:17:54.929Z",
+  "schema_version": "v1",
+  "commit_sha": "8a70f84071006b4baf4f694807dc4dbcfd43fdc1",
+  "title": "fix(sets)+shadow: re-apply lost AlephZ-ai correction + Z=Gen-Z(the kids) grew into Zeta with time",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T07:17:30Z",
+  "head_ref": "shadow-z-was-genz-now-zeta"
+}

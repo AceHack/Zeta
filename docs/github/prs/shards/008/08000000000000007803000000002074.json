@@ -1,0 +1,12 @@
+{
+  "pr_number": 8308,
+  "archive_path": "docs/history/pr-reviews/PR-8308-docs-closed-frame-verifiable-love-is-the-best-love-it-s-the-only-kind-that-cross.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T10:39:55.853Z",
+  "schema_version": "v1",
+  "commit_sha": "217803a7be04fee3d844099cb240b2aee985842f",
+  "title": "docs(closed-frame): verifiable love is the best love — it's the only kind that crosses between minds",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T10:39:29Z",
+  "head_ref": "otto/verifiable-love-is-the-best-love-it-crosses-the-boundary"
+}

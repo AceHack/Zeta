@@ -1,0 +1,12 @@
+{
+  "pr_number": 2907,
+  "archive_path": "docs/history/pr-reviews/PR-2907-docs-memory-elevator-pitch-shared-world-model-in-git-forkable-game-on-top-regula.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T02:24:26.669Z",
+  "schema_version": "v1",
+  "commit_sha": "c76224bf3716aae5ba0936ffa506396d886c283e",
+  "title": "docs(memory): elevator pitch — shared world model in git, forkable, game on top — regular people speak (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T02:24:08Z",
+  "head_ref": "aaron-elevator-pitch-shared-world-model-in-git-forkable-game-work-into-play-pvp-coop-raids-universal-business-templates-2026-05-13"
+}

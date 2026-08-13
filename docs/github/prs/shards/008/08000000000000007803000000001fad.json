@@ -1,0 +1,12 @@
+{
+  "pr_number": 8109,
+  "archive_path": "docs/history/pr-reviews/PR-8109-feat-zeta-id-integrate-multi-language-units-of-measure-uom-in-codegen.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T00:48:33.919Z",
+  "schema_version": "v1",
+  "commit_sha": "bbd92f27ce6bbfdb19262836b11d71974c560764",
+  "title": "feat(zeta-id): integrate multi-language Units of Measure (UoM) in codegen",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T00:48:15Z",
+  "head_ref": "gemini/uom-codegen"
+}

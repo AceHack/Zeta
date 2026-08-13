@@ -1,0 +1,12 @@
+{
+  "pr_number": 2208,
+  "archive_path": "docs/history/pr-reviews/PR-2208-docs-b-0340-spec-completeness-audit-37-coverage.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T06:41:51.689Z",
+  "schema_version": "v1",
+  "commit_sha": "4fb2053c3cb946041bcc1b8970cdfd701768d225",
+  "title": "docs(B-0340): spec completeness audit — 37% coverage",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:41:32Z",
+  "head_ref": "fix/b0340-spec-completeness-audit"
+}

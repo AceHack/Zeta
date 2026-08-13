@@ -1,0 +1,26 @@
+{
+  "pr_number": 2091,
+  "archive_path": "docs/history/pr-reviews/PR-2091-feat-b-0307-source-filter-recency-resolver.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_T-fW",
+    "comment:PRRC_kwDOSF9kNM6_T0rU",
+    "comment:PRRC_kwDOSF9kNM6_T4Lh",
+    "comment:PRRC_kwDOSF9kNM6_T4M-",
+    "comment:PRRC_kwDOSF9kNM6_T4Md",
+    "comment:PRRC_kwDOSF9kNM6_T4NW",
+    "comment:PRRC_kwDOSF9kNM6_UChE",
+    "thread:PRRT_kwDOSF9kNM6Aqhwy",
+    "thread:PRRT_kwDOSF9kNM6Aqkas",
+    "thread:PRRT_kwDOSF9kNM6AqkbV",
+    "thread:PRRT_kwDOSF9kNM6Aqkb_",
+    "thread:PRRT_kwDOSF9kNM6Aqkbq",
+    "thread:PRRT_kwDOSF9kNM6AqsHr"
+  ],
+  "fetched_at": "2026-05-08T15:36:08.587Z",
+  "schema_version": "v1",
+  "commit_sha": "5982c5afda7f6f674d1f87a9699b98e5a7b2a70d",
+  "title": "feat(B-0307): source-filter + recency resolver",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T15:35:49Z",
+  "head_ref": "worktree-b-0307-resolve-authorization"
+}

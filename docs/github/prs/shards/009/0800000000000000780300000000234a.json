@@ -1,0 +1,12 @@
+{
+  "pr_number": 9034,
+  "archive_path": "docs/history/pr-reviews/PR-9034-fix-hygiene-repoint-two-audit-tools-at-the-post-migration-hygiene-dir.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-30T20:07:45.713Z",
+  "schema_version": "v1",
+  "commit_sha": "97e1650eab092e5f1b0fa1a47b323e6a49501781",
+  "title": "fix(hygiene): repoint two audit tools at the post-migration hygiene dir",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T20:07:20Z",
+  "head_ref": "fix-hygiene-tools-stale-migration-paths"
+}

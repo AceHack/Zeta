@@ -1,0 +1,16 @@
+{
+  "pr_number": 5402,
+  "archive_path": "docs/history/pr-reviews/PR-5402-hygiene-bash-retirement-expose-retained-shell-categories.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FNiUa",
+    "comment:PRRC_kwDOSF9kNM7FNjcv",
+    "thread:PRRT_kwDOSF9kNM6FAQW3"
+  ],
+  "fetched_at": "2026-05-27T05:41:54.912Z",
+  "schema_version": "v1",
+  "commit_sha": "1740eead6e102767d74832ddd19d9ab1321896d6",
+  "title": "hygiene(bash-retirement): Expose retained shell categories",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T05:41:34Z",
+  "head_ref": "claim/codex-loop-bash-retirement-category-summary-20260527"
+}

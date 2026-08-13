@@ -1,0 +1,17 @@
+{
+  "pr_number": 2121,
+  "archive_path": "docs/history/pr-reviews/PR-2121-feat-b-0126-2-add-ai-attribution-footer-to-github-actions-workflows.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_Yvu2",
+    "comment:PRRC_kwDOSF9kNM6_YvvY",
+    "thread:PRRT_kwDOSF9kNM6AuJj4",
+    "thread:PRRT_kwDOSF9kNM6AuJjg"
+  ],
+  "fetched_at": "2026-05-08T19:41:24.068Z",
+  "schema_version": "v1",
+  "commit_sha": "3cf04c5163abcf0fc06e225ad6abfa88148cd857",
+  "title": "feat(B-0126.2): add AI attribution footer to GitHub Actions workflows",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T19:41:00Z",
+  "head_ref": "b-0126.2/attribution-footer-gh-actions"
+}

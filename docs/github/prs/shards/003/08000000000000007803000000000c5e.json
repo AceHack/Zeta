@@ -1,0 +1,12 @@
+{
+  "pr_number": 3166,
+  "archive_path": "docs/history/pr-reviews/PR-3166-fix-4-copilot-threads-on-prs-3156-3161-post-merge-follow-up.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T18:36:07.662Z",
+  "schema_version": "v1",
+  "commit_sha": "6427061d3c2308e29423688dbac1135914f599fa",
+  "title": "fix: 4 Copilot threads on PRs #3156 + #3161 (post-merge follow-up)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:35:35Z",
+  "head_ref": "fix/copilot-4-threads-on-pr3156-pr3161-followup-2026-05-14"
+}

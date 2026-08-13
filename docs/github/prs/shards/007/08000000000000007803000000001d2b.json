@@ -1,0 +1,12 @@
+{
+  "pr_number": 7467,
+  "archive_path": "docs/history/pr-reviews/PR-7467-fix-workitems-shadow-route-persona-keys-tsc-keyring-sh-ops-k8s-ts-gate-failures-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T06:23:52.943Z",
+  "schema_version": "v1",
+  "commit_sha": "b55e8aae749adc10b0bec1139bceb1cf96cfac5a",
+  "title": "fix(workitems)+shadow: route persona-keys tsc + keyring.sh (+ops-k8s.ts) gate failures to Dejan",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T06:23:27Z",
+  "head_ref": "shadow-route-gate-failures-to-dejan"
+}

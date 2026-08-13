@@ -1,0 +1,19 @@
+{
+  "pr_number": 3232,
+  "archive_path": "docs/history/pr-reviews/PR-3232-chore-rule-extend-zeta-expected-branch-with-primary-defenses-cold-boot-substrate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BXcWk",
+    "comment:PRRC_kwDOSF9kNM7BXcXz",
+    "comment:PRRC_kwDOSF9kNM7BXcYh",
+    "thread:PRRT_kwDOSF9kNM6CLw2E",
+    "thread:PRRT_kwDOSF9kNM6CLw3D",
+    "thread:PRRT_kwDOSF9kNM6CLw3g"
+  ],
+  "fetched_at": "2026-05-14T20:39:48.268Z",
+  "schema_version": "v1",
+  "commit_sha": "d9cdf50c0ba5a7b0f97a73b3b0dc1fa89af03fc2",
+  "title": "chore(rule): extend zeta-expected-branch with primary defenses (cold-boot substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:39:32Z",
+  "head_ref": "otto/extend-zeta-branch-rule-primary-defenses-2026-05-14"
+}

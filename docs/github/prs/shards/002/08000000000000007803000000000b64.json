@@ -1,0 +1,15 @@
+{
+  "pr_number": 2916,
+  "archive_path": "docs/history/pr-reviews/PR-2916-shard-tick-0302z-pr-2915-merged-thread-reconciliation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AmJXq",
+    "thread:PRRT_kwDOSF9kNM6BnvRf"
+  ],
+  "fetched_at": "2026-05-13T03:06:07.893Z",
+  "schema_version": "v1",
+  "commit_sha": "86ba36204a403a6ba280209a0801406e4ac27e40",
+  "title": "shard(tick): 0302Z — PR #2915 MERGED + thread reconciliation",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T03:05:53Z",
+  "head_ref": "otto-tick-shard-0302Z-pr2915-merged-2026-05-13"
+}

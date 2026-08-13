@@ -1,0 +1,12 @@
+{
+  "pr_number": 7300,
+  "archive_path": "docs/history/pr-reviews/PR-7300-docs-research-the-interfaces-are-the-valuable-seed-code-docs-governance-proofs-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:47:29.761Z",
+  "schema_version": "v1",
+  "commit_sha": "501acae6fc3a62d9a4d4916ed367d97d0b9da4e0",
+  "title": "docs(research): the interfaces are the valuable seed — code/docs/governance/proofs (and eventually hardware) regenerate from them; ace = interface to generators",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:46:59Z",
+  "head_ref": "otto/interfaces-are-the-valuable-seed-everything-regenerates-ace-interface-to-generators"
+}

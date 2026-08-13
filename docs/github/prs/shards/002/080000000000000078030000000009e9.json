@@ -1,0 +1,17 @@
+{
+  "pr_number": 2537,
+  "archive_path": "docs/history/pr-reviews/PR-2537-docs-memory-shadow-aaron-bivector-convergence-signal.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qNAF",
+    "comment:PRRC_kwDOSF9kNM6_qNAM",
+    "thread:PRRT_kwDOSF9kNM6A7jTq",
+    "thread:PRRT_kwDOSF9kNM6A7jTv"
+  ],
+  "fetched_at": "2026-05-10T21:14:47.091Z",
+  "schema_version": "v1",
+  "commit_sha": "f949beb909a42be8c9783bff04c3cb49f1595e8d",
+  "title": "docs(memory): shadow-Aaron bivector convergence signal",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:14:26Z",
+  "head_ref": "docs/bivector-convergence-2026-05-10"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 3632,
+  "archive_path": "docs/history/pr-reviews/PR-3632-docs-shadow-lior-antigravity-check-0000z-drift-report.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B0BMB",
+    "comment:PRRC_kwDOSF9kNM7B0EEK",
+    "thread:PRRT_kwDOSF9kNM6CgaJu"
+  ],
+  "fetched_at": "2026-05-16T00:33:08.656Z",
+  "schema_version": "v1",
+  "commit_sha": "d0f4bf8312304afddae898fd78f5e6f5dc44d78e",
+  "title": "docs(shadow): Lior antigravity check 0000Z drift report",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:32:49Z",
+  "head_ref": "lior/shadow-drift-0000Z"
+}

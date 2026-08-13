@@ -1,0 +1,12 @@
+{
+  "pr_number": 8570,
+  "archive_path": "docs/history/pr-reviews/PR-8570-fix-backlog-regenerate-docs-backlog-md-index-drift-from-8568.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T13:33:25.015Z",
+  "schema_version": "v1",
+  "commit_sha": "0bc8558d4616cc10c8093c2c4065d47c3c7b25ce",
+  "title": "fix(backlog): regenerate docs/BACKLOG.md index — drift from #8568",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T13:32:58Z",
+  "head_ref": "otto/backlog-index-drift-8568"
+}

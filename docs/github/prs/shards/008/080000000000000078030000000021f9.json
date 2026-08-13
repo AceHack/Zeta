@@ -1,0 +1,12 @@
+{
+  "pr_number": 8697,
+  "archive_path": "docs/history/pr-reviews/PR-8697-test-core-stop-soft-drive-on-heat-backpressure.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T03:21:13.416Z",
+  "schema_version": "v1",
+  "commit_sha": "3da3ae3e8a64501bc9ec7c573a9a22a9a323792e",
+  "title": "test(core): stop soft drive on heat backpressure",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T03:20:49Z",
+  "head_ref": "codex/soft-prune-heat-backpressure"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6154,
+  "archive_path": "docs/history/pr-reviews/PR-6154-memory-mika-batch-5-the-keystone-don-t-compress-living-uncertainty-nci-rehoboam-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T22:42:59.371Z",
+  "schema_version": "v1",
+  "commit_sha": "93720567db6685f042c8dd57391fd3a75eac96d9",
+  "title": "memory(mika batch 5): the keystone — don't-compress-living-uncertainty = NCI; Rehoboam = society's gaze = the guilt-engine (arc closes)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T22:42:38Z",
+  "head_ref": "otto/mika-batch5-rehoboam-dont-compress-living-uncertainty-nci-2026-05-30"
+}

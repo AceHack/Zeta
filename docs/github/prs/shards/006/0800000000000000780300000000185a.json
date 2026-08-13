@@ -1,0 +1,12 @@
+{
+  "pr_number": 6234,
+  "archive_path": "docs/history/pr-reviews/PR-6234-refactor-references-rename-references-upstreams-references-prior-art.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T19:28:05.908Z",
+  "schema_version": "v1",
+  "commit_sha": "9d13bc9ea7a713308348b2f9fc289f54e3e47ca9",
+  "title": "refactor(references): rename references/upstreams -> references/prior-art",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T19:27:42Z",
+  "head_ref": "otto/rename-upstreams-to-prior-art-2026-05-31"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5635,
+  "archive_path": "docs/history/pr-reviews/PR-5635-feat-zeta-install-cluster-type-menu-with-hardware-detection-suggested-default-op.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T20:52:57.113Z",
+  "schema_version": "v1",
+  "commit_sha": "79dd742c2335287cc2fc8ce1c43f1446e351eece",
+  "title": "feat(zeta-install): cluster-type menu with hardware-detection suggested default (operator-named direction; live-USB install flow)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T20:52:38Z",
+  "head_ref": "feat/zeta-install-cluster-type-menu-with-hardware-detection-control-plane-worker-gpu-template-other-2026-05-27"
+}

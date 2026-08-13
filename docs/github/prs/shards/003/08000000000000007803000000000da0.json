@@ -1,0 +1,12 @@
+{
+  "pr_number": 3488,
+  "archive_path": "docs/history/pr-reviews/PR-3488-shard-tick-1345z-pr-3483-merged-pr-3485-wait-ci.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T13:50:11.738Z",
+  "schema_version": "v1",
+  "commit_sha": "cd2f6ce53e3ac21dad04cc301bf9d2b84b7a9f49",
+  "title": "shard(tick): 1345Z — PR #3483 merged; PR #3485 wait-CI",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T13:49:50Z",
+  "head_ref": "shard/tick-1345z-otto-cli-2026-05-15"
+}

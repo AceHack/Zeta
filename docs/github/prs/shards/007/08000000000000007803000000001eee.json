@@ -1,0 +1,12 @@
+{
+  "pr_number": 7918,
+  "archive_path": "docs/history/pr-reviews/PR-7918-docs-research-shadow-math-team-report-3-the-attention-boundary-ferry-7-fusefs-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T14:41:10.787Z",
+  "schema_version": "v1",
+  "commit_sha": "d259efa3c03a1ba226901abd586a44a737418c8f",
+  "title": "docs(research)+shadow: math-team REPORT #3 (the attention boundary) + ferry 7 (fusefs / recursive budget-fusion / fusion-doc lineage)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T14:40:38Z",
+  "head_ref": "shadow/math-report-3-and-fusefs-ferry"
+}

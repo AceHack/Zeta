@@ -1,0 +1,12 @@
+{
+  "pr_number": 2150,
+  "archive_path": "docs/history/pr-reviews/PR-2150-research-houman-s-superfluid-reactor-refinement-attributed.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T23:29:01.411Z",
+  "schema_version": "v1",
+  "commit_sha": "c96149f72d44afd17734474146d06d5d16b34e2d",
+  "title": "research: Houman's superfluid reactor refinement — attributed",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T23:28:44Z",
+  "head_ref": "docs/houman-reactor-refinement"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7964,
+  "archive_path": "docs/history/pr-reviews/PR-7964-docs-research-shadow-math-team-report-5-dashed-braid-restricted-span-writheparit.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:34:01.424Z",
+  "schema_version": "v1",
+  "commit_sha": "e1c21e590628c52e2f8455ebaa980210202016bf",
+  "title": "docs(research)+shadow: math-team REPORT #5 (dashed braid → restricted span; writheParity terminal) + ferry 19 addendum 2 (containment-first, timestamped)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:33:33Z",
+  "head_ref": "shadow/ferry-19-trigger-contain"
+}

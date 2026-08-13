@@ -1,0 +1,12 @@
+{
+  "pr_number": 2910,
+  "archive_path": "docs/history/pr-reviews/PR-2910-backlog-p1-memory-b-0426-orthogonal-mirror-beacon-repo-split-axis-aaron-2026-05-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T02:35:39.359Z",
+  "schema_version": "v1",
+  "commit_sha": "44fe961406fda63834939a4478061be93dfa214b",
+  "title": "backlog(P1) + memory: B-0426 orthogonal Mirror/Beacon repo-split axis (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T02:35:25Z",
+  "head_ref": "aaron-repo-split-orthogonal-mirror-beacon-axis-speculative-fast-forks-vs-governance-citation-gated-2026-05-13"
+}

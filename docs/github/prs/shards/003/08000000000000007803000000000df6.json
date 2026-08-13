@@ -1,0 +1,16 @@
+{
+  "pr_number": 3574,
+  "archive_path": "docs/history/pr-reviews/PR-3574-fix-otto-279-role-refs-not-persona-names-in-tools-hygiene-audit-ts-9-hits.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bw8O_",
+    "comment:PRRC_kwDOSF9kNM7BwtFA",
+    "thread:PRRT_kwDOSF9kNM6Cd-oR"
+  ],
+  "fetched_at": "2026-05-15T20:34:43.515Z",
+  "schema_version": "v1",
+  "commit_sha": "ce3faeb97ccef7dd60f35746b91a9098066a8df0",
+  "title": "fix(otto-279): role-refs not persona-names in tools/hygiene/audit-*.ts (9 hits)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T20:34:23Z",
+  "head_ref": "fix/otto-279-role-refs-tools-hygiene-otto-cli-2026-05-15"
+}

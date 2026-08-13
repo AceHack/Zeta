@@ -1,0 +1,17 @@
+{
+  "pr_number": 6089,
+  "archive_path": "docs/history/pr-reviews/PR-6089-fix-b-0707-repair-manifesto-citation-snapshot-cadence.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GYqjL",
+    "comment:PRRC_kwDOSF9kNM7GYqjT",
+    "thread:PRRT_kwDOSF9kNM6F2jRc",
+    "thread:PRRT_kwDOSF9kNM6F2jRi"
+  ],
+  "fetched_at": "2026-05-30T07:14:26.666Z",
+  "schema_version": "v1",
+  "commit_sha": "a4b8cf2ecd2160ffec71cdb390fec41f7ec85f8f",
+  "title": "fix(B-0707): repair manifesto citation snapshot cadence",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T07:14:07Z",
+  "head_ref": "claim/backlog-0707-snapshot-cadence-pr-permission-20260530"
+}

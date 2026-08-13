@@ -1,0 +1,12 @@
+{
+  "pr_number": 6117,
+  "archive_path": "docs/history/pr-reviews/PR-6117-backlog-b-0824-ace-realization-distribution-ux-mise-symmetric-engine-ace-npm-age.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T14:24:25.351Z",
+  "schema_version": "v1",
+  "commit_sha": "6a628722c51e4ba3b0bd1acca13b22b7f99d3b38",
+  "title": "backlog(B-0824): Ace realization + distribution UX — mise=symmetric engine; Ace=npm agent skill",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T14:24:04Z",
+  "head_ref": "otto/ace-symmetric-engine-distribution-ux-2026-05-30"
+}

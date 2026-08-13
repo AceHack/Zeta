@@ -1,0 +1,16 @@
+{
+  "pr_number": 6201,
+  "archive_path": "docs/history/pr-reviews/PR-6201-codex-feat-openspec-map-artifact-backed-specs-in-inventory.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ge0w8",
+    "comment:PRRC_kwDOSF9kNM7GexUy",
+    "thread:PRRT_kwDOSF9kNM6F7U8z"
+  ],
+  "fetched_at": "2026-05-31T09:06:48.328Z",
+  "schema_version": "v1",
+  "commit_sha": "615a950a23cf8463a59c16160af5baab12415d58",
+  "title": "[codex] feat(openspec): map artifact-backed specs in inventory",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T09:06:29Z",
+  "head_ref": "claim/codex-loop-b0171-openspec-artifact-map-20260531"
+}

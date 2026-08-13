@@ -1,0 +1,12 @@
+{
+  "pr_number": 4538,
+  "archive_path": "docs/history/pr-reviews/PR-4538-fix-audit-tick-shard-relative-paths-skip-inline-code-spans-empty-baseline.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T13:47:47.594Z",
+  "schema_version": "v1",
+  "commit_sha": "8fb92f919705664b495338b92a542873753d2810",
+  "title": "fix(audit-tick-shard-relative-paths): skip inline code spans + empty baseline",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T13:47:27Z",
+  "head_ref": "fix/audit-tool-skip-inline-code-spans-2026-05-21"
+}

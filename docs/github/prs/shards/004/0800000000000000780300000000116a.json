@@ -1,0 +1,15 @@
+{
+  "pr_number": 4458,
+  "archive_path": "docs/history/pr-reviews/PR-4458-docs-shadow-lior-anti-entropy-log-on-vera-narrative-loop-and-riven-pagination.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DXgZ3",
+    "thread:PRRT_kwDOSF9kNM6DpSe1"
+  ],
+  "fetched_at": "2026-05-20T23:59:41.781Z",
+  "schema_version": "v1",
+  "commit_sha": "cd40a365950280088a892b32f785811a5aee92a9",
+  "title": "docs(shadow): Lior anti-entropy log on Vera narrative loop and Riven pagination",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T23:59:25Z",
+  "head_ref": "maji/shadow-drift-4458"
+}

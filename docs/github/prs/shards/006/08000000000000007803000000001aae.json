@@ -1,0 +1,12 @@
+{
+  "pr_number": 6830,
+  "archive_path": "docs/history/pr-reviews/PR-6830-docs-compression-generators-incompressible-residual-captured-as-bayesian-uncerta.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T13:55:43.084Z",
+  "schema_version": "v1",
+  "commit_sha": "2168dca04835ad42f479d63b889f395a9df65347",
+  "title": "docs(compression-generators): incompressible residual captured as Bayesian uncertainty (SoftValue)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T13:55:24Z",
+  "head_ref": "capture/incompressible-residual-as-bayesian-uncertainty"
+}

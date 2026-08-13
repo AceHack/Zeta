@@ -1,0 +1,12 @@
+{
+  "pr_number": 4054,
+  "archive_path": "docs/history/pr-reviews/PR-4054-substrate-otto-cli-b-0611-followup-memos-2-tick-shards-from-autonomous-loop-0808.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T09:14:32.754Z",
+  "schema_version": "v1",
+  "commit_sha": "dc096815b7084a022e69d52e819f430a4d74ac9a",
+  "title": "substrate(otto-cli): B-0611 followup memos + 2 tick shards from autonomous-loop 0808Z-0904Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T09:14:16Z",
+  "head_ref": "otto-cli/b0611-followup-substrate-catalog-drift-shell-glob-shards-2026-05-17"
+}

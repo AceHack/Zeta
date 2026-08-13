@@ -1,0 +1,12 @@
+{
+  "pr_number": 8872,
+  "archive_path": "docs/history/pr-reviews/PR-8872-feat-core-project-horizon-heat-onto-darkhall-board.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T05:45:22.738Z",
+  "schema_version": "v1",
+  "commit_sha": "5e318100e5e7664863f69059e1c23b82a63ffd3f",
+  "title": "feat(core): project horizon heat onto darkhall board",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T05:44:57Z",
+  "head_ref": "codex/darkhall-heat-readout"
+}

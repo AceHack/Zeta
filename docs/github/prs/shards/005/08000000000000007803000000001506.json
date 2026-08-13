@@ -1,0 +1,12 @@
+{
+  "pr_number": 5382,
+  "archive_path": "docs/history/pr-reviews/PR-5382-fix-postmerge-5379-qemu-full-install-test-4-copilot-p1-fixes-iter-5-1-marker-was.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T02:17:22.439Z",
+  "schema_version": "v1",
+  "commit_sha": "5514ea94f6c41aba8c20a002539fde86856f6b47",
+  "title": "fix(postmerge #5379): qemu-full-install-test 4 Copilot P1 fixes — iter-5.1 marker (was pre-install) + artifact upload + trigger paths + early-exit race",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T02:17:02Z",
+  "head_ref": "fix-postmerge-5379-qemu-full-install-test-iter-51-marker-artifact-upload-trigger-path-early-exit-race-otto-cli-2026-05-26"
+}

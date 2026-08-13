@@ -1,0 +1,23 @@
+{
+  "pr_number": 2487,
+  "archive_path": "docs/history/pr-reviews/PR-2487-research-b-0313-external-anchors-for-otto-247-otto-341-otto-357-slice-1-of-7.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_nwe1",
+    "comment:PRRC_kwDOSF9kNM6_nwe3",
+    "comment:PRRC_kwDOSF9kNM6_nwe7",
+    "comment:PRRC_kwDOSF9kNM6_nwet",
+    "comment:PRRC_kwDOSF9kNM6_nwey",
+    "thread:PRRT_kwDOSF9kNM6A5lfI",
+    "thread:PRRT_kwDOSF9kNM6A5lfN",
+    "thread:PRRT_kwDOSF9kNM6A5lfQ",
+    "thread:PRRT_kwDOSF9kNM6A5lfS",
+    "thread:PRRT_kwDOSF9kNM6A5lfV"
+  ],
+  "fetched_at": "2026-05-10T12:53:47.325Z",
+  "schema_version": "v1",
+  "commit_sha": "c58a1d66b0b5744dc03be79287bf2a6d402af1f6",
+  "title": "research(B-0313): external anchors for Otto-247, Otto-341, Otto-357 (slice 1 of 7)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T12:53:30Z",
+  "head_ref": "fix/B-0313-otto-nn-anchor-backfill-slice1"
+}

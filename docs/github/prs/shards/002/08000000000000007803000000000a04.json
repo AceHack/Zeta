@@ -1,0 +1,23 @@
+{
+  "pr_number": 2564,
+  "archive_path": "docs/history/pr-reviews/PR-2564-feat-b-0347-carve-3-remaining-long-skill-descriptions-to-fit-routing-budget.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qo2c",
+    "comment:PRRC_kwDOSF9kNM6_qo2i",
+    "comment:PRRC_kwDOSF9kNM6_qo2q",
+    "comment:PRRC_kwDOSF9kNM6_qo2t",
+    "comment:PRRC_kwDOSF9kNM6_qojc",
+    "thread:PRRT_kwDOSF9kNM6A74i8",
+    "thread:PRRT_kwDOSF9kNM6A74xa",
+    "thread:PRRT_kwDOSF9kNM6A74xf",
+    "thread:PRRT_kwDOSF9kNM6A74xk",
+    "thread:PRRT_kwDOSF9kNM6A74xn"
+  ],
+  "fetched_at": "2026-05-10T22:35:19.492Z",
+  "schema_version": "v1",
+  "commit_sha": "55bfd7c0a87eb35091f40fe171b7b11ccc06e43c",
+  "title": "feat(B-0347): carve 3 remaining long skill descriptions to fit routing budget",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T22:35:05Z",
+  "head_ref": "claim/b0347-carved-sentence-smallest-slice-riven-2026-05-10"
+}

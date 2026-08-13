@@ -1,0 +1,12 @@
+{
+  "pr_number": 3482,
+  "archive_path": "docs/history/pr-reviews/PR-3482-shard-tick-1336z-1-stale-codex-thread-cleared-on-pr-3478.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T13:41:45.430Z",
+  "schema_version": "v1",
+  "commit_sha": "d0de9e7212b8d1c4a086ded4985e397fa97a1a32",
+  "title": "shard(tick): 1336Z — 1 stale Codex thread cleared on PR #3478",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T13:41:24Z",
+  "head_ref": "shard/tick-1336z-otto-cli-2026-05-15"
+}

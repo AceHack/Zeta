@@ -1,0 +1,12 @@
+{
+  "pr_number": 7081,
+  "archive_path": "docs/history/pr-reviews/PR-7081-docs-research-time-generator-as-long-division-in-the-interrupt-rationality-perio.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:34:34.229Z",
+  "schema_version": "v1",
+  "commit_sha": "b92110ceb924a4a91f5f0f1a2870cbc8de467e73",
+  "title": "docs(research): time generator as long division in the interrupt — rationality→periodicity→catchability→class",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:34:11Z",
+  "head_ref": "otto/time-generator-long-division-in-interrupt-rationality-class"
+}

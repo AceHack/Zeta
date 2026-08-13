@@ -1,0 +1,12 @@
+{
+  "pr_number": 8493,
+  "archive_path": "docs/history/pr-reviews/PR-8493-memory-feedback-token-economy-is-the-system-s-job-not-otto-s-the-question-genera.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T09:41:24.782Z",
+  "schema_version": "v1",
+  "commit_sha": "7e8727ef952c5a07f54ff35788096f61bce2c786",
+  "title": "memory(feedback): token economy is the SYSTEM's job, not Otto's — the question-generator carries the budget",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T09:40:50Z",
+  "head_ref": "otto/token-economy-is-the-systems-job"
+}

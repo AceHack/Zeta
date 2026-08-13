@@ -1,0 +1,12 @@
+{
+  "pr_number": 3528,
+  "archive_path": "docs/history/pr-reviews/PR-3528-shard-tick-1731z-parallel-work-caught-vera-riven-memory-md-off-by-one-pr-citatio.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T17:36:44.970Z",
+  "schema_version": "v1",
+  "commit_sha": "c565a6b1f0b25f6e582e7a773269f813568cd86c",
+  "title": "shard(tick): 1731Z — parallel work caught Vera+Riven MEMORY.md off-by-one PR citations",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T17:36:28Z",
+  "head_ref": "shard/tick-1731z-otto-cli-2026-05-15"
+}

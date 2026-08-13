@@ -1,0 +1,12 @@
+{
+  "pr_number": 2321,
+  "archive_path": "docs/history/pr-reviews/PR-2321-feat-b-0361-literature-first-anchor-check-in-formal-verification-expert-skill.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T17:44:11.181Z",
+  "schema_version": "v1",
+  "commit_sha": "da3a73280ae2765a3f5ffce6c9b01964f9383bf4",
+  "title": "feat(B-0361): literature-first anchor check in formal-verification-expert skill",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T17:43:53Z",
+  "head_ref": "worktree-crystalline-beaming-sutherland"
+}

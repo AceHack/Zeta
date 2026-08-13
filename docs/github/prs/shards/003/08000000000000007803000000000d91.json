@@ -1,0 +1,16 @@
+{
+  "pr_number": 3473,
+  "archive_path": "docs/history/pr-reviews/PR-3473-shard-tick-1314z-pr-3467-3470-merged-1-stale-thread-cleared.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bn0x4",
+    "comment:PRRC_kwDOSF9kNM7BnwGk",
+    "thread:PRRT_kwDOSF9kNM6CXfce"
+  ],
+  "fetched_at": "2026-05-15T13:21:10.695Z",
+  "schema_version": "v1",
+  "commit_sha": "6f3fbc9d87e2224ec9586683f1c54ac28106e1e5",
+  "title": "shard(tick): 1314Z — PR #3467 + #3470 merged; 1 stale thread cleared",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T13:20:51Z",
+  "head_ref": "shard/tick-1314z-otto-cli-2026-05-15"
+}

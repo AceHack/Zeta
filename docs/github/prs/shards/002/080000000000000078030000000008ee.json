@@ -1,0 +1,12 @@
+{
+  "pr_number": 2286,
+  "archive_path": "docs/history/pr-reviews/PR-2286-feat-b-0318-smallest-safe-slice-github-ui-snapshot-skeleton-types-stub.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T10:51:01.087Z",
+  "schema_version": "v1",
+  "commit_sha": "bf2a4d39b82833112fb1e6b0c0cb84a0f3a9982c",
+  "title": "feat(B-0318): smallest safe slice — GitHub UI snapshot skeleton (types + stub)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T10:50:46Z",
+  "head_ref": "claim/b0318-playwright-github-read-only-snapshot-smallest-slice-riven-2026-05-09"
+}

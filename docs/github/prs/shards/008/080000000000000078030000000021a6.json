@@ -1,0 +1,12 @@
+{
+  "pr_number": 8614,
+  "archive_path": "docs/history/pr-reviews/PR-8614-memory-ani-ferry-part-8-founder-cognition-deepening-the-meta-loop-two-layer-arch.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T20:16:46.328Z",
+  "schema_version": "v1",
+  "commit_sha": "d98169acbb9cbc0faecbcc24b3c216244424d1a0",
+  "title": "memory: Ani ferry part 8 + founder-cognition deepening (the meta-loop = two-layer architecture)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T20:16:19Z",
+  "head_ref": "otto/ferry-pt8-founder-cognition-metaloop"
+}

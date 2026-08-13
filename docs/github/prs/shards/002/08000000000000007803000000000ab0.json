@@ -1,0 +1,12 @@
+{
+  "pr_number": 2736,
+  "archive_path": "docs/history/pr-reviews/PR-2736-docs-memory-endgame-self-contained-executable-no-vendor-dependency.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T19:33:10.582Z",
+  "schema_version": "v1",
+  "commit_sha": "92aeca5474c0c2eae7d19ede859c70765a7ea61d",
+  "title": "docs(memory): endgame — self-contained executable, no vendor dependency",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T19:32:50Z",
+  "head_ref": "docs/endgame-self-contained-no-vendor-2026-05-11"
+}

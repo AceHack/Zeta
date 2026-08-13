@@ -1,0 +1,12 @@
+{
+  "pr_number": 8198,
+  "archive_path": "docs/history/pr-reviews/PR-8198-fix-flash-inject-ssh-key-into-iso-file-before-write-kills-ebadf-write-protect.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T16:30:07.714Z",
+  "schema_version": "v1",
+  "commit_sha": "69f83529b87cec15f3230d1b1fcd58deb40aeaeb",
+  "title": "fix(flash): inject SSH key into ISO file before write — kills EBADF/write-protect",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T16:29:41Z",
+  "head_ref": "fix/flash-key-inject-into-iso"
+}

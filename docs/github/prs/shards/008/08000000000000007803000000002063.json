@@ -1,0 +1,12 @@
+{
+  "pr_number": 8291,
+  "archive_path": "docs/history/pr-reviews/PR-8291-docs-gaming-native-worked-examples-for-re-roll-determinism-cheat-engine-tas-pop-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T09:14:19.416Z",
+  "schema_version": "v1",
+  "commit_sha": "8e6e2c7d3de51f9555be914d014b068c4c02e6cf",
+  "title": "docs: gaming-native worked examples for re-roll/determinism (cheat engine, TAS, PoP/ZSet) + TAS-as-LUPI + grey-hat",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T09:13:50Z",
+  "head_ref": "otto/cheat-engine-tas-worked-examples"
+}

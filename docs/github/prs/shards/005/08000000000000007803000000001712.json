@@ -1,0 +1,19 @@
+{
+  "pr_number": 5906,
+  "archive_path": "docs/history/pr-reviews/PR-5906-docs-archive-preserve-merged-prs-5892-5891-5890-5878-5877.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F3kcg",
+    "comment:PRRC_kwDOSF9kNM7F3kdR",
+    "comment:PRRC_kwDOSF9kNM7F3kdo",
+    "thread:PRRT_kwDOSF9kNM6FeoA5",
+    "thread:PRRT_kwDOSF9kNM6FeoAJ",
+    "thread:PRRT_kwDOSF9kNM6FeoAq"
+  ],
+  "fetched_at": "2026-05-28T21:00:27.607Z",
+  "schema_version": "v1",
+  "commit_sha": "e2a7723887bc3cba88f809f3ab921c7fb321fd6a",
+  "title": "docs(archive): Preserve merged PRs 5892, 5891, 5890, 5878, 5877",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T21:00:06Z",
+  "head_ref": "lior/archive-merged-prs-20260528"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7379,
+  "archive_path": "docs/history/pr-reviews/PR-7379-docs-research-empirical-grounding-the-meta-markov-boundary-is-confirmed-green-wh.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:36:59.239Z",
+  "schema_version": "v1",
+  "commit_sha": "1a6a2f47a05da3c761e63bfe5a99260bc6eed4d6",
+  "title": "docs(research): empirical grounding — the meta-Markov boundary is confirmed (green/white, red/white, bold make consistent, repeatable, inter-subjective 3D shapes)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:36:35Z",
+  "head_ref": "otto/empirical-grounding-meta-markov-boundary-color-weight-repeatable-intersubjective-3d"
+}

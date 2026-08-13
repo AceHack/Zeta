@@ -1,0 +1,15 @@
+{
+  "pr_number": 4227,
+  "archive_path": "docs/history/pr-reviews/PR-4227-chore-lint-regen-audit-tick-shard-relative-paths-baseline-grandfather-21-legacy-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Cdifc",
+    "thread:PRRT_kwDOSF9kNM6C_OSU"
+  ],
+  "fetched_at": "2026-05-18T22:19:31.672Z",
+  "schema_version": "v1",
+  "commit_sha": "af637cdb4877adb0eba2427581ded02f7d7e969e",
+  "title": "chore(lint): regen audit-tick-shard-relative-paths baseline — grandfather 21 legacy findings",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:19:10Z",
+  "head_ref": "chore/regen-tick-shard-relative-paths-baseline-grandfather-21-legacy-findings-2026-05-18"
+}

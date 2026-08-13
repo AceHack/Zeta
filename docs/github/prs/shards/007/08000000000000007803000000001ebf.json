@@ -1,0 +1,12 @@
+{
+  "pr_number": 7871,
+  "archive_path": "docs/history/pr-reviews/PR-7871-feat-add-priorityferrythrottler-with-priority-lanes.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T10:02:29.783Z",
+  "schema_version": "v1",
+  "commit_sha": "10967ca94741530fcb094cd0cdea9eb40f65f959",
+  "title": "feat: add PriorityFerryThrottler with priority lanes",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:02:03Z",
+  "head_ref": "kiro/ferry-throttler-ts-port"
+}

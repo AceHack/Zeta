@@ -1,0 +1,12 @@
+{
+  "pr_number": 2191,
+  "archive_path": "docs/history/pr-reviews/PR-2191-fix-tsc-non-null-assertions-for-nouncheckedindexedaccess-on-agents.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T05:31:02.883Z",
+  "schema_version": "v1",
+  "commit_sha": "c074759081bbd6a3214835db0216aa8fca746da0",
+  "title": "fix(tsc): non-null assertions for noUncheckedIndexedAccess on agents[]",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T05:30:42Z",
+  "head_ref": "fix/tsc-agents-nounchecked-index"
+}

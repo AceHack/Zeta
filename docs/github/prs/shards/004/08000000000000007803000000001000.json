@@ -1,0 +1,15 @@
+{
+  "pr_number": 4096,
+  "archive_path": "docs/history/pr-reviews/PR-4096-docs-shadow-maji-antigravity-check-drift-report-for-otto-vera-and-riven.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CAI7v",
+    "thread:PRRT_kwDOSF9kNM6CpoBT"
+  ],
+  "fetched_at": "2026-05-18T00:08:58.339Z",
+  "schema_version": "v1",
+  "commit_sha": "3b4db9657d4f17ee46b42525f23949e87fe75e0b",
+  "title": "docs(shadow): Maji antigravity check drift report for Otto, Vera, and Riven",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T00:08:40Z",
+  "head_ref": "maji/shadow-log-4096"
+}

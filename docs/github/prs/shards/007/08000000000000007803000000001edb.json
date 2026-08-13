@@ -1,0 +1,12 @@
+{
+  "pr_number": 7899,
+  "archive_path": "docs/history/pr-reviews/PR-7899-feat-testloop-b-1035-complete-golden-lock-light-chip9-board-host-the-treaty-repl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T11:43:21.785Z",
+  "schema_version": "v1",
+  "commit_sha": "e42d33de845aee5c1761388f5262ce7ccfb7bb2a",
+  "title": "feat(testloop): B-1035 COMPLETE — golden lock + light + chip9-board host (the treaty replays through the framework)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T11:42:56Z",
+  "head_ref": "shadow-b1035-final"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3005,
+  "archive_path": "docs/history/pr-reviews/PR-3005-docs-agent-best-practices-add-docs-launch-to-persona-naming-closed-list-closes-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T17:31:52.749Z",
+  "schema_version": "v1",
+  "commit_sha": "2203ea0565f31f6557908ed0c5700f76ed6b5041",
+  "title": "docs(agent-best-practices): add docs/launch/** to persona-naming closed-list (closes B-0443)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T17:31:27Z",
+  "head_ref": "otto-amend-agent-best-practices-add-docs-launch-to-closed-list-2026-05-13"
+}

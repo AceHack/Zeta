@@ -1,0 +1,18 @@
+{
+  "pr_number": 5111,
+  "archive_path": "docs/history/pr-reviews/PR-5111-docs-record-feature-flags-substrate-decision.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ey6Py",
+    "comment:PRRC_kwDOSF9kNM7Ey6Qa",
+    "comment:PRRC_kwDOSF9kNM7EzEsF",
+    "thread:PRRT_kwDOSF9kNM6Es3Up",
+    "thread:PRRT_kwDOSF9kNM6Es3VK"
+  ],
+  "fetched_at": "2026-05-26T07:13:14.539Z",
+  "schema_version": "v1",
+  "commit_sha": "fb0eb02639f13b4ebba20830bf3954b21e557ced",
+  "title": "docs: record feature flags substrate decision",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T07:12:50Z",
+  "head_ref": "claim/task-b0786-feature-flags-doc-slice-20260526"
+}

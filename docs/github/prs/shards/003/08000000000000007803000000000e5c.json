@@ -1,0 +1,17 @@
+{
+  "pr_number": 3676,
+  "archive_path": "docs/history/pr-reviews/PR-3676-shard-tick-2026-05-16t02-10z-otto-cli-cold-boot-cron-rearm-lior-contention-defer.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B0wuA",
+    "comment:PRRC_kwDOSF9kNM7B0wuI",
+    "thread:PRRT_kwDOSF9kNM6Cg9z4",
+    "thread:PRRT_kwDOSF9kNM6Cg9zz"
+  ],
+  "fetched_at": "2026-05-16T02:22:58.359Z",
+  "schema_version": "v1",
+  "commit_sha": "7d19444d6845a5fde3004a196378118e4c291159",
+  "title": "shard(tick): 2026-05-16T02:10Z — Otto-CLI cold-boot cron-rearm + Lior-contention defer",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T02:22:40Z",
+  "head_ref": "shard/tick-0210z-otto-cli-2026-05-16"
+}

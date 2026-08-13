@@ -1,0 +1,12 @@
+{
+  "pr_number": 8408,
+  "archive_path": "docs/history/pr-reviews/PR-8408-docs-routing-canonicalize-agents-persona-folder-split-persona-checkout-owner-hat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T02:21:03.498Z",
+  "schema_version": "v1",
+  "commit_sha": "3a671de8f0cd1e1f5dc178a05d2dfb328b76f6fc",
+  "title": "docs(routing): canonicalize agents→persona folder SPLIT (persona=checkout-owner, hats stay harness-bound) + sovereignty horizon",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T02:20:36Z",
+  "head_ref": "docs/canonicalize-persona-folder-split-from-hats"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7773,
+  "archive_path": "docs/history/pr-reviews/PR-7773-fix-greenfield-hot-path-totality-the-fault-register-drw-clip-filed-as-a-four-ora.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T19:58:32.783Z",
+  "schema_version": "v1",
+  "commit_sha": "cd6805e2288f492c99ee7d553f264c974ef591d6",
+  "title": "fix(greenfield): hot-path totality + the FAULT REGISTER + DRW-clip filed as a four-oracle change",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T19:58:04Z",
+  "head_ref": "shadow-round3b-test-gaps"
+}

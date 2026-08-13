@@ -1,0 +1,12 @@
+{
+  "pr_number": 8655,
+  "archive_path": "docs/history/pr-reviews/PR-8655-docs-resume-add-resume-target-symmetric-dev-experience-iterm2-nerdfonts-zsh-pwsh.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T00:24:17.361Z",
+  "schema_version": "v1",
+  "commit_sha": "11149c5fa784e0e51545256ccc0f605b33f7b375",
+  "title": "docs(resume): add resume target — symmetric dev experience (iTerm2/nerdfonts/zsh/pwsh/ohmyposh) via ace package management",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T00:23:52Z",
+  "head_ref": "otto/resume-dev-experience-symmetry-ace"
+}

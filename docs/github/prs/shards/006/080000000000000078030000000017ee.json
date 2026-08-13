@@ -1,0 +1,12 @@
+{
+  "pr_number": 6126,
+  "archive_path": "docs/history/pr-reviews/PR-6126-feat-ci-slice-2c-server-core-docker-test-for-install-ps1-dispatch-only-iterating.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T15:22:41.817Z",
+  "schema_version": "v1",
+  "commit_sha": "34a253276b8e688a4317f5ee5390e91082f90f33",
+  "title": "feat(ci): Slice 2c — Server-Core Docker test for install.ps1 (dispatch-only, iterating)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T15:22:21Z",
+  "head_ref": "otto-windows/slice2c-servercore-docker-2026-05-30"
+}

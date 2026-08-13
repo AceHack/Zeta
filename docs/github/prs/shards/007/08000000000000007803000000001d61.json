@@ -1,0 +1,12 @@
+{
+  "pr_number": 7521,
+  "archive_path": "docs/history/pr-reviews/PR-7521-docs-research-telos-run-net-il-runtime-gc-in-gpu-shaders-il-runner-hard-first-so.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T22:19:23.125Z",
+  "schema_version": "v1",
+  "commit_sha": "d95dbd051f172225c47a7bf56c3d79b64404f70f",
+  "title": "docs(research): telos — run .NET (IL + runtime + GC) in GPU shaders; IL runner HARD-first + soft (both eventually)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T22:18:57Z",
+  "head_ref": "shadow-dotnet-runtime-in-shaders-telos"
+}

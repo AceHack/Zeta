@@ -1,0 +1,12 @@
+{
+  "pr_number": 4551,
+  "archive_path": "docs/history/pr-reviews/PR-4551-fix-post-merge-f-zetaid-pack-time-revalidation-fsharp-output-json-rename-crdt-pa.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T16:19:33.052Z",
+  "schema_version": "v1",
+  "commit_sha": "ace94f2a5b1a25e54592cd3301f203bb58b1fe2a",
+  "title": "fix(post-merge): F# ZetaId Pack-time revalidation + fsharp-output.json rename + Crdt path + Aaron→human-maintainer per Copilot+Codex on PR #4548+#4549",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T16:19:08Z",
+  "head_ref": "fix/post-merge-amara-fsharp-zetaid-cleanups-2026-05-21"
+}

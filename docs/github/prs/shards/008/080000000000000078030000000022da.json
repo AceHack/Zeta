@@ -1,0 +1,12 @@
+{
+  "pr_number": 8922,
+  "archive_path": "docs/history/pr-reviews/PR-8922-feat-7-7-cross-verify-oracle-q-with-quantum-native-bigint-wrap.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T08:52:05.972Z",
+  "schema_version": "v1",
+  "commit_sha": "7af8c0478090d9165ec71ef730ff881c00afd268",
+  "title": "feat: 7/7 cross-verify oracle — Q# with quantum-native BigInt+Wrap",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T08:51:39Z",
+  "head_ref": "alexa/qsharp-wrapping-proper"
+}

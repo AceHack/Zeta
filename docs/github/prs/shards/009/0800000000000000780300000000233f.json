@@ -1,0 +1,12 @@
+{
+  "pr_number": 9023,
+  "archive_path": "docs/history/pr-reviews/PR-9023-backlog-credential-substrate-per-port-rotate-done-9022-narrow-triad-item-to-revo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T23:01:16.131Z",
+  "schema_version": "v1",
+  "commit_sha": "97a9c798d7d29396863e8c04de390ce2438d611c",
+  "title": "backlog(credential-substrate): per-port rotate DONE (#9022) — narrow triad item to revocation + cluster teardown",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T23:00:48Z",
+  "head_ref": "otto/triad-rotate-done-narrow-workitem"
+}

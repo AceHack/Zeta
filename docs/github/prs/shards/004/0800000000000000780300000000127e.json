@@ -1,0 +1,12 @@
+{
+  "pr_number": 4734,
+  "archive_path": "docs/history/pr-reviews/PR-4734-docs-shadow-add-lesson-on-merging-with-p1-issues-decomposed-from-4692.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T20:49:06.645Z",
+  "schema_version": "v1",
+  "commit_sha": "29c1883059d73d773c8fc282eedd8e07babcda46",
+  "title": "docs(shadow): add lesson on merging with P1 issues (decomposed from #4692)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T20:48:50Z",
+  "head_ref": "lior-shadow-log-4692"
+}

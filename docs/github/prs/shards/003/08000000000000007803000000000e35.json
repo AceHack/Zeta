@@ -1,0 +1,15 @@
+{
+  "pr_number": 3637,
+  "archive_path": "docs/history/pr-reviews/PR-3637-shard-tick-0023z-pr-3636-m-a-coherence-laws-type-correctness-fix.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B0EC_",
+    "thread:PRRT_kwDOSF9kNM6CgcRa"
+  ],
+  "fetched_at": "2026-05-16T00:31:23.476Z",
+  "schema_version": "v1",
+  "commit_sha": "47d0f76eabd16e74ac3d4f45762de2a79e7321bf",
+  "title": "shard(tick): 0023Z — PR #3636 M/A coherence-laws type-correctness fix",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:31:05Z",
+  "head_ref": "shard/tick-0023z-otto-cli-2026-05-16"
+}

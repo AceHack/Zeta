@@ -1,0 +1,12 @@
+{
+  "pr_number": 6846,
+  "archive_path": "docs/history/pr-reviews/PR-6846-test-confluence-out-of-order-events-same-result-needs-a-join-semilattice-resolve.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:52:47.239Z",
+  "schema_version": "v1",
+  "commit_sha": "7c03ebe7e7cb7ba023a0f3ddab9c67a770c7c403",
+  "title": "test(Confluence): out-of-order events → same result needs a join-semilattice resolver",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:52:29Z",
+  "head_ref": "test/confluence-out-of-order-events-same-result"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6197,
+  "archive_path": "docs/history/pr-reviews/PR-6197-docs-b-0250-calibrate-loop-run-lifecycle-age-out.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T04:41:22.477Z",
+  "schema_version": "v1",
+  "commit_sha": "39936d2a9c879a06aae31390d20d410faf95551d",
+  "title": "docs(B-0250): calibrate loop-run lifecycle age-out",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T04:41:04Z",
+  "head_ref": "claim/task-b0250-loop-run-lifecycle-age-out-calibration"
+}

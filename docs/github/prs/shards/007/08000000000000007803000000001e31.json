@@ -1,0 +1,12 @@
+{
+  "pr_number": 7729,
+  "archive_path": "docs/history/pr-reviews/PR-7729-feat-shapes-the-plait-move-the-gate-the-borromean-naming-proposal-for-the-locked.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:01:53.737Z",
+  "schema_version": "v1",
+  "commit_sha": "08f5734f096f63e3595cefc5a99b5d416bcd5a2c",
+  "title": "feat(shapes): the plait move (the gate) + the Borromean naming proposal for the locked braid",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:01:19Z",
+  "head_ref": "shadow-plait-move"
+}

@@ -1,0 +1,22 @@
+{
+  "pr_number": 6426,
+  "archive_path": "docs/history/pr-reviews/PR-6426-docs-ace-slice-6-spec-fix-forward-mandatory-registry-key-future-skew-gate-codex-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GzTny",
+    "comment:PRRC_kwDOSF9kNM7GzVGQ",
+    "comment:PRRC_kwDOSF9kNM7GzVHt",
+    "comment:PRRC_kwDOSF9kNM7Gzs62",
+    "comment:PRRC_kwDOSF9kNM7Gzs_-",
+    "comment:PRRC_kwDOSF9kNM7GztGT",
+    "thread:PRRT_kwDOSF9kNM6GK0Qk",
+    "thread:PRRT_kwDOSF9kNM6GK1W-",
+    "thread:PRRT_kwDOSF9kNM6GK1YO"
+  ],
+  "fetched_at": "2026-06-01T15:54:24.802Z",
+  "schema_version": "v1",
+  "commit_sha": "8dc1af8529be7fe00a001f967a0bd49878237744",
+  "title": "docs(ace): slice 6 spec fix-forward — mandatory registry key + future-skew gate (Codex #6424)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T15:53:55Z",
+  "head_ref": "otto-windows/ace-slice6-spec-fixfwd-2026-06-01"
+}

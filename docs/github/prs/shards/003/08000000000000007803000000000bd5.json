@@ -1,0 +1,12 @@
+{
+  "pr_number": 3029,
+  "archive_path": "docs/history/pr-reviews/PR-3029-docs-rules-auto-load-rule-against-holding-without-named-dependency-aaron-s-claud.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T21:08:30.439Z",
+  "schema_version": "v1",
+  "commit_sha": "be4874c7a680a33faa0f8fb10dfb3e86553dfd90",
+  "title": "docs(rules): auto-load rule against 'Holding' without named dependency (Aaron's CLAUDE.md question)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T21:08:11Z",
+  "head_ref": "otto-b0440-5-subscriber-agent-minimal-2026-05-13"
+}

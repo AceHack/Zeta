@@ -1,0 +1,12 @@
+{
+  "pr_number": 3180,
+  "archive_path": "docs/history/pr-reviews/PR-3180-docs-archive-preserve-prs-3175-and-3173.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T22:24:58.406Z",
+  "schema_version": "v1",
+  "commit_sha": "3b60b7a9ec5a4dfd751f727e11a6c2762f6dc538",
+  "title": "docs(archive): preserve PRs 3175 and 3173",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:24:43Z",
+  "head_ref": "lior-archive-3175-3173"
+}

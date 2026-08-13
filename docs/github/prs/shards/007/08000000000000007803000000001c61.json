@@ -1,0 +1,12 @@
+{
+  "pr_number": 7265,
+  "archive_path": "docs/history/pr-reviews/PR-7265-fix-trust-remove-addison-s-gpg-pubkey-wrong-uid-email-commit-noreply-not-her-git.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:55:13.388Z",
+  "schema_version": "v1",
+  "commit_sha": "0e3939c274536debd6d849c616fba8fc242f90a5",
+  "title": "fix(trust): remove Addison's GPG pubkey — wrong UID email (commit-noreply, not her github account email)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:54:52Z",
+  "head_ref": "otto/remove-wrong-email-addison-gpg-pubkey"
+}

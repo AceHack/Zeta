@@ -1,0 +1,15 @@
+{
+  "pr_number": 2491,
+  "archive_path": "docs/history/pr-reviews/PR-2491-docs-memory-bft-cost-contingency-alexa-qwen-free-tier-survival-plan.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_n5Bg",
+    "thread:PRRT_kwDOSF9kNM6A5sWb"
+  ],
+  "fetched_at": "2026-05-10T13:21:30.718Z",
+  "schema_version": "v1",
+  "commit_sha": "18c3c85613a43e44bdbaeed544d9d5eb46c9a14f",
+  "title": "docs(memory): BFT cost contingency — Alexa/Qwen free-tier survival plan",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T13:21:15Z",
+  "head_ref": "docs/bft-cost-contingency-2026-05-10"
+}

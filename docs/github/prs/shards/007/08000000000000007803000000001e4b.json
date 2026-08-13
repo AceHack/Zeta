@@ -1,0 +1,12 @@
+{
+  "pr_number": 7755,
+  "archive_path": "docs/history/pr-reviews/PR-7755-docs-trajectory-resume-atom-wave-7744-7753.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:16:49.893Z",
+  "schema_version": "v1",
+  "commit_sha": "e9dbb5c5685e76e21585bad5b65a7ae4d1c21627",
+  "title": "docs(trajectory): RESUME atom wave (#7744..#7753)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:16:14Z",
+  "head_ref": "shadow-resume-fold-7744-7753"
+}

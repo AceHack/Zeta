@@ -1,0 +1,12 @@
+{
+  "pr_number": 6748,
+  "archive_path": "docs/history/pr-reviews/PR-6748-fix-tsc-ts2352-in-log-entry-ts-oracle-test-cast-seed-via-unknown.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:48:11.281Z",
+  "schema_version": "v1",
+  "commit_sha": "1774eaf1563d386f310923d1e07f113378a6b66d",
+  "title": "fix(tsc): TS2352 in Log-entry TS oracle test — cast seed via unknown",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:47:50Z",
+  "head_ref": "otto/fix-tsc-log-entry-ts-test"
+}

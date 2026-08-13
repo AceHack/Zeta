@@ -1,0 +1,12 @@
+{
+  "pr_number": 5673,
+  "archive_path": "docs/history/pr-reviews/PR-5673-memory-2026-05-23-aaron-ani-github-swarm-architecture-free-event-store-move-next.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T01:46:13.177Z",
+  "schema_version": "v1",
+  "commit_sha": "25f0ead1f9bdda67da8d173ad0b48e6e62a0ebb2",
+  "title": "memory(2026-05-23 Aaron-Ani): GitHub swarm architecture + free event store + move-next",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T01:45:52Z",
+  "head_ref": "alexa/ani-github-swarm-architecture-2026-05-23"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 1984,
+  "archive_path": "docs/history/pr-reviews/PR-1984-fix-add-current-otto-to-memory-fast-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T01:23:19.877Z",
+  "schema_version": "v1",
+  "commit_sha": "1b827fb56b342ee4a33d5f059119bace8ecb86f0",
+  "title": "fix: add CURRENT-otto to memory fast path",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T01:22:58Z",
+  "head_ref": "codex/current-otto-fastpath"
+}

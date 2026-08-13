@@ -1,0 +1,12 @@
+{
+  "pr_number": 7893,
+  "archive_path": "docs/history/pr-reviews/PR-7893-doc-b-0883-design-better-git-crypt-post-quantum-lattice-based-architecture-and-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T11:04:56.546Z",
+  "schema_version": "v1",
+  "commit_sha": "20ce14b187c08b2c30c8bc5f35bb4b5814b9aa4a",
+  "title": "doc(B-0883): design better git-crypt post-quantum lattice-based architecture and relocate TS files",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T11:04:26Z",
+  "head_ref": "lior/claim-better-gitcrypt-B-0883"
+}

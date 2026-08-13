@@ -1,0 +1,17 @@
+{
+  "pr_number": 4570,
+  "archive_path": "docs/history/pr-reviews/PR-4570-fix-stryker-retarget-f-c-peer-oracle-stryker-net-f-unsupported-transitive-covera.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DtQeo",
+    "comment:PRRC_kwDOSF9kNM7DtUCT",
+    "thread:PRRT_kwDOSF9kNM6D5Txw",
+    "thread:PRRT_kwDOSF9kNM6D5WZ4"
+  ],
+  "fetched_at": "2026-05-21T18:25:47.968Z",
+  "schema_version": "v1",
+  "commit_sha": "fe7a409d966cc48c20ce7c8e8f52be40a343111b",
+  "title": "fix(stryker): retarget F# → C# peer oracle — Stryker.NET F# unsupported; transitive coverage via cross-verify; unblocks 4 stale PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T18:25:26Z",
+  "head_ref": "fix/stryker-retarget-to-csharp-peer-oracle-multi-oracle-transitive-coverage-2026-05-21"
+}

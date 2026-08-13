@@ -1,0 +1,12 @@
+{
+  "pr_number": 8888,
+  "archive_path": "docs/history/pr-reviews/PR-8888-chore-notebook-update-recover-all-orphaned-artifacts.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:40:10.592Z",
+  "schema_version": "v1",
+  "commit_sha": "84af6b6c5f1f3ad8d9eeb3fdb1321e6a5e7eb07a",
+  "title": "chore: NOTEBOOK update + recover all orphaned artifacts",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:39:46Z",
+  "head_ref": "alexa/recovery-and-continue"
+}

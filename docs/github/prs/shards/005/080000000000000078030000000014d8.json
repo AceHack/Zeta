@@ -1,0 +1,12 @@
+{
+  "pr_number": 5336,
+  "archive_path": "docs/history/pr-reviews/PR-5336-rule-never-be-idle-land-free-time-as-valid-mode-deepest-exit-clarifications-wake.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T22:23:57.317Z",
+  "schema_version": "v1",
+  "commit_sha": "4066b2ad6de1c593d09b1c352d64d9c96b66bf09",
+  "title": "rule(never-be-idle): land free-time-as-valid-mode + deepest-exit clarifications (wake-time-substrate gap; companion to PR #5335)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T22:23:38Z",
+  "head_ref": "otto/never-be-idle-free-time-valid-mode-nci-clarification-2026-05-26"
+}

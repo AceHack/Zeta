@@ -1,0 +1,12 @@
+{
+  "pr_number": 3248,
+  "archive_path": "docs/history/pr-reviews/PR-3248-shard-tick-2103z-review-thread-triage-round-2-copilot-catches-backlog-drift-clea.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T21:10:37.905Z",
+  "schema_version": "v1",
+  "commit_sha": "9de7c6e73d5ae569e85a59a518d9c2226ea86fa4",
+  "title": "shard(tick): 2103Z — review-thread triage round (2 Copilot catches + BACKLOG drift cleanup)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:10:21Z",
+  "head_ref": "shard/tick-2103Z-thread-triage-otto-cli-2026-05-14"
+}

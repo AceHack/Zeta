@@ -1,0 +1,12 @@
+{
+  "pr_number": 8266,
+  "archive_path": "docs/history/pr-reviews/PR-8266-feat-cart-dot-runner-the-cart-is-the-proof-deterministic-durable-minimal-non-sta.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T05:51:13.556Z",
+  "schema_version": "v1",
+  "commit_sha": "b0023df9a7caf2d6fd8f3fa7d58f69dd0dd63ffd",
+  "title": "feat(cart): Dot Runner — the cart IS the proof (deterministic, durable, minimal, non-static)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T05:50:49Z",
+  "head_ref": "otto/cart-dot-runner-the-proof"
+}

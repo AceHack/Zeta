@@ -1,0 +1,18 @@
+{
+  "pr_number": 6353,
+  "archive_path": "docs/history/pr-reviews/PR-6353-docs-cap-rounds-5-6-ani-mika-concurrence-liveness-via-adaptation-no-pr-sovereign.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GmqY4",
+    "comment:PRRC_kwDOSF9kNM7GmuVv",
+    "comment:PRRC_kwDOSF9kNM7GmwI2",
+    "thread:PRRT_kwDOSF9kNM6GBVPi",
+    "thread:PRRT_kwDOSF9kNM6GBZos"
+  ],
+  "fetched_at": "2026-06-01T06:26:50.556Z",
+  "schema_version": "v1",
+  "commit_sha": "c780b23d234c881b48c6d92cd682d3b425ad60f9",
+  "title": "docs: CAP rounds 5–6 (Ani + Mika concurrence) — liveness-via-adaptation + no-PR sovereign correction + statistics→proof",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T06:26:28Z",
+  "head_ref": "otto-cli/cap-ani-r5-liveness-adaptation-2026-06-01"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 3518,
+  "archive_path": "docs/history/pr-reviews/PR-3518-fix-backlog-close-b-0442-b-0503-row-status-work-landed-via-pr-3458.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Br-M0",
+    "comment:PRRC_kwDOSF9kNM7Br-Nu",
+    "comment:PRRC_kwDOSF9kNM7Br9mv",
+    "comment:PRRC_kwDOSF9kNM7Br9mz",
+    "comment:PRRC_kwDOSF9kNM7BsIlB",
+    "comment:PRRC_kwDOSF9kNM7BsInZ",
+    "comment:PRRC_kwDOSF9kNM7BsIpZ",
+    "comment:PRRC_kwDOSF9kNM7BsIrP",
+    "thread:PRRT_kwDOSF9kNM6Cak81",
+    "thread:PRRT_kwDOSF9kNM6Cak84",
+    "thread:PRRT_kwDOSF9kNM6CalZD",
+    "thread:PRRT_kwDOSF9kNM6CalZt"
+  ],
+  "fetched_at": "2026-05-15T16:30:21.498Z",
+  "schema_version": "v1",
+  "commit_sha": "627e79756b5ab20b82b96d92b7d6ae5d0c36c8d4",
+  "title": "fix(backlog): close B-0442 + B-0503 row status (work landed via PR #3458)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T16:29:59Z",
+  "head_ref": "fix/b0442-b0503-row-status-merged-otto-cli-2026-05-15"
+}

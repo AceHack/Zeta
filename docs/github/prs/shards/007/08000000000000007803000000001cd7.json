@@ -1,0 +1,12 @@
+{
+  "pr_number": 7383,
+  "archive_path": "docs/history/pr-reviews/PR-7383-feat-vocab-canonical-by-type-personas-grams-is-the-measure-view-master-index-loa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:02:01.558Z",
+  "schema_version": "v1",
+  "commit_sha": "0847de36fd6f2d1a52d90d13cc16d94590a34b89",
+  "title": "feat(vocab): canonical-by-TYPE (+personas) + grams is the measure-view + master index loaded by DST framework (Z-set/git-weak-table/lazy-Rx) + type-provider closes the test loop + autopilot readiness",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:01:34Z",
+  "head_ref": "otto/canonical-by-type-grams-measure-personas-master-index-dst-load"
+}

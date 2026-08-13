@@ -1,0 +1,12 @@
+{
+  "pr_number": 5257,
+  "archive_path": "docs/history/pr-reviews/PR-5257-feat-b-0824-post-5241-enrichments-generators-not-data-bandwidth-0d-1d-2d-nd-null.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T17:48:55.844Z",
+  "schema_version": "v1",
+  "commit_sha": "20a4596bab2e44de41f879107ebb1c7674e21562",
+  "title": "feat(B-0824): post-#5241 enrichments — generators-not-data + bandwidth + 0D/1D/2D/ND + NULL-as-monad + tri-boolean + triangle/GPU",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:48:37Z",
+  "head_ref": "otto-cli/b0824-enrichments-clean-2026-05-26"
+}

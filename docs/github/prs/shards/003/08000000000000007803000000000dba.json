@@ -1,0 +1,12 @@
+{
+  "pr_number": 3514,
+  "archive_path": "docs/history/pr-reviews/PR-3514-feat-persona-alexa-33-archive-migration-11-files-memory-md-creation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T16:03:03.098Z",
+  "schema_version": "v1",
+  "commit_sha": "e824248c543fb435e3b02708befc3420dc6000ed",
+  "title": "feat(persona-alexa): §33 archive migration — 11 files + MEMORY.md creation",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T16:02:44Z",
+  "head_ref": "feat/persona-alexa-migrate-conversations-otto-cli-2026-05-15"
+}

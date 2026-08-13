@@ -1,0 +1,19 @@
+{
+  "pr_number": 2468,
+  "archive_path": "docs/history/pr-reviews/PR-2468-fix-razor-cadence-index-2-new-memory-files-fix-3-truncated-titles-2026-05-10-pas.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_nRMb",
+    "comment:PRRC_kwDOSF9kNM6_nRW0",
+    "comment:PRRC_kwDOSF9kNM6_nRWv",
+    "thread:PRRT_kwDOSF9kNM6A5Mfp",
+    "thread:PRRT_kwDOSF9kNM6A5MnF",
+    "thread:PRRT_kwDOSF9kNM6A5MnJ"
+  ],
+  "fetched_at": "2026-05-10T11:08:05.347Z",
+  "schema_version": "v1",
+  "commit_sha": "d55a37bc9fb1349603da0e2c2c4d36640afb8eeb",
+  "title": "fix(razor-cadence): index 2 new memory files + fix 3 truncated titles (2026-05-10 pass)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T11:07:48Z",
+  "head_ref": "fix/razor-cadence-2026-05-10"
+}

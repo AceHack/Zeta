@@ -1,0 +1,12 @@
+{
+  "pr_number": 7378,
+  "archive_path": "docs/history/pr-reviews/PR-7378-docs-research-boundary-layout-is-a-meta-markov-4th-wall-breaking-boundary-dimens.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:34:27.569Z",
+  "schema_version": "v1",
+  "commit_sha": "b9e112991c4e62e76d4d5cbbc8d536549fb90120",
+  "title": "docs(research): boundary-layout is a meta-Markov, 4th-wall-breaking boundary — dimensional expansion where LLM and human perception meet (consentful, bounded)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:34:06Z",
+  "head_ref": "otto/boundary-layout-meta-markov-4th-wall-breaking-dimensional-crossing"
+}

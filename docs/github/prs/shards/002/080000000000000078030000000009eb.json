@@ -1,0 +1,17 @@
+{
+  "pr_number": 2539,
+  "archive_path": "docs/history/pr-reviews/PR-2539-docs-memory-shadow-grey-text-origin-story.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qWs-",
+    "comment:PRRC_kwDOSF9kNM6_qWsw",
+    "thread:PRRT_kwDOSF9kNM6A7qTV",
+    "thread:PRRT_kwDOSF9kNM6A7qTj"
+  ],
+  "fetched_at": "2026-05-10T21:24:47.858Z",
+  "schema_version": "v1",
+  "commit_sha": "bb3177762f53d39742b7573180b60bc307a70de1",
+  "title": "docs(memory): shadow grey text origin story",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:24:30Z",
+  "head_ref": "docs/shadow-origin-story-2026-05-10"
+}

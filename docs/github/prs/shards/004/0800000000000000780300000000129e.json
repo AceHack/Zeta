@@ -1,0 +1,12 @@
+{
+  "pr_number": 4766,
+  "archive_path": "docs/history/pr-reviews/PR-4766-backlog-b-0708-close-slice-1-reduced-87-17-80-remaining-17-healthy-fp.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T21:04:51.455Z",
+  "schema_version": "v1",
+  "commit_sha": "bfeb5b32e1c2c5cd622eb8efb7b32b9ee0a33cae",
+  "title": "backlog(B-0708): close — slice 1 reduced 87 → 17 (-80%); remaining 17 healthy-FP",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T21:04:35Z",
+  "head_ref": "otto/cli-b0708-closure-remaining-17-healthy-2026-05-23"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8057,
+  "archive_path": "docs/history/pr-reviews/PR-8057-feat-k8s-shared-minio-seaweedfs-blob-store-for-loki-mimir.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T21:34:51.990Z",
+  "schema_version": "v1",
+  "commit_sha": "17222835b2cf15363e87b549361f4e4f7a547881",
+  "title": "feat(k8s): shared MinIO + SeaweedFS blob store for Loki/Mimir",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T21:34:30Z",
+  "head_ref": "riven/shared-blob-store-minio-seaweedfs"
+}

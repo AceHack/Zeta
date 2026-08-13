@@ -1,0 +1,12 @@
+{
+  "pr_number": 8040,
+  "archive_path": "docs/history/pr-reviews/PR-8040-fix-hat-system-gatekeeper-policy-sync-for-kind-included-e2e.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T21:35:29.325Z",
+  "schema_version": "v1",
+  "commit_sha": "718a8e6b041a27d81e568e52f4b5517acad6e81c",
+  "title": "fix(hat-system): Gatekeeper policy sync for kind included E2E",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T21:35:08Z",
+  "head_ref": "riven/k8s-e2e-hat-system-gatekeeper"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 6515,
+  "archive_path": "docs/history/pr-reviews/PR-6515-feat-dynamicvalue-rust-cbor-decode-oracle-from-canonical-cbor-strict-canonical.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G9gr-",
+    "comment:PRRC_kwDOSF9kNM7G9grX",
+    "comment:PRRC_kwDOSF9kNM7G9gsY",
+    "thread:PRRT_kwDOSF9kNM6GSUi4",
+    "thread:PRRT_kwDOSF9kNM6GSUiX",
+    "thread:PRRT_kwDOSF9kNM6GSUjN"
+  ],
+  "fetched_at": "2026-06-02T01:19:14.496Z",
+  "schema_version": "v1",
+  "commit_sha": "ed7215a11281b97f1858f3419f8e998374fc2e75",
+  "title": "feat(DynamicValue): Rust CBOR DECODE oracle (from_canonical_cbor) — strict canonical",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T01:18:53Z",
+  "head_ref": "otto-cli/dynamicvalue-decode-cbor-rust-2026-06-01"
+}

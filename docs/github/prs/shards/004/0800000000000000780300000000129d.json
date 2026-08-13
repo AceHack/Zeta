@@ -1,0 +1,12 @@
+{
+  "pr_number": 4765,
+  "archive_path": "docs/history/pr-reviews/PR-4765-backlog-b-0709-soraya-round-42-hand-off-register-11-unregistered-formal-verifica.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T20:55:41.734Z",
+  "schema_version": "v1",
+  "commit_sha": "d274a8d733bdcf30a8881d76c6af032b1f21d4bd",
+  "title": "backlog(B-0709): Soraya round-42 hand-off — register 11 unregistered formal-verification specs",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T20:55:24Z",
+  "head_ref": "otto/b0709-soraya-kenji-handoff-registry-coverage-2026-05-23"
+}

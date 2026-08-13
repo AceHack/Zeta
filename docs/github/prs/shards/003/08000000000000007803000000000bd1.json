@@ -1,0 +1,22 @@
+{
+  "pr_number": 3025,
+  "archive_path": "docs/history/pr-reviews/PR-3025-test-scaffold-b-0424-5-dry-run-test-suite-for-create-repo-ts-18-tests.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A8uh5",
+    "comment:PRRC_kwDOSF9kNM7A8uhX",
+    "comment:PRRC_kwDOSF9kNM7A8uiN",
+    "comment:PRRC_kwDOSF9kNM7A8yV8",
+    "comment:PRRC_kwDOSF9kNM7A8yft",
+    "comment:PRRC_kwDOSF9kNM7A8yqs",
+    "thread:PRRT_kwDOSF9kNM6B4M3b",
+    "thread:PRRT_kwDOSF9kNM6B4M3z",
+    "thread:PRRT_kwDOSF9kNM6B4M4C"
+  ],
+  "fetched_at": "2026-05-13T20:15:24.178Z",
+  "schema_version": "v1",
+  "commit_sha": "18d823c33b83212819d53c2c44dbb413c442c5f1",
+  "title": "test(scaffold): B-0424.5 — dry-run test suite for create-repo.ts (18 tests)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T20:15:03Z",
+  "head_ref": "feat/B-0424.5-scaffold-dry-run-tests"
+}

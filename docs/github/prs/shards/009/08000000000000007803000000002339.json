@@ -1,0 +1,12 @@
+{
+  "pr_number": 9017,
+  "archive_path": "docs/history/pr-reviews/PR-9017-docs-research-no-central-executor-no-global-tick-execution-is-traveler-frame-rel.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:49:15.185Z",
+  "schema_version": "v1",
+  "commit_sha": "32295a3310a0e243c0a14d7f4b7b4bbba72b2dad",
+  "title": "docs(research): no central executor, no global tick — execution is traveler-frame-relative",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:48:45Z",
+  "head_ref": "otto/no-central-executor-no-global-tick"
+}

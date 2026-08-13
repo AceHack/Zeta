@@ -1,0 +1,12 @@
+{
+  "pr_number": 7548,
+  "archive_path": "docs/history/pr-reviews/PR-7548-feat-core-softtie-wire-the-tie-verb-to-fingerprintprism-soft.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T00:05:37.724Z",
+  "schema_version": "v1",
+  "commit_sha": "94a6c123ac63d08fe4ef8f95c781f4f844b01ff4",
+  "title": "feat(core): SoftTie — wire the tie verb to FingerprintPrism.soft",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T00:05:16Z",
+  "head_ref": "shadow-tie-wired-to-fingerprintprism-soft"
+}

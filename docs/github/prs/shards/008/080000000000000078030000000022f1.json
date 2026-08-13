@@ -1,0 +1,12 @@
+{
+  "pr_number": 8945,
+  "archive_path": "docs/history/pr-reviews/PR-8945-docs-backlog-regenerate-backlog-md-index-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T10:41:18.512Z",
+  "schema_version": "v1",
+  "commit_sha": "d0eb01dbed6e0a4233192fc18a180811248b3591",
+  "title": "docs(backlog): regenerate BACKLOG.md index (drift)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T10:40:50Z",
+  "head_ref": "otto/regen-backlog-index"
+}

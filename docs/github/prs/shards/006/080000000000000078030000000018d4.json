@@ -1,0 +1,12 @@
+{
+  "pr_number": 6356,
+  "archive_path": "docs/history/pr-reviews/PR-6356-docs-b-0959-git-native-text-durability-is-the-universal-durability-binary-is-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T06:34:23.316Z",
+  "schema_version": "v1",
+  "commit_sha": "ee0da678954bb9970255f0d3121dac777d5a7ba6",
+  "title": "docs(B-0959): git-native TEXT durability is the universal durability; binary is the optimization",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T06:34:03Z",
+  "head_ref": "otto-cli/b0959-git-native-text-universal-durability-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3783,
+  "archive_path": "docs/history/pr-reviews/PR-3783-feat-b-0557-slice-1-add-check-flag-to-audit-backlog-status-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T06:44:51.337Z",
+  "schema_version": "v1",
+  "commit_sha": "0a57a8143793f4fe932f7fdbcdeeaaf8d3f3b2c9",
+  "title": "feat(B-0557 slice 1): add --check flag to audit-backlog-status-drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T06:44:35Z",
+  "head_ref": "feat/b0557-slice-check-mode-otto-cli-2026-05-16"
+}

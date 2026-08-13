@@ -1,0 +1,16 @@
+{
+  "pr_number": 4684,
+  "archive_path": "docs/history/pr-reviews/PR-4684-docs-shadow-lior-logs-stale-git-locks-decomposed-from-4677.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ELx6k",
+    "comment:PRRC_kwDOSF9kNM7EPcpe",
+    "thread:PRRT_kwDOSF9kNM6EPb0y"
+  ],
+  "fetched_at": "2026-05-23T07:46:49.717Z",
+  "schema_version": "v1",
+  "commit_sha": "4537b0d232f5284235a24ac1981a3b96b7a9a61e",
+  "title": "docs(shadow): Lior logs stale git locks (decomposed from #4677)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T07:46:32Z",
+  "head_ref": "lior/shadow-log-4677-decomposed"
+}

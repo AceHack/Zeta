@@ -1,0 +1,19 @@
+{
+  "pr_number": 2446,
+  "archive_path": "docs/history/pr-reviews/PR-2446-fix-b-0352-extract-remaining-4-long-claude-md-bullets-to-claude-rules.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_m083",
+    "comment:PRRC_kwDOSF9kNM6_m087",
+    "comment:PRRC_kwDOSF9kNM6_m08z",
+    "thread:PRRT_kwDOSF9kNM6A41ye",
+    "thread:PRRT_kwDOSF9kNM6A41yh",
+    "thread:PRRT_kwDOSF9kNM6A41yl"
+  ],
+  "fetched_at": "2026-05-10T09:20:44.184Z",
+  "schema_version": "v1",
+  "commit_sha": "c08195da34b22fad50c5e6df6d393dbe875122a9",
+  "title": "fix(B-0352): extract remaining 4 long CLAUDE.md bullets to .claude/rules/",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T09:20:26Z",
+  "head_ref": "fix/B-0352-extract-bullets-to-rules"
+}

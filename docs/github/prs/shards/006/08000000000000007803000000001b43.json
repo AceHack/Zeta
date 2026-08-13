@@ -1,0 +1,12 @@
+{
+  "pr_number": 6979,
+  "archive_path": "docs/history/pr-reviews/PR-6979-docs-push-out-accept-in-is-the-eve-protocol-cross-repo-zip-over-two-crdts-or-sag.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:42:29.074Z",
+  "schema_version": "v1",
+  "commit_sha": "cf8c7990df61bfb720dfdcffed3190e40bae46bf",
+  "title": "docs: push-out/accept-in IS the Eve protocol; cross-repo = zip-over-two-CRDTs or saga; push/accept are bus+git verbs",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:42:11Z",
+  "head_ref": "otto/eve-protocol-push-accept-zip-crdts-saga-bus-git-verbs"
+}

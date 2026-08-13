@@ -1,0 +1,12 @@
+{
+  "pr_number": 6950,
+  "archive_path": "docs/history/pr-reviews/PR-6950-test-core-pin-the-ceiling-at-the-weightedset-api-scale-chains-order-sensitive-ab.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T23:28:20.355Z",
+  "schema_version": "v1",
+  "commit_sha": "af89878242f497aea8a37bf64078f906ef00bb47",
+  "title": "test(core): pin the ℍ ceiling at the WeightedSet API (scale-chains order-sensitive above ℍ)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T23:28:03Z",
+  "head_ref": "otto/cayley-weightedset-scale-chain-h-ceiling-pin"
+}

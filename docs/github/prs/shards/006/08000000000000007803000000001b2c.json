@@ -1,0 +1,12 @@
+{
+  "pr_number": 6956,
+  "archive_path": "docs/history/pr-reviews/PR-6956-docs-wi-zs-zetashell-interpreter-zc-zetacell-cli-daemon-idl-in-4-tree-3-tree-sof.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T00:38:41.238Z",
+  "schema_version": "v1",
+  "commit_sha": "c657e675e4ce04267531aad3eb5eee3639b3b0f9",
+  "title": "docs+wi: zs (ZetaShell interpreter) + zc (ZetaCell CLI/daemon); IDL in 4-tree/3-tree(+soft) form",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T00:38:17Z",
+  "head_ref": "otto/zs-zetashell-zc-zetacell-idl-4tree-3tree"
+}

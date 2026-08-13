@@ -1,0 +1,19 @@
+{
+  "pr_number": 6448,
+  "archive_path": "docs/history/pr-reviews/PR-6448-feat-b-0976-resume-engine-f-ferry-restore-not-replay-cek-saga-kernel.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G3Bdy",
+    "comment:PRRC_kwDOSF9kNM7G3Beq",
+    "comment:PRRC_kwDOSF9kNM7G3BfE",
+    "thread:PRRT_kwDOSF9kNM6GNjx0",
+    "thread:PRRT_kwDOSF9kNM6GNjyd",
+    "thread:PRRT_kwDOSF9kNM6GNjyv"
+  ],
+  "fetched_at": "2026-06-01T18:38:12.103Z",
+  "schema_version": "v1",
+  "commit_sha": "701cdf6fa9c7ef691e26bce9539fb9a4b850c05f",
+  "title": "feat(B-0976): resume engine — F# ferry (restore-not-replay CEK saga kernel)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T18:37:44Z",
+  "head_ref": "otto-cli/b0976-resume-engine-fsharp-ferry-2026-06-01"
+}

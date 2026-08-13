@@ -1,0 +1,12 @@
+{
+  "pr_number": 7250,
+  "archive_path": "docs/history/pr-reviews/PR-7250-feat-trust-add-addison-s-operator-ssh-pubkey-persona-owned-baked-into-node-trust.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:01:32.860Z",
+  "schema_version": "v1",
+  "commit_sha": "3f40d10feb763e5680b827fd3b988cf70dc4d9aa",
+  "title": "feat(trust): add Addison's operator SSH pubkey — persona-owned + baked into node trust",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:01:10Z",
+  "head_ref": "otto/trust-addison-operator-ssh-pubkey"
+}

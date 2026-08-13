@@ -1,0 +1,12 @@
+{
+  "pr_number": 5348,
+  "archive_path": "docs/history/pr-reviews/PR-5348-fix-broadcast-omit-absent-optional-receipt-fields.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T23:10:50.476Z",
+  "schema_version": "v1",
+  "commit_sha": "9302d143f7189fb6346903fa0e198e262edffe59",
+  "title": "fix(broadcast): omit absent optional receipt fields",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:10:32Z",
+  "head_ref": "claim/codex-b0213-receipt-optional-fields-fix-20260526"
+}

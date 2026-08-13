@@ -1,0 +1,12 @@
+{
+  "pr_number": 8710,
+  "archive_path": "docs/history/pr-reviews/PR-8710-fix-installer-idempotent-python-minor-alias-slot-before-mise-install-ci-flake-fi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T06:19:51.069Z",
+  "schema_version": "v1",
+  "commit_sha": "d39486a87a8f0c19146adf8aca1a1616a3a071d5",
+  "title": "fix(installer): idempotent python minor-alias slot before mise install (CI flake fix)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T06:19:23Z",
+  "head_ref": "otto/fix-mise-python-alias-idempotency"
+}

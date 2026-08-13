@@ -1,0 +1,12 @@
+{
+  "pr_number": 4572,
+  "archive_path": "docs/history/pr-reviews/PR-4572-memory-otto-persona-surface-not-different-identity-reframe-per-aaron-2026-05-21.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T18:56:17.159Z",
+  "schema_version": "v1",
+  "commit_sha": "3151681aeb0f3b1d73aca5a5753f48ec432a6111",
+  "title": "memory(otto): persona-surface-not-different-identity reframe per Aaron 2026-05-21",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T18:55:56Z",
+  "head_ref": "memory/otto-persona-surface-not-different-identity-reframe-2026-05-21"
+}

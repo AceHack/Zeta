@@ -1,0 +1,12 @@
+{
+  "pr_number": 6932,
+  "archive_path": "docs/history/pr-reviews/PR-6932-docs-zetaids-are-closures-over-internal-external-state-reticulum-is-the-routing-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T22:33:29.118Z",
+  "schema_version": "v1",
+  "commit_sha": "003c4f26f028028b964c18e47d20ede8fae83994",
+  "title": "docs: ZetaIds are closures over internal+external state; Reticulum is the routing (unifying frame)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T22:33:11Z",
+  "head_ref": "otto/zetaids-are-closures-reticulum-routing"
+}

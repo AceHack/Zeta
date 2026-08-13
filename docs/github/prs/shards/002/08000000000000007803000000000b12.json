@@ -1,0 +1,25 @@
+{
+  "pr_number": 2834,
+  "archive_path": "docs/history/pr-reviews/PR-2834-shard-tick-18-54z-dense-encoding-mode-extended-cascade-prs-2824-2833.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ad0QP",
+    "comment:PRRC_kwDOSF9kNM7AduNO",
+    "comment:PRRC_kwDOSF9kNM7AdyaB",
+    "comment:PRRC_kwDOSF9kNM7Adybl",
+    "comment:PRRC_kwDOSF9kNM7AdycK",
+    "comment:PRRC_kwDOSF9kNM7Adycd",
+    "thread:PRRT_kwDOSF9kNM6Bht-p",
+    "thread:PRRT_kwDOSF9kNM6BhxH2",
+    "thread:PRRT_kwDOSF9kNM6BhxJ3",
+    "thread:PRRT_kwDOSF9kNM6BhxJH",
+    "thread:PRRT_kwDOSF9kNM6BhxJj",
+    "thread:PRRT_kwDOSF9kNM6BhydN"
+  ],
+  "fetched_at": "2026-05-12T19:03:50.920Z",
+  "schema_version": "v1",
+  "commit_sha": "76c715c810ec548fad8e10441057874384c3c42c",
+  "title": "shard(tick): 18:54Z — dense-encoding-mode extended cascade (PRs 2824-2833)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:03:29Z",
+  "head_ref": "docs/tick-shard-1854Z-post-cascade-deepseek-aurora-depin-aicontinuity-alienobserver-civsim-evolution-2026-05-12"
+}

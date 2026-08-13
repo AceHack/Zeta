@@ -1,0 +1,19 @@
+{
+  "pr_number": 6354,
+  "archive_path": "docs/history/pr-reviews/PR-6354-refactor-observe-b-0964-executortier-docker-oci-runtime-agnostic-match-merged-2-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gm1MW",
+    "comment:PRRC_kwDOSF9kNM7Gm1Nl",
+    "comment:PRRC_kwDOSF9kNM7GmvLF",
+    "comment:PRRC_kwDOSF9kNM7GmvLt",
+    "thread:PRRT_kwDOSF9kNM6GBY68",
+    "thread:PRRT_kwDOSF9kNM6GBY7h"
+  ],
+  "fetched_at": "2026-06-01T06:34:57.603Z",
+  "schema_version": "v1",
+  "commit_sha": "8d468b75c61b76dc715abc70ca2170e55aedff2d",
+  "title": "refactor(observe B-0964): ExecutorTier 'docker' → 'oci' (runtime-agnostic; match merged §2.2 verdict)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T06:34:38Z",
+  "head_ref": "otto-cli/do-item-executortier-oci-align-2026-06-01"
+}

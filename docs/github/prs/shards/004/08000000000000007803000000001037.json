@@ -1,0 +1,12 @@
+{
+  "pr_number": 4151,
+  "archive_path": "docs/history/pr-reviews/PR-4151-memory-holding-counter-gap-per-chain-n-6-counter-resets-via-peer-main-moves-mask.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T14:21:00.520Z",
+  "schema_version": "v1",
+  "commit_sha": "ded94a60b951a0bd8087a9a2afee7fb3cef9b822",
+  "title": "memory(holding-counter-gap): per-chain N=6 counter resets via peer main-moves mask aggregate brief-ack dwell",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T14:20:36Z",
+  "head_ref": "memory/per-chain-vs-aggregate-counter-gap-otto-cli-2026-05-18-1326z"
+}

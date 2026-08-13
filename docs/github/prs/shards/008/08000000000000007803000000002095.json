@@ -1,0 +1,12 @@
+{
+  "pr_number": 8341,
+  "archive_path": "docs/history/pr-reviews/PR-8341-docs-ip-questionable-deepmind-agi-strategy-youtube-transcript-beyond-transformer.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T21:26:48.704Z",
+  "schema_version": "v1",
+  "commit_sha": "1f3328798fbe673fd4d58d7e901ffd1a4193d103",
+  "title": "docs(ip-questionable): DeepMind AGI-strategy YouTube transcript (beyond transformers / diffusion / JEPA world models) verbatim",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T21:26:26Z",
+  "head_ref": "docs/ipq-deepmind-agi-strategy-beyond-transformers-jepa-worldmodel-verbatim"
+}

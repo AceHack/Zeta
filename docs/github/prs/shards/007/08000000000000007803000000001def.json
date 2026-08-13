@@ -1,0 +1,12 @@
+{
+  "pr_number": 7663,
+  "archive_path": "docs/history/pr-reviews/PR-7663-feat-chip9-interface-c-conformer-third-oracle-otto-rendered-in-color-the-friendl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T12:13:52.840Z",
+  "schema_version": "v1",
+  "commit_sha": "6ae4a9a3cc257640e7b240514a673ec8cb583d3d",
+  "title": "feat(chip9+interface): C# conformer (third oracle) + otto rendered in color + the friendly-interface vision",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T12:13:25Z",
+  "head_ref": "shadow-chip9-csharp-conformer"
+}

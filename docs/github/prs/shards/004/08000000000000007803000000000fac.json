@@ -1,0 +1,12 @@
+{
+  "pr_number": 4012,
+  "archive_path": "docs/history/pr-reviews/PR-4012-backlog-b-0591-wire-tick-shard-schema-validator-to-ci-b-0529-later-item.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T01:44:52.403Z",
+  "schema_version": "v1",
+  "commit_sha": "182fb7e7884ca50b9b2402cc4c351dcd7efdc175",
+  "title": "backlog(B-0591): wire tick-shard schema validator to CI (B-0529 Later item)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T01:44:13Z",
+  "head_ref": "otto/b0591-wire-shard-schema-validator-to-ci"
+}

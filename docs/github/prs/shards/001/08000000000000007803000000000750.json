@@ -1,0 +1,15 @@
+{
+  "pr_number": 1872,
+  "archive_path": "docs/history/pr-reviews/PR-1872-research-correction-loop-cross-agent-shadow-catch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-0keh",
+    "thread:PRRT_kwDOSF9kNM6ATkcF"
+  ],
+  "fetched_at": "2026-05-07T12:54:47.609Z",
+  "schema_version": "v1",
+  "commit_sha": "6fbf59911ca55d67e4e1a8a04c48ed7190060a3b",
+  "title": "research: correction-loop cross-agent shadow catch",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T12:38:15Z",
+  "head_ref": "codex/riven-correction-loop-shadow-catch"
+}

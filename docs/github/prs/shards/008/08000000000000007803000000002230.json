@@ -1,0 +1,12 @@
+{
+  "pr_number": 8752,
+  "archive_path": "docs/history/pr-reviews/PR-8752-fix-ci-add-dv-key-cloud-events-cross-verify-oracle.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T17:18:59.929Z",
+  "schema_version": "v1",
+  "commit_sha": "3755cc06c2e0b749e21aa6a42951a956f5a984f3",
+  "title": "fix(ci): add dv-key cloud-events cross-verify oracle",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T17:18:36Z",
+  "head_ref": "codex/dv-key-cloud-events-cross-verify"
+}

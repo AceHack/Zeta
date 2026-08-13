@@ -1,0 +1,12 @@
+{
+  "pr_number": 7642,
+  "archive_path": "docs/history/pr-reviews/PR-7642-feat-math-trustcalculus-dynamics-sleeping-bear-door-calculus-as-fixed-point-theo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T10:36:08.840Z",
+  "schema_version": "v1",
+  "commit_sha": "757debed5998ea446999a6d72bc4b92b148c241f",
+  "title": "feat(math): TrustCalculus.Dynamics — sleeping-bear/door calculus as fixed-point theorems (build pass)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T10:35:44Z",
+  "head_ref": "shadow-trust-calculus-math"
+}

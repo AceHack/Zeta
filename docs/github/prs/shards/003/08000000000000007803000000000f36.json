@@ -1,0 +1,25 @@
+{
+  "pr_number": 3894,
+  "archive_path": "docs/history/pr-reviews/PR-3894-backlog-b-0558-worktree-pool-primitive-re-land-of-3817-backlog-md-conflict-bypas.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B4_T4",
+    "comment:PRRC_kwDOSF9kNM7B4_T8",
+    "comment:PRRC_kwDOSF9kNM7B4_Tz",
+    "comment:PRRC_kwDOSF9kNM7B4_UC",
+    "comment:PRRC_kwDOSF9kNM7B4_UI",
+    "comment:PRRC_kwDOSF9kNM7B4_UN",
+    "thread:PRRT_kwDOSF9kNM6CkGH0",
+    "thread:PRRT_kwDOSF9kNM6CkGHd",
+    "thread:PRRT_kwDOSF9kNM6CkGHh",
+    "thread:PRRT_kwDOSF9kNM6CkGHk",
+    "thread:PRRT_kwDOSF9kNM6CkGHp",
+    "thread:PRRT_kwDOSF9kNM6CkGHv"
+  ],
+  "fetched_at": "2026-05-16T15:15:08.747Z",
+  "schema_version": "v1",
+  "commit_sha": "1dc175e7b831546165a269d20b75543fd7830c1c",
+  "title": "backlog(B-0558): worktree-pool primitive — re-land of #3817 (BACKLOG.md conflict bypassed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T15:14:51Z",
+  "head_ref": "otto-cli-b0558-reland-2026-05-16-1422z"
+}

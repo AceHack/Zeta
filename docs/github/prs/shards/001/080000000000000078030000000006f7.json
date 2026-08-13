@@ -1,0 +1,19 @@
+{
+  "pr_number": 1783,
+  "archive_path": "docs/history/pr-reviews/PR-1783-research-restore-riven-riff-substrate-verdicts-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-qnkr",
+    "comment:PRRC_kwDOSF9kNM6-qnlB",
+    "comment:PRRC_kwDOSF9kNM6-qt4N",
+    "comment:PRRC_kwDOSF9kNM6-qt4U",
+    "thread:PRRT_kwDOSF9kNM6AMHKC",
+    "thread:PRRT_kwDOSF9kNM6AMHKP"
+  ],
+  "fetched_at": "2026-05-07T04:01:00.112Z",
+  "schema_version": "v1",
+  "commit_sha": "364248d0ba133153117ff48d9c650785ea2bff04",
+  "title": "research: restore Riven riff substrate verdicts verbatim",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T03:48:27Z",
+  "head_ref": "claim/repair-riven-verbatim-research-doc"
+}

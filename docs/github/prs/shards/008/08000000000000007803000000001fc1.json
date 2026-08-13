@@ -1,0 +1,12 @@
+{
+  "pr_number": 8129,
+  "archive_path": "docs/history/pr-reviews/PR-8129-feat-ci-b-0831-slice-2-cluster-node-registration-dry-run-in-qemu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T02:13:06.029Z",
+  "schema_version": "v1",
+  "commit_sha": "a023564a16d055c184c0ab03691addb089a8d9f6",
+  "title": "feat(ci): B-0831 slice 2 — cluster-node registration dry-run in QEMU",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T02:12:39Z",
+  "head_ref": "riven/b0831-slice2-self-reg-dry-run"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 3068,
+  "archive_path": "docs/history/pr-reviews/PR-3068-docs-archive-prs-3065-3064-3062-3061.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BAuOA",
+    "thread:PRRT_kwDOSF9kNM6B7F4i"
+  ],
+  "fetched_at": "2026-05-14T00:15:43.063Z",
+  "schema_version": "v1",
+  "commit_sha": "7a12c01b0714cdb4bf05b8840f987f765b85170e",
+  "title": "docs: archive PRs 3065, 3064, 3062, 3061",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T00:15:28Z",
+  "head_ref": "chore/pr-preservation-3065-3064-3062-3061"
+}

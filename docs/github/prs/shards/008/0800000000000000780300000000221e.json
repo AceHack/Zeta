@@ -1,0 +1,12 @@
+{
+  "pr_number": 8734,
+  "archive_path": "docs/history/pr-reviews/PR-8734-feat-core-admit-darkhall-heat-continuations.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T08:01:32.406Z",
+  "schema_version": "v1",
+  "commit_sha": "efef7d01965f95c9abf24c54859e4c71d1f8122b",
+  "title": "feat(core): admit darkhall heat continuations",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T08:01:09Z",
+  "head_ref": "codex/darkhall-continuation-admission"
+}

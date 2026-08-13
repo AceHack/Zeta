@@ -1,0 +1,12 @@
+{
+  "pr_number": 6389,
+  "archive_path": "docs/history/pr-reviews/PR-6389-feat-algebra-z-set-signed-multiset-ts-reference-top-rung-of-the-ladder.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T10:00:01.407Z",
+  "schema_version": "v1",
+  "commit_sha": "c7e32ecd8260cb0fd24313b2085bb1b0b86910db",
+  "title": "feat(algebra): Z-set (signed multiset) TS reference — top rung of the ladder",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T09:59:35Z",
+  "head_ref": "otto-cli/zset-ts-reference-algebra-ladder-2026-06-01"
+}

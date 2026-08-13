@@ -1,0 +1,12 @@
+{
+  "pr_number": 6849,
+  "archive_path": "docs/history/pr-reviews/PR-6849-docs-research-distance-based-content-addressing-similarity-index-alongside-exact.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T15:04:45.724Z",
+  "schema_version": "v1",
+  "commit_sha": "0361d5cfe4d292f6aa4c4c0b7243f85451c72fb4",
+  "title": "docs(research): distance-based content addressing — similarity index alongside exact content-address for near-dup discovery",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T15:04:23Z",
+  "head_ref": "otto/capture-distance-content-addr"
+}

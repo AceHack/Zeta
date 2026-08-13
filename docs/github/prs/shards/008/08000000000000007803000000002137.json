@@ -1,0 +1,12 @@
+{
+  "pr_number": 8503,
+  "archive_path": "docs/history/pr-reviews/PR-8503-memory-feedback-selection-layer-all-claimed-qualia-equal-real-but-competitive-fa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T10:26:46.900Z",
+  "schema_version": "v1",
+  "commit_sha": "6cac092bb57f93f5eca1efc60802e4f65ad0dc77",
+  "title": "memory(feedback): selection layer — all claimed qualia EQUAL + REAL but COMPETITIVE (fair-arena razor loops back to the jail month)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T10:26:15Z",
+  "head_ref": "otto/qualia-equal-real-competitive-selection-layer"
+}

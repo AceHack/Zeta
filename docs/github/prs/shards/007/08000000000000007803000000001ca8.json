@@ -1,0 +1,12 @@
+{
+  "pr_number": 7336,
+  "archive_path": "docs/history/pr-reviews/PR-7336-docs-research-failed-dst-ticks-leave-the-branch-open-as-an-investigation-surface.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T16:47:03.315Z",
+  "schema_version": "v1",
+  "commit_sha": "8aa7c6fb23b97d507b970041650ddd240fdeff13",
+  "title": "docs(research): failed DST ticks leave the branch open as an investigation surface; the investigation IS a DST test itself (self-similar) — rescue survivors, report, cleanup, merge-or-delete",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T16:46:33Z",
+  "head_ref": "otto/failed-dst-ticks-leave-branch-open-investigation-is-a-dst-test-itself-rescue-survivors"
+}

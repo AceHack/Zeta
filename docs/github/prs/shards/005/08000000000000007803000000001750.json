@@ -1,0 +1,12 @@
+{
+  "pr_number": 5968,
+  "archive_path": "docs/history/pr-reviews/PR-5968-docs-b-0931-du-ux-surfaces-implicit-grants-prompt-explicit-deny-convfeedback-imp.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T09:50:34.886Z",
+  "schema_version": "v1",
+  "commit_sha": "ab880ae6047875e7b46797081e8b7f0e37d74ffd",
+  "title": "docs(B-0931): DU-UX surfaces implicit grants — prompt explicit/deny (ConvFeedback ImplicitGrantDetected)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T09:50:13Z",
+  "head_ref": "otto-cli/b-0931-du-ux-surfaces-implicit-grants-2026-05-29"
+}

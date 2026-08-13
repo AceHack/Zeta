@@ -1,0 +1,12 @@
+{
+  "pr_number": 8688,
+  "archive_path": "docs/history/pr-reviews/PR-8688-docs-handoff-soraya-s-formal-verification-routing-tool-assign-the-11-math-team-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T02:44:47.933Z",
+  "schema_version": "v1",
+  "commit_sha": "85ad6023db8ed62a54c5ddd16bec0f92e3712329",
+  "title": "docs(handoff): Soraya's formal-verification routing — tool-assign the 11 math-team rows (start 1/2/3/11)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T02:44:23Z",
+  "head_ref": "otto/mathteam-routing-soraya-triage"
+}

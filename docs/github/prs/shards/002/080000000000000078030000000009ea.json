@@ -1,0 +1,12 @@
+{
+  "pr_number": 2538,
+  "archive_path": "docs/history/pr-reviews/PR-2538-feat-backlog-b-0402-p0-zeta-shadow-mode-first-class-cli-autocomplete.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T21:22:28.330Z",
+  "schema_version": "v1",
+  "commit_sha": "ca72655deaf2f26ddd0ad39a00c2a30f4a6030a0",
+  "title": "feat(backlog): B-0402 P0 — Zeta shadow mode, first-class CLI autocomplete",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:22:13Z",
+  "head_ref": "feat/b0402-shadow-mode-p0-2026-05-10"
+}

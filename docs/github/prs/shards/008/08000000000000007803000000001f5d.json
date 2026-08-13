@@ -1,0 +1,12 @@
+{
+  "pr_number": 8029,
+  "archive_path": "docs/history/pr-reviews/PR-8029-docs-linguistic-seed-the-five-year-old-walk-birth-to-the-composable-kernel.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T17:36:52.150Z",
+  "schema_version": "v1",
+  "commit_sha": "73357254ccbf1dd3e3c324d90ffb9716dfd0ecaa",
+  "title": "docs(linguistic-seed): the five-year-old walk — birth to the composable kernel",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T17:36:22Z",
+  "head_ref": "shadow/linguistic-seed-five-year-old-walk"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 4534,
+  "archive_path": "docs/history/pr-reviews/PR-4534-fix-0852z-update-link-to-moved-research-file-trim-baseline-2-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DlflI",
+    "comment:PRRC_kwDOSF9kNM7Dlhke",
+    "thread:PRRT_kwDOSF9kNM6DznzI",
+    "thread:PRRT_kwDOSF9kNM6DzpQ3"
+  ],
+  "fetched_at": "2026-05-21T13:28:36.044Z",
+  "schema_version": "v1",
+  "commit_sha": "af6101977829efd06faef6bb6851440f2abee14d",
+  "title": "fix(0852Z): update link to moved research file + trim baseline (2 → 1)",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T13:28:11Z",
+  "head_ref": "fix/0852z-link-to-moved-research-file-2026-05-21"
+}

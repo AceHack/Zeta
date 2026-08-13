@@ -1,0 +1,22 @@
+{
+  "pr_number": 6419,
+  "archive_path": "docs/history/pr-reviews/PR-6419-fix-install-graceful-apt-get-update-on-unreachable-third-party-sources-resilienc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gv6b6",
+    "comment:PRRC_kwDOSF9kNM7Gvgoc",
+    "comment:PRRC_kwDOSF9kNM7Gvn7d",
+    "comment:PRRC_kwDOSF9kNM7GvqrW",
+    "comment:PRRC_kwDOSF9kNM7Gvt-P",
+    "comment:PRRC_kwDOSF9kNM7Gvz7C",
+    "thread:PRRT_kwDOSF9kNM6GH-ao",
+    "thread:PRRT_kwDOSF9kNM6GIGKI",
+    "thread:PRRT_kwDOSF9kNM6GINNG"
+  ],
+  "fetched_at": "2026-06-01T13:51:14.303Z",
+  "schema_version": "v1",
+  "commit_sha": "daa9e44d2084cd18523956f0062f4dd994d24ae1",
+  "title": "fix(install): graceful apt-get update on unreachable third-party sources + resilience test",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T13:50:44Z",
+  "head_ref": "claude/install-apt-resilience-2026-06-01"
+}

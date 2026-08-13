@@ -1,0 +1,12 @@
+{
+  "pr_number": 5485,
+  "archive_path": "docs/history/pr-reviews/PR-5485-docs-rule-proud-if-pattern-propagates-personal-filter-for-substrate-engineering-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T15:29:55.484Z",
+  "schema_version": "v1",
+  "commit_sha": "a8d14621325960466a8c37c9ec81c374e2b56392",
+  "title": "docs(rule): proud-if-pattern-propagates personal-filter for substrate-engineering (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T15:29:31Z",
+  "head_ref": "rule/proud-if-pattern-propagates-personal-filter-2026-05-27"
+}

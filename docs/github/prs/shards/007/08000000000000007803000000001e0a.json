@@ -1,0 +1,12 @@
+{
+  "pr_number": 7690,
+  "archive_path": "docs/history/pr-reviews/PR-7690-docs-trajectory-resume-night-wave-7669-7689-the-atom-format-ratified-the-day-clo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:45:19.549Z",
+  "schema_version": "v1",
+  "commit_sha": "d55957a475b7261ad198c85b9f7bb71c9efe269b",
+  "title": "docs(trajectory): RESUME night wave (#7669–#7689) — the atom format ratified, the day closed whole",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:44:48Z",
+  "head_ref": "shadow-resume-night-wave"
+}

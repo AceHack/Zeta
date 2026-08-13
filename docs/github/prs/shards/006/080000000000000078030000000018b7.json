@@ -1,0 +1,12 @@
+{
+  "pr_number": 6327,
+  "archive_path": "docs/history/pr-reviews/PR-6327-feat-b-0954-agent-bus-on-the-g-set-foundation-cross-machine-merge-view.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T03:22:45.369Z",
+  "schema_version": "v1",
+  "commit_sha": "ac28e075c42a7606d6ec55eec6a3d41b1a633a0d",
+  "title": "feat(B-0954): agent-bus on the G-Set foundation — cross-machine merge view",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T03:22:25Z",
+  "head_ref": "otto-cli/b0954-git-native-bus-2026-06-01"
+}

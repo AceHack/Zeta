@@ -1,0 +1,12 @@
+{
+  "pr_number": 5763,
+  "archive_path": "docs/history/pr-reviews/PR-5763-docs-feat-b-0914-upstream-add-co-scientist-robin-microsoft-infer-net-to-upstream.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T11:46:58.695Z",
+  "schema_version": "v1",
+  "commit_sha": "989ea4e68aff4a68c06b273512cc2c152dfa920d",
+  "title": "docs+feat(B-0914 + upstream): add co-scientist + Robin + Microsoft Infer.NET to upstream references + backlog B-0914 7-candidate substrate-engineering gap decomposition (Aaron 2026-05-28 explicit)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T11:46:36Z",
+  "head_ref": "otto-cli/upstream-references-add-coscientist-robin-trueskill-plus-backlog-7-substrate-engineering-candidates-2026-05-28"
+}

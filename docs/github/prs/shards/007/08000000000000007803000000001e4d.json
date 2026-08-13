@@ -1,0 +1,12 @@
+{
+  "pr_number": 7757,
+  "archive_path": "docs/history/pr-reviews/PR-7757-fix-codeql-authenticate-mise-release-lookups.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:23:34.086Z",
+  "schema_version": "v1",
+  "commit_sha": "080e53af2f59048bbae66a3388c9a2867cf43846",
+  "title": "fix(codeql): authenticate mise release lookups",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:23:10Z",
+  "head_ref": "codex/vera-fix-codeql-mise-token"
+}

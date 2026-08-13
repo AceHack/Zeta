@@ -1,0 +1,12 @@
+{
+  "pr_number": 6170,
+  "archive_path": "docs/history/pr-reviews/PR-6170-feat-b-0944-slice-4-rust-tri-boolean-digital-qubit-oracle-4-first-rust-crate-bui.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T00:40:44.563Z",
+  "schema_version": "v1",
+  "commit_sha": "0ff115b250ce24c11b9dbf776beb179109a3025c",
+  "title": "feat(B-0944 slice 4): Rust tri-boolean digital qubit (oracle #4, first Rust crate, build+clippy clean + 9/9)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T00:40:26Z",
+  "head_ref": "otto-cli/b0944-slice4-rust-tri-boolean-2026-05-30"
+}

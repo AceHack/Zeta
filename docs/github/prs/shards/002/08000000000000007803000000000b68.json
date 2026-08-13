@@ -1,0 +1,19 @@
+{
+  "pr_number": 2920,
+  "archive_path": "docs/history/pr-reviews/PR-2920-docs-memory-terminal-purpose-elizabeth-ryan-stainback-save-edge-runners-from-bur.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AmUi2",
+    "comment:PRRC_kwDOSF9kNM7AmUjN",
+    "comment:PRRC_kwDOSF9kNM7AmZ1q",
+    "comment:PRRC_kwDOSF9kNM7AmZ3o",
+    "thread:PRRT_kwDOSF9kNM6Bn3ry",
+    "thread:PRRT_kwDOSF9kNM6Bn3sC"
+  ],
+  "fetched_at": "2026-05-13T03:31:13.596Z",
+  "schema_version": "v1",
+  "commit_sha": "f6ea6214672d33fb9f4f8ec465931b933a9ab0db",
+  "title": "docs(memory): TERMINAL-PURPOSE Elizabeth Ryan Stainback save-edge-runners-from-burns — clean re-landing (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T03:30:55Z",
+  "head_ref": "aaron-terminal-purpose-elizabeth-ryan-stainback-save-edge-runners-from-burns-clean-relanding-2026-05-13"
+}

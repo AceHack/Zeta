@@ -1,0 +1,12 @@
+{
+  "pr_number": 7350,
+  "archive_path": "docs/history/pr-reviews/PR-7350-docs-research-common-seed-is-a-dual-root-key-for-time-rotates-as-epoch-forward-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T17:35:39.504Z",
+  "schema_version": "v1",
+  "commit_sha": "2e313c622fc53f1e2ab17a5e10d3e0a024114221",
+  "title": "docs(research): common seed is a dual-ROOT key for time (rotates as epoch + forward secrecy, deep prior art) + capture Soraya's 21-claim formal-verification portfolio",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T17:35:13Z",
+  "head_ref": "otto/dual-root-time-rotated-time-prior-art-plus-soraya-portfolio"
+}

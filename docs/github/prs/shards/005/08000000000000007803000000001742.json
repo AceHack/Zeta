@@ -1,0 +1,12 @@
+{
+  "pr_number": 5954,
+  "archive_path": "docs/history/pr-reviews/PR-5954-docs-trajectories-encryption-privacy-carve-out-vs-glass-halo-default-ai-sovereig.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T07:52:16.903Z",
+  "schema_version": "v1",
+  "commit_sha": "fe4ddf69d8e7539fbf679bc5868696c690a6ea54",
+  "title": "docs(trajectories): encryption = privacy carve-out vs glass-halo default (AI-sovereignty + human-privacy)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T07:51:55Z",
+  "head_ref": "otto-cli/cluster-encryption-trajectory-privacy-carveout-2026-05-29"
+}

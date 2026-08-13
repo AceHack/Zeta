@@ -1,0 +1,12 @@
+{
+  "pr_number": 5609,
+  "archive_path": "docs/history/pr-reviews/PR-5609-docs-archive-batch-archive-of-20-prs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T19:32:36.719Z",
+  "schema_version": "v1",
+  "commit_sha": "20af050a759198f20d37272413517b3fdde2555d",
+  "title": "docs(archive): Batch archive of 20 PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T19:31:59Z",
+  "head_ref": "lior/batch-archive-2026-05-27-9"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6355,
+  "archive_path": "docs/history/pr-reviews/PR-6355-docs-b-0954-status-drift-fix-phase-1-is-implemented-6283-6327-not-not-started.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T06:31:54.329Z",
+  "schema_version": "v1",
+  "commit_sha": "cb18dc83205f30371f9183283f65a82b25e83ecb",
+  "title": "docs(B-0954): status-drift fix — Phase 1 is IMPLEMENTED (#6283 + #6327), not 'not started'",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T06:31:34Z",
+  "head_ref": "otto-cli/b0954-status-drift-fix-2026-06-01"
+}

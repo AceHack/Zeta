@@ -1,0 +1,12 @@
+{
+  "pr_number": 2025,
+  "archive_path": "docs/history/pr-reviews/PR-2025-fix-backlog-complete-b-0278-autonomous-priority-selector.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T04:01:22.554Z",
+  "schema_version": "v1",
+  "commit_sha": "5e053ec644cb32b182c2be31429ca759f2d599a9",
+  "title": "fix(backlog): complete B-0278 autonomous priority selector",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T04:01:08Z",
+  "head_ref": "codex/b0278-backlog-priority-selector"
+}

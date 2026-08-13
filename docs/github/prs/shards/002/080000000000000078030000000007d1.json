@@ -1,0 +1,12 @@
+{
+  "pr_number": 2001,
+  "archive_path": "docs/history/pr-reviews/PR-2001-feat-pr-gate-bridge-github-pr-state-consensus-types.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T02:09:50.518Z",
+  "schema_version": "v1",
+  "commit_sha": "ba7cc67829f5f4757c5ac0f605688290fb36a790",
+  "title": "feat: PR gate bridge — GitHub PR state → consensus types",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:09:29Z",
+  "head_ref": "feat/consensus-pr-bridge"
+}

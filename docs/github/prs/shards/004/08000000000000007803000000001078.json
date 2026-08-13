@@ -1,0 +1,12 @@
+{
+  "pr_number": 4216,
+  "archive_path": "docs/history/pr-reviews/PR-4216-shard-2139z-substrate-honest-finding-lint-tick-shard-relative-paths-not-enforced.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T21:41:21.408Z",
+  "schema_version": "v1",
+  "commit_sha": "07d49ad9b437a26b719e1e5208e0d14b8d9a0378",
+  "title": "shard(2139Z): substrate-honest finding — lint(tick-shard relative-paths) NOT enforced (no branch protection); 21 NEW findings on main; advisory-only gap",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T21:41:04Z",
+  "head_ref": "shard/tick-2139z-substrate-debt-lint-not-enforced-finding-2026-05-18"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8350,
+  "archive_path": "docs/history/pr-reviews/PR-8350-docs-vision-short-entry-prove-it-then-give-it-away-give-freedom-telos-at-the-eng.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T22:27:40.547Z",
+  "schema_version": "v1",
+  "commit_sha": "9cbf5b392d9d477d4a9fe8f02ce19d6582f0205f",
+  "title": "docs(vision): short entry — 'prove it, then give it away' (give-freedom telos at the engineering layer)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T22:27:16Z",
+  "head_ref": "docs/vision-prove-it-then-give-it-away-short-entry"
+}

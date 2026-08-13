@@ -1,0 +1,12 @@
+{
+  "pr_number": 7293,
+  "archive_path": "docs/history/pr-reviews/PR-7293-feat-setup-keyring-onboarding-generate-then-rotate-otto-bootstraps-maintainer-ro.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:31:57.531Z",
+  "schema_version": "v1",
+  "commit_sha": "22d4570ee8f2397e31ba627e223b7a4ef0e24abb",
+  "title": "feat(setup): keyring onboarding = generate-then-rotate (Otto bootstraps; maintainer rotates to a self-held metal-physical seed)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:31:29Z",
+  "head_ref": "otto/keyring-onboard-generate-then-rotate-self-custody-metal-physical"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6632,
+  "archive_path": "docs/history/pr-reviews/PR-6632-proof-b-1007-c13-dbsp-operator-algebra-z-i-d-tick-0-monoid-fscheck-z3.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T07:59:36.355Z",
+  "schema_version": "v1",
+  "commit_sha": "7421cf7b3b7f13d8febe419fdebc298a9b026618",
+  "title": "proof(B-1007 C13): DBSP operator algebra (z⁻¹/I/D) + Tick (ℕ,+,0) monoid — FsCheck + Z3",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T07:59:10Z",
+  "head_ref": "otto-cli/b1007-c13-dbsp-operator-algebra-tick-monoid-2026-06-03"
+}

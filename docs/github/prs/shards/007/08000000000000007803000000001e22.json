@@ -1,0 +1,12 @@
+{
+  "pr_number": 7714,
+  "archive_path": "docs/history/pr-reviews/PR-7714-docs-research-the-render-is-the-oracle-cartridges-as-the-validation-surface-know.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T15:36:19.702Z",
+  "schema_version": "v1",
+  "commit_sha": "eff7ee5de4f31c10c5d54dafe05f7c6950ae2503",
+  "title": "docs(research): the render is the oracle — cartridges as the validation surface, known-answer overlays",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T15:35:19Z",
+  "head_ref": "shadow-render-oracle-doctrine"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 5787,
+  "archive_path": "docs/history/pr-reviews/PR-5787-codex-enforce-uppercase-shell-retirement-inventory-extensions.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FwU2h",
+    "thread:PRRT_kwDOSF9kNM6FZWzS"
+  ],
+  "fetched_at": "2026-05-28T15:37:23.182Z",
+  "schema_version": "v1",
+  "commit_sha": "98bed5e0b94b608501f2e72d5db77a18e6c2079b",
+  "title": "[codex] Enforce uppercase shell retirement inventory extensions",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T15:36:51Z",
+  "head_ref": "claim/codex-loop-bash-retirement-inventory-guard-20260528"
+}

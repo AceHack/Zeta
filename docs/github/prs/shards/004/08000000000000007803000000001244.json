@@ -1,0 +1,12 @@
+{
+  "pr_number": 4676,
+  "archive_path": "docs/history/pr-reviews/PR-4676-feedback-aaron-amazon-alexa-hardware-skill-connector-store-as-competitor-substra.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T21:01:05.449Z",
+  "schema_version": "v1",
+  "commit_sha": "108dd64663e9439123f9a521dc6ff42c76ad1b1c",
+  "title": "feedback(aaron): Amazon Alexa+ hardware + skill/connector store as competitor-substrate to Ace + conversation-interface-bootstrap + comprehensive-testbed framing",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T21:00:45Z",
+  "head_ref": "otto/cli-1500z-amazon-alexa-plus-competitor-substrate-rodney-legal-name-harry-potter-echo-dot-2026-05-23"
+}

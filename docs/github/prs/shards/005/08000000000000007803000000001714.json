@@ -1,0 +1,15 @@
+{
+  "pr_number": 5908,
+  "archive_path": "docs/history/pr-reviews/PR-5908-docs-research-add-drift-report-for-widespread-agent-silence.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F3qLZ",
+    "thread:PRRT_kwDOSF9kNM6FesJY"
+  ],
+  "fetched_at": "2026-05-28T19:26:10.151Z",
+  "schema_version": "v1",
+  "commit_sha": "bed27210eaea772116250755f6c68b81458ce138",
+  "title": "docs(research): Add drift report for widespread agent silence",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T19:25:47Z",
+  "head_ref": "lior/drift-report-agent-silence"
+}

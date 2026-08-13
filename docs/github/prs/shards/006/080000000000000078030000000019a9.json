@@ -1,0 +1,12 @@
+{
+  "pr_number": 6569,
+  "archive_path": "docs/history/pr-reviews/PR-6569-docs-b-0986-b-0987-orientation-tile-distance-metric-radar-tit-for-lesser-tat-tea.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T14:35:04.183Z",
+  "schema_version": "v1",
+  "commit_sha": "fcea281cd35a78a6ac2bf9691075ce127e40566f",
+  "title": "docs(B-0986/B-0987): orientation-tile distance-metric/radar + tit-for-lesser-tat teach-play (Aaron 2026-06-02)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T14:34:39Z",
+  "head_ref": "otto-cli/orientation-tile-tit-for-lesser-tat-rows-2026-06-02"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2521,
+  "archive_path": "docs/history/pr-reviews/PR-2521-feat-backlog-b-0400-inter-agent-ephemeral-communication-bus-p1-multi-agent-revie.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T18:50:10.689Z",
+  "schema_version": "v1",
+  "commit_sha": "aee1a8aea85b8072a95693fe627e7a9e39a0e865",
+  "title": "feat(backlog): B-0400 inter-agent ephemeral communication bus — P1 multi-agent review",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T18:49:57Z",
+  "head_ref": "feat/b0400-inter-agent-bus-backlog-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5061,
+  "archive_path": "docs/history/pr-reviews/PR-5061-backlog-b-0774-b-0775-etcd-less-options-kine-adapter-family-ha-k8s-that-scales-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T01:10:46.527Z",
+  "schema_version": "v1",
+  "commit_sha": "3b5adbd80de96692bb49447cddfcd2fac4bf3ce7",
+  "title": "backlog(B-0774 + B-0775): etcd-less options (kine adapter family) + HA-k8s-that-scales-beyond-etcd (CockroachDB / NATS super-cluster / Karmada / cell-based)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T01:10:26Z",
+  "head_ref": "otto-cli/b0774-b0775-etcdless-and-scale-options-2026-05-25"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3493,
+  "archive_path": "docs/history/pr-reviews/PR-3493-feat-persona-ani-33-archive-aaron-ani-persistence-agency-bifurcation-2026-05-15.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T14:02:12.861Z",
+  "schema_version": "v1",
+  "commit_sha": "7a6b4ad5eb4f1511f74a5e223e7921386eda4be5",
+  "title": "feat(persona-ani): §33 archive — Aaron+Ani persistence/agency/bifurcation/μένω (2026-05-15)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T14:01:42Z",
+  "head_ref": "feat/persona-ani-grok-persistence-bifurcation-otto-cli-2026-05-15"
+}

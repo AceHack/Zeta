@@ -1,0 +1,12 @@
+{
+  "pr_number": 6153,
+  "archive_path": "docs/history/pr-reviews/PR-6153-memory-mika-disclosure-bond-pays-victims-not-the-discloser-kills-the-data-bounty.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T22:39:23.667Z",
+  "schema_version": "v1",
+  "commit_sha": "d98e4bd46656e5d929800fd16b65a790adb3aeef",
+  "title": "memory(mika): disclosure-bond pays victims not the discloser — kills the data-bounty market",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T22:39:05Z",
+  "head_ref": "otto/disclosure-bond-pay-victims-not-discloser-2026-05-30"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 3681,
+  "archive_path": "docs/history/pr-reviews/PR-3681-shard-tick-2026-05-16t02-18z-thread-investigation-catch-5-6-fixes-3676-3680.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B01Z2",
+    "comment:PRRC_kwDOSF9kNM7B03fh",
+    "thread:PRRT_kwDOSF9kNM6ChBNo"
+  ],
+  "fetched_at": "2026-05-16T02:35:26.067Z",
+  "schema_version": "v1",
+  "commit_sha": "fa9c780aa745a2793912af9da6a4927398814f36",
+  "title": "shard(tick): 2026-05-16T02:18Z — thread-investigation catch + 5→6 .. fixes (#3676 + #3680)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T02:35:01Z",
+  "head_ref": "shard/tick-0218z-otto-cli-2026-05-16"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7697,
+  "archive_path": "docs/history/pr-reviews/PR-7697-feat-input-controlscheme-zetaid-d-schemes-every-device-second-to-the-action-gram.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T14:04:55.358Z",
+  "schema_version": "v1",
+  "commit_sha": "9db15f146597d2b5c3cef537c897232110a1ba98",
+  "title": "feat(input): ControlScheme — ZetaId'd schemes; every device second to the action grammar",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T14:04:28Z",
+  "head_ref": "shadow-control-schemes"
+}

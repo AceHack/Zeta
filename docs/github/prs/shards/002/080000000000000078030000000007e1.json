@@ -1,0 +1,29 @@
+{
+  "pr_number": 2017,
+  "archive_path": "docs/history/pr-reviews/PR-2017-research-b-0287-ace-dlc-package-format-spec.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_GHpc",
+    "comment:PRRC_kwDOSF9kNM6_GHpe",
+    "comment:PRRC_kwDOSF9kNM6_GIr-",
+    "comment:PRRC_kwDOSF9kNM6_GIrT",
+    "comment:PRRC_kwDOSF9kNM6_GIrk",
+    "comment:PRRC_kwDOSF9kNM6_GIrr",
+    "comment:PRRC_kwDOSF9kNM6_GIrz",
+    "comment:PRRC_kwDOSF9kNM6_GIsE",
+    "thread:PRRT_kwDOSF9kNM6AgZ37",
+    "thread:PRRT_kwDOSF9kNM6AgZ3_",
+    "thread:PRRT_kwDOSF9kNM6AgZ3u",
+    "thread:PRRT_kwDOSF9kNM6AgZ4G",
+    "thread:PRRT_kwDOSF9kNM6AgZ4N",
+    "thread:PRRT_kwDOSF9kNM6AgZ4S",
+    "thread:PRRT_kwDOSF9kNM6AgZFb",
+    "thread:PRRT_kwDOSF9kNM6AgZFe"
+  ],
+  "fetched_at": "2026-05-08T03:19:52.225Z",
+  "schema_version": "v1",
+  "commit_sha": "a3954f88127c8c7c96f524a511cb6e79abfa43ea",
+  "title": "research(B-0287): Ace DLC package format spec",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T03:19:38Z",
+  "head_ref": "feat/b0287-ace-dlc-format-spec"
+}

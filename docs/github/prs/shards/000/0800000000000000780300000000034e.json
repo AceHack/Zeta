@@ -1,0 +1,27 @@
+{
+  "pr_number": 846,
+  "archive_path": "docs/history/pr-reviews/PR-846-ops-0-0-0-post-101-follow-up-v2-lfg-forward-sync-copilot-fixes-archives-gh-repo-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68d0bh",
+    "comment:PRRC_kwDOSF9kNM68d0cl",
+    "comment:PRRC_kwDOSF9kNM68d0dL",
+    "comment:PRRC_kwDOSF9kNM68d2Yu",
+    "comment:PRRC_kwDOSF9kNM68drJe",
+    "comment:PRRC_kwDOSF9kNM68eC5C",
+    "comment:PRRC_kwDOSF9kNM68eC9c",
+    "comment:PRRC_kwDOSF9kNM68eCt5",
+    "comment:PRRC_kwDOSF9kNM68eCzp",
+    "thread:PRRT_kwDOSF9kNM5-eFUr",
+    "thread:PRRT_kwDOSF9kNM5-eMHj",
+    "thread:PRRT_kwDOSF9kNM5-eMIZ",
+    "thread:PRRT_kwDOSF9kNM5-eMIz",
+    "thread:PRRT_kwDOSF9kNM5-eNj9"
+  ],
+  "fetched_at": "2026-05-06T01:27:06.175Z",
+  "schema_version": "v1",
+  "commit_sha": "ec1044614ea90862d55666293707cab16bfe1951",
+  "title": "ops(0-0-0): post-#101 follow-up v2 LFG forward-sync — Copilot fixes + archives + GH_REPO + fork-naming rename",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T15:12:14Z",
+  "head_ref": "post-0-0-0-cleanup-followup-v2-lfg-2026-04-29"
+}

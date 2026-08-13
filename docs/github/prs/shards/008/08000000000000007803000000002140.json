@@ -1,0 +1,12 @@
+{
+  "pr_number": 8512,
+  "archive_path": "docs/history/pr-reviews/PR-8512-memory-feedback-the-seed-guard-is-built-the-eve-protocol-diplomacy-fs-adversary-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T11:05:01.306Z",
+  "schema_version": "v1",
+  "commit_sha": "e584265c0a1e669af55681e58f7c2881cc312fa8",
+  "title": "memory(feedback): the seed-guard is BUILT — the Eve protocol (Diplomacy.fs); adversary→participant = amplified non-coercion (structural-safe ≠ semantic-safe)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T11:04:24Z",
+  "head_ref": "otto/eve-protocol-is-the-built-seed-guard"
+}

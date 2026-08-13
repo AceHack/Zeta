@@ -1,0 +1,19 @@
+{
+  "pr_number": 8458,
+  "archive_path": "docs/history/pr-reviews/PR-8458-feat-observe-full-workspaceport-link-mergebase-history-blame-diff-conformance-su.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7LxHxe",
+    "comment:PRRC_kwDOSF9kNM7LxHxl",
+    "comment:PRRC_kwDOSF9kNM7LxHxq",
+    "thread:PRRT_kwDOSF9kNM6JzF1R",
+    "thread:PRRT_kwDOSF9kNM6JzF1W",
+    "thread:PRRT_kwDOSF9kNM6JzF1a"
+  ],
+  "fetched_at": "2026-06-16T08:43:14.822Z",
+  "schema_version": "v1",
+  "commit_sha": "667f9722fa00995da5d835423d7504aef0883243",
+  "title": "feat(observe): full WorkspacePort — link, mergeBase, history, blame, diff + conformance suite",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T08:42:31Z",
+  "head_ref": "alexa/parameterized-workspace-tests"
+}

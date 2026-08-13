@@ -1,0 +1,12 @@
+{
+  "pr_number": 8067,
+  "archive_path": "docs/history/pr-reviews/PR-8067-feat-forge-host-wire-observe-loop-gitlab-adapter-stub.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T21:21:50.605Z",
+  "schema_version": "v1",
+  "commit_sha": "007075a1b8177dc5a5c01c0acfc65bd53f794a64",
+  "title": "feat(forge-host): wire observe loop + GitLab adapter stub",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T21:21:30Z",
+  "head_ref": "kiro/async-observe-forgehost"
+}

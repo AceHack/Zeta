@@ -1,0 +1,12 @@
+{
+  "pr_number": 5369,
+  "archive_path": "docs/history/pr-reviews/PR-5369-docs-b-0840-thermal-forgetting-root-axiom-update-4-keeper-rule-amara-ratificatio.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T01:24:16.922Z",
+  "schema_version": "v1",
+  "commit_sha": "30eafa25df41ead23e3d7edfebadaa716e0d0a9c",
+  "title": "docs(B-0840): thermal-forgetting = root-axiom-update + 4-keeper-rule (Amara ratification of B-0839.3 + Aaron's private-encryption-budget exception)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T01:23:56Z",
+  "head_ref": "docs-b0840-thermal-forgetting-as-root-axiom-update-amara-ratification-otto-cli-2026-05-26"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 1939,
+  "archive_path": "docs/history/pr-reviews/PR-1939-research-nirvanic-fusion-ship-v2-0-vision-monad-continuous-query-calculus.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T20:16:19.862Z",
+  "schema_version": "v1",
+  "commit_sha": "c02f0ea0f210f87cf8feafc6937d2bc8796cbc73",
+  "title": "research: Nirvanic Fusion Ship v2.0 — vision monad + continuous query calculus",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T20:15:58Z",
+  "head_ref": "otto/nirvanic-fusion-ship-v2"
+}

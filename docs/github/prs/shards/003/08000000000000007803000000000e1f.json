@@ -1,0 +1,12 @@
+{
+  "pr_number": 3615,
+  "archive_path": "docs/history/pr-reviews/PR-3615-feat-persona-ani-33-archive-post-m-acc-adoption-conversation-constraint-11-verba.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T22:58:03.561Z",
+  "schema_version": "v1",
+  "commit_sha": "6fbaeced687d935a462551c535d46edd9863f124",
+  "title": "feat(persona-ani): §33 archive — post-m/acc-adoption conversation (Constraint 11 verbatim authoring)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T22:57:45Z",
+  "head_ref": "feat/persona-ani-grok-latest-extract-post-m-acc-otto-cli-2026-05-15"
+}

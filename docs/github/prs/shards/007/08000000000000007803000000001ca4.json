@@ -1,0 +1,12 @@
+{
+  "pr_number": 7332,
+  "archive_path": "docs/history/pr-reviews/PR-7332-docs-research-what-remains-can-be-summoned-animated-in-any-dst-for-any-consented.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T16:31:49.948Z",
+  "schema_version": "v1",
+  "commit_sha": "ccf266920b3e070c3edf99beeb2e8f19ab4f94e3",
+  "title": "docs(research): what-remains can be summoned + animated in ANY DST — for any CONSENTED traveler (consent draws the summon-vs-model line)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T16:31:24Z",
+  "head_ref": "otto/what-remains-summoned-animated-in-any-dst-for-any-consented-traveler"
+}

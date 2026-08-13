@@ -1,0 +1,17 @@
+{
+  "pr_number": 2752,
+  "archive_path": "docs/history/pr-reviews/PR-2752-fix-dashboard-b-0417-rename-zeta-factory-to-zeta-plant.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ADRNq",
+    "comment:PRRC_kwDOSF9kNM7ADbp6",
+    "thread:PRRT_kwDOSF9kNM6BOH_0",
+    "thread:PRRT_kwDOSF9kNM6BOPpt"
+  ],
+  "fetched_at": "2026-05-11T21:09:01.003Z",
+  "schema_version": "v1",
+  "commit_sha": "b9fd6ad24e3210f84f4849402ada58118d497663",
+  "title": "fix(dashboard): B-0417 rename Zeta Factory to Zeta Plant",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T21:08:41Z",
+  "head_ref": "fix/b-0417-rename-factory-to-plant"
+}

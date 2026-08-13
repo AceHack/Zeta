@@ -1,0 +1,12 @@
+{
+  "pr_number": 1962,
+  "archive_path": "docs/history/pr-reviews/PR-1962-fix-b-0140-port-profile-sh-to-ts-phase-2-4-of-8.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T22:48:19.622Z",
+  "schema_version": "v1",
+  "commit_sha": "b4de47889a2ffb5af0d1d101f39891ae3409deab",
+  "title": "fix(B-0140): port profile.sh to TS — Phase 2 (4 of 8)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T22:48:04Z",
+  "head_ref": "chore/b0140-phase2-profile-ts-port"
+}

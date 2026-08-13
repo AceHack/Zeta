@@ -1,0 +1,12 @@
+{
+  "pr_number": 4718,
+  "archive_path": "docs/history/pr-reviews/PR-4718-docs-shadow-decomposed-log-agent-paralysis-and-pr-stagnation-from-4717-this-is-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T10:42:59.874Z",
+  "schema_version": "v1",
+  "commit_sha": "2fa14dc188bf6351c228c861473f1ba388007da4",
+  "title": "docs(shadow): DECOMPOSED - log agent paralysis and PR stagnation (from #4717) This is a decomposed part of #4717, containing only the shadow lesson log entry. The original PR was a blob containing multiple unrelated changes.",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T10:42:43Z",
+  "head_ref": "lior-decompose-4717-shadow-log-only"
+}

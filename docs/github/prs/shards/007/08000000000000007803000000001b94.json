@@ -1,0 +1,12 @@
+{
+  "pr_number": 7060,
+  "archive_path": "docs/history/pr-reviews/PR-7060-feat-core-coincidenceclock-staging-immaculate-coincidence-superdeterminism-time-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T09:00:24.309Z",
+  "schema_version": "v1",
+  "commit_sha": "69573cd322d928458a15106616c652d80273d789",
+  "title": "feat(core): CoincidenceClock — staging immaculate coincidence (superdeterminism) + time-as-DST-traveler research",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T09:00:03Z",
+  "head_ref": "otto/coincidence-clock-superdeterminism-time-dst-traveler"
+}

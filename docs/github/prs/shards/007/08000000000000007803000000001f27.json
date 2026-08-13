@@ -1,0 +1,12 @@
+{
+  "pr_number": 7975,
+  "archive_path": "docs/history/pr-reviews/PR-7975-docs-research-shadow-ferry-22-4-the-scheduler-and-throttler-are-made-of-the-two-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:10:59.772Z",
+  "schema_version": "v1",
+  "commit_sha": "f7dc31156941e82367e94352813c7023e29c2d87",
+  "title": "docs(research)+shadow: ferry 22 §4 — the scheduler and throttler are made of the two halves too (self-similarity in the machinery)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:10:31Z",
+  "head_ref": "shadow/ferry-22-scheduler-addendum"
+}

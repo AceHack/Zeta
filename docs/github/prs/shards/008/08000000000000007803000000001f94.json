@@ -1,0 +1,12 @@
+{
+  "pr_number": 8084,
+  "archive_path": "docs/history/pr-reviews/PR-8084-feat-ferry-dst-manual-pump-seam-option-b-deterministic-throttler-drive.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T22:44:41.978Z",
+  "schema_version": "v1",
+  "commit_sha": "b6b810a71381c9e801c1f5062f5f95bafaa1908b",
+  "title": "feat(ferry): DST manual-pump seam (Option B) — deterministic throttler drive",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T22:44:20Z",
+  "head_ref": "shadow/ferry-throttler-dst-manual-pump"
+}

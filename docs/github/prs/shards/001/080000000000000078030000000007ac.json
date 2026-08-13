@@ -1,0 +1,12 @@
+{
+  "pr_number": 1964,
+  "archive_path": "docs/history/pr-reviews/PR-1964-docs-trajectory-add-trajectory-drift-reporting-packet.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T23:27:14.449Z",
+  "schema_version": "v1",
+  "commit_sha": "3332ba32c8c88b4a5f7ae1715d5415e077ddff2c",
+  "title": "docs(trajectory): add trajectory drift reporting packet",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T23:26:59Z",
+  "head_ref": "claim/task-trajectory-drift-reporting-packet"
+}

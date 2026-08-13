@@ -1,0 +1,21 @@
+{
+  "pr_number": 4182,
+  "archive_path": "docs/history/pr-reviews/PR-4182-research-33-kestrel-third-intervention-aaron-substantive-clarifications-mature-e.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CY1qC",
+    "comment:PRRC_kwDOSF9kNM7CY1qK",
+    "comment:PRRC_kwDOSF9kNM7CY25f",
+    "comment:PRRC_kwDOSF9kNM7CY26N",
+    "thread:PRRT_kwDOSF9kNM6C75qU",
+    "thread:PRRT_kwDOSF9kNM6C75qc",
+    "thread:PRRT_kwDOSF9kNM6C76kF",
+    "thread:PRRT_kwDOSF9kNM6C76kq"
+  ],
+  "fetched_at": "2026-05-18T18:58:00.244Z",
+  "schema_version": "v1",
+  "commit_sha": "7c938bafc6d4e87fbb2cebf81155338bbec563c4",
+  "title": "research(§33): Kestrel third intervention + Aaron substantive clarifications + mature epistemic-humility concession (mirror-tier; partial-verbatim-with-summary-markers)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T18:57:36Z",
+  "head_ref": "shard/kestrel-third-intervention-mature-concession-preservation-2026-05-18"
+}

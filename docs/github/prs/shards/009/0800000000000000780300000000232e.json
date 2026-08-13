@@ -1,0 +1,12 @@
+{
+  "pr_number": 9006,
+  "archive_path": "docs/history/pr-reviews/PR-9006-docs-research-directory-precise-structure-dag-of-chains-multi-parented-neighborh.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:03:41.592Z",
+  "schema_version": "v1",
+  "commit_sha": "bdc09de255c77ee981f271d28feef4afb8bdfaab",
+  "title": "docs(research): directory precise structure — DAG of chains, multi-parented, neighborhood-aware",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:03:10Z",
+  "head_ref": "otto/directory-dag-of-chains-multiparent-neighborhood"
+}

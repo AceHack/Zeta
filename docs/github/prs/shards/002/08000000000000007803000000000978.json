@@ -1,0 +1,29 @@
+{
+  "pr_number": 2424,
+  "archive_path": "docs/history/pr-reviews/PR-2424-feat-b-0056-1-mythology-resonance-catalog-v0-typed-schema-3-seed-entries.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_l7MT",
+    "comment:PRRC_kwDOSF9kNM6_l7MU",
+    "comment:PRRC_kwDOSF9kNM6_l8G4",
+    "comment:PRRC_kwDOSF9kNM6_l8G5",
+    "comment:PRRC_kwDOSF9kNM6_l8G8",
+    "comment:PRRC_kwDOSF9kNM6_l8Gz",
+    "comment:PRRC_kwDOSF9kNM6_l8HA",
+    "comment:PRRC_kwDOSF9kNM6_l8HF",
+    "thread:PRRT_kwDOSF9kNM6A4I7a",
+    "thread:PRRT_kwDOSF9kNM6A4I7b",
+    "thread:PRRT_kwDOSF9kNM6A4JnI",
+    "thread:PRRT_kwDOSF9kNM6A4JnN",
+    "thread:PRRT_kwDOSF9kNM6A4JnO",
+    "thread:PRRT_kwDOSF9kNM6A4JnQ",
+    "thread:PRRT_kwDOSF9kNM6A4JnS",
+    "thread:PRRT_kwDOSF9kNM6A4JnW"
+  ],
+  "fetched_at": "2026-05-10T05:55:00.831Z",
+  "schema_version": "v1",
+  "commit_sha": "699ba8b832c90f5725289aa61539d11dabed9f93",
+  "title": "feat(B-0056.1): mythology resonance catalog v0 — typed schema + 3 seed entries",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T05:54:43Z",
+  "head_ref": "feat/b-0056.1-mythology-resonance-catalog-v0"
+}

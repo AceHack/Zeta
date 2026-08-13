@@ -1,0 +1,12 @@
+{
+  "pr_number": 5483,
+  "archive_path": "docs/history/pr-reviews/PR-5483-docs-rule-must-paired-with-can-exit-pattern-framework-s-structural-nci-complianc.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T15:20:38.614Z",
+  "schema_version": "v1",
+  "commit_sha": "9c3eb799cbc33ae56c6579061064192a25a75eba",
+  "title": "docs(rule): must-paired-with-can-exit-pattern — framework's structural NCI-compliance mechanism (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T15:20:10Z",
+  "head_ref": "rule/must-paired-with-can-exit-pattern-2026-05-27"
+}

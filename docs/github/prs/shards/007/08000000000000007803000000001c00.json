@@ -1,0 +1,12 @@
+{
+  "pr_number": 7168,
+  "archive_path": "docs/history/pr-reviews/PR-7168-docs-research-fixed-point-registry-5-raw-shapes-free-energy-as-an-rx-query-the-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:46:04.407Z",
+  "schema_version": "v1",
+  "commit_sha": "fff9fe4ffdb60b4aa0dd7856e31c3fa26022bcb3",
+  "title": "docs(research): fixed-point registry — 5 raw shapes, free energy as an RX query, the bonsai root engine",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:45:44Z",
+  "head_ref": "otto/research-fixed-point-registry-raw-shapes-free-energy-root-engine"
+}

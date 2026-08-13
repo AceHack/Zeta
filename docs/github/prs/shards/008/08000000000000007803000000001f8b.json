@@ -1,0 +1,12 @@
+{
+  "pr_number": 8075,
+  "archive_path": "docs/history/pr-reviews/PR-8075-feat-bayesian-budget-quantum-fusion-attention.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T22:13:02.386Z",
+  "schema_version": "v1",
+  "commit_sha": "b4e6e0412f2e453ec1cdae89f45f0edd1d4fdab6",
+  "title": "feat(bayesian): budget quantum fusion attention",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T22:12:36Z",
+  "head_ref": "codex/vision-dbsp-uncertainty-budget"
+}

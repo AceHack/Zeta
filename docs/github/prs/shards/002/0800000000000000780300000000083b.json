@@ -1,0 +1,12 @@
+{
+  "pr_number": 2107,
+  "archive_path": "docs/history/pr-reviews/PR-2107-test-b-0058-add-bun-tests-for-alignment-clause-audit-tools.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T17:23:01.495Z",
+  "schema_version": "v1",
+  "commit_sha": "ab4b51edeb4276e9d2e47b2e8f355e34d1f78d76",
+  "title": "test(B-0058): add Bun tests for alignment-clause audit tools",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T17:22:40Z",
+  "head_ref": "worktree-b-0058-alignment-audit-tests"
+}

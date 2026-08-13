@@ -1,0 +1,19 @@
+{
+  "pr_number": 6308,
+  "archive_path": "docs/history/pr-reviews/PR-6308-feat-ace-mvp-slice-2-content-hash-integrity-install-verify-b-0288.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gj2Il",
+    "comment:PRRC_kwDOSF9kNM7Gj2he",
+    "comment:PRRC_kwDOSF9kNM7Gj466",
+    "comment:PRRC_kwDOSF9kNM7Gj48B",
+    "thread:PRRT_kwDOSF9kNM6F_O5y",
+    "thread:PRRT_kwDOSF9kNM6F_Ooi"
+  ],
+  "fetched_at": "2026-06-01T01:50:34.032Z",
+  "schema_version": "v1",
+  "commit_sha": "b4fdcb06fa0560f27ed48324661e2b9ea2b137ec",
+  "title": "feat(ace): MVP slice 2 — content-hash-integrity install/verify (B-0288)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T01:50:09Z",
+  "head_ref": "otto-windows/ace-mvp-slice2-2026-06-01"
+}

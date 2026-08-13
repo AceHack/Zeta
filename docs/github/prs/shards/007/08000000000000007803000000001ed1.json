@@ -1,0 +1,12 @@
+{
+  "pr_number": 7889,
+  "archive_path": "docs/history/pr-reviews/PR-7889-fix-tsc-drop-unused-mkdirsync-import-unbreak-the-tsc-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T10:47:08.613Z",
+  "schema_version": "v1",
+  "commit_sha": "24ed3f84a1ca5455e82a2ab9591e48200ea6035a",
+  "title": "fix(tsc): drop unused mkdirSync import — unbreak the tsc gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:46:45Z",
+  "head_ref": "shadow-fix-unused-import"
+}

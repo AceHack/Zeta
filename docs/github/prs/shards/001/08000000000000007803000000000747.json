@@ -1,0 +1,12 @@
+{
+  "pr_number": 1863,
+  "archive_path": "docs/history/pr-reviews/PR-1863-research-preserve-alexa-dlc-product-feedback.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T11:41:59.401Z",
+  "schema_version": "v1",
+  "commit_sha": "557ac3649a7a1f1bbb6487ffb28c77da95cadc1b",
+  "title": "research: preserve Alexa DLC product feedback",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T11:28:03Z",
+  "head_ref": "codex/alexa-dlc-product-feedback-absorb"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4417,
+  "archive_path": "docs/history/pr-reviews/PR-4417-docs-shadow-otto-narration-over-action-drift-recorded.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-20T15:12:57.907Z",
+  "schema_version": "v1",
+  "commit_sha": "24da4ee092e2417d7b36a6135410f4d1897e1c53",
+  "title": "docs(shadow): Otto narration-over-action drift recorded",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T15:12:30Z",
+  "head_ref": "maji/shadow-log-1505Z"
+}

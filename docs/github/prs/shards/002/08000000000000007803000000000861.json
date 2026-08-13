@@ -1,0 +1,17 @@
+{
+  "pr_number": 2145,
+  "archive_path": "docs/history/pr-reviews/PR-2145-docs-ops-add-scope-boundaries-to-windows-node-setup.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_b9BM",
+    "comment:PRRC_kwDOSF9kNM6_b9Bj",
+    "thread:PRRT_kwDOSF9kNM6AwfX5",
+    "thread:PRRT_kwDOSF9kNM6AwfYP"
+  ],
+  "fetched_at": "2026-05-08T22:57:54.785Z",
+  "schema_version": "v1",
+  "commit_sha": "eb072ba22713fa79d90918cb9c9fd210c4b545d6",
+  "title": "docs(ops): add scope boundaries to Windows node setup",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T22:57:40Z",
+  "head_ref": "fix/windows-scope-boundaries"
+}

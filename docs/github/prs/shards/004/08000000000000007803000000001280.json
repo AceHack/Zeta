@@ -1,0 +1,12 @@
+{
+  "pr_number": 4736,
+  "archive_path": "docs/history/pr-reviews/PR-4736-docs-archive-preserve-merged-pr-3364-decomposed-from-4693.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T21:45:28.344Z",
+  "schema_version": "v1",
+  "commit_sha": "b0cd52d7892e664f321e1187bd0561f02735de49",
+  "title": "docs(archive): preserve merged PR #3364 (decomposed from #4693)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T21:45:08Z",
+  "head_ref": "lior-archive-4693"
+}

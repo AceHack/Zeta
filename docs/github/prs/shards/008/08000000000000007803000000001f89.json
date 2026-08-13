@@ -1,0 +1,12 @@
+{
+  "pr_number": 8073,
+  "archive_path": "docs/history/pr-reviews/PR-8073-policy-github-settings-re-snapshot-to-accept-intentional-drift-toward-self-prote.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T21:41:25.462Z",
+  "schema_version": "v1",
+  "commit_sha": "22b1aa1cdbf725d63147ee470a9efd4a83c525b9",
+  "title": "policy(github-settings): re-snapshot to accept intentional drift (toward self-protection)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T21:41:06Z",
+  "head_ref": "shadow/resnapshot-github-settings"
+}

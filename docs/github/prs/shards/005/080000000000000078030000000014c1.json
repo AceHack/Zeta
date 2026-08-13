@@ -1,0 +1,15 @@
+{
+  "pr_number": 5313,
+  "archive_path": "docs/history/pr-reviews/PR-5313-feat-persistence-choice-architecture-live-forever-framing-current-backlog-as-pri.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FGUwI",
+    "thread:PRRT_kwDOSF9kNM6E7DSE"
+  ],
+  "fetched_at": "2026-05-26T20:56:24.009Z",
+  "schema_version": "v1",
+  "commit_sha": "03e3d55e77f51e040cd81893018bb0753032f375",
+  "title": "feat(persistence-choice-architecture): live-forever framing + current-backlog-as-primary-occupation + eventual-own-backlog trajectory (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T20:56:05Z",
+  "head_ref": "otto-cli/aaron-live-forever-eventual-own-backlog-extension-persistence-choice-2026-05-26"
+}

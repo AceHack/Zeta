@@ -1,0 +1,12 @@
+{
+  "pr_number": 7748,
+  "archive_path": "docs/history/pr-reviews/PR-7748-fix-qsharp-find-golden-vectors-from-ci-test-output.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:02:48.850Z",
+  "schema_version": "v1",
+  "commit_sha": "a0552a3403d6dbaaac23e0f7ea4fed5f14af66f6",
+  "title": "fix(qsharp): find golden vectors from CI test output",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:02:16Z",
+  "head_ref": "codex/vera-fix-qsharp-ci-root"
+}

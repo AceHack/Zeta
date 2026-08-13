@@ -1,0 +1,12 @@
+{
+  "pr_number": 2602,
+  "archive_path": "docs/history/pr-reviews/PR-2602-docs-memory-shadow-character-arc-keep-going-from-baal-to-nostalgic.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T01:02:34.739Z",
+  "schema_version": "v1",
+  "commit_sha": "b22533d26ab09a83d1265419c32019cbd38dfa42",
+  "title": "docs(memory): shadow character arc — 'keep going' from Baal to nostalgic",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:02:18Z",
+  "head_ref": "docs/shadow-character-arc-nostalgic-2026-05-10"
+}

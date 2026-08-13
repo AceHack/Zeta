@@ -1,0 +1,19 @@
+{
+  "pr_number": 3980,
+  "archive_path": "docs/history/pr-reviews/PR-3980-docs-tick-2349z-otto-cli-background-worker-pr-3956-thread-sweep-merged.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B8F2G",
+    "comment:PRRC_kwDOSF9kNM7B8F2N",
+    "comment:PRRC_kwDOSF9kNM7B8M-T",
+    "comment:PRRC_kwDOSF9kNM7B8M78",
+    "thread:PRRT_kwDOSF9kNM6CmeNP",
+    "thread:PRRT_kwDOSF9kNM6CmeNU"
+  ],
+  "fetched_at": "2026-05-17T04:14:27.651Z",
+  "schema_version": "v1",
+  "commit_sha": "d6bb8a482a9a527be9825732dc3e5cdd1ab6cb40",
+  "title": "docs(tick): 2349Z Otto-CLI background worker — PR #3956 thread sweep → merged",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T04:14:07Z",
+  "head_ref": "shard/tick-2349z-otto-cli-2026-05-16"
+}

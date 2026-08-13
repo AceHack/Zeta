@@ -1,0 +1,12 @@
+{
+  "pr_number": 8798,
+  "archive_path": "docs/history/pr-reviews/PR-8798-codex-add-room-boundary-policy.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:26:47.473Z",
+  "schema_version": "v1",
+  "commit_sha": "9c65ea14307105ee7e1c6636ba93768c78577965",
+  "title": "[codex] add room boundary policy",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:26:24Z",
+  "head_ref": "codex/room-boundary-policy"
+}

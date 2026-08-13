@@ -1,0 +1,12 @@
+{
+  "pr_number": 5729,
+  "archive_path": "docs/history/pr-reviews/PR-5729-docs-cross-ref-close-discoverability-gap-b-0897-persist-as-bridge-composes-with-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T09:13:47.340Z",
+  "schema_version": "v1",
+  "commit_sha": "e1ce8f6c597a275c2c7d239e8f8382903fb6bd7c",
+  "title": "docs(cross-ref): close discoverability gap — B-0897 (Persist-as-bridge) composes_with B-0840; OPLE rule cross-references B-0897 + B-0840 + Amara 2026-05-28 + 2026-05-26 ferries",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T09:13:26Z",
+  "head_ref": "otto-cli/cross-ref-b0897-ople-to-amara-thermal-forgetting-b0840-joins-are-time-entanglements-2026-05-28"
+}

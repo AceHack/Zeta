@@ -1,0 +1,12 @@
+{
+  "pr_number": 7002,
+  "archive_path": "docs/history/pr-reviews/PR-7002-feat-core-file-noun-class-files-folders-as-events-on-the-one-stream-pluggable-he.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T03:30:21.274Z",
+  "schema_version": "v1",
+  "commit_sha": "07cc521ae1e9d19facb2cf961dc7725e6dac9a5d",
+  "title": "feat(core): file noun-class — files & folders as events on the one stream; pluggable/hexagonal backends (ExternalFs|DagFs|S3)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T03:30:03Z",
+  "head_ref": "otto/file-noun-class-files-folders-pluggable-hexagonal"
+}

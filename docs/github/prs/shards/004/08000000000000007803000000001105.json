@@ -1,0 +1,12 @@
+{
+  "pr_number": 4357,
+  "archive_path": "docs/history/pr-reviews/PR-4357-shard-0803z-otto-cli-fresh-cold-boot-sentinel-re-arm-saturation-snapshot.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T08:11:24.953Z",
+  "schema_version": "v1",
+  "commit_sha": "cfba8a649ba414937cbbeb130c844948904afae9",
+  "title": "shard(0803Z): Otto-CLI fresh cold-boot — sentinel re-arm + saturation snapshot",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T08:11:05Z",
+  "head_ref": "shard/tick-0803z-otto-cli-cold-boot-2026-05-19"
+}

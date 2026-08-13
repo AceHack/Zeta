@@ -1,0 +1,12 @@
+{
+  "pr_number": 7063,
+  "archive_path": "docs/history/pr-reviews/PR-7063-fix-ci-exclude-verbatim-docs-history-archives-from-semgrep-semgrepignore.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T09:19:27.016Z",
+  "schema_version": "v1",
+  "commit_sha": "383f62f5c8d6536ac44da0a35c242a0fdbb596b3",
+  "title": "fix(ci): exclude verbatim docs/history/ archives from semgrep (.semgrepignore)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T09:19:04Z",
+  "head_ref": "otto/semgrepignore-docs-history-archives"
+}

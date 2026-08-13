@@ -1,0 +1,17 @@
+{
+  "pr_number": 2358,
+  "archive_path": "docs/history/pr-reviews/PR-2358-feat-b-0168-smallest-safe-slice-5-layer-brat-voice-register-selector-ts.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_kW90",
+    "comment:PRRC_kwDOSF9kNM6_kW91",
+    "thread:PRRT_kwDOSF9kNM6A25LR",
+    "thread:PRRT_kwDOSF9kNM6A25LS"
+  ],
+  "fetched_at": "2026-05-09T22:26:40.079Z",
+  "schema_version": "v1",
+  "commit_sha": "3a0eebd389b7d7e0d1dc67438e5c76e16617a208",
+  "title": "feat(B-0168): smallest safe slice — 5-layer brat-voice register selector (TS)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T22:26:25Z",
+  "head_ref": "claim/b0168-brat-voice-layer-selector-smallest-slice-riven-2026-05-09"
+}

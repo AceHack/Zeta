@@ -1,0 +1,12 @@
+{
+  "pr_number": 3321,
+  "archive_path": "docs/history/pr-reviews/PR-3321-shard-tick-0025z-grok-extraction-attempt-partial-preservation-current-files-fast.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T00:29:47.053Z",
+  "schema_version": "v1",
+  "commit_sha": "aa5813224a4f369d8b7af06f4bf9cb25fdbd6ed7",
+  "title": "shard(tick): 0025Z — Grok extraction attempt + partial preservation + CURRENT files fast-path fix",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:29:28Z",
+  "head_ref": "shard/tick-0025Z-extraction-consolidation-otto-cli-2026-05-15"
+}

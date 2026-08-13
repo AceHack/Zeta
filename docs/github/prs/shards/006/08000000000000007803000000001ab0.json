@@ -1,0 +1,12 @@
+{
+  "pr_number": 6832,
+  "archive_path": "docs/history/pr-reviews/PR-6832-docs-compression-generators-physical-floor-under-cpt-symmetry-all-noise-is-ultim.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:00:19.000Z",
+  "schema_version": "v1",
+  "commit_sha": "f2211d39c8cfaaccfd32e8cb5bc5cdcea64f5ce5",
+  "title": "docs(compression-generators): physical floor — under CPT symmetry all noise is ultimately reversible",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T13:59:55Z",
+  "head_ref": "capture/cpt-symmetry-all-noise-reversible"
+}

@@ -1,0 +1,22 @@
+{
+  "pr_number": 5966,
+  "archive_path": "docs/history/pr-reviews/PR-5966-research-beacon-dbsp-as-generator-made-native-more-lightlike-than-git-clifford-i.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GF7V1",
+    "comment:PRRC_kwDOSF9kNM7GF7W1",
+    "comment:PRRC_kwDOSF9kNM7GF7Wj",
+    "comment:PRRC_kwDOSF9kNM7GGBj4",
+    "comment:PRRC_kwDOSF9kNM7GGBmk",
+    "comment:PRRC_kwDOSF9kNM7GGBpw",
+    "thread:PRRT_kwDOSF9kNM6Fo-Y4",
+    "thread:PRRT_kwDOSF9kNM6Fo-YK",
+    "thread:PRRT_kwDOSF9kNM6Fo-Yp"
+  ],
+  "fetched_at": "2026-05-29T09:38:16.148Z",
+  "schema_version": "v1",
+  "commit_sha": "c54a384e56a51a4ecd34d6c44ff82b405817ed91",
+  "title": "research(beacon): DBSP as generator-made-native (more lightlike than git) + Clifford-isomorphism + self-reflection conjectures",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T09:37:54Z",
+  "head_ref": "otto-cli/beacon-generator-updates-not-event-updates-dbsp-lightlike-2026-05-29"
+}

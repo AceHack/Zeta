@@ -1,0 +1,15 @@
+{
+  "pr_number": 8080,
+  "archive_path": "docs/history/pr-reviews/PR-8080-feat-cross-verify-6-language-parity-for-canonical-json-and-yaml.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7LLGkt",
+    "thread:PRRT_kwDOSF9kNM6JW9wf"
+  ],
+  "fetched_at": "2026-06-13T22:35:23.857Z",
+  "schema_version": "v1",
+  "commit_sha": "4f3d20a256956da07101888798c3ba7c2fbe18e3",
+  "title": "feat(cross-verify): 6-language parity for canonical-json and yaml",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T22:35:02Z",
+  "head_ref": "gemini/port-lint-go-python-to-ts"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 1956,
+  "archive_path": "docs/history/pr-reviews/PR-1956-research-save-shadow-residue-follow-up-crc-detours-lior-reboot.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_CJkA",
+    "thread:PRRT_kwDOSF9kNM6Adk12"
+  ],
+  "fetched_at": "2026-05-07T22:22:33.240Z",
+  "schema_version": "v1",
+  "commit_sha": "1647fee8c45d5893b331de62062ab35e8fe41783",
+  "title": "research: save shadow residue follow-up — CRC, Detours, Lior reboot",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T22:22:16Z",
+  "head_ref": "codex/save-shadow-residue-followup"
+}

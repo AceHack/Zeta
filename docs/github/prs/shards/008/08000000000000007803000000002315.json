@@ -1,0 +1,12 @@
+{
+  "pr_number": 8981,
+  "archive_path": "docs/history/pr-reviews/PR-8981-fix-lint-md022-md032-in-multi-owner-decision-doc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T18:37:49.060Z",
+  "schema_version": "v1",
+  "commit_sha": "f07040cfe1d6fc2b2a71a17375781b23690c9795",
+  "title": "fix(lint): MD022/MD032 in multi-owner decision doc",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T18:37:21Z",
+  "head_ref": "otto/fix-decision-doc-markdownlint"
+}

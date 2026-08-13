@@ -1,0 +1,12 @@
+{
+  "pr_number": 7734,
+  "archive_path": "docs/history/pr-reviews/PR-7734-feat-medialines-the-adapted-rung-the-snap-in-the-capability-ladder-adapter-econo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:18:01.587Z",
+  "schema_version": "v1",
+  "commit_sha": "b7af776ff35724136e412c630b471b1d5c901f23",
+  "title": "feat(medialines): the ADAPTED rung — the snap in the capability ladder + adapter-economy map + Vera/math addendum",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:17:32Z",
+  "head_ref": "shadow-snap-useful"
+}

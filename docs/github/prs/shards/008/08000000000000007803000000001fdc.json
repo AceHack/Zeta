@@ -1,0 +1,12 @@
+{
+  "pr_number": 8156,
+  "archive_path": "docs/history/pr-reviews/PR-8156-fix-ci-keep-stryker-in-c-project-mode.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:26:58.448Z",
+  "schema_version": "v1",
+  "commit_sha": "eeae5a4cf7a8f31b3a85ab4bdcff681639397162",
+  "title": "fix(ci): keep Stryker in C# project mode",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:26:38Z",
+  "head_ref": "codex/stryker-project-mode-fix"
+}

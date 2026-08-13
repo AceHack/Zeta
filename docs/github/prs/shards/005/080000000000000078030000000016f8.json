@@ -1,0 +1,22 @@
+{
+  "pr_number": 5880,
+  "archive_path": "docs/history/pr-reviews/PR-5880-docs-site-create-research-publication-queue-for-pages-b-0304.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F2m25",
+    "comment:PRRC_kwDOSF9kNM7F2m39",
+    "comment:PRRC_kwDOSF9kNM7F2m3n",
+    "comment:PRRC_kwDOSF9kNM7F54dl",
+    "comment:PRRC_kwDOSF9kNM7F54gC",
+    "comment:PRRC_kwDOSF9kNM7F54iQ",
+    "thread:PRRT_kwDOSF9kNM6Fd7T9",
+    "thread:PRRT_kwDOSF9kNM6Fd7TZ",
+    "thread:PRRT_kwDOSF9kNM6Fd7UL"
+  ],
+  "fetched_at": "2026-05-28T19:57:11.038Z",
+  "schema_version": "v1",
+  "commit_sha": "89b94efb69974a93df312d9a8bc3f8f7889d3cd1",
+  "title": "docs(site): Create research publication queue for Pages (B-0304)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T19:56:51Z",
+  "head_ref": "lior/B-0304-research-queue"
+}

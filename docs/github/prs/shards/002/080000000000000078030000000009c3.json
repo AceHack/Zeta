@@ -1,0 +1,21 @@
+{
+  "pr_number": 2499,
+  "archive_path": "docs/history/pr-reviews/PR-2499-research-b-0315-retraction-native-anchor-in-agents-md-glass-halo-note-in-readme-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_oF_z",
+    "comment:PRRC_kwDOSF9kNM6_oGAD",
+    "comment:PRRC_kwDOSF9kNM6_oGAH",
+    "comment:PRRC_kwDOSF9kNM6_oGAP",
+    "thread:PRRT_kwDOSF9kNM6A52x8",
+    "thread:PRRT_kwDOSF9kNM6A52x_",
+    "thread:PRRT_kwDOSF9kNM6A52xv",
+    "thread:PRRT_kwDOSF9kNM6A52yH"
+  ],
+  "fetched_at": "2026-05-10T14:05:39.662Z",
+  "schema_version": "v1",
+  "commit_sha": "6dea0af35c2b147f9449ba444de448036b7791f4",
+  "title": "research(B-0315): retraction-native anchor in AGENTS.md + glass-halo note in README.md — slice 3 of N",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T14:05:26Z",
+  "head_ref": "research/B-0315-external-anchors-slice-3"
+}

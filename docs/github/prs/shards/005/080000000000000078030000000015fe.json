@@ -1,0 +1,12 @@
+{
+  "pr_number": 5630,
+  "archive_path": "docs/history/pr-reviews/PR-5630-docs-archive-batch-archive-of-10-recently-merged-prs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T21:15:51.926Z",
+  "schema_version": "v1",
+  "commit_sha": "f3040983fd034400f563ada631a3336c09ce6102",
+  "title": "docs(archive): Batch archive of 10 recently merged PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T21:15:29Z",
+  "head_ref": "lior/batch-archive-1779912227"
+}

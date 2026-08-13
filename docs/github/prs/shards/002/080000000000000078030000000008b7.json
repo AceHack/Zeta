@@ -1,0 +1,17 @@
+{
+  "pr_number": 2231,
+  "archive_path": "docs/history/pr-reviews/PR-2231-docs-b-0168-add-pre-start-checklist-gate-proof-prior-art-dependency-restructure.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_frjw",
+    "comment:PRRC_kwDOSF9kNM6_fsEW",
+    "thread:PRRT_kwDOSF9kNM6AzOzx",
+    "thread:PRRT_kwDOSF9kNM6AzPLc"
+  ],
+  "fetched_at": "2026-05-09T07:48:45.007Z",
+  "schema_version": "v1",
+  "commit_sha": "4be903f1a0440b47dbcdf395f43fd0cd3896bd54",
+  "title": "docs(B-0168): add pre-start checklist gate proof (prior-art + dependency restructure)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:48:27Z",
+  "head_ref": "claim/b0168-prestart-gate-riven-2026-05-09"
+}

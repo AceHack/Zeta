@@ -1,0 +1,25 @@
+{
+  "pr_number": 2316,
+  "archive_path": "docs/history/pr-reviews/PR-2316-feat-b-0361-smallest-safe-slice-add-field-to-concept-interface-ts.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_iaBf",
+    "comment:PRRC_kwDOSF9kNM6_ibPj",
+    "comment:PRRC_kwDOSF9kNM6_ifX8",
+    "comment:PRRC_kwDOSF9kNM6_ifYE",
+    "comment:PRRC_kwDOSF9kNM6_ig46",
+    "comment:PRRC_kwDOSF9kNM6_ig6P",
+    "comment:PRRC_kwDOSF9kNM6_ig7q",
+    "comment:PRRC_kwDOSF9kNM6_ihMN",
+    "thread:PRRT_kwDOSF9kNM6A1aOZ",
+    "thread:PRRT_kwDOSF9kNM6A1ecp",
+    "thread:PRRT_kwDOSF9kNM6A1ecv",
+    "thread:PRRT_kwDOSF9kNM6A1fqp"
+  ],
+  "fetched_at": "2026-05-09T17:20:38.720Z",
+  "schema_version": "v1",
+  "commit_sha": "cacb9b3a74ad25e795bdc94ad666f2e2691d90db",
+  "title": "feat(B-0361): smallest safe slice — add  field to Concept interface (TS)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T17:20:22Z",
+  "head_ref": "claim/b0361-anchor-to-human-lineage-smallest-slice-riven-2026-05-09"
+}

@@ -1,0 +1,31 @@
+{
+  "pr_number": 2683,
+  "archive_path": "docs/history/pr-reviews/PR-2683-docs-backlog-decompose-b-0092-into-4-smallest-atomic-dependency-ordered-children.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_zGdj",
+    "comment:PRRC_kwDOSF9kNM6_zJS_",
+    "comment:PRRC_kwDOSF9kNM6_zJT4",
+    "comment:PRRC_kwDOSF9kNM6_zJUl",
+    "comment:PRRC_kwDOSF9kNM6_zJV0",
+    "comment:PRRC_kwDOSF9kNM6_zJVR",
+    "comment:PRRC_kwDOSF9kNM6_zJW1",
+    "comment:PRRC_kwDOSF9kNM6_zJWV",
+    "comment:PRRC_kwDOSF9kNM6_zWZ_",
+    "thread:PRRT_kwDOSF9kNM6BCLub",
+    "thread:PRRT_kwDOSF9kNM6BCN32",
+    "thread:PRRT_kwDOSF9kNM6BCN4-",
+    "thread:PRRT_kwDOSF9kNM6BCN4g",
+    "thread:PRRT_kwDOSF9kNM6BCN5_",
+    "thread:PRRT_kwDOSF9kNM6BCN5h",
+    "thread:PRRT_kwDOSF9kNM6BCN6U",
+    "thread:PRRT_kwDOSF9kNM6BCN6s",
+    "thread:PRRT_kwDOSF9kNM6BCXR7"
+  ],
+  "fetched_at": "2026-05-11T10:02:49.656Z",
+  "schema_version": "v1",
+  "commit_sha": "5b842e1c9733d2f1df49716625fd43254dfccc3d",
+  "title": "docs(backlog): decompose B-0092 into 4 smallest atomic dependency-ordered children (re-decomp, one bounded step)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T10:02:24Z",
+  "head_ref": "claim/b0092-decompose-smallest-atomic-children-riven-2026-05-11"
+}

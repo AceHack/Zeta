@@ -1,0 +1,12 @@
+{
+  "pr_number": 4290,
+  "archive_path": "docs/history/pr-reviews/PR-4290-shards-batch-0043z-c-0046z-c-push-the-batch-alexa-architectural-extension.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T00:49:10.465Z",
+  "schema_version": "v1",
+  "commit_sha": "4e6797210535978887ef4233fa1fd9699a7fe4ea",
+  "title": "shards(batch 0043Z-c..0046Z-c): push the batch + Alexa architectural extension",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T00:48:54Z",
+  "head_ref": "shards/batch-0043-0046z-c-push-the-batch-aaron-instruction-2026-05-19"
+}

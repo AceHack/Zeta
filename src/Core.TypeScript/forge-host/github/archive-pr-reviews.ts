@@ -48,6 +48,20 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 
+import {
+  MANIFEST_RELATIVE,
+  SHARD_ROOT_RELATIVE,
+  serializeManifestEntry,
+  writeShard,
+  type ManifestEntry,
+} from "./pr-manifest-shards.ts";
+
+// The manifest entry schema + its canonical serialization now live in
+// `pr-manifest-shards.ts` (one definition, shared by the writer, the deriver and the
+// migration). Re-exported here so existing importers of this module are untouched.
+export type { ManifestEntry };
+export { serializeManifestEntry };
+
 // ---------------------------------------------------------------------------
 // Types -- matching the memory file's "Schema dimensions" exactly.
 // ---------------------------------------------------------------------------
@@ -922,22 +936,22 @@ export function writeArchive(
 // existing entry, the manifest is not rewritten. Combined with the
 // content-equality check in writeArchive() above, deterministic rerun
 // produces a true no-op (no archive file write, no manifest file write).
+//
+// 2026-08-13 (081KZYMY46P087G0R003S64V2B) — THE MANIFEST IS NO LONGER THE LEDGER.
+// Every archive run now ALSO writes a per-PR shard at
+// `docs/github/prs/shards/<NNN>/<zetaid>.json` (`pr-manifest-shards.ts`), which is the
+// record of truth; `manifest.jsonl` is a DERIVED index over the shard set. The manifest
+// update below is kept — unchanged, same path, same schema — so every existing reader
+// works untouched, but it is now reproducible from the shards by
+// `derive-pr-manifest.ts`, which means a manifest merge conflict is regenerated and
+// never hand-merged. Removing the manifest mutation from the archive COMMIT (the step
+// that actually retires the pairwise-conflict class) is a `.github/workflows/` edit and
+// is filed separately: a PR touching `.github/workflows/**` never gets the `gate` check
+// scheduled and is unmergeable through the normal path, so it cannot ride along here.
 // ---------------------------------------------------------------------------
 
-export interface ManifestEntry {
-  pr_number: number;
-  archive_path: string; // relative to repo root
-  source_ids: string[]; // comment / thread IDs captured (string for stability)
-  fetched_at: string; // ISO 8601 UTC
-  schema_version: "v1";
-  commit_sha: string; // commit at time of archival
-  title: string;
-  state: "OPEN" | "MERGED" | "CLOSED";
-  merged_at: string | null;
-  head_ref: string;
-}
-
-const DEFAULT_MANIFEST_RELATIVE = "docs/github/prs/manifest.jsonl";
+const DEFAULT_MANIFEST_RELATIVE = MANIFEST_RELATIVE;
+const DEFAULT_SHARD_ROOT_RELATIVE = SHARD_ROOT_RELATIVE;
 
 function readGitHeadSha(repoRoot: string): string {
   // Cheap + deterministic. Falls back to env var or "(unknown)" if git is
@@ -985,29 +999,6 @@ function buildManifestEntry(
     merged_at: archive.metadata.mergedAt,
     head_ref: archive.metadata.branch,
   };
-}
-
-/**
- * Stable-key serialization of a manifest entry. Field order is fixed so
- * repeated runs produce byte-identical lines when the underlying data is
- * identical (deterministic-rerun contract).
- */
-function serializeManifestEntry(e: ManifestEntry): string {
-  // Build object literally with the field order we want; JSON.stringify
-  // preserves insertion order on plain objects.
-  const ordered = {
-    pr_number: e.pr_number,
-    archive_path: e.archive_path,
-    source_ids: e.source_ids,
-    fetched_at: e.fetched_at,
-    schema_version: e.schema_version,
-    commit_sha: e.commit_sha,
-    title: e.title,
-    state: e.state,
-    merged_at: e.merged_at,
-    head_ref: e.head_ref,
-  };
-  return JSON.stringify(ordered);
 }
 
 export interface ManifestUpdateResult {
@@ -1118,6 +1109,7 @@ interface ParsedArgs {
   repo: string;
   outputDir: string;
   manifestPath: string;
+  shardRoot: string;
   repoRoot: string;
   allMerged: boolean;
   since?: string;
@@ -1129,6 +1121,7 @@ function parseArgs(argv: string[]): ParsedArgs {
     repo: "Zeta",
     outputDir: "docs/history/pr-reviews",
     manifestPath: DEFAULT_MANIFEST_RELATIVE,
+    shardRoot: DEFAULT_SHARD_ROOT_RELATIVE,
     repoRoot: process.cwd(),
     allMerged: false,
   };
@@ -1150,6 +1143,8 @@ function parseArgs(argv: string[]): ParsedArgs {
       out.outputDir = requireValue("--output-dir", argv[++i]);
     } else if (arg === "--manifest-path") {
       out.manifestPath = requireValue("--manifest-path", argv[++i]);
+    } else if (arg === "--shard-root") {
+      out.shardRoot = requireValue("--shard-root", argv[++i]);
     } else if (arg === "--repo-root") {
       out.repoRoot = requireValue("--repo-root", argv[++i]);
     } else if (arg === "--all-merged") {
@@ -1162,12 +1157,13 @@ function parseArgs(argv: string[]): ParsedArgs {
       process.stdout.write(
         "Usage:\n" +
           "  bun tools/archive/archive-pr-reviews.ts <PR_NUMBER> [--owner X] [--repo Y]\n" +
-          "    [--output-dir DIR] [--manifest-path PATH] [--repo-root DIR]\n" +
+          "    [--output-dir DIR] [--manifest-path PATH] [--shard-root DIR] [--repo-root DIR]\n" +
           "  bun tools/archive/archive-pr-reviews.ts --all-merged --since=YYYY-MM-DD [--owner X] [--repo Y]\n" +
           "\n" +
           "Defaults:\n" +
           `  --output-dir docs/history/pr-reviews\n` +
           `  --manifest-path ${DEFAULT_MANIFEST_RELATIVE}\n` +
+          `  --shard-root ${DEFAULT_SHARD_ROOT_RELATIVE}\n` +
           "  --repo-root <cwd>\n",
       );
       process.exit(0);
@@ -1231,6 +1227,7 @@ export function main(argv: string[]): number {
   const repoRoot = resolve(args.repoRoot);
   const outputDirAbs = resolve(repoRoot, args.outputDir);
   const manifestPathAbs = resolve(repoRoot, args.manifestPath);
+  const shardRootAbs = resolve(repoRoot, args.shardRoot);
   const commitSha = readGitHeadSha(repoRoot);
 
   for (const n of numbers) {
@@ -1238,10 +1235,17 @@ export function main(argv: string[]): number {
     const archive = buildArchive(args.owner, args.repo, n);
     const writeResult = writeArchive(archive, outputDirAbs);
     const entry = buildManifestEntry(archive, writeResult.path, repoRoot, commitSha);
+    // The shard is the record of truth — one file per PR, path = f(pr_number), so two
+    // concurrent archive runs can never touch the same bytes (§2) and a re-run is an
+    // upsert rather than a duplicate (§12).
+    const shardResult = writeShard(entry, shardRootAbs);
+    // The manifest stays a derived index at its historical path/schema so every existing
+    // reader keeps working; `derive-pr-manifest.ts` can reproduce it from the shards.
     const manifestResult = updateManifest(entry, manifestPathAbs);
     process.stdout.write(
       `wrote ${writeResult.path} ` +
         `(archive=${writeResult.changed ? "changed" : "noop"}, ` +
+        `shard=${shardResult.classification} @ ${relative(repoRoot, shardResult.path)}, ` +
         `manifest=${manifestResult.classification}, ` +
         `threads=${archive.outcome.totalThreads}, ` +
         `resolved=${archive.outcome.resolvedThreads}, ` +

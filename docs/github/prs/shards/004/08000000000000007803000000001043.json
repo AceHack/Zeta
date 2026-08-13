@@ -1,0 +1,12 @@
+{
+  "pr_number": 4163,
+  "archive_path": "docs/history/pr-reviews/PR-4163-feat-rest-push-delete-rename-extension-mechanizes-id-renumber-pattern-b-0650.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T16:29:48.992Z",
+  "schema_version": "v1",
+  "commit_sha": "8084b1c2f9891dee907965e21d29b1c0bd35ad34",
+  "title": "feat(rest-push): --delete + --rename extension mechanizes ID-renumber pattern (B-0650)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T16:29:27Z",
+  "head_ref": "otto-cli/b0650-rest-push-delete-rename-2026-05-18-1226Z"
+}

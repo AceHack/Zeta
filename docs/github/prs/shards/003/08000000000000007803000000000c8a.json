@@ -1,0 +1,19 @@
+{
+  "pr_number": 3210,
+  "archive_path": "docs/history/pr-reviews/PR-3210-chore-b-0058-decompose-new-surface-audit-into-b-0329.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BWY4z",
+    "comment:PRRC_kwDOSF9kNM7BWY5q",
+    "comment:PRRC_kwDOSF9kNM7BWkO_",
+    "comment:PRRC_kwDOSF9kNM7BWkRC",
+    "thread:PRRT_kwDOSF9kNM6CK_mo",
+    "thread:PRRT_kwDOSF9kNM6CK_nb"
+  ],
+  "fetched_at": "2026-05-14T20:59:24.112Z",
+  "schema_version": "v1",
+  "commit_sha": "ac74616ab95fce2337265c66d59d7d0267dd0417",
+  "title": "chore(b-0058): decompose new-surface audit into B-0329",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:59:00Z",
+  "head_ref": "lior/decompose-b0058"
+}

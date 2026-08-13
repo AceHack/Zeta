@@ -1,0 +1,12 @@
+{
+  "pr_number": 7178,
+  "archive_path": "docs/history/pr-reviews/PR-7178-docs-research-no-mathematical-top-but-a-self-interested-uncertainty-identity-bou.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T02:16:11.787Z",
+  "schema_version": "v1",
+  "commit_sha": "207ddb08acf1587d334006d0dc805e0f33eeb9e1",
+  "title": "docs(research): no mathematical top — but a self-interested uncertainty<->identity bound closes the band",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T02:15:49Z",
+  "head_ref": "otto/research-self-interested-uncertainty-identity-bound-closes-the-band"
+}

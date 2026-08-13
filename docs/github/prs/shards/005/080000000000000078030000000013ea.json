@@ -1,0 +1,21 @@
+{
+  "pr_number": 5098,
+  "archive_path": "docs/history/pr-reviews/PR-5098-backlog-b-0776-p1-re-land-simplest-first-plugin-sequence-redis-kv-first-then-nat.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ExoYa",
+    "comment:PRRC_kwDOSF9kNM7Exw03",
+    "comment:PRRC_kwDOSF9kNM7Exw0g",
+    "comment:PRRC_kwDOSF9kNM7Exwz-",
+    "thread:PRRT_kwDOSF9kNM6Er72K",
+    "thread:PRRT_kwDOSF9kNM6EsB7W",
+    "thread:PRRT_kwDOSF9kNM6EsB7z",
+    "thread:PRRT_kwDOSF9kNM6EsB8G"
+  ],
+  "fetched_at": "2026-05-26T05:18:57.005Z",
+  "schema_version": "v1",
+  "commit_sha": "5db3c931639ccf499bd08d8a7d1215220726fa51",
+  "title": "backlog(B-0776 P1): re-land simplest-first plugin sequence — Redis KV first, then NATS / CockroachDB / Temporal / Orleans / OPA, etc.",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:18:37Z",
+  "head_ref": "otto-cli/reland-b0776-0506z"
+}

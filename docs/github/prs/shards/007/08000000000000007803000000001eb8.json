@@ -1,0 +1,12 @@
+{
+  "pr_number": 7864,
+  "archive_path": "docs/history/pr-reviews/PR-7864-refactor-ts-move-recent-harness-code-under-src.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T02:50:44.959Z",
+  "schema_version": "v1",
+  "commit_sha": "4acaf7488361839248656c1830f32b055d3c1e26",
+  "title": "refactor(ts): move recent harness code under src",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T02:50:12Z",
+  "head_ref": "codex/move-recent-ts-to-src"
+}

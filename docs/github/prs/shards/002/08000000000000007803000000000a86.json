@@ -1,0 +1,15 @@
+{
+  "pr_number": 2694,
+  "archive_path": "docs/history/pr-reviews/PR-2694-docs-memory-mirror-beacon-assessment-what-compiles-vs-what-is-beautiful.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_3sdI",
+    "thread:PRRT_kwDOSF9kNM6BFjO7"
+  ],
+  "fetched_at": "2026-05-11T12:57:27.512Z",
+  "schema_version": "v1",
+  "commit_sha": "20e15295692f4dfce6d0d086c5bb1dd821552b17",
+  "title": "docs(memory): mirror/beacon assessment — what compiles vs what is beautiful",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T12:57:08Z",
+  "head_ref": "docs/mirror-beacon-assessment-2026-05-11"
+}

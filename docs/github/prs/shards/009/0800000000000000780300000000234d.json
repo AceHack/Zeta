@@ -1,0 +1,12 @@
+{
+  "pr_number": 9037,
+  "archive_path": "docs/history/pr-reviews/PR-9037-codex-bank-soft-drive-heat-reports.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-30T21:05:17.982Z",
+  "schema_version": "v1",
+  "commit_sha": "76c4cc90eebaabf4799681e4af0a7eb90f8108f2",
+  "title": "[codex] bank soft-drive heat reports",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T21:04:56Z",
+  "head_ref": "codex/softdrive-heat-report"
+}

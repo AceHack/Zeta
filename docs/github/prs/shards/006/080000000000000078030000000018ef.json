@@ -1,0 +1,12 @@
+{
+  "pr_number": 6383,
+  "archive_path": "docs/history/pr-reviews/PR-6383-docs-registry-blockchain-wallet-payments-family-x402-multi-chain-wallet-indexer.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T09:11:31.397Z",
+  "schema_version": "v1",
+  "commit_sha": "22603243971078999e74d9f4192a3691099a5dc9",
+  "title": "docs(registry): Blockchain / wallet / payments family — x402 + multi-chain wallet + indexer",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T09:11:09Z",
+  "head_ref": "otto-cli/registry-blockchain-wallet-payments-x402-2026-06-01"
+}

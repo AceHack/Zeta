@@ -1,0 +1,12 @@
+{
+  "pr_number": 7799,
+  "archive_path": "docs/history/pr-reviews/PR-7799-feat-bayesian-wset-damping-honest-limits-the-gdl-third-ring-demo-softpositivity-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T21:35:35.322Z",
+  "schema_version": "v1",
+  "commit_sha": "a0776403df4725d4a340d229fce7a54d6d071a32",
+  "title": "feat(bayesian+wset): damping (honest limits) + the GDL third-ring demo + SoftPositivity — B-1032 closed",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T21:35:10Z",
+  "head_ref": "shadow-quantum-bayes-push"
+}

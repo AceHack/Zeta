@@ -1,0 +1,12 @@
+{
+  "pr_number": 6268,
+  "archive_path": "docs/history/pr-reviews/PR-6268-enforce-secret-scopes-on-observe-act-tools.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T23:12:49.500Z",
+  "schema_version": "v1",
+  "commit_sha": "96dd7c950a3385d18b5f35fc4c6e41042b7f0a30",
+  "title": "Enforce secret scopes on observe-act tools",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T23:12:30Z",
+  "head_ref": "codex/agentic-org-secret-scope-controls"
+}

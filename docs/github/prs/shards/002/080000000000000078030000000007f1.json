@@ -1,0 +1,12 @@
+{
+  "pr_number": 2033,
+  "archive_path": "docs/history/pr-reviews/PR-2033-fix-wallet-align-b-0062-intentional-debt-bond-ledger.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T04:36:03.491Z",
+  "schema_version": "v1",
+  "commit_sha": "fa5838e18c0e46d9afda6141b4e1c80699e49f36",
+  "title": "fix(wallet): align B-0062 intentional-debt bond ledger",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T04:35:46Z",
+  "head_ref": "codex/b0062-intentional-debt-schema"
+}

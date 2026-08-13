@@ -1,0 +1,12 @@
+{
+  "pr_number": 8340,
+  "archive_path": "docs/history/pr-reviews/PR-8340-docs-review-society-review-of-forge-host-db-universal-interface-7-decorrelated-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T21:11:00.617Z",
+  "schema_version": "v1",
+  "commit_sha": "609ed01cdd1f6ce504fa015d17319ea0d4f838b3",
+  "title": "docs(review): society review of forge-host + db/ universal-interface (7 decorrelated agents)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T21:10:28Z",
+  "head_ref": "docs/society-review-forge-host-and-db-universal-interface"
+}

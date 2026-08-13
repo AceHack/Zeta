@@ -1,0 +1,12 @@
+{
+  "pr_number": 3579,
+  "archive_path": "docs/history/pr-reviews/PR-3579-shard-tick-2028z-b-0536-filed-orphan-ferry-ref-cleanup-audit-false-positive.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T20:33:41.632Z",
+  "schema_version": "v1",
+  "commit_sha": "76f83de4713b4af7d3b3b152f821c5c0ee526059",
+  "title": "shard(tick): 2028Z — B-0536 filed: orphan-ferry-ref cleanup + audit false-positive",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T20:33:24Z",
+  "head_ref": "shard/tick-2028z-otto-cli-2026-05-15"
+}

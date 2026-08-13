@@ -1,0 +1,12 @@
+{
+  "pr_number": 8859,
+  "archive_path": "docs/history/pr-reviews/PR-8859-feat-keys-biometric-gated-github-public-key-publish-touch-id-gate-fail-closed.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T04:45:05.980Z",
+  "schema_version": "v1",
+  "commit_sha": "452caf5efd1bfcb7c9fb796e569917c2a776ad9f",
+  "title": "feat(keys): biometric-gated GitHub PUBLIC-key publish (Touch ID gate, fail-closed)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T04:44:40Z",
+  "head_ref": "otto/keys-publish-biometric-gate"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8744,
+  "archive_path": "docs/history/pr-reviews/PR-8744-docs-handoff-mark-math-team-row-2-fscheck-binding-leg-discharged-8743-verified.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T16:08:53.502Z",
+  "schema_version": "v1",
+  "commit_sha": "46ef0de9a6a137b9e582cafacf039b4bfbb00493",
+  "title": "docs(handoff): mark math-team row 2 FsCheck binding leg discharged (#8743, verified)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T16:08:25Z",
+  "head_ref": "otto/row2-handoff-discharge"
+}

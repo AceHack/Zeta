@@ -1,0 +1,12 @@
+{
+  "pr_number": 8220,
+  "archive_path": "docs/history/pr-reviews/PR-8220-feat-node-register-node-5b2dfa-self-registers.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T19:59:19.726Z",
+  "schema_version": "v1",
+  "commit_sha": "677ac9b33feb869026ec8b886ef19476b0889507",
+  "title": "feat(node-register): node-5b2dfa self-registers",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T19:58:56Z",
+  "head_ref": "register-node-5b2dfa-20260614T222020Z"
+}

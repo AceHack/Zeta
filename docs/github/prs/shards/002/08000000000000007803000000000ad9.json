@@ -1,0 +1,12 @@
+{
+  "pr_number": 2777,
+  "archive_path": "docs/history/pr-reviews/PR-2777-hygiene-tick-1338z-method-stack-substrate-cascade.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T13:42:39.773Z",
+  "schema_version": "v1",
+  "commit_sha": "a9c6108cd57f5b57015a0bf18a773291245a1347",
+  "title": "hygiene(tick): 1338Z — method-stack substrate cascade",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T13:42:15Z",
+  "head_ref": "hygiene/tick-1338z-method-stack-landing-2026-05-12"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5401,
+  "archive_path": "docs/history/pr-reviews/PR-5401-docs-mika-ferry-2026-05-27-multi-tic-per-persona-join-as-first-class-security-aw.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T05:01:07.390Z",
+  "schema_version": "v1",
+  "commit_sha": "f8b74ee96d2ffecafdaed40fd2cbe7c3f8fd0f10",
+  "title": "docs(mika ferry 2026-05-27): multi-tic-per-persona + join-as-first-class-security-aware-primitive + Kleisli/AsyncLocal context duality",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T05:00:47Z",
+  "head_ref": "feat-mika-ferry-multi-tic-per-persona-kleisli-security-aware-joins-2026-05-27-0930z"
+}

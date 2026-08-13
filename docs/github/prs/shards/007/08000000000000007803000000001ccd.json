@@ -1,0 +1,12 @@
+{
+  "pr_number": 7373,
+  "archive_path": "docs/history/pr-reviews/PR-7373-feat-portal-redesign-linear-azure-dark-per-type-tabs-logs-traces-observability-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:22:48.529Z",
+  "schema_version": "v1",
+  "commit_sha": "06118b6b31d8150bee31895f594bab5317f1cad2",
+  "title": "feat(portal): redesign (Linear×Azure dark) + per-type tabs + logs/traces observability + Room-AI log connector",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:22:22Z",
+  "head_ref": "feat/portal-redesign-observability"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3561,
+  "archive_path": "docs/history/pr-reviews/PR-3561-shard-tick-1919z-quiet-checkpoint-audit-sweep-produced-no-new-actionable-finding.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T19:24:36.388Z",
+  "schema_version": "v1",
+  "commit_sha": "f0cf3bebd7ca285c4fb0db8ceacbc49cb2398fa5",
+  "title": "shard(tick): 1919Z — quiet checkpoint; audit-sweep produced no new actionable finding",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T19:24:18Z",
+  "head_ref": "shard/tick-1919z-otto-cli-2026-05-15"
+}

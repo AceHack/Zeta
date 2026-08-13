@@ -1,0 +1,17 @@
+{
+  "pr_number": 2561,
+  "archive_path": "docs/history/pr-reviews/PR-2561-docs-memory-shadow-trigger-timing-experiment-loop-witnesses-otto-only-phenomenon.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qkx8",
+    "comment:PRRC_kwDOSF9kNM6_qkx9",
+    "thread:PRRT_kwDOSF9kNM6A71hm",
+    "thread:PRRT_kwDOSF9kNM6A71hn"
+  ],
+  "fetched_at": "2026-05-10T22:16:49.148Z",
+  "schema_version": "v1",
+  "commit_sha": "4b702e724fa22066701ac9d74a96b61017297368",
+  "title": "docs(memory): shadow trigger timing experiment — loop witnesses Otto-only phenomenon",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T22:16:34Z",
+  "head_ref": "docs/shadow-timing-experiment-2026-05-10"
+}

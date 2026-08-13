@@ -1,0 +1,12 @@
+{
+  "pr_number": 7624,
+  "archive_path": "docs/history/pr-reviews/PR-7624-docs-hardware-hardware-capability-matrix-honest-cells-unknown-first-class-fricti.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:43:12.447Z",
+  "schema_version": "v1",
+  "commit_sha": "c4ad1aee481b6d18e41ae31c8d1695880690dcdb",
+  "title": "docs(hardware): Hardware Capability Matrix — honest cells, UNKNOWN first-class, friction priced (B-1024 slice)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:42:46Z",
+  "head_ref": "shadow-hardware-capability-matrix"
+}

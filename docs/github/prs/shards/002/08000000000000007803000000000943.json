@@ -1,0 +1,31 @@
+{
+  "pr_number": 2371,
+  "archive_path": "docs/history/pr-reviews/PR-2371-chore-b-0026-decompose-embodiment-grounding-analysis-into-6-atomic-children.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_kjAl",
+    "comment:PRRC_kwDOSF9kNM6_kjiO",
+    "comment:PRRC_kwDOSF9kNM6_kjiW",
+    "comment:PRRC_kwDOSF9kNM6_kjiZ",
+    "comment:PRRC_kwDOSF9kNM6_kjib",
+    "comment:PRRC_kwDOSF9kNM6_kjie",
+    "comment:PRRC_kwDOSF9kNM6_kjil",
+    "comment:PRRC_kwDOSF9kNM6_kjiq",
+    "comment:PRRC_kwDOSF9kNM6_kjqm",
+    "thread:PRRT_kwDOSF9kNM6A3DA0",
+    "thread:PRRT_kwDOSF9kNM6A3Dde",
+    "thread:PRRT_kwDOSF9kNM6A3Ddk",
+    "thread:PRRT_kwDOSF9kNM6A3Ddm",
+    "thread:PRRT_kwDOSF9kNM6A3Ddo",
+    "thread:PRRT_kwDOSF9kNM6A3Ddq",
+    "thread:PRRT_kwDOSF9kNM6A3Ddv",
+    "thread:PRRT_kwDOSF9kNM6A3Ddz",
+    "thread:PRRT_kwDOSF9kNM6A3Dkf"
+  ],
+  "fetched_at": "2026-05-09T23:21:59.267Z",
+  "schema_version": "v1",
+  "commit_sha": "1ca160e10961fc16a0172abbd86f223c1623c53f",
+  "title": "chore(B-0026): decompose embodiment-grounding analysis into 6 atomic children",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T23:21:40Z",
+  "head_ref": "chore/decompose-B-0026-embodiment-grounding"
+}

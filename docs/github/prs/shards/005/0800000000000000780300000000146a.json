@@ -1,0 +1,17 @@
+{
+  "pr_number": 5226,
+  "archive_path": "docs/history/pr-reviews/PR-5226-fix-b-0818-iso-build-audit-glob-accepts-nixpkgs-25-11-default-name-file-b-0818-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FBmTX",
+    "comment:PRRC_kwDOSF9kNM7FBmUU",
+    "thread:PRRT_kwDOSF9kNM6E3lgC",
+    "thread:PRRT_kwDOSF9kNM6E3lgv"
+  ],
+  "fetched_at": "2026-05-26T17:17:21.097Z",
+  "schema_version": "v1",
+  "commit_sha": "75eff94dc8b0f22419ccf86f039dc78b632bccfd",
+  "title": "fix(B-0818): ISO build audit-glob accepts nixpkgs-25.11 default name + file B-0818 substrate fix",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:17:01Z",
+  "head_ref": "otto-cli/fixfwd-iso-name-25-11-2026-05-26"
+}

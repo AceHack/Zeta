@@ -1,0 +1,17 @@
+{
+  "pr_number": 7683,
+  "archive_path": "docs/history/pr-reviews/PR-7683-feat-viz-pixellens-sub-pixel-cells-with-lawful-lenses-data-uncertainty-ride-the-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Kbz3S",
+    "comment:PRRC_kwDOSF9kNM7Kbz3a",
+    "thread:PRRT_kwDOSF9kNM6I0v_2",
+    "thread:PRRT_kwDOSF9kNM6I0v_s"
+  ],
+  "fetched_at": "2026-06-11T13:32:01.045Z",
+  "schema_version": "v1",
+  "commit_sha": "23051e214d38230415c0a66a42f09d92b764f33f",
+  "title": "feat(viz): PixelLens — sub-pixel cells with lawful lenses (data+uncertainty ride the pixel) + CRT/FPGA corner audit",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:30:10Z",
+  "head_ref": "shadow-subpixel-lens"
+}

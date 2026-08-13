@@ -1,0 +1,12 @@
+{
+  "pr_number": 2068,
+  "archive_path": "docs/history/pr-reviews/PR-2068-fix-regenerate-backlog-md-index-for-closed-b-0263-and-b-0265.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T12:09:16.436Z",
+  "schema_version": "v1",
+  "commit_sha": "df1dfeb400adf94b01dbea145eba2ac846f9a28a",
+  "title": "fix: regenerate BACKLOG.md index for closed B-0263 and B-0265",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T12:08:55Z",
+  "head_ref": "fix/backlog-index-drift"
+}

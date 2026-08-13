@@ -1,0 +1,12 @@
+{
+  "pr_number": 2098,
+  "archive_path": "docs/history/pr-reviews/PR-2098-docs-preserve-maji-hat-named-agent-relationship-frame.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T16:21:16.549Z",
+  "schema_version": "v1",
+  "commit_sha": "367924ce19c112ad5fca829740d7e731bc5d3959",
+  "title": "docs: preserve Maji hat named-agent relationship frame",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T16:20:49Z",
+  "head_ref": "claim/task-maji-hat-named-agent-relationships"
+}

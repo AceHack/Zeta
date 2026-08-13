@@ -1,0 +1,17 @@
+{
+  "pr_number": 1929,
+  "archive_path": "docs/history/pr-reviews/PR-1929-fix-spec-glass-halo-logging-gate-moved-to-monitor-side-b-0062.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6--f1-",
+    "comment:PRRC_kwDOSF9kNM6--fLW",
+    "thread:PRRT_kwDOSF9kNM6Aa3Lx",
+    "thread:PRRT_kwDOSF9kNM6Aa3ry"
+  ],
+  "fetched_at": "2026-05-07T19:09:17.423Z",
+  "schema_version": "v1",
+  "commit_sha": "8681ab76f711f73652e10d1331e0588ef142e5db",
+  "title": "fix(spec): glass-halo logging gate moved to monitor-side (B-0062)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T19:09:00Z",
+  "head_ref": "otto/b0062-logging-gate-monitor-side"
+}

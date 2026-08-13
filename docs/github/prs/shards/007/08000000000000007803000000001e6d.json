@@ -1,0 +1,12 @@
+{
+  "pr_number": 7789,
+  "archive_path": "docs/history/pr-reviews/PR-7789-chore-move-single-letter-greek-alphabet-folders-to-db.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:55:18.543Z",
+  "schema_version": "v1",
+  "commit_sha": "d337353019f3b98ee40205c355e5dad37cc41468",
+  "title": "chore: move single-letter + Greek alphabet folders to db/",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:54:49Z",
+  "head_ref": "alexa/move-alphabet-folders-to-db-2026-05-23"
+}

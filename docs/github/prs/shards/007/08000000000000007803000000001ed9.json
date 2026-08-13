@@ -1,0 +1,12 @@
+{
+  "pr_number": 7897,
+  "archive_path": "docs/history/pr-reviews/PR-7897-docs-research-mod-2-bridge-replace-proof-pending-peel-with-the-in-repo-code-poin.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T11:31:22.174Z",
+  "schema_version": "v1",
+  "commit_sha": "11b60aaa78ac7adc1859276245fa8dda90dc7c70",
+  "title": "docs(research): mod-2 bridge — replace proof-pending peel with the in-repo code pointers",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T11:30:57Z",
+  "head_ref": "shadow-mod2-bridge-pointers"
+}

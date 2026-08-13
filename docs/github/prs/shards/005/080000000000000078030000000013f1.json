@@ -1,0 +1,21 @@
+{
+  "pr_number": 5105,
+  "archive_path": "docs/history/pr-reviews/PR-5105-backlog-b-0793-p1-role-as-capability-composition-not-baked-host-single-node-cont.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EyL6_",
+    "comment:PRRC_kwDOSF9kNM7EyL7U",
+    "comment:PRRC_kwDOSF9kNM7EyRkl",
+    "comment:PRRC_kwDOSF9kNM7EyRlH",
+    "thread:PRRT_kwDOSF9kNM6EsVe0",
+    "thread:PRRT_kwDOSF9kNM6EsVfB",
+    "thread:PRRT_kwDOSF9kNM6EsZmy",
+    "thread:PRRT_kwDOSF9kNM6EsZnQ"
+  ],
+  "fetched_at": "2026-05-26T05:59:46.032Z",
+  "schema_version": "v1",
+  "commit_sha": "9c1258b221d6b87b4c5f518ade2cb226cd83082a",
+  "title": "backlog(B-0793 P1): role-as-capability composition (NOT baked host) — single node = control-plane AND gpu AND storage; refactor nixos/hosts/<role>/ → nixos/modules/role-*.nix capability modules (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:59:27Z",
+  "head_ref": "otto-cli/b0793-role-as-capability-composition-not-baked-host-2026-05-26"
+}

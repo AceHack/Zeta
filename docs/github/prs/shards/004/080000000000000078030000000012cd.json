@@ -1,0 +1,15 @@
+{
+  "pr_number": 4813,
+  "archive_path": "docs/history/pr-reviews/PR-4813-shard-2026-05-24-0416z-rename-0240z-0416z-substrate-honest-timestamp-correction.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EVL90",
+    "thread:PRRT_kwDOSF9kNM6EWqd6"
+  ],
+  "fetched_at": "2026-05-24T04:21:39.553Z",
+  "schema_version": "v1",
+  "commit_sha": "ac2c8baca5e73f866e2d2ccc0e79772656df4f5f",
+  "title": "shard(2026-05-24/0416Z): rename 0240Z→0416Z + substrate-honest timestamp correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T04:21:20Z",
+  "head_ref": "otto-cli/dotgit-9th-anchor-descent-0240z"
+}

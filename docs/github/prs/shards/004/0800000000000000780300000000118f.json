@@ -1,0 +1,12 @@
+{
+  "pr_number": 4495,
+  "archive_path": "docs/history/pr-reviews/PR-4495-docs-archive-decompose-pr-preservation-4450-and-4449-from-blob-pr-4462.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T06:07:49.472Z",
+  "schema_version": "v1",
+  "commit_sha": "c3d61992ab9c4bdb46dc50fc50707049ff1923a8",
+  "title": "docs(archive): decompose PR preservation 4450 and 4449 from blob PR 4462",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T06:07:32Z",
+  "head_ref": "lior/decompose-4462-archive"
+}

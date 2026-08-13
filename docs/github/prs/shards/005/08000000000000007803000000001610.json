@@ -1,0 +1,25 @@
+{
+  "pr_number": 5648,
+  "archive_path": "docs/history/pr-reviews/PR-5648-docs-provisioning-add-cred-restore-smoke-test-section-b-0852-end-to-end-verifica.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FhsO6",
+    "comment:PRRC_kwDOSF9kNM7FhsP-",
+    "comment:PRRC_kwDOSF9kNM7FhsPd",
+    "comment:PRRC_kwDOSF9kNM7FhsPv",
+    "comment:PRRC_kwDOSF9kNM7FhsQK",
+    "comment:PRRC_kwDOSF9kNM7FhsQQ",
+    "thread:PRRT_kwDOSF9kNM6FO9E9",
+    "thread:PRRT_kwDOSF9kNM6FO9Ek",
+    "thread:PRRT_kwDOSF9kNM6FO9FI",
+    "thread:PRRT_kwDOSF9kNM6FO9FQ",
+    "thread:PRRT_kwDOSF9kNM6FO9FX",
+    "thread:PRRT_kwDOSF9kNM6FO9Fa"
+  ],
+  "fetched_at": "2026-05-27T21:33:35.952Z",
+  "schema_version": "v1",
+  "commit_sha": "49bf3fb224f6342b43a216f6c5a787380e6249ec",
+  "title": "docs(provisioning): add cred-restore smoke-test section (B-0852 end-to-end verification checklist for operator)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T21:33:13Z",
+  "head_ref": "docs/provisioning-cred-restore-smoke-test-section-2026-05-27"
+}

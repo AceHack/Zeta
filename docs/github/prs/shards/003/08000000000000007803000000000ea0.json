@@ -1,0 +1,17 @@
+{
+  "pr_number": 3744,
+  "archive_path": "docs/history/pr-reviews/PR-3744-shard-tick-2026-05-16t04-44z-third-otto-cli-drift-catch-b-0535-via-pr-3742-patte.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B14XM",
+    "comment:PRRC_kwDOSF9kNM7B14Xk",
+    "thread:PRRT_kwDOSF9kNM6Chxo2",
+    "thread:PRRT_kwDOSF9kNM6ChxpE"
+  ],
+  "fetched_at": "2026-05-16T04:49:14.289Z",
+  "schema_version": "v1",
+  "commit_sha": "907c0c23bd63340c1efdd2b9a0af4bde0ea6ecc4",
+  "title": "shard(tick): 2026-05-16T04:44Z — third Otto-CLI drift catch (B-0535 via PR #3742); pattern distinction filed",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:48:59Z",
+  "head_ref": "shard/tick-0444z-otto-cli-2026-05-16"
+}

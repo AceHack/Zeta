@@ -1,0 +1,12 @@
+{
+  "pr_number": 8508,
+  "archive_path": "docs/history/pr-reviews/PR-8508-memory-feedback-vs-vs-the-z-set-ring-explanation-of-zeta-confirmed-hyperoperatio.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T10:53:18.101Z",
+  "schema_version": "v1",
+  "commit_sha": "f19a3921d1edc4821805944bba0e4f8fdcf103ea",
+  "title": "memory(feedback): + vs * vs - = the Z-set RING explanation of Zeta; ζ confirmed; hyperoperation ladder (×=empowerment, ^=degenerate); 3-body (2 conspire to beat the 3)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T10:52:52Z",
+  "head_ref": "otto/plus-times-minus-ring-3body-hyperop-ladder-zeta"
+}

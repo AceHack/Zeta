@@ -1,0 +1,12 @@
+{
+  "pr_number": 7127,
+  "archive_path": "docs/history/pr-reviews/PR-7127-feat-core-controlmerge-subsumption-survival-veto-crdt-join-of-optimization-loops.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:16:03.038Z",
+  "schema_version": "v1",
+  "commit_sha": "b5090bbb0653f19893695e33ccb3ba1f704387ce",
+  "title": "feat(core): ControlMerge — subsumption (survival veto + CRDT-join of optimization loops)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:15:43Z",
+  "head_ref": "otto/controlmerge-subsumption-survival-veto-crdt-join-control-loops"
+}

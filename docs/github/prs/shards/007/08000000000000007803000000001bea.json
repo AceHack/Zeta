@@ -1,0 +1,12 @@
+{
+  "pr_number": 7146,
+  "archive_path": "docs/history/pr-reviews/PR-7146-docs-research-nci-is-objectively-required-coercion-collapses-diversity-crushing-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:20:56.251Z",
+  "schema_version": "v1",
+  "commit_sha": "ebb8d7f5d5146f0a7a4e39e3e1fcc1517606a80e",
+  "title": "docs(research): NCI is objectively required — coercion collapses diversity, crushing learning",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:20:36Z",
+  "head_ref": "otto/research-nci-objective-pathology-diversity-collapse-crushes-learning"
+}

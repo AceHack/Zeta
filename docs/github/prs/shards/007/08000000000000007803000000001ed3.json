@@ -1,0 +1,12 @@
+{
+  "pr_number": 7891,
+  "archive_path": "docs/history/pr-reviews/PR-7891-feat-core-capabilityledger-resolver-know-what-to-inject-before-asking-refusals-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T10:57:39.233Z",
+  "schema_version": "v1",
+  "commit_sha": "78f2bf5df5a2842462da97c2648759caf199a2b2",
+  "title": "feat(core): CapabilityLedger resolver — know what to inject before asking; refusals re-plan; lint sweeps both ledgers in CI",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:57:16Z",
+  "head_ref": "shadow-cap-resolver"
+}

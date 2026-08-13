@@ -1,0 +1,19 @@
+{
+  "pr_number": 3567,
+  "archive_path": "docs/history/pr-reviews/PR-3567-feat-b-0532-parent-child-status-mismatch-lint-hard-error-slice-gate-yml-wiring.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BwNLG",
+    "comment:PRRC_kwDOSF9kNM7BwNrX",
+    "comment:PRRC_kwDOSF9kNM7BwS0r",
+    "comment:PRRC_kwDOSF9kNM7BwS4H",
+    "thread:PRRT_kwDOSF9kNM6CdoH1",
+    "thread:PRRT_kwDOSF9kNM6CdofJ"
+  ],
+  "fetched_at": "2026-05-15T19:59:50.265Z",
+  "schema_version": "v1",
+  "commit_sha": "376a68697fcc62b3020e895bc1161d1f61dad44f",
+  "title": "feat(B-0532): parent-child status-mismatch lint (hard-error slice) + gate.yml wiring",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T19:59:31Z",
+  "head_ref": "feat/b0532-parent-child-status-mismatch-lint-otto-cli-2026-05-15"
+}

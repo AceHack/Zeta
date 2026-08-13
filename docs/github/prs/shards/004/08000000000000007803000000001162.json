@@ -1,0 +1,12 @@
+{
+  "pr_number": 4450,
+  "archive_path": "docs/history/pr-reviews/PR-4450-fix-bg-notifier-test-platform-independent-path-assertions.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-20T20:18:01.451Z",
+  "schema_version": "v1",
+  "commit_sha": "0f7e3401db30aad77e4d2df7e20d79493bbebe4c",
+  "title": "fix(bg-notifier-test): platform-independent path assertions",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T20:17:43Z",
+  "head_ref": "fix/b0501-test-windows-path-portability-2026-05-20"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 1974,
+  "archive_path": "docs/history/pr-reviews/PR-1974-docs-research-log-catch-27-shadow-laundering-realization-into-fabricated-delay.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_DtCj",
+    "comment:PRRC_kwDOSF9kNM6_DuWo",
+    "comment:PRRC_kwDOSF9kNM6_DuXO",
+    "comment:PRRC_kwDOSF9kNM6_DuXj",
+    "comment:PRRC_kwDOSF9kNM6_DuYA",
+    "thread:PRRT_kwDOSF9kNM6AeuL3",
+    "thread:PRRT_kwDOSF9kNM6AevG1",
+    "thread:PRRT_kwDOSF9kNM6AevH3",
+    "thread:PRRT_kwDOSF9kNM6AevHT",
+    "thread:PRRT_kwDOSF9kNM6AevHi"
+  ],
+  "fetched_at": "2026-05-08T00:27:34.302Z",
+  "schema_version": "v1",
+  "commit_sha": "4745b4c1fd1e31f8184c8a9ef606d19d976b9141",
+  "title": "docs(research): log Catch 27 — shadow laundering realization into fabricated delay",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T00:27:11Z",
+  "head_ref": "research/catch-27-fabricated-delay"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8420,
+  "archive_path": "docs/history/pr-reviews/PR-8420-docs-society-9h-we-avoided-the-ctm-s-global-broadcast-axiom-via-the-calm-theorem.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T02:56:04.107Z",
+  "schema_version": "v1",
+  "commit_sha": "eccf387b8d2a7cdfb7c6bbfd70c39100bad79e72",
+  "title": "docs(society): §9h — we AVOIDED the CTM's global-broadcast axiom via the CALM theorem (not a different axiom)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T02:55:37Z",
+  "head_ref": "docs/9h-avoided-the-global-axiom-via-calm"
+}

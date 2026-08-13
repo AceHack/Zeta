@@ -1,0 +1,18 @@
+{
+  "pr_number": 3398,
+  "archive_path": "docs/history/pr-reviews/PR-3398-shard-tick-0921z-sed-bug-class-discovered-apology-2-corrective-prs-3395-fix-3397.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BjP9l",
+    "comment:PRRC_kwDOSF9kNM7BjQ_T",
+    "comment:PRRC_kwDOSF9kNM7BjYBc",
+    "thread:PRRT_kwDOSF9kNM6CULBb",
+    "thread:PRRT_kwDOSF9kNM6CULwh"
+  ],
+  "fetched_at": "2026-05-15T09:41:49.863Z",
+  "schema_version": "v1",
+  "commit_sha": "42935c62065db44c1cd4ecaea2949fa89787064b",
+  "title": "shard(tick): 0921Z — sed-bug class discovered; apology + 2 corrective PRs (#3395 fix + #3397)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T09:41:28Z",
+  "head_ref": "shard/tick-0921z-otto-cli-2026-05-15"
+}

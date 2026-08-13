@@ -1,0 +1,12 @@
+{
+  "pr_number": 7447,
+  "archive_path": "docs/history/pr-reviews/PR-7447-docs-research-henderson-cotton-mill-history-cooper-coincidence-saved-mechanizati.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T04:33:43.812Z",
+  "schema_version": "v1",
+  "commit_sha": "775bf4041e1ee5f0e02002f5ab5907fdffcbc436",
+  "title": "docs(research): Henderson cotton mill history + Cooper coincidence (saved) + mechanization-vs-subjugation lesson",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T04:33:01Z",
+  "head_ref": "shadow-henderson-mill-history-cooper-coincidence"
+}

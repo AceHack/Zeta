@@ -1,0 +1,17 @@
+{
+  "pr_number": 1868,
+  "archive_path": "docs/history/pr-reviews/PR-1868-backlog-b-0248-multi-site-fork-and-gpu-infrastructure-redundancy.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-z0uC",
+    "comment:PRRC_kwDOSF9kNM6-z0uc",
+    "thread:PRRT_kwDOSF9kNM6ATAHx",
+    "thread:PRRT_kwDOSF9kNM6ATAIC"
+  ],
+  "fetched_at": "2026-05-07T12:54:38.439Z",
+  "schema_version": "v1",
+  "commit_sha": "9143bf3f2b7fd79658a77ef4ce40c651e1a8ad0f",
+  "title": "backlog(B-0248): multi-site fork and GPU infrastructure redundancy",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T12:02:30Z",
+  "head_ref": "codex/b0248-multisite-fork-gpu-infra"
+}

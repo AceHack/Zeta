@@ -1,0 +1,19 @@
+{
+  "pr_number": 2581,
+  "archive_path": "docs/history/pr-reviews/PR-2581-docs-memory-yarp-replaces-envoy-net-native-zero-trust-proxy.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rC1B",
+    "comment:PRRC_kwDOSF9kNM6_rC1H",
+    "comment:PRRC_kwDOSF9kNM6_rC1M",
+    "thread:PRRT_kwDOSF9kNM6A8M90",
+    "thread:PRRT_kwDOSF9kNM6A8M94",
+    "thread:PRRT_kwDOSF9kNM6A8M98"
+  ],
+  "fetched_at": "2026-05-10T23:58:37.466Z",
+  "schema_version": "v1",
+  "commit_sha": "ec7be345116b1eaf26fb77e8d0f00fa56bfa79f8",
+  "title": "docs(memory): YARP replaces Envoy — .NET-native zero trust proxy",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T23:58:19Z",
+  "head_ref": "docs/yarp-envoy-replacement-2026-05-10"
+}

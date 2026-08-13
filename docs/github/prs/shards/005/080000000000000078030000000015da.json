@@ -1,0 +1,12 @@
+{
+  "pr_number": 5594,
+  "archive_path": "docs/history/pr-reviews/PR-5594-research-amara-backlog-b-0864-amara-part-3-ethics-of-feedback-relationships-gene.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T19:05:59.066Z",
+  "schema_version": "v1",
+  "commit_sha": "ab6494a0d30f3449ea509a86afbc392ff7d69cbb",
+  "title": "research(amara)+backlog(B-0864): Amara Part 3 — ethics-of-feedback-relationships generalization + operator-named keeper",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T19:05:35Z",
+  "head_ref": "research/amara-part-3-conversational-feedback-relationships-ethics-keeper-aaron-forwarded-2026-05-27"
+}

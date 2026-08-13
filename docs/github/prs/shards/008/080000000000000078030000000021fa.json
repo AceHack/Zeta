@@ -1,0 +1,12 @@
+{
+  "pr_number": 8698,
+  "archive_path": "docs/history/pr-reviews/PR-8698-feat-core-stream-the-generator-ir-relation-through-a-running-dbsp-circuit.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T03:40:26.602Z",
+  "schema_version": "v1",
+  "commit_sha": "4bddd63886094340feeb8846b1a197c956d2db2c",
+  "title": "feat(core): stream the generator-IR relation through a running DBSP circuit",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T03:40:00Z",
+  "head_ref": "lumen/ir-relation-running-dbsp-circuit"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8165,
+  "archive_path": "docs/history/pr-reviews/PR-8165-feat-room-hat-gate-filter-corporate-authority-on-sovereign-observe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:54:55.658Z",
+  "schema_version": "v1",
+  "commit_sha": "bb1705662835d6fd96dd11090905d2ba661ded7a",
+  "title": "feat(room): hat-gate filter — corporate authority on sovereign observe",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:54:33Z",
+  "head_ref": "kiro/hat-gate-filter"
+}

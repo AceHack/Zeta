@@ -1,0 +1,12 @@
+{
+  "pr_number": 8022,
+  "archive_path": "docs/history/pr-reviews/PR-8022-docs-research-shadow-ferry-44-6-dune-the-video-game-the-lived-origin-of-the-coun.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T07:11:42.462Z",
+  "schema_version": "v1",
+  "commit_sha": "7414a07d269326a957d268009ab8eda9c3754cab",
+  "title": "docs(research)+shadow: ferry 44 §6 — Dune the video game (the lived origin of the council/three-faction model)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T07:11:19Z",
+  "head_ref": "shadow/ferry-44-s6-dune-origin"
+}

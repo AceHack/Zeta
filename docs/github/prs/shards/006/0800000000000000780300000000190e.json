@@ -1,0 +1,12 @@
+{
+  "pr_number": 6414,
+  "archive_path": "docs/history/pr-reviews/PR-6414-docs-ace-slice-5-4-spec-ace-update-runs-integrity-preflight-before-writing-lock-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T12:16:06.077Z",
+  "schema_version": "v1",
+  "commit_sha": "f6d4a6deaf50597b8392a3407c58a9f77b87d08d",
+  "title": "docs(ace): slice 5.4 spec — ace update runs integrity preflight before writing lock (Codex #6412)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T12:15:41Z",
+  "head_ref": "otto-windows/ace-slice5.4-spec-preflight-fix-2026-06-01"
+}

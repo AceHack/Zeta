@@ -1,0 +1,12 @@
+{
+  "pr_number": 6942,
+  "archive_path": "docs/history/pr-reviews/PR-6942-docs-ace-is-also-a-one-liner-bootstrap-register-install-without-a-pm-or-install-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T23:06:44.080Z",
+  "schema_version": "v1",
+  "commit_sha": "8deac2841b1f2ba8e6a2325fac707aad0f406c30",
+  "title": "docs: Ace is also a one-liner bootstrap register — install without a PM, or install the PM itself",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T23:06:24Z",
+  "head_ref": "otto/ace-one-liner-bootstrap-register"
+}

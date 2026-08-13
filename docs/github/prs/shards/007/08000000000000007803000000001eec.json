@@ -1,0 +1,12 @@
+{
+  "pr_number": 7916,
+  "archive_path": "docs/history/pr-reviews/PR-7916-docs-research-bit-from-flow-wheeler-inverted-round-2-input-for-the-attention-bou.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T14:31:04.777Z",
+  "schema_version": "v1",
+  "commit_sha": "a15f3a667a8a124a9771666446ece0df8e3adf9a",
+  "title": "docs(research): Bit-from-Flow — Wheeler inverted (round-2 input for the attention-boundary dispatch)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T14:30:39Z",
+  "head_ref": "shadow-bit-from-flow"
+}

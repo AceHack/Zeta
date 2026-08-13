@@ -1,0 +1,32 @@
+{
+  "pr_number": 2126,
+  "archive_path": "docs/history/pr-reviews/PR-2126-fix-enforce-admins-snapshot-block-direct-pushes.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_ZKmt",
+    "comment:PRRC_kwDOSF9kNM6_ZOVv",
+    "comment:PRRC_kwDOSF9kNM6_ZOWX",
+    "comment:PRRC_kwDOSF9kNM6_ZOWq",
+    "comment:PRRC_kwDOSF9kNM6_ZOX6",
+    "comment:PRRC_kwDOSF9kNM6_ZOXA",
+    "comment:PRRC_kwDOSF9kNM6_ZOXO",
+    "comment:PRRC_kwDOSF9kNM6_ZOXl",
+    "comment:PRRC_kwDOSF9kNM6_ZQBN",
+    "comment:PRRC_kwDOSF9kNM6_ZQN7",
+    "comment:PRRC_kwDOSF9kNM6_ZQYg",
+    "thread:PRRT_kwDOSF9kNM6AudRE",
+    "thread:PRRT_kwDOSF9kNM6AugI0",
+    "thread:PRRT_kwDOSF9kNM6AugIH",
+    "thread:PRRT_kwDOSF9kNM6AugIn",
+    "thread:PRRT_kwDOSF9kNM6AugJC",
+    "thread:PRRT_kwDOSF9kNM6AugJO",
+    "thread:PRRT_kwDOSF9kNM6AugJg",
+    "thread:PRRT_kwDOSF9kNM6AugJx"
+  ],
+  "fetched_at": "2026-05-08T20:13:28.729Z",
+  "schema_version": "v1",
+  "commit_sha": "f07b27844a8dab6225d6f7c8d666f81438d876d9",
+  "title": "fix: enforce_admins + snapshot — block direct pushes",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T20:13:03Z",
+  "head_ref": "fix/enforce-admins-snapshot"
+}

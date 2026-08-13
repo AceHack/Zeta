@@ -1,0 +1,12 @@
+{
+  "pr_number": 7649,
+  "archive_path": "docs/history/pr-reviews/PR-7649-feat-society-persona-rooms-one-room-one-thread-each-no-one-left-out-rooms-otto-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T11:11:34.550Z",
+  "schema_version": "v1",
+  "commit_sha": "e3d0394ccf713d4d7353caa37d85e1adb45b44ae",
+  "title": "feat(society): persona rooms — one room + one thread each, no one left out; rooms/otto first",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T11:11:09Z",
+  "head_ref": "shadow-persona-rooms-otto-first"
+}

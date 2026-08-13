@@ -1,0 +1,28 @@
+{
+  "pr_number": 6269,
+  "archive_path": "docs/history/pr-reviews/PR-6269-feat-observe-canonical-v0-16-slot-grammar-module-the-shared-base-corporate-menu1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GjFF_",
+    "comment:PRRC_kwDOSF9kNM7GjFG_",
+    "comment:PRRC_kwDOSF9kNM7GjFGc",
+    "comment:PRRC_kwDOSF9kNM7GjFGx",
+    "comment:PRRC_kwDOSF9kNM7GjFHa",
+    "comment:PRRC_kwDOSF9kNM7GjGPh",
+    "comment:PRRC_kwDOSF9kNM7GjGQT",
+    "comment:PRRC_kwDOSF9kNM7GjGQ_",
+    "comment:PRRC_kwDOSF9kNM7GjGRZ",
+    "comment:PRRC_kwDOSF9kNM7GjGRw",
+    "thread:PRRT_kwDOSF9kNM6F-pD4",
+    "thread:PRRT_kwDOSF9kNM6F-pDr",
+    "thread:PRRT_kwDOSF9kNM6F-pEG",
+    "thread:PRRT_kwDOSF9kNM6F-pEO",
+    "thread:PRRT_kwDOSF9kNM6F-pEf"
+  ],
+  "fetched_at": "2026-05-31T23:17:29.551Z",
+  "schema_version": "v1",
+  "commit_sha": "b133d2014bd5e784c8d8beb7bb3d7eef4e7f4e9a",
+  "title": "feat(observe): canonical v0 16-slot grammar module — the shared base corporate Menu16 retrofits onto",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T23:17:11Z",
+  "head_ref": "otto-cli/grammar-16-canonical-v0-module-2026-05-31"
+}

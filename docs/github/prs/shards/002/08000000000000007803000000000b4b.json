@@ -1,0 +1,12 @@
+{
+  "pr_number": 2891,
+  "archive_path": "docs/history/pr-reviews/PR-2891-docs-memory-grok-ships-background-listening-amazon-backed-off-from-aaron-s-empir.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T01:05:56.256Z",
+  "schema_version": "v1",
+  "commit_sha": "2d7237da8556a6c2f37e5e1b45db7d3560f72a76",
+  "title": "docs(memory): Grok ships background-listening Amazon backed off from + Aaron's empirical multi-participant family-debate usage + glitchy proactive cut-in (manual invocation = working mode) + cross-vendor risk-tolerance differential",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T01:05:39Z",
+  "head_ref": "grok-already-ships-background-listening-aaron-empirical-multi-participant-family-debate-aaron-alexa-speaker-kids-2026-05-13"
+}

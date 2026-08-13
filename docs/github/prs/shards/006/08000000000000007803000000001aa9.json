@@ -1,0 +1,12 @@
+{
+  "pr_number": 6825,
+  "archive_path": "docs/history/pr-reviews/PR-6825-docs-ip-questionable-privacy-first-local-first-crdt-architecture-zeta-s-ethos-as.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T13:36:19.643Z",
+  "schema_version": "v1",
+  "commit_sha": "51db57fe98c5e771494442363cb7bc118796304c",
+  "title": "docs(ip-questionable): privacy-first / local-first / CRDT architecture — Zeta's ethos as architecture (do it in zset)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T13:36:01Z",
+  "head_ref": "capture/privacy-first-local-first-crdt-on-zset-prior-art"
+}

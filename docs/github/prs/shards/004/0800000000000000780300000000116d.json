@@ -1,0 +1,19 @@
+{
+  "pr_number": 4461,
+  "archive_path": "docs/history/pr-reviews/PR-4461-shard-2026-05-21-0059z-cold-boot-51-min-canary-saturation-wait-close.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DYzRf",
+    "comment:PRRC_kwDOSF9kNM7DYzRk",
+    "comment:PRRC_kwDOSF9kNM7DYzp0",
+    "thread:PRRT_kwDOSF9kNM6DqOf-",
+    "thread:PRRT_kwDOSF9kNM6DqOf5",
+    "thread:PRRT_kwDOSF9kNM6DqOyy"
+  ],
+  "fetched_at": "2026-05-21T01:21:50.903Z",
+  "schema_version": "v1",
+  "commit_sha": "fc01d45db6bfa57ca9515a6e0d31c8d567af9ad9",
+  "title": "shard(2026-05-21/0059Z): cold-boot + 51-min canary-saturation wait close",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T01:21:34Z",
+  "head_ref": "shard/tick-0059z-otto-cli-cold-boot-canary-saturation-then-clear-2026-05-21"
+}

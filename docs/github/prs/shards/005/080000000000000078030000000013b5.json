@@ -1,0 +1,15 @@
+{
+  "pr_number": 5045,
+  "archive_path": "docs/history/pr-reviews/PR-5045-docs-shadow-log-backlog-index-integrity-drift-from-pr-5025.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EuDPF",
+    "thread:PRRT_kwDOSF9kNM6EpWhK"
+  ],
+  "fetched_at": "2026-05-26T02:30:34.275Z",
+  "schema_version": "v1",
+  "commit_sha": "6a940b208bf970d949872bfc932bea1e739b89b2",
+  "title": "docs(shadow): log backlog index integrity drift from PR #5025",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T02:30:16Z",
+  "head_ref": "lior/shadow-log-backlog-index-drift-5025"
+}

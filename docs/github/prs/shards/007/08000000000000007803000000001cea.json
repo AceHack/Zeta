@@ -1,0 +1,12 @@
+{
+  "pr_number": 7402,
+  "archive_path": "docs/history/pr-reviews/PR-7402-docs-it-s-not-f-anymore-it-s-a-universal-intelligence-interface-uii-add-vocab-co.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:58:45.402Z",
+  "schema_version": "v1",
+  "commit_sha": "57798b02ddf04b7060e8f476af75960a0b1d811f",
+  "title": "docs: it's not F# anymore — it's a Universal Intelligence Interface (UII) + add vocab/count/ type home; stepping back while Aaron builds his own interface",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:58:25Z",
+  "head_ref": "otto/uii-reframe-universal-intelligence-interface-plus-count-folder"
+}

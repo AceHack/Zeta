@@ -1,0 +1,19 @@
+{
+  "pr_number": 2572,
+  "archive_path": "docs/history/pr-reviews/PR-2572-feat-backlog-b-0403-0404-0405-weight-free-tick-procurement-beacon-promotion.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_q7IP",
+    "comment:PRRC_kwDOSF9kNM6_q7IU",
+    "comment:PRRC_kwDOSF9kNM6_q7IX",
+    "thread:PRRT_kwDOSF9kNM6A8HCh",
+    "thread:PRRT_kwDOSF9kNM6A8HCm",
+    "thread:PRRT_kwDOSF9kNM6A8HCp"
+  ],
+  "fetched_at": "2026-05-11T01:40:35.471Z",
+  "schema_version": "v1",
+  "commit_sha": "b7259998b6c8f01c364c0abfd5661b8b1faf0f76",
+  "title": "feat(backlog): B-0403/0404/0405 — weight-free + tick procurement + beacon promotion",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:40:20Z",
+  "head_ref": "feat/backlog-b0403-b0404-b0405-critic-session-2026-05-10"
+}

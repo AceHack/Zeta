@@ -1,0 +1,17 @@
+{
+  "pr_number": 4166,
+  "archive_path": "docs/history/pr-reviews/PR-4166-backlog-mika-batch7-substrate-b-0659-consent-as-limit-operation-b-0660-limit-bla.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CV7cN",
+    "comment:PRRC_kwDOSF9kNM7CV7cS",
+    "thread:PRRT_kwDOSF9kNM6C5x4o",
+    "thread:PRRT_kwDOSF9kNM6C5x4s"
+  ],
+  "fetched_at": "2026-05-18T16:43:06.800Z",
+  "schema_version": "v1",
+  "commit_sha": "ad8896a6f0119344d61ef72fcabe41782e54ef32",
+  "title": "backlog(mika-batch7-substrate): B-0659 consent-as-Limit-operation + B-0660 Limit-black-by-default",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T16:42:42Z",
+  "head_ref": "otto-cli/mika-batch7-b0659-b0660-2026-05-18-1236Z"
+}

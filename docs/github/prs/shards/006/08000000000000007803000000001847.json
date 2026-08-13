@@ -1,0 +1,12 @@
+{
+  "pr_number": 6215,
+  "archive_path": "docs/history/pr-reviews/PR-6215-docs-agentic-org-define-phase-2-production-autonomy-ca.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T15:04:45.376Z",
+  "schema_version": "v1",
+  "commit_sha": "5a6df3c09123e44f0c841890a898d965bd54fe85",
+  "title": "docs(agentic-org): define phase 2 production autonomy CA",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T15:04:22Z",
+  "head_ref": "docs/agentic-org-observability-lgtm-stack-2026-05-31"
+}

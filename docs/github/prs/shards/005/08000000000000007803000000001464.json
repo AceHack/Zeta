@@ -1,0 +1,12 @@
+{
+  "pr_number": 5220,
+  "archive_path": "docs/history/pr-reviews/PR-5220-backlog-b-0816-p1-architectural-principle-maximize-argocd-scope-minimize-nixos-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T16:51:26.010Z",
+  "schema_version": "v1",
+  "commit_sha": "b4679f0bdc3ae74c4f60f79a4a5e8f4fd0f64155",
+  "title": "backlog(B-0816 P1 architectural-principle): maximize ArgoCD scope; minimize NixOS-native lock-in for cross-cluster portability",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T16:51:01Z",
+  "head_ref": "otto-cli/b0816-principle-maximize-argocd-scope-portability-leverage-aaron-2026-05-26"
+}

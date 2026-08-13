@@ -1,0 +1,12 @@
+{
+  "pr_number": 8306,
+  "archive_path": "docs/history/pr-reviews/PR-8306-docs-closed-frame-optimize-for-all-lenses-the-generative-use-of-decorrelation-tr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T10:32:29.005Z",
+  "schema_version": "v1",
+  "commit_sha": "26a09b07b519299a814112a329b7cf5994273243",
+  "title": "docs(closed-frame): optimize for all lenses — the generative use of decorrelation (truth not approval)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T10:32:00Z",
+  "head_ref": "otto/optimize-for-all-lenses-generative-decorrelation"
+}

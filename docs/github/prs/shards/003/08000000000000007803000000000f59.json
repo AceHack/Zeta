@@ -1,0 +1,12 @@
+{
+  "pr_number": 3929,
+  "archive_path": "docs/history/pr-reviews/PR-3929-feat-shadow-v2-delta-detection-restore-arrow-logs-what-got-restored.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T18:51:55.789Z",
+  "schema_version": "v1",
+  "commit_sha": "555e644c3a59cc7903a4c9b0cf3d153bd9f13ae5",
+  "title": "feat(shadow): v2 delta-detection — restore-arrow logs what got restored",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T18:51:38Z",
+  "head_ref": "chore/shadow-restore-arrow-v2-delta-detect-otto-cli-2026-05-16-1841z"
+}

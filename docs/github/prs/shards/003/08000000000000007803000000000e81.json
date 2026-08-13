@@ -1,0 +1,12 @@
+{
+  "pr_number": 3713,
+  "archive_path": "docs/history/pr-reviews/PR-3713-docs-shadow-lior-antigravity-drift-report-0336z.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T03:41:29.386Z",
+  "schema_version": "v1",
+  "commit_sha": "a8132a165b71ab708fb75a98b294e6a2ad9b689b",
+  "title": "docs(shadow): Lior antigravity drift report 0336Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:41:09Z",
+  "head_ref": "lior/drift-report-0336Z"
+}

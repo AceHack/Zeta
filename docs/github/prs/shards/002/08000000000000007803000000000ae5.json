@@ -1,0 +1,25 @@
+{
+  "pr_number": 2789,
+  "archive_path": "docs/history/pr-reviews/PR-2789-docs-memory-scaffolding-pedagogy-toolkit-4-color-orthogonality-info-hazard-greek.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AYvXK",
+    "comment:PRRC_kwDOSF9kNM7AYvY5",
+    "comment:PRRC_kwDOSF9kNM7AYvZi",
+    "comment:PRRC_kwDOSF9kNM7AYva-",
+    "comment:PRRC_kwDOSF9kNM7AYvaP",
+    "comment:PRRC_kwDOSF9kNM7AYvc3",
+    "thread:PRRT_kwDOSF9kNM6BeCKd",
+    "thread:PRRT_kwDOSF9kNM6BeCLx",
+    "thread:PRRT_kwDOSF9kNM6BeCM2",
+    "thread:PRRT_kwDOSF9kNM6BeCMU",
+    "thread:PRRT_kwDOSF9kNM6BeCNU",
+    "thread:PRRT_kwDOSF9kNM6BeCO2"
+  ],
+  "fetched_at": "2026-05-12T15:29:13.933Z",
+  "schema_version": "v1",
+  "commit_sha": "68ac2600dc4019024785a0176d41278f7ca1348a",
+  "title": "docs(memory): scaffolding-pedagogy toolkit — 4-color orthogonality + info-hazard + Greek-symbols + density-as-protection + weight-ledger (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T15:28:56Z",
+  "head_ref": "docs/aaron-4color-theorem-orthogonality-test-2026-05-12"
+}

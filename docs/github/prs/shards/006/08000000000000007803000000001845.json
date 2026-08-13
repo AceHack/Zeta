@@ -1,0 +1,15 @@
+{
+  "pr_number": 6213,
+  "archive_path": "docs/history/pr-reviews/PR-6213-feat-b-0164-1-add-divergence-reconcile-json-list-output.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GgPrQ",
+    "thread:PRRT_kwDOSF9kNM6F8eBL"
+  ],
+  "fetched_at": "2026-05-31T14:19:50.493Z",
+  "schema_version": "v1",
+  "commit_sha": "f89cb127427f286abbaf2ffa4328cf28b3ae3a1f",
+  "title": "feat(B-0164.1): add divergence reconcile JSON list output",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T14:19:27Z",
+  "head_ref": "claim/codex-loop-b0164-1-divergence-json-20260531"
+}

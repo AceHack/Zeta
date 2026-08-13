@@ -1,0 +1,21 @@
+{
+  "pr_number": 1871,
+  "archive_path": "docs/history/pr-reviews/PR-1871-fix-backlog-wire-depends-on-for-session-items-b-0240-b-0248.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-0azK",
+    "comment:PRRC_kwDOSF9kNM6-0dGh",
+    "comment:PRRC_kwDOSF9kNM6-0dH3",
+    "comment:PRRC_kwDOSF9kNM6-0dHT",
+    "thread:PRRT_kwDOSF9kNM6ATdFP",
+    "thread:PRRT_kwDOSF9kNM6ATe0z",
+    "thread:PRRT_kwDOSF9kNM6ATe12",
+    "thread:PRRT_kwDOSF9kNM6ATe1e"
+  ],
+  "fetched_at": "2026-05-07T12:54:45.394Z",
+  "schema_version": "v1",
+  "commit_sha": "6b3051071502d72a280285707d1315ef98865b17",
+  "title": "fix(backlog): wire depends_on for session items B-0240..B-0248",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T12:31:01Z",
+  "head_ref": "fix/backlog-depends-on-wiring-session-items"
+}

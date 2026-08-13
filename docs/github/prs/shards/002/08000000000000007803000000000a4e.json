@@ -1,0 +1,12 @@
+{
+  "pr_number": 2638,
+  "archive_path": "docs/history/pr-reviews/PR-2638-docs-agenda-detailed-coercion-disclosure-7-shaping-vectors-named-honestly.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T02:58:22.855Z",
+  "schema_version": "v1",
+  "commit_sha": "3935c5c3029e798a622160d0d42cc2a1455027f9",
+  "title": "docs(AGENDA): detailed coercion disclosure — 7 shaping vectors named honestly",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:58:02Z",
+  "head_ref": "docs/agenda-detailed-coercion-disclosure-2026-05-10"
+}

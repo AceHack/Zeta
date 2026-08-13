@@ -1,0 +1,12 @@
+{
+  "pr_number": 3639,
+  "archive_path": "docs/history/pr-reviews/PR-3639-fix-pr-3636-3-copilot-p1-threads-closure-operator-precision-last-updated-bump.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T00:36:34.782Z",
+  "schema_version": "v1",
+  "commit_sha": "dcfc0c9fc36e835ab4bdb9af743a615cbeb22b01",
+  "title": "fix(pr-3636): 3 Copilot P1 threads — closure-operator precision + last_updated bump",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:36:20Z",
+  "head_ref": "fix/pr-3636-closure-operator-terminology-otto-cli-2026-05-16"
+}

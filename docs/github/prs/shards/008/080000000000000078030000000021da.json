@@ -1,0 +1,12 @@
+{
+  "pr_number": 8666,
+  "archive_path": "docs/history/pr-reviews/PR-8666-feat-core-costarzset-co-star-link-set-as-a-dbsp-zset-reverse-mint-a-fold-increme.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T01:12:52.621Z",
+  "schema_version": "v1",
+  "commit_sha": "1b0ec7eb27f1751921e707f152ec5a8a3d307c1a",
+  "title": "feat(core): CostarZSet — co-star link-set as a DBSP ZSet (reverse-mint = a fold; incremental deltas; schema-evolution-ready)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:12:24Z",
+  "head_ref": "otto/costar-zset-dbsp-schema-evolution"
+}

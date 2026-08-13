@@ -1,0 +1,12 @@
+{
+  "pr_number": 8382,
+  "archive_path": "docs/history/pr-reviews/PR-8382-docs-society-9a-isociety-ctm-in-the-type-system-recursively-composite-hkt-simula.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:46:36.912Z",
+  "schema_version": "v1",
+  "commit_sha": "69c51238ba51552733217d6cc6c0ad8a320c6461",
+  "title": "docs(society): §9a — ISociety <: CTM in the type system, recursively (Composite, HKT-simulated)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:46:09Z",
+  "head_ref": "docs/isociety-is-a-ctm-recursive-hkt"
+}

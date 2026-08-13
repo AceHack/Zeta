@@ -1,0 +1,12 @@
+{
+  "pr_number": 8252,
+  "archive_path": "docs/history/pr-reviews/PR-8252-docs-research-security-three-tier-story-arc-vs-wall-clock-time-zeitgeber-and-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T03:58:32.837Z",
+  "schema_version": "v1",
+  "commit_sha": "4d54a4075b58c993c5cfb3cee0f7e483ce62ba78",
+  "title": "docs(research): security three-tier, story-arc-vs-wall-clock time, zeitgeber, and the dream (session tail)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T03:58:09Z",
+  "head_ref": "otto/the-dream-code-runs-we-build"
+}

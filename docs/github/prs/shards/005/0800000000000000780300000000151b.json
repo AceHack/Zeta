@@ -1,0 +1,21 @@
+{
+  "pr_number": 5403,
+  "archive_path": "docs/history/pr-reviews/PR-5403-feat-b-0852-credential-persistence-on-usb-esp-boot-sequence-auth-method-picker-e.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FN71N",
+    "comment:PRRC_kwDOSF9kNM7FN71w",
+    "comment:PRRC_kwDOSF9kNM7FN72G",
+    "comment:PRRC_kwDOSF9kNM7FNxXK",
+    "thread:PRRT_kwDOSF9kNM6FAbT8",
+    "thread:PRRT_kwDOSF9kNM6FAi_B",
+    "thread:PRRT_kwDOSF9kNM6FAi_a",
+    "thread:PRRT_kwDOSF9kNM6FAi_v"
+  ],
+  "fetched_at": "2026-05-27T06:08:14.934Z",
+  "schema_version": "v1",
+  "commit_sha": "729710947d2af3cd46c79fa757d28f806d1bd66d",
+  "title": "feat(B-0852): credential persistence on USB ESP + boot-sequence auth-method picker — encrypted blob bound to USB UUID + operator passphrase Phase 1 (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T06:07:50Z",
+  "head_ref": "backlog/b-0852-cred-persistence-boot-auth-picker-2026-05-27"
+}

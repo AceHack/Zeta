@@ -1,0 +1,12 @@
+{
+  "pr_number": 7058,
+  "archive_path": "docs/history/pr-reviews/PR-7058-fix-ci-unblock-lint-tsc-tools-5-ts-errors-in-full-ai-cluster-tools-gate-red-7h.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T08:38:36.203Z",
+  "schema_version": "v1",
+  "commit_sha": "f90a3e6925d2a7c386078a76d2206b9d0ca47778",
+  "title": "fix(ci): unblock lint(tsc tools) — 5 TS errors in full-ai-cluster/tools (gate red 7h)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T08:38:17Z",
+  "head_ref": "otto/fix-tsc-tools-gate-full-ai-cluster"
+}

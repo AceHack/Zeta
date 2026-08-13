@@ -1,0 +1,12 @@
+{
+  "pr_number": 9040,
+  "archive_path": "docs/history/pr-reviews/PR-9040-docs-preserve-quarantine-1384-unlanded-files-from-lior-s-263-orphan-branches.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-30T21:17:20.431Z",
+  "schema_version": "v1",
+  "commit_sha": "142734f2cb7d6e6a3c0ea31df23d776ed5720673",
+  "title": "docs(preserve): quarantine 1384 unlanded files from Lior's 263 orphan branches",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T21:16:54Z",
+  "head_ref": "preserve-lior-unlanded-quarantine-2026-06-30"
+}

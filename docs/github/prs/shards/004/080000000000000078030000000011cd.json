@@ -1,0 +1,19 @@
+{
+  "pr_number": 4557,
+  "archive_path": "docs/history/pr-reviews/PR-4557-feat-b-0689-otto-vscode-third-foreground-surface-sender-ids-extension-cold-boot-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DriMZ",
+    "comment:PRRC_kwDOSF9kNM7DriNu",
+    "comment:PRRC_kwDOSF9kNM7DriON",
+    "thread:PRRT_kwDOSF9kNM6D4EXq",
+    "thread:PRRT_kwDOSF9kNM6D4EYt",
+    "thread:PRRT_kwDOSF9kNM6D4EZF"
+  ],
+  "fetched_at": "2026-05-21T17:12:24.585Z",
+  "schema_version": "v1",
+  "commit_sha": "8fd16ff3dfe892b4fc388c73c7db97cdd6dd6e3e",
+  "title": "feat(B-0689): Otto-VSCode third foreground surface — SENDER_IDS extension + cold-boot bootstream + roster card update",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T17:12:01Z",
+  "head_ref": "feat/b0689-otto-vscode-sender-ids-bootstream-roster-card-implementation-2026-05-21"
+}

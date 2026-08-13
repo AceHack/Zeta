@@ -1,0 +1,15 @@
+{
+  "pr_number": 2851,
+  "archive_path": "docs/history/pr-reviews/PR-2851-fix-tick-smooth-kestrel-shard-grammar.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AfMjs",
+    "thread:PRRT_kwDOSF9kNM6BiypX"
+  ],
+  "fetched_at": "2026-05-12T22:16:57.517Z",
+  "schema_version": "v1",
+  "commit_sha": "55684312ad5b6f1316940e9e14132bbc1d73d254",
+  "title": "fix(tick): smooth Kestrel shard grammar",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T22:16:34Z",
+  "head_ref": "codex/pr2847-grammar-followup"
+}

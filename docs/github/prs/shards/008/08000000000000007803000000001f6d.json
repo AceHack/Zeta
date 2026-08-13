@@ -1,0 +1,12 @@
+{
+  "pr_number": 8045,
+  "archive_path": "docs/history/pr-reviews/PR-8045-feat-ace-upstream-change-detector-for-helm-b-0824-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T18:53:14.199Z",
+  "schema_version": "v1",
+  "commit_sha": "2808fcf71f8e08bd4ee34608e18caffcc76252d8",
+  "title": "feat(ace): upstream change detector for helm (B-0824.2)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T18:52:44Z",
+  "head_ref": "lior/helm-change-detector"
+}

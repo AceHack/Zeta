@@ -1,0 +1,12 @@
+{
+  "pr_number": 2753,
+  "archive_path": "docs/history/pr-reviews/PR-2753-archive-pr-reviews-prs-2747-2752-casimir-gap-batch.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T21:22:48.007Z",
+  "schema_version": "v1",
+  "commit_sha": "732f78ccccda3ea57566649da03a81f2e09a2eab",
+  "title": "archive(pr-reviews): PRs #2747-2752 — Casimir gap batch",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T21:22:30Z",
+  "head_ref": "archive/pr-reviews-2747-2752-2026-05-11"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6945,
+  "archive_path": "docs/history/pr-reviews/PR-6945-docs-ferry-ace-self-hosts-then-rebuilds-zeta-from-128-bit-seed-ace-autonomous-co.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T23:12:18.753Z",
+  "schema_version": "v1",
+  "commit_sha": "a41c99a64b08badcd092dd49800b9fef078bf4d4",
+  "title": "docs+ferry: ACE self-hosts then rebuilds Zeta from 128-bit seed; ACE = Autonomous Cognition Engine (closure=cognition)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T23:11:55Z",
+  "head_ref": "otto/ace-self-host-seed-autonomous-cognition-engine"
+}

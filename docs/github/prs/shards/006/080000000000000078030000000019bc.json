@@ -1,0 +1,16 @@
+{
+  "pr_number": 6588,
+  "archive_path": "docs/history/pr-reviews/PR-6588-docs-b-1000-zeta-infer-net-rewrite-f-factor-graph-bp-ep-message-passing-on-the-d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HPULz",
+    "comment:PRRC_kwDOSF9kNM7HPZxr",
+    "thread:PRRT_kwDOSF9kNM6GfaQR"
+  ],
+  "fetched_at": "2026-06-02T16:17:19.927Z",
+  "schema_version": "v1",
+  "commit_sha": "57ac5271987d234f39e36480873b2ae7c7c652a4",
+  "title": "docs(B-1000): Zeta Infer.NET rewrite — F# factor-graph + BP/EP message-passing on the DBSP-semiring substrate; seed CE = model DSL",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T16:16:50Z",
+  "head_ref": "otto-cli/b1000-zeta-infernet-rewrite-2026-06-02"
+}

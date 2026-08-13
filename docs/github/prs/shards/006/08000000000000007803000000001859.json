@@ -1,0 +1,12 @@
+{
+  "pr_number": 6233,
+  "archive_path": "docs/history/pr-reviews/PR-6233-feat-observe-action-simulation-runloop-mode-persistence-v4.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T19:19:17.987Z",
+  "schema_version": "v1",
+  "commit_sha": "7162da93e0be31ced5aa0829457b67cfb78ffeda",
+  "title": "feat(observe): action simulation + runLoop + mode persistence (v4)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T19:18:54Z",
+  "head_ref": "otto-cli/observe-simulate-action-llm-loop-2026-05-31"
+}

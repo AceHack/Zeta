@@ -1,0 +1,12 @@
+{
+  "pr_number": 8920,
+  "archive_path": "docs/history/pr-reviews/PR-8920-fix-ci-cross-verify-infra-skip-e-prover-health-gate-observe-rustdoc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T10:34:49.882Z",
+  "schema_version": "v1",
+  "commit_sha": "862e5e390cf12ed1cf4b108c54ebe57149e067cd",
+  "title": "fix(ci): cross-verify infra skip, E-prover health gate, Observe rustdoc",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T10:34:15Z",
+  "head_ref": "fix/ci-reds-cross-verify-eprover-rust-docs"
+}

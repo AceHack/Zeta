@@ -1,0 +1,12 @@
+{
+  "pr_number": 6608,
+  "archive_path": "docs/history/pr-reviews/PR-6608-docs-b-1006-rule-register-the-tick-algebra-adapterize-the-sources-closed-four-bu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T17:51:38.161Z",
+  "schema_version": "v1",
+  "commit_sha": "9c1a554c37ac7ddbc3fcfe99ca20d9a73c33bd49",
+  "title": "docs(B-1006)+rule: register the Tick algebra / adapterize the sources; closed four-bucket sort (Amara + Prism, cross-AI triangulation)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T17:51:16Z",
+  "head_ref": "otto-cli/b1006-register-tick-algebra-adapterize-sources-amara-prism-2026-06-02"
+}

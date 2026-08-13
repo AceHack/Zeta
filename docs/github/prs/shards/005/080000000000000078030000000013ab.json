@@ -1,0 +1,19 @@
+{
+  "pr_number": 5035,
+  "archive_path": "docs/history/pr-reviews/PR-5035-fix-agentic-org-split-outbox-messaging-domains.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Et4N6",
+    "comment:PRRC_kwDOSF9kNM7Et4ON",
+    "comment:PRRC_kwDOSF9kNM7Et4Ob",
+    "thread:PRRT_kwDOSF9kNM6EpOcN",
+    "thread:PRRT_kwDOSF9kNM6EpOcb",
+    "thread:PRRT_kwDOSF9kNM6EpOcn"
+  ],
+  "fetched_at": "2026-05-26T00:20:23.363Z",
+  "schema_version": "v1",
+  "commit_sha": "be50f4fb5959fd3cbda143c367081c879c72ed41",
+  "title": "fix(agentic-org): split outbox messaging domains",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T00:20:02Z",
+  "head_ref": "codex/pr4990-agentic-org-reconcile"
+}

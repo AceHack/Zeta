@@ -1,0 +1,12 @@
+{
+  "pr_number": 6290,
+  "archive_path": "docs/history/pr-reviews/PR-6290-chore-mise-bump-node-22-24-current-active-lts-keep-bun-node-everywhere.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T00:27:40.999Z",
+  "schema_version": "v1",
+  "commit_sha": "8ebd08e0560025dbbaac49aa6ff240164395eb84",
+  "title": "chore(mise): bump node 22 → 24 (current Active LTS) — keep bun, node everywhere",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T00:27:17Z",
+  "head_ref": "otto-windows/bump-node-22-to-24-lts-2026-06-01"
+}

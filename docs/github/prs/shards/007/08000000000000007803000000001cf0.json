@@ -1,0 +1,12 @@
+{
+  "pr_number": 7408,
+  "archive_path": "docs/history/pr-reviews/PR-7408-fix-vocab-ety-etymology-not-entropy-correct-my-conflation-entropy-saving-is-a-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:08:40.836Z",
+  "schema_version": "v1",
+  "commit_sha": "e271a603c302091b8f6069cb4919755a37442dab",
+  "title": "fix(vocab): ety = ETYMOLOGY, not entropy (correct my conflation; entropy-saving is a resonance, not the definition)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:08:19Z",
+  "head_ref": "otto/fix-ety-is-etymology-not-entropy"
+}

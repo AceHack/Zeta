@@ -1,0 +1,15 @@
+{
+  "pr_number": 6347,
+  "archive_path": "docs/history/pr-reviews/PR-6347-docs-b-0964-fold-oci-runtime-verdict-into-2-preserve-docker-vs-podman-huddle.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gl5oQ",
+    "thread:PRRT_kwDOSF9kNM6GAwZ1"
+  ],
+  "fetched_at": "2026-06-01T05:20:29.598Z",
+  "schema_version": "v1",
+  "commit_sha": "6681717f34234be476bf09ec474daa967350e375",
+  "title": "docs(B-0964): fold OCI-runtime verdict into §2 + preserve docker-vs-podman huddle",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T05:20:05Z",
+  "head_ref": "otto-cli/b0964-oci-fold-2026-06-01"
+}

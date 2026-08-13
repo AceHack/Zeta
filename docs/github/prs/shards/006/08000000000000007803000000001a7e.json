@@ -1,0 +1,12 @@
+{
+  "pr_number": 6782,
+  "archive_path": "docs/history/pr-reviews/PR-6782-feat-command-roadmap-1-zeta-mcp-server-mcp-json-drive-the-verbs-as-native-tools-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T10:22:52.519Z",
+  "schema_version": "v1",
+  "commit_sha": "102154dce1f2bd7377437121324e94af8a893c90",
+  "title": "feat(command/roadmap-#1): zeta MCP server + .mcp.json — drive the verbs as native tools (081KTGSBXDC)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T10:22:34Z",
+  "head_ref": "otto/zeta-mcp-server-and-registration"
+}

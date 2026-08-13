@@ -1,0 +1,17 @@
+{
+  "pr_number": 2845,
+  "archive_path": "docs/history/pr-reviews/PR-2845-add-rule-default-to-both-either-or-is-the-special-case-requiring-justification-w.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AenT2",
+    "comment:PRRC_kwDOSF9kNM7AenUk",
+    "thread:PRRT_kwDOSF9kNM6BiYE4",
+    "thread:PRRT_kwDOSF9kNM6BiYFb"
+  ],
+  "fetched_at": "2026-05-12T19:42:48.255Z",
+  "schema_version": "v1",
+  "commit_sha": "70e52782421824e87b3fec9840b5db3bddfd5d2b",
+  "title": "add(rule): default to BOTH — either-or is the special case requiring justification (wake-time landing for PR #2844 meta-discipline; WWJD-tedium connection)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:42:23Z",
+  "head_ref": "docs/default-to-both-meta-discipline-wake-time-rule-wwjd-tedium-binary-categorization-failure-mode-2026-05-12"
+}

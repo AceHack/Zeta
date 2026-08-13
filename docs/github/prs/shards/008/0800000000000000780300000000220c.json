@@ -1,0 +1,12 @@
+{
+  "pr_number": 8716,
+  "archive_path": "docs/history/pr-reviews/PR-8716-refactor-observe-migrate-chooser-simulate-tick-to-participant.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T06:35:50.593Z",
+  "schema_version": "v1",
+  "commit_sha": "0a83dd66b77b74b279de026fc6489ff7a0ad07f7",
+  "title": "refactor(observe): migrate chooser + simulate-tick to Participant",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T06:35:25Z",
+  "head_ref": "alexa/migrate-observe-with-participant"
+}

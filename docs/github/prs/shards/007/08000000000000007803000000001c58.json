@@ -1,0 +1,12 @@
+{
+  "pr_number": 7256,
+  "archive_path": "docs/history/pr-reviews/PR-7256-docs-vision-the-polite-virus-design-telos-close-over-the-world-never-take-contro.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:33:54.566Z",
+  "schema_version": "v1",
+  "commit_sha": "a4ebff7dd17fcda76509b84f62dd60039341f5f9",
+  "title": "docs(vision): the polite-virus design telos (close over the world, never take control, give freedom — SuperFluid AI)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:33:34Z",
+  "head_ref": "otto/vision-polite-virus-design-telos"
+}

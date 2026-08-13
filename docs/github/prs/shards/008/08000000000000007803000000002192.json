@@ -1,0 +1,12 @@
+{
+  "pr_number": 8594,
+  "archive_path": "docs/history/pr-reviews/PR-8594-docs-handoff-correct-fold-merge-superposition-merge-in-soft-space-no-decoherence.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T16:29:12.755Z",
+  "schema_version": "v1",
+  "commit_sha": "d04b53084c341fca0528efb77f6e76559cb8a275",
+  "title": "docs(handoff): correct FOLD/MERGE — superposition merge in soft space, no decoherence to classical",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T16:28:49Z",
+  "head_ref": "otto/handoff-fold-merge-soft-measurement-fix"
+}

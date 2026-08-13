@@ -1,0 +1,12 @@
+{
+  "pr_number": 2838,
+  "archive_path": "docs/history/pr-reviews/PR-2838-fix-tick-reconcile-1854z-pr-counts.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T19:12:25.975Z",
+  "schema_version": "v1",
+  "commit_sha": "2b09a644ff9653462a4baba5be1c7e2a273bff20",
+  "title": "fix(tick): reconcile 1854Z PR counts",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:12:08Z",
+  "head_ref": "codex/pr2834-tick-review-fix"
+}

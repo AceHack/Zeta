@@ -1,0 +1,15 @@
+{
+  "pr_number": 3160,
+  "archive_path": "docs/history/pr-reviews/PR-3160-docs-archive-preserve-pr-3151.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BUvql",
+    "thread:PRRT_kwDOSF9kNM6CJy1k"
+  ],
+  "fetched_at": "2026-05-14T18:38:51.798Z",
+  "schema_version": "v1",
+  "commit_sha": "906d0d9db773dd7c1dd6c04e7263774f524abcd3",
+  "title": "docs(archive): preserve PR 3151",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:38:31Z",
+  "head_ref": "lior-preserve-3151-1778783038"
+}

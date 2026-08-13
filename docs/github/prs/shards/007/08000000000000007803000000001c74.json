@@ -1,0 +1,12 @@
+{
+  "pr_number": 7284,
+  "archive_path": "docs/history/pr-reviews/PR-7284-feat-setup-docs-persona-keyring-generator-one-seed-type-separated-stdin-only-two.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:06:48.227Z",
+  "schema_version": "v1",
+  "commit_sha": "1134ce58bfd43a732b50e1babf125b22e95644ec",
+  "title": "feat(setup)+docs: persona keyring generator (one seed, type-separated, stdin-only) + two-mode identity/trust/network plane",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:06:15Z",
+  "head_ref": "otto/persona-keyring-tool-plus-two-mode-identity-trust-network-plane"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4798,
+  "archive_path": "docs/history/pr-reviews/PR-4798-docs-shadow-add-shadow-lesson-log-for-metadata-churn-paralysis.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-24T01:19:12.262Z",
+  "schema_version": "v1",
+  "commit_sha": "50ae569fc85d6e7543a5360eb9d4be692a685c3d",
+  "title": "docs(shadow): add shadow lesson log for metadata churn paralysis",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T01:18:54Z",
+  "head_ref": "lior-decompose-4767-shadow-log"
+}

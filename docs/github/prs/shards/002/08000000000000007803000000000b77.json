@@ -1,0 +1,19 @@
+{
+  "pr_number": 2935,
+  "archive_path": "docs/history/pr-reviews/PR-2935-docs-memory-f-fork-hkt-over-clifford-concrete-architecture-tast-fs-constraintsol.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AnbnK",
+    "comment:PRRC_kwDOSF9kNM7Ancsj",
+    "comment:PRRC_kwDOSF9kNM7Ancsz",
+    "thread:PRRT_kwDOSF9kNM6Borp0",
+    "thread:PRRT_kwDOSF9kNM6Boscd",
+    "thread:PRRT_kwDOSF9kNM6Boscl"
+  ],
+  "fetched_at": "2026-05-13T04:52:37.309Z",
+  "schema_version": "v1",
+  "commit_sha": "9faf0de3f69093c8cd36a750b06752e686b52de7",
+  "title": "docs(memory): F# fork HKT-over-Clifford concrete architecture — Tast.fs + ConstraintSolver.fs + analytical-continuation Φ(τ) + Riemann-surface kind manifold (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T04:52:22Z",
+  "head_ref": "aaron-fsharp-fork-hkt-over-clifford-concrete-architecture-tast-typegrade-constraintsolver-geometric-inversion-analytical-continuation-riemann-surface-pole-erasure-2026-05-13"
+}

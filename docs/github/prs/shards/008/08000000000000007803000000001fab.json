@@ -1,0 +1,12 @@
+{
+  "pr_number": 8107,
+  "archive_path": "docs/history/pr-reviews/PR-8107-feat-service-wave-1-persona-registry-env-schema-iservicemanager.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T00:41:19.882Z",
+  "schema_version": "v1",
+  "commit_sha": "a8f08e718c0799048866df01193532e6679a3b32",
+  "title": "feat(service): Wave 1 — persona registry + env schema + IServiceManager",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T00:41:00Z",
+  "head_ref": "kiro/unified-loop-wave1"
+}

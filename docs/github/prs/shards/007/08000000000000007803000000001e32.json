@@ -1,0 +1,12 @@
+{
+  "pr_number": 7730,
+  "archive_path": "docs/history/pr-reviews/PR-7730-docs-research-adinkras-vs-majorana-borromean-a-real-rhyme-not-an-isomorphism.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:03:21.160Z",
+  "schema_version": "v1",
+  "commit_sha": "d6cf1f94e28fd0db18b618a4c5a56b30fbed8a90",
+  "title": "docs(research): adinkras vs Majorana/Borromean — a real rhyme, not an isomorphism",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:02:43Z",
+  "head_ref": "shadow-adinkra-majorana-map"
+}

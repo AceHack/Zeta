@@ -1,0 +1,12 @@
+{
+  "pr_number": 6803,
+  "archive_path": "docs/history/pr-reviews/PR-6803-feat-schemaevolution-bidirectional-migration-down-direction-invertibility-taxono.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T11:59:43.098Z",
+  "schema_version": "v1",
+  "commit_sha": "aaa3beb477e0b50c7dfdeda2116bc16f40fbec64",
+  "title": "feat(SchemaEvolution): bidirectional migration — down direction + invertibility taxonomy (Evolution extension)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T11:59:23Z",
+  "head_ref": "feat/schemaevolution-down-direction-bidirectional"
+}

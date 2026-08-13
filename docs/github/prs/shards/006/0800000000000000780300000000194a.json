@@ -1,0 +1,16 @@
+{
+  "pr_number": 6474,
+  "archive_path": "docs/history/pr-reviews/PR-6474-feat-bag-rust-generic-math-additive-monoid-surface-add-default-sum.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G6cQO",
+    "comment:PRRC_kwDOSF9kNM7G6e4_",
+    "thread:PRRT_kwDOSF9kNM6GQE6Z"
+  ],
+  "fetched_at": "2026-06-01T21:16:49.069Z",
+  "schema_version": "v1",
+  "commit_sha": "2f3b1f96e2460bc6ffd9897e6722560ce8ae59c0",
+  "title": "feat(bag-rust): generic-math additive-monoid surface (Add + Default + Sum)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T21:16:26Z",
+  "head_ref": "otto-cli/bag-generic-math-rust-2026-06-01"
+}

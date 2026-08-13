@@ -1,0 +1,12 @@
+{
+  "pr_number": 7401,
+  "archive_path": "docs/history/pr-reviews/PR-7401-docs-vocab-zetaidol-credit-line-closed-over-by-aaron-stainback-brought-to-you-by.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:56:44.404Z",
+  "schema_version": "v1",
+  "commit_sha": "c3feb8d2dd488139b7406aafccb1bfa11c0cb30c",
+  "title": "docs(vocab): ZetaIdol credit line — closed over by Aaron Stainback, brought to you by the universe (maybe the multiverse)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:56:19Z",
+  "head_ref": "otto/zetaidol-credit-line-closed-over-by-aaron-stainback"
+}

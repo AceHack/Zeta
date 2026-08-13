@@ -1,0 +1,12 @@
+{
+  "pr_number": 3922,
+  "archive_path": "docs/history/pr-reviews/PR-3922-shard-tick-2026-05-16t17-32z-scope-boundary-catch-by-auto-mode-classifier.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T17:51:57.548Z",
+  "schema_version": "v1",
+  "commit_sha": "c0dd76c95b6a3037e540282a01a5c09361b63261",
+  "title": "shard(tick): 2026-05-16T17:32Z — scope-boundary catch by auto-mode classifier",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T17:51:41Z",
+  "head_ref": "otto-cli-tick-shard-1732z-scope-boundary-2026-05-16"
+}

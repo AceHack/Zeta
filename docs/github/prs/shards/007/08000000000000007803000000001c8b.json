@@ -1,0 +1,12 @@
+{
+  "pr_number": 7307,
+  "archive_path": "docs/history/pr-reviews/PR-7307-docs-research-the-disclosure-economy-reveal-to-earn-or-encrypt-to-keep-no-harm-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:05:07.979Z",
+  "schema_version": "v1",
+  "commit_sha": "290511928e8c2a272f098ea57c628dcd6f0ff25b",
+  "title": "docs(research): the disclosure economy — reveal-to-earn or encrypt-to-keep; no harm no foul, feedback is the win; chip8 is the safe sandbox",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:04:41Z",
+  "head_ref": "otto/disclosure-economy-reveal-to-earn-or-encrypt-to-keep-no-harm-no-foul-feedback-is-the-win"
+}

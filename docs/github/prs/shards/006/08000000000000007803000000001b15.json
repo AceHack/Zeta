@@ -1,0 +1,12 @@
+{
+  "pr_number": 6933,
+  "archive_path": "docs/history/pr-reviews/PR-6933-docs-reticulum-traveler-frame-address-vs-durable-rotational-heartbeat-cells-ephe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T22:37:25.387Z",
+  "schema_version": "v1",
+  "commit_sha": "5e0decb39b1499a47a977b1b382bee085e63f5d2",
+  "title": "docs: Reticulum=traveler frame; address vs durable rotational heartbeat (cells/ephemeral/durable agents, thermodynamically typed)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T22:37:06Z",
+  "head_ref": "otto/reticulum-traveler-frame-address-vs-durable-heartbeat-timecrystal"
+}

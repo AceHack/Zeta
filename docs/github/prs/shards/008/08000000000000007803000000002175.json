@@ -1,0 +1,12 @@
+{
+  "pr_number": 8565,
+  "archive_path": "docs/history/pr-reviews/PR-8565-test-aurora-d-capability-gate-z3-lemmas-cap-req-cap-allowed-qf-bv.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T13:00:10.765Z",
+  "schema_version": "v1",
+  "commit_sha": "57da3479957a49ebfc1838d286f61654e6f00e9e",
+  "title": "test(aurora): (d) capability-gate Z3 lemmas — cap_req ⊆ cap_allowed (QF_BV)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T12:59:41Z",
+  "head_ref": "otto/aurora-d-capability-gate-z3"
+}

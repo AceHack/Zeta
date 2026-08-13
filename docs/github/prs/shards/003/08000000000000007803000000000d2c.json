@@ -1,0 +1,12 @@
+{
+  "pr_number": 3372,
+  "archive_path": "docs/history/pr-reviews/PR-3372-backlog-p3-b-0530-cron-sentinel-mutex-to-prevent-multi-otto-cli-self-contention.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T06:26:46.033Z",
+  "schema_version": "v1",
+  "commit_sha": "bc1f46cb36aca16bc4e96d9973f98e933bcd4c85",
+  "title": "backlog(p3): B-0530 — cron-sentinel mutex to prevent multi-Otto-CLI self-contention",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T06:26:27Z",
+  "head_ref": "backlog/b0530-cron-sentinel-mutex-otto-cli-2026-05-15"
+}

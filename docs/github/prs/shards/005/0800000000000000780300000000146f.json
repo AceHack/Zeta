@@ -1,0 +1,12 @@
+{
+  "pr_number": 5231,
+  "archive_path": "docs/history/pr-reviews/PR-5231-fix-riven-resolve-merge-conflict-in-riven-loop-tick-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T17:22:12.805Z",
+  "schema_version": "v1",
+  "commit_sha": "e77206289896a7d2f164800fc9c1a545a080d314",
+  "title": "fix(riven): resolve merge conflict in riven-loop-tick.ts",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:21:50Z",
+  "head_ref": "revert-riven-tick-deletion-fix"
+}

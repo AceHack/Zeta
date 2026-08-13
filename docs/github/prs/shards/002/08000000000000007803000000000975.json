@@ -1,0 +1,17 @@
+{
+  "pr_number": 2421,
+  "archive_path": "docs/history/pr-reviews/PR-2421-feat-b-0055-2-smallest-safe-slice-pure-ts-edge-claim-flag-types-ctf-validator-st.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_l0Rh",
+    "comment:PRRC_kwDOSF9kNM6_l0Rj",
+    "thread:PRRT_kwDOSF9kNM6A4Dvp",
+    "thread:PRRT_kwDOSF9kNM6A4Dvq"
+  ],
+  "fetched_at": "2026-05-10T05:27:52.444Z",
+  "schema_version": "v1",
+  "commit_sha": "d013b86c531b0c6dece3d3806b99bcd15038ff83",
+  "title": "feat(B-0055.2): smallest safe slice — pure-TS edge-claim flag types + CTF validator stub (re-decomposed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T05:27:37Z",
+  "head_ref": "claim/B-0055.2-edge-claims-catalog-validator-smallest-slice-riven-2026-05-10"
+}

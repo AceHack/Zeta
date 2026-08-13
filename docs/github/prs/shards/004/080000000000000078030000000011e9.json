@@ -1,0 +1,12 @@
+{
+  "pr_number": 4585,
+  "archive_path": "docs/history/pr-reviews/PR-4585-shard-2026-05-21-2209z-cold-boot-otto-cli-sentinel-re-arm-orphaned-branch-triage.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T22:17:47.848Z",
+  "schema_version": "v1",
+  "commit_sha": "4a4827781a0eb950161ff03602ac9ca2c078ae30",
+  "title": "shard(2026-05-21/2209Z): cold-boot Otto-CLI + sentinel re-arm + orphaned-branch triage PR #4574",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T22:17:28Z",
+  "head_ref": "shard/tick-2209z-cold-boot-orphaned-branch-pr4574-triage-2026-05-21"
+}

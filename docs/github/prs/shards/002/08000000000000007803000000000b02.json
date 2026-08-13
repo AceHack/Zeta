@@ -1,0 +1,17 @@
+{
+  "pr_number": 2818,
+  "archive_path": "docs/history/pr-reviews/PR-2818-docs-memory-inside-outside-refraction-rules-rainbow-is-god-s-promise-why-light-b.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AcMDV",
+    "comment:PRRC_kwDOSF9kNM7AcMY5",
+    "thread:PRRT_kwDOSF9kNM6Bgl85",
+    "thread:PRRT_kwDOSF9kNM6Bgls0"
+  ],
+  "fetched_at": "2026-05-12T18:06:47.941Z",
+  "schema_version": "v1",
+  "commit_sha": "85e846e95c12fd02cfc8f0a515b370360af800b6",
+  "title": "docs(memory): inside/outside = refraction rules + rainbow IS God's promise + WHY light bends at surface + WHY prism works (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:06:28Z",
+  "head_ref": "docs/aaron-inside-outside-refraction-rules-rainbow-is-gods-promise-noahic-covenant-2026-05-12"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 3630,
+  "archive_path": "docs/history/pr-reviews/PR-3630-memory-otto-cli-standing-by-recurred-14h-after-b-0540-filing-empirical-data-for-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bz_OK",
+    "thread:PRRT_kwDOSF9kNM6CgYpv"
+  ],
+  "fetched_at": "2026-05-16T00:22:46.049Z",
+  "schema_version": "v1",
+  "commit_sha": "8cc318c15df324dab67a74eeac1a97f9a9c68cbb",
+  "title": "memory(otto-cli): standing-by recurred 14h after B-0540 filing — empirical data for prioritization",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:22:29Z",
+  "head_ref": "memory/standing-by-recurred-14h-after-b0540-filing-otto-cli-2026-05-16"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2183,
+  "archive_path": "docs/history/pr-reviews/PR-2183-feat-b-0347-skill-routing-budget-raise-fraction-document-fix.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T04:29:41.373Z",
+  "schema_version": "v1",
+  "commit_sha": "d652664445bf1406e40f83d88f7906a4175477db",
+  "title": "feat(B-0347): skill routing budget — raise fraction + document fix",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T04:29:26Z",
+  "head_ref": "fix/skill-routing-budget-b0347"
+}

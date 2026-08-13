@@ -1,0 +1,12 @@
+{
+  "pr_number": 2956,
+  "archive_path": "docs/history/pr-reviews/PR-2956-fix-tsc-exactoptionalpropertytypes-bus-ts-claim-ts-bus-test-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T06:41:32.920Z",
+  "schema_version": "v1",
+  "commit_sha": "7af01ecb5988abb2c299e28fbc4d371b027a862b",
+  "title": "fix(tsc): exactOptionalPropertyTypes — bus.ts/claim.ts/bus.test.ts",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T06:41:16Z",
+  "head_ref": "fix-tsc-exactoptional-bus-tools-2026-05-13"
+}

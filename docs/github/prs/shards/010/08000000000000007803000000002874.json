@@ -1,0 +1,12 @@
+{
+  "pr_number": 10356,
+  "archive_path": "docs/history/pr-reviews/PR-10356-fix-lean-six-unchecked-proofs-join-the-build-a-silent-orphan-becomes-impossible.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-13T19:10:59.541Z",
+  "schema_version": "v1",
+  "commit_sha": "3e0f12907cec19c74f56dd8e371c25c3dfe104b9",
+  "title": "fix(lean): six unchecked proofs join the build; a silent orphan becomes impossible",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T19:10:23Z",
+  "head_ref": "lean-orphan-guard"
+}

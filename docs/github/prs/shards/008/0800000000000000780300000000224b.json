@@ -1,0 +1,12 @@
+{
+  "pr_number": 8779,
+  "archive_path": "docs/history/pr-reviews/PR-8779-feat-core-metaspacemap-tier-0-navigable-outside-static-no-js-svg-vault-warp-link.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T21:51:57.684Z",
+  "schema_version": "v1",
+  "commit_sha": "104871b62f8cc3d084a77baabca26a7a665d9d63",
+  "title": "feat(core): MetaspaceMap — Tier-0 navigable outside (static no-JS SVG, vault warp-links)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T21:51:32Z",
+  "head_ref": "otto/metaspace-map-warp-links"
+}

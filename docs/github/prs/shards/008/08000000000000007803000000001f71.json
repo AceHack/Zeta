@@ -1,0 +1,12 @@
+{
+  "pr_number": 8049,
+  "archive_path": "docs/history/pr-reviews/PR-8049-ci-mirror-draft-mirror-to-fork-workflow-keep-acehack-zeta-an-exact-mirror-gated-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T20:06:57.948Z",
+  "schema_version": "v1",
+  "commit_sha": "e0d3331eb096be8e753cdfc6df02988b6bd1651e",
+  "title": "ci(mirror): draft mirror-to-fork workflow — keep acehack/Zeta an exact mirror [GATED: Dejan + secret]",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T20:06:35Z",
+  "head_ref": "shadow/mirror-to-fork-workflow"
+}

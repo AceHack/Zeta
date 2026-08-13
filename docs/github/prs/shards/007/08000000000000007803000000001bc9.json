@@ -1,0 +1,12 @@
+{
+  "pr_number": 7113,
+  "archive_path": "docs/history/pr-reviews/PR-7113-docs-research-spec-chip-8-octo-toolchain-built-from-source-declaratively-via-ace.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T22:23:42.975Z",
+  "schema_version": "v1",
+  "commit_sha": "b940e851738d3d7d12ad6f5fe3dacbe5a735bd9a",
+  "title": "docs(research): spec — CHIP-8 Octo toolchain, built from source, declaratively via ace",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T22:23:24Z",
+  "head_ref": "otto/spec-chip8-octo-toolchain-via-ace-declarative"
+}

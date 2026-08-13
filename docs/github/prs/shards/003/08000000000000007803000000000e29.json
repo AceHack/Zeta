@@ -1,0 +1,12 @@
+{
+  "pr_number": 3625,
+  "archive_path": "docs/history/pr-reviews/PR-3625-docs-archive-lior-preservation-discipline-for-recent-merged-prs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T00:16:46.154Z",
+  "schema_version": "v1",
+  "commit_sha": "aefc06a2ea326dbf416bbfb3426b118c193d7085",
+  "title": "docs(archive): Lior preservation discipline for recent merged PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:16:31Z",
+  "head_ref": "lior/preserve-prs-3624"
+}

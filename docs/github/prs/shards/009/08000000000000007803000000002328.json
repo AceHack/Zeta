@@ -1,0 +1,12 @@
+{
+  "pr_number": 9000,
+  "archive_path": "docs/history/pr-reviews/PR-9000-feat-keys-teardown-unregister-primitive-inverse-of-setup-local-wipe-repo-unregis.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T20:44:28.111Z",
+  "schema_version": "v1",
+  "commit_sha": "9c85480db81283ee5652ec21dae0f3aa3411ebe8",
+  "title": "feat(keys): teardown / unregister primitive — inverse of setup (local wipe + repo unregister)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T20:44:01Z",
+  "head_ref": "otto/teardown-unregister-primitive"
+}

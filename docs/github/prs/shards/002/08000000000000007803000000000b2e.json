@@ -1,0 +1,17 @@
+{
+  "pr_number": 2862,
+  "archive_path": "docs/history/pr-reviews/PR-2862-shard-tick-20-23z-twitter-validation-canonical-methodology-hard-limits-prs-2856-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Af2P1",
+    "comment:PRRC_kwDOSF9kNM7Af2Qo",
+    "thread:PRRT_kwDOSF9kNM6BjQHN",
+    "thread:PRRT_kwDOSF9kNM6BjQHz"
+  ],
+  "fetched_at": "2026-05-12T20:33:25.040Z",
+  "schema_version": "v1",
+  "commit_sha": "0e8f751ab68eef77129d77d68f120b369bc1a646",
+  "title": "shard(tick): 20:23Z — Twitter validation + canonical methodology + HARD LIMITS (PRs #2856-#2860; 9 wake-time rules)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T20:33:00Z",
+  "head_ref": "docs/tick-shard-2023Z-twitter-validation-canonical-methodology-hard-limits-x-com-authorization-2026-05-12"
+}

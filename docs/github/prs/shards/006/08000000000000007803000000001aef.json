@@ -1,0 +1,12 @@
+{
+  "pr_number": 6895,
+  "archive_path": "docs/history/pr-reviews/PR-6895-feat-flash-usb-windows-auto-inject-operator-ssh-pubkey-into-esp-fail-loud.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T19:29:04.434Z",
+  "schema_version": "v1",
+  "commit_sha": "45707033bf8d9d89d640b30e3ed3a7762e161609",
+  "title": "feat(flash-usb-windows): auto-inject operator SSH pubkey into ESP (fail-loud)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T19:28:45Z",
+  "head_ref": "feat/windows-ssh-key-injection-2026-06-07"
+}

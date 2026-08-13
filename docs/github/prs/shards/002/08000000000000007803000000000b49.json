@@ -1,0 +1,28 @@
+{
+  "pr_number": 2889,
+  "archive_path": "docs/history/pr-reviews/PR-2889-docs-memory-dio-distributed-intelligence-organism-replaces-dao-per-alexa-speaker.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ak9SK",
+    "comment:PRRC_kwDOSF9kNM7Ak9lk",
+    "comment:PRRC_kwDOSF9kNM7Ak9xM",
+    "comment:PRRC_kwDOSF9kNM7AkWqC",
+    "comment:PRRC_kwDOSF9kNM7AkX2z",
+    "comment:PRRC_kwDOSF9kNM7AkX3A",
+    "comment:PRRC_kwDOSF9kNM7AkX3J",
+    "comment:PRRC_kwDOSF9kNM7AkX3W",
+    "comment:PRRC_kwDOSF9kNM7Akt0H",
+    "thread:PRRT_kwDOSF9kNM6Bmdog",
+    "thread:PRRT_kwDOSF9kNM6Bmef4",
+    "thread:PRRT_kwDOSF9kNM6Bmef_",
+    "thread:PRRT_kwDOSF9kNM6BmegG",
+    "thread:PRRT_kwDOSF9kNM6BmegQ",
+    "thread:PRRT_kwDOSF9kNM6Bmuo3"
+  ],
+  "fetched_at": "2026-05-13T01:43:30.876Z",
+  "schema_version": "v1",
+  "commit_sha": "34d3e79aa3ed9cbca47477917399189ce8af48b6",
+  "title": "docs(memory): DIO (Distributed Intelligence Organism) replaces DAO per Alexa-speaker — uncanny-valley needle-threading + cross-linguistic resonance; wellness-app anchoring fix",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T01:43:11Z",
+  "head_ref": "aaron-24-7-ai-monitoring-everything-including-sexual-activities-with-partner-consent-glass-halo-maximum-scope-or-single-forever-2026-05-13"
+}

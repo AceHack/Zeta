@@ -1,0 +1,12 @@
+{
+  "pr_number": 6057,
+  "archive_path": "docs/history/pr-reviews/PR-6057-docs-b-0344-mark-recreation-experiment-date-gated.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T23:01:52.937Z",
+  "schema_version": "v1",
+  "commit_sha": "4539c783a9cca9c70fe5e26384e685defb913d11",
+  "title": "docs(B-0344): mark recreation experiment date-gated",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T23:01:33Z",
+  "head_ref": "claim/backlog-0344"
+}

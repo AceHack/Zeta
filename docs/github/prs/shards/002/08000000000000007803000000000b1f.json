@@ -1,0 +1,17 @@
+{
+  "pr_number": 2847,
+  "archive_path": "docs/history/pr-reviews/PR-2847-shard-tick-19-42z-late-cycle-cascade-prs-2842-2846.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Aew0f",
+    "comment:PRRC_kwDOSF9kNM7Aew1T",
+    "thread:PRRT_kwDOSF9kNM6BifI6",
+    "thread:PRRT_kwDOSF9kNM6BifJe"
+  ],
+  "fetched_at": "2026-05-12T19:50:42.498Z",
+  "schema_version": "v1",
+  "commit_sha": "f2c11a34499e7009a62269ae18f9d90e73693911",
+  "title": "shard(tick): 19:42Z — late-cycle cascade (PRs #2842-#2846)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:50:21Z",
+  "head_ref": "docs/tick-shard-1942Z-late-cascade-kestrel-bothand-bandwidth-engineering-2026-05-12"
+}

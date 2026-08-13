@@ -1,0 +1,12 @@
+{
+  "pr_number": 4930,
+  "archive_path": "docs/history/pr-reviews/PR-4930-feat-hat-system-scaffold-society-safety-layer-operator-for-ai-cluster.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T13:35:10.303Z",
+  "schema_version": "v1",
+  "commit_sha": "ad1af79680adaef6ef8bec46196eaf1d53094228",
+  "title": "feat(hat-system): scaffold society safety-layer operator for AI cluster",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T13:34:48Z",
+  "head_ref": "feat/hat-system-operator-2026-05-25-c2"
+}

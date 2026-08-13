@@ -1,0 +1,12 @@
+{
+  "pr_number": 7699,
+  "archive_path": "docs/history/pr-reviews/PR-7699-docs-trajectory-resume-play-arc-7692-7698.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T14:24:51.761Z",
+  "schema_version": "v1",
+  "commit_sha": "2764d61ba59de28c09ea9b476563efef76d7f921",
+  "title": "docs(trajectory): RESUME play arc (#7692–#7698)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T14:24:25Z",
+  "head_ref": "shadow-resume-play-arc"
+}

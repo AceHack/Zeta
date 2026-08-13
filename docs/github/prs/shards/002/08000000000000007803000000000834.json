@@ -1,0 +1,12 @@
+{
+  "pr_number": 2100,
+  "archive_path": "docs/history/pr-reviews/PR-2100-docs-extend-maji-hat-agenda-coordination-frame.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T16:30:37.309Z",
+  "schema_version": "v1",
+  "commit_sha": "70c484d70382d286fb60489d689704e8407e6c2e",
+  "title": "docs: extend Maji hat agenda coordination frame",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T16:30:20Z",
+  "head_ref": "claim/task-hats-agendas-bidirectional-growth"
+}

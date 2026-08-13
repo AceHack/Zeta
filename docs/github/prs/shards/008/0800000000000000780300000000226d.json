@@ -1,0 +1,12 @@
+{
+  "pr_number": 8813,
+  "archive_path": "docs/history/pr-reviews/PR-8813-docs-information-theory-tower-routing-note-sequenced-on-the-scope-map-book-row-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:52:32.423Z",
+  "schema_version": "v1",
+  "commit_sha": "87bb3fb51edcf91059239a80de2978eab3f09949",
+  "title": "docs: information-theory tower routing note (sequenced on the scope map) + book row-1 measure-theoretic leg",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:52:05Z",
+  "head_ref": "otto/ferry-info-theory-tower"
+}

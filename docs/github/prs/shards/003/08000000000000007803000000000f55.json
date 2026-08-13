@@ -1,0 +1,12 @@
+{
+  "pr_number": 3925,
+  "archive_path": "docs/history/pr-reviews/PR-3925-shard-tick-2026-05-16t17-47z-mise-ci-flake-gh-run-rerun-failed-recovery.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T18:02:59.876Z",
+  "schema_version": "v1",
+  "commit_sha": "65dd0a726fb0745ed7e4542ecafe48d5f5ed648c",
+  "title": "shard(tick): 2026-05-16T17:47Z — mise CI flake; gh run rerun --failed recovery",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T18:02:43Z",
+  "head_ref": "otto-cli-tick-shard-1747z-ci-flake-rerun-2026-05-16"
+}

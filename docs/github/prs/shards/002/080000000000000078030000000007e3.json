@@ -1,0 +1,12 @@
+{
+  "pr_number": 2019,
+  "archive_path": "docs/history/pr-reviews/PR-2019-feat-skills-add-pm-2-product-manager-role.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T03:24:00.696Z",
+  "schema_version": "v1",
+  "commit_sha": "0f148aee2ec9867f3162c85396a0559fbc14bb8b",
+  "title": "feat(skills): add PM-2 product manager role",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T03:23:47Z",
+  "head_ref": "codex/b0270-pm2-skill"
+}

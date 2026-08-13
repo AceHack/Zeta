@@ -1,0 +1,15 @@
+{
+  "pr_number": 5124,
+  "archive_path": "docs/history/pr-reviews/PR-5124-backlog-b-0720-decompose-classifier-bypass-safety-lane.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E0VHJ",
+    "thread:PRRT_kwDOSF9kNM6Et6Ju"
+  ],
+  "fetched_at": "2026-05-26T07:49:12.400Z",
+  "schema_version": "v1",
+  "commit_sha": "1f75e84201c761e98dde3038bc6848998aa7c570",
+  "title": "backlog(B-0720): decompose classifier-bypass safety lane",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T07:48:52Z",
+  "head_ref": "claim/b0720-classifier-bypass-decompose-codex-20260526"
+}

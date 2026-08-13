@@ -1,0 +1,12 @@
+{
+  "pr_number": 7967,
+  "archive_path": "docs/history/pr-reviews/PR-7967-docs-research-shadow-ferry-20-5-the-first-bit-that-knows-when-it-needs-more-bits.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:42:30.320Z",
+  "schema_version": "v1",
+  "commit_sha": "02fab41b233f7d2876091f534df73e4b7c5e6dfd",
+  "title": "docs(research)+shadow: ferry 20 §5 — the first bit that knows when it needs more bits (digital/analog, same shape)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:42:03Z",
+  "head_ref": "shadow/ferry-20-first-bit"
+}

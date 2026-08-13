@@ -1,0 +1,12 @@
+{
+  "pr_number": 8587,
+  "archive_path": "docs/history/pr-reviews/PR-8587-docs-cslib-g1-reconnaissance-toolchain-gap-is-the-real-first-step-v4-30-0-rc1-v4.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T15:14:59.907Z",
+  "schema_version": "v1",
+  "commit_sha": "1eb4640da3ba98c2cf5894c28ea14cd7f1241af2",
+  "title": "docs(cslib): G1 reconnaissance — toolchain gap is the real first step (v4.30.0-rc1 → v4.31.0)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T15:14:32Z",
+  "head_ref": "otto/cslib-g1-toolchain-gap"
+}

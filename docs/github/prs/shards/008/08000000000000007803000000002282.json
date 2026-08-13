@@ -1,0 +1,12 @@
+{
+  "pr_number": 8834,
+  "archive_path": "docs/history/pr-reviews/PR-8834-backlog-workitem-unified-key-onboarding-per-persona-per-machine-one-generator.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T03:00:39.022Z",
+  "schema_version": "v1",
+  "commit_sha": "9bd05e346f7b8877ed1120d6a9eb8af5023157bf",
+  "title": "backlog(workitem): unified key onboarding — per-persona + per-machine, one generator",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:00:15Z",
+  "head_ref": "otto/workitem-unified-key-onboarding"
+}

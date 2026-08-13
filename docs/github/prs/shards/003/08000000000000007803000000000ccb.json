@@ -1,0 +1,12 @@
+{
+  "pr_number": 3275,
+  "archive_path": "docs/history/pr-reviews/PR-3275-shard-tick-2154z-post-merge-cleanup-2146z-grep-rendering-operands.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T22:00:39.148Z",
+  "schema_version": "v1",
+  "commit_sha": "41627c356ecee27eba8a0b211d1c6b9c4f427231",
+  "title": "shard(tick): 2154Z — post-merge cleanup: 2146Z grep rendering + operands",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:00:22Z",
+  "head_ref": "shard/tick-2154Z-grep-rendering-fix-otto-cli-2026-05-14"
+}

@@ -1,0 +1,27 @@
+{
+  "pr_number": 3132,
+  "archive_path": "docs/history/pr-reviews/PR-3132-decompose-b-0429-end-user-persona-mapping-9-atomic-child-rows-b-0485-b-0493.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BNAf-",
+    "comment:PRRC_kwDOSF9kNM7BNAhE",
+    "comment:PRRC_kwDOSF9kNM7BNAhp",
+    "comment:PRRC_kwDOSF9kNM7BNAi8",
+    "comment:PRRC_kwDOSF9kNM7BNAiT",
+    "comment:PRRC_kwDOSF9kNM7BNAjk",
+    "comment:PRRC_kwDOSF9kNM7BNAkH",
+    "thread:PRRT_kwDOSF9kNM6CEEoD",
+    "thread:PRRT_kwDOSF9kNM6CEEoz",
+    "thread:PRRT_kwDOSF9kNM6CEEpO",
+    "thread:PRRT_kwDOSF9kNM6CEEpw",
+    "thread:PRRT_kwDOSF9kNM6CEEq1",
+    "thread:PRRT_kwDOSF9kNM6CEEqT",
+    "thread:PRRT_kwDOSF9kNM6CEErN"
+  ],
+  "fetched_at": "2026-05-14T12:52:22.972Z",
+  "schema_version": "v1",
+  "commit_sha": "6f61acd0603ff1806d41802d852a0b802e74cac8",
+  "title": "decompose(b-0429): end-user persona mapping — 9 atomic child rows B-0485..B-0493",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T12:52:05Z",
+  "head_ref": "feat/b-0429-persona-mapping-decompose-2026-05-14"
+}

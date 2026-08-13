@@ -1,0 +1,12 @@
+{
+  "pr_number": 7528,
+  "archive_path": "docs/history/pr-reviews/PR-7528-docs-trajectory-resume-4-done-fingerprintprism-7527-chip-8-first-soft-scheduler-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T22:50:10.003Z",
+  "schema_version": "v1",
+  "commit_sha": "de443f7a7f83282182daf51d026b9816f2831293",
+  "title": "docs(trajectory): RESUME #4 done (FingerprintPrism #7527) — CHIP-8 = first soft-scheduler client",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T22:48:59Z",
+  "head_ref": "shadow-resume-fingerprint-prism-done"
+}

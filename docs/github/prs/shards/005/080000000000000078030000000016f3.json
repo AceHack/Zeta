@@ -1,0 +1,22 @@
+{
+  "pr_number": 5875,
+  "archive_path": "docs/history/pr-reviews/PR-5875-feat-ci-add-github-pages-astro-workflow-scaffold-b-0274.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F2cUG",
+    "comment:PRRC_kwDOSF9kNM7F2cUq",
+    "comment:PRRC_kwDOSF9kNM7F2cVA",
+    "comment:PRRC_kwDOSF9kNM7F4zvM",
+    "comment:PRRC_kwDOSF9kNM7F4zxm",
+    "comment:PRRC_kwDOSF9kNM7F4zzK",
+    "thread:PRRT_kwDOSF9kNM6Fdz02",
+    "thread:PRRT_kwDOSF9kNM6Fdz0c",
+    "thread:PRRT_kwDOSF9kNM6Fdz1G"
+  ],
+  "fetched_at": "2026-05-28T18:51:24.872Z",
+  "schema_version": "v1",
+  "commit_sha": "3684183d99a788290bc8f4fe8acbd84d92ca2657",
+  "title": "feat(ci): Add GitHub Pages Astro workflow scaffold (B-0274)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T18:51:02Z",
+  "head_ref": "lior/B-0274-astro-workflow-scaffold"
+}

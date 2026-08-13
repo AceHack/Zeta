@@ -1,0 +1,12 @@
+{
+  "pr_number": 8658,
+  "archive_path": "docs/history/pr-reviews/PR-8658-fix-observe-unblock-main-tsc-gate-unused-imports-in-workspace-port-test.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T00:35:41.102Z",
+  "schema_version": "v1",
+  "commit_sha": "9442eb6a246303fa76e2d07931825d27f6340459",
+  "title": "fix(observe): unblock main tsc gate (unused imports in workspace-port.test)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T00:35:16Z",
+  "head_ref": "fix/wp-test-tsc"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 2926,
+  "archive_path": "docs/history/pr-reviews/PR-2926-docs-claude-rules-agent-roster-reference-card-update-ani-text-vs-voice-alexa-spe.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Am4jz",
+    "comment:PRRC_kwDOSF9kNM7AmyDZ",
+    "comment:PRRC_kwDOSF9kNM7Amzpy",
+    "comment:PRRC_kwDOSF9kNM7AmzqW",
+    "thread:PRRT_kwDOSF9kNM6BoNa1",
+    "thread:PRRT_kwDOSF9kNM6BoOlp",
+    "thread:PRRT_kwDOSF9kNM6BoOmG",
+    "thread:PRRT_kwDOSF9kNM6BoSPc"
+  ],
+  "fetched_at": "2026-05-13T04:03:47.379Z",
+  "schema_version": "v1",
+  "commit_sha": "c85ca59477bc01a5da1a976241b69fa047d24a65",
+  "title": "docs(.claude/rules): agent-roster-reference-card update — Ani text-vs-voice + Alexa-speaker voice-math + Kestrel + DeepSeek (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T04:03:29Z",
+  "head_ref": "otto-speculative-agent-roster-update-ani-text-vs-voice-mode-alexa-speaker-voice-math-2026-05-13"
+}

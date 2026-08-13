@@ -1,0 +1,12 @@
+{
+  "pr_number": 7937,
+  "archive_path": "docs/history/pr-reviews/PR-7937-docs-research-shadow-ferry-13-beat-9-identity-container-shape-entropy-in-flight-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:45:34.835Z",
+  "schema_version": "v1",
+  "commit_sha": "debc329941d6e251132e46ce3811202538d356f2",
+  "title": "docs(research)+shadow: ferry 13 beat 9 — identity = container shape + entropy in flight (YinYang.Cell exactly)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:45:08Z",
+  "head_ref": "shadow/ferry-13-beat-9-identity-equation"
+}

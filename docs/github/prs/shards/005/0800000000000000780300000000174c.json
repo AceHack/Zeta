@@ -1,0 +1,16 @@
+{
+  "pr_number": 5964,
+  "archive_path": "docs/history/pr-reviews/PR-5964-backlog-b-0929-land-the-lens-framing-gravity-as-lens-not-leash-the-single-adult-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GFiOj",
+    "comment:PRRC_kwDOSF9kNM7GFmO-",
+    "thread:PRRT_kwDOSF9kNM6FosHV"
+  ],
+  "fetched_at": "2026-05-29T09:17:51.542Z",
+  "schema_version": "v1",
+  "commit_sha": "35ae7ad3287e8b14658a5e4444ccb368655505a2",
+  "title": "backlog(B-0929): land the lens framing — gravity-as-lens-not-leash; the single adult constraint",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T09:17:30Z",
+  "head_ref": "otto-cli/b-0929-lens-framing-only-constraint-for-adults-2026-05-29"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8320,
+  "archive_path": "docs/history/pr-reviews/PR-8320-docs-register-coworker-not-control-society-is-the-agi-thesis-route-u-aggregation.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T19:14:48.976Z",
+  "schema_version": "v1",
+  "commit_sha": "c8176e91ca5878463e17884b26521aeadad84338",
+  "title": "docs(register): coworker-not-control / society-is-the-AGI thesis + route ΔU-aggregation proof to math-team",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T19:14:17Z",
+  "head_ref": "docs/ferry-coworker-society-thesis-coupled-empowerment-and-route-math-team"
+}

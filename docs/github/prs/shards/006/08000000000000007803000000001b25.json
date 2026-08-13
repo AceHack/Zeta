@@ -1,0 +1,12 @@
+{
+  "pr_number": 6949,
+  "archive_path": "docs/history/pr-reviews/PR-6949-docs-workstreams-milestones-k8s-pods-on-real-hardware-usb-install-on-windows-max.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T23:25:31.521Z",
+  "schema_version": "v1",
+  "commit_sha": "222636f590656efe9954832b213b5b6c5a71d4e2",
+  "title": "docs(workstreams): milestones — k8s pods on real hardware; USB install on Windows (Max)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T23:25:14Z",
+  "head_ref": "otto/milestones-k8s-real-hardware-usb-windows-max"
+}

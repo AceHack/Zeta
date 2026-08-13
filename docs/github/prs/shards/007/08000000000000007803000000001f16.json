@@ -1,0 +1,12 @@
+{
+  "pr_number": 7958,
+  "archive_path": "docs/history/pr-reviews/PR-7958-docs-research-shadow-ferry-17-refinement-git-s-history-stream-allows-true-invers.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:10:38.507Z",
+  "schema_version": "v1",
+  "commit_sha": "33031a7edceb70d789ae22975d359c689e183114",
+  "title": "docs(research)+shadow: ferry 17 refinement — git's history stream allows true inverses (reversibility lives where the deltas survive)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:10:10Z",
+  "head_ref": "shadow/ferry-17-git-reversibility"
+}

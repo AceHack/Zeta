@@ -1,0 +1,12 @@
+{
+  "pr_number": 4583,
+  "archive_path": "docs/history/pr-reviews/PR-4583-trajectory-autonomous-loop-quiet-state-encode-what-to-do-when-there-is-nothing-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T22:14:12.363Z",
+  "schema_version": "v1",
+  "commit_sha": "1671f02abf8eab8efe010a56e2ef57660033c5cf",
+  "title": "trajectory(autonomous-loop-quiet-state): encode what to do when there is nothing to do",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T22:13:55Z",
+  "head_ref": "trajectory/autonomous-loop-quiet-state-2026-05-21"
+}

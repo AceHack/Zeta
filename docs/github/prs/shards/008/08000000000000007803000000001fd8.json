@@ -1,0 +1,12 @@
+{
+  "pr_number": 8152,
+  "archive_path": "docs/history/pr-reviews/PR-8152-docs-cursor-agent-home-multi-repo-layout-zeta-clone-mcp-fragments.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:02:19.694Z",
+  "schema_version": "v1",
+  "commit_sha": "bb060c405f56c812c7cfa3e547faa5944e8cf05c",
+  "title": "docs(cursor): agent-home multi-repo layout — Zeta/ clone + MCP fragments",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:01:49Z",
+  "head_ref": "riven/agent-home-multi-repo-mcp"
+}

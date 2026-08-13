@@ -1,0 +1,15 @@
+{
+  "pr_number": 3983,
+  "archive_path": "docs/history/pr-reviews/PR-3983-docs-tick-0012z-otto-cli-markdownlint-fix-on-pr-3974.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B8LN3",
+    "thread:PRRT_kwDOSF9kNM6CmiN8"
+  ],
+  "fetched_at": "2026-05-17T00:24:11.908Z",
+  "schema_version": "v1",
+  "commit_sha": "a33dab39d52529b3152274640fcd933e3434aa76",
+  "title": "docs(tick): 0012Z Otto-CLI markdownlint fix on PR #3974",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T00:23:54Z",
+  "head_ref": "otto/tick-shard-0012z-md-fix-2026-05-17"
+}

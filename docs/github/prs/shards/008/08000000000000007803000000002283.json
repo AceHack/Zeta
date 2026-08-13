@@ -1,0 +1,12 @@
+{
+  "pr_number": 8835,
+  "archive_path": "docs/history/pr-reviews/PR-8835-backlog-workitem-key-onboarding-first-run-auto-provision-at-flash-time-honesty-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T03:05:31.559Z",
+  "schema_version": "v1",
+  "commit_sha": "4a20a8ddd51755614667244e52ed6a2b8280c6c7",
+  "title": "backlog(workitem): key onboarding — first-run auto-provision at flash time + honesty corrections",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:05:03Z",
+  "head_ref": "otto/workitem-key-onboarding-first-run"
+}

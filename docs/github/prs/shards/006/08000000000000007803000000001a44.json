@@ -1,0 +1,12 @@
+{
+  "pr_number": 6724,
+  "archive_path": "docs/history/pr-reviews/PR-6724-test-bifurcation-merge-associativity-property-correct-stale-registry-leg-b-alrea.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T06:11:34.205Z",
+  "schema_version": "v1",
+  "commit_sha": "aa39b22e08f4ac55e53b5504614b671e06da556a",
+  "title": "test(bifurcation): merge-associativity property + correct stale registry (Leg-B already landed → 4/4 full-3-leg)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T06:11:14Z",
+  "head_ref": "otto/bifurcation-assoc-registry-fix"
+}

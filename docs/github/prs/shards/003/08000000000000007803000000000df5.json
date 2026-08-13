@@ -1,0 +1,12 @@
+{
+  "pr_number": 3573,
+  "archive_path": "docs/history/pr-reviews/PR-3573-shard-tick-2004z-otto-279-role-ref-discipline-fixed-in-docs-surfaces-3-hits.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T20:11:32.761Z",
+  "schema_version": "v1",
+  "commit_sha": "ec005ca59e0b3e8b4cce67aa419566c0b5eb9eb4",
+  "title": "shard(tick): 2004Z — Otto-279 role-ref discipline fixed in docs/ surfaces (3 hits)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T20:11:16Z",
+  "head_ref": "shard/tick-2004z-otto-cli-2026-05-15"
+}

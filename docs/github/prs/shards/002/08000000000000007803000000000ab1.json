@@ -1,0 +1,17 @@
+{
+  "pr_number": 2737,
+  "archive_path": "docs/history/pr-reviews/PR-2737-docs-backlog-re-decompose-b-0366-2-into-3-smallest-atomic-children-toffoli-zset-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ABxD6",
+    "comment:PRRC_kwDOSF9kNM7ABxDL",
+    "thread:PRRT_kwDOSF9kNM6BM_81",
+    "thread:PRRT_kwDOSF9kNM6BM_8X"
+  ],
+  "fetched_at": "2026-05-11T20:00:07.583Z",
+  "schema_version": "v1",
+  "commit_sha": "40f223a0daed91a2abf43e3bf53a5918ffb9f74d",
+  "title": "docs(backlog): re-decompose B-0366.2 into 3 smallest atomic children (toffoli zset join formal model slices, F#-first, one bounded step) (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T19:59:41Z",
+  "head_ref": "claim/b0366.2-toffoli-zset-join-redecomp-smallest-slice-riven-2026-05-11"
+}

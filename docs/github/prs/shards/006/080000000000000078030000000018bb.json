@@ -1,0 +1,21 @@
+{
+  "pr_number": 6331,
+  "archive_path": "docs/history/pr-reviews/PR-6331-docs-single-cross-lane-work-stream-index-docs-active-workstreams-md-auto-load-po.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gkuy0",
+    "comment:PRRC_kwDOSF9kNM7GkuyX",
+    "comment:PRRC_kwDOSF9kNM7Gkuym",
+    "comment:PRRC_kwDOSF9kNM7Gkuyu",
+    "thread:PRRT_kwDOSF9kNM6F_5SM",
+    "thread:PRRT_kwDOSF9kNM6F_5SY",
+    "thread:PRRT_kwDOSF9kNM6F_5Sg",
+    "thread:PRRT_kwDOSF9kNM6F_5Sl"
+  ],
+  "fetched_at": "2026-06-01T03:38:48.234Z",
+  "schema_version": "v1",
+  "commit_sha": "6dd58682697a6e0f046452b38196efa511d64317",
+  "title": "docs: single cross-lane work-stream index (docs/ACTIVE-WORKSTREAMS.md) + auto-load pointer",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T03:38:29Z",
+  "head_ref": "otto-cli/sovereign-db-pointer-2026-06-01"
+}

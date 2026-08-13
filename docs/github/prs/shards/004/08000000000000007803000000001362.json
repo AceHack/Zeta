@@ -1,0 +1,16 @@
+{
+  "pr_number": 4962,
+  "archive_path": "docs/history/pr-reviews/PR-4962-fix-tools-flash-usb-ts-ts-strict-mode-errors-6-narrowing-fixes.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ep6-s",
+    "comment:PRRC_kwDOSF9kNM7Ep86K",
+    "thread:PRRT_kwDOSF9kNM6EmPaJ"
+  ],
+  "fetched_at": "2026-05-25T17:34:05.715Z",
+  "schema_version": "v1",
+  "commit_sha": "efbdd4a1607b548ef1679e1c9ad6933a7ac5bc41",
+  "title": "fix(tools): flash-usb.ts TS strict-mode errors (6× narrowing fixes)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T17:33:46Z",
+  "head_ref": "fix/flash-usb-ts-strict-2026-05-25-c2"
+}

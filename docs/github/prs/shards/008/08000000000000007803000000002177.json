@@ -1,0 +1,23 @@
+{
+  "pr_number": 8567,
+  "archive_path": "docs/history/pr-reviews/PR-8567-feat-schema-evolution-9-10-oracles-tlc-safety-liveness-bounded-delivery-cdc-veri.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7NNEA-",
+    "comment:PRRC_kwDOSF9kNM7NNHKP",
+    "comment:PRRC_kwDOSF9kNM7NNHKc",
+    "comment:PRRC_kwDOSF9kNM7NNHKi",
+    "comment:PRRC_kwDOSF9kNM7NNHKu",
+    "thread:PRRT_kwDOSF9kNM6K2CIA",
+    "thread:PRRT_kwDOSF9kNM6K2Eg8",
+    "thread:PRRT_kwDOSF9kNM6K2EhH",
+    "thread:PRRT_kwDOSF9kNM6K2EhL",
+    "thread:PRRT_kwDOSF9kNM6K2EhV"
+  ],
+  "fetched_at": "2026-06-19T21:48:21.779Z",
+  "schema_version": "v1",
+  "commit_sha": "7a6775c586ae71cf0bee24666a3ebb195e07905f",
+  "title": "feat(schema-evolution): 9/10 oracles + TLC SAFETY+LIVENESS + bounded-delivery CDC verified",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T21:47:52Z",
+  "head_ref": "alexa/polyfill-executor-oracle-ports"
+}

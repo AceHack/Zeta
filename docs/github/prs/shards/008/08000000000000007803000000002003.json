@@ -1,0 +1,12 @@
+{
+  "pr_number": 8195,
+  "archive_path": "docs/history/pr-reviews/PR-8195-docs-research-vision-razor-cuts-environment-uncertainty-not-privacy-commutative-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T16:02:49.288Z",
+  "schema_version": "v1",
+  "commit_sha": "fa5cd473857c47b98ab22710fa7a2d87b640b641",
+  "title": "docs(research): vision — razor cuts environment uncertainty not privacy; commutative-uncertainty trust",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T16:02:26Z",
+  "head_ref": "otto/vision-razor-environment-not-privacy"
+}

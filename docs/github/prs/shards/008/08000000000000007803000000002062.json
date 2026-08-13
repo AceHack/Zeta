@@ -1,0 +1,12 @@
+{
+  "pr_number": 8290,
+  "archive_path": "docs/history/pr-reviews/PR-8290-docs-determinism-is-the-un-shoppable-critic-no-re-roll-for-business-safety.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T09:03:56.781Z",
+  "schema_version": "v1",
+  "commit_sha": "54236c79cdcf32a78aa0b3fffc5f5dd3da124c16",
+  "title": "docs: determinism is the un-shoppable critic — no re-roll for business/safety",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T09:03:27Z",
+  "head_ref": "otto/no-reroll-determinism-notes"
+}

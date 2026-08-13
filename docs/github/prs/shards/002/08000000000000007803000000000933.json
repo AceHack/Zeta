@@ -1,0 +1,19 @@
+{
+  "pr_number": 2355,
+  "archive_path": "docs/history/pr-reviews/PR-2355-docs-b-0023-re-decompose-into-6-smallest-dependency-ordered-atomic-children-rive.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_kSbX",
+    "comment:PRRC_kwDOSF9kNM6_kSbc",
+    "comment:PRRC_kwDOSF9kNM6_kShA",
+    "thread:PRRT_kwDOSF9kNM6A21cu",
+    "thread:PRRT_kwDOSF9kNM6A21cx",
+    "thread:PRRT_kwDOSF9kNM6A21hM"
+  ],
+  "fetched_at": "2026-05-09T22:11:20.671Z",
+  "schema_version": "v1",
+  "commit_sha": "1fab110ddaa084453a5f932855fe23a5d7aad7de",
+  "title": "docs(B-0023): re-decompose into 6 smallest dependency-ordered atomic children (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T22:11:06Z",
+  "head_ref": "claim/backlog-0023"
+}

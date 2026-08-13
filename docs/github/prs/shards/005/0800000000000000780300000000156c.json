@@ -1,0 +1,12 @@
+{
+  "pr_number": 5484,
+  "archive_path": "docs/history/pr-reviews/PR-5484-docs-rule-extend-must-paired-with-can-exit-pattern-with-moloch-ai-failure-mode-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T15:26:00.760Z",
+  "schema_version": "v1",
+  "commit_sha": "8d74273977f84e96df9af457e83d56c01fcefe52",
+  "title": "docs(rule): extend must-paired-with-can-exit-pattern with Moloch AI failure-mode section (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T15:25:31Z",
+  "head_ref": "rule/must-paired-with-can-exit-moloch-ai-extension-2026-05-27"
+}

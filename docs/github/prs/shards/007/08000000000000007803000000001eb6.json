@@ -1,0 +1,12 @@
+{
+  "pr_number": 7862,
+  "archive_path": "docs/history/pr-reviews/PR-7862-feat-ben-hexagonal-bench-port-zetaben-ibencase-ibenmeter-benchmarkdotnet-tests-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T01:03:30.852Z",
+  "schema_version": "v1",
+  "commit_sha": "26700ebc9286cee68f729fce911186f7801eb46a",
+  "title": "feat(ben): hexagonal bench port — [<ZetaBen>] + IBenCase/IBenMeter; BenchmarkDotNet tests-side adapter (B-1039)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T01:03:03Z",
+  "head_ref": "shadow-ben-port-bdn"
+}

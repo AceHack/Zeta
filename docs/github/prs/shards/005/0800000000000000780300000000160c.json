@@ -1,0 +1,17 @@
+{
+  "pr_number": 5644,
+  "archive_path": "docs/history/pr-reviews/PR-5644-fix-b-0852-4-correct-cred-blob-default-path-esp-boot-copilot-finding-on-5640-res.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fhf8-",
+    "comment:PRRC_kwDOSF9kNM7Fhf93",
+    "thread:PRRT_kwDOSF9kNM6FO0B9",
+    "thread:PRRT_kwDOSF9kNM6FO0Cq"
+  ],
+  "fetched_at": "2026-05-27T21:24:17.392Z",
+  "schema_version": "v1",
+  "commit_sha": "4632f3c56afd542e0c98c7c6a41578070eb09f0d",
+  "title": "fix(b-0852.4): correct cred-blob default path /esp → /boot (Copilot finding on #5640 — restore service never fired)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T21:23:55Z",
+  "head_ref": "fix/b-0852.4-blobpath-esp-vs-boot-mount-mismatch-2026-05-27"
+}

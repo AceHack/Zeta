@@ -1,0 +1,12 @@
+{
+  "pr_number": 2192,
+  "archive_path": "docs/history/pr-reviews/PR-2192-backlog-b-0357-first-class-uncertainty-semiring-parameterized-weight.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T05:45:32.956Z",
+  "schema_version": "v1",
+  "commit_sha": "5ed14c033177c7c4f4d0a2c774c409ea8770f544",
+  "title": "backlog(B-0357): first-class uncertainty — semiring-parameterized weight",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T05:45:16Z",
+  "head_ref": "backlog/b0357-uncertainty-semiring"
+}

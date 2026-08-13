@@ -1,0 +1,12 @@
+{
+  "pr_number": 6889,
+  "archive_path": "docs/history/pr-reviews/PR-6889-feat-abstractions-unified-ray-traceable-interface-capability-facets-any-frame-tr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T18:51:10.287Z",
+  "schema_version": "v1",
+  "commit_sha": "baf8fe3623594a9653b097a885568401e0c37b66",
+  "title": "feat(abstractions): unified ray-traceable interface + capability facets (any frame; traveler-frame=proof; geospatial locality)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T18:50:53Z",
+  "head_ref": "otto/ray-traceable-capability-interfaces-from-any-frame"
+}

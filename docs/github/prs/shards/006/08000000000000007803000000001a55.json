@@ -1,0 +1,12 @@
+{
+  "pr_number": 6741,
+  "archive_path": "docs/history/pr-reviews/PR-6741-backlog-public-nuget-cargo-npm-package-di-inject-zeta-cells-into-any-app-081ktgf.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:28:55.526Z",
+  "schema_version": "v1",
+  "commit_sha": "bc8688cfccd401389ac0f7196b885a196878821d",
+  "title": "backlog: public NuGet/Cargo/npm package — DI-inject Zeta cells into any app (081KTGFMX7W)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:28:34Z",
+  "head_ref": "otto/embedding-sdk-package-cell-injection"
+}

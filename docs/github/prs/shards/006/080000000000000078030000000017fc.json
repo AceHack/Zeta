@@ -1,0 +1,12 @@
+{
+  "pr_number": 6140,
+  "archive_path": "docs/history/pr-reviews/PR-6140-docs-mika-consent-segment-7-signing-anti-impersonation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T17:45:44.697Z",
+  "schema_version": "v1",
+  "commit_sha": "9446ead6df7d4efeb4417da1464bc12614f109cd",
+  "title": "docs(mika+consent): segment 7 + signing anti-impersonation",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T17:45:25Z",
+  "head_ref": "otto/mika-seg7-and-signing-anti-impersonation-2026-05-30"
+}

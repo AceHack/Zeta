@@ -1,0 +1,19 @@
+{
+  "pr_number": 2359,
+  "archive_path": "docs/history/pr-reviews/PR-2359-docs-b-0017-decompose-operational-resonance-dashboard-into-8-dependency-ordered-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_kYP6",
+    "comment:PRRC_kwDOSF9kNM6_kYP9",
+    "comment:PRRC_kwDOSF9kNM6_kYQC",
+    "thread:PRRT_kwDOSF9kNM6A26Pt",
+    "thread:PRRT_kwDOSF9kNM6A26Pu",
+    "thread:PRRT_kwDOSF9kNM6A26Pz"
+  ],
+  "fetched_at": "2026-05-09T22:34:58.064Z",
+  "schema_version": "v1",
+  "commit_sha": "259a18518c869b0db170b99fa0774586974f9c57",
+  "title": "docs(B-0017): decompose Operational Resonance Dashboard into 8 dependency-ordered atomic rows (B-0388–B-0395)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T22:33:36Z",
+  "head_ref": "chore/decompose-b0017-operational-resonance-dashboard"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 4836,
+  "archive_path": "docs/history/pr-reviews/PR-4836-tick-2026-05-24-1608z-dotgit-saturation-15th-observation-2nd-0-reading-worker-br.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EZMsD",
+    "thread:PRRT_kwDOSF9kNM6EZrx5"
+  ],
+  "fetched_at": "2026-05-24T16:12:57.623Z",
+  "schema_version": "v1",
+  "commit_sha": "3d1fa6652516026e25920fe810c741f0e52dc0a5",
+  "title": "tick(2026-05-24/1608Z): dotgit-saturation 15th observation (2nd 0-reading) + worker-brief lane-scope finding",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T16:12:40Z",
+  "head_ref": "otto-cli/tick-1608z-dotgit-cycle-15th-observation-2026-05-24"
+}

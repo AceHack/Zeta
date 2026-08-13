@@ -1,0 +1,12 @@
+{
+  "pr_number": 8854,
+  "archive_path": "docs/history/pr-reviews/PR-8854-feat-algebra-ring-generic-soft-mix-one-function-any-starring.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T04:26:10.675Z",
+  "schema_version": "v1",
+  "commit_sha": "eee66ae77f2137c6845f48c8809b7a94d59f0698",
+  "title": "feat(algebra): ring-generic soft-mix — one function, any StarRing",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T04:25:47Z",
+  "head_ref": "alexa/ring-generic-soft"
+}

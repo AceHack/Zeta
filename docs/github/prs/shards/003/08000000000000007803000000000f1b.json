@@ -1,0 +1,15 @@
+{
+  "pr_number": 3867,
+  "archive_path": "docs/history/pr-reviews/PR-3867-shard-tick-2026-05-16t11-31z-b-0037-2-class-2-2-ready-overlay-36-38.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B4WLp",
+    "thread:PRRT_kwDOSF9kNM6CjlY7"
+  ],
+  "fetched_at": "2026-05-16T13:05:12.887Z",
+  "schema_version": "v1",
+  "commit_sha": "aa4b2806f553be671878ba5c4df37d8b9da8d102",
+  "title": "shard(tick): 2026-05-16T11:31Z — B-0037.2 = class #2 + #2-Ready overlay; 36/38",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T13:04:56Z",
+  "head_ref": "otto-cli-b0037.2-audit-2026-05-16-1131z"
+}

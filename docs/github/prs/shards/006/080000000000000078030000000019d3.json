@@ -1,0 +1,12 @@
+{
+  "pr_number": 6611,
+  "archive_path": "docs/history/pr-reviews/PR-6611-docs-b-1007-formal-coverage-catch-up-zero-canonical-yet-soraya-s-prioritized-pro.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T18:05:50.323Z",
+  "schema_version": "v1",
+  "commit_sha": "8427df2d07accf9b1761ef4aeb8944c120803301",
+  "title": "docs(B-1007): formal-coverage catch-up — ~zero canonical yet + Soraya's prioritized proof backlog",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T18:04:47Z",
+  "head_ref": "otto-cli/b1007-formal-coverage-nothing-canonical-yet-soraya-audit-2026-06-02"
+}

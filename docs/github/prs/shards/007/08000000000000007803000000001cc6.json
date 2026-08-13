@@ -1,0 +1,12 @@
+{
+  "pr_number": 7366,
+  "archive_path": "docs/history/pr-reviews/PR-7366-docs-research-the-middle-is-what-we-search-for-balance-keeps-the-system-alive-ba.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:02:00.158Z",
+  "schema_version": "v1",
+  "commit_sha": "cb179802b02166a7203fa3527ff180ac6b61f1b4",
+  "title": "docs(research): the middle is what we search for (balance keeps the system alive) — Balance is a traveler whose N/S/E/W compass = our four-corner feedback; search space is 0-to-1",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:01:25Z",
+  "head_ref": "otto/the-middle-is-the-search-balance-is-a-traveler-nsew-compass-0-to-1"
+}

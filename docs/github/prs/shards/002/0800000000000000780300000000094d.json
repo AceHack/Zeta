@@ -1,0 +1,27 @@
+{
+  "pr_number": 2381,
+  "archive_path": "docs/history/pr-reviews/PR-2381-claim-b-0347-smallest-safe-slice-ts-audit-tool-for-carved-skill-description-budg.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_kuwi",
+    "comment:PRRC_kwDOSF9kNM6_kuwk",
+    "comment:PRRC_kwDOSF9kNM6_kuz0",
+    "comment:PRRC_kwDOSF9kNM6_kuz2",
+    "comment:PRRC_kwDOSF9kNM6_kuz5",
+    "comment:PRRC_kwDOSF9kNM6_kuzp",
+    "comment:PRRC_kwDOSF9kNM6_kuzy",
+    "thread:PRRT_kwDOSF9kNM6A3MeY",
+    "thread:PRRT_kwDOSF9kNM6A3Mea",
+    "thread:PRRT_kwDOSF9kNM6A3Mg-",
+    "thread:PRRT_kwDOSF9kNM6A3Mg0",
+    "thread:PRRT_kwDOSF9kNM6A3Mg8",
+    "thread:PRRT_kwDOSF9kNM6A3Mg9",
+    "thread:PRRT_kwDOSF9kNM6A3MhA"
+  ],
+  "fetched_at": "2026-05-10T00:15:53.050Z",
+  "schema_version": "v1",
+  "commit_sha": "79f5cc23fd3b189445a60af59b69045e99eb69af",
+  "title": "claim(B-0347): smallest safe slice — TS audit tool for carved-skill-description budget",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T00:15:37Z",
+  "head_ref": "claim/b0347-carved-sentence-skill-descriptions-smallest-slice-riven-2026-05-09"
+}

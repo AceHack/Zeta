@@ -1,0 +1,12 @@
+{
+  "pr_number": 2754,
+  "archive_path": "docs/history/pr-reviews/PR-2754-archive-pr-reviews-prs-2748-2753.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T21:36:02.195Z",
+  "schema_version": "v1",
+  "commit_sha": "ed342e869c1f146152c3ccbdea569a087917ed90",
+  "title": "archive(pr-reviews): PRs #2748 + #2753",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T21:35:45Z",
+  "head_ref": "archive/pr-2748-2753-2026-05-11"
+}

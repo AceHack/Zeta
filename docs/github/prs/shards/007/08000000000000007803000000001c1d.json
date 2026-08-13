@@ -1,0 +1,12 @@
+{
+  "pr_number": 7197,
+  "archive_path": "docs/history/pr-reviews/PR-7197-feat-portal-polish-unified-terminal-logs-console-native-file-explorer-w-drag-dro.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T03:46:06.955Z",
+  "schema_version": "v1",
+  "commit_sha": "679270f63037525253ec45fb293794495bcac867",
+  "title": "feat(portal): polish + unified Terminal (logs+console) + native file explorer w/ drag-drop",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T03:45:45Z",
+  "head_ref": "feat/portal-polish-terminal-files"
+}

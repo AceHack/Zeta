@@ -1,0 +1,12 @@
+{
+  "pr_number": 8166,
+  "archive_path": "docs/history/pr-reviews/PR-8166-ci-gate-combine-ts-into-the-per-language-lint-family-lint-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:56:30.519Z",
+  "schema_version": "v1",
+  "commit_sha": "f1ff447da06304f1cca2b95b8f661b63d8e416de",
+  "title": "ci(gate): combine TS into the per-language lint family — lint (TS)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:56:04Z",
+  "head_ref": "otto/combine-ts-into-lint-family"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 3445,
+  "archive_path": "docs/history/pr-reviews/PR-3445-shard-tick-1156z-no-merges-this-tick-ci-wait.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BmMvZ",
+    "comment:PRRC_kwDOSF9kNM7BmP9l",
+    "thread:PRRT_kwDOSF9kNM6CWVi2"
+  ],
+  "fetched_at": "2026-05-15T12:02:49.023Z",
+  "schema_version": "v1",
+  "commit_sha": "95aa63f9eff477f36de978fb3955ff441e75fe38",
+  "title": "shard(tick): 1156Z — no merges this tick; CI wait",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T12:02:26Z",
+  "head_ref": "shard/tick-1156z-otto-cli-2026-05-15"
+}

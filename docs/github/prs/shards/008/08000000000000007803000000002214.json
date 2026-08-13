@@ -1,0 +1,12 @@
+{
+  "pr_number": 8724,
+  "archive_path": "docs/history/pr-reviews/PR-8724-docs-handoff-row-4-fully-done-4-language-merkle-inclusion-proof-byte-lock-closed.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T07:05:01.622Z",
+  "schema_version": "v1",
+  "commit_sha": "4b3d0da81285e92cff60e1d196b6aaa6e40f6f25",
+  "title": "docs(handoff): row 4 FULLY DONE — 4-language Merkle inclusion-proof byte-lock closed",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T07:04:34Z",
+  "head_ref": "otto/row4-4lang-proof-complete"
+}

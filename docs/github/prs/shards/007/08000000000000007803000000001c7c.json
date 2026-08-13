@@ -1,0 +1,12 @@
+{
+  "pr_number": 7292,
+  "archive_path": "docs/history/pr-reviews/PR-7292-fix-installer-step-6-9-self-registration-never-push-an-empty-branch-fail-loud-b-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:28:46.832Z",
+  "schema_version": "v1",
+  "commit_sha": "5b82d0095168ff05861f6d0eb05311460d2ea8a2",
+  "title": "fix(installer): Step 6.9 self-registration — never push an empty branch; fail loud (B-0855)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:28:20Z",
+  "head_ref": "fix/installer-self-register-empty-commit"
+}

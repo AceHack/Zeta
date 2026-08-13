@@ -1,0 +1,12 @@
+{
+  "pr_number": 7403,
+  "archive_path": "docs/history/pr-reviews/PR-7403-docs-vocab-track-the-miss-mystery-case-sensitivity-false-negative-in-my-own-chec.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:01:08.138Z",
+  "schema_version": "v1",
+  "commit_sha": "51ca0c9fbf4d00021c32dadb7436817a9ab8e7be",
+  "title": "docs+vocab: track the MISS mystery (case-sensitivity false-negative in my own check) + acronyms/ (fs/UII/ULI) + ety/ folders",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:00:43Z",
+  "head_ref": "otto/track-miss-mystery-case-sensitivity-plus-acronyms-ety-folders-uli"
+}

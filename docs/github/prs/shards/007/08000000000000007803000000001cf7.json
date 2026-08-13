@@ -1,0 +1,12 @@
+{
+  "pr_number": 7415,
+  "archive_path": "docs/history/pr-reviews/PR-7415-feat-vocab-docs-type-shape-e-into-f-both-ways-homoiconic-everything-must-compile.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:24:37.184Z",
+  "schema_version": "v1",
+  "commit_sha": "37ed111ed4de9a88e3017c3903eb6eaaf69f010e",
+  "title": "feat(vocab)+docs: type shape E into F# both ways (homoiconic) + everything must compile in F# = our runtime index, of itself (self-referential)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:24:15Z",
+  "head_ref": "otto/everything-compiles-fsharp-runtime-index-of-itself-self-referential"
+}

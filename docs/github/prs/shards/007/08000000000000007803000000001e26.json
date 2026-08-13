@@ -1,0 +1,12 @@
+{
+  "pr_number": 7718,
+  "archive_path": "docs/history/pr-reviews/PR-7718-feat-shapes-the-catalog-completes-braid-worldline-lightcone-fourcorner-seam-each.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T15:50:56.865Z",
+  "schema_version": "v1",
+  "commit_sha": "325919c076902c016f1b7e60ceef7b1a253b2d07",
+  "title": "feat(shapes): the catalog completes — braid, worldline, lightcone, fourcorner, seam (each with its own treaty)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T15:50:25Z",
+  "head_ref": "shadow-shape-catalog-wave"
+}

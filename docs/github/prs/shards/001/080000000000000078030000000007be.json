@@ -1,0 +1,23 @@
+{
+  "pr_number": 1982,
+  "archive_path": "docs/history/pr-reviews/PR-1982-feat-bft-consensus-state-machine-typed-lifecycle-6-tests.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_EdsN",
+    "comment:PRRC_kwDOSF9kNM6_Ef36",
+    "comment:PRRC_kwDOSF9kNM6_Ef3k",
+    "comment:PRRC_kwDOSF9kNM6_Ef4A",
+    "comment:PRRC_kwDOSF9kNM6_Ef4H",
+    "thread:PRRT_kwDOSF9kNM6AfPYY",
+    "thread:PRRT_kwDOSF9kNM6AfQ72",
+    "thread:PRRT_kwDOSF9kNM6AfQ7e",
+    "thread:PRRT_kwDOSF9kNM6AfQ7t",
+    "thread:PRRT_kwDOSF9kNM6AfQ7x"
+  ],
+  "fetched_at": "2026-05-08T01:13:33.250Z",
+  "schema_version": "v1",
+  "commit_sha": "c3cc2be3fd6119b3b550c4275977e7b00c0871ce",
+  "title": "feat: BFT consensus state machine — typed lifecycle + 6 tests",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T01:13:16Z",
+  "head_ref": "feat/consensus-state-machine"
+}

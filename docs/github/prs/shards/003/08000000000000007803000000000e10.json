@@ -1,0 +1,12 @@
+{
+  "pr_number": 3600,
+  "archive_path": "docs/history/pr-reviews/PR-3600-shard-tick-2210z-fresh-cold-boot-cron-re-armed-null-actionable.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T22:15:02.903Z",
+  "schema_version": "v1",
+  "commit_sha": "d189638aaca217efaa55074cf47bf613bbe72c8a",
+  "title": "shard(tick): 2210Z — fresh cold-boot; cron re-armed; null actionable",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T22:14:44Z",
+  "head_ref": "shard/tick-2210z-otto-cli-2026-05-15"
+}

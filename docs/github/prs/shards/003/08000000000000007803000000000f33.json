@@ -1,0 +1,12 @@
+{
+  "pr_number": 3891,
+  "archive_path": "docs/history/pr-reviews/PR-3891-feat-b-0037-3-wire-6-meta-cognition-measurables-into-alignment-md-close-5th-cycl.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T14:11:51.058Z",
+  "schema_version": "v1",
+  "commit_sha": "d943698a285c43ae110e735d6d99d5cd13e2a0ff",
+  "title": "feat(b-0037.3): wire 6 meta-cognition measurables into ALIGNMENT.md + close (5th cycle close-row)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T14:11:32Z",
+  "head_ref": "otto-cli-b0037.3-impl-measurables-2026-05-16-1357z"
+}

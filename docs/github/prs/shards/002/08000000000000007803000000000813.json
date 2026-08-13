@@ -1,0 +1,12 @@
+{
+  "pr_number": 2067,
+  "archive_path": "docs/history/pr-reviews/PR-2067-fix-backlog-add-decomposition-classification-to-p1-items.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T12:07:38.350Z",
+  "schema_version": "v1",
+  "commit_sha": "5818e82251f8b4f7195f14bbd0157a572f3c7fea",
+  "title": "fix(backlog): add decomposition + classification to P1 items",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T12:07:21Z",
+  "head_ref": "fix/backlog-decomposition-classification"
+}

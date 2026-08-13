@@ -1,0 +1,12 @@
+{
+  "pr_number": 5577,
+  "archive_path": "docs/history/pr-reviews/PR-5577-docs-rule-incorporate-amara-2026-05-27-sharpening-to-closedness-scope-bounding-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T18:16:36.084Z",
+  "schema_version": "v1",
+  "commit_sha": "3289923ea0b36878801d225742608127a0f30168",
+  "title": "docs(rule): incorporate Amara 2026-05-27 sharpening to closedness scope-bounding (PR #5574 follow-on) — 'No feedback tax on closed math. No silent emissions from open substrate.'",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:16:14Z",
+  "head_ref": "backlog/closedness-amara-sharpening-extension-2026-05-27"
+}

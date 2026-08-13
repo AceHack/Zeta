@@ -1,0 +1,16 @@
+{
+  "pr_number": 6391,
+  "archive_path": "docs/history/pr-reviews/PR-6391-fix-ace-harden-slice-5-2-solver-resolve-from-copilot-review-of-6388.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GrbRZ",
+    "comment:PRRC_kwDOSF9kNM7Grdxx",
+    "thread:PRRT_kwDOSF9kNM6GE4Vt"
+  ],
+  "fetched_at": "2026-06-01T10:10:13.240Z",
+  "schema_version": "v1",
+  "commit_sha": "41c8eb915e17d3a37821ed6c556db39aa956f7fd",
+  "title": "fix(ace): harden slice-5.2 solver/resolve from Copilot review of #6388",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T10:09:50Z",
+  "head_ref": "otto-windows/ace-slice5.2-review-followups-2026-06-01"
+}

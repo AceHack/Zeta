@@ -1,0 +1,12 @@
+{
+  "pr_number": 2255,
+  "archive_path": "docs/history/pr-reviews/PR-2255-docs-b-0126-normalize-closed-backlog-status.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T09:21:25.260Z",
+  "schema_version": "v1",
+  "commit_sha": "11a27a78783423da91681d4524ab95e74f311225",
+  "title": "docs(B-0126): normalize closed backlog status",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:21:08Z",
+  "head_ref": "codex/b0126-close-status-debt"
+}

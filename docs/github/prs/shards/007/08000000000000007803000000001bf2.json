@@ -1,0 +1,12 @@
+{
+  "pr_number": 7154,
+  "archive_path": "docs/history/pr-reviews/PR-7154-feat-core-gamefingerprint-the-first-external-index-game-content-identity-size-cr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:55:01.459Z",
+  "schema_version": "v1",
+  "commit_sha": "1561c2c0b4a5cd9ebd04578db2b7397f80623838",
+  "title": "feat(core): GameFingerprint — the first external index (game content identity: size+crc32+sha256)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:54:39Z",
+  "head_ref": "otto/gamefingerprint-first-external-index-content-identity"
+}

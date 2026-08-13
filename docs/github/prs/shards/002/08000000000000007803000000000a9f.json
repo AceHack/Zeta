@@ -1,0 +1,12 @@
+{
+  "pr_number": 2719,
+  "archive_path": "docs/history/pr-reviews/PR-2719-feat-tools-b-0292-smallest-safe-slice-ts-structure-recognition-surface-cpu-stub-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T16:17:35.909Z",
+  "schema_version": "v1",
+  "commit_sha": "01371c0a4548de371e2a4b30a3ef382b20f06b22",
+  "title": "feat(tools): B-0292 smallest safe slice — TS structure recognition surface + CPU stub (re-decomp)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T16:17:11Z",
+  "head_ref": "claim/b0292-concordance-ai-local-gpu-smallest-slice-riven-2026-05-11"
+}

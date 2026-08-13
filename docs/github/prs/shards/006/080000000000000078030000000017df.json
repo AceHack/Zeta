@@ -1,0 +1,16 @@
+{
+  "pr_number": 6111,
+  "archive_path": "docs/history/pr-reviews/PR-6111-docs-persistence-windows-as-built-readme-fixes-after-6108-merge.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gaf_W",
+    "comment:PRRC_kwDOSF9kNM7Gaffs",
+    "thread:PRRT_kwDOSF9kNM6F3-p-"
+  ],
+  "fetched_at": "2026-05-30T13:59:53.162Z",
+  "schema_version": "v1",
+  "commit_sha": "35114b7148a3c52bb791919170e5cbc4c27a8e4a",
+  "title": "docs(persistence/windows): as-built README fixes after #6108 merge",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T13:59:31Z",
+  "head_ref": "otto-windows/readme-asbuilt-flip-on-merge-2026-05-30"
+}

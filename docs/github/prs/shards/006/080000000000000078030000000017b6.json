@@ -1,0 +1,19 @@
+{
+  "pr_number": 6070,
+  "archive_path": "docs/history/pr-reviews/PR-6070-feat-health-detect-claim-path-collisions.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GXDQE",
+    "comment:PRRC_kwDOSF9kNM7GXDQI",
+    "comment:PRRC_kwDOSF9kNM7GXFuD",
+    "comment:PRRC_kwDOSF9kNM7GXFun",
+    "thread:PRRT_kwDOSF9kNM6F1ZmI",
+    "thread:PRRT_kwDOSF9kNM6F1ZmK"
+  ],
+  "fetched_at": "2026-05-30T03:16:41.298Z",
+  "schema_version": "v1",
+  "commit_sha": "21908581df97bf2496ab8af7dd6cdf2ca3c3805c",
+  "title": "feat(health): detect claim path collisions",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T03:16:23Z",
+  "head_ref": "claim/codex-loop-claim-path-collision-health-20260530"
+}

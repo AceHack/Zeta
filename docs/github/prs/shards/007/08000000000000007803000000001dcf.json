@@ -1,0 +1,12 @@
+{
+  "pr_number": 7631,
+  "archive_path": "docs/history/pr-reviews/PR-7631-docs-charter-the-feel-charter-pre-internet-magic-d-d-style-for-max-and-addison.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:53:38.760Z",
+  "schema_version": "v1",
+  "commit_sha": "f11e5dd31fb245fccf3a6311b835117a429d576b",
+  "title": "docs(charter): the feel charter — pre-internet magic, D&D style, for Max and Addison",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:53:12Z",
+  "head_ref": "shadow-dnd-feel-charter"
+}

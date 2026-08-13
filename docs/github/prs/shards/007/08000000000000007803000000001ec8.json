@@ -1,0 +1,12 @@
+{
+  "pr_number": 7880,
+  "archive_path": "docs/history/pr-reviews/PR-7880-fix-installer-clamp-greedy-root-size-to-boot-disk-capacity-b-0891-qemu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T10:16:50.690Z",
+  "schema_version": "v1",
+  "commit_sha": "5ba5d9f2071920460d6c227dec13008c29240769",
+  "title": "fix(installer): clamp greedy ROOT_SIZE to BOOT disk capacity (B-0891 QEMU)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:16:25Z",
+  "head_ref": "riven/b0891-clamp-root-size"
+}

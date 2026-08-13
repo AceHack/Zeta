@@ -1,0 +1,12 @@
+{
+  "pr_number": 8416,
+  "archive_path": "docs/history/pr-reviews/PR-8416-docs-society-11-ihost-anchor-to-the-net-generic-host-as-the-starting-point.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T02:40:19.480Z",
+  "schema_version": "v1",
+  "commit_sha": "d891bf63aff122abde2cdc0a92456620c3fb6de9",
+  "title": "docs(society): §11 IHost — anchor to the .NET Generic Host as the starting point",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T02:39:54Z",
+  "head_ref": "docs/ihost-anchor-dotnet-generic-host"
+}

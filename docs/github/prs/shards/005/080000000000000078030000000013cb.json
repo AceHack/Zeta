@@ -1,0 +1,31 @@
+{
+  "pr_number": 5067,
+  "archive_path": "docs/history/pr-reviews/PR-5067-tools-wire-bash-retirement-inventory-guard.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Eu9N7",
+    "comment:PRRC_kwDOSF9kNM7Eu9ON",
+    "comment:PRRC_kwDOSF9kNM7Ev0H8",
+    "comment:PRRC_kwDOSF9kNM7Ev7P3",
+    "comment:PRRC_kwDOSF9kNM7Ev7Qt",
+    "comment:PRRC_kwDOSF9kNM7Ev7Rv",
+    "comment:PRRC_kwDOSF9kNM7Ev7TE",
+    "comment:PRRC_kwDOSF9kNM7Ev7Uy",
+    "comment:PRRC_kwDOSF9kNM7Ev7V1",
+    "comment:PRRC_kwDOSF9kNM7EvGF-",
+    "comment:PRRC_kwDOSF9kNM7EvGFc",
+    "comment:PRRC_kwDOSF9kNM7EvGFx",
+    "thread:PRRT_kwDOSF9kNM6EqAwA",
+    "thread:PRRT_kwDOSF9kNM6EqAwO",
+    "thread:PRRT_kwDOSF9kNM6EqG93",
+    "thread:PRRT_kwDOSF9kNM6EqG9g",
+    "thread:PRRT_kwDOSF9kNM6EqG9u",
+    "thread:PRRT_kwDOSF9kNM6EqoD2"
+  ],
+  "fetched_at": "2026-05-26T02:51:40.563Z",
+  "schema_version": "v1",
+  "commit_sha": "89a39ea55e35e96944ca2f64e9181471d8c4e2db",
+  "title": "tools: wire bash retirement inventory guard",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T02:51:20Z",
+  "head_ref": "claim/task-bash-retirement-inventory-wire-20260512"
+}

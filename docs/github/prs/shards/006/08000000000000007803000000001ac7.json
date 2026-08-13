@@ -1,0 +1,12 @@
+{
+  "pr_number": 6855,
+  "archive_path": "docs/history/pr-reviews/PR-6855-docs-research-model-weights-as-globals-state-dict-embedding-bnn-soft-tensor-huma.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T15:34:05.046Z",
+  "schema_version": "v1",
+  "commit_sha": "f6b61fc58f7b1a0174537f6d66a9b04b4510182b",
+  "title": "docs(research): model weights as globals — state_dict/embedding/BNN-soft-tensor, human-readable model API",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T15:33:43Z",
+  "head_ref": "otto/model-weights-as-globals-capture"
+}

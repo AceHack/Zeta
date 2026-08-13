@@ -1,0 +1,12 @@
+{
+  "pr_number": 7424,
+  "archive_path": "docs/history/pr-reviews/PR-7424-docs-vocab-llmtv-qpg-over-dpi-aaron-s-carved-definition-seat-qpg-dpi-update-llmt.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:51:13.304Z",
+  "schema_version": "v1",
+  "commit_sha": "19c736f70955592e41f2b22695bec7371094d0ef",
+  "title": "docs(vocab): LLMTV = QPG over DPI (Aaron's carved definition) — seat qpg, dpi; update llmtv",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:50:51Z",
+  "head_ref": "otto/llmtv-equals-qpg-over-dpi-definition"
+}

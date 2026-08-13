@@ -1,0 +1,15 @@
+{
+  "pr_number": 2417,
+  "archive_path": "docs/history/pr-reviews/PR-2417-feat-b-0054-1-media-resonance-catalog-v0-typed-schema-4-seed-entries.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lrdi",
+    "thread:PRRT_kwDOSF9kNM6A39NP"
+  ],
+  "fetched_at": "2026-05-10T04:55:55.272Z",
+  "schema_version": "v1",
+  "commit_sha": "ff667330283e4f6e4a8bea12aa097438206cf12b",
+  "title": "feat(B-0054.1): media resonance catalog v0 — typed schema + 4 seed entries",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T04:55:40Z",
+  "head_ref": "feat/B-0054.1-media-resonance-catalog-schema"
+}

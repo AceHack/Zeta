@@ -1,0 +1,12 @@
+{
+  "pr_number": 7997,
+  "archive_path": "docs/history/pr-reviews/PR-7997-feat-core-test-dashedwalk-report-5-s-restricted-span-executable-rank-17-computed.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T19:56:26.140Z",
+  "schema_version": "v1",
+  "commit_sha": "3b6164d2e6969c5fd1d7d96eb174729a84f4816b",
+  "title": "feat(core)+test: DashedWalk — REPORT #5's restricted span executable (rank-17 computed; Eulerian round-trip; H₁ collapse witnessed)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T19:56:00Z",
+  "head_ref": "shadow/dashedwalk-slice"
+}

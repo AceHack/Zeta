@@ -1,0 +1,12 @@
+{
+  "pr_number": 8596,
+  "archive_path": "docs/history/pr-reviews/PR-8596-docs-gen-gen-record-the-q-self-hosting-lane-gen-gen-gen-cogen-in-q.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T16:40:29.458Z",
+  "schema_version": "v1",
+  "commit_sha": "cdf93037c231d58a26d92466c88590d657bbe3ce",
+  "title": "docs(gen-gen): record the Q# self-hosting lane — gen(gen)===gen + cogen in Q#",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T16:40:04Z",
+  "head_ref": "otto/gen-gen-qsharp-self-hosting-lane"
+}

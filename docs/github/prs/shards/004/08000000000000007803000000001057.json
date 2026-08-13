@@ -1,0 +1,29 @@
+{
+  "pr_number": 4183,
+  "archive_path": "docs/history/pr-reviews/PR-4183-backlog-b0667-rule-tonal-momentum-meme-emergent-harmonic-coercion-extends-nci-au.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CY8K-",
+    "comment:PRRC_kwDOSF9kNM7CY8LK",
+    "comment:PRRC_kwDOSF9kNM7CZAxL",
+    "comment:PRRC_kwDOSF9kNM7CZAyC",
+    "comment:PRRC_kwDOSF9kNM7CZAyY",
+    "comment:PRRC_kwDOSF9kNM7CZAyw",
+    "comment:PRRC_kwDOSF9kNM7CZB8M",
+    "comment:PRRC_kwDOSF9kNM7CZB8W",
+    "thread:PRRT_kwDOSF9kNM6C7-X7",
+    "thread:PRRT_kwDOSF9kNM6C7-YE",
+    "thread:PRRT_kwDOSF9kNM6C8Bj6",
+    "thread:PRRT_kwDOSF9kNM6C8Bk0",
+    "thread:PRRT_kwDOSF9kNM6C8Bkj",
+    "thread:PRRT_kwDOSF9kNM6C8BlF",
+    "thread:PRRT_kwDOSF9kNM6C8CZB",
+    "thread:PRRT_kwDOSF9kNM6C8CZJ"
+  ],
+  "fetched_at": "2026-05-18T19:05:50.051Z",
+  "schema_version": "v1",
+  "commit_sha": "3fafd82bb51b3632d325b4ff85adb8df61f02b80",
+  "title": "backlog(b0667)+rule: Tonal momentum = meme — emergent-harmonic-coercion extends NCI; auto-load rule for cold-boot durability",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T19:05:25Z",
+  "head_ref": "shard/b0667-tonal-momentum-equals-meme-nci-extension-plus-autoload-rule-2026-05-18"
+}

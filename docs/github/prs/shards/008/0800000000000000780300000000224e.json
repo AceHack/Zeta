@@ -1,0 +1,12 @@
+{
+  "pr_number": 8782,
+  "archive_path": "docs/history/pr-reviews/PR-8782-feat-core-metaspacegraphrender-end-to-end-wire-graph-physics-navigable-map.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T22:22:06.327Z",
+  "schema_version": "v1",
+  "commit_sha": "418fd67eec2c5344ff75b9349d019d6e67d73c67",
+  "title": "feat(core): MetaspaceGraphRender — end-to-end wire (graph → physics → navigable map)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T22:21:43Z",
+  "head_ref": "otto/metaspace-render-graph"
+}

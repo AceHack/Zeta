@@ -1,0 +1,19 @@
+{
+  "pr_number": 5991,
+  "archive_path": "docs/history/pr-reviews/PR-5991-fix-tsc-nouncheckedindexedaccess-guards-in-audit-content-marking-fix-forward-for.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GKkEW",
+    "comment:PRRC_kwDOSF9kNM7GKkFT",
+    "comment:PRRC_kwDOSF9kNM7GKkFt",
+    "thread:PRRT_kwDOSF9kNM6FsY-N",
+    "thread:PRRT_kwDOSF9kNM6FsY95",
+    "thread:PRRT_kwDOSF9kNM6FsY9K"
+  ],
+  "fetched_at": "2026-05-29T13:40:38.731Z",
+  "schema_version": "v1",
+  "commit_sha": "02557d6939af6007562701ba75e769f4bc2c4bdd",
+  "title": "fix(tsc): noUncheckedIndexedAccess guards in audit-content-marking (fix-forward for main, broken by #5990 auto-merge race)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T13:40:08Z",
+  "head_ref": "otto-cli/fix-tsc-content-marking-2026-05-29"
+}

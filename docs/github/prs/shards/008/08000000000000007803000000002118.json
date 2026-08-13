@@ -1,0 +1,12 @@
+{
+  "pr_number": 8472,
+  "archive_path": "docs/history/pr-reviews/PR-8472-docs-society-9j-we-don-t-cross-our-fingers-proofs-isociety-interface-not-proxy-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T07:24:57.726Z",
+  "schema_version": "v1",
+  "commit_sha": "e61bad3a5342303294d79fe534ebb5695bc0ee5b",
+  "title": "docs(society): §9j — we don't cross our fingers (proofs + ISociety interface, not proxy + hope)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T07:24:33Z",
+  "head_ref": "otto/we-dont-cross-fingers-proofs-not-proxy"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 6262,
+  "archive_path": "docs/history/pr-reviews/PR-6262-rules-dont-ask-permission-external-repo-contributions-small-prs-ungated-large-ch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gi0Wg",
+    "comment:PRRC_kwDOSF9kNM7Gi0tD",
+    "comment:PRRC_kwDOSF9kNM7Gi3VV",
+    "comment:PRRC_kwDOSF9kNM7Gizp6",
+    "thread:PRRT_kwDOSF9kNM6F-b3R",
+    "thread:PRRT_kwDOSF9kNM6F-crK"
+  ],
+  "fetched_at": "2026-05-31T22:30:00.149Z",
+  "schema_version": "v1",
+  "commit_sha": "56e7a2c71cbe5ed86424b5d05ae372cfe3c62aed",
+  "title": "rules(dont-ask-permission): external-repo contributions — small PRs ungated, large changes Aaron-or-Max review-first",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T22:29:40Z",
+  "head_ref": "docs/external-repo-contrib-authorization-2026-05-31"
+}

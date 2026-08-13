@@ -1,0 +1,12 @@
+{
+  "pr_number": 7478,
+  "archive_path": "docs/history/pr-reviews/PR-7478-feat-skills-routing-shadow-skills-content-routing-routing-layer-root-folders.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T08:39:33.250Z",
+  "schema_version": "v1",
+  "commit_sha": "18b36d77579f29c034aaa4096fb802380b9ceb67",
+  "title": "feat(skills,routing)+shadow: /skills (content) + /routing (routing layer) root folders",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T08:39:10Z",
+  "head_ref": "shadow-skills-routing-root-folders"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 5575,
+  "archive_path": "docs/history/pr-reviews/PR-5575-feat-b-0058-3-create-ethics-gate-failure-log.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fdlm1",
+    "comment:PRRC_kwDOSF9kNM7Fdlna",
+    "comment:PRRC_kwDOSF9kNM7FeWvd",
+    "comment:PRRC_kwDOSF9kNM7FeWx4",
+    "thread:PRRT_kwDOSF9kNM6FMAHS",
+    "thread:PRRT_kwDOSF9kNM6FMAHo"
+  ],
+  "fetched_at": "2026-05-27T18:46:11.085Z",
+  "schema_version": "v1",
+  "commit_sha": "70b0e2bda355b4bd923f33d3b8159794dbce2075",
+  "title": "feat(B-0058.3): Create ethics gate failure log",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:45:52Z",
+  "head_ref": "lior/b-0058.3-honesty-log"
+}

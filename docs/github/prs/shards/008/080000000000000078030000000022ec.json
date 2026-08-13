@@ -1,0 +1,12 @@
+{
+  "pr_number": 8940,
+  "archive_path": "docs/history/pr-reviews/PR-8940-keys-register-acehacks-mac-studio-pure-machine-key-user-independent.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T10:13:21.131Z",
+  "schema_version": "v1",
+  "commit_sha": "dcfa5bfd427ca05eb0590bf80fed42ef5ed4607b",
+  "title": "keys(register): acehacks-mac-studio PURE machine key (user-independent)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T10:12:56Z",
+  "head_ref": "otto/register-acehacks-mac-studio-pure-machine-key"
+}

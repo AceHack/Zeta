@@ -1,0 +1,12 @@
+{
+  "pr_number": 2707,
+  "archive_path": "docs/history/pr-reviews/PR-2707-fix-b-0118-align-status-semantics.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T14:44:16.077Z",
+  "schema_version": "v1",
+  "commit_sha": "cd4ad233b6e904593fa1267e10c2dfdfa36eb4c3",
+  "title": "fix(B-0118): align status semantics",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T14:43:54Z",
+  "head_ref": "claim/b0118-status-semantics-codex-2026-05-11"
+}

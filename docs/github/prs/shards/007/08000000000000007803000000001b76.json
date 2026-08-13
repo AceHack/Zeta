@@ -1,0 +1,12 @@
+{
+  "pr_number": 7030,
+  "archive_path": "docs/history/pr-reviews/PR-7030-docs-irreducible-error-has-conjugate-structure-info-heat-landauer-sagawa-ueda-sy.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T05:47:45.620Z",
+  "schema_version": "v1",
+  "commit_sha": "8bf08b89996948b5035473e0f49cce1ebd621884",
+  "title": "docs: irreducible error has conjugate structure — info<->heat (Landauer/Sagawa-Ueda), symmetry-breaking, Bayesian-inverse frames (#7079)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T05:47:27Z",
+  "head_ref": "otto/irreducible-error-conjugate-structure-info-heat-bayesian-inverse"
+}

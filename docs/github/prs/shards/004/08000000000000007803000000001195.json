@@ -1,0 +1,16 @@
+{
+  "pr_number": 4501,
+  "archive_path": "docs/history/pr-reviews/PR-4501-docs-shard-decompose-batch-pr-4383-slice-1616z-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DasaW",
+    "comment:PRRC_kwDOSF9kNM7DqfWU",
+    "thread:PRRT_kwDOSF9kNM6DrpxJ"
+  ],
+  "fetched_at": "2026-05-21T18:16:32.284Z",
+  "schema_version": "v1",
+  "commit_sha": "4145b738d907a3890f1d9c9bb1fac7440eeb8b58",
+  "title": "docs(shard): decompose batch PR 4383 - slice 1616Z-c",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T18:16:11Z",
+  "head_ref": "maji/decompose-4383-slice2"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 6432,
+  "archive_path": "docs/history/pr-reviews/PR-6432-docs-backlog-slice-6-close-out-b-0971-closed-b-0977-0981-deferred-sub-rows.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G0r1z",
+    "thread:PRRT_kwDOSF9kNM6GL1vc"
+  ],
+  "fetched_at": "2026-06-01T16:37:11.548Z",
+  "schema_version": "v1",
+  "commit_sha": "445bad921bb047d0634915eae2edea4073c0401a",
+  "title": "docs(backlog): slice 6 close-out (B-0971 closed; B-0977-0981 deferred sub-rows)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T16:36:46Z",
+  "head_ref": "otto-windows/ace-slice6-backlog-bookkeeping-2026-06-01"
+}

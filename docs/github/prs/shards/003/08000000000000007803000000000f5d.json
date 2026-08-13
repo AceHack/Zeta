@@ -1,0 +1,12 @@
+{
+  "pr_number": 3933,
+  "archive_path": "docs/history/pr-reviews/PR-3933-backlog-b-0560-autonomous-loop-cron-cadence-vs-settled-state-tension.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T19:40:54.943Z",
+  "schema_version": "v1",
+  "commit_sha": "c3323d679e902a58ba1de1559092df2eec1814b0",
+  "title": "backlog(B-0560): autonomous-loop cron-cadence vs settled-state tension",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T19:40:38Z",
+  "head_ref": "otto-cli-backlog-b0560-autonomous-loop-cron-cadence-tension-2026-05-16"
+}

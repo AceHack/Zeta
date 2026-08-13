@@ -1,0 +1,17 @@
+{
+  "pr_number": 6240,
+  "archive_path": "docs/history/pr-reviews/PR-6240-test-setup-assert-install-sh-idempotency-2nd-run-must-not-re-pull-the-model-ubun.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GiJxQ",
+    "comment:PRRC_kwDOSF9kNM7GiJxd",
+    "thread:PRRT_kwDOSF9kNM6F97CN",
+    "thread:PRRT_kwDOSF9kNM6F97CX"
+  ],
+  "fetched_at": "2026-05-31T19:57:23.588Z",
+  "schema_version": "v1",
+  "commit_sha": "911b825c7ec6f317e6b27e944b2333661aa87994",
+  "title": "test(setup): assert install.sh idempotency — 2nd run must not re-pull the model (ubuntu shield)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T19:57:04Z",
+  "head_ref": "otto-windows/install-sh-idempotency-2nd-run-assert-2026-05-31"
+}

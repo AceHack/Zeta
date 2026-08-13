@@ -1,0 +1,12 @@
+{
+  "pr_number": 4519,
+  "archive_path": "docs/history/pr-reviews/PR-4519-fix-zeta-id-address-7-copilot-codex-review-findings-on-pr-4517-substrate.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T08:43:06.796Z",
+  "schema_version": "v1",
+  "commit_sha": "ee25b106e95a5f007a434c69684954080b0e3519",
+  "title": "fix(zeta-id): address 7 Copilot+Codex review findings on PR #4517 substrate",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T08:42:47Z",
+  "head_ref": "fix/zeta-id-review-followups-2026-05-21"
+}

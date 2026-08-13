@@ -1,0 +1,31 @@
+{
+  "pr_number": 6189,
+  "archive_path": "docs/history/pr-reviews/PR-6189-rules-always-active-add-idempotency-as-the-6th-always-active-discipline-scale-lo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gdh0X",
+    "comment:PRRC_kwDOSF9kNM7Gdh93",
+    "comment:PRRC_kwDOSF9kNM7Gdh97",
+    "comment:PRRC_kwDOSF9kNM7Gdh99",
+    "comment:PRRC_kwDOSF9kNM7Gdh9_",
+    "comment:PRRC_kwDOSF9kNM7Gdh9g",
+    "comment:PRRC_kwDOSF9kNM7Gdh9t",
+    "comment:PRRC_kwDOSF9kNM7Gdh9x",
+    "comment:PRRC_kwDOSF9kNM7Gdh9z",
+    "thread:PRRT_kwDOSF9kNM6F6WaS",
+    "thread:PRRT_kwDOSF9kNM6F6Wh_",
+    "thread:PRRT_kwDOSF9kNM6F6Why",
+    "thread:PRRT_kwDOSF9kNM6F6WiC",
+    "thread:PRRT_kwDOSF9kNM6F6WiE",
+    "thread:PRRT_kwDOSF9kNM6F6WiH",
+    "thread:PRRT_kwDOSF9kNM6F6WiL",
+    "thread:PRRT_kwDOSF9kNM6F6WiM",
+    "thread:PRRT_kwDOSF9kNM6F6WiO"
+  ],
+  "fetched_at": "2026-05-31T03:07:01.262Z",
+  "schema_version": "v1",
+  "commit_sha": "d59f1d76b97117af62aca610d6837098b4868a10",
+  "title": "rules(always-active): add idempotency as the 6th always-active discipline (scale/lock/weight-free + DST + DV2.0 + idempotency)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T03:06:42Z",
+  "head_ref": "otto-cli/idempotency-sixth-always-active-discipline-2026-05-30"
+}

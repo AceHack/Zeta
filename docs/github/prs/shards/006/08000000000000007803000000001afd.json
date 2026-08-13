@@ -1,0 +1,12 @@
+{
+  "pr_number": 6909,
+  "archive_path": "docs/history/pr-reviews/PR-6909-docs-research-correction-temporal-plasticity-is-real-compute-economics-otto-over.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T20:37:02.874Z",
+  "schema_version": "v1",
+  "commit_sha": "1dfa7ff54c2696652cee6daeb2e28722e82b8601",
+  "title": "docs(research): CORRECTION — 'temporal plasticity' is real (compute economics), Otto over-peeled it",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T20:36:45Z",
+  "head_ref": "otto/temporal-plasticity-real-via-free-compute-correction"
+}

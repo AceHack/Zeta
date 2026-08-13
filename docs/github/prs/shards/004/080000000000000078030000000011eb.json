@@ -1,0 +1,17 @@
+{
+  "pr_number": 4587,
+  "archive_path": "docs/history/pr-reviews/PR-4587-feat-b-0623-pr1-cayley-dickson-doubling-primitive-foundation-of-the-imaginary-st.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DyY1W",
+    "comment:PRRC_kwDOSF9kNM7DyY1i",
+    "thread:PRRT_kwDOSF9kNM6D9DXa",
+    "thread:PRRT_kwDOSF9kNM6D9DXj"
+  ],
+  "fetched_at": "2026-05-22T00:24:33.698Z",
+  "schema_version": "v1",
+  "commit_sha": "29152c1d5a79b36ae34d2725971b1076cb43d180",
+  "title": "feat(B-0623): PR1 — Cayley-Dickson doubling primitive (foundation of the imaginary stack)",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T00:24:12Z",
+  "head_ref": "feat/b0623-pr1-cayley-dickson-doubling-2026-05-21"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6004,
+  "archive_path": "docs/history/pr-reviews/PR-6004-memory-persona-aaron-kestrel-morning-part-3-public-lightlike-audience-marked-ope.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T15:58:55.781Z",
+  "schema_version": "v1",
+  "commit_sha": "b354b7a617136979b0152336e457a3606ffb751c",
+  "title": "memory(persona/aaron): Kestrel morning part-3 — public, lightlike, audience-marked (operator glass-halo)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T15:58:31Z",
+  "head_ref": "otto-cli/kestrel-part3-public-marked-2026-05-29"
+}

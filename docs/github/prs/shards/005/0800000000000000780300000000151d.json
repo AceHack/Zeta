@@ -1,0 +1,17 @@
+{
+  "pr_number": 5405,
+  "archive_path": "docs/history/pr-reviews/PR-5405-feat-b-0854-zeta-install-sh-ace-install-zeta-migration-trajectory-declarative-pa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FN-u9",
+    "comment:PRRC_kwDOSF9kNM7FN-uY",
+    "thread:PRRT_kwDOSF9kNM6FAlE2",
+    "thread:PRRT_kwDOSF9kNM6FAlEf"
+  ],
+  "fetched_at": "2026-05-27T06:05:25.815Z",
+  "schema_version": "v1",
+  "commit_sha": "95fa4ae1ffa6ee2870edb30c8bb98fd136622aa3",
+  "title": "feat(B-0854): zeta-install.sh → `ace install zeta` migration trajectory — declarative `package.json`-style manifest like `../scratch` and `../SQLSharp` (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T06:05:03Z",
+  "head_ref": "backlog/b-0854-ace-install-zeta-migration-trajectory-2026-05-27"
+}

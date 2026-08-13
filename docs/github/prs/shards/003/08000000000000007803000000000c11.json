@@ -1,0 +1,12 @@
+{
+  "pr_number": 3089,
+  "archive_path": "docs/history/pr-reviews/PR-3089-chore-tick-0210z-shard-md038-md056-round-2-fixes-on-shard-prs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T02:14:19.211Z",
+  "schema_version": "v1",
+  "commit_sha": "5577c41cd204962927d9107c00f13bc737d45b12",
+  "title": "chore(tick): 0210Z shard — MD038+MD056 round-2 fixes on shard PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T02:13:57Z",
+  "head_ref": "chore/tick-shard-0210z-2026-05-14"
+}

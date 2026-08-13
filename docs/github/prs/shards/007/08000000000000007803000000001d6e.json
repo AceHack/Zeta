@@ -1,0 +1,12 @@
+{
+  "pr_number": 7534,
+  "archive_path": "docs/history/pr-reviews/PR-7534-docs-research-vernacular-is-the-real-beacon-test-explaining-the-shapes-without-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:15:21.611Z",
+  "schema_version": "v1",
+  "commit_sha": "344804f648e35ecd53f8efefd251b1840a075872",
+  "title": "docs(research): vernacular is the real Beacon test — explaining the shapes without the math",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:14:58Z",
+  "head_ref": "shadow-vernacular-beacon-capture"
+}

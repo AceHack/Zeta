@@ -1,0 +1,12 @@
+{
+  "pr_number": 6737,
+  "archive_path": "docs/history/pr-reviews/PR-6737-backlog-data-plane-plugin-determinism-contract-perf-parity-4-lang-benchmark.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:15:34.068Z",
+  "schema_version": "v1",
+  "commit_sha": "621be59da89e7038e53fbcf58672515e95ffa55e",
+  "title": "backlog: data-plane plugin determinism contract + perf-parity/4-lang benchmark",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:15:13Z",
+  "head_ref": "otto/plugin-determinism-and-perf-parity"
+}

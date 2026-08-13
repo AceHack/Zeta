@@ -1,0 +1,12 @@
+{
+  "pr_number": 7421,
+  "archive_path": "docs/history/pr-reviews/PR-7421-feat-add-network-at-root-the-zeta-network-layer-the-reticulum-overlay.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:43:51.107Z",
+  "schema_version": "v1",
+  "commit_sha": "e002110fd7ae29bdb6eee68070f9e0b1211fd7b1",
+  "title": "feat: add network/ at root — the Zeta network layer (the Reticulum overlay)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:43:29Z",
+  "head_ref": "otto/network-folder-at-root-reticulum-overlay"
+}

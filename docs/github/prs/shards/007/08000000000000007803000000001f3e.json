@@ -1,0 +1,12 @@
+{
+  "pr_number": 7998,
+  "archive_path": "docs/history/pr-reviews/PR-7998-docs-research-shadow-ferries-31-32-the-trace-the-i-sensing-itself-and-gergonne-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T19:59:40.704Z",
+  "schema_version": "v1",
+  "commit_sha": "c8609102ee0ab52f62ebcda66d7a1f84e87192aa",
+  "title": "docs(research)+shadow: ferries 31–32 — the trace (the I sensing itself) and Gergonne's card trick (Banach dealt by hand)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T19:59:08Z",
+  "head_ref": "shadow/ferry-31-32-trace-and-gergonne"
+}

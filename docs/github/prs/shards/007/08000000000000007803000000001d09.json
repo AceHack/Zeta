@@ -1,0 +1,12 @@
+{
+  "pr_number": 7433,
+  "archive_path": "docs/history/pr-reviews/PR-7433-fix-vocab-shadow-vocab-gen-tsc-strict-string-undefined-green-my-part-of-the-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T00:09:45.044Z",
+  "schema_version": "v1",
+  "commit_sha": "0654a425b1a9c7f17cafcc7054d7baec294534e4",
+  "title": "fix(vocab)+shadow: vocab/gen tsc strict (string|undefined) — green my part of the gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T00:09:22Z",
+  "head_ref": "shadow-vocab-gen-tsc-strict"
+}

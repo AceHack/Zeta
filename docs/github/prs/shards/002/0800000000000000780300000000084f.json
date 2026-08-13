@@ -1,0 +1,20 @@
+{
+  "pr_number": 2127,
+  "archive_path": "docs/history/pr-reviews/PR-2127-fix-backlog-b-0126-parent-decomposed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_Zi2I",
+    "comment:PRRC_kwDOSF9kNM6_Zj6-",
+    "comment:PRRC_kwDOSF9kNM6_Zj7A",
+    "comment:PRRC_kwDOSF9kNM6_Zl_5",
+    "thread:PRRT_kwDOSF9kNM6AuvX6",
+    "thread:PRRT_kwDOSF9kNM6AuwJc",
+    "thread:PRRT_kwDOSF9kNM6AuwJe"
+  ],
+  "fetched_at": "2026-05-08T20:31:02.583Z",
+  "schema_version": "v1",
+  "commit_sha": "a3be6f2644bc5be69f8e66264eb99d64b2154a27",
+  "title": "fix(backlog): B-0126 parent → decomposed",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T20:30:37Z",
+  "head_ref": "fix/b0126-decomposed"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 2742,
+  "archive_path": "docs/history/pr-reviews/PR-2742-feat-b-0414-metrics-json-generator-agent-readable-dashboard-endpoint.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ACKKW",
+    "comment:PRRC_kwDOSF9kNM7ACKKb",
+    "thread:PRRT_kwDOSF9kNM6BNSnm",
+    "thread:PRRT_kwDOSF9kNM6BNSnq"
+  ],
+  "fetched_at": "2026-05-11T20:07:40.994Z",
+  "schema_version": "v1",
+  "commit_sha": "7fb07720deeabb03e5bc91526b7edc9ed9414f86",
+  "title": "feat(B-0414): metrics.json generator — agent-readable dashboard endpoint",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T20:07:24Z",
+  "head_ref": "feat/B-0414-metrics-json-generator-2026-05-11"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7364,
+  "archive_path": "docs/history/pr-reviews/PR-7364-feat-portal-pro-revamp-toasts-type-specific-dashboards-guided-create-provisionin.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T18:57:49.295Z",
+  "schema_version": "v1",
+  "commit_sha": "79a3dfefa5251af619a250a057129c83b1ebc4d7",
+  "title": "feat(portal): pro revamp — toasts, type-specific dashboards, guided create + provisioning, de-gamify",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T18:57:23Z",
+  "head_ref": "feat/portal-pro-revamp"
+}

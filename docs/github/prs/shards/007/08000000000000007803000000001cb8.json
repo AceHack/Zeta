@@ -1,0 +1,12 @@
+{
+  "pr_number": 7352,
+  "archive_path": "docs/history/pr-reviews/PR-7352-fix-keyring-track-the-4x4-golden-vector-allowlist-past-json-ignore-byte-lock-tes.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T17:43:24.701Z",
+  "schema_version": "v1",
+  "commit_sha": "a44440bd78aff69b532cd1776cb2207facbddc01",
+  "title": "fix(keyring): track the 4x4 golden vector (allowlist past *.json ignore) — byte-lock test needs it",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T17:43:01Z",
+  "head_ref": "otto/fix-track-keyring-4x4-golden-vector"
+}

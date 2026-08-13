@@ -1,0 +1,12 @@
+{
+  "pr_number": 8248,
+  "archive_path": "docs/history/pr-reviews/PR-8248-docs-research-institutional-capstone-no-villain-yet-victims-surveillance-paradox.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T03:30:09.661Z",
+  "schema_version": "v1",
+  "commit_sha": "6f19abde562fd56b6499e43d5bb5b1738d665d6b",
+  "title": "docs(research): institutional capstone — no-villain-yet-victims, surveillance paradox, privacy-as-budget",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T03:29:47Z",
+  "head_ref": "otto/pattern-generalizes-institutional"
+}

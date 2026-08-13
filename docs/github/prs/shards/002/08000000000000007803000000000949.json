@@ -1,0 +1,17 @@
+{
+  "pr_number": 2377,
+  "archive_path": "docs/history/pr-reviews/PR-2377-claim-b-0168-audit-narrative-worked-translation-prospective-self-attestation-acr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_kqNj",
+    "comment:PRRC_kwDOSF9kNM6_kqYE",
+    "thread:PRRT_kwDOSF9kNM6A3I5Z",
+    "thread:PRRT_kwDOSF9kNM6A3Iwo"
+  ],
+  "fetched_at": "2026-05-09T23:51:58.210Z",
+  "schema_version": "v1",
+  "commit_sha": "2cdab5397de394e05ad57b0afebdf1db60618d98",
+  "title": "claim(B-0168): audit-narrative worked translation — prospective self-attestation across 5 register layers",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T23:51:42Z",
+  "head_ref": "claim/B-0168-audit-narrative-worked-translations"
+}

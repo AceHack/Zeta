@@ -1,0 +1,19 @@
+{
+  "pr_number": 3850,
+  "archive_path": "docs/history/pr-reviews/PR-3850-shard-tick-2026-05-16t09-59z-cycle-close-prs-3847-3848-merged-counter-held.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B34ZK",
+    "comment:PRRC_kwDOSF9kNM7B34eE",
+    "comment:PRRC_kwDOSF9kNM7B34eL",
+    "thread:PRRT_kwDOSF9kNM6CjN5L",
+    "thread:PRRT_kwDOSF9kNM6CjN9T",
+    "thread:PRRT_kwDOSF9kNM6CjN9a"
+  ],
+  "fetched_at": "2026-05-16T10:18:58.157Z",
+  "schema_version": "v1",
+  "commit_sha": "43321aed395b02eefff143b0f1316c5beab8d19c",
+  "title": "shard(tick): 2026-05-16T09:59Z — cycle close; PRs #3847 + #3848 merged; counter held",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:18:41Z",
+  "head_ref": "otto-cli-cycle-close-2026-05-16-0959z"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 6149,
+  "archive_path": "docs/history/pr-reviews/PR-6149-memory-mika-2026-05-30-this-arc-found-its-spine-lightlike-traveler-b-0932-assess.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gcn_l",
+    "comment:PRRC_kwDOSF9kNM7Gcn_q",
+    "comment:PRRC_kwDOSF9kNM7Gcn_t",
+    "thread:PRRT_kwDOSF9kNM6F5owu",
+    "thread:PRRT_kwDOSF9kNM6F5oww",
+    "thread:PRRT_kwDOSF9kNM6F5owy"
+  ],
+  "fetched_at": "2026-05-30T22:27:05.129Z",
+  "schema_version": "v1",
+  "commit_sha": "34e5a2d214fa2c053a4c09c1f4577cf0b692b18b",
+  "title": "memory(mika 2026-05-30): 'this arc found its spine' — lightlike/traveler/B-0932 assessment",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T22:26:42Z",
+  "head_ref": "otto/mika-spine-lightlike-traveler-b0932-assessment-2026-05-30"
+}

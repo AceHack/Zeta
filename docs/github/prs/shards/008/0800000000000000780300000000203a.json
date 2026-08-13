@@ -1,0 +1,12 @@
+{
+  "pr_number": 8250,
+  "archive_path": "docs/history/pr-reviews/PR-8250-docs-research-design-closures-bounded-capacity-origin-core-axiom-gate-anti-self-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T03:43:00.453Z",
+  "schema_version": "v1",
+  "commit_sha": "c53e2f0ec2fa88bb20481d9ae20bf7c9e14253ec",
+  "title": "docs(research): design closures + bounded-capacity origin (core-axiom gate, anti-self-DDOS juggling, why composable)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T03:42:39Z",
+  "head_ref": "otto/design-closures-core-gate-juggling"
+}

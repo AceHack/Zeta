@@ -1,0 +1,12 @@
+{
+  "pr_number": 7038,
+  "archive_path": "docs/history/pr-reviews/PR-7038-docs-cooperative-side-channel-on-the-clock-am-i-in-a-deterministic-sim-eve-proto.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T06:19:57.984Z",
+  "schema_version": "v1",
+  "commit_sha": "f2c63cc080e2c1484cde324123dc764e6163cbaa",
+  "title": "docs: cooperative side-channel on the clock — 'am I in a deterministic sim?'; Eve protocol with time itself (#7096)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T06:19:37Z",
+  "head_ref": "otto/coop-side-channel-clock-am-i-in-a-sim-eve-protocol-with-time"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 5977,
+  "archive_path": "docs/history/pr-reviews/PR-5977-docs-security-define-b-0810-ratification-gate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GIaPJ",
+    "comment:PRRC_kwDOSF9kNM7GIaPz",
+    "thread:PRRT_kwDOSF9kNM6FqzL-",
+    "thread:PRRT_kwDOSF9kNM6FqzLf"
+  ],
+  "fetched_at": "2026-05-29T11:51:27.866Z",
+  "schema_version": "v1",
+  "commit_sha": "83f3113e1538c0783ab405e5124619b791a2ccde",
+  "title": "docs(security): define B-0810 ratification gate",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T11:51:04Z",
+  "head_ref": "claim/codex-loop-b0810-ratification-gate-20260529"
+}

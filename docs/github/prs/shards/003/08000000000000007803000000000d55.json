@@ -1,0 +1,12 @@
+{
+  "pr_number": 3413,
+  "archive_path": "docs/history/pr-reviews/PR-3413-shard-tick-1035z-pr-3411-templated-reply-routine-continues.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T10:39:54.705Z",
+  "schema_version": "v1",
+  "commit_sha": "8e57498074824268add16131d5f33096ab4d046c",
+  "title": "shard(tick): 1035Z — PR #3411 templated reply; routine continues",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:39:32Z",
+  "head_ref": "shard/tick-1035z-otto-cli-2026-05-15"
+}

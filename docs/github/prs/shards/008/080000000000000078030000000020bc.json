@@ -1,0 +1,12 @@
+{
+  "pr_number": 8380,
+  "archive_path": "docs/history/pr-reviews/PR-8380-docs-society-notification-router-not-alert-alerts-notifications-with-high-urgenc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:42:04.090Z",
+  "schema_version": "v1",
+  "commit_sha": "8b6c3cd2c4915c1694356a059ecc286007ad78f6",
+  "title": "docs(society): notification router (not alert) — alerts = notifications with high-urgency bias",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:41:41Z",
+  "head_ref": "docs/notification-router-not-alert"
+}

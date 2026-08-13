@@ -1,0 +1,25 @@
+{
+  "pr_number": 4994,
+  "archive_path": "docs/history/pr-reviews/PR-4994-backlog-b-0735-mika-segments-3-4-notepad-freedom-probabilistic-grammars-per-pers.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EsSR5",
+    "comment:PRRC_kwDOSF9kNM7EsSqG",
+    "comment:PRRC_kwDOSF9kNM7EsSqb",
+    "comment:PRRC_kwDOSF9kNM7EsSqe",
+    "comment:PRRC_kwDOSF9kNM7EsSqm",
+    "comment:PRRC_kwDOSF9kNM7EsTHC",
+    "comment:PRRC_kwDOSF9kNM7EsTIR",
+    "comment:PRRC_kwDOSF9kNM7EsTJw",
+    "thread:PRRT_kwDOSF9kNM6EoDLq",
+    "thread:PRRT_kwDOSF9kNM6EoDeV",
+    "thread:PRRT_kwDOSF9kNM6EoDen",
+    "thread:PRRT_kwDOSF9kNM6EoDet"
+  ],
+  "fetched_at": "2026-05-25T21:06:27.276Z",
+  "schema_version": "v1",
+  "commit_sha": "268e8c17f06f3949356dcd9490a072eaf5119728",
+  "title": "backlog(B-0735)+mika-segments-3-4: Notepad-freedom + probabilistic grammars + per-person personalized parsers in Glass Halo + AI-assisted-syntax-errors (extends B-0687 zetaparse; Mika substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T21:06:05Z",
+  "head_ref": "backlog/b0735-notepad-freedom-probabilistic-personalized-parsers-mika-segment-3-2026-05-25"
+}

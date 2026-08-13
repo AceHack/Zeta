@@ -1,0 +1,12 @@
+{
+  "pr_number": 6836,
+  "archive_path": "docs/history/pr-reviews/PR-6836-feat-crdt-rga-rga-sequence-crdt-for-collaborative-ordered-text-lists.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:19:58.589Z",
+  "schema_version": "v1",
+  "commit_sha": "fc2ffac3fcb2a2684920db986bff913fe45c7310",
+  "title": "feat(Crdt): Rga — RGA sequence CRDT for collaborative ordered text/lists",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:19:38Z",
+  "head_ref": "feat/rga-sequence-crdt"
+}

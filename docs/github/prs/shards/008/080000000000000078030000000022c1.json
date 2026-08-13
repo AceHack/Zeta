@@ -1,0 +1,12 @@
+{
+  "pr_number": 8897,
+  "archive_path": "docs/history/pr-reviews/PR-8897-feat-gen-rx-clifford-lenses-all-7-languages.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T07:03:05.569Z",
+  "schema_version": "v1",
+  "commit_sha": "8dc35a90dded8004b4acfbf14421c50e2b7894de",
+  "title": "feat(gen): Rx + Clifford lenses → all 7 languages",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T07:02:40Z",
+  "head_ref": "alexa/full-lens-spread"
+}

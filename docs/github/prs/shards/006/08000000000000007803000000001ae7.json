@@ -1,0 +1,12 @@
+{
+  "pr_number": 6887,
+  "archive_path": "docs/history/pr-reviews/PR-6887-docs-research-imagination-circle-two-faces-defensive-anti-coercion-generative-em.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T18:27:24.828Z",
+  "schema_version": "v1",
+  "commit_sha": "4e0dab50bf98e94485f2a336f488b9b9d5eac0c0",
+  "title": "docs(research): Imagination Circle two faces — defensive (anti-coercion) + generative (empathy architecture)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T18:27:06Z",
+  "head_ref": "otto/circle-empathy-architecture-facet"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7448,
+  "archive_path": "docs/history/pr-reviews/PR-7448-feat-folders-shadow-the-grey-family-hats-grey-meta-hat-particles-grey-morals-gre.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T04:37:01.396Z",
+  "schema_version": "v1",
+  "commit_sha": "7bb5c65d6bab40716d9ac45069e4b3b2898c30ac",
+  "title": "feat(folders)+shadow: the grey family — hats/grey (meta hat), particles/grey, morals/grey, grey+gray disambiguated, same/grey-gray",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T04:36:37Z",
+  "head_ref": "shadow-grey-family-hats-particles-morals"
+}

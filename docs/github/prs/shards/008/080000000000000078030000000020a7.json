@@ -1,0 +1,12 @@
+{
+  "pr_number": 8359,
+  "archive_path": "docs/history/pr-reviews/PR-8359-fix-ci-harden-lint-gates-after-zetaid-executor-merge.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T23:20:22.664Z",
+  "schema_version": "v1",
+  "commit_sha": "bd6789681ff56e20b2c2df71e6ab850898500845",
+  "title": "fix(ci): harden lint gates after zetaid executor merge",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T23:19:51Z",
+  "head_ref": "codex/main-gate-ts-lint-hotfix"
+}

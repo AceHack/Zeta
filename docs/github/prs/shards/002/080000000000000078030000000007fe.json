@@ -1,0 +1,17 @@
+{
+  "pr_number": 2046,
+  "archive_path": "docs/history/pr-reviews/PR-2046-fix-trajectories-ignore-placeholder-child-candidates.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_Ixrh",
+    "comment:PRRC_kwDOSF9kNM6_IxsX",
+    "thread:PRRT_kwDOSF9kNM6AiU25",
+    "thread:PRRT_kwDOSF9kNM6AiU3d"
+  ],
+  "fetched_at": "2026-05-08T06:45:23.295Z",
+  "schema_version": "v1",
+  "commit_sha": "2d3470551cefb2f35ddeb7e326297d16f0e7b0cb",
+  "title": "fix(trajectories): ignore placeholder child candidates",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T06:45:05Z",
+  "head_ref": "claim/fix-trajectory-none-child-candidate"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2986,
+  "archive_path": "docs/history/pr-reviews/PR-2986-feat-shadow-b-0433-slice-5-zeta-shadow-bin-entry-readme-smoke-tests.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T11:41:32.715Z",
+  "schema_version": "v1",
+  "commit_sha": "10b9dbc78bc7566baeb8a4fea49578db3ec9b8a9",
+  "title": "feat(shadow): B-0433 slice 5 — zeta-shadow bin entry + README + smoke tests",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T11:41:13Z",
+  "head_ref": "feat/b-0433-shadow-distribution-demo"
+}

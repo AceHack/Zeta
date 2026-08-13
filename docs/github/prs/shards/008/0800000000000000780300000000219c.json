@@ -1,0 +1,12 @@
+{
+  "pr_number": 8604,
+  "archive_path": "docs/history/pr-reviews/PR-8604-docs-handoff-session-resume-state-checkpoint-2026-06-19.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T19:22:02.880Z",
+  "schema_version": "v1",
+  "commit_sha": "b5a6f8a20bf8e7d3a68ef81f94aefd603fc37ee6",
+  "title": "docs(handoff): session resume-state checkpoint (2026-06-19)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T19:21:35Z",
+  "head_ref": "otto/session-resume-state-2026-06-19"
+}

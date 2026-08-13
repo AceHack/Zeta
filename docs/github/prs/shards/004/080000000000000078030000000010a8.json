@@ -1,0 +1,12 @@
+{
+  "pr_number": 4264,
+  "archive_path": "docs/history/pr-reviews/PR-4264-fix-4261-codex-p1-remove-name-attribution-from-holding-rule.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:47:32.803Z",
+  "schema_version": "v1",
+  "commit_sha": "e8d7dc31d83c3f8d5ff7498988ba6ecb18561bb4",
+  "title": "fix(4261): Codex P1 — remove name attribution from holding rule",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:47:16Z",
+  "head_ref": "fix/4261-codex-p1-remove-aaron-name-attribution-from-rule-2026-05-18"
+}

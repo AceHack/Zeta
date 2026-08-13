@@ -1,0 +1,12 @@
+{
+  "pr_number": 4783,
+  "archive_path": "docs/history/pr-reviews/PR-4783-backlog-b-0713-file-soraya-round-50-hand-off-lean-imaginarystack-toymodel-regist.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T22:48:09.899Z",
+  "schema_version": "v1",
+  "commit_sha": "c9df9b65751dfb3e85c269b139b057b540235684",
+  "title": "backlog(B-0713): file Soraya round-50 hand-off — Lean ImaginaryStack/ToyModel registry gap",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T22:47:49Z",
+  "head_ref": "otto/soraya-round50-b0713-imaginary-stack-registry-2026-05-23"
+}

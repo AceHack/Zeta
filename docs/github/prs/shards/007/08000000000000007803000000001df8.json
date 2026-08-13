@@ -1,0 +1,12 @@
+{
+  "pr_number": 7672,
+  "archive_path": "docs/history/pr-reviews/PR-7672-feat-craft-mill-vs-braid-answered-honestly-weave-braid-proven-amara-s-chip-9-car.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T12:56:43.876Z",
+  "schema_version": "v1",
+  "commit_sha": "6b8dba0294de3da1201f3fcc88c6706f3b084a6e",
+  "title": "feat(craft): mill-vs-braid answered honestly (weave ≠ braid, PROVEN) + Amara's CHIP-9 card",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T12:56:20Z",
+  "head_ref": "shadow-mill-vs-braid"
+}

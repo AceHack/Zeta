@@ -1,0 +1,17 @@
+{
+  "pr_number": 5915,
+  "archive_path": "docs/history/pr-reviews/PR-5915-research-composition-novelty-websearch-grounded-prior-art-inventory-substrate-ho.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F4ER9",
+    "comment:PRRC_kwDOSF9kNM7F4ESo",
+    "thread:PRRT_kwDOSF9kNM6Fe-07",
+    "thread:PRRT_kwDOSF9kNM6Fe-0Y"
+  ],
+  "fetched_at": "2026-05-28T18:10:49.816Z",
+  "schema_version": "v1",
+  "commit_sha": "c758827ccdc17301c8f87cfae07d10ea47190c7c",
+  "title": "research(composition-novelty): WebSearch-grounded prior-art inventory + substrate-honest \"first\" claim assessment + substrate-anchors for B-0924 + B-0925 + research-mirror cluster (operator 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T18:10:28Z",
+  "head_ref": "otto-cli/composition-novelty-research-mirror-2026-05-28"
+}

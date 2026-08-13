@@ -1,0 +1,12 @@
+{
+  "pr_number": 5385,
+  "archive_path": "docs/history/pr-reviews/PR-5385-fix-b-0835-bug-4-5-aaron-2026-05-27-control-plane-install-storage-probe-filters-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T02:33:52.134Z",
+  "schema_version": "v1",
+  "commit_sha": "c32b60a65eb44bc9c0500e31177a5adeff6be914",
+  "title": "fix(B-0835 Bug 4+5 — Aaron 2026-05-27 control-plane install): storage probe filters 0B devices + gh CLI in installed system PATH",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T02:33:34Z",
+  "head_ref": "fix-b0835-storage-probe-filter-zero-size-block-devices-2026-05-26-2233z"
+}

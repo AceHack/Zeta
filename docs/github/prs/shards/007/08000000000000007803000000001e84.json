@@ -1,0 +1,12 @@
+{
+  "pr_number": 7812,
+  "archive_path": "docs/history/pr-reviews/PR-7812-fix-zflash-path-fork-tsc-execution-step-union-7808-follow-up.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:15:50.913Z",
+  "schema_version": "v1",
+  "commit_sha": "d2b041883656f32c022d1c8a0a243122e74cb33c",
+  "title": "fix(zflash): path-fork tsc execution step union (#7808 follow-up)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:15:26Z",
+  "head_ref": "fix/zflash-path-fork-tsc-execution-steps"
+}

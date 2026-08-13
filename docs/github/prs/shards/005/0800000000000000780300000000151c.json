@@ -1,0 +1,12 @@
+{
+  "pr_number": 5404,
+  "archive_path": "docs/history/pr-reviews/PR-5404-feat-b-0853-sigstore-cosign-artifact-signing-free-stuff-coverage-for-iso-contain.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T05:59:10.417Z",
+  "schema_version": "v1",
+  "commit_sha": "ab71b9c1b25e721049d88204cc093a905cc166f2",
+  "title": "feat(B-0853): sigstore/cosign artifact signing — free-stuff coverage for ISO + containers + tarballs + Nix substitutes (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T05:58:51Z",
+  "head_ref": "backlog/b-0853-sigstore-cosign-artifact-signing-2026-05-27"
+}

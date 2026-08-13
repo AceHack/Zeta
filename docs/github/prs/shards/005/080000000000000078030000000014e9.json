@@ -1,0 +1,12 @@
+{
+  "pr_number": 5353,
+  "archive_path": "docs/history/pr-reviews/PR-5353-docs-backlog-b-0836-hardware-inventory-vs-cluster-reconciliation-buying-decision.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T23:29:40.884Z",
+  "schema_version": "v1",
+  "commit_sha": "9908dcc80a6aeac95b348b739a3e1d890ea5cda6",
+  "title": "docs(backlog): B-0836 — hardware-inventory-vs-cluster reconciliation + buying-decisions substrate (no more buying willy nilly)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:29:23Z",
+  "head_ref": "otto/b-0836-hardware-inventory-vs-cluster-reconciliation-gap-analysis-buying-decisions-2026-05-26"
+}

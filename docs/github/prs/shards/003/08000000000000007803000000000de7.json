@@ -1,0 +1,12 @@
+{
+  "pr_number": 3559,
+  "archive_path": "docs/history/pr-reviews/PR-3559-shard-tick-1907z-audit-rule-cross-refs-surfaced-2-real-stale-pointers.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T19:12:40.138Z",
+  "schema_version": "v1",
+  "commit_sha": "3c4dfb2756788d670c89cb91f2ae9b640a76d3fd",
+  "title": "shard(tick): 1907Z — audit-rule-cross-refs surfaced 2 real stale pointers",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T19:12:24Z",
+  "head_ref": "shard/tick-1907z-otto-cli-2026-05-15"
+}

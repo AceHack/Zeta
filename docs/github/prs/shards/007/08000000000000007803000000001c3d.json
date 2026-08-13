@@ -1,0 +1,12 @@
+{
+  "pr_number": 7229,
+  "archive_path": "docs/history/pr-reviews/PR-7229-docs-research-ferry-flasher-os-split-is-accidental-complexity-unify-the-3-flashe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T08:15:09.677Z",
+  "schema_version": "v1",
+  "commit_sha": "9d22ab67ed52cba6567229b6b14b27901f1dcddb",
+  "title": "docs(research)+ferry: flasher OS-split is accidental complexity — unify the 3 flashers, enforce via QEMU+free-compute gate (close the AI loop), teach via shapes-as-letters",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T08:14:45Z",
+  "head_ref": "otto/research-flasher-os-split-accidental-complexity-unify-enforce"
+}

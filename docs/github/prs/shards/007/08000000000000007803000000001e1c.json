@@ -1,0 +1,12 @@
+{
+  "pr_number": 7708,
+  "archive_path": "docs/history/pr-reviews/PR-7708-feat-sim-wavesim-honest-interference-superposition-is-the-cayley-add-the-fringe-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T15:08:28.173Z",
+  "schema_version": "v1",
+  "commit_sha": "45ebcc8076380a39b84b126a11513daa3528153d",
+  "title": "feat(sim): WaveSim — honest interference (superposition IS the Cayley Add; the fringe test is physics) + UV/IR in the deep cell",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T15:07:59Z",
+  "head_ref": "shadow-wave-interference"
+}

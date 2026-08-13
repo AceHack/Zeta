@@ -1,0 +1,12 @@
+{
+  "pr_number": 10381,
+  "archive_path": "docs/history/pr-reviews/PR-10381-fix-backlog-sort-ordinal-was-localecompare-culture-sensitive-under-an-ordinal-na.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-13T22:02:54.326Z",
+  "schema_version": "v1",
+  "commit_sha": "9117abd50c295117ca42b8334e8f358b2445dbb8",
+  "title": "fix(backlog): SORT_ORDINAL was localeCompare — culture-sensitive under an ordinal name",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T22:02:21Z",
+  "head_ref": "fix/sort-ordinal-is-not-ordinal"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5963,
+  "archive_path": "docs/history/pr-reviews/PR-5963-docs-decisions-add-adr-on-git-native-event-store-and-128-bit-zetaid-spec.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T09:08:31.005Z",
+  "schema_version": "v1",
+  "commit_sha": "168ec8a9ad143f3cbdc73f7871cf53667b808a16",
+  "title": "docs(decisions): Add ADR on Git-native event store and 128-bit ZetaID spec",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T09:08:06Z",
+  "head_ref": "lior/adr-git-native-event-store"
+}

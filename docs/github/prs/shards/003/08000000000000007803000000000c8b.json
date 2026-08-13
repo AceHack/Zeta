@@ -1,0 +1,23 @@
+{
+  "pr_number": 3211,
+  "archive_path": "docs/history/pr-reviews/PR-3211-shard-tick-1942z-pr-3208-ci-rerun-cleared-session-state-checkpoint.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BWeI9",
+    "comment:PRRC_kwDOSF9kNM7BWeJ3",
+    "comment:PRRC_kwDOSF9kNM7BWeJe",
+    "comment:PRRC_kwDOSF9kNM7BWeKY",
+    "comment:PRRC_kwDOSF9kNM7BWjDF",
+    "thread:PRRT_kwDOSF9kNM6CLDhC",
+    "thread:PRRT_kwDOSF9kNM6CLDhV",
+    "thread:PRRT_kwDOSF9kNM6CLDho",
+    "thread:PRRT_kwDOSF9kNM6CLDiB",
+    "thread:PRRT_kwDOSF9kNM6CLHL2"
+  ],
+  "fetched_at": "2026-05-14T19:58:40.518Z",
+  "schema_version": "v1",
+  "commit_sha": "a9a180f537b3b9ae6838c6c22c83bfaa540f7e7e",
+  "title": "shard(tick): 1942Z — PR #3208 CI rerun cleared + session state checkpoint",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:58:03Z",
+  "head_ref": "shard/tick-1942Z-pr3208-rerun-cleared-otto-cli-2026-05-14"
+}

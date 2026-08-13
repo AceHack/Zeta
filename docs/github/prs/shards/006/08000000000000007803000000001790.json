@@ -1,0 +1,12 @@
+{
+  "pr_number": 6032,
+  "archive_path": "docs/history/pr-reviews/PR-6032-docs-b-0088-5-close-backlog-index-integrity-audit.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T19:06:58.822Z",
+  "schema_version": "v1",
+  "commit_sha": "b763c7208f8f7d3b6b793ddfe306a13bf6ae2e9f",
+  "title": "docs(B-0088.5): close backlog index integrity audit",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T19:06:34Z",
+  "head_ref": "claim/codex-loop-b0088-5-backlog-index-integrity-audit-20260529"
+}

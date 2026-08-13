@@ -1,0 +1,12 @@
+{
+  "pr_number": 8331,
+  "archive_path": "docs/history/pr-reviews/PR-8331-docs-research-an-interface-is-defined-by-what-it-can-prove-naming-by-externally-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T20:18:29.482Z",
+  "schema_version": "v1",
+  "commit_sha": "9f2e68639586987b3cd56c27280f50d03e5a85a0",
+  "title": "docs(research): an interface is defined by what it can prove; naming by externally-anchored CS",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T20:18:04Z",
+  "head_ref": "docs/ferry-interface-defined-by-what-it-proves-naming-by-anchored-cs"
+}

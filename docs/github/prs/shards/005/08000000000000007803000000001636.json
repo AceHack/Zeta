@@ -1,0 +1,12 @@
+{
+  "pr_number": 5686,
+  "archive_path": "docs/history/pr-reviews/PR-5686-fix-backlog-renumber-zetaid-v2-row-to-b-0892.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T03:26:30.938Z",
+  "schema_version": "v1",
+  "commit_sha": "e192a02a511c5e9feba8183d9c4a8f56df051e4b",
+  "title": "fix(backlog): renumber ZetaID v2 row to B-0892",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T03:26:10Z",
+  "head_ref": "claim/codex-loop-remote-claim-overlap-audit-20260528"
+}

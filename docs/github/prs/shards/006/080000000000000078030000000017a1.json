@@ -1,0 +1,19 @@
+{
+  "pr_number": 6049,
+  "archive_path": "docs/history/pr-reviews/PR-6049-feat-health-add-lane-runway-classifier.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GTkcD",
+    "comment:PRRC_kwDOSF9kNM7GTkca",
+    "comment:PRRC_kwDOSF9kNM7GTkct",
+    "thread:PRRT_kwDOSF9kNM6Fy75N",
+    "thread:PRRT_kwDOSF9kNM6Fy75f",
+    "thread:PRRT_kwDOSF9kNM6Fy75r"
+  ],
+  "fetched_at": "2026-05-29T21:49:17.989Z",
+  "schema_version": "v1",
+  "commit_sha": "3c323598f25ef50053ec13e830d8ec495057a221",
+  "title": "feat(health): add lane runway classifier",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T21:48:55Z",
+  "head_ref": "claim/codex-loop-lane-runway-classifier-20260529"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3310,
+  "archive_path": "docs/history/pr-reviews/PR-3310-shard-tick-0004z-0003z-pr-3306-merged-consolidation-sanity-check.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T00:08:03.126Z",
+  "schema_version": "v1",
+  "commit_sha": "c2661c529b9553e04738577ff4ce6a5523a3d627",
+  "title": "shard(tick): 0004Z + 0003Z — PR #3306 merged + consolidation sanity-check",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:07:47Z",
+  "head_ref": "shard/tick-0004Z-consolidation-otto-cli-2026-05-15"
+}

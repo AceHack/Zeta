@@ -1,0 +1,12 @@
+{
+  "pr_number": 5389,
+  "archive_path": "docs/history/pr-reviews/PR-5389-fix-iter-5-5-1-fix-fwd-pr-5388-alignment-nixpkgs-bun-mise-canonical-mise-toml-ss.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T02:53:12.887Z",
+  "schema_version": "v1",
+  "commit_sha": "a9fca1e52f9de85dd26e605b0412199064f3dc51",
+  "title": "fix(iter-5.5.1 fix-fwd PR #5388 ALIGNMENT): nixpkgs bun → mise (canonical .mise.toml SSoT); linux.sh NixOS detection; zeta-install.sh invokes tools/setup/install.sh (operator default per 'this is our default')",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T02:52:53Z",
+  "head_ref": "fix-iter551-alignment-bun-to-mise-canonical-install-sh-fixfwd-pr-5388-2026-05-26-2353z"
+}

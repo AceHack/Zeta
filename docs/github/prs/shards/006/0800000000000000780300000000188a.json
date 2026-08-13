@@ -1,0 +1,23 @@
+{
+  "pr_number": 6282,
+  "archive_path": "docs/history/pr-reviews/PR-6282-research-shields-detect-drift-dont-block-cross-os-developer-friction-not-end-use.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GjP9i",
+    "comment:PRRC_kwDOSF9kNM7GjPwG",
+    "comment:PRRC_kwDOSF9kNM7GjRGg",
+    "comment:PRRC_kwDOSF9kNM7GjSqA",
+    "comment:PRRC_kwDOSF9kNM7GjSqR",
+    "thread:PRRT_kwDOSF9kNM6F-xPL",
+    "thread:PRRT_kwDOSF9kNM6F-xZ7",
+    "thread:PRRT_kwDOSF9kNM6F-yRh",
+    "thread:PRRT_kwDOSF9kNM6F-zgW",
+    "thread:PRRT_kwDOSF9kNM6F-zgn"
+  ],
+  "fetched_at": "2026-06-01T00:06:22.196Z",
+  "schema_version": "v1",
+  "commit_sha": "6b2cc82f93cd3b6f21307f256d9fd5d50abfd4e5",
+  "title": "research: shields detect drift, dont block — cross-OS = developer-friction not end-user-friction (operator rationale)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T00:06:04Z",
+  "head_ref": "otto-cli/shields-detect-not-block-rationale-2026-05-31"
+}

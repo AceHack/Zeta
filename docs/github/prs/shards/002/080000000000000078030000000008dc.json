@@ -1,0 +1,15 @@
+{
+  "pr_number": 2268,
+  "archive_path": "docs/history/pr-reviews/PR-2268-fix-delete-stale-b-0357-semiring-duplicate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gcOD",
+    "thread:PRRT_kwDOSF9kNM6Az2Qa"
+  ],
+  "fetched_at": "2026-05-09T09:57:52.198Z",
+  "schema_version": "v1",
+  "commit_sha": "6ced0c520dae67c877e775ea7d4a9c34cbaffeeb",
+  "title": "fix: delete stale B-0357 semiring duplicate",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:57:36Z",
+  "head_ref": "fix/b0357-delete-stale-duplicate"
+}

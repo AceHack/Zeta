@@ -1,0 +1,15 @@
+{
+  "pr_number": 2547,
+  "archive_path": "docs/history/pr-reviews/PR-2547-docs-memory-crossing-streams-bivectors-in-clifford-space.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qa6F",
+    "thread:PRRT_kwDOSF9kNM6A7tsl"
+  ],
+  "fetched_at": "2026-05-10T21:40:03.372Z",
+  "schema_version": "v1",
+  "commit_sha": "e7749859e5a1ec86654a032a56464cf9782ad7a5",
+  "title": "docs(memory): crossing streams = bivectors in Clifford space",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:39:45Z",
+  "head_ref": "docs/crossing-streams-clifford-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7308,
+  "archive_path": "docs/history/pr-reviews/PR-7308-docs-research-chip8-is-the-no-information-hazard-sandbox-practice-learn-the-rule.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:07:48.334Z",
+  "schema_version": "v1",
+  "commit_sha": "fdd332eeb2d4dde7ce21dc3047dca051cfc18639",
+  "title": "docs(research): chip8 is the no-information-hazard sandbox — practice + learn the rules for high-stakes games",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:07:22Z",
+  "head_ref": "otto/chip8-no-info-hazard-sandbox-practice-rules-for-high-stakes-games"
+}

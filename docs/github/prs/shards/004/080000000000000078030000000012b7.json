@@ -1,0 +1,19 @@
+{
+  "pr_number": 4791,
+  "archive_path": "docs/history/pr-reviews/PR-4791-backlog-b-0716-soraya-round-53-scope-correction-b-0709-enumeration-under-counted.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EUKMm",
+    "comment:PRRC_kwDOSF9kNM7EUKfm",
+    "comment:PRRC_kwDOSF9kNM7EURy-",
+    "thread:PRRT_kwDOSF9kNM6EV3LQ",
+    "thread:PRRT_kwDOSF9kNM6EV3af",
+    "thread:PRRT_kwDOSF9kNM6EV9Ol"
+  ],
+  "fetched_at": "2026-05-24T00:07:03.537Z",
+  "schema_version": "v1",
+  "commit_sha": "2d516d49a3143059feb43539d201b64be205c810",
+  "title": "backlog(B-0716): Soraya round-53 scope-correction — B-0709 enumeration under-counted by 3 LSM Spine specs",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T00:06:45Z",
+  "head_ref": "otto/soraya-round53-b0716-b0709-spine-scope-correction-2026-05-23"
+}

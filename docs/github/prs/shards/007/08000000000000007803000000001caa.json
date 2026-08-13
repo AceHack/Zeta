@@ -1,0 +1,12 @@
+{
+  "pr_number": 7338,
+  "archive_path": "docs/history/pr-reviews/PR-7338-feat-setup-ci-docs-1000-keyring-dst-as-a-watchable-test-workflow-derive-ts-pure-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T16:57:50.631Z",
+  "schema_version": "v1",
+  "commit_sha": "570dc8f996b9e092ad8f8a3ebe5586fc3f4f0b45",
+  "title": "feat(setup)+ci+docs: 1000× keyring DST as a watchable test + workflow; derive.ts pure oracle; tests-are-strange-attractors / test-is-the-4×4-meta-interface",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T16:54:56Z",
+  "head_ref": "otto/keyring-1000x-dst-watchable-derive-refactor-workflow-tests-are-strange-attractors-meta-interface"
+}

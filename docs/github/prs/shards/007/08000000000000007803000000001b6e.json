@@ -1,0 +1,12 @@
+{
+  "pr_number": 7022,
+  "archive_path": "docs/history/pr-reviews/PR-7022-feat-core-db-values-are-dynamicvalue-homoiconicity-7041-sequence-step-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T05:22:15.760Z",
+  "schema_version": "v1",
+  "commit_sha": "acd98ce766e3e04a2a7803bdd41aaeaa9360f60e",
+  "title": "feat(core): Db values are DynamicValue (homoiconicity #7041) — sequence step 1",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T05:21:53Z",
+  "head_ref": "otto/db-dynamicvalue-homoiconicity"
+}

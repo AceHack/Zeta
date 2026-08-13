@@ -1,0 +1,31 @@
+{
+  "pr_number": 2133,
+  "archive_path": "docs/history/pr-reviews/PR-2133-feat-b-0160-add-permissions-allowlist-to-claude-settings-json.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_aKo-",
+    "comment:PRRC_kwDOSF9kNM6_aKo1",
+    "comment:PRRC_kwDOSF9kNM6_aLs3",
+    "comment:PRRC_kwDOSF9kNM6_aLsC",
+    "comment:PRRC_kwDOSF9kNM6_aLse",
+    "comment:PRRC_kwDOSF9kNM6_aLtN",
+    "comment:PRRC_kwDOSF9kNM6_aPEg",
+    "comment:PRRC_kwDOSF9kNM6_aPHC",
+    "comment:PRRC_kwDOSF9kNM6_aPKh",
+    "comment:PRRC_kwDOSF9kNM6_aPOC",
+    "comment:PRRC_kwDOSF9kNM6_aPVK",
+    "comment:PRRC_kwDOSF9kNM6_aPZr",
+    "thread:PRRT_kwDOSF9kNM6AvMBJ",
+    "thread:PRRT_kwDOSF9kNM6AvMBO",
+    "thread:PRRT_kwDOSF9kNM6AvMv0",
+    "thread:PRRT_kwDOSF9kNM6AvMvO",
+    "thread:PRRT_kwDOSF9kNM6AvMvh",
+    "thread:PRRT_kwDOSF9kNM6AvMwF"
+  ],
+  "fetched_at": "2026-05-08T21:04:03.642Z",
+  "schema_version": "v1",
+  "commit_sha": "5ce2a0596feb51c0e484a1f74cd4c601d09c20d9",
+  "title": "feat(B-0160): add permissions allowlist to .claude/settings.json",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T21:03:37Z",
+  "head_ref": "b-0160-permissions-allowlist"
+}

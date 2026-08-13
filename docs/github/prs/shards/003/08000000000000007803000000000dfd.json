@@ -1,0 +1,12 @@
+{
+  "pr_number": 3581,
+  "archive_path": "docs/history/pr-reviews/PR-3581-shard-tick-2032z-b-0537-filed-memory-memory-md-long-entry-cleanup-ci-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T20:40:02.057Z",
+  "schema_version": "v1",
+  "commit_sha": "f11826c7d415ee22440a000d7f4c829fa9170e7f",
+  "title": "shard(tick): 2032Z — B-0537 filed: memory/MEMORY.md long-entry cleanup + CI gate",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T20:39:46Z",
+  "head_ref": "shard/tick-2032z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7417,
+  "archive_path": "docs/history/pr-reviews/PR-7417-docs-research-password-management-via-s-4-staged-coincidence-a-rolling-code-auth.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:30:26.746Z",
+  "schema_version": "v1",
+  "commit_sha": "1bffd5ab1a23bc720a62477c2dd256dee4a60bf0",
+  "title": "docs(research): password management via S=4 staged coincidence — a rolling-code authenticator (common-seed TOTP); security routed, not claimed",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:30:04Z",
+  "head_ref": "otto/password-management-via-s4-coincidence-rolling-code-authenticator"
+}

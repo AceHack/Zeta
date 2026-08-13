@@ -1,0 +1,19 @@
+{
+  "pr_number": 3436,
+  "archive_path": "docs/history/pr-reviews/PR-3436-shard-tick-1130z-pr-3434-merged.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BlsvG",
+    "comment:PRRC_kwDOSF9kNM7BltH7",
+    "comment:PRRC_kwDOSF9kNM7BlxWx",
+    "comment:PRRC_kwDOSF9kNM7Blxa9",
+    "thread:PRRT_kwDOSF9kNM6CV9gO",
+    "thread:PRRT_kwDOSF9kNM6CV9zc"
+  ],
+  "fetched_at": "2026-05-15T11:38:17.974Z",
+  "schema_version": "v1",
+  "commit_sha": "f6f27cb51a6e6cc3719e9c83b998c1c5db2b3c74",
+  "title": "shard(tick): 1130Z — PR #3434 merged",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:37:57Z",
+  "head_ref": "shard/tick-1130z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8056,
+  "archive_path": "docs/history/pr-reviews/PR-8056-fix-mirror-persist-credentials-false-so-mirror-token-is-used-403-fix.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T20:12:20.255Z",
+  "schema_version": "v1",
+  "commit_sha": "1cfe72d7621f6d03228db10e8c6fa0d77986f571",
+  "title": "fix(mirror): persist-credentials:false so MIRROR_TOKEN is used (403 fix)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T20:11:54Z",
+  "head_ref": "shadow/fix-mirror-persist-creds"
+}

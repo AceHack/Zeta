@@ -1,0 +1,12 @@
+{
+  "pr_number": 7801,
+  "archive_path": "docs/history/pr-reviews/PR-7801-fix-pr-preservation-enforce-lf-only-writes-tighten-crlf-strip.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T21:49:41.457Z",
+  "schema_version": "v1",
+  "commit_sha": "3eeac9b70d3e914201170ec008771ed84247edb0",
+  "title": "fix(pr-preservation): enforce LF-only writes + tighten CRLF strip",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T21:49:16Z",
+  "head_ref": "alexa/fix-archive-crlf-timestamp-2026-06-11"
+}

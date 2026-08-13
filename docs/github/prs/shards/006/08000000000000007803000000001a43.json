@@ -1,0 +1,12 @@
+{
+  "pr_number": 6723,
+  "archive_path": "docs/history/pr-reviews/PR-6723-test-non-register-collapse-bp-16-leg-3-fscheck-over-deployed-gcounter-merge.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T05:59:49.288Z",
+  "schema_version": "v1",
+  "commit_sha": "e692db6ae746a94e4b8185ff076637dea05d1708",
+  "title": "test(non-register-collapse): BP-16 Leg-3 — FsCheck over deployed GCounter.Merge",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T05:59:26Z",
+  "head_ref": "otto/nrc-fscheck-leg3"
+}

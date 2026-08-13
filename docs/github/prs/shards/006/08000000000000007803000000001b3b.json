@@ -1,0 +1,12 @@
+{
+  "pr_number": 6971,
+  "archive_path": "docs/history/pr-reviews/PR-6971-docs-everything-is-a-short-context-aware-seam-verb-noun-dependson-statement.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:16:48.434Z",
+  "schema_version": "v1",
+  "commit_sha": "e35ac3a9b20151f7e7b4fceae185097dc3d32555",
+  "title": "docs: everything is a short, context-aware '[seam] verb noun dependson ...' statement",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:16:26Z",
+  "head_ref": "otto/short-context-aware-seam-verb-noun-dependson"
+}

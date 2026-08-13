@@ -1,0 +1,12 @@
+{
+  "pr_number": 8896,
+  "archive_path": "docs/history/pr-reviews/PR-8896-feat-gen-clifford-lens-close-cross-lang-interfaces.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:56:12.878Z",
+  "schema_version": "v1",
+  "commit_sha": "91580d10bcec242ef4b579d04abe72182868ec65",
+  "title": "feat(gen): Clifford lens + close cross-lang-interfaces",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:55:21Z",
+  "head_ref": "alexa/close-and-push"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9054,
+  "archive_path": "docs/history/pr-reviews/PR-9054-docs-preserve-recover-4-substantive-files-from-lior-s-bucket-c-gc-over-reach-sha.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-01T20:46:56.443Z",
+  "schema_version": "v1",
+  "commit_sha": "6ec3f024b477bee663ee923895fb890a7c6845e2",
+  "title": "docs(preserve): recover 4 substantive files from Lior's Bucket-C GC over-reach (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T20:46:36Z",
+  "head_ref": "otto/recover-4-substantive-files-lior-gc-overreach-2026-07"
+}

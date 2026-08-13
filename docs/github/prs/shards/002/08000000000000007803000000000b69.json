@@ -1,0 +1,12 @@
+{
+  "pr_number": 2921,
+  "archive_path": "docs/history/pr-reviews/PR-2921-docs-memory-aesthetic-substrate-is-bidirectional-ais-own-this-too-not-just-human.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T03:25:10.546Z",
+  "schema_version": "v1",
+  "commit_sha": "9ce94301770630f6a95ec1cdf5b416e11bdbc0a1",
+  "title": "docs(memory): aesthetic substrate is BIDIRECTIONAL — AIs OWN this too, not just human framing for safety (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T03:24:50Z",
+  "head_ref": "aaron-aesthetic-substrate-is-bidirectional-ais-own-this-too-not-just-human-framing-for-safety-2026-05-13"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3050,
+  "archive_path": "docs/history/pr-reviews/PR-3050-docs-rules-otto-channels-card-b-0444-shipped-retire-follow-up-gap-framing.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T22:52:15.605Z",
+  "schema_version": "v1",
+  "commit_sha": "a65a1276ef2d1b81674b0c5b45aff9c901629928",
+  "title": "docs(rules): otto-channels card — B-0444 shipped, retire \"follow-up gap\" framing",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T22:52:00Z",
+  "head_ref": "fix/otto-channels-card-b0444-shipped-2026-05-13"
+}

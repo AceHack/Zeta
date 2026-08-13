@@ -1,0 +1,12 @@
+{
+  "pr_number": 7375,
+  "archive_path": "docs/history/pr-reviews/PR-7375-docs-vocab-core-date-agnostic-vocabulary-folders-grams-n-canonical-words-symlink.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:29:55.565Z",
+  "schema_version": "v1",
+  "commit_sha": "84787dc5364d9964b974668a172b8755290e25b0",
+  "title": "docs(vocab): core date-agnostic vocabulary folders — grams/<n> (canonical; words=symlink label), letters/<language>, shapes, colors, temperatures + entropy/negotiation travelers",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:29:21Z",
+  "head_ref": "otto/core-date-agnostic-vocabulary-folders-grams-letters-shapes-colors-temperatures"
+}

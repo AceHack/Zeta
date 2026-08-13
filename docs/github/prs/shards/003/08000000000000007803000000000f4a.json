@@ -1,0 +1,12 @@
+{
+  "pr_number": 3914,
+  "archive_path": "docs/history/pr-reviews/PR-3914-shard-tick-2026-05-16t16-57z-light-tick-cascade-complete-session-character-obser.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T17:08:20.449Z",
+  "schema_version": "v1",
+  "commit_sha": "bad84cdcef9c5a40754f4109654eea3d38b43730",
+  "title": "shard(tick): 2026-05-16T16:57Z — light tick; cascade complete; session-character observation",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T17:08:02Z",
+  "head_ref": "otto-cli-tick-shard-1657z-light-2026-05-16"
+}

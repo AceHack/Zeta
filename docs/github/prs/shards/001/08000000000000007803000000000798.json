@@ -1,0 +1,12 @@
+{
+  "pr_number": 1944,
+  "archive_path": "docs/history/pr-reviews/PR-1944-fix-close-b-0215-alignment-md-survey-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T21:23:29.787Z",
+  "schema_version": "v1",
+  "commit_sha": "c63cc7046099a60a141fcdf215a5e6ca838edb26",
+  "title": "fix: close B-0215 (ALIGNMENT.md survey complete)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T21:23:14Z",
+  "head_ref": "otto/close-b0215"
+}

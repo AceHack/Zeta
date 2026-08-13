@@ -1,0 +1,19 @@
+{
+  "pr_number": 6108,
+  "archive_path": "docs/history/pr-reviews/PR-6108-feat-persistence-windows-windows-user-mode-background-service-parity-slice-1-1b.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GabYO",
+    "comment:PRRC_kwDOSF9kNM7GabYd",
+    "comment:PRRC_kwDOSF9kNM7GadbT",
+    "comment:PRRC_kwDOSF9kNM7Gadbn",
+    "thread:PRRT_kwDOSF9kNM6F37Yc",
+    "thread:PRRT_kwDOSF9kNM6F37Yn"
+  ],
+  "fetched_at": "2026-05-30T13:48:41.860Z",
+  "schema_version": "v1",
+  "commit_sha": "b784a9bae7f31cfc4af68248e93d3ea418030196",
+  "title": "feat(persistence/windows): Windows user-mode background-service parity (slice 1 + 1b)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T13:48:22Z",
+  "head_ref": "feat/windows-parity-2026-05-30"
+}

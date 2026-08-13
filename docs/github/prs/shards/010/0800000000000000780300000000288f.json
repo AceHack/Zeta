@@ -1,0 +1,12 @@
+{
+  "pr_number": 10383,
+  "archive_path": "docs/history/pr-reviews/PR-10383-fix-formal-avoid-openjdk-26-c2-crash-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-13T21:53:28.661Z",
+  "schema_version": "v1",
+  "commit_sha": "22ded701fb1cd4e6491ecd8e9dc8e68273a079c5",
+  "title": "fix(formal): avoid OpenJDK 26 C2 crash path",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T21:52:57Z",
+  "head_ref": "codex/tlc-openjdk26-jit-hardening"
+}

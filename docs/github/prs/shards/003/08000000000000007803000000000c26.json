@@ -1,0 +1,17 @@
+{
+  "pr_number": 3110,
+  "archive_path": "docs/history/pr-reviews/PR-3110-feat-b-0261-autodream-automemory-compat-validation-pass-b-0066-close-recommended.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BG9O5",
+    "comment:PRRC_kwDOSF9kNM7BG9Om",
+    "thread:PRRT_kwDOSF9kNM6B_lG-",
+    "thread:PRRT_kwDOSF9kNM6B_lGv"
+  ],
+  "fetched_at": "2026-05-14T07:43:05.996Z",
+  "schema_version": "v1",
+  "commit_sha": "fc1ae1bcf565d1a0c92616e952ed2ceb6c405469",
+  "title": "feat(b-0261): AutoDream/AutoMemory compat validation — PASS; B-0066 close-recommended",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T07:42:48Z",
+  "head_ref": "feat/b-0261-autodream-compat-validation-2026-05-14"
+}

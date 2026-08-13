@@ -1,0 +1,12 @@
+{
+  "pr_number": 3569,
+  "archive_path": "docs/history/pr-reviews/PR-3569-shard-tick-1952z-quiet-checkpoint-2-4-of-4-lint-cluster-awaiting-ci-natural-plat.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T19:57:01.702Z",
+  "schema_version": "v1",
+  "commit_sha": "2ee10fbd5f790ec33e8bb285abbc8e01cdfdd340",
+  "title": "shard(tick): 1952Z — quiet checkpoint #2; 4-of-4 lint cluster awaiting CI; natural plateau",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T19:56:45Z",
+  "head_ref": "shard/tick-1952z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 6421,
+  "archive_path": "docs/history/pr-reviews/PR-6421-feat-b-0164-1-add-review-thread-observation-batch-recorder.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gw9GN",
+    "comment:PRRC_kwDOSF9kNM7GxZ62",
+    "thread:PRRT_kwDOSF9kNM6GJD58"
+  ],
+  "fetched_at": "2026-06-01T14:26:09.205Z",
+  "schema_version": "v1",
+  "commit_sha": "ad63233198759d2eb31edf62de43558cbdace96d",
+  "title": "feat(B-0164.1): add review-thread observation batch recorder",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T14:25:39Z",
+  "head_ref": "claim/codex-loop-b0164-1-batch-observation-wiring-20260601T135524Z"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6914,
+  "archive_path": "docs/history/pr-reviews/PR-6914-docs-wi-ferry-heartbeats-are-useful-work-differentiation-cartel-detection-anti-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T20:54:03.708Z",
+  "schema_version": "v1",
+  "commit_sha": "eb5ddf5ba841dd9e165ee49274c39e2ead4370cb",
+  "title": "docs+wi+ferry: heartbeats are useful work — differentiation -> cartel detection + anti-Sybil (provable math, routed to Soraya)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T20:53:42Z",
+  "head_ref": "otto/heartbeat-useful-work-anti-sybil"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8529,
+  "archive_path": "docs/history/pr-reviews/PR-8529-memory-feedback-we-are-just-multidimensional-ohm-s-law-scalar-dimensions-rx-intr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T12:17:01.059Z",
+  "schema_version": "v1",
+  "commit_sha": "9f6b102c64ae49cce36bb0f7a5b79436ec80e74f",
+  "title": "memory(feedback): 'we are just multidimensional Ohm's law × scalar + dimensions + Rx-introspection' — the substrate-mechanism compression (Mirror gestalt; engine not values)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T12:16:29Z",
+  "head_ref": "otto/we-are-just-md-ohms-law-scalar-dimensions-rx-introspection"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7329,
+  "archive_path": "docs/history/pr-reviews/PR-7329-docs-research-ferry-amara-time-as-a-generator-the-clock-is-a-generator-the-seed-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T16:24:52.915Z",
+  "schema_version": "v1",
+  "commit_sha": "6baf78daeba3f3c3ae87287501959fd78dd5ca07",
+  "title": "docs(research)+ferry: Amara — time as a generator (the clock is a generator, the seed is the common cause); anchored to existing FeedbackThrottle/BellTest/CoincidenceClock",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T16:24:28Z",
+  "head_ref": "otto/ferry-amara-time-as-a-generator-treaty-primitive-anchored-feedbackthrottle-belltest"
+}

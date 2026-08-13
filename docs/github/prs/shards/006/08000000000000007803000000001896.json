@@ -1,0 +1,12 @@
+{
+  "pr_number": 6294,
+  "archive_path": "docs/history/pr-reviews/PR-6294-docs-ace-ace-cli-mvp-implementation-plan-two-slice-slice-1-first-tdd.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T00:42:46.645Z",
+  "schema_version": "v1",
+  "commit_sha": "9ecad3a00a367a9f8aeaaabe0b324a06353e9b62",
+  "title": "docs(ace): Ace CLI MVP implementation plan (two-slice, slice-1-first; TDD)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T00:42:26Z",
+  "head_ref": "otto-windows/ace-cli-mvp-implementation-plan-2026-06-01"
+}

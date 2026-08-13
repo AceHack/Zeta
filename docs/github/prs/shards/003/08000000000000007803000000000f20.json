@@ -1,0 +1,12 @@
+{
+  "pr_number": 3872,
+  "archive_path": "docs/history/pr-reviews/PR-3872-shard-tick-2026-05-16t12-21z-multi-otto-contamination-caught-at-tick-start.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T13:04:27.402Z",
+  "schema_version": "v1",
+  "commit_sha": "b519299196f36d50689726a3559ea565834cef76",
+  "title": "shard(tick): 2026-05-16T12:21Z — multi-Otto contamination caught at tick start",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T13:04:08Z",
+  "head_ref": "otto-cli-tick-2026-05-16-1221z"
+}

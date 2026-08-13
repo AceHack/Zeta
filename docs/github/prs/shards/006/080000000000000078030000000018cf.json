@@ -1,0 +1,12 @@
+{
+  "pr_number": 6351,
+  "archive_path": "docs/history/pr-reviews/PR-6351-docs-b-0962-round-3-aaron-resolves-round-2-claim-best-effort-ap-not-cp-per-agent.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T05:59:57.985Z",
+  "schema_version": "v1",
+  "commit_sha": "5a93a627743ab8632084f49797482ae228350383",
+  "title": "docs(B-0962): Round 3 — Aaron resolves round-2 (Claim=best-effort AP not CP; per-agent PC/EC via geo-replicas)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T05:59:35Z",
+  "head_ref": "otto-cli/cap-round3-aaron-resolution-2026-06-01"
+}

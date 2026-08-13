@@ -1,0 +1,17 @@
+{
+  "pr_number": 1919,
+  "archive_path": "docs/history/pr-reviews/PR-1919-fix-actions-open-pr-for-archive-workflow-output.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-8ZHN",
+    "comment:PRRC_kwDOSF9kNM6-8ZIM",
+    "thread:PRRT_kwDOSF9kNM6AZVOQ",
+    "thread:PRRT_kwDOSF9kNM6AZVPG"
+  ],
+  "fetched_at": "2026-05-07T17:41:02.078Z",
+  "schema_version": "v1",
+  "commit_sha": "619245f06a24ef893afb95f67f10371c39c1da04",
+  "title": "fix(actions): open PR for archive workflow output",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T17:40:38Z",
+  "head_ref": "claim/pr-archive-workflow-open-pr"
+}

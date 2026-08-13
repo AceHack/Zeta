@@ -1,0 +1,12 @@
+{
+  "pr_number": 4902,
+  "archive_path": "docs/history/pr-reviews/PR-4902-shard-2026-05-25-0243z-18th-dotgit-anchor-5th-consecutive-0-stuck-proc-reading-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T02:48:58.204Z",
+  "schema_version": "v1",
+  "commit_sha": "fcf7b26ec3c120974868b7f89e627e9fc78649bd",
+  "title": "shard(2026-05-25/0243Z): 18th dotgit anchor — 5th consecutive 0-stuck-proc reading; third-surface convergence (otto-bg-worker); empty Otto-lane (0/63)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T02:48:38Z",
+  "head_ref": "shard/tick-0243z-otto-bg-worker-18th-dotgit-anchor-empty-otto-lane-2026-05-25"
+}

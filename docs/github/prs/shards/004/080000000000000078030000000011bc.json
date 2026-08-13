@@ -1,0 +1,12 @@
+{
+  "pr_number": 4540,
+  "archive_path": "docs/history/pr-reviews/PR-4540-shard-tick-1401z-recursion-termination-at-6-cycle-3-post-arc-minimal-shard-is-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T14:08:13.955Z",
+  "schema_version": "v1",
+  "commit_sha": "e763e8312d2531072d58ce61ee1e8e9217e259f0",
+  "title": "shard(tick 1401Z): recursion-termination at #6 — Cycle-3 post-arc; minimal shard IS the substantive substrate",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T14:07:46Z",
+  "head_ref": "otto/shard-1401z-recursion-termination-cycle-3"
+}

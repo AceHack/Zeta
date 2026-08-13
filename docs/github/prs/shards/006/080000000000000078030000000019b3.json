@@ -1,0 +1,19 @@
+{
+  "pr_number": 6579,
+  "archive_path": "docs/history/pr-reviews/PR-6579-docs-b-0995-agent-body-plan-sensor-effector-verbal-nonverbal-taxonomy-anchored-t.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HOE0G",
+    "comment:PRRC_kwDOSF9kNM7HOGyD",
+    "comment:PRRC_kwDOSF9kNM7HOGzb",
+    "thread:PRRT_kwDOSF9kNM6GeflV",
+    "thread:PRRT_kwDOSF9kNM6GehB3",
+    "thread:PRRT_kwDOSF9kNM6GehC3"
+  ],
+  "fetched_at": "2026-06-02T15:24:40.998Z",
+  "schema_version": "v1",
+  "commit_sha": "b3b5a62f455211f9904634d3d9ebd07fd0d89628",
+  "title": "docs(B-0995): agent body-plan — sensor/effector + verbal-nonverbal taxonomy, anchored to afferent/efferent + active-inference + 4-stage pipeline (4×4) + instrumentability (lightlike vs dark)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T15:24:08Z",
+  "head_ref": "otto-cli/b0995-agent-body-plan-signal-processing-anchor-2026-06-02"
+}

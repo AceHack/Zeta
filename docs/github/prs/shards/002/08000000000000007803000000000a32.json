@@ -1,0 +1,12 @@
+{
+  "pr_number": 2610,
+  "archive_path": "docs/history/pr-reviews/PR-2610-docs-memory-sql-server-pdw-appliance-on-prem-mpp-where-experiment-ran.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T01:32:40.649Z",
+  "schema_version": "v1",
+  "commit_sha": "abbaaf967ac90d5cf2305052eb0799652a1a5f71",
+  "title": "docs(memory): SQL Server PDW appliance — on-prem MPP where ℵ₁ experiment ran",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:32:17Z",
+  "head_ref": "docs/pdw-appliance-lineage-2026-05-10"
+}

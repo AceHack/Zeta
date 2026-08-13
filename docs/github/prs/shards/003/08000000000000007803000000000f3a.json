@@ -1,0 +1,21 @@
+{
+  "pr_number": 3898,
+  "archive_path": "docs/history/pr-reviews/PR-3898-shard-tick-2026-05-16t15-35z-peer-handoff-observation-b-0462-close-row-already-i.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B5Wu7",
+    "comment:PRRC_kwDOSF9kNM7B5ZCD",
+    "comment:PRRC_kwDOSF9kNM7B5ZCQ",
+    "comment:PRRC_kwDOSF9kNM7B5ZCT",
+    "thread:PRRT_kwDOSF9kNM6CkYYc",
+    "thread:PRRT_kwDOSF9kNM6CkaH-",
+    "thread:PRRT_kwDOSF9kNM6CkaH_",
+    "thread:PRRT_kwDOSF9kNM6CkaHx"
+  ],
+  "fetched_at": "2026-05-16T16:23:38.007Z",
+  "schema_version": "v1",
+  "commit_sha": "b5850f796ee03a82fc3db6fb0ea24a48e7858228",
+  "title": "shard(tick): 2026-05-16T15:35Z — peer-handoff observation; B-0462 close-row already in flight as PR #3897",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T16:23:21Z",
+  "head_ref": "otto-cli-tick-shard-1535z-b0462-handoff-2026-05-16"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3257,
+  "archive_path": "docs/history/pr-reviews/PR-3257-docs-archive-preserve-pr-3205.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T21:46:34.155Z",
+  "schema_version": "v1",
+  "commit_sha": "2c50d6d91cd87da51fc755e4cf899f0eb41f0dc4",
+  "title": "docs(archive): preserve PR 3205",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:46:13Z",
+  "head_ref": "lior/archive-3205-decomposed"
+}

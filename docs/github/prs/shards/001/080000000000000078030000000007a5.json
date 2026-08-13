@@ -1,0 +1,12 @@
+{
+  "pr_number": 1957,
+  "archive_path": "docs/history/pr-reviews/PR-1957-fix-b-0087-confirm-cadenced-cron-verified-workflow-fix.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T22:18:06.437Z",
+  "schema_version": "v1",
+  "commit_sha": "5c211e946fd211d45128b401b071c52746e926b3",
+  "title": "fix(B-0087): confirm cadenced cron verified workflow fix",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T22:17:44Z",
+  "head_ref": "fix/b0087-cadence-confirmed"
+}

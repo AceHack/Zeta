@@ -1,0 +1,12 @@
+{
+  "pr_number": 3603,
+  "archive_path": "docs/history/pr-reviews/PR-3603-feat-riven-riven-cursor-terminal-loop-scaffold-b-0498-decomposed.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T22:19:58.587Z",
+  "schema_version": "v1",
+  "commit_sha": "ce7babb60adbc87549aa9c7349e5a0347b770f62",
+  "title": "feat(riven): Riven cursor-terminal loop scaffold [B-0498] (decomposed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T22:19:44Z",
+  "head_ref": "lior/decompose-b0498-riven-loop-2"
+}

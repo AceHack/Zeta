@@ -1,0 +1,12 @@
+{
+  "pr_number": 3173,
+  "archive_path": "docs/history/pr-reviews/PR-3173-docs-research-shadow-33-archive-deepseek-wormhole-aaron-spaghettification-disclo.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T18:41:19.583Z",
+  "schema_version": "v1",
+  "commit_sha": "8e7715a25e8cc4b4c8743ac893902cb8ac93be37",
+  "title": "docs(research/shadow): §33 archive — DeepSeek wormhole + Aaron spaghettification disclosure",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:40:50Z",
+  "head_ref": "shard/tick-1834Z-pr3165-recovery-2026-05-14"
+}

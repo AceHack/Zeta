@@ -1,0 +1,12 @@
+{
+  "pr_number": 4091,
+  "archive_path": "docs/history/pr-reviews/PR-4091-shard-2026-05-17-1401z-autonomous-loop-tick-post-reset-3-pr-burst-parked-armed.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T14:19:52.390Z",
+  "schema_version": "v1",
+  "commit_sha": "f9b993547237081f35ffe907d701a5bce7d63d91",
+  "title": "shard(2026-05-17/1401Z): autonomous-loop tick — post-reset 3-PR burst (parked → armed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T14:19:34Z",
+  "head_ref": "otto/1401z-burst-recap"
+}

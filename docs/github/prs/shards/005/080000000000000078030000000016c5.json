@@ -1,0 +1,12 @@
+{
+  "pr_number": 5829,
+  "archive_path": "docs/history/pr-reviews/PR-5829-backlog-b-0919-hat-vs-persona-memory-binding-operational-hat-on-leave-personal-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T14:10:37.529Z",
+  "schema_version": "v1",
+  "commit_sha": "50d50b9e5aca71ec718a8d09b79bd279f3920861",
+  "title": "backlog(B-0919): hat-vs-persona memory binding — operational→hat on leave, personal→persona, dual-tagged default, consent-bound (Aaron 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T14:10:14Z",
+  "head_ref": "otto-cli/b-0919-hat-vs-persona-memory-binding-2026-05-28"
+}

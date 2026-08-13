@@ -1,0 +1,12 @@
+{
+  "pr_number": 8889,
+  "archive_path": "docs/history/pr-reviews/PR-8889-fix-lint-codegen-interface-ts-unused-vars-ts6133-restore-lint-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:38:44.356Z",
+  "schema_version": "v1",
+  "commit_sha": "8ba347e914060510d4ea12b18288608702d6b27f",
+  "title": "fix(lint): codegen-interface.ts unused vars (TS6133) — restore lint(TS)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:38:20Z",
+  "head_ref": "otto/fix-codegen-interface-lints"
+}

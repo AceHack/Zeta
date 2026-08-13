@@ -1,0 +1,15 @@
+{
+  "pr_number": 2534,
+  "archive_path": "docs/history/pr-reviews/PR-2534-docs-b-0401-add-ux-of-the-math-static-pages-v1-target.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qIvk",
+    "thread:PRRT_kwDOSF9kNM6A7f6t"
+  ],
+  "fetched_at": "2026-05-10T20:53:35.761Z",
+  "schema_version": "v1",
+  "commit_sha": "cc50614e1090ae340b2867db35b7cf5836f21534",
+  "title": "docs(B-0401): add UX-of-the-math + static Pages v1 target",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T20:53:18Z",
+  "head_ref": "feat/b0401-static-demo-v1-2026-05-10"
+}

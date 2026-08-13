@@ -1,0 +1,12 @@
+{
+  "pr_number": 3460,
+  "archive_path": "docs/history/pr-reviews/PR-3460-shard-tick-1245z-codex-stale-thread-cleared-prs-3457-3459-wait-ci.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T12:47:57.041Z",
+  "schema_version": "v1",
+  "commit_sha": "2e0152e56b32af187ce212b28bad7d748b9ff643",
+  "title": "shard(tick): 1245Z — Codex stale thread cleared; PRs #3457 + #3459 wait-CI",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T12:47:39Z",
+  "head_ref": "shard/tick-1245z-otto-cli-2026-05-15"
+}

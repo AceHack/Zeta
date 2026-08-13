@@ -1,0 +1,31 @@
+{
+  "pr_number": 2167,
+  "archive_path": "docs/history/pr-reviews/PR-2167-feat-b-0169-smallest-safe-slice-string-archaeology-ts-helper-existence-mode.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_d6f3",
+    "comment:PRRC_kwDOSF9kNM6_d6fg",
+    "comment:PRRC_kwDOSF9kNM6_d6ft",
+    "comment:PRRC_kwDOSF9kNM6_d6gA",
+    "comment:PRRC_kwDOSF9kNM6_d6gL",
+    "comment:PRRC_kwDOSF9kNM6_d6gR",
+    "comment:PRRC_kwDOSF9kNM6_d77k",
+    "comment:PRRC_kwDOSF9kNM6_d797",
+    "comment:PRRC_kwDOSF9kNM6_d7_N",
+    "comment:PRRC_kwDOSF9kNM6_d8AT",
+    "comment:PRRC_kwDOSF9kNM6_d8FR",
+    "comment:PRRC_kwDOSF9kNM6_d8G5",
+    "thread:PRRT_kwDOSF9kNM6Ax6y1",
+    "thread:PRRT_kwDOSF9kNM6Ax6y_",
+    "thread:PRRT_kwDOSF9kNM6Ax6zJ",
+    "thread:PRRT_kwDOSF9kNM6Ax6zR",
+    "thread:PRRT_kwDOSF9kNM6Ax6zc",
+    "thread:PRRT_kwDOSF9kNM6Ax6zg"
+  ],
+  "fetched_at": "2026-05-09T02:54:08.004Z",
+  "schema_version": "v1",
+  "commit_sha": "b1c77b256ebc9f5c0ed57853c51b7908bab3d98e",
+  "title": "feat(B-0169): smallest safe slice — string-archaeology TS helper (existence mode)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T02:53:52Z",
+  "head_ref": "claim/b0169-decision-archaeology-smallest-slice-riven-2026-05-08"
+}

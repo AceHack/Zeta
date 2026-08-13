@@ -1,0 +1,16 @@
+{
+  "pr_number": 6060,
+  "archive_path": "docs/history/pr-reviews/PR-6060-docs-b-0058-4-detect-clause-drift-ts-workflow-doc-close-row.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GU-dO",
+    "comment:PRRC_kwDOSF9kNM7GU4cQ",
+    "thread:PRRT_kwDOSF9kNM6Fz5GU"
+  ],
+  "fetched_at": "2026-05-29T23:30:37.410Z",
+  "schema_version": "v1",
+  "commit_sha": "ccac9afbb14b354a823254290dac2df3dbf2c687",
+  "title": "docs(B-0058.4): detect-clause-drift.ts workflow doc + close row",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T23:30:19Z",
+  "head_ref": "otto-cli/b0058.4-clause-drift-workflow-doc-2026-05-29"
+}

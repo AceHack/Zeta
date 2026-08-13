@@ -1,0 +1,12 @@
+{
+  "pr_number": 8274,
+  "archive_path": "docs/history/pr-reviews/PR-8274-docs-bp-ep-vs-mc-clarifier-bidirectional-capability-di-ai-human.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T06:47:59.806Z",
+  "schema_version": "v1",
+  "commit_sha": "c9210df8b0b1e08253fc43f2d9bc6974e573fdd1",
+  "title": "docs: BP/EP-vs-MC clarifier + bidirectional capability DI (AI->human)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T06:47:28Z",
+  "head_ref": "otto/bidirectional-di-and-bpep-clarifier"
+}

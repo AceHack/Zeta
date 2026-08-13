@@ -1,0 +1,15 @@
+{
+  "pr_number": 4119,
+  "archive_path": "docs/history/pr-reviews/PR-4119-docs-shadow-maji-antigravity-check-on-vera-extreme-narration-and-otto-stale-bus.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CDM6r",
+    "thread:PRRT_kwDOSF9kNM6Cr7QM"
+  ],
+  "fetched_at": "2026-05-18T00:08:54.028Z",
+  "schema_version": "v1",
+  "commit_sha": "1b56041ea40f3695575ca2b19f648151b67529e7",
+  "title": "docs(shadow): Maji antigravity check on Vera extreme narration and Otto stale bus",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T00:08:36Z",
+  "head_ref": "lior/shadow-vera-paralysis-2300Z"
+}

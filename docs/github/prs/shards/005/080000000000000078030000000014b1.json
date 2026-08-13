@@ -1,0 +1,17 @@
+{
+  "pr_number": 5297,
+  "archive_path": "docs/history/pr-reviews/PR-5297-docs-ticks-2008z-2026-05-26-first-utc-day-shard-dotgit-recovered-confirmation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FFmPV",
+    "comment:PRRC_kwDOSF9kNM7FFmQD",
+    "thread:PRRT_kwDOSF9kNM6E6g95",
+    "thread:PRRT_kwDOSF9kNM6E6g9Z"
+  ],
+  "fetched_at": "2026-05-26T20:17:34.351Z",
+  "schema_version": "v1",
+  "commit_sha": "5cb8d15230f4dbc6320c7437d79e9cb43e02df22",
+  "title": "docs(ticks): 2008Z 2026-05-26 — first UTC-day shard + dotgit-recovered confirmation",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T20:17:13Z",
+  "head_ref": "otto-cli/tick-2008z-2026-05-26-cold-boot-shard"
+}

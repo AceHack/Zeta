@@ -1,0 +1,12 @@
+{
+  "pr_number": 6660,
+  "archive_path": "docs/history/pr-reviews/PR-6660-research-deepen-shape-1-the-i-o-monad-external-edge-bit-perfect-serialization-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T11:10:03.405Z",
+  "schema_version": "v1",
+  "commit_sha": "e0d82440b318ccdd45ec6574db6041c1239b9dea",
+  "title": "research(deepen): shape-1 = the I/O-monad external edge; bit-perfect serialization reduces external-observation uncertainty",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T11:09:40Z",
+  "head_ref": "otto-cli/shape1-io-monad-external-edge-2026-06-03"
+}

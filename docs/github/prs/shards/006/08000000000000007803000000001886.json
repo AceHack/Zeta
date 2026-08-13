@@ -1,0 +1,19 @@
+{
+  "pr_number": 6278,
+  "archive_path": "docs/history/pr-reviews/PR-6278-fix-shield-authenticate-mise-in-the-windows-ps1-install-shield-mise-github-token.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GjL35",
+    "comment:PRRC_kwDOSF9kNM7GjL4e",
+    "comment:PRRC_kwDOSF9kNM7GjLSb",
+    "comment:PRRC_kwDOSF9kNM7GjLSj",
+    "thread:PRRT_kwDOSF9kNM6F-tw3",
+    "thread:PRRT_kwDOSF9kNM6F-twy"
+  ],
+  "fetched_at": "2026-05-31T23:38:21.558Z",
+  "schema_version": "v1",
+  "commit_sha": "864f976f726bfb3b7b577363b8f741af65c26eb5",
+  "title": "fix(shield): authenticate mise in the windows-ps1 install shield (MISE_GITHUB_TOKEN build-arg)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T23:37:59Z",
+  "head_ref": "otto-windows/shield-windows-ps1-mise-token-2026-05-31"
+}

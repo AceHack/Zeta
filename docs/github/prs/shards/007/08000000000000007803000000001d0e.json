@@ -1,0 +1,12 @@
+{
+  "pr_number": 7438,
+  "archive_path": "docs/history/pr-reviews/PR-7438-feat-core-shadow-wire-the-governed-zetaid-minter-into-destination-reticulumlink.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T03:47:33.898Z",
+  "schema_version": "v1",
+  "commit_sha": "e9a6408d25eadec7df5c5e9066c2c317fbad94e5",
+  "title": "feat(core)+shadow: wire the governed ZetaId minter into Destination (ReticulumLink)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T03:47:15Z",
+  "head_ref": "shadow-zetaid-minter-into-destination"
+}

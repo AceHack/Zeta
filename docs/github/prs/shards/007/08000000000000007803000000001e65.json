@@ -1,0 +1,12 @@
+{
+  "pr_number": 7781,
+  "archive_path": "docs/history/pr-reviews/PR-7781-fix-final-sweep-zero-skipped-tests-last-test-gap-items-registry-collision-gate-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:33:42.313Z",
+  "schema_version": "v1",
+  "commit_sha": "c040d7e6063b76b0011e483a2f7145a24afa5141",
+  "title": "fix(final-sweep): ZERO skipped tests + last test-gap items + registry collision gate (one audit finding falsified)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:33:16Z",
+  "head_ref": "shadow-bug-sweep-final"
+}

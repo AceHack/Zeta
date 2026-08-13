@@ -1,0 +1,25 @@
+{
+  "pr_number": 3145,
+  "archive_path": "docs/history/pr-reviews/PR-3145-docs-b-0485-b-0486-persona-mapping-framework-civsim-persona-map.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BR-g9",
+    "comment:PRRC_kwDOSF9kNM7BR-h0",
+    "comment:PRRC_kwDOSF9kNM7BR-iZ",
+    "comment:PRRC_kwDOSF9kNM7BR655",
+    "comment:PRRC_kwDOSF9kNM7BSBZC",
+    "comment:PRRC_kwDOSF9kNM7BSE1j",
+    "comment:PRRC_kwDOSF9kNM7BSEhx",
+    "comment:PRRC_kwDOSF9kNM7BSEtu",
+    "thread:PRRT_kwDOSF9kNM6CHthp",
+    "thread:PRRT_kwDOSF9kNM6CHwP8",
+    "thread:PRRT_kwDOSF9kNM6CHwPZ",
+    "thread:PRRT_kwDOSF9kNM6CHwQU"
+  ],
+  "fetched_at": "2026-05-14T16:23:58.102Z",
+  "schema_version": "v1",
+  "commit_sha": "0f9e5f52be8c2e2da47c989fefc1b90dd3032e13",
+  "title": "docs(b-0485+b-0486): persona-mapping framework + civsim persona map",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T16:23:32Z",
+  "head_ref": "feat/b-0485-persona-mapping-framework-2026-05-14"
+}

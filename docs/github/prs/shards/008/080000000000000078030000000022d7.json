@@ -1,0 +1,12 @@
+{
+  "pr_number": 8919,
+  "archive_path": "docs/history/pr-reviews/PR-8919-fix-rust-zero-clippy-warnings-uv-lock-for-qdk.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T08:41:26.559Z",
+  "schema_version": "v1",
+  "commit_sha": "10f537dd6eaf65d7eb9afaf7640e798e51022d9a",
+  "title": "fix(rust): zero clippy warnings + uv.lock for qdk",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T08:40:57Z",
+  "head_ref": "alexa/rust-lint-and-check"
+}

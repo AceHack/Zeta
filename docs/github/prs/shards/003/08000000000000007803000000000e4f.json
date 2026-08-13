@@ -1,0 +1,15 @@
+{
+  "pr_number": 3663,
+  "archive_path": "docs/history/pr-reviews/PR-3663-shard-tick-0107z-meta-loop-convergence-1-redundancy-fix-pr-3662.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B0ZBw",
+    "thread:PRRT_kwDOSF9kNM6Cgsaj"
+  ],
+  "fetched_at": "2026-05-16T01:18:58.928Z",
+  "schema_version": "v1",
+  "commit_sha": "bed5fa9c0e9e4c4f106a1dc6376f0231c1487934",
+  "title": "shard(tick): 0107Z — meta-loop convergence (1 redundancy fix → PR #3662)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T01:18:42Z",
+  "head_ref": "shard/tick-0107z-otto-cli-2026-05-16"
+}

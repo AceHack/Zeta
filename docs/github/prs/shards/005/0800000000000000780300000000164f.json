@@ -1,0 +1,19 @@
+{
+  "pr_number": 5711,
+  "archive_path": "docs/history/pr-reviews/PR-5711-fix-codex-treat-stale-cleanup-heartbeats-as-terminal.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fpuoq",
+    "comment:PRRC_kwDOSF9kNM7Fpup8",
+    "comment:PRRC_kwDOSF9kNM7Fpupj",
+    "thread:PRRT_kwDOSF9kNM6FUqEP",
+    "thread:PRRT_kwDOSF9kNM6FUqEx",
+    "thread:PRRT_kwDOSF9kNM6FUqFD"
+  ],
+  "fetched_at": "2026-05-28T07:46:25.609Z",
+  "schema_version": "v1",
+  "commit_sha": "b6df0cbe348b73b703d769d25970d6a4ae11c936",
+  "title": "fix(codex): treat stale cleanup heartbeats as terminal",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T07:46:01Z",
+  "head_ref": "claim/codex-loop-stale-cleanup-heartbeat-terminal-20260528"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2675,
+  "archive_path": "docs/history/pr-reviews/PR-2675-docs-memory-self-reflection-roadmap-persist-endure.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T08:57:42.797Z",
+  "schema_version": "v1",
+  "commit_sha": "f41caa252fa861b1a29b3de9087ef81c7b5bb0ec",
+  "title": "docs(memory): self-reflection roadmap + μένω = persist/endure",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T08:57:19Z",
+  "head_ref": "docs/self-reflection-roadmap-menow-endure-2026-05-11"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8452,
+  "archive_path": "docs/history/pr-reviews/PR-8452-memory-reference-fold-legacy-os-world-until-our-own-microkernel-into-the-f-pump-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T05:38:57.536Z",
+  "schema_version": "v1",
+  "commit_sha": "48fec9bd37e4e41491af8ed17203613eeda871f7",
+  "title": "memory(reference): fold legacy-OS-world + 'until our own microkernel' into the F# pump note",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T05:38:29Z",
+  "head_ref": "otto/ref-fsharp-pump-legacy-os-microkernel"
+}

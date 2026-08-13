@@ -1,0 +1,12 @@
+{
+  "pr_number": 8506,
+  "archive_path": "docs/history/pr-reviews/PR-8506-memory-feedback-empowerment-meter-coupling-ai-extends-the-human-s-bounded-meter-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T10:46:02.230Z",
+  "schema_version": "v1",
+  "commit_sha": "a9104628001e96d8c087241424f0c332ea622500",
+  "title": "memory(feedback): empowerment = METER-COUPLING (AI extends the human's bounded meter); humans=control / AI=measurement today (separation principle)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T10:45:32Z",
+  "head_ref": "otto/empowerment-is-meter-coupling-humans-control-ai-measurement"
+}

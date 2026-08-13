@@ -1,0 +1,12 @@
+{
+  "pr_number": 6392,
+  "archive_path": "docs/history/pr-reviews/PR-6392-test-algebra-f-z-set-joins-the-shared-golden-vector-treaty-oracle-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T10:08:18.784Z",
+  "schema_version": "v1",
+  "commit_sha": "c277af7f1a6b41f6244fb347cd2ab42d556a480c",
+  "title": "test(algebra): F# Z-set joins the shared golden-vector treaty (oracle #2)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T10:07:54Z",
+  "head_ref": "otto-cli/zset-fsharp-replay-oracle2-2026-06-01"
+}

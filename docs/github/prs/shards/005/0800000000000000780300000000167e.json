@@ -1,0 +1,12 @@
+{
+  "pr_number": 5758,
+  "archive_path": "docs/history/pr-reviews/PR-5758-feat-b-0867-20-determinereviewlevel-discriminator-trajectory-push-vs-pr-review-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:54:24.241Z",
+  "schema_version": "v1",
+  "commit_sha": "91e68ccb667408415bd0eedb2f86dec23535857a",
+  "title": "feat(B-0867.20): determineReviewLevel discriminator — trajectory-push vs PR-review lifecycle DU split (Kestrel substrate + Aaron 3-lane substrate-check substantive lane work)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:54:02Z",
+  "head_ref": "otto-cli/b-0867-20-determine-review-level-discriminator-trajectory-push-vs-pr-review-lifecycle-du-2026-05-28"
+}

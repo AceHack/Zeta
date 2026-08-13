@@ -1,0 +1,29 @@
+{
+  "pr_number": 2667,
+  "archive_path": "docs/history/pr-reviews/PR-2667-docs-backlog-re-decompose-b-0088-into-5-smallest-atomic-children-riven-redecomp.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_w-kJ",
+    "comment:PRRC_kwDOSF9kNM6_w30R",
+    "comment:PRRC_kwDOSF9kNM6_w40j",
+    "comment:PRRC_kwDOSF9kNM6_w41m",
+    "comment:PRRC_kwDOSF9kNM6_xHPR",
+    "comment:PRRC_kwDOSF9kNM6_xHQJ",
+    "comment:PRRC_kwDOSF9kNM6_xHQy",
+    "comment:PRRC_kwDOSF9kNM6_xIGW",
+    "thread:PRRT_kwDOSF9kNM6BAhUz",
+    "thread:PRRT_kwDOSF9kNM6BAiDu",
+    "thread:PRRT_kwDOSF9kNM6BAiEo",
+    "thread:PRRT_kwDOSF9kNM6BAmS7",
+    "thread:PRRT_kwDOSF9kNM6BAswZ",
+    "thread:PRRT_kwDOSF9kNM6BAsxF",
+    "thread:PRRT_kwDOSF9kNM6BAsxq",
+    "thread:PRRT_kwDOSF9kNM6BAtaI"
+  ],
+  "fetched_at": "2026-05-11T08:38:13.672Z",
+  "schema_version": "v1",
+  "commit_sha": "41356c9ef5e84a358b852a8ce5b3c32555c90b34",
+  "title": "docs(backlog): re-decompose B-0088 into 5 smallest atomic children (riven redecomp)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T08:37:51Z",
+  "head_ref": "claim/b0088-redecomp-smallest-atomic-children-riven-2026-05-11"
+}

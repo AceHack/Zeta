@@ -1,0 +1,12 @@
+{
+  "pr_number": 4270,
+  "archive_path": "docs/history/pr-reviews/PR-4270-shard-2352z-c-brief-ack-5-skip-pre-empt.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:55:30.426Z",
+  "schema_version": "v1",
+  "commit_sha": "c7286d404b4dcca216cf106d00c980941a3de67c",
+  "title": "shard(2352Z-c): brief-ack #5 SKIP pre-empt",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:55:14Z",
+  "head_ref": "shard/tick-2352z-c-brief-ack-5-skip-pre-empt-2026-05-18"
+}

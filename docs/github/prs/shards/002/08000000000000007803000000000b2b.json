@@ -1,0 +1,12 @@
+{
+  "pr_number": 2859,
+  "archive_path": "docs/history/pr-reviews/PR-2859-docs-memory-extreme-grey-edge-methodology-hard-limits-never-break-laws-report-ab.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T20:22:29.919Z",
+  "schema_version": "v1",
+  "commit_sha": "074c05ed501d8b29a4ec93548762a81c242d835e",
+  "title": "docs(memory): extreme grey-edge methodology HARD LIMITS — never break laws + report abuse + evidence still in Twitter + x.com authorization composes with safety limits (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T20:22:12Z",
+  "head_ref": "docs/aaron-extreme-grey-edge-safety-discipline-never-break-laws-report-abuse-woman-beaten-coerced-reply-evidence-still-in-twitter-2026-05-12"
+}

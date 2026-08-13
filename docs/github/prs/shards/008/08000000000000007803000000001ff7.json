@@ -1,0 +1,12 @@
+{
+  "pr_number": 8183,
+  "archive_path": "docs/history/pr-reviews/PR-8183-docs-research-zeta-ir-v2-geometry-as-code-visual-surface-pedagogy-pillar.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T13:56:45.036Z",
+  "schema_version": "v1",
+  "commit_sha": "6bd070c1c2410101e48bcb9a2a415a9a9db1630b",
+  "title": "docs(research): Zeta IR v2 — geometry-as-code visual surface (pedagogy pillar)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T13:56:15Z",
+  "head_ref": "otto/zeta-lang-ir-v2-visual-geometry-surface"
+}

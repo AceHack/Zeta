@@ -1,0 +1,12 @@
+{
+  "pr_number": 1992,
+  "archive_path": "docs/history/pr-reviews/PR-1992-fix-backlog-b-0156-decomposed-child-b-0140.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T01:56:21.363Z",
+  "schema_version": "v1",
+  "commit_sha": "05bc2707ee8a93a39ed816f78768c81050932810",
+  "title": "fix(backlog): B-0156 → decomposed, child = B-0140",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T01:56:09Z",
+  "head_ref": "backlog/b0156-link-to-b0140"
+}

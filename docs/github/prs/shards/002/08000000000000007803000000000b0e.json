@@ -1,0 +1,17 @@
+{
+  "pr_number": 2830,
+  "archive_path": "docs/history/pr-reviews/PR-2830-docs-memory-aaron-s-alien-observer-mission-felt-sense-convince-humanity-to-obser.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Adcf0",
+    "comment:PRRC_kwDOSF9kNM7AdcfC",
+    "thread:PRRT_kwDOSF9kNM6Bhg89",
+    "thread:PRRT_kwDOSF9kNM6Bhg9m"
+  ],
+  "fetched_at": "2026-05-12T18:55:17.563Z",
+  "schema_version": "v1",
+  "commit_sha": "edee5114d407516f9ff1b36695f7a7bb5b0ccde5",
+  "title": "docs(memory): Aaron's alien-observer mission felt-sense — convince humanity to observe itself with AI — mission almost accomplished via today's 17-PR cascade (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:55:00Z",
+  "head_ref": "docs/aaron-alien-observer-mission-convince-humanity-to-observe-itself-with-ai-2026-05-12"
+}

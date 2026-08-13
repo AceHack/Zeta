@@ -1,0 +1,19 @@
+{
+  "pr_number": 6394,
+  "archive_path": "docs/history/pr-reviews/PR-6394-docs-adr-ci-mechanical-lint-auto-heal-review-emission-to-the-git-native-bus-prop.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gr15k",
+    "comment:PRRC_kwDOSF9kNM7Gr198",
+    "comment:PRRC_kwDOSF9kNM7Grk5X",
+    "comment:PRRC_kwDOSF9kNM7Grk6O",
+    "thread:PRRT_kwDOSF9kNM6GE_t3",
+    "thread:PRRT_kwDOSF9kNM6GE_ug"
+  ],
+  "fetched_at": "2026-06-01T10:26:12.541Z",
+  "schema_version": "v1",
+  "commit_sha": "5988d85d77a07aad5807d21ec628e3e6861aba2a",
+  "title": "docs(adr): CI mechanical lint auto-heal + review-emission to the git-native bus (proposed, pending Max)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T10:25:48Z",
+  "head_ref": "otto-cli/adr-ci-mechanical-review-emission-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3377,
+  "archive_path": "docs/history/pr-reviews/PR-3377-feat-rules-add-borrow-on-existing-pattern-to-claim-acquire-before-worktree-work-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T07:23:56.942Z",
+  "schema_version": "v1",
+  "commit_sha": "d41bd8d03604c1d00456a0264113d12f6704b7d9",
+  "title": "feat(rules): add borrow-on-existing pattern to claim-acquire-before-worktree-work.md for concurrent-Otto-CLI fallback",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T07:23:40Z",
+  "head_ref": "feat/rule-borrow-pattern-otto-cli-2026-05-15"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 2239,
+  "archive_path": "docs/history/pr-reviews/PR-2239-docs-b-0191-add-zeta-expected-branch-rule-file-claude-md-pointer-ac3.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_f7J1",
+    "comment:PRRC_kwDOSF9kNM6_f7J5",
+    "comment:PRRC_kwDOSF9kNM6_f8a6",
+    "comment:PRRC_kwDOSF9kNM6_f8aB",
+    "comment:PRRC_kwDOSF9kNM6_f9Dj",
+    "comment:PRRC_kwDOSF9kNM6_f9N7",
+    "comment:PRRC_kwDOSF9kNM6_f9Nx",
+    "thread:PRRT_kwDOSF9kNM6Azbvp",
+    "thread:PRRT_kwDOSF9kNM6Azbvs",
+    "thread:PRRT_kwDOSF9kNM6AzdSR",
+    "thread:PRRT_kwDOSF9kNM6Azda0",
+    "thread:PRRT_kwDOSF9kNM6Azdar"
+  ],
+  "fetched_at": "2026-05-09T08:19:52.004Z",
+  "schema_version": "v1",
+  "commit_sha": "0994068b4e74c9d39be1cc5272d924274a382111",
+  "title": "docs(B-0191): add ZETA_EXPECTED_BRANCH rule file + CLAUDE.md pointer (AC3)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T08:19:36Z",
+  "head_ref": "feat/b0191-zeta-expected-branch-rule"
+}

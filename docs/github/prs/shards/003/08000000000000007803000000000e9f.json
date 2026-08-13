@@ -1,0 +1,12 @@
+{
+  "pr_number": 3743,
+  "archive_path": "docs/history/pr-reviews/PR-3743-chore-b-0528-close-row-tests-shipped-via-pr-3423-3rd-drift-catch.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T04:49:09.618Z",
+  "schema_version": "v1",
+  "commit_sha": "c59e730bc1c7ad1256f4785804afb97050ad943c",
+  "title": "chore(b-0528): close row — tests shipped via PR #3423 (3rd drift catch)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:48:54Z",
+  "head_ref": "chore/b0528-close-row-otto-cli-2026-05-16"
+}

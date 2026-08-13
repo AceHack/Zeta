@@ -1,0 +1,12 @@
+{
+  "pr_number": 7006,
+  "archive_path": "docs/history/pr-reviews/PR-7006-docs-platform-human-agent-collaboration-model-anchored-to-zeta-canon.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T03:48:32.361Z",
+  "schema_version": "v1",
+  "commit_sha": "03efdf52ffc0a79a78b4975f8dd827a52b864fa1",
+  "title": "docs(platform): human-agent collaboration model (anchored to Zeta canon)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T03:48:12Z",
+  "head_ref": "docs/collaboration-model"
+}

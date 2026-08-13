@@ -1,0 +1,12 @@
+{
+  "pr_number": 7660,
+  "archive_path": "docs/history/pr-reviews/PR-7660-docs-vision-head-shapes-steerable-gpu-primitives-roads-vs-monorails-bidirectiona.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T11:57:31.568Z",
+  "schema_version": "v1",
+  "commit_sha": "0426e85f59a6b67d7e6be9dd4bbf603ef4822dae",
+  "title": "docs(vision): head-shapes → steerable GPU primitives; roads vs monorails; bidirectional safe lanes + speed limits",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T11:57:06Z",
+  "head_ref": "shadow-roads-monorails"
+}

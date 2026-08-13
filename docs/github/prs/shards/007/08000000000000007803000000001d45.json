@@ -1,0 +1,12 @@
+{
+  "pr_number": 7493,
+  "archive_path": "docs/history/pr-reviews/PR-7493-docs-boards-board-room-encode-dynamicvalue-into-cmyk-solid-rgb-soft-prelude-styl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T09:49:35.704Z",
+  "schema_version": "v1",
+  "commit_sha": "e37ba033a5cf94d477425b434df7ab29c0b393b9",
+  "title": "docs(boards): board room — encode DynamicValue into CMYK(solid)+RGB(soft) Prelude-style; settle by room/sim mea'd until it resolves",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T09:49:10Z",
+  "head_ref": "shadow-board-room-dynamic-value-cmyk-rgb-encoding"
+}

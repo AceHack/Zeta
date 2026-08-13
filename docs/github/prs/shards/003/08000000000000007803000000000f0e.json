@@ -1,0 +1,12 @@
+{
+  "pr_number": 3854,
+  "archive_path": "docs/history/pr-reviews/PR-3854-shard-tick-2026-05-16t10-08z-b-0129-class-2-status-annotated-27-38-triaged.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T10:18:21.904Z",
+  "schema_version": "v1",
+  "commit_sha": "947fffda746121cd580072b12b214a4f934a026f",
+  "title": "shard(tick): 2026-05-16T10:08Z — B-0129 = class #2 (Status-annotated); 27/38 triaged",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:18:02Z",
+  "head_ref": "otto-cli-b0129-audit-2026-05-16-1008z"
+}

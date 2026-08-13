@@ -1,0 +1,12 @@
+{
+  "pr_number": 8857,
+  "archive_path": "docs/history/pr-reviews/PR-8857-feat-core-export-room-horizon-heat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T04:38:14.633Z",
+  "schema_version": "v1",
+  "commit_sha": "6614c5dda54eee557321cc7d49d98cb39eb05ed6",
+  "title": "feat(core): export room horizon heat",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T04:37:49Z",
+  "head_ref": "codex/bounded-gset-heat"
+}

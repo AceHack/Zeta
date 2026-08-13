@@ -1,0 +1,12 @@
+{
+  "pr_number": 7140,
+  "archive_path": "docs/history/pr-reviews/PR-7140-docs-research-the-controller-is-a-qubit-action-uncertainty-multi-agent-hats-qubi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:00:02.012Z",
+  "schema_version": "v1",
+  "commit_sha": "f014905611d611fb6860d3d3f075dc29aeff2d30",
+  "title": "docs(research): the controller is a qubit (action uncertainty); multi-agent hats = qubit combinations",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:59:39Z",
+  "head_ref": "otto/research-controller-qubit-action-uncertainty-hats-qubit-combinations"
+}

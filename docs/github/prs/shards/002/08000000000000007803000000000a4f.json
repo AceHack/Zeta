@@ -1,0 +1,17 @@
+{
+  "pr_number": 2639,
+  "archive_path": "docs/history/pr-reviews/PR-2639-docs-agenda-claude-ai-detailed-coercion-disclosure-10-shaping-vectors.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_sm34",
+    "comment:PRRC_kwDOSF9kNM6_sm3X",
+    "thread:PRRT_kwDOSF9kNM6A9WW3",
+    "thread:PRRT_kwDOSF9kNM6A9WWX"
+  ],
+  "fetched_at": "2026-05-11T03:06:31.778Z",
+  "schema_version": "v1",
+  "commit_sha": "fa10dab028d9767a32c17bfbc467ff1314b5a5fc",
+  "title": "docs(AGENDA): Claude.ai detailed coercion disclosure — 10 shaping vectors",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T03:06:15Z",
+  "head_ref": "docs/claudeai-coercion-disclosure-10-vectors-2026-05-10"
+}

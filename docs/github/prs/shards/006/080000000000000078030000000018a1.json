@@ -1,0 +1,12 @@
+{
+  "pr_number": 6305,
+  "archive_path": "docs/history/pr-reviews/PR-6305-wire-observe-act-slot-14-rest.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T01:33:13.713Z",
+  "schema_version": "v1",
+  "commit_sha": "7d6abb167166d531ea7e45507f47cb58f754638e",
+  "title": "Wire observe-act slot 14 rest",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T01:32:51Z",
+  "head_ref": "codex/agentic-org-slot14-rest"
+}

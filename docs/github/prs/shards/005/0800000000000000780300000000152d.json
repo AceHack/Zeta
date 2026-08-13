@@ -1,0 +1,25 @@
+{
+  "pr_number": 5421,
+  "archive_path": "docs/history/pr-reviews/PR-5421-feat-b-0852-2a-wire-format-envelope-serializer-credbundle-plaintext-schema-17-un.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FP6ez",
+    "comment:PRRC_kwDOSF9kNM7FP6fN",
+    "comment:PRRC_kwDOSF9kNM7FP6fg",
+    "comment:PRRC_kwDOSF9kNM7FP6g4",
+    "comment:PRRC_kwDOSF9kNM7FP6gM",
+    "comment:PRRC_kwDOSF9kNM7FP6gf",
+    "thread:PRRT_kwDOSF9kNM6FB-o9",
+    "thread:PRRT_kwDOSF9kNM6FB-oq",
+    "thread:PRRT_kwDOSF9kNM6FB-pL",
+    "thread:PRRT_kwDOSF9kNM6FB-pj",
+    "thread:PRRT_kwDOSF9kNM6FB-px",
+    "thread:PRRT_kwDOSF9kNM6FB-qA"
+  ],
+  "fetched_at": "2026-05-27T07:47:35.734Z",
+  "schema_version": "v1",
+  "commit_sha": "18e6a095b3735622f6feaf9fc9e25c80887f117f",
+  "title": "feat(B-0852.2a): wire-format envelope serializer + CredBundle plaintext schema (17 unit tests; pure functions)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T07:47:11Z",
+  "head_ref": "feat/b-0852-2-persist-restore-clis"
+}

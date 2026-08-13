@@ -1,0 +1,12 @@
+{
+  "pr_number": 6077,
+  "archive_path": "docs/history/pr-reviews/PR-6077-docs-research-dio-did-canonical-architecture-b-0939-self-propagating-markdown-co.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T04:34:47.310Z",
+  "schema_version": "v1",
+  "commit_sha": "9a658b641e2309ca47ab7a2ed28b4997fda1f326",
+  "title": "docs(research): DIO/DID canonical architecture + B-0939 self-propagating-Markdown compiler-rule",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T04:34:27Z",
+  "head_ref": "otto-cli/dio-did-architecture-canonical-spec-2026-05-30"
+}

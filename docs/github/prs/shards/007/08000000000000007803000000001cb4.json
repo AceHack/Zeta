@@ -1,0 +1,12 @@
+{
+  "pr_number": 7348,
+  "archive_path": "docs/history/pr-reviews/PR-7348-docs-research-adopt-time-warp-jefferson-1985-as-our-time-engine-name-zetadatetim.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T17:24:18.791Z",
+  "schema_version": "v1",
+  "commit_sha": "cf74bb4b41cd7986bfc60b2b70ff44c5122f0beb",
+  "title": "docs(research): adopt \"Time Warp\" (Jefferson 1985) as our time engine name — ZetaDateTime value, Phase step, anti-message = Z-set retraction, GVT = merge frontier",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T17:23:56Z",
+  "head_ref": "otto/adopt-time-warp-jefferson-time-engine-name"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6730,
+  "archive_path": "docs/history/pr-reviews/PR-6730-feat-log-081ktgd5jmd-canonical-deltalogentry-codec-f-reference-oracle-format-par.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T06:55:39.143Z",
+  "schema_version": "v1",
+  "commit_sha": "18cfe7fc754a8a3615979add780e0d0f69cee7a6",
+  "title": "feat(Log/081KTGD5JMD): canonical DeltaLogEntry codec — F# reference oracle (format-parameterized, ordinal-deterministic)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T06:55:20Z",
+  "head_ref": "otto/log-entry-codec-fsharp-reference"
+}

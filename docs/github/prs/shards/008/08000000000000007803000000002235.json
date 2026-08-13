@@ -1,0 +1,12 @@
+{
+  "pr_number": 8757,
+  "archive_path": "docs/history/pr-reviews/PR-8757-feat-csharp-typeprovider-roslyn-iincrementalgenerator-approach-a-of-the-generati.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T17:35:11.434Z",
+  "schema_version": "v1",
+  "commit_sha": "a9a20bd1de641c71492dd0e7db4862c29f5465eb",
+  "title": "feat(csharp): TypeProvider — Roslyn IIncrementalGenerator (approach A of the generative type-provider pair)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T17:34:48Z",
+  "head_ref": "otto/csharp-roslyn-source-generator-A"
+}

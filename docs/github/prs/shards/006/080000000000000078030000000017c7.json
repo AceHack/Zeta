@@ -1,0 +1,12 @@
+{
+  "pr_number": 6087,
+  "archive_path": "docs/history/pr-reviews/PR-6087-fix-tsc-exclude-self-typechecking-agentic-organization-from-factory-top-level-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T06:19:43.180Z",
+  "schema_version": "v1",
+  "commit_sha": "99f820a2b5acfdbc03461708037a1d9bd57229c8",
+  "title": "fix(tsc): exclude self-typechecking agentic-organization/ from factory top-level tsc scope",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T06:19:24Z",
+  "head_ref": "otto-cli/exclude-agentic-org-from-factory-tsc-2026-05-30"
+}

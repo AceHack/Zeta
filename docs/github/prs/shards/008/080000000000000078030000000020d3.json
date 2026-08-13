@@ -1,0 +1,12 @@
+{
+  "pr_number": 8403,
+  "archive_path": "docs/history/pr-reviews/PR-8403-docs-society-9h-heartbeat-layer-aliveness-proven-clockless-multi-repo-join-relat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:58:58.227Z",
+  "schema_version": "v1",
+  "commit_sha": "3b33561f212c08316b6193642e76d96a96b3ed6e",
+  "title": "docs(society): §9h — heartbeat layer: aliveness (proven), clockless multi-repo join → relativistic + braided → Clifford; cartel-detection",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:58:28Z",
+  "head_ref": "docs/9h-heartbeat-aliveness-clockless-relativistic-braided-cartel"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5649,
+  "archive_path": "docs/history/pr-reviews/PR-5649-feat-audit-cross-file-consistency-check-for-cred-blob-producer-consumer-paths-ca.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T21:28:29.981Z",
+  "schema_version": "v1",
+  "commit_sha": "3a81db5e11c4a4cf02286c15735bcd52b3a0ffe2",
+  "title": "feat(audit): cross-file consistency check for cred-blob producer/consumer paths (catches PR #5640/#5644 bug class at CI time)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T21:28:07Z",
+  "head_ref": "feat/audit-cred-path-cross-file-consistency-2026-05-27"
+}

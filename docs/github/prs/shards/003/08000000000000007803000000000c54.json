@@ -1,0 +1,12 @@
+{
+  "pr_number": 3156,
+  "archive_path": "docs/history/pr-reviews/PR-3156-chore-b-0506-file-stale-worktree-prune-cadence-row-1817z-tick-shard.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T18:23:56.000Z",
+  "schema_version": "v1",
+  "commit_sha": "9324c1403f0e59a8ed382bd3a06eb43f947d9468",
+  "title": "chore(b-0506): file stale-worktree prune cadence row + 1817Z tick shard",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:23:27Z",
+  "head_ref": "chore/b-0506-stale-worktree-prune-cadence-2026-05-14"
+}

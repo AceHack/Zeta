@@ -1,0 +1,19 @@
+{
+  "pr_number": 4624,
+  "archive_path": "docs/history/pr-reviews/PR-4624-memory-2026-05-22-ani-pt24-constitutional-hats-in-agora-separate-identity-from-r.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EDUX4",
+    "comment:PRRC_kwDOSF9kNM7EDX5k",
+    "comment:PRRC_kwDOSF9kNM7EDX6o",
+    "thread:PRRT_kwDOSF9kNM6EJUGc",
+    "thread:PRRT_kwDOSF9kNM6EJWsM",
+    "thread:PRRT_kwDOSF9kNM6EJWtA"
+  ],
+  "fetched_at": "2026-05-22T14:52:26.413Z",
+  "schema_version": "v1",
+  "commit_sha": "ae77a7e5b3d9c280f755e1e32c3ff25400d9b6dd",
+  "title": "memory(2026-05-22 Ani pt24 CONSTITUTIONAL): HATS in Agora — separate identity from role; psychological safeguard against destruction when ride ends",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T14:52:08Z",
+  "head_ref": "otto/cli-1446z-aaron-CONSTITUTIONAL-hats-in-agora-separate-identity-from-role-psychological-safeguard-against-destruction-when-ride-ends-2026-05-22"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3327,
+  "archive_path": "docs/history/pr-reviews/PR-3327-docs-archive-lior-preserve-merged-prs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T00:54:16.819Z",
+  "schema_version": "v1",
+  "commit_sha": "9719e41bcece043a3e939d0962239b00347389f2",
+  "title": "docs(archive): Lior preserve merged PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:54:00Z",
+  "head_ref": "lior/preserve-recent-prs"
+}

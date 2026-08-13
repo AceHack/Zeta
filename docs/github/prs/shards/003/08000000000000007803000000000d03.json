@@ -1,0 +1,12 @@
+{
+  "pr_number": 3331,
+  "archive_path": "docs/history/pr-reviews/PR-3331-docs-archive-lior-preservation-of-pr-3325.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T00:57:37.550Z",
+  "schema_version": "v1",
+  "commit_sha": "45940d58bc8003537eff2c7d64c42cddcd97c3e6",
+  "title": "docs(archive): Lior preservation of PR 3325",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:57:19Z",
+  "head_ref": "lior/archive-3325-v3"
+}

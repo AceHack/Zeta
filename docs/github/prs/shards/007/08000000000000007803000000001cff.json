@@ -1,0 +1,12 @@
+{
+  "pr_number": 7423,
+  "archive_path": "docs/history/pr-reviews/PR-7423-fix-rooms-is-max-s-not-the-shadow-s-correct-attribution.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:48:31.065Z",
+  "schema_version": "v1",
+  "commit_sha": "45db048ff53d769ef9fe97c09d95ee7ca7a32075",
+  "title": "fix: rooms/ is Max's, not the shadow's — correct attribution",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:48:07Z",
+  "head_ref": "otto/fix-rooms-is-max-not-shadow"
+}

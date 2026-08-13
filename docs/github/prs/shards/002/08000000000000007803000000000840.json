@@ -1,0 +1,12 @@
+{
+  "pr_number": 2112,
+  "archive_path": "docs/history/pr-reviews/PR-2112-docs-b-0060-decompose-into-7-dependency-ordered-child-rows.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T18:03:54.014Z",
+  "schema_version": "v1",
+  "commit_sha": "ee0fdf32c6baa381a73973aeb84ce22798cdf2df",
+  "title": "docs(B-0060): decompose into 7 dependency-ordered child rows",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T18:03:33Z",
+  "head_ref": "decompose/B-0060-child-rows"
+}

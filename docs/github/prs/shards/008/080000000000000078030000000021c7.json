@@ -1,0 +1,12 @@
+{
+  "pr_number": 8647,
+  "archive_path": "docs/history/pr-reviews/PR-8647-memory-uncertainty-orthogonal-axis-basis-cayley-dickson-clifford-geospatial-meme.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T23:39:04.615Z",
+  "schema_version": "v1",
+  "commit_sha": "e9b119b3462f49447b3f1622acd33f2b258e72d3",
+  "title": "memory(uncertainty): orthogonal-axis basis → Cayley-Dickson + Clifford (geospatial) + memetics; all cohomoiconic",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T23:38:36Z",
+  "head_ref": "otto/uncertainty-orthogonal-basis-cayley-clifford-memetics-cohomoiconic"
+}

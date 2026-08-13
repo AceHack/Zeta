@@ -1,0 +1,12 @@
+{
+  "pr_number": 4028,
+  "archive_path": "docs/history/pr-reviews/PR-4028-fix-3823-correct-partial-multi-slice-tally.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T07:22:29.029Z",
+  "schema_version": "v1",
+  "commit_sha": "80d5fce83f6509aa6c240a9898e5133e874f8dad",
+  "title": "fix(3823): correct partial/multi-slice tally",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T07:22:11Z",
+  "head_ref": "codex/pr3823-rebased-vera-20260516"
+}

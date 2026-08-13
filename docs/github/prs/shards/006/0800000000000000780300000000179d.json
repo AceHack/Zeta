@@ -1,0 +1,12 @@
+{
+  "pr_number": 6045,
+  "archive_path": "docs/history/pr-reviews/PR-6045-feat-b-0355-4-codex-md-cross-harness-bootstrap-file-codex-vera.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T20:49:24.126Z",
+  "schema_version": "v1",
+  "commit_sha": "9eaf6e75eba69cec57d27a98c03fd86d8f8c2a5e",
+  "title": "feat(B-0355.4): CODEX.md cross-harness bootstrap file (Codex/Vera)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T20:49:05Z",
+  "head_ref": "otto-cli/b0355-4-codex-md-harness-bootstrap-2026-05-29"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9032,
+  "archive_path": "docs/history/pr-reviews/PR-9032-docs-memory-pre-ai-lineage-shelf-under-aaron-s-persona-2012-2015-ferries-index.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-30T19:54:51.534Z",
+  "schema_version": "v1",
+  "commit_sha": "de33377b681d451a6a4d029b6de3b74c8f3e6186",
+  "title": "docs(memory): Pre-AI Lineage shelf under Aaron's persona (2012/2015 ferries index)",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T19:54:24Z",
+  "head_ref": "docs-shelf-pre-ai-lineage-index"
+}

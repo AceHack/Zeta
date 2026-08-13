@@ -1,0 +1,12 @@
+{
+  "pr_number": 8526,
+  "archive_path": "docs/history/pr-reviews/PR-8526-memory-feedback-tesla-ac-vs-edison-dc-beacon-vs-mirror-cross-frame-transmission-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T12:09:28.868Z",
+  "schema_version": "v1",
+  "commit_sha": "5c7fa363c176c2b7c92b76c8fbc0b6cc3fc28334",
+  "title": "memory(feedback): Tesla/AC vs Edison/DC = Beacon vs Mirror — cross-frame transmission via the TRANSFORMER (AI-as-Transformer flagged Mirror-resonance)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T12:08:56Z",
+  "head_ref": "otto/tesla-ac-edison-dc-beacon-mirror-transformer"
+}

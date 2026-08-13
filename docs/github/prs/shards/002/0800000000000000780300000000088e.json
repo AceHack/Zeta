@@ -1,0 +1,22 @@
+{
+  "pr_number": 2190,
+  "archive_path": "docs/history/pr-reviews/PR-2190-backlog-b-0356-capture-model-token-cost-on-every-pr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_e221",
+    "comment:PRRC_kwDOSF9kNM6_e241",
+    "comment:PRRC_kwDOSF9kNM6_e2BI",
+    "comment:PRRC_kwDOSF9kNM6_e2YE",
+    "comment:PRRC_kwDOSF9kNM6_e2eS",
+    "comment:PRRC_kwDOSF9kNM6_e2eX",
+    "thread:PRRT_kwDOSF9kNM6Ayn0a",
+    "thread:PRRT_kwDOSF9kNM6AyoML",
+    "thread:PRRT_kwDOSF9kNM6AyoMP"
+  ],
+  "fetched_at": "2026-05-09T05:33:51.429Z",
+  "schema_version": "v1",
+  "commit_sha": "5dd4e7fa7269a6ceeaa955ab5547642d7a050018",
+  "title": "backlog(B-0356): capture model + token cost on every PR",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T05:33:37Z",
+  "head_ref": "feat/b0356-backlog-cost-on-prs"
+}

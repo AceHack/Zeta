@@ -1,0 +1,12 @@
+{
+  "pr_number": 3013,
+  "archive_path": "docs/history/pr-reviews/PR-3013-fix-lint-ts2345-nouncheckedindexedaccess-in-missed-substrate-detector-ts-parsear.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T18:13:37.324Z",
+  "schema_version": "v1",
+  "commit_sha": "30ac1549d8aa467307ccdebaa0b438a7e6275949",
+  "title": "fix(lint): TS2345 noUncheckedIndexedAccess in missed-substrate-detector.ts parseArgs",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T18:12:55Z",
+  "head_ref": "fix-ts2345-missed-substrate-detector-2026-05-13"
+}

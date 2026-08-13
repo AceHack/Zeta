@@ -1,0 +1,12 @@
+{
+  "pr_number": 1950,
+  "archive_path": "docs/history/pr-reviews/PR-1950-backlog-b-0256-model-recursion-exploit-class-metasploit-ida-pro-mapping.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T21:54:45.945Z",
+  "schema_version": "v1",
+  "commit_sha": "4b7367300987049a4004f059b1a832b355841fe6",
+  "title": "backlog(B-0256): model recursion exploit class — Metasploit + IDA Pro mapping",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T21:54:30Z",
+  "head_ref": "backlog/b0256-model-exploit-class-v2"
+}

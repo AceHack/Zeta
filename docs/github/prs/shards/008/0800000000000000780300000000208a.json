@@ -1,0 +1,12 @@
+{
+  "pr_number": 8330,
+  "archive_path": "docs/history/pr-reviews/PR-8330-docs-research-name-aaron-s-forgehost-as-the-sovereign-host-port-confirms-my-gith.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T20:15:26.634Z",
+  "schema_version": "v1",
+  "commit_sha": "13d0b3c0b4fb2d34f565eaa8aa7c79265d02be6a",
+  "title": "docs(research): name Aaron's ForgeHost as the sovereign host port — confirms 'my github impl made it in'",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T20:15:02Z",
+  "head_ref": "docs/fix-name-forge-host-as-aarons-port"
+}

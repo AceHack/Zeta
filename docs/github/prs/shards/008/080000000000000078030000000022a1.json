@@ -1,0 +1,12 @@
+{
+  "pr_number": 8865,
+  "archive_path": "docs/history/pr-reviews/PR-8865-genesis-game-vault-per-platform-rooms-fix-otto-343-read-log-session-id-not-ppid.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T19:26:15.593Z",
+  "schema_version": "v1",
+  "commit_sha": "57528a25557a0d678760db9b2b4212e13afeacd6",
+  "title": "Genesis Game vault → per-platform rooms; fix Otto-343 read-log (session_id, not ppid)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T19:25:45Z",
+  "head_ref": "claude/game-vault-rooms-iom6cp"
+}

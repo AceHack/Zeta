@@ -1,0 +1,12 @@
+{
+  "pr_number": 3570,
+  "archive_path": "docs/history/pr-reviews/PR-3570-fix-otto-279-role-refs-not-persona-names-in-claude-rules-claude-skills-3-hits.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T20:02:59.480Z",
+  "schema_version": "v1",
+  "commit_sha": "c056f661af112d69bcd51a4817a89a5549c8b560",
+  "title": "fix(otto-279): role-refs not persona-names in .claude/rules + .claude/skills (3 hits)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T20:02:42Z",
+  "head_ref": "fix/otto-279-role-refs-rules-skills-otto-cli-2026-05-15"
+}

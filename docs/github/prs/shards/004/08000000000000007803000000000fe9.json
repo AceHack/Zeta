@@ -1,0 +1,12 @@
+{
+  "pr_number": 4073,
+  "archive_path": "docs/history/pr-reviews/PR-4073-backlog-b-0156-close-as-substrate-drift-all-6-acceptance-criteria-met.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T13:04:22.981Z",
+  "schema_version": "v1",
+  "commit_sha": "b4cb042dc6fbac82898b2b402226086aada779e3",
+  "title": "backlog(B-0156): close as substrate-drift — all 6 acceptance criteria met",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T13:04:07Z",
+  "head_ref": "backlog/b0156-substrate-drift-close-2026-05-17"
+}

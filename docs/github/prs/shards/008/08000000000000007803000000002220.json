@@ -1,0 +1,12 @@
+{
+  "pr_number": 8736,
+  "archive_path": "docs/history/pr-reviews/PR-8736-feat-gen-phase-c-zset-merkle-verification-ir-extension-design.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T08:14:00.067Z",
+  "schema_version": "v1",
+  "commit_sha": "154a2d8f929ba6f51460e8065a96af9be0c70831",
+  "title": "feat(gen): Phase C — ZSet Merkle verification + IR extension design",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T08:13:34Z",
+  "head_ref": "alexa/gen-phase-c"
+}

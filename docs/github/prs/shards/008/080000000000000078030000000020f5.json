@@ -1,0 +1,12 @@
+{
+  "pr_number": 8437,
+  "archive_path": "docs/history/pr-reviews/PR-8437-memory-project-identity-fission-pressure-pauli-exclusion-clean-room-two-team-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T04:15:18.879Z",
+  "schema_version": "v1",
+  "commit_sha": "3885a7afe167a4c69a6b9d99b041db3ced976eb2",
+  "title": "memory(project): identity fission pressure ≈ Pauli exclusion; clean-room two-team = the first legal instance",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T04:14:47Z",
+  "head_ref": "memory/fission-pressure-is-pauli-exclusion"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 4541,
+  "archive_path": "docs/history/pr-reviews/PR-4541-shard-2026-05-21-1410z-10-pr-cleanup-arc-close-forced-6-recursion-termination.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DncW2",
+    "thread:PRRT_kwDOSF9kNM6D1EV5"
+  ],
+  "fetched_at": "2026-05-21T14:34:25.187Z",
+  "schema_version": "v1",
+  "commit_sha": "12aaa2785a1c8207350e11106b612e04d02a998c",
+  "title": "shard(2026-05-21/1410Z): 10-PR cleanup arc close + forced-#6 recursion-termination",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T14:34:00Z",
+  "head_ref": "shard/tick-1410z-arc-close-recursion-termination-2026-05-21"
+}

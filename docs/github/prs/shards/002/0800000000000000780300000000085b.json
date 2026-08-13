@@ -1,0 +1,22 @@
+{
+  "pr_number": 2139,
+  "archive_path": "docs/history/pr-reviews/PR-2139-skill-b-0169-add-decision-archaeology-capability-skill.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_bQ5R",
+    "comment:PRRC_kwDOSF9kNM6_bQ5T",
+    "comment:PRRC_kwDOSF9kNM6_bRgH",
+    "comment:PRRC_kwDOSF9kNM6_bS25",
+    "comment:PRRC_kwDOSF9kNM6_bS4g",
+    "comment:PRRC_kwDOSF9kNM6_bS6M",
+    "thread:PRRT_kwDOSF9kNM6Av-Gr",
+    "thread:PRRT_kwDOSF9kNM6Av-Gt",
+    "thread:PRRT_kwDOSF9kNM6Av-ix"
+  ],
+  "fetched_at": "2026-05-08T22:08:30.190Z",
+  "schema_version": "v1",
+  "commit_sha": "e0cf8c2ea3d91604d688ff54b85051d68100dc2c",
+  "title": "skill(B-0169): add decision-archaeology capability skill",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T22:08:13Z",
+  "head_ref": "claim/b0169-decision-archaeology-skill-2026-05-08"
+}

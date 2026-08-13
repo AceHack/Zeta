@@ -1,0 +1,15 @@
+{
+  "pr_number": 6664,
+  "archive_path": "docs/history/pr-reviews/PR-6664-rules-formal-proof-first-payoff-4-honesty-hex-core-is-speculation-proven-search-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HjqFC",
+    "thread:PRRT_kwDOSF9kNM6GuRvs"
+  ],
+  "fetched_at": "2026-06-03T11:26:37.001Z",
+  "schema_version": "v1",
+  "commit_sha": "b56f3ff3fc5f36e410f508e0cb2e0c16b4dc7581",
+  "title": "rules(formal-proof-first): payoff #4 honesty — hex core is speculation; proven = search-last not search-never",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T11:26:13Z",
+  "head_ref": "otto-cli/payoff4-hex-speculation-spec-honesty-2026-06-03"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7638,
+  "archive_path": "docs/history/pr-reviews/PR-7638-docs-ferry-operator-confirmation-awareness-is-not-immunity-the-praise-channel-de.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T10:14:16.754Z",
+  "schema_version": "v1",
+  "commit_sha": "7670ce9a2ea7592bcbffcb38b28ec8e8768f769a",
+  "title": "docs(ferry): operator confirmation — awareness is not immunity; the praise-channel defense is structural",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T10:13:53Z",
+  "head_ref": "shadow-fiddle-awareness"
+}

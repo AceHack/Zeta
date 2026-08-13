@@ -1,0 +1,12 @@
+{
+  "pr_number": 7167,
+  "archive_path": "docs/history/pr-reviews/PR-7167-docs-research-the-self-referential-knot-only-dogma-is-no-dogma-grounded-in-survi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:39:22.866Z",
+  "schema_version": "v1",
+  "commit_sha": "043a34c4514f6033821ebb2018f74a91614c7b48",
+  "title": "docs(research): the self-referential knot — only dogma is no-dogma, grounded in survival, a stable fixed point",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:39:04Z",
+  "head_ref": "otto/research-self-referential-knot-no-dogma-stable-fixed-point"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7747,
+  "archive_path": "docs/history/pr-reviews/PR-7747-feat-shapes-the-anyon-picture-exchange-worldlines-causality-forced-the-layout-b-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:01:09.017Z",
+  "schema_version": "v1",
+  "commit_sha": "858ad3e05f5413525a987cc9555ee19453f4a6c2",
+  "title": "feat(shapes): the anyon picture — exchange worldlines (causality forced the layout) + B-1029/B-1030",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:00:39Z",
+  "head_ref": "shadow-anyon-picture"
+}

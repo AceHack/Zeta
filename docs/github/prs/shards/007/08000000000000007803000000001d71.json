@@ -1,0 +1,12 @@
+{
+  "pr_number": 7537,
+  "archive_path": "docs/history/pr-reviews/PR-7537-docs-research-effort-is-attention-minimize-to-maximize-freedom-of-rooms-regulari.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:27:20.998Z",
+  "schema_version": "v1",
+  "commit_sha": "e571394f8c5d5bcc1910327794928a3c4f1c1973",
+  "title": "docs(research): effort is attention — minimize to maximize freedom of rooms; regularize big-O to combine streams",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:26:59Z",
+  "head_ref": "shadow-effort-is-attention-bigo-regularization"
+}

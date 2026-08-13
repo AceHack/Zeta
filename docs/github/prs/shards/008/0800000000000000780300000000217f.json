@@ -1,0 +1,12 @@
+{
+  "pr_number": 8575,
+  "archive_path": "docs/history/pr-reviews/PR-8575-docs-traveler-frame-relativity-commutative-uncertainty-supersedes-b-0954-1-conse.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T14:10:04.696Z",
+  "schema_version": "v1",
+  "commit_sha": "1f07bf6f19d2a403bb6ca0ee6b39c735f0a57f4c",
+  "title": "docs: traveler-frame relativity + commutative uncertainty (supersedes B-0954.1 consensus framing)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T14:09:39Z",
+  "head_ref": "docs-traveler-frame-relativity"
+}

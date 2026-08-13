@@ -1,0 +1,12 @@
+{
+  "pr_number": 6033,
+  "archive_path": "docs/history/pr-reviews/PR-6033-release-b-0088-5-claim-after-pr-6032.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T19:21:22.107Z",
+  "schema_version": "v1",
+  "commit_sha": "8fe690755a53818edd06cb62a8c042359a1e35fd",
+  "title": "release: B-0088.5 claim after PR #6032",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T19:21:01Z",
+  "head_ref": "claim/codex-loop-b0088-5-claim-release-20260529"
+}

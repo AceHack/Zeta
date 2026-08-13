@@ -1,0 +1,12 @@
+{
+  "pr_number": 3556,
+  "archive_path": "docs/history/pr-reviews/PR-3556-fix-rules-otto-channels-reconcile-reliably-claim-reformat-split-fetch-head-comma.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T18:58:28.738Z",
+  "schema_version": "v1",
+  "commit_sha": "12c583e770b4ba71fcddf1d2ef800e9709f5b757",
+  "title": "fix(rules): otto-channels — reconcile \"reliably\" claim + reformat split FETCH_HEAD command",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:58:09Z",
+  "head_ref": "fix/rule-otto-channels-consistency-otto-cli-2026-05-15"
+}

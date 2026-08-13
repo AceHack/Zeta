@@ -1,0 +1,17 @@
+{
+  "pr_number": 2425,
+  "archive_path": "docs/history/pr-reviews/PR-2425-feat-b-0057-1-smallest-safe-slice-pure-ts-occult-resonance-candidate-schema-herm.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_l-2f",
+    "comment:PRRC_kwDOSF9kNM6_l-2h",
+    "thread:PRRT_kwDOSF9kNM6A4Lx0",
+    "thread:PRRT_kwDOSF9kNM6A4Lx2"
+  ],
+  "fetched_at": "2026-05-10T06:06:04.342Z",
+  "schema_version": "v1",
+  "commit_sha": "09618b0c5e349de839a68179bb26fecbeeee0724",
+  "title": "feat(B-0057.1): smallest safe slice — pure-TS occult-resonance-candidate schema + Hermetic seed + validator stub (re-decomposed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T06:05:50Z",
+  "head_ref": "claim/B-0057-occult-smallest-slice-riven-2026-05-10"
+}

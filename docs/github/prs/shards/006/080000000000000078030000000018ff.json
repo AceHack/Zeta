@@ -1,0 +1,12 @@
+{
+  "pr_number": 6399,
+  "archive_path": "docs/history/pr-reviews/PR-6399-docs-registry-bcl-interface-correction-microsoft-extensions-objectpool-system-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T10:51:00.288Z",
+  "schema_version": "v1",
+  "commit_sha": "0ad7fc8dfd9e79596bd3dec0e4f47c3984241faa",
+  "title": "docs(registry): BCL-interface correction — Microsoft.Extensions.ObjectPool + System.Threading.Lock cover most of the pool/lock primitives",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T10:50:38Z",
+  "head_ref": "otto-cli/registry-bcl-pool-lock-corrections-2026-06-01"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 6183,
+  "archive_path": "docs/history/pr-reviews/PR-6183-feat-b-0944-slice-5-pt2-f-tri-boolean-float-biased-exponent-oracle-2-parity.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GdVXR",
+    "comment:PRRC_kwDOSF9kNM7GdVXT",
+    "thread:PRRT_kwDOSF9kNM6F6MVu",
+    "thread:PRRT_kwDOSF9kNM6F6MVv"
+  ],
+  "fetched_at": "2026-05-31T02:50:18.424Z",
+  "schema_version": "v1",
+  "commit_sha": "f73f7d39b9f77cc462f36ff92377d85f96c5475a",
+  "title": "feat(B-0944 slice 5 pt2): F# tri-boolean float (biased-exponent) — oracle #2 parity",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T02:50:00Z",
+  "head_ref": "otto-cli/b0944-slice5pt2-fsharp-biased-exp-float-2026-05-30"
+}

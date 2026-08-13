@@ -1,0 +1,12 @@
+{
+  "pr_number": 8090,
+  "archive_path": "docs/history/pr-reviews/PR-8090-fix-gate-drop-kiro-sh-from-bash-retirement-allowlist-converted-to-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T23:07:52.843Z",
+  "schema_version": "v1",
+  "commit_sha": "98e90c37b9d530830b1d80693a24c332d3e32870",
+  "title": "fix(gate): drop kiro .sh from bash-retirement allowlist (converted to .ts)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T23:07:32Z",
+  "head_ref": "shadow/bash-retirement-drop-kiro-sh"
+}

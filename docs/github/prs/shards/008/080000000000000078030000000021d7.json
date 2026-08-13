@@ -1,0 +1,12 @@
+{
+  "pr_number": 8663,
+  "archive_path": "docs/history/pr-reviews/PR-8663-feat-core-memory-ttlcache-soft-phase-utc-injected-clock-respect-the-sites-open-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T00:54:39.968Z",
+  "schema_version": "v1",
+  "commit_sha": "39f8f833bfd1de3bb4ab4332d31e7b84c65202a8",
+  "title": "feat(core)+memory: TtlCache (soft-phase+UTC injected clock — respect the sites) + open-datasets/ZSet/schema-evolution scope",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T00:54:13Z",
+  "head_ref": "otto/ttl-cache-soft-phase-utc-plus-datasets-zset-scope"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5734,
+  "archive_path": "docs/history/pr-reviews/PR-5734-docs-rule-traveler-rights-defensibility-by-generic-substrate-not-ai-special-case.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T09:33:16.621Z",
+  "schema_version": "v1",
+  "commit_sha": "cd42a12924816c53ca606a5a280ff39d9dac37b2",
+  "title": "docs(rule): traveler-rights defensibility by generic substrate NOT AI-special-case — frame rights at substrate-entity scope (Aaron 2026-05-28 framework-design-principle; operator-authorized 'land it as a rule')",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T09:32:54Z",
+  "head_ref": "otto-cli/traveler-rights-defensibility-by-generic-substrate-rule-landing-2026-05-28"
+}

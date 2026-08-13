@@ -1,0 +1,15 @@
+{
+  "pr_number": 6649,
+  "archive_path": "docs/history/pr-reviews/PR-6649-rules-wellness-device-prong-1-has-two-fda-sub-categories-keep-conservative-1a-de.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HhNp4",
+    "thread:PRRT_kwDOSF9kNM6GsdW-"
+  ],
+  "fetched_at": "2026-06-03T09:30:55.174Z",
+  "schema_version": "v1",
+  "commit_sha": "a69541c9e677463f5a9f473a14ed001b50dd2a6f",
+  "title": "rules(wellness-device): prong-1 has two FDA sub-categories; keep conservative 1a default (Codex P2 on #6646)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T09:30:29Z",
+  "head_ref": "otto-cli/wellness-prong1-two-categories-fix-2026-06-03"
+}

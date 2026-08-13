@@ -1,0 +1,12 @@
+{
+  "pr_number": 6820,
+  "archive_path": "docs/history/pr-reviews/PR-6820-feat-contenthasher-hexagonal-content-hashing-port-own-the-interface-generic-over.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:59:20.491Z",
+  "schema_version": "v1",
+  "commit_sha": "5d7425eeded28e4915efa6adca666539e0cd6d40",
+  "title": "feat(ContentHasher): hexagonal content-hashing port — own the interface, generic over algorithms",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:59:02Z",
+  "head_ref": "feat/content-hasher-hexagonal-port"
+}

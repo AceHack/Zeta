@@ -1,0 +1,12 @@
+{
+  "pr_number": 8430,
+  "archive_path": "docs/history/pr-reviews/PR-8430-memory-project-the-ir-form-how-aaron-re-s-games-cheat-engine-character-loops-no-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T03:32:13.895Z",
+  "schema_version": "v1",
+  "commit_sha": "6139b921eefca5c6e5112782deb57473571a6dfd",
+  "title": "memory(project): the IR form = how Aaron RE's games (Cheat Engine → character loops, no control flow)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T03:31:51Z",
+  "head_ref": "memory/cheat-engine-re-into-character-loops-is-the-ir-form"
+}

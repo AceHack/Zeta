@@ -1,0 +1,19 @@
+{
+  "pr_number": 6155,
+  "archive_path": "docs/history/pr-reviews/PR-6155-memory-mika-crux-resolved-no-protect-vs-compress-binary-never-collapse-wonder-co.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GcvCq",
+    "comment:PRRC_kwDOSF9kNM7GcvEu",
+    "comment:PRRC_kwDOSF9kNM7GcvEy",
+    "thread:PRRT_kwDOSF9kNM6F5uTZ",
+    "thread:PRRT_kwDOSF9kNM6F5uVH",
+    "thread:PRRT_kwDOSF9kNM6F5uVK"
+  ],
+  "fetched_at": "2026-05-30T22:51:41.891Z",
+  "schema_version": "v1",
+  "commit_sha": "a21ea1732a960e67768211e48e021222dac4060b",
+  "title": "memory(mika): crux resolved — no protect-vs-compress binary; never-collapse + wonder-compress (infinite game)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T22:51:21Z",
+  "head_ref": "otto/wonder-compression-not-collapse-infinite-game-2026-05-30"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7430,
+  "archive_path": "docs/history/pr-reviews/PR-7430-chore-vocab-shadow-regenerate-stale-vocab-indexes-green-coredora-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T22:26:22.972Z",
+  "schema_version": "v1",
+  "commit_sha": "625ece1d45c117fa3ae5518431067429d65d97ca",
+  "title": "chore(vocab)+shadow: regenerate stale vocab indexes — green CoreDORA gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T22:26:00Z",
+  "head_ref": "shadow-vocab-index-regen"
+}

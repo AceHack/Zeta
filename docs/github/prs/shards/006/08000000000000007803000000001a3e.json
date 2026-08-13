@@ -1,0 +1,12 @@
+{
+  "pr_number": 6718,
+  "archive_path": "docs/history/pr-reviews/PR-6718-feat-binding-proof-f-binding-layer-bp-16-legs-b-c-for-right-to-refuse-binding.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T05:12:13.590Z",
+  "schema_version": "v1",
+  "commit_sha": "8ee81f65b21f0e0f2f5e39464e8fabf08b638840",
+  "title": "feat(Binding) + proof: F# binding layer + BP-16 legs B/C for right-to-refuse-binding",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T05:11:51Z",
+  "head_ref": "otto/binding-layer-legs-bc"
+}

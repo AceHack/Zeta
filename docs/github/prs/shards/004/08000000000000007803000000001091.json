@@ -1,0 +1,12 @@
+{
+  "pr_number": 4241,
+  "archive_path": "docs/history/pr-reviews/PR-4241-chore-rules-composes-with-reciprocity-for-god-tier-claims-rule-3-edits.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:08:26.922Z",
+  "schema_version": "v1",
+  "commit_sha": "4c277a158d0f772841811c4f711d8d382cff8b42",
+  "title": "chore(rules): composes_with reciprocity for god-tier-claims rule — 3 edits",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:08:11Z",
+  "head_ref": "chore/composes-with-reciprocity-god-tier-claims-rule-3-edits-2026-05-18"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7990,
+  "archive_path": "docs/history/pr-reviews/PR-7990-feat-hygiene-docs-research-the-spectrum-measured-parnas-holds-the-founding-cohor.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:58:55.910Z",
+  "schema_version": "v1",
+  "commit_sha": "bf09c9f6f71aa50e0e82d1683d60f103198b2d9e",
+  "title": "feat(hygiene)+docs(research): the spectrum measured — Parnas HOLDS; the founding cohort is gapped (REPORT #4 empirical leg)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:58:28Z",
+  "head_ref": "shadow/change-rate-spectrum-parnas"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6078,
+  "archive_path": "docs/history/pr-reviews/PR-6078-ci-accelerator-go-live-the-move-next-self-triggering-workflow-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T04:38:25.602Z",
+  "schema_version": "v1",
+  "commit_sha": "86bf283537d9c66d59bdb68ee1471c3baaf551cd",
+  "title": "ci(accelerator): go-live the move-next self-triggering workflow on main",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T04:38:05Z",
+  "head_ref": "otto-cli/accelerator-move-next-workflow-go-live-2026-05-30"
+}

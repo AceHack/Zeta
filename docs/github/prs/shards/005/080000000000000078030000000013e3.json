@@ -1,0 +1,12 @@
+{
+  "pr_number": 5091,
+  "archive_path": "docs/history/pr-reviews/PR-5091-feat-b-0789-iter-4-3-zflash-stale-checkout-detection-auto-download-fresh-iso-fro.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T04:54:48.422Z",
+  "schema_version": "v1",
+  "commit_sha": "7fd5236576646ffebab8d3607e3f5d0d0eb6d85d",
+  "title": "feat(B-0789 iter-4.3): zflash stale-checkout detection + auto-download fresh ISO from CI",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T04:54:30Z",
+  "head_ref": "otto-cli/iter43-stale-checkout-and-iso-auto-download-2026-05-26"
+}

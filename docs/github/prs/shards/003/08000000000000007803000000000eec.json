@@ -1,0 +1,12 @@
+{
+  "pr_number": 3820,
+  "archive_path": "docs/history/pr-reviews/PR-3820-chore-b-0272-close-row-tosec-canonicalizer-shipped-2026-05-09-10th-pure-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T08:02:54.101Z",
+  "schema_version": "v1",
+  "commit_sha": "6820af0f7fb7cd053eb0ca6d7f85b1af9543c14a",
+  "title": "chore(b-0272): close row — TOSEC canonicalizer shipped 2026-05-09 (10th pure-drift)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T08:02:37Z",
+  "head_ref": "chore/b0272-close-row-otto-cli-2026-05-16"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8404,
+  "archive_path": "docs/history/pr-reviews/PR-8404-docs-society-9h-prior-immune-system-formal-analysis-early-math-to-reconcile-with.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T02:09:01.931Z",
+  "schema_version": "v1",
+  "commit_sha": "57dd13786be3684e1c938777ae3e787912be5aa2",
+  "title": "docs(society): §9h — prior immune-system formal analysis (early math) to reconcile with identity proofs",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T02:08:32Z",
+  "head_ref": "docs/9h-immune-system-prior-analysis-reconcile"
+}

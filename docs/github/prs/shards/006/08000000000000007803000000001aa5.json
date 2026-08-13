@@ -1,0 +1,12 @@
+{
+  "pr_number": 6821,
+  "archive_path": "docs/history/pr-reviews/PR-6821-feat-core-blake3-blake3-adapter-for-icontenthasher-isolated-project-hexagonal.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T13:06:23.233Z",
+  "schema_version": "v1",
+  "commit_sha": "124cd22deebe0cd37d431071382047143255e2ef",
+  "title": "feat(Core.Blake3): BLAKE3 adapter for IContentHasher — isolated project (hexagonal)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T13:06:02Z",
+  "head_ref": "feat/blake3-hasher-adapter-isolated-project"
+}

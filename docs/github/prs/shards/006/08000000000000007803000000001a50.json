@@ -1,0 +1,12 @@
+{
+  "pr_number": 6736,
+  "archive_path": "docs/history/pr-reviews/PR-6736-fix-ci-docs-green-markdownlint-workitem-md032-capture-file-type-plugin-model.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:13:13.945Z",
+  "schema_version": "v1",
+  "commit_sha": "a1805f248ce3684fa0955094cc163bf23cc6a152",
+  "title": "fix(ci)+docs: green markdownlint (workitem MD032) + capture file-type plugin model",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:12:54Z",
+  "head_ref": "otto/fix-markdownlint-plus-plugin-model"
+}

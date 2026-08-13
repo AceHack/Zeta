@@ -1,0 +1,12 @@
+{
+  "pr_number": 5759,
+  "archive_path": "docs/history/pr-reviews/PR-5759-docs-b-0808-land-zeta-safety-substrate-inventory-for-classifier-floor-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:56:00.459Z",
+  "schema_version": "v1",
+  "commit_sha": "ff575b7004508cdf3172f179f93e974403a246b0",
+  "title": "docs(B-0808): land Zeta safety substrate inventory for classifier-floor gate",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:55:40Z",
+  "head_ref": "otto-cli/b0808-safety-substrate-inventory-2026-05-28"
+}

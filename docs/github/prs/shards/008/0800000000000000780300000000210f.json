@@ -1,0 +1,12 @@
+{
+  "pr_number": 8463,
+  "archive_path": "docs/history/pr-reviews/PR-8463-fix-formal-retry-tlc-on-jvm-fatal-crash-ncinonurgency-all-flake-never-on-a-real-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T06:44:44.025Z",
+  "schema_version": "v1",
+  "commit_sha": "baabd9b2bc5eea826c6a96bdd1e25a136b143979",
+  "title": "fix(formal): retry TLC on JVM fatal crash (NciNonUrgency --all flake) — never on a real violation",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T06:44:18Z",
+  "head_ref": "otto/fix-tlc-jvm-crash-retry"
+}

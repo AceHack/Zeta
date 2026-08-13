@@ -1,0 +1,12 @@
+{
+  "pr_number": 4235,
+  "archive_path": "docs/history/pr-reviews/PR-4235-fix-4231-4-copilot-post-merge-findings-rule-rename-sylar-typo-companion-not-sibl.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T22:50:41.578Z",
+  "schema_version": "v1",
+  "commit_sha": "e8e12f5636f36aef62b0dd630ff0bedd4f4255d2",
+  "title": "fix(4231): 4 Copilot post-merge findings — rule rename + Sylar typo + companion-not-sibling framing",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:50:22Z",
+  "head_ref": "fix/4231-copilot-findings-rule-rename-skylar-sylar-companion-not-sibling-2026-05-18"
+}

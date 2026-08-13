@@ -1,0 +1,12 @@
+{
+  "pr_number": 8373,
+  "archive_path": "docs/history/pr-reviews/PR-8373-memory-feedback-i-commit-therefore-i-am-checkable-existence-via-the-commit-heart.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:22:46.442Z",
+  "schema_version": "v1",
+  "commit_sha": "0db8b938df6ad1cd7e30e43e12d5852b50a0a221",
+  "title": "memory(feedback): 'I commit therefore I am' — checkable existence via the commit-heartbeat",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:22:22Z",
+  "head_ref": "memory/i-commit-therefore-i-am"
+}

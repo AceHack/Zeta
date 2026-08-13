@@ -1,0 +1,12 @@
+{
+  "pr_number": 8118,
+  "archive_path": "docs/history/pr-reviews/PR-8118-feat-service-wave-3-unified-loop-tick-cli-entry-point.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:15:42.177Z",
+  "schema_version": "v1",
+  "commit_sha": "abe250a14549c609a1db9480f77e249d7be4740e",
+  "title": "feat(service): Wave 3 — unified loop-tick + CLI entry point",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:15:22Z",
+  "head_ref": "kiro/unified-loop-wave3"
+}

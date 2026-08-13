@@ -1,0 +1,12 @@
+{
+  "pr_number": 2135,
+  "archive_path": "docs/history/pr-reviews/PR-2135-backlog-b-0168-add-5-layer-register-architecture-to-alignment-md.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T21:27:02.807Z",
+  "schema_version": "v1",
+  "commit_sha": "be359cbf0cfcce89bfa2d82bef1ce3e4044cf91f",
+  "title": "backlog(B-0168): add 5-layer register architecture to ALIGNMENT.md",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T21:26:46Z",
+  "head_ref": "backlog/b-0168-alignment-register-pointer"
+}

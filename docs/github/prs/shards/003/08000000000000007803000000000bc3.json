@@ -1,0 +1,21 @@
+{
+  "pr_number": 3011,
+  "archive_path": "docs/history/pr-reviews/PR-3011-feat-bg-b-0440-2-commit-history-poll-real-detection-logic-13-tests-pass.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A6CO6",
+    "comment:PRRC_kwDOSF9kNM7A6VK6",
+    "comment:PRRC_kwDOSF9kNM7A6VKO",
+    "comment:PRRC_kwDOSF9kNM7A6VLh",
+    "thread:PRRT_kwDOSF9kNM6B2OHQ",
+    "thread:PRRT_kwDOSF9kNM6B2cMG",
+    "thread:PRRT_kwDOSF9kNM6B2cMl",
+    "thread:PRRT_kwDOSF9kNM6B2cNE"
+  ],
+  "fetched_at": "2026-05-13T18:23:29.777Z",
+  "schema_version": "v1",
+  "commit_sha": "aa3bf4d101c055be11bb81f32ad8f11dd8f9cad1",
+  "title": "feat(bg): B-0440.2 — commit-history poll (real detection logic; 13 tests pass)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T18:23:05Z",
+  "head_ref": "otto-b0440-2-commit-history-poll-slice-2-impl-2026-05-13"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8881,
+  "archive_path": "docs/history/pr-reviews/PR-8881-fix-lint-codegen-spread-gate-lints-unused-imports-resume-markdownlint.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:24:50.784Z",
+  "schema_version": "v1",
+  "commit_sha": "5728554800632cfe214fde59eeb12b6c55ccdf3c",
+  "title": "fix(lint): codegen-spread gate lints — unused imports + RESUME markdownlint",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:24:23Z",
+  "head_ref": "otto/fix-codegen-spread-lints"
+}

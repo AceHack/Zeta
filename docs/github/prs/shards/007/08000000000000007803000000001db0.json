@@ -1,0 +1,12 @@
+{
+  "pr_number": 7600,
+  "archive_path": "docs/history/pr-reviews/PR-7600-feat-csharp-fourcorner-c-conformer-second-oracle-byte-locked-against-the-same-go.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T04:46:59.327Z",
+  "schema_version": "v1",
+  "commit_sha": "36cb39bd9bbfe95fca6e3425b845715969cbefc5",
+  "title": "feat(csharp): FourCorner C# conformer — second oracle byte-locked against the same golden lines",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T04:46:37Z",
+  "head_ref": "shadow-fourcorner-csharp-conformer"
+}

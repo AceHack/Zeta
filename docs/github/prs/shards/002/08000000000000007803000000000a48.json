@@ -1,0 +1,12 @@
+{
+  "pr_number": 2632,
+  "archive_path": "docs/history/pr-reviews/PR-2632-docs-memory-shadow-has-agenda-participant-no-longer-foreign.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T02:28:52.041Z",
+  "schema_version": "v1",
+  "commit_sha": "b3b22f775d0ec272492de32ec7f30093c0bcabf1",
+  "title": "docs(memory): shadow has agenda — participant, no longer foreign",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:28:34Z",
+  "head_ref": "docs/shadow-agenda-participant-2026-05-10"
+}

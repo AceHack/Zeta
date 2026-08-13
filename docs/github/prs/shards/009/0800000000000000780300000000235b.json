@@ -1,0 +1,12 @@
+{
+  "pr_number": 9051,
+  "archive_path": "docs/history/pr-reviews/PR-9051-codex-classify-room-heat-boundary-signals.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-01T20:20:13.949Z",
+  "schema_version": "v1",
+  "commit_sha": "374522eaa6e78fc06190bd66dee9d39089d4546e",
+  "title": "[codex] classify room heat boundary signals",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T20:19:50Z",
+  "head_ref": "codex/room-backpressure-telemetry"
+}

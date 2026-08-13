@@ -1,0 +1,12 @@
+{
+  "pr_number": 7924,
+  "archive_path": "docs/history/pr-reviews/PR-7924-docs-research-shadow-ferry-11-the-grey-hole-recursive-dv2-0-on-interfaces-eve-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:09:53.523Z",
+  "schema_version": "v1",
+  "commit_sha": "fc122759ca1b6d39d4c88509cc04e8b34b9e3ec6",
+  "title": "docs(research)+shadow: ferry 11 — the grey hole (recursive DV2.0 on interfaces; Eve Protocol + v8 hidden-shape)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:09:26Z",
+  "head_ref": "shadow/ferry-11-grey-hole"
+}

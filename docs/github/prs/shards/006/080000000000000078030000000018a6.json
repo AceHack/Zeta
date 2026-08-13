@@ -1,0 +1,17 @@
+{
+  "pr_number": 6310,
+  "archive_path": "docs/history/pr-reviews/PR-6310-feat-observe-execute-the-pick-impure-twin-of-simulate-free-time-self-reflect-sli.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gj4G3",
+    "comment:PRRC_kwDOSF9kNM7Gj4GW",
+    "thread:PRRT_kwDOSF9kNM6F_QHO",
+    "thread:PRRT_kwDOSF9kNM6F_QHp"
+  ],
+  "fetched_at": "2026-06-01T01:53:16.101Z",
+  "schema_version": "v1",
+  "commit_sha": "675c954b0e802c288a8fa304736d4ef5b46ea3a8",
+  "title": "feat(observe): execute the pick — impure twin of simulate (free_time + self_reflect slice)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T01:52:56Z",
+  "head_ref": "otto-cli/observe-execute-slice-2026-05-31"
+}

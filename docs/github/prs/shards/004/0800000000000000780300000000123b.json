@@ -1,0 +1,12 @@
+{
+  "pr_number": 4667,
+  "archive_path": "docs/history/pr-reviews/PR-4667-memory-persona-otto-otto-desktop-integration-of-aaron-s-2026-05-22-kestrel-ferri.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T21:14:24.892Z",
+  "schema_version": "v1",
+  "commit_sha": "79c874acd5a21a0e5aa07fe5592ca8c9dd41180c",
+  "title": "memory(persona/otto): Otto-Desktop integration of Aaron's 2026-05-22 Kestrel-ferried updates (family configuration + grammar-discriminator + Harry Potter / 4yo)",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T21:14:06Z",
+  "head_ref": "memory/otto-desktop-family-config-grammar-discriminator-harry-potter-2026-05-22"
+}

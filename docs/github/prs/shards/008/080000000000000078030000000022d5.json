@@ -1,0 +1,12 @@
+{
+  "pr_number": 8917,
+  "archive_path": "docs/history/pr-reviews/PR-8917-add-lcg32-glibc-third-add-anchor.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T08:30:02.890Z",
+  "schema_version": "v1",
+  "commit_sha": "5187091824614d7bf8c41c89d256fc7bec6e075b",
+  "title": "Add lcg32_glibc third add-anchor",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T08:29:37Z",
+  "head_ref": "feature/lumen-add-anchor"
+}

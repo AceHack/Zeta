@@ -1,0 +1,12 @@
+{
+  "pr_number": 8262,
+  "archive_path": "docs/history/pr-reviews/PR-8262-docs-playable-quotes-search-half-record-quote-dst-rarity-ip-notice-and-takedown-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T05:07:09.055Z",
+  "schema_version": "v1",
+  "commit_sha": "8df981b7a43070fa9e398488a4be56fcc3ab7dde",
+  "title": "docs: playable-quotes search-half + record-quote (DST rarity) + IP notice-and-takedown quarantine",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T05:06:41Z",
+  "head_ref": "otto/playable-quotes-search-half-and-ip"
+}

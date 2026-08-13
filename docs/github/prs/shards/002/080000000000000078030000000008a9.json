@@ -1,0 +1,12 @@
+{
+  "pr_number": 2217,
+  "archive_path": "docs/history/pr-reviews/PR-2217-docs-b-0361-anchor-to-human-lineage-step-in-formal-workflows.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T07:10:17.962Z",
+  "schema_version": "v1",
+  "commit_sha": "7491bf1da968bd5ee3ea168be4d96f3aca884f7f",
+  "title": "docs(B-0361): anchor-to-human-lineage step in formal workflows",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:09:59Z",
+  "head_ref": "docs/b0361-anchor-to-human-lineage"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6462,
+  "archive_path": "docs/history/pr-reviews/PR-6462-feat-ace-slice-6-2-publish-enhancements-per-package-url-multi-dir-sequence.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T19:35:06.009Z",
+  "schema_version": "v1",
+  "commit_sha": "ebd601b015bf35a852ab839dcc2d5b96f5356d97",
+  "title": "feat(ace): slice 6.2 publish enhancements (per-package url + multi-dir + --sequence)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T19:34:43Z",
+  "head_ref": "otto-windows/ace-slice6.2-impl-2026-06-01"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 2787,
+  "archive_path": "docs/history/pr-reviews/PR-2787-feat-b-0423-memory-reindexer-heap-stack-memory-md-promotion-aaron-2026-05-12.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AYX-w",
+    "comment:PRRC_kwDOSF9kNM7AYYAn",
+    "comment:PRRC_kwDOSF9kNM7AYYBE",
+    "comment:PRRC_kwDOSF9kNM7AYYBt",
+    "thread:PRRT_kwDOSF9kNM6Bdw6S",
+    "thread:PRRT_kwDOSF9kNM6Bdw74",
+    "thread:PRRT_kwDOSF9kNM6Bdw7g",
+    "thread:PRRT_kwDOSF9kNM6Bdw8Z"
+  ],
+  "fetched_at": "2026-05-12T15:20:28.758Z",
+  "schema_version": "v1",
+  "commit_sha": "5100604a34864a9abab6ea5663e87e9a11b654eb",
+  "title": "feat(B-0423): memory/ reindexer — heap→stack MEMORY.md promotion (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T15:20:02Z",
+  "head_ref": "feat/b-0423-memory-md-reindexer-2026-05-12"
+}

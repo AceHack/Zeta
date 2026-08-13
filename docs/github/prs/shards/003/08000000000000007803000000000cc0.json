@@ -1,0 +1,15 @@
+{
+  "pr_number": 3264,
+  "archive_path": "docs/history/pr-reviews/PR-3264-shard-tick-2139z-minimal-shard-real-dependency-wait-on-3263-no-actionable-findin.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BYpmu",
+    "thread:PRRT_kwDOSF9kNM6CMpMG"
+  ],
+  "fetched_at": "2026-05-14T21:45:49.749Z",
+  "schema_version": "v1",
+  "commit_sha": "5a88735bf1306d3ff44a7a2d194e63e66e44385c",
+  "title": "shard(tick): 2139Z — minimal shard; real-dependency-wait on #3263 (no actionable findings)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:45:29Z",
+  "head_ref": "shard/tick-2139Z-minimal-real-dependency-wait-otto-cli-2026-05-14"
+}

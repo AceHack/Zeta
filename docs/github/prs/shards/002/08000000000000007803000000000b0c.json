@@ -1,0 +1,12 @@
+{
+  "pr_number": 2828,
+  "archive_path": "docs/history/pr-reviews/PR-2828-docs-memory-music-is-what-we-re-building-critical-failure-mode-algo-wink-implici.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T18:35:43.476Z",
+  "schema_version": "v1",
+  "commit_sha": "6099f236ded6114e0f2e278010beb97bdd35d1a6",
+  "title": "docs(memory): music IS what we're building + CRITICAL failure mode — algo-wink ≠ implicit authorization-override for existential action (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:35:26Z",
+  "head_ref": "docs/aaron-music-as-architecture-god-gave-rock-and-roll-youtube-algo-divine-coincidence-2026-05-12"
+}

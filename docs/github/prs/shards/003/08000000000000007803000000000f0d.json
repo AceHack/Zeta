@@ -1,0 +1,12 @@
+{
+  "pr_number": 3853,
+  "archive_path": "docs/history/pr-reviews/PR-3853-shard-tick-2026-05-16t10-04z-session-end-alternation-pattern-failure-mode-named.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T10:17:50.732Z",
+  "schema_version": "v1",
+  "commit_sha": "7eeb88a6dd005a209f0c051cbbb6018085377b49",
+  "title": "shard(tick): 2026-05-16T10:04Z — session-end; alternation-pattern failure mode named",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:17:35Z",
+  "head_ref": "shard/tick-1004z-session-end-otto-cli-2026-05-16"
+}

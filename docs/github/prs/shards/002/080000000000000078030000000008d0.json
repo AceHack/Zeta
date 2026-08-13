@@ -1,0 +1,17 @@
+{
+  "pr_number": 2256,
+  "archive_path": "docs/history/pr-reviews/PR-2256-feat-b-0266-review-policy-ruleset-trim-default.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gQB7",
+    "comment:PRRC_kwDOSF9kNM6_gQLl",
+    "thread:PRRT_kwDOSF9kNM6Azs22",
+    "thread:PRRT_kwDOSF9kNM6Azsvx"
+  ],
+  "fetched_at": "2026-05-09T09:27:09.704Z",
+  "schema_version": "v1",
+  "commit_sha": "67f5e93909c7c14ce82bcd88ec0daa73ffa7445c",
+  "title": "feat(B-0266): Review Policy ruleset + trim Default",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:26:55Z",
+  "head_ref": "fix/b0266-review-policy-ruleset"
+}

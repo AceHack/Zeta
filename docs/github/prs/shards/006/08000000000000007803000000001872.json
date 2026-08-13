@@ -1,0 +1,19 @@
+{
+  "pr_number": 6258,
+  "archive_path": "docs/history/pr-reviews/PR-6258-docs-rules-bcl-interface-boundary-rule-own-your-interfaces-hexagonal-whys-first-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gikr1",
+    "comment:PRRC_kwDOSF9kNM7GiksK",
+    "comment:PRRC_kwDOSF9kNM7Gilpf",
+    "comment:PRRC_kwDOSF9kNM7GilqN",
+    "thread:PRRT_kwDOSF9kNM6F-QI2",
+    "thread:PRRT_kwDOSF9kNM6F-QIk"
+  ],
+  "fetched_at": "2026-05-31T21:28:21.992Z",
+  "schema_version": "v1",
+  "commit_sha": "bc25dfbf7238926fb52a161a531d73e04a64f5df",
+  "title": "docs(rules): BCL-interface-boundary rule — own your interfaces, hexagonal, whys-first (Aaron 2026-05-31)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T21:28:00Z",
+  "head_ref": "docs/bcl-interface-boundary-rule-2026-05-31"
+}

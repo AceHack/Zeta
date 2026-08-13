@@ -1,0 +1,30 @@
+{
+  "pr_number": 6502,
+  "archive_path": "docs/history/pr-reviews/PR-6502-feat-dynamicvalue-re-ground-c-against-the-seed-canonical-json-encoder-byte-lock-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G81dk",
+    "comment:PRRC_kwDOSF9kNM7G86CU",
+    "comment:PRRC_kwDOSF9kNM7G879w",
+    "comment:PRRC_kwDOSF9kNM7G8pyZ",
+    "comment:PRRC_kwDOSF9kNM7G8qc7",
+    "comment:PRRC_kwDOSF9kNM7G8qcD",
+    "comment:PRRC_kwDOSF9kNM7G8qcr",
+    "comment:PRRC_kwDOSF9kNM7G8y2c",
+    "comment:PRRC_kwDOSF9kNM7G8y2f",
+    "thread:PRRT_kwDOSF9kNM6GR1la",
+    "thread:PRRT_kwDOSF9kNM6GR4yG",
+    "thread:PRRT_kwDOSF9kNM6GRtHL",
+    "thread:PRRT_kwDOSF9kNM6GRtmU",
+    "thread:PRRT_kwDOSF9kNM6GRtm_",
+    "thread:PRRT_kwDOSF9kNM6GRtmx",
+    "thread:PRRT_kwDOSF9kNM6GRzo8",
+    "thread:PRRT_kwDOSF9kNM6GRzo_"
+  ],
+  "fetched_at": "2026-06-02T00:15:16.860Z",
+  "schema_version": "v1",
+  "commit_sha": "62a9f2cf7cabc7d6f7218f01317c8ae210ab5622",
+  "title": "feat(DynamicValue): re-ground C# against the seed — canonical JSON encoder + byte-lock test",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T00:14:54Z",
+  "head_ref": "otto-cli/dynamicvalue-csharp-reground-seed-2026-06-01"
+}

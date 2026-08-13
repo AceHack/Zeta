@@ -1,0 +1,12 @@
+{
+  "pr_number": 8991,
+  "archive_path": "docs/history/pr-reviews/PR-8991-genesis-pan-zoom-the-homepage-drag-to-move-wheel-pinch-to-zoom.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T19:58:14.083Z",
+  "schema_version": "v1",
+  "commit_sha": "85a6cf45b56452f68fea8768385f3e57beb48d21",
+  "title": "genesis: pan + zoom the homepage (drag to move, wheel/pinch to zoom)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T19:57:48Z",
+  "head_ref": "claude/homepage-zoom-visibility-jqvkwd"
+}

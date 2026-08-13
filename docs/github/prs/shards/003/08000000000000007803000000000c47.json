@@ -1,0 +1,12 @@
+{
+  "pr_number": 3143,
+  "archive_path": "docs/history/pr-reviews/PR-3143-docs-research-33-archive-aaron-ani-grok-b77516a2-root-axiom-system-surfacing-202.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T15:59:50.283Z",
+  "schema_version": "v1",
+  "commit_sha": "45653b03a7242964c7b179f4986dda8957c5b796",
+  "title": "docs(research): §33 archive — Aaron + Ani Grok b77516a2 root-axiom-system surfacing (2026-05-14)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T15:59:32Z",
+  "head_ref": "feat/aaron-ani-attention-optimization-substrate-2026-05-14"
+}

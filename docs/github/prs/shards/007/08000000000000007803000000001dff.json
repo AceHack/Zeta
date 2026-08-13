@@ -1,0 +1,12 @@
+{
+  "pr_number": 7679,
+  "archive_path": "docs/history/pr-reviews/PR-7679-feat-core-add-q-locked-s-t-qubit-phase-gates.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:18:12.133Z",
+  "schema_version": "v1",
+  "commit_sha": "c5825993b220f0ea7e23162c812fe1523e77b5c8",
+  "title": "feat(core): add Q#-locked S/T qubit phase gates",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:17:45Z",
+  "head_ref": "codex/vera-qsharp-observable-benchmarks"
+}

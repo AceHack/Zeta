@@ -1,0 +1,12 @@
+{
+  "pr_number": 2103,
+  "archive_path": "docs/history/pr-reviews/PR-2103-feat-b-0058-alignment-clause-drift-detector.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T17:02:22.777Z",
+  "schema_version": "v1",
+  "commit_sha": "f7127ee8baa6ac8903748190049fede973eb81ac",
+  "title": "feat(B-0058): alignment-clause drift detector",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T17:02:00Z",
+  "head_ref": "worktree-b-0058+clause-drift-detector"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7613,
+  "archive_path": "docs/history/pr-reviews/PR-7613-fix-core-math-razor-p0-corrections-ragged-dot-wasn-t-psd-rbf-only-psd-on-null-po.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:04:18.397Z",
+  "schema_version": "v1",
+  "commit_sha": "3c8af5f684f12a896a2a33a655aeb99f695ab623",
+  "title": "fix(core): Math Razor P0 corrections — ragged dot wasn't PSD; RBF only PSD on null points; witness is evidence not proof",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:03:48Z",
+  "head_ref": "shadow-math-razor-p0-fixes"
+}

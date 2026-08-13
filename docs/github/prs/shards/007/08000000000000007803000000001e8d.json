@@ -1,0 +1,12 @@
+{
+  "pr_number": 7821,
+  "archive_path": "docs/history/pr-reviews/PR-7821-feat-shapes-shape-softvalue-shape-dynamicvalue-the-ladder-and-the-treemap-catalo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:48:16.018Z",
+  "schema_version": "v1",
+  "commit_sha": "5a1a4b2341ca22100401b13e5373d182b35cde39",
+  "title": "feat(shapes): shape-softvalue + shape-dynamicvalue — the ladder and the treemap (catalog = 15)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:47:48Z",
+  "head_ref": "shadow-two-cartridges"
+}

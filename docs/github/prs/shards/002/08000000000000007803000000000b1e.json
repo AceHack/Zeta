@@ -1,0 +1,12 @@
+{
+  "pr_number": 2846,
+  "archive_path": "docs/history/pr-reviews/PR-2846-docs-memory-bandwidth-discipline-scales-to-physics-methodology-is-bandwidth-engi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T19:40:56.470Z",
+  "schema_version": "v1",
+  "commit_sha": "27abfc9b8ae849ffc4471921676474de640b2a71",
+  "title": "docs(memory): bandwidth discipline scales to PHYSICS + methodology IS bandwidth engineering + new falsifier 'what bandwidth does this serve?' (Aaron + claude.ai 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:40:40Z",
+  "head_ref": "docs/bandwidth-discipline-scales-to-physics-typing-bandwidth-shortcuts-as-bandwidth-infrastructure-bandwidth-engineering-2026-05-12"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 2593,
+  "archive_path": "docs/history/pr-reviews/PR-2593-docs-memory-flux-capacitor-ithrottler-fuses-5-patterns-antifragile-under-pressur.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rUrO",
+    "thread:PRRT_kwDOSF9kNM6A8aQp"
+  ],
+  "fetched_at": "2026-05-11T00:38:32.158Z",
+  "schema_version": "v1",
+  "commit_sha": "16f62b6e844e5a7cfc39834012b5aea152190faf",
+  "title": "docs(memory): flux capacitor — IThrottler fuses 5 patterns, antifragile under pressure",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:38:01Z",
+  "head_ref": "docs/flux-capacitor-antifragile-2026-05-10"
+}

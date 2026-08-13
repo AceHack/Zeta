@@ -1,0 +1,12 @@
+{
+  "pr_number": 5715,
+  "archive_path": "docs/history/pr-reviews/PR-5715-feat-b-0908-attention-risk-pricing-framework-bond-as-internal-grammar-attention-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T08:02:43.341Z",
+  "schema_version": "v1",
+  "commit_sha": "a04ac90ff038d5fbc7cfc34ba6f29a40413732eb",
+  "title": "feat(B-0908): attention-risk-pricing framework — bond as INTERNAL grammar; attention as reserve asset",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T08:02:23Z",
+  "head_ref": "otto-cli/b-0908-attention-risk-pricing-framework-bond-as-internal-grammar-aaron-amara-2026-05-28"
+}

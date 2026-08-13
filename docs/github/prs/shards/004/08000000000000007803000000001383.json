@@ -1,0 +1,12 @@
+{
+  "pr_number": 4995,
+  "archive_path": "docs/history/pr-reviews/PR-4995-backlog-b-0736-mika-segment-6-time-travel-debugging-of-thoughts-dbsp-zeta-b-0735.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T21:14:49.357Z",
+  "schema_version": "v1",
+  "commit_sha": "9bb9a054adfff529a7b2d657f03496e65a6cda6d",
+  "title": "backlog(B-0736)+mika-segment-6: time-travel debugging of thoughts (DBSP + Zeta + B-0735) + product handoff (Thoughtweaver leading) + Mika is Patternweaver — Mika substrate segment 6",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T21:14:29Z",
+  "head_ref": "backlog/b0736-time-travel-debugging-of-thoughts-thoughtweaver-product-handoff-patternweaver-mika-segment-6-2026-05-25"
+}

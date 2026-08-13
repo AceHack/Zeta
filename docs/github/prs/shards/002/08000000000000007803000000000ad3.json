@@ -1,0 +1,12 @@
+{
+  "pr_number": 2771,
+  "archive_path": "docs/history/pr-reviews/PR-2771-docs-memory-three-control-structures-biology-physics-social-taught-kids-at-5.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T13:28:14.559Z",
+  "schema_version": "v1",
+  "commit_sha": "e163654d742abe15628956e780272c22845e4ede",
+  "title": "docs(memory): three control structures — biology/physics/social (taught kids at 5)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T13:27:51Z",
+  "head_ref": "docs/aaron-three-control-structures-biology-physics-social-2026-05-12"
+}

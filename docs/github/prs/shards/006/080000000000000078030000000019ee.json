@@ -1,0 +1,18 @@
+{
+  "pr_number": 6638,
+  "archive_path": "docs/history/pr-reviews/PR-6638-research-preserve-kestrel-maintainer-2026-06-03-critic-layers-permission-liabili.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Hf0GV",
+    "comment:PRRC_kwDOSF9kNM7Hf2A1",
+    "comment:PRRC_kwDOSF9kNM7Hf6TH",
+    "thread:PRRT_kwDOSF9kNM6GrbjQ",
+    "thread:PRRT_kwDOSF9kNM6Grc-g"
+  ],
+  "fetched_at": "2026-06-03T08:35:10.204Z",
+  "schema_version": "v1",
+  "commit_sha": "ccfd5c876d38077d04ca49efebc25e3d70eb28be",
+  "title": "research(preserve): Kestrel × maintainer 2026-06-03 — critic layers, permission/liability, autonomy-within-bounds, anthropomorphic register-split",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T08:34:47Z",
+  "head_ref": "otto-cli/preserve-kestrel-governance-critic-permission-register-2026-06-03"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 5443,
+  "archive_path": "docs/history/pr-reviews/PR-5443-docs-hygiene-tick-2026-05-27t13-03z-discriminator-pass-on-40-open-prs-0-mine-40-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FWOq0",
+    "comment:PRRC_kwDOSF9kNM7FWOrp",
+    "comment:PRRC_kwDOSF9kNM7FWOsG",
+    "thread:PRRT_kwDOSF9kNM6FGmO2",
+    "thread:PRRT_kwDOSF9kNM6FGmP8",
+    "thread:PRRT_kwDOSF9kNM6FGmPm"
+  ],
+  "fetched_at": "2026-05-27T15:15:59.651Z",
+  "schema_version": "v1",
+  "commit_sha": "cb56393587a9fd941c3d2705be690e562945c792",
+  "title": "docs(hygiene): tick 2026-05-27T13:03Z — discriminator-pass on 40 open PRs: 0 mine / 40 peer",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T15:15:32Z",
+  "head_ref": "otto-cli/tick-1303z-bg-worker-discriminator-pass-2026-05-27"
+}

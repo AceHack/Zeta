@@ -1,0 +1,12 @@
+{
+  "pr_number": 2966,
+  "archive_path": "docs/history/pr-reviews/PR-2966-docs-memory-audience-persona-mapping-dashboard-art-metrics-priority-social-media.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T07:20:42.701Z",
+  "schema_version": "v1",
+  "commit_sha": "65a5a3726f80e56ea664ba6dffa61e898228e22a",
+  "title": "docs(memory): audience persona mapping — dashboard art = metrics priority + social media content + persona-hats list parallel to role-hats (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T07:20:20Z",
+  "head_ref": "aaron-audience-persona-mapping-dashboard-art-equal-to-metrics-social-media-twitter-content-push-numbers-neurodivergent-ai-assisted-dev-cognitive-arch-students-2026-05-13"
+}

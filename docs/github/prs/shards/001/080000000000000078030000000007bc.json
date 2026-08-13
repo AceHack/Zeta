@@ -1,0 +1,12 @@
+{
+  "pr_number": 1980,
+  "archive_path": "docs/history/pr-reviews/PR-1980-docs-research-log-catch-28-and-29.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T01:01:39.700Z",
+  "schema_version": "v1",
+  "commit_sha": "90097b85ed6b7717435b49c611b506fc0b0d1635",
+  "title": "docs(research): log Catch 28 and 29",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T01:01:25Z",
+  "head_ref": "research/catch-28-29"
+}

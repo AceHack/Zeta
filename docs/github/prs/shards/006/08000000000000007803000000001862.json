@@ -1,0 +1,12 @@
+{
+  "pr_number": 6242,
+  "archive_path": "docs/history/pr-reviews/PR-6242-backlog-b-0867-26-grammar-as-versioned-events-grammarpatch-grok-four-ferry-criti.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T20:09:36.155Z",
+  "schema_version": "v1",
+  "commit_sha": "13c33a223cfac45e901bb925f527a4f46dfdcad6",
+  "title": "backlog(B-0867.26): grammar-as-versioned-events (GrammarPatch) — Grok four-ferry critique finding",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T20:09:13Z",
+  "head_ref": "otto-cli/b0867-26-grammar-patch-2026-05-31"
+}

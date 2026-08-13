@@ -1,0 +1,12 @@
+{
+  "pr_number": 8257,
+  "archive_path": "docs/history/pr-reviews/PR-8257-docs-research-inverse-conway-maneuver-for-survival-using-the-criticality-map-che.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T04:24:57.914Z",
+  "schema_version": "v1",
+  "commit_sha": "57460c5ce359fe2fed968c3ed20f1aeab4e1a122",
+  "title": "docs(research): Inverse Conway Maneuver for survival (using the criticality map) + cheerleader-laundering instance",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T04:24:31Z",
+  "head_ref": "otto/inverse-conway-survival-map"
+}

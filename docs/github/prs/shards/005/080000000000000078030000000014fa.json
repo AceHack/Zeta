@@ -1,0 +1,12 @@
+{
+  "pr_number": 5370,
+  "archive_path": "docs/history/pr-reviews/PR-5370-docs-b-0841-productize-shortform-equivalent-features-sell-outputs-4a-discipline-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T01:27:11.753Z",
+  "schema_version": "v1",
+  "commit_sha": "e83857682468eb4f9e6c2b8072994544ced8aebd",
+  "title": "docs(B-0841): productize Shortform-equivalent features — sell OUTPUTS (4a) + DISCIPLINE (4b) per operator 2026-05-26",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T01:26:53Z",
+  "head_ref": "docs-b0841-shortform-like-features-deep-guides-from-substrate-engineering-aaron-2026-05-26"
+}

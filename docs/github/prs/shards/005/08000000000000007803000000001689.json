@@ -1,0 +1,27 @@
+{
+  "pr_number": 5769,
+  "archive_path": "docs/history/pr-reviews/PR-5769-feat-b-0914-2-l-closed-loop-ci-result-next-hypothesis-dispatch-orchestrator-comp.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fu0uh",
+    "comment:PRRC_kwDOSF9kNM7Fu0v9",
+    "comment:PRRC_kwDOSF9kNM7Fu0wm",
+    "comment:PRRC_kwDOSF9kNM7Fu0xd",
+    "comment:PRRC_kwDOSF9kNM7Fu0y5",
+    "comment:PRRC_kwDOSF9kNM7Fu0yI",
+    "comment:PRRC_kwDOSF9kNM7Fu0zh",
+    "thread:PRRT_kwDOSF9kNM6FYRjv",
+    "thread:PRRT_kwDOSF9kNM6FYRkt",
+    "thread:PRRT_kwDOSF9kNM6FYRlC",
+    "thread:PRRT_kwDOSF9kNM6FYRls",
+    "thread:PRRT_kwDOSF9kNM6FYRmO",
+    "thread:PRRT_kwDOSF9kNM6FYRmw",
+    "thread:PRRT_kwDOSF9kNM6FYRnG"
+  ],
+  "fetched_at": "2026-05-28T11:36:25.383Z",
+  "schema_version": "v1",
+  "commit_sha": "ec9c45fc278c518167be63ddcf5f93aeea96869d",
+  "title": "feat(B-0914.2): L — closed-loop CI-result → next-hypothesis dispatch orchestrator (composes TrueSkill + evolution + pairing via injectable callbacks); S/M/L sequence COMPLETE",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T11:36:04Z",
+  "head_ref": "otto-cli/b-0914-2-closed-loop-ci-result-to-next-hypothesis-dispatch-tournament-loop-orchestrator-2026-05-28"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 4435,
+  "archive_path": "docs/history/pr-reviews/PR-4435-docs-shard-tick-1643z-pr-4432-merge-narrative-followup-after-push-race-loss.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DP36Q",
+    "comment:PRRC_kwDOSF9kNM7DP8sq",
+    "thread:PRRT_kwDOSF9kNM6DjvCR",
+    "thread:PRRT_kwDOSF9kNM6Djyls"
+  ],
+  "fetched_at": "2026-05-20T17:16:07.304Z",
+  "schema_version": "v1",
+  "commit_sha": "4626362ca8fe44e6073b94677beb9df5247b2539",
+  "title": "docs(shard): tick 1643Z — PR #4432 merge-narrative followup after push race-loss",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T17:15:17Z",
+  "head_ref": "shard/tick-1643z-pr4432-merge-narrative-followup-2026-05-20"
+}

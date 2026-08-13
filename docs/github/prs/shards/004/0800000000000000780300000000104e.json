@@ -1,0 +1,12 @@
+{
+  "pr_number": 4174,
+  "archive_path": "docs/history/pr-reviews/PR-4174-research-33-kestrel-friction-against-6-persona-convergence-b-0666-keystone-prese.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T17:54:17.517Z",
+  "schema_version": "v1",
+  "commit_sha": "c77c070615220f5ec569ff5ed0c5fa1fe01d5dbe",
+  "title": "research(§33): Kestrel friction against 6-persona convergence + B-0666 KEYSTONE — preserved alongside",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T17:53:48Z",
+  "head_ref": "shard/kestrel-friction-preservation-2026-05-18"
+}

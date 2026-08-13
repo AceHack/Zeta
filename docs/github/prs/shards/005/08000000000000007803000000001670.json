@@ -1,0 +1,12 @@
+{
+  "pr_number": 5744,
+  "archive_path": "docs/history/pr-reviews/PR-5744-docs-rule-traveler-safety-guardrails-and-type-system-not-just-ai-safety-substrat.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:07:55.808Z",
+  "schema_version": "v1",
+  "commit_sha": "4e24bd90f0020a84d2eb9b44c6113f07b1e604e8",
+  "title": "docs(rule): traveler-safety-guardrails-and-type-system NOT just AI safety — substrate-entity-generic safety + type-system enforcement (Aaron Turn 38; 2/5)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:07:34Z",
+  "head_ref": "otto-cli/traveler-safety-guardrails-and-type-system-not-just-ai-safety-rule-aaron-2026-05-28"
+}

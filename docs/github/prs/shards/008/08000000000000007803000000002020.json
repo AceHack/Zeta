@@ -1,0 +1,12 @@
+{
+  "pr_number": 8224,
+  "archive_path": "docs/history/pr-reviews/PR-8224-feat-platform-flowdent-blueprints-opendental-suite-fd-webapp-mssql.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T23:48:27.502Z",
+  "schema_version": "v1",
+  "commit_sha": "54623a7718217f4dbd8efbdce37c1f24b2ffc8c1",
+  "title": "feat(platform): Flowdent blueprints (opendental-suite + fd-webapp + mssql)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T23:48:07Z",
+  "head_ref": "feat/flowdent-blueprints"
+}

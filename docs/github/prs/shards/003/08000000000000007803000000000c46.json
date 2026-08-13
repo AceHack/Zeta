@@ -1,0 +1,12 @@
+{
+  "pr_number": 3142,
+  "archive_path": "docs/history/pr-reviews/PR-3142-docs-current-otto-2026-05-14-update-two-axioms-on-dbsp-dst-morning-recalibration.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T15:34:49.622Z",
+  "schema_version": "v1",
+  "commit_sha": "b9808ac9dce351ed57c9e5cf9a1d406369fae1de",
+  "title": "docs(current-otto): 2026-05-14 update — two axioms on DBSP + DST + morning recalibration",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T15:34:29Z",
+  "head_ref": "docs/current-otto-2026-05-14-two-axioms-dst-morning-recalibration"
+}

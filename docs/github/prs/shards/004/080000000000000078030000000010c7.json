@@ -1,0 +1,15 @@
+{
+  "pr_number": 4295,
+  "archive_path": "docs/history/pr-reviews/PR-4295-shard-0106z-c-codex-4291-5-finding-batch-resolution.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CftIS",
+    "thread:PRRT_kwDOSF9kNM6DAw9L"
+  ],
+  "fetched_at": "2026-05-19T02:13:29.290Z",
+  "schema_version": "v1",
+  "commit_sha": "4fa6bb204fcdbbaa04c6fd52623a58ba5b4c2989",
+  "title": "shard(0106Z-c): Codex #4291 5-finding batch resolution",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T02:13:10Z",
+  "head_ref": "shard/tick-2026-05-19-0106z-c-codex-4291-5-findings-2026-05-19"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3644,
+  "archive_path": "docs/history/pr-reviews/PR-3644-kestrel-part3-aaron-genie-market-clearing-asymmetric-critic-flag-logged-once-spe.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T00:43:35.880Z",
+  "schema_version": "v1",
+  "commit_sha": "e5f858a8688e18618aee4ceee62885e9c0364a4a",
+  "title": "kestrel(part3)+aaron(genie+market-clearing): asymmetric-critic flag-logged-once + spec-quality framing + oracle clearing mechanism",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:43:20Z",
+  "head_ref": "kestrel/part3-gravity-mechanism-genie-spec-quality-market-clearing-otto-cli-2026-05-16"
+}

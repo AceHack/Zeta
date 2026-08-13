@@ -1,0 +1,12 @@
+{
+  "pr_number": 8394,
+  "archive_path": "docs/history/pr-reviews/PR-8394-fix-memory-main-red-top-level-type-created-frontmatter-were-nested-under-metadat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:25:01.675Z",
+  "schema_version": "v1",
+  "commit_sha": "01ecf97710d1ce9821bec61dc11d09dfb8a008a4",
+  "title": "fix(memory): main-red — top-level type+created frontmatter (were nested under metadata:)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:24:35Z",
+  "head_ref": "fix/memory-frontmatter-toplevel-type-created"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6761,
+  "archive_path": "docs/history/pr-reviews/PR-6761-backlog-cell-injection-a-boundary-self-describing-values-self-testing-values.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T08:52:30.155Z",
+  "schema_version": "v1",
+  "commit_sha": "7b7641f6e3dddc2d0d47ab3d2828329b0b813ac8",
+  "title": "backlog: cell injection = a boundary; self-describing values → self-testing values",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T08:52:11Z",
+  "head_ref": "otto/cell-injection-boundary-self-testing-values"
+}

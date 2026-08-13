@@ -1,0 +1,16 @@
+{
+  "pr_number": 6357,
+  "archive_path": "docs/history/pr-reviews/PR-6357-backlog-b-0968-both-runtimes-on-windows-shield-coverage-manifest-windows-contain.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gm_Zi",
+    "comment:PRRC_kwDOSF9kNM7GnAqV",
+    "thread:PRRT_kwDOSF9kNM6GBlTg"
+  ],
+  "fetched_at": "2026-06-01T06:46:46.048Z",
+  "schema_version": "v1",
+  "commit_sha": "791d9f22fa20240bcd7151e1f11e5661e2f5a04d",
+  "title": "backlog(B-0968): both-runtimes-on-Windows shield coverage + manifest Windows-container note",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T06:46:26Z",
+  "head_ref": "otto-windows/b0968-podman-windows-containers-note-shield-2026-06-01"
+}

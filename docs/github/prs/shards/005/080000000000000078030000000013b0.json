@@ -1,0 +1,15 @@
+{
+  "pr_number": 5040,
+  "archive_path": "docs/history/pr-reviews/PR-5040-docs-archive-preserve-discussions-for-pr-4965-5034-batch-22-prs-named-after-5028.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Et-PX",
+    "thread:PRRT_kwDOSF9kNM6EpS3Q"
+  ],
+  "fetched_at": "2026-05-26T02:28:12.538Z",
+  "schema_version": "v1",
+  "commit_sha": "48493555cdfc00e45a4a2441951b93c147454fea",
+  "title": "docs(archive): preserve discussions for PR #4965-#5034 batch (22 PRs, named after #5028)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T02:27:56Z",
+  "head_ref": "lior-archive-pr-5028"
+}

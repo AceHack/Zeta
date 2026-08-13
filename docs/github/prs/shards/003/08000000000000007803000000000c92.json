@@ -1,0 +1,12 @@
+{
+  "pr_number": 3218,
+  "archive_path": "docs/history/pr-reviews/PR-3218-shard-tick-2001z-minimal-shard-pattern-real-dependency-wait-on-3217.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T20:06:39.190Z",
+  "schema_version": "v1",
+  "commit_sha": "a8f638185f918e78f93f3249639e601d7837885e",
+  "title": "shard(tick): 2001Z — minimal-shard pattern; real-dependency-wait on #3217",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:06:17Z",
+  "head_ref": "shard/tick-2001Z-minimal-wait-otto-cli-2026-05-14"
+}

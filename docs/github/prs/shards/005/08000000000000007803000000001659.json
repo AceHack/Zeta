@@ -1,0 +1,12 @@
+{
+  "pr_number": 5721,
+  "archive_path": "docs/history/pr-reviews/PR-5721-feat-b-0912-rule-bridge-attention-risk-pricing-arc-with-pre-existing-aurora-immu.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T08:31:31.096Z",
+  "schema_version": "v1",
+  "commit_sha": "a241ba34c84699a10d0ff1b968b2b2b4f1e1262a",
+  "title": "feat(B-0912 + rule): bridge attention-risk-pricing arc with pre-existing Aurora-immune + Veridicality + PoUW-CC + Maji substrate + useful-output-is-evidence-not-authority rule",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T08:31:08Z",
+  "head_ref": "otto-cli/b-0912-bridge-attention-risk-pricing-with-aurora-immune-veridicality-pouwcc-maji-substrate-plus-useful-output-evidence-rule-aaron-otto-2026-05-28"
+}

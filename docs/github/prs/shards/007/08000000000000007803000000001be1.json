@@ -1,0 +1,12 @@
+{
+  "pr_number": 7137,
+  "archive_path": "docs/history/pr-reviews/PR-7137-feat-core-metacontroller-the-agent-s-controller-traversals-map-moves-meta-univer.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:49:04.603Z",
+  "schema_version": "v1",
+  "commit_sha": "9a3f850d092e4773d7306de9c0a9b143612789d8",
+  "title": "feat(core): MetaController — the agent's controller (traversals + map moves) = meta universal action grammar",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:48:46Z",
+  "head_ref": "otto/metacontroller-agent-xbox-controller-traversals-plus-map-moves"
+}

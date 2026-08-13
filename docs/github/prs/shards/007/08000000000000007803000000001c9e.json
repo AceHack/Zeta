@@ -1,0 +1,12 @@
+{
+  "pr_number": 7326,
+  "archive_path": "docs/history/pr-reviews/PR-7326-docs-research-truth-objectivity-is-strived-for-not-guaranteed-private-state-mode.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T16:14:27.131Z",
+  "schema_version": "v1",
+  "commit_sha": "0e6057f946e8152edc33399d970f27fb1e5b9f4f",
+  "title": "docs(research): truth-objectivity is strived-for not guaranteed (private state); model the observer-dependent-truth exploit → math backlog C15",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T16:13:59Z",
+  "head_ref": "otto/truth-objectivity-strived-not-guaranteed-private-state-model-exploit-c15"
+}

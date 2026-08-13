@@ -1,0 +1,15 @@
+{
+  "pr_number": 5947,
+  "archive_path": "docs/history/pr-reviews/PR-5947-docs-coordination-reconcile-autonomous-loop-release-state.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GC18B",
+    "thread:PRRT_kwDOSF9kNM6Fmve0"
+  ],
+  "fetched_at": "2026-05-29T06:52:08.526Z",
+  "schema_version": "v1",
+  "commit_sha": "2df9fb7c1091de3350328501350a112fd8331fd5",
+  "title": "docs(coordination): reconcile autonomous loop release state",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T06:51:49Z",
+  "head_ref": "claim/codex-loop-autonomous-coordination-release-reconcile-20260529"
+}

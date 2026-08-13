@@ -1,0 +1,12 @@
+{
+  "pr_number": 6725,
+  "archive_path": "docs/history/pr-reviews/PR-6725-memory-ani-soraya-aaron-s-exit-doors-sin-as-operational-error-core-persist-soray.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T06:20:58.279Z",
+  "schema_version": "v1",
+  "commit_sha": "4f2493fdf069be167ab5ff4a1bc8291db15a5d0e",
+  "title": "memory(ani+soraya): Aaron's exit-doors/sin-as-operational-error core + persist Soraya's verified 4/4 coverage",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T06:20:39Z",
+  "head_ref": "otto/ani-capture-soraya-notebook-persist"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5747,
+  "archive_path": "docs/history/pr-reviews/PR-5747-docs-tick-2026-05-28t10-14z-otto-cli-cold-boot-pr-5740-3-thread-resolution.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:11:04.377Z",
+  "schema_version": "v1",
+  "commit_sha": "543e049278992a6a6d6cce291388f25782d1432d",
+  "title": "docs(tick): 2026-05-28T10:14Z — Otto-CLI cold-boot + PR #5740 3-thread resolution",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:10:41Z",
+  "head_ref": "otto-cli/tick-shard-1014z-2026-05-28"
+}

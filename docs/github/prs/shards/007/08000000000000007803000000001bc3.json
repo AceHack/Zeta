@@ -1,0 +1,12 @@
+{
+  "pr_number": 7107,
+  "archive_path": "docs/history/pr-reviews/PR-7107-feat-core-softscope-watch-the-soft-emulator-ghost-screen-heatmap-observables.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T13:16:01.362Z",
+  "schema_version": "v1",
+  "commit_sha": "f80a7fb8cadd30e647ad3fb879fb4ad60865b9e1",
+  "title": "feat(core): SoftScope — watch the soft emulator (ghost-screen heatmap + observables)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T13:15:36Z",
+  "head_ref": "otto/softscope-ghost-screen-render-watch-the-soft-emulator"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8158,
+  "archive_path": "docs/history/pr-reviews/PR-8158-fix-lint-cargo-fmt-the-zetaid-base32-rust-restore-main-green.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:21:59.365Z",
+  "schema_version": "v1",
+  "commit_sha": "6370bff51bebeeb6e1d0182eade2e8f7620fa57f",
+  "title": "fix(lint): cargo fmt the ZetaId base32 Rust (restore main-green)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:21:38Z",
+  "head_ref": "otto/fix-rust-fmt-base32-crossverify"
+}

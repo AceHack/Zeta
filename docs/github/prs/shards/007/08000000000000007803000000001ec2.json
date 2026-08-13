@@ -1,0 +1,12 @@
+{
+  "pr_number": 7874,
+  "archive_path": "docs/history/pr-reviews/PR-7874-fix-zflash-serial-getty-race-don-t-fail-harness-on-idle-shell-during-first-boot.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T02:57:54.921Z",
+  "schema_version": "v1",
+  "commit_sha": "6434f84250dd2ea540df649e50569a3d2ca35cd5",
+  "title": "fix(zflash): serial-getty race — don't fail harness on idle shell during first-boot",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T02:57:29Z",
+  "head_ref": "riven/b0891-harness-getty-race"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2544,
+  "archive_path": "docs/history/pr-reviews/PR-2544-docs-memory-comedy-as-debugging-funniest-friction-is-p0.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T21:34:33.613Z",
+  "schema_version": "v1",
+  "commit_sha": "f885f9bd28a1751d22ed5c7161b6ba9f5863451c",
+  "title": "docs(memory): comedy as debugging — funniest friction is P0",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:34:19Z",
+  "head_ref": "docs/comedy-as-debugging-2026-05-10"
+}

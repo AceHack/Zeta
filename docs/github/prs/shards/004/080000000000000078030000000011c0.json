@@ -1,0 +1,12 @@
+{
+  "pr_number": 4544,
+  "archive_path": "docs/history/pr-reviews/PR-4544-fix-kestrel-archive-correct-governance-md-cross-refs-24-16-27-per-copilot-post-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T15:04:52.728Z",
+  "schema_version": "v1",
+  "commit_sha": "04c8ab07506c23b5f9ac4882677bea9e4c844c7b",
+  "title": "fix(kestrel-archive): correct GOVERNANCE.md cross-refs §24→§16+§27 per Copilot post-merge thread on PR #4537",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T15:04:24Z",
+  "head_ref": "fix/kestrel-archive-governance-section-citations-24-to-16-and-27-2026-05-21"
+}

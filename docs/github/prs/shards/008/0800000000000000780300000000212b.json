@@ -1,0 +1,12 @@
+{
+  "pr_number": 8491,
+  "archive_path": "docs/history/pr-reviews/PR-8491-memory-feedback-transit-judgment-separation-is-the-weight-free-scale-free-optimi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T09:35:28.943Z",
+  "schema_version": "v1",
+  "commit_sha": "67b464d2f29f261eb44924402ca7b1e8ce00a63c",
+  "title": "memory(feedback): transit/judgment separation IS the weight-free + scale-free optimization (judgment off the wire, capacity on the wire, morality at the ends)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T09:34:53Z",
+  "head_ref": "otto/separation-is-weightfree-scalefree-optimization"
+}

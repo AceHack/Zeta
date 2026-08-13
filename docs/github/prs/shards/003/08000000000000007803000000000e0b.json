@@ -1,0 +1,25 @@
+{
+  "pr_number": 3595,
+  "archive_path": "docs/history/pr-reviews/PR-3595-backlog-b-0539-b-0540-b-0541-b-0542-otto-bft-internal-quorum-3-surface-self-reco.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ByO-G",
+    "comment:PRRC_kwDOSF9kNM7ByO-f",
+    "comment:PRRC_kwDOSF9kNM7ByO-r",
+    "comment:PRRC_kwDOSF9kNM7ByO9u",
+    "comment:PRRC_kwDOSF9kNM7ByOlj",
+    "comment:PRRC_kwDOSF9kNM7ByOlp",
+    "thread:PRRT_kwDOSF9kNM6CfFFL",
+    "thread:PRRT_kwDOSF9kNM6CfFFQ",
+    "thread:PRRT_kwDOSF9kNM6CfFV8",
+    "thread:PRRT_kwDOSF9kNM6CfFWN",
+    "thread:PRRT_kwDOSF9kNM6CfFWi",
+    "thread:PRRT_kwDOSF9kNM6CfFWp"
+  ],
+  "fetched_at": "2026-05-15T21:55:49.276Z",
+  "schema_version": "v1",
+  "commit_sha": "48b3cc6edf8480e80c3e0534019ef26f2c7b1e85",
+  "title": "backlog(B-0539,B-0540,B-0541,B-0542): Otto-BFT internal-quorum 3-surface self-recovery",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T21:55:32Z",
+  "head_ref": "backlog/b-0539-otto-bft-internal-quorum-otto-cli-2026-05-15"
+}

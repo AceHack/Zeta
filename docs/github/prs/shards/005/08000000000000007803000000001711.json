@@ -1,0 +1,12 @@
+{
+  "pr_number": 5905,
+  "archive_path": "docs/history/pr-reviews/PR-5905-docs-research-add-shadow-lesson-log-for-broken-main-branch-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T19:43:00.753Z",
+  "schema_version": "v1",
+  "commit_sha": "4cacb0617697ab51b1b1b4e012514563a963b358",
+  "title": "docs(research): Add shadow lesson log for broken main branch drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T19:42:38Z",
+  "head_ref": "lior/drift-report-broken-main-20260528"
+}

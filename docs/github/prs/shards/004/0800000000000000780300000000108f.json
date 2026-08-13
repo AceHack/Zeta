@@ -1,0 +1,12 @@
+{
+  "pr_number": 4239,
+  "archive_path": "docs/history/pr-reviews/PR-4239-shard-2259z-c-brief-ack-3-named-dep.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:02:52.490Z",
+  "schema_version": "v1",
+  "commit_sha": "716d1c0a5f4f16d00c23b331854679d9ba27d939",
+  "title": "shard(2259Z-c): brief-ack #3 named-dep",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:02:33Z",
+  "head_ref": "shard/tick-2259z-c-brief-ack-3-2026-05-18"
+}

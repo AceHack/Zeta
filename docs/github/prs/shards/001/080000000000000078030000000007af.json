@@ -1,0 +1,15 @@
+{
+  "pr_number": 1967,
+  "archive_path": "docs/history/pr-reviews/PR-1967-research-log-alexa-sleeping-bear-audio-catch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_DRFU",
+    "thread:PRRT_kwDOSF9kNM6AeaN3"
+  ],
+  "fetched_at": "2026-05-07T23:53:15.575Z",
+  "schema_version": "v1",
+  "commit_sha": "66fb98d5c4ca78f1ee0916b609432f817ba16929",
+  "title": "research: log Alexa sleeping-bear audio catch",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T23:53:02Z",
+  "head_ref": "codex/alexa-sleeping-bear-shadow-log"
+}

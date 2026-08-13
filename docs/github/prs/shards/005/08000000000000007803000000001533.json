@@ -1,0 +1,17 @@
+{
+  "pr_number": 5427,
+  "archive_path": "docs/history/pr-reviews/PR-5427-fix-repair-docker-nixos-install-sh-harness.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FQU4q",
+    "comment:PRRC_kwDOSF9kNM7FQU54",
+    "thread:PRRT_kwDOSF9kNM6FCR_T",
+    "thread:PRRT_kwDOSF9kNM6FCSAH"
+  ],
+  "fetched_at": "2026-05-27T08:40:42.039Z",
+  "schema_version": "v1",
+  "commit_sha": "76d15c354dabbc8dc3e07369659757f5c34a2c3e",
+  "title": "fix: repair Docker NixOS install-sh harness",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T08:40:15Z",
+  "head_ref": "claim/codex-docker-nixos-install-sh-test-path-20260527"
+}

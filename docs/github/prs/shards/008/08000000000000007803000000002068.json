@@ -1,0 +1,12 @@
+{
+  "pr_number": 8296,
+  "archive_path": "docs/history/pr-reviews/PR-8296-docs-closed-frame-repetition-is-neutral-the-audience-s-correlation-sets-the-sign.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T09:46:13.029Z",
+  "schema_version": "v1",
+  "commit_sha": "30480571d09b5d63f1603568c967afd5c6d4ddac",
+  "title": "docs(closed-frame): repetition is neutral — the audience's correlation sets the sign",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T09:45:38Z",
+  "head_ref": "otto/repetition-is-neutral-audience-correlation-sets-the-sign"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 6345,
+  "archive_path": "docs/history/pr-reviews/PR-6345-backlog-b-0966-ace-store-keyed-by-package-identity-deferred-future-enhancement.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Glr9E",
+    "thread:PRRT_kwDOSF9kNM6GAmC7"
+  ],
+  "fetched_at": "2026-06-01T05:03:02.669Z",
+  "schema_version": "v1",
+  "commit_sha": "35ebe52a3c6da25f1d97582836ad15829ec20f70",
+  "title": "backlog(B-0966): Ace store keyed by package identity — deferred future enhancement",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T05:02:42Z",
+  "head_ref": "otto-windows/b0966-ace-store-key-by-package-identity-2026-06-01"
+}

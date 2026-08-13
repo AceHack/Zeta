@@ -1,0 +1,12 @@
+{
+  "pr_number": 2249,
+  "archive_path": "docs/history/pr-reviews/PR-2249-chore-close-b-0160-p0-mechanical-auth-check-all-children-done.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T08:50:30.554Z",
+  "schema_version": "v1",
+  "commit_sha": "5ee160e477a95d5aa618c86e9bb778dfb30dcca0",
+  "title": "chore: close B-0160 (P0 mechanical auth check — all children done)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T08:50:15Z",
+  "head_ref": "fix/close-b0160"
+}

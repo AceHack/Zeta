@@ -1,0 +1,12 @@
+{
+  "pr_number": 5687,
+  "archive_path": "docs/history/pr-reviews/PR-5687-backlog-lock-7-operator-decisions-from-pq-audit-three-lanes-concurrent-operating.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T03:28:01.815Z",
+  "schema_version": "v1",
+  "commit_sha": "5ef10ccf21bcbaa0b7e9132884679b034fd86468",
+  "title": "backlog: lock 7 operator decisions from PQ audit + three-lanes-concurrent operating discipline (6 rows)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T03:27:44Z",
+  "head_ref": "backlog/pq-decisions-locked-b-0883-2-2-3-2-4-2-5-b-0887-2-aaron-2026-05-28"
+}

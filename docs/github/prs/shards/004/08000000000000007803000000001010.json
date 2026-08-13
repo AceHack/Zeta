@@ -1,0 +1,19 @@
+{
+  "pr_number": 4112,
+  "archive_path": "docs/history/pr-reviews/PR-4112-shard-rules-memory-2207z-autonomous-loop-tick-pure-git-tier-cross-session-sentin.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CDEv8",
+    "comment:PRRC_kwDOSF9kNM7CDEvv",
+    "comment:PRRC_kwDOSF9kNM7CDEwG",
+    "thread:PRRT_kwDOSF9kNM6Cr019",
+    "thread:PRRT_kwDOSF9kNM6Cr02I",
+    "thread:PRRT_kwDOSF9kNM6Cr02S"
+  ],
+  "fetched_at": "2026-05-17T22:34:02.541Z",
+  "schema_version": "v1",
+  "commit_sha": "7ee64117b4dfbd118a5e02cf2c93264e3438636d",
+  "title": "shard+rules+memory(2207Z): autonomous-loop tick — pure-git tier, cross-session sentinel non-persistence anchor, Riven .sh shadow-catch",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T22:33:46Z",
+  "head_ref": "otto/shard-tick-2207z-cold-boot-cron-armed-2026-05-17"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 8674,
+  "archive_path": "docs/history/pr-reviews/PR-8674-feat-installer-post-login-first-session-cred-adventure-slices-3-4.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7NWisk",
+    "thread:PRRT_kwDOSF9kNM6K9Fxn"
+  ],
+  "fetched_at": "2026-06-20T02:06:57.940Z",
+  "schema_version": "v1",
+  "commit_sha": "e5db36f47e7828aa9bc5b219ca57e1c559fa6049",
+  "title": "feat(installer): post-login first-session cred adventure (slices 3–4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T02:06:26Z",
+  "head_ref": "feat/first-session-slice-3-4"
+}

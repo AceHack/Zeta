@@ -1,0 +1,12 @@
+{
+  "pr_number": 7771,
+  "archive_path": "docs/history/pr-reviews/PR-7771-fix-round3b-the-falsifier-found-a-live-injection-hole-in-htmlcssbinding-exact-co.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T19:48:54.146Z",
+  "schema_version": "v1",
+  "commit_sha": "c44c281e1e8edb937b2888d0051744ffbba255c5",
+  "title": "fix(round3b): the falsifier found a LIVE injection hole in HtmlCssBinding + exact-count determinism allowlist + pong serveDir",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T19:48:26Z",
+  "head_ref": "shadow-round3b-test-gaps"
+}

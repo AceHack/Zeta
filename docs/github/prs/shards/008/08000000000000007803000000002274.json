@@ -1,0 +1,12 @@
+{
+  "pr_number": 8820,
+  "archive_path": "docs/history/pr-reviews/PR-8820-fix-setup-non-interactive-mise-trust-on-tty-dev-installs.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T03:10:07.661Z",
+  "schema_version": "v1",
+  "commit_sha": "ee5caa09f157e768110a8713afacd33d63bbc0be",
+  "title": "fix(setup): non-interactive mise trust on TTY dev installs",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:09:38Z",
+  "head_ref": "fix/mise-trust-noninteractive"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3233,
+  "archive_path": "docs/history/pr-reviews/PR-3233-shard-tick-2034z-promote-primary-defenses-to-claude-rules.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T20:39:46.606Z",
+  "schema_version": "v1",
+  "commit_sha": "0bb96048f77b53ade3c031dfa011c928254851fc",
+  "title": "shard(tick): 2034Z — promote primary defenses to .claude/rules/",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:39:20Z",
+  "head_ref": "shard/tick-2034Z-promote-defenses-to-rule-otto-cli-2026-05-14"
+}

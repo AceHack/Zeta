@@ -1,0 +1,12 @@
+{
+  "pr_number": 7152,
+  "archive_path": "docs/history/pr-reviews/PR-7152-feat-core-gameportfolio-entropy-f-set-of-games-time-in-each-order-free-commutati.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:51:33.215Z",
+  "schema_version": "v1",
+  "commit_sha": "9b9a19b8d0d0d3377706cacd2c4025166707b861",
+  "title": "feat(core): GamePortfolio — entropy = f(set of games, time-in-each), order-free (commutative)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:51:10Z",
+  "head_ref": "otto/gameportfolio-entropy-from-game-set-duration-commutative-regime"
+}

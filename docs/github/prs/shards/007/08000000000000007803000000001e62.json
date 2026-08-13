@@ -1,0 +1,12 @@
+{
+  "pr_number": 7778,
+  "archive_path": "docs/history/pr-reviews/PR-7778-refactor-workflow-source-own-agent-loop-state-machines.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:24:52.046Z",
+  "schema_version": "v1",
+  "commit_sha": "50af8c3f04229938b044fba3d38ad59dad57fcea",
+  "title": "refactor(workflow): source-own agent-loop state machines",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:24:25Z",
+  "head_ref": "codex/source-own-agent-loop-state-machines"
+}

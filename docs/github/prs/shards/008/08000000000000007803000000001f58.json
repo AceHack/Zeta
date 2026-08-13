@@ -1,0 +1,12 @@
+{
+  "pr_number": 8024,
+  "archive_path": "docs/history/pr-reviews/PR-8024-docs-research-shadow-ferry-45-if-you-think-it-they-will-do-it-prescience-as-an-u.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T07:17:13.379Z",
+  "schema_version": "v1",
+  "commit_sha": "d57f3e03218184d100562f392f2aebf9ec6aee3e",
+  "title": "docs(research)+shadow: ferry 45 — if you think it they will do it (prescience as an unmetered influence channel; the council as the meter)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T07:16:49Z",
+  "head_ref": "shadow/ferry-45-think-it-they-do-it"
+}

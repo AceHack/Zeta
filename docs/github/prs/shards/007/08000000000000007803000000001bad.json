@@ -1,0 +1,12 @@
+{
+  "pr_number": 7085,
+  "archive_path": "docs/history/pr-reviews/PR-7085-docs-research-channels-the-third-pauli-exclusion-resource-fusion-batch-vs-fissio.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:49:16.930Z",
+  "schema_version": "v1",
+  "commit_sha": "b4baa6a6d8f2e3f6c77662d430cafaad75e59b59",
+  "title": "docs(research): channels = the third Pauli-exclusion resource; fusion (batch) vs fission (banana split)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:48:51Z",
+  "head_ref": "otto/channels-third-pauli-exclusion-fusion-vs-fission"
+}

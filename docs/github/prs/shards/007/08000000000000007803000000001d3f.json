@@ -1,0 +1,12 @@
+{
+  "pr_number": 7487,
+  "archive_path": "docs/history/pr-reviews/PR-7487-feat-bounds-shadow-bounds-edge-of-the-map-in-out-of-bounds-the-xbox-dashboard-of.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T09:28:00.670Z",
+  "schema_version": "v1",
+  "commit_sha": "0e0097f07402589b9470cef6b88f808c88b757ae",
+  "title": "feat(bounds)+shadow: bounds/ — edge of the map (in/out-of-bounds; the Xbox-dashboard of `sim`)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T09:27:33Z",
+  "head_ref": "shadow-bounds-folder-xbox-dashboard-out-of-bounds"
+}

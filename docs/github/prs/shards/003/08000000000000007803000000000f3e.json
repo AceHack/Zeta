@@ -1,0 +1,12 @@
+{
+  "pr_number": 3902,
+  "archive_path": "docs/history/pr-reviews/PR-3902-feat-amara-cluster-close-b-0458-b-0118-umbrella-9th-10th-cycle-close-rows-silent.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T16:17:59.668Z",
+  "schema_version": "v1",
+  "commit_sha": "17b9eee29e3dac3e273f47cbf79bc05273f9041d",
+  "title": "feat(amara-cluster): close B-0458 + B-0118 umbrella (9th + 10th cycle close-rows; silent-courier-debt CLEARED)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T16:17:42Z",
+  "head_ref": "otto-cli-amara-cluster-close-2026-05-16-1607z"
+}

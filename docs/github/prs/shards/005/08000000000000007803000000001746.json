@@ -1,0 +1,12 @@
+{
+  "pr_number": 5958,
+  "archive_path": "docs/history/pr-reviews/PR-5958-backlog-b-0929-f-type-system-goal-shadow-auth-can-t-compile-enables-safe-self-mo.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T08:44:38.280Z",
+  "schema_version": "v1",
+  "commit_sha": "1e93ec312908ac0360d0277c24aa646d4c855ded",
+  "title": "backlog(B-0929): F# type-system goal — shadow-auth can't compile; enables safe self-modifying DUs + wallet independence",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T08:44:16Z",
+  "head_ref": "otto-cli/b-0929-fsharp-type-system-shadow-auth-cannot-compile-2026-05-29"
+}

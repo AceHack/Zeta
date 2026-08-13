@@ -1,0 +1,28 @@
+{
+  "pr_number": 6350,
+  "archive_path": "docs/history/pr-reviews/PR-6350-feat-ace-slice-4-inline-url-transitive-dependency-resolution-b-0288.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GmXho",
+    "comment:PRRC_kwDOSF9kNM7Gmac9",
+    "comment:PRRC_kwDOSF9kNM7GmacZ",
+    "comment:PRRC_kwDOSF9kNM7GmadN",
+    "comment:PRRC_kwDOSF9kNM7GmadZ",
+    "comment:PRRC_kwDOSF9kNM7Gmkqw",
+    "comment:PRRC_kwDOSF9kNM7GmktA",
+    "comment:PRRC_kwDOSF9kNM7GmkvX",
+    "comment:PRRC_kwDOSF9kNM7GmkxR",
+    "comment:PRRC_kwDOSF9kNM7Gmkzg",
+    "thread:PRRT_kwDOSF9kNM6GBHD4",
+    "thread:PRRT_kwDOSF9kNM6GBJQ5",
+    "thread:PRRT_kwDOSF9kNM6GBJQY",
+    "thread:PRRT_kwDOSF9kNM6GBJRG",
+    "thread:PRRT_kwDOSF9kNM6GBJRQ"
+  ],
+  "fetched_at": "2026-06-01T06:17:07.845Z",
+  "schema_version": "v1",
+  "commit_sha": "233e96def0c6595916adae902d31433ebd55d93d",
+  "title": "feat(ace): slice 4 — inline-URL transitive dependency resolution (B-0288)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T06:16:39Z",
+  "head_ref": "otto-windows/ace-slice4-impl-2026-06-01"
+}

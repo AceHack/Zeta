@@ -1,0 +1,12 @@
+{
+  "pr_number": 6192,
+  "archive_path": "docs/history/pr-reviews/PR-6192-inventory-phase-1-schema-rls-audit-trigger-phase-2-auth-roles-gates-passed.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T07:05:43.750Z",
+  "schema_version": "v1",
+  "commit_sha": "5a2f183bfba7d2f270891ef8887ebdddb13cc446",
+  "title": "Inventory: Phase 1 (schema + RLS + audit trigger) + Phase 2 (auth + roles) — gates passed",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T07:05:20Z",
+  "head_ref": "claude/phase-2-auth-roles-rls-sISt0"
+}

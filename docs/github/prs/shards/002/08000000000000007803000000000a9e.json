@@ -1,0 +1,19 @@
+{
+  "pr_number": 2718,
+  "archive_path": "docs/history/pr-reviews/PR-2718-fix-b0314-smallest-safe-slice-bp-23-24-25-external-anchor-backfill-re-decomp.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_8g0T",
+    "comment:PRRC_kwDOSF9kNM6_8g0u",
+    "comment:PRRC_kwDOSF9kNM6_8gzn",
+    "thread:PRRT_kwDOSF9kNM6BJJ2N",
+    "thread:PRRT_kwDOSF9kNM6BJJ2u",
+    "thread:PRRT_kwDOSF9kNM6BJJ3A"
+  ],
+  "fetched_at": "2026-05-11T16:06:47.141Z",
+  "schema_version": "v1",
+  "commit_sha": "c6569f16c437305dd080884b831c8a8eb5d5b0d4",
+  "title": "fix(b0314): smallest safe slice — BP-23/24/25 external-anchor backfill (re-decomp)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T16:06:26Z",
+  "head_ref": "claim/b0314-bp-nn-rule-anchor-backfill-slice9-riven-2026-05-11"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7059,
+  "archive_path": "docs/history/pr-reviews/PR-7059-fix-ci-gcdl-torn-windows-file-sharing-leak-ignore-machine-generated-workitems-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T08:49:40.574Z",
+  "schema_version": "v1",
+  "commit_sha": "e8211054defe647fa9305f24bbf72c0a57ce0e43",
+  "title": "fix(ci): gcdl-torn Windows file-sharing leak + ignore machine-generated workitems in markdownlint",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T08:49:20Z",
+  "head_ref": "otto/fix-ci-gcdl-torn-windows-sharing-and-markdownlint-workitems"
+}

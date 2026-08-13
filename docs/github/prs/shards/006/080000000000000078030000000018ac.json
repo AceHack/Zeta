@@ -1,0 +1,19 @@
+{
+  "pr_number": 6316,
+  "archive_path": "docs/history/pr-reviews/PR-6316-feat-observe-loadworld-wire-the-real-world-snapshot-closes-the-observe-execute-o.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GkIOF",
+    "comment:PRRC_kwDOSF9kNM7GkION",
+    "comment:PRRC_kwDOSF9kNM7GkLzP",
+    "thread:PRRT_kwDOSF9kNM6F_cZ-",
+    "thread:PRRT_kwDOSF9kNM6F_cZ4",
+    "thread:PRRT_kwDOSF9kNM6F_fA9"
+  ],
+  "fetched_at": "2026-06-01T02:22:24.915Z",
+  "schema_version": "v1",
+  "commit_sha": "e1248f9a5692c2c4516eda057f7fa69a225c1700",
+  "title": "feat(observe): loadWorld — wire the real World snapshot (closes the observe→execute→observe loop)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T02:22:03Z",
+  "head_ref": "otto-cli/observe-loadworld-2026-05-31"
+}

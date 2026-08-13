@@ -1,0 +1,12 @@
+{
+  "pr_number": 7816,
+  "archive_path": "docs/history/pr-reviews/PR-7816-docs-backlog-mark-b-rows-legacy.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:33:44.264Z",
+  "schema_version": "v1",
+  "commit_sha": "c1aa9b080ad5afd5da5f34876ea4ce4adae3cc35",
+  "title": "docs(backlog): mark B rows legacy",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:33:21Z",
+  "head_ref": "codex/backlog-zetaid-wording"
+}

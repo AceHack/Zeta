@@ -1,0 +1,21 @@
+{
+  "pr_number": 5398,
+  "archive_path": "docs/history/pr-reviews/PR-5398-feat-b-0850-phase-3c-vera-codex-3rd-vendor-hits-3-bft-floor-anthropic-google-ope.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FMe0L",
+    "comment:PRRC_kwDOSF9kNM7FMe0i",
+    "comment:PRRC_kwDOSF9kNM7FMe0r",
+    "comment:PRRC_kwDOSF9kNM7FMe0y",
+    "thread:PRRT_kwDOSF9kNM6E_fc-",
+    "thread:PRRT_kwDOSF9kNM6E_fdP",
+    "thread:PRRT_kwDOSF9kNM6E_fdU",
+    "thread:PRRT_kwDOSF9kNM6E_fda"
+  ],
+  "fetched_at": "2026-05-27T04:16:54.240Z",
+  "schema_version": "v1",
+  "commit_sha": "282648d0208ee0c3514429b165eca93df4ea6e1f",
+  "title": "feat(B-0850 Phase 3c): Vera/Codex 3rd vendor — hits ≥3 BFT floor (Anthropic + Google + OpenAI); @openai/codex install + device-flow auth + control-plane enable (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T04:16:36Z",
+  "head_ref": "feat-b0850-3c-vera-codex-3rd-vendor-hits-bft-floor-2026-05-27-0512z"
+}

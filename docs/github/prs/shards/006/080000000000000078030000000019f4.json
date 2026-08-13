@@ -1,0 +1,12 @@
+{
+  "pr_number": 6644,
+  "archive_path": "docs/history/pr-reviews/PR-6644-rules-formal-proof-first-reviewer-fixes-on-layered-lemma-section-role-refs-wordi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T08:52:33.579Z",
+  "schema_version": "v1",
+  "commit_sha": "de6ee639df15b52d5e98eec1dbc112e680972f2b",
+  "title": "rules(formal-proof-first): reviewer fixes on layered-lemma section (role-refs + wording)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T08:52:12Z",
+  "head_ref": "otto-cli/layered-lemma-rule-reviewer-fixes-2026-06-03"
+}

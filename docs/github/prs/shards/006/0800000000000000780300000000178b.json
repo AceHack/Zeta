@@ -1,0 +1,12 @@
+{
+  "pr_number": 6027,
+  "archive_path": "docs/history/pr-reviews/PR-6027-research-2026-05-29-fold-robustness-facet-confidence-calibration-dna-caveat-into.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T18:20:25.908Z",
+  "schema_version": "v1",
+  "commit_sha": "c3c45a65b6df8299cad631551154ddc51f1e195f",
+  "title": "research(2026-05-29): fold robustness facet + confidence-calibration + DNA caveat into the power-tree doc",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T18:20:06Z",
+  "head_ref": "otto-cli/research-power-tree-robustness-facet-foldin-2026-05-29"
+}

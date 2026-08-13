@@ -1,0 +1,12 @@
+{
+  "pr_number": 3917,
+  "archive_path": "docs/history/pr-reviews/PR-3917-chore-b-0122-close-peer-call-ts-migration-complete-11th-cycle-close-row.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T17:23:14.756Z",
+  "schema_version": "v1",
+  "commit_sha": "03caa8607a9fbeaf659c8590d2cde74d15bf555d",
+  "title": "chore(b-0122): close — peer-call TS migration complete (11th cycle close-row)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T17:22:55Z",
+  "head_ref": "otto-cli-shard-1707z-b0122-close-unique-2026-05-16"
+}

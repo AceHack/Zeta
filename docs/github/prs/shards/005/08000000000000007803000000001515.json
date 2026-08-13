@@ -1,0 +1,12 @@
+{
+  "pr_number": 5397,
+  "archive_path": "docs/history/pr-reviews/PR-5397-feat-b-0850-phase-3d-lior-gemini-cli-as-2nd-systemd-vendor-anthropic-google-inst.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T04:08:29.595Z",
+  "schema_version": "v1",
+  "commit_sha": "132eca9bd48707dd73be2443db660df0d075517b",
+  "title": "feat(B-0850 Phase 3d): Lior/Gemini CLI as 2nd systemd vendor — Anthropic + Google; install + interactive auth + control-plane enable (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T04:08:12Z",
+  "head_ref": "feat-b0850-3d-lior-gemini-cli-2nd-vendor-systemd-agent-2026-05-27-0454z"
+}

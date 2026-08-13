@@ -1,0 +1,12 @@
+{
+  "pr_number": 3848,
+  "archive_path": "docs/history/pr-reviews/PR-3848-shard-tick-2026-05-16t09-44z-b-0418-class-2-opaque-partial-26-38-triaged-recover.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T10:02:12.138Z",
+  "schema_version": "v1",
+  "commit_sha": "14d79cf6ad10d2fc459de555d4f8b392b116df58",
+  "title": "shard(tick): 2026-05-16T09:44Z — B-0418 = class #2 (opaque partial); 26/38 triaged + recovery",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:01:54Z",
+  "head_ref": "otto-cli-b0418-audit-recover-2026-05-16-0944z"
+}

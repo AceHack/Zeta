@@ -1,0 +1,19 @@
+{
+  "pr_number": 6492,
+  "archive_path": "docs/history/pr-reviews/PR-6492-feat-core-dynamicvalue-universal-self-describing-payload-primitive-f-canonical-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G71BF",
+    "comment:PRRC_kwDOSF9kNM7G72W2",
+    "comment:PRRC_kwDOSF9kNM7G72XU",
+    "thread:PRRT_kwDOSF9kNM6GRHAe",
+    "thread:PRRT_kwDOSF9kNM6GRIAN",
+    "thread:PRRT_kwDOSF9kNM6GRIAo"
+  ],
+  "fetched_at": "2026-06-01T22:53:45.727Z",
+  "schema_version": "v1",
+  "commit_sha": "2a15ba1815f744f353a476c130f0bc27f9eb88b6",
+  "title": "feat(Core): DynamicValue — universal self-describing-payload primitive (F# canonical shape)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T22:53:21Z",
+  "head_ref": "otto-cli/dynamic-value-fsharp-canonical-shape-2026-06-01"
+}

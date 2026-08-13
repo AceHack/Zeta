@@ -1,0 +1,12 @@
+{
+  "pr_number": 8400,
+  "archive_path": "docs/history/pr-reviews/PR-8400-docs-society-9f-correction-alljoyn-qpg-established-not-absent-low-fi-glyphs-are-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:44:54.108Z",
+  "schema_version": "v1",
+  "commit_sha": "a0dc3720540f57948bdc796ff79853240706f8df",
+  "title": "docs(society): §9f correction — AllJoyn/QPG established (not absent), low-fi glyphs are CHIP-8/9 (built)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:44:22Z",
+  "head_ref": "docs/9f-correct-alljoyn-qpg-chip9-established"
+}

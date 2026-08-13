@@ -1,0 +1,12 @@
+{
+  "pr_number": 3512,
+  "archive_path": "docs/history/pr-reviews/PR-3512-feat-persona-lior-33-archive-migration-44-files-memory-persona-lior-conversation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T15:50:18.779Z",
+  "schema_version": "v1",
+  "commit_sha": "837ea1617b04b12b93a0831d913f13c3d95712a3",
+  "title": "feat(persona-lior): §33 archive migration — 44 files → memory/persona/lior/conversations/",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T15:50:00Z",
+  "head_ref": "feat/persona-lior-migrate-conversations-otto-cli-2026-05-15"
+}

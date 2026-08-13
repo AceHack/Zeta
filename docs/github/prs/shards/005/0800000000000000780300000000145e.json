@@ -1,0 +1,12 @@
+{
+  "pr_number": 5214,
+  "archive_path": "docs/history/pr-reviews/PR-5214-fix-postmerge-5210-5-copilot-findings-prompt-copy-comment-accuracy-path-banner-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T16:29:39.588Z",
+  "schema_version": "v1",
+  "commit_sha": "fad21dfbe2d181f5340fae923e9aebf51e59d62b",
+  "title": "fix(postmerge-5210): 5 Copilot findings — prompt copy + comment accuracy + path + banner-password truth + sk-* FIDO key support",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T16:29:19Z",
+  "head_ref": "otto-cli/postmerge-5210-fixfwd-5-copilot-findings-2026-05-26"
+}

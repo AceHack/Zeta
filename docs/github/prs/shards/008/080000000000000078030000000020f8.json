@@ -1,0 +1,12 @@
+{
+  "pr_number": 8440,
+  "archive_path": "docs/history/pr-reviews/PR-8440-docs-society-9-ctm-finite-game-win-once-vs-infinite-game-continue-play.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T04:28:52.029Z",
+  "schema_version": "v1",
+  "commit_sha": "4ff24b1a976cd7c0abcbcbf5b29827c11154a9d6",
+  "title": "docs(society): §9 CTM — finite game (win once) vs infinite game (continue play)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T04:28:26Z",
+  "head_ref": "otto/ctm-finite-vs-infinite-game"
+}

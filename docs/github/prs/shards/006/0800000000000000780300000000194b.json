@@ -1,0 +1,12 @@
+{
+  "pr_number": 6475,
+  "archive_path": "docs/history/pr-reviews/PR-6475-feat-bag-ts-additive-monoid-surface-monoid-record-completes-bag-generic-math-4-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T21:14:29.976Z",
+  "schema_version": "v1",
+  "commit_sha": "9d0824f4c0381833db12378ba81a33286c618fac",
+  "title": "feat(bag-ts): additive-monoid surface (Monoid record) — completes Bag generic-math 4/4",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T21:14:10Z",
+  "head_ref": "otto-cli/bag-generic-math-ts-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8280,
+  "archive_path": "docs/history/pr-reviews/PR-8280-docs-correct-the-sustainability-seam-free-riding-is-not-the-hazard-on-a-non-riva.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T07:21:44.170Z",
+  "schema_version": "v1",
+  "commit_sha": "e65fcb6e5d992185801b72047791edd16e8bd028",
+  "title": "docs: correct the sustainability seam — free-riding is NOT the hazard on a non-rival positive-sum good",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T07:21:14Z",
+  "head_ref": "otto/free-riding-is-not-the-hazard-nonrival-positive-sum"
+}

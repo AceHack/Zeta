@@ -1,0 +1,12 @@
+{
+  "pr_number": 5235,
+  "archive_path": "docs/history/pr-reviews/PR-5235-fix-b-0823-iso-audit-accepts-nixpkgs-25-11-kernel-initrd-variant-paths-diagnosti.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T17:32:23.590Z",
+  "schema_version": "v1",
+  "commit_sha": "d559799765b4f330ee672d07802e3a57d7023403",
+  "title": "fix(B-0823): ISO audit accepts nixpkgs-25.11 kernel/initrd variant paths + diagnostic dump on failure",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:32:04Z",
+  "head_ref": "otto-cli/fixfwd-iso-bootloader-paths-25-11-2026-05-26"
+}

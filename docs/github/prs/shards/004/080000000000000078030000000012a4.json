@@ -1,0 +1,25 @@
+{
+  "pr_number": 4772,
+  "archive_path": "docs/history/pr-reviews/PR-4772-docs-lean4-add-readme-ci-badge-closes-publication-readiness-gaps-1-2-on-lean-dbs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ET0KF",
+    "comment:PRRC_kwDOSF9kNM7ET0KN",
+    "comment:PRRC_kwDOSF9kNM7ET0KS",
+    "comment:PRRC_kwDOSF9kNM7ET0KT",
+    "comment:PRRC_kwDOSF9kNM7ET0KV",
+    "comment:PRRC_kwDOSF9kNM7ETz44",
+    "thread:PRRT_kwDOSF9kNM6EVlWl",
+    "thread:PRRT_kwDOSF9kNM6EVlke",
+    "thread:PRRT_kwDOSF9kNM6EVlkm",
+    "thread:PRRT_kwDOSF9kNM6EVlkq",
+    "thread:PRRT_kwDOSF9kNM6EVlkr",
+    "thread:PRRT_kwDOSF9kNM6EVlkt"
+  ],
+  "fetched_at": "2026-05-23T22:05:47.130Z",
+  "schema_version": "v1",
+  "commit_sha": "488e971c4bfd03ab28eae25621c22daedf585a52",
+  "title": "docs(lean4): add README + CI badge — closes publication-readiness gaps #1+#2 on Lean DBSP chain rule",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T22:05:27Z",
+  "head_ref": "otto/lean4-readme-publication-readiness-2026-05-23"
+}

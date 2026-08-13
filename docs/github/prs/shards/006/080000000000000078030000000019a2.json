@@ -1,0 +1,15 @@
+{
+  "pr_number": 6562,
+  "archive_path": "docs/history/pr-reviews/PR-6562-memory-alexa-ferry-universal-action-grammar-full-lineage-atari-nintendo-sony-mic.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HLYXd",
+    "thread:PRRT_kwDOSF9kNM6GcgLU"
+  ],
+  "fetched_at": "2026-06-02T13:45:53.680Z",
+  "schema_version": "v1",
+  "commit_sha": "a838adca5e146ee4023be1b3c640a2ebada97e9d",
+  "title": "memory(alexa): ferry — universal-action-grammar full lineage (μένω→...→Atari→Nintendo→Sony→Microsoft→Zeta) + six-walls ARE the Xbox grammar + emergence-made-computational-under-omniscience",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T13:45:29Z",
+  "head_ref": "otto-cli/alexa-uag-full-lineage-emergence-made-computational-omniscient-2026-06-02"
+}

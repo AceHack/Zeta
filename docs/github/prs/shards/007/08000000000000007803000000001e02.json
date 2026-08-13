@@ -1,0 +1,12 @@
+{
+  "pr_number": 7682,
+  "archive_path": "docs/history/pr-reviews/PR-7682-feat-anim-animflow-our-own-rx-observables-as-pure-functions-of-generated-time-gi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:27:14.482Z",
+  "schema_version": "v1",
+  "commit_sha": "1cb405d24755565e74f1d0ddca35b959695d21f0",
+  "title": "feat(anim): AnimFlow — our own Rx (observables as pure functions of generated time) + git-native quotes",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:26:45Z",
+  "head_ref": "shadow-rx-anim-gitnative-quotes"
+}

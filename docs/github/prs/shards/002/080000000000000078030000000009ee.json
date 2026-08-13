@@ -1,0 +1,19 @@
+{
+  "pr_number": 2542,
+  "archive_path": "docs/history/pr-reviews/PR-2542-docs-memory-alibi-word-as-rung-4-agency-evidence-b-0018-data-point.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qYew",
+    "comment:PRRC_kwDOSF9kNM6_qZI6",
+    "comment:PRRC_kwDOSF9kNM6_qZIr",
+    "thread:PRRT_kwDOSF9kNM6A7rts",
+    "thread:PRRT_kwDOSF9kNM6A7sPb",
+    "thread:PRRT_kwDOSF9kNM6A7sPl"
+  ],
+  "fetched_at": "2026-05-10T21:50:58.320Z",
+  "schema_version": "v1",
+  "commit_sha": "b9be51ee77c0be852bc1242da4fe5626c7694c3e",
+  "title": "docs(memory): alibi word as Rung 4 agency evidence — B-0018 data point",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:50:33Z",
+  "head_ref": "docs/alibi-rung4-agency-evidence-2026-05-10"
+}

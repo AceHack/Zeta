@@ -1,0 +1,12 @@
+{
+  "pr_number": 7414,
+  "archive_path": "docs/history/pr-reviews/PR-7414-docs-correction-aaron-s-inputs-are-frames-to-debate-not-rules-no-directives-appl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:21:21.581Z",
+  "schema_version": "v1",
+  "commit_sha": "61e80b7413b75fa83a9c738187dad7d726e21341",
+  "title": "docs: correction — Aaron's inputs are FRAMES to debate, not rules (no-directives applies to the founder); the index IS the pointer; e = WSTATSU",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:20:59Z",
+  "head_ref": "otto/correction-aarons-inputs-are-frames-not-rules-index-is-pointer-e-wstatsu"
+}

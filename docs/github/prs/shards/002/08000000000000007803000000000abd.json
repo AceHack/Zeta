@@ -1,0 +1,12 @@
+{
+  "pr_number": 2749,
+  "archive_path": "docs/history/pr-reviews/PR-2749-docs-backlog-b-0415-craft-school-subject-dependency-graph.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T20:25:35.697Z",
+  "schema_version": "v1",
+  "commit_sha": "b69b5c2be41541d4cbb679c4faf18581435a8a54",
+  "title": "docs(backlog): B-0415 craft school subject dependency graph",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T20:25:13Z",
+  "head_ref": "feat/b-0415-craft-school-backlog-2026-05-11"
+}

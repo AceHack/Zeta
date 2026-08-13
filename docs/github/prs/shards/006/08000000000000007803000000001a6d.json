@@ -1,0 +1,12 @@
+{
+  "pr_number": 6765,
+  "archive_path": "docs/history/pr-reviews/PR-6765-docs-architecture-safety-invariant-zetaid-is-a-pointer-not-authority.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T09:17:08.284Z",
+  "schema_version": "v1",
+  "commit_sha": "4deeef5516990b178301a2210816a63c5d4f30df",
+  "title": "docs(architecture): SAFETY INVARIANT — ZetaID is a pointer, not authority",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T09:16:48Z",
+  "head_ref": "otto/zetaid-pointer-not-authority-safety-invariant"
+}

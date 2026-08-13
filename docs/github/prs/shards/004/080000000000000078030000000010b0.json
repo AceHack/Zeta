@@ -1,0 +1,12 @@
+{
+  "pr_number": 4272,
+  "archive_path": "docs/history/pr-reviews/PR-4272-shard-2354z-c-forced-6-cycle-4-recursion-termination.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:58:31.126Z",
+  "schema_version": "v1",
+  "commit_sha": "6693a3605babdc8fe8618ea36954400f48ba47e8",
+  "title": "shard(2354Z-c): forced-#6 cycle-4 — recursion termination",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:58:12Z",
+  "head_ref": "shard/tick-2354z-c-forced-6-recursion-termination-clause-2026-05-18"
+}

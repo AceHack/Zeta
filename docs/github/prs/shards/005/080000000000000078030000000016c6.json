@@ -1,0 +1,21 @@
+{
+  "pr_number": 5830,
+  "archive_path": "docs/history/pr-reviews/PR-5830-backlog-b-0920-memorylifetime-du-agent-initiated-cleanup-with-history-preservati.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FypbR",
+    "comment:PRRC_kwDOSF9kNM7Fypc0",
+    "comment:PRRC_kwDOSF9kNM7FypcX",
+    "comment:PRRC_kwDOSF9kNM7Fypdh",
+    "thread:PRRT_kwDOSF9kNM6FbDB4",
+    "thread:PRRT_kwDOSF9kNM6FbDCv",
+    "thread:PRRT_kwDOSF9kNM6FbDDE",
+    "thread:PRRT_kwDOSF9kNM6FbDDq"
+  ],
+  "fetched_at": "2026-05-28T14:23:55.058Z",
+  "schema_version": "v1",
+  "commit_sha": "fde5741283af2d62792ac74f5d95c9ddaef77df4",
+  "title": "backlog(B-0920): MemoryLifetime DU — agent-initiated cleanup with history preservation; sibling orthogonal axis to B-0919 MemoryBinding (Aaron 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T14:23:28Z",
+  "head_ref": "otto-cli/b-0920-memory-lifetime-cleanup-with-history-2026-05-28"
+}

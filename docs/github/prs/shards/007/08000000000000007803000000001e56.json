@@ -1,0 +1,12 @@
+{
+  "pr_number": 7766,
+  "archive_path": "docs/history/pr-reviews/PR-7766-refactor-qsharp-move-reference-oracle-into-src.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T19:18:18.603Z",
+  "schema_version": "v1",
+  "commit_sha": "49a11411bde728d37938e0f82753d47a02823e01",
+  "title": "refactor(qsharp): move reference oracle into src",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T19:17:47Z",
+  "head_ref": "codex/src-owned-qsharp-oracle"
+}

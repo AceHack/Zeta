@@ -1,0 +1,12 @@
+{
+  "pr_number": 8747,
+  "archive_path": "docs/history/pr-reviews/PR-8747-docs-handoff-mark-math-team-row-5-ntp-noninterference-fscheck-leg-discharged-874.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T16:22:39.838Z",
+  "schema_version": "v1",
+  "commit_sha": "7c30c4850a0356688c7be61851e5498b3f0fedf9",
+  "title": "docs(handoff): mark math-team row 5 NTP noninterference FsCheck leg discharged (#8745, verified)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T16:22:16Z",
+  "head_ref": "otto/row5-handoff-discharge"
+}

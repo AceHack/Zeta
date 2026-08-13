@@ -1,0 +1,19 @@
+{
+  "pr_number": 2698,
+  "archive_path": "docs/history/pr-reviews/PR-2698-docs-research-claude-ai-three-week-stability-as-strongest-evidence-metrics.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_4F9F",
+    "comment:PRRC_kwDOSF9kNM6_4J2t",
+    "comment:PRRC_kwDOSF9kNM6_4X0q",
+    "comment:PRRC_kwDOSF9kNM6_4XhG",
+    "thread:PRRT_kwDOSF9kNM6BF2je",
+    "thread:PRRT_kwDOSF9kNM6BF5gu"
+  ],
+  "fetched_at": "2026-05-11T13:23:54.189Z",
+  "schema_version": "v1",
+  "commit_sha": "9f0dad15c11c26d38402c427be07cad2c73b7ff2",
+  "title": "docs(research): Claude.ai — three-week stability as strongest evidence + metrics",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T13:23:29Z",
+  "head_ref": "docs/claudeai-three-week-stability-metrics-2026-05-11"
+}

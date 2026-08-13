@@ -1,0 +1,12 @@
+{
+  "pr_number": 7835,
+  "archive_path": "docs/history/pr-reviews/PR-7835-feat-ben-b-1039-slice-1-exact-chip8-tick-meter-the-prediction-grader-two-registr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T23:27:06.628Z",
+  "schema_version": "v1",
+  "commit_sha": "7bdcdc4b573e1b6c50ea3172c763be5ee1dea3be",
+  "title": "feat(ben): B-1039 slice 1 — exact chip8 tick meter + the prediction grader (two registry rows graded CONFIRMED)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T23:26:44Z",
+  "head_ref": "shadow-ben-slice1"
+}

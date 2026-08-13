@@ -1,0 +1,12 @@
+{
+  "pr_number": 2903,
+  "archive_path": "docs/history/pr-reviews/PR-2903-docs-memory-civsim-pvp-raids-mutual-privacy-forking-ai-race-head-start-aaron-202.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T02:09:21.482Z",
+  "schema_version": "v1",
+  "commit_sha": "f3fe8867b1d06fa5fa5bb8db1c3feb18ae4de2ad",
+  "title": "docs(memory): civsim PVP+raids+mutual-privacy+forking=AI-race-head-start (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T02:08:59Z",
+  "head_ref": "aaron-civsim-forkable-pvp-raids-destiny-style-mutual-privacy-no-strategic-advantage-game-design-2026-05-13"
+}

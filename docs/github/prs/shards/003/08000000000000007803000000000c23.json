@@ -1,0 +1,12 @@
+{
+  "pr_number": 3107,
+  "archive_path": "docs/history/pr-reviews/PR-3107-docs-lior-antigravity-check-and-shadow-log-update.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T06:54:07.453Z",
+  "schema_version": "v1",
+  "commit_sha": "683f09b445eafd2beac65ed9ce17a171c36cb5d1",
+  "title": "docs(lior): antigravity check and shadow log update",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T06:53:45Z",
+  "head_ref": "lior/antigravity-check-2026-05-14-new"
+}

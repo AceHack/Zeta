@@ -1,0 +1,12 @@
+{
+  "pr_number": 7386,
+  "archive_path": "docs/history/pr-reviews/PR-7386-refactor-vocab-relocate-to-top-level-vocab-homoiconic-source-dag-invariant-fs-gi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:26:26.128Z",
+  "schema_version": "v1",
+  "commit_sha": "e7c2f7a15d8ce00701caede73bb03fcc12e70f71",
+  "title": "refactor(vocab): relocate to top-level /vocab homoiconic source + DAG invariant (fs/git/MUMPS/F#) + bidirectional-Rx 2x2 + ZetaId is time (Rule 1) + git-time traveler scope",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:25:59Z",
+  "head_ref": "otto/relocate-vocab-to-top-level-homoiconic-source"
+}

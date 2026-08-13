@@ -1,0 +1,17 @@
+{
+  "pr_number": 6424,
+  "archive_path": "docs/history/pr-reviews/PR-6424-docs-ace-slice-6-remote-registry-design-spec-b-0971.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GzNIh",
+    "comment:PRRC_kwDOSF9kNM7GzNIm",
+    "thread:PRRT_kwDOSF9kNM6GKvaL",
+    "thread:PRRT_kwDOSF9kNM6GKvaN"
+  ],
+  "fetched_at": "2026-06-01T15:31:36.821Z",
+  "schema_version": "v1",
+  "commit_sha": "3e4be3370ec7a00eb624f6ac65ee521c1e60ba82",
+  "title": "docs(ace): slice 6 remote-registry design spec (B-0971)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T15:31:03Z",
+  "head_ref": "otto-windows/ace-slice6-remote-registry-spec-2026-06-01"
+}

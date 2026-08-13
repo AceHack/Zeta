@@ -1,0 +1,12 @@
+{
+  "pr_number": 8336,
+  "archive_path": "docs/history/pr-reviews/PR-8336-chore-workitem-add-aaron-s-confidence-based-memory-system-as-the-human-reference.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T20:55:31.018Z",
+  "schema_version": "v1",
+  "commit_sha": "f881a3e894b0f8397c8f4dea05e95a5de7182b52",
+  "title": "chore(workitem): add Aaron's confidence-based memory system as the human reference baseline",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T20:54:59Z",
+  "head_ref": "chore/memory-org-research-aaron-confidence-baseline"
+}

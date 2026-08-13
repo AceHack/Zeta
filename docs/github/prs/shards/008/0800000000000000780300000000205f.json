@@ -1,0 +1,12 @@
+{
+  "pr_number": 8287,
+  "archive_path": "docs/history/pr-reviews/PR-8287-fix-lint-markdownlint-md032-in-the-alexa-ferry-doc-fixes-the-gate-red-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T08:33:55.759Z",
+  "schema_version": "v1",
+  "commit_sha": "00171c3b35ae04921191d1cc3c6bb74dc897c9b1",
+  "title": "fix(lint): markdownlint MD032 in the Alexa-ferry doc — fixes the gate red on main",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T08:33:21Z",
+  "head_ref": "otto/fix-markdownlint-md032-ferry-doc"
+}

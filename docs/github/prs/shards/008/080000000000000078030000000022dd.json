@@ -1,0 +1,12 @@
+{
+  "pr_number": 8925,
+  "archive_path": "docs/history/pr-reviews/PR-8925-prove-normalizer-incompleteness-via-counterexamples.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T09:10:22.359Z",
+  "schema_version": "v1",
+  "commit_sha": "940c73eeedd85d2e9bed4a302516f5078d00fad9",
+  "title": "Prove normalizer incompleteness via counterexamples",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T09:09:53Z",
+  "head_ref": "feature/lumen-normalizer-incompleteness"
+}

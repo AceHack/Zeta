@@ -1,0 +1,12 @@
+{
+  "pr_number": 8100,
+  "archive_path": "docs/history/pr-reviews/PR-8100-docs-governance-shared-checkout-is-view-only-cross-harness-rule-35.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T00:03:40.525Z",
+  "schema_version": "v1",
+  "commit_sha": "ada44fa59ab3b09da1e410221bbcd37be96c990b",
+  "title": "docs(governance): shared checkout is view-only — cross-harness rule (§35)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T00:03:20Z",
+  "head_ref": "otto/shared-checkout-isolation-cross-harness"
+}

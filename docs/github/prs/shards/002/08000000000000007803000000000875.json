@@ -1,0 +1,33 @@
+{
+  "pr_number": 2165,
+  "archive_path": "docs/history/pr-reviews/PR-2165-feat-b-0272-rom-canonical-naming-via-tosec-no-intro-datfile-lookup.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_dtDS",
+    "comment:PRRC_kwDOSF9kNM6_dtDW",
+    "comment:PRRC_kwDOSF9kNM6_dua5",
+    "comment:PRRC_kwDOSF9kNM6_dua_",
+    "comment:PRRC_kwDOSF9kNM6_duaa",
+    "comment:PRRC_kwDOSF9kNM6_duav",
+    "comment:PRRC_kwDOSF9kNM6_dubG",
+    "comment:PRRC_kwDOSF9kNM6_dubP",
+    "comment:PRRC_kwDOSF9kNM6_dubc",
+    "comment:PRRC_kwDOSF9kNM6_dubk",
+    "thread:PRRT_kwDOSF9kNM6AxxUt",
+    "thread:PRRT_kwDOSF9kNM6AxxUw",
+    "thread:PRRT_kwDOSF9kNM6AxyV4",
+    "thread:PRRT_kwDOSF9kNM6AxyVs",
+    "thread:PRRT_kwDOSF9kNM6AxyWA",
+    "thread:PRRT_kwDOSF9kNM6AxyWF",
+    "thread:PRRT_kwDOSF9kNM6AxyWJ",
+    "thread:PRRT_kwDOSF9kNM6AxyWQ",
+    "thread:PRRT_kwDOSF9kNM6AxyWd",
+    "thread:PRRT_kwDOSF9kNM6AxyWj"
+  ],
+  "fetched_at": "2026-05-09T02:24:02.866Z",
+  "schema_version": "v1",
+  "commit_sha": "6298a2371c6379ed9b1956aeb652bd6d9aa98b02",
+  "title": "feat(B-0272): ROM canonical naming via TOSEC/No-Intro datfile lookup",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T02:23:47Z",
+  "head_ref": "claim/b0272-rom-canonical-naming-smallest-slice-2026-05-08"
+}

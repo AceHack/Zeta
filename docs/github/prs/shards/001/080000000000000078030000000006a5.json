@@ -1,0 +1,17 @@
+{
+  "pr_number": 1701,
+  "archive_path": "docs/history/pr-reviews/PR-1701-memory-discipline-otto-holds-synthesis-weight-prior-art-grep-before-substrate-la.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-RGQ_",
+    "comment:PRRC_kwDOSF9kNM6-RGQi",
+    "thread:PRRT_kwDOSF9kNM5_z7r0",
+    "thread:PRRT_kwDOSF9kNM5_z7sJ"
+  ],
+  "fetched_at": "2026-05-06T01:41:09.586Z",
+  "schema_version": "v1",
+  "commit_sha": "3baefe8192c6865a61785be0e2f62d8daa3f98e2",
+  "title": "memory(discipline): Otto holds synthesis weight + prior-art-grep BEFORE substrate-landing + scout-and-delegate + context-budget-preservation (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T23:30:59Z",
+  "head_ref": "memory/otto-holds-synthesis-weight-prior-art-grep-first-before-substrate-landing-discipline-aaron-2026-05-05"
+}

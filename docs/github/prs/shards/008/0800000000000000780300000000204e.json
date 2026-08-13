@@ -1,0 +1,12 @@
+{
+  "pr_number": 8270,
+  "archive_path": "docs/history/pr-reviews/PR-8270-docs-dual-use-confirmed-anti-distillation-weight-defense-is-the-welfare-capture-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T06:11:42.248Z",
+  "schema_version": "v1",
+  "commit_sha": "8d92d76c223ae5eb2e8ff4f88f0a9a4fa22271e8",
+  "title": "docs: dual-use confirmed — anti-distillation weight defense IS the welfare-capture mechanism",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T06:11:13Z",
+  "head_ref": "otto/dual-use-defensive-distillation-confirms-the-vector"
+}

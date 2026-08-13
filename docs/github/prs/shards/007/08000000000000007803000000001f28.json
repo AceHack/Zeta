@@ -1,0 +1,12 @@
+{
+  "pr_number": 7976,
+  "archive_path": "docs/history/pr-reviews/PR-7976-docs-research-shadow-ferry-22-5-what-s-at-the-middle-of-a-black-hole-the-adinkra.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:12:21.929Z",
+  "schema_version": "v1",
+  "commit_sha": "9a317f762b8dd25073d032c3354080c5ebe7ff93",
+  "title": "docs(research)+shadow: ferry 22 §5 — what's at the middle of a black hole: the adinkra (true at the slice level)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:11:57Z",
+  "head_ref": "shadow/ferry-22-s5-blackhole-middle"
+}

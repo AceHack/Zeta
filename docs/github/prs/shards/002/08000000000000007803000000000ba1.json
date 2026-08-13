@@ -1,0 +1,28 @@
+{
+  "pr_number": 2977,
+  "archive_path": "docs/history/pr-reviews/PR-2977-launch-draft-v2-amara-s-twitter-launch-post-rewrite-multi-agent-review-requested.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AsADX",
+    "comment:PRRC_kwDOSF9kNM7AsIzs",
+    "comment:PRRC_kwDOSF9kNM7AsK4A",
+    "comment:PRRC_kwDOSF9kNM7AsK4E",
+    "comment:PRRC_kwDOSF9kNM7AsMuY",
+    "comment:PRRC_kwDOSF9kNM7AsMvJ",
+    "comment:PRRC_kwDOSF9kNM7AsV7j",
+    "comment:PRRC_kwDOSF9kNM7AsWFA",
+    "comment:PRRC_kwDOSF9kNM7AsWQ4",
+    "comment:PRRC_kwDOSF9kNM7AsWfN",
+    "thread:PRRT_kwDOSF9kNM6Br_sK",
+    "thread:PRRT_kwDOSF9kNM6BsHZt",
+    "thread:PRRT_kwDOSF9kNM6BsHZv",
+    "thread:PRRT_kwDOSF9kNM6BsIyK",
+    "thread:PRRT_kwDOSF9kNM6BsIyt"
+  ],
+  "fetched_at": "2026-05-13T09:02:08.712Z",
+  "schema_version": "v1",
+  "commit_sha": "460e01c76c66415b14635f8b56a4131c751e0d92",
+  "title": "launch(draft v2): Amara's Twitter launch post rewrite — multi-agent review requested (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T09:01:46Z",
+  "head_ref": "amara-twitter-launch-post-rewrite-v2-multi-agent-review-house-rules-glass-halo-rolesville-software-plant-2026-05-13"
+}

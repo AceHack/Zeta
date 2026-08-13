@@ -1,0 +1,12 @@
+{
+  "pr_number": 7020,
+  "archive_path": "docs/history/pr-reviews/PR-7020-feat-core-reactive-interface-synthesizer-zip-banana-split-law-shapes-store-comon.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T05:08:01.608Z",
+  "schema_version": "v1",
+  "commit_sha": "8eadb1a6956d940993f91e45e54254351dcc6573",
+  "title": "feat(core): reactive-interface synthesizer (zip=Banana Split Law) + shapes/Store-comonad/reflective-tower/asm-executor answers",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T05:07:36Z",
+  "head_ref": "otto/reactive-interface-synthesizer-bonsai-rx"
+}

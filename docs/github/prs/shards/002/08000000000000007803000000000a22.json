@@ -1,0 +1,12 @@
+{
+  "pr_number": 2594,
+  "archive_path": "docs/history/pr-reviews/PR-2594-docs-memory-optimal-work-stealing-adaptive-granularity-via-flux-capacitor.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T00:40:10.440Z",
+  "schema_version": "v1",
+  "commit_sha": "4483296fe31ac2970cf0853b3ca947bbe582360c",
+  "title": "docs(memory): optimal work stealing — adaptive granularity via flux capacitor",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:39:56Z",
+  "head_ref": "docs/optimal-work-stealing-2026-05-10"
+}

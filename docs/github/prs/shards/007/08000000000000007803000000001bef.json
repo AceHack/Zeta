@@ -1,0 +1,12 @@
+{
+  "pr_number": 7151,
+  "archive_path": "docs/history/pr-reviews/PR-7151-feat-platform-generic-data-driven-deployment-engine-blueprint-deployable.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:48:00.840Z",
+  "schema_version": "v1",
+  "commit_sha": "410f96b1ac4b148fa085cf89d2a1888c1b7645c8",
+  "title": "feat(platform): generic data-driven deployment engine (Blueprint + Deployable)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:47:39Z",
+  "head_ref": "feat/generic-deployable-engine"
+}

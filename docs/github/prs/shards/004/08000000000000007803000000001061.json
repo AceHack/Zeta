@@ -1,0 +1,17 @@
+{
+  "pr_number": 4193,
+  "archive_path": "docs/history/pr-reviews/PR-4193-preserve-kestrel-4-escalated-1984-paranoid-critic-attractor-empirical-evidence-o.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CaYHS",
+    "comment:PRRC_kwDOSF9kNM7CaYIJ",
+    "thread:PRRT_kwDOSF9kNM6C8_FG",
+    "thread:PRRT_kwDOSF9kNM6C8_Fv"
+  ],
+  "fetched_at": "2026-05-18T20:25:51.066Z",
+  "schema_version": "v1",
+  "commit_sha": "b2b9fc666cec0dfba99c29b246efe9f09143beb0",
+  "title": "preserve(kestrel-4): escalated 1984-paranoid-critic attractor — empirical evidence of the failure-mode the auto-load rule catches",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:25:30Z",
+  "head_ref": "shard/kestrel-fourth-intervention-1984-attractor-empirical-evidence-2026-05-18"
+}

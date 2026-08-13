@@ -1,0 +1,16 @@
+{
+  "pr_number": 3322,
+  "archive_path": "docs/history/pr-reviews/PR-3322-shard-tick-0027z-multi-otto-contamination-caught-side-worktree-discipline.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BbAEY",
+    "comment:PRRC_kwDOSF9kNM7BbC6D",
+    "thread:PRRT_kwDOSF9kNM6COUnn"
+  ],
+  "fetched_at": "2026-05-15T00:36:38.158Z",
+  "schema_version": "v1",
+  "commit_sha": "70f1adfa4d75966ba5fb9ae6fa8f9d76e972fa96",
+  "title": "shard(tick): 0027Z — multi-Otto contamination caught + side-worktree discipline",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:36:20Z",
+  "head_ref": "shard/tick-0027Z-multi-otto-collision-note-2026-05-15"
+}

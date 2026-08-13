@@ -1,0 +1,12 @@
+{
+  "pr_number": 6086,
+  "archive_path": "docs/history/pr-reviews/PR-6086-feat-health-add-b-0250-merged-pr-event-adapter.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T06:06:01.004Z",
+  "schema_version": "v1",
+  "commit_sha": "b7fe942a74cb3eb8c67db9ed95219309bebc5c7c",
+  "title": "feat(health): add B-0250 merged PR event adapter",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T06:05:42Z",
+  "head_ref": "claim/codex-loop-b0250-event-observation-adapter-20260530"
+}

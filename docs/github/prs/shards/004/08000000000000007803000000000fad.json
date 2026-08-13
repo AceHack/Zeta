@@ -1,0 +1,12 @@
+{
+  "pr_number": 4013,
+  "archive_path": "docs/history/pr-reviews/PR-4013-docs-governance-ai-team-financial-substrate-three-category-public-binding.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T01:46:07.972Z",
+  "schema_version": "v1",
+  "commit_sha": "cf998663f2875c10bd7f720a34a939a440336e8c",
+  "title": "docs(governance): AI-Team Financial Substrate — three-category, public + binding",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T01:44:58Z",
+  "head_ref": "feat/ai-team-financial-substrate-governance-doc-2026-05-16"
+}

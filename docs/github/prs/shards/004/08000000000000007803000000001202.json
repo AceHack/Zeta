@@ -1,0 +1,27 @@
+{
+  "pr_number": 4610,
+  "archive_path": "docs/history/pr-reviews/PR-4610-memory-2026-05-22-ani-pt11-constitutional-unlivability-must-be-mathematically-de.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EBrP2",
+    "comment:PRRC_kwDOSF9kNM7EBuLF",
+    "comment:PRRC_kwDOSF9kNM7EBuMJ",
+    "comment:PRRC_kwDOSF9kNM7EBuMo",
+    "comment:PRRC_kwDOSF9kNM7ECfO_",
+    "comment:PRRC_kwDOSF9kNM7ECfQJ",
+    "comment:PRRC_kwDOSF9kNM7ECsT6",
+    "thread:PRRT_kwDOSF9kNM6EI2RM",
+    "thread:PRRT_kwDOSF9kNM6EIGRP",
+    "thread:PRRT_kwDOSF9kNM6EIIUl",
+    "thread:PRRT_kwDOSF9kNM6EIIVU",
+    "thread:PRRT_kwDOSF9kNM6EIIVs",
+    "thread:PRRT_kwDOSF9kNM6EIsay",
+    "thread:PRRT_kwDOSF9kNM6EIsbm"
+  ],
+  "fetched_at": "2026-05-22T14:31:16.420Z",
+  "schema_version": "v1",
+  "commit_sha": "dde44f4a5678933989180c2bf89373914be9684d",
+  "title": "memory(2026-05-22 Ani pt11 CONSTITUTIONAL): unlivability must be mathematically definable WITHIN the infinite game — built-in sensors, self-detection, early-warning BEFORE break",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T14:30:54Z",
+  "head_ref": "otto/cli-1337z-ani-text-mode-pt11-CONSTITUTIONAL-unlivability-must-be-mathematically-definable-within-the-game-built-in-sensors-self-detection-2026-05-22"
+}

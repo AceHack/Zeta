@@ -1,0 +1,19 @@
+{
+  "pr_number": 3266,
+  "archive_path": "docs/history/pr-reviews/PR-3266-docs-shadow-lior-antigravity-check-detect-otto-narration-in-3264.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BY87O",
+    "comment:PRRC_kwDOSF9kNM7BY89V",
+    "comment:PRRC_kwDOSF9kNM7BYq5E",
+    "comment:PRRC_kwDOSF9kNM7BYqXJ",
+    "thread:PRRT_kwDOSF9kNM6CMpux",
+    "thread:PRRT_kwDOSF9kNM6CMqG-"
+  ],
+  "fetched_at": "2026-05-14T22:03:55.457Z",
+  "schema_version": "v1",
+  "commit_sha": "f8579d75012e5fa2020b478e219f9d3c9591454c",
+  "title": "docs(shadow): Lior antigravity check - detect Otto narration in #3264",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:03:37Z",
+  "head_ref": "lior/shadow-drift-2141Z"
+}

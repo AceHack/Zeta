@@ -1,0 +1,12 @@
+{
+  "pr_number": 7192,
+  "archive_path": "docs/history/pr-reviews/PR-7192-docs-research-sim-detection-meta-game-leaks-into-infosec-timing-side-channel-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T03:34:03.300Z",
+  "schema_version": "v1",
+  "commit_sha": "4868020333da7cdc709a44322043e33e53df7a1c",
+  "title": "docs(research): sim-detection meta-game leaks into infosec (timing side-channel); the two-directions bidirectional-lowering move",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T03:33:43Z",
+  "head_ref": "otto/research-sim-detection-metagame-leaks-into-infosec-two-directions"
+}

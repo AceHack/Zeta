@@ -1,0 +1,12 @@
+{
+  "pr_number": 6661,
+  "archive_path": "docs/history/pr-reviews/PR-6661-research-fix-tfeedback-consistency-un-split-ople-acronym-copilot-on-6660.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T11:13:22.806Z",
+  "schema_version": "v1",
+  "commit_sha": "5a45ab24045eb73c1723b2950514633de4bbb1d2",
+  "title": "research(fix): TFeedback consistency + un-split OPLE acronym (Copilot on #6660)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T11:12:59Z",
+  "head_ref": "otto-cli/shape1-note-tfeedback-ople-fixes-2026-06-03"
+}

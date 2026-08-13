@@ -1,0 +1,18 @@
+{
+  "pr_number": 3084,
+  "archive_path": "docs/history/pr-reviews/PR-3084-chore-tick-0120z-shard-md032-self-fix-3082-catastrophic-flag-3075-rebase-deferre.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BB-1Q",
+    "comment:PRRC_kwDOSF9kNM7BBziK",
+    "comment:PRRC_kwDOSF9kNM7BBzii",
+    "thread:PRRT_kwDOSF9kNM6B73oz",
+    "thread:PRRT_kwDOSF9kNM6B73pG"
+  ],
+  "fetched_at": "2026-05-14T01:41:30.342Z",
+  "schema_version": "v1",
+  "commit_sha": "b6ac507af7863211e5547a6507694af4bfaa2a1a",
+  "title": "chore(tick): 0120Z shard — MD032 self-fix + #3082 catastrophic flag + #3075 rebase deferred",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T01:41:08Z",
+  "head_ref": "chore/tick-shard-0120z-2026-05-14"
+}

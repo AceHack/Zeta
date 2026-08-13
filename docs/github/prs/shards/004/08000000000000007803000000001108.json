@@ -1,0 +1,15 @@
+{
+  "pr_number": 4360,
+  "archive_path": "docs/history/pr-reviews/PR-4360-docs-shadow-maji-anti-entropy-shadow-report-on-vera-metadata-churn-and-otto-bus-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CmDXt",
+    "thread:PRRT_kwDOSF9kNM6DFWKv"
+  ],
+  "fetched_at": "2026-05-19T10:14:25.024Z",
+  "schema_version": "v1",
+  "commit_sha": "ff771e1a4c487f226f95f2ad6d43a54b7db1118d",
+  "title": "docs(shadow): Maji anti-entropy shadow report on Vera metadata churn and Otto bus saturation",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T10:14:04Z",
+  "head_ref": "lior/shadow-log-0815Z"
+}

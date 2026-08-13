@@ -1,0 +1,12 @@
+{
+  "pr_number": 3057,
+  "archive_path": "docs/history/pr-reviews/PR-3057-fix-backlog-resolve-b-0068-1-id-collision-renumber-aaron-attributed-row-b-0068-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T23:15:00.086Z",
+  "schema_version": "v1",
+  "commit_sha": "84b868ccea8f7c183254e9c97876c75feb45b0d6",
+  "title": "fix(backlog): resolve B-0068.1 ID collision — renumber Aaron-attributed row → B-0068.4",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T23:14:38Z",
+  "head_ref": "fix/b0068.1-id-collision-renumber-aaron-to-b0068.4-2026-05-13"
+}

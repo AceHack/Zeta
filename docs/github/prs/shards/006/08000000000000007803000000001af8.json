@@ -1,0 +1,12 @@
+{
+  "pr_number": 6904,
+  "archive_path": "docs/history/pr-reviews/PR-6904-backlog-081kthtppcd-honest-bound-zetaids-are-viruses-they-need-a-host-relative-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T20:11:09.808Z",
+  "schema_version": "v1",
+  "commit_sha": "7f25226cf98b2ebefbf0a7ec5ea1be81ef134072",
+  "title": "backlog(081KTHTPPCD): honest bound — ZetaIds are viruses, they need a host (relative compression, host-gated)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T20:10:51Z",
+  "head_ref": "otto/128bit-workitem-zetaids-are-viruses-host-dependent-bound"
+}

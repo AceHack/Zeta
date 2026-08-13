@@ -1,0 +1,19 @@
+{
+  "pr_number": 3429,
+  "archive_path": "docs/history/pr-reviews/PR-3429-shard-tick-1114z-pr-3425-merged-routine-threads-on-pr-3427.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BlaNp",
+    "comment:PRRC_kwDOSF9kNM7BlaOV",
+    "comment:PRRC_kwDOSF9kNM7Bldfv",
+    "comment:PRRC_kwDOSF9kNM7BldjY",
+    "thread:PRRT_kwDOSF9kNM6CVvfE",
+    "thread:PRRT_kwDOSF9kNM6CVvfl"
+  ],
+  "fetched_at": "2026-05-15T11:22:05.432Z",
+  "schema_version": "v1",
+  "commit_sha": "243b001009f81f6992f9e69341508b54c223a3a0",
+  "title": "shard(tick): 1114Z — PR #3425 merged; routine threads on PR #3427",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:21:48Z",
+  "head_ref": "shard/tick-1114z-otto-cli-2026-05-15"
+}

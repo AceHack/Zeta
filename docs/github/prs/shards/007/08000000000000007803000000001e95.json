@@ -1,0 +1,12 @@
+{
+  "pr_number": 7829,
+  "archive_path": "docs/history/pr-reviews/PR-7829-feat-quantum-observable-mirror-reticulum-observable-row-contract-and-codec-on-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T23:09:50.488Z",
+  "schema_version": "v1",
+  "commit_sha": "a5a923314b152b0e00eb7836d251aeb6190f32e3",
+  "title": "feat(quantum-observable): mirror Reticulum observable row contract and codec on TS-side",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T23:09:25Z",
+  "head_ref": "fix/watermark-ts-safe-integers"
+}

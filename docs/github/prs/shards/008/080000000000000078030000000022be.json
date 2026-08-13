@@ -1,0 +1,12 @@
+{
+  "pr_number": 8894,
+  "archive_path": "docs/history/pr-reviews/PR-8894-fix-keys-onboard-publishes-machine-pubkey-so-publish-step-finds-it-coherent-dry-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:52:13.377Z",
+  "schema_version": "v1",
+  "commit_sha": "20f43baa1be57efc86d3fe377898993a5d7ca442",
+  "title": "fix(keys): onboard publishes machine pubkey so publish step finds it (+ coherent dry-run)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:51:47Z",
+  "head_ref": "otto/onboard-publish-path-fix"
+}

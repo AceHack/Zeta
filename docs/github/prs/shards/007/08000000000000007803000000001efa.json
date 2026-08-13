@@ -1,0 +1,12 @@
+{
+  "pr_number": 7930,
+  "archive_path": "docs/history/pr-reviews/PR-7930-docs-research-ip-questionable-shadow-welch-labs-deepseek-mla-transcript-verbatim.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:31:27.429Z",
+  "schema_version": "v1",
+  "commit_sha": "74f7963c24b888c91df24002920bea80aea20666",
+  "title": "docs(research/ip-questionable)+shadow: Welch Labs DeepSeek MLA transcript (verbatim, routed) + the runtime-transformer destination claim",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:30:56Z",
+  "head_ref": "shadow/ip-q-welch-labs-mla"
+}

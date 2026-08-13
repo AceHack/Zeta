@@ -1,0 +1,12 @@
+{
+  "pr_number": 2385,
+  "archive_path": "docs/history/pr-reviews/PR-2385-decompose-b-0004-smallest-dependency-ordered-atomic-child-backlog-rows-inventory.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T00:49:41.716Z",
+  "schema_version": "v1",
+  "commit_sha": "5ce41c37a4ab640fdc7d1e489c0c464c7e6a72ee",
+  "title": "decompose(B-0004): smallest dependency-ordered atomic child backlog rows — inventory + glossary + surfaces",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T00:49:27Z",
+  "head_ref": "claim/b0004-decompose-repo-translation-smallest-slice-riven-2026-05-09"
+}

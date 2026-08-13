@@ -1,0 +1,12 @@
+{
+  "pr_number": 6452,
+  "archive_path": "docs/history/pr-reviews/PR-6452-feat-resume-rust-rust-resume-engine-ferry-oracle-4-of-4-completes-the-four-oracl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T18:56:36.982Z",
+  "schema_version": "v1",
+  "commit_sha": "55a85e3ee5ac84fa48dacaa52536d3e22fc9a67e",
+  "title": "feat(resume-rust): Rust resume-engine ferry (oracle #4 of 4) — completes the four-oracle resume slice",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T18:56:12Z",
+  "head_ref": "otto-cli/b0976-resume-engine-rust-ferry-2026-06-01"
+}

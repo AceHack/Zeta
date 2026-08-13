@@ -1,0 +1,12 @@
+{
+  "pr_number": 8805,
+  "archive_path": "docs/history/pr-reviews/PR-8805-feat-formal-z3-qf-bv-denotation-proofs-for-ir-rows-hand-written-splitmix64-fmix3.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:33:56.338Z",
+  "schema_version": "v1",
+  "commit_sha": "3d79f12db70ba002b104dfd0ee801e2ea6c7d5bd",
+  "title": "feat(formal): Z3 QF_BV denotation proofs for IR rows — hand-written splitmix64/fmix32 (C2) + parameterised emitter",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:33:28Z",
+  "head_ref": "soraya/z3-gen-denotation-splitmix64"
+}

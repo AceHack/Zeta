@@ -1,0 +1,12 @@
+{
+  "pr_number": 6715,
+  "archive_path": "docs/history/pr-reviews/PR-6715-feat-observebridge-wire-emitresponse-the-outbound-twin-of-persistferry-reply-res.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T04:07:22.739Z",
+  "schema_version": "v1",
+  "commit_sha": "1dac209eb15f318cf72f15048dbc9f6e0a2440bf",
+  "title": "feat(ObserveBridge): wire EmitResponse — the outbound twin of PersistFerry (reply → response stream)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T04:07:03Z",
+  "head_ref": "otto/wire-emitresponse"
+}

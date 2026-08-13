@@ -1,0 +1,21 @@
+{
+  "pr_number": 5669,
+  "archive_path": "docs/history/pr-reviews/PR-5669-feat-b-0867-5-work-lifecycle-state-machine-backlog-claim-pr-review-cycle-n-times.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FkmF-",
+    "comment:PRRC_kwDOSF9kNM7FkmF1",
+    "comment:PRRC_kwDOSF9kNM7FkmGE",
+    "comment:PRRC_kwDOSF9kNM7FkmGI",
+    "thread:PRRT_kwDOSF9kNM6FRBc4",
+    "thread:PRRT_kwDOSF9kNM6FRBc6",
+    "thread:PRRT_kwDOSF9kNM6FRBcu",
+    "thread:PRRT_kwDOSF9kNM6FRBcz"
+  ],
+  "fetched_at": "2026-05-28T00:53:21.873Z",
+  "schema_version": "v1",
+  "commit_sha": "0836639102b4cd4cd97b74c055f21ce2660f922e",
+  "title": "feat(B-0867.5+): work-lifecycle state machine — backlog → claim → PR → review (cycle N times) → merge (operator 2026-05-28 question answered)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T00:53:03Z",
+  "head_ref": "feat/agent-loop-work-lifecycle-state-machine-backlog-claim-pr-review-merge-aaron-2026-05-28"
+}

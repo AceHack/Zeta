@@ -1,0 +1,19 @@
+{
+  "pr_number": 1933,
+  "archive_path": "docs/history/pr-reviews/PR-1933-fix-backlog-b-0062-self-revocation-auth-retraction-scoped-session-key.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-_Cs-",
+    "comment:PRRC_kwDOSF9kNM6-_Ctf",
+    "comment:PRRC_kwDOSF9kNM6-_Ctv",
+    "thread:PRRT_kwDOSF9kNM6AbRj7",
+    "thread:PRRT_kwDOSF9kNM6AbRjh",
+    "thread:PRRT_kwDOSF9kNM6AbRkG"
+  ],
+  "fetched_at": "2026-05-07T19:37:06.522Z",
+  "schema_version": "v1",
+  "commit_sha": "a34355e68108963cca65e5af9b0476c7c42403e5",
+  "title": "fix(backlog): B-0062 self-revocation auth — retraction-scoped session key",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T19:36:42Z",
+  "head_ref": "otto/b0062-self-revocation-auth-proposal"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 3705,
+  "archive_path": "docs/history/pr-reviews/PR-3705-docs-shadow-lior-drift-report-for-otto-0318z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1IZX",
+    "comment:PRRC_kwDOSF9kNM7B1Pvt",
+    "thread:PRRT_kwDOSF9kNM6ChPMc"
+  ],
+  "fetched_at": "2026-05-16T03:50:03.028Z",
+  "schema_version": "v1",
+  "commit_sha": "0df46bacbcd65c92067baaa430aa0e3bb78df007",
+  "title": "docs(shadow): Lior drift report for Otto 0318Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:49:48Z",
+  "head_ref": "lior/drift-report-0318Z"
+}

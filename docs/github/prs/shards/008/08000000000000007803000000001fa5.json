@@ -1,0 +1,12 @@
+{
+  "pr_number": 8101,
+  "archive_path": "docs/history/pr-reviews/PR-8101-feat-codegen-relocate-zetaid-generator-optimize-triboolean-exponent-search-land-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T00:10:39.780Z",
+  "schema_version": "v1",
+  "commit_sha": "0a3611d1ae6dc2f41b91e0134b993042c0cce9e4",
+  "title": "feat(codegen): relocate ZetaId generator, optimize TriBoolean exponent search & land BenPort benchmarks",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T00:10:18Z",
+  "head_ref": "lior/zeta-id-benchmarks-relocate"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2654,
+  "archive_path": "docs/history/pr-reviews/PR-2654-docs-memory-b-0071-smallest-slice-rename-otto-275-forever-manufactured-patience-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T06:33:37.092Z",
+  "schema_version": "v1",
+  "commit_sha": "bc6fb64047524e413d0202acc4b8fe65a507f480",
+  "title": "docs(memory): B-0071 smallest slice — rename otto_275_forever manufactured-patience memory out of live-lock class (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T06:33:18Z",
+  "head_ref": "claim/B-0071-smallest-slice-rename-memory-riven-2026-05-11"
+}

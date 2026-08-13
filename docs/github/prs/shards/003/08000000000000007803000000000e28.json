@@ -1,0 +1,12 @@
+{
+  "pr_number": 3624,
+  "archive_path": "docs/history/pr-reviews/PR-3624-feat-b-0170-4-seed-existence-drift-fixture-regression-test.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T00:04:26.120Z",
+  "schema_version": "v1",
+  "commit_sha": "66815705b95303d7d2354615486dee7c2d596c7a",
+  "title": "feat(B-0170.4): seed existence-drift fixture + regression test",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:04:09Z",
+  "head_ref": "otto/b0170-4-existence-drift-fixture-2026-05-15-v2"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 3405,
+  "archive_path": "docs/history/pr-reviews/PR-3405-shard-tick-1003z-pr-3402-3403-merged-substantive-n-1-discipline-phrasing-correct.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bj_uh",
+    "comment:PRRC_kwDOSF9kNM7Bj_vU",
+    "thread:PRRT_kwDOSF9kNM6CUtiu",
+    "thread:PRRT_kwDOSF9kNM6CUtjX"
+  ],
+  "fetched_at": "2026-05-15T10:09:49.079Z",
+  "schema_version": "v1",
+  "commit_sha": "dfb37dbfba4394c43ccef54d93ac628a8aa98ade",
+  "title": "shard(tick): 1003Z — PR #3402 + #3403 merged; substantive N+1 discipline phrasing correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:09:31Z",
+  "head_ref": "shard/tick-1003z-otto-cli-2026-05-15"
+}

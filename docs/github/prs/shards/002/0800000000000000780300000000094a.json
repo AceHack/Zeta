@@ -1,0 +1,12 @@
+{
+  "pr_number": 2378,
+  "archive_path": "docs/history/pr-reviews/PR-2378-claim-b-0323-smallest-safe-slice-pure-feature-diff-ts-module-diff-engine-persist.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T23:56:24.714Z",
+  "schema_version": "v1",
+  "commit_sha": "fc906934b683b15309005d1d74c9d220828cb097",
+  "title": "claim(B-0323): smallest safe slice — pure feature-diff TS module (diff engine + persistence + report)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T23:56:07Z",
+  "head_ref": "claim/b0323-github-feature-discovery-diff-smallest-slice-riven-2026-05-09"
+}

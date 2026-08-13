@@ -1,0 +1,19 @@
+{
+  "pr_number": 5873,
+  "archive_path": "docs/history/pr-reviews/PR-5873-feat-b-0904-phase-2-lane-2-compression-rate-measurement-substrate-for-github-as-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F2UJt",
+    "comment:PRRC_kwDOSF9kNM7F2UKT",
+    "comment:PRRC_kwDOSF9kNM7F2UKy",
+    "thread:PRRT_kwDOSF9kNM6Fdt7-",
+    "thread:PRRT_kwDOSF9kNM6Fdt7I",
+    "thread:PRRT_kwDOSF9kNM6Fdt7p"
+  ],
+  "fetched_at": "2026-05-28T16:50:59.342Z",
+  "schema_version": "v1",
+  "commit_sha": "8cdee61ee3f96f8cbf09a3b5388706564be01eaf",
+  "title": "feat(B-0904 Phase 2 Lane 2): compression-rate measurement substrate for GitHub-as-free-accelerator; 20 tests pass; live baseline 84% compression-ratio in last 24h (operator 2026-05-28 pick lane 2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T16:50:38Z",
+  "head_ref": "otto-cli/b-0904-phase-2-compression-rate-measurement-substrate-2026-05-28"
+}

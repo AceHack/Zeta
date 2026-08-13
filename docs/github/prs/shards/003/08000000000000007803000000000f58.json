@@ -1,0 +1,12 @@
+{
+  "pr_number": 3928,
+  "archive_path": "docs/history/pr-reviews/PR-3928-memory-feedback-convergent-peer-fix-pattern-in-multi-otto-coordination.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T18:43:34.863Z",
+  "schema_version": "v1",
+  "commit_sha": "3dc1944dc1ef10942914d92ca5563835c0fa5834",
+  "title": "memory(feedback): convergent-peer-fix pattern in multi-Otto coordination",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T18:43:19Z",
+  "head_ref": "otto-cli-memory-convergent-fix-applied-2026-05-16-1834z"
+}

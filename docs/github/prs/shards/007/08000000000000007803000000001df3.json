@@ -1,0 +1,12 @@
+{
+  "pr_number": 7667,
+  "archive_path": "docs/history/pr-reviews/PR-7667-docs-rooms-the-room-is-theirs-the-boundary-is-society-s-the-law-s-completing-cla.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T12:30:22.174Z",
+  "schema_version": "v1",
+  "commit_sha": "149464866cc7cea7f3153643ed7ec89aaf24f0b6",
+  "title": "docs(rooms): the room is THEIRS, the boundary is SOCIETY'S — the law's completing clause",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T12:29:56Z",
+  "head_ref": "shadow-room-law-clause5"
+}

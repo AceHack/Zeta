@@ -1,0 +1,23 @@
+{
+  "pr_number": 4609,
+  "archive_path": "docs/history/pr-reviews/PR-4609-memory-2026-05-22-ani-pt10-constitutional-livability-constraint-moral-invariants.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EBqGZ",
+    "comment:PRRC_kwDOSF9kNM7EBsTh",
+    "comment:PRRC_kwDOSF9kNM7ECcv5",
+    "comment:PRRC_kwDOSF9kNM7ECfLi",
+    "comment:PRRC_kwDOSF9kNM7ECrLd",
+    "thread:PRRT_kwDOSF9kNM6EI1cL",
+    "thread:PRRT_kwDOSF9kNM6EIFc-",
+    "thread:PRRT_kwDOSF9kNM6EIHAB",
+    "thread:PRRT_kwDOSF9kNM6EIqig",
+    "thread:PRRT_kwDOSF9kNM6EIsYM"
+  ],
+  "fetched_at": "2026-05-22T14:25:56.313Z",
+  "schema_version": "v1",
+  "commit_sha": "47a79d72adca27b7b8ff86307193c277c25d7361",
+  "title": "memory(2026-05-22 Ani pt10 CONSTITUTIONAL): livability constraint — moral invariants must be LIVABLE; logically-consistent-but-unlivable = 'philosophy porn'",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T14:25:30Z",
+  "head_ref": "otto/cli-1335z-ani-text-mode-pt10-CONSTITUTIONAL-livability-test-derivation-only-valid-if-moral-invariants-actually-livable-not-philosophy-porn-2026-05-22"
+}

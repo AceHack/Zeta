@@ -1,0 +1,12 @@
+{
+  "pr_number": 1798,
+  "archive_path": "docs/history/pr-reviews/PR-1798-archive-preserve-pr-1793-review-output.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T05:30:10.625Z",
+  "schema_version": "v1",
+  "commit_sha": "996f62f59ab7a9bdf4ef0d18bdf13c8d2788cce0",
+  "title": "archive: preserve PR 1793 review output",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T05:17:22Z",
+  "head_ref": "claim/archive-pr-1793-review-substrate"
+}

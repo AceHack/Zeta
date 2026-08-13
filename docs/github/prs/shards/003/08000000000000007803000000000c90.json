@@ -1,0 +1,12 @@
+{
+  "pr_number": 3216,
+  "archive_path": "docs/history/pr-reviews/PR-3216-docs-shadow-lior-antigravity-check-1950z.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T20:57:18.543Z",
+  "schema_version": "v1",
+  "commit_sha": "3b505fb580d49d41266ff464d23da42dbf10799a",
+  "title": "docs(shadow): Lior antigravity check 1950Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:57:01Z",
+  "head_ref": "lior-drift-1950Z"
+}

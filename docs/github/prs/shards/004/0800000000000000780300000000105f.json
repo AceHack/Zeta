@@ -1,0 +1,21 @@
+{
+  "pr_number": 4191,
+  "archive_path": "docs/history/pr-reviews/PR-4191-preserve-mika-packets-33-36-fix-33-lint-30-20-spec-fix-pilot-disambig-vs-b-0617.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CZ7Ua",
+    "comment:PRRC_kwDOSF9kNM7CZ7VK",
+    "comment:PRRC_kwDOSF9kNM7CZ8Gb",
+    "comment:PRRC_kwDOSF9kNM7CZ8Gi",
+    "thread:PRRT_kwDOSF9kNM6C8rCm",
+    "thread:PRRT_kwDOSF9kNM6C8rDL",
+    "thread:PRRT_kwDOSF9kNM6C8rj-",
+    "thread:PRRT_kwDOSF9kNM6C8rj4"
+  ],
+  "fetched_at": "2026-05-18T19:41:45.475Z",
+  "schema_version": "v1",
+  "commit_sha": "095c9c5efef55c7ef867879859e94b8c6df92b4f",
+  "title": "preserve(mika-packets-33-36) + fix(§33-lint 30→20 spec) + fix(pilot-disambig vs B-0617)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T19:41:24Z",
+  "head_ref": "shard/mika-packets-33-36-schizophrenia-as-society-brake-cartographer-as-high-res-replacement-plus-lint-spec-fix-pilot-disambig-2026-05-18"
+}

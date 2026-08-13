@@ -1,0 +1,15 @@
+{
+  "pr_number": 6053,
+  "archive_path": "docs/history/pr-reviews/PR-6053-docs-b-0343-close-completed-seed-repo-backlog-row.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GUbY9",
+    "thread:PRRT_kwDOSF9kNM6Fzj76"
+  ],
+  "fetched_at": "2026-05-29T22:45:58.582Z",
+  "schema_version": "v1",
+  "commit_sha": "51ec8de89ae5518bd3c5db8cd24035d13fda68dc",
+  "title": "docs(B-0343): close completed seed repo backlog row",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T22:45:38Z",
+  "head_ref": "claim/backlog-0343"
+}

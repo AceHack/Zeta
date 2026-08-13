@@ -1,0 +1,12 @@
+{
+  "pr_number": 3120,
+  "archive_path": "docs/history/pr-reviews/PR-3120-feat-b-0445-c-fluent-operator-surface-zetacircuitbuilder-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T09:10:26.751Z",
+  "schema_version": "v1",
+  "commit_sha": "83f60e2987ff0bfbae8fad4522b535f09fba3646",
+  "title": "feat(b-0445): C# fluent operator surface — ZetaCircuitBuilder<T>",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T09:10:08Z",
+  "head_ref": "feat/b-0445-csharp-fluent-builder-2026-05-14"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 4051,
+  "archive_path": "docs/history/pr-reviews/PR-4051-fix-rules-pr-4050-follow-up-math-inconsistency-persona-name-attribution.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B-UwD",
+    "comment:PRRC_kwDOSF9kNM7B-UwN",
+    "thread:PRRT_kwDOSF9kNM6CoMKl",
+    "thread:PRRT_kwDOSF9kNM6CoMKu"
+  ],
+  "fetched_at": "2026-05-17T09:11:50.346Z",
+  "schema_version": "v1",
+  "commit_sha": "4c4423fb9bdd9f6ed738d9d7308b397388b84022",
+  "title": "fix(rules): PR #4050 follow-up — math inconsistency + persona/name attribution",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T09:11:30Z",
+  "head_ref": "otto/fix-pr-4050-followup-math-and-persona-attribution-2026-05-17"
+}

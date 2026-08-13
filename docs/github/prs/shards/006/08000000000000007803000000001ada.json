@@ -1,0 +1,12 @@
+{
+  "pr_number": 6874,
+  "archive_path": "docs/history/pr-reviews/PR-6874-docs-research-numeric-floor-over-cayley-towers-unify-isemiring-cayleydickson-ial.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T17:03:12.856Z",
+  "schema_version": "v1",
+  "commit_sha": "1b499675c31caa33e42b35de155d81bdbae39e1e",
+  "title": "docs(research): numeric floor over Cayley towers? unify ISemiring + CayleyDickson IAlgebra (*-ring)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T17:02:50Z",
+  "head_ref": "otto/floor-unify-isemiring-cayley-ialgebra-star-ring"
+}

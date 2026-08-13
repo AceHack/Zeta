@@ -1,0 +1,15 @@
+{
+  "pr_number": 5378,
+  "archive_path": "docs/history/pr-reviews/PR-5378-fix-b-0832-nmtui-auto-relaunch-loop-on-no-internet-esc-to-refresh-without-breaki.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FK9U6",
+    "thread:PRRT_kwDOSF9kNM6E-YoZ"
+  ],
+  "fetched_at": "2026-05-27T02:16:59.482Z",
+  "schema_version": "v1",
+  "commit_sha": "fb4676648c8604e8ed0858c6eab0827631997153",
+  "title": "fix(B-0832): nmtui auto-relaunch loop on no-internet — Esc to refresh without breaking install (operator 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T02:16:37Z",
+  "head_ref": "fix-b0832-nmtui-auto-relaunch-on-no-internet-aaron-2026-05-26"
+}

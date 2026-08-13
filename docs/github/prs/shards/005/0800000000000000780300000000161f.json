@@ -1,0 +1,12 @@
+{
+  "pr_number": 5663,
+  "archive_path": "docs/history/pr-reviews/PR-5663-feat-b-0871-reproducibility-as-causal-attribution-substrate-usb-boot-helm-charts.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T03:13:12.212Z",
+  "schema_version": "v1",
+  "commit_sha": "e5a8b27823bcc0aa036958c4e47881a29a35a593",
+  "title": "feat(B-0871): reproducibility-as-causal-attribution substrate (USB-boot + helm-charts auto-DORA + cross-replication + anti-skeptic substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T03:12:47Z",
+  "head_ref": "feat/b-0871-reproducibility-as-causal-attribution-plus-b0866-27-plus-b0869-10-helm-dora-aaron-2026-05-28"
+}

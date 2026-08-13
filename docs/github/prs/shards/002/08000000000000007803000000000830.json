@@ -1,0 +1,23 @@
+{
+  "pr_number": 2096,
+  "archive_path": "docs/history/pr-reviews/PR-2096-feat-b-0308-tick-start-authorization-check-integration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_Ua_L",
+    "comment:PRRC_kwDOSF9kNM6_Ua_P",
+    "comment:PRRC_kwDOSF9kNM6_UdUb",
+    "comment:PRRC_kwDOSF9kNM6_UdVB",
+    "comment:PRRC_kwDOSF9kNM6_UdVg",
+    "thread:PRRT_kwDOSF9kNM6Aq-UU",
+    "thread:PRRT_kwDOSF9kNM6Aq-UY",
+    "thread:PRRT_kwDOSF9kNM6ArAD7",
+    "thread:PRRT_kwDOSF9kNM6ArADI",
+    "thread:PRRT_kwDOSF9kNM6ArADm"
+  ],
+  "fetched_at": "2026-05-08T15:58:55.124Z",
+  "schema_version": "v1",
+  "commit_sha": "f861152612bb73bf64f7be5aad987c5314478785",
+  "title": "feat(B-0308): tick-start authorization check integration",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T15:58:34Z",
+  "head_ref": "claim/B-0308-mechanical-auth-check-loop-integration"
+}

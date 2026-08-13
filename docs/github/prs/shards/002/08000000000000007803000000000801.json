@@ -1,0 +1,21 @@
+{
+  "pr_number": 2049,
+  "archive_path": "docs/history/pr-reviews/PR-2049-feat-backlog-advance-b-0280-pr-body-publication.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_KUAQ",
+    "comment:PRRC_kwDOSF9kNM6_KWZ0",
+    "comment:PRRC_kwDOSF9kNM6_KWac",
+    "comment:PRRC_kwDOSF9kNM6_Kcq8",
+    "thread:PRRT_kwDOSF9kNM6AjaDl",
+    "thread:PRRT_kwDOSF9kNM6AjbvK",
+    "thread:PRRT_kwDOSF9kNM6Ajbvp",
+    "thread:PRRT_kwDOSF9kNM6AjgH8"
+  ],
+  "fetched_at": "2026-05-08T07:53:38.823Z",
+  "schema_version": "v1",
+  "commit_sha": "3f9310f250f4881706f96d1d905ca64b7101bde4",
+  "title": "feat(backlog): advance B-0280 PR body publication",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T07:53:20Z",
+  "head_ref": "claim/task-b0280-pr-body-file"
+}

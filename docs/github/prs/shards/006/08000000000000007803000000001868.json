@@ -1,0 +1,12 @@
+{
+  "pr_number": 6248,
+  "archive_path": "docs/history/pr-reviews/PR-6248-feat-observe-golden-vector-conformance-fixture-the-cross-language-agreement-spec.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T20:26:15.775Z",
+  "schema_version": "v1",
+  "commit_sha": "79835144372975255c8a16e36983436747516ed5",
+  "title": "feat(observe): golden-vector conformance fixture — the cross-language agreement spec (B-0867.27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T20:25:56Z",
+  "head_ref": "otto-cli/observe-golden-vectors-2026-05-31"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 6188,
+  "archive_path": "docs/history/pr-reviews/PR-6188-backlog-b-0949-fromvalue-wide-decoder-mode-search-hang-cross-language-hardening-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GdhjB",
+    "thread:PRRT_kwDOSF9kNM6F6WMl"
+  ],
+  "fetched_at": "2026-05-31T03:00:37.266Z",
+  "schema_version": "v1",
+  "commit_sha": "1bc38319d24528aa2f01b5f80f543027603a1e38",
+  "title": "backlog(B-0949): FromValue wide-decoder mode-search hang — cross-language hardening (Codex P2 on #6186)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T03:00:19Z",
+  "head_ref": "otto-cli/b0949-fromvalue-wide-decoder-mode-search-hardening-2026-05-30"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5339,
+  "archive_path": "docs/history/pr-reviews/PR-5339-fix-postmerge-cluster-name-attribution-xref-path-consistency-copilot-2-findings-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T22:29:00.249Z",
+  "schema_version": "v1",
+  "commit_sha": "2326700bce16f4fdfea387d70d3c30e1e2704456",
+  "title": "fix(postmerge-cluster): name-attribution + xref path consistency (Copilot 2 findings on PR #5337 — bundle-fix across PRs #5335 + #5336 + #5337)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T22:28:43Z",
+  "head_ref": "otto/postmerge-name-attribution-bundle-fix-cluster-2026-05-26"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 4885,
+  "archive_path": "docs/history/pr-reviews/PR-4885-docs-shadow-add-shadow-lesson-logs-from-4832.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EbHZ1",
+    "comment:PRRC_kwDOSF9kNM7EbHaE",
+    "comment:PRRC_kwDOSF9kNM7EdYX7",
+    "comment:PRRC_kwDOSF9kNM7EdYZC",
+    "thread:PRRT_kwDOSF9kNM6EbK5D",
+    "thread:PRRT_kwDOSF9kNM6EbK5L"
+  ],
+  "fetched_at": "2026-05-25T04:17:47.034Z",
+  "schema_version": "v1",
+  "commit_sha": "c1e44f51b1ee7ef3dac46c34667f36fcad640177",
+  "title": "docs(shadow): Add shadow lesson logs from #4832",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T04:17:29Z",
+  "head_ref": "shadow-logs-4832"
+}

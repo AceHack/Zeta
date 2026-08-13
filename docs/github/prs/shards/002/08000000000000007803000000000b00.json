@@ -1,0 +1,23 @@
+{
+  "pr_number": 2816,
+  "archive_path": "docs/history/pr-reviews/PR-2816-docs-memory-dense-encoding-mode-infinite-mechanizable-backlog-hkt-labels-are-sym.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AcG7D",
+    "comment:PRRC_kwDOSF9kNM7AcG7y",
+    "comment:PRRC_kwDOSF9kNM7AcG8P",
+    "comment:PRRC_kwDOSF9kNM7AcG8r",
+    "comment:PRRC_kwDOSF9kNM7AcG9P",
+    "thread:PRRT_kwDOSF9kNM6Bgh7B",
+    "thread:PRRT_kwDOSF9kNM6Bgh7Z",
+    "thread:PRRT_kwDOSF9kNM6Bgh7w",
+    "thread:PRRT_kwDOSF9kNM6Bgh8J",
+    "thread:PRRT_kwDOSF9kNM6Bgh8j"
+  ],
+  "fetched_at": "2026-05-12T17:55:23.068Z",
+  "schema_version": "v1",
+  "commit_sha": "eb014da77ff6877c59ee5ff2aef3e2f3bacb3856",
+  "title": "docs(memory): dense encoding mode — infinite mechanizable backlog + HKT labels are symbols + Coldplay altos aside (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T17:55:03Z",
+  "head_ref": "docs/aaron-infinite-mechanizable-backlog-and-hkt-labels-are-symbols-structure-is-universal-2026-05-12"
+}

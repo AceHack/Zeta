@@ -1,0 +1,15 @@
+{
+  "pr_number": 5951,
+  "archive_path": "docs/history/pr-reviews/PR-5951-research-beacon-capstone-coherent-ai-from-an-externalized-reservoir-the-whole-th.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GDP-s",
+    "thread:PRRT_kwDOSF9kNM6FnCEJ"
+  ],
+  "fetched_at": "2026-05-29T07:23:45.122Z",
+  "schema_version": "v1",
+  "commit_sha": "8346c6dfbdffe6711bfc86f2436352735777ce6a",
+  "title": "research(beacon): capstone — coherent AI from an externalized reservoir (the whole thesis)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T07:23:23Z",
+  "head_ref": "otto-cli/beacon-capstone-coherence-from-externalized-reservoir-2026-05-29"
+}

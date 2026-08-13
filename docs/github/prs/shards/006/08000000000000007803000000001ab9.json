@@ -1,0 +1,12 @@
+{
+  "pr_number": 6841,
+  "archive_path": "docs/history/pr-reviews/PR-6841-feat-dagfs-contentstore-merge-two-zetafs-content-union-free-path-resolve-folder-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:40:03.592Z",
+  "schema_version": "v1",
+  "commit_sha": "f7845d01b96618f57e50ec35e2a8fbcb09247b9f",
+  "title": "feat(DagFs/ContentStore): merge two ZetaFS — content-union (free) + path resolve + folder-uniqueness capture",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:39:45Z",
+  "head_ref": "feat/zetafs-merge-content-union-label-resolve"
+}

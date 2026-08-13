@@ -1,0 +1,21 @@
+{
+  "pr_number": 4578,
+  "archive_path": "docs/history/pr-reviews/PR-4578-plan-b-0698-phase-2-zsetw-operator-algorithm-migration-plan.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Dwovy",
+    "comment:PRRC_kwDOSF9kNM7DwsDs",
+    "comment:PRRC_kwDOSF9kNM7DwsEU",
+    "comment:PRRC_kwDOSF9kNM7DwsEj",
+    "thread:PRRT_kwDOSF9kNM6D7wvl",
+    "thread:PRRT_kwDOSF9kNM6D7zI8",
+    "thread:PRRT_kwDOSF9kNM6D7zJV",
+    "thread:PRRT_kwDOSF9kNM6D7zJe"
+  ],
+  "fetched_at": "2026-05-21T21:11:14.859Z",
+  "schema_version": "v1",
+  "commit_sha": "53cf74f720e4bc2943100cc7eba9bb0a50d0f275",
+  "title": "plan(B-0698): Phase 2 ZSetW operator+algorithm migration plan",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T21:10:52Z",
+  "head_ref": "backlog/b0698-zset-phase-2-plan"
+}

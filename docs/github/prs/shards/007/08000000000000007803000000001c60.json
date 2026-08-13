@@ -1,0 +1,12 @@
+{
+  "pr_number": 7264,
+  "archive_path": "docs/history/pr-reviews/PR-7264-feat-trust-docs-addison-s-gpg-pubkey-trust-layer-model-roots-in-iso-flash-time-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:54:05.512Z",
+  "schema_version": "v1",
+  "commit_sha": "9ec0f53bc719542847485dcaa9be016199855718",
+  "title": "feat(trust)+docs: Addison's GPG pubkey + trust-layer model (roots in ISO, flash-time only secrets) + test-zflash-creation scope",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:53:44Z",
+  "head_ref": "otto/addison-gpg-key-plus-trust-layer-iso-vs-flash-doc"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3138,
+  "archive_path": "docs/history/pr-reviews/PR-3138-feat-b-0437-ux-of-math-panel-slice-3-interactive-clause-selection.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T14:53:10.336Z",
+  "schema_version": "v1",
+  "commit_sha": "d88d24bd172c21d1861752e22d70f945e839a197",
+  "title": "feat(b-0437): UX-of-math panel — slice-3 interactive clause selection",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T14:52:48Z",
+  "head_ref": "feat/b-0437-ux-of-math-slice-3"
+}

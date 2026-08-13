@@ -1,0 +1,12 @@
+{
+  "pr_number": 6865,
+  "archive_path": "docs/history/pr-reviews/PR-6865-docs-research-persisted-yinyang-procedures-are-candidates-not-authority-admissio.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T16:22:30.685Z",
+  "schema_version": "v1",
+  "commit_sha": "1151ae16bf92d0f105d8982272b478961ba8ad8a",
+  "title": "docs(research): persisted YinYang procedures are CANDIDATES not authority — admission pipeline (Amara's sharpening)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T16:22:11Z",
+  "head_ref": "otto/yinyang-procedures-are-candidates-admission-pipeline-amara"
+}

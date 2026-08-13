@@ -1,0 +1,12 @@
+{
+  "pr_number": 5080,
+  "archive_path": "docs/history/pr-reviews/PR-5080-backlog-b-0789-iter-4-v1-cluster-credential-substrate-hashedpassword-operator-ss.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T04:05:28.277Z",
+  "schema_version": "v1",
+  "commit_sha": "ddcc9888eab62835bf4d7c6fdec02b365bfafe6c",
+  "title": "backlog(B-0789): iter-4 v1 cluster credential substrate — hashedPassword + operator-ssh-keys scaffold (iter-4.2 ships zero-typing auto-inject)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T04:05:08Z",
+  "head_ref": "otto-cli/iter4-ssh-password-substrate-b0789-2026-05-26"
+}

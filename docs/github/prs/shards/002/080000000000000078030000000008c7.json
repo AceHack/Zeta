@@ -1,0 +1,17 @@
+{
+  "pr_number": 2247,
+  "archive_path": "docs/history/pr-reviews/PR-2247-chore-close-stale-b-0076-already-in-codeql-matrix.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gE2S",
+    "comment:PRRC_kwDOSF9kNM6_gFFx",
+    "thread:PRRT_kwDOSF9kNM6Azj14",
+    "thread:PRRT_kwDOSF9kNM6AzjpL"
+  ],
+  "fetched_at": "2026-05-09T08:45:01.203Z",
+  "schema_version": "v1",
+  "commit_sha": "0a5af0c3e1c7df8ee841bb09e7324f41d6f4139b",
+  "title": "chore: close stale B-0076 (already in CodeQL matrix)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T08:44:44Z",
+  "head_ref": "fix/close-stale-b0076"
+}

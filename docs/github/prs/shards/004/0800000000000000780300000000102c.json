@@ -1,0 +1,20 @@
+{
+  "pr_number": 4140,
+  "archive_path": "docs/history/pr-reviews/PR-4140-docs-shadow-maji-antigravity-check-on-4136-slice-2-decomposition.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CJg9Q",
+    "comment:PRRC_kwDOSF9kNM7CJplc",
+    "comment:PRRC_kwDOSF9kNM7CJpnE",
+    "comment:PRRC_kwDOSF9kNM7DLzq8",
+    "thread:PRRT_kwDOSF9kNM6Cwj-5",
+    "thread:PRRT_kwDOSF9kNM6CwqW_",
+    "thread:PRRT_kwDOSF9kNM6CwqYX"
+  ],
+  "fetched_at": "2026-05-20T14:21:04.610Z",
+  "schema_version": "v1",
+  "commit_sha": "ddca9681b1954124896c9a370675125bce15e281",
+  "title": "docs(shadow): Maji antigravity check on #4136 (slice 2 decomposition)",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T14:20:30Z",
+  "head_ref": "maji/decompose-4136-slice2"
+}

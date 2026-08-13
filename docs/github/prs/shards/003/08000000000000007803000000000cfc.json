@@ -1,0 +1,15 @@
+{
+  "pr_number": 3324,
+  "archive_path": "docs/history/pr-reviews/PR-3324-memory-current-otto-2026-05-15-update-post-cascade-integration-manifesto-v2-wait.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BbB_J",
+    "thread:PRRT_kwDOSF9kNM6COV_4"
+  ],
+  "fetched_at": "2026-05-15T00:34:49.837Z",
+  "schema_version": "v1",
+  "commit_sha": "99fae6418cfb4ca9a85ff90b3f4fcf0309a7817b",
+  "title": "memory(CURRENT-otto): 2026-05-15 update — post-cascade integration + Manifesto V2 + wait-cadence",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:34:31Z",
+  "head_ref": "memory/current-otto-2026-05-15-update-otto-cli"
+}

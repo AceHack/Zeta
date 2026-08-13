@@ -1,0 +1,21 @@
+{
+  "pr_number": 3359,
+  "archive_path": "docs/history/pr-reviews/PR-3359-shard-tick-0414z-pr-3339-3349-merged-b-0527-collision-republished-new-worktree-p.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BefEZ",
+    "comment:PRRC_kwDOSF9kNM7Beiec",
+    "comment:PRRC_kwDOSF9kNM7BejM5",
+    "comment:PRRC_kwDOSF9kNM7BejMl",
+    "thread:PRRT_kwDOSF9kNM6CQvQg",
+    "thread:PRRT_kwDOSF9kNM6CQxsJ",
+    "thread:PRRT_kwDOSF9kNM6CQyOW",
+    "thread:PRRT_kwDOSF9kNM6CQyOk"
+  ],
+  "fetched_at": "2026-05-15T05:13:43.156Z",
+  "schema_version": "v1",
+  "commit_sha": "19e7362525d73ad442088e092e081fd49213c077",
+  "title": "shard(tick): 0414Z — PR #3339/#3349 merged + B-0527 collision republished + new worktree-pruning-race failure mode",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T05:13:21Z",
+  "head_ref": "shard/tick-0414z-otto-cli-2026-05-15"
+}

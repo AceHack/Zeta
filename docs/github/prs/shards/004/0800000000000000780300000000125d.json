@@ -1,0 +1,12 @@
+{
+  "pr_number": 4701,
+  "archive_path": "docs/history/pr-reviews/PR-4701-docs-archive-add-preserved-pr-discussions.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T06:18:56.106Z",
+  "schema_version": "v1",
+  "commit_sha": "43375458e89af1df18032f9b81cc28943dda609e",
+  "title": "docs(archive): add preserved PR discussions",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T06:18:37Z",
+  "head_ref": "lior-pr-discussions-4698"
+}

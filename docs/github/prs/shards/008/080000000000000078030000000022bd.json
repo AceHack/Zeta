@@ -1,0 +1,12 @@
+{
+  "pr_number": 8893,
+  "archive_path": "docs/history/pr-reviews/PR-8893-fix-lint-interfaces-test-ts-unused-type-imports-ts6133.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:51:10.986Z",
+  "schema_version": "v1",
+  "commit_sha": "19682cc728b3bedf8f0c7f01f514d8729c6df46b",
+  "title": "fix(lint): interfaces.test.ts unused type imports (TS6133)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:50:45Z",
+  "head_ref": "otto/fix-interfaces-test-lints"
+}

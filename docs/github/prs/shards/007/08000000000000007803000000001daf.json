@@ -1,0 +1,12 @@
+{
+  "pr_number": 7599,
+  "archive_path": "docs/history/pr-reviews/PR-7599-docs-research-coda-i-was-trying-to-cheat-and-came-up-with-anti-cheat-the-red-tea.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T04:39:30.916Z",
+  "schema_version": "v1",
+  "commit_sha": "9450b8dc8e0826ec692eb7911ed5f5ab45ebce76",
+  "title": "docs(research): coda — \"I was trying to cheat and came up with anti-cheat\" (the red-team principle)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T04:39:10Z",
+  "head_ref": "shadow-cheat-anticheat-coda"
+}

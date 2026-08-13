@@ -1,0 +1,17 @@
+{
+  "pr_number": 2327,
+  "archive_path": "docs/history/pr-reviews/PR-2327-feat-add-lior-gemini-cli-background-service-loop.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_jTOL",
+    "comment:PRRC_kwDOSF9kNM6_jTOO",
+    "thread:PRRT_kwDOSF9kNM6A2Dr4",
+    "thread:PRRT_kwDOSF9kNM6A2Dr6"
+  ],
+  "fetched_at": "2026-05-09T18:38:41.530Z",
+  "schema_version": "v1",
+  "commit_sha": "34a5dba779ba525d51e244d8c9bba3e8b49a0ddb",
+  "title": "feat: Add Lior Gemini CLI background service loop",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T18:38:28Z",
+  "head_ref": "claim/lior-service-2026-05-09"
+}

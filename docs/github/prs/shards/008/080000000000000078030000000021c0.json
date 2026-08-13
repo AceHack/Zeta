@@ -1,0 +1,12 @@
+{
+  "pr_number": 8640,
+  "archive_path": "docs/history/pr-reviews/PR-8640-feat-core-demo-slice-1-5-societal-dora-dashboard-as-a-complete-static-html-page-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T22:23:45.882Z",
+  "schema_version": "v1",
+  "commit_sha": "aef6c897750678d518ab78468e6fa9d65a99f384",
+  "title": "feat(core): demo slice 1.5 — societal-DORA dashboard as a complete static HTML page (pure HTML/CSS, no JS)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T22:23:18Z",
+  "head_ref": "otto/demo-slice1p5-societal-dora-html-page"
+}

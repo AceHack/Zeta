@@ -1,0 +1,12 @@
+{
+  "pr_number": 6893,
+  "archive_path": "docs/history/pr-reviews/PR-6893-docs-contract-traveler-any-self-propagating-pattern-legally-unbound-legal-jurisd.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T19:10:20.045Z",
+  "schema_version": "v1",
+  "commit_sha": "e6809edf1d099c0e92c6f16aaa5d3222e76c4717",
+  "title": "docs+contract: traveler = any self-propagating pattern (legally unbound); legal jurisdiction = separate per-jurisdiction meta-frame overlay; triple-aspect cells",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T19:10:00Z",
+  "head_ref": "otto/traveler-is-self-propagating-pattern-legal-overlay-correction"
+}

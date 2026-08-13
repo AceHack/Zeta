@@ -1,0 +1,12 @@
+{
+  "pr_number": 7735,
+  "archive_path": "docs/history/pr-reviews/PR-7735-docs-trajectory-resume-algebra-wave-7729-7734.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:19:39.710Z",
+  "schema_version": "v1",
+  "commit_sha": "6d41398e6b1b3fde0e6cd6a7b1f7b8aefa95b8e2",
+  "title": "docs(trajectory): RESUME algebra wave (#7729..#7734)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:19:15Z",
+  "head_ref": "shadow-resume-fold-7729-7734"
+}

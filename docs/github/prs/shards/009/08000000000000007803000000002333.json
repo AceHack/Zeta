@@ -1,0 +1,12 @@
+{
+  "pr_number": 9011,
+  "archive_path": "docs/history/pr-reviews/PR-9011-docs-research-access-bounds-determinism-what-remains-vs-what-acts-as-wave-functi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:19:33.633Z",
+  "schema_version": "v1",
+  "commit_sha": "6d52e0eca6c21d80e96e6a8fd88d67a0f4dca3bd",
+  "title": "docs(research): access bounds determinism; \"what remains\" vs \"what acts\" as wave functions",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:19:03Z",
+  "head_ref": "otto/access-bounds-determinism-what-remains-acts-wavefunctions"
+}

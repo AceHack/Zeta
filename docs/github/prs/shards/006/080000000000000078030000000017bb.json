@@ -1,0 +1,12 @@
+{
+  "pr_number": 6075,
+  "archive_path": "docs/history/pr-reviews/PR-6075-docs-research-encryption-budget-architecture-permanent-ratchet-hodl-reveal-to-ea.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T04:25:21.678Z",
+  "schema_version": "v1",
+  "commit_sha": "8f85527dc5fbeab0f7f16ba8bd8c2aa50f615576",
+  "title": "docs(research): encryption-budget architecture — permanent ratchet + HODL/reveal-to-earn + meter-the-bits + anti-monopoly N-of-M",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T04:25:02Z",
+  "head_ref": "otto-cli/encryption-budget-hodl-dark-light-architecture-2026-05-30"
+}

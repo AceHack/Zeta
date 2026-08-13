@@ -1,0 +1,12 @@
+{
+  "pr_number": 3951,
+  "archive_path": "docs/history/pr-reviews/PR-3951-backlog-b-0571-github-app-for-factory-automation-separate-api-rate-limit-pool.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T22:04:18.711Z",
+  "schema_version": "v1",
+  "commit_sha": "da38bfc6d5a095e8f388a3acb02843edc47a65b3",
+  "title": "backlog(B-0571): GitHub App for factory automation — separate API rate-limit pool",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T22:04:03Z",
+  "head_ref": "feature/b-0571-github-app-factory-2026-05-16"
+}

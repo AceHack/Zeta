@@ -1,0 +1,12 @@
+{
+  "pr_number": 8703,
+  "archive_path": "docs/history/pr-reviews/PR-8703-docs-handoff-mark-row-6-fscheck-leg-discharged-coupled-minimizer-capture-exposur.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T03:49:26.407Z",
+  "schema_version": "v1",
+  "commit_sha": "9ce09a302a90d02403939cf76f4a707f2f34ae22",
+  "title": "docs(handoff): mark row 6 FsCheck leg discharged — coupled-minimizer / capture-exposure (#8701, verified)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T03:48:58Z",
+  "head_ref": "otto/mathteam-row6-fscheck-discharged"
+}

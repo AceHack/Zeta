@@ -1,0 +1,12 @@
+{
+  "pr_number": 6273,
+  "archive_path": "docs/history/pr-reviews/PR-6273-ci-shields-mise-token-no-403-exercise-one-liner-installers-across-unix-shields.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T23:26:13.506Z",
+  "schema_version": "v1",
+  "commit_sha": "e39ae982d64d50e8a769b0c072787e76562904a2",
+  "title": "ci(shields): mise token (no 403) + exercise one-liner installers across Unix shields",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T23:25:55Z",
+  "head_ref": "otto-windows/shield-mise-token-and-install-full-2026-05-31"
+}

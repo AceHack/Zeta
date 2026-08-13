@@ -1,0 +1,15 @@
+{
+  "pr_number": 6482,
+  "archive_path": "docs/history/pr-reviews/PR-6482-feat-algebra-z-set-rust-generic-math-add-sub-neg-ref-ops-default-sum-abelian-gro.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G7O5h",
+    "thread:PRRT_kwDOSF9kNM6GQqu_"
+  ],
+  "fetched_at": "2026-06-01T22:02:49.643Z",
+  "schema_version": "v1",
+  "commit_sha": "dc256c60fc40ed3273a5409d4ab3e43c6be9fedf",
+  "title": "feat(algebra): Z-set Rust generic-math — Add/Sub/Neg (ref-ops) + Default + Sum (abelian group)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T22:02:26Z",
+  "head_ref": "otto-cli/zset-rust-generic-math-2026-06-01"
+}

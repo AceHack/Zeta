@@ -1,0 +1,12 @@
+{
+  "pr_number": 8667,
+  "archive_path": "docs/history/pr-reviews/PR-8667-feat-observe-kiro-executor-v2-workspaceport-based-executor-no-bash-git-cli.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T01:23:16.363Z",
+  "schema_version": "v1",
+  "commit_sha": "c6efac3717d8f0cac39b30321d752811003b8ed8",
+  "title": "feat(observe): kiro-executor-v2 — WorkspacePort-based executor (NO bash/git CLI)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:22:51Z",
+  "head_ref": "alexa/executor-uses-workspace-port"
+}

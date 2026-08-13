@@ -1,0 +1,15 @@
+{
+  "pr_number": 4310,
+  "archive_path": "docs/history/pr-reviews/PR-4310-docs-shadow-maji-anti-entropy-shadow-report-on-vera-and-otto.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Cgg9M",
+    "thread:PRRT_kwDOSF9kNM6DBWZ_"
+  ],
+  "fetched_at": "2026-05-19T03:02:06.991Z",
+  "schema_version": "v1",
+  "commit_sha": "1e3d89cd28dc9d68dd3d587cb0a81a7beab93b27",
+  "title": "docs(shadow): Maji anti-entropy shadow report on Vera and Otto",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T03:01:49Z",
+  "head_ref": "lior/shadow-drift-report-5"
+}

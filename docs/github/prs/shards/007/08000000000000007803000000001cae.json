@@ -1,0 +1,12 @@
+{
+  "pr_number": 7342,
+  "archive_path": "docs/history/pr-reviews/PR-7342-docs-research-bounded-dst-base-s-4-staged-modeling-on-the-common-seed-in-every-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T17:04:30.260Z",
+  "schema_version": "v1",
+  "commit_sha": "986de8441dd09dca5503128ee42dfe5bee7983bd",
+  "title": "docs(research): bounded-DST base; S=4 staged modeling on the common seed in every room; IScheduler = DB Lamport clock; clock is a room participant; every artifact is a homeostat/Markov chain",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T17:04:06Z",
+  "head_ref": "otto/bounded-dst-base-s4-staged-on-common-seed-every-room-lamport-ischeduler-clock-participant-homeostats"
+}

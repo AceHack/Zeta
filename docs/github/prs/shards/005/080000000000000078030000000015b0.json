@@ -1,0 +1,17 @@
+{
+  "pr_number": 5552,
+  "archive_path": "docs/history/pr-reviews/PR-5552-docs-archive-preserve-discussion-for-pr-5471.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FdO16",
+    "comment:PRRC_kwDOSF9kNM7FdO1P",
+    "thread:PRRT_kwDOSF9kNM6FLvck",
+    "thread:PRRT_kwDOSF9kNM6FLvdG"
+  ],
+  "fetched_at": "2026-05-27T18:14:27.924Z",
+  "schema_version": "v1",
+  "commit_sha": "f1a3c8e0b49cd2d4c7eeabe1cd3b03c7d55d5cbf",
+  "title": "docs(archive): Preserve discussion for PR #5471",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:14:04Z",
+  "head_ref": "lior/archive-5471"
+}

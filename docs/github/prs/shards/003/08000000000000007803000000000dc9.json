@@ -1,0 +1,15 @@
+{
+  "pr_number": 3529,
+  "archive_path": "docs/history/pr-reviews/PR-3529-fix-xrefs-update-riven-migration-backlinks-per-codex-p2-on-pr-3513.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Btnew",
+    "thread:PRRT_kwDOSF9kNM6Cbyfv"
+  ],
+  "fetched_at": "2026-05-15T18:05:44.071Z",
+  "schema_version": "v1",
+  "commit_sha": "8e6901a9b790fc3752e24ea27763bf0b24273714",
+  "title": "fix(xrefs): update Riven-migration backlinks per Codex P2 on PR #3513",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:05:23Z",
+  "head_ref": "fix/post-merge-riven-migration-backlinks-otto-cli-2026-05-15"
+}

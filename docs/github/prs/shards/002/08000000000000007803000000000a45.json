@@ -1,0 +1,12 @@
+{
+  "pr_number": 2629,
+  "archive_path": "docs/history/pr-reviews/PR-2629-docs-memory-could-be-nothing-software-plant-is-real.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T02:23:37.457Z",
+  "schema_version": "v1",
+  "commit_sha": "a596d2263873f9a3f50d5836a72d2c68dc3c5ad4",
+  "title": "docs(memory): could be nothing, software plant IS real",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:23:18Z",
+  "head_ref": "docs/could-be-nothing-software-plant-real-2026-05-10"
+}

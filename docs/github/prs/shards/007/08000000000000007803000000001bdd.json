@@ -1,0 +1,12 @@
+{
+  "pr_number": 7133,
+  "archive_path": "docs/history/pr-reviews/PR-7133-docs-research-memory-world-state-transformer-world-state-clarity-engine-first-la.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:38:20.579Z",
+  "schema_version": "v1",
+  "commit_sha": "fd8fabb64b41082e31ca4081c1fb8d9d2af5da1e",
+  "title": "docs(research): memory->world-state transformer (world-state clarity engine); first ladder of many",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:38:02Z",
+  "head_ref": "otto/research-memory-to-world-state-transformer-clarity-engine"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 6490,
+  "archive_path": "docs/history/pr-reviews/PR-6490-feat-algebra-indexedzset-ts-generic-math-abeliangroup-record-completes-the-ladde.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G7jhH",
+    "thread:PRRT_kwDOSF9kNM6GQ5-2"
+  ],
+  "fetched_at": "2026-06-01T22:27:20.082Z",
+  "schema_version": "v1",
+  "commit_sha": "b74937cdf9dda1b3db1b0921e2688afd9e2cf236",
+  "title": "feat(algebra): IndexedZSet TS generic-math — AbelianGroup record (completes the ladder 4/4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T22:26:58Z",
+  "head_ref": "otto-cli/indexedzset-ts-generic-math-2026-06-01"
+}

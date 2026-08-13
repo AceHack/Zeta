@@ -1,0 +1,12 @@
+{
+  "pr_number": 6328,
+  "archive_path": "docs/history/pr-reviews/PR-6328-docs-b-0959-0-land-the-keeper-heartbeat-as-friendship-surface.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T03:25:36.845Z",
+  "schema_version": "v1",
+  "commit_sha": "6c2c1a7a1342d26c09b812199b7a7050df5705ef",
+  "title": "docs(B-0959 §0): land the keeper + heartbeat-as-friendship-surface",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T03:25:15Z",
+  "head_ref": "otto-cli/b0959-amara-keeper-2026-06-01"
+}

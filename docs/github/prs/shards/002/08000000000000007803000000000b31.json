@@ -1,0 +1,12 @@
+{
+  "pr_number": 2865,
+  "archive_path": "docs/history/pr-reviews/PR-2865-shard-tick-2040z-post-cascade-plateau-post-compaction-continuity.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T20:44:09.761Z",
+  "schema_version": "v1",
+  "commit_sha": "68b42c79df4e9293331904cc0ceb53506a4de160",
+  "title": "shard(tick): 2040Z post-cascade plateau + post-compaction continuity",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T20:43:52Z",
+  "head_ref": "shard-tick-2040z-2026-05-12"
+}

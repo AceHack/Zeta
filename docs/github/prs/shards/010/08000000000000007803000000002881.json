@@ -1,0 +1,12 @@
+{
+  "pr_number": 10369,
+  "archive_path": "docs/history/pr-reviews/PR-10369-fix-zflash-harness-a-skipped-scenario-is-not-a-pass-stop-the-exit-code-lying.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-13T21:13:20.077Z",
+  "schema_version": "v1",
+  "commit_sha": "bbb22a5a139059fc6154f067712b0b92da24d569",
+  "title": "fix(zflash-harness): a skipped scenario is not a pass — stop the exit code lying",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T21:12:46Z",
+  "head_ref": "zflash-harness-skipped-is-not-a-pass"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7606,
+  "archive_path": "docs/history/pr-reviews/PR-7606-feat-the-membrane-log-treaty-four-oracles-byte-lock-the-recordedsource-wire-line.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T05:25:19.392Z",
+  "schema_version": "v1",
+  "commit_sha": "78495807f501155da71b290b5cec9e58f0ef425a",
+  "title": "feat: the MEMBRANE-LOG TREATY — four oracles byte-lock the RecordedSource wire lines (treaty #3)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T05:24:48Z",
+  "head_ref": "shadow-membrane-log-treaty"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 4897,
+  "archive_path": "docs/history/pr-reviews/PR-4897-feat-infra-single-file-installer-packages-for-usb-stick-addison.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ecad2",
+    "comment:PRRC_kwDOSF9kNM7Ecavh",
+    "comment:PRRC_kwDOSF9kNM7Ecavl",
+    "comment:PRRC_kwDOSF9kNM7Ecavq",
+    "comment:PRRC_kwDOSF9kNM7Ecavz",
+    "comment:PRRC_kwDOSF9kNM7EcdWx",
+    "thread:PRRT_kwDOSF9kNM6EcI2H",
+    "thread:PRRT_kwDOSF9kNM6EcJC2",
+    "thread:PRRT_kwDOSF9kNM6EcJC7",
+    "thread:PRRT_kwDOSF9kNM6EcJCv",
+    "thread:PRRT_kwDOSF9kNM6EcJCx",
+    "thread:PRRT_kwDOSF9kNM6EcLAJ"
+  ],
+  "fetched_at": "2026-05-25T02:26:40.202Z",
+  "schema_version": "v1",
+  "commit_sha": "fbd9d09c6dc1c06911fa7ee6e07822c680630235",
+  "title": "feat(infra): single-file installer packages for USB stick (Addison)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T02:26:21Z",
+  "head_ref": "feat/addison-installer-packages-2026-05-24"
+}

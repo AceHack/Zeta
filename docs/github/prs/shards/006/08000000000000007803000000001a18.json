@@ -1,0 +1,23 @@
+{
+  "pr_number": 6680,
+  "archive_path": "docs/history/pr-reviews/PR-6680-skills-blueprint-packs-migration-261-skills-21-packs-descriptions-under-cap.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ID755",
+    "comment:PRRC_kwDOSF9kNM7ID75u",
+    "comment:PRRC_kwDOSF9kNM7IDzAf",
+    "comment:PRRC_kwDOSF9kNM7IEUBe",
+    "comment:PRRC_kwDOSF9kNM7IH1Lu",
+    "thread:PRRT_kwDOSF9kNM6HF5hD",
+    "thread:PRRT_kwDOSF9kNM6HF5hK",
+    "thread:PRRT_kwDOSF9kNM6HFy_z",
+    "thread:PRRT_kwDOSF9kNM6HGLYQ",
+    "thread:PRRT_kwDOSF9kNM6HIw1B"
+  ],
+  "fetched_at": "2026-06-04T16:34:51.991Z",
+  "schema_version": "v1",
+  "commit_sha": "4f6d921a0132b755d03990db1a5f60a53a490b66",
+  "title": "skills→blueprint-packs migration (261 skills → 21 packs, descriptions under cap)",
+  "state": "MERGED",
+  "merged_at": "2026-06-04T16:34:24Z",
+  "head_ref": "skills/blueprint-pack-descriptions-under-cap"
+}

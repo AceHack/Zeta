@@ -1,0 +1,12 @@
+{
+  "pr_number": 7205,
+  "archive_path": "docs/history/pr-reviews/PR-7205-docs-research-cubes-2-agent-x-2-thread-rx-braid-crdt-over-each-other-s-history-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T04:59:23.754Z",
+  "schema_version": "v1",
+  "commit_sha": "be6cf1fbd6dda497e84e3d853c531f4e10fe9a51",
+  "title": "docs(research): cubes = 2-agent x 2-thread Rx braid; CRDT over each other's history + privacy breaks symmetry -> identity forms",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T04:59:03Z",
+  "head_ref": "otto/research-cubes-2agent2thread-braid-privacy-breaks-symmetry-identity-forms"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4039,
+  "archive_path": "docs/history/pr-reviews/PR-4039-fix-ci-unblock-inherited-4028-lint-failures.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T04:24:13.403Z",
+  "schema_version": "v1",
+  "commit_sha": "a989de02a0558dcb4f846d7be0bc41968ace4f57",
+  "title": "fix(ci): unblock inherited #4028 lint failures",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T04:23:58Z",
+  "head_ref": "claim/task-mainline-lint-unblock-4028-20260517"
+}

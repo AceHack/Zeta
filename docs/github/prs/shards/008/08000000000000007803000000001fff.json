@@ -1,0 +1,12 @@
+{
+  "pr_number": 8191,
+  "archive_path": "docs/history/pr-reviews/PR-8191-docs-research-zeta-ir-v2-clifford-is-generated-free-monoidal-category-operad-is-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T15:20:36.078Z",
+  "schema_version": "v1",
+  "commit_sha": "9da198f30cf1da661bf3579343cf32ed6be1daf0",
+  "title": "docs(research): Zeta IR v2 — Clifford is GENERATED; free monoidal category/operad is the irreducible",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T15:20:11Z",
+  "head_ref": "otto/zeta-lang-ir-v2-clifford-is-generated"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 2995,
+  "archive_path": "docs/history/pr-reviews/PR-2995-chore-backlog-close-b-0402-b-0433-shadow-mode-fully-shipped.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A2R_q",
+    "comment:PRRC_kwDOSF9kNM7A2U3e",
+    "comment:PRRC_kwDOSF9kNM7A2bCv",
+    "comment:PRRC_kwDOSF9kNM7A2bG8",
+    "thread:PRRT_kwDOSF9kNM6BzeIu",
+    "thread:PRRT_kwDOSF9kNM6BzgRm"
+  ],
+  "fetched_at": "2026-05-13T15:33:17.898Z",
+  "schema_version": "v1",
+  "commit_sha": "42f5da7da72fa6930d3fa93f117ac7198878d11c",
+  "title": "chore(backlog): close B-0402 + B-0433 — shadow mode fully shipped",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T15:32:51Z",
+  "head_ref": "chore/close-b-0402-b-0433-shadow-complete"
+}

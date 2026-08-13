@@ -1,0 +1,25 @@
+{
+  "pr_number": 3136,
+  "archive_path": "docs/history/pr-reviews/PR-3136-feat-b-0437-ux-of-math-panel-slice-1-static-bivector-fingerprint-scaffold.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BO5E-",
+    "comment:PRRC_kwDOSF9kNM7BO5F2",
+    "comment:PRRC_kwDOSF9kNM7BO5Fh",
+    "comment:PRRC_kwDOSF9kNM7BO5G4",
+    "comment:PRRC_kwDOSF9kNM7BO5Ga",
+    "comment:PRRC_kwDOSF9kNM7BO5Hb",
+    "thread:PRRT_kwDOSF9kNM6CFd30",
+    "thread:PRRT_kwDOSF9kNM6CFd3L",
+    "thread:PRRT_kwDOSF9kNM6CFd3k",
+    "thread:PRRT_kwDOSF9kNM6CFd4R",
+    "thread:PRRT_kwDOSF9kNM6CFd4r",
+    "thread:PRRT_kwDOSF9kNM6CFd5C"
+  ],
+  "fetched_at": "2026-05-14T14:17:36.224Z",
+  "schema_version": "v1",
+  "commit_sha": "a661b815b268acb679afa26bd073cc55ef505fce",
+  "title": "feat(b-0437): UX-of-math panel — slice-1 static bivector fingerprint scaffold",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T14:17:14Z",
+  "head_ref": "feat/b-0437-ux-of-math-slice-1"
+}

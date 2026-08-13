@@ -1,0 +1,12 @@
+{
+  "pr_number": 2843,
+  "archive_path": "docs/history/pr-reviews/PR-2843-add-rule-f-anchor-dotnet-build-is-the-sanity-check-we-are-not-crazy-wake-time-la.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T19:33:18.038Z",
+  "schema_version": "v1",
+  "commit_sha": "2fa3245db95e8a78e402dee9769355b8b820522f",
+  "title": "add(rule): F# anchor + dotnet build IS the sanity check we are not crazy (wake-time landing for PR #2840 methodology)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:32:55Z",
+  "head_ref": "docs/fsharp-anchor-dotnet-build-sanity-check-wake-time-rule-2026-05-12"
+}

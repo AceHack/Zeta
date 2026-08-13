@@ -1,0 +1,12 @@
+{
+  "pr_number": 7428,
+  "archive_path": "docs/history/pr-reviews/PR-7428-test-finalizer-prove-the-prod-test-engine-temperature-scaling-bounded-convergenc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T22:15:50.019Z",
+  "schema_version": "v1",
+  "commit_sha": "46387b5921f421dc6f3ac1612da7d53c63cdd4bd",
+  "title": "test(finalizer): prove the prod=test engine — temperature scaling + bounded convergence (no fork-bomb), 12/12",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T22:15:28Z",
+  "head_ref": "otto/finalizer-test-proves-bounded-convergence"
+}

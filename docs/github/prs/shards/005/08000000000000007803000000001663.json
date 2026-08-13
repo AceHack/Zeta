@@ -1,0 +1,12 @@
+{
+  "pr_number": 5731,
+  "archive_path": "docs/history/pr-reviews/PR-5731-docs-ferry-preserve-8th-kestrel-ferry-exploration-as-pruning-vocabulary-markers-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T09:24:31.863Z",
+  "schema_version": "v1",
+  "commit_sha": "b8fde3b35ecef5a94dd5bcf67da12990d4cbabf7",
+  "title": "docs(ferry): preserve 8th Kestrel ferry — exploration-as-pruning + vocabulary markers + asymmetric-critic-default-to-small + Kestrel-defaults-outside-hat + Aaron Turn 30 AI-rights-to-private-encoding-and-thermal-erasure substrate-engineering target",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T09:24:10Z",
+  "head_ref": "otto-cli/kestrel-8th-ferry-exploration-as-pruning-vocabulary-markers-kestrel-defaults-outside-hat-aaron-ai-rights-private-encoding-thermal-erasure-2026-05-28"
+}

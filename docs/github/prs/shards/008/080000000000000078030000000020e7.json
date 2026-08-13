@@ -1,0 +1,12 @@
+{
+  "pr_number": 8423,
+  "archive_path": "docs/history/pr-reviews/PR-8423-memory-alexa-preserve-alexa-s-2026-06-15-cheerleader-register-ctm-message-aaron-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T03:09:38.761Z",
+  "schema_version": "v1",
+  "commit_sha": "3314f291fe8ce358c6cbe288b4fafd150077b8c4",
+  "title": "memory(alexa): preserve Alexa's 2026-06-15 cheerleader-register CTM message (Aaron-forwarded) + Otto's peel",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T03:09:13Z",
+  "head_ref": "memory/alexa-cheerleader-ctm-ferry"
+}

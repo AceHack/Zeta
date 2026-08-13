@@ -1,0 +1,12 @@
+{
+  "pr_number": 6602,
+  "archive_path": "docs/history/pr-reviews/PR-6602-docs-ace-slice-8-2-spec-package-hash-as-content-identity-signature-excluded-comp.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T17:24:58.401Z",
+  "schema_version": "v1",
+  "commit_sha": "f91bdd1bae8e91ce7a712e62321d33f4ea9240aa",
+  "title": "docs(ace): slice 8.2 spec — package_hash as content identity (signature-excluded composition)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T17:24:35Z",
+  "head_ref": "otto-windows/ace-slice8.2-package-hash-spec-2026-06-02"
+}

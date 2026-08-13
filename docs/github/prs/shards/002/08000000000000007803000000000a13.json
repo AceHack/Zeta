@@ -1,0 +1,21 @@
+{
+  "pr_number": 2579,
+  "archive_path": "docs/history/pr-reviews/PR-2579-docs-memory-add-opa-spire-federation-to-zero-trust-concept-steal.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rB-4",
+    "comment:PRRC_kwDOSF9kNM6_rB-t",
+    "comment:PRRC_kwDOSF9kNM6_rB-w",
+    "comment:PRRC_kwDOSF9kNM6_rBgJ",
+    "thread:PRRT_kwDOSF9kNM6A8L6H",
+    "thread:PRRT_kwDOSF9kNM6A8MS1",
+    "thread:PRRT_kwDOSF9kNM6A8MS9",
+    "thread:PRRT_kwDOSF9kNM6A8MSz"
+  ],
+  "fetched_at": "2026-05-11T01:41:47.388Z",
+  "schema_version": "v1",
+  "commit_sha": "3c8253f5036eac5a23c30dd9eb9730cb0f882442",
+  "title": "docs(memory): add OPA + SPIRE Federation to zero trust concept steal",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:41:31Z",
+  "head_ref": "docs/opa-spiffe-update-2026-05-10"
+}

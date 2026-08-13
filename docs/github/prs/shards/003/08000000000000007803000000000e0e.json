@@ -1,0 +1,16 @@
+{
+  "pr_number": 3598,
+  "archive_path": "docs/history/pr-reviews/PR-3598-feat-persona-otto-33-archive-migration-26-files-memory-md-update-decomposed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ByUb0",
+    "comment:PRRC_kwDOSF9kNM7Byf5H",
+    "thread:PRRT_kwDOSF9kNM6CfJQQ"
+  ],
+  "fetched_at": "2026-05-15T22:07:00.486Z",
+  "schema_version": "v1",
+  "commit_sha": "1818aaa43ec8e3c8a739b46c8d8ea169defe86cf",
+  "title": "feat(persona-otto): §33 archive migration — 26 files + MEMORY.md update (decomposed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T22:06:44Z",
+  "head_ref": "lior/decompose-3590-otto-memory"
+}

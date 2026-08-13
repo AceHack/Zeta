@@ -1,0 +1,12 @@
+{
+  "pr_number": 5727,
+  "archive_path": "docs/history/pr-reviews/PR-5727-docs-rule-forgetting-costs-energy-remembering-is-cheap-landauer-bounded-axiom-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T09:06:40.880Z",
+  "schema_version": "v1",
+  "commit_sha": "70c01f2fb5bb7204e030f21dc95a779989265c97",
+  "title": "docs(rule): forgetting-costs-energy-remembering-is-cheap — Landauer-bounded axiom-preservation as thermodynamic discipline (Signal 2 from 7th Kestrel ferry; operator-authorized 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T09:06:20Z",
+  "head_ref": "otto-cli/signal-2-forgetting-costs-energy-landauer-axiom-preservation-rule-2026-05-28"
+}

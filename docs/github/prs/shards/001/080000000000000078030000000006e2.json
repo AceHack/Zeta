@@ -1,0 +1,12 @@
+{
+  "pr_number": 1762,
+  "archive_path": "docs/history/pr-reviews/PR-1762-archive-preserve-pr-1761-review-output.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T02:06:16.984Z",
+  "schema_version": "v1",
+  "commit_sha": "7ec1ab2d8674bdba3ac864d5442a439e1961af49",
+  "title": "archive: preserve PR 1761 review output",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T02:04:22Z",
+  "head_ref": "claim/archive-pr-1761-review-substrate"
+}

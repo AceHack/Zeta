@@ -1,0 +1,30 @@
+{
+  "pr_number": 2257,
+  "archive_path": "docs/history/pr-reviews/PR-2257-feat-b-0212-smallest-slice-ts-tmp-shadow-outlet-creator-phase-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gQiu",
+    "comment:PRRC_kwDOSF9kNM6_gQs5",
+    "comment:PRRC_kwDOSF9kNM6_gRA4",
+    "comment:PRRC_kwDOSF9kNM6_gRA8",
+    "comment:PRRC_kwDOSF9kNM6_gRA_",
+    "comment:PRRC_kwDOSF9kNM6_gRBD",
+    "comment:PRRC_kwDOSF9kNM6_gRBG",
+    "comment:PRRC_kwDOSF9kNM6_gS2v",
+    "comment:PRRC_kwDOSF9kNM6_gURa",
+    "thread:PRRT_kwDOSF9kNM6AztKB",
+    "thread:PRRT_kwDOSF9kNM6AztRe",
+    "thread:PRRT_kwDOSF9kNM6Azthg",
+    "thread:PRRT_kwDOSF9kNM6Azthj",
+    "thread:PRRT_kwDOSF9kNM6Azthm",
+    "thread:PRRT_kwDOSF9kNM6Azthp",
+    "thread:PRRT_kwDOSF9kNM6Azths",
+    "thread:PRRT_kwDOSF9kNM6Azu-I"
+  ],
+  "fetched_at": "2026-05-09T09:35:16.496Z",
+  "schema_version": "v1",
+  "commit_sha": "467518c05e152d0d88d021ae9c28d121c33208ac",
+  "title": "feat(B-0212): smallest slice — TS /tmp shadow outlet creator (Phase 1)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:35:02Z",
+  "head_ref": "claim/b0212-shadow-outlet-smallest-slice-riven-2026-05-09"
+}

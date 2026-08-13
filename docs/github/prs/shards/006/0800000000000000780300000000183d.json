@@ -1,0 +1,19 @@
+{
+  "pr_number": 6205,
+  "archive_path": "docs/history/pr-reviews/PR-6205-docs-openspec-map-tick-history-inventory-artifacts.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GfPAX",
+    "comment:PRRC_kwDOSF9kNM7GfPCa",
+    "comment:PRRC_kwDOSF9kNM7GfSK0",
+    "comment:PRRC_kwDOSF9kNM7GfSX2",
+    "thread:PRRT_kwDOSF9kNM6F7r7X",
+    "thread:PRRT_kwDOSF9kNM6F7r85"
+  ],
+  "fetched_at": "2026-05-31T11:07:12.751Z",
+  "schema_version": "v1",
+  "commit_sha": "370dfd7654468c141baa6df2327d8a506324c68b",
+  "title": "docs(openspec): map tick-history inventory artifacts",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T11:06:54Z",
+  "head_ref": "claim/backlog-0171-tick-history-artifact-map-20260531"
+}

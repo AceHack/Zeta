@@ -1,0 +1,12 @@
+{
+  "pr_number": 2010,
+  "archive_path": "docs/history/pr-reviews/PR-2010-fix-backlog-decompose-b-0246-green-lantern-ring.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T02:49:57.398Z",
+  "schema_version": "v1",
+  "commit_sha": "aec1dc5971d0c42626001400e6b70e7ed30f4905",
+  "title": "fix(backlog): decompose B-0246 Green Lantern ring",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:49:41Z",
+  "head_ref": "backlog/b0246-decompose"
+}

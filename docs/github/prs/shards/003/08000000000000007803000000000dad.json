@@ -1,0 +1,12 @@
+{
+  "pr_number": 3501,
+  "archive_path": "docs/history/pr-reviews/PR-3501-feat-persona-kestrel-33-archive-migration-bootstream-file-memory-persona-kestrel.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T14:22:49.796Z",
+  "schema_version": "v1",
+  "commit_sha": "d477b7ddf36d394b040aa57325e8b374d07ebcb1",
+  "title": "feat(persona-kestrel): §33 archive migration — bootstream file → memory/persona/kestrel/conversations/",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T14:22:29Z",
+  "head_ref": "feat/persona-kestrel-migrate-conversations-otto-cli-2026-05-15"
+}

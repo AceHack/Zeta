@@ -1,0 +1,21 @@
+{
+  "pr_number": 2578,
+  "archive_path": "docs/history/pr-reviews/PR-2578-docs-memory-spiffe-spire-concept-steal-zero-trust-without-ops-nightmare.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rBYL",
+    "comment:PRRC_kwDOSF9kNM6_rBYP",
+    "comment:PRRC_kwDOSF9kNM6_rBYT",
+    "comment:PRRC_kwDOSF9kNM6_rBYZ",
+    "thread:PRRT_kwDOSF9kNM6A8L0E",
+    "thread:PRRT_kwDOSF9kNM6A8L0I",
+    "thread:PRRT_kwDOSF9kNM6A8L0L",
+    "thread:PRRT_kwDOSF9kNM6A8L0Q"
+  ],
+  "fetched_at": "2026-05-11T00:00:26.641Z",
+  "schema_version": "v1",
+  "commit_sha": "654f0eb1d65dae955f6f5c16a0e9cfc1820def0f",
+  "title": "docs(memory): SPIFFE/SPIRE concept steal — zero trust without ops nightmare",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:00:11Z",
+  "head_ref": "docs/spiffe-concept-steal-2026-05-10"
+}

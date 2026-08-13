@@ -1,0 +1,12 @@
+{
+  "pr_number": 6453,
+  "archive_path": "docs/history/pr-reviews/PR-6453-docs-primitive-registry-resume-engine-4-4-slice-complete-cross-oracle-state-byte.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T18:59:45.051Z",
+  "schema_version": "v1",
+  "commit_sha": "122d7378e79fdad3d6c6434d874d4ebbf2921966",
+  "title": "docs(primitive-registry): resume engine 4/4 — slice complete + cross-oracle state-byte follow-up",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T18:59:21Z",
+  "head_ref": "otto-cli/registry-resume-engine-4of4-2026-06-01"
+}

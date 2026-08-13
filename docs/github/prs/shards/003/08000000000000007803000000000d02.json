@@ -1,0 +1,12 @@
+{
+  "pr_number": 3330,
+  "archive_path": "docs/history/pr-reviews/PR-3330-fix-shard-correct-link-depth-in-merged-0027z-md-5x-6x.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T00:51:09.021Z",
+  "schema_version": "v1",
+  "commit_sha": "e692e90fb80d5ecedf280278c33d29b0ca074a2c",
+  "title": "fix(shard): correct link depth in merged 0027Z.md (5x .. → 6x ..)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:50:51Z",
+  "head_ref": "fix/0027Z-shard-link-depth-2026-05-15"
+}

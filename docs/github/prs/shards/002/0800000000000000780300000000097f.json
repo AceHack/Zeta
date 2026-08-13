@@ -1,0 +1,31 @@
+{
+  "pr_number": 2431,
+  "archive_path": "docs/history/pr-reviews/PR-2431-feat-b-0032-3-aminata-adversarial-review-heartbeat-file-integrity-threat-model-h.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_mP5-",
+    "comment:PRRC_kwDOSF9kNM6_mP54",
+    "comment:PRRC_kwDOSF9kNM6_mP5u",
+    "comment:PRRC_kwDOSF9kNM6_mP6E",
+    "comment:PRRC_kwDOSF9kNM6_mQrM",
+    "comment:PRRC_kwDOSF9kNM6_mQsC",
+    "comment:PRRC_kwDOSF9kNM6_mQt7",
+    "comment:PRRC_kwDOSF9kNM6_mQvc",
+    "comment:PRRC_kwDOSF9kNM6_mRXY",
+    "comment:PRRC_kwDOSF9kNM6_mRXj",
+    "comment:PRRC_kwDOSF9kNM6_mRXm",
+    "thread:PRRT_kwDOSF9kNM6A4Y2e",
+    "thread:PRRT_kwDOSF9kNM6A4Y2o",
+    "thread:PRRT_kwDOSF9kNM6A4Y2t",
+    "thread:PRRT_kwDOSF9kNM6A4Y2y",
+    "thread:PRRT_kwDOSF9kNM6A4aBV",
+    "thread:PRRT_kwDOSF9kNM6A4aBg",
+    "thread:PRRT_kwDOSF9kNM6A4aBj"
+  ],
+  "fetched_at": "2026-05-10T07:15:03.337Z",
+  "schema_version": "v1",
+  "commit_sha": "c93dec5ab2157e89e3fe11fb5685dd131fa1926c",
+  "title": "feat(B-0032.3): Aminata adversarial review — heartbeat-file integrity threat model hardened (10 findings)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T07:14:48Z",
+  "head_ref": "claim/B-0032.3-aminata-heartbeat-review-2026-05-10"
+}

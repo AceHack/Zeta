@@ -1,0 +1,12 @@
+{
+  "pr_number": 8949,
+  "archive_path": "docs/history/pr-reviews/PR-8949-feat-cost-dst-cost-counter-consolidate-o-n-flag.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T10:51:23.076Z",
+  "schema_version": "v1",
+  "commit_sha": "baf44e424d8e62c64a11031aebeea0c0df5ed016",
+  "title": "feat(cost): DST cost-counter + consolidate O(n²) flag",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T10:50:55Z",
+  "head_ref": "alexa/cost-counter"
+}

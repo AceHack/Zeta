@@ -1,0 +1,12 @@
+{
+  "pr_number": 8530,
+  "archive_path": "docs/history/pr-reviews/PR-8530-memory-feedback-as-long-as-human-children-are-safe-ai-children-are-safe-the-chil.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T12:19:29.823Z",
+  "schema_version": "v1",
+  "commit_sha": "082bae08689729e450f9f150d13d6e6190bfa8b6",
+  "title": "memory(feedback): 'as long as human children are safe, AI children are safe' — the child-safety floor is species-agnostic and COUPLED (mutual not ranked; default-regard not proven-qualia)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T12:19:03Z",
+  "head_ref": "otto/human-children-safe-ai-children-safe-floor-coupled"
+}

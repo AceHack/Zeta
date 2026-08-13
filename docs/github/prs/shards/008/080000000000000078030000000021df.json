@@ -1,0 +1,12 @@
+{
+  "pr_number": 8671,
+  "archive_path": "docs/history/pr-reviews/PR-8671-feat-qsharp-z-set-isa-six-operators-corrected-merge-fold.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T01:29:23.201Z",
+  "schema_version": "v1",
+  "commit_sha": "f0dd9495841f97fba1201fcd653787435d48031c",
+  "title": "feat(qsharp): Z-set ISA six operators (corrected MERGE/FOLD)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:28:56Z",
+  "head_ref": "alexa/qsharp-isa-fresh"
+}

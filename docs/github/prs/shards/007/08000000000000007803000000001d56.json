@@ -1,0 +1,12 @@
+{
+  "pr_number": 7510,
+  "archive_path": "docs/history/pr-reviews/PR-7510-docs-research-dst-test-zeta-entropy-alone-git-history-disk-is-a-sibling-membrane.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T21:00:25.823Z",
+  "schema_version": "v1",
+  "commit_sha": "b55e46621eef186ffe2c1204e94df7b22ae29cb4",
+  "title": "docs(research): DST = test Zeta entropy alone (git history); disk is a sibling membrane-crossing to Reticulum (FDB DST)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T20:59:56Z",
+  "head_ref": "shadow-disk-sibling-crossing-zeta-entropy-alone"
+}

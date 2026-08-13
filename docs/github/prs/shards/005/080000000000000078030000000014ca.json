@@ -1,0 +1,12 @@
+{
+  "pr_number": 5322,
+  "archive_path": "docs/history/pr-reviews/PR-5322-feat-usb-pr-3-qemu-boot-smoke-test-for-canonical-installer-iso-cascade-5-dynamic.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T21:15:16.443Z",
+  "schema_version": "v1",
+  "commit_sha": "807364dcbe017157b7e1e208ace9374514d5cfb4",
+  "title": "feat(USB PR 3): QEMU boot smoke-test for canonical installer ISO — cascade #5 dynamic boot floor",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T21:14:53Z",
+  "head_ref": "otto-cli/usb-cleanup-pr3-qemu-boot-smoke-test-build-ai-cluster-iso-workflow-2026-05-26"
+}

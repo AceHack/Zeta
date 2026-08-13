@@ -1,0 +1,12 @@
+{
+  "pr_number": 7054,
+  "archive_path": "docs/history/pr-reviews/PR-7054-feat-core-symmetricendurance-weight-free-perspective-relative-frame-time-is-a-pe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T08:07:07.058Z",
+  "schema_version": "v1",
+  "commit_sha": "21a5c365d339936c66adb55e1c63b028a0f19ae6",
+  "title": "feat(core): SymmetricEndurance — weight-free perspective-relative frame; time is a peer; identity changes behavior",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T08:06:44Z",
+  "head_ref": "otto/symmetric-endurance-weight-free-frame-time-peer"
+}

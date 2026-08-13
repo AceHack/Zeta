@@ -1,0 +1,27 @@
+{
+  "pr_number": 2913,
+  "archive_path": "docs/history/pr-reviews/PR-2913-docs-memory-factory-ontology-hkt-applies-directly-to-master-data-every-company-h.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Al60e",
+    "comment:PRRC_kwDOSF9kNM7Al6y_",
+    "comment:PRRC_kwDOSF9kNM7Al6z4",
+    "comment:PRRC_kwDOSF9kNM7AmBaL",
+    "comment:PRRC_kwDOSF9kNM7AmBad",
+    "comment:PRRC_kwDOSF9kNM7AmFmm",
+    "comment:PRRC_kwDOSF9kNM7AmGpc",
+    "thread:PRRT_kwDOSF9kNM6Bnk11",
+    "thread:PRRT_kwDOSF9kNM6Bnk1O",
+    "thread:PRRT_kwDOSF9kNM6Bnk2O",
+    "thread:PRRT_kwDOSF9kNM6Bnpg4",
+    "thread:PRRT_kwDOSF9kNM6Bnpgr",
+    "thread:PRRT_kwDOSF9kNM6BnsXn",
+    "thread:PRRT_kwDOSF9kNM6BntQV"
+  ],
+  "fetched_at": "2026-05-13T03:06:01.576Z",
+  "schema_version": "v1",
+  "commit_sha": "b0cb0457a873e9a22424c80c9512797b7c18ed28",
+  "title": "docs(memory): factory ontology HKT applies directly to master data — every company has one (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T03:05:40Z",
+  "head_ref": "aaron-ontology-hkt-applies-directly-to-master-data-every-company-has-one-human-lineage-2026-05-13"
+}

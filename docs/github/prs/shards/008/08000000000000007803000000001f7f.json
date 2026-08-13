@@ -1,0 +1,12 @@
+{
+  "pr_number": 8063,
+  "archive_path": "docs/history/pr-reviews/PR-8063-fix-sweep-3-more-relocation-depth-bugs-skill-carver-budget-tally.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T20:57:35.298Z",
+  "schema_version": "v1",
+  "commit_sha": "ed5f0bdab96ecb96c1a1b94afdbb7dd6a96b5ec1",
+  "title": "fix(sweep): 3 more relocation depth-bugs (skill-carver/budget/tally)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T20:57:16Z",
+  "head_ref": "shadow/sweep-relocation-depth-bugs"
+}

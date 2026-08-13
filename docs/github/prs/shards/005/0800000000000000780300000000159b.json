@@ -1,0 +1,15 @@
+{
+  "pr_number": 5531,
+  "archive_path": "docs/history/pr-reviews/PR-5531-docs-archive-preserve-discussion-for-pr-5513.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FdBY9",
+    "thread:PRRT_kwDOSF9kNM6FLlo_"
+  ],
+  "fetched_at": "2026-05-27T18:14:07.179Z",
+  "schema_version": "v1",
+  "commit_sha": "4017984b081beb58d77762190a09c8520af57af2",
+  "title": "docs(archive): Preserve discussion for PR #5513",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:13:42Z",
+  "head_ref": "lior/archive-5513-v3"
+}

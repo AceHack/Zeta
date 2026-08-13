@@ -1,0 +1,25 @@
+{
+  "pr_number": 3510,
+  "archive_path": "docs/history/pr-reviews/PR-3510-feat-rules-references-upstreams-is-not-our-code-search-scan-operations-must-excl.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bq4S2",
+    "comment:PRRC_kwDOSF9kNM7Bq6qS",
+    "comment:PRRC_kwDOSF9kNM7Bq6qh",
+    "comment:PRRC_kwDOSF9kNM7BqtpI",
+    "comment:PRRC_kwDOSF9kNM7BqzB0",
+    "comment:PRRC_kwDOSF9kNM7BqzB3",
+    "thread:PRRT_kwDOSF9kNM6CZqIA",
+    "thread:PRRT_kwDOSF9kNM6CZuD6",
+    "thread:PRRT_kwDOSF9kNM6CZuD9",
+    "thread:PRRT_kwDOSF9kNM6CZx5x",
+    "thread:PRRT_kwDOSF9kNM6CZzsJ",
+    "thread:PRRT_kwDOSF9kNM6CZzsR"
+  ],
+  "fetched_at": "2026-05-15T15:38:39.647Z",
+  "schema_version": "v1",
+  "commit_sha": "b13cbc13d84dd6187d559ca28f210b8911e794bb",
+  "title": "feat(rules): references/upstreams/ is NOT our code — search/scan operations must exclude it",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T15:38:21Z",
+  "head_ref": "feat/references-upstreams-search-hygiene-rule-otto-cli-2026-05-15"
+}

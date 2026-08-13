@@ -1,0 +1,15 @@
+{
+  "pr_number": 2525,
+  "archive_path": "docs/history/pr-reviews/PR-2525-research-b-0314-slice-8-external-anchors-bp-20-bp-21-bp-22.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_prxm",
+    "thread:PRRT_kwDOSF9kNM6A7Ian"
+  ],
+  "fetched_at": "2026-05-10T19:22:37.307Z",
+  "schema_version": "v1",
+  "commit_sha": "f58674c4917540627503ce3db99b120ccb389e6c",
+  "title": "research(B-0314): slice-8 external anchors — BP-20, BP-21, BP-22",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T19:22:19Z",
+  "head_ref": "fix/B-0314-bp-nn-anchor-backfill-slice8"
+}

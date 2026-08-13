@@ -1,0 +1,19 @@
+{
+  "pr_number": 2415,
+  "archive_path": "docs/history/pr-reviews/PR-2415-feat-b-0051-1-isomorphism-catalog-v0-forward-index-if-filter-framework.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lnTq",
+    "comment:PRRC_kwDOSF9kNM6_lnzR",
+    "comment:PRRC_kwDOSF9kNM6_lnzW",
+    "thread:PRRT_kwDOSF9kNM6A35z-",
+    "thread:PRRT_kwDOSF9kNM6A36Nl",
+    "thread:PRRT_kwDOSF9kNM6A36Nq"
+  ],
+  "fetched_at": "2026-05-10T04:39:53.094Z",
+  "schema_version": "v1",
+  "commit_sha": "ac3e796d5605fc8a55ffc329c7d5d2623f257947",
+  "title": "feat(B-0051.1): isomorphism catalog v0 — forward index + IF-filter framework",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T04:39:35Z",
+  "head_ref": "feat/B-0051.1-isomorphism-catalog-index"
+}

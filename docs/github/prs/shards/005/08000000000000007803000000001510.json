@@ -1,0 +1,12 @@
+{
+  "pr_number": 5392,
+  "archive_path": "docs/history/pr-reviews/PR-5392-feat-b-0850-phase-1-zeta-otto-systemd-unit-nixos-module-control-plane-enable-cla.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T03:08:19.650Z",
+  "schema_version": "v1",
+  "commit_sha": "314344fb0289a4422c7e1a02b6bd2306d1e9cc83",
+  "title": "feat(B-0850 Phase 1): zeta-otto systemd unit NixOS module + control-plane enable — claude service auto-starts on reboot using persisted iter-5.5.0 device-code creds (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T03:07:59Z",
+  "head_ref": "feat-b0850-1-zeta-otto-systemd-unit-nixos-module-autostart-on-reboot-2026-05-27-0050z"
+}

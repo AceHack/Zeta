@@ -1,0 +1,12 @@
+{
+  "pr_number": 4575,
+  "archive_path": "docs/history/pr-reviews/PR-4575-backlog-b-0696-substrate-surface-change-bus-envelope-for-cross-ai-coordination.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T19:19:10.896Z",
+  "schema_version": "v1",
+  "commit_sha": "7aa417d72cb68dfbd982fb35942c2aeaab388ff2",
+  "title": "backlog(B-0696): substrate-surface-change bus envelope for cross-AI coordination",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T19:18:53Z",
+  "head_ref": "backlog/substrate-surface-change-bus-envelope-2026-05-21"
+}

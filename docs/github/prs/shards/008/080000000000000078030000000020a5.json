@@ -1,0 +1,12 @@
+{
+  "pr_number": 8357,
+  "archive_path": "docs/history/pr-reviews/PR-8357-fix-observe-main-red-lint-legacyid-fixture-unused-git-itemcontent-md032.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T23:00:34.917Z",
+  "schema_version": "v1",
+  "commit_sha": "17f113bc4f9236a9b3bc50d58ff40a108ca7272b",
+  "title": "fix(observe): main-red lint — legacyId fixture + unused git()/itemContent + MD032",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T23:00:11Z",
+  "head_ref": "fix/main-red-lint-observe-zetaid-rotation"
+}

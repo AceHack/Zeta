@@ -1,0 +1,12 @@
+{
+  "pr_number": 7621,
+  "archive_path": "docs/history/pr-reviews/PR-7621-feat-chip8-chip8citizen-identity-as-an-injected-13-effect-the-c-in-the-citizensh.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:37:42.973Z",
+  "schema_version": "v1",
+  "commit_sha": "dd6d2e3e115e87f27b1ec64cf534b9208fcb341f",
+  "title": "feat(chip8): Chip8Citizen — identity as an injected §13 effect (the C in the citizenship quartet)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:37:21Z",
+  "head_ref": "shadow-chip8-citizen-identity"
+}

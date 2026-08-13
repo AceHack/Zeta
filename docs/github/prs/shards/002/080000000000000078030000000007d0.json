@@ -1,0 +1,27 @@
+{
+  "pr_number": 2000,
+  "archive_path": "docs/history/pr-reviews/PR-2000-fix-backlog-decompose-b-0240-structure-recognizer.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_FHFC",
+    "comment:PRRC_kwDOSF9kNM6_FHFG",
+    "comment:PRRC_kwDOSF9kNM6_FHFJ",
+    "comment:PRRC_kwDOSF9kNM6_FHY_",
+    "comment:PRRC_kwDOSF9kNM6_FHYb",
+    "comment:PRRC_kwDOSF9kNM6_FHYy",
+    "comment:PRRC_kwDOSF9kNM6_FHZP",
+    "thread:PRRT_kwDOSF9kNM6AftS_",
+    "thread:PRRT_kwDOSF9kNM6AftTB",
+    "thread:PRRT_kwDOSF9kNM6AftTE",
+    "thread:PRRT_kwDOSF9kNM6Aftg0",
+    "thread:PRRT_kwDOSF9kNM6Aftg9",
+    "thread:PRRT_kwDOSF9kNM6Aftgl",
+    "thread:PRRT_kwDOSF9kNM6AfthJ"
+  ],
+  "fetched_at": "2026-05-08T02:32:52.495Z",
+  "schema_version": "v1",
+  "commit_sha": "c60fba46735a502f0b6cdc6d29378b3b9f8f4733",
+  "title": "fix(backlog): decompose B-0240 structure recognizer",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:32:38Z",
+  "head_ref": "backlog/b0240-decompose"
+}

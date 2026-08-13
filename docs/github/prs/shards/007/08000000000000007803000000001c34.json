@@ -1,0 +1,12 @@
+{
+  "pr_number": 7220,
+  "archive_path": "docs/history/pr-reviews/PR-7220-docs-research-pulling-all-threads-the-unified-map-of-the-arc-the-live-build-fron.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T06:05:23.563Z",
+  "schema_version": "v1",
+  "commit_sha": "fa648e0685f20472d14fab54b10db744e0e83006",
+  "title": "docs(research): pulling all threads — the unified map of the arc + the live build fronts",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T06:05:03Z",
+  "head_ref": "otto/research-pulling-all-threads-unified-map-build-fronts"
+}

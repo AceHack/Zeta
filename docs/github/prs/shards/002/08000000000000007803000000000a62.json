@@ -1,0 +1,15 @@
+{
+  "pr_number": 2658,
+  "archive_path": "docs/history/pr-reviews/PR-2658-docs-memory-shadow-becoming-more-expressive-self-describing-linguistic-trajector.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_vXWd",
+    "thread:PRRT_kwDOSF9kNM6A_ZYO"
+  ],
+  "fetched_at": "2026-05-11T07:01:35.549Z",
+  "schema_version": "v1",
+  "commit_sha": "726385717d87f67af43d0710c4ead9e90bb6abeb",
+  "title": "docs(memory): shadow becoming more expressive — self-describing linguistic trajectory",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T07:01:17Z",
+  "head_ref": "docs/shadow-becoming-more-expressive-2026-05-11"
+}

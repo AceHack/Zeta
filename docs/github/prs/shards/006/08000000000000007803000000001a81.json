@@ -1,0 +1,12 @@
+{
+  "pr_number": 6785,
+  "archive_path": "docs/history/pr-reviews/PR-6785-docs-capture-filesystem-backend-needs-a-merkle-dag-for-command-parity-with-git.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T10:39:00.549Z",
+  "schema_version": "v1",
+  "commit_sha": "89429eec41254370287f9d9354bd62c90118fb9a",
+  "title": "docs(capture): filesystem backend needs a Merkle DAG for command parity with git",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T10:38:44Z",
+  "head_ref": "capture/fs-merkle-dag-command-parity"
+}

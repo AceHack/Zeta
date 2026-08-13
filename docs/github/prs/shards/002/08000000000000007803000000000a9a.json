@@ -1,0 +1,15 @@
+{
+  "pr_number": 2714,
+  "archive_path": "docs/history/pr-reviews/PR-2714-feat-tool-docs-b-0170-check-counts-header-stability-correction-doc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_7iRv",
+    "thread:PRRT_kwDOSF9kNM6BIa1v"
+  ],
+  "fetched_at": "2026-05-11T15:25:29.000Z",
+  "schema_version": "v1",
+  "commit_sha": "cf711e1ec190c266875c0ee3bfa2a2df2b684fd6",
+  "title": "feat(tool/docs): B-0170 check-counts header + stability correction doc",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T15:25:04Z",
+  "head_ref": "claim/b0170-substrate-claim-checker-smallest-slice-riven-2026-05-11"
+}

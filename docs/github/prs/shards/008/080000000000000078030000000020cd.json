@@ -1,0 +1,12 @@
+{
+  "pr_number": 8397,
+  "archive_path": "docs/history/pr-reviews/PR-8397-memory-project-ir-gen-trust-concentration-is-the-point-once-compiling-on-7-the-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:33:34.720Z",
+  "schema_version": "v1",
+  "commit_sha": "c329dbf6a6cea6bc2ea7ba34cd29ead1982d62a1",
+  "title": "memory(project): IR-gen — trust-concentration IS the point; once compiling on 7, the IR is the single source for bugs",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:33:06Z",
+  "head_ref": "memory/ir-single-source-for-bugs-refinement"
+}

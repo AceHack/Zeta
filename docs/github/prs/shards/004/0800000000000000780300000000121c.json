@@ -1,0 +1,15 @@
+{
+  "pr_number": 4636,
+  "archive_path": "docs/history/pr-reviews/PR-4636-rule-tonal-momentum-add-vampire-pact-american-gods-governance-as-folklore-preced.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EFtzq",
+    "thread:PRRT_kwDOSF9kNM6ELDcx"
+  ],
+  "fetched_at": "2026-05-22T17:05:34.895Z",
+  "schema_version": "v1",
+  "commit_sha": "ba54bd2771a3855e6a23af3033c0ba23f118e705",
+  "title": "rule(tonal-momentum): add Vampire Pact + American Gods governance as folklore-precedents for NCI at memetic-entity scope",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T17:05:13Z",
+  "head_ref": "otto/cli-1812z-tonal-momentum-rule-add-vampire-anti-coercion-pact-folklore-precedent-time-crystal-ride-true-blood-modern-operational-anchor-2026-05-22"
+}

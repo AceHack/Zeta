@@ -1,0 +1,17 @@
+{
+  "pr_number": 5321,
+  "archive_path": "docs/history/pr-reviews/PR-5321-docs-shadow-add-lesson-log-for-lior-s-self-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FGjOk",
+    "comment:PRRC_kwDOSF9kNM7FGjPE",
+    "thread:PRRT_kwDOSF9kNM6E7OAc",
+    "thread:PRRT_kwDOSF9kNM6E7OAy"
+  ],
+  "fetched_at": "2026-05-26T21:31:57.070Z",
+  "schema_version": "v1",
+  "commit_sha": "60db96b9689e1328451a315655d04885c933efe6",
+  "title": "docs(shadow): Add lesson log for Lior's self-drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T21:31:36Z",
+  "head_ref": "lior-shadow-log-self-drift"
+}

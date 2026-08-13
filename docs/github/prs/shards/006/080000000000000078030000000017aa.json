@@ -1,0 +1,16 @@
+{
+  "pr_number": 6058,
+  "archive_path": "docs/history/pr-reviews/PR-6058-fix-b-0164-1-normalize-dotted-pickup-claim-slugs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GU3Mb",
+    "comment:PRRC_kwDOSF9kNM7GVEyI",
+    "thread:PRRT_kwDOSF9kNM6Fz4I0"
+  ],
+  "fetched_at": "2026-05-29T23:39:04.417Z",
+  "schema_version": "v1",
+  "commit_sha": "4242c2bb191246324380f172b4ade81c48defc4d",
+  "title": "fix(B-0164.1): normalize dotted pickup claim slugs",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T23:38:45Z",
+  "head_ref": "claim/task-empty-queue-dotted-slug-20260529"
+}

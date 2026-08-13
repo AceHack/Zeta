@@ -1,0 +1,12 @@
+{
+  "pr_number": 8106,
+  "archive_path": "docs/history/pr-reviews/PR-8106-feat-complexity-use-native-dynamicvalue-yaml-parser-and-reformat-registry-canoni.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T00:40:07.408Z",
+  "schema_version": "v1",
+  "commit_sha": "7d4dd4d395966429be0bae6840cc5e05600428f6",
+  "title": "feat(complexity): use native DynamicValue YAML parser and reformat registry canonically",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T00:39:45Z",
+  "head_ref": "gemini/dynamicvalue-yaml"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8209,
+  "archive_path": "docs/history/pr-reviews/PR-8209-fix-ci-update-substrate-audit-sentinels-to-the-b-0855-2-self-register-design.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T18:45:08.458Z",
+  "schema_version": "v1",
+  "commit_sha": "bf6bf3528507bfa8e09ee8deba92f9d330be56ae",
+  "title": "fix(ci): update substrate-audit sentinels to the B-0855.2 self-register design",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T18:44:47Z",
+  "head_ref": "fix/substrate-audit-self-register"
+}

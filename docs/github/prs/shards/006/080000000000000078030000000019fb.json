@@ -1,0 +1,12 @@
+{
+  "pr_number": 6651,
+  "archive_path": "docs/history/pr-reviews/PR-6651-feat-ace-slice-8-5-canonical-json-seam-cross-language-golden-vectors.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T10:17:43.743Z",
+  "schema_version": "v1",
+  "commit_sha": "e15d46823566bdb3e0840275cd82ba8b0a395c81",
+  "title": "feat(ace): slice 8.5 — canonical-JSON seam cross-language golden vectors",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T10:17:20Z",
+  "head_ref": "otto-windows/ace-slice8.5-canonical-json-vectors-2026-06-03"
+}

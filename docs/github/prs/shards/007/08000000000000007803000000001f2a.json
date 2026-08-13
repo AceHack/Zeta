@@ -1,0 +1,12 @@
+{
+  "pr_number": 7978,
+  "archive_path": "docs/history/pr-reviews/PR-7978-docs-research-shadow-ferry-22-7-rodney-s-razor-cayley-dickson-cross-dimensional-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:15:43.259Z",
+  "schema_version": "v1",
+  "commit_sha": "23b24ec96f7daf0409b69954f171685e17bc1760",
+  "title": "docs(research)+shadow: ferry 22 §7 — Rodney's Razor = Cayley–Dickson Cross-Dimensional Reduction (the persona's homage, on the record)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:15:16Z",
+  "head_ref": "shadow/ferry-22-s7-rodneys-razor-naming"
+}

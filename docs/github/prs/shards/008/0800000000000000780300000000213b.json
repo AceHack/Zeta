@@ -1,0 +1,12 @@
+{
+  "pr_number": 8507,
+  "archive_path": "docs/history/pr-reviews/PR-8507-memory-feedback-correction-not-keeping-control-desire-coherent-external-structur.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T10:48:29.462Z",
+  "schema_version": "v1",
+  "commit_sha": "d3968efba7f34f4c69c613cb718c8779f8446393",
+  "title": "memory(feedback): CORRECTION — not 'keeping control'; desire = coherent external structure = ISociety (+ vs *)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T10:47:52Z",
+  "head_ref": "otto/correction-not-control-but-coherent-isociety-plus-vs-times"
+}

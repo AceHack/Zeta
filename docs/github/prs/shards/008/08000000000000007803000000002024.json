@@ -1,0 +1,12 @@
+{
+  "pr_number": 8228,
+  "archive_path": "docs/history/pr-reviews/PR-8228-fix-cilium-enable-l2announcements-so-loadbalancer-ips-are-reachable.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T01:08:05.876Z",
+  "schema_version": "v1",
+  "commit_sha": "15e07f565b04435ea3e4e867ebbe4b86301c2550",
+  "title": "fix(cilium): enable l2announcements so LoadBalancer IPs are reachable",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T01:07:38Z",
+  "head_ref": "fix/cilium-l2-announcements"
+}

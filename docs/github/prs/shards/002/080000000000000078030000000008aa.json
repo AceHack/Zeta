@@ -1,0 +1,15 @@
+{
+  "pr_number": 2218,
+  "archive_path": "docs/history/pr-reviews/PR-2218-chore-close-stale-b-0015-script-already-deleted.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_ffOC",
+    "thread:PRRT_kwDOSF9kNM6AzGHH"
+  ],
+  "fetched_at": "2026-05-09T07:13:20.103Z",
+  "schema_version": "v1",
+  "commit_sha": "3a22a179b05181c8fedeb067ccc191ca2f6bbfa8",
+  "title": "chore: close stale B-0015 (script already deleted)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:13:05Z",
+  "head_ref": "fix/close-stale-b0015"
+}

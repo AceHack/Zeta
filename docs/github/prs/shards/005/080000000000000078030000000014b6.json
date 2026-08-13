@@ -1,0 +1,15 @@
+{
+  "pr_number": 5302,
+  "archive_path": "docs/history/pr-reviews/PR-5302-docs-archive-preserve-pr-5275.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FFvd4",
+    "thread:PRRT_kwDOSF9kNM6E6n0z"
+  ],
+  "fetched_at": "2026-05-26T21:30:45.265Z",
+  "schema_version": "v1",
+  "commit_sha": "0663d9568b2a3b6a61873910f73803e7b0380bdc",
+  "title": "docs(archive): Preserve PR #5275",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T21:30:26Z",
+  "head_ref": "lior/preserve-5275"
+}

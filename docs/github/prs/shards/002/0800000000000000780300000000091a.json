@@ -1,0 +1,12 @@
+{
+  "pr_number": 2330,
+  "archive_path": "docs/history/pr-reviews/PR-2330-docs-claims-preserve-task-trajectory-placeholder-filter-claim-record.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T19:02:28.939Z",
+  "schema_version": "v1",
+  "commit_sha": "1ca9d3bddb8a26801ae92e0015d742886bfbc495",
+  "title": "docs(claims): preserve task-trajectory-placeholder-filter claim record",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T19:02:14Z",
+  "head_ref": "claim/preserve-task-trajectory-placeholder-filter-claim-2026-05-09"
+}

@@ -1,0 +1,18 @@
+{
+  "pr_number": 6227,
+  "archive_path": "docs/history/pr-reviews/PR-6227-feat-zeta-id-register-bus-spawn-workitem-categories-git-native-bus-first-brick-6.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ghr95",
+    "comment:PRRC_kwDOSF9kNM7Ghswy",
+    "comment:PRRC_kwDOSF9kNM7GhuE2",
+    "thread:PRRT_kwDOSF9kNM6F9kOG",
+    "thread:PRRT_kwDOSF9kNM6F9l11"
+  ],
+  "fetched_at": "2026-05-31T18:33:29.386Z",
+  "schema_version": "v1",
+  "commit_sha": "7632191c2d87ab8069cf2c423c4c38ab4cae4c8b",
+  "title": "feat(zeta-id): register Bus, Spawn, WorkItem categories (git-native bus first brick, #6219)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T18:33:10Z",
+  "head_ref": "otto-cli/zetaid-bus-spawn-workitem-categories-2026-05-31"
+}

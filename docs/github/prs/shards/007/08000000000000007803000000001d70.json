@@ -1,0 +1,12 @@
+{
+  "pr_number": 7536,
+  "archive_path": "docs/history/pr-reviews/PR-7536-docs-research-boundary-flow-architecture-minimal-action-energy-redirection-ferry.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:24:03.157Z",
+  "schema_version": "v1",
+  "commit_sha": "b9ab30cc66ade78fb3325b22eec47aa2516004f6",
+  "title": "docs(research): boundary-flow architecture — minimal action, energy redirection, FerryThrottler membranes, FDB origin",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:23:36Z",
+  "head_ref": "shadow-boundary-flow-architecture-capture"
+}

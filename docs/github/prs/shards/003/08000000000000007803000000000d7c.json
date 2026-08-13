@@ -1,0 +1,15 @@
+{
+  "pr_number": 3452,
+  "archive_path": "docs/history/pr-reviews/PR-3452-shard-tick-1214z-no-merges-routine.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bmihq",
+    "thread:PRRT_kwDOSF9kNM6CWl3N"
+  ],
+  "fetched_at": "2026-05-15T12:24:41.674Z",
+  "schema_version": "v1",
+  "commit_sha": "5a2e7347a88035ca8f3148cb3eb7b4ae3976e77e",
+  "title": "shard(tick): 1214Z — no merges; routine",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T12:24:24Z",
+  "head_ref": "shard/tick-1214z-otto-cli-2026-05-15"
+}

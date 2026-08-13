@@ -1,0 +1,25 @@
+{
+  "pr_number": 6059,
+  "archive_path": "docs/history/pr-reviews/PR-6059-docs-research-land-hflv-active-triggers-gate-preserving-pr-review-friction-mitig.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GU2gh",
+    "comment:PRRC_kwDOSF9kNM7GU2hP",
+    "comment:PRRC_kwDOSF9kNM7GU5YF",
+    "comment:PRRC_kwDOSF9kNM7GU5Ya",
+    "comment:PRRC_kwDOSF9kNM7GU5Yl",
+    "comment:PRRC_kwDOSF9kNM7GVj1p",
+    "thread:PRRT_kwDOSF9kNM6F0Wl3",
+    "thread:PRRT_kwDOSF9kNM6Fz3oz",
+    "thread:PRRT_kwDOSF9kNM6Fz3pY",
+    "thread:PRRT_kwDOSF9kNM6Fz5z0",
+    "thread:PRRT_kwDOSF9kNM6Fz5z8",
+    "thread:PRRT_kwDOSF9kNM6Fz5zn"
+  ],
+  "fetched_at": "2026-05-30T00:19:04.010Z",
+  "schema_version": "v1",
+  "commit_sha": "f4a1eafec23d7481dc8145460079572d7cf78188",
+  "title": "docs(research): land HFLV active triggers + gate-preserving PR-review-friction mitigations under B-0938",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T00:18:42Z",
+  "head_ref": "lior/friction-report-refinement"
+}

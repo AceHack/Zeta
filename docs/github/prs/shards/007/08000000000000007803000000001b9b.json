@@ -1,0 +1,12 @@
+{
+  "pr_number": 7067,
+  "archive_path": "docs/history/pr-reviews/PR-7067-feat-core-f-proofs-qubit-iso-pauli-su-2-operations-leg-staged-bell-chsh-violatio.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T09:50:04.281Z",
+  "schema_version": "v1",
+  "commit_sha": "2d9f09476eab63bd37dfaabb176b330a220a3d87",
+  "title": "feat(core): F# proofs — qubit-iso Pauli SU(2) operations leg + staged Bell/CHSH violation",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T09:49:44Z",
+  "head_ref": "otto/qubit-iso-pauli-su2-and-bell-chsh-violation-fsharp-proofs"
+}

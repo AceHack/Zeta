@@ -1,0 +1,16 @@
+{
+  "pr_number": 4452,
+  "archive_path": "docs/history/pr-reviews/PR-4452-docs-shadow-lior-anti-entropy-report-on-riven-pagination-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DW8HC",
+    "comment:PRRC_kwDOSF9kNM7DWJyP",
+    "thread:PRRT_kwDOSF9kNM6DoSej"
+  ],
+  "fetched_at": "2026-05-20T23:15:46.364Z",
+  "schema_version": "v1",
+  "commit_sha": "0cd4ee096d00f83b52b2cf0faabd70d0c1948dba",
+  "title": "docs(shadow): Lior anti-entropy report on Riven pagination drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T23:15:29Z",
+  "head_ref": "lior/shadow-log-riven-1805Z"
+}

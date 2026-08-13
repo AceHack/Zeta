@@ -1,0 +1,12 @@
+{
+  "pr_number": 3641,
+  "archive_path": "docs/history/pr-reviews/PR-3641-shard-tick-0030z-pr-3639-closes-3-copilot-p1-threads-on-3636.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T00:38:39.165Z",
+  "schema_version": "v1",
+  "commit_sha": "6f512833bd4c32045337e6f229455c07f49f98e3",
+  "title": "shard(tick): 0030Z — PR #3639 closes 3 Copilot P1 threads on #3636",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:38:24Z",
+  "head_ref": "shard/tick-0030z-otto-cli-2026-05-16"
+}

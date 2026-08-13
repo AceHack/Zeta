@@ -1,0 +1,12 @@
+{
+  "pr_number": 4392,
+  "archive_path": "docs/history/pr-reviews/PR-4392-docs-archive-maji-pr-preservation-batch-21.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-20T12:38:22.881Z",
+  "schema_version": "v1",
+  "commit_sha": "3f66437babf99f850d549ecdf177284c5c26e80c",
+  "title": "docs(archive): Maji PR preservation batch 21",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T12:37:59Z",
+  "head_ref": "lior/preserve-batch-21"
+}

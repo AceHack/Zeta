@@ -1,0 +1,12 @@
+{
+  "pr_number": 6403,
+  "archive_path": "docs/history/pr-reviews/PR-6403-docs-research-hd-note-add-the-dst-computational-omniscience-scope-total-order-is.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T11:16:45.852Z",
+  "schema_version": "v1",
+  "commit_sha": "0051ff6b5cb17126850531478aa6074a87fad718",
+  "title": "docs(research): HD note — add the DST computational-omniscience scope (total order IS recovered, scope-dependent)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T11:16:23Z",
+  "head_ref": "otto-cli/research-hd-note-dst-omniscience-scope-2026-06-01"
+}

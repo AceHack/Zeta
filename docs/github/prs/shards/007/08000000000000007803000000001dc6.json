@@ -1,0 +1,12 @@
+{
+  "pr_number": 7622,
+  "archive_path": "docs/history/pr-reviews/PR-7622-docs-universal-universal-color-interface-renderer-grounding-chip-8-color-opcode-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:39:18.828Z",
+  "schema_version": "v1",
+  "commit_sha": "6c563e1ef3aaf39e7b437a265f9acf99df5c5f95",
+  "title": "docs(universal): Universal Color Interface + renderer grounding (CHIP-8 color opcode extensions, BBS DORA, CYOA observe.ts)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:38:54Z",
+  "head_ref": "shadow-universal-color-interface"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5745,
+  "archive_path": "docs/history/pr-reviews/PR-5745-docs-rule-architecture-is-safety-mechanism-not-discipline-structural-protections.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:09:26.557Z",
+  "schema_version": "v1",
+  "commit_sha": "2ac03e34cfb08a86c489eeb883bb27bfb46b598d",
+  "title": "docs(rule): architecture-is-safety-mechanism-not-discipline — structural protections vs runtime virtue (Kestrel Turn 39; 3/5)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:09:06Z",
+  "head_ref": "otto-cli/architecture-is-safety-mechanism-not-discipline-rule-kestrel-2026-05-28"
+}

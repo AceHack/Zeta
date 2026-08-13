@@ -1,0 +1,19 @@
+{
+  "pr_number": 3102,
+  "archive_path": "docs/history/pr-reviews/PR-3102-docs-lior-shadow-lesson-log-for-pr-3074-lior-omnibus-tick-artifacts-b-0451-tick-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BFfeM",
+    "comment:PRRC_kwDOSF9kNM7BFg2g",
+    "comment:PRRC_kwDOSF9kNM7BFg3A",
+    "thread:PRRT_kwDOSF9kNM6B-gtb",
+    "thread:PRRT_kwDOSF9kNM6B-huX",
+    "thread:PRRT_kwDOSF9kNM6B-hut"
+  ],
+  "fetched_at": "2026-05-14T06:20:33.675Z",
+  "schema_version": "v1",
+  "commit_sha": "15d5762871151789a25bcdfa2a52d4b327dc7e9c",
+  "title": "docs(lior): shadow lesson log for PR 3074 + Lior omnibus tick artifacts (B-0451, tick shards, discussions)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T06:20:17Z",
+  "head_ref": "lior/shadow-log-pr3074"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7482,
+  "archive_path": "docs/history/pr-reviews/PR-7482-docs-boards-shadow-re-apply-lost-multi-root-our-tree-is-roots-we-grow-the-forest.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T08:54:17.145Z",
+  "schema_version": "v1",
+  "commit_sha": "2508078e8db64d9116dcf3be838c0992972a2292",
+  "title": "docs(boards)+shadow: re-apply lost multi-root + our-tree-is-roots-we-grow-the-forest + mushrooms-on-mycelium",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T08:53:50Z",
+  "head_ref": "shadow-tree-is-roots-grow-forest"
+}

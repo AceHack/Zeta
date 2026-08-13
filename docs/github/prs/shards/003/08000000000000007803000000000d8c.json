@@ -1,0 +1,12 @@
+{
+  "pr_number": 3468,
+  "archive_path": "docs/history/pr-reviews/PR-3468-docs-shadow-lior-antigravity-check-otto-metadata-churn-and-codex-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T18:26:27.298Z",
+  "schema_version": "v1",
+  "commit_sha": "9ffb2160b90248417fcf05da763a3e836e744e8c",
+  "title": "docs(shadow): Lior antigravity check - Otto metadata churn and Codex drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:26:10Z",
+  "head_ref": "lior/shadow-report-05-15-run2"
+}

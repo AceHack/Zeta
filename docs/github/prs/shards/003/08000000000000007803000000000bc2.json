@@ -1,0 +1,12 @@
+{
+  "pr_number": 3010,
+  "archive_path": "docs/history/pr-reviews/PR-3010-fix-lint-ts2532-nouncheckedindexedaccess-in-b-0440-b-0441-bg-test-array-indexing.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T18:01:25.948Z",
+  "schema_version": "v1",
+  "commit_sha": "be89423d0a0f0d1b6c2470d4a9ae47862ed24111",
+  "title": "fix(lint): TS2532 noUncheckedIndexedAccess in B-0440/B-0441 bg test array indexing",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T18:01:07Z",
+  "head_ref": "otto-fix-ts2532-bg-nounchecked-wt-2026-05-13"
+}

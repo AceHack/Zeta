@@ -1,0 +1,15 @@
+{
+  "pr_number": 3756,
+  "archive_path": "docs/history/pr-reviews/PR-3756-shard-tick-2026-05-16t05-23z-brief-ack-3-rate-limit-cost-aware-mode.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B2RQe",
+    "thread:PRRT_kwDOSF9kNM6CiBvq"
+  ],
+  "fetched_at": "2026-05-16T06:09:51.519Z",
+  "schema_version": "v1",
+  "commit_sha": "a273538c853fe07d2b783f29ec9735c2de0ed041",
+  "title": "shard(tick): 2026-05-16T05:23Z — brief-ack #3; rate-limit cost-aware mode",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T06:09:34Z",
+  "head_ref": "shard/tick-0523z-otto-cli-2026-05-16"
+}

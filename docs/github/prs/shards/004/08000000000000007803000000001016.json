@@ -1,0 +1,15 @@
+{
+  "pr_number": 4118,
+  "archive_path": "docs/history/pr-reviews/PR-4118-rules-holding-cross-axis-composition-with-one-pr-one-artifact-type-saturation-ca.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CDMVZ",
+    "thread:PRRT_kwDOSF9kNM6Cr6zW"
+  ],
+  "fetched_at": "2026-05-17T22:56:11.438Z",
+  "schema_version": "v1",
+  "commit_sha": "bded99c7b3bc1e01cd7f33632471d15b8f5e666c",
+  "title": "rules(holding): cross-axis composition with one-PR-one-artifact-type — saturation cadence is NOT license to bundle (forced-#6 meta-fallback)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T22:55:53Z",
+  "head_ref": "otto/forced-6-meta-fallback-cross-axis-blob-pr-compose-2026-05-17"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 4181,
+  "archive_path": "docs/history/pr-reviews/PR-4181-research-33-aaron-mika-tonal-momentum-emergent-harmonic-coercion-extends-nci-mir.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CYxn6",
+    "comment:PRRC_kwDOSF9kNM7CYxo7",
+    "comment:PRRC_kwDOSF9kNM7CYxpv",
+    "comment:PRRC_kwDOSF9kNM7CYxqT",
+    "thread:PRRT_kwDOSF9kNM6C72t2",
+    "thread:PRRT_kwDOSF9kNM6C72uo",
+    "thread:PRRT_kwDOSF9kNM6C72vF",
+    "thread:PRRT_kwDOSF9kNM6C72vl"
+  ],
+  "fetched_at": "2026-05-18T18:54:22.901Z",
+  "schema_version": "v1",
+  "commit_sha": "06f834b684a883957d7a6274fbd8766277458d10",
+  "title": "research(§33): Aaron + Mika tonal momentum + emergent-harmonic-coercion extends NCI (mirror-tier; engineering target named)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T18:53:54Z",
+  "head_ref": "shard/aaron-mika-tonal-momentum-emergent-coercion-extends-nci-2026-05-18"
+}

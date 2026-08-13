@@ -1,0 +1,12 @@
+{
+  "pr_number": 8972,
+  "archive_path": "docs/history/pr-reviews/PR-8972-backlog-credential-substrate-self-host-oss-secret-manager-via-argocd-1password-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T17:46:18.079Z",
+  "schema_version": "v1",
+  "commit_sha": "ac81ee02490f9cb8cc72ae1c5349d860b3bb91d5",
+  "title": "backlog(credential-substrate): self-host OSS secret manager via ArgoCD (1Password OSS complement)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T17:45:47Z",
+  "head_ref": "otto/backlog-oss-secret-manager-argocd"
+}

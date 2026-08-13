@@ -1,0 +1,12 @@
+{
+  "pr_number": 7271,
+  "archive_path": "docs/history/pr-reviews/PR-7271-docs-research-cold-boot-token-audit-glossary-dominates-13-6k-of-33k-3-its-stale-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:16:43.718Z",
+  "schema_version": "v1",
+  "commit_sha": "73528866fb13049c445185aa05b23c93b79681fa",
+  "title": "docs(research): cold-boot token audit — GLOSSARY dominates ~13.6k of ~33k (3× its stale estimate); ranked compression plan",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:16:16Z",
+  "head_ref": "otto/research-cold-boot-token-audit-glossary-dominates"
+}

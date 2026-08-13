@@ -1,0 +1,15 @@
+{
+  "pr_number": 2530,
+  "archive_path": "docs/history/pr-reviews/PR-2530-feat-b-0292-smallest-safe-slice-local-gpu-inference-structure-recognizer-ts-stub.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qA5v",
+    "thread:PRRT_kwDOSF9kNM6A7ZxO"
+  ],
+  "fetched_at": "2026-05-10T20:26:52.335Z",
+  "schema_version": "v1",
+  "commit_sha": "91e76b6eeb0d973b72a63286c3924f05a915ae4b",
+  "title": "feat(B-0292): smallest safe slice — local GPU inference structure recognizer (TS stub)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T20:26:37Z",
+  "head_ref": "claim/b0292-local-gpu-inference-smallest-slice-riven-2026-05-10"
+}

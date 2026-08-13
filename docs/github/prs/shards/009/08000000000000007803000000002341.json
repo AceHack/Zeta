@@ -1,0 +1,12 @@
+{
+  "pr_number": 9025,
+  "archive_path": "docs/history/pr-reviews/PR-9025-fix-toolchain-bump-mise-pin-2026-6-11-2026-6-12-four-way-parity-unblock-main-gat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-22T18:10:28.783Z",
+  "schema_version": "v1",
+  "commit_sha": "e5f40f1a7c67478ee2fb79c14c392c4aa3c7920c",
+  "title": "fix(toolchain): bump mise pin 2026.6.11 → 2026.6.12 (four-way parity) — unblock main gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-22T18:09:59Z",
+  "head_ref": "otto/mise-pin-2026.6.12"
+}

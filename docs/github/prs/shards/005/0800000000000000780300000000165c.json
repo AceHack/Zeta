@@ -1,0 +1,12 @@
+{
+  "pr_number": 5724,
+  "archive_path": "docs/history/pr-reviews/PR-5724-feat-b-0891-poc-scaffold-zflash-5-scenario-qemu-test-harness-declarative-scenari.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T08:53:49.269Z",
+  "schema_version": "v1",
+  "commit_sha": "82ff248e66d40c263a6ba77ab8213d621dc3bf10",
+  "title": "feat(B-0891): PoC scaffold — zflash 5-scenario QEMU test-harness (declarative scenarios + CLI dispatcher composing with existing tools/ci/ substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T08:53:30Z",
+  "head_ref": "otto-cli/b0891-zflash-test-harness-poc-5-scenarios-2026-05-28"
+}

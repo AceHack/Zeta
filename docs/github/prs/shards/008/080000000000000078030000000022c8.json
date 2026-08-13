@@ -1,0 +1,12 @@
+{
+  "pr_number": 8904,
+  "archive_path": "docs/history/pr-reviews/PR-8904-fix-lint-ruff-format-8902-python-interface-stack-md012-artifact.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T07:45:17.000Z",
+  "schema_version": "v1",
+  "commit_sha": "c4a4a8c6ab3a6ea8d4bf2f2daeb475488e224732",
+  "title": "fix(lint): ruff-format #8902 Python interface stack + MD012 artifact",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T07:44:51Z",
+  "head_ref": "otto/fix-8902-python-md-lints"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4635,
+  "archive_path": "docs/history/pr-reviews/PR-4635-docs-hygiene-tick-2026-05-22t1615z-otto-vscode-rest-bypass-cleared-pr-4632-revie.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T16:19:24.774Z",
+  "schema_version": "v1",
+  "commit_sha": "9e5453679c53a621afe36b22d1bbf784303537e7",
+  "title": "docs(hygiene): tick 2026-05-22T1615Z — Otto-VSCode REST-bypass cleared PR #4632 review-thread gate under 337-worktree saturation",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T16:19:06Z",
+  "head_ref": "otto/vscode-1615z-tick-shard-2026-05-22"
+}

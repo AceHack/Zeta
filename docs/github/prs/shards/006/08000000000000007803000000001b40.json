@@ -1,0 +1,12 @@
+{
+  "pr_number": 6976,
+  "archive_path": "docs/history/pr-reviews/PR-6976-docs-lockfiles-assemble-incrementally-jit-per-timestep-resolution-itself-is-a-du.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:30:16.396Z",
+  "schema_version": "v1",
+  "commit_sha": "8b45365fa378da732bfcfbdee8a8a332bac48ba9",
+  "title": "docs: lockfiles assemble incrementally/JIT per timestep — resolution itself is a DU/saga",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:29:59Z",
+  "head_ref": "otto/lockfiles-jit-incremental-per-timestep-du-saga"
+}

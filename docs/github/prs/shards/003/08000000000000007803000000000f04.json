@@ -1,0 +1,12 @@
+{
+  "pr_number": 3844,
+  "archive_path": "docs/history/pr-reviews/PR-3844-shard-tick-2026-05-16t09-34z-steady-state-per-tick-shard-maintenance.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T09:59:54.568Z",
+  "schema_version": "v1",
+  "commit_sha": "055773b7606edaa9991525705c5f9a1c754e4aea",
+  "title": "shard(tick): 2026-05-16T09:34Z — steady-state per-tick-shard maintenance",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T09:59:37Z",
+  "head_ref": "shard/tick-0934z-steady-state-otto-cli-2026-05-16"
+}

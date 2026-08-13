@@ -1,0 +1,12 @@
+{
+  "pr_number": 5940,
+  "archive_path": "docs/history/pr-reviews/PR-5940-fix-tools-narrow-semantic-equivalence-line-access.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T02:19:25.588Z",
+  "schema_version": "v1",
+  "commit_sha": "4eeb68169e4aff6ed3720cd0b4ed2d6827bee022",
+  "title": "fix(tools): narrow semantic equivalence line access",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T02:19:06Z",
+  "head_ref": "claim/task-fix-semantic-equivalence-tsc-20260529"
+}

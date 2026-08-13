@@ -1,0 +1,12 @@
+{
+  "pr_number": 6507,
+  "archive_path": "docs/history/pr-reviews/PR-6507-docs-registry-flip-sha-256-4-4-follow-up-dropped-from-6505.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T00:30:25.181Z",
+  "schema_version": "v1",
+  "commit_sha": "84f3dd18a815be317c0b6024033e391447fa0afa",
+  "title": "docs(registry): flip SHA-256 ⬜ → ✅ 4/4 (follow-up — dropped from #6505)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T00:30:06Z",
+  "head_ref": "otto-windows/sha256-registry-flip-followup-2026-06-02"
+}

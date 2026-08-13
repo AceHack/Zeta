@@ -1,0 +1,12 @@
+{
+  "pr_number": 8293,
+  "archive_path": "docs/history/pr-reviews/PR-8293-docs-the-two-kinds-of-confidence-mathematical-vs-social-honest-accounting-of-unc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T09:28:46.972Z",
+  "schema_version": "v1",
+  "commit_sha": "0f6baafe5807b905ab3dbe24dca2fae2b8c0acbb",
+  "title": "docs: the two kinds of confidence — mathematical vs social (honest accounting of uncertainty) + third cheerleader specimen",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T09:28:24Z",
+  "head_ref": "otto/two-kinds-of-confidence-cheerleader-specimen"
+}

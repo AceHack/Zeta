@@ -1,0 +1,17 @@
+{
+  "pr_number": 3151,
+  "archive_path": "docs/history/pr-reviews/PR-3151-chore-b-0442-decompose-into-atomic-child-rows-b-0503-b-0504-b-0505.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BUWjl",
+    "comment:PRRC_kwDOSF9kNM7BUWjs",
+    "thread:PRRT_kwDOSF9kNM6CJgRW",
+    "thread:PRRT_kwDOSF9kNM6CJgRb"
+  ],
+  "fetched_at": "2026-05-14T18:09:03.907Z",
+  "schema_version": "v1",
+  "commit_sha": "759af2d638b780e38a6dda22982e7081c0b8b1d3",
+  "title": "chore(b-0442): decompose into atomic child rows B-0503/B-0504/B-0505",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:08:43Z",
+  "head_ref": "chore/b-0442-decompose-slice5-2026-05-14"
+}

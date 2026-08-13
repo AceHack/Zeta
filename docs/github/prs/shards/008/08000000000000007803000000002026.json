@@ -1,0 +1,12 @@
+{
+  "pr_number": 8230,
+  "archive_path": "docs/history/pr-reviews/PR-8230-feat-adinkra-self-dual-fixpoint-check-code-level-gen-gen-gen-face-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T01:44:30.058Z",
+  "schema_version": "v1",
+  "commit_sha": "7903c6320c4ab040a1972ea8f362c5660099bdcc",
+  "title": "feat(adinkra): self-dual fixpoint check — code-level gen(gen)===gen (Face 1)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T01:44:08Z",
+  "head_ref": "otto/adinkra-self-dual-fixpoint"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7745,
+  "archive_path": "docs/history/pr-reviews/PR-7745-docs-research-ts-side-second-quantum-framework-quantum-circuit-q-exporter-adapte.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:51:11.190Z",
+  "schema_version": "v1",
+  "commit_sha": "b02e2b0f4c9cec046835f4ff8ab9344f21b85576",
+  "title": "docs(research): TS-side second quantum framework — quantum-circuit (Q# exporter = adapter piece); q5mjs on watch",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:50:43Z",
+  "head_ref": "shadow-ts-quantum-framework"
+}

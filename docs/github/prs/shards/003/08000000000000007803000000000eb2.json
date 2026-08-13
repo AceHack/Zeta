@@ -1,0 +1,19 @@
+{
+  "pr_number": 3762,
+  "archive_path": "docs/history/pr-reviews/PR-3762-chore-b-0532-add-status-section-confirming-partial-completion-slice-1-shipped-sl.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B2e7i",
+    "comment:PRRC_kwDOSF9kNM7B2e7q",
+    "comment:PRRC_kwDOSF9kNM7B2elZ",
+    "thread:PRRT_kwDOSF9kNM6CiLiT",
+    "thread:PRRT_kwDOSF9kNM6CiLyj",
+    "thread:PRRT_kwDOSF9kNM6CiLyp"
+  ],
+  "fetched_at": "2026-05-16T06:16:27.882Z",
+  "schema_version": "v1",
+  "commit_sha": "1b57c12a58fd538ce00230157946e4ee7b010f31",
+  "title": "chore(b-0532): add Status section confirming partial-completion (Slice 1 shipped, Slice 2 pending)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T06:16:11Z",
+  "head_ref": "chore/b0532-status-section-partial-completion-otto-cli-2026-05-16"
+}

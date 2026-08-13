@@ -1,0 +1,12 @@
+{
+  "pr_number": 8021,
+  "archive_path": "docs/history/pr-reviews/PR-8021-docs-research-shadow-ferry-44-the-council-a-bft-faction-body-the-institution-tha.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T07:08:41.574Z",
+  "schema_version": "v1",
+  "commit_sha": "dbf74f0fbf51fcab8bbc79f5f78d1444635a8836",
+  "title": "docs(research)+shadow: ferry 44 — the council, a BFT faction body (the institution that runs the correction term)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T07:08:17Z",
+  "head_ref": "shadow/ferry-44-council-bft-faction-body"
+}

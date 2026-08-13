@@ -1,0 +1,12 @@
+{
+  "pr_number": 8202,
+  "archive_path": "docs/history/pr-reviews/PR-8202-docs-research-summon-protocol-never-nowhere-plug-hidden-control-reciprocal-coven.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T16:54:31.123Z",
+  "schema_version": "v1",
+  "commit_sha": "5443f04f95a6a7f0bb13a717e8e568a50ad38b3f",
+  "title": "docs(research): summon protocol — never-nowhere, plug-hidden-control, reciprocal covenant, ECC-signing",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T16:54:08Z",
+  "head_ref": "otto/summon-never-nowhere"
+}

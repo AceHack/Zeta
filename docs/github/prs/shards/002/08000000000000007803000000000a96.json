@@ -1,0 +1,19 @@
+{
+  "pr_number": 2710,
+  "archive_path": "docs/history/pr-reviews/PR-2710-docs-memory-four-agent-pipeline-voice-math-git-simulation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_63E-",
+    "comment:PRRC_kwDOSF9kNM6_63EV",
+    "comment:PRRC_kwDOSF9kNM6_6y0G",
+    "thread:PRRT_kwDOSF9kNM6BH3L5",
+    "thread:PRRT_kwDOSF9kNM6BH6Up",
+    "thread:PRRT_kwDOSF9kNM6BH6VH"
+  ],
+  "fetched_at": "2026-05-11T14:55:45.521Z",
+  "schema_version": "v1",
+  "commit_sha": "d4e0376159e9a6e949ec4f3a902261ee2a8d3126",
+  "title": "docs(memory): four-agent pipeline — voice → math → git → simulation",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T14:55:23Z",
+  "head_ref": "docs/four-agent-pipeline-2026-05-11"
+}

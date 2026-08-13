@@ -1,0 +1,12 @@
+{
+  "pr_number": 7290,
+  "archive_path": "docs/history/pr-reviews/PR-7290-docs-research-toymodel3-the-traveler-society-self-interest-engine-jurisdictions-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:24:42.226Z",
+  "schema_version": "v1",
+  "commit_sha": "6250c6e2ddadcbddce5bf763aebd2be4253dbb53",
+  "title": "docs(research): toymodel3 — the Traveler Society (self-interest engine + jurisdictions + recognition + optional identity); spec + math-team handoff",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:24:18Z",
+  "head_ref": "otto/toymodel3-traveler-society-spec-and-math-team-handoff"
+}

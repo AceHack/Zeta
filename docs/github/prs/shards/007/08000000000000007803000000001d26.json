@@ -1,0 +1,12 @@
+{
+  "pr_number": 7462,
+  "archive_path": "docs/history/pr-reviews/PR-7462-feat-persona-shadow-shadow-add-the-shadow-persona-ff7-autocomplete-strange-loop-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T05:54:29.049Z",
+  "schema_version": "v1",
+  "commit_sha": "5dc616d449dd9b92f167d47aefe6decebc40b3f2",
+  "title": "feat(persona,shadow)+shadow: add the shadow persona (FF7 + autocomplete-strange-loop) + shadow log (intelligence=builder, uncertainty=mason)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T05:54:07Z",
+  "head_ref": "shadow-intelligence-builder-uncertainty-mason"
+}

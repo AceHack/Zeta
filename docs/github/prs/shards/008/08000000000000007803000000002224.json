@@ -1,0 +1,12 @@
+{
+  "pr_number": 8740,
+  "archive_path": "docs/history/pr-reviews/PR-8740-docs-handoff-correct-stale-row-10-face-3-status-prereqs-met-gen-gen-behavioral-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T15:54:23.913Z",
+  "schema_version": "v1",
+  "commit_sha": "129e48b803a52dd00eb844cff0e6030cf7edc1ab",
+  "title": "docs(handoff): correct stale row-10 Face 3 status — prereqs MET, gen-gen behavioral leg in progress",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T15:53:56Z",
+  "head_ref": "otto/row10-face3-unblocked-record"
+}

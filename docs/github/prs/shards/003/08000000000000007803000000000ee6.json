@@ -1,0 +1,15 @@
+{
+  "pr_number": 3814,
+  "archive_path": "docs/history/pr-reviews/PR-3814-shard-tick-2026-05-16t07-36z-b-0346-3rd-fp-variant-taxonomy-now-6-patterns.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B3Mbp",
+    "thread:PRRT_kwDOSF9kNM6CisaI"
+  ],
+  "fetched_at": "2026-05-16T07:43:20.372Z",
+  "schema_version": "v1",
+  "commit_sha": "b707accfcb11be6ab7e40424ea09025280ca9ce8",
+  "title": "shard(tick): 2026-05-16T07:36Z — B-0346 = 3rd FP variant; taxonomy now 6 patterns",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T07:43:04Z",
+  "head_ref": "shard/tick-0736z-otto-cli-2026-05-16"
+}

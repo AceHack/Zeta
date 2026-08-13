@@ -1,0 +1,28 @@
+{
+  "pr_number": 6119,
+  "archive_path": "docs/history/pr-reviews/PR-6119-research-b-0623-3-adinkra-8-4-4-code-based-crypto-constructive-proof-prototype-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gao9Q",
+    "comment:PRRC_kwDOSF9kNM7Gao9T",
+    "comment:PRRC_kwDOSF9kNM7Gao9W",
+    "comment:PRRC_kwDOSF9kNM7Gao9X",
+    "comment:PRRC_kwDOSF9kNM7GaogC",
+    "comment:PRRC_kwDOSF9kNM7Gare9",
+    "comment:PRRC_kwDOSF9kNM7Garf0",
+    "comment:PRRC_kwDOSF9kNM7GarfV",
+    "comment:PRRC_kwDOSF9kNM7GargW",
+    "comment:PRRC_kwDOSF9kNM7GarhI",
+    "thread:PRRT_kwDOSF9kNM6F4FxR",
+    "thread:PRRT_kwDOSF9kNM6F4GHb",
+    "thread:PRRT_kwDOSF9kNM6F4GHd",
+    "thread:PRRT_kwDOSF9kNM6F4GHg",
+    "thread:PRRT_kwDOSF9kNM6F4GHh"
+  ],
+  "fetched_at": "2026-05-30T14:42:34.901Z",
+  "schema_version": "v1",
+  "commit_sha": "8bfbc2c856a3b26b3a37ba0910e7249ad85baa41",
+  "title": "research(B-0623 #3): Adinkra [8,4,4] code-based-crypto constructive proof prototype (code → ECC → key)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T14:42:16Z",
+  "head_ref": "otto/adinkra-encryption-primer-b0623-2026-05-30"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 3409,
+  "archive_path": "docs/history/pr-reviews/PR-3409-shard-tick-1020z-pr-3406-3407-merged-clean-steady-state.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BkUGz",
+    "comment:PRRC_kwDOSF9kNM7BkUHN",
+    "thread:PRRT_kwDOSF9kNM6CU864",
+    "thread:PRRT_kwDOSF9kNM6CU87J"
+  ],
+  "fetched_at": "2026-05-15T10:26:13.413Z",
+  "schema_version": "v1",
+  "commit_sha": "2e30b6dc5b0a441e844b54cb1ca02693445f1a42",
+  "title": "shard(tick): 1020Z — PR #3406 + #3407 merged; clean steady-state",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:25:56Z",
+  "head_ref": "shard/tick-1020z-otto-cli-2026-05-15"
+}

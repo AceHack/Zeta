@@ -1,0 +1,16 @@
+{
+  "pr_number": 5363,
+  "archive_path": "docs/history/pr-reviews/PR-5363-fix-gemini-isolate-background-loop-launchd-plist-to-dedicated-workspace.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FJxOj",
+    "comment:PRRC_kwDOSF9kNM7FKY0f",
+    "thread:PRRT_kwDOSF9kNM6E9hln"
+  ],
+  "fetched_at": "2026-05-27T01:18:40.196Z",
+  "schema_version": "v1",
+  "commit_sha": "33ff554ae925f8299af53fbda4fafe97b703c822",
+  "title": "fix(gemini): isolate background loop launchd plist to dedicated workspace",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T01:18:19Z",
+  "head_ref": "lior/isolate-background-loop-plist"
+}

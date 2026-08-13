@@ -1,0 +1,12 @@
+{
+  "pr_number": 8055,
+  "archive_path": "docs/history/pr-reviews/PR-8055-fix-mirror-fetch-into-remote-tracking-refs-first-run-exit-128.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T20:09:50.151Z",
+  "schema_version": "v1",
+  "commit_sha": "be99f42a967d406ffc10a08bde5b5eada3ec0161",
+  "title": "fix(mirror): fetch into remote-tracking refs (first-run exit 128)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T20:09:24Z",
+  "head_ref": "shadow/fix-mirror-fetch-refspec"
+}

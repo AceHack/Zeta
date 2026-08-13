@@ -1,0 +1,12 @@
+{
+  "pr_number": 7405,
+  "archive_path": "docs/history/pr-reviews/PR-7405-docs-research-glowmotion-the-ultimate-universal-controller-that-glows-the-right-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:04:55.174Z",
+  "schema_version": "v1",
+  "commit_sha": "ffb6c2c1d9d23acc36cea36cb3761e21d916a353",
+  "title": "docs(research): GlowMotion — the ultimate universal controller that glows the right button on every game (SoftDashboard as hardware); glowmotion -> like/ candidate",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:04:31Z",
+  "head_ref": "otto/glowmotion-universal-glowing-controller-soft-dashboard-as-hardware"
+}

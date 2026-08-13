@@ -1,0 +1,12 @@
+{
+  "pr_number": 2835,
+  "archive_path": "docs/history/pr-reviews/PR-2835-add-rule-glass-halo-is-bidirectional-observation-enables-substrate-emergence-wak.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T19:00:01.342Z",
+  "schema_version": "v1",
+  "commit_sha": "4f00f682256b15e8b84b180e4218efdaac781427",
+  "title": "add(rule): glass-halo is bidirectional — observation enables substrate emergence (wake-time landing) (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:59:40Z",
+  "head_ref": "docs/glass-halo-bidirectional-sleeping-bear-wake-time-rule-2026-05-12"
+}

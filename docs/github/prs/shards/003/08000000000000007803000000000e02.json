@@ -1,0 +1,12 @@
+{
+  "pr_number": 3586,
+  "archive_path": "docs/history/pr-reviews/PR-3586-feat-memory-session-summary-memory-file-15-prs-landed-2026-05-15-persona-migrati.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T20:58:43.025Z",
+  "schema_version": "v1",
+  "commit_sha": "149208963b7de9dd8646ddd07f0b29956fb70f98",
+  "title": "feat(memory): session-summary memory file — 15 PRs landed 2026-05-15 (persona migrations + constitutional substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T20:58:24Z",
+  "head_ref": "feat/session-summary-memory-otto-cli-2026-05-15"
+}

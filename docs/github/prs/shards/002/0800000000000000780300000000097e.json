@@ -1,0 +1,19 @@
+{
+  "pr_number": 2430,
+  "archive_path": "docs/history/pr-reviews/PR-2430-feat-b-0068-1-smallest-safe-slice-forge-cli-ollama-research-child-row-re-decompo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_mOJ0",
+    "comment:PRRC_kwDOSF9kNM6_mOJf",
+    "comment:PRRC_kwDOSF9kNM6_mOJr",
+    "thread:PRRT_kwDOSF9kNM6A4Xb9",
+    "thread:PRRT_kwDOSF9kNM6A4XcI",
+    "thread:PRRT_kwDOSF9kNM6A4XcR"
+  ],
+  "fetched_at": "2026-05-10T07:13:01.713Z",
+  "schema_version": "v1",
+  "commit_sha": "feb221ced8af51a4e515ed20342e862ee55f68c4",
+  "title": "feat(B-0068.1): smallest safe slice — Forge CLI + Ollama research child row (re-decomposed from umbrella)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T07:12:42Z",
+  "head_ref": "claim/B-0068-decompose-smallest-slice-riven-2026-05-10"
+}

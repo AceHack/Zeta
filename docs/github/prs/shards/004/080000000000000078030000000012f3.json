@@ -1,0 +1,16 @@
+{
+  "pr_number": 4851,
+  "archive_path": "docs/history/pr-reviews/PR-4851-docs-archive-preserve-recently-merged-prs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EZ8bG",
+    "comment:PRRC_kwDOSF9kNM7EaUHr",
+    "thread:PRRT_kwDOSF9kNM6EaRFn"
+  ],
+  "fetched_at": "2026-05-24T20:11:01.298Z",
+  "schema_version": "v1",
+  "commit_sha": "9b94a274ae9f65938ec6bcf4cae0d1368f20e9af",
+  "title": "docs(archive): preserve recently merged PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T20:10:43Z",
+  "head_ref": "lior-decompose-4828-preservation"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 3308,
+  "archive_path": "docs/history/pr-reviews/PR-3308-docs-pr-discussions-archive-pr-3307.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Baps3",
+    "comment:PRRC_kwDOSF9kNM7Bavtu",
+    "thread:PRRT_kwDOSF9kNM6COEg8"
+  ],
+  "fetched_at": "2026-05-15T00:12:56.529Z",
+  "schema_version": "v1",
+  "commit_sha": "c27ac481e452b5a799babac31507ea29613603e9",
+  "title": "docs(pr-discussions): archive PR 3307",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:12:41Z",
+  "head_ref": "lior/preserve-3307"
+}

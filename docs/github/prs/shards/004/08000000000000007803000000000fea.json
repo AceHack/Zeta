@@ -1,0 +1,12 @@
+{
+  "pr_number": 4074,
+  "archive_path": "docs/history/pr-reviews/PR-4074-fix-research-address-pr-4071-v5-post-merge-findings-archive-path-persona-link-la.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T13:09:48.008Z",
+  "schema_version": "v1",
+  "commit_sha": "ddf72baf712c047426773bd3aa614933d9474f4d",
+  "title": "fix(research): address PR #4071 V5 post-merge findings — archive path + persona link label",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T13:09:30Z",
+  "head_ref": "otto/fix-pr-4071-v5-archive-path-and-table-and-link-label-2026-05-17"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 1874,
+  "archive_path": "docs/history/pr-reviews/PR-1874-backlog-b-0249-p0-autonomous-backlog-pickup-self-sustaining-new-work.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-1ak-",
+    "comment:PRRC_kwDOSF9kNM6-1akB",
+    "thread:PRRT_kwDOSF9kNM6AUNHs",
+    "thread:PRRT_kwDOSF9kNM6AUNIc"
+  ],
+  "fetched_at": "2026-05-07T13:24:52.391Z",
+  "schema_version": "v1",
+  "commit_sha": "512ac750e9e96f410186662f23dadc20eca07431",
+  "title": "backlog(B-0249 P0): autonomous backlog pickup — self-sustaining NEW WORK",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T13:11:38Z",
+  "head_ref": "backlog/b0249-autonomous-backlog-pickup"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2220,
+  "archive_path": "docs/history/pr-reviews/PR-2220-docs-b-0362-backlog-alignment-proof-primitive-ladder.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T07:13:53.560Z",
+  "schema_version": "v1",
+  "commit_sha": "b4f79bea34a0bbc84d688451ab40e72c2188d7fa",
+  "title": "docs(B-0362): backlog alignment proof primitive ladder",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:13:36Z",
+  "head_ref": "codex/b0362-alignment-proof-primitive-ladder"
+}

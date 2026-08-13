@@ -1,0 +1,12 @@
+{
+  "pr_number": 7026,
+  "archive_path": "docs/history/pr-reviews/PR-7026-docs-fabric-refinement-per-frame-total-order-convergence-lossless-past-compressi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T05:35:04.104Z",
+  "schema_version": "v1",
+  "commit_sha": "55f6d1029ee3f0fd590d4b4a1d6eb02f94a9b4b1",
+  "title": "docs: fabric refinement — per-frame total order, convergence, lossless past-compression = Mazurkiewicz traces (#7067-#7071)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T05:34:40Z",
+  "head_ref": "otto/fabric-convergence-mazurkiewicz-lossless-past-compression"
+}

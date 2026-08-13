@@ -1,0 +1,12 @@
+{
+  "pr_number": 6795,
+  "archive_path": "docs/history/pr-reviews/PR-6795-fix-gset-default-to-binary-ordinal-collation-not-culture-sensitive-comparer-defa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T11:27:09.563Z",
+  "schema_version": "v1",
+  "commit_sha": "59e5010f799a04bdc6ec0954c77abda8ba476061",
+  "title": "fix(GSet): default to binary/ordinal collation, not culture-sensitive Comparer.Default (B-0969)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T11:26:50Z",
+  "head_ref": "fix/gset-ordinal-collation-b0969"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6681,
+  "archive_path": "docs/history/pr-reviews/PR-6681-chore-remove-claude-skills-bak-duplicated-by-blueprint-packs.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-04T16:39:10.899Z",
+  "schema_version": "v1",
+  "commit_sha": "77e19f33c1a4ff52cd99c604b83008bffb45b2e6",
+  "title": "chore: remove .claude/skills.bak (duplicated by blueprint packs)",
+  "state": "MERGED",
+  "merged_at": "2026-06-04T16:38:36Z",
+  "head_ref": "chore/remove-skills-bak"
+}

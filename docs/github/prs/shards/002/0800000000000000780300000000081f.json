@@ -1,0 +1,12 @@
+{
+  "pr_number": 2079,
+  "archive_path": "docs/history/pr-reviews/PR-2079-feat-b-0281-empty-queue-pickup-orchestrator.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T13:46:38.260Z",
+  "schema_version": "v1",
+  "commit_sha": "aac82a1484fed53b7d5c966e7a4322c8673789fb",
+  "title": "feat(B-0281): empty-queue-pickup orchestrator",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T13:46:22Z",
+  "head_ref": "claim/backlog-0281-empty-queue-pickup"
+}

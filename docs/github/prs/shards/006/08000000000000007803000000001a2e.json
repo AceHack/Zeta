@@ -1,0 +1,12 @@
+{
+  "pr_number": 6702,
+  "archive_path": "docs/history/pr-reviews/PR-6702-feat-core-diplomacy-cached-polymorphic-diplomacy-v8-hidden-shapes-pic-shape-keye.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T01:46:01.276Z",
+  "schema_version": "v1",
+  "commit_sha": "84eba1bd3a9fc4af709b7c426cd24be96b03cbf0",
+  "title": "feat(Core/Diplomacy): cached polymorphic diplomacy = V8 hidden-shapes / PIC (shape-keyed, NCI-safe)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T01:45:38Z",
+  "head_ref": "otto/diplomacy-cached-pic"
+}

@@ -1,0 +1,27 @@
+{
+  "pr_number": 1961,
+  "archive_path": "docs/history/pr-reviews/PR-1961-fix-b-0140-port-lane-scripts-to-ts-phase-2-3-of-8.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_Ce4s",
+    "comment:PRRC_kwDOSF9kNM6_CfG0",
+    "comment:PRRC_kwDOSF9kNM6_CfHQ",
+    "comment:PRRC_kwDOSF9kNM6_CfHe",
+    "comment:PRRC_kwDOSF9kNM6_CfHm",
+    "comment:PRRC_kwDOSF9kNM6_CfHs",
+    "comment:PRRC_kwDOSF9kNM6_CfHz",
+    "thread:PRRT_kwDOSF9kNM6Ad0-D",
+    "thread:PRRT_kwDOSF9kNM6Ad0-J",
+    "thread:PRRT_kwDOSF9kNM6Ad09-",
+    "thread:PRRT_kwDOSF9kNM6Ad094",
+    "thread:PRRT_kwDOSF9kNM6Ad09Z",
+    "thread:PRRT_kwDOSF9kNM6Ad09u",
+    "thread:PRRT_kwDOSF9kNM6Ad0yN"
+  ],
+  "fetched_at": "2026-05-07T22:44:36.894Z",
+  "schema_version": "v1",
+  "commit_sha": "bb4654cb1e65dbfc9da326ebe2580a1b158e89d1",
+  "title": "fix(B-0140): port lane scripts to TS — Phase 2 (3 of 8)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T22:44:16Z",
+  "head_ref": "chore/b0140-phase2-lane-scripts-ts-port"
+}

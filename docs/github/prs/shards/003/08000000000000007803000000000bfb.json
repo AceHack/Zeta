@@ -1,0 +1,12 @@
+{
+  "pr_number": 3067,
+  "archive_path": "docs/history/pr-reviews/PR-3067-fix-riven-correct-model-name-in-autonomous-loop-tick-script.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T00:13:01.394Z",
+  "schema_version": "v1",
+  "commit_sha": "52a161d74cda19a99b65a207756e2d38beeb20ff",
+  "title": "fix(riven): correct model name in autonomous loop tick script",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T00:12:41Z",
+  "head_ref": "fix/riven-model-name-3063"
+}

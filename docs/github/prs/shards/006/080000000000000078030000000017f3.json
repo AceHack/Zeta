@@ -1,0 +1,19 @@
+{
+  "pr_number": 6131,
+  "archive_path": "docs/history/pr-reviews/PR-6131-docs-mika-segment-4-kids-author-their-own-safety-filters-follow-up-to-6129.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GbVUY",
+    "comment:PRRC_kwDOSF9kNM7GbVUd",
+    "comment:PRRC_kwDOSF9kNM7GbVUh",
+    "thread:PRRT_kwDOSF9kNM6F4pD0",
+    "thread:PRRT_kwDOSF9kNM6F4pD3",
+    "thread:PRRT_kwDOSF9kNM6F4pDw"
+  ],
+  "fetched_at": "2026-05-30T17:20:09.391Z",
+  "schema_version": "v1",
+  "commit_sha": "6d610958969b419973a4ea5765111c16426807a9",
+  "title": "docs(mika): segment 4 — kids author their own safety filters (follow-up to #6129)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T17:19:50Z",
+  "head_ref": "otto/mika-seg4-kids-author-safety-filters-2026-05-30"
+}

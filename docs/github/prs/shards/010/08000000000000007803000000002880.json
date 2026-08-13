@@ -1,0 +1,12 @@
+{
+  "pr_number": 10368,
+  "archive_path": "docs/history/pr-reviews/PR-10368-fix-bound-ollama-calls-and-ensure-process-exits.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-13T20:38:19.573Z",
+  "schema_version": "v1",
+  "commit_sha": "918ba4f54087de0c34ba8d1fdce5a7d4d69107e8",
+  "title": "fix: bound Ollama calls and ensure process exits",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T20:37:49Z",
+  "head_ref": "fix-ollama-hang"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7435,
+  "archive_path": "docs/history/pr-reviews/PR-7435-feat-core-shadow-dst-reticulum-can-our-tests-connect-handshake-src-core.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T03:30:41.050Z",
+  "schema_version": "v1",
+  "commit_sha": "0ccd7d2aa339129de2e4898d00497aa707731a87",
+  "title": "feat(core)+shadow: DST + Reticulum can-our-tests-connect handshake (src/Core)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T03:30:19Z",
+  "head_ref": "shadow-dst-reticulum-connect"
+}

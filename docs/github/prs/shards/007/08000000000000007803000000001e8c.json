@@ -1,0 +1,12 @@
+{
+  "pr_number": 7820,
+  "archive_path": "docs/history/pr-reviews/PR-7820-chore-move-31-conceptual-dirs-to-db-fix-path-refs.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:46:51.149Z",
+  "schema_version": "v1",
+  "commit_sha": "9bb5cb9b401544b04b168fc170225efc4e62dc09",
+  "title": "chore: move 31 conceptual dirs to db/ + fix path refs",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:46:24Z",
+  "head_ref": "alexa/move-batch2"
+}

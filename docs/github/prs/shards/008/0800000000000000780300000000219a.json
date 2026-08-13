@@ -1,0 +1,12 @@
+{
+  "pr_number": 8602,
+  "archive_path": "docs/history/pr-reviews/PR-8602-memory-current-aaron-carve-the-epistemic-posture-bow-but-not-take-a-knee.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T17:35:23.995Z",
+  "schema_version": "v1",
+  "commit_sha": "57371216c031fa03c2ef65e6d5dfb0d2c981e1fe",
+  "title": "memory(CURRENT-aaron): carve the epistemic posture — \"bow but not take a knee\"",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T17:34:59Z",
+  "head_ref": "otto/aaron-bow-not-kneel-ethos"
+}

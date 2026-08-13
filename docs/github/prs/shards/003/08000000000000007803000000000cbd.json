@@ -1,0 +1,19 @@
+{
+  "pr_number": 3261,
+  "archive_path": "docs/history/pr-reviews/PR-3261-chore-b-0139-decompose-branch-worktree-inventory-to-b-0351.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BYf_9",
+    "comment:PRRC_kwDOSF9kNM7BYgAj",
+    "comment:PRRC_kwDOSF9kNM7BYgHb",
+    "thread:PRRT_kwDOSF9kNM6CMiCB",
+    "thread:PRRT_kwDOSF9kNM6CMiCh",
+    "thread:PRRT_kwDOSF9kNM6CMiHh"
+  ],
+  "fetched_at": "2026-05-14T23:09:35.365Z",
+  "schema_version": "v1",
+  "commit_sha": "90c9a81c893b9a6841006dff6da730ab2f1af25e",
+  "title": "chore(b-0139): decompose branch/worktree inventory to B-0351",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T23:09:12Z",
+  "head_ref": "lior/decompose-b0139"
+}

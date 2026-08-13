@@ -1,0 +1,12 @@
+{
+  "pr_number": 8979,
+  "archive_path": "docs/history/pr-reviews/PR-8979-docs-research-config-secrets-are-event-sourced-z-set-dbsp-topology-emerges-not-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T18:15:23.244Z",
+  "schema_version": "v1",
+  "commit_sha": "d9becf8f200e050cfd6a0ced2f31e2c6d911d7d0",
+  "title": "docs(research): config + secrets are event-sourced (Z-set/DBSP) — topology emerges, not pre-defined",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T18:14:56Z",
+  "head_ref": "otto/event-sourced-config-secrets-reframe"
+}

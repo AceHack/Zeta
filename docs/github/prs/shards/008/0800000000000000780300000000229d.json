@@ -1,0 +1,12 @@
+{
+  "pr_number": 8861,
+  "archive_path": "docs/history/pr-reviews/PR-8861-genesis-unseal-the-civilization-vault.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T05:02:04.543Z",
+  "schema_version": "v1",
+  "commit_sha": "17c73eaae56a15a05ff8b829e143afe680463c91",
+  "title": "genesis: unseal the Civilization vault",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T05:01:40Z",
+  "head_ref": "claude/genesis-github-pages-deploy-x6pgl9"
+}

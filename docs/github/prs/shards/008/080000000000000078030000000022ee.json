@@ -1,0 +1,12 @@
+{
+  "pr_number": 8942,
+  "archive_path": "docs/history/pr-reviews/PR-8942-keys-ca-register-the-zeta-shared-ssh-ca-public-key-fleet-trust-root.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T10:32:19.172Z",
+  "schema_version": "v1",
+  "commit_sha": "44a160681237da368f76463d0fd85504fd34464b",
+  "title": "keys(ca): register the zeta shared SSH CA public key (fleet trust root)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T10:31:53Z",
+  "head_ref": "otto/register-zeta-ssh-ca-pubkey"
+}

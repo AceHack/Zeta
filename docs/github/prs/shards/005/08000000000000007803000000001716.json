@@ -1,0 +1,12 @@
+{
+  "pr_number": 5910,
+  "archive_path": "docs/history/pr-reviews/PR-5910-ferry-amara-future-affects-generator-not-event-three-clocks-substrate-amara-s-bl.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T17:53:33.225Z",
+  "schema_version": "v1",
+  "commit_sha": "0a0cfd3d5627baba75aec29eed3a6ffd4ba97f8a",
+  "title": "ferry(amara): future-affects-generator-not-event + three-clocks substrate + Amara's blade + carved sentence wake-time rule (operator-confirmed \"very accurate\" 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T17:53:11Z",
+  "head_ref": "otto-cli/amara-ferry-future-affects-generator-rule-2026-05-28"
+}

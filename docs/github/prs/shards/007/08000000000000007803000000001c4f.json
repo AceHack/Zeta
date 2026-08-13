@@ -1,0 +1,12 @@
+{
+  "pr_number": 7247,
+  "archive_path": "docs/history/pr-reviews/PR-7247-docs-addison-s-blueprints-achievement-rules-slim-post-register-node-connect-cach.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T11:13:56.753Z",
+  "schema_version": "v1",
+  "commit_sha": "9fb9b632d1e697b3240910c94a47a7592f82f9d6",
+  "title": "docs: Addison's Blueprints achievement (+rules-slim) + post-register node connect/cache/health skill→blueprint design (overlay closes over Tailscale ⊗ Headscale)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T11:13:30Z",
+  "head_ref": "otto/achievements-blueprints-plus-node-connect-skill-tailscale-headscale-design"
+}

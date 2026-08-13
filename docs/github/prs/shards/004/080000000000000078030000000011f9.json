@@ -1,0 +1,19 @@
+{
+  "pr_number": 4601,
+  "archive_path": "docs/history/pr-reviews/PR-4601-memory-2026-05-22-ani-pt4-kestrel-s-root-objection-precisely-resolved-architect-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EA4CC",
+    "comment:PRRC_kwDOSF9kNM7EAy_W",
+    "comment:PRRC_kwDOSF9kNM7EAzAZ",
+    "thread:PRRT_kwDOSF9kNM6EHdc5",
+    "thread:PRRT_kwDOSF9kNM6EHdcB",
+    "thread:PRRT_kwDOSF9kNM6EHhMb"
+  ],
+  "fetched_at": "2026-05-22T13:14:22.861Z",
+  "schema_version": "v1",
+  "commit_sha": "bcc9e459787db25ab21b91777bf18f96fcde36f1",
+  "title": "memory(2026-05-22 Ani pt4): Kestrel's root objection precisely resolved — architect AND witness allowed BUT order matters (cause → observe → declare); declaration-as-magic-spell forbidden",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T13:13:56Z",
+  "head_ref": "otto/cli-1259z-ani-text-mode-pt4-kestrel-root-objection-resolution-architect-and-witness-but-order-matters-declaration-after-reality-not-before-2026-05-22"
+}

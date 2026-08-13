@@ -1,0 +1,25 @@
+{
+  "pr_number": 1392,
+  "archive_path": "docs/history/pr-reviews/PR-1392-feat-substrate-discovery-phase-0-poc-scaffold-aot-toolchain-validated-end-to-end.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69bbwZ",
+    "comment:PRRC_kwDOSF9kNM69bc56",
+    "comment:PRRC_kwDOSF9kNM69bc5r",
+    "comment:PRRC_kwDOSF9kNM69bc6C",
+    "comment:PRRC_kwDOSF9kNM69bc6H",
+    "comment:PRRC_kwDOSF9kNM69bcRH",
+    "comment:PRRC_kwDOSF9kNM69bcRP",
+    "comment:PRRC_kwDOSF9kNM69bcRU",
+    "thread:PRRT_kwDOSF9kNM5_L1Ow",
+    "thread:PRRT_kwDOSF9kNM5_L1n8",
+    "thread:PRRT_kwDOSF9kNM5_L1n_",
+    "thread:PRRT_kwDOSF9kNM5_L1nz"
+  ],
+  "fetched_at": "2026-05-06T01:27:27.927Z",
+  "schema_version": "v1",
+  "commit_sha": "ec1044614ea90862d55666293707cab16bfe1951",
+  "title": "feat(substrate-discovery): Phase 0 PoC scaffold — AOT toolchain validated end-to-end on osx-arm64",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T12:13:14Z",
+  "head_ref": "feat/substrate-discovery-phase-0-poc-scaffold"
+}
