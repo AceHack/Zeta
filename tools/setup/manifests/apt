@@ -129,9 +129,15 @@ binaryen
 #   Verified present: apt-cache show emscripten (Noble 3.1.6~dfsg-1).
 emscripten
 #
-# AssemblyScript (asc) is installed via pnpm (already in mise) at the project
-# level — it is NOT an apt package. The asc binary is available after
-# `pnpm add -g assemblyscript` or via the project's node_modules/.bin/asc.
+# AssemblyScript (asc) is a project-level tool, NOT an apt package. Install it
+# with the repo's own package manager (`bun add -d assemblyscript`) and invoke
+# it via the project's node_modules/.bin/asc.
+#
+# NOTE (081KZYAGTB6087G0R002W8CWQK): this comment used to claim asc came in via
+# `pnpm add -g` and that pnpm was "already in mise". Neither was ever true —
+# pnpm is not a mise tool, and it is no longer a root devDependency either. The
+# only pnpm consumer is demo/identity-dla-site, which now provisions its own
+# pinned pnpm from src/Core.TypeScript/discovery/identity-dla-pages-build.ts.
 # nodejs is required as the asc runtime host.
 nodejs          # AssemblyScript runtime host (asc CLI requires Node.js)
 
