@@ -71,7 +71,14 @@ export interface BrowserDatabaseReceiptHandoffFeedback {
     | "receipt-handoff-downstream-backpressured"
     | "receipt-handoff-ack-invalid"
     | "receipt-handoff-archive-changed"
-    | "receipt-handoff-compact-failed";
+    | "receipt-handoff-compact-failed"
+    | "receipt-handoff-peer-configuration-invalid"
+    | "receipt-handoff-peer-request-invalid"
+    | "receipt-handoff-peer-request-capacity-exhausted"
+    | "receipt-handoff-peer-response-invalid"
+    | "receipt-handoff-peer-response-capacity-exhausted"
+    | "receipt-handoff-peer-transport-failed"
+    | "receipt-handoff-peer-target-rejected";
   readonly detail: string;
 }
 

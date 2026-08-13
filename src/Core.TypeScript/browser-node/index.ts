@@ -232,6 +232,28 @@ export {
 } from "./browser-database-receipt-handoff";
 
 export {
+  BROWSER_DATABASE_RECEIPT_PEER_READOUT_SCHEMA,
+  BROWSER_DATABASE_RECEIPT_PEER_REQUEST_SCHEMA,
+  BROWSER_DATABASE_RECEIPT_PEER_RESPONSE_SCHEMA,
+  createBrowserDatabaseReceiptPeerReceiver,
+  createBrowserDatabaseReceiptPeerSender,
+  type BrowserDatabaseReceiptPeerAcknowledgedResponse,
+  type BrowserDatabaseReceiptPeerLimits,
+  type BrowserDatabaseReceiptPeerReadout,
+  type BrowserDatabaseReceiptPeerReceiver,
+  type BrowserDatabaseReceiptPeerReceiverOptions,
+  type BrowserDatabaseReceiptPeerRejectedResponse,
+  type BrowserDatabaseReceiptPeerRemoteFeedback,
+  type BrowserDatabaseReceiptPeerRequest,
+  type BrowserDatabaseReceiptPeerResponse,
+  type BrowserDatabaseReceiptPeerSender,
+  type BrowserDatabaseReceiptPeerSenderOptions,
+  type BrowserDatabaseReceiptPeerTransport,
+  type BrowserDatabaseReceiptPeerTransportFeedback,
+  type BrowserDatabaseReceiptPeerTransportResult,
+} from "./browser-database-receipt-peer-exchange";
+
+export {
   BROWSER_ZETA_DB_WAKE_RESPONSE_SCHEMA,
   BROWSER_ZETA_DB_WAKE_SCHEMA,
   handleBrowserZetaDbWakeMessage,
