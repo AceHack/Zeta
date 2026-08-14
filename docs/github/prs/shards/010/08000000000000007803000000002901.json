@@ -1,0 +1,12 @@
+{
+  "pr_number": 10497,
+  "archive_path": "docs/history/pr-reviews/PR-10497-workitem-every-smt-runner-asserts-all-unsat-which-a-tautology-satisfies.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T02:00:52.174Z",
+  "schema_version": "v1",
+  "commit_sha": "c3a9c1cdd1c20626a00bcdad88222b2a14a4a5f6",
+  "title": "workitem: every SMT runner asserts all-unsat — which a tautology satisfies",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T02:00:13Z",
+  "head_ref": "workitem/smt-runners-all-unsat-cannot-catch-tautology"
+}
