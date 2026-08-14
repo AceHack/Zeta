@@ -1,0 +1,12 @@
+{
+  "pr_number": 10500,
+  "archive_path": "docs/history/pr-reviews/PR-10500-feat-browser-propose-durable-receipt-batches-without-credentials.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T01:51:04.339Z",
+  "schema_version": "v1",
+  "commit_sha": "4f339bb94c8048cdfbf4de8482bcf6f89a297fac",
+  "title": "feat(browser): propose durable receipt batches without credentials",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T01:50:32Z",
+  "head_ref": "codex/browser-receipt-proposal-port"
+}
