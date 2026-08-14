@@ -20,6 +20,9 @@
     "BenchmarkDotNet.Artifacts/**",
     "TestResults/**",
     "artifacts/**",
+    // Generated Pages output can contain verbatim copies of archived Markdown.
+    // Lint the source files, not the ignored deployment artifact.
+    "dist/**",
     "**/node_modules/**",
     "bin/**",
     "obj/**",

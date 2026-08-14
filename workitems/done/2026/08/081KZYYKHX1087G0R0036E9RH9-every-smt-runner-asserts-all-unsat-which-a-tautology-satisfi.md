@@ -67,7 +67,7 @@ suggests the vacuity class spans **every** formal lane here, not just SMT.
 
 Note `light-time-endpoint-speed-envelope` in the un-run column: it is the z3 certificate for the
 **PROVED** orbital envelope theorem (#10418). The theorem itself is independently checked in Lean
-(`Lean4/LightTimeAsymmetry.lean`, which **is** gated), so the property is not unverified — but the SMT
+(`src/Core.Lean4/Lean4/LightTimeAsymmetry.lean`, which **is** gated), so the property is not unverified — but the SMT
 half of that cross-check has never executed.
 
 ## Two jobs, in order
@@ -84,4 +84,3 @@ half of that cross-check has never executed.
 - Every `.smt2` file is either executed by a runner or listed with a **non-empty reason** — the
   `ORPHANS.json` / `unexecuted-test-files.json` shape.
 - Mutating a lemma into a tautology turns its runner **red**.
-

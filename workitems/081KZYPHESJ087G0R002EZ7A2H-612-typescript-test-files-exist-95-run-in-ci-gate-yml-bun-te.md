@@ -46,7 +46,7 @@ that directory's tests. The green is about the two directories that happen to be
    falsification cannot be regression-protected.
 
 The light-time theorem itself is fine and this is worth stating precisely rather than alarmingly:
-`Lean4/LightTimeAsymmetry.lean` **is** imported by `Lean4.lean` (line 17) and `src/Core.Lean4/` **is**
+`src/Core.Lean4/Lean4/LightTimeAsymmetry.lean` **is** imported by `Lean4.lean` (line 17) and `src/Core.Lean4/` **is**
 gated, so the proof genuinely runs. What is missing is the second oracle — `tools/Z3Verify/*.smt2`
 (9 files) is referenced by **no** workflow at all. Loss of cross-check redundancy, not loss of the
 property.
@@ -110,7 +110,7 @@ Two caveats that survive the measurement, both honest:
 
 - The run was on macOS (this operator's machine); CI is `ubuntu-24.04`. Runtime and pass rate should be
   confirmed on the CI runner before the cap is trusted. Some tests spawn `kind`/ArgoCD scaffolding
-  (`cluster/dev-cluster/use-cases.test.ts`) whose behaviour differs there.
+  (`src/Core.TypeScript/cluster/dev-cluster/use-cases.test.ts`) whose behaviour differs there.
 - 568 files ran, against 612 counted under `src/` + `tests/`. The difference is `tests/` (not under
   `src/Core.TypeScript/`), so that tree still needs its own measurement.
 

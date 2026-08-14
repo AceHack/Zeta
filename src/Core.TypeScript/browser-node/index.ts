@@ -263,6 +263,22 @@ export {
 } from "./browser-database-receipt-proposal-acceptance";
 
 export {
+  BROWSER_DATABASE_RECEIPT_PAGES_DATA_ROOT,
+  BROWSER_DATABASE_RECEIPT_PAGES_INDEX_PATH,
+  BROWSER_DATABASE_RECEIPT_PAGES_INDEX_SCHEMA,
+  BROWSER_DATABASE_RECEIPT_PAGES_RECORD_ROOT,
+  type BrowserDatabaseReceiptPagesIndex,
+  type BrowserDatabaseReceiptPagesIndexEntry,
+} from "./browser-database-receipt-pages-contract";
+
+export {
+  createBrowserDatabaseReceiptPagesSource,
+  type BrowserDatabaseReceiptPagesFetch,
+  type BrowserDatabaseReceiptPagesSourceLimits,
+  type BrowserDatabaseReceiptPagesSourceOptions,
+} from "./browser-database-receipt-pages-source";
+
+export {
   BROWSER_DATABASE_RECEIPT_PEER_READOUT_SCHEMA,
   BROWSER_DATABASE_RECEIPT_PEER_REQUEST_SCHEMA,
   BROWSER_DATABASE_RECEIPT_PEER_RESPONSE_SCHEMA,

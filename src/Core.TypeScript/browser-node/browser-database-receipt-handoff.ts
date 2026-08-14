@@ -84,7 +84,11 @@ export interface BrowserDatabaseReceiptHandoffFeedback {
     | "receipt-handoff-acceptance-source-threw"
     | "receipt-handoff-acceptance-record-invalid"
     | "receipt-handoff-acceptance-capacity-exhausted"
-    | "receipt-handoff-acceptance-content-mismatch";
+    | "receipt-handoff-acceptance-content-mismatch"
+    | "receipt-handoff-acceptance-pages-configuration-invalid"
+    | "receipt-handoff-acceptance-pages-transport-failed"
+    | "receipt-handoff-acceptance-pages-index-invalid"
+    | "receipt-handoff-acceptance-pages-capacity-exhausted";
   readonly detail: string;
 }
 

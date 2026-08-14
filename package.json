@@ -19,7 +19,7 @@
     "typecheck": "bun node_modules/typescript/bin/tsc --noEmit",
     "preflight": "bun ./src/Core.TypeScript/hygiene/preflight.ts",
     "preflight:quick": "bun ./src/Core.TypeScript/hygiene/preflight.ts --quick",
-    "pages:build": "bun ./src/Core.TypeScript/discovery/llmtv-pages-static-export.ts --out-dir dist && bun ./src/Core.TypeScript/browser-node/browser-pwa-build.ts --out-dir dist/hall/room && bun ./src/Core.TypeScript/discovery/identity-dla-pages-build.ts",
+    "pages:build": "bun ./src/Core.TypeScript/discovery/llmtv-pages-static-export.ts --out-dir dist && bun ./src/Core.TypeScript/browser-node/browser-pwa-build.ts --out-dir dist/hall/room && bun ./src/Core.TypeScript/browser-node/browser-database-receipt-pages-build.ts --out-dir dist/hall/room && bun ./src/Core.TypeScript/discovery/identity-dla-pages-build.ts",
     "build:browser-pwa": "bun ./src/Core.TypeScript/browser-node/browser-pwa-build.ts --out-dir dist/hall/room",
     "test:typescript": "bun test",
     "install:browser-smoke": "playwright install chromium",
