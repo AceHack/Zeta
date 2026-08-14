@@ -4,7 +4,11 @@
  * Probes local system interfaces for physical YubiKey (PCSC/CCID), TPM 2.0
  * device nodes (/dev/tpmrm0, /sys/class/tpm), and PKCS#11 shared libraries.
  *
- * Supports seamless fallback to software simulation when physical hardware is unattached.
+ * Reports what is ATTACHED. It does not choose a seal tier and it does not authorise a
+ * fallback: under no-silent-downgrade the caller declares a required tier and
+ * frost-share-adapter throws if that tier is unavailable. A probe result of
+ * noHardwareDetected means "do not ask for a hardware tier here", never "quietly use
+ * software instead".
  */
 
 import { existsSync, readdirSync } from "node:fs";
@@ -18,7 +22,8 @@ export interface HardwareProbeResult {
   readonly yubikeySerial?: string | undefined;
   readonly pkcs11ModuleFound: boolean;
   readonly pkcs11LibraryPath?: string | undefined;
-  readonly fallbackToSimulator: boolean;
+  /** No hardware found. NOT a licence to fall back: the adapter has no fallback path. */
+  readonly noHardwareDetected: boolean;
 }
 
 /**
@@ -33,7 +38,8 @@ const PKCS11_LIBRARY_PATHS: readonly string[] = [
 ];
 
 /**
- * Probes for physical TPM 2.0 device nodes.
+ * Probes for physical TPM 2.0 device nodes. LINUX ONLY: Apple Silicon has a Secure
+ * Enclave, not a TPM 2.0, so this correctly reports false on macOS.
  */
 export function probeTpm2(): { available: boolean; path?: string } {
   if (existsSync("/dev/tpmrm0")) {
@@ -104,7 +110,7 @@ export function probeHardwareSecurity(): HardwareProbeResult {
     yubikeySerial: yubi.serial,
     pkcs11ModuleFound: pkcs11.found,
     pkcs11LibraryPath: pkcs11.path,
-    fallbackToSimulator: !hardwareAvailable,
+    noHardwareDetected: !hardwareAvailable,
   };
 }
 
@@ -114,5 +120,5 @@ if (import.meta.main) {
   console.log(`  TPM 2.0:           ${res.tpm2Available ? res.tpmDeviceNode : "Not found"}`);
   console.log(`  YubiKey:           ${res.yubikeyDetected ? `Detected (S/N: ${res.yubikeySerial})` : "Not detected"}`);
   console.log(`  PKCS#11 Library:   ${res.pkcs11ModuleFound ? res.pkcs11LibraryPath : "Not found"}`);
-  console.log(`  Simulator Fallback:${res.fallbackToSimulator ? " ACTIVE" : " INACTIVE (Hardware present)"}`);
+  console.log(`  Hardware present:  ${res.noHardwareDetected ? "NO - a hardware seal tier will THROW here" : "YES"}`);
 }

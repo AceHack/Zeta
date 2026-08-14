@@ -22,13 +22,13 @@ describe("Hardware Security Device Probe", () => {
     expect(typeof pkcs11.found).toBe("boolean");
   });
 
-  it("executes full hardware probe and sets fallbackToSimulator flag correctly", () => {
+  it("executes full hardware probe and sets noHardwareDetected flag correctly", () => {
     const res = probeHardwareSecurity();
     expect(res.timestamp).toBeDefined();
-    expect(typeof res.fallbackToSimulator).toBe("boolean");
-    // When physical hardware is absent, fallbackToSimulator MUST be true
+    expect(typeof res.noHardwareDetected).toBe("boolean");
+    // When physical hardware is absent, noHardwareDetected MUST be true
     if (!res.tpm2Available && !res.yubikeyDetected && !res.pkcs11ModuleFound) {
-      expect(res.fallbackToSimulator).toBeTrue();
+      expect(res.noHardwareDetected).toBeTrue();
     }
   });
 });

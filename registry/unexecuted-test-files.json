@@ -25,8 +25,8 @@
     "workitem": ""
   },
   {
-    "path": "tools/setup/persona-keys/frost-share-adapter.test.ts",
-    "reason": "MEASURED on ubuntu-24.04 in PR #10473 run 31757721615: FSA-6 (tpm adapter unseals via mock cmd) fails on the runner and passes on the dev laptop. The adapter reaches a platform-specific TPM path that the runner does not provide. The other assertions in the file pass in both places, so this is one test holding the file out, and separating it is the fix.",
-    "workitem": ""
+    "path": "tools/setup/persona-keys/frost-share-adapter.hardware.test.ts",
+    "reason": "HARDWARE-ONLY LANE. The only reason it is excluded is that no runner has the silicon: the PKCS#11 tests need an attached token holding an AES-256 key labelled zeta-frost-wrap, and the TPM 2.0 tests need a TPM device node plus tpm2-tools. This entry REPLACES the previous exclusion of frost-share-adapter.test.ts, whose own reason named separating the platform-specific test as the fix. That separation is now done and the CI-safe file runs in the gate with 16 tests. Non-vacuity is enforced INSIDE this file rather than promised here: selecting a lane via ZETA_FROST_HARDWARE_LANE asserts that hardware is attached, so opting in without it FAILS rather than skips, an unrecognised lane name FAILS, and no code path in the file constructs the software fake. MEASURED 2026-08-13 on darwin-arm64: lane tpm2 gives 2 failures because Apple Silicon has no TPM 2.0, lane pkcs11 gives 2 failures because no token is attached, and lane tpm gives 1 failure because the name is unrecognised.",
+    "workitem": "081KWPHRNFW08QG0R0031ZNXTD"
   }
 ]
