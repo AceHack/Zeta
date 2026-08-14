@@ -13,7 +13,7 @@ let lior = NodeId "lior"
 let now = DateTimeOffset.UtcNow
 
 let vote node value =
-    { Node = node; Value = value; Timestamp = now }
+    { Node = node; Value = value; LocalObservedAt = now }
 
 [<Fact>]
 let ``4 nodes unanimous — commits`` () =
@@ -188,3 +188,65 @@ let ``prConsensus — one node sees failure, rest see clean — blocks`` () =
     | Committed(Merge, _, _) -> ()
     | Committed(Block _, _, _) -> Assert.Fail "3/4 see Merge, should commit Merge"
     | Rejected _ -> Assert.Fail "3/4 agree on Merge, should commit"
+
+// ── local-time-never-enters-the-shared-fold: `decide` is the shared fold ──────────────────────
+// `.claude/rules/local-time-never-enters-the-shared-fold.md` · §13 noninterference, on time.
+
+let stampedVote node value (stamp: DateTimeOffset) =
+    { Node = node; Value = value; LocalObservedAt = stamp }
+
+let t (seconds: int) = DateTimeOffset.UnixEpoch.AddSeconds(float seconds)
+
+/// THE MUTANT-CATCHER. n=6 with a perfect 3/3 tie is the *only* shape where the local stamp could
+/// change the outcome, so it is the shape the guard has to use. The list order says "a" first; the
+/// stamps say "b" first. If anyone ever sorts/filters/weights `votes` by `LocalObservedAt` inside
+/// `decide`, this commits "b" and the test fails — which is precisely the divergence the rule forbids.
+[<Fact>]
+let ``decide ignores LocalObservedAt — stamps disagreeing with list order do not move the decision`` () =
+    let votes =
+        [ stampedVote (NodeId "n0") "a" (t 50)
+          stampedVote (NodeId "n1") "a" (t 60)
+          stampedVote (NodeId "n2") "a" (t 70)
+          stampedVote (NodeId "n3") "b" (t 10)
+          stampedVote (NodeId "n4") "b" (t 20)
+          stampedVote (NodeId "n5") "b" (t 30) ]
+    Assert.Equal(3, quorumThreshold 6)
+    match decide votes with
+    | Committed(v, _, _) ->
+        Assert.Equal("a", v) // list order, NOT stamp order (stamp order would give "b")
+    | Rejected _ -> Assert.Fail "3 >= threshold 3, expected a commit"
+
+/// The same evidence SET with every stamp identical must decide the same as the case above — i.e. the
+/// stamps contributed nothing. Together the two pin `decide` as a function of (evidence, order) only.
+[<Fact>]
+let ``decide is invariant under rewriting every LocalObservedAt`` () =
+    let mk stamps =
+        List.map2 (fun (n, v) s -> stampedVote (NodeId n) v s)
+            [ "n0","a"; "n1","a"; "n2","a"; "n3","b"; "n4","b"; "n5","b" ] stamps
+    let spread = mk [ t 50; t 60; t 70; t 10; t 20; t 30 ]
+    let flat   = mk [ t 0;  t 0;  t 0;  t 0;  t 0;  t 0 ]
+    let reversed = mk [ t 70; t 60; t 50; t 30; t 20; t 10 ]
+    Assert.Equal(committedValue (decide spread), committedValue (decide flat))
+    Assert.Equal(committedValue (decide spread), committedValue (decide reversed))
+
+/// CHARACTERIZATION OF A KNOWN DEFECT — 081M013T0D7087G0R0009E1QF7. Not an endorsement.
+/// `decide`'s tie-break is first-occurrence, so receive ORDER (not the stamp) still decides a tie that
+/// reaches quorum. This is byte-locked into the four-oracle treaty, so it is filed rather than fixed.
+/// This test exists so that a future fix is a deliberate, visible change rather than a silent one.
+[<Fact>]
+let ``KNOWN DEFECT — decide tie-break is receive-order dependent at n=6`` () =
+    let a i = stampedVote (NodeId $"n{i}") "a" (t 0)
+    let b i = stampedVote (NodeId $"n{i}") "b" (t 0)
+    let aFirst = [ a 0; a 1; a 2; b 3; b 4; b 5 ]
+    let bFirst = [ b 3; b 4; b 5; a 0; a 1; a 2 ]
+    Assert.Equal(Some "a", committedValue (decide aFirst))
+    Assert.Equal(Some "b", committedValue (decide bFirst))
+
+/// The bound on the defect above: a tie can only ALSO reach quorum when floor(n/2) >= threshold(n),
+/// which holds for exactly n ∈ {2, 3, 6}. For every other n the tie-break is unreachable, so the
+/// receive-order dependence cannot change a committed value. Pins the blast radius.
+[<Fact>]
+let ``tie can reach quorum only at n in 2, 3, 6`` () =
+    let reachable =
+        [ 0 .. 64 ] |> List.filter (fun n -> n >= 2 && (n / 2) >= quorumThreshold n)
+    Assert.Equal<int list>([ 2; 3; 6 ], reachable)

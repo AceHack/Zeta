@@ -1204,6 +1204,14 @@ jobs:
       - name: Run audit-schema-key-set-parity (cross-oracle schema key sets)
         run: bun src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts --min-schemas 6
 
+      # local-time-never-enters-the-shared-fold: a field carrying a node's LOCAL wall-clock must
+      # never be READ — a read is how it reaches a shared commutative fold and makes nodes with
+      # different receive-times diverge. Exit 1 = a read; exit 2 = the guard could not do its job
+      # (field renamed out from under the registry, or the scan floor was unmet), because a check
+      # that did not run must not look like a check that passed.
+      - name: Run lint-local-clock-fields-never-read (§13 noninterference, on time)
+        run: bun src/Core.TypeScript/hygiene/lint-local-clock-fields-never-read.ts
+
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
     # forgotten artefact (an agent-created skill folder without a

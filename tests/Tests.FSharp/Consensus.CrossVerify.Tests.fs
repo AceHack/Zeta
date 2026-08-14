@@ -35,7 +35,7 @@ let ``F# Consensus decision core agrees with the shared golden seed`` () =
     for v in section "decide" do
         let votes =
             [ for e in (v.GetProperty "votes").EnumerateArray() ->
-                { C.Node = C.NodeId "n"; C.Value = e.GetString(); C.Timestamp = DateTimeOffset.UnixEpoch } ]
+                { C.Node = C.NodeId "n"; C.Value = e.GetString(); C.LocalObservedAt = DateTimeOffset.UnixEpoch } ]
         let r = v.GetProperty "result"
         let expectedCommitted = (r.GetProperty "committed").GetBoolean()
         let expectedValue = if (r.GetProperty "value").ValueKind = JsonValueKind.Null then None else Some((r.GetProperty "value").GetString())

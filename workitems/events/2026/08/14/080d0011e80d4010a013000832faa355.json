@@ -1,0 +1,14 @@
+{
+  "id": "080d0011e80d4010a013000832faa355",
+  "at": "2026-08-14T21:45:47.688Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M013T0D7087G0R0009E1QF7",
+    "type": "bug",
+    "title": "Consensus.decide tie-break is receive-order dependent and byte-locked into the four-oracle treaty (n in {2,3,6} diverge)",
+    "slug": "consensus-decide-tie-break-is-receive-order-dependent-and-by",
+    "priority": "P2",
+    "filename": "081M013T0D7087G0R0009E1QF7-consensus-decide-tie-break-is-receive-order-dependent-and-by.md"
+  }
+}
