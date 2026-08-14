@@ -1,0 +1,12 @@
+{
+  "pr_number": 10561,
+  "archive_path": "docs/history/pr-reviews/PR-10561-build-add-burmese-to-pages-deployment.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T12:29:49.666Z",
+  "schema_version": "v1",
+  "commit_sha": "97bda43d04e1ec6159ef3b9f34387c1a2e78ffa6",
+  "title": "build: add Burmese to Pages deployment",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T12:29:12Z",
+  "head_ref": "fix-pages-burmese"
+}
