@@ -117,8 +117,27 @@ module ZetaIdCodec =
             Location   = LanguagePrimitives.EnumOfValue<byte, Location>    (toByte layout.Location)
         }
 
+    /// The Generic layout gives the payload 119 bits (65 low + 54 high).
+    /// Private, mirroring the C# `GenericPayloadBits` const: the bound is a
+    /// property of the codec, not a new public API surface.
+    let private genericPayloadBits = 119
+
     /// Pack a generic ZetaId payload (119 bits) with a version and category.
+    ///
+    /// A wider payload used to be MASKED here rather than rejected, which aliases
+    /// ids instead of failing: at 2039-09-07T15:47:35.552Z a caller building
+    /// (ms <<< 78) ||| random78 -- the shape inventory/new-item.ts uses -- reaches
+    /// ms = 2^41, the top ms bit falls off, and the result is BYTE-IDENTICAL to the
+    /// same call with ms = 0. That is a silent collision with 1970, forever.
+    /// The bound lives in the primitive (not only in the packPayload wrapper)
+    /// because packGeneric is public: the exposure is a future caller reaching past
+    /// the wrapper, which is exactly the mistake new-item.ts made in TS.
     let packGeneric (version: IdVersion) (category: Category) (payload: System.UInt128) : System.UInt128 =
+        let maxPayload = (System.UInt128.One <<< genericPayloadBits) - System.UInt128.One
+        if payload > maxPayload then
+            raise (System.ArgumentOutOfRangeException(
+                    "payload", payload :> obj,
+                    "Generic payload exceeds 119 bits. Masking it would silently alias this id onto a different payload rather than fail."))
         let mutable id = System.UInt128.Zero
         // version goes to bits 123-127
         id <- id ||| (System.UInt128(0UL, (uint64 version) &&& 31UL) <<< 123)
