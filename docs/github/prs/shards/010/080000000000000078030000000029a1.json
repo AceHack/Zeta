@@ -1,0 +1,12 @@
+{
+  "pr_number": 10657,
+  "archive_path": "docs/history/pr-reviews/PR-10657-research-code-bound-key-access-preliminary-integration-note.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T18:02:06.764Z",
+  "schema_version": "v1",
+  "commit_sha": "620a1729cb5f6a5826e7da2cb8ee2b140295eb4a",
+  "title": "research: code-bound key access — preliminary integration note",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T17:59:34Z",
+  "head_ref": "research/code-bound-key-access"
+}
