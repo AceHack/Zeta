@@ -1,0 +1,37 @@
+[
+  {
+    "path": "docs/recovered-orphan-branches-2026-05/",
+    "reason": "Recovered-branch ARCHIVE, not live code: 18 snapshots of test files from abandoned branches, several of them older copies of files that still exist elsewhere in the tree. Running them would assert against code that was deliberately not merged. Excluded at the bunfig.toml pathIgnorePatterns layer, so bun cannot discover them from any invocation; this entry is the written half of that exclusion.",
+    "workitem": ""
+  },
+  {
+    "path": "src/Core.TypeScript/cluster/dev-cluster/use-cases.test.ts",
+    "reason": "MEASURED 2026-08-13: creates a real kind cluster named zeta-ci and installs ArgoCD plus the Gateway API CRDs, with no CI guard. That is minutes of runner time, a docker-in-runner dependency, and shared mutable state on any machine that runs it, a developer laptop included. The k8s surface has its own lane in k8s-argocd-health-test.yml. Un-ignoring this needs an env-gated skip inside the test, which belongs to whoever owns the cluster harness.",
+    "workitem": ""
+  },
+  {
+    "path": "src/Core.TypeScript/health/factory-health-monitor.test.ts",
+    "reason": "MEASURED 2026-08-13, reproduced twice: runHealthCheck probes the live repository over the network, and its single test times out after 60s, carrying the file to 93s wall-clock and failing. The other 50 tests in the file pass in under a second. It is a live-environment probe wearing a unit-test name, so it cannot join the PR lane until that one test is separated or gated. Losing 50 real assertions to keep it out is a genuine cost, recorded here rather than hidden.",
+    "workitem": ""
+  },
+  {
+    "path": "src/Core.TypeScript/service/persona-health.test.ts",
+    "reason": "MEASURED on ubuntu-24.04 in PR #10473 run 31757721615: 7 failures, each asserting that a persona agent CLI is on PATH (claude, kiro-cli, codex, cursor-agent, agy). Those exist on the maintainer workstation and on no runner, so the file measures the HOST rather than the code. Passes on a developer machine, fails in CI by construction.",
+    "workitem": ""
+  },
+  {
+    "path": "src/Core.TypeScript/shadow/shadow-observer.test.ts",
+    "reason": "MEASURED on ubuntu-24.04 in PR #10473 run 31757721615: 2 failures in detectGreyTextMacOS, which shells osascript. That binary is macOS-only, so the tests cannot pass on a Linux runner and cannot be made to without a platform guard inside the file. This is genuine three-way-parity DEBT, not a permanent exclusion: the same file passes on the dev laptop and fails in CI, which is drift by definition.",
+    "workitem": ""
+  },
+  {
+    "path": "src/Core.TypeScript/backlog/empty-queue-pickup.test.ts",
+    "reason": "MEASURED on ubuntu-24.04 in PR #10473 run 31757721615: all 6 tests fail with Expected claimed, Received wait-pr-capacity. The suite queries the LIVE pull-request queue, so its result depends on how many PRs happen to be open at the moment it runs. That makes it nondeterministic in any lane, CI or laptop; it passed locally only because the queue was quiet. A test whose verdict tracks repository weather is not a unit test.",
+    "workitem": ""
+  },
+  {
+    "path": "tools/setup/persona-keys/frost-share-adapter.test.ts",
+    "reason": "MEASURED on ubuntu-24.04 in PR #10473 run 31757721615: FSA-6 (tpm adapter unseals via mock cmd) fails on the runner and passes on the dev laptop. The adapter reaches a platform-specific TPM path that the runner does not provide. The other assertions in the file pass in both places, so this is one test holding the file out, and separating it is the fix.",
+    "workitem": ""
+  }
+]

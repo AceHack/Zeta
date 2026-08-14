@@ -1538,6 +1538,98 @@ jobs:
             tests/cross-verification/_harness/generated-star-ring-laws.test.ts \
             tests/cross-verification/_harness/generated-kleene-laws.test.ts
 
+  test-typescript:
+    # THE GAP THIS CLOSES. Before this job, CI executed roughly 130 of the repo's 900-plus
+    # `*.test.ts` files. Whole directories -- discovery/, planning/, browser-node/,
+    # ferry-throttler/, model-backend/, oracle/, forge-host/ -- were never executed by any
+    # workflow, so a PR touching them went green having run zero of their tests. Three live
+    # instances on 2026-08-13 alone: a 32-test chaos harness whose four deliberately-pinned
+    # known-broken behaviours were inert; the independent check that falsified a proposed
+    # light-time remedy, never re-run; and a freshly-merged 21-test migration alongside a
+    # drift gate referenced by no workflow, while main sat in drift and nothing reported it.
+    # zflash-harness-lint.yml states the rule: a green check that implies more than it tested
+    # is worse than no check. Work-item 081KZYPHESJ087G0R002EZ7A2H.
+    #
+    # WHY A BARE `bun test` AND NOT A LIST OF DIRECTORIES. Every filter list is a fresh copy
+    # of the same defect: forge-host/ fell outside the previous globs precisely because
+    # someone had to remember to add it. A bare invocation cannot have that bug -- a new
+    # directory is covered the moment it exists. Deliberate exclusions therefore live in
+    # exactly one place, the pathIgnorePatterns of bunfig.toml, and each one must carry a
+    # written reason in registry/unexecuted-test-files.json.
+    # hygiene/unexecuted-test-files.ts enforces both halves and fails on an undeclared,
+    # unreasoned, or stale entry.
+    #
+    # WHY A SEPARATE JOB rather than a step inside `lint (TS)`. That job type-checks; folding
+    # behaviour into it puts two different failures behind one red X, which is the attribution
+    # problem the 2026-06-13 per-language lint split already solved once here. It also carries
+    # a 12-minute cap sized for tsc, while this suite measured 256-346s locally on its own.
+    #
+    # WHY NOT SPLIT ACROSS PARALLEL JOBS. Per-job fixed cost here is the install.sh bootstrap
+    # plus `bun install` -- 1-2 minutes even on a cache hit -- against roughly 7 minutes of
+    # actual test time. N jobs multiply the fixed cost for a wall-clock saving that does not
+    # pay. Revisit if the suite passes about 10 minutes.
+    #
+    # COST. About 9 minutes per run (setup plus tests) on ubuntu-24.04 at the 1x multiplier;
+    # at roughly 250 gate runs per month that is on the order of 2,250 runner-minutes added.
+    # It buys execution of ~770 files and ~9,000 assertions that today execute nowhere.
+    #
+    # RUNS, DOES NOT BLOCK. Deliberately absent from the `gate-required` needs list. The
+    # 2026-08-01 drift-and-heal ADR narrowed the blocking floor to
+    # registry/uncompensatable-floor.yaml after a priority-inversion incident; making ~770
+    # long-unrun files blocking on day one would be that inversion again. Running them IS the
+    # drift signal. Promotion to the floor is a separate treaty amendment, once this job has
+    # a track record. The blocking subset is unchanged: build-and-test, cross-verify,
+    # full-verify and lint (semgrep) keep their existing named steps and their floor status.
+    name: test (TS suite)
+    timeout-minutes: 20
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Provides bun via mise's `bun = "1.3"` pin in .mise.toml.
+        # See lint-shell job above for retry rationale (Aaron 2026-04-28
+        # PR #23 mise+bun-1.3.13 502).
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
+
+      - name: Install npm devDependencies
+        # Several suites import devDependencies directly (z3-solver among them) and
+        # assert-dont-skip when the dep is absent, so a missing install reads as a real
+        # failure rather than a skip. --frozen-lockfile matches the other bun jobs.
+        run: bun install --frozen-lockfile
+
+      - name: Whole TypeScript suite
+        # No path filters: see the header. Exclusions live in bunfig.toml and every one of
+        # them is declared with a reason in registry/unexecuted-test-files.json.
+        run: bun test
+
   # ═══════════════════════════════════════════════════════════════════
   # Full Verification Gate — 7-language oracle + cost + proofs
   # ═══════════════════════════════════════════════════════════════════
