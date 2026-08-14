@@ -51,6 +51,24 @@ The verifier rejects schema/repository/ref substitutions, non-immutable base SHA
 
 > **Security invariant:** neither GitHub Pages nor the browser receives a shared organization token, an installation token, a GitHub App private key, or the Action's ephemeral write credential. Possession of a passkey proves consent to a proposal; it does not bypass branch protection or create autonomous authority to merge.
 
+## Verified low-touch Pages operation
+
+The normal operating path is deliberately not an issue form, a copied token, or a manual branch procedure. The GitHub Pages PWA performs browser-local reasoning and constructs a bounded proposal. A person completes the one-time authorization boundary for the device, after which the PWA can submit eligible proposals to the server-bound verifier. The verifier checks the public proposal-author registry, origin, device capability, immutable base SHA, canonical patch digest, expiry, and replay state. It then uses the repository-limited GitHub App only to dispatch the declared executor workflow. The workflow receives inert patch data, validates it again, and can create only a review branch and PR; protected `main` remains outside its write path.
+
+| Layer | Routine responsibility | Credential or authority | Explicitly excluded |
+| --- | --- | --- | --- |
+| Pages PWA | Local LLM/BNN reasoning, proposal construction, visual status | Origin-bound public WebAuthn assertion or short-lived device capability | GitHub App key, installation token, PAT, direct repository write |
+| Authorization harness | Verifies device authorization and proposal bounds | Encrypted server-side App material; short-lived HttpOnly approval | Returning secrets to the browser; accepting an arbitrary return origin |
+| GitHub App | Dispatches the declared executor only | Repository installation with **Actions: write** and Metadata read | Contents write, PR write, administration, organization-wide access |
+| Executor workflow | Revalidates input and stages review delivery | Ephemeral workflow credentials plus separately scoped PR handoff only where declared | Protected-main write and ungated merge |
+| Required gate | Decides whether review delivery may merge | Protected-branch policy | Treating an AI output or self-test as a merge authorization |
+
+The control's already-installed route renews only a short-lived, HttpOnly approval when the return target is the published Pages origin. An arbitrary return origin is rejected. This ensures that a prior successful installation does not force a human to repeat registration, while it does not turn a copied App-control URL into a reusable cross-site dispatch capability.
+
+> **Operational result:** the private `Zeta Society Heartbeat` App was registered and installed only on `Lucent-Financial-Group/Zeta` with Metadata read and Actions write. A single Pages-origin dispatch completed successfully as GitHub Actions run `31812938153`; its society evidence was delivered through staging PR `#10593`, required checks, and protected auto-merge. This validates the executor path without putting any write credential in GitHub Pages.
+
+The registry remains intentionally empty at sequence 1 until a maintainer accepts a public enrollment package in a protected review. The completed App path is therefore ready to dispatch bounded operational workflows, while passkey-authorized arbitrary code proposals remain correctly disabled until that independent registry authorization occurs.
+
 ## References
 
 [1]: https://www.w3.org/TR/webauthn-3/ "W3C Web Authentication: An API for accessing Public Key Credentials, Level 3"
