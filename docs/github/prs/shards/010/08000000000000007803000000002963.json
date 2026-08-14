@@ -1,0 +1,12 @@
+{
+  "pr_number": 10595,
+  "archive_path": "docs/history/pr-reviews/PR-10595-workitem-the-no-op-cadence-detector-fires-the-warning-and-returns-0-anyway.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T13:59:59.161Z",
+  "schema_version": "v1",
+  "commit_sha": "d830d6fd7e2f054aba5297439992f9c500927764",
+  "title": "workitem: the no-op-cadence detector fires the warning and returns 0 anyway",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T13:59:20Z",
+  "head_ref": "workitem/no-op-cadence-checker-cannot-report"
+}
