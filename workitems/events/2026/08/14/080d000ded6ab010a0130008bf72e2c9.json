@@ -1,0 +1,14 @@
+{
+  "id": "080d000ded6ab010a0130008bf72e2c9",
+  "at": "2026-08-14T19:26:43.030Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00VVBAN087G0R000XC5MN7",
+    "type": "task",
+    "title": "Add an exposure dimension to the bash-retirement allowlist: check-bash-retirement-inventory.ts categorizes by WHY a script is still shell (setup/bootstrap holds 22 of 31) but never by WHAT IT CAN REACH, so keyring.sh shares a bucket with install-zig.sh and the toolchain smoke tests",
+    "slug": "add-an-exposure-dimension-to-the-bash-retirement-allowlist-c",
+    "priority": "P2",
+    "filename": "081M00VVBAN087G0R000XC5MN7-add-an-exposure-dimension-to-the-bash-retirement-allowlist-c.md"
+  }
+}

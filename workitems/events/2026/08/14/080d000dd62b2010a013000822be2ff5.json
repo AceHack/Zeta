@@ -1,0 +1,14 @@
+{
+  "id": "080d000dd62b2010a013000822be2ff5",
+  "at": "2026-08-14T19:23:32.580Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00VNHB3087G0R001WHTKTH",
+    "type": "task",
+    "title": "Umbrella: sequence the .sh deprecation by measured key exposure, not convenience — 28 executable shell scripts (36 paths minus 2 markdown stubs and 6 archive), credential-touching first, sourced libraries never convertible, smoke/CI scripts last",
+    "slug": "umbrella-sequence-the-sh-deprecation-by-measured-key-exposur",
+    "priority": "P2",
+    "filename": "081M00VNHB3087G0R001WHTKTH-umbrella-sequence-the-sh-deprecation-by-measured-key-exposur.md"
+  }
+}

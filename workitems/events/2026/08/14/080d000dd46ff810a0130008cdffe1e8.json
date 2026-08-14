@@ -1,0 +1,14 @@
+{
+  "id": "080d000dd46ff810a0130008cdffe1e8",
+  "at": "2026-08-14T19:23:18.399Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00VN3FX087G0R0006ZGRWG",
+    "type": "bug",
+    "title": "security(1) subprocess calls launder the caller code identity: a keychain-ACL-trusted binary is DENIED (errSecInteractionNotAllowed) because /usr/bin/security is the caller — 9 call sites across op-token-setup.sh, secret-clip.sh, manus-smoke-test.ts, shellenv.sh must move to in-process Security.framework or L2 buys nothing",
+    "slug": "security-1-subprocess-calls-launder-the-caller-code-identity",
+    "priority": "P1",
+    "filename": "081M00VN3FX087G0R0006ZGRWG-security-1-subprocess-calls-launder-the-caller-code-identity.md"
+  }
+}

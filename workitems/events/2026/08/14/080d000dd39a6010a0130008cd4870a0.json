@@ -1,0 +1,14 @@
+{
+  "id": "080d000dd39a6010a0130008cd4870a0",
+  "at": "2026-08-14T19:23:11.564Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00VMWTB087G0R0026XSWT6",
+    "type": "bug",
+    "title": "Delete the ambient OP token hoist: ~/.config/zeta/secrets-env.sh puts an 852-byte 1Password service-account token into every shell environment, inherited across exec regardless of code identity — no signature or ACL can gate it (13 noninterference)",
+    "slug": "delete-the-ambient-op-token-hoist-config-zeta-secrets-env-sh",
+    "priority": "P1",
+    "filename": "081M00VMWTB087G0R0026XSWT6-delete-the-ambient-op-token-hoist-config-zeta-secrets-env-sh.md"
+  }
+}

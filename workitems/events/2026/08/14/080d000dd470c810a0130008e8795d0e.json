@@ -1,0 +1,14 @@
+{
+  "id": "080d000dd470c810a0130008e8795d0e",
+  "at": "2026-08-14T19:23:18.425Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00VN3GR087G0R003WXE8R8",
+    "type": "task",
+    "title": "Convert tools/setup/persona-keys/keyring.sh to a compiled signed zeta-keyring CLI — highest key exposure per invocation (BIP-39 seed to every key type); agent builds and stages, Developer-ID signing stays a biometric-gated operator action",
+    "slug": "convert-tools-setup-persona-keys-keyring-sh-to-a-compiled-si",
+    "priority": "P2",
+    "filename": "081M00VN3GR087G0R003WXE8R8-convert-tools-setup-persona-keys-keyring-sh-to-a-compiled-si.md"
+  }
+}
