@@ -149,6 +149,16 @@ export function probeJoinImplementation(
 /**
  * The message a promotion failure should carry. Kept next to the probe so the
  * instruction cannot drift away from the check that triggers it.
+ *
+ * HISTORICAL NOTE — this direction has FIRED. When this function landed the
+ * expected reading was `absent`, and `emitted` was the promotion signal. On
+ * 2026-08-13 Aaron answered the question the signal was waiting on ("k3s's
+ * join is the join, don't invent our own"), `k3s-join-observer.nix` landed,
+ * and the guest started emitting. The tripwire in the accompanying test now
+ * points the OTHER way — see {@link describeEmitterRegression}. This function
+ * is kept because it is the message a REPEAT promotion would carry (a second
+ * guest surface starting to emit), and because deleting the record of a check
+ * that did its job is how the record stops being trustworthy.
  */
 export function describePromotionSignal(sightings: readonly JoinMarkerSighting[]): string {
   const where = sightings.map((s) => `${s.filePath} emits ${JSON.stringify(s.marker)}`).join("; ");
@@ -162,6 +172,27 @@ export function describePromotionSignal(sightings: readonly JoinMarkerSighting[]
     "executeMultiVMRuntimePlan boots the VMs serially, terminating each on " +
     "marker match. Give the VMs a shared L2 segment and a DoP-knobbed concurrent " +
     "boot, THEN dispatch the scenario. Do not dispatch it before both are done."
+  );
+}
+
+/**
+ * The message the tripwire carries NOW that the guest emits.
+ *
+ * Two ways to trip it, and they are the same defect wearing different clothes:
+ * someone deletes the emitter, or someone edits one of the marker strings on
+ * only one side of the TypeScript↔Nix boundary. Nix cannot import
+ * `serial-markers.ts`, so this string comparison IS the contract between them
+ * — there is no compiler that will catch a drifted space.
+ */
+export function describeEmitterRegression(rootsScanned: readonly string[], filesScanned: number): string {
+  return (
+    "REGRESSION: the guest no longer emits B0891_CLUSTER_JOIN_SERIAL_MARKERS. " +
+    `Scanned ${String(filesScanned)} files across ${rootsScanned.join(", ")} and found none. ` +
+    "Either full-ai-cluster/nixos/modules/k3s-join-observer.nix lost its emitter, or a " +
+    "marker string changed on ONE side of the TypeScript-to-Nix boundary — the literals in " +
+    "that module must stay byte-identical to B0891_CLUSTER_JOIN_SERIAL_MARKERS in " +
+    "serial-markers.ts, five-space runs included, and nothing but this check enforces it. " +
+    "Fix the emitter or update both sides together; do NOT relax the marker set."
   );
 }
 

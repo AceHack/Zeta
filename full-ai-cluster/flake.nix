@@ -224,6 +224,15 @@
           k3s-control-plane-platform-fixes =
             import ./nixos/tests/k3s-control-plane-platform-fixes.nix { inherit pkgs; };
 
+          # TWO-NODE: an agent configured by nixos/modules/k3s-agent.nix joins
+          # a server configured by nixos/modules/k3s-server.nix on one shared
+          # virtual segment, and k3s-join-observer.nix announces it on serial
+          # in the exact strings 081KSNY2Z0008QG0R0008PN7RQ scenario 5
+          # asserts. Hermetic (membership, not readiness — no CNI image in
+          # the sandbox). See nixos/tests/k3s-agent-join.nix.
+          k3s-agent-join =
+            import ./nixos/tests/k3s-agent-join.nix { inherit pkgs; };
+
           # ONLINE end-to-end: boots the control-plane WITH internet, installs
           # Cilium for real, asserts the node reaches Ready + CoreDNS Running.
           # REQUIRES internet -> build with `--option sandbox false`.

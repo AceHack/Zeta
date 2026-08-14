@@ -145,13 +145,22 @@
   # mDNS is NOT used — `control-plane.zeta.local` was a dangling name that
   # never resolved (mDNS is single-label `.local`; nothing defined it).
   #
-  # MULTI-NODE TODO: workers (k3s-agent serverAddr = https://control-plane)
-  # need `control-plane` to resolve to the control-plane's LAN IP. mDNS is
+  # MULTI-NODE: the JOIN ITSELF IS NOT MISSING — k3s's agent-to-server join
+  # is the join (Aaron 2026-08-13, closing the open question on PR #10493:
+  # "k3s's join is the join, don't invent our own"). `k3s-agent.nix` already
+  # carries `serverAddr` + `tokenFile`, the `--tls-san=control-plane` above
+  # makes the API cert valid for that name, and `k3s-join-observer.nix` now
+  # witnesses the result on serial. `nixos/tests/k3s-agent-join.nix` boots a
+  # server and an agent on one virtual segment and proves the join lands.
+  #
+  # What IS still missing is NAME RESOLUTION on real hardware: a worker
+  # resolving `control-plane` to the control-plane's LAN IP. mDNS is
   # unreliable here and NetBIOS/nss-wins broadcast resolution did not work
   # in testing (winbindd path). The robust path is to inject a
   # `control-plane <cp-ip>` /etc/hosts entry on each worker at install
   # time (zeta-install.sh) once worker provisioning lands. Tracked
-  # separately; single-node bring-up does not depend on it.
+  # separately; single-node bring-up does not depend on it, and the VM test
+  # supplies the mapping explicitly rather than pretending it is solved.
   networking.hosts."127.0.0.1" = [ "control-plane" ];
 
   networking.firewall = {

@@ -800,37 +800,47 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
         // NOT a pass — `skipped` names what happened (nothing ran) and the
         // exit code says so.
         //
-        // TWO blockers, and the order matters. This comment used to name only
-        // the second, which read as "fix QEMU networking and we are done".
+        // The FIRST blocker has CLEARED. There is now a join to observe:
+        // k3s's join is the join (Aaron 2026-08-13, closing PR #10493's open
+        // question), and full-ai-cluster/nixos/modules/k3s-join-observer.nix
+        // witnesses it, emitting B0891_CLUSTER_JOIN_SERIAL_MARKERS to serial
+        // on every agent-role node. nixos/tests/k3s-agent-join.nix proves that
+        // end-to-end against the shipped modules, two nodes on one segment.
         //
-        // FIRST: there is no join to observe. The success contract is
-        // B0891_CLUSTER_JOIN_SERIAL_MARKERS, and nothing in the guest tree
-        // emits those strings — not zeta-install.sh, not any module under
-        // full-ai-cluster/nixos/ (k3s-server.nix still carries a
-        // "MULTI-NODE TODO: workers" note). The only thing in the repository
-        // that produces them is a mock serial log in multi-vm.test.ts.
-        // join-implementation-probe.ts checks this mechanically.
+        // The status stays `skipped` anyway, because three separate things
+        // still stand between this harness and an honest verdict — and none of
+        // them is the join:
         //
-        // SECOND: multi-vm.ts has a planner and an injected executor, but
-        // buildQemuSystemBootArgs emits only per-VM `-netdev user` (SLIRP NAT,
-        // no shared segment) and executeMultiVMRuntimePlan boots the VMs
-        // serially — terminating each on marker match, so the "existing" node
-        // is already dead before the joining node starts.
+        //   1. joining-node-role-provisioning. A zflash-prepared boot image
+        //      installs HOST=control-plane: zeta-first-boot.sh reads the role
+        //      from the ISO's own /etc/zeta-firstboot.conf, the tty1 role
+        //      prompt takes its timed default under automation, and zflash
+        //      writes no firstboot config to the ESP. So the "joining" VM
+        //      would come up as a second control-plane, run no k3s agent, and
+        //      therefore run no observer.
+        //   2. shared-l2-segment. buildQemuSystemBootArgs emits only per-VM
+        //      `-netdev user` (SLIRP NAT); the VMs cannot address each other.
+        //   3. concurrent-vm-lifecycle. executeMultiVMRuntimePlan boots the
+        //      VMs serially and SIGTERMs each on marker match, so the existing
+        //      node is dead before the joining node starts.
         //
-        // Fixing only the second would turn an honest `skipped` into a
-        // `failed` timeout. Wiring the dispatch before both clear would
-        // manufacture exactly the false green this status refuses to give.
+        // Dispatching now would produce a `failed` whose cause is none of the
+        // things this scenario claims to test — which is worse than an honest
+        // skip, because it sends the next reader hunting a join bug that is
+        // not there.
         return {
           id: "cluster-joining",
           status: "skipped",
           message:
-            "NOT RUN (counts as non-passing): no cluster join exists to observe — " +
-            "nothing under full-ai-cluster/ emits B0891_CLUSTER_JOIN_SERIAL_MARKERS " +
-            "(FIRST blocker; see join-implementation-probe.ts). Multi-VM QEMU " +
-            "orchestration is the SECOND blocker: buildQemuSystemBootArgs emits " +
-            "per-VM SLIRP NAT with no shared segment, and executeMultiVMRuntimePlan " +
-            "boots the VMs serially. Both must clear, in that order, before this " +
-            "scenario can honestly report passed or failed.",
+            "NOT RUN (counts as non-passing): the join itself is no longer the blocker — " +
+            "k3s-join-observer.nix emits B0891_CLUSTER_JOIN_SERIAL_MARKERS on agent nodes " +
+            "and nixos/tests/k3s-agent-join.nix proves the two-node join. Still blocked on " +
+            "three items, none of them the join: (1) joining-node-role-provisioning — a " +
+            "zflash-prepared image installs HOST=control-plane, so the joining VM runs no " +
+            "k3s agent; (2) shared-l2-segment — buildQemuSystemBootArgs emits per-VM SLIRP " +
+            "NAT; (3) concurrent-vm-lifecycle — executeMultiVMRuntimePlan boots serially and " +
+            "kills each VM on marker match. All three must clear before this scenario can " +
+            "honestly report passed or failed.",
         };
       }
       return reportScaffolded(scenario);

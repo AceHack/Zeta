@@ -182,6 +182,28 @@ jobs:
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L --print-build-logs --fallback
 
+      # TWO-NODE join proof (081KSNY2Z0008QG0R0008PN7RQ scenario 5, FIRST
+      # blocker). Boots a server built from nixos/modules/k3s-server.nix and
+      # an agent built from nixos/modules/k3s-agent.nix on ONE shared virtual
+      # segment, hands over k3s's own node-token, and asserts that
+      # nixos/modules/k3s-join-observer.nix writes the scenario's two contract
+      # markers to the SERIAL console — the same channel the zflash harness
+      # reads.
+      #
+      # This is the layer a Docker Compose test was proposed for on PR #10493,
+      # done without Compose's drift surface: nixosTest IMPORTS the shipped
+      # module files, so a wrong `--tls-san`, a closed 6443, or a drifted
+      # marker string fails HERE. A Compose `command:` could only test its own
+      # transcription of those flags.
+      #
+      # Hermetic — no internet, so the joined node stays NotReady and the test
+      # asserts MEMBERSHIP, not readiness (readiness is the online lane
+      # below). Runs before the ~15-min ISO build so a broken join fails fast.
+      - name: NixOS test — k3s agent JOINS the server (scenario 5 markers on serial)
+        timeout-minutes: 30
+        working-directory: full-ai-cluster
+        run: nix build .#checks.x86_64-linux.k3s-agent-join -L --print-build-logs --fallback
+
       # ONLINE end-to-end proof: boots the control-plane WITH internet,
       # installs Cilium for real, asserts the node reaches Ready + CoreDNS
       # Running. This is the gate that catches the full bring-up chain

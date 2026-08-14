@@ -12,9 +12,42 @@ name: k8s-argocd-health-test
 
 on:
   schedule:
-    # Weekly Sunday cadence: exercises runner-image/Docker/kind/helm drift
-    # without loading every PR in the default required gate.
-    - cron: "43 16 * * 0"
+    # DAILY (was weekly Sunday, "43 16 * * 0") — Aaron 2026-08-13: "it should
+    # be more often than weekly on the k8s testing".
+    #
+    # Why daily, and why not more or less:
+    #
+    # 1. The billable cost is ZERO, checked not assumed. Lucent-Financial-
+    #    Group/Zeta is a PUBLIC repository, and GitHub-hosted standard runners
+    #    are free for public repositories. Confirmed against this workflow's
+    #    own accounting: `GET /actions/runs/31754638408/timing` reports
+    #    `billable.UBUNTU.total_ms = 0` across all 4 jobs for a 12.6-minute
+    #    run. So the real costs are concurrency slots and the maintainer
+    #    attention a failure consumes — not dollars.
+    #
+    # 2. Everything this lane could drift against is PINNED IN-REPO: kind
+    #    0.31.0 / kubectl 1.36.1 / helm 4.2.0 (.mise.full.toml), argo-cd chart
+    #    7.7.10, Gateway API v1.2.1 (vendored CRDs). What is NOT pinned is the
+    #    substrate underneath: the `ubuntu-24.04` runner image (Docker,
+    #    containerd, kernel, cgroup layout), live registry + helm-repo
+    #    availability, and main-branch changes outside this workflow's `paths`
+    #    filter — `tools/setup/**` is notably absent from it, so an
+    #    `install.sh` change reaches main untested by this lane until a cron
+    #    fires. Those move on the order of a day; a weekly cron gives a mean
+    #    time-to-detect of ~3.5 days and a worst case of 7, which is longer
+    #    than the drift period it exists to catch.
+    #
+    # 3. Daily brings MTTD to ~12h (24h worst case) — matched to the fastest
+    #    drift source we actually have. Sub-daily (e.g. `*/6`) would mostly
+    #    re-measure the same unchanged substrate and multiply failure noise
+    #    without shortening detection below that period, so it would buy
+    #    signal we cannot act on any faster.
+    #
+    # Minute 53 is off `:00`/`:30` (thundering-herd) and unused elsewhere in
+    # .github/workflows; 16:53 UTC is mid-morning US Pacific, so a failure
+    # lands when someone is around to read it. Hour retained from the former
+    # weekly slot — only the day-of-week widens.
+    - cron: "53 16 * * *"
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:

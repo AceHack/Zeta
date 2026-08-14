@@ -163,7 +163,7 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
     ],
     gates: [],
     notes:
-      "TWO blockers, in order. FIRST: no join exists to observe — nothing under full-ai-cluster/ emits B0891_CLUSTER_JOIN_SERIAL_MARKERS, and k3s-server.nix still carries a MULTI-NODE TODO; the only producer of those strings in-repo is a mock serial log in multi-vm.test.ts. Checked mechanically by join-implementation-probe.ts. SECOND: multi-VM QEMU orchestration (one existing cluster VM + one joining VM) — buildQemuSystemBootArgs emits per-VM SLIRP NAT with no shared segment, and executeMultiVMRuntimePlan boots serially. Fixing only the second converts an honest skip into a timeout failure.",
+      "FIRST blocker CLEARED 2026-08-13: a join now exists to observe. k3s's join is the join (Aaron, closing PR #10493's open question), so full-ai-cluster/nixos/modules/k3s-join-observer.nix witnesses k3s's own agent-to-server join and emits B0891_CLUSTER_JOIN_SERIAL_MARKERS to serial; nixos/tests/k3s-agent-join.nix proves it two-node against the shipped modules. Checked mechanically by join-implementation-probe.ts. STILL BLOCKED on three named items (see JoinBlocker): joining-node-role-provisioning — a zflash-prepared image installs HOST=control-plane, so the joining VM runs no k3s agent at all; shared-l2-segment — buildQemuSystemBootArgs emits per-VM SLIRP NAT; concurrent-vm-lifecycle — executeMultiVMRuntimePlan boots serially and kills each VM on marker match. Dispatching before all three clear would report a failure that has nothing to do with joining.",
   },
 ];
 
@@ -209,6 +209,29 @@ export function findScenario(id: ScenarioId): Scenario | undefined {
  */
 
 /**
+ * The blockers still standing between `cluster-joining` and an honest
+ * dispatch, measured 2026-08-13. Named individually because "multi-VM
+ * orchestration" as a single phrase hid an entire provisioning gap once
+ * already, which is what PR #10493 was about.
+ *
+ * - `joining-node-role-provisioning` — the joining VM cannot be provisioned
+ *   as a WORKER. `zeta-first-boot.sh` reads its role from the ISO's own
+ *   `/etc/zeta-firstboot.conf`, which ships `HOST=control-plane`; the role
+ *   prompt is interactive on tty1 with a timed default; and zflash writes no
+ *   firstboot config to the ESP (zero matches for "firstboot" under
+ *   `src/Core.TypeScript/zflash/`). The installer ISO itself says the
+ *   per-flash `--role` flag is "B-0754 v2 scope". So a zflash-prepared boot
+ *   image installs a second control-plane, which joins nothing and runs no
+ *   k3s agent — and therefore no join observer.
+ * - `shared-l2-segment` — `buildQemuSystemBootArgs` emits only per-VM
+ *   `-netdev user` (SLIRP NAT); the two VMs cannot address each other.
+ * - `concurrent-vm-lifecycle` — `executeMultiVMRuntimePlan` boots the VMs
+ *   serially and `runManagedCommandUntilSerialMarkers` SIGTERMs each VM on
+ *   marker match, so the existing node is dead before the joining node boots.
+ */
+export type JoinBlocker = "joining-node-role-provisioning" | "shared-l2-segment" | "concurrent-vm-lifecycle";
+
+/**
  * RunnabilityVerdict — discriminated union for whether a scenario can
  * run in the current substrate state.
  */
@@ -216,16 +239,16 @@ export type RunnabilityVerdict =
   | { kind: "can-run-now"; harnessEntry: string }
   | { kind: "blocked-on-upstream-gate"; missingGates: ReadonlyArray<ScenarioId> }
   | { kind: "blocked-on-state-preservation"; required: "tpm-equivalent" | "persisted-kv" }
-  // FIRST blocker for cluster-joining, and the ordering is load-bearing.
-  // Nothing in the guest tree emits B0891_CLUSTER_JOIN_SERIAL_MARKERS, so
-  // there is no join for any harness to observe — with or without a
-  // working network. Probed by join-implementation-probe.ts, whose
-  // tripwire test fails (good news) the day the guest starts emitting them.
-  | { kind: "blocked-on-absent-join-implementation"; nextBlocker: "multi-vm-orchestration" }
-  // SECOND blocker: buildQemuSystemBootArgs emits per-VM `-netdev user`
-  // (SLIRP NAT, no shared segment) and executeMultiVMRuntimePlan boots the
-  // VMs serially, terminating each one when its markers match.
-  | { kind: "blocked-on-multi-vm-orchestration" }
+  // Blocker for cluster-joining. The FIRST blocker — nothing in the guest
+  // tree emitted B0891_CLUSTER_JOIN_SERIAL_MARKERS, so there was no join for
+  // any harness to observe — HAS CLEARED: k3s-join-observer.nix now witnesses
+  // k3s's own agent-to-server join and writes those exact strings to serial
+  // (Aaron 2026-08-13: "k3s's join is the join, don't invent our own"), and
+  // nixos/tests/k3s-agent-join.nix proves it two-node.
+  //
+  // What remains is carried explicitly rather than in prose, so that dropping
+  // one is a type change and not a quiet edit.
+  | { kind: "blocked-on-multi-vm-orchestration"; remainingBlockers: ReadonlyArray<JoinBlocker> }
   | { kind: "blocked-on-test-harness-path-fork" }
   | { kind: "requires-physical-usb" };
 
@@ -310,13 +333,16 @@ export function determineRunnability(
         return { kind: "blocked-on-test-harness-path-fork" };
       }
       if (scenario.id === "cluster-joining") {
-        // Reports the FIRST blocker, not the second. This used to return
-        // blocked-on-multi-vm-orchestration, which read as "fix the network
-        // and this scenario is done". It is not: with a shared L2 segment
-        // and concurrent boot the joining node would still emit nothing and
-        // time out, turning an honest `skipped` into a `failed`. Both
-        // blockers must clear, in this order, before the scenario dispatches.
-        return { kind: "blocked-on-absent-join-implementation", nextBlocker: "multi-vm-orchestration" };
+        // The first blocker (no join to observe) has cleared — the guest now
+        // emits the markers. The scenario still does NOT dispatch, because a
+        // joining VM that installs as a control-plane on a network it cannot
+        // reach would fail for three reasons that have nothing to do with the
+        // join. Each remaining blocker is named, so clearing one is a visible
+        // type-level edit rather than a quiet prose change.
+        return {
+          kind: "blocked-on-multi-vm-orchestration",
+          remainingBlockers: ["joining-node-role-provisioning", "shared-l2-segment", "concurrent-vm-lifecycle"],
+        };
       }
       // Default scaffolded blocker:
       return {

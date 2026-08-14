@@ -153,18 +153,25 @@ describe("081KSNY2Z0008QG0R0008PN7RQ determineRunnability discriminator", () => 
     }
   });
 
-  it("cluster-joining reports the FIRST blocker (absent join), not the second", () => {
-    // Regression guard for a misdiagnosis that had propagated across
-    // scenarios.ts, run.ts and extensions.ts: the scenario was recorded as
-    // blocked on multi-VM orchestration, which reads as "fix the network and
-    // it is done". The prior blocker is that no join is implemented at all, so
-    // this verdict must name that one and point at the next.
+  it("cluster-joining names every remaining blocker, and the join is not one of them", () => {
+    // The verdict has moved twice, and that history is why this test is
+    // strict. It first said blocked-on-multi-vm-orchestration, which read as
+    // "fix the network and it is done" while no join existed at all. PR
+    // #10493 corrected it to blocked-on-absent-join-implementation. The join
+    // now exists — k3s's join is the join, and k3s-join-observer.nix
+    // witnesses it — so the verdict is multi-VM again, but this time it must
+    // ENUMERATE what is left, because a single phrase is exactly what hid a
+    // whole provisioning gap the first time round.
     const s = findScenario("cluster-joining");
     if (!s) throw new Error("scenario missing");
     const verdict = determineRunnability(s, new Set());
-    expect(verdict.kind).toBe("blocked-on-absent-join-implementation");
-    if (verdict.kind === "blocked-on-absent-join-implementation") {
-      expect(verdict.nextBlocker).toBe("multi-vm-orchestration");
+    expect(verdict.kind).toBe("blocked-on-multi-vm-orchestration");
+    if (verdict.kind === "blocked-on-multi-vm-orchestration") {
+      expect([...verdict.remainingBlockers].sort()).toEqual([
+        "concurrent-vm-lifecycle",
+        "joining-node-role-provisioning",
+        "shared-l2-segment",
+      ]);
     }
   });
 
@@ -177,7 +184,6 @@ describe("081KSNY2Z0008QG0R0008PN7RQ determineRunnability discriminator", () => 
         case "can-run-now":
         case "blocked-on-upstream-gate":
         case "blocked-on-state-preservation":
-        case "blocked-on-absent-join-implementation":
         case "blocked-on-multi-vm-orchestration":
         case "blocked-on-test-harness-path-fork":
         case "requires-physical-usb":

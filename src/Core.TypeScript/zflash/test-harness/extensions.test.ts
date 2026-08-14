@@ -92,8 +92,15 @@ describe("MultiVMOrchestrationSubstrate (scenario 5)", () => {
     expect(DEFAULT_MULTI_VM.networkTopology.kind).toBe("shared-bridge");
   });
 
-  test("DEFAULT_MULTI_VM uses credential-provisioning join protocol", () => {
-    expect(DEFAULT_MULTI_VM.joinProtocol.kind).toBe("credential-provisioning");
+  test("DEFAULT_MULTI_VM joins with k3s's own token, not a Zeta-invented protocol", () => {
+    // Aaron 2026-08-13: "k3s's join is the join, don't invent our own."
+    // This asserted `credential-provisioning` — a cred-picker handshake that
+    // was never built. The substrate must describe the join that exists.
+    expect(DEFAULT_MULTI_VM.joinProtocol.kind).toBe("explicit-join-token");
+    if (DEFAULT_MULTI_VM.joinProtocol.kind === "explicit-join-token") {
+      // The exact path k3s --cluster-init writes and k3s-agent.nix reads.
+      expect(DEFAULT_MULTI_VM.joinProtocol.tokenSource).toBe("/var/lib/rancher/k3s/server/node-token");
+    }
   });
 
   test("NetworkTopology variants are exhaustive", () => {

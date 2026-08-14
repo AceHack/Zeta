@@ -6,6 +6,21 @@
 { config, pkgs, lib, ... }:
 
 {
+  imports = [
+    # Serial witness for the join. Imported HERE and not on the server
+    # because only an agent joins anything — the `--cluster-init` founding
+    # server joins nothing, and a witness on it would announce a join that
+    # never happened.
+    ./k3s-join-observer.nix
+  ];
+
+  # k3s's join is the join (Aaron 2026-08-13, closing PR #10493's open
+  # question). Nothing below implements a join; the observer only reports
+  # whether the k3s handshake configured in `services.k3s` succeeded, on the
+  # console and on serial, so 081KSNY2Z0008QG0R0008PN7RQ scenario 5 has
+  # something real to watch. `lib.mkDefault` so a host can switch it off.
+  zeta.k3sJoinObserver.enable = lib.mkDefault true;
+
   services.k3s = {
     enable = true;
     role = "agent";

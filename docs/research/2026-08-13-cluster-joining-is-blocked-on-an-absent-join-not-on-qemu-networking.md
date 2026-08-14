@@ -1,10 +1,19 @@
 # cluster-joining is blocked on an absent join, not on QEMU networking
 
-**Status:** PROPOSED — awaiting human sign-off. No workflow YAML changes in this PR.
+**Status:** **DECIDED** on §8 Q1 — see the addendum at the end. §4's QEMU networking
+proposal remains **PROPOSED**; §3's container verdict is **SUPERSEDED**.
 **Author:** Dejan (devops-engineer) · **Date:** 2026-08-13
+**Addendum:** Otto (the shadow) · 2026-08-13, after Aaron's answer
 **Scenario:** 081KSNY2Z0008QG0R0008PN7RQ scenario 5 (cluster-joining)
 **Prompted by:** Aaron asking how hardware tests are coming along, and then asking
 whether Docker or k8s could carry this instead of QEMU.
+
+> **Read §10 first if you are catching up.** Aaron answered Q1 the same day, and
+> the answer moved this document from a diagnosis to a closed one: the first
+> blocker described below is **fixed**, and §3's "the container layer would be
+> vacuous" conclusion rested on a premise the answer removed. Sections 0–9 are
+> preserved as written — they were right when written and the reasoning is worth
+> keeping intact — but §10 is what is true now.
 
 ---
 
@@ -216,3 +225,138 @@ Answer shapes given so the reply can be short.
 - `.claude/rules/toy-is-free-metered-must-be-earned.md` — a check with no
   falsifier is unmetered; the container test in section 3 would be unmetered by
   construction until question 1 is answered.
+
+---
+
+## 10. ADDENDUM (2026-08-13, after Aaron's answer) — Q1 decided, first blocker cleared
+
+Aaron, answering §8 Q1 the same day:
+
+> **"k3s's join is the join, don't invent our own"**
+
+and, on the schedule question:
+
+> "also it should be more often than weekly on the k8s testing"
+
+### 10.1 What the answer changed
+
+Q1 was the load-bearing question and it resolved to the second expected shape:
+_"k3s's is fine, just prove the node comes up and registers."_ So **there is no
+Zeta join protocol to build**, and the work that remained was never protocol
+work — it was **observation plumbing**. A harness cannot watch a join that does
+not announce itself; nothing was missing but the witness.
+
+`full-ai-cluster/nixos/modules/k3s-join-observer.nix` is that witness. It
+implements no join. It watches the k3s agent-to-server handshake that
+`services.k3s.{serverAddr,tokenFile}` already performs and writes the scenario's
+two contract markers to the console and the serial port. Imported from
+`k3s-agent.nix` — only an agent joins anything; the `--cluster-init` founding
+server joins nothing, and a witness there would announce a join that never
+happened.
+
+The two markers are deliberately two **independent** facts, because an assertion
+that cannot fail on its own is not an assertion:
+
+| marker | fact | fails independently when |
+| --- | --- | --- |
+| `cluster join successful` | the server issued this node a kubelet client certificate AND the API accepts it | the token is wrong, the TLS SAN does not cover `control-plane`, 6443 is closed |
+| `joining-node added to the cluster state` | the API server's node registry contains this node (`metadata.uid` present) | the certificate is valid but the kubelet never registers — node-name collision, kubelet failure, API unreachable after issuance |
+
+Readiness (`Ready=True`) is **not** claimed: it needs the Cilium CNI image and
+therefore the internet, and conflating _joined_ with _healthy_ would silently
+widen the claim. Membership here; health in the online lane. Same line
+`k3s-cluster-init.nix` already drew.
+
+### 10.2 §3 is superseded — and the honest answer is not the one it predicted
+
+§3 argued the container layer would be vacuous **because Zeta owned no join**.
+The decision removes that premise, so the question was re-asked properly: _can a
+container test using our actual k3s configuration fail in a way that is OUR
+fault?_
+
+**Yes — but a container cannot consume our configuration, and that is the whole
+answer.** Our configuration is NixOS module attributes: `services.k3s.extraFlags`,
+`networking.firewall.allowedTCPPorts`, `networking.firewall.checkReversePath =
+false`, `networking.hosts`. A Compose `command:` would have to **transcribe**
+them, and a transcription drifts from its source with nothing failing. Such a
+test verifies the transcription, not the shipped artefact — a check that can pass
+while the thing it names is broken.
+
+`pkgs.testers.nixosTest` has no such gap: it **imports the module files that
+ship**, and it already boots multiple nodes on one shared virtual segment. So
+`nixos/tests/k3s-agent-join.nix` is the layer §3 wanted Compose for, obtained
+without the drift surface:
+
+| | Compose (§3's proposal) | nixosTest (landed) |
+| --- | --- | --- |
+| consumes the shipped config | no — a transcription | **yes — imports the module** |
+| shared L2 segment | yes | yes |
+| exercises `--tls-san=control-plane` | only if transcribed | **yes** |
+| exercises the firewall / rpfilter config | **no — not expressible in a container** | yes |
+| observes the serial contract markers | no | **yes — `wait_for_console_text`** |
+
+So: the container layer is **not vacuous in principle** — the correction §3
+needed. It is **dominated** in practice. Revisit only if we ever need to test a
+join in an environment where a NixOS VM cannot run.
+
+### 10.3 A third blocker, found while wiring this (CHECKED)
+
+Ordering matters here for exactly the reason §2 gives, so it is recorded before
+anyone builds §4's networking:
+
+**The joining VM cannot be provisioned as a worker.** `zeta-first-boot.sh` reads
+its role from the ISO's own `/etc/zeta-firstboot.conf`, which ships
+`HOST=control-plane`; the tty1 role prompt takes its timed default under
+automation; and `zflash` writes no firstboot config to the ESP (zero matches for
+"firstboot" under `src/Core.TypeScript/zflash/`). The installer config says the
+per-flash `--role` flag is "B-0754 v2 scope". So a zflash-prepared boot image
+installs a **second control-plane**, which runs no k3s agent — and therefore no
+join observer.
+
+Fix only §4's networking and the scenario would still fail, for a reason with
+nothing to do with joining. The three remaining blockers are now carried in the
+type system (`JoinBlocker` in `scenarios.ts`) rather than in prose, so clearing
+one is a visible edit:
+
+1. `joining-node-role-provisioning` (this section)
+2. `shared-l2-segment` (§4)
+3. `concurrent-vm-lifecycle` (§4)
+
+`cluster-joining` therefore stays **`skipped`**, with the reason updated to name
+only what is actually left. No green was manufactured.
+
+### 10.4 The other three open questions, and the schedule
+
+- **Q2** (multi-hour scheduled runner time, or wait for hardware?) — **narrowed,
+  not answered.** The two-node join now runs hermetically in ~minutes inside the
+  existing ISO lane, so the expensive provisioned-join run is no longer the only
+  way to learn anything. §5's wall-clock argument still stands for the full
+  boot-then-install-then-join path.
+- **Q3** (split into protocol join / provisioned join?) — **effectively split by
+  construction.** `k3s-agent-join` is the protocol layer and it runs today;
+  `cluster-joining` remains the provisioned layer and remains skipped. Whether to
+  give the protocol layer its own scenario row is cosmetic now.
+- **Q4** (tripwire in the PR lane or on a schedule?) — **PR lane**, as leaned. It
+  costs no new job, and it fired within a day of landing, which is the argument.
+- **The k8s cadence** is now daily (`53 16 * * *`, was `43 16 * * 0`) with the
+  full reasoning inline in `.github/workflows/k8s-argocd-health-test.yml` —
+  briefly: billable cost is **zero** (public repo, checked against the run-timing
+  API, not assumed), every tool version is pinned in-repo, and what actually
+  drifts (the runner image, registry availability, main-branch changes outside
+  the `paths` filter) moves on the order of a day. Weekly gave a mean
+  time-to-detect longer than the drift period it existed to catch.
+
+### 10.5 What the tripwire did, and what it became
+
+§7's promotion tripwire **fired**, within a day, exactly as designed — a failure
+there was good news and it was good news. It was not deleted afterwards; it was
+inverted. Nix cannot import `serial-markers.ts`, so the marker literals live in
+two files with no compiler between them, and that scan is now the only thing that
+notices when they drift apart.
+
+Its limits were measured by mutation rather than asserted: dropping one space
+from a marker is caught, deleting the module is caught, but **keeping the literal
+while deleting the line that emits it is not** — a text scan cannot see that. That
+is why `k3s-agent-join.nix` waits for the markers on the real console. Neither
+check subsumes the other, and a green on the scan alone does not mean a node
+announces its join.

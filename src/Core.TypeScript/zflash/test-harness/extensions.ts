@@ -209,9 +209,23 @@ export const DEFAULT_MULTI_VM: MultiVMOrchestrationSubstrate = {
     },
   ],
   networkTopology: { kind: "shared-bridge", bridgeName: "zflash-test-br0" },
+  // k3s's join is the join (Aaron 2026-08-13, closing the open question on
+  // PR #10493: "k3s's join is the join, don't invent our own").
+  //
+  // This was `credential-provisioning` pointing at an
+  // http://cluster-existing:8080/cred-pick endpoint — a Zeta-owned join
+  // protocol that does not exist and, per that decision, is not going to be
+  // built. Leaving it would keep the design substrate describing a handshake
+  // nobody is implementing, which is how a spec starts lying about the system
+  // it claims to describe. `explicit-join-token` was already in the
+  // JoinProtocol union and is literally what happens: the founding server's
+  // `--cluster-init` generates the token at this path and a worker copies it
+  // to /var/lib/rancher/k3s/agent/token. See nixos/modules/k3s-server.nix for
+  // the generation and nixos/tests/k3s-agent-join.nix, which performs exactly
+  // this hand-off between two real nodes.
   joinProtocol: {
-    kind: "credential-provisioning",
-    credPickerEndpoint: "http://cluster-existing:8080/cred-pick",
+    kind: "explicit-join-token",
+    tokenSource: "/var/lib/rancher/k3s/server/node-token",
   },
   orchestrator: { kind: "qemu-shell-scripts" },
 };
@@ -253,7 +267,7 @@ export const SCENARIO_IMPL_DESIGN: Record<
   },
   "cluster-joining": {
     kind: "design-spec-complete",
-    specRef: "extensions.ts MultiVMOrchestrationSubstrate + DEFAULT_MULTI_VM (shared-bridge + credential-provisioning)",
+    specRef: "extensions.ts MultiVMOrchestrationSubstrate + DEFAULT_MULTI_VM (shared-bridge + explicit-join-token)",
   },
 };
 
