@@ -52,6 +52,7 @@ import {
   MANIFEST_RELATIVE,
   SHARD_ROOT_RELATIVE,
   serializeManifestEntry,
+  shardPathFor,
   writeShard,
   type ManifestEntry,
 } from "./pr-manifest-shards.ts";
@@ -1113,6 +1114,8 @@ interface ParsedArgs {
   repoRoot: string;
   allMerged: boolean;
   since?: string;
+  /** Max PRs archived in one `--all-merged` sweep. Undefined = unbounded. */
+  limit?: number;
 }
 
 function parseArgs(argv: string[]): ParsedArgs {
@@ -1149,6 +1152,13 @@ function parseArgs(argv: string[]): ParsedArgs {
       out.repoRoot = requireValue("--repo-root", argv[++i]);
     } else if (arg === "--all-merged") {
       out.allMerged = true;
+    } else if (arg === "--limit") {
+      const raw = requireValue("--limit", argv[++i]);
+      if (!/^\d+$/.test(raw) || Number.parseInt(raw, 10) <= 0) {
+        process.stderr.write(`--limit must be a positive integer (got: ${raw})\n`);
+        process.exit(1);
+      }
+      out.limit = Number.parseInt(raw, 10);
     } else if (arg.startsWith("--since=")) {
       out.since = arg.slice("--since=".length);
     } else if (arg === "--since") {
@@ -1158,7 +1168,11 @@ function parseArgs(argv: string[]): ParsedArgs {
         "Usage:\n" +
           "  bun tools/archive/archive-pr-reviews.ts <PR_NUMBER> [--owner X] [--repo Y]\n" +
           "    [--output-dir DIR] [--manifest-path PATH] [--shard-root DIR] [--repo-root DIR]\n" +
-          "  bun tools/archive/archive-pr-reviews.ts --all-merged --since=YYYY-MM-DD [--owner X] [--repo Y]\n" +
+          "  bun tools/archive/archive-pr-reviews.ts --all-merged [--since YYYY-MM-DD|Nd|Nh] [--limit N]\n" +
+          "    [--owner X] [--repo Y]\n" +
+          "\n" +
+          "  --all-merged skips PRs that already have a shard and archives the OLDEST\n" +
+          "  --limit of what remains, so repeated bounded runs drain the backlog.\n" +
           "\n" +
           "Defaults:\n" +
           `  --output-dir docs/history/pr-reviews\n` +
@@ -1182,6 +1196,45 @@ function parseArgs(argv: string[]): ParsedArgs {
   return out;
 }
 
+/**
+ * How far back `--all-merged` can see. `gh pr list` returns the NEWEST N merged PRs,
+ * so this is the reachable window, and anything older than it can never be backfilled.
+ * 3000 comfortably covers the 2026-07-01..2026-08-13 archiving outage (a 1282-PR-number
+ * hole, ~1273 unarchived merged PRs) that the backfill exists to drain. It is one
+ * paginated `gh` call per tick.
+ */
+const MERGED_LIST_LIMIT = "3000";
+
+/**
+ * Normalise a `--since` value into the ISO-8601 prefix that `mergedAt` is compared against.
+ *
+ * THIS FUNCTION EXISTS BECAUSE `--since 7d` SILENTLY MATCHED NOTHING.
+ * The filter is a lexicographic string comparison (`p.mergedAt >= since`), and
+ * `mergedAt` looks like "2026-08-14T12:00:00Z". `"2026-08-14T12:00:00Z" >= "7d"` is
+ * FALSE — "2" sorts before "7" — so *every* PR was filtered out and the run printed
+ * "no merged PRs found for the given filter" and returned 0. That is a second,
+ * quieter vacuity hiding behind the `--batch` one: fixing only the unknown-flag
+ * crash would have produced a step that exits 0, looks healthy, and still archives
+ * nothing. A comment in agent-heartbeat.yml asserted `--since 7d` was "working" here;
+ * it never was, and that claim has been corrected in the workflow.
+ *
+ * Accepts an absolute `YYYY-MM-DD` (or full ISO timestamp) and relative `Nd` / `Nh`
+ * forms, and REJECTS anything else loudly rather than degrading to a silent no-match.
+ */
+export function normalizeSince(raw: string, now: Date = new Date()): string {
+  const relative = /^(\d+)([dh])$/.exec(raw.trim());
+  if (relative !== null) {
+    const n = Number.parseInt(relative[1] ?? "0", 10);
+    const unitMs = relative[2] === "d" ? 86_400_000 : 3_600_000;
+    return new Date(now.getTime() - n * unitMs).toISOString();
+  }
+  if (/^\d{4}-\d{2}-\d{2}(T[\d:.]+Z?)?$/.test(raw.trim())) return raw.trim();
+  process.stderr.write(
+    `--since must be YYYY-MM-DD, a full ISO timestamp, or a relative Nd/Nh (got: ${raw})\n`,
+  );
+  process.exit(1);
+}
+
 function listMergedPRs(owner: string, repo: string, since?: string): number[] {
   // Phase 3 helper -- listed for completeness; Phase 2 prototype runs against
   // a single PR by number. When --all-merged is passed, this fans out.
@@ -1193,7 +1246,7 @@ function listMergedPRs(owner: string, repo: string, since?: string): number[] {
     "--state",
     "merged",
     "--limit",
-    "1000",
+    MERGED_LIST_LIMIT,
     "--json",
     "number,mergedAt",
   ];
@@ -1204,18 +1257,64 @@ function listMergedPRs(owner: string, repo: string, since?: string): number[] {
   );
   let filtered = parsed;
   if (since) {
-    filtered = parsed.filter((p) => p.mergedAt >= since);
+    const cutoff = normalizeSince(since);
+    filtered = parsed.filter((p) => p.mergedAt >= cutoff);
   }
   return filtered.map((p) => p.number).sort((a, b) => a - b);
 }
 
+/**
+ * Select the bounded batch this run will archive: drop what is already archived,
+ * then take the OLDEST `limit` of what remains.
+ *
+ * OLDEST-FIRST IS THE ANTI-STARVATION CHOICE, and it is the whole reason this
+ * function exists rather than a bare `.slice(0, limit)` at the call site.
+ * A bounded sweep that takes the NEWEST N re-selects the same N every tick while
+ * the backlog behind it grows without bound — the queue never drains and the tail
+ * is starved forever. (That exact shape — unbounded queue + newest-first + small
+ * cap — was just fixed elsewhere in agent-heartbeat.yml; it is not being recreated
+ * here.) Filtering out already-archived PRs first is what makes the bound a DRAIN
+ * instead of a treadmill: each tick permanently removes `limit` items from the
+ * head of the queue, so every PR's position strictly decreases and progress is
+ * guaranteed. Newly-merged PRs are the primary path's job (pr-archive-on-merge.yml);
+ * this sweep is the backfill net for whatever that path missed.
+ */
+export function selectBatch(
+  candidates: readonly number[],
+  shardRootAbs: string,
+  limit: number | undefined,
+  isArchived: (pr: number) => boolean = (pr) => existsSync(shardPathFor(pr, shardRootAbs)),
+): number[] {
+  const unarchived = candidates.filter((pr) => !isArchived(pr));
+  const ascending = [...unarchived].sort((a, b) => a - b);
+  return limit === undefined ? ascending : ascending.slice(0, limit);
+}
+
 export function main(argv: string[]): number {
   const args = parseArgs(argv);
+  const repoRoot = resolve(args.repoRoot);
+  const outputDirAbs = resolve(repoRoot, args.outputDir);
+  const manifestPathAbs = resolve(repoRoot, args.manifestPath);
+  const shardRootAbs = resolve(repoRoot, args.shardRoot);
+
   let numbers: number[];
   if (args.allMerged) {
-    numbers = listMergedPRs(args.owner, args.repo, args.since);
-    if (numbers.length === 0) {
+    const candidates = listMergedPRs(args.owner, args.repo, args.since);
+    if (candidates.length === 0) {
       process.stderr.write("no merged PRs found for the given filter\n");
+      return 0;
+    }
+    numbers = selectBatch(candidates, shardRootAbs, args.limit);
+    const remaining = candidates.length - numbers.length;
+    process.stderr.write(
+      `[backfill] ${String(candidates.length)} merged PR(s) in window; ` +
+        `archiving ${String(numbers.length)} unarchived (oldest first); ` +
+        `${String(remaining)} already archived or deferred to a later run\n`,
+    );
+    if (numbers.length === 0) {
+      // Healthy steady state, not a failure: the backlog is drained and the
+      // per-merge path is keeping up. Distinct from "the filter matched nothing".
+      process.stderr.write("[backfill] nothing to backfill — every merged PR in window has a shard\n");
       return 0;
     }
   } else if (args.number !== undefined) {
@@ -1224,10 +1323,6 @@ export function main(argv: string[]): number {
     process.stderr.write("must provide PR number or --all-merged\n");
     return 1;
   }
-  const repoRoot = resolve(args.repoRoot);
-  const outputDirAbs = resolve(repoRoot, args.outputDir);
-  const manifestPathAbs = resolve(repoRoot, args.manifestPath);
-  const shardRootAbs = resolve(repoRoot, args.shardRoot);
   const commitSha = readGitHeadSha(repoRoot);
 
   for (const n of numbers) {

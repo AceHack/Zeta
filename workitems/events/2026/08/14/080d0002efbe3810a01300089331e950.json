@@ -1,0 +1,14 @@
+{
+  "id": "080d0002efbe3810a01300089331e950",
+  "at": "2026-08-14T13:02:33.415Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M005VXY6087G0R001T04ATY",
+    "type": "bug",
+    "title": "agent-heartbeat archive step was a no-op: unknown --batch flag, pipe-masked exit code, and a --since that matched nothing",
+    "slug": "agent-heartbeat-archive-step-was-a-no-op-unknown-batch-flag",
+    "priority": "P2",
+    "filename": "081M005VXY6087G0R001T04ATY-agent-heartbeat-archive-step-was-a-no-op-unknown-batch-flag.md"
+  }
+}

@@ -228,8 +228,17 @@ jobs:
           # guard printed "returned NO FILES AT ALL" and did nothing.
           #
           # The precise failure, measured on this repo 2026-08-11 (an earlier version of this
-          # comment said short forms were invalid in general, which is WRONG and would have
-          # invited "fixing" the working `--since 7d` on the archive step below):
+          # comment said short forms were invalid in general, which is WRONG for THIS step's
+          # git-approxidate `--since`):
+          #
+          # CORRECTION 2026-08-14 (081M005VXY6087G0R001T04ATY): that earlier revision went on to
+          # call `--since 7d` on the archive step below "working". It was not. Those are two
+          # different tools with two different --since implementations, and the archive one was
+          # never a git approxidate at all — it was a lexicographic string compare against ISO
+          # `mergedAt`, where "2026-08-14T..." >= "7d" is FALSE, so it matched zero PRs. A
+          # comment written to stop a bad fix ended up vouching for a broken flag. Both the
+          # archive `--since` and that claim are fixed below; the numbers in this table remain
+          # correct for the mutation-runner `--since`, which really is a git approxidate.
           #     24h            ->    0 commits   <- 24 overflows the HOUR field
           #     1h             -> 1239 commits
           #     2h             -> 1095 commits
@@ -506,11 +515,57 @@ jobs:
             exit 0
           fi
 
-          # Archive up to 3 recently-merged PRs that aren't in the manifest yet
+          # BACKFILL NET. The primary archive path is pr-archive-on-merge.yml, which archives
+          # each PR at merge time; this sweep exists only to pick up whatever that path missed.
+          #
+          # THIS STEP DID NOTHING AT ALL FROM THE DAY IT SHIPPED UNTIL 2026-08-14
+          # (081M005VXY6087G0R001T04ATY). Three independent defects, each sufficient on its own:
+          #
+          #   1. `--batch 3` is not a flag archive-pr-reviews.ts has ever accepted. Its parser
+          #      hits the else-branch, writes "unknown arg: --batch" and exits 1. Live proof:
+          #      run 31800609010, soraya tick — the entire step output was that one line.
+          #   2. `2>&1 | tail -10` made the failure invisible: a pipeline's exit status is the
+          #      LAST command's, so the archiver's 1 became tail's 0. That also made the
+          #      trailing `|| echo "::warning::"` UNREACHABLE — it could never fire.
+          #      Check: `bash -c 'false 2>&1 | tail -10 || echo FALLBACK; echo $?'` -> no
+          #      FALLBACK, exit 0. So the step reported success on every tick, forever.
+          #   3. `--since 7d` matched ZERO PRs even had the above been fixed. That filter is a
+          #      lexicographic string compare against ISO `mergedAt`, and
+          #      "2026-08-14T..." >= "7d" is false. An earlier comment in this file asserted
+          #      `--since 7d` was "working" on this step; that claim was WRONG and is retracted
+          #      here. `--since` now parses Nd/Nh into a real cutoff and rejects garbage loudly.
+          #
+          # Cost of the outage, measured 2026-08-14 rather than guessed: archiving has a
+          # 1282-PR-number hole between PR 9058 (2026-07-01) and PR 10341 (2026-08-13),
+          # ~1273 merged PRs with no shard. GitHub still holds those review threads; what was
+          # lost is the git-canonical mirror this repo keeps precisely because the host copy is
+          # not durable. This net is what should have drained that hole and never ran.
+          #
+          # --limit 3 is a real bound now, and it DRAINS rather than spinning: the tool skips
+          # PRs that already have a shard and takes the OLDEST 3 of what is left. Oldest-first
+          # is deliberate — newest-first with a small cap re-picks the same head every tick and
+          # starves the tail (the unbounded-queue starvation bug fixed elsewhere in this file).
+          # At 48 ticks/day the backlog drains monotonically; once drained the tool prints
+          # "nothing to backfill" and exits 0.
+          #
+          # No `--since`: the backlog reaches back to 2026-07-01, so any recent-window filter
+          # would put the oldest and most at-risk PRs permanently out of reach. The listing is
+          # already bounded by MERGED_LIST_LIMIT inside the tool, and `--limit` bounds the work.
+          #
+          # NO PIPE on the command itself — the output is captured, then printed separately —
+          # because piping is what hid the failure for months. The exit code is checked
+          # explicitly rather than with `||`, which is unreachable after a pipe. errexit is NOT
+          # enabled here: the rest of this step (git add/commit, `|| true`) is written for a
+          # non-errexit shell, so turning it on would change behaviour well beyond this fix.
           echo "[archive] Checking for un-archived merged PRs..."
-          bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts \
-            --owner Lucent-Financial-Group --repo Zeta --batch 3 --since 7d \
-            2>&1 | tail -10 || echo "::warning::[archive] archive step failed (non-fatal)"
+          set +e
+          ARCHIVE_OUT=$(bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts \
+            --owner Lucent-Financial-Group --repo Zeta --all-merged --limit 3 2>&1)
+          ARCHIVE_RC=$?
+          printf '%s\n' "$ARCHIVE_OUT" | tail -20
+          if [ "$ARCHIVE_RC" -ne 0 ]; then
+            echo "::warning::[archive] archive-pr-reviews.ts exited $ARCHIVE_RC (non-fatal; see log above)"
+          fi
 
           # THIS STEP IS THE SINGLE SERIALISED WRITER OF THE DERIVED MANIFEST INDEX
           # (081KZYP7MNV087G0R002X0E3V9). pr-archive-on-merge.yml no longer stages
