@@ -1,11 +1,12 @@
 ---
 id: 081KZZ3Q990087G0R003QXYVN6
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: workitems-done-index-jsonl-is-a-shared-append-only-file-with
 title: "workitems done index.jsonl is a shared append-only file with the conflict class the PR manifest already retired"
 created: 2026-08-14T03:05:49.600Z
+completed: 2026-08-14T11:05:50.699Z
 depends_on: []
 composes_with: []
 ---

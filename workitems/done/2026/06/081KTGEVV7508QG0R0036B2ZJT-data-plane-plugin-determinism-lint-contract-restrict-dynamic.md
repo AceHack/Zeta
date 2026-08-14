@@ -6,6 +6,7 @@ priority: P1
 slug: data-plane-plugin-determinism-lint-contract-restrict-dynamic
 title: "Data-plane plugin determinism lint/contract — restrict DynamicValue plugins to fast DETERMINISTIC ops (no non-determinism; DST-safe), with allocation + Big-O awareness"
 created: 2026-06-07T07:13:27.781Z
+completed: 2026-06-21T04:26:24.417Z
 depends_on: []
 composes_with: ["081KTGES04808QG0R0010AK90E"]
 ---

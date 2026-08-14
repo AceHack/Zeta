@@ -6,6 +6,7 @@ priority: P2
 slug: 2nd-executable-di-inject-a-zeta-cell-into-the-ace-package-ma
 title: "2nd executable: DI-inject a Zeta cell into the Ace package manager; a file-type plugin per supported package manager + its declarative dep files"
 created: 2026-06-07T07:24:33.801Z
+completed: 2026-06-21T04:26:24.417Z
 depends_on: []
 composes_with: ["081KTFKQGZP08QG0R001ND3VK2", "081KTGES04808QG0R0010AK90E"]
 ---

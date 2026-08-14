@@ -6,6 +6,7 @@ priority: P2
 slug: file-type-plugin-model-plugin-file-type-zset-handler-optiona
 title: "File-type plugin model — plugin = file-type<->ZSet handler + OPTIONAL Rx-defined incremental indexed views (=git main); plugin persisted as DynamicValue to run in all 4 langs; open/closed"
 created: 2026-06-07T07:11:54.504Z
+completed: 2026-06-21T04:26:24.417Z
 depends_on: []
 composes_with: []
 ---
