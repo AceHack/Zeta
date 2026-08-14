@@ -1,0 +1,12 @@
+{
+  "pr_number": 10492,
+  "archive_path": "docs/history/pr-reviews/PR-10492-fix-ci-un-exclude-the-dev-cluster-test-it-was-quarantined-on-a-false-premise.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T01:38:39.383Z",
+  "schema_version": "v1",
+  "commit_sha": "76d15eafe4c66df9bc53f31f0c3be6101b8fff94",
+  "title": "fix(ci): un-exclude the dev-cluster test — it was quarantined on a false premise",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T01:38:07Z",
+  "head_ref": "fix/dev-cluster-test-was-excluded-on-a-false-premise"
+}
