@@ -1,7 +1,7 @@
 ---
 id: 081KZZVC6SE087G0R001SXE8BV
 type: task
-state: backlog
+state: in-progress
 priority: P2
 slug: guard-the-braided-subcategory-v-every-hom-is-a-basis-bijecti
 title: "Guard the braided subcategory V: every hom is a basis bijection, so copy and discard cannot enter"
