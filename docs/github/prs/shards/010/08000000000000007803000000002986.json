@@ -1,0 +1,12 @@
+{
+  "pr_number": 10630,
+  "archive_path": "docs/history/pr-reviews/PR-10630-docs-wi-the-universal-color-contract-has-drifted-behind-its-shipped-chip-9-bindi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T16:09:28.401Z",
+  "schema_version": "v1",
+  "commit_sha": "0a41d22db30c90f5502e83421b67813f4817931c",
+  "title": "docs(wi): the universal color contract has drifted behind its shipped CHIP-9 bindings",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T16:08:57Z",
+  "head_ref": "shadow-universal-color-contract-reconcile"
+}
