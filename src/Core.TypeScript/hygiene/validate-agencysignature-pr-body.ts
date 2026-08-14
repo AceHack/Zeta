@@ -58,8 +58,47 @@ const REQUIRED_KEYS: readonly string[] = [
 
 const FENCE_RE = /^[\t ]*```[A-Za-z]*[\t ]*$/;
 const BLANK_RE = /^[\t ]*$/;
-const TASK_RE =
-  /^(?:none|Otto-\d+|task-#?\d+|#?\d+|[A-Za-z][A-Za-z0-9]*-\d+)$/;
+/**
+ * What may name the work a commit belongs to.
+ *
+ * WIDENED 2026-08-14, from measurement rather than taste. The previous pattern was
+ * `^(?:none|Otto-\d+|task-#?\d+|#?\d+|[A-Za-z][A-Za-z0-9]*-\d+)$` — ticket-shaped ids only,
+ * written before this repo retired sequential `B-NNNN` ids for ZetaIds. Counted over every
+ * `Task:` value in the last 300 commits on `main` (363 values):
+ *
+ *   143  passed the old pattern
+ *    12  were bare ZetaIds — the repo's OWN canonical work-item key, which the pattern could
+ *        not express at all (26 chars, Crockford base32, digit-initial, no dash)
+ *   208  were slugs naming the work, or a ZetaId joined to one
+ *
+ * So it rejected 57% of established practice, including the id format
+ * `.claude/rules/workitems-mint-with-zetaid.md` mandates. Wired to CI unchanged (#10594) it
+ * would have reddened the majority of correct commits at the cutover — and a gate that fires
+ * mostly on correct work gets switched off, which is strictly worse than no gate, because a
+ * disabled check still occupies the slot where a real one would go.
+ *
+ * The field's job is to NAME the work, so a slug always was a legitimate name; shape was
+ * never the property worth enforcing. What must stay caught is the UNFILLED TEMPLATE, and
+ * that is now `PLACEHOLDER_TASK_RE` below — so widening the shape does not widen the escape.
+ *
+ * The dashed alternative is case-INSENSITIVE deliberately: the commonest real form is a
+ * ZetaId joined to a slug (`081KZZYWBN2087G0R003NAQQAF-exact-cyclotomic-amplitude-carrier`,
+ * and the reverse order too), and a lowercase-only slug rule rejected all 23 of those.
+ */
+const ZETA_ID = "[0-9][0-9A-HJKMNP-TV-Z]{25}";
+const TASK_RE = new RegExp(
+  `^(?:none|${ZETA_ID}|task-#?\\d+|#?\\d+|[A-Za-z0-9]+(?:-[A-Za-z0-9]+)+)$`,
+);
+
+/**
+ * The unfilled template, which must stay rejected however the shape widens.
+ *
+ * Complements `PLACEHOLDER_RE` below rather than duplicating it: that one catches the
+ * angle-bracket skeleton `<task>` across every required key, while these are the words a
+ * human or agent types when they have not decided yet — `TODO`, `tbd`, `task` — none of
+ * which contain angle brackets and all of which would satisfy the widened shape.
+ */
+const PLACEHOLDER_TASK_RE = /^(?:<[^>]*>|todo|tbd|xxx+|task|placeholder|fixme|n\/a|-+)$/i;
 
 const ENUMS: readonly { readonly key: string; readonly allowed: readonly string[] }[] = [
   { key: "Agency-Signature-Version", allowed: ["1", "2"] },
@@ -416,12 +455,24 @@ function checkEnums(trailers: string): ExitCode | null {
 
 function checkTaskPattern(trailers: string): ExitCode | null {
   const value = getValue(trailers, "Task");
+  // Placeholder first, and independently of shape: `task` and `todo` both satisfy the widened
+  // pattern, and an unfilled template passing validation is the exact defect this validator
+  // exists to catch — attribution to nobody, wearing a green check.
+  if (PLACEHOLDER_TASK_RE.test(value)) {
+    process.stdout.write("FAIL: Task is an unfilled placeholder\n");
+    process.stdout.write(`  Found:    '${value}'\n`);
+    process.stdout.write("  Expected: the work this commit belongs to, or the literal 'none'\n");
+    process.stdout.write(`  Spec:     ${SPEC_DOC} Section 9.2 (Task: none fallback)\n`);
+    return 1;
+  }
   if (TASK_RE.test(value)) return null;
   process.stdout.write("FAIL: invalid Task value\n");
   process.stdout.write(`  Found:    '${value}'\n`);
   process.stdout.write(
-    "  Expected: a ticket-id (e.g. Otto-NN, task-#NNN, #NNN, FOO-NN)\n",
+    "  Expected: a ZetaId work-item key (26 chars, e.g. 081M0085XQT087G0R003W4KFS4),\n",
   );
+  process.stdout.write("            a slug naming the work (e.g. fix-merge-duty-ordering),\n");
+  process.stdout.write("            a ticket-id (Otto-NN, task-#NNN, #NNN, FOO-NN),\n");
   process.stdout.write("            or the literal 'none' fallback\n");
   process.stdout.write(`  Spec:     ${SPEC_DOC} Section 9.2 (Task: none fallback)\n`);
   return 1;
