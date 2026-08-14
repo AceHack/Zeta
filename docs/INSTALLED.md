@@ -46,12 +46,20 @@ be able to recreate the environment from this doc.
 | -------------- | ------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | **Playwright** | 1.62.1  | Opt-in real-Chromium multi-page verification for the browser node and page-owned mesh layer | Package pinned by `bun add -d --exact playwright@1.62.1`; Chromium via `bun run install:browser-smoke` |
 
-## Project-specific binary artifacts (downloaded by `tools/setup/install.sh`)
+## Project-specific binary artifacts
+
+The two verifier jars are COMMITTED to git (#8053), not downloaded: the
+toolchain is byte-pinned by the diff. Their version and sha256 below are
+DERIVED from the jars themselves and checked by
+`src/Core.TypeScript/hygiene/lint-verifier-jar-provenance.ts`; edit the jar
+and this table fails until it is updated. TLC composes its banner from the
+build timestamp and short rev, so the version below is exactly what
+`java -cp src/Core.TLA/tla2tools.jar tlc2.TLC` prints.
 
 | Artifact                  | Version              | Path                                     | Why                                                      | Install command                                                                                                                               |
 | ------------------------- | -------------------- | ---------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **TLA+ / TLC**            | tla2tools.jar v1.8.0 | `src/Core.TLA/tla2tools.jar`             | Model-check every `src/Core.TLA/specs/*.tla` spec in CI  | `tools/setup/install.sh` from the declarative `tools/setup/manifests/from-url` entry                                                         |
-| **Alloy**                 | v6.2.0 dist jar      | `src/Core.Alloy/alloy.jar`               | Bounded-model structural invariants (Spine sizeDoubling) | `tools/setup/install.sh` from the declarative `tools/setup/manifests/from-url` entry                                                         |
+| **TLA+ / TLC** | `TLC2 Version 2026.05.18.174321 (rev: 8ba1027)` | `src/Core.TLA/tla2tools.jar` | Model-check every `src/Core.TLA/specs/*.tla` spec in CI | Committed to git; sha256 `71546dff3897a01b0ee4fa64135d9f5e9384d2b7e47b3cc20a16b655b0eb4f86` |
+| **Alloy** | `6.2.0.202501090817 (rev: 794226d)` | `src/Core.Alloy/alloy.jar` | Bounded-model structural invariants (Spine sizeDoubling) | Committed to git; sha256 `6b8c1cb5bc93bedfc7c61435c4e1ab6e688a242dc702a394628d9a9801edb78d` -- byte-identical to upstream v6.2.0 `org.alloytools.alloy.dist.jar` |
 | **Feldera (cloned)**      | `main` branch        | `references/prior-art/feldera/`          | Apples-to-apples Nexmark benchmarks                      | `git clone --depth 1 https://github.com/feldera/feldera.git`                                                                                  |
 | **CTFP book (Milewski)**  | v1.3.0 PDF           | `docs/category-theory/ctfp-milewski.pdf` | Required-reading category theory reference               | `curl -sL -o ... https://github.com/hmemcpy/milewski-ctfp-pdf/.../category-theory-for-programmers.pdf`                                        |
 | **CTFP .NET (Bouderaux)** | archived snapshot    | `docs/category-theory/ctfp-dotnet/`      | F#/C# CT examples (no upstream tracking, .git stripped)  | `git clone ... && rm -rf .git .github`                                                                                                        |
@@ -113,7 +121,7 @@ audit is idempotent; `⚠ bump available` lines are actionable.
 # devcontainer). See
 # memory/feedback_install_script_is_preferred_update_method_2026_04_24.md.
 # .NET, Java, Rust, Python, and the other language runtimes come from `.mise.toml`.
-# SDKs + dotnet-stryker + TLC + Alloy + elan:
+# SDKs + dotnet-stryker + elan (the TLC/Alloy jars are committed, not installed):
 ./tools/setup/install.sh            # reads .mise.toml + global.json pins
                                     # (CI-parity form; same as `bash tools/...`
                                     # but catches missing exec-bit / shebang

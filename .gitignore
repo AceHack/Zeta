@@ -75,8 +75,11 @@ lake-packages/
 *.ilean
 *.trace
 
-# Verifier JARs — downloaded by tools/setup/install.sh.
-# Regeneratable; not committed so clones stay lean.
+# Verifier JARs at the LEGACY tools/ paths. The jars the runners load are
+# committed at src/Core.TLA/tla2tools.jar + src/Core.Alloy/alloy.jar (#8053);
+# nothing writes tools/{tla,alloy}/ any more (081M001E114087G0R001AZF4KD
+# deleted the from-url rows). These patterns stay as a guard so a jar copied
+# here by hand cannot be committed as a second, unused toolchain.
 tools/alloy/*.jar
 tools/tla/*.jar
 
