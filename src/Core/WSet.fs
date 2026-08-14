@@ -36,6 +36,9 @@ module WSet =
 
     /// Consolidate: sum weights per key under the ring's Add; drop keys whose total isZero.
     /// THIS is where interference/retraction happens — opposite weights annihilate here.
+    /// And therefore THIS is the step that ERASES: it is non-injective (the annihilating pair and
+    /// the empty set both land on `[]`), so it — not `negate` — is where the Landauer floor binds.
+    /// See the HONESTY note on `FourCornerTrace` below, and WSet.ErasureClassification.Laws.Tests.fs.
     let consolidate (ring: IStarRing<'W>) (isZero: 'W -> bool) (s: WSet<'K, 'W>) : WSet<'K, 'W> =
         s
         |> List.groupBy fst
@@ -125,6 +128,19 @@ module WSet =
 /// one C₄ phase `{1, i, −1, −i}` — that is an identity in the *ring*, matching `FourCorner`'s 2×2 compass.
 /// It is NOT a claim that this substrate is physically quantum, nor that the trace exploits quantum
 /// mechanics; it is the same GDL circuit (Aji–McEliece 2000) run over a different semiring.
+///
+/// **HONESTY — the retraction is Landauer-FREE, so Landauer does not meter it.** `WSet.negate` is a
+/// self-inverse *bijection* of the state space, so by Bennett 1973 it erases nothing and costs nothing;
+/// a Landauer meter placed on it must read zero for every input, forever. That is a property of the
+/// operation, not a weak instrument — which is why "the retraction is reversible" is TRUE but carries no
+/// thermodynamic content, and cannot be evidence that the fold as a whole runs reversibly. The erasure is
+/// elsewhere: `consolidate`, `discard`, `bornProb`, `plus` and `tensor` are all non-injective, and
+/// `consolidate` is the sharp case — the annihilation the comment on it describes (`+w` and `−w` cancel)
+/// maps two distinct states to one, which is Landauer 1961's own example of an erasure. So the negation is
+/// free and the *annihilation* is what pays; those two are easily read as one operation, and they are not.
+/// Measured, not asserted: `tests/Tests.FSharp/Formal/WSet.ErasureClassification.Laws.Tests.fs` sweeps every
+/// public op exhaustively, derives bits-erased = log2(largest fibre), and fails if a declared class drifts
+/// or a new op is added unclassified. Formal sibling: `src/Core.Lean4/Lean4/LandauerFloor.lean`.
 ///
 /// **Which corners admit the trace.** The retraction needs an ADDITIVE INVERSE, so the trace is available
 /// exactly on the ring corners: ℤ (DBSP/CD) and ℂ (amplitudes). The *normalized* ℝ≥0 (Markov) corner and
