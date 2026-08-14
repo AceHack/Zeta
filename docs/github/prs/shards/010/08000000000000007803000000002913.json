@@ -1,0 +1,12 @@
+{
+  "pr_number": 10515,
+  "archive_path": "docs/history/pr-reviews/PR-10515-fix-hygiene-derive-unexecuted-test-files-from-the-tracked-set-not-a-working-tree.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T03:02:07.111Z",
+  "schema_version": "v1",
+  "commit_sha": "1a3ab4f32af8533b509a93402d9c97e99f760941",
+  "title": "fix(hygiene): derive unexecuted-test-files from the tracked set, not a working-tree walk",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T03:01:32Z",
+  "head_ref": "fix/unexecuted-test-files-tracked-set-not-working-tree"
+}
