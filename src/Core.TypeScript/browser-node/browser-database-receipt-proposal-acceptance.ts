@@ -15,6 +15,8 @@ import {
 
 export const BROWSER_DATABASE_RECEIPT_ACCEPTED_RECORD_SCHEMA =
   "zeta.browser-database-receipt-accepted-record.v1" as const;
+export const BROWSER_DATABASE_RECEIPT_PROPOSAL_ACCEPTANCE_PORT_KIND =
+  "zeta.browser-database-receipt-proposal-acceptance-port.v1" as const;
 
 export interface BrowserDatabaseReceiptAcceptedRecord {
   readonly schema: typeof BROWSER_DATABASE_RECEIPT_ACCEPTED_RECORD_SCHEMA;
@@ -34,6 +36,10 @@ export interface BrowserDatabaseReceiptProposalAcceptanceOptions {
   readonly source: BrowserDatabaseReceiptAcceptedRecordSource;
   readonly hasher: BrowserDatabaseReceiptBatchHasher;
   readonly maxRecordBytes: number;
+}
+
+export interface BrowserDatabaseReceiptProposalAcceptancePort extends BrowserDatabaseReceiptHandoffPort {
+  readonly kind: typeof BROWSER_DATABASE_RECEIPT_PROPOSAL_ACCEPTANCE_PORT_KIND;
 }
 
 function succeeded<T>(value: T): BrowserDatabaseReceiptHandoffResult<T> {
@@ -100,7 +106,7 @@ function acknowledgement(
  */
 export function createBrowserDatabaseReceiptProposalAcceptanceHandoff(
   options: BrowserDatabaseReceiptProposalAcceptanceOptions,
-): BrowserDatabaseReceiptHandoffResult<BrowserDatabaseReceiptHandoffPort> {
+): BrowserDatabaseReceiptHandoffResult<BrowserDatabaseReceiptProposalAcceptancePort> {
   if (
     !isIdentifier(options.targetNodeId) ||
     !hasMethod(options.source, "read") ||
@@ -115,6 +121,7 @@ export function createBrowserDatabaseReceiptProposalAcceptanceHandoff(
   }
 
   return succeeded({
+    kind: BROWSER_DATABASE_RECEIPT_PROPOSAL_ACCEPTANCE_PORT_KIND,
     handoff: async (batchValue) => {
       const batch = validateBrowserDatabaseReceiptProposalBatch(batchValue, options.hasher);
       if (!batch.ok) {

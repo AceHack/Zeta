@@ -212,6 +212,7 @@ export {
   createZetaDbBrowserDatabaseReceiptArchiveMaintenance,
   createZetaDbBrowserDatabaseReceiptHandoff,
   encodeBrowserDatabaseReceiptHandoffBody,
+  prepareBrowserDatabaseReceiptHandoffBatch,
   type BrowserDatabaseReceiptArchiveMaintenancePort,
   type BrowserDatabaseReceiptArchiveCompactor,
   type BrowserDatabaseReceiptArchiveLoader,
@@ -224,6 +225,8 @@ export {
   type BrowserDatabaseReceiptHandoffLimits,
   type BrowserDatabaseReceiptHandoffOptions,
   type BrowserDatabaseReceiptHandoffPort,
+  type BrowserDatabaseReceiptHandoffPreparation,
+  type BrowserDatabaseReceiptHandoffPreparationOptions,
   type BrowserDatabaseReceiptHandoffReadout,
   type BrowserDatabaseReceiptHandoffResult,
   type BrowserDatabaseReceiptHandoffRuntime,
@@ -269,11 +272,25 @@ export {
 
 export {
   BROWSER_DATABASE_RECEIPT_ACCEPTED_RECORD_SCHEMA,
+  BROWSER_DATABASE_RECEIPT_PROPOSAL_ACCEPTANCE_PORT_KIND,
   createBrowserDatabaseReceiptProposalAcceptanceHandoff,
   type BrowserDatabaseReceiptAcceptedRecord,
   type BrowserDatabaseReceiptAcceptedRecordSource,
   type BrowserDatabaseReceiptProposalAcceptanceOptions,
+  type BrowserDatabaseReceiptProposalAcceptancePort,
 } from "./browser-database-receipt-proposal-acceptance";
+
+export {
+  BROWSER_DATABASE_RECEIPT_SYNC_READOUT_SCHEMA,
+  createBrowserDatabaseReceiptSyncRuntime,
+  type BrowserDatabaseReceiptSyncFeedback,
+  type BrowserDatabaseReceiptSyncReadout,
+  type BrowserDatabaseReceiptSyncResult,
+  type BrowserDatabaseReceiptSyncRuntime,
+  type BrowserDatabaseReceiptSyncRuntimeFeedback,
+  type BrowserDatabaseReceiptSyncRuntimeOptions,
+  type BrowserDatabaseReceiptSyncStatus,
+} from "./browser-database-receipt-sync-runtime";
 
 export {
   BROWSER_DATABASE_RECEIPT_PAGES_DATA_ROOT,
