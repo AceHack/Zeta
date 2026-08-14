@@ -1,0 +1,12 @@
+{
+  "pr_number": 8726,
+  "archive_path": "docs/history/pr-reviews/PR-8726-deps-bump-actions-checkout-from-6-0-3-to-7-0-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T19:24:30.170Z",
+  "schema_version": "v1",
+  "commit_sha": "26af0d626dbe5da532e1490ce7a737ecb2bc500d",
+  "title": "deps: bump actions/checkout from 6.0.3 to 7.0.0",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T21:52:02Z",
+  "head_ref": "dependabot/github_actions/actions/checkout-7.0.0"
+}

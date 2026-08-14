@@ -1,0 +1,12 @@
+{
+  "pr_number": 9027,
+  "archive_path": "docs/history/pr-reviews/PR-9027-deps-bump-actions-cache-from-5-0-5-to-6-1-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T19:24:31.634Z",
+  "schema_version": "v1",
+  "commit_sha": "26af0d626dbe5da532e1490ce7a737ecb2bc500d",
+  "title": "deps: bump actions/cache from 5.0.5 to 6.1.0",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T21:52:42Z",
+  "head_ref": "dependabot/github_actions/actions/cache-6.1.0"
+}
