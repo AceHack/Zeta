@@ -1,24 +1,81 @@
+# infra/k8s GitOps validation — ArgoCD Application manifests + the Helm charts they pin.
+#
+# WHAT CHANGED 2026-08-14 (Dejan) AND WHY
+#
+# This lane existed but could not go red on the failures it was there to catch.
+# Measured against the pre-change validator:
+#   - a manifest with a tab-indented line, an unterminated quote and an
+#     unclosed flow sequence printed `PASS: ... valid YAML`;
+#   - a duplicate `destination.namespace` key gave `37 passed, 0 failed`, exit 0;
+#   - `targetRevision: 999.999.999` on the cockroachdb chart gave
+#     `44 passed, 0 failed`, exit 0 — the chart check was a substring grep for
+#     `name: <chart>` in index.yaml and never looked at the version.
+# The one online check that could have caught a bad chart pin before ArgoCD
+# tried to sync it on real hardware also only ran on push-to-main and a WEEKLY
+# Monday cron, never on a pull request. Total real-world run count of this
+# workflow before today: one (2026-08-10, a cron).
+#
+# So: the validator was rewritten on a real YAML parser with exact version
+# resolution, a `helm template` + `kubeconform` render lane was added, a
+# mutation suite that PROVES the validator exits 1 now runs in CI, and the
+# cadence moved weekly -> daily with the chart checks running on every PR.
+#
+# COST, MEASURED, NOT ESTIMATED (2026-08-14, local, warm):
+#   - offline structural validation of all 7 apps ......... 0.4 s
+#   - mutation suite, 12 cases, subprocess per case ....... 1.7 s
+#   - online exact-version check, 6 charts, ~5 MB pulled .. 1.4 s
+#   - helm template of all 6 charts ....................... 5.1 s
+#   - kubeconform over every rendered manifest ............ included above
+#   - end-to-end `--render` run ........................... 7.6 s
+# The checks themselves are seconds. Job wall clock is dominated by toolchain
+# install; the previous incarnation of this workflow ran 3.2 min end to end.
+# There was never a cost case for keeping chart validation off pull requests.
+#
+# BILLABLE COST: zero. Lucent-Financial-Group/Zeta is a public repository and
+# GitHub-hosted standard runners are free for public repositories; the k8s lane
+# confirmed this against its own accounting (`/timing` reports
+# billable.UBUNTU.total_ms = 0). The real budget is concurrency slots and
+# maintainer attention, which is why this is two short jobs and not a matrix.
+
 name: helm-validate
 
 on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
-      - "infra/k8s/applications/**"
-      - "infra/k8s/tests/validate-applications.ts"
+      - "infra/k8s/**"
+      - ".github/workflows/helm-validate.yml"
+      - ".mise.toml"
+      - ".mise.full.toml"
+      - "package.json"
+      - "bun.lock"
   push:
     branches: [main]
     paths:
-      - "infra/k8s/applications/**"
-      - "infra/k8s/tests/validate-applications.ts"
+      - "infra/k8s/**"
+      - ".github/workflows/helm-validate.yml"
+      - ".mise.toml"
+      - ".mise.full.toml"
+      - "package.json"
+      - "bun.lock"
   schedule:
-    - cron: "0 9 * * 1"
+    # DAILY (was "0 9 * * 1", weekly Monday) — Aaron 2026-08-13: "it should be
+    # more often than weekly on the k8s testing". The k8s-argocd lane moved to
+    # daily for the same reason; this one had been left behind.
+    #
+    # The drift this cron exists to catch is entirely EXTERNAL, because the
+    # `paths` triggers already cover every in-repo input. A chart version can be
+    # yanked, a Helm repo can move or go dark, and a chart's own dependencies
+    # can be republished — none of which produce a commit here. Those move on
+    # the order of a day, so a weekly cron gave a mean time-to-detect of ~3.5
+    # days against a drift period of ~1 day. Daily brings MTTD to ~12 h.
+    # Sub-daily would re-measure the same unchanged upstream and buy signal
+    # nobody can act on faster.
+    #
+    # 15:29 UTC: minute 29 is unused across .github/workflows (thundering-herd
+    # avoidance) and 08:29 US Pacific puts a failure in front of someone awake.
+    - cron: "29 15 * * *"
   workflow_dispatch:
-    inputs:
-      offline:
-        description: "Run in offline mode (skip chart existence check)"
-        type: boolean
-        default: false
 
 permissions:
   contents: read
@@ -28,60 +85,116 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  offline:
-    name: validate manifests (offline)
+  structural:
+    # Deterministic half: no network, so this job is the one allowed to be a
+    # hard gate without importing upstream flakiness. Base tier — bun is all it
+    # needs.
+    name: manifests (offline) + mutation proof
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 10
+
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Cache mise runtimes
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools)
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             ~/.local/bin/mise
             ~/.local/share/mise
             ~/.cache/mise
-          key: mise-helm-validate-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
-      - name: Install toolchain (mise + bun)
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-base-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script
         env:
           MISE_GITHUB_TOKEN: ${{ github.token }}
         run: ./tools/setup/install.sh
+
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
+
       - name: Validate Application manifests (offline)
         run: bun infra/k8s/tests/validate-applications.ts --offline
 
-  online:
-    name: validate manifests (online — chart existence)
-    if: >
-      github.event_name == 'push' ||
-      github.event_name == 'schedule' ||
-      github.event_name == 'workflow_dispatch'
+      - name: Prove the validator can go red (mutation suite)
+        # THE POINT OF THIS STEP. It copies the real manifest tree, breaks one
+        # thing at a time, and asserts the validator exits 1 with the specific
+        # expected reason. It also runs the UNMUTATED copy and asserts exit 0,
+        # so a validator that failed unconditionally would not satisfy it.
+        # Verified 2026-08-14 by stubbing out the validator's non-zero exit:
+        # 9 of the 12 cases went red immediately. 1.7 s.
+        run: bun test infra/k8s/tests/validate-applications.test.ts
+
+  charts:
+    # Network half: does the pinned chart:version actually exist, does it
+    # render with the values we hand it, and is the render schema-valid.
+    # Needs helm + kubeconform, which are pinned in .mise.full.toml — hence
+    # tier=full. The cache key is deliberately BYTE-IDENTICAL to the one in
+    # k8s-argocd-health-test.yml so this job restores the artefacts that
+    # workflow's daily run already paid for, instead of building its own.
+    name: chart pins + helm template + kubeconform
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
+
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Cache mise runtimes
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             ~/.local/bin/mise
             ~/.local/share/mise
             ~/.cache/mise
-          key: mise-helm-validate-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
-      - name: Install toolchain (mise + bun)
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script
         env:
           MISE_GITHUB_TOKEN: ${{ github.token }}
         run: ./tools/setup/install.sh
+
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
-      - name: Validate Application manifests (online — chart existence)
+
+      - name: Confirm helm and kubeconform are on PATH
+        # Fail HERE, loudly, if the toolchain did not land — rather than let the
+        # next step decide a missing tool is a reason to skip. A check that
+        # degrades to green when its tool is absent is the failure mode this
+        # whole workflow was rewritten to remove.
         run: |
-          OFFLINE="${{ github.event.inputs.offline }}"
-          if [[ "$OFFLINE" == "true" ]]; then
-            bun infra/k8s/tests/validate-applications.ts --offline
-          else
-            bun infra/k8s/tests/validate-applications.ts
-          fi
+          set -euo pipefail
+          command -v helm
+          command -v kubeconform
+          helm version --short
+          kubeconform -v
+
+      - name: Chart pins + helm template + kubeconform
+        # RETRY WITHOUT SWALLOWING THE EXIT CODE. Upstream Helm repos are third
+        # parties and do occasionally 5xx; three attempts absorb that. Note what
+        # this deliberately does NOT do: no `| tail`, no `| grep`, no pipeline
+        # whose status is taken from the last stage. A pipe here would discard
+        # the validator's exit code and the `||` after it would be unreachable
+        # — the exact pattern that let a job in this repo report success for
+        # months while its tool exited 1 on argument parsing.
+        # Final attempt runs bare, so its non-zero status fails the step.
+        run: |
+          set -euo pipefail
+          for attempt in 1 2; do
+            if bun infra/k8s/tests/validate-applications.ts --render; then
+              exit 0
+            fi
+            echo "::warning::helm-validate attempt ${attempt} failed; retrying in $((attempt * 30))s"
+            sleep $((attempt * 30))
+          done
+          bun infra/k8s/tests/validate-applications.ts --render
