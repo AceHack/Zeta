@@ -1,0 +1,14 @@
+{
+  "id": "080d000cf1ce3010a0130008423960e1",
+  "at": "2026-08-14T18:52:21.830Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00SWEE6087G0R00092EHTE",
+    "type": "task",
+    "title": "Beacon-anchor ace derived state to Dolstra content-addressed derivation and McCarthy GC, not to time crystals",
+    "slug": "beacon-anchor-ace-derived-state-to-dolstra-content-addressed",
+    "priority": "P2",
+    "filename": "081M00SWEE6087G0R00092EHTE-beacon-anchor-ace-derived-state-to-dolstra-content-addressed.md"
+  }
+}
