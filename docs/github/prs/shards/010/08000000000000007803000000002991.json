@@ -1,0 +1,12 @@
+{
+  "pr_number": 10641,
+  "archive_path": "docs/history/pr-reviews/PR-10641-feat-heat-meter-wset-erasure-profiles.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T16:37:05.839Z",
+  "schema_version": "v1",
+  "commit_sha": "0d349b34bbae9ab9dd7831fa5a7091b7bc4319fd",
+  "title": "feat(heat): meter WSet erasure profiles",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T16:36:37Z",
+  "head_ref": "codex/wset-heat-integration"
+}
