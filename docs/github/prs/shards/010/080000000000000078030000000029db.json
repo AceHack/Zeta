@@ -1,0 +1,12 @@
+{
+  "pr_number": 10715,
+  "archive_path": "docs/history/pr-reviews/PR-10715-fix-zeta-id-bound-packgeneric-s-payload-it-silently-truncated-which-aliases-ids-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T22:31:32.167Z",
+  "schema_version": "v1",
+  "commit_sha": "e375ae858644f341b79f37df9c63ccbd1f580bee",
+  "title": "fix(zeta-id): bound packGeneric's payload — it silently truncated, which aliases ids instead of failing",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T22:30:52Z",
+  "head_ref": "otto/packgeneric-bound-v2"
+}
