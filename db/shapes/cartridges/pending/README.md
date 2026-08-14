@@ -59,6 +59,16 @@ Each is a real gate in code, not a checklist someone maintains by hand.
 
 Steps 1–4 are engineering anyone can do. Step 5 is the one that is *supposed* to be slow.
 
+> **Correction, 2026-08-14 (otto), found by trying it.** Steps 4 and 5 are listed in the wrong
+> order, and the ordering is not a matter of taste — it is enforced. `zeta shape render` calls
+> `ShapeAcceptance.accepted`, which is `bytes ∧ geometry ∧ honest-labels`, and refuses to emit
+> anything for a cartridge that fails it (`Program.fs` `shapeRender`, exit 3). `bytes` is a treaty
+> row. So **goldens sit behind the consent gate, not before it**: 1–3 are the engineering anyone can
+> do, then 5, then 4. There is no honest way to close 4 first — hand-writing the SVG is already
+> forbidden above, and loosening the CLI gate to get a golden out would be weakening a
+> consent-linked check to make one's own work look finished. `symmetric-vs-braided` is parked at
+> exactly this line: gates 1–3 closed, gate 4 blocked *by* gate 5, and gate 5 unasked.
+
 ## Reading them without a renderer
 
 Every claim in these files is either an integer identity the file itself carries (`law` lines with

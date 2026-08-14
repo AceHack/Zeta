@@ -95,6 +95,12 @@ module GeneratorRegistry =
           register "shape.crossing" 1
           register "shape.sybil-verdict" 1
           register "shape.refraction" 1
+          // THE CONTRAST cartridge (still `pending/`): one word (σ·σ), two categories, two panels.
+          // Registered because registration is what makes its `meta shape-zetaid` CHECKABLE — the id
+          // in the file is `idOf "shape.symmetric-vs-braided" 1`, derivable, so the shelf and the
+          // cartridge cannot silently disagree. Registration is naming, NOT ratification: the file
+          // stays in pending/ until its own oracles write their treaty rows.
+          register "shape.symmetric-vs-braided" 1
           register "rng.splitmix64" 1
           register "rng.lcg64_mmix" 1
           register "hash.murmur3_32_tail" 1

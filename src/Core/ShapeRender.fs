@@ -284,6 +284,78 @@ module ShapeRender =
                     Name = sprintf "event-%d" i
                     Mask = 7uy
                     Points = [ ex, ey - r; ex + r, ey; ex, ey + r; ex - r, ey; ex, ey - r ] } ]
+        | "shape-symmetric-vs-braided" ->
+            // THE CONTRAST: ONE word, read TWICE. The word is parsed ONCE and handed to both
+            // panels — a panel carrying its own word would prove nothing (the cartridge's
+            // stroke-generator issue says exactly that), so the two calls below differ in EXACTLY
+            // one argument: `gapped`. The braided reading carries an occlusion gap at every
+            // crossing (who went over whom is in the ink — shape-braid's over-under register); the
+            // symmetric reading carries NONE, because a symmetric swap has no over/under to
+            // remember, and a gap drawn there would be the picture lying about the category.
+            // Same input, same geometry, different REGISTER — and the register IS the category.
+            let word =
+                MediaLines.field "constant" "word" d
+                |> Option.defaultValue "1,1"
+                |> fun s ->
+                    s.Split(',')
+                    |> Array.choose (fun x ->
+                        match System.Int32.TryParse(x.Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture) with
+                        | true, v -> Some v
+                        | _ -> None)
+                    |> Array.toList
+            let strands = constInt "strands" 2
+            let panels = constInt "panels" 2
+            let rows = constInt "rows" 24
+            // drawn-vs-gated parity (the braid family's guard): an out-of-range cartridge draws
+            // NOTHING rather than crashing on perm indexing — the gate refuses it either way.
+            if strands < 2 || panels < 2 || rows < List.length word + 1 || not (Braid.validWord strands word) then [] else
+            let top = 4
+            let bayW = 64 / panels
+            // columns are DERIVED from the file's own declared constants (panels, strands) — there
+            // are no bare positions here to go stale behind a constant change (shape-braid's
+            // stale-gen-args lesson, applied to the layout itself).
+            let colsOf (panel: int) = Array.init strands (fun i -> panel * bayW + bayW * (i + 1) / (strands + 1))
+            let rowsPerCross = rows / (List.length word + 1)
+            let strandMask = [| 1uy; 4uy; 2uy |] // the atom's own palette (shape-crossing: red over/under blue)
+            let panelStrokes (panel: int) (gapped: bool) (tag: string) =
+                let cols = colsOf panel
+                let perm = Array.init strands id // strand index occupying each column slot
+                let runs = Array.init strands (fun _ -> ResizeArray<ResizeArray<int * int>>())
+                for slot in 0 .. strands - 1 do
+                    let r = ResizeArray<int * int>()
+                    r.Add(pt cols.[slot] top)
+                    runs.[perm.[slot]].Add r
+                word
+                |> List.iteri (fun i c ->
+                    let y = top + (i + 1) * rowsPerCross
+                    let a = abs c - 1
+                    // Artin's sign decides who goes under; in the SYMMETRIC panel nobody does,
+                    // because there is no under to be — the swap keeps no record of the passage.
+                    let underSlot = if c > 0 then a + 1 else a
+                    let under = perm.[underSlot]
+                    if gapped then
+                        let x0, y0 = List.last (List.ofSeq runs.[under].[runs.[under].Count - 1])
+                        let x1, y1 = pt cols.[(if underSlot = a then a + 1 else a)] y
+                        // occlusion gap: break the under diagonal at 2/5 and 3/5 of its length
+                        let cur = runs.[under].[runs.[under].Count - 1]
+                        cur.Add(x0 + (x1 - x0) * 2 / 5, y0 + (y1 - y0) * 2 / 5)
+                        let next = ResizeArray<int * int>()
+                        next.Add(x0 + (x1 - x0) * 3 / 5, y0 + (y1 - y0) * 3 / 5)
+                        runs.[under].Add next
+                    let t = perm.[a] in perm.[a] <- perm.[a + 1]; perm.[a + 1] <- t
+                    for slot in 0 .. strands - 1 do
+                        runs.[perm.[slot]].[runs.[perm.[slot]].Count - 1].Add(pt cols.[slot] y))
+                for slot in 0 .. strands - 1 do
+                    runs.[perm.[slot]].[runs.[perm.[slot]].Count - 1].Add(pt cols.[slot] (top + rows))
+                [ for s in 0 .. strands - 1 do
+                      for r in 0 .. runs.[s].Count - 1 ->
+                          { Dash = false
+                            Name = (if r = 0 then sprintf "%s-strand-%d" tag s else sprintf "%s-strand-%d-r%d" tag s r)
+                            Mask = strandMask.[s % 3]
+                            Points = List.ofSeq runs.[s].[r] } ]
+            // LEFT = the symmetric reading (no register), RIGHT = the braided one (every crossing
+            // remembered). Both from `word`, which is bound once, above.
+            panelStrokes 0 false "sym" @ panelStrokes 1 true "brd"
         | "shape-crossing" ->
             // THE ATOM: two strands, one crossing. Drawn big and alone — the whole figure is the
             // lesson (over keeps its line; under carries the gap; the sign decides which).

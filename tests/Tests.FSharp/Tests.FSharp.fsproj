@@ -281,6 +281,7 @@
     <Compile Include="HtmlCssBinding.Tests.fs" />
     <Compile Include="ShapeCartridge.Tests.fs" />
     <Compile Include="ShapeAcceptance.Tests.fs" />
+    <Compile Include="ShapePending.Tests.fs" />
     <Compile Include="DeterminismLint.Tests.fs" />
     <Compile Include="WSet.MachZehnder.Tests.fs" />
     <Compile Include="WSetHeat.Tests.fs" />
