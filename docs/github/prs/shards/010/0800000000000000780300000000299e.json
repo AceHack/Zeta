@@ -1,0 +1,12 @@
+{
+  "pr_number": 10654,
+  "archive_path": "docs/history/pr-reviews/PR-10654-feat-persona-keys-a-dead-hsm-s-share-can-be-replaced-without-reassembling-the-se.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T17:33:32.233Z",
+  "schema_version": "v1",
+  "commit_sha": "d2b18fb98f547636bcba5ae07f351280c5f9f765",
+  "title": "feat(persona-keys): a dead HSM's share can be replaced without reassembling the secret",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T17:32:59Z",
+  "head_ref": "nazar/frost-reshare-no-reconstitution"
+}
