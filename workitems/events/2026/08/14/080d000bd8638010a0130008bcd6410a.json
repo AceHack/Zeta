@@ -1,0 +1,14 @@
+{
+  "id": "080d000bd8638010a0130008bcd6410a",
+  "at": "2026-08-14T18:13:56.464Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00QP33F087G0R001JKB5QM",
+    "type": "task",
+    "title": "Switch GPU nodes to hardware.nvidia.open = true — shrink the unauditable ring-0 surface to GSP firmware only",
+    "slug": "switch-gpu-nodes-to-hardware-nvidia-open-true-shrink-the-una",
+    "priority": "P2",
+    "filename": "081M00QP33F087G0R001JKB5QM-switch-gpu-nodes-to-hardware-nvidia-open-true-shrink-the-una.md"
+  }
+}

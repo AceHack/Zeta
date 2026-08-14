@@ -1,0 +1,14 @@
+{
+  "id": "080d000bd8ef6010a01300088907e5db",
+  "at": "2026-08-14T18:14:00.940Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00QP7FB087G0R00031BQ93",
+    "type": "task",
+    "title": "Name the vendor root in every attestation claim — AMD ARK, Intel PCS, NVIDIA NRAS, TPM EK are centralized roots",
+    "slug": "name-the-vendor-root-in-every-attestation-claim-amd-ark-inte",
+    "priority": "P2",
+    "filename": "081M00QP7FB087G0R00031BQ93-name-the-vendor-root-in-every-attestation-claim-amd-ark-inte.md"
+  }
+}

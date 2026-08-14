@@ -1,0 +1,14 @@
+{
+  "id": "080d000bd8f03810a013000835e69ccf",
+  "at": "2026-08-14T18:14:00.967Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00QP7G7087G0R002PZB5T2",
+    "type": "task",
+    "title": "Measure the post-UKI attestation gap — MODULE_SIG=no and no lockdown mean the measured chain ends at the kernel",
+    "slug": "measure-the-post-uki-attestation-gap-module-sig-no-and-no-lo",
+    "priority": "P3",
+    "filename": "081M00QP7G7087G0R002PZB5T2-measure-the-post-uki-attestation-gap-module-sig-no-and-no-lo.md"
+  }
+}
