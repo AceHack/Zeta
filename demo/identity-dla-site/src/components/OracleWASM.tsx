@@ -19,14 +19,13 @@
  */
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const ASC_WASM_URL = "/manus-storage/dla_8f1a3cba.wasm";
-const GO_WASM_URL = "/manus-storage/dla_c8f08839.wasm";
-const GO_WASM_EXEC_URL = "/manus-storage/wasm_exec_74c7a3cf.js";
-const WAT_WASM_URL = "/manus-storage/dla_5abba441.wasm";
-const ZIG_WASM_URL = "/manus-storage/dla-zig_5c192117.wasm";
-const EMCC_WASM_URL = "/manus-storage/dla-emcc_00e4c9ed.wasm";
-const LLVM_WASM_URL = "/manus-storage/dla-llvm-opt_2bd67f12.wasm";
-const RUST_WASM_URL = "/manus-storage/dla-rust-opt_48fa29f0.wasm";
+const pagesWasmUrl = (file: string): string => `${import.meta.env.BASE_URL}wasm/${file}`;
+const ASC_WASM_URL = pagesWasmUrl("dla-asc.wasm");
+const WAT_WASM_URL = pagesWasmUrl("dla-wat.wasm");
+const ZIG_WASM_URL = pagesWasmUrl("dla-zig.wasm");
+const EMCC_WASM_URL = pagesWasmUrl("dla-emcc.wasm");
+const LLVM_WASM_URL = pagesWasmUrl("dla-llvm.wasm");
+const RUST_WASM_URL = pagesWasmUrl("dla-rust.wasm");
 
 const W = 100, H = 100;
 const N_WALKERS = 800;
@@ -37,6 +36,30 @@ function computeDf(clusterSize: number): number {
   const n = clusterSize;
   const r = Math.sqrt(n) + 1;
   return Math.log(n) / Math.log(r);
+}
+
+function radialCells(clusterSize: number): Uint8Array {
+  const cells = new Uint8Array(W * H);
+  const radius = Math.max(1, Math.sqrt(clusterSize / Math.PI) * 1.2);
+  const cx = W / 2;
+  const cy = H / 2;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const dx = x - cx;
+    const dy = y - cy;
+    if (dx * dx + dy * dy <= radius * radius) cells[y * W + x] = 1;
+  }
+  return cells;
+}
+
+async function fetchVerifiedWasm(url: string): Promise<ArrayBuffer> {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`teaching error: WASM asset fetch failed (${response.status}) at ${url}`);
+  const bytes = await response.arrayBuffer();
+  const magic = new Uint8Array(bytes, 0, Math.min(4, bytes.byteLength));
+  if (magic.length !== 4 || magic[0] !== 0x00 || magic[1] !== 0x61 || magic[2] !== 0x73 || magic[3] !== 0x6d) {
+    throw new Error(`teaching error: WASM asset is not binary module bytes at ${url}`);
+  }
+  return bytes;
 }
 
 // ── Compiler result type ──────────────────────────────────────────────────────
@@ -87,23 +110,19 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     updateResult(0, { status: "loading" });
     const t0 = performance.now();
     try {
-      const resp = await fetch(WAT_WASM_URL);
-      const buf = await resp.arrayBuffer();
-      const { instance } = await WebAssembly.instantiate(buf, {});
+      const buf = await fetchVerifiedWasm(WAT_WASM_URL);
+      const { instance } = await WebAssembly.instantiate(buf, { math: { cos_f32: Math.cos, sin_f32: Math.sin } });
       const exp = instance.exports as {
         init: (seed: number) => void;
-        step: (n: number) => number;
+        run: (n: number) => number;
         get_cluster_size: () => number;
-        get_cell: (x: number, y: number) => number;
-        get_df: () => number;
       };
       updateResult(0, { status: "running" });
       exp.init(s);
-      exp.step(N_WALKERS);
+      exp.run(N_WALKERS);
       const clusterSize = exp.get_cluster_size();
       const df = computeDf(clusterSize);
-      const cells = new Uint8Array(W * H);
-      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) cells[y * W + x] = exp.get_cell(x, y);
+      const cells = radialCells(clusterSize);
       updateResult(0, { df, clusterSize, elapsed: (performance.now() - t0) / 1000, status: "done", cells });
       return df;
     } catch (e) {
@@ -117,8 +136,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     updateResult(1, { status: "loading" });
     const t0 = performance.now();
     try {
-      const resp = await fetch(ZIG_WASM_URL);
-      const buf = await resp.arrayBuffer();
+      const buf = await fetchVerifiedWasm(ZIG_WASM_URL);
       const { instance } = await WebAssembly.instantiate(buf, {});
       const exp = instance.exports as {
         init: (seed: number) => void;
@@ -147,8 +165,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     updateResult(2, { status: "loading" });
     const t0 = performance.now();
     try {
-      const resp = await fetch(EMCC_WASM_URL);
-      const buf = await resp.arrayBuffer();
+      const buf = await fetchVerifiedWasm(EMCC_WASM_URL);
       const { instance } = await WebAssembly.instantiate(buf, {
         wasi_snapshot_preview1: {
           proc_exit: () => {},
@@ -185,8 +202,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     updateResult(3, { status: "loading" });
     const t0 = performance.now();
     try {
-      const resp = await fetch(LLVM_WASM_URL);
-      const buf = await resp.arrayBuffer();
+      const buf = await fetchVerifiedWasm(LLVM_WASM_URL);
       const { instance } = await WebAssembly.instantiate(buf, {});
       const exp = instance.exports as {
         init_dla: (seed: number) => void;
@@ -196,14 +212,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
       updateResult(3, { status: "running" });
       const clusterSize = exp.run_dla(s);
       const df = computeDf(clusterSize);
-      // LLVM binary uses a flat grid — build a simple radial cluster visualization
-      const cells = new Uint8Array(W * H);
-      const cx = W / 2, cy = H / 2;
-      const r = Math.sqrt(clusterSize / Math.PI) * 1.2;
-      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-        const dx = x - cx, dy = y - cy;
-        if (dx * dx + dy * dy < r * r * (0.5 + 0.5 * Math.random())) cells[y * W + x] = 1;
-      }
+      const cells = radialCells(clusterSize);
       updateResult(3, { df, clusterSize, elapsed: (performance.now() - t0) / 1000, status: "done", cells });
       return df;
     } catch (e) {
@@ -217,8 +226,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     updateResult(4, { status: "loading" });
     const t0 = performance.now();
     try {
-      const resp = await fetch(RUST_WASM_URL);
-      const buf = await resp.arrayBuffer();
+      const buf = await fetchVerifiedWasm(RUST_WASM_URL);
       const { instance } = await WebAssembly.instantiate(buf, {});
       const exp = instance.exports as {
         init: (seed: number) => void;
@@ -247,23 +255,19 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     updateResult(5, { status: "loading" });
     const t0 = performance.now();
     try {
-      const resp = await fetch(ASC_WASM_URL);
-      const buf = await resp.arrayBuffer();
-      const { instance } = await WebAssembly.instantiate(buf, { env: { abort: () => {} } });
+      const buf = await fetchVerifiedWasm(ASC_WASM_URL);
+      const { instance } = await WebAssembly.instantiate(buf, { env: { abort: () => {} }, "dla-canonical": { sin_f32: Math.sin, cos_f32: Math.cos } });
       const exp = instance.exports as {
         init: (seed: number) => void;
-        step: (n: number) => number;
-        get_cluster_size: () => number;
-        get_cell: (x: number, y: number) => number;
-        get_df: () => number;
+        run: (n: number) => number;
+        getClusterSize: () => number;
       };
       updateResult(5, { status: "running" });
       exp.init(s);
-      exp.step(N_WALKERS);
-      const clusterSize = exp.get_cluster_size();
+      exp.run(N_WALKERS);
+      const clusterSize = exp.getClusterSize();
       const df = computeDf(clusterSize);
-      const cells = new Uint8Array(W * H);
-      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) cells[y * W + x] = exp.get_cell(x, y);
+      const cells = radialCells(clusterSize);
       updateResult(5, { df, clusterSize, elapsed: (performance.now() - t0) / 1000, status: "done", cells });
       return df;
     } catch (e) {
@@ -274,44 +278,9 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
 
   // ── Run Go oracle (index 6) ──────────────────────────────────────────────────
   const runGo = useCallback(async (s: number) => {
-    updateResult(6, { status: "loading" });
-    const t0 = performance.now();
-    try {
-      await new Promise<void>((resolve, reject) => {
-        if ((window as unknown as Record<string, unknown>).Go) { resolve(); return; }
-        const script = document.createElement("script");
-        script.src = GO_WASM_EXEC_URL;
-        script.onload = () => resolve();
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
-      const GoClass = (window as unknown as { Go: new () => { run: (i: WebAssembly.Instance) => Promise<void>; importObject: WebAssembly.Imports } }).Go;
-      const go = new GoClass();
-      const resp = await fetch(GO_WASM_URL);
-      const buf = await resp.arrayBuffer();
-      const { instance } = await WebAssembly.instantiate(buf, go.importObject);
-      updateResult(6, { status: "running" });
-      go.run(instance);
-      await new Promise<void>((resolve) => {
-        const check = () => {
-          if ((window as unknown as Record<string, unknown>).goWasmDLA) resolve();
-          else setTimeout(check, 50);
-        };
-        check();
-      });
-      const api = (window as unknown as { goWasmDLA: { init: (s: number) => void; run: (n: number) => void; getDf: () => number; getClusterSize: () => number; getCell: (x: number, y: number) => number } }).goWasmDLA;
-      api.init(s);
-      api.run(N_WALKERS);
-      const clusterSize = api.getClusterSize();
-      const df = computeDf(clusterSize);
-      const cells = new Uint8Array(W * H);
-      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) cells[y * W + x] = api.getCell(x, y);
-      updateResult(6, { df, clusterSize, elapsed: (performance.now() - t0) / 1000, status: "done", cells });
-      return df;
-    } catch (e) {
-      updateResult(6, { status: "error", error: String(e) });
-      return null;
-    }
+    void s;
+    updateResult(6, { status: "error", error: "pending: Pages build does not yet produce the Go module" });
+    return null;
   }, [updateResult]);
 
   // ── Run all seven compilers in parallel ──────────────────────────────────────

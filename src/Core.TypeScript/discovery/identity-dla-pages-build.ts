@@ -15,6 +15,7 @@
  */
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import { stagePagesWasmAssets } from "./identity-dla-pages-wasm-assets";
 
 const repoRoot = process.cwd();
 const siteRoot = join(repoRoot, "demo", "identity-dla-site");
@@ -83,4 +84,5 @@ if (!existsSync(builtSite)) throw new Error("teaching error: Race Mode Vite buil
 rmSync(artifactTarget, { recursive: true, force: true });
 mkdirSync(artifactTarget, { recursive: true });
 cpSync(builtSite, artifactTarget, { recursive: true });
+stagePagesWasmAssets(repoRoot, artifactTarget);
 console.log(`[pages] Race Mode artifact ready: ${artifactTarget}`);
