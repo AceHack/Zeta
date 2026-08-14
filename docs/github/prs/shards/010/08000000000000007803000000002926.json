@@ -1,0 +1,12 @@
+{
+  "pr_number": 10534,
+  "archive_path": "docs/history/pr-reviews/PR-10534-fix-browser-preserve-receipt-proposal-activation.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T06:12:25.697Z",
+  "schema_version": "v1",
+  "commit_sha": "74521eba52f8af70a3b7a1159f4a2cb1f9949c72",
+  "title": "fix(browser): preserve receipt proposal activation",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T06:11:53Z",
+  "head_ref": "codex/browser-receipt-activation-lease"
+}
