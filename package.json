@@ -12,7 +12,7 @@
     "build-graph:quorum": "bun ./src/Core.TypeScript/ace/build-graph.ts quorum",
     "generate:transcript": "bun ./src/Core.QSharp.ReferenceOracle/generate-treaty-transcript.ts",
     "lint:typescript": "bun ./src/Core.TypeScript/lint/lint-typescript.ts",
-    "lint:markdown": "markdownlint-cli2",
+    "lint:markdown": "markdownlint-cli2 \"**/*.md\"",
     "lint:css": "stylelint \"**/*.css\" --allow-empty-input",
     "format:check": "prettier --check \"**/*.{json,jsonc,md,markdown,ts,toml,yml,yaml,css}\"",
     "format:write": "prettier --write \"**/*.{json,jsonc,md,markdown,ts,toml,yml,yaml,css}\"",
