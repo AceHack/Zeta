@@ -551,4 +551,96 @@ describe("udp-bdp-link: the decisive experiment", () => {
     expect(table).toContain("attrib%");
     expect(table.split("\n").length).toBe(4);
   });
+
+  // -- UBL-13: the corruption curve, over the axis that decides whether it can separate -----
+  //
+  // UBL-10 measured the collapse. This measures what an integrity check does to it
+  // (081KZYP1X3B087G0R001EZ37PQ), and the answer is NOT one number, because it turns on a
+  // property of the LINK that nothing above the link layer controls:
+  //
+  //   `deliveredCorruptFraction = 0` - the link's own frame check (802.11 FCS, LoRa CRC, a UDP
+  //     checksum) already destroyed the corrupt frame. The receiver observes an ABSENT sequence
+  //     number, identical to a queue drop. NO application-layer check can attribute this, ever.
+  //     This was the unstated model of every corruption number measured before 2026-08-14.
+  //   `deliveredCorruptFraction = 1` - no lower-layer check, or one that missed (Stone &
+  //     Partridge, SIGCOMM 2000). The frame arrives, fails CRC-32C, and is attributable.
+  //
+  // MEASURED (seed 0x5eed, 10s, C = 4000 pkt/s, congestion held at 0 by construction):
+  //
+  //     corrupt   aimd thru, DCF=0   shortfall   aimd thru, DCF=1   shortfall   attributed
+  //       0.5%          828.6          x1.2            993.2          x1.0          48
+  //       1.0%          605.7          x1.6            988.8          x1.0          92
+  //       2.0%          138.7          x7.1            979.0          x1.0         190
+  //       5.0%           23.4         x40.5            949.5          x1.0         485
+  //      10.0%            9.6         x93.6            903.4          x1.0         945
+  //
+  // THE HEADLINE, and its exact scope. At DCF=1 the AIMD arm becomes numerically IDENTICAL to the
+  // signal-BLIND open-loop arm at every rate - the 93.6x shortfall goes to 1.0x and `gapMs` never
+  // leaves its floor. At DCF=0 the curve is unchanged from UBL-10, to the digit. So the honest
+  // claim is not "the 90x is recovered"; it is "the 90x is recovered exactly in proportion to how
+  // much corruption reaches the receiver", and that proportion is a link property, not a
+  // control-law one.
+  //
+  // INSTRUMENT CAVEAT, applying to THIS table (081KZYY6SVJ087G0R0035SW945, filed, unfixed):
+  // `meanBurstLength = 1` is not i.i.d. Bernoulli - the Gilbert-Elliott chain FORBIDS consecutive
+  // corruptions - so every row is optimistic in the code's favour. A burst that corrupts several
+  // frames in a row is exactly the case where `pendingCorruptFrames` and the gap it is spent
+  // against could diverge, and this sweep cannot produce one. (The chaos-side companion UCH-19 is
+  // NOT affected: its corruption draw is genuine per-packet Bernoulli.)
+  it("UBL-13: the corruption curve separates completely where corruption is observable, and not at all where it is not", async () => {
+    const rates = [0, 0.005, 0.01, 0.02, 0.05, 0.1];
+    const destroyed = await corruptionVsCongestion(["open-loop", "aimd"], rates, 1, { durationMs: 10000 }, 1, 0);
+    const delivered = await corruptionVsCongestion(["open-loop", "aimd"], rates, 1, { durationMs: 10000 }, 1, 1);
+    type Point = (typeof destroyed)[number];
+    const byRate = (pts: readonly Point[], arm: ArmName): Map<number, Point> =>
+      new Map(pts.filter((p) => p.arm === arm).map((p) => [p.targetCorruptionRate, p]));
+
+    // The premise of the experiment, checked rather than assumed, in BOTH regimes.
+    for (const p of [...destroyed, ...delivered]) expect(p.congestionDrops).toBe(0);
+
+    const destroyedAimd = byRate(destroyed, "aimd");
+    const deliveredAimd = byRate(delivered, "aimd");
+    const deliveredOpen = byRate(delivered, "open-loop");
+
+    // DCF = 0 — NOTHING CHANGED, and saying so is half the finding. A frame the link destroyed
+    // never arrives, so there is nothing to check and nothing to attribute. The collapse UBL-10
+    // pinned is still exactly there.
+    for (const p of destroyed) expect(p.attributedCorruption).toBe(0);
+    expect(destroyedAimd.get(0.02)!.throughputRelativeToClean).toBeLessThan(0.2);
+    expect(destroyedAimd.get(0.1)!.throughputRelativeToClean).toBeLessThan(0.02);
+
+    // DCF = 1 — the receiver CHECKS, so the receiver ATTRIBUTES, and the count rises with rate.
+    expect(deliveredAimd.get(0)!.attributedCorruption).toBe(0);
+    let previous = 0;
+    for (const rate of rates.filter((r) => r > 0)) {
+      const a = deliveredAimd.get(rate)!.attributedCorruption;
+      expect(a).toBeGreaterThan(previous);
+      previous = a;
+    }
+
+    // THE SEPARATION: the paced arm now matches the signal-BLIND arm at every rate. That is the
+    // strongest available statement — the controller is no longer responding to corruption at
+    // all, which is precisely what "backing off does not make a noisy channel quieter" means.
+    for (const rate of rates) {
+      expect(deliveredAimd.get(rate)!.throughputPktPerSec).toBeCloseTo(deliveredOpen.get(rate)!.throughputPktPerSec, 5);
+      // ...and it tracks the ideal (1 − lossRate) line within a percentage point.
+      expect(Math.abs(deliveredAimd.get(rate)!.throughputRelativeToClean - (1 - rate))).toBeLessThan(0.01);
+    }
+
+    // The ratio a reader can carry, stated both ways so neither half can be quoted alone.
+    const shortfall = (m: Map<number, Point>, rate: number): number =>
+      m.get(rate)!.idealNonBackoffThroughput / m.get(rate)!.throughputPktPerSec;
+    expect(shortfall(destroyedAimd, 0.02)).toBeGreaterThan(5); // corruption invisible: ~7x down
+    expect(shortfall(destroyedAimd, 0.1)).toBeGreaterThan(50); // corruption invisible: ~90x down
+    expect(shortfall(deliveredAimd, 0.02)).toBeLessThan(1.05); // corruption visible: gone
+    expect(shortfall(deliveredAimd, 0.1)).toBeLessThan(1.05);
+
+    // ANTI-VACUITY: the corruption process really ran in both regimes and at the intended rate,
+    // so "no shortfall" at DCF=1 is not secretly "no corruption".
+    for (const p of [...destroyed, ...delivered]) {
+      if (p.targetCorruptionRate === 0) expect(p.observedCorruptionRate).toBe(0);
+      else
+        expect(Math.abs(p.observedCorruptionRate - p.targetCorruptionRate) / p.targetCorruptionRate).toBeLessThan(0.2);
+    }
+  });
 });

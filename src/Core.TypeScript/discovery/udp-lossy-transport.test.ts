@@ -27,6 +27,8 @@ import {
   type NackMessage,
   encodePacket,
   decodePacket,
+  PACKET_HEADER_BYTES,
+  PACKET_CHECKSUM_BYTES,
   xorParityBlock,
   xorRecoverErasure,
   scheduleGossipRebroadcast,
@@ -313,13 +315,19 @@ describe("udp-lossy-transport", () => {
     const payload = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]);
     const header = { seq: 42, blockSeq: 5, blockPos: 2, isData: true, payloadLen: 8 };
     const buf = encodePacket(header, payload);
+    // PIN UPDATED 2026-08-14 (081KZYP1X3B087G0R001EZ37PQ). The frame now carries a 4-byte CRC-32C
+    // TRAILER and `decodePacket` returns a discriminated result rather than `T | null`, because a
+    // framing failure and a checksum failure license different conclusions and `null` could not
+    // tell them apart. The round-trip property itself is unchanged.
+    expect(buf.length).toBe(PACKET_HEADER_BYTES + payload.length + PACKET_CHECKSUM_BYTES);
     const decoded = decodePacket(buf);
-    expect(decoded).not.toBeNull();
-    expect(decoded!.header.seq).toBe(42);
-    expect(decoded!.header.blockSeq).toBe(5);
-    expect(decoded!.header.blockPos).toBe(2);
-    expect(decoded!.header.isData).toBe(true);
-    expect(Array.from(decoded!.payload)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) throw new Error("unreachable");
+    expect(decoded.header.seq).toBe(42);
+    expect(decoded.header.blockSeq).toBe(5);
+    expect(decoded.header.blockPos).toBe(2);
+    expect(decoded.header.isData).toBe(true);
+    expect(Array.from(decoded.payload)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
   });
 
   // ── ULT-12: XOR parity fallback recovers 1 erasure ───────────────────────────────────
@@ -986,30 +994,252 @@ describe("udp-lossy-transport: separated loss signals", () => {
     expect(reordered).not.toContain(2);
   });
 
-  // ── ULT-31: the unattributable causes are UNCONSTRUCTIBLE, not merely undocumented ─────
+  // ── ULT-32: end to end — a corrupt frame is refused, surfaced, and RE-ATTRIBUTED ────────
   //
-  // `congestion` and `corruption` are cases of `LossSignal` that nothing can build today,
-  // because their evidence types are branded with unexported symbols. That is the finding stated
-  // as a type: this transport has no integrity check (081KZYP1X3B087G0R001EZ37PQ) and no queue
-  // or delay signal, so it cannot perceive either cause — and a taxonomy whose cases can be
-  // filled in by assertion would be a taxonomy that pretends.
+  // The channel-level companion to UCH-21 (081KZYP1X3B087G0R001EZ37PQ). Three properties, and the
+  // third is the one that changes a control decision:
   //
-  // Whoever adds an integrity check adds the minting function beside it, and this test fails at
-  // that moment — which is the intent, not an accident.
-  it("ULT-31: nothing in the module mints a congestion or corruption evidence value", async () => {
+  //   1. the corrupt frame delivers NOTHING — it never reaches `addToBlock`;
+  //   2. `onCorruption` fires with LOCAL evidence — this receiver ran the check;
+  //   3. the next gap emits TWO reports: the `unknown` the receiver always owed, and a
+  //      `corruption` re-attribution withdrawing the part it can now account for.
+  //
+  // Why two messages rather than one NACK with a mixed cause: a report is a claim about a set of
+  // sequence numbers, and the receiver genuinely does not know WHICH of them the corrupt frame
+  // was — only how many. Splitting is what keeps the count a measurement and the assignment an
+  // admitted convention.
+  it("ULT-32: a corrupt frame delivers nothing, surfaces evidence, and re-attributes the next gap", async () => {
+    let receive: (text: string, from: string) => void = () => {};
+    const sent: string[] = [];
+    const transport = {
+      broadcast: (text: string) => {
+        sent.push(text);
+      },
+      onMessage: (h: (text: string, from: string) => void) => {
+        receive = h;
+      },
+    };
+    const ch = new LossyUdpChannel(transport, "receiver");
+    const corruptions: string[] = [];
+    ch.onCorruption((e) => corruptions.push(e.source));
+    const delivered: number[] = [];
+    ch.onData((p) => delivered.push(p[0]!));
+
+    const frame = (seq: number): Buffer =>
+      encodePacket(
+        { seq, blockSeq: Math.floor(seq / 8), blockPos: seq % 8, isData: seq % 8 < 4, payloadLen: 2 },
+        new Uint8Array([seq & 0xff, 1]),
+      );
+    const send = (buf: Buffer): void => {
+      receive(JSON.stringify({ type: "lossy-udp", zid: "sender", pkt: buf.toString("base64") }), "sender");
+    };
+    const nacks = (): Array<{ nack: number[]; teaching: { cause: string; why: string } }> =>
+      sent.map((t) => JSON.parse(t) as Record<string, unknown>).filter((e) => e["type"] === "lossy-udp-nack") as never;
+    const settle = (): Promise<unknown> => new Promise((r) => setTimeout(r, 10));
+
+    send(frame(0));
+    await settle();
+    expect(corruptions.length).toBe(0); // control: a good frame mints nothing
+
+    // seq 1 arrives with one bit of its PAYLOAD flipped.
+    const bad = Buffer.from(frame(1));
+    bad[PACKET_HEADER_BYTES] = bad[PACKET_HEADER_BYTES]! ^ 0x01;
+    send(bad);
+    await settle();
+
+    // (1) refused — and note `expectedSeq` did NOT advance, so seq 1 is still owed.
+    // (2) surfaced, with local evidence naming what the check saw.
+    expect(corruptions.length).toBe(1);
+    expect(corruptions[0]).toContain("crc32c mismatch");
+    // Nothing was broadcast in response to it: a rejected frame is not a wire event.
+    expect(nacks().length).toBe(0);
+
+    // seq 2 arrives cleanly and reveals the gap at 1.
+    send(frame(2));
+    await settle();
+
+    // (3) TWO reports: the honest `unknown`, then the withdrawal of the part now accounted for.
+    expect(nacks().length).toBe(2);
+    expect(nacks()[0]!.teaching.cause).toBe("unknown");
+    expect(nacks()[0]!.nack).toEqual([1]);
+    expect(nacks()[1]!.teaching.cause).toBe("corruption");
+    expect(nacks()[1]!.nack).toEqual([1]);
+    expect(nacks()[1]!.teaching.why).toContain("only the COUNT is a measurement");
+
+    // The pending count was SPENT, so a second gap does not re-claim the same corrupt frame.
+    send(frame(4)); // gap at 3
+    await settle();
+    expect(nacks().length).toBe(3);
+    expect(nacks()[2]!.teaching.cause).toBe("unknown");
+
+    // ANTI-VACUITY: good frames still deliver. Without this every assertion above would hold on
+    // a channel that dropped everything.
+    expect(delivered.length).toBe(0); // block 0 is still incomplete — 1 is genuinely gone
+    for (const s of [3, 5, 6, 7]) send(frame(s));
+    await settle();
+    expect(delivered.length).toBeGreaterThan(0);
+  });
+
+  // ── ULT-33: a wire-borne corruption report is a RETRACTION, and mints no evidence ───────
+  //
+  // The sender never held the bytes, so it never ran a check, so it has no `CorruptionEvidence`
+  // and must not be handed one. `retractLoss(state, seqs, "corruption")` is the honest shape: the
+  // reporter is withdrawing its OWN earlier congestion-suspect claim, and the decision is
+  // RECOMPUTED without it rather than inverted.
+  it("ULT-33: a corruption report withdraws the backoff it caused, recomputing rather than inverting", () => {
+    let state = makeAimdState(10);
+    for (let i = 0; i < 10; i++) state = onSend(state);
+    state = onLoss(state, { cause: "unknown", seqs: [1, 2] }); // 2/10 = 20% → multiplicative decrease
+    expect(state.gapMs).toBe(20);
+
+    // Both were corrupt frames the receiver rejected. Without them the decrease would not have
+    // fired (0/10 = 0% ≤ 5%), so it is undone exactly.
+    const after = retractLoss(state, [1, 2], "corruption");
+    expect(after.gapMs).toBe(10);
+    expect(after.lossByCause.corruption).toBe(2);
+    expect(after.lossByCause.reorder).toBe(0); // NOT re-attributed to the wrong cause
+    expect(congestionSuspectRate(after)).toBe(0);
+
+    // RECOMPUTED, not inverted: with enough OTHER unattributed loss the decrease still stands.
+    let heavy = makeAimdState(10);
+    for (let i = 0; i < 10; i++) heavy = onSend(heavy);
+    heavy = onLoss(heavy, { cause: "unknown", seqs: [1, 2, 3] }); // 3/10 = 30%
+    expect(heavy.gapMs).toBe(20);
+    const partial = retractLoss(heavy, [1], "corruption");
+    expect(partial.gapMs).toBe(20); // 2/10 = 20% > 5% — still justified
+    expect(partial.lossByCause.corruption).toBe(1);
+
+    // §12: retracting the same sequence twice is the SAME object, not an equal copy.
+    expect(retractLoss(after, [1, 2], "corruption")).toBe(after);
+  });
+
+  // ── ULT-34: more rejections than the gap they are spent against ────────────────────────
+  //
+  // FOUND BY MUTATING THE FIX, and it is the reason to do that rather than to trust a green
+  // suite. `Math.min(this.pendingCorruptFrames, missing.length)` is the bound on the only
+  // adversarial lever this change opens — a peer spraying deliberately bad frames can RE-LABEL
+  // losses the receiver independently observed, never manufacture them. Replacing that `min`
+  // with the bare `pendingCorruptFrames` left ALL 75 tests across the three suites green.
+  //
+  // The reason it was invisible is worth recording, because it is a property of the instruments
+  // and not of the assertions: the clamp only bites when MORE frames were rejected than the next
+  // gap is wide, and neither sweep can produce that. The chaos harness does not drive the channel
+  // class at all, and the BDP sweep runs `meanBurstLength = 1`, whose Gilbert-Elliott chain
+  // FORBIDS consecutive corruptions (081KZYY6SVJ087G0R0035SW945, filed, unfixed). The one
+  // configuration that exercises the bound is the one the instrument cannot generate — so the
+  // case is constructed directly here instead of hoped for from a sweep.
+  //
+  // Note the NACK CONTENTS are identical either way: `missing.slice(0, 2)` on a one-element list
+  // is a one-element list. The divergence is in the RESIDUE — unclamped, the counter goes
+  // NEGATIVE and silently swallows a later, genuine attribution.
+  it("ULT-34: two rejections against a one-packet gap clamp to one, and the second is still owed", async () => {
+    let receive: (text: string, from: string) => void = () => {};
+    const sent: string[] = [];
+    const transport = {
+      broadcast: (text: string) => {
+        sent.push(text);
+      },
+      onMessage: (h: (text: string, from: string) => void) => {
+        receive = h;
+      },
+    };
+    const ch = new LossyUdpChannel(transport, "receiver");
+    const corruptions: string[] = [];
+    ch.onCorruption((e) => corruptions.push(e.source));
+
+    const frame = (seq: number): Buffer =>
+      encodePacket(
+        { seq, blockSeq: Math.floor(seq / 8), blockPos: seq % 8, isData: seq % 8 < 4, payloadLen: 2 },
+        new Uint8Array([seq & 0xff, 1]),
+      );
+    const corruptFrame = (seq: number): Buffer => {
+      const b = Buffer.from(frame(seq));
+      b[PACKET_HEADER_BYTES] = b[PACKET_HEADER_BYTES]! ^ 0x01;
+      return b;
+    };
+    const send = (buf: Buffer): void => {
+      receive(JSON.stringify({ type: "lossy-udp", zid: "sender", pkt: buf.toString("base64") }), "sender");
+    };
+    const causes = (): string[] =>
+      sent
+        .map((t) => JSON.parse(t) as { type?: string; teaching?: { cause?: string } })
+        .filter((e) => e.type === "lossy-udp-nack")
+        .map((e) => e.teaching?.cause ?? "");
+    const settle = (): Promise<unknown> => new Promise((r) => setTimeout(r, 10));
+
+    send(frame(0)); // expectedSeq -> 1
+    send(corruptFrame(1)); // refused; expectedSeq stays 1
+    send(corruptFrame(2)); // refused; expectedSeq stays 1
+    await settle();
+    expect(corruptions.length).toBe(2); // TWO rejections pending
+    expect(causes().length).toBe(0); // and no wire traffic yet — a rejection is not an event
+
+    // A gap of exactly ONE. Two rejections are pending, so the clamp must fire.
+    send(frame(2)); // gap = [1], one sequence number
+    await settle();
+    expect(causes()).toEqual(["unknown", "corruption"]);
+
+    // THE ASSERTION THE MUTANT FAILS. One rejection is still owed, so the NEXT gap gets an
+    // attribution too. Unclamped, the counter went to -1 above and this second one vanishes.
+    send(frame(4)); // gap = [3]
+    await settle();
+    expect(causes()).toEqual(["unknown", "corruption", "unknown", "corruption"]);
+
+    // ...and now the credit really is exhausted: a third gap is `unknown` and stays that way.
+    send(frame(6)); // gap = [5]
+    await settle();
+    expect(causes()).toEqual(["unknown", "corruption", "unknown", "corruption", "unknown"]);
+  });
+
+  // ── ULT-31: the evidence brands, and the ASYMMETRY between them ────────────────────────
+  //
+  // PIN UPDATED 2026-08-14 (081KZYP1X3B087G0R001EZ37PQ), and the update IS the signal this test
+  // was built to give. It used to assert that BOTH `congestion` and `corruption` were
+  // unconstructible; it now asserts that exactly one of them still is.
+  //
+  // The old form said: this transport has no integrity check and no queue signal, so it cannot
+  // perceive either cause, and a taxonomy whose cases can be filled in by assertion would be a
+  // taxonomy that pretends. That was true, and the fix for the corruption half was never to relax
+  // the assertion — it was to build the instrument. The CRC-32C trailer is that instrument, so
+  // `CorruptionEvidence` is now minted, by exactly one function, with exactly one caller.
+  //
+  // `CongestionEvidence` is deliberately NOT promoted alongside it. There is still no timestamp,
+  // no ECN bit and no receiver-side queue estimate, so a queue drop is still invisible here. A
+  // change that quietly promoted both would be the pretending taxonomy arriving by the back door.
+  it("ULT-31: corruption evidence is minted once and only once; congestion evidence still cannot exist", async () => {
     const src = await Bun.file(new URL("./udp-lossy-transport.ts", import.meta.url).pathname).text();
     const code = src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
     expect(code.length).toBeGreaterThan(5000);
-    // The brands are declared (type-only) and never exported, so no other module can name them.
+
+    // CONGESTION — unchanged. Type-only brand, never exported, never cast into being.
     expect(code).toContain("declare const CONGESTION_EVIDENCE: unique symbol");
-    expect(code).toContain("declare const CORRUPTION_EVIDENCE: unique symbol");
     expect(code).not.toContain("export const CONGESTION_EVIDENCE");
-    expect(code).not.toContain("export const CORRUPTION_EVIDENCE");
-    // ...and no cast smuggles one into existence.
     expect(code).not.toContain("as CongestionEvidence");
+    // Nothing constructs the brand, so `LossSignal`'s `congestion` arm stays unreachable. Counted
+    // rather than string-matched on `cause: "congestion"`, which also appears in the `LossSignal`
+    // type alias — a check that cannot separate a type from a construction is not a check.
+    // Two sites: the `declare const`, and the interface member that names it.
+    expect((code.match(/CONGESTION_EVIDENCE/g) ?? []).length).toBe(2);
+
+    // CORRUPTION — a REAL runtime symbol now, because a brand you cannot instantiate is a brand
+    // whose case cannot be built. Still unexported, so it stays unforgeable outside this module.
+    expect(code).toContain("const CORRUPTION_EVIDENCE: unique symbol = Symbol(");
+    expect(code).not.toContain("export const CORRUPTION_EVIDENCE");
+    // No cast smuggles one into existence — the mint is a real constructor, not an assertion.
     expect(code).not.toContain("as CorruptionEvidence");
+
+    // THE LOAD-BEARING COUNT: one minting function, one caller, and the caller is the checksum
+    // verification failure. A second caller is the moment this type stops meaning "a check ran
+    // here and failed" and starts meaning "someone decided this was corruption".
+    expect(code).not.toContain("export function mintCorruptionEvidence");
+    const mintSites = code.match(/mintCorruptionEvidence/g) ?? [];
+    expect(mintSites.length).toBe(2); // the declaration, and its single call site
+    // ...and that single call site is inside the CRC-32C comparison, not anywhere else.
+    expect(code).toMatch(/if \(claimed !== actual\)[\s\S]{0,220}mintCorruptionEvidence\(/);
+
     // The reachable causes ARE constructed, or the whole taxonomy would be decorative.
     expect(code).toContain('cause: "unknown"');
     expect(code).toContain('cause: "reorder"');
+    expect(code).toContain('cause: "corruption"');
   });
 });

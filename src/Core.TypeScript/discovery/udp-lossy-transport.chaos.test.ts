@@ -40,6 +40,13 @@ import {
   makeAimdState,
   onSend,
   onLoss,
+  addToBlock,
+  buildSenderBlock,
+  decodePacket,
+  encodePacket,
+  makeReceiverBlock,
+  PACKET_CHECKSUM_BYTES,
+  PACKET_HEADER_BYTES,
   LossyUdpChannel,
 } from "./udp-lossy-transport";
 
@@ -531,15 +538,16 @@ describe("udp-lossy-transport.chaos", () => {
       ch.onData(() => {
         deliveredPayloads++;
       });
+      // PIN UPDATED 2026-08-14 (081KZYP1X3B087G0R001EZ37PQ), and the flip was informative rather
+      // than incidental. This loop used to hand-roll a 16-byte header and concatenate the payload
+      // — i.e. it emitted an OLD-FORMAT frame. Against the new receiver every one of those frames
+      // is refused as `truncated` (no CRC-32C trailer), and `deliveredPayloads` fell from 2000 to
+      // 0. That is the wire-compatibility direction demonstrated by accident, and it is the
+      // direction the design chose deliberately: old sender → new receiver FAILS, loudly and as a
+      // FRAMING error rather than as fabricated channel corruption. `UCH-20` now pins it on
+      // purpose. Here the harness simply sends the real frame the sender built.
       for (const pkt of delivered) {
-        const hdr = Buffer.alloc(16);
-        hdr.writeUInt32BE(pkt.seq, 0);
-        hdr.writeUInt32BE(pkt.blockSeq, 4);
-        hdr.writeUInt8(pkt.blockPos, 8);
-        hdr.writeUInt8(pkt.blockPos < 4 ? 1 : 0, 9);
-        hdr.writeUInt32BE(pkt.payload.length, 10);
-        const buf = Buffer.concat([hdr, Buffer.from(pkt.payload)]);
-        receive(JSON.stringify({ type: "lossy-udp", zid: "sender", pkt: buf.toString("base64") }), "sender");
+        receive(JSON.stringify({ type: "lossy-udp", zid: "sender", pkt: pkt.frame.toString("base64") }), "sender");
       }
       return { nackBroadcasts, retractions, deliveredPayloads, sent: wire.length };
     };
@@ -621,5 +629,204 @@ describe("udp-lossy-transport.chaos", () => {
     expect(hardRun.blocksLost).toBeGreaterThan(0);
     expect(hardRun.deliveryRatio).toBeGreaterThan(0.9); // …and recovered anyway, at 30% loss
     expect(hardRun.observedLossRate).toBeGreaterThan(0.25);
+  });
+
+  // ── UCH-19: the corruption curve, with the check and without it ─────────────────────────
+  //
+  // The fault class this harness could not express until 081KZYP1X3B087G0R001EZ37PQ. Erasure,
+  // duplication and reordering all PRESERVE BYTES, so every number this file produced before
+  // today described a channel that never lied — and the one fault where the code's capability was
+  // weakest and its blast radius largest went unmeasured.
+  //
+  // Both arms run, and the DIFFERENCE between them is the measurement. An assertion that only
+  // ever runs the checked path cannot distinguish a working check from one that never fires.
+  //
+  // MEASURED (seed 0x5eed, 2000 blocks, 8B payload, loss held at ZERO so corruption is isolated):
+  //
+  //     corrupt%   corrupted   rejected   SILENT-WRONG deliveries      deliveryRatio
+  //                             (check)    check off   check on    check off   check on
+  //       0.5%          73         73          15           0        0.9981     1.0000
+  //       1.0%         137        137          21           0        0.9974     1.0000
+  //       2.0%         318        318          47           0        0.9941     1.0000
+  //       5.0%         803        803         128           0        0.9840     1.0000
+  //      10.0%        1593       1593         278           0        0.9653     0.9970
+  //
+  // Two things in that table, and the second is the one worth arguing about:
+  //
+  //   1. Silently-wrong deliveries go to ZERO and stay there. That is the defect closed.
+  //   2. Delivery ratio goes UP, not down. Rejecting a frame COSTS nothing and BUYS a repair,
+  //      because the [8,4,4] code corrects erasures and cannot correct errors: discarding a
+  //      corrupt frame converts a fault the code cannot handle into one it can. The intuition
+  //      that an integrity check trades goodput for safety is simply wrong for an erasure-coded
+  //      transport, and this is the number that says so.
+  //
+  // NOT affected by the `meanBurstLength = 1` instrument caveat (081KZYY6SVJ087G0R0035SW945):
+  // corruption here is drawn per-packet from `drawUnit(seed, STREAM.corrupt, i) < p`, which is
+  // genuine i.i.d. Bernoulli, not a Gilbert-Elliott chain forbidden from repeating.
+  it("UCH-19: the CRC-32C rejects every corrupt frame, delivers zero wrong bytes, and RAISES delivery", async () => {
+    const mk = (corruptProbability: number, verifyChecksum: boolean) =>
+      defaultConfig({
+        blocks: 2000,
+        seed: 0x5eedn,
+        loss: burstParams(0, 1), // corruption ISOLATED — no erasure anywhere
+        corruptProbability,
+        verifyChecksum,
+      });
+
+    // Control: no corruption, both arms identical and perfect. Without this the rows below could
+    // be a dead path that delivers nothing and passes every "no wrong bytes" assertion.
+    const cleanOn = await runScenario(mk(0, true), "impl-adinkra");
+    const cleanOff = await runScenario(mk(0, false), "impl-adinkra");
+    expect(cleanOn.framesCorrupted).toBe(0);
+    expect(cleanOn.framesRejected).toBe(0);
+    expect(cleanOn.dataPacketsDelivered).toBe(8000);
+    expect(cleanOff.dataPacketsDelivered).toBe(8000);
+
+    for (const [p, wrongWithoutCheck] of [
+      [0.005, 15],
+      [0.01, 21],
+      [0.02, 47],
+      [0.05, 128],
+      [0.1, 278],
+    ] as [number, number][]) {
+      const off = await runScenario(mk(p, false), "impl-adinkra");
+      const on = await runScenario(mk(p, true), "impl-adinkra");
+
+      // The channel corrupted the same frames in both arms — the check changes what the RECEIVER
+      // does, never what the channel did. Disjoint streams are what make that true.
+      expect(on.framesCorrupted).toBe(off.framesCorrupted);
+      expect(on.framesCorrupted).toBeGreaterThan(0);
+
+      // Detection is TOTAL, and it is an identity rather than a probability: every corruption
+      // here is a single bit flip, and every CRC has minimum distance ≥ 2, so a single-bit error
+      // is undetectable by NO CRC. A shortfall here would be a bug, not bad luck.
+      expect(on.framesRejected).toBe(on.framesCorrupted);
+      expect(off.framesRejected).toBe(0);
+
+      // THE DEFECT, and its closure. Without the check, wrong bytes reach the application with
+      // no error signal — that is `recoverAdinkraErasure` laundering a flipped parity bit into a
+      // data packet. With it, zero, at every rate.
+      expect(off.corruptDeliveries).toBe(wrongWithoutCheck);
+      expect(on.corruptDeliveries).toBe(0);
+
+      // ...and the check is not paid for in goodput. It is paid for BY goodput.
+      expect(on.dataPacketsDelivered).toBeGreaterThan(off.dataPacketsDelivered);
+    }
+  });
+
+  // ── UCH-20: the wire change is one-way compatible, and the failing direction is LOUD ────
+  //
+  // A wire-format change that only says "a field was added" has not said the part that matters.
+  // This pins both directions, because the ASYMMETRY is the design decision (see `encodePacket`):
+  //
+  //   new sender → OLD receiver   WORKS   — the trailer sits past the payload and is ignored.
+  //   old sender → NEW receiver   FAILS   — as `truncated`, a FRAMING error, never `checksum`.
+  //
+  // The second half is the load-bearing one. A version skew reported as channel corruption would
+  // suppress a peer's backoff for the whole of a rollout, so the decode result keeps framing and
+  // corruption apart and this test is what stops them being merged back into one `null` later.
+  it("UCH-20: old frames are refused as `truncated`, not as corruption; new frames stay old-readable", () => {
+    const payload = new Uint8Array([9, 8, 7, 6]);
+    const header = { seq: 12, blockSeq: 1, blockPos: 4, isData: false, payloadLen: 4 };
+    const frame = encodePacket(header, payload);
+    expect(frame.length).toBe(PACKET_HEADER_BYTES + 4 + PACKET_CHECKSUM_BYTES);
+
+    // OLD sender → NEW receiver: the pre-2026-08-14 frame, rebuilt here exactly as the old
+    // encoder built it (16-byte header, payload, nothing else).
+    const legacy = Buffer.concat([frame.subarray(0, PACKET_HEADER_BYTES), Buffer.from(payload)]);
+    const onLegacy = decodePacket(legacy);
+    expect(onLegacy.ok).toBe(false);
+    if (onLegacy.ok) throw new Error("unreachable");
+    expect(onLegacy.reason).toBe("truncated");
+    // Emphatically NOT corruption — a rollout is not a noisy channel.
+    expect(onLegacy.reason).not.toBe("checksum");
+
+    // NEW sender → OLD receiver: the old decoder, reconstructed. It reads `payloadLen` and slices
+    // from offset 16, tolerating trailing bytes — so it decodes the new frame correctly, unaware.
+    const oldPayloadLen = frame.readUInt32BE(10);
+    expect(frame.length).toBeGreaterThanOrEqual(PACKET_HEADER_BYTES + oldPayloadLen);
+    expect(frame.readUInt32BE(0)).toBe(12);
+    expect(frame.readUInt8(8)).toBe(4);
+    expect(Array.from(frame.subarray(PACKET_HEADER_BYTES, PACKET_HEADER_BYTES + oldPayloadLen))).toEqual([9, 8, 7, 6]);
+
+    // A short buffer is `short`, distinct again from both of the above.
+    const stub = decodePacket(frame.subarray(0, 8));
+    expect(stub.ok).toBe(false);
+    if (stub.ok) throw new Error("unreachable");
+    expect(stub.reason).toBe("short");
+
+    // And a genuinely corrupt full frame IS `checksum` — otherwise the three-way split would be
+    // a two-way split with a decorative third case.
+    for (const bit of [0, 7, 63, 8 * PACKET_HEADER_BYTES + 3, frame.length * 8 - 1]) {
+      const bad = Buffer.from(frame);
+      bad[bit >> 3] = bad[bit >> 3]! ^ (1 << (bit & 7));
+      const d = decodePacket(bad);
+      expect(d.ok).toBe(false);
+      if (d.ok) throw new Error("unreachable");
+      expect(d.reason).toBe("checksum");
+    }
+  });
+
+  // ── UCH-21: the original probe from the work-item, now refused ──────────────────────────
+  //
+  // 081KZYP1X3B087G0R001EZ37PQ was filed on exactly this: erase data packet 0, flip ONE bit in
+  // PARITY packet 5, decode. The measured result was
+  //
+  //     erased d0 truth : [ 1, 2, 3, 4 ]
+  //     recovered       : [ 254, 2, 3, 4 ]
+  //     returned null?  : false          ← non-null, WRONG, silent
+  //
+  // One flipped bit in a packet the application never sees and would not have missed became a
+  // wrong byte in a packet it does see. The decoder is UNCHANGED — it is still a pure erasure
+  // decoder and would still do this — so this test pins the membrane in front of it: the corrupt
+  // parity frame never reaches the block, the block sees an erasure at position 5 instead, and
+  // the [8,4,4] code repairs BOTH positions and returns the truth.
+  it("UCH-21: erase d0 + flip one bit of parity p5 — the corrupt frame is refused and d0 is recovered CORRECTLY", () => {
+    const data = [
+      new Uint8Array([1, 2, 3, 4]),
+      new Uint8Array([5, 6, 7, 8]),
+      new Uint8Array([9, 10, 11, 12]),
+      new Uint8Array([13, 14, 15, 16]),
+    ];
+    const block = buildSenderBlock(0, data);
+    const all = [...block.dataPackets, ...block.parityPackets];
+    const frames = all.map((p, pos) =>
+      encodePacket({ seq: pos, blockSeq: 0, blockPos: pos, isData: pos < 4, payloadLen: p.length }, p),
+    );
+
+    // Flip one bit in the PAYLOAD of parity packet 5 — the exact fault from the work-item.
+    const corrupt = Buffer.from(frames[5]!);
+    corrupt[PACKET_HEADER_BYTES] = corrupt[PACKET_HEADER_BYTES]! ^ 0x01;
+
+    // The membrane refuses it...
+    const rejected = decodePacket(corrupt);
+    expect(rejected.ok).toBe(false);
+    if (rejected.ok) throw new Error("unreachable");
+    expect(rejected.reason).toBe("checksum");
+
+    // ...so the receiver sees d0 erased AND p5 erased — two erasures, well inside d−1 = 3.
+    const recv = makeReceiverBlock(0);
+    let delivered: Uint8Array[] | null = null;
+    for (const pos of [1, 2, 3, 4, 6, 7]) {
+      const d = decodePacket(frames[pos]!);
+      expect(d.ok).toBe(true);
+      if (!d.ok) throw new Error("unreachable");
+      delivered = addToBlock(recv, d.header.blockPos, new Uint8Array(d.payload)) ?? delivered;
+    }
+    expect(delivered).not.toBeNull();
+    // The TRUTH, not [254, 2, 3, 4].
+    expect(Array.from(delivered![0]!)).toEqual([1, 2, 3, 4]);
+    for (let i = 0; i < 4; i++) expect(Array.from(delivered![i]!)).toEqual(Array.from(data[i]!));
+
+    // ANTI-VACUITY: the un-flipped block must ALSO decode, or the assertion above could be
+    // passing because nothing was ever decoded at all.
+    const control = makeReceiverBlock(0);
+    let controlOut: Uint8Array[] | null = null;
+    for (const pos of [1, 2, 3, 4, 5, 6, 7]) {
+      const d = decodePacket(frames[pos]!);
+      if (!d.ok) throw new Error("unreachable");
+      controlOut = addToBlock(control, d.header.blockPos, new Uint8Array(d.payload)) ?? controlOut;
+    }
+    expect(Array.from(controlOut![0]!)).toEqual([1, 2, 3, 4]);
   });
 });

@@ -115,6 +115,10 @@ export const LINK_STREAM = {
   jitter: 12,
   /** Sender phase noise - breaks the deterministic phase lock Floyd and Jacobson 1992 describe. */
   sendPhase: 13,
+  /** Whether a corrupted frame is DELIVERED corrupt or destroyed on the wire. Its own stream, so
+   *  that changing `deliveredCorruptFraction` cannot perturb WHICH frames the Gilbert-Elliott
+   *  chain corrupts - the two curves in `UBL-13` must differ only in what the receiver SEES. */
+  corruptDelivery: 14,
 } as const;
 
 // -- Link ---------------------------------------------------------------------------------
@@ -128,6 +132,27 @@ export interface LinkParams {
   readonly bufferPackets: number;
   /** Channel corruption. Structurally distinct from queue overflow and counted separately. */
   readonly corruption: GilbertElliottParams;
+  /**
+   * The share of corrupted frames that are DELIVERED corrupt rather than destroyed on the wire.
+   *
+   * THIS KNOB IS THE WHOLE QUESTION 081KZYP1X3B087G0R001EZ37PQ TURNS ON, and it did not exist
+   * before that work-item because nothing downstream could tell the two apart. Corruption splits
+   * into two physically different populations, and an application-layer integrity check sees
+   * exactly one of them:
+   *
+   *   - **0.0 — destroyed on the wire.** The link layer's own frame check (802.11 FCS, LoRa CRC,
+   *     a UDP checksum) caught it and dropped it. The receiver observes an ABSENT sequence number,
+   *     identical in every respect to a queue drop. NO application check can attribute this, ever.
+   *     This was the implicit and unstated model of every corruption number measured before
+   *     2026-08-14, which is why those numbers showed 0.0% attributable corruption.
+   *   - **1.0 — delivered corrupt.** No lower-layer check, or one that missed (Stone & Partridge,
+   *     SIGCOMM 2000, measured the residual rate to be dominated by faults BETWEEN the link
+   *     checks). The frame arrives, fails the transport's CRC-32C, and is attributable.
+   *
+   * Defaulting to 0.0 keeps every previously measured number exactly as it was, so a flip in any
+   * pinned figure is a real change and not a re-baseline. `UBL-13` sweeps both ends.
+   */
+  readonly deliveredCorruptFraction: number;
   /**
    * Per-packet extra delivery delay drawn uniformly from [0, jitterMs). This is how reordering
    * arises physically (per-hop retry on a mesh), and it is the input that drives the reorder
@@ -147,6 +172,7 @@ export function defaultLink(overrides: Partial<LinkParams> = {}): LinkParams {
     ...base,
     bufferPackets: Math.max(1, Math.round(bdpPackets(base))),
     corruption: burstParams(0, 1),
+    deliveredCorruptFraction: 0,
     jitterMs: 0,
     ...overrides,
   };
@@ -204,7 +230,18 @@ export function defaultSim(overrides: Partial<SimConfig> = {}): SimConfig {
 
 // -- Event loop ---------------------------------------------------------------------------
 
-type EventKind = "send" | "deliver" | "nack" | "retract";
+type EventKind =
+  | "send"
+  | "deliver"
+  | "nack"
+  | "retract"
+  /** A corrupted frame that ARRIVED and failed its CRC-32C. It is not a delivery - the payload is
+   *  refused - but it is an OBSERVATION, and it is the only thing that makes corruption
+   *  attributable at all (081KZYP1X3B087G0R001EZ37PQ). */
+  | "corrupt-arrival"
+  /** The receiver withdrawing part of its own earlier `unknown` report, having matched it to
+   *  frames it rejected. `retract` is the same move for reordering. */
+  | "retract-corrupt";
 
 interface SimEvent {
   readonly time: number;
@@ -298,10 +335,17 @@ export interface FlowResult {
    */
   readonly attributedReorder: number;
   /**
+   * Reported-missing sequence numbers the RECEIVER attributed to CORRUPTION, by matching them
+   * against frames it had itself rejected on a failed CRC-32C. Nonzero only when
+   * `deliveredCorruptFraction > 0`: a frame the link destroyed never arrives, so there is nothing
+   * to check and nothing to attribute (081KZYP1X3B087G0R001EZ37PQ).
+   */
+  readonly attributedCorruption: number;
+  /**
    * Reported-missing sequence numbers that were never attributed to anything and stayed
-   * `unknown`. On this link that is every genuine erasure, congestion and corruption alike -
-   * the receiver has no integrity check and no queue signal, so it cannot tell them apart.
-   * `attributedReorder / (attributedReorder + unattributed)` is the attribution fraction.
+   * `unknown`. This is the residue after reorder and corruption have taken their shares: genuine
+   * congestion drops, plus every corruption the link destroyed before the receiver could check it.
+   * The receiver still has no queue signal, so congestion itself remains unattributable.
    */
   readonly unattributed: number;
   readonly throughputPktPerSec: number;
@@ -362,6 +406,12 @@ interface FlowState {
   seqsReportedMissing: number;
   spuriousMissingSeqs: number;
   attributedReorder: number;
+  attributedCorruption: number;
+  /** Frames that ARRIVED and failed the CRC-32C, not yet spent against a gap. Mirrors
+   *  `LossyUdpChannel.pendingCorruptFrames` exactly, including the `MAX_NACK_GAP` cap - see there
+   *  for why corruption is carried as a COUNT and never as a sequence number (the rejected
+   *  frame's header is inside the checksummed region, so its `seq` is as suspect as its body). */
+  pendingCorruptFrames: number;
   unattributed: number;
   expectedSeq: number;
   /** The receiver's own bounded record of what it has REPORTED missing - the same set, and the
@@ -407,6 +457,8 @@ export function runLink(cfg: SimConfig): SimResult {
     seqsReportedMissing: 0,
     spuriousMissingSeqs: 0,
     attributedReorder: 0,
+    attributedCorruption: 0,
+    pendingCorruptFrames: 0,
     unattributed: 0,
     expectedSeq: 0,
     reportedMissing: new Set<number>(),
@@ -516,15 +568,27 @@ export function runLink(cfg: SimConfig): SimResult {
         const corrupted = uL < (geState === "bad" ? link.corruption.lossInBad : link.corruption.lossInGood);
         txIndex++;
 
+        const jitter =
+          link.jitterMs > 0 ? drawUnit(cfg.seed, LINK_STREAM.jitter, ev.flow * 1000003 + seq) * link.jitterMs : 0;
+        const arriveAt = nextFree + link.owdMs + jitter;
         if (corrupted) {
-          // CORRUPTION drop - the frame consumed capacity and died on the wire. Backing off
-          // relieves nothing here; that asymmetry is the whole subject of this module.
+          // CORRUPTION - the frame consumed capacity and its bytes are wrong. Backing off relieves
+          // nothing here; that asymmetry is the whole subject of this module. What
+          // 081KZYP1X3B087G0R001EZ37PQ added is that "wrong bytes" now has two fates, and only one
+          // of them is observable by anything above the link layer.
           fl.corruptionDrops++;
           fl.trulyLost.add(seq);
+          const deliveredCorrupt =
+            drawUnit(cfg.seed, LINK_STREAM.corruptDelivery, ev.flow * 1000003 + seq) < link.deliveredCorruptFraction;
+          if (deliveredCorrupt) {
+            // It ARRIVES, and the receiver's CRC-32C refuses it. Not a delivery - the payload is
+            // discarded, `delivered` is not incremented, `expectedSeq` does not move - but an
+            // OBSERVATION, which is the entire difference this work-item makes.
+            push(arriveAt, "corrupt-arrival", ev.flow, seq, 0, arriveAt - ev.time);
+          }
+          // Otherwise it died on the wire: the link's own frame check ate it, nothing arrives,
+          // and the loss is indistinguishable from a queue drop. No application check can reach it.
         } else {
-          const jitter =
-            link.jitterMs > 0 ? drawUnit(cfg.seed, LINK_STREAM.jitter, ev.flow * 1000003 + seq) * link.jitterMs : 0;
-          const arriveAt = nextFree + link.owdMs + jitter;
           push(arriveAt, "deliver", ev.flow, seq, 0, arriveAt - ev.time);
         }
       }
@@ -564,6 +628,19 @@ export function runLink(cfg: SimConfig): SimResult {
         fl.spuriousMissingSeqs += spurious;
         // The module states the NACK channel is assumed reliable; it travels back in one D.
         push(ev.time + link.owdMs, "nack", ev.flow, ev.seq, missing);
+
+        // ATTRIBUTION by CRC-32C, reproduced from `LossyUdpChannel`: frames this receiver rejected
+        // are spent against this gap, up to its size. The `min` is load-bearing - a rejection can
+        // RE-LABEL a loss the receiver independently observed, never manufacture one.
+        const attributable = Math.min(fl.pendingCorruptFrames, missing);
+        if (attributable > 0) {
+          fl.pendingCorruptFrames -= attributable;
+          // The FIRST `attributable` of `[ev.seq - missing, ev.seq)`, matching
+          // `missing.slice(0, attributable)` in `LossyUdpChannel`. Which numbers get the label is
+          // arbitrary either way - only the COUNT is a measurement - but the model and the code
+          // must make the same arbitrary choice or a divergence between them means nothing.
+          push(ev.time + link.owdMs, "retract-corrupt", ev.flow, ev.seq - missing + attributable, attributable);
+        }
       } else if (fl.reportedMissing.delete(ev.seq)) {
         // ATTRIBUTION: a sequence number this receiver reported missing has ARRIVED. It was
         // reordered, not lost, and the earlier report is withdrawn on the same one-D return path.
@@ -574,6 +651,23 @@ export function runLink(cfg: SimConfig): SimResult {
         const floor = fl.expectedSeq - MAX_NACK_GAP;
         for (const s of fl.reportedMissing) if (s < floor) fl.reportedMissing.delete(s);
       }
+    } else if (ev.kind === "corrupt-arrival") {
+      // A frame arrived and failed its CRC-32C. It is DISCARDED - no delivery, no OWD sample, no
+      // movement of `expectedSeq` - and recorded as a count. That is the honest shape: the
+      // receiver knows THAT a frame was destroyed, never WHICH sequence number it was, because
+      // the header is inside the checksummed region.
+      fl.pendingCorruptFrames = Math.min(MAX_NACK_GAP, fl.pendingCorruptFrames + 1);
+    } else if (ev.kind === "retract-corrupt") {
+      // The receiver withdrawing part of its own earlier `unknown` report. Same machinery as the
+      // reorder retraction, different target cause, and no evidence value crosses the wire -
+      // see `retractLoss` for why a sender must not mint evidence for a check it never ran.
+      const seqs: number[] = [];
+      for (let s = ev.seq - ev.missing; s < ev.seq; s++) seqs.push(s);
+      fl.attributedCorruption += seqs.length;
+      fl.unattributed = Math.max(0, fl.unattributed - seqs.length);
+      fl.aimd = retractLoss(fl.aimd, seqs, "corruption");
+      if (fl.aimd.gapMs < fl.minGapMs) fl.minGapMs = fl.aimd.gapMs;
+      if (fl.aimd.gapMs > fl.maxGapMs) fl.maxGapMs = fl.aimd.gapMs;
     } else if (ev.kind === "nack") {
       // The estimator absorbs loss reports in BOTH arms - as the shipped code does - but it now
       // absorbs a CAUSE with each one. `[seq - missing, seq)` reconstructs the exact sequence
@@ -612,6 +706,7 @@ export function runLink(cfg: SimConfig): SimResult {
       seqsReportedMissing: fl.seqsReportedMissing,
       spuriousMissingSeqs: fl.spuriousMissingSeqs,
       attributedReorder: fl.attributedReorder,
+      attributedCorruption: fl.attributedCorruption,
       unattributed: fl.unattributed,
       throughputPktPerSec: (fl.delivered * 1000) / cfg.durationMs,
       meanOwdMs: mean,
@@ -994,6 +1089,12 @@ export interface CorruptionPoint {
   readonly finalGapMs: number;
   readonly nacksEmitted: number;
   readonly seqsReportedMissing: number;
+  /** The share of corrupted frames that were DELIVERED corrupt rather than destroyed on the wire
+   *  - the knob this experiment now sweeps as its second axis. */
+  readonly deliveredCorruptFraction: number;
+  /** Sequence numbers the receiver attributed to corruption via its own CRC-32C rejections.
+   *  Necessarily 0 at `deliveredCorruptFraction = 0`: nothing arrived, so nothing was checked. */
+  readonly attributedCorruption: number;
 }
 
 export async function corruptionVsCongestion(
@@ -1002,6 +1103,9 @@ export async function corruptionVsCongestion(
   meanBurstLength = 1,
   base: Partial<SimConfig> = {},
   degreeOfParallelism = 1,
+  /** See `LinkParams.deliveredCorruptFraction`. 0 reproduces every number measured before
+   *  081KZYP1X3B087G0R001EZ37PQ; 1 is the link with no lower-layer frame check. */
+  deliveredCorruptFraction = 0,
 ): Promise<CorruptionPoint[]> {
   // The two arms are matched so that ONLY the pacing rule differs:
   //   C = 4000 pkt/s, B = 4 x BDP, offered = 1000 pkt/s in the open-loop arm - which is exactly
@@ -1013,7 +1117,7 @@ export async function corruptionVsCongestion(
   const bufferPackets = Math.max(1, Math.round(4 * bdpPackets({ capacityPktPerSec: capacity, owdMs })));
   const mk = (arm: ArmName, corruption: GilbertElliottParams): SimConfig =>
     defaultSim({
-      link: defaultLink({ capacityPktPerSec: capacity, owdMs, bufferPackets, corruption }),
+      link: defaultLink({ capacityPktPerSec: capacity, owdMs, bufferPackets, corruption, deliveredCorruptFraction }),
       pacing: arm === "open-loop" ? { kind: "open-loop", offeredPktPerSec: 1000 } : { kind: "aimd", initialGapMs: 1 },
       ...base,
     });
@@ -1040,6 +1144,8 @@ export async function corruptionVsCongestion(
       finalGapMs: f.finalGapMs,
       nacksEmitted: f.nacksEmitted,
       seqsReportedMissing: f.seqsReportedMissing,
+      deliveredCorruptFraction,
+      attributedCorruption: f.attributedCorruption,
     };
   });
 }

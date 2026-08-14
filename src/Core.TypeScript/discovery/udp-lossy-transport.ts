@@ -80,9 +80,22 @@
  *     (This paragraph read "corrects 1 erasure per block; 2+ is unrecoverable" until
  *     2026-08-13. That was the decoder's limit stated as the code's — the defect itself,
  *     documented as a property. Workitem 081KZYN3B79087G0R0014ZKE3C.)
- *   - Erasure decoding assumes packets arrive intact or not at all (UDP checksums drop corrupt
- *     datagrams). A corrupt-but-delivered symbol is decoded as if it were correct; the spare
- *     check equation that could detect it is not tested. Named, not handled.
+ *   - Erasure decoding still assumes packets arrive intact or not at all, and that assumption is
+ *     now ENFORCED rather than merely stated: every frame carries a CRC-32C trailer and a frame
+ *     that fails it is discarded before block assembly, so corruption degrades to erasure — the
+ *     fault class the code handles. This paragraph read "a corrupt-but-delivered symbol is decoded
+ *     as if it were correct … named, not handled" until 2026-08-14; it is handled now
+ *     (081KZYP1X3B087G0R001EZ37PQ). The spare check equation inside the decoder is still not
+ *     tested, and no longer needs to be for this fault: a corrupt symbol does not reach it.
+ *   - The check is a CHECKSUM, NOT a MAC. It detects accidental corruption and nothing an
+ *     adversary does. See `encodePacket` for why a MAC is not the increment shipped here, and for
+ *     the wire-compatibility direction (new→old works, old→new is rejected as `truncated`).
+ *   - It attributes only the corruption that REACHES this receiver. Corruption a lower layer
+ *     already discarded (802.11 FCS, LoRa CRC, UDP checksum) still arrives as an absent sequence
+ *     number and still lands in `unknown`. The 7.1x/90x throughput loss is recovered exactly in
+ *     proportion to how much corruption is delivered rather than destroyed on the wire; that is a
+ *     property of the link, and `udp-bdp-link.ts` `deliveredCorruptFraction` is the knob that
+ *     makes it a curve instead of a claim.
  *   - For higher erasure rates, use a larger code (e.g. [16,8,4] or [32,16,4]).
  *   - The NACK mechanism assumes the NACK channel itself is reliable (e.g. TCP for NACKs,
  *     UDP for data). If NACKs are also lossy, the loss estimate is noisy but still useful.
@@ -94,13 +107,12 @@
  *   - Losing more than `MAX_NACK_GAP` consecutive packets produces NO congestion signal. The
  *     single `expectedSeq` is shared across every peer on a broadcast transport, so a wide gap
  *     is not attributable to a sender in the first place; per-peer sequence state is the fix.
- *   - **This transport cannot perceive congestion or corruption, and says so in the type.**
- *     `LossSignal`'s `congestion` and `corruption` cases require evidence values that nothing can
- *     mint here: an integrity check (081KZYP1X3B087G0R001EZ37PQ — there is none) and a queue or
- *     delay signal (there is none). Measured under the BDP harness: reordering is 99.6%
- *     attributable, corruption and congestion are 0%. So separating the signals closes the
- *     reorder door (paced throughput under jitter 20.9 -> 466.2 pkt/s) and does NOT close the
- *     corruption door, which stays exactly where it was until an integrity check exists.
+ *   - **This transport cannot perceive CONGESTION, and says so in the type.** `LossSignal`'s
+ *     `congestion` case requires a `CongestionEvidence` value that nothing can mint here: there is
+ *     no timestamp, no ECN bit and no receiver-side queue estimate. The `corruption` case WAS in
+ *     the same position and no longer is — `CorruptionEvidence` is minted at the CRC-32C
+ *     verification failure in `decodePacket`, and nowhere else. The asymmetry is the honest
+ *     summary of this change: one of the two blind causes got an instrument, the other did not.
  *     Unattributed loss keeps the classical backoff, which is the conservative direction: not
  *     backing off on it would be ASSUMING corruption, and that error ends in congestion collapse.
  *
@@ -119,6 +131,7 @@
 // This keeps the transport usable in all environments while rewarding teaching-capable peers.
 import type { ErrorEnvelope } from "../protocol/error-envelope";
 import type { DimensionalBnn } from "../planning/error-bnn-bridge";
+import { crc32c } from "../crc32c/crc32c";
 
 // ── [8,4,4] Adinkra generator matrix (same as AdinkraCode.fs) ─────────────────────────────
 // Generator matrix G = [I₄ | A] in systematic form, over GF(2).
@@ -340,7 +353,43 @@ export function recoverAdinkraErasure(
   return full === null ? null : full[erasedIdx]!;
 }
 
-// ── Packet framing ────────────────────────────────────────────────────────────────────────
+// ── Packet framing, and the integrity check ───────────────────────────────────────────────
+//
+// CHECKSUM, NOT A MAC — and the label is the load-bearing part (081KZYP1X3B087G0R001EZ37PQ).
+//
+// A CRC detects ACCIDENTAL corruption. It detects nothing an adversary does, because an
+// adversary recomputes it: the polynomial is public, the frame is unauthenticated, and there is
+// no key anywhere in this transport. Every use of the word "integrity" in this module means
+// "the bytes are self-consistent", never "the bytes came from who they claim".
+//
+// WHY NOT A MAC, stated so the omission is a decision rather than a gap. A MAC needs a shared
+// secret and this is a BROADCAST transport with no session, no key agreement and no group key:
+// `myZid` is a self-asserted string used for echo suppression. The repo's existing authenticity
+// membrane (`beacon-auth.ts`) is Ed25519 SIGNATURES over an injected trust store — 64 bytes and
+// an asymmetric verify per message, which is right for the low-rate discovery vocabulary and
+// wrong for every packet of an 8-packet ECC block on a LoRa-class link. Authentication also
+// belongs on the CONTROL channel, where the actual lever is (a peer can fabricate NACKs), and a
+// per-packet data-path CRC does not move that lever one inch. So: CRC now, labelled; the MAC is
+// a separate membrane in front of the NACK path, and it is not this work-item.
+//
+// Anchors (Beacon): Castagnoli, Bräuer & Herrmann, "Optimization of Cyclic Redundancy-Check
+// Codes with 24 and 32 Parity Bits" (IEEE Trans. Comm. 41(6), 1993 — CITED, not page-checked)
+// for CRC-32C itself; Koopman, "32-Bit Cyclic Redundancy Codes for Internet Applications"
+// (DSN 2002 — CITED) for why polynomial choice is a Hamming-distance argument and not taste;
+// Stone & Partridge, "When the CRC and TCP Checksum Disagree" (SIGCOMM 2000 — CITED) for why an
+// end-to-end check is worth its bytes even under a link layer that already has one: their
+// measured residual-error rate is dominated by hardware and software faults between the link
+// checks, which no link check can see.
+//
+// The implementation is NOT a second CRC. It is `src/Core.TypeScript/crc32c/crc32c.ts` — the
+// existing 4-oracle byte-locked primitive (C#/F#/Rust/TS agree on `golden-vectors.json`), so
+// this transport joins the existing proof lineage instead of minting a rival checksum that is
+// free to drift from it.
+
+/** Fixed header bytes preceding the payload. */
+export const PACKET_HEADER_BYTES = 16;
+/** CRC-32C trailer bytes following the payload. See `encodePacket` for why it is a TRAILER. */
+export const PACKET_CHECKSUM_BYTES = 4;
 
 export interface LossyPacketHeader {
   readonly seq: number; // global sequence number (monotone)
@@ -350,29 +399,110 @@ export interface LossyPacketHeader {
   readonly payloadLen: number;
 }
 
-/** Encode a packet header + payload into a single Buffer. */
+/**
+ * Encode a packet header + payload + CRC-32C trailer into a single Buffer.
+ *
+ * WIRE-FORMAT CHANGE, and the compatibility is ONE-WAY — stated plainly because a wire change
+ * that only says "added a field" has not said the part that matters:
+ *
+ *   - **new sender → OLD receiver: WORKS.** The old `decodePacket` reads `payloadLen` from the
+ *     header and slices `[16, 16+payloadLen)`; it checked `buf.length < 16 + payloadLen`, which
+ *     TOLERATES trailing bytes. The 4-byte trailer lands past the payload and is ignored. An old
+ *     peer therefore keeps decoding new frames correctly and unaware — it simply gets no check.
+ *   - **old sender → NEW receiver: REJECTED, loudly, as `truncated`.** An old frame is exactly
+ *     `16 + payloadLen` bytes, so the trailer is missing and the length test fails. It is
+ *     reported as a FRAMING failure and explicitly NOT as corruption: a version skew that
+ *     masqueraded as channel corruption would suppress a peer's backoff for the entire duration
+ *     of a rollout, which is the worst possible way to learn that two peers disagree about a
+ *     wire format.
+ *
+ * The trailer position is what buys the working direction. A checksum placed INSIDE the header
+ * (there are 2 spare padding bytes at offset 14) or appended to a grown 20-byte header would
+ * make an old receiver mis-slice the payload and deliver silently-wrong bytes — trading a loud
+ * failure for exactly the silent one this work-item exists to remove. There is no fully
+ * backward-compatible option, because the format carries no version field; the choice available
+ * was WHICH direction fails and HOW, and it was made for fail-closed and loud.
+ *
+ * The CRC covers the header as well as the payload. That is deliberate: a corrupted `blockPos`
+ * writes a good symbol into the wrong slot of the erasure block, and a corrupted `payloadLen`
+ * mis-frames everything after it — both are corruptions the decoder would happily consume.
+ */
 export function encodePacket(header: LossyPacketHeader, payload: Uint8Array): Buffer {
-  const hdr = Buffer.alloc(16);
-  hdr.writeUInt32BE(header.seq, 0);
-  hdr.writeUInt32BE(header.blockSeq, 4);
-  hdr.writeUInt8(header.blockPos, 8);
-  hdr.writeUInt8(header.isData ? 1 : 0, 9);
-  hdr.writeUInt32BE(header.payloadLen, 10);
-  // 2 bytes padding for alignment
-  return Buffer.concat([hdr, Buffer.from(payload)]);
+  const framed = Buffer.alloc(PACKET_HEADER_BYTES + payload.length + PACKET_CHECKSUM_BYTES);
+  framed.writeUInt32BE(header.seq, 0);
+  framed.writeUInt32BE(header.blockSeq, 4);
+  framed.writeUInt8(header.blockPos, 8);
+  framed.writeUInt8(header.isData ? 1 : 0, 9);
+  framed.writeUInt32BE(header.payloadLen, 10);
+  // bytes 14..16 are reserved and MUST stay zero — they are inside the checksummed region.
+  framed.set(payload, PACKET_HEADER_BYTES);
+  const end = PACKET_HEADER_BYTES + payload.length;
+  framed.writeUInt32BE(crc32c(framed.subarray(0, end)), end);
+  return framed;
 }
 
-/** Decode a packet from a Buffer. Returns null if the buffer is too short. */
-export function decodePacket(buf: Buffer): { header: LossyPacketHeader; payload: Uint8Array } | null {
-  if (buf.length < 16) return null;
-  const seq = buf.readUInt32BE(0);
-  const blockSeq = buf.readUInt32BE(4);
-  const blockPos = buf.readUInt8(8);
-  const isData = buf.readUInt8(9) === 1;
+/**
+ * Why a frame was refused. The three cases are kept apart because they license different
+ * conclusions, and collapsing them is how a rollout skew becomes a fake corruption measurement.
+ *
+ *   - `short` / `truncated` — FRAMING. The buffer cannot hold what its own header says it holds.
+ *     Says nothing about the channel: an old peer, a truncating relay and a mangled frame all
+ *     land here. Never attributed to corruption.
+ *   - `checksum` — the frame is complete and its bytes disagree with its own CRC-32C. THIS is
+ *     the corruption observation, and it is the only one that carries evidence.
+ */
+export type PacketRejectReason = "short" | "truncated" | "checksum";
+
+export type PacketDecode =
+  | { readonly ok: true; readonly header: LossyPacketHeader; readonly payload: Uint8Array }
+  | { readonly ok: false; readonly reason: "short" | "truncated" }
+  | { readonly ok: false; readonly reason: "checksum"; readonly evidence: CorruptionEvidence };
+
+/**
+ * Decode and VERIFY a packet. A frame whose CRC-32C does not match its bytes is refused — it
+ * never reaches `addToBlock`, so corruption degrades to erasure, which is the fault class the
+ * [8,4,4] code actually handles.
+ *
+ * That degradation is the whole defect being closed. Before this check, one flipped bit in a
+ * PARITY packet — a packet the application never sees and would not have missed — plus one
+ * ordinary erasure made `recoverAdinkraBlock` return non-null WRONG bytes in a DATA packet, with
+ * no error signal anywhere. Erasure recovery moved corruption out of redundancy the application
+ * never sees and into payload it does.
+ *
+ * Note the check is per-FRAME, not per-block: it rejects a frame whose own bytes are internally
+ * inconsistent, and it never inspects the block. So it cannot refuse a block the decoder could
+ * legitimately solve (#10496, all 3 erasures via Gauss–Jordan) — a refused frame is simply one
+ * more erasure, and the solve is attempted from the 4th arrival exactly as before.
+ *
+ * Aliasing note, unchanged and pre-existing: `payload` is a VIEW into `buf`. The CRC was verified
+ * over `buf` at this instant, so a caller that mutates `buf` afterwards invalidates a check that
+ * has already passed. `handleIncoming` copies before storing.
+ */
+export function decodePacket(buf: Buffer): PacketDecode {
+  if (buf.length < PACKET_HEADER_BYTES + PACKET_CHECKSUM_BYTES) return { ok: false, reason: "short" };
   const payloadLen = buf.readUInt32BE(10);
-  if (buf.length < 16 + payloadLen) return null;
-  const payload = new Uint8Array(buf.buffer, buf.byteOffset + 16, payloadLen);
-  return { header: { seq, blockSeq, blockPos, isData, payloadLen }, payload };
+  const end = PACKET_HEADER_BYTES + payloadLen;
+  if (buf.length < end + PACKET_CHECKSUM_BYTES) return { ok: false, reason: "truncated" };
+  const claimed = buf.readUInt32BE(end);
+  const actual = crc32c(buf.subarray(0, end));
+  if (claimed !== actual) {
+    return {
+      ok: false,
+      reason: "checksum",
+      evidence: mintCorruptionEvidence(`crc32c mismatch: claimed ${claimed}, computed ${actual}, ${end} bytes`),
+    };
+  }
+  return {
+    ok: true,
+    header: {
+      seq: buf.readUInt32BE(0),
+      blockSeq: buf.readUInt32BE(4),
+      blockPos: buf.readUInt8(8),
+      isData: buf.readUInt8(9) === 1,
+      payloadLen,
+    },
+    payload: new Uint8Array(buf.buffer, buf.byteOffset + PACKET_HEADER_BYTES, payloadLen),
+  };
 }
 
 // ── The loss signal: a cause that travels with the loss ───────────────────────────────────
@@ -405,7 +535,13 @@ export type LossCause = "congestion" | "corruption" | "reorder" | "unknown";
 export const LOSS_CAUSES: readonly LossCause[] = ["congestion", "corruption", "reorder", "unknown"] as const;
 
 declare const CONGESTION_EVIDENCE: unique symbol;
-declare const CORRUPTION_EVIDENCE: unique symbol;
+
+/** The corruption brand, now a REAL runtime symbol rather than a `declare const`.
+ *
+ *  It is not exported, so `CorruptionEvidence` remains unforgeable outside this module — but it
+ *  now EXISTS, which is the difference an integrity check makes. `mintCorruptionEvidence` below
+ *  is the only thing that can name it, and it is not exported either. */
+const CORRUPTION_EVIDENCE: unique symbol = Symbol("zeta.transport.corruption-evidence");
 
 /**
  * Evidence that a loss was a full queue: an explicit congestion notification, a standing-queue
@@ -424,17 +560,35 @@ export interface CongestionEvidence {
 }
 
 /**
- * Evidence that a frame was corrupted: a checksum or MAC that rejected it.
+ * Evidence that a frame was corrupted: a checksum that rejected it.
  *
- * **NOT CONSTRUCTIBLE TODAY** for the same reason and by the same mechanism -
- * 081KZYP1X3B087G0R001EZ37PQ: this transport has no integrity check at all. Erase one packet,
- * flip one bit of parity, and `recoverAdinkraBlock` returns non-null WRONG bytes silently. Until
- * that work-item lands, corruption is not something this receiver can perceive, and the honest
- * consequence is that corruption loss arrives here as `unknown`.
+ * **CONSTRUCTIBLE SINCE 081KZYP1X3B087G0R001EZ37PQ, and only one way.** The sole minting
+ * function is `mintCorruptionEvidence`, its sole caller is the CRC-32C verification failure in
+ * `decodePacket`, and neither is exported. So a value of this type is not an assertion that
+ * corruption occurred — it is a record that THIS receiver ran a check on bytes it held and the
+ * check failed. That is the strongest claim available and it is deliberately narrow:
+ *
+ *   - it is LOCAL. It says nothing about a peer's claim that its loss was corruption; see
+ *     `retractLoss`, where a wire-borne corruption report is handled as a RE-ATTRIBUTION of the
+ *     reporter's own earlier report and needs no evidence value at all, precisely because the
+ *     sender verified nothing.
+ *   - it is ACCIDENTAL-corruption evidence. A CRC an adversary recomputed matches. `source`
+ *     records what the check saw, never who sent it.
+ *
+ * `CongestionEvidence` is deliberately NOT promoted alongside it, and the asymmetry is the
+ * finding: this change gave the receiver an instrument for one of the two blind causes and not
+ * the other. There is still no timestamp, no ECN bit and no queue estimate here.
  */
 export interface CorruptionEvidence {
   readonly [CORRUPTION_EVIDENCE]: true;
   readonly source: string;
+}
+
+/** The ONLY constructor of `CorruptionEvidence`. Not exported; its only caller is the
+ *  checksum-verification failure branch of `decodePacket`. Adding a second caller is the moment
+ *  this type stops meaning "a check ran and failed here", so `ULT-31` pins the caller count. */
+function mintCorruptionEvidence(source: string): CorruptionEvidence {
+  return { [CORRUPTION_EVIDENCE]: true, source };
 }
 
 /**
@@ -443,21 +597,38 @@ export interface CorruptionEvidence {
  * What can be attributed HONESTLY, and by what:
  *
  *   - `reorder`   — a sequence number the receiver REPORTED missing that then ARRIVED. The
- *                   receiver observes this directly; it is the one attribution this transport can
- *                   make today, and it is the one RFC 4653 is about.
- *   - `corruption` — needs an integrity check (`CorruptionEvidence`). Not available.
- *   - `congestion` — needs a queue or delay signal (`CongestionEvidence`). Not available.
+ *                   receiver observes this directly, and it is the one RFC 4653 is about.
+ *   - `corruption` — a frame ARRIVED and failed its CRC-32C (`CorruptionEvidence`, minted only at
+ *                   that verification failure). Available since 081KZYP1X3B087G0R001EZ37PQ, and
+ *                   available ONLY for corruption that reaches the receiver — see the honest
+ *                   boundary below, which is the difference between closing this door and
+ *                   claiming to have closed it.
+ *   - `congestion` — needs a queue or delay signal (`CongestionEvidence`). Still not available.
  *   - `unknown`   — an erasure whose cause the receiver cannot see. **A first-class case, not a
- *                   dumping ground:** it is the honest name for the union {congestion,
- *                   corruption} that this transport cannot split. Under the BDP harness it is
- *                   where essentially all real loss lands, and saying that plainly is worth more
- *                   than a taxonomy that pretends.
+ *                   dumping ground:** it is the honest name for what is left of {congestion,
+ *                   corruption} after the integrity check has taken the share it can see.
  *
- * SECURITY, named because it is a new lever on an existing hole: the data path is
- * UNAUTHENTICATED (see "Honest boundary"), so a peer can claim `reorder` and suppress a sender's
- * backoff. It could already fabricate NACKs to *cause* backoff; this is the same hole with the
- * opposite sign, and it is not closed by this change. Authenticating the control channel is what
- * closes it.
+ * HONEST BOUNDARY ON THE CORRUPTION CASE, because the obvious overclaim is one sentence away.
+ * An application-layer check attributes exactly the corruption that SURVIVES TO THE APPLICATION.
+ * Corruption a lower layer already discarded — an 802.11 FCS, a LoRa CRC, a UDP checksum — never
+ * reaches this code and arrives as an absent sequence number, indistinguishable from a queue
+ * drop, exactly as before. So this change splits the corruption class in two and closes one half:
+ *
+ *   delivered-corrupt  → detected, discarded, attributed, and no longer amplified.  CLOSED.
+ *   dropped-on-the-wire → still an erasure, still `unknown`, still backs off.        OPEN.
+ *
+ * Which half dominates is a property of the LINK, not of this code, so the honest report is a
+ * curve over that split rather than a single number: `udp-bdp-link.ts` `deliveredCorruptFraction`
+ * is the knob, `UBL-13` is the measurement.
+ *
+ * SECURITY. The data path is UNAUTHENTICATED (see "Honest boundary"), so a peer can claim
+ * `reorder` — and now `corruption` — and suppress a sender's backoff. That is the same hole and
+ * NOT a new one, for a reason worth stating exactly: a receiver that wants to suppress a sender's
+ * backoff can simply STAY SILENT and emit no NACK at all, which is cheaper and strictly more
+ * effective than any claim. Believing an attribution therefore grants an adversary nothing
+ * withholding did not already grant. The asymmetric direction — FABRICATING NACKs to *cause*
+ * backoff — is the real hole, it is untouched here, and authenticating the control channel is
+ * what closes it. A per-packet CRC is not that; see `encodePacket`.
  */
 export type LossSignal =
   | { readonly cause: "unknown"; readonly seqs: readonly number[] }
@@ -698,18 +869,34 @@ export function onLoss(state: AimdState, signal: LossSignal): AimdState {
 }
 
 /**
- * Retract a loss that turned out to be a reordered packet: the receiver reported these sequence
- * numbers missing and then watched them arrive.
+ * Retract a congestion-suspect loss, re-attributing it to a cause that backing off cannot relieve.
  *
- * Two effects, and the second is the one that matters. The counts move from `unknown` to
- * `reorder` — a Z-set correction, +1 then −1, not a duplicate guard. And if the decrease those
- * sequence numbers caused would NOT have fired without them, the gap is restored. The decision is
- * RECOMPUTED, never merely inverted, so a decrease that was justified by other losses stands.
+ * Two effects, and the second is the one that matters. The counts move from `unknown` to `to` — a
+ * Z-set correction, +1 then −1, not a duplicate guard. And if the decrease those sequence numbers
+ * caused would NOT have fired without them, the gap is restored. The decision is RECOMPUTED, never
+ * merely inverted, so a decrease that was justified by other losses stands.
+ *
+ * WHY `to` EXISTS AND WHY IT TAKES NO EVIDENCE (081KZYP1X3B087G0R001EZ37PQ). Two reports arrive
+ * over the wire that mean "do not back off on this":
+ *
+ *   - `reorder`    — the receiver reported these missing and then watched them arrive.
+ *   - `corruption` — the receiver reported these missing and then matched them against frames it
+ *                    had itself REJECTED on a failed CRC-32C.
+ *
+ * Both are the reporter WITHDRAWING its own earlier congestion-suspect claim, so both are handled
+ * here, and neither carries a `CorruptionEvidence` value — deliberately. The sender verified
+ * nothing; minting evidence on its behalf would be exactly the circular inference this module
+ * removed, re-entering through a helpful-looking constructor. `LossSignal`'s `corruption` case
+ * stays reachable only from LOCAL verification, and this path stays a re-attribution.
  *
  * §12 idempotency: retracting the same sequence twice is a no-op, because the retracted numbers
  * leave `suspectSeqs` on the first call and the record is cleared once it is reversed.
  */
-export function retractLoss(state: AimdState, seqs: readonly number[]): AimdState {
+export function retractLoss(
+  state: AimdState,
+  seqs: readonly number[],
+  to: "reorder" | "corruption" = "reorder",
+): AimdState {
   if (seqs.length === 0) return state;
   const retracted = new Set(seqs);
   const stillSuspect = state.suspectSeqs.filter((s) => !retracted.has(s));
@@ -744,7 +931,7 @@ export function retractLoss(state: AimdState, seqs: readonly number[]): AimdStat
 
   // Re-attribution. `removed` left the CURRENT window; `dropped` was counted in a window that has
   // already been evaluated and reset (081KZYN37T4087G0R00181THA4 resets on every evaluation), so
-  // only `removed` can be subtracted from `unknown` — but both are genuinely reorder, and the
+  // only `removed` can be subtracted from `unknown` — but both are genuinely `to`, and the
   // attribution report is the reason to say so. The two sets are disjoint by construction:
   // `updateAimd` empties `suspectSeqs` at the instant it builds a record from them.
   const attributed = removed + dropped;
@@ -756,7 +943,7 @@ export function retractLoss(state: AimdState, seqs: readonly number[]): AimdStat
   const lossByCause = {
     ...state.lossByCause,
     unknown: Math.max(0, state.lossByCause.unknown - removed),
-    reorder: state.lossByCause.reorder + attributed,
+    [to]: state.lossByCause[to] + attributed,
   };
   return { ...state, gapMs, lossByCause, suspectSeqs: stillSuspect, lastDecrease };
 }
@@ -928,11 +1115,27 @@ export class LossyUdpChannel {
    *  `2 * MAX_NACK_GAP` by eviction below `expectedSeq - MAX_NACK_GAP`, because unbounded state
    *  keyed on an unauthenticated peer's sequence field is how the 3,333,337x amplification worked. */
   private reportedMissing = new Set<number>();
+  /** Frames this receiver REJECTED on a failed CRC-32C and has not yet matched to a gap.
+   *
+   *  A rejected frame's header is inside the checksummed region, so its `seq` is exactly as
+   *  untrustworthy as the rest of it — the receiver knows THAT a frame was destroyed, never WHICH
+   *  sequence number it was. So corruption is carried as a COUNT and spent against the next gap:
+   *  `min(pending, gapSize)` of the missing numbers are attributed to corruption and the rest stay
+   *  `unknown`. Sound as a count (each rejection is one real destroyed transmission), arbitrary in
+   *  which numbers get the label — and the arbitrariness costs nothing downstream, because
+   *  corruption never enters `suspectSeqs` and so is never matched by sequence again.
+   *
+   *  The `min` is also the bound on the one lever this opens: an attacker spraying deliberately
+   *  bad frames can RE-LABEL losses the receiver independently observed, never manufacture them.
+   *  Capped at `MAX_NACK_GAP` for the same reason `reportedMissing` is — unbounded state keyed on
+   *  a peer-controlled stream is how the 3,333,337x amplification worked. */
+  private pendingCorruptFrames = 0;
   private dataHandlers: Array<(payload: Uint8Array) => void> = [];
   private lossHandlers: Array<(rates: readonly LossRate[]) => void> = [];
   private envelopeHandlers: Array<(envelope: ErrorEnvelope) => void> = [];
   private desyncHandlers: Array<(event: DesyncEvent) => void> = [];
   private reorderHandlers: Array<(seqs: readonly number[]) => void> = [];
+  private corruptionHandlers: Array<(evidence: CorruptionEvidence) => void> = [];
   /** Optional DimensionalBnn — absorbs teaching NACKs as EP observations. */
   private bnn: DimensionalBnn | null = null;
 
@@ -979,6 +1182,11 @@ export class LossyUdpChannel {
    *  attribution this transport can make today. Local; the wire retraction is separate. */
   onReorder(h: (seqs: readonly number[]) => void): void {
     this.reorderHandlers.push(h);
+  }
+  /** Called when a frame ARRIVED and failed its CRC-32C. The evidence is LOCAL — this receiver
+   *  ran the check — and is accidental-corruption evidence only; see `encodePacket`. */
+  onCorruption(h: (evidence: CorruptionEvidence) => void): void {
+    this.corruptionHandlers.push(h);
   }
   /** Called when a teaching NACK envelope is emitted (for logging / UI). */
   onEnvelope(h: (envelope: ErrorEnvelope) => void): void {
@@ -1038,12 +1246,20 @@ export class LossyUdpChannel {
       const seqs = envelope.nack.filter((s): s is number => Number.isSafeInteger(s) && s >= 0);
       const claimed = (envelope.teaching as Partial<NackMessage> | undefined)?.cause;
       const before = this.aimd;
-      if (claimed === "reorder") {
-        this.aimd = retractLoss(this.aimd, seqs);
+      if (claimed === "reorder" || claimed === "corruption") {
+        // Both are RE-ATTRIBUTIONS: the reporter is withdrawing its own earlier congestion-suspect
+        // claim, having since watched the packet arrive (`reorder`) or matched it to a frame it
+        // rejected on a failed CRC-32C (`corruption`). Neither mints evidence here, and that is
+        // the honest part — this sender verified nothing; it is being told. See `retractLoss`.
+        //
+        // Believing it grants an adversary nothing: a receiver that wants to suppress this
+        // sender's backoff can simply emit no NACK, which is cheaper and strictly more effective.
+        this.aimd = retractLoss(this.aimd, seqs, claimed);
       } else {
-        // `corruption` and `congestion` are unreachable here by construction — neither evidence
-        // type can be minted (see `CongestionEvidence`) — so every non-retraction report is
-        // `unknown`. When 081KZYP1X3B lands, this is where the integrity verdict arrives.
+        // `congestion` remains unreachable here by construction — `CongestionEvidence` still
+        // cannot be minted anywhere, because this transport still has no queue or delay signal.
+        // So every non-retraction report is `unknown`, and unattributed loss keeps the classical
+        // backoff.
         this.aimd = onLoss(this.aimd, { cause: "unknown", seqs });
       }
       if (this.aimd !== before) {
@@ -1102,7 +1318,20 @@ export class LossyUdpChannel {
 
     const buf = Buffer.from(envelope.pkt, "base64");
     const decoded = decodePacket(buf);
-    if (!decoded) return;
+    if (!decoded.ok) {
+      if (decoded.reason === "checksum") {
+        // A frame arrived and its own bytes disagree with its own CRC-32C. It is DISCARDED here,
+        // which is the point: corruption degrades to erasure, and erasure is the fault class the
+        // [8,4,4] code handles. Nothing corrupt reaches `addToBlock`, so nothing corrupt can be
+        // laundered into a data packet by the erasure solve.
+        this.pendingCorruptFrames = Math.min(MAX_NACK_GAP, this.pendingCorruptFrames + 1);
+        for (const h of this.corruptionHandlers) h(decoded.evidence);
+      }
+      // `short` / `truncated` are FRAMING failures and are deliberately NOT counted as
+      // corruption — an old peer that has not taken the trailer lands here on every frame, and a
+      // rollout skew reported as channel corruption would suppress backoff for its duration.
+      return;
+    }
 
     const { header, payload } = decoded;
     // Check for sequence gaps → send NACK.
@@ -1164,6 +1393,37 @@ export class LossyUdpChannel {
           teaching: teachingNack,
         });
         this.transport.broadcast(nackEnv);
+
+        // ATTRIBUTION, second of the two this transport can now make. Frames this receiver
+        // REJECTED on a failed CRC-32C are spent against this gap, up to its size. The report
+        // above went out as `unknown` first and this WITHDRAWS part of it — the same shape as the
+        // reorder retraction below, for the same reason: the sender cannot verify a checksum it
+        // never held, so the honest wire form is the reporter taking back its own claim rather
+        // than the sender minting evidence on the reporter's word.
+        //
+        // Named cost, on the same ledger as the reorder retraction: one extra broadcast, emitted
+        // only when a corrupt frame was actually observed, bounded by the same MAX_NACK_GAP.
+        const attributable = Math.min(this.pendingCorruptFrames, missing.length);
+        if (attributable > 0) {
+          this.pendingCorruptFrames -= attributable;
+          const corruptSeqs = missing.slice(0, attributable);
+          const reattribution: NackMessage = {
+            type: "nack",
+            missingSeqs: corruptSeqs,
+            cause: "corruption",
+            why: `${attributable} frame(s) arrived and failed CRC-32C since the last gap; that many of [${missing[0]}..${missing[missing.length - 1]}] were destroyed by the channel, not by a queue. WHICH of them is arbitrary — the rejected frame's header is inside the checksummed region, so only the COUNT is a measurement`,
+            howToFix: "do not back off: backing off does not make a noisy channel quieter (RFC 4653)",
+            retractableBeliefId: corruptSeqs.map((s) => `missing:seq=${s}:cause=unknown:zid=${this.myZid}`).join(","),
+          };
+          this.transport.broadcast(
+            JSON.stringify({
+              type: "lossy-udp-nack",
+              zid: this.myZid,
+              nack: corruptSeqs,
+              teaching: reattribution,
+            }),
+          );
+        }
       }
     } else if (this.reportedMissing.delete(header.seq)) {
       // ATTRIBUTION, and the only one available today: a sequence number this receiver reported

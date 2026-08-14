@@ -66,7 +66,11 @@ import {
   computeAdinkraParity,
   buildSenderBlock,
   addToBlock,
+  decodePacket,
+  encodePacket,
   makeReceiverBlock,
+  PACKET_CHECKSUM_BYTES,
+  PACKET_HEADER_BYTES,
   xorParityBlock,
   xorRecoverErasure,
 } from "./udp-lossy-transport";
@@ -86,6 +90,12 @@ export const STREAM = {
   reorder: 2,
   duplicate: 3,
   payload: 4,
+  /** Which SURVIVING frame gets a bit flipped, and which bit. Disjoint from `loss` on purpose:
+   *  a CORRUPTED frame is one that ARRIVED, so the corruption process must not be able to
+   *  perturb the drop trace, or the two fault classes stop being separable and the sweep stops
+   *  being an experiment (081KZYP1X3B087G0R001EZ37PQ). */
+  corrupt: 5,
+  corruptBit: 6,
 } as const;
 
 /**
@@ -383,6 +393,13 @@ export interface WirePacket {
   readonly blockSeq: number;
   readonly blockPos: number;
   readonly payload: Uint8Array;
+  /** The ENCODED frame — header + payload + CRC-32C trailer, built by the live `encodePacket`.
+   *
+   *  Corruption is injected HERE and nowhere else, because a bit flip on the wire hits a frame,
+   *  not a decoded payload: flipping inside `payload` alone could never exercise a corrupted
+   *  `blockPos` or a corrupted length, which are the two corruptions with the largest blast
+   *  radius (a good symbol written into the wrong slot; a mis-framed remainder). */
+  readonly frame: Buffer;
 }
 
 export type CodeKind = "adinkra844" | "xor7of8";
@@ -396,6 +413,25 @@ export interface ChaosConfig {
   readonly reorderDepth: number;
   /** Per-packet probability that a surviving packet is delivered twice. */
   readonly duplicateProbability: number;
+  /**
+   * Per-packet probability that a SURVIVING frame arrives with one bit flipped.
+   *
+   * The fourth fault class, and the one the harness could not express until
+   * 081KZYP1X3B087G0R001EZ37PQ: erasure, duplication and reordering all preserve bytes, so every
+   * number this harness ever produced described a channel that never lied. Applied to survivors
+   * only — a dropped frame cannot also be corrupted — and drawn on its own stream.
+   */
+  readonly corruptProbability: number;
+  /**
+   * Whether the receiver VERIFIES the CRC-32C trailer. `true` is the shipped path.
+   *
+   * `false` is the NEGATIVE CONTROL, and it is the whole reason this knob exists rather than a
+   * hardcoded `true`: it reproduces the pre-2026-08-14 receiver, which read the frame without
+   * checking it. A test that only ever runs the checked path cannot tell a working check from a
+   * check that never fires — `UCH-19` runs both arms and the difference between them IS the
+   * measurement of what the check buys.
+   */
+  readonly verifyChecksum: boolean;
   readonly seed: bigint;
 }
 
@@ -407,6 +443,8 @@ export function defaultConfig(overrides: Partial<ChaosConfig> = {}): ChaosConfig
     reorderProbability: 0,
     reorderDepth: 3,
     duplicateProbability: 0,
+    corruptProbability: 0,
+    verifyChecksum: true,
     seed: 0x5eedn,
     ...overrides,
   };
@@ -442,36 +480,76 @@ export function buildWire(cfg: ChaosConfig, code: CodeKind): WirePacket[] {
           })()
         : [...data, xorParityBlock(data)];
     for (let pos = 0; pos < BLOCK_TOTAL; pos++) {
-      out.push({ seq: blockSeq * BLOCK_TOTAL + pos, blockSeq, blockPos: pos, payload: all[pos]! });
+      const seq = blockSeq * BLOCK_TOTAL + pos;
+      const payload = all[pos]!;
+      out.push({
+        seq,
+        blockSeq,
+        blockPos: pos,
+        payload,
+        // The LIVE encoder, not a re-implementation: the harness must measure the checksum the
+        // transport actually writes, or it measures a checksum of its own invention.
+        frame: encodePacket(
+          { seq, blockSeq, blockPos: pos, isData: pos < dataPerBlock, payloadLen: payload.length },
+          payload,
+        ),
+      });
     }
   }
   return out;
 }
 
+/** Flip one bit of a frame, chosen by a pure draw. Returns a COPY — the sender's frame is
+ *  evidence and must survive the channel unmodified, or the corruption check has no truth to
+ *  compare against. The bit is drawn over the WHOLE frame (header, payload and CRC trailer
+ *  alike), because a real flip does not respect field boundaries: a flip in `blockPos` writes a
+ *  good symbol into the wrong slot, and a flip in the trailer is a frame whose data is fine and
+ *  whose checksum is not. Both must be rejected, and only a whole-frame draw exercises both. */
+function flipOneBit(frame: Buffer, seed: bigint, index: number): Buffer {
+  const copy = Buffer.from(frame);
+  const bit = Number(drawU64(seed, STREAM.corruptBit, index) % BigInt(frame.length * 8));
+  copy[bit >> 3] = copy[bit >> 3]! ^ (1 << (bit & 7));
+  return copy;
+}
+
 /**
- * Apply the three faults, in wire order, from the seed. Returns the packets the receiver
+ * Apply the four faults, in wire order, from the seed. Returns the packets the receiver
  * actually sees, in the order it sees them.
  *
- * Order of application matters and is fixed: LOSS, then DUPLICATION, then REORDERING. Loss
- * first because the channel drops before anything downstream can copy it; duplication before
- * reordering because a duplicate is itself a packet that can then be reordered.
+ * Order of application matters and is fixed: LOSS, then CORRUPTION, then DUPLICATION, then
+ * REORDERING. Loss first because the channel drops before anything downstream can copy it;
+ * corruption next because only a SURVIVING frame can be corrupted — a frame the channel
+ * destroyed is an erasure, and conflating the two is the exact distinction this fault class
+ * exists to keep; duplication before reordering because a duplicate is itself a packet that can
+ * then be reordered.
+ *
+ * MODELLING CHOICE, named: corruption is drawn per WIRE index and applied before duplication, so
+ * a duplicated corrupt frame carries the SAME flip in both copies rather than two independent
+ * ones. The corruption sweeps run with `duplicateProbability = 0`, so the two never interact in
+ * any measured number here; a run that sets both should read this line first.
  */
 export function applyFaults(
   wire: readonly WirePacket[],
   cfg: ChaosConfig,
-): { delivered: WirePacket[]; trace: LossTrace } {
+): { delivered: WirePacket[]; trace: LossTrace; corrupted: number } {
   const trace = gilbertElliottTrace(wire.length, cfg.loss, cfg.seed, STREAM.loss);
 
   const survived: WirePacket[] = [];
+  let corrupted = 0;
   for (let i = 0; i < wire.length; i++) {
     if (trace.dropped[i]) continue;
-    survived.push(wire[i]!);
+    let pkt = wire[i]!;
+    if (cfg.corruptProbability > 0 && drawUnit(cfg.seed, STREAM.corrupt, i) < cfg.corruptProbability) {
+      pkt = { ...pkt, frame: flipOneBit(pkt.frame, cfg.seed, i) };
+      corrupted++;
+    }
+    survived.push(pkt);
     if (cfg.duplicateProbability > 0 && drawUnit(cfg.seed, STREAM.duplicate, i) < cfg.duplicateProbability) {
-      survived.push(wire[i]!);
+      survived.push(pkt);
     }
   }
 
-  if (cfg.reorderProbability <= 0 || cfg.reorderDepth <= 0) return { delivered: survived, trace };
+  if (cfg.reorderProbability <= 0 || cfg.reorderDepth <= 0) return { delivered: survived, trace, corrupted };
 
   // Reordering: a selected packet is held back and re-inserted `reorderDepth` slots later.
   // Deterministic: selection is a pure draw on the reorder stream, keyed by position.
@@ -491,7 +569,7 @@ export function applyFaults(
     }
   }
   for (const d of delayed) outOrder.push(d.pkt);
-  return { delivered: outOrder, trace };
+  return { delivered: outOrder, trace, corrupted };
 }
 
 // ── Receivers ─────────────────────────────────────────────────────────────────────────────
@@ -509,8 +587,17 @@ export interface RunResult {
   readonly wirePacketsSent: number;
   readonly dataPacketsSent: number;
   readonly dataPacketsDelivered: number;
-  /** Delivered payloads that did NOT match the sender's bytes. Must be 0. */
+  /** Delivered payloads that did NOT match the sender's bytes. Must be 0 whenever
+   *  `verifyChecksum` is true — that is the property 081KZYP1X3B087G0R001EZ37PQ bought, and with
+   *  `verifyChecksum: false` this counter is what shows the defect it bought it from. */
   readonly corruptDeliveries: number;
+  /** Frames the channel corrupted (one bit flipped in a SURVIVING frame). */
+  readonly framesCorrupted: number;
+  /** Frames the CRC-32C refused. Under `verifyChecksum: true` these are exactly the corrupted
+   *  frames, so `framesRejected === framesCorrupted` is the check's detection rate stated as an
+   *  identity — CRC-32C misses no single-bit error by construction (any CRC has Hamming distance
+   *  at least 2), so a shortfall here is a bug and not a probability. */
+  readonly framesRejected: number;
   /** Blocks that produced no delivery at all. */
   readonly blocksLost: number;
   /** dataPacketsDelivered / dataPacketsSent. */
@@ -533,14 +620,29 @@ export async function runScenario(cfg: ChaosConfig, decoder: DecoderKind, degree
   const code: CodeKind = decoder === "xor7of8" ? "xor7of8" : "adinkra844";
   const dataPerBlock = code === "adinkra844" ? BLOCK_DATA : 7;
   const wire = buildWire(cfg, code);
-  const { delivered, trace } = applyFaults(wire, cfg);
+  const { delivered, trace, corrupted } = applyFaults(wire, cfg);
 
   // Stage 1 — the ferry. Pure per-packet work; results keyed by input index.
-  const decodedArrivals = await runFerry(delivered, degreeOfParallelism, async (pkt) => ({
-    blockSeq: pkt.blockSeq,
-    blockPos: pkt.blockPos,
-    payload: pkt.payload,
-  }));
+  //
+  // The frame is DECODED here, by the live `decodePacket`, which is also where the CRC-32C is
+  // verified. That placement is not incidental: rejection is per-frame and stateless, so it is
+  // pure ferry work, and a rejected frame simply never reaches the order-sensitive fold — it
+  // becomes an erasure, which is precisely the degradation the check is for.
+  const arrivals = await runFerry(delivered, degreeOfParallelism, async (pkt) => {
+    const d = decodePacket(pkt.frame);
+    if (d.ok) return { blockSeq: d.header.blockSeq, blockPos: d.header.blockPos, payload: d.payload };
+    if (cfg.verifyChecksum) return null;
+    // NEGATIVE CONTROL — the pre-2026-08-14 receiver, reconstructed deliberately rather than
+    // kept alive in the module: read the header fields and hand the bytes on WITHOUT checking
+    // them. This is what made one flipped parity bit into a silently wrong data packet.
+    return {
+      blockSeq: pkt.frame.readUInt32BE(4),
+      blockPos: pkt.frame.readUInt8(8),
+      payload: new Uint8Array(pkt.frame.subarray(PACKET_HEADER_BYTES, pkt.frame.length - PACKET_CHECKSUM_BYTES)),
+    };
+  });
+  const decodedArrivals = arrivals.filter((a): a is NonNullable<typeof a> => a !== null);
+  const framesRejected = arrivals.length - decodedArrivals.length;
 
   // Stage 2 — the fold, in canonical wire order.
   const G = generatorFromModule();
@@ -584,8 +686,12 @@ export async function runScenario(cfg: ChaosConfig, decoder: DecoderKind, degree
         arr = new Array<Uint8Array | null>(BLOCK_TOTAL).fill(null);
         seen.set(a.blockSeq, arr);
       }
-      // Idempotent: a duplicate writes the same value at the same key.
-      arr[a.blockPos] = a.payload;
+      // Idempotent: a duplicate writes the same value at the same key. The range guard matters
+      // only in the `verifyChecksum: false` arm, where a corrupted `blockPos` is a `uint8` a
+      // flipped bit may set anywhere in 0..255 — the same protection `addToBlock` already gives
+      // the live path, applied here so the negative control measures WRONG BYTES rather than an
+      // out-of-range array write.
+      if (a.blockPos < BLOCK_TOTAL) arr[a.blockPos] = a.payload;
     }
     for (let b = 0; b < cfg.blocks; b++) {
       const arr = seen.get(b) ?? new Array<Uint8Array | null>(BLOCK_TOTAL).fill(null);
@@ -609,6 +715,8 @@ export async function runScenario(cfg: ChaosConfig, decoder: DecoderKind, degree
     dataPacketsSent,
     dataPacketsDelivered,
     corruptDeliveries,
+    framesCorrupted: corrupted,
+    framesRejected,
     blocksLost,
     deliveryRatio: dataPacketsSent === 0 ? 0 : dataPacketsDelivered / dataPacketsSent,
     goodput: wire.length === 0 ? 0 : dataPacketsDelivered / wire.length,

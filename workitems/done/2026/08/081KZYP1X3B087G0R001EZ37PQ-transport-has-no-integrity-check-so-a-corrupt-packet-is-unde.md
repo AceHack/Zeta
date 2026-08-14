@@ -1,11 +1,12 @@
 ---
 id: 081KZYP1X3B087G0R001EZ37PQ
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: transport-has-no-integrity-check-so-a-corrupt-packet-is-unde
 title: "Transport has no integrity check, so a corrupt packet is undetectable and erasure recovery amplifies it: one flipped parity byte silently corrupts a delivered data packet"
 created: 2026-08-13T23:06:57.515Z
+completed: 2026-08-14T10:26:05.599Z
 depends_on: []
 composes_with: []
 ---
