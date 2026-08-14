@@ -78,6 +78,16 @@ jobs:
       - name: no-new-B-NNNN cutover guard (mint ZetaIds instead)
         run: bun src/Core.TypeScript/backlog/lint-no-new-bnnnn.ts
 
+      # Falsifiability harness for the lint below. It was red on main for an
+      # extended period (1548 of 1551 offenders were verbatim PR titles in the
+      # generated mirror), and the fix narrowed its scan to authored surfaces.
+      # Narrowing scope is the easiest way to make a lint unable to fail, so
+      # these tests pin BOTH halves — what it must still catch, and what it may
+      # ignore — and run BEFORE it, so a scope regression reports as a scope
+      # regression rather than as a suspiciously green lint.
+      - name: lint-no-b-refs falsifiability + boundary tests
+        run: bun test src/Core.TypeScript/backlog/lint-no-b-refs.test.ts
+
       - name: no legacy B-NNNN prose refs (alias map is frozen history only)
         run: bun src/Core.TypeScript/backlog/lint-no-b-refs.ts
 

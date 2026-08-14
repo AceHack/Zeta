@@ -219,8 +219,8 @@ export function findScenario(id: ScenarioId): Scenario | undefined {
  *   `/etc/zeta-firstboot.conf`, which ships `HOST=control-plane`; the role
  *   prompt is interactive on tty1 with a timed default; and zflash writes no
  *   firstboot config to the ESP (zero matches for "firstboot" under
- *   `src/Core.TypeScript/zflash/`). The installer ISO itself says the
- *   per-flash `--role` flag is "B-0754 v2 scope". So a zflash-prepared boot
+ *   `src/Core.TypeScript/zflash/`). The installer ISO itself defers the
+ *   per-flash `--role` flag to v2 scope of 081KSGS9H0008QG0R002T3BJ2R. So a zflash-prepared boot
  *   image installs a second control-plane, which joins nothing and runs no
  *   k3s agent — and therefore no join observer.
  * - `shared-l2-segment` — `buildQemuSystemBootArgs` emits only per-VM

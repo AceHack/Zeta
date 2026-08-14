@@ -21,6 +21,7 @@ import { readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
 import { basename, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { legacyZetaIdFromBId, parentBId, timestampForLegacyBId } from "./legacy-b-id-zetaid";
+import { SKIP_DIR_NAMES, shouldSkipDir } from "./b-ref-scope";
 
 const REPO_ROOT = process.cwd();
 const MAP_PATH = join(REPO_ROOT, "src", "Core.TypeScript", "backlog", "b-to-zetaid-map.json");
@@ -141,11 +142,19 @@ function inheritSubItems(map: Map<string, string>): void {
   }
 }
 
+/**
+ * Discovery walk — intentionally WIDE, including archival trees.
+ *
+ * This is read-only, and the alias map exists precisely so that a legacy id
+ * found in an archive can still be resolved. Narrowing this would shrink the
+ * map's coverage of exactly the history it is meant to resolve. The narrowing
+ * belongs on `applyWalk` below, which writes.
+ */
 function scanRemainingBIds(): Set<string> {
   const found = new Set<string>();
   function walk(dir: string) {
     for (const entry of readdirSync(dir)) {
-      if (entry === "node_modules" || entry === ".git") continue;
+      if (SKIP_DIR_NAMES.has(entry)) continue;
       const full = join(dir, entry);
       let st;
       try { st = statSync(full); } catch { continue; }
@@ -221,9 +230,20 @@ if (!DRY_RUN) {
 console.log(`Alias map: ${Object.keys(sorted).length} entries (${remaining.size} unique B-ids seen in repo)`);
 
 let changed = 0;
+/**
+ * Rewrite walk — scoped to the SAME trees `lint-no-b-refs.ts` polices.
+ *
+ * Previously this skipped only `node_modules`/`.git`, so the remedy the linter
+ * advertises was strictly wider than the linter itself: it rewrote the recovered
+ * orphan-branch archive, `docs/history/`, `memory/`, `.claude/rules.bak/`, and
+ * the generated PR mirror — all trees the linter deliberately refuses to police.
+ * Observed live: ~1,700 files modified, and the run exceeded 500s and was killed
+ * mid-rewrite. A remedy must not have a larger blast radius than its check.
+ */
 function applyWalk(dir: string) {
+  if (shouldSkipDir(dir.slice(REPO_ROOT.length + 1))) return;
   for (const entry of readdirSync(dir)) {
-    if (entry === "node_modules" || entry === ".git") continue;
+    if (SKIP_DIR_NAMES.has(entry)) continue;
     const full = join(dir, entry);
     let st;
     try { st = statSync(full); } catch { continue; }

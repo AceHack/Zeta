@@ -14,27 +14,25 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
+import { SKIP_DIR_NAMES, SCAN_EXTENSIONS, shouldSkipDir } from "./b-ref-scope";
 
 const B_ID_RE = /\bB-[0-9]{4}(?:\.[0-9]+)*\b/g;
 
+/**
+ * Files that legitimately carry legacy ids as DATA rather than as references:
+ * the alias maps themselves, the tools that read/write them, and the tests that
+ * plant a legacy id as a fixture.
+ */
 const ALLOWED_FILES = new Set([
   "b-to-zetaid-map.json",
   "b-id-renumber-aliases.json",
   "rebuild-legacy-b-id-aliases.ts",
   "legacy-b-id-zetaid.ts",
+  "b-ref-scope.ts",
   "lint-no-b-refs.ts",
+  "lint-no-b-refs.test.ts",
   "lint-no-new-bnnnn.ts",
 ]);
-
-const ALLOWED_DIRS = new Set(["node_modules", ".git"]);
-
-/** Quarantined / archival surfaces — historical B-NNNN prose, not live substrate. */
-const SKIP_DIR_PREFIXES = [
-  "docs/recovered-orphan-branches-2026-05/",
-  "docs/history/",
-  "memory/",
-  ".claude/rules.bak/",
-];
 
 function repoRoot(): string {
   const r = spawnSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" });
@@ -44,21 +42,13 @@ function repoRoot(): string {
 function main(): number {
   const root = repoRoot();
   const offenders: { file: string; ids: string[] }[] = [];
-  const extensions = new Set([".md", ".ts", ".tsx", ".js", ".json", ".yaml", ".yml", ".jsonc", ".sh", ".fs", ".fsx"]);
-
-  function shouldSkipDir(relDir: string): boolean {
-    if (relDir.length === 0) return false;
-    return SKIP_DIR_PREFIXES.some(
-      (prefix) => relDir === prefix.slice(0, -1) || relDir.startsWith(prefix),
-    );
-  }
 
   function walk(dir: string) {
     const rel = dir.slice(root.length + 1);
     if (shouldSkipDir(rel)) return;
 
     for (const entry of readdirSync(dir)) {
-      if (ALLOWED_DIRS.has(entry)) continue;
+      if (SKIP_DIR_NAMES.has(entry)) continue;
       const full = join(dir, entry);
       let st;
       try { st = statSync(full); } catch { continue; }
@@ -66,7 +56,7 @@ function main(): number {
         walk(full);
         continue;
       }
-      if (!extensions.has(entry.slice(entry.lastIndexOf(".")))) continue;
+      if (!SCAN_EXTENSIONS.has(entry.slice(entry.lastIndexOf(".")))) continue;
       if (ALLOWED_FILES.has(entry)) continue;
       const text = readFileSync(full, "utf8");
       const ids = [...new Set(text.match(B_ID_RE) ?? [])];

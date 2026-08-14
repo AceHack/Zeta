@@ -180,7 +180,7 @@ The grep behind that claim was too narrow — it looked for `webauthn` and `pass
 
 | Prior work | Status | Where |
 |---|---|---|
-| **B-0744 — FIDO2/WebAuthn/Passkeys/OIDC adopted as Zeta's cross-cutting auth substrate** (Aaron, 2026-05-25). The exact desktop-biometric → server-token bridge this brief needs; names `@simplewebauthn/server` server-side, browser-native WebAuthn client-side; anchors FIDO Alliance + W3C + OpenID Foundation | **designed, never built** | `docs/recovered-orphan-branches-2026-05/misc/backlog/b0744-…` |
+| **081KSE6WT0008QG0R000SH6E0R — FIDO2/WebAuthn/Passkeys/OIDC adopted as Zeta's cross-cutting auth substrate** (Aaron, 2026-05-25). The exact desktop-biometric → server-token bridge this brief needs; names `@simplewebauthn/server` server-side, browser-native WebAuthn client-side; anchors FIDO Alliance + W3C + OpenID Foundation | **designed, never built** | `docs/recovered-orphan-branches-2026-05/misc/backlog/b0744-…` |
 | **Biometric sudo elevation via Touch ID PAM** — ADR, status **accepted** | **landed** | `docs/DECISIONS/2026-05-29-biometric-sudo-elevation-via-touch-id-pam.md` |
 | **zflash "I execute, you fingerprint"** — Touch ID PAM as the irreversible-action consent gate, short `yes <4-hex>` challenge | open work-item | `081KSE6WT0008QG0R003WZAQKV` |
 | **`fido:credId` as a ZetaId-resolvable identity-anchor scheme**, alongside `oauth:`, `did:`, `nostr:` | architecture, not built | `081KTHY32YQ08QG0R000JWHJYN` |
@@ -210,7 +210,7 @@ and building the mechanism is the correct read; treating the ADR as coverage is 
 
 ### The finding underneath the mistake
 
-B-0744 is an **adopted-substrate decision living in a recovery folder**. It was never re-filed into the
+081KSE6WT0008QG0R000SH6E0R is an **adopted-substrate decision living in a recovery folder**. It was never re-filed into the
 live backlog after the 2026-05 orphan-branch recovery, so it is invisible to a normal backlog search
 and shows up only if you grep the recovery tree. Anyone scoping auth work will re-derive it from
 scratch — which is what just happened here. `docs/recovered-orphan-branches-2026-05/` should be swept

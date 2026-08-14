@@ -308,8 +308,8 @@ anyone builds §4's networking:
 its role from the ISO's own `/etc/zeta-firstboot.conf`, which ships
 `HOST=control-plane`; the tty1 role prompt takes its timed default under
 automation; and `zflash` writes no firstboot config to the ESP (zero matches for
-"firstboot" under `src/Core.TypeScript/zflash/`). The installer config says the
-per-flash `--role` flag is "B-0754 v2 scope". So a zflash-prepared boot image
+"firstboot" under `src/Core.TypeScript/zflash/`). The installer config defers the
+per-flash `--role` flag to v2 scope of 081KSGS9H0008QG0R002T3BJ2R. So a zflash-prepared boot image
 installs a **second control-plane**, which runs no k3s agent — and therefore no
 join observer.
 
