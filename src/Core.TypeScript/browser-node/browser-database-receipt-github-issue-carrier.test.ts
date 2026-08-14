@@ -53,9 +53,11 @@ const request = {
 describe("native GitHub issue proposal carrier", () => {
   test("presents the exact gated-commit carrier without claiming submission", async () => {
     let openedUrl = "";
-    const openedWindow: { opener: unknown; location: { href: string } } = {
+    let closes = 0;
+    const openedWindow: { opener: unknown; location: { href: string }; close: () => void } = {
       opener: "page",
       location: { href: "" },
+      close: () => closes++,
     };
     const carrier = createNativeBrowserDatabaseReceiptGitHubIssueCarrier({
       root: {
@@ -69,7 +71,12 @@ describe("native GitHub issue proposal carrier", () => {
     });
     expect(carrier.ok).toBe(true);
     if (!carrier.ok) throw new Error(carrier.feedback.detail);
-    expect(await carrier.value.carry(request)).toEqual({
+    const reserved = carrier.value.reserveFromUserActivation();
+    expect(openedWindow.opener).toBeNull();
+    expect(openedWindow.location.href).toBe("");
+    if (!reserved.ok) throw new Error(reserved.feedback.detail);
+    await Promise.resolve();
+    expect(await reserved.value.carry(request)).toEqual({
       ok: true,
       value: {
         proposalId: proposal.proposalId,
@@ -77,7 +84,8 @@ describe("native GitHub issue proposal carrier", () => {
         disposition: "presented",
       },
     });
-    expect(openedWindow.opener).toBeNull();
+    reserved.value.release();
+    expect(closes).toBe(0);
     openedUrl = openedWindow.location.href;
     const url = new URL(openedUrl);
     expect(`${url.origin}${url.pathname}`).toBe("https://github.com/Lucent-Financial-Group/Zeta/issues/new");
@@ -92,22 +100,51 @@ describe("native GitHub issue proposal carrier", () => {
       maxUrlBytes: 128 * 1024,
     });
     if (!blocked.ok) throw new Error(blocked.feedback.detail);
-    expect(await blocked.value.carry(request)).toMatchObject({
+    expect(blocked.value.reserveFromUserActivation()).toMatchObject({
       ok: false,
       feedback: { severity: "backpressure", code: "receipt-proposal-carrier-rejected" },
     });
 
     let opens = 0;
+    let closes = 0;
     const constrained = createNativeBrowserDatabaseReceiptGitHubIssueCarrier({
-      root: { open: () => ++opens },
+      root: {
+        open: () => {
+          opens++;
+          return { opener: "page", location: { href: "" }, close: () => closes++ };
+        },
+      },
       repository: "Lucent-Financial-Group/Zeta",
       maxUrlBytes: 1,
     });
     if (!constrained.ok) throw new Error(constrained.feedback.detail);
-    expect(await constrained.value.carry(request)).toMatchObject({
+    const reserved = constrained.value.reserveFromUserActivation();
+    if (!reserved.ok) throw new Error(reserved.feedback.detail);
+    expect(await reserved.value.carry(request)).toMatchObject({
       ok: false,
       feedback: { severity: "backpressure", code: "receipt-proposal-carrier-rejected" },
     });
-    expect(opens).toBe(0);
+    expect({ opens, closes }).toEqual({ opens: 1, closes: 1 });
+  });
+
+  test("closes an unused reservation and rejects reuse", async () => {
+    let closes = 0;
+    const carrier = createNativeBrowserDatabaseReceiptGitHubIssueCarrier({
+      root: {
+        open: () => ({ opener: "page", location: { href: "" }, close: () => closes++ }),
+      },
+      repository: "Lucent-Financial-Group/Zeta",
+      maxUrlBytes: 128 * 1024,
+    });
+    if (!carrier.ok) throw new Error(carrier.feedback.detail);
+    const reserved = carrier.value.reserveFromUserActivation();
+    if (!reserved.ok) throw new Error(reserved.feedback.detail);
+    reserved.value.release();
+    reserved.value.release();
+    expect(closes).toBe(1);
+    expect(await reserved.value.carry(request)).toMatchObject({
+      ok: false,
+      feedback: { severity: "backpressure", code: "receipt-proposal-carrier-rejected" },
+    });
   });
 });

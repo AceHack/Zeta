@@ -74,10 +74,17 @@ export interface BrowserDatabaseReceiptProposalSigner {
   ): Promise<BrowserDatabaseReceiptProposalResult<SignedProposal>>;
 }
 
-export interface BrowserDatabaseReceiptProposalCarrier {
+/** A single-use presentation edge synchronously reserved by a user action. */
+export interface BrowserDatabaseReceiptProposalCarrierLease {
   carry(
     request: BrowserDatabaseReceiptProposalCarrierRequest,
   ): Promise<BrowserDatabaseReceiptProposalResult<BrowserDatabaseReceiptProposalCarrierReceipt>>;
+  release(): void;
+}
+
+/** Reserve transport authority before asynchronous proposal preparation starts. */
+export interface BrowserDatabaseReceiptProposalCarrier {
+  reserveFromUserActivation(): BrowserDatabaseReceiptProposalResult<BrowserDatabaseReceiptProposalCarrierLease>;
 }
 
 export interface BrowserDatabaseReceiptProposalLimits {
@@ -91,13 +98,20 @@ export interface BrowserDatabaseReceiptProposalOptions {
   readonly limits: BrowserDatabaseReceiptProposalLimits;
 }
 
+/** A single-use proposal operation bound to one carrier reservation. */
+export interface BrowserDatabaseReceiptProposalLease {
+  propose(
+    batch: BrowserDatabaseReceiptHandoffBatch,
+  ): Promise<BrowserDatabaseReceiptProposalResult<BrowserDatabaseReceiptProposalSubmission>>;
+  release(): void;
+}
+
+/** Build inert artifacts or begin an explicitly user-activated proposal lease. */
 export interface BrowserDatabaseReceiptProposalPort {
   build(
     batch: BrowserDatabaseReceiptHandoffBatch,
   ): BrowserDatabaseReceiptProposalResult<BrowserDatabaseReceiptProposalArtifact>;
-  propose(
-    batch: BrowserDatabaseReceiptHandoffBatch,
-  ): Promise<BrowserDatabaseReceiptProposalResult<BrowserDatabaseReceiptProposalSubmission>>;
+  beginFromUserActivation(): BrowserDatabaseReceiptProposalResult<BrowserDatabaseReceiptProposalLease>;
 }
 
 function succeeded<T>(value: T): BrowserDatabaseReceiptProposalResult<T> {
@@ -315,9 +329,9 @@ function freezeSignedProposal(value: SignedProposal): SignedProposal {
 }
 
 /**
- * Build and submit a credential-free proposal without claiming that submission
- * persisted the batch. A later accepted-record observer must produce the
- * existing handoff acknowledgement before the receipt archive may compact.
+ * Build inert artifacts and open single-use, credential-free proposal leases
+ * without claiming that presentation persisted the batch. A later accepted-
+ * record observer must acknowledge the handoff before the archive may compact.
  */
 export function createBrowserDatabaseReceiptProposalPort(
   options: BrowserDatabaseReceiptProposalOptions,
@@ -325,7 +339,7 @@ export function createBrowserDatabaseReceiptProposalPort(
   if (
     !hasMethod(options.hasher, "hash") ||
     !hasMethod(options.signer, "sign") ||
-    !hasMethod(options.carrier, "carry") ||
+    !hasMethod(options.carrier, "reserveFromUserActivation") ||
     !Number.isSafeInteger(options.limits.maxPatchBytes) ||
     options.limits.maxPatchBytes < 1
   ) {
@@ -344,69 +358,125 @@ export function createBrowserDatabaseReceiptProposalPort(
 
   return succeeded({
     build,
-    propose: async (batchValue) => {
-      const batch = validateBrowserDatabaseReceiptProposalBatch(batchValue, options.hasher);
-      if (!batch.ok) return batch;
-      const artifact = buildArtifact(batch.value, options.limits.maxPatchBytes);
-      if (!artifact.ok) return artifact;
-
-      let signed: BrowserDatabaseReceiptProposalResult<SignedProposal>;
+    beginFromUserActivation: () => {
+      let reserved: BrowserDatabaseReceiptProposalResult<BrowserDatabaseReceiptProposalCarrierLease>;
       try {
-        signed = await options.signer.sign({ artifact: artifact.value, batch: batch.value });
-      } catch {
-        return failed("receipt-proposal-signer-threw", "The injected passkey signer threw before submission.");
-      }
-      if (!signed.ok) {
-        return failed("receipt-proposal-signer-rejected", signed.feedback.detail, signed.feedback.severity);
-      }
-      let expectedChangeDigest: string;
-      try {
-        expectedChangeDigest = await sha256Hex(artifact.value.patch.trim());
+        reserved = options.carrier.reserveFromUserActivation();
       } catch {
         return failed(
-          "receipt-proposal-signer-rejected",
-          "The browser could not compute the signed patch digest before transport.",
+          "receipt-proposal-carrier-threw",
+          "The injected proposal carrier threw while reserving its user-activated presentation edge.",
         );
       }
-      if (!validSignedProposal(signed.value, expectedChangeDigest)) {
-        return failed("receipt-proposal-signer-rejected", "The injected signer returned no finite proposal envelope.");
-      }
-      const proposal = freezeSignedProposal(signed.value);
+      if (!reserved.ok) return reserved;
 
-      let carried: BrowserDatabaseReceiptProposalResult<BrowserDatabaseReceiptProposalCarrierReceipt>;
-      try {
-        carried = await options.carrier.carry({
-          artifact: artifact.value,
-          batch: batch.value,
-          proposal,
-        });
-      } catch {
-        return failed("receipt-proposal-carrier-threw", "The injected proposal carrier threw before submission.");
-      }
-      if (!carried.ok) {
-        return failed("receipt-proposal-carrier-rejected", carried.feedback.detail, carried.feedback.severity);
-      }
-      if (
-        carried.value.proposalId !== proposal.proposalId ||
-        carried.value.reference.length === 0 ||
-        carried.value.reference.length > 4096 ||
-        (carried.value.disposition !== "presented" && carried.value.disposition !== "submitted")
-      ) {
-        return failed(
-          "receipt-proposal-carrier-rejected",
-          "The proposal carrier returned no exact bounded submission receipt.",
-        );
-      }
-      return succeeded(
-        Object.freeze({
-          schema: BROWSER_DATABASE_RECEIPT_PROPOSAL_SUBMISSION_SCHEMA,
-          status: carried.value.disposition,
-          proposalId: carried.value.proposalId,
-          reference: carried.value.reference,
-          contentHash: batch.value.contentHash,
-          targetPath: artifact.value.targetPath,
-        }),
-      );
+      const carrierLease = reserved.value;
+      let available = true;
+      let carrierReserved = true;
+      const release = (): void => {
+        available = false;
+        if (!carrierReserved) return;
+        carrierReserved = false;
+        try {
+          carrierLease.release();
+        } catch {
+          // Release is best-effort cleanup; all operational failures remain typed results.
+        }
+      };
+
+      return succeeded({
+        release,
+        propose: async (batchValue) => {
+          if (!available) {
+            return failed(
+              "receipt-proposal-carrier-rejected",
+              "The user-activated proposal lease is no longer available.",
+              "backpressure",
+            );
+          }
+          available = false;
+
+          const reject = <T>(result: BrowserDatabaseReceiptProposalResult<T>) => {
+            release();
+            return result;
+          };
+          const batch = validateBrowserDatabaseReceiptProposalBatch(batchValue, options.hasher);
+          if (!batch.ok) return reject(batch);
+          const artifact = buildArtifact(batch.value, options.limits.maxPatchBytes);
+          if (!artifact.ok) return reject(artifact);
+
+          let signed: BrowserDatabaseReceiptProposalResult<SignedProposal>;
+          try {
+            signed = await options.signer.sign({ artifact: artifact.value, batch: batch.value });
+          } catch {
+            return reject(
+              failed("receipt-proposal-signer-threw", "The injected passkey signer threw before submission."),
+            );
+          }
+          if (!signed.ok) {
+            return reject(failed("receipt-proposal-signer-rejected", signed.feedback.detail, signed.feedback.severity));
+          }
+          let expectedChangeDigest: string;
+          try {
+            expectedChangeDigest = await sha256Hex(artifact.value.patch.trim());
+          } catch {
+            return reject(
+              failed(
+                "receipt-proposal-signer-rejected",
+                "The browser could not compute the signed patch digest before transport.",
+              ),
+            );
+          }
+          if (!validSignedProposal(signed.value, expectedChangeDigest)) {
+            return reject(
+              failed("receipt-proposal-signer-rejected", "The injected signer returned no finite proposal envelope."),
+            );
+          }
+          const proposal = freezeSignedProposal(signed.value);
+
+          let carried: BrowserDatabaseReceiptProposalResult<BrowserDatabaseReceiptProposalCarrierReceipt>;
+          try {
+            carried = await carrierLease.carry({
+              artifact: artifact.value,
+              batch: batch.value,
+              proposal,
+            });
+          } catch {
+            return reject(
+              failed("receipt-proposal-carrier-threw", "The injected proposal carrier threw before submission."),
+            );
+          }
+          if (!carried.ok) {
+            return reject(
+              failed("receipt-proposal-carrier-rejected", carried.feedback.detail, carried.feedback.severity),
+            );
+          }
+          if (
+            carried.value.proposalId !== proposal.proposalId ||
+            carried.value.reference.length === 0 ||
+            carried.value.reference.length > 4096 ||
+            (carried.value.disposition !== "presented" && carried.value.disposition !== "submitted")
+          ) {
+            return reject(
+              failed(
+                "receipt-proposal-carrier-rejected",
+                "The proposal carrier returned no exact bounded submission receipt.",
+              ),
+            );
+          }
+          carrierReserved = false;
+          return succeeded(
+            Object.freeze({
+              schema: BROWSER_DATABASE_RECEIPT_PROPOSAL_SUBMISSION_SCHEMA,
+              status: carried.value.disposition,
+              proposalId: carried.value.proposalId,
+              reference: carried.value.reference,
+              contentHash: batch.value.contentHash,
+              targetPath: artifact.value.targetPath,
+            }),
+          );
+        },
+      });
     },
   });
 }

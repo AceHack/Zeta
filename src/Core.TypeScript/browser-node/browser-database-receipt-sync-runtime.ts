@@ -16,6 +16,7 @@ import {
   BROWSER_DATABASE_RECEIPT_PROPOSAL_SUBMISSION_SCHEMA,
   browserDatabaseReceiptProposalTargetPath,
   type BrowserDatabaseReceiptProposalFeedback,
+  type BrowserDatabaseReceiptProposalLease,
   type BrowserDatabaseReceiptProposalPort,
   type BrowserDatabaseReceiptProposalSubmission,
 } from "./browser-database-receipt-proposal";
@@ -194,7 +195,7 @@ export function createBrowserDatabaseReceiptSyncRuntime(
     !hasMethods(options.archive, ["read", "compactGeneration"]) ||
     !hasMethods(options.hasher, ["hash"]) ||
     !validLimits(options.limits) ||
-    !hasMethods(options.proposal, ["build", "propose"]) ||
+    !hasMethods(options.proposal, ["build", "beginFromUserActivation"]) ||
     options.acceptance.kind !== BROWSER_DATABASE_RECEIPT_PROPOSAL_ACCEPTANCE_PORT_KIND ||
     !hasMethods(options.acceptance, ["handoff"])
   ) {
@@ -251,7 +252,22 @@ export function createBrowserDatabaseReceiptSyncRuntime(
     submitFromUserActivation: async () => {
       if (active !== null) return rejectBusy("submit");
       active = "submit";
+      let proposalLease: BrowserDatabaseReceiptProposalLease | null = null;
       try {
+        let leased;
+        try {
+          leased = options.proposal.beginFromUserActivation();
+        } catch {
+          return failWith(
+            runtimeFeedback(
+              "receipt-sync-proposal-threw",
+              "The proposal port threw while reserving its user-activated presentation edge.",
+            ),
+          );
+        }
+        if (!leased.ok) return failWith(leased.feedback);
+        proposalLease = leased.value;
+
         let snapshot;
         try {
           snapshot = await options.archive.read();
@@ -278,7 +294,7 @@ export function createBrowserDatabaseReceiptSyncRuntime(
 
         let submitted;
         try {
-          submitted = await options.proposal.propose(prepared.value.batch);
+          submitted = await proposalLease.propose(prepared.value.batch);
         } catch {
           return failWith(
             runtimeFeedback("receipt-sync-proposal-threw", "The proposal port threw during user submission."),
@@ -304,6 +320,11 @@ export function createBrowserDatabaseReceiptSyncRuntime(
         };
         return succeeded(copyReadout(latest));
       } finally {
+        try {
+          proposalLease?.release();
+        } catch {
+          // Release is best-effort cleanup; operational failures are already typed.
+        }
         active = null;
       }
     },

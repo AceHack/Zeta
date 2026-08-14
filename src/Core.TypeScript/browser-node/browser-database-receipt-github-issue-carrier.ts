@@ -16,6 +16,7 @@ interface NativeIssueHost {
   readonly openBlank: () => unknown;
   readonly isolate: (opened: Readonly<Record<string, unknown>>) => boolean;
   readonly navigate: (opened: Readonly<Record<string, unknown>>, url: string) => boolean;
+  readonly close: (opened: Readonly<Record<string, unknown>>) => void;
 }
 
 function succeeded<T>(value: T): BrowserDatabaseReceiptProposalResult<T> {
@@ -42,6 +43,10 @@ function nativeHost(root: unknown): NativeIssueHost | null {
         const location = Reflect.get(opened, "location");
         return isRecord(location) && Reflect.set(location, "href", url);
       },
+      close: (opened) => {
+        const close = Reflect.get(opened, "close");
+        if (typeof close === "function") Reflect.apply(close, opened, []);
+      },
     };
   } catch {
     return null;
@@ -62,8 +67,9 @@ function issueUrl(repository: string, request: BrowserDatabaseReceiptProposalCar
 }
 
 /**
- * Present a GitHub-owned issue composer without exposing a repository token to
- * the page. Presentation is not submission; durable acceptance is observed later.
+ * Reserve and later present a GitHub-owned issue composer without exposing a
+ * repository token to the page. Presentation is not submission; durable
+ * acceptance is observed later.
  */
 export function createNativeBrowserDatabaseReceiptGitHubIssueCarrier(
   options: NativeBrowserDatabaseReceiptGitHubIssueCarrierOptions,
@@ -79,47 +85,81 @@ export function createNativeBrowserDatabaseReceiptGitHubIssueCarrier(
   }
 
   return succeeded({
-    carry: (request) => {
-      const url = issueUrl(options.repository, request);
-      if (new TextEncoder().encode(url).byteLength > options.maxUrlBytes) {
-        return Promise.resolve(
-          failed(
-            `The GitHub issue composer URL exceeds its ${options.maxUrlBytes.toString()} byte budget.`,
-            "backpressure",
-          ),
-        );
-      }
+    reserveFromUserActivation: () => {
       let opened: unknown;
       try {
         opened = host.openBlank();
       } catch {
-        return Promise.resolve(failed("The browser threw while opening the GitHub issue composer."));
+        return failed("The browser threw while reserving the GitHub issue composer.");
       }
       if (opened === null || opened === undefined) {
-        return Promise.resolve(
-          failed("The browser blocked the GitHub issue composer; no proposal was presented.", "backpressure"),
-        );
+        return failed("The browser blocked the GitHub issue composer; no proposal was presented.", "backpressure");
       }
       if (!isRecord(opened)) {
-        return Promise.resolve(failed("The browser returned no controllable GitHub issue composer."));
+        return failed("The browser returned no controllable GitHub issue composer.");
       }
       try {
         if (!host.isolate(opened)) {
-          return Promise.resolve(failed("The browser could not isolate the GitHub issue composer from its opener."));
-        }
-        if (!host.navigate(opened, url)) {
-          return Promise.resolve(failed("The browser could not navigate the isolated GitHub issue composer."));
+          host.close(opened);
+          return failed("The browser could not isolate the GitHub issue composer from its opener.");
         }
       } catch {
-        return Promise.resolve(failed("The browser could not isolate and navigate the GitHub issue composer."));
+        try {
+          host.close(opened);
+        } catch {
+          // The failed reservation is already reported as heat.
+        }
+        return failed("The browser could not isolate the GitHub issue composer from its opener.");
       }
-      return Promise.resolve(
-        succeeded({
-          proposalId: request.proposal.proposalId,
-          reference: `github-issue-compose:${request.proposal.proposalId}`,
-          disposition: "presented",
-        }),
-      );
+
+      let active = true;
+      const release = (): void => {
+        if (!active) return;
+        active = false;
+        try {
+          host.close(opened);
+        } catch {
+          // Release is best-effort cleanup after a typed rejection.
+        }
+      };
+
+      return succeeded({
+        release,
+        carry: (request) => {
+          if (!active) {
+            return Promise.resolve(
+              failed("The GitHub issue composer reservation is no longer available.", "backpressure"),
+            );
+          }
+          const url = issueUrl(options.repository, request);
+          if (new TextEncoder().encode(url).byteLength > options.maxUrlBytes) {
+            release();
+            return Promise.resolve(
+              failed(
+                `The GitHub issue composer URL exceeds its ${options.maxUrlBytes.toString()} byte budget.`,
+                "backpressure",
+              ),
+            );
+          }
+          try {
+            if (!host.navigate(opened, url)) {
+              release();
+              return Promise.resolve(failed("The browser could not navigate the isolated GitHub issue composer."));
+            }
+          } catch {
+            release();
+            return Promise.resolve(failed("The browser could not navigate the isolated GitHub issue composer."));
+          }
+          active = false;
+          return Promise.resolve(
+            succeeded({
+              proposalId: request.proposal.proposalId,
+              reference: `github-issue-compose:${request.proposal.proposalId}`,
+              disposition: "presented",
+            }),
+          );
+        },
+      });
     },
   });
 }

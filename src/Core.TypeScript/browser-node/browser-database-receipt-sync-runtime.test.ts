@@ -14,6 +14,7 @@ import {
 import {
   BROWSER_DATABASE_RECEIPT_PROPOSAL_SUBMISSION_SCHEMA,
   browserDatabaseReceiptProposalTargetPath,
+  type BrowserDatabaseReceiptProposalLease,
   type BrowserDatabaseReceiptProposalPort,
   type BrowserDatabaseReceiptProposalSubmission,
 } from "./browser-database-receipt-proposal";
@@ -119,27 +120,59 @@ function open(
   return created.value;
 }
 
+function proposalPort(
+  propose: BrowserDatabaseReceiptProposalLease["propose"],
+  hooks: { readonly begin?: () => void; readonly release?: () => void } = {},
+): BrowserDatabaseReceiptProposalPort {
+  return {
+    build: () => {
+      throw new Error("not used by the coordinator");
+    },
+    beginFromUserActivation: () => {
+      hooks.begin?.();
+      return { ok: true, value: { propose, release: () => hooks.release?.() } };
+    },
+  };
+}
+
 describe("browser database receipt sync runtime", () => {
   test("submits only from the explicit user-activation method and never compacts on presentation", async () => {
+    let leaseCalls = 0;
     let proposalCalls = 0;
     let acceptanceCalls = 0;
+    const ordering: string[] = [];
     const runtime = open(
-      {
-        build: () => {
-          throw new Error("not used by the coordinator");
-        },
-        propose: (batch) => {
+      proposalPort(
+        (batch) => {
           proposalCalls++;
           return Promise.resolve({ ok: true, value: submission(batch.contentHash, "presented") });
         },
-      },
+        {
+          begin: () => {
+            leaseCalls++;
+            ordering.push("reserve");
+          },
+        },
+      ),
       acceptance(() => {
         acceptanceCalls++;
         throw new Error("submission must not poll acceptance");
       }),
+      {
+        read: () => {
+          ordering.push("archive");
+          return Promise.resolve({ ok: true, value: snapshot() });
+        },
+        compactGeneration: () => {
+          throw new Error("submission must not compact the archive");
+        },
+      },
     );
 
-    expect(await runtime.submitFromUserActivation()).toMatchObject({
+    const submitting = runtime.submitFromUserActivation();
+    expect(leaseCalls).toBe(1);
+    expect(ordering).toEqual(["reserve", "archive"]);
+    expect(await submitting).toMatchObject({
       ok: true,
       value: {
         status: "presented",
@@ -155,12 +188,9 @@ describe("browser database receipt sync runtime", () => {
 
   test("rejects proposal metadata for any other archive generation", async () => {
     const runtime = open(
-      {
-        build: () => {
-          throw new Error("not used by the coordinator");
-        },
-        propose: () => Promise.resolve({ ok: true, value: submission(`blake3:${"f".repeat(64)}`, "submitted") }),
-      },
+      proposalPort(() =>
+        Promise.resolve({ ok: true, value: submission(`blake3:${"f".repeat(64)}`, "submitted") }),
+      ),
       acceptance(() => {
         throw new Error("submission must not poll acceptance");
       }),
@@ -180,15 +210,10 @@ describe("browser database receipt sync runtime", () => {
       detail: "not accepted",
     } as const;
     const runtime = open(
-      {
-        build: () => {
-          throw new Error("polling must not build a proposal");
-        },
-        propose: () => {
+      proposalPort(() => {
           proposalCalls++;
           throw new Error("polling must not sign or carry a proposal");
-        },
-      },
+      }),
       acceptance(() => Promise.resolve({ ok: false, feedback: pendingFeedback })),
     );
 
@@ -208,15 +233,10 @@ describe("browser database receipt sync runtime", () => {
     let proposalCalls = 0;
     let compactions = 0;
     const runtime = open(
-      {
-        build: () => {
-          throw new Error("polling must not build a proposal");
-        },
-        propose: () => {
+      proposalPort(() => {
           proposalCalls++;
           throw new Error("polling must not submit a proposal");
-        },
-      },
+      }),
       acceptance((batch) => Promise.resolve({ ok: true, value: acknowledgement(batch) })),
       archive(snapshot(), () => {
         compactions++;
@@ -248,16 +268,11 @@ describe("browser database receipt sync runtime", () => {
     let acceptanceCalls = 0;
     let proposedHash = "";
     const runtime = open(
-      {
-        build: () => {
-          throw new Error("not used by the coordinator");
-        },
-        propose: async (batch) => {
+      proposalPort(async (batch) => {
           proposedHash = batch.contentHash;
           entered();
           return { ok: true, value: await carrier };
-        },
-      },
+      }),
       acceptance((batch) => {
         acceptanceCalls++;
         return Promise.resolve({ ok: true, value: acknowledgement(batch) });
@@ -284,15 +299,10 @@ describe("browser database receipt sync runtime", () => {
       archive: archive(snapshot([receipt(3)])),
       hasher: { hash },
       limits: { ...limits, minimumReceipts: 2 },
-      proposal: {
-        build: () => {
-          throw new Error("not used by the coordinator");
-        },
-        propose: () => {
+      proposal: proposalPort(() => {
           proposalCalls++;
           throw new Error("an underfilled archive must remain local");
-        },
-      },
+      }),
       acceptance: acceptance(() => {
         throw new Error("submission must not poll acceptance");
       }),
@@ -304,5 +314,60 @@ describe("browser database receipt sync runtime", () => {
       value: { status: "retained", receiptCount: 1, proposal: null },
     });
     expect(proposalCalls).toBe(0);
+  });
+
+  test("releases the presentation lease when the archive remains local", async () => {
+    let releases = 0;
+    const created = createBrowserDatabaseReceiptSyncRuntime({
+      databaseNodeId,
+      archiveNodeId,
+      targetNodeId,
+      archive: archive(snapshot([receipt(3)])),
+      hasher: { hash },
+      limits: { ...limits, minimumReceipts: 2 },
+      proposal: proposalPort(
+        () => {
+          throw new Error("a retained archive must not propose");
+        },
+        { release: () => releases++ },
+      ),
+      acceptance: acceptance(() => {
+        throw new Error("submission must not poll acceptance");
+      }),
+    });
+    if (!created.ok) throw new Error(created.feedback.detail);
+
+    expect(await created.value.submitFromUserActivation()).toMatchObject({
+      ok: true,
+      value: { status: "retained" },
+    });
+    expect(releases).toBe(1);
+  });
+
+  test("releases the presentation lease when archive reading fails", async () => {
+    let releases = 0;
+    const runtime = open(
+      proposalPort(
+        () => {
+          throw new Error("an unreadable archive must not propose");
+        },
+        { release: () => releases++ },
+      ),
+      acceptance(() => {
+        throw new Error("submission must not poll acceptance");
+      }),
+      {
+        read: () => Promise.reject(new Error("storage unavailable")),
+        compactGeneration: () => {
+          throw new Error("submission must not compact the archive");
+        },
+      },
+    );
+
+    expect(await runtime.submitFromUserActivation()).toMatchObject({
+      ok: false,
+      feedback: { severity: "heat", code: "receipt-sync-archive-threw" },
+    });
+    expect(releases).toBe(1);
   });
 });

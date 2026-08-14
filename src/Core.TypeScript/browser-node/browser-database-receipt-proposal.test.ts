@@ -13,6 +13,8 @@ import {
   BROWSER_DATABASE_RECEIPT_PROPOSAL_SUBMISSION_SCHEMA,
   createBrowserDatabaseReceiptProposalPort,
   type BrowserDatabaseReceiptProposalCarrier,
+  type BrowserDatabaseReceiptProposalLease,
+  type BrowserDatabaseReceiptProposalPort,
   type BrowserDatabaseReceiptProposalResult,
   type BrowserDatabaseReceiptProposalSigner,
 } from "./browser-database-receipt-proposal";
@@ -98,10 +100,18 @@ function createPort(input?: {
   const carrier =
     input?.carrier ??
     ({
-      carry: (request) =>
-        Promise.resolve(
-          accepted({ proposalId: request.proposal.proposalId, reference: "github-issue:10489", disposition: "submitted" }),
-        ),
+      reserveFromUserActivation: () =>
+        accepted({
+          release: () => undefined,
+          carry: (request) =>
+            Promise.resolve(
+              accepted({
+                proposalId: request.proposal.proposalId,
+                reference: "github-issue:10489",
+                disposition: "submitted",
+              }),
+            ),
+        }),
     } satisfies BrowserDatabaseReceiptProposalCarrier);
   const opened = createBrowserDatabaseReceiptProposalPort({
     hasher: { hash },
@@ -109,6 +119,12 @@ function createPort(input?: {
     carrier,
     limits: { maxPatchBytes: input?.maxPatchBytes ?? 32 * 1024 },
   });
+  if (!opened.ok) throw new Error(opened.feedback.detail);
+  return opened.value;
+}
+
+function begin(port: BrowserDatabaseReceiptProposalPort): BrowserDatabaseReceiptProposalLease {
+  const opened = port.beginFromUserActivation();
   if (!opened.ok) throw new Error(opened.feedback.detail);
   return opened.value;
 }
@@ -147,15 +163,24 @@ describe("browser database receipt passkey proposal port", () => {
         },
       },
       carrier: {
-        carry: (request) => {
-          events.push(`carry:${request.proposal.proposalId}`);
-          expect(request.batch.contentHash).toBe(request.artifact.contentHash);
-          return Promise.resolve(accepted({ proposalId, reference: "github-issue:10489", disposition: "submitted" }));
+        reserveFromUserActivation: () => {
+          events.push("reserve");
+          return accepted({
+            release: () => events.push("release"),
+            carry: (request) => {
+              events.push(`carry:${request.proposal.proposalId}`);
+              expect(request.batch.contentHash).toBe(request.artifact.contentHash);
+              return Promise.resolve(
+                accepted({ proposalId, reference: "github-issue:10489", disposition: "submitted" }),
+              );
+            },
+          });
         },
       },
     });
-    const result = await port.propose(batch());
-    expect(events).toEqual([`sign:${batch().contentHash}`, `carry:${proposalId}`]);
+    const lease = begin(port);
+    const result = await lease.propose(batch());
+    expect(events).toEqual(["reserve", `sign:${batch().contentHash}`, `carry:${proposalId}`]);
     expect(result).toEqual({
       ok: true,
       value: {
@@ -180,16 +205,17 @@ describe("browser database receipt passkey proposal port", () => {
       },
     });
     const source = { ...batch(), contentHash: `blake3:${"0".repeat(64)}` };
-    expect(await port.propose(source)).toMatchObject({
+    expect(await begin(port).propose(source)).toMatchObject({
       ok: false,
       feedback: { code: "receipt-proposal-hash-invalid" },
     });
     expect(signerCalls).toBe(0);
   });
 
-  test("backpressures an oversized patch without spending signer or carrier authority", async () => {
+  test("releases a reserved presentation when the patch exceeds its finite budget", async () => {
     let signerCalls = 0;
     let carrierCalls = 0;
+    let releases = 0;
     const port = createPort({
       maxPatchBytes: 1,
       signer: {
@@ -199,17 +225,21 @@ describe("browser database receipt passkey proposal port", () => {
         },
       },
       carrier: {
-        carry: () => {
-          carrierCalls++;
-          return Promise.resolve(accepted({ proposalId, reference: "unreachable", disposition: "submitted" }));
-        },
+        reserveFromUserActivation: () =>
+          accepted({
+            release: () => releases++,
+            carry: () => {
+              carrierCalls++;
+              return Promise.resolve(accepted({ proposalId, reference: "unreachable", disposition: "submitted" }));
+            },
+          }),
       },
     });
-    expect(await port.propose(batch())).toMatchObject({
+    expect(await begin(port).propose(batch())).toMatchObject({
       ok: false,
       feedback: { severity: "backpressure", code: "receipt-proposal-capacity-exhausted" },
     });
-    expect({ signerCalls, carrierCalls }).toEqual({ signerCalls: 0, carrierCalls: 0 });
+    expect({ signerCalls, carrierCalls, releases }).toEqual({ signerCalls: 0, carrierCalls: 0, releases: 1 });
   });
 
   test("turns signer and carrier faults into typed feedback", async () => {
@@ -220,7 +250,7 @@ describe("browser database receipt passkey proposal port", () => {
         },
       },
     });
-    expect(await signerFailure.propose(batch())).toMatchObject({
+    expect(await begin(signerFailure).propose(batch())).toMatchObject({
       ok: false,
       feedback: { code: "receipt-proposal-signer-threw" },
     });
@@ -231,13 +261,17 @@ describe("browser database receipt passkey proposal port", () => {
         sign: () => Promise.resolve(accepted(proposal("b".repeat(64)))),
       },
       carrier: {
-        carry: () => {
-          carrierCalls++;
-          return Promise.resolve(accepted({ proposalId, reference: "unreachable", disposition: "submitted" }));
-        },
+        reserveFromUserActivation: () =>
+          accepted({
+            release: () => undefined,
+            carry: () => {
+              carrierCalls++;
+              return Promise.resolve(accepted({ proposalId, reference: "unreachable", disposition: "submitted" }));
+            },
+          }),
       },
     });
-    expect(await mismatchedSigner.propose(batch())).toMatchObject({
+    expect(await begin(mismatchedSigner).propose(batch())).toMatchObject({
       ok: false,
       feedback: { code: "receipt-proposal-signer-rejected" },
     });
@@ -245,15 +279,59 @@ describe("browser database receipt passkey proposal port", () => {
 
     const carrierFailure = createPort({
       carrier: {
-        carry: () =>
-          Promise.resolve(
-            accepted({ proposalId: crypto.randomUUID(), reference: "wrong proposal", disposition: "submitted" }),
-          ),
+        reserveFromUserActivation: () =>
+          accepted({
+            release: () => undefined,
+            carry: () =>
+              Promise.resolve(
+                accepted({ proposalId: crypto.randomUUID(), reference: "wrong proposal", disposition: "submitted" }),
+              ),
+          }),
       },
     });
-    expect(await carrierFailure.propose(batch())).toMatchObject({
+    expect(await begin(carrierFailure).propose(batch())).toMatchObject({
       ok: false,
       feedback: { code: "receipt-proposal-carrier-rejected" },
     });
+  });
+
+  test("makes each user-activated lease single-use", async () => {
+    const lease = begin(createPort());
+    expect(await lease.propose(batch())).toMatchObject({ ok: true });
+    expect(await lease.propose(batch())).toMatchObject({
+      ok: false,
+      feedback: { severity: "backpressure", code: "receipt-proposal-carrier-rejected" },
+    });
+  });
+
+  test("backpressures concurrent use while the first lease operation is signing", async () => {
+    let entered!: () => void;
+    let resume!: () => void;
+    const signing = new Promise<void>((resolve) => {
+      entered = resolve;
+    });
+    const held = new Promise<void>((resolve) => {
+      resume = resolve;
+    });
+    const lease = begin(
+      createPort({
+        signer: {
+          sign: async (request) => {
+            entered();
+            await held;
+            return accepted(proposal(await sha256Hex(request.artifact.patch.trim())));
+          },
+        },
+      }),
+    );
+
+    const first = lease.propose(batch());
+    await signing;
+    expect(await lease.propose(batch())).toMatchObject({
+      ok: false,
+      feedback: { severity: "backpressure", code: "receipt-proposal-carrier-rejected" },
+    });
+    resume();
+    expect(await first).toMatchObject({ ok: true });
   });
 });
