@@ -1,0 +1,14 @@
+{
+  "id": "080d00080ef86010a013000888e07f31",
+  "at": "2026-08-14T16:01:34.988Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00G3QRA087G0R003GB0P4X",
+    "type": "bug",
+    "title": "no-op-cadence detector reads an abandoned surface: repoint to data/tick-shards or retire",
+    "slug": "no-op-cadence-detector-reads-an-abandoned-surface-repoint-to",
+    "priority": "P2",
+    "filename": "081M00G3QRA087G0R003GB0P4X-no-op-cadence-detector-reads-an-abandoned-surface-repoint-to.md"
+  }
+}

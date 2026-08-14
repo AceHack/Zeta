@@ -228,6 +228,23 @@ wait for instruction. Priority ladder:
    old. Default is advisory (exit 0 either way). `--enforce`
    makes a detection fatal; it is opt-in and not a required
    gate until the heuristic is calibrated (081M0085XQT087G0R003W4KFS4).
+
+   > **READ THIS BEFORE TRUSTING CHECK 0a (081M00G3QRA087G0R003GB0P4X).**
+   > Its input surface `docs/hygiene-history/ticks/` has had **no shard since
+   > 2026-05-29**. A run today reports `input-surface-absent` and judges
+   > *nothing* — that is **not** a clean bill of health, and the silent exit 0
+   > it used to give was never evidence the tick loop was healthy. Live tick
+   > telemetry is at `data/tick-shards/**/*.json`, which this tool does not
+   > read. Until the routing decision lands, use the heartbeat-via-commit
+   > check in `CLAUDE.md` (`git log --since` over `main` **and**
+   > `origin/heartbeat/*`) as the real idle counter.
+   >
+   > The minimal-observation heuristic was also measured at a **60.4%
+   > false-positive rate** before repair — it fired on 48/48 overlap windows,
+   > 29 of them while substantive commits were landing. Cause was a parse
+   > mismatch (now fixed); sensitivity is still unmeasured, so do not arm
+   > `--enforce` as a gate.
+
    On warn: write a substantive shard OR do real work,
    not acknowledgment-only.
 
