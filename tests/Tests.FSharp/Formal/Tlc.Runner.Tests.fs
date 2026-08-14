@@ -550,3 +550,44 @@ let ``TLC validates PredictiveLookahead`` () =
     // Reformulation as a separate LiveSpec (per-action WF, no constraint,
     // mode-conditioned ~>) is routed as P2 follow-up per the handoff.
     assertSpecValid "PredictiveLookahead"
+
+
+[<Fact>]
+let ``TLC validates QuorumCollateral`` () =
+    // Soraya 2026-08-13. The COLLATERAL layer: what a defecting identity pays.
+    // The default .cfg is regime R4 (voluntary wager), all four safety properties
+    // green: TypeOK, AccountableSafety, NoRepeatAttack, NoCompulsion, NoSeizure.
+    //
+    // GATING GAP, NAMED RATHER THAN HIDDEN: this runner has no -config support, so
+    // ONLY the default .cfg runs here. The other twelve configs (R1/R2/R3, the
+    // threshold config, the reachability witnesses, the two liveness runs) were
+    // executed by hand and their results recorded in the companion research doc --
+    // which means they are NOT gated, exactly like BftLiveness.cfg. Filed as a
+    // work-item; a check that ran once is not a check that runs.
+    assertSpecValid "QuorumCollateral"
+
+
+[<Fact>]
+let ``TLC validates QuorumPhaseCancellation`` () =
+    // Is a quorum-level phase cancellation reachable, and is it attributable.
+    // Default .cfg is the NORMALISED case (per-member magnitude capped equal,
+    // honest phase fixed at 0) where cancellation is NOT reachable with f = 1.
+    //
+    // SOUNDNESS DIRECTION MATTERS HERE and is stated in the spec header: phases are
+    // restricted to the 4th roots of unity, so the arithmetic is exact Gaussian
+    // integers rather than a discretisation. A VIOLATION transfers up to arbitrary
+    // real phases; a GREEN result does NOT. This green therefore means "not
+    // reachable using axis-aligned phases at this magnitude cap" and must never be
+    // read as a safety result for the general adversary.
+    assertSpecValid "QuorumPhaseCancellation"
+
+
+[<Fact>]
+let ``TLC validates WagerSolvency`` () =
+    // The subsistence floor and the solvency-under-privacy contradiction.
+    // Default .cfg has StructuralSplit = TRUE and SolvencyProofSound = TRUE, where
+    // NoSocialisedLoss and FloorUnwagerable both hold. The interesting runs are the
+    // negative ones (split off, proof unsound, attestation stale) -- all three
+    // produce counterexamples, all three recorded in the companion doc, and none of
+    // them gated for the same missing -config reason as above.
+    assertSpecValid "WagerSolvency"
