@@ -35,7 +35,11 @@ import { describe, expect, test } from "bun:test";
 import { existsSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createHsmShareAdapter, isHardwareSealTier, type FrostShareAdapter } from "./frost-share-adapter.ts";
+import {
+  createHsmShareAdapter,
+  isHardwareSealTier,
+  type ExtractingFrostShareAdapter,
+} from "./frost-share-adapter.ts";
 import { frostSharePath, type FrostCaCustodyEffects } from "./frost-ca-custody.ts";
 
 const LANE = process.env["ZETA_FROST_HARDWARE_LANE"] ?? "";
@@ -64,10 +68,13 @@ const REC = {
   groupPublicKeyHex: "ab".repeat(32),
 };
 
-function assertRoundTripOnRealChip(adapter: FrostShareAdapter, files: Map<string, string>, root: string): void {
+function assertRoundTripOnRealChip(adapter: ExtractingFrostShareAdapter, files: Map<string, string>, root: string): void {
   expect(isHardwareSealTier(adapter.sealTier)).toBe(true);
   // Even on real hardware this port still extracts. Do not let the lane imply otherwise.
+  // The port split made that structural: the adapter is named for the forfeit, and the
+  // signing path that does NOT forfeit lives in frost-partial-signer.ts.
   expect(adapter.usesWithoutExtract).toBe(false);
+  expect(adapter.extractsScalar).toBe(true);
 
   adapter.storeShare(REC, "hw-ca");
   const onDisk = files.get(frostSharePath(root, 1)) ?? "";

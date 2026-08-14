@@ -9,15 +9,23 @@
 // ============================================================================
 //
 // use-without-extract is NOT met by any adapter in this file, and cannot be met
-// behind this port as it is currently shaped. loadShare RETURNS the share
-// scalar, so the raw secret necessarily lands in host RAM. Sovereignty
-// invariant 2 says: if an adapter can return the share, it has failed the
-// invariant regardless of what it encrypts.
+// behind the extracting port. loadShare RETURNS the share scalar, so the raw
+// secret necessarily lands in host RAM. Sovereignty invariant 2 says: if an
+// adapter can return the share, it has failed the invariant regardless of what
+// it encrypts.
 //
-// That fact is therefore made unfakeable at the type level: every adapter
-// carries usesWithoutExtract typed as the LITERAL false. An adapter that tries
-// to claim otherwise does not compile. Removing that marker requires changing
-// the port -- see PORT CHANGE REQUIRED FOR L1 COMPLETION at the bottom.
+// That fact is made unfakeable at the type level: every adapter here is an
+// ExtractingFrostShareAdapter, which carries extractsScalar typed as the LITERAL
+// true and usesWithoutExtract typed as the LITERAL false. An adapter that tries
+// to claim otherwise does not compile.
+//
+// THE PORT CHANGE THAT WAS FILED HERE HAS LANDED, in frost-partial-signer.ts.
+// That module has commit() and signPartial() and NO method returning a scalar,
+// so it is the shape in which the invariant is reachable. Its software adapter
+// still does not reach it -- it narrows the exposure window from the caller
+// process to one function frame and says so in its type (exposureBoundary:
+// "signer-function"). Use it for SIGNING; use this file for storage, re-seal,
+// backup, and migration, which genuinely need the scalar.
 //
 // What the hardware tiers DO buy today is at-rest sealing: the share on disk is
 // not readable without the chip. That is real and worth having (it is the
@@ -30,7 +38,6 @@ import { execFileSync } from "node:child_process";
 import { createCipheriv, createDecipheriv, randomBytes as nodeRandomBytes } from "node:crypto";
 import type { FrostCaCustodyEffects, FrostShareFileV1 } from "./frost-ca-custody.ts";
 import { FROST_SHARE_SCHEMA, frostSharePath } from "./frost-ca-custody.ts";
-import type { FrostKeyShare } from "./frost.ts";
 
 export interface FrostShareRecord {
   readonly x: number;
@@ -62,19 +69,41 @@ export function isHardwareSealTier(tier: FrostSealTier): boolean {
   return HARDWARE_SEAL_TIERS.includes(tier);
 }
 
-/** Read/write a participant FROST share without exposing adapter details to custody logic. */
+/**
+ * Store a participant FROST share. STORAGE ONLY -- there is no read-back here.
+ *
+ * The read side was split out into ExtractingFrostShareAdapter below, because reading
+ * is what forfeits the invariant and a port should say so in its name.
+ */
 export interface FrostShareAdapter {
   /** Storage shape only. Carries NO security claim; read sealTier for that. */
   readonly kind: "software-file" | "sealed-file" | "hsm-stub";
   /** What actually protected the share. The security-bearing field. */
   readonly sealTier: FrostSealTier;
-  /**
-   * Literal false by construction. See the header: this port returns the share
-   * scalar, so no adapter behind it can operate the share without extracting it.
-   */
+  storeShare(record: FrostShareRecord, ca: string): void;
+}
+
+/**
+ * The lesser port: an adapter that will hand the share scalar back.
+ *
+ * Named for what it does rather than for what it stores. Everything in this file is
+ * one of these, because a file-backed share must be readable to be usable. That is
+ * exactly why usesWithoutExtract is the literal false here: an adapter that can return
+ * the share has failed sovereignty invariant 2 regardless of what it encrypts, and the
+ * type refuses to let any adapter claim otherwise.
+ *
+ * PREFER FrostPartialSigner (frost-partial-signer.ts) for SIGNING. This port remains
+ * for the operations that genuinely need the scalar and that a signing port cannot
+ * serve -- keygen write-out, re-seal at a different tier, backup, and migration -- and
+ * for the software partial signer, whose constructor takes one of these precisely so
+ * that its own exposure boundary is legible in its signature.
+ */
+export interface ExtractingFrostShareAdapter extends FrostShareAdapter {
+  /** Declares the forfeit. Literal true: this is not a knob. */
+  readonly extractsScalar: true;
+  /** Entailed by loadShare existing. Literal false: it cannot be widened. */
   readonly usesWithoutExtract: false;
   loadShare(x: number): FrostShareRecord | null;
-  storeShare(record: FrostShareRecord, ca: string): void;
 }
 
 export const FROST_SEALED_SHARE_SCHEMA = "zeta-frost-share-sealed-v2" as const;
@@ -121,10 +150,11 @@ export function createSoftwareFileShareAdapter(
   fx: FrostCaCustodyEffects,
   sharesDir: string,
   ca: string,
-): FrostShareAdapter {
+): ExtractingFrostShareAdapter {
   return {
     kind: "software-file",
     sealTier: "software-plaintext",
+    extractsScalar: true,
     usesWithoutExtract: false,
     loadShare(x: number): FrostShareRecord | null {
       const p = frostSharePath(sharesDir, x);
@@ -219,11 +249,12 @@ export function createSealedFileShareAdapter(
   ca: string,
   sealFx: FrostShareSealEffects,
   sealTier: FrostSealTier = "software-sealed",
-): FrostShareAdapter {
+): ExtractingFrostShareAdapter {
   sealFx.probe?.();
   return {
     kind: "sealed-file",
     sealTier,
+    extractsScalar: true,
     usesWithoutExtract: false,
     loadShare(x: number): FrostShareRecord | null {
       const p = frostSharePath(sharesDir, x);
@@ -298,13 +329,14 @@ export function createSealedFileShareAdapter(
 }
 
 /** Honest stub: documents the HSM seam without pretending hardware exists. */
-export function createHsmShareAdapterStub(): FrostShareAdapter {
+export function createHsmShareAdapterStub(): ExtractingFrostShareAdapter {
   const err = (): never => {
     throw new Error("frost-share-adapter: HSM/TPM seal not implemented for this kind - choose a declared tier");
   };
   return {
     kind: "hsm-stub",
     sealTier: "software-plaintext",
+    extractsScalar: true,
     usesWithoutExtract: false,
     loadShare: err,
     storeShare: err,
@@ -357,7 +389,7 @@ export function createInsecureFakeHsmShareAdapter(
   sharesDir: string,
   ca: string,
   ack: InsecureFakeHsmAcknowledgement,
-): FrostShareAdapter {
+): ExtractingFrostShareAdapter {
   if (ack?.iUnderstandThisIsNotHardware !== true) {
     throw new Error(
       "frost-share-adapter: the fake HSM adapter requires an explicit acknowledgement " +
@@ -732,7 +764,7 @@ export function createPkcs11ShareAdapter(
   sharesDir: string,
   ca: string,
   opts: Pkcs11SealEffectsOptions,
-): FrostShareAdapter {
+): ExtractingFrostShareAdapter {
   return createSealedFileShareAdapter(fx, sharesDir, ca, createPkcs11SealEffects(opts), "hardware-pkcs11");
 }
 
@@ -741,7 +773,7 @@ export function createTpmShareAdapter(
   sharesDir: string,
   ca: string,
   opts: TpmSealEffectsOptions,
-): FrostShareAdapter {
+): ExtractingFrostShareAdapter {
   return createSealedFileShareAdapter(fx, sharesDir, ca, createTpmSealEffects(opts), "hardware-tpm2");
 }
 
@@ -784,7 +816,7 @@ export function createHsmShareAdapter(
   sharesDir: string,
   ca: string,
   opts: HsmShareAdapterOptions,
-): FrostShareAdapter {
+): ExtractingFrostShareAdapter {
   const adapter = buildForTier(fx, sharesDir, ca, opts);
   if (adapter.sealTier !== opts.requireTier) {
     throw new Error(
@@ -800,7 +832,7 @@ function buildForTier(
   sharesDir: string,
   ca: string,
   opts: HsmShareAdapterOptions,
-): FrostShareAdapter {
+): ExtractingFrostShareAdapter {
   switch (opts.requireTier) {
     case "hardware-pkcs11": {
       if (!opts.pkcs11Opts) throw new Error("frost-share-adapter: pkcs11Opts required for hardware-pkcs11");
@@ -832,43 +864,37 @@ function buildForTier(
   }
 }
 
-/**
- * Load all local shares for threshold signing.
- *
- * THIS IS THE EXTRACTION PATH. Every share it returns is a plaintext scalar in host
- * RAM. It is what makes usesWithoutExtract false for every adapter above. Keep the
- * returned array as short-lived as possible.
- */
-export function loadFrostKeyShares(adapter: FrostShareAdapter, totalShares: number): FrostKeyShare[] {
-  const out: FrostKeyShare[] = [];
-  for (let x = 1; x <= totalShares; x++) {
-    const rec = adapter.loadShare(x);
-    if (rec) out.push({ x: rec.x, secretShare: rec.secretShare });
-  }
-  return out;
-}
+// loadFrostKeyShares -- REMOVED 2026-08-14.
+//
+// It walked every index and returned every share scalar as one array: the bulk
+// extraction path, and the widest exposure surface in this file. It had ZERO
+// production callers (frost-ca-custody.ts reads its own shares directly for
+// frostThresholdSign; nothing else imported it), so deleting it costs nothing and is
+// the strongest statement available -- the convenient way to get all the secrets at
+// once no longer exists. Signing goes through FrostPartialSigner
+// (frost-partial-signer.ts), which never returns a scalar at all.
 
 // ============================================================================
-// PORT CHANGE REQUIRED FOR L1 COMPLETION
+// WHERE use-without-extract ACTUALLY LIVES NOW
 // ============================================================================
 //
-// Sealing the share at rest (what this file now does honestly) is NOT invariant 2.
-// To reach use-without-extract the port must stop returning the scalar and start
-// asking the chip to USE it:
+// Sealing the share at rest (what this file does, honestly) is NOT invariant 2. The
+// port that can express the invariant is frost-partial-signer.ts:
 //
-//   interface FrostShareAdapter {
-//     signPartial(x: number, ctx: FrostSigningContext): FrostPartialSignature;
-//   }
+//   commit(x)                        -> public nonce commitments only
+//   signPartial(handle, package)     -> a partial z_i, never a share
 //
-// with loadShare removed, or demoted to an explicitly extract-capable sub-interface
-// that hardware adapters do not implement. That change also has a hardware
-// prerequisite that is not ours to wish away, and which the ladder proposal already
-// records at L2: consumer HSMs and TPMs do not implement FROST partial signing in
-// firmware. So a genuine use-without-extract tier needs either a token with a
-// programmable applet, or the confidential-compute route at L3. Filing that as the
-// next increment is honest; claiming this file achieved it would not be.
-//
-// This port also currently contradicts its own governing ADR
+// with the bulk extractor deleted and loadShare demoted to the explicitly-named
+// ExtractingFrostShareAdapter. That closes the contradiction with the governing ADR
 // (docs/DECISIONS/2026-06-21-hexagonal-pki-and-secret-vault-ports-swappable-adapters.md),
-// whose KeyCustody port contract reads "hold a private key; sign without exposing"
-// and "private bytes never leave the custody boundary". loadShare exposes them.
+// whose KeyCustody contract reads "hold a private key; sign without exposing": the
+// SIGNING port now honours it structurally, and the port that still exposes is named
+// for the fact.
+//
+// The hardware prerequisite is unchanged and is not ours to wish away, but the reason
+// is now checked rather than inherited: no PKCS#11 mechanism can compose a FROST
+// partial from a sensitive key, and the absence is structural rather than an omission
+// in the mechanism list. See the PKCS#11 section of frost-partial-signer.ts. A genuine
+// use-without-extract tier needs FROST-aware firmware -- a programmable applet, an
+// extensible open-firmware token, or a purpose-built device -- or the
+// confidential-compute route at ladder L3.

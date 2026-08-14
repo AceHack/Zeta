@@ -96,9 +96,17 @@ real, honest guarantee — you never need the whole tower to get value.
   Pluton / a $50 Nitrokey). The share is unwrapped only inside the chip, bound to a measured-boot PCR
   state, and can be made *use-without-extract* for the operations the chip supports.
 - **Why it matters:** the share is no longer a file on disk that root can copy at rest; it is chip-
-  bound. Realizes **invariant 2 (use-without-extract)** for the at-rest share and begins **invariant 4
-  (destruction-not-leakage)** — reflash/boot-state-change ⇒ the seal won't open (the share is
-  effectively destroyed on that node, not leaked).
+  bound. Begins **invariant 4 (destruction-not-leakage)** — reflash/boot-state-change ⇒ the seal
+  won't open (the share is effectively destroyed on that node, not leaked).
+- **Correction 2026-08-14 (Nazar):** the line above used to read "realizes invariant 2
+  (use-without-extract) for the at-rest share." That phrasing is the conflation this ladder exists to
+  avoid. **At-rest sealing is not use-without-extract**, not even "for the at-rest share" — the share
+  is unwrapped into host RAM to be used, so an adapter that seals it has still handed it over. L1
+  realizes at-rest confidentiality bound to a chip. Invariant 2 is about the *use* op and is not met
+  at any rung of this ladder today.
+- **Apple Silicon:** `hardware-tpm2` cannot work on such a machine. The Secure Enclave is not a TPM
+  2.0; there is no `/dev/tpmrm0` and no `tpm2_unseal`. On those machines the only hardware tier
+  available is PKCS#11 with an external token.
 - **Cost:** $0 (every modern laptop/mini-PC has a TPM 2.0) to ~$50/node for a discrete secure element.
 - **Effort:** the `frost-share-adapter.ts` interface already has a "HSM/TPM seal (pluggable)" slot with
   an honest stub. This is filling that slot with a real PKCS#11 / TPM2 adapter (081KWPHRNFW DoD item 5,
@@ -117,6 +125,29 @@ real, honest guarantee — you never need the whole tower to get value.
   the threshold layer is **FROST in software across guard nodes**, with each guard's *share* sealed in
   its local HSM. HSM = per-guard root of trust; FROST = cross-guard threshold. Two layers, not one
   device. (This was found and documented in the 2026-05-31 design; it still holds.)
+- **Sharpened 2026-08-14 (Nazar) — CHECKED against PKCS#11 v3.1, not inherited.** The constraint above
+  was carried forward as a vendor-feature observation. It is stronger than that: **a FROST partial
+  cannot be composed from generic PKCS#11 primitives at all.** The spec defines no mechanism that
+  performs modular scalar arithmetic on a sensitive key and returns the number; `CKM_ECDSA` and
+  `CKM_EDDSA` generate the nonce internally and compute the challenge over *their own* R, so neither
+  can be bound to the group's R; the derive family emits non-extractable key objects, and
+  `CKM_BIP32_CHILD_DERIVE` (the only additive-tweak shape) is a **Thales vendor extension**,
+  secp256k1-only, and still a key object rather than a scalar. And the absence is **structural**: a
+  partial is an extractable affine function of the secret, so a generic primitive emitting one would
+  become a key-extraction oracle the moment a caller replayed it against a second challenge on one
+  nonce. Emitting a partial safely *requires* the token to enforce nonce freshness and challenge
+  binding itself, which is what "implementing FROST in firmware" means.
+  **Consequence for this rung:** buying HSMs does **not** buy use-without-extract for the signing op.
+  A YubiHSM 2 or Nitrokey HSM 2 at $650/guard still lands at *at-rest sealing per guard*, i.e. L1
+  with better hardware, not L2 as written. Genuine L2 needs **FROST-aware firmware** — a programmable
+  applet (JavaCard), an extensible open-firmware token, or a purpose-built FROST device (Frostsnap
+  ships one, for Bitcoin/secp256k1, not as a PKCS#11 token) — or the confidential-compute route at L3.
+  **No hardware was exercised for this finding; it is read from the specification.**
+- **Port status:** the `signPartial`-shaped port this rung needs now exists —
+  `tools/setup/persona-keys/frost-partial-signer.ts` (RFC 9591 two rounds; nonces born and consumed
+  inside the boundary; no method returns a share scalar). Its only implementation is software and
+  declares `exposureBoundary: "signer-function"`, which narrows the exposure window and is **not** the
+  invariant. The `usesWithoutExtract: true` branch of the type has no inhabitant anywhere in the repo.
 - **Cost:** ~$650/YubiHSM 2 × M guards, plus mini-PCs. A 5-guard roster is low-thousands of dollars.
 
 ### L3 — Attestation-gated invocation + confidential-compute combine (closes the RAM gap)

@@ -21,10 +21,10 @@ import {
   createSoftwareFileShareAdapter,
   createTpmShareAdapter,
   defaultPointerOf,
-  loadFrostKeyShares,
   FROST_SEALED_SHARE_SCHEMA_V1,
   INSECURE_FAKE_SEAL_ALG,
   isHardwareSealTier,
+  type ExtractingFrostShareAdapter,
   type FrostShareAdapter,
   type Pkcs11Lib,
   type Pkcs11PointerOf,
@@ -117,15 +117,14 @@ describe("FrostShareAdapter: storage round-trips", () => {
     expect(adapter.sealTier).toBe("software-plaintext");
   });
 
-  test("FSA-2: loadFrostKeyShares collects all present shares", () => {
-    const { fx, root } = sandboxFx();
-    const adapter = createSoftwareFileShareAdapter(fx, root, "ca");
-    for (let x = 1; x <= 2; x++) {
-      adapter.storeShare({ ...REC, x, secretShare: BigInt(x * 10), totalShares: 2 }, "ca");
-    }
-    const shares = loadFrostKeyShares(adapter, 2);
-    expect(shares.length).toBe(2);
-    expect(shares[0]!.secretShare).toBe(10n);
+  test("FSA-2: the bulk extraction path no longer exists on the module surface", async () => {
+    // loadFrostKeyShares walked every index and returned every scalar in one array.
+    // It was deleted with the port split; signing goes through FrostPartialSigner.
+    // This asserts the ABSENCE, so re-adding it under the old name fails here.
+    const mod = (await import("./frost-share-adapter.ts")) as Record<string, unknown>;
+    expect(Object.keys(mod)).not.toContain("loadFrostKeyShares");
+    const bulkNamed = Object.keys(mod).filter((k) => /^load.*Shares$/.test(k));
+    expect(bulkNamed).toEqual([]);
   });
 
   test("FSA-3: HSM stub throws honestly", () => {
@@ -287,7 +286,7 @@ describe("FrostShareAdapter: no-silent-downgrade", () => {
 describe("FrostShareAdapter: integrity and honesty", () => {
   test("FSA-13: no adapter claims use-without-extract", () => {
     const { fx, root } = sandboxFx();
-    const adapters: FrostShareAdapter[] = [
+    const adapters: ExtractingFrostShareAdapter[] = [
       createSoftwareFileShareAdapter(fx, root, "ca"),
       createHsmShareAdapterStub(),
       createSealedFileShareAdapter(fx, root, "ca", { getSealKey: () => new Uint8Array(32).fill(1) }),
@@ -298,7 +297,23 @@ describe("FrostShareAdapter: integrity and honesty", () => {
         pointerOf: stubPointerOf,
       }),
     ];
-    for (const a of adapters) expect(a.usesWithoutExtract).toBe(false);
+    for (const a of adapters) {
+      expect(a.usesWithoutExtract).toBe(false);
+      // Named for the forfeit, not just marked with it.
+      expect(a.extractsScalar).toBe(true);
+    }
+  });
+
+  test("FSA-17: storage and extraction are separate ports", () => {
+    const { fx, root } = sandboxFx();
+    const adapter = createSoftwareFileShareAdapter(fx, root, "ca");
+    // A store-only view is a legitimate FrostShareAdapter and has NO read-back.
+    const storeOnly: FrostShareAdapter = adapter;
+    expect("loadShare" in storeOnly).toBe(true); // the object has it...
+    expect(typeof (storeOnly as ExtractingFrostShareAdapter).extractsScalar).toBe("boolean");
+    // ...but the base port does not declare it, which is what a consumer sees.
+    const baseKeys: readonly string[] = ["kind", "sealTier", "storeShare"];
+    for (const k of baseKeys) expect(k in adapter).toBe(true);
   });
 
   test("FSA-14: header tampering on a PKCS#11-sealed share is detected", () => {

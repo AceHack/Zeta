@@ -43,6 +43,26 @@ it and is filed below as its own P1/P2 rows, not folded into a completed item.)
 
 ## P1 — serious
 
+### FROST CA keys and Shamir splits created before 2026-08-14 were generated with `Math.random`
+
+- **Site:** `tools/setup/persona-keys/frost.ts` (`randScalar`), `frost-dkg.ts` (`randScalar`),
+  `shamir.ts` (`randCoeff`) — the **defaults**, now fixed; this row is the **residual**, not the code
+- **Found:** 2026-08-14 by Nazar (security-operations-engineer), while shaping the `signPartial` port
+- **Severity:** P1 (the code defect was P0 and is fixed in the same commit; what remains is that
+  material already generated under the old default is weak and code cannot retroactively fix it)
+- **Symptom:** every production call site reached the `Math.random` default —
+  `frost-ca-custody.ts` passes no `random` to `frostKeygen`, `frostDkgKeygen`, or
+  `frostThresholdSign` — so the **CA group signing scalar**, the **Shamir polynomial
+  coefficients**, and **every FROST nonce** came from V8's xorshift128+, whose internal state is
+  recoverable from its own output. A recovered nonce yields the share directly from
+  `z_i = k_i + c * lambda_i * s_i`, and recovered Shamir coefficients collapse the threshold.
+- **Fix:** rotate any FROST CA (`~/.config/zeta/ca/frost/<ca>/`) and any Shamir split produced
+  before 2026-08-14; re-issue anything signed under the old group key. Code defaults now draw from
+  the OS CSPRNG and are guarded by `frost-csprng-default.test.ts` (counts `Math.random` calls).
+  The injected `random` door is unchanged, so DST replay is unaffected.
+- **Who:** human maintainer — key rotation is a ceremony, not an agent action (Nazar documents,
+  never fires it)
+
 ### `LossyUdpChannel` retains a `ReceiverBlock` per attacker-chosen `blockSeq` forever
 
 - **Site:** `src/Core.TypeScript/discovery/udp-lossy-transport.ts` (`handleIncoming`, `recvBlocks`)
