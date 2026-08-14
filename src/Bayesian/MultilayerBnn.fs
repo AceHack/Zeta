@@ -1,79 +1,110 @@
 namespace Zeta.Bayesian
 
-/// **MultilayerBnn — N-layer Bayesian Neural Network over categorical tensors.**
+/// **MultilayerBnn — an N-layer Bayesian network over a chain of Gaussian latents.**
 ///
-/// This module closes the §B open item "N-layer BNN composition" from
-/// `docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md`. The primitives (WSet.copy /
-/// WSet.tensor / WSet.discard, MinimalBnn single-cell, GDL sum-product)
-/// are all present in the codebase. This module stacks N MinimalBnn cells
-/// into a composable multilayer network with a shared EP backward pass.
+/// ## The model, stated explicitly
 ///
-/// ## Architecture
+/// One latent variable `x_i` per layer. Three kinds of factor:
 ///
-/// A `Layer` is a `MinimalBnn.State` — a single Gaussian inference cell
-/// with a prior, a running likelihood product, a posterior, and an IV
-/// objective. A `Network` is an array of layers plus a `topology` that
-/// describes how layers are wired together (fan-out, fan-in, skip
-/// connections).
+///   * `prior_i`   — the layer prior `N(x_i ; priors.[i])`;
+///   * `data`      — the observation stream, absorbed at layer 0 with variance
+///                   `ObservationVariances.[0]`;
+///   * `channel_i` — for `i >= 1`, the link `N(s_i ; x_i, ObservationVariances.[i])`,
+///                   where `s_i = x_(i-1)` under `Sequential` and
+///                   `s_i = x_(i-1) + (sum of the skip sources)` under `SkipConnections`.
 ///
-/// The forward pass (inference): each layer receives the posterior of the
-/// previous layer as an observation, updates its own posterior, and passes
-/// it forward. This is the ADF (Assumed Density Filtering) approximation
-/// to the full EP backward pass — correct for tree-structured networks,
-/// approximate for loopy ones.
+/// Under `Sequential` that is a chain, hence a tree, so sum-product is EXACT:
+/// one forward sweep plus one backward sweep yields the exact marginals. That
+/// two-pass schedule is the Rauch-Tung-Striebel smoother in factor-graph
+/// clothing (Rauch, Tung and Striebel 1965; Kalman 1960).
 ///
-/// The backward pass (EP refinement): after the forward pass, each layer
-/// runs one EP cavity step — it removes its own message from the joint
-/// posterior and recomputes the moment-matched approximation. This is the
-/// same EP step as `Ep.probitSite` but applied to the Gaussian-Gaussian
-/// likelihood (conjugate, so the cavity step is exact).
+/// ## What this revision fixed
 ///
-/// ## The gen(gen)==gen property
+/// The inter-layer hand-off used to be a POINT ESTIMATE: layer `i` received
+/// `Gaussian.mean posterior_(i-1)` as a scalar observation and every layer
+/// accumulated it into its own likelihood product. Three defects followed from
+/// that single choice.
 ///
-/// A `Network` is a `DynamicValue`-serialisable structure (each `Layer` is
-/// a `MinimalBnn.State`, which serialises to JSON). The network can be
-/// collected by Shiva-GC and regenerated from the generator (the prior
-/// array + topology). This is the same property as `SpecializationCache` —
-/// the network is a residual, not a root.
+///   1. **The variance of the layer below was discarded.** Output precision was
+///      depth-INVARIANT (11.0 at every depth in the reproduction) while the mean
+///      attenuated geometrically, so a deep agent published a confidently wrong
+///      answer — and confidence is the only channel the society reads.
+///   2. **The advertised EP cavity was an algebraic identity.** A layer holds
+///      only `prior x likelihood`, so `posterior / likelihood` is identically the
+///      prior and `(P - L) + L = P`; the backward pass provably did nothing.
+///   3. **Messages were accumulated rather than replaced,** so one observation
+///      was counted once per layer.
+///
+/// The fix is to carry a MESSAGE instead of a number. A belief crossing a noisy
+/// link keeps its mean and gains the link variance (`throughChannel`); a skip
+/// junction sums by convolution (`convolve`); and each sweep RECOMPUTES the
+/// up/down messages instead of multiplying fresh copies in. Only layer 0
+/// accumulates evidence, because only layer 0 sees data.
+///
+/// The cavity is now real: the message from `x_(i-1)` to `x_i` is the belief at
+/// layer `i-1` with the message layer `i` sent DOWN divided out — the
+/// sum-product variable rule, which is exactly the EP cavity (Minka 2001).
+/// Dividing it out is also what makes both sweeps idempotent (discipline #6).
+///
+/// ## What this revision did NOT fix, deliberately
+///
+/// Depth still attenuates the posterior mean. That is now a property of the
+/// STATED MODEL rather than of the arithmetic: every layer carries its own
+/// proper prior, so every hop shrinks the mean toward that prior while the
+/// channel adds variance. With near-flat deeper priors the same code preserves
+/// the mean and grows the variance instead. Choosing the per-layer prior is a
+/// modelling decision for the caller, and an agent whose interval fails to
+/// cover the truth must be refused by a calibration gate rather than silently
+/// summed into a society.
 ///
 /// ## Honest scope boundary
 ///
-/// The full EP backward pass (loopy BP convergence, damping, schedule) is
-/// not yet implemented. The current backward pass is one synchronous
-/// cavity step per layer, which is exact for tree-structured networks and
-/// a first-order approximation for loopy ones. The `runToFixpoint`
-/// function from `FactorGraph.fs` is the upgrade path.
+/// Under `SkipConnections` the graph is loopy: the forward sweep carries skip
+/// evidence but the backward sweep sends downward messages only along the
+/// sequential links, so the result is a first-order approximation rather than
+/// the exact marginal. `FactorGraph.runToFixpointDamped` is the upgrade path.
 ///
-/// Anchors: Minka 2001 (EP); Herbrich, Minka, Graepel 2006 (TrueSkill);
-/// Kschischang, Frey, Loeliger 2001 (sum-product).
+/// Anchors: Kalman 1960; Rauch, Tung and Striebel 1965 (the two-pass smoother);
+/// Kschischang, Frey and Loeliger 2001 (sum-product); Loeliger 2004 (the
+/// Gaussian message tables for the sum and channel factors); Minka 2001 (EP,
+/// and the reason a fully conjugate site has nothing left to refine).
+/// All cited from standing knowledge, not page-checked in this pass.
 [<RequireQualifiedAccess>]
 module MultilayerBnn =
 
-    // ── Types ──────────────────────────────────────────────────────────────────
+    // -- Types ------------------------------------------------------------------
 
-    /// A single layer in the network — a MinimalBnn inference cell.
+    /// A single layer in the network — a MinimalBnn inference cell. Only layer 0
+    /// ever absorbs data; deeper layers contribute their prior and their
+    /// bookkeeping, and their belief is formed from messages.
     type Layer = MinimalBnn.State
 
     /// Wiring topology: how layers are connected.
     /// `Sequential` = each layer feeds the next (default).
     /// `SkipConnection from to` = layer `from` also feeds layer `to` directly
-    ///   (residual connection — the posterior of `from` is added to the
-    ///   observation at `to`).
+    ///   (residual connection — the source beliefs are SUMMED at `to`).
     type Topology =
         | Sequential
         | SkipConnections of (int * int) list
 
-    /// An N-layer Bayesian Neural Network.
+    /// An N-layer Bayesian network.
     type Network =
         { /// The layers, in forward-pass order.
           Layers: Layer array
           /// The wiring topology.
           Topology: Topology
-          /// The observation variance used to create each layer (kept for
-          /// regeneration — the `gen(gen)==gen` property).
-          ObservationVariances: float array }
+          /// Layer 0: the data observation variance. Layer i >= 1: the noise
+          /// variance of the link feeding layer i.
+          ObservationVariances: float array
+          /// The message arriving at layer i FROM BELOW. Recomputed by every
+          /// forward sweep — never accumulated, which is what stops one
+          /// observation being counted once per layer.
+          UpwardMessages: Gaussian array
+          /// The message arriving at layer i FROM ABOVE. Recomputed by every
+          /// backward sweep. Uniform at the top layer by construction.
+          DownwardMessages: Gaussian array }
 
-    // ── Construction ───────────────────────────────────────────────────────────
+    // -- Construction -------------------------------------------------------------
 
     /// Create an N-layer network from an array of Gaussian priors and
     /// observation variances. Returns `Error` if any layer fails to
@@ -102,7 +133,9 @@ module MultilayerBnn =
                 Ok
                     { Layers = layers
                       Topology = topology
-                      ObservationVariances = observationVariances }
+                      ObservationVariances = observationVariances
+                      UpwardMessages = Array.create layers.Length Gaussian.One
+                      DownwardMessages = Array.create layers.Length Gaussian.One }
 
     /// Create a sequential network with identical priors and variances at
     /// every layer — the simplest useful default.
@@ -116,128 +149,175 @@ module MultilayerBnn =
             (Array.create depth observationVariance)
             Sequential
 
-    // ── Skip-connection helpers ─────────────────────────────────────────────────
+    // -- Skip-connection helpers ---------------------------------------------------
 
-    /// The set of extra observations that layer `i` receives from skip
-    /// connections (in addition to the sequential feed from layer i−1).
+    /// The extra sources that layer `i` receives from skip connections
+    /// (in addition to the sequential feed from layer i-1).
     let private skipSourcesFor (topology: Topology) (i: int) : int list =
         match topology with
         | Sequential -> []
         | SkipConnections pairs ->
             pairs |> List.choose (fun (from, ``to``) -> if ``to`` = i then Some from else None)
 
-    // ── Forward pass ───────────────────────────────────────────────────────────
+    // -- Gaussian message primitives -----------------------------------------------
 
-    /// Run the forward pass: feed the observation into layer 0, then pass
-    /// each layer's posterior mean as the observation for the next layer.
-    /// Skip connections add the posterior mean of the source layer to the
-    /// observation at the target layer.
-    ///
-    /// Returns the updated network and the sequence of per-layer posteriors
-    /// (for the backward pass and for the IV objective).
+    /// The sum of two INDEPENDENT Gaussian beliefs: means add, variances add
+    /// (the sum-factor rule, Loeliger 2004). A uniform addend absorbs — the sum
+    /// of a known and an unknown quantity is unknown.
+    let private convolve (a: Gaussian) (b: Gaussian) : Gaussian =
+        if a.Precision <= 0.0 || b.Precision <= 0.0 then
+            Gaussian.One
+        else
+            let v = (1.0 / a.Precision) + (1.0 / b.Precision)
+            { PrecisionMean = (Gaussian.mean a + Gaussian.mean b) / v
+              Precision = 1.0 / v }
+
+    /// The inverse of `convolve` in one addend: the message about `x` given a
+    /// belief about `x + y` and a belief about `y`. Means SUBTRACT; variances
+    /// still ADD. That asymmetry is the point — uncertainty never cancels,
+    /// which is why this is not `Gaussian.divide`.
+    let private deconvolve (total: Gaussian) (other: Gaussian) : Gaussian =
+        if total.Precision <= 0.0 || other.Precision <= 0.0 then
+            Gaussian.One
+        else
+            let v = (1.0 / total.Precision) + (1.0 / other.Precision)
+            { PrecisionMean = (Gaussian.mean total - Gaussian.mean other) / v
+              Precision = 1.0 / v }
+
+    /// A belief pushed through a link with additive noise of known variance: the
+    /// mean survives, the variance grows by exactly the link noise. This is the
+    /// quantity the previous point-estimate hand-off silently discarded, and
+    /// discarding it is what made the output precision depth-invariant.
+    let private throughChannel (noiseVariance: float) (m: Gaussian) : Gaussian =
+        if m.Precision <= 0.0 then
+            Gaussian.One
+        else
+            let v = (1.0 / m.Precision) + noiseVariance
+            { PrecisionMean = (Gaussian.mean m) / v
+              Precision = 1.0 / v }
+
+    // -- Beliefs -------------------------------------------------------------------
+
+    /// The marginal belief at layer `i`: the layer posterior (prior times the
+    /// accumulated data likelihood, which is uniform above layer 0) times the
+    /// message from below times the message from above.
+    let beliefAt (net: Network) (i: int) : Gaussian =
+        net.Layers.[i].Posterior * net.UpwardMessages.[i] * net.DownwardMessages.[i]
+
+    // -- Forward pass ---------------------------------------------------------------
+
+    /// Run the forward (filtering) sweep. Layer 0 absorbs the scalar
+    /// observation; every deeper layer recomputes the message arriving from
+    /// below. Returns the updated network and the per-layer beliefs.
     let forward (observation: float) (net: Network) : Result<Network * Gaussian array, string> =
         let n = net.Layers.Length
-        let updatedLayers = Array.copy net.Layers
+        let layers = Array.copy net.Layers
+        let up = Array.copy net.UpwardMessages
+        let down = Array.copy net.DownwardMessages
         let posteriors = Array.zeroCreate<Gaussian> n
+        let localBelief i = layers.[i].Posterior * up.[i] * down.[i]
 
-        let mutable error: string option = None
-        let mutable i = 0
+        let mutable error : string option = None
 
+        // Layer 0 is the only layer that sees data: the conjugate accumulation
+        // there is genuine evidence, not a relayed copy of it.
+        match MinimalBnn.update observation layers.[0] with
+        | Error e -> error <- Some(sprintf "forward pass layer 0: %s" e)
+        | Ok updatedLayer0 ->
+            layers.[0] <- updatedLayer0
+            posteriors.[0] <- localBelief 0
+
+        let mutable i = 1
         while i < n && error.IsNone do
-            // The observation for layer i: the posterior mean of layer i-1,
-            // plus the posterior means of any skip-connection sources.
-            let baseObs =
-                if i = 0 then observation
-                else Gaussian.mean updatedLayers.[i - 1].Posterior
-
-            let skipObs =
+            let previous = localBelief i
+            // The message x_(i-1) -> x_i is the belief at layer i-1 with the
+            // message that layer i sent DOWN divided out: the sum-product
+            // variable rule, i.e. the EP cavity (Minka 2001). Without this
+            // division the chain re-absorbs its own evidence every sweep.
+            let cavityBelow = Gaussian.divide (localBelief (i - 1)) down.[i - 1]
+            let sumBelief =
                 skipSourcesFor net.Topology i
-                |> List.sumBy (fun src ->
-                    if src < i then Gaussian.mean updatedLayers.[src].Posterior else 0.0)
-
-            let totalObs = baseObs + skipObs
-
-            match MinimalBnn.update totalObs updatedLayers.[i] with
-            | Ok newLayer ->
-                updatedLayers.[i] <- newLayer
-                posteriors.[i] <- newLayer.Posterior
+                |> List.filter (fun src -> src < i)
+                |> List.fold (fun acc src -> convolve acc (localBelief src)) cavityBelow
+            up.[i] <- throughChannel net.ObservationVariances.[i] sumBelief
+            let updated = localBelief i
+            if not (System.Double.IsFinite updated.Precision && System.Double.IsFinite updated.PrecisionMean) then
+                error <- Some(sprintf "forward pass layer %d: non-finite belief" i)
+            else
+                let stepIv = InformationValue.compute previous updated
+                layers.[i] <-
+                    { layers.[i] with
+                        Objective =
+                            { layers.[i].Objective with
+                                ObservationCount = layers.[i].Objective.ObservationCount + 1
+                                LastIncrementalIv = stepIv
+                                CumulativeIv = layers.[i].Objective.CumulativeIv + stepIv } }
+                posteriors.[i] <- updated
                 i <- i + 1
-            | Error e ->
-                error <- Some $"forward pass layer {i}: {e}"
 
         match error with
         | Some e -> Error e
-        | None -> Ok ({ net with Layers = updatedLayers }, posteriors)
+        | None ->
+            Ok(
+                { net with
+                    Layers = layers
+                    UpwardMessages = up
+                    DownwardMessages = down },
+                posteriors)
 
-    // ── Backward pass (EP cavity step) ─────────────────────────────────────────
+    // -- Backward pass (the EP cavity sweep) ----------------------------------------
 
-    /// Run one synchronous EP cavity step across all layers.
+    /// Run the backward (smoothing) sweep: for each layer from the top down,
+    /// form the EP cavity at the layer above — its belief WITHOUT the message
+    /// that came up from this layer — push it back through the link, and store
+    /// it as the message arriving from above.
     ///
-    /// For each layer i (in reverse order): remove the layer's own message
-    /// from the joint posterior (the cavity), recompute the moment-matched
-    /// approximation, and update the layer's likelihood product.
-    ///
-    /// This is exact for tree-structured networks (the cavity is the product
-    /// of all other factors). For loopy networks it is a first-order
-    /// approximation — run `backward` in a loop until convergence for better
-    /// accuracy.
+    /// On a `Sequential` chain, forward-then-backward gives the EXACT marginals.
+    /// The sweep is idempotent: `down.[i]` is computed from quantities that do
+    /// not contain `down.[i]`.
     let backward (net: Network) : Result<Network, string> =
         let n = net.Layers.Length
-        let updatedLayers = Array.copy net.Layers
-        let mutable error: string option = None
+        let up = net.UpwardMessages
+        let down = Array.copy net.DownwardMessages
+        let localBelief i = net.Layers.[i].Posterior * up.[i] * down.[i]
 
-        // Backward pass: layer n-1 down to 0.
-        let mutable i = n - 1
+        // The top layer receives nothing from above; hold that invariant.
+        down.[n - 1] <- Gaussian.One
+
+        let mutable error : string option = None
+        let mutable i = n - 2
         while i >= 0 && error.IsNone do
-            let layer = updatedLayers.[i]
-            // Cavity: the prior × all likelihood messages EXCEPT this layer's own.
-            // In the single-variable model, the cavity is just the prior (the
-            // likelihood product minus this layer's contribution).
-            // For the Gaussian-Gaussian conjugate case, the cavity computation
-            // is exact: cavity_precision = posterior_precision - likelihood_precision.
-            let posteriorPrec = layer.Posterior.Precision
-            let likelihoodPrec = layer.LikelihoodProduct.Precision
-            let cavityPrec = posteriorPrec - likelihoodPrec
-
-            if cavityPrec <= 0.0 then
-                // Cavity has non-positive precision — the likelihood dominates.
-                // This is a degenerate case; skip the cavity step for this layer.
-                i <- i - 1
+            let cavityAbove = Gaussian.divide (localBelief (i + 1)) up.[i + 1]
+            if not (Gaussian.isProper cavityAbove) then
+                // Nothing to say downward yet; a uniform message is the honest
+                // answer, not a fabricated one.
+                down.[i] <- Gaussian.One
             else
-                let cavityPrecMean = layer.Posterior.PrecisionMean - layer.LikelihoodProduct.PrecisionMean
-                let cavityMean = cavityPrecMean / cavityPrec
-                let cavitySigma2 = 1.0 / cavityPrec
-
-                // Moment-match: the new posterior is the cavity × the likelihood.
-                // For Gaussian × Gaussian this is exact (no approximation needed).
-                // The new likelihood message = new_posterior / cavity.
-                let newPosteriorPrec = cavityPrec + likelihoodPrec
-                let newPosteriorPrecMean = cavityPrecMean + layer.LikelihoodProduct.PrecisionMean
-                let newPosterior =
-                    { PrecisionMean = newPosteriorPrecMean
-                      Precision = newPosteriorPrec }
-
-                // The cavity sigma2 is used to bound the update (damping).
-                // For now: no damping (full EP step). Damping is the upgrade path.
-                let _ = cavityMean
-                let _ = cavitySigma2
-
-                updatedLayers.[i] <- { layer with Posterior = newPosterior }
+                let toSum = throughChannel net.ObservationVariances.[i + 1] cavityAbove
+                // If layer i+1 was fed by a SUM, remove the other addends. The
+                // target itself is never removed from its own message.
+                down.[i] <-
+                    skipSourcesFor net.Topology (i + 1)
+                    |> List.filter (fun src -> src < i + 1 && src <> i)
+                    |> List.fold (fun acc src -> deconvolve acc (localBelief src)) toSum
+            let updated = localBelief i
+            if not (System.Double.IsFinite updated.Precision && System.Double.IsFinite updated.PrecisionMean) then
+                error <- Some(sprintf "backward pass layer %d: non-finite belief" i)
+            else
                 i <- i - 1
 
         match error with
         | Some e -> Error e
-        | None -> Ok { net with Layers = updatedLayers }
+        | None -> Ok { net with DownwardMessages = down }
 
-    // ── Combined forward+backward ───────────────────────────────────────────────
+    // -- Combined forward+backward ---------------------------------------------------
 
-    /// Run one full forward+backward cycle: forward pass then one EP
-    /// cavity step. This is the standard online learning update for a
-    /// multilayer Bayesian network.
+    /// Run one full forward+backward cycle. On a `Sequential` chain this is the
+    /// exact two-pass smoother, not an approximation.
     let update (observation: float) (net: Network) : Result<Network, string> =
         net
         |> forward observation
-        |> Result.bind (fun (net', _) -> backward net')
+        |> Result.bind (fun (updatedNet, _) -> backward updatedNet)
 
     /// Absorb a stream of observations into the network.
     let infer (observations: seq<float>) (net: Network) : Result<Network, string> =
@@ -249,25 +329,25 @@ module MultilayerBnn =
                 | Error e -> Error e)
             (Ok net)
 
-    // ── Objective ──────────────────────────────────────────────────────────────
+    // -- Objective --------------------------------------------------------------------
 
     /// The cumulative information value across all layers.
     let cumulativeIv (net: Network) : float<InformationValue.iv> =
         net.Layers |> Array.sumBy (fun l -> l.Objective.CumulativeIv)
 
-    /// The posterior of the final layer (the network's output belief).
+    /// The belief of the final layer (the network output).
     let outputPosterior (net: Network) : Gaussian =
-        net.Layers.[net.Layers.Length - 1].Posterior
+        beliefAt net (net.Layers.Length - 1)
 
     /// The posterior mean of the final layer.
     let outputMean (net: Network) : float =
-        (Gaussian.mean (outputPosterior net))
+        Gaussian.mean (outputPosterior net)
 
     /// The posterior variance of the final layer.
     let outputVariance (net: Network) : float =
-        (1.0 / (outputPosterior net).Precision)
+        Gaussian.variance (outputPosterior net)
 
-    // ── Serialisation (gen(gen)==gen) ──────────────────────────────────────────
+    // -- Serialisation (gen(gen)==gen) ------------------------------------------------
 
     /// Serialise the network to a JSON string. The network is a residual —
     /// it can be collected by Shiva-GC and regenerated from the priors +
@@ -275,10 +355,10 @@ module MultilayerBnn =
     let toJsonString (net: Network) : string =
         let layerJsons =
             net.Layers
-            |> Array.map (fun l ->
-                let p = l.Posterior
-                sprintf """{"mu":%.12g,"sigma2":%.12g,"obsCount":%d}"""
-                    (Gaussian.mean p) (1.0 / p.Precision) l.Objective.ObservationCount)
+            |> Array.mapi (fun i l ->
+                let p = beliefAt net i
+                sprintf "{\"mu\":%.12g,\"sigma2\":%.12g,\"obsCount\":%d}"
+                    (Gaussian.mean p) (Gaussian.variance p) l.Objective.ObservationCount)
             |> String.concat ","
         let topologyJson =
             match net.Topology with
@@ -286,5 +366,5 @@ module MultilayerBnn =
             | SkipConnections pairs ->
                 let pairJsons =
                     pairs |> List.map (fun (f, t) -> sprintf "[%d,%d]" f t) |> String.concat ","
-                sprintf """{"skipConnections":[%s]}""" pairJsons
-        sprintf """{"layers":[%s],"topology":%s}""" layerJsons topologyJson
+                sprintf "{\"skipConnections\":[%s]}" pairJsons
+        sprintf "{\"layers\":[%s],\"topology\":%s}" layerJsons topologyJson
