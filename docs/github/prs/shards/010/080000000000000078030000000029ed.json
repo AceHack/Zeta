@@ -1,0 +1,12 @@
+{
+  "pr_number": 10733,
+  "archive_path": "docs/history/pr-reviews/PR-10733-spec-eve-the-translation-layer-the-dynamicvalue-shape-lattice-costs-1-bit-of-imp.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T22:06:52.014Z",
+  "schema_version": "v1",
+  "commit_sha": "d1beb7d14ab219a5a0a66ad148cff6195846e243",
+  "title": "spec(eve): the translation layer — the DynamicValue shape lattice costs 1 bit of imposition, and RFC 8949 pays it",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T22:06:11Z",
+  "head_ref": "shadow/eve-translation-layer-spec"
+}
