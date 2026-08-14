@@ -1,0 +1,12 @@
+{
+  "pr_number": 10663,
+  "archive_path": "docs/history/pr-reviews/PR-10663-skip-review-telemetry-flush-chore-red-state-refresh-dashboard-data.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T18:16:46.709Z",
+  "schema_version": "v1",
+  "commit_sha": "0a87a892d321dcfa9d3a63b04d53710a334b036c",
+  "title": "[skip-review][telemetry-flush] chore(red-state): refresh dashboard data",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T18:15:49Z",
+  "head_ref": "heartbeat/red-state"
+}
