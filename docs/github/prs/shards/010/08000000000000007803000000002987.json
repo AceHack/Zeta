@@ -1,0 +1,12 @@
+{
+  "pr_number": 10631,
+  "archive_path": "docs/history/pr-reviews/PR-10631-ferry-agent-coordination-is-the-capability-we-are-building-meter-it-don-t-abolis.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T16:04:46.546Z",
+  "schema_version": "v1",
+  "commit_sha": "f3b134c4674db6d908af3efb6bdb925fcbf7a436",
+  "title": "ferry: agent coordination is the capability we are building — meter it, don't abolish it",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T16:04:13Z",
+  "head_ref": "ferry/agent-coordination-emergent-institutions"
+}
