@@ -1,0 +1,12 @@
+{
+  "pr_number": 10480,
+  "archive_path": "docs/history/pr-reviews/PR-10480-research-the-infinite-backlog-is-inventory-not-debt-and-verification-is-the-bind.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T01:08:31.245Z",
+  "schema_version": "v1",
+  "commit_sha": "cb567112eb9c9af795bb733a02a8cef141d7bdf2",
+  "title": "research: the infinite backlog is inventory, not debt — and verification is the binding constraint",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T01:07:58Z",
+  "head_ref": "research/infinite-backlog-is-inventory-not-debt"
+}
