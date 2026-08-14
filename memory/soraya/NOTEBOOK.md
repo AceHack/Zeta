@@ -280,3 +280,52 @@ Verified by execution: **5 properties green** (`Divvy.merge` is a lawful join). 
 
 The four floors: child-floor, right-to-refuse-binding, bifurcation, non-register-collapse — each at all
 three legs. No open bifurcation routing item for Kenji (the Face-3 item is retired — it already existed).
+
+
+## Vacuity round — the Landauer lane (2026-08-13, PR pending)
+
+Third instance of the vacuity class this session, and the first one I fixed rather than flagged.
+Sibling cases: `QuorumCollateral` / `WagerSolvency` stutter (TLC deadlock checks vacuous, flagged
+against my own specs); B AC3 `= true` (2026-08-09 rule table).
+
+CHECKED, all by execution:
+
+- `entropy-tracker.ts` `verifyLandauer` — `heatPaid`, `floor`, `bitsErased` all read
+  `entropy_heat`, so the comparison was `x >= x`. #10476 named this.
+- **`second_law_satisfied` was ALSO vacuous, and #10476 did not name it.** The test was
+  `state + heat >= 0`; `measure(k)` moves `k` between ledgers and leaves the sum alone for
+  every `k`, so only `branch` (+1) ever moves it. Exhaustive sweep over the 6-op alphabet to
+  length 5: `false` occurred **zero times**. `holds` therefore reduced to `entropy_heat >= 0`.
+- `tools/Z3Verify/landauer-floor-lemma.smt2` — **vacuous**. Its second-law premise
+  `-k + heat >= 0` IS the conclusion `heat >= k`. Deleting only that premise flips the file
+  from unsat to **sat, model k=1.0 heat=0.0** (an erasure paying nothing). Header advertised
+  four lemmas F1-F4; the file contained one. **Not gated by any workflow** — that is why it
+  rotted unseen.
+- `LandauerFloor.lean` — NOT vacuous, but not faithful. Its `measure` carries `k <= s.state`,
+  which the TypeScript does not implement, and its heat-monotonicity theorems are discharged
+  by `Nat` rather than by the model. The implementation uses signed `number`, where the same
+  property is falsifiable — and was false. A formal artefact that discharges an obligation
+  using a type the implementation lacks has not discharged it. Gated (lean-proof.yml).
+
+Routing verdict: **no non-trivial Landauer invariant exists in normalized units** — the ledger
+pays exactly the floor by construction, so the honest fix is rename + narrow, not a stricter
+comparison. Real falsifiable invariants that DO exist here: heat monotonicity (arrow of time),
+heat non-negativity, erasures-fully-admitted. The third is **false in shipped callers by
+design** (`createNonAdjMap`, `event-sink-folder`), so it is reported, never enforced — a check
+that fails spuriously gets disabled, which is the other half of this defect class.
+
+Portfolio delta: Landauer lane goes from 1 gated artefact (Lean) to 2 (Lean + the SMT lemma,
+newly gated by `tools/Z3Verify/landauer-floor-lemma.test.ts`, z3 AND cvc5, BP-16). The SMT
+runner asserts the verdict sequence CONTAINS a `sat` — an all-unsat proof file is
+indistinguishable from a tautology, so non-vacuity is now a gate condition, not a review habit.
+
+Open for Kenji, CHECKED counts: 9 `.smt2` files. 4 now have an executing companion runner
+(chsh-band-gate-agreement, consolidate-quadratic-envelope, gen-denotation-splitmix64, and
+landauer as of this PR). 5 have none: externality-bound, light-time-endpoint-speed-envelope,
+predictive-advantage, privacy-budget-net-positive-regime, whitewash-economics.
+
+Sharper than the count: **every pre-existing runner asserts all-unsat**, so not one of them
+could have detected the defect I just found. An all-unsat expectation is satisfied by a
+tautology. The routing recommendation is that each lemma file carry a non-vacuity probe whose
+expected verdict is `sat`, and that the runner assert the SEQUENCE rather than "every verdict is
+unsat". That is a 4-file retrofit, not a rewrite.
