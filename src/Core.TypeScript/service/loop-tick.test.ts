@@ -53,8 +53,8 @@ describe("loop-tick", () => {
       mkdirSync(bin, { recursive: true });
       mkdirSync(worktree, { recursive: true });
 
-      // loop-tick intentionally replaces PATH with a known host-tool path that includes
-      // $HOME/.local/bin, so test fakes must live there rather than in an inherited PATH.
+      // Inject the executable port explicitly. The test must never reach the network or
+      // depend on whichever git and gh happen to be installed on the runner.
       writeExecutable(
         join(bin, "git"),
         ["#!/usr/bin/env bash", 'case "$1" in', "  fetch|branch|status) exit 0 ;;", "  *) exit 0 ;;", "esac", ""].join(
@@ -73,6 +73,7 @@ describe("loop-tick", () => {
         ZETA_LOOP_WORKTREE: worktree,
         ZETA_LOOP_STATE_DIR: stateDir,
         ZETA_LOOP_LOG_DIR: logDir,
+        ZETA_LOOP_TOOL_PATH_PREFIX: bin,
         ZETA_LOOP_DRY_RUN: "1",
         ZETA_LOOP_FETCH_TIMEOUT_SECONDS: "1",
         ZETA_LOOP_LOCK_TTL_SECONDS: "1",

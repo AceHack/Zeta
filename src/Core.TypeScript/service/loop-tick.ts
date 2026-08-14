@@ -14,7 +14,7 @@
  * Set ZETA_LOOP_OBSERVE_INLINE=1 to use v1. Default is v0 (CLI shelling).
  */
 import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { delimiter, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { homedir } from "node:os";
 import { getPersona, listPersonas } from "./persona-registry";
@@ -48,6 +48,18 @@ const runId = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/,
 const lockTtlMs = Number(process.env["ZETA_LOOP_LOCK_TTL_SECONDS"] ?? "120") * 1000;
 const fetchTimeoutMs = Number(process.env["ZETA_LOOP_FETCH_TIMEOUT_SECONDS"] ?? "45") * 1000;
 const useObserveInline = process.env["ZETA_LOOP_OBSERVE_INLINE"] === "1";
+const hostToolPath = [
+  "/opt/homebrew/bin",
+  "/usr/local/bin",
+  "/usr/bin",
+  "/bin",
+  "/usr/sbin",
+  "/sbin",
+  join(home, ".local", "bin"),
+  join(home, ".bun", "bin"),
+];
+const executionPath =
+  env.toolPathPrefix === undefined ? hostToolPath.join(delimiter) : [env.toolPathPrefix, ...hostToolPath].join(delimiter);
 
 mkdirSync(stateDir, { recursive: true });
 mkdirSync(logDir, { recursive: true });
@@ -81,7 +93,7 @@ function exec(command: string, args: string[], timeoutMs: number): { status: num
       ZETA_LOOP_STATE_DIR: stateDir,
       ZETA_LOOP_LOG_DIR: logDir,
       ZETA_LOOP_REF: ref,
-      PATH: `/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${join(home, ".local/bin")}:${join(home, ".bun/bin")}`,
+      PATH: executionPath,
     },
     timeout: timeoutMs,
     maxBuffer: 20 * 1024 * 1024,
