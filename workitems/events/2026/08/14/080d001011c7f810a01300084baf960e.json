@@ -1,0 +1,14 @@
+{
+  "id": "080d001011c7f810a01300084baf960e",
+  "at": "2026-08-14T20:41:35.231Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0104E7Y087G0R002X9A6NB",
+    "type": "bug",
+    "title": "gate jobs hang in apt install, time out as conclusion=cancelled, and block auto-merge with nothing re-running them",
+    "slug": "gate-jobs-hang-in-apt-install-time-out-as-conclusion-cancell",
+    "priority": "P2",
+    "filename": "081M0104E7Y087G0R002X9A6NB-gate-jobs-hang-in-apt-install-time-out-as-conclusion-cancell.md"
+  }
+}

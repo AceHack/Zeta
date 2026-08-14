@@ -1,0 +1,94 @@
+# Auto-rerun for `gate` runs that end `cancelled`.
+#
+# THE PROBLEM (measured 2026-08-14 — docs/research/2026-08-14-cancelled-gate-runs-are-apt-stalls-hitting-job-timeouts-not-concurrency-cancels.md):
+# a job killed by `timeout-minutes` reports `conclusion: cancelled`. The
+# `gate (required)` roll-up reads that as failure, and `gate (required)` is the
+# ONLY required check in the `CI Gate` ruleset — so an auto-merge-armed PR sits
+# red forever with nothing re-running it. `gh pr checks` renders the cancelled
+# job as `fail`, so a step that NEVER RAN presents identically to one that ran
+# and failed. That is the standing "a check that did not run looking like one
+# that passed" failure class, inverted.
+#
+# THIS WORKFLOW IS THE SECOND LINE, NOT THE FIX. The dominant cause (12 of 14
+# hung jobs) was a stalled apt mirror inside the toolchain install step, fixed
+# at the root in `tools/setup/linux.sh` in the same commit. This covers the
+# measured RESIDUAL (hangs in other steps, infra cancellations). If the rerun
+# rate rises, the root cause has returned and must be fixed there — the log line
+# below exists to make that visible rather than quietly absorbed.
+#
+# DISCIPLINE (mirrors the gate.yml header):
+#   - Runner pinned to an explicit version, not -latest.
+#   - Third-party actions SHA-pinned by full 40-char commit SHA.
+#   - permissions: `actions: write` ONLY — the single scope needed to re-run a
+#     workflow. No `contents: write`, no `pull-requests: write`. The token
+#     cannot modify code or approve anything.
+#   - Every job carries timeout-minutes.
+#
+# SECURITY — untrusted input (BP-11). `workflow_run` runs in the BASE repo with
+# a writable token, including for runs triggered by fork PRs. Two guards:
+#   1. Checkout takes NO `ref:`, so it resolves to the default branch — trusted
+#      code. The PR head is never checked out and never executed.
+#   2. No `${{ github.event.workflow_run.* }}` value is interpolated into any
+#      `run:` block. The run id crosses into the script as an env var, so an
+#      attacker-controlled branch name cannot become shell.
+#
+# COST. The job is gated by an `if:` on the trigger's conclusion, so the ~96% of
+# gate completions that are not cancelled cost zero runner minutes (a skipped
+# job consumes none). A firing evaluation is ~30s. Measured window (2h18m,
+# 100 gate runs) had 37 cancellations; post-apt-fix the expected residual is a
+# small fraction of that. Worst case at the pre-fix rate (~385/day) is
+# ~190 min/day; the realistic post-fix figure is well under 30 min/day, against
+# a per-incident manual cost of a human noticing and running `gh run rerun`.
+
+name: rerun-cancelled-gate
+
+on:
+  workflow_run:
+    workflows: [gate]
+    types: [completed]
+
+permissions:
+  actions: write
+
+concurrency:
+  # Per-run key: two different cancelled gate runs must be evaluated
+  # independently, so this must NOT collapse them into one slot.
+  group: rerun-cancelled-gate-${{ github.event.workflow_run.id }}
+  cancel-in-progress: false
+
+jobs:
+  rerun:
+    name: rerun cancelled gate run
+    # Only `cancelled` reaches the runner. `failure` is deliberately excluded:
+    # re-running a genuine failure converts a real red into a flaky green, which
+    # is strictly worse than the bug this treats. The policy module re-asserts
+    # this independently, so the guarantee does not rest on this line alone.
+    if: github.event.workflow_run.conclusion == 'cancelled'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout (default branch — never the PR head; see header)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            src/Core.TypeScript/ci
+            package.json
+          sparse-checkout-cone-mode: false
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Evaluate rerun policy and apply
+        # The run id arrives as an env var, never as `${{ }}` inside the script.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          CANCELLED_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          bun src/Core.TypeScript/ci/rerun-cancelled-gate-run-cli.ts \
+            --run-id "$CANCELLED_RUN_ID" --apply

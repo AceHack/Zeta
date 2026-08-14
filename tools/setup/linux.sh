@@ -139,8 +139,59 @@ elif [ -f "$APT_MANIFEST" ]; then
       echo "  the apt-get install below still asserts the packages we need are present." >&2
     fi
     rm -f "$apt_log"
-    # shellcheck disable=SC2086
-    $SUDO apt-get install -y --no-install-recommends $PKGS
+    # HANG GUARD (Dejan 2026-08-14, workitem below). A STALLED archive mirror —
+    # not a failing one — was the dominant CI outage: on 2026-08-14, 12 of 14
+    # `gate` jobs that ended `cancelled` died inside THIS step, each one at
+    # exactly its job's `timeout-minutes` (+15-17s of runner shutdown). The
+    # trace: `azure.archive.ubuntu.com` decayed from 8083 kB/s to ~1.5 kB/s and
+    # then stopped mid-`pandoc` (26.9 MB) without closing the socket.
+    #
+    # Why apt's own timeouts do NOT catch this: `Acquire::http::Timeout` is an
+    # INACTIVITY timer, and a slow trickle keeps resetting it. The transfer is
+    # never idle long enough to trip, so apt waits forever and the JOB timeout
+    # is what finally fires. A job killed by `timeout-minutes` reports
+    # `conclusion: cancelled`, which the roll-up reads as failure and
+    # `gh pr checks` renders as `fail` — a step that never ran, presented as one
+    # that ran and failed.
+    #
+    # So the bound has to be WALL-CLOCK over the whole operation, not per-socket.
+    # `timeout` converts a stall into an ordinary non-zero exit, which is a state
+    # the retry loops (here, and the 5-attempt wrapper in gate.yml) can already
+    # act on — they were never broken, they were simply unreachable, because a
+    # hung `apt-get` never returns to be retried.
+    #
+    # Parity (GOVERNANCE §24): this is in linux.sh, so the dev laptop, the CI
+    # runner and the devcontainer all get the identical bound. `timeout` is
+    # coreutils, present on every apt-bearing host.
+    apt_timeout="${ZETA_APT_TIMEOUT_SECONDS:-600}"
+    apt_install_rc=0
+    for apt_attempt in 1 2 3; do
+      apt_install_rc=0
+      # shellcheck disable=SC2086
+      timeout --signal=TERM --kill-after=30s "$apt_timeout" \
+        $SUDO apt-get install -y --no-install-recommends \
+          -o Acquire::Retries=3 \
+          -o Acquire::http::Timeout=30 \
+          -o Acquire::https::Timeout=30 \
+          $PKGS || apt_install_rc=$?
+      [ "$apt_install_rc" -eq 0 ] && break
+      # 124 = `timeout` fired (the stall case); anything else is a real apt error.
+      if [ "$apt_install_rc" -eq 124 ]; then
+        echo "⚠ apt-get install exceeded ${apt_timeout}s (attempt ${apt_attempt}/3) —" >&2
+        echo "  stalled archive mirror, not a package error." >&2
+      else
+        echo "⚠ apt-get install failed rc=${apt_install_rc} (attempt ${apt_attempt}/3)" >&2
+      fi
+      [ "$apt_attempt" -eq 3 ] && break
+      sleep $((apt_attempt * 15))
+    done
+    # STRICT on exhaustion: the assert is preserved (see the update-vs-install
+    # split above) — a package we actually need being unavailable still fails
+    # loudly rather than degrading to a false-green.
+    if [ "$apt_install_rc" -ne 0 ]; then
+      echo "✗ apt-get install did not succeed after 3 attempts (rc=${apt_install_rc})" >&2
+      exit "$apt_install_rc"
+    fi
   else
     echo "✓ apt manifest empty; skipping"
   fi

@@ -1,0 +1,14 @@
+{
+  "id": "080d001044938010a01300085adda52e",
+  "at": "2026-08-14T20:48:31.344Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M010H4KE087G0R00092AYZS",
+    "type": "bug",
+    "title": "heartbeat pull_request runs held in action_required because the branch push uses GITHUB_TOKEN, making github-actions[bot] the run actor",
+    "slug": "heartbeat-pull-request-runs-held-in-action-required-because",
+    "priority": "P2",
+    "filename": "081M010H4KE087G0R00092AYZS-heartbeat-pull-request-runs-held-in-action-required-because.md"
+  }
+}
