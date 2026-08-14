@@ -1,0 +1,12 @@
+{
+  "pr_number": 10540,
+  "archive_path": "docs/history/pr-reviews/PR-10540-math-braid-no-rung-and-one-sideways-step-what-a-finite-rank-braid-rep-actually-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T11:07:38.025Z",
+  "schema_version": "v1",
+  "commit_sha": "00024a8bc25a3ada717c4cbb13d2aaef30ac3d7a",
+  "title": "math(braid): no rung, and one sideways step — what a finite-rank braid rep actually buys",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T11:06:59Z",
+  "head_ref": "lumen/braid-alternatives-scoping"
+}
