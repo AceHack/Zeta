@@ -1,0 +1,12 @@
+{
+  "pr_number": 10618,
+  "archive_path": "docs/history/pr-reviews/PR-10618-docs-auth-record-verified-pages-executor-boundary.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T15:42:03.257Z",
+  "schema_version": "v1",
+  "commit_sha": "3580572d8ef04ec78cc8d024d6254d66f2b77ba6",
+  "title": "docs(auth): record verified Pages executor boundary",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T15:41:26Z",
+  "head_ref": "docs/pwa-authorized-executor-operation"
+}
