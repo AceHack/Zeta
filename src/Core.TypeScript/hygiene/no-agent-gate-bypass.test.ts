@@ -72,24 +72,35 @@ describe("no automated path can bypass the required gate", () => {
         (f) => !ALLOWED.some((re) => re.test(f)),
     );
 
+    // READ ONCE, MATCH MANY. The first version read every file inside each pattern's test,
+    // so ~1700 tracked files were read once PER PATTERN -- four full passes over the tree to
+    // answer four questions about the same bytes. Measured 2026-08-14: 4.0s idle-ish, 8.1s
+    // under load, against a per-test cap that is really 5000 ms (bunfig's `timeout = 20000`
+    // was never honoured -- 081KZZ3JHP1087G0R00027ARRR). That is the load-dependent flake
+    // shape: green on a quiet laptop, red on a busy runner, and the author cannot reproduce
+    // it. The I/O is hoisted here, where it is charged to collection rather than to any one
+    // test, and each assertion below is now a pure regex over memory.
+    const sources: ReadonlyArray<{ path: string; text: string }> = files.flatMap((f) => {
+        try {
+            return [{ path: f, text: readFileSync(f, "utf8") }];
+        } catch {
+            return []; // unreadable/binary: not an invocation site
+        }
+    });
+
     test("the search actually covers something — a vacuous pass is not a pass", () => {
         // Without this, a broken glob would make every assertion below trivially true, and
         // the guard would report green having checked nothing. That failure mode is the
         // reason this file exists at all.
         expect(files.length).toBeGreaterThan(100);
+        // Hoisting the reads adds a second way to go vacuous: every read could fail and the
+        // patterns would then match nothing. Pin the readable set too.
+        expect(sources.length).toBeGreaterThan(100);
     });
 
     for (const { pattern, why } of FORBIDDEN) {
         test(`no agent-facing file invokes ${String(pattern)} — ${why}`, () => {
-            const offenders = files.filter((f) => {
-                let text: string;
-                try {
-                    text = readFileSync(f, "utf8");
-                } catch {
-                    return false; // unreadable/binary: not an invocation site
-                }
-                return pattern.test(text);
-            });
+            const offenders = sources.filter((s) => pattern.test(s.text)).map((s) => s.path);
             expect(offenders).toEqual([]);
         });
     }

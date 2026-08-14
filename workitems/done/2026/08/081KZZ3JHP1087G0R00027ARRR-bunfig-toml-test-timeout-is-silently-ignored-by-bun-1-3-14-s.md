@@ -1,11 +1,12 @@
 ---
 id: 081KZZ3JHP1087G0R00027ARRR
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: bunfig-toml-test-timeout-is-silently-ignored-by-bun-1-3-14-s
 title: "bunfig.toml test timeout is silently ignored by bun 1.3.14 so every test over 5s flakes"
 created: 2026-08-14T03:03:14.369Z
+completed: 2026-08-14T10:16:11.620Z
 depends_on: []
 composes_with: []
 ---

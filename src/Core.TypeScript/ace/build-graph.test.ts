@@ -394,8 +394,14 @@ describe("the checked-in repo graph", () => {
     // Cargo path dep, or a Lake package is added/removed without refreshing
     // the graph, this fails. Fix: `bun src/Core.TypeScript/ace/build-graph.ts derive --write`.
     // Content-exact, formatting-agnostic — prettier owns the file's layout.
-    expect(serializeGraph(deriveGraph(REPO_ROOT, graph))).toBe(serializeGraph(graph));
-    expect(graphsEqual(deriveGraph(REPO_ROOT, graph), graph)).toBe(true);
+    // deriveGraph walks every manifest in the repo, so it is derived ONCE and both
+    // properties are asserted against that one result. Calling it per-expect cost ~2.6s
+    // under whole-suite load against a 5000 ms per-test cap -- half of it re-deriving an
+    // identical graph. Slow BY ACCIDENT, so made fast rather than given a timeout
+    // (081KZZ3JHP1087G0R00027ARRR).
+    const derived = deriveGraph(REPO_ROOT, graph);
+    expect(serializeGraph(derived)).toBe(serializeGraph(graph));
+    expect(graphsEqual(derived, graph)).toBe(true);
   });
 
   test("the checked-in file parses to exactly what loadGraph returns (no lossy fields)", () => {
@@ -797,7 +803,10 @@ describe("the checked-in repo graph — quorum", () => {
     expect(graphsEqual(deriveGraph(REPO_ROOT, tampered), tampered)).toBe(false);
     // ...and the untampered graph is in sync, so the gate is not simply always red.
     expect(graphsEqual(deriveGraph(REPO_ROOT, graph), graph)).toBe(true);
-  });
+    // Two repo-wide derivations, both load-bearing: one must fail, one must pass, and
+    // dropping either makes the gate vacuous. Slow BY NATURE (~2.5s standalone) against a
+    // real 5000 ms cap -- explicit timeout, see 081KZZ3JHP1087G0R00027ARRR.
+  }, 30_000);
 
   test("DRIFT GATE: a hand-invented reviewer class fails derive", () => {
     const tampered: BuildGraph = {
@@ -809,9 +818,13 @@ describe("the checked-in repo graph — quorum", () => {
     expect(graphsEqual(deriveGraph(REPO_ROOT, tampered), tampered)).toBe(false);
   });
 
+  // Slow BY NATURE: proving determinism REQUIRES deriving twice, so the second walk is the
+  // assertion and cannot be optimised away. Measured ~2.6s standalone against a real 5000 ms
+  // cap (081KZZ3JHP1087G0R00027ARRR) -- too close to survive a loaded runner, so it carries
+  // an explicit timeout at the call site where a reader can see it.
   test("derivation is DETERMINISTIC — same tree, same quorums, every run", () => {
     const a = computeQuorums(REPO_ROOT, graph);
     const b = computeQuorums(REPO_ROOT, graph);
     expect(JSON.stringify([...a.entries()])).toBe(JSON.stringify([...b.entries()]));
-  });
+  }, 30_000);
 });
