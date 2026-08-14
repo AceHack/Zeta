@@ -112,32 +112,67 @@ module OrbitalAsymmetryBudget =
     let rttMs (bodyA: string) (bodyB: string) (jd: float) : float =
         2.0 * oneWayMs bodyA bodyB jd
 
-    /// Conservative asymmetry budget δ_max (ms) for the A↔B link at Julian Date jd.
+    /// The A↔B asymmetry budget as a **justified** bound (ms) at Julian Date jd.
     ///
     /// The asymmetry arises because body B moves during the round-trip. The signal from A
     /// arrives at B's FUTURE position (A→B), but B's reply travels back to A's PAST position
-    /// (B→A). The difference is:
-    ///   δ ≈ |v_B · RTT / c|
-    /// where v_B is the component of B's velocity along the A→B direction.
+    /// (B→A).
     ///
-    /// A conservative upper bound adds 20% margin for perturbations and model error.
-    let deltaMaxMs (bodyA: string) (bodyB: string) (jd: float) : float =
+    /// **Register: `Assumption`, and that is the finding, not an oversight.** The shipped
+    /// expression below is `|v_B·û| · RTT / c · 1.2`, and neither factor is derived:
+    ///
+    /// - the projection `v_B·û` passes through **zero** while the true asymmetry does not, so
+    ///   the ratio true/shipped is unbounded near the zero crossing — it is an *estimator*,
+    ///   never a bound (PR #10387, reproduced independently in PR #10418);
+    /// - the `1.2` is a fudge factor. The endpoint-speed envelope that *does* bound this
+    ///   quantity is **sharp** — equality attained, exact rational witness
+    ///   (`c=10, R=1, V_A=2, V_B=3` gives `τ_AB=1/7, τ_BA=1/12`) — so within the model there
+    ///   is nothing left for a margin to cover, and the residuals that *are* uncovered are
+    ///   additive rather than multiplicative.
+    ///
+    /// **The value is unchanged by this typing.** Replacing it is
+    /// `081KZYK0Q8Z087G0R0010Z2Z2Q`, not this change; moving a number while retyping it would
+    /// hide the retyping. What changed is that the register is now in the code instead of in a
+    /// review document, and that a future margin cannot be added as a silent multiplier —
+    /// `BoundJustification.Bound` has no multiply, so widening costs a named term and a reason.
+    let internal deltaMaxBound (bodyA: string) (bodyB: string) (jd: float) : BoundJustification.Bound =
         let ax, ay, az = helioPos bodyA jd
         let bx, by, bz = helioPos bodyB jd
         let dx, dy, dz = bx - ax, by - ay, bz - az
         let dist = sqrt (dx*dx + dy*dy + dz*dz)
-        if dist < 1.0 then 0.0 // same body
-        else
-            // Unit vector A→B
-            let ux, uy, uz = dx / dist, dy / dist, dz / dist
-            // Velocity of B (km/s)
-            let vx, vy, vz = helioVel bodyB jd
-            // Component of B's velocity along A→B
-            let vProj = vx * ux + vy * uy + vz * uz
-            // RTT in seconds
-            let rttS = 2.0 * dist / C_KM_S
-            // Asymmetry in ms, with 20% conservative margin
-            abs vProj * rttS / C_KM_S * 1000.0 * 1.2
+
+        let shippedMs =
+            if dist < 1.0 then 0.0 // same body
+            else
+                // Unit vector A→B
+                let ux, uy, uz = dx / dist, dy / dist, dz / dist
+                // Velocity of B (km/s)
+                let vx, vy, vz = helioVel bodyB jd
+                // Component of B's velocity along A→B
+                let vProj = vx * ux + vy * uy + vz * uz
+                // RTT in seconds
+                let rttS = 2.0 * dist / C_KM_S
+                // Asymmetry in ms, with 20% conservative margin
+                abs vProj * rttS / C_KM_S * 1000.0 * 1.2
+
+        BoundJustification.Bound.ofTerms
+            [ { Name = "delta_speed_projection_x1.2 (shipped)"
+                Value = shippedMs
+                Why =
+                  BoundJustification.Assumption
+                      ("Velocity-projection estimator times an underived 1.2. The projection is not a bound "
+                       + "(it vanishes at the zero crossing while the true asymmetry does not), and the 1.2 "
+                       + "covers nothing the sharp envelope can produce. Replacement is filed as "
+                       + "081KZYK0Q8Z087G0R0010Z2Z2Q; see docs/research/"
+                       + "2026-08-13-soraya-light-time-asymmetry-envelope-routing-and-proof.md.") } ]
+
+    /// Conservative asymmetry budget δ_max (ms) for the A↔B link at Julian Date jd.
+    ///
+    /// The consumer-facing contract, unchanged: `string -> string -> float -> float`. The
+    /// justification is an authoring-side concern and deliberately does not appear here —
+    /// `BusRegime.regimeOf` takes an `int` of milliseconds and has no use for provenance.
+    let deltaMaxMs (bodyA: string) (bodyB: string) (jd: float) : float =
+        deltaMaxBound bodyA bodyB jd |> BoundJustification.Bound.value
 
     // ── Convenience: current JD from Unix epoch ms ──────────────────────────────────────────────────
     /// Convert a Unix timestamp (ms since 1970-01-01T00:00:00Z) to Julian Date.

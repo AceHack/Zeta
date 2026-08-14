@@ -1,3 +1,72 @@
+## 2026-08-13 — `Bound` / `Justification` (the orbital `1.2`) — ACCEPT_WITH_CONDITIONS
+
+Proposal (PR #10437's rung-1 candidate): a **public** DU pairing a bound with
+`Derivation | Measurement | Assumption`, so a bound without a justification is
+unrepresentable. **Mechanism accepted, public surface refused.** `internal` to
+`Zeta.Bayesian` + one `InternalsVisibleTo("Bayesian.Tests")`; zero public members
+added. Decision doc:
+`docs/DECISIONS/2026-08-13-bound-justification-is-an-authoring-type-not-a-public-contract.md`.
+
+**What it turned on.** Every consumer of `deltaMaxMs` is inside `Zeta.Bayesian`
+(ReticulumBusMeter ×2, GossipTelemetry ×2), each narrowing immediately to the
+`int` of ms `BusRegime` takes. Nobody outside constructs or reads a justification.
+So the only caller needing access was the test assembly — §19's
+`InternalsVisibleTo` redirect verbatim, and the first time that guardrail has
+*decided* a case for me rather than merely informed one.
+
+**The finding I did not expect, and the one worth carrying.** The proposed DU
+**would not have caught the `1.2`**. Pairing a float with a reason is decoration
+when the offending literal sits *inside* the expression that produces the float —
+the author writes one justification for the whole expression and the multiplier
+stays invisible. What catches it is deleting the operation: *a bound is a sum of
+named terms and there is no multiply*, with a private case so the total is derived
+by summation and never authored. The type had to encode the **refutation** (the
+residuals are additive) rather than merely ask the question.
+
+> Generalised, for the next rung-1 review: **ask which operation the defect
+> required, and remove it. Do not add a field beside it.** A field beside the
+> defect is rung 4 wearing a type.
+
+**Register discipline on my own claim.** Leaf magnitudes are still `float`, so the
+guarantee is *no unnamed, unjustified contribution to a total* — not *no wrong
+arithmetic*. Rung 1 for the silence, rung 4 for the arithmetic. Said in the module
+itself, because overclaiming a guard is the exact defect class the guard answers.
+
+**Pattern, first sighting — worth a standing question if it recurs.** Two
+consecutive "make it public" proposals have had *audit / observability* as the
+motive. Audit wants to **read**; a constructor is what goes **public**. Those are
+different halves of a type, and the reader can arrive later, non-breaking, when a
+real audit surface exists. Candidate addition to the review template: *is the
+requested surface the constructor or the reader?*
+
+**Second pattern (recorded as a coincidence, not a conclusion).** This and
+`src/Core/DerivationProtocol.fs` are both closed DUs naming *what is and is not
+verified*. Same philosophy, different domains. Tempting to unify; refused with one
+instance in hand. Revisit at two.
+
+**Open question carried forward.** The scope criterion — *"a constant whose being
+too small produces a false verdict"*, which separates soundness-bearing bounds
+from policy knobs (timeouts, batch sizes, backoff) — currently lives only in a
+decision doc. If the type spreads, that criterion must spread with it, or the type
+dilutes to `Assumption` everywhere and stops discriminating.
+
+**Also refused:** the `Assumption "pre-dates this type"` grandfathering sweep. It
+relabels the problem and destroys the audit signal on the day it is created, by
+making thoughtless annotations indistinguishable from considered ones. No sweep;
+the type applies where a bound is authored or touched, and an unwrapped `float` is
+honest because it claims nothing.
+
+**Found while doing this, for the outstanding `Stream<'T>.Op` /
+`Circuit.RegisterStream` audit:** `src/Core/AssemblyInfo.fs` carries an explicit
+comment that `Zeta.Bayesian` is deliberately *not* on the `InternalsVisibleTo`
+list because it uses the public `IOperator<'T>` plugin interface, *"exactly the
+shape every external plugin library uses."* If those two flips were made so the
+Bayesian plugin could register operators, they sit in direct tension with that
+stated design — and the counter-argument is already written down in the
+repository.
+
+---
+
 ## 2026-07-02 — IRing/ISemiring split: APPROVE-WITH-CONDITIONS (081KWG9JQ9H)
 
 The ten-year test ran backwards: the contract we could not keep was the shipped
