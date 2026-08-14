@@ -1,0 +1,12 @@
+{
+  "pr_number": 10634,
+  "archive_path": "docs/history/pr-reviews/PR-10634-fix-heartbeat-the-archive-backfill-committed-the-shard-index-and-threw-away-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T16:32:04.096Z",
+  "schema_version": "v1",
+  "commit_sha": "6254bc0e171d57013b7ee61aa1a65c3d6acf34c4",
+  "title": "fix(heartbeat): the archive backfill committed the shard index and threw away the archive bodies (081M00GCA8P087G0R000M00W9S)",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T16:31:26Z",
+  "head_ref": "shadow/pr-archive-hole-drain"
+}
