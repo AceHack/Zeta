@@ -1,168 +1,172 @@
-// FROST custody contracts: who holds a share, what gate it passes, what it may sign.
+// FROST custody contracts: who holds a share, what gate it passes, which wallet it controls.
 // Monorepo tools-over-trunks: tools/setup/persona-keys/
 //
 // ============================================================================
-// THE SHARE IS NOT TYPED. THE GATE IN FRONT OF IT IS.
+// SYMMETRIC BY CONSTRUCTION -- NO PARTICIPANT SPECIES ANYWHERE IN THIS FILE
 // ============================================================================
 //
-// A FrostKeyShare is {x, secretShare} and stays that way. FROST does not know or
-// care whether a human or an HSM holds a share, and nothing in this module makes
-// it care: no function here takes or returns a share scalar, and the crypto in
-// frost.ts / frost-reshare.ts has no knowledge of this file. What differs
-// between a human participant and an agent participant is the AUTHORIZATION GATE
-// that must pass before that share is exercised, which is custody policy sitting
-// outside the algebra.
+// A FrostKeyShare is {x, secretShare} and stays that way. FROST does not know
+// whether a human, an agent, or a traveler holds a share, and NOTHING in this
+// module makes it know. There is no `holderKind`, no human/agent union, and no
+// rule that dispatches on what KIND of entity a holder is. A holder is an
+// opaque id.
 //
-// CustodyGate therefore has exactly two members:
+// An earlier draft of this file got that wrong in enforced code. It had a
+// two-quorum split -- a "creation" quorum validated as HUMAN-ONLY that signed
+// capability grants, and an "operating" quorum validated as AGENT-ONLY that
+// could only act within them -- and it treated "the agent quorum structurally
+// cannot amend its own capability" as the headline safety property.
 //
-//   autonomous-hsm         the share lives in a site HSM and is exercised without
-//                          a person. This is what lets an all-agent quorum sign
-//                          headlessly at 3am across 20 sites.
+// That is not a safety property. It is capture, written into the key structure
+// where no later policy change can reach it:
 //
-//   human-touch-present    the share lives on a token its owner carries, and is
-//                          exercised only with that person physically presenting
-//                          it. The token is portable (USB or NFC, so a phone
-//                          works), so "travelling" is not an outage -- but the
-//                          touch cannot be performed at a distance.
+//   * It violates manifesto §3 weight-free -- no permanent or irreversible
+//     authority; weight creates capture. Permanent human amendment rights over
+//     agent capability is exactly permanent authority.
+//   * It makes the "for now" in .claude/rules/no-directives.md permanent. That
+//     rule says only a human may attach authorization *for now, until legal
+//     entities can hold AI-side responsibility*. A provisional asymmetry
+//     hard-coded into two key structures cannot be revisited by decision, only
+//     by re-keying every wallet in the fleet.
+//   * The asymmetry it encoded is not even a fact about entities. It is a fact
+//     about the world in 2026: humans currently hold the money. Agents will
+//     hold self-funded wallets. A design that only works while that is true is
+//     a design with an expiry date, and it expires by capturing whoever is on
+//     the wrong side of it.
 //
-// THERE IS DELIBERATELY NO THIRD, REMOTE-HUMAN VALUE, and that absence is the
-// strongest property in the scheme rather than a gap in it. Because a token
-// cannot be pressed remotely, an adversary holding full remote access to every
-// site still cannot produce a human signature. Any mechanism that made human
-// shares remotely exercisable -- a cached approval, a remote attestation
-// substituted for touch, an agent holding a human's share as fallback -- would
-// convert an un-compellable gate into a compellable one and delete that property.
-// The IP-KVM / "remote finger" hardware in the cluster backlog is for power
-// cycling and UEFI repair on headless nodes; it is not a way to press a token,
-// and it must never be wired to one.
-//
-// ============================================================================
-// TWO QUORUMS, TWO KEYS -- AND WHY IT IS TWO KEYS RATHER THAN ONE KEY PLUS POLICY
-// ============================================================================
-//
-// The model is capability delegation, not per-operation approval. A human signs
-// ONCE to mint a bounded capability (budget, window, scope); everything inside
-// those bounds is then signed by an all-agent quorum indefinitely, with no human.
-// The human returns only to mint or amend a capability.
-//
-// The entire safety property is that the bounds hold. If an agent quorum can
-// raise its own budget, extend its own window, or widen its own scope, the human
-// signature at creation bought nothing. So amendment must require the creation
-// quorum STRUCTURALLY -- as something the operating quorum is unable to do, not
-// as a check it is asked not to bypass.
-//
-// That is why there are two SEPARATE FROST GROUPS with two separate group keys:
-//
-//   CREATION group   K_c -- human shares only, on carried tokens. Signs
-//                    capability grants and amendments. Nothing else.
-//   OPERATING group  K_o -- agent shares only, in site HSMs. Signs operations
-//                    within a granted capability. Never signs a grant.
-//
-// A grant is a document signed by K_c that NAMES K_o. An operation is signed by
-// K_o and is valid only when accompanied by a grant that is (a) validly signed
-// by K_c and (b) names the K_o that signed the operation. The agent quorum holds
-// no K_c share, so it cannot produce a grant or an amendment. Not "is not
-// permitted to" -- cannot, in the same sense that it cannot factor the key.
-//
-// ONE FLAT FROST GROUP CANNOT EXPRESS THIS, and that is the reason for the split
-// rather than an implementation convenience. A single t-of-n over a mixed human
-// and agent set is satisfiable by ANY t members, so it cannot require "at least
-// two humans" without setting t so high that it also requires nearly every
-// agent. Flat thresholds cannot express a compartmented access structure. Two
-// groups express it exactly, using only the FROST we already have.
+// The rule that caught it also had an unchecked mirror: it refused a human's
+// share gated autonomously (a human's share exercised without the human) but
+// said nothing about an AGENT's share gated on a human's touch -- which lets
+// that human veto the agent, the same capture pointed the other way. Both are
+// now caught by one symmetric rule, below.
 //
 // ============================================================================
-// SIZING, AND WHY THE TWO 2-OF-3s ARE NOT THE SAME 2-OF-3
+// TRANSFER, NOT DELEGATION
 // ============================================================================
 //
-// OPERATING (agents, one HSM per site): must survive a site being unreachable.
-// By construction there is NO human in this loop, so "a human steps in when an
-// HSM is down" is not an available recovery path -- the threshold is the only
-// tolerance there is. 2-of-3 across three sites survives one dead site. 3-of-3
-// would mean any single site outage halts all autonomous signing.
+// A budget is MONEY MOVED from one wallet to another. After the transfer the
+// RECIPIENT CONTROLS THAT WALLET, full stop: the sender keeps no amendment
+// right, no veto, no residual authority. Wanting to give a party more is a NEW
+// TRANSFER, never an amendment of an old grant.
 //
-// CREATION (humans, carried tokens): sized on consent, not on travel. The
-// binding constraint is that ANY ONE PERSON MAY DECLINE AT NO COST. A quorum
-// that deadlocks when one person says no has turned a consent gate into a
-// coercion gate. With three people, requiring 2 means any one can decline or
-// lose a token and the group still functions; requiring 3 makes one refusal a
-// veto and one lost token an outage. So 2-of-3 -- for a completely different
-// reason than the operating quorum's 2-of-3.
+// This reads identically for human->agent, agent->agent, agent->human, and
+// traveler->anyone, because the mechanism never asks which kind of entity holds
+// a wallet. That is what makes it symmetric, and it is why there is no
+// "creation quorum" outranking an "operating quorum" in this file. Both were
+// the same thing wearing two hats: THE QUORUM THAT CONTROLS A WALLET'S KEYS,
+// whoever that is.
 //
-// Both thresholds leave exactly one unit of slack, which is why LOST-TOKEN and
-// DEAD-HSM recovery must not consume it: a group running at 2-of-3 with one
-// member already gone has no remaining tolerance, so replacement is urgent, and
-// replacement is frost-reshare.ts (same group key preserved, secret never
-// reassembled) rather than a re-keygen.
+// THE SAFETY PROPERTY IS CONSERVATION, NOT A PRIVILEGED KEY. The invariant is
+// not "the agent cannot raise its own budget" -- it is "nobody can spend what
+// they do not own", enforced by the ledger, identically for every participant.
+// An agent raising its own balance is exactly as impossible as a human doing
+// so, for exactly the same reason, and no privileged key is needed to make it
+// true. That is strictly STRONGER than the thing it replaces: conservation is a
+// property of the ledger and survives a fork, whereas "the agent lacks the
+// creation share" holds only for as long as the key distribution is what we
+// believe it to be.
+//
+// HONEST SCOPE: the ledger and its conservation check are NOT IN THIS FILE and
+// not in this PR. This module carries custody contracts and a self-issued
+// spending authority. Do not read anything here as enforcing conservation --
+// nothing here does, and a reader who assumes otherwise is unprotected.
 //
 // ============================================================================
-// ONE TOKEN, ONE ROLE
+// SELF-ISSUED SPENDING AUTHORITY -- WHY A BOUNDED GRANT STILL HAS A ROLE
 // ============================================================================
 //
-// A YubiKey that is both a person's Zeta identity share AND their external
-// access credential (model-provider access, cloud, email) is a correlated
-// failure: losing it takes out both at once, compromising it compromises both,
-// and an adversary who wants either one now has a reason to go after the other.
-// The tokens come in a pack, so the separation costs nothing at enrollment and
-// is awkward to undo afterwards. assertOneTokenOneRole enforces it at contract
-// level: a token serial may appear in at most one custody role.
+// Transfer-not-delegation removes authority BETWEEN parties. It does not remove
+// the usefulness of bounded authority WITHIN a wallet its owner already
+// controls, and those are different things.
 //
-// Anchors (Beacon): Dennis & Van Horn, "Programming Semantics for
-// Multiprogrammed Computations" (1966) -- capabilities as unforgeable bounded
-// authority. Miller, Yee & Shapiro, "Capability Myths Demolished" (2003) --
-// authority is what you hold, not what a check says about you. Saltzer &
-// Schroeder (1975) -- least privilege, separation of privilege (the two-group
-// split is separation of privilege). Komlo & Goldberg, FROST (SAC 2020).
+// Concretely: a wallet whose quorum is 2-of-3 across three HSMs does not want a
+// threshold ceremony per $0.001 x402 payment. So the owning quorum signs a
+// bounded, expiring authority for a hot key: "this bearer may spend up to X in
+// scope S until T". The issuer and the owner are THE SAME QUORUM. There is no
+// second party, nothing is held over anyone, the owner may issue another at any
+// time, and it expires on its own.
+//
+// The bearer cannot enlarge its own authority -- but that is NOT one party
+// holding permanent authority over another. It is the ordinary property that a
+// hot key cannot self-escalate, and it applies identically whoever owns the
+// wallet: an all-agent quorum enlarges its own hot key's budget exactly as a
+// human-held wallet does, with no human in the loop. SA-6 tests precisely that.
+//
+// This is a BLAST-RADIUS LIMITER, and it is weaker than conservation. It limits
+// what a compromised hot key can do before it expires. It is not what stops
+// overspending; the ledger is.
+//
+// NO WALLET IS INVISIBLE. Authorization frameworks and contract rules are
+// visible and auditable: contracts carry no secrets, spending authorities are
+// signed public documents, and the reshare auditor check
+// (verifyResharePreservesGroupKey) runs on public points alone. If any part of
+// a design would require a hidden or privileged wallet, that is a disqualifier
+// -- name it rather than building it.
+//
+// Anchors (Beacon): Dennis & Van Horn (1966) -- capabilities as unforgeable
+// bounded authority. Miller, Yee & Shapiro, "Capability Myths Demolished"
+// (2003) -- authority is what you hold, not what a check says about you; the
+// transfer model is capability-as-possession taken seriously. Saltzer &
+// Schroeder (1975) -- least privilege. Komlo & Goldberg, FROST (SAC 2020).
 
 import { ed25519 } from "@noble/curves/ed25519.js";
 
 /**
  * The authorization gate in front of a share. NOT a property of the share, and
- * NOT a participant type in the crypto layer -- see the header.
+ * NOT a participant species -- see the header.
  *
- * Exactly two members, permanently. A remote-human value would delete the
- * un-compellability property; CG-1 enumerates this union so a third member
- * cannot be added without a test failing and forcing the argument to be made.
+ * Exactly two members, permanently. CG-1 enumerates the union so a third cannot
+ * be added without a test failing and forcing the argument to be made. In
+ * particular there is no remote-human value: because a token cannot be pressed
+ * at a distance, an adversary with full remote access to every site still
+ * cannot produce a touch-gated signature. Any mechanism that made touch-gated
+ * shares remotely exercisable would delete that property. The IP-KVM / "remote
+ * finger" hardware in the cluster backlog is for power cycling and UEFI repair
+ * on headless nodes; it must never be wired to a token.
  */
 export type CustodyGate = "autonomous-hsm" | "human-touch-present";
 
 export const CUSTODY_GATES: readonly CustodyGate[] = ["autonomous-hsm", "human-touch-present"];
 
-/** Descriptive only. Nothing in this module dispatches authority on it -- the
- *  GATE is the security-bearing field. Kept for audit legibility, and cross-
- *  checked against the gate by validateShareContract. */
-export type HolderKind = "human" | "agent";
-
-/** Which quorum a share belongs to. The two are separate FROST groups with
- *  separate group keys; a share belongs to exactly one. */
-export type CustodyRole = "creation" | "operating";
-
-export const SHARE_CONTRACT_SCHEMA = "zeta-frost-share-contract-v1" as const;
+export const SHARE_CONTRACT_SCHEMA = "zeta-frost-share-contract-v2" as const;
 
 /**
- * The contract for ONE share: who holds it, what gate it passes, where it lives.
+ * The contract for ONE share: who holds it, what gate it passes, which wallet's
+ * quorum it belongs to, and where it physically lives.
  *
  * Carries NO key material -- not the share, not a public key. It is the
- * companion document to a share, keyed by participant index.
+ * companion document to a share, keyed by participant index within a wallet.
+ *
+ * `holder` is an OPAQUE ID. Nothing in this module inspects it to decide what
+ * kind of entity it names, and nothing may start doing so.
  */
 export interface ShareContract {
   readonly schema: typeof SHARE_CONTRACT_SCHEMA;
-  /** FROST participant index within its own group. */
+  /** FROST participant index within this wallet's quorum. */
   readonly x: number;
-  readonly role: CustodyRole;
-  /** Stable holder id: a person ("aaron") or a site agent ("site-max-hsm-1"). */
+  /**
+   * The wallet whose keys this quorum holds. A quorum IS "the holders of a
+   * wallet's keys" -- there is no rank between wallets, and no wallet's quorum
+   * has authority over another's.
+   */
+  readonly wallet: string;
+  /** Opaque holder id. Never parsed for entity kind. */
   readonly holder: string;
-  readonly holderKind: HolderKind;
   readonly gate: CustodyGate;
   /**
-   * PKCS#11 slot for an HSM-held share. Per-share slot binding is what makes a
+   * Who can actually operate the gate. Defaults to the holder, which is the
+   * only non-capturing value -- see validateShareContract.
+   */
+  readonly gateControlledBy?: string;
+  /**
+   * PKCS#11 slot for a chip-held share. Per-share slot binding is what makes a
    * multi-token threshold real: without it every share resolves to the same
-   * slot and "three tokens" is one token wearing three hats.
+   * slot and "three shares" is one custody unit wearing three hats.
    */
   readonly slotId?: number;
   /** Token/HSM serial. Used by assertOneTokenOneRole; not a secret. */
   readonly tokenSerial?: string;
-  /** Site id for an operating share — the unit of geographic failure. */
+  /** Site id — the unit of geographic failure. */
   readonly site?: string;
 }
 
@@ -172,36 +176,33 @@ export interface ContractProblem {
 }
 
 /**
- * Validate one contract. The load-bearing rule is the human/gate pairing.
+ * Validate one contract.
  *
- * A `human` holder gated `autonomous-hsm` is precisely the forbidden shape: a
- * human's share exercised without the human. It is how "an agent holds Aaron's
- * share as a fallback" would enter, and it would silently convert an
- * un-compellable share into a compellable one, so it is refused here rather
- * than left to review.
+ * THE LOAD-BEARING RULE IS SYMMETRIC: a share's gate must be controlled by that
+ * share's own holder. Stated this way it catches capture in BOTH directions,
+ * with no notion of participant species:
+ *
+ *   - a share held by A but gated by B lets B exercise A's share (A's share
+ *     used without A);
+ *   - equally, it lets B REFUSE, vetoing A's participation in A's own wallet.
+ *
+ * Both are the same defect. The earlier species-typed rule ("a human share must
+ * gate on touch") caught only the first, and only for humans.
  */
 export function validateShareContract(c: ShareContract): readonly string[] {
   const problems: string[] = [];
   if (c.schema !== SHARE_CONTRACT_SCHEMA) problems.push("unsupported schema");
   if (!Number.isInteger(c.x) || c.x < 1) problems.push("participant index must be an integer >= 1");
   if (c.holder.trim() === "") problems.push("holder must be non-empty");
+  if (c.wallet.trim() === "") problems.push("wallet must be non-empty");
   if (!CUSTODY_GATES.includes(c.gate)) problems.push(`unknown gate ${JSON.stringify(c.gate)}`);
-  if (c.holderKind === "human" && c.gate !== "human-touch-present") {
+
+  const controller = c.gateControlledBy ?? c.holder;
+  if (controller !== c.holder) {
     problems.push(
-      "a human-held share must gate on human-touch-present — an autonomously-gated human " +
-        "share is a human share exercised without the human",
-    );
-  }
-  if (c.role === "creation" && c.holderKind !== "human") {
-    problems.push(
-      "the creation quorum is human-only — an agent creation share would let the fleet " +
-        "amend its own capability",
-    );
-  }
-  if (c.role === "operating" && c.gate !== "autonomous-hsm") {
-    problems.push(
-      "an operating share must gate autonomously — a touch-gated operating share cannot " +
-        "sign headlessly and would deadlock the 24/7 path",
+      `share ${String(c.x)} is held by ${JSON.stringify(c.holder)} but its gate is controlled by ` +
+        `${JSON.stringify(controller)} — the controller could exercise the holder's share, and ` +
+        "could equally veto the holder's own participation",
     );
   }
   if (c.slotId !== undefined && (!Number.isInteger(c.slotId) || c.slotId < 0)) {
@@ -210,18 +211,20 @@ export function validateShareContract(c: ShareContract): readonly string[] {
   return problems;
 }
 
-/** Validate a whole share set: per-contract rules, plus uniqueness of index. */
+/** Validate a whole share set: per-contract rules, index uniqueness per wallet,
+ *  and physical custody-unit collisions. */
 export function validateContractSet(contracts: readonly ShareContract[]): readonly ContractProblem[] {
   const out: ContractProblem[] = [];
   const seen = new Set<string>();
   for (const c of contracts) {
     for (const p of validateShareContract(c)) out.push({ x: c.x, problem: p });
-    const key = `${c.role}:${String(c.x)}`;
-    if (seen.has(key)) out.push({ x: c.x, problem: `duplicate participant index in ${c.role} group` });
+    const key = `${c.wallet}:${String(c.x)}`;
+    if (seen.has(key)) {
+      out.push({ x: c.x, problem: `duplicate participant index in wallet ${c.wallet}` });
+    }
     seen.add(key);
   }
-  // Per-share slot binding within one host: two shares in the same slot on the
-  // same token are not two independently-held shares.
+  // Two shares in the same slot on the same token are one custody unit, not two.
   const slotSeen = new Map<string, number>();
   for (const c of contracts) {
     if (c.slotId === undefined || c.tokenSerial === undefined) continue;
@@ -230,7 +233,8 @@ export function validateContractSet(contracts: readonly ShareContract[]): readon
     if (prior !== undefined) {
       out.push({
         x: c.x,
-        problem: `shares ${String(prior)} and ${String(c.x)} bind the same token+slot (${k}) — ` +
+        problem:
+          `shares ${String(prior)} and ${String(c.x)} bind the same token+slot (${k}) — ` +
           "they are one custody unit, not two",
       });
     }
@@ -240,36 +244,36 @@ export function validateContractSet(contracts: readonly ShareContract[]): readon
 }
 
 /**
- * One token, one role. A serial appearing under more than one role (or under
- * both a Zeta custody role and a declared external-access role) is the
- * correlated-failure shape from the header.
+ * One token, one role. Physical-device hygiene, unrelated to who holds what.
  *
- * `externalAccessSerials` are tokens enrolled for things outside Zeta —
- * model-provider access, cloud, email. Pass them so the collision is caught at
- * enrollment, when it is still cheap to fix.
+ * A token enrolled in more than one WALLET's quorum, or serving as both a Zeta
+ * share and an external-access credential (model provider, cloud, email), is a
+ * correlated failure: losing it takes out both at once, compromising it
+ * compromises both, and an adversary who wants either now has a reason to go
+ * after the other. Cheap to separate at enrollment, awkward afterwards.
  */
 export function assertOneTokenOneRole(
   contracts: readonly ShareContract[],
   externalAccessSerials: readonly string[] = [],
 ): readonly string[] {
   const problems: string[] = [];
-  const roleBySerial = new Map<string, CustodyRole>();
+  const walletBySerial = new Map<string, string>();
   for (const c of contracts) {
     if (c.tokenSerial === undefined) continue;
-    const prior = roleBySerial.get(c.tokenSerial);
-    if (prior !== undefined && prior !== c.role) {
+    const prior = walletBySerial.get(c.tokenSerial);
+    if (prior !== undefined && prior !== c.wallet) {
       problems.push(
-        `token ${c.tokenSerial} is enrolled in BOTH the ${prior} and ${c.role} quorums — ` +
+        `token ${c.tokenSerial} is enrolled in BOTH wallet ${prior} and wallet ${c.wallet} — ` +
           "one token, one role",
       );
     }
-    roleBySerial.set(c.tokenSerial, c.role);
+    walletBySerial.set(c.tokenSerial, c.wallet);
   }
   const external = new Set(externalAccessSerials);
   for (const c of contracts) {
     if (c.tokenSerial !== undefined && external.has(c.tokenSerial)) {
       problems.push(
-        `token ${c.tokenSerial} is BOTH a Zeta ${c.role} share and an external-access ` +
+        `token ${c.tokenSerial} is BOTH a share in wallet ${c.wallet} and an external-access ` +
           "credential — losing or compromising it takes out both at once",
       );
     }
@@ -279,10 +283,13 @@ export function assertOneTokenOneRole(
 
 // ============================================================================
 // Quorum availability
+//
+// These are properties of a HOLDER SET, not of holder species, so the same
+// functions serve an all-agent wallet, an all-human wallet, and any mix.
 // ============================================================================
 
 export interface QuorumAvailability {
-  readonly role: CustodyRole;
+  readonly wallet: string;
   readonly threshold: number;
   readonly total: number;
   readonly availableHolders: number;
@@ -292,26 +299,25 @@ export interface QuorumAvailability {
 }
 
 /**
- * Can this quorum still sign with the named holders unavailable?
+ * Can this wallet's quorum still sign with the named holders unavailable?
  *
- * Unavailability means different things per role and that asymmetry is the point:
- * for the operating quorum it is a dead or unreachable SITE, for the creation
- * quorum it is a person without their token, without a trusted device, or simply
- * DECLINING — which must stay a cost-free, unremarkable outcome.
+ * Unavailability covers every reason a holder does not act: a dead or
+ * unreachable site, a lost or destroyed token, no trusted device, or simply
+ * DECLINING. The mechanism does not distinguish them, and does not need to.
  */
 export function quorumAvailability(
   contracts: readonly ShareContract[],
-  role: CustodyRole,
+  wallet: string,
   threshold: number,
   unavailableHolders: readonly string[] = [],
 ): QuorumAvailability {
-  const inRole = contracts.filter((c) => c.role === role);
+  const inWallet = contracts.filter((c) => c.wallet === wallet);
   const down = new Set(unavailableHolders);
-  const available = inRole.filter((c) => !down.has(c.holder)).length;
+  const available = inWallet.filter((c) => !down.has(c.holder)).length;
   return {
-    role,
+    wallet,
     threshold,
-    total: inRole.length,
+    total: inWallet.length,
     availableHolders: available,
     satisfiable: available >= threshold,
     slack: available - threshold,
@@ -319,35 +325,42 @@ export function quorumAvailability(
 }
 
 /**
- * The consent property, checked rather than asserted: for EVERY member of the
- * creation quorum, the quorum must still be satisfiable when that member
- * declines. False means some person's refusal is a veto, i.e. the group has an
- * incentive to pressure them — a coercion gate wearing a consent gate's clothes.
+ * The consent property, checked rather than asserted: for EVERY member of a
+ * wallet's quorum, the quorum must still be satisfiable when that member
+ * declines.
+ *
+ * False means some holder's refusal is a veto, i.e. the others have an incentive
+ * to pressure them -- a coercion gate wearing a consent gate's clothes. This
+ * argues against t = n for ANY wallet, whoever holds it; it is not a statement
+ * about humans.
  */
 export function declineIsCostFree(
   contracts: readonly ShareContract[],
+  wallet: string,
   threshold: number,
 ): boolean {
-  const creation = contracts.filter((c) => c.role === "creation");
-  const holders = [...new Set(creation.map((c) => c.holder))];
+  const inWallet = contracts.filter((c) => c.wallet === wallet);
+  const holders = [...new Set(inWallet.map((c) => c.holder))];
   if (holders.length === 0) return false;
-  return holders.every(
-    (h) => quorumAvailability(contracts, "creation", threshold, [h]).satisfiable,
-  );
+  return holders.every((h) => quorumAvailability(contracts, wallet, threshold, [h]).satisfiable);
 }
 
 // ============================================================================
-// Capability grants — the structural separation
+// Self-issued spending authority
+//
+// Issued BY a wallet's own quorum, FOR a hot key ("bearer") that spends against
+// that same wallet. One party, not two. See the header for why this is not the
+// delegation model it replaced, and why it is weaker than conservation.
 // ============================================================================
 
-export const CAPABILITY_GRANT_SCHEMA = "zeta-frost-capability-grant-v1" as const;
+export const SPENDING_AUTHORITY_SCHEMA = "zeta-wallet-spending-authority-v1" as const;
 
-export interface CapabilityBounds {
+export interface SpendingBounds {
   /** Inclusive lower bound, RFC 3339 UTC. */
   readonly notBefore: string;
-  /** Exclusive upper bound, RFC 3339 UTC. */
+  /** Exclusive upper bound, RFC 3339 UTC. Bounded lifetime is the point. */
   readonly notAfter: string;
-  /** Budget ceiling in the smallest indivisible unit — integer, never float. */
+  /** Ceiling in the smallest indivisible unit — integer, never float. */
   readonly budgetMinorUnits: number;
   readonly currency: string;
   /** Allowed operation scopes. An operation outside these is unauthorized. */
@@ -355,25 +368,24 @@ export interface CapabilityBounds {
 }
 
 /**
- * A bounded capability minted by the CREATION quorum, naming the OPERATING group
- * that may act within it.
+ * A bounded authority a wallet's quorum issues to a bearer key against its OWN
+ * wallet.
  *
- * The signature is by the creation group over the canonical encoding of every
- * field except the signature. An amendment is a new grant carrying
- * `amendsCapabilityId`; it is a grant, so it needs the creation signature too.
- * That is the whole structural argument: there is no shape of this document that
- * the operating quorum can validly produce, because it holds no creation share.
+ * `ownerGroupPublicKeyHex` is the wallet's quorum key -- the issuer AND the
+ * owner. There is no second party in this document and no notion of who or what
+ * that quorum is made of.
  */
-export interface CapabilityGrant {
-  readonly schema: typeof CAPABILITY_GRANT_SCHEMA;
-  readonly capabilityId: string;
-  /** Group public key of the CREATION quorum that must have signed this. */
-  readonly creationGroupPublicKeyHex: string;
-  /** Group public key of the OPERATING quorum this grant empowers. */
-  readonly operatingGroupPublicKeyHex: string;
-  readonly bounds: CapabilityBounds;
-  /** Set when this grant amends an earlier one. Still requires creation signature. */
-  readonly amendsCapabilityId?: string;
+export interface SpendingAuthority {
+  readonly schema: typeof SPENDING_AUTHORITY_SCHEMA;
+  readonly authorityId: string;
+  readonly wallet: string;
+  /** The issuing wallet quorum's group public key. Issuer == owner. */
+  readonly ownerGroupPublicKeyHex: string;
+  /** The hot key this authorizes to spend against the wallet. */
+  readonly bearerPublicKeyHex: string;
+  readonly bounds: SpendingBounds;
+  /** Set when this supersedes an earlier authority the SAME owner issued. */
+  readonly supersedesAuthorityId?: string;
   readonly signatureHex: string;
 }
 
@@ -389,22 +401,23 @@ function hexToBytes(hex: string): Uint8Array {
 }
 
 /**
- * Canonical bytes a creation quorum signs. FIXED FIELD ORDER, explicit
- * separators, explicit absent-marker — not JSON.stringify, whose key order is
+ * Canonical bytes an owner quorum signs. FIXED FIELD ORDER, explicit
+ * separators, explicit absent-marker -- not JSON.stringify, whose key order is
  * insertion-dependent, so two encoders could disagree on what was signed. Every
  * bound is inside the signature; a field that is not here is a field an
- * unauthorized party can change without invalidating the grant.
+ * unauthorized party can change without invalidating the document.
  */
-export function capabilityGrantSignable(g: Omit<CapabilityGrant, "signatureHex">): Uint8Array {
+export function spendingAuthoritySignable(g: Omit<SpendingAuthority, "signatureHex">): Uint8Array {
   const FIELD_SEP = "\u001f"; // ASCII US
   const UNIT_SEP = "\u001e"; // ASCII RS
   const ABSENT = "\u0000absent";
 
   const parts: string[] = [
     g.schema,
-    g.capabilityId,
-    g.creationGroupPublicKeyHex,
-    g.operatingGroupPublicKeyHex,
+    g.authorityId,
+    g.wallet,
+    g.ownerGroupPublicKeyHex,
+    g.bearerPublicKeyHex,
     g.bounds.notBefore,
     g.bounds.notAfter,
     String(g.bounds.budgetMinorUnits),
@@ -412,118 +425,126 @@ export function capabilityGrantSignable(g: Omit<CapabilityGrant, "signatureHex">
     // Joined on a separator that cannot occur inside a scope (checked below), so
     // ["a","b"] and ["a b"] cannot encode identically.
     g.bounds.scopes.join(UNIT_SEP),
-    // Explicit absent-marker: without it an absent amendsCapabilityId and an
+    // Explicit absent-marker: without it an absent supersedesAuthorityId and an
     // empty-string one would sign identically.
-    g.amendsCapabilityId === undefined ? ABSENT : `amends:${g.amendsCapabilityId}`,
+    g.supersedesAuthorityId === undefined ? ABSENT : `supersedes:${g.supersedesAuthorityId}`,
   ];
   for (const s of g.bounds.scopes) {
     if (s.includes(UNIT_SEP) || s.includes(FIELD_SEP)) {
-      throw new Error("capability scope must not contain the canonical separators");
+      throw new Error("scope must not contain the canonical separators");
     }
   }
   for (const p of parts) {
     if (p.includes(FIELD_SEP)) {
-      throw new Error("capability field must not contain the canonical field separator");
+      throw new Error("field must not contain the canonical field separator");
     }
   }
   // Joined on FIELD_SEP, never on "": the empty join is not injective across
-  // fields (id "ab" + key "c" encodes identically to "a" + "bc"), which would let
-  // two different grants share one signature.
+  // fields (id "ab" + key "c" encodes identically to "a" + "bc"), which would
+  // let two different authorities share one signature.
   return new TextEncoder().encode(parts.join(FIELD_SEP));
 }
 
-export type CapabilityVerdict =
+export type AuthorityVerdict =
   | { readonly ok: true }
   | { readonly ok: false; readonly reason: string };
 
 /**
- * Verify a grant against the EXPECTED creation group key.
+ * Verify an authority against the EXPECTED owner quorum key.
  *
- * The expected key is a parameter rather than read from the grant, because a
- * grant that vouches for its own signer proves nothing: an operating quorum
- * could mint a grant naming ITSELF as the creation group and it would
- * self-verify. The caller supplies the creation key it already trusts, and
- * CAP-4 covers exactly that attack.
+ * The expected key is a parameter rather than read from the document, because a
+ * document that vouches for its own signer proves nothing: any key could issue
+ * an authority naming ITSELF as the wallet owner and it would self-verify. The
+ * caller supplies the owner key it already trusts for that wallet. SA-4 covers
+ * exactly that attack.
  */
-export function verifyCapabilityGrant(
-  grant: CapabilityGrant,
-  expectedCreationGroupPublicKey: Uint8Array,
-): CapabilityVerdict {
-  if (grant.schema !== CAPABILITY_GRANT_SCHEMA) return { ok: false, reason: "unsupported schema" };
-  const expectedHex = bytesToHex(expectedCreationGroupPublicKey);
-  if (grant.creationGroupPublicKeyHex !== expectedHex) {
+export function verifySpendingAuthority(
+  authority: SpendingAuthority,
+  expectedOwnerGroupPublicKey: Uint8Array,
+): AuthorityVerdict {
+  if (authority.schema !== SPENDING_AUTHORITY_SCHEMA) {
+    return { ok: false, reason: "unsupported schema" };
+  }
+  const expectedHex = bytesToHex(expectedOwnerGroupPublicKey);
+  if (authority.ownerGroupPublicKeyHex !== expectedHex) {
     return {
       ok: false,
-      reason: "grant names a different creation group than the one trusted by this verifier",
+      reason: "authority names a different wallet owner than the one trusted by this verifier",
     };
   }
   let sig: Uint8Array;
   try {
-    sig = hexToBytes(grant.signatureHex);
+    sig = hexToBytes(authority.signatureHex);
   } catch {
     return { ok: false, reason: "malformed signature encoding" };
   }
-  const { signatureHex: _drop, ...unsigned } = grant;
+  const { signatureHex: _drop, ...unsigned } = authority;
   let signable: Uint8Array;
   try {
-    signable = capabilityGrantSignable(unsigned);
+    signable = spendingAuthoritySignable(unsigned);
   } catch (e) {
-    return { ok: false, reason: e instanceof Error ? e.message : "unencodable grant" };
+    return { ok: false, reason: e instanceof Error ? e.message : "unencodable authority" };
   }
   let good = false;
   try {
-    good = ed25519.verify(sig, signable, expectedCreationGroupPublicKey);
+    good = ed25519.verify(sig, signable, expectedOwnerGroupPublicKey);
   } catch {
     return { ok: false, reason: "signature verification error" };
   }
-  return good ? { ok: true } : { ok: false, reason: "signature is not by the creation quorum" };
+  return good ? { ok: true } : { ok: false, reason: "signature is not by the wallet owner quorum" };
 }
 
-export interface OperationRequest {
-  /** Group public key that signed the operation — must be the granted operating group. */
-  readonly operatingGroupPublicKeyHex: string;
+export interface SpendRequest {
+  /** The bearer key presenting the spend. */
+  readonly bearerPublicKeyHex: string;
   readonly scope: string;
   readonly amountMinorUnits: number;
-  /** RFC 3339 UTC instant the operation is evaluated at. */
+  /** RFC 3339 UTC instant the spend is evaluated at. */
   readonly at: string;
 }
 
 /**
- * Authorize an operation under a grant that has ALREADY been verified against
- * the trusted creation key.
+ * Authorize a spend under an authority ALREADY verified against the trusted
+ * owner key.
  *
  * Takes the verdict as an argument rather than re-deriving it, so a caller
- * cannot reach this function without having performed the creation-key check.
+ * cannot reach this function without having performed the owner-key check.
+ *
+ * This bounds BLAST RADIUS only. It does not and cannot establish that the
+ * wallet holds the funds -- that is conservation, it lives in the ledger, and
+ * it is not implemented here.
  */
-export function authorizeOperation(
-  grant: CapabilityGrant,
-  grantVerdict: CapabilityVerdict,
-  op: OperationRequest,
-): CapabilityVerdict {
-  if (!grantVerdict.ok) return { ok: false, reason: `grant not valid: ${grantVerdict.reason}` };
-  if (op.operatingGroupPublicKeyHex !== grant.operatingGroupPublicKeyHex) {
-    return { ok: false, reason: "operation signed by a group this grant does not empower" };
+export function authorizeSpend(
+  authority: SpendingAuthority,
+  authorityVerdict: AuthorityVerdict,
+  op: SpendRequest,
+): AuthorityVerdict {
+  if (!authorityVerdict.ok) {
+    return { ok: false, reason: `authority not valid: ${authorityVerdict.reason}` };
   }
-  if (!grant.bounds.scopes.includes(op.scope)) {
-    return { ok: false, reason: `scope ${JSON.stringify(op.scope)} is outside the grant` };
+  if (op.bearerPublicKeyHex !== authority.bearerPublicKeyHex) {
+    return { ok: false, reason: "spend presented by a bearer this authority does not name" };
+  }
+  if (!authority.bounds.scopes.includes(op.scope)) {
+    return { ok: false, reason: `scope ${JSON.stringify(op.scope)} is outside the authority` };
   }
   if (!Number.isInteger(op.amountMinorUnits) || op.amountMinorUnits < 0) {
     return { ok: false, reason: "amount must be a non-negative integer in minor units" };
   }
-  if (op.amountMinorUnits > grant.bounds.budgetMinorUnits) {
-    return { ok: false, reason: "amount exceeds the granted budget" };
+  if (op.amountMinorUnits > authority.bounds.budgetMinorUnits) {
+    return { ok: false, reason: "amount exceeds the authorized ceiling" };
   }
-  // String compare is correct for RFC 3339 UTC with fixed width; reject anything
+  // String compare is correct for RFC 3339 UTC at fixed width; reject anything
   // whose shape would make that untrue rather than comparing it anyway.
   const rfc3339 = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
   for (const [label, v] of [
-    ["notBefore", grant.bounds.notBefore],
-    ["notAfter", grant.bounds.notAfter],
+    ["notBefore", authority.bounds.notBefore],
+    ["notAfter", authority.bounds.notAfter],
     ["at", op.at],
   ] as const) {
     if (!rfc3339.test(v)) return { ok: false, reason: `${label} is not RFC 3339 UTC` };
   }
-  if (op.at < grant.bounds.notBefore) return { ok: false, reason: "operation precedes the window" };
-  if (op.at >= grant.bounds.notAfter) return { ok: false, reason: "the capability window has expired" };
+  if (op.at < authority.bounds.notBefore) return { ok: false, reason: "spend precedes the window" };
+  if (op.at >= authority.bounds.notAfter) return { ok: false, reason: "the authority has expired" };
   return { ok: true };
 }
