@@ -1,8 +1,9 @@
-export const ZETA_PROPOSAL_SCHEMA = "zeta.proposal.v1";
+export const ZETA_PROPOSAL_SCHEMA = "zeta.proposal.v2";
 export const ZETA_REPOSITORY = "Lucent-Financial-Group/Zeta";
-export const ZETA_PROPOSAL_MARKER = "<!-- zeta-proposal-v1 -->";
+export const ZETA_PROPOSAL_MARKER = "<!-- zeta-proposal-v2 -->";
 export const ZETA_PAGES_ORIGIN = "https://lucent-financial-group.github.io";
 export const ZETA_PAGES_RP_ID = "lucent-financial-group.github.io";
+export const ZETA_PROPOSAL_MAX_LIFETIME_MS = 5 * 60_000;
 
 export type ProposalIntent = {
   schema: typeof ZETA_PROPOSAL_SCHEMA;
@@ -15,6 +16,7 @@ export type ProposalIntent = {
   nonce: string;
   changeDigest: string;
   authorCredentialId: string;
+  authorRegistrySequence: number;
 };
 
 export type SerializedWebAuthnAssertion = {
@@ -45,14 +47,16 @@ function bytesToBase64url(bytes: ArrayBuffer | Uint8Array): string {
   return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
 }
 
-function base64urlToBytes(value: string): Uint8Array {
-  const padded = value.replaceAll("-", "+").replaceAll("_", "/") + "=".repeat((4 - value.length % 4) % 4);
+function base64urlToBytes(value: string): Uint8Array<ArrayBuffer> {
+  const padded = value.replaceAll("-", "+").replaceAll("_", "/") + "=".repeat((4 - (value.length % 4)) % 4);
   const binary = atob(padded);
-  return Uint8Array.from(binary, char => char.charCodeAt(0));
+  const output = new Uint8Array(new ArrayBuffer(binary.length));
+  for (let index = 0; index < binary.length; index++) output[index] = binary.charCodeAt(index);
+  return output;
 }
 
-function randomBytes(length: number): Uint8Array {
-  const output = new Uint8Array(length);
+function randomBytes(length: number): Uint8Array<ArrayBuffer> {
+  const output = new Uint8Array(new ArrayBuffer(length));
   crypto.getRandomValues(output);
   return output;
 }
@@ -62,7 +66,7 @@ export function isCommitSha(value: string): boolean {
 }
 
 export function canonicalProposalIntent(intent: ProposalIntent): string {
-  return JSON.stringify({
+  const fields: Record<string, unknown> = {
     schema: intent.schema,
     proposalId: intent.proposalId,
     repository: intent.repository,
@@ -73,31 +77,41 @@ export function canonicalProposalIntent(intent: ProposalIntent): string {
     nonce: intent.nonce,
     changeDigest: intent.changeDigest,
     authorCredentialId: intent.authorCredentialId,
-  });
+    authorRegistrySequence: intent.authorRegistrySequence,
+  };
+  return JSON.stringify(
+    Object.fromEntries(Object.entries(fields).sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))),
+  );
 }
 
-export async function sha256Bytes(value: string): Promise<Uint8Array> {
+export async function sha256Bytes(value: string): Promise<Uint8Array<ArrayBuffer>> {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
   return new Uint8Array(digest);
 }
 
 export async function sha256Hex(value: string): Promise<string> {
   const bytes = await sha256Bytes(value);
-  return Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("");
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
 export async function createProposalIntent(input: {
   baseSha: string;
   payload: string;
   credentialId: string;
+  authorRegistrySequence: number;
   now?: Date;
   expiresInMs?: number;
 }): Promise<ProposalIntent> {
   if (!isCommitSha(input.baseSha)) throw new Error("baseSha must be a 40-character immutable Git commit SHA");
   if (input.payload.trim().length === 0) throw new Error("proposal payload must explain the desired change");
   if (input.credentialId.length === 0) throw new Error("a registered passkey credential ID is required");
+  if (!Number.isSafeInteger(input.authorRegistrySequence) || input.authorRegistrySequence < 0)
+    throw new Error("authorRegistrySequence must identify the reviewed registry at the immutable base commit");
   const now = input.now ?? new Date();
-  const expiresInMs = input.expiresInMs ?? 5 * 60_000;
+  const expiresInMs = input.expiresInMs ?? ZETA_PROPOSAL_MAX_LIFETIME_MS;
+  if (!Number.isSafeInteger(expiresInMs) || expiresInMs < 1 || expiresInMs > ZETA_PROPOSAL_MAX_LIFETIME_MS) {
+    throw new Error("proposal lifetime must be a positive duration no greater than five minutes");
+  }
   return {
     schema: ZETA_PROPOSAL_SCHEMA,
     proposalId: crypto.randomUUID(),
@@ -109,12 +123,17 @@ export async function createProposalIntent(input: {
     nonce: bytesToBase64url(randomBytes(32)),
     changeDigest: await sha256Hex(input.payload.trim()),
     authorCredentialId: input.credentialId,
+    authorRegistrySequence: input.authorRegistrySequence,
   };
 }
 
 export async function enrollProposalPasskey(): Promise<PasskeyEnrollment> {
-  if (!window.PublicKeyCredential) throw new Error("This browser does not support passkeys. Use a current browser with WebAuthn enabled.");
-  if (window.location.origin !== ZETA_PAGES_ORIGIN) throw new Error("Passkey enrollment is bound to the published GitHub Pages origin. Open the primary GitHub Pages site before enrolling so this credential is not stranded on a preview hostname.");
+  if (!window.PublicKeyCredential)
+    throw new Error("This browser does not support passkeys. Use a current browser with WebAuthn enabled.");
+  if (window.location.origin !== ZETA_PAGES_ORIGIN)
+    throw new Error(
+      "Passkey enrollment is bound to the published GitHub Pages origin. Open the primary GitHub Pages site before enrolling so this credential is not stranded on a preview hostname.",
+    );
   const credential = await navigator.credentials.create({
     publicKey: {
       challenge: randomBytes(32),
@@ -136,9 +155,11 @@ export async function enrollProposalPasskey(): Promise<PasskeyEnrollment> {
       timeout: 60_000,
     },
   });
-  if (!(credential instanceof PublicKeyCredential)) throw new Error("No passkey was created. Confirm the browser prompt to enroll.");
+  if (!(credential instanceof PublicKeyCredential))
+    throw new Error("No passkey was created. Confirm the browser prompt to enroll.");
   const response = credential.response;
-  if (!(response instanceof AuthenticatorAttestationResponse)) throw new Error("The browser did not return an attestation response.");
+  if (!(response instanceof AuthenticatorAttestationResponse))
+    throw new Error("The browser did not return an attestation response.");
   return {
     schema: "zeta.proposal-author.v1",
     repository: ZETA_REPOSITORY,
@@ -150,7 +171,10 @@ export async function enrollProposalPasskey(): Promise<PasskeyEnrollment> {
 }
 
 export async function signProposal(intent: ProposalIntent): Promise<SignedProposal> {
-  if (window.location.origin !== ZETA_PAGES_ORIGIN) throw new Error("Passkey signing is bound to the published GitHub Pages origin. Open the primary GitHub Pages site before signing.");
+  if (window.location.origin !== ZETA_PAGES_ORIGIN)
+    throw new Error(
+      "Passkey signing is bound to the published GitHub Pages origin. Open the primary GitHub Pages site before signing.",
+    );
   const challenge = await sha256Bytes(canonicalProposalIntent(intent));
   const credential = await navigator.credentials.get({
     publicKey: {
@@ -160,9 +184,11 @@ export async function signProposal(intent: ProposalIntent): Promise<SignedPropos
       timeout: 60_000,
     },
   });
-  if (!(credential instanceof PublicKeyCredential)) throw new Error("No passkey assertion was returned. Confirm the browser prompt to sign.");
+  if (!(credential instanceof PublicKeyCredential))
+    throw new Error("No passkey assertion was returned. Confirm the browser prompt to sign.");
   const response = credential.response;
-  if (!(response instanceof AuthenticatorAssertionResponse)) throw new Error("The browser did not return a passkey assertion.");
+  if (!(response instanceof AuthenticatorAssertionResponse))
+    throw new Error("The browser did not return a passkey assertion.");
   const userHandle = response.userHandle ? bytesToBase64url(response.userHandle) : undefined;
   return {
     ...intent,

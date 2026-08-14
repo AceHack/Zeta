@@ -1,8 +1,11 @@
 import { createHash, randomBytes, randomUUID } from "node:crypto";
+import { canonicalBytes } from "../ace/canonical";
 
-export const PROPOSAL_SCHEMA = "zeta.proposal.v1";
+export const PROPOSAL_SCHEMA = "zeta.proposal.v2";
 export const PROPOSAL_REPOSITORY = "Lucent-Financial-Group/Zeta";
 export const PROPOSAL_BASE_REF = "main";
+export const PROPOSAL_MAX_LIFETIME_MS = 5 * 60_000;
+export const PROPOSAL_MAX_FUTURE_SKEW_MS = 60_000;
 
 export interface ProposalIntent {
   readonly schema: typeof PROPOSAL_SCHEMA;
@@ -15,6 +18,7 @@ export interface ProposalIntent {
   readonly nonce: string;
   readonly changeDigest: string;
   readonly authorCredentialId: string;
+  readonly authorRegistrySequence: number;
 }
 
 export interface WebAuthnAssertion {
@@ -37,6 +41,10 @@ export function isSha256(value: string): boolean {
   return /^[a-f0-9]{64}$/i.test(value);
 }
 
+export function isProposalId(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
 export function toBase64url(value: Uint8Array): string {
   return Buffer.from(value).toString("base64url");
 }
@@ -51,23 +59,26 @@ export function sha256Hex(value: string | Uint8Array): string {
 }
 
 /**
- * This serialization is deliberately a fixed-key object, not an open JSON map.
- * Its byte representation is the exact WebAuthn challenge preimage, so any
- * field substitution changes the challenge and invalidates the assertion.
+ * This fixed-key projection uses Ace's shared canonical byte form. Its byte
+ * representation is the exact WebAuthn challenge preimage, so field order is
+ * irrelevant while any field substitution invalidates the assertion.
  */
 export function canonicalProposalIntent(intent: ProposalIntent): string {
-  return JSON.stringify({
-    schema: intent.schema,
-    proposalId: intent.proposalId,
-    repository: intent.repository,
-    baseRef: intent.baseRef,
-    baseSha: intent.baseSha,
-    createdAt: intent.createdAt,
-    expiresAt: intent.expiresAt,
-    nonce: intent.nonce,
-    changeDigest: intent.changeDigest,
-    authorCredentialId: intent.authorCredentialId,
-  });
+  return new TextDecoder().decode(
+    canonicalBytes({
+      schema: intent.schema,
+      proposalId: intent.proposalId,
+      repository: intent.repository,
+      baseRef: intent.baseRef,
+      baseSha: intent.baseSha,
+      createdAt: intent.createdAt,
+      expiresAt: intent.expiresAt,
+      nonce: intent.nonce,
+      changeDigest: intent.changeDigest,
+      authorCredentialId: intent.authorCredentialId,
+      authorRegistrySequence: intent.authorRegistrySequence,
+    }),
+  );
 }
 
 export function proposalChallenge(intent: ProposalIntent): Buffer {
@@ -78,14 +89,32 @@ export function createProposalIntent(input: {
   readonly baseSha: string;
   readonly payload: string;
   readonly authorCredentialId: string;
+  readonly authorRegistrySequence: number;
   readonly now?: Date;
   readonly expiresInMs?: number;
 }): ProposalIntent {
-  if (!isCommitSha(input.baseSha)) throw new Error("teaching error: baseSha must be a 40-character immutable Git commit SHA; generator: bind current main before signing");
-  if (input.payload.trim().length === 0) throw new Error("teaching error: a proposal must bind a non-empty requested change; generator: describe the change before signing");
-  if (input.authorCredentialId.length === 0) throw new Error("teaching error: a passkey credential ID is required; generator: enroll an authorized proposal passkey");
+  if (!isCommitSha(input.baseSha))
+    throw new Error(
+      "teaching error: baseSha must be a 40-character immutable Git commit SHA; generator: bind current main before signing",
+    );
+  if (input.payload.trim().length === 0)
+    throw new Error(
+      "teaching error: a proposal must bind a non-empty requested change; generator: describe the change before signing",
+    );
+  if (input.authorCredentialId.length === 0)
+    throw new Error(
+      "teaching error: a passkey credential ID is required; generator: enroll an authorized proposal passkey",
+    );
+  if (!Number.isSafeInteger(input.authorRegistrySequence) || input.authorRegistrySequence < 0)
+    throw new Error(
+      "teaching error: authorRegistrySequence must bind a non-negative author-registry revision; generator: load the registry from the immutable base commit before signing",
+    );
   const now = input.now ?? new Date();
-  const expiresInMs = input.expiresInMs ?? 5 * 60_000;
+  const expiresInMs = input.expiresInMs ?? PROPOSAL_MAX_LIFETIME_MS;
+  if (!Number.isSafeInteger(expiresInMs) || expiresInMs < 1 || expiresInMs > PROPOSAL_MAX_LIFETIME_MS)
+    throw new Error(
+      "teaching error: expiresInMs must be a positive duration no greater than five minutes; generator: create a fresh bounded envelope",
+    );
   return {
     schema: PROPOSAL_SCHEMA,
     proposalId: randomUUID(),
@@ -97,5 +126,6 @@ export function createProposalIntent(input: {
     nonce: toBase64url(randomBytes(32)),
     changeDigest: sha256Hex(input.payload.trim()),
     authorCredentialId: input.authorCredentialId,
+    authorRegistrySequence: input.authorRegistrySequence,
   };
 }

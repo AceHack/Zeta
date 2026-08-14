@@ -1,5 +1,8 @@
 {
-  "schema": "zeta.proposal-author-registry.v1",
+  "schema": "zeta.proposal-author-registry.v2",
   "repository": "Lucent-Financial-Group/Zeta",
-  "authors": []
+  "sequence": 1,
+  "issuedAt": "2026-08-14T01:02:00.000Z",
+  "authors": [],
+  "revoked": {}
 }

@@ -2,16 +2,14 @@ import { createHash, generateKeyPairSync, sign } from "node:crypto";
 import { describe, expect, test } from "bun:test";
 import { encode } from "cborg";
 import {
+  canonicalProposalIntent,
   createProposalIntent,
   proposalChallenge,
   toBase64url,
   type SignedProposal,
 } from "./proposal-envelope";
-import {
-  publicKeyJwkFromEnrollment,
-  verifySignedProposal,
-  type ProposalAuthorRegistry,
-} from "./proposal-verifier";
+import { canonicalProposalIntent as canonicalBrowserProposalIntent } from "../../../demo/identity-dla-site/src/lib/passkeyProposal";
+import { publicKeyJwkFromEnrollment, verifySignedProposal, type ProposalAuthorRegistry } from "./proposal-verifier";
 
 const ORIGIN = "https://lucent-financial-group.github.io";
 const RP_ID = "lucent-financial-group.github.io";
@@ -19,13 +17,16 @@ const NOW = new Date("2026-08-13T20:00:00.000Z");
 const BASE_SHA = "a".repeat(40);
 const PAYLOAD = "Change docs/research/example.md with a reviewed protocol clarification.";
 const CREDENTIAL_ID = toBase64url(Buffer.alloc(32, 7));
+const REGISTRY_SEQUENCE = 1;
 
 function clientData(intent: ReturnType<typeof createProposalIntent>, origin = ORIGIN): Buffer {
-  return Buffer.from(JSON.stringify({
-    type: "webauthn.get",
-    challenge: toBase64url(proposalChallenge(intent)),
-    origin,
-  }));
+  return Buffer.from(
+    JSON.stringify({
+      type: "webauthn.get",
+      challenge: toBase64url(proposalChallenge(intent)),
+      origin,
+    }),
+  );
 }
 
 function authenticatorData(rpId = RP_ID, flags = 0x05): Buffer {
@@ -42,6 +43,7 @@ function fixture(): { proposal: SignedProposal; registry: ProposalAuthorRegistry
     baseSha: BASE_SHA,
     payload: PAYLOAD,
     authorCredentialId: CREDENTIAL_ID,
+    authorRegistrySequence: REGISTRY_SEQUENCE,
     now: NOW,
   });
   const authData = authenticatorData();
@@ -58,14 +60,19 @@ function fixture(): { proposal: SignedProposal; registry: ProposalAuthorRegistry
     },
   };
   const registry: ProposalAuthorRegistry = {
-    schema: "zeta.proposal-author-registry.v1",
+    schema: "zeta.proposal-author-registry.v2",
     repository: "Lucent-Financial-Group/Zeta",
-    authors: [{
-      credentialId: CREDENTIAL_ID,
-      origin: ORIGIN,
-      rpId: RP_ID,
-      publicKeyJwk: publicKey.export({ format: "jwk" }),
-    }],
+    sequence: REGISTRY_SEQUENCE,
+    issuedAt: "2026-08-13T19:55:00.000Z",
+    authors: [
+      {
+        credentialId: CREDENTIAL_ID,
+        origin: ORIGIN,
+        rpId: RP_ID,
+        publicKeyJwk: publicKey.export({ format: "jwk" }),
+      },
+    ],
+    revoked: {},
   };
   return { proposal, registry };
 }
@@ -78,33 +85,65 @@ describe("passkey proposal verifier", () => {
     if (result.ok) {
       expect(result.proposal.baseSha).toBe(BASE_SHA);
       expect(result.canonicalIntent).toContain('"repository":"Lucent-Financial-Group/Zeta"');
+      expect(canonicalBrowserProposalIntent(result.proposal)).toBe(canonicalProposalIntent(result.proposal));
     }
   });
 
   test("PPV-2 FAULT INJECTION: an unregistered passkey becomes an enrollment teaching error", () => {
     const { proposal, registry } = fixture();
-    const result = verifySignedProposal({ proposal, payload: PAYLOAD, registry: { ...registry, authors: [] }, now: NOW });
-    expect(result).toMatchObject({ ok: false, code: "unknown-author", retraction: { weight: -1 }, generator: "enrollProposalPasskey" });
+    const result = verifySignedProposal({
+      proposal,
+      payload: PAYLOAD,
+      registry: { ...registry, authors: [] },
+      now: NOW,
+    });
+    expect(result).toMatchObject({
+      ok: false,
+      code: "unknown-author",
+      retraction: { weight: -1 },
+      generator: "enrollProposalPasskey",
+    });
   });
 
   test("PPV-3 FAULT INJECTION: a stale envelope is rejected even when its cryptographic shape is intact", () => {
     const { proposal, registry } = fixture();
     const expired = { ...proposal, expiresAt: "2026-08-13T19:59:00.000Z" };
     const result = verifySignedProposal({ proposal: expired, payload: PAYLOAD, registry, now: NOW });
-    expect(result).toMatchObject({ ok: false, code: "time", retraction: { weight: -1 }, generator: "createProposalIntent" });
+    expect(result).toMatchObject({
+      ok: false,
+      code: "time",
+      retraction: { weight: -1 },
+      generator: "createProposalIntent",
+    });
   });
 
   test("PPV-4 FAULT INJECTION: a consumed nonce cannot be replayed as another action", () => {
     const { proposal, registry } = fixture();
-    const result = verifySignedProposal({ proposal, payload: PAYLOAD, registry, consumedNonces: new Set([proposal.nonce]), now: NOW });
-    expect(result).toMatchObject({ ok: false, code: "replay", retraction: { weight: -1 }, generator: "createProposalIntent" });
+    const result = verifySignedProposal({
+      proposal,
+      payload: PAYLOAD,
+      registry,
+      consumedNonces: new Set([proposal.nonce]),
+      now: NOW,
+    });
+    expect(result).toMatchObject({
+      ok: false,
+      code: "replay",
+      retraction: { weight: -1 },
+      generator: "createProposalIntent",
+    });
   });
 
   test("PPV-5 FAULT INJECTION: a repository substitution is rejected before any key operation", () => {
     const { proposal, registry } = fixture();
     const wrongRepository = { ...proposal, repository: "attacker/other" } as unknown as SignedProposal;
     const result = verifySignedProposal({ proposal: wrongRepository, payload: PAYLOAD, registry, now: NOW });
-    expect(result).toMatchObject({ ok: false, code: "repository", retraction: { weight: -1 }, generator: "createProposalIntent" });
+    expect(result).toMatchObject({
+      ok: false,
+      code: "repository",
+      retraction: { weight: -1 },
+      generator: "createProposalIntent",
+    });
   });
 
   test("PPV-6 FAULT INJECTION: changing the GitHub Pages origin invalidates the relying-party boundary", () => {
@@ -125,31 +164,144 @@ describe("passkey proposal verifier", () => {
       assertion: { ...proposal.assertion, signature: toBase64url(Buffer.from("forged")) },
     };
     const result = verifySignedProposal({ proposal: forged, payload: PAYLOAD, registry, now: NOW });
-    expect(result).toMatchObject({ ok: false, code: "assertion-signature", retraction: { weight: -1 }, generator: "signProposal" });
+    expect(result).toMatchObject({
+      ok: false,
+      code: "assertion-signature",
+      retraction: { weight: -1 },
+      generator: "signProposal",
+    });
   });
 
   test("PPV-8 FAULT INJECTION: modifying requested change text after signing is detected", () => {
     const { proposal, registry } = fixture();
     const result = verifySignedProposal({ proposal, payload: `${PAYLOAD}\nInjected edit.`, registry, now: NOW });
-    expect(result).toMatchObject({ ok: false, code: "change-digest", retraction: { weight: -1 }, generator: "createProposalIntent" });
+    expect(result).toMatchObject({
+      ok: false,
+      code: "change-digest",
+      retraction: { weight: -1 },
+      generator: "createProposalIntent",
+    });
   });
 
   test("PPV-9: extracts an ES256 P-256 public key from an enrollment package before registry approval", () => {
     const credentialId = Buffer.alloc(32, 3);
     const x = Buffer.alloc(32, 4);
     const y = Buffer.alloc(32, 5);
-    const cose = encode(new Map<unknown, unknown>([
-      [1, 2], [3, -7], [-1, 1], [-2, x], [-3, y],
-    ]));
+    const cose = encode(
+      new Map<unknown, unknown>([
+        [1, 2],
+        [3, -7],
+        [-1, 1],
+        [-2, x],
+        [-3, y],
+      ]),
+    );
     const authData = Buffer.alloc(55 + credentialId.length + cose.length);
     authData[32] = 0x41;
     authData.writeUInt16BE(credentialId.length, 53);
     credentialId.copy(authData, 55);
     Buffer.from(cose).copy(authData, 55 + credentialId.length);
-    const attestation = encode(new Map<unknown, unknown>([
-      ["fmt", "none"], ["attStmt", new Map()], ["authData", authData],
-    ]));
-    const jwk = publicKeyJwkFromEnrollment({ credentialId: toBase64url(credentialId), attestationObject: toBase64url(Buffer.from(attestation)) });
+    const attestation = encode(
+      new Map<unknown, unknown>([
+        ["fmt", "none"],
+        ["attStmt", new Map()],
+        ["authData", authData],
+      ]),
+    );
+    const jwk = publicKeyJwkFromEnrollment({
+      credentialId: toBase64url(credentialId),
+      attestationObject: toBase64url(Buffer.from(attestation)),
+    });
     expect(jwk).toEqual({ kty: "EC", crv: "P-256", x: toBase64url(x), y: toBase64url(y), ext: true });
+  });
+
+  test("PPV-10 FAULT INJECTION: an older registry cannot verify an envelope bound to a newer sequence", () => {
+    const { proposal, registry } = fixture();
+    const result = verifySignedProposal({
+      proposal,
+      payload: PAYLOAD,
+      registry: { ...registry, sequence: 0 },
+      now: NOW,
+    });
+    expect(result).toMatchObject({
+      ok: false,
+      code: "registry-sequence",
+      retraction: { weight: -1 },
+      generator: "bindCurrentMainAndSign",
+    });
+  });
+
+  test("PPV-11 FAULT INJECTION: a revoked passkey is rejected even while its signature remains valid", () => {
+    const { proposal, registry } = fixture();
+    const result = verifySignedProposal({
+      proposal,
+      payload: PAYLOAD,
+      registry: { ...registry, revoked: { [CREDENTIAL_ID]: { at: "2026-08-13T19:58:00.000Z", reason: "rotated" } } },
+      now: NOW,
+    });
+    expect(result).toMatchObject({
+      ok: false,
+      code: "revoked-author",
+      retraction: { weight: -1 },
+      generator: "enrollProposalPasskey",
+    });
+  });
+
+  test("PPV-12 FAULT INJECTION: proposal identity cannot become a branch or receipt path", () => {
+    const { proposal, registry } = fixture();
+    const result = verifySignedProposal({
+      proposal: { ...proposal, proposalId: "../../authority" },
+      payload: PAYLOAD,
+      registry,
+      now: NOW,
+    });
+    expect(result).toMatchObject({
+      ok: false,
+      code: "proposal-id",
+      retraction: { weight: -1 },
+      generator: "createProposalIntent",
+    });
+  });
+
+  test("PPV-13 FAULT INJECTION: a signer cannot extend an envelope beyond the five-minute verifier bound", () => {
+    const { proposal, registry } = fixture();
+    const result = verifySignedProposal({
+      proposal: { ...proposal, expiresAt: "2026-08-13T20:06:00.000Z" },
+      payload: PAYLOAD,
+      registry,
+      now: NOW,
+    });
+    expect(result).toMatchObject({
+      ok: false,
+      code: "time",
+      retraction: { weight: -1 },
+      generator: "createProposalIntent",
+    });
+  });
+
+  test("PPV-14 FAULT INJECTION: a cross-origin iframe assertion is not an accepted client-data record", () => {
+    const { proposal, registry } = fixture();
+    const encoded = toBase64url(
+      Buffer.from(
+        JSON.stringify({
+          type: "webauthn.get",
+          challenge: toBase64url(proposalChallenge(proposal)),
+          origin: ORIGIN,
+          crossOrigin: true,
+        }),
+      ),
+    );
+    const result = verifySignedProposal({
+      proposal: { ...proposal, assertion: { ...proposal.assertion, clientDataJSON: encoded } },
+      payload: PAYLOAD,
+      registry,
+      now: NOW,
+    });
+    expect(result).toMatchObject({
+      ok: false,
+      code: "client-data",
+      retraction: { weight: -1 },
+      generator: "signProposal",
+    });
   });
 });
