@@ -1,0 +1,12 @@
+{
+  "pr_number": 10532,
+  "archive_path": "docs/history/pr-reviews/PR-10532-feat-browser-connect-receipt-sync-controls.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T05:30:53.992Z",
+  "schema_version": "v1",
+  "commit_sha": "a74618500089fb9873671758d87df7ba3222979a",
+  "title": "feat(browser): connect receipt sync controls",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T05:30:18Z",
+  "head_ref": "codex/browser-receipt-sync-ui"
+}
