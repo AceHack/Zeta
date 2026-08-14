@@ -49,7 +49,7 @@ and fails on a busy one, so it fails *in CI* and passes when the author investig
 
 ## Confirmed instances, both found today by accident
 
-1. **`hygiene/no-agent-gate-bypass.test.ts`** — measured **9.38 s (1 fail)** under load, **1.50 s
+1. **`src/Core.TypeScript/hygiene/no-agent-gate-bypass.test.ts`** — measured **9.38 s (1 fail)** under load, **1.50 s
    (0 fail)** idle, on unmodified `origin/main`. It already uses `git ls-files` rather than a
    working-tree walk, so the tracked-set fix does not help it; it is simply a repo-wide scan that
    exceeds 5 s when the machine is busy. It **runs in CI** as of #10473.
@@ -81,4 +81,3 @@ population is every test over ~5 s under load — which after #10473 is 884 test
   fast.
 - A check that fails if a test's declared budget exceeds the effective cap — the honest version of what
   the config was pretending to do.
-

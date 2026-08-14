@@ -38,11 +38,12 @@ export interface BrowserDatabaseReceiptProposalCarrierRequest extends BrowserDat
 export interface BrowserDatabaseReceiptProposalCarrierReceipt {
   readonly proposalId: string;
   readonly reference: string;
+  readonly disposition: "presented" | "submitted";
 }
 
 export interface BrowserDatabaseReceiptProposalSubmission {
   readonly schema: typeof BROWSER_DATABASE_RECEIPT_PROPOSAL_SUBMISSION_SCHEMA;
-  readonly status: "submitted";
+  readonly status: BrowserDatabaseReceiptProposalCarrierReceipt["disposition"];
   readonly proposalId: string;
   readonly reference: string;
   readonly contentHash: string;
@@ -388,7 +389,8 @@ export function createBrowserDatabaseReceiptProposalPort(
       if (
         carried.value.proposalId !== proposal.proposalId ||
         carried.value.reference.length === 0 ||
-        carried.value.reference.length > 4096
+        carried.value.reference.length > 4096 ||
+        (carried.value.disposition !== "presented" && carried.value.disposition !== "submitted")
       ) {
         return failed(
           "receipt-proposal-carrier-rejected",
@@ -398,7 +400,7 @@ export function createBrowserDatabaseReceiptProposalPort(
       return succeeded(
         Object.freeze({
           schema: BROWSER_DATABASE_RECEIPT_PROPOSAL_SUBMISSION_SCHEMA,
-          status: "submitted",
+          status: carried.value.disposition,
           proposalId: carried.value.proposalId,
           reference: carried.value.reference,
           contentHash: batch.value.contentHash,

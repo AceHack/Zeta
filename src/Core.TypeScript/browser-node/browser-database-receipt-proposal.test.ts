@@ -99,7 +99,9 @@ function createPort(input?: {
     input?.carrier ??
     ({
       carry: (request) =>
-        Promise.resolve(accepted({ proposalId: request.proposal.proposalId, reference: "github-issue:10489" })),
+        Promise.resolve(
+          accepted({ proposalId: request.proposal.proposalId, reference: "github-issue:10489", disposition: "submitted" }),
+        ),
     } satisfies BrowserDatabaseReceiptProposalCarrier);
   const opened = createBrowserDatabaseReceiptProposalPort({
     hasher: { hash },
@@ -148,7 +150,7 @@ describe("browser database receipt passkey proposal port", () => {
         carry: (request) => {
           events.push(`carry:${request.proposal.proposalId}`);
           expect(request.batch.contentHash).toBe(request.artifact.contentHash);
-          return Promise.resolve(accepted({ proposalId, reference: "github-issue:10489" }));
+          return Promise.resolve(accepted({ proposalId, reference: "github-issue:10489", disposition: "submitted" }));
         },
       },
     });
@@ -165,7 +167,6 @@ describe("browser database receipt passkey proposal port", () => {
         targetPath: `db/receipts/browser/v1/${batch().contentHash.slice("blake3:".length)}.json`,
       },
     });
-    expect(result.ok && Reflect.has(result.value, "disposition")).toBe(false);
   });
 
   test("rejects a forged content address before asking the passkey signer", async () => {
@@ -200,7 +201,7 @@ describe("browser database receipt passkey proposal port", () => {
       carrier: {
         carry: () => {
           carrierCalls++;
-          return Promise.resolve(accepted({ proposalId, reference: "unreachable" }));
+          return Promise.resolve(accepted({ proposalId, reference: "unreachable", disposition: "submitted" }));
         },
       },
     });
@@ -232,7 +233,7 @@ describe("browser database receipt passkey proposal port", () => {
       carrier: {
         carry: () => {
           carrierCalls++;
-          return Promise.resolve(accepted({ proposalId, reference: "unreachable" }));
+          return Promise.resolve(accepted({ proposalId, reference: "unreachable", disposition: "submitted" }));
         },
       },
     });
@@ -244,7 +245,10 @@ describe("browser database receipt passkey proposal port", () => {
 
     const carrierFailure = createPort({
       carrier: {
-        carry: () => Promise.resolve(accepted({ proposalId: crypto.randomUUID(), reference: "wrong proposal" })),
+        carry: () =>
+          Promise.resolve(
+            accepted({ proposalId: crypto.randomUUID(), reference: "wrong proposal", disposition: "submitted" }),
+          ),
       },
     });
     expect(await carrierFailure.propose(batch())).toMatchObject({

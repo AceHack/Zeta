@@ -255,6 +255,19 @@ export {
 } from "./browser-database-receipt-proposal";
 
 export {
+  createNativeBrowserDatabaseReceiptPasskeySigner,
+  type BrowserDatabaseReceiptProposalIntentSource,
+  type NativeBrowserDatabaseReceiptPasskeySignerOptions,
+} from "./browser-database-receipt-passkey-signer";
+
+export {
+  BROWSER_DATABASE_RECEIPT_PROPOSAL_ISSUE_MARKER,
+  createNativeBrowserDatabaseReceiptGitHubIssueCarrier,
+  encodeBrowserDatabaseReceiptProposalIssueBody,
+  type NativeBrowserDatabaseReceiptGitHubIssueCarrierOptions,
+} from "./browser-database-receipt-github-issue-carrier";
+
+export {
   BROWSER_DATABASE_RECEIPT_ACCEPTED_RECORD_SCHEMA,
   createBrowserDatabaseReceiptProposalAcceptanceHandoff,
   type BrowserDatabaseReceiptAcceptedRecord,

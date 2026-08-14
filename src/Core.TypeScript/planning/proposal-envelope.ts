@@ -1,37 +1,23 @@
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { canonicalBytes } from "../ace/canonical";
+import {
+  PROPOSAL_BASE_REF,
+  PROPOSAL_MAX_LIFETIME_MS,
+  PROPOSAL_REPOSITORY,
+  PROPOSAL_SCHEMA,
+  type ProposalIntent,
+} from "./proposal-contract";
 
-export const PROPOSAL_SCHEMA = "zeta.proposal.v2";
-export const PROPOSAL_REPOSITORY = "Lucent-Financial-Group/Zeta";
-export const PROPOSAL_BASE_REF = "main";
-export const PROPOSAL_MAX_LIFETIME_MS = 5 * 60_000;
-export const PROPOSAL_MAX_FUTURE_SKEW_MS = 60_000;
-
-export interface ProposalIntent {
-  readonly schema: typeof PROPOSAL_SCHEMA;
-  readonly proposalId: string;
-  readonly repository: typeof PROPOSAL_REPOSITORY;
-  readonly baseRef: typeof PROPOSAL_BASE_REF;
-  readonly baseSha: string;
-  readonly createdAt: string;
-  readonly expiresAt: string;
-  readonly nonce: string;
-  readonly changeDigest: string;
-  readonly authorCredentialId: string;
-  readonly authorRegistrySequence: number;
-}
-
-export interface WebAuthnAssertion {
-  readonly credentialId: string;
-  readonly authenticatorData: string;
-  readonly clientDataJSON: string;
-  readonly signature: string;
-  readonly userHandle?: string;
-}
-
-export interface SignedProposal extends ProposalIntent {
-  readonly assertion: WebAuthnAssertion;
-}
+export {
+  PROPOSAL_BASE_REF,
+  PROPOSAL_MAX_FUTURE_SKEW_MS,
+  PROPOSAL_MAX_LIFETIME_MS,
+  PROPOSAL_REPOSITORY,
+  PROPOSAL_SCHEMA,
+  type ProposalIntent,
+  type SignedProposal,
+  type WebAuthnAssertion,
+} from "./proposal-contract";
 
 export function isCommitSha(value: string): boolean {
   return /^[a-f0-9]{40}$/i.test(value);
