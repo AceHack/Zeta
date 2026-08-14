@@ -1,0 +1,12 @@
+{
+  "pr_number": 10632,
+  "archive_path": "docs/history/pr-reviews/PR-10632-fix-zeta-id-gate-mumps-output-json-so-a-forgotten-regen-fails.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T16:18:52.404Z",
+  "schema_version": "v1",
+  "commit_sha": "1e0c26ab0e1d0dc4eaa525c5097898d86b96a597",
+  "title": "fix(zeta-id): gate mumps-output.json so a forgotten regen fails",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T16:18:16Z",
+  "head_ref": "claim/task-zetaid-compare-reads-mumps"
+}
