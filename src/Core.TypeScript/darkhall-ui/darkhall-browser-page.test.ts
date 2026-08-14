@@ -132,8 +132,14 @@ class NativeDatabaseRowControl {
 }
 
 class NativeReceiptSyncButton {
+  private readonly command: "submit" | "enroll";
+
+  constructor(command: "submit" | "enroll") {
+    this.command = command;
+  }
+
   closest(selector: string): NativeReceiptSyncButton | null {
-    return selector === "[data-receipt-sync-submit]" ? this : null;
+    return selector === `[data-receipt-sync-${this.command}]` ? this : null;
   }
 }
 
@@ -141,10 +147,13 @@ class NativeReceiptSyncMount {
   readonly attributes = new Map<string, string>();
   readonly listeners = new Map<string, Set<NativeListener>>();
   readonly output = { textContent: "" };
-  readonly button = new NativeReceiptSyncButton();
+  readonly enrollmentOutput = { textContent: "" };
+  readonly submitButton = new NativeReceiptSyncButton("submit");
+  readonly enrollButton = new NativeReceiptSyncButton("enroll");
 
   querySelector(selector: string): unknown {
-    return selector === "[data-receipt-sync-readout]" ? this.output : null;
+    if (selector === "[data-receipt-sync-readout]") return this.output;
+    return selector === "[data-receipt-sync-enrollment]" ? this.enrollmentOutput : null;
   }
 
   setAttribute(name: string, value: string): void {
@@ -159,9 +168,10 @@ class NativeReceiptSyncMount {
     this.listeners.get(type)?.delete(listener);
   }
 
-  click(): void {
+  click(command: "submit" | "enroll" = "submit"): void {
+    const target = command === "submit" ? this.submitButton : this.enrollButton;
     for (const listener of this.listeners.get("click") ?? []) {
-      listener({ button: 0, target: this.button, preventDefault: () => undefined });
+      listener({ button: 0, target, preventDefault: () => undefined });
     }
   }
 }
@@ -254,20 +264,69 @@ class NativeBrowserRoot {
 
 class NativeAssertionResponse {}
 
+class NativeAttestationResponse {
+  readonly clientDataJSON: ArrayBuffer;
+  readonly attestationObject: ArrayBuffer;
+
+  constructor(clientDataJSON: ArrayBuffer, attestationObject: ArrayBuffer) {
+    this.clientDataJSON = clientDataJSON;
+    this.attestationObject = attestationObject;
+  }
+}
+
 class NativePublicKeyCredential {
-  readonly rawId = new ArrayBuffer(0);
-  readonly response = new NativeAssertionResponse();
+  readonly rawId: ArrayBuffer;
+  readonly response: NativeAssertionResponse | NativeAttestationResponse;
+
+  constructor(
+    rawId: ArrayBuffer = new ArrayBuffer(0),
+    response: NativeAssertionResponse | NativeAttestationResponse = new NativeAssertionResponse(),
+  ) {
+    this.rawId = rawId;
+    this.response = response;
+  }
 }
 
 function enableNativeReceiptSync(root: NativeBrowserRoot, fetchImpl: BrowserDatabaseReceiptPagesFetch): void {
   Reflect.set(root.location, "href", "https://lucent-financial-group.github.io/Zeta/hall/room/");
   Reflect.set(root.location, "origin", "https://lucent-financial-group.github.io");
-  Reflect.set(root, "localStorage", { getItem: (): string | null => null });
+  const storage = new Map<string, string>();
+  Reflect.set(root, "localStorage", {
+    getItem: (key: string): string | null => storage.get(key) ?? null,
+    setItem: (key: string, value: string): void => {
+      storage.set(key, value);
+    },
+  });
   Reflect.set(root.crypto, "getRandomValues", (target: Uint8Array): Uint8Array => target.fill(1));
   Reflect.set(root.crypto, "subtle", webcrypto.subtle);
-  Reflect.set(root.navigator, "credentials", { get: (): Promise<null> => Promise.resolve(null) });
+  Reflect.set(root.navigator, "credentials", {
+    get: (): Promise<null> => Promise.resolve(null),
+    create: (options: CredentialCreationOptions): Promise<Credential> => {
+      const challenge = options.publicKey?.challenge;
+      const challengeBytes =
+        challenge instanceof ArrayBuffer
+          ? challenge
+          : challenge === undefined
+            ? new ArrayBuffer(0)
+            : challenge.buffer.slice(challenge.byteOffset, challenge.byteOffset + challenge.byteLength);
+      const clientDataJSON = new TextEncoder().encode(
+        JSON.stringify({
+          type: "webauthn.create",
+          challenge: Buffer.from(challengeBytes).toString("base64url"),
+          origin: "https://lucent-financial-group.github.io",
+        }),
+      ).buffer;
+      return Promise.resolve(
+        new NativePublicKeyCredential(
+          Uint8Array.of(7, 8, 9).buffer,
+          new NativeAttestationResponse(clientDataJSON, Uint8Array.of(1, 2, 3).buffer),
+        ) as unknown as Credential,
+      );
+    },
+  });
   Reflect.set(root, "PublicKeyCredential", NativePublicKeyCredential);
   Reflect.set(root, "AuthenticatorAssertionResponse", NativeAssertionResponse);
+  Reflect.set(root, "AuthenticatorAttestationResponse", NativeAttestationResponse);
   Reflect.set(root, "atob", (value: string): string => Buffer.from(value, "base64").toString("binary"));
   Reflect.set(root, "btoa", (value: string): string => Buffer.from(value, "binary").toString("base64"));
   Reflect.set(root, "fetch", fetchImpl);
@@ -931,6 +990,17 @@ describe("Dark Hall active browser page", () => {
       input: "https://lucent-financial-group.github.io/Zeta/hall/room/data/browser-receipts/index.json",
       init: { method: "GET", credentials: "omit", cache: "no-store", redirect: "error" },
     });
+    root.receiptSync.click("enroll");
+    await waitFor(() => started.value.read().receiptSync?.enrollments === 1);
+    expect(started.value.read().receiptSync).toMatchObject({
+      enrollments: 1,
+      enrollment: {
+        schema: "zeta.proposal-passkey-enrollment.v1",
+        credentialId: Buffer.from([7, 8, 9]).toString("base64url"),
+      },
+      last: { operation: "enroll", trigger: "user-activation", outcome: "complete" },
+    });
+    expect(root.receiptSync.enrollmentOutput.textContent).toContain('"schema": "zeta.proposal-passkey-enrollment.v1"');
     expect(started.value.stop().ok).toBe(true);
   });
 
@@ -1068,6 +1138,7 @@ describe("Dark Hall active browser page", () => {
 
     expect(document).toContain('<link rel="manifest" href="./manifest.webmanifest">');
     expect(document).toContain('<section id="darkhall-receipt-sync" class="zeta-receipt-sync"');
+    expect(document).toContain("data-receipt-sync-enroll");
     expect(document).toContain("data-receipt-sync-submit");
     expect(document).toContain('<section id="darkhall-row-command-editor" class="zeta-row-command-editor"');
     expect(document).toContain("data-row-command-key");

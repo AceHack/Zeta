@@ -1,4 +1,5 @@
 export const ZETA_PROPOSAL_SCHEMA = "zeta.proposal.v2";
+export const ZETA_PASSKEY_ENROLLMENT_SCHEMA = "zeta.proposal-passkey-enrollment.v1";
 export const ZETA_REPOSITORY = "Lucent-Financial-Group/Zeta";
 export const ZETA_PROPOSAL_MARKER = "<!-- zeta-proposal-v2 -->";
 export const ZETA_PAGES_ORIGIN = "https://lucent-financial-group.github.io";
@@ -33,11 +34,14 @@ export type SignedProposal = ProposalIntent & {
 };
 
 export type PasskeyEnrollment = {
-  schema: "zeta.proposal-author.v1";
+  schema: typeof ZETA_PASSKEY_ENROLLMENT_SCHEMA;
   repository: typeof ZETA_REPOSITORY;
   credentialId: string;
+  challenge: string;
   clientDataJSON: string;
   attestationObject: string;
+  origin: typeof ZETA_PAGES_ORIGIN;
+  rpId: typeof ZETA_PAGES_RP_ID;
   createdAt: string;
 };
 
@@ -149,19 +153,17 @@ export async function enrollProposalPasskey(): Promise<PasskeyEnrollment> {
     throw new Error(
       "Passkey enrollment is bound to the published GitHub Pages origin. Open the primary GitHub Pages site before enrolling so this credential is not stranded on a preview hostname.",
     );
+  const challenge = randomBytes(32);
   const credential = await navigator.credentials.create({
     publicKey: {
-      challenge: asArrayBuffer(randomBytes(32)),
+      challenge: asArrayBuffer(challenge),
       rp: { name: "Zeta proposal signer", id: ZETA_PAGES_RP_ID },
       user: {
         id: asArrayBuffer(randomBytes(32)),
         name: "zeta-proposal-signer",
         displayName: "Zeta proposal signer",
       },
-      pubKeyCredParams: [
-        { type: "public-key", alg: -7 },
-        { type: "public-key", alg: -8 },
-      ],
+      pubKeyCredParams: [{ type: "public-key", alg: -7 }],
       authenticatorSelection: {
         residentKey: "preferred",
         userVerification: "required",
@@ -176,11 +178,14 @@ export async function enrollProposalPasskey(): Promise<PasskeyEnrollment> {
   if (!(response instanceof AuthenticatorAttestationResponse))
     throw new Error("The browser did not return an attestation response.");
   return {
-    schema: "zeta.proposal-author.v1",
+    schema: ZETA_PASSKEY_ENROLLMENT_SCHEMA,
     repository: ZETA_REPOSITORY,
     credentialId: bytesToBase64url(credential.rawId),
+    challenge: bytesToBase64url(challenge),
     clientDataJSON: bytesToBase64url(response.clientDataJSON),
     attestationObject: bytesToBase64url(response.attestationObject),
+    origin: ZETA_PAGES_ORIGIN,
+    rpId: ZETA_PAGES_RP_ID,
     createdAt: new Date().toISOString(),
   };
 }

@@ -10,11 +10,15 @@ import {
   PROPOSAL_BASE_REF,
   PROPOSAL_MAX_FUTURE_SKEW_MS,
   PROPOSAL_MAX_LIFETIME_MS,
+  PROPOSAL_ORIGIN,
+  PROPOSAL_PASSKEY_ENROLLMENT_SCHEMA,
   PROPOSAL_REPOSITORY,
+  PROPOSAL_RP_ID,
   PROPOSAL_SCHEMA,
   sha256Hex,
   toBase64url,
   type ProposalIntent,
+  type ProposalPasskeyEnrollment,
   type SignedProposal,
 } from "./proposal-envelope";
 
@@ -81,6 +85,14 @@ export type ProposalVerification = ProposalTeachingError | VerifiedProposal;
 export type ProposalAuthorRegistryValidation =
   | { readonly ok: true; readonly value: ProposalAuthorRegistry }
   | ProposalTeachingError;
+
+export interface VerifiedProposalPasskeyEnrollment {
+  readonly ok: true;
+  readonly enrollment: ProposalPasskeyEnrollment;
+  readonly author: AuthorizedProposalAuthor;
+}
+
+export type ProposalPasskeyEnrollmentVerification = VerifiedProposalPasskeyEnrollment | ProposalTeachingError;
 
 export interface ProposalVerificationInput {
   readonly proposal: SignedProposal;
@@ -149,6 +161,8 @@ function validAuthor(value: unknown): value is AuthorizedProposalAuthor {
       origin.protocol === "https:" &&
       origin.origin === value.origin &&
       origin.hostname === value.rpId &&
+      value.origin === PROPOSAL_ORIGIN &&
+      value.rpId === PROPOSAL_RP_ID &&
       value.publicKeyJwk.kty === "EC" &&
       value.publicKeyJwk.crv === "P-256" &&
       typeof value.publicKeyJwk.x === "string" &&
@@ -407,27 +421,33 @@ export function verifySignedProposal(input: ProposalVerificationInput): Proposal
   return { ok: true, proposal: input.proposal, canonicalIntent: canonicalProposalIntent(input.proposal), author };
 }
 
-/** Extract a P-256 COSE public key from a passkey registration record.
- * Enrollment has no GitHub authority; a maintainer must independently review the
- * output before it enters the author registry consumed by verifySignedProposal. */
-export function publicKeyJwkFromEnrollment(enrollment: {
-  readonly credentialId: string;
-  readonly attestationObject: string;
-}): JsonWebKey {
-  const attestation = decode(fromBase64url(enrollment.attestationObject));
+interface DecodedEnrollmentAttestation {
+  readonly authenticatorData: Buffer;
+  readonly credentialId: Buffer;
+  readonly publicKeyJwk: JsonWebKey;
+}
+
+function decodeEnrollmentAttestation(attestationObject: string): DecodedEnrollmentAttestation {
+  const attestation = decode(fromBase64url(attestationObject));
+  const format =
+    attestation instanceof Map
+      ? attestation.get("fmt")
+      : attestation && typeof attestation === "object" && "fmt" in attestation
+        ? (attestation as { readonly fmt?: unknown }).fmt
+        : undefined;
   const authData =
     attestation instanceof Map
       ? attestation.get("authData")
       : attestation && typeof attestation === "object" && "authData" in attestation
         ? (attestation as { readonly authData?: unknown }).authData
         : undefined;
-  if (!(authData instanceof Uint8Array) || authData.length < 55)
+  if (format !== "none" || !(authData instanceof Uint8Array) || authData.length < 55)
     throw new Error(
-      "teaching error: enrollment does not carry authenticator data; generator: create a fresh passkey enrollment package",
+      "teaching error: enrollment does not carry none-format authenticator data; generator: create a fresh privacy-preserving passkey enrollment package",
     );
   const credentialIdLength = ((authData[53] ?? 0) << 8) | (authData[54] ?? 0);
   const coseOffset = 55 + credentialIdLength;
-  if (coseOffset >= authData.length)
+  if (credentialIdLength < 1 || credentialIdLength > 1024 || coseOffset >= authData.length)
     throw new Error(
       "teaching error: enrollment lacks a COSE public key; generator: create a fresh passkey enrollment package",
     );
@@ -450,5 +470,162 @@ export function publicKeyJwkFromEnrollment(enrollment: {
       "teaching error: enrollment must contain an ES256 P-256 COSE key; generator: enroll a supported passkey authenticator",
     );
   }
-  return { kty: "EC", crv: "P-256", x: toBase64url(x), y: toBase64url(y), ext: true };
+  return {
+    authenticatorData: Buffer.from(authData),
+    credentialId: Buffer.from(authData.subarray(55, coseOffset)),
+    publicKeyJwk: { kty: "EC", crv: "P-256", x: toBase64url(x), y: toBase64url(y), ext: true },
+  };
+}
+
+/** Extract a P-256 COSE public key without granting it repository authority. */
+export function publicKeyJwkFromEnrollment(enrollment: {
+  readonly credentialId: string;
+  readonly attestationObject: string;
+}): JsonWebKey {
+  return decodeEnrollmentAttestation(enrollment.attestationObject).publicKeyJwk;
+}
+
+/**
+ * Verify every browser-controlled enrollment binding before a maintainer may
+ * copy its public author record into the protected registry.
+ */
+export function verifyProposalPasskeyEnrollment(
+  value: unknown,
+  now: Date = new Date(),
+): ProposalPasskeyEnrollmentVerification {
+  if (
+    !isRecord(value) ||
+    value.schema !== PROPOSAL_PASSKEY_ENROLLMENT_SCHEMA ||
+    value.repository !== PROPOSAL_REPOSITORY ||
+    typeof value.credentialId !== "string" ||
+    typeof value.challenge !== "string" ||
+    typeof value.clientDataJSON !== "string" ||
+    typeof value.attestationObject !== "string" ||
+    value.origin !== PROPOSAL_ORIGIN ||
+    value.rpId !== PROPOSAL_RP_ID ||
+    typeof value.createdAt !== "string"
+  ) {
+    return reject(
+      "schema",
+      "teaching error: passkey enrollment is not the canonical Zeta package; generator: enroll from the protected GitHub Pages origin",
+      "proposal-passkey-enrollment-schema",
+      "enrollProposalPasskey",
+    );
+  }
+  const enrollment = value as unknown as ProposalPasskeyEnrollment;
+  const createdAt = parseIso(enrollment.createdAt);
+  if (
+    createdAt === null ||
+    enrollment.createdAt !== new Date(createdAt).toISOString() ||
+    createdAt - now.getTime() > PROPOSAL_MAX_FUTURE_SKEW_MS
+  ) {
+    return reject(
+      "time",
+      "teaching error: passkey enrollment has no canonical finite creation time; generator: create a fresh enrollment package",
+      "proposal-passkey-enrollment-time",
+      "enrollProposalPasskey",
+    );
+  }
+
+  let challenge: Buffer;
+  let credentialId: Buffer;
+  try {
+    challenge = fromBase64url(enrollment.challenge);
+    credentialId = fromBase64url(enrollment.credentialId);
+  } catch {
+    return reject(
+      "client-data",
+      "teaching error: passkey enrollment identifiers are not canonical base64url; generator: export the untouched browser package",
+      "proposal-passkey-enrollment-encoding",
+      "enrollProposalPasskey",
+    );
+  }
+  if (
+    challenge.length !== 32 ||
+    credentialId.length < 1 ||
+    credentialId.length > 1024 ||
+    toBase64url(challenge) !== enrollment.challenge ||
+    toBase64url(credentialId) !== enrollment.credentialId
+  ) {
+    return reject(
+      "client-data",
+      "teaching error: passkey enrollment identifiers are not finite canonical WebAuthn values; generator: create a fresh enrollment package",
+      "proposal-passkey-enrollment-encoding",
+      "enrollProposalPasskey",
+    );
+  }
+  const clientData = parseClientData(enrollment.clientDataJSON);
+  if (!clientData || clientData.type !== "webauthn.create" || clientData.crossOrigin) {
+    return reject(
+      "client-data",
+      "teaching error: passkey enrollment lacks a same-origin WebAuthn create record; generator: complete enrollment in the top-level Pages document",
+      "proposal-passkey-enrollment-client-data",
+      "enrollProposalPasskey",
+    );
+  }
+  if (clientData.origin !== enrollment.origin) {
+    return reject(
+      "origin",
+      "teaching error: passkey enrollment client origin differs from the canonical Pages origin; generator: enroll on the primary Pages site",
+      "proposal-passkey-enrollment-origin",
+      "enrollProposalPasskey",
+    );
+  }
+  if (clientData.challenge !== enrollment.challenge) {
+    return reject(
+      "challenge",
+      "teaching error: passkey enrollment challenge differs from the exported ceremony; generator: export the untouched browser package",
+      "proposal-passkey-enrollment-challenge",
+      "enrollProposalPasskey",
+    );
+  }
+
+  let attestation: DecodedEnrollmentAttestation;
+  try {
+    attestation = decodeEnrollmentAttestation(enrollment.attestationObject);
+  } catch (error) {
+    return reject(
+      "author-registry",
+      error instanceof Error ? error.message : "teaching error: passkey enrollment attestation is malformed",
+      "proposal-passkey-enrollment-attestation",
+      "enrollProposalPasskey",
+    );
+  }
+  if (!authenticatorDataIsBoundToRpId(attestation.authenticatorData, enrollment.rpId)) {
+    return reject(
+      "rp-id",
+      "teaching error: passkey enrollment authenticator data is not bound to the canonical RP ID; generator: enroll on the primary Pages site",
+      "proposal-passkey-enrollment-rp-id",
+      "enrollProposalPasskey",
+    );
+  }
+  if (
+    !authenticatorDataHasUserVerification(attestation.authenticatorData) ||
+    ((attestation.authenticatorData[32] ?? 0) & 0x40) === 0
+  ) {
+    return reject(
+      "user-verification",
+      "teaching error: passkey enrollment lacks user presence, user verification, or attested credential data; generator: complete the platform passkey prompt",
+      "proposal-passkey-enrollment-user-verification",
+      "enrollProposalPasskey",
+    );
+  }
+  if (!equalBytes(attestation.credentialId, credentialId)) {
+    return reject(
+      "credential-mismatch",
+      "teaching error: exported passkey credential ID differs from the attested credential; generator: export the untouched browser package",
+      "proposal-passkey-enrollment-credential",
+      "enrollProposalPasskey",
+    );
+  }
+  return {
+    ok: true,
+    enrollment,
+    author: {
+      credentialId: enrollment.credentialId,
+      origin: enrollment.origin,
+      rpId: enrollment.rpId,
+      publicKeyJwk: attestation.publicKeyJwk,
+    },
+  };
 }

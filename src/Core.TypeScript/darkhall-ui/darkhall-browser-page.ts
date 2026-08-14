@@ -39,6 +39,7 @@ import {
   createNativeBrowserDatabaseReceiptSync,
   type NativeBrowserDatabaseReceiptSyncLimits,
 } from "../browser-node/browser-database-receipt-native-sync";
+import { createNativeBrowserDatabaseReceiptPasskeyEnrollment } from "../browser-node/browser-database-receipt-passkey-enrollment";
 import type { BrowserDatabaseReceiptSyncRuntime } from "../browser-node/browser-database-receipt-sync-runtime";
 import { openNativeIndexedDbDatabaseIntentOutbox } from "../browser-node/browser-indexeddb-database-intent-outbox";
 import { createNativeBrowserExecutionAdmission } from "../browser-node/browser-web-lock-execution-admission";
@@ -53,6 +54,7 @@ import {
   type BrowserZetaDbTabRuntime,
 } from "../browser-node/browser-zetadb-tab-runtime";
 import type { ZetaDbTickLimits } from "../zetadb/zeta-db-node";
+import { PROPOSAL_ORIGIN, PROPOSAL_RP_ID } from "../planning/proposal-contract";
 import {
   startNativeDarkHallPwa,
   type DarkHallBrowserPwaOptions,
@@ -630,7 +632,7 @@ function selectPageDatabaseReceiptArchiveMaintenance(
 
 function nativeReceiptPageAddress(
   root: unknown,
-): { readonly baseUrl: string; readonly origin: string; readonly rpId: string } | null {
+): { readonly baseUrl: string; readonly origin: typeof PROPOSAL_ORIGIN; readonly rpId: typeof PROPOSAL_RP_ID } | null {
   if (!isRecord(root)) return null;
   try {
     const location = Reflect.get(root, "location");
@@ -640,8 +642,16 @@ function nativeReceiptPageAddress(
     if (typeof href !== "string" || typeof originValue !== "string") return null;
     const origin = new URL(originValue);
     const page = new URL(href);
-    if (origin.protocol !== "https:" || origin.origin !== originValue || page.origin !== origin.origin) return null;
-    return { baseUrl: new URL("./", page).href, origin: origin.origin, rpId: origin.hostname };
+    if (
+      origin.protocol !== "https:" ||
+      origin.origin !== originValue ||
+      page.origin !== origin.origin ||
+      origin.origin !== PROPOSAL_ORIGIN ||
+      origin.hostname !== PROPOSAL_RP_ID
+    ) {
+      return null;
+    }
+    return { baseUrl: new URL("./", page).href, origin: PROPOSAL_ORIGIN, rpId: PROPOSAL_RP_ID };
   } catch {
     return null;
   }
@@ -936,10 +946,21 @@ function startPageDatabaseReceiptSync(
       lifecycle.feedback.severity,
     );
   }
+  const enrollment = createNativeBrowserDatabaseReceiptPasskeyEnrollment({
+    root: configuration.root,
+    expectedOrigin: PROPOSAL_ORIGIN,
+    rpId: PROPOSAL_RP_ID,
+    timeoutMs: 60_000,
+    now: Date.now,
+  });
+  if (!enrollment.ok) {
+    configuration.context.mount.setAttribute("data-database-receipt-passkey-enrollment", enrollment.feedback.code);
+  }
   const control = startDarkHallBrowserReceiptSyncControl({
     mount: mount.value,
     lifecycle: lifecycle.value,
     synchronization,
+    ...(enrollment.ok ? { enrollment: enrollment.value } : {}),
   });
   return control.ok
     ? succeeded(control.value)

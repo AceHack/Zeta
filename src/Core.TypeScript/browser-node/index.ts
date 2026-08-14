@@ -272,6 +272,14 @@ export {
 } from "./browser-database-receipt-native-intent-source";
 
 export {
+  createNativeBrowserDatabaseReceiptPasskeyEnrollment,
+  type BrowserDatabaseReceiptPasskeyEnrollmentFeedback,
+  type BrowserDatabaseReceiptPasskeyEnrollmentResult,
+  type BrowserDatabaseReceiptPasskeyEnrollmentRuntime,
+  type NativeBrowserDatabaseReceiptPasskeyEnrollmentOptions,
+} from "./browser-database-receipt-passkey-enrollment";
+
+export {
   createNativeBrowserDatabaseReceiptSync,
   type NativeBrowserDatabaseReceiptSyncLimits,
   type NativeBrowserDatabaseReceiptSyncOptions,

@@ -9,7 +9,13 @@ import {
   type SignedProposal,
 } from "./proposal-envelope";
 import { canonicalProposalIntent as canonicalBrowserProposalIntent } from "../../../demo/identity-dla-site/src/lib/passkeyProposal";
-import { publicKeyJwkFromEnrollment, verifySignedProposal, type ProposalAuthorRegistry } from "./proposal-verifier";
+import type { ProposalPasskeyEnrollment } from "./proposal-contract";
+import {
+  publicKeyJwkFromEnrollment,
+  verifyProposalPasskeyEnrollment,
+  verifySignedProposal,
+  type ProposalAuthorRegistry,
+} from "./proposal-verifier";
 
 const ORIGIN = "https://lucent-financial-group.github.io";
 const RP_ID = "lucent-financial-group.github.io";
@@ -35,6 +41,66 @@ function authenticatorData(rpId = RP_ID, flags = 0x05): Buffer {
   output[32] = flags;
   output.writeUInt32BE(1, 33);
   return output;
+}
+
+function enrollmentFixture(input?: {
+  readonly rpId?: string;
+  readonly flags?: number;
+  readonly clientOrigin?: string;
+}): { readonly enrollment: ProposalPasskeyEnrollment; readonly x: Buffer; readonly y: Buffer } {
+  const credentialId = Buffer.alloc(32, 3);
+  const challenge = Buffer.alloc(32, 9);
+  const x = Buffer.alloc(32, 4);
+  const y = Buffer.alloc(32, 5);
+  const cose = encode(
+    new Map<unknown, unknown>([
+      [1, 2],
+      [3, -7],
+      [-1, 1],
+      [-2, x],
+      [-3, y],
+    ]),
+  );
+  const authData = Buffer.alloc(55 + credentialId.length + cose.length);
+  createHash("sha256")
+    .update(input?.rpId ?? RP_ID)
+    .digest()
+    .copy(authData, 0);
+  authData[32] = input?.flags ?? 0x45;
+  authData.writeUInt32BE(1, 33);
+  authData.writeUInt16BE(credentialId.length, 53);
+  credentialId.copy(authData, 55);
+  Buffer.from(cose).copy(authData, 55 + credentialId.length);
+  const attestation = encode(
+    new Map<unknown, unknown>([
+      ["fmt", "none"],
+      ["attStmt", new Map()],
+      ["authData", authData],
+    ]),
+  );
+  const clientDataJSON = Buffer.from(
+    JSON.stringify({
+      type: "webauthn.create",
+      challenge: toBase64url(challenge),
+      origin: input?.clientOrigin ?? ORIGIN,
+      crossOrigin: false,
+    }),
+  );
+  return {
+    enrollment: {
+      schema: "zeta.proposal-passkey-enrollment.v1",
+      repository: "Lucent-Financial-Group/Zeta",
+      credentialId: toBase64url(credentialId),
+      challenge: toBase64url(challenge),
+      clientDataJSON: toBase64url(clientDataJSON),
+      attestationObject: toBase64url(Buffer.from(attestation)),
+      origin: ORIGIN,
+      rpId: RP_ID,
+      createdAt: NOW.toISOString(),
+    },
+    x,
+    y,
+  };
 }
 
 function fixture(): { proposal: SignedProposal; registry: ProposalAuthorRegistry } {
@@ -303,5 +369,50 @@ describe("passkey proposal verifier", () => {
       retraction: { weight: -1 },
       generator: "signProposal",
     });
+  });
+
+  test("PPV-15: independently verifies a registration package into the exact public registry entry", () => {
+    const fixture = enrollmentFixture();
+
+    expect(verifyProposalPasskeyEnrollment(fixture.enrollment, NOW)).toEqual({
+      ok: true,
+      enrollment: fixture.enrollment,
+      author: {
+        credentialId: fixture.enrollment.credentialId,
+        origin: ORIGIN,
+        rpId: RP_ID,
+        publicKeyJwk: {
+          kty: "EC",
+          crv: "P-256",
+          x: toBase64url(fixture.x),
+          y: toBase64url(fixture.y),
+          ext: true,
+        },
+      },
+    });
+  });
+
+  test("PPV-16 FAULT INJECTION: enrollment substitutions do not become registry authors", () => {
+    const fixture = enrollmentFixture();
+    const changedChallenge = verifyProposalPasskeyEnrollment(
+      { ...fixture.enrollment, challenge: toBase64url(Buffer.alloc(32, 10)) },
+      NOW,
+    );
+    const changedCredential = verifyProposalPasskeyEnrollment(
+      { ...fixture.enrollment, credentialId: toBase64url(Buffer.alloc(32, 10)) },
+      NOW,
+    );
+    const changedOrigin = verifyProposalPasskeyEnrollment(
+      enrollmentFixture({ clientOrigin: "https://evil.example" }).enrollment,
+      NOW,
+    );
+    const changedRpId = verifyProposalPasskeyEnrollment(enrollmentFixture({ rpId: "evil.example" }).enrollment, NOW);
+    const missingVerification = verifyProposalPasskeyEnrollment(enrollmentFixture({ flags: 0x41 }).enrollment, NOW);
+
+    expect(changedChallenge).toMatchObject({ ok: false, code: "challenge" });
+    expect(changedCredential).toMatchObject({ ok: false, code: "credential-mismatch" });
+    expect(changedOrigin).toMatchObject({ ok: false, code: "origin" });
+    expect(changedRpId).toMatchObject({ ok: false, code: "rp-id" });
+    expect(missingVerification).toMatchObject({ ok: false, code: "user-verification" });
   });
 });

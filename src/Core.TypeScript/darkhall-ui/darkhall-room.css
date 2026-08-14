@@ -78,6 +78,7 @@ body {
   font-size: 0.75rem;
 }
 
+.zeta-receipt-sync-enroll,
 .zeta-receipt-sync-submit {
   min-height: 2.25rem;
   padding: 0.45rem 0.7rem;
@@ -85,15 +86,48 @@ body {
   border-radius: 4px;
   background: #11110f;
   color: var(--sync-text);
-  font: 0.8rem/1 ui-monospace, monospace;
+  font:
+    0.8rem/1 ui-monospace,
+    monospace;
   cursor: pointer;
 }
 
+.zeta-receipt-sync-enroll {
+  border-color: #65aee8;
+}
+
+.zeta-receipt-sync-enroll:hover,
+.zeta-receipt-sync-enroll:focus-visible,
 .zeta-receipt-sync-submit:hover,
 .zeta-receipt-sync-submit:focus-visible {
   background: color-mix(in srgb, var(--sync-ready), #11110f 78%);
   outline: 2px solid var(--sync-ready);
   outline-offset: 1px;
+}
+
+.zeta-receipt-sync-enroll:hover,
+.zeta-receipt-sync-enroll:focus-visible {
+  background: color-mix(in srgb, #65aee8, #11110f 78%);
+  outline-color: #65aee8;
+}
+
+.zeta-receipt-sync-enrollment {
+  box-sizing: border-box;
+  display: none;
+  flex-basis: 100%;
+  min-height: 8rem;
+  resize: vertical;
+  border: 1px solid var(--sync-line);
+  border-radius: 4px;
+  background: #11110f;
+  color: var(--sync-muted);
+  font:
+    0.7rem/1.4 ui-monospace,
+    monospace;
+}
+
+.zeta-receipt-sync[data-receipt-sync-enrollment-status="exported"] .zeta-receipt-sync-enrollment {
+  display: block;
 }
 
 .zeta-receipt-sync[data-receipt-sync-status="backpressured"] {

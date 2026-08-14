@@ -12,9 +12,13 @@ export {
   PROPOSAL_BASE_REF,
   PROPOSAL_MAX_FUTURE_SKEW_MS,
   PROPOSAL_MAX_LIFETIME_MS,
+  PROPOSAL_ORIGIN,
+  PROPOSAL_PASSKEY_ENROLLMENT_SCHEMA,
   PROPOSAL_REPOSITORY,
+  PROPOSAL_RP_ID,
   PROPOSAL_SCHEMA,
   type ProposalIntent,
+  type ProposalPasskeyEnrollment,
   type SignedProposal,
   type WebAuthnAssertion,
 } from "./proposal-contract";

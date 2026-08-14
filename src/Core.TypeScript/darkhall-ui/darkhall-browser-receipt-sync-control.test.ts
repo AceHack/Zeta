@@ -8,6 +8,7 @@ import type {
   BrowserDatabaseReceiptSyncReadout,
   BrowserDatabaseReceiptSyncRuntime,
 } from "../browser-node/browser-database-receipt-sync-runtime";
+import type { BrowserDatabaseReceiptPasskeyEnrollmentRuntime } from "../browser-node/browser-database-receipt-passkey-enrollment";
 import {
   DARK_HALL_BROWSER_RECEIPT_SYNC_CONTROL_SCHEMA,
   renderDarkHallBrowserReceiptSyncControlHtml,
@@ -17,8 +18,14 @@ import {
 type NativeListener = (event: unknown) => void;
 
 class ControlButton {
+  private readonly command: "submit" | "enroll";
+
+  constructor(command: "submit" | "enroll") {
+    this.command = command;
+  }
+
   closest(selector: string): ControlButton | null {
-    return selector === "[data-receipt-sync-submit]" ? this : null;
+    return selector === `[data-receipt-sync-${this.command}]` ? this : null;
   }
 }
 
@@ -26,10 +33,13 @@ class ControlMount {
   readonly attributes = new Map<string, string>();
   readonly listeners = new Map<string, Set<NativeListener>>();
   readonly output = { textContent: "" };
-  readonly button = new ControlButton();
+  readonly enrollmentOutput = { textContent: "" };
+  readonly submitButton = new ControlButton("submit");
+  readonly enrollButton = new ControlButton("enroll");
 
   querySelector(selector: string): unknown {
-    return selector === "[data-receipt-sync-readout]" ? this.output : null;
+    if (selector === "[data-receipt-sync-readout]") return this.output;
+    return selector === "[data-receipt-sync-enrollment]" ? this.enrollmentOutput : null;
   }
 
   setAttribute(name: string, value: string): void {
@@ -46,9 +56,10 @@ class ControlMount {
     this.listeners.get(type)?.delete(listener);
   }
 
-  click(): void {
+  click(command: "submit" | "enroll" = "submit"): void {
+    const target = command === "submit" ? this.submitButton : this.enrollButton;
     for (const listener of this.listeners.get("click") ?? []) {
-      listener({ button: 0, target: this.button, preventDefault: () => undefined });
+      listener({ button: 0, target, preventDefault: () => undefined });
     }
   }
 }
@@ -122,6 +133,35 @@ function syncRuntime(): {
   };
 }
 
+function enrollmentRuntime(): {
+  readonly runtime: BrowserDatabaseReceiptPasskeyEnrollmentRuntime;
+  readonly calls: { count: number };
+} {
+  const calls = { count: 0 };
+  return {
+    calls,
+    runtime: {
+      enrollFromUserActivation: () => {
+        calls.count += 1;
+        return Promise.resolve({
+          ok: true,
+          value: {
+            schema: "zeta.proposal-passkey-enrollment.v1",
+            repository: "Lucent-Financial-Group/Zeta",
+            credentialId: "credential-a",
+            challenge: "challenge-a",
+            clientDataJSON: "client-data-a",
+            attestationObject: "attestation-a",
+            origin: "https://lucent-financial-group.github.io",
+            rpId: "lucent-financial-group.github.io",
+            createdAt: "2026-08-14T12:20:00.000Z",
+          },
+        });
+      },
+    },
+  };
+}
+
 async function settle(): Promise<void> {
   await Promise.resolve();
   await Promise.resolve();
@@ -157,6 +197,34 @@ describe("Dark Hall browser receipt synchronization control", () => {
     expect(sync.calls).toEqual({ submissions: 1, polls: 2 });
     expect(started.value.read().last?.operation).toBe("poll");
     expect(started.value.read().last?.trigger).toBe("pageshow");
+  });
+
+  test("routes passkey enrollment only from its explicit command and exposes the public package", async () => {
+    const mount = new ControlMount();
+    const life = lifecycle();
+    const sync = syncRuntime();
+    const enrollment = enrollmentRuntime();
+    const started = startDarkHallBrowserReceiptSyncControl({
+      mount,
+      lifecycle: life.port,
+      synchronization: sync.runtime,
+      enrollment: enrollment.runtime,
+    });
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+
+    mount.click("enroll");
+    await settle();
+
+    expect(enrollment.calls.count).toBe(1);
+    expect(sync.calls).toEqual({ submissions: 0, polls: 0 });
+    expect(started.value.read()).toMatchObject({
+      enrollments: 1,
+      last: { operation: "enroll", trigger: "user-activation", outcome: "complete" },
+      enrollment: { credentialId: "credential-a" },
+    });
+    expect(mount.attributes.get("data-receipt-sync-enrollment-status")).toBe("exported");
+    expect(mount.enrollmentOutput.textContent).toContain('"credentialId": "credential-a"');
   });
 
   test("skips polling while hidden without spending submission authority", async () => {
