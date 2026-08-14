@@ -35,7 +35,7 @@ jobs:
         run: bun run pages:build
       - name: Add book to public site
         run: |
-          mkdir -p dist/books/you-born-at-the-hinge/en dist/books/you-born-at-the-hinge/id dist/books/you-born-at-the-hinge/vi dist/books/you-born-at-the-hinge/ko dist/books/you-born-at-the-hinge/th dist/books/you-born-at-the-hinge/ru dist/books/you-born-at-the-hinge/ar dist/books/you-born-at-the-hinge/fa dist/books/you-born-at-the-hinge/en-nc
+          mkdir -p dist/books/you-born-at-the-hinge/en dist/books/you-born-at-the-hinge/id dist/books/you-born-at-the-hinge/vi dist/books/you-born-at-the-hinge/ko dist/books/you-born-at-the-hinge/th dist/books/you-born-at-the-hinge/ru dist/books/you-born-at-the-hinge/ar dist/books/you-born-at-the-hinge/fa dist/books/you-born-at-the-hinge/en-nc dist/books/you-born-at-the-hinge/my
           cp docs/books/you-born-at-the-hinge/site/index.zh.html dist/books/you-born-at-the-hinge/index.html
           cp docs/books/you-born-at-the-hinge/site/index.en.html dist/books/you-born-at-the-hinge/en/index.html
           cp docs/books/you-born-at-the-hinge/site/index.id.html dist/books/you-born-at-the-hinge/id/index.html
@@ -46,6 +46,7 @@ jobs:
           cp docs/books/you-born-at-the-hinge/site/index.ar.html dist/books/you-born-at-the-hinge/ar/index.html
           cp docs/books/you-born-at-the-hinge/site/index.fa.html dist/books/you-born-at-the-hinge/fa/index.html
           cp docs/books/you-born-at-the-hinge/site/index.en-nc.html dist/books/you-born-at-the-hinge/en-nc/index.html
+          cp docs/books/you-born-at-the-hinge/site/index.my.html dist/books/you-born-at-the-hinge/my/index.html
       - name: Generate eBooks
         run: bun run docs/books/you-born-at-the-hinge/scripts/build_ebooks.ts
       - name: Upload artifact
