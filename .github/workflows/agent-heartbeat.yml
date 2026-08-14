@@ -411,17 +411,59 @@ jobs:
             exit 0
           fi
 
-          # Find clean PRs (CI passed, approved or auto-mergeable)
-          CLEAN_PRS=$(gh pr list --state open --json number,title,mergeable --jq '.[] | select(.mergeable == "MERGEABLE") | .number' 2>/dev/null | head -3)
-          if [ -z "$CLEAN_PRS" ]; then
-            echo "[merge] No clean PRs to merge"
+          # SELECTION — why this is not `gh pr list ... | head -3`.
+          #
+          # It used to be. `gh pr list` returns NEWEST-FIRST, so `head -3` made this a LIFO
+          # stack with a cap: whenever three fresher mergeable PRs existed at tick time, every
+          # older PR was passed over. Not merged slowly — passed over on every tick, forever.
+          # On 2026-08-14 that had stranded 19 bot PRs, the oldest 13 hours old, and it was
+          # what turned main red: soraya's archive duty had committed the manifest.jsonl repair
+          # on schedule, and its PR was sitting in the starved tail while pr-manifest-integrity
+          # failed with "the repair writer has stopped landing". The writer had not stopped.
+          # The queue had.
+          #
+          # Capacity was never the problem: 3 per tick x 2 ticks/hour = 144/day against ~100
+          # PRs/day. Ordering was. So this selects OLDEST-FIRST, and the cap is now a rate
+          # limit rather than a queue bound.
+          #
+          # It also filters to UNARMED PRs (`auto_merge == null`). Arming is durable and
+          # idempotent — an armed PR merges when its checks go green with no further help — so
+          # re-arming one is pure waste, and spending slots on it is how a cap this small
+          # starves the tail. Filtering to unarmed makes the candidate set shrink monotonically
+          # as we work it, which is what makes 3/tick sufficient.
+          #
+          # REST, not `gh pr list --json` (GraphQL). One request, zero GraphQL points, and the
+          # REST list response already carries `auto_merge` — which the GraphQL path did not
+          # give us anyway. Rate-limit budgets are separate per API and the GraphQL one is what
+          # binds us.
+          CANDIDATES=$(gh api "repos/{owner}/{repo}/pulls?state=open&per_page=100" \
+            --jq '[.[] | select(.auto_merge == null) | select(.draft == false)]
+                  | sort_by(.created_at) | .[].number' 2>/dev/null)
+          if [ -z "$CANDIDATES" ]; then
+            echo "[merge] No unarmed PRs — the queue is caught up."
             exit 0
           fi
 
-          for PR in $CLEAN_PRS; do
-            echo "[merge] Attempting to merge PR #$PR..."
-            gh pr merge "$PR" --squash --auto --delete-branch 2>&1 || echo "[merge] PR #$PR not ready (non-fatal)"
+          # A PR that can never be armed (conflicting, blocked by a failed required check) would
+          # otherwise occupy a slot on every tick and re-create the starvation from the head
+          # instead of the tail. So the cap counts SUCCESSES, not attempts: a failure costs an
+          # API call and moves on. ATTEMPT_LIMIT bounds the blast radius when many are stuck.
+          ARMED=0
+          ATTEMPTS=0
+          CAP=3
+          ATTEMPT_LIMIT=20
+          for PR in $CANDIDATES; do
+            [ "$ARMED" -ge "$CAP" ] && break
+            [ "$ATTEMPTS" -ge "$ATTEMPT_LIMIT" ] && break
+            ATTEMPTS=$((ATTEMPTS + 1))
+            if gh pr merge "$PR" --squash --auto --delete-branch 2>&1; then
+              ARMED=$((ARMED + 1))
+              echo "[merge] armed auto-merge on PR #$PR"
+            else
+              echo "[merge] PR #$PR could not be armed (non-fatal) — not consuming a slot"
+            fi
           done
+          echo "[merge] armed $ARMED of $CAP (attempted $ATTEMPTS, $(echo "$CANDIDATES" | wc -l) unarmed in queue)"
 
       - name: Archive PR review history (git-native backup)
         env:
