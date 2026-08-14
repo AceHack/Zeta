@@ -1,0 +1,12 @@
+{
+  "pr_number": 10459,
+  "archive_path": "docs/history/pr-reviews/PR-10459-research-witnessed-channel-metering-ranked-vs-unranked-and-why-derive-is-not-eno.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:13:20.961Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "research: witnessed channel metering — ranked vs unranked, and why derive is not enough",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T00:08:13Z",
+  "head_ref": "research/witnessed-channel-metering"
+}

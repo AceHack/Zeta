@@ -1,0 +1,132 @@
+name: pr-manifest-integrity
+
+# Watchdog for the PR-archive shard store and its DERIVED index
+# (081KZYMY46P087G0R003S64V2B, 081KZYP7MNV087G0R002X0E3V9).
+#
+# WHY THIS FILE EXISTS.
+# derive-pr-manifest.ts shipped as a drift gate that no workflow ever invoked, and
+# src/Core.TypeScript/forge-host/ is in no bun test path, so the 109 tests covering the
+# archival + shard tooling never ran either. Main then sat in derive-drift for an hour after
+# #10427 and nothing reported it; a human found it by hand. A gate that never runs is worse
+# than no gate: it is a file whose stated job is to catch exactly the divergence that then
+# happened silently.
+#
+# WHAT IT ASSERTS, and what it deliberately does not.
+#   exit 2, shard-store integrity (unreadable, misfiled, or duplicate-keyed shard)
+#     -> FAIL on every trigger. That class is never legitimate and never by design.
+#   exit 1, derived-index drift (manifest.jsonl behind the shard set)
+#     -> FAIL on schedule and workflow_dispatch, REPORT on pull_request.
+#     Drift is legitimate and expected for up to about an hour: an archive PR writes only its
+#     own shard (that is what retired the pairwise-conflict class), and the index is repaired
+#     by the single serialised writer in agent-heartbeat.yml (soraya archive duty, whose flush
+#     gate is MIN_INTERVAL_SECONDS=3000). Six hours is well past that bound, so drift seen by a
+#     scheduled run means the repair cadence has STOPPED -- which is the condition that earns a
+#     red run. On a pull_request the drift belongs to main rather than to the branch, so it is
+#     reported and never charged to the contributor.
+#
+# COST. 4 scheduled runs/day at roughly 2 minutes, about 8 minutes/day, plus a run on the rare
+# PR that edits the archival tooling. The path filter deliberately excludes docs/github/prs:
+# every archive PR touches that path and would trigger a by-design drift report on each one.
+#
+# SCOPE. The general problem, 612 test files of which about 95 run in CI, is #10429 and is not
+# solved here. This wires ONE directory: the one whose absence is load-bearing for the shard
+# migration. gate.yml is deliberately untouched so the two changes cannot collide.
+
+on:
+  schedule:
+    # 4x/day, offset off the hour so it does not pile onto the :00 cron surge.
+    - cron: "23 */6 * * *"
+  pull_request:
+    paths:
+      - "src/Core.TypeScript/forge-host/github/**"
+      # The telemetry-flush module is in scope because the derived index staleness bound
+      # DEPENDS on it: agent-heartbeat.yml soraya archive duty is the serialised writer that
+      # repairs the index, and it only lands through this flush. It had no CI test path
+      # either -- which is how a contract regression there stayed invisible.
+      - "src/Core.TypeScript/agent-heartbeats/**"
+      - ".github/workflows/pr-manifest-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  # Read-only, and it stays that way. This workflow REPORTS; it never repairs. Repair belongs
+  # to the single serialised writer in agent-heartbeat.yml. A second writer of the derived
+  # index would reintroduce the shared-file write this whole change set removed.
+  contents: read
+
+concurrency:
+  group: pr-manifest-integrity-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  integrity:
+    name: shard store + derived index
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Depth 1: this job reads the working tree only. No history, no rev-parse, no push.
+          fetch-depth: 1
+          # No credentials are needed and none are wanted; nothing here writes to the repo.
+          persist-credentials: false
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Unit tests for the archival, shard and telemetry-flush tooling
+        # About 140 tests across 11 files, roughly 6 seconds. Before this workflow, ZERO of
+        # them ran in CI: gate.yml enumerates its bun test targets explicitly and neither
+        # directory was ever one of them.
+        # No bun install step: these tests import node builtins and repo-local modules only.
+        run: |
+          bun test src/Core.TypeScript/forge-host/github/
+          bun test src/Core.TypeScript/agent-heartbeats/
+
+      - name: Shard store integrity + derived index drift
+        env:
+          GH_EVENT: ${{ github.event_name }}
+        run: |
+          set -uo pipefail
+
+          # Command substitution rather than a temp file: the report is a handful of lines and
+          # this keeps the step free of stray artefacts on the runner.
+          set +e
+          report=$(bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts 2>&1)
+          rc=$?
+          set -e
+
+          # The tool prefixes findings with the error annotation marker so an ordinary caller
+          # gets annotations for free. Strip it here and re-raise the annotation deliberately
+          # below, so the by-design pull_request drift case does not paint a red annotation on
+          # a run that is passing on purpose.
+          clean=$(printf '%s\n' "$report" | sed -e "s/^::error:://")
+          # tee, not an append redirect: the report reaches the job log AND the step
+          # summary from one call, so the two can never disagree about what ran.
+          printf '%s\n' "### PR shard store + derived index" "" \
+            "Trigger: $GH_EVENT. derive-pr-manifest.ts exit code: $rc." "" \
+            "$clean" | tee -a "$GITHUB_STEP_SUMMARY"
+
+          if [ "$rc" -eq 2 ]; then
+            echo "::error title=Shard store integrity failure::A shard is unreadable, misfiled, or duplicate-keyed. Never by design. The shards are the ledger, so a bad shard is substrate loss and not an index nuisance."
+            exit 2
+          fi
+
+          if [ "$rc" -eq 1 ]; then
+            if [ "$GH_EVENT" = "pull_request" ]; then
+              echo "::notice title=Derived index drift (informational)::main is currently ahead of docs/github/prs/manifest.jsonl. Expected for up to about an hour after an archive PR merges, and repaired by agent-heartbeat.yml soraya archive duty. Not attributable to this PR, so not failing it."
+              exit 0
+            fi
+            echo "::error title=Derived index drift outlived the repair cadence::docs/github/prs/manifest.jsonl has been behind the shards for longer than the roughly one-hour repair bound, so the serialised repair writer (agent-heartbeat.yml, soraya archive duty) has stopped landing. Repair by hand: bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --write"
+            exit 1
+          fi
+
+          if [ "$rc" -ne 0 ]; then
+            echo "::error title=derive-pr-manifest.ts failed unexpectedly::exit code $rc"
+            exit "$rc"
+          fi
+
+          echo "Shard store and derived index agree."

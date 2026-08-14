@@ -235,8 +235,30 @@ export function flush(opts: FlushOptions): number {
     );
     return 3;
   }
+  const what = result.ok.reused ? "re-used" : "opened";
+  if (!result.ok.armed) {
+    // THE FLUSH SUCCEEDED. The staging branch is pushed and the PR is open; only ARMING
+    // auto-merge failed, and arming is an optimisation. Returning 3 here (the behaviour
+    // before 2026-08-14) failed the whole tick on completed work -- society-heartbeat was
+    // red on EVERY run for exactly this, which is also why nobody noticed the telemetry
+    // was in fact landing. A failing exit code on successful work is the wrong contract.
+    //
+    // Loud, though, never swallowed: an unarmed PR merges only if something else merges
+    // it, so this names the PR and the cause. A green tick that silently queues PRs
+    // forever is the failure class this trades against, not one it accepts.
+    process.stderr.write(
+      `::warning title=Telemetry flush PR is open but NOT auto-merged::lane ${opts.lane}: ` +
+        `PR #${String(result.ok.number)} (${result.ok.url}) ${what}, and arming auto-merge ` +
+        `failed, so something must merge it. Cause: ${result.ok.armError ?? "unknown"}\n`,
+    );
+    process.stdout.write(
+      `[flush] ${opts.lane}: PR #${String(result.ok.number)} ${what} (${result.ok.url}); ` +
+        `auto-merge NOT armed -- awaiting a merger\n`,
+    );
+    return 0;
+  }
   process.stdout.write(
-    `[flush] ${opts.lane}: PR #${result.ok.number} ${result.ok.reused ? "re-used" : "opened"} ` +
+    `[flush] ${opts.lane}: PR #${String(result.ok.number)} ${what} ` +
       `(${result.ok.url}); squash auto-merge armed\n`,
   );
   return 0;

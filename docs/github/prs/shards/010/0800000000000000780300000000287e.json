@@ -1,0 +1,12 @@
+{
+  "pr_number": 10366,
+  "archive_path": "docs/history/pr-reviews/PR-10366-vocab-witness-vs-quorum-earn-their-place-in-well-definitions.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:11:33.247Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "vocab: witness vs quorum earn their place in WELL-DEFINITIONS",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T20:18:12Z",
+  "head_ref": "vocab-witness-quorum"
+}

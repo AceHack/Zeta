@@ -1,0 +1,12 @@
+{
+  "pr_number": 10447,
+  "archive_path": "docs/history/pr-reviews/PR-10447-research-tit-for-lesser-tat-is-generous-tft-and-it-is-the-same-defect-as-aimd-un.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:13:16.283Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "research: tit for lesser tat is generous TFT — and it is the same defect as AIMD under corruption",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T23:47:50Z",
+  "head_ref": "research/tit-for-lesser-tat-arena"
+}

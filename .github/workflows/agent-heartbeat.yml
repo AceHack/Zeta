@@ -440,9 +440,35 @@ jobs:
             --owner Lucent-Financial-Group --repo Zeta --batch 3 --since 7d \
             2>&1 | tail -10 || echo "::warning::[archive] archive step failed (non-fatal)"
 
+          # THIS STEP IS THE SINGLE SERIALISED WRITER OF THE DERIVED MANIFEST INDEX
+          # (081KZYP7MNV087G0R002X0E3V9). pr-archive-on-merge.yml no longer stages
+          # docs/github/prs/manifest.jsonl, because N concurrent archive PRs writing one shared
+          # file is exactly the pairwise-conflict class that work retired. The index has to be
+          # maintained SOMEWHERE, and it has to be somewhere serialised, which is here:
+          #   - one duty holder (soraya only, gated above),
+          #   - workflow-level concurrency group agent-heartbeat with cancel-in-progress: false,
+          #   - the branch is hard-reset from origin/main at the top of every tick, so a tick
+          #     that fails to land is simply recomputed next tick (idempotent, discipline #6).
+          #
+          # --write is a full REGENERATION from the shard store, not the per-PR upsert that
+          # archive-pr-reviews.ts does. That matters: the shards this tick has to index were
+          # written by OTHER runs (every merged PR archives itself), so an upsert of the three
+          # PRs handled above would leave the index short by every shard landed since the last
+          # tick. Regenerating from the shards is also the only correct repair by construction --
+          # the derived file carries no information the shards do not.
+          #
+          # STALENESS BOUND, stated because a knowingly-stale index is fine and a silently-stale
+          # one is not: the shards are authoritative the moment an archive PR merges; the derived
+          # index lags them by at most one landed flush. flush-to-main gates on
+          # MIN_INTERVAL_SECONDS=3000, so the bound is ~1 hour plus GitHub scheduled-run delay.
+          # Readers wanting the current set must read docs/github/prs/shards/, or run
+          # derive-pr-manifest.ts themselves. pr-manifest-integrity.yml fails loudly if this
+          # cadence stops repairing at all.
+          bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --write             || echo "::warning::[archive] manifest derive failed (non-fatal; shards are the ledger)"
+
           # Stage + commit what the archive wrote. It writes into TRACKED paths
-          # (docs/github/prs/, incl. manifest.jsonl) but previously never staged them, and it
-          # ran after the push anyway — so its output was written to a runner and destroyed.
+          # (docs/github/prs/ -- shards + the derived manifest) but previously never staged them,
+          # and it ran after the push anyway — so its output was written to a runner and destroyed.
           if ! git diff --quiet -- docs/github/prs/ || [ -n "$(git ls-files -o --exclude-standard docs/github/prs/)" ]; then
             git config user.name "${AGENT}[bot]"
             git config user.email "${AGENT}[bot]@users.noreply.github.com"
@@ -667,6 +693,25 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+
+      # WITHOUT THIS THE WHOLE FLUSH JOB IS DEAD. The Flush step below shells out to
+      # `bun src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts`, and this job
+      # never installed bun -- only the heartbeat job above did. Every scheduled run therefore
+      # exited 127:
+      #     line 59: bun: command not found
+      #     [flush] alexa: could not open/arm the flush PR (rc=127).
+      # Confirmed on runs 31740994688 / 31742919389 / ... / 31755070447 -- every flush leg of
+      # every run on 2026-08-13, all three agents. The ticks themselves were green the whole
+      # time, so the failure read as an ordinary red X on a noisy workflow rather than as
+      # "no agent telemetry has reached main in hours".
+      #
+      # Found while wiring the derived PR-manifest index onto this job soraya archive duty
+      # (081KZYP7MNV087G0R002X0E3V9): that index has a staleness bound only if this job runs,
+      # so the bound could not be stated honestly without repairing this first.
+      - name: Setup bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
 
       - name: Check if heartbeat branch has events to flush
         id: check

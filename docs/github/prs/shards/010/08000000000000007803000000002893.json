@@ -1,0 +1,12 @@
+{
+  "pr_number": 10387,
+  "archive_path": "docs/history/pr-reviews/PR-10387-research-orbital-independently-falsify-asymmetric-light-time-proxies.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:12:10.644Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "research(orbital): independently falsify asymmetric light-time proxies",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T22:08:35Z",
+  "head_ref": "research/orbital-asymmetry-independent-review"
+}

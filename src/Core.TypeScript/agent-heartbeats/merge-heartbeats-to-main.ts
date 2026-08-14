@@ -30,7 +30,7 @@
 // Exit codes:
 //   0 success (PR opened + armed OR up-to-date)
 //   2 arg-parse error
-//   3 PR-create or arm-auto-merge call failed
+//   3 PR-create call failed (arm-auto-merge failure is NOT fatal — see openMergePR)
 //   4 up-to-date (no heartbeats since last merge)
 
 import { spawnSync } from "node:child_process";
@@ -124,14 +124,81 @@ export function findExistingPR(repo: string, head: string, base: string): { read
   }
 }
 
-/** Open PR from head → base + arm auto-merge with squash. Returns PR URL + number. */
+/**
+ * The outcome of opening (or re-using) the flush PR.
+ *
+ * `armed` is deliberately part of the SUCCESS shape: the PR exists either way, and whether
+ * auto-merge could be armed on it is a separate fact the caller needs in order to say
+ * something useful. See the arming block below for why it is not an error.
+ */
+export interface OpenedPR {
+  readonly number: number;
+  readonly url: string;
+  readonly reused: boolean;
+  /** Whether squash auto-merge was armed. False means the PR is open and waiting on a merger. */
+  readonly armed: boolean;
+  /** Why arming failed, when `armed` is false. */
+  readonly armError?: string;
+}
+
+export const ARMING_DISABLED =
+  "auto-merge arming is opt-in (set ZETA_FLUSH_ARM_AUTOMERGE=1); enablePullRequestAutoMerge is GraphQL-only and the flush token does not carry it";
+
+/**
+ * Whether to attempt `gh pr merge --auto` at all. OPT-IN, and deliberately off by default.
+ *
+ * Three independent reasons, none of which alone would be enough:
+ *  1. IT DOES NOT WORK HERE. The scoped flush PAT cannot call the mutation --
+ *     `GraphQL: Resource not accessible by personal access token (enablePullRequestAutoMerge)`
+ *     on every society-heartbeat run. Granting it is a credential change, so it is the human
+ *     maintainer call, not this modules.
+ *  2. IT IS THE EXPENSIVE API. `enablePullRequestAutoMerge` is GraphQL-ONLY -- there is no
+ *     REST equivalent -- and GraphQL is the budget that actually rate-limits this repo
+ *     (measured 2026-08-14: GraphQL 1147/5000 points vs REST 33/5000 requests). Four lanes
+ *     ticking every 15 minutes spend that budget on a call that has never once succeeded.
+ *  3. IT IS NOT THE JOB. The flush has already fully succeeded by the time arming is
+ *     attempted; see armOutcome.
+ *
+ * Flip `ZETA_FLUSH_ARM_AUTOMERGE=1` the moment the token carries the permission. Until then
+ * every flush says out loud that its PR is waiting on a merger, which is the honest state --
+ * it was equally true before, just hidden behind a red X blamed on something else.
+ */
+export function armingEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
+  return env.ZETA_FLUSH_ARM_AUTOMERGE === "1";
+}
+
+/**
+ * Decide the outcome of the arming attempt. Pure, so the contract has a falsifier.
+ *
+ * THE CONTRACT: a failed arm NEVER destroys a successful PR. Before 2026-08-14 this branch
+ * returned { error, code: 3 } and dropped `prNumber` on the floor, so a completed flush --
+ * branch pushed, PR open -- was reported as a total failure. Both telemetry lanes were red on
+ * every run because of it (society-heartbeat: `arm auto-merge failed (PR #10397 reused):
+ * GraphQL: Resource not accessible by personal access token (enablePullRequestAutoMerge)`,
+ * exit 3). The scoped PAT does not carry that mutation; granting it is a gated credential
+ * change, and a successful flush should not have been reporting failure regardless.
+ *
+ * The returned value is the NEUTRAL FACT (`armed`), not a verdict: callers decide whether an
+ * unarmed PR is a warning or an error. That split is the same discipline as
+ * .claude/rules/dual-use-detection-is-neutral-oracle-decides.md.
+ */
+export function armOutcome(
+  pr: { readonly number: number; readonly url: string; readonly reused: boolean },
+  armStatus: number,
+  armMessage: string,
+): OpenedPR {
+  if (armStatus === 0) return { ...pr, armed: true };
+  return { ...pr, armed: false, armError: armMessage.trim() };
+}
+
 export function openMergePR(
   repo: string,
   head: string,
   base: string,
   title: string,
   body: string,
-): { readonly ok: { readonly number: number; readonly url: string; readonly reused: boolean } } | { readonly error: string; readonly code: 3 } {
+  env: NodeJS.ProcessEnv = process.env,
+): { readonly ok: OpenedPR } | { readonly error: string; readonly code: 3 } {
   // Idempotency: re-use existing open PR if one is already open head→base
   const existing = findExistingPR(repo, head, base);
   if ("error" in existing) {
@@ -162,11 +229,43 @@ export function openMergePR(
   }
   // Arm auto-merge with squash via gh CLI (GraphQL under the hood).
   // Safe to re-arm on already-armed PRs (idempotent).
-  const armResult = gh(["pr", "merge", String(prNumber), "--auto", "--squash", "--repo", repo]);
-  if (armResult.status !== 0) {
-    return { error: `arm auto-merge failed (PR #${prNumber}${reused ? " reused" : " opened"}): ${armResult.stderr || armResult.stdout}`, code: 3 };
+  //
+  // ARMING IS AN OPTIMISATION, NOT THE JOB, so its failure is REPORTED and never collapses
+  // the successful PR into an error (2026-08-14). Before this, a failed arm returned
+  // { error, code: 3 } and threw away `prNumber` -- the branch was pushed, the PR was open,
+  // and the caller still exited non-zero with the PR number nowhere in the result. Live for
+  // both telemetry lanes:
+  //   society-heartbeat, every run:  flush-via-staging: arm auto-merge failed (PR #10397
+  //     reused): GraphQL: Resource not accessible by personal access token
+  //     (enablePullRequestAutoMerge)   -> exit 3
+  // The scoped PAT (ZETA_TELEMETRY_FLUSH_TOKEN) simply does not carry that GraphQL mutation.
+  // Granting it is a credential change and therefore gated on the human maintainer; making a
+  // successful flush report success is not.
+  //
+  // The result stays TRUTHFUL rather than forgiving: `armed` is the neutral fact, and the
+  // caller decides the policy (a warning here, a hard failure elsewhere if some lane ever
+  // needs one). Swallowing it silently would be the other failure -- an unarmed PR merges
+  // only if something else merges it, so a green tick that quietly queues PRs forever is
+  // exactly the class this repo keeps rediscovering.
+  if (!armingEnabled(env)) {
+    return {
+      ok: {
+        number: prNumber,
+        url: prUrl,
+        reused,
+        armed: false,
+        armError: ARMING_DISABLED,
+      },
+    };
   }
-  return { ok: { number: prNumber, url: prUrl, reused } };
+  const armResult = gh(["pr", "merge", String(prNumber), "--auto", "--squash", "--repo", repo]);
+  return {
+    ok: armOutcome(
+      { number: prNumber, url: prUrl, reused },
+      armResult.status,
+      armResult.stderr || armResult.stdout,
+    ),
+  };
 }
 
 async function main(): Promise<number> {
@@ -203,7 +302,20 @@ async function main(): Promise<number> {
     console.error(`merge-heartbeats-to-main: ${result.error}`);
     return result.code;
   }
-  console.log(`${result.ok.reused ? "re-used" : "opened"}: PR #${result.ok.number} (${result.ok.url}); auto-merge re-armed (squash)`);
+  const what = result.ok.reused ? "re-used" : "opened";
+  if (!result.ok.armed) {
+    // Loud on purpose. The flush SUCCEEDED and the PR is open, but nothing will merge it on
+    // its own, so a quiet exit-0 here would queue PRs forever -- which is how #10397 sat
+    // open while the workflow reported a hard failure for an unrelated-looking reason.
+    console.warn(
+      `::warning title=Telemetry flush PR is open but NOT auto-merged::PR #${String(result.ok.number)} ` +
+        `(${result.ok.url}) ${what}; arming auto-merge failed and something must merge it. ` +
+        `Cause: ${result.ok.armError ?? "unknown"}`,
+    );
+    console.log(`${what}: PR #${String(result.ok.number)} (${result.ok.url}); auto-merge NOT armed`);
+    return 0;
+  }
+  console.log(`${what}: PR #${String(result.ok.number)} (${result.ok.url}); auto-merge re-armed (squash)`);
   return 0;
 }
 

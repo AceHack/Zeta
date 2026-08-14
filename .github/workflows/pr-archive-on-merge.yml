@@ -5,7 +5,11 @@ name: pr-archive-on-merge
 # `src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts` tool to materialise the PR's review
 # threads, comments, fix commits, and outcome metadata as a committed
 # git-canonical markdown file under `docs/history/pr-reviews/PR-NNNN-*.md`,
-# and update the JSONL manifest at `docs/github/prs/manifest.jsonl`.
+# plus the PR per-PR shard at `docs/github/prs/shards/<NNN>/<zetaid>.json`.
+#
+# The archive commit does NOT carry `docs/github/prs/manifest.jsonl`. That file is a
+# DERIVED index over the shard store; see the `Inspect diff` step for why staging it
+# here is the defect this workflow no longer has.
 #
 # Why: per CLAUDE.md substrate-or-it-didn't-happen (Otto-363), GitHub
 # review threads are host-durable-not-git-canonical -- they can vanish if
@@ -51,7 +55,10 @@ concurrency:
   # One run per PR number. cancel-in-progress: false because the archival
   # operation is not idempotent in the wall-clock-timestamp sense (each run
   # produces a new `fetched_at`), and cancelling a partially-completed run
-  # could leave the manifest in a divergent state until the next merge.
+  # could leave the shard store in a divergent state until the next merge.
+  # This group is also what makes the shard write single-writer PER PR: two runs
+  # for the same PR number never overlap, and runs for different PR numbers
+  # target different files by construction.
   group: pr-archive-on-merge-${{ github.event.pull_request.number }}
   cancel-in-progress: false
 
@@ -79,7 +86,7 @@ jobs:
     timeout-minutes: 15
 
     permissions:
-      # contents:write to push the archive + manifest update to a bot branch.
+      # contents:write to push the archive markdown + the PR shard to a bot branch.
       # pull-requests:write opens the archive PR and also covers the archival
       # tool's read calls against /pulls/N/comments and graphql reviewThreads
       # under GITHUB_TOKEN. No other scopes needed.
@@ -133,7 +140,7 @@ jobs:
         run: |
           set -euo pipefail
           # GITHUB_SHA in the GHA env is the merge-commit SHA on main; we
-          # want that recorded as the manifest commit_sha so future re-runs
+          # want that recorded as the shard commit_sha so future re-runs
           # against the same merge can detect "same archival baseline".
           export GITHUB_SHA="$GITHUB_SHA_OVERRIDE"
           bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts "$PR_NUMBER"
@@ -142,9 +149,29 @@ jobs:
         id: diff
         run: |
           set -euo pipefail
-          # Stage just the two output paths; anything else is noise the
+          # Stage the archive markdown + this PR ONE shard. Anything else is noise the
           # archival tool should not be producing.
-          git add docs/history/pr-reviews/ docs/github/prs/manifest.jsonl
+          #
+          # THE DERIVED MANIFEST IS DELIBERATELY NOT STAGED (081KZYP7MNV087G0R002X0E3V9).
+          # docs/github/prs/manifest.jsonl is a DERIVED index over the shard store
+          # (081KZYMY46P087G0R003S64V2B); staging it here is what made every in-flight archive
+          # PR append to the same trailing region of the same file and therefore conflict
+          # PAIRWISE. Measured 2026-08-13: 26 open archive PRs, 13 already CONFLICTING.
+          # Reproduced with a control at the git level before this change landed:
+          #   two archive commits off one base, each appending a manifest line
+          #     -> CONFLICT (content) in docs/github/prs/manifest.jsonl
+          #   the same two commits writing only their own shard
+          #     -> clean merge
+          # The shard path is a function of pr_number, so two archive commits can never
+          # write the same file and can never conflict. git restore drops the tool side
+          # manifest mutation from the worktree so a later git add -a cannot resurrect it.
+          #
+          # The index is repaired by the serialised single writer in agent-heartbeat.yml
+          # (soraya archive duty runs derive-pr-manifest.ts --write); the staleness bound is
+          # stated at that step. pr-manifest-integrity.yml is the watchdog that fails loudly
+          # if that repair cadence stops running.
+          git add docs/history/pr-reviews/ docs/github/prs/shards/
+          git restore docs/github/prs/manifest.jsonl 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "changed=false" >>"$GITHUB_OUTPUT"
             echo "archival produced no diff -- nothing to commit (deterministic-rerun no-op)"
@@ -209,7 +236,7 @@ jobs:
             echo "## Summary"
             echo
             echo "- Archive review substrate for merged PR #${PR_NUMBER}"
-            echo "- Update docs/github/prs/manifest.jsonl"
+            echo "- Add docs/github/prs/shards/<NNN>/<zetaid>.json (the derived manifest is regenerated separately)"
             echo
             echo "## Notes"
             echo

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10440,
+  "archive_path": "docs/history/pr-reviews/PR-10440-test-discovery-bandwidth-delay-product-link-model-for-udp-lossy-transport-ubl-1-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:13:12.178Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "test(discovery): bandwidth-delay-product link model for udp-lossy-transport (UBL-1..14)",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T23:47:19Z",
+  "head_ref": "shadow/udp-bdp-link-congestion-harness"
+}

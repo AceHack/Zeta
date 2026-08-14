@@ -1,0 +1,12 @@
+{
+  "pr_number": 10396,
+  "archive_path": "docs/history/pr-reviews/PR-10396-workitem-support-js-postmessage-handler-has-no-origin-check-081kzyd1m71087g0r002.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:12:24.707Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "workitem: support.js postMessage handler has no origin check (081KZYD1M71087G0R0022GS3ZH)",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T22:29:03Z",
+  "head_ref": "workitem/support-js-origin-check"
+}

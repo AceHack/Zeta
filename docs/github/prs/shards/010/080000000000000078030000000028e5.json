@@ -1,0 +1,12 @@
+{
+  "pr_number": 10469,
+  "archive_path": "docs/history/pr-reviews/PR-10469-research-attested-key-erasure-makes-frozen-assertable-and-at-the-landauer-limit-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:32:27.500Z",
+  "schema_version": "v1",
+  "commit_sha": "8114b2cf7c26c55ea168357c04a9d40c7f3eebd3",
+  "title": "research: attested key erasure makes frozen assertable — and at the Landauer limit the energy is the receipt",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T00:25:20Z",
+  "head_ref": "research/attested-erasure-makes-frozen-provable"
+}

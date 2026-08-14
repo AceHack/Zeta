@@ -1,0 +1,12 @@
+{
+  "pr_number": 10462,
+  "archive_path": "docs/history/pr-reviews/PR-10462-research-patchability-decides-whether-a-glitch-is-a-decision-or-a-fact-and-versi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:15:23.960Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "research: patchability decides whether a glitch is a decision or a fact — and version is the third partition",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T00:13:29Z",
+  "head_ref": "research/patchability-and-the-third-partition"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10457,
+  "archive_path": "docs/history/pr-reviews/PR-10457-research-recover-two-arena-addenda-stranded-by-auto-merge-on-an-earlier-sha.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:13:19.105Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "research: recover two Arena addenda stranded by auto-merge on an earlier SHA",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T23:57:47Z",
+  "head_ref": "fix/recover-stranded-arena-addenda"
+}

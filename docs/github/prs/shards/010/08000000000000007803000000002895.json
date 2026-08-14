@@ -1,0 +1,12 @@
+{
+  "pr_number": 10389,
+  "archive_path": "docs/history/pr-reviews/PR-10389-security-make-the-gate-bypass-ban-technical-again-and-correct-a-now-false-commen.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:12:13.793Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "security: make the gate-bypass ban technical again, and correct a now-false comment",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T22:22:02Z",
+  "head_ref": "security/no-agent-gate-bypass"
+}

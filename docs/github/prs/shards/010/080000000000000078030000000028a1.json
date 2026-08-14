@@ -1,0 +1,12 @@
+{
+  "pr_number": 10401,
+  "archive_path": "docs/history/pr-reviews/PR-10401-feat-browser-reconcile-receipt-peer-links.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:12:29.824Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "feat(browser): reconcile receipt peer links",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T22:34:53Z",
+  "head_ref": "codex/browser-receipt-peer-host"
+}

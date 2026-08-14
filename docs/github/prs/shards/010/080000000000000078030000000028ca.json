@@ -1,0 +1,12 @@
+{
+  "pr_number": 10442,
+  "archive_path": "docs/history/pr-reviews/PR-10442-fix-discovery-bound-the-nack-gap-by-the-receiver-s-retention-window-3-333-337x-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-13T23:48:47.333Z",
+  "schema_version": "v1",
+  "commit_sha": "ab2f28f8aea2f92a75618490e4322ec75e2b12ef",
+  "title": "fix(discovery): bound the NACK gap by the receiver's retention window -- 3,333,337x broadcast amplification from one unauthenticated packet",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T23:48:13Z",
+  "head_ref": "fix/udp-lossy-nack-amplification-bound-081KZYP1S96"
+}

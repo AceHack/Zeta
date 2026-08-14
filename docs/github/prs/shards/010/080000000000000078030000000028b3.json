@@ -1,0 +1,12 @@
+{
+  "pr_number": 10419,
+  "archive_path": "docs/history/pr-reviews/PR-10419-design-bridge-the-factor-graph-the-soft-amplitude-values-heterogeneous-depth-bnn.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:12:51.555Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "design: bridge the factor graph, the soft/amplitude values, heterogeneous-depth BNNs and the linguistic seed",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T23:05:36Z",
+  "head_ref": "design/bayesian-soft-linguistic-bridge"
+}

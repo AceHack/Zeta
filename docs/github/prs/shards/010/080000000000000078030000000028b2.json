@@ -1,0 +1,12 @@
+{
+  "pr_number": 10418,
+  "archive_path": "docs/history/pr-reviews/PR-10418-proof-orbital-the-light-time-asymmetry-envelope-is-a-theorem-the-1-2-is-a-fudge-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:12:49.938Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "proof(orbital): the light-time asymmetry envelope is a theorem; the 1.2 is a fudge factor",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T23:11:29Z",
+  "head_ref": "soraya/orbital-delta-max-envelope-proof"
+}

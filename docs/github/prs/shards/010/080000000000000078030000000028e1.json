@@ -1,0 +1,12 @@
+{
+  "pr_number": 10465,
+  "archive_path": "docs/history/pr-reviews/PR-10465-research-canon-is-decided-by-write-keys-disagreement-forks-rather-than-votes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:18:13.334Z",
+  "schema_version": "v1",
+  "commit_sha": "aa2888e8172f8a0b1ca82333123a1ab3b16d6b2e",
+  "title": "research: canon is decided by write keys — disagreement forks rather than votes",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T00:16:17Z",
+  "head_ref": "research/canon-is-authorship-not-vote"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10371,
+  "archive_path": "docs/history/pr-reviews/PR-10371-fix-ci-route-the-four-telemetry-lanes-off-direct-push-to-main-part-b-workflow-fi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:11:40.482Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "fix(ci): route the four telemetry lanes off direct-push-to-main (Part B — workflow files only)",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T21:51:08Z",
+  "head_ref": "otto/telemetry-flush-via-staging-not-direct-push"
+}

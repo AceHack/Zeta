@@ -1,0 +1,12 @@
+{
+  "pr_number": 10373,
+  "archive_path": "docs/history/pr-reviews/PR-10373-ci-move-pnpm-off-root-devdependencies-to-its-one-consumer.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:11:44.427Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "ci: move pnpm off root devDependencies to its one consumer",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T21:03:14Z",
+  "head_ref": "dejan/pnpm-off-root-devdeps-to-pages-consumer"
+}
