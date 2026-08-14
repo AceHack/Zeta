@@ -10,34 +10,14 @@ is canon (BP-08). This notebook supplements, never overrides.
 
 ## Round 35 — verification-drift-auditor skill adopted
 
-New audit surface:
-`.claude/skills/verification-drift-auditor/SKILL.md`.
-Registry at `docs/research/verification-registry.md`.
-
-Motivating case: `Dbsp.ChainRule.chain_rule` in
-`tools/lean4/Lean4/DbspChainRule.lean` was labelled as Budiu
-et al. Proposition 3.2 but actually proved a Theorem 3.3
-corollary (`Dop` = `D ∘ f` on linear operators, not `D ∘ f ∘ I`
-= paper's `Q^Δ`). Caught by human peer-review cross-check
-against arXiv:2203.16684v1 §3; landed four fixes same round
-(rename + Qdelta + chain_rule_proposition_3_2 + registry).
-
-First audit report:
-`docs/research/verification-drift-audit-2026-04-19.md`.
-Cadence: every 5-10 rounds, or on any commit adding a theorem
-/ property / spec with an external citation.
-
-Six drift classes defined (Name, Precondition, Statement,
-Definition, Numbering, Source-decay) and one pre-registration
-class (Class 0). The skill is tool-agnostic: Lean / TLA+ / Z3
-/ FsCheck today, Alloy / F* / Dafny / Stainless / Viper etc.
-as they land in the portfolio.
-
-This skill is Soraya's audit surface — not a new persona. The
-persona is still `formal-verification-expert` (me); the skill
-is a named procedure I run on a cadence.
-
----
+Audit surface `.claude/skills/verification-drift-auditor/SKILL.md`; registry
+`docs/research/verification-registry.md`; first report
+`docs/research/verification-drift-audit-2026-04-19.md`. Motivating case: the
+`DbspChainRule` mis-citation (labelled Budiu Prop 3.2, actually a Thm 3.3
+corollary) — caught by cross-check against arXiv:2203.16684v1 §3. Six drift
+classes + one pre-registration class; tool-agnostic. Cadence: every 5-10
+rounds, or on any commit adding a cited theorem/property/spec. A named
+procedure I run, not a new persona.
 
 ## Portfolio metric
 
@@ -329,3 +309,54 @@ could have detected the defect I just found. An all-unsat expectation is satisfi
 tautology. The routing recommendation is that each lemma file carry a non-vacuity probe whose
 expected verdict is `sat`, and that the runner assert the SEQUENCE rather than "every verdict is
 unsat". That is a 4-file retrofit, not a rewrite.
+
+---
+
+## 2026-08-14 -- Meno braided ladder: Q3 then Q1. Balanced, and it stops there.
+
+Routed and answered the last open MATHEMATICAL question on the Meno board. Checked Q3 first
+because it gates whether Q1 is even about Meno.
+
+**Q3 -- obstruction NOT real as stated.** The brief's premise ("our ambient tensor is described
+in our own source as cartesian") misreads `Meno.fs:38`, which says the DETERMINISTIC
+SUBCATEGORY is cartesian. Ambient `(x)_Kronecker` is not cartesian (not the product in Mod_Z;
+`unitObject` not terminal), so Mathlib `Subsingleton (SymmetricCategory C)` does not apply.
+
+**But the adjacent obstruction IS real and sharper than the brief's version.** A cartesian
+monoidal category has a unique BRAIDING -- not merely a unique symmetric structure. I is
+terminal, naturality against `!_A : A -> I` forces both projections of `c`, product universal
+property pins `c = swap`. And `braidR` is built with `Meno.arr`, i.e. it lives in the cartesian
+deterministic subcategory. The escape: every `<V>` morphism is a BASIS BIJECTION, and copy is
+not surjective / discard is not injective, so neither can enter. Fox 1976 then gives
+non-cartesian. Nothing needs constructing -- the "minimal non-cartesian tensor" is the ambient
+one under a hom-restriction, and `MenoBraided.rep` already IS it. Deliverable is a GUARD.
+
+**Q1 -- balanced, and the two prior reviews were wrong in the same way.** Both read the axiom as
+`theta_{A(x)B} = theta_A (x) theta_B`. Real axiom has `. c_{B,A} . c_{A,B}` on the right, so
+`theta_V = id` forces `theta_{V(x)V} = c^2`, NOT `c^2 = id`. `<V>` is balanced, uniquely, with
+`theta_{V^n} = rho(Delta_n^2)` -- the Garside full twist. `theta_V = id` is forced by B_1 being
+trivial and is correct, not degenerate.
+
+Routing: REJECTED the brief's suggested Z3-over-{S3,S4,Q8} search -- it answers a different
+question. `Hom_{<V>}(V^n,V^n) = rho(B_n)` and rho is faithful, so the problem is central
+elements of B_n, not set-maps G^n -> G^n. Encoding free-group rewriting into SMT-LIB is ~a week
+producing something less trustworthy than `Braid.equal`, which we already ship and test.
+REJECTED Lean-first: general n needs Garside normal form, which Mathlib does not carry.
+ACCEPTED exact computation over the shipped faithful `Braid.equal`. Hours, not weeks.
+
+BP-16 honoured, and this time I did not repeat the `chsh` mistake: the F# check runs against the
+SHIPPED `Braid.fs` (not a private copy), and the second implementation is an independent
+re-write from the spec. Both agree for all m+n <= 7. Four planted mutants -- theta=id (the
+reviewers' own reading), theta=Delta, theta=Delta^4, single block-swap -- all REJECTED by both.
+An all-pass run with no mutant that dies is a tautology; these die.
+
+**Q4, and it is the useful part.** Balanced was worth hours and it CLOSED a line. Above it buys
+nothing: ribbon would give a Markov trace scalar link invariant, strictly weaker than the
+faithful `Braid.equal` we already have, and it is blocked at the object anyway (V has no dual in
+Mod_Z). MTC is false, not open. Recommendation: STOP at balanced. Climbing further is aesthetics.
+
+Portfolio: Meno lane goes 1 gated artefact (`MenoBraidedRMatrix.lean`, reachable from the `Lean4`
+root -- orphan guard checked, it is fine) to 1 gated + 2 routed
+(081KZZVC3DD087G0R0035SZN58 Lean certificate, 081KZZVC6SE087G0R001SXE8BV copy/discard guard).
+Denominator unchanged. Also fixed a garbled sentence in `MenoBraided.fs` left by a bad edit on
+2026-08-13 -- the kind of damage that makes a docstring stop being readable evidence.

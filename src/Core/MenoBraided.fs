@@ -10,7 +10,9 @@ namespace Zeta.Core
 /// product — in Mod_ℤ that is the biproduct `⊕ = ℤ[X ⊔ Y]` of rank |X|+|Y|, while `Meno.tensor` gives
 /// `ℤ[X × Y]` of rank |X|·|Y| (|X|=|Y|=1: 1 vs 2). (2) `unitObject` is not terminal —
 /// `Hom(ℤ[X], ℤ) = ℤ^X`, a singleton only when X is empty. See `Meno.fs:34`, which already said this
-/// ("CD category, NOT cartesian") while four other comments in the same file contradicted it., so `Meno.braid` (the tuple swap) is a *correct symmetric* braiding — σ²=id. It is NOT
+/// ("CD category, NOT cartesian") while four other comments in the same file contradicted it.
+///
+/// So `Meno.braid` (the tuple swap) is a *correct symmetric* braiding — σ²=id. It is NOT
 /// "unearned braiding"; it is genuinely the symmetry. A genuine BRAID needs EXTRA DATA the tensor cannot
 /// supply: a Yang–Baxter operator R with **R²≠id**. Over the free-group-word object V = ℤ[Fₙ]
 /// (`Braid.Word`), the integer / float-free / byte-lockable choice is the **conjugation-rack** solution
@@ -24,6 +26,36 @@ namespace Zeta.Core
 /// symmetric (the P4 tripwire). Scope earned (Soraya): *"V is a braided object; the subcategory ⟨V⟩ it
 /// generates is braided monoidal and realizes Bₙ"* — NOT "all of Meno is braided" (that needs a full
 /// quasi-triangular R). This module claims the first only.
+///
+/// **BALANCED — the rung above braided, settled 2026-08-14 (Soraya).** `⟨V⟩` **is** balanced, and the
+/// balanced structure is **unique**: the twist is the Garside full twist `θ_{V^n} = ρ(Δₙ²)`, where
+/// `Δₙ = (σ₁)(σ₂σ₁)…(σₙ₋₁…σ₁)`. Note `θ_V = ρ(Δ₁²) = id` — that is FORCED (B₁ is trivial) and it is
+/// NOT a contradiction: the balanced axiom is `θ_{A⊗B} = (θ_A ⊗ θ_B) ∘ c_{B,A} ∘ c_{A,B}`, **not**
+/// `θ_{A⊗B} = θ_A ⊗ θ_B`, so `θ_V = id` forces `θ_{V⊗V} = c² = σ₁²` rather than `c² = id`. (Two earlier
+/// reviews made exactly that misreading and concluded Meno was provably NOT balanced. It is balanced.)
+/// Naturality reduces to centrality in Bₙ because `Hom_{⟨V⟩}(V^n, V^n) = ρ(Bₙ)` and ρ is faithful;
+/// `Z(Bₙ) = ⟨Δ²⟩` for n ≥ 3 (Chow 1948). CHECKED for all m+n ≤ 7 by two independent implementations of
+/// Artin's action (the shipped `Braid.equal` plus an independent re-implementation), with four planted
+/// mutants — θ=id, θ=Δ, θ=Δ⁴, and a single block-swap — all REJECTED, so the check is not vacuous.
+/// General-n Lean certificate: work-item 081KZZVC3DD087G0R0035SZN58.
+///
+/// **Why `⟨V⟩` must never admit copy Δ or discard ε.** A *cartesian* monoidal category has a **unique
+/// braiding**, and it is the swap — stronger than Mathlib's `Subsingleton (SymmetricCategory C)`, which
+/// only pins the *symmetric* structure. (I is terminal, so naturality against `!_A : A → I` forces
+/// `π₁∘c = π_B` and `π₂∘c = π_A`; the product's universal property then pins `c = swap`.) `Meno.fs:38`
+/// records that the DETERMINISTIC subcategory — the `arr f` arrows — IS cartesian (Fox 1976), and
+/// `braidR` below is built with `Meno.arr`. What keeps `⟨V⟩` honest is that every one of its morphisms
+/// is a **basis bijection** (`braidR`/`braidRinv` are mutually inverse; ⊗ and ∘ preserve bijections),
+/// while Δ : V → V⊗V is not surjective on basis and ε : V → I is not injective — so neither can enter,
+/// and by Fox `⟨V⟩` is not cartesian. Nothing new needs constructing: the "minimal non-cartesian ⊗ on
+/// ⟨V⟩" is the ambient Kronecker ⊗ under a **hom-restriction**, and `rep` below IS that restriction.
+/// Regression guard: work-item 081KZZVC6SE087G0R001SXE8BV.
+///
+/// **Where the ladder stops, and why.** Ribbon is blocked at the OBJECT, not merely unproven: V = ℤ[Fₙ]
+/// is free of infinite rank and in Mod_ℤ dualizable ⟺ finitely generated projective, so V has no dual.
+/// Modular tensor is false, not open (infinitely many simples). Anchors: Joyal–Street 1993 (braided /
+/// balanced); Garside 1969 (Δ, the full twist Δ²); Chow 1948 (Z(Bₙ)); Fox 1976 (cartesian ⟺ natural
+/// comonoid); Artin 1925 (faithfulness).
 ///
 /// **What is NOT here yet (deferred, per spec):** the associator α + unitors (ZSet tuples are non-strict,
 /// so the two hexagons can't even be *stated* without α — the sleeper prerequisite), the full FsCheck
