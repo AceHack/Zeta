@@ -1,0 +1,12 @@
+{
+  "pr_number": 10573,
+  "archive_path": "docs/history/pr-reviews/PR-10573-fix-hygiene-the-agencysignature-audit-exempted-the-fleet-s-own-personas-invert-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T13:31:32.932Z",
+  "schema_version": "v1",
+  "commit_sha": "660514bec7069985279e5beb54b54f18309e1760",
+  "title": "fix(hygiene): the AgencySignature audit exempted the fleet's own personas — invert the default to fail-closed",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T13:30:53Z",
+  "head_ref": "fix/081M003VH9B087G0R002WXK2HD-agencysignature-audit-fail-closed"
+}
