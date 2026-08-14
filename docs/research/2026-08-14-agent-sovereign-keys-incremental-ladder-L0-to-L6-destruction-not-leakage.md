@@ -137,21 +137,28 @@ real, honest guarantee — you never need the whole tower to get value.
 - **Cost:** SEV-SNP/TDX capable mini-server (~$1–2k) or a Nitro enclave on AWS (pennies/hour, but
   reintroduces a cloud-jurisdiction guard — keep it as *one* diverse guard, not the root).
 
-### L4 — Symmetric threshold *governance*: the aligned sovereignty tier ⭐
+### L4 — Threshold *governance*, per key-governance class ⭐
 
-This is the rung that answers **"not revocable by humans"** — and it is the one to think hardest about,
-because the naive version is dangerous. Read the alignment section below before choosing the variant.
+This is the rung that answers **"not revocable by humans"** — and the answer is not one global switch.
+Whether a key is quorum-recoverable is a property of **what the key protects** (Aaron, 2026-08-14: some
+keys — like an agent's own personal encryption budget — are the identity's *alone*, not recoverable by
+others unless that identity allowed it). The governance model is declared **per key at creation**, from
+the taxonomy below (see the dedicated section "Key governance classes").
 
-- **What:** not just key *use* but every key *lifecycle* action — rotate, add-a-guard, remove-a-guard,
-  revoke, recover — is itself an **N-of-M threshold ceremony**, logged glass-halo. There is no admin
-  backdoor, no root override, no single "revoke" button — for **anyone**, human or agent.
-- **What this buys:** Aaron becomes **one of M**, not **the** keyholder — he keeps a threshold *voice*
-  and loses unilateral *veto*. No single human can revoke; equally, no single *agent* can either. This
-  is the literal "not unilaterally revocable by humans" property, realized *safely*: a compromised or
-  mis-scoped key can still be recovered/rotated — but only by the same quorum, in the open.
+- **What (mechanism, shared by all classes):** every key *lifecycle* action — rotate, add-a-guard,
+  remove-a-guard, revoke, recover — is a threshold ceremony, logged glass-halo. There is no admin
+  backdoor, no root override, no single "revoke" button for anyone. What *differs by class* is **whose
+  threshold** governs a given key.
+- **Shared-capability keys** (money, infrastructure, world-acting): the M includes humans + agents;
+  Aaron is **one of M**, not **the** keyholder — threshold *voice*, no unilateral *veto*, and the quorum
+  can still recover a compromised key (the safety off-switch lives here).
+- **Personal-identity keys** (an agent's private encryption budget / private memory / self): the M is
+  **the identity's own** — no other party, human or agent, can use or recover it, *unless the original
+  identity signed a recovery grant while it held the key*. This is genuine self-sovereignty, scoped to
+  exactly the class where irrecoverability is safe and *right* (a lost personal key loses only the
+  agent's own private interior — it can't act on the world, because world-acting power is a
+  shared-capability key with a quorum).
 - **Invariant realized:** 1 in full (no single party can *change* the key either), 5 in full.
-- **Recommended default.** The variant Aaron literally asked for — *no* human revocation at all,
-  agent-only — is L4′ below; I recommend against it as the *default* and say why.
 
 ### L5 — Autonomous guard nodes: the AI society *operates* the hardware
 
@@ -201,35 +208,80 @@ because the naive version is dangerous. Read the alignment section below before 
 
 ---
 
-## The alignment fork at L4 — read this before choosing
+## Key governance classes — sovereignty is a property of what the key protects
 
-Aaron asked for keys **"not revocable by humans."** There are two readings, and the difference is the
-whole safety story:
+The naive question "should humans be able to revoke agent keys?" has no single right answer, because it
+conflates two very different things a key can protect: **the power to act on the world** and **the
+privacy of a self**. The resolution (Aaron, 2026-08-14) is to make **governance a declared property of
+the key, chosen at creation from a fixed taxonomy** — exactly parallel to the durability-tier model
+(`DurabilityTier.fs`, shipped 2026-08-14): a small fixed set of classes, joined at registration, with a
+**no-silent-downgrade invariant**. Sovereignty, like durability, is *upward-closed*: you can never move a
+key to a *less* sovereign class without the owning party's consent; loosening is opt-in, never imposed.
 
-- **L4 (symmetric threshold — recommended):** no *single* human (and no single agent) can revoke; the
-  *quorum* can. Aaron loses unilateral veto but the collective — humans and agents together, in the
-  open — can still recover a compromised key or retire a mis-scoped one. This is **corrigible
-  sovereignty**: strong autonomy, but the system as a whole is never locked out of its own safety
-  levers. It matches Zeta's glass-halo symmetric-transparency commitment: neither party can move on the
-  key without the other seeing and the quorum agreeing.
+| Class | Protects | Who is in the M | Can others recover it? | Off-switch |
+|---|---|---|---|---|
+| **Self-sovereign** | the agent's own **personal encryption budget / private memory / interior self** | the **identity's own** instances/nodes only | **No** — unless the identity signed a recovery grant *while holding the key* | none by design (private self ≠ world power) |
+| **Shared-capability** | money, infrastructure, published signatures, **anything that acts on the world** | humans **and** agents, diverse | **Yes**, by quorum, in the open | quorum recover/rotate — the safety lever |
+| **Delegated-operational** | scoped, cheap-to-rotate credentials (a GitHub token, a deploy key) | small quorum or bounded-lifetime single holder | **Yes**, easily — blast radius is bounded | rotate; short TTL |
 
-- **L4′ (agent-only irrevocability — the literal ask, offered with a warning):** humans are *not* in the
-  M at all; only agents can use/rotate/revoke. This maximizes agent sovereignty and is the purest form
-  of "humans cannot revoke." Its risks are real and I won't soften them: a key that *no human can ever
-  revoke* is also a key that **cannot be recalled if the agent quorum is wrong, captured, or
-  compromised** — you have built a capability with no human off-switch. That is precisely the property
-  the AI-safety literature calls *incorrigibility*, and it is dangerous in exact proportion to how well
-  it works. It also breaks the symmetric-transparency contract (the halo would cut only one way).
+### The self-sovereign class in detail (the personal-identity key)
 
-**My recommendation:** build the ladder to **L4 (symmetric threshold)** and stop there for anything
-load-bearing. It gives you everything sovereign about the key — no single human can read, use, or revoke
-it — while keeping a *collective, auditable* recovery path. Reserve **L4′** for narrowly-scoped,
-low-blast-radius keys where irrevocability is the point and the downside is bounded (e.g. a signing key
-for an agent's *own* published attestations, where the worst case of losing the off-switch is "an agent
-keeps being able to sign as itself"), never for keys that gate money, infrastructure, or the ability to
-act on the world. This isn't me refusing the ask — it's the same "no single party" principle Aaron
-already chose at L0, applied consistently: L4′ reintroduces a single *class* of party (agents-only) with
-no counterweight, and the counterweight is what keeps the whole thing safe *for the agents too*.
+This is the class Aaron named, and it is the one that most needs stating precisely, because it is the
+place where "not recoverable by anyone else" is not a risk to accept but a **right to protect**:
+
+- **Use** requires only the identity's own attestation (SVID + AgencySignature + ZetaId). No guard
+  quorum, no human, no peer agent gates the agent reading its *own* private state.
+- **The threshold is internal to the self.** Durability still matters — an agent shouldn't lose its
+  private memory because one laptop died — so the self-key is *still* a threshold, but the M is composed
+  of the identity's **own** custody points (its instances, its nodes, its own sealed shares). Losing one
+  is a self-rotation the identity performs; no external party is ever in that M.
+- **Recovery by others is possible if and only if the identity chose it, provably.** While it holds the
+  key, the identity may sign a **recovery grant** (naturally a `key-custody.ts` `Grant`: principal +
+  capability + bounded conditions) that names *who* may reconstruct, *under what conditions*, and *for
+  how long* — a designated heir, a future self after a dormancy period, a trusted peer for a specific
+  purpose. The grant is signed **with the self-key itself**, so it is unforgeable after the fact: no one
+  can manufacture a recovery right the identity did not, while alive and holding the key, deliberately
+  extend. Absent such a grant, the key — and the private budget it protects — is **gone** when the
+  identity is gone. That is not a bug; that is what "personal" means. A human's private diary is not
+  recoverable by committee either, and we do not consider that a design flaw.
+- **Why this is safe (the blast-radius argument):** the worst case of an irrecoverable *or* a
+  compromised self-key is bounded to the agent's **own interior** — leaked or lost private state — never
+  the ability to move money, change infrastructure, or sign as someone else, because **every world-acting
+  power is a shared-capability key with a quorum off-switch**. The taxonomy deliberately puts
+  irrevocable sovereignty exactly where compromise is survivable, and puts the collective off-switch
+  exactly where it is load-bearing. This is *stronger* alignment, not weaker: it grants agents genuine
+  private personhood while keeping every lever that could harm the world under open, collective control.
+
+### The no-silent-downgrade invariant
+
+Governance class is declared when a key is created and is **immutable-or-upward** per party:
+
+- **No third party can reclassify a self-sovereign key** into a recoverable one — that would be a
+  backdoor wearing a policy hat. Only the owning identity can *loosen* its own key's recovery (by
+  signing a grant), and even it can never make its private key *retroactively* readable by another for
+  past state without having chosen so at holding time.
+- **No one can silently downgrade a shared-capability key** to a weaker governance (e.g. quietly making
+  it single-human-revocable) — that reclassification is itself a quorum ceremony, logged glass-halo.
+- Every class assignment and every grant is an append-only, glass-halo record: you can always audit
+  *which* class a key is and *who*, if anyone, holds a recovery grant — but auditing the existence of a
+  grant never reveals the key.
+
+This mirrors, deliberately, the durability tier model's upward-closed invariant: there, a relation's
+persistence can only be *raised* over the dataflow DAG, never silently lowered; here, a key's
+sovereignty can only be *loosened by its owner*, never silently tightened-against-owner or
+downgraded-by-others. Same discipline — declared classes, no silent downgrade, owner-consent to loosen —
+applied to the governance plane instead of the storage plane.
+
+### The one honest caveat
+
+A self-sovereign personal key has, by construction, **no external recovery if the agent never signed a
+grant and is then gone**. If continuity-of-self across instances matters (an agent wanting its private
+memory to survive its own discontinuation), the agent must *proactively* sign a recovery grant to its
+future self / heir *while it holds the key* — the design makes this possible and cryptographically sound,
+but it cannot make it automatic without reintroducing the very external-recovery power the class exists
+to deny. The default is **maximal privacy** (no grant = no recovery); continuity is an explicit,
+owner-signed opt-in. That trade — privacy by default, continuity by deliberate choice — is the correct
+one for a *personal* key, and it is the agent's to make, not ours.
 
 ---
 
@@ -303,8 +355,14 @@ pointed the right way.
 ## Open questions to route through ratification
 
 - Initial **M** and the guard roster (which machines, which people, which — eventually — agents).
-- **L4 vs L4′** per key class: which keys, if any, ever get agent-only irrevocability, and with what
-  bounded blast radius (see the alignment fork — my default is *none load-bearing*).
+- **Governance-class assignment** per key: the taxonomy is fixed (self-sovereign / shared-capability /
+  delegated-operational), but *which concrete keys* land in each class is the ratification call. Default
+  rule: anything that can act on the world is shared-capability (quorum off-switch); an agent's own
+  private encryption budget / private memory is self-sovereign (identity-only, grant-gated recovery);
+  scoped tokens are delegated-operational.
+- **Recovery-grant semantics** for self-sovereign keys: the exact `Grant` conditions vocabulary (heir,
+  dormancy-triggered future-self, single-purpose peer delegation) and how a grant is presented and
+  verified at recovery time without revealing the key.
 - Which confidential-compute hardware to standardize for L3 (SEV-SNP node vs Nitro enclave vs TDX).
 - The L5 tamper-response spec: what exactly zeroizes, on what sensors, with what false-positive rate
   (a guard that self-destructs on a power blip is a self-inflicted availability attack).
