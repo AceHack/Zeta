@@ -1,0 +1,14 @@
+{
+  "id": "080cfff04c1da810a0130008f0b92082",
+  "at": "2026-08-14T02:11:04.245Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZZ0K0XM087G0R003RNC0C7",
+    "type": "bug",
+    "title": "demo/identity-dla-site toolchain lags the root: TS 5.6.3 vs 6.0.3 and no tsconfig target",
+    "slug": "demo-identity-dla-site-toolchain-lags-the-root-ts-5-6-3-vs-6",
+    "priority": "P2",
+    "filename": "081KZZ0K0XM087G0R003RNC0C7-demo-identity-dla-site-toolchain-lags-the-root-ts-5-6-3-vs-6.md"
+  }
+}
