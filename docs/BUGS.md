@@ -166,15 +166,6 @@ carrying the same class of claim with no authenticity layer at all.
 - **Fix:** bound it — time-windowed (add a timestamp to the fid or evict by count) or LRU/ring by insert order.
 - **Who:** architect (Kenji) → discovery/bus owner
 
-### ZetaId base32 cross-verify lacks edge vectors + has two overflow algorithms
-
-- **Site:** `tests/cross-verification/zeta-id/vectors.yaml` (12 happy-path only); `parse` in TS/Py (bigint, post-check `>MASK_128`) vs C#/F#/Rust (u128, pre-guard `firstVal>=8`)
-- **Found:** 2026-06-13 by Kira (harsh-critic), Otto anti-entropy sweep
-- **Severity:** P1
-- **Symptom:** no all-zero / max-128 / first-char-overflow (parse-reject) / lenient-alias vectors — the exact boundaries base32 breaks at, and the only place cross-language divergence would show. The overflow-reject contract is two different algorithms that agree today but are pinned only by reading, not a vector.
-- **Fix:** add all-zero, all-ones-128, first-char-overflow-reject, and lenient-alias round-trip vectors asserting uniform accept/reject across all oracles.
-- **Who:** architect (Kenji) → falsifier/vector design
-
 ### Checkpoint corruption is indistinguishable from absence (round-2 hunt, 2026-06-12)
 
 - **Site:** `src/Core/Checkpoint.fs:124-170` (`FileCheckpointStore.LoadCheckpointAsync`)

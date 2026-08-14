@@ -1,7 +1,8 @@
 # ZetaId cross-verification — what this gate does and does NOT check
 
-**Verified 2026-08-11.** Notes for anyone changing the ZetaId bit layout, written after a
-read-only audit found two gaps that are invisible from a green run.
+**Verified 2026-08-14.** Notes for anyone changing the ZetaId bit layout. A
+2026-08-11 read-only audit found two gaps invisible from a green run; Gap 1
+(compare.ts ignoring `vectors.yaml`) closed in this slice.
 
 ## The byte-lock holds today
 
@@ -10,19 +11,26 @@ Checked directly, rather than inferred from CI being green: every `expected_hex`
 
 | oracle | expected_hex matched |
 |---|---|
-| TypeScript · F# · C# · Rust · Python · Go | **15 / 15** |
-| MUMPS | **13 / 15** — see below |
+| TypeScript · F# · C# · Rust · Python · Go | **16 / 16** |
+| MUMPS | **13 keys, not gated** — see Gap 2 |
 
-## Gap 1 — `compare.ts` does not read `vectors.yaml`
+## Gap 1 — `compare.ts` used to ignore `vectors.yaml`
 
-`compare.ts` compares the six committed output JSONs **against each other**, with TypeScript as
-reference. It never opens `vectors.yaml`.
+`compare.ts` used to compare the six committed output JSONs **against each
+other**, with TypeScript as reference. It never opened `vectors.yaml`.
 
-> **A fully stale but mutually consistent set of outputs passes cleanly.**
+> **A fully stale but mutually consistent set of outputs passed cleanly.**
 
-Green cross-verify is therefore *necessary, not sufficient*. The `expected_hex` byte-lock is asserted
-only by the per-language test suites, and only when those are actually run. After any layout change,
-run all six suites so each rewrites its output — do not rely on `compare.ts` to catch a missed one.
+That hole is closed. `compare.ts` now loads `vectors.yaml` via the YAML
+port and pins every present oracle's `hex` / `crockford` to
+`expected_hex` / `expected_crockford` (parse-reject oracles emit the
+`rejected` token; the yaml `expected_crockford` stays the illegal
+input). Green cross-verify is still *necessary, not sufficient* for a
+layout change — per-language suites still have to regenerate outputs —
+but a missed regen can no longer hide behind a consistent stale set.
+
+After any layout change, run all six suites so each rewrites its output
+— do not rely on `compare.ts` to regenerate a missed one.
 
 ## Gap 2 — MUMPS is not compared by anything
 
@@ -30,13 +38,20 @@ run all six suites so each rewrites its output — do not rely on `compare.ts` t
 test and no gate.** `mumps_zeta_id.m` is hand-rolled bit arithmetic with the layout hardcoded
 (`mumps_zeta_id.m:13-14`), so it can drift silently and indefinitely.
 
-**Its 13/15 is expected, not a defect.** The two it lacks are exactly the two degenerate vectors:
+**Its 13 keys are not a 13/16 match.** It lacks the four degenerate / edge
+vectors (`all-zero`, `max-128`, `overflow-reject-1`, `lenient-alias-1`) and
+still carries a stale `workitem-v1-standard` key that is not in
+`vectors.yaml`. That drift is invisible until someone reads this file —
+`compare.ts` still does not load `mumps-output.json`.
+
+The two degenerates that give **false confidence** in a layout change:
 
 - `all-zero` — packs to zero under *any* layout, so it constrains nothing;
 - `max-128` — built as all-ones directly in `cross-verify.ts:151-153` and never packed at all.
 
-Those are also the two that give **false confidence** in a layout change: they stay green no matter
-what happens to the field offsets. The 13 MUMPS does carry are the real pack vectors.
+If those are the only vectors still passing, the change is untested. The 12
+packed vectors MUMPS does carry are the real pack check — when someone next
+regenerates `mumps-output.json` by hand.
 
 ## If you are changing the layout
 
