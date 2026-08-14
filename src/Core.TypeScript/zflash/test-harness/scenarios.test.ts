@@ -153,11 +153,19 @@ describe("081KSNY2Z0008QG0R0008PN7RQ determineRunnability discriminator", () => 
     }
   });
 
-  it("cluster-joining → blocked-on-multi-vm-orchestration", () => {
+  it("cluster-joining reports the FIRST blocker (absent join), not the second", () => {
+    // Regression guard for a misdiagnosis that had propagated across
+    // scenarios.ts, run.ts and extensions.ts: the scenario was recorded as
+    // blocked on multi-VM orchestration, which reads as "fix the network and
+    // it is done". The prior blocker is that no join is implemented at all, so
+    // this verdict must name that one and point at the next.
     const s = findScenario("cluster-joining");
     if (!s) throw new Error("scenario missing");
     const verdict = determineRunnability(s, new Set());
-    expect(verdict.kind).toBe("blocked-on-multi-vm-orchestration");
+    expect(verdict.kind).toBe("blocked-on-absent-join-implementation");
+    if (verdict.kind === "blocked-on-absent-join-implementation") {
+      expect(verdict.nextBlocker).toBe("multi-vm-orchestration");
+    }
   });
 
   it("all scenarios resolve to a valid RunnabilityVerdict (exhaustiveness)", () => {
@@ -169,6 +177,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ determineRunnability discriminator", () => 
         case "can-run-now":
         case "blocked-on-upstream-gate":
         case "blocked-on-state-preservation":
+        case "blocked-on-absent-join-implementation":
         case "blocked-on-multi-vm-orchestration":
         case "blocked-on-test-harness-path-fork":
         case "requires-physical-usb":

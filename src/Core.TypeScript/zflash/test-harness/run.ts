@@ -798,21 +798,39 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
     case "scaffolded":
       if (scenario.id === "cluster-joining") {
         // NOT a pass — `skipped` names what happened (nothing ran) and the
-        // exit code now says so. multi-vm.ts already has a planner and an
-        // injected executor, but its boot args carry only per-VM
-        // `-netdev user` (SLIRP NAT, no shared bridge) and
-        // executeMultiVMRuntimePlan boots the VMs serially, so an
-        // "execution" here could not observe a real join. Wiring the
-        // dispatch before that is fixed would manufacture exactly the false
-        // green this status refuses to give.
+        // exit code says so.
+        //
+        // TWO blockers, and the order matters. This comment used to name only
+        // the second, which read as "fix QEMU networking and we are done".
+        //
+        // FIRST: there is no join to observe. The success contract is
+        // B0891_CLUSTER_JOIN_SERIAL_MARKERS, and nothing in the guest tree
+        // emits those strings — not zeta-install.sh, not any module under
+        // full-ai-cluster/nixos/ (k3s-server.nix still carries a
+        // "MULTI-NODE TODO: workers" note). The only thing in the repository
+        // that produces them is a mock serial log in multi-vm.test.ts.
+        // join-implementation-probe.ts checks this mechanically.
+        //
+        // SECOND: multi-vm.ts has a planner and an injected executor, but
+        // buildQemuSystemBootArgs emits only per-VM `-netdev user` (SLIRP NAT,
+        // no shared segment) and executeMultiVMRuntimePlan boots the VMs
+        // serially — terminating each on marker match, so the "existing" node
+        // is already dead before the joining node starts.
+        //
+        // Fixing only the second would turn an honest `skipped` into a
+        // `failed` timeout. Wiring the dispatch before both clear would
+        // manufacture exactly the false green this status refuses to give.
         return {
           id: "cluster-joining",
           status: "skipped",
           message:
-            "NOT RUN (counts as non-passing): multi-VM QEMU orchestration not yet automated — " +
-            "multi-vm.ts plans a shared-bridge topology that buildQemuSystemBootArgs does not emit, " +
-            "and executeMultiVMRuntimePlan boots the VMs serially; validates today only via " +
-            "extensions.ts design spec + operator-collaborative USB join",
+            "NOT RUN (counts as non-passing): no cluster join exists to observe — " +
+            "nothing under full-ai-cluster/ emits B0891_CLUSTER_JOIN_SERIAL_MARKERS " +
+            "(FIRST blocker; see join-implementation-probe.ts). Multi-VM QEMU " +
+            "orchestration is the SECOND blocker: buildQemuSystemBootArgs emits " +
+            "per-VM SLIRP NAT with no shared segment, and executeMultiVMRuntimePlan " +
+            "boots the VMs serially. Both must clear, in that order, before this " +
+            "scenario can honestly report passed or failed.",
         };
       }
       return reportScaffolded(scenario);

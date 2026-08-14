@@ -163,7 +163,7 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
     ],
     gates: [],
     notes:
-      "Requires multi-VM QEMU orchestration (one existing cluster VM + one joining VM). Existing harness is single-VM; multi-VM orchestration deferred to follow-up. PoC defines the contract.",
+      "TWO blockers, in order. FIRST: no join exists to observe — nothing under full-ai-cluster/ emits B0891_CLUSTER_JOIN_SERIAL_MARKERS, and k3s-server.nix still carries a MULTI-NODE TODO; the only producer of those strings in-repo is a mock serial log in multi-vm.test.ts. Checked mechanically by join-implementation-probe.ts. SECOND: multi-VM QEMU orchestration (one existing cluster VM + one joining VM) — buildQemuSystemBootArgs emits per-VM SLIRP NAT with no shared segment, and executeMultiVMRuntimePlan boots serially. Fixing only the second converts an honest skip into a timeout failure.",
   },
 ];
 
@@ -216,6 +216,15 @@ export type RunnabilityVerdict =
   | { kind: "can-run-now"; harnessEntry: string }
   | { kind: "blocked-on-upstream-gate"; missingGates: ReadonlyArray<ScenarioId> }
   | { kind: "blocked-on-state-preservation"; required: "tpm-equivalent" | "persisted-kv" }
+  // FIRST blocker for cluster-joining, and the ordering is load-bearing.
+  // Nothing in the guest tree emits B0891_CLUSTER_JOIN_SERIAL_MARKERS, so
+  // there is no join for any harness to observe — with or without a
+  // working network. Probed by join-implementation-probe.ts, whose
+  // tripwire test fails (good news) the day the guest starts emitting them.
+  | { kind: "blocked-on-absent-join-implementation"; nextBlocker: "multi-vm-orchestration" }
+  // SECOND blocker: buildQemuSystemBootArgs emits per-VM `-netdev user`
+  // (SLIRP NAT, no shared segment) and executeMultiVMRuntimePlan boots the
+  // VMs serially, terminating each one when its markers match.
   | { kind: "blocked-on-multi-vm-orchestration" }
   | { kind: "blocked-on-test-harness-path-fork" }
   | { kind: "requires-physical-usb" };
@@ -258,7 +267,8 @@ export function determineRunnability(
       if (scenario.id === "initial-format") {
         return {
           kind: "can-run-now",
-          harnessEntry: "src/Core.TypeScript/ci/qemu-boot-test.ts + src/Core.TypeScript/ci/audit-installer-iso-content.ts",
+          harnessEntry:
+            "src/Core.TypeScript/ci/qemu-boot-test.ts + src/Core.TypeScript/ci/audit-installer-iso-content.ts",
         };
       }
       if (scenario.id === "boot-cluster-up") {
@@ -300,8 +310,13 @@ export function determineRunnability(
         return { kind: "blocked-on-test-harness-path-fork" };
       }
       if (scenario.id === "cluster-joining") {
-        // Requires multi-VM QEMU orchestration per scenarios.ts notes
-        return { kind: "blocked-on-multi-vm-orchestration" };
+        // Reports the FIRST blocker, not the second. This used to return
+        // blocked-on-multi-vm-orchestration, which read as "fix the network
+        // and this scenario is done". It is not: with a shared L2 segment
+        // and concurrent boot the joining node would still emit nothing and
+        // time out, turning an honest `skipped` into a `failed`. Both
+        // blockers must clear, in this order, before the scenario dispatches.
+        return { kind: "blocked-on-absent-join-implementation", nextBlocker: "multi-vm-orchestration" };
       }
       // Default scaffolded blocker:
       return {
