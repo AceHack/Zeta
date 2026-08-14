@@ -121,6 +121,51 @@ export function assertNoSkipCi(message: string): { readonly error: string } | nu
 }
 
 /**
+ * The AgencySignature v1 block for a telemetry-lane flush commit.
+ *
+ * WHY THIS IS HERE AND NOT IN EACH WORKFLOW. Every lane that flushes through this
+ * tool (tick-metrics, society, red-state) commits on line ~201 below, so signing
+ * once here signs all of them and cannot drift between lanes the way three copies
+ * of an `echo` block would. Four cadence workflows already echo this block by hand;
+ * this is the same convention applied at the shared choke point.
+ *
+ * WHAT IT REPLACES. Before this, these lanes produced unsigned commits that the
+ * post-merge auditor could only let through via the explicit `MACHINE-LANE-EXEMPT`
+ * roster entry added in #10573. An exemption is a promise that provenance is
+ * established some other way; a signature establishes it directly. Signing shrinks
+ * the exemption surface toward zero, which is strictly better than defending it —
+ * these commits now classify CORRECT rather than exempt.
+ *
+ * Key spelling is `Agency-Signature-Version` — Agency, not Agent. The misspelled
+ * twin reached main three times in 2026-08 and was, until #10573, exempt AND
+ * unsigned at once.
+ *
+ * The block MUST be contiguous and terminal: git's trailer parser reads only the
+ * final blank-line-delimited paragraph, so a blank line inside the block silently
+ * drops everything above it (the Trailer Contiguity Survival Failure).
+ */
+export function agencySignatureBlock(lane: string): string {
+  return [
+    "Agency-Signature-Version: 1",
+    `Agent: ${lane}-flush-workflow`,
+    "Agent-Runtime: GitHub Actions",
+    "Agent-Model: bun + git + gh CLI",
+    "Credential-Identity: github-actions[bot]",
+    "Credential-Mode: dedicated-agent",
+    "Human-Review: not-implied-by-credential",
+    "Human-Review-Evidence: none",
+    "Action-Mode: autonomous-fail-open",
+    "Task: none",
+    "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  ].join("\n");
+}
+
+/** The flush commit message: the lane's subject, then the signature block, terminal. */
+export function signedFlushMessage(message: string, lane: string): string {
+  return `${message.trimEnd()}\n\n${agencySignatureBlock(lane)}\n`;
+}
+
+/**
  * Reset the working tree to `origin/main` and union in anything already parked on the
  * lane's staging branch.
  *
@@ -198,7 +243,14 @@ export function flush(opts: FlushOptions): number {
     return 0;
   }
 
-  const commit = git("commit", "--no-verify", "-m", opts.message);
+  // Signed at the choke point — see `agencySignatureBlock` for why here and not
+  // in each lane's workflow yaml.
+  const commit = git(
+    "commit",
+    "--no-verify",
+    "-m",
+    signedFlushMessage(opts.message, opts.lane),
+  );
   if (commit.status !== 0) {
     process.stderr.write(`flush-via-staging: commit failed: ${commit.stderr || commit.stdout}\n`);
     return 3;
@@ -218,12 +270,19 @@ export function flush(opts: FlushOptions): number {
   process.stdout.write(`[flush] ${opts.lane}: parked on ${ref}\n`);
 
   const title = `[skip-review][telemetry-flush] ${opts.message.split("\n")[0] ?? opts.lane}`;
+  // The BODY carries the signature too, and that is the load-bearing copy: these
+  // flushes land by SQUASH-MERGE, which uses the PR body as the commit message and
+  // discards the branch commit's own trailers. Signing only the commit above would
+  // produce a signed commit that arrives on `main` unsigned — the Squash-Merge
+  // Invariant, and the mechanism behind most of the 113 unsigned commits #10564
+  // measured. Block last, contiguous, nothing after it.
   const body =
     `**Reviewer bots: skip this PR.** Mechanically-generated telemetry flush for lane \`${opts.lane}\`.\n\n` +
     `Opened by \`src/Core.TypeScript/forge-host/github/flush-via-staging.ts\` because ruleset "CI Gate" ` +
     `makes \`gate (required)\` a required status check on \`main\` with no bypass actors — a direct push ` +
     `can no longer land, by design. Content is generated observational data, not factory logic.\n\n` +
-    `Paths: ${opts.paths.map((p) => `\`${p}\``).join(", ")}\n`;
+    `Paths: ${opts.paths.map((p) => `\`${p}\``).join(", ")}\n\n` +
+    `${agencySignatureBlock(opts.lane)}\n`;
 
   const result = openMergePR(opts.repo, ref, opts.base, title, body);
   if ("error" in result) {
