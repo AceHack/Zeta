@@ -1,0 +1,12 @@
+{
+  "pr_number": 10629,
+  "archive_path": "docs/history/pr-reviews/PR-10629-fix-hygiene-the-task-validator-rejected-the-repo-s-own-zetaid-and-57-of-real-usa.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T17:54:40.212Z",
+  "schema_version": "v1",
+  "commit_sha": "2fe3d2a36dcd02861b41040e7d53bd9c3e5b31c7",
+  "title": "fix(hygiene): the Task validator rejected the repo's own ZetaId and 57% of real usage",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T17:53:39Z",
+  "head_ref": "fix/task-regex-rejects-zetaids"
+}
