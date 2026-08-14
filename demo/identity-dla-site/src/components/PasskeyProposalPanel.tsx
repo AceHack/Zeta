@@ -116,7 +116,7 @@ export default function PasskeyProposalPanel() {
     try {
       const result = await submitAutomaticProposal({ capability, baseSha, payload });
       setState("submitted");
-      setMessage(`${result.message} Proposal ${result.proposalId.slice(0, 8)} is at ${result.issueUrl}.`);
+      setMessage(`${result.message} Proposal ${result.proposalId.slice(0, 8)} is staged for bounded Action review delivery.`);
     } catch (error) {
       setState("error");
       setMessage(error instanceof Error ? error.message : "Automatic proposal delivery failed.");
@@ -181,9 +181,9 @@ export default function PasskeyProposalPanel() {
               color: "#a7f3d0",
             }}
           >
-            <strong>Routine path: authorize once, then automate.</strong> A passkey authorizes one non-exportable
-            browser key; the loopback companion carries signed patches to the trusted verifier using the operator's
-            local GitHub login.
+            <strong>Routine path: authorize once, then automate.</strong> A reviewed passkey grants a short-lived
+            device capability; browser-local agents submit bounded patches directly to the trusted verifier. No
+            loopback companion, GitHub issue form, or browser-held repository key is involved.
           </div>
           <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap", marginBottom: "0.35rem" }}>
             <button
@@ -283,7 +283,7 @@ export default function PasskeyProposalPanel() {
           <div style={{ color: statusColor, fontSize: "0.48rem", marginTop: "0.32rem" }}>{message}</div>
           <div style={{ color: "#475569", fontSize: "0.44rem", marginTop: "0.25rem" }}>
             The executor rejects an unrecognized or revoked authority, stale base SHA, oversize/non-unified patch,
-            protected-path edit, replay, or origin/RP-ID mismatch. The local companion must be running on loopback.
+            protected-path edit, replay, or origin/RP-ID mismatch before creating any review branch.
           </div>
         </div>
       )}
