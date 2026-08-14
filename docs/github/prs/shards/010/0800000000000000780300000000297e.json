@@ -1,0 +1,12 @@
+{
+  "pr_number": 10622,
+  "archive_path": "docs/history/pr-reviews/PR-10622-handoff-heat-brief-for-vera-carry-the-wset-erasure-classification-into-the-heat-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T15:49:29.073Z",
+  "schema_version": "v1",
+  "commit_sha": "89556f36c20643c12e91e8bc58b54d0ca866d42f",
+  "title": "handoff(heat): brief for Vera — carry the WSet erasure classification into the heat types",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T15:48:48Z",
+  "head_ref": "handoff/heat-type-integration-vera"
+}
