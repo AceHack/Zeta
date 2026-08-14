@@ -15,6 +15,32 @@
  *
  * This is the injected effect (§13 metered door) — NOT an ambient mutable.
  * Same discipline as cost-counter.ts.
+ *
+ * ## What this module is, and is not (audited 2026-08-13)
+ *
+ * It is an **accounting ledger**: it counts bits against a floor in normalized units. It is
+ * **not a physical meter**: there is no joule, no temperature, and no instrument anywhere in it,
+ * and no quantity here has ever been measured against the world. A claim resting on this tracker
+ * is strictly weaker than one resting on a measurement, and treating the two as interchangeable
+ * is the physics-as-metaphor failure the metering test exists to catch
+ * (`.claude/rules/anchor-to-human-prior-art.md`).
+ *
+ * Three consequences of the current design, recorded rather than silently fixed, because callers
+ * are relying on the present behaviour:
+ *
+ * 1. **`verifyLandauer` cannot fail on the Landauer bound.** `bitsErased`, `heatPaid` and `floor`
+ *    are all the same field (`entropy_heat`), so `heatPaid >= floor` is `x >= x` — true by
+ *    construction. What `holds` actually reports is `entropy_heat >= 0 && second_law_satisfied`,
+ *    i.e. a non-negative-argument check. The name promises more than the arithmetic delivers.
+ * 2. **`measure(n)` accepts bits that were never admitted.** `measure(1_000_000)` on a fresh
+ *    tracker succeeds, leaving `entropy_state = -1_000_000`, and `second_law_satisfied` stays
+ *    `true` because the check is on the *sum*. Erasing what you never held is currently legal.
+ * 3. **`measure(n)` accepts negative `n`**, which un-pays heat and drives `entropy_heat` negative.
+ *
+ * `key-erasure-meter.ts` is the guarded path built over this one: it admits key material before it
+ * can be erased (so 2 cannot happen on that path), rejects non-positive bit counts (so 3 cannot),
+ * and keeps ledger bits, the derived `kT ln 2` bound, and an instrument measurement in three
+ * disjoint types so 1 cannot be mistaken for a physical verification.
  */
 
 // ─── The Two-Ledger Model ────────────────────────────────────────────────
@@ -111,8 +137,12 @@ export function createEntropyTracker(): EntropyTracker {
 export const LANDAUER_FLOOR_PER_BIT = 1; // 1 × kT·ln2 per bit (normalized units)
 
 /**
- * Verify: the heat paid is at least the Landauer floor.
- * This IS the cost contract for measurement/commit operations.
+ * Report the heat paid against the Landauer floor.
+ *
+ * **Read `holds` narrowly.** In normalized units the floor IS the heat (both are `entropy_heat`),
+ * so the comparison this name suggests is a tautology; `holds` is really "heat is non-negative and
+ * the second law survived". It is an accounting self-consistency check, not a verification that
+ * any physical bound was respected — nothing here measures energy. See the module header.
  */
 export function verifyLandauer(tracker: EntropyTracker): {
   holds: boolean;
