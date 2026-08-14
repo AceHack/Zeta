@@ -55,6 +55,48 @@ What is missing is the **label / translation half**: how the agreed structure de
 translation, and what to do when it does not determine it uniquely. That has no spec anywhere; the
 four-step protocol and Aaron's verbatim live only in `memory/`.
 
+## Progress — 2026-08-14 (the shadow), branch `shadow/eve-translation-layer-spec`
+
+Spec landed: `docs/research/2026-08-14-the-eve-translation-layer-computing-the-imposition-budget-for-the-dynamicvalue-shape-lattice.md`.
+Executable check landed: `src/Core.TypeScript/eve-translation/` (`aut-budget.ts`,
+`eve-invariant-table.json`, `aut-budget.test.ts`).
+
+**The measurement.** The `DynamicValue` shape lattice carries an imposition budget of
+**1.0000 bits (strict reading) / 0.0000 bits (role reading)**, and the residual bit is exactly the
+`Int`/`Bytes` transposition. The shipped claim it pays for is the **CBOR major-type assignment** —
+and the party spending it is **RFC 8949**, neither negotiating party. Ladder, brute-forced over
+`Sym(8)`: 40320 → 720 → 24 → 6 → 2 → 1, i.e. 15.2992 → 9.4919 → 4.5850 → 2.5850 → 1.0000 → 0.0000
+bits.
+
+**Ask status:**
+
+- **1 — done.** ETP-1, six steps, in the spec §4 (including retraction as a Z-set `−1` with the
+  invariant family as hub and the label log as satellite).
+- **2 — done.** `aut-budget.ts`; the number is above. Method: `Aut(S) ⊆ Stab(invariants)`, so only
+  an **upper bound** is computed — and an upper bound of 1 is *exact*, which is all rigidity needs.
+- **3 — done, tension confirmed quantitatively.** The bare 8-tag set (committing to nothing) is
+  `Sym(8)` = 15.2992 bits; four performable relations buy it down to 1.0000. Relations buy rigidity
+  and the exchange rate is now measurable. Not resolved, measured.
+- **5 — done.** Four planted defects, each a non-zero exit, control green (spec §5). The strongest
+  is defect **B**: adding a 9th tag (`Decimal`) with `Int`'s profile — which the shipped
+  doc-comment explicitly invites — pushes the budget 1 → 2.585 bits and un-forces the translation,
+  and nothing in the repo would previously have noticed. The 23 unit tests were themselves
+  mutation-tested (`preserves()` → `return true` kills 13 of 23).
+- **4 — STILL OPEN.** The non-isomorphic case (partial semiotic morphisms, Goguen's preservation
+  ordering) is untouched and is the largest remaining gap.
+- **6 — STILL OPEN.** `docs/SEED-VOCABULARY.md` as the live instance of the tension.
+
+**New open question this work produced:** rung 5 (`ordinal-sort-role`) is *contested* — `tryItem`
+takes an `int32` index while `DynamicValue.Int` carries `int64`. The shipped code does not settle
+whether Array's ordinal sort *is* the Int tag, and the answer decides whether the lattice is rigid
+or keeps one bit. Reported both ways rather than rounded.
+
+**Register unchanged:** `log₂|Aut|`-as-coercion is still **toy** and was deliberately NOT promoted.
+The four-oracle agreement looks like a falsifier and is not one — all four read the same seed, so it
+is one observation wearing four costumes. What would meter it is named in the spec §8.
+
+`DynamicValue.fs` and the golden vectors were not touched.
+
 ## Asks
 
 1. **Write the mechanism spec** for the label half and land it under `docs/` against
