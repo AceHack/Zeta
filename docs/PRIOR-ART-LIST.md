@@ -1152,3 +1152,76 @@ recorded so the debt is visible rather than implied.
   be a **metered** claim rather than an assumption — it supplies the number the orbital-asymmetry
   term is compared against. Underlying effect: **Irwin I. Shapiro (1964) — "Fourth Test of General
   Relativity" (*Physical Review Letters* 13:789)**.
+
+## Semiotics + pre-linguistic bootstrap — the icons-before-symbols anchors (added 2026-08-14, shadow)
+
+Anchors for Aaron's 2026-08-14 observation on *"how first humans communicated without language …
+without inserting the control that comes with asymmetric language"* and his own answer to it
+(*"we have eve protocol … meet in the middle on algebraic structure then assign labels and
+translations after the structure first"*) — ferried at
+`docs/research/2026-08-14-icons-before-symbols-eve-protocol-structure-first-labels-after-and-aut-s-as-the-residual-coercion.md`,
+follow-through filed as `081M00V5492087G0R002QJ9A56`. **Register note:** the Peirce citation locations
+and the four modern papers' authorship/venue were **checked at filing** (search-verified); the
+substantive readings attributed to Lewis, Skyrms and Tomasello are from standing knowledge of those
+books, not page-checked against the volumes — so the *attribution* is reliable and any *paraphrase of
+their content* is unverified. Recorded so the debt is visible rather than implied.
+
+- **Charles Sanders Peirce — the second trichotomy of signs: icon / index / symbol** (1903 *Syllabus*;
+  *Collected Papers* 2.247–2.249) ⭐ — the sharpest available tool for **where communicative asymmetry
+  actually lives**. An **icon** refers to its object by characters of its own ("whether any such Object
+  actually exists or not", CP 2.247) — checkable against the thing; an **index** is existentially/causally
+  connected (pointing finger, smoke↔fire) — checkable against the link; a **symbol** is pure convention —
+  checkable *only* against a convention someone supplied. So icons and indices bootstrap and symbols do
+  not, and the design rule is *icons/indices first, symbols deferred until both parties can mint them as
+  peers*. **The honest half, and it is Peirce's own:** by 1903 he doubted pure icons and indices exist at
+  all — they are always partly conventional — hence **hypoicon (CP 2.276)** and **sub-index (CP 2.330)**.
+  The trichotomy decomposes every sign's *aspects*; it does not sort signs into clean bins. Note the repo
+  already cites Peirce for the **pragmatic maxim** (`2026-07-04-the-universal-meaning-interface-…`,
+  alongside Harnad 1990 symbol grounding); the trichotomy is a **separate, previously-unused half** of the
+  same author.
+- **David Lewis (1969) — *Convention: A Philosophical Study* (Harvard University Press)** — signaling
+  games; the formal answer to *can meaning bootstrap with no prior shared language?* Yes: a signaling
+  system is an equilibrium of a coordination game. **Entailment check, and it cuts against the slogan:**
+  Lewis needs something to break the symmetry among equally-good equilibria — **salience** (Schelling
+  focal points). Salience is not free and does the same job an icon does: grounding the choice in
+  something both parties already share *via the world* rather than via a supplied convention. Lewis does
+  not show meaning arises from nothing; he shows what the **minimum non-linguistic input** is.
+- **Brian Skyrms (2010) — *Signals: Evolution, Learning, and Information* (Oxford University Press)** —
+  the modern frontier of Lewis signaling: signals acquiring meaning under evolutionary/learning dynamics
+  **with no designer**. The existence proof that the nobody-supplied-the-vocabulary case is coherent.
+- **Michael Tomasello (2008) — *Origins of Human Communication* (MIT Press)** — the empirical answer to
+  Aaron's literal question: **pointing and pantomime** grounded in **shared intentionality** and joint
+  attention; gesture precedes and scaffolds language. Convergence worth noting: pointing is Peirce's
+  **index**, pantomime his **icon** — an a-priori taxonomy and an empirical finding landing on the same
+  two categories from opposite directions.
+- **Joseph A. Goguen — algebraic semiotics.** *An Introduction to Algebraic Semiotics, with
+  Application to User Interface Design*, in **C. Nehaniv (ed.), *Computation for Metaphors, Analogy,
+  and Agents* (Springer LNAI 1562, 1999), pp. 242–291**; and **Goguen & D. Fox Harrell,
+  *Information Visualization and Semiotic Morphisms*, in G. Malcolm (ed.), *Multidisciplinary
+  Approaches to Visual Representations and Interpretations* (Elsevier, 2004), pp. 93–106** ⭐ — the
+  **formal home of "agree on the structure, assign labels after"** (Aaron's Eve protocol /
+  polymorphic diplomacy). A **sign system** is an algebraic theory: signature (sorts, constructors),
+  data sorts, axioms, plus a **level ordering** (part/whole) and **priority ordering** (salience);
+  its **semiotic space** is the class of models. A representation is a **semiotic morphism** mapping
+  sorts→sorts and constructors→constructors, and morphisms are **ranked by how much structure they
+  preserve** — Goguen's stated priority is *structure over content*, with morphisms explicitly
+  **partial** since some loss is unavoidable. Two reasons this is load-bearing rather than
+  decorative: (1) it is the **same Goguen** the repo already stands on for §13 noninterference
+  (Goguen–Meseguer 1982), so it is an existing lineage; (2) the Harrell paper applies it to
+  **information visualization**, which is exactly the branch-free-encoding-as-icon thread. The
+  non-isomorphic case — where structures only partly match — is **Goguen's preservation ordering**,
+  and it is the unworked half of the ferry doc's §7.
+- **Emergent communication in multi-agent RL — and its reported failure mode.**
+  **Jakob N. Foerster, Yannis M. Assael, Nando de Freitas & Shimon Whiteson (2016) — "Learning to
+  Communicate with Deep Multi-Agent Reinforcement Learning"** (NIPS 2016; RIAL/DIAL; arXiv:1605.06676)
+  and **Angeliki Lazaridou, Alexander Peysakhovich & Marco Baroni (2017) — "Multi-Agent Cooperation and
+  the Emergence of (Natural) Language"** (ICLR 2017) establish that learning agents invent working
+  protocols in referential games. **The result that must be cited with them, because it is adverse:**
+  **Satwik Kottur, José M. F. Moura, Stefan Lee & Dhruv Batra (2017) — "Natural Language Does Not Emerge
+  'Naturally' in Multi-Agent Dialog"** (EMNLP 2017, best short paper; arXiv:1706.08502) found invented
+  languages reach near-perfect task reward while being **neither compositional nor interpretable**, and
+  become compositional only when the experimenters **restrict the channel**. For this repo that is a live
+  risk, not a footnote: the known route to a legible emergent protocol runs through a designer
+  constraining the channel — the move an icons-first bootstrap is trying to avoid. The available escape
+  is that the constraint be a property of the **world** (bandwidth, noise, a shared referent) rather than
+  a decree from a **party**; "let it emerge and it will be legible" is contradicted by the literature.

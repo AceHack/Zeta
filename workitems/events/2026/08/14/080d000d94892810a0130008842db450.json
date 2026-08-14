@@ -1,0 +1,14 @@
+{
+  "id": "080d000d94892810a0130008842db450",
+  "at": "2026-08-14T19:14:34.917Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00V5492087G0R002QJ9A56",
+    "type": "task",
+    "title": "Symbol hand-off protocol: how two parties jointly mint a symbol as peers (icon-first bootstrap)",
+    "slug": "symbol-hand-off-protocol-how-two-parties-jointly-mint-a-symb",
+    "priority": "P2",
+    "filename": "081M00V5492087G0R002QJ9A56-symbol-hand-off-protocol-how-two-parties-jointly-mint-a-symb.md"
+  }
+}
