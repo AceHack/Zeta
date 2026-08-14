@@ -1,7 +1,7 @@
 {
   "schema": "zeta.society.event-index/v1",
-  "eventCount": 104,
-  "headDigest": "cf41ff06933a3fc408813f79bdc88be223a56323ac968ea14cc5c7283d19cc0e",
+  "eventCount": 108,
+  "headDigest": "8ca83e7753208c7bc5058dda247529e282e31516febd1a8a2cbd7d4c9be5fd29",
   "events": [
     {
       "id": "society-msm7luj6",
@@ -898,6 +898,42 @@
       "previousDigest": "138ee7488b2a97f692005857729267ab50cde67f1b880c25ad553aea4f36f778",
       "chainDigest": "cf41ff06933a3fc408813f79bdc88be223a56323ac968ea14cc5c7283d19cc0e",
       "sourceRevision": "1a2104873de73f4820249a48005b55df4b2a8bb9"
+    },
+    {
+      "id": "society-msszlu3z",
+      "at": "2026-08-14T13:32:53.808Z",
+      "file": "society-msszlu3z.json",
+      "eventDigest": "ed5dffa71a1a131cd7f66910cc76c561bc8c82d65970160969607f78d5f85876",
+      "previousDigest": "cf41ff06933a3fc408813f79bdc88be223a56323ac968ea14cc5c7283d19cc0e",
+      "chainDigest": "610ea8eb9cf2c923c787088b24b2c93717faece15a08f884c28e38eb4ce1d225",
+      "sourceRevision": "660514bec7069985279e5beb54b54f18309e1760"
+    },
+    {
+      "id": "society-mst1j5n4",
+      "at": "2026-08-14T14:26:48.017Z",
+      "file": "society-mst1j5n4.json",
+      "eventDigest": "1331086fa061624ca5cf263cc1b287239434a022ab4a75a74561c5b2f264cf1b",
+      "previousDigest": "610ea8eb9cf2c923c787088b24b2c93717faece15a08f884c28e38eb4ce1d225",
+      "chainDigest": "86dc90de20bd9356f1cdb809f76ec29ba58de6dcf5c7578b71f7abc6f6321fc8",
+      "sourceRevision": "24b76ac90e18462cbb738ed6c321f5b642689f52"
+    },
+    {
+      "id": "society-mst2ex57",
+      "at": "2026-08-14T14:51:29.996Z",
+      "file": "society-mst2ex57.json",
+      "eventDigest": "09c29fbcd0816ec34acf32b7fcad34bb2da741ec525e0a65dbbdae2a022a353c",
+      "previousDigest": "86dc90de20bd9356f1cdb809f76ec29ba58de6dcf5c7578b71f7abc6f6321fc8",
+      "chainDigest": "228457b6d285165dbe77a3e6ea90c9d41d5f11dbc1993db2dd466447a09cf6ed",
+      "sourceRevision": "724f599e888e5817ca1aaa9cc524b2ca68084b5f"
+    },
+    {
+      "id": "society-mst30fb3",
+      "at": "2026-08-14T15:08:13.312Z",
+      "file": "society-mst30fb3.json",
+      "eventDigest": "e9e1168f8135f305bd4c21f7ec05870e1de355e9a6e4692f269270e60aac8f3e",
+      "previousDigest": "228457b6d285165dbe77a3e6ea90c9d41d5f11dbc1993db2dd466447a09cf6ed",
+      "chainDigest": "8ca83e7753208c7bc5058dda247529e282e31516febd1a8a2cbd7d4c9be5fd29",
+      "sourceRevision": "2d2210a3fbffb3d1fdf4a198ea506309c566dd89"
     }
   ]
 }
