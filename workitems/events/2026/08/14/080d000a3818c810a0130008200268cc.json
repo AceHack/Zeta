@@ -1,0 +1,14 @@
+{
+  "id": "080d000a3818c810a0130008200268cc",
+  "at": "2026-08-14T17:17:06.201Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00ME0RR087G0R003TWRW39",
+    "type": "task",
+    "title": "FROST resharing without reconstitution + two-quorum custody contracts (n-of-m human/agent recovery)",
+    "slug": "frost-resharing-without-reconstitution-two-quorum-custody-co",
+    "priority": "P2",
+    "filename": "081M00ME0RR087G0R003TWRW39-frost-resharing-without-reconstitution-two-quorum-custody-co.md"
+  }
+}
