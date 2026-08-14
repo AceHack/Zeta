@@ -10,14 +10,26 @@
  * are kept in sync.
  *
  * Usage:
- *   bun tools/hygiene/check-no-op-cadence-pattern.ts
+ *   bun src/Core.TypeScript/hygiene/check-no-op-cadence-pattern.ts
+ *   bun src/Core.TypeScript/hygiene/check-no-op-cadence-pattern.ts --enforce
  *
  * Env vars (parity with bash version):
  *   NO_OP_CHECK_WINDOW=7        — window size (last N shards)
  *   NO_OP_CHECK_THRESHOLD=5     — minimal-observation threshold
  *   NO_OP_CHECK_GAP_MINUTES=15  — shard-density gap threshold
  *
- * Exit code: always 0 (informational only; never blocks the tick).
+ * Exit codes:
+ *   0 — no detection, or detection in the default advisory mode
+ *   1 — detection AND `--enforce` (opt-in; not a required gate)
+ *   2 — unknown argument / usage error
+ *
+ * WHY `--enforce` IS OPT-IN (081M0085XQT087G0R003W4KFS4). Until 2026-08-14
+ * this process exited 0 on every path, including both detections. The
+ * warnings existed; the exit code did not. Making detection fatal by
+ * default would promote an uncalibrated heuristic to a blocking gate.
+ * `--enforce` is the reversible middle: the exit code CAN carry the
+ * answer, and nothing arms it as a required check until the false-positive
+ * rate is measured against real `docs/hygiene-history/ticks/` history.
  */
 
 import { readdirSync, readFileSync, existsSync } from "node:fs";
@@ -239,24 +251,57 @@ export function runCheck(repoRoot: string, args: CheckArgs): CheckResult {
   };
 }
 
-export function main(): number {
-  const repoRoot = findRepoRoot();
-  process.chdir(repoRoot);
+export type CliParse =
+  | { readonly kind: "run"; readonly enforce: boolean }
+  | { readonly kind: "help" }
+  | { readonly kind: "error"; readonly message: string };
 
-  const args: CheckArgs = {
-    windowSize: parsePositiveInt("NO_OP_CHECK_WINDOW", 7),
-    threshold: parsePositiveInt("NO_OP_CHECK_THRESHOLD", 5),
-    gapThresholdMinutes: parsePositiveInt("NO_OP_CHECK_GAP_MINUTES", 15),
-    now: new Date(),
-  };
+/**
+ * Closed flag set. Unknown args are fatal so a mistyped `--enforce` cannot
+ * silently fall back to advisory (the original defect in argv form).
+ */
+export function parseCli(argv: readonly string[]): CliParse {
+  let enforce = false;
+  for (const arg of argv) {
+    if (arg === "--enforce") {
+      enforce = true;
+      continue;
+    }
+    if (arg === "-h" || arg === "--help") return { kind: "help" };
+    return { kind: "error", message: "unknown arg: " + arg };
+  }
+  return { kind: "run", enforce };
+}
 
-  const result = runCheck(repoRoot, args);
+/** Either detection the warnings already name. */
+export function detected(result: CheckResult): boolean {
+  return result.thresholdHit || result.gapHit;
+}
 
+/**
+ * The exit code the process should carry.
+ *
+ * THIS IS THE WHOLE FIX. The warnings already fire; until 081M0085XQT they
+ * fell through to `return 0`. Advisory mode keeps that (the heuristic is
+ * uncalibrated). `--enforce` is what makes the check *able* to fail.
+ *
+ * MUTATION: if this function always returns 0, or if `enforce &&` is dropped
+ * so advisory mode also exits 1, the paired tests go red. That is the
+ * falsifier the work-item required.
+ */
+export function exitStatus(result: CheckResult, enforce: boolean): number {
+  return enforce && detected(result) ? 1 : 0;
+}
+
+export const USAGE =
+  "Usage: bun src/Core.TypeScript/hygiene/check-no-op-cadence-pattern.ts [--enforce]\n";
+
+export function printReport(result: CheckResult, args: CheckArgs): void {
   if (result.totalShards === 0) {
     console.error(
       `[no-op-check] No shards in window for today or yesterday; nothing to check.`
     );
-    return 0;
+    return;
   }
 
   console.error(
@@ -351,8 +396,58 @@ export function main(): number {
       );
     }
   }
+}
 
-  return 0;
+/**
+ * Slide `now` across a list of instants and count how often the threshold
+ * heuristic fires. Empty windows are skipped so a day with no shards cannot
+ * inflate the denominator as "healthy".
+ *
+ * This is the calibration the work-item required before anyone arms
+ * `--enforce` as a required gate. It measures the surface the detector
+ * actually reads (`docs/hygiene-history/ticks/`).
+ */
+export function measureThresholdFires(
+  repoRoot: string,
+  sampleNows: readonly Date[],
+  base: Omit<CheckArgs, "now">,
+): { readonly windows: number; readonly fires: number } {
+  let windows = 0;
+  let fires = 0;
+  for (const now of sampleNows) {
+    const result = runCheck(repoRoot, { ...base, now });
+    if (result.totalShards === 0) continue;
+    windows += 1;
+    if (result.thresholdHit) fires += 1;
+  }
+  return { windows, fires };
+}
+
+export function runCli(repoRoot: string, parsed: Extract<CliParse, { kind: "run" }>): number {
+  const args: CheckArgs = {
+    windowSize: parsePositiveInt("NO_OP_CHECK_WINDOW", 7),
+    threshold: parsePositiveInt("NO_OP_CHECK_THRESHOLD", 5),
+    gapThresholdMinutes: parsePositiveInt("NO_OP_CHECK_GAP_MINUTES", 15),
+    now: new Date(),
+  };
+  const result = runCheck(repoRoot, args);
+  printReport(result, args);
+  return exitStatus(result, parsed.enforce);
+}
+
+export function main(argv: readonly string[] = process.argv.slice(2)): number {
+  const parsed = parseCli(argv);
+  if (parsed.kind === "help") {
+    process.stdout.write(USAGE);
+    return 0;
+  }
+  if (parsed.kind === "error") {
+    process.stderr.write(parsed.message + "\n" + USAGE);
+    return 2;
+  }
+  const repoRoot = findRepoRoot();
+  process.chdir(repoRoot);
+  return runCli(repoRoot, parsed);
 }
 
 if (import.meta.main) {

@@ -1,11 +1,12 @@
 ---
 id: 081M0085XQT087G0R003W4KFS4
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: check-no-op-cadence-pattern-detects-the-standing-by-failure
 title: "check-no-op-cadence-pattern detects the standing-by failure and returns 0 on every path"
 created: 2026-08-14T13:42:58.042Z
+completed: 2026-08-14T15:26:40.700Z
 depends_on: []
 composes_with: []
 ---
@@ -93,6 +94,13 @@ fail without asserting a threshold nobody has calibrated — and because the
 calibration is then itself measurable. Per `toy-is-free-metered-must-be-earned`,
 this detector is currently **unmetered**: implemented, used, never falsified.
 
+## Pre-start checklist
+
+- **Substrate-drift:** primary artefact `src/Core.TypeScript/hygiene/check-no-op-cadence-pattern.ts` exists. Acceptance bullets are **not** met — `main()` still returns 0 on every path, no `--enforce`, no test file, no workflow invocation. This is work, not drift. #10595 filed the item only.
+- **Prior-art search:** in-repo `--enforce` pattern already exists (`audit-orphan-role-refs.ts`, `check-bash-retirement-inventory.ts`, `audit-memory-references.ts`): default advisory, `--enforce` makes detection fatal, unknown flags rejected. Same shape here. No competing PR or `origin/claim/*` for this id.
+- **Depends-on:** none. Composes with 081M003VH9B087G0R002WXK2HD (sibling vacuity, already closed).
+- **Calibration surface honesty:** the detector reads `docs/hygiene-history/ticks/`, not `docs/agent-heartbeats/`. Measuring against the latter would be a check of a different filename schema. Measure against the surface the heuristic actually classifies.
+
 ## Acceptance
 
 - A planted tick history exhibiting the pattern makes the check report failure
@@ -102,6 +110,32 @@ this detector is currently **unmetered**: implemented, used, never falsified.
   shard history before any blocking mode is armed.
 - If it stays advisory, it is invoked somewhere that reads it — an advisory
   nothing runs is the same defect in a quieter register.
+
+## Resolution (2026-08-14)
+
+Option (2) landed. `parseCli` / `exitStatus` / `detected` make the exit
+code *able* to carry a detection. Default remains advisory (exit 0).
+`--enforce` exits 1 on threshold or gap. Unknown flags exit 2.
+
+- Falsifier: `check-no-op-cadence-pattern.test.ts`. A planted 5-of-7
+  short-body window + `--enforce` is 1; the same window without the
+  flag is 0; a healthy 7-of-7 long-body window is 0 either way.
+  Removing `enforce &&` or forcing `return 0` turns those tests red.
+- Calibration, measured not asserted: May 2026, 18:00Z sample,
+  `docs/hygiene-history/ticks/` (the surface the heuristic actually
+  reads). **30 windows, 23 fires, rate 0.767.** That is why
+  `--enforce` is not a required gate — promoting an uncalibrated
+  heuristic that fires on three-quarters of a dense month would be a
+  different act from repairing the vacuity.
+- Invocation: the new test file runs in
+  `bun test src/Core.TypeScript/hygiene/` (gate job
+  "lint (bash retirement inventory + hygiene unit tests)").
+  `docs/AUTONOMOUS-LOOP.md` Check 0a now points at the real path
+  (`src/Core.TypeScript/hygiene/…`, not the deleted
+  `tools/hygiene/…`) so a tick-start agent can actually run it.
+
+`--enforce` is **not** added to branch protection or `gate.yml`.
+Arming it is a later call that uses the 0.767 measurement.
 
 ## Pointers
 

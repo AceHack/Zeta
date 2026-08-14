@@ -219,13 +219,16 @@ wait for instruction. Priority ladder:
 
    ```
    bun tools/authorization/check-authorization.ts
-   bun tools/hygiene/check-no-op-cadence-pattern.ts
+   bun src/Core.TypeScript/hygiene/check-no-op-cadence-pattern.ts
    grep -rE "CADENCE-TRACK" docs/hygiene-history/ticks/
    ```
 
    **Check 0a — no-op-cadence**: examines last 7 tick-shards;
    warns if ≥5 are minimal-observation OR most-recent >15 min
-   old. On warn: write a substantive shard OR do real work,
+   old. Default is advisory (exit 0 either way). `--enforce`
+   makes a detection fatal; it is opt-in and not a required
+   gate until the heuristic is calibrated (081M0085XQT087G0R003W4KFS4).
+   On warn: write a substantive shard OR do real work,
    not acknowledgment-only.
 
    **Check 0b — cadence-tracker**: shards mark `CADENCE-TRACK:
