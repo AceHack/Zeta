@@ -436,8 +436,38 @@ jobs:
           # REST list response already carries `auto_merge` — which the GraphQL path did not
           # give us anyway. Rate-limit budgets are separate per API and the GraphQL one is what
           # binds us.
+          # SCOPE — automation branches ONLY, and this is load-bearing.
+          #
+          # This step is titled "agent-to-agent value transfer" and exists for terminal
+          # bookkeeping: PR-review archives and telemetry flushes. It was never scoped to that
+          # in code, and while the selection was newest-first that omission LOOKED harmless —
+          # the newest open PRs are almost always the bookkeeping ones, so the unfiltered
+          # selection happened to land on them.
+          #
+          # Inverting to oldest-first (the starvation fix above) turned that latent hole into a
+          # live one, aimed at the worst possible target. The OLDEST unarmed PRs are precisely
+          # the ones a human or a reviewing agent deliberately left unarmed pending review.
+          # Caught 2026-08-14T13:46Z with the next three selections being an unreviewed
+          # passkey-authorization PR, an unreviewed FROST signing change carrying a P0 CSPRNG
+          # fix, and an exact-arithmetic carrier — i.e. a heartbeat was one step from arming
+          # auto-merge on security-class changes nobody had read. Draft status held them off
+          # (see the `.draft` filter) but draft is a human convention, not a guard.
+          #
+          # So the guard is the branch name, matched against the prefixes THIS repo's
+          # automation actually pushes. A substantive change never lives on those branches, so
+          # it can never be selected here regardless of age, review state, or who forgot to
+          # mark something draft. Fail-closed: an unrecognised branch is not auto-merged.
+          #
+          # If a new automation lane is added, add its prefix here DELIBERATELY. That one-line
+          # diff is the whole cost, and it is the correct place to think about whether that
+          # lane's output should merge without a human.
           CANDIDATES=$(gh api "repos/{owner}/{repo}/pulls?state=open&per_page=100" \
-            --jq '[.[] | select(.auto_merge == null) | select(.draft == false)]
+            --jq '[.[]
+                   | select(.auto_merge == null)
+                   | select(.draft == false)
+                   | select(.head.ref
+                            | startswith("automation/pr-archive-")
+                              or startswith("heartbeat/"))]
                   | sort_by(.created_at) | .[].number' 2>/dev/null)
           if [ -z "$CANDIDATES" ]; then
             echo "[merge] No unarmed PRs — the queue is caught up."
