@@ -14,6 +14,7 @@ import type {
   BrowserDatabaseIntentOutboxPort,
   BrowserDatabaseIntentReadout,
 } from "../browser-node/browser-database-intent-outbox";
+import { createNativeBrowserLifecyclePort } from "../browser-node/browser-lifecycle-host";
 import {
   createZetaDbBrowserDatabaseReceiptArchive,
   type BrowserDatabaseReceiptArchiveExecutor,
@@ -33,6 +34,7 @@ import {
   type BrowserDatabaseReceiptBroadcastPeerLinkReadout,
   type BrowserDatabaseReceiptBroadcastPeerLinkRuntime,
 } from "../browser-node/browser-database-receipt-broadcast-peer-link";
+import type { BrowserDatabaseReceiptSyncRuntime } from "../browser-node/browser-database-receipt-sync-runtime";
 import { openNativeIndexedDbDatabaseIntentOutbox } from "../browser-node/browser-indexeddb-database-intent-outbox";
 import { createNativeBrowserExecutionAdmission } from "../browser-node/browser-web-lock-execution-admission";
 import {
@@ -85,9 +87,16 @@ import {
   type DarkHallBrowserDatabaseRowSelectionResult,
   type DarkHallBrowserDatabaseRowSelectionRuntime,
 } from "./darkhall-browser-database-row-selection";
+import {
+  DARK_HALL_BROWSER_RECEIPT_SYNC_CONTROL_MOUNT_ID,
+  renderDarkHallBrowserReceiptSyncControlHtml,
+  startDarkHallBrowserReceiptSyncControl,
+  type DarkHallBrowserReceiptSyncControlReadout,
+  type DarkHallBrowserReceiptSyncControlRuntime,
+} from "./darkhall-browser-receipt-sync-control";
 import { renderDarkHallRoomHtml, type RoomRunTranscript } from "./darkhall-room";
 
-export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v9" as const;
+export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v10" as const;
 export const DARK_HALL_BROWSER_PAGE_GLOBAL = "__zetaDarkHallPage" as const;
 export const DARK_HALL_BROWSER_PAGE_MOUNT_ID = "darkhall-room" as const;
 
@@ -108,6 +117,10 @@ export interface DarkHallBrowserPageFeedback {
     | "page-database-hydration-failed"
     | "page-database-stop-failed"
     | "page-database-receipt-peer-stop-failed"
+    | "page-database-receipt-sync-unavailable"
+    | "page-database-receipt-sync-start-failed"
+    | "page-database-receipt-sync-operation-failed"
+    | "page-database-receipt-sync-stop-failed"
     | "page-editor-start-failed"
     | "page-editor-stop-failed"
     | "page-selection-start-failed"
@@ -135,6 +148,7 @@ export interface DarkHallBrowserPageReadout {
   readonly database: DarkHallDatabaseReadout;
   readonly receiptHandoff: BrowserDatabaseReceiptHandoffReadout | null;
   readonly receiptPeer: BrowserDatabaseReceiptBroadcastPeerLinkReadout | null;
+  readonly receiptSync: DarkHallBrowserReceiptSyncControlReadout | null;
   readonly controller: DarkHallBrowserDatabaseControllerReadout | null;
   readonly editor: DarkHallBrowserRowCommandEditorReadout;
   readonly selection: DarkHallBrowserDatabaseRowSelectionReadout;
@@ -154,6 +168,8 @@ export interface DarkHallBrowserPageRuntime {
     rowKey: string,
     source: DarkHallBrowserControllerInputSource,
   ): DarkHallBrowserDatabaseRowSelectionResult<DarkHallBrowserDatabaseRowSelectionReadout>;
+  submitDatabaseReceipts(): Promise<DarkHallBrowserPageResult<DarkHallBrowserPageReadout>>;
+  pollDatabaseReceiptAcceptance(): Promise<DarkHallBrowserPageResult<DarkHallBrowserPageReadout>>;
   stop(): DarkHallBrowserPageResult<DarkHallBrowserPageReadout>;
 }
 
@@ -185,6 +201,8 @@ export interface NativeDarkHallBrowserPageOptions {
   readonly databaseReceiptHandoffLimits?: BrowserDatabaseReceiptHandoffLimits;
   readonly databaseReceiptHandoffTargetLimits?: ZetaDbTickLimits;
   readonly databaseReceiptHandoffTargetExecutor?: BrowserDatabaseReceiptArchiveExecutor;
+  readonly databaseReceiptSync?: BrowserDatabaseReceiptSyncRuntime;
+  readonly databaseReceiptSyncMountId?: string;
   readonly databaseReceiptPeerId?: string;
   readonly databaseReceiptPeerChannelName?: string;
   readonly databaseReceiptPeerInitialSequence?: number;
@@ -217,7 +235,7 @@ interface PagePeerDarkRecovery {
 export const DARK_HALL_BROWSER_PAGE_TRANSCRIPT: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
   roomName: "dark hall browser node",
-  seed: "browser-page-v9",
+  seed: "browser-page-v10",
   generatedBy: "darkhall-browser-page",
   controller: DARK_HALL_BROWSER_DATABASE_ACTIONS.map((action) => ({
     cell: action.cell,
@@ -372,7 +390,11 @@ function initialSequence(value: string | null): DarkHallBrowserPageResult<number
     : failed("page-configuration-invalid", "The browser page sequence must be a non-negative safe integer.");
 }
 
-function pageElement(documentValue: unknown, elementId: string): DarkHallBrowserPageResult<unknown> {
+function pageElement(
+  documentValue: unknown,
+  elementId: string,
+  description = "row command editor",
+): DarkHallBrowserPageResult<unknown> {
   const getElementById = method(documentValue, "getElementById");
   if (getElementById === null) {
     return failed("page-document-unavailable", "The active browser page does not expose document.getElementById.");
@@ -380,10 +402,10 @@ function pageElement(documentValue: unknown, elementId: string): DarkHallBrowser
   try {
     const value = Reflect.apply(getElementById, documentValue, [elementId]);
     return value === null || value === undefined
-      ? failed("page-editor-start-failed", `The active browser page is missing row command editor #${elementId}.`)
+      ? failed("page-editor-start-failed", `The active browser page is missing ${description} #${elementId}.`)
       : succeeded(value);
   } catch {
-    return failed("page-editor-start-failed", "The browser threw while locating the row command editor.");
+    return failed("page-editor-start-failed", `The browser threw while locating the ${description}.`);
   }
 }
 
@@ -619,6 +641,14 @@ function selectPageDatabaseReceiptHandoff(
 ): DarkHallBrowserPageResult<PageDatabaseReceiptHandoffSelection> {
   const peerId = pageReceiptPeerId(options, configuration);
   if (!peerId.ok) return peerId;
+  if (options.databaseReceiptSync !== undefined) {
+    return options.databaseReceiptHandoff === undefined && peerId.value === null
+      ? succeeded({ runtime: null, peer: null })
+      : failed(
+          "page-configuration-invalid",
+          "Signed receipt synchronization cannot share the page with a direct receipt handoff or receipt peer.",
+        );
+  }
   if (options.databaseReceiptHandoff !== undefined) {
     return peerId.value === null
       ? succeeded({ runtime: options.databaseReceiptHandoff, peer: null })
@@ -781,6 +811,42 @@ function optionalReceiptHandoff(receiptHandoff: BrowserDatabaseReceiptHandoffRun
   readonly receiptHandoff?: BrowserDatabaseReceiptHandoffRuntime;
 } {
   return receiptHandoff === null ? {} : { receiptHandoff };
+}
+
+function startPageDatabaseReceiptSync(
+  options: NativeDarkHallBrowserPageOptions,
+  configuration: NativePageConfiguration,
+): DarkHallBrowserPageResult<DarkHallBrowserReceiptSyncControlRuntime | null> {
+  if (options.databaseReceiptSync === undefined) return succeeded(null);
+  const mountId = identifier(
+    options.databaseReceiptSyncMountId ?? null,
+    DARK_HALL_BROWSER_RECEIPT_SYNC_CONTROL_MOUNT_ID,
+  );
+  if (!mountId.ok) return mountId;
+  const mount = pageElement(configuration.context.document, mountId.value, "receipt synchronization control");
+  if (!mount.ok) {
+    return failed("page-database-receipt-sync-start-failed", mount.feedback.detail, mount.feedback.severity);
+  }
+  const lifecycle = createNativeBrowserLifecyclePort(configuration.root);
+  if (!lifecycle.ok) {
+    return failed(
+      "page-database-receipt-sync-start-failed",
+      `${lifecycle.feedback.code}: ${lifecycle.feedback.detail}`,
+      lifecycle.feedback.severity,
+    );
+  }
+  const control = startDarkHallBrowserReceiptSyncControl({
+    mount: mount.value,
+    lifecycle: lifecycle.value,
+    synchronization: options.databaseReceiptSync,
+  });
+  return control.ok
+    ? succeeded(control.value)
+    : failed(
+        "page-database-receipt-sync-start-failed",
+        `${control.feedback.code}: ${control.feedback.detail}`,
+        control.feedback.severity,
+      );
 }
 
 function createPagePeerDarkRecovery(context: NativePageContext, localTabId: string): PagePeerDarkRecovery {
@@ -1390,6 +1456,22 @@ export async function startNativeDarkHallBrowserPage(
     );
   }
   const input: DarkHallBrowserControllerInputRuntime = inputStarted.value;
+  const receiptSyncStarted = startPageDatabaseReceiptSync(options, configuration.value);
+  if (!receiptSyncStarted.ok) {
+    receiptPeer?.close();
+    input.stop();
+    selection.stop();
+    editor.stop();
+    controller.stop();
+    database.stop();
+    pwa.browser.host.stop();
+    context.mount.setStatus(
+      pageStatusFromSeverity(receiptSyncStarted.feedback.severity),
+      receiptSyncStarted.feedback.code,
+    );
+    return receiptSyncStarted;
+  }
+  const receiptSync = receiptSyncStarted.value;
 
   let status: DarkHallBrowserPageStatus = "live";
   if (
@@ -1398,6 +1480,7 @@ export async function startNativeDarkHallBrowserPage(
     !context.mount.setAttribute("data-browser-transport", pwa.browser.transport.selected) ||
     !context.mount.setAttribute("data-browser-tab", tabId)
   ) {
+    receiptSync?.stop();
     receiptPeer?.close();
     input.stop();
     selection.stop();
@@ -1420,18 +1503,66 @@ export async function startNativeDarkHallBrowserPage(
     database: latestDatabase ?? hydratedDatabase,
     receiptHandoff: database.readReceiptHandoff(),
     receiptPeer: receiptPeer?.read() ?? null,
+    receiptSync: receiptSync?.read() ?? null,
     controller: latestController,
     editor: editor.read(),
     selection: selection.read(),
     input: input.read(),
   });
+  if (receiptSync !== null) void receiptSync.pollAcceptance("startup");
 
   return succeeded({
     read,
     dispatchController: (command) => controller.dispatch(command),
     dispatchControllerInput: (cell, source) => input.dispatchCell(cell, source),
     selectDatabaseRow: (rowKey, source) => selection.select(rowKey, source),
+    submitDatabaseReceipts: async () => {
+      if (receiptSync === null) {
+        return failed(
+          "page-database-receipt-sync-unavailable",
+          "The active page has no injected receipt synchronization port.",
+          "backpressure",
+        );
+      }
+      const submitted = await receiptSync.submitFromUserActivation();
+      if (submitted.ok) return succeeded(read());
+      context.mount.setStatus(pageStatusFromSeverity(submitted.feedback.severity), submitted.feedback.code);
+      return failed(
+        "page-database-receipt-sync-operation-failed",
+        `${submitted.feedback.code}: ${submitted.feedback.detail}`,
+        submitted.feedback.severity,
+      );
+    },
+    pollDatabaseReceiptAcceptance: async () => {
+      if (receiptSync === null) {
+        return failed(
+          "page-database-receipt-sync-unavailable",
+          "The active page has no injected receipt synchronization port.",
+          "backpressure",
+        );
+      }
+      const polled = await receiptSync.pollAcceptance();
+      if (polled.ok) return succeeded(read());
+      context.mount.setStatus(pageStatusFromSeverity(polled.feedback.severity), polled.feedback.code);
+      return failed(
+        "page-database-receipt-sync-operation-failed",
+        `${polled.feedback.code}: ${polled.feedback.detail}`,
+        polled.feedback.severity,
+      );
+    },
     stop: () => {
+      const receiptSyncStopped = receiptSync?.stop();
+      if (receiptSyncStopped !== undefined && !receiptSyncStopped.ok) {
+        context.mount.setStatus(
+          pageStatusFromSeverity(receiptSyncStopped.feedback.severity),
+          receiptSyncStopped.feedback.code,
+        );
+        return failed(
+          "page-database-receipt-sync-stop-failed",
+          `${receiptSyncStopped.feedback.code}: ${receiptSyncStopped.feedback.detail}`,
+          receiptSyncStopped.feedback.severity,
+        );
+      }
       const inputStopped = input.stop();
       if (!inputStopped.ok) {
         receiptPeer?.close();
@@ -1532,6 +1663,7 @@ export function renderDarkHallBrowserNodeDocument(): string {
     "</head>",
     '<body data-browser-page="active">',
     '<nav class="zeta-room-nav"><a href="./">&larr; static room</a><span>active browser node</span></nav>',
+    renderDarkHallBrowserReceiptSyncControlHtml(),
     renderDarkHallBrowserRowCommandEditorHtml(),
     `<main id="${DARK_HALL_BROWSER_PAGE_MOUNT_ID}" data-pwa-status="starting" data-database-outbox-admission="open" data-database-outbox-queued="0" data-database-outbox-executing="0" data-database-outbox-settled="0" data-database-outbox-refused="0" data-database-outbox-bytes="0" data-database-outbox-latest-status="none" data-database-outbox-latest-intent="none" data-database-outbox-latest-revision="none" data-database-peer-receipt-status="none" data-database-peer-receipt-intent="none" data-database-peer-receipt-revision="none" data-database-peer-receipt-source="none" data-database-outbox-recovery="idle" aria-live="polite">`,
     renderDarkHallRoomHtml(DARK_HALL_BROWSER_PAGE_TRANSCRIPT),

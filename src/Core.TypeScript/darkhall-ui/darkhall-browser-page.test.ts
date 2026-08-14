@@ -4,6 +4,10 @@ import {
   type BrowserDatabaseIntentOutboxPort,
 } from "../browser-node/browser-database-intent-outbox";
 import type { BrowserDatabaseReceiptArchivePort } from "../browser-node/browser-database-receipt-archive";
+import type {
+  BrowserDatabaseReceiptSyncReadout,
+  BrowserDatabaseReceiptSyncRuntime,
+} from "../browser-node/browser-database-receipt-sync-runtime";
 import { BROWSER_TAB_COORDINATOR_SCHEMA, type BrowserTabChannelMessage } from "../browser-node/browser-tab-coordinator";
 import { SLOT } from "../observe/grammar-16";
 import type { ZetaDbTickReadout, ZetaDbTickRequest } from "../zetadb/zeta-db-node";
@@ -124,6 +128,41 @@ class NativeDatabaseRowControl {
   }
 }
 
+class NativeReceiptSyncButton {
+  closest(selector: string): NativeReceiptSyncButton | null {
+    return selector === "[data-receipt-sync-submit]" ? this : null;
+  }
+}
+
+class NativeReceiptSyncMount {
+  readonly attributes = new Map<string, string>();
+  readonly listeners = new Map<string, Set<NativeListener>>();
+  readonly output = { textContent: "" };
+  readonly button = new NativeReceiptSyncButton();
+
+  querySelector(selector: string): unknown {
+    return selector === "[data-receipt-sync-readout]" ? this.output : null;
+  }
+
+  setAttribute(name: string, value: string): void {
+    this.attributes.set(name, value);
+  }
+
+  addEventListener(type: string, listener: NativeListener): void {
+    addNativeListener(this.listeners, type, listener);
+  }
+
+  removeEventListener(type: string, listener: NativeListener): void {
+    this.listeners.get(type)?.delete(listener);
+  }
+
+  click(): void {
+    for (const listener of this.listeners.get("click") ?? []) {
+      listener({ button: 0, target: this.button, preventDefault: () => undefined });
+    }
+  }
+}
+
 class NativeServiceWorkerContainer {
   readonly messages: BrowserTabChannelMessage[] = [];
   readonly listeners = new Map<string, Set<NativeListener>>();
@@ -172,6 +211,7 @@ class NativeLockManager {
 class NativeBrowserRoot {
   readonly mount = new NativeMount();
   readonly editor = new NativeEditorMount();
+  readonly receiptSync = new NativeReceiptSyncMount();
   editorAvailable = true;
   readonly serviceWorker = new NativeServiceWorkerContainer();
   readonly locks = new NativeLockManager();
@@ -182,9 +222,10 @@ class NativeBrowserRoot {
   readonly pageListeners = new Map<string, Set<NativeListener>>();
   readonly document = {
     visibilityState: "visible",
-    getElementById: (id: string): NativeMount | NativeEditorMount | null => {
+    getElementById: (id: string): NativeMount | NativeEditorMount | NativeReceiptSyncMount | null => {
       if (id === "darkhall-room") return this.mount;
       if (id === "darkhall-row-command-editor") return this.editorAvailable ? this.editor : null;
+      if (id === "darkhall-receipt-sync") return this.receiptSync;
       return null;
     },
     addEventListener: (type: string, listener: NativeListener): void => {
@@ -259,6 +300,41 @@ function databaseReceiptArchive(): BrowserDatabaseReceiptArchivePort {
           disposition: "stored",
         },
       }),
+  };
+}
+
+function databaseReceiptSync(): {
+  readonly runtime: BrowserDatabaseReceiptSyncRuntime;
+  readonly calls: { submissions: number; polls: number };
+} {
+  const calls = { submissions: 0, polls: 0 };
+  let readout: BrowserDatabaseReceiptSyncReadout = {
+    schema: "zeta.browser-database-receipt-sync-readout.v1",
+    status: "idle",
+    databaseNodeId: "zeta-darkhall-browser-node:database",
+    archiveNodeId: "zeta-darkhall-browser-node:database:receipts",
+    receiptCount: 2,
+    highWaterSequence: 1,
+    contentHash: "blake3:" + "1".repeat(64),
+    proposal: null,
+    handoff: null,
+    feedback: null,
+  };
+  return {
+    calls,
+    runtime: {
+      read: () => ({ ...readout }),
+      submitFromUserActivation: () => {
+        calls.submissions += 1;
+        readout = { ...readout, status: "presented" };
+        return Promise.resolve({ ok: true, value: { ...readout } });
+      },
+      pollAcceptance: () => {
+        calls.polls += 1;
+        readout = { ...readout, status: "pending" };
+        return Promise.resolve({ ok: true, value: { ...readout } });
+      },
+    },
   };
 }
 
@@ -730,6 +806,83 @@ describe("Dark Hall active browser page", () => {
     }
   });
 
+  test("keeps signed submission on the explicit control while lifecycle events only poll acceptance", async () => {
+    const root = new NativeBrowserRoot();
+    const sync = databaseReceiptSync();
+    const started = await startNativeDarkHallBrowserPage({
+      root,
+      databaseIntentOutbox: databaseIntentOutbox(),
+      databaseReceiptArchive: databaseReceiptArchive(),
+      databaseReceiptSync: sync.runtime,
+      databaseExecutor,
+    });
+
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+    await waitFor(() => sync.calls.polls === 1);
+    expect(sync.calls).toEqual({ submissions: 0, polls: 1 });
+    expect(started.value.read()).toMatchObject({
+      receiptHandoff: null,
+      receiptSync: {
+        status: "live",
+        polls: 1,
+        submissions: 0,
+        synchronization: { status: "pending", receiptCount: 2 },
+        last: { operation: "poll", trigger: "startup" },
+      },
+    });
+
+    root.receiptSync.click();
+    await waitFor(() => sync.calls.submissions === 1);
+    expect(sync.calls).toEqual({ submissions: 1, polls: 1 });
+    expect(root.receiptSync.attributes.get("data-receipt-sync-trigger")).toBe("user-activation");
+
+    root.emitDocument("visibilitychange", {});
+    await waitFor(() => sync.calls.polls === 2);
+    expect(sync.calls).toEqual({ submissions: 1, polls: 2 });
+    expect(root.receiptSync.attributes.get("data-receipt-sync-trigger")).toBe("visibilitychange");
+    expect(started.value.stop().ok).toBe(true);
+  });
+
+  test("refuses signed synchronization beside the legacy direct handoff", async () => {
+    const root = new NativeBrowserRoot();
+    const sync = databaseReceiptSync();
+    const result = await startNativeDarkHallBrowserPage({
+      root,
+      databaseIntentOutbox: databaseIntentOutbox(),
+      databaseReceiptArchive: databaseReceiptArchive(),
+      databaseReceiptSync: sync.runtime,
+      databaseReceiptHandoff: {
+        read: () => ({
+          schema: "zeta.browser-database-receipt-handoff-readout.v1",
+          status: "idle",
+          databaseNodeId: "db",
+          archiveNodeId: "archive",
+          targetNodeId: "target",
+          archiveRevision: 0,
+          retainedReceipts: 0,
+          releasedReceipts: 0,
+          receiptPayloadBytes: 0,
+          highWaterSequence: null,
+          contentHash: null,
+          disposition: null,
+          feedback: null,
+        }),
+        handoff: () => Promise.reject(new Error("must not run")),
+      },
+      databaseExecutor,
+    });
+
+    expect(result).toMatchObject({
+      ok: false,
+      feedback: {
+        code: "page-configuration-invalid",
+        detail: "Signed receipt synchronization cannot share the page with a direct receipt handoff or receipt peer.",
+      },
+    });
+    expect(sync.calls).toEqual({ submissions: 0, polls: 0 });
+  });
+
   test("refuses invalid page configuration before registering a worker", async () => {
     const root = new NativeBrowserRoot();
     root.location.search = "?tab=tab-a&sequence=-1";
@@ -824,6 +977,8 @@ describe("Dark Hall active browser page", () => {
     const document = renderDarkHallBrowserNodeDocument();
 
     expect(document).toContain('<link rel="manifest" href="./manifest.webmanifest">');
+    expect(document).toContain('<section id="darkhall-receipt-sync" class="zeta-receipt-sync"');
+    expect(document).toContain("data-receipt-sync-submit");
     expect(document).toContain('<section id="darkhall-row-command-editor" class="zeta-row-command-editor"');
     expect(document).toContain("data-row-command-key");
     expect(document).toContain("data-row-command-payload");
