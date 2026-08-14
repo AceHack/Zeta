@@ -1,0 +1,12 @@
+{
+  "pr_number": 10698,
+  "archive_path": "docs/history/pr-reviews/PR-10698-docs-research-sequence-the-sh-deprecation-by-measured-key-exposure-the-interpret.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T19:40:27.583Z",
+  "schema_version": "v1",
+  "commit_sha": "984bbdfe0bcfd9ff415f9d762f25d702f622894d",
+  "title": "docs(research): sequence the .sh deprecation by measured key exposure — the interpreter is the identity gap, not the shell",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T19:39:53Z",
+  "head_ref": "shadow/sh-deprecation-sequenced-by-key-exposure"
+}
