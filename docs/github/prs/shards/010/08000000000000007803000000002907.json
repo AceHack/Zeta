@@ -1,0 +1,12 @@
+{
+  "pr_number": 10503,
+  "archive_path": "docs/history/pr-reviews/PR-10503-cluster-joining-emit-the-join-markers-k3s-s-join-is-the-join.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T03:05:12.141Z",
+  "schema_version": "v1",
+  "commit_sha": "2943971f0bd5ec9d2e35bf7c246c415b0c5d4137",
+  "title": "cluster-joining: emit the join markers — k3s's join is the join",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T03:04:36Z",
+  "head_ref": "otto/cluster-join-markers-emit-k3s-join-is-the-join"
+}
