@@ -1,0 +1,12 @@
+{
+  "pr_number": 10694,
+  "archive_path": "docs/history/pr-reviews/PR-10694-docs-seed-the-seed-vocabulary-contradicted-itself-on-both-counts-it-states.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T19:21:16.609Z",
+  "schema_version": "v1",
+  "commit_sha": "26af0d626dbe5da532e1490ce7a737ecb2bc500d",
+  "title": "docs(seed): the seed vocabulary contradicted itself on both counts it states",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T19:20:43Z",
+  "head_ref": "otto/seed-vocabulary-discipline-and-spec-counts"
+}
