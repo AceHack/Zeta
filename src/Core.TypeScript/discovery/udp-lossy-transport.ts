@@ -7,7 +7,7 @@
  *   - Your outbound signal is noise to your own inbound channel.
  *   - ECC lets you recover dropped packets without retransmitting (no extra noise).
  *   - The Adinkra [8,4,4] extended Hamming code is the right ECC: doubly-even, self-dual,
- *     minimum distance 4, corrects 1 erasure per block of 8 packets.
+ *     minimum distance 4, corrects any 3 erasures per block of 8 packets.
  *   - The same code that generates the E8 lattice (via Construction A) is the transport layer.
  *     That is the homoiconic property: the code IS the algebra IS the transport.
  *
@@ -16,9 +16,28 @@
  * ### Erasure coding (Adinkra [8,4,4])
  *   - Every 4 data packets → 4 parity packets (8 total per block).
  *   - Generator matrix G = [I₄ | A] in systematic form (same as AdinkraCode.fs).
- *   - Any 1 erasure in a block of 8 is recoverable from the remaining 7.
- *   - Rate: 4/8 = 0.5 (50% overhead). For high-bandwidth UDP this is acceptable;
- *     for low-bandwidth LoRa/BLE, use the XOR-only fallback (rate 7/8).
+ *   - ANY 3 erasures in a block of 8 are recoverable from the remaining 5 — d−1 = 3, and 4
+ *     independent symbols determine the block. 56 of the 70 four-erasure patterns recover too;
+ *     the 14 that do not are exactly the weight-4 codeword supports (see `recoverAdinkraBlock`).
+ *   - Rate: 4/8 = 0.5 (50% overhead).
+ *
+ * ### Which code to use — MEASURED, and NOT what this header used to say
+ *   This file used to offer [8,4,4] as the choice for high-bandwidth UDP and the XOR-only
+ *   fallback (rate 7/8) as a low-bandwidth compromise for LoRa/BLE. On GOODPUT — delivered data
+ *   packets per WIRE packet, the only fair comparison between codes of different rate — that
+ *   guidance is inverted across the entire ordinary operating range, and fixing the decoder
+ *   (081KZYN3B79087G0R0014ZKE3C) did not change the ranking, only the crossover point:
+ *
+ *       loss (uniform)      0%      5%     10%     20%     30%     40%
+ *       [8,4,4]           0.500   0.500   0.500   0.497   0.479   0.388
+ *       XOR-7/8           0.875   0.833   0.722   0.409   0.125   0.010
+ *
+ *   The reason is rate, not capability: at low loss goodput → rate, and 7/8 > 4/8 by
+ *   construction, so no decoder can close that gap. Erasure capability only starts paying once
+ *   loss is high enough to break the 7/8 code often. Measured crossover (seeded harness):
+ *   ~18% uniform loss, ~31% at mean burst length 4. Below it prefer XOR-7/8 REGARDLESS of
+ *   bandwidth; above it [8,4,4] wins decisively (at 40% uniform: 0.388 vs 0.010).
+ *   Numbers: `udp-lossy-transport.chaos.test.ts` UCH-13 / UCH-13b.
  *
  * ### Adaptive backoff (AIMD — Additive Increase, Multiplicative Decrease)
  *   - Measure packet loss rate: NACK count / send count over a sliding window.
@@ -43,8 +62,15 @@
  *   - The sender uses NACKs to adjust the inter-packet gap via AIMD.
  *
  * ## Honest boundary
- *   - The [8,4,4] code corrects 1 erasure per block. If 2+ packets drop in the same
- *     block of 8, the block is unrecoverable (the receiver marks it as lost and moves on).
+ *   - The [8,4,4] code corrects any 3 erasures per block, and 56 of the 70 four-erasure
+ *     patterns. At 5+ erasures, or on one of the 14 weight-4 codeword supports, the block is
+ *     unrecoverable BY ANY DECODER and the receiver marks it lost and moves on.
+ *     (This paragraph read "corrects 1 erasure per block; 2+ is unrecoverable" until
+ *     2026-08-13. That was the decoder's limit stated as the code's — the defect itself,
+ *     documented as a property. Workitem 081KZYN3B79087G0R0014ZKE3C.)
+ *   - Erasure decoding assumes packets arrive intact or not at all (UDP checksums drop corrupt
+ *     datagrams). A corrupt-but-delivered symbol is decoded as if it were correct; the spare
+ *     check equation that could detect it is not tested. Named, not handled.
  *   - For higher erasure rates, use a larger code (e.g. [16,8,4] or [32,16,4]).
  *   - The NACK mechanism assumes the NACK channel itself is reliable (e.g. TCP for NACKs,
  *     UDP for data). If NACKs are also lossy, the loss estimate is noisy but still useful.
@@ -144,63 +170,153 @@ export function computeAdinkraParity(data: readonly Uint8Array[]): Uint8Array[] 
   return parity;
 }
 
-/** Recover a single erased packet from the remaining 7 in a block of 8.
- *  Returns the recovered packet, or null if more than 1 erasure.
+// ── [8,4,4] parity-check matrix, DERIVED from the generator ───────────────────────────────
+/**
+ * `H = [Aᵀ | I₄]`, the parity-check matrix of the systematic code `G = [I₄ | A]`.
  *
- *  The [8,4,4] code has minimum distance 4, so it can correct 1 erasure.
- *  Recovery: find the unique codeword consistent with the 7 received packets.
- *  For a systematic code [I₄|A], recovery is:
- *    - If the erased position is a data position i: recover d_i from the parity equations.
- *    - If the erased position is a parity position j: recompute p_j from the data.
+ * `ADINKRA_H[j][i] === 1` iff codeword position `i` takes part in parity check `j`:
+ *
+ *     check j:   XOR{ d_i : G[i][4+j] = 1 }   XOR   p_j   =   0
+ *
+ * It is COMPUTED from `ADINKRA_G` rather than written out a second time. A literal copy is
+ * free to drift from the generator on any edit; a derivation cannot.
+ *
+ * UNOBSERVABLE MUTANT, recorded rather than chased: transposing this construction
+ * (`ADINKRA_G[j][4+i]` instead of `ADINKRA_G[i][4+j]`) leaves the whole suite green, because
+ * `A` is symmetric for THIS code so `Aᵀ = A`. No test can distinguish the two, and none should
+ * be contrived to — the transpose is what the algebra calls for, the symmetry is a property of
+ * the Adinkra generator, and if that generator is ever replaced by an asymmetric one the
+ * distinction becomes observable and every erasure test starts failing at once.
+ */
+const ADINKRA_H: readonly (readonly number[])[] = Array.from({ length: BLOCK_DATA }, (_, j) => {
+  const row = new Array<number>(BLOCK_TOTAL).fill(0);
+  for (let i = 0; i < BLOCK_DATA; i++) row[i] = ADINKRA_G[i]![BLOCK_DATA + j]!;
+  row[BLOCK_DATA + j] = 1;
+  return row;
+});
+
+/**
+ * Erasure-decode one block of 8, recovering EVERY erased position at once.
+ *
+ * ## What the code can actually do
+ *
+ * A linear code of minimum distance `d` corrects **any `d−1` erasures**: two distinct
+ * codewords agreeing on the `n−(d−1)` surviving positions would differ in at most `d−1 < d`
+ * positions, contradicting the minimum distance. `[8,4,4]` has `d = 4`, so **any 3 erasures
+ * per block are recoverable**, plus every 4-erasure pattern whose erased set is not the
+ * support of a nonzero codeword (56 of the 70 four-subsets; the other 14 are the weight-4
+ * codewords and are genuinely undecodable by any decoder).
+ *
+ * ## How
+ *
+ * Erasure decoding is a linear solve, not a special case per position. Let `E` be the erased
+ * positions and `K` the received ones. Each check `j` gives
+ *
+ *     XOR{ c_e : e ∈ E, H[j][e] = 1 }  =  XOR{ c_i : i ∈ K, H[j][i] = 1 }  =:  s_j
+ *
+ * — a system of 4 equations over GF(2) in `|E|` unknowns whose right-hand sides are byte
+ * vectors (GF(2) acts on bytes as XOR, so the same elimination runs on whole packets).
+ * Gauss–Jordan on that system returns the unique solution when the erased columns of `H` are
+ * linearly independent, and `null` when they are not — and "not independent" is exactly
+ * "the erased set contains the support of a nonzero codeword", i.e. the code's own limit
+ * rather than the decoder's.
+ *
+ * Returns the 8 codeword positions with the erasures filled in, or `null` if the pattern is
+ * undecodable (or if nothing was received). Deterministic: fixed column order, fixed pivot
+ * search, no allocation keyed on anything but block length (§7 DST).
+ *
+ * NOT attempted here, and named so it is not mistaken for a guarantee: with fewer than 4
+ * erasures the system is over-determined, so a leftover check equation could DETECT symbol
+ * corruption. This decoder assumes the erasure channel (UDP checksums drop corrupt datagrams
+ * rather than delivering them) and does not test that residual. Adding it would reject blocks
+ * this one accepts, which is a separate behaviour change.
+ */
+export function recoverAdinkraBlock(block: readonly (Uint8Array | null)[]): Uint8Array[] | null {
+  if (block.length !== BLOCK_TOTAL) return null;
+
+  const erased: number[] = [];
+  let len = 0;
+  for (let i = 0; i < BLOCK_TOTAL; i++) {
+    const sym = block[i];
+    if (sym === null || sym === undefined) erased.push(i);
+    else if (sym.length > len) len = sym.length;
+  }
+  if (erased.length === 0) return block.slice() as Uint8Array[];
+
+  // Left-hand side: the erased columns of H. Right-hand side: the syndrome of what arrived.
+  const coef: number[][] = [];
+  const rhs: Uint8Array[] = [];
+  for (let j = 0; j < BLOCK_DATA; j++) {
+    const s = new Uint8Array(len);
+    for (let i = 0; i < BLOCK_TOTAL; i++) {
+      if (ADINKRA_H[j]![i] === 1) {
+        const sym = block[i];
+        if (sym) xorBytes(s, sym);
+      }
+    }
+    coef.push(erased.map((e) => ADINKRA_H[j]![e]!));
+    rhs.push(s);
+  }
+
+  // Gauss–Jordan over GF(2). Row ops are XOR on both the coefficient row and its byte-vector
+  // right-hand side, so the packets ride along with the elimination.
+  //
+  // Column `c`'s pivot lands on ROW `c`: a column without a pivot returns immediately, so no
+  // column is ever skipped and the rank equals the column index throughout. A separate `rank`
+  // counter and a `pivotRow` lookup were carried here at first and mutation testing found both
+  // unobservable — `pivotRow[c] === c` on every path — so they are gone. That also removes the
+  // need for a "more erasures than checks" pre-check: with 5+ unknowns some column finds no
+  // pivot among the 4 rows and the same return fires. One rejection path, not three.
+  for (let c = 0; c < erased.length; c++) {
+    let pivot = -1;
+    for (let j = c; j < BLOCK_DATA; j++) {
+      if (coef[j]![c] === 1) {
+        pivot = j;
+        break;
+      }
+    }
+    // No pivot ⇒ the erased columns of H are dependent ⇒ several codewords fit the survivors.
+    // Undecodable by ANY decoder, not a limit of this one.
+    if (pivot === -1) return null;
+    if (pivot !== c) {
+      const tmpCoef = coef[pivot]!;
+      coef[pivot] = coef[c]!;
+      coef[c] = tmpCoef;
+      const tmpRhs = rhs[pivot]!;
+      rhs[pivot] = rhs[c]!;
+      rhs[c] = tmpRhs;
+    }
+    for (let j = 0; j < BLOCK_DATA; j++) {
+      if (j !== c && coef[j]![c] === 1) {
+        for (let cc = 0; cc < erased.length; cc++) coef[j]![cc] = coef[j]![cc]! ^ coef[c]![cc]!;
+        xorBytes(rhs[j]!, rhs[c]!);
+      }
+    }
+  }
+
+  const out = block.slice() as (Uint8Array | null)[];
+  for (let c = 0; c < erased.length; c++) out[erased[c]!] = rhs[c]!;
+  return out as Uint8Array[];
+}
+
+/** Recover the FIRST erased packet in a block of 8.
+ *
+ *  A thin projection of `recoverAdinkraBlock`: decode the whole block, hand back the symbol at
+ *  the lowest erased index. Returns null when there is no erasure, or when the pattern is
+ *  undecodable (5+ erasures, or one of the 14 weight-4 codeword supports).
+ *
+ *  Callers that need more than one erased packet should call `recoverAdinkraBlock` directly —
+ *  this signature can only express one, which is what previously made the decoder look like
+ *  a 1-erasure code (081KZYN3B79087G0R0014ZKE3C).
  */
 export function recoverAdinkraErasure(
-  block: (Uint8Array | null)[], // length 8, one null = erased
+  block: (Uint8Array | null)[], // length 8, nulls = erased
 ): Uint8Array | null {
   if (block.length !== BLOCK_TOTAL) return null;
   const erasedIdx = block.findIndex((p) => p === null);
   if (erasedIdx === -1) return null; // no erasure
-  const erasedCount = block.filter((p) => p === null).length;
-  if (erasedCount > 1) return null; // too many erasures for [8,4,4]
-
-  const sample = block.find((p) => p !== null);
-  if (!sample) return null;
-  const len = sample.length;
-  const recovered = new Uint8Array(len);
-
-  if (erasedIdx < BLOCK_DATA) {
-    // Erased data packet: recover from parity equations.
-    // For data position i: d_i = XOR of parity packets p_j where G[i][4+j] = 1,
-    //                            XOR of data packets d_k where G[k][4+j] = 1 and k ≠ i.
-    // Simplified: use the first parity equation that involves d_i.
-    const i = erasedIdx;
-    for (let j = 0; j < BLOCK_DATA; j++) {
-      if (ADINKRA_G[i]![4 + j] === 1) {
-        // p_j = XOR of d_k where G[k][4+j] = 1
-        // d_i = p_j XOR (XOR of d_k for k ≠ i where G[k][4+j] = 1)
-        const pj = block[4 + j];
-        if (!pj) continue; // this parity is also erased, try next
-        recovered.set(pj);
-        for (let k = 0; k < BLOCK_DATA; k++) {
-          if (k !== i && ADINKRA_G[k]![4 + j] === 1) {
-            const dk = block[k];
-            if (dk) xorBytes(recovered, dk);
-          }
-        }
-        return recovered;
-      }
-    }
-    return null; // shouldn't happen for [8,4,4]
-  } else {
-    // Erased parity packet: recompute from data.
-    const j = erasedIdx - BLOCK_DATA;
-    for (let i = 0; i < BLOCK_DATA; i++) {
-      if (ADINKRA_G[i]![4 + j] === 1) {
-        const di = block[i];
-        if (di) xorBytes(recovered, di);
-      }
-    }
-    return recovered;
-  }
+  const full = recoverAdinkraBlock(block);
+  return full === null ? null : full[erasedIdx]!;
 }
 
 // ── Packet framing ────────────────────────────────────────────────────────────────────────
@@ -388,25 +504,37 @@ export function makeReceiverBlock(blockSeq: number): ReceiverBlock {
 }
 
 /** Add a received packet to the block buffer. Returns the recovered data packets if
- *  the block is now complete (or recoverable), or null if more packets are needed. */
+ *  the block is now complete (or recoverable), or null if more packets are needed.
+ *
+ *  Recovery is attempted on EVERY arrival from the 4th onwards, not only at 7-of-8. Four
+ *  independent symbols are enough to solve for the block, and which four they are is not
+ *  something the receiver gets to choose — waiting for a 7th packet that a burst already ate
+ *  is how a decodable block was being discarded. */
 export function addToBlock(block: ReceiverBlock, pos: number, payload: Uint8Array): Uint8Array[] | null {
-  if (block.packets[pos] !== null) return null; // duplicate
+  // Rejects duplicates AND out-of-range positions, and the second half is load-bearing: `pos`
+  // is `header.blockPos`, a `uint8` off an unauthenticated packet, so 8..255 are values a peer
+  // may choose. `packets[9]` reads `undefined`, and `undefined !== null` is true, so the write
+  // never happens. That protection rests entirely on the STRICT `!==`; relaxing it to `!=`
+  // (or to `?? null`) would let a peer write past the 8-slot array with one packet, after
+  // which `recoverAdinkraBlock`'s length check refuses the block forever. ULT-24 is the
+  // falsifier — an explicit range test was tried here and mutation testing showed it could not
+  // be observed, because this line already does the job.
+  if (block.packets[pos] !== null) return null;
   block.packets[pos] = payload;
   block.receivedCount++;
+  if (block.recovered) return null; // §12: already delivered; a late arrival is not a second credit
 
-  // Check if we have all 4 data packets (no erasure needed)
-  const dataComplete = block.packets.slice(0, BLOCK_DATA).every((p) => p !== null);
-  if (dataComplete && !block.recovered) {
+  // All 4 data packets present — no decode needed.
+  if (block.packets.slice(0, BLOCK_DATA).every((p) => p !== null)) {
     block.recovered = true;
     return block.packets.slice(0, BLOCK_DATA) as Uint8Array[];
   }
 
-  // Check if we have 7 of 8 packets (1 erasure, recoverable by [8,4,4])
-  if (block.receivedCount === BLOCK_TOTAL - 1 && !block.recovered) {
-    const erasedIdx = block.packets.findIndex((p) => p === null);
-    const recovered = recoverAdinkraErasure(block.packets);
-    if (recovered !== null) {
-      block.packets[erasedIdx] = recovered;
+  // Otherwise solve, as soon as there are enough symbols for the solve to be possible at all.
+  if (block.receivedCount >= BLOCK_DATA) {
+    const full = recoverAdinkraBlock(block.packets);
+    if (full !== null) {
+      for (let i = 0; i < BLOCK_TOTAL; i++) block.packets[i] = full[i]!;
       block.recovered = true;
       return block.packets.slice(0, BLOCK_DATA) as Uint8Array[];
     }
@@ -612,7 +740,7 @@ export class LossyUdpChannel {
             howToFix: teaching.howToFix,
             dimension: "transport",
             severity: envelope.nack.length > 3 ? "error" : "warn",
-          ...retractable,
+            ...retractable,
           },
           new Date().toISOString(),
         );

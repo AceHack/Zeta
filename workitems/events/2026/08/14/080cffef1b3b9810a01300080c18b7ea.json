@@ -1,0 +1,14 @@
+{
+  "id": "080cffef1b3b9810a01300080c18b7ea",
+  "at": "2026-08-14T01:29:26.643Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYY6SVJ087G0R0035SW945",
+    "type": "bug",
+    "title": "Gilbert-Elliott meanBurstLength=1 is not i.i.d. Bernoulli; it forbids consecutive losses, so every uniform-loss row is optimistic",
+    "slug": "gilbert-elliott-meanburstlength-1-is-not-i-i-d-bernoulli-it",
+    "priority": "P2",
+    "filename": "081KZYY6SVJ087G0R0035SW945-gilbert-elliott-meanburstlength-1-is-not-i-i-d-bernoulli-it.md"
+  }
+}

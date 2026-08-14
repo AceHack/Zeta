@@ -11,6 +11,7 @@ import {
   type DesyncEvent,
   computeAdinkraParity,
   recoverAdinkraErasure,
+  recoverAdinkraBlock,
   buildSenderBlock,
   addToBlock,
   makeReceiverBlock,
@@ -89,15 +90,51 @@ describe("udp-lossy-transport", () => {
     }
   });
 
-  // ── ULT-4: Two erasures are unrecoverable (negative control) ──────────────────────────
-  it("ULT-4 (negative): two erasures → unrecoverable", () => {
+  // ── ULT-4: the REAL negative control — what the code genuinely cannot do ───────────────
+  //
+  // FLIPPED 2026-08-13 (081KZYN3B79087G0R0014ZKE3C). This test used to read
+  //   "ULT-4 (negative): two erasures → unrecoverable"
+  // and it passed. It was pinning the DECODER's limit while describing it as the CODE's:
+  // [8,4,4] has d=4 and therefore corrects any 3 erasures. Two erasures are recovered now, so
+  // the old assertion is false and is replaced rather than relaxed.
+  //
+  // A negative control still has to exist, or "recovers everything" becomes untestable. The
+  // honest one is a pattern no decoder can resolve: the erased set contains the support of a
+  // nonzero codeword, so two distinct codewords agree on every surviving position.
+  it("ULT-4 (negative): an erased weight-4 codeword support is unrecoverable — by any decoder", () => {
     const data = makeData(4, 3);
     const parity = computeAdinkraParity(data);
-    const block = [...data, ...parity] as (Uint8Array | null)[];
-    block[0] = null;
-    block[1] = null;
-    const recovered = recoverAdinkraErasure(block);
-    expect(recovered).toBeNull();
+    const full = [...data, ...parity] as (Uint8Array | null)[];
+
+    // {0,5,6,7} is the support of generator row 0 (10000111) — itself a codeword of weight 4.
+    const onCodeword = [...full];
+    for (const i of [0, 5, 6, 7]) onCodeword[i] = null;
+    expect(recoverAdinkraBlock(onCodeword)).toBeNull();
+    expect(recoverAdinkraErasure(onCodeword)).toBeNull();
+
+    // WHY it is unrecoverable, demonstrated rather than asserted: adding that codeword to the
+    // data produces a DIFFERENT message whose codeword agrees on all four surviving positions.
+    // The survivors therefore do not identify the message, and no decoder can choose.
+    const alt = data.map((d, i) => {
+      const c = new Uint8Array(d);
+      if (i === 0) for (let b = 0; b < c.length; b++) c[b] = c[b]! ^ 0xff; // flip d0 by the codeword
+      return c;
+    });
+    const altFull = [...alt, ...computeAdinkraParity(alt)];
+    for (const survivor of [1, 2, 3, 4]) {
+      expect(Array.from(altFull[survivor]!)).toEqual(Array.from(full[survivor]!));
+    }
+    expect(Array.from(altFull[0]!)).not.toEqual(Array.from(full[0]!)); // …but the messages differ
+
+    // Five erasures: more unknowns than the 4 parity checks can pin down.
+    const fiveGone = [...full];
+    for (const i of [0, 1, 2, 3, 4]) fiveGone[i] = null;
+    expect(recoverAdinkraBlock(fiveGone)).toBeNull();
+
+    // Anti-vacuity: a decoder that returned null for everything would satisfy all of the above.
+    const threeGone = [...full];
+    for (const i of [0, 5, 6]) threeGone[i] = null;
+    expect(recoverAdinkraBlock(threeGone)).not.toBeNull();
   });
 
   // ── ULT-5: buildSenderBlock produces correct structure ────────────────────────────────
@@ -110,20 +147,45 @@ describe("udp-lossy-transport", () => {
   });
 
   // ── ULT-6: Receiver block recovers from 1 dropped packet ─────────────────────────────
-  it("ULT-6: receiver block recovers from 1 dropped packet (fault injection)", () => {
+  //
+  // AMENDED 2026-08-13 (081KZYN3B79087G0R0014ZKE3C). This test used to keep only the LAST
+  // call's return value and assert it was non-null. That held only because delivery used to
+  // happen at the 7th packet, which was also the last one fed in. With the block solved as
+  // soon as 4 independent symbols are in hand, delivery moves EARLIER and the last three calls
+  // now correctly return null (nothing further to deliver) — so the old shape failed on an
+  // improvement. Capturing the FIRST delivery, and asserting WHICH arrival produced it, tests
+  // the thing the name claims and pins the latency as a number.
+  it("ULT-6: receiver block recovers from 1 dropped packet, delivering at the 4th arrival", () => {
     const data = makeData(4, 11);
     const block = buildSenderBlock(0, data);
     const recv = makeReceiverBlock(0);
     const allPkts = [...block.dataPackets, ...block.parityPackets];
-    // Drop packet at position 2 (data packet)
+    // Drop packet at position 2 (a data packet).
     let result: Uint8Array[] | null = null;
+    let deliveredAfter = -1;
+    let arrivals = 0;
+    let deliveries = 0;
     for (let pos = 0; pos < 8; pos++) {
       if (pos === 2) continue; // simulate drop
-      result = addToBlock(recv, pos, allPkts[pos]!);
+      arrivals++;
+      const got = addToBlock(recv, pos, allPkts[pos]!);
+      if (got) {
+        deliveries++;
+        if (result === null) {
+          result = got;
+          deliveredAfter = arrivals;
+        }
+      }
     }
     expect(result).not.toBeNull();
     expect(result!.length).toBe(4);
     expect(Array.from(result![2]!)).toEqual(Array.from(data[2]!));
+    // Every data packet, not just the recovered one.
+    for (let i = 0; i < 4; i++) expect(Array.from(result![i]!)).toEqual(Array.from(data[i]!));
+    // 4 symbols suffice: positions 0,1,3,4 arrived — the block did not wait for a 7th packet.
+    expect(deliveredAfter).toBe(4);
+    // §12 idempotency: the later arrivals deliver nothing a second time.
+    expect(deliveries).toBe(1);
   });
 
   // ── ULT-7: Receiver block delivers data when no packets dropped ───────────────────────
@@ -498,5 +560,204 @@ describe("udp-lossy-transport", () => {
     // five times is the same as emitting nothing once, and the local report fires once.
     expect(probe.outBytes()).toBe(0);
     expect(probe.desyncs().length).toBe(1);
+  });
+
+  // ── ULT-22..24: the erasure census (workitem 081KZYN3B79087G0R0014ZKE3C) ──────────────────
+  //
+  // The defect these exist to prevent recurring: `recoverAdinkraErasure` returned null at 2
+  // erasures, so the transport used ONE of the THREE erasures its 50%-overhead code pays for.
+  // It survived because the suite only ever erased one packet, and the one test that erased two
+  // asserted the decoder's limit as though it were the code's.
+  //
+  // The standing falsifier is therefore EXHAUSTIVE and derived from the algebra: all 256 erasure
+  // patterns, each checked against what the code itself permits — never against a remembered
+  // number. It fails the moment the decoder is weaker (or stronger) than [8,4,4] actually is.
+
+  /** The supports of all 16 codewords, ENUMERATED through the module's own parity function.
+   *  `ADINKRA_G` is module-private, so this recovers the code's structure the only way a caller
+   *  can — by feeding it messages. A hand-written table of the 14 weight-4 supports would be a
+   *  second source of truth free to disagree with the generator. */
+  function codewordSupports(): number[][] {
+    const supports: number[][] = [];
+    for (let m = 0; m < 16; m++) {
+      // Message bit i selects the all-ones byte for data symbol i; GF(2) then acts bytewise, so
+      // a symbol is 0xff exactly where the codeword bit is 1.
+      const data = Array.from({ length: 4 }, (_, i) => Uint8Array.from([(m >> i) & 1 ? 0xff : 0x00]));
+      const cw = [...data, ...computeAdinkraParity(data)];
+      supports.push(cw.map((s, i) => (s[0] === 0xff ? i : -1)).filter((i) => i >= 0));
+    }
+    return supports;
+  }
+
+  it("ULT-22 (exhaustive): all 256 erasure patterns decode exactly when — and only when — the code allows", () => {
+    const data = makeData(4, 61);
+    const full = [...data, ...computeAdinkraParity(data)];
+
+    // First establish the code's own structure, so the expectations below are DERIVED.
+    const supports = codewordSupports();
+    expect(supports.length).toBe(16);
+    expect(supports.filter((s) => s.length === 0).length).toBe(1); // the zero codeword
+    expect(supports.filter((s) => s.length === 8).length).toBe(1); // the all-ones codeword
+    const weight4 = supports.filter((s) => s.length === 4);
+    expect(weight4.length).toBe(14); // …and nothing between: minimum distance 4, hence d−1 = 3
+    expect(supports.every((s) => s.length === 0 || s.length === 4 || s.length === 8)).toBe(true);
+    const undecodable = new Set(weight4.map((s) => s.join(",")));
+
+    const census = new Map<number, { recovered: number; total: number }>();
+    for (let mask = 0; mask < 256; mask++) {
+      const erased: number[] = [];
+      for (let i = 0; i < 8; i++) if ((mask >> i) & 1) erased.push(i);
+      const blk = full.map((s, i) => (erased.includes(i) ? null : s)) as (Uint8Array | null)[];
+      const got = recoverAdinkraBlock(blk);
+
+      // The verdict must agree with the algebra pattern-by-pattern, not just in aggregate:
+      // any k ≤ 3 erasures are correctable (d−1 = 3); 4 are correctable unless the erased set
+      // IS a codeword's support; 5+ leave more unknowns than there are checks.
+      const shouldDecode = erased.length <= 3 || (erased.length === 4 && !undecodable.has(erased.join(",")));
+      expect(got !== null).toBe(shouldDecode);
+      if (got !== null) {
+        // Byte-exact on ALL 8 positions — not merely non-null, and not only the erased ones.
+        for (let i = 0; i < 8; i++) expect(Array.from(got[i]!)).toEqual(Array.from(full[i]!));
+      }
+
+      const tally = census.get(erased.length) ?? { recovered: 0, total: 0 };
+      tally.total++;
+      if (got !== null) tally.recovered++;
+      census.set(erased.length, tally);
+    }
+
+    // The census, as one readable fact. Row k=3 is the defect's signature: it read 0 of 56.
+    expect(
+      [...census.entries()].sort((a, b) => a[0] - b[0]).map(([k, t]) => `${k}: ${t.recovered}/${t.total}`),
+    ).toEqual([
+      "0: 1/1",
+      "1: 8/8",
+      "2: 28/28",
+      "3: 56/56", // ← was 0/56 before 081KZYN3B79087G0R0014ZKE3C
+      "4: 56/70", // the 14 misses are exactly the weight-4 codeword supports, asserted above
+      "5: 0/56",
+      "6: 0/28",
+      "7: 0/8",
+      "8: 0/1",
+    ]);
+  });
+
+  it("ULT-23 (property): any 3 losses, in any arrival order, still deliver the exact data", () => {
+    // Through the RECEIVER STATE MACHINE, not the decoder alone — the defect lived at the seam
+    // (`addToBlock` only attempted recovery at 7-of-8, so a decodable block was thrown away).
+    // Arrival order is shuffled because a decoder that quietly depended on it would be a
+    // `local-time-never-enters-the-shared-fold` violation. Seeded, so a failure replays (§7).
+    fc.assert(
+      fc.property(
+        fc.uint8Array({ minLength: 32, maxLength: 32 }),
+        fc.shuffledSubarray([0, 1, 2, 3, 4, 5, 6, 7], { minLength: 3, maxLength: 3 }),
+        fc.shuffledSubarray([0, 1, 2, 3, 4, 5, 6, 7], { minLength: 8, maxLength: 8 }),
+        (bytes, lost, arrivalOrder) => {
+          const data = Array.from({ length: 4 }, (_, i) => bytes.slice(i * 8, i * 8 + 8));
+          const sent = buildSenderBlock(0, data);
+          const wire = [...sent.dataPackets, ...sent.parityPackets];
+          const lostSet = new Set(lost);
+
+          const recv = makeReceiverBlock(0);
+          let delivered: Uint8Array[] | null = null;
+          let deliveries = 0;
+          for (const pos of arrivalOrder) {
+            if (lostSet.has(pos)) continue;
+            const got = addToBlock(recv, pos, wire[pos]!);
+            if (got) {
+              deliveries++;
+              delivered ??= got;
+            }
+          }
+          expect(delivered).not.toBeNull();
+          for (let i = 0; i < 4; i++) expect(Array.from(delivered![i]!)).toEqual(Array.from(data[i]!));
+          expect(deliveries).toBe(1); // §12: delivered once, however many packets follow
+        },
+      ),
+      { numRuns: 500, seed: 0x5eed },
+    );
+  });
+
+  it("ULT-24: an out-of-range blockPos is refused — it is a uint8 off an unauthenticated packet", () => {
+    // `handleIncoming` passes `header.blockPos` straight through and the field is a `uint8`, so
+    // 8..255 are values a peer can choose. Writing one of those into the 8-slot array would grow
+    // it, and `recoverAdinkraBlock`'s length check would then refuse that block forever — a
+    // peer-triggered denial of a block, for one packet.
+    //
+    // WHAT ACTUALLY STOPS IT — checked, having first got this wrong. I added an explicit
+    // `Number.isInteger(pos) && pos < BLOCK_TOTAL` guard, and mutation testing could not
+    // observe its removal. The reason is that `addToBlock`'s duplicate check already covers it:
+    // `packets[9]` reads `undefined`, and `undefined !== null` is true, so it returns early.
+    // The explicit guard was dead code and was removed. This test stays, because the surviving
+    // protection is an incidental property of a STRICT `!==` and deserves a falsifier of its
+    // own — `!=` would make every assertion below fail.
+    const data = makeData(4, 5);
+    const sent = buildSenderBlock(0, data);
+    const wire = [...sent.dataPackets, ...sent.parityPackets];
+    const recv = makeReceiverBlock(0);
+
+    for (const pos of [8, 9, 255, -1, 1.5, Number.NaN]) {
+      expect(addToBlock(recv, pos, wire[0]!)).toBeNull();
+    }
+    expect(recv.packets.length).toBe(8);
+    expect(recv.receivedCount).toBe(0);
+
+    // The block is undamaged: {0,1,3,5} is not a codeword support, so 4 arrivals still decode.
+    let delivered: Uint8Array[] | null = null;
+    for (const pos of [0, 1, 3, 5]) {
+      const got = addToBlock(recv, pos, wire[pos]!);
+      delivered ??= got;
+    }
+    expect(delivered).not.toBeNull();
+    for (let i = 0; i < 4; i++) expect(Array.from(delivered![i]!)).toEqual(Array.from(data[i]!));
+  });
+
+  it("ULT-25: recovery is sized by the LONGEST surviving symbol, not by whichever arrived first", () => {
+    // Found by mutating `len` from "max over present symbols" to "length of the first present
+    // symbol" (which is what the pre-fix decoder used, via `block.find(...)`) — the whole suite
+    // stayed green, because the sender pads every packet in a block to one length so no test
+    // ever had a mixed-length block. `payloadLen` is a peer-controlled `uint32` header field,
+    // so a short symbol IS reachable from the wire, and a recovery silently truncated to it
+    // would hand the application a short payload with no error anywhere.
+    const data = makeData(4, 71); // four 8-byte symbols
+    const full = [...data, ...computeAdinkraParity(data)] as (Uint8Array | null)[];
+
+    // Erase position 0, and truncate position 1 — so the FIRST surviving symbol is the short one.
+    const blk = [...full];
+    blk[0] = null;
+    blk[1] = full[1]!.slice(0, 4);
+
+    const got = recoverAdinkraBlock(blk);
+    expect(got).not.toBeNull();
+    // The recovered symbol keeps the block's full width. With "first present" it would be 4.
+    expect(got![0]!.length).toBe(8);
+    // The prefix is exact: every contribution to bytes 0..3 is present, truncation or not.
+    expect(Array.from(got![0]!.subarray(0, 4))).toEqual(Array.from(data[0]!.subarray(0, 4)));
+    // The tail is NOT claimed correct — the truncated symbol's missing bytes are absent from the
+    // equations that determine it. Pinned as the honest boundary rather than asserted away: a
+    // short symbol corrupts the tail, it does not shorten the output.
+    expect(got![0]!.length).toBe(full[0]!.length);
+  });
+
+  it("ULT-26: the decoder's block-length precondition is a real check, not decoration", () => {
+    // `recoverAdinkraBlock` is exported, so its "length must be 8" precondition is a contract
+    // with callers it cannot see. Mutation testing found the check unobservable — every caller
+    // in the repo passes 8 — which is exactly the state in which a precondition rots. A wrong
+    // length is not a decodable block under ANY erasure pattern, so it must be refused rather
+    // than silently indexed past the end of `ADINKRA_H`.
+    const data = makeData(4, 13);
+    const full = [...data, ...computeAdinkraParity(data)] as (Uint8Array | null)[];
+
+    expect(recoverAdinkraBlock(full.slice(0, 7))).toBeNull(); // short
+    expect(recoverAdinkraBlock([...full, full[0]!])).toBeNull(); // long
+    expect(recoverAdinkraBlock([])).toBeNull();
+    expect(recoverAdinkraErasure(full.slice(0, 7) as (Uint8Array | null)[])).toBeNull();
+
+    // Anti-vacuity: the SAME symbols at the right length decode fine, so the nulls above are
+    // the length check firing and not a decoder that refuses this data.
+    const erased = [...full];
+    erased[2] = null;
+    erased[5] = null;
+    expect(recoverAdinkraBlock(erased)).not.toBeNull();
   });
 });

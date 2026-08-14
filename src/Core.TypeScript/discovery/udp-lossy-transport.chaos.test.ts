@@ -36,6 +36,7 @@ import {
 import {
   computeAdinkraParity,
   recoverAdinkraErasure,
+  recoverAdinkraBlock,
   makeAimdState,
   onSend,
   onNack,
@@ -145,11 +146,23 @@ describe("udp-lossy-transport.chaos", () => {
     ).toBeNull();
   });
 
-  // ── UCH-7: the CAPABILITY GAP, as a test ────────────────────────────────────────────────
+  // ── UCH-7: the CAPABILITY GAP — CLOSED 2026-08-13 ───────────────────────────────────────
   // A linear code with minimum distance d corrects ANY d−1 erasures. [8,4,4] has d=4, so it
-  // corrects any 3. The shipped `recoverAdinkraErasure` handles exactly 1 and returns null at 2.
-  // This test pins BOTH facts side by side so the gap is a fact on file, not an opinion.
-  it("UCH-7: the [8,4,4] code corrects any 3 erasures; the shipped decoder stops at 1", () => {
+  // corrects any 3.
+  //
+  // FLIPPED, as the workitem said it would. This test used to end
+  //     expect(mlRecovered).toBe(56);
+  //     expect(implRecovered).toBe(0);   // "The shipped decoder recovers none of them."
+  // and 0/56 was the measurement that filed 081KZYN3B79087G0R0014ZKE3C. `recoverAdinkraErasure`
+  // now solves the erasure system over the code's parity checks, so it recovers 56/56.
+  //
+  // The pin is UPDATED rather than deleted, and strengthened where it was weak: the old
+  // implementation check was `!== null`, which would have accepted a decoder returning
+  // confident garbage. Both decoders are now compared BYTE-FOR-BYTE against the sent data and
+  // against each other — and they are independent implementations (the harness searches
+  // invertible 4-column submatrices of G; the module runs Gauss–Jordan on H), so agreement is
+  // evidence rather than a tautology.
+  it("UCH-7: the [8,4,4] code corrects any 3 erasures — and the shipped decoder now gets all 56", () => {
     const data = Array.from({ length: 4 }, (_, i) => Uint8Array.from([i * 31 + 1, 200 - i, i, 0x5a ^ i]));
     const parity = computeAdinkraParity(data);
     const full = [...data, ...parity] as (Uint8Array | null)[];
@@ -157,6 +170,7 @@ describe("udp-lossy-transport.chaos", () => {
 
     let mlRecovered = 0;
     let implRecovered = 0;
+    let agreed = 0;
     let patterns = 0;
     for (let a = 0; a < BLOCK_TOTAL; a++)
       for (let b = a + 1; b < BLOCK_TOTAL; b++)
@@ -166,15 +180,24 @@ describe("udp-lossy-transport.chaos", () => {
           blk[a] = null;
           blk[b] = null;
           blk[c] = null;
+          const exact = (s: Uint8Array, i: number) => Array.from(s).every((v, k) => v === full[i]![k]);
+
           const ml = mlDecodeBlock(blk, G);
-          if (ml && ml.every((s, i) => Array.from(s).every((v, k) => v === data[i]![k]))) mlRecovered++;
-          if (recoverAdinkraErasure(blk) !== null) implRecovered++;
+          if (ml && ml.every((s, i) => exact(s, i))) mlRecovered++;
+
+          const impl = recoverAdinkraBlock(blk);
+          if (impl && impl.every((s, i) => exact(s, i))) implRecovered++;
+
+          // The single-packet projection must agree with the block decode at the first erasure.
+          const one = recoverAdinkraErasure(blk);
+          if (impl && one && Array.from(one).every((v, k) => v === full[a]![k])) agreed++;
         }
     expect(patterns).toBe(56);
     // Every 3-erasure pattern is recoverable — the code's guarantee, measured.
     expect(mlRecovered).toBe(56);
-    // The shipped decoder recovers none of them. This is the gap.
-    expect(implRecovered).toBe(0);
+    // …and the shipped decoder now attains it, byte-exactly. Was 0.
+    expect(implRecovered).toBe(56);
+    expect(agreed).toBe(56);
   });
 
   // ── UCH-8: DoP is a throughput knob, never a semantics knob ─────────────────────────────
@@ -256,7 +279,14 @@ describe("udp-lossy-transport.chaos", () => {
   // Reported, not asserted as a requirement: the highest swept loss rate holding >= 99%
   // delivery. Bounds are deliberately loose (one grid step) so this fails on a REGRESSION,
   // not on sampling noise.
-  it("UCH-12: cliff — the shipped decoder holds 99% delivery only to ~2% uniform / ~0.5-1% bursty loss", async () => {
+  //
+  // FLIPPED 2026-08-13 (081KZYN3B79087G0R0014ZKE3C). The old assertions were
+  //     expect(implUniform!).toBeLessThanOrEqual(0.03);   // measured 0.02
+  //     expect(mlUniform!).toBeGreaterThan(implUniform!);
+  // i.e. the shipped decoder fell off an order of magnitude before the code did. It no longer
+  // does: the two cliffs now COINCIDE, which is the whole point of the fix, so the assertion
+  // that they differ had to be inverted rather than loosened.
+  it("UCH-12: cliff — the shipped decoder's cliff has moved out to the code's own, ~20% uniform", async () => {
     const rates = [0.005, 0.01, 0.02, 0.03, 0.05, 0.08, 0.12, 0.2, 0.3];
     const impl = await characteriseCliff("impl-adinkra", rates, [1, 4], { blocks: 2000, seed: 0x5eedn }, 0.99, 1);
     const ml = await characteriseCliff("ml-adinkra", rates, [1, 4], { blocks: 2000, seed: 0x5eedn }, 0.99, 1);
@@ -266,26 +296,44 @@ describe("udp-lossy-transport.chaos", () => {
     const mlUniform = ml.cliffByBurstLength.get(1);
     const mlBursty = ml.cliffByBurstLength.get(4);
 
-    // Shipped decoder: falls off an order of magnitude earlier than the code allows.
-    expect(implUniform).not.toBeNull();
-    expect(implUniform!).toBeLessThanOrEqual(0.03);
-    expect(implBursty!).toBeLessThanOrEqual(0.02);
-
-    // Same code, full-capability decoder: an order of magnitude more headroom on uniform loss.
+    // The code's ceiling, unchanged — it was never the code that moved.
     expect(mlUniform!).toBeGreaterThanOrEqual(0.12);
     expect(mlBursty!).toBeGreaterThanOrEqual(0.02);
-    expect(mlUniform!).toBeGreaterThan(implUniform!);
+
+    // The shipped decoder now sits ON it, at both burst lengths.
+    expect(implUniform).not.toBeNull();
+    expect(implUniform!).toBe(mlUniform!);
+    expect(implBursty!).toBe(mlBursty!);
+
+    // Stated absolutely too, so this cannot pass by both decoders regressing together.
+    expect(implUniform!).toBeGreaterThanOrEqual(0.12);
+    expect(implBursty!).toBeGreaterThanOrEqual(0.02);
   });
 
-  // ── UCH-13: the XOR fallback is NOT worse — which is the signal something is wrong ───────
+  // ── UCH-13: XOR-7/8 still wins on goodput — and the DECODER was not why ──────────────────
   // The module header presents XOR-only (rate 7/8) as the low-bandwidth compromise for LoRa/BLE
   // and [8,4,4] (rate 4/8) as the choice for high-bandwidth UDP. Measured on goodput — delivered
-  // data packets per wire packet, the only fair cross-rate comparison — the shipped [8,4,4] path
-  // is DOMINATED by the XOR fallback across the whole useful operating range. It pays 50%
-  // overhead for the same 1-erasure-per-8 correction the XOR code provides at 12.5%.
+  // data packets per wire packet, the only fair cross-rate comparison — the [8,4,4] path is
+  // DOMINATED by the XOR fallback across the whole useful operating range.
   //
-  // PINS CURRENT BEHAVIOUR. If the transport adopts a full-capability decoder this SHOULD fail.
-  it("UCH-13: XOR-7/8 goodput dominates the shipped [8,4,4] path at every measured loss rate", async () => {
+  // THIS TEST PREDICTED ITS OWN FAILURE AND THE PREDICTION WAS WRONG. It was filed saying
+  // "PINS CURRENT BEHAVIOUR. If the transport adopts a full-capability decoder this SHOULD
+  // fail", on the reasoning that the shipped decoder corrected 1 erasure for 50% overhead where
+  // XOR corrected 1 for 12.5%. The decoder was fixed on 2026-08-13
+  // (081KZYN3B79087G0R0014ZKE3C) and it corrects 3 now — and every assertion below still holds,
+  // unchanged, at the same seed. Recorded rather than quietly re-baselined, because a wrong
+  // prediction that goes unremarked is how the next one gets believed.
+  //
+  // Why it was wrong: at LOW loss, goodput → rate, and 7/8 > 4/8 by construction. No decoder
+  // improvement can close that — it can only raise [8,4,4] toward its own 0.5 ceiling, which is
+  // still below the 0.875 the XOR code delivers when it rarely fails. Erasure capability only
+  // starts paying once loss is high enough to break the 7/8 code often, i.e. once the block
+  // failure probability at rate 7/8 exceeds 1 − 0.5/0.875 ≈ 0.43. So the crossover is set by
+  // the RATES, and the decoder fix moves it without abolishing it — measured on this harness at
+  // the same seed, the crossover moved from roughly 33% to roughly 18% uniform loss, and from
+  // beyond 40% to roughly 31% at mean burst length 4. The header's rate guidance is still
+  // inverted for the useful range; what changed is by how much and why.
+  it("UCH-13: XOR-7/8 goodput dominates the [8,4,4] path at every measured loss rate — decoder fix and all", async () => {
     for (const [rate, L] of [
       [0.0, 1],
       [0.02, 1],
@@ -298,13 +346,39 @@ describe("udp-lossy-transport.chaos", () => {
       const xor = await runScenario(cfg, "xor7of8", 1);
       expect(xor.goodput).toBeGreaterThan(impl.goodput);
     }
-    // And the shipped [8,4,4] decoder never exceeds the 0.5 goodput ceiling its rate imposes.
+    // And the [8,4,4] path never exceeds the 0.5 goodput ceiling its rate imposes — now reached
+    // exactly on a clean channel, where before the fix it was reached only because nothing was
+    // lost to recover from.
     const clean = await runScenario(
       defaultConfig({ blocks: 1000, seed: 0x5eedn, loss: burstParams(0, 1) }),
       "impl-adinkra",
       1,
     );
     expect(clean.goodput).toBeCloseTo(0.5, 6);
+  });
+
+  // ── UCH-13b: the crossover EXISTS — so UCH-13 is a range claim, not a verdict on the code ─
+  // Without this, UCH-13 reads as "the [8,4,4] code is simply worse", which is false and would
+  // be an argument for deleting a code that wins decisively where it is meant to be used.
+  // Above the crossover the 7/8 code collapses and [8,4,4] keeps delivering.
+  it("UCH-13b: above the crossover the ranking inverts — [8,4,4] wins where the 7/8 code collapses", async () => {
+    for (const [rate, L] of [
+      [0.25, 1],
+      [0.3, 1],
+      [0.4, 1],
+      [0.4, 4],
+    ] as [number, number][]) {
+      const cfg = defaultConfig({ blocks: 3000, seed: 0x5eedn, loss: burstParams(rate, L) });
+      const impl = await runScenario(cfg, "impl-adinkra", 1);
+      const xor = await runScenario(cfg, "xor7of8", 1);
+      expect(impl.goodput).toBeGreaterThan(xor.goodput);
+    }
+    // The margin at 40% uniform loss is not marginal: the 7/8 code is essentially dead there.
+    const cfg = defaultConfig({ blocks: 3000, seed: 0x5eedn, loss: burstParams(0.4, 1) });
+    const impl = await runScenario(cfg, "impl-adinkra", 1);
+    const xor = await runScenario(cfg, "xor7of8", 1);
+    expect(impl.goodput).toBeGreaterThan(0.3);
+    expect(xor.goodput).toBeLessThan(0.05);
   });
 
   // ── UCH-14: AIMD evaluates against a PARTIAL window ──────────────────────────────────────
@@ -423,5 +497,54 @@ describe("udp-lossy-transport.chaos", () => {
     const spuriousRate = r.nackBroadcasts / r.sent;
     expect(spuriousRate).toBeGreaterThan(0.03);
     expect(spuriousRate).toBeLessThan(0.06);
+  });
+
+  // ── UCH-17: the shipped receiver attains the code's ceiling, end to end ─────────────────
+  // The standing falsifier for 081KZYN3B79087G0R0014ZKE3C at the TRANSPORT layer, not the
+  // decoder layer. ULT-22 proves the decoder is exactly as strong as [8,4,4]; this proves the
+  // receiver STATE MACHINE gives that away nowhere — the defect lived at that seam, where
+  // `addToBlock` only attempted recovery at 7-of-8 and discarded decodable blocks.
+  //
+  // `impl-adinkra` drives the live `makeReceiverBlock`/`addToBlock` path packet by packet, in
+  // arrival order, through loss AND reordering AND duplication. `ml-adinkra` collects each
+  // block's arrival SET and decodes once by an independent algorithm. Byte-for-byte equality of
+  // the two under a real fault process is a much stronger statement than either alone, and any
+  // shortfall — a missed pattern, an order dependence, a lost block held one packet too long —
+  // shows up as a difference rather than as a slightly worse number nobody notices.
+  it("UCH-17: the live receiver delivers exactly what the code allows — no shortfall vs the ML ceiling", async () => {
+    for (const [rate, L] of [
+      [0.02, 1],
+      [0.05, 1],
+      [0.1, 1],
+      [0.2, 1],
+      [0.3, 1],
+      [0.05, 4],
+      [0.1, 4],
+      [0.2, 4],
+      [0.35, 8],
+    ] as [number, number][]) {
+      const cfg = defaultConfig({
+        blocks: 2000,
+        seed: 0x5eedn,
+        loss: burstParams(rate, L),
+        reorderProbability: 0.1,
+        reorderDepth: 8,
+        duplicateProbability: 0.1,
+      });
+      const impl = await runScenario(cfg, "impl-adinkra", 1);
+      const ml = await runScenario(cfg, "ml-adinkra", 1);
+      expect(impl.dataPacketsDelivered).toBe(ml.dataPacketsDelivered);
+      expect(impl.blocksLost).toBe(ml.blocksLost);
+      expect(impl.corruptDeliveries).toBe(0);
+      expect(ml.corruptDeliveries).toBe(0);
+    }
+    // ANTI-VACUITY. Every assertion above would hold if both decoders delivered nothing, and it
+    // would also hold if the channel dropped nothing. Pin that the hard points are genuinely
+    // hard — blocks ARE being lost at 30% — and that recovery is genuinely doing work.
+    const hard = defaultConfig({ blocks: 2000, seed: 0x5eedn, loss: burstParams(0.3, 1) });
+    const hardRun = await runScenario(hard, "impl-adinkra", 1);
+    expect(hardRun.blocksLost).toBeGreaterThan(0);
+    expect(hardRun.deliveryRatio).toBeGreaterThan(0.9); // …and recovered anyway, at 30% loss
+    expect(hardRun.observedLossRate).toBeGreaterThan(0.25);
   });
 });
