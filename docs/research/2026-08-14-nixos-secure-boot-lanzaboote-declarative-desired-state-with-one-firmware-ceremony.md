@@ -192,6 +192,26 @@ The centralized alternative (one org db key, signed artifacts distributed) would
 (one key to rotate, a shared signed rescue ISO) and is **disqualified** under Aaron's stated boundary. Do not
 propose it. The cost of the decentralized choice is real and stated in §7.1: no single signed rescue medium.
 
+**Where the decentralization stops (root: the OEM Platform Key, and the OEM firmware that enforces it).**
+This is a **software-layer** decentralization claim, and it is a good one — but it does not extend to the
+metal, and manifesto **§1 scale-free** should be read the same way here. Three limits, all structural:
+
+1. **Getting to Setup Mode is an OEM-gated act.** Per §3, deleting the PK requires an authenticated
+   variable update signed by the current PK's private key, which is the OEM's. The physical-presence
+   firmware-menu ceremony is the *only* path, and it exists because the OEM's firmware offers it.
+2. **The enforcer is OEM code.** After enrollment your PK/KEK/db are the roots for *image verification* —
+   that part genuinely becomes yours. But the UEFI implementation deciding whether to honour them is
+   vendor firmware you cannot read, rebuild, or replace, and OEM-signed capsule updates can change it.
+3. **The one root that is never ours is `db`'s Microsoft CA on GPU nodes** — already reported at §6.3,
+   which is the register this note follows.
+
+None of this argues against the design; per-node self-generated keys with no fleet CA remain the right
+shape and are strictly better than a fleet key. It bounds the claim: *within* what the firmware enforces,
+there is no central point of control; the firmware itself is a per-vendor one. The mitigation available is
+the same one that applies to attestation roots — **vendor diversity across the fleet**, so that one OEM's
+firmware behaviour is not every node's. See the sovereign-keys ladder's "Vendor roots cap every attestation
+claim" section, and `docs/research/2026-08-14-what-a-full-rewrite-cannot-remove-…md` §5.4.
+
 ---
 
 ## 5. Composition with the existing ISO / first-boot install path

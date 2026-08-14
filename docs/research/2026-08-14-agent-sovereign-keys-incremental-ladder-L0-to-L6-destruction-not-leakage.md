@@ -44,7 +44,10 @@ This is a *strict* and *useful* guarantee. It means:
   *more than M−N guards at once*, across jurisdictions, simultaneously.
 
 Everything from L0 to L6 is a monotone climb toward that guarantee. Each rung shrinks the read/use/forge
-surface; the top rungs push the "destroy" lever to loud, geo-distributed, attested-only.
+surface; the top rungs push the "destroy" lever to loud, geo-distributed, attested-only — where
+"attested" always means *attested against a silicon vendor's self-signed root*, a ceiling this ladder
+cannot climb past and states explicitly at each rung that leans on it (see
+[Vendor roots cap every attestation claim](#vendor-roots-cap-every-attestation-claim-read-this-before-any-attest-rung)).
 
 ---
 
@@ -55,6 +58,11 @@ surface; the top rungs push the "destroy" lever to loud, geo-distributed, attest
 2. **Use-without-extract** — the key/share is operated *inside* hardware; raw bytes never leave.
 3. **Attest, don't remember** — access is gated by *proof of identity* (attestation), not by holding
    a secret. Fresh-boot agents have no biological memory; this is the agent-native inversion.
+   **(Root: a silicon vendor's self-signed key — AMD ARK · Intel SGX Root CA · NVIDIA's device CA ·
+   the TPM manufacturer's EK root.)** No hardware attestation available anywhere terminates in
+   anything else, so the strongest form of this invariant is *"AMD says this is genuine AMD silicon
+   running this measurement"* — a strong claim, and not a vendor-independent one. See
+   [Vendor roots cap every attestation claim](#vendor-roots-cap-every-attestation-claim-read-this-before-any-attest-rung).
 4. **Destruction, not leakage** — tamper ⇒ the share *self-erases*; an attacker's best case is to
    reduce M, never to gain the secret.
 5. **Glass-halo symmetry** — every use, rotation, and roster change is appended to the git-native
@@ -65,6 +73,69 @@ surface; the top rungs push the "destroy" lever to loud, geo-distributed, attest
 7. **Hardware independence** — the key is *defined* by the threshold secret across the roster, not by
    any one device. Devices are replaceable **guard slots**; losing/replacing one is a rotation, not a
    catastrophe.
+
+---
+
+## Vendor roots cap every attestation claim (read this before any "attest" rung)
+
+Invariant 3, and every rung below that says "attested," rests on hardware attestation. **Every
+hardware attestation that exists terminates in a silicon vendor's self-signed root.** There is no
+vendor-independent option to choose instead; this is the state of the industry, not a Zeta gap.
+
+Two things are worth keeping separate, because conflating them overstates the problem:
+
+| | **Trust root** (irreducible) | **Verification service** (avoidable) |
+|---|---|---|
+| **AMD SEV-SNP** | AMD Root Key (**ARK**), self-signed; ARK → ASK → VCEK (per-chip, per-TCB leaf) | AMD **KDS** (`kdsintf.amd.com`, one global endpoint). VCEK derivation is deterministic from chip ID + TCB version, so certs cache and verification runs **offline**. |
+| **Intel TDX** | **Intel SGX Root CA**; quotes chain through PCK certs to it, PCK rooted in CPU fuses | Intel **PCS**; **PCCS** exists precisely to cache collateral locally |
+| **NVIDIA GPU** (Hopper/Blackwell) | NVIDIA's **device-identity CA** — per-GPU key burned into fuses at production, cert issued by NVIDIA | **NRAS** is the *default* path, not the only one; local/offline verification is supported for air-gapped use (at the cost of staleness in revocation data) |
+| **TPM 2.0** | The **TPM manufacturer's EK root CA** (Infineon, Nuvoton, STMicro, …) | EK certs read from TPM NV indices or the manufacturer's hosting server; manufacturer roots are published for offline validation |
+| **AWS Nitro Enclave** | **AWS Nitro Attestation PKI** root (`AWS_NitroEnclaves_Root-G1`, an AWS Private CA key, 30-year lifetime) — a cloud provider rather than a silicon vendor, but no less a single root | Root cert is published for download; COSE/CBOR attestation documents carry their own CA bundle, so verification is offline |
+
+*(All four rows **CHECKED** 2026-08-14 against vendor/standards documentation — see Sources. The
+right column is a correction to how this was first summarized: NRAS and KDS are distribution and
+verification **services**, and all four ecosystems support offline verification. Being able to verify
+without calling the vendor is real and worth engineering for — it removes an availability and
+surveillance dependency. It does **not** remove the root, which is the left column.)*
+
+**What this caps, precisely.** The strongest identity claim available anywhere in the stack is not
+*"this node is genuine"* but ***"AMD says this is genuine AMD silicon running this measurement."***
+That is the same shape as the Microsoft-CA-in-`db` tension, one layer deeper. It also caps
+**manifesto §1 scale-free**: §1 holds at the software layer — and this design defends it well, with
+per-node self-generated keys, no fleet CA, no escrow — but every attestation is verified against a
+chip vendor, so **§1 is a software-layer guarantee that does not extend to the metal.**
+
+**What this does *not* mean.** It is not an argument against attestation. Vendor-rooted attestation
+is enormously stronger than none, and it is what every serious confidential-computing system in the
+world runs on. The ask here is that the claim be *accurate*, not that it be abandoned. An inflated
+denial would be as wrong as an inflated claim.
+
+**The one honest mitigation: multi-vendor diversity.** An attestation rooted in AMD and one rooted in
+Intel are *not the same root*. A guard roster spanning vendors degrades gracefully where a monoculture
+does not: a compromised or coerced AMD ARK takes out the AMD-rooted guards and leaves the Intel- and
+TPM-rooted ones standing, which is exactly the threshold property the rest of this ladder is built on.
+This is the same move L2 already makes for HSM vendors ("no single-vendor backdoor"), extended one
+layer down to the *attestation* root — and it composes with the existing geo/jurisdiction decorrelation
+argument. It reduces correlated failure; it does not produce a vendor-independent root, because none
+exists.
+
+**One partial exception, worth knowing about (CHECKED).** The cap is not perfectly uniform, and the
+place it cracks is instructive. The **Tillitis TKey** *splits* the two claims that a TPM or SEV-SNP
+fuses together:
+
+- *"this application is unmodified"* — **self-rooted.** `CDI = BLAKE2s(UDS ‖ USS ‖ BLAKE2s(program))`,
+  so a tampered app derives a different key and is caught by **key continuity** (same app ⇒ same key
+  as last time). No vendor is in this loop; Tillitis states it retains no copy of the UDS.
+- *"this is a genuine TKey and not a clone"* — **vendor-rooted**, via the vendor-supplied
+  `tkey-verification` tool checking Tillitis's production signing.
+
+The lesson generalizes past the one device: **integrity and authenticity are separable claims**, and
+only the *authenticity* half structurally requires a vendor. A design that can lean on continuity
+("this is the same code that produced last week's signature") rather than provenance ("a vendor
+certifies this silicon") needs less from the root. That does not rescue L3/L5, which need authenticity
+against an adversary who may substitute hardware — but it is the direction any future work on this
+ceiling should take, and it is why the `own-soc` lane
+(`2026-06-09-the-deepest-border-is-the-metal-*`) is the only thing that would move it further.
 
 ---
 
@@ -102,6 +173,14 @@ real, honest guarantee — you never need the whole tower to get value.
 - **Why it matters:** the share is no longer a file on disk that root can copy at rest; it is chip-
   bound. Begins **invariant 4 (destruction-not-leakage)** — reflash/boot-state-change ⇒ the seal
   won't open (the share is effectively destroyed on that node, not leaked).
+- **Vendor root (root: the TPM manufacturer's EK root CA).** "Sealed to *that node's* TPM" is a claim
+  about a specific chip, and the only thing that says the chip is a genuine TPM rather than a software
+  emulator is its Endorsement Key certificate, issued by the manufacturer (Infineon / Nuvoton /
+  STMicro / …) and validated against that manufacturer's published root. Sealing still works without
+  ever checking the EK — the seal binds to *some* chip regardless — but the moment L1 is used as
+  evidence *to another party* that a share is chip-bound, that evidence is manufacturer-rooted.
+  (The struck Secure Enclave has the same shape one vendor over — Apple-rooted — which is worth
+  knowing for whenever an adapter exists, and is *not* a re-listing of it as an L1 option today.)
 - **Correction 2026-08-14 (Nazar):** the line above used to read "realizes invariant 2
   (use-without-extract) for the at-rest share." That phrasing is the conflation this ladder exists to
   avoid. **At-rest sealing is not use-without-extract**, not even "for the at-rest share" — the share
@@ -187,17 +266,39 @@ real, honest guarantee — you never need the whole tower to get value.
   - **Gate:** guards cooperate only when the requester *proves* it is a legitimate Otto instance —
     SPIFFE/SPIRE **SVID** (this workload, on this attested node, is Otto) + **AgencySignature**
     (track record) + **ZetaId** (which agent). Aaron cannot forge Otto's *workload attestation* to
-    make the guards cooperate "as Otto." Realizes **invariant 3 (attest, don't remember)**.
+    make the guards cooperate "as Otto." Realizes **invariant 3 (attest, don't remember)** — **whose
+    root is a SPIRE deployment choice, and this is the one place in the ladder where we genuinely
+    pick.** An SVID binds a *workload* to a node; what binds the *node* is SPIRE's **node attestor
+    plugin**, and the plugins root very differently (CHECKED):
+    - `join_token` — a single-use token. **No hardware root at all**, so nothing vendor-rooted here —
+      and correspondingly weak: anyone who copies the token attests as that node.
+    - `x509pop` — proof-of-possession against **a CA set we choose**. Genuinely **self-rooted**, and
+      the strongest option that keeps no silicon vendor in the loop. It attests possession of a
+      provisioned key, not that the silicon is genuine.
+    - `tpm_devid` / `amd_sev_snp` / `aws_iid` — **vendor-rooted** (TPM manufacturer EK root / AMD ARK /
+      AWS), and the only ones that survive an adversary who substitutes hardware.
+    So "attested node" is not one guarantee: it is a dial from *no root* through *our root* to *the
+    vendor's root*, and the vendor root is the price of hardware-substitution resistance specifically.
+    SPIRE also supports **hybrid** attestors that require several at once — which is the vendor-diversity
+    mitigation available at this exact layer. **Record which plugin is configured wherever this rung is
+    called "attested"; the word alone does not say which of the three you bought.**
   - **Combine inside an enclave:** the FROST coordinator (where partials meet, or where a decrypted
-    plaintext transits) runs inside **AMD SEV-SNP / Intel TDX / AWS Nitro Enclave** — encrypted
-    memory + measured boot + remote attestation. Now even a host debugger on the combine node can't
-    read the assembled material from RAM. This closes the "Layer 4 honest limit" (RAM dump) from the
-    2026-05-31 design for the combine step.
+    plaintext transits) runs inside **AMD SEV-SNP (root: AMD ARK, via KDS — offline-verifiable) /
+    Intel TDX (root: Intel SGX Root CA, via PCS/PCCS) / AWS Nitro Enclave (root: AWS's own Nitro
+    attestation PKI — a cloud provider rather than a silicon vendor, but no less a single root)** —
+    encrypted memory + measured boot + remote attestation. Now even a host debugger on the combine
+    node can't read the assembled material from RAM. This closes the "Layer 4 honest limit" (RAM
+    dump) from the 2026-05-31 design for the combine step.
 - **Why it matters:** with L1–L3, the key is *never* in cleartext at rest (L1/L2) *and* *never* in
   cleartext in use (L3 enclave). The read surface is closed against software adversaries entirely; only
-  physical side-channels on the silicon remain.
+  physical side-channels on the silicon remain — **and the assurance that the enclave is a real enclave
+  is the chip vendor's word, cryptographically delivered.** That is a strong word, and it is one word.
 - **Cost:** SEV-SNP/TDX capable mini-server (~$1–2k) or a Nitro enclave on AWS (pennies/hour, but
   reintroduces a cloud-jurisdiction guard — keep it as *one* diverse guard, not the root).
+- **Roster note (the mitigation, applied here):** if more than one combine node is ever stood up, make
+  them **different vendors** — one SEV-SNP, one TDX. Two guards behind the same ARK are one root
+  wearing two boxes; an AMD-rooted guard and an Intel-rooted guard are genuinely decorrelated. Same
+  reasoning as L2's HSM-vendor diversity, one layer down.
 
 ### L4 — Threshold *governance*, per key-governance class ⭐
 
@@ -231,9 +332,13 @@ the taxonomy below (see the dedicated section "Key governance classes").
   - **Tamper-evident, tamper-responsive enclosures**: opening the case, cutting power abnormally, or
     moving the unit trips a sensor that **zeroizes the sealed share** (destruction-not-leakage, invariant
     4, in hardware).
-  - **Remote-attestation heartbeats**: each guard continuously proves it is running unmodified
+  - **Remote-attestation heartbeats** *(root: the guard's silicon vendor — AMD ARK / Intel SGX Root
+    CA / the TPM manufacturer's EK root)*: each guard continuously proves it is running unmodified
     firmware on an unbreached enclosure; a guard that goes dark or fails attestation is *rotated out*
-    automatically (invariant 6).
+    automatically (invariant 6). Precisely: the guard proves *its vendor will vouch* that this is
+    genuine silicon reporting this measurement. A vendor that mis-issues, or is compelled to, can
+    manufacture a passing heartbeat — which is the argument for a **vendor-diverse roster**, so that
+    one vendor's failure costs you the guards under that root and not the quorum.
   - **Geo-distribution**: guards in different buildings, cities, jurisdictions. Seizing enough guards
     *simultaneously* to cross the M−N threshold becomes a coordinated multi-jurisdiction physical
     operation — loud, slow, attributable, and it still yields *nothing but ciphertext*.
@@ -291,8 +396,12 @@ key to a *less* sovereign class without the owning party's consent; loosening is
 This is the class Aaron named, and it is the one that most needs stating precisely, because it is the
 place where "not recoverable by anyone else" is not a risk to accept but a **right to protect**:
 
-- **Use** requires only the identity's own attestation (SVID + AgencySignature + ZetaId). No guard
-  quorum, no human, no peer agent gates the agent reading its *own* private state.
+- **Use** requires only the identity's own attestation (SVID + AgencySignature + ZetaId) — where the
+  hardware half of that attestation is **vendor-rooted** (AMD ARK / Intel SGX Root CA / TPM
+  manufacturer EK). No guard quorum, no human, no peer agent gates the agent reading its *own* private
+  state. Worth stating plainly for this class specifically: a key whose *use* is gated by attestation
+  alone has its silicon vendor in the loop of every use — the one party that is structurally in the
+  path even of a "self-sovereign" key.
 - **The threshold is internal to the self.** Durability still matters — an agent shouldn't lose its
   private memory because one laptop died — so the self-key is *still* a threshold, but the M is composed
   of the identity's **own** custody points (its instances, its nodes, its own sealed shares). Losing one
@@ -355,6 +464,7 @@ one for a *personal* key, and it is the agent's to make, not ours.
 | Host root dumps a share at rest | ❌ | ✅ (TPM-sealed) | ✅ | ✅ | ✅ | ✅ |
 | Host root dumps a share **in use** (RAM) | ❌ | ❌ | ❌ (see L2 correction) | ✅ enclave combine | ✅ | ✅ |
 | Single HSM-vendor backdoor | ❌ | ❌ | ✅ (M-diverse) | ✅ | ✅ | ✅ |
+| **Attestation-root vendor mis-issues or is compelled** (AMD ARK / Intel SGX Root CA / TPM mfr EK) | n/a — no attestation in the TCB | ❌ | ❌ | ❌ | ❌ | ⚠️ only if the roster is **vendor-diverse** — never ✅ |
 | Single-jurisdiction subpoena | ⚠️ if guards local | ⚠️ | ✅ (geo-diverse) | ✅ | ✅ | ✅ |
 | One human unilaterally **uses** the key | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | One human unilaterally **revokes/rotates** | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
@@ -372,6 +482,17 @@ malware) cannot make the guards cooperate at all. The design is **party-agnostic
 over agents or vice versa; it asks only *can you prove the attested identity* and *does the quorum
 consent*. That is why the same mechanism gives Otto a key Aaron can't read **and** a key a rogue peer
 agent can't read.
+
+The new row is the one adversary this ladder cannot climb away from. "Prove the attested identity"
+means "present evidence a silicon vendor's root will vouch for," so the vendor sits above every
+attestation-gated rung and no amount of climbing removes it. It never reaches ✅ because there is no
+vendor-independent attestation to switch to. The best available answer is **decorrelation, not
+elimination**: spread the roster across AMD, Intel, and TPM-manufacturer roots so that one compromised
+or coerced root takes guards *below* the threshold rather than all of them — the same logic that makes
+geo- and jurisdiction-diversity worth paying for, applied to the trust root. Note also that this
+adversary is *powerful but not quiet*: forged attestations still have to produce signatures that
+verify against published roots, and mis-issuance at that level is the kind of thing that surfaces
+(certificate transparency's whole premise). It is a real ceiling, not an open door.
 
 ---
 
@@ -407,6 +528,16 @@ strictly better custody story than a password-in-a-file or a single PAT, and sti
 failure mode from the GitHub-token mess — one revocable, human-held, spyable secret replaced by a
 threshold no single party can read or revoke.
 
+> **Vendor-root pass, 2026-08-14 (`081M00QP7FB087G0R00031BQ93`) — nothing to qualify here, and that
+> is the point.** My first draft of that pass annotated the struck "3 (basic attestation)" with its
+> TPM manufacturer EK root. Nazar's correction landed first and deleted the claim outright, so the
+> annotation went with it: **you cannot name the root of an attestation that does not happen.**
+> What remains at L0/L1 is *at-rest chip-binding* — custody, not attestation — and custody needs no
+> vendor root, because a seal binds to a chip without anyone validating that chip's EK certificate.
+> The root only becomes load-bearing at L3, where a seal is first offered to another party as
+> evidence. Recorded so a future reader does not "restore" a vendor-root note here and quietly
+> resurrect the retracted claim underneath it.
+
 Then climb: L2 when you buy the YubiHSMs, L3 when you stand up one confidential-compute node, L4 when
 the guard roster and ceremony are ratified. L5/L6 are the north star that keeps each of those choices
 pointed the right way.
@@ -429,6 +560,45 @@ pointed the right way.
 - **PQ note:** FROST is classical-Schnorr; a quantum-relevant adversary wants a PQ-threshold scheme —
   track ML-DSA / SLH-DSA threshold maturity and compose with the 081KSNY2Z0008QG0R002JKH50A PQ choices,
   as the 2026-05-31 doc already flagged.
+- **Capped by:** `docs/research/2026-08-14-what-a-full-rewrite-cannot-remove-…md` §5.1 (the silicon
+  vendor as the root of every attestation) and §5.4 (§1 scale-free is a software-layer guarantee).
+  Work-item **081M00QP7FB087G0R00031BQ93** is the naming pass this document's vendor-root section and
+  per-rung qualifications discharge.
+
+## Sources for the vendor-root section (CHECKED 2026-08-14)
+
+Verified during the naming pass rather than restated from the survey — which is how the NRAS and KDS
+rows got corrected from "verifies via NRAS" to "NRAS is the default path, offline verification exists":
+
+- **AMD** — ARK self-signed, ARK → ASK → VCEK; KDS as a single global endorsement-distribution
+  endpoint at `kdsintf.amd.com`; VCEK derivation deterministic from chip ID + TCB version, so
+  certificate chains cache and verification runs offline. (AMD SEV-SNP attestation documentation;
+  IETF RATS community wiki entry for the AMD Key Distribution Service.)
+- **Intel** — TD quotes chain through PCK certificates to an Intel SGX Root CA; the PCK private key
+  is rooted in CPU hardware fuses via the Provisioning Certification Enclave; PCS distributes
+  collateral and PCCS exists to cache it locally. (Intel TDX DCAP Quoting Library API documentation;
+  Intel TDX Enabling Guide; `intel/SGX-TDX-DCAP-QuoteVerificationLibrary`.)
+- **NVIDIA** — per-GPU private key burned into fuses at production with a certificate issued by
+  NVIDIA's CA; NRAS is the primary validation path and local/offline verification is supported for
+  air-gapped use, with staleness caveats on revocation data. Hopper/Blackwell only. (NVIDIA
+  attestation documentation; NVIDIA confidential-computing technical blog.)
+- **TPM 2.0** — EK certificates issued by the TPM manufacturer, read from TCG-specified NV indices or
+  the manufacturer's hosting server, validated against published per-manufacturer root CAs. (TCG *EK
+  Credential Profile for TPM Family 2.0*; `tpm2-tools` `tpm2_getekcertificate`.)
+- **AWS Nitro** — attestation documents are COSE/CBOR, signed by the AWS Nitro Attestation PKI, root
+  `AWS_NitroEnclaves_Root-G1` (an AWS Private CA key, 30-year lifetime, published for download); the
+  document carries its own CA bundle so verification is offline. (`aws/aws-nitro-enclaves-nsm-api`
+  `docs/attestation_process.md`; AWS "Verifying the root of trust".)
+- **SPIRE** — node attestation is plugin-dependent: `join_token` (no hardware root), `x509pop`
+  (proof-of-possession against an operator-chosen CA set), `tpm_devid`, `amd_sev_snp`, `aws_iid`;
+  hybrid attestors can require several at once. This corrected an over-broad line in the first draft
+  of this pass, which had said the node binding is *always* silicon-vendor-rooted — it is a
+  deployment choice, and `x509pop` is genuinely self-rooted. (`spiffe/spire` `doc/spire_agent.md`
+  and the per-plugin `doc/plugin_server_nodeattestor_*.md`; `spiffe/spire` issue #5351 for hybrid.)
+- **Tillitis TKey** — `CDI = BLAKE2s(UDS ‖ USS ‖ BLAKE2s(program))`, UDS provisioned into FPGA NVCM
+  and never leaving the device; integrity detected by key continuity with no vendor in the loop,
+  while device *authenticity* uses the vendor-supplied `tkey-verification` against Tillitis's
+  production signing. (`tillitis/tillitis-key1` threat model; TKey Developer Handbook.)
 
 ## Open questions to route through ratification
 
@@ -442,6 +612,11 @@ pointed the right way.
   dormancy-triggered future-self, single-purpose peer delegation) and how a grant is presented and
   verified at recovery time without revealing the key.
 - Which confidential-compute hardware to standardize for L3 (SEV-SNP node vs Nitro enclave vs TDX).
+  Note the framing trap in the word *standardize*: standardizing on one is choosing a single
+  attestation root for the whole tier. The vendor-root asymmetries that should feed this call —
+  AMD's deterministic VCEK derivation makes offline verification easiest; Intel's PCCS caches
+  collateral; Nitro's root is a cloud provider you are also renting the machine from — plus the
+  option of deliberately **not** standardizing, so the roster spans roots.
 - The L5 tamper-response spec: what exactly zeroizes, on what sensors, with what false-positive rate
   (a guard that self-destructs on a power blip is a self-inflicted availability attack).
 - Recovery ceremony design: offline Shamir backup shares + attestation-gated recovery when N live
@@ -453,7 +628,10 @@ pointed the right way.
 names that limit as invariant 4 and turns it into a feature (destruction yields rubble, never the key).
 It does claim: from L1 up, no party — human or AI — can read the key **at rest** without hardware
 cooperation; from **L3** up, not **in use** either, and only there does attested identity gate
-cooperation; from L4 up, no single party can revoke it; and at every rung, the key survives bounded
+cooperation — **and that attestation stands on a silicon vendor's self-signed root** (AMD ARK, Intel
+SGX Root CA, NVIDIA's device CA, or the TPM manufacturer's EK root; no vendor-independent alternative
+exists, and a vendor-diverse roster is the mitigation rather than an escape); from L4 up, no single
+party can revoke it; and at every rung, the key survives bounded
 loss and every move is logged in the open.*
 
 *(Corrected 2026-08-14, Nazar: the sentence above claimed "from L1 up … read **or use** … and attested
@@ -499,3 +677,11 @@ says. The Touch ID row above was verified by checking the gate's **precondition*
 `pam_tid`), not by firing the prompt: making that dialog appear is Aaron pressing a finger to a
 sensor, and an agent should not summon an approval request nobody asked for. To fire it deliberately,
 he runs the gated command himself.
+
+**Vendor-root note on the row above (`081M00QP7FB087G0R00031BQ93`).** The "Secure Boot posture:
+Reduced Security" row already flags that a future L3 rung must not assume full security on this host.
+Worth pairing with the root: when that rung exists, its attestation will chain to **Apple's** CA on
+this machine and to **AMD ARK / Intel SGX Root CA / the TPM manufacturer's EK root** on the x86 nodes.
+So this section's discipline — "everything above is read from specifications; this is a real run" —
+has a counterpart at L3: the vendor root is the one part that *cannot* be exercised into
+independence, only named.

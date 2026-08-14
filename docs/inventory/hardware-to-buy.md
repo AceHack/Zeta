@@ -92,6 +92,17 @@ Start smaller if validating: **2× YubiHSM 2** (~$1,300) is enough to prove HSM-
   secret; key exists only when the *attested app* runs). Embodies the design's "attest, don't
   remember" inversion. **Buy 2 to experiment** with attestation-gated derivation. *Confirm 2026
   availability/specs before ordering (search was inconclusive).*
+  - **Vendor root — the interesting exception, and a reason to actually buy these** (CHECKED
+    2026-08-14): TKey **splits** the two claims a TPM or SEV-SNP fuses into one.
+    *(a) "this app is unmodified"* is **self-rooted** — `CDI = BLAKE2s(UDS ‖ USS ‖ BLAKE2s(program))`,
+    so tampering with the app changes the derived key and you detect it by **key continuity** (same
+    app ⇒ same key as last time). No vendor is consulted, and Tillitis states it does not retain a
+    copy of the UDS. *(b) "this is a genuine TKey, not a clone"* is **vendor-rooted** — that is what
+    the vendor-supplied `tkey-verification` tool checks, against Tillitis's production signing.
+    So the vendor cap that applies to every other device on this list binds TKey's *authenticity*
+    claim but **not** its *integrity* claim. With an open FPGA bitstream and open firmware, that is
+    the closest purchasable thing to a vendor-independent measured-boot root — worth the ~$160 to
+    learn the shape even if it never reaches production.
 
 ### Tier 3 — confidential computing ("Xbox-style", down the road, don't buy yet)
 
@@ -100,6 +111,20 @@ The Layer-4 full fix for the debug-dump limit (encrypted memory + measured boot)
 encryption + attestation) as a confidential-compute guard. Consumer Ryzen often lacks full
 SEV-SNP — verify the specific SKU before buying. (Inventory already has Ryzen 9 9955HX / 7940HS;
 confirm whether either exposes SEV-SNP.)
+
+**Vendor root, before this becomes a purchase (root: AMD ARK).** SEV-SNP attestation reports chain
+VCEK → ASK → **ARK, AMD's self-signed root**, with certificates distributed by AMD's KDS. Buying this
+node buys a real capability *and* takes on AMD as the root of every attestation that node makes. Two
+consequences for the buy decision, neither of which argues against buying:
+
+- **AMD is the friendliest of the options on verification.** VCEK derivation is deterministic from
+  chip ID + TCB version, so certificates cache and verification runs **offline** — no per-attestation
+  call to AMD. Prefer that mode from day one; it removes an availability and surveillance dependency
+  (though not the root itself).
+- **If a second confidential-compute guard is ever bought, buy Intel TDX, not a second AMD box.**
+  Two SEV-SNP guards share one root and fail together; an AMD-rooted guard plus an Intel-rooted guard
+  are genuinely decorrelated. Same reasoning as the Tier-1 YubiHSM + NetHSM split above — which is
+  already the right instinct, applied one layer down to the attestation root.
 
 ### No-hardware note
 

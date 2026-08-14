@@ -68,6 +68,12 @@ Two consumers, both live:
   and Addison's list shows the fleet is Ryzen 9 7940HS / 9955HX / N100 / N150 / J4125, i.e.
   all consumer. That conclusion currently rests on a draft rather than on the register, and
   the register is where a claim like that should be checkable.
+  **Record the attestation root per CPU while you are at it** (`081M00QP7FB087G0R00031BQ93`): the
+  register should carry not just *can this node attest* but *to whose root* — TDX chains to the
+  **Intel SGX Root CA**, SEV-SNP to **AMD's ARK**, a TPM to its **manufacturer's EK root**. That
+  makes the vendor-diversity question answerable from the register rather than by inspection, which
+  matters because two SEV-SNP nodes are one root wearing two boxes, and a fleet spanning AMD and
+  Intel roots degrades gracefully where a monoculture does not.
 
 ## Pointers
 

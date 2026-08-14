@@ -492,7 +492,12 @@ the package registry + Aaron's trust in Anthropic.
 - **Gap 4 (CI)**, **Gap 9 (secrets)**, **Gap 10 (harness)** —
   these are infrastructure-level. No algebra closes them.
   Mitigations are operational: runner pinning (Nazar /
-  Dejan), reproducible builds, hardware attestation.
+  Dejan), reproducible builds, hardware attestation — the last
+  of which shifts trust rather than removing it, since every
+  hardware attestation terminates in a **silicon vendor's
+  self-signed root** (AMD ARK / Intel SGX Root CA / TPM
+  manufacturer EK root). Still a large improvement over an
+  unattested runner; just not a gap *closed*.
 
 ## Priority ordering — what to close first
 

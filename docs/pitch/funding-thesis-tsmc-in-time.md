@@ -30,7 +30,11 @@ clearly marked, not yet verified.** Marking the line precisely is *itself* the p
   *modeled* telemetry) plus a **real-data adapter** stating exactly what a live system must emit. The
   verification-precision the moat sells, made concrete on a load-bearing security primitive. (Register-2
   for the *verification primitive*; the full guardian — hardware attestation, real EMS integration — stays
-  Conjecture. Diligence surface: [`../explainers/decorrelation-meter-grid-trust-for-max.md`](../explainers/decorrelation-meter-grid-trust-for-max.md).)
+  Conjecture. When it is built, its strongest possible claim is *"the silicon vendor vouches this is
+  genuine silicon running this measurement"* — hardware attestation terminates in a vendor's self-signed
+  root, AMD ARK or Intel SGX Root CA, with no vendor-independent alternative in existence. That is the
+  industry-standard foundation, not a weakness; stating it is how a diligence reader knows the number is
+  honest. Diligence surface: [`../explainers/decorrelation-meter-grid-trust-for-max.md`](../explainers/decorrelation-meter-grid-trust-for-max.md).)
 - **The factory method** — the founder produces *observations*; a decorrelated society + independent
   oracles verify; passing seeds become substrate, failing seeds retract (key-man risk answered
   structurally — see below).

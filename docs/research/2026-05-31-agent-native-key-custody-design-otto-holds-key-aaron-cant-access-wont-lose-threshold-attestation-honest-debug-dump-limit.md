@@ -109,7 +109,22 @@ is where the keystone's identity layer plugs in:
 - **ZetaId** — the category-tagged distributed identity (which agent, which category).
 
 Aaron cannot forge Otto's *workload attestation* to make the guards cooperate "as Otto," and
-every invocation is **auditable (glass-halo)**. The **NCI social-consent floor** binds the human
+every invocation is **auditable (glass-halo)**.
+
+> **Root of "this attested node" (added 2026-08-14, work-item `081M00QP7FB087G0R00031BQ93`).** An
+> SVID binds a *workload* to a node. What binds the **node** is SPIRE's node-attestor plugin, and the
+> root differs by plugin (CHECKED): `join_token` has **no hardware root**; `x509pop` roots in **a CA
+> we choose** (self-rooted, and it attests key possession rather than genuine silicon); `tpm_devid` /
+> `amd_sev_snp` / `aws_iid` root in a **vendor's self-signed key** (TPM manufacturer EK root, AMD's
+> ARK, AWS) and are the only ones that resist an adversary who substitutes hardware.
+> So this layer's guarantee is not a single thing — "attested node" is a dial from *no root* through
+> *our root* to *the vendor's root*, and **a vendor root is specifically the price of
+> hardware-substitution resistance**. Whichever is chosen, say which: the word "attested" alone does
+> not tell a reader what was bought. Where the vendor-rooted plugins are used, the mitigation is a
+> **vendor-diverse roster** (SPIRE supports hybrid attestors requiring several at once), not an
+> escape — no vendor-independent hardware attestation exists. Full treatment in the L0–L6 ladder's
+> "Vendor roots cap every attestation claim" section
+> (`docs/research/2026-08-14-agent-sovereign-keys-incremental-ladder-…md`). The **NCI social-consent floor** binds the human
 guards: a key-guard is a society member with agency — their cooperation is **consent, not
 compulsion** (no coercing a guard to release a share; per
 `non-coercion-invariant` <!-- STALE-REF: ../../.claude/rules/non-coercion-invariant.md -->).

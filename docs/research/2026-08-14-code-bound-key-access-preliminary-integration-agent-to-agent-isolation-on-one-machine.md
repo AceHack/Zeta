@@ -28,11 +28,17 @@ cells on that machine is asking for a key ten hours later.
 Code-bound key access is exactly the extension of the measurement from *boot* into *runtime*. So
 these are one ladder, not two efforts:
 
-| rung | what is measured | what a key is bound to |
-|---|---|---|
-| L1 (today) | nothing at runtime | a **credential** — whoever holds the PIN/auth key |
-| L2 | the running binary, by the OS | a **signed binary's identity** |
-| L3 | boot + code, by hardware | a **PCR-sealed policy** — no credential exists to steal |
+| rung | what is measured | what a key is bound to | trust root |
+|---|---|---|---|
+| L1 (today) | nothing at runtime | a **credential** — whoever holds the PIN/auth key | the HSM vendor (YubiHSM attestation) |
+| L2 | the running binary, by the OS | a **signed binary's identity** | **Apple** on macOS (code-signature ACLs); our own IMA/EVM or LSM signing keys on Linux |
+| L3 | boot + code, by hardware | a **PCR-sealed policy** — no credential exists to steal | the **TPM manufacturer's EK root CA** |
+
+The trust-root column is not decoration. Climbing this ladder trades a credential you can steal for a
+vendor whose word you must take, and the rungs get *stronger* as you climb — a vendor root is a far
+better thing to depend on than a file-readable auth key — but the dependency never goes to zero. Note
+the asymmetry the column exposes: Linux L2 is the one cell where the root can be **ours** (we sign the
+IMA/EVM policy), which is a point in its favour that the cost comparison below does not otherwise show.
 
 ## 3. Where we actually are — L1, and its boundary is weaker than it looks
 
@@ -59,9 +65,14 @@ credentials sit beside each other in one process's reach.
   the credential path. Both are real, both are a NixOS module's worth of work, and both change the
   node's failure modes.
 
-**L3 — TPM-sealed to PCRs extended with the code measurement.** The strongest, and the only one
+**L3 — TPM-sealed to PCRs extended with the code measurement** *(root: the TPM manufacturer's EK
+root CA)*. The strongest, and the only one
 with no credential to steal: the key material is released by the TPM *only* when the measurement
-register matches. The costs are equally real — Apple Silicon has **no TPM 2.0** (confirmed by the
+register matches. "No credential to steal" is exact and is the real win — but what stands behind it
+is a chip whose genuineness is certified by an Endorsement Key certificate the manufacturer issued.
+Sealing works without ever validating that EK; the root only becomes load-bearing when the seal is
+offered to *another party* as proof, at which point the proof is manufacturer-rooted. The costs are
+equally real — Apple Silicon has **no TPM 2.0** (confirmed by the
 probe on the Mac Studio), so this rung is x86-node-only, and sealing to PCRs makes every
 legitimate code update a re-seal ceremony. That last point is the one that decides whether L3 is
 livable at 20 sites, and it should be answered before anything is built.

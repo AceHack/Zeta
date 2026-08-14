@@ -43,6 +43,17 @@ Both feed the same credence query; the binding is just a high-weight piece of ev
   least "central" of the central rails (only the attestation CA is). It is the natural hardware attestation for
   the yang key, and the human analogue of the #6913 watch-EKG-AgencySignature: a hardware-bound human consent
   pulse.
+  - **Name that CA, because it is the same ceiling everywhere else in the stack**
+    (`081M00QP7FB087G0R00031BQ93`): WebAuthn attestation roots in the **authenticator vendor's
+    attestation CA** (Yubico's, Feitian's, Apple's for platform authenticators), distributed via the
+    FIDO Metadata Service. So "hardware-bound" is vendor-vouched, exactly as AMD ARK / Intel SGX Root
+    CA / the TPM manufacturer's EK root are for the machine-side claims. The good news specific to
+    FIDO is stronger than "optional" (CHECKED): `none` is the **W3C WebAuthn Level 2 default**
+    conveyance, and a relying party that takes it still gets the full public-key,
+    user-holds-the-key property — it just learns nothing about the authenticator model. So here the
+    vendor root is a *droppable credence booster*, not a gate: exactly the weight-free shape argued
+    above, and a materially better position than the confidential-compute rungs get, where the
+    attestation IS the gate.
 
 ## Web3 anchors too — and ZetaId points to all of them like deps & secrets (Aaron, cont.)
 

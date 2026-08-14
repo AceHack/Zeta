@@ -1,0 +1,14 @@
+{
+  "id": "080d000c9ee8b010a0130008b666c34b",
+  "at": "2026-08-14T18:41:02.742Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00S7Q8P087G0R00044ZN8Q",
+    "type": "task",
+    "title": "Propose manifesto §1 scale-free annotation: a software-layer guarantee that does not extend to firmware/attestation trust roots",
+    "slug": "propose-manifesto-1-scale-free-annotation-a-software-layer-g",
+    "priority": "P2",
+    "filename": "081M00S7Q8P087G0R00044ZN8Q-propose-manifesto-1-scale-free-annotation-a-software-layer-g.md"
+  }
+}

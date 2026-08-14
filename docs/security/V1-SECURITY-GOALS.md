@@ -94,7 +94,12 @@ A control that fails any of (1)-(3) lands in
   Zeta has no crypto surface to constant-time.
 - **Trusted-execution-environment integration (SGX / SEV / TDX).**
   Out of scope for the DBSP algebra layer. Consumers who need
-  this wrap Zeta in their own TEE.
+  this wrap Zeta in their own TEE. Note for whoever revisits: a
+  TEE's attestation terminates in a **silicon vendor's self-signed
+  root** (AMD ARK / Intel SGX Root CA), so adopting one adds a
+  vendor to the trust base. That is a normal and acceptable trade
+  — it is what every confidential-computing system does — but it
+  belongs in the goal statement rather than discovered later.
 
 ### Nation-state bespoke malware
 

@@ -97,7 +97,10 @@ guarantee class and worth having.
 
 ## The limits, and they are not small
 
-- **A hardware trust root is a trust dependency (§1).** Every attestation chains to a vendor. The prior
+- **A hardware trust root is a trust dependency (§1).** Every attestation chains to a vendor —
+  concretely, to a **self-signed vendor root**: the TPM manufacturer's EK root CA for TPM 2.0
+  non-migratable keys, Apple's CA for Secure Enclave attestation, Google's for Android StrongBox,
+  AMD's ARK for SEV-SNP, Intel's SGX Root CA for TDX. The prior
   doc's framing — authority scoped to your own artefact, no central seat — is weakened by a vendor who
   vouches for everyone's attestations. `081KTHY32YQ08QG0R000JWHJYN` already settles the layering for this
   class: external anchors are **optional, revocable credence boosters**, never load-bearing for

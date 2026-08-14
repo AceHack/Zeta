@@ -22,6 +22,22 @@ silicon → manufacturing**). The deepest border is the **chip itself**:
 - **Secure boot.** A measured boot chain rooted in **our** keys (the keyring PKI all
   the way down): each stage verifies the next against a root we control, so nothing
   unsigned-by-us runs on our metal.
+
+> **Where we are today, so the gap is legible** (`081M00QP7FB087G0R00031BQ93`). Everything above is
+> the *destination*, and this doc is the only lane in the repo that reaches it. On the hardware we
+> actually run, the position is the opposite: every attestation terminates in a **silicon vendor's
+> self-signed root** — AMD's ARK, Intel's SGX Root CA, NVIDIA's device CA, the TPM manufacturer's EK
+> root — and each board's firmware trust root is its OEM's **Platform Key**. That is why "own the
+> SoC" is the *deepest* border and not a rhetorical one: it is the only move that converts "the
+> vendor vouches for this silicon" into "we vouch for this silicon."
+>
+> Two honest qualifiers, so this reads as a decade-scale program rather than a near-term plan:
+> **(1)** vendor-rooted attestation is not broken — it is what every serious system in the world
+> uses, and a fleet spanning AMD *and* Intel roots already degrades gracefully where a monoculture
+> does not; **(2)** owning the SoC relocates the root rather than abolishing it — customers of *our*
+> silicon would then be trusting *our* self-signed root, which is the same structure with a different
+> name. The gain is sovereignty over our own metal, not the invention of a rootless attestation.
+> There is no such thing.
 - **Own the PKI.** The same PKI that starts at the keyring (SSH/PGP/Nostr + the
   byte-locked derivation) extends into silicon: the root of trust is one owned PKI
   from the seed phrase to the boot ROM.

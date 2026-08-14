@@ -86,6 +86,14 @@ So the identity-access stack composes: **SPIRE attests → SPIFFE SVID = the ide
 
 `[labeling-confidence: hypothesized]` — SPIFFE/SPIRE/OPA as the external-standard adapters behind the Rainbow-Table identity + bus-lane policy ports is a design composition to verify; the in-house crypto-identity (081KSNY2Z0008QG0R002JKH50A) is the alternative/peer implementation behind the same port.
 
+**"SPIRE attests" — say what the root is when this is built** (`081M00QP7FB087G0R00031BQ93`). SPIRE's
+node attestation is only as strong as its configured **node-attestor plugin**, and the plugins root
+differently (CHECKED 2026-08-14): `join_token` = **no hardware root** (copy the token, attest as that
+node); `x509pop` = **a CA we choose** (self-rooted; attests key possession, not genuine silicon);
+`tpm_devid` / `amd_sev_snp` / `aws_iid` = **a vendor's self-signed root** (TPM manufacturer EK root /
+AMD ARK / AWS) and the only ones that resist hardware substitution. So this row's "attests" is a dial,
+not a guarantee — record the plugin alongside any lane-admission claim that leans on it.
+
 ## Addressing — the real-world Rainbow-Table grounding (E911 street-segment / ArcGIS / Census-TIGER)
 
 Aaron 2026-06-02 (verbatim): *"rainbow table responders just need your 911 addressable street segment, arcgis census election boundary lines drawn on the map lol — i did that [at] Elections Systems and Software, it's the same but not for gerry mandering."*

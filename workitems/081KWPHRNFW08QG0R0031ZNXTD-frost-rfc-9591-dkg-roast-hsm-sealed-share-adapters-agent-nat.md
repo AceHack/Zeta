@@ -19,7 +19,13 @@ key custody design wants:
 
 1. **Layer 1** — per-guard HSM/TPM seals the share (use-without-extract)
 2. **Layer 2** — FROST across guards without a dealer who ever holds the full scalar
-3. **Layer 3** — attestation-gated invocation (SPIFFE / AgencySignature / ZetaId)
+3. **Layer 3** — attestation-gated invocation (SPIFFE / AgencySignature / ZetaId) — **rooted in a
+   silicon vendor's self-signed key** (TPM manufacturer EK root / AMD ARK / Intel SGX Root CA).
+   Whoever implements this: the gate is real and worth building, and it is not vendor-independent.
+   Do not write "attested" in the code comments or the DoD without the root beside it, and prefer a
+   **vendor-diverse** guard roster so one root's compromise costs guards rather than the quorum.
+   (`081M00QP7FB087G0R00031BQ93`; detail in the L0–L6 ladder's "Vendor roots cap every attestation
+   claim".)
 
 RFC 9591 DKG removes the dealer SPOF; ROAST adds robustness under concurrent signers;
 HSM adapters seal shares so host RAM never sees share bytes during partial sign.
