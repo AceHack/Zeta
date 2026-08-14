@@ -106,6 +106,11 @@ module SoftThrottle =
     /// **The boat — Aaron's zero-wait batch, generalized over his limiter.** Take items (arrival order,
     /// never waits, no timeout) while the limiter says they fit, folding its state; stop the instant one
     /// doesn't. Returns (boat, remaining, finalState).
+    ///
+    /// **Conservation (locked by test): `boat @ remaining = items`, exactly.** The non-boarding items are
+    /// HANDED BACK to the caller, never dropped — deferral, not annihilation. Under the `SchedulerZeta`
+    /// test (*"because the fixed points are derived, drop-and-recompute is lossless"*) that makes a full
+    /// boat **pressure**, never loss. See `SchedulerShedHeat.throttlePressure`.
     let boat (limiter: Limiter<'a, 's>) (items: 'a list) (s0: 's) : 'a list * 'a list * 's =
         let rec go acc rest s =
             match rest with
@@ -113,6 +118,10 @@ module SoftThrottle =
             | x :: xs ->
                 match limiter x s with
                 | true, s' -> go (x :: acc) xs s'
+                // SHED: soft-throttle-boat-close class=pressure metered=no
+                // NOT loss: `rest` (the unboarded tail, `x` included) is RETURNED, so
+                // the partition is exact and the caller retains every item. Nothing
+                // was annihilated, so nothing needs a loss meter.
                 | false, _ -> List.rev acc, rest, s
 
         go [] items s0
@@ -146,6 +155,10 @@ module SoftThrottle =
             match discharge want t with
             | Some t' -> want, t'
             | None ->
+                // SHED: soft-throttle-step-sip class=pressure metered=no
+                // NOT loss: the shortfall is `want - served`, and the caller supplied
+                // `want` — it still holds both halves. A scalar deficit the caller can
+                // recompute is deferral, so this is pressure at most.
                 let sip = available t
                 sip, { t with Charge = 0.0 }
         else
@@ -171,6 +184,13 @@ module SoftThrottle =
     /// otherwise the arrival is *softly skipped* (inner state untouched, tank charges, the room keeps
     /// breathing). `pressure` reads the current pressure off the inner state. The SCHEDULER IS UNTOUCHED
     /// — softness arrives by wrapping (the 081KTQD8A0008QG0R0005EFYPV razor: instantiation, not refactor).
+    ///
+    /// **A soft skip is PRESSURE, never loss** (locked by test). `Inner` is carried through
+    /// bit-for-bit — the wrapper never held the arrival as data in the first place (`Handler.Run` is
+    /// `ISR<'S,'S>`; it cannot see the crossing), and `SoftScheduler.Source` is `int -> InterruptKind list`,
+    /// a pure function of the tick the scheduler retains for the whole run. So the skipped arrival is
+    /// derived, drop-and-recompute is lossless, and `Served + Skipped = Tick` holds every tick — nothing
+    /// is annihilated to pay for. `SchedulerShedHeat.throttlePressure` reads `Skipped` as backpressure.
     let wrapHandler
         (k: float)
         (seed: int64)
@@ -194,7 +214,9 @@ module SoftThrottle =
                                     Tick = st.Tick + 1
                                     Served = st.Served + 1 })
                     | None ->
-                        // tank dry — soft skip; charge and move on (no hard failure)
+                        // SHED: soft-throttle-skip-dry-tank class=pressure metered=yes
+                        // tank dry — soft skip; charge and move on (no hard failure).
+                        // `Inner` unchanged ⇒ nothing annihilated ⇒ pressure (Skipped).
                         return
                             Ok
                                 { st with
@@ -202,7 +224,9 @@ module SoftThrottle =
                                     Tick = st.Tick + 1
                                     Skipped = st.Skipped + 1 }
                 else
-                    // gradient said not-now — soft skip; charge
+                    // SHED: soft-throttle-skip-gradient class=pressure metered=yes
+                    // gradient said not-now — soft skip; charge.
+                    // `Inner` unchanged ⇒ nothing annihilated ⇒ pressure (Skipped).
                     return
                         Ok
                             { st with

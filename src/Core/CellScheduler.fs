@@ -33,34 +33,115 @@ module CellScheduler =
           Inbox: Map<CellId, 'Msg list>   // head = next to process (FIFO)
           Ready: CellId list }             // head = next to run (FIFO); distinct
 
+    // ═══════════════════════════════════════════════════════════════
+    //  The shed channel — what routing ANNIHILATES.
+    //
+    //  The deciding test is already stated in `SchedulerZeta`: *"because
+    //  the fixed points are DERIVED, drop-and-recompute is LOSSLESS"*. So:
+    //    • a shed whose payload something still retains (a queue, a report,
+    //      a seed) is DEFERRAL — recoverable — and reads as **pressure**;
+    //    • a shed after which NO reachable state distinguishes the payload
+    //      from any other is ANNIHILATION — unrecoverable — and reads as
+    //      **loss**. It pays.
+    //  `CellShed` names only the second kind. Deferral is deliberately NOT
+    //  here (see `SoftThrottle.boat`, which returns its `remaining` list, and
+    //  `Vision.predictBranches`, which returns its `Deferred` branches — both
+    //  hand the payload back, so both are pressure, not loss).
+    //
+    //  Heat-free by construction: `Heat.fs` compiles far later than this file,
+    //  so the mapping into the treaty'd `HeatSignal` vocabulary lives in
+    //  `SchedulerShedHeat.fs`. This type is the honest local record; the
+    //  signature is the small host-facing smell (Heat.fs's own doctrine:
+    //  "keep the detailed lost payload locally only when it can afford to").
+    // ═══════════════════════════════════════════════════════════════
+
+    /// A payload the SCHEDULER'S OWN ROUTING annihilated.
+    [<RequireQualifiedAccess>]
+    type CellShed<'Msg> =
+        /// A message routed to a cell that does not exist. `deliver` returns the
+        /// state UNCHANGED, so the post-state is byte-identical for every possible
+        /// message — the payload is unrecoverable from anything the scheduler still
+        /// holds. LOSS, not pressure: nothing will ever redeliver it.
+        | UndeliverableMessage of target: CellId * message: 'Msg
+
+    /// A payload the `__outbox__` DECODER annihilated. Separate from `CellShed`
+    /// because `routeOutbox` runs inside a caller's `stepFn`, which the scheduler
+    /// cannot see into — the shed surfaces on the decoder's own return, not the
+    /// scheduler's (see `routeOutboxWithShed`).
+    [<RequireQualifiedAccess>]
+    type OutboxShed =
+        /// An `__outbox__` entry that is not `[String target; message]`.
+        /// `routeOutbox` STRIPS the whole `__outbox__` key from the returned state,
+        /// so the malformed entry survives in neither the state nor the emission
+        /// list. LOSS.
+        | MalformedOutboxEntry of entry: DynamicValue
+        /// `__outbox__` present but not an `Array` — the whole outbox is stripped
+        /// and nothing is emitted. LOSS.
+        | MalformedOutbox of outbox: DynamicValue
+
     let private inboxOf id (s: State<'St, 'Msg>) =
         match Map.tryFind id s.Inbox with Some q -> q | None -> []
 
     /// Enqueue a message to a cell's inbox (FIFO append) and mark it ready
     /// (if not already), preserving FIFO ready order. Messages to unknown
     /// cells are dropped — a cell must exist to receive (surfaced by the
-    /// caller creating cells first; slice 1 keeps the topology fixed).
-    let private deliver (target: CellId) (msg: 'Msg) (s: State<'St, 'Msg>) : State<'St, 'Msg> =
-        if not (Map.containsKey target s.Cells) then s
+    /// caller creating cells first; slice 1 keeps the topology fixed) — and the
+    /// drop is REPORTED here rather than swallowed.
+    let private deliverWithShed
+        (target: CellId)
+        (msg: 'Msg)
+        (s: State<'St, 'Msg>)
+        : State<'St, 'Msg> * CellShed<'Msg> option =
+        if not (Map.containsKey target s.Cells) then
+            // SHED: cell-deliver-unknown-target class=loss metered=yes
+            s, Some(CellShed.UndeliverableMessage(target, msg))
         else
             let q = inboxOf target s
             let ready = if List.contains target s.Ready then s.Ready else s.Ready @ [ target ]
-            { s with Inbox = Map.add target (q @ [ msg ]) s.Inbox; Ready = ready }
+            { s with Inbox = Map.add target (q @ [ msg ]) s.Inbox; Ready = ready }, None
+
+    /// `deliverWithShed` with the shed report discarded (the original signature,
+    /// behaviour byte-identical).
+    let private deliver (target: CellId) (msg: 'Msg) (s: State<'St, 'Msg>) : State<'St, 'Msg> =
+        fst (deliverWithShed target msg s)
+
+    /// Build the initial state from cells and an initial message batch, reporting
+    /// every seed message that named a cell which does not exist.
+    let initWithShed
+        (cells: (CellId * 'St) list)
+        (initialMsgs: (CellId * 'Msg) list)
+        : State<'St, 'Msg> * CellShed<'Msg> list =
+        let s0 = { Cells = Map.ofList cells; Inbox = Map.empty; Ready = [] }
+        let final, shedRev =
+            initialMsgs
+            |> List.fold
+                (fun (s, shed) (t, m) ->
+                    match deliverWithShed t m s with
+                    | s', Some h -> s', h :: shed
+                    | s', None -> s', shed)
+                (s0, [])
+        final, List.rev shedRev
 
     /// Build the initial state from cells and an initial message batch.
     let init (cells: (CellId * 'St) list) (initialMsgs: (CellId * 'Msg) list) : State<'St, 'Msg> =
-        let s0 = { Cells = Map.ofList cells; Inbox = Map.empty; Ready = [] }
-        initialMsgs |> List.fold (fun s (t, m) -> deliver t m s) s0
+        fst (initWithShed cells initialMsgs)
 
-    /// One deterministic step: run the head ready cell on its next inbox
-    /// message, route emitted messages, re-park or re-ready the cell.
+    /// One deterministic step, reporting anything the ROUTING annihilated.
     /// `None` when quiescent (no ready cells).
-    let step (stepFn: 'St -> 'Msg -> 'St * (CellId * 'Msg) list) (s: State<'St, 'Msg>) : State<'St, 'Msg> option =
+    let stepWithShed
+        (stepFn: 'St -> 'Msg -> 'St * (CellId * 'Msg) list)
+        (s: State<'St, 'Msg>)
+        : (State<'St, 'Msg> * CellShed<'Msg> list) option =
         match s.Ready with
         | [] -> None
         | id :: restReady ->
             match inboxOf id s with
-            | [] -> Some { s with Ready = restReady }   // spurious ready; drop (defensive)
+            // SHED: cell-step-spurious-ready class=derived metered=no
+            // NOT loss: `Ready` is a DERIVED index over `Inbox` (see `readyOf`,
+            // which recomputes it exactly), and the dropped entry carries no
+            // payload — its inbox is empty. Drop-and-recompute is lossless, so
+            // this is the `SchedulerZeta` case: emit nothing, correctly.
+            | [] -> Some({ s with Ready = restReady }, [])   // spurious ready; drop (defensive)
             | msg :: restInbox ->
                 let st = Map.find id s.Cells
                 let st', emitted = stepFn st msg
@@ -71,7 +152,14 @@ module CellScheduler =
                         Inbox = Map.add id restInbox s.Inbox
                         Ready = restReady }
                 // route emitted messages (deterministic: emission order)
-                let s2 = emitted |> List.fold (fun acc (t, m) -> deliver t m acc) s1
+                let s2, shedRev =
+                    emitted
+                    |> List.fold
+                        (fun (acc, shed) (t, m) ->
+                            match deliverWithShed t m acc with
+                            | acc', Some h -> acc', h :: shed
+                            | acc', None -> acc', shed)
+                        (s1, [])
                 // If this cell still has queued input, re-ready it at the Ready TAIL
                 // (fairness). Re-ready via `Ready` ONLY — must NOT disturb the inbox,
                 // or the cell's own FIFO order is broken (an earlier bug round-tripped
@@ -80,7 +168,30 @@ module CellScheduler =
                 let s3 =
                     if List.isEmpty (inboxOf id s2) || List.contains id s2.Ready then s2
                     else { s2 with Ready = s2.Ready @ [ id ] }
-                Some s3
+                Some(s3, List.rev shedRev)
+
+    /// One deterministic step: run the head ready cell on its next inbox
+    /// message, route emitted messages, re-park or re-ready the cell.
+    /// `None` when quiescent (no ready cells).
+    let step (stepFn: 'St -> 'Msg -> 'St * (CellId * 'Msg) list) (s: State<'St, 'Msg>) : State<'St, 'Msg> option =
+        stepWithShed stepFn s |> Option.map fst
+
+    /// Run to quiescence, returning the final per-cell state AND every message the
+    /// routing annihilated on the way (in routing order). Same run, same result —
+    /// `runToQuiescence` is this with the shed list discarded.
+    let runToQuiescenceWithShed
+        (maxSteps: int)
+        (stepFn: 'St -> 'Msg -> 'St * (CellId * 'Msg) list)
+        (s0: State<'St, 'Msg>)
+        : Result<Map<CellId, 'St> * CellShed<'Msg> list, string> =
+        let rec loop n shedRev s =
+            if n > maxSteps then
+                Error(sprintf "cell scheduler did not quiesce in %d steps (non-terminating message cycle?)" maxSteps)
+            else
+                match stepWithShed stepFn s with
+                | None -> Ok(s.Cells, List.rev shedRev)
+                | Some(s', shed) -> loop (n + 1) (List.rev shed @ shedRev) s'
+        loop 0 [] s0
 
     /// Run to quiescence (no ready cells) or until `maxSteps` (a runaway /
     /// non-termination backstop, NOT a silent cap — `Error` names it).
@@ -90,14 +201,7 @@ module CellScheduler =
         (stepFn: 'St -> 'Msg -> 'St * (CellId * 'Msg) list)
         (s0: State<'St, 'Msg>)
         : Result<Map<CellId, 'St>, string> =
-        let rec loop n s =
-            if n > maxSteps then
-                Error(sprintf "cell scheduler did not quiesce in %d steps (non-terminating message cycle?)" maxSteps)
-            else
-                match step stepFn s with
-                | None -> Ok s.Cells
-                | Some s' -> loop (n + 1) s'
-        loop 0 s0
+        runToQuiescenceWithShed maxSteps stepFn s0 |> Result.map fst
 
     // ═══════════════════════════════════════════════════════════════
     //  Slice 2 — DoP=N via FerryThrottler, and the run(1)==run(N) law.
@@ -161,12 +265,12 @@ module CellScheduler =
     /// Run to quiescence with a `FerryThrottler` at `config.MaxDegreeOfParallelism`
     /// ferries. Round-based; result is byte-identical across DoP (the scale-free
     /// law). `maxRounds` is the named non-termination backstop (not a silent cap).
-    let runFerryToQuiescence
+    let runFerryToQuiescenceWithShed
         (config: FerryThrottlerConfig)
         (stepFn: 'St -> 'Msg -> 'St * (CellId * 'Msg) list)
         (maxRounds: int)
         (s0: State<'St, 'Msg>)
-        : System.Threading.Tasks.Task<Result<Map<CellId, 'St>, string>> =
+        : System.Threading.Tasks.Task<Result<Map<CellId, 'St> * CellShed<'Msg> list, string>> =
         // The batch processor applies the pure step to each (state, message).
         let processBatch (mem: System.ReadOnlyMemory<'St * 'Msg>) (_ct: System.Threading.CancellationToken) =
             let src = mem.ToArray()
@@ -179,13 +283,14 @@ module CellScheduler =
             // compilable — FS3511); the round semantics are unchanged.
             let mutable s = s0
             let mutable round = 0
-            let mutable result : Result<Map<CellId, 'St>, string> option = None
+            let mutable shedRev : CellShed<'Msg> list = []
+            let mutable result : Result<Map<CellId, 'St> * CellShed<'Msg> list, string> option = None
             while result.IsNone do
                 if round > maxRounds then
                     result <- Some(Error(sprintf "cell scheduler did not quiesce in %d rounds (non-terminating message cycle?)" maxRounds))
                 else
                     match readyOf s with
-                    | [] -> result <- Some(Ok s.Cells)
+                    | [] -> result <- Some(Ok(s.Cells, List.rev shedRev))
                     | ready ->
                         // Each ready cell processes its head message this round.
                         let work =
@@ -209,14 +314,38 @@ module CellScheduler =
                                         Inbox = Map.add id (List.tail (inboxOf id acc)) acc.Inbox })
                                 s
                         // Phase 2: route all emitted messages, in deterministic
-                        // (processing-cell, then emission) order.
-                        let routed =
+                        // (processing-cell, then emission) order. The shed list is
+                        // accumulated in that SAME deterministic order, so it is a
+                        // function of the round semantics only — never of ferry
+                        // completion order. `shed(DoP=1) == shed(DoP=N)` therefore
+                        // holds by the same construction as `run(1)==run(N)`.
+                        let routed, roundShedRev =
                             zipped
                             |> List.collect (fun (_, (_, emitted)) -> emitted)
-                            |> List.fold (fun acc (t, m) -> deliver t m acc) afterConsume
+                            |> List.fold
+                                (fun (acc, shed) (t, m) ->
+                                    match deliverWithShed t m acc with
+                                    | acc', Some h -> acc', h :: shed
+                                    | acc', None -> acc', shed)
+                                (afterConsume, [])
                         s <- routed
+                        shedRev <- roundShedRev @ shedRev
                         round <- round + 1
             return result.Value
+        }
+
+    /// Run to quiescence with a `FerryThrottler` at `config.MaxDegreeOfParallelism`
+    /// ferries. Round-based; result is byte-identical across DoP (the scale-free
+    /// law). `maxRounds` is the named non-termination backstop (not a silent cap).
+    let runFerryToQuiescence
+        (config: FerryThrottlerConfig)
+        (stepFn: 'St -> 'Msg -> 'St * (CellId * 'Msg) list)
+        (maxRounds: int)
+        (s0: State<'St, 'Msg>)
+        : System.Threading.Tasks.Task<Result<Map<CellId, 'St>, string>> =
+        task {
+            let! r = runFerryToQuiescenceWithShed config stepFn maxRounds s0
+            return r |> Result.map fst
         }
 
     /// The YinYang instantiation: a cell's state is its `Remains`
@@ -228,25 +357,49 @@ module CellScheduler =
     [<Literal>]
     let OutboxKey = "__outbox__"
 
-    /// Split a cell's new `Remains` into (state-without-outbox, emitted messages).
-    /// The outbox convention: a reserved `"__outbox__"` key holding an Array of
-    /// `[targetId, msg]` pairs. Malformed entries are dropped (a cell must not
-    /// corrupt the society by emitting garbage). Pure — testable without Bonsai.
-    let routeOutbox (next: DynamicValue) : DynamicValue * (CellId * DynamicValue) list =
+    /// Split a cell's new `Remains` into (state-without-outbox, emitted messages,
+    /// annihilated entries). The outbox convention: a reserved `"__outbox__"` key
+    /// holding an Array of `[targetId, msg]` pairs. Malformed entries are dropped
+    /// (a cell must not corrupt the society by emitting garbage) — and because the
+    /// whole `__outbox__` key is STRIPPED from the returned state, a dropped entry
+    /// survives in neither the state nor the emission list. That is annihilation,
+    /// so it is REPORTED here instead of vanishing. Pure — testable without Bonsai.
+    ///
+    /// Conservation law (locked by test): for an `Array` outbox,
+    /// `|emitted| + |shed| = |items|` — every entry is either routed or reported.
+    let routeOutboxWithShed
+        (next: DynamicValue)
+        : DynamicValue * (CellId * DynamicValue) list * OutboxShed list =
         match next with
         | DynamicValue.Object kvs ->
-            let outbox =
+            let outbox, shed =
                 kvs
                 |> List.tryPick (fun (k, v) -> if k = OutboxKey then Some v else None)
                 |> function
                    | Some(DynamicValue.Array items) ->
-                       items |> List.choose (function
-                           | DynamicValue.Array [ DynamicValue.String t; m ] -> Some(t, m)
-                           | _ -> None)
-                   | _ -> []
+                       let routed, shedRev =
+                           items
+                           |> List.fold
+                               (fun (acc, shed) item ->
+                                   match item with
+                                   | DynamicValue.Array [ DynamicValue.String t; m ] -> (t, m) :: acc, shed
+                                   // SHED: outbox-malformed-entry class=loss metered=yes
+                                   | other -> acc, OutboxShed.MalformedOutboxEntry other :: shed)
+                               ([], [])
+                       List.rev routed, List.rev shedRev
+                   // SHED: outbox-malformed-container class=loss metered=yes
+                   | Some other -> [], [ OutboxShed.MalformedOutbox other ]
+                   | None -> [], []
             let stripped = DynamicValue.Object(kvs |> List.filter (fun (k, _) -> k <> OutboxKey))
-            stripped, outbox
-        | other -> other, []
+            stripped, outbox, shed
+        | other -> other, [], []
+
+    /// Split a cell's new `Remains` into (state-without-outbox, emitted messages).
+    /// `routeOutboxWithShed` with the annihilated entries discarded (the original
+    /// signature, behaviour byte-identical).
+    let routeOutbox (next: DynamicValue) : DynamicValue * (CellId * DynamicValue) list =
+        let stripped, outbox, _ = routeOutboxWithShed next
+        stripped, outbox
 
     let yinYangStep (acts: Bonsai.Expr) (threshold: float)
         : DynamicValue -> DynamicValue -> DynamicValue * (CellId * DynamicValue) list =
@@ -283,7 +436,19 @@ module CellScheduler =
                 | Some sharp ->
                     let _, emitted = routeOutbox sharp
                     next, emitted |> List.map (fun (t, m) -> t, SoftValue.certain m)
+                // SHED: soft-step-refuse-collapse class=pressure metered=no
+                // NOT loss: the full distribution `next` IS the returned state, so
+                // nothing is annihilated — the cell holds and may emit on a later
+                // input. Deferral ⇒ pressure at most. Unmetered because the
+                // `stepFn` contract (`'St -> 'Msg -> 'St * emissions`) has no shed
+                // channel; the state itself already carries the evidence.
                 | None -> next, []   // refuse to collapse: hold, emit nothing
+            // SHED: soft-step-evolve-error class=loss metered=no
+            // LOSS, deliberately UNMETERED: the scheduler has already consumed the
+            // head message and `evolveSoft`'s `Error` payload is discarded here, so
+            // neither survives. It is not metered because `stepFn`'s signature has
+            // no shed channel to return one on — a `stepFn` can only meter its own
+            // shed by widening `'St`. Named, not hidden: 081M00FGTPC087G0R0014BPJFC.
             | Error _ -> remains, []
 
     /// The society-wide READ-time snap: collapse each cell's soft state at

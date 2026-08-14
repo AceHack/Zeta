@@ -221,6 +221,7 @@
     <Compile Include="PredictionInference.Tests.fs" />
     <Compile Include="PredictionScheduler.Tests.fs" />
     <Compile Include="ReceiptScheduler.Tests.fs" />
+    <Compile Include="SchedulerShedHeat.Tests.fs" />
     <Compile Include="RoomHorizon.Tests.fs" />
     <Compile Include="RoomAdmission.Tests.fs" />
     <Compile Include="RoomBoundary.Tests.fs" />
