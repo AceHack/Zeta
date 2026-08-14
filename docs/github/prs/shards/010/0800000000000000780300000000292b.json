@@ -1,0 +1,12 @@
+{
+  "pr_number": 10539,
+  "archive_path": "docs/history/pr-reviews/PR-10539-fix-ci-bunfig-s-test-timeout-was-never-real-the-cap-is-5000-ms.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T10:34:07.588Z",
+  "schema_version": "v1",
+  "commit_sha": "2168436c17a1e7e7f046ad38c5a29711c833f20f",
+  "title": "fix(ci): bunfig's [test] timeout was never real — the cap is 5000 ms",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T10:33:35Z",
+  "head_ref": "ci/bunfig-test-timeout-is-ignored-real-cap-is-5s"
+}
