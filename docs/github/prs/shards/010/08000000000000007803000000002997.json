@@ -1,0 +1,12 @@
+{
+  "pr_number": 10647,
+  "archive_path": "docs/history/pr-reviews/PR-10647-fix-k8s-helm-validate-could-not-go-red-real-parser-exact-chart-version-render-la.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T17:54:59.865Z",
+  "schema_version": "v1",
+  "commit_sha": "5f3a23c7f89ad4bcd485c8f92c8cda2bf69f25ce",
+  "title": "fix(k8s): helm-validate could not go red — real parser, exact chart version, render lane, daily cadence",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T17:54:25Z",
+  "head_ref": "dejan/k8s-charts-local-testing"
+}
