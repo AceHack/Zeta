@@ -33,6 +33,25 @@ Delivered payloads by receiver-side reorder depth, in packet positions:
 
 `*` totals above 1600 are duplicate deliveries — `081KZZZGYBR087G0R00302Z2J6`, a separate defect.
 
+### UPDATE 2026-08-14 — the LRU row moved when that separate defect was closed
+
+`081KZZZGYBR087G0R00302Z2J6` is fixed (delivered-block identifiers are now retained past the block
+itself), and it moved this table's shipped row as a **side effect**: a straggler for an
+already-delivered block is now refused outright instead of re-creating a dead block inside the
+recovery window, so the window holds more live blocks. Re-measured on the committed harness
+(`udp-lossy-transport.reorder-sweep.ts`, 400 blocks, seed `0x5eed`), reporting distinct payloads:
+
+| depth          | 32   | 64               | 128           | 256    |
+| -------------- | ---- | ---------------- | ------------- | ------ |
+| LRU, before    | 1600 | 1560 (+112 dup)  | 496 (+12 dup) | 44     |
+| **LRU, after** | 1600 | **1600** (0 dup) | **696** (0)   | **48** |
+
+The absolute numbers differ from the table above because that one came from a harness that lived
+only in a pull request and this one is re-derived from the committed harness — which is the reason
+the harness is committed now. **The cliff is not removed**: past the declared envelope delivery
+still degrades sharply, `ULT-36` still pins zero delivery on a uniform 9-block cycle, and per-peer
+state is still the real repair. This row is better, not fixed.
+
 And on a **uniform round-robin across `RECV_BLOCK_WINDOW + 1` blocks**, LRU delivers **zero**, with
 no channel loss at all: the classical LRU cyclic-access pathology (Belady 1966), pinned as `ULT-36`.
 

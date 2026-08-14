@@ -9,6 +9,7 @@ import fc from "fast-check";
 import {
   MAX_NACK_GAP,
   RECV_BLOCK_WINDOW,
+  DELIVERED_BLOCK_CAP,
   type DesyncEvent,
   computeAdinkraParity,
   recoverAdinkraErasure,
@@ -36,6 +37,7 @@ import {
   LossyUdpChannel,
 } from "./udp-lossy-transport";
 import { createDimensionalBnn } from "../planning/error-bnn-bridge";
+import { sweepOnce } from "./udp-lossy-transport.reorder-sweep";
 
 // ── Helpers ────────────────────────────────────────────────────────────────────────────────
 function makeData(n: number, seed = 0): Uint8Array[] {
@@ -1470,4 +1472,239 @@ describe("udp-lossy-transport: bounded receiver block memory", () => {
     untouched.raw(3, 0, 3, sent[0]![3]!);
     expect(untouched.delivered.length).toBe(0);
   });
+});
+
+// ── ULT-38..43: the delivered-once guard OUTLIVES the block (081KZZZGYBR087G0R00302Z2J6, §12) ──
+//
+// The defect: `ReceiverBlock.recovered` is the §12 duplicate guard and it lives ON the block, so
+// evicting an already-delivered block threw the guard away with it. A straggler then created a
+// FRESH block with `recovered = false`, the [8,4,4] decoder solved it a second time, and `onData`
+// fired again for the same four payloads.
+//
+// It is not an attack path and it is not a regression to be embarrassed about. The unbounded map
+// hit it too (at reorder depth 128); bounding the map to 8 entries in 081KZYQJPNG087G0R002B9E9S1
+// necessarily evicts blocks the unbounded map remembered forever, so the SAME cost moved out of
+// memory and onto the guard. Measured on the seeded reorder sweep, 400 blocks / 1600 payloads,
+// 0% channel loss: at depth 64, 1672 delivered against 1560 distinct — 112 duplicate payloads
+// across 28 blocks. Zero at depth <= 32, which is why the ordinary path never showed it.
+//
+// The fix is a SEPARATE bounded structure, because the two bounds answer different questions: a
+// retained block is 8 payload references, a delivered-block identifier is one integer, so the
+// cheaper item earns the wider window (`DELIVERED_BLOCK_CAP = 2 * RECV_BLOCK_WINDOW`, the same
+// construction `SUSPECT_SEQ_CAP = 2 * MAX_NACK_GAP` already uses one level down).
+describe("udp-lossy-transport: the delivered-once guard outlives the block", () => {
+  function makeReceiver(): {
+    channel: LossyUdpChannel;
+    delivered: Uint8Array[];
+    raw: (seq: number, blockSeq: number, blockPos: number, payload: Uint8Array) => void;
+    /** Emit an honest block's chosen positions, with `seq` and `blockSeq` separately controllable —
+     *  which is what the wire is, and what makes the key-choice test below expressible at all. */
+    emit: (opts: { blockSeq: number; seqBase?: number; positions?: readonly number[]; payloadsOf?: number }) => void;
+    expectedPayloads: (blockSeq: number) => Uint8Array[];
+  } {
+    let receive: (text: string, from: string) => void = () => {};
+    const delivered: Uint8Array[] = [];
+    const channel = new LossyUdpChannel(
+      {
+        broadcast: () => {},
+        onMessage: (h: (text: string, from: string) => void) => {
+          receive = h;
+        },
+      },
+      "receiver",
+    );
+    channel.onData((p) => delivered.push(p));
+    const raw = (seq: number, blockSeq: number, blockPos: number, payload: Uint8Array): void => {
+      const pkt = encodePacket({ seq, blockSeq, blockPos, isData: blockPos < 4, payloadLen: payload.length }, payload);
+      receive(JSON.stringify({ type: "lossy-udp", zid: "peer", pkt: pkt.toString("base64") }), "peer");
+    };
+    const dataFor = (blockSeq: number): Uint8Array[] =>
+      Array.from({ length: 4 }, (_, i) => Uint8Array.from([blockSeq & 0xff, (blockSeq >> 8) & 0xff, i, 0x5a]));
+    return {
+      channel,
+      delivered,
+      raw,
+      emit: ({ blockSeq, seqBase, positions = [0, 1, 2, 3], payloadsOf }) => {
+        const s = buildSenderBlock(blockSeq, dataFor(payloadsOf ?? blockSeq));
+        const wire = [...s.dataPackets, ...s.parityPackets];
+        const base = seqBase ?? blockSeq * 8;
+        for (const pos of positions) raw(base + pos, blockSeq, pos, wire[pos]!);
+      },
+      expectedPayloads: dataFor,
+    };
+  }
+
+  /** Push `count` distinct blocks through the RECEIVER BLOCK window without delivering any of
+   *  them, which is what evicts an already-delivered block from `recvBlocks`. One symbol each at
+   *  `blockPos = 0` is never recoverable, so nothing here can be mistaken for a delivery. */
+  function openBlocks(r: ReturnType<typeof makeReceiver>, from: number, count: number): void {
+    for (let i = 0; i < count; i++) r.raw((from + i) * 8, from + i, 0, new Uint8Array([7, 7, 7, 7]));
+  }
+
+  it("ULT-38: the filed reproduction — a delivered block, evicted, then replayed, delivers ONCE", () => {
+    const r = makeReceiver();
+    r.emit({ blockSeq: 0 });
+    expect(r.delivered.length).toBe(4);
+    expect(r.channel.deliveredGuardCount).toBe(1);
+
+    // Force block 0 out of `recvBlocks` — this is the eviction that used to take the guard with it.
+    openBlocks(r, 100, RECV_BLOCK_WINDOW + 1);
+    expect(r.channel.retainedBlockCount).toBe(RECV_BLOCK_WINDOW);
+
+    // The straggler. Before the guard this re-created block 0 and delivered its payloads a second
+    // time; the assertion below was `8`.
+    r.emit({ blockSeq: 0 });
+    expect(r.delivered.length).toBe(4);
+    expect(r.delivered.map((p) => Array.from(p))).toEqual(r.expectedPayloads(0).map((p) => Array.from(p)));
+
+    // ANTI-VACUITY, and it is the load-bearing half: the guard must refuse a REPEAT, not refuse
+    // everything old. A block that was never delivered still delivers on exactly the same path,
+    // at a `seq` well behind `expectedSeq`. A receiver that had simply stopped accepting late
+    // packets would pass every assertion above and fail this one.
+    r.emit({ blockSeq: 1 });
+    expect(r.delivered.length).toBe(8);
+    expect(r.delivered.slice(4).map((p) => Array.from(p))).toEqual(r.expectedPayloads(1).map((p) => Array.from(p)));
+  });
+
+  it("ULT-39 (property): no stream of peer-chosen deliveries takes the guard past its cap", () => {
+    // Over the whole u32 domain, seeded (§7). The guard is keyed on a peer-controlled field, so
+    // "bounded" has to be a property over that domain and not a check at one value — the same
+    // shape as ULT-32 for the block window, for the same reason.
+    fc.assert(
+      fc.property(fc.array(fc.integer({ min: 0, max: 0x0fffffff }), { minLength: 40, maxLength: 120 }), (blockSeqs) => {
+        const r = makeReceiver();
+        for (const b of blockSeqs) r.emit({ blockSeq: b });
+        expect(r.channel.deliveredGuardCount).toBeLessThanOrEqual(DELIVERED_BLOCK_CAP);
+        // ANTI-VACUITY: a guard that retained NOTHING would also satisfy the line above and
+        // would be the unfixed module. With >= 40 deliveries the cap must actually be reached.
+        expect(r.channel.deliveredGuardCount).toBe(DELIVERED_BLOCK_CAP);
+      }),
+      { numRuns: 200, seed: 0x5eed },
+    );
+  });
+
+  it("ULT-40: the guard evicts by RECENCY — deliveries at the top of u32 cannot park it", () => {
+    // The same negative control ULT-34 is for the block map, and it is needed independently here:
+    // a second bounded structure is a second chance to reintroduce the parking fixed point.
+    // Evicting the lowest key would let a peer hold every guard slot with `DELIVERED_BLOCK_CAP`
+    // high-keyed deliveries, after which every honest guard entry is evicted the instant it is
+    // created and the duplicate defect is restored for everyone but the attacker.
+    const HIGH = 0x0f000000;
+    const parked = makeReceiver();
+    for (let i = 0; i < DELIVERED_BLOCK_CAP; i++) parked.emit({ blockSeq: HIGH + i });
+    expect(parked.channel.deliveredGuardCount).toBe(DELIVERED_BLOCK_CAP); // full of squatters
+    const squatterPayloads = parked.delivered.length;
+
+    // Honest traffic now arrives, delivers, is evicted from the block window, and is replayed.
+    for (let b = 0; b < 4; b++) parked.emit({ blockSeq: b });
+    const afterFirstPass = parked.delivered.length;
+    expect(afterFirstPass).toBe(squatterPayloads + 16);
+    openBlocks(parked, 500, RECV_BLOCK_WINDOW + 1);
+    for (let b = 0; b < 4; b++) parked.emit({ blockSeq: b });
+    // Under key-order eviction the four honest guard entries are gone and this is 16 duplicates.
+    expect(parked.delivered.length).toBe(afterFirstPass);
+
+    // The control: the identical honest traffic with no squatters present is byte-identical, so
+    // the assertion above is about the parking and not about the honest path being weak.
+    const clean = makeReceiver();
+    for (let b = 0; b < 4; b++) clean.emit({ blockSeq: b });
+    openBlocks(clean, 500, RECV_BLOCK_WINDOW + 1);
+    for (let b = 0; b < 4; b++) clean.emit({ blockSeq: b });
+    expect(parked.delivered.slice(squatterPayloads).map((p) => Array.from(p))).toEqual(
+      clean.delivered.map((p) => Array.from(p)),
+    );
+  });
+
+  it("ULT-41: a straggler REFRESHES its block's guard — recency, not delivery age", () => {
+    // This exists because the same mutation was unobservable one level down: ULT-37 records that
+    // removing the block map's move-to-tail left every other test green. The guard has its own
+    // move-to-tail, on the branch where a straggler HITS the guard, and it needs its own falsifier
+    // or it is decoration for exactly the same reason.
+    //
+    // The discriminator: two delivered blocks, both evicted from the block window; touch block 0
+    // with a straggler; then deliver enough further blocks to force exactly one guard eviction.
+    // Under LRU the victim is the untouched block 1; under insertion-order-only it is block 0.
+    // Replaying both says which it was.
+    const r = makeReceiver();
+    r.emit({ blockSeq: 0 });
+    r.emit({ blockSeq: 1 });
+    openBlocks(r, 300, RECV_BLOCK_WINDOW + 1); // both are now out of `recvBlocks`
+    expect(r.channel.deliveredGuardCount).toBe(2);
+
+    // TOUCH: a parity straggler for block 0. It is refused (that is the guard working) and it
+    // moves block 0's entry to the tail. Delivery must not change — anti-vacuity on the touch.
+    const beforeTouch = r.delivered.length;
+    r.emit({ blockSeq: 0, positions: [4] });
+    expect(r.delivered.length).toBe(beforeTouch);
+
+    // Fill the guard to its cap and then force exactly one eviction.
+    for (let b = 0; b < DELIVERED_BLOCK_CAP - 1; b++) r.emit({ blockSeq: 400 + b });
+    expect(r.channel.deliveredGuardCount).toBe(DELIVERED_BLOCK_CAP);
+    const beforeReplay = r.delivered.length;
+
+    // Replay both. Block 0 survived (touched); block 1 did not, so it delivers a second time —
+    // and that second delivery is the honest cost of a bounded guard, pinned rather than hidden.
+    r.emit({ blockSeq: 0 });
+    expect(r.delivered.length).toBe(beforeReplay); // still guarded
+    r.emit({ blockSeq: 1 });
+    expect(r.delivered.length).toBe(beforeReplay + 4); // evicted: §12 holds over a WINDOW only
+    expect(r.delivered.slice(beforeReplay).map((p) => Array.from(p))).toEqual(
+      r.expectedPayloads(1).map((p) => Array.from(p)),
+    );
+  });
+
+  it("ULT-42: the guard is keyed on the block index DERIVED from seq, not on the blockSeq field", () => {
+    // `seq = blockSeq * BLOCK_TOTAL + pos` in the encoder, so for any honest sender the two are the
+    // same number and this test is invisible. It is expressible only because the receiver trusts
+    // them independently — which is 081KZZZH24H087G0R002TXQA15, still open, and the reason a guard
+    // keyed on `blockSeq` would inherit a 4.29e9-value key space bounded by nothing the receiver
+    // already tracks. Keyed on `seq >> 3` the guard lives in the key space `expectedSeq`,
+    // `reportedMissing` and `MAX_NACK_GAP` are all built on.
+    const r = makeReceiver();
+    r.emit({ blockSeq: 0, seqBase: 0 });
+    expect(r.delivered.length).toBe(4);
+    openBlocks(r, 700, RECV_BLOCK_WINDOW + 1);
+
+    // Same sequence numbers, a DIFFERENT `blockSeq`, the same payloads. Under `blockSeq` keying
+    // this is a fresh block and delivers again; under seq-derived keying it is the same block
+    // position on the wire and is refused.
+    r.emit({ blockSeq: 0xabcdef, seqBase: 0, payloadsOf: 0 });
+    expect(r.delivered.length).toBe(4);
+
+    // ANTI-VACUITY / the converse: the same `blockSeq` at a DIFFERENT seq base is a different
+    // block on the wire and delivers. Without this line the assertion above would be satisfied by
+    // a guard that refuses everything after the first delivery.
+    r.emit({ blockSeq: 0, seqBase: 8000, payloadsOf: 2 });
+    expect(r.delivered.length).toBe(8);
+    expect(r.delivered.slice(4).map((p) => Array.from(p))).toEqual(r.expectedPayloads(2).map((p) => Array.from(p)));
+  });
+
+  it("ULT-43: the seeded reorder sweep delivers 1600 of 1600 with ZERO duplicates", () => {
+    // The filed measurement, run in the suite rather than remembered from a pull request. The
+    // harness is `udp-lossy-transport.reorder-sweep.ts`; `distinct` and `delivered` are reported
+    // apart precisely because the defect hid inside a goodput total that read as a good number
+    // (1672 of 1600 sent).
+    //
+    //     depth   before (delivered / distinct / dup)     after
+    //        32           1600 / 1600 /   0               1600 / 1600 / 0
+    //        64           1672 / 1560 / 112               1600 / 1600 / 0
+    //       128            508 /  496 /  12                696 /  696 / 0
+    //
+    // Depth 128 also gains DISTINCT delivery (496 -> 696) — refusing a straggler for a
+    // delivered block keeps a dead block out of the recovery window. That is a side effect of the
+    // guard, not its purpose, and it is not pinned exactly below because it is a property of the
+    // eviction policy (081KZZZH7H4087G0R001HV0W40), which is free to move.
+    for (const depth of [32, 64] as const) {
+      const s = sweepOnce(400, depth, 0, 0x5eed);
+      expect(s.duplicates).toBe(0);
+      expect(s.delivered).toBe(1600); // exact: 0% loss inside the declared envelope loses nothing
+      expect(s.distinct).toBe(1600);
+    }
+    // Past the declared envelope the guard still holds even though delivery degrades — the §12
+    // property is not conditional on the reorder depth being polite.
+    const deep = sweepOnce(400, 128, 0, 0x5eed);
+    expect(deep.duplicates).toBe(0);
+    expect(deep.distinct).toBeGreaterThan(0); // anti-vacuity: it is not zero-delivery that holds it
+    expect(deep.distinct).toBeLessThan(1600); // and the loss past the window is real, not hidden
+  }, 20_000);
 });

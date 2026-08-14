@@ -131,10 +131,17 @@
  *     RSS, zero evicted, growing linearly with no ceiling (081KZYQJPNG087G0R002B9E9S1). Unbounded
  *     retention is not a gentler tradeoff than a short window; it is a remote memory exhaustion
  *     any peer can drive at ~3x its own bandwidth.
- *   - A block that is evicted AFTER being recovered loses its `recovered` flag with it, so a
- *     straggler can re-create it and deliver the same payloads a second time (§12). PRE-EXISTING —
- *     measured on the unfixed code at reorder depth 128 — and made reachable at shallower depth by
- *     the tighter window: 21 blocks of 400 at depth 64. Filed as 081KZZZGYBR087G0R00302Z2J6.
+ *   - The delivered-once guard (§12) OUTLIVES the block it belongs to. `ReceiverBlock.recovered`
+ *     lives on the block object, so evicting an already-delivered block used to throw the guard
+ *     away and a straggler could re-create the block and deliver the same four payloads again —
+ *     measured at 112 duplicate payloads across 28 blocks of 400 at reorder depth 64
+ *     (081KZZZGYBR087G0R00302Z2J6, pre-existing at depth 128, reachable at half that depth once the
+ *     window was bounded). The receiver now also remembers `DELIVERED_BLOCK_CAP` recent DELIVERIES
+ *     as bare identifiers, which is a bound on a different and much cheaper thing than a block.
+ *     What is still true: the guard is a WINDOW, not a promise. A duplicate separated from its
+ *     original by more than `DELIVERED_BLOCK_CAP` further deliveries is delivered twice, and no
+ *     bounded receiver can say otherwise — §12 holds here over the receiver's declared memory,
+ *     which is the only span it ever held over.
  *   - Losing more than `MAX_NACK_GAP` consecutive packets produces NO congestion signal. The
  *     single `expectedSeq` is shared across every peer on a broadcast transport, so a wide gap
  *     is not attributable to a sender in the first place; per-peer sequence state is the fix.
@@ -213,6 +220,35 @@ export const RECV_BLOCK_WINDOW = 8;
  *  Both derivations are of the *receiver's own memory*, which is the only thing that bounds
  *  what it may honestly claim. If either constant moves, this moves with it. */
 export const MAX_NACK_GAP = RECV_BLOCK_WINDOW * BLOCK_TOTAL;
+
+/** How many DELIVERED block identifiers the receiver remembers after the blocks themselves are gone.
+ *
+ *  DERIVATION (not a chosen constant), and the factor of 2 is the whole point: a retained block is
+ *  eight payload references, a delivered-block identifier is one integer, so the two bounds answer
+ *  different questions and must not be the same number. The precedent is already in this file —
+ *  `SUSPECT_SEQ_CAP = 2 * MAX_NACK_GAP` keeps a WIDER window of the cheaper item (a sequence
+ *  number) than the state it refers to. This is that construction one level up:
+ *
+ *      RECV_BLOCK_WINDOW          blocks retained          (8 payloads each)
+ *      2 * RECV_BLOCK_WINDOW      deliveries remembered    (1 integer each)
+ *
+ *  Equivalently `2 * MAX_NACK_GAP / BLOCK_TOTAL` — the same width `SUSPECT_SEQ_CAP` uses, counted
+ *  in blocks instead of packets, because that is the unit a delivery happens in. If
+ *  `RECV_BLOCK_WINDOW` moves, both move with it.
+ *
+ *  WHY 2 AND NOT 1 — measured, and it is the smallest multiple that holds. Over 144 seeded
+ *  configurations (8 seeds x depths {32,64,96,128,192,256} x loss {0, 5%, 15%}, 200 blocks each,
+ *  `udp-lossy-transport.reorder-sweep.ts`):
+ *
+ *      1 * RECV_BLOCK_WINDOW  (8)    156 duplicate payloads   <- the guard dies with its own block
+ *      2 * RECV_BLOCK_WINDOW  (16)     0
+ *      3 * RECV_BLOCK_WINDOW  (24)     0
+ *
+ *  At the width of the block window itself the guard is evicted at roughly the moment the block it
+ *  guards for is, so it buys almost nothing: the surviving duplicates are concentrated at reorder
+ *  depths (96, 128) where a straggler outlives eight further deliveries. 3x buys nothing over 2x,
+ *  so 2x is not a safety margin picked upward — it is where the measurement flattens. */
+export const DELIVERED_BLOCK_CAP = 2 * RECV_BLOCK_WINDOW;
 
 // ── GF(2) arithmetic ──────────────────────────────────────────────────────────────────────
 
@@ -1165,6 +1201,13 @@ export class LossyUdpChannel {
    *  Capped at `MAX_NACK_GAP` for the same reason `reportedMissing` is — unbounded state keyed on
    *  a peer-controlled stream is how the 3,333,337x amplification worked. */
   private pendingCorruptFrames = 0;
+  /** Block identifiers this receiver has already DELIVERED — the §12 guard that outlives the block.
+   *
+   *  `ReceiverBlock.recovered` is the in-window half of the same guard and is still the fast path;
+   *  this is the half that survives eviction. Bounded to `DELIVERED_BLOCK_CAP`, evicted
+   *  least-recently-used, and keyed on the block index DERIVED FROM `seq` — see the eviction site
+   *  in `handleIncoming` for all three reasons. */
+  private deliveredBlocks = new Set<number>();
   private dataHandlers: Array<(payload: Uint8Array) => void> = [];
   private lossHandlers: Array<(rates: readonly LossRate[]) => void> = [];
   private envelopeHandlers: Array<(envelope: ErrorEnvelope) => void> = [];
@@ -1214,6 +1257,15 @@ export class LossyUdpChannel {
    *  be measured is a comment. */
   get retainedBlockCount(): number {
     return this.recvBlocks.size;
+  }
+
+  /** How many DELIVERED block identifiers the §12 guard is holding right now.
+   *
+   *  The same kind of observation point as `retainedBlockCount`, added for the same reason: this
+   *  bound is on state no delivered output reveals, and #10552 is the precedent for what happens
+   *  to an unobservable bound — it was a comment for as long as nothing could see it. */
+  get deliveredGuardCount(): number {
+    return this.deliveredBlocks.size;
   }
 
   onData(h: (payload: Uint8Array) => void): void {
@@ -1576,6 +1628,74 @@ export class LossyUdpChannel {
     // monotone — provoking no NACK at all — while spending a fresh key per packet. Bounding the
     // buffer makes that harmless for MEMORY; it does not stop one packet addressing any block at
     // any position. 081KZZZH24H087G0R002TXQA15.
+    // ── §12: the delivered-once guard, which must OUTLIVE the block ─────────────────────────
+    //
+    // `ReceiverBlock.recovered` is the duplicate guard, and it lives on the block object — so
+    // evicting a block that had already been delivered threw the guard away with it. A straggler
+    // then created a FRESH block with `recovered = false`, and if enough of its symbols were still
+    // in flight the decoder solved it a second time and `onData` fired again for the same four
+    // payloads. Measured on the code before this guard, seeded reorder sweep, 400 blocks / 1600
+    // payloads, 0% channel loss: at reorder depth 64, 1672 delivered against 1560 distinct — 112
+    // duplicate payloads across 28 blocks; 12 more at depth 128. Zero at depth ≤ 32.
+    // (081KZZZGYBR087G0R00302Z2J6. Pre-existing — the unbounded map hit it at depth 128 too — and
+    // reachable at half the depth after 081KZYQJPNG087G0R002B9E9S1 bounded the map, because a
+    // bounded map necessarily evicts blocks the unbounded one remembered forever. That is the same
+    // cost moving from memory onto the guard, and this is where it stops.)
+    //
+    // WHY A SEPARATE STRUCTURE, rather than retaining the block. A retained block is eight payload
+    // references; the fact that a block was delivered is one integer. Widening
+    // `RECV_BLOCK_WINDOW` to keep the guard alive would pay for the guard in payload memory, which
+    // is the resource 081KZYQJPNG087G0R002B9E9S1 exists to bound — and it would only move the depth
+    // at which the guard starts dying, never stop it dying with the object. The bounds answer
+    // different questions, so they are different numbers: see `DELIVERED_BLOCK_CAP`.
+    //
+    // WHY NOT AN EXISTING STRUCTURE. Both bounded receiver-side structures were checked before this
+    // one was added, and neither carries the fact:
+    //   - `reportedMissing` holds sequence numbers the receiver reported MISSING and has not seen
+    //     arrive. It is the complement of what is wanted, and it is emptied by arrival — the exact
+    //     event that precedes a delivery.
+    //   - `expectedSeq` alone can say a packet is OLDER than the retention window
+    //     (`seq < expectedSeq - MAX_NACK_GAP`). That zero-new-state alternative was IMPLEMENTED and
+    //     MEASURED rather than argued away, and it does not work: on the same sweep it left the
+    //     depth-64 column completely unchanged — 1672 delivered, 1560 distinct, 112 duplicates,
+    //     exactly the unfixed numbers. The reason is structural, not a tuning miss: the duplicates
+    //     at that depth are produced by stragglers that are still INSIDE `MAX_NACK_GAP`, so an
+    //     age test never fires on them. Age and delivery are different predicates, and only one of
+    //     them is what §12 is about. (The age test did raise DISTINCT delivery at depth 128/256 —
+    //     496 -> 824, 44 -> 280 — by keeping stale traffic out of the LRU window. That is an
+    //     eviction-policy observation for 081KZZZH7H4087G0R001HV0W40, not a duplicate guard.)
+    //
+    // WHY THE KEY IS DERIVED FROM `seq`. `blockSeq` is redundant with `seq` — the encoder sets
+    // `seq = blockSeq * BLOCK_TOTAL + pos` — yet the receiver trusts the two fields independently,
+    // which is what let 081KZYQJPNG087G0R002B9E9S1 be driven with `seq` monotone and a fresh
+    // `blockSeq` per packet, provoking no NACK at all (081KZZZH24H087G0R002TXQA15, filed, open). A
+    // guard keyed on `blockSeq` would inherit that key space — 4.29e9 peer-chosen values, none of
+    // them bounded by anything the receiver already tracks. Keyed on `seq >> 3` it lives in the key
+    // space `expectedSeq`, `reportedMissing` and `MAX_NACK_GAP` are all already built on. The
+    // honest consequence of the difference: a peer that DECOUPLES the two fields can make one guard
+    // entry cover two blocks it labelled differently, and suppress the second delivery. That is not
+    // a new lever — `recvBlocks` is one map shared across all peers with no per-peer state, so a
+    // peer can already claim another's `blockSeq` and have `addToBlock` refuse the real one on
+    // `packets[pos] !== null`. Same magnitude, and the real repair is per-peer state (named twice
+    // above, filed as 081KZZZH7H4087G0R001HV0W40).
+    //
+    // VICTIM: LEAST-RECENTLY-USED, and for the reason ULT-34 pins for the block map rather than by
+    // analogy. Evicting the lowest key here would let a peer PARK the guard — `DELIVERED_BLOCK_CAP`
+    // deliveries at the top of the u32 range would hold every slot permanently, and every honest
+    // guard entry would be evicted the instant it was created, restoring the defect for anyone but
+    // the attacker. Under LRU nothing a peer puts in a header makes its entry preferred, and a
+    // straggler for a recently-delivered block REFRESHES that block's guard — which is exactly the
+    // traffic pattern the guard exists for, so recency is the right order on the ordinary path too.
+    const deliveredKey = Math.floor(header.seq / BLOCK_TOTAL);
+    if (this.deliveredBlocks.has(deliveredKey)) {
+      // Already delivered, block long gone. Refresh recency — while stragglers keep arriving for
+      // this block, the guard it needs stays alive — and drop the packet. Dropping rather than
+      // re-creating the block also keeps a dead block out of the recovery window.
+      this.deliveredBlocks.delete(deliveredKey);
+      this.deliveredBlocks.add(deliveredKey);
+      return;
+    }
+
     let block = this.recvBlocks.get(header.blockSeq);
     if (!block) {
       block = makeReceiverBlock(header.blockSeq);
@@ -1596,6 +1716,19 @@ export class LossyUdpChannel {
     }
     const recovered = addToBlock(block, header.blockPos, new Uint8Array(payload));
     if (recovered) {
+      // Recorded BEFORE the handlers run, so both halves of the guard are set at the same instant.
+      // Stated honestly: this ordering is NOT independently observable today — a handler that
+      // re-enters this channel with the same block hits `block.recovered` on the still-retained
+      // block and is refused there. So no test pins it, and it is written this way because the
+      // alternative would depend on the in-window half staying reachable, not because a falsifier
+      // demanded it. Noted rather than tested.
+      this.deliveredBlocks.add(deliveredKey);
+      // Same shape as the block window: `if`, not `while`. The set grows only here, by one, and
+      // this runs on every growth, so it can never be more than one over.
+      if (this.deliveredBlocks.size > DELIVERED_BLOCK_CAP) {
+        const lru = this.deliveredBlocks.values().next();
+        if (lru.done !== true) this.deliveredBlocks.delete(lru.value);
+      }
       // Deliver data packets to handlers
       for (const dp of recovered) {
         if (dp.length > 0) {
