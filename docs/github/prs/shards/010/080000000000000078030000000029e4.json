@@ -1,0 +1,12 @@
+{
+  "pr_number": 10724,
+  "archive_path": "docs/history/pr-reviews/PR-10724-docs-provenance-evidence-protocol-for-the-2007-2008-company-lineage-is-evidencea.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T21:18:42.984Z",
+  "schema_version": "v1",
+  "commit_sha": "e2d14b84f54d15839ab13186ecba891a39cb84cc",
+  "title": "docs(provenance): evidence protocol for the 2007-2008 company — lineage is evidenceable, priority is not",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T21:18:07Z",
+  "head_ref": "shadow/2007-company-evidence-protocol"
+}
