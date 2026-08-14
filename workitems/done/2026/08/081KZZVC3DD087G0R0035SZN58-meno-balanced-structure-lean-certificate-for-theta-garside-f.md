@@ -1,11 +1,12 @@
 ---
 id: 081KZZVC3DD087G0R0035SZN58
 type: task
-state: backlog
+state: done
 priority: P2
 slug: meno-balanced-structure-lean-certificate-for-theta-garside-f
 title: "Meno balanced structure: Lean certificate for theta = Garside full twist Delta_n^2"
 created: 2026-08-14T09:59:08.973Z
+completed: 2026-08-14T15:42:59.090Z
 depends_on: []
 composes_with: [081KZZVC6SE087G0R001SXE8BV]
 ---
@@ -99,3 +100,39 @@ beats an unbuilt general proof.
   less trustworthy artefact than `Braid.equal`, which we already ship and test.
 - **FsCheck** — not primary. The property space is a small finite grid (`m`,`n`), so
   exhaustive beats random; a generator would only re-sample the same 21 cases.
+
+## Delivered 2026-08-14 (Soraya) — general-`n`, not the bounded fallback
+
+`src/Core.Lean4/Lean4/MenoBalancedTwist.lean`. `sorry`-free; `#print axioms` for every
+listed declaration is within `{propext, Classical.choice, Quot.sound}`; reachable from the
+`Lean4` root, so `lake build` compiles it and `lean-orphan-modules.ts` sees it; gated in
+`.github/workflows/lean-proof.yml` by a `sorryAx` audit (mutation-tested: a planted `sorry`
+in `dbl_cocycle` does make the gate fire).
+
+The item's cost note predicted step 2 would need Garside normal-form machinery and offered
+a bounded `n <= 5` fallback. **The fallback was not needed.** Taking the statement into
+`Mathlib`'s `BraidedCategory` rather than into `B_n` directly, the general-`m,n` result
+follows from the hexagon axioms alone via four Yang-Baxter rewrites:
+
+| Item's step | Status | Where |
+|---|---|---|
+| 2 — `Delta_{m+n}^2 = (Delta_m^2 (x) Delta_n^2)·c·c`, general | CHECKED, all `m,n` | `dbl_cocycle` (the 2-cocycle identity that makes `Delta^2` a coboundary of `D`) |
+| 3 — `theta_1 = id` forces the whole family | CHECKED, all `n` | `twist_Vpow_succ`, `twist_eq_on_Vpow`, `twist_eq_of_eq_on_gen` |
+| the `theta_A (x) theta_B` misreading | CHECKED both ways | `twist_tensor_of_id` (correct axiom ⇒ `theta_{V(x)V} = c^2`), `misread_axiom_forces_symmetry` (misread axiom ⇒ `c^2 = id`), `twist_tensor_ne_id_of_dbl_ne_id` (`theta_V = id` is not a degeneracy) |
+| 1 — naturality reduces to centrality in `B_n` | NOT CHECKED | naturality is a FIELD of `Twist`, assumed. Needs the braid groupoid + Artin faithfulness; neither is in Mathlib. Tracked as 081M00EZXN2087G0R003AY3WSJ |
+
+Non-vacuity: `symmetricTwist` witnesses that `Twist` is inhabited; `act_braid_relation_dihedral3`
+and `act_nontrivial_dihedral3` are positive controls on the concrete instrument; all four of
+this item's mutants are re-rejected in Lean by the `braidR` action on `DihedralGroup 3 ~= S_3`
+(`mutant_theta_id_rejected`, `mutant_half_twist_rejected`, `mutant_single_braiding_rejected`,
+`mutant_delta_fourth_rejected`). Epistemic direction is stated in the file: `!=` in a
+non-faithful representation is sound (proves words differ in `B_3`), `=` is only evidence —
+so `garside_relation_dihedral3` is labelled a cross-check and the positive result rests on
+`dbl_cocycle`.
+
+Routing note (rejected alternatives held up): the item rejected Z3/SMT and demoted FsCheck.
+Both calls stand. The alternative that was NOT considered — and turned out to be the right
+one — was **Mathlib's `BraidedCategory` instead of `B_n`**: it moves the problem from braid
+combinatorics (no Mathlib support) to coherence algebra (excellent Mathlib support), and it
+generalises `m,n` for free. Cost of the wrong call here would have been the predicted
+"couple of days" of Garside normal-form machinery for a strictly weaker result.

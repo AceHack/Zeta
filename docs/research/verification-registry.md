@@ -26,6 +26,57 @@ because <one-line>.`
 
 ---
 
+## `MenoBalancedTwist` *(Meno balanced structure / Garside full twist — Lean 4 + Mathlib)*
+
+- **Artifact.** `src/Core.Lean4/Lean4/MenoBalancedTwist.lean` (Lean 4 + Mathlib
+  v4.30.0-rc1). Authored 2026-08-14, work-item 081KZZVC3DD087G0R0035SZN58. Reachable from
+  the `Lean4` root, so `lake build` compiles it and `lean-orphan-modules.ts` sees it; gated
+  in `.github/workflows/lean-proof.yml` by a `sorryAx` axiom audit over 16 named
+  declarations, plus the workflow's existing anti-vacuity "Unknown constant" guard.
+- **Internal correctness target.** `Zeta.MenoBraided.braidR` in `src/Core/MenoBraided.fs`
+  and the braided monoidal subcategory `<V>` it generates. Companion artifact:
+  `src/Core.Lean4/Lean4/MenoBraidedRMatrix.lean` (braided-not-symmetric; now audited by the
+  same CI step, which it previously escaped).
+- **Internal correctness claim.** Three, each for ALL `n`, in an arbitrary braided monoidal
+  category: (i) the coherence obstruction to a balanced structure vanishes — `dbl_cocycle`,
+  the 2-cocycle identity for the double braiding `D_{X,Y} = c_{Y,X} ∘ c_{X,Y}`, which is
+  what makes `Δ²` a coboundary of `D` (the general-`n` content of Garside's full-twist
+  relation), together with `twist_assoc_consistent`; (ii) UNIQUENESS — two balanced
+  structures agreeing on `V` agree on every tensor power (`twist_eq_on_Vpow`,
+  `twist_eq_of_eq_on_gen`), with the forcing recursion `θ_{n+1} = (θ_n ⊗ θ_1) ∘ c ∘ c`
+  (`twist_Vpow_succ`); (iii) `θ_V = id` is NOT a degeneracy — the correct axiom
+  `θ_{A⊗B} = (θ_A ⊗ θ_B) ∘ c_{B,A} ∘ c_{A,B}` gives `θ_{V⊗V} = c²` and not `c² = id`
+  (`twist_tensor_of_id`), while the misread axiom `θ_{A⊗B} = θ_A ⊗ θ_B` really does force
+  `c² = id` (`misread_axiom_forces_symmetry`) — the two prior reviews' inference was valid
+  from a false premise, and both halves are now machine-checked.
+- **Spec-vs-implementation alignment.** The Lean side models `<V>`'s homs ABSTRACTLY, in
+  `Mathlib`'s `CategoryTheory.BraidedCategory`; it does NOT port the ZSet monoidal category
+  (standing boundary inherited from `MenoBraidedRMatrix`). Concrete cross-check: the Artin
+  action of `B₃` through the shipped `braidR` is evaluated exhaustively over all `6³ = 216`
+  triples of `DihedralGroup 3 ≅ S₃` (`garside_relation_dihedral3`), and all four mutants
+  the F#-side check rejected are re-rejected here (`mutant_theta_id_rejected`,
+  `mutant_half_twist_rejected`, `mutant_single_braiding_rejected`,
+  `mutant_delta_fourth_rejected`) — BP-16 two-tool cross-check, F# `Braid.equal` + Lean.
+  Epistemic direction is stated in the file: the representation is NOT faithful, so `≠` is
+  sound (proves words differ in `B₃`) but `=` is only evidence; the positive result rests on
+  `dbl_cocycle`, not on the exhaustive run.
+- **NOT claimed.** That a `Twist` INSTANCE exists on `<V>` — that needs the braid groupoid
+  as the free braided monoidal category on one object (Joyal–Street 1993 §2) plus
+  faithfulness of the Artin action (Artin 1925), neither in Mathlib. So `θ`'s naturality
+  (equivalently centrality of `Δₙ²` in `Bₙ`, Chow 1948) is a FIELD of `Zeta.MenoBalanced.Twist`,
+  assumed rather than derived. Tracked as 081M00EZXN2087G0R003AY3WSJ. Also: the inhabitation
+  witness `symmetricTwist` is SYMMETRIC, so it does not exercise `dbl ≠ id`; a non-symmetric
+  witness is option (b) of that item.
+- **External anchors.** Joyal & Street 1993, *Braided Tensor Categories* (Adv. Math. 102);
+  Garside 1969, *The braid group and other groups*; Chow 1948 (`Z(Bₙ) = ⟨Δ²⟩`, `n ≥ 3`);
+  Artin 1925; Kassel, *Quantum Groups* XIII.
+- **Last audit.** 2026-08-14, authored by Soraya. Grade: machine-checked (Lean 4 kernel;
+  `#print axioms` ⊆ `{propext, Classical.choice, Quot.sound}` for every listed declaration).
+  Gate mutation-tested at authoring time: a planted `sorry` in `dbl_cocycle` makes the CI
+  audit step fire, and a mis-qualified name makes the anti-vacuity guard fire.
+
+---
+
 ## `Spine.als` *(LSM Spine structural model — Alloy)*
 
 - **Artifact.** `src/Core.Alloy/specs/Spine.als` (Alloy structural model of the LSM Spine; checked via Alloy Analyzer). Authored 2026-06-12. *(Path corrected 2026-08-10 — the row pointed at `tools/alloy/specs/Spine.als`, which does not exist; the specs live under `src/Core.Alloy/`. This registry is the ground-truth map for `verification-drift-auditor`, and that skill has no missing-artifact branch, so a dead row is a silently-skipped audit rather than a loud failure.)*

@@ -183,6 +183,16 @@ jobs:
           printf '#print axioms Zeta.LandauerFloor.measure_preserves_total\n#print axioms Zeta.LandauerFloor.measure_heat_grows\n#print axioms Zeta.LandauerFloor.measure_heat_monotone\n#print axioms Zeta.LandauerFloor.branches_zero_heat\n#print axioms Zeta.LandauerFloor.adj_only_zero_heat\n#print axioms Zeta.LandauerFloor.larger_window_less_excess\n#print axioms Zeta.LandauerFloor.quasistatic_limit\n#print axioms Zeta.LandauerFloor.n_appends_from_n_branches\n' \
             | cat Lean4/LandauerFloor.lean - > /tmp/landauer_axiom_audit.lean
 
+          # ── Added 2026-08-14 (081KZZVC3DD087G0R0035SZN58): the Meno braided/balanced
+          # pair. `MenoBraidedRMatrix` was wired into the build 2026-08-13 but never into
+          # this audit, so a regression to `sorry` there would have type-checked green.
+          # `MenoBalancedTwist` lands with its gate rather than after it. Names are fully
+          # qualified because the audit lines are appended AFTER the files' `end`.
+          printf '#print axioms Zeta.MenoBraided.selfBraiding_comp_eq_id\n#print axioms Zeta.MenoBraided.braidRinv_braidR\n#print axioms Zeta.MenoBraided.braidR_isSymmetric_iff_commute\n#print axioms Zeta.MenoBraided.braidR_not_symmetric_perm3\n#print axioms Zeta.MenoBraided.braidR_yangBaxter\n#print axioms Zeta.MenoBraided.conj_selfDistrib\n#print axioms Zeta.MenoBraided.mut_not_yangBaxter\n#print axioms Zeta.MenoBraided.braidR_yangBaxter_perm3_exhaustive\n' \
+            | cat Lean4/MenoBraidedRMatrix.lean - > /tmp/meno_rmatrix_axiom_audit.lean
+          printf '#print axioms Zeta.MenoBalanced.dbl_cocycle\n#print axioms Zeta.MenoBalanced.twist_assoc_consistent\n#print axioms Zeta.MenoBalanced.twist_tensor_of_id\n#print axioms Zeta.MenoBalanced.misread_axiom_forces_symmetry\n#print axioms Zeta.MenoBalanced.twist_tensor_ne_id_of_dbl_ne_id\n#print axioms Zeta.MenoBalanced.dbl_eq_id_of_twist_id\n#print axioms Zeta.MenoBalanced.twist_Vpow_succ\n#print axioms Zeta.MenoBalanced.twist_eq_on_Vpow\n#print axioms Zeta.MenoBalanced.twist_eq_of_eq_on_gen\n#print axioms Zeta.MenoBalanced.act_braid_relation_dihedral3\n#print axioms Zeta.MenoBalanced.act_nontrivial_dihedral3\n#print axioms Zeta.MenoBalanced.garside_relation_dihedral3\n#print axioms Zeta.MenoBalanced.mutant_theta_id_rejected\n#print axioms Zeta.MenoBalanced.mutant_half_twist_rejected\n#print axioms Zeta.MenoBalanced.mutant_single_braiding_rejected\n#print axioms Zeta.MenoBalanced.mutant_delta_fourth_rejected\n' \
+            | cat Lean4/MenoBalancedTwist.lean - > /tmp/meno_balanced_axiom_audit.lean
+
           # ── Added 2026-08-10: three files that were in NEITHER list ──────────────
           # Each audits ONLY declarations measured sorry-free on 2026-08-10, so these
           # are genuine regression gates rather than permanently-red steps. Files that
@@ -250,6 +260,14 @@ jobs:
           fi
           if lake env lean /tmp/landauer_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::LandauerFloor depends on sorryAx — the Landauer two-ledger / predictive-advantage proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/meno_rmatrix_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::MenoBraidedRMatrix depends on sorryAx — the braided-not-symmetric / Yang-Baxter certificate regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/meno_balanced_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::MenoBalancedTwist depends on sorryAx — the balanced-structure / Garside full-twist certificate regressed to sorry/admit"
             exit 1
           fi
           # ── Anti-vacuity guard (added 2026-08-10) ────────────────────────────────
