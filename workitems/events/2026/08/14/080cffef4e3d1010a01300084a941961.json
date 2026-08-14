@@ -1,0 +1,14 @@
+{
+  "id": "080cffef4e3d1010a01300084a941961",
+  "at": "2026-08-14T01:36:24.482Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYYKHX1087G0R0036E9RH9",
+    "type": "bug",
+    "title": "every SMT runner asserts all-unsat, which a tautology satisfies, so no runner can catch a vacuous lemma",
+    "slug": "every-smt-runner-asserts-all-unsat-which-a-tautology-satisfi",
+    "priority": "P2",
+    "filename": "081KZYYKHX1087G0R0036E9RH9-every-smt-runner-asserts-all-unsat-which-a-tautology-satisfi.md"
+  }
+}
