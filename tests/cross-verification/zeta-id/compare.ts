@@ -6,7 +6,11 @@ import type { YamlValue } from "../../../src/Core.TypeScript/yaml/dom";
 // `{ [id]: hexString | { hex, crockford } }`. Compares present oracles
 // against each other AND against `vectors.yaml` `expected_hex` /
 // `expected_crockford`. A mutually consistent but stale output set
-// must fail — that was Gap 1 in README.md (closed this slice).
+// must fail — that was Gap 1 in README.md (closed).
+//
+// MUMPS is a required oracle (Gap 2, closed): missing `mumps-output.json`
+// fails closed. The other five language files stay optional-if-absent so a
+// partial checkout can still pin TS against the fixture.
 //
 // `parse-reject` vectors store the illegal Crockford input in
 // `expected_crockford`; oracles emit `crockford: "rejected"`. Pin hex
@@ -88,11 +92,20 @@ export type CompareResult = {
 export function compareOracles(
   fixture: readonly CanonicalVector[],
   impls: Record<string, OracleMap | null>,
+  required: readonly string[] = [],
 ): CompareResult {
   const mismatches: string[] = [];
   const implCounts: Record<string, number | "MISSING"> = {};
   for (const [name, impl] of Object.entries(impls)) {
     implCounts[name] = impl === null ? "MISSING" : Object.keys(impl).length;
+  }
+
+  for (const name of required) {
+    if (impls[name] === null || impls[name] === undefined) {
+      mismatches.push(
+        `${name} output missing — required oracle (assert-don't-skip).`,
+      );
+    }
   }
 
   const ts = impls.TS;
@@ -198,18 +211,18 @@ function main(): number {
     Rust: loadJson("rust-output.json"),
     Py: loadJson("python-output.json"),
     Go: loadJson("go-output.json"),
+    Mumps: loadJson("mumps-output.json"),
   };
 
-  const { mismatches, implCounts } = compareOracles(fixture, impls);
+  const { mismatches, implCounts } = compareOracles(fixture, impls, ["Mumps"]);
 
   console.log(`Cross-verification across implementations:`);
   console.log(`  fixture: ${String(fixture.length)} vectors`);
-  for (const name of ["TS", "F#", "C#", "Rust", "Py", "Go"]) {
+  for (const name of ["TS", "F#", "C#", "Rust", "Py", "Go", "Mumps"]) {
     const count = implCounts[name];
     const shown = count === "MISSING" ? "MISSING" : `${String(count)} vectors`;
     console.log(`  ${name.padEnd(6, " ")} ${shown}`);
   }
-
 
   for (const line of mismatches) console.error(line);
 

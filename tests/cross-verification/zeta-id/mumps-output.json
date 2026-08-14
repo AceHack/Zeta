@@ -71,9 +71,27 @@
     "roundtripOk": true,
     "matchesExpected": true
   },
-  "workitem-v1-standard": {
-    "hex": "080cb77ed58d18107813000000000000",
-    "crockford": "081JVQXNCD308QG4R000000000",
+  "all-zero": {
+    "hex": "00000000000000000000000000000000",
+    "crockford": "00000000000000000000000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "max-128": {
+    "hex": "ffffffffffffffffffffffffffffffff",
+    "crockford": "7ZZZZZZZZZZZZZZZZZZZZZZZZZ",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "overflow-reject-1": {
+    "hex": "rejected",
+    "crockford": "rejected",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "lenient-alias-1": {
+    "hex": "080cb77ed58d19c0f80b000800000000",
+    "crockford": "081JVQXNCD370FG2R010000000",
     "roundtripOk": true,
     "matchesExpected": true
   }

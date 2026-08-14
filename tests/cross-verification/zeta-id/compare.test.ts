@@ -36,16 +36,54 @@ describe("zeta-id compare.ts fixture pin", () => {
   });
 
   test("committed oracles agree with vectors.yaml", () => {
+    const result = compareOracles(
+      fixture,
+      {
+        TS: loadJson("ts-output.json"),
+        "F#": loadJson("fsharp-output.json"),
+        "C#": loadJson("cs-output.json"),
+        Rust: loadJson("rust-output.json"),
+        Py: loadJson("python-output.json"),
+        Go: loadJson("go-output.json"),
+        Mumps: loadJson("mumps-output.json"),
+      },
+      ["Mumps"],
+    );
+    expect(result.mismatches).toEqual([]);
+    expect(result.implCounts.Mumps).toBe(fixture.length);
+  });
+
+  test("missing required MUMPS output fails closed", () => {
+    const result = compareOracles(
+      fixture,
+      {
+        TS: loadJson("ts-output.json"),
+        Mumps: null,
+      },
+      ["Mumps"],
+    );
+    expect(result.mismatches.some((m) => m.includes("Mumps output missing"))).toBe(
+      true,
+    );
+  });
+
+  test("stale MUMPS extra key is drift", () => {
+    const mumps = {
+      ...loadJson("ts-output.json"),
+      "workitem-v1-standard": {
+        hex: "080cb77ed58d18107813000000000000",
+        crockford: "081JVQXNCD308QG4R000000000",
+      },
+    };
     const result = compareOracles(fixture, {
       TS: loadJson("ts-output.json"),
-      "F#": loadJson("fsharp-output.json"),
-      "C#": loadJson("cs-output.json"),
-      Rust: loadJson("rust-output.json"),
-      Py: loadJson("python-output.json"),
-      Go: loadJson("go-output.json"),
+      Mumps: mumps,
     });
-    expect(result.mismatches).toEqual([]);
+    expect(result.mismatches.some((m) => m.includes("workitem-v1-standard"))).toBe(
+      true,
+    );
   });
+
 
   test("stale-but-consistent outputs fail the fixture pin", () => {
     const stale: OracleMap = {
