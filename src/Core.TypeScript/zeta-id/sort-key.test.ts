@@ -151,17 +151,38 @@ test("the two live inventory ids decode to real, ordered timestamps", () => {
   expect(msA < msB).toBe(true); // and that matches their lexical order
 });
 
-test("packGeneric does NOT bound the payload — the 2039-09-07 truncation is real", () => {
-  // Latent, thirteen years out, and deliberately NOT fixed in this PR: new-item.ts
-  // calls packGeneric directly, which masks instead of validating, so `Date.now()`
-  // crossing 2^41 silently drops the top ms bit and collides with a zero-ms id.
-  const CLIFF = 1n << 41n; // 2039-09-07T15:47:35.552Z
+test("packGeneric now BOUNDS the payload — the 2039-09-07 truncation is fixed", () => {
+  // Was: "packGeneric does NOT bound the payload — the truncation is real", which
+  // asserted the defect. Now it asserts the remedy. new-item.ts builds
+  // `(Date.now() << 78n) | random78` = exactly 119 bits, i.e. ZERO headroom, so the
+  // very next bit of clock used to alias silently instead of failing.
+  const CLIFF = 1n << 41n;
   expect(new Date(Number(CLIFF)).toISOString()).toBe("2039-09-07T15:47:35.552Z");
-  expect(packGeneric(1, Category.InventoryAsset, CLIFF << 78n)).toBe(
-    packGeneric(1, Category.InventoryAsset, 0n),
-  );
-  // The unbounded-payload root cause, stated as a test rather than as prose.
-  expect(() => packGeneric(1, Category.InventoryAsset, 1n << 125n)).not.toThrow();
+
+  // The dated collision, rejected rather than minted.
+  expect(() => packGeneric(1, Category.InventoryAsset, CLIFF << 78n)).toThrow(/2\^119/);
+
+  // And the last ms before the cliff still mints — the bound fires at the boundary,
+  // not before it, so nothing mintable today changes.
+  const lastGoodMs = CLIFF - 1n;
+  const payload = (lastGoodMs << 78n) | ((1n << 78n) - 1n); // worst-case randomness
+  expect(payload.toString(2).length).toBe(119);
+  expect(() => packGeneric(1, Category.InventoryAsset, payload)).not.toThrow();
+
+  // Negative payloads alias the same way under BigInt masking; rejected too.
+  expect(() => packGeneric(1, Category.InventoryAsset, -1n)).toThrow();
+});
+
+test("the bound changes no currently-mintable id — the on-disk ids still re-mint byte-for-byte", () => {
+  // Inertness, proved against REAL data rather than an invented vector: take each id
+  // already committed under inventory/items/, recover its payload, and re-mint it
+  // through the now-bounded packGeneric. Identical bytes means the bound is inert for
+  // everything that exists, which is the whole claim.
+  for (const s of ["0EFJ9RW179ZFT9WBMXZZNYM92A", "0EFJ9RW1DD28A33YN3F9NCAP9E"]) {
+    const payload = payloadOf(parse(s));
+    expect(payload.toString(2).length).toBe(119); // at the cap, with zero headroom
+    expect(format(packGeneric(1, Category.InventoryAsset, payload))).toBe(s);
+  }
 });
 
 test("timeSortKey ACCEPTS an observation id and returns its ms", () => {
