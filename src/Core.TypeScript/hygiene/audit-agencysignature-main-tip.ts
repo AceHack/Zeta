@@ -15,22 +15,61 @@
 //   bun tools/hygiene/audit-agencysignature-main-tip.ts --since YYYY-MM-DD
 //   bun tools/hygiene/audit-agencysignature-main-tip.ts --branch main
 //   bun tools/hygiene/audit-agencysignature-main-tip.ts --v1-ship-date <DATE>
+//   bun tools/hygiene/audit-agencysignature-main-tip.ts --fail-closed-cutover <DATE>
 //
 // Exit codes:
-//   0 — no regressions found (LEGACY / CORRECT / HUMAN-AUTHORED-EXEMPT only)
+//   0 — no regressions found (LEGACY / CORRECT / *-EXEMPT only)
 //   1 — at least one REGRESSION found
 //   2 — tooling / input error
+//
+// ---------------------------------------------------------------------------
+// FAIL-CLOSED (2026-08-14, work-item 081M003VH9B087G0R002WXK2HD / PR #10564)
+// ---------------------------------------------------------------------------
+// This auditor used to recognise an agent commit by an ALLOWLIST of vendor
+// co-author trailers (Claude|Codex|Grok|Gemini|Kiro + five noreply domains) and
+// exempt everything else as "assuming human-authored". That is fail-OPEN, and
+// the actors it exempted were precisely the ones it exists to attribute:
+// measured over the last 300 commits of origin/main on 2026-08-14, 39
+// github-actions[bot] commits and 8 commits trailed with the fleet's own
+// personas (Dejan / Soraya / Otto / the shadow) were HUMAN-AUTHORED-EXEMPT.
+//
+// The default is now inverted. On and after the fail-closed cutover a commit is
+// exempt only on a POSITIVE identity match in
+// `agency-signature-identity-roster.json`; everything else — unknown persona,
+// unlisted bot, no Co-authored-by at all — is agent-or-unknown and must carry
+// the trailer. Adding a persona to the fleet no longer buys silent exemption.
+//
+// GRANDFATHER, stated the way the v1 ship date already is: commits BEFORE the
+// cutover keep their legacy (fail-open) classification exactly, so the fix adds
+// no retroactive red to `main` — and removes none of the red already there.
+// ---------------------------------------------------------------------------
 
 import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { join as joinPath } from "node:path";
 
 type ExitCode = 0 | 1 | 2;
 type Mode = "head" | "commit" | "max" | "since";
-type Status = "CORRECT" | "LEGACY" | "HUMAN-AUTHORED-EXEMPT" | "REGRESSION";
+type Status =
+  | "CORRECT"
+  | "LEGACY"
+  | "HUMAN-AUTHORED-EXEMPT"
+  | "HUMAN-ROSTER-EXEMPT"
+  | "MACHINE-LANE-EXEMPT"
+  | "REGRESSION";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
 const SPEC_DOC =
   "docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md";
+
+/**
+ * The date the fail-closed default takes effect. Commits with a committer
+ * timestamp BEFORE this instant are classified under the legacy fail-open rule
+ * (grandfathered — see the header block); commits at or after it must carry a
+ * signature unless an identity on the roster exempts them.
+ */
+export const FAIL_CLOSED_CUTOVER_DEFAULT = "2026-08-15T00:00:00Z";
 
 const POSITIVE_INT_RE = /^[1-9]\d*$/;
 const V1_TRAILER_RE = /^(?:Agency-Signature-Version:\s*1\b|AgencySignature-v1:)/im;
@@ -40,8 +79,104 @@ const V2_TRAILER_RE = /^Agency-Signature-Version:\s*2\b/im;
 const AGENT_COAUTHOR_RE =
   /^Co-authored-by:\s*(?:(?:Claude|Codex|Grok|Gemini|Kiro)\b|.*<noreply@(?:anthropic\.com|openai\.com|x\.ai|google\.com|kiro\.dev)>)/im;
 
+// `Agency-Signature-Version` is CANONICAL. Checked 2026-08-14 against every
+// surface that names the key: the spec doc (SPEC_DOC §7.5/§10), the pre-merge
+// validator's REQUIRED_KEYS (validate-agencysignature-pr-body.ts:47), the
+// persona-cell ADR, samples/canonical-observation-2-hop-chain.txt, and the four
+// cadence workflows that `echo` the trailer (budget-snapshot, zetadb-scheduled-node,
+// context-cost-trend, manifesto-citation-snapshot). NO file in the repo emits
+// `Agent-Signature-Version` — so there is no wrong generator to fix; the three
+// commits carrying it on main (174bcd0891, 1930217660, 90e1d6a8c5, all
+// 2026-08-13/14) were hand-composed by agents. A commit carrying ONLY the
+// misspelling used to be exempt AND unsigned at once; it is now named and loud.
+const MISSPELLED_VERSION_RE = /^Agent-Signature-Version:\s*\d/im;
+export const CANONICAL_VERSION_KEY = "Agency-Signature-Version";
+export const MISSPELLED_VERSION_KEY = "Agent-Signature-Version";
+
+// No `[\t ]*(.*)` prefix: two adjacent quantifiers over overlapping character
+// classes is the super-linear-backtracking shape. Capture the rest of the line
+// and trim in code instead.
+const COAUTHOR_LINE_RE = /^Co-authored-by:(.*)$/gim;
+const EMAIL_RE = /<([^<>]+)>/;
+
 export function hasAgentCoauthorTrailer(trailers: string): boolean {
   return AGENT_COAUTHOR_RE.test(trailers);
+}
+
+/** True when the misspelled `Agent-Signature-Version` key appears. */
+export function hasMisspelledVersionTrailer(text: string): boolean {
+  return MISSPELLED_VERSION_RE.test(text);
+}
+
+/**
+ * Every `Co-authored-by` e-mail in a commit message, lowercased.
+ * A trailer with no `<...>` yields the whole raw value, which can never match a
+ * roster e-mail — deliberately, so a malformed trailer fails closed.
+ */
+export function coauthorEmails(message: string): readonly string[] {
+  const out: string[] = [];
+  for (const m of message.matchAll(COAUTHOR_LINE_RE)) {
+    const raw = (m[1] ?? "").trim();
+    if (raw === "") continue;
+    const email = EMAIL_RE.exec(raw);
+    out.push((email?.[1] ?? raw).trim().toLowerCase());
+  }
+  return out;
+}
+
+interface RosterEntry {
+  readonly email: string;
+  readonly name?: string;
+  readonly why?: string;
+}
+
+export interface IdentityRoster {
+  readonly humans: ReadonlySet<string>;
+  readonly machineLanes: ReadonlySet<string>;
+}
+
+const ROSTER_FILENAME = "agency-signature-identity-roster.json";
+
+function emailSet(rows: readonly RosterEntry[] | undefined, label: string): ReadonlySet<string> {
+  if (rows === undefined || !Array.isArray(rows)) {
+    throw new TypeError(`${ROSTER_FILENAME}: '${label}' must be an array`);
+  }
+  const set = new Set<string>();
+  for (const row of rows as readonly RosterEntry[]) {
+    const email: unknown = row.email;
+    if (typeof email !== "string" || email.trim() === "") {
+      throw new TypeError(`${ROSTER_FILENAME}: every '${label}' row needs a non-empty email`);
+    }
+    set.add(email.trim().toLowerCase());
+  }
+  return set;
+}
+
+/**
+ * Parse the roster. Throws on anything malformed — a roster that cannot be read
+ * is a tooling error (exit 2), never an empty roster that quietly exempts
+ * nobody or, worse, a default that quietly exempts everybody.
+ */
+export function parseIdentityRoster(json: string): IdentityRoster {
+  const raw = JSON.parse(json) as {
+    humans?: readonly RosterEntry[];
+    machineLanes?: readonly RosterEntry[];
+  };
+  return {
+    humans: emailSet(raw.humans, "humans"),
+    machineLanes: emailSet(raw.machineLanes, "machineLanes"),
+  };
+}
+
+let cachedRoster: IdentityRoster | null = null;
+
+export function loadIdentityRoster(): IdentityRoster {
+  if (cachedRoster !== null) return cachedRoster;
+  // Module-relative, so the auditor works from any cwd (tests chdir into a
+  // temporary repository to plant falsifier commits).
+  const path = joinPath(import.meta.dir, ROSTER_FILENAME);
+  cachedRoster = parseIdentityRoster(readFileSync(path, "utf8"));
+  return cachedRoster;
 }
 
 export function hasAgencySignatureV1(text: string): boolean {
@@ -68,6 +203,7 @@ interface ParsedArgs {
   readonly sinceDate: string;
   readonly branch: string;
   readonly v1ShipDate: string;
+  readonly failClosedCutover: string;
 }
 
 function gitOutput(args: readonly string[]): {
@@ -108,6 +244,7 @@ interface MutableArgs {
   sinceDate: string;
   branch: string;
   v1ShipDate: string;
+  failClosedCutover: string;
 }
 
 // Derived from MutableArgs so adding/removing string fields cannot drift
@@ -127,6 +264,11 @@ function classifyArg(arg: string, next: string | undefined): ArgStep {
     "--since": { key: "sinceDate", setMode: "since", missing: "error: --since requires DATE (YYYY-MM-DD)" },
     "--branch": { key: "branch", setMode: null, missing: "error: --branch requires NAME" },
     "--v1-ship-date": { key: "v1ShipDate", setMode: null, missing: "error: --v1-ship-date requires DATE" },
+    "--fail-closed-cutover": {
+      key: "failClosedCutover",
+      setMode: null,
+      missing: "error: --fail-closed-cutover requires DATE",
+    },
   };
   const spec = requiresNext[arg];
   if (spec !== undefined) {
@@ -145,6 +287,7 @@ function parseArgs(argv: readonly string[]): ArgParseResult {
     sinceDate: "",
     branch: "",
     v1ShipDate: "",
+    failClosedCutover: FAIL_CLOSED_CUTOVER_DEFAULT,
   };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i] ?? "";
@@ -160,10 +303,6 @@ function parseArgs(argv: readonly string[]): ArgParseResult {
 
 function commitTrailers(sha: string): string {
   return gitOutput(["log", "-1", "--pretty=%(trailers)", sha]).stdout;
-}
-
-function commitMessage(sha: string): string {
-  return gitOutput(["log", "-1", "--pretty=%B", sha]).stdout;
 }
 
 interface V1Ship {
@@ -208,32 +347,195 @@ interface ShipState {
   readonly tsCache: number | null;
 }
 
-function commitTimestamp(sha: string): number {
-  const out = gitOutput(["log", "-1", "--pretty=%ct", sha]);
-  return Number.parseInt(out.stdout.trim(), 10);
-}
-
-function commitIsoDate(sha: string): string {
-  return gitOutput(["log", "-1", "--pretty=%cI", sha]).stdout.trim();
-}
-
 function commitSubject(sha: string): string {
   return gitOutput(["log", "-1", "--pretty=%s", sha]).stdout.trim();
+}
+
+/**
+ * One `git log` for the whole record. `%B` is last because it is the only field
+ * that may contain newlines.
+ */
+function commitRecord(sha: string): CommitRecord {
+  const out = gitOutput(["log", "-1", "--pretty=format:%ae%n%ce%n%ct%n%cI%n%B", sha]).stdout;
+  const nl = (n: number): number => {
+    let i = -1;
+    for (let k = 0; k < n; k++) {
+      i = out.indexOf("\n", i + 1);
+      if (i < 0) return out.length;
+    }
+    return i;
+  };
+  const cut = (a: number, b: number): string => out.slice(a === 0 ? 0 : a + 1, b);
+  const b1 = nl(1);
+  const b2 = nl(2);
+  const b3 = nl(3);
+  const b4 = nl(4);
+  return {
+    trailers: commitTrailers(sha),
+    message: out.slice(Math.min(b4 + 1, out.length)),
+    authorEmail: cut(0, b1),
+    committerEmail: cut(b1, b2),
+    timestamp: Number.parseInt(cut(b2, b3).trim(), 10),
+    isoDate: cut(b3, b4).trim(),
+  };
+}
+
+/**
+ * Everything the classification depends on, with git already read. Kept pure so
+ * the falsifier tests can plant an arbitrary commit shape without a repository.
+ */
+export interface CommitRecord {
+  readonly trailers: string;
+  readonly message: string;
+  /** Committer timestamp, Unix seconds. */
+  readonly timestamp: number;
+  readonly isoDate: string;
+  /** Author e-mail (`%ae`). NEVER a human-authorship signal — see the roster. */
+  readonly authorEmail: string;
+  /** Committer e-mail (`%ce`). Same caveat. */
+  readonly committerEmail: string;
+}
+
+export interface Classification {
+  readonly status: Status;
+  readonly reason: string;
+}
+
+function classifySigned(record: CommitRecord): Classification | null {
+  const hasV2 =
+    hasAgencySignatureV2(record.trailers) || hasAgencySignatureV2(record.message);
+  if (hasAgencySignature(record.trailers)) {
+    return { status: "CORRECT", reason: hasV2 ? "trailer present (v2)" : "trailer present (v1)" };
+  }
+  if (hasAgencySignature(record.message)) {
+    return {
+      status: "CORRECT",
+      reason: hasV2
+        ? "AgencySignature v2 block present in commit message"
+        : "AgencySignature block present in commit message",
+    };
+  }
+  return null;
+}
+
+/**
+ * The FAIL-OPEN rule as it stood before 2026-08-14. Retained verbatim in
+ * behaviour so grandfathered (pre-cutover) commits keep the classification they
+ * already had — the fix must not repaint history in either direction.
+ */
+function classifyLegacyFailOpen(record: CommitRecord): Classification {
+  const signed = classifySigned(record);
+  if (signed !== null) return signed;
+  if (hasAgentCoauthorSignal(record.trailers, record.message)) {
+    return {
+      status: "REGRESSION",
+      reason: "agent commit (Co-authored-by present) missing AgencySignature",
+    };
+  }
+  return {
+    status: "HUMAN-AUTHORED-EXEMPT",
+    reason: "pre-cutover legacy rule: no vendor Co-authored-by; assumed human-authored",
+  };
+}
+
+/**
+ * The FAIL-CLOSED rule. Exemption requires a POSITIVE roster match; absence of
+ * evidence is treated as agent-or-unknown, which is the whole inversion.
+ *
+ * Order is load-bearing:
+ *  1. the misspelled version key, before anything can exempt it;
+ *  2. a real signature — always CORRECT, whoever committed it;
+ *  3. Co-authored-by present  → every co-author must be on a roster, and which
+ *     roster decides the exemption. One unlisted co-author kills it, so a
+ *     `Co-authored-by: github-actions[bot]` cannot be bolted onto an agent
+ *     commit to buy the machine-lane exemption;
+ *  4. Co-authored-by absent   → only the AUTHOR/COMMITTER being a machine lane
+ *     exempts. Absence of a co-author trailer is NOT a human signal: 7 of the
+ *     last 300 commits on main have none and are plainly agent squash-merges
+ *     (#10368, #10410, #10544, #10561, …), and 51 more are bot telemetry ticks.
+ */
+function classifyFailClosed(record: CommitRecord, roster: IdentityRoster): Classification {
+  if (
+    hasMisspelledVersionTrailer(record.message) &&
+    !hasAgencySignature(record.message) &&
+    !hasAgencySignature(record.trailers)
+  ) {
+    return {
+      status: "REGRESSION",
+      reason: `misspelled trailer key '${MISSPELLED_VERSION_KEY}' — canonical key is '${CANONICAL_VERSION_KEY}' (the commit is unsigned)`,
+    };
+  }
+
+  const signed = classifySigned(record);
+  if (signed !== null) return signed;
+
+  const coauthors = coauthorEmails(record.message);
+  if (coauthors.length > 0) {
+    const unlisted = coauthors.filter(
+      (e) => !roster.humans.has(e) && !roster.machineLanes.has(e),
+    );
+    if (unlisted.length > 0) {
+      return {
+        status: "REGRESSION",
+        reason: `unsigned, and Co-authored-by is not on the identity roster: ${unlisted.join(", ")} — agent-or-unknown must carry ${CANONICAL_VERSION_KEY}`,
+      };
+    }
+    if (coauthors.some((e) => roster.machineLanes.has(e))) {
+      return {
+        status: "MACHINE-LANE-EXEMPT",
+        reason: `explicit machine-lane exemption (${coauthors.join(", ")}); provenance is the in-repo workflow + run, not a trailer`,
+      };
+    }
+    return {
+      status: "HUMAN-ROSTER-EXEMPT",
+      reason: `positive human signal: every Co-authored-by is on the human roster (${coauthors.join(", ")})`,
+    };
+  }
+
+  const author = record.authorEmail.trim().toLowerCase();
+  const committer = record.committerEmail.trim().toLowerCase();
+  if (roster.machineLanes.has(author) || roster.machineLanes.has(committer)) {
+    return {
+      status: "MACHINE-LANE-EXEMPT",
+      reason: `explicit machine-lane exemption (author ${author}); provenance is the in-repo workflow + run, not a trailer`,
+    };
+  }
+  return {
+    status: "REGRESSION",
+    reason: `unsigned, and no Co-authored-by at all — absence is not a human signal; must carry ${CANONICAL_VERSION_KEY}`,
+  };
+}
+
+export function classifyCommitRecord(
+  record: CommitRecord,
+  shipTs: number | null,
+  shipDate: string,
+  cutoverTs: number,
+  roster: IdentityRoster,
+): Classification {
+  if (shipTs === null) {
+    return { status: "LEGACY", reason: "v1 not yet shipped on this branch" };
+  }
+  if (record.timestamp < shipTs) {
+    return {
+      status: "LEGACY",
+      reason: `pre-v1-ship-date (${record.isoDate} < ${shipDate})`,
+    };
+  }
+  if (record.timestamp < cutoverTs) return classifyLegacyFailOpen(record);
+  return classifyFailClosed(record, roster);
 }
 
 function classifyCommit(
   sha: string,
   ship: ShipState | null,
-): { status: Status; reason: string } | null {
-  const trailers = commitTrailers(sha);
-  const message = commitMessage(sha);
-  const hasV2 = hasAgencySignatureV2(trailers) || hasAgencySignatureV2(message);
-  const hasV1Trailer = hasAgencySignature(trailers);
-  const hasV1Message = hasV1Trailer || hasAgencySignature(message);
-  const hasCoauthor = hasAgentCoauthorSignal(trailers, message);
+  cutoverTs: number,
+  roster: IdentityRoster,
+): Classification | null {
+  const record = commitRecord(sha);
 
   if (ship === null) {
-    return { status: "LEGACY", reason: "v1 not yet shipped on this branch" };
+    return classifyCommitRecord(record, null, "", cutoverTs, roster);
   }
 
   let shipTs: number;
@@ -250,32 +552,7 @@ function classifyCommit(
     shipTs = parsed;
   }
 
-  const commitTs = commitTimestamp(sha);
-  if (commitTs < shipTs) {
-    return {
-      status: "LEGACY",
-      reason: `pre-v1-ship-date (${commitIsoDate(sha)} < ${ship.date})`,
-    };
-  }
-  if (hasV1Trailer) return { status: "CORRECT", reason: hasV2 ? "trailer present (v2)" : "trailer present (v1)" };
-  if (hasV1Message) {
-    return {
-      status: "CORRECT",
-      reason: hasV2
-        ? "AgencySignature v2 block present in commit message"
-        : "AgencySignature block present in commit message",
-    };
-  }
-  if (hasCoauthor) {
-    return {
-      status: "REGRESSION",
-      reason: "agent commit (Co-authored-by present) missing AgencySignature",
-    };
-  }
-  return {
-    status: "HUMAN-AUTHORED-EXEMPT",
-    reason: "no Co-authored-by signal; assuming human-authored",
-  };
+  return classifyCommitRecord(record, shipTs, ship.date, cutoverTs, roster);
 }
 
 function buildCommitList(args: ParsedArgs, targetRev: string): readonly string[] | null {
@@ -321,6 +598,7 @@ function emitHelp(): ExitCode {
   process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --since DATE      # since DATE\n");
   process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --branch NAME     # branch tip\n");
   process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --v1-ship-date DATE\n");
+  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --fail-closed-cutover DATE\n");
   return 0;
 }
 
@@ -329,11 +607,18 @@ interface AuditCounts {
   correctV2: number;
   legacy: number;
   human: number;
+  humanRoster: number;
+  machineLane: number;
   regression: number;
   regressions: string[];
 }
 
-function emitHeader(args: ParsedArgs, targetRev: string, ship: ShipState | null): void {
+function emitHeader(
+  args: ParsedArgs,
+  targetRev: string,
+  ship: ShipState | null,
+  roster: IdentityRoster,
+): void {
   const sha = gitOutput(["rev-parse", targetRev]).stdout.trim();
   process.stdout.write("AgencySignature v1 main-tip audit\n");
   process.stdout.write(`  target_rev:    ${targetRev} (${sha})\n`);
@@ -348,6 +633,12 @@ function emitHeader(args: ParsedArgs, targetRev: string, ship: ShipState | null)
       "  v1-ship-date:  not yet shipped on this branch (all commits LEGACY)\n",
     );
   }
+  process.stdout.write(`  fail-closed:   ${args.failClosedCutover} — commits at or after this instant are\n`);
+  process.stdout.write("                 exempt only on a POSITIVE roster match; earlier commits keep\n");
+  process.stdout.write("                 the legacy fail-open classification (grandfathered, stated).\n");
+  process.stdout.write(
+    `  roster:        ${ROSTER_FILENAME} — ${String(roster.humans.size)} human, ${String(roster.machineLanes.size)} machine-lane identities\n`,
+  );
   process.stdout.write(`  mode:          ${args.mode}\n`);
   process.stdout.write("\n");
 }
@@ -359,6 +650,8 @@ function tallyCommit(status: Status, short: string, counts: AuditCounts, isV2 = 
   }
   else if (status === "LEGACY") counts.legacy++;
   else if (status === "HUMAN-AUTHORED-EXEMPT") counts.human++;
+  else if (status === "HUMAN-ROSTER-EXEMPT") counts.humanRoster++;
+  else if (status === "MACHINE-LANE-EXEMPT") counts.machineLane++;
   else {
     counts.regression++;
     counts.regressions.push(short);
@@ -373,12 +666,16 @@ function emitCommitRow(status: Status, short: string, subject: string, reason: s
 function auditCommits(
   commits: readonly string[],
   ship: ShipState | null,
+  cutoverTs: number,
+  roster: IdentityRoster,
 ): { counts: AuditCounts; toolingError: boolean } {
   const counts: AuditCounts = {
     correct: 0,
     correctV2: 0,
     legacy: 0,
     human: 0,
+    humanRoster: 0,
+    machineLane: 0,
     regression: 0,
     regressions: [],
   };
@@ -386,7 +683,7 @@ function auditCommits(
   for (const sha of commits) {
     if (sha === "") continue;
     const shipState = ship === null ? null : { ...ship, tsCache: cachedShipTs };
-    const result = classifyCommit(sha, shipState);
+    const result = classifyCommit(sha, shipState, cutoverTs, roster);
     if (result === null) return { counts, toolingError: true };
     if (ship !== null && cachedShipTs === null) {
       cachedShipTs = parseShipDate(ship.date);
@@ -402,7 +699,9 @@ function emitSummary(counts: AuditCounts): ExitCode {
   process.stdout.write("\nSummary:\n");
   process.stdout.write(`  CORRECT:                ${String(counts.correct)}\n`);
   process.stdout.write(`  LEGACY:                 ${String(counts.legacy)}\n`);
-  process.stdout.write(`  HUMAN-AUTHORED-EXEMPT:  ${String(counts.human)}\n`);
+  process.stdout.write(`  HUMAN-AUTHORED-EXEMPT:  ${String(counts.human)}   (pre-cutover legacy rule)\n`);
+  process.stdout.write(`  HUMAN-ROSTER-EXEMPT:    ${String(counts.humanRoster)}\n`);
+  process.stdout.write(`  MACHINE-LANE-EXEMPT:    ${String(counts.machineLane)}\n`);
   process.stdout.write(`  REGRESSION:             ${String(counts.regression)}\n`);
   if (counts.correct > 0) {
     const v1 = counts.correct - counts.correctV2;
@@ -419,16 +718,28 @@ function emitSummary(counts: AuditCounts): ExitCode {
     `\nFAIL: ${String(counts.regression)} regression(s) found:${regressionList}\n`,
   );
   process.stdout.write(
-    "  Cause: agent-authored commits (Co-authored-by present) on or after v1\n",
+    "  Cause: a commit that is agent-or-unknown is missing the\n",
   );
   process.stdout.write(
-    "         ship date are missing the Agency-Signature-Version: 1 trailer\n",
+    `         ${CANONICAL_VERSION_KEY}: 1 trailer block — squash-merge stripped\n`,
   );
   process.stdout.write(
-    "         block, indicating squash-merge stripped the trailers OR the PR\n",
+    "         the trailers, the PR body did not carry the block at its bottom,\n",
   );
   process.stdout.write(
-    "         body did not carry the trailer block at the bottom.\n",
+    `         or the block used the WRONG KEY '${MISSPELLED_VERSION_KEY}'\n`,
+  );
+  process.stdout.write(
+    "         (read the per-commit reason above; it says which).\n",
+  );
+  process.stdout.write(
+    "         Since 2026-08-14 exemption is FAIL-CLOSED: it requires a positive\n",
+  );
+  process.stdout.write(
+    `         identity match in ${ROSTER_FILENAME}. An unlisted\n`,
+  );
+  process.stdout.write(
+    "         persona or bot is agent-or-unknown by construction, not exempt.\n",
   );
   process.stdout.write(
     "  Fix:   re-attach AgencySignature trailers to the next commit; ensure\n",
@@ -437,7 +748,13 @@ function emitSummary(counts: AuditCounts): ExitCode {
     "         future PR bodies include the trailer block at the body bottom\n",
   );
   process.stdout.write(
-    "         per the Squash-Merge Invariant rule (ferry-6/7).\n",
+    "         per the Squash-Merge Invariant rule (ferry-6/7). If the identity\n",
+  );
+  process.stdout.write(
+    "         genuinely belongs to a human or a machine lane, add it to the\n",
+  );
+  process.stdout.write(
+    "         roster — a reviewed one-line diff, which is the point.\n",
   );
   process.stdout.write(`  Spec:  ${SPEC_DOC} Section 7.5 + Section 10\n`);
   return 1;
@@ -471,6 +788,25 @@ export function main(argv: readonly string[]): ExitCode {
     return 2;
   }
 
+  const cutoverTs = parseShipDate(args.failClosedCutover);
+  if (cutoverTs === null) {
+    process.stderr.write(
+      `error: --fail-closed-cutover value is not a valid date: ${args.failClosedCutover}\n`,
+    );
+    return 2;
+  }
+
+  // A roster that cannot be read is a TOOLING ERROR, never an empty roster.
+  // An empty roster would exempt nobody (noisy but safe); a *default* roster
+  // would exempt somebody nobody reviewed, which is the defect being fixed.
+  let roster: IdentityRoster;
+  try {
+    roster = loadIdentityRoster();
+  } catch (err) {
+    process.stderr.write(`error: cannot load identity roster: ${String(err)}\n`);
+    return 2;
+  }
+
   const ship = determineShip(args, targetRev);
   const commits = buildCommitList(args, targetRev);
   if (commits === null) return 2;
@@ -481,8 +817,8 @@ export function main(argv: readonly string[]): ExitCode {
     return 0;
   }
 
-  emitHeader(args, targetRev, ship);
-  const { counts, toolingError } = auditCommits(commits, ship);
+  emitHeader(args, targetRev, ship, roster);
+  const { counts, toolingError } = auditCommits(commits, ship, cutoverTs, roster);
   if (toolingError) return 2;
   return emitSummary(counts);
 }

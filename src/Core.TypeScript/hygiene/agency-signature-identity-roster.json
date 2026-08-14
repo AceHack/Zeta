@@ -1,0 +1,66 @@
+{
+  "note": [
+    "Identity roster for audit-agencysignature-main-tip.ts (fail-CLOSED exemption list).",
+    "",
+    "READ THIS BEFORE ADDING A ROW. This file lists the ONLY identities that may be",
+    "EXEMPT from carrying an AgencySignature trailer. It is deliberately NOT a list of",
+    "agents. The auditor's previous defect was an ALLOWLIST OF AGENTS: a commit whose",
+    "Co-authored-by did not match Claude|Codex|Grok|Gemini|Kiro fell through to",
+    "'assuming human-authored' and was exempted. That is fail-OPEN -- every persona the",
+    "fleet adds is silently exempt until someone audits the auditor. Measured on",
+    "origin/main 2026-08-14, it exempted 39 github-actions[bot] commits and 6 commits",
+    "trailed with the fleet's own personas (Dejan, Soraya, the shadow, Otto).",
+    "",
+    "The inversion: exemption now requires a POSITIVE match in this file. An identity",
+    "nobody listed is agent-or-unknown and MUST sign. A stale roster therefore produces",
+    "a FALSE REGRESSION (loud, one-line diff to fix) instead of a FALSE EXEMPTION",
+    "(silent, indefinite). That asymmetry is the entire point of the file.",
+    "",
+    "MATCHED ON Co-authored-by ONLY -- never on the git author field. 155 of the last",
+    "300 commits on origin/main are authored 'Aaron Stainback <aaron_bond@yahoo.com>'",
+    "and committed by 'GitHub <noreply@github.com>': that is GitHub's squash-merge",
+    "attribution of AGENT pull requests to the merging human's account. Treating the",
+    "author field as a human signal would exempt the majority of main. The one",
+    "exception is machineLanes, which may also match author/committer, and only for a",
+    "commit that carries no Co-authored-by at all (the direct-push telemetry lanes).",
+    "",
+    "Comparison is on the e-mail address, lowercased (ASCII), exact. Display names are",
+    "informational only.",
+    "",
+    "RESIDUAL HOLE, stated rather than papered over: a commit produced by an agent but",
+    "pushed through a human's GitHub credential is attributed by GitHub to that human,",
+    "and this roster will exempt it. The credential is the human-authorization boundary",
+    "in this repo, so that is the intended reading -- but it is an inference from the",
+    "credential, not evidence a human wrote the diff. The HUMAN-ROSTER-EXEMPT count is",
+    "printed in every audit summary so the size of that inference stays visible."
+  ],
+  "humans": [
+    {
+      "email": "578953+acehack@users.noreply.github.com",
+      "name": "AceHack",
+      "why": "Aaron Stainback, maintainer; GitHub noreply address used for web/API-authored commits"
+    },
+    {
+      "email": "aaron_bond@yahoo.com",
+      "name": "Aaron Stainback",
+      "why": "maintainer's local git identity; valid ONLY as a Co-authored-by, never as the author field"
+    }
+  ],
+  "machineLanes": [
+    {
+      "email": "github-actions[bot]@users.noreply.github.com",
+      "name": "github-actions[bot]",
+      "why": "GitHub Actions default identity for the in-repo telemetry/archive lanes (tick-metrics, drift-sweep, pr-archive-on-merge, lint-autofix, lockfile-healer)"
+    },
+    {
+      "email": "41898282+github-actions[bot]@users.noreply.github.com",
+      "name": "github-actions[bot]",
+      "why": "the numeric-uid form of the same identity; both spellings appear on main"
+    },
+    {
+      "email": "society[bot]@users.noreply.github.com",
+      "name": "society[bot]",
+      "why": "society-heartbeat.yml evolution-tick lane"
+    }
+  ]
+}

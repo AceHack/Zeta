@@ -269,10 +269,37 @@ function emitNonTrailerAfterFailure(after: readonly string[]): ExitCode {
   return 1;
 }
 
-function emitMissingKeys(missing: readonly string[]): ExitCode {
+// `Agency-Signature-Version` is the canonical key (REQUIRED_KEYS above, the
+// spec doc, the post-merge auditor, the four cadence workflows that echo it).
+// `Agent-Signature-Version` is a hand-composition slip that reached main three
+// times on 2026-08-13/14 — and because the post-merge auditor used to exempt
+// anything it did not recognise, such a commit was unsigned AND exempt at once.
+// Say the misspelling out loud here so the pre-merge side names it too.
+const MISSPELLED_VERSION_KEY = "Agent-Signature-Version";
+const CANONICAL_VERSION_KEY = "Agency-Signature-Version";
+const MISSPELLED_VERSION_RE = /^Agent-Signature-Version:\s*\d/im;
+
+/** True when the PR body carries the misspelled version key. */
+export function hasMisspelledVersionKey(body: string): boolean {
+  return MISSPELLED_VERSION_RE.test(body);
+}
+
+function emitMissingKeys(missing: readonly string[], body = ""): ExitCode {
   process.stdout.write(
     `FAIL: missing required AgencySignature v1 trailer keys: ${missing.join(" ")}\n`,
   );
+  if (missing.includes(CANONICAL_VERSION_KEY) && hasMisspelledVersionKey(body)) {
+    process.stdout.write(
+      `  WRONG KEY: the body carries '${MISSPELLED_VERSION_KEY}'. The canonical key is\n`,
+    );
+    process.stdout.write(
+      `             '${CANONICAL_VERSION_KEY}' — Agency, not Agent. Every consumer\n`,
+    );
+    process.stdout.write(
+      "             (this validator, the post-merge auditor, the cadence workflows)\n",
+    );
+    process.stdout.write("             reads the canonical spelling only.\n");
+  }
   process.stdout.write(
     "  Class:    Trailer Contiguity Survival Failure — likely cause\n",
   );
@@ -325,7 +352,7 @@ function checkTerminalBlock(stripped: string, trailers: string): ExitCode | null
   return null;
 }
 
-function checkRequiredKeys(trailers: string): ExitCode | null {
+function checkRequiredKeys(trailers: string, body = ""): ExitCode | null {
   const missing: string[] = [];
   for (const key of REQUIRED_KEYS) {
     const prefix = `${key.toLowerCase()}:`;
@@ -335,7 +362,7 @@ function checkRequiredKeys(trailers: string): ExitCode | null {
     if (!found) missing.push(key);
   }
   if (missing.length === 0) return null;
-  return emitMissingKeys(missing);
+  return emitMissingKeys(missing, body);
 }
 
 function checkEnums(trailers: string): ExitCode | null {
@@ -499,7 +526,7 @@ export function main(): ExitCode {
   const terminalCheck = checkTerminalBlock(stripped, trailers);
   if (terminalCheck !== null) return terminalCheck;
 
-  const requiredCheck = checkRequiredKeys(trailers);
+  const requiredCheck = checkRequiredKeys(trailers, stripped);
   if (requiredCheck !== null) return requiredCheck;
 
   const enumCheck = checkEnums(trailers);
