@@ -16,9 +16,15 @@ import {
   addToBlock,
   makeReceiverBlock,
   makeAimdState,
-  onNack,
+  onLoss,
   onSend,
-  lossRate,
+  retractLoss,
+  lossRates,
+  evaluatedLossRates,
+  congestionSuspectRate,
+  encodeNack,
+  decodeNack,
+  type NackMessage,
   encodePacket,
   decodePacket,
   xorParityBlock,
@@ -205,15 +211,40 @@ describe("udp-lossy-transport", () => {
     }
   });
 
-  // ── ULT-8: AIMD backoff on high loss ─────────────────────────────────────────────────
-  it("ULT-8: AIMD doubles gap on high loss (>5%)", () => {
+  // ── ULT-8: AIMD backoff on UNATTRIBUTED loss ─────────────────────────────────────────
+  //
+  // Unattributed loss keeps the classical response, and that is a deliberate choice rather than
+  // an omission: `unknown` is the union {congestion, corruption}, and refusing to back off on it
+  // would be ASSUMING corruption — the same error as the one 081KZYQ8KNB fixes, with the sign
+  // flipped, and with congestion collapse as its failure mode instead of lost throughput.
+  it("ULT-8: unattributed loss above 5% still doubles the gap (the conservative direction)", () => {
     let state = makeAimdState(10);
-    // Simulate 30 sends with 5 NACKs (16.7% loss → above HIGH_LOSS_THRESHOLD=5%)
-    // NACKs are interleaved before the window resets at 64 sends
     for (let i = 0; i < 30; i++) state = onSend(state);
-    state = onNack(state, 5); // 5/30 = 16.7% loss → multiplicative decrease
-    // onNack calls updateAimd which doubles the gap (10 → 20)
+    state = onLoss(state, { cause: "unknown", seqs: [0, 1, 2, 3, 4] }); // 5/30 = 16.7%
     expect(state.gapMs).toBeGreaterThanOrEqual(20);
+  });
+
+  // ── ULT-8b: THE FIX. Attributed non-congestion loss does not move the gap at all ──────
+  //
+  // Same window, same 16.7%, different cause. Before 081KZYQ8KNB there was no way to express
+  // this difference: `onNack(state, 5)` was the only door and it took a bare count.
+  it("ULT-8b: the SAME 16.7% loss, attributed to reorder, moves the gap the OPPOSITE way", () => {
+    let state = makeAimdState(10);
+    for (let i = 0; i < 30; i++) state = onSend(state);
+    expect(congestionSuspectRate(state)).toBe(0);
+    state = onLoss(state, { cause: "reorder", seqs: [0, 1, 2, 3, 4] });
+    // Not merely "does not back off": with no congestion-suspect loss the channel reads CLEAR, so
+    // additive increase runs and the gap SHRINKS. ULT-8 doubled it to 20 on the identical rate.
+    expect(state.gapMs).toBe(8);
+    // ...and it was COUNTED, not discarded. A suppressed signal that vanishes is not honest, and
+    // the evaluated window is where it is visible (the live one is reset by the evaluation).
+    const row = evaluatedLossRates(state).find((r) => r.cause === "reorder")!;
+    expect(row.missing).toBe(5);
+    expect(row.windowPackets).toBe(30);
+    expect(row.rate).toBeCloseTo(5 / 30, 5);
+    // MUTATION GUARD: if `updateAimd` summed all causes instead of the congestion-suspect ones,
+    // 5/30 = 16.7% would double the gap to 20 and this test fails. That is the falsifier, and it
+    // was checked by making that mutation rather than by assuming it.
   });
 
   // ── ULT-9: AIMD additive increase on low loss ─────────────────────────────────────────
@@ -225,15 +256,56 @@ describe("udp-lossy-transport", () => {
     expect(state.gapMs).toBeLessThan(20);
   });
 
-  // ── ULT-10: lossRate returns correct fraction ─────────────────────────────────────────
-  it("ULT-10: lossRate returns correct fraction", () => {
+  // ── ULT-10: lossRates returns one row PER CAUSE ──────────────────────────────────────
+  //
+  // This test used to read `lossRate(state)` and assert a single fraction. That function is gone:
+  // it is the operation that discarded the distinction, and it was removed rather than kept
+  // beside a replacement, because a scalar that is still reachable is still the easy path.
+  it("ULT-10: lossRates reports every cause separately and never as one number", () => {
+    // One report per window, because the estimator evaluates AND resets on every report
+    // (081KZYN37T, pinned in ULT-10b). That is exactly why `evaluatedLossRates` has to exist.
+    const by = (rows: ReturnType<typeof lossRates>) => new Map(rows.map((r) => [r.cause, r]));
+
     let state = makeAimdState(10);
-    // Add sends and NACKs without triggering a window reset (window resets at 64 sends)
+    for (let i = 0; i < 40; i++) state = onSend(state);
+    state = onLoss(state, { cause: "reorder", seqs: [1, 2, 3, 4, 5] }); // 5/40 = 12.5%
+    const afterReorder = evaluatedLossRates(state);
+    expect(afterReorder.map((r) => r.cause)).toEqual(["congestion", "corruption", "reorder", "unknown"]);
+    expect(by(afterReorder).get("reorder")!.missing).toBe(5);
+    expect(by(afterReorder).get("unknown")!.missing).toBe(0);
+    // The denominator travels with the numerator, so a reader can check the division.
+    for (const r of afterReorder) expect(r.windowPackets).toBe(40);
+    expect(by(afterReorder).get("reorder")!.rate).toBeCloseTo(5 / 40, 6);
+    const gapAfterReorder = state.gapMs;
+
+    for (let i = 0; i < 40; i++) state = onSend(state);
+    state = onLoss(state, { cause: "unknown", seqs: [50, 51, 52, 53, 54] }); // the SAME 12.5%
+    const afterUnknown = evaluatedLossRates(state);
+    expect(by(afterUnknown).get("unknown")!.missing).toBe(5);
+    expect(by(afterUnknown).get("reorder")!.missing).toBe(0);
+
+    // Same rate, different cause, OPPOSITE response. A single `lossRate` number could not have
+    // told these two windows apart, which is the whole of 081KZYQ8KNB in two assertions.
+    expect(gapAfterReorder).toBeLessThan(10);
+    expect(state.gapMs).toBe(gapAfterReorder * 2);
+  });
+
+  // ── ULT-10b: the live window is emptied by every evaluation — 081KZYN37T, PINNED ─────
+  //
+  // PINS CURRENT BEHAVIOUR of a defect this change deliberately does NOT fix (it is next in the
+  // ordering). `updateAimd` resets the window on every evaluation, so a caller that samples
+  // `lossRates` right after a decision sees nothing. It is pinned rather than worked around so
+  // that whoever fixes the estimator sees this test fail and knows the surface changed.
+  // Expected to FAIL when 081KZYN37T4087G0R00181THA4 is fixed.
+  it("ULT-10b: after a backoff the live window is empty and only the evaluated window remembers", () => {
+    let state = makeAimdState(10);
     for (let i = 0; i < 10; i++) state = onSend(state);
-    // Manually inject nackCount without calling onNack (which triggers updateAimd+reset)
-    // Instead, check lossRate before the window resets
-    const stateWithNack = { ...state, nackCount: 2 };
-    expect(lossRate(stateWithNack)).toBeCloseTo(2 / 10, 5);
+    state = onLoss(state, { cause: "unknown", seqs: [0, 1] }); // 2/10 = 20% → decrease + reset
+    expect(state.gapMs).toBe(20);
+    expect(lossRates(state).every((r) => r.missing === 0 && r.windowPackets === 0)).toBe(true);
+    const evaluated = evaluatedLossRates(state).find((r) => r.cause === "unknown")!;
+    expect(evaluated.missing).toBe(2);
+    expect(evaluated.windowPackets).toBe(10);
   });
 
   // ── ULT-11: Packet encode/decode round-trip ───────────────────────────────────────────
@@ -313,7 +385,7 @@ describe("udp-lossy-transport", () => {
           teaching: {
             type: "nack",
             missingSeqs: [missingSeq],
-            cause: "timeout",
+            cause: "unknown",
             why: `sequence ${missingSeq} did not arrive`,
             howToFix: "increase the receive window",
             retractableBeliefId: `received:${missingSeq}`,
@@ -374,7 +446,7 @@ describe("udp-lossy-transport", () => {
         teaching: {
           type: "nack",
           missingSeqs: [1],
-          cause: "timeout",
+          cause: "unknown",
           why: "sequence 1 did not arrive",
           howToFix: "increase the receive window",
         },
@@ -759,5 +831,185 @@ describe("udp-lossy-transport", () => {
     erased[2] = null;
     erased[5] = null;
     expect(recoverAdinkraBlock(erased)).not.toBeNull();
+  });
+});
+
+// ── ULT-27..31: the loss signal is typed (081KZYQ8KNB087G0R000G8QPRE, P1) ─────────────────
+//
+// The defect: `nackCount / sentCount` could not say WHAT KIND of loss it was, so a corruption
+// erasure and a queue overflow produced the same number and the same multiplicative decrease.
+// Measured cost with congestion held at zero by construction: 7.1x throughput at 2% corruption,
+// 90x at 10% (`UBL-10`). These tests check the mechanism that replaced it.
+describe("udp-lossy-transport: separated loss signals", () => {
+  // ── ULT-27: a retraction reverses EXACTLY the decrease its own evidence caused ─────────
+  it("ULT-27: retracting the loss that caused a backoff restores the gap, and is idempotent", () => {
+    let state = makeAimdState(10);
+    for (let i = 0; i < 30; i++) state = onSend(state);
+    state = onLoss(state, { cause: "unknown", seqs: [100, 101] }); // 2/30 = 6.7% > 5%
+    expect(state.gapMs).toBe(20);
+
+    // Both sequence numbers turn up: the decision had no evidence left, so it is undone.
+    const undone = retractLoss(state, [100, 101]);
+    expect(undone.gapMs).toBe(10);
+    // ...and the count is RE-ATTRIBUTED rather than deleted. Suppressed evidence that vanishes
+    // is not honest; the reorder rate is a real measurement of the channel.
+    expect(undone.lossByCause.reorder).toBe(2);
+
+    // §12: applying the same retraction again has the effect of applying it once.
+    const twice = retractLoss(undone, [100, 101]);
+    expect(twice.gapMs).toBe(10);
+    expect(twice.lossByCause.reorder).toBe(2);
+    // ...and a retraction of numbers that were never reported does nothing at all.
+    expect(retractLoss(undone, [7000, 7001]).gapMs).toBe(10);
+
+    // A loss that was never CONGESTION-SUSPECT is not retractable either, and this is the
+    // falsifier for the narrow condition in `onLoss` that decides what enters `suspectSeqs`.
+    //
+    // Found by mutation, and the first attempt at this assertion did NOT kill the mutant — it was
+    // written against a 30-send window, where `updateAimd` clears `suspectSeqs` on the way out
+    // and hides the difference. The reachable case is a report arriving with an EMPTY window,
+    // which `updateAimd` returns from early without resetting — and that is not exotic here,
+    // because the window is reset by every previous evaluation (081KZYN37T). Under the mutant
+    // seq 5 enters `suspectSeqs` as a reorder and the retraction then credits `reorder` twice
+    // for one packet.
+    const reorderOnly = onLoss(makeAimdState(10), { cause: "reorder", seqs: [5] });
+    expect(reorderOnly.lossByCause.reorder).toBe(1);
+    expect(reorderOnly.suspectSeqs).toEqual([]);
+    const afterNoop = retractLoss(reorderOnly, [5]);
+    expect(afterNoop.lossByCause.reorder).toBe(1); // still 1, not 2
+    expect(afterNoop).toBe(reorderOnly); // literally the same object: nothing to retract
+  });
+
+  // ── ULT-28: the NEGATIVE control — a decrease that survives its own recount stands ─────
+  //
+  // Without this, ULT-27 would be satisfied by "any retraction undoes any backoff", which is not
+  // a recomputation, it is an undo button. The decision is re-evaluated on the evidence that
+  // remains, and 3/30 = 10% is still above the 5% threshold.
+  it("ULT-28 (negative): retracting one of four losses does NOT undo a backoff that still holds", () => {
+    let state = makeAimdState(10);
+    for (let i = 0; i < 30; i++) state = onSend(state);
+    state = onLoss(state, { cause: "unknown", seqs: [200, 201, 202, 203] }); // 4/30 = 13.3%
+    expect(state.gapMs).toBe(20);
+
+    const partial = retractLoss(state, [200]);
+    expect(partial.gapMs).toBe(20); // 3/30 = 10% > 5% — the decision stands
+    expect(partial.lossByCause.reorder).toBe(1);
+
+    // Retract two more and it falls to 1/30 = 3.3%, below the threshold: NOW it is reversed.
+    const enough = retractLoss(partial, [201, 202]);
+    expect(enough.gapMs).toBe(10);
+  });
+
+  // ── ULT-29: the compact NACK codec carries the cause, and refuses one it does not know ──
+  it("ULT-29: encodeNack/decodeNack round-trip the cause; an unknown cause byte is refused", () => {
+    for (const cause of ["congestion", "corruption", "reorder", "unknown"] as const) {
+      const msg: NackMessage = {
+        type: "nack",
+        missingSeqs: [1, 2, 4294967295],
+        cause,
+        why: "test",
+        howToFix: "test",
+      };
+      const decoded = decodeNack(encodeNack(msg));
+      expect(decoded).not.toBeNull();
+      expect(decoded!.cause).toBe(cause);
+      expect(decoded!.missingSeqs).toEqual([1, 2, 4294967295]);
+    }
+
+    // The cause byte is peer-controlled. An index outside the declared set must not decode as
+    // some default — inventing a cause at the parser is the circular inference this fix removed,
+    // re-entering by the back door.
+    const buf = encodeNack({ type: "nack", missingSeqs: [9], cause: "unknown", why: "", howToFix: "" });
+    for (const bogus of [4, 5, 127, 255]) {
+      const tampered = Buffer.from(buf);
+      tampered.writeUInt8(bogus, 4);
+      expect(decodeNack(tampered)).toBeNull();
+    }
+    // Anti-vacuity: the untampered buffer still decodes, so the nulls above are the cause check.
+    expect(decodeNack(buf)).not.toBeNull();
+    // Short buffers are still refused (the header grew from 4 bytes to 5).
+    expect(decodeNack(Buffer.alloc(4))).toBeNull();
+  });
+
+  // ── ULT-30: end to end — the channel reports `unknown`, then RETRACTS as `reorder` ─────
+  it("ULT-30: a gap is reported unknown; when the packet arrives the receiver retracts it", async () => {
+    let receive: (text: string, from: string) => void = () => {};
+    const sent: string[] = [];
+    const transport = {
+      broadcast: (text: string) => {
+        sent.push(text);
+      },
+      onMessage: (h: (text: string, from: string) => void) => {
+        receive = h;
+      },
+    };
+    const ch = new LossyUdpChannel(transport, "receiver");
+    const reordered: number[] = [];
+    ch.onReorder((seqs) => reordered.push(...seqs));
+
+    const wire = (seq: number): string => {
+      const pkt = encodePacket(
+        { seq, blockSeq: Math.floor(seq / 8), blockPos: seq % 8, isData: seq % 8 < 4, payloadLen: 2 },
+        new Uint8Array([seq & 0xff, 1]),
+      );
+      return JSON.stringify({ type: "lossy-udp", zid: "sender", pkt: pkt.toString("base64") });
+    };
+    const nacksSoFar = (): Array<{ nack: number[]; teaching: { cause: string; why: string } }> =>
+      sent.map((t) => JSON.parse(t) as Record<string, unknown>).filter((e) => e["type"] === "lossy-udp-nack") as never;
+    const settle = (): Promise<unknown> => new Promise((r) => setTimeout(r, 10));
+
+    receive(wire(0), "sender");
+    receive(wire(3), "sender"); // gap: 1 and 2 are missing
+    await settle();
+
+    expect(nacksSoFar().length).toBe(1);
+    expect(nacksSoFar()[0]!.nack).toEqual([1, 2]);
+    // NOT "congestion", NOT "timeout": at this instant the receiver can evidence nothing.
+    expect(nacksSoFar()[0]!.teaching.cause).toBe("unknown");
+    expect(nacksSoFar()[0]!.teaching.why).toContain("NOT attributable");
+
+    // Now seq 1 turns up late. It was never lost, so the report is withdrawn.
+    receive(wire(1), "sender");
+    await settle();
+    expect(nacksSoFar().length).toBe(2);
+    expect(nacksSoFar()[1]!.teaching.cause).toBe("reorder");
+    expect(nacksSoFar()[1]!.nack).toEqual([1]);
+    expect(reordered).toEqual([1]);
+
+    // §12: a duplicate of the same late packet retracts nothing further.
+    receive(wire(1), "sender");
+    await settle();
+    expect(nacksSoFar().length).toBe(2);
+    expect(reordered).toEqual([1]);
+
+    // Anti-vacuity: seq 2 never arrived, so it stays reported-missing and is never retracted.
+    expect(reordered).not.toContain(2);
+  });
+
+  // ── ULT-31: the unattributable causes are UNCONSTRUCTIBLE, not merely undocumented ─────
+  //
+  // `congestion` and `corruption` are cases of `LossSignal` that nothing can build today,
+  // because their evidence types are branded with unexported symbols. That is the finding stated
+  // as a type: this transport has no integrity check (081KZYP1X3B087G0R001EZ37PQ) and no queue
+  // or delay signal, so it cannot perceive either cause — and a taxonomy whose cases can be
+  // filled in by assertion would be a taxonomy that pretends.
+  //
+  // Whoever adds an integrity check adds the minting function beside it, and this test fails at
+  // that moment — which is the intent, not an accident.
+  it("ULT-31: nothing in the module mints a congestion or corruption evidence value", async () => {
+    const src = await Bun.file(new URL("./udp-lossy-transport.ts", import.meta.url).pathname).text();
+    const code = src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+    expect(code.length).toBeGreaterThan(5000);
+    // The brands are declared (type-only) and never exported, so no other module can name them.
+    expect(code).toContain("declare const CONGESTION_EVIDENCE: unique symbol");
+    expect(code).toContain("declare const CORRUPTION_EVIDENCE: unique symbol");
+    expect(code).not.toContain("export const CONGESTION_EVIDENCE");
+    expect(code).not.toContain("export const CORRUPTION_EVIDENCE");
+    // ...and no cast smuggles one into existence.
+    expect(code).not.toContain("as CongestionEvidence");
+    expect(code).not.toContain("as CorruptionEvidence");
+    // The reachable causes ARE constructed, or the whole taxonomy would be decorative.
+    expect(code).toContain('cause: "unknown"');
+    expect(code).toContain('cause: "reorder"');
   });
 });

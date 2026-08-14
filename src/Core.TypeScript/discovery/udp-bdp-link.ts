@@ -24,7 +24,11 @@
  *   - **corruption loss** - the channel corrupted the frame (the Gilbert-Elliott process,
  *     reused from the chaos harness). Backing off relieves NOTHING.
  *
- * Keeping those separable is the entire point of the module.
+ * Keeping those separable is the entire point of the module - and the sharp distinction, added
+ * with 081KZYQ8KNB087G0R000G8QPRE, is that they are separable **in the model** and not
+ * **at the receiver**. The simulator knows which drop was which; the receiver sees an absent
+ * sequence number either way. Experiment 7 (`attributionPoint`) measures exactly that gap, and it
+ * is the number that says how much "separate the signals" can currently buy.
  *
  * ## The wiring fact this model exposes first - CHECKED
  *
@@ -42,8 +46,8 @@
  *     with `gapMs` actually pacing the sender.
  *
  * The delta between the two arms is the measurement of what wiring the controller up would buy
- * (or cost). Neither arm modifies the transport; `makeAimdState` / `onSend` / `onNack` are
- * imported and driven, never reimplemented.
+ * (or cost). Neither arm modifies the transport; `makeAimdState` / `onSend` / `onLoss` /
+ * `retractLoss` are imported and driven, never reimplemented.
  *
  * ## The framing under test - the decisive experiment
  *
@@ -82,9 +86,9 @@
  *
  * - **Sec.7 DST** - one deterministic event loop. Entropy enters only through `drawUnit(seed,
  *   stream, index)` (the declared door of the chaos harness, byte-locked SplitMix64). No
- *   `Math.random`. The one `Date.now()` reachable from here is the `windowStart` of
- *   `makeAimdState`, which is written and read nowhere (CHECKED by grep) and so cannot perturb
- *   a run; `UBL-1` pins byte-identical replay to make that concrete rather than argued.
+ *   `Math.random`, and since 081KZYQ8KNB087G0R000G8QPRE no `Date.now()` either: `AimdState`
+ *   carried a `windowStart` that was written and never read, and it was removed rather than left
+ *   as an unread clock in a Sec.13 module. `UBL-1` pins byte-identical replay regardless.
  * - **Sec.13 noninterference** - corruption and jitter draw on streams disjoint from those of
  *   the chaos harness, so raising jitter provably cannot perturb the corruption trace (`UBL-2`).
  * - **local-time-never-enters-the-shared-fold** - simulated time steers only local actions
@@ -97,7 +101,7 @@
  */
 
 import { burstParams, drawUnit, runFerry, type GilbertElliottParams } from "./udp-lossy-transport.chaos";
-import { makeAimdState, onNack, onSend, type AimdState } from "./udp-lossy-transport";
+import { MAX_NACK_GAP, makeAimdState, onLoss, onSend, retractLoss, type AimdState } from "./udp-lossy-transport";
 
 // -- Declared entropy streams (Sec.13) ----------------------------------------------------
 //
@@ -200,7 +204,7 @@ export function defaultSim(overrides: Partial<SimConfig> = {}): SimConfig {
 
 // -- Event loop ---------------------------------------------------------------------------
 
-type EventKind = "send" | "deliver" | "nack";
+type EventKind = "send" | "deliver" | "nack" | "retract";
 
 interface SimEvent {
   readonly time: number;
@@ -209,7 +213,9 @@ interface SimEvent {
   readonly kind: EventKind;
   readonly flow: number;
   readonly seq: number;
-  /** For `nack`: how many sequence numbers the receiver reported missing. */
+  /** For `nack`: how many sequence numbers the receiver reported missing. The numbers themselves
+   *  are `[seq - missing, seq)`, which is how the receiver computed them, so they do not need a
+   *  second representation that could disagree. For `retract`: always 1. */
   readonly missing: number;
   /** For `deliver`: the one-way delay this packet experienced, carried so it stays exact. */
   readonly owd: number;
@@ -280,8 +286,24 @@ export interface FlowResult {
   /**
    * NACKed sequence numbers that were NOT actually lost - they arrived later, out of order.
    * This is defect 081KZYN3D53087G0R0036XZSYM measured on a link with real delay and jitter.
+   *
+   * GROUND TRUTH, available only because the simulator can see `trulyLost`. The receiver cannot,
+   * which is why `attributedReorder` below is a separate and always-smaller number.
    */
   readonly spuriousMissingSeqs: number;
+  /**
+   * Reported-missing sequence numbers the RECEIVER later attributed to reordering, by watching
+   * them arrive. This is what the transport can actually perceive, and it is fed back to the
+   * estimator as a retraction (`retractLoss`).
+   */
+  readonly attributedReorder: number;
+  /**
+   * Reported-missing sequence numbers that were never attributed to anything and stayed
+   * `unknown`. On this link that is every genuine erasure, congestion and corruption alike -
+   * the receiver has no integrity check and no queue signal, so it cannot tell them apart.
+   * `attributedReorder / (attributedReorder + unattributed)` is the attribution fraction.
+   */
+  readonly unattributed: number;
   readonly throughputPktPerSec: number;
   readonly meanOwdMs: number;
   readonly p95OwdMs: number;
@@ -339,7 +361,12 @@ interface FlowState {
   nacksEmitted: number;
   seqsReportedMissing: number;
   spuriousMissingSeqs: number;
+  attributedReorder: number;
+  unattributed: number;
   expectedSeq: number;
+  /** The receiver's own bounded record of what it has REPORTED missing - the same set, and the
+   *  same MAX_NACK_GAP eviction bound, as `LossyUdpChannel.reportedMissing`. */
+  reportedMissing: Set<number>;
   owdSamples: number[];
   gapTrajectory: number[];
   deliveredTrajectory: number[];
@@ -379,7 +406,10 @@ export function runLink(cfg: SimConfig): SimResult {
     nacksEmitted: 0,
     seqsReportedMissing: 0,
     spuriousMissingSeqs: 0,
+    attributedReorder: 0,
+    unattributed: 0,
     expectedSeq: 0,
+    reportedMissing: new Set<number>(),
     owdSamples: [] as number[],
     gapTrajectory: [] as number[],
     deliveredTrajectory: [] as number[],
@@ -517,23 +547,49 @@ export function runLink(cfg: SimConfig): SimResult {
       const bucket = Math.min(buckets - 1, Math.floor(ev.time / cfg.sampleMs));
       fl.deliveredTrajectory[bucket] = (fl.deliveredTrajectory[bucket] ?? 0) + 1;
 
-      // Receiver gap detection, reproduced from `LossyUdpChannel.handleIncoming` (lines 576-606):
-      // any seq above `expectedSeq` is declared a gap and every sequence number in it is NACKed.
-      // There is no reorder hold-down, which is exactly defect 081KZYN3D53087G0R0036XZSYM.
+      // Receiver gap detection, reproduced from `LossyUdpChannel.handleIncoming`: any seq above
+      // `expectedSeq` is declared a gap and every sequence number in it is reported missing. There
+      // is still no reorder hold-down - deliberately, because a hold-down treats the symptom - so
+      // a reordered packet still costs one report. What changed (081KZYQ8KNB087G0R000G8QPRE) is
+      // that the report now carries a CAUSE, and the cause at this instant is `unknown`.
       if (ev.seq > fl.expectedSeq) {
         const missing = ev.seq - fl.expectedSeq;
         let spurious = 0;
-        for (let s = fl.expectedSeq; s < ev.seq; s++) if (!fl.trulyLost.has(s)) spurious++;
+        for (let s = fl.expectedSeq; s < ev.seq; s++) {
+          if (!fl.trulyLost.has(s)) spurious++;
+          fl.reportedMissing.add(s);
+        }
         fl.nacksEmitted++;
         fl.seqsReportedMissing += missing;
         fl.spuriousMissingSeqs += spurious;
         // The module states the NACK channel is assumed reliable; it travels back in one D.
         push(ev.time + link.owdMs, "nack", ev.flow, ev.seq, missing);
+      } else if (fl.reportedMissing.delete(ev.seq)) {
+        // ATTRIBUTION: a sequence number this receiver reported missing has ARRIVED. It was
+        // reordered, not lost, and the earlier report is withdrawn on the same one-D return path.
+        push(ev.time + link.owdMs, "retract", ev.flow, ev.seq, 1);
       }
       fl.expectedSeq = Math.max(fl.expectedSeq, ev.seq + 1);
+      if (fl.reportedMissing.size > 0) {
+        const floor = fl.expectedSeq - MAX_NACK_GAP;
+        for (const s of fl.reportedMissing) if (s < floor) fl.reportedMissing.delete(s);
+      }
+    } else if (ev.kind === "nack") {
+      // The estimator absorbs loss reports in BOTH arms - as the shipped code does - but it now
+      // absorbs a CAUSE with each one. `[seq - missing, seq)` reconstructs the exact sequence
+      // numbers the receiver reported, which is what makes the retraction below matchable.
+      const seqs: number[] = [];
+      for (let s = ev.seq - ev.missing; s < ev.seq; s++) seqs.push(s);
+      fl.unattributed += seqs.length;
+      fl.aimd = onLoss(fl.aimd, { cause: "unknown", seqs });
+      if (fl.aimd.gapMs < fl.minGapMs) fl.minGapMs = fl.aimd.gapMs;
+      if (fl.aimd.gapMs > fl.maxGapMs) fl.maxGapMs = fl.aimd.gapMs;
     } else {
-      // The estimator absorbs NACKs in BOTH arms - again, as the shipped code does.
-      fl.aimd = onNack(fl.aimd, ev.missing);
+      // A retraction. The count moves from `unknown` to `reorder`, and the decrease it caused is
+      // recomputed without it - reversed only if it would not have fired.
+      fl.attributedReorder += 1;
+      fl.unattributed = Math.max(0, fl.unattributed - 1);
+      fl.aimd = retractLoss(fl.aimd, [ev.seq]);
       if (fl.aimd.gapMs < fl.minGapMs) fl.minGapMs = fl.aimd.gapMs;
       if (fl.aimd.gapMs > fl.maxGapMs) fl.maxGapMs = fl.aimd.gapMs;
     }
@@ -555,6 +611,8 @@ export function runLink(cfg: SimConfig): SimResult {
       nacksEmitted: fl.nacksEmitted,
       seqsReportedMissing: fl.seqsReportedMissing,
       spuriousMissingSeqs: fl.spuriousMissingSeqs,
+      attributedReorder: fl.attributedReorder,
+      unattributed: fl.unattributed,
       throughputPktPerSec: (fl.delivered * 1000) / cfg.durationMs,
       meanOwdMs: mean,
       p95OwdMs: p95,
@@ -1098,4 +1156,69 @@ export function recoveryReport(startGapMs = OBSERVED_MAX_GAP_MS, durationMs?: nu
     packetsSent: f.sent,
     analyticMsToGapMin: analytic,
   };
+}
+
+// -- Experiment 7: what fraction of loss can this transport ATTRIBUTE? ---------------------
+//
+// The honest companion to experiment 5. Separating the signals only buys something where the
+// signals are SEPARABLE, so the first number to publish is how much of the loss the receiver can
+// name at all. Ground truth is available here (`trulyLost`, `congestionDrops`, `corruptionDrops`)
+// and the receiver's attribution is not - the gap between them is the measurement.
+
+export interface AttributionPoint {
+  readonly label: string;
+  readonly arm: ArmName;
+  /** Sequence numbers the receiver reported missing, from every cause. */
+  readonly reportedMissing: number;
+  /** ...of which it later attributed to reordering, by watching them arrive. */
+  readonly attributedReorder: number;
+  /** ...of which stayed `unknown`: an erasure whose cause the receiver cannot see. */
+  readonly unattributed: number;
+  /** `attributedReorder / reportedMissing`. */
+  readonly attributableFraction: number;
+  /** GROUND TRUTH, for comparison only: reports that were not real loss at all. */
+  readonly trulySpurious: number;
+  readonly congestionDrops: number;
+  readonly corruptionDrops: number;
+  readonly throughputPktPerSec: number;
+}
+
+export function attributionPoint(label: string, cfg: SimConfig): AttributionPoint {
+  const res = runLink(cfg);
+  const f = res.flows[0]!;
+  return {
+    label,
+    arm: cfg.pacing.kind,
+    reportedMissing: f.seqsReportedMissing,
+    attributedReorder: f.attributedReorder,
+    unattributed: f.unattributed,
+    attributableFraction: f.seqsReportedMissing === 0 ? 0 : f.attributedReorder / f.seqsReportedMissing,
+    trulySpurious: f.spuriousMissingSeqs,
+    congestionDrops: res.totalCongestionDrops,
+    corruptionDrops: res.totalCorruptionDrops,
+    throughputPktPerSec: f.throughputPktPerSec,
+  };
+}
+
+export function formatAttribution(points: readonly AttributionPoint[]): string {
+  const lines: string[] = [];
+  lines.push(
+    "  scenario              arm         reported   reorder   unknown   attrib%   congDrop  corrDrop     thru",
+  );
+  for (const p of points) {
+    lines.push(
+      [
+        "  " + p.label.padEnd(22),
+        p.arm.padEnd(11),
+        String(p.reportedMissing).padStart(8),
+        String(p.attributedReorder).padStart(10),
+        String(p.unattributed).padStart(10),
+        (p.attributableFraction * 100).toFixed(1).padStart(9) + "%",
+        String(p.congestionDrops).padStart(10),
+        String(p.corruptionDrops).padStart(10),
+        p.throughputPktPerSec.toFixed(1).padStart(9),
+      ].join(""),
+    );
+  }
+  return lines.join("\n");
 }

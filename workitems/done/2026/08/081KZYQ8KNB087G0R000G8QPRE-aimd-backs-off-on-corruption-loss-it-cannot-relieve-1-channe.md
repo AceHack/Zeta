@@ -1,11 +1,12 @@
 ---
 id: 081KZYQ8KNB087G0R000G8QPRE
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: aimd-backs-off-on-corruption-loss-it-cannot-relieve-1-channe
 title: "AIMD backs off on corruption loss it cannot relieve: 1% channel corruption costs 39% of throughput and 2% costs 86%, with congestion held at zero"
 created: 2026-08-13T23:28:05.803Z
+completed: 2026-08-14T02:38:58.766Z
 depends_on: []
 composes_with: []
 ---
@@ -106,6 +107,76 @@ own before/after run of `UBL-10`.
 
 `UBL-10` and `UBL-11` pin **current measured behaviour** and are **expected to FAIL when this is
 fixed** - the failure is the signal the fix landed.
+
+---
+
+## RESOLVED 2026-08-13 - what was done, and what it did NOT buy
+
+The scalar is gone. `nackCount` and `lossRate(state): number` were **removed**, not deprecated
+beside a replacement: a loss now arrives as a typed `LossSignal`
+(`congestion | corruption | reorder | unknown`, each carrying its sequence numbers), the estimator
+counts **by cause**, and only the congestion-suspect share steers the gap. Same rung-1 move as
+`BoundJustification` (#10461) - a value that cannot say why it is believed does not get to exist.
+
+### The finding that matters most, stated first
+
+**The two causes are separable in the MODEL and not at the RECEIVER**, and the measurement of that
+gap is the honest headline. New experiment 7 (`attributionPoint`, `UBL-15`, demo table `UBL-I`):
+
+| scenario              | reports | attributed | unknown | attributable |
+| --------------------- | ------- | ---------- | ------- | ------------ |
+| corruption 10%        | 946     | 0          | 945     | **0.0%**     |
+| congestion 2x offered | 9901    | 0          | 9881    | **0.0%**     |
+| jitter 5ms (reorder)  | 4018    | 4008       | 0       | **99.8%**    |
+
+A queue drop and a corrupted frame reach the receiver as _the same event_ - an absent sequence
+number. There is no integrity check (081KZYP1X3B087G0R001EZ37PQ) and no queue or delay signal, so
+**neither cause can be named**, and the type now says so: the `congestion` and `corruption` cases
+require evidence values branded with unexported symbols, so they are **unconstructible** rather
+than merely undocumented (`ULT-31`). Whoever adds an integrity check adds the minting function
+beside it and that test fails at exactly that moment.
+
+### What that means for the two doors of this defect
+
+- **The reorder door CLOSED substantially.** A sequence number the receiver reported missing and
+  then watched arrive is retracted; the decrease it caused is **recomputed** without it and
+  reversed only if it no longer holds (Z-set retraction, not an undo button - `ULT-28` is the
+  negative control). Paced throughput under 5ms jitter with zero packet loss:
+  **20.9 -> 466.2 pkt/s, a 22.3x improvement**; the collapse factor fell from 47.7x to 2.14x.
+- **The corruption door did NOT move.** `UBL-10` still reports 0.139 at 2% and 0.010 at 10%,
+  because every one of those erasures is `unknown`, and unattributed loss keeps the classical
+  backoff. That is deliberate and it is the conservative direction: refusing to back off on
+  unattributed loss would be _assuming corruption_, the same error with the sign flipped, whose
+  failure mode is congestion collapse (Jacobson 1988) rather than lost throughput.
+
+**So 081KZYP1X3B087G0R001EZ37PQ is promoted from "filed" to "on the critical path".** The 7.1x /
+90x in the title is not recoverable by any control-law change; it is gated on making corruption
+_perceivable_. That is a finding this work-item did not have before.
+
+### Ordering held
+
+`gapMs` is still unwired (`UBL-14` asserts the send path does not mention it) and the estimator
+still evaluates against a partial window (081KZYN37T4087G0R00181THA4, re-pinned in `ULT-10b`).
+Neither was touched. The residual 2.14x reorder collapse is _because_ of the second one - a
+retraction takes one propagation delay to arrive, and a partial-window evaluation can fire before
+it does - which is the ordering argument turned into a number.
+
+### Costs, named
+
+- **NACK volume doubles under reordering.** 4.7% -> 9.4% broadcast rate (`UCH-16`), because the
+  retraction is a second broadcast. The amplification bound this module guards (ULT-17..21, the
+  3,333,337x incident) is now 2 messages per in-window gap. It adds no new peer-controlled lever -
+  a retraction is only ever emitted for a sequence number this receiver itself reported.
+- **A peer can claim `reorder` to suppress a sender's backoff.** The data path is unauthenticated;
+  it could already fabricate NACKs to _cause_ backoff. Same hole, opposite sign, not closed here.
+
+### Pins updated (each says so in its own comment)
+
+`UBL-11` (flipped, in the direction of the fix) - `UBL-14` (grep bound 6 -> 14, plus a stronger
+class-scoped assertion) - `UCH-14`, `UCH-15` (same defect through the new API, plus the
+counterfactual) - `UCH-16` (flipped, and it is a COST) - `ULT-8/8b/9/10/10b`. New: `ULT-27..31`,
+`UBL-15`. All 9 mutants of the new logic were killed; one (`suspectSeqs` widened to every cause)
+survived the first attempt and the note in `ULT-27` records why.
 
 ## Pointers
 

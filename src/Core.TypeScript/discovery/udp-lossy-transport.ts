@@ -40,12 +40,20 @@
  *   Numbers: `udp-lossy-transport.chaos.test.ts` UCH-13 / UCH-13b.
  *
  * ### Adaptive backoff (AIMD — Additive Increase, Multiplicative Decrease)
- *   - Measure packet loss rate: NACK count / send count over a sliding window.
- *   - If loss > HIGH_LOSS_THRESHOLD: double the inter-packet gap (multiplicative decrease).
- *   - If loss < LOW_LOSS_THRESHOLD: subtract GAP_STEP from the gap (additive increase).
- *   - This is the same algorithm as TCP congestion control, but for UDP.
- *   - The echolocation analogy: back off when the channel is saturated (your signal drowns
- *     out your return echo). Increase when the channel is clear.
+ *   - Measure loss BY ATTRIBUTED CAUSE — congestion / corruption / reorder / unknown — never as
+ *     one rate. This paragraph read "NACK count / send count over a sliding window" until
+ *     2026-08-13; that single number is what made the controller back off on channel corruption
+ *     it could not relieve (081KZYQ8KNB087G0R000G8QPRE: 7.1x throughput at 2% corruption, 90x at
+ *     10%, with congestion held at zero by construction).
+ *   - Only the CONGESTION-SUSPECT share steers the gap (`congestionSuspectRate`). Attributed
+ *     reorder and attributed corruption are counted, reported, and never move it.
+ *   - If that share > HIGH_LOSS_THRESHOLD: double the gap (multiplicative decrease).
+ *   - If it is < LOW_LOSS_THRESHOLD: subtract GAP_STEP from the gap (additive increase).
+ *   - A report the receiver later withdraws (`retractLoss` — the sequence number arrived after
+ *     all) causes the decision to be RECOMPUTED without it, and reversed if it no longer holds.
+ *   - The echolocation analogy still applies, with the correction this defect was about: go quiet
+ *     when the channel is SATURATED, not merely when it is noisy. A bat does not stop calling
+ *     because the air is turbulent.
  *
  * ### Debounce on gossip re-broadcast
  *   - Anti-entropy re-broadcasts use a random jitter window (50–200ms) to prevent
@@ -60,6 +68,10 @@
  *     Beyond the retention window the receiver also has no state to base a claim on.
  *   - NACKs update the loss estimate (not for immediate retransmit — ECC handles that).
  *   - The sender uses NACKs to adjust the inter-packet gap via AIMD.
+ *   - A sequence number the receiver reported missing that then ARRIVES is RETRACTED: a second
+ *     report with `cause: "reorder"`, carrying the belief being withdrawn. This is the only loss
+ *     attribution the transport can make today, and it costs a second broadcast per reordered
+ *     packet — the NACK-amplification bound is now 2 messages per in-window gap, not 1 (UCH-16).
  *
  * ## Honest boundary
  *   - The [8,4,4] code corrects any 3 erasures per block, and 56 of the 70 four-erasure
@@ -82,6 +94,15 @@
  *   - Losing more than `MAX_NACK_GAP` consecutive packets produces NO congestion signal. The
  *     single `expectedSeq` is shared across every peer on a broadcast transport, so a wide gap
  *     is not attributable to a sender in the first place; per-peer sequence state is the fix.
+ *   - **This transport cannot perceive congestion or corruption, and says so in the type.**
+ *     `LossSignal`'s `congestion` and `corruption` cases require evidence values that nothing can
+ *     mint here: an integrity check (081KZYP1X3B087G0R001EZ37PQ — there is none) and a queue or
+ *     delay signal (there is none). Measured under the BDP harness: reordering is 99.6%
+ *     attributable, corruption and congestion are 0%. So separating the signals closes the
+ *     reorder door (paced throughput under jitter 20.9 -> 466.2 pkt/s) and does NOT close the
+ *     corruption door, which stays exactly where it was until an integrity check exists.
+ *     Unattributed loss keeps the classical backoff, which is the conservative direction: not
+ *     backing off on it would be ASSUMING corruption, and that error ends in congestion collapse.
  *
  * ## Connection to the Adinkra physics
  *   - The [8,4,4] code is the concrete Adinkra code from AdinkraCode.fs.
@@ -354,10 +375,109 @@ export function decodePacket(buf: Buffer): { header: LossyPacketHeader; payload:
   return { header: { seq, blockSeq, blockPos, isData, payloadLen }, payload };
 }
 
-// ── NACK message ─────────────────────────────────────────────────────────────────────────
+// ── The loss signal: a cause that travels with the loss ───────────────────────────────────
+//
+// WHY THIS IS A TYPE AND NOT A FLOAT (081KZYQ8KNB087G0R000G8QPRE, P1).
+//
+// This module used to fold every reported-missing packet into one `nackCount`, divide it by
+// `sentCount`, and threshold the quotient. Measured consequence, with congestion held at ZERO
+// **by construction** (`udp-bdp-link.ts` `corruptionVsCongestion`, `UBL-10`): at 2% channel
+// corruption the paced controller delivered **7.1x less** than a sender that ignored the loss,
+// and at 10% it delivered **90x less**. The same defect through a second door (`UBL-11`): 5ms of
+// delivery jitter, ZERO packets lost, paced throughput 838.9 -> 70.6 pkt/s.
+//
+// No threshold repairs that, and the reason is worth stating exactly: 5% corruption and 5%
+// congestion produce the SAME value of `nackCount / sentCount`. RFC 4653, "Improving the
+// Robustness of TCP to Non-Congestion Events" (Bhandarkar, Sadry, Reddy, Vaidya, 2006 - CITED,
+// not page-checked) names the class and states the identity outright: a delayed segment and a
+// dropped segment "play out in precisely the same manner". A bare scalar is where that
+// distinction goes to die, so the fix is to REMOVE the aggregate rather than annotate it -
+// `nackCount` and `lossRate` are gone from this module, not deprecated beside a replacement.
+//
+// Same rung-1 move as `BoundJustification` (#10461): a magnitude that cannot say why it is
+// believed does not get to exist.
 
-/** Inferred cause of packet loss — feeds the DimensionalBnn transport factor. */
-export type LossCause = "congestion" | "corruption" | "timeout" | "unknown";
+/** The cause of a missing packet. Four cases, and `unknown` is first-class - see `LossSignal`. */
+export type LossCause = "congestion" | "corruption" | "reorder" | "unknown";
+
+/** Every cause, in a fixed order. Iteration order is part of the DST contract, so it is declared
+ *  once here rather than taken from `Object.keys`, which is insertion-ordered and easy to perturb. */
+export const LOSS_CAUSES: readonly LossCause[] = ["congestion", "corruption", "reorder", "unknown"] as const;
+
+declare const CONGESTION_EVIDENCE: unique symbol;
+declare const CORRUPTION_EVIDENCE: unique symbol;
+
+/**
+ * Evidence that a loss was a full queue: an explicit congestion notification, a standing-queue
+ * estimate, or a delay signal of the kind Vegas and BBR are built on.
+ *
+ * **NOT CONSTRUCTIBLE TODAY, and that is the finding rather than an oversight.** The brand key is
+ * an unexported `unique symbol`, so no module - including this one, without a deliberate cast -
+ * can mint one. This transport carries no timestamp, no ECN bit and no receiver-side queue
+ * estimate, so a queue drop and a wire corruption reach the receiver as *the same event*: an
+ * absent sequence number. Whoever adds that signal adds the minting function beside it, and the
+ * `congestion` case of `LossSignal` becomes reachable at that moment and not before.
+ */
+export interface CongestionEvidence {
+  readonly [CONGESTION_EVIDENCE]: true;
+  readonly source: string;
+}
+
+/**
+ * Evidence that a frame was corrupted: a checksum or MAC that rejected it.
+ *
+ * **NOT CONSTRUCTIBLE TODAY** for the same reason and by the same mechanism -
+ * 081KZYP1X3B087G0R001EZ37PQ: this transport has no integrity check at all. Erase one packet,
+ * flip one bit of parity, and `recoverAdinkraBlock` returns non-null WRONG bytes silently. Until
+ * that work-item lands, corruption is not something this receiver can perceive, and the honest
+ * consequence is that corruption loss arrives here as `unknown`.
+ */
+export interface CorruptionEvidence {
+  readonly [CORRUPTION_EVIDENCE]: true;
+  readonly source: string;
+}
+
+/**
+ * A loss report, with its cause attached — the typed replacement for a bare rate.
+ *
+ * What can be attributed HONESTLY, and by what:
+ *
+ *   - `reorder`   — a sequence number the receiver REPORTED missing that then ARRIVED. The
+ *                   receiver observes this directly; it is the one attribution this transport can
+ *                   make today, and it is the one RFC 4653 is about.
+ *   - `corruption` — needs an integrity check (`CorruptionEvidence`). Not available.
+ *   - `congestion` — needs a queue or delay signal (`CongestionEvidence`). Not available.
+ *   - `unknown`   — an erasure whose cause the receiver cannot see. **A first-class case, not a
+ *                   dumping ground:** it is the honest name for the union {congestion,
+ *                   corruption} that this transport cannot split. Under the BDP harness it is
+ *                   where essentially all real loss lands, and saying that plainly is worth more
+ *                   than a taxonomy that pretends.
+ *
+ * SECURITY, named because it is a new lever on an existing hole: the data path is
+ * UNAUTHENTICATED (see "Honest boundary"), so a peer can claim `reorder` and suppress a sender's
+ * backoff. It could already fabricate NACKs to *cause* backoff; this is the same hole with the
+ * opposite sign, and it is not closed by this change. Authenticating the control channel is what
+ * closes it.
+ */
+export type LossSignal =
+  | { readonly cause: "unknown"; readonly seqs: readonly number[] }
+  | { readonly cause: "reorder"; readonly seqs: readonly number[] }
+  | { readonly cause: "corruption"; readonly seqs: readonly number[]; readonly evidence: CorruptionEvidence }
+  | { readonly cause: "congestion"; readonly seqs: readonly number[]; readonly evidence: CongestionEvidence };
+
+/** One cause's share of the current estimation window. The plural of this IS the fix: `lossRates`
+ *  returns one row per cause where `lossRate` returned a single number that had forgotten. */
+export interface LossRate {
+  readonly cause: LossCause;
+  /** Packets attributed to this cause in the current window. */
+  readonly missing: number;
+  /** Packets sent in the current window — the denominator, carried so the rate is checkable. */
+  readonly windowPackets: number;
+  /** `missing / windowPackets`, or 0 for an empty window. */
+  readonly rate: number;
+}
+
+// ── NACK message ─────────────────────────────────────────────────────────────────────────
 
 /**
  * A teaching NACK — not a bare failure code.
@@ -374,7 +494,14 @@ export type LossCause = "congestion" | "corruption" | "timeout" | "unknown";
 export interface NackMessage {
   readonly type: "nack";
   readonly missingSeqs: readonly number[];
-  /** Inferred cause of the loss — feeds the DimensionalBnn transport factor. */
+  /**
+   * The ATTRIBUTED cause — what the receiver can evidence, never what it can guess.
+   *
+   * This field used to be filled by `lr > 0.1 ? "congestion" : lr > 0.02 ? "timeout" : "unknown"`,
+   * i.e. by thresholding the very loss rate the controller was trying to explain. That is
+   * circular: the estimate produced the cause, and the cause fed the estimate. It is now the
+   * cause the receiver observed, and `unknown` when it observed nothing that attributes.
+   */
   readonly cause: LossCause;
   /** Human-readable explanation (Beacon register). */
   readonly why: string;
@@ -387,11 +514,7 @@ export interface NackMessage {
 function isNackMessage(value: unknown): value is NackMessage {
   if (typeof value !== "object" || value === null) return false;
   const candidate = value as Partial<NackMessage>;
-  const validCause =
-    candidate.cause === "congestion" ||
-    candidate.cause === "corruption" ||
-    candidate.cause === "timeout" ||
-    candidate.cause === "unknown";
+  const validCause = LOSS_CAUSES.includes(candidate.cause as LossCause);
   return (
     candidate.type === "nack" &&
     Array.isArray(candidate.missingSeqs) &&
@@ -423,44 +546,219 @@ export interface DesyncEvent {
   readonly maxNackGap: number;
 }
 
-/** Sequence-only NACK represented by the compact binary codec. */
-export type DecodedNackMessage = Pick<NackMessage, "type" | "missingSeqs">;
+/** The part of a NACK the compact binary codec carries: the sequence numbers AND the cause.
+ *
+ *  The cause is in the codec deliberately. A wire format that carried only `missingSeqs` would
+ *  be a second place the distinction dies — the encoder would compile, the decoder would return
+ *  a cause-free NACK, and every reader downstream would be back to inferring. One byte. */
+export type DecodedNackMessage = Pick<NackMessage, "type" | "missingSeqs" | "cause">;
 
 export function encodeNack(nack: NackMessage): Buffer {
-  const buf = Buffer.alloc(4 + nack.missingSeqs.length * 4);
+  const buf = Buffer.alloc(5 + nack.missingSeqs.length * 4);
   buf.writeUInt32BE(nack.missingSeqs.length, 0);
+  buf.writeUInt8(LOSS_CAUSES.indexOf(nack.cause), 4);
   for (let i = 0; i < nack.missingSeqs.length; i++) {
-    buf.writeUInt32BE(nack.missingSeqs[i]!, 4 + i * 4);
+    buf.writeUInt32BE(nack.missingSeqs[i]!, 5 + i * 4);
   }
   return buf;
 }
 
 export function decodeNack(buf: Buffer): DecodedNackMessage | null {
-  if (buf.length < 4) return null;
+  if (buf.length < 5) return null;
   const count = buf.readUInt32BE(0);
-  if (buf.length < 4 + count * 4) return null;
+  // The cause byte is peer-controlled. An index outside the declared set is not decoded as some
+  // default cause — the whole message is refused, because a NACK whose cause we invented is the
+  // circular inference this change removed, re-entering through the parser.
+  const cause = LOSS_CAUSES[buf.readUInt8(4)];
+  if (cause === undefined) return null;
+  if (buf.length < 5 + count * 4) return null;
   const missingSeqs: number[] = [];
-  for (let i = 0; i < count; i++) missingSeqs.push(buf.readUInt32BE(4 + i * 4));
-  return { type: "nack", missingSeqs };
+  for (let i = 0; i < count; i++) missingSeqs.push(buf.readUInt32BE(5 + i * 4));
+  return { type: "nack", missingSeqs, cause };
 }
 
 // ── AIMD congestion controller ────────────────────────────────────────────────────────────
 
+/** The most recent multiplicative decrease, kept so a RETRACTED loss can undo exactly the
+ *  decrease it caused rather than waiting out the additive-increase walk (measured at 67 minutes
+ *  from MAX_GAP_MS, `UBL-12`). This is a Z-set retraction, not a heuristic re-increase: the
+ *  decision is recomputed without the retracted evidence and only reversed if it would not have
+ *  fired. */
+interface DecreaseRecord {
+  readonly gapBefore: number;
+  readonly gapAfter: number;
+  /** The window the decision was taken over. */
+  readonly windowPackets: number;
+  /** The sequence numbers that made up the suspect count, so a retraction can be matched exactly. */
+  readonly suspectSeqs: readonly number[];
+  /** The suspect count itself, which may exceed `suspectSeqs.length` if the list was truncated. */
+  readonly suspectCount: number;
+}
+
 export interface AimdState {
   gapMs: number; // current inter-packet gap (ms)
   sentCount: number; // packets sent in the current window
-  nackCount: number; // NACKs received in the current window
-  windowStart: number; // timestamp of window start
+  /** Reported-missing packets in the current window, BY ATTRIBUTED CAUSE.
+   *
+   *  There is deliberately no aggregate `nackCount` here. Keeping one beside this map would be
+   *  "add a field beside it" — the aggregate is what discarded the distinction, so it is gone,
+   *  and every reader now has to say which cause it means. */
+  lossByCause: Readonly<Record<LossCause, number>>;
+  /** Sequence numbers behind the *congestion-suspect* part of the current window (see
+   *  `congestionSuspectRate`). Bounded by `SUSPECT_SEQ_CAP`; past that the list stops growing and
+   *  a retraction can no longer reverse a decision exactly, which is a degradation this state
+   *  records rather than hides. */
+  suspectSeqs: readonly number[];
+  lastDecrease: DecreaseRecord | null;
+  /** The window the last evaluation was taken over, retained because the live window is reset by
+   *  every evaluation (081KZYN37T4087G0R00181THA4, deliberately not fixed here) — so a reader who
+   *  samples after a decision sees all zeros and would conclude nothing happened. This is what
+   *  `evaluatedLossRates` reports and what the channel hands to `onLossRates`. */
+  lastWindow: { readonly lossByCause: Readonly<Record<LossCause, number>>; readonly windowPackets: number };
 }
+
+/** The retention cap on `AimdState.suspectSeqs`. Two full NACK reports at the widest gap the
+ *  receiver may report (`MAX_NACK_GAP`) — derived, not chosen, for the same reason
+ *  `MAX_NACK_GAP` is: the numbers must move together or one of them is a coincidence. */
+const SUSPECT_SEQ_CAP = 2 * MAX_NACK_GAP;
+
+const NO_LOSS: Readonly<Record<LossCause, number>> = { congestion: 0, corruption: 0, reorder: 0, unknown: 0 };
 
 export function makeAimdState(initialGapMs = 10): AimdState {
-  return { gapMs: initialGapMs, sentCount: 0, nackCount: 0, windowStart: Date.now() };
+  return {
+    gapMs: initialGapMs,
+    sentCount: 0,
+    lossByCause: NO_LOSS,
+    suspectSeqs: [],
+    lastDecrease: null,
+    lastWindow: { lossByCause: NO_LOSS, windowPackets: 0 },
+  };
 }
 
-/** Update the AIMD state after receiving a NACK. Returns the new state. */
-export function onNack(state: AimdState, nackCount: number): AimdState {
-  const s = { ...state, nackCount: state.nackCount + nackCount };
-  return updateAimd(s);
+/**
+ * The share of the window that MIGHT be congestion — and the name is the honest part.
+ *
+ * `congestion` counts losses attributed to a queue by evidence. `unknown` counts erasures whose
+ * cause the receiver could not see, which is the union {congestion, corruption}. Summing them is
+ * a conflation, and it is deliberate, named, and confined to this one function, where before it
+ * was the only thing the estimator could express.
+ *
+ * WHY THE CONSERVATIVE DIRECTION. Refusing to back off on `unknown` would not be neutrality — it
+ * would be *assuming corruption*, which is the same error as the one being fixed with the sign
+ * flipped, and its failure mode is congestion collapse (Jacobson, SIGCOMM 88 - CITED, not
+ * page-checked) rather than lost throughput. So unattributed loss keeps the classical response,
+ * and the way to earn the throughput back is to make corruption *perceivable*
+ * (081KZYP1X3B087G0R001EZ37PQ), not to reinterpret silence.
+ *
+ * `reorder` and `corruption` are excluded outright: backing off relieves neither, and RFC 4653 /
+ * BBR are the anchors for saying so.
+ */
+export function congestionSuspectRate(state: AimdState): number {
+  if (state.sentCount === 0) return 0;
+  return (state.lossByCause.congestion + state.lossByCause.unknown) / state.sentCount;
+}
+
+function rowsFrom(lossByCause: Readonly<Record<LossCause, number>>, windowPackets: number): readonly LossRate[] {
+  return LOSS_CAUSES.map((cause) => ({
+    cause,
+    missing: lossByCause[cause],
+    windowPackets,
+    rate: windowPackets > 0 ? lossByCause[cause] / windowPackets : 0,
+  }));
+}
+
+/** One row per cause for the window still accumulating. Replaces `lossRate(state): number` — the
+ *  operation that discarded the distinction — and the plural is the entire point.
+ *
+ *  Reads all-zero immediately after any evaluation, because `updateAimd` resets the window every
+ *  time it runs (081KZYN37T4087G0R00181THA4). That is the estimator defect, next in the ordering
+ *  and deliberately untouched here; `ULT-10b` pins it. Use `evaluatedLossRates` to see the window
+ *  a decision was actually taken over. */
+export function lossRates(state: AimdState): readonly LossRate[] {
+  return rowsFrom(state.lossByCause, state.sentCount);
+}
+
+/** One row per cause for the window the last evaluation was taken over. This is the honest
+ *  observation point for a reader sampling after a decision. */
+export function evaluatedLossRates(state: AimdState): readonly LossRate[] {
+  return rowsFrom(state.lastWindow.lossByCause, state.lastWindow.windowPackets);
+}
+
+/** Absorb one attributed loss report. The caller must name a cause; there is no arity that lets
+ *  it hand over a bare count. */
+export function onLoss(state: AimdState, signal: LossSignal): AimdState {
+  const n = signal.seqs.length;
+  if (n === 0) return state;
+  const lossByCause = { ...state.lossByCause, [signal.cause]: state.lossByCause[signal.cause] + n };
+  const suspect =
+    signal.cause === "congestion" || signal.cause === "unknown"
+      ? [...state.suspectSeqs, ...signal.seqs].slice(0, SUSPECT_SEQ_CAP)
+      : state.suspectSeqs;
+  return updateAimd({ ...state, lossByCause, suspectSeqs: suspect });
+}
+
+/**
+ * Retract a loss that turned out to be a reordered packet: the receiver reported these sequence
+ * numbers missing and then watched them arrive.
+ *
+ * Two effects, and the second is the one that matters. The counts move from `unknown` to
+ * `reorder` — a Z-set correction, +1 then −1, not a duplicate guard. And if the decrease those
+ * sequence numbers caused would NOT have fired without them, the gap is restored. The decision is
+ * RECOMPUTED, never merely inverted, so a decrease that was justified by other losses stands.
+ *
+ * §12 idempotency: retracting the same sequence twice is a no-op, because the retracted numbers
+ * leave `suspectSeqs` on the first call and the record is cleared once it is reversed.
+ */
+export function retractLoss(state: AimdState, seqs: readonly number[]): AimdState {
+  if (seqs.length === 0) return state;
+  const retracted = new Set(seqs);
+  const stillSuspect = state.suspectSeqs.filter((s) => !retracted.has(s));
+  const removed = state.suspectSeqs.length - stillSuspect.length;
+
+  // `removed` is what leaves the CURRENT window. A retraction usually arrives after the window
+  // that counted it was already evaluated and reset (081KZYN37T4087G0R00181THA4 resets on every
+  // evaluation), so the current window is often empty and the reversal below is the only effect —
+  // which is exactly why this must not return early on `removed === 0`.
+  const rec = state.lastDecrease;
+  let gapMs = state.gapMs;
+  let lastDecrease = rec;
+  let dropped = 0;
+  if (rec !== null && rec.windowPackets > 0) {
+    const stillInRecord = rec.suspectSeqs.filter((s) => !retracted.has(s));
+    dropped = rec.suspectSeqs.length - stillInRecord.length;
+    if (dropped > 0) {
+      const recomputed = (rec.suspectCount - dropped) / rec.windowPackets;
+      // `gapMs === rec.gapAfter` is load-bearing: if the gap has moved since the decision (another
+      // decrease, an additive increase), restoring `gapBefore` would not be an undo — it would be
+      // a write of a stale value. In that case the retraction still re-attributes the count and
+      // leaves the gap alone.
+      if (recomputed <= HIGH_LOSS_THRESHOLD && state.gapMs === rec.gapAfter) {
+        // The decision does not survive its own evidence being withdrawn. Undo it exactly.
+        gapMs = rec.gapBefore;
+        lastDecrease = null;
+      } else {
+        lastDecrease = { ...rec, suspectSeqs: stillInRecord, suspectCount: rec.suspectCount - dropped };
+      }
+    }
+  }
+
+  // Re-attribution. `removed` left the CURRENT window; `dropped` was counted in a window that has
+  // already been evaluated and reset (081KZYN37T4087G0R00181THA4 resets on every evaluation), so
+  // only `removed` can be subtracted from `unknown` — but both are genuinely reorder, and the
+  // attribution report is the reason to say so. The two sets are disjoint by construction:
+  // `updateAimd` empties `suspectSeqs` at the instant it builds a record from them.
+  const attributed = removed + dropped;
+  // §12: a retraction naming nothing this estimator counted is literally a no-op — the SAME
+  // state object, not an equal copy. That matters beyond tidiness: `LossyUdpChannel` decides
+  // whether to notify `onLossRates` by identity, so an equal-but-new object would announce a
+  // change that did not happen.
+  if (attributed === 0) return state;
+  const lossByCause = {
+    ...state.lossByCause,
+    unknown: Math.max(0, state.lossByCause.unknown - removed),
+    reorder: state.lossByCause.reorder + attributed,
+  };
+  return { ...state, gapMs, lossByCause, suspectSeqs: stillSuspect, lastDecrease };
 }
 
 /** Update the AIMD state after sending a packet. Returns the new state. */
@@ -473,21 +771,39 @@ export function onSend(state: AimdState): AimdState {
 
 function updateAimd(state: AimdState): AimdState {
   if (state.sentCount === 0) return state;
-  const lossRate = state.nackCount / state.sentCount;
+  // NOT `total loss / sent`. Only the congestion-suspect share steers the gap; reorder and
+  // corruption are counted, reported, and never move it. That is the whole defect.
+  const suspectRate = congestionSuspectRate(state);
+  const suspectCount = state.lossByCause.congestion + state.lossByCause.unknown;
   let gapMs = state.gapMs;
-  if (lossRate > HIGH_LOSS_THRESHOLD) {
+  let lastDecrease = state.lastDecrease;
+  if (suspectRate > HIGH_LOSS_THRESHOLD) {
     // Multiplicative decrease: double the gap (back off like a bat going quiet)
     gapMs = Math.min(MAX_GAP_MS, gapMs * 2);
-  } else if (lossRate < LOW_LOSS_THRESHOLD) {
+    lastDecrease = {
+      gapBefore: state.gapMs,
+      gapAfter: gapMs,
+      windowPackets: state.sentCount,
+      suspectSeqs: state.suspectSeqs,
+      suspectCount,
+    };
+  } else if (suspectRate < LOW_LOSS_THRESHOLD) {
     // Additive increase: reduce the gap by GAP_STEP_MS
     gapMs = Math.max(MIN_GAP_MS, gapMs - GAP_STEP_MS);
+    lastDecrease = null; // the gap has moved since; a retraction can no longer reverse it exactly
   }
-  return { gapMs, sentCount: 0, nackCount: 0, windowStart: Date.now() };
-}
-
-/** The current loss rate estimate (0..1). */
-export function lossRate(state: AimdState): number {
-  return state.sentCount > 0 ? state.nackCount / state.sentCount : 0;
+  // NOTE: the window is reset on EVERY evaluation, which is 081KZYN37T4087G0R00181THA4 and is
+  // deliberately NOT fixed here. It is left intact so the ordering is checkable: this change
+  // supplies the distinction, the estimator window is next, and the pacing wiring is last.
+  return {
+    ...state,
+    gapMs,
+    sentCount: 0,
+    lossByCause: NO_LOSS,
+    suspectSeqs: [],
+    lastDecrease,
+    lastWindow: { lossByCause: state.lossByCause, windowPackets: state.sentCount },
+  };
 }
 
 // ── Receiver block buffer ─────────────────────────────────────────────────────────────────
@@ -592,7 +908,7 @@ export function scheduleGossipRebroadcast(
  *    const ch = new LossyUdpChannel(transport, myZid);
  *    ch.send(payload);                          // sends 4 data + 4 parity packets
  *    ch.onData(payload => { ... });             // called when a block is recovered
- *    ch.onLossRate(rate => { ... });            // called after each AIMD window
+ *    ch.onLossRates(rows => { ... });           // one row PER CAUSE, never a single number
  */
 export class LossyUdpChannel {
   private readonly transport: {
@@ -605,10 +921,18 @@ export class LossyUdpChannel {
   private sendQueue: Uint8Array[] = []; // accumulate 4 data packets before sending a block
   private recvBlocks = new Map<number, ReceiverBlock>();
   private expectedSeq = 0;
+  /** Sequence numbers this receiver has REPORTED missing and not yet seen arrive.
+   *
+   *  This is the whole reorder attribution: a number that leaves this set by ARRIVING was never
+   *  lost, and the receiver is the only party that can observe that. Bounded to
+   *  `2 * MAX_NACK_GAP` by eviction below `expectedSeq - MAX_NACK_GAP`, because unbounded state
+   *  keyed on an unauthenticated peer's sequence field is how the 3,333,337x amplification worked. */
+  private reportedMissing = new Set<number>();
   private dataHandlers: Array<(payload: Uint8Array) => void> = [];
-  private lossHandlers: Array<(rate: number) => void> = [];
+  private lossHandlers: Array<(rates: readonly LossRate[]) => void> = [];
   private envelopeHandlers: Array<(envelope: ErrorEnvelope) => void> = [];
   private desyncHandlers: Array<(event: DesyncEvent) => void> = [];
+  private reorderHandlers: Array<(seqs: readonly number[]) => void> = [];
   /** Optional DimensionalBnn — absorbs teaching NACKs as EP observations. */
   private bnn: DimensionalBnn | null = null;
 
@@ -646,8 +970,15 @@ export class LossyUdpChannel {
   onData(h: (payload: Uint8Array) => void): void {
     this.dataHandlers.push(h);
   }
-  onLossRate(h: (rate: number) => void): void {
+  /** One row per cause. There is no single-number variant, and removing it is the fix: a caller
+   *  handed `0.05` cannot ask whether backing off would relieve anything. */
+  onLossRates(h: (rates: readonly LossRate[]) => void): void {
     this.lossHandlers.push(h);
+  }
+  /** Called when a sequence number this receiver reported missing ARRIVES — the one loss
+   *  attribution this transport can make today. Local; the wire retraction is separate. */
+  onReorder(h: (seqs: readonly number[]) => void): void {
+    this.reorderHandlers.push(h);
   }
   /** Called when a teaching NACK envelope is emitted (for logging / UI). */
   onEnvelope(h: (envelope: ErrorEnvelope) => void): void {
@@ -697,12 +1028,29 @@ export class LossyUdpChannel {
       return;
     }
     if (envelope.type === "lossy-udp-nack" && Array.isArray(envelope.nack)) {
-      // Teaching NACK received: update AIMD loss estimate + absorb into BNN
-      const prevRate = lossRate(this.aimd);
-      this.aimd = onNack(this.aimd, envelope.nack.length);
-      const newRate = lossRate(this.aimd);
-      if (newRate !== prevRate) {
-        for (const h of this.lossHandlers) h(newRate);
+      // Teaching NACK received: update the per-cause loss estimate + absorb into BNN.
+      //
+      // The cause is READ off the report; it is no longer synthesised from the loss rate the
+      // controller is trying to explain. `reorder` is a RETRACTION — the receiver reported these
+      // sequence numbers missing and then watched them arrive — so it withdraws evidence rather
+      // than adding it. An absent or unrecognised cause is `unknown`, which is the conservative
+      // direction: it keeps the classical backoff rather than silently suppressing it.
+      const seqs = envelope.nack.filter((s): s is number => Number.isSafeInteger(s) && s >= 0);
+      const claimed = (envelope.teaching as Partial<NackMessage> | undefined)?.cause;
+      const before = this.aimd;
+      if (claimed === "reorder") {
+        this.aimd = retractLoss(this.aimd, seqs);
+      } else {
+        // `corruption` and `congestion` are unreachable here by construction — neither evidence
+        // type can be minted (see `CongestionEvidence`) — so every non-retraction report is
+        // `unknown`. When 081KZYP1X3B lands, this is where the integrity verdict arrives.
+        this.aimd = onLoss(this.aimd, { cause: "unknown", seqs });
+      }
+      if (this.aimd !== before) {
+        // The EVALUATED window, not the live one: `updateAimd` empties the live window every time
+        // it runs, so reporting that here would hand every observer a row of zeros.
+        const rows = evaluatedLossRates(this.aimd);
+        for (const h of this.lossHandlers) h(rows);
       }
       // Absorb teaching error into DimensionalBnn if available
       if (this.bnn && isNackMessage(envelope.teaching)) {
@@ -793,23 +1141,22 @@ export class LossyUdpChannel {
       const missing: number[] = [];
       for (let s = this.expectedSeq; s < header.seq; s++) missing.push(s);
       if (missing.length > 0) {
-        // Infer cause from AIMD state: high loss rate → congestion, else unknown
-        const lr = lossRate(this.aimd);
-        const cause: LossCause = lr > 0.1 ? "congestion" : lr > 0.02 ? "timeout" : "unknown";
-        const howToFix =
-          cause === "congestion"
-            ? "reduce send rate: increase inter-packet gap by 2x"
-            : cause === "timeout"
-              ? "increase block size timeout: wait 50ms before declaring erasure"
-              : "retry with smaller block size (2 data + 2 parity)";
+        // The cause is what the receiver can EVIDENCE, and at this instant it can evidence
+        // nothing: the packet is absent, and an absent packet looks identical whether a queue
+        // dropped it, the channel corrupted it, or it is merely late (RFC 4653). The previous
+        // code answered this question by thresholding its own loss estimate — the estimate
+        // produced the cause, the cause fed the estimate — which is why `unknown` is reported
+        // here and re-attributed later if one of these numbers turns up.
         const teachingNack: NackMessage = {
           type: "nack",
           missingSeqs: missing,
-          cause,
-          why: `${missing.length} packet(s) missing in sequence [${missing[0]}..${missing[missing.length - 1]}]; inferred cause: ${cause}`,
-          howToFix,
+          cause: "unknown",
+          why: `${missing.length} packet(s) missing in sequence [${missing[0]}..${missing[missing.length - 1]}]; cause NOT attributable: this transport has no integrity check (081KZYP1X3B087G0R001EZ37PQ) and no queue or delay signal, so a queue drop, a corrupted frame and a late packet are the same observation here`,
+          howToFix:
+            "treat as possible congestion (the conservative direction); to attribute it, add an integrity check so corruption is perceivable",
           retractableBeliefId: missing.map((s) => `received:seq=${s}:zid=${this.myZid}`).join(","),
         };
+        for (const s of missing) this.reportedMissing.add(s);
         const nackEnv = JSON.stringify({
           type: "lossy-udp-nack",
           zid: this.myZid,
@@ -818,8 +1165,40 @@ export class LossyUdpChannel {
         });
         this.transport.broadcast(nackEnv);
       }
+    } else if (this.reportedMissing.delete(header.seq)) {
+      // ATTRIBUTION, and the only one available today: a sequence number this receiver reported
+      // missing has ARRIVED. It was never lost — it was reordered — so the earlier report is
+      // withdrawn rather than left standing. `retractableBeliefId` was always the field for this;
+      // nothing retracted through it until now.
+      //
+      // Named cost, because every byte emitted in response to an unauthenticated packet is an
+      // amplification factor: this is a second broadcast per reordered packet, so it at most
+      // DOUBLES the NACK volume the module already bounds. It is self-limiting — a retraction is
+      // only emitted for a sequence number this receiver itself reported — so it adds no new
+      // peer-controlled lever, only more traffic on an existing one.
+      //
+      // §12: `Set.delete` returns true at most once per sequence number, so a duplicated packet
+      // cannot retract the same belief twice.
+      const retraction: NackMessage = {
+        type: "nack",
+        missingSeqs: [header.seq],
+        cause: "reorder",
+        why: `seq=${header.seq} was reported missing and then arrived; it was reordered, not lost`,
+        howToFix: "do not back off: reordering carries no capacity information",
+        retractableBeliefId: `received:seq=${header.seq}:zid=${this.myZid}`,
+      };
+      this.transport.broadcast(
+        JSON.stringify({ type: "lossy-udp-nack", zid: this.myZid, nack: [header.seq], teaching: retraction }),
+      );
+      for (const h of this.reorderHandlers) h([header.seq]);
     }
     this.expectedSeq = Math.max(this.expectedSeq, header.seq + 1);
+    // Evict sequence numbers the receiver can no longer speak to, on the SAME bound the NACK is
+    // derived from. Without this the set grows without limit under a peer-chosen sequence field.
+    if (this.reportedMissing.size > 0) {
+      const floor = this.expectedSeq - MAX_NACK_GAP;
+      for (const s of this.reportedMissing) if (s < floor) this.reportedMissing.delete(s);
+    }
 
     // Add to receiver block
     let block = this.recvBlocks.get(header.blockSeq);

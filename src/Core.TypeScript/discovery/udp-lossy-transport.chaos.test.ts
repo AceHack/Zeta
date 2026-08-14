@@ -39,7 +39,7 @@ import {
   recoverAdinkraBlock,
   makeAimdState,
   onSend,
-  onNack,
+  onLoss,
   LossyUdpChannel,
 } from "./udp-lossy-transport";
 
@@ -382,31 +382,49 @@ describe("udp-lossy-transport.chaos", () => {
   });
 
   // ── UCH-14: AIMD evaluates against a PARTIAL window ──────────────────────────────────────
-  // `onNack` calls `updateAimd` immediately, and `updateAimd` RESETS the window on every
-  // evaluation. So the loss estimate is never "NACKs per 64 packets" as `LOSS_WINDOW = 64` and
-  // the module comment state — it is "1 NACK per packets-since-the-last-NACK". A single NACK
+  // `onLoss` calls `updateAimd` immediately, and `updateAimd` RESETS the window on every
+  // evaluation. So the loss estimate is never "losses per 64 packets" as `LOSS_WINDOW = 64` and
+  // the module comment state — it is "1 loss per packets-since-the-last-loss". A single report
   // arriving within 19 sends therefore reads as >5% loss and doubles the gap.
   //
   // ULT-8/9/10 cannot see this: they hand the controller a pre-arranged whole window.
   // PINS CURRENT BEHAVIOUR — this test SHOULD fail when the estimator is fixed.
-  it("UCH-14: a single NACK after <=19 sends doubles the gap on a one-sample loss estimate", () => {
+  //
+  // UPDATED 2026-08-13 for 081KZYQ8KNB087G0R000G8QPRE: `onNack(s, 1)` became
+  // `onLoss(s, { cause: "unknown", seqs: [n] })`, and the `nackCount` field became a per-cause
+  // map. The DEFECT this pins is unchanged and deliberately unfixed — it is the next work-item in
+  // the ordering — so the assertions are the same numbers through the new door. What the second
+  // loop now also shows is that the SAME report attributed to `reorder` never backs off at all.
+  it("UCH-14: a single loss report after <=19 sends doubles the gap on a one-sample estimate", () => {
     for (const sends of [1, 5, 10, 19]) {
       let s = makeAimdState(10);
       for (let i = 0; i < sends; i++) s = onSend(s);
       const before = s.gapMs;
-      s = onNack(s, 1);
+      s = onLoss(s, { cause: "unknown", seqs: [sends] });
       expect(s.gapMs).toBe(before * 2);
       // The window is reset by the evaluation, so the estimate is discarded immediately.
       expect(s.sentCount).toBe(0);
-      expect(s.nackCount).toBe(0);
+      expect(s.lossByCause.unknown).toBe(0);
+      // ...but it is not LOST: the evaluated window remembers what the decision was taken on.
+      expect(s.lastWindow.lossByCause.unknown).toBe(1);
+      expect(s.lastWindow.windowPackets).toBe(sends);
     }
     // 20 sends is exactly the 5% threshold and does NOT back off — pinning the real boundary.
     for (const sends of [20, 25, 40]) {
       let s = makeAimdState(10);
       for (let i = 0; i < sends; i++) s = onSend(s);
       const before = s.gapMs;
-      s = onNack(s, 1);
+      s = onLoss(s, { cause: "unknown", seqs: [sends] });
       expect(s.gapMs).toBe(before);
+    }
+    // And the contrast that is the point of 081KZYQ8KNB: identical arithmetic, attributed cause,
+    // and the one-sample estimate never fires because the sample is not congestion-suspect.
+    for (const sends of [1, 5, 10, 19]) {
+      let s = makeAimdState(10);
+      for (let i = 0; i < sends; i++) s = onSend(s);
+      s = onLoss(s, { cause: "reorder", seqs: [sends] });
+      expect(s.gapMs).toBeLessThanOrEqual(10);
+      expect(s.lastWindow.lossByCause.reorder).toBe(1);
     }
   });
 
@@ -415,15 +433,27 @@ describe("udp-lossy-transport.chaos", () => {
   // converge to a rate tracking the loss. It pins at MAX_GAP_MS (500ms ~ 2 packets/second) for
   // loss at or above ~1% — well below the 5% HIGH_LOSS_THRESHOLD it is designed to back off at.
   // PINS CURRENT BEHAVIOUR.
+  //
+  // The Gilbert-Elliott trace is a CHANNEL process — corruption, not queue overflow — so under
+  // 081KZYQ8KNB the honest attribution for every one of these drops is `unknown`: the receiver
+  // has no integrity check, so it cannot tell this from a full buffer. That is why this test
+  // still saturates, and it is the measurement, not a disappointment: separating the signals
+  // does not help where the transport cannot perceive the separation. `attrib` below is the
+  // counterfactual — the same trace with the cause attributed — and the gap between the two
+  // columns is exactly what 081KZYP1X3B087G0R001EZ37PQ would buy.
   it("UCH-15: under a 1% real loss process the gap saturates at the 500ms floor, not at a fixed point", () => {
     const N = 20_000;
-    const drive = (rate: number, L: number): number[] => {
+    const drive = (rate: number, L: number, cause: "unknown" | "corruption-if-perceivable" = "unknown"): number[] => {
       const trace = gilbertElliottTrace(N, burstParams(rate, L), 0x5eedn);
       let s = makeAimdState(10);
       const samples: number[] = [];
       for (let i = 0; i < N; i++) {
         s = onSend(s);
-        if (trace.dropped[i]) s = onNack(s, 1);
+        // `corruption` cannot be constructed (no integrity check), so the counterfactual is
+        // driven through `reorder` — the one attributed non-congestion cause that exists. It
+        // stands in for "the receiver could tell this was not congestion", which is the property
+        // under test, not the specific cause name.
+        if (trace.dropped[i]) s = onLoss(s, { cause: cause === "unknown" ? "unknown" : "reorder", seqs: [i] });
         if (i % 2000 === 1999) samples.push(s.gapMs);
       }
       return samples;
@@ -436,6 +466,14 @@ describe("udp-lossy-transport.chaos", () => {
     // 10% bursty: fully pinned.
     const at10pct = drive(0.1, 4);
     expect(Math.min(...at10pct)).toBeGreaterThan(490);
+
+    // THE COUNTERFACTUAL, and the number this work-item is really about. The same 10% bursty
+    // trace, with the cause attributed instead of unattributed, does not back off at all — the
+    // controller drives to the floor because nothing it can do would change a channel process.
+    // 490ms versus 1ms is the whole of "separate the signals", and it is unreachable for
+    // corruption today because the receiver cannot perceive corruption.
+    const attributed = drive(0.1, 4, "corruption-if-perceivable");
+    expect(Math.max(...attributed)).toBe(1);
   });
 
   // ── UCH-16: reordering alone produces spurious NACKs on a LOSSLESS channel ───────────────
@@ -444,7 +482,23 @@ describe("udp-lossy-transport.chaos", () => {
   // reordered packet costs one NACK, and by UCH-14/UCH-15 that NACK stream alone drives the
   // sender to the 500ms floor. Reordering therefore collapses throughput with zero packet loss.
   // PINS CURRENT BEHAVIOUR.
-  it("UCH-16: 5% reordering on a zero-loss channel yields a ~4-5% spurious NACK rate", () => {
+  //
+  // FLIPPED 2026-08-13 by 081KZYQ8KNB087G0R000G8QPRE, and the flip is a COST, not a win, so it
+  // is recorded as one. The measured broadcast rate went from 4.7% to 9.4% — almost exactly
+  // double — because the receiver now also emits a RETRACTION when a sequence number it reported
+  // missing arrives. That retraction is what carries the reorder attribution back to the sender,
+  // and it is the mechanism that stops the backoff; it is bought with a second broadcast per
+  // reordered packet.
+  //
+  // Named honestly because this module bounds NACK amplification deliberately (ULT-17..21, the
+  // 3,333,337x incident): the bound is now 2 broadcasts per in-window gap rather than 1. It adds
+  // no new peer-controlled lever — a retraction is only ever emitted for a sequence number this
+  // receiver itself reported — but it is more traffic on an existing one, and a mesh deployment
+  // should know that before it turns this on.
+  //
+  // The test is split so both halves are visible: total broadcasts (what the mesh pays) and
+  // retractions specifically (what the attribution costs).
+  it("UCH-16: 5% reordering on a zero-loss channel yields a ~9% broadcast rate — half of it retractions", () => {
     const run = (reorderProbability: number, reorderDepth: number) => {
       const cfg = defaultConfig({
         blocks: 500,
@@ -459,10 +513,14 @@ describe("udp-lossy-transport.chaos", () => {
 
       let receive: (t: string, f: string) => void = () => {};
       let nackBroadcasts = 0;
+      let retractions = 0;
       const transport = {
         broadcast: (text: string) => {
-          const e = JSON.parse(text) as { type?: string };
-          if (e.type === "lossy-udp-nack") nackBroadcasts++;
+          const e = JSON.parse(text) as { type?: string; teaching?: { cause?: string } };
+          if (e.type === "lossy-udp-nack") {
+            nackBroadcasts++;
+            if (e.teaching?.cause === "reorder") retractions++;
+          }
         },
         onMessage: (h: (t: string, f: string) => void) => {
           receive = h;
@@ -483,20 +541,37 @@ describe("udp-lossy-transport.chaos", () => {
         const buf = Buffer.concat([hdr, Buffer.from(pkt.payload)]);
         receive(JSON.stringify({ type: "lossy-udp", zid: "sender", pkt: buf.toString("base64") }), "sender");
       }
-      return { nackBroadcasts, deliveredPayloads, sent: wire.length };
+      return { nackBroadcasts, retractions, deliveredPayloads, sent: wire.length };
     };
 
-    // Control: no reordering, no NACKs. Without this the numbers below could be a dead path.
+    // Control: no reordering, no NACKs and no retractions. Without this the numbers below could
+    // be a dead path.
     const control = run(0, 0);
     expect(control.nackBroadcasts).toBe(0);
+    expect(control.retractions).toBe(0);
     expect(control.deliveredPayloads).toBe(2000);
 
     const r = run(0.05, 8);
     // Data still arrives in full — the damage is entirely in the control channel.
     expect(r.deliveredPayloads).toBe(2000);
-    const spuriousRate = r.nackBroadcasts / r.sent;
-    expect(spuriousRate).toBeGreaterThan(0.03);
-    expect(spuriousRate).toBeLessThan(0.06);
+    const broadcastRate = r.nackBroadcasts / r.sent;
+    expect(broadcastRate).toBeGreaterThan(0.07);
+    expect(broadcastRate).toBeLessThan(0.12);
+
+    // The gap reports themselves are unchanged from the pre-fix measurement — no hold-down was
+    // added, deliberately, because a hold-down treats the symptom. Every extra broadcast is a
+    // retraction, and every retraction carries an attribution the sender could not otherwise have.
+    const reports = r.nackBroadcasts - r.retractions;
+    const reportRate = reports / r.sent;
+    expect(reportRate).toBeGreaterThan(0.03);
+    expect(reportRate).toBeLessThan(0.06);
+    // The two counts are NOT the same unit, and the measurement made that concrete: a gap report
+    // is one message naming SEVERAL sequence numbers, while a retraction is one message per
+    // sequence number that arrives. Measured 183 reports against 193 retractions — retractions
+    // slightly EXCEED reports, which was not the shape assumed when this assertion was first
+    // written. Pinned as measured.
+    expect(r.retractions).toBeGreaterThanOrEqual(reports);
+    expect(r.retractions).toBeLessThan(1.3 * reports);
   });
 
   // ── UCH-17: the shipped receiver attains the code's ceiling, end to end ─────────────────

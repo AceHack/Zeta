@@ -9,6 +9,7 @@
  */
 
 import {
+  attributionPoint,
   bdpPackets,
   bufferbloatSweep,
   convergenceReport,
@@ -16,6 +17,7 @@ import {
   defaultLink,
   defaultSim,
   fairnessReport,
+  formatAttribution,
   formatBufferbloat,
   formatCorruptionPlot,
   formatUtilisationTable,
@@ -176,6 +178,47 @@ async function main(): Promise<void> {
       ].join("  "),
     );
   }
+
+  console.log("");
+  console.log("=== UBL-I: ATTRIBUTION - how much of the loss can the receiver actually NAME? ===");
+  console.log("  (read this table BEFORE UBL-E: separating the signals only pays where the");
+  console.log("   receiver can separate them, and this is the measurement of that.)");
+  const corrupt = (arm: "open-loop" | "aimd", rate: number) =>
+    defaultSim({
+      link: defaultLink({
+        capacityPktPerSec: 4000,
+        owdMs: 20,
+        bufferPackets: Math.max(1, Math.round(4 * bdpPackets({ capacityPktPerSec: 4000, owdMs: 20 }))),
+        corruption: burstParams(rate, 1),
+      }),
+      pacing: arm === "open-loop" ? { kind: "open-loop", offeredPktPerSec: 1000 } : { kind: "aimd", initialGapMs: 1 },
+      durationMs: 10000,
+    });
+  const jittered = (arm: "open-loop" | "aimd", jitterMs: number) =>
+    defaultSim({
+      link: defaultLink({
+        capacityPktPerSec: 4000,
+        owdMs: 20,
+        bufferPackets: Math.max(1, Math.round(4 * bdpPackets({ capacityPktPerSec: 4000, owdMs: 20 }))),
+        corruption: burstParams(0, 1),
+        jitterMs,
+      }),
+      pacing: arm === "open-loop" ? { kind: "open-loop", offeredPktPerSec: 1000 } : { kind: "aimd", initialGapMs: 1 },
+      durationMs: 10000,
+    });
+  console.log(
+    formatAttribution([
+      attributionPoint("corruption 2%", corrupt("aimd", 0.02)),
+      attributionPoint("corruption 10%", corrupt("aimd", 0.1)),
+      attributionPoint("corruption 10%", corrupt("open-loop", 0.1)),
+      attributionPoint("jitter 5ms", jittered("aimd", 5)),
+      attributionPoint("jitter 5ms", jittered("open-loop", 5)),
+      attributionPoint(
+        "congestion 2x",
+        gridConfig("open-loop", { capacityPktPerSec: 1000, owdMs: 20, bufferBdpMultiple: 1 }, { durationMs: 10000 }),
+      ),
+    ]),
+  );
 }
 
 await main();

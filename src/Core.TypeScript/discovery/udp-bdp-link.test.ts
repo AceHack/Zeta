@@ -1,18 +1,19 @@
 /**
- * udp-bdp-link.test.ts - UBL-1..UBL-14.
+ * udp-bdp-link.test.ts - UBL-1..UBL-15.
  *
  * Two kinds of test live here and they are labelled, because mixing them is how a green suite
  * becomes an endorsement:
  *
  *   - **MODEL FALSIFIERS** (UBL-1..UBL-5) - checks on the SIMULATOR. If the link model is wrong,
  *     every number below it is decoration. These must always pass.
- *   - **BEHAVIOUR PINS** (UBL-6..UBL-14) - checks on the TRANSPORT as it is today. Several pin
+ *   - **BEHAVIOUR PINS** (UBL-6..UBL-15) - checks on the TRANSPORT as it is today. Several pin
  *     defects, and each such test says so in its own comment and is **expected to FAIL when the
  *     defect is fixed**. That is deliberate: precedent set by UCH-13..16 in #10417. Whoever fixes
  *     the controller updates the pin in the same PR, and the failure is the signal it landed.
  */
 import { describe, it, expect } from "bun:test";
 import {
+  attributionPoint,
   bdpPackets,
   bufferbloatSweep,
   convergenceReport,
@@ -20,12 +21,15 @@ import {
   defaultLink,
   defaultSim,
   fairnessReport,
+  formatAttribution,
   gridConfig,
   jainFairness,
   recoveryReport,
   runLink,
   utilisationTable,
+  type ArmName,
   type GridPoint,
+  type SimConfig,
   type SimResult,
 } from "./udp-bdp-link";
 import { burstParams } from "./udp-lossy-transport.chaos";
@@ -347,8 +351,25 @@ describe("udp-bdp-link: the decisive experiment", () => {
   // This is 081KZYN3D53087G0R0036XZSYM composed with 081KZYN37T4087G0R00181THA4, measured on a
   // link with real delay rather than on a synthetic packet permutation - and it is the evidence
   // for reading the two as one defect: a non-congestion signal driving a congestion response.
-  // PINS A DEFECT. Expected to FAIL when either is fixed.
-  it("UBL-11: 5ms of jitter, zero loss, zero congestion - and the AIMD arm loses 11x throughput", () => {
+  //
+  // FLIPPED 2026-08-13 by 081KZYQ8KNB087G0R000G8QPRE, in the direction of the fix, and the pin is
+  // updated with the measured before/after rather than merely relaxed:
+  //
+  //     paced throughput under 5ms jitter, zero loss    BEFORE      AFTER
+  //     absolute                                        20.9 pkt/s  466.2 pkt/s
+  //     relative to the same arm on a clean link         0.021       0.467
+  //     collapse factor                                 47.7x        2.14x
+  //
+  // 22.3x more throughput on a channel that drops nothing. The receiver now attributes 99.6% of
+  // its own reports to reordering by watching the packets arrive, and retracts them; a retracted
+  // decrease is recomputed and reversed when its evidence is gone.
+  //
+  // It is NOT fully repaired, and the residual is the ordering argument made visible: a
+  // retraction travels back in one propagation delay, so a decrease taken on evidence that has
+  // not been retracted yet still fires, and the estimator evaluates on a partial window
+  // (081KZYN37T4087G0R00181THA4, next in the ordering). Expect this number to move again when
+  // that lands. STILL PINS A DEFECT - a smaller one.
+  it("UBL-11: 5ms of jitter, zero loss, zero congestion - the AIMD arm now loses 2.1x, was 47.7x", () => {
     const mk = (arm: "open-loop" | "aimd", jitterMs: number) => {
       const link = defaultLink({
         capacityPktPerSec: 4000,
@@ -385,8 +406,22 @@ describe("udp-bdp-link: the decisive experiment", () => {
     // Delivery itself is unharmed - the damage is entirely in the control channel.
     expect(jitterOpen.flows[0]!.delivered / cleanOpen.flows[0]!.delivered).toBeGreaterThan(0.99);
 
-    // And once the control channel is wired to the sender, the collapse arrives.
-    expect(jitterAimd.flows[0]!.delivered / cleanAimd.flows[0]!.delivered).toBeLessThan(0.15);
+    // THE ATTRIBUTION, and it is what changed the number below. Essentially every report is
+    // recognised as a reordered packet, because the receiver saw it arrive.
+    for (const r of [jitterOpen, jitterAimd]) {
+      const f = r.flows[0]!;
+      expect(f.attributedReorder / f.seqsReportedMissing).toBeGreaterThan(0.99);
+      expect(f.unattributed).toBe(0);
+    }
+    // Anti-vacuity: with no jitter there is nothing to attribute, so a classifier that reported
+    // "reorder" unconditionally would not pass this line.
+    expect(cleanOpen.flows[0]!.attributedReorder).toBe(0);
+
+    // The collapse still arrives once the control channel is wired to the sender - but it is
+    // 2.14x, not the 47.7x measured before the signals were separated.
+    const ratio = jitterAimd.flows[0]!.delivered / cleanAimd.flows[0]!.delivered;
+    expect(ratio).toBeGreaterThan(0.4);
+    expect(ratio).toBeLessThan(0.55);
   });
 
   // -- UBL-12: recovery from a single spurious backoff. -------------------------------------
@@ -433,8 +468,87 @@ describe("udp-bdp-link: the decisive experiment", () => {
     expect(flush.length).toBeGreaterThan(100);
     expect(flush).toContain("onSend(this.aimd)");
     expect(flush).not.toContain("gapMs");
-    // gapMs appears only inside updateAimd, which is the function that writes it.
+    // gapMs appears only in the estimator: `updateAimd` writes it, `retractLoss` reverses a write
+    // it can prove should not have happened, and `DecreaseRecord` carries the before/after pair.
+    // The bound went 6 -> 14 with 081KZYQ8KNB087G0R000G8QPRE, which is a WEAKER check, so the
+    // load-bearing half is the assertion above: the SEND PATH still does not mention gapMs. A raw
+    // line count over the whole file was always the soft part of this test and grows with any
+    // estimator work; it is kept as a coarse tripwire, not as the guarantee.
     const readers = src.split("\n").filter((l) => l.includes("gapMs") && !l.trimStart().startsWith("//"));
-    expect(readers.length).toBeLessThanOrEqual(6);
+    expect(readers.length).toBeLessThanOrEqual(14);
+    // The strong form of the same fact, and the one that actually pins the wiring: no method of
+    // the channel class reads it.
+    const cls = src.slice(src.indexOf("export class LossyUdpChannel"));
+    expect(cls.length).toBeGreaterThan(1000);
+    expect(cls.split("\n").filter((l) => l.includes("gapMs") && !l.trimStart().startsWith("*")).length).toBe(0);
+  });
+
+  // -- UBL-15: how much of the loss can this transport ATTRIBUTE at all? --------------------
+  //
+  // The honest companion to UBL-10, and the number to read FIRST. Separating the signals only
+  // buys something where the signals are separable AT THE RECEIVER, and this measures that.
+  //
+  // PINS CURRENT BEHAVIOUR, and two rows of it are findings rather than defects:
+  //   - reordering is 99%+ attributable, because the receiver watches the packet arrive;
+  //   - corruption and congestion are 0% attributable, because an erasure is an erasure. That is
+  //     081KZYP1X3B087G0R001EZ37PQ (no integrity check) and the absence of any queue/delay
+  //     signal, measured rather than asserted.
+  // Expected to move when an integrity check or a delay signal lands.
+  it("UBL-15: reorder is 99.6% attributable; corruption and congestion are 0% - measured, not claimed", () => {
+    const corrupt = (arm: ArmName, rate: number): SimConfig => {
+      const capacity = 4000;
+      const owdMs = 20;
+      const bufferPackets = Math.max(1, Math.round(4 * bdpPackets({ capacityPktPerSec: capacity, owdMs })));
+      return defaultSim({
+        link: defaultLink({ capacityPktPerSec: capacity, owdMs, bufferPackets, corruption: burstParams(rate, 1) }),
+        pacing: arm === "open-loop" ? { kind: "open-loop", offeredPktPerSec: 1000 } : { kind: "aimd", initialGapMs: 1 },
+        durationMs: 10000,
+      });
+    };
+    const jitter = (arm: ArmName, jitterMs: number): SimConfig =>
+      defaultSim({
+        link: defaultLink({
+          capacityPktPerSec: 4000,
+          owdMs: 20,
+          bufferPackets: Math.max(1, Math.round(4 * bdpPackets({ capacityPktPerSec: 4000, owdMs: 20 }))),
+          corruption: burstParams(0, 1),
+          jitterMs,
+        }),
+        pacing: arm === "open-loop" ? { kind: "open-loop", offeredPktPerSec: 1000 } : { kind: "aimd", initialGapMs: 1 },
+        durationMs: 10000,
+      });
+
+    // CORRUPTION: 948 frames died on the wire, the receiver reported 946 sequence numbers
+    // missing, and it could name the cause of NONE of them.
+    const corr = attributionPoint("corruption 10%", corrupt("open-loop", 0.1));
+    expect(corr.corruptionDrops).toBeGreaterThan(900);
+    expect(corr.reportedMissing).toBeGreaterThan(900);
+    expect(corr.attributedReorder).toBe(0);
+    expect(corr.attributableFraction).toBe(0);
+
+    // CONGESTION: a greedy open-loop sender overflows the buffer ~9900 times. Same story.
+    const cong = attributionPoint(
+      "congestion 2x",
+      gridConfig("open-loop", { capacityPktPerSec: 1000, owdMs: 20, bufferBdpMultiple: 1 }, { durationMs: 10000 }),
+    );
+    expect(cong.congestionDrops).toBeGreaterThan(5000);
+    expect(cong.reportedMissing).toBeGreaterThan(5000);
+    expect(cong.attributableFraction).toBe(0);
+
+    // REORDER: the one cause this receiver can see, and it sees essentially all of it.
+    const reord = attributionPoint("jitter 5ms", jitter("open-loop", 5));
+    expect(reord.corruptionDrops).toBe(0);
+    expect(reord.congestionDrops).toBe(0);
+    expect(reord.reportedMissing).toBeGreaterThan(3000);
+    expect(reord.attributableFraction).toBeGreaterThan(0.99);
+    // ...and the receiver's attribution never claims MORE than ground truth allows. It cannot,
+    // by construction - a reorder is only counted when the packet is observed arriving - and
+    // asserting it is what keeps this a measurement rather than a self-report.
+    expect(reord.attributedReorder).toBeLessThanOrEqual(reord.trulySpurious);
+
+    // The table renders as text (no binary in the proof lineage) and is non-empty.
+    const table = formatAttribution([corr, cong, reord]);
+    expect(table).toContain("attrib%");
+    expect(table.split("\n").length).toBe(4);
   });
 });
