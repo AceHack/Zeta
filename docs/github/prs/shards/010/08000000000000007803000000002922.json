@@ -1,0 +1,12 @@
+{
+  "pr_number": 10530,
+  "archive_path": "docs/history/pr-reviews/PR-10530-feat-browser-add-receipt-proposal-sync-runtime.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T04:52:43.267Z",
+  "schema_version": "v1",
+  "commit_sha": "82860ff12f2be15480af07fe721c9e6aad2a70c3",
+  "title": "feat(browser): add receipt proposal sync runtime",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T04:52:02Z",
+  "head_ref": "codex/browser-receipt-sync-runtime"
+}
