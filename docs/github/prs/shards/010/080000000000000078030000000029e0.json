@@ -1,0 +1,12 @@
+{
+  "pr_number": 10720,
+  "archive_path": "docs/history/pr-reviews/PR-10720-fix-backlog-scope-lint-no-b-refs-to-authored-surfaces-resolve-the-3-real-refs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T21:09:46.928Z",
+  "schema_version": "v1",
+  "commit_sha": "619243ae3a9be337d9da378d26dd00cf900d3e65",
+  "title": "fix(backlog): scope lint-no-b-refs to authored surfaces, resolve the 3 real refs",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T21:09:14Z",
+  "head_ref": "shadow/fix-frozen-legacy-backlog-drift"
+}
