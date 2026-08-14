@@ -1,0 +1,14 @@
+{
+  "id": "080cfff1dd290810a013000823993c70",
+  "at": "2026-08-14T03:05:49.601Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZZ3Q990087G0R003QXYVN6",
+    "type": "bug",
+    "title": "workitems done index.jsonl is a shared append-only file with the conflict class the PR manifest already retired",
+    "slug": "workitems-done-index-jsonl-is-a-shared-append-only-file-with",
+    "priority": "P2",
+    "filename": "081KZZ3Q990087G0R003QXYVN6-workitems-done-index-jsonl-is-a-shared-append-only-file-with.md"
+  }
+}
