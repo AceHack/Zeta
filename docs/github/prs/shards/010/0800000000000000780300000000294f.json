@@ -1,0 +1,12 @@
+{
+  "pr_number": 10575,
+  "archive_path": "docs/history/pr-reviews/PR-10575-fix-society-the-runner-published-a-prior-as-a-posterior-and-banded-mu-inside-its.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T14:48:39.222Z",
+  "schema_version": "v1",
+  "commit_sha": "cc0955c150d8cd6ee4f9e0b2ff92fb219ec1f8da",
+  "title": "fix(society): the runner published a prior as a posterior, and banded mu inside its own error bar",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T14:48:01Z",
+  "head_ref": "lumen/society-runner-prior-published-as-posterior-and-bands-inside-the-error-bar"
+}
