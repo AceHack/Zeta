@@ -1,0 +1,12 @@
+{
+  "pr_number": 10488,
+  "archive_path": "docs/history/pr-reviews/PR-10488-fix-auth-reconcile-passkey-proposals-with-trust-core.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T01:25:46.499Z",
+  "schema_version": "v1",
+  "commit_sha": "160883ce0c68ef7f50b47f6ba5f4b031a7dbc5c2",
+  "title": "fix(auth): reconcile passkey proposals with trust core",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T01:25:06Z",
+  "head_ref": "codex/browser-signed-outbox-reconcile"
+}
