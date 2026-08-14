@@ -1,0 +1,12 @@
+{
+  "pr_number": 10652,
+  "archive_path": "docs/history/pr-reviews/PR-10652-docs-secure-boot-lanzaboote-keeps-desired-state-one-firmware-ceremony-per-node-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T17:54:21.138Z",
+  "schema_version": "v1",
+  "commit_sha": "96827b48d4813791a59a24ffcd4c2408bb3a2a95",
+  "title": "docs(secure-boot): lanzaboote keeps desired-state; one firmware ceremony per node cannot be eliminated",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T17:53:49Z",
+  "head_ref": "dejan/nixos-secure-boot-lanzaboote-research"
+}
