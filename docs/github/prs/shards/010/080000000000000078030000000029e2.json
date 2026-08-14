@@ -1,0 +1,12 @@
+{
+  "pr_number": 10722,
+  "archive_path": "docs/history/pr-reviews/PR-10722-fix-heat-the-gauges-pinned-and-a-pinned-gauge-and-an-emergency-looked-the-same.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T21:12:35.889Z",
+  "schema_version": "v1",
+  "commit_sha": "baefaeab7bcf953b0ef0feb59df11f9048eeffe6",
+  "title": "fix(heat): the gauges pinned, and a pinned gauge and an emergency looked the same",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T21:11:57Z",
+  "head_ref": "shadow/fix-non-injective-heat-encoders"
+}
