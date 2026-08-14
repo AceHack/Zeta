@@ -4,8 +4,9 @@ export const ZETA_PROPOSAL_MARKER = "<!-- zeta-proposal-v2 -->";
 export const ZETA_PAGES_ORIGIN = "https://lucent-financial-group.github.io";
 export const ZETA_PAGES_RP_ID = "lucent-financial-group.github.io";
 export const ZETA_PROPOSAL_MAX_LIFETIME_MS = 5 * 60_000;
+export const ZETA_OPERATOR_HARNESS_ORIGIN = "https://idspace-dla-6faa9bmi.manus.space";
 
-export interface ProposalIntent {
+export type ProposalIntent = {
   schema: typeof ZETA_PROPOSAL_SCHEMA;
   proposalId: string;
   repository: typeof ZETA_REPOSITORY;
@@ -17,90 +18,67 @@ export interface ProposalIntent {
   changeDigest: string;
   authorCredentialId: string;
   authorRegistrySequence: number;
-}
+};
 
-export interface SerializedWebAuthnAssertion {
+export type SerializedWebAuthnAssertion = {
   credentialId: string;
   authenticatorData: string;
   clientDataJSON: string;
   signature: string;
   userHandle?: string;
-}
+};
 
 export type SignedProposal = ProposalIntent & {
   assertion: SerializedWebAuthnAssertion;
 };
 
-export interface PasskeyEnrollment {
+export type PasskeyEnrollment = {
   schema: "zeta.proposal-author.v1";
   repository: typeof ZETA_REPOSITORY;
   credentialId: string;
   clientDataJSON: string;
   attestationObject: string;
   createdAt: string;
-}
+};
 
 function bytesToBase64url(bytes: ArrayBuffer | Uint8Array): string {
   const view = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
-  // `Array.from` rather than `for...of`: this tsconfig sets no `target`, so iterating a
-  // Uint8Array directly is a TS2802 error under the site's own toolchain. Same idiom as
-  // `sha256Hex` below.
-  const binary = Array.from(view, (byte) => String.fromCharCode(byte)).join("");
-  // Padding is stripped with `replaceAll("=", "")` rather than `.replace(/=+$/, "")`.
-  // The regex form is genuinely super-linear (a run of "=" that never reaches end-of-input
-  // backtracks quadratically), and while base64 output bounds that run at 2 so it is not
-  // reachable here, the linear form removes the construct instead of arguing about it.
-  // Equivalent by RFC 4648 §4: "=" occurs in base64 output only as trailing padding, never
-  // interior — so removing every "=" and removing the trailing run are the same string.
-  return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replaceAll("=", "");
+  let binary = "";
+  for (let index = 0; index < view.length; index++) binary += String.fromCharCode(view[index] ?? 0);
+  return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
 }
 
-// The three helpers below deliberately carry NO return-type annotation, and the omission is
-// load-bearing rather than laziness. `Uint8Array` became generic in TypeScript 5.7, and the two
-// toolchains that check this file disagree about how the annotation must be spelled:
-//
-//   root, TS 6.0.3        bare `Uint8Array` widens to `Uint8Array<ArrayBufferLike>`, which is
-//                         NOT assignable to the `BufferSource` that WebAuthn's challenge/id
-//                         fields require -> TS2322
-//   site, TS 5.6.3        `Uint8Array<ArrayBuffer>` is not generic yet -> TS2315
-//
-// No written annotation satisfies both, so #10501 could only trade one error for the other.
-// Inference satisfies both at once: `new Uint8Array(new ArrayBuffer(n))` infers the precise
-// `Uint8Array<ArrayBuffer>` under 6.0.3 and plain `Uint8Array` under 5.6.3, from one spelling.
-// Do not "helpfully" re-add these annotations. See workitem 081KZZ0K0XM087G0R003RNC0C7.
-function base64urlToBytes(value: string) {
+function base64urlToBytes(value: string): ArrayBuffer {
   const padded = value.replaceAll("-", "+").replaceAll("_", "/") + "=".repeat((4 - (value.length % 4)) % 4);
   const binary = atob(padded);
   const output = new Uint8Array(new ArrayBuffer(binary.length));
   for (let index = 0; index < binary.length; index++) output[index] = binary.charCodeAt(index);
-  return output;
+  return output.buffer;
 }
 
-function randomBytes(length: number) {
+function randomBytes(length: number): Uint8Array {
   const output = new Uint8Array(new ArrayBuffer(length));
   crypto.getRandomValues(output);
   return output;
 }
 
-function ownedArrayBuffer(bytes: Uint8Array): ArrayBuffer {
-  const output = new ArrayBuffer(bytes.byteLength);
-  new Uint8Array(output).set(bytes);
-  return output;
+function asArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+}
+
+async function jsonResponse<T>(response: Response): Promise<T> {
+  const body = (await response.json()) as T & { teachingError?: unknown };
+  if (!response.ok)
+    throw new Error(
+      typeof body.teachingError === "string"
+        ? body.teachingError
+        : `Operator service rejected the request (HTTP ${response.status}).`,
+    );
+  return body;
 }
 
 export function isCommitSha(value: string): boolean {
   return /^[0-9a-f]{40}$/i.test(value);
-}
-
-/**
- * Ordinal (UTF-16 code-unit) key ordering. This is the canonical collation the signed challenge
- * is computed over and is byte-locked against the Node verifier, so it must stay ordinal and must
- * never become locale-aware — `<`/`>` on strings compare code units, `localeCompare` would not.
- */
-function compareKeysOrdinal(left: string, right: string): number {
-  if (left < right) return -1;
-  if (left > right) return 1;
-  return 0;
 }
 
 export function canonicalProposalIntent(intent: ProposalIntent): string {
@@ -118,18 +96,17 @@ export function canonicalProposalIntent(intent: ProposalIntent): string {
     authorRegistrySequence: intent.authorRegistrySequence,
   };
   return JSON.stringify(
-    Object.fromEntries(Object.entries(fields).sort(([left], [right]) => compareKeysOrdinal(left, right))),
+    Object.fromEntries(Object.entries(fields).sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))),
   );
 }
 
-export async function sha256Bytes(value: string) {
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
-  return new Uint8Array(digest);
+export async function sha256Bytes(value: string): Promise<ArrayBuffer> {
+  return crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
 }
 
 export async function sha256Hex(value: string): Promise<string> {
   const bytes = await sha256Bytes(value);
-  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return Array.from(new Uint8Array(bytes), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
 export async function createProposalIntent(input: {
@@ -165,27 +142,8 @@ export async function createProposalIntent(input: {
   };
 }
 
-/**
- * WebAuthn feature detection that stays honest to BOTH the type-checker and the runtime.
- *
- * `lib.dom.d.ts` declares `PublicKeyCredential` as a non-optional global
- * (`declare var PublicKeyCredential: { ... }`), so TypeScript proves `window.PublicKeyCredential`
- * can never be falsy and reports a plain truthiness guard as an unnecessary condition. That proof
- * is about the ambient DOM *declarations*, not about any real browser: the lib describes a fully
- * modern DOM, and a browser without WebAuthn simply has no such property, so the access yields
- * `undefined`. The guard therefore does real work at runtime — verified: `tsc` emits the branch
- * verbatim (no type-directed dead-code elimination) and esbuild's minifier preserves it.
- *
- * `typeof` is opaque to that narrowing, so the check is now visible as live to the type-checker
- * too. This matters on a security-adjacent path: a guard the linter calls unnecessary is a guard
- * the next refactor deletes.
- */
-function browserSupportsWebAuthn(): boolean {
-  return typeof window.PublicKeyCredential === "function";
-}
-
 export async function enrollProposalPasskey(): Promise<PasskeyEnrollment> {
-  if (!browserSupportsWebAuthn())
+  if (!window.PublicKeyCredential)
     throw new Error("This browser does not support passkeys. Use a current browser with WebAuthn enabled.");
   if (window.location.origin !== ZETA_PAGES_ORIGIN)
     throw new Error(
@@ -193,10 +151,10 @@ export async function enrollProposalPasskey(): Promise<PasskeyEnrollment> {
     );
   const credential = await navigator.credentials.create({
     publicKey: {
-      challenge: ownedArrayBuffer(randomBytes(32)),
+      challenge: asArrayBuffer(randomBytes(32)),
       rp: { name: "Zeta proposal signer", id: ZETA_PAGES_RP_ID },
       user: {
-        id: ownedArrayBuffer(randomBytes(32)),
+        id: asArrayBuffer(randomBytes(32)),
         name: "zeta-proposal-signer",
         displayName: "Zeta proposal signer",
       },
@@ -235,10 +193,8 @@ export async function signProposal(intent: ProposalIntent): Promise<SignedPropos
   const challenge = await sha256Bytes(canonicalProposalIntent(intent));
   const credential = await navigator.credentials.get({
     publicKey: {
-      challenge: ownedArrayBuffer(challenge),
-      allowCredentials: [
-        { type: "public-key", id: ownedArrayBuffer(base64urlToBytes(intent.authorCredentialId)) },
-      ],
+      challenge,
+      allowCredentials: [{ type: "public-key", id: base64urlToBytes(intent.authorCredentialId) }],
       userVerification: "required",
       timeout: 60_000,
     },
@@ -259,6 +215,56 @@ export async function signProposal(intent: ProposalIntent): Promise<SignedPropos
       ...(userHandle ? { userHandle } : {}),
     },
   };
+}
+
+export async function authorizeOperatorDevice(
+  credentialId: string,
+): Promise<{ capability: string; credentialId: string; expiresAt: string }> {
+  if (window.location.origin !== ZETA_PAGES_ORIGIN)
+    throw new Error("Device authorization is bound to the published GitHub Pages origin.");
+  const challenge = await jsonResponse<{ ok: true; challenge: string; challengeToken: string }>(
+    await fetch(`${ZETA_OPERATOR_HARNESS_ORIGIN}/api/github-app/operator/challenge`, {
+      headers: { Accept: "application/json" },
+    }),
+  );
+  const credential = await navigator.credentials.get({
+    publicKey: {
+      challenge: base64urlToBytes(challenge.challenge),
+      allowCredentials: [{ type: "public-key", id: base64urlToBytes(credentialId) }],
+      userVerification: "required",
+      timeout: 60_000,
+    },
+  });
+  if (!(credential instanceof PublicKeyCredential) || !(credential.response instanceof AuthenticatorAssertionResponse))
+    throw new Error("No device authorization assertion was returned. Confirm the passkey prompt.");
+  const assertion = {
+    credentialId: bytesToBase64url(credential.rawId),
+    authenticatorData: bytesToBase64url(credential.response.authenticatorData),
+    clientDataJSON: bytesToBase64url(credential.response.clientDataJSON),
+    signature: bytesToBase64url(credential.response.signature),
+  };
+  return jsonResponse<{ ok: true; capability: string; credentialId: string; expiresAt: string }>(
+    await fetch(`${ZETA_OPERATOR_HARNESS_ORIGIN}/api/github-app/operator/session`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ challengeToken: challenge.challengeToken, assertion }),
+    }),
+  );
+}
+
+export async function submitAutomaticProposal(input: {
+  capability: string;
+  proposalId: string;
+  baseSha: string;
+  payload: string;
+}): Promise<{ proposalId: string; message: string }> {
+  return jsonResponse<{ ok: true; proposalId: string; message: string }>(
+    await fetch(`${ZETA_OPERATOR_HARNESS_ORIGIN}/api/github-app/operator/proposals`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${input.capability}` },
+      body: JSON.stringify({ proposalId: input.proposalId, baseSha: input.baseSha, payload: input.payload }),
+    }),
+  );
 }
 
 export function proposalIssueBody(payload: string, proposal: SignedProposal): string {

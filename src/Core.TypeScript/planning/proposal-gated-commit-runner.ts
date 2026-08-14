@@ -19,7 +19,7 @@ export function createGatedReviewPullRequest(
     readonly repository: string;
     readonly branch: string;
     readonly proposalId: string;
-    readonly issueNumber: number;
+    readonly issueNumber?: number;
   },
   execute: HandoffExec = (command, args, options) => {
     execFileSync(command, [...args], options);
@@ -46,7 +46,7 @@ export function createGatedReviewPullRequest(
         "--title",
         `proposal: ${input.proposalId}`,
         "--body",
-        `Passkey-signed proposal from issue #${input.issueNumber}. The branch was created by the bounded verifier; required gates must pass before any merge.`,
+        `Proposal from ${input.issueNumber === undefined ? "an authorized Pages device or trusted workflow" : `issue #${input.issueNumber}`}. The branch was created by the bounded verifier; required gates must pass before any merge.`,
       ],
       { env: { ...process.env, GH_TOKEN: input.token }, stdio: "pipe" },
     );
