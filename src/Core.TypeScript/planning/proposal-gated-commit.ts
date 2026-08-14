@@ -13,8 +13,11 @@ export const PROPOSAL_ISSUE_MARKER = "<!-- zeta-proposal-v2 -->";
 const REQUESTED_CHANGE_HEADING = "## Requested change";
 const ENVELOPE_HEADING = "## Signed proposal envelope";
 const PROTECTED_PATHS = [
-  ".github/workflows/",
-  "docs/security/proposal-author-registry.json",
+  ".github/",
+  "docs/observe-events/proposals/",
+  "docs/security/",
+  "githooks/",
+  "src/Core.TypeScript/planning/delegated-device-proposal",
   "src/Core.TypeScript/planning/proposal-",
   "demo/identity-dla-site/",
   "docs/design/root-site-iris/",

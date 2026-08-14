@@ -1,11 +1,33 @@
 import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import {
+  DEVICE_PROPOSAL_ISSUE_MARKER,
+  decodeDelegatedDeviceProposalIssueBody,
+  verifyDelegatedDeviceProposal,
+  type DelegatedDeviceProposalTeachingError,
+} from "./delegated-device-proposal";
 import { loadProposalAuthorRegistry, planGatedCommit, type GatedCommitRejection } from "./proposal-gated-commit";
+import type { ProposalTeachingError } from "./proposal-verifier";
 
 type GitHubIssueEvent = {
   readonly issue?: { readonly number?: unknown; readonly body?: unknown; readonly html_url?: unknown };
 };
+
+type PlanningError = GatedCommitRejection | DelegatedDeviceProposalTeachingError | ProposalTeachingError;
+
+interface StagedProposalPlan {
+  readonly branch: string;
+  readonly commitMessage: string;
+  readonly payload: string;
+  readonly proposalId: string;
+  readonly baseSha: string;
+  readonly changeDigest: string;
+  readonly nonce: string;
+  readonly authorRegistrySequence: number;
+  readonly authorityCredentialId: string;
+  readonly deviceId?: string;
+}
 
 export type HandoffExec = (
   command: string,
@@ -29,8 +51,6 @@ export function createGatedReviewPullRequest(
     throw new Error(
       "teaching error: a separate pull-request-scoped credential is required to request an independently gated review; generator: configure ZETA_PR_ARCHIVE_TOKEN with Pull requests: write",
     );
-  // `execFileSync` receives individual, non-shell arguments. The token is scoped to
-  // the child environment rather than serialised from the issue body into a URL.
   try {
     execute(
       "gh",
@@ -67,7 +87,7 @@ function writeOutput(name: string, value: string): void {
   writeFileSync(outputPath, `${name}=${value.replaceAll("\n", " ")}\n`, { encoding: "utf8", flag: "a" });
 }
 
-function publishTeachingError(error: GatedCommitRejection): never {
+function publishTeachingError(error: PlanningError): never {
   const message = `${error.message} [${error.code}; retract ${error.retraction.weight} ${error.retraction.belief}; generator ${error.generator}]`;
   writeOutput("teaching_error", message);
   throw new Error(message);
@@ -105,13 +125,55 @@ function receiptPath(proposalId: string): string {
 }
 
 function proposalIdWasConsumed(proposalId: string): boolean {
-  const path = receiptPath(proposalId);
   try {
-    git(["cat-file", "-e", `origin/main:${path}`]);
+    git(["cat-file", "-e", `origin/main:${receiptPath(proposalId)}`]);
     return true;
   } catch {
     return false;
   }
+}
+
+function isPlanningError(value: unknown): value is PlanningError {
+  return value !== null && typeof value === "object" && "ok" in value && Reflect.get(value, "ok") === false;
+}
+
+export function planProposalIssue(
+  body: string,
+  currentMainSha: string,
+  registry: Parameters<typeof planGatedCommit>[0]["registry"],
+  now: Date,
+): StagedProposalPlan | PlanningError {
+  if (body.startsWith(DEVICE_PROPOSAL_ISSUE_MARKER)) {
+    const submission = decodeDelegatedDeviceProposalIssueBody(body);
+    if (isPlanningError(submission)) return submission;
+    const plan = verifyDelegatedDeviceProposal({ submission, registry, currentMainSha, now });
+    if (!plan.ok) return plan;
+    return {
+      branch: plan.branch,
+      commitMessage: plan.commitMessage,
+      payload: submission.payload,
+      proposalId: submission.proposal.proposalId,
+      baseSha: submission.proposal.baseSha,
+      changeDigest: submission.proposal.patchDigest,
+      nonce: submission.proposal.nonce,
+      authorRegistrySequence: submission.delegation.authorRegistrySequence,
+      authorityCredentialId: submission.delegation.authorityCredentialId,
+      deviceId: submission.proposal.deviceId,
+    };
+  }
+  const plan = planGatedCommit({ issueBody: body, currentMainSha, registry, now });
+  if (!plan.ok) return plan;
+  return {
+    branch: plan.branch,
+    commitMessage: plan.commitMessage,
+    payload: plan.payload,
+    proposalId: plan.proposal.proposalId,
+    baseSha: plan.proposal.baseSha,
+    changeDigest: plan.proposal.changeDigest,
+    nonce: plan.proposal.nonce,
+    authorRegistrySequence: plan.proposal.authorRegistrySequence,
+    authorityCredentialId: plan.proposal.authorCredentialId,
+  };
 }
 
 async function applyPlan(): Promise<void> {
@@ -120,14 +182,9 @@ async function applyPlan(): Promise<void> {
   const registry = loadProposalAuthorRegistry(resolve(repoRoot, "docs/security/proposal-author-registry.json"));
   if (!registry.ok) publishTeachingError(registry);
   const currentMainSha = git(["rev-parse", "origin/main"]);
-  const preliminary = planGatedCommit({
-    issueBody: event.body,
-    currentMainSha,
-    registry: registry.value,
-    now: new Date(),
-  });
-  if (!preliminary.ok) publishTeachingError(preliminary);
-  if (proposalIdWasConsumed(preliminary.proposal.proposalId) || branchExists(preliminary.branch)) {
+  const plan = planProposalIssue(event.body, currentMainSha, registry.value, new Date());
+  if (isPlanningError(plan)) publishTeachingError(plan);
+  if (proposalIdWasConsumed(plan.proposalId) || branchExists(plan.branch)) {
     publishTeachingError({
       ok: false,
       code: "stale-base",
@@ -137,30 +194,30 @@ async function applyPlan(): Promise<void> {
       generator: "createProposalIntent",
     });
   }
+
   git(["switch", "--detach", "origin/main"]);
-  git(["switch", "-c", preliminary.branch]);
+  git(["switch", "-c", plan.branch]);
   const patchPath = resolve(repoRoot, ".git", "zeta-proposal.patch");
-  writeFileSync(patchPath, preliminary.payload, "utf8");
+  writeFileSync(patchPath, plan.payload, "utf8");
   git(["apply", "--check", "--whitespace=error", patchPath]);
   git(["apply", "--whitespace=error", patchPath]);
-  const receipt = receiptPath(preliminary.proposal.proposalId);
+  const receipt = receiptPath(plan.proposalId);
   const receiptAbsolutePath = resolve(repoRoot, receipt);
   mkdirSync(dirname(receiptAbsolutePath), { recursive: true });
   try {
-    // O_EXCL (`wx`) makes receipt creation the replay race barrier. A preceding
-    // existence check would allow concurrent Actions to both pass the check.
     writeFileSync(
       receiptAbsolutePath,
       `${JSON.stringify(
         {
-          schema: "zeta.proposal-receipt.v2",
-          proposalId: preliminary.proposal.proposalId,
+          schema: "zeta.proposal-receipt.v3",
+          proposalId: plan.proposalId,
           issue: event.url,
-          baseSha: preliminary.proposal.baseSha,
-          changeDigest: preliminary.proposal.changeDigest,
-          credentialId: preliminary.proposal.authorCredentialId,
-          authorRegistrySequence: preliminary.proposal.authorRegistrySequence,
-          nonce: preliminary.proposal.nonce,
+          baseSha: plan.baseSha,
+          changeDigest: plan.changeDigest,
+          authorityCredentialId: plan.authorityCredentialId,
+          authorRegistrySequence: plan.authorRegistrySequence,
+          nonce: plan.nonce,
+          ...(plan.deviceId === undefined ? {} : { deviceId: plan.deviceId }),
           receivedAt: new Date().toISOString(),
         },
         null,
@@ -174,23 +231,23 @@ async function applyPlan(): Promise<void> {
     );
   }
   git(["add", "--", "."]);
-  git(["commit", "-m", preliminary.commitMessage]);
-  git(["push", "origin", `HEAD:refs/heads/${preliminary.branch}`]);
+  git(["commit", "-m", plan.commitMessage]);
+  git(["push", "origin", `HEAD:refs/heads/${plan.branch}`]);
   try {
-    await createGatedReviewPullRequest({
+    createGatedReviewPullRequest({
       token: process.env.ZETA_PR_ARCHIVE_TOKEN ?? "",
       repository: process.env.GITHUB_REPOSITORY ?? "Lucent-Financial-Group/Zeta",
-      branch: preliminary.branch,
-      proposalId: preliminary.proposal.proposalId,
+      branch: plan.branch,
+      proposalId: plan.proposalId,
       issueNumber: event.number,
     });
   } catch (error) {
-    git(["push", "origin", "--delete", preliminary.branch]);
+    git(["push", "origin", "--delete", plan.branch]);
     throw error;
   }
-  writeOutput("branch", preliminary.branch);
+  writeOutput("branch", plan.branch);
   writeOutput("issue_number", String(event.number));
-  writeOutput("proposal_id", preliminary.proposal.proposalId);
+  writeOutput("proposal_id", plan.proposalId);
 }
 
 if (import.meta.main) await applyPlan();

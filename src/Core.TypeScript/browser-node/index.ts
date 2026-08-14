@@ -280,6 +280,54 @@ export {
 } from "./browser-database-receipt-passkey-enrollment";
 
 export {
+  createBrowserDelegatedDeviceProposalRelay,
+  type BrowserDelegatedDeviceProposalIssuePort,
+  type BrowserDelegatedDeviceProposalIssueReceipt,
+  type BrowserDelegatedDeviceProposalRelay,
+  type BrowserDelegatedDeviceProposalRelayResult,
+} from "./browser-delegated-device-proposal-relay";
+
+export {
+  createGitHubCliDelegatedDeviceProposalIssuePort,
+  type GitHubIssueCreateExec,
+} from "./browser-delegated-device-proposal-gh-cli";
+
+export {
+  createBrowserDelegatedDeviceProposalSigner,
+  type BrowserDelegatedDeviceProposalFeedback,
+  type BrowserDelegatedDeviceProposalResult,
+  type BrowserDelegatedDeviceProposalSigner,
+  type BrowserProposalDeviceKey,
+  type BrowserProposalDeviceKeyPort,
+  type BrowserProposalDigestPort,
+  type BrowserProposalPasskeyAuthorityPort,
+} from "./browser-delegated-device-proposal-signer";
+
+export {
+  BROWSER_PROPOSAL_DEVICE_KEY_SCHEMA,
+  createNativeBrowserProposalDeviceCrypto,
+  type BrowserProposalDeviceKeyStore,
+  type BrowserStoredProposalDeviceKey,
+  type NativeBrowserProposalDeviceCrypto,
+} from "./browser-delegated-device-key";
+
+export {
+  BROWSER_PROPOSAL_DEVICE_DATABASE,
+  BROWSER_PROPOSAL_DEVICE_STORE,
+  openNativeIndexedDbProposalDeviceKeyStore,
+} from "./browser-delegated-device-key-indexeddb";
+
+export { createNativeBrowserProposalPasskeyAuthority } from "./browser-delegated-device-passkey-authority";
+
+export {
+  BROWSER_DELEGATED_DEVICE_RELAY_MAX_BYTES,
+  BROWSER_DELEGATED_DEVICE_RELAY_PATH,
+  createBrowserDelegatedDeviceProposalRelayHttpHandler,
+  type BrowserDelegatedDeviceRelayAuthority,
+  type BrowserDelegatedDeviceRelayAuthorityPort,
+} from "./browser-delegated-device-proposal-relay-http";
+
+export {
   createNativeBrowserDatabaseReceiptSync,
   type NativeBrowserDatabaseReceiptSyncLimits,
   type NativeBrowserDatabaseReceiptSyncOptions,

@@ -20,6 +20,7 @@ import {
   type ProposalIntent,
   type ProposalPasskeyEnrollment,
   type SignedProposal,
+  type WebAuthnAssertion,
 } from "./proposal-envelope";
 
 export interface AuthorizedProposalAuthor {
@@ -41,6 +42,7 @@ export interface ProposalAuthorRegistry {
   readonly issuedAt: string;
   readonly authors: readonly AuthorizedProposalAuthor[];
   readonly revoked: Readonly<Record<string, ProposalAuthorRevocation>>;
+  readonly revokedDevices?: Readonly<Record<string, ProposalAuthorRevocation>>;
 }
 
 export type ProposalErrorCode =
@@ -102,6 +104,17 @@ export interface ProposalVerificationInput {
   readonly consumedNonces?: ReadonlySet<string>;
   readonly now?: Date;
 }
+
+export interface AuthorizedWebAuthnAssertionInput {
+  readonly assertion: WebAuthnAssertion;
+  readonly credentialId: string;
+  readonly expectedChallenge: Uint8Array;
+  readonly registry: ProposalAuthorRegistry;
+}
+
+export type AuthorizedWebAuthnAssertionVerification =
+  | { readonly ok: true; readonly author: AuthorizedProposalAuthor }
+  | ProposalTeachingError;
 
 function reject(code: ProposalErrorCode, message: string, belief: string, generator: string): ProposalTeachingError {
   return { ok: false, code, message, retraction: { weight: -1, belief }, generator };
@@ -197,7 +210,8 @@ export function validateProposalAuthorRegistry(value: unknown): ProposalAuthorRe
     parseIso(value.issuedAt) === null ||
     !Array.isArray(value.authors) ||
     !value.authors.every(validAuthor) ||
-    !validRevocations(value.revoked)
+    !validRevocations(value.revoked) ||
+    (value.revokedDevices !== undefined && !validRevocations(value.revokedDevices))
   ) {
     return reject(
       "author-registry",
@@ -224,6 +238,7 @@ export function validateProposalAuthorRegistry(value: unknown): ProposalAuthorRe
       issuedAt: value.issuedAt,
       authors,
       revoked: value.revoked,
+      ...(value.revokedDevices === undefined ? {} : { revokedDevices: value.revokedDevices }),
     },
   };
 }
@@ -326,7 +341,28 @@ export function verifySignedProposal(input: ProposalVerificationInput): Proposal
       "bindCurrentMainAndSign",
     );
   }
-  if (registry.value.revoked[input.proposal.authorCredentialId] !== undefined) {
+  const assertion = verifyAuthorizedWebAuthnAssertion({
+    assertion: input.proposal.assertion,
+    credentialId: input.proposal.authorCredentialId,
+    expectedChallenge: proposalChallenge(input.proposal),
+    registry: registry.value,
+  });
+  if (!assertion.ok) return assertion;
+  return {
+    ok: true,
+    proposal: input.proposal,
+    canonicalIntent: canonicalProposalIntent(input.proposal),
+    author: assertion.author,
+  };
+}
+
+/** Verify one origin-bound, user-verified assertion without granting repository execution by itself. */
+export function verifyAuthorizedWebAuthnAssertion(
+  input: AuthorizedWebAuthnAssertionInput,
+): AuthorizedWebAuthnAssertionVerification {
+  const registry = validateProposalAuthorRegistry(input.registry);
+  if (!registry.ok) return registry;
+  if (registry.value.revoked[input.credentialId] !== undefined) {
     return reject(
       "revoked-author",
       "teaching error: proposal passkey is revoked; generator: enroll a new passkey and obtain independent registry approval",
@@ -334,9 +370,7 @@ export function verifySignedProposal(input: ProposalVerificationInput): Proposal
       "enrollProposalPasskey",
     );
   }
-  const author = registry.value.authors.find(
-    (candidate) => candidate.credentialId === input.proposal.authorCredentialId,
-  );
+  const author = registry.value.authors.find((candidate) => candidate.credentialId === input.credentialId);
   if (!author)
     return reject(
       "unknown-author",
@@ -344,14 +378,14 @@ export function verifySignedProposal(input: ProposalVerificationInput): Proposal
       "proposal-author",
       "enrollProposalPasskey",
     );
-  if (input.proposal.assertion.credentialId !== author.credentialId)
+  if (input.assertion.credentialId !== author.credentialId)
     return reject(
       "credential-mismatch",
       "teaching error: assertion credential does not match the envelope author; generator: sign with the enrolled passkey",
       "proposal-credential",
       "signProposal",
     );
-  const clientData = parseClientData(input.proposal.assertion.clientDataJSON);
+  const clientData = parseClientData(input.assertion.clientDataJSON);
   if (!clientData || clientData.type !== "webauthn.get" || clientData.crossOrigin)
     return reject(
       "client-data",
@@ -366,7 +400,7 @@ export function verifySignedProposal(input: ProposalVerificationInput): Proposal
       "proposal-origin",
       "signProposal",
     );
-  const expectedChallenge = toBase64url(proposalChallenge(input.proposal));
+  const expectedChallenge = toBase64url(input.expectedChallenge);
   if (clientData.challenge !== expectedChallenge)
     return reject(
       "challenge",
@@ -378,9 +412,9 @@ export function verifySignedProposal(input: ProposalVerificationInput): Proposal
   let clientDataBytes: Buffer;
   let signature: Buffer;
   try {
-    authenticatorData = fromBase64url(input.proposal.assertion.authenticatorData);
-    clientDataBytes = fromBase64url(input.proposal.assertion.clientDataJSON);
-    signature = fromBase64url(input.proposal.assertion.signature);
+    authenticatorData = fromBase64url(input.assertion.authenticatorData);
+    clientDataBytes = fromBase64url(input.assertion.clientDataJSON);
+    signature = fromBase64url(input.assertion.signature);
   } catch {
     return reject(
       "client-data",
@@ -418,7 +452,7 @@ export function verifySignedProposal(input: ProposalVerificationInput): Proposal
       "proposal-assertion-signature",
       "signProposal",
     );
-  return { ok: true, proposal: input.proposal, canonicalIntent: canonicalProposalIntent(input.proposal), author };
+  return { ok: true, author };
 }
 
 interface DecodedEnrollmentAttestation {

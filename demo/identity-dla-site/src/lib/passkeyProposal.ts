@@ -1,3 +1,12 @@
+import { createNativeBrowserProposalDeviceCrypto } from "../../../../src/Core.TypeScript/browser-node/browser-delegated-device-key";
+import { openNativeIndexedDbProposalDeviceKeyStore } from "../../../../src/Core.TypeScript/browser-node/browser-delegated-device-key-indexeddb";
+import { createNativeBrowserProposalPasskeyAuthority } from "../../../../src/Core.TypeScript/browser-node/browser-delegated-device-passkey-authority";
+import {
+  createBrowserDelegatedDeviceProposalSigner,
+  type BrowserDelegatedDeviceProposalSigner,
+} from "../../../../src/Core.TypeScript/browser-node/browser-delegated-device-proposal-signer";
+import type { SignedDeviceDelegation } from "../../../../src/Core.TypeScript/planning/delegated-device-proposal-contract";
+
 export const ZETA_PROPOSAL_SCHEMA = "zeta.proposal.v2";
 export const ZETA_PASSKEY_ENROLLMENT_SCHEMA = "zeta.proposal-passkey-enrollment.v1";
 export const ZETA_REPOSITORY = "Lucent-Financial-Group/Zeta";
@@ -5,7 +14,9 @@ export const ZETA_PROPOSAL_MARKER = "<!-- zeta-proposal-v2 -->";
 export const ZETA_PAGES_ORIGIN = "https://lucent-financial-group.github.io";
 export const ZETA_PAGES_RP_ID = "lucent-financial-group.github.io";
 export const ZETA_PROPOSAL_MAX_LIFETIME_MS = 5 * 60_000;
-export const ZETA_OPERATOR_HARNESS_ORIGIN = "https://idspace-dla-6faa9bmi.manus.space";
+export const ZETA_LOCAL_DEVICE_RELAY_ORIGIN = "http://127.0.0.1:8787";
+export const ZETA_DEVICE_DELEGATION_STORAGE_KEY = "zeta-proposal-device-delegation-v1";
+export type DeviceCapability = SignedDeviceDelegation;
 
 export type ProposalIntent = {
   schema: typeof ZETA_PROPOSAL_SCHEMA;
@@ -71,14 +82,49 @@ function asArrayBuffer(bytes: Uint8Array): ArrayBuffer {
 }
 
 async function jsonResponse<T>(response: Response): Promise<T> {
-  const body = (await response.json()) as T & { teachingError?: unknown };
+  const body = (await response.json()) as T & {
+    teachingError?: unknown;
+    detail?: unknown;
+    feedback?: { readonly detail?: unknown };
+  };
   if (!response.ok)
     throw new Error(
       typeof body.teachingError === "string"
         ? body.teachingError
-        : `Operator service rejected the request (HTTP ${response.status}).`,
+        : typeof body.detail === "string"
+          ? body.detail
+          : typeof body.feedback?.detail === "string"
+            ? body.feedback.detail
+            : `Local device relay rejected the request (HTTP ${response.status}).`,
     );
   return body;
+}
+
+let deviceSigner: Promise<BrowserDelegatedDeviceProposalSigner> | null = null;
+
+async function localDeviceSigner(): Promise<BrowserDelegatedDeviceProposalSigner> {
+  deviceSigner ??= (async () => {
+    const store = await openNativeIndexedDbProposalDeviceKeyStore(window);
+    if (!store.ok) throw new Error(store.feedback.detail);
+    const native = createNativeBrowserProposalDeviceCrypto(window, store.value);
+    if (!native.ok) throw new Error(native.feedback.detail);
+    const passkeys = createNativeBrowserProposalPasskeyAuthority({
+      root: window,
+      expectedOrigin: ZETA_PAGES_ORIGIN,
+      rpId: ZETA_PAGES_RP_ID,
+      timeoutMs: 60_000,
+    });
+    if (!passkeys.ok) throw new Error(passkeys.feedback.detail);
+    const signer = createBrowserDelegatedDeviceProposalSigner({
+      now: () => Date.now(),
+      keys: native.value.keys,
+      digest: native.value.digest,
+      passkeys: passkeys.value,
+    });
+    if (!signer.ok) throw new Error(signer.feedback.detail);
+    return signer.value;
+  })();
+  return deviceSigner;
 }
 
 export function isCommitSha(value: string): boolean {
@@ -224,52 +270,46 @@ export async function signProposal(intent: ProposalIntent): Promise<SignedPropos
 
 export async function authorizeOperatorDevice(
   credentialId: string,
-): Promise<{ capability: string; credentialId: string; expiresAt: string }> {
+  authorRegistrySequence: number,
+): Promise<DeviceCapability> {
   if (window.location.origin !== ZETA_PAGES_ORIGIN)
     throw new Error("Device authorization is bound to the published GitHub Pages origin.");
-  const challenge = await jsonResponse<{ ok: true; challenge: string; challengeToken: string }>(
-    await fetch(`${ZETA_OPERATOR_HARNESS_ORIGIN}/api/github-app/operator/challenge`, {
-      headers: { Accept: "application/json" },
-    }),
-  );
-  const credential = await navigator.credentials.get({
-    publicKey: {
-      challenge: base64urlToBytes(challenge.challenge),
-      allowCredentials: [{ type: "public-key", id: base64urlToBytes(credentialId) }],
-      userVerification: "required",
-      timeout: 60_000,
-    },
+  const result = await (
+    await localDeviceSigner()
+  ).authorizeFromUserActivation({
+    authorityCredentialId: credentialId,
+    authorRegistrySequence,
+    maxPatchBytes: 32 * 1024,
   });
-  if (!(credential instanceof PublicKeyCredential) || !(credential.response instanceof AuthenticatorAssertionResponse))
-    throw new Error("No device authorization assertion was returned. Confirm the passkey prompt.");
-  const assertion = {
-    credentialId: bytesToBase64url(credential.rawId),
-    authenticatorData: bytesToBase64url(credential.response.authenticatorData),
-    clientDataJSON: bytesToBase64url(credential.response.clientDataJSON),
-    signature: bytesToBase64url(credential.response.signature),
-  };
-  return jsonResponse<{ ok: true; capability: string; credentialId: string; expiresAt: string }>(
-    await fetch(`${ZETA_OPERATOR_HARNESS_ORIGIN}/api/github-app/operator/session`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ challengeToken: challenge.challengeToken, assertion }),
-    }),
-  );
+  if (!result.ok) throw new Error(result.feedback.detail);
+  return result.value;
 }
 
 export async function submitAutomaticProposal(input: {
-  capability: string;
-  proposalId: string;
+  capability: DeviceCapability;
   baseSha: string;
   payload: string;
-}): Promise<{ proposalId: string; message: string }> {
-  return jsonResponse<{ ok: true; proposalId: string; message: string }>(
-    await fetch(`${ZETA_OPERATOR_HARNESS_ORIGIN}/api/github-app/operator/proposals`, {
+}): Promise<{ proposalId: string; issueUrl: string; message: string }> {
+  const signed = await (
+    await localDeviceSigner()
+  ).sign({
+    delegation: input.capability,
+    baseSha: input.baseSha,
+    payload: input.payload,
+  });
+  if (!signed.ok) throw new Error(signed.feedback.detail);
+  const accepted = await jsonResponse<{ readonly ok: true; readonly issueUrl: string }>(
+    await fetch(`${ZETA_LOCAL_DEVICE_RELAY_ORIGIN}/v1/delegated-device-proposals`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${input.capability}` },
-      body: JSON.stringify({ proposalId: input.proposalId, baseSha: input.baseSha, payload: input.payload }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(signed.value),
     }),
   );
+  return {
+    proposalId: signed.value.proposal.proposalId,
+    issueUrl: accepted.issueUrl,
+    message: "The local companion accepted the signed proposal for trusted verification.",
+  };
 }
 
 export function proposalIssueBody(payload: string, proposal: SignedProposal): string {

@@ -1,5 +1,15 @@
 import { describe, expect, test } from "bun:test";
-import { createGatedReviewPullRequest, type HandoffExec } from "./proposal-gated-commit-runner";
+import { createGatedReviewPullRequest, planProposalIssue, type HandoffExec } from "./proposal-gated-commit-runner";
+import type { ProposalAuthorRegistry } from "./proposal-verifier";
+
+const EMPTY_REGISTRY: ProposalAuthorRegistry = {
+  schema: "zeta.proposal-author-registry.v2",
+  repository: "Lucent-Financial-Group/Zeta",
+  sequence: 1,
+  issuedAt: "2026-08-14T14:00:00.000Z",
+  authors: [],
+  revoked: {},
+};
 
 describe("proposal gated-commit runner handoff", () => {
   test("PGCR-1: branch-to-PR handoff uses argument-safe GitHub CLI inputs and keeps the credential out of proposal arguments", () => {
@@ -61,5 +71,16 @@ describe("proposal gated-commit runner handoff", () => {
         denied,
       ),
     ).toThrow("Pull requests: write");
+  });
+
+  test("PGCR-4: delegated-device marker routes through its fail-closed carrier decoder", () => {
+    const result = planProposalIssue(
+      "<!-- zeta-delegated-device-proposal-v1 -->\n\n***",
+      "a".repeat(40),
+      EMPTY_REGISTRY,
+      new Date("2026-08-14T14:00:00.000Z"),
+    );
+
+    expect(result).toMatchObject({ ok: false, code: "device-carrier", retraction: { weight: -1 } });
   });
 });
