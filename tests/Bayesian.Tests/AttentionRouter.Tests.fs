@@ -139,9 +139,9 @@ let ``AR-9 sparse routing preserves mutual empowerment`` (NormalFloat mu1) (Norm
     let prec2 = 1.0 + abs mu2 % 4.0
     let prec3 = 1.0 + abs mu3 % 4.0
     let agents =
-        [ { ReferenceFrameAgent.Id = "A"; Prior = properGaussian mu1 prec1; VarIndex = 0 }
-          { ReferenceFrameAgent.Id = "B"; Prior = properGaussian mu2 prec2; VarIndex = 1 }
-          { ReferenceFrameAgent.Id = "C"; Prior = properGaussian mu3 prec3; VarIndex = 2 } ]
+        [ ReferenceFrameAgent.attested "A" "src-A" (properGaussian mu1 prec1)
+          ReferenceFrameAgent.attested "B" "src-B" (properGaussian mu2 prec2)
+          ReferenceFrameAgent.attested "C" "src-C" (properGaussian mu3 prec3) ]
     let result = SparseSocietyNetwork.run defaultConfig 20 1e-4 agents
     let maxSoloPrecision = agents |> List.map (fun a -> a.Prior.Precision) |> List.max
     result.IsProper && result.FinalJointMarginal.Precision > maxSoloPrecision
@@ -154,8 +154,8 @@ let ``AR-10 sparse routing always converges to a proper joint posterior`` (Norma
     let prec1 = 0.5 + abs mu1 % 5.0
     let prec2 = 0.5 + abs mu2 % 5.0
     let agents =
-        [ { ReferenceFrameAgent.Id = "X"; Prior = properGaussian mu1 prec1; VarIndex = 0 }
-          { ReferenceFrameAgent.Id = "Y"; Prior = properGaussian mu2 prec2; VarIndex = 1 } ]
+        [ ReferenceFrameAgent.attested "X" "src-X" (properGaussian mu1 prec1)
+          ReferenceFrameAgent.attested "Y" "src-Y" (properGaussian mu2 prec2) ]
     let result = SparseSocietyNetwork.run defaultConfig 30 1e-4 agents
     result.IsProper
 

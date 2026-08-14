@@ -74,11 +74,11 @@ let private buildWeightedAgents
                   Precision     = a.Current.Precision * scale }
             (a.Id, weighted))
     // Build a list of weighted ReferenceFrameAgents for SocietyNetwork.run
+    // Each agent is its OWN evidence source here: the sparse network derives one
+    // belief per agent id from that agent own trajectory, so the ids are distinct
+    // by construction and nothing is double-counted at admission.
     weightedBeliefs
-    |> List.map (fun (id, belief) ->
-        { ReferenceFrameAgent.Id = id
-          Prior = belief
-          VarIndex = 0 })
+    |> List.map (fun (id, belief) -> ReferenceFrameAgent.attested id id belief)
 
 // ---------------------------------------------------------------------------
 // One round of the sparse society network:

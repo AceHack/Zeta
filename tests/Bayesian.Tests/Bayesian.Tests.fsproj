@@ -16,6 +16,7 @@
     <Compile Include="Bp.Tests.fs" />
     <Compile Include="Ep.Tests.fs" />
     <Compile Include="SoftMode.Tests.fs" />
+    <Compile Include="Attested.Tests.fs" />
     <Compile Include="SocietyBootstrap.Tests.fs" />
     <Compile Include="AttentionRouter.Tests.fs" />
     <Compile Include="ReticulumRouter.Tests.fs" />
