@@ -1,0 +1,14 @@
+{
+  "id": "080d00083148b810a01300083226cd60",
+  "at": "2026-08-14T16:06:16.087Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00GCA8P087G0R000M00W9S",
+    "type": "bug",
+    "title": "heartbeat archive backfill stages the shard index but never the archive bodies, and the shard-keyed selector then never re-selects those PRs",
+    "slug": "heartbeat-archive-backfill-stages-the-shard-index-but-never",
+    "priority": "P2",
+    "filename": "081M00GCA8P087G0R000M00W9S-heartbeat-archive-backfill-stages-the-shard-index-but-never.md"
+  }
+}

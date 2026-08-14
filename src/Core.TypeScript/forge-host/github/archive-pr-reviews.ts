@@ -954,6 +954,30 @@ export function writeArchive(
 const DEFAULT_MANIFEST_RELATIVE = MANIFEST_RELATIVE;
 const DEFAULT_SHARD_ROOT_RELATIVE = SHARD_ROOT_RELATIVE;
 
+/**
+ * Where the archive BODIES land — the rendered markdown, which is the actual
+ * substrate this tool exists to make git-canonical. The shard under
+ * `SHARD_ROOT_RELATIVE` is only an index entry POINTING here.
+ *
+ * EXPORTED SO THE STAGING AUDIT CANNOT DRIFT FROM THE TOOL (081M00GCA8P087G0R000M00W9S).
+ * A caller that stages the shard root and not this directory commits an index entry
+ * whose `archive_path` names a file that was never committed — and because
+ * `selectBatch` skips any PR that HAS a shard, that PR is then never re-selected.
+ * The heartbeat backfill did exactly that; `archive-pr-reviews.test.ts` now derives
+ * the required staging set from these three constants rather than restating them.
+ */
+export const DEFAULT_OUTPUT_DIR = "docs/history/pr-reviews";
+
+/**
+ * Every repo-relative path this tool writes into. A workflow step that invokes the
+ * tool and then commits must stage all of these, or it silently drops output.
+ */
+export const WRITE_TARGETS: readonly string[] = [
+  DEFAULT_OUTPUT_DIR,
+  DEFAULT_SHARD_ROOT_RELATIVE,
+  DEFAULT_MANIFEST_RELATIVE,
+];
+
 function readGitHeadSha(repoRoot: string): string {
   // Cheap + deterministic. Falls back to env var or "(unknown)" if git is
   // unavailable, so the tool still works in CI minimal-environment cases.
@@ -1122,7 +1146,7 @@ function parseArgs(argv: string[]): ParsedArgs {
   const out: ParsedArgs = {
     owner: "Lucent-Financial-Group",
     repo: "Zeta",
-    outputDir: "docs/history/pr-reviews",
+    outputDir: DEFAULT_OUTPUT_DIR,
     manifestPath: DEFAULT_MANIFEST_RELATIVE,
     shardRoot: DEFAULT_SHARD_ROOT_RELATIVE,
     repoRoot: process.cwd(),

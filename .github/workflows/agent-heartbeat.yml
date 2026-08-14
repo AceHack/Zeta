@@ -541,16 +541,57 @@ jobs:
           # lost is the git-canonical mirror this repo keeps precisely because the host copy is
           # not durable. This net is what should have drained that hole and never ran.
           #
-          # --limit 3 is a real bound now, and it DRAINS rather than spinning: the tool skips
+          # --limit 3 is a real bound, and it DRAINS rather than spinning: the tool skips
           # PRs that already have a shard and takes the OLDEST 3 of what is left. Oldest-first
           # is deliberate — newest-first with a small cap re-picks the same head every tick and
           # starves the tail (the unbounded-queue starvation bug fixed elsewhere in this file).
-          # At 48 ticks/day the backlog drains monotonically; once drained the tool prints
-          # "nothing to backfill" and exits 0.
+          # The backlog drains monotonically; once drained the tool prints "nothing to
+          # backfill" and exits 0.
           #
-          # No `--since`: the backlog reaches back to 2026-07-01, so any recent-window filter
-          # would put the oldest and most at-risk PRs permanently out of reach. The listing is
-          # already bounded by MERGED_LIST_LIMIT inside the tool, and `--limit` bounds the work.
+          # WHY 3 AND NOT 25 — blast radius, not arithmetic (Aaron 2026-08-14).
+          #
+          # The measurement genuinely favours a larger bound. Per-invocation cost splits into a
+          # FIXED part and a MARGINAL part:
+          #   fixed:    `gh pr list --state merged --limit 3000` = 30 GraphQL points, ~10s.
+          #   marginal: 3 GraphQL points + ~2 REST requests + ~4.4s per PR archived.
+          #             (Measured, not derived from the node-count formula, which predicts
+          #             ~150 points/PR for the reviewThreads query and is wrong here — GitHub
+          #             charged 1 point for each of the three calls.)
+          # So at --limit 3 this step spends 39 GraphQL points to archive 3 PRs: 77% of the
+          # budget goes on the listing and 23% on the work. At 25 it would be 71% useful and
+          # take the drain from ~9 days to ~27 hours. On cost alone, 25 wins.
+          #
+          # It is 3 anyway, and the reason is the track record of THIS step specifically:
+          #
+          #   Archive bodies under docs/history/pr-reviews/ ever added by a heartbeat commit: 0.
+          #   Checked over 500 commits touching that directory — every one came from
+          #   pr-archive-on-merge.yml or a bulk backfill PR. This lane has never once worked.
+          #
+          # And on 2026-08-14 four defects were found in this one step, in sequence, each
+          # masking the next: `--batch 3` was not an accepted flag (exit 1 on arg parsing);
+          # `| tail -10` swallowed that exit code so the `::warning::` fallback was unreachable;
+          # `--since 7d` compared timestamps LEXICOGRAPHICALLY (`"2026-…" >= "7d"` is false) so
+          # it matched nothing even had the flag parsed; and the commit staged the shard index
+          # while never staging the archive BODY the shard points at.
+          #
+          # That last one is why the bound is the safety knob rather than a throughput dial. It
+          # is SELF-SEALING: `selectBatch` skips any PR that already has a shard, so a shard
+          # written without its body is never re-selected and never repaired. A bulk drain under
+          # that defect would have converted ~1,345 PRs missing from the mirror into ~1,345
+          # permanent dangling pointers.
+          #
+          # Four defects in one step in one day makes a fifth likely enough that cheap discovery
+          # beats fast completion. At 3, an undiscovered defect costs 3 PRs and shows up in the
+          # first flush. At 25 it costs 25. The drain is not urgent — these PRs have been out of
+          # the mirror for six weeks, GitHub still holds the threads, and 9 days versus 27 hours
+          # buys nothing against that risk.
+          #
+          # RAISE IT once this lane has produced a few clean ticks — at which point it will have
+          # a track record for the first time, and the measurement above is already done.
+          #
+          # The OTHER ceiling this must respect is `timeout-minutes: 10` on this job: blowing it
+          # kills the whole tick, not just archive duty. Measured on the three most recent soraya
+          # ticks: 136s / 293s / 188s of a 600s budget, with this step at 18s under --limit 3.
           #
           # NO PIPE on the command itself — the output is captured, then printed separately —
           # because piping is what hid the failure for months. The exit code is checked
@@ -596,10 +637,32 @@ jobs:
           # Stage + commit what the archive wrote. It writes into TRACKED paths
           # (docs/github/prs/ -- shards + the derived manifest) but previously never staged them,
           # and it ran after the push anyway — so its output was written to a runner and destroyed.
-          if ! git diff --quiet -- docs/github/prs/ || [ -n "$(git ls-files -o --exclude-standard docs/github/prs/)" ]; then
+          #
+          # docs/history/pr-reviews/ IS IN THIS LIST BECAUSE IT IS THE ARCHIVE BODY
+          # (081M00GCA8P087G0R000M00W9S). Staging only docs/github/prs/ committed the INDEX
+          # while discarding the thing it indexes: archive-pr-reviews.ts writes the rendered
+          # markdown to docs/history/pr-reviews/PR-<N>-<slug>.md and the shard is just a
+          # pointer at it. The markdown arrives UNTRACKED, so `git diff --quiet` below never
+          # saw it, and the later codegen step's `git add -A` is itself gated on a bare
+          # `git diff --quiet` that is also blind to untracked files — nothing staged it.
+          #
+          # That is worse than the six-week hole this step exists to drain, because it is
+          # self-sealing: `selectBatch` skips any PR that already HAS a shard, so every PR
+          # this step touched would be marked archived, have no body on main, and never be
+          # re-selected by --all-merged again. Measured before the fix: 0 of the 6,467 shards
+          # on main were dangling and 0 archive bodies had EVER been added by a heartbeat
+          # commit (every one came from pr-archive-on-merge.yml or a bulk backfill PR) — the
+          # step had simply not yet flushed a tick since its --batch defect was fixed.
+          #
+          # The guard against a silent recurrence is archive-pr-reviews.test.ts, which derives
+          # the required pathspec set from the tool's exported WRITE_TARGETS instead of
+          # restating it, so a new output directory cannot be added to the tool without this
+          # step failing until it stages it too.
+          if ! git diff --quiet -- docs/github/prs/ docs/history/pr-reviews/ \
+             || [ -n "$(git ls-files -o --exclude-standard docs/github/prs/ docs/history/pr-reviews/)" ]; then
             git config user.name "${AGENT}[bot]"
             git config user.email "${AGENT}[bot]@users.noreply.github.com"
-            git add docs/github/prs/
+            git add docs/github/prs/ docs/history/pr-reviews/
             git commit --no-verify -q -m "archive($AGENT): PR review history $(date -u +%Y-%m-%dT%H:%M:%SZ)
 
           Git-native backup of merged PR review threads.

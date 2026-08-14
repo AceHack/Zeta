@@ -14,7 +14,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { extractInvocations } from "../../hygiene/audit-workflow-cli-flags.ts";
-import { normalizeSince, selectBatch } from "./archive-pr-reviews.ts";
+import { WRITE_TARGETS, normalizeSince, selectBatch } from "./archive-pr-reviews.ts";
 
 const REPO_ROOT = join(import.meta.dir, "..", "..", "..", "..");
 const TOOL = "src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts";
@@ -117,6 +117,87 @@ describe("heartbeat archive step is not vacuous", () => {
     // PR number or --all-merged"); a bound is what keeps a 30-minute tick sane.
     expect(argv).toContain("--all-merged");
     expect(argv).toContain("--limit");
+  });
+});
+
+/**
+ * THE STEP MUST COMMIT WHAT THE TOOL WROTE — all of it, not just the index.
+ *
+ * The defect (081M00GCA8P087G0R000M00W9S): the step ran `git add docs/github/prs/`,
+ * which is the shard store plus the derived index, and never staged
+ * `docs/history/pr-reviews/`, which is where the archive BODIES go. The shard is a
+ * pointer; staging the pointer and dropping the target commits an index entry whose
+ * `archive_path` names a file that is not in the tree.
+ *
+ * It is self-sealing, which is what makes it worth a test rather than a one-line fix:
+ * `selectBatch` skips any PR that already has a shard, so a PR processed by the broken
+ * step is marked done, has no body, and is never re-selected by `--all-merged`.
+ *
+ * These probes derive the required pathspecs from the tool's exported `WRITE_TARGETS`,
+ * so adding a new output directory to the tool fails here until the step stages it too
+ * — the class is closed, not the one instance.
+ */
+describe("heartbeat archive step commits every path the tool writes", () => {
+  /** The pathspecs on the step's `git add` lines, with line-continuations folded. */
+  function gitAddPathspecs(runBlock: string): string[] {
+    const joined = runBlock.replace(/\\\r?\n\s*/g, " ");
+    const specs: string[] = [];
+    for (const line of joined.split("\n")) {
+      const m = /^\s*git add\s+(.+)$/.exec(line);
+      if (!m) continue;
+      for (const tok of (m[1] ?? "").split(/\s+/)) {
+        if (tok.length > 0 && !tok.startsWith("-") && !tok.startsWith("|")) specs.push(tok);
+      }
+    }
+    return specs;
+  }
+
+  const covers = (specs: string[], target: string): boolean =>
+    specs.some((s) => {
+      const spec = s.replace(/\/$/, "");
+      return target === spec || target.startsWith(`${spec}/`);
+    });
+
+  test("every WRITE_TARGET is staged by the step's git add", () => {
+    const specs = gitAddPathspecs(archiveStepRunBlock());
+    expect(specs.length).toBeGreaterThan(0);
+    for (const target of WRITE_TARGETS) {
+      // Names the target in the failure message — a bare toBe(true) here would say
+      // nothing about WHICH output directory is being dropped.
+      expect({ target, staged: covers(specs, target) }).toEqual({ target, staged: true });
+    }
+  });
+
+  test("the archive body directory specifically is staged", () => {
+    // Pinned separately from the loop above: this is the one that was actually missing,
+    // and the loop would still pass if WRITE_TARGETS were ever narrowed to hide it.
+    const specs = gitAddPathspecs(archiveStepRunBlock());
+    expect(WRITE_TARGETS).toContain("docs/history/pr-reviews");
+    expect(covers(specs, "docs/history/pr-reviews")).toBe(true);
+  });
+
+  test("the commit guard sees the body directory too, including UNTRACKED files", () => {
+    // `git diff --quiet` is blind to untracked files, and a fresh archive body is always
+    // untracked. So the guard needs the `git ls-files -o` half AND that half must name
+    // the body directory — otherwise the `git add` above is never reached on the exact
+    // tick that has new archives and nothing else. (Proof the blindness is real, not
+    // theoretical: this is also why the later codegen step's `git add -A`, gated on a
+    // bare `git diff --quiet`, did not rescue the dropped bodies.)
+    const run = archiveStepRunBlock();
+    const joined = run.replace(/\\\r?\n\s*/g, " ");
+    const guard = joined.split("\n").find((l) => l.includes("git ls-files -o")) ?? "";
+    expect(guard).toContain("docs/history/pr-reviews/");
+    expect(guard).toContain("docs/github/prs/");
+  });
+
+  test("probe is not vacuous: the historical git-add line fails these checks", () => {
+    // Replant the exact pre-fix staging and show it dies. Without this, the three tests
+    // above could be passing on a pathspec matcher that returns true for anything.
+    const mutant = "            git add docs/github/prs/\n";
+    const specs = gitAddPathspecs(mutant);
+    expect(specs).toEqual(["docs/github/prs/"]);
+    expect(covers(specs, "docs/github/prs/shards")).toBe(true); // index: still covered
+    expect(covers(specs, "docs/history/pr-reviews")).toBe(false); // body: DROPPED
   });
 });
 
