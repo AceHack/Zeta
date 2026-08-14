@@ -22,6 +22,29 @@ export const HOT_TEMPERATURE_MAX_PPM = 666_666;
 
 export type TemperatureBand = "cold" | "warm" | "hot" | "critical";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Encoder faithfulness — 081M00TYT8N087G0R003MPMRX9
+//
+// An encoder is a function `data -> channel`. It LIES when it is non-injective
+// on its declared domain: two different data states produce the same reading and
+// no reader can tell them apart. Every encoder below therefore carries a STATED
+// DOMAIN and a STATED INJECTIVITY PROPERTY, and where a channel genuinely cannot
+// represent its domain the loss is reported as a value (`ChannelFidelity`)
+// rather than silently absorbed.
+//
+// Anchor: Tufte, *The Visual Display of Quantitative Information* (1983) — the
+// lie factor, (effect shown) / (effect in data), which should be 1.0.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Why a ppm channel value may fail to faithfully represent the input it encodes.
+ *
+ * This is the *declaration* half of the injectivity discipline: a saturating or
+ * quantising encoder is honest exactly when it says so. `exact` is the only
+ * value that asserts the channel round-trips the input's ordering.
+ */
+export type ChannelFidelity = "exact" | "saturated" | "below-resolution" | "out-of-domain";
+
 export type HeatReceiptOutcome =
   | "cold"
   | "paid"
@@ -87,6 +110,15 @@ export interface TemperatureReadout {
   readonly uncertaintyPpm: number;
   readonly pressurePpm: number;
   readonly attentionPpm: number;
+  /**
+   * Whether the four input channels were representable at all.
+   *
+   * `out-of-domain` means at least one input was not a `[0, MAX_TEMPERATURE_PPM]`
+   * integer — including `NaN` and `Infinity`, both of which the clamp silently
+   * turned into `0`, i.e. into `cold`. A dead sensor read as a calm room; this
+   * field is what separates the two.
+   */
+  readonly fidelity: ChannelFidelity;
 }
 
 export interface BlackBodyReadout {
@@ -234,11 +266,89 @@ function receiptPolicy(signals: readonly HeatSignal[]): HeatReceiptPolicy {
   return "unknown";
 }
 
-export function heatReceiptPpm(units: number, maxUnits = 16): number {
-  if (!Number.isFinite(units) || units <= 0 || !Number.isFinite(maxUnits) || maxUnits <= 0) return 0;
-  const cappedUnits = Math.trunc(units);
-  const cappedMaxUnits = Math.max(1, Math.trunc(maxUnits));
-  return clampTemperaturePpm(cappedUnits * Math.floor(MAX_TEMPERATURE_PPM / cappedMaxUnits));
+/**
+ * The declared ceiling of the heat-receipt channel, in units.
+ *
+ * Was an implicit `16`: with a linear encoder over a `1_000_000` ppm channel,
+ * every count from 16 upward rendered as exactly `1_000_000`. Measured on
+ * `origin/main@f63307c17`: 24 collisions over units `1..40`, and lie factors
+ * `LF(16->32) = 0.5000`, `LF(16->100) = 0.1600`, `LF(16->1000) = 0.0160`
+ * against Tufte's ideal of 1.0.
+ *
+ * `65_536` is the largest POWER OF TWO at which the `log1p` protocol below is
+ * still injective on the integers, verified exhaustively rather than estimated:
+ * at `65_536` the image is `65_537` of `65_537` and the tightest realised
+ * consecutive gap is exactly `1` ppm (between units `45_256` and `45_257`); at
+ * `131_072` injectivity fails outright (image `121_755` of `131_073`). Larger
+ * non-power-of-two ceilings up to ~`88_000` are also injective; `65_536` is
+ * chosen for legibility. 2^4 -> 2^16.
+ */
+export const HEAT_RECEIPT_CEILING_UNITS = 65_536;
+
+/**
+ * The declared reading protocol for the heat-receipt channel.
+ *
+ * `log1p`: `ppm = round(MAX * ln(1 + units) / ln(1 + ceilingUnits))`. The reader
+ * integrates LOGARITHMICALLY — equal ppm steps are equal *ratios* of units, not
+ * equal counts. A linear reading of this channel has a lie factor != 1 BY
+ * CONSTRUCTION, which is why the protocol is named in the value rather than left
+ * to the reader to assume.
+ *
+ * Chosen over a wider linear channel because heat counts are open-ended: any
+ * linear ceiling is an arbitrary number that saturates, whereas `log1p` spends
+ * its resolution where the data is (small counts) and still separates 11 from
+ * 1000 from 100_000.
+ */
+export const HEAT_RECEIPT_PROTOCOL = "log1p";
+
+/**
+ * A heat count encoded onto the ppm channel, carrying its own faithfulness.
+ *
+ * **Stated domain:** `units` in the non-negative integers; `ceilingUnits` in the
+ * positive integers.
+ *
+ * **Stated injectivity property:** `units -> ppm` is INJECTIVE on the integers
+ * `[0, ceilingUnits]` (verified exhaustively by test, not asserted). Above
+ * `ceilingUnits` the channel saturates and says so via `fidelity: "saturated"`,
+ * so a consumer can distinguish "exactly at the ceiling" from "at or above the
+ * ceiling" — the distinction the old encoder destroyed. Outside the domain the
+ * result is `fidelity: "out-of-domain"`, which is what separates a genuine
+ * `0 units` from `NaN` / `Infinity` / `-5` / `0.5`, all four of which the old
+ * encoder mapped to the same `0`.
+ */
+export interface HeatReceiptScale {
+  readonly units: number;
+  readonly ppm: number;
+  readonly fidelity: ChannelFidelity;
+  readonly ceilingUnits: number;
+  readonly protocol: typeof HEAT_RECEIPT_PROTOCOL;
+}
+
+export function heatReceiptScale(units: number, maxUnits = HEAT_RECEIPT_CEILING_UNITS): HeatReceiptScale {
+  const ceilingUnits =
+    Number.isInteger(maxUnits) && maxUnits >= 1 ? maxUnits : HEAT_RECEIPT_CEILING_UNITS;
+
+  if (!Number.isInteger(units) || units < 0) {
+    return { units, ppm: 0, fidelity: "out-of-domain", ceilingUnits, protocol: HEAT_RECEIPT_PROTOCOL };
+  }
+
+  if (units > ceilingUnits) {
+    return { units, ppm: MAX_TEMPERATURE_PPM, fidelity: "saturated", ceilingUnits, protocol: HEAT_RECEIPT_PROTOCOL };
+  }
+
+  const ppm = Math.round((MAX_TEMPERATURE_PPM * Math.log1p(units)) / Math.log1p(ceilingUnits));
+  return { units, ppm, fidelity: "exact", ceilingUnits, protocol: HEAT_RECEIPT_PROTOCOL };
+}
+
+/**
+ * The ppm channel alone, for callers that only render the number.
+ *
+ * Prefer {@link heatReceiptScale}: this accessor cannot tell a saturated reading
+ * from an exact one, nor an out-of-domain input from a true zero. It is faithful
+ * only over the integers `[0, HEAT_RECEIPT_CEILING_UNITS]`.
+ */
+export function heatReceiptPpm(units: number, maxUnits = HEAT_RECEIPT_CEILING_UNITS): number {
+  return heatReceiptScale(units, maxUnits).ppm;
 }
 
 export function heatReceiptFromRow(
@@ -275,12 +385,78 @@ export function clampTemperaturePpm(value: number): number {
   return Math.min(MAX_TEMPERATURE_PPM, Math.trunc(value));
 }
 
-export function temperatureBand(temperaturePpm: number): TemperatureBand {
+/**
+ * Whether a value offered to the band classifier was inside the treaty domain.
+ *
+ * The four band TOKENS are a four-oracle treaty
+ * (`src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json` `temperatureBands`,
+ * `src/Core/Heat.fs` `TemperatureBand`, `HeatSignals.qs`), so the band set cannot
+ * be widened here unilaterally. The verdict is the *separable* channel that
+ * carries what the four tokens cannot.
+ */
+export type TemperatureDomainVerdict = "in-range" | "over-ceiling" | "out-of-domain";
+
+/**
+ * A band together with whether the band means anything.
+ *
+ * **Stated domain:** `observed` is any `number`; the treaty domain is the
+ * integers `[0, MAX_TEMPERATURE_PPM]`.
+ *
+ * **Stated injectivity property:** the band alone is — deliberately — a 4-way
+ * quantiser, so it is non-injective BY DESIGN, and the quantisation is declared
+ * and bounded (measured over `0..1_000_000`: cold 1, warm 333_333, hot 333_333,
+ * critical 333_334). What was NOT declared, and is the actual defect, is that
+ * the classifier absorbed everything outside the treaty domain into a band that
+ * looks like a measurement:
+ *
+ *   - `temperatureBand(NaN)` -> `"cold"`
+ *   - `temperatureBand(Infinity)` -> `"cold"`
+ *   - `temperatureBand(-1)` -> `"cold"`
+ *   - `temperatureBand(2_000_000)` -> `"critical"`, indistinguishable from `700_000`
+ *
+ * The first three are fail-DANGEROUS: a broken or absent sensor renders as a calm
+ * room. The property this type restores is that **no out-of-domain input shares a
+ * `(band, verdict)` cell with an in-range input** — so `cold/in-range` (idle) and
+ * `cold/out-of-domain` (blind) are separable, which is the whole point.
+ *
+ * Same shape as the existing refusal in
+ * `src/Core.TypeScript/planning/society-heat-readout.ts` `declareBand`, which
+ * publishes `"indeterminate"` rather than a band its evidence cannot support.
+ */
+export interface TemperatureBandReading {
+  readonly band: TemperatureBand;
+  readonly verdict: TemperatureDomainVerdict;
+  /** The clamped, in-treaty-domain value the band was actually computed from. */
+  readonly ppm: number;
+  /** Exactly what was handed in, before clamping. */
+  readonly observed: number;
+}
+
+export function temperatureBandReading(temperaturePpm: number): TemperatureBandReading {
   const ppm = clampTemperaturePpm(temperaturePpm);
-  if (ppm === 0) return "cold";
-  if (ppm <= WARM_TEMPERATURE_MAX_PPM) return "warm";
-  if (ppm <= HOT_TEMPERATURE_MAX_PPM) return "hot";
-  return "critical";
+  const band: TemperatureBand =
+    ppm === 0 ? "cold" : ppm <= WARM_TEMPERATURE_MAX_PPM ? "warm" : ppm <= HOT_TEMPERATURE_MAX_PPM ? "hot" : "critical";
+
+  const verdict: TemperatureDomainVerdict = !Number.isInteger(temperaturePpm)
+    ? "out-of-domain"
+    : temperaturePpm < 0
+      ? "out-of-domain"
+      : temperaturePpm > MAX_TEMPERATURE_PPM
+        ? "over-ceiling"
+        : "in-range";
+
+  return { band, verdict, ppm, observed: temperaturePpm };
+}
+
+/**
+ * The band token alone, for the four-oracle treaty surface.
+ *
+ * Value-identical to the pre-fix encoder, deliberately: the tokens are locked
+ * across TypeScript, F# and Q#. Prefer {@link temperatureBandReading} — this
+ * accessor cannot tell an idle room from a blind one.
+ */
+export function temperatureBand(temperaturePpm: number): TemperatureBand {
+  return temperatureBandReading(temperaturePpm).band;
 }
 
 export function thermalPpm(heatPpm: number, uncertaintyPpm: number, pressurePpm: number): number {
@@ -300,6 +476,18 @@ export function temperatureReadout(input: {
   const attentionPpm = clampTemperaturePpm(input.attentionPpm);
   const temperaturePpm = thermalPpm(heatPpm, uncertaintyPpm, pressurePpm);
 
+  // The clamp above is lossy and was silent. Report what it absorbed: an
+  // out-of-domain input (NaN / Infinity / negative / non-integer) became `0` and
+  // therefore `cold`, which is the fail-dangerous direction.
+  const verdicts = [input.heatPpm, input.uncertaintyPpm, input.pressurePpm, input.attentionPpm].map(
+    (value) => temperatureBandReading(value).verdict,
+  );
+  const fidelity: ChannelFidelity = verdicts.includes("out-of-domain")
+    ? "out-of-domain"
+    : verdicts.includes("over-ceiling")
+      ? "saturated"
+      : "exact";
+
   return {
     schema: TEMPERATURE_READOUT_SCHEMA,
     source: input.source,
@@ -309,9 +497,75 @@ export function temperatureReadout(input: {
     uncertaintyPpm,
     pressurePpm,
     attentionPpm,
+    fidelity,
   };
 }
 
+/**
+ * The least temperature whose radiance is representable as at least 1 ppm.
+ *
+ * Measured, not derived from the source: `blackBodyRadiancePpm(31_622) === 0`
+ * and `blackBodyRadiancePpm(31_623) === 1`. Every temperature in `1..31_622`
+ * — 31_622 distinct states, 3.1622% of the scale — renders as radiance `0`,
+ * identical to a genuinely cold room.
+ *
+ * This floor is NOT a bug in the arithmetic and cannot be fixed by removing the
+ * `floor` calls: a fourth-power law (Stefan-Boltzmann) over a six-decade input
+ * needs twenty-four decades of output range, and the channel has six. At
+ * `T = 31_623` the true radiance is `(T/MAX)^4 * MAX` = 1.0 ppm exactly; below
+ * that it is genuinely sub-ppm. The information is destroyed by the CHANNEL
+ * WIDTH, so the honest move is to declare the floor, not to widen a value that
+ * three other oracles byte-lock (`src/Core/Heat.fs` `BlackBodyReadout.radiancePpm`
+ * computes the identical integer double-floor in `int64`).
+ */
+export const BLACK_BODY_RADIANCE_FLOOR_PPM = 31_623;
+
+/**
+ * Radiance with its representability declared.
+ *
+ * **Stated domain:** integers `[0, MAX_TEMPERATURE_PPM]`.
+ *
+ * **Stated injectivity property:** deliberately NOT injective, and bounded —
+ * measured over the whole domain, `1_000_001` temperatures produce `515_562`
+ * distinct radiance values. The loss is integer-floor quantisation of a
+ * fourth-power law and is declared in two parts:
+ *   - `fidelity: "below-resolution"` for `0 < T < BLACK_BODY_RADIANCE_FLOOR_PPM`,
+ *     where the channel reports `0` but the radiance is not zero;
+ *   - `fidelity: "exact"` for `T = 0` (radiance genuinely zero) and for
+ *     `T >= BLACK_BODY_RADIANCE_FLOOR_PPM`, where the reading is monotone
+ *     non-decreasing in `T`.
+ *
+ * A reader may therefore never confuse "cold" with "too faint to encode".
+ */
+export interface BlackBodyRadianceReading {
+  readonly temperaturePpm: number;
+  readonly radiancePpm: number;
+  readonly fidelity: ChannelFidelity;
+  readonly floorPpm: typeof BLACK_BODY_RADIANCE_FLOOR_PPM;
+}
+
+export function blackBodyRadianceReading(temperaturePpm: number): BlackBodyRadianceReading {
+  const radiancePpm = blackBodyRadiancePpm(temperaturePpm);
+  const inDomain =
+    Number.isInteger(temperaturePpm) && temperaturePpm >= 0 && temperaturePpm <= MAX_TEMPERATURE_PPM;
+
+  const fidelity: ChannelFidelity = !inDomain
+    ? "out-of-domain"
+    : temperaturePpm > 0 && temperaturePpm < BLACK_BODY_RADIANCE_FLOOR_PPM
+      ? "below-resolution"
+      : "exact";
+
+  return { temperaturePpm, radiancePpm, fidelity, floorPpm: BLACK_BODY_RADIANCE_FLOOR_PPM };
+}
+
+/**
+ * Radiance on the ppm channel alone — value-identical to the pre-fix encoder,
+ * because `src/Core/Heat.fs` and the Q# reference oracle byte-lock these values.
+ *
+ * Prefer {@link blackBodyRadianceReading}: this accessor reports `0` both for a
+ * cold room and for every temperature below
+ * {@link BLACK_BODY_RADIANCE_FLOOR_PPM}, and cannot distinguish them.
+ */
 export function blackBodyRadiancePpm(temperaturePpm: number): number {
   const temperature = clampTemperaturePpm(temperaturePpm);
   const square = Math.floor((temperature * temperature) / MAX_TEMPERATURE_PPM);

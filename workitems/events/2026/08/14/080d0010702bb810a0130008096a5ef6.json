@@ -1,0 +1,14 @@
+{
+  "id": "080d0010702bb810a0130008096a5ef6",
+  "at": "2026-08-14T20:54:28.471Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M010W1BP087G0R002M2BNVW",
+    "type": "bug",
+    "title": "HeatSignature.isPressureKind and HeatSignal.ofKind disagree on kinds carrying both a forgetting and a pressure token",
+    "slug": "heatsignature-ispressurekind-and-heatsignal-ofkind-disagree",
+    "priority": "P2",
+    "filename": "081M010W1BP087G0R002M2BNVW-heatsignature-ispressurekind-and-heatsignal-ofkind-disagree.md"
+  }
+}

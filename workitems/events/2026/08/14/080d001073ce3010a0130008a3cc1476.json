@@ -1,0 +1,14 @@
+{
+  "id": "080d001073ce3010a0130008a3cc1476",
+  "at": "2026-08-14T20:54:58.246Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M010WYE5087G0R003J89QVF",
+    "type": "task",
+    "title": "Surface encoder fidelity in the renderers and bring the F# TemperatureReadout to parity",
+    "slug": "surface-encoder-fidelity-in-the-renderers-and-bring-the-f-te",
+    "priority": "P2",
+    "filename": "081M010WYE5087G0R003J89QVF-surface-encoder-fidelity-in-the-renderers-and-bring-the-f-te.md"
+  }
+}

@@ -411,7 +411,12 @@ describe("Dark Hall CSS room UI", () => {
 
   it("projects heat rows into compact provenance receipts without changing the heat summary", () => {
     expect(heatReceiptPpm(1)).toBe(62_500);
-    expect(heatReceiptPpm(99)).toBe(1_000_000);
+    // Was `expect(heatReceiptPpm(99)).toBe(1_000_000)` — that assertion PINNED the defect:
+    // the old linear encoder saturated at 16 units, so 99 units and 1_000_000 units were the
+    // same picture. 99 units now reads below the ceiling and below `critical`
+    // (081M00TYT8N087G0R003MPMRX9); saturation is reported as a value, not as a maxed gauge.
+    expect(heatReceiptPpm(99)).toBe(415_240);
+    expect(heatReceiptPpm(99)).toBeLessThan(heatReceiptPpm(1_000));
 
     const receipts = heatReceiptsFromRows(heatRows, { source: "darkhall/room" });
 

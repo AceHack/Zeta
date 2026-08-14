@@ -114,3 +114,88 @@ discharge condition for the faithfulness claim, not a nicety.
 
 Channel ranking against Cleveland–McGill, and adoption of grammar-of-graphics vocabulary
 (Wilkinson 1999 / Wickham 2010) — both tracked as open items in the analysis doc.
+
+---
+
+## Progress — scope items 3 and 4 DONE (shadow, 2026-08-14, branch `shadow/fix-non-injective-heat-encoders`)
+
+Scope items **1** (encoder registry) and **2** (the audit under `hygiene/`) remain open; this pass
+fixed the encoders themselves. All numbers below were produced by running the code, before and after.
+
+### Reproduction of the reported defects — all four confirmed against `origin/main@f63307c17`
+
+| # | reported | reproduced? |
+|---|---|---|
+| 1 | `heatReceiptPpm` saturates at 16 units, 24 collisions over `1..40`, `LF(16->1000) = 0.0160` | **yes, exactly** — `LF(16->32) = 0.500000`, `LF(16->100) = 0.160000`, `LF(16->1000) = 0.016000`; collisions = `|domain| - |image|` = `40 - 16` = 24 |
+| 2 | `temperatureBand` pins at `critical` from 11 units up | **yes** — with the nuance that *two* mechanisms compose: units 11–15 differ in ppm but share the band; from 16 up the ppm is identical too |
+| 3 | `blackBodyRadiancePpm` ≡ 0 below 3.162% of scale | **yes** — `radiance == 0` for 31 623 of 1 000 001 temperatures; first non-zero at `T = 31 623` (3.1623%) |
+| 4 | `SocietalDoraSvg.fs:22` clamp latent but not live | **yes** — and measured: pre-fix, `render(1.5)`, `render(nan)`, `render(-0.5)` and `render(infinity)` are **byte-identical** to a healthy `render(1.0)` / `render(0.0)` |
+
+### Corrections and additions
+
+- **The reported lie factors are right; a first probe of mine was wrong.** Computing
+  `LF(a->b)` as `[e(a)/e(b)] / [a/b]` yields `62.5` and invites the conclusion that `0.0160`
+  was mislabelled. Tufte's orientation is `[e(b)/e(a)] / [b/a]`, which reproduces `0.0160`
+  exactly. The error was in the measurement, not the report.
+- **NEW, and ranked above the reported defects in the fail-dangerous direction:** the clamp
+  makes out-of-domain input *reassuring*. Measured pre-fix:
+  `temperatureBand(NaN) = "cold"`, `temperatureBand(Infinity) = "cold"`,
+  `temperatureBand(-1) = "cold"`; likewise `heatReceiptPpm(NaN) = 0` and
+  `heatReceiptPpm(Infinity) = 0`, and in F# `pct(nan) = 0` (a 0% bar) while
+  `pct(infinity) = 100` (a full bar). The reported defects **over**-alarm; these
+  **under**-alarm — a dead sensor renders as a calm room.
+- **NEW:** `heatReceiptPpm` also collided at the bottom — `0`, `-5`, `0.5`, `0.999`, `NaN`
+  and `Infinity` all mapped to `0`, so a true "no heat" was indistinguishable from a broken
+  counter.
+- **NEW:** `blackBodyRadiancePpm` is non-injective across its *whole* range, not only the
+  dead zone: 1 000 001 temperatures produce 515 562 distinct radiance values.
+
+### Per-site choice, and why they differ
+
+The three heat sites are NOT alike, and the deciding fact is **who else byte-locks the values**:
+`temperatureBand` and `blackBodyRadiancePpm` have F# counterparts (`src/Core/Heat.fs`
+`bandOfPpm`, `BlackBodyReadout.radiancePpm` — the identical integer double-floor in `int64`)
+plus treaty cases; `heatReceiptPpm` has **no** F#, Q# or treaty counterpart at all.
+
+| site | option taken | why this one |
+|---|---|---|
+| `heatReceiptPpm` | **1 — widen the channel** | TypeScript-only, nothing cross-oracle to break, so the values are free to move. Now `log1p` with a declared ceiling of `65 536` units (was an implicit linear 16), **verified injective exhaustively**: image 65 537 of 65 537, strictly increasing, tightest realised gap exactly 1 ppm. `131 072` is not injective (image 121 755) — the ceiling is measured, not guessed. |
+| `temperatureBand` | **3 — refine the input**, plus **2 — declare the ceiling** | The four band tokens are a four-oracle treaty; widening the band set unilaterally is not available here. `number` is wider than the treaty domain (`int` in `[0, 1e6]`), so the fix relocates the branch into `TemperatureBandReading.verdict` — `in-range` / `over-ceiling` / `out-of-domain`. Band tokens unchanged. |
+| `blackBodyRadiancePpm` | **2 — declare the bound** | Values are byte-locked by F# and the treaty, **and the floor is mathematically forced**: a fourth-power law over six decades of input needs twenty-four decades of output and the channel has six. At `T = 31 623` the true radiance is exactly 1.0 ppm; below that it is genuinely sub-ppm. Declared as `BLACK_BODY_RADIANCE_FLOOR_PPM` + `fidelity: "below-resolution"`, which is *not* the same statement as `radiance = 0`. |
+| `SocietalDoraSvg.pct` | **3 — refine the input** | Exactly as this work-item proposed: a new `UnitInterval` with a smart constructor. `percent` is now total and branch-free; the branch relocated upstream to one site in `render`, where out-of-range renders a visibly broken dial instead of a plausible bar. |
+
+### Evidence that the tests discriminate
+
+A test that passes before *and* after proves nothing, so this was checked rather than assumed.
+Six assertions expressible against the **pre-fix** API, run against both modules:
+
+```
+check                                                          | pre-fix | post-fix
+heatReceiptPpm(16) !== heatReceiptPpm(17)                      | FAIL    | PASS
+units {16,17,32,100,1000} give 5 distinct ppm                  | FAIL    | PASS
+heatReceiptPpm injective over units 0..40                      | FAIL    | PASS
+11 units does NOT read `critical`                              | FAIL    | PASS
+units {11,100,1000,1000000} give 4 distinct (ppm,band) pictures | FAIL    | PASS
+a 100x climb in units is visible as a band change              | FAIL    | PASS
+```
+
+6 of 6 discriminate. The headline defect: units `{11, 100, 1000, 1 000 000}` produced **one**
+picture before and **four** after; 11 units now reads `warm`, not `critical`.
+
+On the F# side, all four out-of-range renders were byte-identical to a healthy render pre-fix and
+all four differ post-fix, while `render(0.5)` still emits `width="150"` on the 300px track and
+remains deterministic.
+
+The remaining fidelity checks are **not expressible against the pre-fix API** — there was no
+channel to carry the answer. That absence *is* the defect, and it is recorded as such rather than
+dressed up as a passing test.
+
+### Residuals — deliberately not fixed here
+
+Filed as **081M010WYE5087G0R003J89QVF**: no renderer reads `fidelity`/`verdict` yet; TypeScript's
+`TemperatureReadout` gained a required `fidelity` field that F#'s has **not**, while both still
+declare `zeta.temperature.readout.v1` (a divergence this change introduced, and which no existing
+test can see); and `thermalPpm` remains the non-injective fold of defect 4.
+
+Filed as **081M010W1BP087G0R002M2BNVW**: `HeatSignature.isPressureKind` vs `HeatSignal.ofKind`
+disagree on dual-token kinds (3 of 6 probed kinds), found in passing and left alone.
