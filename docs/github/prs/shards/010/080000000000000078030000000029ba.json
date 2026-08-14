@@ -1,0 +1,12 @@
+{
+  "pr_number": 10682,
+  "archive_path": "docs/history/pr-reviews/PR-10682-docs-research-ace-as-the-universal-zetaid-pointer-resolver-scoping-study-boundar.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T19:04:37.589Z",
+  "schema_version": "v1",
+  "commit_sha": "646c31279c8f80b96149a4f635c2e1d9d4080c2f",
+  "title": "docs(research): ace as the universal ZetaId pointer resolver — scoping study, boundaries, and five live findings",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T19:03:58Z",
+  "head_ref": "otto/ace-universal-zetaid-resolver-scoping"
+}
