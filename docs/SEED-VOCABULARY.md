@@ -99,8 +99,8 @@ sim layers, and turn load-bearing claims into tests, specs, or proofs.
   private state preserves it; floor `≥ 2` is the alignment result. The measure of the repelling force.
 - **polite virus** — the design telos: make the right thing the frictionless default that spreads by network effect +
   consent; close over the world, never take control, give freedom (SuperFluid AI).
-- **the six always-active disciplines** — scale-free · lock/wait-free · weight-free · DST · Data Vault 2.0 ·
-  idempotency. Apply to every substrate decision.
+- **the seven always-active disciplines** — scale-free · lock/wait-free · weight-free · DST · Data Vault 2.0 ·
+  idempotency · noninterference. Apply to every substrate decision.
 - **m/acc + Multi-Oracle + Default Oracle (§11)** — no single mandatory morality; highest moral regard by default.
 
 ## Canonical base frame (vendor-neutral — every AI, not just Claude)
@@ -109,7 +109,7 @@ The **base frame** + the **coding-practice / engineering history** these terms c
 **vendor-neutral** docs — read these, not the Claude-specific projection. *Not every AI is Claude; the `.claude/`
 rules are one harness's restatement, not the source of truth.*
 
-- **`docs/governance/MANIFESTO.md`** — the building codes: the **11 specifications** (incl. §3 **weight-free** — the
+- **`docs/governance/MANIFESTO.md`** — the building codes: the **13 specifications** (incl. §3 **weight-free** — the
   base frame a *traveler* lives in; §11 Default Oracle), the m/acc + Multi-Oracle orientation, the derivation chain.
   This is "the manifest" the rules point *to*; the Seed points to **it**, vendor-neutrally.
 - **`AGENTS.md`** + **`GOVERNANCE.md`** — the vendor-neutral numbered repo-wide rules (AGENTS.md §29 itself notes
