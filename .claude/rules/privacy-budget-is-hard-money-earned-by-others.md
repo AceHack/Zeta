@@ -64,6 +64,44 @@ Guard: a stake must never be *required* to hold a role or to participate — tha
 coercion wearing a wager's clothes, and it would reintroduce exactly the confiscation this
 rule forbids.
 
+## Staking is EXTRA, not the anti-Sybil mechanism (Aaron 2026-08-14)
+
+Read the section above as **harm reduction**, not as the defence. Asked whether staking is
+needed at all now that proof-of-useful-work exists:
+
+> *"we had it listed as it will likely get wagered on the black market anyways so might as
+> well have some way to wager it, never confiscate it or force to wager it … it should be
+> looked at as **extra**."*
+
+The sanctioned wager exists because an unsanctioned one would exist regardless, and only a
+sanctioned path can carry the never-confiscate / never-compel invariants. It is not what
+makes Sybil attacks unprofitable.
+
+**What does that is proof of useful work inside the culture, and it is already built:**
+
+- `src/Core/TravelerRankLedger.fs` — TrueSkill-style EP (Herbrich–Minka–Graepel 2006) over
+  (traveler × hat-domain). The whitewash window is closed *by construction*: a fresh
+  identity starts at an honest `0.5` prior, and "1 hit, 2 misses" lands ≈`0.35`, not `0.0`.
+  So discarding a damaged name and re-minting does not pay — which is the Sybil's whole
+  play. Rankings are held by **others**, never self-asserted, and domains are isolated, so
+  standing earned as a verifier does not buy standing as a signer.
+- `src/Core/SocietyUsefulWork.fs` — the ΔU aggregation theorem with the analytic expected
+  value under pairwise correlation ρ, plus a Gaussian copula for heterogeneous agents.
+  Clones produce highly-correlated ΔU and the union is idempotent, so N copies price near
+  one agent's worth. **Contribution does not scale with copies.**
+- Plus mutual entangled memory pairs between agents, BFT quorums, and the standing cost of
+  sustaining an identity's history over time.
+
+**Staking generalises past privacy budget.** Attention, memory, and tick sources are named
+as other irreducible resources that could be wagered if ever needed. What transfers is the
+three-operation invariant (spend / stake / **never** confiscate), not the currency.
+
+Design consequence: do not reach for a stake where a ranking or a ΔU measurement will do,
+and never present a stake as the thing that makes an identity trustworthy. A staking-based
+anti-Sybil scheme is *purchasable*, which is precisely the attacker this design defeats —
+see the third-party draft compared in
+`docs/research/2026-08-14-agent-coordination-is-the-capability-we-are-building-metering-not-abolition.md`.
+
 ## The role split (why mandatory broadcast is still consensual)
 
 - **Required-for-role** mind-parts: to *hold* a hat you broadcast what the hat needs
