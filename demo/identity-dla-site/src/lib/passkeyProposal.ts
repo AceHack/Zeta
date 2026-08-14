@@ -47,7 +47,7 @@ function bytesToBase64url(bytes: ArrayBuffer | Uint8Array): string {
   return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
 }
 
-function base64urlToBytes(value: string): Uint8Array<ArrayBuffer> {
+function base64urlToBytes(value: string): Uint8Array {
   const padded = value.replaceAll("-", "+").replaceAll("_", "/") + "=".repeat((4 - (value.length % 4)) % 4);
   const binary = atob(padded);
   const output = new Uint8Array(new ArrayBuffer(binary.length));
@@ -55,7 +55,7 @@ function base64urlToBytes(value: string): Uint8Array<ArrayBuffer> {
   return output;
 }
 
-function randomBytes(length: number): Uint8Array<ArrayBuffer> {
+function randomBytes(length: number): Uint8Array {
   const output = new Uint8Array(new ArrayBuffer(length));
   crypto.getRandomValues(output);
   return output;
@@ -84,7 +84,7 @@ export function canonicalProposalIntent(intent: ProposalIntent): string {
   );
 }
 
-export async function sha256Bytes(value: string): Promise<Uint8Array<ArrayBuffer>> {
+export async function sha256Bytes(value: string): Promise<Uint8Array> {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
   return new Uint8Array(digest);
 }
