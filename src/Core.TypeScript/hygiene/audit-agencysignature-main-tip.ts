@@ -204,6 +204,8 @@ interface ParsedArgs {
   readonly branch: string;
   readonly v1ShipDate: string;
   readonly failClosedCutover: string;
+  /** `"1"` when --require-shipped was passed; empty otherwise. */
+  readonly requireShipped: string;
 }
 
 function gitOutput(args: readonly string[]): {
@@ -245,6 +247,7 @@ interface MutableArgs {
   branch: string;
   v1ShipDate: string;
   failClosedCutover: string;
+  requireShipped: string;
 }
 
 // Derived from MutableArgs so adding/removing string fields cannot drift
@@ -253,11 +256,24 @@ interface MutableArgs {
 type StringArgKey = Exclude<keyof MutableArgs, "mode">;
 
 type ArgStep =
-  | { readonly kind: "ok"; readonly key: StringArgKey; readonly value: string; readonly setMode: Mode | null; readonly skip: 1 }
+  | { readonly kind: "ok"; readonly key: StringArgKey; readonly value: string; readonly setMode: Mode | null; readonly skip: 0 | 1 }
   | { readonly kind: "error"; readonly message: string }
   | { readonly kind: "help" };
 
+// Flags that take no operand. `--require-shipped` is the CI guard: without it,
+// a shallow clone (`fetch-depth: 1`) cannot reach the v1 anchor, every commit
+// classifies LEGACY, and the audit reports PASS having checked nothing. That is
+// the exact failure this whole work-item is about, so the enforcement path
+// refuses to run without a ship anchor rather than passing.
+const BOOLEAN_ARGS: Readonly<Record<string, StringArgKey>> = {
+  "--require-shipped": "requireShipped",
+};
+
 function classifyArg(arg: string, next: string | undefined): ArgStep {
+  const boolKey = BOOLEAN_ARGS[arg];
+  if (boolKey !== undefined) {
+    return { kind: "ok", key: boolKey, value: "1", setMode: null, skip: 0 };
+  }
   const requiresNext: Record<string, { key: StringArgKey; setMode: Mode | null; missing: string }> = {
     "--commit": { key: "commitSha", setMode: "commit", missing: "error: --commit requires SHA" },
     "--max": { key: "maxN", setMode: "max", missing: "error: --max requires N" },
@@ -288,6 +304,7 @@ function parseArgs(argv: readonly string[]): ArgParseResult {
     branch: "",
     v1ShipDate: "",
     failClosedCutover: FAIL_CLOSED_CUTOVER_DEFAULT,
+    requireShipped: "",
   };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i] ?? "";
@@ -310,6 +327,29 @@ interface V1Ship {
   readonly date: string;
 }
 
+/**
+ * The v1 ship date is a HISTORICAL FACT and is therefore pinned, not re-derived.
+ *
+ * It used to be detected by walking `--reverse --max-count=5000`. git applies
+ * max-count BEFORE reversing, so that walk only ever saw the newest 5000
+ * commits — and `main` passed 5000 some time ago (6772 as of 2026-08-14). The
+ * consequence, measured: the true first v1-signed commit is `a4bdce83da81`
+ * (2026-05-28T20:22:11Z, PR #5928), but detection reported 2026-06-10 — 13 days
+ * later — so every commit in that gap was classified LEGACY and auto-passed.
+ *
+ * Worse, it DRIFTS: the window slides forward as history grows, so the reported
+ * ship date advances and the auditor quietly audits less of `main` every day.
+ * A check whose coverage erodes on a timer is the same failure class as a check
+ * that cannot fail. Pinning it removes the timer.
+ */
+export const V1_SHIP_DATE_DEFAULT = "2026-05-28T20:22:11Z";
+export const V1_SHIP_SHA_DEFAULT = "a4bdce83da81966361599f59128b461aabcacf2a";
+
+/**
+ * Fallback only — used when the pinned anchor commit is not reachable (a fork,
+ * a shallow clone, a rewritten history). Still window-limited, and now says so
+ * out loud in the reason it returns rather than passing for a silent LEGACY.
+ */
 function detectV1Ship(targetRev: string): V1Ship | null {
   // Iterate commits oldest-first; return first one whose parsed
   // trailers contain Agency-Signature-Version: 1.
@@ -599,6 +639,7 @@ function emitHelp(): ExitCode {
   process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --branch NAME     # branch tip\n");
   process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --v1-ship-date DATE\n");
   process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --fail-closed-cutover DATE\n");
+  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --require-shipped     # CI: refuse to pass without a v1 anchor\n");
   return 0;
 }
 
@@ -760,9 +801,18 @@ function emitSummary(counts: AuditCounts): ExitCode {
   return 1;
 }
 
+/**
+ * Resolution order: explicit `--v1-ship-date` → the PINNED anchor (when its
+ * commit is reachable) → the window-limited fallback scan. The pinned anchor is
+ * what stops the auditor's coverage from eroding as history grows; the scan
+ * remains for repositories where the anchor commit does not exist.
+ */
 function determineShip(args: ParsedArgs, targetRev: string): ShipState | null {
   if (args.v1ShipDate !== "") {
     return { date: args.v1ShipDate, sha: "", tsCache: null };
+  }
+  if (gitOutput(["cat-file", "-e", `${V1_SHIP_SHA_DEFAULT}^{commit}`]).status === 0) {
+    return { date: V1_SHIP_DATE_DEFAULT, sha: V1_SHIP_SHA_DEFAULT, tsCache: null };
   }
   const detected = detectV1Ship(targetRev);
   if (detected === null) return null;
@@ -808,6 +858,25 @@ export function main(argv: readonly string[]): ExitCode {
   }
 
   const ship = determineShip(args, targetRev);
+  if (args.requireShipped !== "" && ship === null) {
+    // Without this, a shallow CI clone reaches no v1 anchor, EVERY commit
+    // classifies LEGACY, and the audit reports PASS having verified nothing —
+    // a green check that checked zero commits. Refuse instead.
+    process.stderr.write(
+      "error: --require-shipped was passed but no v1 ship anchor is reachable.\n",
+    );
+    process.stderr.write(
+      `       Expected commit ${V1_SHIP_SHA_DEFAULT.slice(0, 12)} (${V1_SHIP_DATE_DEFAULT}).\n`,
+    );
+    process.stderr.write(
+      "       A shallow clone cannot see it; deepen the fetch or pass --v1-ship-date.\n",
+    );
+    process.stderr.write(
+      "       Every commit would otherwise classify LEGACY and the audit would\n",
+    );
+    process.stderr.write("       PASS having verified nothing.\n");
+    return 2;
+  }
   const commits = buildCommitList(args, targetRev);
   if (commits === null) return 2;
   if (commits.length === 0 && args.mode === "since") {

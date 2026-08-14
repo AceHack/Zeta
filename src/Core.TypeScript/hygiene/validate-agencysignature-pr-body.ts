@@ -177,6 +177,47 @@ function getValue(trailers: string, key: string): string {
   return "";
 }
 
+// An UNFILLED TEMPLATE PLACEHOLDER, e.g. `Agent: <persona>`. The PR template
+// ships the trailer block pre-populated so the block survives squash-merge —
+// which means the easy failure is now shipping the SKELETON. A block that
+// validates while saying `Agent: <persona>` is attribution to nobody: the
+// enforcement passes and the provenance is still absent, which is the same
+// silent-green shape as the audit that exempted the whole fleet (#10564).
+const PLACEHOLDER_RE = /^<.*>$/;
+
+/** True when a required trailer's value is still an unfilled `<...>` placeholder. */
+export function isUnfilledPlaceholder(value: string): boolean {
+  return PLACEHOLDER_RE.test(value.trim());
+}
+
+function checkPlaceholders(trailers: string): ExitCode | null {
+  const unfilled = REQUIRED_KEYS.filter((key) =>
+    isUnfilledPlaceholder(getValue(trailers, key)),
+  );
+  if (unfilled.length === 0) return null;
+  process.stdout.write(
+    `FAIL: AgencySignature trailer values are still template placeholders: ${unfilled.join(" ")}\n`,
+  );
+  for (const key of unfilled) {
+    process.stdout.write(`  ${key}: ${getValue(trailers, key)}\n`);
+  }
+  process.stdout.write(
+    "  Cause:  the block was copied from .github/PULL_REQUEST_TEMPLATE.md and\n",
+  );
+  process.stdout.write(
+    "          not filled in. A block that validates while saying `Agent: <persona>`\n",
+  );
+  process.stdout.write(
+    "          is attribution to nobody — the check passes, the provenance is\n",
+  );
+  process.stdout.write("          still missing.\n");
+  process.stdout.write(
+    "  Fix:    replace every `<...>` with the real persona / runtime / model /\n",
+  );
+  process.stdout.write("          credential identity.\n");
+  return 1;
+}
+
 function emitParseFailure(): ExitCode {
   process.stdout.write("FAIL: no parseable git trailers found in PR body\n");
   process.stdout.write(
@@ -506,10 +547,83 @@ function emitPass(trailers: string): ExitCode {
   return 0;
 }
 
-export function main(): ExitCode {
+/**
+ * The grandfather decision, as a pure function so it can be falsified.
+ *
+ * It exists because MEASURED on 2026-08-14, 0 of 12 open PRs carried a valid
+ * trailer block: turning a blocking validator on retroactively would red-X the
+ * whole in-flight fleet for something they could not have known. So PRs created
+ * before the stated cutover are exempt, and every PR from the cutover onward is
+ * not. Deliberately NOT living in the CI yaml — untested yaml is how a check
+ * that cannot fail gets written, which is the entire subject of this work.
+ *
+ * Fails CLOSED on an unparseable date: an unreadable timestamp must not buy an
+ * exemption.
+ */
+export function isGrandfatheredPr(createdAt: string, cutover: string): boolean {
+  const created = Date.parse(createdAt);
+  const cut = Date.parse(cutover);
+  if (Number.isNaN(created) || Number.isNaN(cut)) return false;
+  return created < cut;
+}
+
+interface ValidatorOptions {
+  readonly createdAt: string;
+  readonly cutover: string;
+}
+
+function parseOptions(argv: readonly string[]): ValidatorOptions | null {
+  let createdAt = "";
+  let cutover = "";
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i] ?? "";
+    const next = argv[i + 1];
+    if (arg === "--pr-created-at") {
+      if (next === undefined) return null;
+      createdAt = next;
+      i++;
+    } else if (arg === "--grandfather-cutover") {
+      if (next === undefined) return null;
+      cutover = next;
+      i++;
+    } else {
+      return null;
+    }
+  }
+  return { createdAt, cutover };
+}
+
+export function main(argv: readonly string[] = []): ExitCode {
   if (!gitAvailable()) {
     process.stderr.write("error: git not found on PATH\n");
     return 2;
+  }
+  const options = parseOptions(argv);
+  if (options === null) {
+    process.stderr.write(
+      "usage: ... | validate-agencysignature-pr-body.ts [--pr-created-at ISO] [--grandfather-cutover ISO]\n",
+    );
+    return 2;
+  }
+  if (
+    options.createdAt !== "" &&
+    options.cutover !== "" &&
+    isGrandfatheredPr(options.createdAt, options.cutover)
+  ) {
+    process.stdout.write(
+      `GRANDFATHERED: PR created ${options.createdAt}, before the stated cutover ${options.cutover}.\n`,
+    );
+    process.stdout.write(
+      "  The trailer block is not required on PRs opened before the cutover.\n",
+    );
+    process.stdout.write(
+      "  Measured 2026-08-14: 0 of 12 open PRs carried one, so a retroactive\n",
+    );
+    process.stdout.write(
+      "  block would have red-X'd the whole in-flight fleet. Every PR opened\n",
+    );
+    process.stdout.write("  from the cutover onward IS checked.\n");
+    return 0;
   }
   const input = readStdin();
   if (input === "") {
@@ -529,6 +643,9 @@ export function main(): ExitCode {
   const requiredCheck = checkRequiredKeys(trailers, stripped);
   if (requiredCheck !== null) return requiredCheck;
 
+  const placeholderCheck = checkPlaceholders(trailers);
+  if (placeholderCheck !== null) return placeholderCheck;
+
   const enumCheck = checkEnums(trailers);
   if (enumCheck !== null) return enumCheck;
 
@@ -545,5 +662,5 @@ export function main(): ExitCode {
 }
 
 if (import.meta.main) {
-  process.exit(main());
+  process.exit(main(process.argv.slice(2)));
 }

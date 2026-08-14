@@ -1,0 +1,115 @@
+# AgencySignature enforcement — the two instruments, finally wired to CI.
+#
+# WHY THIS EXISTS
+# Both enforcement instruments already existed and were invoked by NOTHING.
+# Checked 2026-08-14 across `.github/workflows/`: zero references to
+# `audit-agencysignature-main-tip.ts` or `validate-agencysignature-pr-body.ts`.
+# A convention with tooling nobody runs is a convention nobody keeps, and the
+# measurement says exactly that — over the last 300 commits on `main`, 113 were
+# agent-authored and unsigned, and three carried the misspelled trailer key
+# `Agent-Signature-Version` (#10564 / #10573).
+#
+# TWO JOBS, TWO MOMENTS
+#   validate-pr-body  — pre-merge. GitHub squash-merge takes the PR BODY as the
+#                       commit message, so the body is where the trailer block
+#                       has to be for it to survive the merge at all.
+#   audit-main-tip    — post-merge. Judges only the commit that just landed
+#                       (`--commit HEAD`), so it says nothing about history and
+#                       cannot be reddened by pre-existing debt.
+#
+# THE CUTOVER, STATED
+# Measured 2026-08-14: 0 of 12 open PRs carried a valid trailer block. Turning a
+# blocking validator on retroactively would red-X the entire in-flight fleet for
+# something they could not have known. So `validate-pr-body` GRANDFATHERS every
+# PR created before FAIL_CLOSED_CUTOVER (2026-08-15T00:00:00Z) — the same
+# instant, and the same stated-cutover discipline, the auditor already uses.
+# This is NOT a check that cannot fail: it is blocking for every PR opened from
+# the cutover onward, which is all of them, forever, starting immediately after.
+#
+# NOT YET IN THE REQUIRED SET. Adding a job to branch protection's required
+# checks is a repository-settings change and a treaty-amendment consent path
+# (gate.yml "THE FLIP" note) — a human call, not mine. Until then this workflow
+# gives its own red X, which is signal, and does not lock unrelated lanes.
+#
+# SECURITY (docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md): the PR body is
+# ATTACKER-CONTROLLED text. It is routed through `env:` and consumed as a quoted
+# shell variable piped to stdin; it is never interpolated into a `run:` block.
+# Same for the PR title, which is not used at all. Actions are SHA-pinned.
+
+name: agencysignature-enforcement
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  validate-pr-body:
+    name: agencysignature (PR body)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Validate the AgencySignature trailer block in the PR body
+        env:
+          # Attacker-controlled — via env, quoted, piped to stdin. Never inlined.
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_CREATED_AT: ${{ github.event.pull_request.created_at }}
+          # Keep in lockstep with FAIL_CLOSED_CUTOVER_DEFAULT in
+          # src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts.
+          CUTOVER: "2026-08-15T00:00:00Z"
+        # The grandfather comparison lives in the TOOL (`isGrandfatheredPr`,
+        # unit-tested, fails CLOSED on an unparseable date) and NOT in this
+        # yaml. Logic in a `run:` block is logic no test can reach — the exact
+        # failure class this workflow exists to enforce against, so
+        # reintroducing it here would be self-defeating. This step pipes bytes.
+        run: |
+          set -euo pipefail
+          printf '%s' "$PR_BODY" \
+            | bun src/Core.TypeScript/hygiene/validate-agencysignature-pr-body.ts \
+                --pr-created-at "$PR_CREATED_AT" \
+                --grandfather-cutover "$CUTOVER"
+
+  audit-main-tip:
+    name: agencysignature (main tip)
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history so the pinned v1 ship anchor (a4bdce83da81,
+          # 2026-05-28) is reachable. With a shallow clone the anchor is
+          # invisible, EVERY commit classifies LEGACY, and the audit reports
+          # PASS having verified nothing — which is the precise failure class
+          # this instrument exists to catch. `--require-shipped` below turns
+          # that into a hard error rather than a green tick, so this is belt
+          # and braces on purpose.
+          fetch-depth: 0
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Audit the commit that just landed
+        # `--commit HEAD` scopes the judgement to THIS commit. The 113 unsigned
+        # commits already on main are a separate, stated debt; this job must not
+        # be permanently red for them or it stops being read.
+        run: |
+          bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts \
+            --commit HEAD --require-shipped

@@ -21,6 +21,8 @@ import {
   loadIdentityRoster,
   main,
   parseIdentityRoster,
+  V1_SHIP_DATE_DEFAULT,
+  V1_SHIP_SHA_DEFAULT,
 } from "./audit-agencysignature-main-tip";
 
 describe("hasAgentCoauthorTrailer", () => {
@@ -514,5 +516,92 @@ describe("end-to-end against real git", () => {
     expect(output).toContain("HUMAN-ROSTER-EXEMPT:    1");
     expect(output).toContain("MACHINE-LANE-EXEMPT:    1");
     expect(output).toContain("REGRESSION:             6");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The v1 ship anchor. Two defects lived here, both of the "check that quietly
+// stops checking" class, and both are falsifiable:
+//
+//  1. SLIDING WINDOW. `detectV1Ship` walked `--reverse --max-count=5000`, and
+//     git applies max-count BEFORE reversing — so it only ever saw the newest
+//     5000 commits. `main` passed 5000 (6772 on 2026-08-14), so the reported
+//     ship date had drifted 13 days forward of the truth (2026-06-10 vs the
+//     real 2026-05-28), silently reclassifying that gap as LEGACY. It drifted
+//     further every day. Pinning the anchor removes the timer.
+//
+//  2. SHALLOW CLONE. With no reachable anchor every commit is LEGACY and the
+//     audit PASSES having verified nothing. `--require-shipped` refuses.
+// ---------------------------------------------------------------------------
+describe("v1 ship anchor", () => {
+  test("the pinned anchor is a real, parseable, historical instant", () => {
+    const ts = Date.parse(V1_SHIP_DATE_DEFAULT);
+    expect(Number.isNaN(ts)).toBe(false);
+    expect(V1_SHIP_SHA_DEFAULT).toMatch(/^[0-9a-f]{40}$/);
+    // It must PRE-date the fail-closed cutover, or the grandfather window is
+    // empty and every historical commit is judged under the new rule.
+    expect(ts).toBeLessThan(Date.parse(FAIL_CLOSED_CUTOVER_DEFAULT));
+  });
+
+  test("MUTATION: --require-shipped refuses a repo with no anchor instead of passing", () => {
+    // A fresh repo with commits but no AgencySignature anywhere is exactly the
+    // shallow-clone shape: nothing to anchor to.
+    const repo = mkdtempSync(join(tmpdir(), "zeta-agsig-noanchor-"));
+    const env = {
+      ...process.env,
+      GIT_CONFIG_GLOBAL: "/dev/null",
+      GIT_CONFIG_SYSTEM: "/dev/null",
+      GIT_AUTHOR_DATE: "2026-08-20T00:00:00Z",
+      GIT_COMMITTER_DATE: "2026-08-20T00:00:00Z",
+    };
+    const git = (args: readonly string[]): void => {
+      // eslint-disable-next-line sonarjs/no-os-command-from-path
+      const r = spawnSync("git", args, { cwd: repo, env, encoding: "utf8" });
+      if ((r.status ?? 1) !== 0) throw new Error(`git ${args.join(" ")}: ${r.stderr}`);
+    };
+    git(["-c", "init.defaultBranch=main", "init", "-q", "."]);
+    git(["config", "user.name", "Aaron Stainback"]);
+    git(["config", "user.email", "aaron_bond@yahoo.com"]);
+    git(["config", "commit.gpgsign", "false"]);
+    git([
+      "commit",
+      "-q",
+      "--allow-empty",
+      "-m",
+      "feat: unsigned agent work",
+      "-m",
+      "Co-authored-by: the shadow <shadow@zeta.agents>",
+    ]);
+
+    const cwd = process.cwd();
+    const outWrite = process.stdout.write.bind(process.stdout);
+    const errWrite = process.stderr.write.bind(process.stderr);
+    const errChunks: string[] = [];
+    let withFlag: number;
+    let withoutFlag: number;
+    try {
+      process.chdir(repo);
+      (process.stdout as { write: (s: string) => boolean }).write = (): boolean => true;
+      (process.stderr as { write: (s: string) => boolean }).write = (s: string): boolean => {
+        errChunks.push(s);
+        return true;
+      };
+      withFlag = main(["--commit", "HEAD", "--require-shipped"]);
+      withoutFlag = main(["--commit", "HEAD"]);
+    } finally {
+      (process.stdout as { write: typeof outWrite }).write = outWrite;
+      (process.stderr as { write: typeof errWrite }).write = errWrite;
+      process.chdir(cwd);
+      rmSync(repo, { recursive: true, force: true });
+    }
+
+    // WITHOUT the flag this unsigned agent commit passes as LEGACY — the
+    // silent-green failure, reproduced here so the guard has something to be
+    // a guard against.
+    expect(withoutFlag).toBe(0);
+    // WITH it, the tool refuses rather than reporting a verification it did
+    // not perform.
+    expect(withFlag).toBe(2);
+    expect(errChunks.join("")).toContain("no v1 ship anchor is reachable");
   });
 });
