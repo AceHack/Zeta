@@ -19,7 +19,16 @@ import {
   drawU64,
   STREAM,
   burstParams,
+  bernoulliParams,
+  gilbertElliottParams,
+  CALIBRATION,
+  LOMAX_WIFI2022_DERIVED,
+  lomaxBurstTrace,
   analyticLossRate,
+  analyticLossRunLength,
+  conditionalRepeatLossRate,
+  blockErasureHistogram,
+  binomialPmf,
   stationaryBadFraction,
   gilbertElliottTrace,
   generatorFromModule,
@@ -48,6 +57,7 @@ import {
   PACKET_CHECKSUM_BYTES,
   PACKET_HEADER_BYTES,
   LossyUdpChannel,
+  MAX_NACK_GAP,
 } from "./udp-lossy-transport";
 
 describe("udp-lossy-transport.chaos", () => {
@@ -110,10 +120,92 @@ describe("udp-lossy-transport.chaos", () => {
     }
   });
 
-  it("UCH-5: meanBurstLength=1 degenerates to i.i.d. Bernoulli — every burst has length 1", () => {
+  // ── UCH-5: `meanBurstLength = 1` is the ANTI-CORRELATED extremum, NOT Bernoulli ──────────
+  //
+  // RENAMED AND RE-AIMED 2026-08-14 (081KZYY6SVJ087G0R0035SW945). This test used to be called
+  // "meanBurstLength=1 degenerates to i.i.d. Bernoulli — every burst has length 1" and asserted
+  // exactly the two things below. Both assertions were TRUE. The NAME was false, and the name is
+  // what everything downstream believed.
+  //
+  // "Every burst has length 1" is not evidence of independence — it is proof of ANTI-dependence.
+  // An i.i.d. Bernoulli(ρ) channel has `P(drop | previous drop) = ρ > 0`, so it produces runs;
+  // its mean run length is `1/(1−ρ)`, which is strictly greater than 1 for every ρ > 0. A mean
+  // run length of exactly 1 is therefore UNATTAINABLE for any i.i.d. lossy channel, and `L = 1`
+  // is the far end of the correlation axis from Bernoulli rather than the origin of it.
+  //
+  // The assertions are kept, unweakened, and the claim attached to them is corrected. `L = 1`
+  // remains a legitimate channel — a genuine anti-correlated bound — and is now labelled as one.
+  it("UCH-5: meanBurstLength=1 FORBIDS consecutive loss — the anti-correlated extremum, not Bernoulli", () => {
     const trace = gilbertElliottTrace(50_000, burstParams(0.1, 1), 0xabcdn);
     expect(trace.meanBurstLength).toBeCloseTo(1, 10);
     expect([...trace.burstHistogram.keys()]).toEqual([1]);
+    // The measurement that renames the test: an i.i.d. channel would report ~0.1 here.
+    expect(conditionalRepeatLossRate(trace)).toBe(0);
+    // …and the closed form agrees, so this is a property of the MODEL, not of one seed.
+    expect(analyticLossRunLength(burstParams(0.1, 1))).toBe(1);
+  });
+
+  // ── UCH-5b: THE FALSIFIER the harness lacked ─────────────────────────────────────────────
+  //
+  // This is the test whose ABSENCE was the defect. Every assertion in UCH-5 passes on a channel
+  // that cannot produce a consecutive loss, so nothing in the suite could tell "uncorrelated"
+  // from "anti-correlated" — and the harness's entire purpose is to measure the effect of
+  // correlation. A model that cannot fail the independence check was never checked for it.
+  //
+  // This test FAILS if consecutive losses are impossible. Run it against `burstParams(ρ, 1)` and
+  // every one of the four assertions below breaks.
+  it("UCH-5b: genuine i.i.d. Bernoulli PRODUCES consecutive losses — fails if the channel forbids them", () => {
+    const rho = 0.1;
+    const trace = gilbertElliottTrace(200_000, bernoulliParams(rho), 0xabcdn);
+
+    // 1. Independence, stated as the conditional that `burstParams(ρ,1)` pins to 0.
+    expect(conditionalRepeatLossRate(trace)).toBeGreaterThan(0.08);
+    expect(conditionalRepeatLossRate(trace)).toBeCloseTo(rho, 2);
+
+    // 2. Runs of length >= 2 EXIST. `burstParams(ρ,1)` has an empty histogram above key 1.
+    const runs = [...trace.burstHistogram.keys()].sort((a, b) => a - b);
+    expect(Math.max(...runs)).toBeGreaterThanOrEqual(3);
+    expect(trace.burstHistogram.get(2)).toBeGreaterThan(0);
+
+    // 3. The mean run length is 1/(1−ρ) — DERIVED from independence, never asserted of it.
+    expect(analyticLossRunLength(bernoulliParams(rho))).toBeCloseTo(1 / (1 - rho), 12);
+    expect(trace.meanBurstLength).toBeCloseTo(1 / (1 - rho), 1);
+    expect(trace.meanBurstLength).toBeGreaterThan(1); // the inequality L=1 cannot satisfy
+
+    // 4. The overall rate is unchanged, so 1-3 measure CORRELATION and not a different channel.
+    expect(analyticLossRate(bernoulliParams(rho))).toBeCloseTo(rho, 12);
+    expect(Math.abs(trace.dropCount / 200_000 - rho)).toBeLessThan(0.005);
+  });
+
+  // ── UCH-5c: the per-block erasure tail — the distribution the [8,4,4] code is decided by ──
+  //
+  // The block code does not see a loss RATE, it sees a count of erasures per block of 8. That
+  // distribution is where the anti-correlated model's error actually lands, and it lands in the
+  // tail — the only part an erasure code cares about.
+  it("UCH-5c: Bernoulli matches Binomial(8,ρ); the L=1 model understates the tail and forbids k>=5", () => {
+    const rho = 0.1;
+    const N = 400_000;
+    const binom = binomialPmf(8, rho);
+    const berHist = blockErasureHistogram(gilbertElliottTrace(N, bernoulliParams(rho), 0xabcdn));
+    const oldHist = blockErasureHistogram(gilbertElliottTrace(N, burstParams(rho, 1), 0xabcdn));
+
+    // Bernoulli IS the binomial, to sampling error, across the whole support.
+    for (let k = 0; k <= 4; k++) expect(Math.abs(berHist[k]! - binom[k]!)).toBeLessThan(0.005);
+    // …including the tail the code fails on.
+    expect(berHist[5]!).toBeGreaterThan(0);
+    expect(berHist[6]!).toBeGreaterThan(0);
+
+    // The L=1 model does not, and every discrepancy flatters the code.
+    expect(oldHist[5]!).toBe(0); // k>=5 is IMPOSSIBLE, not merely rare
+    expect(oldHist[6]!).toBe(0);
+    expect(oldHist[7]!).toBe(0);
+    expect(oldHist[8]!).toBe(0);
+    // k=4 is understated by ~4.6x against the binomial (measured 0.001000 vs 0.004593).
+    expect(oldHist[4]!).toBeLessThan(binom[4]! / 3);
+    // k=3 by ~1.8x (0.018300 vs 0.033067).
+    expect(oldHist[3]!).toBeLessThan(binom[3]! / 1.5);
+    // Understated where it matters means OVERSTATED where the code succeeds — the false green.
+    expect(oldHist[0]! + oldHist[1]!).toBeGreaterThan(berHist[0]! + berHist[1]!);
   });
 
   // ── UCH-6: the harness reads the generator FROM the module (drift guard) ─────────────────
@@ -267,19 +359,34 @@ describe("udp-lossy-transport.chaos", () => {
     }
   });
 
-  // ── UCH-11: THE FALSE GREEN — uniform loss hides the correlated-failure cliff ────────────
-  it("UCH-11: at one fixed loss rate, correlation alone moves delivery — uniform reports a false green", async () => {
+  // ── UCH-11: THE FALSE GREEN — low-correlation loss hides the correlated-failure cliff ────
+  //
+  // The `L = 1` arm was called "uniform" here until 2026-08-14. It is the ANTI-correlated
+  // extremum, not the uncorrelated case (UCH-5/UCH-5b), so the test now measures the correlation
+  // axis with all three points on it named correctly. The finding survives the correction and
+  // gets STRONGER at the honest end: a genuine i.i.d. injector still reports 0.99983 where the
+  // bursty channel reports 0.946, so the false green is real and was never resting on the model
+  // defect. Assertions are added, none relaxed.
+  it("UCH-11: at one fixed loss rate, correlation alone moves delivery — a low-correlation injector reports a false green", async () => {
     const base = { blocks: 6000, seed: 0x5eedn };
-    const uniform = await runScenario(defaultConfig({ ...base, loss: burstParams(0.05, 1) }), "ml-adinkra", 1);
+    const anti = await runScenario(defaultConfig({ ...base, loss: burstParams(0.05, 1) }), "ml-adinkra", 1);
+    const iid = await runScenario(defaultConfig({ ...base, loss: bernoulliParams(0.05) }), "ml-adinkra", 1);
     const bursty = await runScenario(defaultConfig({ ...base, loss: burstParams(0.05, 8) }), "ml-adinkra", 1);
-    // Same mean loss rate, to within sampling error.
-    expect(Math.abs(uniform.observedLossRate - bursty.observedLossRate)).toBeLessThan(0.02);
-    // Uniform loss is essentially invisible to the code — this is the false green.
-    expect(uniform.deliveryRatio).toBeGreaterThan(0.999);
+    // Same mean loss rate, to within sampling error — so this measures CORRELATION, nothing else.
+    expect(Math.abs(anti.observedLossRate - bursty.observedLossRate)).toBeLessThan(0.02);
+    expect(Math.abs(iid.observedLossRate - bursty.observedLossRate)).toBeLessThan(0.02);
+    // Low-correlation loss is essentially invisible to the code — this is the false green, and
+    // it holds for the genuine Bernoulli injector a naive harness would have built.
+    expect(anti.deliveryRatio).toBeGreaterThan(0.999);
+    expect(iid.deliveryRatio).toBeGreaterThan(0.999);
     // Correlated loss at the SAME rate is not.
     expect(bursty.deliveryRatio).toBeLessThan(0.96);
     // The gap is the measurement a uniform injector would have thrown away.
-    expect(uniform.deliveryRatio - bursty.deliveryRatio).toBeGreaterThan(0.04);
+    expect(anti.deliveryRatio - bursty.deliveryRatio).toBeGreaterThan(0.04);
+    expect(iid.deliveryRatio - bursty.deliveryRatio).toBeGreaterThan(0.04);
+    // …and the ordering along the correlation axis is monotone, which is the axis's own falsifier.
+    expect(iid.deliveryRatio).toBeLessThanOrEqual(anti.deliveryRatio);
+    expect(bursty.deliveryRatio).toBeLessThan(iid.deliveryRatio);
   });
 
   // ── UCH-12: the cliff, as numbers ───────────────────────────────────────────────────────
@@ -293,7 +400,13 @@ describe("udp-lossy-transport.chaos", () => {
   // i.e. the shipped decoder fell off an order of magnitude before the code did. It no longer
   // does: the two cliffs now COINCIDE, which is the whole point of the fix, so the assertion
   // that they differ had to be inverted rather than loosened.
-  it("UCH-12: cliff — the shipped decoder's cliff has moved out to the code's own, ~20% uniform", async () => {
+  //
+  // NAME CORRECTED 2026-08-14: the `L = 1` row is the ANTI-CORRELATED extremum, not "uniform"
+  // (081KZYY6SVJ087G0R0035SW945). The 20% figure below is real and is a property of THAT
+  // channel; on genuine i.i.d. loss the same cliff is 12%, measured in UCH-25. The assertions
+  // here are unchanged — the channel they describe has not changed, only its name — and UCH-25
+  // carries the honest number rather than this one being quietly relaxed to accommodate it.
+  it("UCH-12: cliff — the shipped decoder's cliff has moved out to the code's own, ~20% anti-correlated", async () => {
     const rates = [0.005, 0.01, 0.02, 0.03, 0.05, 0.08, 0.12, 0.2, 0.3];
     const impl = await characteriseCliff("impl-adinkra", rates, [1, 4], { blocks: 2000, seed: 0x5eedn }, 0.99, 1);
     const ml = await characteriseCliff("ml-adinkra", rates, [1, 4], { blocks: 2000, seed: 0x5eedn }, 0.99, 1);
@@ -828,5 +941,276 @@ describe("udp-lossy-transport.chaos", () => {
       controlOut = addToBlock(control, d.header.blockPos, new Uint8Array(d.payload)) ?? controlOut;
     }
     expect(Array.from(controlOut![0]!)).toEqual([1, 2, 3, 4]);
+  });
+
+  // ── UCH-18: the closed form for the LOSS-RUN length — the falsifier `1/r` was standing in for
+  //
+  // The harness had two closed forms (stationary π_B and the loss rate) and treated `1/r` as a
+  // third. `1/r` is the mean sojourn in the BAD STATE, which equals the mean run of consecutive
+  // DROPS only when `lossInBad = 1` — i.e. only on the two-parameter Gilbert channel every call
+  // site was pinned to. Under the measured 802.11 fit the two differ by 2.8x, and it is the DROP
+  // run, not the state sojourn, that an erasure code experiences.
+  it("UCH-18: analyticLossRunLength predicts the measured run length on all four channel families", () => {
+    const N = 400_000;
+    for (const [name, params] of [
+      ["anti-correlated L=1", burstParams(0.1, 1)],
+      ["geometric burst L=5.37", burstParams(0.1108, 5.37)],
+      ["i.i.d. Bernoulli", bernoulliParams(0.1)],
+      ["calibrated 802.11 (4-param)", CALIBRATION.wifi2022],
+    ] as const) {
+      const trace = gilbertElliottTrace(N, params, 0xabcdn);
+      const predicted = analyticLossRunLength(params);
+      expect(`${name}:${Math.abs(trace.meanBurstLength - predicted) < 0.15}`).toBe(`${name}:true`);
+      // …and the loss RATE closed form holds at the same time, so this is not a rescaled fit.
+      expect(Math.abs(trace.dropCount / N - analyticLossRate(params))).toBeLessThan(0.005);
+    }
+    // The state sojourn and the drop run COINCIDE only on a total-outage bad state.
+    expect(analyticLossRunLength(burstParams(0.1108, 5.37))).toBeCloseTo(5.37, 6);
+    // …and diverge by 2.8x once `lossInBad` is the measured 0.6097 rather than 1.
+    expect(1 / CALIBRATION.wifi2022.pBadToGood).toBeCloseTo(5.37, 2);
+    expect(analyticLossRunLength(CALIBRATION.wifi2022)).toBeLessThan(2.0);
+  });
+
+  // ── UCH-22: all four Gilbert–Elliott parameters are REACHABLE ────────────────────────────
+  //
+  // `lossInGood = 0, lossInBad = 1` was hardcoded on every path, which is Gilbert's 1960 channel
+  // (`k = 1, h = 0`), not the Elliott 1963 generalisation the harness is named for. Two of four
+  // parameters had no call site (081KZYP23HG087G0R000117H0K). Named, cited operating points beat
+  // a large uncalibrated grid, so the fix is a constructor plus ONE cited point — not a
+  // four-dimensional sweep nobody can afford or interpret.
+  it("UCH-22: the calibrated 802.11 point exercises lossInGood and lossInBad, and is not a total outage", () => {
+    const p = CALIBRATION.wifi2022;
+    // The two parameters that had been unreachable are genuinely interior.
+    expect(p.lossInGood).toBeGreaterThan(0);
+    expect(p.lossInBad).toBeLessThan(1);
+    expect(p.lossInBad).toBeCloseTo(0.6097, 6);
+
+    // A bad state that drops ~61% leaves ~3 of 8 gone per block — ON the [8,4,4] boundary, which
+    // is the region a total-outage model skips over entirely rather than merely exaggerating.
+    const N = 400_000;
+    const cal = blockErasureHistogram(gilbertElliottTrace(N, p, 0xabcdn));
+    const outage = blockErasureHistogram(gilbertElliottTrace(N, burstParams(analyticLossRate(p), 5.37), 0xabcdn));
+    const anti = blockErasureHistogram(gilbertElliottTrace(N, burstParams(analyticLossRate(p), 1), 0xabcdn));
+    // The calibrated channel puts MORE mass on the k=3..5 boundary than either substitute.
+    // Measured at ρ = 0.1108: calibrated 0.12620, total-outage 0.08878, anti-correlated 0.02634
+    // — i.e. 1.42x the total-outage model and 4.79x the anti-correlated one. Pinned at the
+    // measured ratios rather than at round numbers, so a drift shows up as a diff.
+    const boundary = (h: number[]) => h[3]! + h[4]! + h[5]!;
+    expect(boundary(cal)).toBeCloseTo(0.1262, 3);
+    expect(boundary(cal) / boundary(outage)).toBeGreaterThan(1.4);
+    expect(boundary(cal) / boundary(anti)).toBeGreaterThan(4.7);
+    // k>=5 is IMPOSSIBLE under the anti-correlated model and 2.7% of blocks under the fit.
+    expect(anti[5]!).toBe(0);
+    expect(cal[5]!).toBeGreaterThan(0.02);
+    // …at the SAME overall loss rate, so the difference is shape and not severity.
+    expect(analyticLossRate(p)).toBeCloseTo(analyticLossRate(burstParams(analyticLossRate(p), 5.37)), 6);
+
+    // The constructor validates rather than trusting.
+    expect(() => gilbertElliottParams(1.2, 0.5, 0, 1)).toThrow();
+    expect(() => gilbertElliottParams(0, 0, 0, 1)).toThrow();
+    expect(gilbertElliottParams(0.0393, 0.1862, 0.0055, 0.6097)).toEqual(p);
+  });
+
+  // ── UCH-23: the heavy tail a geometric burst length cannot represent ─────────────────────
+  //
+  // GE burst lengths are geometric BY CONSTRUCTION. The measured traces are Pareto Type II with
+  // max 8,853 against a mean of 5.37 — three orders of magnitude — and a block code's failure
+  // probability is dominated by that tail. This is the honest limit of the whole exercise: the
+  // paper that supplies the calibration also concludes a 2-state GE "cannot capture the behavior
+  // of the real system". The renewal channel here is richer than GE and still weaker than the
+  // paper's 4-state HMM, and is labelled as such rather than presented as sufficient.
+  it("UCH-23: the Lomax renewal channel produces runs a geometric channel of equal mean cannot", () => {
+    const N = 400_000;
+    const heavy = lomaxBurstTrace(N, LOMAX_WIFI2022_DERIVED, 0xabcdn);
+    const geo = gilbertElliottTrace(N, burstParams(heavy.dropCount / N, heavy.meanBurstLength), 0xabcdn);
+
+    // Same overall rate and same MEAN burst — matched on everything a GE model can express.
+    expect(Math.abs(heavy.dropCount / N - geo.dropCount / N)).toBeLessThan(0.01);
+    expect(Math.abs(heavy.meanBurstLength - geo.meanBurstLength)).toBeLessThan(0.6);
+
+    // …and the tails are nothing alike. That is the point: matching the first two moments of a
+    // heavy-tailed process with a geometric one does not match the risk.
+    const maxOf = (h: ReadonlyMap<number, number>) => Math.max(...h.keys());
+    expect(maxOf(heavy.burstHistogram)).toBeGreaterThan(maxOf(geo.burstHistogram) * 3);
+    // Total block wipeouts (k=8) are far more common under the tail.
+    expect(blockErasureHistogram(heavy)[8]!).toBeGreaterThan(blockErasureHistogram(geo)[8]!);
+
+    // DST: the renewal channel replays exactly, like every other draw in this harness.
+    expect(lomaxBurstTrace(1000, LOMAX_WIFI2022_DERIVED, 0xabcdn).dropped).toEqual(
+      lomaxBurstTrace(1000, LOMAX_WIFI2022_DERIVED, 0xabcdn).dropped,
+    );
+    expect(lomaxBurstTrace(1000, LOMAX_WIFI2022_DERIVED, 0xabcen).dropped).not.toEqual(
+      lomaxBurstTrace(1000, LOMAX_WIFI2022_DERIVED, 0xabcdn).dropped,
+    );
+  });
+
+  // ── UCH-24: the DELTA — every headline number re-run on a channel that is what it claims ──
+  //
+  // The numbers get WORSE, which is the point. Reported as measurements, with the old value
+  // beside the new one, so the size of the instrument's error is legible rather than quietly
+  // absorbed into a re-baselined figure.
+  it("UCH-24: delivery under genuine Bernoulli is strictly below the anti-correlated model's, at every rate", async () => {
+    const rows: string[] = [];
+    for (const rate of [0.05, 0.12, 0.2, 0.3]) {
+      const anti = await runScenario(
+        defaultConfig({ blocks: 3000, seed: 0x5eedn, loss: burstParams(rate, 1) }),
+        "impl-adinkra",
+        1,
+      );
+      const ber = await runScenario(
+        defaultConfig({ blocks: 3000, seed: 0x5eedn, loss: bernoulliParams(rate) }),
+        "impl-adinkra",
+        1,
+      );
+      rows.push(`${rate}: ${anti.deliveryRatio.toFixed(5)} -> ${ber.deliveryRatio.toFixed(5)}`);
+      // The anti-correlated model NEVER reports worse than the honest one. Not once.
+      expect(`${rate}:${ber.deliveryRatio <= anti.deliveryRatio}`).toBe(`${rate}:true`);
+    }
+    // Pinned so a regression in either direction is visible in the diff.
+    expect(rows).toEqual([
+      "0.05: 1.00000 -> 0.99967",
+      "0.12: 0.99900 -> 0.99767",
+      "0.2: 0.99433 -> 0.98367",
+      "0.3: 0.95933 -> 0.91333",
+    ]);
+  }, 20_000);
+
+  // ── UCH-25: the cliff moves IN by a full grid step under an honest channel ───────────────
+  //
+  // UCH-12 reports "~20% uniform". That row was never uniform. On genuine i.i.d. loss the 99%
+  // cliff is 12%, and UCH-12's own words are corrected rather than its threshold lowered.
+  it("UCH-25: the 99% cliff is 12% under Bernoulli, not the 20% the anti-correlated row reported", async () => {
+    const rates = [0.005, 0.01, 0.02, 0.03, 0.05, 0.08, 0.12, 0.2, 0.3];
+    const base = { blocks: 2000, seed: 0x5eedn };
+    for (const dec of ["impl-adinkra", "ml-adinkra"] as const) {
+      const anti = await characteriseCliff(dec, rates, [1], base, 0.99, 1);
+      const ber = await characteriseCliff(dec, rates, [1], base, 0.99, 1, (r) => bernoulliParams(r));
+      expect(`${dec}:${anti.cliffByBurstLength.get(1)}`).toBe(`${dec}:0.2`);
+      expect(`${dec}:${ber.cliffByBurstLength.get(1)}`).toBe(`${dec}:0.12`);
+    }
+  }, 30_000);
+
+  // ── UCH-26: the bias is NOT uniformly optimistic — the direction reverses at high loss ────
+  //
+  // 081KZYY6SVJ087G0R0035SW945 states that "every uniform-loss row is optimistic in the code's
+  // favour". Measured, that is true for the [8,4,4] delivery curve and FALSE for the XOR-7/8
+  // goodput curve at high loss, and the correction is recorded here rather than left standing.
+  //
+  // The mechanism: anti-correlation SUPPRESSES VARIANCE. At high loss a rate-7/8 code needs a
+  // lucky block (<=1 erasure in 8), and luck is variance. Forbidding runs also forbids the clean
+  // stretches, so the anti-correlated model under-reports XOR-7/8 — by 9x at 40% loss. A model
+  // error is not a bias with a sign; it is a distortion, and which way it points depends on
+  // which tail the consumer of the number lives in.
+  it("UCH-26: at 40% loss the anti-correlated model UNDER-reports XOR-7/8 by ~9x — the bias has no fixed sign", async () => {
+    const cfgAt = (loss: ReturnType<typeof burstParams>) => defaultConfig({ blocks: 3000, seed: 0x5eedn, loss });
+    // Low loss: the honest channel is worse for BOTH codes (the expected direction).
+    const antiLo = await runScenario(cfgAt(burstParams(0.05, 1)), "xor7of8", 1);
+    const berLo = await runScenario(cfgAt(bernoulliParams(0.05)), "xor7of8", 1);
+    expect(berLo.goodput).toBeLessThan(antiLo.goodput);
+
+    // High loss: it is BETTER, and by a lot. UCH-13b's `xor.goodput < 0.05` at 40% is a property
+    // of the anti-correlated channel and does not survive on an i.i.d. one.
+    const antiHi = await runScenario(cfgAt(burstParams(0.4, 1)), "xor7of8", 1);
+    const berHi = await runScenario(cfgAt(bernoulliParams(0.4)), "xor7of8", 1);
+    expect(antiHi.goodput).toBeLessThan(0.05); // the number the module header quotes as 0.010
+    expect(berHi.goodput).toBeGreaterThan(0.05); // …and the honest channel says otherwise
+    expect(berHi.goodput / antiHi.goodput).toBeGreaterThan(5);
+
+    // The crossover itself barely moves, because both curves shift together: ~18% -> ~19%.
+    for (const [rate, expected] of [
+      [0.18, "xor"],
+      [0.19, "impl"],
+    ] as const) {
+      const impl = await runScenario(cfgAt(bernoulliParams(rate)), "impl-adinkra", 1);
+      const xor = await runScenario(cfgAt(bernoulliParams(rate)), "xor7of8", 1);
+      expect(`${rate}:${xor.goodput > impl.goodput ? "xor" : "impl"}`).toBe(`${rate}:${expected}`);
+    }
+  }, 20_000);
+
+  // ── UCH-27: what ACTUALLY put ULT-34's bound out of the instrument's reach ───────────────
+  //
+  // PR #10541 records that mutating `Math.min(pendingCorruptFrames, missing.length)` to the bare
+  // count left all 75 tests green, and attributes the blindness to `meanBurstLength = 1`
+  // forbidding consecutive corruptions. The first half is a fact. **The causal half is wrong,
+  // and this test is the measurement that says so.**
+  //
+  // CONFIRMED EMPIRICALLY once #10541 merged, against the real code rather than a model: with
+  // `Math.min(...)` replaced by the bare `this.pendingCorruptFrames`, this whole chaos file —
+  // all 30 tests, genuine Bernoulli channel and all — stays GREEN, and only the hand-built
+  // `ULT-34` goes red. The corrected loss model does not kill this mutant.
+  //
+  // Replaying the receiver's own arithmetic (READ from `udp-lossy-transport.ts`, the
+  // `pendingCorruptFrames` increment and the `attributable` clamp, not inferred) against
+  // 400,000 frames:
+  //
+  //   channel                        clamp fires
+  //   burstParams(rho, 1)            0
+  //   bernoulliParams(rho)           0      <-- fixing the Bernoulli defect changes NOTHING here
+  //   + loss bursts wider than MAX_NACK_GAP  ~1,000
+  //
+  // The reason is structural, and it is a proof rather than a sample. A refused frame does not
+  // advance `expectedSeq`, and arrivals are in sequence order, so every refused sequence number
+  // still lies inside the NEXT reported gap: `missing.length >= pending`, always, at every burst
+  // length and every loss rate. `pending > missing.length` is UNREACHABLE in an in-order channel
+  // — consecutive corruption is neither necessary nor sufficient for it.
+  //
+  // What does reach it is the DESYNC branch: a gap wider than `MAX_NACK_GAP` is reported locally
+  // and never runs the attribution block, so `pendingCorruptFrames` survives the wide gap and the
+  // next narrow gap satisfies the bound. That needs a loss burst > 64 packets — and the sweep's
+  // burst grid stops at 8. So the instrument defect that hid ULT-34 was the GRID, not the model,
+  // and the heavy-tailed channel reaches it at a realistic overall loss rate.
+  it("UCH-27: the clamp's precondition is unreachable in-order at ANY burst length, and reachable past MAX_NACK_GAP", () => {
+    const N = 200_000;
+    // The receiver's arithmetic, transcribed. `loss` never arrives; `corrupt` arrives and is
+    // refused, incrementing pending without advancing expectedSeq.
+    const replay = (loss: readonly boolean[], corrupt: readonly boolean[]) => {
+      let expectedSeq = 0;
+      let pending = 0;
+      let bites = 0;
+      let desyncs = 0;
+      for (let seq = 0; seq < N; seq++) {
+        if (loss[seq]) continue;
+        if (corrupt[seq]) {
+          pending = Math.min(MAX_NACK_GAP, pending + 1);
+          continue;
+        }
+        const gap = seq - expectedSeq;
+        if (gap > MAX_NACK_GAP) desyncs++; // pending is NOT spent on this path
+        else if (gap > 0) {
+          if (pending > gap) bites++;
+          pending -= Math.min(pending, gap);
+        }
+        expectedSeq = Math.max(expectedSeq, seq + 1);
+      }
+      return { bites, desyncs };
+    };
+    const clean = new Array<boolean>(N).fill(false);
+    const corruptAnti = gilbertElliottTrace(N, burstParams(0.05, 1), 0xc0ffeen, STREAM.duplicate).dropped;
+    const corruptBer = gilbertElliottTrace(N, bernoulliParams(0.05), 0xc0ffeen, STREAM.duplicate).dropped;
+
+    // (a) No loss at all: the clamp cannot fire under EITHER corruption model.
+    expect(replay(clean, corruptAnti).bites).toBe(0);
+    expect(replay(clean, corruptBer).bites).toBe(0);
+
+    // (b) With the sweep's loss channels — still 0, Bernoulli corruption and all. This is the
+    //     assertion that refutes "meanBurstLength = 1 is why the mutation survived".
+    for (const L of [1, 2, 4, 8]) {
+      const loss = gilbertElliottTrace(N, burstParams(0.05, L), 0xabcdn, STREAM.loss).dropped;
+      expect(`L=${L}:${replay(loss, corruptAnti).bites}`).toBe(`L=${L}:0`);
+      expect(`L=${L}:${replay(loss, corruptBer).bites}`).toBe(`L=${L}:0`);
+    }
+
+    // (c) Past MAX_NACK_GAP the desync branch carries `pending` across, and the bound is reached.
+    const longBurst = gilbertElliottTrace(N, burstParams(0.05, 100), 0xabcdn, STREAM.loss).dropped;
+    const reached = replay(longBurst, corruptBer);
+    expect(reached.desyncs).toBeGreaterThan(0);
+    expect(reached.bites).toBeGreaterThan(100);
+
+    // (d) …and the heavy-tailed channel reaches it WITHOUT an artificial burst length, at ~12%
+    //     overall loss. This is the operating point a real 802.11 trace supplies.
+    const heavy = lomaxBurstTrace(N, LOMAX_WIFI2022_DERIVED, 0xabcdn, STREAM.loss);
+    const heavyReached = replay(heavy.dropped, corruptBer);
+    expect(heavyReached.desyncs).toBeGreaterThan(0);
+    expect(heavyReached.bites).toBeGreaterThan(0);
   });
 });

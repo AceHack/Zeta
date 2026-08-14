@@ -1,0 +1,14 @@
+{
+  "id": "080cffff3b58f810a013000857906167",
+  "at": "2026-08-14T10:53:04.159Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZZYETRX087G0R000Q52KAA",
+    "type": "bug",
+    "title": "The chaos sweep's burst-length grid stops at 8, below MAX_NACK_GAP, so the desync branch is never swept",
+    "slug": "the-chaos-sweep-s-burst-length-grid-stops-at-8-below-max-nac",
+    "priority": "P2",
+    "filename": "081KZZYETRX087G0R000Q52KAA-the-chaos-sweep-s-burst-length-grid-stops-at-8-below-max-nac.md"
+  }
+}

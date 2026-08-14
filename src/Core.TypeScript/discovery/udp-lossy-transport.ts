@@ -28,16 +28,32 @@
  *   guidance is inverted across the entire ordinary operating range, and fixing the decoder
  *   (081KZYN3B79087G0R0014ZKE3C) did not change the ranking, only the crossover point:
  *
- *       loss (uniform)      0%      5%     10%     20%     30%     40%
- *       [8,4,4]           0.500   0.500   0.500   0.497   0.479   0.388
- *       XOR-7/8           0.875   0.833   0.722   0.409   0.125   0.010
+ *   RE-MEASURED 2026-08-14 on a corrected instrument (081KZYY6SVJ087G0R0035SW945). The row
+ *   below was labelled "uniform" and was not: it ran the harness's `meanBurstLength = 1`
+ *   channel, which FORBIDS consecutive loss and is the maximally ANTI-CORRELATED extremum, not
+ *   i.i.d. Bernoulli. Both rows are given, because the ranking is the same and the MARGIN is not.
+ *
+ *   Both rows re-measured together at blocks=3000, seed 0x5eed, so they are comparable to each
+ *   other; the anti-correlated row therefore differs from the previously published one in the
+ *   third decimal (0.479 -> 0.480, 0.722 -> 0.725, 0.409 -> 0.413) purely on sample size.
+ *
+ *       loss                0%      5%     10%     20%     30%     40%
+ *       [8,4,4]  anti-corr 0.500   0.500   0.500   0.497   0.480   0.388
+ *       [8,4,4]  i.i.d.    0.500   0.500   0.499   0.492   0.457   0.387
+ *       XOR-7/8  anti-corr 0.875   0.834   0.725   0.413   0.126   0.010
+ *       XOR-7/8  i.i.d.    0.875   0.825   0.714   0.445   0.229   0.092
  *
  *   The reason is rate, not capability: at low loss goodput → rate, and 7/8 > 4/8 by
  *   construction, so no decoder can close that gap. Erasure capability only starts paying once
  *   loss is high enough to break the 7/8 code often. Measured crossover (seeded harness):
- *   ~18% uniform loss, ~31% at mean burst length 4. Below it prefer XOR-7/8 REGARDLESS of
- *   bandwidth; above it [8,4,4] wins decisively (at 40% uniform: 0.388 vs 0.010).
- *   Numbers: `udp-lossy-transport.chaos.test.ts` UCH-13 / UCH-13b.
+ *   ~18% anti-correlated / ~19% i.i.d., and ~31% at mean burst length 4. Below it prefer
+ *   XOR-7/8 REGARDLESS of bandwidth; above it [8,4,4] wins.
+ *
+ *   The old "at 40% uniform: 0.388 vs 0.010" is withdrawn. On an i.i.d. channel it is
+ *   0.387 vs 0.092 — the XOR code is 9x less dead than the anti-correlated model reported,
+ *   because anti-correlation suppresses VARIANCE and a rate-7/8 code lives on the lucky blocks
+ *   that variance supplies. The model error is a distortion, not a bias with a fixed sign.
+ *   Numbers: `udp-lossy-transport.chaos.test.ts` UCH-13 / UCH-13b / UCH-23.
  *
  * ### Adaptive backoff (AIMD — Additive Increase, Multiplicative Decrease)
  *   - Measure loss BY ATTRIBUTED CAUSE — congestion / corruption / reorder / unknown — never as

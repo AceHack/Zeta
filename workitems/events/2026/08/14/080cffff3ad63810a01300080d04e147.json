@@ -1,0 +1,14 @@
+{
+  "id": "080cffff3ad63810a01300080d04e147",
+  "at": "2026-08-14T10:52:59.975Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZZYEPP6087G0R002DRY1PD",
+    "type": "task",
+    "title": "A 2-state Gilbert-Elliott cannot capture the measured 802.11 channel: 4-state HMM or Pareto-tailed successor",
+    "slug": "a-2-state-gilbert-elliott-cannot-capture-the-measured-802-11",
+    "priority": "P2",
+    "filename": "081KZZYEPP6087G0R002DRY1PD-a-2-state-gilbert-elliott-cannot-capture-the-measured-802-11.md"
+  }
+}

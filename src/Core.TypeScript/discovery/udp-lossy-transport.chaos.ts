@@ -14,8 +14,38 @@
  * concentrating the losses inside blocks destroys delivery while spreading them out does not.
  * A uniform-random (Bernoulli) loss injector would be the easy thing to build and would
  * produce a FALSE GREEN precisely because it never concentrates loss. So the loss model here
- * is a 2-state Markov chain, and Bernoulli is available only as its degenerate L=1 case — kept
+ * is a 2-state Markov chain, with Bernoulli available as a named point on it — kept
  * deliberately so the harness can DEMONSTRATE the false green rather than assert it.
+ *
+ * ## The instrument was itself defective until 2026-08-14 — read this before trusting a number
+ *
+ * That Bernoulli point used to be `burstParams(rate, 1)`, and it was not Bernoulli. With `r = 1`
+ * the chain leaves BAD after exactly one packet, always, so the channel FORBIDS consecutive
+ * losses: `P(drop | previous drop) = 0.00000` measured over 400,000 packets. A mean loss-run
+ * length of exactly 1 is unattainable for any i.i.d. channel (Bernoulli sits at `1/(1−ρ)`), so
+ * `L = 1` is the maximally ANTI-correlated extremum rather than the uncorrelated case
+ * (081KZYY6SVJ087G0R0035SW945).
+ *
+ * Two consequences, and the second is why this mattered enough to fix:
+ *
+ * 1. Every "uniform loss" row the harness ever produced was measured on a channel that spaces
+ *    its losses out. Per block of 8 at ρ = 0.1 it understated `k = 4` by 4.6x against
+ *    `Binomial(8, 0.1)` and made `k >= 5` IMPOSSIBLE — and the tail is the only part an erasure
+ *    code cares about. The 99% delivery cliff moves from 20% to **12%** once the channel is
+ *    what it claimed to be (`UCH-22`).
+ * 2. It was silently disarming MUTATION TESTS. A model that cannot produce a fault class cannot
+ *    kill a mutant in that class, so a bound can be deleted and the suite stays green — which
+ *    is exactly what happened to `min(pendingCorruptFrames, missing.length)` in #10541. See
+ *    `UCH-24`, which measures that story and finds the stated cause was the wrong one.
+ *
+ * The correction is `bernoulliParams` (independence DERIVED, not asserted), `gilbertElliottParams`
+ * (all four parameters reachable — the harness was running Gilbert's channel, not Elliott's),
+ * `CALIBRATION.wifi2022` (a cited fit instead of round numbers), and `lomaxBurstTrace` (the
+ * heavy tail a geometric burst length cannot represent). `UCH-5b` is the falsifier the harness
+ * lacked: it FAILS if consecutive losses are impossible.
+ *
+ * `burstParams(ρ, 1)` is KEPT and still used — an anti-correlated bound is a legitimate thing to
+ * measure against. It is simply no longer called uniform.
  *
  * ## Discipline conformance
  *
@@ -51,8 +81,17 @@
  *   1960. — CITED, not page-checked.
  * - E. O. Elliott, "Estimates of Error Rates for Codes on Burst-Noise Channels", BSTJ 42(5),
  *   1963. — CITED, not page-checked. (Elliott generalises Gilbert's channel to a nonzero error
- *   probability in the GOOD state; this harness implements the Gilbert–Elliott form with both
- *   `lossInGood` and `lossInBad` free.)
+ *   probability in the GOOD state. This harness's TYPE always had `lossInGood`/`lossInBad` free;
+ *   until 2026-08-14 no CALL SITE did, so what actually ran was Gilbert's channel throughout.
+ *   `gilbertElliottParams` closes that gap — a free field with no caller is not a capability.)
+ * - I. da Silva & J. Pedroso, "Packet Loss Characterization Using Cross Layer Information and
+ *   HMM for Wi-Fi Networks", Sensors 22(2), 2022 (PMC9696961) — the calibration in
+ *   `CALIBRATION.wifi2022`. **CITED, not page-checked** by this pass; the numbers are carried
+ *   from the audit in 081KZYP23HG087G0R000117H0K, which reports reading them from the paper.
+ *   The same paper concludes a 2-state GE model cannot capture the real system, which is
+ *   recorded here as a LIMIT of this instrument rather than argued away.
+ * - Lomax, "Business Failures: Another Example of the Analysis of Failure Data", JASA 49(268),
+ *   1954 — the Pareto Type II distribution `lomaxBurstTrace` samples. CITED, not page-checked.
  * - Vigna, SplitMix64 (arXiv 1410.0530 §3) — the mixer, already byte-locked in this repo
  *   against the F#/C#/Rust oracles at `src/Core.TypeScript/splitmix64/golden-vectors.json`.
  * - Zhou et al., "FoundationDB: A Distributed Unbundled Transactional Key Value Store", SIGMOD
@@ -136,8 +175,22 @@ export type ChannelState = "good" | "bad";
  *
  *     p = r · π_B / (1 − π_B)
  *
- * meanBurstLength = 1 reduces to i.i.d. Bernoulli loss — the degenerate case, kept so the
- * harness can show what a uniform injector would have reported.
+ * ## `meanBurstLength = 1` is NOT i.i.d. Bernoulli — corrected 2026-08-14
+ *
+ * This docstring used to claim "meanBurstLength = 1 reduces to i.i.d. Bernoulli loss — the
+ * degenerate case". That is false, and it was false in the direction that flatters the code
+ * (081KZYY6SVJ087G0R0035SW945).
+ *
+ * With `r = 1` the chain leaves BAD after EXACTLY one packet, always, so
+ * `P(drop | previous drop) = 0` — measured at 0.00000 over 400,000 packets. An i.i.d.
+ * Bernoulli(ρ) channel has `P(drop | previous drop) = ρ`, and therefore a mean loss-run length
+ * of `1/(1−ρ) > 1`. **A mean burst length of exactly 1 is unattainable for any i.i.d. channel
+ * with nonzero loss.** `L = 1` is not the uncorrelated case — it is the maximally
+ * ANTI-correlated extremum, a channel that actively spaces its losses out.
+ *
+ * `L = 1` is kept, because an anti-correlated extremum is a legitimate and useful bound. It is
+ * simply no longer named Bernoulli. For genuine i.i.d. loss use {@link bernoulliParams}, where
+ * `L = 1/(1−ρ)` FALLS OUT of the chain rather than being asserted of it.
  */
 export function burstParams(overallLossRate: number, meanBurstLength: number): GilbertElliottParams {
   if (overallLossRate < 0 || overallLossRate >= 1) throw new Error("overallLossRate must be in [0,1)");
@@ -146,6 +199,94 @@ export function burstParams(overallLossRate: number, meanBurstLength: number): G
   const p = (r * overallLossRate) / (1 - overallLossRate);
   return { pGoodToBad: Math.min(1, p), pBadToGood: r, lossInGood: 0, lossInBad: 1 };
 }
+
+/**
+ * Genuine i.i.d. Bernoulli(ρ) loss, expressed as the Gilbert–Elliott point where the chain is
+ * MEMORYLESS.
+ *
+ * The construction is forced, not chosen. A two-state chain is memoryless exactly when the
+ * probability of being BAD next is the same from either state:
+ *
+ *     P(bad next | good) = p          P(bad next | bad) = 1 − r
+ *     memoryless  ⟺  p = 1 − r  ⟺  r = 1 − p
+ *
+ * Setting `p = ρ` then gives `r = 1 − ρ`, `π_B = p/(p+r) = ρ`, and with a total outage in BAD
+ * the drop indicator is i.i.d. Bernoulli(ρ) exactly.
+ *
+ * The mean loss-run length is then **derived, not asserted**: the expected sojourn in BAD is
+ * `1/r = 1/(1−ρ)`. Nothing here sets a burst length; it is a consequence of demanding
+ * independence. That is the whole difference from `burstParams(ρ, 1)`, which asserts `L = 1`
+ * and thereby forbids the consecutive losses independence requires.
+ *
+ * `UCH-5b` is the falsifier: it FAILS if consecutive losses are impossible.
+ */
+export function bernoulliParams(lossRate: number): GilbertElliottParams {
+  if (lossRate < 0 || lossRate >= 1) throw new Error("lossRate must be in [0,1)");
+  return { pGoodToBad: lossRate, pBadToGood: 1 - lossRate, lossInGood: 0, lossInBad: 1 };
+}
+
+/**
+ * The full four-parameter Gilbert–Elliott channel, every parameter reachable.
+ *
+ * `burstParams` and `bernoulliParams` both hardcode `lossInGood = 0, lossInBad = 1` — which in
+ * the classical notation is `k = 1, h = 0`, i.e. **Gilbert's** 1960 channel with a total outage
+ * in the bad state, not **Elliott's** 1963 generalisation the harness is named for. Two of the
+ * four parameters were unreachable through any call site until this constructor existed
+ * (081KZYP23HG087G0R000117H0K).
+ *
+ * `p` and `r` are the transition probabilities; `lossInGood`/`lossInBad` are `1−k` and `1−h`.
+ */
+export function gilbertElliottParams(
+  pGoodToBad: number,
+  pBadToGood: number,
+  lossInGood: number,
+  lossInBad: number,
+): GilbertElliottParams {
+  for (const [name, v] of [
+    ["pGoodToBad", pGoodToBad],
+    ["pBadToGood", pBadToGood],
+    ["lossInGood", lossInGood],
+    ["lossInBad", lossInBad],
+  ] as const) {
+    if (!(v >= 0 && v <= 1)) throw new Error(`${name} must be in [0,1]`);
+  }
+  if (pGoodToBad === 0 && pBadToGood === 0) throw new Error("p and r cannot both be 0 — the chain never mixes");
+  return { pGoodToBad, pBadToGood, lossInGood, lossInBad };
+}
+
+/**
+ * Named, CITED operating points. A calibrated point beats a large uncalibrated grid — which is
+ * the entire lesson of 081KZYP23HG087G0R000117H0K, whose sweep values
+ * (`[0.005 … 0.3] × [1,2,4,8]`) are round numbers with no trace behind them.
+ *
+ * `wifi2022` — da Silva & Pedroso, "Packet Loss Characterization Using Cross Layer Information
+ * and HMM for Wi-Fi Networks", Sensors 22(2), 2022 (PMC9696961). 410 hours of indoor 802.11 UDP
+ * traces. **CITED, not page-checked** — the numbers below are as recorded in the audit
+ * (081KZYP23HG087G0R000117H0K), which reports having read them from the paper.
+ *
+ * Two of these four numbers are the point of the whole exercise:
+ *   - `lossInBad = 0.6097`, not 1. A bad state that drops ~61% of packets leaves ~3 of 8 gone
+ *     per block — sitting exactly ON the [8,4,4] correction boundary, which is precisely where a
+ *     full decoder and a partial one differ most. `lossInBad = 1` is not merely harsher, it is
+ *     MIS-SHAPED: it tests the region where every decoder fails alike.
+ *   - `lossInGood = 0.0055`, not 0. The good state is not clean, so a block can fail without any
+ *     burst at all.
+ *
+ * **Named honestly:** the same paper concludes a 2-state GE model "cannot capture the behavior
+ * of the real system" and uses a 4-state HMM instead — see {@link lomaxBurstTrace} and the
+ * follow-up item. This constant is the best 2-state point available, not a sufficient one.
+ *
+ * LoRa and LEO-satellite fits were searched for and **NOT FOUND**. They are deliberately absent
+ * rather than extrapolated from the Wi-Fi fit.
+ */
+export const CALIBRATION = {
+  wifi2022: {
+    pGoodToBad: 0.0393,
+    pBadToGood: 0.1862,
+    lossInGood: 0.0055,
+    lossInBad: 0.6097,
+  } as GilbertElliottParams,
+} as const;
 
 /** Closed-form stationary probability of the BAD state. The falsifier for `gilbertElliottTrace`. */
 export function stationaryBadFraction(p: GilbertElliottParams): number {
@@ -157,6 +298,79 @@ export function stationaryBadFraction(p: GilbertElliottParams): number {
 export function analyticLossRate(p: GilbertElliottParams): number {
   const piB = stationaryBadFraction(p);
   return (1 - piB) * p.lossInGood + piB * p.lossInBad;
+}
+
+/**
+ * Closed-form mean length of a run of CONSECUTIVE DROPS. The third falsifier, and the one the
+ * harness was missing.
+ *
+ * `1/r` is the mean sojourn in the BAD state, and the harness treated the two as the same
+ * number. They are equal only when `lossInBad = 1` and `lossInGood = 0`. Under the measured
+ * 802.11 fit (`lossInBad = 0.6097`) a bad-state sojourn is punctuated by packets that get
+ * through, so the DROP runs are far shorter than the STATE sojourns — and the drop run is what
+ * an erasure code actually experiences.
+ *
+ *     E[run] = P(drop) / P(drop_i ∧ ¬drop_{i−1})
+ *
+ * both taken in the stationary distribution. For `burstParams(ρ, L)` this returns exactly `L`;
+ * for `bernoulliParams(ρ)` it returns exactly `1/(1−ρ)`; for `burstParams(ρ, 1)` it returns
+ * exactly 1, which is the anti-correlation stated as a number.
+ */
+export function analyticLossRunLength(p: GilbertElliottParams): number {
+  const piB = stationaryBadFraction(p);
+  const pi = { good: 1 - piB, bad: piB };
+  const e = { good: p.lossInGood, bad: p.lossInBad };
+  // T[s][t] — probability of moving s → t in one packet.
+  const T = {
+    good: { good: 1 - p.pGoodToBad, bad: p.pGoodToBad },
+    bad: { good: p.pBadToGood, bad: 1 - p.pBadToGood },
+  } as const;
+  const pDrop = pi.good * e.good + pi.bad * e.bad;
+  let pRunStart = 0;
+  for (const s of ["good", "bad"] as const)
+    for (const t of ["good", "bad"] as const) pRunStart += pi[s] * (1 - e[s]) * T[s][t] * e[t];
+  return pRunStart === 0 ? 0 : pDrop / pRunStart;
+}
+
+/** Measured `P(drop | previous drop)`. 0 means the channel FORBIDS consecutive loss. */
+export function conditionalRepeatLossRate(trace: LossTrace): number {
+  let prevDrops = 0;
+  let bothDrop = 0;
+  for (let i = 1; i < trace.dropped.length; i++) {
+    if (!trace.dropped[i - 1]) continue;
+    prevDrops++;
+    if (trace.dropped[i]) bothDrop++;
+  }
+  return prevDrops === 0 ? 0 : bothDrop / prevDrops;
+}
+
+/**
+ * Per-block-of-8 erasure-count histogram: `k → fraction of blocks with exactly k drops`.
+ *
+ * This is the distribution the [8,4,4] code is decided by, so it is the distribution the
+ * instrument has to get right. Under `burstParams(ρ, 1)` the k≥4 tail is understated ~4.6× and
+ * k≥5 is IMPOSSIBLE; under `bernoulliParams(ρ)` it matches `Binomial(8, ρ)`.
+ */
+export function blockErasureHistogram(trace: LossTrace, blockSize = BLOCK_TOTAL): number[] {
+  const counts = new Array<number>(blockSize + 1).fill(0);
+  const blocks = Math.floor(trace.dropped.length / blockSize);
+  for (let b = 0; b < blocks; b++) {
+    let k = 0;
+    for (let i = 0; i < blockSize; i++) if (trace.dropped[b * blockSize + i]) k++;
+    counts[k] = counts[k]! + 1;
+  }
+  return blocks === 0 ? counts : counts.map((c) => c / blocks);
+}
+
+/** `Binomial(n, p)` pmf — the closed form `blockErasureHistogram` is checked against. */
+export function binomialPmf(n: number, p: number): number[] {
+  const out = new Array<number>(n + 1).fill(0);
+  let choose = 1;
+  for (let k = 0; k <= n; k++) {
+    out[k] = choose * Math.pow(p, k) * Math.pow(1 - p, n - k);
+    choose = (choose * (n - k)) / (k + 1);
+  }
+  return out;
 }
 
 export interface LossTrace {
@@ -229,6 +443,117 @@ export function gilbertElliottTrace(
     burstHistogram,
     meanBurstLength: bursts === 0 ? 0 : burstPackets / bursts,
   };
+}
+
+// ── Heavy-tailed (Pareto Type II / Lomax) burst channel ───────────────────────────────────
+//
+// Gilbert–Elliott burst lengths are GEOMETRIC by construction — the sojourn in BAD is a
+// coin-flip repeated. The da Silva & Pedroso traces are not: burst length mean 5.37, sd 31.68,
+// **max 8,853**, fitted with a Pareto Type II tail. A block code's failure probability is
+// dominated by that tail, and a geometric model cannot represent it at any parameter setting —
+// which is why the paper concludes a 2-state GE "cannot capture the behavior of the real
+// system" and moves to a 4-state HMM.
+//
+// So this is a RENEWAL process, not a Markov chain: alternating good runs (geometric) and loss
+// bursts (Lomax). It is a strictly richer instrument than GE, and still strictly weaker than
+// the paper's model. Named as such.
+
+export interface LomaxBurstParams {
+  /** Pareto Type II shape α. Tail index — the mean is finite for α>1, the variance for α>2. */
+  readonly alpha: number;
+  /** Pareto Type II scale λ. */
+  readonly lambda: number;
+  /** Mean length of a clean run between bursts (geometric). Sets the overall loss rate. */
+  readonly meanGoodRun: number;
+  /** Hard cap on a single burst, in packets. The traces' observed max is 8,853. */
+  readonly maxBurst: number;
+}
+
+/**
+ * Lomax parameters MOMENT-MATCHED to the reported 802.11 burst-length moments.
+ *
+ * **Register: DERIVED, not the paper's fit.** da Silva & Pedroso report burst mean 5.37 and sd
+ * 31.68 and state the fit is Pareto Type II; they do not report α and λ in the audit note this
+ * repo holds, so these two numbers are solved from the moments rather than read off:
+ *
+ *     Var/mean² = α/(α−2)  ⇒  1003.62/28.84 = 34.80  ⇒  α ≈ 2.0592
+ *     mean = λ/(α−1)       ⇒  λ ≈ 5.37 × 1.0592 ≈ 5.688
+ *
+ * **Honest limit, stated because α is barely above 2:** at α ≈ 2.06 the variance exists but is
+ * enormous and slowly-converging, so the sd match is fragile and a finite run will not reproduce
+ * 31.68 reliably. The mean is robust; the sd is not. Use this to see whether the tail CHANGES A
+ * CONCLUSION, not to quote a second-decimal figure.
+ *
+ * `meanGoodRun = 43` puts the overall loss rate at 5.37/(5.37+43) ≈ 11.1%, matching the overall
+ * rate implied by `CALIBRATION.wifi2022`, so the two channels are comparable at equal mean loss
+ * — which is the only way to attribute a delta to SHAPE rather than to rate.
+ */
+export const LOMAX_WIFI2022_DERIVED: LomaxBurstParams = {
+  alpha: 2.0592,
+  lambda: 5.688,
+  meanGoodRun: 43,
+  maxBurst: 8853,
+};
+
+/**
+ * Generate a deterministic heavy-tailed drop trace by renewal: geometric good run, Lomax burst,
+ * repeat. Total outage within a burst.
+ *
+ * Inverse-CDF sampling on the declared entropy channel keeps it DST-replayable and O(1)-seekable
+ * per RENEWAL (not per packet — the renewal index is the counter, so the trace is still a pure
+ * function of the seed).
+ */
+export function lomaxBurstTrace(
+  count: number,
+  params: LomaxBurstParams,
+  seed: bigint,
+  stream: number = STREAM.loss,
+): LossTrace {
+  if (params.alpha <= 0 || params.lambda <= 0) throw new Error("alpha and lambda must be > 0");
+  if (params.meanGoodRun <= 0) throw new Error("meanGoodRun must be > 0");
+  const dropped = new Array<boolean>(count).fill(false);
+  const states = new Array<ChannelState>(count).fill("good");
+
+  // Geometric with mean m has success probability 1/m; inverse-CDF gives ceil(ln(u)/ln(1−1/m)).
+  const qGood = 1 - 1 / params.meanGoodRun;
+  let i = 0;
+  let renewal = 0;
+  while (i < count) {
+    const uG = drawUnit(seed, stream, 4 * renewal);
+    const good = qGood <= 0 ? 1 : Math.max(1, Math.ceil(Math.log(1 - uG) / Math.log(qGood)));
+    i += good;
+    if (i >= count) break;
+    const uB = drawUnit(seed, stream, 4 * renewal + 1);
+    // Lomax inverse CDF: X = λ((1−u)^(−1/α) − 1). Rounded up so a burst is at least 1 packet.
+    const raw = params.lambda * (Math.pow(1 - uB, -1 / params.alpha) - 1);
+    const burst = Math.min(params.maxBurst, Math.max(1, Math.ceil(raw)));
+    for (let b = 0; b < burst && i < count; b++, i++) {
+      dropped[i] = true;
+      states[i] = "bad";
+    }
+    renewal++;
+  }
+
+  let dropCount = 0;
+  const burstHistogram = new Map<number, number>();
+  let run = 0;
+  for (let k = 0; k < count; k++) {
+    if (dropped[k]) {
+      dropCount++;
+      run++;
+    } else if (run > 0) {
+      burstHistogram.set(run, (burstHistogram.get(run) ?? 0) + 1);
+      run = 0;
+    }
+  }
+  if (run > 0) burstHistogram.set(run, (burstHistogram.get(run) ?? 0) + 1);
+  let bursts = 0;
+  let burstPackets = 0;
+  for (const [len, n] of burstHistogram) {
+    bursts += n;
+    burstPackets += len * n;
+  }
+  return { dropped, states, dropCount, burstHistogram, meanBurstLength: bursts === 0 ? 0 : burstPackets / bursts };
 }
 
 // ── GF(2) maximum-likelihood erasure decoder ──────────────────────────────────────────────
@@ -408,6 +733,12 @@ export interface ChaosConfig {
   readonly blocks: number;
   readonly payloadBytes: number;
   readonly loss: GilbertElliottParams;
+  /**
+   * When present, the loss process is the heavy-tailed RENEWAL channel instead of the
+   * Gilbert–Elliott chain, and `loss` is ignored. Absent by default, so every existing number is
+   * reproduced rather than re-baselined.
+   */
+  readonly heavyTailLoss?: LomaxBurstParams;
   /** Per-packet probability that a packet is delayed behind the next `reorderDepth` packets. */
   readonly reorderProbability: number;
   readonly reorderDepth: number;
@@ -532,7 +863,9 @@ export function applyFaults(
   wire: readonly WirePacket[],
   cfg: ChaosConfig,
 ): { delivered: WirePacket[]; trace: LossTrace; corrupted: number } {
-  const trace = gilbertElliottTrace(wire.length, cfg.loss, cfg.seed, STREAM.loss);
+  const trace = cfg.heavyTailLoss
+    ? lomaxBurstTrace(wire.length, cfg.heavyTailLoss, cfg.seed, STREAM.loss)
+    : gilbertElliottTrace(wire.length, cfg.loss, cfg.seed, STREAM.loss);
 
   const survived: WirePacket[] = [];
   let corrupted = 0;
@@ -783,13 +1116,19 @@ export async function characteriseCliff(
   base: Partial<ChaosConfig> = {},
   threshold = 0.99,
   degreeOfParallelism = 1,
+  /**
+   * The channel family the sweep runs on. Defaults to `burstParams` so every previously
+   * published sweep reproduces exactly. Pass `(rate) => bernoulliParams(rate)` to sweep genuine
+   * i.i.d. loss — which is what the `L = 1` row was believed to be and was not.
+   */
+  channelFor: (rate: number, meanBurstLength: number) => GilbertElliottParams = burstParams,
 ): Promise<CliffReport> {
   const points: SweepPoint[] = [];
   const cliffByBurstLength = new Map<number, number | null>();
   for (const L of burstLengths) {
     let cliff: number | null = null;
     for (const rate of lossRates) {
-      const cfg = defaultConfig({ ...base, loss: burstParams(rate, L) });
+      const cfg = defaultConfig({ ...base, loss: channelFor(rate, L) });
       const res = await runScenario(cfg, decoder, degreeOfParallelism);
       points.push({
         meanBurstLength: L,

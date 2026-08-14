@@ -105,6 +105,25 @@ a lower layer, not a replacement for it, and a full picture of this transport wa
 
 ## 4. Loss model: Gilbert–Elliott, and why uniform loss would have produced a false green
 
+> **CORRECTION 2026-08-14 — every "uniform" number in this section is mislabelled.**
+> `meanBurstLength = 1` is **not** i.i.d. Bernoulli. It forbids consecutive losses outright
+> (`P(drop | previous drop) = 0.00000` over 400,000 packets), which makes it the maximally
+> **anti-correlated** extremum rather than the uncorrelated case — a mean loss-run length of
+> exactly 1 is unattainable for any i.i.d. channel, which sits at `1/(1−ρ)`.
+>
+> The section's *conclusion* survives: the false green is real, and a genuine Bernoulli injector
+> still reports 99.98% delivery where the bursty channel reports 94.6%. What does not survive is
+> the quantitative claim — the 99% cliff is **12%**, not the ~20% recorded below, and the k=4
+> per-block erasure tail was understated 4.6× against `Binomial(8, 0.1)`.
+> Sentence 3 of this section ("Bernoulli loss at rate `q` almost never puts two losses in the
+> same block") is the correct statement of what the harness *should* have been doing and is
+> exactly what the model was not doing.
+>
+> Full deltas, the falsifier that was missing, and the calibrated 802.11 point:
+> `docs/research/2026-08-14-the-chaos-harness-loss-model-was-anti-correlated-not-uniform-a-falsifier-a-calibration-and-what-really-disarmed-ult-34.md`
+> (workitems `081KZYY6SVJ087G0R0035SW945`, `081KZYP23HG087G0R000117H0K`). Left in place rather
+> than rewritten: the record of what was believed is worth more than a clean page.
+
 **Anchors (Beacon).** All four are **CITED, not page-checked** — I did not open the papers:
 
 - E. N. Gilbert, *Capacity of a Burst-Noise Channel*, Bell System Technical Journal 39(5), 1960.

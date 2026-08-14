@@ -1,11 +1,12 @@
 ---
 id: 081KZYP23HG087G0R000117H0K
 type: task
-state: backlog
+state: done
 priority: P2
 slug: calibrate-the-gilbert-elliott-chaos-harness-against-publishe
 title: "Calibrate the Gilbert-Elliott chaos harness against published loss-trace fits: free k and h, sweep the measured 802.11 parameters, and add a heavy-tailed burst option"
 created: 2026-08-13T23:07:04.112Z
+completed: 2026-08-14T10:55:27.628Z
 depends_on: []
 composes_with: []
 ---
@@ -92,3 +93,42 @@ work, not a precondition already met.
 **Cost, named honestly:** four free parameters make the sweep 4-dimensional, and a full grid is
 not affordable. Pick 3-5 *named, cited* operating points instead of sweeping k and h — a
 calibrated point beats a large uncalibrated grid, which is the whole lesson of this item.
+
+---
+
+## RESOLVED 2026-08-14
+
+All five proposals addressed; two of them by **filing rather than pretending**.
+
+1. **Done.** `gilbertElliottParams(p, r, lossInGood, lossInBad)` added with validation, and
+   `CALIBRATION.wifi2022 = { 0.0393, 0.1862, 0.0055, 0.6097 }` carries its citation in the code.
+   The item's framing is sharpened by one point worth keeping: `GilbertElliottParams` **did**
+   expose `k` and `h`, but no call site set them — **a free field with no caller is not a
+   capability**, and what actually ran was Gilbert's 1960 channel throughout.
+2. **Done**, and the "differently-shaped, not merely harsher" claim is now a measurement. At a
+   matched ρ = 0.1108, mass on the k=3..5 `[8,4,4]` boundary: calibrated **0.12620**,
+   total-outage GE **0.08878** (1.42× less), anti-correlated **0.02634** (4.79× less). `UCH-19`.
+   The prediction that the shipped decoder would "look better" did not materialise as stated —
+   `impl` and `ml` now coincide everywhere (the decoder was fixed in between), so there is no
+   full-vs-partial gap left to widen. Recorded rather than quietly dropped.
+3. **Done, with its register attached.** `lomaxBurstTrace` is a Pareto Type II renewal channel.
+   Its `α = 2.0592, λ = 5.688` are **DERIVED** by moment-matching the reported mean/sd, **not**
+   the paper's fit; at α ≈ 2.06 the variance is barely finite so the sd match is fragile
+   (measured 12.2 vs the reported 31.68). Adequate for "does the tail change a conclusion",
+   not for quoting a figure. `UCH-20`.
+4. **Done** — and it turned out the labelling was worse than "uncalibrated". The synthetic rows
+   were labelled *uniform* and the channel was **anti-correlated**
+   (`081KZYY6SVJ087G0R0035SW945`, closed alongside this).
+5. **Filed:** `081KZZYENAT087G0R001RJ4T6W` (LoRa/LEO fits — still UNRESOLVED, not extrapolated)
+   and `081KZZYEPP6087G0R002DRY1PD` (the 4-state HMM the cited paper says is actually required).
+
+**The item's own honest limit, kept:** `CALIBRATION.wifi2022` is the best 2-state point
+available, **not a sufficient model**. The same paper concludes a 2-state GE "cannot capture the
+behavior of the real system". That sentence is now in the code, in the tests, and in the research
+doc rather than only in this work-item.
+
+## Pointers
+
+- `src/Core.TypeScript/discovery/udp-lossy-transport.chaos.ts` — `gilbertElliottParams`,
+  `CALIBRATION`, `lomaxBurstTrace`, `LOMAX_WIFI2022_DERIVED`
+- `docs/research/2026-08-14-the-chaos-harness-loss-model-was-anti-correlated-not-uniform-*.md` §3
