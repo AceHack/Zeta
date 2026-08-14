@@ -1,0 +1,12 @@
+{
+  "pr_number": 10640,
+  "archive_path": "docs/history/pr-reviews/PR-10640-feat-scheduler-heat-classify-shed-paths-annihilation-is-loss-deferral-is-pressur.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T18:46:43.904Z",
+  "schema_version": "v1",
+  "commit_sha": "7d5ea62162e6cb5228b65c7bf578babf22218001",
+  "title": "feat(scheduler-heat): classify shed paths — annihilation is loss, deferral is pressure",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T18:46:07Z",
+  "head_ref": "otto/heat-shed-classification"
+}
