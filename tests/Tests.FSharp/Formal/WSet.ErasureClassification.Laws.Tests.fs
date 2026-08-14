@@ -95,78 +95,57 @@ let private keyProb (s: (int * float) list) =
         String.Format(CultureInfo.InvariantCulture, "{0}:{1}", k, p.ToString("R", CultureInfo.InvariantCulture)))
     |> String.concat ","
 
-/// Thermodynamic class under Landauer/Bennett.
-type ThermoClass =
-    /// Injective on the swept domain — the output determines the input.
-    /// Bennett 1973: erases nothing, pays nothing. A Landauer meter here reads 0 forever.
-    | Reversible
-    /// Non-injective — distinct inputs collapse to one output.
-    /// Landauer 1961: pays >= kT·ln2 per bit lost. This is where a meter has signal.
-    | Erasing
-
 /// Measure the class of an operation by exhaustive sweep: group the domain by image,
 /// and read the largest fibre. maxFibre = 1 <=> injective. bits erased = log2(maxFibre).
-let private measureClass (inputs: 'a list) (probe: 'a -> string) : ThermoClass * float * int =
+let private measureClass
+    (inputs: 'a list)
+    (probe: 'a -> string)
+    : WSetHeat.ThermodynamicClass * float * int =
     let fibres = inputs |> List.groupBy probe
     let maxFibre = fibres |> List.map (snd >> List.length) |> List.max
-    let cls = if maxFibre = 1 then Reversible else Erasing
+
+    let cls =
+        if maxFibre = 1 then
+            WSetHeat.ThermodynamicClass.Reversible
+        else
+            WSetHeat.ThermodynamicClass.Erasing
+
     cls, Math.Log(float maxFibre, 2.0), maxFibre
 
-/// A row of the declared table: one public `WSet` operation, the specialization that was
-/// swept (stated, so the claim is auditable), and the class it is DECLARED to have.
+/// One source-owned profile paired with the executable specialization measured here.
 type private Row =
-    { Op: string
-      Specialization: string
-      Declared: ThermoClass
-      Measure: unit -> ThermoClass * float * int }
+    { Operation: WSetHeat.Operation
+      Measure: unit -> WSetHeat.ThermodynamicClass * float * int }
 
 let private table: Row list =
     [
       // ── the reversible corner: bijections. Bennett — free, and unmeterable. ──
-      { Op = "negate"
-        Specialization = "negate intStar — THE RETRACTION (w -> -w)"
-        Declared = Reversible
+      { Operation = WSetHeat.Operation.Negate
         Measure = fun () -> measureClass domain (WSet.negate intStar >> keyZ) }
 
-      { Op = "copy"
-        Specialization = "copy — the comonoid comultiplication Delta (k -> (k,k))"
-        Declared = Reversible
+      { Operation = WSetHeat.Operation.Copy
         Measure = fun () -> measureClass domain (WSet.copy >> keyZ2) }
 
-      { Op = "mapKeys"
-        Specialization = "mapKeys id — deterministic re-keying with an INJECTIVE g"
-        Declared = Reversible
+      { Operation = WSetHeat.Operation.MapKeysInjective
         Measure = fun () -> measureClass domain (WSet.mapKeys id >> keyZ) }
 
-      { Op = "apply"
-        Specialization = "apply intStar (fun k -> [ k+10, One ]) — an injective re-keying operator"
-        Declared = Reversible
+      { Operation = WSetHeat.Operation.ApplyInjective
         Measure = fun () -> measureClass domain (WSet.apply intStar (fun k -> [ (k + 10), 1L ]) >> keyZ) }
 
       // ── the erasing corner: where the Landauer floor actually binds. ──
-      { Op = "consolidate"
-        Specialization = "consolidate intStar isZero — THE ANNIHILATION STEP (+w and -w cancel here)"
-        Declared = Erasing
+      { Operation = WSetHeat.Operation.Consolidate
         Measure = fun () -> measureClass domain (WSet.consolidate intStar isZeroI >> keyZ) }
 
-      { Op = "discard"
-        Specialization = "discard intStar — the comonoid counit (categorical deletion)"
-        Declared = Erasing
+      { Operation = WSetHeat.Operation.Discard
         Measure = fun () -> measureClass domain (WSet.discard intStar >> keyW) }
 
-      { Op = "bornProb"
-        Specialization = "bornProb |w|^2 — the measurement boundary (normalisation loses global scale)"
-        Declared = Erasing
+      { Operation = WSetHeat.Operation.BornProb
         Measure = fun () -> measureClass domain (WSet.bornProb (fun (w: int64) -> float w * float w) >> keyProb) }
 
-      { Op = "plus"
-        Specialization = "plus, swept over the PAIR (a,b) — concatenation forgets the split point"
-        Declared = Erasing
+      { Operation = WSetHeat.Operation.Plus
         Measure = fun () -> measureClass domain2 (fun (a, b) -> keyZ (WSet.plus a b)) }
 
-      { Op = "tensor"
-        Specialization = "tensor intStar, swept over the PAIR (a,b) — an empty factor annihilates"
-        Declared = Erasing
+      { Operation = WSetHeat.Operation.Tensor
         Measure = fun () -> measureClass domain2 (fun (a, b) -> keyZ2 (WSet.tensor intStar a b)) } ]
 
 // ═══ 1. The declared class must match the measured class, per operation ═══
@@ -179,17 +158,18 @@ let ``every declared thermodynamic class matches the exhaustively measured class
         table
         |> List.choose (fun row ->
             let measured, bits, fibre = row.Measure()
+            let declared = WSetHeat.profile row.Operation
 
-            if measured = row.Declared then
+            if measured = declared.Classification then
                 None
             else
                 Some(
                     String.Format(
                         CultureInfo.InvariantCulture,
                         "{0} ({1}): declared {2} but measured {3} (largest fibre {4}, {5:F3} bits erased)",
-                        row.Op,
-                        row.Specialization,
-                        row.Declared,
+                        declared.WSetFunction,
+                        declared.Specialization,
+                        declared.Classification,
                         measured,
                         fibre,
                         bits
@@ -206,12 +186,17 @@ let ``every declared thermodynamic class matches the exhaustively measured class
 let ``reversible operations erase exactly zero bits and erasing operations erase strictly more`` () =
     for row in table do
         let _, bits, fibre = row.Measure()
+        let declared = WSetHeat.profile row.Operation
+        let bitsPpm = int64 (Math.Round(bits * 1_000_000.0))
 
-        match row.Declared with
-        | Reversible ->
+        fibre |> should equal declared.LargestFibre
+        bitsPpm |> should equal declared.BitsErasedPpm
+
+        match declared.Classification with
+        | WSetHeat.ThermodynamicClass.Reversible ->
             fibre |> should equal 1
             bits |> should equal 0.0
-        | Erasing ->
+        | WSetHeat.ThermodynamicClass.Erasing ->
             fibre |> should be (greaterThan 1)
             bits |> should be (greaterThan 0.0)
 
@@ -233,7 +218,10 @@ let ``the classification table covers exactly the public WSet operation surface`
         |> Array.distinct
         |> Set.ofArray
 
-    let declared = table |> List.map (fun r -> r.Op) |> Set.ofList
+    let declared =
+        WSetHeat.allProfiles
+        |> List.map (fun operationProfile -> operationProfile.WSetFunction)
+        |> Set.ofList
 
     // Named separately so a failure says WHICH way it drifted.
     let unclassified = Set.difference reflected declared

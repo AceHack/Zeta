@@ -188,7 +188,15 @@
       "token": "forgotten"
     },
     {
+      "kind": "wset.consolidate.forgotten",
+      "token": "forgotten"
+    },
+    {
       "kind": "meta-cart.policy-backpressure",
+      "token": "backpressure"
+    },
+    {
+      "kind": "prediction.complexity-bound.backpressure",
       "token": "backpressure"
     },
     {

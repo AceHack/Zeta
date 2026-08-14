@@ -18,12 +18,12 @@ composes_with: []
 ## The state today (checked 2026-08-14)
 
 `src/Core.TypeScript/bayesian/bnn-persistence.ts` exists, is tested (15 tests), and its
-header names `docs/observe-events/bnn-state.json` as living "in the same G-set as the
+header names **docs/observe-events/bnn-state.json** as living "in the same G-set as the
 society evolution events, so the BNN state is version-controlled alongside the society
 state" -- i.e. it was written FOR the society runner.
 
 `saveBnnState` and `loadBnnState` have **zero call sites** anywhere in the repo.
-`docs/observe-events/bnn-state.json` has never existed. The path was drawn and never
+**docs/observe-events/bnn-state.json** has never existed. The path was drawn and never
 soldered at either end.
 
 ## Why this is the blocking dependency for a non-empty PriorHint list

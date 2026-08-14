@@ -31,14 +31,14 @@ already have contributed nothing.
 
 ## Scope
 
-Changes the wire type (`PriorHint` in `protocol/batch-teaching-envelope.ts`) and every
-producer and consumer, including `discovery/zeta-transport-cell.ts`. Not a drive-by.
+Changes the wire type (`PriorHint` in `src/Core.TypeScript/protocol/batch-teaching-envelope.ts`) and every
+producer and consumer, including `src/Core.TypeScript/discovery/zeta-transport-cell.ts`. Not a drive-by.
 
 ## Honest limit to state in the fix
 
 A site message is still not idempotent under redelivery -- `mergePriorHint` has no
 dedup key, so the same site folded twice counts twice. Pinned today by SHR-6 in
-`planning/society-heat-readout.test.ts` so nobody reads the interim guard as having
+`src/Core.TypeScript/planning/society-heat-readout.test.ts` so nobody reads the interim guard as having
 fixed idempotency (discipline #6) as well.
 
 ## Related

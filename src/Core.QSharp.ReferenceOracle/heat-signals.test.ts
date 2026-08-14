@@ -153,6 +153,15 @@ describe("Q# heat-signal reference treaty", () => {
     expect(bandForPpm).toContain("ppm <= 666666");
     expect(bandForPpm).toContain("TemperatureBandCritical");
 
+    const declaredBands = treaty.temperatureBands.map((band) => band.token).toSorted();
+    const reachedBands = [...new Set(treaty.temperatureCases.map((item) => item.band))].toSorted();
+    expect(reachedBands).toEqual(declaredBands);
+
+    for (const band of treaty.temperatureBands) {
+      expect(bandForPpm).toContain(`${band.qsharpFunction}()`);
+      expect(treaty.temperatureCases.some((item) => item.code === band.code && item.band === band.token)).toBe(true);
+    }
+
     expect(treaty.temperatureCases.map((item) => item.id)).toContain("attention-does-not-heat-cost");
     expect(treaty.temperatureCases.map((item) => item.band)).toEqual([
       "cold",

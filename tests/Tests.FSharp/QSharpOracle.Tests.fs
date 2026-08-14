@@ -242,6 +242,18 @@ let ``F# TemperatureReadout matches the Q# thermal treaty`` () =
 
     let cases =
         heatTreaty.GetProperty("temperatureCases").EnumerateArray()
+        |> Seq.toList
+
+    let declaredBands =
+        expectedBands |> List.map fst |> List.sort
+
+    let reachedBands =
+        cases
+        |> List.map (fun item -> item.GetProperty("band").GetString())
+        |> List.distinct
+        |> List.sort
+
+    Assert.Equal<string list>(declaredBands, reachedBands)
 
     for item in cases do
         let id = item.GetProperty("id").GetString()
@@ -263,8 +275,8 @@ let ``F# TemperatureReadout matches the Q# thermal treaty`` () =
         Assert.Equal(expectedCode, temperatureCode readout.Band)
 
     let attentionOnly =
-        heatTreaty.GetProperty("temperatureCases").EnumerateArray()
-        |> Seq.find (fun item -> item.GetProperty("id").GetString() = "attention-does-not-heat-cost")
+        cases
+        |> List.find (fun item -> item.GetProperty("id").GetString() = "attention-does-not-heat-cost")
 
     Assert.Equal(1_000_000, attentionOnly.GetProperty("attentionPpm").GetInt32())
     Assert.Equal(125_000, attentionOnly.GetProperty("temperaturePpm").GetInt32())

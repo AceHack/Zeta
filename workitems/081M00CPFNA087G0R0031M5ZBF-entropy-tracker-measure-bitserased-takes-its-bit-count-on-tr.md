@@ -26,7 +26,7 @@ measure(bitsErased: number): void   // caller supplies the bit count
 ```
 
 Every caller hands it a constant. `physics-traits.ts` `createNonAdjMap` and
-`observe/event-sink-folder.ts` both call `measure(1)` — one bit per append, by
+`src/Core.TypeScript/observe/event-sink-folder.ts` both call `measure(1)` — one bit per append, by
 declaration. Nothing computes the bits an operation *actually* destroys, so the
 ledger is only as honest as the constants feeding it. A sound meter with an
 asserted input is the same defect one layer in.
@@ -44,7 +44,7 @@ Landauer 1961 prices, computed from the operation itself. Measured values on the
 
 - Give `measure` a derived-bits path for operations whose fibres are enumerable,
   and keep the asserted path clearly labelled as asserted where they are not.
-- Check the `measure(1)`-per-append claim in `event-sink-folder.ts`: is one
+- Check the `measure(1)`-per-append claim in `src/Core.TypeScript/observe/event-sink-folder.ts`: is one
   append really one bit erased, or is that a placeholder constant?
 
 ## Also noted while siting the meter (separate, smaller)

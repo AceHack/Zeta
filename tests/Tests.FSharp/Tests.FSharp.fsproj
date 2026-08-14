@@ -283,6 +283,7 @@
     <Compile Include="ShapeAcceptance.Tests.fs" />
     <Compile Include="DeterminismLint.Tests.fs" />
     <Compile Include="WSet.MachZehnder.Tests.fs" />
+    <Compile Include="WSetHeat.Tests.fs" />
     <Compile Include="IbltReconcile.Tests.fs" />
     <Compile Include="TestLoop.Host.fs" />
     <Compile Include="Ben.Tests.fs" />

@@ -332,6 +332,7 @@
     <Compile Include="Ben.fs" />
     <Compile Include="BenPort.fs" />
     <Compile Include="WSet.fs" />
+    <Compile Include="WSetHeat.fs" />
     <Compile Include="IbltReconcile.fs" />
     <Compile Include="InferenceLadder.fs" />
     <Compile Include="TimeGen.fs" />
