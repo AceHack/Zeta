@@ -1523,6 +1523,13 @@ jobs:
       - name: Cross-language byte-lock + golden-vector oracles
         run: bun src/Core.TypeScript/ci/cross-verify-all.ts
 
+      # Executes mumps_zeta_id.m (subset interpreter). compare.ts already pins
+      # the committed JSON; this step runs the routine so a layout edit in the
+      # .m file cannot hide behind a stale mumps-output.json.
+      - name: Execute MUMPS zeta-id packer
+        working-directory: tests/cross-verification/zeta-id
+        run: bun run-mumps.ts
+
       # Algebra-tower drift-check: the generated law-property tests must be
       # regenerable-identical from their IRs (codegen-law-drift), and the
       # generated laws must hold against the TS oracle instances. Covers the

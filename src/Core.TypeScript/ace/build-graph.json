@@ -2522,7 +2522,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/cross-verification/_golden/zeta-ir-v4.golden.json",
-            "count": 282,
+            "count": 284,
             "holder": "ts:cross-verification"
           },
           {

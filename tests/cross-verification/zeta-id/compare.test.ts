@@ -8,6 +8,8 @@ import {
   type CanonicalVector,
   type OracleMap,
 } from "./compare";
+import { packWithMumps, runMumpsOracle } from "./run-mumps";
+import { MumpsRuntime } from "./mumps-runtime";
 
 const here = import.meta.dir;
 
@@ -84,7 +86,6 @@ describe("zeta-id compare.ts fixture pin", () => {
     );
   });
 
-
   test("stale-but-consistent outputs fail the fixture pin", () => {
     const stale: OracleMap = {
       "authority-human-verified": {
@@ -125,5 +126,53 @@ describe("zeta-id compare.ts fixture pin", () => {
       true,
     );
     expect(result.mismatches.some((m) => m.includes("missing from TS"))).toBe(true);
+  });
+});
+
+describe("zeta-id MUMPS runtime executes the committed .m", () => {
+  const source = readFileSync(join(here, "mumps_zeta_id.m"), "utf8");
+  const yamlText = readFileSync(join(here, "vectors.yaml"), "utf8");
+
+  test("live PACK matches mumps-output.json and the fixture", () => {
+    const live = runMumpsOracle(source, yamlText);
+    const committed = loadJson("mumps-output.json");
+    const result = compareOracles(
+      loadCanonicalVectors(yamlText),
+      { TS: committed, Mumps: live },
+      ["Mumps"],
+    );
+    expect(result.mismatches).toEqual([]);
+  });
+
+  test("a weight edit in the .m file changes packed hex", () => {
+    const mutated = source.replace("+(CAT*2)", "+(CAT*4)");
+    expect(mutated).not.toBe(source);
+    const live = runMumpsOracle(source, yamlText);
+    const broken = runMumpsOracle(mutated, yamlText);
+    const key = "authority-best-effort";
+    const liveHex = live[key]?.hex;
+    const brokenHex = broken[key]?.hex;
+    expect(brokenHex).not.toBe(liveHex);
+  });
+
+  test("PACK writes HEX and CROCK for the human-verified vector", () => {
+    const runtime = new MumpsRuntime(source);
+    const packed = packWithMumps(runtime, {
+      id: "authority-human-verified",
+      version: 1,
+      timestamp: 1747780809123,
+      chromosome: 7,
+      category: 0,
+      authorityType: "HumanVerified",
+      authorityRaw: null,
+      persona: 1,
+      momentumType: "Normal",
+      momentumRaw: null,
+      location: 1,
+      expectedHex: "080cb77ed58d19c0f80b000800000000",
+      expectedCrockford: "081JVQXNCD370FG2R010000000",
+    });
+    expect(packed.hex).toBe("080cb77ed58d19c0f80b000800000000");
+    expect(packed.crockford).toBe("081JVQXNCD370FG2R010000000");
   });
 });

@@ -8,7 +8,7 @@ ZETAID ; MUMPS routine to pack a ZetaObservation into a 128-bit ZetaId
  ; compare.ts requires tests/cross-verification/zeta-id/mumps-output.json to
  ; carry every vectors.yaml id (16 as of 2026-08-14). This packer covers the
  ; 12 packed vectors; all-zero / max-128 / parse-reject / lenient-alias are
- ; filled by hand in that JSON. A forgotten regen fails the compare gate.
+ ; filled by run-mumps.ts. CI executes this file via that runner.
  ;
 PACK(VER,TS,CHR,CAT,AUTH,PER,MOM,LOC,RAND)
  NEW W3,W2,W1,W0,H3,H2,H1,H0,C
