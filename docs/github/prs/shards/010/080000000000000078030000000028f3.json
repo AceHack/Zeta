@@ -1,0 +1,12 @@
+{
+  "pr_number": 10483,
+  "archive_path": "docs/history/pr-reviews/PR-10483-research-peer-agents-parallel-experiments-and-why-a-health-dashboard-is-a-check-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T01:08:36.791Z",
+  "schema_version": "v1",
+  "commit_sha": "5f50fe30376c40b2a473c3b00ad1e87be4171ea6",
+  "title": "research: peer agents, parallel experiments, and why a health dashboard is a check that must not lie",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T01:08:04Z",
+  "head_ref": "research/dashboards-are-checks-that-must-not-lie"
+}
