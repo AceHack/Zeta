@@ -1,0 +1,12 @@
+{
+  "pr_number": 10543,
+  "archive_path": "docs/history/pr-reviews/PR-10543-feat-browser-activate-native-receipt-synchronization.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T10:54:05.006Z",
+  "schema_version": "v1",
+  "commit_sha": "f0b6f774e6296c2ffc01e607891d66099cf7e4c2",
+  "title": "feat(browser): activate native receipt synchronization",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T10:53:24Z",
+  "head_ref": "claim/task-browser-native-receipt-sync"
+}
