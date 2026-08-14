@@ -1,0 +1,12 @@
+{
+  "pr_number": 10600,
+  "archive_path": "docs/history/pr-reviews/PR-10600-fix-telemetry-the-flush-lanes-sign-their-own-commits-so-the-machine-lane-exempti.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T14:48:01.400Z",
+  "schema_version": "v1",
+  "commit_sha": "d6cbf28d43d5cf538e875420a0958d0e2a9f1909",
+  "title": "fix(telemetry): the flush lanes sign their own commits, so the machine-lane exemption stops carrying them",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T14:47:26Z",
+  "head_ref": "fix/telemetry-lanes-sign-their-flushes"
+}
