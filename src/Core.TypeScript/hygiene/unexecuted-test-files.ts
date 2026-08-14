@@ -51,10 +51,11 @@
  * in `registry/unexecuted-test-files.json` with a non-empty reason. One JSON entry is the
  * whole cost of a deliberate omission; the cost of an accidental one is a red build.
  *
- * Three failure modes, all fatal:
+ * Four failure modes, all fatal:
  *   - an unexecuted file absent from the allow-list   (the silent-omission case)
  *   - a listed entry with an empty/missing reason     (the "" escape hatch)
  *   - a listed entry matching nothing unexecuted      (so the list cannot rot into noise)
+ *   - a tracked test file under a dot-prefixed path   (undiscoverable by bun -- see isHiddenPath)
  *
  * And one that fires before any of them: NON-VACUITY. If the discovered file count or the
  * parsed invocation count is implausibly low, this fails loudly rather than reporting a
@@ -125,13 +126,20 @@ export interface BunTestInvocation {
  *
  * So a dot-prefixed path is UNDISCOVERABLE BY LOCATION, and crediting it to the bare
  * `bun test` in gate.yml - which is what the no-filters rule in `executes` would do -
- * would invent coverage that does not exist. It is excluded from the denominator here and
- * COUNTED OUT LOUD in `summary`, so the exclusion is never silent.
+ * would invent coverage that does not exist. Such a file is therefore kept out of the
+ * `executes` derivation entirely and counted straight into `unexecuted` by `report`.
  *
- * This is a residual, not a resolution: two tracked files (`.claude/hooks/harness.test.ts`
- * and `.claude/hooks/stop-detect-response-rut.test.ts`) are in this class today, executed
- * by nothing. That is a genuine instance of the defect this checker exists to close, in a
- * shape the checker cannot yet express - work-item 081KZZ1RK6A087G0R003C773WC.
+ * IT IS A FINDING NOW, NOT A NUMBER. Until 081KZZ1RK6A087G0R003C773WC this class was merely
+ * COUNTED, in the `hidden-from-bun` field of the summary line - visible, but passing. That
+ * visibility is what surfaced the two live instances (`.claude/hooks/harness.test.ts` and
+ * `.claude/hooks/stop-detect-response-rut.test.ts`, 13 assertions on the session-start and
+ * Stop hooks, executed by nothing since 2026-06-21). Both have moved to
+ * `src/Core.TypeScript/claude-hooks/`, where the bare `bun test` reaches them.
+ *
+ * A count that nobody has to act on is the soft version of the defect this checker exists
+ * to close, so the count is no longer the whole remedy: a hidden file is now unexecuted,
+ * and unexecuted means allow-listed with a written reason or red. The `hidden-from-bun`
+ * field stays in the summary because it names the CAUSE, which "unexecuted" alone does not.
  */
 export function isHiddenPath(file: string): boolean {
   return file.split("/").some((seg) => seg.startsWith("."));
@@ -443,7 +451,7 @@ export function check(unexecuted: readonly string[], allow: readonly AllowEntry[
 
 export interface Report {
   readonly files: readonly string[];
-  /** Tracked test files bun cannot discover by location - excluded, never silently. */
+  /** Tracked test files bun cannot discover by location. A subset of `unexecuted`. */
   readonly hidden: readonly string[];
   readonly invocations: readonly BunTestInvocation[];
   readonly ignored: ReadonlySet<string>;
@@ -471,7 +479,11 @@ export function report(root: string): Report {
   const ignored = bunIgnored(root, files);
   const reached = executedInPrLane(invocations, files);
   const executed = new Set([...reached].filter((f) => !ignored.has(f)));
-  const unexecuted = files.filter((f) => !executed.has(f));
+  // Hidden files join `unexecuted` DIRECTLY, never via `executes`. Routing them through it
+  // would hand them to the bare, filter-less `bun test` in gate.yml, whose no-filters rule
+  // says "runs everything discoverable" - and the whole point of `isHiddenPath` is that bun
+  // does not discover them. That would invent the coverage this checker exists to deny.
+  const unexecuted = [...files.filter((f) => !executed.has(f)), ...hidden].sort(byOrdinal);
   const verdict = check(unexecuted, loadAllowList(root));
   return { files, hidden, invocations, ignored, executed, unexecuted, verdict };
 }
@@ -496,8 +508,10 @@ export function findings(r: Report): readonly string[] {
 /**
  * The one-line summary printed on every run, pass or fail.
  *
- * `hidden` is in the line rather than in a comment because an exclusion nobody can see is
- * the defect this file exists to close, and that applies to its own denominator too.
+ * `hidden` stays in the line even though it is now fatal rather than merely excluded: the
+ * findings say a file is unexecuted, and only this field says the cause is WHERE IT LIVES.
+ * It should read 0. It read 2 for the whole life of `.claude/hooks/*.test.ts`, which is how
+ * they were found (081KZZ1RK6A087G0R003C773WC).
  */
 export function summary(r: Report): string {
   const pr = r.invocations.filter((x) => x.triggers.includes("pull_request")).length;
@@ -591,11 +605,15 @@ export function invocationsInStep(
 }
 
 /**
- * Why a given file is not executed. Three distinct causes, and telling them apart is what
- * makes a finding actionable: an ignored file needs a bunfig decision, a cadence-only file
- * needs a lane decision, and a file nothing runs needs a filter.
+ * Why a given file is not executed. Four distinct causes, and telling them apart is what
+ * makes a finding actionable: a hidden file needs to MOVE, an ignored file needs a bunfig
+ * decision, a cadence-only file needs a lane decision, and a file nothing runs needs a
+ * filter. The hidden case is checked first because it is a property of the path itself and
+ * no lane can fix it.
  */
 export function whyNotRun(r: Report, file: string): string {
+  const move = "bun cannot discover a dot-prefixed path; move it out of the dot-directory";
+  if (isHiddenPath(file)) return move;
   if (r.ignored.has(file)) return "bunfig pathIgnorePatterns hides it from every bun test run";
   const lanes = anyLane(r.invocations, file);
   if (lanes.length > 0) return "runs only in " + lanes.join(", ");

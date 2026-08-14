@@ -1,7 +1,14 @@
 import { describe, expect, test } from "bun:test";
 
-import { extractLastAssistantText } from "./stop-detect-response-rut";
-import { detectRepeatedTokenRut } from "../../src/Core.TypeScript/hygiene/detect-repeated-token-rut";
+import { extractLastAssistantText } from "../../../.claude/hooks/stop-detect-response-rut";
+import { detectRepeatedTokenRut } from "../hygiene/detect-repeated-token-rut";
+
+// WHY THIS TEST DOES NOT SIT NEXT TO ITS SUBJECT. See the header of `harness.test.ts` in
+// this directory: a test under a dot-prefixed directory is undiscoverable by bun, so this
+// file executed NOWHERE while its name promised a check ran (081KZZ1RK6A087G0R003C773WC).
+// This one is the sharper instance -- `stop-detect-response-rut` is a behavioural guard on
+// what agents emit, wired as the Stop hook in `.claude/settings.json`. An unrun guard on
+// agent output is the same defect the guard exists to catch, one level up.
 
 function asstLine(text: string): string {
   return JSON.stringify({

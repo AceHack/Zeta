@@ -226,11 +226,58 @@ describe("discovery is a function of the TRACKED set, not of what this machine b
     expect(isHiddenPath("src/Core.TypeScript/hygiene/x.test.ts")).toBe(false);
   });
 
-  test("hidden files are excluded from the denominator but still COUNTED", () => {
+  test("hidden files stay out of the executes derivation but land in unexecuted", () => {
     expect(REPO_REPORT.files.some(isHiddenPath)).toBe(false);
     expect(REPO_REPORT.hidden.every(isHiddenPath)).toBe(true);
-    // The exclusion appears in the line printed on every run, so it is never silent.
+    // Never credited to the bare, filter-less `bun test` -- that would invent coverage.
+    expect([...REPO_REPORT.executed].some(isHiddenPath)).toBe(false);
+    // Every one of them is a finding-eligible entry, not merely a number in the summary.
+    REPO_REPORT.hidden.forEach((f) => {
+      expect(REPO_REPORT.unexecuted).toContain(f);
+    });
+    // The cause still appears in the line printed on every run, so it is never silent.
     expect(summary(REPO_REPORT)).toContain("hidden-from-bun");
+  });
+
+  /**
+   * The teeth added by 081KZZ1RK6A087G0R003C773WC.
+   *
+   * `.claude/hooks/harness.test.ts` and `.claude/hooks/stop-detect-response-rut.test.ts` sat
+   * tracked and unexecuted from 2026-06-21 -- 13 assertions on the hooks that run at every
+   * agent session start and stop -- and the checker's response was to print `hidden-from-bun
+   * 2` and PASS. A count nobody must act on is the soft form of the defect this file closes,
+   * so a hidden file is now a red build unless it is allow-listed with a written reason.
+   *
+   * This test plants a hidden path through the pure `check`/`whyNotRun` seam rather than
+   * writing into `.claude/`, so it neither depends on the repo currently having zero hidden
+   * files nor perturbs the tracked set.
+   */
+  test("a hidden file is a FINDING, and the finding says to move it", () => {
+    const hidden = ".claude/hooks/planted.test.ts";
+    const verdict = check([hidden], []);
+    expect(verdict.undeclared).toEqual([hidden]);
+    const planted = { ...REPO_REPORT, hidden: [hidden], unexecuted: [hidden], verdict };
+    const lines = findings(planted);
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toContain(hidden);
+    expect(lines[0]).toContain("dot-prefixed");
+    // And an allow-list entry with a reason is still the documented escape hatch.
+    const declared = check([hidden], [{ path: hidden, reason: "measured: bun cannot see it" }]);
+    expect(declared.undeclared).toEqual([]);
+    expect(declared.reasonless).toEqual([]);
+    expect(declared.stale).toEqual([]);
+  });
+
+  /**
+   * The regression this whole work-item is: the two hook tests must be somewhere bun's
+   * ordinary walk reaches. Naming them explicitly means moving them back under a dot
+   * directory fails here as well as in the count.
+   */
+  test("the Claude hook tests are discoverable, not hidden", () => {
+    const hooks = REPO_REPORT.files.filter((f) => f.startsWith("src/Core.TypeScript/claude-hooks/"));
+    expect(hooks).toContain("src/Core.TypeScript/claude-hooks/harness.test.ts");
+    expect(hooks).toContain("src/Core.TypeScript/claude-hooks/stop-detect-response-rut.test.ts");
+    expect(REPO_REPORT.hidden).toEqual([]);
   });
 });
 
