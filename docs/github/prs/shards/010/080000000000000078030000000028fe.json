@@ -1,0 +1,12 @@
+{
+  "pr_number": 10494,
+  "archive_path": "docs/history/pr-reviews/PR-10494-fix-entropy-verifylandauer-could-not-fail-replace-it-and-the-vacuous-smt-lemma-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T01:38:44.232Z",
+  "schema_version": "v1",
+  "commit_sha": "4660642942529658db5242668f04ad25e986e7d0",
+  "title": "fix(entropy): verifyLandauer could not fail -- replace it, and the vacuous SMT lemma behind it",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T01:38:12Z",
+  "head_ref": "soraya/entropy-tracker-vacuous-landauer-verification"
+}
