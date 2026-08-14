@@ -557,15 +557,20 @@ jobs:
     # yamllint = syntax/indentation/dup-key; kubeconform = k8s API-schema validation.
     # Aaron 2026-06-10 ("should we have a yaml/k8s lint gate? ... lets do that").
     #
-    # ADVISORY first (continue-on-error) — reports without blocking the gate; flip
-    # to required once it has run clean for a few rounds (same easing-in pattern as
-    # prior gate additions). The full dev-machine bootstrap is deliberately NOT run
+    # REQUIRED as of 2026-08-14. It shipped ADVISORY (continue-on-error) under the
+    # standing easing-in pattern, with the instruction to flip once clean for a few
+    # rounds. That condition is met and was measured, not assumed: clean since
+    # 2026-08-01, and 8 of 8 recent gate runs carrying this job report success. An
+    # advisory check that has earned its promotion and never gets it is just a check
+    # that cannot fail — which is the defect class this repo spent 2026-08-14 removing
+    # (nine of them, including a k8s manifest validator that accepted tab indentation,
+    # unterminated quotes and duplicate keys as "valid YAML"). The full dev-machine bootstrap is deliberately NOT run
     # here: this job only needs two lint tools, and install.sh pulls heavy proof/QEMU/R
     # substrate that can consume the whole advisory timeout before YAML is checked.
     name: lint (yaml/k8s)
     timeout-minutes: 10
     runs-on: ubuntu-24.04
-    continue-on-error: true # ADVISORY — remove once clean for a few rounds (then required)
+    # No continue-on-error: this job now blocks the gate (see the note above).
 
     steps:
       - name: Checkout
