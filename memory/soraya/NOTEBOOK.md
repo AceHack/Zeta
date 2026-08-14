@@ -8,39 +8,21 @@ is canon (BP-08). This notebook supplements, never overrides.
 
 ---
 
-## Round 35 — verification-drift-auditor skill adopted
+## Round 35 -- verification-drift-auditor skill adopted
 
-Audit surface `.claude/skills/verification-drift-auditor/SKILL.md`; registry
+Surface `.claude/skills/verification-drift-auditor/SKILL.md`; registry
 `docs/research/verification-registry.md`; first report
-`docs/research/verification-drift-audit-2026-04-19.md`. Motivating case: the
-`DbspChainRule` mis-citation (labelled Budiu Prop 3.2, actually a Thm 3.3
-corollary) — caught by cross-check against arXiv:2203.16684v1 §3. Six drift
-classes + one pre-registration class; tool-agnostic. Cadence: every 5-10
-rounds, or on any commit adding a cited theorem/property/spec. A named
-procedure I run, not a new persona.
+`docs/research/verification-drift-audit-2026-04-19.md`. Motivating case: the `DbspChainRule`
+mis-citation (labelled Budiu Prop 3.2, actually a Thm 3.3 corollary). Six drift classes plus
+one pre-registration class, tool-agnostic. Cadence: every 5-10 rounds, or on any commit
+adding a cited theorem/property/spec.
 
 ## Portfolio metric
 
-Reported each invocation:
+Formal-coverage ratio = gated artefacts / paths flagged as needing one. Trend beats absolute.
 
-- **Formal-coverage ratio** = (code paths with an in-gate formal
-  artefact) / (code paths flagged as needing one).
-- Trend over rounds matters more than the absolute number.
-
-### Round 21 baseline
-
-- Numerator: files covered by a CI-gated spec — 4 TLA+ specs
-  in gate (`TickMonotonicity`, `OperatorLifecycleRace`,
-  `TransactionInterleaving`, `TwoPCSink`) + 8 Z3 pointwise
-  lemmas in `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`.
-  ≈ 12 artefacts touching ≈ 15 code paths.
-- Denominator: numerator + `docs/BUGS.md` formal-gap entries
-  (`InfoTheoreticSharder` missing spec, `RecursiveCounting`
-  multi-tick-seed unproven, `FeedbackOp` memory-ordering
-  unproven) = ≈ 18 paths.
-- **Ratio ≈ 15 / 18 ≈ 0.83.** The denominator grows every time
-  a new research claim lands; a stable or rising ratio means
-  Soraya's routing is keeping up with claim intake.
+### Round 21 baseline -- PRUNED 2026-08-14. Ratio was ~15/18 = 0.83 over 4 gated TLA+ specs
+and 8 Z3 lemmas. Superseded: the TLA+ leg alone is now 52 gated model runs.
 
 ---
 
@@ -61,6 +43,7 @@ Reported each invocation:
   4.x with Scala 3 is finally stable enough to evaluate for our
   termination claims. Put on the Assess row in `TECH-RADAR.md`
   when the Tech-Radar Owner (Jun) runs his next sweep.
+### Round 21 targets -- PRUNED 2026-08-14, all dispatched and long landed.
 
 ---
 
@@ -363,3 +346,50 @@ DENOMINATOR. +1 path (AmplitudeEmu drop) flagged; +1 numerator (now in-gate). On
 opened and named, not closed: WSet.consolidate carries its own isZero at 1e-12 on COMPONENTS,
 six orders tighter than AmplitudeEmu's on INTENSITY. Same shape, un-run. Do not assume it
 inherits this result.
+## Round 2026-08-14 — the flags a spec is measured under ARE part of the claim
+
+Closed `081KZYRDMZW087G0R0012K4QA0`, which I raised and then raised P2 to P1 after it bit me.
+
+The defect was not in a model. `QuorumPhaseCancellation` went red on CI with exit 11 because my
+recorded runs were driven by a script passing `-deadlock` (which DISABLES deadlock checking) and
+the gate passed no such flag. **A hand-run green and a gated green were not the same result and
+nothing anywhere said so.** Adding `-config` was necessary and not sufficient: the next mismatch
+would have been a different flag.
+
+Routing call, and it generalises past TLC: **a recorded verdict that does not carry the exact
+invocation that produced it is a claim about an unknown experiment.** So the fix is not a flag,
+it is `registry/tlc-models.json` -- 53 pinned model runs, both consumers building argv from that
+one file, the id quotable next to any result.
+
+Portfolio delta: configs executing in the PR lane **34 -> 52 of 53**. Configs no runner opened
+**19 -> 0**. Negative configs that fail when the witness stops firing **0 -> 14**. Exhaustive
+state counts asserted **0 -> 37**. One model (`BftLiveness`) is `extended` tier with a written
+reason: at `-workers 1` it takes ~26 min against the `11min 14s` recorded from a 4-worker run.
+Declared gap, not a silent one.
+
+**Verdict on a `tlc-solver-floor.json` sibling to `smt2-solver-floor.json`: NO, and the cheaper
+answer is better.** z3/cvc5 come from the runner `apt`, so their version is ambient and degrades
+silently -- a floor is the only lever. `tla2tools.jar` is COMMITTED to git (since #8053), so the
+toolchain is already byte-pinned by the diff. What was missing was not a floor but an assertion
+that the jar loaded is the pinned one; the registry now carries its sha256 and version banner and
+the gate checks the banner on every run. One field, not a second registry.
+
+Two things found while pinning, both real:
+
+- `tools/setup/manifests/from-url` downloads `tla2tools.jar` to `tools/tla/tla2tools.jar`, **a
+  path no runner reads**, unchecksummed. The committed jar reports `2026.05.18.174321`, not the
+  `v1.8.0` two docs claim.
+- My own state-count parser matched a TLC *progress* line rather than the final summary, reading
+  122647 off `BftConsensus` against a pinned 4665495. The tempting fix was to relax the pin. The
+  correct one was to chase the number -- **the assertion caught my parser on its first real run,** 
+  which is what a falsifier is for.
+
+Carried forward: the deadlock caveat is now IN the artefact, not only in prose.
+`QuorumCollateral` and `WagerSolvency` stutter, so their deadlock checks cannot fail; each model
+records `deadlock` as `off-cfg` / `on-vacuous` / `on`, and the linter cross-checks `off-cfg`
+against what the `.cfg` actually declares.
+
+Not exposed to the bun 5s cap (`081KZZ3JHP1087G0R00027ARRR`, reproduced here: `bunfig.toml`
+`timeout = 20000` is ignored, a 6s test dies at 5002ms). The gate is `dotnet test`; the bun-side
+TLC tests only run metadata commands. A comment in `run-tlc.test.ts` names the hazard so nobody
+adds a real model check there and reads a 5s truncation as a failed proof.

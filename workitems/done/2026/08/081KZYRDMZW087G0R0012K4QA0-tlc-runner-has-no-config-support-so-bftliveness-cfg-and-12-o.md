@@ -1,11 +1,12 @@
 ---
 id: 081KZYRDMZW087G0R0012K4QA0
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: tlc-runner-has-no-config-support-so-bftliveness-cfg-and-12-o
 title: "TLC runner has no -config support, so BftLiveness.cfg and 12 other configs are ungated"
 created: 2026-08-13T23:48:19.580Z
+completed: 2026-08-14T11:04:58.387Z
 depends_on: []
 composes_with: []
 ---
@@ -90,3 +91,63 @@ Suggested shape:
 Immediate mitigation already landed on #10452: `CHECK_DEADLOCK FALSE` declared in the four
 `QuorumPhase*` configs with the reasoning written in, so the intent is in the artefact rather
 than in a shell history.
+
+## Resolved 2026-08-14 — the whole invocation is pinned
+
+Fix landed as filed, plus the widening the postscript asked for.
+
+**`registry/tlc-models.json`** is the single source of truth: 53 pinned model runs, one per
+(module x config). Each fixes the config, the worker count, the expected exit code, the expected
+TLC error substring for negative runs, and -- for exhaustive runs only -- the distinct-state
+count. `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs` and
+`src/Core.TypeScript/formal-verification/run-tlc.ts` both build argv from it through
+`src/Core.TypeScript/formal-verification/tlc-invocation.ts`, and neither may add a flag. **The
+command recorded next to a result is the command CI runs.**
+
+| | before | after |
+|---|---|---|
+| configs that execute in the PR lane | 34 of 53 | **52 of 53** |
+| configs no runner opened | 19 | **0** |
+| negative configs that fail when the witness stops firing | 0 | **14** |
+| exhaustive state counts asserted | 0 | **37** |
+| ungated models, declared with a written reason | 0 | **1** (`BftLiveness`) |
+
+**Verdicts re-measured under the pinned invocation.** All 14 negative verdicts and every
+exhaustive green reproduce with the same property names. Four halt-on-violation counts moved
+(234 to 149, 41004 to 41003, 54 to 42, 112 to 100) because exploration order depends on worker
+count -- so the registry records those and asserts only the exhaustive ones. `BftLiveness` ran to
+completion under the pin: `ConditionalTermination` HOLDS, exhaustive, 4,665,495 distinct states,
+depth 24, **43min 02s** against the `11min 14s` its `.cfg` records from a 4-worker run.
+`BftConsensus`
+explores 4,665,495 distinct states at `-workers 1`, byte-identical to the 4-worker figure in its
+`.cfg`, which is the evidence that the split is real.
+
+**No spec was made to pass by weakening what it checks.** Nothing was relaxed; the one number
+that looked wrong (`BftConsensus` reporting 122647 against a pinned 4665495) was a defect in my
+own parser -- it matched a TLC *progress* line instead of the final summary. Fixed in both
+implementations with a regression test, rather than by loosening the pin.
+
+**The related gap in this file is closed too.** `the TLA+ gate leg actually carries the gate on
+CI` fails when the one Linux-x64 leg that carries the whole TLA+ gate lacks java or the jar,
+instead of skipping silently.
+
+**Deadlock vacuity is now in the artefact.** Every model records `deadlock` as `off-cfg`,
+`on-vacuous` or `on`. `QuorumCollateral` and `WagerSolvency` are `on-vacuous`: they stutter, so
+their deadlock checks cannot fail and neither makes a deadlock-freedom claim. The linter
+cross-checks `off-cfg` against what the `.cfg` actually declares.
+
+**Drift is loud.** `src/Core.TypeScript/hygiene/lint-tlc-model-registry.ts` (gated by
+`bun test src/Core.TypeScript/hygiene/`) refuses a `.cfg` that no model claims, a model whose
+files are gone, a violation-expecting model with no pinned error string, an `extended` tier with
+no reason, and a `tla2tools.jar` whose sha256 has moved.
+
+**Found while pinning, filed separately:** `tools/setup/manifests/from-url` downloads
+`tla2tools.jar` into `tools/tla/tla2tools.jar`, a path no runner reads, with no checksum. The jar
+the gate loads is `src/Core.TLA/tla2tools.jar`, committed to git since #8053, reporting
+`TLC2 Version 2026.05.18.174321` -- not the `v1.8.0` that `docs/dependency-status.md` and
+`docs/INSTALLED.md` claim.
+
+**Verified locally:** `dotnet build -c Release` 0 warnings 0 errors; `dotnet test --filter
+TlcRunnerTests` **58 passed, 0 failed** in 4m11s; `bun test src/Core.TypeScript/hygiene/` 886
+passed; `bun test src/Core.TypeScript/formal-verification/` 21 passed;
+`bun src/Core.TypeScript/lint/lint-typescript.ts` clean.

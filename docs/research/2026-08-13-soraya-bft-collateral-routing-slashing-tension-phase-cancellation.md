@@ -591,3 +591,67 @@ verdicts are identical and are what the section claims** — `NoFullCancellation
 `QuorumPhaseUnnormalised`, `CancellationImpliesByzantineContributor` VIOLATED under
 `QuorumPhaseHonestSplit`. Exhaustive runs (`0 states left on queue`) are worker-independent and
 those figures stand unchanged: 48, 162, 49,674, 324.
+
+---
+
+## 15. Closed 2026-08-14 — the invocation is pinned, and section 9 is now out of date
+
+Work-item `081KZYRDMZW087G0R0012K4QA0` is closed. **Section 9 above described the state of the
+world on 2026-08-13 and no longer describes it**; it is left standing rather than edited,
+because the shape of the defect is the useful part.
+
+What changed:
+
+- **`registry/tlc-models.json`** now carries **53 pinned model runs**, one per (module x config).
+  Each entry fixes the config, the worker count, the expected exit code, the expected TLC error
+  string for negative runs, and -- for exhaustive runs only -- the distinct-state count. Both the
+  gate (`tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs`) and the hand-run CLI
+  (`src/Core.TypeScript/formal-verification/run-tlc.ts`) build their argv from that one file, so
+  **the command recorded next to a result is the command CI runs.**
+- **52 of 53 execute in the PR lane**, against 34 before. The 19 configs that had no matching
+  `.tla` -- `BftLiveness` and the 18 collateral/phase/solvency variants -- are now models with
+  ids rather than files nothing opened.
+- **`BftLiveness` is the one `extended`-tier model**, with a written `tierReason`. Run to
+  completion under the pinned invocation: `ConditionalTermination` **HOLDS**, exhaustive, 4,665,495
+  distinct states, depth 24 -- in **43min 02s**, against the `11min 14s` recorded on 2026-08-11
+  from a 4-worker run. Roughly 4x, so it cannot sit in the PR lane. That is a declared gap, not a
+  silent one -- which is the entire difference this work-item was about.
+- **The 14 negative configs now FAIL the build when TLC finds no error**, and fail again if the
+  violation is of a *different* property than the one pinned. A witness that stops firing is a
+  model that has stopped modelling anything.
+- **`src/Core.TypeScript/hygiene/lint-tlc-model-registry.ts`** refuses any `.cfg` on disk that no
+  model claims, so the twelve-ungated-configs condition cannot recur without a red gate.
+
+### Every verdict in sections 3, 4 and 5 was re-measured under the pinned invocation
+
+All fourteen negative verdicts and all four exhaustive greens reproduce **with the same property
+names**. Two classes of number moved and neither is a claim:
+
+| | 2026-08-13 (4 workers) | 2026-08-14 (pinned, 1 worker) |
+|---|---|---|
+| `QuorumCollateralR1`, halt-on-violation | 234 distinct | **149 distinct**, `NoSeizure` violated |
+| `QuorumCollateralR2`, halt-on-violation | 41,004 distinct | **41,003 distinct**, `NoRepeatAttack` violated |
+| `QuorumPhaseHonestSplit`, halt-on-violation | 54 distinct | **42 distinct**, same invariant |
+| `QuorumPhaseUnnormalised`, halt-on-violation | 112 distinct | **100 distinct**, same invariant |
+| every exhaustive run (48, 162, 49,674, 324, 4,665,495) | unchanged | **unchanged** |
+
+So the registry asserts the exhaustive counts and merely *records* the halting ones. The
+confirmation that this split is real rather than cautious: `BftConsensus` explores **4,665,495**
+distinct states at one worker, byte-identical to the 4-worker figure in its `.cfg`.
+
+### The caveat from section 14 is now in the artefact
+
+`QuorumCollateral` and `WagerSolvency` carry an unconditional stutter disjunct in `Next`, so their
+deadlock checks **cannot fail** and neither model makes a deadlock-freedom claim. Every registry
+entry now records `deadlock` as `off-cfg`, `on-vacuous` or `on`, and the linter cross-checks the
+`off-cfg` value against what the `.cfg` actually declares. The vacuity is legible where the
+verdict is, not only in the prose above.
+
+### One thing found while pinning, and it is a real defect
+
+`tools/setup/manifests/from-url` downloads `tla2tools.jar` from the tlaplus `v1.8.0` release URL
+into `tools/tla/tla2tools.jar` -- **a path no runner reads**, with no checksum. The jar the gate
+actually loads is `src/Core.TLA/tla2tools.jar`, **committed to git since #8053**, and it reports
+`TLC2 Version 2026.05.18.174321 (rev: 8ba1027)`, which is not what `docs/dependency-status.md` and
+`docs/INSTALLED.md` say it is. The registry now pins the jar sha256 and the version banner, and
+the gate asserts the banner on every model run. Filing the dead download separately.
