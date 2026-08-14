@@ -1,0 +1,12 @@
+{
+  "pr_number": 10627,
+  "archive_path": "docs/history/pr-reviews/PR-10627-fix-pages-submit-proposals-to-server-verifier.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T16:08:38.839Z",
+  "schema_version": "v1",
+  "commit_sha": "34c5108fb517c722282d2d0359ab8461c8e1393f",
+  "title": "fix(pages): submit proposals to server verifier",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T16:08:02Z",
+  "head_ref": "fix/pages-direct-operator"
+}
