@@ -1,0 +1,12 @@
+{
+  "pr_number": 10678,
+  "archive_path": "docs/history/pr-reviews/PR-10678-ferry-intel-smm-seam-transcripts-confidential-computing-on-consumer-hardware.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T19:43:24.977Z",
+  "schema_version": "v1",
+  "commit_sha": "9ffb412fe53a280f9a3e5f6373f3ce286827cc8c",
+  "title": "ferry: Intel SMM/SEAM transcripts + confidential computing on consumer hardware",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T19:42:47Z",
+  "head_ref": "ferry/intel-smm-seam-hidden-modes"
+}
