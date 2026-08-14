@@ -1,0 +1,12 @@
+{
+  "pr_number": 10624,
+  "archive_path": "docs/history/pr-reviews/PR-10624-feat-shapes-symmetric-vs-braided-passes-gates-1-3-the-consent-gate-is-the-only-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T17:54:10.203Z",
+  "schema_version": "v1",
+  "commit_sha": "239514ab375597689ddf87b8660b79e2165054ca",
+  "title": "feat(shapes): symmetric-vs-braided passes gates 1-3 -- the consent gate is the only one left",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T17:53:37Z",
+  "head_ref": "shadow/meno-drawing-cartridges"
+}
