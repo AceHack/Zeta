@@ -16,6 +16,7 @@ const roots: string[] = [];
 const revision = "a".repeat(40);
 const limits: BrowserDatabaseReceiptPagesBuildLimits = {
   maxRecords: 8,
+  maxAuthors: 8,
   maxRecordBytes: 1024,
   maxIndexBytes: 4096,
 };
@@ -30,13 +31,43 @@ function root(): string {
   return value;
 }
 
+function sourceRoot(): string {
+  const value = root();
+  const registryDir = join(value, "docs", "security");
+  mkdirSync(registryDir, { recursive: true });
+  writeFileSync(
+    join(registryDir, "proposal-author-registry.json"),
+    `${JSON.stringify(
+      {
+        schema: "zeta.proposal-author-registry.v2",
+        repository: "Lucent-Financial-Group/Zeta",
+        sequence: 7,
+        issuedAt: "2026-08-14T01:02:00.000Z",
+        authors: [
+          {
+            credentialId: "credential-a",
+            origin: "https://lucent-financial-group.github.io",
+            rpId: "lucent-financial-group.github.io",
+            publicKeyJwk: { kty: "EC", crv: "P-256", x: "x", y: "y" },
+          },
+        ],
+        revoked: {},
+      },
+      null,
+      2,
+    )}\n`,
+    "utf8",
+  );
+  return value;
+}
+
 function acceptedDir(sourceDir: string): string {
   return join(sourceDir, "db", "receipts", "browser", "v1");
 }
 
 describe("browser database receipt Pages build", () => {
   test("emits an empty revision-bound index when main has no accepted receipt records", () => {
-    const sourceDir = root();
+    const sourceDir = sourceRoot();
     const outDir = root();
     const result = buildBrowserDatabaseReceiptPages({ sourceDir, outDir, revision, limits });
 
@@ -45,16 +76,26 @@ describe("browser database receipt Pages build", () => {
       readFileSync(join(outDir, BROWSER_DATABASE_RECEIPT_PAGES_INDEX_PATH), "utf8"),
     ) as BrowserDatabaseReceiptPagesIndex;
     expect(index).toEqual({
-      schema: "zeta.browser-database-receipt-pages-index.v1",
+      schema: "zeta.browser-database-receipt-pages-index.v2",
       repository: "Lucent-Financial-Group/Zeta",
       ref: "main",
       revision,
+      proposalAuthority: {
+        registrySequence: 7,
+        authors: [
+          {
+            credentialId: "credential-a",
+            origin: "https://lucent-financial-group.github.io",
+            rpId: "lucent-financial-group.github.io",
+          },
+        ],
+      },
       records: [],
     });
   });
 
   test("sorts canonical records and copies their exact bytes without truncation", () => {
-    const sourceDir = root();
+    const sourceDir = sourceRoot();
     const outDir = root();
     const source = acceptedDir(sourceDir);
     mkdirSync(source, { recursive: true });
@@ -90,8 +131,43 @@ describe("browser database receipt Pages build", () => {
     );
   });
 
+  test("publishes only active proposal authors and enforces the author budget", () => {
+    const sourceDir = sourceRoot();
+    const registryPath = join(sourceDir, "docs", "security", "proposal-author-registry.json");
+    const registry = JSON.parse(readFileSync(registryPath, "utf8")) as {
+      authors: Record<string, unknown>[];
+      revoked: Record<string, unknown>;
+    };
+    registry.authors.push({
+      credentialId: "credential-b",
+      origin: "https://lucent-financial-group.github.io",
+      rpId: "lucent-financial-group.github.io",
+      publicKeyJwk: { kty: "EC", crv: "P-256", x: "x", y: "y" },
+    });
+    registry.revoked["credential-a"] = { at: "2026-08-14T02:00:00.000Z", reason: "rotated" };
+    writeFileSync(registryPath, `${JSON.stringify(registry, null, 2)}\n`, "utf8");
+    const outDir = root();
+
+    expect(buildBrowserDatabaseReceiptPages({ sourceDir, outDir, revision, limits })).toMatchObject({ ok: true });
+    const index = JSON.parse(
+      readFileSync(join(outDir, BROWSER_DATABASE_RECEIPT_PAGES_INDEX_PATH), "utf8"),
+    ) as BrowserDatabaseReceiptPagesIndex;
+    expect(index.proposalAuthority.authors.map((author) => author.credentialId)).toEqual(["credential-b"]);
+
+    registry.revoked = {};
+    writeFileSync(registryPath, `${JSON.stringify(registry, null, 2)}\n`, "utf8");
+    expect(
+      buildBrowserDatabaseReceiptPages({
+        sourceDir,
+        outDir: root(),
+        revision,
+        limits: { ...limits, maxAuthors: 1 },
+      }),
+    ).toMatchObject({ ok: false, error: expect.stringContaining("active authors") });
+  });
+
   test("fails closed on malformed directory entries instead of publishing an ambiguous index", () => {
-    const sourceDir = root();
+    const sourceDir = sourceRoot();
     const outDir = root();
     const source = acceptedDir(sourceDir);
     mkdirSync(source, { recursive: true });
@@ -107,7 +183,7 @@ describe("browser database receipt Pages build", () => {
   });
 
   test("backpressures record-count, record-byte, and index-byte budgets without partial output", () => {
-    const sourceDir = root();
+    const sourceDir = sourceRoot();
     const source = acceptedDir(sourceDir);
     mkdirSync(source, { recursive: true });
     writeFileSync(join(source, `${"1".repeat(64)}.json`), "one", "utf8");
@@ -143,7 +219,7 @@ describe("browser database receipt Pages build", () => {
   });
 
   test("rejects mutable revisions and invalid build limits", () => {
-    const sourceDir = root();
+    const sourceDir = sourceRoot();
     const outDir = root();
     expect(buildBrowserDatabaseReceiptPages({ sourceDir, outDir, revision: "main", limits })).toMatchObject({
       ok: false,

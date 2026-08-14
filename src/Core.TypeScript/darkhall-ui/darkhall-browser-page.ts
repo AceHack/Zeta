@@ -24,6 +24,7 @@ import {
   createBrowserDatabaseReceiptHandoffRuntime,
   createZetaDbBrowserDatabaseReceiptArchiveMaintenance,
   createZetaDbBrowserDatabaseReceiptHandoff,
+  type BrowserDatabaseReceiptArchiveMaintenancePort,
   type BrowserDatabaseReceiptHandoffLimits,
   type BrowserDatabaseReceiptHandoffReadout,
   type BrowserDatabaseReceiptHandoffRuntime,
@@ -34,6 +35,10 @@ import {
   type BrowserDatabaseReceiptBroadcastPeerLinkReadout,
   type BrowserDatabaseReceiptBroadcastPeerLinkRuntime,
 } from "../browser-node/browser-database-receipt-broadcast-peer-link";
+import {
+  createNativeBrowserDatabaseReceiptSync,
+  type NativeBrowserDatabaseReceiptSyncLimits,
+} from "../browser-node/browser-database-receipt-native-sync";
 import type { BrowserDatabaseReceiptSyncRuntime } from "../browser-node/browser-database-receipt-sync-runtime";
 import { openNativeIndexedDbDatabaseIntentOutbox } from "../browser-node/browser-indexeddb-database-intent-outbox";
 import { createNativeBrowserExecutionAdmission } from "../browser-node/browser-web-lock-execution-admission";
@@ -196,12 +201,15 @@ export interface NativeDarkHallBrowserPageOptions {
   readonly databaseReceiptArchiveNodeId?: string;
   readonly databaseReceiptArchiveLimits?: ZetaDbTickLimits;
   readonly databaseReceiptArchiveExecutor?: BrowserDatabaseReceiptArchiveExecutor;
+  readonly databaseReceiptArchiveMaintenance?: BrowserDatabaseReceiptArchiveMaintenancePort;
   readonly databaseReceiptHandoff?: BrowserDatabaseReceiptHandoffRuntime;
   readonly databaseReceiptHandoffTargetNodeId?: string;
   readonly databaseReceiptHandoffLimits?: BrowserDatabaseReceiptHandoffLimits;
   readonly databaseReceiptHandoffTargetLimits?: ZetaDbTickLimits;
   readonly databaseReceiptHandoffTargetExecutor?: BrowserDatabaseReceiptArchiveExecutor;
   readonly databaseReceiptSync?: BrowserDatabaseReceiptSyncRuntime;
+  readonly databaseReceiptSyncTargetNodeId?: string;
+  readonly databaseReceiptNativeSyncLimits?: NativeBrowserDatabaseReceiptSyncLimits;
   readonly databaseReceiptSyncMountId?: string;
   readonly databaseReceiptPeerId?: string;
   readonly databaseReceiptPeerChannelName?: string;
@@ -482,6 +490,17 @@ const defaultDatabaseReceiptHandoffTargetLimits: ZetaDbTickLimits = {
   maxCheckpointBytes: 16 * 1024 * 1024,
 };
 
+const defaultDatabaseReceiptNativeSyncLimits: NativeBrowserDatabaseReceiptSyncLimits = {
+  pagesIndexBytes: 256 * 1024,
+  pagesRecords: 1024,
+  pagesAuthors: 128,
+  recordBytes: 256 * 1024,
+  patchBytes: 512 * 1024,
+  issueUrlBytes: 1024 * 1024,
+  passkeyTimeoutMs: 120_000,
+  proposalLifetimeMs: 5 * 60_000,
+};
+
 const defaultDatabaseReceiptPeerLimits: BrowserDatabaseReceiptBroadcastPeerLinkLimits = {
   handoff: defaultDatabaseReceiptHandoffLimits,
   peer: {
@@ -586,6 +605,97 @@ interface PageDatabaseReceiptHandoffSelection {
   readonly peer: BrowserDatabaseReceiptBroadcastPeerLinkRuntime | null;
 }
 
+function selectPageDatabaseReceiptArchiveMaintenance(
+  options: NativeDarkHallBrowserPageOptions,
+  configuration: NativePageConfiguration,
+  archiveNodeId: string,
+): DarkHallBrowserPageResult<BrowserDatabaseReceiptArchiveMaintenancePort> {
+  if (options.databaseReceiptArchiveMaintenance !== undefined) {
+    return succeeded(options.databaseReceiptArchiveMaintenance);
+  }
+  const imageOptions = {
+    databaseName: options.databaseName ?? "zeta-browser-node",
+    storeName: options.databaseStoreName ?? "database-images",
+  };
+  const maintenance = createZetaDbBrowserDatabaseReceiptArchiveMaintenance({
+    sourceDatabaseNodeId: configuration.databaseNodeId,
+    archiveNodeId,
+    executorId: configuration.tabId,
+    limits: options.databaseReceiptArchiveLimits ?? defaultDatabaseReceiptArchiveLimits,
+    load: (nodeId) => loadBrowserZetaDbImage(configuration.root, imageOptions, nodeId),
+    save: (replacement) => saveBrowserZetaDbImage(configuration.root, imageOptions, replacement),
+  });
+  return maintenance.ok ? succeeded(maintenance.value) : pageReceiptHandoffFailure(configuration, maintenance.feedback);
+}
+
+function nativeReceiptPageAddress(
+  root: unknown,
+): { readonly baseUrl: string; readonly origin: string; readonly rpId: string } | null {
+  if (!isRecord(root)) return null;
+  try {
+    const location = Reflect.get(root, "location");
+    if (!isRecord(location)) return null;
+    const href = Reflect.get(location, "href");
+    const originValue = Reflect.get(location, "origin");
+    if (typeof href !== "string" || typeof originValue !== "string") return null;
+    const origin = new URL(originValue);
+    const page = new URL(href);
+    if (origin.protocol !== "https:" || origin.origin !== originValue || page.origin !== origin.origin) return null;
+    return { baseUrl: new URL("./", page).href, origin: origin.origin, rpId: origin.hostname };
+  } catch {
+    return null;
+  }
+}
+
+function selectPageDatabaseReceiptSync(
+  options: NativeDarkHallBrowserPageOptions,
+  configuration: NativePageConfiguration,
+): DarkHallBrowserPageResult<BrowserDatabaseReceiptSyncRuntime | null> {
+  if (options.databaseReceiptSync !== undefined) return succeeded(options.databaseReceiptSync);
+  const peerId = pageReceiptPeerId(options, configuration);
+  if (!peerId.ok) return peerId;
+  if (
+    options.databaseReceiptHandoff !== undefined ||
+    peerId.value !== null ||
+    ((options.databaseReceiptArchive !== undefined || options.databaseReceiptArchiveExecutor !== undefined) &&
+      options.databaseReceiptArchiveMaintenance === undefined)
+  ) {
+    return succeeded(null);
+  }
+  const address = nativeReceiptPageAddress(configuration.root);
+  if (address === null) return succeeded(null);
+  const archiveNodeId = identifier(
+    options.databaseReceiptArchiveNodeId ?? null,
+    `${configuration.databaseNodeId}:receipts`,
+  );
+  if (!archiveNodeId.ok) return archiveNodeId;
+  const targetNodeId = identifier(
+    options.databaseReceiptSyncTargetNodeId ?? null,
+    "git:Lucent-Financial-Group/Zeta:browser-receipts",
+  );
+  if (!targetNodeId.ok) return targetNodeId;
+  const maintenance = selectPageDatabaseReceiptArchiveMaintenance(options, configuration, archiveNodeId.value);
+  if (!maintenance.ok) return maintenance;
+  const hasher = { hash: (payload: Uint8Array) => `blake3:${ContentHash256.ofBytes(payload).toHex()}` };
+  const native = createNativeBrowserDatabaseReceiptSync({
+    root: configuration.root,
+    baseUrl: address.baseUrl,
+    expectedOrigin: address.origin,
+    rpId: address.rpId,
+    databaseNodeId: configuration.databaseNodeId,
+    archiveNodeId: archiveNodeId.value,
+    targetNodeId: targetNodeId.value,
+    archive: maintenance.value,
+    hasher,
+    handoffLimits: options.databaseReceiptHandoffLimits ?? defaultDatabaseReceiptHandoffLimits,
+    limits: options.databaseReceiptNativeSyncLimits ?? defaultDatabaseReceiptNativeSyncLimits,
+    now: Date.now,
+  });
+  if (native.ok) return succeeded(native.value);
+  configuration.context.mount.setAttribute("data-database-receipt-native-sync", native.feedback.code);
+  return succeeded(null);
+}
+
 function pageReceiptPeerId(
   options: NativeDarkHallBrowserPageOptions,
   configuration: NativePageConfiguration,
@@ -619,11 +729,7 @@ function pageReceiptPeerLimits(
   const parameter = configuration.context.parameters.get("receipt-minimum");
   if (parameter === null) return succeeded(limits);
   const minimumReceipts = Number(parameter);
-  if (
-    !Number.isSafeInteger(minimumReceipts) ||
-    minimumReceipts < 1 ||
-    minimumReceipts > limits.handoff.maxReceipts
-  ) {
+  if (!Number.isSafeInteger(minimumReceipts) || minimumReceipts < 1 || minimumReceipts > limits.handoff.maxReceipts) {
     return failed(
       "page-configuration-invalid",
       "The receipt peer minimum must be a positive safe integer within the handoff receipt budget.",
@@ -638,10 +744,11 @@ function pageReceiptPeerLimits(
 function selectPageDatabaseReceiptHandoff(
   options: NativeDarkHallBrowserPageOptions,
   configuration: NativePageConfiguration,
+  receiptSync: BrowserDatabaseReceiptSyncRuntime | null,
 ): DarkHallBrowserPageResult<PageDatabaseReceiptHandoffSelection> {
   const peerId = pageReceiptPeerId(options, configuration);
   if (!peerId.ok) return peerId;
-  if (options.databaseReceiptSync !== undefined) {
+  if (receiptSync !== null) {
     return options.databaseReceiptHandoff === undefined && peerId.value === null
       ? succeeded({ runtime: null, peer: null })
       : failed(
@@ -676,20 +783,13 @@ function selectPageDatabaseReceiptHandoff(
     `${configuration.databaseNodeId}:receipt-batches`,
   );
   if (!targetNodeId.ok) return targetNodeId;
+  const maintenance = selectPageDatabaseReceiptArchiveMaintenance(options, configuration, archiveNodeId.value);
+  if (!maintenance.ok) return maintenance;
+
   const imageOptions = {
     databaseName: options.databaseName ?? "zeta-browser-node",
     storeName: options.databaseStoreName ?? "database-images",
   };
-  const archiveLimits = options.databaseReceiptArchiveLimits ?? defaultDatabaseReceiptArchiveLimits;
-  const maintenance = createZetaDbBrowserDatabaseReceiptArchiveMaintenance({
-    sourceDatabaseNodeId: configuration.databaseNodeId,
-    archiveNodeId: archiveNodeId.value,
-    executorId: configuration.tabId,
-    limits: archiveLimits,
-    load: (nodeId) => loadBrowserZetaDbImage(configuration.root, imageOptions, nodeId),
-    save: (replacement) => saveBrowserZetaDbImage(configuration.root, imageOptions, replacement),
-  });
-  if (!maintenance.ok) return pageReceiptHandoffFailure(configuration, maintenance.feedback);
 
   const hasher = { hash: (payload: Uint8Array) => `blake3:${ContentHash256.ofBytes(payload).toHex()}` };
   const downstream = createZetaDbBrowserDatabaseReceiptHandoff({
@@ -814,10 +914,11 @@ function optionalReceiptHandoff(receiptHandoff: BrowserDatabaseReceiptHandoffRun
 }
 
 function startPageDatabaseReceiptSync(
+  synchronization: BrowserDatabaseReceiptSyncRuntime | null,
   options: NativeDarkHallBrowserPageOptions,
   configuration: NativePageConfiguration,
 ): DarkHallBrowserPageResult<DarkHallBrowserReceiptSyncControlRuntime | null> {
-  if (options.databaseReceiptSync === undefined) return succeeded(null);
+  if (synchronization === null) return succeeded(null);
   const mountId = identifier(
     options.databaseReceiptSyncMountId ?? null,
     DARK_HALL_BROWSER_RECEIPT_SYNC_CONTROL_MOUNT_ID,
@@ -838,7 +939,7 @@ function startPageDatabaseReceiptSync(
   const control = startDarkHallBrowserReceiptSyncControl({
     mount: mount.value,
     lifecycle: lifecycle.value,
-    synchronization: options.databaseReceiptSync,
+    synchronization,
   });
   return control.ok
     ? succeeded(control.value)
@@ -1041,6 +1142,7 @@ async function startPageEdges(
     readonly receiptArchive: BrowserDatabaseReceiptArchivePort;
     readonly receiptHandoff: BrowserDatabaseReceiptHandoffRuntime | null;
     readonly receiptPeer: BrowserDatabaseReceiptBroadcastPeerLinkRuntime | null;
+    readonly receiptSync: BrowserDatabaseReceiptSyncRuntime | null;
   }>
 > {
   const pwa = await startPagePwa(
@@ -1064,7 +1166,13 @@ async function startPageEdges(
     pwa.value.browser.host.stop();
     return receiptArchive;
   }
-  const receiptHandoff = selectPageDatabaseReceiptHandoff(options, configuration);
+  const receiptSync = selectPageDatabaseReceiptSync(options, configuration);
+  if (!receiptSync.ok) {
+    outbox.value.close();
+    pwa.value.browser.host.stop();
+    return receiptSync;
+  }
+  const receiptHandoff = selectPageDatabaseReceiptHandoff(options, configuration, receiptSync.value);
   if (!receiptHandoff.ok) {
     outbox.value.close();
     pwa.value.browser.host.stop();
@@ -1076,6 +1184,7 @@ async function startPageEdges(
     receiptArchive: receiptArchive.value,
     receiptHandoff: receiptHandoff.value.runtime,
     receiptPeer: receiptHandoff.value.peer,
+    receiptSync: receiptSync.value,
   });
 }
 
@@ -1200,7 +1309,7 @@ export async function startNativeDarkHallBrowserPage(
   );
   if (!edges.ok) return edges;
 
-  const { pwa, outbox, receiptArchive, receiptHandoff, receiptPeer } = edges.value;
+  const { pwa, outbox, receiptArchive, receiptHandoff, receiptPeer, receiptSync: receiptSynchronization } = edges.value;
   let latestDatabase: DarkHallDatabaseReadout | null = null;
   const observedDatabase = (): DarkHallDatabaseReadout | null => latestDatabase;
   let latestController: DarkHallBrowserDatabaseControllerReadout | null = null;
@@ -1456,7 +1565,7 @@ export async function startNativeDarkHallBrowserPage(
     );
   }
   const input: DarkHallBrowserControllerInputRuntime = inputStarted.value;
-  const receiptSyncStarted = startPageDatabaseReceiptSync(options, configuration.value);
+  const receiptSyncStarted = startPageDatabaseReceiptSync(receiptSynchronization, options, configuration.value);
   if (!receiptSyncStarted.ok) {
     receiptPeer?.close();
     input.stop();

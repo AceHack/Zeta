@@ -19,15 +19,26 @@ const recordPayload = new TextEncoder().encode('{"accepted":true}\n');
 const limits: BrowserDatabaseReceiptPagesSourceLimits = {
   maxIndexBytes: 4096,
   maxRecords: 8,
+  maxAuthors: 8,
   maxRecordBytes: 1024,
 };
 
 function index(overrides: Partial<BrowserDatabaseReceiptPagesIndex> = {}): BrowserDatabaseReceiptPagesIndex {
   return {
-    schema: "zeta.browser-database-receipt-pages-index.v1",
+    schema: "zeta.browser-database-receipt-pages-index.v2",
     repository: "Lucent-Financial-Group/Zeta",
     ref: "main",
     revision,
+    proposalAuthority: {
+      registrySequence: 7,
+      authors: [
+        {
+          credentialId: "credential-a",
+          origin: expectedOrigin,
+          rpId: "lucent-financial-group.github.io",
+        },
+      ],
+    },
     records: [{ targetPath, byteLength: recordPayload.byteLength }],
     ...overrides,
   };
@@ -52,6 +63,12 @@ function open(fetchImpl: BrowserDatabaseReceiptPagesFetch, sourceLimits = limits
 }
 
 describe("browser database receipt Pages accepted-record source", () => {
+  test("reads the immutable proposal-author binding without browser credentials", async () => {
+    const source = open(() => Promise.resolve(jsonResponse(index())));
+
+    expect(await source.readIndex()).toEqual({ ok: true, value: index() });
+  });
+
   test("reads an indexed record from the trusted origin without browser credentials", async () => {
     const calls: { readonly input: string; readonly init: RequestInit }[] = [];
     const source = open((input, init) => {
@@ -132,6 +149,14 @@ describe("browser database receipt Pages accepted-record source", () => {
       { ...index(), repository: "other/repository" },
       { ...index(), ref: "topic" },
       { ...index(), revision: "main" },
+      { ...index(), proposalAuthority: { ...index().proposalAuthority, registrySequence: -1 } },
+      {
+        ...index(),
+        proposalAuthority: {
+          registrySequence: 7,
+          authors: [...index().proposalAuthority.authors, ...index().proposalAuthority.authors],
+        },
+      },
       {
         ...index(),
         records: [

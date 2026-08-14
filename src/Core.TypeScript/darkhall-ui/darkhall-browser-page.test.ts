@@ -1,9 +1,12 @@
+import { webcrypto } from "node:crypto";
 import { describe, expect, test } from "bun:test";
 import {
   createInMemoryBrowserDatabaseIntentOutbox,
   type BrowserDatabaseIntentOutboxPort,
 } from "../browser-node/browser-database-intent-outbox";
 import type { BrowserDatabaseReceiptArchivePort } from "../browser-node/browser-database-receipt-archive";
+import type { BrowserDatabaseReceiptArchiveMaintenancePort } from "../browser-node/browser-database-receipt-handoff";
+import type { BrowserDatabaseReceiptPagesFetch } from "../browser-node/browser-database-receipt-pages-source";
 import type {
   BrowserDatabaseReceiptSyncReadout,
   BrowserDatabaseReceiptSyncRuntime,
@@ -247,6 +250,28 @@ class NativeBrowserRoot {
   emitDocument(type: string, event: unknown): void {
     for (const listener of this.documentListeners.get(type) ?? []) listener(event);
   }
+}
+
+class NativeAssertionResponse {}
+
+class NativePublicKeyCredential {
+  readonly rawId = new ArrayBuffer(0);
+  readonly response = new NativeAssertionResponse();
+}
+
+function enableNativeReceiptSync(root: NativeBrowserRoot, fetchImpl: BrowserDatabaseReceiptPagesFetch): void {
+  Reflect.set(root.location, "href", "https://lucent-financial-group.github.io/Zeta/hall/room/");
+  Reflect.set(root.location, "origin", "https://lucent-financial-group.github.io");
+  Reflect.set(root, "localStorage", { getItem: (): string | null => null });
+  Reflect.set(root.crypto, "getRandomValues", (target: Uint8Array): Uint8Array => target.fill(1));
+  Reflect.set(root.crypto, "subtle", webcrypto.subtle);
+  Reflect.set(root.navigator, "credentials", { get: (): Promise<null> => Promise.resolve(null) });
+  Reflect.set(root, "PublicKeyCredential", NativePublicKeyCredential);
+  Reflect.set(root, "AuthenticatorAssertionResponse", NativeAssertionResponse);
+  Reflect.set(root, "atob", (value: string): string => Buffer.from(value, "base64").toString("binary"));
+  Reflect.set(root, "btoa", (value: string): string => Buffer.from(value, "binary").toString("base64"));
+  Reflect.set(root, "fetch", fetchImpl);
+  Reflect.set(root, "open", (): unknown => ({ location: { href: "" }, opener: null, close: (): void => undefined }));
 }
 
 function databaseReadout(
@@ -841,6 +866,71 @@ describe("Dark Hall active browser page", () => {
     await waitFor(() => sync.calls.polls === 2);
     expect(sync.calls).toEqual({ submissions: 1, polls: 2 });
     expect(root.receiptSync.attributes.get("data-receipt-sync-trigger")).toBe("visibilitychange");
+    expect(started.value.stop().ok).toBe(true);
+  });
+
+  test("selects the source-owned native receipt synchronization path when the browser supports every edge", async () => {
+    const root = new NativeBrowserRoot();
+    const fetches: { readonly input: string; readonly init: RequestInit }[] = [];
+    enableNativeReceiptSync(root, (input, init) => {
+      fetches.push({ input: input.toString(), init: init ?? {} });
+      return Promise.resolve(new Response(null, { status: 404 }));
+    });
+    const maintenance: BrowserDatabaseReceiptArchiveMaintenancePort = {
+      read: () =>
+        Promise.resolve({
+          ok: true,
+          value: {
+            schema: "zeta.browser-database-receipt-archive-snapshot.v1",
+            databaseNodeId: "zeta-darkhall-browser-node:database",
+            archiveNodeId: "zeta-darkhall-browser-node:database:receipts",
+            archiveRevision: 1,
+            receiptPayloadBytes: 64,
+            limits: { maxDeltas: 1, maxEntries: 8, maxCheckpointBytes: 32 * 1024 },
+            receipts: [
+              {
+                schema: "zeta.browser-database-execution-receipt.v1",
+                databaseNodeId: "zeta-darkhall-browser-node:database",
+                intentId: "event/0",
+                sequence: 0,
+                status: "settled",
+                executorId: "tab-a",
+                executorKind: "browser-tab",
+                revision: 1,
+                accepted: 1,
+                duplicates: 0,
+                deltaCount: 1,
+              },
+            ],
+            generation: null,
+          },
+        }),
+      compactGeneration: () => Promise.reject(new Error("an absent accepted record must not compact")),
+    };
+    const started = await startNativeDarkHallBrowserPage({
+      root,
+      databaseIntentOutbox: databaseIntentOutbox(),
+      databaseReceiptArchive: databaseReceiptArchive(),
+      databaseReceiptArchiveMaintenance: maintenance,
+      databaseReceiptHandoffLimits: { minimumReceipts: 1, maxReceipts: 8, maxBatchBytes: 32 * 1024 },
+      databaseExecutor,
+    });
+
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+    await waitFor(() => started.value.read().receiptSync?.last !== null);
+    expect(started.value.read()).toMatchObject({
+      receiptHandoff: null,
+      receiptSync: {
+        status: "live",
+        synchronization: { status: "pending", receiptCount: 1 },
+        last: { operation: "poll", trigger: "startup", outcome: "complete" },
+      },
+    });
+    expect(fetches[0]).toMatchObject({
+      input: "https://lucent-financial-group.github.io/Zeta/hall/room/data/browser-receipts/index.json",
+      init: { method: "GET", credentials: "omit", cache: "no-store", redirect: "error" },
+    });
     expect(started.value.stop().ok).toBe(true);
   });
 

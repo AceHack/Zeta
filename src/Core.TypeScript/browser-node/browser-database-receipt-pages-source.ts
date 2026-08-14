@@ -10,6 +10,7 @@ import {
   BROWSER_DATABASE_RECEIPT_PAGES_RECORD_ROOT,
   type BrowserDatabaseReceiptPagesIndex,
   type BrowserDatabaseReceiptPagesIndexEntry,
+  type BrowserDatabaseReceiptPagesProposalAuthor,
 } from "./browser-database-receipt-pages-contract";
 import {
   BROWSER_DATABASE_RECEIPT_PROPOSAL_REPOSITORY,
@@ -19,6 +20,7 @@ import {
 export interface BrowserDatabaseReceiptPagesSourceLimits {
   readonly maxIndexBytes: number;
   readonly maxRecords: number;
+  readonly maxAuthors: number;
   readonly maxRecordBytes: number;
 }
 
@@ -31,6 +33,10 @@ export interface BrowserDatabaseReceiptPagesSourceOptions {
   readonly expectedOrigin: string;
   readonly fetch: BrowserDatabaseReceiptPagesFetch;
   readonly limits: BrowserDatabaseReceiptPagesSourceLimits;
+}
+
+export interface BrowserDatabaseReceiptPagesSource extends BrowserDatabaseReceiptAcceptedRecordSource {
+  readIndex(): Promise<BrowserDatabaseReceiptHandoffResult<BrowserDatabaseReceiptPagesIndex | null>>;
 }
 
 type PagesFeedbackCode =
@@ -65,6 +71,8 @@ function validLimits(limits: BrowserDatabaseReceiptPagesSourceLimits): boolean {
     limits.maxIndexBytes >= 1 &&
     Number.isSafeInteger(limits.maxRecords) &&
     limits.maxRecords >= 1 &&
+    Number.isSafeInteger(limits.maxAuthors) &&
+    limits.maxAuthors >= 1 &&
     Number.isSafeInteger(limits.maxRecordBytes) &&
     limits.maxRecordBytes >= 1
   );
@@ -155,6 +163,11 @@ function decodeIndex(
     parsed.ref !== "main" ||
     typeof parsed.revision !== "string" ||
     !/^[0-9a-f]{40}$/.test(parsed.revision) ||
+    !isRecord(parsed.proposalAuthority) ||
+    typeof parsed.proposalAuthority.registrySequence !== "number" ||
+    !Number.isSafeInteger(parsed.proposalAuthority.registrySequence) ||
+    parsed.proposalAuthority.registrySequence < 0 ||
+    !Array.isArray(parsed.proposalAuthority.authors) ||
     !Array.isArray(parsed.records)
   ) {
     return failed(
@@ -168,6 +181,49 @@ function decodeIndex(
       `The Pages receipt index carries ${parsed.records.length.toString()} records; its read budget is ${limits.maxRecords.toString()}.`,
       "backpressure",
     );
+  }
+  if (parsed.proposalAuthority.authors.length > limits.maxAuthors) {
+    return failed(
+      "receipt-handoff-acceptance-pages-capacity-exhausted",
+      `The Pages receipt index carries ${parsed.proposalAuthority.authors.length.toString()} proposal authors; its read budget is ${limits.maxAuthors.toString()}.`,
+      "backpressure",
+    );
+  }
+
+  const authors: BrowserDatabaseReceiptPagesProposalAuthor[] = [];
+  let previousCredentialId = "";
+  for (const value of parsed.proposalAuthority.authors) {
+    if (
+      !isRecord(value) ||
+      typeof value.credentialId !== "string" ||
+      value.credentialId.length < 1 ||
+      value.credentialId.length > 4096 ||
+      value.credentialId <= previousCredentialId ||
+      typeof value.origin !== "string" ||
+      typeof value.rpId !== "string"
+    ) {
+      return failed(
+        "receipt-handoff-acceptance-pages-index-invalid",
+        "The Pages receipt index contains an invalid, duplicate, or unsorted proposal author.",
+      );
+    }
+    let origin: URL;
+    try {
+      origin = new URL(value.origin);
+    } catch {
+      return failed(
+        "receipt-handoff-acceptance-pages-index-invalid",
+        "The Pages receipt index contains an invalid proposal-author origin.",
+      );
+    }
+    if (origin.protocol !== "https:" || origin.origin !== value.origin || origin.hostname !== value.rpId) {
+      return failed(
+        "receipt-handoff-acceptance-pages-index-invalid",
+        "The Pages receipt index contains a proposal author outside its exact HTTPS relying party.",
+      );
+    }
+    authors.push({ credentialId: value.credentialId, origin: value.origin, rpId: value.rpId });
+    previousCredentialId = value.credentialId;
   }
 
   const records: BrowserDatabaseReceiptPagesIndexEntry[] = [];
@@ -202,6 +258,10 @@ function decodeIndex(
     repository: BROWSER_DATABASE_RECEIPT_PROPOSAL_REPOSITORY,
     ref: "main",
     revision: parsed.revision,
+    proposalAuthority: {
+      registrySequence: parsed.proposalAuthority.registrySequence,
+      authors,
+    },
     records,
   });
 }
@@ -246,7 +306,7 @@ function httpFailure(response: Response): BrowserDatabaseReceiptHandoffResult<ne
 /** Adapt a static Pages projection into the host-neutral accepted-record source. */
 export function createBrowserDatabaseReceiptPagesSource(
   options: BrowserDatabaseReceiptPagesSourceOptions,
-): BrowserDatabaseReceiptHandoffResult<BrowserDatabaseReceiptAcceptedRecordSource> {
+): BrowserDatabaseReceiptHandoffResult<BrowserDatabaseReceiptPagesSource> {
   let baseUrl: URL;
   let expectedOrigin: string;
   try {
@@ -275,7 +335,17 @@ export function createBrowserDatabaseReceiptPagesSource(
   baseUrl.search = "";
   baseUrl.hash = "";
 
+  const readIndex = async (): Promise<BrowserDatabaseReceiptHandoffResult<BrowserDatabaseReceiptPagesIndex | null>> => {
+    const response = await fetchResponse(options.fetch, new URL(BROWSER_DATABASE_RECEIPT_PAGES_INDEX_PATH, baseUrl));
+    if (!response.ok) return response;
+    if (response.value.status === 404) return succeeded(null);
+    if (!response.value.ok) return httpFailure(response.value);
+    const payload = await boundedBytes(response.value, options.limits.maxIndexBytes);
+    return payload.ok ? decodeIndex(payload.value, options.limits) : payload;
+  };
+
   return succeeded({
+    readIndex,
     read: async (targetPath) => {
       const target = RECORD_PATH_PATTERN.exec(targetPath);
       if (target === null || target[1] === undefined) {
@@ -285,17 +355,8 @@ export function createBrowserDatabaseReceiptPagesSource(
         );
       }
 
-      const indexResponse = await fetchResponse(
-        options.fetch,
-        new URL(BROWSER_DATABASE_RECEIPT_PAGES_INDEX_PATH, baseUrl),
-      );
-      if (!indexResponse.ok) return indexResponse;
-      if (indexResponse.value.status === 404) return succeeded(null);
-      if (!indexResponse.value.ok) return httpFailure(indexResponse.value);
-      const indexPayload = await boundedBytes(indexResponse.value, options.limits.maxIndexBytes);
-      if (!indexPayload.ok) return indexPayload;
-      const index = decodeIndex(indexPayload.value, options.limits);
-      if (!index.ok) return index;
+      const index = await readIndex();
+      if (!index.ok || index.value === null) return index;
       const entry = index.value.records.find((record) => record.targetPath === targetPath);
       if (entry === undefined) return succeeded(null);
 

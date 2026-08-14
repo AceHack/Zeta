@@ -266,6 +266,18 @@ export {
 } from "./browser-database-receipt-passkey-signer";
 
 export {
+  BROWSER_DATABASE_RECEIPT_PASSKEY_CREDENTIAL_STORAGE_KEY,
+  createNativeBrowserDatabaseReceiptIntentSource,
+  type NativeBrowserDatabaseReceiptIntentSourceOptions,
+} from "./browser-database-receipt-native-intent-source";
+
+export {
+  createNativeBrowserDatabaseReceiptSync,
+  type NativeBrowserDatabaseReceiptSyncLimits,
+  type NativeBrowserDatabaseReceiptSyncOptions,
+} from "./browser-database-receipt-native-sync";
+
+export {
   BROWSER_DATABASE_RECEIPT_PROPOSAL_ISSUE_MARKER,
   createNativeBrowserDatabaseReceiptGitHubIssueCarrier,
   encodeBrowserDatabaseReceiptProposalIssueBody,
@@ -301,11 +313,14 @@ export {
   BROWSER_DATABASE_RECEIPT_PAGES_RECORD_ROOT,
   type BrowserDatabaseReceiptPagesIndex,
   type BrowserDatabaseReceiptPagesIndexEntry,
+  type BrowserDatabaseReceiptPagesProposalAuthor,
+  type BrowserDatabaseReceiptPagesProposalAuthority,
 } from "./browser-database-receipt-pages-contract";
 
 export {
   createBrowserDatabaseReceiptPagesSource,
   type BrowserDatabaseReceiptPagesFetch,
+  type BrowserDatabaseReceiptPagesSource,
   type BrowserDatabaseReceiptPagesSourceLimits,
   type BrowserDatabaseReceiptPagesSourceOptions,
 } from "./browser-database-receipt-pages-source";

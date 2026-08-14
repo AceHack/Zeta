@@ -2,6 +2,7 @@
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { validateProposalAuthorRegistry } from "../planning/proposal-verifier";
 import {
   BROWSER_DATABASE_RECEIPT_PROPOSAL_REPOSITORY,
   BROWSER_DATABASE_RECEIPT_PROPOSAL_ROOT,
@@ -15,6 +16,7 @@ import {
 
 export interface BrowserDatabaseReceiptPagesBuildLimits {
   readonly maxRecords: number;
+  readonly maxAuthors: number;
   readonly maxRecordBytes: number;
   readonly maxIndexBytes: number;
 }
@@ -39,6 +41,7 @@ export type BrowserDatabaseReceiptPagesBuildResult =
 export const DEFAULT_BROWSER_DATABASE_RECEIPT_PAGES_BUILD_LIMITS: BrowserDatabaseReceiptPagesBuildLimits =
   Object.freeze({
     maxRecords: 1024,
+    maxAuthors: 128,
     maxRecordBytes: 64 * 1024,
     maxIndexBytes: 256 * 1024,
   });
@@ -49,6 +52,8 @@ function validLimits(limits: BrowserDatabaseReceiptPagesBuildLimits): boolean {
   return (
     Number.isSafeInteger(limits.maxRecords) &&
     limits.maxRecords >= 1 &&
+    Number.isSafeInteger(limits.maxAuthors) &&
+    limits.maxAuthors >= 1 &&
     Number.isSafeInteger(limits.maxRecordBytes) &&
     limits.maxRecordBytes >= 1 &&
     Number.isSafeInteger(limits.maxIndexBytes) &&
@@ -80,8 +85,27 @@ export function buildBrowserDatabaseReceiptPages(
   const sourceRoot = resolve(options.sourceDir);
   const outRoot = resolve(options.outDir);
   const acceptedRoot = join(sourceRoot, ...BROWSER_DATABASE_RECEIPT_PROPOSAL_ROOT.split("/"));
+  const registryPath = join(sourceRoot, "docs", "security", "proposal-author-registry.json");
   const records: { readonly name: string; readonly payload: Uint8Array }[] = [];
   try {
+    const registry = validateProposalAuthorRegistry(JSON.parse(readFileSync(registryPath, "utf8")) as unknown);
+    if (!registry.ok) return { ok: false, error: registry.message };
+    const authors = registry.value.authors
+      .filter((author) => registry.value.revoked[author.credentialId] === undefined)
+      .map((author) => ({
+        credentialId: author.credentialId,
+        origin: author.origin,
+        rpId: author.rpId,
+      }))
+      .sort((left, right) =>
+        left.credentialId < right.credentialId ? -1 : left.credentialId > right.credentialId ? 1 : 0,
+      );
+    if (authors.length > options.limits.maxAuthors) {
+      return {
+        ok: false,
+        error: `The proposal-author registry carries ${authors.length.toString()} active authors; its Pages budget is ${options.limits.maxAuthors.toString()}.`,
+      };
+    }
     if (existsSync(acceptedRoot)) {
       const entries = readdirSync(acceptedRoot, { withFileTypes: true }).sort((left, right) =>
         left.name < right.name ? -1 : left.name > right.name ? 1 : 0,
@@ -112,6 +136,10 @@ export function buildBrowserDatabaseReceiptPages(
       repository: BROWSER_DATABASE_RECEIPT_PROPOSAL_REPOSITORY,
       ref: "main",
       revision: options.revision,
+      proposalAuthority: {
+        registrySequence: registry.value.sequence,
+        authors,
+      },
       records: records.map((record) => ({
         targetPath: `${BROWSER_DATABASE_RECEIPT_PROPOSAL_ROOT}/${record.name}`,
         byteLength: record.payload.byteLength,
