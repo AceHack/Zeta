@@ -1,0 +1,12 @@
+{
+  "pr_number": 10719,
+  "archive_path": "docs/history/pr-reviews/PR-10719-fix-ci-bound-apt-install-with-wall-clock-timeout-guarded-rerun-for-cancelled-gat.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T21:21:29.935Z",
+  "schema_version": "v1",
+  "commit_sha": "0cb3642eb5468a6c5f95c7489236c9029ec21863",
+  "title": "fix(ci): bound apt install with wall-clock timeout; guarded rerun for cancelled gate runs",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T21:20:25Z",
+  "head_ref": "dejan/auto-rerun-cancelled-gate-jobs"
+}
