@@ -18,7 +18,6 @@ pathIgnorePatterns = [
   # Environment-dependent, excluded from the whole-suite gate job (081KZYPHESJ087G0R002EZ7A2H).
   # Each is declared with a reason in registry/unexecuted-test-files.json; the checker at
   # hygiene/unexecuted-test-files.ts fails if one loses its reason or becomes stale.
-  "src/Core.TypeScript/cluster/dev-cluster/use-cases.test.ts",
   "src/Core.TypeScript/service/persona-health.test.ts",
   "src/Core.TypeScript/shadow/shadow-observer.test.ts",
   "src/Core.TypeScript/backlog/empty-queue-pickup.test.ts",

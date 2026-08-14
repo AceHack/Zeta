@@ -5,11 +5,6 @@
     "workitem": ""
   },
   {
-    "path": "src/Core.TypeScript/cluster/dev-cluster/use-cases.test.ts",
-    "reason": "MEASURED 2026-08-13: creates a real kind cluster named zeta-ci and installs ArgoCD plus the Gateway API CRDs, with no CI guard. That is minutes of runner time, a docker-in-runner dependency, and shared mutable state on any machine that runs it, a developer laptop included. The k8s surface has its own lane in k8s-argocd-health-test.yml. Un-ignoring this needs an env-gated skip inside the test, which belongs to whoever owns the cluster harness.",
-    "workitem": ""
-  },
-  {
     "path": "src/Core.TypeScript/health/factory-health-monitor.test.ts",
     "reason": "MEASURED 2026-08-13, reproduced twice: runHealthCheck probes the live repository over the network, and its single test times out after 60s, carrying the file to 93s wall-clock and failing. The other 50 tests in the file pass in under a second. It is a live-environment probe wearing a unit-test name, so it cannot join the PR lane until that one test is separated or gated. Losing 50 real assertions to keep it out is a genuine cost, recorded here rather than hidden.",
     "workitem": ""
