@@ -1,0 +1,14 @@
+{
+  "id": "080cffffc4f12810a013000845a6700c",
+  "at": "2026-08-14T11:11:51.333Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZZZH7H4087G0R001HV0W40",
+    "type": "task",
+    "title": "Receiver block reassembly degrades out of envelope: LRU eviction at RECV_BLOCK_WINDOW delivers 540 of 1600 at reorder depth 128 (unbounded map delivered 1408) and zero on a uniform 9-block cycle",
+    "slug": "receiver-block-reassembly-degrades-out-of-envelope-lru-evict",
+    "priority": "P2",
+    "filename": "081KZZZH7H4087G0R001HV0W40-receiver-block-reassembly-degrades-out-of-envelope-lru-evict.md"
+  }
+}

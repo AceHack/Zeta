@@ -8,6 +8,7 @@ import { describe, it, expect } from "bun:test";
 import fc from "fast-check";
 import {
   MAX_NACK_GAP,
+  RECV_BLOCK_WINDOW,
   type DesyncEvent,
   computeAdinkraParity,
   recoverAdinkraErasure,
@@ -1241,5 +1242,232 @@ describe("udp-lossy-transport: separated loss signals", () => {
     expect(code).toContain('cause: "unknown"');
     expect(code).toContain('cause: "reorder"');
     expect(code).toContain('cause: "corruption"');
+  });
+});
+
+// ── ULT-32..36: the receiver's block memory is BOUNDED (081KZYQJPNG087G0R002B9E9S1, P1) ────
+//
+// The defect: `recvBlocks` grew one `ReceiverBlock` per peer-chosen u32 `blockSeq`, forever,
+// because eviction was lexically inside `if (recovered)` — the one branch a stream that never
+// completes a block never reaches. Measured on the unfixed code: 200,000 packets (82 MB in)
+// retained 200,000 blocks and 279,805,952 bytes of RSS, zero evicted.
+//
+// It is NOT an attack-only path. A block becomes recoverable at 4 of 8 symbols, so a block that
+// never recovers is a block that lost 5+ — ordinary heavy loss, which is what this transport is
+// for. The attacker's contribution is only speed: `blockSeq` is a separate header field from
+// `seq`, so a peer can hold `seq` monotone (provoking no NACK at all) while spending 4.29e9 keys.
+//
+// These tests observe `retainedBlockCount`, which exists for exactly this reason: unbounded
+// growth changes no delivered output, so before it there was nothing in the module a test could
+// see. The RSS number itself lives in `udp-lossy-transport.retention-measure.ts` — process memory
+// is too noisy to assert on inside a unit test, and asserting it there would be a benchmark
+// pretending to be a falsifier.
+describe("udp-lossy-transport: bounded receiver block memory", () => {
+  function makeReceiver(): {
+    channel: LossyUdpChannel;
+    delivered: Uint8Array[];
+    /** Deliver one raw packet with FULLY peer-chosen header fields — which is what the wire is. */
+    raw: (seq: number, blockSeq: number, blockPos: number, payload: Uint8Array) => void;
+    /** Deliver every packet of an honest Adinkra block, at honest `seq`s, minus `lost` positions. */
+    honestBlock: (blockSeq: number, lost?: readonly number[]) => void;
+    /** The 4 data payloads an honest block for `blockSeq` carries — the delivery expectation. */
+    expectedPayloads: (blockSeq: number) => Uint8Array[];
+  } {
+    let receive: (text: string, from: string) => void = () => {};
+    const delivered: Uint8Array[] = [];
+    const channel = new LossyUdpChannel(
+      {
+        broadcast: () => {},
+        onMessage: (h: (text: string, from: string) => void) => {
+          receive = h;
+        },
+      },
+      "receiver",
+    );
+    channel.onData((p) => delivered.push(p));
+
+    const raw = (seq: number, blockSeq: number, blockPos: number, payload: Uint8Array): void => {
+      const pkt = encodePacket({ seq, blockSeq, blockPos, isData: blockPos < 4, payloadLen: payload.length }, payload);
+      receive(JSON.stringify({ type: "lossy-udp", zid: "peer", pkt: pkt.toString("base64") }), "peer");
+    };
+    // Distinct per block AND per position, so a delivery can be attributed to its own block.
+    const dataFor = (blockSeq: number): Uint8Array[] =>
+      Array.from({ length: 4 }, (_, i) => Uint8Array.from([blockSeq & 0xff, (blockSeq >> 8) & 0xff, i, 0x5a]));
+    return {
+      channel,
+      delivered,
+      raw,
+      honestBlock: (blockSeq, lost = []) => {
+        const sent = buildSenderBlock(blockSeq, dataFor(blockSeq));
+        const wire = [...sent.dataPackets, ...sent.parityPackets];
+        for (let pos = 0; pos < 8; pos++) {
+          if (lost.includes(pos)) continue;
+          raw(blockSeq * 8 + pos, blockSeq, pos, wire[pos]!);
+        }
+      },
+      expectedPayloads: dataFor,
+    };
+  }
+
+  it("ULT-32 (property): no stream of peer-chosen blockSeq takes retention past the window", () => {
+    // Stated over the whole u32 domain rather than at one value, because the defect was "any
+    // sufficiently long stream of distinct keys", not one key. Seeded, so a failure replays (§7).
+    fc.assert(
+      fc.property(fc.array(fc.integer({ min: 0, max: 0xffffffff }), { minLength: 64, maxLength: 256 }), (keys) => {
+        const r = makeReceiver();
+        keys.forEach((blockSeq, i) => r.raw(i, blockSeq, 0, new Uint8Array([7, 7, 7, 7])));
+        expect(r.channel.retainedBlockCount).toBeLessThanOrEqual(RECV_BLOCK_WINDOW);
+        // ANTI-VACUITY: a receiver that retained NOTHING would also pass the line above, and would
+        // be a different, worse module. With ≥64 distinct-ish keys and blockPos 0 throughout, the
+        // window must actually be full — the bound is being exercised, not merely satisfied.
+        expect(r.channel.retainedBlockCount).toBe(Math.min(RECV_BLOCK_WINDOW, new Set(keys).size));
+      }),
+      { numRuns: 200, seed: 0x5eed },
+    );
+  });
+
+  it("ULT-33: the filed reproduction — 20,000 never-completing blocks retain 8", () => {
+    // The defect's own shape at 1/10 scale (20k rather than 200k, to stay inside a test budget):
+    // fresh `blockSeq` per packet, `blockPos` 0 so nothing ever becomes recoverable, `seq` monotone
+    // so the NACK path is never entered and `recvBlocks` is the only thing under measurement.
+    const r = makeReceiver();
+    for (let i = 0; i < 20_000; i++) r.raw(i, i, 0, new Uint8Array(64).fill(0xa5));
+    expect(r.channel.retainedBlockCount).toBe(RECV_BLOCK_WINDOW); // was 20,000
+    expect(r.delivered.length).toBe(0); // nothing was ever recoverable — anti-vacuity on the setup
+
+    // §12 idempotency: replaying the same stream has the effect of running it once.
+    for (let i = 0; i < 20_000; i++) r.raw(i, i, 0, new Uint8Array(64).fill(0xa5));
+    expect(r.channel.retainedBlockCount).toBe(RECV_BLOCK_WINDOW);
+  }, 30_000);
+
+  it("ULT-34: eviction is by RECENCY — 8 packets at the top of u32 cannot park the window", () => {
+    // The negative control that chose the policy, and it is a real fork rather than a preference:
+    // evicting the LOWEST `blockSeq` bounds memory just as well and tracks the unbounded map more
+    // closely under reordering — but it was measured to take honest delivery from 20/20 payloads to
+    // 0/20, permanently, for 8 attacker packets, because every honest block sorts below the parked
+    // keys and is evicted the instant it is created. Trading an unauthenticated memory drain for an
+    // unauthenticated permanent shutdown is not a fix, and this test is what refuses it.
+    const parked = makeReceiver();
+    for (let i = 0; i < RECV_BLOCK_WINDOW; i++) parked.raw(i, 0xffffffff - i, 0, new Uint8Array([7, 7, 7, 7]));
+    expect(parked.channel.retainedBlockCount).toBe(RECV_BLOCK_WINDOW); // the window is full of squatters
+    for (let b = 0; b < 5; b++) parked.honestBlock(b);
+    expect(parked.delivered.length).toBe(20); // 5 blocks * 4 data payloads — was 0 under key order
+
+    // Same traffic with no squatters: byte-identical delivery, so the assertion above is about the
+    // parking and not about the honest path being weak.
+    const clean = makeReceiver();
+    for (let b = 0; b < 5; b++) clean.honestBlock(b);
+    expect(parked.delivered.map((p) => Array.from(p))).toEqual(clean.delivered.map((p) => Array.from(p)));
+  });
+
+  it("ULT-35: a full window of concurrent, 3-erasure blocks all deliver — the cap does not clip its own size", () => {
+    // BOTH SIDES of the boundary, as ULT-19 does for the NACK bound.
+    // At exactly RECV_BLOCK_WINDOW concurrent open blocks, nothing is evicted and every block that
+    // the [8,4,4] code can decode is decoded. Symbols are interleaved round-robin across all the
+    // blocks, so every block is genuinely open at once — delivering them in sequence would leave
+    // the cap untouched and make this test vacuous.
+    const r = makeReceiver();
+    const lost = [1, 4, 6]; // 3 erasures: within d−1, decodable by the code itself
+    const sent = Array.from({ length: RECV_BLOCK_WINDOW }, (_, b) => ({
+      blockSeq: b,
+      wire: (() => {
+        const s = buildSenderBlock(b, r.expectedPayloads(b));
+        return [...s.dataPackets, ...s.parityPackets];
+      })(),
+    }));
+    for (let pos = 0; pos < 8; pos++) {
+      if (lost.includes(pos)) continue;
+      for (const blk of sent) r.raw(blk.blockSeq * 8 + pos, blk.blockSeq, pos, blk.wire[pos]!);
+    }
+    expect(r.channel.retainedBlockCount).toBe(RECV_BLOCK_WINDOW);
+    expect(r.delivered.length).toBe(RECV_BLOCK_WINDOW * 4);
+    for (let b = 0; b < RECV_BLOCK_WINDOW; b++) {
+      const mine = r.delivered.filter((p) => p[0] === (b & 0xff) && p[1] === ((b >> 8) & 0xff));
+      expect(mine.map((p) => Array.from(p))).toEqual(r.expectedPayloads(b).map((p) => Array.from(p)));
+    }
+  });
+
+  it("ULT-36: one block past the window collapses to ZERO delivery — the priced worst case", () => {
+    // The other side of the boundary, and the number is exact rather than "less than": at
+    // RECV_BLOCK_WINDOW + 1 blocks open in a perfectly uniform round-robin, delivery is 0. Not
+    // degraded — zero, even with no channel loss at all.
+    //
+    // This is the textbook worst case of the chosen policy rather than a surprise: a cyclic access
+    // pattern one larger than the cache evicts every entry exactly before its next use, which is
+    // the classical LRU pathology (Belady 1966; it is why Belady's OPT and LRU diverge maximally
+    // here). Every bounded policy has some such pattern — a hard cap must drop something, and a
+    // uniform cycle makes every choice the wrong one. What is pinned here is that the cliff sits
+    // one block past the declared window and is TOTAL, so nobody reads "bounded at 8" as "degrades
+    // gently at 9". Widening RECV_BLOCK_WINDOW moves this cliff; it does not remove it.
+    //
+    // Measured against the ordinary path for scale: under a seeded reorder model rather than a
+    // uniform stride, this same policy delivers 1600/1600 through a reorder depth of 32 packets —
+    // identical to the unbounded map it replaces. The stride below is the adversarial shape.
+    const r = makeReceiver();
+    const open = RECV_BLOCK_WINDOW + 1;
+    const sent = Array.from({ length: open }, (_, b) => {
+      const s = buildSenderBlock(b, r.expectedPayloads(b));
+      return { blockSeq: b, wire: [...s.dataPackets, ...s.parityPackets] };
+    });
+    for (let pos = 0; pos < 8; pos++) {
+      for (const blk of sent) r.raw(blk.blockSeq * 8 + pos, blk.blockSeq, pos, blk.wire[pos]!);
+    }
+    expect(r.channel.retainedBlockCount).toBe(RECV_BLOCK_WINDOW);
+    expect(r.delivered.length).toBe(0);
+
+    // ANTI-VACUITY / the control: the SAME traffic, one block fewer, delivers everything. Without
+    // this line the assertion above would be satisfied by a receiver that delivers nothing ever.
+    const atWindow = makeReceiver();
+    const fits = Array.from({ length: RECV_BLOCK_WINDOW }, (_, b) => {
+      const s = buildSenderBlock(b, atWindow.expectedPayloads(b));
+      return { blockSeq: b, wire: [...s.dataPackets, ...s.parityPackets] };
+    });
+    for (let pos = 0; pos < 8; pos++) {
+      for (const blk of fits) atWindow.raw(blk.blockSeq * 8 + pos, blk.blockSeq, pos, blk.wire[pos]!);
+    }
+    expect(atWindow.delivered.length).toBe(RECV_BLOCK_WINDOW * 4);
+  });
+
+  it("ULT-37: a block that is still RECEIVING outlives an idle one — recency, not creation age", () => {
+    // This exists because mutation testing found the recency half unobservable. Removing the
+    // move-to-tail turns the policy into FIFO on creation age, and every other test in this file
+    // stayed green — so the line that makes it LRU was, until this test, decoration.
+    //
+    // The discriminator: fill the window, then TOUCH the oldest block, then force one eviction.
+    // Under LRU the victim is the untouched block 1; under FIFO it is block 0, which is the one
+    // actively receiving. Whichever survived is then completed, and delivery says which it was.
+    const r = makeReceiver();
+    const sent = Array.from({ length: RECV_BLOCK_WINDOW + 1 }, (_, b) => {
+      const s = buildSenderBlock(b, r.expectedPayloads(b));
+      return [...s.dataPackets, ...s.parityPackets];
+    });
+
+    // Fill the window: blocks 0..7, one symbol each. Nothing is evicted yet.
+    for (let b = 0; b < RECV_BLOCK_WINDOW; b++) r.raw(b * 8, b, 0, sent[b]![0]!);
+    expect(r.channel.retainedBlockCount).toBe(RECV_BLOCK_WINDOW);
+
+    // Touch block 0 — it is now the most-recently-used, and the least-recently-used is block 1.
+    r.raw(1, 0, 1, sent[0]![1]!);
+    expect(r.delivered.length).toBe(0); // 2 of 4 data symbols: not yet decodable, anti-vacuity
+
+    // Open a 9th block. Exactly one eviction happens; the policy chooses whom.
+    r.raw(RECV_BLOCK_WINDOW * 8, RECV_BLOCK_WINDOW, 0, sent[RECV_BLOCK_WINDOW]![0]!);
+    expect(r.channel.retainedBlockCount).toBe(RECV_BLOCK_WINDOW);
+
+    // Complete block 0's data. It kept its first two symbols iff it was NOT the victim.
+    r.raw(2, 0, 2, sent[0]![2]!);
+    r.raw(3, 0, 3, sent[0]![3]!);
+    expect(r.delivered.map((p) => Array.from(p))).toEqual(r.expectedPayloads(0).map((p) => Array.from(p)));
+
+    // The negative control, and it is what makes the assertion above about RECENCY rather than
+    // about block 0 being special: with the touch omitted, block 0 IS the least-recently-used, is
+    // evicted by the 9th block, and the identical completion sequence delivers nothing.
+    const untouched = makeReceiver();
+    for (let b = 0; b < RECV_BLOCK_WINDOW; b++) untouched.raw(b * 8, b, 0, sent[b]![0]!);
+    untouched.raw(RECV_BLOCK_WINDOW * 8, RECV_BLOCK_WINDOW, 0, sent[RECV_BLOCK_WINDOW]![0]!);
+    untouched.raw(1, 0, 1, sent[0]![1]!);
+    untouched.raw(2, 0, 2, sent[0]![2]!);
+    untouched.raw(3, 0, 3, sent[0]![3]!);
+    expect(untouched.delivered.length).toBe(0);
   });
 });

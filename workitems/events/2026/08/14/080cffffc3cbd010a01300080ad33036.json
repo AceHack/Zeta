@@ -1,0 +1,14 @@
+{
+  "id": "080cffffc3cbd010a01300080ad33036",
+  "at": "2026-08-14T11:11:41.946Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZZZGYBR087G0R00302Z2J6",
+    "type": "bug",
+    "title": "Evicting a recovered ReceiverBlock drops its delivered-once guard: a straggler re-creates the block and the same payloads are delivered twice (21 of 400 blocks at reorder depth 64)",
+    "slug": "evicting-a-recovered-receiverblock-drops-its-delivered-once",
+    "priority": "P2",
+    "filename": "081KZZZGYBR087G0R00302Z2J6-evicting-a-recovered-receiverblock-drops-its-delivered-once.md"
+  }
+}

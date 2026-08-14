@@ -1,11 +1,12 @@
 ---
 id: 081KZYQJPNG087G0R002B9E9S1
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: lossyudpchannel-retains-a-receiverblock-per-attacker-chosen
 title: "LossyUdpChannel retains a ReceiverBlock per attacker-chosen blockSeq forever: 200k packets (82 MB) retained 279 MB, and eviction only runs on a recovered block"
 created: 2026-08-13T23:33:36.560Z
+completed: 2026-08-14T11:19:32.087Z
 depends_on: []
 composes_with: []
 ---

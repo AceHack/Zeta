@@ -1,0 +1,14 @@
+{
+  "id": "080cffffc4448810a01300089d651139",
+  "at": "2026-08-14T11:11:45.809Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZZZH24H087G0R002TXQA15",
+    "type": "bug",
+    "title": "blockSeq and blockPos are redundant with seq but independently peer-controlled: nothing checks seq = blockSeq*8+blockPos, so one packet can address any block at any position",
+    "slug": "blockseq-and-blockpos-are-redundant-with-seq-but-independent",
+    "priority": "P2",
+    "filename": "081KZZZH24H087G0R002TXQA15-blockseq-and-blockpos-are-redundant-with-seq-but-independent.md"
+  }
+}

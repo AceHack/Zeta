@@ -104,6 +104,21 @@
  *     costs a broadcast, measured at 33.6x the inbound packet at the bound. Reducing that
  *     further needs a unicast reply to the peer that revealed the gap, which this transport
  *     interface cannot express (it exposes `broadcast` only). Named, not silently accepted.
+ *   - The receiver holds at most `RECV_BLOCK_WINDOW` partially-received blocks, evicting the
+ *     least-recently-used. Measured cost: none through a reorder depth of 32 packets (identical
+ *     delivery to the unbounded map at 0/10/20/30% loss); real past it (at depth 128, 540 payloads
+ *     of 1600 vs 1408); and TOTAL — zero delivery — on a uniform round-robin across 9 blocks, which
+ *     is LRU's classical cyclic worst case. That regime is already outside what this receiver
+ *     claims: `MAX_NACK_GAP` = 64 packets is the widest gap it will speak about at all. Until
+ *     2026-08-14 eviction ran only inside the recovered branch, so blocks that never became
+ *     recoverable were retained forever: 200,000 packets retained 200,000 blocks and ~260 MB of
+ *     RSS, zero evicted, growing linearly with no ceiling (081KZYQJPNG087G0R002B9E9S1). Unbounded
+ *     retention is not a gentler tradeoff than a short window; it is a remote memory exhaustion
+ *     any peer can drive at ~3x its own bandwidth.
+ *   - A block that is evicted AFTER being recovered loses its `recovered` flag with it, so a
+ *     straggler can re-create it and deliver the same payloads a second time (§12). PRE-EXISTING —
+ *     measured on the unfixed code at reorder depth 128 — and made reachable at shallower depth by
+ *     the tighter window: 21 blocks of 400 at depth 64. Filed as 081KZZZGYBR087G0R00302Z2J6.
  *   - Losing more than `MAX_NACK_GAP` consecutive packets produces NO congestion signal. The
  *     single `expectedSeq` is shared across every peer on a broadcast transport, so a wide gap
  *     is not attributable to a sender in the first place; per-peer sequence state is the fix.
@@ -163,8 +178,12 @@ const JITTER_MAX_MS = 200;
 // ── Receiver retention window, and the NACK gap bound derived from it ─────────────────────
 /** How many blocks the receiver retains before evicting (see `handleIncoming` cleanup).
  *  Was a bare `8` inline; named here because MAX_NACK_GAP is derived from it, and a
- *  derivation that points at a literal is two magic numbers agreeing by luck. */
-const RECV_BLOCK_WINDOW = 8;
+ *  derivation that points at a literal is two magic numbers agreeing by luck.
+ *
+ *  EXPORTED (2026-08-14) because it is now a hard cap on `recvBlocks.size`
+ *  (081KZYQJPNG087G0R002B9E9S1) rather than a best-effort cleanup, and a test that pinned that cap
+ *  against a literal `8` would be a third copy of the same number free to drift from both. */
+export const RECV_BLOCK_WINDOW = 8;
 
 /** The widest sequence gap the receiver can still say anything true about.
  *
@@ -1170,6 +1189,17 @@ export class LossyUdpChannel {
     if (this.sendQueue.length >= BLOCK_DATA) this.flushBlock();
   }
 
+  /** How many partially-received blocks the receiver is holding right now.
+   *
+   *  An OBSERVATION POINT, not a knob — there is no setter and nothing in the module reads it. It
+   *  exists because the retention bound below is otherwise unobservable from outside: the defect it
+   *  guards (081KZYQJPNG087G0R002B9E9S1) was invisible to every test in this suite precisely because
+   *  `recvBlocks` is private and unbounded growth changes no delivered output. A bound that cannot
+   *  be measured is a comment. */
+  get retainedBlockCount(): number {
+    return this.recvBlocks.size;
+  }
+
   onData(h: (payload: Uint8Array) => void): void {
     this.dataHandlers.push(h);
   }
@@ -1460,10 +1490,92 @@ export class LossyUdpChannel {
       for (const s of this.reportedMissing) if (s < floor) this.reportedMissing.delete(s);
     }
 
-    // Add to receiver block
+    // ── Add to the receiver block, and EVICT ON INSERTION ────────────────────────────────────
+    //
+    // MEMORY (fixed 2026-08-14, workitem 081KZYQJPNG087G0R002B9E9S1, P1). Eviction used to live
+    // inside `if (recovered)` below, which is the one branch a leaking stream never reaches: a
+    // block that never becomes recoverable never triggers its own cleanup. That is not an exotic
+    // input — it is the ORDINARY case on a lossy link, which is what this transport is for.
+    // Measured on the unfixed code, 200,000 packets at 256-byte payloads (82.8 MB in) retained
+    // 200,000 blocks and 259,833,856 bytes of RSS, zero evicted. Read the SLOPE rather than that
+    // total — a Bun heap that expanded for transient garbage keeps ~100 MB of high-water mark
+    // whatever the receiver does, so the total flatters the fix. Over the second half of the run:
+    // 119,848,960 bytes before, 901,120 after. Linear versus flat, which is the whole claim.
+    // `blockSeq` is `readUInt32BE` of an unauthenticated packet and is a SEPARATE field from `seq`,
+    // so a peer holds `seq` monotone — provoking no NACK at all — while spending 4.29e9 distinct
+    // keys. Reproduce with `udp-lossy-transport.retention-measure.ts`.
+    //
+    // The bound is RECV_BLOCK_WINDOW blocks — the SAME constant `MAX_NACK_GAP` is derived from,
+    // not a fresh number. That is the point of the shared constant: the receiver's memory is one
+    // quantity, and everything it may honestly claim is derived from it. Retaining more than the
+    // recovery window buys nothing anyway — the [8,4,4] decoder acts on a block, never across
+    // blocks, so a 9th block is state no decode can consume.
+    //
+    // VICTIM: the LEAST-RECENTLY-USED block (`Map` iteration is insertion order, and a hit moves
+    // its entry to the tail). This was chosen by MEASUREMENT over three alternatives, because the
+    // memory bound is the easy half — every candidate below caps the map at 8 — and the eviction
+    // ORDER is where the real behaviour is. Delivered payloads out of 1600, 400 blocks, seeded
+    // reorder jitter of `depth` packet positions, 0% channel loss (`reorder-sweep`, and the whole
+    // table is in the PR):
+    //
+    //     depth        0      8     16     32     64    128    256   |  parked?
+    //     unbounded  1600   1600   1600   1600   1600   1408    724  |  n/a — the defect
+    //     lowest key 1600   1600   1600   1600   1600   1284    488  |  YES, 8 packets, forever
+    //     LRU        1600   1600   1600   1600   1632    540     96  |  no
+    //     FIFO       1600   1600   1600   1600   1712    284     48  |  no
+    //     fewest-sym 1600   1272    444    104     48     32     32  |  no
+    //
+    // LOWEST-KEY is disqualified on the last column, not the first. It tracks the unbounded map
+    // almost exactly — and it lets any peer PARK: 8 packets claiming the top of the u32 range
+    // occupy all 8 slots permanently, because every honest block that arrives afterwards sorts
+    // below them and is evicted the instant it is created. Measured, that took honest delivery from
+    // 20/20 payloads to 0/20 and it never recovers. Trading an unauthenticated memory drain for an
+    // unauthenticated permanent shutdown is not a fix. LRU has no such fixed point: nothing a peer
+    // can put in a header makes its entry preferred, so displacing honest traffic costs it one
+    // packet per eviction, continuously, forever.
+    //
+    // LRU over FIFO: strictly better past the window (540 vs 284, 96 vs 48) because a block being
+    // actively assembled keeps refreshing itself, so the victim is genuinely idle rather than
+    // merely early. FEWEST-SYMBOLS was the appealing idea and it is the worst: a block that has
+    // just started IS the least-progressed one, so the policy evicts exactly the traffic it should
+    // be accumulating (444/1600 at a reorder depth of 16). Recorded so it is not re-proposed.
+    // Anchor: Belady 1966 / Mattson et al. 1970 — LRU as the standard stack algorithm.
+    // ULT-34 is the falsifier for the parking column; ULT-32/33 for the bound.
+    //
+    // WHAT IS GIVEN UP, stated rather than waved past. Inside the transport's DECLARED envelope
+    // this costs exactly nothing — through a reorder depth of 32 packets LRU is identical to the
+    // unbounded map at every loss rate measured. Past it there is real loss: at depth 128 the
+    // unbounded map delivered 1408 and LRU delivers 540. That regime is already outside what this
+    // receiver claims to handle (`MAX_NACK_GAP` = 64 packets is the width it will speak about at
+    // all, and a wider gap is reported as DESYNC precisely because there is no state behind it) —
+    // but "outside the declared envelope" is a reason to name a cost, not a reason to omit it, so
+    // it is filed as 081KZZZH7H4087G0R001HV0W40 rather than buried, with the real repair named
+    // there (per-peer block state — the same fix the shared `expectedSeq` already needs). What is
+    // NOT the reason: "the NACK already refused to speak for that block". NACKs here update the
+    // loss estimate and never trigger retransmission (see the header), so no NACK bound can be what
+    // makes an old block unrecoverable — that argument was checked and does not hold.
+    //
+    // NOT CLOSED HERE: `blockSeq` is redundant with `seq` (an honest sender always sets it to
+    // `seq / BLOCK_TOTAL`) yet is trusted independently, which is what lets a peer hold `seq`
+    // monotone — provoking no NACK at all — while spending a fresh key per packet. Bounding the
+    // buffer makes that harmless for MEMORY; it does not stop one packet addressing any block at
+    // any position. 081KZZZH24H087G0R002TXQA15.
     let block = this.recvBlocks.get(header.blockSeq);
     if (!block) {
       block = makeReceiverBlock(header.blockSeq);
+      this.recvBlocks.set(header.blockSeq, block);
+      // `if`, not `while`: the map grows only here, by one, and this runs on every growth — so it
+      // can never be more than one over. A `while` would be a loop whose second iteration no input
+      // can reach, i.e. unfalsifiable code standing in for a bound the insertion point already gives.
+      if (this.recvBlocks.size > RECV_BLOCK_WINDOW) {
+        const lru = this.recvBlocks.keys().next();
+        if (lru.done !== true) this.recvBlocks.delete(lru.value);
+      }
+    } else {
+      // Touch: re-insert so this block moves to the tail of the iteration order. Without it the
+      // policy is FIFO on creation age, which the table above prices at roughly half the goodput
+      // past the window — a block still receiving symbols would age out while genuinely active.
+      this.recvBlocks.delete(header.blockSeq);
       this.recvBlocks.set(header.blockSeq, block);
     }
     const recovered = addToBlock(block, header.blockPos, new Uint8Array(payload));
@@ -1473,12 +1585,6 @@ export class LossyUdpChannel {
         if (dp.length > 0) {
           for (const h of this.dataHandlers) h(dp);
         }
-      }
-      // Clean up old blocks (keep last RECV_BLOCK_WINDOW). This retention window is what
-      // MAX_NACK_GAP is derived from — the two must not drift apart, hence the shared constant.
-      const keys = [...this.recvBlocks.keys()].sort((a, b) => a - b);
-      for (const k of keys.slice(0, Math.max(0, keys.length - RECV_BLOCK_WINDOW))) {
-        this.recvBlocks.delete(k);
       }
     }
   }
