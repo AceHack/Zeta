@@ -46,46 +46,6 @@ Reported each invocation:
 
 ## Current-round routing recommendations
 
-### Round 21 targets
-
-1. **TLA+ `InfoTheoreticSharder`** — Observe-pure, Pick-commits-
-   once, cold-start tie-break. TLC at 3×2×4. Effort: M.
-   In-flight (dispatched this round).
-2. **Z3 pointwise tie-break identity** for the sharder — proves
-   the argmin on cold start distributes by hash index. Effort: S.
-   Bundle with #1.
-3. **Multi-tick-seed tests for `RecursiveCounting`** — not
-   formal, but the empirical cross-check the claim needs.
-   FsCheck property + three targeted `[<Fact>]`s. Effort: S-M.
-   In-flight (dispatched this round).
-4. **Z3 lemma expansion from 8 → ~16** — chain rule pointwise,
-   Distinct idempotence, H-function correctness, tropical
-   distributivity, weight overflow soundness, residuation
-   adjunction, Bloom probe determinism, Merkle second-preimage
-   on one level. Effort: S (one evening each). In-flight.
-5. **Alloy CI hook for `Spine.als`** + new
-   `tools/alloy/specs/InfoTheoreticSharder.als`. Effort: S. In-flight.
-
-### Round 22+ targets (not yet dispatched)
-
-6. **Finish Lean 4 chain-rule proof.** `proofs/lean/ChainRule.lean`
-   stub has been sitting five rounds. Effort: L. Mathlib abelian-
-   group hierarchy is now complete enough to support the proof.
-7. **Wire Stryker + Semgrep + CodeQL into CI.** Configs exist;
-   gate is free coverage. Effort: S (each).
-8. **LiquidF# trial on FastCdc + SimdMerge + BloomFilter.pairOf.**
-   Off-by-one class is exactly what LiquidF# catches at compile
-   time. One-week trial. Effort: M.
-9. **Fifteen missing FsCheck properties.** PN-Counter, OR-Set,
-   LWW-Register, DeltaCrdt, Residuated lattice, Merkle collision-
-   freedom, Watermark monotonicity, KLL quantile ε-bound, and
-   more. Cheapest coverage expansion on the board. Effort: S.
-10. **`FeedbackOp` memory-ordering proof.** Viper or a hand-proof
-    reviewed by Anjali; TLA+ doesn't fit heap aliasing well.
-    Effort: M.
-
----
-
 ## Running observations
 
 - **2026-04-17 (round 21) — seeded.** Skill just landed. First
@@ -360,3 +320,46 @@ root -- orphan guard checked, it is fine) to 1 gated + 2 routed
 (081KZZVC3DD087G0R0035SZN58 Lean certificate, 081KZZVC6SE087G0R001SXE8BV copy/discard guard).
 Denominator unchanged. Also fixed a garbled sentence in `MenoBraided.fs` left by a bad edit on
 2026-08-13 -- the kind of damage that makes a docstring stop being readable evidence.
+
+## 2026-08-14 -- Z-EPS run: the AmplitudeEmu threshold drop SIGNALS. Verdict: conjecture HOLDS.
+
+Handed by Lumen (PR #10551 open, docs/research/2026-08-14-the-quorum-fold-is-not-a-join-...).
+My doc: docs/research/2026-08-14-z-eps-run-the-threshold-drop-signals-...-soraya.md.
+Artefact: tests/Tests.FSharp/Formal/AmplitudeEmuSignalling.Tests.fs (12 tests, in-gate).
+
+ROUTING CALL. Property class is NOT on the table: IEEE-754 arithmetic near a hard threshold,
+and the claim is EXISTENTIAL. Route = analytic construction + executable witness on shipped
+code. Rejected: TLC (no reals; the exact carrier it would need makes the defect INVISIBLE --
+false green on a P0, the sharpest wrong-tool cost I have logged); Z3 (right for the 3-line
+non-linearity lemma, unknown for the claim); Lean (weeks, wrong object); FsCheck as primary
+(witness set is measure-zero -- a green run would have been a FALSE NEGATIVE). FsCheck is
+correct AFTER the witness -- Adaeze's lane, filed as open item 3.
+
+THE LESSON WORTH KEEPING: the offered framing was that the algebra might settle it without an
+experiment. It does not, and the error is a converse slip. "Linear implies no-signalling" has
+contrapositive "signalling implies nonlinear", NOT "nonlinear implies signalling" -- global
+renormalisation is nonlinear and signals nothing. Algebra voids the GUARANTEE; only a witness
+establishes the CLAIM. Gisin 1990 is a genericity result, not a theorem about a given map.
+Generalise: whenever a conjecture cites an impossibility theorem, check which direction of the
+implication the citation actually licenses before routing to a prover.
+
+RESULT. Bob-local, trace-preserving op moves Alice's marginal 0.2647 -> 0.0000 (26 points).
+Support flips [0;1] -> [0]. Survives on a unit-norm state (1.44e-12 -> exactly 0, support still
+flips). Control = the SAME RAY at 1e6 -- invariant to 1e-16, drop fired 0 times. Exact-integer
+arm gives 9/34 under both settings. Drop-fired asserted by branch count in BOTH arms.
+
+NON-VACUITY. Mutation check run: EPS := 0.0 kills exactly the 5 drop-dependent tests and leaves
+preconditions + controls + exact arm green. Correct kill pattern. Every arm calls shipped
+AmplitudeEmu.step -- the chsh-probe failure (own copy of the definitions) is not repeatable here.
+
+CONSEQUENCE. "Tune EPS" is dead as a class, not just inelegant: for any EPS > 0 there is a ray
+where the shift is order 1, because the shift is scale-dependent and the theory is not. Raises
+urgency on 081KZZYWBN2087G0R003NAQQAF (exact carrier) -- did NOT do it, separate item.
+
+RING NOTE. Nothing moved. Confirms the standing FsCheck ring caveat: random search is the wrong
+generator for measure-zero witness classes; it must be seeded by construction.
+
+DENOMINATOR. +1 path (AmplitudeEmu drop) flagged; +1 numerator (now in-gate). One NEW gap
+opened and named, not closed: WSet.consolidate carries its own isZero at 1e-12 on COMPONENTS,
+six orders tighter than AmplitudeEmu's on INTENSITY. Same shape, un-run. Do not assume it
+inherits this result.

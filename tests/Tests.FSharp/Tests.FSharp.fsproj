@@ -619,6 +619,7 @@
     <Compile Include="Formal/Alloy.Runner.Tests.fs" />
     <Compile Include="Formal/Sharder.InfoTheoretic.Tests.fs" />
     <Compile Include="Formal/ToffoliGate.Laws.Tests.fs" />
+    <Compile Include="Formal/AmplitudeEmuSignalling.Tests.fs" />
 
     <!-- Properties/ last (they cross modules by design). -->
     <Compile Include="Properties/Math.Invariants.Tests.fs" />
