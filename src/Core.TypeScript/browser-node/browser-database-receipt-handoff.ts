@@ -78,7 +78,13 @@ export interface BrowserDatabaseReceiptHandoffFeedback {
     | "receipt-handoff-peer-response-invalid"
     | "receipt-handoff-peer-response-capacity-exhausted"
     | "receipt-handoff-peer-transport-failed"
-    | "receipt-handoff-peer-target-rejected";
+    | "receipt-handoff-peer-target-rejected"
+    | "receipt-handoff-acceptance-configuration-invalid"
+    | "receipt-handoff-acceptance-pending"
+    | "receipt-handoff-acceptance-source-threw"
+    | "receipt-handoff-acceptance-record-invalid"
+    | "receipt-handoff-acceptance-capacity-exhausted"
+    | "receipt-handoff-acceptance-content-mismatch";
   readonly detail: string;
 }
 

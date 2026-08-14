@@ -233,9 +233,13 @@ export {
 
 export {
   BROWSER_DATABASE_RECEIPT_PROPOSAL_ARTIFACT_SCHEMA,
+  BROWSER_DATABASE_RECEIPT_PROPOSAL_REPOSITORY,
   BROWSER_DATABASE_RECEIPT_PROPOSAL_ROOT,
   BROWSER_DATABASE_RECEIPT_PROPOSAL_SUBMISSION_SCHEMA,
+  browserDatabaseReceiptProposalTargetPath,
   createBrowserDatabaseReceiptProposalPort,
+  encodeBrowserDatabaseReceiptProposalDocument,
+  validateBrowserDatabaseReceiptProposalBatch,
   type BrowserDatabaseReceiptProposalArtifact,
   type BrowserDatabaseReceiptProposalCarrier,
   type BrowserDatabaseReceiptProposalCarrierReceipt,
@@ -249,6 +253,14 @@ export {
   type BrowserDatabaseReceiptProposalSigningRequest,
   type BrowserDatabaseReceiptProposalSubmission,
 } from "./browser-database-receipt-proposal";
+
+export {
+  BROWSER_DATABASE_RECEIPT_ACCEPTED_RECORD_SCHEMA,
+  createBrowserDatabaseReceiptProposalAcceptanceHandoff,
+  type BrowserDatabaseReceiptAcceptedRecord,
+  type BrowserDatabaseReceiptAcceptedRecordSource,
+  type BrowserDatabaseReceiptProposalAcceptanceOptions,
+} from "./browser-database-receipt-proposal-acceptance";
 
 export {
   BROWSER_DATABASE_RECEIPT_PEER_READOUT_SCHEMA,

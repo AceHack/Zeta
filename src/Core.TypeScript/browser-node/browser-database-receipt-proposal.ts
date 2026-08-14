@@ -16,6 +16,7 @@ export const BROWSER_DATABASE_RECEIPT_PROPOSAL_ARTIFACT_SCHEMA =
 export const BROWSER_DATABASE_RECEIPT_PROPOSAL_SUBMISSION_SCHEMA =
   "zeta.browser-database-receipt-proposal-submission.v1" as const;
 export const BROWSER_DATABASE_RECEIPT_PROPOSAL_ROOT = "db/receipts/browser/v1" as const;
+export const BROWSER_DATABASE_RECEIPT_PROPOSAL_REPOSITORY = "Lucent-Financial-Group/Zeta" as const;
 
 export interface BrowserDatabaseReceiptProposalArtifact {
   readonly schema: typeof BROWSER_DATABASE_RECEIPT_PROPOSAL_ARTIFACT_SCHEMA;
@@ -144,7 +145,7 @@ function bodyFromBatch(batch: BrowserDatabaseReceiptHandoffBatch): BrowserDataba
   };
 }
 
-function validateBatch(
+export function validateBrowserDatabaseReceiptProposalBatch(
   batch: unknown,
   hasher: BrowserDatabaseReceiptBatchHasher,
 ): BrowserDatabaseReceiptProposalResult<BrowserDatabaseReceiptHandoffBatch> {
@@ -219,11 +220,11 @@ function validateBatch(
     : failed("receipt-proposal-hash-invalid", "The receipt batch bytes do not match their content address.");
 }
 
-function targetPath(contentHash: string): string {
+export function browserDatabaseReceiptProposalTargetPath(contentHash: string): string {
   return `${BROWSER_DATABASE_RECEIPT_PROPOSAL_ROOT}/${contentHash.slice("blake3:".length)}.json`;
 }
 
-function encodeDocument(batch: BrowserDatabaseReceiptHandoffBatch): string {
+export function encodeBrowserDatabaseReceiptProposalDocument(batch: BrowserDatabaseReceiptHandoffBatch): string {
   return `${JSON.stringify(batch, null, 2)}\n`;
 }
 
@@ -245,8 +246,8 @@ function buildArtifact(
   batch: BrowserDatabaseReceiptHandoffBatch,
   maxPatchBytes: number,
 ): BrowserDatabaseReceiptProposalResult<BrowserDatabaseReceiptProposalArtifact> {
-  const path = targetPath(batch.contentHash);
-  const document = encodeDocument(batch);
+  const path = browserDatabaseReceiptProposalTargetPath(batch.contentHash);
+  const document = encodeBrowserDatabaseReceiptProposalDocument(batch);
   const patch = encodeNewFilePatch(path, document);
   const patchBytes = new TextEncoder().encode(patch).byteLength;
   return patchBytes <= maxPatchBytes
@@ -277,7 +278,7 @@ function validSignedProposal(value: SignedProposal, expectedChangeDigest: string
     value.schema === "zeta.proposal.v2" &&
     typeof value.proposalId === "string" &&
     /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value.proposalId) &&
-    value.repository === "Lucent-Financial-Group/Zeta" &&
+    value.repository === BROWSER_DATABASE_RECEIPT_PROPOSAL_REPOSITORY &&
     value.baseRef === "main" &&
     typeof value.baseSha === "string" &&
     /^[0-9a-f]{40}$/i.test(value.baseSha) &&
@@ -336,14 +337,14 @@ export function createBrowserDatabaseReceiptProposalPort(
   const build = (
     batchValue: BrowserDatabaseReceiptHandoffBatch,
   ): BrowserDatabaseReceiptProposalResult<BrowserDatabaseReceiptProposalArtifact> => {
-    const batch = validateBatch(batchValue, options.hasher);
+    const batch = validateBrowserDatabaseReceiptProposalBatch(batchValue, options.hasher);
     return batch.ok ? buildArtifact(batch.value, options.limits.maxPatchBytes) : batch;
   };
 
   return succeeded({
     build,
     propose: async (batchValue) => {
-      const batch = validateBatch(batchValue, options.hasher);
+      const batch = validateBrowserDatabaseReceiptProposalBatch(batchValue, options.hasher);
       if (!batch.ok) return batch;
       const artifact = buildArtifact(batch.value, options.limits.maxPatchBytes);
       if (!artifact.ok) return artifact;

@@ -61,6 +61,12 @@ function randomBytes(length: number): Uint8Array {
   return output;
 }
 
+function ownedArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  const output = new ArrayBuffer(bytes.byteLength);
+  new Uint8Array(output).set(bytes);
+  return output;
+}
+
 export function isCommitSha(value: string): boolean {
   return /^[0-9a-f]{40}$/i.test(value);
 }
@@ -136,10 +142,10 @@ export async function enrollProposalPasskey(): Promise<PasskeyEnrollment> {
     );
   const credential = await navigator.credentials.create({
     publicKey: {
-      challenge: randomBytes(32),
+      challenge: ownedArrayBuffer(randomBytes(32)),
       rp: { name: "Zeta proposal signer", id: ZETA_PAGES_RP_ID },
       user: {
-        id: randomBytes(32),
+        id: ownedArrayBuffer(randomBytes(32)),
         name: "zeta-proposal-signer",
         displayName: "Zeta proposal signer",
       },
@@ -178,8 +184,10 @@ export async function signProposal(intent: ProposalIntent): Promise<SignedPropos
   const challenge = await sha256Bytes(canonicalProposalIntent(intent));
   const credential = await navigator.credentials.get({
     publicKey: {
-      challenge,
-      allowCredentials: [{ type: "public-key", id: base64urlToBytes(intent.authorCredentialId) }],
+      challenge: ownedArrayBuffer(challenge),
+      allowCredentials: [
+        { type: "public-key", id: ownedArrayBuffer(base64urlToBytes(intent.authorCredentialId)) },
+      ],
       userVerification: "required",
       timeout: 60_000,
     },
