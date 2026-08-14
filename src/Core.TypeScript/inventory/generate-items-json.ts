@@ -97,7 +97,15 @@ export function generate(): { items: Item[]; errors: string[] } {
     errors.push(...res.errors);
     if (res.item) items.push(res.item);
   }
-  // ordinal sort by id (codepoint order — culture-invariant by default)
+  // DECLARED SORT FIELD: identity, NOT time (see zeta-id/sort-key.ts).
+  // Ordinal codepoint order over the canonical base32 id — culture-invariant by
+  // default, and equal to whole-128-bit numeric order. What this site needs is a
+  // stable total order so items.json has reproducible bytes; it makes NO claim
+  // about acquisition order, and it stays correct for any future id version.
+  // That distinction is load-bearing here: item ids are Category.InventoryAsset (10),
+  // which uses the packGeneric layout and has NO Timestamp field at bits [75,123) —
+  // reading one as an observation timestamp yields the year 9200. `timeSortKey`
+  // refuses these ids for exactly that reason.
   items.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
   return { items, errors };
 }
