@@ -1,0 +1,14 @@
+{
+  "id": "080d0002c24d3810a0130008ec8b4b7e",
+  "at": "2026-08-14T12:56:21.159Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M005GJD6087G0R003VRN71G",
+    "type": "bug",
+    "title": "society-evolution-runner publishes a prior as a posterior and bands mu inside its own error bar",
+    "slug": "society-evolution-runner-publishes-a-prior-as-a-posterior-an",
+    "priority": "P2",
+    "filename": "081M005GJD6087G0R003VRN71G-society-evolution-runner-publishes-a-prior-as-a-posterior-an.md"
+  }
+}

@@ -74,12 +74,36 @@ export interface PriorHint {
  *
  * This is the commutative operation: mergePriorHint(A, B) = mergePriorHint(B, A)
  * in terms of the resulting joint posterior.
+ *
+ * REFUSAL: a hint with `obsCount <= 0` contributes NO precision -- the local belief
+ * is returned unchanged. A prior is not evidence, and the commutativity above holds
+ * for the refusal too (a no-op commutes with everything).
  */
 export function mergePriorHint(
   local: { mu: number; sigma2: number },
   hint: PriorHint,
   trustWeight: number = 1.0,
 ): { mu: number; sigma2: number } {
+  // A hint that absorbed NOTHING is a prior, and a prior is not evidence.
+  //
+  // Measured before this guard existed: a receiver at N(0,1) merging the society
+  // runner's zero-observation hint at trustWeight 0.5 came out at sigma2 = 0.666667
+  // -- 18% narrower for a message carrying no observation -- and the 82 such hints
+  // already on main drive it to sigma2 = 0.023810 (sigma 1.0 -> 0.154303, precision
+  // 1 -> 42). Nothing measured any of that precision.
+  //
+  // The principled statement, which is why the guard is a no-op for correct senders:
+  // under EP the message a peer owes is its SITE contribution (posterior / cavity),
+  // not its posterior (Minka 2001 ch. 4). Sending the posterior counts the shared
+  // prior once per peer -- the classic prior-double-counting failure the cavity
+  // exists to prevent. `StudentTState` already carries that site message, and for a
+  // never-observed dimension it is exactly uniform (`factorSigma2 = +Infinity`, so
+  // zero precision). So a hint built from the right object would have contributed
+  // nothing here anyway; the guard makes the WRONG object behave like the right one
+  // in the one case where the difference is total. Exchanging site messages instead
+  // of posteriors is the full repair and it changes the wire type: 081M005CFFE087G0R0026WF2DS.
+  if (!(hint.obsCount > 0)) return { mu: local.mu, sigma2: local.sigma2 };
+
   const rhoLocal = 1 / local.sigma2;
   const tauLocal = local.mu * rhoLocal;
   const rhoHint = (1 / hint.sigma2) * hint.robustnessWeight * trustWeight;

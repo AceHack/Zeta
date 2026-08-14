@@ -1,0 +1,14 @@
+{
+  "id": "080d0002b20b4010a0130008127bcfcb",
+  "at": "2026-08-14T12:54:07.976Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M005CGB7087G0R0031328CY",
+    "type": "task",
+    "title": "wire bnn-persistence so the society BNN survives the tick boundary",
+    "slug": "wire-bnn-persistence-so-the-society-bnn-survives-the-tick-bo",
+    "priority": "P2",
+    "filename": "081M005CGB7087G0R0031328CY-wire-bnn-persistence-so-the-society-bnn-survives-the-tick-bo.md"
+  }
+}
