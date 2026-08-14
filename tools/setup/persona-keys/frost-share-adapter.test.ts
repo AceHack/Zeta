@@ -24,6 +24,7 @@ import {
   FROST_SEALED_SHARE_SCHEMA_V1,
   INSECURE_FAKE_SEAL_ALG,
   isHardwareSealTier,
+  parseCkTokenInfoIdentity,
   type ExtractingFrostShareAdapter,
   type FrostShareAdapter,
   type Pkcs11Lib,
@@ -53,13 +54,30 @@ const REC = {
   groupPublicKeyHex: "cc".repeat(32),
 };
 
-/** A PKCS#11 token that is present, holds the key, and XOR-"encrypts". */
-function mockToken(opts: { keyPresent?: boolean } = {}): Pkcs11Lib {
+/** Build a raw CK_TOKEN_INFO the way a real module does: blank-padded, NOT NUL-terminated. */
+function mockCkTokenInfo(label: string, serial: string): Uint8Array {
+  const info = new Uint8Array(1024).fill(0x20); // 0x20 = ' ', the PKCS#11 pad byte
+  info.set(new TextEncoder().encode(label.padEnd(32, " ").slice(0, 32)), 0);
+  info.set(new TextEncoder().encode("Yubico".padEnd(32, " ")), 32);
+  info.set(new TextEncoder().encode("YubiKey".padEnd(16, " ")), 64);
+  info.set(new TextEncoder().encode(serial.padEnd(16, " ").slice(0, 16)), 80);
+  return info;
+}
+
+/** A PKCS#11 token that is present, holds the key, and XOR-"encrypts".
+ *  `serial` is what distinguishes one physical token from another below. */
+function mockToken(opts: { keyPresent?: boolean; serial?: string; label?: string } = {}): Pkcs11Lib {
   const keyPresent = opts.keyPresent ?? true;
+  const serial = opts.serial ?? "0000001";
+  const label = opts.label ?? "zeta-guard";
   return {
     C_Initialize: () => 0n,
     C_Finalize: () => 0n,
     C_GetSlotList: () => 0n,
+    C_GetTokenInfo: (_slot, pInfo) => {
+      (pInfo as Uint8Array).set(mockCkTokenInfo(label, serial));
+      return 0n;
+    },
     C_OpenSession: (_s, _f, _a, _n, phSession) => {
       phSession[0] = 123n;
       return 0n;
@@ -371,3 +389,163 @@ describe("FrostShareAdapter: integrity and honesty", () => {
     expect(adapter.loadShare(1)?.secretShare).toBe(987654321n);
   });
 });
+
+// ============================================================================
+// MULTI-TOKEN ROSTER: the count is where the defence comes from, not the tier
+// ============================================================================
+//
+// Neither a YubiKey nor a YubiHSM reaches use-without-extract (see the file header and
+// the PKCS#11 finding). So the security a token pack buys is DISTRIBUTION: N tokens each
+// sealing a distinct share means compromising one token yields one share, which is below
+// threshold and worth nothing on its own.
+//
+// That property is not free. It holds only if share i can be opened by token i AND BY NO
+// OTHER TOKEN. The tempting provisioning shortcut -- put the same wrapping key on every
+// token, so there is one PIN and a spare if one is lost -- silently converts an N-of-N
+// roster into 1-of-N, and before sealedByToken there was nothing in the artifact, the
+// types, or the logs that could tell the difference. These tests are that difference.
+
+describe("FrostShareAdapter: multi-token roster", () => {
+  const guard = (serial: string) => ({
+    libraryPath: "/mock/pkcs11.so",
+    keyLabel: "zeta-frost-wrap",
+    ffiLoader: () => mockToken({ serial }),
+    pointerOf: defaultPointerOf as Pkcs11PointerOf,
+  });
+
+  test("FSA-20: a sealed share records WHICH token sealed it", () => {
+    const { fx, root, files } = sandboxFx();
+    const a = createPkcs11ShareAdapter(fx, root, "ca", guard("YK-11111"));
+    a.storeShare(REC, "ca");
+    const onDisk = files.get(frostSharePath(root, 1)) ?? "";
+    expect(onDisk).toContain("zeta-guard#YK-11111");
+    // The identity is a label and a serial. It must never be a secret.
+    expect(onDisk).not.toContain(REC.secretShare.toString(10));
+  });
+
+  test("FSA-21: the sealing token opens its own share", () => {
+    const { fx, root } = sandboxFx();
+    const a = createPkcs11ShareAdapter(fx, root, "ca", guard("YK-11111"));
+    a.storeShare(REC, "ca");
+    expect(a.loadShare(1)?.secretShare).toBe(REC.secretShare);
+  });
+
+  test("FSA-22: a DIFFERENT token is refused, even though its key would decrypt", () => {
+    // Both mock tokens XOR with 0xff, i.e. this models the exact dangerous provisioning:
+    // identical wrapping key material on two physically distinct tokens. Cryptography
+    // alone cannot catch this -- the second token really can decrypt. Only the recorded
+    // identity can, which is why the check is not redundant with the seal.
+    const { fx, root } = sandboxFx();
+    const sealer = createPkcs11ShareAdapter(fx, root, "ca", guard("YK-11111"));
+    sealer.storeShare(REC, "ca");
+
+    const impostor = createPkcs11ShareAdapter(fx, root, "ca", guard("YK-22222"));
+    expect(() => impostor.loadShare(1)).toThrow(/wrong token for share x=1/);
+    expect(() => impostor.loadShare(1)).toThrow(/would be 1-of-N, not a threshold/);
+  });
+
+  test("FSA-23: one compromised token yields ONE share, not the roster", () => {
+    // Three guards, three shares, three tokens with identical key material.
+    const { fx, root } = sandboxFx();
+    const serials = ["YK-11111", "YK-22222", "YK-33333"];
+    serials.forEach((s, i) => {
+      createPkcs11ShareAdapter(fx, root, "ca", guard(s)).storeShare({ ...REC, x: i + 1 }, "ca");
+    });
+
+    // The attacker has token 1 only.
+    const stolen = createPkcs11ShareAdapter(fx, root, "ca", guard("YK-11111"));
+    expect(stolen.loadShare(1)?.secretShare).toBe(REC.secretShare); // its own: yes
+    for (const x of [2, 3]) {
+      expect(() => stolen.loadShare(x)).toThrow(/wrong token for share x=/); // the rest: no
+    }
+  });
+
+  test("FSA-24: stripping the binding does not dodge the check (non-AEAD tier)", () => {
+    // PKCS#11 seals with CKM_AES_CBC_PAD, which has no associated-data input, so the
+    // AAD alone would not protect this field. The in-plaintext bind string does.
+    const { fx, root, files } = sandboxFx();
+    createPkcs11ShareAdapter(fx, root, "ca", guard("YK-11111")).storeShare(REC, "ca");
+
+    const p = frostSharePath(root, 1);
+    const body = JSON.parse(files.get(p) ?? "{}") as Record<string, unknown>;
+    delete body["sealedByToken"];
+    files.set(p, JSON.stringify(body));
+
+    const impostor = createPkcs11ShareAdapter(fx, root, "ca", guard("YK-22222"));
+    expect(() => impostor.loadShare(1)).toThrow(/seal-binding mismatch/);
+  });
+
+  test("FSA-25: editing the binding to name the attacker's token is also refused", () => {
+    const { fx, root, files } = sandboxFx();
+    createPkcs11ShareAdapter(fx, root, "ca", guard("YK-11111")).storeShare(REC, "ca");
+
+    const p = frostSharePath(root, 1);
+    const body = JSON.parse(files.get(p) ?? "{}") as Record<string, unknown>;
+    body["sealedByToken"] = "zeta-guard#YK-22222";
+    files.set(p, JSON.stringify(body));
+
+    const impostor = createPkcs11ShareAdapter(fx, root, "ca", guard("YK-22222"));
+    // Passes the identity comparison, then fails the cryptographic binding.
+    expect(() => impostor.loadShare(1)).toThrow(/seal-binding mismatch/);
+  });
+
+  test("FSA-26: a token-bound share is refused by a backend with no token identity", () => {
+    const { fx, root, files } = sandboxFx();
+    createPkcs11ShareAdapter(fx, root, "ca", guard("YK-11111")).storeShare(REC, "ca");
+    const raw = files.get(frostSharePath(root, 1)) ?? "";
+
+    // Same tier, same everything, but a backend that cannot say which token it is.
+    const { fx: fx2, root: root2, files: files2 } = sandboxFx();
+    files2.set(frostSharePath(root2, 1), raw.replaceAll(root, root2));
+    const anonymous = createSealedFileShareAdapter(
+      fx2,
+      root2,
+      "ca",
+      { getSealKey: () => new Uint8Array(32) },
+      "hardware-pkcs11",
+    );
+    expect(() => anonymous.loadShare(1)).toThrow(/reports no token identity/);
+  });
+
+  test("FSA-27: shares sealed before this field existed still load", () => {
+    // Backward compatibility is load-bearing: sealedByToken is optional, and an artifact
+    // without it must reconstruct byte-identical AAD or every existing share breaks.
+    const { fx, root } = sandboxFx();
+    const noIdentity = createSealedFileShareAdapter(
+      fx,
+      root,
+      "ca",
+      { getSealKey: () => new Uint8Array(32).fill(7) },
+      "software-sealed",
+    );
+    noIdentity.storeShare(REC, "ca");
+    expect(noIdentity.loadShare(1)?.secretShare).toBe(REC.secretShare);
+  });
+});
+
+describe("parseCkTokenInfoIdentity: the struct offsets", () => {
+  // The FFI call cannot be exercised without hardware. The parse can, and a wrong
+  // serialNumber offset would bind every token to the same string, silently restoring
+  // any-token-opens-any-share. So the offsets are pinned here.
+  test("FSA-28: reads label and serial at the PKCS#11 offsets, blank-trimmed", () => {
+    expect(parseCkTokenIdentityFixture("zeta-guard", "YK-11111")).toBe("zeta-guard#YK-11111");
+  });
+
+  test("FSA-29: distinct serials produce distinct identities", () => {
+    expect(parseCkTokenIdentityFixture("zeta-guard", "YK-11111")).not.toBe(
+      parseCkTokenIdentityFixture("zeta-guard", "YK-22222"),
+    );
+  });
+
+  test("FSA-30: an empty serial is refused, never bound as a shared empty identity", () => {
+    expect(() => parseCkTokenIdentityFixture("zeta-guard", "")).toThrow(/empty serial number/);
+  });
+
+  test("FSA-31: a full-width 16-char serial is not truncated", () => {
+    expect(parseCkTokenIdentityFixture("L", "0123456789ABCDEF")).toBe("L#0123456789ABCDEF");
+  });
+});
+
+function parseCkTokenIdentityFixture(label: string, serial: string): string {
+  return parseCkTokenInfoIdentity(mockCkTokenInfo(label, serial));
+}

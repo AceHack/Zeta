@@ -55,6 +55,12 @@ can read the raw key out — both interact through the same constrained API.
 
 - This gives **use-without-extract**: the host (and anyone with host root) sees ciphertext and
   plaintext-being-processed, never the key — *as long as the crypto happens inside the chip*.
+  > **Note 2026-08-14 (Nazar):** that italicised condition is load-bearing, and for the FROST
+  > threshold scheme Layer 2 selects it **does not hold on a generic PKCS#11 token**: no PKCS#11
+  > mechanism composes a FROST partial from a sensitive key, so the partial is computed *outside*
+  > the chip and Layer 1 delivers at-rest sealing rather than use-without-extract. The condition is
+  > stated correctly here; later summaries dropped it. See the L1/L2 corrections in
+  > `2026-08-14-agent-sovereign-keys-incremental-ladder-L0-to-L6-destruction-not-leakage.md`.
 - A single chip is a **single point of loss** (chip dies → key gone) and a **single point of
   control** (whoever holds the chip controls it). Layer 2 fixes both.
 

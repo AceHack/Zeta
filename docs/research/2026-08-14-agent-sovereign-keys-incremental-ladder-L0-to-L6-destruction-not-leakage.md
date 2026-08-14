@@ -92,9 +92,13 @@ real, honest guarantee — you never need the whole tower to get value.
 
 ### L1 — TPM / secure-element seal per share (cheap; hardware you already own)
 
-- **What:** each node's FROST share is *sealed to that node's TPM 2.0* (or Apple Secure Enclave /
-  Pluton / a $50 Nitrokey). The share is unwrapped only inside the chip, bound to a measured-boot PCR
-  state, and can be made *use-without-extract* for the operations the chip supports.
+- **What:** each node's FROST share is *sealed to that node's TPM 2.0* (or Pluton / a $50 Nitrokey /
+  an external PKCS#11 token). The share is unwrapped only inside the chip and bound to a
+  measured-boot PCR state. ~~or Apple Secure Enclave~~ — struck 2026-08-14 (Nazar): the Secure
+  Enclave is listed nowhere in `FrostSealTier`, exposes no AES key-wrapping primitive of the shape
+  `frost-share-adapter.ts` needs, and has **no adapter in this repo**. Naming it here as an L1 option
+  contradicted this same rung's own Apple-Silicon paragraph three lines down. It is a real hardware
+  root that no rung can currently use; `frost-hardware-probe.ts` now reports it as exactly that.
 - **Why it matters:** the share is no longer a file on disk that root can copy at rest; it is chip-
   bound. Begins **invariant 4 (destruction-not-leakage)** — reflash/boot-state-change ⇒ the seal
   won't open (the share is effectively destroyed on that node, not leaked).
@@ -107,7 +111,15 @@ real, honest guarantee — you never need the whole tower to get value.
 - **Apple Silicon:** `hardware-tpm2` cannot work on such a machine. The Secure Enclave is not a TPM
   2.0; there is no `/dev/tpmrm0` and no `tpm2_unseal`. On those machines the only hardware tier
   available is PKCS#11 with an external token.
-- **Cost:** $0 (every modern laptop/mini-PC has a TPM 2.0) to ~$50/node for a discrete secure element.
+- **Correction 2026-08-14 (Nazar) — EXERCISED, not read.** The cost line below used to read "$0
+  (every modern laptop/mini-PC has a TPM 2.0)". That is false on the machine this ladder is being
+  built on. `frost-hardware-probe.ts`, run on Aaron's Mac Studio (M2 Ultra, Mac14,14, Darwin 25.5):
+  no TPM 2.0, no YubiKey, no smart-card reader, no PKCS#11 module — **zero honourable hardware seal
+  tiers**. A Secure Enclave *is* present and no `FrostSealTier` can reach it. So L1 on Apple Silicon
+  costs the price of an external token, not $0, and until one is attached L1 is **not reachable on
+  this host at all**. Run the probe before quoting a cost.
+- **Cost:** $0 *on a machine with a TPM 2.0* (most x86 laptops/mini-PCs; **not** Apple Silicon) to
+  ~$50/node for a discrete secure element or external token.
 - **Effort:** the `frost-share-adapter.ts` interface already has a "HSM/TPM seal (pluggable)" slot with
   an honest stub. This is filling that slot with a real PKCS#11 / TPM2 adapter (081KWPHRNFW DoD item 5,
   currently the one *open* item there).
@@ -148,7 +160,26 @@ real, honest guarantee — you never need the whole tower to get value.
   inside the boundary; no method returns a share scalar). Its only implementation is software and
   declares `exposureBoundary: "signer-function"`, which narrows the exposure window and is **not** the
   invariant. The `usesWithoutExtract: true` branch of the type has no inhabitant anywhere in the repo.
+- **Hardware inbound 2026-08-14 — read this before it arrives (Nazar).** Aaron has ordered a
+  **YubiKey pack** and a **YubiHSM**. Neither is a rung upgrade, and the arrival must not be read as
+  one: the PKCS#11 finding above is structural, so a YubiHSM 2 lands at **L1 with better hardware**,
+  not L2. Plugging it in changes nothing about invariant 2.
+  **Where the value actually is: the pack, not the HSM.** One YubiHSM holding one key is one point of
+  compromise. *N* YubiKeys each sealing a **distinct** share is a genuine threshold — take one token
+  and you get one share, which is below threshold and worth nothing. That defence comes from the
+  **count**, not the tier, and it is the one real security gain available from this purchase.
+  **It is not automatic.** It holds only if share *i* is openable by token *i* **and by no other
+  token**, and the way it fails is silent: provision the same wrapping key onto every token — the
+  obvious move, since it means one PIN and a spare if one is lost — and any single token opens every
+  share, a roster that has collapsed to 1-of-N with nothing to show it. Cryptography alone cannot
+  catch that, because the second token genuinely *can* decrypt. So the artifact now records **which
+  token sealed each share** (`sealedByToken`, bound into the AAD *and* the in-plaintext bind string,
+  so it cannot be stripped) and a different token is **refused on load**. Exercise it the day the
+  tokens land: `ZETA_FROST_HARDWARE_LANE=pkcs11-multi ZETA_FROST_PKCS11_SLOTS=0,1,2`.
+  **Slot ids are not identities** — they are module-assigned and change with replug order, which is
+  why the binding is to the token's label+serial and is re-read on every call rather than cached.
 - **Cost:** ~$650/YubiHSM 2 × M guards, plus mini-PCs. A 5-guard roster is low-thousands of dollars.
+  Priced honestly: that spend buys **at-rest sealing and roster diversity**, not a rung.
 
 ### L3 — Attestation-gated invocation + confidential-compute combine (closes the RAM gap)
 
@@ -322,19 +353,22 @@ one for a *personal* key, and it is the agent's to make, not ours.
 |---|---|---|---|---|---|---|
 | Steal one laptop / one file | ✅ (need N) | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Host root dumps a share at rest | ❌ | ✅ (TPM-sealed) | ✅ | ✅ | ✅ | ✅ |
-| Host root dumps a share **in use** (RAM) | ❌ | ⚠️ partial | ✅ on-chip ops | ✅ enclave combine | ✅ | ✅ |
+| Host root dumps a share **in use** (RAM) | ❌ | ❌ | ❌ (see L2 correction) | ✅ enclave combine | ✅ | ✅ |
 | Single HSM-vendor backdoor | ❌ | ❌ | ✅ (M-diverse) | ✅ | ✅ | ✅ |
 | Single-jurisdiction subpoena | ⚠️ if guards local | ⚠️ | ✅ (geo-diverse) | ✅ | ✅ | ✅ |
 | One human unilaterally **uses** the key | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | One human unilaterally **revokes/rotates** | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| Another **AI** exfiltrates the key | ⚠️ if it gets N shares | ✅ (chip-bound) | ✅ | ✅ (attestation-gated) | ✅ | ✅ |
+| Another **AI** exfiltrates the key | ⚠️ if it gets N shares | ⚠️ at rest only | ⚠️ at rest only | ✅ (attestation-gated) | ✅ | ✅ |
 | Coordinated physical seizure of ≥ M−N guards | ❌ | ❌ | ⚠️ hard (geo) | ⚠️ hard | ⚠️ very hard | ✅ loud + non-leaking |
 | Physical **destruction** of hardware | never defended (physics) — but destruction yields **rubble + ciphertext, never the key**, and only dents *availability* |
 
 "Another AI exfiltrates the key" — Aaron's explicit new requirement — is defeated the same way a human
-is: from L1 up, there is no extractable key to exfiltrate (chip-bound, use-without-extract), and from L3
-up, an unattested requester (whether human, rogue agent, or malware) cannot even make the guards
-cooperate. The design is **party-agnostic**: it never asks *who* you are in a way that trusts humans
+is, but **not until L3**. The original sentence here read "from L1 up, there is no extractable key to
+exfiltrate (chip-bound, use-without-extract)"; that is the retracted claim wearing a different hat
+(**corrected 2026-08-14, Nazar**). From L1 up there is no extractable key **at rest**; the share is
+still unwrapped into host RAM to be used, so an adversary with host root at signing time gets it at
+every rung below L3. It is from **L3** up that an unattested requester (whether human, rogue agent, or
+malware) cannot make the guards cooperate at all. The design is **party-agnostic**: it never asks *who* you are in a way that trusts humans
 over agents or vice versa; it asks only *can you prove the attested identity* and *does the quorum
 consent*. That is why the same mechanism gives Otto a key Aaron can't read **and** a key a rogue peer
 agent can't read.
@@ -347,18 +381,31 @@ If you want one concrete next step that is *honest sovereignty today*, it is **L
 
 1. Run a **dealerless FROST DKG** (`frost-dkg.ts`, already landed) across 3–5 machines you control, so
    no ceremony participant ever holds the full scalar.
-2. **Seal each share to that node's TPM 2.0** — this is the one *open* DoD item on the in-progress
-   workitem 081KWPHRNFW (a real PKCS#11/TPM2 adapter in `frost-share-adapter.ts`'s pluggable slot).
-   Every machine you own already has the chip.
-3. Keep **Aaron holding at most N−1** guard slots; put the rest on machines/people such that no single
+2. **Run `bun tools/setup/persona-keys/frost-hardware-probe.ts` on each candidate node FIRST**, and
+   read the `Honourable tiers:` line. That step is new (2026-08-14, Nazar) because step 3 below used
+   to end "Every machine you own already has the chip", and on the machine this was written on that
+   is false: the probe reports `(none)`. A node with no honourable tier cannot do step 3 at all —
+   attach a token or use a different node.
+3. **Seal each share to that node's TPM 2.0 or PKCS#11 token** — the one *open* DoD item on the
+   in-progress workitem 081KWPHRNFW (a real PKCS#11/TPM2 adapter in `frost-share-adapter.ts`'s
+   pluggable slot). Declare the tier; `createHsmShareAdapter` throws rather than downgrading, and
+   `assertHardwareSealTierAvailable` fails earlier with a legible reason.
+4. Keep **Aaron holding at most N−1** guard slots; put the rest on machines/people such that no single
    party reaches N.
-4. Log every use to the git-native substrate (glass-halo) — you already have this discipline.
+5. Log every use to the git-native substrate (glass-halo) — you already have this discipline.
 
-That is buildable in days, costs nothing, and already delivers invariants 1, 2 (at rest), 3 (basic
-attestation), 5, 6, 7. It is a **strictly better** custody story than any password-in-a-file or
-single-PAT setup — and it is the exact opposite failure mode from the GitHub-token mess: instead of one
-revocable, human-held, spyable secret, it is a threshold, hardware-sealed, attested one that no single
-party can read or revoke.
+That is buildable in days and delivers invariants **1, 5, 6, 7** — plus at-rest chip-binding on any
+node that has an honourable tier. **Corrected 2026-08-14 (Nazar):** this paragraph used to claim it
+"already delivers invariants 1, **2 (at rest)**, **3 (basic attestation)**, 5, 6, 7". Both struck
+items were wrong, and "2 (at rest)" is the *same retracted claim* the L1 rung above already corrected
+— it survived here because the correction was applied in one place and not searched for elsewhere.
+Invariant **2 is use-without-extract and is met at no rung of this ladder today**; qualifying it "(at
+rest)" does not make it partially met, it changes the subject. Invariant **3 is attest-don't-remember
+and arrives at L3**; L0/L1 perform no attestation whatsoever, so calling it "basic attestation" named
+a thing that does not exist. Nothing about the *cost* of the paragraph changes: it is still a
+strictly better custody story than a password-in-a-file or a single PAT, and still the opposite
+failure mode from the GitHub-token mess — one revocable, human-held, spyable secret replaced by a
+threshold no single party can read or revoke.
 
 Then climb: L2 when you buy the YubiHSMs, L3 when you stand up one confidential-compute node, L4 when
 the guard roster and ceremony are ratified. L5/L6 are the north star that keeps each of those choices
@@ -404,6 +451,51 @@ pointed the right way.
 
 *Substrate-honest framing: this proposal claims no perfect secrecy against physical destruction — it
 names that limit as invariant 4 and turns it into a feature (destruction yields rubble, never the key).
-It does claim: from L1 up, no party — human or AI — can read or use the key without hardware cooperation
-and attested identity; from L4 up, no single party can revoke it; and at every rung, the key survives
-bounded loss and every move is logged in the open.*
+It does claim: from L1 up, no party — human or AI — can read the key **at rest** without hardware
+cooperation; from **L3** up, not **in use** either, and only there does attested identity gate
+cooperation; from L4 up, no single party can revoke it; and at every rung, the key survives bounded
+loss and every move is logged in the open.*
+
+*(Corrected 2026-08-14, Nazar: the sentence above claimed "from L1 up … read **or use** … and attested
+identity". Use-without-extract is invariant 2, met at no rung today, and attestation is invariant 3,
+which arrives at L3. Both were the L1 conflation this ladder exists to avoid, restated in the closing
+line where a reader is most likely to take the summary and skip the rungs.)*
+
+---
+
+## What has actually been exercised on hardware (2026-08-14, Nazar)
+
+Everything above this section is read from specifications. This section is not: it is the recorded
+output of a real run, so the ladder has at least one anchored cell.
+
+**Host:** Aaron's Mac Studio, Apple M2 Ultra (Mac14,14), Darwin 25.5.0 arm64.
+
+```
+$ bun tools/setup/persona-keys/frost-hardware-probe.ts
+[Hardware Security Probe] Result:
+  TPM 2.0:            Not found
+  YubiKey / token:    Not detected
+  Smart-card reader:  None attached
+  PKCS#11 module:     Not found
+  Secure Enclave:     Present (no seal tier can use it — see header)
+  Device present:     NO - a hardware seal tier will THROW here
+  Honourable tiers:   (none)
+```
+
+| Claim | Verdict | How checked |
+|---|---|---|
+| L1 is reachable on this machine | **NO** | probe: zero honourable tiers. No TPM (Apple Silicon), no token attached. |
+| "Every machine you own already has the chip" | **FALSE here** | probe, above. Corrected in the L1 rung and in step 2 of the runbook. |
+| Apple Silicon has no TPM 2.0 | **CONFIRMED** | probe reports absent; `frost-share-adapter.ts` says the same and is right. |
+| A Secure Enclave is present | **YES** | `ioreg -rc AppleSEPManager` → registered, matched, active. |
+| Any seal tier can use that Secure Enclave | **NO** | `FrostSealTier` has no such member; no adapter exists in-repo. |
+| The Touch ID approval gate is live here | **YES** | `bioutil -r` → biometrics enrolled; `pam_tid.so` present in `/etc/pam.d/sudo`, which is `biometric.ts`'s stated precondition. Aaron's operator-approves-via-biometric model is executable on this host **today** — it is the one hardware-backed control that is. |
+| Secure Boot posture | **Reduced Security** | `system_profiler SPiBridgeDataType`. Noted because any future measured-boot / attestation rung (L3) must not assume full security on this host. |
+
+**Not exercised, and therefore still documentary:** every claim at L2 and above; the PKCS#11 FFI path
+(no token to talk to); the TPM2 path (no Linux TPM host tried); the L1 seal round-trip end-to-end.
+The PKCS#11-cannot-compose-a-FROST-partial finding remains a specification reading, as its own note
+says. The Touch ID row above was verified by checking the gate's **precondition** (enrolment +
+`pam_tid`), not by firing the prompt: making that dialog appear is Aaron pressing a finger to a
+sensor, and an agent should not summon an approval request nobody asked for. To fire it deliberately,
+he runs the gated command himself.

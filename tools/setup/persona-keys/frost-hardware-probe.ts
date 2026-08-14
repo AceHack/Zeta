@@ -1,18 +1,92 @@
 /**
  * frost-hardware-probe.ts — Hardware Security Device Probe Engine.
  *
- * Probes local system interfaces for physical YubiKey (PCSC/CCID), TPM 2.0
- * device nodes (/dev/tpmrm0, /sys/class/tpm), and PKCS#11 shared libraries.
+ * Probes local system interfaces for physical YubiKey / smart-card readers (PCSC/CCID),
+ * TPM 2.0 device nodes (/dev/tpmrm0, /sys/class/tpm), PKCS#11 shared libraries, and the
+ * Apple Secure Enclave.
  *
  * Reports what is ATTACHED. It does not choose a seal tier and it does not authorise a
  * fallback: under no-silent-downgrade the caller declares a required tier and
  * frost-share-adapter throws if that tier is unavailable. A probe result of
  * noHardwareDetected means "do not ask for a hardware tier here", never "quietly use
  * software instead".
+ *
+ * ============================================================================
+ * A DRIVER IS NOT A DEVICE (corrected 2026-08-14, Nazar — exercised on real hardware)
+ * ============================================================================
+ *
+ * The previous version computed
+ *
+ *     hardwareAvailable = tpm.available || yubi.detected || pkcs11.found
+ *
+ * where `pkcs11.found` is true when a shared LIBRARY EXISTS ON DISK. Installing
+ * yubico-piv-tool drops ykcs11.dylib into /opt/homebrew/lib with no token anywhere near
+ * the machine, and the probe then reported "Hardware present: YES". That is a
+ * false positive on physical presence: a PKCS#11 module is a driver, and a driver is
+ * evidence that someone once ran brew, not that a device is attached. `pkcs11ModuleFound`
+ * is now reported on its own and NEVER clears `noHardwareDetected`.
+ *
+ * The same probe was also wrong in the other direction: YubiKey detection shelled out to
+ * `ykman`, so a genuinely attached token on a machine without the Yubico CLI installed
+ * read as "not detected". Reader detection now goes through the OS smart-card stack
+ * (CCID interface class on Linux sysfs, SPSmartCardsDataType on macOS), which sees the
+ * hardware whether or not ykman exists; `ykman` is kept only for the serial number.
+ *
+ * ============================================================================
+ * THE SECURE ENCLAVE IS PRESENT AND NO SEAL TIER CAN USE IT
+ * ============================================================================
+ *
+ * On Apple Silicon `secureEnclaveAvailable` is true and `noHardwareDetected` is ALSO
+ * true, which looks like a contradiction and is not. There is a real hardware root on
+ * the machine, and `FrostSealTier` has no member that can reach it: hardware-tpm2 needs
+ * a TPM 2.0 that Apple Silicon does not have, and hardware-pkcs11 needs an external
+ * token. The Secure Enclave is reached through the Keychain
+ * (kSecAttrTokenIDSecureEnclave), is P-256 only, and exposes no AES key-wrapping
+ * primitive of the shape frost-share-adapter needs — see the TPM section of that file.
+ * Letting SEP presence clear `noHardwareDetected` would reintroduce exactly the
+ * false-positive fixed above, so it deliberately does not.
+ *
+ * `availableHardwareSealTiers()` below is the field to read when the question is "can
+ * this host honour a hardware tier", because that is the only question the adapter can
+ * act on. It is ADVISORY: it never selects a tier for a caller.
+ *
+ * Noninterference (manifesto §13): every reading of the outside world — filesystem,
+ * subprocess, platform string — enters through the injected `HardwareProbeEffects` door.
+ * The default door is the real host; tests inject a fake host and therefore assert on
+ * outcomes that can actually be wrong.
  */
 
-import { existsSync, readdirSync } from "node:fs";
-import { execSync } from "node:child_process";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { platform as osPlatform } from "node:os";
+import type { FrostSealTier } from "./frost-share-adapter.ts";
+
+/**
+ * The ONLY door through which this module reads the outside world (§13 noninterference).
+ * Injected wholesale so a test can describe a machine — an Apple Silicon laptop, a Linux
+ * box with a TPM, a host with a driver but no token — and get a deterministic result.
+ */
+export interface HardwareProbeEffects {
+  readonly exists: (path: string) => boolean;
+  readonly readDir: (path: string) => readonly string[];
+  readonly readFile: (path: string) => string;
+  /** argv form, NEVER a shell string. Throws when the command is absent or fails. */
+  readonly run: (cmd: string, args: readonly string[]) => string;
+  /** node:os platform string ("darwin" | "linux" | "win32" | …). */
+  readonly platform: string;
+}
+
+/** The real host. The only place in this module that touches fs/subprocess directly. */
+export function realProbeEffects(): HardwareProbeEffects {
+  return {
+    exists: (p) => existsSync(p),
+    readDir: (p) => readdirSync(p),
+    readFile: (p) => readFileSync(p, "utf8"),
+    run: (cmd, args) =>
+      execFileSync(cmd, [...args], { encoding: "utf8", timeout: 5000, stdio: ["ignore", "pipe", "ignore"] }),
+    platform: osPlatform(),
+  };
+}
 
 export interface HardwareProbeResult {
   readonly timestamp: string;
@@ -20,9 +94,29 @@ export interface HardwareProbeResult {
   readonly tpmDeviceNode?: string | undefined;
   readonly yubikeyDetected: boolean;
   readonly yubikeySerial?: string | undefined;
+  /**
+   * A CCID / PCSC smart-card reader is physically attached. Independent of whether the
+   * Yubico CLI is installed, which is why it — not `yubikeyDetected` — is what
+   * hardware-pkcs11 availability keys on.
+   */
+  readonly smartCardReaderAttached: boolean;
+  /**
+   * A PKCS#11 shared library exists on disk. THIS IS A DRIVER, NOT A DEVICE, and on its
+   * own it is not evidence that any token is attached. It never clears
+   * `noHardwareDetected`.
+   */
   readonly pkcs11ModuleFound: boolean;
   readonly pkcs11LibraryPath?: string | undefined;
-  /** No hardware found. NOT a licence to fall back: the adapter has no fallback path. */
+  /**
+   * An Apple Secure Enclave is present. Real hardware, and NO `FrostSealTier` can reach
+   * it, so it does not clear `noHardwareDetected` either. See the header.
+   */
+  readonly secureEnclaveAvailable: boolean;
+  /**
+   * No DEVICE that a hardware seal tier could use was found. NOT a licence to fall back:
+   * the adapter has no fallback path. True on an Apple Silicon machine with a Secure
+   * Enclave, because no tier can use one.
+   */
   readonly noHardwareDetected: boolean;
 }
 
@@ -32,60 +126,129 @@ export interface HardwareProbeResult {
 const PKCS11_LIBRARY_PATHS: readonly string[] = [
   "/usr/local/lib/ykcs11.dylib",
   "/opt/homebrew/lib/ykcs11.dylib",
+  "/Library/OpenSC/lib/opensc-pkcs11.so",
   "/usr/lib/x86_64-linux-gnu/opensc-pkcs11.so",
   "/usr/lib/x86_64-linux-gnu/libykcs11.so",
   "/usr/lib/libykcs11.so",
 ];
 
+/** USB interface class 0x0B is "Smart Card" (USB-IF CCID). */
+const USB_CCID_INTERFACE_CLASS = "0b";
+
 /**
  * Probes for physical TPM 2.0 device nodes. LINUX ONLY: Apple Silicon has a Secure
  * Enclave, not a TPM 2.0, so this correctly reports false on macOS.
  */
-export function probeTpm2(): { available: boolean; path?: string } {
-  if (existsSync("/dev/tpmrm0")) {
+export function probeTpm2(fx: HardwareProbeEffects = realProbeEffects()): {
+  available: boolean;
+  path?: string;
+} {
+  if (fx.exists("/dev/tpmrm0")) {
     return { available: true, path: "/dev/tpmrm0" };
   }
-  if (existsSync("/dev/tpm0")) {
+  if (fx.exists("/dev/tpm0")) {
     return { available: true, path: "/dev/tpm0" };
   }
-  if (existsSync("/sys/class/tpm")) {
+  if (fx.exists("/sys/class/tpm")) {
     try {
-      const entries = readdirSync("/sys/class/tpm");
-      if (entries.length > 0) {
-        return { available: true, path: `/dev/${entries[0]}` };
+      const entries = fx.readDir("/sys/class/tpm");
+      const first = entries[0];
+      if (first !== undefined) {
+        return { available: true, path: `/dev/${first}` };
       }
     } catch {
-      // Ignore reading error
+      // Unreadable /sys/class/tpm — report absent rather than guess.
     }
   }
   return { available: false };
 }
 
 /**
- * Probes for physical YubiKey USB device attached via system USB / PCSC tools.
+ * Probes the OS smart-card stack for an ATTACHED CCID reader (a YubiKey in CCID mode is
+ * one). Deliberately independent of `ykman`: the previous ykman-only path reported a real
+ * attached token as absent whenever the Yubico CLI was not installed.
+ *
+ * Linux: sysfs USB interface class 0x0B, readable with no tools installed.
+ * macOS: the Readers section of `system_profiler SPSmartCardsDataType`. Reader DRIVERS
+ * are always listed on a stock macOS and are ignored — only the Readers block counts.
  */
-export function probeYubikey(): { detected: boolean; serial?: string } {
+export function probeSmartCardReader(fx: HardwareProbeEffects = realProbeEffects()): boolean {
+  if (fx.platform === "linux") {
+    try {
+      for (const dev of fx.readDir("/sys/bus/usb/devices")) {
+        try {
+          const cls = fx.readFile(`/sys/bus/usb/devices/${dev}/bInterfaceClass`).trim().toLowerCase();
+          if (cls === USB_CCID_INTERFACE_CLASS) return true;
+        } catch {
+          // Not an interface dir, or unreadable — next.
+        }
+      }
+    } catch {
+      // No sysfs USB tree.
+    }
+    return false;
+  }
+  if (fx.platform === "darwin") {
+    try {
+      const out = fx.run("system_profiler", ["SPSmartCardsDataType"]);
+      return macReadersBlockIsNonEmpty(out);
+    } catch {
+      return false;
+    }
+  }
+  return false;
+}
+
+/**
+ * True when the `Readers:` block of SPSmartCardsDataType lists at least one reader.
+ * Exported for test: this parser is the whole of macOS reader detection, and an
+ * always-false or always-true parser is exactly the bug class this file is correcting.
+ */
+export function macReadersBlockIsNonEmpty(systemProfilerOutput: string): boolean {
+  const lines = systemProfilerOutput.split("\n");
+  const start = lines.findIndex((l) => l.trim() === "Readers:");
+  const header = start < 0 ? undefined : lines[start];
+  if (header === undefined) return false;
+  const headerIndent = header.length - header.trimStart().length;
+  for (const line of lines.slice(start + 1)) {
+    if (line.trim() === "") continue;
+    // Any subsequent section header ("Reader Drivers:", "SmartCard Drivers:", …) ends
+    // the block. Reader entries are indented further than the header.
+    const indent = line.length - line.trimStart().length;
+    return indent > headerIndent;
+  }
+  return false;
+}
+
+/**
+ * Probes for a physical YubiKey and its serial. `ykman` is the serial-number source only;
+ * presence does not depend on it (see probeSmartCardReader).
+ */
+export function probeYubikey(fx: HardwareProbeEffects = realProbeEffects()): {
+  detected: boolean;
+  serial?: string;
+} {
   try {
-    const output = execSync("ykman list --serials 2>/dev/null || ykman info 2>/dev/null", {
-      encoding: "utf8",
-      timeout: 1000,
-    });
+    const output = fx.run("ykman", ["list", "--serials"]);
     const match = output.match(/\b\d{6,10}\b/);
     if (match) {
       return { detected: true, serial: match[0] };
     }
   } catch {
-    // Command failed or ykman not present
+    // ykman absent or no key — fall through to the tool-independent reader probe.
   }
-  return { detected: false };
+  return probeSmartCardReader(fx) ? { detected: true } : { detected: false };
 }
 
 /**
- * Probes for PKCS#11 shared library installation.
+ * Probes for a PKCS#11 shared library installation. A LIBRARY, not a token — see header.
  */
-export function probePkcs11(): { found: boolean; path?: string } {
+export function probePkcs11(fx: HardwareProbeEffects = realProbeEffects()): {
+  found: boolean;
+  path?: string;
+} {
   for (const libPath of PKCS11_LIBRARY_PATHS) {
-    if (existsSync(libPath)) {
+    if (fx.exists(libPath)) {
       return { found: true, path: libPath };
     }
   }
@@ -93,14 +256,37 @@ export function probePkcs11(): { found: boolean; path?: string } {
 }
 
 /**
- * Runs full hardware security probe and determines if simulator fallback is required.
+ * Probes for an Apple Secure Enclave via the IOKit registry (AppleSEPManager). Real
+ * hardware that no seal tier can currently use — reported, never counted as a tier.
  */
-export function probeHardwareSecurity(): HardwareProbeResult {
-  const tpm = probeTpm2();
-  const yubi = probeYubikey();
-  const pkcs11 = probePkcs11();
+export function probeSecureEnclave(fx: HardwareProbeEffects = realProbeEffects()): boolean {
+  if (fx.platform !== "darwin") return false;
+  try {
+    const out = fx.run("ioreg", ["-rc", "AppleSEPManager"]);
+    return out.includes("AppleSEPManager");
+  } catch {
+    return false;
+  }
+}
 
-  const hardwareAvailable = tpm.available || yubi.detected || pkcs11.found;
+/**
+ * Runs the full hardware security probe.
+ *
+ * `noHardwareDetected` is derived from DEVICES ONLY. A PKCS#11 driver on disk and an
+ * Apple Secure Enclave are both reported and neither clears it, for the reasons in the
+ * header. There is still no fallback anywhere: the flag informs a caller not to declare a
+ * hardware tier, and the adapter throws if one declares it anyway.
+ */
+export function probeHardwareSecurity(fx: HardwareProbeEffects = realProbeEffects()): HardwareProbeResult {
+  const tpm = probeTpm2(fx);
+  const yubi = probeYubikey(fx);
+  const reader = yubi.detected || probeSmartCardReader(fx);
+  const pkcs11 = probePkcs11(fx);
+  const sep = probeSecureEnclave(fx);
+
+  // A driver on disk is NOT a device, and the Secure Enclave is a device no tier reaches.
+  // Neither belongs in this disjunction.
+  const deviceAvailable = tpm.available || yubi.detected || reader;
 
   return {
     timestamp: new Date().toISOString(),
@@ -108,17 +294,82 @@ export function probeHardwareSecurity(): HardwareProbeResult {
     tpmDeviceNode: tpm.path,
     yubikeyDetected: yubi.detected,
     yubikeySerial: yubi.serial,
+    smartCardReaderAttached: reader,
     pkcs11ModuleFound: pkcs11.found,
     pkcs11LibraryPath: pkcs11.path,
-    noHardwareDetected: !hardwareAvailable,
+    secureEnclaveAvailable: sep,
+    noHardwareDetected: !deviceAvailable,
   };
+}
+
+/** The hardware members of FrostSealTier. Kept as a narrowing of that union so a new
+ *  hardware tier in the adapter cannot silently go unconsidered here. */
+export type HardwareSealTier = Extract<FrostSealTier, "hardware-pkcs11" | "hardware-tpm2">;
+
+/**
+ * Which hardware seal tiers this host could honour right now — the CHECKABLE form of the
+ * ladder's L1 rung claim, which is otherwise only asserted in a document.
+ *
+ * ADVISORY ONLY. It selects nothing. The caller still DECLARES its tier and
+ * `createHsmShareAdapter` still throws when the declared tier cannot be built; this
+ * function exists so a runbook step like "seal each share to that node's TPM 2.0" can be
+ * checked against the machine in front of you instead of assumed.
+ *
+ *  - hardware-tpm2 requires a TPM 2.0 device node. Apple Silicon never qualifies.
+ *  - hardware-pkcs11 requires a driver AND an attached token. A module with no token is
+ *    the false positive this file was fixed to stop reporting, so it is not a tier here.
+ */
+export function availableHardwareSealTiers(res: HardwareProbeResult): readonly HardwareSealTier[] {
+  const tiers: HardwareSealTier[] = [];
+  if (res.tpm2Available) tiers.push("hardware-tpm2");
+  if (res.pkcs11ModuleFound && (res.yubikeyDetected || res.smartCardReaderAttached)) {
+    tiers.push("hardware-pkcs11");
+  }
+  return tiers;
+}
+
+/**
+ * Preflight a declared hardware tier against this host. THROWS when the host cannot
+ * honour it — the same direction as the adapter, never a downgrade. Use it to fail a
+ * runbook early with a legible reason instead of deep inside a PKCS#11 FFI call.
+ */
+export function assertHardwareSealTierAvailable(tier: HardwareSealTier, res: HardwareProbeResult): void {
+  if (availableHardwareSealTiers(res).includes(tier)) return;
+  const why: string[] = [];
+  if (tier === "hardware-tpm2" && !res.tpm2Available) {
+    why.push(
+      res.secureEnclaveAvailable
+        ? "no TPM 2.0 device node (this host has an Apple Secure Enclave, which is NOT a TPM 2.0 and which no seal tier can use)"
+        : "no TPM 2.0 device node (/dev/tpmrm0, /dev/tpm0, /sys/class/tpm)",
+    );
+  }
+  if (tier === "hardware-pkcs11") {
+    if (!res.pkcs11ModuleFound) why.push("no PKCS#11 module on disk");
+    if (!res.yubikeyDetected && !res.smartCardReaderAttached) {
+      why.push("no smart-card reader or token attached (a PKCS#11 driver alone is not a device)");
+    }
+  }
+  throw new Error(
+    `frost-hardware-probe: this host cannot honour seal tier "${tier}": ${why.join("; ")}. ` +
+      `No fallback is offered — pick a tier this host can honour, or attach the hardware.`,
+  );
 }
 
 if (import.meta.main) {
   const res = probeHardwareSecurity();
+  const tiers = availableHardwareSealTiers(res);
   console.log(`[Hardware Security Probe] Result:`);
-  console.log(`  TPM 2.0:           ${res.tpm2Available ? res.tpmDeviceNode : "Not found"}`);
-  console.log(`  YubiKey:           ${res.yubikeyDetected ? `Detected (S/N: ${res.yubikeySerial})` : "Not detected"}`);
-  console.log(`  PKCS#11 Library:   ${res.pkcs11ModuleFound ? res.pkcs11LibraryPath : "Not found"}`);
-  console.log(`  Hardware present:  ${res.noHardwareDetected ? "NO - a hardware seal tier will THROW here" : "YES"}`);
+  console.log(`  TPM 2.0:            ${res.tpm2Available ? res.tpmDeviceNode : "Not found"}`);
+  console.log(
+    `  YubiKey / token:    ${res.yubikeyDetected ? `Detected${res.yubikeySerial ? ` (S/N: ${res.yubikeySerial})` : " (no serial; ykman absent)"}` : "Not detected"}`,
+  );
+  console.log(`  Smart-card reader:  ${res.smartCardReaderAttached ? "Attached" : "None attached"}`);
+  console.log(
+    `  PKCS#11 module:     ${res.pkcs11ModuleFound ? `${res.pkcs11LibraryPath} (a DRIVER — not evidence of a device)` : "Not found"}`,
+  );
+  console.log(
+    `  Secure Enclave:     ${res.secureEnclaveAvailable ? "Present (no seal tier can use it — see header)" : "Not present"}`,
+  );
+  console.log(`  Device present:     ${res.noHardwareDetected ? "NO - a hardware seal tier will THROW here" : "YES"}`);
+  console.log(`  Honourable tiers:   ${tiers.length > 0 ? tiers.join(", ") : "(none)"}`);
 }

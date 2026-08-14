@@ -133,6 +133,16 @@ export interface FrostShareSealEffects {
    * this hook means there is nothing external to probe.
    */
   readonly probe?: () => void;
+  /**
+   * A stable identity for the token behind this backend ("label#serial"), when there is
+   * one. Recorded at seal time and REQUIRED to match at load time; see
+   * FrostSealedShareFileV2.sealedByToken for why an N-token roster is not a threshold
+   * without it. NEVER carries key material -- a label and a serial number are printed on
+   * the outside of the device.
+   *
+   * Absent for TPM and software backends, which have no token to name.
+   */
+  readonly tokenIdentity?: () => string;
 }
 
 interface FrostSealedShareFileV2 {
@@ -143,6 +153,25 @@ interface FrostSealedShareFileV2 {
   readonly totalShares: number;
   readonly groupPublicKeyHex: string;
   readonly x: number;
+  /**
+   * WHICH token sealed this share (label+serial), when the backend can say.
+   *
+   * This is what makes an N-token roster a real threshold instead of N copies of one
+   * risk. Without it, share i is opened by whatever token happens to answer at the
+   * configured slot, so an operator who provisions the same wrapping key onto every
+   * token -- the obvious move, since it avoids N different PINs and gives "backup" --
+   * silently gets a roster where ANY ONE token opens EVERY share. That is a threshold
+   * that has collapsed to 1-of-N with nothing in the artifact, the logs, or the types
+   * to show it. Recording the sealing token and refusing a different one on load turns
+   * "compromising one token yields one share" from an assumption into a checked fact.
+   *
+   * Optional because TPM and software backends have no token identity to report, and
+   * because artifacts sealed before this field existed must still load. It cannot be
+   * stripped to dodge the check: it is part of the AAD *and* of the in-plaintext bind
+   * string, so removing or editing it fails the binding comparison on every tier,
+   * including the non-AEAD PKCS#11 one.
+   */
+  readonly sealedByToken?: string;
   readonly sealed: FrostShareSealBox;
 }
 
@@ -278,6 +307,25 @@ export function createSealedFileShareAdapter(
             "silently accepting a differently-protected share.",
         );
       }
+      // WHICH TOKEN. Enforced before any decrypt is attempted, so the refusal names the
+      // real reason instead of surfacing as an opaque padding error three layers down.
+      const presentedToken = sealFx.tokenIdentity?.();
+      if (body.sealedByToken !== undefined) {
+        if (presentedToken === undefined) {
+          throw new Error(
+            `frost-share-adapter: share x=${x} is bound to token "${body.sealedByToken}", but ` +
+              "this backend reports no token identity. Refusing rather than opening a " +
+              "token-bound share with an unidentified backend.",
+          );
+        }
+        if (presentedToken !== body.sealedByToken) {
+          throw new Error(
+            `frost-share-adapter: wrong token for share x=${x}: sealed by ` +
+              `"${body.sealedByToken}" but "${presentedToken}" is present. Refusing. ` +
+              "If one token could open every share, the roster would be 1-of-N, not a threshold.",
+          );
+        }
+      }
       const aadBody: Omit<FrostSealedShareFileV2, "sealed"> = {
         schema: body.schema,
         sealTier: body.sealTier,
@@ -286,6 +334,9 @@ export function createSealedFileShareAdapter(
         totalShares: body.totalShares,
         groupPublicKeyHex: body.groupPublicKeyHex,
         x: body.x,
+        // Undefined keys are omitted by JSON.stringify, so an artifact sealed before this
+        // field existed reconstructs byte-identical AAD and still loads.
+        ...(body.sealedByToken !== undefined ? { sealedByToken: body.sealedByToken } : {}),
       };
       const aad = sealedShareAad(aadBody);
       const plaintext = sealFx.unseal?.(body.sealed, aad) ?? defaultUnseal(sealFx, body.sealed, aad);
@@ -308,6 +359,7 @@ export function createSealedFileShareAdapter(
       };
     },
     storeShare(record: FrostShareRecord, caName: string): void {
+      const sealingToken = sealFx.tokenIdentity?.();
       const aadBody: Omit<FrostSealedShareFileV2, "sealed"> = {
         schema: FROST_SEALED_SHARE_SCHEMA,
         sealTier,
@@ -316,6 +368,7 @@ export function createSealedFileShareAdapter(
         totalShares: record.totalShares,
         groupPublicKeyHex: record.groupPublicKeyHex,
         x: record.x,
+        ...(sealingToken !== undefined ? { sealedByToken: sealingToken } : {}),
       };
       const aad = sealedShareAad(aadBody);
       const plaintext = new TextEncoder().encode(
@@ -426,6 +479,8 @@ export interface Pkcs11Lib {
   readonly C_Initialize: (pInitArgs: number | bigint) => number | bigint;
   readonly C_Finalize: (pReserved: number | bigint) => number | bigint;
   readonly C_GetSlotList: (tokenPresent: number, pSlotList: unknown, pulCount: unknown) => number | bigint;
+  /** Fills a 1024-byte CK_TOKEN_INFO. The source of the token identity we bind shares to. */
+  readonly C_GetTokenInfo: (slotID: number | bigint, pInfo: unknown) => number | bigint;
   readonly C_OpenSession: (
     slotID: number | bigint,
     flags: number | bigint,
@@ -514,6 +569,7 @@ export const defaultFfiLoader = (libPath: string): Pkcs11Lib => {
     C_Initialize: { args: [t.ptr], returns: t.u64 },
     C_Finalize: { args: [t.ptr], returns: t.u64 },
     C_GetSlotList: { args: [t.u8, t.ptr, t.ptr], returns: t.u64 },
+    C_GetTokenInfo: { args: [t.u64, t.ptr], returns: t.u64 },
     C_OpenSession: { args: [t.u64, t.u64, t.ptr, t.ptr, t.ptr], returns: t.u64 },
     C_CloseSession: { args: [t.u64], returns: t.u64 },
     C_Login: { args: [t.u64, t.u64, t.ptr, t.u64], returns: t.u64 },
@@ -577,6 +633,38 @@ function buildCbcMechanism(iv: Uint8Array, pointerOf: Pkcs11PointerOf) {
 
 function rvOk(rv: number | bigint): boolean {
   return BigInt(rv) === CKR_OK;
+}
+
+/** CK_TOKEN_INFO leading fields (PKCS#11 v2.40 §10.11 / v3.1 §10.12): all blank-padded,
+ *  NOT NUL-terminated. label[32] manufacturerID[32] model[16] serialNumber[16]. */
+const CK_TOKEN_INFO_SIZE = 1024;
+const CK_TOKEN_INFO_LABEL_OFFSET = 0;
+const CK_TOKEN_INFO_LABEL_LEN = 32;
+const CK_TOKEN_INFO_SERIAL_OFFSET = 80;
+const CK_TOKEN_INFO_SERIAL_LEN = 16;
+
+/**
+ * Parse a token identity out of a raw CK_TOKEN_INFO buffer. Pure and exported so the
+ * struct offsets are covered by tests today, on a machine with no token: the FFI call
+ * around it cannot be exercised until hardware lands, but getting `serialNumber` at the
+ * wrong offset would bind every share to the same garbage string and quietly restore the
+ * any-token-opens-any-share behaviour this field exists to prevent.
+ *
+ * Returns "label#serial", both blank-trimmed. NEVER touches key material -- these two
+ * fields are printed on the outside of the device.
+ */
+export function parseCkTokenInfoIdentity(info: Uint8Array): string {
+  const field = (off: number, len: number): string =>
+    new TextDecoder().decode(info.subarray(off, off + len)).replace(/[\s\0]+$/u, "");
+  const label = field(CK_TOKEN_INFO_LABEL_OFFSET, CK_TOKEN_INFO_LABEL_LEN);
+  const serial = field(CK_TOKEN_INFO_SERIAL_OFFSET, CK_TOKEN_INFO_SERIAL_LEN);
+  if (serial === "") {
+    throw new Error(
+      "frost-share-adapter: token reports an empty serial number, so shares cannot be bound " +
+        "to it. Refusing rather than binding every token to the same empty identity.",
+    );
+  }
+  return `${label}#${serial}`;
 }
 
 function findKey(lib: Pkcs11Lib, hSession: bigint | number, keyLabel: string, pointerOf: Pkcs11PointerOf): bigint {
@@ -646,6 +734,26 @@ export function createPkcs11SealEffects(opts: Pkcs11SealEffectsOptions): FrostSh
     /** Eager liveness check: prove the token is present and holds the wrapping key. */
     probe(): void {
       withSession((lib, hSession) => findKey(lib, hSession, keyLabel, pointerOf));
+    },
+
+    /**
+     * WHICH token is in the configured slot. Read fresh on every call rather than cached,
+     * because slot IDs are assigned by the module and are NOT stable identities: replug
+     * two tokens in the other order and slot 0 is a different device. Caching the first
+     * answer would let a swapped token inherit the previous one's identity, which is the
+     * precise failure this binding exists to catch.
+     */
+    tokenIdentity(): string {
+      const lib = getLib();
+      lib.C_Initialize(0n);
+      try {
+        const info = new Uint8Array(CK_TOKEN_INFO_SIZE);
+        const rv = lib.C_GetTokenInfo(BigInt(slotId), info);
+        if (!rvOk(rv)) throw new Error(`C_GetTokenInfo failed for slot ${slotId}: ${rv}`);
+        return parseCkTokenInfoIdentity(info);
+      } finally {
+        lib.C_Finalize(0n);
+      }
     },
 
     seal(plaintext: Uint8Array, _aad: Uint8Array): FrostShareSealBox {
