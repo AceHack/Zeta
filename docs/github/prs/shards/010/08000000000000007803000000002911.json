@@ -1,0 +1,17 @@
+{
+  "pr_number": 10513,
+  "archive_path": "docs/history/pr-reviews/PR-10513-feat-persona-keys-frost-share-seal-tiers-the-fake-can-no-longer-pass-as-hardware.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7hVxNO",
+    "comment:PRRC_kwDOSF9kNM7hVxNQ",
+    "thread:PRRT_kwDOSF9kNM6ZJMYA",
+    "thread:PRRT_kwDOSF9kNM6ZJMYB"
+  ],
+  "fetched_at": "2026-08-14T09:54:52.773Z",
+  "schema_version": "v1",
+  "commit_sha": "b62e21c1e7e96917e1498ede83392deafcf4a8d7",
+  "title": "feat(persona-keys): FROST share seal tiers - the fake can no longer pass as hardware (081KWPHRNFW item 5)",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T09:54:20Z",
+  "head_ref": "nazar/frost-share-adapter-hardware-seal-tiers"
+}
