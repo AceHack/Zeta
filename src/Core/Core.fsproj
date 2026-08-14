@@ -371,6 +371,7 @@
     <Compile Include="SoftDashboard.fs" />
     <Compile Include="SoftEmu.fs" />
     <Compile Include="AmplitudeEmu.fs" />
+    <Compile Include="CyclotomicAmplitude.fs" />
     <Compile Include="QuorumAlgebra.fs" />
     <Compile Include="HlAmplitudeEmu.fs" />
     <Compile Include="QuantumArith.fs" />

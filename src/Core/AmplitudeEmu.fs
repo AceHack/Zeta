@@ -60,6 +60,15 @@ namespace Zeta.Core
 /// re-association. `QuorumAlgebra.interfereQuorum` restores a canonical summation order; exactness
 /// needs the cyclotomic carrier scoped in
 /// `docs/research/2026-08-14-the-quorum-fold-is-not-a-join-interference-vs-evidence-and-the-cyclotomic-exit-lumen.md`.
+///
+/// **That carrier has now SHIPPED: `src/Core/CyclotomicAmplitude.fs` (`Cyc`, `Z[zeta_16][1/sqrt2]`).**
+/// It is the fix, and this module is not deleted because (a) the continuous-phase interferometer
+/// sweeps genuinely need floats and are permanently outside the byte-lock treaty, and (b) an exact
+/// carrier is **blind to the Z-EPS defect by construction**, so the regression evidence for the
+/// signalling channel can only live against THIS path. See
+/// `tests/Tests.FSharp/Formal/AmplitudeEmuSignalling.Tests.fs` (the witness, unchanged) and
+/// `tests/Tests.FSharp/CyclotomicAmplitude.Tests.fs` section C (the differential that holds both
+/// carriers in one assertion, so deleting this one breaks the pair loudly).
 [<RequireQualifiedAccess>]
 module AmplitudeEmu =
 

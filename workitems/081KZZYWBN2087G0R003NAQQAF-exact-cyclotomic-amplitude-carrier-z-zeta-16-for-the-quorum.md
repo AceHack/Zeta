@@ -1,7 +1,7 @@
 ---
 id: 081KZZYWBN2087G0R003NAQQAF
 type: task
-state: backlog
+state: in-progress
 priority: P2
 slug: exact-cyclotomic-amplitude-carrier-z-zeta-16-for-the-quorum
 title: "Exact cyclotomic amplitude carrier Z[zeta_16] for the quorum interference fold"
@@ -51,3 +51,34 @@ and **TLC counterexamples become directly executable F# tests**.
 - `universal/interference.md` - the honest boundary this closes
 - Anchors: Coste-Gannon 1994, Ng-Schauenburg 2010 (modular data is cyclotomic); Giles-Selinger 2013,
   Kliuchnikov-Maslov-Mosca 2013 (exact synthesis over `Z[1/sqrt2, i]`, denominator-exponent form)
+
+## The fourth reason, which outranks the other three (2026-08-14)
+
+Conjecture **Z-EPS was run and it HOLDS** (#10554,
+`docs/research/2026-08-14-z-eps-run-the-threshold-drop-signals-routing-the-conjecture-and-the-witness-soraya.md`).
+A Bob-local, trace-preserving operation moves Alice's marginal Born probability from `0.2647` to
+`0.0000` on the shipped `AmplitudeEmu.step`. **The emulator computes a theory that signals**, and it
+survives normalisation. "Tune EPS" is dead **as a class** - the shift is scale-dependent and the
+theory is not - so **the admissible fixes are carrier changes**. This item stopped being an
+improvement and became the repair for a proven defect.
+
+## What shipped (2026-08-14, Lumen)
+
+- `src/Core/CyclotomicAmplitude.fs` - the `Cyc` carrier (`Z[zeta_16][1/sqrt2]`, unique canonical
+  form, `encode` as the byte-lock text) and `CyclotomicAmplitude`, the same fold with `Cyc.isZero`
+  in place of the `EPS` comparison.
+- `tests/Tests.FSharp/CyclotomicAmplitude.Tests.fs` - 27 tests: ring soundness cross-checked against
+  float complex arithmetic; the laws back; the instrument surviving; the **Z-EPS differential**
+  (both carriers, one ray, one test); the `Z[zeta_4]` bridge with a TLC counterexample executed;
+  byte-lock; and cost measured against the depth-1 prediction.
+- **`N = 16` chosen, and `N = 8` / `N = 4` are sub-lattices of it, not alternatives.** The fallback
+  branch of this item is therefore a selection, not a second implementation.
+- **The float path is untouched.** `AmplitudeEmu` still carries the continuous-phase sweeps and is
+  still where the Z-EPS regression test lives.
+
+## What remains (the follow-on slice)
+
+Migrating `QuorumAlgebra.Contribution` itself to `Cyc` is **not** done here and is deliberately
+separate: `tests/Tests.FSharp/QuorumAlgebra.Tests.fs` section C *measures the float defects*, so
+converting that module in the same change would delete the evidence along with the defect - the
+exact trap Z-EPS section 5 named. The migration wants its own PR that keeps a float-path arm.
