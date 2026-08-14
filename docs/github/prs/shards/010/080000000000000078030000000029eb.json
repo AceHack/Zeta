@@ -1,0 +1,12 @@
+{
+  "pr_number": 10731,
+  "archive_path": "docs/history/pr-reviews/PR-10731-fix-zeta-id-bound-packgeneric-packgeneric-in-c-and-f-they-silently-truncated-whi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T22:24:37.308Z",
+  "schema_version": "v1",
+  "commit_sha": "a724f696cd34546e7b6299c01ed320869a1dfc46",
+  "title": "fix(zeta-id): bound PackGeneric/packGeneric in C# and F# — they silently truncated, which aliases ids instead of failing",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T22:24:04Z",
+  "head_ref": "shadow/packgeneric-bound-parity-csharp-fsharp"
+}
