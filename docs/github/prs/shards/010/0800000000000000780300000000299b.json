@@ -1,0 +1,12 @@
+{
+  "pr_number": 10651,
+  "archive_path": "docs/history/pr-reviews/PR-10651-fix-service-inject-loop-tick-executable-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T17:15:52.104Z",
+  "schema_version": "v1",
+  "commit_sha": "7dfdf32522473401f27818249340d7df560a311f",
+  "title": "fix(service): inject loop tick executable path",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T17:15:18Z",
+  "head_ref": "codex/loop-tick-injected-tool-path"
+}
