@@ -1,0 +1,12 @@
+{
+  "pr_number": 10623,
+  "archive_path": "docs/history/pr-reviews/PR-10623-proof-meno-general-n-lean-certificate-for-the-balanced-structure-the-garside-obs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T17:54:30.079Z",
+  "schema_version": "v1",
+  "commit_sha": "343e17638566fe92db9b36ae83c08b7673387b08",
+  "title": "proof(meno): general-n Lean certificate for the balanced structure — the Garside obstruction vanishes",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T17:53:35Z",
+  "head_ref": "soraya/meno-balanced-lean-certificate"
+}
