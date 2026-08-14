@@ -43,6 +43,10 @@ shape* of the interface.
 - **Universal Evidence** — how anything folds what it was told, without counting one source twice. A
   belief IS its provenance-keyed atom set; the join is a bounded semilattice, so individual/society/world
   share one interface (§9, §10). Dedup removes redundancy, NOT correlation — that needs an external observer.
+- **Universal Interference** — how distinct PATHS to one outcome combine: the **sum**, not the join.
+  Not idempotent (`a + a = 2a`), inverses exist, and opposite phases **cancel** — the one layer where a
+  quorum can disagree with itself to zero. Sibling of Evidence, deliberately outside its family; the
+  composition is join → interfere → Born. Cancellation is reported as a neutral fact, never a verdict.
 - **Universal Codec** — the ZetaId codec; 4-lang serializers byte-lock.
 - **Universal Algebra** — DBSP / Z-set / Semiring; the math substrate.
 - **Universal Traveler** — the traveler itself as an interface (identity/consent/audition/boundary; the

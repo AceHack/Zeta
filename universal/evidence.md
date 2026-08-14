@@ -49,6 +49,23 @@ certificate of independence**. The correlation half needs an external observer o
 without ever acquitting**. A fold that cannot attest its provenance must **refuse to publish a confidence
 claim** and emit the decorrelation reading instead.
 
+## Where this shape STOPS — the quorum layer is not a member (Lumen 2026-08-14)
+
+The closure property above is what makes the interface scale-free, so it matters exactly where it ends.
+It ends **above the individual agent**. Aaron placed the Born boundary at the society/quorum layer, and
+the quorum carrier is `AmplitudeEmu.Amp` (complex), which combines by **sum** — distinct paths to one
+outcome, phases able to cancel. **A sum is not a join**: `interfere a a = 2a`, never `a`, so §12
+idempotency is *declined by design* there and the semilattice guarantee does not extend past the join.
+
+That is not a defect to fix; it is a second algebra that needed its own name. It has one:
+[`universal/interference`](interference.md), implemented in `src/Core/QuorumAlgebra.fs` alongside this
+shape's `join`. The composition is **join first, interfere second, Born last** — dedupe by source (which
+is what stops the six-agents-one-stream double count), *then* let the distinct sources' phases interact.
+
+Read this way the two files are complementary rather than competing: **evidence counts sources;
+interference combines them.** Nothing in this file weakens — it just no longer silently claims a layer
+that was never taking its shape.
+
 ## Membership contract (what taking this shape requires)
 
 1. **Carry provenance, not just a message** — the belief is the atom set; the message is derived.
