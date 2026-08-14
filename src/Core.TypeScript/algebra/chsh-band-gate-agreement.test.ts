@@ -14,6 +14,16 @@
  * are each gated by a companion bun test that shells `z3 <file>` and asserts unsat — the
  * pattern from cost-envelope.test.ts). Without this companion, audit-formal-artifacts.ts
  * registers the artefact's existence but nothing runs it → false-green. This is that gate.
+ *
+ * WHAT CHANGED, 2026-08-13 (work-item 081KZYYKHX1087G0R0036E9RH9). The pattern quoted above
+ * — "shells `z3 <file>` and asserts unsat" — turned out to be the defect, portfolio-wide: an
+ * `unsat` expectation is satisfied by a TAUTOLOGY, so a lemma whose premises contain its
+ * conclusion goes green while proving nothing. The .smt2 now carries a non-vacuity probe (V:
+ * the theorem with `eps >= 0` ablated, expected `sat`) and returns a verdict SEQUENCE.
+ *
+ * The STRICT sequence, the mutation legs, and the falsifier proof live in the canonical
+ * runner tools/Z3Verify/chsh-band-gate-agreement-lemma.test.ts. This file keeps the two
+ * properties that make it a gate and does not restate the sequence, so the two cannot drift.
  */
 import { describe, test, expect } from "bun:test";
 import { execSync } from "node:child_process";
@@ -37,13 +47,21 @@ describe("chsh-band gate-agreement — Z3 lemma (BP-16 second tool)", () => {
     expect(existsSync(SMT_FILE)).toBe(true);
   });
 
-  test("Z3 discharges the biconditional (band>=Quantum ⇔ |s|>2+eps) as UNSAT", () => {
+  test("Z3 discharges the biconditional (band>=Quantum ⇔ |s|>2+eps), and it is not vacuous", () => {
     if (!z3Available()) {
       console.log("  ⚠ z3 not available — skipping execution");
       return;
     }
-    const result = execSync(`z3 ${SMT_FILE}`, { encoding: "utf-8", timeout: 10000 }).trim();
-    expect(result).toBe("unsat");
+    const raw = execSync(`z3 ${SMT_FILE}`, { encoding: "utf-8", timeout: 10000 });
+    const verdicts = raw
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter((l) => l === "sat" || l === "unsat" || l === "unknown");
+
+    expect(verdicts[0]).toBe("unsat"); // G1 — the gate and the predicate never disagree
+    // V — with `eps >= 0` ablated they CAN disagree. Without a `sat` in the list this
+    // assertion would be indistinguishable from one made against a tautology.
+    expect(verdicts).toContain("sat");
   });
 
   test("ground check: the conviction boundary is soundness-biased at the edges", () => {

@@ -52,8 +52,11 @@
 ; a = |s|, exactly as classifyBand's `let a = abs s`.
 (define-fun a () Real (ite (>= s 0.0) s (- s)))
 
-; Valid-domain constraint: chshMargin = sqrt(32*ln(1/delta)/n) >= 0 for delta in (0,1), n > 0.
-(assert (>= eps 0.0))
+; Valid-domain constraint: chshMargin = sqrt(32*ln(1/delta)/n) >= 0 for delta in (0,1),
+; n > 0. NOT asserted globally -- it is the hypothesis the non-vacuity probe ablates,
+; so it is asserted inside G1 and negated inside V. (Retrofit 2026-08-13,
+; work-item 081KZYYKHX1087G0R0036E9RH9.)
+(define-fun validDomain () Bool (>= eps 0.0))
 
 ; Pin the Tsirelson constant: sqrt2 = +sqrt(2), tsirelson = 2*sqrt2 + 1e-12.
 (assert (>= sqrt2 0.0))
@@ -71,9 +74,51 @@
 ; The calibrated-oracle union predicate (strict), from chshSybilCalibrated.
 (define-fun unionPredicate () Bool (> a (+ 2.0 eps)))
 
-; Negate the biconditional for refutation: a state where they DISAGREE.
-(assert (not (= convicts unionPredicate)))
+; The refutation goal, named ONCE and shared by both blocks below. Sharing is
+; deliberate: a mutation that collapsed `unionPredicate` into `convicts` (making
+; G1 a restatement rather than a theorem) propagates into V, which then flips
+; from `sat` to `unsat` and turns the runner red. A probe written over a private
+; copy of these definitions would not catch that, and would be a probe about
+; itself.
+(define-fun disagree () Bool (not (= convicts unionPredicate)))
 
+; --- G1  THE THEOREM ---------------------------------------------------------
+; Negate the biconditional for refutation: a state where they DISAGREE.
+; SCOPED in (push)/(pop) so that the NON-VACUITY PROBE below is a separate query.
+; (Retrofit 2026-08-13, work-item 081KZYYKHX1087G0R0036E9RH9. Before the scoping
+; this assertion was GLOBAL, which would have made every later block trivially
+; `unsat` regardless of its content -- the vacuity trap, one level up.)
+(push)
+(assert validDomain)
+(assert disagree)
 (check-sat)
 ; Expected: unsat -- band>=Quantum and `|s| > 2 + eps` never disagree, for any
 ; s, any non-negative margin eps, and the true Tsirelson constant.
+(pop)
+
+; --- V  NON-VACUITY PROBE ----------------------------------------------------
+; The whole point of this block. G1 alone is indistinguishable from a tautology:
+; a lemma whose premises contain its conclusion also returns `unsat`, and a runner
+; asserting all-unsat could not tell the difference. This block is G1 with exactly
+; ONE hypothesis ABLATED -- `validDomain`, i.e. `eps >= 0` -- and negated, so a
+; model is a genuine disagreement between the gate and the predicate.
+;
+; `sat` here proves two things:
+;   1. `eps >= 0` is LOAD-BEARING, not decorative -- it must be discharged at the
+;      call site (chshMargin's sqrt form is non-negative on the valid domain; the
+;      degenerate n <= 0 / delta outside (0,1) case is handled by the +infinity
+;      argument in the header, not by this encoding);
+;   2. therefore G1's `unsat` is a theorem ABOUT that hypothesis, not a tautology.
+;
+; The witness shape: with eps < 0 the SoundMargin rung is empty, so the ladder
+; convicts exactly on `a > 2` while the union predicate fires on `a > 2 + eps`;
+; any `a` strictly between them is a disagreement.
+(push)
+(assert (not validDomain))   ; <-- the ABLATED hypothesis, negated
+(assert disagree)
+(check-sat)   ; expect: sat  => the gate and the predicate CAN disagree once
+              ; eps is allowed negative; G1 is a theorem, not a tautology.
+(get-model)
+(pop)
+
+; Verdict sequence: unsat sat  (G1 proved, V is the non-vacuity witness).

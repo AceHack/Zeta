@@ -1,11 +1,12 @@
 ---
 id: 081KZYYKHX1087G0R0036E9RH9
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: every-smt-runner-asserts-all-unsat-which-a-tautology-satisfi
 title: "every SMT runner asserts all-unsat, which a tautology satisfies, so no runner can catch a vacuous lemma"
 created: 2026-08-14T01:36:24.481Z
+completed: 2026-08-14T02:08:17.010Z
 depends_on: []
 composes_with: []
 ---

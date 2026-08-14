@@ -11,17 +11,51 @@
 (set-logic QF_NIA)
 (declare-const n Int)
 
+; --- E1  THE BOUND -----------------------------------------------------------
 ; Assumption: n ≥ 0 (input size is non-negative)
-(assert (>= n 0))
-
 ; Claim: n(n-1)/2 ≤ n²
 ; Equivalently: n*(n-1) ≤ 2*n*n (multiply both sides by 2 to avoid integer division)
 ; Negate for refutation: assert n*(n-1) > 2*n*n
+; SCOPED in (push)/(pop) as of the 2026-08-13 retrofit (work-item
+; 081KZYYKHX1087G0R0036E9RH9); these two assertions used to be GLOBAL, which
+; would have made every block added after them trivially `unsat`.
+(push)
+(assert (>= n 0))
 (assert (> (* n (- n 1)) (* 2 (* n n))))
-
 (check-sat)
 ; Expected: unsat (the bound holds for all n ≥ 0)
+(pop)
 
-; BONUS: also prove n(n-1)/2 is TIGHT (not just an upper bound)
-; i.e., there exists n where n(n-1)/2 = n(n-1)/2 (trivially true, but
-; the point is: the quadratic growth IS the actual behavior, not just a loose bound)
+; --- V1  NON-VACUITY PROBE ---------------------------------------------------
+; E1 on its own is indistinguishable from a tautology of the ENCODING: if the
+; negation were unsatisfiable for a structural reason (a typo'd term, an
+; accidentally-contradictory premise set), `unsat` would still be printed and no
+; runner asserting all-unsat could tell. So run the SAME encoding against a
+; bound that is genuinely FALSE and require `sat`.
+;
+; The tighter claim n(n-1)/2 ≤ n²/4  (i.e. 2*n*(n-1) ≤ n*n) FAILS -- witness n=3:
+; 2*3*2 = 12 > 9. So the encoding can return sat, and E1's unsat carries content.
+(push)
+(assert (>= n 0))
+(assert (> (* 2 (* n (- n 1))) (* n n)))
+(check-sat)   ; expect: sat  => the quadratic form is not vacuously bounded;
+              ; there is a constant at which the claim breaks.
+(pop)
+
+; --- V2  HYPOTHESIS IS NOT LOAD-BEARING (recorded, not hidden) ---------------
+; Honest register (measured 2026-08-13, z3 4.16.0 and cvc5 1.3.4): dropping the
+; `n >= 0` premise leaves E1 STILL unsat. Over the integers n*(n-1) > 2*n*n
+; reduces to n*(n+1) < 0, which no integer satisfies. So `n >= 0` is DECORATIVE
+; for this claim -- true and meaningful as documentation of the domain, but it
+; does no work in the proof. That is not a defect; it is a fact about a very
+; loose bound, and it belongs in the file rather than in a reviewer's head.
+;
+; The slack is real and worth naming: the actual worst case is n(n-1)/2, so the
+; sharp quadratic envelope is n²/2, and E1 states a bound with a factor of 2 to
+; spare. V1 locates where the slack runs out.
+(push)
+(assert (> (* n (- n 1)) (* 2 (* n n))))
+(check-sat)   ; expect: unsat  => n >= 0 does no work here
+(pop)
+
+; Verdict sequence: unsat sat unsat

@@ -1,0 +1,18 @@
+[
+  {
+    "lemma": "tools/Z3Verify/light-time-endpoint-speed-envelope.smt2",
+    "solver": "z3",
+    "minimumVersion": "4.16.0",
+    "measuredBadVersion": "4.8.12",
+    "workitem": "081KZZ27KJ8087G0R0038ZGBAT",
+    "reason": "MEASURED 2026-08-13 in `podman run ubuntu:24.04` + `apt-get install z3` -- the CI runner's exact pair. The file discharges only its first SIX blocks and then returns `timeout`, at -T:300. No verdict for M1 (the envelope theorem), S1 (sharpness), or R1/R2 (hypothesis necessity). Under z3 4.16.0 the whole file takes 0.08s; z3's nlsat engine improved substantially between the two and the boundary release is NOT measured. This is not merely slow: every block the old z3 reaches is `unsat` and every block it misses is a `sat` witness, so gating the reachable prefix would reproduce exactly the all-unsat defect 081KZYYKHX1087G0R0036E9RH9 removed. The PROPERTY is not at risk -- src/Core.Lean4/Lean4/LightTimeAsymmetry.lean proves it independently and IS gated; what is lost on CI is the BP-16 second leg. Confirmed on the runner itself in PR #10508 gate run 31763383985."
+  },
+  {
+    "lemma": "tools/Z3Verify/chsh-band-gate-agreement-lemma.smt2",
+    "solver": "cvc5",
+    "minimumVersion": "1.3.4",
+    "measuredBadVersion": "1.1.2",
+    "workitem": "081KZZ27KJ8087G0R0038ZGBAT",
+    "reason": "MEASURED 2026-08-13 in `podman run ubuntu:24.04` + `apt-get install cvc5`. cvc5 1.1.2 discharges G1 (`unsat`) and then cannot decide the V non-vacuity probe -- interrupted at --tlimit=120000 with no second verdict and a core dump. cvc5 1.3.4 answers both instantly. Only the BP-16 CROSS-CHECK degrades here: z3 4.8.12 produces the full `unsat sat` sequence on the CI runner, so the lemma remains genuinely and non-vacuously gated there by z3 alone. Confirmed on the runner in PR #10508 gate run 31763383985."
+  }
+]
