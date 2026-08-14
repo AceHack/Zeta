@@ -1,0 +1,12 @@
+{
+  "pr_number": 10656,
+  "archive_path": "docs/history/pr-reviews/PR-10656-fix-persona-keys-remove-the-human-agent-capture-that-landed-on-main-in-10654.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T17:55:20.996Z",
+  "schema_version": "v1",
+  "commit_sha": "62769ab468193709f6f7221df1d84e293d53beff",
+  "title": "fix(persona-keys): remove the human/agent capture that landed on main in #10654",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T17:54:45Z",
+  "head_ref": "nazar/symmetric-custody-no-capture"
+}
