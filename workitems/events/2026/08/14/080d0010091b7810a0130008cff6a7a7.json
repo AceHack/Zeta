@@ -1,0 +1,14 @@
+{
+  "id": "080d0010091b7810a0130008cff6a7a7",
+  "at": "2026-08-14T20:40:24.175Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M01028VF087G0R001W0VD0B",
+    "type": "task",
+    "title": "Keychain ACL re-store ceremony: every zeta-* item is stored with an ACL naming only /usr/bin/security, so an in-process Security.framework reader is refused (errSecAuthFailed, -25293) for the same item the deputy reads at 852 bytes — the reader port is BLOCKED on a biometric-gated operator re-store, never an agent action",
+    "slug": "keychain-acl-re-store-ceremony-every-zeta-item-is-stored-wit",
+    "priority": "P2",
+    "filename": "081M01028VF087G0R001W0VD0B-keychain-acl-re-store-ceremony-every-zeta-item-is-stored-wit.md"
+  }
+}

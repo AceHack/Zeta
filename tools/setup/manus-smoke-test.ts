@@ -7,18 +7,32 @@
 //   401            → bad key / wrong paste.
 // The key never touches stdout.
 
-import { execFileSync } from "node:child_process";
+import { readGenericPassword, describeStatus } from "../../src/Core.TypeScript/secrets/keychain-macos.ts";
 import { createTask } from "../../src/Core.TypeScript/model-backend/manus-task.ts";
 import type { HttpTransport } from "../../src/Core.TypeScript/model-backend/backend.ts";
 
-let apiKey: string;
-try {
-  apiKey = execFileSync("security", ["find-generic-password", "-s", "zeta-manus-api-key", "-w"], { encoding: "utf8" }).trim();
-} catch {
-  console.error("✗ zeta-manus-api-key not found in Keychain");
+// Was: execFileSync("security", ["find-generic-password", …]).
+//
+// macOS evaluates a keychain item's ACL against the process that ASKS, so with a
+// subprocess the asker is always /usr/bin/security and this file's own code
+// identity never reaches the keychain — Norm Hardy's confused deputy (1988).
+// Porting shell to TypeScript did not fix that: `spawnSync` and `$( )` launder
+// identity identically, which is why this site kept the defect through its port.
+//
+// `readGenericPassword` tries Security.framework in-process first and reports in
+// `via` which path actually served the read. On this machine the in-process read
+// is currently REFUSED (errSecAuthFailed, -25293) because every existing item was
+// stored with an ACL naming only `security`; the deputy fallback keeps this smoke
+// test working and makes the refusal visible instead of silent. It stops being a
+// deputy read once the item is re-stored with an ACL that names the reader — an
+// operator ceremony, tracked in the work-item, not something an agent fires.
+const read = readGenericPassword("zeta-manus-api-key");
+if (!read.ok) {
+  console.error(`✗ zeta-manus-api-key unavailable: ${describeStatus(read.status)} (attempted ${read.via})`);
   process.exit(1);
 }
-console.log(`key length: ${String(apiKey.length)} chars (value not shown)`); // shape sanity, not the value
+const apiKey = read.secret;
+console.log(`key length: ${String(apiKey.length)} chars (value not shown; served ${read.via})`);
 
 const transport: HttpTransport = {
   async post(url, headers, body) {

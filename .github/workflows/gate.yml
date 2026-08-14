@@ -779,6 +779,18 @@ jobs:
       - name: Run bash-retirement inventory guard
         run: bun run hygiene:check-bash-retirement-inventory
 
+      - name: Ambient-credential-hoist guard
+        # Refuses any tracked executable surface that puts a credential into a
+        # shell environment. An env var crosses `exec` regardless of the child's
+        # code identity, so this is the one exposure no signature, keychain ACL,
+        # IMA appraisal or TPM seal can gate — all four bind a secret to a
+        # CALLER, and an inherited variable has already escaped that question.
+        # It caught two live sites when first run (shellenv.sh:111 and
+        # op-token-setup.sh:83); both are removed in the same change.
+        # Exits 2 if it scans fewer files than its floor, so a scope regression
+        # cannot report success the way `lint:markdown` did (#10712).
+        run: bun run hygiene:no-ambient-credential-hoist
+
       - name: Hygiene unit-test suite (closes the per-PR coverage gap)
         # Runs every src/Core.TypeScript/hygiene/*.test.ts. These are
         # fixture/in-memory tests (no MEMORY.md / user-scope deps), so they
