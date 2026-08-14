@@ -232,6 +232,25 @@ export {
 } from "./browser-database-receipt-handoff";
 
 export {
+  BROWSER_DATABASE_RECEIPT_PROPOSAL_ARTIFACT_SCHEMA,
+  BROWSER_DATABASE_RECEIPT_PROPOSAL_ROOT,
+  BROWSER_DATABASE_RECEIPT_PROPOSAL_SUBMISSION_SCHEMA,
+  createBrowserDatabaseReceiptProposalPort,
+  type BrowserDatabaseReceiptProposalArtifact,
+  type BrowserDatabaseReceiptProposalCarrier,
+  type BrowserDatabaseReceiptProposalCarrierReceipt,
+  type BrowserDatabaseReceiptProposalCarrierRequest,
+  type BrowserDatabaseReceiptProposalFeedback,
+  type BrowserDatabaseReceiptProposalLimits,
+  type BrowserDatabaseReceiptProposalOptions,
+  type BrowserDatabaseReceiptProposalPort,
+  type BrowserDatabaseReceiptProposalResult,
+  type BrowserDatabaseReceiptProposalSigner,
+  type BrowserDatabaseReceiptProposalSigningRequest,
+  type BrowserDatabaseReceiptProposalSubmission,
+} from "./browser-database-receipt-proposal";
+
+export {
   BROWSER_DATABASE_RECEIPT_PEER_READOUT_SCHEMA,
   BROWSER_DATABASE_RECEIPT_PEER_REQUEST_SCHEMA,
   BROWSER_DATABASE_RECEIPT_PEER_RESPONSE_SCHEMA,
