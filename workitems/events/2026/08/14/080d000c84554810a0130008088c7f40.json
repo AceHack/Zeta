@@ -1,0 +1,14 @@
+{
+  "id": "080d000c84554810a0130008088c7f40",
+  "at": "2026-08-14T18:37:25.033Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00S12N8087G0R002HW4ZK0",
+    "type": "task",
+    "title": "Adapter guarantee vector: each (adapter x template) pair declares individually-falsifiable guarantees (survives-logout, at-most-one-concurrent, bounded-run-time, reports-last-exit, converges) plus a probe per guarantee; declared-unprobed must be a distinct value from probed-true or the mechanism is another check that cannot fail. Caller passes a required set and refusal is a typed value.",
+    "slug": "adapter-guarantee-vector-each-adapter-x-template-pair-declar",
+    "priority": "P2",
+    "filename": "081M00S12N8087G0R002HW4ZK0-adapter-guarantee-vector-each-adapter-x-template-pair-declar.md"
+  }
+}

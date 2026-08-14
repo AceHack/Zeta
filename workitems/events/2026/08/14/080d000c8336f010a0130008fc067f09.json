@@ -1,0 +1,14 @@
+{
+  "id": "080d000c8336f010a0130008fc067f09",
+  "at": "2026-08-14T18:37:15.870Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00S0SPW087G0R0001RS7M9",
+    "type": "bug",
+    "title": "ace/service split-brain: IServiceManager status() cannot distinguish healthy from broken — launchd reports installed-stopped for a 1508-successful-run loop and not-installed for a live label absent from persona-registry (com.lucent.zeta.otto, last exit code 78 EX_CONFIG); systemd status asks is-active on the .timer, which stays active while every service invocation fails. Read last-exit/run-count per adapter or declare the guarantee absent.",
+    "slug": "ace-service-split-brain-iservicemanager-status-cannot-distin",
+    "priority": "P2",
+    "filename": "081M00S0SPW087G0R0001RS7M9-ace-service-split-brain-iservicemanager-status-cannot-distin.md"
+  }
+}

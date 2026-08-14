@@ -1,0 +1,14 @@
+{
+  "id": "080d000c865ba810a01300083863343c",
+  "at": "2026-08-14T18:37:41.621Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00S1JVN087G0R001WKXQ32",
+    "type": "task",
+    "title": "Umbrella: ace as universal ZetaId pointer resolver — eight target kinds, resolver/supervisor line at first-transition-plus-declared-invariant, ContentAddress realization key as the idempotency key. Structural finding: src/Core.TypeScript/ace (bytes, trust, capability) and src/Core.TypeScript/service (launchd/systemd/task-scheduler adapters) are the two halves of this resolver and currently do not reference each other.",
+    "slug": "umbrella-ace-as-universal-zetaid-pointer-resolver-eight-targ",
+    "priority": "P2",
+    "filename": "081M00S1JVN087G0R001WKXQ32-umbrella-ace-as-universal-zetaid-pointer-resolver-eight-targ.md"
+  }
+}
