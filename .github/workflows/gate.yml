@@ -1094,6 +1094,18 @@ jobs:
       - name: Run lint-no-manus-commit-leak (081KWMY831H)
         run: bun src/Core.TypeScript/hygiene/lint-no-manus-commit-leak.ts
 
+      # The four-oracle byte-lock pins field VALUES, not field NAMES — so two oracles
+      # could declare the same schema id with different key sets and every existing
+      # check stayed green. Live instance: PR #10722 gave TypeScript's
+      # TemperatureReadout a required `fidelity` that F#'s does not have, both still
+      # declaring `zeta.temperature.readout.v1`; the three suites that read that treaty
+      # reported 51 pass / 0 fail / exit 0 with the divergence in place.
+      # --min-schemas is a SCAN FLOOR: if a moved path or a changed glob makes the audit
+      # inspect fewer schemas than stated, it exits non-zero instead of reporting
+      # success — a check that did not run must not look like one that passed.
+      - name: Run audit-schema-key-set-parity (cross-oracle schema key sets)
+        run: bun src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts --min-schemas 6
+
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
     # forgotten artefact (an agent-created skill folder without a

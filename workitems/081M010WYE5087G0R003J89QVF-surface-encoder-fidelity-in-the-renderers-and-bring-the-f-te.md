@@ -56,6 +56,30 @@ Decide, then do one of:
 
 Whichever is chosen, add the missing key-set conformance check so the next divergence fails loudly.
 
+**Update (shadow, 2026-08-14) — the key-set check now exists; the design call does not.**
+`src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts` compares key sets across oracles for
+every schema id bound to a type shape in more than one of them, and it catches this divergence: with
+its exceptions file removed it exits 2 naming `fidelity`. The observation in the paragraph above was
+confirmed empirically before the tool was written — the three suites that read the heat treaty
+(`heat-signals.test.ts`, `darkhall-room.test.ts`, `batch-heat-bridge.test.ts`) report 51 pass / 0
+fail / exit 0 with the divergence live, so nothing could see it.
+
+The **choice between the three options is still open and still belongs here.** It is recorded as a
+declared exception in `audit-schema-key-set-parity.exceptions.json` pointing at this work-item — an
+honest declared divergence rather than a guessed fix in a treaty. A declared exception that stops
+matching a live divergence is reported as STALE and fails, so resolving this here will make the
+audit demand the exception's removal rather than let it linger.
+
+One input for whoever makes the call: `ChannelFidelity`'s `out-of-domain` case is motivated by
+JavaScript `number` admitting `NaN`/`Infinity`, which F#'s `int`-typed `TemperatureReadout.ofPpm`
+cannot produce — but `saturated` and negative input are real on both sides, and F#'s
+`max 0 |> min MaxPpm` discards them exactly as silently as TypeScript's clamp did before the fix. So
+`fidelity` is not purely encoder-local. Also worth weighing: adding a REQUIRED field to an
+already-published `v1` is a breaking change by the ordinary schema-evolution rule.
+
+Residual scope of the audit itself (two oracles of four, 6 of 78 schema ids, F# optionality
+undetected) is filed as **081M013X907087G0R0037FPC5S**.
+
 ## 3. `thermalPpm` remains a non-injective fold
 
 `max(heat, uncertainty, pressure)` — defect 4 in the parent work-item, untouched here. The cause is
