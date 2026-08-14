@@ -78,7 +78,7 @@ export function createDimensionalBnn(nu = 3, obsVariance = 1.0): DimensionalBnn 
   const states = new Map<ErrorDimension, StudentTState>();
   const robustnessWeights = new Map<ErrorDimension, number>();
   for (const dim of ALL_DIMENSIONS) {
-    states.set(dim, createStudentTState(0, 1, nu, obsVariance));
+    states.set(dim, createStudentTState(nu, 0, 1, obsVariance));
     robustnessWeights.set(dim, 1);
   }
   return { states, robustnessWeights, guard: new EnvelopeIdempotencyGuard() };

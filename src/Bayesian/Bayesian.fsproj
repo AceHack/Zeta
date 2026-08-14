@@ -14,6 +14,7 @@
     <Compile Include="BoundJustification.fs" />
     <Compile Include="Message.fs" />
     <Compile Include="Attested.fs" />
+    <Compile Include="HeavyTailFold.fs" />
     <Compile Include="QuantumFusion.fs" />
     <Compile Include="MessageBatch.fs" />
     <Compile Include="FactorGraph.fs" />

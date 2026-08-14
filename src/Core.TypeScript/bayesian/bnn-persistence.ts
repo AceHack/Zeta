@@ -150,9 +150,9 @@ export function deserializeBnn(
     } else {
       // New dimension not in the default set — add it
       const { createStudentTState: mkState } = require("../planning/student-t-bnn") as {
-        createStudentTState: (mu: number, sigma2: number, nu: number) => StudentTState;
+        createStudentTState: (nu: number, mu: number, sigma2: number) => StudentTState;
       };
-      const newState = mkState(dim.mu, dim.sigma2, dim.nu);
+      const newState = mkState(dim.nu, dim.mu, dim.sigma2);
       (bnn.states as Map<string, StudentTState>).set(dim.dimension, newState);
       (bnn.robustnessWeights as Map<string, number>).set(dim.dimension, dim.lastRobustnessWeight);
     }
