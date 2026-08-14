@@ -36,6 +36,15 @@
  * list of "what CI runs" rots into folklore the first time a workflow is edited - deriving
  * it is the whole point.
  *
+ * DISCOVERED FROM THE TRACKED SET, SO THE VERDICT IS THE SAME EVERYWHERE. Both halves of
+ * this check are derived, and both must be derived from something a fresh checkout has.
+ * The file half was a working-tree walk until 081KZYXRYR8087G0R003E6JZA4, which made it a
+ * function of what the machine had built - `bun run pages:build` copies `docs/` into a
+ * gitignored `dist/`, so 18 archived test files reappeared under a second path and the
+ * checker exited 1 on any developer machine that had built while staying green in CI. A
+ * checker that cries wolf where people work and reports clean where nobody looks is worse
+ * than absent: it teaches its own audience to ignore it. See `../git/tracked-files.ts`.
+ *
  * WHAT THIS DOES NOT DO. It does not forbid exclusion. Some suites genuinely do not belong
  * in the PR lane (they need a cluster, a GPU, a physical USB device, or minutes nobody wants
  * to pay per PR). It forbids exclusion being *invisible*: an unexecuted file must be listed
@@ -50,13 +59,16 @@
  * And one that fires before any of them: NON-VACUITY. If the discovered file count or the
  * parsed invocation count is implausibly low, this fails loudly rather than reporting a
  * clean sheet. A checker that silently finds nothing is precisely the defect it closes.
+ * A `git ls-files` that fails throws at the source; one that returns an implausibly small
+ * set is caught by the same floor. Neither can read as "all clear".
  *
  * Usage:
  *   bun src/Core.TypeScript/hygiene/unexecuted-test-files.ts [repo-root]
  */
 
 import { readFileSync, readdirSync, existsSync } from "node:fs";
-import { join, sep } from "node:path";
+import { join } from "node:path";
+import { trackedFiles } from "../git/tracked-files";
 
 export const WORKFLOW_DIR = join(".github", "workflows");
 
@@ -104,39 +116,51 @@ export interface BunTestInvocation {
 // ---------------------------------------------------------------------------
 
 /**
- * Directories never walked. These are build output, vendored code, and the multi-gigabyte
- * upstream mirror - all of them already in the pathIgnorePatterns of `bunfig.toml`, so bun
- * cannot discover a test file inside them either. This list exists to bound WALK COST, not
- * to express policy: a suite deliberately kept out of CI belongs in the allow-list with a
- * reason, never in a prune list where nobody would look for it.
+ * Is any segment of this path dot-prefixed?
+ *
+ * MEASURED against bun 1.3.14, because this is a claim about a tool and not a preference:
+ * a `.hidden/x.test.ts` is NOT run by a bare `bun test` (1 of 2 files ran), and a
+ * positional filter cannot resurrect it - bun answers "the following filters did not match
+ * any test files". Only an explicit `./.hidden/x.test.ts` path argument reaches it.
+ *
+ * So a dot-prefixed path is UNDISCOVERABLE BY LOCATION, and crediting it to the bare
+ * `bun test` in gate.yml - which is what the no-filters rule in `executes` would do -
+ * would invent coverage that does not exist. It is excluded from the denominator here and
+ * COUNTED OUT LOUD in `summary`, so the exclusion is never silent.
+ *
+ * This is a residual, not a resolution: two tracked files (`.claude/hooks/harness.test.ts`
+ * and `.claude/hooks/stop-detect-response-rut.test.ts`) are in this class today, executed
+ * by nothing. That is a genuine instance of the defect this checker exists to close, in a
+ * shape the checker cannot yet express - work-item 081KZZ1RK6A087G0R003C773WC.
  */
-export const PRUNED_DIRS: ReadonlySet<string> = new Set([
-  "node_modules",
-  "references",
-  "artifacts",
-  "bin",
-  "obj",
-  "TestResults",
-  "BenchmarkDotNet.Artifacts",
-]);
+export function isHiddenPath(file: string): boolean {
+  return file.split("/").some((seg) => seg.startsWith("."));
+}
 
-/** Every test file under the repo root, repo-relative and sorted, dot-directories pruned. */
-export function testFilesOnDisk(root: string): readonly string[] {
-  const out: string[] = [];
-  const walk = (dir: string): void => {
-    for (const e of readdirSync(dir, { withFileTypes: true })) {
-      if (e.name.startsWith(".") || PRUNED_DIRS.has(e.name)) continue;
-      const p = join(dir, e.name);
-      if (e.isDirectory()) {
-        walk(p);
-        continue;
-      }
-      if (!e.name.endsWith(".test.ts")) continue;
-      out.push(p.slice(root.length + 1).split(sep).join("/"));
-    }
-  };
-  walk(root);
-  return out.sort(byOrdinal);
+/**
+ * Every TRACKED test file, repo-relative and ordinal-sorted.
+ *
+ * DERIVED FROM THE TRACKED SET, NOT A WALK OF THE WORKING TREE. This was a walk until
+ * 081KZYXRYR8087G0R003E6JZA4, and the walk made the discovered set a function of what the
+ * machine happened to have built: `bun run pages:build` copies `docs/` into a gitignored
+ * `dist/`, so 18 archived test files reappeared under a second path and the checker exited
+ * 1 on every developer machine that had built, while CI - which checks out clean - stayed
+ * green. `git ls-files` is what a fresh checkout contains, so the discovered set is now
+ * identical on every machine. The reasoning and the shared helper live in
+ * `../git/tracked-files.ts`; the same lesson was learned once already in `ace/build-graph.ts`.
+ *
+ * The prune list this replaced (`node_modules`, `references`, `artifacts`, `bin`, `obj`,
+ * ...) existed only to bound WALK COST, by its own docstring. There is no walk to bound
+ * now, and none of those directories holds a tracked test file, so it is gone rather than
+ * carried forward as decoration.
+ */
+export function testFilesTracked(root: string): readonly string[] {
+  return trackedFiles(root).filter((f) => f.endsWith(".test.ts") && !isHiddenPath(f));
+}
+
+/** Tracked test files bun cannot discover because of where they live. See `isHiddenPath`. */
+export function hiddenTestFiles(root: string): readonly string[] {
+  return trackedFiles(root).filter((f) => f.endsWith(".test.ts") && isHiddenPath(f));
 }
 
 // ---------------------------------------------------------------------------
@@ -419,6 +443,8 @@ export function check(unexecuted: readonly string[], allow: readonly AllowEntry[
 
 export interface Report {
   readonly files: readonly string[];
+  /** Tracked test files bun cannot discover by location - excluded, never silently. */
+  readonly hidden: readonly string[];
   readonly invocations: readonly BunTestInvocation[];
   readonly ignored: ReadonlySet<string>;
   readonly executed: ReadonlySet<string>;
@@ -435,18 +461,19 @@ export interface Report {
  * be the way this file passes.
  */
 export function report(root: string): Report {
-  const files = testFilesOnDisk(root);
+  const files = testFilesTracked(root);
   const tooFew = files.length < MIN_TEST_FILES;
-  if (tooFew) fail("found only " + String(files.length) + " test files; the walk is broken");
+  if (tooFew) fail("found only " + String(files.length) + " test files; the derivation is broken");
   const invocations = parseInvocations(root);
   const tooThin = invocations.length < MIN_INVOCATIONS;
   if (tooThin) fail("parsed only " + String(invocations.length) + " invocations; the parse is broken");
+  const hidden = hiddenTestFiles(root);
   const ignored = bunIgnored(root, files);
   const reached = executedInPrLane(invocations, files);
   const executed = new Set([...reached].filter((f) => !ignored.has(f)));
   const unexecuted = files.filter((f) => !executed.has(f));
   const verdict = check(unexecuted, loadAllowList(root));
-  return { files, invocations, ignored, executed, unexecuted, verdict };
+  return { files, hidden, invocations, ignored, executed, unexecuted, verdict };
 }
 
 // ---------------------------------------------------------------------------
@@ -466,11 +493,23 @@ export function findings(r: Report): readonly string[] {
   return out;
 }
 
-/** The one-line summary printed on every run, pass or fail. */
+/**
+ * The one-line summary printed on every run, pass or fail.
+ *
+ * `hidden` is in the line rather than in a comment because an exclusion nobody can see is
+ * the defect this file exists to close, and that applies to its own denominator too.
+ */
 export function summary(r: Report): string {
   const pr = r.invocations.filter((x) => x.triggers.includes("pull_request")).length;
-  const counts = [r.files.length, r.invocations.length, pr, r.executed.size, r.unexecuted.length];
-  const label = "files/invocations/pr-lane-invocations/executed/unexecuted";
+  const counts = [
+    r.files.length,
+    r.hidden.length,
+    r.invocations.length,
+    pr,
+    r.executed.size,
+    r.unexecuted.length,
+  ];
+  const label = "tracked-files/hidden-from-bun/invocations/pr-lane-invocations/executed/unexecuted";
   return "[unexecuted-test-files] " + label + " = " + counts.join(" ");
 }
 

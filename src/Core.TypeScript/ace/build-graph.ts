@@ -65,9 +65,9 @@
 // collation throughout — `ordinalCompare`, never `localeCompare`
 // (.claude/rules/culture-invariant-by-default.md).
 
-import { execFileSync } from "node:child_process";
 import { readFileSync, readdirSync, existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { trackedFiles as sharedTrackedFiles } from "../git/tracked-files";
 
 // ── Schema ────────────────────────────────────────────────────────────────
 
@@ -1037,27 +1037,17 @@ export function deriveTargets(root: string): readonly BuildTarget[] {
  * silently demote every target to the T1 floor, which is precisely the
  * "a skipped check looks like a passed check" failure this graph exists to
  * prevent.
+ *
+ * The mechanism now lives in `../git/tracked-files.ts` and this is a thin
+ * alias over it. That move is the point rather than tidying: the reasoning
+ * above sat here as PROSE, and the next checker built - hygiene's
+ * `unexecuted-test-files.ts` - hand-rolled a working-tree walk anyway and
+ * shipped the identical machine-dependence defect (081KZYXRYR8087G0R003E6JZA4).
+ * A lesson each author must re-derive is a lesson one of them will miss, so it
+ * is now a function they can only call.
  */
 export function trackedFiles(root: string): readonly string[] {
-  let raw: string;
-  try {
-    // eslint-disable-next-line sonarjs/no-os-command-from-path
-    raw = execFileSync("git", ["-C", root, "ls-files", "-z"], {
-      encoding: "utf8",
-      maxBuffer: 256 * 1024 * 1024,
-    });
-  } catch (err) {
-    throw new Error(`quorum derivation needs the tracked file list and \`git ls-files\` failed in ${root}`, {
-      cause: err,
-    });
-  }
-  const out: string[] = [];
-  for (const line of raw.split("\0")) {
-    const t = line.trim();
-    if (t !== "") out.push(normalizePath(t));
-  }
-  out.sort(ordinalCompare);
-  return out;
+  return sharedTrackedFiles(root);
 }
 
 /**

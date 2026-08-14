@@ -17,6 +17,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   MIN_INVOCATIONS,
@@ -26,15 +27,26 @@ import {
   covers,
   executes,
   findings,
+  isHiddenPath,
   joinContinuation,
   listItems,
   report,
   runScripts,
+  summary,
+  testFilesTracked,
   triggersOf,
   workDirOf,
 } from "./unexecuted-test-files";
 
 const REPO_ROOT = join(import.meta.dir, "..", "..", "..");
+
+/**
+ * ONE whole-repo report, shared by every assertion that needs it. Building it parses every
+ * workflow and shells `git ls-files`, so a second call is a second full derivation - and
+ * this file already runs alongside 57 others in the hygiene job, where a five-second
+ * per-test cap is close enough that added work turns a neighbouring test red.
+ */
+const REPO_REPORT = report(REPO_ROOT);
 
 /** A synthetic invocation, so the unit tests never depend on a real workflow. */
 function inv(filters: readonly string[], wd = "", on: readonly string[] = ["pull_request"]) {
@@ -176,10 +188,56 @@ describe("the allow-list cannot become a silent mute or a stale one", () => {
   });
 });
 
-describe("this repository", () => {
-  const r = report(REPO_ROOT);
+/**
+ * The regression for 081KZYXRYR8087G0R003E6JZA4, planted in THIS repository on purpose.
+ *
+ * The fixture is the live defect, not an analogue of it: `bun run pages:build` copies
+ * `docs/` into the gitignored `dist/`, so 18 archived test files acquired a second path
+ * and the checker exited 1 on every machine that had built while CI stayed green. This
+ * plants one file of that exact shape and asserts the discovered set is unmoved.
+ *
+ * Two guards keep it from passing vacuously - the failure mode of a "it isn't there" test:
+ * the plant is asserted to EXIST on disk (so a silently failed write cannot look like a
+ * pass), and a known tracked file is asserted to be PRESENT (so an empty derivation cannot
+ * either). Reintroduce the working-tree walk and this goes red.
+ */
+describe("discovery is a function of the TRACKED set, not of what this machine built", () => {
+  const plantedDir = join(REPO_ROOT, "dist", "unexecuted-test-files-regression");
+  const planted = join(plantedDir, "planted.test.ts");
+  const self = "src/Core.TypeScript/hygiene/unexecuted-test-files.test.ts";
 
-  test("the walk actually found the test suite - a vacuous pass is not a pass", () => {
+  test("an untracked *.test.ts under gitignored dist/ is NOT discovered", () => {
+    mkdirSync(plantedDir, { recursive: true });
+    writeFileSync(planted, "// planted by unexecuted-test-files.test.ts; gitignored.\n", "utf8");
+    try {
+      expect(existsSync(planted)).toBe(true);
+      const files = testFilesTracked(REPO_ROOT);
+      expect(files).toContain(self);
+      expect(files.filter((f) => f.includes("unexecuted-test-files-regression"))).toEqual([]);
+      expect(files.filter((f) => f.startsWith("dist/"))).toEqual([]);
+    } finally {
+      rmSync(plantedDir, { recursive: true, force: true });
+    }
+  });
+
+  test("a dot-prefixed segment anywhere in the path counts as hidden from bun", () => {
+    expect(isHiddenPath(".claude/hooks/harness.test.ts")).toBe(true);
+    expect(isHiddenPath("tools/.cache/x.test.ts")).toBe(true);
+    expect(isHiddenPath("src/Core.TypeScript/hygiene/x.test.ts")).toBe(false);
+  });
+
+  test("hidden files are excluded from the denominator but still COUNTED", () => {
+    expect(REPO_REPORT.files.some(isHiddenPath)).toBe(false);
+    expect(REPO_REPORT.hidden.every(isHiddenPath)).toBe(true);
+    // The exclusion appears in the line printed on every run, so it is never silent.
+    expect(summary(REPO_REPORT)).toContain("hidden-from-bun");
+  });
+});
+
+describe("this repository", () => {
+  const r = REPO_REPORT;
+
+  test("the derivation actually found the test suite - a vacuous pass is not a pass", () => {
     expect(r.files.length).toBeGreaterThan(MIN_TEST_FILES);
   });
 
