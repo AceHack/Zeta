@@ -1,0 +1,14 @@
+{
+  "id": "080d000417b7d810a0130008bcab35c4",
+  "at": "2026-08-14T13:42:58.043Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0085XQT087G0R003W4KFS4",
+    "type": "bug",
+    "title": "check-no-op-cadence-pattern detects the standing-by failure and returns 0 on every path",
+    "slug": "check-no-op-cadence-pattern-detects-the-standing-by-failure",
+    "priority": "P2",
+    "filename": "081M0085XQT087G0R003W4KFS4-check-no-op-cadence-pattern-detects-the-standing-by-failure.md"
+  }
+}
