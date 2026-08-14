@@ -1,0 +1,12 @@
+{
+  "pr_number": 10594,
+  "archive_path": "docs/history/pr-reviews/PR-10594-fix-hygiene-wire-the-agencysignature-instruments-to-ci-and-pin-the-ship-anchor-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T14:47:57.202Z",
+  "schema_version": "v1",
+  "commit_sha": "774a16dfaad6f5135fa050b309f9a17b7c2b901d",
+  "title": "fix(hygiene): wire the AgencySignature instruments to CI, and pin the ship anchor the sliding window was eroding",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T14:47:20Z",
+  "head_ref": "fix/agencysignature-wire-enforcement-and-pin-ship-date"
+}
