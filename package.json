@@ -17,6 +17,7 @@
     "format:check": "prettier --check \"**/*.{json,jsonc,md,markdown,ts,toml,yml,yaml,css}\"",
     "format:write": "prettier --write \"**/*.{json,jsonc,md,markdown,ts,toml,yml,yaml,css}\"",
     "typecheck": "bun node_modules/typescript/bin/tsc --noEmit",
+    "check:loop-liveness": "bun ./src/Core.TypeScript/service/loop-liveness.ts",
     "preflight": "bun ./src/Core.TypeScript/hygiene/preflight.ts",
     "preflight:quick": "bun ./src/Core.TypeScript/hygiene/preflight.ts --quick",
     "pages:build": "bun ./src/Core.TypeScript/discovery/llmtv-pages-static-export.ts --out-dir dist && bun ./src/Core.TypeScript/browser-node/browser-pwa-build.ts --out-dir dist/hall/room && bun ./src/Core.TypeScript/browser-node/browser-database-receipt-pages-build.ts --out-dir dist/hall/room && bun ./src/Core.TypeScript/discovery/identity-dla-pages-build.ts",
