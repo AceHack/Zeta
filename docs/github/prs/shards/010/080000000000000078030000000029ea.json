@@ -1,0 +1,12 @@
+{
+  "pr_number": 10730,
+  "archive_path": "docs/history/pr-reviews/PR-10730-fix-hygiene-the-treaty-pins-field-values-not-key-sets-one-oracle-can-grow-a-requ.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T22:06:25.967Z",
+  "schema_version": "v1",
+  "commit_sha": "e8c950ded3c65b685c3ea0103a6f4ae5749d97da",
+  "title": "fix(hygiene): the treaty pins field values, not key sets — one oracle can grow a required field and stay green",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T22:05:48Z",
+  "head_ref": "shadow/treaty-cannot-see-key-set-divergence"
+}
