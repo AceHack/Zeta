@@ -1,0 +1,14 @@
+{
+  "id": "080d0002bfaa6010a013000818c7416e",
+  "at": "2026-08-14T12:55:59.564Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M005FXAB087G0R0039AGC2E",
+    "type": "bug",
+    "title": "heartbeat PRs never merge: github-actions[bot]-triggered runs sit in action_required forever",
+    "slug": "heartbeat-prs-never-merge-github-actions-bot-triggered-runs",
+    "priority": "P2",
+    "filename": "081M005FXAB087G0R0039AGC2E-heartbeat-prs-never-merge-github-actions-bot-triggered-runs.md"
+  }
+}
