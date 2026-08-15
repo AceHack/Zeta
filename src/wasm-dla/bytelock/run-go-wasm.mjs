@@ -15,7 +15,7 @@
  * Outputs a golden vector JSON to stdout.
  */
 
-import { readFileSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { createContext, Script } from "vm";
@@ -24,9 +24,46 @@ const __dir = dirname(fileURLToPath(import.meta.url));
 const seed = process.argv[2] ? parseInt(process.argv[2], 10) : 42;
 const N_WALKERS = 800;
 
+// ── Prerequisite checks — SAY WHICH KIND OF FAILURE THIS IS ──────────────────
+//
+// This harness is launched by `run-bytelock-ci.mjs` through `execSync`, which cannot see
+// inside the child and prefixes every non-zero exit with "Command failed". Until
+// 2026-08-15 the parent matched that prefix and called the result "toolchain absent", so a
+// Go substrate that ran and crashed was indistinguishable from one that was never built.
+// The fix has two halves: the parent no longer guesses (it classifies on exit status and
+// spawn errno), and THIS harness declares its own condition in words the parent keys on.
+//
+// Two prefixes, two meanings, both exact:
+//   TOOLING-ABSENT:   the prerequisite was never produced — nothing was verified, and that
+//                     is infrastructure, not evidence.
+//   MALFORMED ARTEFACT: the file exists but is not a WebAssembly module. This is the exact
+//                     shape that hid in `dla-canonical-zig.wasm` (an `ar` archive) for two
+//                     weeks while counting as an executed substrate.
+const goWasmPath = join(__dir, "dla-canonical-go.wasm");
+if (!existsSync(goWasmPath)) {
+  process.stderr.write(
+    `TOOLING-ABSENT: dla-canonical-go.wasm was not built. ` +
+      `Build it with: GOOS=js GOARCH=wasm go build -o dla-canonical-go.wasm .\n`,
+  );
+  process.exit(2);
+}
+
+// Header check: `00 61 73 6d` magic + `01 00 00 00` binary-format version.
+const WASM_HEADER = [0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00];
+const wasmBytes = readFileSync(goWasmPath);
+if (!WASM_HEADER.every((b, i) => wasmBytes[i] === b)) {
+  const found = [...wasmBytes.subarray(0, WASM_HEADER.length)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join(" ");
+  process.stderr.write(
+    `MALFORMED ARTEFACT: dla-canonical-go.wasm is not a WebAssembly module — ` +
+      `expected header ${WASM_HEADER.map((b) => b.toString(16).padStart(2, "0")).join(" ")}, found ${found}\n`,
+  );
+  process.exit(3);
+}
+
 // ── Build a minimal global shim for wasm_exec.js ─────────────────────────────
 const wasmExecSrc = readFileSync(join(__dir, "wasm_exec.js"), "utf8");
-const wasmBytes = readFileSync(join(__dir, "dla-canonical-go.wasm"));
 
 const globalShim = {
   performance: { now: () => Date.now() },

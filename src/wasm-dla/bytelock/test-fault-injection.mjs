@@ -18,9 +18,18 @@
  * 3. All-zeros trajectory     — every entry is 0x00000000 (silent wrong output)
  * 4. Liveness floor           — set BYTELOCK_MIN_SUBSTRATES=99 (nothing runs)
  * 5. Toolchain absent         — substrate command that does not exist
+ * 6. Malformed artefact       — an `ar` archive planted where a .wasm is expected
+ * 7. Script substrate crash   — a substrate that RAN and failed (must not read as absent)
  *
- * Each fault must cause the runner to report DIVERGED or LIVENESS FAILURE.
+ * Each fault must cause the runner to report DIVERGED, LIVENESS FAILURE, or MALFORMED —
+ * and faults 5, 6 and 7 must be told APART from each other, because the whole point is
+ * that "never ran", "cannot load" and "ran and was wrong" are three different findings.
  * A fault that goes undetected is a test failure.
+ *
+ * Faults 6 and 7 are regressions, not hypotheticals: both were live on main until
+ * 2026-08-15, and both presented as a green run. This file was itself unexecuted by any
+ * workflow until the same change wired it into `bytelock.yml` — a negative-control suite
+ * that never runs proves nothing, which is the identical defect one level up.
  *
  * Usage:
  *   node test-fault-injection.mjs
@@ -240,10 +249,125 @@ console.log("\nPhase 5: toolchain absent (nonexistent command classified as TOOL
   }
 }
 
+// ── Fault 6: Malformed artefact ───────────────────────────────────────────────
+// THIS ONE IS NOT HYPOTHETICAL. `dla-canonical-zig.wasm` sat on main as an `ar` archive
+// (`!<arch>` = 21 3c 61 72), the unlinked `zig build-lib` intermediate. It could not load
+// in any run, yet it counted toward `executed` and its load error was classified as a byte
+// divergence — which this runner deliberately does not fail on. So the job went green over
+// a substrate that verified nothing, for two weeks, while printing the error every time.
+//
+// A malformed artefact must be its OWN failure class: exit 3, status MALFORMED, and not
+// counted as executed. Both directions are checked — planted and restored — because a
+// guard that only ever sees the broken case is not shown to permit the good one.
+console.log("\nPhase 6: malformed artefact (ar archive planted where a .wasm is expected)");
+{
+  const wasmPath = join(__dir, "dla-canonical-zig.wasm");
+  const backupPath = join(__dir, "dla-canonical-zig.wasm.bak");
+  // Attempt the copy rather than existsSync-then-copy: the check/use pair is a
+  // TOCTOU gap (CodeQL js/file-system-race, high) because the file can change
+  // between the two calls. Letting copyFileSync be the check closes the gap —
+  // there is only one filesystem operation — and an absent file lands in the
+  // same failure branch with the same message it had before.
+  let copied = false;
+  try {
+    copyFileSync(wasmPath, backupPath);
+    copied = true;
+  } catch (e) {
+    fail("malformed artefact", `${wasmPath} is absent or unreadable — cannot run this negative control: ${e.message}`);
+    failures++;
+  }
+  if (copied) {
+    try {
+      // Direction 1: plant an `ar` archive — the exact bytes that were on main.
+      writeFileSync(wasmPath, Buffer.from("!<arch>\n", "ascii"));
+      const bad = run({ BYTELOCK_STRICT: "1" });
+      const badZig = bad.report?.substrates?.find((s) => s.name === "Zig");
+      const notCounted =
+        (bad.report?.summary?.malformed ?? 0) === 1 &&
+        !bad.report?.substrates?.some((s) => s.name === "Zig" && (s.status === "PASS" || s.status === "FAIL"));
+      if (bad.exit === 3 && badZig?.status === "MALFORMED" && notCounted) {
+        pass(`malformed artefact detected — exit=3, status=MALFORMED, excluded from executed`);
+      } else {
+        fail(
+          "malformed artefact",
+          `exit=${bad.exit}, Zig.status=${badZig?.status ?? "?"}, malformed=${bad.report?.summary?.malformed ?? "?"} — expected exit=3 + MALFORMED`,
+        );
+        failures++;
+      }
+
+      // Direction 2: restore the real module — the guard must PERMIT a valid one.
+      copyFileSync(backupPath, wasmPath);
+      const good = run();
+      const goodZig = good.report?.substrates?.find((s) => s.name === "Zig");
+      if (good.exit === 0 && goodZig?.status === "PASS") {
+        pass("real module restored — exit=0, Zig=PASS (the guard is not a blanket refusal)");
+      } else {
+        fail(
+          "malformed artefact (restore)",
+          `exit=${good.exit}, Zig.status=${goodZig?.status ?? "?"} — a valid module must still pass`,
+        );
+        failures++;
+      }
+    } finally {
+      copyFileSync(backupPath, wasmPath);
+      unlinkSync(backupPath);
+    }
+  }
+}
+
+// ── Fault 7: A script substrate that RAN and CRASHED is a FAILURE, not absent tooling ──
+// Phase 5 above proves a missing interpreter is classified TOOLING. This proves the
+// converse, which was broken: the classifier matched the literal string "Command failed",
+// which `execSync` prefixes onto EVERY non-zero exit, so a substrate that launched, ran and
+// crashed was reported "toolchain absent — NOT a divergence" and the run exited 0 claiming
+// AGREED. Every script substrate (JS, Lua, Go) could fail in complete silence.
+console.log("\nPhase 7: script substrate runs and crashes (must be FAIL, not TOOLING)");
+{
+  const ciPath = join(__dir, "run-bytelock-ci.mjs");
+  const ciSrc = readFileSync(ciPath, "utf8");
+  const backupPath = join(__dir, "run-bytelock-ci.mjs.bak");
+  const crasherPath = join(__dir, "fault-crasher.mjs");
+  copyFileSync(ciPath, backupPath);
+
+  const anchor = '  { name: "Go",          cmd: "node",    args: ["run-go-wasm.mjs"],         type: "script" },';
+  const patched = ciSrc.replace(
+    anchor,
+    anchor +
+      '\n  { name: "CrashSubstrate", cmd: "node", args: ["fault-crasher.mjs"], type: "script" },',
+  );
+
+  if (patched === ciSrc) {
+    fail("script crash", "could not inject fault — anchor line not found");
+    failures++;
+  } else {
+    // The interpreter (node) plainly EXISTS — it is running this file. Only the substrate
+    // is broken, which is exactly the case the old classifier could not distinguish.
+    writeFileSync(crasherPath, 'process.stderr.write("deliberate substrate crash\\n");\nprocess.exit(7);\n');
+    writeFileSync(ciPath, patched);
+    try {
+      const { exit, report } = run();
+      const crashSub = report?.substrates?.find((s) => s.name === "CrashSubstrate");
+      if (crashSub?.status === "FAIL" && exit === 0) {
+        pass("crashing substrate classified as FAIL (not TOOLING) — status=FAIL");
+      } else {
+        fail(
+          "script crash",
+          `exit=${exit}, CrashSubstrate.status=${crashSub?.status ?? "?"} — expected FAIL; TOOLING would mean a real failure is invisible`,
+        );
+        failures++;
+      }
+    } finally {
+      copyFileSync(backupPath, ciPath);
+      unlinkSync(backupPath);
+      if (existsSync(crasherPath)) unlinkSync(crasherPath);
+    }
+  }
+}
+
 // ── Summary ───────────────────────────────────────────────────────────────────
 console.log("");
 if (failures === 0) {
-  console.log("All 5 fault-injection negative controls PASS.");
+  console.log("All 7 fault-injection negative controls PASS.");
   console.log("The byte-lock correctly detects all injected faults.");
   process.exit(0);
 } else {

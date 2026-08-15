@@ -1,4 +1,14 @@
-# Compiled WASM binaries (built by CI/local toolchain, not stored in repo)
+# Compiled WASM binaries.
+#
+# READ THIS BEFORE TRUSTING THE HEADING BELOW. These patterns are ignore rules, not
+# statements of fact: six substrate modules ARE tracked (force-added) and are what the
+# runner actually loads — dla-canonical-{wat,llvm,emcc,rust,asc,zig}.wasm. Only the Go
+# module is genuinely built at run time, because it is ~1.9 MB.
+#
+# The gap between this file's intent and the tree cost two weeks (2026-08-15):
+# `dla-canonical-zig.wasm` was committed as an `ar` archive and nobody re-derived it,
+# because everyone read this heading and assumed it was built fresh. If you commit a
+# substrate here, `git add -f` it AND record why it is tracked rather than built.
 *.wasm
 *.wasm.o
 *.o

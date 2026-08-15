@@ -9,13 +9,19 @@
 // Walk:   4-directional, clamp to [1, 126]
 // Output: trajectory[] = (stick_x << 16) | stick_y, or 0xFFFFFFFF if escaped
 //
-// Compile (two-step — Zig 0.13 wasm32-freestanding produces an ar archive):
-//   zig build-lib dla-canonical.zig -target wasm32-freestanding -rdynamic \
-//     -O ReleaseFast -femit-bin=dla-canonical-zig-obj.wasm
-//   wasm-ld dla-canonical-zig-obj.wasm.o --no-entry \
+// Compile (ONE step — `build-exe` links a complete module; Zig ships its own linker):
+//   zig build-exe dla-canonical.zig -target wasm32-freestanding -O ReleaseSmall \
+//     -fno-entry \
 //     --export=init --export=run \
 //     --export=get_cluster_size --export=get_max_r_bits --export=get_trajectory_entry \
-//     --allow-undefined -o dla-canonical-zig.wasm
+//     -femit-bin=dla-canonical-zig.wasm
+//
+// DO NOT USE `zig build-lib` HERE. It emits an `ar` archive (`!<arch>`, `21 3c 61 72`)
+// under the same name the runner expects a module at, and needs an external `wasm-ld` to
+// finish. That trap fired: the archive was committed as `dla-canonical-zig.wasm` and this
+// substrate loaded in no run for two weeks while still counting toward the executed total.
+// Zig 0.13.0 (pinned in .mise.toml) with the command above produces a 1,314-byte module
+// that agrees with the reference at seeds 1, 42, 100, 999.
 //
 // WHY NO @min / @round:
 //   Zig 0.13 on wasm32-freestanding emits calls to fminf and roundf as host imports

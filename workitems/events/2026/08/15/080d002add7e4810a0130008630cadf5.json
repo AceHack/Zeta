@@ -1,0 +1,14 @@
+{
+  "id": "080d002add7e4810a0130008630cadf5",
+  "at": "2026-08-15T12:18:09.993Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M02NQBY7087G0R0030AAHZ7",
+    "type": "bug",
+    "title": "Two of nine byte-lock substrates had never verified anything: Go was never built, Zig's artefact was an ar archive",
+    "slug": "two-of-nine-byte-lock-substrates-had-never-verified-anything",
+    "priority": "P2",
+    "filename": "081M02NQBY7087G0R0030AAHZ7-two-of-nine-byte-lock-substrates-had-never-verified-anything.md"
+  }
+}

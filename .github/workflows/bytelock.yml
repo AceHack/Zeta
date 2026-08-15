@@ -24,6 +24,16 @@ name: bytelock
 #   exit 0 = agreed (or diverged — reported as drift)
 #   exit 1 = diverged AND BYTELOCK_STRICT=1 (not set here)
 #   exit 2 = LIVENESS FAILURE — too few substrates ran. This is the failure that matters.
+#   exit 3 = MALFORMED ARTEFACT — a substrate binary is not loadable, so it verified nothing.
+#
+# WHAT EXIT 3 IS FOR (added 2026-08-15, and it had already happened):
+#   `dla-canonical-zig.wasm` was committed as an `ar` archive (`!<arch>`), the unlinked
+#   `zig build-lib` intermediate. It could not load in ANY run, yet it counted toward
+#   `executed`, so the summary claimed "1 of 8 executed" when 7 substrates had compared a
+#   vector and the eighth had only ever thrown at load. A load failure arrived through the
+#   same channel as a byte divergence, and divergence is deliberately non-fatal here — so
+#   the job went green for two weeks over a substrate that verified nothing.
+#   A broken instrument is not a soft finding. It stops the run.
 
 on:
   push:
@@ -59,25 +69,88 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends wabt lua5.4
 
+      # THE GO SUBSTRATE HAD NEVER EXECUTED IN CI. `run-go-wasm.mjs` needs
+      # `dla-canonical-go.wasm`; that artefact was neither committed nor built here, so Go
+      # reported TOOLING-ABSENT on every run from the day it joined the roster while
+      # `executed >= 2` stayed satisfied by the others. It sat in the roster contributing
+      # nothing.
+      #
+      # It is BUILT rather than COMMITTED, and that is deliberate. The Go artefact is
+      # ~1.9 MB — 1,500× the Zig module and 4× the largest binary already in this
+      # directory — and `src/wasm-dla/bytelock/.gitignore` already states the intent that
+      # compiled substrates are "built by CI/local toolchain, not stored in repo". Building
+      # it from the committed 3.8 KB `dla-canonical.go` keeps the reviewable artefact TEXT
+      # (`.claude/rules/no-binary-in-proof-lineage.md` in spirit: the proof lineage should
+      # not rest on bytes a reviewer cannot read) and makes the substrate reproducible
+      # rather than trusted.
+      #
+      # The version is pinned to `.mise.toml`'s `go = "1.26.4"`. This is a PARITY
+      # REQUIREMENT, not a preference: `wasm_exec.js` is the Go runtime's own JS bridge and
+      # is committed alongside the source, so it must come from a compatible Go. Bump both
+      # together or the harness fails at boot.
+      - name: Setup Go (pinned to .mise.toml — must match the committed wasm_exec.js)
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "1.26.4"
+          cache: false
+
+      - name: Build the Go WASM substrate
+        working-directory: src/wasm-dla/bytelock
+        # `build-substrates.mjs` checks the exit status AND the emitted file's WebAssembly
+        # header, so a failed build cannot leave a missing or non-module artefact behind
+        # while reporting success.
+        run: node build-substrates.mjs --only=Go
+
       - name: Versions (recorded so a drift can be attributed to a toolchain change)
         run: |
           node --version
+          go version || echo "go: ABSENT"
           wat2wasm --version || echo "wat2wasm: ABSENT"
           lua5.4 -v || echo "lua5.4: ABSENT"
 
       - name: Run the N-oracle byte-lock
         working-directory: src/wasm-dla/bytelock
         env:
-          # The floor is the only hard failure. Raise it as substrates become reliably
-          # buildable in CI; never lower it silently — that is how a check goes vacuous.
-          BYTELOCK_MIN_SUBSTRATES: "2"
+          # RAISED 2 → 9 (2026-08-15), which the previous comment here asked for: "raise it
+          # as substrates become reliably buildable in CI; never lower it silently."
+          #
+          # 2 was an aggregate over NINE independent instruments, so seven could go dark and
+          # the count still cleared it — and two of them WERE dark. Go had never been built,
+          # and Zig's artefact was an `ar` archive that could not load. The floor noticed
+          # neither, because redundancy in the numerator hides a zero.
+          #
+          # At 9 the floor EQUALS the number of substrates this runner provides a toolchain
+          # for, which makes an aggregate floor per-route by exhaustion: any single
+          # substrate failing to execute drops the count to 8 and exits 2. That is the whole
+          # roster held to account, with no list to keep in sync.
+          #
+          # Lower this ONLY together with removing a substrate from the roster — an honestly
+          # smaller N is worth more than a padded one, but the two numbers must move as one.
+          BYTELOCK_MIN_SUBSTRATES: "9"
         run: node run-bytelock-ci.mjs
+
+      # THE NEGATIVE CONTROLS HAD NEVER RUN EITHER. `test-fault-injection.mjs` is the suite
+      # that proves this byte-lock can DETECT a fault — corrupt trajectory, corrupt cluster
+      # size, all-zeros output, liveness floor, absent toolchain, malformed artefact, and a
+      # substrate that ran and crashed. Until 2026-08-15 no workflow referenced it, so the
+      # evidence that the byte-lock is falsifiable was itself never gathered. A suite that
+      # never executes is the same defect as a substrate that never executes, one level up.
+      #
+      # It mutates files in the working tree (reference.mjs, run-bytelock-ci.mjs, the Zig
+      # artefact) and restores them in `finally`, so it runs AFTER the real byte-lock and
+      # before the report is emitted.
+      - name: Run the fault-injection negative controls
+        working-directory: src/wasm-dla/bytelock
+        run: node test-fault-injection.mjs
 
       - name: Emit the machine-readable report
         if: always()
         working-directory: src/wasm-dla/bytelock
         env:
-          BYTELOCK_MIN_SUBSTRATES: "2"
+          # Kept equal to the run step above so the uploaded report describes the same
+          # instrument the job was judged on. `|| true` keeps the drift record uploadable
+          # even when the run step failed — which is precisely when it is worth reading.
+          BYTELOCK_MIN_SUBSTRATES: "9"
         run: node run-bytelock-ci.mjs --json > bytelock-report.json || true
 
       - name: Upload the report (the drift record)
