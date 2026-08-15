@@ -43,6 +43,13 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
+          # 081M010H4KE: GITHUB_TOKEN makes github-actions[bot] the push actor,
+          # so pull_request runs on heartbeat/* land in action_required and
+          # `gate (required)` never starts. The archive/society flush already
+          # uses this PAT. Recursion is safe: this workflow is schedule +
+          # workflow_dispatch only — a PAT push does not re-fire it.
+          persist-credentials: true
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -883,6 +890,8 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          persist-credentials: true
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
 
       # WITHOUT THIS THE WHOLE FLUSH JOB IS DEAD. The Flush step below shells out to
       # `bun src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts`, and this job
@@ -1074,3 +1083,14 @@ jobs:
             echo "[flush] an already-landed event set is a no-op (G-Set union)."
             exit 1
           fi
+
+      - name: Fail if a heartbeat PR is old and gate never started
+        if: always() && matrix.agent == 'alexa'
+        env:
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          # 081M010H4KE / 081M005FXAB. "All present checks are green" was the
+          # lie: gate never started. This exits 1 when a heartbeat/* PR older
+          # than one tick has no `gate (required)` in its rollup. Young PRs
+          # are ignored — the check may not have been scheduled yet.
+          bun src/Core.TypeScript/forge-host/github/required-check-started.ts --min-age-min 20

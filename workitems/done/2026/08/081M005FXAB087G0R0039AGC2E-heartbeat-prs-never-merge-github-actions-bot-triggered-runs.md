@@ -1,11 +1,12 @@
 ---
 id: 081M005FXAB087G0R0039AGC2E
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: heartbeat-prs-never-merge-github-actions-bot-triggered-runs
 title: "heartbeat PRs never merge: github-actions[bot]-triggered runs sit in action_required forever"
 created: 2026-08-14T12:55:59.563Z
+completed: 2026-08-15T22:47:57.072Z
 depends_on: []
 composes_with: []
 ---
@@ -106,3 +107,10 @@ missed it.
   what was never connected is that this makes such PRs permanently unmergeable
 - `.claude/rules/dv2-data-split-discipline-activated.md` §6 idempotency — the repair
   writer is correctly idempotent, which is why nothing was lost, only stalled
+
+## Resolution (2026-08-15)
+
+Cause is the checkout identity (081M010H4KE). Fixed there (option A, PAT on
+checkout). This row's non-vacuity is `required-check-started.ts`: a heartbeat
+PR older than one tick with no `gate (required)` in the rollup fails the
+flush job. Not an auto-approver.

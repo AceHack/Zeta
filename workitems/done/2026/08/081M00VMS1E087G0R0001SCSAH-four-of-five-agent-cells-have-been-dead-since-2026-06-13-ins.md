@@ -1,11 +1,12 @@
 ---
 id: 081M00VMS1E087G0R0001SCSAH
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: four-of-five-agent-cells-have-been-dead-since-2026-06-13-ins
 title: "Four of five agent cells have been dead since 2026-06-13: installed plists name tools/kiro/kiro-loop-wrapper.sh, deleted by PR #8088, launchctl reports exit 78 EX_CONFIG; host-loop-bootstrap.sh:142 still emits the dead path"
 created: 2026-08-14T19:23:07.694Z
+completed: 2026-08-15T22:48:14.194Z
 depends_on: []
 composes_with: []
 ---
@@ -108,3 +109,10 @@ nobody ran against a known-bad input is indistinguishable from one that works.
 
 The repo half is fixed; the four installed plists on this machine are still the old
 broken ones. Reinstalling is the operator's action — see the PR body for exact commands.
+
+## Resolution (2026-08-15)
+
+Repo half already on main: bootstrap emits `loop-tick.ts`, alexa/vera are in
+`persona-registry.ts`, `loop-liveness.ts` probes both label forms and the
+heartbeat artefact. Work-item closed so the P1 queue stops offering a shipped
+row. Machine-side reinstall of the four plists remains an operator action.

@@ -1,11 +1,12 @@
 ---
 id: 081M010H4KE087G0R00092AYZS
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: heartbeat-pull-request-runs-held-in-action-required-because
 title: "heartbeat pull_request runs held in action_required because the branch push uses GITHUB_TOKEN, making github-actions[bot] the run actor"
 created: 2026-08-14T20:48:31.342Z
+completed: 2026-08-15T22:47:57.014Z
 depends_on: []
 composes_with: []
 ---
@@ -64,3 +65,15 @@ commit author and run actor are different fields).
 **Not recommended: an auto-approver.** Approving a run grants execution. Building a standing
 execution-granting capability to work around a misconfigured credential leaves the defect in
 place and permanently hides it.
+
+## Resolution (2026-08-15)
+
+Option A. Both checkouts in `agent-heartbeat.yml` persist credentials from
+`ZETA_TELEMETRY_FLUSH_TOKEN` (same ladder as the flush/`gh pr create` step).
+The workflow is schedule + workflow_dispatch only, so a PAT push does not
+re-fire it.
+
+`required-check-started.ts` is the non-vacuity: a heartbeat PR older than one
+tick whose rollup has no `gate (required)` fails the flush job. "All present
+checks are green" is no longer readable as healthy when the required one
+never started.
