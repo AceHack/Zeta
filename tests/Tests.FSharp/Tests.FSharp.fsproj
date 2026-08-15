@@ -636,6 +636,7 @@
     <Compile Include="Properties/PolicyRelocation.Tests.fs" />
     <Compile Include="MajiTests.fs" />
     <Compile Include="Consensus.Tests.fs" />
+    <Compile Include="Consensus.TieBreak.Tests.fs" />
     <Compile Include="Arena.Tests.fs" />
 
     <!-- ZetaId/ — F# peer oracle cross-verify (matches TS + C# canonical hex) -->

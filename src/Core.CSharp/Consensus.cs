@@ -19,8 +19,12 @@ public static class Consensus
     public static int QuorumThreshold(int nodeCount) => (2 * ((nodeCount - 1) / 3)) + 1;
 
     /// <summary>
-    /// Decide consensus over a list of vote values: group by value preserving first-occurrence order,
-    /// stable-sort by descending count, commit the top iff its support reaches the quorum threshold.
+    /// Decide consensus over a list of vote values: group by value, take the highest support, commit
+    /// it iff it reaches the quorum threshold. The tie-break among values sharing the highest support
+    /// is the <b>ordinal minimum</b> — deliberately order-INDEPENDENT, so two nodes that received the
+    /// same votes in different orders decide identically. (It was first-occurrence, which read
+    /// arrival order and diverged at n in {2,3,6}; see <c>src/Core/Consensus.fs</c> and the shared
+    /// seed <c>golden-vectors.json</c>. Do not change it in one oracle.)
     /// </summary>
     public static Decision Decide(IReadOnlyList<string> votes)
     {
@@ -30,17 +34,19 @@ public static class Consensus
             return new Decision(false, null, 0, 0);
         }
 
-        // GroupBy yields groups in first-occurrence order; OrderByDescending is a stable sort.
         var groups = votes
             .GroupBy(v => v, StringComparer.Ordinal)
             .Select(g => (Value: g.Key, Count: g.Count()))
-            .OrderByDescending(x => x.Count)
             .ToList();
 
+        var best = groups.Max(x => x.Count);
+        // Order-independent tie-break: the ordinal minimum among the values tied at `best`.
+        // Ordinal, never culture-sensitive (.claude/rules/culture-invariant-by-default.md).
+        var value = groups.Where(x => x.Count == best).Select(x => x.Value).Min(StringComparer.Ordinal)!;
+
         var threshold = QuorumThreshold(total);
-        var top = groups[0];
-        return top.Count >= threshold
-            ? new Decision(true, top.Value, top.Count, total)
-            : new Decision(false, null, top.Count, total);
+        return best >= threshold
+            ? new Decision(true, value, best, total)
+            : new Decision(false, null, best, total);
     }
 }
