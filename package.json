@@ -33,6 +33,7 @@
     "hygiene:fix-markdown": "bun ./tools/hygiene/fix-markdown-md032-md026.ts",
     "hygiene:check-bash-retirement-inventory": "bun ./src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce",
     "hygiene:no-ambient-credential-hoist": "bun ./src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts",
+    "measure": "bun ./src/Core.TypeScript/ledger/measure.ts",
     "shadow": "bun src/Core.TypeScript/shadow/zeta-shadow.ts",
     "summon": "bun ./src/Core.TypeScript/peer-call/summon.ts"
   },
