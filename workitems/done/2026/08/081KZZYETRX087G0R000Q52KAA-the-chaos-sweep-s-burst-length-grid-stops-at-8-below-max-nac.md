@@ -1,11 +1,12 @@
 ---
 id: 081KZZYETRX087G0R000Q52KAA
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: the-chaos-sweep-s-burst-length-grid-stops-at-8-below-max-nac
 title: "The chaos sweep's burst-length grid stops at 8, below MAX_NACK_GAP, so the desync branch is never swept"
 created: 2026-08-14T10:53:04.157Z
+completed: 2026-08-15T14:59:20.691Z
 depends_on: []
 composes_with: []
 ---
@@ -57,3 +58,18 @@ So: the model fix did not make the bound reachable; **the grid** is what has to 
 - `src/Core.TypeScript/discovery/udp-lossy-transport.chaos.test.ts` — `UCH-12`, `UCH-24`
 - `docs/research/2026-08-14-the-chaos-harness-loss-model-was-anti-correlated-not-uniform-*.md` §5
 - `081KZZYESKA087G0R0008WFKFG` — the production observation this exposed
+
+## Resolution (2026-08-15)
+
+`deriveSweepBurstLengths(maxNackGap)` is the grid. Powers of two through the
+NACK window, then `maxNackGap + floor(maxNackGap / 2)` so the top is past
+desync by construction. `SWEEP_BURST_LENGTHS` is that function applied to
+`MAX_NACK_GAP` — currently `[1, 2, 4, 8, 16, 32, 96]`.
+
+- `UCH-28` is the falsifier: exported grid equals the derivation, max exceeds
+  `MAX_NACK_GAP`, and a GE trace at the past-desync L produces runs wider than
+  the window.
+- `UCH-27` walks the derived in-window points and the derived past-desync
+  point (no remembered `100`).
+- `UCH-12` still samples `[1, 4]` — cliff characterisation at 2000 blocks
+  cannot afford the full grid; the comment says so.

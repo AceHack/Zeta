@@ -1359,8 +1359,9 @@ describe("udp-lossy-transport: separated loss signals", () => {
 //
 // It is NOT an attack-only path. A block becomes recoverable at 4 of 8 symbols, so a block that
 // never recovers is a block that lost 5+ — ordinary heavy loss, which is what this transport is
-// for. The attacker's contribution is only speed: `blockSeq` is a separate header field from
-// `seq`, so a peer can hold `seq` monotone (provoking no NACK at all) while spending 4.29e9 keys.
+// for. The address is derived from `seq` (`blockAddressOf`, 081KZZZH24H), so a peer cannot
+// mint a new key with a lying `blockSeq` — it has to spend a new sequence number. The remaining
+// drain is many *incomplete* derived blocks (`seq = 8k`, position 0 only).
 //
 // These tests observe `retainedBlockCount`, which exists for exactly this reason: unbounded
 // growth changes no delivered output, so before it there was nothing in the module a test could
@@ -1414,18 +1415,22 @@ describe("udp-lossy-transport: bounded receiver block memory", () => {
     };
   }
 
-  it("ULT-32 (property): no stream of peer-chosen blockSeq takes retention past the window", () => {
+  it("ULT-32 (property): no stream of peer-chosen seq takes retention past the window", () => {
     // Stated over the whole u32 domain rather than at one value, because the defect was "any
     // sufficiently long stream of distinct keys", not one key. Seeded, so a failure replays (§7).
+    // Address is derived from seq (ULT-36), so the generator is seqs, aligned to position 0
+    // of each derived block — otherwise consecutive seqs complete blocks and the window
+    // empties, which is a different measurement (and is what #10778 left these tests doing).
     fc.assert(
-      fc.property(fc.array(fc.integer({ min: 0, max: 0xffffffff }), { minLength: 64, maxLength: 256 }), (keys) => {
+      fc.property(fc.array(fc.integer({ min: 0, max: 0xffffffff }), { minLength: 64, maxLength: 256 }), (seqs) => {
         const r = makeReceiver();
-        keys.forEach((blockSeq, i) => r.raw(i, blockSeq, 0, new Uint8Array([7, 7, 7, 7])));
+        seqs.forEach((seq) => r.raw(seq - (seq % 8), 0, 0, new Uint8Array([7, 7, 7, 7])));
         expect(r.channel.retainedBlockCount).toBeLessThanOrEqual(RECV_BLOCK_WINDOW);
         // ANTI-VACUITY: a receiver that retained NOTHING would also pass the line above, and would
-        // be a different, worse module. With ≥64 distinct-ish keys and blockPos 0 throughout, the
-        // window must actually be full — the bound is being exercised, not merely satisfied.
-        expect(r.channel.retainedBlockCount).toBe(Math.min(RECV_BLOCK_WINDOW, new Set(keys).size));
+        // be a different, worse module. With ≥64 distinct-ish derived blocks and only pos 0,
+        // the window must actually be full — the bound is being exercised, not merely satisfied.
+        const distinctBlocks = new Set(seqs.map((s) => Math.floor(s / 8))).size;
+        expect(r.channel.retainedBlockCount).toBe(Math.min(RECV_BLOCK_WINDOW, distinctBlocks));
       }),
       { numRuns: 200, seed: 0x5eed },
     );
@@ -1433,15 +1438,16 @@ describe("udp-lossy-transport: bounded receiver block memory", () => {
 
   it("ULT-33: the filed reproduction — 20,000 never-completing blocks retain 8", () => {
     // The defect's own shape at 1/10 scale (20k rather than 200k, to stay inside a test budget):
-    // fresh `blockSeq` per packet, `blockPos` 0 so nothing ever becomes recoverable, `seq` monotone
-    // so the NACK path is never entered and `recvBlocks` is the only thing under measurement.
+    // one packet at position 0 of each derived block, so nothing ever becomes recoverable.
+    // `seq = 8i` is monotone so the NACK path is never entered and `recvBlocks` is the only
+    // thing under measurement. Wire `blockSeq`/`blockPos` are ignored (ULT-36).
     const r = makeReceiver();
-    for (let i = 0; i < 20_000; i++) r.raw(i, i, 0, new Uint8Array(64).fill(0xa5));
+    for (let i = 0; i < 20_000; i++) r.raw(i * 8, 0, 0, new Uint8Array(64).fill(0xa5));
     expect(r.channel.retainedBlockCount).toBe(RECV_BLOCK_WINDOW); // was 20,000
     expect(r.delivered.length).toBe(0); // nothing was ever recoverable — anti-vacuity on the setup
 
     // §12 idempotency: replaying the same stream has the effect of running it once.
-    for (let i = 0; i < 20_000; i++) r.raw(i, i, 0, new Uint8Array(64).fill(0xa5));
+    for (let i = 0; i < 20_000; i++) r.raw(i * 8, 0, 0, new Uint8Array(64).fill(0xa5));
     expect(r.channel.retainedBlockCount).toBe(RECV_BLOCK_WINDOW);
   }, 30_000);
 
@@ -1452,8 +1458,12 @@ describe("udp-lossy-transport: bounded receiver block memory", () => {
     // 0/20, permanently, for 8 attacker packets, because every honest block sorts below the parked
     // keys and is evicted the instant it is created. Trading an unauthenticated memory drain for an
     // unauthenticated permanent shutdown is not a fix, and this test is what refuses it.
+    //
+    // Squatters are high *derived* blocks (seq near 2^32-1, stride 8) — a lying wire blockSeq
+    // no longer parks a key (ULT-36). Consecutive seqs 0..7 would complete block 0 and leave
+    // the window empty, which is what the unfixed test started measuring after #10778.
     const parked = makeReceiver();
-    for (let i = 0; i < RECV_BLOCK_WINDOW; i++) parked.raw(i, 0xffffffff - i, 0, new Uint8Array([7, 7, 7, 7]));
+    for (let i = 0; i < RECV_BLOCK_WINDOW; i++) parked.raw(0xffffffff - i * 8, 0, 0, new Uint8Array([7, 7, 7, 7]));
     expect(parked.channel.retainedBlockCount).toBe(RECV_BLOCK_WINDOW); // the window is full of squatters
     for (let b = 0; b < 5; b++) parked.honestBlock(b);
     expect(parked.delivered.length).toBe(20); // 5 blocks * 4 data payloads — was 0 under key order

@@ -112,6 +112,7 @@ import {
   PACKET_HEADER_BYTES,
   xorParityBlock,
   xorRecoverErasure,
+  MAX_NACK_GAP,
 } from "./udp-lossy-transport";
 
 const MASK64 = (1n << 64n) - 1n;
@@ -120,6 +121,36 @@ const TWO53 = 9007199254740992;
 
 export const BLOCK_TOTAL = 8;
 export const BLOCK_DATA = 4;
+
+/**
+ * Burst lengths the chaos sweeps walk.
+ *
+ * The top of the grid is derived from `maxNackGap` so a silent stop below the
+ * receiver's desync threshold cannot recur (081KZZYETRX). Powers of two through
+ * the NACK window, then one point past it. The past-desync point is what
+ * actually exercises the receiver's desync branch; everything below the window
+ * is NACK territory.
+ *
+ * Cost-aware: the grid is short (log of the window, plus one). A cliff
+ * characterisation (`UCH-12`) may sample a subset; a caller that claims to
+ * have swept the desync branch must walk the whole thing, including the
+ * past-desync point. `UCH-28` is the falsifier: it fails if the exported grid
+ * no longer exceeds `MAX_NACK_GAP`.
+ */
+export function deriveSweepBurstLengths(maxNackGap: number): readonly number[] {
+  if (!Number.isInteger(maxNackGap) || maxNackGap < 2) {
+    throw new Error(`maxNackGap must be an integer >= 2, got ${String(maxNackGap)}`);
+  }
+  const below: number[] = [];
+  for (let L = 1; L < maxNackGap; L *= 2) below.push(L);
+  const mid = Math.floor(maxNackGap / 2);
+  if (!below.includes(mid)) below.push(mid);
+  below.sort((a, b) => a - b);
+  return [...below, maxNackGap + mid];
+}
+
+/** The live sweep grid. Recomputed from {@link MAX_NACK_GAP}, never a remembered list. */
+export const SWEEP_BURST_LENGTHS: readonly number[] = deriveSweepBurstLengths(MAX_NACK_GAP);
 
 // ── Declared entropy channel (§13) ────────────────────────────────────────────────────────
 

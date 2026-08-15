@@ -41,6 +41,8 @@ import {
   runScenario,
   characteriseCliff,
   BLOCK_TOTAL,
+  deriveSweepBurstLengths,
+  SWEEP_BURST_LENGTHS,
 } from "./udp-lossy-transport.chaos";
 import {
   computeAdinkraParity,
@@ -408,6 +410,9 @@ describe("udp-lossy-transport.chaos", () => {
   // carries the honest number rather than this one being quietly relaxed to accommodate it.
   it("UCH-12: cliff — the shipped decoder's cliff has moved out to the code's own, ~20% anti-correlated", async () => {
     const rates = [0.005, 0.01, 0.02, 0.03, 0.05, 0.08, 0.12, 0.2, 0.3];
+    // Cost: 2000 blocks × 2 decoders × 2 L × ~5 rates. The full derived grid
+    // (`SWEEP_BURST_LENGTHS`, 081KZZYETRX) is walked by UCH-27/28; this test
+    // samples the anti-correlated extremum and a moderate in-window burst.
     const impl = await characteriseCliff("impl-adinkra", rates, [1, 4], { blocks: 2000, seed: 0x5eedn }, 0.99, 1);
     const ml = await characteriseCliff("ml-adinkra", rates, [1, 4], { blocks: 2000, seed: 0x5eedn }, 0.99, 1);
 
@@ -1194,9 +1199,10 @@ describe("udp-lossy-transport.chaos", () => {
     expect(replay(clean, corruptAnti).bites).toBe(0);
     expect(replay(clean, corruptBer).bites).toBe(0);
 
-    // (b) With the sweep's loss channels — still 0, Bernoulli corruption and all. This is the
+    // (b) The derived in-window grid — still 0, Bernoulli corruption and all. This is the
     //     assertion that refutes "meanBurstLength = 1 is why the mutation survived".
-    for (const L of [1, 2, 4, 8]) {
+    const inWindow = SWEEP_BURST_LENGTHS.filter((L) => L <= MAX_NACK_GAP);
+    for (const L of inWindow) {
       const loss = gilbertElliottTrace(N, burstParams(0.05, L), 0xabcdn, STREAM.loss).dropped;
       expect(`L=${L}:${replay(loss, corruptAnti).bites}`).toBe(`L=${L}:0`);
       expect(`L=${L}:${replay(loss, corruptBer).bites}`).toBe(`L=${L}:0`);
@@ -1204,7 +1210,9 @@ describe("udp-lossy-transport.chaos", () => {
 
     // (c) Past MAX_NACK_GAP the desync branch used to CARRY pending across (081KZZYESKA).
     //     That leak is closed: pending is cleared, so the clamp stays unreachable.
-    const longBurst = gilbertElliottTrace(N, burstParams(0.05, 100), 0xabcdn, STREAM.loss).dropped;
+    //     The past-desync L is taken from the derived grid, not a remembered 100.
+    const pastDesync = Math.max(...SWEEP_BURST_LENGTHS);
+    const longBurst = gilbertElliottTrace(N, burstParams(0.05, pastDesync), 0xabcdn, STREAM.loss).dropped;
     const reached = replay(longBurst, corruptBer);
     expect(reached.desyncs).toBeGreaterThan(0);
     expect(reached.bites).toBe(0);
@@ -1215,5 +1223,45 @@ describe("udp-lossy-transport.chaos", () => {
     const heavyReached = replay(heavy.dropped, corruptBer);
     expect(heavyReached.desyncs).toBeGreaterThan(0);
     expect(heavyReached.bites).toBe(0);
+  });
+
+  // ── UCH-28: the grid itself is the instrument — it must cross the desync threshold ──────
+  //
+  // 081KZZYETRX. The previous sweep list was `[1, 2, 4, 8]`. Nothing in it could produce a
+  // gap of `MAX_NACK_GAP` (64) at any realistic sample size, so the desync branch was never
+  // walked by the chaos harness — only by hand-built unit cases. A grid that silently stops
+  // below a threshold in the code under test is the same class of defect as a model that
+  // cannot produce a fault class (the lesson of `burstParams(ρ, 1)` being named Bernoulli).
+  //
+  // The fix is to DERIVE the top of the grid from `MAX_NACK_GAP`. This test is the
+  // falsifier: it fails if the exported grid no longer exceeds the threshold, if it is a
+  // remembered list that has drifted from the derivation, or if the past-desync point
+  // cannot actually produce a gap wider than the window.
+  it("UCH-28: the sweep grid is derived from MAX_NACK_GAP and its top produces desync-width gaps", () => {
+    expect(SWEEP_BURST_LENGTHS).toEqual(deriveSweepBurstLengths(MAX_NACK_GAP));
+    expect(Math.max(...SWEEP_BURST_LENGTHS)).toBeGreaterThan(MAX_NACK_GAP);
+    expect(SWEEP_BURST_LENGTHS.some((L) => L < MAX_NACK_GAP)).toBe(true);
+    // The property, not the 64: a smaller window still grows a past-desync point.
+    expect(Math.max(...deriveSweepBurstLengths(8))).toBeGreaterThan(8);
+    expect(Math.max(...deriveSweepBurstLengths(32))).toBeGreaterThan(32);
+    expect(() => deriveSweepBurstLengths(1)).toThrow(/integer >= 2/);
+
+    // Anti-vacuity: a GE trace at the past-desync L produces runs wider than the window.
+    // Cheap — boolean array, no ferry — so this can live under the default 5s cap.
+    const past = Math.max(...SWEEP_BURST_LENGTHS);
+    const N = 50_000;
+    const dropped = gilbertElliottTrace(N, burstParams(0.05, past), 0xabcdn, STREAM.loss).dropped;
+    let run = 0;
+    let wideRuns = 0;
+    for (let i = 0; i < N; i++) {
+      if (dropped[i]) {
+        run++;
+      } else {
+        if (run > MAX_NACK_GAP) wideRuns++;
+        run = 0;
+      }
+    }
+    if (run > MAX_NACK_GAP) wideRuns++;
+    expect(wideRuns).toBeGreaterThan(0);
   });
 });
