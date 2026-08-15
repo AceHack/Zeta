@@ -246,6 +246,36 @@ jobs:
             echo "PR title: ${PR_TITLE}"
             echo "Workflow run: ${RUN_ID}"
             echo "Workflow attempt: ${RUN_ATTEMPT}"
+            # AgencySignature v1 trailer block. Required in the PR BODY by
+            # .github/workflows/agencysignature-enforcement.yml for every PR created after
+            # FAIL_CLOSED_CUTOVER (2026-08-15T00:00:00Z); this workflow predates the cutover
+            # and so emitted archive PRs that failed the gate on creation, every time.
+            #
+            # Two shape constraints, both load-bearing, both learned the hard way:
+            #   * the block must be the LAST contiguous group of trailer lines, with exactly
+            #     one blank line before it and ZERO blank lines inside it — including before
+            #     Co-authored-by, which is itself a trailer and belongs in the same group.
+            #   * nothing above it may start a line with `---`. `git interpret-trailers`
+            #     reads a leading `---` as the diff/patch boundary and discards everything
+            #     after it, so a markdown horizontal rule anywhere above silently makes a
+            #     perfectly well-formed block invisible to the parser.
+            #
+            # Values describe THIS workflow, not a human: the credential is the Actions bot,
+            # nobody reviewed this PR, and it runs unattended — so Human-Review is
+            # not-implied-by-credential with no evidence, and the mode is autonomous. Same
+            # shape the red-state-flush workflow already emits on its commits.
+            echo
+            echo "Agency-Signature-Version: 1"
+            echo "Agent: pr-archive-on-merge"
+            echo "Agent-Runtime: GitHub Actions"
+            echo "Agent-Model: bun + git + gh CLI"
+            echo "Credential-Identity: github-actions[bot]"
+            echo "Credential-Mode: dedicated-agent"
+            echo "Human-Review: not-implied-by-credential"
+            echo "Human-Review-Evidence: none"
+            echo "Action-Mode: autonomous-fail-open"
+            echo "Task: none"
+            echo "Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
           } >"${body_file}"
 
           set +e
