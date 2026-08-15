@@ -1,0 +1,12 @@
+{
+  "pr_number": 10781,
+  "archive_path": "docs/history/pr-reviews/PR-10781-fix-discovery-write-merged-prior-hints-as-beliefs-not-errors.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T13:57:51.268Z",
+  "schema_version": "v1",
+  "commit_sha": "0ebae66e8dda09359bc2602956da3aca2690a3a9",
+  "title": "fix(discovery): write merged prior hints as beliefs, not errors",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T13:57:14Z",
+  "head_ref": "fix/081M005CBQ-set-merged-posterior"
+}
