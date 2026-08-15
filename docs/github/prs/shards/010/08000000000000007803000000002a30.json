@@ -1,0 +1,12 @@
+{
+  "pr_number": 10800,
+  "archive_path": "docs/history/pr-reviews/PR-10800-fix-z3-delete-the-smt-skip-floor-now-that-ci-discharges-the-certs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T15:06:23.577Z",
+  "schema_version": "v1",
+  "commit_sha": "106ea60d58ace5bd5b34bde419adb8208303f679",
+  "title": "fix(z3): delete the SMT skip-floor now that CI discharges the certs",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T15:05:52Z",
+  "head_ref": "fix/081KZZ27KJ8-delete-smt-solver-floor"
+}
