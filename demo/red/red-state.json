@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAtIso": "2026-08-15T13:30:09.336Z",
-  "commit": "f298a4375",
+  "generatedAtIso": "2026-08-15T14:23:51.585Z",
+  "commit": "67c0bbba4",
   "totals": {
     "findings": 0,
     "bySeverity": {}
