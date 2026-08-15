@@ -26,6 +26,56 @@ because <one-line>.`
 
 ---
 
+## `MenoTwistCentrality` *(twist naturality derived; the Schur/scalar route refuted — Lean 4 + Mathlib)*
+
+- **Artifact.** `src/Core.Lean4/Lean4/MenoTwistCentrality.lean` (Lean 4 + Mathlib
+  v4.30.0-rc1). Authored 2026-08-15, work-item 081M00EZXN2087G0R003AY3WSJ. Reachable from the
+  `Lean4` root; gated in `.github/workflows/lean-proof.yml` by a `sorryAx` axiom audit over 26
+  named declarations plus the workflow's anti-vacuity "Unknown constant" guard.
+- **Internal correctness target.** The `naturality` FIELD of `Zeta.MenoBalanced.Twist` in
+  `MenoBalancedTwist.lean` — i.e. centrality of `ρ(Δₙ²)` in `ρ(Bₙ)` — and the shipped
+  `Zeta.MenoBraided` Artin action in `src/Core/MenoBraided.fs`.
+- **Internal correctness claim.** Two, both general. (i) NATURALITY IS DERIVED, not assumed:
+  `PreTwist` carries the balanced axiom plus one equation at the unit and NO naturality field,
+  and `PreTwist.natural_of_mem` proves `θ` commutes past every morphism in the `⊗`/`≫`-closure
+  of identities, braidings and coherence isomorphisms (`natural_braiding`,
+  `natural_braiding_inv`, `natural_associator`, `natural_tensor`, the unitors);
+  `PreTwist.toTwist` then upgrades a `PreTwist` on a braid-generated category to a full
+  `Zeta.MenoBalanced.Twist`. (ii) The proposed SCHUR SHORTCUT (central ⇒ scalar on an irrep)
+  does not apply, with three of its four failures machine-checked: the representation is
+  reducible because the Artin action preserves the boundary word `x₁⋯xₙ` (`actWord_prod`,
+  `linearize_fiber_invariant`); `ρ(Δ₃²)` is not a scalar (`fullTwist_not_scalar`); and
+  scalarity would force symmetry, contradicting `braidR_not_symmetric_perm3`
+  (`scalar_twist_forces_symmetry`). The fourth failure — Schur consumes centrality rather than
+  producing it — is structural and stated in the file, not proved.
+- **Spec-vs-implementation alignment.** `actAt` / `actAtInv` / `crossing` / `actWord` mirror
+  the shipped F# `MenoBraided.crossingOnList` encoding (word is a `List ℤ`, `c > 0` is `σ_{|c|−1}`,
+  `c < 0` its inverse, out-of-range is a no-op) so the boundary-word invariant is proved about
+  the same action the F# runs, for every `n` — not only for `B₃`. Concrete `decide` checks are
+  over `DihedralGroup 3 ≅ S₃`, and the epistemic direction of `MenoBalancedTwist` carries over:
+  `≠` results are proofs, `=` results are evidence.
+- **Anti-vacuity.** `Framed` supplies a NON-SYMMETRIC witness (option (b) of the work item):
+  a braided monoidal category with `D_{1,1} ≠ id` carrying a twist with `θ_V = id` and
+  `θ_{V⊗V} ≠ id`. `generators_not_commute` shows centrality is not automatic (`σ₁`, `σ₂` do not
+  commute in the action), so `natural_of_mem` derives something that can fail. Mutation-tested
+  at authoring time: a wrong braiding exponent breaks the hexagons, a wrong twist exponent
+  breaks the balanced axiom, and asserting centrality of the HALF twist makes `decide` prove
+  the proposition false.
+- **NOT claimed.** `BraidGenerated <V>` — that every morphism of `<V>` is in the braid closure
+  (Joyal–Street 1993 §2). It is a NAMED HYPOTHESIS of `PreTwist.toTwist`, not a `sorry`. The
+  file also does NOT discriminate the correct balanced axiom from the misread one: the
+  naturality derivation is insensitive to the double-braiding factor, and that discrimination
+  remains `MenoBalancedTwist.twist_tensor_of_id` / `misread_axiom_forces_symmetry`.
+- **External anchors.** Artin 1925/1947 (the action on `Fₙ`; the boundary-word clause that is
+  the reducibility mechanism); Joyal & Street 1993, *Braided Tensor Categories* (Adv. Math.
+  102); Schur 1905 (the lemma shown inapplicable); Garside 1969 (`Δ²`); Chow 1948 — cited here
+  only to record that it is NOT needed, the certificate using only `Δₙ² ∈ Z(Bₙ)`.
+- **Last audit.** 2026-08-15, authored by the shadow. Grade: machine-checked (Lean 4 kernel;
+  `#print axioms` ⊆ `{propext, Classical.choice, Quot.sound}` for all 26 audited declarations;
+  `lake build` green on the full default target).
+
+---
+
 ## `MenoBalancedTwist` *(Meno balanced structure / Garside full twist — Lean 4 + Mathlib)*
 
 - **Artifact.** `src/Core.Lean4/Lean4/MenoBalancedTwist.lean` (Lean 4 + Mathlib
@@ -63,10 +113,13 @@ because <one-line>.`
 - **NOT claimed.** That a `Twist` INSTANCE exists on `<V>` — that needs the braid groupoid
   as the free braided monoidal category on one object (Joyal–Street 1993 §2) plus
   faithfulness of the Artin action (Artin 1925), neither in Mathlib. So `θ`'s naturality
-  (equivalently centrality of `Δₙ²` in `Bₙ`, Chow 1948) is a FIELD of `Zeta.MenoBalanced.Twist`,
+  (equivalently centrality of `Δₙ²` in `Bₙ`) is a FIELD of `Zeta.MenoBalanced.Twist`,
   assumed rather than derived. Tracked as 081M00EZXN2087G0R003AY3WSJ. Also: the inhabitation
   witness `symmetricTwist` is SYMMETRIC, so it does not exercise `dbl ≠ id`; a non-symmetric
-  witness is option (b) of that item.
+  witness is option (b) of that item. **Both updated 2026-08-15** by `MenoTwistCentrality`
+  (row above): naturality is now DERIVED from the balanced axiom modulo a named
+  `BraidGenerated` hypothesis, and a non-symmetric witness exists. The Chow 1948 attribution
+  was also corrected there — only `Δₙ² ∈ Z(Bₙ)` is used, never `Z(Bₙ) = ⟨Δ²⟩`.
 - **External anchors.** Joyal & Street 1993, *Braided Tensor Categories* (Adv. Math. 102);
   Garside 1969, *The braid group and other groups*; Chow 1948 (`Z(Bₙ) = ⟨Δ²⟩`, `n ≥ 3`);
   Artin 1925; Kassel, *Quantum Groups* XIII.

@@ -33,11 +33,16 @@ namespace Zeta.Core
 /// NOT a contradiction: the balanced axiom is `θ_{A⊗B} = (θ_A ⊗ θ_B) ∘ c_{B,A} ∘ c_{A,B}`, **not**
 /// `θ_{A⊗B} = θ_A ⊗ θ_B`, so `θ_V = id` forces `θ_{V⊗V} = c² = σ₁²` rather than `c² = id`. (Two earlier
 /// reviews made exactly that misreading and concluded Meno was provably NOT balanced. It is balanced.)
-/// Naturality reduces to centrality in Bₙ because `Hom_{⟨V⟩}(V^n, V^n) = ρ(Bₙ)` and ρ is faithful;
-/// `Z(Bₙ) = ⟨Δ²⟩` for n ≥ 3 (Chow 1948). CHECKED for all m+n ≤ 7 by two independent implementations of
-/// Artin's action (the shipped `Braid.equal` plus an independent re-implementation), with four planted
-/// mutants — θ=id, θ=Δ, θ=Δ⁴, and a single block-swap — all REJECTED, so the check is not vacuous.
-/// General-n Lean certificate: work-item 081KZZVC3DD087G0R0035SZN58.
+/// Naturality reduces to centrality in Bₙ because `Hom_{⟨V⟩}(V^n, V^n) = ρ(Bₙ)` and ρ is faithful.
+/// CITATION CORRECTED 2026-08-15: this needs only `Δₙ² ∈ Z(Bₙ)` — elementary from `ΔσᵢΔ⁻¹ = σₙ₋ᵢ` —
+/// and NOT Chow 1948's strictly stronger `Z(Bₙ) = ⟨Δ²⟩`, which was cited here for a fact the proof does
+/// not use (and whose generation half is false at n = 2, where `Z(B₂) = B₂ = ⟨Δ₂⟩ ⊋ Δ₂²`). Better still,
+/// centrality need not be ASSUMED at all: `MenoTwistCentrality.PreTwist.natural_of_mem` DERIVES it from
+/// the balanced axiom via the hexagons, for all n. CHECKED for all m+n ≤ 7 by two independent
+/// implementations of Artin's action (the shipped `Braid.equal` plus an independent re-implementation),
+/// with four planted mutants — θ=id, θ=Δ, θ=Δ⁴, and a single block-swap — all REJECTED, so the check is
+/// not vacuous. General-n Lean certificate: work-item 081KZZVC3DD087G0R0035SZN58 (landed); the derived
+/// naturality + the non-symmetric witness: 081M00EZXN2087G0R003AY3WSJ.
 ///
 /// **Why `⟨V⟩` must never admit copy Δ or discard ε.** A *cartesian* monoidal category has a **unique
 /// braiding**, and it is the swap — stronger than Mathlib's `Subsingleton (SymmetricCategory C)`, which

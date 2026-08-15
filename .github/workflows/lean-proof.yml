@@ -197,6 +197,11 @@ jobs:
           # gate rather than after it, per the MenoBalancedTwist precedent above.
           printf '#print axioms Zeta.MenoMonoidal.assocInv_assoc\n#print axioms Zeta.MenoMonoidal.assoc_assocInv\n#print axioms Zeta.MenoMonoidal.pentagon\n#print axioms Zeta.MenoMonoidal.triangle\n#print axioms Zeta.MenoMonoidal.hexagon1_tuple\n#print axioms Zeta.MenoMonoidal.hexagon2_tuple\n#print axioms Zeta.MenoMonoidal.strict_assoc\n#print axioms Zeta.MenoMonoidal.strict_leftUnit\n#print axioms Zeta.MenoMonoidal.strict_rightUnit\n#print axioms Zeta.MenoMonoidal.act_append\n#print axioms Zeta.MenoMonoidal.act_act\n#print axioms Zeta.MenoMonoidal.cBlock_singleton\n#print axioms Zeta.MenoMonoidal.hexagon1_strict\n#print axioms Zeta.MenoMonoidal.hexagon2_strict\n#print axioms Zeta.MenoMonoidal.cBlock_singleton_eq_interp\n#print axioms Zeta.MenoMonoidal.cBlock_one_two_eq_interp\n#print axioms Zeta.MenoMonoidal.cBlock_two_one_eq_interp\n#print axioms Zeta.MenoMonoidal.interp_length\n#print axioms Zeta.MenoMonoidal.interp_invWord\n#print axioms Zeta.MenoMonoidal.interp_injective\n#print axioms Zeta.MenoMonoidal.no_hom_between_distinct_degrees\n#print axioms Zeta.MenoMonoidal.no_copy\n#print axioms Zeta.MenoMonoidal.no_discard\n#print axioms Zeta.MenoMonoidal.no_copy_lengthPreserving\n#print axioms Zeta.MenoMonoidal.oppR_yangBaxter\n#print axioms Zeta.MenoMonoidal.hexagon1_opp\n#print axioms Zeta.MenoMonoidal.hexagon2_opp_fails\n#print axioms Zeta.MenoMonoidal.hexagon1_swap\n#print axioms Zeta.MenoMonoidal.hexagon2_swap\n' \
             | cat Lean4/MenoMonoidalHexagons.lean - > /tmp/meno_hexagons_axiom_audit.lean
+          # `MenoTwistCentrality` (081M00EZXN2087G0R003AY3WSJ) lands with its gate, as
+          # `MenoBalancedTwist` did — a new proof file that is built but unaudited is a
+          # regression to `sorry` waiting to type-check green.
+          printf '#print axioms Zeta.MenoTwistCentrality.actAt_prod\n#print axioms Zeta.MenoTwistCentrality.actAtInv_prod\n#print axioms Zeta.MenoTwistCentrality.actWord_prod\n#print axioms Zeta.MenoTwistCentrality.linearize_fiber_invariant\n#print axioms Zeta.MenoTwistCentrality.linearize_not_scalar\n#print axioms Zeta.MenoTwistCentrality.fullTwist_moves\n#print axioms Zeta.MenoTwistCentrality.fullTwist_not_scalar\n#print axioms Zeta.MenoTwistCentrality.scalar_twist_forces_symmetry\n#print axioms Zeta.MenoTwistCentrality.generators_not_commute\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_braiding\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_braiding_inv\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_tensor\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_associator\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_leftUnitor\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_rightUnitor\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_of_mem\n#print axioms Zeta.MenoTwistCentrality.PreTwist.toTwist\n#print axioms Zeta.MenoTwistCentrality.preTwist_id_forces_symmetry\n#print axioms Zeta.MenoTwistCentrality.Framed.dbl_one_one_ne_id\n#print axioms Zeta.MenoTwistCentrality.Framed.framedTwist\n#print axioms Zeta.MenoTwistCentrality.Framed.framedTwist_gen\n#print axioms Zeta.MenoTwistCentrality.Framed.framedTwist_two_ne_id\n#print axioms Zeta.MenoTwistCentrality.mutant_half_twist_not_central\n#print axioms Zeta.MenoTwistCentrality.mutant_block_swap_not_central\n#print axioms Zeta.MenoTwistCentrality.mutant_delta_fourth_ne_full_twist\n#print axioms Zeta.MenoTwistCentrality.fullTwist_central_dihedral3\n' \
+            | cat Lean4/MenoTwistCentrality.lean - > /tmp/meno_centrality_axiom_audit.lean
 
           # ── Added 2026-08-10: three files that were in NEITHER list ──────────────
           # Each audits ONLY declarations measured sorry-free on 2026-08-10, so these
@@ -277,6 +282,10 @@ jobs:
           fi
           if lake env lean /tmp/meno_hexagons_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::MenoMonoidalHexagons depends on sorryAx — the associator/unitor/hexagon coherence certificate or the copy-discard degree argument regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/meno_centrality_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::MenoTwistCentrality depends on sorryAx — the derived-naturality / Schur-refutation certificate regressed to sorry/admit"
             exit 1
           fi
           # ── Anti-vacuity guard (added 2026-08-10) ────────────────────────────────

@@ -61,3 +61,34 @@ honest options, in order of cost:
 - Artin 1925 — faithfulness of the action on `F_n`
 - Chow 1948 — `Z(B_n) = <Delta^2>` for `n >= 3`
 - Garside 1969 — the full twist `Delta^2`
+
+## Progress 2026-08-15 (shadow) — option (b) CLOSED; the naturality gap REDUCED, not closed
+
+`src/Core.Lean4/Lean4/MenoTwistCentrality.lean`, `sorry`-free, `#print axioms` within
+`{propext, Classical.choice, Quot.sound}` for all 26 audited declarations, gated in
+`.github/workflows/lean-proof.yml`.
+
+**Option (b) is done.** `Framed` builds a braided monoidal category that is genuinely NOT
+symmetric (`dbl_one_one_ne_id`: `D_{1,1}` has framing 2) and a twist on it with
+`θ` at the generator `= id` and `θ` at `V ⊗ V` `≠ id` (`framedTwist_gen`,
+`framedTwist_two_ne_id`). That is exactly the configuration two prior reviews believed
+impossible, now inhabited. It is the writhe/abelianisation shadow of `<V>` (`β_{m,n} ↦ m·n`,
+`θ_n ↦ n(n−1)`), so it does NOT witness the difficulty of centrality — its hom-monoids are
+commutative. That difficulty is witnessed separately by `generators_not_commute`.
+
+**Ingredient 2 (faithfulness ⇒ centrality) is no longer needed for naturality.** Naturality
+is DERIVED from the balanced axiom alone, in an arbitrary braided monoidal category:
+`PreTwist` (tensor axiom + one equation at the unit, no naturality field) →
+`PreTwist.natural_braiding` / `natural_braiding_inv` / `natural_associator` /
+`natural_tensor` / unitors → `PreTwist.natural_of_mem` → `PreTwist.toTwist`. Chow 1948 is
+not used; only the elementary `Δₙ² ∈ Z(Bₙ)` was ever needed, and even that is now a
+consequence rather than an input.
+
+**What remains (ingredient 1, unchanged in substance, sharper in statement).** `toTwist`
+takes the hypothesis `BraidGenerated C` — every morphism is in the `⊗`/`≫`-closure of
+identities, braidings and coherence isos. For `<V>` that is Joyal–Street 1993 §2. It is a
+NAMED hypothesis, not a `sorry`. Option (c) is therefore now: prove `BraidGenerated <V>`,
+which is strictly less than "braid groupoid + Artin faithfulness" was.
+
+**Separately settled:** the proposed Schur's-lemma shortcut (central ⇒ scalar on an irrep)
+does NOT apply — see the file's header for the four failures, three machine-checked.
