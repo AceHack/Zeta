@@ -1,11 +1,12 @@
 ---
 id: 081M010W1BP087G0R002M2BNVW
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: heatsignature-ispressurekind-and-heatsignal-ofkind-disagree
 title: "HeatSignature.isPressureKind and HeatSignal.ofKind disagree on kinds carrying both a forgetting and a pressure token"
 created: 2026-08-14T20:54:28.470Z
+completed: 2026-08-15T15:05:22.306Z
 depends_on: []
 composes_with: []
 ---
@@ -68,3 +69,16 @@ The defect is *two* classifiers, not the ordering of either. Deriving one from t
 unrepresentable. A test that asserts the two routes agree on a generated kind corpus is the
 falsifier; note that an ordered chain must then decide dual-token kinds explicitly rather
 than by accident of branch order.
+
+## Resolution (2026-08-15)
+
+Both routes now read `HeatSignature.classifyKind`. Dual-token kinds are
+**pressure** — missing a pressure signal is fail-dangerous
+(`TemperatureReadout` would otherwise read cold). The order is the
+decision, not an accident of `if/elif` listing.
+
+Live kinds (L7 corpus in `ShedDisposition.Property.Tests`) all carry one
+token class; none change. The falsifier constructs dual-token kinds by
+concatenation (so a kind-literal lint does not fire) and asserts the two
+routes agree on the live corpus and the product of forget × pressure
+tokens. `forget-backpressure` now reports `PressurePpm = MaxPpm`.

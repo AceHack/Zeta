@@ -340,6 +340,69 @@ let ``heat signature classifier is the shared pressure and forgetting rule`` () 
     )
 
 [<Fact>]
+let ``heat pressure classifiers agree on live kinds and on dual-token kinds`` () =
+    // 081M010W1BP. The two routes used to disagree whenever a kind carried both a
+    // forgetting token and a pressure token: isPressureKind said yes, ofKind said
+    // Forgotten so isPressure said no. TemperatureReadout then read cold for a
+    // room under genuine backpressure. Both routes now read classifyKind.
+    //
+    // Live kinds (enumerated in ShedDisposition.Property.Tests L7 corpus) all
+    // carry one token class. Dual-token kinds are constructed by concatenation
+    // so a kind-literal lint that refuses them in source does not fire here.
+    let live =
+        [ "room-admission.backpressure"
+          "room-horizon.backpressure"
+          "room-boundary.privacy-backpressure"
+          "meta-cart.policy-backpressure"
+          "darkhall.backpressure"
+          "room-boundary.door-denied"
+          "meta-cart.denied"
+          "darkhall.machine.denied"
+          "room-horizon.forgotten"
+          "room-admission.forgotten"
+          "wset.consolidate.forgotten"
+          "soft-emu.prune"
+          "darkhall.storage-error"
+          "invalid"
+          "forgotten"
+          "backpressure"
+          "reject-cache.overwritten"
+          "denied-list.compacted"
+          "rejection-sampler.evicted"
+          "backpressure-meter.erased" ]
+
+    let forgetTokens = [ "forgotten"; "forget"; "prune" ]
+    let pressureTokens = [ "backpressure"; "denied"; "reject" ]
+
+    let dual =
+        [ for f in forgetTokens do
+              for p in pressureTokens do
+                  yield f + "-" + p
+                  yield p + "-" + f ]
+
+    for kind in live @ dual do
+        let fromKind = HeatSignature.isPressureKind kind
+        let fromSignal = HeatSignal.ofKind kind |> HeatSignal.isPressure
+        Assert.True((fromKind = fromSignal), sprintf "disagree on %s: isPressureKind=%b ofKind|>isPressure=%b" kind fromKind fromSignal)
+
+    // The workitem's measured table: dual-token kinds are pressure, explicitly.
+    // Built by concatenation so the dual-token kind-literal lint does not fire.
+    let forgetBackpressure = "forget" + "-" + "backpressure"
+    let pruneRejected = "prune" + "-" + "rejected"
+    let boundedForgetDenied = "bounded" + "-" + "forget" + "-" + "denied"
+
+    Assert.True(HeatSignature.isPressureKind forgetBackpressure)
+    Assert.Equal(HeatSignal.Backpressure, HeatSignal.ofKind forgetBackpressure)
+    Assert.True(HeatSignature.isPressureKind pruneRejected)
+    Assert.Equal(HeatSignal.Denied, HeatSignal.ofKind pruneRejected)
+    Assert.True(HeatSignature.isPressureKind boundedForgetDenied)
+    Assert.Equal(HeatSignal.Denied, HeatSignal.ofKind boundedForgetDenied)
+
+    // Fail-safe: a dual-token signature reports full pressure, not a cold room.
+    let dualSig = HeatSignature.ofMass "test" forgetBackpressure 1 1.0 "dual-token probe"
+    Assert.Equal(TemperatureReadout.MaxPpm, TemperatureReadout.ofHeatSignature(dualSig).PressurePpm)
+
+[<Fact>]
 let ``heat rows export through an injected host heat sink`` () =
     let rows: Scheduler.HeatBoundaryRow list =
         [ { Tick = 1

@@ -84,9 +84,6 @@ module HeatSignature =
     let isDeniedKind (kind: string) : bool =
         kindContains "denied" kind || kindContains "reject" kind
 
-    let isPressureKind (kind: string) : bool =
-        isBackpressureKind kind || isDeniedKind kind
-
     let isForgettingKind (kind: string) : bool =
         kindContains "forgotten" kind || kindContains "forget" kind || kindContains "prune" kind
 
@@ -101,6 +98,48 @@ module HeatSignature =
 
     let isStaleKind (kind: string) : bool =
         kindContains "stale" kind
+
+    /// Single ordered classification of a kind string. Both `isPressureKind` and
+    /// `HeatSignal.ofKind` read this; they cannot disagree (081M010W1BP).
+    ///
+    /// Dual-token kinds that carry both a forgetting token and a pressure token
+    /// are **pressure**. Missing a pressure signal is fail-dangerous:
+    /// `TemperatureReadout.ofHeatSignature` would otherwise read cold for a room
+    /// under genuine backpressure. The order is the decision, not an accident
+    /// of `if/elif` listing.
+    [<RequireQualifiedAccess>]
+    type KindClass =
+        | Backpressure
+        | Denied
+        | Forgotten
+        | StorageError
+        | Invalid
+        | Expired
+        | Stale
+        | Other
+
+    let classifyKind (kind: string) : KindClass =
+        if isBackpressureKind kind then KindClass.Backpressure
+        elif isDeniedKind kind then KindClass.Denied
+        elif isForgettingKind kind then KindClass.Forgotten
+        elif isStorageErrorKind kind then KindClass.StorageError
+        elif isInvalidKind kind then KindClass.Invalid
+        elif isExpiredKind kind then KindClass.Expired
+        elif isStaleKind kind then KindClass.Stale
+        else KindClass.Other
+
+    /// Derived from `classifyKind`. A kind is pressure iff the single classifier
+    /// said so — never a second, independent substring test.
+    let isPressureKind (kind: string) : bool =
+        match classifyKind kind with
+        | KindClass.Backpressure
+        | KindClass.Denied -> true
+        | KindClass.Forgotten
+        | KindClass.StorageError
+        | KindClass.Invalid
+        | KindClass.Expired
+        | KindClass.Stale
+        | KindClass.Other -> false
 
     let ofMass (source: string) (kind: string) (units: int) (mass: double) (detail: string) : HeatSignature =
         let ppm =
@@ -155,22 +194,15 @@ type HeatSignal =
 module HeatSignal =
 
     let ofKind (kind: string) : HeatSignal =
-        if HeatSignature.isForgettingKind kind then
-            HeatSignal.Forgotten
-        elif HeatSignature.isBackpressureKind kind then
-            HeatSignal.Backpressure
-        elif HeatSignature.isDeniedKind kind then
-            HeatSignal.Denied
-        elif HeatSignature.isStorageErrorKind kind then
-            HeatSignal.StorageError
-        elif HeatSignature.isInvalidKind kind then
-            HeatSignal.Invalid
-        elif HeatSignature.isExpiredKind kind then
-            HeatSignal.Expired
-        elif HeatSignature.isStaleKind kind then
-            HeatSignal.Stale
-        else
-            HeatSignal.Other kind
+        match HeatSignature.classifyKind kind with
+        | HeatSignature.KindClass.Backpressure -> HeatSignal.Backpressure
+        | HeatSignature.KindClass.Denied -> HeatSignal.Denied
+        | HeatSignature.KindClass.Forgotten -> HeatSignal.Forgotten
+        | HeatSignature.KindClass.StorageError -> HeatSignal.StorageError
+        | HeatSignature.KindClass.Invalid -> HeatSignal.Invalid
+        | HeatSignature.KindClass.Expired -> HeatSignal.Expired
+        | HeatSignature.KindClass.Stale -> HeatSignal.Stale
+        | HeatSignature.KindClass.Other -> HeatSignal.Other kind
 
     let token =
         function
@@ -207,7 +239,9 @@ module HeatSignal =
     /// pressure token reads as `Deferred` — i.e. claims a composition law it does not satisfy.
     /// Measured witnesses (single-token, so not the dual-token case a kind-literal lint
     /// catches): `reject-cache.overwritten`, `denied-list.compacted`,
-    /// `rejection-sampler.evicted`, `backpressure-meter.erased`.
+    /// `rejection-sampler.evicted`, `backpressure-meter.erased`. Dual-token kinds
+    /// are pressure by `classifyKind` (081M010W1BP) and so read `Deferred` here —
+    /// that is the fail-safe direction, not this collision.
     ///
     /// Note the *other* direction is merely pessimistic: an unrecognised kind falls to
     /// `Other`, which reads `Annihilated`, so an undeclared deferral is over-charged rather
