@@ -329,3 +329,73 @@ let ``the property generator actually produces Binary, Cond, and non-trivial wid
         | Ok c -> c.Width > 1L
         | Error _ -> false)
     |> should equal true
+
+
+// ═══════════════════════════════════════════════════════════════════
+// DISCRIMINATION — measured and RECORDED, never gated.
+//
+// Aaron 2026-08-15, asked whether the predictions must actually discriminate:
+//   "yes exactly — most probably won't at first, until we get better at it."
+//
+// So this is an instrument, not a bar. The only hard assertion is SOUNDNESS
+// (`actual > predicted` is the violation). The concordance and over-prediction
+// numbers are computed, printed in a fixed diffable format, and left un-gated on
+// purpose: a threshold here would either block honest work or invite tuning the
+// model until the number looks good, which inverts the instrument into a target.
+//
+// The corpus is checked in and stable so two runs on different dates compare.
+// It is NOT to be edited to improve the score.
+// ═══════════════════════════════════════════════════════════════════
+
+/// One source of truth: the corpus lives in `BonsaiCostMeasure.standardCorpus` so it can
+/// be re-run outside the test harness (that is what makes the number comparable over time).
+let private corpus = BonsaiCostMeasure.standardCorpus
+
+let private okMeasurement =
+    function
+    | Ok(m: BonsaiCostMeasure.Measurement) -> m
+    | Error e -> failwithf "measurement declined: %A" e
+
+[<Fact>]
+let ``discrimination is MEASURED and reported; only soundness is asserted`` () =
+    let m = BonsaiCostMeasure.measure corpus |> okMeasurement
+
+    // The instrument itself must not be vacuous: a corpus with no comparable pairs
+    // would report a meaningless concordance of 0.0 and look like a real score.
+    m.Cases |> should equal (List.length corpus)
+    m.ComparablePairs > 0 |> should equal true
+
+    // THE ONLY HARD ASSERTION. Everything below is recorded, not gated.
+    m.Unsound |> should be Empty
+
+    // Printed in a fixed, invariant-culture format so runs on different dates diff.
+    // Recorded in docs/research/2026-08-15-inject-the-scheduler-at-the-evaluation-seam-*.md
+    printfn "%s" (BonsaiCostMeasure.report m)
+    for o in m.Outcomes do
+        printfn "  %-34s predicted=%-6d actual=%-4d over=%.2fx" o.Label o.Predicted o.Actual o.OverPredictionFactor
+
+[<Fact>]
+let ``the instrument detects a constant predictor as pure noise`` () =
+    // A sound-but-useless model: always predict the largest actual in the corpus.
+    // It never under-predicts, so soundness passes — and concordance must collapse
+    // to 0.0 with every comparable pair tied. This is what makes the number a real
+    // measurement rather than a statistic that is high no matter what.
+    let constant _ _ : Result<BonsaiCost.Cost, BonsaiCost.CostFeedback> =
+        Ok { Width = 1000L; ToyPairs = 0L }
+    let m = BonsaiCostMeasure.measureWith constant corpus |> okMeasurement
+
+    m.Unsound |> should be Empty                       // sound
+    m.ConcordantPairs |> should equal 0                // and carries no ordering signal
+    m.TiedPredictedPairs |> should equal m.ComparablePairs
+    m.ConcordantFraction |> should equal 0.0
+
+[<Fact>]
+let ``the instrument reports unsoundness rather than throwing`` () =
+    // An under-predicting model must show up in `Unsound`, by label — the defect
+    // direction is reported as data, not as an exception.
+    let under _ _ : Result<BonsaiCost.Cost, BonsaiCost.CostFeedback> =
+        Ok { Width = 1L; ToyPairs = 0L }
+    let m = BonsaiCostMeasure.measureWith under corpus |> okMeasurement
+
+    m.Unsound |> List.isEmpty |> should equal false
+    m.Unsound |> List.contains "mul-3x3-distinct" |> should equal true

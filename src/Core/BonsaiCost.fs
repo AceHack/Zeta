@@ -249,3 +249,232 @@ module BonsaiCost =
                         { Snapshot = ()
                           Branches = branches }
                     forecast) }
+
+
+/// **BonsaiCostMeasure — the instrument, not the gate.**
+///
+/// A cost bound has two independent properties that fail in OPPOSITE directions:
+///
+/// - **Soundness** — never under-predict. `actual > predicted` is the violation;
+///   `actual < predicted` is a loose bound and is permitted. This stays a hard assertion.
+/// - **Discrimination** — does the prediction actually separate cheap branches from
+///   expensive ones? A model answering "the ceiling" for everything is perfectly sound and
+///   useless, because `Vision.predictBranches` prunes on the predicted order.
+///
+/// **Discrimination is measured and recorded, NOT gated** (Aaron 2026-08-15, on the
+/// expectation that predictions will discriminate poorly at first: *"yes exactly — most
+/// probably won't at first, until we get better at it."*). Treating it as a bar to clear
+/// would either block honest work or, worse, invite tuning the model until the number looks
+/// good — inverting the instrument into a target. The number exists to tell us whether
+/// pruning is worth trusting yet; **do not optimise against it.**
+///
+/// So: `measure` asserts nothing. It returns the numbers, re-runnably, so the trajectory is
+/// visible across dates. A recorded poor score is honest and improvable; an unmeasured
+/// "sound" model is neither. The labelling discipline is unchanged — a model that does not
+/// discriminate is `unmetered` as a *predictor* however sound it is as a *bound*.
+///
+/// **The concordance number is the one that matters for a prune.** A scheduler boards by
+/// ORDER, not by absolute magnitude, so the question is whether predicted order agrees with
+/// actual order. A constant predictor scores `ConcordantFraction = 0` with every pair landing
+/// in `TiedPredictedPairs` — the "1.02x spread" failure made visible rather than argued about.
+///
+/// **`measureWith` takes the predictor as a parameter.** That is one parameter, not
+/// speculative architecture, and it is what lets several independent estimators be scored
+/// against the same actuals later. Aaron 2026-08-15: *"fast failures and decorrelated cheap
+/// AI is the way to improve this."* Whether decorrelated ensembles actually beat one
+/// carefully-argued cost function here is **not measured** — see the research doc, which
+/// records that transfer as a structural argument rather than a result.
+[<RequireQualifiedAccess>]
+module BonsaiCostMeasure =
+
+    open Bonsai
+
+    /// One scored case: the estimator's inputs plus the environment to actually evaluate in.
+    type Case =
+        { Label: string
+          Widths: BonsaiCost.Widths
+          Env: BonsaiSoft.Env
+          Expr: Expr }
+
+    type CaseOutcome =
+        { Label: string
+          Predicted: int64
+          Actual: int
+          /// `false` is the defect: the bound was exceeded.
+          Sound: bool
+          Exact: bool
+          /// predicted / actual — 1.0 is a tight bound, large is a loose one.
+          OverPredictionFactor: float }
+
+    type Measurement =
+        { Cases: int
+          /// Labels where `actual > predicted`. Non-empty means the MODEL IS WRONG.
+          Unsound: string list
+          ExactCases: int
+          MaxOverPredictionFactor: float
+          GeoMeanOverPredictionFactor: float
+          /// Pairs whose ACTUAL widths differ — the pairs a predictor could get right.
+          ComparablePairs: int
+          ConcordantPairs: int
+          DiscordantPairs: int
+          /// Pairs the predictor could not separate at all. A constant model lands here.
+          TiedPredictedPairs: int
+          /// ConcordantPairs / ComparablePairs. 1.0 = perfect ordering, 0.0 = no signal.
+          ConcordantFraction: float
+          Outcomes: CaseOutcome list }
+
+    type MeasureFeedback =
+        | NoCases
+        | PredictDeclined of label: string * text: string
+        | EvalDeclined of label: string * text: string
+
+    let private score (case: Case) (predicted: int64) (actual: int) : CaseOutcome =
+        { Label = case.Label
+          Predicted = predicted
+          Actual = actual
+          Sound = int64 actual <= predicted
+          Exact = int64 actual = predicted
+          OverPredictionFactor = float predicted / float actual }
+
+    /// Score a corpus with ANY predictor against the actual `evalSoft` widths.
+    let measureWith
+        (predictor: BonsaiCost.Widths -> Expr -> Result<BonsaiCost.Cost, BonsaiCost.CostFeedback>)
+        (cases: Case list)
+        : Result<Measurement, MeasureFeedback> =
+        if List.isEmpty cases then
+            Error NoCases
+        else
+            let rec run acc rest =
+                match rest with
+                | [] -> Ok(List.rev acc)
+                | (case: Case) :: tail ->
+                    match predictor case.Widths case.Expr with
+                    | Error feedback -> Error(PredictDeclined(case.Label, BonsaiCost.feedbackText feedback))
+                    | Ok cost ->
+                        match BonsaiSoft.evalSoft case.Env case.Expr with
+                        | Error text -> Error(EvalDeclined(case.Label, text))
+                        | Ok sv -> run (score case cost.Width (List.length (SoftValue.candidates sv)) :: acc) tail
+
+            run [] cases
+            |> Result.map (fun outcomes ->
+                let arr = List.toArray outcomes
+                let mutable comparable = 0
+                let mutable concordant = 0
+                let mutable discordant = 0
+                let mutable tied = 0
+                for i in 0 .. arr.Length - 2 do
+                    for j in i + 1 .. arr.Length - 1 do
+                        let da = compare arr.[i].Actual arr.[j].Actual
+                        if da <> 0 then
+                            comparable <- comparable + 1
+                            let dp = compare arr.[i].Predicted arr.[j].Predicted
+                            if dp = 0 then tied <- tied + 1
+                            elif dp = da then concordant <- concordant + 1
+                            else discordant <- discordant + 1
+                let logSum = outcomes |> List.sumBy (fun o -> log o.OverPredictionFactor)
+                { Cases = arr.Length
+                  Unsound = outcomes |> List.filter (fun o -> not o.Sound) |> List.map _.Label
+                  ExactCases = outcomes |> List.filter _.Exact |> List.length
+                  MaxOverPredictionFactor = outcomes |> List.map _.OverPredictionFactor |> List.max
+                  GeoMeanOverPredictionFactor = exp (logSum / float arr.Length)
+                  ComparablePairs = comparable
+                  ConcordantPairs = concordant
+                  DiscordantPairs = discordant
+                  TiedPredictedPairs = tied
+                  ConcordantFraction =
+                    if comparable = 0 then 0.0 else float concordant / float comparable
+                  Outcomes = outcomes })
+
+    /// Score a corpus with the shipped predictor.
+    let measure (cases: Case list) : Result<Measurement, MeasureFeedback> =
+        measureWith BonsaiCost.predict cases
+
+    // ── The reference corpus ────────────────────────────────────────────────
+    //
+    // It lives in Core, not in the test project, for one reason: the number is
+    // meant to be re-run and compared across DATES, which means the instrument has
+    // to be callable outside the test harness (`dotnet fsi`, a future metrics tick,
+    // another estimator being scored against the same actuals). A corpus locked
+    // inside a test file can only ever be run one way.
+    //
+    // It is DELIBERATELY FIXED. Editing it changes what the score means, so a later
+    // reading would not be comparable to the recorded one. If it needs to grow,
+    // append and say so with the date — never rewrite to improve a number.
+
+    let private softOf (values: int64 list) : SoftValue.SoftValue =
+        values
+        |> List.map (fun v -> DynamicValue.Int v, 1.0)
+        |> SoftValue.ofWeighted
+        |> Option.defaultValue (SoftValue.certain (DynamicValue.Int 0L))
+
+    let private case label widths env expr : Case =
+        { Label = label
+          Widths = Map.ofList widths
+          Env = Map.ofList env
+          Expr = expr }
+
+    /// The stable scoring corpus: certain constants, bare params, products that do
+    /// and do not collide, predicate ops (where the codomain cap bites), both `Cond`
+    /// shapes (both branches live vs. a certain test dropping one), and nested trees.
+    let standardCorpus: Case list =
+        let x3 = softOf [ 2L; 3L; 5L ]
+        let y3 = softOf [ 7L; 11L; 13L ]
+        let z2 = softOf [ 100L; 200L ]
+        let a2 = softOf [ 1L; 10L ]
+        let q3 = softOf [ 300L; 400L; 500L ]
+        let xyzW = [ "x", 3L; "y", 3L; "z", 2L ]
+        let xyzE = [ "x", x3; "y", y3; "z", z2 ]
+
+        [ case "const" [] [] (Const(CInt 1L))
+          case "const-binary" [] [] (Binary(Mul, Const(CInt 2L), Const(CInt 3L)))
+          case "param-3" [ "x", 3L ] [ "x", x3 ] (Param "x")
+          case "mul-3x3-distinct" xyzW xyzE (Binary(Mul, Param "x", Param "y"))
+          case "mul-collapse-to-zero" [ "x", 3L ] [ "x", x3 ] (Binary(Mul, Param "x", Const(CInt 0L)))
+          case "add-3x2" xyzW xyzE (Binary(Add, Param "x", Param "z"))
+          case "sub-self-merges" [ "x", 3L ] [ "x", x3 ] (Binary(Sub, Param "x", Param "x"))
+          case "lt-3x3-predicate" xyzW xyzE (Binary(Lt, Param "x", Param "y"))
+          case "eq-self-predicate" [ "x", 3L ] [ "x", x3 ] (Binary(Eq, Param "x", Param "x"))
+          case
+              "and-of-predicates"
+              xyzW
+              xyzE
+              (Binary(And, Binary(Lt, Param "x", Param "y"), Binary(Lt, Param "y", Param "x")))
+          case "nested-mul-3x3x2" xyzW xyzE (Binary(Mul, Binary(Mul, Param "x", Param "y"), Param "z"))
+          case
+              "add-over-merged-sub"
+              [ "x", 3L ]
+              [ "x", x3 ]
+              (Binary(Add, Param "x", Binary(Sub, Param "x", Param "x")))
+          case
+              "cond-both-branches-live"
+              [ "a", 2L; "p", 2L; "q", 3L ]
+              [ "a", a2; "p", z2; "q", q3 ]
+              (Cond(Binary(Lt, Param "a", Const(CInt 5L)), Param "p", Param "q"))
+          case
+              "cond-test-certain-drops-a-branch"
+              [ "p", 2L; "q", 3L ]
+              [ "p", z2; "q", q3 ]
+              (Cond(Binary(Lt, Const(CInt 1L), Const(CInt 5L)), Param "p", Param "q"))
+          case
+              "cond-nested-in-arithmetic"
+              [ "a", 2L; "p", 2L; "q", 3L; "z", 2L ]
+              [ "a", a2; "p", z2; "q", q3; "z", z2 ]
+              (Binary(Add, Cond(Binary(Lt, Param "a", Const(CInt 5L)), Param "p", Param "q"), Param "z")) ]
+
+    /// A single fixed-format line, so two runs on different dates are diffable by eye.
+    /// Invariant-culture throughout — this line is compared across machines.
+    let report (m: Measurement) : string =
+        System.String.Format(
+            System.Globalization.CultureInfo.InvariantCulture,
+            "BonsaiCost discrimination: cases={0} unsound={1} exact={2} concordant={3}/{4} tied={5} discordant={6} concordantFraction={7:F3} overPrediction(geoMean)={8:F3} overPrediction(max)={9:F3}",
+            m.Cases,
+            List.length m.Unsound,
+            m.ExactCases,
+            m.ConcordantPairs,
+            m.ComparablePairs,
+            m.TiedPredictedPairs,
+            m.DiscordantPairs,
+            m.ConcordantFraction,
+            m.GeoMeanOverPredictionFactor,
+            m.MaxOverPredictionFactor
+        )

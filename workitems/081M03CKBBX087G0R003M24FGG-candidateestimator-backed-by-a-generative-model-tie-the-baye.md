@@ -77,6 +77,24 @@ reports it. Absent that, the estimator is `unmetered` and must say so
 (`toy-is-free-metered-must-be-earned.md`). Do **not** let a shipped cost-bound pruner be
 described as satisfying Rodney's Razor — that is the silent-promotion failure.
 
+## Successor thread: decorrelated cheap estimators
+
+Aaron 2026-08-15: *"this is where AI intelligence comes into play. This has had humans stuck
+for a long time because of disagreements. Fast failures and decorrelated cheap AI is the way
+to improve this."*
+
+`BonsaiCostMeasure.measureWith` already takes **the predictor as a parameter**, so N
+independent estimators can be scored against the same actuals with no further plumbing. The
+open question — untested — is whether many cheap decorrelated estimates beat one
+carefully-argued recurrence for cost prediction.
+
+**Register:** this is a structural resemblance to the PR #10834 tangle finding (a correlated
+quorum buys nothing at any N; a decorrelated one bounds the stall), **not** a transfer with
+evidence. That finding is about escape times, not big-O estimates. Per
+`numerology-vs-number-theory.md` it stays a coincidence-index entry until someone supplies the
+structure — which here means actually scoring an ensemble against `standardCorpus` and
+reporting whether `ConcordantFraction` improves.
+
 ## Pointers
 
 - `docs/research/2026-08-15-inject-the-scheduler-at-the-evaluation-seam-not-the-encoding-seam-and-what-the-app-free-claim-actually-survives.md` §6 — the measurement above

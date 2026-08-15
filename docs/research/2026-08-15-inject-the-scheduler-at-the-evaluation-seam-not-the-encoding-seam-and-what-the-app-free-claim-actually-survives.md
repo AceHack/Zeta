@@ -105,6 +105,83 @@ and the property failed *for the wrong reason* — a false red that would have r
 Fixed to compare in `int64`. Recording it because a falsifier that fires for a reason other than the
 one it names is the same class of defect as one that cannot fire at all.
 
+### Discrimination is MEASURED and RECORDED — deliberately not gated
+
+**Correction to my own first framing, which my coordinator flagged and Aaron reframed.** I built
+non-triviality as a bar to clear. Aaron 2026-08-15, asked whether the predictions must actually
+discriminate:
+
+> *"yes exactly — most probably won't at first, until we get better at it."*
+
+So it is a **trajectory, not a gate**. The labelling discipline is unchanged — a sound-but-loose model
+is `unmetered` as a *predictor* however good it is as a *bound*, and calling it a prediction would be
+the silent promotion `toy-is-free-metered-must-be-earned.md` forbids. What changes is that a poor score
+must not block honest work: land it **with the number**, and watch the number move.
+
+`BonsaiCostMeasure` is that instrument. It asserts nothing about quality. The **only** hard assertion in
+its tests is soundness (`Unsound` must be empty); everything else is reported. The reference corpus
+lives in Core rather than the test project specifically so the number can be re-run outside the test
+harness and compared across dates.
+
+**Measured 2026-08-15, `BonsaiCost.predict` over `BonsaiCostMeasure.standardCorpus` (15 cases):**
+
+```
+cases=15 unsound=0 exact=8 concordant=83/93 tied=5 discordant=5
+concordantFraction=0.892 overPrediction(geoMean)=1.410 overPrediction(max)=3.000
+```
+
+| case | predicted | actual | over |
+|---|---|---|---|
+| `const` · `const-binary` · `param-3` · `mul-3x3-distinct` · `add-3x2` · `eq-self-predicate` · `nested-mul-3x3x2` · `cond-both-branches-live` | — | — | **1.00×** (exact) |
+| `sub-self-merges` | 9 | 7 | 1.29× |
+| `cond-nested-in-arithmetic` | 10 | 6 | 1.67× |
+| `lt-3x3-predicate` | 2 | 1 | 2.00× |
+| `and-of-predicates` | 2 | 1 | 2.00× |
+| `cond-test-certain-drops-a-branch` | 5 | 2 | 2.50× |
+| `add-over-merged-sub` | 27 | 10 | 2.70× |
+| `mul-collapse-to-zero` | 3 | 1 | **3.00×** |
+
+**Reading it honestly, including the parts that are not flattering:**
+
+- **Sound on every case**, which is the property that actually had to hold.
+- **8/15 exact**, geometric-mean over-prediction **1.41×**, worst **3.0×**. The loose cases are exactly
+  the ones the model is structurally blind to: value-dependent merging (`Mul` by zero collapsing three
+  candidates to one), and a certain `Cond` test whose weight-0 branch is dropped at evaluation. A
+  value-blind estimator cannot see either, and both are *over*-prediction, so the bound holds.
+- **ConcordantFraction 0.892 — higher than expected, and I am not treating that as a success.**
+  Fifteen cases give 93 comparable pairs, of which **5 are outright discordant** — the model orders
+  them backwards, and a scheduler pruning by that order would defer the cheaper branch. The corpus is
+  small and I chose it; a hand-built corpus scored by its author is the weakest form of this
+  measurement. The number is a **starting point on the trajectory**, not a result.
+- **The instrument is itself falsified**, so the number is not a statistic that is high regardless: a
+  constant predictor over the same corpus is asserted to score `ConcordantFraction = 0.0` with all 93
+  pairs tied, and an under-predicting one is asserted to appear in `Unsound` by label. Both are tests.
+
+**The corpus must not be tuned.** It is fixed on purpose; editing it changes what the score means and
+silently breaks comparability with the reading above. Append with a date if it must grow — never
+rewrite to improve a number. The instrument exists to tell us whether pruning is worth trusting; a
+number optimised against is a number that has stopped saying that (Goodhart, and here self-inflicted).
+
+### On "fast failures and decorrelated cheap AI" — the shape is admitted, the transfer is not measured
+
+Aaron 2026-08-15 on why this has been hard:
+
+> *"this is where AI intelligence comes into play. This has had humans stuck for a long time because of
+> disagreements. Fast failures and decorrelated cheap AI is the way to improve this."*
+
+`BonsaiCostMeasure.measureWith` takes **the predictor as a parameter**, so several independent
+estimators can be scored against the same actuals. That is one parameter, not speculative architecture,
+and it is the cheapest thing that admits the shape.
+
+**What is NOT claimed.** My coordinator noted that PR #10834 measured, in the tangle work, that a
+*correlated* quorum buys nothing at any N while a *decorrelated* one bounds the stall — and offered the
+transfer as a structural argument, explicitly not as a measured result about cost models. Holding that
+line: **that finding is about escape times, not big-O estimates**, and nothing here tests whether many
+cheap decorrelated estimators beat one carefully-argued recurrence. Per
+`numerology-vs-number-theory.md` this is recorded as a **structural resemblance with the register
+attached** — a reason to keep `measureWith` general, not a reason to believe an ensemble would win.
+Building the ensemble is successor work, noted on the minted work-item.
+
 ### What is toy, and says so
 
 `Cost.ToyPairs` is the time half — an upper bound on the candidate pairs `evalSoft` enumerates through
