@@ -1,0 +1,12 @@
+{
+  "pr_number": 10759,
+  "archive_path": "docs/history/pr-reviews/PR-10759-fix-consensus-the-tie-break-was-never-actually-pinned-ordinal-minimum-reproduces.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T12:48:51.093Z",
+  "schema_version": "v1",
+  "commit_sha": "26f0884173dd192d304736fbe46923f12314021e",
+  "title": "fix(consensus): the tie-break was never actually pinned — ordinal-minimum reproduces the treaty byte-for-byte",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T12:48:14Z",
+  "head_ref": "shadow/consensus-tie-break-decision"
+}
