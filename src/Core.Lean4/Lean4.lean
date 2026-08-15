@@ -28,4 +28,5 @@ import Lean4.Bonsai
 import Lean4.AdjCtlOrthogonality
 import Lean4.CliffordReflectionE8
 import Lean4.MenoBraidedRMatrix
+import Lean4.MenoMonoidalHexagons
 import Lean4.MenoBalancedTwist

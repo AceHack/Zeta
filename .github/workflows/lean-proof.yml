@@ -192,6 +192,11 @@ jobs:
             | cat Lean4/MenoBraidedRMatrix.lean - > /tmp/meno_rmatrix_axiom_audit.lean
           printf '#print axioms Zeta.MenoBalanced.dbl_cocycle\n#print axioms Zeta.MenoBalanced.twist_assoc_consistent\n#print axioms Zeta.MenoBalanced.twist_tensor_of_id\n#print axioms Zeta.MenoBalanced.misread_axiom_forces_symmetry\n#print axioms Zeta.MenoBalanced.twist_tensor_ne_id_of_dbl_ne_id\n#print axioms Zeta.MenoBalanced.dbl_eq_id_of_twist_id\n#print axioms Zeta.MenoBalanced.twist_Vpow_succ\n#print axioms Zeta.MenoBalanced.twist_eq_on_Vpow\n#print axioms Zeta.MenoBalanced.twist_eq_of_eq_on_gen\n#print axioms Zeta.MenoBalanced.act_braid_relation_dihedral3\n#print axioms Zeta.MenoBalanced.act_nontrivial_dihedral3\n#print axioms Zeta.MenoBalanced.garside_relation_dihedral3\n#print axioms Zeta.MenoBalanced.mutant_theta_id_rejected\n#print axioms Zeta.MenoBalanced.mutant_half_twist_rejected\n#print axioms Zeta.MenoBalanced.mutant_single_braiding_rejected\n#print axioms Zeta.MenoBalanced.mutant_delta_fourth_rejected\n' \
             | cat Lean4/MenoBalancedTwist.lean - > /tmp/meno_balanced_axiom_audit.lean
+          # ── Added 2026-08-15 (shadow/meno-associator-hexagons): the associator +
+          # unitors + BOTH hexagons + the copy/discard degree argument. Landed with its
+          # gate rather than after it, per the MenoBalancedTwist precedent above.
+          printf '#print axioms Zeta.MenoMonoidal.assocInv_assoc\n#print axioms Zeta.MenoMonoidal.assoc_assocInv\n#print axioms Zeta.MenoMonoidal.pentagon\n#print axioms Zeta.MenoMonoidal.triangle\n#print axioms Zeta.MenoMonoidal.hexagon1_tuple\n#print axioms Zeta.MenoMonoidal.hexagon2_tuple\n#print axioms Zeta.MenoMonoidal.strict_assoc\n#print axioms Zeta.MenoMonoidal.strict_leftUnit\n#print axioms Zeta.MenoMonoidal.strict_rightUnit\n#print axioms Zeta.MenoMonoidal.act_append\n#print axioms Zeta.MenoMonoidal.act_act\n#print axioms Zeta.MenoMonoidal.cBlock_singleton\n#print axioms Zeta.MenoMonoidal.hexagon1_strict\n#print axioms Zeta.MenoMonoidal.hexagon2_strict\n#print axioms Zeta.MenoMonoidal.cBlock_singleton_eq_interp\n#print axioms Zeta.MenoMonoidal.cBlock_one_two_eq_interp\n#print axioms Zeta.MenoMonoidal.cBlock_two_one_eq_interp\n#print axioms Zeta.MenoMonoidal.interp_length\n#print axioms Zeta.MenoMonoidal.interp_invWord\n#print axioms Zeta.MenoMonoidal.interp_injective\n#print axioms Zeta.MenoMonoidal.no_hom_between_distinct_degrees\n#print axioms Zeta.MenoMonoidal.no_copy\n#print axioms Zeta.MenoMonoidal.no_discard\n#print axioms Zeta.MenoMonoidal.no_copy_lengthPreserving\n#print axioms Zeta.MenoMonoidal.oppR_yangBaxter\n#print axioms Zeta.MenoMonoidal.hexagon1_opp\n#print axioms Zeta.MenoMonoidal.hexagon2_opp_fails\n#print axioms Zeta.MenoMonoidal.hexagon1_swap\n#print axioms Zeta.MenoMonoidal.hexagon2_swap\n' \
+            | cat Lean4/MenoMonoidalHexagons.lean - > /tmp/meno_hexagons_axiom_audit.lean
 
           # ── Added 2026-08-10: three files that were in NEITHER list ──────────────
           # Each audits ONLY declarations measured sorry-free on 2026-08-10, so these
@@ -268,6 +273,10 @@ jobs:
           fi
           if lake env lean /tmp/meno_balanced_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::MenoBalancedTwist depends on sorryAx — the balanced-structure / Garside full-twist certificate regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/meno_hexagons_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::MenoMonoidalHexagons depends on sorryAx — the associator/unitor/hexagon coherence certificate or the copy-discard degree argument regressed to sorry/admit"
             exit 1
           fi
           # ── Anti-vacuity guard (added 2026-08-10) ────────────────────────────────

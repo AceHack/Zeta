@@ -57,10 +57,20 @@ namespace Zeta.Core
 /// balanced); Garside 1969 (Δ, the full twist Δ²); Chow 1948 (Z(Bₙ)); Fox 1976 (cartesian ⟺ natural
 /// comonoid); Artin 1925 (faithfulness).
 ///
-/// **What is NOT here yet (deferred, per spec):** the associator α + unitors (ZSet tuples are non-strict,
-/// so the two hexagons can't even be *stated* without α — the sleeper prerequisite), the full FsCheck
-/// hexagon suite, and the Lean4 abstract R-matrix certificate. This increment lands the genuine braiding
-/// itself + its two earned tripwires (σ²≠id, realizes-Braid-σ). Work-item 081KYWEM90908QG0R002NHEMZE.
+/// **What is NOT here yet — CORRECTED 2026-08-15.** The previous text listed three deferrals; two of
+/// them had already shipped and the paragraph had gone stale, which is exactly the failure this file's
+/// Part 4 note warns about (a name standing in for a check).
+///  * ~~associator α + unitors~~ — **shipped**: `Meno.associator` / `associatorInv` / `leftUnitor` /
+///    `rightUnitor` (`Meno.fs`), pentagon + triangle at `MENO-8`/`MENO-9`. The claim "the hexagons can't
+///    even be *stated* without α" is correct and is a **typing** fact — without α the two sides of a
+///    hexagon do not have the same type — but α was never the blocker; it was already there.
+///  * ~~Lean4 abstract R-matrix certificate~~ — **shipped**: `src/Core.Lean4/Lean4/MenoBraidedRMatrix.lean`.
+///  * **the two hexagons themselves** — the genuine gap, and the one the deferral note obscured. Now
+///    discharged in Lean: `src/Core.Lean4/Lean4/MenoMonoidalHexagons.lean` proves both hexagons in the
+///    non-strict (tuple) model at the generating triple AND in the strict (list) model at all block
+///    sizes, with negative controls showing they are independent of Yang–Baxter and of σ²≠id.
+/// Still open: the FsCheck hexagon suite on the F# side (the Lean file is the certificate, not the
+/// property test). Work-item 081KYWEM90908QG0R002NHEMZE.
 ///
 /// Anchors: Joyal–Street 1993 (braided monoidal categories, the hexagons); Yang 1967 / Baxter 1972 (YBE);
 /// Joyce 1982 / Fenn–Rourke 1992 (racks/quandles as set-theoretic YB solutions); Kassel *Quantum Groups*.
