@@ -268,19 +268,32 @@ module MachZehnderWSet =
     let private phasePlate (phi: float) (k: int) : WSet.WSet<int, Complex> =
         if k = 1 then [ 1, Doubled.make (cos phi) (sin phi) ] else [ 0, ring.One ]
 
-    /// CLOSED interferometer: H · R1(φ) · H on |0⟩, consolidated (the interference), then the
-    /// boundary measurement. Linear ops inside; Born at the edge — the discipline, demonstrated.
-    let closed (phi: float) : (int * float) list =
+    /// The unconsolidated amplitudes immediately before the closed interferometer's erasing
+    /// boundary. Assembly-internal so the heat adapter can meter the boundary without duplicating
+    /// the circuit; public callers receive either the pure reference result or the metered bridge.
+    let internal closedAmplitudes (phi: float) : WSet.WSet<int, Complex> =
         [ 0, ring.One ]
         |> WSet.apply ring hadamard
         |> WSet.apply ring (phasePlate phi)
         |> WSet.apply ring hadamard
+
+    /// CLOSED interferometer: H · R1(φ) · H on |0⟩, consolidated (the interference), then the
+    /// boundary measurement. Linear ops inside; Born at the edge — the discipline, demonstrated.
+    /// This is the pure reference calculation. Production observable generation uses the
+    /// injected-sink adapter in `MachZehnderWSetHeat`.
+    let closed (phi: float) : (int * float) list =
+        closedAmplitudes phi
         |> WSet.consolidate ring isZero
         |> WSet.bornProb (fun z -> z.Real * z.Real + z.Imag * z.Imag)
 
-    /// OPEN interferometer: one beamsplitter, no recombination — equal halves, no interference.
-    let openArm () : (int * float) list =
+    /// The unconsolidated amplitudes immediately before the open interferometer's boundary.
+    let internal openArmAmplitudes () : WSet.WSet<int, Complex> =
         [ 0, ring.One ]
         |> WSet.apply ring hadamard
+
+    /// OPEN interferometer: one beamsplitter, no recombination — equal halves, no interference.
+    /// This is the pure reference calculation; production generation uses the heat adapter.
+    let openArm () : (int * float) list =
+        openArmAmplitudes ()
         |> WSet.consolidate ring isZero
         |> WSet.bornProb (fun z -> z.Real * z.Real + z.Imag * z.Imag)

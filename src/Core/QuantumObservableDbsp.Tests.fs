@@ -14,6 +14,11 @@ let private repoRoot () =
 
 let private tolerance = 1e-5
 
+let private mustOk =
+    function
+    | Ok value -> value
+    | Error feedback -> failwithf "unexpected Mach-Zehnder heat feedback: %A" feedback
+
 let private interferenceRowsById (rows: ZSet<QuantumObservableRow>) =
     rows
     |> Seq.choose (fun kv ->
@@ -72,8 +77,16 @@ let ``F# parses quantum Z-set transcript and verifies parity under DBSP updates`
 
     Assert.Equal(6, ZSet.count interferenceRows)
 
-    let wsetInterferenceRows = QuantumObservableDbsp.machZehnderZSet () |> interferenceRowsById
+    let heatSink = RecordingHeatSink()
+
+    let meteredRows =
+        QuantumObservableDbsp.machZehnderZSet (heatSink :> IHeatSink) "quantum-observable-dbsp"
+        |> mustOk
+
+    let wsetInterferenceRows = meteredRows.Value |> interferenceRowsById
     Assert.Equal(6, wsetInterferenceRows.Count)
+    Assert.Equal(12, meteredRows.Heat.Length)
+    Assert.Equal<HeatSignature list>(meteredRows.Heat, List.ofSeq heatSink.Signatures)
 
     // Check Mach-Zehnder probabilities against the source-owned WSet→observable-row bridge.
     for kv in interferenceRows do
@@ -157,7 +170,7 @@ let ``F# parses quantum Z-set transcript and verifies parity under DBSP updates`
     match piOver6Key with
     | QuantumObservableRow.InterferenceVisibility v ->
         let expected =
-            QuantumObservableDbsp.machZehnderClosedRow
+            QuantumObservableDbsp.machZehnderClosedReferenceRow
                 "mach-zehnder-closed-pi-over-6-phase"
                 "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver6Phase"
                 (System.Math.PI / 6.0)
@@ -170,7 +183,7 @@ let ``F# parses quantum Z-set transcript and verifies parity under DBSP updates`
 [<Fact>]
 let ``Q# oracle observable rows live on the signed Z-set ledger`` () =
     let row =
-        QuantumObservableDbsp.machZehnderClosedRow
+        QuantumObservableDbsp.machZehnderClosedReferenceRow
             "mach-zehnder-closed-pi-phase"
             "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase"
             Math.PI
@@ -181,3 +194,40 @@ let ``Q# oracle observable rows live on the signed Z-set ledger`` () =
         |> QuantumObservableDbsp.zsetOfDeltas
 
     Assert.True(ZSet.isEmpty signed)
+
+[<Fact>]
+let ``Mach-Zehnder DBSP generation emits every erasing boundary through the injected sink`` () =
+    let sink = RecordingHeatSink()
+
+    let generated =
+        QuantumObservableDbsp.machZehnderRows (sink :> IHeatSink) "quantum-room"
+        |> mustOk
+
+    Assert.Equal(6, generated.Value.Length)
+    Assert.Equal(12, generated.Heat.Length)
+    Assert.Equal<HeatSignature list>(generated.Heat, List.ofSeq sink.Signatures)
+
+    let kinds = generated.Heat |> List.countBy _.Kind |> Map.ofList
+    Assert.Equal(6, kinds.["wset.consolidate.forgotten"])
+    Assert.Equal(6, kinds.["wset.bornProb.forgotten"])
+    Assert.All(generated.Heat, fun heat -> Assert.Equal(ShedDisposition.Annihilated, heat.Disposition.Value))
+
+[<Fact>]
+let ``Mach-Zehnder DBSP generation preserves completed heat when the next stage backpressures`` () =
+    let sink = BoundedHeatSink(BoundedGSetConfig.noForgetBackpressure 1)
+
+    match QuantumObservableDbsp.machZehnderRows (sink :> IHeatSink) "bounded-quantum-room" with
+    | Ok _ -> Assert.Fail "the second heat signature must backpressure at capacity one"
+    | Error feedback ->
+        Assert.Empty feedback.CompletedRows
+        Assert.Equal(MachZehnderWSetHeat.Stage.BornProjection, feedback.Measurement.Stage)
+        Assert.Single feedback.Measurement.Completed |> ignore
+        Assert.Equal("wset.consolidate.forgotten", feedback.Measurement.Completed.Head.Kind)
+        Assert.Equal("wset.bornProb.forgotten", feedback.Measurement.Pending.Kind)
+
+        match feedback.Measurement.Sink with
+        | HeatSinkFeedback.Backpressure(heat, capacity, count) ->
+            Assert.Equal(feedback.Measurement.Pending, heat)
+            Assert.Equal(1, capacity)
+            Assert.Equal(2, count)
+        | other -> Assert.Fail(sprintf "expected typed backpressure, got %A" other)

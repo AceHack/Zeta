@@ -38,7 +38,7 @@ Reproduced pre-fix in both oracles: C# and F# each emitted
 Every in-repo caller goes through the validating `PackPayload` / `packPayload`
 wrapper, so the bound is **inert for every id mintable today**. The exposure is
 a **future** caller reaching past the wrapper — exactly the mistake
-`inventory/new-item.ts` made on the TypeScript side.
+`src/Core.TypeScript/inventory/new-item.ts` made on the TypeScript side.
 
 And the headroom is **zero, not comfortable**: both ids committed under
 `inventory/items/` carry payloads of **exactly 119 bits**. One more bit of clock
@@ -67,5 +67,5 @@ than bundling it.
 - **The cross-verification byte-lock vectors do not exercise this path**: all 16
   vectors are category 0 or 3, both `< 9`, so they route to the observation
   `pack`. Cross-verify is silent on this change in both directions.
-- No minting site changed. `inventory/new-item.ts` writes to the offset it
+- No minting site changed. `src/Core.TypeScript/inventory/new-item.ts` writes to the offset it
   intends and was deliberately left alone.

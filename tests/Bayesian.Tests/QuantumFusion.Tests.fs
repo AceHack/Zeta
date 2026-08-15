@@ -47,10 +47,10 @@ let private budget : QuantumFusion.Budget =
       BytesPerTick = 0L
       ResolutionBits = 16 }
 
-let private openRow = QuantumObservableDbsp.machZehnderOpenRow ()
+let private openRow = QuantumObservableDbsp.machZehnderOpenReferenceRow ()
 
 let private piRow =
-    QuantumObservableDbsp.machZehnderClosedRow
+    QuantumObservableDbsp.machZehnderClosedReferenceRow
         "mach-zehnder-closed-pi-phase"
         "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase"
         Math.PI
@@ -124,8 +124,15 @@ let ``fusion hides multiplicity while Bayesian confidence counts exterior identi
 
 [<Fact>]
 let ``Vision budget backpressure does not change fused arithmetic truth`` () =
+    let heatSink = RecordingHeatSink()
+
+    let deltas =
+        QuantumObservableDbsp.machZehnderDeltas (heatSink :> IHeatSink) "quantum-fusion"
+        |> mustOk
+        |> _.Value
+
     let report =
-        QuantumObservableDbsp.machZehnderDeltas ()
+        deltas
         |> QuantumFusion.fuseDeltas budget (SoftThrottle.tank 0.0 0.0)
         |> mustOk
 

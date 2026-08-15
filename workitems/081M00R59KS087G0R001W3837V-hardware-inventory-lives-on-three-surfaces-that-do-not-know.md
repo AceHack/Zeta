@@ -23,8 +23,8 @@ Hardware inventory exists in three places, none of which references the others:
 | `docs/HARDWARE-CAPABILITY-MATRIX.md` | capability matrix | separate again |
 
 So the audited *register* holds 2 of ~40 assets, while the *data* sits in a draft that
-the register does not know about. The draft's own header says it "promotes to canonical
-(`hardware.md`) after Addison + operator reconcile miner counts" — that reconciliation
+the register does not know about. The draft's own header says it promotes to a canonical
+**hardware.md** after Addison + operator reconcile miner counts — that reconciliation
 never happened, and the audited data never reached the audited register.
 
 ## Do NOT bulk-import the May draft
@@ -77,7 +77,7 @@ Two consumers, both live:
 
 ## Pointers
 
-- `inventory/README.md` · `inventory/AUDIT-PHASE7.md` · `inventory/items/README.md`
+- `docs/inventory/README.md` · `inventory/AUDIT-PHASE7.md` · `inventory/items/README.md`
 - `src/Core.TypeScript/inventory/{new-item,generate-items-json,amazon-orders-extract}.ts`
 - `081KSGS9H0008QG0R001VVEZQ9` — the earlier hardware-inventory-vs-cluster reconciliation item this composes with
 - `docs/backlog/P2/081KSE6WT0008QG0R0004AP0ZA-…` — the curated commodity-hardware reference (mini PCs + OCuLink eGPU + IP-KVM + remote finger)

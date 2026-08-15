@@ -47,7 +47,7 @@ whose vectors are not shared.
 
 ## Proposed shape
 
-Add `tests/cross-verification/actor-ref/vectors.json` carrying both classes — the golden
+Add **tests/cross-verification/actor-ref/vectors.json** carrying both classes — the golden
 (valid) vectors with their canonical string + SPIFFE projections, and the invalid class
 with the *door* each must be rejected at. Have the TS test and `ActorRef.Tests.fs` both
 read it instead of restating it. Then a vector added for one oracle is automatically

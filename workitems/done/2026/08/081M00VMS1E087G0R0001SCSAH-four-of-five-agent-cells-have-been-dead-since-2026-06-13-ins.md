@@ -24,7 +24,7 @@ with three corrections to the original framing.
 
 | claim | verdict | evidence |
 |---|---|---|
-| four plists name `tools/kiro/kiro-loop-wrapper.sh` | confirmed | `launchctl print` → `program = /Users/acehack/.zeta/clones/<p>/tools/kiro/kiro-loop-wrapper.sh` for otto/alexa/vera/lior |
+| four plists name **tools/kiro/kiro-loop-wrapper.sh** | confirmed | `launchctl print` → `program = /Users/acehack/.zeta/clones/<p>/tools/kiro/kiro-loop-wrapper.sh` for otto/alexa/vera/lior |
 | deleted by PR #8088 on 2026-06-13 | confirmed | `git log --diff-filter=D` → `3430a032a`, 2026-06-13 18:52:45 -0400 |
 | every clone `reset --hard`'d it away | confirmed | `tools/kiro/` absent in all four clones |
 | `launchctl` reports exit 78, no PID | confirmed | `last exit code = 78: EX_CONFIG`, `state = spawn scheduled` |
@@ -40,13 +40,13 @@ all. The file is `tools/setup/host-loop-bootstrap.sh`.
 ### Correction 2 — a sixth unit also names the dead wrapper
 
 `com.lucent.zeta.kiro.plist` (distinct from the healthy `kiro-loop`) also points at
-`tools/kiro/kiro-loop-wrapper.sh`, in the shared checkout. It is not loaded
+**tools/kiro/kiro-loop-wrapper.sh**, in the shared checkout. It is not loaded
 (`launchctl print` → rc 113), so it is dormant rather than failing and does not appear
 in `launchctl list`. It should be deleted, not repaired.
 
 ### Correction 3 — the TS wrapper that replaced the shell wrapper is ALSO gone
 
-PR #8088 ported the shell wrapper to `src/Core.TypeScript/kiro/kiro-loop-wrapper.ts`.
+PR #8088 ported the shell wrapper to **src/Core.TypeScript/kiro/kiro-loop-wrapper.ts**.
 That file was then deleted by **PR #8121** ("Wave 4 — delete superseded per-persona
 loop scripts"). The correct target is neither wrapper: it is
 `src/Core.TypeScript/service/loop-tick.ts`, which is what the healthy cell runs.
@@ -68,7 +68,7 @@ derived from two agreeing in-repo sources (`registry/personas.yaml` id=3 Kiro / 
 Codex, and the manifest's own `harness=` column) rather than invented.
 
 **C. The bootstrap's own health check could not fail.** Three ways at once: it globbed
-`zeta-*/runner.log` and guarded each hit with `[[ -f ]]`, so a cell that never started
+`zeta-*/runner.log` and guarded each hit with the Bash `-f` file test, so a cell that never started
 (no runner.log) was silently skipped; it only ever `echo`'d, never affecting exit
 status; and it grepped for `"heartbeat complete"`, a string `loop-tick.ts` does not
 emit — it logs `"tick complete"` (measured: 0 vs 33 matches in the live kiro log). A
@@ -78,7 +78,8 @@ healthy cell could only ever produce the ⚠ branch.
 
 Nothing reported persona-loop liveness, and the thing that looked like it did could not
 fail. `ServiceState` is `installed-running | installed-stopped | not-installed`, and
-`adapters/launchd.ts` derives it from `stdout.includes("state = running")`. Measured on
+`src/Core.TypeScript/service/adapters/launchd.ts` derives it from
+`stdout.includes("state = running")`. Measured on
 the live machine:
 
 ```text

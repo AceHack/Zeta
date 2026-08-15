@@ -69,7 +69,8 @@ line regardless of hedging. See `.claude/rules/numerology-vs-number-theory.md`.
   information asymmetry (Akerlof 1970; Kaplan–Strömberg 2003). See the doc §6 for the exclusion.
 - **Do not name the other participants in the $500K raise.** Aaron: *"i'll mention later after they
   allow."* Consent pending. Not by name, not by role, not by count-plus-context. **"Houman and a few
-  others" is the ceiling.** A pending-consent row belongs in `CONSENT-LEDGER.md`.
+  others" is the ceiling.** A pending-consent row belongs in
+  `docs/books/you-born-at-the-hinge/CONSENT-LEDGER.md`.
 - **Do not assert a connection between any found "Moveable Cubicle" record and Aaron, Houman, or
   Functional Tree** without his confirmation. Finding *a* Moveable Cubicle is not finding *theirs* —
   the misattribution failure PR #10717 exists to prevent.

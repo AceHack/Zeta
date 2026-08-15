@@ -132,7 +132,8 @@ module WSetHeat =
             let detail =
                 System.String.Format(
                     CultureInfo.InvariantCulture,
-                    "finite-reference-domain;largest-fibre={0};bits-erased-ppm={1};not-per-input-physical-cost",
+                    "finite-reference-domain;specialization={0};largest-fibre={1};bits-erased-ppm={2};not-per-input-physical-cost",
+                    operationProfile.Specialization,
                     operationProfile.LargestFibre,
                     operationProfile.BitsErasedPpm
                 )
@@ -190,3 +191,72 @@ module WSetHeat =
 
     let tensor source (ring: IStarRing<'W>) (a: WSet.WSet<'A, 'W>) (b: WSet.WSet<'B, 'W>) =
         WSet.tensor ring a b |> meter source Operation.Tensor
+
+/// Injected heat boundary for the source-owned Mach-Zehnder WSet calculation.
+/// The pure calculation remains available as a reference; production observable generation
+/// crosses both non-injective stages here and cannot silently discard their signatures.
+/// `MassPpm` remains the committed integer-reference-domain witness named in each signature's
+/// detail; it is not presented as measured dissipation of a complex-amplitude execution.
+[<RequireQualifiedAccess>]
+module MachZehnderWSetHeat =
+
+    [<RequireQualifiedAccess>]
+    type Stage =
+        | Consolidation
+        | BornProjection
+
+    type Measurement =
+        { Probabilities: (int * float) list
+          Heat: HeatSignature list }
+
+    type Feedback =
+        { Stage: Stage
+          Completed: HeatSignature list
+          Pending: HeatSignature
+          Sink: HeatSinkFeedback }
+
+    let private ring = ImaginaryStack.complex
+    let private isZero (z: Complex) = abs z.Real < 1e-12 && abs z.Imag < 1e-12
+    let private magSq (z: Complex) = z.Real * z.Real + z.Imag * z.Imag
+
+    let private emitStage
+        (sink: IHeatSink)
+        (stage: Stage)
+        (completed: HeatSignature list)
+        (result: WSetHeat.Metered<'T>)
+        : Result<HeatSignature list, Feedback> =
+        match result.Heat with
+        | None -> Ok completed
+        | Some pending ->
+            match WSetHeat.emit sink result with
+            | Ok _ -> Ok(completed @ [ pending ])
+            | Error feedback ->
+                Error
+                    { Stage = stage
+                      Completed = completed
+                      Pending = pending
+                      Sink = feedback }
+
+    let private measure
+        (sink: IHeatSink)
+        (source: string)
+        (amplitudes: WSet.WSet<int, Complex>)
+        : Result<Measurement, Feedback> =
+        let consolidated = WSetHeat.consolidate source ring isZero amplitudes
+        let projected = WSetHeat.bornProb source magSq consolidated.Value
+
+        match emitStage sink Stage.Consolidation [] consolidated with
+        | Error feedback -> Error feedback
+        | Ok completed ->
+            match emitStage sink Stage.BornProjection completed projected with
+            | Error feedback -> Error feedback
+            | Ok heat ->
+                Ok
+                    { Probabilities = projected.Value
+                      Heat = heat }
+
+    let closed (sink: IHeatSink) (source: string) (phi: float) : Result<Measurement, Feedback> =
+        MachZehnderWSet.closedAmplitudes phi |> measure sink source
+
+    let openArm (sink: IHeatSink) (source: string) : Result<Measurement, Feedback> =
+        MachZehnderWSet.openArmAmplitudes () |> measure sink source

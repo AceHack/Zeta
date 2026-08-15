@@ -32,18 +32,18 @@ bun src/Core.TypeScript/ledger/measure.ts \
   [--lineage "how it was found"]
 ```
 
-**Idempotent by key** (`dv2-data-split-discipline-activated.md` §6). The key is the work-item ZetaId,
+**Idempotent by key** (`.claude/rules/dv2-data-split-discipline-activated.md` §6). The key is the work-item ZetaId,
 not the slug — so a re-measure is an **upsert, not double-pay**: measuring the same fix twice leaves one
 entry and one price, and an identical re-measure is a byte-identical no-op. A legacy short-form entry
 (`081KWG9JQ9H-…` for `081KWG9JQ9H08QG0R0024EMETG`) is matched by prefix, so it dedups rather than gaining
-a twin. Entries are markdown (`no-binary-in-proof-lineage.md`).
+a twin. Entries are markdown (`.claude/rules/no-binary-in-proof-lineage.md`).
 
 ### The register is ORDINAL and WITNESSED — never a cardinal price
 
 An entry records a ΔU **sign** plus the **witness** that makes it falsifiable. It does **not** record a
 number, and the tool gives you no field in which to invent one. Nothing in the repo meters a bug-fix in
 units, so a cardinal price would be `toy` asserted as `metered`
-(`toy-is-free-metered-must-be-earned.md`) — and because this ledger exists to *price* work, a fabricated
+(`.claude/rules/toy-is-free-metered-must-be-earned.md`) — and because this ledger exists to *price* work, a fabricated
 price corrupts the only thing it is for. A cardinal ΔU must be **earned** by a metering discipline later.
 
 Four refusals, each a falsifier (removing any one kills a test in `measure.test.ts`):
