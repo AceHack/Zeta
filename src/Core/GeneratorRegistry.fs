@@ -101,6 +101,11 @@ module GeneratorRegistry =
           // cartridge cannot silently disagree. Registration is naming, NOT ratification: the file
           // stays in pending/ until its own oracles write their treaty rows.
           register "shape.symmetric-vs-braided" 1
+          // THE TRACE cartridge (still `pending/`): a feedback wire that bends back and crosses
+          // NOTHING. Registered for the same reason as its sibling above — registration is what makes
+          // `meta shape-zetaid` CHECKABLE (`idOf "shape.traced" 1`, derivable), and it is naming, NOT
+          // ratification: the file stays in pending/ until its own oracles write their treaty rows.
+          register "shape.traced" 1
           register "rng.splitmix64" 1
           register "rng.lcg64_mmix" 1
           register "hash.murmur3_32_tail" 1

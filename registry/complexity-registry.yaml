@@ -373,6 +373,12 @@
     "space": "O(panels·crossings·strands)"
     "by": "Derived"
   -
+    "artifact": "shape.traced"
+    "op": "draw"
+    "time": "O(wires+corners)"
+    "space": "O(wires+corners)"
+    "by": "Derived"
+  -
     "artifact": "rng.splitmix64"
     "op": "mix"
     "time": "O(1)"

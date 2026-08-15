@@ -79,6 +79,7 @@ export const DECLARED: Record<string, Cost> = {
     space: "O(panels·crossings·strands)",
     by: "Derived",
   },
+  "shape.traced:draw": { time: "O(wires+corners)", space: "O(wires+corners)", by: "Derived" },
   "rng.splitmix64:mix": { time: "O(1)", space: "O(1)", by: "Derived" },
   "rng.lcg64_mmix:mix": { time: "O(1)", space: "O(1)", by: "Derived" },
   "hash.murmur3_32_tail:mix": { time: "O(1)", space: "O(1)", by: "Derived" },

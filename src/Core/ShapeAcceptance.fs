@@ -293,6 +293,133 @@ module ShapeAcceptance =
             sprintf
                 "one word (%d letters) read twice: permutation identity in BOTH panels (the forgetful shadow cannot separate them); σ² ≠ 1 in the braid group so the right panel does NOT collapse; ink matches the register — %d runs left (%d gaps), %d runs right (%d gaps, one per crossing)"
                 (List.length word) symRuns (symRuns - strands) brdRuns (brdRuns - strands)
+        | "shape-traced" ->
+            // THE REFUSAL, COMPUTED — and the law is deliberately NOT the one the cartridge's own
+            // `geometry-law` issue proposed. That issue says: "count the drawn crossings and
+            // occlusion gaps and require BOTH to be zero", and calls it "mechanical and strong".
+            // It is mechanical, it is TRUE, and on its own it is worthless: AN EMPTY PICTURE HAS
+            // ZERO CROSSINGS AND ZERO GAPS. So does a single dot. A law whose every conjunct is an
+            // absence is satisfied by absence — the vacuity class, which is exactly what a
+            // known-answer gate exists to refuse. The zero-counts below are kept, because they are
+            // the cartridge's thesis; what is added is everything that makes them MEAN something:
+            // the figure must exist, the loop must actually return, and it must return to the
+            // corner this cartridge stakes its honesty on (TInFeedback, not TOut).
+            //
+            // Sentinel 99999, not -1: `retract-weight` is legitimately -1, so -1 as "missing" would
+            // let an ABSENT constant read as a present one. A missing constant must fail every
+            // comparison it appears in, and 99999 is outside every range this figure can draw.
+            let c name = MediaLines.constIntOr name 99999 d
+            let strokes = ShapeRender.strokesOf d
+            let named (prefix: string) =
+                strokes |> List.filter (fun s -> s.Name.StartsWith(prefix, System.StringComparison.Ordinal))
+            let wireRuns = named "wire-"
+            // an occlusion gap splits a wire into runs named "<wire>-rN" (the braid family's
+            // convention, held here so the two families count the same thing the same way). Distinct
+            // base names = wires actually drawn; the excess over that = gaps drawn.
+            let baseName (n: string) =
+                let i = n.LastIndexOf "-r"
+                if i > 0 && n.Length > i + 2 && n.Substring(i + 2) |> Seq.forall System.Char.IsAsciiDigit then n.Substring(0, i) else n
+            let wireNames = wireRuns |> List.map (fun s -> baseName s.Name) |> List.distinct
+            let gapsDrawn = List.length wireRuns - List.length wireNames
+            // A BEND IS NOT A CROSSING, counted by integer segment intersection — not by trusting the
+            // renderer's naming and not by eye. Collinear touching counts as meeting: in a figure
+            // whose entire claim is "this wire passes over nothing", grazing is not innocent.
+            let orient (ax, ay) (bx, by) (px, py) = sign ((bx - ax) * (py - ay) - (by - ay) * (px - ax))
+            let onSeg a b p =
+                let (ax, ay), (bx, by), (px, py) = a, b, p
+                orient a b p = 0 && min ax bx <= px && px <= max ax bx && min ay by <= py && py <= max ay by
+            let meet (a, b) (p, q) =
+                (orient a b p * orient a b q < 0 && orient p q a * orient p q b < 0)
+                || onSeg a b p || onSeg a b q || onSeg p q a || onSeg p q b
+            let segs =
+                wireRuns
+                |> List.collect (fun s -> s.Points |> List.pairwise |> List.mapi (fun i sg -> s.Name, i, sg))
+                |> List.toArray
+            let mutable crossings = 0
+            for i in 0 .. segs.Length - 1 do
+                for j in i + 1 .. segs.Length - 1 do
+                    let n1, k1, s1 = segs.[i]
+                    let n2, k2, s2 = segs.[j]
+                    // consecutive segments of one polyline share an endpoint BY CONSTRUCTION; every
+                    // other pair meeting is a crossing, self-crossings of the return path included.
+                    if not (n1 = n2 && abs (k1 - k2) = 1) && meet s1 s2 then crossings <- crossings + 1
+            // THE PORTS, read back off the ink. This is the conjunct the zero-counts cannot supply:
+            // a straight line drawn in an empty corner of the court crosses nothing and is no trace.
+            let centerOf (s: ShapeRender.Stroke) =
+                let xs, ys = s.Points |> List.map fst, s.Points |> List.map snd
+                (List.min xs + List.max xs) / 2, (List.min ys + List.max ys) / 2
+            let cornerStrokes = named "corner-"
+            let cornerAt n = cornerStrokes |> List.tryFind (fun s -> s.Name = n) |> Option.map centerOf
+            let wireAt n = wireRuns |> List.tryFind (fun s -> s.Name = n)
+            let boxes = strokes |> List.filter (fun s -> s.Name = "box")
+            let onWire (w: ShapeRender.Stroke) (p: int * int) =
+                w.Points |> List.pairwise |> List.exists (fun (a, b) -> onSeg a b p)
+            let portsOk, loopOk, boxOk =
+                match wireAt "wire-through", wireAt "wire-feedback", boxes with
+                | Some through, Some feedback, [ box ] ->
+                    let fPts = feedback.Points
+                    let head, tail' = List.head fPts, List.last fPts
+                    // (a) the loop's two ends ARE the two feedback corners — TOutFeedback out,
+                    //     TInFeedback back in. `feedback-on-input` is the cartridge's honest
+                    //     mechanism (the standard monadic loop feeds the OUTPUT channel only), so a
+                    //     figure that lands the return on TOut has drawn a pipeline and must fail.
+                    let ports =
+                        cornerAt "corner-toutfeedback" = Some head
+                        && cornerAt "corner-tinfeedback" = Some tail'
+                        && (match cornerAt "corner-tin", cornerAt "corner-tout" with
+                            | Some a, Some b -> onWire through a && onWire through b
+                            | _ -> false)
+                    // (b) the loop RETURNS, and returns THE LONG WAY. Same channel height at both
+                    //     ends (it lands where it left), right-to-left (output side back to input
+                    //     side), on a channel that is not the pass-through one, and leaving that
+                    //     channel's height in between — i.e. it goes AROUND the box in SPACE. A
+                    //     return drawn flat along the channel it left would read as travelling back
+                    //     along a time axis, which is the strong claim src/Core/WSet.fs refuses.
+                    let loop =
+                        snd head = snd tail'
+                        && fst head > fst tail'
+                        && snd head <> (List.head through.Points |> snd)
+                        && (fPts |> List.map snd |> List.max) > snd head
+                    // (c) the box is a closed rectangle the pass-through wire really goes THROUGH.
+                    let bx = box.Points |> List.map fst
+                    let bo =
+                        List.head box.Points = List.last box.Points
+                        && List.length box.Points = 5
+                        && (through.Points |> List.map fst |> List.min) < List.min bx
+                        && (through.Points |> List.map fst |> List.max) > List.max bx
+                    ports, loop, bo
+                | _ -> false, false, false
+            // THE SIGN AS INK: exactly one wire is dashed, and it is dashed iff the file declares a
+            // negative weight for it (WSet.negate — the retraction IS the mechanism, not bookkeeping
+            // around it). Dash is the sign register here and never occlusion; the gap count above is
+            // what measures occlusion, and the two must not be allowed to stand in for each other.
+            let dashed = wireRuns |> List.filter (fun s -> s.Dash) |> List.length
+            // NOT gated here, and this is a finding rather than an omission: the in-file law
+            // `only-the-ring-corners` reads `rings-with-a-trace + inverse-free-corners = corners`,
+            // which adds the FOUR-CORNER RING FAMILY (ℤ, ℂ, ℝ≥0, Boolean) to a total taken from
+            // FourCornerOwnership's TIn/TOut/TInFeedback/TOutFeedback. Two unrelated objects that
+            // both happen to count 4 — the file's own `differs-from shape-fourcorner` edge records
+            // that this name collides, and then the law crosses it anyway. The arithmetic holds by
+            // coincidence of counts, which is numerology, not an identification. Left standing and
+            // named; changing the file's claims is its author's call, not the gate's.
+            let ok =
+                List.length wireNames = c "wires"
+                && List.length cornerStrokes = c "corners"
+                && List.length boxes = 1
+                && boxOk
+                && portsOk
+                && loopOk
+                && gapsDrawn = c "gaps"
+                && gapsDrawn = 0 // nothing passes over anything: a gap would import a braiding
+                && crossings = c "loop-crossings"
+                && crossings = 0 // TRACED ⇏ BRAIDED, measured rather than promised
+                && c "feedback-on-input" = 1
+                && c "emit-weight" + c "retract-weight" = 0 // +w and -w annihilate in consolidate
+                && dashed = (if c "retract-weight" < 0 then 1 else 0)
+            ok,
+            sprintf
+                "the bend is not a crossing, counted: %d wire-wire intersections and %d occlusion gaps over %d wires (both must be 0 — and the figure must EXIST, which is why %d corners, a closed box the through-wire spans, and a return path landing on TOutFeedback→TInFeedback are conjuncts too); %d dashed wire carries the -1 retraction"
+                crossings gapsDrawn (List.length wireNames) (List.length cornerStrokes) dashed
         | "shape-crossing" ->
             // the atom's three laws, by Artin's faithful action on B2:
             let ok =

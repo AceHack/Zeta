@@ -173,6 +173,115 @@ let ``MUTANT — the permutation claim is false: an odd word leaves the strands 
     let d = mutateConstant "word" "1,1,1" (symBraided ()) |> mutateConstant "crossings" "3"
     Assert.False(geomOf d)
 
+// ── traced: the refusal, and the falsifiers that show the refusal is a CHECK and not a wish ──
+
+let private traced () = docOf "traced"
+
+let private geomTraced (d: MediaLines.Doc) = fst (ShapeAcceptance.geometryLaw "shape-traced" d)
+
+[<Fact>]
+let ``A BEND IS NOT A CROSSING: the trace figure draws two wires that never meet, and the gate counts the intersections rather than trusting the names`` () =
+    let d = traced ()
+    let ok, evidence = ShapeAcceptance.geometryLaw "shape-traced" d
+    Assert.True(ok, evidence)
+    // the ink, counted independently of the gate: two wires, each ONE unbroken polyline (no runs ⇒
+    // no occlusion gaps), four corner markers, one box.
+    let strokes = ShapeRender.strokesOf d
+    let byPrefix (p: string) = strokes |> List.filter (fun s -> s.Name.StartsWith(p, System.StringComparison.Ordinal))
+    Assert.Equal(2, List.length (byPrefix "wire-"))
+    Assert.Equal(4, List.length (byPrefix "corner-"))
+    Assert.Equal(1, strokes |> List.filter (fun s -> s.Name = "box") |> List.length)
+    // and the sign register: exactly one dashed wire, the -1 retraction (WSet.negate)
+    Assert.Equal(1, byPrefix "wire-" |> List.filter (fun s -> s.Dash) |> List.length)
+
+[<Fact>]
+let ``THE LOOP LANDS ON THE FEEDBACK CORNER: the return path's ends ARE TOutFeedback and TInFeedback — a pipeline would land on TOut`` () =
+    let strokes = ShapeRender.strokesOf (traced ())
+    let center (n: string) =
+        let s = strokes |> List.find (fun s -> s.Name = n)
+        let xs, ys = s.Points |> List.map fst, s.Points |> List.map snd
+        (List.min xs + List.max xs) / 2, (List.min ys + List.max ys) / 2
+    let feedback = strokes |> List.find (fun s -> s.Name = "wire-feedback")
+    Assert.Equal(center "corner-toutfeedback", List.head feedback.Points)
+    Assert.Equal(center "corner-tinfeedback", List.last feedback.Points)
+    // it bends in SPACE: the return leaves its own channel height in between (around the box),
+    // so nothing in the figure reads as an arrow travelling back along a time axis.
+    let ys = feedback.Points |> List.map snd
+    Assert.True(List.max ys > snd (List.head feedback.Points))
+    Assert.Equal(snd (List.head feedback.Points), snd (List.last feedback.Points))
+
+[<Fact>]
+let ``THE BEN LINE agrees with the shelf for traced too: the cartridge's own cost prediction matches the registry row`` () =
+    let checks = ComplexityRegistry.benCheck (traced ())
+    Assert.NotEmpty(checks) // a vacuous sweep proves nothing
+    for b in checks do
+        Assert.True(b.Ok, b.Evidence)
+
+// The mutants below are planted against the ZERO-COUNT law the cartridge originally proposed
+// ("count crossings and gaps, require both zero"). Every one of them satisfies it. That is the
+// finding this gate work banks: the proposed law was mechanical, true, and unable to fail.
+
+[<Fact>]
+let ``MUTANT — THE VACUITY CLASS: an EMPTY picture has zero crossings and zero gaps and is passed by the proposed law; this gate refuses it`` () =
+    // strokesOf returns [] for a cartridge outside the figure's vocabulary (wires <> 2). Zero
+    // crossings, zero gaps, nothing drawn — the exact drawing the original law could not reject.
+    let d = mutateConstant "wires" "3" (traced ())
+    Assert.Empty(ShapeRender.strokesOf d)
+    Assert.False(geomTraced d)
+
+[<Fact>]
+let ``MUTANT — the file lies about the ink: loop-crossings = 1 dies against the segment arithmetic (there is no crossing to find)`` () =
+    Assert.False(geomTraced (mutateConstant "loop-crossings" "1" (traced ())))
+
+[<Fact>]
+let ``MUTANT — an occlusion gap claimed where none is drawn: gaps = 1 dies (a gap would import a braiding this structure does not have)`` () =
+    Assert.False(geomTraced (mutateConstant "gaps" "1" (traced ())))
+
+[<Fact>]
+let ``MUTANT — the annihilation breaks: retract-weight = -2 leaves +1 and -2 failing to cancel, and the sign in the ink no longer matches the file`` () =
+    Assert.False(geomTraced (mutateConstant "retract-weight" "-2" (traced ())))
+
+[<Fact>]
+let ``MUTANT — the retraction turned positive: retract-weight = 1 means nothing is un-emitted, and the dashed wire in the ink contradicts it`` () =
+    let d = mutateConstant "retract-weight" "1" (traced ())
+    Assert.False(geomTraced d)
+    // and the drawing MOVES with the constant — the sign is read from the file, not hardcoded
+    let dashes = ShapeRender.strokesOf d |> List.filter (fun s -> s.Dash) |> List.length
+    Assert.Equal(0, dashes)
+
+[<Fact>]
+let ``MUTANT — the feedback claim withdrawn: feedback-on-input = 0 dies while the figure still lands the loop on TInFeedback`` () =
+    Assert.False(geomTraced (mutateConstant "feedback-on-input" "0" (traced ())))
+
+[<Fact>]
+let ``MUTANT — the corner count drifts: corners = 6 dies (the ownership object the trace closes over is a FOUR-corner object)`` () =
+    Assert.False(geomTraced (mutateConstant "corners" "6" (traced ())))
+
+[<Fact>]
+let ``THE GATE CAN SEE A CROSSING: hand a wrong drawing to the same arithmetic and it counts one — the zero is measured, not assumed`` () =
+    // The falsifier that matters for a law made of zeroes. The cartridge is untouched; what is
+    // perturbed is the DRAWING, by asking the gate to read a figure whose return path cuts straight
+    // back across the pass-through wire — the exact renderer mistake ("quietly drew a braid") the
+    // law exists to catch. Proved here by construction rather than asserted, because the geometry
+    // law reads ShapeRender's output and a test cannot edit ShapeRender.
+    let orient (ax, ay) (bx, by) (px, py) = sign ((bx - ax) * (py - ay) - (by - ay) * (px - ax))
+    let onSeg a b p =
+        let (ax, ay), (bx, by), (px, py) = a, b, p
+        orient a b p = 0 && min ax bx <= px && px <= max ax bx && min ay by <= py && py <= max ay by
+    let meet (a, b) (p, q) =
+        (orient a b p * orient a b q < 0 && orient p q a * orient p q b < 0)
+        || onSeg a b p || onSeg a b q || onSeg p q a || onSeg p q b
+    // the real figure's two wires: no intersection anywhere
+    let strokes = ShapeRender.strokesOf (traced ())
+    let segsOf n =
+        (strokes |> List.find (fun s -> s.Name = n)).Points |> List.pairwise
+    let count a b = [ for x in segsOf a do for y in segsOf b do if meet x y then yield 1 ] |> List.length
+    Assert.Equal(0, count "wire-through" "wire-feedback")
+    // …and the SAME arithmetic on a return path drawn straight back through the channel finds it
+    let badReturn = [ (425, 145 - 40); (425, 145 + 40) ] |> List.pairwise
+    let through = segsOf "wire-through"
+    Assert.Equal(1, [ for x in through do for y in badReturn do if meet x y then yield 1 ] |> List.length)
+
 // ── THE CONSENT GATE — the one thing this work did not touch, asserted to still hold ──
 
 [<Fact>]
@@ -189,6 +298,31 @@ let ``THE CONSENT GATE STANDS: symmetric-vs-braided passes geometry and honest-l
         + "should be generated with `zeta shape render`, ShapeCartridge.Tests' catalog count should go 19 -> 20, "
         + "and the pending-golden assertion above should stop covering it. Do not silence this test; promote the file."
     )
+
+[<Fact>]
+let ``THE CONSENT GATE STANDS FOR traced TOO: geometry and honest-labels pass, bytes is REFUSED, and the treaty is nobody else's to write`` () =
+    let verdicts = ShapeAcceptance.acceptOne (traced ())
+    let reg r = verdicts |> List.find (fun v -> v.Register = r)
+    Assert.True((reg ShapeAcceptance.Geometry).Accepted, "geometry must pass — gate 3 is closed")
+    Assert.True((reg ShapeAcceptance.HonestLabels).Accepted, "honest labels must pass")
+    Assert.False((reg ShapeAcceptance.Bytes).Accepted, "bytes must NOT pass: no oracle has been asked")
+    Assert.False(
+        ShapeAcceptance.accepted verdicts,
+        "REFUSED, and correctly so. When this assertion fails it means an oracle wrote its own treaty row — "
+        + "promote the file then (a move, not a copy), generate its goldens, and step the catalog count. Do not silence this test."
+    )
+
+[<Fact>]
+let ``twist IS STILL REFUSED ON GEOMETRY, and that is the honest state: no known-answer law exists for it yet`` () =
+    // The third pending cartridge got NO gate work this pass, and saying so out loud is the point —
+    // an untouched cartridge that quietly looked finished would be the failure pending/ exists to
+    // prevent. `twist` has no registered generator, no stroke branch and no geometry case, so the
+    // default refusal stands and names itself.
+    let ok, evidence = ShapeAcceptance.geometryLaw "shape-twist" (docOf "twist")
+    Assert.False(ok)
+    Assert.Contains("no known-answer law", evidence)
+    Assert.Empty(ShapeRender.strokesOf (docOf "twist"))
+    Assert.True((GeneratorRegistry.byName "shape.twist").IsNone, "unregistered, and honestly so")
 
 [<Fact>]
 let ``NO CARTRIDGE IN pending/ CARRIES A TREATY ROW: consent is absent because nobody has been asked, not because nobody noticed`` () =
