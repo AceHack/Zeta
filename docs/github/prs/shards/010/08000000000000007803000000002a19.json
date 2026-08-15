@@ -1,0 +1,12 @@
+{
+  "pr_number": 10777,
+  "archive_path": "docs/history/pr-reviews/PR-10777-fix-transport-clear-pendingcorruptframes-on-desync.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T13:54:24.030Z",
+  "schema_version": "v1",
+  "commit_sha": "724ca7625bb933e554f981dfb557068934945709",
+  "title": "fix(transport): clear pendingCorruptFrames on desync",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T13:53:49Z",
+  "head_ref": "fix/081KZZYESKA-clear-pending-on-desync"
+}
