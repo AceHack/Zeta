@@ -6,19 +6,17 @@ import {
   hostKey,
   meetsPin,
 } from "./install-pinned-smt.ts";
-import { readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 const SHA256 = /^[0-9a-f]{64}$/;
 const REPO = join(import.meta.dir, "..", "..", "..", "..");
 
 describe("install-pinned-smt pins", () => {
-  test("pin versions match the declared SMT floor", () => {
-    const floor = JSON.parse(
-      readFileSync(join(REPO, "registry", "smt2-solver-floor.json"), "utf8"),
-    ) as readonly { solver: string; minimumVersion: string }[];
-    expect(floor.find((r) => r.solver === "z3")?.minimumVersion).toBe(Z3_PIN);
-    expect(floor.find((r) => r.solver === "cvc5")?.minimumVersion).toBe(CVC5_PIN);
+  test("the skip-floor is gone; these constants ARE the pin", () => {
+    expect(Z3_PIN).toBe("4.16.0");
+    expect(CVC5_PIN).toBe("1.3.4");
+    expect(existsSync(join(REPO, "registry", "smt2-solver-floor.json"))).toBe(false);
   });
 
   test("every Linux pin is a checksummed GitHub release URL", () => {

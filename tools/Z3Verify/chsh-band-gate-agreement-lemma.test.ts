@@ -25,9 +25,6 @@ import {
   structureOf,
   z3Available,
   z3Verdicts,
-  solverFloorMet,
-  solverFloorRow,
-  installedVersion,
   SOLVER_TEST_TIMEOUT_MS,
 } from "./smt2-solvers.ts";
 
@@ -35,20 +32,6 @@ const FILE = "chsh-band-gate-agreement-lemma.smt2";
 
 // G1 unsat | V sat (non-vacuity probe: the valid-domain hypothesis is ablated)
 const EXPECTED = ["unsat", "sat"] as const;
-
-/**
- * Can THIS host's cvc5 decide the V probe?
- *
- * cvc5 1.1.2 — what Ubuntu 24.04's apt gives the CI runner — discharges G1 and then cannot
- * decide V, interrupted at --tlimit=120000 with a core dump. cvc5 1.3.4 answers instantly.
- * Measured in `podman run ubuntu:24.04`, confirmed on the runner in gate run 31763383985,
- * declared in registry/smt2-solver-floor.json; toolchain fix is 081KZZ27KJ8087G0R0038ZGBAT.
- *
- * Only the BP-16 CROSS-CHECK degrades. z3 4.8.12 produces the full `unsat sat` sequence on
- * the runner, so this lemma stays genuinely and non-vacuously gated there — by one solver
- * instead of two, which is a weaker claim and is said as such rather than glossed.
- */
-const cvc5CanDecide = cvc5Available && solverFloorMet(FILE, "cvc5");
 
 test("the lemma file is structurally intact (push/pop balanced, every block checked)", () => {
   const s = structureOf(readLemma(FILE));
@@ -59,23 +42,13 @@ test("the lemma file is structurally intact (push/pop balanced, every block chec
 test(
   "z3 and cvc5 independently produce the expected verdict sequence (BP-16)",
   () => {
-    if (!z3Available && !cvc5CanDecide) {
+    if (!z3Available && !cvc5Available) {
       console.warn("  [skip] no solver on this host can decide the file — legs not run");
       return;
     }
     const text = readLemma(FILE);
     if (z3Available) expect(z3Verdicts(text)).toEqual([...EXPECTED]);
-    if (cvc5CanDecide) {
-      expect(cvc5Verdicts(text)).toEqual([...EXPECTED]);
-    } else {
-      const row = solverFloorRow(FILE, "cvc5");
-      console.warn(
-        `  [skip] cvc5 cross-check: installed ${installedVersion("cvc5")} is below the ` +
-          `declared floor ${row?.minimumVersion} — see registry/smt2-solver-floor.json, ` +
-          `work-item ${row?.workitem}. The z3 leg above still gates this lemma; the BP-16 ` +
-          `second tool did not run.`,
-      );
-    }
+    if (cvc5Available) expect(cvc5Verdicts(text)).toEqual([...EXPECTED]);
   },
   SOLVER_TEST_TIMEOUT_MS,
 );

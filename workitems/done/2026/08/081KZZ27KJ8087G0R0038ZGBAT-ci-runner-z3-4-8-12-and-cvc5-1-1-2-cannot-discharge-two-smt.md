@@ -1,11 +1,12 @@
 ---
 id: 081KZZ27KJ8087G0R0038ZGBAT
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: ci-runner-z3-4-8-12-and-cvc5-1-1-2-cannot-discharge-two-smt
 title: "CI runner z3 4.8.12 and cvc5 1.1.2 cannot discharge two SMT certificates that modern solvers do in under a second"
 created: 2026-08-14T02:39:47.272Z
+completed: 2026-08-15T14:53:23.459Z
 depends_on: []
 composes_with: []
 ---
@@ -90,3 +91,15 @@ floor. `test (TS suite)` in `gate.yml` runs it before `bun test`. The floor
 file and the skip legs stay until this has a green track record on the
 runner — deleting them is the second half of acceptance. Checksums measured
 2026-08-15 by streaming the four release zips through `shasum -a 256`.
+
+## Resolution (2026-08-15)
+
+Second half. Gate run 31888161507 / job `test (TS suite)` on #10783:
+
+- `[install-pinned-smt] installed pins for linux-x64 into /home/runner/.local/bin`
+- `z3 produces the expected verdict sequence` — **pass, 44ms** (11-verdict
+  light-time sequence, not a skip)
+- `z3 and cvc5 independently produce the expected verdict sequence` — pass
+
+The skip-floor is deleted. Runners skip only when a solver is **absent**.
+`smt2-runner-coverage.test.ts` asserts the floor file stays gone.

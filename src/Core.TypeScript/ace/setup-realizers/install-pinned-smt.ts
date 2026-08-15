@@ -5,13 +5,9 @@
  * WHY (081KZZ27KJ8). Ubuntu 24.04 apt gives the CI runner z3 4.8.12 and
  * cvc5 1.1.2. Two committed certificates do not discharge under that pair
  * and discharge in well under a second under 4.16.0 / 1.3.4. The runners
- * currently soft-skip those legs via registry/smt2-solver-floor.json —
- * declared, not silent, but still a gap. This script is the first half of
- * closing it: pin the GitHub-release binaries (checksummed) into
- * ~/.local/bin so the TS-suite job actually runs the certificates.
- *
- * The floor file stays until this has a green track record on the runner;
- * deleting it is the second half of the work-item.
+ * used to soft-skip those legs. This script pins the GitHub-release
+ * binaries (checksummed) into ~/.local/bin so the TS-suite job runs the
+ * certificates. The skip-floor is gone (081KZZ27KJ8, second half).
  *
  * Usage: bun src/Core.TypeScript/ace/setup-realizers/install-pinned-smt.ts
  */
