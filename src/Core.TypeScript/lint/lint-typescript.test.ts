@@ -36,6 +36,8 @@ describe("TypeScript compiler runtime", () => {
       "bun",
       "node_modules/typescript/bin/tsc",
       "--noEmit",
+      "--pretty",
+      "false",
       "-p",
       "tsconfig.json",
     ]);
@@ -80,6 +82,15 @@ describe("missingInstalledDeps (081KZKWB1FZ)", () => {
   it("reports nothing for output containing no TS2307 at all", () => {
     const other = "src/foo.ts(1,1): error TS2532: Object is possibly 'undefined'.";
     expect(missingInstalledDeps(other, declared, nothingInstalled)).toEqual([]);
+  });
+
+  it("misses a TS2307 whose 'error TS' token was split by ANSI pretty (081M031RT7S)", () => {
+    // Default tsc --pretty paints the code: `error` + reset + ` TS2307`.
+    // Measured on #10811: grep -c "error TS" == 0 while tsc exited 2.
+    // --pretty false is the fix; do not teach the regex to parse color.
+    const pretty = "src/foo.ts(6,51): error\u001b[0m\u001b[90m TS2307: Cannot find module 'playwright'.";
+    expect(missingInstalledDeps(pretty, declared, nothingInstalled)).toEqual([]);
+    expect(pretty.includes("error TS")).toBe(false);
   });
 
   it("deduplicates and sorts across many diagnostics", () => {

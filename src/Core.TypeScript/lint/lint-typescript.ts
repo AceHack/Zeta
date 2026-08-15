@@ -110,6 +110,8 @@ export const TYPESCRIPT_COMPILER_COMMAND: readonly [string, ...string[]] = [
   "bun",
   "node_modules/typescript/bin/tsc",
   "--noEmit",
+  "--pretty",
+  "false",
   "-p",
   "tsconfig.json",
 ];
