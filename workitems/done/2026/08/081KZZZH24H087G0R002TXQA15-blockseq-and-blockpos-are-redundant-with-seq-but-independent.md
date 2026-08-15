@@ -1,11 +1,12 @@
 ---
 id: 081KZZZH24H087G0R002TXQA15
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: blockseq-and-blockpos-are-redundant-with-seq-but-independent
 title: "blockSeq and blockPos are redundant with seq but independently peer-controlled: nothing checks seq = blockSeq*8+blockPos, so one packet can address any block at any position"
 created: 2026-08-14T11:11:45.809Z
+completed: 2026-08-15T13:42:24.806Z
 depends_on: []
 composes_with: []
 ---
@@ -59,6 +60,15 @@ for one release and rejecting disagreement is the compatible alternative, and it
 **Open question that must be answered first, not assumed:** the chaos and BDP harnesses construct
 headers directly, and `ULT-17`/`ULT-24` deliberately generate independent `seq`/`blockSeq`/
 `blockPos`. Deriving would change what those tests are exercising, so the sequencing needs care.
+
+## Resolution (2026-08-15)
+
+`handleIncoming` now keys `recvBlocks` and `addToBlock` on
+`blockAddressOf(seq)` — `floor(seq/8)` and `seq%8`. Wire fields stay
+on the packet (honest senders still write them) but are not an
+independent address. ULT-36 is the falsifier: seq 0..7 with lying
+`blockSeq`/`blockPos` still deliver block 0. ULT-17 still generates
+independent fields and still only exercises the NACK path.
 
 Ordering context: signals (#10516, done) -> integrity (#10541) -> retention
 (081KZYQJPNG087G0R002B9E9S1, done) -> estimator (081KZYN37T4087G0R00181THA4) -> pacing. This sits

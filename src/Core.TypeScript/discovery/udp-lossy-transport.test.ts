@@ -29,6 +29,7 @@ import {
   type NackMessage,
   encodePacket,
   decodePacket,
+  blockAddressOf,
   PACKET_HEADER_BYTES,
   PACKET_CHECKSUM_BYTES,
   xorParityBlock,
@@ -793,6 +794,44 @@ describe("udp-lossy-transport", () => {
     }
     expect(delivered).not.toBeNull();
     for (let i = 0; i < 4; i++) expect(Array.from(delivered![i]!)).toEqual(Array.from(data[i]!));
+  });
+
+  it("ULT-36: the receiver derives blockSeq/blockPos from seq — lying wire fields cannot re-address", async () => {
+    // 081KZZZH24H. Honest senders set blockSeq=floor(seq/8), blockPos=seq%8. The wire
+    // still carries both independently. Until this test, handleIncoming trusted the
+    // wire fields, so a peer could hold seq monotone (no NACK) and write any slot of
+    // any block.
+    expect(blockAddressOf(0)).toEqual({ blockSeq: 0, blockPos: 0 });
+    expect(blockAddressOf(7)).toEqual({ blockSeq: 0, blockPos: 7 });
+    expect(blockAddressOf(8)).toEqual({ blockSeq: 1, blockPos: 0 });
+
+    let receive: (text: string, from: string) => void = () => {};
+    const delivered: Uint8Array[] = [];
+    const transport = {
+      broadcast: (_text: string) => {},
+      onMessage: (h: (text: string, from: string) => void) => {
+        receive = h;
+      },
+    };
+    const ch = new LossyUdpChannel(transport, "receiver");
+    ch.onData((p) => delivered.push(p));
+
+    const data = makeData(4, 5);
+    const sent = buildSenderBlock(0, data);
+    const wire = [...sent.dataPackets, ...sent.parityPackets];
+    // Every packet claims a DIFFERENT blockSeq and blockPos=0, while seq is the
+    // honest 0..7. Unfixed, that is 8 one-slot blocks and no decode. Fixed, they
+    // land in block 0 at the derived positions and deliver.
+    for (let pos = 0; pos < 8; pos++) {
+      const pkt = encodePacket(
+        { seq: pos, blockSeq: 1000 + pos, blockPos: 0, isData: pos < 4, payloadLen: wire[pos]!.length },
+        wire[pos]!,
+      );
+      receive(JSON.stringify({ type: "lossy-udp", zid: "liar", pkt: pkt.toString("base64") }), "liar");
+    }
+    await new Promise((r) => setTimeout(r, 10));
+    expect(delivered.length).toBe(4);
+    for (let i = 0; i < 4; i++) expect(Array.from(delivered[i]!)).toEqual(Array.from(data[i]!));
   });
 
   it("ULT-25: recovery is sized by the LONGEST surviving symbol, not by whichever arrived first", () => {

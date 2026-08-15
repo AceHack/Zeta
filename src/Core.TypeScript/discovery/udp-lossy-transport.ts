@@ -186,6 +186,14 @@ const ADINKRA_G: readonly (readonly number[])[] = [
 const BLOCK_DATA = 4;
 const BLOCK_TOTAL = 8;
 
+/** Block address implied by `seq`. Honest senders already set
+ *  `blockSeq = floor(seq/8)` and `blockPos = seq%8`; the receiver must
+ *  DERIVE those rather than trust the independent wire fields
+ *  (081KZZZH24H087G0R002TXQA15). */
+export function blockAddressOf(seq: number): { readonly blockSeq: number; readonly blockPos: number } {
+  return { blockSeq: Math.floor(seq / BLOCK_TOTAL), blockPos: seq % BLOCK_TOTAL };
+}
+
 // AIMD parameters
 const HIGH_LOSS_THRESHOLD = 0.05; // 5% loss → back off
 const LOW_LOSS_THRESHOLD = 0.01; // 1% loss → speed up
@@ -1630,11 +1638,9 @@ export class LossyUdpChannel {
     // loss estimate and never trigger retransmission (see the header), so no NACK bound can be what
     // makes an old block unrecoverable — that argument was checked and does not hold.
     //
-    // NOT CLOSED HERE: `blockSeq` is redundant with `seq` (an honest sender always sets it to
-    // `seq / BLOCK_TOTAL`) yet is trusted independently, which is what lets a peer hold `seq`
-    // monotone — provoking no NACK at all — while spending a fresh key per packet. Bounding the
-    // buffer makes that harmless for MEMORY; it does not stop one packet addressing any block at
-    // any position. 081KZZZH24H087G0R002TXQA15.
+    // CLOSED: recvBlocks is now keyed on floor(seq/8) and addToBlock uses seq%8
+    // (081KZZZH24H087G0R002TXQA15 / ULT-36). The wire still carries the fields;
+    // they are no longer an independent address.
     // ── §12: the delivered-once guard, which must OUTLIVE the block ─────────────────────────
     //
     // `ReceiverBlock.recovered` is the duplicate guard, and it lives on the block object — so
@@ -1703,10 +1709,11 @@ export class LossyUdpChannel {
       return;
     }
 
-    let block = this.recvBlocks.get(header.blockSeq);
+    const { blockSeq, blockPos } = blockAddressOf(header.seq);
+    let block = this.recvBlocks.get(blockSeq);
     if (!block) {
-      block = makeReceiverBlock(header.blockSeq);
-      this.recvBlocks.set(header.blockSeq, block);
+      block = makeReceiverBlock(blockSeq);
+      this.recvBlocks.set(blockSeq, block);
       // `if`, not `while`: the map grows only here, by one, and this runs on every growth — so it
       // can never be more than one over. A `while` would be a loop whose second iteration no input
       // can reach, i.e. unfalsifiable code standing in for a bound the insertion point already gives.
@@ -1718,10 +1725,10 @@ export class LossyUdpChannel {
       // Touch: re-insert so this block moves to the tail of the iteration order. Without it the
       // policy is FIFO on creation age, which the table above prices at roughly half the goodput
       // past the window — a block still receiving symbols would age out while genuinely active.
-      this.recvBlocks.delete(header.blockSeq);
-      this.recvBlocks.set(header.blockSeq, block);
+      this.recvBlocks.delete(blockSeq);
+      this.recvBlocks.set(blockSeq, block);
     }
-    const recovered = addToBlock(block, header.blockPos, new Uint8Array(payload));
+    const recovered = addToBlock(block, blockPos, new Uint8Array(payload));
     if (recovered) {
       // Recorded BEFORE the handlers run, so both halves of the guard are set at the same instant.
       // Stated honestly: this ordering is NOT independently observable today — a handler that
