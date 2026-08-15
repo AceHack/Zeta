@@ -59,6 +59,7 @@ module PredictionScheduler =
         | PredictionInference.AllCandidatesRefuted -> "all candidates refuted"
         | PredictionInference.VisionFeedback feedback -> growthFeedbackText feedback
         | PredictionInference.SoftValueRefuted -> "soft value refuted"
+        | PredictionInference.GenerationFeedback detail -> "candidate generation declined: " + detail
 
     let private asInterruptFeedback feedback =
         Failed("prediction scheduler: " + feedbackText feedback)

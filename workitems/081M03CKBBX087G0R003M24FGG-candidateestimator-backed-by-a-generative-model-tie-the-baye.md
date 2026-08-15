@@ -1,7 +1,7 @@
 ---
 id: 081M03CKBBX087G0R003M24FGG
 type: task
-state: backlog
+state: in-progress
 priority: P2
 slug: candidateestimator-backed-by-a-generative-model-tie-the-baye
 title: "CandidateEstimator backed by a generative model: tie the Bayesian factor graph / BNN into PredictionScheduler so alternative futures are theorized, not hand-supplied"
@@ -102,3 +102,25 @@ reporting whether `ConcordantFraction` improves.
 - `src/Core/PredictionInference.fs` · `src/Core/Vision.fs` — the existing posterior -> budget -> prune path
 - `src/Bayesian/QuantumFusion.fs:421` — the one production `IBranchForecaster`
 - `src/Core/BonsaiCost.fs` — cost-bound pruning, shipped; explicitly NOT this
+
+## Progress 2026-08-15 — the F# half shipped; the TS crossing is NOT done
+
+`src/Core/CandidateGeneration.fs` supplies the missing input to the existing posterior path:
+a grammar-bounded enumeration over `Bonsai.Expr`, an MDL prior (`∝ 2^−size`; Solomonoff 1964,
+Rissanen 1978), a likelihood from actual `BonsaiSoft.evalSoft` mass on observed values, and
+`BonsaiCost` for the price. `CandidateGeneration.estimator` is a
+`PredictionScheduler.CandidateEstimator` — the seam is unchanged, only its input is new.
+
+**What is closed.** Gap (1), the candidate generator. Measured on the fixed
+`referenceSituation`: 80 alternatives, 80 structurally distinct, 78 refuted by the evidence,
+0 unsound costs, held-out agreement on an unseen point. `occamSituation` shows the prior
+deciding among observationally-identical rivals — Rodney's Razor, which no cost model can
+perform.
+
+**What is NOT closed, and is not claimed to be.** Gap (2): `src/Core.TypeScript/bayesian/`
+still has zero scheduler references. The generative model here is F#-native and is *not* the
+TS factor graph or BNN this item's title names. That crossing remains open, and this item
+stays `in-progress` for it rather than being closed on the half that was cheap.
+
+**Also not claimed:** that any of this improves a real scheduling decision. There is no
+workload behind it yet; the estimator is `unmetered` as a scheduling improvement and says so.

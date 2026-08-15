@@ -52,6 +52,12 @@ module PredictionInference =
         | AllCandidatesRefuted
         | VisionFeedback of Vision.GrowthFeedback
         | SoftValueRefuted
+        /// A candidate GENERATOR declined before any candidate existed. Distinct from every
+        /// case above, all of which describe a candidate that was supplied and found wanting:
+        /// this one says the alternatives were never produced. Folding it into
+        /// `EmptyCandidates` would erase the reason, and reusing `NegativePrior` would report
+        /// a value defect for a generation defect.
+        | GenerationFeedback of detail: string
 
     let neutralPriority: BranchPriority =
         { Attention = PS.one
