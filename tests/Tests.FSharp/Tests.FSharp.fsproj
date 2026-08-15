@@ -11,6 +11,7 @@
   <ItemGroup>
     <!-- _Support/ helpers first (they're consumed by subject files below). -->
     <Compile Include="_Support/DeterministicTestPath.fs" />
+    <Compile Include="_Support/CwdChaos.fs" />
     <Compile Include="_Support/ConcurrencyHarness.fs" />
     <Compile Include="_Support/CartelInjector.fs" />
     <Compile Include="_Support/SerializerLegs.fs" />
@@ -583,6 +584,7 @@
     <Compile Include="Infra/Environment.Tests.fs" />
     <Compile Include="Infra/Rx.Tests.fs" />
     <Compile Include="Infra/FeatureFlags.Tests.fs" />
+    <Compile Include="Infra/CwdChaos.Tests.fs" />
 
     <!-- Limit/ -->
     <Compile Include="Limit/Limit.Tests.fs" />
