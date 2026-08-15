@@ -142,7 +142,11 @@ module WSetHeat =
                   Kind = "wset." + operationProfile.WSetFunction + ".forgotten"
                   Units = 1
                   MassPpm = operationProfile.BitsErasedPpm
-                  Detail = detail }
+                  Detail = detail
+                  // Declared, not inferred: this branch IS `ThermodynamicClass.Erasing` — the
+                  // fibre collapsed, so no reachable state distinguishes the erased inputs and
+                  // nothing retains a seed. `Reversible` emits no signature at all.
+                  Disposition = Some ShedDisposition.Annihilated }
 
     let private meter (source: string) (operation: Operation) (value: 'T) : Metered<'T> =
         let operationProfile = profile operation

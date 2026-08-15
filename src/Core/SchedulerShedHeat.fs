@@ -65,14 +65,18 @@ module SchedulerShedHeat =
     [<Literal>]
     let BackpressureKind = "backpressure"
 
-    /// The classification predicate, stated once: a signature is LOSS exactly when the treaty says its
-    /// signal is not a pressure signal. Loss and pressure are complementary by construction, so a
+    /// The classification predicate, stated once: a signature is LOSS exactly when its shed
+    /// disposition is `Annihilated`. Loss and pressure are complementary by construction, so a
     /// misclassification cannot hide in a gap between them.
+    ///
+    /// This now reads the emitter's **declared** `Disposition` (via `HeatSignal.dispositionOfSignature`),
+    /// falling back to the kind-string inference only for emitters that have not declared one. Every
+    /// signature built in this module declares, so none of them depends on the substring match.
     let isLoss (heat: HeatSignature) : bool =
-        heat |> HeatSignal.ofSignature |> HeatSignal.isPressure |> not
+        heat |> HeatSignal.dispositionOfSignature = ShedDisposition.Annihilated
 
     let isPressure (heat: HeatSignature) : bool =
-        heat |> HeatSignal.ofSignature |> HeatSignal.isPressure
+        heat |> HeatSignal.dispositionOfSignature = ShedDisposition.Deferred
 
     // ══════════════════════════════════════════════════════════════
     //  LOSS — the annihilating sheds
@@ -84,7 +88,8 @@ module SchedulerShedHeat =
     let cellShedSignature (shed: CellScheduler.CellShed<'Msg>) : HeatSignature =
         match shed with
         | CellScheduler.CellShed.UndeliverableMessage(target, _) ->
-            HeatSignature.ofMass
+            HeatSignature.ofMassWithDisposition
+                ShedDisposition.Annihilated
                 CellSchedulerSource
                 ForgottenKind
                 1
@@ -97,14 +102,16 @@ module SchedulerShedHeat =
     let outboxShedSignature (shed: CellScheduler.OutboxShed) : HeatSignature =
         match shed with
         | CellScheduler.OutboxShed.MalformedOutboxEntry _ ->
-            HeatSignature.ofMass
+            HeatSignature.ofMassWithDisposition
+                ShedDisposition.Annihilated
                 CellOutboxSource
                 InvalidKind
                 1
                 1.0
                 "malformed __outbox__ entry (expected [String target; message]) — stripped with the outbox"
         | CellScheduler.OutboxShed.MalformedOutbox _ ->
-            HeatSignature.ofMass
+            HeatSignature.ofMassWithDisposition
+                ShedDisposition.Annihilated
                 CellOutboxSource
                 InvalidKind
                 1
@@ -131,7 +138,8 @@ module SchedulerShedHeat =
                 |> List.distinct
                 |> List.sortWith (fun a b -> System.String.CompareOrdinal(a, b))
             Some(
-                HeatSignature.ofMass
+                HeatSignature.ofMassWithDisposition
+                    ShedDisposition.Annihilated
                     CellSchedulerSource
                     ForgottenKind
                     n
@@ -158,7 +166,8 @@ module SchedulerShedHeat =
             let total = max 1 (state.Served + state.Skipped)
             let fraction = float state.Skipped / float total
             Some(
-                HeatSignature.ofMass
+                HeatSignature.ofMassWithDisposition
+                    ShedDisposition.Deferred
                     SoftThrottleSource
                     BackpressureKind
                     state.Skipped
@@ -180,7 +189,8 @@ module SchedulerShedHeat =
         | deferred ->
             let unboarded = report.Confidence |> (-) 1.0 |> max 0.0 |> min 1.0
             Some(
-                HeatSignature.ofMass
+                HeatSignature.ofMassWithDisposition
+                    ShedDisposition.Deferred
                     BranchBudgetSource
                     BackpressureKind
                     (List.length deferred)

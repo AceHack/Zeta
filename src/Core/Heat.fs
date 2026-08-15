@@ -3,18 +3,73 @@ namespace Zeta.Core
 open System
 open System.Collections.Generic
 
+/// Whether a shed **deferred** the payload or **annihilated** it — the one bit the
+/// backpressure composition law turns on.
+///
+/// Model a shed as `m : Q -> Q * Q`, `m offered = (admitted, deferred)`. Call it
+/// *conservative* when `admitted ⊎ deferred = offered` — nothing destroyed, the unboarded
+/// tail handed back:
+///
+///   • **Conservative operators compose.** Composition is associative with the admit-all
+///     identity as unit (a monoid), and deferred sets join by union — idempotent and
+///     order-independent, a join-semilattice. This is a Kahn process network, determinate
+///     independently of scheduling (Kahn 1974; Kahn–MacQueen 1977 for the bounded-FIFO
+///     blocking-write case that conservative backpressure actually is), which is why the
+///     throttle path replays at all under DST (§7).
+///   • **Lossy operators compose into nothing.** A destroyed item is invisible to every
+///     downstream operator, so the composite depends on application order and the
+///     input–output relation is not a compositional semantics (Brock–Ackerman 1981).
+///
+/// The emitter is the only party that knows which of the two it did, so this is carried as
+/// a **declared field** rather than recovered from the kind string. Inference from the kind
+/// is unsound in the dangerous direction: the kind classifiers substring-scan the whole
+/// dotted kind *including the source prefix*, so a subsystem whose NAME carries a pressure
+/// token (`reject-cache.overwritten`, `backpressure-meter.erased`) stamps every kind it
+/// emits as deferral — claiming a composition law that the operator does not satisfy.
+[<RequireQualifiedAccess>]
+type ShedDisposition =
+    /// The tail is still held by the caller; a retry reconstructs it. Conservative — composes.
+    | Deferred
+    /// Nothing retains a seed. Not conservative — does not compose.
+    | Annihilated
+
+
+[<RequireQualifiedAccess>]
+module ShedDisposition =
+
+    let token =
+        function
+        | ShedDisposition.Deferred -> "deferred"
+        | ShedDisposition.Annihilated -> "annihilated"
+
+    /// `admitted ⊎ deferred = offered` holds exactly for the deferring half. This is the
+    /// predicate the composition law is stated over.
+    let isConservative =
+        function
+        | ShedDisposition.Deferred -> true
+        | ShedDisposition.Annihilated -> false
+
+
 /// A deterministic heat signature for information loss at a room boundary.
 ///
 /// The emitting subsystem should keep the detailed lost payload locally only
 /// when it can afford to; this signature is the small host-facing smell:
 /// source, kind, units, and fixed-point mass. `MassPpm` is parts per million so
 /// cross-language tests can compare integers instead of float formatting.
+///
+/// `Disposition` is the emitter's declaration of deferral-vs-annihilation. It is
+/// `option` deliberately, on the same policy a published schema takes a new key under:
+/// an **optional field with a declared absent-reading**. `None` means *this emitter did
+/// not declare*, and the absent-reading is "fall back to inferring from `Kind`" — exactly
+/// the behaviour every emitter had before the field existed. So adding it changes nothing
+/// until an emitter opts in, and `Some` always wins over inference.
 type HeatSignature =
     { Source: string
       Kind: string
       Units: int
       MassPpm: int64
-      Detail: string }
+      Detail: string
+      Disposition: ShedDisposition option }
 
 
 [<RequireQualifiedAccess>]
@@ -58,7 +113,28 @@ module HeatSignature =
           Kind = kind
           Units = max 0 units
           MassPpm = ppm
-          Detail = detail }
+          Detail = detail
+          Disposition = None }
+
+    /// `ofMass`, with the emitter **declaring** whether it deferred the payload or
+    /// annihilated it. Prefer this wherever the emitting code path structurally knows —
+    /// which is every path that had to decide, in code, whether to hand the tail back.
+    let ofMassWithDisposition
+        (disposition: ShedDisposition)
+        (source: string)
+        (kind: string)
+        (units: int)
+        (mass: double)
+        (detail: string)
+        : HeatSignature =
+        { ofMass source kind units mass detail with
+            Disposition = Some disposition }
+
+    /// Attach a declaration to an already-built signature (for emitters that construct the
+    /// record directly). Declaring twice is idempotent in effect — the last declaration wins.
+    let withDisposition (disposition: ShedDisposition) (signature: HeatSignature) : HeatSignature =
+        { signature with
+            Disposition = Some disposition }
 
 
 /// Shared, typed signal vocabulary for heat emitted through host IO and
@@ -120,6 +196,43 @@ module HeatSignal =
 
     let ofSignature (signature: HeatSignature) : HeatSignal =
         ofKind signature.Kind
+
+    /// The disposition **inferred** from a kind string — the legacy fallback, and the only
+    /// route available before `HeatSignature.Disposition` existed.
+    ///
+    /// It is derived from the single ordered `ofKind` chain (never recomputed beside it), so
+    /// it cannot drift from the signal vocabulary. It is nonetheless **unsound**, and in the
+    /// direction that matters: the classifiers substring-match the whole dotted kind, source
+    /// prefix included, so a destroying operator emitted by a subsystem whose name carries a
+    /// pressure token reads as `Deferred` — i.e. claims a composition law it does not satisfy.
+    /// Measured witnesses (single-token, so not the dual-token case a kind-literal lint
+    /// catches): `reject-cache.overwritten`, `denied-list.compacted`,
+    /// `rejection-sampler.evicted`, `backpressure-meter.erased`.
+    ///
+    /// Note the *other* direction is merely pessimistic: an unrecognised kind falls to
+    /// `Other`, which reads `Annihilated`, so an undeclared deferral is over-charged rather
+    /// than wrongly trusted. Only the pressure-token collision is unsound.
+    let dispositionOfKind (kind: string) : ShedDisposition =
+        if kind |> ofKind |> isPressure then
+            ShedDisposition.Deferred
+        else
+            ShedDisposition.Annihilated
+
+    /// The disposition of a signature: the emitter's **declaration** when it made one, and
+    /// only otherwise the inference from `Kind`. This is the single read — nothing else in
+    /// the tree should decide deferral-vs-annihilation.
+    ///
+    /// A declared disposition is *intrinsic*: relabelling `Kind` cannot change it. That is
+    /// the whole point of the field, and it is the property the law tests pin.
+    let dispositionOfSignature (signature: HeatSignature) : ShedDisposition =
+        match signature.Disposition with
+        | Some declared -> declared
+        | None -> dispositionOfKind signature.Kind
+
+    /// Whether a signature's shed is conservative — `admitted ⊎ deferred = offered`, hence
+    /// composable. Declared-field-first, by way of `dispositionOfSignature`.
+    let isConservativeSignature (signature: HeatSignature) : bool =
+        signature |> dispositionOfSignature |> ShedDisposition.isConservative
 
     let tokenOfKind (kind: string) : string =
         kind |> ofKind |> token
