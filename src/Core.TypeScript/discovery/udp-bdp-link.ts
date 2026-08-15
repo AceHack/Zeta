@@ -611,35 +611,43 @@ export function runLink(cfg: SimConfig): SimResult {
       const bucket = Math.min(buckets - 1, Math.floor(ev.time / cfg.sampleMs));
       fl.deliveredTrajectory[bucket] = (fl.deliveredTrajectory[bucket] ?? 0) + 1;
 
-      // Receiver gap detection, reproduced from `LossyUdpChannel.handleIncoming`: any seq above
-      // `expectedSeq` is declared a gap and every sequence number in it is reported missing. There
+      // Receiver gap detection, reproduced from `LossyUdpChannel.handleIncoming`: an in-window
+      // seq above `expectedSeq` is a gap and every sequence number in it is reported missing.
+      // Wider than MAX_NACK_GAP is DESYNC (pending corruption is cleared, no NACK). There
       // is still no reorder hold-down - deliberately, because a hold-down treats the symptom - so
       // a reordered packet still costs one report. What changed (081KZYQ8KNB087G0R000G8QPRE) is
       // that the report now carries a CAUSE, and the cause at this instant is `unknown`.
       if (ev.seq > fl.expectedSeq) {
         const missing = ev.seq - fl.expectedSeq;
-        let spurious = 0;
-        for (let s = fl.expectedSeq; s < ev.seq; s++) {
-          if (!fl.trulyLost.has(s)) spurious++;
-          fl.reportedMissing.add(s);
-        }
-        fl.nacksEmitted++;
-        fl.seqsReportedMissing += missing;
-        fl.spuriousMissingSeqs += spurious;
-        // The module states the NACK channel is assumed reliable; it travels back in one D.
-        push(ev.time + link.owdMs, "nack", ev.flow, ev.seq, missing);
+        // Match LossyUdpChannel: a gap wider than the retention window is
+        // DESYNC, not loss, and pending corruption credit does not cross it
+        // (081KZZYESKA087G0R0008WFKFG).
+        if (missing > MAX_NACK_GAP) {
+          fl.pendingCorruptFrames = 0;
+        } else {
+          let spurious = 0;
+          for (let s = fl.expectedSeq; s < ev.seq; s++) {
+            if (!fl.trulyLost.has(s)) spurious++;
+            fl.reportedMissing.add(s);
+          }
+          fl.nacksEmitted++;
+          fl.seqsReportedMissing += missing;
+          fl.spuriousMissingSeqs += spurious;
+          // The module states the NACK channel is assumed reliable; it travels back in one D.
+          push(ev.time + link.owdMs, "nack", ev.flow, ev.seq, missing);
 
-        // ATTRIBUTION by CRC-32C, reproduced from `LossyUdpChannel`: frames this receiver rejected
-        // are spent against this gap, up to its size. The `min` is load-bearing - a rejection can
-        // RE-LABEL a loss the receiver independently observed, never manufacture one.
-        const attributable = Math.min(fl.pendingCorruptFrames, missing);
-        if (attributable > 0) {
-          fl.pendingCorruptFrames -= attributable;
-          // The FIRST `attributable` of `[ev.seq - missing, ev.seq)`, matching
-          // `missing.slice(0, attributable)` in `LossyUdpChannel`. Which numbers get the label is
-          // arbitrary either way - only the COUNT is a measurement - but the model and the code
-          // must make the same arbitrary choice or a divergence between them means nothing.
-          push(ev.time + link.owdMs, "retract-corrupt", ev.flow, ev.seq - missing + attributable, attributable);
+          // ATTRIBUTION by CRC-32C, reproduced from `LossyUdpChannel`: frames this receiver rejected
+          // are spent against this gap, up to its size. The `min` is load-bearing - a rejection can
+          // RE-LABEL a loss the receiver independently observed, never manufacture one.
+          const attributable = Math.min(fl.pendingCorruptFrames, missing);
+          if (attributable > 0) {
+            fl.pendingCorruptFrames -= attributable;
+            // The FIRST `attributable` of `[ev.seq - missing, ev.seq)`, matching
+            // `missing.slice(0, attributable)` in `LossyUdpChannel`. Which numbers get the label is
+            // arbitrary either way - only the COUNT is a measurement - but the model and the code
+            // must make the same arbitrary choice or a divergence between them means nothing.
+            push(ev.time + link.owdMs, "retract-corrupt", ev.flow, ev.seq - missing + attributable, attributable);
+          }
         }
       } else if (fl.reportedMissing.delete(ev.seq)) {
         // ATTRIBUTION: a sequence number this receiver reported missing has ARRIVED. It was

@@ -1194,6 +1194,70 @@ describe("udp-lossy-transport: separated loss signals", () => {
     expect(causes()).toEqual(["unknown", "corruption", "unknown", "corruption", "unknown"]);
   });
 
+  // ── ULT-35: pending corruption does not survive a desync (081KZZYESKA) ────────
+  //
+  // A CRC-failed frame increments `pendingCorruptFrames` without advancing
+  // `expectedSeq`. A later gap > MAX_NACK_GAP takes the desync branch, which
+  // used to leave that count standing. The NEXT in-window gap then spent it
+  // against a different region of sequence space — re-labelling as
+  // `corruption` losses the receiver never checksummed. The desync branch
+  // already argues it cannot evidence anything past the window; the count
+  // is the same class of claim.
+  it("ULT-35: a desync clears pendingCorruptFrames so the next gap is not mis-attributed", async () => {
+    let receive: (text: string, from: string) => void = () => {};
+    const sent: string[] = [];
+    const desyncs: DesyncEvent[] = [];
+    const transport = {
+      broadcast: (text: string) => {
+        sent.push(text);
+      },
+      onMessage: (h: (text: string, from: string) => void) => {
+        receive = h;
+      },
+    };
+    const ch = new LossyUdpChannel(transport, "receiver");
+    ch.onDesync((e) => desyncs.push(e));
+
+    const frame = (seq: number): Buffer =>
+      encodePacket(
+        { seq, blockSeq: Math.floor(seq / 8), blockPos: seq % 8, isData: seq % 8 < 4, payloadLen: 2 },
+        new Uint8Array([seq & 0xff, 1]),
+      );
+    const corruptFrame = (seq: number): Buffer => {
+      const b = Buffer.from(frame(seq));
+      b[PACKET_HEADER_BYTES] = b[PACKET_HEADER_BYTES]! ^ 0x01;
+      return b;
+    };
+    const send = (buf: Buffer): void => {
+      receive(JSON.stringify({ type: "lossy-udp", zid: "sender", pkt: buf.toString("base64") }), "sender");
+    };
+    const causes = (): string[] =>
+      sent
+        .map((t) => JSON.parse(t) as { type?: string; teaching?: { cause?: string } })
+        .filter((e) => e.type === "lossy-udp-nack")
+        .map((e) => e.teaching?.cause ?? "");
+    const settle = (): Promise<unknown> => new Promise((r) => setTimeout(r, 10));
+
+    send(frame(0));
+    send(corruptFrame(1));
+    send(corruptFrame(2));
+    await settle();
+    expect(causes()).toEqual([]);
+
+    send(frame(MAX_NACK_GAP + 8));
+    await settle();
+    expect(desyncs.length).toBe(1);
+    expect(causes()).toEqual([]);
+
+    // Narrow gap after the desync. Unfixed, this would emit unknown+corruption
+    // by spending the pre-desync rejections against [expected .. this seq).
+    sent.length = 0;
+    const after = desyncs[0]!.observedSeq + 3;
+    send(frame(after));
+    await settle();
+    expect(causes()).toEqual(["unknown"]);
+  });
+
   // ── ULT-31: the evidence brands, and the ASYMMETRY between them ────────────────────────
   //
   // PIN UPDATED 2026-08-14 (081KZYP1X3B087G0R001EZ37PQ), and the update IS the signal this test

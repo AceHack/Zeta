@@ -1457,6 +1457,13 @@ export class LossyUdpChannel {
       // and it is not fixable here: with one `expectedSeq` shared across all peers on a
       // broadcast transport, the wide-gap case is not measurable in the first place. The fix is
       // per-peer sequence state — filed separately, not bundled into a security patch.
+      // A gap this wide is not a region the receiver can evidence (see the
+      // paragraph above). The same argument applies to a corruption COUNT
+      // accumulated BEFORE this boundary: those rejected frames lived in a
+      // different region of sequence space, and spending them against the
+      // next narrow gap would re-label losses the receiver never checked
+      // (081KZZYESKA087G0R0008WFKFG). Clear, do not carry.
+      this.pendingCorruptFrames = 0;
       const event: DesyncEvent = {
         expectedSeq: this.expectedSeq,
         observedSeq: header.seq,

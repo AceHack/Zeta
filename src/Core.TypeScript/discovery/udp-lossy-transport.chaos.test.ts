@@ -1154,12 +1154,12 @@ describe("udp-lossy-transport.chaos", () => {
   // length and every loss rate. `pending > missing.length` is UNREACHABLE in an in-order channel
   // — consecutive corruption is neither necessary nor sufficient for it.
   //
-  // What does reach it is the DESYNC branch: a gap wider than `MAX_NACK_GAP` is reported locally
-  // and never runs the attribution block, so `pendingCorruptFrames` survives the wide gap and the
-  // next narrow gap satisfies the bound. That needs a loss burst > 64 packets — and the sweep's
-  // burst grid stops at 8. So the instrument defect that hid ULT-34 was the GRID, not the model,
-  // and the heavy-tailed channel reaches it at a realistic overall loss rate.
-  it("UCH-27: the clamp's precondition is unreachable in-order at ANY burst length, and reachable past MAX_NACK_GAP", () => {
+  // The DESYNC branch used to be the way the clamp fired: pending survived a gap wider
+  // than MAX_NACK_GAP and was spent against the next narrow gap (081KZZYESKA). That leak
+  // is closed — pending is cleared on desync — so the clamp is unreachable on both the
+  // in-order path and the desync path. ULT-35 is the unit falsifier; this test is the
+  // channel-scale confirmation.
+  it("UCH-27: the clamp's precondition is unreachable in-order at ANY burst length, and stays so past MAX_NACK_GAP", () => {
     const N = 200_000;
     // The receiver's arithmetic, transcribed. `loss` never arrives; `corrupt` arrives and is
     // refused, incrementing pending without advancing expectedSeq.
@@ -1175,8 +1175,10 @@ describe("udp-lossy-transport.chaos", () => {
           continue;
         }
         const gap = seq - expectedSeq;
-        if (gap > MAX_NACK_GAP) desyncs++; // pending is NOT spent on this path
-        else if (gap > 0) {
+        if (gap > MAX_NACK_GAP) {
+          desyncs++;
+          pending = 0; // 081KZZYESKA: desync cannot evidence the prior count
+        } else if (gap > 0) {
           if (pending > gap) bites++;
           pending -= Math.min(pending, gap);
         }
@@ -1200,17 +1202,18 @@ describe("udp-lossy-transport.chaos", () => {
       expect(`L=${L}:${replay(loss, corruptBer).bites}`).toBe(`L=${L}:0`);
     }
 
-    // (c) Past MAX_NACK_GAP the desync branch carries `pending` across, and the bound is reached.
+    // (c) Past MAX_NACK_GAP the desync branch used to CARRY pending across (081KZZYESKA).
+    //     That leak is closed: pending is cleared, so the clamp stays unreachable.
     const longBurst = gilbertElliottTrace(N, burstParams(0.05, 100), 0xabcdn, STREAM.loss).dropped;
     const reached = replay(longBurst, corruptBer);
     expect(reached.desyncs).toBeGreaterThan(0);
-    expect(reached.bites).toBeGreaterThan(100);
+    expect(reached.bites).toBe(0);
 
-    // (d) …and the heavy-tailed channel reaches it WITHOUT an artificial burst length, at ~12%
-    //     overall loss. This is the operating point a real 802.11 trace supplies.
+    // (d) The heavy-tailed channel still desyncs at ~12% overall loss, and still
+    //     does not bite the clamp once pending dies with the desync.
     const heavy = lomaxBurstTrace(N, LOMAX_WIFI2022_DERIVED, 0xabcdn, STREAM.loss);
     const heavyReached = replay(heavy.dropped, corruptBer);
     expect(heavyReached.desyncs).toBeGreaterThan(0);
-    expect(heavyReached.bites).toBeGreaterThan(0);
+    expect(heavyReached.bites).toBe(0);
   });
 });

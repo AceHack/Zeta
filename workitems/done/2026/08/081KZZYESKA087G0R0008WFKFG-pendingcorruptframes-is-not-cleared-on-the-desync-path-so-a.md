@@ -1,11 +1,12 @@
 ---
 id: 081KZZYESKA087G0R0008WFKFG
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: pendingcorruptframes-is-not-cleared-on-the-desync-path-so-a
 title: "pendingCorruptFrames is not cleared on the desync path, so a corruption attribution leaks across a desync boundary"
 created: 2026-08-14T10:53:02.954Z
+completed: 2026-08-15T13:41:04.804Z
 depends_on: []
 composes_with: []
 ---
@@ -43,6 +44,14 @@ channel, and at a handful per 200k on the heavy-tailed channel at ~12% overall l
 Clear (or explicitly carry, with a stated reason) `pendingCorruptFrames` on the desync path. The
 desync branch already argues that beyond the retention window the receiver *cannot evidence*
 anything; the same argument applies to a corruption count accumulated before that boundary.
+
+## Resolution (2026-08-15)
+
+Cleared `pendingCorruptFrames` on the desync branch in
+`LossyUdpChannel.handleIncoming`. The BDP model matches. ULT-35 is the
+falsifier: corrupt frames, then a gap > MAX_NACK_GAP, then a narrow gap
+emits only `unknown`. UCH-27's replay now zeros pending on desync and
+asserts the clamp stays unreachable.
 
 ## Pointers
 
