@@ -1,0 +1,12 @@
+{
+  "pr_number": 10768,
+  "archive_path": "docs/history/pr-reviews/PR-10768-gate-traced-earns-its-known-answer-geometry-law-and-the-law-the-cartridge-asked-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T13:57:21.626Z",
+  "schema_version": "v1",
+  "commit_sha": "0d67329334ed2503484289f34d32a0c53242f47d",
+  "title": "gate: traced earns its known-answer geometry law — and the law the cartridge asked for was the vacuity class",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T13:56:46Z",
+  "head_ref": "shadow/pending-cartridge-gate-work"
+}
