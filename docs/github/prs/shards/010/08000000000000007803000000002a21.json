@@ -1,0 +1,12 @@
+{
+  "pr_number": 10785,
+  "archive_path": "docs/history/pr-reviews/PR-10785-docs-ferry-harness-as-capability-du-verbatim-transcript-framework-analysis.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T14:06:14.264Z",
+  "schema_version": "v1",
+  "commit_sha": "159880bbc835bd3b8eda1d2167eb52fbfd1a8423",
+  "title": "docs(ferry): harness-as-capability-DU — verbatim transcript + framework analysis",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T14:05:40Z",
+  "head_ref": "shadow/ferry-harness-evolution-verbatim"
+}
