@@ -81,3 +81,12 @@ touches every job on every runner. Different blast radius, different review.
 **Acceptance:** delete `registry/smt2-solver-floor.json`, delete the soft-skips that read it,
 and have `test (TS suite)` go green with the full 11-verdict light-time sequence and the cvc5
 leg on chsh both asserted on the runner.
+
+## Progress (2026-08-15) — first slice, floor still in place
+
+`install-pinned-smt.ts` pins z3 4.16.0 and cvc5 1.3.4 from checksummed GitHub
+release zips (linux x64 + arm64) into `~/.local/bin` when PATH is below the
+floor. `test (TS suite)` in `gate.yml` runs it before `bun test`. The floor
+file and the skip legs stay until this has a green track record on the
+runner — deleting them is the second half of acceptance. Checksums measured
+2026-08-15 by streaming the four release zips through `shasum -a 256`.

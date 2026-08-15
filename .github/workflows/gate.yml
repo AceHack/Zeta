@@ -1661,6 +1661,12 @@ jobs:
         # failure rather than a skip. --frozen-lockfile matches the other bun jobs.
         run: bun install --frozen-lockfile
 
+      - name: Pin z3 4.16.0 and cvc5 1.3.4 (081KZZ27KJ8)
+        # apt on ubuntu-24.04 is z3 4.8.12 / cvc5 1.1.2; two SMT certificates
+        # soft-skip under that pair. Checksummed GitHub-release binaries go in
+        # ~/.local/bin. No-op when PATH already meets the floor.
+        run: bun src/Core.TypeScript/ace/setup-realizers/install-pinned-smt.ts
+
       - name: Whole TypeScript suite
         # No path filters: see the header. Exclusions live in bunfig.toml and every one of
         # them is declared with a reason in registry/unexecuted-test-files.json.
