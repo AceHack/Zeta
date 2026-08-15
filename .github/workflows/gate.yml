@@ -1751,6 +1751,17 @@ jobs:
         run: bun test tests/cross-verification/_harness/cross-verify-ir.test.ts
         timeout-minutes: 5
 
+      # The COMPLEMENT of the step above, not a duplicate of it. That one proves the
+      # generated lanes agree WITH EACH OTHER, which a wrong IR satisfies just as well
+      # as a right one — N lanes generated from one spec agreeing is one observation
+      # counted N times. This one diffs the generated code against the HAND-WRITTEN
+      # ports, which are the independent oracle, and so is the only thing here that can
+      # falsify IR *adequacy*. It also fails by name on any IR-carrying primitive that
+      # has no hand-written port at all.
+      - name: IR-generated vs hand-written (independent-oracle check)
+        run: bun test tests/cross-verification/_harness/ir-vs-handwritten.test.ts
+        timeout-minutes: 5
+
       - name: Interface law oracle (per-directory)
         run: bun test tests/cross-verification/zeta-ir-v2/interfaces/cross-verify-interfaces.test.ts
         timeout-minutes: 5
