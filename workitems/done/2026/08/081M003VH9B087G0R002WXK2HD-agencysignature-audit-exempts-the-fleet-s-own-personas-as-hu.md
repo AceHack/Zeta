@@ -1,11 +1,12 @@
 ---
 id: 081M003VH9B087G0R002WXK2HD
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: agencysignature-audit-exempts-the-fleet-s-own-personas-as-hu
 title: "AgencySignature audit exempts the fleet's own personas as human-authored, so shadow and persona commits are never checked"
 created: 2026-08-14T12:27:23.307Z
+completed: 2026-08-15T13:38:33.528Z
 depends_on: []
 composes_with: []
 ---
@@ -86,4 +87,18 @@ fails. If it cannot fail, it is not a check.
 - `HUMAN-AUTHORED-EXEMPT` requires positive evidence of human authorship, not absence of a known vendor.
 - The `Agent-` / `Agency-` spelling divergence is resolved, with the non-canonical form rejected loudly.
 - A recorded mutation test proving the auditor can fail.
+
+## Resolution (2026-08-15)
+
+**Drift close.** Acceptance shipped on `main`:
+
+- #10573 inverted the default to fail-closed (roster of humans, not
+  allowlist of vendor agents).
+- #10594 wired the instruments into CI and pinned the v1 ship date.
+
+`src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts` and
+`agency-signature-identity-roster.json` are the artefacts. `Agent-` vs
+`Agency-` spelling is rejected by `validate-agencysignature-pr-body.ts`.
+This row stayed `backlog` after those landings. No code change in this
+close.
 

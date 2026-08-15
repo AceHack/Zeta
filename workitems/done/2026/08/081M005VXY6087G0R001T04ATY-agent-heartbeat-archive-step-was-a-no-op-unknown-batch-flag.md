@@ -1,11 +1,12 @@
 ---
 id: 081M005VXY6087G0R001T04ATY
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: agent-heartbeat-archive-step-was-a-no-op-unknown-batch-flag
 title: "agent-heartbeat archive step was a no-op: unknown --batch flag, pipe-masked exit code, and a --since that matched nothing"
 created: 2026-08-14T13:02:33.414Z
+completed: 2026-08-15T13:38:33.566Z
 depends_on: []
 composes_with: []
 ---
@@ -84,3 +85,11 @@ safety net reporting green while dead. The backfill would have drained the hole;
 The 1273-PR backlog is not backfilled by this PR. The fixed step drains it at 3 PRs/tick;
 at 48 ticks/day that is roughly 9 days, or an operator can run
 `--all-merged` with a larger `--limit` once to drain it in a single pass.
+
+## Resolution (2026-08-15)
+
+**Drift close.** Acceptance shipped on `main` in #10577. The workflow
+no longer passes `--batch`; `normalizeSince` and `--limit` exist;
+`audit-workflow-cli-flags.ts` is the class-level probe. The 1273-PR
+backfill follow-up is still a follow-up, not this row. No code change
+in this close.

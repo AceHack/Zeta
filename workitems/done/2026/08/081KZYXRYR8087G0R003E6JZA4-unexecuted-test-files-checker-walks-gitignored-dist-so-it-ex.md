@@ -1,11 +1,12 @@
 ---
 id: 081KZYXRYR8087G0R003E6JZA4
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: unexecuted-test-files-checker-walks-gitignored-dist-so-it-ex
 title: "unexecuted-test-files checker walks gitignored dist so it exits 1 on any built dev machine"
 created: 2026-08-14T01:21:52.904Z
+completed: 2026-08-15T13:38:33.494Z
 depends_on: []
 composes_with: []
 ---
@@ -49,4 +50,13 @@ build-graph work found and documented this, and the next checker built repeated 
 - Checker exits 0 on a built working tree with no other findings.
 - The discovered set is a pure function of the tracked files, so it is identical on every checkout.
 - A regression test that plants an untracked `*.test.ts` and asserts the checker ignores it.
+
+## Resolution (2026-08-15)
+
+**Drift close.** Acceptance already shipped on `main` in #10515
+(`fix(hygiene): derive unexecuted-test-files from the tracked set`).
+`src/Core.TypeScript/git/tracked-files.ts` is the shared
+helper; `unexecuted-test-files.ts` walks that set; the planted-untracked
+regression lives in `unexecuted-test-files.test.ts`. This row stayed
+`backlog` after the landing PR. No code change in this close.
 
