@@ -84,6 +84,7 @@ import { batchTemperatureBand } from "../protocol/batch-heat-bridge";
 import {
   createDimensionalBnn,
   absorbError,
+  replaceDimensionPosterior,
   ALL_DIMENSIONS,
   dimensionPosterior,
   type DimensionalBnn,
@@ -274,22 +275,10 @@ export class ZetaTransportCell {
         hint,
         trustWeight,
       );
-      // Absorb the merged posterior as a soft observation
-      // (low severity = soft update, not a hard error)
-      const envelope: ErrorEnvelope = {
-        envelopeId: `prior:${hint.dimension}:${hint.senderZid ?? "unknown"}`,
-        correlationId: `prior:${hint.dimension}`,
-        beacon: `Prior hint from ${hint.senderZid ?? "unknown"}: μ=${merged.mu.toFixed(3)}, σ²=${merged.sigma2.toFixed(3)}`,
-        mirror: {
-          what: `prior hint for dimension ${hint.dimension}`,
-          why: `bidirectional EP update from sender ${hint.senderZid ?? "unknown"}`,
-          howToFix: "no action needed — this is a soft prior update",
-          dimension: hint.dimension,
-          severity: "info",
-        },
-        emittedAt: new Date().toISOString(),
-      };
-      absorbError(this._bnn, envelope);
+      // A peer belief is not an error. absorbError mapped every hint to
+      // severity "info" → z = 0.5, so mu=4 and mu=0 were indistinguishable
+      // (081M005CBQ6087G0R003N21Z9J). Write the merged posterior directly.
+      replaceDimensionPosterior(this._bnn, hint.dimension, merged);
     }
   }
 

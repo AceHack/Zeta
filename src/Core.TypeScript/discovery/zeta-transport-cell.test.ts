@@ -248,3 +248,25 @@ describe("zeta-transport-cell", () => {
     const bnnAfter = cell.bnnStatus().find(s => s.dimension === "transport")!;
     expect(bnnAfter.mu).toBeCloseTo(bnnBefore.mu, 5); // BNN unchanged
   });
+
+  // ZTC-18: two hints that differ only in mu must leave different states
+  // (081M005CBQ). The unfixed path routed every hint through absorbError at
+  // severity "info" → z=0.5, so mu=4 and mu=0 were indistinguishable.
+  test("ZTC-18: mergePriorHints distinguishes two hints that differ only in mu", () => {
+    const mock = makeMockTransport(false);
+    const a = createZetaTransportCell("node-a", { broadcast: mock });
+    const b = createZetaTransportCell("node-b", { broadcast: mock });
+    const base = {
+      dimension: "transport" as const,
+      sigma2: 0.25,
+      robustnessWeight: 1,
+      obsCount: 4,
+      senderZid: "peer",
+    };
+    a.mergePriorHints([{ ...base, mu: 4 }]);
+    b.mergePriorHints([{ ...base, mu: 0 }]);
+    const muA = a.bnnStatus().find((s) => s.dimension === "transport")!.mu;
+    const muB = b.bnnStatus().find((s) => s.dimension === "transport")!.mu;
+    expect(muA).not.toBe(muB);
+    expect(muA).toBeGreaterThan(muB);
+  });

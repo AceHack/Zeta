@@ -1,11 +1,12 @@
 ---
 id: 081M005CBQ6087G0R003N21Z9J
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: mergepriorhints-discards-the-merged-posterior-and-absorbs-a
 title: "mergePriorHints discards the merged posterior and absorbs a constant severity instead"
 created: 2026-08-14T12:54:03.238Z
+completed: 2026-08-15T13:44:05.536Z
 depends_on: []
 composes_with: []
 ---
@@ -48,3 +49,11 @@ See 081M005CFFE087G0R0026WF2DS (site messages, not posteriors) for the wire-type
 
 Two hints differing only in `mu` must leave the receiver in two different states.
 That test fails against the code as written today.
+
+## Resolution (2026-08-15)
+
+`mergePriorHints` now writes the merged Gaussian through
+`replaceDimensionPosterior` and no longer routes a peer belief through
+`absorbError`. ZTC-18 is the falsifier: mu=4 and mu=0 leave different
+receiver states. The wire-type follow-up (site messages, not posteriors)
+stays on 081M005CFFE087G0R0026WF2DS.

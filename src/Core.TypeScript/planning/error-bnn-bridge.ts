@@ -337,6 +337,33 @@ export function absorbError(
   };
 }
 
+/**
+ * Assign a dimension's published (and shadow) posterior.
+ *
+ * This is NOT an EP observation. A peer PriorHint is a belief, not an
+ * error: routing it through `absorbError` mapped every hint to the
+ * constant `severity: "info"` z-score 0.5, so two hints that differed
+ * only in `mu` left the receiver in the same state
+ * (081M005CBQ6087G0R003N21Z9J). The merged Gaussian is written
+ * directly. Shadows get the same (mu, sigma2) at their own `nu`,
+ * because this is an assignment of a belief, not a stream fold.
+ */
+export function replaceDimensionPosterior(
+  bnn: DimensionalBnn,
+  dimension: ErrorDimension,
+  belief: { readonly mu: number; readonly sigma2: number },
+): void {
+  const published = bnn.states.get(dimension);
+  if (!published) return;
+  const next = createStudentTState(published.nu, belief.mu, belief.sigma2, published.obsVariance);
+  (bnn.states as Map<ErrorDimension, StudentTState>).set(dimension, next);
+  const shadows = bnn.shadowRungs.get(dimension) ?? [];
+  (bnn.shadowRungs as Map<ErrorDimension, readonly StudentTState[]>).set(
+    dimension,
+    shadows.map((s) => createStudentTState(s.nu, belief.mu, belief.sigma2, s.obsVariance)),
+  );
+}
+
 // ── The verdict ────────────────────────────────────────────────────────────────
 
 /**
