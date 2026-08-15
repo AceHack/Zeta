@@ -250,6 +250,7 @@
     <Compile Include="Incremental.fs" />
     <Compile Include="Dsl.fs" />
     <Compile Include="Vision.fs" />
+    <Compile Include="BonsaiCost.fs" />
     <Compile Include="PredictionInference.fs" />
     <Compile Include="PredictionScheduler.fs" />
     <Compile Include="ReceiptScheduler.fs" />

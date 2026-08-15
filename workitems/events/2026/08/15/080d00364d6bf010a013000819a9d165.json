@@ -1,0 +1,14 @@
+{
+  "id": "080d00364d6bf010a013000819a9d165",
+  "at": "2026-08-15T18:57:55.582Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M03CKBBX087G0R003M24FGG",
+    "type": "task",
+    "title": "CandidateEstimator backed by a generative model: tie the Bayesian factor graph / BNN into PredictionScheduler so alternative futures are theorized, not hand-supplied",
+    "slug": "candidateestimator-backed-by-a-generative-model-tie-the-baye",
+    "priority": "P2",
+    "filename": "081M03CKBBX087G0R003M24FGG-candidateestimator-backed-by-a-generative-model-tie-the-baye.md"
+  }
+}
