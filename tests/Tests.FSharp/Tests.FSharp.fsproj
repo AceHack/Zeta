@@ -392,6 +392,7 @@
     <Compile Include="StorePipeline.Integration.Tests.fs" />
     <Compile Include="CloudEvents.Tests.fs" />
     <Compile Include="Collation.Tests.fs" />
+    <Compile Include="Collation.CrossOracleTreaty.Tests.fs" />
     <Compile Include="EvolutionWindow.Tests.fs" />
     <Compile Include="SerializationSeed.FullVertical.Tests.fs" />
     <Compile Include="Identity.FullVertical.Tests.fs" />

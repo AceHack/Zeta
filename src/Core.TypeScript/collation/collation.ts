@@ -59,7 +59,17 @@ export const catalog: Record<string, Compare<string>> = {
   "utf8_unicode_ci": stringCompareCI,
   "utf8mb4_unicode_ci": stringCompareCI,
 
-  // SQL Server aliases
+  // SQL Server aliases. See
+  // docs/research/2026-08-15-canonical-collation-is-utf8-byte-order-sql-servers-bin2-utf8-not-nvarchar-bin2.md
+  //
+  // EXACT: _BIN2_UTF8 stores as UTF-8, which has no surrogates, so its BIN2 sort is TRUE
+  // code-point order (Unicode Standard 2.5.3). This is the one SQL Server name that denotes
+  // exactly our canonical collation — it is what a DBA should be told to use.
+  "latin1_general_100_bin2_utf8": stringCompare,
+  // APPROXIMATE — agrees on the BMP, DIVERGES above it. BIN2 over nvarchar (UTF-16) compares
+  // per WCHAR, i.e. by UTF-16 code UNIT, not code point. Legacy _BIN is weaker still: first
+  // character by code point, then raw byte-by-byte.
+  "latin1_general_100_bin2": stringCompare,
   "latin1_general_bin": stringCompare,
   "latin1_general_ci_as": stringCompareCI,
   "latin1_general_cs_as": stringCompare

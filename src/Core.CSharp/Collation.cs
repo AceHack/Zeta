@@ -133,7 +133,17 @@ public static class Collation
             ["utf8_unicode_ci"] = StringComparer.InvariantCultureIgnoreCase,
             ["utf8mb4_unicode_ci"] = StringComparer.InvariantCultureIgnoreCase,
 
-            // SQL Server aliases
+            // SQL Server aliases. See
+            // docs/research/2026-08-15-canonical-collation-is-utf8-byte-order-sql-servers-bin2-utf8-not-nvarchar-bin2.md
+            //
+            // EXACT: _BIN2_UTF8 stores as UTF-8, which has no surrogates, so its BIN2 sort is TRUE
+            // code-point order (Unicode Standard 2.5.3). This is the one SQL Server name that
+            // denotes exactly our canonical collation — it is what a DBA should be told to use.
+            ["Latin1_General_100_BIN2_UTF8"] = Binary,
+            // APPROXIMATE — agrees on the BMP, DIVERGES above it. BIN2 over nvarchar (UTF-16)
+            // compares per WCHAR, i.e. by UTF-16 code UNIT, not code point. Legacy _BIN is weaker
+            // still: first character by code point, then raw byte-by-byte.
+            ["Latin1_General_100_BIN2"] = Binary,
             ["Latin1_General_BIN"] = Binary,
             ["Latin1_General_CI_AS"] = StringComparer.InvariantCultureIgnoreCase,
             ["Latin1_General_CS_AS"] = StringComparer.InvariantCulture
