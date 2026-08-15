@@ -32,7 +32,28 @@
     "and this roster will exempt it. The credential is the human-authorization boundary",
     "in this repo, so that is the intended reading -- but it is an inference from the",
     "credential, not evidence a human wrote the diff. The HUMAN-ROSTER-EXEMPT count is",
-    "printed in every audit summary so the size of that inference stays visible."
+    "printed in every audit summary so the size of that inference stays visible.",
+    "",
+    "SECOND SECTION, ADDED 2026-08-15: 'externalActors'. Read by the PRE-MERGE validator",
+    "(validate-agencysignature-pr-body.ts) and by NOTHING else -- the post-merge auditor",
+    "reads 'humans' and 'machineLanes' only. The two sections are disjoint and keyed",
+    "differently on purpose: a commit has e-mails, a proposal has a forge actor identity.",
+    "",
+    "WHY IT IS NOT A SYNTHESISED TRAILER. A trailer is a SELF-attestation: the actor says",
+    "who it is, what model it ran, and whether a human reviewed it. Dependabot is a third",
+    "party -- it will never emit one, and writing one that claims to come FROM it would be",
+    "forging an attestation inside an attestation convention, which is the one thing the",
+    "convention exists to make impossible. So the profile below is REPO-ASSERTED: it is",
+    "what WE know about a known external actor, recorded here, in git, in text, by whoever",
+    "merged the row. The validator PRINTS it and never emits it as a trailer.",
+    "See .claude/rules/no-directives.md -- source is not authorization; anyone may attach",
+    "a source, the attestation stays the actor's own.",
+    "",
+    "MATCHED ON THE PR AUTHOR (github.event.pull_request.user.login), never on",
+    "github.actor. github.actor is whoever TRIGGERED the event -- on an `edited` event",
+    "that is the editor, so matching it would let any rostered actor exempt somebody",
+    "else's PR by touching it. Exact equality on the trimmed, lowercased login; no",
+    "prefixes, no globs, no `endsWith('[bot]')`. An empty or absent author is NOT exempt."
   ],
   "humans": [
     {
@@ -61,6 +82,25 @@
       "email": "society[bot]@users.noreply.github.com",
       "name": "society[bot]",
       "why": "society-heartbeat.yml evolution-tick lane"
+    }
+  ],
+  "externalActors": [
+    {
+      "actor": "dependabot[bot]",
+      "name": "Dependabot",
+      "why": "GitHub's dependency-update service. THIRD PARTY: we do not run it, cannot change what it writes in a PR body, and cannot make it emit a trailer. Every other unsigned PR-opening lane in this repo is OUR workflow and is fixed by making the workflow sign (pr-archive-on-merge.yml #10764; merge-heartbeats-to-main.ts, this PR). This one cannot be, so it is recorded instead.",
+      "repoAssertedProfile": {
+        "Agent": "dependabot",
+        "Agent-Runtime": "GitHub Dependabot",
+        "Agent-Model": "none-rule-based",
+        "Credential-Identity": "dependabot[bot] GitHub App",
+        "Credential-Mode": "dedicated-agent",
+        "Human-Review": "none",
+        "Human-Review-Evidence": "none",
+        "Action-Mode": "autonomous-fail-open",
+        "Task": "none"
+      },
+      "profileEvidence": "Measured 2026-08-15 on PR #10753: pull_request.user.login = 'dependabot[bot]', user.type = 'Bot'. Opens PRs on a schedule with no human in the loop; the diff is a manifest version bump generated from the advisory/registry feed, not a model sample. A human still has to MERGE it -- that is the review, and it happens after this gate, which is why Human-Review is 'none' here and not 'explicit'."
     }
   ]
 }

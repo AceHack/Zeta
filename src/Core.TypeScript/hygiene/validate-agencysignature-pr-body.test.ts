@@ -1,12 +1,341 @@
+import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { describe, expect, test } from "bun:test";
 
 import {
+  diagnoseParseFailure,
+  finalParagraph,
   hasMisspelledVersionKey,
   isGrandfatheredPr,
   isUnfilledPlaceholder,
+  main,
+  parseExternalActors,
+  repoAssertedAttribution,
+  type RepoAssertedActor,
 } from "./validate-agencysignature-pr-body";
 
 const CUTOVER = "2026-08-15T00:00:00Z";
+
+// ---------------------------------------------------------------------------
+// END-TO-END harness. The pure helpers below are unit-tested, but the two
+// defects this file was extended for (the `---` divider, the external-actor
+// path) live in `main()`'s wiring, and a unit test of a helper cannot see a
+// wiring bug. So these run the REAL script, over a REAL stdin body, and read
+// the REAL exit code -- the same three things CI does.
+// ---------------------------------------------------------------------------
+
+const SCRIPT = join(import.meta.dir, "validate-agencysignature-pr-body.ts");
+
+/**
+ * Run the REAL `main()` over a real body and capture its real output + exit
+ * code — the same three things CI reads.
+ *
+ * In-process rather than a subprocess per case, for a measured reason: a
+ * spawn-per-case version of this file made an unrelated real-git test's 5s
+ * `beforeEach` hook time out in 2 of 6 full-directory runs (0 of 6 without it).
+ * `main()` still does everything it does in CI — spawns git, reads the roster
+ * off disk, writes the same bytes — the only substitution is stdin. The process
+ * boundary itself is covered once, by the CLI smoke test below.
+ */
+function runValidator(
+  body: string,
+  args: readonly string[] = [],
+): { readonly status: number; readonly out: string } {
+  const chunks: string[] = [];
+  const capture = (chunk: unknown): boolean => {
+    chunks.push(String(chunk));
+    return true;
+  };
+  const realOut = process.stdout.write;
+  const realErr = process.stderr.write;
+  process.stdout.write = capture as typeof process.stdout.write;
+  process.stderr.write = capture as typeof process.stderr.write;
+  try {
+    return { status: main(args, body), out: chunks.join("") };
+  } finally {
+    process.stdout.write = realOut;
+    process.stderr.write = realErr;
+  }
+}
+
+// The one subprocess test. Everything else calls `main()` directly, so this is
+// what proves the shebang, the argv slice, the stdin read and the exit-code
+// propagation are wired — i.e. that the thing CI actually invokes runs.
+test("CLI smoke: the script itself validates a good body over real stdin", () => {
+  const result = spawnSync("bun", [SCRIPT, "--author-identity", "AceHack"], {
+    input: `## Summary\n\nWork.\n\n---\n\n${GOOD_BLOCK}\n`,
+    encoding: "utf8",
+    maxBuffer: 16 * 1024 * 1024,
+  });
+  expect(result.stdout).toContain("PASS: AgencySignature v1");
+  expect(result.status).toBe(0);
+});
+
+/** A valid, contiguous, terminal v1 block. */
+const GOOD_BLOCK = [
+  "Agency-Signature-Version: 1",
+  "Agent: shadow",
+  "Agent-Runtime: Claude Code",
+  "Agent-Model: claude-opus-5",
+  "Credential-Identity: AceHack via gh",
+  "Credential-Mode: shared",
+  "Human-Review: not-implied-by-credential",
+  "Human-Review-Evidence: none",
+  "Action-Mode: supervised",
+  "Task: agencysignature-gate-divider-and-external-actors",
+].join("\n");
+
+// ---------------------------------------------------------------------------
+// DEFECT 1 -- a bare `---` anywhere in the body silently killed trailer parsing.
+//
+// `git interpret-trailers` reads stdin as a commit message with a patch possibly
+// appended, so `---` is the diff boundary and everything after it is discarded.
+// A PR body is not that, and the artifact made a flawless trailer block
+// invisible while the error text blamed blank-line discipline a hundred lines
+// away. MEASURED 2026-08-15: nine open PR bodies carry a bare `---`, including
+// all five dependabot PRs.
+//
+// MUTATION PROOF (run 2026-08-15): with `--no-divider` removed from
+// TRAILER_PARSE_ARGS all four shapes below fail with exit 1 and
+// "no parseable git trailers found"; restored, all four pass with exit 0.
+// ---------------------------------------------------------------------------
+describe("the `---` divider artifact (defect 1)", () => {
+  test("a bare `---` horizontal rule above the block does not hide it", () => {
+    const body = `## Summary\n\nSomething shipped.\n\n---\n\nMore prose.\n\n${GOOD_BLOCK}\n`;
+    const { status, out } = runValidator(body);
+    expect(out).toContain("PASS");
+    expect(status).toBe(0);
+  });
+
+  test("a `--- text ---` line inside a fenced evidence block does not hide it", () => {
+    // The literal shape hit twice on 2026-08-15. Note `stripCodeFences` removes
+    // the ``` lines but keeps their CONTENT, so the `--- ... ---` line survives
+    // into what git sees -- which is exactly why the fence strip did not save it.
+    const body =
+      "## Evidence\n\n```\n--- MEASURED ZERO (0 of 12 open PRs) ---\nrows: 0\n```\n\n" +
+      `${GOOD_BLOCK}\n`;
+    const { status, out } = runValidator(body);
+    expect(out).toContain("PASS");
+    expect(status).toBe(0);
+  });
+
+  test("a dependabot-style footer `---` does not hide it", () => {
+    const body =
+      "Bumps xunit.v3 from 3.2.2 to 4.0.0.\n\n" +
+      "[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n" +
+      "---\n\n<details>\n<summary>Dependabot commands and options</summary>\n" +
+      "You can trigger Dependabot actions by commenting on this PR.\n</details>\n\n" +
+      `${GOOD_BLOCK}\n`;
+    const { status, out } = runValidator(body);
+    expect(out).toContain("PASS");
+    expect(status).toBe(0);
+  });
+
+  test("a line beginning `--- ` (the other boundary spelling) does not hide it", () => {
+    const body = `Prose.\n\n--- a trailing note ---\n\n${GOOD_BLOCK}\n`;
+    const { status, out } = runValidator(body);
+    expect(out).toContain("PASS");
+    expect(status).toBe(0);
+  });
+
+  test("MUTATION: the divider fix did not make the gate unable to fail", () => {
+    // Everything above proves `---` is no longer a cause. This proves the
+    // check still HAS causes: a body with no block at all is still rejected,
+    // `---` or no `---`.
+    const { status, out } = runValidator("## Summary\n\n---\n\nNo block here.\n");
+    expect(status).toBe(1);
+    expect(out).toContain("FAIL");
+  });
+});
+
+// The error text has to name the cause it actually found. The old message
+// asserted "block missing OR blank-line discipline broken" unconditionally --
+// a fixed sentence, and (before the divider fix) wrong in the commonest case.
+describe("parse-failure diagnosis names the real cause", () => {
+  test("absent: no version key anywhere", () => {
+    const d = diagnoseParseFailure("## Summary\n\nnothing here\n");
+    expect(d.cause).toBe("absent");
+    expect(d.keyLine).toBe(0);
+  });
+
+  test("unreadable: the key IS present, so the cause is placement", () => {
+    const d = diagnoseParseFailure(`${GOOD_BLOCK}\n\nA trailing footer paragraph.\n`);
+    expect(d.cause).toBe("unreadable");
+    expect(d.keyLine).toBe(1);
+    expect(d.finalParagraph).toEqual(["A trailing footer paragraph."]);
+  });
+
+  test("the emitted text distinguishes the two", () => {
+    const absent = runValidator("## Summary\n\nno block\n");
+    expect(absent.out).toContain("no 'Agency-Signature-Version:' line at all");
+    expect(absent.out).not.toContain("PLACEMENT problem");
+
+    const misplaced = runValidator(`${GOOD_BLOCK}\n\nA trailing footer paragraph.\n`);
+    expect(misplaced.out).toContain("PLACEMENT problem");
+    expect(misplaced.out).toContain("A trailing footer paragraph.");
+  });
+
+  test("finalParagraph is the last contiguous non-blank run", () => {
+    expect(finalParagraph("a\n\nb\nc\n\n\n")).toEqual(["b", "c"]);
+    expect(finalParagraph("only\n")).toEqual(["only"]);
+    expect(finalParagraph("\n\n")).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// DEFECT 2 -- actors that structurally cannot comply.
+//
+// dependabot is a third party: we cannot make it emit a trailer, and
+// synthesising one that claims to come FROM it would be forging an attestation
+// inside an attestation convention. It gets a REPO-ASSERTED attribution instead.
+// The danger of any exemption path is that it swallows everyone, so the
+// negative tests here matter more than the positive one.
+// ---------------------------------------------------------------------------
+const ROSTER: readonly RepoAssertedActor[] = parseExternalActors(
+  readFileSync(
+    join(import.meta.dir, "agency-signature-identity-roster.json"),
+    "utf8",
+  ),
+);
+
+describe("repo-asserted attribution for rostered external actors", () => {
+  test("the shipped roster actually carries dependabot", () => {
+    // Guards the case where the roster is well-formed and lists nobody, which
+    // would make every test below vacuously pass.
+    expect(ROSTER.length).toBeGreaterThan(0);
+    expect(ROSTER.map((r) => r.actor)).toContain("dependabot[bot]");
+  });
+
+  test("a rostered actor is matched, and the profile comes with it", () => {
+    const hit = repoAssertedAttribution("dependabot[bot]", ROSTER);
+    expect(hit).not.toBeNull();
+    expect(hit?.repoAssertedProfile.Agent).toBe("dependabot");
+    expect(hit?.profileEvidence).toContain("10753");
+  });
+
+  test.each([
+    ["", "an empty author"],
+    ["   ", "a whitespace author"],
+    ["dependabot", "a PREFIX of a rostered actor"],
+    ["evil-dependabot[bot]", "a SUFFIX match on a rostered actor"],
+    ["dependabot[bot]-x", "a rostered actor with a suffix appended"],
+    ["renovate[bot]", "a different bot nobody rostered"],
+    ["*", "a glob"],
+    ["AceHack", "a human"],
+  ])("MUTATION: %s (%s) is NOT matched", (actor) => {
+    expect(repoAssertedAttribution(actor, ROSTER)).toBeNull();
+  });
+
+  test("matching is case-insensitive and whitespace-tolerant on an EXACT actor", () => {
+    expect(repoAssertedAttribution("  Dependabot[Bot]  ", ROSTER)?.actor).toBe(
+      "dependabot[bot]",
+    );
+  });
+
+  test("an empty roster exempts nobody", () => {
+    // The failure direction of a missing section must be MORE enforcement.
+    expect(repoAssertedAttribution("dependabot[bot]", [])).toBeNull();
+  });
+});
+
+describe("the external-actor path end to end", () => {
+  const AFTER_CUTOVER = ["--pr-created-at", "2026-08-16T00:00:00Z", "--grandfather-cutover", CUTOVER];
+  // A real dependabot body: no trailer block, and a bare `---` in the footer.
+  const DEPENDABOT_BODY =
+    "Bumps xunit.v3 from 3.2.2 to 4.0.0.\n\n---\n\n<details>\n" +
+    "<summary>Dependabot commands and options</summary>\n</details>\n";
+
+  test("a rostered actor with no trailer passes, marked repo-asserted", () => {
+    const { status, out } = runValidator(DEPENDABOT_BODY, [
+      ...AFTER_CUTOVER,
+      "--author-identity",
+      "dependabot[bot]",
+    ]);
+    expect(status).toBe(0);
+    expect(out).toContain("REPO-ASSERTED ATTRIBUTION");
+    expect(out).toContain("ASSERTED BY THIS REPOSITORY, not by the actor");
+    // The one thing it must never do: emit the profile as a trailer block.
+    expect(out).not.toContain("PASS: AgencySignature");
+  });
+
+  test("MUTATION: a NON-rostered actor with the same body still FAILS", () => {
+    // The vacuity guard. If the exemption ever swallows everyone this is the
+    // test that goes red.
+    const { status, out } = runValidator(DEPENDABOT_BODY, [
+      ...AFTER_CUTOVER,
+      "--author-identity",
+      "renovate[bot]",
+    ]);
+    expect(status).toBe(1);
+    expect(out).toContain("FAIL");
+  });
+
+  test("MUTATION: an ABSENT author identity does not buy an exemption", () => {
+    const { status } = runValidator(DEPENDABOT_BODY, AFTER_CUTOVER);
+    expect(status).toBe(1);
+  });
+
+  test("MUTATION: a human author with no trailer still FAILS after the cutover", () => {
+    const { status, out } = runValidator("## Summary\n\nJust prose.\n", [
+      ...AFTER_CUTOVER,
+      "--author-identity",
+      "AceHack",
+    ]);
+    expect(status).toBe(1);
+    expect(out).toContain("FAIL");
+  });
+
+  test("a non-rostered author WITH a valid block still passes", () => {
+    const { status, out } = runValidator(`## Summary\n\nWork.\n\n${GOOD_BLOCK}\n`, [
+      ...AFTER_CUTOVER,
+      "--author-identity",
+      "AceHack",
+    ]);
+    expect(status).toBe(0);
+    expect(out).toContain("PASS: AgencySignature v1");
+  });
+});
+
+describe("roster parsing is strict", () => {
+  test("an absent section yields an empty roster, not a throw", () => {
+    expect(parseExternalActors('{"humans":[]}')).toEqual([]);
+  });
+
+  test.each([
+    ['{"externalActors": {}}', "not an array"],
+    ['{"externalActors": [{"name":"x","why":"y","profileEvidence":"z","repoAssertedProfile":{}}]}', "no actor"],
+    ['{"externalActors": [{"actor":"a","name":"x","why":"y","profileEvidence":"z"}]}', "no profile"],
+  ])("MUTATION: a malformed section throws (%s)", (json) => {
+    expect(() => parseExternalActors(json)).toThrow();
+  });
+
+  test("MUTATION: a profile missing required keys throws", () => {
+    // A row that exempts an actor while asserting almost nothing is a bare
+    // exemption wearing an attribution's clothes.
+    const thin: string = JSON.stringify({
+      externalActors: [
+        {
+          actor: "a[bot]",
+          name: "A",
+          why: "y",
+          profileEvidence: "z",
+          repoAssertedProfile: { Agent: "a" },
+        },
+      ],
+    });
+    expect(() => parseExternalActors(thin)).toThrow(/Agent-Runtime/);
+  });
+
+  test("every shipped row carries a full profile and its evidence", () => {
+    for (const row of ROSTER) {
+      expect(row.why.length).toBeGreaterThan(40);
+      expect(row.profileEvidence.length).toBeGreaterThan(40);
+      expect(row.repoAssertedProfile["Human-Review"]).toBeDefined();
+    }
+  });
+});
 
 // `Agency-Signature-Version` is canonical (this validator's REQUIRED_KEYS, the
 // spec doc, the post-merge auditor, the four cadence workflows that echo it).

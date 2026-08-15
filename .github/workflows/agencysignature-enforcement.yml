@@ -70,6 +70,17 @@ jobs:
           # Attacker-controlled — via env, quoted, piped to stdin. Never inlined.
           PR_BODY: ${{ github.event.pull_request.body }}
           PR_CREATED_AT: ${{ github.event.pull_request.created_at }}
+          # THE PROPOSAL AUTHOR — deliberately `pull_request.user.login`, NOT
+          # `github.actor`. `github.actor` is whoever TRIGGERED the event, and
+          # this workflow also fires on `edited` and `synchronize`: keyed on
+          # `github.actor`, a rostered external actor would exempt SOMEBODY
+          # ELSE'S PR merely by touching it — and dependabot touches other PRs
+          # (rebases, comments) as a matter of course. `user.login` is the
+          # author of the proposal, which is what the roster is a statement
+          # about. GitHub-supplied rather than body text, so it is not
+          # attacker-controlled; it still travels via env and is passed as a
+          # quoted argument, never interpolated into the script.
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
           # Keep in lockstep with FAIL_CLOSED_CUTOVER_DEFAULT in
           # src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts.
           CUTOVER: "2026-08-15T00:00:00Z"
@@ -78,12 +89,20 @@ jobs:
         # yaml. Logic in a `run:` block is logic no test can reach — the exact
         # failure class this workflow exists to enforce against, so
         # reintroducing it here would be self-defeating. This step pipes bytes.
+        #
+        # Same reason the external-actor decision is `--author-identity` and not
+        # an `if:` condition on the job: an `if: github.actor != 'dependabot[bot]'`
+        # would be an exemption with no test, no printed profile, and no way to
+        # prove it does not swallow everyone. It lives in
+        # `repoAssertedAttribution`, which is pure and has falsifiers — including
+        # one asserting a NON-rostered actor with no trailer still fails.
         run: |
           set -euo pipefail
           printf '%s' "$PR_BODY" \
             | bun src/Core.TypeScript/hygiene/validate-agencysignature-pr-body.ts \
                 --pr-created-at "$PR_CREATED_AT" \
-                --grandfather-cutover "$CUTOVER"
+                --grandfather-cutover "$CUTOVER" \
+                --author-identity "$PR_AUTHOR"
 
   audit-main-tip:
     name: agencysignature (main tip)

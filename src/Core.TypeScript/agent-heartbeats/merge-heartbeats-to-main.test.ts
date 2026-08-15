@@ -1,7 +1,8 @@
 // tools/agent-heartbeats/merge-heartbeats-to-main.test.ts — 081KSKBP80008QG0R001KK9WV6.4 merge-tool tests.
 
 import { describe, expect, it } from "bun:test";
-import { armOutcome, armingEnabled, parseArgs } from "./merge-heartbeats-to-main";
+import { armOutcome, armingEnabled, heartbeatMergePrBody, parseArgs } from "./merge-heartbeats-to-main";
+import { main as validateAgencySignature } from "../hygiene/validate-agencysignature-pr-body";
 
 const TEST_ENV = {} as NodeJS.ProcessEnv;
 
@@ -88,5 +89,93 @@ describe("armingEnabled", () => {
     for (const v of ["true", "yes", "0", "", "on"]) {
       expect(armingEnabled({ ZETA_FLUSH_ARM_AUTOMERGE: v } as NodeJS.ProcessEnv)).toBe(false);
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The lane signs its own PRs (2026-08-15).
+//
+// This generator's bodies carried no AgencySignature block: PRs #10709/#10710/
+// #10711 on the open set are its output and all three are unsigned. They pass
+// today only by grandfathering. Since GitHub squash-merge takes the PR BODY as
+// the commit message, an unsigned body is an unsigned commit on main.
+//
+// The falsifier is the REAL validator over the REAL generated string, because a
+// hand-written expectation about trailer shape is exactly the thing that was
+// wrong before -- the body always LOOKED fine to a human reader.
+// ---------------------------------------------------------------------------
+describe("heartbeatMergePrBody", () => {
+  const AFTER_CUTOVER = [
+    "--pr-created-at",
+    "2026-08-16T00:00:00Z",
+    "--grandfather-cutover",
+    "2026-08-15T00:00:00Z",
+  ];
+
+  // The real validator's real `main()`, over the real generated string.
+  function validate(body: string): { readonly status: number; readonly out: string } {
+    const chunks: string[] = [];
+    const capture = (chunk: unknown): boolean => {
+      chunks.push(String(chunk));
+      return true;
+    };
+    const realOut = process.stdout.write;
+    const realErr = process.stderr.write;
+    process.stdout.write = capture as typeof process.stdout.write;
+    process.stderr.write = capture as typeof process.stderr.write;
+    try {
+      return { status: validateAgencySignature(AFTER_CUTOVER, body), out: chunks.join("") };
+    } finally {
+      process.stdout.write = realOut;
+      process.stderr.write = realErr;
+    }
+  }
+
+  it("passes the real pre-merge validator", () => {
+    const { status, out } = validate(
+      heartbeatMergePrBody("main", "2026-08-15T00:00:00.000Z", "AceHack"),
+    );
+    expect(out).toContain("PASS: AgencySignature v1");
+    expect(status).toBe(0);
+  });
+
+  it("MUTATION: the same body WITHOUT its block is rejected", () => {
+    // Guards against the test passing for some reason other than the block --
+    // e.g. an exemption swallowing this lane.
+    const body = heartbeatMergePrBody("main", "2026-08-15T00:00:00.000Z", "AceHack");
+    const stripped = body.slice(0, body.indexOf("Agency-Signature-Version:"));
+    expect(validate(stripped).status).toBe(1);
+  });
+
+  it("the credential is reported, not assumed, and the mode follows its shape", () => {
+    // The workflow's token is `ZETA_TELEMETRY_FLUSH_TOKEN || ZETA_PR_ARCHIVE_TOKEN
+    // || GITHUB_TOKEN`, so the identity is a runtime fact. Hardcoding one would
+    // have been a false claim in two of the three cases.
+    expect(heartbeatMergePrBody("main", "t", "AceHack")).toContain(
+      "Credential-Mode: shared",
+    );
+    expect(heartbeatMergePrBody("main", "t", "github-actions[bot]")).toContain(
+      "Credential-Mode: dedicated-agent",
+    );
+    expect(heartbeatMergePrBody("main", "t", "unknown")).toContain(
+      "Credential-Mode: unknown",
+    );
+  });
+
+  it("uses `***` for the rule, never `---`", () => {
+    // Not required any more (the validator passes --no-divider), but this lane's
+    // liveness must not depend on a parser flag staying set.
+    const body = heartbeatMergePrBody("main", "t", "AceHack");
+    expect(body.split("\n")).not.toContain("---");
+    expect(body.split("\n")).toContain("***");
+  });
+
+  it("the block is the final paragraph, contiguous, nothing after it", () => {
+    const lines = heartbeatMergePrBody("main", "t", "AceHack").split("\n");
+    const start = lines.indexOf("Agency-Signature-Version: 1");
+    expect(start).toBeGreaterThan(0);
+    expect(lines[start - 1]).toBe("");
+    for (const line of lines.slice(start)) expect(line).not.toBe("");
+    expect(lines.at(-1)).toStartWith("Task: ");
   });
 });

@@ -24,12 +24,26 @@
 //
 // Usage:
 //   gh pr view <number> --json body --jq '.body' \
-//     | bun tools/hygiene/validate-agencysignature-pr-body.ts
+//     | bun tools/hygiene/validate-agencysignature-pr-body.ts \
+//         [--pr-created-at ISO] [--grandfather-cutover ISO] [--author-identity ID]
 //
 // Exit codes:
-//   0 — all required trailers present and enums valid
+//   0 — all required trailers present and enums valid, OR the author is a
+//       rostered external actor carrying a repo-asserted attribution
 //   1 — validation failed (specific failure printed)
 //   2 — tooling / input error
+//
+// SOVEREIGN-MODE SEAM (Aaron 2026-08-15: "we want all their checks to be able to
+// run anywhere on our git-native / ZetaDB-native stuff … GitHub's dependabot is
+// temporary"). Nothing GitHub-shaped lives below this comment. The decision this
+// file makes is: GIVEN A PROPOSAL BODY AND AN AUTHOR IDENTITY, is the attribution
+// present or excused? Both inputs are plain strings — the body on stdin, the
+// author via --author-identity — so the GitHub plumbing (`github.event.
+// pull_request.user.login`, the Actions yaml) stays at the edge in
+// .github/workflows/agencysignature-enforcement.yml, and a ZetaDB-native
+// proposal lane calls the same binary with the same two strings. No portability
+// framework was built for this; the seam already existed and the author identity
+// just had to stop being implicit.
 
 import { spawnSync } from "node:child_process";
 import { parse as parseActorRef } from "../identity/actor-ref.ts";
@@ -136,16 +150,63 @@ function stripCodeFences(input: string): string {
     .join("\n");
 }
 
-function parseTrailers(stripped: string): string {
+/**
+ * `--no-divider` is LOAD-BEARING. Read this before removing it.
+ *
+ * `git interpret-trailers` reads stdin as a commit message with a PATCH POSSIBLY
+ * APPENDED (that is what it is for — `git commit --verbose` templates). So by
+ * default it treats a line that is `---`, or begins `--- `, as the diff boundary
+ * and DISCARDS EVERYTHING AFTER IT. A PR body is not a commit message with a
+ * patch appended, so here that rule is pure artifact: one ordinary markdown
+ * horizontal rule anywhere above the block made a perfectly well-formed trailer
+ * block invisible, and this validator then blamed blank-line discipline —
+ * pointing a hundred lines away from the actual cause. Nobody diagnoses that.
+ *
+ * MEASURED 2026-08-15 across the open PR set: nine bodies carried a bare `---`,
+ * including all five dependabot PRs (it is in their template footer). Confirmed
+ * at the shell — `printf 'B\n\n---\n\nAgency-Signature-Version: 1\n' |
+ * git interpret-trailers --parse` prints nothing; adding `--no-divider` prints
+ * the block.
+ *
+ * AND IT IS THE RIGHT FIX RATHER THAN A LOOSENING, because of PARITY with the
+ * post-merge side — which was measured, not assumed. In a scratch repo the same
+ * day, a commit whose message contains a bare `---` above the block still yields
+ * the whole block from `git log -1 --pretty='%(trailers)'`: git does NOT apply
+ * the divider rule to a stored commit message, only to interpret-trailers'
+ * stdin. So the strict behaviour was the pre-merge gate predicting a post-merge
+ * failure that does not occur — rejecting bodies whose trailers the auditor
+ * reads without complaint. `--no-divider` makes the paired instruments agree,
+ * which is the only property this gate has to offer.
+ *
+ * Requires git >= 2.24 (when the flag landed). An older git exits non-zero,
+ * which the status check below reports as a TOOLING error (exit 2) instead of
+ * silently reading as "this PR body has no trailers".
+ */
+const TRAILER_PARSE_ARGS: readonly string[] = [
+  "interpret-trailers",
+  "--no-divider",
+  "--parse",
+];
+
+type TrailerParse =
+  | { readonly ok: true; readonly trailers: string }
+  | { readonly ok: false; readonly stderr: string };
+
+function parseTrailers(stripped: string): TrailerParse {
   // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const result = spawnSync("git", ["interpret-trailers", "--parse"], {
+  const result = spawnSync("git", [...TRAILER_PARSE_ARGS], {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
     input: stripped,
   });
-  // git interpret-trailers exits 0 with empty output when no trailers found;
-  // bash version uses `2>/dev/null || true` — just take the stdout.
-  return result.stdout;
+  // git interpret-trailers exits 0 with EMPTY OUTPUT when it finds no trailers.
+  // A NON-zero status is a categorically different event — unsupported flag,
+  // missing git, spawn failure — and the old code, which took `result.stdout`
+  // unconditionally, reported a broken tool as a broken PR body.
+  if (result.status !== 0) {
+    return { ok: false, stderr: (result.stderr ?? "").trim() };
+  }
+  return { ok: true, trailers: result.stdout };
 }
 
 function lastNonBlankLine(text: string): string {
@@ -257,20 +318,118 @@ function checkPlaceholders(trailers: string): ExitCode | null {
   return 1;
 }
 
-function emitParseFailure(): ExitCode {
+// `Agency-Signature-Version` is the canonical key (REQUIRED_KEYS above, the
+// spec doc, the post-merge auditor, the four cadence workflows that echo it).
+// `Agent-Signature-Version` is a hand-composition slip that reached main three
+// times on 2026-08-13/14 — and because the post-merge auditor used to exempt
+// anything it did not recognise, such a commit was unsigned AND exempt at once.
+// Say the misspelling out loud here so the pre-merge side names it too.
+const MISSPELLED_VERSION_KEY = "Agent-Signature-Version";
+const CANONICAL_VERSION_KEY = "Agency-Signature-Version";
+const MISSPELLED_VERSION_RE = /^Agent-Signature-Version:\s*\d/im;
+
+/** True when the PR body carries the misspelled version key. */
+export function hasMisspelledVersionKey(body: string): boolean {
+  return MISSPELLED_VERSION_RE.test(body);
+}
+
+/** The last contiguous run of non-blank lines — the paragraph git reads trailers from. */
+export function finalParagraph(text: string): readonly string[] {
+  const lines = text.split("\n");
+  let end = lines.length;
+  while (end > 0 && BLANK_RE.test(lines[end - 1] ?? "")) end--;
+  let start = end;
+  while (start > 0 && !BLANK_RE.test(lines[start - 1] ?? "")) start--;
+  return lines.slice(start, end);
+}
+
+export interface ParseFailureDiagnosis {
+  /** `absent` — no version key anywhere. `unreadable` — the key is there and still did not parse. */
+  readonly cause: "absent" | "unreadable";
+  /** 1-indexed line of the version key, 0 when absent. */
+  readonly keyLine: number;
+  /** What git actually looked at. */
+  readonly finalParagraph: readonly string[];
+}
+
+/**
+ * Name the REAL cause of a parse failure instead of guessing one.
+ *
+ * The previous message asserted "trailer block missing OR blank-line discipline
+ * broken" unconditionally — a fixed sentence that was wrong at least as often as
+ * it was right, and (before `--no-divider`) was wrong in the single commonest
+ * case, where the block was flawless and a `---` a hundred lines up had eaten it.
+ * A diagnosis nobody can act on is a failure the author works around rather than
+ * fixes.
+ *
+ * Pure, so it has falsifiers; it does not guess beyond what it can see, which is
+ * why the two cases are `absent` and `unreadable` rather than a list of hunches.
+ */
+export function diagnoseParseFailure(stripped: string): ParseFailureDiagnosis {
+  const lines = stripped.split("\n");
+  const needle = `${CANONICAL_VERSION_KEY.toLowerCase()}:`;
+  let keyLine = 0;
+  for (let i = lines.length - 1; i >= 0; i--) {
+    if ((lines[i] ?? "").trim().toLowerCase().startsWith(needle)) {
+      keyLine = i + 1;
+      break;
+    }
+  }
+  return {
+    cause: keyLine === 0 ? "absent" : "unreadable",
+    keyLine,
+    finalParagraph: finalParagraph(stripped),
+  };
+}
+
+function emitParseFailure(stripped: string): ExitCode {
+  const d = diagnoseParseFailure(stripped);
   process.stdout.write("FAIL: no parseable git trailers found in PR body\n");
-  process.stdout.write(
-    "  Class:  Trailer Contiguity Survival Failure\n",
-  );
-  process.stdout.write(
-    "  Cause:  AgencySignature trailer block missing OR blank-line discipline broken\n",
-  );
-  process.stdout.write(
-    "  Fix:    ensure the trailer block at PR body bottom has exactly ONE blank\n",
-  );
-  process.stdout.write(
-    "          line preceding it and ZERO blank lines within it\n",
-  );
+  process.stdout.write("  Class:  Trailer Contiguity Survival Failure\n");
+  if (d.cause === "absent") {
+    process.stdout.write(
+      `  Cause:  the body carries no '${CANONICAL_VERSION_KEY}:' line at all — the\n`,
+    );
+    process.stdout.write(
+      "          AgencySignature block was never added. This is not a formatting\n",
+    );
+    process.stdout.write("          problem; the attribution is simply absent.\n");
+    process.stdout.write(
+      "  Fix:    append the 10-trailer block (see .github/PULL_REQUEST_TEMPLATE.md)\n",
+    );
+    process.stdout.write("          at the very bottom of the PR body.\n");
+  } else {
+    process.stdout.write(
+      `  Cause:  '${CANONICAL_VERSION_KEY}:' IS present, at line ${String(d.keyLine)} of the\n`,
+    );
+    process.stdout.write(
+      "          body — so this is a PLACEMENT problem, not a missing block. git\n",
+    );
+    process.stdout.write(
+      "          reads trailers only from the FINAL paragraph, and the final\n",
+    );
+    process.stdout.write("          paragraph of this body is:\n");
+    for (const line of d.finalParagraph.slice(0, 5)) {
+      process.stdout.write(`            | ${line}\n`);
+    }
+    if (d.finalParagraph.length > 5) {
+      process.stdout.write(
+        `            | ... (${String(d.finalParagraph.length - 5)} more line(s))\n`,
+      );
+    }
+    process.stdout.write(
+      "  Fix:    move the block so it IS the final paragraph — one blank line\n",
+    );
+    process.stdout.write(
+      "          before it, zero blank lines inside it, nothing after it.\n",
+    );
+    process.stdout.write(
+      "  Note:   a markdown `---` rule above the block is NOT a cause any more.\n",
+    );
+    process.stdout.write(
+      "          This validator passes --no-divider; see TRAILER_PARSE_ARGS.\n",
+    );
+  }
   process.stdout.write(
     "  Maxim:  A governance convention is not shipped when humans can read it.\n",
   );
@@ -281,6 +440,21 @@ function emitParseFailure(): ExitCode {
     `  Spec:   ${SPEC_DOC} Section 7.4 (canonical shape) + Section 4 (blank-line guardrail)\n`,
   );
   return 1;
+}
+
+function emitToolingParseFailure(stderr: string): ExitCode {
+  process.stderr.write("error: `git interpret-trailers` failed\n");
+  process.stderr.write(`  git said: ${stderr === "" ? "(nothing)" : stderr}\n`);
+  process.stderr.write(
+    "  This validator passes --no-divider, which requires git >= 2.24.\n",
+  );
+  process.stderr.write(
+    "  Reported as a TOOLING error, never as a PR-body failure: a check that\n",
+  );
+  process.stderr.write(
+    "  could not run must not be reported as one that ran and found nothing.\n",
+  );
+  return 2;
 }
 
 function emitLookupFailure(): ExitCode {
@@ -347,21 +521,6 @@ function emitNonTrailerAfterFailure(after: readonly string[]): ExitCode {
   );
   process.stdout.write(`  Spec:      ${SPEC_DOC} Section 7.5 (Squash-Merge Invariant)\n`);
   return 1;
-}
-
-// `Agency-Signature-Version` is the canonical key (REQUIRED_KEYS above, the
-// spec doc, the post-merge auditor, the four cadence workflows that echo it).
-// `Agent-Signature-Version` is a hand-composition slip that reached main three
-// times on 2026-08-13/14 — and because the post-merge auditor used to exempt
-// anything it did not recognise, such a commit was unsigned AND exempt at once.
-// Say the misspelling out loud here so the pre-merge side names it too.
-const MISSPELLED_VERSION_KEY = "Agent-Signature-Version";
-const CANONICAL_VERSION_KEY = "Agency-Signature-Version";
-const MISSPELLED_VERSION_RE = /^Agent-Signature-Version:\s*\d/im;
-
-/** True when the PR body carries the misspelled version key. */
-export function hasMisspelledVersionKey(body: string): boolean {
-  return MISSPELLED_VERSION_RE.test(body);
 }
 
 function emitMissingKeys(missing: readonly string[], body = ""): ExitCode {
@@ -598,6 +757,187 @@ function emitPass(trailers: string): ExitCode {
   return 0;
 }
 
+// ---------------------------------------------------------------------------
+// External actors: a record the repo keeps ABOUT an actor, never a trailer
+// forged to look like one FROM it.
+// ---------------------------------------------------------------------------
+//
+// THE PROBLEM. Some proposal authors structurally cannot comply. There are two
+// classes and they want OPPOSITE remedies, so the first job is to separate them:
+//
+//   OUR OWN AUTOMATION opens PRs with no trailer because we never taught it to.
+//   That is a bug in the workflow, and the fix is to make the workflow SIGN —
+//   its self-attestation is real, we run it. Fixed for pr-archive-on-merge.yml
+//   in #10764 and for merge-heartbeats-to-main.ts in this change. Surveyed
+//   2026-08-15 (`grep -rl 'pr create|create-pull-request|pulls.create'
+//   .github/workflows/`): those are the only two PR-opening lanes we own.
+//
+//   THIRD-PARTY BOTS cannot be fixed that way. dependabot is GitHub's service;
+//   we cannot change a byte of what it writes.
+//
+// WHY NOT SYNTHESISE A TRAILER FOR THEM. Because a trailer is a SELF-attestation
+// — "I am this agent, this model, under this credential, with this much human
+// review" — and writing one that claims to come FROM dependabot is forging an
+// attestation inside an attestation convention. It would make every trailer in
+// the repo mean less, which is the entire asset. `.claude/rules/no-directives.md`
+// draws the same line for authority: anyone may attach a SOURCE, only the
+// principal may attach the thing that carries blame.
+//
+// WHAT IS DONE INSTEAD, and why it is more truthful than a bare skip. Three
+// options were on the table:
+//
+//   1. NAMED EXEMPTION — roster of actors the gate skips. Honest and simple; the
+//      cost is that an exemption list is a place things hide: a row costs one
+//      line, says nothing, and nothing downstream can tell an exempt PR from an
+//      unattributed one.
+//   2. REPO-ASSERTED ATTRIBUTION — the roster row carries the actor's KNOWN
+//      agency profile, and the gate prints it, marked unambiguously as asserted
+//      BY THE REPO. Coverage is preserved: every proposal has an attribution,
+//      some self-asserted, some repo-asserted, and which is which is never in
+//      doubt because the repo-asserted ones never appear as trailers.
+//   3. Have a workflow EDIT the third party's PR body to add a block. Rejected:
+//      that is option-1 dishonesty with extra steps — the block would land in
+//      the squash commit indistinguishable from a self-attestation. It is the
+//      forgery, merely committed by a robot.
+//
+// Chosen: 2. The differences from 1 that pay for it: adding an actor COSTS you
+// stating its profile and the evidence for it (`profileEvidence`), the profile
+// is diffable text in git so the row is attributable to whoever merged it, and
+// the gate output says what it knows rather than only that it declined to look.
+//
+// WHAT IT DOES NOT DO, stated so nobody mistakes the scope: this is the
+// PRE-merge instrument. The post-merge auditor is untouched, and a merged
+// dependabot commit will classify UNSIGNED there. That is deliberate — measured
+// 2026-08-15, zero dependabot commits exist in the last 800 on `main`, so what
+// identity such a commit carries after squash-merge is unmeasured, and a roster
+// row written from a guess is exactly the kind of exemption this file's own note
+// warns about. A loud false regression on the first one is the correct outcome.
+
+const ROSTER_FILENAME = "agency-signature-identity-roster.json";
+
+export interface RepoAssertedActor {
+  readonly actor: string;
+  readonly name: string;
+  readonly why: string;
+  readonly repoAssertedProfile: Readonly<Record<string, string>>;
+  readonly profileEvidence: string;
+}
+
+/**
+ * Parse the `externalActors` section of the shared identity roster.
+ *
+ * STRICT, and throws rather than degrading: a roster that cannot be read is a
+ * tooling error, never an empty roster. Note the asymmetry that makes this safe
+ * — an empty external-actor list exempts NOBODY, so the failure direction of a
+ * missing/mangled section is more enforcement, not less. `externalActors` is
+ * OPTIONAL for that reason (absent ⇒ empty ⇒ everyone must sign), while a
+ * present-but-malformed section throws, because that is somebody's edit going
+ * wrong and it must be loud.
+ */
+export function parseExternalActors(json: string): readonly RepoAssertedActor[] {
+  const raw = JSON.parse(json) as { externalActors?: unknown };
+  if (raw.externalActors === undefined) return [];
+  if (!Array.isArray(raw.externalActors)) {
+    throw new TypeError(`${ROSTER_FILENAME}: 'externalActors' must be an array`);
+  }
+  return raw.externalActors.map((row: unknown, i: number) => {
+    const r = row as Partial<RepoAssertedActor>;
+    for (const field of ["actor", "name", "why", "profileEvidence"] as const) {
+      if (typeof r[field] !== "string" || r[field].trim() === "") {
+        throw new TypeError(
+          `${ROSTER_FILENAME}: externalActors[${String(i)}] needs a non-empty '${field}'`,
+        );
+      }
+    }
+    const profile = r.repoAssertedProfile;
+    if (typeof profile !== "object" || profile === null) {
+      throw new TypeError(
+        `${ROSTER_FILENAME}: externalActors[${String(i)}] needs a 'repoAssertedProfile' object`,
+      );
+    }
+    // The profile stands in for a trailer block, so it must carry the same ten
+    // fields. A row that omits half of them would buy an exemption while
+    // asserting nothing — option 1 wearing option 2's clothes.
+    const missing = REQUIRED_KEYS.filter(
+      (k) => k !== CANONICAL_VERSION_KEY && typeof profile[k] !== "string",
+    );
+    if (missing.length > 0) {
+      throw new TypeError(
+        `${ROSTER_FILENAME}: externalActors[${String(i)}].repoAssertedProfile is missing ${missing.join(" ")}`,
+      );
+    }
+    return {
+      actor: r.actor as string,
+      name: r.name as string,
+      why: r.why as string,
+      repoAssertedProfile: profile as Readonly<Record<string, string>>,
+      profileEvidence: r.profileEvidence as string,
+    };
+  });
+}
+
+function loadExternalActors(): readonly RepoAssertedActor[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const fs = require("node:fs") as typeof import("node:fs");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const path = require("node:path") as typeof import("node:path");
+  return parseExternalActors(
+    fs.readFileSync(path.join(import.meta.dir, ROSTER_FILENAME), "utf8"),
+  );
+}
+
+/**
+ * THE PORTABLE DECISION. Given a proposal's author identity and the roster, is
+ * there a repo-asserted attribution for it? Pure — no forge, no network, no
+ * environment. GitHub supplies the string at the edge (the workflow reads
+ * `github.event.pull_request.user.login`); nothing GitHub-shaped reaches here,
+ * so the same call answers the same question over a ZetaDB-native proposal.
+ *
+ * EXACT equality on the trimmed, lowercased actor, and nothing else. No prefix
+ * match, no glob, no `endsWith("[bot]")` — every one of those is how an
+ * exemption list quietly grows to cover everybody, which is the vacuity class
+ * this whole instrument exists to avoid. An empty or whitespace actor matches
+ * nothing: an unknown author must sign.
+ */
+export function repoAssertedAttribution(
+  authorIdentity: string,
+  roster: readonly RepoAssertedActor[],
+): RepoAssertedActor | null {
+  const wanted = authorIdentity.trim().toLowerCase();
+  if (wanted === "") return null;
+  return roster.find((row) => row.actor.trim().toLowerCase() === wanted) ?? null;
+}
+
+function emitRepoAssertedAttribution(row: RepoAssertedActor): ExitCode {
+  process.stdout.write(
+    `REPO-ASSERTED ATTRIBUTION: '${row.actor}' is a known external actor.\n`,
+  );
+  process.stdout.write(
+    "  This PR carries NO trailer block, and is not required to. Read the next\n",
+  );
+  process.stdout.write("  three lines before reading the profile below them.\n");
+  process.stdout.write(
+    "    * The profile is ASSERTED BY THIS REPOSITORY, not by the actor.\n",
+  );
+  process.stdout.write(
+    "    * It is NOT a trailer and is NOT written into the commit. Nothing here\n",
+  );
+  process.stdout.write("      claims to be a self-attestation by the actor.\n");
+  process.stdout.write(
+    `    * Its source is ${ROSTER_FILENAME}, in git, changed by review.\n`,
+  );
+  process.stdout.write(`  Actor:  ${row.name} (${row.actor})\n`);
+  process.stdout.write(`  Why:    ${row.why}\n`);
+  process.stdout.write("  Repo-asserted profile:\n");
+  for (const key of REQUIRED_KEYS) {
+    const value = row.repoAssertedProfile[key];
+    if (value === undefined) continue;
+    process.stdout.write(`    ${key.padEnd(24)}${value}\n`);
+  }
+  process.stdout.write(`  Evidence: ${row.profileEvidence}\n`);
+  return 0;
+}
+
 /**
  * The grandfather decision, as a pure function so it can be falsified.
  *
@@ -621,11 +961,14 @@ export function isGrandfatheredPr(createdAt: string, cutover: string): boolean {
 interface ValidatorOptions {
   readonly createdAt: string;
   readonly cutover: string;
+  /** The proposal AUTHOR's identity. Forge-agnostic string; empty means unknown. */
+  readonly authorIdentity: string;
 }
 
 function parseOptions(argv: readonly string[]): ValidatorOptions | null {
   let createdAt = "";
   let cutover = "";
+  let authorIdentity = "";
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i] ?? "";
     const next = argv[i + 1];
@@ -637,14 +980,27 @@ function parseOptions(argv: readonly string[]): ValidatorOptions | null {
       if (next === undefined) return null;
       cutover = next;
       i++;
+    } else if (arg === "--author-identity") {
+      if (next === undefined) return null;
+      authorIdentity = next;
+      i++;
     } else {
       return null;
     }
   }
-  return { createdAt, cutover };
+  return { createdAt, cutover, authorIdentity };
 }
 
-export function main(argv: readonly string[] = []): ExitCode {
+/**
+ * @param body - the proposal body. Omitted in production, where it is read from
+ *   stdin; supplied by the tests so they can exercise this exact wiring without
+ *   a subprocess per case. (Measured 2026-08-15: a spawn-per-case test file made
+ *   an unrelated real-git test's 5s `beforeEach` hook time out in 2 of 6
+ *   full-directory runs, against 0 of 6 before. Shipping a new flake to test a
+ *   fix is not a trade worth making, and one CLI smoke test still covers the
+ *   process boundary.)
+ */
+export function main(argv: readonly string[] = [], body?: string): ExitCode {
   if (!gitAvailable()) {
     process.stderr.write("error: git not found on PATH\n");
     return 2;
@@ -652,10 +1008,17 @@ export function main(argv: readonly string[] = []): ExitCode {
   const options = parseOptions(argv);
   if (options === null) {
     process.stderr.write(
-      "usage: ... | validate-agencysignature-pr-body.ts [--pr-created-at ISO] [--grandfather-cutover ISO]\n",
+      "usage: ... | validate-agencysignature-pr-body.ts [--pr-created-at ISO] [--grandfather-cutover ISO] [--author-identity ID]\n",
     );
     return 2;
   }
+  // Before the grandfather window and before stdin: a known external actor's
+  // proposal never had a block to read, whenever it was opened.
+  const external = repoAssertedAttribution(
+    options.authorIdentity,
+    loadExternalActors(),
+  );
+  if (external !== null) return emitRepoAssertedAttribution(external);
   if (
     options.createdAt !== "" &&
     options.cutover !== "" &&
@@ -676,7 +1039,7 @@ export function main(argv: readonly string[] = []): ExitCode {
     process.stdout.write("  from the cutover onward IS checked.\n");
     return 0;
   }
-  const input = readStdin();
+  const input = body ?? readStdin();
   if (input === "") {
     process.stderr.write("error: no input on stdin\n");
     process.stderr.write(
@@ -685,8 +1048,10 @@ export function main(argv: readonly string[] = []): ExitCode {
     return 2;
   }
   const stripped = stripCodeFences(input);
-  const trailers = parseTrailers(stripped);
-  if (trailers === "") return emitParseFailure();
+  const parsed = parseTrailers(stripped);
+  if (!parsed.ok) return emitToolingParseFailure(parsed.stderr);
+  const trailers = parsed.trailers;
+  if (trailers === "") return emitParseFailure(stripped);
 
   const terminalCheck = checkTerminalBlock(stripped, trailers);
   if (terminalCheck !== null) return terminalCheck;
