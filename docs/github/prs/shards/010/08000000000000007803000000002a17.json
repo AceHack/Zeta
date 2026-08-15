@@ -1,0 +1,12 @@
+{
+  "pr_number": 10775,
+  "archive_path": "docs/history/pr-reviews/PR-10775-workitem-close-three-rows-whose-acceptance-already-shipped.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T13:52:08.940Z",
+  "schema_version": "v1",
+  "commit_sha": "2f37ef0889ee09d377321ef9fe99da5f04816630",
+  "title": "workitem: close three rows whose acceptance already shipped",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T13:51:35Z",
+  "head_ref": "fix/close-three-shipped-workitem-drift"
+}
