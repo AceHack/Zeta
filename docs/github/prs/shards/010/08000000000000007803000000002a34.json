@@ -1,0 +1,12 @@
+{
+  "pr_number": 10804,
+  "archive_path": "docs/history/pr-reviews/PR-10804-fix-heat-one-classifier-for-pressure-so-dual-token-kinds-cannot-disagree.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T15:41:08.528Z",
+  "schema_version": "v1",
+  "commit_sha": "5f7bb588551cdf43429a27759ac4872cf96b896c",
+  "title": "fix(heat): one classifier for pressure, so dual-token kinds cannot disagree",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T15:40:35Z",
+  "head_ref": "fix/081M010W1BP-derive-pressure-classifier"
+}
