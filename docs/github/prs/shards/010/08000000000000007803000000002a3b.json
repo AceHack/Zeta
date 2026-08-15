@@ -1,0 +1,15 @@
+{
+  "pr_number": 10811,
+  "archive_path": "docs/history/pr-reviews/PR-10811-fix-society-persist-the-society-bnn-across-the-30-minute-tick.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7h4c1f",
+    "thread:PRRT_kwDOSF9kNM6ZhNaM"
+  ],
+  "fetched_at": "2026-08-15T16:01:25.823Z",
+  "schema_version": "v1",
+  "commit_sha": "9cc863dc37362158c0ff7757cf33918b8cfbb6ef",
+  "title": "fix(society): persist the society BNN across the 30-minute tick",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T16:00:53Z",
+  "head_ref": "fix/081M005CGB7-society-bnn-survives-tick"
+}
