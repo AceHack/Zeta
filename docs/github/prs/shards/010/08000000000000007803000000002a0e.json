@@ -1,0 +1,12 @@
+{
+  "pr_number": 10766,
+  "archive_path": "docs/history/pr-reviews/PR-10766-feat-lean-the-two-hexagons-stated-and-proved-and-the-sleeper-was-not-the-associa.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T13:29:59.022Z",
+  "schema_version": "v1",
+  "commit_sha": "f298a43751f14709850e796ac3609e09bcb69e84",
+  "title": "feat(lean): the two hexagons, stated and proved — and the sleeper was NOT the associator",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T13:29:24Z",
+  "head_ref": "shadow/meno-associator-hexagons"
+}
