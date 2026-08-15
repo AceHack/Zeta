@@ -1,11 +1,12 @@
 ---
 id: 081M005CGB7087G0R0031328CY
 type: task
-state: backlog
+state: done
 priority: P2
 slug: wire-bnn-persistence-so-the-society-bnn-survives-the-tick-bo
 title: "wire bnn-persistence so the society BNN survives the tick boundary"
 created: 2026-08-14T12:54:07.975Z
+completed: 2026-08-15T15:36:48.262Z
 depends_on: []
 composes_with: []
 ---
@@ -48,3 +49,14 @@ which process owns the society-scale BNN and what feeds it.
 - Idempotency (#6): re-loading the same state must not re-count it.
 - The restored `nu` must be the STORED one, not the constructor default (#10563 fixed
   three defects on that branch already).
+
+## Resolution (2026-08-15)
+
+Both ends soldered in `society-bnn.ts`. Load `bnn-state.json` from the event dir
+(or start from the prior). Absorb THIS generation as one `calibration`
+observation keyed by event id — not a re-fold of the log, because the persist
+format does not carry the envelope guard. Save only once `obsCount > 0`.
+
+`evolve()` does not read the BNN. Transport trend stays `indeterminate` until
+that dimension is fed. After the first tick, `evidenceBackedPriorHints` publishes
+`calibration` with the real obsCount. Restored `nu` is the stored one.

@@ -22,9 +22,9 @@
  * `discovery/zeta-transport-cell.ts` and `discovery/udp-lossy-transport.ts`, each into
  * a BNN private to ITS OWN process, and `bayesian/bnn-persistence.ts` -- whose header
  * names `docs/observe-events/bnn-state.json` as living "in the same G-set as the
- * society evolution events" -- has ZERO callers of `saveBnnState` or `loadBnnState`.
- * The file has never existed. The path was drawn and never soldered at either end, so
- * wiring only the load side would restore a prior from a file nothing writes.
+ * society evolution events" -- had ZERO callers of `saveBnnState` or `loadBnnState`.
+ * The path is now soldered at both ends by `society-bnn.ts` (081M005CGB7). The feed
+ * is this generation, not a re-fold of the event log.
  *
  * So "PriorHint" is an honest NAME for a prior, and the defect is downstream: the
  * receiver credited it as evidence. `mergePriorHint` weighted the hint by `1/sigma2`
@@ -254,8 +254,8 @@ export function declareTrend(
  * quieter defect, because it would have gone on reporting `0` after the BNN learned
  * something, disarming any receiver-side guard exactly when it started to matter.
  *
- * Today this returns `[]` for the society runner. That is the correct output, not a
- * regression: there is nothing for a fresh 30-minute CI process to have absorbed.
+ * Returns `[]` when every dimension is still the constructor prior. After the
+ * society BNN persists, `calibration` is withheld no longer — it has obsCount.
  */
 export function evidenceBackedPriorHints(bnn: DimensionalBnn, senderZid: string): PriorHint[] {
   const hints: PriorHint[] = [];
@@ -296,12 +296,10 @@ export interface SocietyHeatReadout {
 /**
  * Assemble the transport-heat readout.
  *
- * `previous` is the transport belief from the preceding tick, and the society runner
- * has none: `saveBnnState` / `loadBnnState` have zero callers, so the BNN does not
- * survive the process boundary and `trend` is honestly `indeterminate`. The parameter
- * exists rather than being hardcoded because the fix is wiring persistence, and when
- * that lands the runner passes the restored belief here and nothing else changes.
- * Workitem: 081M005CGB7087G0R0031328CY.
+ * `previous` is the transport belief from the restored file, and only when that
+ * dimension has observations. A loaded BNN that has only seen `calibration`
+ * ticks still has no transport derivative — `trend` stays `indeterminate`
+ * rather than inventing one. Workitem: 081M005CGB7087G0R0031328CY.
  */
 export function transportHeatReadout(
   bnn: DimensionalBnn,

@@ -165,9 +165,9 @@ describe("the band ladder: reachable, bounded, and refusable", () => {
 
 describe("trend: one sample has no derivative", () => {
   // SHR-13. The old trend was mu > 0.6 ? warming : mu < 0.4 ? recovering : stable
-  // -- a LEVEL read off one snapshot and reported as a rate of change. Nothing in
-  // the process could have computed a derivative; the BNN does not survive the
-  // 30-minute process boundary (saveBnnState / loadBnnState have zero callers).
+  // -- a LEVEL read off one snapshot and reported as a rate of change. Without a
+  // previous transport belief the derivative still does not exist. Persistence
+  // restores calibration; transport stays a prior until that dimension is fed.
   test("SHR-13: no previous belief means no trend, at any level of mu", () => {
     for (const mu of [0, 0.39, 0.5, 0.61, 4]) {
       expect(declareTrend({ mu, sigma: 0.01 })).toBe("indeterminate");

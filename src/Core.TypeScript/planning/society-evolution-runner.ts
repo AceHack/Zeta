@@ -18,8 +18,8 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { evolve, createAgent, createSociety, type SocietyAgent, type Society } from "./society-evolution";
-import { createDimensionalBnn } from "./error-bnn-bridge";
 import { evidenceBackedPriorHints, transportHeatReadout } from "./society-heat-readout";
+import { absorbGeneration, loadSocietyBnn, saveSocietyBnn } from "./society-bnn";
 import { founderGenome } from "./agent-genome";
 import type { CalibrationPosterior } from "./calibration-ledger";
 import { writeSocietyEventEvidence } from "./society-event-index";
@@ -106,31 +106,32 @@ async function main(): Promise<number> {
   // Write the evolution result as a G-set event
   const eventId = `society-${Date.now().toString(36)}`;
   // ── PriorHint exchange: publish only what OBSERVATIONS support ────────────────
-  // This BNN is constructed fresh on every 30-minute tick and nothing in this process
-  // absorbs into it, so it has no posterior to publish. `evidenceBackedPriorHints`
-  // withholds every dimension with `obsCount === 0` — today all nine, so the list is
-  // empty, and empty is the truthful output.
+  // The BNN now survives the tick (081M005CGB7087G0R0031328CY): load the file in
+  // this event dir, absorb THIS generation as one calibration observation, save
+  // only if something has been absorbed. Re-folding the event log would double-
+  // count — the persist format does not carry the envelope guard — so the feed
+  // is the generation just produced, keyed by event id.
   //
-  // Publishing the constructor's prior instead is what put `mu = 0, sigma2 = 1,
-  // obsCount = 0` into all 567 hint slots across the 82 evolution events already on
-  // `main`, and a receiver's `mergePriorHint` credited each one with real precision
-  // (sigma 1.0 → 0.154303 over those 82, from zero observations). Both halves are now
-  // refused: the producer withholds, and the merge ignores a hint with no obsCount.
-  //
-  // What would make the list non-empty: wiring `bayesian/bnn-persistence.ts`, whose
-  // header names `docs/observe-events/bnn-state.json` as living in the same G-set as
-  // these events and whose `saveBnnState` / `loadBnnState` have zero callers on either
-  // side. That is a separate slice — the path was drawn and never soldered at BOTH
-  // ends, so loading alone would restore a prior from a file nothing writes.
-  // Workitem: 081M005CGB7087G0R0031328CY.
-  const bnn = createDimensionalBnn();
+  // `evolve()` above does not read the BNN. Restored belief is not a fold input.
+  const eventAt = new Date().toISOString();
+  const loaded = await loadSocietyBnn(args.eventDir);
+  const bnn = loaded.bnn;
+  const absorbed = absorbGeneration(bnn, society, eventId, eventAt);
+  if (absorbed) {
+    const saved = await saveSocietyBnn(bnn, args.eventDir);
+    console.log(`[society] BNN ${loaded.loaded ? "restored" : "started"}; generation absorbed; saved=${saved}`);
+  } else {
+    console.log(`[society] BNN ${loaded.loaded ? "restored" : "started"}; generation was a duplicate, not re-counted`);
+  }
   const priorHints = evidenceBackedPriorHints(bnn, "society-runner");
   if (priorHints.length === 0) {
     console.log(`[society] priorHints: none — the BNN absorbed nothing; a prior is not evidence`);
+  } else {
+    console.log(`[society] priorHints: ${priorHints.length} evidence-backed dimension(s)`);
   }
   const event = {
     id: eventId,
-    at: new Date().toISOString(),
+    at: eventAt,
     by: "society",
     kind: "evolution",
     generation: society.generation,
@@ -159,7 +160,7 @@ async function main(): Promise<number> {
   // the four old cut-points 0.1/0.4/0.5/0.6 sat 0.100σ apart, 0.265σ at the σ ≈
   // 0.378 a six-observation stream publishes. The point estimate is still reported,
   // under a name that does not promise a decision.
-  const heatReadout = transportHeatReadout(bnn);
+  const heatReadout = transportHeatReadout(bnn, loaded.previousTransport);
   const bandLine = `band=${heatReadout.band} (point ${heatReadout.pointBand})`;
   const beliefLine = `transportMu=${heatReadout.transportMu.toFixed(3)}±${heatReadout.transportSigma.toFixed(3)}`;
   console.log(`[society] heat readout: ${bandLine} ${beliefLine} trend=${heatReadout.trend} evidence=${heatReadout.evidence}`);
