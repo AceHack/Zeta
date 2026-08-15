@@ -1655,6 +1655,17 @@ jobs:
             sleep "$backoff"
           done
 
+      - name: QDK venv setup (uv sync)
+        # Same step full-verify runs, for the same reason, and this job needs it for the
+        # same test. `bun test` here includes cross-verify-ir, whose Q# lane executes
+        # through src/Core.Python/.venv/bin/python3 — a gitignored venv, not a PATH tool.
+        # Without this step that lane cannot run, and until the per-route floor landed it
+        # went dark silently: six of seven lanes satisfied an aggregate `>= 6` floor on the
+        # seventh's behalf, so the job reported a 7-language byte-lock it never checked.
+        # The floor now names a dark lane and fails, which is what turned this absence from
+        # invisible into visible. uv comes from install.sh above, as it does in full-verify.
+        run: uv sync --project src/Core.Python
+
       - name: Install npm devDependencies
         # Several suites import devDependencies directly (z3-solver among them) and
         # assert-dont-skip when the dep is absent, so a missing install reads as a real

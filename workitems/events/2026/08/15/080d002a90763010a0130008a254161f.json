@@ -1,0 +1,14 @@
+{
+  "id": "080d002a90763010a0130008a254161f",
+  "at": "2026-08-15T12:07:38.950Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M02N43P5087G0R0010MGWGK",
+    "type": "bug",
+    "title": "cross-verify-ir aggregate floor absorbs a dark oracle lane (qsharp) — per-route floor",
+    "slug": "cross-verify-ir-aggregate-floor-absorbs-a-dark-oracle-lane-q",
+    "priority": "P2",
+    "filename": "081M02N43P5087G0R0010MGWGK-cross-verify-ir-aggregate-floor-absorbs-a-dark-oracle-lane-q.md"
+  }
+}
