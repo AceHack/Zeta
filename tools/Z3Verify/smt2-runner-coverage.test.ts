@@ -38,21 +38,11 @@ interface AllowRow {
   readonly reason: string;
 }
 
-interface FloorRow {
-  readonly lemma: string;
-  readonly solver: string;
-  readonly minimumVersion: string;
-  readonly measuredBadVersion: string;
-  readonly workitem: string;
-  readonly reason: string;
-}
-
 const lemmas = readdirSync(DIR)
   .filter((f) => f.endsWith(".smt2"))
   .sort();
 
 const allowed: readonly AllowRow[] = JSON.parse(readFileSync(ALLOWLIST, "utf8"));
-const floors: readonly FloorRow[] = JSON.parse(readFileSync(SOLVER_FLOOR, "utf8"));
 
 test("there are lemma files to cover (the check itself is not vacuous)", () => {
   // A coverage check over an empty set passes trivially. Guard it.
@@ -66,19 +56,12 @@ test("every allow-list entry names a real file and carries a non-empty reason", 
   }
 });
 
-test("every solver-floor entry names a real file, a work-item, and a MEASURED reason", () => {
-  // A solver floor makes a runner leg skip on an under-capable host. That is a hole in the
-  // shield, so it pays the same toll as an allow-list entry: a real target, a non-empty
-  // reason, a work-item to close it, and both version numbers — the one that works and the
-  // one that was measured NOT to. A floor with a vague reason is a skip nobody can audit.
-  for (const row of floors) {
-    expect(existsSync(join(DIR, "..", "..", row.lemma))).toBe(true);
-    expect(["z3", "cvc5"]).toContain(row.solver);
-    expect(row.minimumVersion).toMatch(/^\d+\.\d+\.\d+$/);
-    expect(row.measuredBadVersion).toMatch(/^\d+\.\d+\.\d+$/);
-    expect(row.workitem.trim().length).toBeGreaterThan(0);
-    expect(row.reason).toContain("MEASURED");
-  }
+test("the solver-floor file is gone — CI pins modern solvers instead of skipping", () => {
+  // 081KZZ27KJ8. A floor that skips a certificate is a hole. After #10783 put
+  // z3 4.16.0 / cvc5 1.3.4 on the TS-suite runner (MEASURED: light-time 11-verdict
+  // sequence passed in 44ms on run 31888161507), the skip is furniture. This
+  // assertion is the latch: a reintroduced floor file is a regression.
+  expect(existsSync(SOLVER_FLOOR)).toBe(false);
 });
 
 test("every .smt2 has a companion runner, or a reasoned allow-list entry", () => {

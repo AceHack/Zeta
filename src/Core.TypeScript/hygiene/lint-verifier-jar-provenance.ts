@@ -9,9 +9,9 @@
 // re-uploaded in place. So the jar itself is the only authority, and this lint
 // reads it: sha256 over the bytes, provenance out of META-INF/MANIFEST.MF.
 //
-// Distinct from registry/smt2-solver-floor.json, which exists because z3/cvc5
-// arrive from the runner's apt with an ambient version. Committed binary =>
-// derive its identity; ambient binary => declare a floor.
+// Distinct from install-pinned-smt.ts, which pins z3/cvc5 off checksummed
+// GitHub releases because apt's ambient version is too old. Committed
+// binary => derive its identity; fetched binary => pin the digest.
 //
 // 081M001E114087G0R001AZF4KD
 

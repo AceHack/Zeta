@@ -34,9 +34,9 @@
 // A solver that grinds hits ITS limit first and returns `unknown`/`timeout`, which fails the
 // sequence assertion loudly and legibly. The test harness is never the thing that gives up.
 //
-// The CI runner's solvers are OLDER than a dev workstation's — z3 4.8.12 and cvc5 1.1.2 from
-// the noble apt manifest, against 4.16.0 / 1.3.4 here — so "fast locally" is not evidence
-// about CI, and the budget is sized for the slower pair.
+// The CI runner used to get z3 4.8.12 / cvc5 1.1.2 from apt. That pair is gone:
+// install-pinned-smt.ts puts 4.16.0 / 1.3.4 on PATH in the TS-suite job
+// (081KZZ27KJ8). The 20s solver budget is now slack, not a floor-skip.
 //
 // cvc5 genuinely does grind on one file here (see `light-time-endpoint-speed-envelope.test.ts`,
 // which runs z3 only for that reason); that is recorded, not hidden.
@@ -77,56 +77,6 @@ export const z3Available: boolean = z3Version !== null;
 
 /** cvc5 on PATH? */
 export const cvc5Available: boolean = cvc5Version !== null;
-
-interface SolverFloorRow {
-  readonly lemma: string;
-  readonly solver: string;
-  readonly minimumVersion: string;
-  readonly measuredBadVersion: string;
-  readonly workitem: string;
-  readonly reason: string;
-}
-
-const SOLVER_FLOORS: readonly SolverFloorRow[] = JSON.parse(
-  readFileSync(join(import.meta.dir, "..", "..", "registry", "smt2-solver-floor.json"), "utf8"),
-);
-
-const versionKey = (v: string): number => {
-  const [a = 0, b = 0, c = 0] = v.split(".").map(Number);
-  return a * 1_000_000 + b * 1_000 + c;
-};
-
-/**
- * Does this host's `solver` meet the declared floor for `lemmaFile`?
- *
- * WHY A FLOOR EXISTS AT ALL. Two committed certificates do not discharge under the solvers
- * Ubuntu 24.04's apt supplies to the CI runner (z3 4.8.12, cvc5 1.1.2) and discharge in well
- * under a second under a workstation's (z3 4.16.0, cvc5 1.3.4). Measured in
- * `podman run ubuntu:24.04` against the CI pair exactly, and confirmed on the runner itself —
- * see registry/smt2-solver-floor.json for the per-file numbers and work-item
- * 081KZZ27KJ8087G0R0038ZGBAT for the toolchain fix.
- *
- * WHY THE AFFECTED LEGS SKIP RATHER THAN ASSERT A PREFIX. For `light-time`, every block the
- * old z3 reaches is `unsat` and every block it misses is a `sat` witness. Gating the
- * reachable prefix would therefore reproduce the exact all-unsat defect this whole lane was
- * just fixed to remove — a green that cannot fail. A declared skip is honest about covering
- * nothing; a prefix assertion would claim coverage it does not have.
- *
- * The skip is DECLARED, in a registry, with a measured reason and a work-item — never
- * silent, and never a bare version check invented at the call site.
- */
-export function solverFloorMet(lemmaFile: string, solver: "z3" | "cvc5"): boolean {
-  const row = SOLVER_FLOORS.find((r) => r.lemma === `tools/Z3Verify/${lemmaFile}` && r.solver === solver);
-  if (row === undefined) return true; // no floor declared for this pair
-  const installed = solver === "z3" ? z3Version : cvc5Version;
-  if (installed === null) return false;
-  return versionKey(installed) >= versionKey(row.minimumVersion);
-}
-
-/** The declared-floor row for a (lemma, solver) pair, for a runner's skip message. */
-export function solverFloorRow(lemmaFile: string, solver: "z3" | "cvc5"): SolverFloorRow | undefined {
-  return SOLVER_FLOORS.find((r) => r.lemma === `tools/Z3Verify/${lemmaFile}` && r.solver === solver);
-}
 
 /** The installed version string, for logging. */
 export function installedVersion(solver: "z3" | "cvc5"): string {
