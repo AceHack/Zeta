@@ -1203,6 +1203,16 @@ jobs:
         # refusal of rows that contradict (or are missing) their cited evidence.
         run: bun src/Core.TypeScript/hygiene/lint-discharge-certificate-consistency.ts
 
+      - name: Guard — a golden-vector treaty may not claim a rule its vectors do not pin
+        # PR #10759 was filed on the premise "the tie-break behaviour is byte-locked into
+        # the four-oracle treaty." Measured, that premise was false: first-occurrence and
+        # ordinal-minimum each changed 0 of 7 pinned vectors, because six of the seven had
+        # no tie reaching quorum at all. "The treaty pinned a POINT; the prose claimed a
+        # RULE." This is spec-side mutation testing — mutate the RULE, count the vectors
+        # that change, and refuse a declared exclusion that changes zero. Cross-oracle byte
+        # agreement (the treaty's other, real job) is deliberately NOT audited here.
+        run: bun src/Core.TypeScript/hygiene/lint-treaty-rule-discrimination.ts
+
   lint-markdown:
     # markdownlint-cli2 on every .md file outside the ignore list in
     # .markdownlint-cli2.jsonc. Round 33 static-analysis expansion
