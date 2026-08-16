@@ -60,6 +60,17 @@
     "                               no quorum to lose - but no redundancy either.",
     "  full-ai-cluster/platform     examples/gmod-server.yaml replicas=2. A sample",
     "                               workload, not part of the PoC critical path.",
+    "  full-ai-cluster/kubevirt     virt-operator Deployment replicas=2, from the",
+    "                               VENDORED upstream kubevirt-operator.yaml",
+    "                               (v1.8.4, line 8493). Upstream ships 2 for",
+    "                               control-plane HA; on one node both co-schedule.",
+    "                               NOT edited down to 1 on purpose: that manifest",
+    "                               is vendored byte-for-byte so it stays 1:1 with",
+    "                               what runs, and node-5b2dfa really does run two",
+    "                               virt-operator pods today. Editing it would make",
+    "                               the checked-in copy diverge from the cluster it",
+    "                               documents, which is a worse lie than this one.",
+    "                               Resolves at nodeCount >= 2 with no code change.",
     "",
     "Removing an entry from this list is the fix, and the fix is one of: drop to",
     "nodeCount replicas (honest single node), set hard anti-affinity (the shortfall",
@@ -70,7 +81,8 @@
     "full-ai-cluster/vault",
     "full-ai-cluster/nats",
     "full-ai-cluster/redis",
-    "full-ai-cluster/platform"
+    "full-ai-cluster/platform",
+    "full-ai-cluster/kubevirt"
   ],
 
   "$comment_acknowledgedRootAppDuplicates": [
