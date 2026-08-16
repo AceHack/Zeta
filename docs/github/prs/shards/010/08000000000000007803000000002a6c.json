@@ -1,0 +1,12 @@
+{
+  "pr_number": 10860,
+  "archive_path": "docs/history/pr-reviews/PR-10860-fix-hygiene-the-closed-flag-set-detector-stops-being-satisfied-by-a-comment.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:04:52.487Z",
+  "schema_version": "v1",
+  "commit_sha": "60beeac3c25343e404f9b21ad578b2c2480cf96f",
+  "title": "fix(hygiene): the closed-flag-set detector stops being satisfied by a comment",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:04:16Z",
+  "head_ref": "shadow/close-comment-fooled-closed-flag-set-detector"
+}
