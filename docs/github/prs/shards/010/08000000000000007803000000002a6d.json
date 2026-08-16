@@ -1,0 +1,12 @@
+{
+  "pr_number": 10861,
+  "archive_path": "docs/history/pr-reviews/PR-10861-docs-pointers-sweep-documentation-surfaces-for-references-that-do-not-resolve-17.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:04:46.921Z",
+  "schema_version": "v1",
+  "commit_sha": "b684413774e3bb57a212a829e23b6904bcb46fae",
+  "title": "docs(pointers): sweep documentation surfaces for references that do not resolve — 17 fixed, inventory classified, instrument failed its own control first",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:04:10Z",
+  "head_ref": "shadow/dangling-pointer-sweep"
+}
