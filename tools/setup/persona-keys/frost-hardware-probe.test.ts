@@ -55,6 +55,29 @@ const MAC_PROFILER_WITH_READER = `SmartCards:
       #01: fr.apdu.ccid.smartcardccid:1.5.1 (/usr/libexec/SmartCardServices/drivers/ifd-ccid.bundle)
 `;
 
+/**
+ * Driver lists and NO `Readers:` section at all. This is the fixture that makes the
+ * "a driver is not a device" guard in the parser CHECKABLE rather than merely stated:
+ * both fixtures above happen to open their `Readers:` block on the same line that the
+ * substring "Reader" first appears, so they cannot tell a header-exact parser from one
+ * that keys on the word — a parser that matched `line.includes("Reader")` passed all 23
+ * tests and reported the ifd-ccid DRIVER ENTRY below as an attached reader. That is the
+ * same conflation this whole file exists to refuse, one layer down in the parser, and it
+ * survived until this fixture existed. Nothing guarantees every macOS build, locale, or
+ * SmartCardServices state emits the empty `Readers:` block that this host does, so
+ * "absent section" is not permitted to mean "reader found".
+ */
+const MAC_PROFILER_DRIVERS_ONLY = `SmartCards:
+
+    Reader Drivers:
+
+      #01: fr.apdu.ccid.smartcardccid:1.5.1 (/usr/libexec/SmartCardServices/drivers/ifd-ccid.bundle)
+
+    SmartCard Drivers:
+
+      #01: com.apple.CryptoTokenKit.pivtoken:1.0 (/System/Library/Frameworks/CryptoTokenKit.framework/PlugIns/pivtoken.appex)
+`;
+
 describe("a PKCS#11 driver on disk is not a device", () => {
   // The regression this file exists for. `brew install yubico-piv-tool` drops
   // ykcs11.dylib on a machine with no token; the old probe reported hardware present.
@@ -152,6 +175,33 @@ describe("the macOS Readers-block parser", () => {
 
   it("reports no reader when the section is absent entirely", () => {
     expect(macReadersBlockIsNonEmpty("SmartCards:\n")).toBeFalse();
+  });
+
+  it("reads a driver list with NO Readers section as no reader", () => {
+    // The mutant this kills: `findIndex((l) => l.includes("Reader"))` instead of
+    // `l.trim() === "Readers:"`. It matches `Reader Drivers:`, sees the deeper-indented
+    // `#01: …ifd-ccid.bundle` beneath it, and calls a bundled driver an attached reader.
+    expect(macReadersBlockIsNonEmpty(MAC_PROFILER_DRIVERS_ONLY)).toBeFalse();
+  });
+
+  it("does not let a driver-only profiler answer clear noHardwareDetected", () => {
+    // End-to-end through the probe, with the PKCS#11 module ALSO on disk — the exact
+    // machine the work-item describes. Driver on disk plus driver in the profiler output
+    // is still zero devices.
+    const driversEverywhere = host({
+      platform: "darwin",
+      exists: (p) => p === "/opt/homebrew/lib/ykcs11.dylib",
+      run: (cmd) => {
+        if (cmd === "system_profiler") return MAC_PROFILER_DRIVERS_ONLY;
+        throw new Error("command not found");
+      },
+    });
+    const res = probeHardwareSecurity(driversEverywhere);
+    expect(res.pkcs11ModuleFound).toBeTrue();
+    expect(res.smartCardReaderAttached).toBeFalse();
+    expect(res.yubikeyDetected).toBeFalse();
+    expect(res.noHardwareDetected).toBeTrue();
+    expect(availableHardwareSealTiers(res)).toEqual([]);
   });
 });
 

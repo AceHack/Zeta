@@ -1,0 +1,14 @@
+{
+  "id": "080d0066e6e0c010a0130008b718d995",
+  "at": "2026-08-16T23:16:35.992Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M06DSQ0Q087G0R000H91391",
+    "type": "bug",
+    "title": "biometric gate reports 'macos-touchid' for any sufficient PAM factor that satisfies sudo",
+    "slug": "biometric-gate-reports-macos-touchid-for-any-sufficient-pam",
+    "priority": "P2",
+    "filename": "081M06DSQ0Q087G0R000H91391-biometric-gate-reports-macos-touchid-for-any-sufficient-pam.md"
+  }
+}
