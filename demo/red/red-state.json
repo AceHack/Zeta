@@ -1,12 +1,10 @@
 {
   "version": 1,
-  "generatedAtIso": "2026-08-16T18:35:27.735Z",
-  "commit": "39b68da9b",
+  "generatedAtIso": "2026-08-16T19:59:56.979Z",
+  "commit": "2b705e63f",
   "totals": {
-    "findings": 2,
-    "bySeverity": {
-      "failing": 2
-    }
+    "findings": 0,
+    "bySeverity": {}
   },
   "territories": [
     {
@@ -36,31 +34,8 @@
         {
           "id": "main-failures",
           "name": "main — recent runs",
-          "summary": "2 of the last 40 runs on main failed.",
-          "findings": [
-            {
-              "id": "ci:31964933775",
-              "title": "pr-manifest-integrity",
-              "severity": "failing",
-              "locus": "39b68da9b — 2026-08-16 18:33",
-              "evidence": [
-                "pr-manifest-integrity",
-                "run id 31964933775"
-              ],
-              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
-            },
-            {
-              "id": "ci:31964851306",
-              "title": "agencysignature-enforcement",
-              "severity": "failing",
-              "locus": "39b68da9b — 2026-08-16 18:31",
-              "evidence": [
-                "research(zeta): mint the zeta-values table and audit our own zetas by…",
-                "run id 31964851306"
-              ],
-              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
-            }
-          ]
+          "summary": "All of the last 40 runs on main concluded green.",
+          "findings": []
         }
       ]
     }
