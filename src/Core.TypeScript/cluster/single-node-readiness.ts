@@ -394,10 +394,7 @@ export function findRootAppCollisions(
 // Budget + redundancy findings
 // ---------------------------------------------------------------------------
 
-export function findStorageBudgetOverruns(
-  claims: readonly StorageClaim[],
-  ledger: Ledger,
-): readonly Finding[] {
+export function findStorageBudgetOverruns(claims: readonly StorageClaim[], ledger: Ledger): readonly Finding[] {
   const budget = ledger.nodeDiskGib * ledger.nodeCount;
   const findings: Finding[] = [];
   for (const storageClass of [...ledger.budgetedStorageClasses].sort((a, b) => stringCompare(a, b))) {
@@ -425,10 +422,7 @@ export function findStorageBudgetOverruns(
   return findings;
 }
 
-export function findFalseRedundancy(
-  claims: readonly ReplicaClaim[],
-  ledger: Ledger,
-): readonly Finding[] {
+export function findFalseRedundancy(claims: readonly ReplicaClaim[], ledger: Ledger): readonly Finding[] {
   const offenders = claims.filter(
     (claim) => claim.verdict === "false-redundancy" && !ledger.acknowledgedFalseRedundancy.includes(claim.app),
   );
@@ -448,7 +442,9 @@ export function findFalseRedundancy(
         `On ${ledger.nodeCount} node(s) every replica co-schedules: the redundancy is nominal, the failure ` +
         `domain is one node. Either drop to ${ledger.nodeCount}, set hard anti-affinity so the shortfall is ` +
         `visible as Pending pods, or record it in acknowledgedFalseRedundancy with the reason.`,
-      detail: bucket.map((claim) => `${claim.path}: ${claim.field} = ${claim.replicas}`).sort((a, b) => stringCompare(a, b)),
+      detail: bucket
+        .map((claim) => `${claim.path}: ${claim.field} = ${claim.replicas}`)
+        .sort((a, b) => stringCompare(a, b)),
     }));
 }
 

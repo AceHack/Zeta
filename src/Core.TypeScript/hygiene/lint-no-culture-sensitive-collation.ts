@@ -227,7 +227,8 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
   },
   {
     file: "demo/identity-dla-site/src/components/ui/calendar.tsx",
-    reason: "display edge — a calendar widget MUST render month and weekday names in the viewer's locale; that is the feature",
+    reason:
+      "display edge — a calendar widget MUST render month and weekday names in the viewer's locale; that is the feature",
   },
   {
     file: "demo/identity-dla-site/src/components/ui/chart.tsx",
@@ -235,7 +236,8 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
   },
   {
     file: "src/Renderers/website/client/src/components/ui/calendar.tsx",
-    reason: "display edge — a calendar widget MUST render month and weekday names in the viewer's locale; that is the feature",
+    reason:
+      "display edge — a calendar widget MUST render month and weekday names in the viewer's locale; that is the feature",
   },
   {
     file: "src/Renderers/website/client/src/components/ui/chart.tsx",
@@ -243,11 +245,13 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
   },
   {
     file: "src/Core.TypeScript/ops/model-rating-report.ts",
-    reason: "display edge — thousands separators in a console-only cost table; verified to write no file, so no committed diff can churn",
+    reason:
+      "display edge — thousands separators in a console-only cost table; verified to write no file, so no committed diff can churn",
   },
   {
     file: "src/Core.TypeScript/discovery/udp-lossy-transport.retention-measure.ts",
-    reason: "display edge — toLocaleString with the locale pinned explicitly to en-US, formatting console output of a measurement run",
+    reason:
+      "display edge — toLocaleString with the locale pinned explicitly to en-US, formatting console output of a measurement run",
   },
 ];
 

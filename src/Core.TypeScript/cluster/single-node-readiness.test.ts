@@ -231,6 +231,24 @@ describe("extractStorageClaims / findStorageBudgetOverruns", () => {
     expect(storageTotals(claims)).toEqual([["longhorn", 300]]);
   });
 
+  test("equal totals use canonical Unicode code-point order", () => {
+    const bmp = "\uFFFD";
+    const astral = "\u{1F600}";
+    const claims = [bmp, astral].map((storageClass) => ({
+      app: "tree/storage",
+      path: `${storageClass}.yaml`,
+      field: "spec.storageClassName",
+      storageClass,
+      gibibytes: 1,
+      replicas: 1,
+    }));
+
+    expect(storageTotals(claims)).toEqual([
+      [bmp, 1],
+      [astral, 1],
+    ]);
+  });
+
   test("RED: 300 GiB against a 100 GiB budget is a blocker", () => {
     const claims = extractStorageClaims(manifest("t/k8s/applications/cockroachdb/Application.yaml", CRDB));
     const findings = findStorageBudgetOverruns(claims, LEDGER);
