@@ -383,6 +383,7 @@
     <Compile Include="ReticulumQuantum.Tests.fs" />
     <Compile Include="PolarityFilter.Tests.fs" />
     <Compile Include="PolarityFilterResolution.Tests.fs" />
+    <Compile Include="PolarityFilterSmoothness.Tests.fs" />
     <Compile Include="DarkHall.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />
     <Compile Include="SagaSnapshot.Tests.fs" />
