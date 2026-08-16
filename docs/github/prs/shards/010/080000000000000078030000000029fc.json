@@ -1,0 +1,12 @@
+{
+  "pr_number": 10748,
+  "archive_path": "docs/history/pr-reviews/PR-10748-deps-bump-actions-github-script-from-8-0-0-to-9-0-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:08:03.622Z",
+  "schema_version": "v1",
+  "commit_sha": "f1c51ef95b3e7061bd510e1d21a3508487ab6040",
+  "title": "deps: Bump actions/github-script from 8.0.0 to 9.0.0",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:07:28Z",
+  "head_ref": "dependabot/github_actions/actions/github-script-9.0.0"
+}
