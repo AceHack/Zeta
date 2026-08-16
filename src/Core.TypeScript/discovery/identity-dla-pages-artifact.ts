@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { PAGES_WASM_ASSETS } from "./identity-dla-pages-wasm-assets";
 
@@ -8,6 +8,7 @@ const RETIRED_PROPOSAL_MARKER = "GitHub's own issue form authenticates";
 
 export type PagesArtifactEvidence = Readonly<{
   readonly entryAsset: string;
+  readonly authorizationAsset: string;
   readonly proposalMarker: typeof CURRENT_PROPOSAL_MARKER;
   readonly wasmAssets: readonly string[];
 }>;
@@ -30,16 +31,20 @@ export function verifyPagesArtifact(artifactRoot: string): PagesArtifactEvidence
   const entryMatch = /assets\/(index-[A-Za-z0-9_-]+\.js)/.exec(index);
   if (!entryMatch?.[1]) throw new Error("teaching error: Pages index does not reference a hashed JavaScript entry asset");
   const entryAsset = entryMatch[1];
-  const entry = readFileSync(join(artifactRoot, "assets", entryAsset), "utf8");
-  if (!entry.includes(CURRENT_PROPOSAL_MARKER)) {
-    throw new Error("teaching error: Pages entry omits the current one-time device authorization control");
+  const assetsDirectory = join(artifactRoot, "assets");
+  const scriptAssets = readdirSync(assetsDirectory).filter(asset => asset.endsWith(".js"));
+  const scripts = scriptAssets.map(asset => ({ asset, body: readFileSync(join(assetsDirectory, asset), "utf8") }));
+  const authorizationAsset = scripts.find(script => script.body.includes(CURRENT_PROPOSAL_MARKER))?.asset;
+  if (!authorizationAsset) {
+    throw new Error("teaching error: Pages artifact omits the current one-time device authorization control");
   }
-  if (entry.includes(RETIRED_PROPOSAL_MARKER)) {
-    throw new Error("teaching error: Pages entry still contains the retired GitHub issue-form proposal transport");
+  if (scripts.some(script => script.body.includes(RETIRED_PROPOSAL_MARKER))) {
+    throw new Error("teaching error: Pages artifact still contains the retired GitHub issue-form proposal transport");
   }
   for (const asset of PAGES_WASM_ASSETS) assertWasmMagic(join(artifactRoot, asset.published));
   return {
     entryAsset,
+    authorizationAsset,
     proposalMarker: CURRENT_PROPOSAL_MARKER,
     wasmAssets: PAGES_WASM_ASSETS.map(asset => asset.published),
   };

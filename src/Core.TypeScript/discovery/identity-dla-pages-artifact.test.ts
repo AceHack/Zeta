@@ -12,8 +12,9 @@ function fixture(options: { readonly currentMarker?: boolean; readonly retiredMa
   roots.push(root);
   mkdirSync(join(root, "assets"), { recursive: true });
   writeFileSync(join(root, "index.html"), '<script type="module" src="/assets/index-fixture.js"></script>');
+  writeFileSync(join(root, "assets", "index-fixture.js"), "import('./PasskeyProposalPanel-fixture.js')");
   writeFileSync(
-    join(root, "assets", "index-fixture.js"),
+    join(root, "assets", "PasskeyProposalPanel-fixture.js"),
     `${options.currentMarker === false ? "" : "authorize this device"}${options.retiredMarker ? " GitHub's own issue form authenticates" : ""}`,
   );
   for (const asset of PAGES_WASM_ASSETS) {
@@ -29,9 +30,10 @@ afterEach(() => {
 });
 
 describe("identity-dla Pages artifact verification", () => {
-  test("accepts a current hashed entry and repository-owned WASM bytes", () => {
+  test("accepts a current lazy authorization chunk and repository-owned WASM bytes", () => {
     const evidence = verifyPagesArtifact(fixture());
     expect(evidence.proposalMarker).toBe("authorize this device");
+    expect(evidence.authorizationAsset).toBe("PasskeyProposalPanel-fixture.js");
     expect(evidence.wasmAssets).toHaveLength(6);
   });
 
