@@ -187,6 +187,16 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
     file: "src/Core.TypeScript/git/tracked-files.test.ts",
     reason: "pins that tracked-file order is ordinal by exhibiting the locale order it must not be",
   },
+  {
+    file: "src/Core.TypeScript/hygiene/treaty-rule-alternatives.ts",
+    reason:
+      "the treaty-rule register — locale collation IS the alternative under evaluation. All three uses sit inside `evaluate:` callbacks that measure how many pinned vectors change if an implementer had chosen Intl.Collator instead of ordinal; the file exists to prove the vectors discriminate the two. Same shape as collation.test.ts above.",
+  },
+  {
+    file: "src/Core.TypeScript/hygiene/lint-treaty-rule-discrimination.test.ts",
+    reason:
+      "that register's falsifier — asserts Intl.Collator('en') orders 'Z' before 'a' while byte order does not, so the discriminating vectors are proven non-vacuous. The divergence is the assertion, as in society.test.ts above.",
+  },
 
   // ── THE PERMITTED DISPLAY EDGE ──────────────────────────────────────────────
   // Each verified by reading its call sites: `toLocale*` only, rendering a number
