@@ -252,6 +252,56 @@ let ``L4 trace: one turn packages as a FourCornerOwnership with feedback on the 
     FourCorner.hasFeedback corner |> should equal true
     st.Emitted |> should equal [ 5, 1L; 30, 1L ]
 
+// The trace fixes logical direction independently of the materialized view. A later
+// interpretation can retract what an earlier turn emitted, but it appends that correction
+// at a larger sequence; it never rewrites the earlier evidence.
+[<Fact>]
+let ``L4 trace: later reinterpretation appends a correction without rewriting the past`` () =
+    let history = [ 3 ]
+
+    let first =
+        FourCornerTrace.foldRecorded 12I intStar isZeroI reread update history [ (3, 30) ] (startT history)
+
+    let earlierTurn = first.Turns |> List.exactlyOne
+    earlierTurn.Sequence |> should equal 12I
+    earlierTurn.Feedback |> should equal (3, 30)
+    earlierTurn.Delta |> should equal [ 3, -1L; 30, 1L ]
+
+    let later =
+        FourCornerTrace.foldRecorded
+            first.NextSequence
+            intStar
+            isZeroI
+            reread
+            update
+            history
+            [ (3, 40) ]
+            first.State
+
+    // The old turn is immutable; the correction is a new turn in the only time direction.
+    first.Turns |> List.exactlyOne |> should equal earlierTurn
+    let correction = later.Turns |> List.exactlyOne
+    correction.Sequence |> should equal 13I
+    correction.Delta |> should equal [ 30, -1L; 40, 1L ]
+    later.NextSequence |> should equal 14I
+    later.State.Emitted |> should equal [ 40, 1L ]
+    history |> should equal [ 3 ]
+
+[<Property(Arbitrary = [| typeof<TraceArb> |])>]
+let ``L4 trace: recorded turns preserve fold order including empty deltas``
+    (history: int list)
+    (fbs: (int * int) list)
+    =
+    let start = startT history
+    let expectedState, expectedDeltas = foldT history fbs start
+    let recorded = FourCornerTrace.foldRecorded 100I intStar isZeroI reread update history fbs start
+
+    recorded.State = expectedState
+    && recorded.NextSequence = 100I + bigint fbs.Length
+    && (recorded.Turns |> List.map _.Sequence) = [ for i in 0 .. fbs.Length - 1 -> 100I + bigint i ]
+    && (recorded.Turns |> List.map _.Feedback) = fbs
+    && (recorded.Turns |> List.map _.Delta) = expectedDeltas
+
 // ═══════════════════════════════════════════════════════════════════
 // (L5) THE C₄ CORNER WITNESS over ℂ — retraction = i²
 // ═══════════════════════════════════════════════════════════════════

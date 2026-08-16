@@ -163,6 +163,20 @@ module FourCornerTrace =
           /// the consolidated running sum of the opening emission plus every delta since
           Emitted: WSet.WSet<'K, 'W> }
 
+    /// One append-only observation of the loop. `Sequence` is logical order, not wall time:
+    /// a later turn may retract an earlier interpretation, but it cannot rewrite this record.
+    type TraceTurn<'F, 'K, 'W when 'K: comparison> =
+        { Sequence: bigint
+          Feedback: 'F
+          Delta: WSet.WSet<'K, 'W> }
+
+    /// A finite recorded batch. The trace is returned to the caller rather than retained in
+    /// `Traced`, so storage and forgetting remain explicit policy decisions at the boundary.
+    type RecordedFold<'I, 'F, 'K, 'W when 'K: comparison> =
+        { State: Traced<'I, 'K, 'W>
+          NextSequence: bigint
+          Turns: TraceTurn<'F, 'K, 'W> list }
+
     /// Pure assembly functions shared by the reference trace and source-owned adapters.
     /// Consolidation remains at the caller boundary so adapters can meter that destructive phase.
     let internal openingUnconsolidated
@@ -256,6 +270,38 @@ module FourCornerTrace =
                     st', d :: acc)
                 (st0, [])
         st, List.rev rev
+
+    /// Run a finite feedback batch and attach an append-only logical sequence to every turn.
+    /// Empty deltas are still recorded: receiving idempotent feedback is part of the causal
+    /// history even when it does not change the current materialized view. `bigint` keeps the
+    /// sequence total without introducing an overflow exception at a long-lived boundary.
+    let foldRecorded
+        (firstSequence: bigint)
+        (ring: IStarRing<'W>)
+        (isZero: 'W -> bool)
+        (gen: Generator<'H, 'I, 'K, 'W>)
+        (update: 'I -> 'F -> 'I)
+        (history: 'H)
+        (feedbacks: 'F list)
+        (st0: Traced<'I, 'K, 'W>)
+        : RecordedFold<'I, 'F, 'K, 'W> =
+        let state, nextSequence, revTurns =
+            feedbacks
+            |> List.fold
+                (fun (st, sequence, acc) fb ->
+                    let st', d = step ring isZero gen update history fb st
+
+                    let turn =
+                        { Sequence = sequence
+                          Feedback = fb
+                          Delta = d }
+
+                    st', sequence + 1I, turn :: acc)
+                (st0, firstSequence, [])
+
+        { State = state
+          NextSequence = nextSequence
+          Turns = List.rev revTurns }
 
     /// Package one traced turn as the literal four-corner object: `TIn` = the history being reread,
     /// `TOut` = the emitted delta, `TInFeedback` = the co-owned feedback that caused the reread.
