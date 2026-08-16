@@ -56,6 +56,20 @@ module SchedulerZeta =
     /// NOT `horizon` invocations of `step`. Work is O(reachable), independent of how
     /// large `horizon` is — the scheduler stops re-simulating a config it has proven
     /// periodic. Equal to the naive `stepⁿ start` for every `horizon` (the guarantee).
+    ///
+    /// **PRECONDITION on `key` — the guarantee above is CONDITIONAL, and silently so.**
+    /// The cycle is detected in the PROJECTION, and the state is returned in FULL. So the
+    /// equality with `stepⁿ start` holds only when `key` is injective on the reachable set
+    /// (equivalently: nothing the key projects out carries state forward). Project out a
+    /// component that the dynamics still advances — a coupled neighbour, a counter, a
+    /// timer — and this returns a state that is stale in exactly that component, with no
+    /// exception and no diagnostic. Measured, with an exact zero-coupling control, in
+    /// `tests/Tests.FSharp/TimeDilation.Tests.fs`.
+    ///
+    /// The existing CHIP-8 caller satisfies the precondition (its ROM writes no memory and
+    /// touches no display, so `chip8Key` drops only constants), but it satisfies it by
+    /// ARGUMENT, not by a check — the test compares projections, so it would pass either
+    /// way. Any new caller owes the same argument.
     let runToHorizon (key: 'S -> 'K) (step: 'S -> 'S) (start: 'S) (horizon: int) : 'S =
         let states = System.Collections.Generic.List<'S>()
         let index = System.Collections.Generic.Dictionary<'K, int>()
