@@ -1,0 +1,12 @@
+{
+  "pr_number": 10902,
+  "archive_path": "docs/history/pr-reviews/PR-10902-docs-research-ferry-the-llm-replacement-bet-is-a-society-of-decorrelated-bnns-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:36:17.600Z",
+  "schema_version": "v1",
+  "commit_sha": "0c9d7ea909a4cf878806e4358d9c3620330e5730",
+  "title": "docs(research): ferry — the LLM-replacement bet is a society of decorrelated BNNs, not one factor graph (Aaron, verbatim)",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:35:45Z",
+  "head_ref": "shadow/ferry-llm-replacement-society-decorrelated-bnns"
+}
