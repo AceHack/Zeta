@@ -1,0 +1,12 @@
+{
+  "pr_number": 10931,
+  "archive_path": "docs/history/pr-reviews/PR-10931-sec-ci-pin-the-heartbeat-s-ollama-install-by-sha-256-drop-curl-sh.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T16:13:48.471Z",
+  "schema_version": "v1",
+  "commit_sha": "6d51594240ea6f9622093438f460d9cf536b3c50",
+  "title": "sec(ci): pin the heartbeat's Ollama install by SHA-256, drop curl|sh",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T16:13:16Z",
+  "head_ref": "shadow/pin-ollama-install-heartbeat"
+}
