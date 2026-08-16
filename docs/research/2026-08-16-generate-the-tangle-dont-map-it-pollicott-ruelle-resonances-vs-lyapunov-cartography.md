@@ -33,9 +33,29 @@ function**, and "generator for the singularity outwards" is *literal* rather tha
 > The **poles** of the meromorphically continued Ruelle zeta function are the **Pollicott–Ruelle
 > resonances** — the system's correlation-decay rates.
 
-That is the same class of information `largestLyapunov` samples by nudging, obtained instead by
-**generating**: build a function as an Euler product over the primitive periodic orbits, continue
-it, and read the dynamics off its singularities. Same content, opposite direction of travel.
+> ### ⚠ CORRECTED 2026-08-16 — the sentence that stood here was WRONG
+>
+> It read: *"That is the same class of information `largestLyapunov` samples by nudging."* **It is
+> not.** Pollicott–Ruelle resonances are **correlation-decay** rates; a Lyapunov exponent is an
+> **expansion** rate. Different quantities from different operators.
+>
+> The follow-up work (#11030) refuted it **on this section's own best case**. For the Arnold cat
+> map, `⟨e_k∘Tⁿ, e_m⟩ = δ((Aᵀ)ⁿk, m)` is *exactly zero* for large n — correlations vanish
+> identically, the transfer-operator spectrum is `{1}`, and **there is no resonance at `log λ`**.
+> The proposed substitution fails precisely where it should have worked best.
+>
+> What *does* deliver `log λ` is the **orbit-counting** zeta — a different function from the one
+> whose poles are the resonances. So the generator exists, but it is not the generator this
+> paragraph named.
+>
+> §1 and §5b are unaffected and stand. This is recorded rather than deleted because the error is
+> the instructive part: two objects sharing the name "dynamical zeta function" were treated as one,
+> which is the numerology failure applied to *function names* instead of numbers.
+
+Building a function as an Euler product over the primitive periodic orbits, continuing it, and
+reading the dynamics off its singularities is real — the direction of travel is the point, and it
+is the opposite of sampling. But **which** zeta function you build decides **which** quantity you
+get back, and that distinction was collapsed above.
 
 **This cashes the Ruelle bridge from earlier the same day**
 (`2026-08-16-jacobis-generator-is-inversion-and-we-already-run-on-it.md` §2b), which Aaron
