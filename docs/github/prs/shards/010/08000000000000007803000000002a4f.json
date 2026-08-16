@@ -1,0 +1,15 @@
+{
+  "pr_number": 10831,
+  "archive_path": "docs/history/pr-reviews/PR-10831-docs-research-continuity-vs-identity-where-quantization-lives-and-five-forced-nu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7h5sfD",
+    "thread:PRRT_kwDOSF9kNM6ZiFvA"
+  ],
+  "fetched_at": "2026-08-16T22:29:47.213Z",
+  "schema_version": "v1",
+  "commit_sha": "0225c68db3ddb99183b342c8859f1129a3bd5354",
+  "title": "docs(research): continuity vs identity — where quantization lives, and five forced numbers",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:29:13Z",
+  "head_ref": "docs/continuity-vs-identity-quantization-locus-and-forced-numbers"
+}
