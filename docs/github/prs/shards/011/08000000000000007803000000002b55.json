@@ -1,0 +1,12 @@
+{
+  "pr_number": 11093,
+  "archive_path": "docs/history/pr-reviews/PR-11093-docs-four-corner-homoiconicity-three-claimed-identities-checked-one-analogy-two-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T21:51:37.848Z",
+  "schema_version": "v1",
+  "commit_sha": "40e7c9987b5d629fb446899a0009fc26d66c3cd0",
+  "title": "docs: four-corner homoiconicity — three claimed identities checked, one analogy, two false (dilation is not AIMD)",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T21:51:03Z",
+  "head_ref": "shadow/four-corner-homoiconicity-register"
+}
