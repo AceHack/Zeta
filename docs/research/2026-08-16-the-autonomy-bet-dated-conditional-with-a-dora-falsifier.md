@@ -44,7 +44,7 @@ different regime, so the transfer is an **analogy until measured**.
 
 ## The falsifier — measurable with instruments already in this repo
 
-`src/Core.TypeScript/observability/dora-metrics.ts` exists, and DORA-per-agent-per-hat was scoped
+`src/Core.TypeScript/backlog/dora-metrics.ts` exists, and DORA-per-agent-per-hat was scoped
 earlier the same day.
 
 > **Test:** deployment frequency and change-failure rate, **per agent, split by grant regime**
@@ -103,7 +103,7 @@ the graph**, no interpretation required.
 
 ## Pointers
 
-- `src/Core.TypeScript/observability/dora-metrics.ts` — the instrument the falsifier uses
+- `src/Core.TypeScript/backlog/dora-metrics.ts` — the instrument the falsifier uses
 - `docs/research/2026-08-16-the-costume-experiment-*` — the ρ̂ measurement
 - [`no-directives.md`](../../.claude/rules/no-directives.md) — standing authorization broad and indefinite; only gated classes need fresh consent
 - [`itron-hub-patent-boundary-p2p-is-the-upgrade.md`](../../.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md) — exit is the discriminator; hubs are enforced, oracles are chosen
