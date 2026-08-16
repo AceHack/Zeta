@@ -1,0 +1,12 @@
+{
+  "pr_number": 10877,
+  "archive_path": "docs/history/pr-reviews/PR-10877-feat-installer-per-federation-threat-model-stub-exit-path-validator.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:17:01.903Z",
+  "schema_version": "v1",
+  "commit_sha": "50449982376e32dae8b277f43edeca4792d9f94c",
+  "title": "feat(installer): per-federation threat-model stub + exit-path validator",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:16:26Z",
+  "head_ref": "riven/federation-threat-model-stub"
+}
