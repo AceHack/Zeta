@@ -1,0 +1,12 @@
+{
+  "pr_number": 10833,
+  "archive_path": "docs/history/pr-reviews/PR-10833-docs-research-triage-the-125-non-backlog-recovered-files-7-live-and-one-dispatch.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:59:45.097Z",
+  "schema_version": "v1",
+  "commit_sha": "a1ed8c422df7d28c69ea7cd9f44d76b820d0b4cc",
+  "title": "docs(research): triage the 125 non-backlog recovered files — 7 live, and one dispatchable workflow is already broken",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:59:08Z",
+  "head_ref": "shadow/recovered-wip-and-research-sweep-2026-08-15"
+}
