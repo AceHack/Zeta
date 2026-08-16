@@ -1,0 +1,15 @@
+{
+  "pr_number": 10832,
+  "archive_path": "docs/history/pr-reviews/PR-10832-fix-backlog-the-legacy-ref-ban-forbade-its-own-subject-check-resolution-instead.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7h5zSb",
+    "thread:PRRT_kwDOSF9kNM6ZiKiA"
+  ],
+  "fetched_at": "2026-08-16T14:12:25.926Z",
+  "schema_version": "v1",
+  "commit_sha": "cc7a1899aa7f3300eb9b6548ff01dce33c9cdadd",
+  "title": "fix(backlog): the legacy-ref ban forbade its own subject — check resolution instead",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:11:33Z",
+  "head_ref": "shadow/b-ref-resolution-gate"
+}
