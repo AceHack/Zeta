@@ -1,0 +1,12 @@
+{
+  "pr_number": 10960,
+  "archive_path": "docs/history/pr-reviews/PR-10960-feat-installer-persist-uefi-keyfile-on-esp-fat-image.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T16:56:48.706Z",
+  "schema_version": "v1",
+  "commit_sha": "883de4fa88c1b26113f4a5d31f7a18845e9babca",
+  "title": "feat(installer): persist UEFI keyfile on ESP FAT image",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T16:56:11Z",
+  "head_ref": "riven/uefi-keyfile-esp"
+}
