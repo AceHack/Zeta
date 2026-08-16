@@ -248,10 +248,52 @@ Under the density criterion that motivated `supportsAbsence`, a **common failure
 methods** is the signature of intrinsic-class rather than artifact-class. Held with the correlation
 caveat: three shared-weight probes are not three independent ones.
 
-**One named gap, not closed:** Perez & Nilsson, *Testing and Debugging Functional Reactive
-Programming* (ICFP 2017) — record-and-replay **in Yampa** — could not be retrieved (ACM DL and both
-repository mirrors failed). That is the single most likely place for leg 3 to already exist, and it
-should be closed before anyone treats this `NotFound` as settled.
+### The named gap is now CLOSED — confirming, 2026-08-16
+
+The gap was Perez & Nilsson, *Testing and Debugging Functional Reactive Programming* (ICFP 2017) —
+record-and-replay **in Yampa**, the single most likely place for leg 3 to already exist.
+
+The ICFP text itself remains unretrieved (ACM DL and both Nottingham mirrors are bot-walled; 13
+access routes tried and logged). What was read in full is its **journal superset**, which
+self-identifies as extending it and lists record-and-replay among the *revisited* contributions:
+
+> Perez, I. & Nilsson, H. (2020). **Runtime verification and validation of functional reactive
+> systems.** *JFP* 30, e28. DOI 10.1017/S0956796820000210.
+
+**It justifies replay by purity, referential transparency, and a recorded input trace** — never by
+structure:
+
+> *"we rely on Haskell's strong type system to guarantee the freedom from side effects … and hence
+> absolute determinism"* (p. 50) · *"users can record the inputs and sampling times … Developers can
+> later replay these traces"* (p. 29)
+
+Grep over 43 pages: **`ArrowApply` 0 · `speculat*` 0 · `rollback` 0**; the single `static` is
+*"static pictures"* (an image type).
+
+**Stronger than absence — it is a counterexample.** The paper's replayed example, `bouncingBall`
+(p. 18), **is built out of `switch`**, and varying structure is presented as a feature (p. 10,
+Fig. 3 *"System of interconnected MSFs with varying structure"*). So the static-structure
+restriction is demonstrably **not necessary** for deterministic replay. Note the contrast with
+Winograd-Cort & Hudak (ICFP 2014), who *remove* `switch`: the two go opposite ways and both work.
+
+**The nearest miss, and the crux.** The paper does credit structure once — *"AFRP … provides enough
+**structure** to address whole-program testing and debugging"* (p. 2) — but the structure it names
+is **effects-and-time-confined-to-the-boundary** and signals not being first-class, **not** static
+topology. That is a *different restriction* from the one this doc asserted, and they are separable:
+Perez & Nilsson take the effects-placement one while freely violating the network-shape one.
+
+**And on the rollback half specifically**, backward stepping is bought by snapshotting intermediate
+SFs, with the structural version named as unsolved:
+
+> *"Time-reversible FRP combinators remain an open problem."* (p. 51)
+
+Two of the authors closest to this question, in 2020, call reversible-by-construction combinators
+**open** while shipping working rollback from recorded inputs. That pushes P3 further toward this
+doc's own *"probably false as stated"* reading.
+
+**Residual risk, stated:** this is a superset read, not the named text. A structure-justification
+sentence could in principle exist in ICFP 2017 and have been cut from the journal version. Journal
+extensions rarely delete justifications of retained contributions, so the risk is low — but nonzero.
 
 So: **plausibly novel as a synthesis, unverified, and the instrument that produced it is the wrong
 one to settle it.** Recorded as an open question, not a claim.
