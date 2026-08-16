@@ -58,17 +58,23 @@ moment it is converted.
 
 ## Named instances
 
-`persisted-artifact-migration`: `observe/tick-shards.ts`,
-`memory/reindex-memory-md.ts`, `hygiene/healers/memory-reindex-certified.ts`,
+`persisted-artifact-migration`: `src/Core.TypeScript/observe/tick-shards.ts`,
+`src/Core.TypeScript/memory/reindex-memory-md.ts`,
+`src/Core.TypeScript/hygiene/healers/memory-reindex-certified.ts`,
 `vocab/gen/MasterIndex.ts`, `vocab/gen/Reify.ts`,
-`installer/multiboot/sha256sums.ts`, `installer/multiboot/assemble.ts`,
-`installer/uefi-keyfile-esp.ts`, the two `migrations/b026*` ruleset scripts.
+`src/Core.TypeScript/installer/multiboot/sha256sums.ts`,
+`src/Core.TypeScript/installer/multiboot/assemble.ts`,
+`src/Core.TypeScript/installer/uefi-keyfile-esp.ts`, the two `migrations/b026*`
+ruleset scripts.
 
 `ordering-change-migration`: the `hygiene/audit-*` path sorters,
-`lint/doc-comment-history-audit.ts`, `planning/society-event-index-rebuild.ts`,
-`forge-host/github/archive-pr-reviews.ts`, `observe/surface-dsl.ts`,
-`tests/cross-verification/*`, `playwright/github-ui/feature-diff.ts`,
-`skill-catalog/backfill_dv2_frontmatter.ts`.
+`src/Core.TypeScript/lint/doc-comment-history-audit.ts`,
+`src/Core.TypeScript/planning/society-event-index-rebuild.ts`,
+`src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts`,
+`src/Core.TypeScript/observe/surface-dsl.ts`,
+`tests/cross-verification/*`,
+`src/Core.TypeScript/playwright/github-ui/feature-diff.ts`,
+`src/Core.TypeScript/skill-catalog/backfill_dv2_frontmatter.ts`.
 
 ## Secondary, and smaller than it sounds
 

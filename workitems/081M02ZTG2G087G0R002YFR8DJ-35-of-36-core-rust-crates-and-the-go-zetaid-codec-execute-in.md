@@ -26,9 +26,10 @@ composes_with: []
 ```
 
 `git ls-tree -r origin/main --name-only | grep -c 'Core.Rust.*/Cargo.toml'` returns **36**.
-So 35 crates — including roughly 20 `tests/golden_vectors.rs` suites that are the Rust leg of
-the four-language byte-lock treaties — execute in no CI job. `src/Core.Go/cross_verify_test.go`
-is `package main` at the Go module root and is likewise outside `./algebra/`.
+So 35 crates — including roughly 20 golden-vector suites such as
+`src/Core.Rust.FourCorner/tests/golden_vectors.rs`, which form the Rust leg of the four-language
+byte-lock treaties — execute in no CI job. `src/Core.Go/cross_verify_test.go` is `package main` at
+the Go module root and is likewise outside `./algebra/`.
 
 ## Why it matters beyond coverage
 

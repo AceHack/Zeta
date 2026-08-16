@@ -177,6 +177,22 @@ module FourCornerTrace =
           NextSequence: bigint
           Turns: TraceTurn<'F, 'K, 'W> list }
 
+    /// An opt-in witness for modeling execution in either direction. Exact rewind is possible
+    /// because the pre-consolidation information is retained in `Before`; it is not inferred
+    /// from the non-injective materialized output. The ordinary trace does not pay this cost.
+    type WitnessedTurn<'I, 'F, 'K, 'W when 'K: comparison> =
+        { Sequence: bigint
+          Feedback: 'F
+          Before: Traced<'I, 'K, 'W>
+          After: Traced<'I, 'K, 'W>
+          Delta: WSet.WSet<'K, 'W> }
+
+    /// A finite batch of witnessed turns. As with `RecordedFold`, the caller owns retention.
+    type WitnessedFold<'I, 'F, 'K, 'W when 'K: comparison> =
+        { State: Traced<'I, 'K, 'W>
+          NextSequence: bigint
+          Turns: WitnessedTurn<'I, 'F, 'K, 'W> list }
+
     /// Pure assembly functions shared by the reference trace and source-owned adapters.
     /// Consolidation remains at the caller boundary so adapters can meter that destructive phase.
     let internal openingUnconsolidated
@@ -302,6 +318,53 @@ module FourCornerTrace =
         { State = state
           NextSequence = nextSequence
           Turns = List.rev revTurns }
+
+    /// Run a finite batch while retaining the information required for exact rewind/replay.
+    /// This is a model of bidirectional execution over an immutable trace: no earlier record is
+    /// edited, and no signal is sent to an earlier logical turn.
+    let foldWitnessed
+        (firstSequence: bigint)
+        (ring: IStarRing<'W>)
+        (isZero: 'W -> bool)
+        (gen: Generator<'H, 'I, 'K, 'W>)
+        (update: 'I -> 'F -> 'I)
+        (history: 'H)
+        (feedbacks: 'F list)
+        (st0: Traced<'I, 'K, 'W>)
+        : WitnessedFold<'I, 'F, 'K, 'W> =
+        let state, nextSequence, revTurns =
+            feedbacks
+            |> List.fold
+                (fun (before, sequence, acc) fb ->
+                    let after, d = step ring isZero gen update history fb before
+
+                    let turn =
+                        { Sequence = sequence
+                          Feedback = fb
+                          Before = before
+                          After = after
+                          Delta = d }
+
+                    after, sequence + 1I, turn :: acc)
+                (st0, firstSequence, [])
+
+        { State = state
+          NextSequence = nextSequence
+          Turns = List.rev revTurns }
+
+    /// Move the modeled cursor to the state retained before this turn.
+    let rewind (turn: WitnessedTurn<'I, 'F, 'K, 'W>) : Traced<'I, 'K, 'W> = turn.Before
+
+    /// Move the modeled cursor forward to the state retained after this turn.
+    let replay (turn: WitnessedTurn<'I, 'F, 'K, 'W>) : Traced<'I, 'K, 'W> = turn.After
+
+    /// The compensating delta for traversing a witnessed turn backward.
+    let inverseDelta
+        (ring: IStarRing<'W>)
+        (isZero: 'W -> bool)
+        (turn: WitnessedTurn<'I, 'F, 'K, 'W>)
+        : WSet.WSet<'K, 'W> =
+        WSet.negate ring turn.Delta |> WSet.consolidate ring isZero
 
     /// Package one traced turn as the literal four-corner object: `TIn` = the history being reread,
     /// `TOut` = the emitted delta, `TInFeedback` = the co-owned feedback that caused the reread.

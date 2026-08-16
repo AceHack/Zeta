@@ -28,17 +28,21 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { stringCompare } from "../collation/collation.ts";
 import { complexRing, type Complex } from "./star-ring.ts";
-import { discardWSet, type WElement, type WSet } from "./wset.ts";
+import { consolidateWSet, discardWSet, type WElement, type WSet } from "./wset.ts";
 import {
   IntegerTraceRing,
   delta,
   fold,
   foldRecorded,
+  foldWitnessed,
+  inverseDelta,
   interpretationToText,
   negateWSet,
   numericCompareKeys,
   ordinalCompareKeys,
+  replay,
   rereadRelabelled,
+  rewind,
   start,
   step,
   stringKeyIntegerOps,
@@ -323,6 +327,51 @@ describe("L4 — path-independence and the four-corner packaging", () => {
       );
       expect(recorded.turns.map((t) => t.feedback)).toEqual(fbs.map((f) => f));
       expect(recorded.turns.map((t) => pairs(t.delta))).toEqual(expected.deltas.map(pairs));
+    }
+  });
+
+  it("a witnessed turn can be rewound and replayed exactly", () => {
+    const history = [3];
+    const initial = startT(history);
+    const witnessed = foldWitnessed(
+      20n,
+      numOps,
+      reread,
+      update,
+      history,
+      [
+        [3, 30],
+        [3, 40],
+      ] as const,
+      initial,
+    );
+
+    const first = witnessed.turns[0]!;
+    const second = witnessed.turns[1]!;
+    expect(first.sequence).toBe(20n);
+    expect(second.sequence).toBe(21n);
+    expect(rewind(second)).toBe(first.after);
+    expect(replay(second)).toBe(second.after);
+    expect(rewind(first)).toBe(initial);
+    expect(witnessed.state).toBe(second.after);
+  });
+
+  it("inverse deltas reconstruct every witnessed prior materialized view", () => {
+    for (const { history, fbs } of cases()) {
+      const witnessed = foldWitnessed(0n, numOps, reread, update, history, fbs, startT(history));
+
+      for (const turn of witnessed.turns) {
+        const inverse = inverseDelta(numOps, turn);
+        const prior = [
+          ...consolidateWSet(
+            IntegerTraceRing,
+            (w) => w === 0n,
+            (key) => key.toString(),
+            [...turn.after.emitted, ...inverse],
+          ),
+        ].sort((a, b) => numericCompareKeys(a.key, b.key));
+        expect(pairs(prior)).toEqual(pairs(turn.before.emitted));
+      }
     }
   });
 });

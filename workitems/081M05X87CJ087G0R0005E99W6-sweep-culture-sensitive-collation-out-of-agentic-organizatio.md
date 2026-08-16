@@ -30,13 +30,13 @@ Baselined under category `sibling-owned-in-flight`. The concentration is in
 ordering keys that are structurally identical to the ones the sweep just fixed
 elsewhere:
 
-- `packages/application/src/observe.ts` — 8 sites (project/initiative/milestone/
+- `agentic-organization/packages/application/src/observe.ts` — 8 sites (project/initiative/milestone/
   task ordering)
-- `packages/application/src/work-market.ts` — 4 sites (queue, shard and agent id
+- `agentic-organization/packages/application/src/work-market.ts` — 4 sites (queue, shard and agent id
   ordering — a **work-distribution** key)
-- `packages/simulator/src/index.ts` — 3 sites (`occurredAt` then `eventId`: the
+- `agentic-organization/packages/simulator/src/index.ts` — 3 sites (`occurredAt` then `eventId`: the
   simulator's **event fold order**, which is a DST-determinism surface)
-- `apps/agent-cli/src/agent-cli.ts` — 3
+- `agentic-organization/apps/agent-cli/src/agent-cli.ts` — 3
 - the `context-pack-*-policy.ts` family — `updatedAt` then `layerId`, repeated in
   five files
 - `packages/state/**`, `packages/domain/**`, `packages/observability/**` — the rest

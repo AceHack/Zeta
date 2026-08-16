@@ -171,6 +171,30 @@ export interface RecordedFold<I, F, K, W> {
 }
 
 /**
+ * An opt-in witness for modeling execution in either direction. Exact rewind is possible because
+ * the state before consolidation is retained; it is not inferred from a non-injective output.
+ * The ordinary trace does not pay this storage cost.
+ *
+ * `I` and the values reachable from it must follow the module's immutable-state contract. The
+ * witness retains those values; it cannot make an arbitrary caller-defined interpretation deeply
+ * immutable.
+ */
+export interface WitnessedTurn<I, F, K, W> {
+  readonly sequence: bigint;
+  readonly feedback: F;
+  readonly before: Traced<I, K, W>;
+  readonly after: Traced<I, K, W>;
+  readonly delta: WSet<K, W>;
+}
+
+/** A finite batch of witnessed turns. As with `RecordedFold`, the caller owns retention. */
+export interface WitnessedFold<I, F, K, W> {
+  readonly state: Traced<I, K, W>;
+  readonly nextSequence: bigint;
+  readonly turns: readonly WitnessedTurn<I, F, K, W>[];
+}
+
+/**
  * F# returns `Traced * WSet` from `start` and `step`. TS has no structural tuple-record sugar
  * worth the ambiguity, so the pair is named. Mechanical divergence, no semantic content.
  */
@@ -342,6 +366,59 @@ export function foldRecorded<H, I, F, K, W>(
 }
 
 /**
+ * Run a finite batch while retaining the information required for exact rewind and replay.
+ *
+ * This models bidirectional traversal over an immutable trace. It never edits an earlier turn and
+ * never sends information to an earlier logical step. Empty deltas are retained because receipt of
+ * feedback remains part of the execution record even when the materialized view does not change.
+ */
+export function foldWitnessed<H, I, F, K, W>(
+  firstSequence: bigint,
+  ops: TraceOps<K, W>,
+  gen: Generator<H, I, K, W>,
+  update: (interpretation: I, feedback: F) => I,
+  history: H,
+  feedbacks: readonly F[],
+  st0: Traced<I, K, W>,
+): WitnessedFold<I, F, K, W> {
+  let before = st0;
+  let sequence = firstSequence;
+  const turns: WitnessedTurn<I, F, K, W>[] = [];
+
+  for (const fb of feedbacks) {
+    const r = step(ops, gen, update, history, fb, before);
+    turns.push(
+      freezeWitnessedTurn({
+        sequence,
+        feedback: fb,
+        before,
+        after: r.state,
+        delta: r.delta,
+      }),
+    );
+    before = r.state;
+    sequence += 1n;
+  }
+
+  return Object.freeze({ state: before, nextSequence: sequence, turns: Object.freeze(turns) });
+}
+
+/** Move the modeled cursor to the state retained before this turn. */
+export function rewind<I, F, K, W>(turn: WitnessedTurn<I, F, K, W>): Traced<I, K, W> {
+  return turn.before;
+}
+
+/** Move the modeled cursor forward to the state retained after this turn. */
+export function replay<I, F, K, W>(turn: WitnessedTurn<I, F, K, W>): Traced<I, K, W> {
+  return turn.after;
+}
+
+/** The compensating delta for traversing a witnessed turn backward. */
+export function inverseDelta<I, F, K, W>(ops: TraceOps<K, W>, turn: WitnessedTurn<I, F, K, W>): WSet<K, W> {
+  return consolidateOrdered(ops, negateWSet(ops.ring, turn.delta));
+}
+
+/**
  * Package one traced turn as the literal four-corner object: `tIn` = the history being reread,
  * `tOut` = the emitted delta, `tInFeedback` = the co-owned feedback that caused the reread.
  * `tOutFeedback` is absent — this loop authors no forward control-flow of its own.
@@ -365,6 +442,13 @@ export function toFourCorner<H, F, K, W>(
  * without this the "cannot rewrite this record" claim would have no falsifier in TS.
  */
 function freezeTurn<F, K, W>(turn: TraceTurn<F, K, W>): TraceTurn<F, K, W> {
+  for (const element of turn.delta) Object.freeze(element);
+  Object.freeze(turn.delta);
+  return Object.freeze(turn);
+}
+
+/** Freeze the witness shell and its owned delta; generic state values remain caller-owned. */
+function freezeWitnessedTurn<I, F, K, W>(turn: WitnessedTurn<I, F, K, W>): WitnessedTurn<I, F, K, W> {
   for (const element of turn.delta) Object.freeze(element);
   Object.freeze(turn.delta);
   return Object.freeze(turn);

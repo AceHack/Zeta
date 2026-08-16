@@ -302,6 +302,48 @@ let ``L4 trace: recorded turns preserve fold order including empty deltas``
     && (recorded.Turns |> List.map _.Feedback) = fbs
     && (recorded.Turns |> List.map _.Delta) = expectedDeltas
 
+// Backward execution is modeled by retaining the information consolidation erased. The model
+// traverses immutable witnesses; it does not infer a unique past from a non-injective output.
+[<Fact>]
+let ``L4 trace: a witnessed turn can be rewound and replayed exactly`` () =
+    let history = [ 3 ]
+    let start = startT history
+
+    let witnessed =
+        FourCornerTrace.foldWitnessed
+            20I
+            intStar
+            isZeroI
+            reread
+            update
+            history
+            [ (3, 30); (3, 40) ]
+            start
+
+    let first, second = witnessed.Turns.[0], witnessed.Turns.[1]
+    first.Sequence |> should equal 20I
+    second.Sequence |> should equal 21I
+    FourCornerTrace.rewind second |> should equal first.After
+    FourCornerTrace.replay second |> should equal second.After
+    FourCornerTrace.rewind first |> should equal start
+    witnessed.State |> should equal second.After
+
+[<Property(Arbitrary = [| typeof<TraceArb> |])>]
+let ``L4 trace: inverse delta reconstructs each witnessed prior view``
+    (history: int list)
+    (fbs: (int * int) list)
+    =
+    let witnessed =
+        FourCornerTrace.foldWitnessed 0I intStar isZeroI reread update history fbs (startT history)
+
+    witnessed.Turns
+    |> List.forall (fun turn ->
+        let inverse = FourCornerTrace.inverseDelta intStar isZeroI turn
+
+        WSet.plus turn.After.Emitted inverse
+        |> WSet.consolidate intStar isZeroI
+        |> (=) turn.Before.Emitted)
+
 // ═══════════════════════════════════════════════════════════════════
 // (L5) THE C₄ CORNER WITNESS over ℂ — retraction = i²
 // ═══════════════════════════════════════════════════════════════════
