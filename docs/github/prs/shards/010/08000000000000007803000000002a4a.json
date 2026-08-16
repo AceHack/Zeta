@@ -1,0 +1,12 @@
+{
+  "pr_number": 10826,
+  "archive_path": "docs/history/pr-reviews/PR-10826-docs-vision-one-substrate-four-readings-the-object-store-the-epoch-and-the-compi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:59:20.561Z",
+  "schema_version": "v1",
+  "commit_sha": "666cecdd37b90fb944dab284e930f28c7818727b",
+  "title": "docs(vision): one substrate, four readings — the object store, the epoch, and the compiler ladder",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:58:47Z",
+  "head_ref": "docs/vision-one-substrate-four-readings-compiler-ladder"
+}
