@@ -1,0 +1,12 @@
+{
+  "pr_number": 11018,
+  "archive_path": "docs/history/pr-reviews/PR-11018-test-heartbeat-re-aim-the-credential-split-pin-my-own-change-made-stale.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:00:42.918Z",
+  "schema_version": "v1",
+  "commit_sha": "4db852b38b6c443a5995531e5ca3a756084afe12",
+  "title": "test(heartbeat): re-aim the credential-split pin my own change made stale",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:00:06Z",
+  "head_ref": "shadow/reaim-heartbeat-credential-split-test"
+}
