@@ -1643,6 +1643,22 @@ jobs:
         working-directory: tests/cross-verification/zeta-id
         run: bun run-mumps.ts
 
+      # The six GENERATED bit-layout files vs docs/zeta-id-v1-layout.yaml, which the
+      # zeta-id README named as an open hole: "There is no CI gate verifying the .gen
+      # files match the YAML, so an edit without regeneration fails nowhere until a
+      # codec stops compiling."
+      #
+      # The oracles above do not close it. compare.ts pins each oracle's COMMITTED
+      # output to vectors.yaml, and CI independently re-executes five of the seven
+      # (TS `bun test`, F#/C# `dotnet test`, Python `pytest`, MUMPS the step above).
+      # Go and Rust are re-executed NOWHERE — this workflow runs only
+      # `go test ./algebra/` and `cargo test … Core.Rust.Observe`. So a wrong constant
+      # in zeta_id.gen.go or bit_layout.gen.rs sat behind a stale-but-agreeing output
+      # JSON with every job green. This step is the independent reproduction for that
+      # pair, and for the other four at no extra cost.
+      - name: zeta-id generated layouts vs the layout YAML
+        run: bun tests/cross-verification/zeta-id/gen-layout-drift.ts
+
       # Algebra-tower drift-check: the generated law-property tests must be
       # regenerable-identical from their IRs (codegen-law-drift), and the
       # generated laws must hold against the TS oracle instances. Covers the

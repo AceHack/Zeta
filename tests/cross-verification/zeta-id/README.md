@@ -69,8 +69,16 @@ a layout edit by the 12 packed vectors.
 ## Related
 
 - `docs/zeta-id-v1-layout.yaml` — the source of truth; `src/Core.TypeScript/zeta-id/zeta-id-generator.ts`
-  regenerates six `.gen` files from it. **There is no CI gate verifying the `.gen` files match the
-  YAML**, so an edit without regeneration fails nowhere until a codec stops compiling.
+  regenerates six `.gen` files from it. **Gap 3, closed 2026-08-15**: there used to be no CI gate
+  verifying the `.gen` files match the YAML, so an edit without regeneration failed nowhere until a
+  codec stopped compiling. `gen-layout-drift.ts` now compares every offset/width in all six lanes
+  against the YAML, and `gate.yml`'s blocking `cross-verify` job runs it.
+  It was sharper than it read: for **Go and Rust** the phrase "until a codec stops compiling" was
+  optimistic, because those codecs compile-and-run in no CI job at all
+  (`gate.yml` runs only `go test ./algebra/` and `cargo test … Core.Rust.Observe`, 1 of 36 crates).
+  A wrong constant in `zeta_id.gen.go` or `bit_layout.gen.rs` produced no compile error, no test
+  failure and no oracle disagreement — because the oracle it would have disagreed with is a JSON
+  file committed beside it. Their codec *logic* is still unexecuted: `081M02ZTG2G087G0R002YFR8DJ`.
 - `tests/Tests.FSharp/ZetaId/BitLayoutAgreement.Tests.fs` ·
   `tests/Tests.CSharp/ZetaId/BitLayoutAgreementTests.cs` — added 2026-08-11. F#, C# and Rust each
   build the layout by two independent paths (`TopDown` / `BottomUp`); only Rust previously asserted
