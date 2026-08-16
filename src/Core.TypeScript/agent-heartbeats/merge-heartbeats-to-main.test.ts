@@ -259,31 +259,56 @@ describe("heartbeat workflow credential split", () => {
     expect(prepareStep).not.toContain('git checkout -B "heartbeat/$AGENT" origin/main');
   });
 
-  it("dispatches the required gate before arming auto-merge", () => {
-    const flushClosure = HEARTBEAT_WORKFLOW.slice(
-      HEARTBEAT_WORKFLOW.indexOf("- name: Dispatch gate for heartbeat head"),
-      HEARTBEAT_WORKFLOW.indexOf("- name: Fail if a heartbeat PR is old"),
-    );
-    const dispatchIndex = flushClosure.indexOf("gh workflow run gate.yml");
-    const mergeIndex = flushClosure.indexOf("gh pr merge");
+  // RE-AIMED 2026-08-16 (second time today). The predecessor test here pinned the
+  // PRESENCE of `gh workflow run gate.yml` in the flush closure. That belt existed
+  // because a `pull_request` gate run used to park in `action_required`; #10986
+  // removed that cause, and measurement then showed the belt was not merely
+  // redundant but INERT — a `workflow_dispatch` gate run's checks never enter the
+  // flush PR's statusCheckRollup, so they cannot satisfy `gate (required)`.
+  // Observed on one commit: dispatch suite 86701078150 held
+  // `gate (required) completed/success` on PR #11165's head while #11165's rollup
+  // held nine contexts and no gate at all.
+  //
+  // So the assertion is INVERTED rather than deleted. A pin that says "the belt is
+  // here" would now defend a step that costs 3 full-matrix runs per 15-minute tick
+  // and feeds nothing; a pin that says "the belt is gone" defends the removal
+  // against a well-meaning re-add, which is the actual regression risk.
+  it("starts the required gate exactly once, through the PR event and nothing else", () => {
+    // Repo-wide, not closure-scoped: a re-add anywhere in this workflow revives the
+    // duplicate. There is exactly one gate-starting mechanism and it is the
+    // `pull_request` event on the flush PR, which is the only one the merge reads.
+    expect(HEARTBEAT_WORKFLOW).not.toContain("gh workflow run gate.yml");
+    expect(HEARTBEAT_WORKFLOW).not.toContain("secrets.ZETA_SOCIETY_DISPATCH_TOKEN");
 
-    expect(flushClosure).toContain("GH_TOKEN: ${{ secrets.ZETA_SOCIETY_DISPATCH_TOKEN }}");
-    expect(flushClosure).toContain("GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}");
-    expect(dispatchIndex).toBeGreaterThan(-1);
-    expect(mergeIndex).toBeGreaterThan(dispatchIndex);
+    // The removal is only safe because production keeps a falsifier for it. If the
+    // PR event stops starting gate, this step fails the tick instead of letting a
+    // lane merge unchecked — so its loss would silently restore the exact defect
+    // (#10986 / 081M010H4KE) the deleted belt was originally covering for.
+    expect(HEARTBEAT_WORKFLOW).toContain("- name: Fail if a heartbeat PR is old and gate never started");
+    expect(HEARTBEAT_WORKFLOW).toContain("required-check-started.ts --min-age-min 20");
   });
 
-  it("dispatches and merges the immutable outputs, never the mutable heartbeat head", () => {
+  it("arms auto-merge on the immutable outputs, never the mutable heartbeat head", () => {
     const flushClosure = HEARTBEAT_WORKFLOW.slice(
       HEARTBEAT_WORKFLOW.indexOf("- name: Flush to main"),
       HEARTBEAT_WORKFLOW.indexOf("- name: Fail if a heartbeat PR is old"),
     );
-    const checkedClosure = flushClosure.slice(flushClosure.indexOf("- name: Dispatch gate for heartbeat head"));
+    // Re-anchored from the deleted dispatch step to the arming step — same
+    // property (the checked closure consumes the frozen snapshot outputs, never
+    // the mutable lane head that a later tick can advance under it).
+    const checkedClosure = flushClosure.slice(flushClosure.indexOf("- name: Arm heartbeat PR auto-merge"));
     expect(flushClosure).toContain("id: flush");
     expect(flushClosure).toContain('git push origin "$SOURCE_SHA:refs/heads/$SNAPSHOT_REF"');
     expect(flushClosure).toContain('--source-sha "$SOURCE_SHA"');
-    expect(checkedClosure).toContain("steps.flush.outputs.snapshot_ref");
+    // The freeze must still be VERIFIED after it is written -- the snapshot is what
+    // stops a later tick advancing the lane under an already-checked PR head. The
+    // deleted dispatch step was the last workflow-side reader of the `snapshot_ref`
+    // step OUTPUT, so this pins the property at the place that still enforces it
+    // rather than at a consumer that no longer exists.
+    expect(flushClosure).toContain("Heartbeat snapshot verification failed");
     expect(checkedClosure).toContain("steps.flush.outputs.pr_number");
+    expect(checkedClosure).toContain("GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}");
+    expect(checkedClosure).toContain("gh pr merge");
     expect(checkedClosure).not.toContain('--ref "heartbeat/$AGENT"');
     expect(checkedClosure).not.toContain("gh pr list");
   });

@@ -1300,29 +1300,56 @@ jobs:
             exit 1
           fi
 
-      - name: Dispatch gate for heartbeat head
-        if: steps.check.outputs.skip != 'true' && steps.flush.outputs.skip != 'true'
-        env:
-          AGENT: ${{ matrix.agent }}
-          SNAPSHOT_REF: ${{ steps.flush.outputs.snapshot_ref }}
-          # This fine-grained credential owns Actions dispatch only. It does not
-          # need repository contents write, and the browser/device relay remains
-          # unable to merge or push main directly.
-          GH_TOKEN: ${{ secrets.ZETA_SOCIETY_DISPATCH_TOKEN }}
-        run: |
-          if [ -z "$GH_TOKEN" ]; then
-            echo "::error title=Heartbeat gate dispatch unavailable::ZETA_SOCIETY_DISPATCH_TOKEN is not configured"
-            exit 1
-          fi
-          if [ -z "$SNAPSHOT_REF" ]; then
-            echo "::error title=Heartbeat snapshot missing::$AGENT flush produced no immutable snapshot ref"
-            exit 1
-          fi
-          gh workflow run gate.yml \
-            --repo "$GITHUB_REPOSITORY" \
-            --ref "$SNAPSHOT_REF"
-          echo "[flush] $AGENT: dispatched gate.yml for immutable $SNAPSHOT_REF"
-
+      # THE GATE DISPATCH BELT THAT USED TO SIT HERE WAS REMOVED 2026-08-16, AND THE
+      # REASON IS NOT "IT IS REDUNDANT". IT WAS INERT. Measured, not inferred.
+      #
+      # (The literal invocation is spelled out nowhere in this file on purpose: the
+      # unit test pins its ABSENCE by string search, so writing it even inside a
+      # comment would defeat the pin.)
+      #
+      # The dispatch belt was added when a `pull_request` gate run on a heartbeat
+      # lane was created and immediately parked (`completed`/`action_required`)
+      # because the pushing actor was `github-actions[bot]`. #10986 fixed that at
+      # the root by putting a PAT on the checkout whose credential performs the
+      # push, and the `pull_request` run has executed normally since the 17:49Z
+      # cutover — zero `action_required` on alexa/otto/soraya after 18:00Z, all
+      # runs triggered by the PAT actor.
+      #
+      # What the measurement then showed is stronger than redundancy. A
+      # `workflow_dispatch` gate run's checks DO NOT ENTER THE FLUSH PR'S
+      # statusCheckRollup, so they can never satisfy the `gate (required)`
+      # required status check. Both halves observed on the same commit:
+      #   PR #11165, head 3da9b0f3 — dispatch check-suite 86701078150 carried
+      #     `gate (required) completed/success`, and the PR's rollup carried nine
+      #     contexts, none of them gate. `required-check-started.ts` agreed:
+      #     "gate (required) never started on heartbeat PR(s): #11165 ...".
+      #   PR #11166 / #11167 — merged, and the `gate (required)` in the rollup
+      #     came from the `pull_request` run, never from the dispatch run beside it.
+      # So the dispatch was paying for a full matrix that no merge could ever read.
+      #
+      # It was also the MORE expensive of the two: `matrix-setup` gives
+      # `workflow_dispatch` the full OS set (5 build legs, Windows + macOS) and
+      # gives `pull_request` the pre-merge set (3 legs). Cadence measured over 13
+      # consecutive cycles: exactly 3 dispatch gate runs every 15 minutes, without
+      # exception — 288/day of full-matrix work with no consumer.
+      #
+      # AND THE FALSIFIER IS ALREADY IN PRODUCTION, one step below: "Fail if a
+      # heartbeat PR is old and gate never started" exits 1 when a heartbeat PR
+      # older than one tick has no `gate (required)` in its rollup. If removing
+      # this belt is wrong, that step says so on the next tick rather than a lane
+      # merging unchecked. That is why the belt could be removed rather than
+      # merely suspected.
+      #
+      # Reasoning inherited from #10986, which declined to ADD this belt to the
+      # lanes it treated: two independent gate-starting mechanisms make the result
+      # unattributable. That argument applies here in reverse — one mechanism, and
+      # it is the one whose checks the merge actually reads.
+      #
+      # DO NOT re-add a dispatch here to "make sure gate runs". If a flush PR has
+      # no gate run, the cause is upstream of this step: every flush PR observed
+      # without a `pull_request` gate run was `mergeStateStatus: DIRTY` (a
+      # conflicting PR has no computable merge ref), and a dispatch does not fix a
+      # conflict — it only hides the conflict behind a green check nobody reads.
       - name: Arm heartbeat PR auto-merge
         if: steps.check.outputs.skip != 'true' && steps.flush.outputs.skip != 'true'
         env:
