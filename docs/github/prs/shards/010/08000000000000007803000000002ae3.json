@@ -1,0 +1,12 @@
+{
+  "pr_number": 10979,
+  "archive_path": "docs/history/pr-reviews/PR-10979-design-triage-report-triage-priority-queue-information-gain-primary-holdout-tuni.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T17:50:06.535Z",
+  "schema_version": "v1",
+  "commit_sha": "98bc14ca206b23b7761e72bdef08f05473323899",
+  "title": "design(triage): report triage priority queue — information gain primary, holdout tuning, cry-wolf blocked on rubric",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T17:49:34Z",
+  "head_ref": "shadow/report-triage-priority-queue"
+}
