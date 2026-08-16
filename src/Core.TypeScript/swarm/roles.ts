@@ -17,8 +17,8 @@ export const SWARM_ROLES: RoleDefinition[] = [
   {
     name: "Pilot",
     personaName: "riven", // The executor
-    instructionModifier: `You are the Pilot. Your role is to execute directly on the terrain provided by the Cartographer. Bias heavily toward 'shell_exec', 'file_edit', 'node_repl' and actual work items. Do not over-explore, let the Cartographer do that.`,
-    biasActions: ["shell_exec", "file_edit", "node_repl", "start_backlog_item", "finish_backlog_item"],
+    instructionModifier: `You are the Pilot. Your role is to execute directly on the terrain provided by the Cartographer. Bias heavily toward 'shell_exec', 'file_edit', 'node_repl', 'read_memory_sector' and actual work items. Do not over-explore, let the Cartographer do that.`,
+    biasActions: ["shell_exec", "file_edit", "node_repl", "read_memory_sector", "start_backlog_item", "finish_backlog_item"],
   },
   {
     name: "Recursive Composer",

@@ -186,7 +186,7 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
 
         const prompt = `You are executing a sub-task on an ARC grid: "${item.title}".
 Available deterministic tools:
-- {"tool": "readGridLenography", "args": {"sector": 0}}
+- {"tool": "readGridLensography", "args": {"sector": 0}}
 - {"tool": "findShapes"}
 - {"tool": "recolorShape", "args": {"shapeId": "shape_1", "color": 5}}
 - {"tool": "translateShape", "args": {"shapeId": "shape_1", "dx": 1, "dy": 0}}

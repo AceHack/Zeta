@@ -166,6 +166,8 @@ export interface World {
    * `retract_time` entry (the −1); it never pops the `do_item` (the +1).
    */
   readonly history?: readonly HistoryEvent[];
+  /** The "Cheat Engine" memory map, providing Lensography-like read-only access to toy/environment internals */
+  readonly cheatEngine?: { readonly memorySectors: Uint8Array[] };
 }
 
 /** KPI attached to a `do_item` (ARC-AGI grid scoring). */
@@ -281,7 +283,8 @@ export type NextAction =
   | { kind: "navigate_cartography"; direction: "up" | "down" | "left" | "right"; reason: string } // D-pad space navigation
   | { kind: "scope_cartography"; direction: "in" | "out"; reason: string } // Bumper resolution zoom
   | { kind: "retract_time"; reason: string } // Undo/retract event (LT)
-  | { kind: "replay_time"; reason: string }; // Redo/replay event (RT) // rail-change exit — raw below threshold, summon-BFT-gated above (not yet)
+  | { kind: "replay_time"; reason: string } // Redo/replay event (RT)
+  | { kind: "read_memory_sector"; sectorIndex: number; length: number; reason: string }; // CheatEngine lensography mapping
 
 /**
  * Pure controller. Priority: operator > offered-work > forward-default.
@@ -740,7 +743,38 @@ export function simulate(world: World, action: NextAction): World {
           timeOffset: (world.cartography?.timeOffset ?? 0) + 1 
         } 
       };
+    case "read_memory_sector":
+      return {
+        ...world,
+        cartography: {
+          ...world.cartography,
+          scopeLevel: world.cartography?.scopeLevel ?? 0,
+          timeOffset: world.cartography?.timeOffset ?? 0,
+          inspections: ((world.cartography as any)?.inspections ?? 0) + 1
+        }
+      };
   }
+}
+
+/**
+ * AUTO-CLASSIFIER (Max's keystone): Given a before-and-after world snapshot and the action taken,
+ * automatically label the semantic result of the transition.
+ */
+export function classify(before: World, after: World, action: NextAction): string {
+  if (action.kind === "do_item") {
+    // Basic heuristic: check if the item moved from backlog to done
+    const stillInBacklog = after.backlog.find(b => b.id === action.item.id);
+    if (!stillInBacklog) return "item_completed";
+    return "item_in_progress";
+  }
+  if (action.kind === "read_memory_sector") {
+    return "memory_inspected";
+  }
+  if (action.kind === "explore") {
+    if (before.backlog.length < after.backlog.length) return "explore_yielded_work";
+    return "explore_quiet";
+  }
+  return "unclassified";
 }
 
 /** Canonical key of the observable world state (for fixed-point detection). */
@@ -751,7 +785,10 @@ function worldKey(world: World): string {
   const op = world.operator
     ? `${world.operator.pendingMessage ? "m" : "-"}${world.operator.pendingFerry ? "f" : "-"}`
     : "x";
-  return `${bl}|op:${op}|mode:${world.mode ?? "-"}`;
+  const cart = world.cartography 
+    ? `c:${world.cartography.scopeLevel}:${world.cartography.timeOffset}:${(world.cartography as any).inspections ?? 0}` 
+    : "-";
+  return `${bl}|op:${op}|mode:${world.mode ?? "-"}|${cart}`;
 }
 
 /**

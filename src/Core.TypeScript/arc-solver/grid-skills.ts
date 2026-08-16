@@ -161,13 +161,13 @@ export function executeSkillSequence(initialGrid: Grid, calls: { tool: string, a
         case "findShapes":
           // findShapes doesn't mutate grid, it's just an observation.
           break;
-        case "readGridLenography":
+        case "readGridLensography":
           // Cheat Engine Mode: The soft value reads raw cartridge memory sectors.
           // This allows reverse engineering the raw numbers without kinetic offset mutations.
           if (args && args.sector !== undefined) {
-             console.log(`[GridSkills] Lenography cheat engine reading sector ${args.sector}...`);
+             console.log(`[GridSkills] Lensography cheat engine reading sector ${args.sector}...`);
           } else {
-             console.log(`[GridSkills] Lenography cheat engine reading entire raw grid footprint.`);
+             console.log(`[GridSkills] Lensography cheat engine reading entire raw grid footprint.`);
           }
           break;
         default:
