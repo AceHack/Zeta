@@ -945,6 +945,21 @@ The synthesis note is [`docs/research/2026-07-03-futamura-plus-ephemeron-geo-dis
   `eval(specialize p s) d ⊕ known = eval p (s∪d)` is S-m-n stated for our interpreter.
 - **Andrei Ershov — "Mixed Computation" (1977–82)** — the independent Soviet lineage of partial
   evaluation ("mixed computation" = the mix). The word `mix` is his.
+- **Nada Amin & Tiark Rompf — "Collapsing Towers of Interpreters" (POPL 2018)** ⭐ — a *stack* of
+  interpreters collapsed by a single-level specializer, so the tower's cost stops being multiplicative
+  (Pink/Purple; multi-level lambda calculus). The anchor for Aaron's *"use the compiler we are running
+  in to close over itself"* (`docs/VISION.md` §"One substrate, four readings") — Futamura gives one
+  rung, this gives the **tower**.
+- **Carl Friedrich Bolz, Antonio Cuni, Maciej Fijałkowski & Armin Rigo — "Tracing the Meta-Level:
+  PyPy's Tracing JIT Compiler" (ICOOOLPS 2009)** — meta-tracing: trace the **interpreter**, not the
+  program, and any interpreter written in the meta-language acquires a JIT. Cited as the
+  **alternative** route to the same destination as the Futamura ladder, and as the honest reference
+  class for the word "JIT-like" (which is `toy` in Zeta today — no `Reflection.Emit` under `src/`).
+- **John C. Reynolds — "Definitional Interpreters for Higher-Order Programming Languages" (1972)** —
+  defunctionalization: higher-order control reified as first-order tagged data plus a dispatch. This
+  is literally what `MixIr.defaultEvalDef` is — an operator table as `DynamicValue`
+  (`"prim", DynamicValue.String "combine"`) — and defunctionalization is *why* a specializer can read
+  the interpreter's own rules.
 - **Barry Hayes — "Ephemerons: A New Finalization Mechanism" (OOPSLA, 1997)** — the real name for
   the weak-value table in `Ephemeron.fs`. An ephemeron's VALUE is reachable only THROUGH its KEY,
   so key→value cycles collect (where weak refs / strong refs leak). Our `reachable` fixpoint is

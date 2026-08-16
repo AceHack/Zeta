@@ -840,6 +840,179 @@ This is the operational heart: **safe attractor-shapes (A–F)** as the building
 **three-verb deterministic-simulation CLI** over a **content-addressed filesystem-genome**, committing
 only through the **finalizer** — scale-free, DST-replayable, weight-free, idempotent.
 
+## One substrate, four readings — the object store, the epoch, and the compiler ladder (2026-08-15)
+
+Aaron 2026-08-15: *"this is our relative, no-central-processor zetadb/fs too — they are all one, and when
+combined with DynamicValue it's also code that can be interpreted and compiled and specialized at runtime
+with JIT-like behavior."* And, on recording it: *"this is our direction to pull all our pieces together."*
+
+The section above gives the content-addressed filesystem-genome that `sim`/`mea`/`cut` run over. This
+section says what that store is **for** — the one thread in the factory that had no home in this document.
+**Memories, types, files, and code are one content-addressed object store read four ways.** The compiler is
+what happens when the fourth reading is executed over the same store as the other three: per-agent stores,
+no central processor, coordination through shared repositories rather than through a coordinator.
+
+**Read the registers, not only the prose.** This describes work at four very different maturities, and
+flattening them would be worse than writing nothing. Every claim below is marked **SHIPPED** (in `main`,
+named artifact), **IN FLIGHT** (open PR), **DESIGNED** (specified, not built), or **ASPIRATION**
+(direction, no mechanism yet), per
+[`toy-is-free-metered-must-be-earned`](../.claude/rules/toy-is-free-metered-must-be-earned.md). Nothing
+here is `metered`: no falsifier exists that would tell us the *direction* is wrong.
+
+### The four readings
+
+| Reading | What it is | Register | Evidence |
+|---|---|---|---|
+| **files** | a content-addressed tree; identical content under N paths is one stored node | **SHIPPED** | `src/Core/ZetaFs.fs` (387 lines — Patricia trie over `ContentStore`, `MerkleHash` roots); `src/Core/DagFs.fs` (multi-parent; `editLocal` vs `editEverywhere`) |
+| **code** | expression trees as *values*, serialized identically across four languages | **SHIPPED** | `Bonsai` — F#/C#/TS/Rust oracles byte-locked by `src/Core.TypeScript/bonsai/golden-vectors.json`; `src/Core/BonsaiSoft.fs` makes the soft half executable |
+| **types** | the interpreter's own rules held as data, so one specializer can read them | **SHIPPED** | `src/Core/MixIr.fs` — `defaultEvalDef : DynamicValue` (line 184). The evaluator's operator table genuinely *is* a `DynamicValue`, not baked code |
+| **memories** | per-agent stores joined through shared repositories | **DESIGNED** | no per-agent memory network with MCP / CLI / mux-duplex ports exists; per-markdown-file DORA likewise unbuilt |
+
+The **unification** claim — that these are one store rather than four stores that resemble each other — is
+**DESIGNED**, and the distinction is the point. Three readings ship as separate working artifacts; the
+plumbing that makes them one addressable space (ZetaDB ↔ specialization) does not exist. A count of shipped
+artifacts is not a shipped substrate.
+
+### Epoch-based addressing — where the referrer gets to decide
+
+Aaron: *"when type A references B and then B changes, its zetaid changes, and then A will have to decide to
+point at the new or old one in the next epoch."*
+
+Content-addressing propagates change **upward**: edit a leaf and every ancestor hash changes, to the root.
+That is the property that makes the store honest, and it is the same property that makes it unusable
+without a decision point — otherwise every referrer must follow every edit instantly, or freeze forever.
+An **epoch** is that decision point, and its shape is already familiar: **a lockfile made
+content-addressed and given parents — which is to say, a commit.** Between epochs a referrer's view is
+stable; at an epoch it chooses, per reference, whether to advance.
+
+**Register: DESIGNED.** The store ships; the epoch layer over it does not. PR #10819 works out the
+correspondence (git's object/ref split lifted to types). Nothing implements it.
+
+### Nobody picked a duration
+
+An epoch is a **decision point, not a length**, and that is not only an epoch property — it holds one layer
+down, and there it is checkable. `src/Core/AdinkraClock.fs` runs its worldline tick against an *injected*
+`VirtualTimeScheduler`, and `isMetricFree` compares the causal trace produced at two different tick
+durations (1 and 7). The traces are identical: the **frame sequence** is invariant under rescaling the
+**duration between frames**. Aaron's vernacular for it is exact — *the same animation at 24 fps or 60 fps*.
+
+**Register: SHIPPED, and this narrow property is `metered`** — which does not disturb the section
+preamble, since what has a falsifier here is one technical property, not the *direction*. The check carries
+a working negative control (`stepMetricDependent`, a step that reads the clock, returns `false`), so it is
+a test that can fail rather than an assertion that cannot. What it establishes is worth stating at exactly
+its width: **no duration is chosen anywhere in the causal structure; the ordering is topological, and any
+clock over it is injected rather than intrinsic.**
+
+**What is NOT claimed here, and the condition that would license it.** This says nothing about the tick
+being *derived* from the supersymmetry algebra. `AdinkraClock.fs` runs at **N=1**, where the
+anticommutator's entire non-trivial content (`{Q_I, Q_J}` for `I ≠ J`) is empty — `C(1,2) = 0` such pairs —
+and its scheduler advance is a hand-written branch rather than a derived quantity; the file's own
+self-review records the resulting verdict as tautological. **The derivation claim requires an N ≥ 2
+implementation, and is not made.** That is a named, checkable gate rather than a gap for the next reader to
+rediscover. Derivation, the forced numbers, and the refutations: PR **#10831**.
+
+### The compiler ladder — Bonsai first, and the rungs are not one maturity
+
+Aaron: *"the goal is to emit IL or even machine code or assembly directly … we start as interpreted but
+then use the compiler we are running in to close over itself … our seed unfolds eventually to a compiler of
+compilers whose class libraries are shared across all compiler languages."* And the sequencing correction
+that governs the near term: *"rather than raw expressions our initial approach is generated bonsai tree
+expression trees — this is much easier to reason about than IL."*
+
+| Rung | Register | Evidence, or what is missing |
+|---|---|---|
+| Expression trees as serializable values | **SHIPPED** | `src/Core/Bonsai.fs` (729 lines) + the four-oracle byte-lock |
+| Interpreter rules as data, so one `mix` specializes any ISA | **SHIPPED** | `MixIr.fs`, `MixCogen.fs`, `Mixin.fs`, `Cogen.fs`, `IsaSpec.fs` — **all in F#**, under `src/Core/` |
+| Specialization cached without leaking | **SHIPPED, with its limit stated** | `src/Core/SpecializationCache.fs` — generator held strongly, product held weakly. This is **compression, not creation**: if the GC takes the specialization, the next call regenerates it from a generator that was never discarded. PR #10815 states the general form — regeneration *relocates* a lifetime, it does not remove one |
+| A canonical evaluator for the generator IR — semantics stop being prose | **IN FLIGHT** | PR #10807 (`ZetaIrEval.fs`); PR #10822 (`ZetaIrV4.fs`, the irreducible-core split). Open, not merged |
+| Emission that is **idiomatic in the target**, not merely behaviourally correct | **DESIGNED** | The requirement: emitted code must satisfy *the target's own linter*. A behavioural byte-lock cannot check this — idiom is by construction what a byte-lock quotients out. Analysis: PR #10774 |
+| IL / machine code / assembly emitted directly | **ASPIRATION** | Zero `Reflection.Emit`, `ILGenerator`, or `DynamicMethod` anywhere under `src/` |
+| A compiler of compilers, class libraries shared across all compiler languages | **ASPIRATION** | No mechanism |
+| Parser-combinator / ANTLR-shaped frontends for many languages and our own | **ASPIRATION** | No mechanism |
+
+**"Compiled" is currently true only in the Futamura sense** — specializing an interpreter to a program to
+get something faster than interpreting it. It is not true in the machine-code sense, and **"JIT-like" is
+`toy`**. Saying that plainly is what earns the aspiration rows their place in the document.
+
+### Two corrections this section is built on
+
+Errors the fleet made and cleared on 2026-08-15, recorded so they are not repeated:
+
+- **The mix / Futamura work is in F#, not TypeScript-only.** `MixIr.fs` (12.7 KB), `MixCogen.fs`,
+  `Mixin.fs`, `Cogen.fs`, and `IsaSpec.fs` are all `src/Core/`. An earlier belief that this lived only in
+  the TS harness was wrong.
+- **`codegen-self-host.ts` proves less than its docstring claims.** Its header says *"mix(mix, mix) = cogen
+  (the 3rd projection, THIS FILE)."* What it proves is that a table-driven emitter equals a hand-written
+  emitter on two hash functions — real and useful, and not the 3rd projection. The reified part is the
+  emission *template*; the operator expression stays native TypeScript, and `CodegenIr` carries a `target`
+  field with exactly **one** instantiation. The shortfall is precisely the idiom axis (PR #10774). The
+  file is at `tests/cross-verification/_harness/codegen-self-host.ts`, not under `src/`.
+
+### The tension we are stating rather than resolving: IL re-enters the ALC wall
+
+PR #10819 established that **.NET types are not GC-granular** — the smallest collectable unit is an
+`AssemblyLoadContext`. A design that emits types at runtime therefore gets collection only per-context, and
+`ShivaGc`'s per-object reachability story stops applying at that boundary; two ALCs holding the same
+generated type hold **two distinct CLR types**, and casts across them fail.
+
+Bonsai trees do not have this problem, which is the strongest argument for the ordering Aaron gave. **A
+Bonsai tree is a value** — GC-granular, content-addressable, serializable, and the same object in all four
+oracles. Choosing expression trees first is not only "easier to reason about than IL"; it is the choice
+that keeps the memory model and the addressing model intact at the same time.
+
+The narrow path that might keep both true is **anonymously-hosted `DynamicMethod`** — collectable
+independently of any assembly, and already what `Expression<T>.Compile()` lowers to on CoreCLR. That is a
+**seam, not a solution**: it buys methods, not types, so it does not by itself deliver the runtime-typed
+world PR #10819 was examining. This is recorded as an **open tension**. Reading this paragraph as "IL is
+unblocked via `DynamicMethod`" is reading it wrong.
+
+### The linguistic half
+
+Aaron: *"linguistic seed english over bayesian factor graphs/bnns so our mini bnn AIs can also have chat
+and programming behaviors over time … we have online bayesian learning so we don't need different training
+and inference time."*
+
+The no-train/no-infer-split claim is the sharp one, and it is the half that is already real: **online
+Bayesian updating has no separate training phase by construction.**
+
+- **SHIPPED:** `src/Bayesian/MultilayerBnn.fs`; `src/Bayesian/Ep.fs` (expectation propagation);
+  `src/Core/TravelerRankLedger.fs` (streaming O(1) EP updates via cavity messages, TrueSkill-shaped —
+  Herbrich, Minka & Graepel 2006, cited in the file).
+- **ASPIRATION:** that mini-BNNs on this substrate acquire chat and programming behaviours. Nothing in the
+  shipped code bears on that. The gap between "online posterior updates over a small network" and
+  "language behaviour" is the whole problem, not a scaling detail.
+
+Adjacent and deliberately constrained: the F#/HKT strand this leans on is a **multi-month, no-fork,
+upstream-contribution program**, not a patch. Recorded in PR #10820 and the memory file it carries; not
+restated here.
+
+### Anchors (checked)
+
+*Checked* means the cited work entails the claim attached to it — not merely that it is adjacent.
+
+- **Futamura (1971), "Partial Evaluation of Computation Process."** Entails the ladder's shape exactly:
+  specializing an interpreter to a program yields a compiled program (1st projection); specializing the
+  specializer to the interpreter yields a compiler (2nd); to itself, a compiler-generator (3rd).
+  "Compiler of compilers" is the 3rd projection under its own name. The full Beacon set — Futamura,
+  Jones–Gomard–Sestoft, Kleene's S-m-n, Ershov — is in
+  [`docs/PRIOR-ART-LIST.md`](PRIOR-ART-LIST.md) §"Partial evaluation + garbage collection".
+- **Amin & Rompf, "Collapsing Towers of Interpreters" (POPL 2018).** Entails the close-over-itself step:
+  a stack of interpreters can be collapsed by a single-level specializer so the tower's cost stops being
+  multiplicative. This is the anchor for *"use the compiler we are running in to close over itself"*.
+- **Bolz, Cuni, Fijałkowski & Rigo, "Tracing the Meta-Level: PyPy's Tracing JIT Compiler" (ICOOOLPS 2009).**
+  Entails that a JIT is obtainable by tracing the *interpreter* rather than the program. Cited as the
+  **alternative** route to the same destination, and as the honest reference class for "JIT-like".
+- **Reynolds (1972), "Definitional Interpreters for Higher-Order Programming Languages."** Defunctionalization:
+  higher-order control reified as first-order tagged data plus a dispatch. Entails what `defaultEvalDef`
+  is — a defunctionalized operator table (`"prim", DynamicValue.String "combine"`, and so on), which is
+  exactly why a specializer can read it.
+- **Nuqleon / Bonsai (Reaqtor; Bart DeSmet).** The expression-tree-as-serialized-value lineage `Bonsai.fs`
+  is named for and follows; already carried in [`docs/PRIOR-ART-LIST.md`](PRIOR-ART-LIST.md).
+
+Evidence trail: PRs **#10774** (the idiom axis), **#10807** (the IR evaluator), **#10815** (regeneration
+relocates lifetimes), **#10819** (types as a virtualized runtime; the ALC wall), **#10820** (the F#/HKT
+upstream program), **#10822** (the irreducible core).
+
 ## The four products in the initial split (evolving trajectory)
 
 Aaron, 2026-04-30: *"substrate IS one of our products … 4
