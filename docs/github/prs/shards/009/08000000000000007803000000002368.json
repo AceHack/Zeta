@@ -1,0 +1,12 @@
+{
+  "pr_number": 9064,
+  "archive_path": "docs/history/pr-reviews/PR-9064-fix-workitems-future-path-backtick-ref-trips-auto-vivify-check-preflight-red.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:12:23.812Z",
+  "schema_version": "v1",
+  "commit_sha": "ad0027e670354c5798ec466d089dfac0b82b8c08",
+  "title": "fix(workitems): future-path backtick ref trips auto-vivify --check (preflight red)",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T22:36:32Z",
+  "head_ref": "otto/fix-dangling-future-path-refs-quarantine-workitems"
+}

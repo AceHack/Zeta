@@ -1,0 +1,12 @@
+{
+  "pr_number": 9063,
+  "archive_path": "docs/history/pr-reviews/PR-9063-feat-core-land-binarycode-fs-adinkra-graph-quotient-h-8-c-from-the-8-4-4-code-sh.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:12:22.110Z",
+  "schema_version": "v1",
+  "commit_sha": "ad0027e670354c5798ec466d089dfac0b82b8c08",
+  "title": "feat(core): land BinaryCode.fs — Adinkra graph quotient H_8/C from the [8,4,4] code (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T22:13:45Z",
+  "head_ref": "otto/land-binarycode-fs-adinkra-graph-081KWFS6B9Y"
+}
