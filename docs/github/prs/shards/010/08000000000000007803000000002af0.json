@@ -1,0 +1,12 @@
+{
+  "pr_number": 10992,
+  "archive_path": "docs/history/pr-reviews/PR-10992-feat-core-record-four-corner-trace-turns.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:12:20.150Z",
+  "schema_version": "v1",
+  "commit_sha": "0e68131b641594f12c9f57bfcc72e68285981294",
+  "title": "feat(core): record four-corner trace turns",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T18:11:38Z",
+  "head_ref": "codex/four-corner-recorded-trace"
+}
