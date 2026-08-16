@@ -1,0 +1,12 @@
+{
+  "pr_number": 11034,
+  "archive_path": "docs/history/pr-reviews/PR-11034-fix-ci-give-tick-metrics-the-push-credential-that-lets-gate-start-society-left-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:31:57.939Z",
+  "schema_version": "v1",
+  "commit_sha": "ccccbf7be404af4e736328498b98c9374df47969",
+  "title": "fix(ci): give tick-metrics the push credential that lets gate start (society left as control)",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:31:16Z",
+  "head_ref": "shadow/tick-metrics-held-gate-credential"
+}
