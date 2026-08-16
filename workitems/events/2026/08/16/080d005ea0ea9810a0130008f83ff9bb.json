@@ -1,0 +1,14 @@
+{
+  "id": "080d005ea0ea9810a0130008f83ff9bb",
+  "at": "2026-08-16T18:27:25.651Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05X87AJ087G0R003DPMYRK",
+    "type": "bug",
+    "title": "F# has no culture-invariant analyzer coverage and InvariantGlobalization is set on one project of many",
+    "slug": "f-has-no-culture-invariant-analyzer-coverage-and-invariantgl",
+    "priority": "P2",
+    "filename": "081M05X87AJ087G0R003DPMYRK-f-has-no-culture-invariant-analyzer-coverage-and-invariantgl.md"
+  }
+}

@@ -10,6 +10,7 @@
  */
 
 import { computeConnectivity } from "./connectivity-metric";
+import { stringCompare } from "../collation/collation";
 
 // ═══ Input Types (what we read) ═══════════════════════════════════════════════
 
@@ -222,7 +223,7 @@ export function buildVaultState(input: BridgeInput): VaultState {
 
   // Sort each agent's events by timestamp (ZetaId names are time-ordered but be safe)
   for (const list of eventsByAgent.values()) {
-    list.sort((a, b) => a.at.localeCompare(b.at));
+    list.sort((a, b) => stringCompare(a.at, b.at));
   }
 
   // Compute per-agent latest event

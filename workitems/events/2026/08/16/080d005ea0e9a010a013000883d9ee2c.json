@@ -1,0 +1,14 @@
+{
+  "id": "080d005ea0e9a010a013000883d9ee2c",
+  "at": "2026-08-16T18:27:25.620Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05X879K087G0R003TSBM9D",
+    "type": "task",
+    "title": "ace graphMerkleRoot is a 32-bit Java string hash, not a Merkle root - replace with ZSetMerkle",
+    "slug": "ace-graphmerkleroot-is-a-32-bit-java-string-hash-not-a-merkl",
+    "priority": "P2",
+    "filename": "081M05X879K087G0R003TSBM9D-ace-graphmerkleroot-is-a-32-bit-java-string-hash-not-a-merkl.md"
+  }
+}

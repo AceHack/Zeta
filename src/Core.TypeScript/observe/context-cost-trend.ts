@@ -12,6 +12,7 @@
 //   default   read the trend + report direction (growing / shrinking / stable).
 import { Glob } from "bun";
 import { readFileSync, existsSync, appendFileSync } from "node:fs";
+import { stringCompare } from "../collation/collation";
 import { MANIFESTS, measureHarness } from "./context-cost";
 import { estimateTokens } from "./token-calibration";
 
@@ -35,7 +36,7 @@ export interface TrendVerdict {
 /** Analyze one harness's series (chronological). Pure. stable = |%| < 1%. */
 export function analyzeTrend(records: readonly TrendRecord[]): TrendVerdict | null {
   if (records.length === 0) return null;
-  const sorted = [...records].sort((a, b) => a.ts.localeCompare(b.ts));
+  const sorted = [...records].sort((a, b) => stringCompare(a.ts, b.ts));
   const first = sorted[0]!.bytes;
   const latest = sorted[sorted.length - 1]!.bytes;
   const delta = latest - first;

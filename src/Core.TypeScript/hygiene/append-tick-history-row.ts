@@ -26,6 +26,7 @@ import { appendFileSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
 import { detectRepeatedTokenRut } from "./detect-repeated-token-rut";
+import { stringCompare } from "../collation/collation";
 
 type ExitCode = 0 | 1 | 2 | 3;
 
@@ -63,7 +64,7 @@ function findLatestTimestamp(content: string): string {
     if (m !== null) timestamps.push(m[1] ?? "");
   }
   // ISO-8601 is lex-sortable; sort + take last for "latest".
-  timestamps.sort((a, b) => a.localeCompare(b));
+  timestamps.sort((a, b) => stringCompare(a, b));
   return timestamps.length === 0 ? "" : (timestamps.at(-1) ?? "");
 }
 

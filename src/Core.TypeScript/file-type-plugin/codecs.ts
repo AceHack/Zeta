@@ -3,6 +3,7 @@ import { type Tagged } from "../dynamic-value/types";
 import { compareTagged } from "./types";
 import { fromYamlValue, canonicalYaml } from "../dynamic-value/yaml";
 import { parse as parseYaml } from "../yaml/dom";
+import { stringCompare } from "../collation/collation";
 
 // ─── Helpers for converting between arbitrary JS values and Tagged ───────────
 
@@ -93,7 +94,7 @@ export function zsetToDocument(zset: ZSet<Tagged>): Tagged {
       }
     }
   }
-  fields.sort((a, b) => a[0].localeCompare(b[0]));
+  fields.sort((a, b) => stringCompare(a[0], b[0]));
   return { t: "obj", v: fields };
 }
 
@@ -216,7 +217,7 @@ export const markdownCodec: Codec = {
       return body;
     }
 
-    fields.sort((a, b) => a[0].localeCompare(b[0]));
+    fields.sort((a, b) => stringCompare(a[0], b[0]));
     const metadataObj: Tagged = { t: "obj", v: fields };
     const frontmatter = serializeYaml(metadataObj);
     return `---\n${frontmatter}---\n${body}`;
@@ -345,7 +346,7 @@ export const cargoCodec: Codec = {
     }
     if (deps.length > 0) {
       out += "[dependencies]\n";
-      deps.sort((a, b) => a[0].localeCompare(b[0]));
+      deps.sort((a, b) => stringCompare(a[0], b[0]));
       for (const [k, v] of deps) {
         out += `${k} = "${v}"\n`;
       }

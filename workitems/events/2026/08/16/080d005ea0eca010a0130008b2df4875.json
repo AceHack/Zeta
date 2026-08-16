@@ -1,0 +1,14 @@
+{
+  "id": "080d005ea0eca010a0130008b2df4875",
+  "at": "2026-08-16T18:27:25.716Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05X87CJ087G0R0005E99W6",
+    "type": "task",
+    "title": "Sweep culture-sensitive collation out of agentic-organization once sibling work lands",
+    "slug": "sweep-culture-sensitive-collation-out-of-agentic-organizatio",
+    "priority": "P3",
+    "filename": "081M05X87CJ087G0R0005E99W6-sweep-culture-sensitive-collation-out-of-agentic-organizatio.md"
+  }
+}

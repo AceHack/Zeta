@@ -2,6 +2,7 @@ import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, 
 import type { Dirent } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { stringCompare } from "../collation/collation";
 
 export type AceDependency =
   | { readonly kind: "inline"; readonly name: string; readonly version: string; readonly url: string; readonly package_hash: string }
@@ -77,7 +78,7 @@ export function listInstalled(storePath: string): InstalledPackage[] {
     }
   }
 
-  return packages.sort((a, b) => a.manifest.name.localeCompare(b.manifest.name));
+  return packages.sort((a, b) => stringCompare(a.manifest.name, b.manifest.name));
 }
 
 export interface AcePackage {
