@@ -7,6 +7,10 @@
 { config, pkgs, lib, ... }:
 
 {
+  imports = [
+    ./nvidia-open-guard.nix
+  ];
+
   nixpkgs.config.allowUnfreePredicate = pkg:
     let name = lib.getName pkg; in
     builtins.elem name [
@@ -30,6 +34,26 @@
     nvidiaPersistenced = true;
     powerManagement.enable = false;
     powerManagement.finegrained = false;
+
+    # Open-source kernel modules. Turing (RTX 20-series / GTX 16xx) or newer
+    # only: they depend on the GSP, which Maxwell/Pascal/Volta do not have.
+    #
+    # Left at false because NO host in this repo has a known GPU — every GPU
+    # host's hardware-configuration.nix is a placeholder, and the audited
+    # inventory register holds one card. Flipping the fleet default on that
+    # basis would be guessing, and a GPU node that cannot load its driver is
+    # worse than an unfree closure.
+    #
+    # The default is NOT "the safe one" in both directions. Blackwell
+    # (RTX 50-series) has no proprietary kernel module at all — on such a node
+    # `false` is the broken setting, not the cautious one.
+    #
+    # Per-host, after running bun tools/nvidia-open-preflight.ts ON that node:
+    #   zeta.gpu.openModulePreflight.passed   = true;
+    #   zeta.gpu.openModulePreflight.evidence = "2026-.., <host>: <cards/cc>";
+    #   hardware.nvidia.open = lib.mkForce true;
+    # The attestation is enforced by ./nvidia-open-guard.nix, not by this
+    # comment — `open = true` without it fails the build.
     open = lib.mkDefault false;
   };
 
