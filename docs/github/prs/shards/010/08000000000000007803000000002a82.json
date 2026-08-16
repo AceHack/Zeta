@@ -1,0 +1,12 @@
+{
+  "pr_number": 10882,
+  "archive_path": "docs/history/pr-reviews/PR-10882-test-vacuity-the-z-2-falsifier-is-a-tautology-and-its-negative-control-could-not.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:08:47.671Z",
+  "schema_version": "v1",
+  "commit_sha": "bab4b0deaf1310c740ab35120ac328cd4e34b0d2",
+  "title": "test(vacuity): the Z-2 falsifier is a tautology and its negative control could not see it",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:08:11Z",
+  "head_ref": "shadow/vacuity-sweep-z2-falsifier-society-evolution"
+}
