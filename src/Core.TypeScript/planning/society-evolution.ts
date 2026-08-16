@@ -38,8 +38,10 @@
  * - 4 data bits per 8-bit codeword — it does NOT carry 7 channels + 1 parity.
  * - The doubly-even self-dual property, which is what makes it an adinkra code.
  * `genomeToParityByte` below is NOT that code: it is the single-parity-check
- * [8,7,2] (detection only, not self-dual). Nothing here uses [8,4,4] yet; see
- * that function's docstring for the condition under which it would have to.
+ * [8,7,2] (detection only, not self-dual). The real [8,4,4] IS in use elsewhere
+ * in the tree (src/Core/AdinkraCode.fs and its consumers; the UDP erasure coding
+ * in src/Core.TypeScript/discovery/udp-lossy-transport.ts) — it is *this genome
+ * byte* that does not use it. See that function's docstring.
  * The hexagonal quantum arithmetic (quantum-arith.ts) provides:
  * - Blaschke maps for the HL conformal amplitude (Z-2 falsifier).
  * - Born probabilities for the ThousandBrains column voting weights.
@@ -302,21 +304,39 @@ export function reservoirReadout(society: Society): {
  * (`.claude/rules/numerology-vs-number-theory.md`). This docstring previously
  * claimed the [8,4,4] structure; the bytes never had it.
  *
- * ## Where the genuine doubly-even self-dual machinery lives
+ * ## Where the genuine [8,4,4] lives — it IS in use; call it, do not re-derive
  *
- * Call these; do not re-derive here.
+ * The real adinkra code has live consumers in this tree. If you want an adinkra
+ * code, reach for one of these, NOT for the parity byte below:
+ *   - `src/Core/AdinkraCode.fs` — the pinned generator, with `encode`,
+ *     `syndrome`, `isCodeword`, and `correct`. Used by
+ *     `src/Core/PrivacyPreservingIdentity.fs` (key roots must be codewords),
+ *     `src/Bayesian/YinYangCell.fs` (cell-state validity), `src/Core/BitAdinkra.fs`,
+ *     `src/Core/BeliefConvergence.fs` (MacWilliams self-dual fixed point),
+ *     `src/Bayesian/BusDelayTick.fs`, `src/Core/SoftRegimeStability.fs`.
+ *   - `src/Core.TypeScript/discovery/udp-lossy-transport.ts` — [8,4,4] as an
+ *     **erasure code on the wire**: 4 data + 4 parity packets per block,
+ *     recovered by `recoverAdinkraBlock`. This is the transport-side consumer.
  *   - `src/Core.TypeScript/research/adinkra-ecc/adinkra-ecc-prototype.ts` —
  *     constructs [8,4,4] and *verifies* doubly-even + self-dual.
- *   - `src/Core.Lean4/Lean4/CayleyDicksonDoublyEven.lean` — the proof layer.
+ *   - `src/Core.Lean4/Lean4/CayleyDicksonDoublyEven.lean` — the proof layer;
+ *     `src/Core.Lean4/ImaginaryStack/ErasureDistance.lean` — distance ⇒
+ *     erasure-correction (the missed-observations-over-time property).
  *   - `src/Core/CliffordE8BladeMask.fs`, `src/Core/OrbitEquivariance.fs`,
  *     `src/Core.TypeScript/algebra/e8-blade-mask-sandwich.ts` — the algebra layer.
  *
+ * Because those consumers are real, the mislabelling this rename fixed was a live
+ * hazard and not a cosmetic one: a byte named "adinkra" that is distance-2 and
+ * not self-dual could be wired into a path expecting the guarantees above.
+ *
  * ## When this decision flips
  *
- * As of the rename (2026-08-16) this byte has **no consumer** that decodes it,
- * corrects with it, or checks self-duality — only determinism and byte-lock
- * tests. So [8,7,2] costs nothing, while [8,4,4] would cost capacity (7 data
- * bits → 4) for no operational gain. If the generator-as-ECC thesis
+ * As of the rename (2026-08-16) **this function** has no consumer that decodes
+ * its byte, corrects with it, or checks self-duality — only determinism and
+ * byte-lock tests. (That is a statement about this function only; adinkra ECC
+ * itself is used elsewhere, see above.) So [8,7,2] costs nothing here, while
+ * [8,4,4] would cost capacity (7 data bits → 4) for no gain *at this call site*.
+ * If the generator-as-ECC thesis
  * (`.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md` —
  * "the highest-value generator IS an error-correcting code") acquires a consumer
  * that needs **correction** or **self-duality**, [8,4,4] becomes a *correctness
