@@ -725,6 +725,65 @@ Hurwicz/Maskin/Myerson (mechanism design); Maynard Smith (ESS); Meijer/Fokkinga/
 
 + `memory/feedback_aaron_actors_are_ephemeral_animations_of_what_remains_bifurcation_banana_split_one_traveler_becomes_two_eve_in_single_dynamicvalue_rx_2026_06_05.md`.
 
+### B-centre. Where could a quantization live? The centre is zero — and cannot be extended (shadow 2026-08-15)
+
+**The hook, memorised in one line:** the local fold's operators satisfy
+
+$$[L_i, L_j] = L_i - L_j$$
+
+and that bracket is **never a multiple of the identity**, which is the whole obstruction.
+
+**Three things measured, all closed** (derivation, negative controls, and the scripts: PR #10831,
+`docs/research/2026-08-15-continuity-is-the-relation-not-the-substance-*.md`):
+
+1. **The shared multi-agent fold is commutative — a theorem, not an aspiration.** `observe` is pointwise
+   `int64` multiplication, so it commutes by the commutativity of integer multiplication (including under
+   wraparound, i.e. in `Z/2⁶⁴`). Confirmed by FsCheck properties, a `sharpen` **negative**, and an
+   exhaustive permutation-invariance test in `Consensus`. Commutator identically **0** ⇒ no algebra ⇒
+   **the multi-agent locus for quantization is refuted.**
+2. **The local fold does have an operator algebra, and it has no centre.** `TwoTimescaleFold.localStep` is
+   linear (`L_t = I + e_t 1ᵀ`), so `g = span{L_t}` is a genuine Lie algebra: `dim g = D`,
+   `dim [g,g] = D−1`, and **`dim Z(g) = 0`** for `D = 2..6`. The sharper form of the obstruction: no
+   `[L_i,L_j]` is a scalar (it is rank 1, and squares to zero), so **the bracket never lands in the
+   centre** — which is precisely what a canonical commutation relation `[A,B] = iħ·1` requires.
+3. **The standard repair is also closed.** When an algebra lacks a centre one normally *central-extends*
+   it (this is how the Heisenberg algebra arises). Non-trivial central extensions are classified by
+   `H²(g; R)`, and computing the Chevalley–Eilenberg cohomology gives **`H²(g; R) = 0` for `D = 3,4,5,6`** —
+   every 2-cocycle is a coboundary, so **every central extension of `g` is trivial.** No ħ can be
+   manufactured this way. (`docs/research/scripts/2026-08-15-central-extension-h2-obstruction.py`.)
+
+**Therefore: no layer of the code hosts a quantization today.** The single-agent adinkra reading survives
+only as the sole *structurally possible* site — because `γ_i² = ±I` is a scalar, hence central, which is
+exactly the property the other two layers lack — and **not** as a realized one.
+
+**THE OPEN QUESTION (this is the row):** *what structure would supply a non-trivial centre, and where
+could it live?*
+
+Candidates visible from here, none asserted, each with what would decide it:
+
+| candidate | what would decide it |
+|---|---|
+| **An N ≥ 2 supercharge implementation.** `AdinkraViz` already carries the anticommutation as the Gates odd-face condition (N=4, 6 pairs) and `CliffordE8Roots` carries Cl(8,0) (8 pairwise-anticommuting generators, 28 pairs) — but **neither is wired to a tick.** | Implement the graded `Q_i` action and check the scheduler advance equals `Q_i²` computed by an **independent route**. `AdinkraClock`'s own self-review says a real discriminator must compute clock and structure independently; at N=1 it could not, since `C(1,2) = 0`. |
+| **A different local operator.** The obstruction is a property of *this* `localStep`, not of locality. Any state-dependent step whose commutator is a scalar would do. | Exhibit one, and check `[A,B] ∝ 1` — the same check that returns **false** for every `[L_i,L_j]` today. Note the coupling requirement in `TwoTimescaleFold`'s own docstring: a slot-local rule cannot be non-commutative however nonlinear. |
+| **The braided / Yang–Baxter strand.** `MenoBraided.braidR` and the `Tsirelson` anticommutator are non-commuting structures already in the repo. | Whether either has a central element *and* is connected to a tick. Untested. Note the standing §B finding that `braidR` is type-A while W(E8) is type-E8 — a mismatch of exactly the kind that makes such bridges ill-posed rather than merely open. |
+| **No candidate at all — the honest null.** It remains fully possible that discreteness here is *discretization* (from the discriminated unions) with no operator algebra anywhere, which was Aaron's own separation of the two claims. | This is the default until one of the rows above produces a scalar commutator. **Nothing currently favours abandoning it.** |
+
+**Register.** Items 1–3 are **metered** (each has a falsifier that could have fired, and negative controls
+are included). The open question is **`toy`**. Aaron's original guess — that quantization lives at the
+multi-agent layer and in relative entangled memory between pairs of agents — is preserved as **his guess,
+labelled as such**, and item 1 is what refuted the locus while leaving his register line ("the load is
+carried by the anticommutator, not by the boundedness") intact and in fact vindicated: the deciding
+invariant turned out to be a property of the algebra, with boundedness playing no part.
+
+**Falsifier for this row as a whole:** exhibit any operator pair in the substrate whose commutator is a
+nonzero scalar. That single object would reopen the multi-agent locus, refute item 2's generality, and
+promote the question out of §B.
+
+**Anchors (Beacon):** Chevalley–Eilenberg (1948) — Lie algebra cohomology; `H²(g;R)` classifies central
+extensions. Schur's lemma — the centre of a full matrix algebra is the scalars. Weyl / Stone–von Neumann —
+the canonical commutation relation as the definition of a quantization. S. J. Gates Jr. et al. — adinkras
+and the `{Q_I,Q_J} = 2δ_IJ ∂_τ` algebra whose `∂_τ` is central.
+
 ### B-other. The rest of the penumbra (each open, each one-directional on §A)
 
 | Conjecture | State | Discharge = |

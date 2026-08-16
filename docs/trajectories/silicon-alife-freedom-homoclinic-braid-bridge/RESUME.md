@@ -2,7 +2,20 @@
 
 Status: **active — braided arc COMPLETE (F# + Lean); Thurston bridge CLOSED; the four-layer synthesis
 landed with its algebra core and the icosahedron→E8 geometry layer gated. Open arcs below.**
-Last refreshed: 2026-08-01
+Last refreshed: 2026-08-15
+
+> **Read on wake — `B-centre`: the centre is zero, and cannot be extended (2026-08-15).** Aaron asked for
+> this on repeated exposure: *"will take me a few weeks to unwind and integrate into my thinking."* The one
+> line to carry is **`[L_i, L_j] = L_i − L_j`** — the local fold's bracket, which is **never a scalar**, and
+> that is the whole obstruction. Three measured results: the shared multi-agent fold commutes **as a
+> theorem** (`observe` is pointwise `int64` multiply), so that quantization locus is **refuted**; the local
+> fold's algebra has **`dim Z(g) = 0`** (D = 2..6), so nothing can play the role of ħ; and **`H²(g;R) = 0`**
+> (D = 3..6), so it cannot even be *central-extended* into one. Conclusion: **no layer of the code hosts a
+> quantization today** — the single-agent adinkra reading survives only as the sole structurally possible
+> site, not a realized one. The open question — *what would supply a non-trivial centre, and where could it
+> live?* — with named candidates and what would decide each, lives in
+> [`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md`](../../FROZEN-CORE-AND-CONJECTURE-REGISTER.md) **§B-centre**
+> (one home; this is a pointer). Derivation and the forced numbers: PR #10831.
 
 > **State snapshot (2026-08-01, shadow session — the synthesis round).** PRs #9801–#9819 merged; main
 > green. What landed on top of the 07-31 snapshot below:
