@@ -1,0 +1,12 @@
+{
+  "pr_number": 11050,
+  "archive_path": "docs/history/pr-reviews/PR-11050-fix-docs-the-app-replay-novelty-claim-did-not-survive-search.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T20:06:38.816Z",
+  "schema_version": "v1",
+  "commit_sha": "12f244362990a210a63fe8a4f368a0e7ef699c66",
+  "title": "fix(docs): the app/replay novelty claim did not survive search",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T20:06:04Z",
+  "head_ref": "shadow/correct-app-replay-novelty"
+}
