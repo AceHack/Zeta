@@ -1,0 +1,12 @@
+{
+  "pr_number": 10903,
+  "archive_path": "docs/history/pr-reviews/PR-10903-feat-wset-meter-four-corner-trace-consolidation.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:44:00.311Z",
+  "schema_version": "v1",
+  "commit_sha": "6f92f013c2aab81bcb3c1ec15d0e1f04ce54414f",
+  "title": "feat(wset): meter four-corner trace consolidation",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:43:26Z",
+  "head_ref": "codex/four-corner-trace-heat"
+}
