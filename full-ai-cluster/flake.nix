@@ -239,6 +239,17 @@
           # See nixos/tests/k3s-cluster-online.nix.
           k3s-cluster-online =
             import ./nixos/tests/k3s-cluster-online.nix { inherit pkgs; };
+
+          # THE CLOSEST THING TO PROD without touching prod: installs the REAL
+          # Longhorn chart at the REAL version with the REAL prod values, then
+          # proves a `longhorn` PVC BINDS and a pod writes through the mount.
+          # The platform-fixes check proves iscsiadm resolves; this one proves
+          # the rest of the chain that was dead for 62 days on node-5b2dfa
+          # (manager Ready -> Node CR -> StorageClass -> PVC Bound -> data).
+          # REQUIRES internet -> build with `--option sandbox false`.
+          # See nixos/tests/longhorn-volume-binds.nix.
+          longhorn-volume-binds =
+            import ./nixos/tests/longhorn-volume-binds.nix { inherit pkgs; };
         };
 
         devShells.default = pkgs.mkShell {

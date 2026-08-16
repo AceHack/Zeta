@@ -236,6 +236,25 @@ jobs:
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-cluster-online -L --print-build-logs --fallback --option sandbox false
 
+      # STORAGE, end to end. The lane above proves the cluster comes up; it says
+      # nothing about whether a stateful workload gets a disk. That distinction
+      # is not academic: on node-5b2dfa longhorn-manager crash-looped 16495 times
+      # over 62 days, the `longhorn` StorageClass was never created, and 20 PVCs
+      # sat Pending — while every lane here was green, because no lane asked
+      # "does a volume bind?". This one installs the REAL chart at the REAL
+      # version with the REAL prod values and asserts manager Ready -> Node CR ->
+      # StorageClass -> PVC Bound -> data read back through the mount.
+      #
+      # Gated to push + workflow_dispatch, matching the scenario-3/4 and wifi-ESP
+      # convention: it needs internet and ~15-25 min on a cold runner, so PR runs
+      # stay fast while main keeps the guarantee. Measured 162 s of test-script
+      # time on a warm host; the runner cost is image pulls, not the assertions.
+      - name: NixOS test — a longhorn PVC actually BINDS and data survives
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        timeout-minutes: 45
+        working-directory: full-ai-cluster
+        run: nix build .#checks.x86_64-linux.longhorn-volume-binds -L --print-build-logs --fallback --option sandbox false
+
       - name: Build installer ISO
         working-directory: full-ai-cluster
         run: nix build .#installer-iso --print-build-logs --fallback
