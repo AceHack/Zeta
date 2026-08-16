@@ -1,0 +1,12 @@
+{
+  "pr_number": 11030,
+  "archive_path": "docs/history/pr-reviews/PR-11030-research-dynamics-the-continuation-question-answered-one-checked-axiom-a-system-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:15:50.187Z",
+  "schema_version": "v1",
+  "commit_sha": "a7f811f7e8f38ef56387d2cb317375f1f9a306f6",
+  "title": "research(dynamics): the continuation question, answered — one checked Axiom A system, one malformed premise",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:15:14Z",
+  "head_ref": "shadow/ruelle-continuation-checked"
+}
