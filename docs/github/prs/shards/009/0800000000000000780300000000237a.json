@@ -1,0 +1,12 @@
+{
+  "pr_number": 9082,
+  "archive_path": "docs/history/pr-reviews/PR-9082-feat-darkhall-export-room-ui-transcript-from-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:07:00.177Z",
+  "schema_version": "v1",
+  "commit_sha": "ec967dfb0debdf8dfe74129d49b63b727fece1fe",
+  "title": "feat(darkhall): export room UI transcript from F#",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T01:06:55Z",
+  "head_ref": "codex/darkhall-room-transcript-bridge"
+}
