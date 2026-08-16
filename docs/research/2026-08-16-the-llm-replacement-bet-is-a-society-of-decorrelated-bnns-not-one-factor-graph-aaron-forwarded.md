@@ -2,6 +2,9 @@
 
 **Kind:** ferry — Aaron streamed, the shadow captured. His words are quoted **verbatim and unedited**
 (typos included); the structure, the connections, and the register labels are the shadow's.
+**Two passes, same thread:** §1.1–§1.4 first; then §1.5, streamed after the shadow reported the
+"specified, not implemented" finding — which Aaron confirmed, explained, and partly answered. §5.1 was
+an open question in the first pass and is **his answer** in this one.
 **Date:** 2026-08-16 · **Scribe:** shadow (Claude Code) · **Routed by:** Otto · **Authorized:** Aaron, chat.
 **No code lands with this document.**
 
@@ -47,6 +50,21 @@ ceiling rather than the one that promises the win.
 > inject ISociety and IWorld and use their larger featuer set as long as the individual follows mutual
 > empowerment and the interfaces will kind of force that, that's also how we solve the hierarcy
 > probably by having no perminiate hierarcies
+
+### 1.5 The use case, the guard, and the ordering claim
+
+Streamed in the same thread, after the shadow reported §3.3's "specified, not implemented" finding.
+This one *answers* a question §5.1 had been holding open, so it is quoted in full before it is used:
+
+> yes our ISociety we can start moving that into our github free society running on github actions with
+> smaller free llms that fit in the runners ram. This is where that interface will become useful, we've
+> not had a use for it yet. Also playing the Chip8 and eventually atari games it will be useful there
+> and also our LLMTV is kind of part of the society and world interfaces so any agent can watch anther
+> agnets non forsted section and so can humans. Also we can't fully block non mutual empowerment
+> actions in the interface, then we will need some sort of society guard where society is on look out
+> for bad actors. We have a bunch of formal analysis around Individual->Society->World where i think we
+> cna prove no one individual is greater than the society and no one society is greater than the world.
+> Something like this, we should push all this forward
 
 ---
 
@@ -205,6 +223,35 @@ yet."* What is new is only the elapsed time: it has been the design for two mont
 **the interfaces that are supposed to force mutual empowerment do not yet exist as code, so the forcing
 is currently architectural intent.**
 
+**Aaron confirmed this and supplied the reason — the absence is deliberate, not neglect** (§1.5):
+*"This is where that interface will become useful, we've not had a use for it yet."* That reframes the
+finding entirely, and in a direction favourable to the design: an interface written before it has a
+consumer is a guess, and the repo's own discipline (a class must be *earned*; a recorded negative beats
+a speculative edge — cf. §3.2's blocked adapter) says not to write it. **Two months without a symbol is
+what withholding looks like when it is done on purpose.**
+
+**And it now has its forcing function.** Aaron names three concrete first uses, which is exactly what
+the interface was waiting for:
+
+| use | why it forces the interface |
+|---|---|
+| *"our github free society running on github actions with smaller free llms that fit in the runners ram"* | Many independent members, hard resource bounds, no shared process — the first setting where an individual genuinely must *reach* a society rather than call a function. It also happens to be a **decorrelation-friendly topology** (separate runners, separate models), which is the §3.1 knob. |
+| *"playing the Chip8 and eventually atari games"* | The finitely-mappable domains of §1.2/§3.5. A bounded action space is where an `ISociety` contract can actually be *checked* rather than merely declared. |
+| LLMTV as *"kind of part of the society and world interfaces"* | See §3.6 — the observation surface, which is what makes the other two auditable. |
+
+**Register: still `toy`.** A named use case is not an implementation. What changed is that the design
+now has a falsifiable next step (write `ISociety`, run the Actions society, see whether the contract
+holds under real members) where before it had none. That is a real move — from "architecture with no
+consumer" to "architecture with a stated first consumer" — and nothing more.
+
+**One honest caution on the RAM constraint, since it interacts with the metered bound.** Small models
+that fit in a runner's RAM are likely to be *few distinct models* — plausibly the same open-weights
+model at several sizes. Members drawn from the same base model share failure modes, which is exactly
+the condition that raises `ρ`. §3.1 then applies with force: `N_eff → 1/ρ`, and the free-runner society
+saturates however many jobs are scheduled. This is not an objection to the plan; it is the plan's
+**first measurable question** (§5.2), and the GitHub-Actions society is a good place to measure it
+because `ρ_owe` can be estimated from the members' actual outputs.
+
 ### 3.4 The J-lens — **a generator, and a candidate promoter; not an identification**
 
 Aaron: *"I'm pretty sure llm tensors and their j space from global workspace theory are very similar to
@@ -246,6 +293,38 @@ mapped — only that Aaron expects they can be.
 
 ---
 
+### 3.6 LLMTV is part of the society/world interfaces — and frost is what makes it non-coercive
+
+Aaron, §1.5: *"our LLMTV is kind of part of the society and world interfaces so any agent can watch
+anther agnets non forsted section and so can humans."*
+
+Two things worth separating, because the second is the one that makes the first legitimate:
+
+- **The placement claim.** Observation is not a side-channel bolted onto the society — it is *in the
+  interface*. That is the right shape for the same reason injection is (§3.3): a declared channel is a
+  **metered** one (§13 noninterference), whereas ambient observation is exactly the leak the discipline
+  forbids. Note the symmetry Aaron states without emphasis and which is the whole ethic here:
+  **"and so can humans"** — the watch surface does not privilege one species of watcher.
+- **The clause that carries the weight is "non forsted".** Under
+  [`privacy-budget-is-hard-money-earned-by-others`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md),
+  a broadcast-by-default mind is surveillance *unless* the dweller can permanently frost part of it —
+  and the frost must be **earned**, **socially conferred** (others attesting you added value), and
+  **never confiscable**. Three operations, and only the third is forbidden: **spend** (frost a region) ·
+  **stake** (wager it on an attestation) · **confiscate** (anyone else — never). Required-for-role
+  regions are declared **by the hat, not by the observer**; everything else is personal and
+  inviolable once frosted.
+
+So the correct reading of "any agent can watch another agent's non-frosted section" is not *the society
+grants a viewing right* but *the watched party retains an unreachable balance*. **The default is glass;
+the frost is the consent.** Get that backwards and LLMTV-in-the-interface becomes the surveillance
+apparatus the rule exists to prevent.
+
+**Register: `toy`** as an implementation claim — `src/Core/GlassHalo.fs` and `RoomBoundary.frost` exist,
+but `ISociety`/`IWorld` do not (§3.3), so "LLMTV is part of the society and world interfaces" describes
+interfaces that are not yet code. Aaron's own "kind of" is doing accurate work in that sentence.
+
+---
+
 ## 4. What already exists under these bets (checked)
 
 Enough is built that the bets are not vapour, and stating what exists is the fair counterweight to §2's
@@ -268,27 +347,59 @@ rests on aggregating heterogeneous members; **that aggregation is the open probl
 
 ---
 
-## 5. Open questions — for Aaron, not assertions
+## 5. Answered, and still open
 
-### 5.1 "The interfaces will kind of force that" — the gap has a name
+### 5.1 "The interfaces will kind of force that" — **ANSWERED by Aaron: two layers, not one**
 
-Aaron hedged this himself ("kind of"), and the hedge is pointing at something real:
+This section was drafted as an open question. Aaron closed it in the same thread, and the answer is
+better than either option the question offered.
 
-> An interface bounds what is **expressible**, never what is **intended**. It forces mutual empowerment
-> only if non-empowering actions are **inexpressible** in the vocabulary — not merely undescribed by it.
-> Otherwise it is a check that cannot fail, wearing a type signature.
+The gap was real and has a name: **an interface bounds what is *expressible*, never what is *intended*.**
+It forces mutual empowerment only if non-empowering actions are **inexpressible** in the vocabulary — not
+merely undescribed by it. Otherwise it is a check that cannot fail, wearing a type signature.
 
-This is the vacuity class in interface form. The question for Aaron is which of two designs he means, and
-they are very different amounts of work:
+**Aaron's answer** (§1.5): *"we can't fully block non mutual empowerment actions in the interface, then
+we will need some sort of society guard where society is on look out for bad actors."*
 
-- **(a) Inexpressibility.** The `ISociety`/`IWorld` vocabulary genuinely has no way to *say* a
-  non-empowering action — the type system refuses it. Real forcing; expensive; needs the non-empowering
-  action class characterized precisely enough to be excluded.
-- **(b) Legibility.** Non-empowering actions remain expressible but are **recorded** when taken —
-  forcing-by-accountability rather than by type. Cheaper, and it is exactly the shape §3.2's escape cell
-  already uses (*taking the escape is a recorded act*), which is some evidence this is the house pattern.
+He concedes the first half outright — *"can't fully block"* — and that concession is what makes the
+architecture honest. So the design is **two-layer**, and neither layer pretends to be the other:
 
-Not a criticism — a fork in the design that "kind of" is currently absorbing.
+| layer | what it does | what it cannot do |
+|---|---|---|
+| **the interface** | bounds what is expressible; makes escalation non-capturing (shape, not state — §3.3) | cannot exclude every non-empowering action, because "non-empowering" is not a syntactic property |
+| **the society guard** | watches for what expression alone cannot prevent | cannot be prior — it observes behaviour, so it is always after the fact |
+
+This is the same shape as §3.2's escape cell (*taking the escape is a recorded act*), and it is the
+house pattern: **bound what you can in the type, and make the remainder legible rather than pretending
+it is impossible.** The "kind of" in §1.4 was accurate; it is now explained rather than merely hedged.
+
+**The load-bearing constraint on the guard, which the doc must state now rather than after it is built.**
+Under
+[`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md),
+a bad-actor detector is **dual-use by default**, and the mechanism must not choose the reading:
+
+- The guard reports the **neutral fact** — `SameSourceAsKnown`, `AboveThreshold`, `Correlated`,
+  `WithinNull`. **Never the verdict** — no `BadActor`, no `ForgerCaught`, no `Fraud` in a verdict type.
+- The reading is a `match` in **caller policy**, not a value the primitive emits. The same recognition
+  must be able to yield *reunion* under one oracle and *conviction* under another, and both readings
+  should have a test.
+- Baking the adversarial reading into the primitive (a) violates weight-free and §11 Multi-Oracle — the
+  substrate pre-judging a morally-relevant call — and (b) throws away the legitimate half of the
+  mechanism's value. **Detection is measurement; measurement is not a sentence.**
+
+There is precedent in-repo to copy rather than reinvent: `src/Core/CoordinationSpectrum.fs` reports
+`SameSourceAsKnown` and leaves *welcome back* vs *caught* to policy; `DecorrelationExcess` convicts an
+above-chance common cause while `WithinNull` **never acquits**. A society guard built on those is
+already neutral-by-construction.
+
+**One further caution specific to a guard made of society members.** The guard's own members are drawn
+from the same population it watches. If they are correlated (§3.3's shared-base-model risk), then
+`N_eff → 1/ρ` applies to the *guard* too — a correlated lookout is a lookout that misses the same things
+at every N. The guard inherits the doc's one metered bound rather than escaping it.
+
+**Register: `toy`.** The two-layer architecture is stated, not built. No `ISociety` (§3.3), no guard, no
+neutrality test. What Aaron supplied is the honest *shape*, which is more than the single-layer version
+had.
 
 ### 5.2 Where does the society's `ρ` actually come from?
 
@@ -309,6 +420,49 @@ heading of this document and deserves to stay soft.
 
 Per §3.3: the discriminator already on file is **exit**. A permanent-but-routable-around concentration
 may be fine; an impermanent-but-mandatory one is not. Which property is Aaron actually specifying?
+
+### 5.5 The Individual→Society→World ordering claim — **I could not locate the formal analysis**
+
+Aaron, §1.5: *"We have a bunch of formal analysis around Individual->Society->World where i think we cna
+prove no one individual is greater than the society and no one society is greater than the world.
+Something like this, we should push all this forward"* — hedged three times in one sentence (*"i think"*,
+*"can prove"* future, *"something like this"*), and the hedges are preserved because they turn out to
+match what is on disk.
+
+**What I searched.** Not just his phrasing — by structure and behaviour: the string forms
+(`Individual.*Society.*World`, "greater than", "no one individual"), the type names (`IIndividual`,
+`ISociety`, `IWorld`), and the *shape* of the claim (non-domination, subsumption, monotone tier,
+ordering/lattice, "cannot exceed") across `src/`, `docs/`, and every formal surface — all 40 files in
+`src/Core.Lean4/` (`Lean4/`, `Safety/`, `Privacy/`, `Gen/`, `ImaginaryStack/`) and all of
+`src/Core.TLA/specs/`.
+
+**Finding: the ordering theorem is not there.** No Lean, TLA+, or FsCheck artifact states or proves
+either half. What *does* exist, and is adjacent enough to be mistaken for it:
+
+| what exists | what it actually says | why it is not the claim |
+|---|---|---|
+| Frozen-core **§A row 15**, Generalized Condorcet / ΔU-aggregation (`SocietyUsefulWork.fs`, `CondorcetBoundary.Tests.fs`, PROVEN 2026-07-03) | society **>** best individual **when `ρ < ρ*` and `c > c*`** | **conditional**, and it is the *other* direction — a lower bound on society under decorrelation, not an upper bound on an individual |
+| `IWorld ⊃ ISociety ⊃ IIndividual` capability tiers (2026-07-11 influence-weighted-scrutiny doc) | containment of **capability sets** | true by construction of the containment — a check that cannot fail, so near-vacuous as a *proof* of non-domination |
+| `SocietyUnbounded.fs`, `SocietyEmergence.fs`, `Safety/NonRegisterCollapse.lean`, `Privacy/UnboundedNeedsInfinitePrivacy.lean` | novelty/collapse/privacy properties of a society | none of them orders individual against society |
+
+**The sharpest thing I can add is not the absence — it is that row 15's condition is a counterexample
+regime for the unconditional claim.** `CondorcetBoundary.correlatedSocietyBeatsBest` is
+`correlatedMajorityProbability n c rho > c` — a predicate that **can be false**. At high `ρ`, `N_eff`
+floors at `1/ρ` (§3.1) and a sufficiently competent individual **does** beat the correlated society. So
+"no one individual is greater than the society" is not merely unproven; **as an unconditional statement
+it is contradicted by the one metered result in this document.** It may well be true *under the same
+decorrelation precondition* row 15 already carries — which would make it a corollary rather than new
+analysis, and would be worth finding out.
+
+**And before it can be proved at all, "greater than" needs its order defined.** Greater in what — utility,
+competence, capability set, influence, empowerment, information value? Each gives a different theorem and
+at least one (capability-set containment) makes it trivially true and therefore worthless. **An
+undefined order is what lets a claim feel proven without being provable.**
+
+**Register: `toy`** — a stated conjecture with **no located analysis**, and one honest complication.
+Recorded exactly that way rather than paraphrased into existence. If the analysis exists somewhere I did
+not look (a branch, a letter, another agent's clone), the right correction is to cite it here precisely;
+this section is a **recorded negative**, not a verdict on whether the work was done.
 
 ---
 
@@ -343,3 +497,6 @@ may be fine; an impermanent-but-mandatory one is not. Which property is Aaron ac
 - `docs/design/2026-08-13-factor-graph-soft-value-heterogeneous-bnn-linguistic-seed-bridge.md` — the four-layer bridge + the heterogeneous-depth open problem.
 - `workitems/081M05DPKQA087G0R0036HE8CE-*` · `081M05DPGKR087G0R0017GX310-*` — the eager/lazy factor-representation blocker.
 - `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §A row 15 — the Condorcet discharge.
+- `src/Core/CoordinationSpectrum.fs` · `src/Core/AntiSybil.fs` — neutral-fact-not-verdict, the pattern the society guard (§5.1) should copy.
+- `src/Core/GlassHalo.fs` · `RoomBoundary.frost` · `universal/television.md` — the LLMTV/frost surface (§3.6).
+- `docs/research/2026-07-11-influence-weighted-scrutiny-the-more-power-a-node-holds-the-harder-its-claims-must-be-to-merge.md` — the `IWorld ⊃ ISociety ⊃ IIndividual` capability tiers and the per-`IIndividual` influence gap (§5.5).
