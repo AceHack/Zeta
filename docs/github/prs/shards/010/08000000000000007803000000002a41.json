@@ -1,0 +1,12 @@
+{
+  "pr_number": 10817,
+  "archive_path": "docs/history/pr-reviews/PR-10817-docs-research-separate-the-four-strands-hkt-in-f-hott-time-deformed-types-quasi-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:58:59.402Z",
+  "schema_version": "v1",
+  "commit_sha": "f66665a05c724a67bfa35fb454db1ed6cb610677",
+  "title": "docs(research): separate the four strands — HKT in F#, HoTT, time-deformed types, quasi-time-crystal — with measured costs",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:58:22Z",
+  "head_ref": "shadow/hkt-hott-time-deformed-types-four-strands"
+}
