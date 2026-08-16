@@ -1,0 +1,12 @@
+{
+  "pr_number": 9078,
+  "archive_path": "docs/history/pr-reviews/PR-9078-feat-core-the-reframe-one-shared-merge-kernel-for-zset-zsetw-perf-gate-passed-sh.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T21:39:00.152Z",
+  "schema_version": "v1",
+  "commit_sha": "4e0173f2fb19aa98325e0c4d82d5c3edcdb71b2f",
+  "title": "feat(core): the reframe — ONE shared merge kernel for ZSet + ZSetW, perf-gate passed (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T00:43:22Z",
+  "head_ref": "otto/zset-reframe-shared-merge-kernel-081KWFXTHJY"
+}
