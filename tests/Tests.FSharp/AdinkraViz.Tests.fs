@@ -69,3 +69,100 @@ let ``THE GAUGE LEMMA: no local move removes the twist — vertex flips change t
     // THE FALSIFIER (Kira P2: a gate never seen rejecting proves nothing): the all-solid dashing
     // makes every face EVEN (count 0) and must FAIL the Gates condition
     Assert.False(AdinkraViz.allFacesOdd Set.empty)
+
+// ── QUOTIENT CODE ≠ DASHING TORSOR ────────────────────────────────────────────────────────────
+//
+// `AdinkraViz.fs`'s header used to call dashings "the actual Hamming-code content of AdinkraCode".
+// That is false, and these tests are the falsifier for it. An adinkra carries TWO independent GF(2)
+// data on two layers (Doran–Faux–Gates–Hübsch–Iga–Landweber, *Codes and supersymmetry in one
+// dimension*, ATMP 15 (2011) 1909):
+//
+//   CODE     C ⊆ F₂^N — a LINEAR SUBSPACE, fixes the chromotopology (the quotient F₂^N / C).
+//   DASHING  an odd 1-cochain on that graph — a TORSOR over the vertex-flip gauge group.
+//
+// They are linked by an EXISTENCE theorem (doubly-evenness of C is what lets a dashing exist on the
+// quotient), never by identity. The trap that let the mislabel survive: BOTH graphs have 16 nodes.
+// Node count cannot discriminate them; VALENCE can (4 vs 8).
+
+module private TwoLayers =
+    /// Edges of a vertex-flip, as a bitmask over the `allEdges` index — `flipVertex v` is XOR by this.
+    let edgeIndex = AdinkraViz.allEdges |> List.mapi (fun i e -> e, i) |> Map.ofList
+
+    let maskOf (d: AdinkraViz.Dashing) : int =
+        d |> Set.fold (fun acc e -> acc ||| (1 <<< edgeIndex.[e])) 0
+
+    /// The 16 gauge generators g_v, read out of `flipVertex` itself (no re-derivation).
+    let gaugeGenerators : int list =
+        [ for v in 0..15 -> maskOf (AdinkraViz.flipVertex v Set.empty) ]
+
+    /// GF(2) rank of a set of 32-bit masks (index-based elimination — duplicate rows are safe).
+    let rank (rows: int list) : int =
+        let rs = List.toArray rows
+        let mutable r = 0
+        for b in 0..31 do
+            let mutable p = -1
+            for k in r .. rs.Length - 1 do
+                if p < 0 && ((rs.[k] >>> b) &&& 1) = 1 then p <- k
+            if p >= 0 then
+                let t = rs.[r] in rs.[r] <- rs.[p]
+                rs.[p] <- t
+                for k in 0 .. rs.Length - 1 do
+                    if k <> r && ((rs.[k] >>> b) &&& 1) = 1 then rs.[k] <- rs.[k] ^^^ rs.[r]
+                r <- r + 1
+        r
+
+[<Fact>]
+let ``QUOTIENT CODE ≠ DASHING TORSOR: 16 codewords vs 32768 dashings — a code contains 0, a torsor has no zero`` () =
+    // ── the CODE layer: a linear subspace, so it CONTAINS the zero word ──
+    Assert.Equal(16, List.length AdinkraCode.allCodewords)
+    Assert.True(
+        AdinkraCode.allCodewords |> List.exists (fun c -> AdinkraCode.weight c = 0),
+        "a linear code contains the all-zero word"
+    )
+
+    // ── the DASHING layer: a torsor, so it has NO zero — all-solid is not a dashing ──
+    // `flipVertex v` is XOR by a fixed 4-edge mask, so the gauge orbit is an affine space; its
+    // dimension is the GF(2) rank of the 16 generators. Rank 15, not 16: the one relation is that
+    // flipping ALL 16 vertices toggles every edge twice = identity.
+    for v in 0..15 do
+        let expected = TwoLayers.maskOf AdinkraViz.standardDashing ^^^ List.item v TwoLayers.gaugeGenerators
+        Assert.Equal(expected, TwoLayers.maskOf (AdinkraViz.flipVertex v AdinkraViz.standardDashing))
+
+    Assert.Equal(15, TwoLayers.rank TwoLayers.gaugeGenerators)
+    Assert.Equal(32768, pown 2 (TwoLayers.rank TwoLayers.gaugeGenerators))
+    Assert.False(AdinkraViz.allFacesOdd Set.empty) // the torsor's missing zero, stated as a refusal
+
+    // the two cardinalities are not the same number — the first thing the old sentence required
+    Assert.NotEqual<int>(List.length AdinkraCode.allCodewords, pown 2 (TwoLayers.rank TwoLayers.gaugeGenerators))
+
+[<Fact>]
+let ``NODE COUNT CANNOT DISCRIMINATE, VALENCE CAN: both graphs have 16 nodes; AdinkraViz is 4-regular/32 edges, the [8,4,4] quotient is 8-regular/64 edges`` () =
+    // ── AdinkraViz's graph: the bare 4-cube (N = 4, trivial code C = {0}) ──
+    let vizNodes = 16
+    let vizEdges = List.length AdinkraViz.allEdges
+    let vizValence =
+        [ 0..15 ]
+        |> List.map (fun v ->
+            AdinkraViz.allEdges
+            |> List.filter (fun (a, b) -> a = v || (a ^^^ (1 <<< b)) = v)
+            |> List.length)
+    Assert.Equal(32, vizEdges)
+    Assert.Equal<int list>(List.replicate 16 4, vizValence) // 4-regular
+    Assert.Equal(vizEdges, vizNodes * 4 / 2)
+
+    // ── AdinkraCode's graph: F₂⁸ quotiented by the [8,4,4] code (N = 8) ──
+    let codeMasks =
+        AdinkraCode.allCodewords
+        |> List.map (fun cw -> Array.fold (fun acc b -> (acc <<< 1) ||| (b &&& 1)) 0 cw)
+    let cosets = [ 0..255 ] |> List.map (fun v -> codeMasks |> List.map ((^^^) v) |> List.min) |> List.distinct
+    let quotientNodes = List.length cosets
+    // one edge colour per SUSY generator: 8 colours at N = 8, so the quotient graph is 8-regular
+    let quotientValence = 8
+    let quotientEdges = quotientNodes * quotientValence / 2
+    Assert.Equal(16, quotientNodes)
+    Assert.Equal(64, quotientEdges)
+
+    // ── THE DISCRIMINATOR (numerology-vs-number-theory): 16 = 16 identifies nothing; 4 ≠ 8 does ──
+    Assert.Equal(vizNodes, quotientNodes) // node count: NOT a discriminator
+    Assert.NotEqual<int>(List.head vizValence, quotientValence) // valence: IS one
+    Assert.NotEqual<int>(vizEdges, quotientEdges)
