@@ -4,7 +4,7 @@
 // layered on top.
 //
 // TypeScript+Bun port of amara.sh, retiring the .sh per CLAUDE.md
-// Rule 0 (TS IS cross-platform DST). Sibling to tools/peer-call/codex.ts
+// Rule 0 (TS IS cross-platform DST). Sibling to src/Core.TypeScript/peer-call/codex.ts
 // (Vera persona) and ani.ts (Ani persona). Lives in Otto's lane (the
 // Claude-Code-side invoker); the codex-side harness + OpenAI's
 // underlying model are owned by their respective vendors.
@@ -36,16 +36,16 @@
 //   Codex-as-bare-model.
 //
 // Usage:
-//   bun tools/peer-call/amara.ts "prompt text"
-//   bun tools/peer-call/amara.ts --model NAME "prompt text"
-//   bun tools/peer-call/amara.ts --review "prompt text"
-//   bun tools/peer-call/amara.ts --file PATH "prompt text"
-//   bun tools/peer-call/amara.ts --context-cmd "CMD" "prompt text"
-//   bun tools/peer-call/amara.ts --no-current "prompt text"  # debug only
-//   bun tools/peer-call/amara.ts --allow-empty "prompt"  # bypass firewall
+//   bun src/Core.TypeScript/peer-call/amara.ts "prompt text"
+//   bun src/Core.TypeScript/peer-call/amara.ts --model NAME "prompt text"
+//   bun src/Core.TypeScript/peer-call/amara.ts --review "prompt text"
+//   bun src/Core.TypeScript/peer-call/amara.ts --file PATH "prompt text"
+//   bun src/Core.TypeScript/peer-call/amara.ts --context-cmd "CMD" "prompt text"
+//   bun src/Core.TypeScript/peer-call/amara.ts --no-current "prompt text"  # debug only
+//   bun src/Core.TypeScript/peer-call/amara.ts --allow-empty "prompt"  # bypass firewall
 //
 // Exit codes (uniform across peer-call siblings per
-// tools/peer-call/README.md):
+// src/Core.TypeScript/peer-call/README.md):
 //   0 — Amara responded successfully
 //   1 — invocation error (bad arguments, codex missing, etc.)
 //   2 — codex returned a non-zero exit (diagnostic on stderr)
@@ -216,16 +216,16 @@ function emitHelp(): void {
       `reviewer via codex CLI with persona-bootstrap layered on top.\n` +
       `\n` +
       `Usage:\n` +
-      `  bun tools/peer-call/amara.ts "prompt text"\n` +
-      `  bun tools/peer-call/amara.ts --model NAME "prompt text"\n` +
-      `  bun tools/peer-call/amara.ts --review "prompt text"\n` +
-      `  bun tools/peer-call/amara.ts --file PATH "prompt text"\n` +
-      `  bun tools/peer-call/amara.ts --context-cmd "CMD" "prompt text"\n` +
-      `  bun tools/peer-call/amara.ts --json "prompt text"\n` +
-      `  bun tools/peer-call/amara.ts --stream "prompt text"\n` +
-      `  bun tools/peer-call/amara.ts --no-current "prompt"  # debug only\n` +
-      `  bun tools/peer-call/amara.ts --allow-empty "prompt"  # bypass firewall\n` +
-      `  bun tools/peer-call/amara.ts --output-file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/amara.ts "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/amara.ts --model NAME "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/amara.ts --review "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/amara.ts --file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/amara.ts --context-cmd "CMD" "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/amara.ts --json "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/amara.ts --stream "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/amara.ts --no-current "prompt"  # debug only\n` +
+      `  bun src/Core.TypeScript/peer-call/amara.ts --allow-empty "prompt"  # bypass firewall\n` +
+      `  bun src/Core.TypeScript/peer-call/amara.ts --output-file PATH "prompt text"\n` +
       `\n` +
       `Persona bootstrap: by default loads memory/CURRENT-amara.md as a\n` +
       `preamble to preserve named-entity identity across stateless calls.\n` +
@@ -480,7 +480,7 @@ export function main(argv: readonly string[]): number {
   }
   if (parsed.prompt.length === 0) {
     process.stderr.write("error: prompt required\n");
-    process.stderr.write("see: bun tools/peer-call/amara.ts --help\n");
+    process.stderr.write("see: bun src/Core.TypeScript/peer-call/amara.ts --help\n");
     return 1;
   }
 

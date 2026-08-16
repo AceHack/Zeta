@@ -3,6 +3,7 @@
 // Tests parseArgs (pure) + runPicker (against a mock readline-like interface).
 
 import { describe, expect, it } from "bun:test";
+import { existsSync } from "node:fs";
 import { parseArgs, runPicker, buildVerifyArgs } from "./zeta-creds-picker";
 
 describe("parseArgs", () => {
@@ -65,7 +66,10 @@ describe("buildVerifyArgs", () => {
     const parsed = parseArgs(["--usb-uuid", "u1", "--output", "/mnt/boot/zeta-creds.enc", "--passphrase-env", "ZETA_PP", "--verify"]);
     if ("error" in parsed) throw new Error(parsed.error);
     const args = buildVerifyArgs(parsed, "/tmp/verify-x");
-    expect(args).toContain("tools/installer/zeta-creds-restore.ts");
+    expect(args).toContain("src/Core.TypeScript/installer/zeta-creds-restore.ts");
+    // The spawned script must EXIST; asserting the string alone is what let
+    // this argv keep pointing at the pre-#8050 `tools/` path while green.
+    expect(existsSync(args[0]!)).toBe(true);
     expect(args).toContain("--usb-uuid"); expect(args).toContain("u1");
     expect(args).toContain("--input"); expect(args).toContain("/mnt/boot/zeta-creds.enc");
     expect(args).toContain("--target-root"); expect(args).toContain("/tmp/verify-x");

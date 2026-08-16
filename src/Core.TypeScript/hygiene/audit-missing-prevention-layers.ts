@@ -11,8 +11,8 @@
 //   surfaces unclassified + gap rows.
 //
 // Usage:
-//   bun tools/hygiene/audit-missing-prevention-layers.ts
-//   bun tools/hygiene/audit-missing-prevention-layers.ts --classify FILE
+//   bun src/Core.TypeScript/hygiene/audit-missing-prevention-layers.ts
+//   bun src/Core.TypeScript/hygiene/audit-missing-prevention-layers.ts --classify FILE
 //
 // Exit codes:
 //   0   all rows classified, no gap rows

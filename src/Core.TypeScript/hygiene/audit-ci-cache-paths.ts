@@ -42,8 +42,8 @@
 //   2   workflow file or git read failure
 //
 // Usage:
-//   bun tools/hygiene/audit-ci-cache-paths.ts
-//   bun tools/hygiene/audit-ci-cache-paths.ts --enforce  (alias for default)
+//   bun src/Core.TypeScript/hygiene/audit-ci-cache-paths.ts
+//   bun src/Core.TypeScript/hygiene/audit-ci-cache-paths.ts --enforce  (alias for default)
 
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";

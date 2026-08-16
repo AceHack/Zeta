@@ -84,7 +84,7 @@ paths-ignore:
 # ships Zeta-specific taint / CWE rules. The formal-
 # verification-expert (Soraya) routes the rule authoring
 # between Semgrep (syntactic) and CodeQL (taint-flow); see
-# .claude/skills/codeql-expert/SKILL.md §"When CodeQL is the
+# .claude/skills/formal-methods/blueprints/codeql-expert.md §"When CodeQL is the
 # wrong tool" for the decision rubric.
 #
 # packs:

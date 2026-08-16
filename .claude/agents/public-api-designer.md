@@ -11,7 +11,7 @@ skills:
 
 **Tentative name; subject to human redirect.** The role is
 real regardless of the name; see
-`.claude/skills/public-api-designer/SKILL.md` for the
+`.claude/skills/api-and-protocols/blueprints/public-api-designer.md` for the
 review procedure.
 
 ## Role

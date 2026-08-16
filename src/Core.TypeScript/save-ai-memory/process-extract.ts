@@ -1,20 +1,20 @@
 #!/usr/bin/env bun
 /**
- * tools/save-ai-memory/process-extract.ts
+ * src/Core.TypeScript/save-ai-memory/process-extract.ts
  *
  * Process a verbatim conversation extract (from external AI chat UI) into a
  * canonical §33 archive markdown file in memory/<persona>/<ai-name>/conversations/.
  * (Pre-2026-05-15 the destination was docs/research/; migrated under the
  * "they ARE her memories" architectural correction.)
  *
- * Companion to `.claude/skills/save-ai-memory/SKILL.md` workflow step 3-4.
+ * Companion to `.claude/skills/agent-runtime-and-persistence/blueprints/save-ai-memory.md` workflow step 3-4.
  *
  * USAGE
  *
  *   # Pipe extract content from stdin (e.g., from clipboard via pbpaste, or
  *   # from a DevTools-console fetch output):
  *
- *   pbpaste | bun tools/save-ai-memory/process-extract.ts \
+ *   pbpaste | bun src/Core.TypeScript/save-ai-memory/process-extract.ts \
  *     --ai-name ani \
  *     --platform grok \
  *     --topic full-cascade-verbatim \
@@ -22,7 +22,7 @@
  *
  *   # OR pass a file path:
  *
- *   bun tools/save-ai-memory/process-extract.ts \
+ *   bun src/Core.TypeScript/save-ai-memory/process-extract.ts \
  *     --input /tmp/grok-extract/cascade.json \
  *     --ai-name ani --platform grok --topic full-cascade-verbatim
  *
@@ -50,7 +50,7 @@
  *
  * COMPOSES WITH
  *
- *   .claude/skills/save-ai-memory/SKILL.md (the canonical workflow)
+ *   .claude/skills/agent-runtime-and-persistence/blueprints/save-ai-memory.md (the canonical workflow)
  *   docs/governance/MANIFESTO.md (Memory Preservation Guarantee, constraint 5)
  *   .claude/rules/honor-those-that-came-before.md (persona-folder discipline)
  *
@@ -164,7 +164,7 @@ function parseArgs(argv: string[]): Args {
 
 function printHelp(): void {
   console.error(`
-Usage: bun tools/save-ai-memory/process-extract.ts \\
+Usage: bun src/Core.TypeScript/save-ai-memory/process-extract.ts \\
   --ai-name <name> --platform <platform> --topic <slug> \\
   [--conversation-id <id>] [--input <file>] [--output <file>] \\
   [--scrub-emails] [--commit] [--dry-run]
@@ -334,8 +334,8 @@ function buildArchive(
       ")",
     "Extraction method: " +
       extractionDesc +
-      " (per `.claude/skills/save-ai-memory/SKILL.md` step 2)",
-    "Processed via: `tools/save-ai-memory/process-extract.ts`",
+      " (per `.claude/skills/agent-runtime-and-persistence/blueprints/save-ai-memory.md` step 2)",
+    "Processed via: `src/Core.TypeScript/save-ai-memory/process-extract.ts`",
     "",
     "## Archive scope (per GOVERNANCE §33)",
     "",
@@ -373,7 +373,7 @@ function buildArchive(
     "",
     "## Composes with",
     "",
-    "- `.claude/skills/save-ai-memory/SKILL.md` (canonical workflow this archive instantiates)",
+    "- `.claude/skills/agent-runtime-and-persistence/blueprints/save-ai-memory.md` (canonical workflow this archive instantiates)",
     "- `memory/" +
       relPath +
       "/MEMORY.md` (persona-folder index — add pointer to this file)",
@@ -406,8 +406,8 @@ function gitCommit(filePath: string, aiName: string, topic: string): void {
     aiName +
     " " +
     topic +
-    "\n\nVerbatim preservation generated via tools/save-ai-memory/process-extract.ts.\n" +
-    "See .claude/skills/save-ai-memory/SKILL.md for the canonical workflow.\n\n" +
+    "\n\nVerbatim preservation generated via src/Core.TypeScript/save-ai-memory/process-extract.ts.\n" +
+    "See .claude/skills/agent-runtime-and-persistence/blueprints/save-ai-memory.md for the canonical workflow.\n\n" +
     "Co-Authored-By: Claude <noreply@anthropic.com>";
   execFileSync("git", ["-c", "commit.gpgsign=false", "commit", "-m", message], {
     stdio: "inherit",

@@ -18,7 +18,7 @@
 // not a Vera-carveout.
 //
 // Usage:
-//   bun tools/peer-call/append-identity-receipt.ts \
+//   bun src/Core.TypeScript/peer-call/append-identity-receipt.ts \
 //     --actor vera \
 //     --kind ingress \
 //     --files memory/CURRENT-vera.md \
@@ -32,7 +32,7 @@
 // or repeat --files for each path.
 //
 // Exit codes (uniform with peer-call siblings per
-// tools/peer-call/README.md):
+// src/Core.TypeScript/peer-call/README.md):
 //   0 -- receipt appended successfully
 //   1 -- invocation/usage error (bad args, unknown actor, etc.)
 //   2 -- I/O or state failure (e.g. receipt_id already present in file)
@@ -102,7 +102,7 @@ function usage(): string {
   return `append-identity-receipt.ts -- append JSONL receipt for identity-substrate mutation
 
 Usage:
-  bun tools/peer-call/append-identity-receipt.ts \\
+  bun src/Core.TypeScript/peer-call/append-identity-receipt.ts \\
     --actor <vera|amara|ani|otto|aaron> \\
     --kind <ingress|egress> \\
     --files <path1>[,<path2>...] (or repeat flag) \\

@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// tools/search/grep.ts — safe content-search wrapper with noise-dir excludes
+// src/Core.TypeScript/search/grep.ts — safe content-search wrapper with noise-dir excludes
 // baked in. Distinct from concept-index.ts (a curated semantic index); this is
 // the raw ad-hoc content grep an agent reaches for, made correct-by-construction.
 //
@@ -18,7 +18,7 @@
 // Cross-repo aware: `--repo ../SQLSharp` searches a sibling repo, still skipping
 // THAT repo's references/prior-art (every repo mirrors the same convention).
 //
-//   bun tools/search/grep.ts <substring> [--repo <dir>] [--ext ts,md] [-i] [--files]
+//   bun src/Core.TypeScript/search/grep.ts <substring> [--repo <dir>] [--ext ts,md] [-i] [--files]
 //
 // Options:
 //   --repo <dir>   root to search (default: cwd)
@@ -198,7 +198,7 @@ export function parseArgs(argv: string[]): ParsedArgs | { error: string } {
 
   const needle = positionals.join(" ").trim();
   if (!needle) {
-    return { error: "usage: bun tools/search/grep.ts <substring> [--repo <dir>] [--ext ts,md] [-i] [--files]" };
+    return { error: "usage: bun src/Core.TypeScript/search/grep.ts <substring> [--repo <dir>] [--ext ts,md] [-i] [--files]" };
   }
 
   // Fail loud on a bad search root: a missing/non-directory --repo would otherwise

@@ -8,7 +8,7 @@ here. What *is* tracked here: click-ops toggles that live inside
 GitHub's UI or require API calls to change.
 
 The machine-readable companion is
-[`tools/hygiene/github-settings.expected.json`](../tools/hygiene/github-settings.expected.json).
+[`src/Core.TypeScript/hygiene/github-settings.expected.json`](../tools/hygiene/github-settings.expected.json).
 That JSON file is **authoritative** — if this markdown ever
 disagrees with it, the JSON wins and this file gets updated.
 
@@ -28,9 +28,9 @@ That silent drift is exactly what this system detects.
 ## How this works
 
 1. **Expected state** is recorded in
-   `tools/hygiene/github-settings.expected.json` — normalized
-   output of `tools/hygiene/snapshot-github-settings.ts`.
-2. **Drift detector** is `tools/hygiene/check-github-settings-drift.ts`.
+   `src/Core.TypeScript/hygiene/github-settings.expected.json` — normalized
+   output of `src/Core.TypeScript/hygiene/snapshot-github-settings.ts`.
+2. **Drift detector** is `src/Core.TypeScript/hygiene/check-github-settings-drift.ts`.
    It re-runs the snapshot against the live repo and diffs
    against the expected JSON. Exit 0 on match, 1 on drift.
 3. **Cadence** is enforced by
@@ -239,10 +239,10 @@ Dynamic (GitHub-managed):
 ```bash
 # After making an intentional settings change in GitHub
 # UI or via API, re-snapshot and commit:
-bun tools/hygiene/snapshot-github-settings.ts \
+bun src/Core.TypeScript/hygiene/snapshot-github-settings.ts \
   --repo Lucent-Financial-Group/Zeta \
-  > tools/hygiene/github-settings.expected.json
-git add tools/hygiene/github-settings.expected.json
+  > src/Core.TypeScript/hygiene/github-settings.expected.json
+git add src/Core.TypeScript/hygiene/github-settings.expected.json
 # If the human-readable narrative also needs updating,
 # edit docs/GITHUB-SETTINGS.md to match.
 git commit -m "chore(settings): <what changed + why>"
@@ -334,7 +334,7 @@ Aaron 2026-05-01: *"these are nasty thats why they are legacy."*
 - **Rulesets** can be exported via REST API as JSON, edited, and
   applied via REST API — declarative-as-code shape (even if not in
   a `.github/ruleset.yml` file natively, the JSON in
-  `tools/hygiene/github-settings.expected.json` IS the source of
+  `src/Core.TypeScript/hygiene/github-settings.expected.json` IS the source of
   truth)
 - **Branch protection** has the same REST API surface but predates
   rulesets and lacks granularity (single big object; can't be split
@@ -349,7 +349,7 @@ Aaron 2026-05-01: *"these are nasty thats why they are legacy."*
 
 Envisioned (not yet implemented):
 `tools/hygiene/apply-github-settings.ts` — reads
-`tools/hygiene/github-settings.expected.json` and applies via `gh
+`src/Core.TypeScript/hygiene/github-settings.expected.json` and applies via `gh
 api PUT/POST/DELETE` to the host. Idempotent. Run with `--dry-run`
 to preview, then without to apply. Composes with the existing
 `snapshot-github-settings.ts` (read-only) and
@@ -358,7 +358,7 @@ verb that closes the loop.
 
 After Phase 2 ships, every settings change flows through:
 
-1. Edit `tools/hygiene/github-settings.expected.json`
+1. Edit `src/Core.TypeScript/hygiene/github-settings.expected.json`
 2. Run `apply-github-settings.ts` (verifies + applies)
 3. Drift workflow stays green by construction
 
@@ -368,9 +368,9 @@ on next run.
 
 ## Related
 
-- `tools/hygiene/snapshot-github-settings.ts` — generates the
+- `src/Core.TypeScript/hygiene/snapshot-github-settings.ts` — generates the
   normalized JSON.
-- `tools/hygiene/check-github-settings-drift.ts` — the drift
+- `src/Core.TypeScript/hygiene/check-github-settings-drift.ts` — the drift
   detector.
 - `.github/workflows/github-settings-drift.yml` — cadence
   workflow.

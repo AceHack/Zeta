@@ -32,7 +32,7 @@ search + dependency check). Claim before worktree work with the
 Cursor-tagged sender ID:
 
 ```bash
-bun tools/bus/claim.ts acquire --from riven-cursor --item <B-NNNN>
+bun src/Core.TypeScript/bus/claim.ts acquire --from riven-cursor --item <B-NNNN>
 ```
 
 ## 4. Build

@@ -46,7 +46,7 @@ This citation arrives within hours of 081KSNY2Z0008QG0R002HB4AGT substrate-targe
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` — Kleisli IS canonical instance; Furber-Jacobs operates at categorical-substrate scope
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle = probabilistic-substrate operating per probabilistic-Gelfand-duality shape
 - 081KSNY2Z0008QG0R002HB4AGT (interrupt substrate in monad space) — Furber-Jacobs is mathematical-substrate anchor for Kleisli substrate at framework scope
-- `.claude/skills/category-theory-expert/SKILL.md` — Furber-Jacobs is canonical reference for skill-expert work at Kleisli + Gelfand duality scope
+- `.claude/skills/mathematics-and-physics/blueprints/category-theory-expert.md` — Furber-Jacobs is canonical reference for skill-expert work at Kleisli + Gelfand duality scope
 - 081KRFA460008QG0R0018SN61J (F# fork for AI safety) — F# substrate already provides Kleisli-shaped helpers (src/Core/Tracing.fs Arrow type); Furber-Jacobs anchors WHY this shape generalizes
 - Aurora multi-oracle BFT substrate (081KS3X9Y0008QG0R00218150M) — probabilistic operator-substrate composes with probabilistic-Gelfand-duality at consensus-mechanism scope
 - `references/notes/kleisli-ts-prior-art.md` — sibling notes file for TS-library prior-art at impl-substrate scope; Furber-Jacobs is the math-substrate anchor for the same shape

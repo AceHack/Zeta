@@ -9,13 +9,13 @@
 // validator) as the ferry-7 enforcement-instrument set.
 //
 // Usage:
-//   bun tools/hygiene/audit-agencysignature-main-tip.ts                   # audit HEAD
-//   bun tools/hygiene/audit-agencysignature-main-tip.ts --commit <SHA>    # audit specific
-//   bun tools/hygiene/audit-agencysignature-main-tip.ts --max 10          # last N
-//   bun tools/hygiene/audit-agencysignature-main-tip.ts --since YYYY-MM-DD
-//   bun tools/hygiene/audit-agencysignature-main-tip.ts --branch main
-//   bun tools/hygiene/audit-agencysignature-main-tip.ts --v1-ship-date <DATE>
-//   bun tools/hygiene/audit-agencysignature-main-tip.ts --fail-closed-cutover <DATE>
+//   bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts                   # audit HEAD
+//   bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --commit <SHA>    # audit specific
+//   bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --max 10          # last N
+//   bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --since YYYY-MM-DD
+//   bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --branch main
+//   bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --v1-ship-date <DATE>
+//   bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --fail-closed-cutover <DATE>
 //
 // Exit codes:
 //   0 — no regressions found (LEGACY / CORRECT / *-EXEMPT only)
@@ -632,14 +632,14 @@ function buildCommitList(args: ParsedArgs, targetRev: string): readonly string[]
 function emitHelp(): ExitCode {
   process.stdout.write("audit-agencysignature-main-tip.ts — post-merge AgencySignature auditor.\n");
   process.stdout.write("\nUsage:\n");
-  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts                   # audit HEAD\n");
-  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --commit <SHA>    # audit specific\n");
-  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --max 10          # last N\n");
-  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --since DATE      # since DATE\n");
-  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --branch NAME     # branch tip\n");
-  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --v1-ship-date DATE\n");
-  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --fail-closed-cutover DATE\n");
-  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --require-shipped     # CI: refuse to pass without a v1 anchor\n");
+  process.stdout.write("  bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts                   # audit HEAD\n");
+  process.stdout.write("  bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --commit <SHA>    # audit specific\n");
+  process.stdout.write("  bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --max 10          # last N\n");
+  process.stdout.write("  bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --since DATE      # since DATE\n");
+  process.stdout.write("  bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --branch NAME     # branch tip\n");
+  process.stdout.write("  bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --v1-ship-date DATE\n");
+  process.stdout.write("  bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --fail-closed-cutover DATE\n");
+  process.stdout.write("  bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --require-shipped     # CI: refuse to pass without a v1 anchor\n");
   return 0;
 }
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * tools/crypto/better-git-crypt/memory-encrypt-loop.ts
+ * src/Core.TypeScript/crypto/better-git-crypt/memory-encrypt-loop.ts
  *
  * Self-encrypt a folder of plaintext files into post-quantum `.zc` envelopes — the
  * loop over the file CLI's encrypt step, for the "encrypt a folder of private
@@ -18,12 +18,12 @@
  *
  * RUNBOOK (the key owner runs steps 1-2 locally; an agent commits the .zc in step 3):
  *   1. one-time keygen (the agent never sees the secret):
- *        bun tools/crypto/better-git-crypt/cli/main.ts \
+ *        bun src/Core.TypeScript/crypto/better-git-crypt/cli/main.ts \
  *          --gen-recipient <identity> --out-dir ~/.zeta-keys
  *      → ~/.zeta-keys/<identity>.recipient.json  (public; shareable)
  *        ~/.zeta-keys/<identity>.secret.json     (SECRET — never commit; .zeta-keys/ is gitignored)
  *   2. self-encrypt the folder (this script):
- *        bun tools/crypto/better-git-crypt/memory-encrypt-loop.ts \
+ *        bun src/Core.TypeScript/crypto/better-git-crypt/memory-encrypt-loop.ts \
  *          --keys ~/.zeta-keys/<identity>.secret.json \
  *          --in <in-dir> --out <out-dir>
  *      → one `.zc` per `*.txt` in <in-dir> (keep plaintext in a gitignored dir)
@@ -137,10 +137,10 @@ function flagValue(args: readonly string[], name: string): string | undefined {
 const USAGE = `memory-encrypt-loop — self-encrypt a folder of memories to post-quantum .zc
 
   Preview (no key, no writes — the only mode an agent should run):
-    bun tools/crypto/better-git-crypt/memory-encrypt-loop.ts --dry-run --in <in-dir> --out <out-dir>
+    bun src/Core.TypeScript/crypto/better-git-crypt/memory-encrypt-loop.ts --dry-run --in <in-dir> --out <out-dir>
 
   Real run (key owner only — requires the owner's SECRET bundle as sender):
-    bun tools/crypto/better-git-crypt/memory-encrypt-loop.ts \\
+    bun src/Core.TypeScript/crypto/better-git-crypt/memory-encrypt-loop.ts \\
       --keys ~/.zeta-keys/<identity>.secret.json --in <in-dir> --out <out-dir>
 
   Flags:

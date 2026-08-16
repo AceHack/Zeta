@@ -17,13 +17,13 @@
 // Six remaining DORA columns emit "-" until signals exist.
 //
 // Usage:
-//   bun tools/alignment/audit_skills.ts                   # main..HEAD
-//   bun tools/alignment/audit_skills.ts HEAD~20..HEAD     # explicit range
-//   bun tools/alignment/audit_skills.ts --json
-//   bun tools/alignment/audit_skills.ts --md
-//   bun tools/alignment/audit_skills.ts --out DIR
-//   bun tools/alignment/audit_skills.ts --stale N
-//   bun tools/alignment/audit_skills.ts --gate N
+//   bun src/Core.TypeScript/alignment/audit_skills.ts                   # main..HEAD
+//   bun src/Core.TypeScript/alignment/audit_skills.ts HEAD~20..HEAD     # explicit range
+//   bun src/Core.TypeScript/alignment/audit_skills.ts --json
+//   bun src/Core.TypeScript/alignment/audit_skills.ts --md
+//   bun src/Core.TypeScript/alignment/audit_skills.ts --out DIR
+//   bun src/Core.TypeScript/alignment/audit_skills.ts --stale N
+//   bun src/Core.TypeScript/alignment/audit_skills.ts --gate N
 //
 // Exit codes:
 //   0  Clean run

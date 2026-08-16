@@ -18,9 +18,9 @@
  * not exist at all.
  *
  * Usage:
- *   bun tools/memory/validate-memory-parity.ts
- *   bun tools/memory/validate-memory-parity.ts --json
- *   bun tools/memory/validate-memory-parity.ts --exit-on-loss
+ *   bun src/Core.TypeScript/memory/validate-memory-parity.ts
+ *   bun src/Core.TypeScript/memory/validate-memory-parity.ts --json
+ *   bun src/Core.TypeScript/memory/validate-memory-parity.ts --exit-on-loss
  */
 
 import { readFile } from "node:fs/promises";

@@ -1,4 +1,4 @@
-# tools/peer-call/ — Otto's Claude-Code-side peer callers
+# src/Core.TypeScript/peer-call/ — Otto's Claude-Code-side peer callers
 
 Eight sibling TypeScript wrappers (Bun runtime: grok, gemini, codex, amara, ani, riven, kiro, claude) that let Otto
 (Claude Opus 4.7 running in Claude Code) invoke a peer agent
@@ -9,7 +9,7 @@ peer knows the call posture.
 
 Originally authored as bash `.sh` scripts; ported to TypeScript
 2026-05-06 per CLAUDE.md Rule 0 / Rule -1 (NO-MORE-BASH; TS IS
-cross-platform DST). Invocation form is `bun tools/peer-call/<name>.ts`.
+cross-platform DST). Invocation form is `bun src/Core.TypeScript/peer-call/<name>.ts`.
 
 ## Scripts at a glance
 
@@ -138,7 +138,7 @@ agent imposes.
 ### Critique pass on a draft (Grok)
 
 ```bash
-bun tools/peer-call/grok.ts \
+bun src/Core.TypeScript/peer-call/grok.ts \
   --file docs/research/some-draft.md \
   "Critique the framing in section 2 — does the claim follow from the evidence cited, or is there a gap?"
 ```
@@ -146,16 +146,16 @@ bun tools/peer-call/grok.ts \
 ### Proposal exploration (Gemini)
 
 ```bash
-bun tools/peer-call/gemini.ts \
+bun src/Core.TypeScript/peer-call/gemini.ts \
   "We're choosing between strategy A (per-file 3-way merge with subagent dispatch) and strategy B (pure concatenation). Propose a 3rd option I haven't considered, with one paragraph each on tradeoffs."
 ```
 
 ### Code-grounded second opinion (Codex / Vera)
 
 ```bash
-bun tools/peer-call/codex.ts \
+bun src/Core.TypeScript/peer-call/codex.ts \
   --review \
-  --context-cmd "git diff HEAD~3..HEAD -- tools/peer-call/" \
+  --context-cmd "git diff HEAD~3..HEAD -- src/Core.TypeScript/peer-call/" \
   "Review the recent peer-call diff for correctness. Flag anything that breaks portability across the install-graph targets (macOS / Ubuntu / Windows-via-Bun)."
 ```
 

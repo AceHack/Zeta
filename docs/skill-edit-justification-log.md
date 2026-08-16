@@ -20,8 +20,8 @@ Newest-first per Zeta convention (`AGENTS.md §2`).
 
 ### 2026-04-20 — `round-management/SKILL.md` + `holistic-view/SKILL.md` — GOVERNANCE.md §11 citation refresh (debt-intentionality rewrite)
 
-- **Skill:** `.claude/skills/round-management/SKILL.md`,
-  `.claude/skills/holistic-view/SKILL.md`
+- **Skill:** `.claude/skills/workflows/blueprints/round-management.md`,
+  `.claude/skills/governance/blueprints/holistic-view.md`
 - **Round:** 43
 - **Edit type:** BP-NN citation refresh (mechanical) — the
   cited rule GOVERNANCE.md §11 was rewritten this round
@@ -49,11 +49,11 @@ Newest-first per Zeta convention (`AGENTS.md §2`).
   cross-reference, which is the only thing that had to
   change.
 - **Files touched:**
-  - `.claude/skills/round-management/SKILL.md` — one
+  - `.claude/skills/workflows/blueprints/round-management.md` — one
     line edit (§"What this skill does NOT do" bullet
     3): "Review gate per §11" → "Round-close synthesis
     per §11 (debt-intentionality invariant)".
-  - `.claude/skills/holistic-view/SKILL.md` — two
+  - `.claude/skills/governance/blueprints/holistic-view.md` — two
     edits: frontmatter `description` now names
     "synthesises at round-close per §11 (debt-
     intentionality invariant)" instead of "owns
@@ -73,7 +73,7 @@ Newest-first per Zeta convention (`AGENTS.md §2`).
 
 ### 2026-04-20 — `skill-tune-up/SKILL.md` — BP-03 self-breach cleanup via content extraction
 
-- **Skill:** `.claude/skills/skill-tune-up/SKILL.md`
+- **Skill:** `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md`
 - **Round:** 42/43 boundary
 - **Edit type:** Content extraction (mechanical)
 - **Line delta:** 436 → 282 (54 lines under the 300-line
@@ -93,7 +93,7 @@ Newest-first per Zeta convention (`AGENTS.md §2`).
   pre-extract SKILL.md. Ranking behaviour is unchanged;
   only the progressive-disclosure shape is fixed.
 - **Files touched:**
-  - `.claude/skills/skill-tune-up/SKILL.md` — replace
+  - `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — replace
     inline §"The eval-loop hand-off protocol" (~130
     lines) with a 20-line pointer; replace inline
     template blocks (~55 lines) with a 6-line pointer.

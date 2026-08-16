@@ -5,7 +5,7 @@
 // in CLAUDE.md ("no more .sh files except install-graph; TS IS cross-platform
 // DST"). Same first-run output shape (markdown sections per axis).
 //
-// Sibling to tools/hygiene/audit-lost-files.ts. Where the lost-files audit
+// Sibling to src/Core.TypeScript/hygiene/audit-lost-files.ts. Where the lost-files audit
 // answers "what artifacts might be drifting out of reach?", this audit
 // answers "what trajectory axes is the factory currently running on, and
 // is each one healthy?"
@@ -29,7 +29,7 @@
 // Bun.spawn with explicit argv arrays (no shell expansion).
 //
 // Usage:
-//   bun tools/hygiene/audit-trajectories.ts
+//   bun src/Core.TypeScript/hygiene/audit-trajectories.ts
 //
 // Exit codes:
 //   0 — survey ran (findings reported in body)
@@ -319,7 +319,7 @@ async function axisHygieneTooling(): Promise<void> {
   console.log(
     "## 4. Hygiene tooling cadence (src/Core.TypeScript/hygiene/audit-*.ts)",
   );
-  // The hygiene tools migrated from tools/hygiene/ to src/Core.TypeScript/hygiene/
+  // The hygiene tools migrated from src/Core.TypeScript/hygiene/ to src/Core.TypeScript/hygiene/
   // (the "no more .sh files, TS IS cross-platform DST" port); the old dir is now
   // empty, so scanning it silently reported Count: 0. Scan the live location.
   const dir = join(REPO_ROOT, "src", "Core.TypeScript", "hygiene");
@@ -435,7 +435,7 @@ async function main(): Promise<number> {
   console.log("");
   console.log(`Repo: ${REPO_ROOT}`);
   console.log(
-    "Sibling: tools/hygiene/audit-lost-files.ts (lost-files axis)",
+    "Sibling: src/Core.TypeScript/hygiene/audit-lost-files.ts (lost-files axis)",
   );
   console.log(
     "Discipline: orthogonal-axes (memory/feedback_orthogonal_axes_factory_hygiene.md)",
@@ -454,7 +454,7 @@ async function main(): Promise<number> {
 
   console.log("## Summary");
   console.log(
-    "Audit complete. Sibling: tools/hygiene/audit-lost-files.ts.",
+    "Audit complete. Sibling: src/Core.TypeScript/hygiene/audit-lost-files.ts.",
   );
   console.log(
     "Triage: per-axis. Aging razor-cadence issues = mechanization-firing-but-pass-not-run.",

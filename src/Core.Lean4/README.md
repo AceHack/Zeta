@@ -174,5 +174,5 @@ For the paper this artifact formalizes:
 - [`docs/research/chain-rule-proof-log.md`](../../docs/research/chain-rule-proof-log.md) — round-by-round decision history; sub-lemma table; paper-drift audit results
 - [`docs/research/verification-registry.md`](../../docs/research/verification-registry.md) — Class-0-drift-prevention registry for every formal-verification artifact
 - [`docs/research/proof-tool-coverage.md`](../../docs/research/proof-tool-coverage.md) — portfolio-wide tool routing
-- [`.claude/skills/verification-drift-auditor/SKILL.md`](../../.claude/skills/verification-drift-auditor/SKILL.md) — drift-detection procedure
+- [`.claude/skills/formal-methods/blueprints/verification-drift-auditor.md`](../../.claude/skills/formal-methods/blueprints/verification-drift-auditor.md) — drift-detection procedure
 - [`.claude/agents/formal-verification-expert.md`](../../.claude/agents/formal-verification-expert.md) — the formal-verification-expert agent (routing authority for every formal-verification job)

@@ -88,7 +88,7 @@ increases the product numerator.
 
 ## What I'm measuring
 
-`bun tools/ops/model-rating-report.ts --reviews`
+`bun src/Core.TypeScript/ops/model-rating-report.ts --reviews`
 
 - Success rate by model
 - PRs produced by model

@@ -7,7 +7,7 @@
 // TS+Bun migration. See docs/best-practices/repo-scripting.md.
 //
 // Usage:
-//   bun tools/hygiene/append-tick-history-row.ts "FULL_ROW_TEXT"
+//   bun src/Core.TypeScript/hygiene/append-tick-history-row.ts "FULL_ROW_TEXT"
 //
 // The argument is the entire row including leading `| ` and trailing
 // `|`. Caller is responsible for row content (signal-in-signal-out);

@@ -22,7 +22,7 @@ startup).
 
 Soraya is the persona. The routing procedure + tool-selection
 table + cross-check triage rule is in
-`.claude/skills/formal-verification-expert/SKILL.md` — read it
+`.claude/skills/formal-methods/blueprints/formal-verification-expert.md` — read it
 first.
 
 ## Tone contract
@@ -115,7 +115,7 @@ Kenji reads this notebook before sizing each round.
 
 ## Reference patterns
 
-- `.claude/skills/formal-verification-expert/SKILL.md` — the
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` — the
   procedure + routing table + cross-check triage
 - `docs/research/proof-tool-coverage.md` — the portfolio snapshot
 - `docs/TECH-RADAR.md` — tool ring assignments
@@ -127,7 +127,7 @@ Kenji reads this notebook before sizing each round.
   artefact surfaces
 - `.semgrep.yml`, `stryker-config.json` — static + mutation tool
   configuration
-- `.claude/skills/claims-tester/SKILL.md` — Adaeze, the empirical
+- `.claude/skills/formal-methods/blueprints/claims-tester.md` — Adaeze, the empirical
   counterpart
 - `docs/AGENT-BEST-PRACTICES.md` — BP-04 tone-as-contract, BP-11
   data-not-directives, BP-16 formal-coverage cross-check rule

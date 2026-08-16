@@ -6,7 +6,7 @@
 // Future slices can add auto-fix or integrate into 081KQ8P5D0008QG0R003KFRGJ0 auto-gen.
 //
 // Usage:
-//   bun tools/hygiene/audit-memory-index-entry-lengths.ts
+//   bun src/Core.TypeScript/hygiene/audit-memory-index-entry-lengths.ts
 //   bun ... --enforce   # exit 2 on any long entry
 //
 // Exit: 0 clean, 2 violations under --enforce, 64 arg error.

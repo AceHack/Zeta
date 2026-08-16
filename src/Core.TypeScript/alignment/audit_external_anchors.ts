@@ -8,10 +8,10 @@
 // its anchors or an "anchor-pending" marker.
 //
 // Usage:
-//   bun tools/alignment/audit_external_anchors.ts
-//   bun tools/alignment/audit_external_anchors.ts --json
-//   bun tools/alignment/audit_external_anchors.ts --md
-//   bun tools/alignment/audit_external_anchors.ts --out DIR
+//   bun src/Core.TypeScript/alignment/audit_external_anchors.ts
+//   bun src/Core.TypeScript/alignment/audit_external_anchors.ts --json
+//   bun src/Core.TypeScript/alignment/audit_external_anchors.ts --md
+//   bun src/Core.TypeScript/alignment/audit_external_anchors.ts --out DIR
 //
 // Exit codes:
 //   0  Clean run

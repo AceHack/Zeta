@@ -27,7 +27,7 @@
 // SYSTEM_ENV at the CLI boundary.
 //
 // Usage:
-//   bun tools/backlog/complete-workitem.ts <zetaid|path> [--dir workitems] [--dry-run]
+//   bun src/Core.TypeScript/backlog/complete-workitem.ts <zetaid|path> [--dir workitems] [--dry-run]
 //
 // Exit codes: 0 ok · 2 usage / not-found error.
 

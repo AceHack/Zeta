@@ -6,13 +6,13 @@
 // See docs/best-practices/repo-scripting.md.
 //
 // Usage:
-//   bun tools/peer-call/grok.ts "prompt text"
-//   bun tools/peer-call/grok.ts --thinking "prompt text"
-//   bun tools/peer-call/grok.ts --file path/to/file.fs "prompt text"
-//   bun tools/peer-call/grok.ts --context-cmd "git diff HEAD~3..HEAD" "prompt text"
-//   bun tools/peer-call/grok.ts --json "prompt text"
-//   bun tools/peer-call/grok.ts --allow-empty "prompt"  # bypass firewall
-//   bun tools/peer-call/grok.ts --output-file PATH "prompt text"
+//   bun src/Core.TypeScript/peer-call/grok.ts "prompt text"
+//   bun src/Core.TypeScript/peer-call/grok.ts --thinking "prompt text"
+//   bun src/Core.TypeScript/peer-call/grok.ts --file path/to/file.fs "prompt text"
+//   bun src/Core.TypeScript/peer-call/grok.ts --context-cmd "git diff HEAD~3..HEAD" "prompt text"
+//   bun src/Core.TypeScript/peer-call/grok.ts --json "prompt text"
+//   bun src/Core.TypeScript/peer-call/grok.ts --allow-empty "prompt"  # bypass firewall
+//   bun src/Core.TypeScript/peer-call/grok.ts --output-file PATH "prompt text"
 //
 // Routing: wraps `cursor-agent --print --model grok-build-0.1` (the
 // generic-grok default for this git-based code env; both --thinking and
@@ -187,15 +187,15 @@ function emitHelp(): void {
       `reviewer via cursor-agent.\n` +
       `\n` +
       `Usage:\n` +
-      `  bun tools/peer-call/grok.ts "prompt text"\n` +
-      `  bun tools/peer-call/grok.ts --thinking "prompt text"\n` +
-      `  bun tools/peer-call/grok.ts --fast "prompt text"\n` +
-      `  bun tools/peer-call/grok.ts --file PATH "prompt text"\n` +
-      `  bun tools/peer-call/grok.ts --context-cmd "CMD" "prompt text"\n` +
-      `  bun tools/peer-call/grok.ts --json "prompt text"\n` +
-      `  bun tools/peer-call/grok.ts --stream "prompt text"\n` +
-      `  bun tools/peer-call/grok.ts --allow-empty "prompt"  # bypass firewall\n` +
-      `  bun tools/peer-call/grok.ts --output-file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok.ts "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok.ts --thinking "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok.ts --fast "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok.ts --file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok.ts --context-cmd "CMD" "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok.ts --json "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok.ts --stream "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok.ts --allow-empty "prompt"  # bypass firewall\n` +
+      `  bun src/Core.TypeScript/peer-call/grok.ts --output-file PATH "prompt text"\n` +
       `\n` +
       `Routing: wraps cursor-agent --print --model grok-build-0.1\n` +
       `(generic-grok default; both --thinking and --fast use this id).\n` +
@@ -327,7 +327,7 @@ export function main(argv: readonly string[]): number {
   }
   if (parsed.prompt.length === 0) {
     process.stderr.write("error: prompt required\n");
-    process.stderr.write(`see: bun tools/peer-call/grok.ts --help\n`);
+    process.stderr.write(`see: bun src/Core.TypeScript/peer-call/grok.ts --help\n`);
     return 1;
   }
 

@@ -7,11 +7,11 @@
 // (no more .sh files except install-graph; TS IS cross-platform DST).
 //
 // Usage:
-//   bun tools/hygiene/check-github-settings-drift.ts [--repo OWNER/NAME] [--expected PATH]
+//   bun src/Core.TypeScript/hygiene/check-github-settings-drift.ts [--repo OWNER/NAME] [--expected PATH]
 //
 // Defaults:
 //   --repo        $GH_REPO, else `gh repo view --json nameWithOwner`
-//   --expected    tools/hygiene/github-settings.expected.json (next to this script)
+//   --expected    src/Core.TypeScript/hygiene/github-settings.expected.json (next to this script)
 //
 // Exit codes:
 //   0   — no drift
@@ -220,7 +220,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       process.stderr.write("\n");
       process.stderr.write("Resolve options:\n");
       process.stderr.write("  1. Intentional change -> update expected snapshot:\n");
-      process.stderr.write(`     bun tools/hygiene/snapshot-github-settings.ts --repo ${repo} > ${expected}\n`);
+      process.stderr.write(`     bun src/Core.TypeScript/hygiene/snapshot-github-settings.ts --repo ${repo} > ${expected}\n`);
       process.stderr.write("     Then commit the diff with a message explaining the policy change.\n");
       process.stderr.write("  2. Unintentional change -> revert the setting in GitHub UI/API\n");
       process.stderr.write("     and re-run this script to confirm.\n");

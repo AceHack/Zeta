@@ -9,10 +9,10 @@
 //   4. Redundant depends_on/composes_with edges
 //
 // Usage:
-//   bun tools/backlog/lint-frontmatter.ts                # lint all backlog rows
-//   bun tools/backlog/lint-frontmatter.ts --file <path>  # lint specific file
-//   bun tools/backlog/lint-frontmatter.ts --strict       # exit 1 on findings
-//   bun tools/backlog/lint-frontmatter.ts --check 1,3    # only run checks 1 and 3
+//   bun src/Core.TypeScript/backlog/lint-frontmatter.ts                # lint all backlog rows
+//   bun src/Core.TypeScript/backlog/lint-frontmatter.ts --file <path>  # lint specific file
+//   bun src/Core.TypeScript/backlog/lint-frontmatter.ts --strict       # exit 1 on findings
+//   bun src/Core.TypeScript/backlog/lint-frontmatter.ts --check 1,3    # only run checks 1 and 3
 //
 // Closes 081KRW63S0008QG0R000488SY1 (mechanizes batch-7 recurring reviewer findings).
 
@@ -53,7 +53,7 @@ interface Frontmatter {
 // spurious findings on legitimate factory variation; if a typo'd key is genuinely
 // non-schema, it'll be a singleton occurrence that stands out in review.
 const SCHEMA_KEYS = new Set([
-    // Canonical schema (tools/backlog/README.md)
+    // Canonical schema (src/Core.TypeScript/backlog/README.md)
     "id", "priority", "status", "title",
     "zetaid", // 081KSXN940008QG0R002FWR9B2: the 128-bit ZetaId alias backfilled into legacy rows (B-NNNN stays the slug/id)
     "tier", "effort", "ask", "type",

@@ -5,7 +5,7 @@
  * Layer 1: raw structured JSON
  * Layer 2: labeled interpretation
  *
- * Usage: bun tools/authorization/check-authorization.ts [rootPath]
+ * Usage: bun src/Core.TypeScript/authorization/check-authorization.ts [rootPath]
  * Exit code 0 always — this check surfaces information, never gates.
  */
 

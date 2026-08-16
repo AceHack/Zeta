@@ -24,7 +24,7 @@ name: tlaps-proof
 #   - src/Core.TypeScript/formal-verification/run-tlaps.ts (the runner / catalogue)
 #   - src/Core.TypeScript/ace/setup-realizers/from-opam-git.ts (the cross-OS opam source-build)
 #   - docs/research/verification-registry.md (rung-3 registry row)
-#   - .claude/skills/verification-drift-auditor/SKILL.md (every fire is
+#   - .claude/skills/formal-methods/blueprints/verification-drift-auditor.md (every fire is
 #     implicit drift-check input)
 #
 # Safe-pattern compliance (per FACTORY-HYGIENE row #43):

@@ -24,7 +24,7 @@
 //
 // Usage:
 //   gh pr view <number> --json body --jq '.body' \
-//     | bun tools/hygiene/validate-agencysignature-pr-body.ts \
+//     | bun src/Core.TypeScript/hygiene/validate-agencysignature-pr-body.ts \
 //         [--pr-created-at ISO] [--grandfather-cutover ISO] [--author-identity ID]
 //
 // Exit codes:
@@ -1043,7 +1043,7 @@ export function main(argv: readonly string[] = [], body?: string): ExitCode {
   if (input === "") {
     process.stderr.write("error: no input on stdin\n");
     process.stderr.write(
-      "usage: gh pr view N --json body --jq '.body' | bun tools/hygiene/validate-agencysignature-pr-body.ts\n",
+      "usage: gh pr view N --json body --jq '.body' | bun src/Core.TypeScript/hygiene/validate-agencysignature-pr-body.ts\n",
     );
     return 2;
   }

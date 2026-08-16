@@ -41,7 +41,7 @@ grep -l -i "<phrase the operator remembers>" \
 If the operator did not name a phrase, scan the whole project dir:
 
 ```bash
-bun tools/claude-code-recovery/repair-jsonl-strip-images.ts --scan
+bun src/Core.TypeScript/claude-code-recovery/repair-jsonl-strip-images.ts --scan
 ```
 
 The `--scan` output lists every session with at least one JSONL line
@@ -53,7 +53,7 @@ whose title matches their work).
 ### Step 2 — Dry-run on the target session
 
 ```bash
-bun tools/claude-code-recovery/repair-jsonl-strip-images.ts \
+bun src/Core.TypeScript/claude-code-recovery/repair-jsonl-strip-images.ts \
   --session <uuid>
 ```
 
@@ -92,7 +92,7 @@ modification + needs operator-level authorization beyond chat agreement.
 Hand the exact command to the operator:
 
 ```bash
-bun tools/claude-code-recovery/repair-jsonl-strip-images.ts \
+bun src/Core.TypeScript/claude-code-recovery/repair-jsonl-strip-images.ts \
   --session <uuid> \
   --apply
 ```
@@ -149,9 +149,9 @@ the human-audit-attribution rule.
 
 ## Composes with
 
-- `tools/claude-code-recovery/repair-jsonl-strip-images.ts` — the
+- `src/Core.TypeScript/claude-code-recovery/repair-jsonl-strip-images.ts` — the
   script this skill drives
-- `tools/claude-code-recovery/README.md` — full tool documentation
+- `src/Core.TypeScript/claude-code-recovery/README.md` — full tool documentation
 - `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`
   — the standing operator-self-constraint that mandates the
   operator-runs split for `--apply`

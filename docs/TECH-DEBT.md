@@ -326,7 +326,7 @@ signal; ranker recommends SPLIT or SHRINK.
 
 **Example from this repo:**
 
-- `.claude/skills/skill-creator/SKILL.md` at ~180 lines
+- `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` at ~180 lines
   (still under cap but large); `skill-tune-up` itself
   hit 436 lines in round 42 → content-extraction to
   `docs/references/skill-tune-up-eval-loop.md`; open entry in

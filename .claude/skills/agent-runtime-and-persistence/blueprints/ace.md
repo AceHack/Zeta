@@ -9,13 +9,13 @@ status: active
 
 # Ace — DLC package manager (skill surface)
 
-Ace is the repo's package manager (`tools/ace/ace.ts`). This skill is the agent
+Ace is the repo's package manager (`src/Core.TypeScript/ace/ace.ts`). This skill is the agent
 surface; the human surface is the `ace` command (exposed by `install.sh` via
 `bun link`).
 
 ## Runtime precondition (load-bearing)
 
-Ace is TS run on **bun** in-repo: `bun tools/ace/ace.ts <verb>`. The floor is a JS
+Ace is TS run on **bun** in-repo: `bun src/Core.TypeScript/ace/ace.ts <verb>`. The floor is a JS
 runtime — **Node ≥ 22.5 or bun**. Harnesses with a JS runtime (Claude Code, Cursor,
 Gemini CLI) run it directly. A pure-Rust harness with **no** JS runtime (e.g. OpenAI
 Codex CLI) must first install bun/Node (run the repo `install.sh`) — Ace cannot run
@@ -27,17 +27,17 @@ Publisher verbs: `keygen`, `sign`. Consumer verbs: `install`, `verify`, `trust a
 
 | Verb | Form | What |
 |---|---|---|
-| `keygen` | `bun tools/ace/ace.ts keygen [--out <prefix>]` | Generate an Ed25519 keypair (writes `<prefix>.key` 0600 + `<prefix>.pub`) |
-| `sign` | `bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]` | Sign a package manifest with an Ed25519 private key |
-| `list` | `bun tools/ace/ace.ts list [--store <path>] [--json]` | List installed packages from `~/.ace/store` |
-| `install` | `bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen\|--locked] [--lockfile <path>]` | Resolve the transitive dependency graph, verify integrity + authenticity of every node, install leaves-first (atomic) |
-| `update` | `bun tools/ace/ace.ts update <url-or-path> [--lockfile <path>] [--allow-no-signature]` | Re-solve the graph and rewrite the lockfile; installs nothing (lock-only) |
-| `verify` | `bun tools/ace/ace.ts verify <hash>` | Confirm an installed package is present |
-| `trust add` | `bun tools/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]` | Add an Ed25519 public key to the user trust store (`~/.ace/trusted-keys.json`) |
-| `trust list` | `bun tools/ace/ace.ts trust list` | List all trusted keys (bundled + user) |
-| `registry add` | `bun tools/ace/ace.ts registry add <name> <version> <url> [--hash <package_hash>]` | Register a package version in the user registry (`~/.ace/registry.json`); fetches + computes package_hash unless `--hash` given |
-| `registry list` | `bun tools/ace/ace.ts registry list` | List registry entries (bundled + user) |
-| `help` | `bun tools/ace/ace.ts help` | Usage |
+| `keygen` | `bun src/Core.TypeScript/ace/ace.ts keygen [--out <prefix>]` | Generate an Ed25519 keypair (writes `<prefix>.key` 0600 + `<prefix>.pub`) |
+| `sign` | `bun src/Core.TypeScript/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]` | Sign a package manifest with an Ed25519 private key |
+| `list` | `bun src/Core.TypeScript/ace/ace.ts list [--store <path>] [--json]` | List installed packages from `~/.ace/store` |
+| `install` | `bun src/Core.TypeScript/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen\|--locked] [--lockfile <path>]` | Resolve the transitive dependency graph, verify integrity + authenticity of every node, install leaves-first (atomic) |
+| `update` | `bun src/Core.TypeScript/ace/ace.ts update <url-or-path> [--lockfile <path>] [--allow-no-signature]` | Re-solve the graph and rewrite the lockfile; installs nothing (lock-only) |
+| `verify` | `bun src/Core.TypeScript/ace/ace.ts verify <hash>` | Confirm an installed package is present |
+| `trust add` | `bun src/Core.TypeScript/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]` | Add an Ed25519 public key to the user trust store (`~/.ace/trusted-keys.json`) |
+| `trust list` | `bun src/Core.TypeScript/ace/ace.ts trust list` | List all trusted keys (bundled + user) |
+| `registry add` | `bun src/Core.TypeScript/ace/ace.ts registry add <name> <version> <url> [--hash <package_hash>]` | Register a package version in the user registry (`~/.ace/registry.json`); fetches + computes package_hash unless `--hash` given |
+| `registry list` | `bun src/Core.TypeScript/ace/ace.ts registry list` | List registry entries (bundled + user) |
+| `help` | `bun src/Core.TypeScript/ace/ace.ts help` | Usage |
 
 `install` verifies **integrity** (content hash) AND **authenticity** (Ed25519 signature
 against the trust store). Unsigned packages need `--allow-no-signature`; a present-but-untrusted
@@ -54,7 +54,7 @@ uniqueness BEFORE extracting anything — any failure installs nothing. Refusal 
 `--allow-no-signature` applies graph-wide
 (permits only genuinely-unsigned nodes; a bad/untrusted signature on any node always refuses).
 
-A dependency edge is one of two kinds: `inline` (`{kind:"inline", name, version, url, package_hash}` — self-pinned) or `registry` (`{kind:"registry", name, version}` — resolved via the registry). Registry deps are resolved against the bundled (`tools/ace/registry.json`) ∪ user (`~/.ace/registry.json`) registry. After lookup, a registry dep runs the identical verify path (hash + pin + identity + signature) as an inline dep.
+A dependency edge is one of two kinds: `inline` (`{kind:"inline", name, version, url, package_hash}` — self-pinned) or `registry` (`{kind:"registry", name, version}` — resolved via the registry). Registry deps are resolved against the bundled (`src/Core.TypeScript/ace/registry.json`) ∪ user (`~/.ace/registry.json`) registry. After lookup, a registry dep runs the identical verify path (hash + pin + identity + signature) as an inline dep.
 
 ## Semver ranges (slice 5.2)
 
@@ -126,7 +126,7 @@ signature) and an `ace update` write failure are hard exits (code `1`).
 ## Invocation
 
 ```bash
-bun tools/ace/ace.ts list --json
+bun src/Core.TypeScript/ace/ace.ts list --json
 ```
 
 Exit codes: `0` ok · `64` usage error · `65` invalid package JSON · `1` refused (bad signature / untrusted key / integrity fail / unsatisfiable range).
@@ -209,7 +209,7 @@ When multiple registries supply an entry for the same package, the resolution
 order is:
 
 1. **User registry** (`~/.ace/registry.json`) — always wins.
-2. **Bundled registry** (`tools/ace/registry.json`) — wins over any remote.
+2. **Bundled registry** (`src/Core.TypeScript/ace/registry.json`) — wins over any remote.
 3. **Remote registries** — resolved in the order listed in
    `~/.ace/registries.json` (first-listed remote wins among remotes).
 

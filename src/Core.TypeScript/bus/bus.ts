@@ -5,10 +5,10 @@
 // All subcommands accept --json for programmatic consumption.
 //
 // Usage:
-//   bun tools/bus/bus.ts publish --from otto --to "*" --topic heartbeat --payload '{"status":"alive"}'
-//   bun tools/bus/bus.ts list [--topic heartbeat] [--to otto] [--json]
-//   bun tools/bus/bus.ts read <id> [--json]
-//   bun tools/bus/bus.ts clean [--expired] [--from otto]
+//   bun src/Core.TypeScript/bus/bus.ts publish --from otto --to "*" --topic heartbeat --payload '{"status":"alive"}'
+//   bun src/Core.TypeScript/bus/bus.ts list [--topic heartbeat] [--to otto] [--json]
+//   bun src/Core.TypeScript/bus/bus.ts read <id> [--json]
+//   bun src/Core.TypeScript/bus/bus.ts clean [--expired] [--from otto]
 
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";

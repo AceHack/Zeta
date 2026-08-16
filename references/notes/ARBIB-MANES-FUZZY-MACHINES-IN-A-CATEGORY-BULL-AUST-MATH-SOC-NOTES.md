@@ -75,7 +75,7 @@ The framework's broader trajectory: workflow-engine + interrupt-substrate + mult
 - Aurora multi-oracle BFT immune-system math (`docs/research/aurora-immune-math-standardization-2026-04-26.md`) — applied fuzzy-machine substrate at consensus scope
 - `references/notes/furber-jacobs-2015-probabilistic-gelfand-duality-kleisli-to-c-star-algebras.md` — sibling research note; Furber-Jacobs handles smooth-continuous side; Arbib-Manes handles fuzzy-discrete side; both compose at category-theory substrate
 - `references/notes/kleisli-ts-prior-art.md` — TS-impl scope sibling
-- `.claude/skills/category-theory-expert/SKILL.md` — canonical reference for fuzzy-machine + Kleisli + Eilenberg-Moore substrate
+- `.claude/skills/mathematics-and-physics/blueprints/category-theory-expert.md` — canonical reference for fuzzy-machine + Kleisli + Eilenberg-Moore substrate
 - `CLAUDE.md` Infer.NET BP/EP framing — long-term substrate target this paper anchors mathematically
 
 ## Three formal-math anchors stack today (2026-05-28 substrate-recognition)

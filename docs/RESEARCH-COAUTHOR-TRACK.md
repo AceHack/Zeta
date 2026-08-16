@@ -263,7 +263,7 @@ Proposed pass order:
 - `memory/project_document_audience_categories.md` —
   audience #7 (research-readers) is where this track
   lives.
-- `.claude/skills/paper-peer-reviewer/SKILL.md` — the
+- `.claude/skills/research/blueprints/paper-peer-reviewer.md` — the
   inbound peer-review skill (reviewing others' work).
 - `docs/research/` — Zeta's research reports; the
   raw material any future paper draws from.

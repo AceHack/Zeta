@@ -91,7 +91,7 @@ Do not use it for ordinary priority grooming; use
    BACKLOG_WRITE_FORCE=1 bash tools/backlog/generate-index.sh
    bash tools/backlog/generate-index.sh --check
    git diff origin/main --check
-   bun tools/hygiene/audit-backlog-items.ts
+   bun src/Core.TypeScript/hygiene/audit-backlog-items.ts
    ```
 
    A good decomposition has zero broken `depends_on` and

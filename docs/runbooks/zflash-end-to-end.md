@@ -312,7 +312,7 @@ iter-4.2: pubkey written; USB ejected. Safe to remove.
 - **081KSE6WT0008QG0R003WZAQKV** — Touch ID + PAM (CP-2 fingerprint)
 - **081KSNY2Z0008QG0R002CR38D8** — operator-personal-axis USB-first priority (CP-6 demo is the operational realization)
 - **081KSNY2Z0008QG0R002QA720J** — three-lanes-concurrent operating discipline (this runbook advances zflash lane)
-- `.claude/skills/flash-cluster-iso/SKILL.md` — Path C `--agent` flag invocation pattern
+- `.claude/skills/agent-runtime-and-persistence/blueprints/flash-cluster-iso.md` — Path C `--agent` flag invocation pattern
 - `docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md` — full per-row audit + critical path
 
 ## Updates

@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// tools/ci/audit-installer-substrate.ts
+// src/Core.TypeScript/ci/audit-installer-substrate.ts
 //
 // Source-level audit of the AI-cluster installer substrate. Runs in
 // CI before the ISO is uploaded as a workflow artifact, and locally
@@ -49,7 +49,7 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 // Repo root is THREE levels up from src/Core.TypeScript/ci/ (was ../.. when
-// this lived at tools/ci/; the #8048-era relocation added a directory level).
+// this lived at src/Core.TypeScript/ci/; the #8048-era relocation added a directory level).
 const ROOT = resolve(import.meta.dir, "../../..");
 
 interface FileAssertion {
@@ -437,7 +437,7 @@ function main(): number {
   }
   process.stderr.write("\n");
   process.stderr.write(
-    `  To investigate locally: bun tools/ci/audit-installer-substrate.ts\n` +
+    `  To investigate locally: bun src/Core.TypeScript/ci/audit-installer-substrate.ts\n` +
       `  To add a new iter-N module: add its path to REQUIRED_FILES + (if applicable)\n` +
       `  add its sentinels to REQUIRED_SENTINELS in this file.\n` +
       `  To add a new cross-file consistency assertion: add to CROSS_FILE_ASSERTIONS.\n`,

@@ -124,7 +124,7 @@ export interface WorldviewSnapshot {
 function runGhOrExit(args: string[], context: string): string {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh is a
   // standard CI/dev dependency invoked by name; convention used across
-  // tools/github/poll-pr-gate.ts, tools/peer-call/, tools/audit-packages.ts.
+  // tools/github/poll-pr-gate.ts, src/Core.TypeScript/peer-call/, tools/audit-packages.ts.
   const result = spawnSync("gh", args, {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,

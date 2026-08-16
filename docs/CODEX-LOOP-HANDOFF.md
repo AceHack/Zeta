@@ -242,7 +242,7 @@ goldfish-ontology failure mode.
 
 When work decomposes cleanly into doc-side AND code-side
 that share no files, dispatch as two parallel lanes per
-the canonical contract in `tools/lanes/README.md` (the
+the canonical contract in `src/Core.TypeScript/lanes/README.md` (the
 **authoritative** source for lane allowlists; this doc
 provides a high-level summary, not a duplicate
 specification).
@@ -261,8 +261,8 @@ Summary of the lane split:
 Exact paths and edge-cases (e.g., `tools/*.md`
 co-located docs being code-lane property by the
 disjoint-file-trees contract) live in
-`tools/lanes/README.md` and the per-lane prompt
-templates under `tools/lanes/prompts/`. Read the
+`src/Core.TypeScript/lanes/README.md` and the per-lane prompt
+templates under `src/Core.TypeScript/lanes/prompts/`. Read the
 canonical contract before dispatching; treat any
 divergence between this summary and the canonical as
 an error in this doc, not in the contract.
@@ -418,7 +418,7 @@ GPT-5.5's actual overnight behaviour.
   — search-first authority.
 - `tools/peer-call/codex.sh` — existing Codex peer-review
   wrapper.
-- `tools/lanes/README.md` — rung-2 doc/code lane
+- `src/Core.TypeScript/lanes/README.md` — rung-2 doc/code lane
   discipline.
 - `tools/github/poll-pr-gate.ts`,
   `tools/github/poll-pr-gate-batch.ts` —

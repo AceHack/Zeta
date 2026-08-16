@@ -13,7 +13,7 @@ downstream `my-app.database.url` without manual values wiring.
 
 ```bash
 OUT=/tmp/b0821-my-app-postgres
-bun tools/cluster/deps-to-engine-config.ts \
+bun src/Core.TypeScript/cluster/deps-to-engine-config.ts \
   --graph examples/helm-dependency-graph/my-app-postgres/zeta-deps.yaml \
   --charts-dir examples/helm-dependency-graph/charts \
   --out-dir "$OUT" \

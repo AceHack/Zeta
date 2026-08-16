@@ -15,9 +15,9 @@
 // surveys their cross-references across the working tree.
 //
 // Usage:
-//   bun tools/alignment/detect-clause-drift.ts            # all clauses
-//   bun tools/alignment/detect-clause-drift.ts HC-1       # one clause
-//   bun tools/alignment/detect-clause-drift.ts --json
+//   bun src/Core.TypeScript/alignment/detect-clause-drift.ts            # all clauses
+//   bun src/Core.TypeScript/alignment/detect-clause-drift.ts HC-1       # one clause
+//   bun src/Core.TypeScript/alignment/detect-clause-drift.ts --json
 //
 // Exit codes:
 //   0  Clean run (references emitted, or none found)
@@ -30,7 +30,7 @@ import { spawnSync } from "node:child_process";
 type ExitCode = 0 | 2;
 
 // Canonical valid clause set + matcher, aligned with
-// tools/alignment/audit_clause_coverage.ts extractClauses(). Word
+// src/Core.TypeScript/alignment/audit_clause_coverage.ts extractClauses(). Word
 // boundaries + bounded numeric ranges prevent false positives on
 // out-of-range IDs (HC-0, SD-99, etc.). A fresh RegExp per line keeps
 // the matcher stateless (no shared /g lastIndex skipping matches).

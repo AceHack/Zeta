@@ -3,14 +3,14 @@
 // untracked unsafe directory based on an allowlist manifest. Part of 081KR2E4K0008QG0R001JC6S3N.
 //
 // Usage:
-//   bun tools/roms/split-by-license.ts --rom-dir <dir> --safe-dir <dir> --unsafe-dir <dir> --allowlist <path>
-//   bun tools/roms/split-by-license.ts --rom-dir <dir> --safe-dir <dir> --unsafe-dir <dir> --allowlist <path> --apply
+//   bun src/Core.TypeScript/roms/split-by-license.ts --rom-dir <dir> --safe-dir <dir> --unsafe-dir <dir> --allowlist <path>
+//   bun src/Core.TypeScript/roms/split-by-license.ts --rom-dir <dir> --safe-dir <dir> --unsafe-dir <dir> --allowlist <path> --apply
 //
 // Output (default dry-run): JSON array of { file, classification, moved }.
 // --apply: actually moves files. Default is report-only because the failure
 // mode (silently moving the wrong file across the legal safe/unsafe boundary)
 // has the "legal blast radius" framing of 081KQ8P5D0008QG0R001590WJ3 -- so moves are opt-in,
-// mirroring the sibling tools/roms/canonicalize.ts --apply discipline.
+// mirroring the sibling src/Core.TypeScript/roms/canonicalize.ts --apply discipline.
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync } from "node:fs";
 import { extname, join } from "node:path";
@@ -48,7 +48,7 @@ const ROM_EXTENSIONS = new Set([
 ]);
 
 // Reject any name that could escape the destination directory when used as a
-// path component. Mirrors isSafeCanonicalName in tools/roms/canonicalize.ts.
+// path component. Mirrors isSafeCanonicalName in src/Core.TypeScript/roms/canonicalize.ts.
 export function isSafeFilename(name: string): boolean {
   return (
     name.length > 0 &&

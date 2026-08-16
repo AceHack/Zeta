@@ -12,8 +12,8 @@
 //   violation — bash/PowerShell under tools/ outside exempt without label
 //
 // Usage:
-//   bun tools/hygiene/audit-post-setup-script-stack.ts             # full report
-//   bun tools/hygiene/audit-post-setup-script-stack.ts --summary   # counts
+//   bun src/Core.TypeScript/hygiene/audit-post-setup-script-stack.ts             # full report
+//   bun src/Core.TypeScript/hygiene/audit-post-setup-script-stack.ts --summary   # counts
 //
 // Exit codes:
 //   0   no violations (labelled + exempt acceptable)

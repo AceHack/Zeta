@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // claude.ts -- agent-side caller for cold-boot self-testing via the Claude CLI.
 //
-// Part of the tools/peer-call/ suite (grok.ts, gemini.ts, codex.ts,
+// Part of the src/Core.TypeScript/peer-call/ suite (grok.ts, gemini.ts, codex.ts,
 // amara.ts, ani.ts, riven.ts, kiro.ts). Implements 081KR2E4K0008QG0R002KNZ29V (P1).
 //
 // Cold-boot self-test is the highest-leverage verification surface the agent
@@ -15,12 +15,12 @@
 // dialog is automatically skipped in --print mode.
 //
 // Usage:
-//   bun tools/peer-call/claude.ts "prompt text"
-//   bun tools/peer-call/claude.ts --file path/to/file.md "prompt text"
-//   bun tools/peer-call/claude.ts --context-cmd "git diff HEAD~3..HEAD" "prompt"
-//   bun tools/peer-call/claude.ts --output-file path/out.md "prompt text"
-//   bun tools/peer-call/claude.ts --model sonnet "prompt text"
-//   bun tools/peer-call/claude.ts --allow-empty "prompt"  # bypass firewall
+//   bun src/Core.TypeScript/peer-call/claude.ts "prompt text"
+//   bun src/Core.TypeScript/peer-call/claude.ts --file path/to/file.md "prompt text"
+//   bun src/Core.TypeScript/peer-call/claude.ts --context-cmd "git diff HEAD~3..HEAD" "prompt"
+//   bun src/Core.TypeScript/peer-call/claude.ts --output-file path/out.md "prompt text"
+//   bun src/Core.TypeScript/peer-call/claude.ts --model sonnet "prompt text"
+//   bun src/Core.TypeScript/peer-call/claude.ts --allow-empty "prompt"  # bypass firewall
 //
 // Routing: wraps `claude --print --tools "Read,Glob,Grep" --no-session-persistence`
 // (non-interactive headless mode). Optional --model overrides the default model.
@@ -231,12 +231,12 @@ function emitHelp(): void {
     `claude.ts -- agent-side caller for cold-boot self-testing via the Claude CLI.\n` +
       `\n` +
       `Usage:\n` +
-      `  bun tools/peer-call/claude.ts "prompt text"\n` +
-      `  bun tools/peer-call/claude.ts --file PATH "prompt text"\n` +
-      `  bun tools/peer-call/claude.ts --context-cmd "CMD" "prompt text"\n` +
-      `  bun tools/peer-call/claude.ts --output-file PATH "prompt text"\n` +
-      `  bun tools/peer-call/claude.ts --model MODEL "prompt text"\n` +
-      `  bun tools/peer-call/claude.ts --allow-empty "prompt"  # bypass firewall\n` +
+      `  bun src/Core.TypeScript/peer-call/claude.ts "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/claude.ts --file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/claude.ts --context-cmd "CMD" "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/claude.ts --output-file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/claude.ts --model MODEL "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/claude.ts --allow-empty "prompt"  # bypass firewall\n` +
       `\n` +
       `Routing: wraps claude --print --tools "${CLAUDE_TOOLS}" --no-session-persistence\n` +
       `(non-interactive, read-only blast radius, no session carry-over).\n` +
@@ -439,7 +439,7 @@ export function main(argv: readonly string[]): number {
   }
   if (parsed.prompt.length === 0) {
     process.stderr.write("error: prompt required\n");
-    process.stderr.write("see: bun tools/peer-call/claude.ts --help\n");
+    process.stderr.write("see: bun src/Core.TypeScript/peer-call/claude.ts --help\n");
     return 1;
   }
 

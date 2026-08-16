@@ -6,9 +6,9 @@
 // shell wrapper. Same shape as run-tlc.ts.
 //
 // Usage:
-//   bun tools/formal-verification/run-alloy.ts <SpecName>
-//   bun tools/formal-verification/run-alloy.ts --all
-//   bun tools/formal-verification/run-alloy.ts --check-toolchain
+//   bun src/Core.TypeScript/formal-verification/run-alloy.ts <SpecName>
+//   bun src/Core.TypeScript/formal-verification/run-alloy.ts --all
+//   bun src/Core.TypeScript/formal-verification/run-alloy.ts --check-toolchain
 //
 // AlloyRunner.java compiles to <runner-class-dir>/AlloyRunner.class
 // on first use; idempotent (skips recompile if .class is newer than
@@ -260,7 +260,7 @@ function runAll(toolchain: Toolchain): ExitCode {
     process.stderr.write("\n--- failure details ---\n");
     for (const fd of failureDetails) {
       process.stderr.write(
-        `\n[${fd.spec}] (rerun with: bun tools/formal-verification/run-alloy.ts ${fd.spec})\n`,
+        `\n[${fd.spec}] (rerun with: bun src/Core.TypeScript/formal-verification/run-alloy.ts ${fd.spec})\n`,
       );
       const tail = fd.result.stdout.split("\n").slice(-30).join("\n");
       process.stderr.write(tail);
@@ -291,9 +291,9 @@ function main(argv: readonly string[]): ExitCode {
 
   if (argv.length === 0 || argv[0] === "--help" || argv[0] === "-h") {
     process.stdout.write("Usage:\n");
-    process.stdout.write("  bun tools/formal-verification/run-alloy.ts <SpecName>\n");
-    process.stdout.write("  bun tools/formal-verification/run-alloy.ts --all\n");
-    process.stdout.write("  bun tools/formal-verification/run-alloy.ts --check-toolchain\n");
+    process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-alloy.ts <SpecName>\n");
+    process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-alloy.ts --all\n");
+    process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-alloy.ts --check-toolchain\n");
     return 0;
   }
 

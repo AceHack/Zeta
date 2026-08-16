@@ -6,11 +6,11 @@
 // Reports inbound reference counts so entangled surfaces are visible.
 //
 // Usage:
-//   bun tools/alignment/audit_retractibility.ts
-//   bun tools/alignment/audit_retractibility.ts --json
-//   bun tools/alignment/audit_retractibility.ts --md
-//   bun tools/alignment/audit_retractibility.ts --gate N   # fail if any surface has >= N inbound refs
-//   bun tools/alignment/audit_retractibility.ts <path> ... # check specific files
+//   bun src/Core.TypeScript/alignment/audit_retractibility.ts
+//   bun src/Core.TypeScript/alignment/audit_retractibility.ts --json
+//   bun src/Core.TypeScript/alignment/audit_retractibility.ts --md
+//   bun src/Core.TypeScript/alignment/audit_retractibility.ts --gate N   # fail if any surface has >= N inbound refs
+//   bun src/Core.TypeScript/alignment/audit_retractibility.ts <path> ... # check specific files
 //
 // Exit codes:
 //   0  All surfaces retractible (or below gate threshold)

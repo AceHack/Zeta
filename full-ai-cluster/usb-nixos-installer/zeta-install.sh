@@ -322,7 +322,7 @@ if [[ -z "$HOST" ]]; then
   # lspci-only heuristic so the menu still works in degraded environments.
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   HWDETECT_REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-  HWDETECT_TS="$HWDETECT_REPO_ROOT/tools/installer/zeta-hardware-detect.ts"
+  HWDETECT_TS="$HWDETECT_REPO_ROOT/src/Core.TypeScript/installer/zeta-hardware-detect.ts"
   SUGGESTED_HOST=""
   SUGGESTED_REASON=""
   if command -v bun >/dev/null 2>&1 && [ -f "$HWDETECT_TS" ]; then

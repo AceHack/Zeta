@@ -90,8 +90,8 @@ history, not a TODO list.
 - **Shortcut:** The GOVERNANCE.md §11 rewrite landing
   this round introduces the debt-intentionality rule.
   Internal files (`.claude/agents/architect.md`,
-  `.claude/skills/round-management/SKILL.md`,
-  `.claude/skills/holistic-view/SKILL.md`) were
+  `.claude/skills/workflows/blueprints/round-management.md`,
+  `.claude/skills/governance/blueprints/holistic-view.md`) were
   refreshed this round. **Still unaudited:**
   `.github/copilot-instructions.md` and
   `docs/CONFLICT-RESOLUTION.md`. Both cross cohort
@@ -125,7 +125,7 @@ history, not a TODO list.
 
 ### 2026-04-20 (round 42/43) — skill-tune-up SKILL.md content-extraction to hit BP-03
 
-- **Shortcut:** `.claude/skills/skill-tune-up/SKILL.md`
+- **Shortcut:** `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md`
   was 436 lines after the round-42 retune (commit
   `baa423e`) — 1.45x the BP-03 300-line cap. Instead
   of running the upstream eval harness to produce a

@@ -10,7 +10,7 @@
  * assumed SMT binding; this TS slice is safer, zero-dep, surfaces the
  * NP boundary directly for routing evidence).
  *
- * Usage: bun tools/graph-coloring/three-color-probe.ts
+ * Usage: bun src/Core.TypeScript/graph-coloring/three-color-probe.ts
  * Co-Authored-By: Grok <noreply@x.ai>
  */
 

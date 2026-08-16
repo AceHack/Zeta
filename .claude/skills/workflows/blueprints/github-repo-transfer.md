@@ -21,7 +21,7 @@ Data layer (consulted by this routine):
   — known silent drifts (S1-S7), what-survives inventory,
   adapter-neutrality mapping, worked-example summaries.
 - [`docs/GITHUB-SETTINGS.md`](../../../docs/GITHUB-SETTINGS.md)
-  + [`tools/hygiene/github-settings.expected.json`](../../../tools/hygiene/github-settings.expected.json)
+  + [`src/Core.TypeScript/hygiene/github-settings.expected.json`](../../../tools/hygiene/github-settings.expected.json)
   — declarative scorecard this routine snapshots and diffs.
 - [`docs/AGENT-GITHUB-SURFACES.md`](../../../docs/AGENT-GITHUB-SURFACES.md)
   — ten-surface playbook informing step 3 and step 8.
@@ -114,11 +114,11 @@ Any failure → stop and file an `HB-NNN` row.
 ### Step 2 — Pre-transfer scorecard
 
 ```bash
-bun tools/hygiene/snapshot-github-settings.ts \
+bun src/Core.TypeScript/hygiene/snapshot-github-settings.ts \
   --repo <old-owner>/<name> \
   > /tmp/pre-transfer-scorecard.json
 
-diff -u tools/hygiene/github-settings.expected.json \
+diff -u src/Core.TypeScript/hygiene/github-settings.expected.json \
         /tmp/pre-transfer-scorecard.json
 ```
 
@@ -187,7 +187,7 @@ gh api /repos/<new>/<name> --jq '.full_name'
 ### Step 6 — Post-transfer diff
 
 ```bash
-bun tools/hygiene/snapshot-github-settings.ts \
+bun src/Core.TypeScript/hygiene/snapshot-github-settings.ts \
   --repo <new>/<name> \
   > /tmp/post-transfer-scorecard.json
 
@@ -287,8 +287,8 @@ way and you mentied it for the skills earler, works in code too lol"*.
   — ten-surface playbook (steps 3, 8).
 - [`docs/hygiene-history/repo-transfer-history.md`](../../../docs/hygiene-history/repo-transfer-history.md)
   — fire-history (step 9).
-- [`tools/hygiene/snapshot-github-settings.ts`](../../../tools/hygiene/snapshot-github-settings.ts),
-  [`tools/hygiene/check-github-settings-drift.ts`](../../../tools/hygiene/check-github-settings-drift.ts)
+- [`src/Core.TypeScript/hygiene/snapshot-github-settings.ts`](../../../tools/hygiene/snapshot-github-settings.ts),
+  [`src/Core.TypeScript/hygiene/check-github-settings-drift.ts`](../../../tools/hygiene/check-github-settings-drift.ts)
   — scorecard tooling (steps 2, 6).
 - `memory/project_zeta_org_migration_to_lucent_financial_group.md`
   — the worked-example memory.

@@ -49,7 +49,7 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 // 3 levels up from src/Core.TypeScript/invariant-substrates/ (was "..",".."
-// at tools/invariant-substrates/; the relocation added a directory level).
+// at src/Core.TypeScript/invariant-substrates/; the relocation added a directory level).
 const repoRoot = resolve(here, "..", "..", "..");
 
 type Flags = {

@@ -484,7 +484,7 @@ PR-N is CLEAN/MERGEABLE, the branch is logically done but the
 round-N+1 work has no place to land until Aaron clicks merge.
 The round-41-late 28-fire `/next-steps` hold-pattern diagnosed
 the symptom; this commit lands the fix as durable policy in
-`.claude/skills/git-workflow-expert/SKILL.md` (116 lines
+`.claude/skills/workflows/blueprints/git-workflow-expert.md` (116 lines
 added): fork `round-<N+1>-speculative` from round-N HEAD
 immediately on CLEAN + green CI + clean tree, rebase onto main
 after squash-merge + drop the suffix, explicit fair-game vs
@@ -654,7 +654,7 @@ lines added). Prior state: the concept cited in 20+ files
 three skill files) but defined nowhere in committed docs.
 New GLOSSARY entry: Plain + Technical definitions in the
 standard two-register glossary format; pointer to the
-authoritative definition at `.claude/skills/reducer/SKILL.md`
+authoritative definition at `.claude/skills/code-review-and-quality/blueprints/reducer.md`
 §"The five roles inside Quantum Rodney's Razor" (lines
 125-260); explicit note that the glossary's job is pointer-
 plus-gist, not canonical definition. Opens a new glossary
@@ -678,7 +678,7 @@ testing, iteration loops, patterns, troubleshooting) for
 citation by `skill-creator` / `skill-tune-up` / `skill-
 improver`. `docs/references/README.md` documents the three-
 part inclusion criterion and BP-11 (data not directives)
-discipline. Retunes `.claude/skills/skill-tune-up/SKILL.md`
+discipline. Retunes `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md`
 (303 → 436 lines) from a ranker-only skill into a thick
 wrapper over the upstream `claude-plugins-official` `skill-
 creator` plugin's eval harness
@@ -2919,7 +2919,7 @@ insisted the doc accompany the code, and it did.
   annotated with the decision.
 - **Yara (skill-improver)** on the BP-10 cite defect in
   Aarav's own skill file. Fixed in place at
-  `.claude/skills/skill-tune-up/SKILL.md` lines
+  `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` lines
   114-119; three cosmetic BP-cite follow-ups flagged for
   Aarav's next tune-up pass.
 - **Daya (AX researcher)** ran Kenji's first self-audit.
@@ -3361,7 +3361,7 @@ point where governance work has its own rhythm.
   blocks). 14 experts pending in future rounds.
 - **Daya spawned as the 23rd expert** — the first agent-experience
   (AX) researcher. New skill at
-  `.claude/skills/agent-experience-engineer/SKILL.md` plus agent
+  `.claude/skills/experience-and-product/blueprints/agent-experience-engineer.md` plus agent
   file; speaks for the personas themselves as their own user
   population. Aaron coined the AX framing; Daya is the persona that
   role became.
@@ -3382,7 +3382,7 @@ point where governance work has its own rhythm.
   round-scoped; entries promote or delete at round-close.
 - **`docs/skill-notes/architect-offtime.md`** — seeded honestly
   with a zero entry (no off-time budget spent round 23).
-- **`.claude/skills/round-management/SKILL.md` + `.claude/agents/architect.md`.**
+- **`.claude/skills/workflows/blueprints/round-management.md` + `.claude/agents/architect.md`.**
   Kenji's orchestration procedure codified as a hat; architect
   persona formalised with the §10 / §11 / glossary-police
   contract.

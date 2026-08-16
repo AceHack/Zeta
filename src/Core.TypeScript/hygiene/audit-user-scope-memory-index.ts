@@ -21,9 +21,9 @@
 //
 // Usage:
 //
-//   bun tools/hygiene/audit-user-scope-memory-index.ts                # detect-only
-//   bun tools/hygiene/audit-user-scope-memory-index.ts --report PATH  # write markdown report
-//   bun tools/hygiene/audit-user-scope-memory-index.ts --memory PATH  # override MEMORY.md location
+//   bun src/Core.TypeScript/hygiene/audit-user-scope-memory-index.ts                # detect-only
+//   bun src/Core.TypeScript/hygiene/audit-user-scope-memory-index.ts --report PATH  # write markdown report
+//   bun src/Core.TypeScript/hygiene/audit-user-scope-memory-index.ts --memory PATH  # override MEMORY.md location
 //
 // Exit codes:
 //

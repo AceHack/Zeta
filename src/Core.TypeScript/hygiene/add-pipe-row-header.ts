@@ -13,15 +13,15 @@
 // the pipe-row are honest about being retrofit rather than
 // archaeologically reconstructing claims.
 //
-// Validator: `tools/hygiene/check-tick-history-shard-schema.ts`
+// Validator: `src/Core.TypeScript/hygiene/check-tick-history-shard-schema.ts`
 // Backlog row: `docs/backlog/P2/081KRMEXM0008QG0R002HBY56V-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md`
 // Rule 0: TypeScript (no .sh) per `.claude/rules/rule-0-no-sh-files.md`.
 //
 // Usage:
-//   bun tools/hygiene/add-pipe-row-header.ts                       # dry-run, full scan
-//   bun tools/hygiene/add-pipe-row-header.ts --write               # write, full scan
-//   bun tools/hygiene/add-pipe-row-header.ts --files <paths>       # restrict to paths
-//   bun tools/hygiene/add-pipe-row-header.ts --write --files <p>   # restrict + write
+//   bun src/Core.TypeScript/hygiene/add-pipe-row-header.ts                       # dry-run, full scan
+//   bun src/Core.TypeScript/hygiene/add-pipe-row-header.ts --write               # write, full scan
+//   bun src/Core.TypeScript/hygiene/add-pipe-row-header.ts --files <paths>       # restrict to paths
+//   bun src/Core.TypeScript/hygiene/add-pipe-row-header.ts --write --files <p>   # restrict + write
 //
 // Run from the repo root, or set REPO_ROOT env var.
 //

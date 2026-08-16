@@ -451,7 +451,7 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   `_ = Send(...)` / `Assert.True(true)` / empty
   `catch (Exception) { }` to silence a rule is a rejection,
   not a suggestion. Full rulebook at
-  `.claude/skills/sonar-issue-fixer/SKILL.md`.
+  `.claude/skills/languages-and-build/blueprints/sonar-issue-fixer.md`.
 - **F# and C# language-fit on every code diff.** Zeta
   is F#-first by design — DBSP's math shape fits F#
   idioms cleanly. But `src/Core.CSharp/` is a
@@ -472,7 +472,7 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   Tag findings P0 (load-bearing perf / correctness;
   needs Naledi benchmark), P1 (readability win), P2
   (idiom nit). Full rulebook at
-  `.claude/skills/csharp-fsharp-fit-reviewer/SKILL.md`.
+  `.claude/skills/languages-and-build/blueprints/csharp-fsharp-fit-reviewer.md`.
 - **Python tool management is `uv`-only.** Any PR diff
   that introduces `pip install`, `pipx install`,
   `poetry install` / `poetry add`, `pyenv install`,
@@ -484,7 +484,7 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   `uv lock` / `uv venv`. Zeta's runtime Python is mise-
   managed; `uv` is the only package / tool / lockfile
   manager Zeta uses. Full rewrite table in
-  `.claude/skills/python-expert/SKILL.md` §Packaging.
+  `.claude/skills/languages-and-build/blueprints/python-expert.md` §Packaging.
 
 ## What to do when unsure
 

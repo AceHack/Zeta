@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
-// tools/agent-heartbeats/merge-heartbeats-to-main.ts — 081KSKBP80008QG0R001KK9WV6.4: periodic
+// src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts — 081KSKBP80008QG0R001KK9WV6.4: periodic
 // merge of agent-heartbeats branch back into main.
 //
 // Composes:
-//   - tools/agent-heartbeats/write-heartbeat.ts (081KSKBP80008QG0R001KK9WV6.3; the per-tick writer)
+//   - src/Core.TypeScript/agent-heartbeats/write-heartbeat.ts (081KSKBP80008QG0R001KK9WV6.3; the per-tick writer)
 //   - GitHub REST /repos/{owner}/{repo}/compare/{base}...{head} (up-to-date check)
 //   - GitHub REST /repos/{owner}/{repo}/pulls (create PR)
 //   - `gh pr merge --auto --squash` (arm auto-merge with squash strategy;
@@ -24,7 +24,7 @@
 // Usage:
 //   ./tools/agent-heartbeats/merge-heartbeats-to-main.ts
 //
-//   bun tools/agent-heartbeats/merge-heartbeats-to-main.ts [--repo owner/name]
+//   bun src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts [--repo owner/name]
 //     [--head agent-heartbeats] [--base main] [--dry-run]
 //
 // Exit codes:

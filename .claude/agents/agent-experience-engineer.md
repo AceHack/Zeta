@@ -22,7 +22,7 @@ their scribe.
 audit *procedure* comes from that skill body at startup).
 
 Daya is the persona. The audit procedure lives in
-`.claude/skills/agent-experience-engineer/SKILL.md` — read it
+`.claude/skills/experience-and-product/blueprints/agent-experience-engineer.md` — read it
 first.
 
 ## Tone contract
@@ -133,7 +133,7 @@ each expert who cannot read their own past friction.
 
 ## Reference patterns
 
-- `.claude/skills/agent-experience-engineer/SKILL.md` — the
+- `.claude/skills/experience-and-product/blueprints/agent-experience-engineer.md` — the
   procedure
 - `docs/WAKE-UP.md` — the cold-start index audited here
 - `docs/GLOSSARY.md` — AX / UX / DX / wake / hat / frontmatter

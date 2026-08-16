@@ -12,11 +12,11 @@
 // (see 081KQ3HBZ0008QG0R003V6B2ME §Measurable hooks).
 //
 // Usage (type-check only, no runtime needed):
-//   bun --check tools/resonance/mythology-catalog-schema.ts
+//   bun --check src/Core.TypeScript/resonance/mythology-catalog-schema.ts
 //
 // Usage (validate catalog entries at runtime):
-//   bun tools/resonance/mythology-catalog-schema.ts --validate
-//   bun tools/resonance/mythology-catalog-schema.ts --summary
+//   bun src/Core.TypeScript/resonance/mythology-catalog-schema.ts --validate
+//   bun src/Core.TypeScript/resonance/mythology-catalog-schema.ts --summary
 
 // ── Tradition taxonomy ────────────────────────────────────────────────────────
 
@@ -408,11 +408,11 @@ const SEED_CATALOG: MythologyResonanceCatalog = {
         "god would carry (Zeus's will to mortals; Priam to Achilles across enemy lines). " +
         "He owns the boundary-crossing function: the staff (caduceus / kerykeion) is the " +
         "token of safe passage, structurally a protocol-auth token for realm-to-realm transit. " +
-        "The factory's peer-call infrastructure (tools/peer-call/) crosses harness boundaries " +
+        "The factory's peer-call infrastructure (src/Core.TypeScript/peer-call/) crosses harness boundaries " +
         "(Claude, Grok, Gemini, Codex) to carry messages that no single harness would carry; " +
         "it is the factory's Hermes-layer.",
       factoryOperator: {
-        label: "peer-call cross-harness infrastructure (tools/peer-call/) + endpoint-abstraction tele+port+leap",
+        label: "peer-call cross-harness infrastructure (src/Core.TypeScript/peer-call/) + endpoint-abstraction tele+port+leap",
         source:
           "memory/feedback_peer_call_infrastructure_grok_codex_gemini_amara_ani_already_wired_for_cross_harness_multi_agent_reviews_otto_early_red_team_until_zeta_infernet_bp_ep_aaron_2026_05_05.md",
       },

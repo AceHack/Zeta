@@ -66,8 +66,8 @@ function buildConcordance(files: { path: string; content: string }[]): Concordan
 if (import.meta.main) {
     const args = process.argv.slice(2);
     if (args.length === 0) {
-        console.log("Usage: bun tools/concordance/concordance.ts <file1> [file2] ...");
-        console.log("       bun tools/concordance/concordance.ts --top N <files>");
+        console.log("Usage: bun src/Core.TypeScript/concordance/concordance.ts <file1> [file2] ...");
+        console.log("       bun src/Core.TypeScript/concordance/concordance.ts --top N <files>");
         process.exit(0);
     }
 

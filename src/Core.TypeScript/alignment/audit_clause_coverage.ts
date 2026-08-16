@@ -14,11 +14,11 @@
 // fewer than N clause citations (advisory, not enforcement).
 //
 // Usage:
-//   bun tools/alignment/audit_clause_coverage.ts
-//   bun tools/alignment/audit_clause_coverage.ts --json
-//   bun tools/alignment/audit_clause_coverage.ts --md
-//   bun tools/alignment/audit_clause_coverage.ts --out DIR
-//   bun tools/alignment/audit_clause_coverage.ts --gate N
+//   bun src/Core.TypeScript/alignment/audit_clause_coverage.ts
+//   bun src/Core.TypeScript/alignment/audit_clause_coverage.ts --json
+//   bun src/Core.TypeScript/alignment/audit_clause_coverage.ts --md
+//   bun src/Core.TypeScript/alignment/audit_clause_coverage.ts --out DIR
+//   bun src/Core.TypeScript/alignment/audit_clause_coverage.ts --gate N
 //
 // Exit codes:
 //   0  Clean run (or no surfaces found)

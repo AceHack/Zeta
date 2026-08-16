@@ -7,7 +7,7 @@
 // (no more .sh files except install-graph; TS IS cross-platform DST).
 //
 // Usage:
-//   bun tools/hygiene/snapshot-github-settings.ts [--repo OWNER/NAME] > snapshot.json
+//   bun src/Core.TypeScript/hygiene/snapshot-github-settings.ts [--repo OWNER/NAME] > snapshot.json
 //
 // Defaults: $GH_REPO env var, then `gh repo view --json nameWithOwner`.
 //

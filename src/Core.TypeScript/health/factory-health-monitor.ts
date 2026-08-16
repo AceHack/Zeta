@@ -169,7 +169,7 @@ export interface LocalWorktreeDirtObservation extends LocalWorktreeObservation {
 type ToolCommand = "bun" | "gh" | "git";
 type ToolResult = { ok: boolean; stdout: string };
 
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const REPO = process.env.REPO ?? "Lucent-Financial-Group/Zeta";
 const DEFAULT_LOCAL_WORKTREE_DIRT_SCAN_LIMIT = 60;
 const LOCAL_WORKTREE_DIRT_SCAN_LIMIT = parseLocalWorktreeDirtScanLimit(process.env.FACTORY_HEALTH_WORKTREE_DIRT_LIMIT);
@@ -2193,7 +2193,7 @@ function checkLostFiles(): HealthSignal[] {
     }
   }
 
-  const memoryRefs = run("bun", [join(ROOT, "tools/hygiene/audit-memory-references.ts")]);
+  const memoryRefs = run("bun", [join(ROOT, "src/Core.TypeScript/hygiene/audit-memory-references.ts")]);
   if (memoryRefs.ok && memoryRefs.stdout.includes("BROKEN")) {
     const brokenCount = (memoryRefs.stdout.match(/BROKEN/g) || []).length;
     signals.push({
@@ -2351,7 +2351,7 @@ export function runHealthCheck(): HealthReport {
 }
 
 function printHelp(): void {
-  console.log(`Usage: bun tools/health/factory-health-monitor.ts [--json]
+  console.log(`Usage: bun src/Core.TypeScript/health/factory-health-monitor.ts [--json]
 
 Options:
   --json   Emit the health report as JSON.

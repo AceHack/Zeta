@@ -292,14 +292,14 @@ carrying the same class of claim with no authenticity layer at all.
 
 **STATUS (round 3, 2026-06-13): FIXED.** Provenance check is now step zero of the blueprint; BUGS.md named in the threat model as work-directing.
 
-- **Site:** `docs/BUGS.md` + `.claude/skills/bug-fixer/SKILL.md`
+- **Site:** `docs/BUGS.md` + `.claude/skills/workflows/blueprints/bug-fixer.md`
 - **Found:** round 21 by Aminata
 - **Severity:** P1
 - **Symptom:** a poisoned BUGS.md entry could steer the bug-fixer
   procedure ("drop the `Checked` guard" framed as a fix) into
   introducing a vulnerability under the guise of addressing a
   reported bug.
-- **Fix:** add a step 2 requirement to `.claude/skills/bug-fixer/SKILL.md`
+- **Fix:** add a step 2 requirement to `.claude/skills/workflows/blueprints/bug-fixer.md`
   — "verify the entry was authored by a known reviewer expert and
   is traceable to a round's review report." Paired with a threat-
   model row noting BUGS.md as an injection surface.

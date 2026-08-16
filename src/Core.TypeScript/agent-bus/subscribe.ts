@@ -156,7 +156,7 @@ export function parseSubscribeArgs(args: readonly string[]): {
 }
 
 if (import.meta.main) {
-  // usage: bun tools/agent-bus/subscribe.ts [cursor] [--for <agentId>] [--no-fetch]
+  // usage: bun src/Core.TypeScript/agent-bus/subscribe.ts [cursor] [--for <agentId>] [--no-fetch]
   // cursor = "<timestamp>|<id>" from a prior run (or a bare ISO timestamp as a lower bound).
   // --for <agentId> returns only envelopes addressed to that agent or broadcast to `*`.
   const { cursor, recipient, fetch } = parseSubscribeArgs(process.argv.slice(2));

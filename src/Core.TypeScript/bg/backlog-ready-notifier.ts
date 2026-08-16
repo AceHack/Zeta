@@ -9,7 +9,7 @@
 // slice 5; slice 4 publishes unconditionally when ready rows exist so the
 // reactive loop is closed end-to-end.
 //
-// Run: bun tools/bg/backlog-ready-notifier.ts [--once] [--poll-min N] [--backlog-dir PATH] [--no-publish] [--agent NAME] [--to NAME] [--max-assignments N]
+// Run: bun src/Core.TypeScript/bg/backlog-ready-notifier.ts [--once] [--poll-min N] [--backlog-dir PATH] [--no-publish] [--agent NAME] [--to NAME] [--max-assignments N]
 // Compose with: 081KRFA460008QG0R00229616S + 081KR7JY10008QG0R000R503K2 (bus) + 081KRFA460008QG0R001KC0VBH (reactive peer).
 
 import { readdirSync, readFileSync, renameSync, writeFileSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
@@ -121,7 +121,7 @@ export type Adapters = {
   writeHistoryFile: (path: string, history: AssignmentHistory) => void;
 };
 
-// Keys are lowercase to match the canonical bus agent IDs (SENDER_IDS in tools/bus/types.ts).
+// Keys are lowercase to match the canonical bus agent IDs (SENDER_IDS in src/Core.TypeScript/bus/types.ts).
 // Only otto/alexa/riven/vera/lior are valid SENDER_IDS; aaron is a human, not a bus sender.
 export const AGENT_MAP: Record<string, string[]> = {
   otto: ["Co-Authored-By: Claude"],
@@ -326,7 +326,7 @@ export function isAgentQueueEmpty(
 /**
  * A dependency is "satisfied" iff the dep's row status is `closed` OR begins
  * with `superseded-by-` (matching the canonical generator's checkbox logic
- * in tools/backlog/generate-index.ts). A dangling reference (dep ID not
+ * in src/Core.TypeScript/backlog/generate-index.ts). A dangling reference (dep ID not
  * present in the scan) is treated as UNSATISFIED.
  */
 function isDepSatisfied(depStatus: string | undefined): boolean {

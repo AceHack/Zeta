@@ -662,7 +662,7 @@ wrong-audience, unclear-contract, tooling-gap).
 touch anything else in the system?" Any expert can wear this
 lens without claiming architect authority.
 **Technical:** Capability skill at
-`.claude/skills/holistic-view/SKILL.md`; no persona; adds a
+`.claude/skills/governance/blueprints/holistic-view.md`; no persona; adds a
 5-step cross-artefact walk to any finding. Does not grant
 integration authority (Kenji still owns §11 integration).
 
@@ -930,7 +930,7 @@ the Harmonizer role: it is a gradient operator that at any
 decision point points in the direction of *most constructive
 harmony* — the direction in decision-space where surviving
 branches most reinforce rather than cancel each other.
-Authoritative source: `.claude/skills/reducer/SKILL.md`
+Authoritative source: `.claude/skills/code-review-and-quality/blueprints/reducer.md`
 §"The five roles inside Quantum Rodney's Razor" (lines
 125-260). Referenced in `.claude/skills/request-play/`,
 `.claude/skills/glossary-anchor-keeper/`, and across

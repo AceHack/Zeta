@@ -27,8 +27,8 @@
 //
 // Usage:
 //
-//   bun tools/hygiene/audit-rule-cross-refs.ts                # detect-only, exit 0 always
-//   bun tools/hygiene/audit-rule-cross-refs.ts --report PATH  # write markdown report
+//   bun src/Core.TypeScript/hygiene/audit-rule-cross-refs.ts                # detect-only, exit 0 always
+//   bun src/Core.TypeScript/hygiene/audit-rule-cross-refs.ts --report PATH  # write markdown report
 //
 // Exit codes:
 //
@@ -284,7 +284,7 @@ function refExists(ref: Ref): boolean {
     }
     // Peer-call wrapper resolution: bare `<name>.ts` references in
     // agent-roster-reference-card.md and similar rules typically point
-    // to `tools/peer-call/<name>` per the established peer-call wrapper
+    // to `src/Core.TypeScript/peer-call/<name>` per the established peer-call wrapper
     // convention.
     if (ref.raw.endsWith(".ts") && !ref.raw.includes("/")) {
       if (existsSync(join("src/Core.TypeScript/peer-call", ref.raw))) return true;

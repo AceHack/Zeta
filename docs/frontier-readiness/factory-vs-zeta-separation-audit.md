@@ -348,7 +348,7 @@ across 12 top-level sections.
 Before the split, surgical edits for Frontier:
 
 1. **Skill-path references in rationales** (e.g., BP-17
-   cites `.claude/skills/canonical-home-auditor/SKILL.md`
+   cites `.claude/skills/governance/blueprints/canonical-home-auditor.md`
    alongside the `2026-04-19-bp-home-rule-zero.md` ADR):
    these are illustrative in the current phrasing ("the
    canonical-home map in ..."). Frontier adopters have

@@ -3,12 +3,12 @@
 // 081KSKBP80008QG0R003AX2A69.2b CLI sibling to zeta-creds-persist.ts.
 //
 // Composes:
-//   - tools/installer/zeta-creds-crypto.ts (081KSKBP80008QG0R003AX2A69.1; decrypt)
-//   - tools/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; cred catalog → paths)
-//   - tools/installer/zeta-creds-envelope.ts (081KSKBP80008QG0R003AX2A69.2a; wire format + bundle)
+//   - src/Core.TypeScript/installer/zeta-creds-crypto.ts (081KSKBP80008QG0R003AX2A69.1; decrypt)
+//   - src/Core.TypeScript/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; cred catalog → paths)
+//   - src/Core.TypeScript/installer/zeta-creds-envelope.ts (081KSKBP80008QG0R003AX2A69.2a; wire format + bundle)
 //
 // Usage:
-//   bun tools/installer/zeta-creds-restore.ts \
+//   bun src/Core.TypeScript/installer/zeta-creds-restore.ts \
 //     --usb-uuid <uuid> \
 //     --input /esp/zeta-creds.enc \
 //     ( --passphrase-file <path> | --passphrase-env <VAR> ) \

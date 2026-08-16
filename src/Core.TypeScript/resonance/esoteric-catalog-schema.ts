@@ -18,11 +18,11 @@
 //   EST-004 — Thelemic True Will — F2-weak candidate, recorded per filter-failure-rate discipline
 //
 // Usage (type-check only):
-//   bun --check tools/resonance/esoteric-catalog-schema.ts
+//   bun --check src/Core.TypeScript/resonance/esoteric-catalog-schema.ts
 //
 // Usage (validate + summarize):
-//   bun tools/resonance/esoteric-catalog-schema.ts --validate
-//   bun tools/resonance/esoteric-catalog-schema.ts --summary
+//   bun src/Core.TypeScript/resonance/esoteric-catalog-schema.ts --validate
+//   bun src/Core.TypeScript/resonance/esoteric-catalog-schema.ts --summary
 
 // ── Shared types (mirrors mythology-catalog-schema.ts; intentionally self-contained) ──
 

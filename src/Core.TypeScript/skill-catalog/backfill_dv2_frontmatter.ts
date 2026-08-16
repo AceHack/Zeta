@@ -11,8 +11,8 @@
 // closing frontmatter fence. Idempotent.
 //
 // Usage:
-//   bun tools/skill-catalog/backfill_dv2_frontmatter.ts [--dry-run] <path>...
-//   bun tools/skill-catalog/backfill_dv2_frontmatter.ts [--dry-run] --all
+//   bun src/Core.TypeScript/skill-catalog/backfill_dv2_frontmatter.ts [--dry-run] <path>...
+//   bun src/Core.TypeScript/skill-catalog/backfill_dv2_frontmatter.ts [--dry-run] --all
 //
 // Exit codes:
 //   0    success
@@ -62,7 +62,7 @@ function parseArgs(argv: readonly string[]): ParseResult {
 
 function emitHelp(): void {
   process.stdout.write(
-    "Usage: bun tools/skill-catalog/backfill_dv2_frontmatter.ts [--dry-run] <path>... | --all\n",
+    "Usage: bun src/Core.TypeScript/skill-catalog/backfill_dv2_frontmatter.ts [--dry-run] <path>... | --all\n",
   );
 }
 
@@ -334,7 +334,7 @@ export function main(argv: readonly string[]): ExitCode {
   const files = args.all ? findAllSkillFiles() : args.files;
   if (files.length === 0) {
     process.stderr.write(
-      "usage: bun tools/skill-catalog/backfill_dv2_frontmatter.ts [--dry-run] <SKILL.md path>... | --all\n",
+      "usage: bun src/Core.TypeScript/skill-catalog/backfill_dv2_frontmatter.ts [--dry-run] <SKILL.md path>... | --all\n",
     );
     return 1;
   }

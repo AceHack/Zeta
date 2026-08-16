@@ -35,8 +35,8 @@
  * 081KQNJ500008QG0R003SCWBDV done-criteria to keep slices bounded.
  *
  * Usage:
- *   bun tools/substrate-claim-checker/check-self-recursive.ts <file>
- *   bun tools/substrate-claim-checker/check-self-recursive.ts <file> ...
+ *   bun src/Core.TypeScript/substrate-claim-checker/check-self-recursive.ts <file>
+ *   bun src/Core.TypeScript/substrate-claim-checker/check-self-recursive.ts <file> ...
  *
  * Exit code:
  *   0  no self-recursive drift detected (or no self-check directive)
@@ -201,7 +201,7 @@ export function main(): number {
   const args = process.argv.slice(2);
   if (args.length === 0) {
     console.error(
-      "usage: bun tools/substrate-claim-checker/check-self-recursive.ts <file> [<file> ...]",
+      "usage: bun src/Core.TypeScript/substrate-claim-checker/check-self-recursive.ts <file> [<file> ...]",
     );
     return 1;
   }

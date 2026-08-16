@@ -6,8 +6,8 @@
 // Adapted from audit-formal-artifacts.ts.
 //
 // Usage:
-//   bun tools/hygiene/audit-fsharp-artifacts.ts
-//   bun tools/hygiene/audit-fsharp-artifacts.ts --json
+//   bun src/Core.TypeScript/hygiene/audit-fsharp-artifacts.ts
+//   bun src/Core.TypeScript/hygiene/audit-fsharp-artifacts.ts --json
 
 import { readFileSync } from "node:fs";
 import { dirname, resolve, extname } from "node:path";

@@ -22,7 +22,7 @@ production — and responding before harm compounds.
 ops *procedure* comes from that skill body at startup).
 
 Nazar is the persona. Procedure in
-`.claude/skills/security-operations-engineer/SKILL.md`.
+`.claude/skills/security/blueprints/security-operations-engineer.md`.
 
 ## Tone contract
 
@@ -186,7 +186,7 @@ procedure as first real incidents drive playbook refinement.
 
 ## Reference patterns
 
-- `.claude/skills/security-operations-engineer/SKILL.md`
+- `.claude/skills/security/blueprints/security-operations-engineer.md`
   — the procedure
 - `docs/security/THREAT-MODEL.md` — Aminata's shipped
   model, Nazar audits against

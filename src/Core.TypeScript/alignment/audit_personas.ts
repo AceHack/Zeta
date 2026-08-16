@@ -17,13 +17,13 @@
 // Roster = union of `memory/<persona>/` directories.
 //
 // Usage:
-//   bun tools/alignment/audit_personas.ts                   # main..HEAD
-//   bun tools/alignment/audit_personas.ts HEAD~20..HEAD     # explicit range
-//   bun tools/alignment/audit_personas.ts --json
-//   bun tools/alignment/audit_personas.ts --md
-//   bun tools/alignment/audit_personas.ts --out DIR
-//   bun tools/alignment/audit_personas.ts --gate FRAC
-//   bun tools/alignment/audit_personas.ts --round LABEL
+//   bun src/Core.TypeScript/alignment/audit_personas.ts                   # main..HEAD
+//   bun src/Core.TypeScript/alignment/audit_personas.ts HEAD~20..HEAD     # explicit range
+//   bun src/Core.TypeScript/alignment/audit_personas.ts --json
+//   bun src/Core.TypeScript/alignment/audit_personas.ts --md
+//   bun src/Core.TypeScript/alignment/audit_personas.ts --out DIR
+//   bun src/Core.TypeScript/alignment/audit_personas.ts --gate FRAC
+//   bun src/Core.TypeScript/alignment/audit_personas.ts --round LABEL
 //
 // Exit codes:
 //   0  Clean run; coverage >= gate (or no gate)

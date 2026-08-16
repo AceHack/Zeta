@@ -12,19 +12,19 @@
 // 081KQ3HBZ0008QG0R003GTG5P2 etymology+epistemology, and any future resonance-family row).
 //
 // Usage:
-//   bun tools/alignment/filter_gate_log.ts --record \
+//   bun src/Core.TypeScript/alignment/filter_gate_log.ts --record \
 //     --candidate "skill:foo" --source 081KQ3HBZ0008QG0R0034DHWTQ --decision fail \
 //     --rationale "Breaks retractibility — force-publishes to channel"
 //
-//   bun tools/alignment/filter_gate_log.ts --record \
+//   bun src/Core.TypeScript/alignment/filter_gate_log.ts --record \
 //     --candidate "glossary:bar" --source 081KQ3HBZ0008QG0R003GTG5P2 --decision pass \
 //     --rationale "Additive, git-tracked, one-commit removable" \
 //     --clauses HC-1,SD-3
 //
-//   bun tools/alignment/filter_gate_log.ts --list
-//   bun tools/alignment/filter_gate_log.ts --list --json
-//   bun tools/alignment/filter_gate_log.ts --list --md
-//   bun tools/alignment/filter_gate_log.ts --summary
+//   bun src/Core.TypeScript/alignment/filter_gate_log.ts --list
+//   bun src/Core.TypeScript/alignment/filter_gate_log.ts --list --json
+//   bun src/Core.TypeScript/alignment/filter_gate_log.ts --list --md
+//   bun src/Core.TypeScript/alignment/filter_gate_log.ts --summary
 //
 // Exit codes:
 //   0  Success

@@ -33,14 +33,14 @@
 //
 // Usage:
 //
-//   bun tools/hygiene/audit-tick-shard-relative-paths.ts                       # detect-only
-//   bun tools/hygiene/audit-tick-shard-relative-paths.ts --enforce             # exit 1 on findings
-//   bun tools/hygiene/audit-tick-shard-relative-paths.ts --enforce --baseline FILE # exit 1 only on NEW findings (grandfather mechanism)
-//   bun tools/hygiene/audit-tick-shard-relative-paths.ts --files <p...>        # scan specific files
-//   bun tools/hygiene/audit-tick-shard-relative-paths.ts --json                # JSON output (includes newFindings + baselineMatched fields)
+//   bun src/Core.TypeScript/hygiene/audit-tick-shard-relative-paths.ts                       # detect-only
+//   bun src/Core.TypeScript/hygiene/audit-tick-shard-relative-paths.ts --enforce             # exit 1 on findings
+//   bun src/Core.TypeScript/hygiene/audit-tick-shard-relative-paths.ts --enforce --baseline FILE # exit 1 only on NEW findings (grandfather mechanism)
+//   bun src/Core.TypeScript/hygiene/audit-tick-shard-relative-paths.ts --files <p...>        # scan specific files
+//   bun src/Core.TypeScript/hygiene/audit-tick-shard-relative-paths.ts --json                # JSON output (includes newFindings + baselineMatched fields)
 //
 // The `--baseline` flag avoids the tick-shard-immutability tension at
-// CI-gate scope: ship `--enforce --baseline tools/hygiene/audit-tick-shard-relative-paths.baseline.json`
+// CI-gate scope: ship `--enforce --baseline src/Core.TypeScript/hygiene/audit-tick-shard-relative-paths.baseline.json`
 // in CI, and only NEW findings (not in the baseline) fail the gate.
 // Grandfathered findings stay visible in detect-only output. Same shape
 // as Stryker `--reset` or ESLint suppressions.

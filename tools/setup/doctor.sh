@@ -180,17 +180,17 @@ echo
 # SKILL.md, a research folder with no report). Full check is in
 # `tools/lint/no-empty-dirs.ts`; doctor just runs it and reports.
 echo "[6/6] Repo structure: no unexpected empty directories"
-if command -v bun >/dev/null 2>&1 && [ -f "$REPO_ROOT/tools/lint/no-empty-dirs.ts" ]; then
-  if bun "$REPO_ROOT/tools/lint/no-empty-dirs.ts" >/dev/null 2>&1; then
+if command -v bun >/dev/null 2>&1 && [ -f "$REPO_ROOT/src/Core.TypeScript/lint/no-empty-dirs.ts" ]; then
+  if bun "$REPO_ROOT/src/Core.TypeScript/lint/no-empty-dirs.ts" >/dev/null 2>&1; then
     pass "no-empty-dirs: OK"
   else
     # Re-run in list mode for actionable output.
-    bun "$REPO_ROOT/tools/lint/no-empty-dirs.ts" --list \
+    bun "$REPO_ROOT/src/Core.TypeScript/lint/no-empty-dirs.ts" --list \
       | sed 's/^/    /'
     fail "no-empty-dirs: unexpected empty directories — see list above"
   fi
 else
-  warn "bun or tools/lint/no-empty-dirs.ts unavailable — skipping"
+  warn "bun or src/Core.TypeScript/lint/no-empty-dirs.ts unavailable — skipping"
 fi
 echo
 

@@ -52,7 +52,7 @@ const GIT_BIN = "/usr/bin/git";
 function usage(): string {
   return [
     "Usage:",
-    "  bun tools/trajectories/autonomous-pickup.ts [--json] [--repo-root DIR]",
+    "  bun src/Core.TypeScript/trajectories/autonomous-pickup.ts [--json] [--repo-root DIR]",
     "    [--active-claim TEXT] [--no-git-claims]",
     "",
     "Selects the next bounded trajectory packet action.",

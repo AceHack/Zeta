@@ -299,7 +299,7 @@ I'd rather fail a job interview here than lose it for
 overclaiming later. So:
 
 - **Stryker mutation testing** — I've studied it
-  (`.claude/skills/stryker-expert/SKILL.md`), not yet
+  (`.claude/skills/formal-methods/blueprints/stryker-expert.md`), not yet
   wired it in. I can talk about it; I can't claim I've
   shipped it.
 - **F\* (F-star)** — I have a skill but no code. I've

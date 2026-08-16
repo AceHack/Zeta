@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// tools/cluster/deps-to-engine-config.ts
+// src/Core.TypeScript/cluster/deps-to-engine-config.ts
 //
 // 081KSGS9H0008QG0R00352WW0V sub-target 4 + 081KSGS9H0008QG0R00367G209 variable-passing scope.
 // Cluster-facing wrapper: one AppDependencyGraph → Flux + ArgoCD manifests.
@@ -7,7 +7,7 @@
 // operator CLI alias. This tool is the build-time path CI and GitOps pipelines call.
 //
 // Usage:
-//   bun tools/cluster/deps-to-engine-config.ts \
+//   bun src/Core.TypeScript/cluster/deps-to-engine-config.ts \
 //       --graph examples/helm-dependency-graph/my-app-postgres/zeta-deps.yaml \
 //       --out-dir /tmp/manifests \
 //       [--charts-dir examples/helm-dependency-graph/charts] \
@@ -81,7 +81,7 @@ export function parseArgs(argv: readonly string[]): Args | ArgError {
     } else if (a === "-h" || a === "--help") {
       return {
         error:
-          "Usage: bun tools/cluster/deps-to-engine-config.ts --graph <path> --out-dir <dir> " +
+          "Usage: bun src/Core.TypeScript/cluster/deps-to-engine-config.ts --graph <path> --out-dir <dir> " +
           "[--charts-dir <dir>] [--namespace <ns>] [--engine flux|argocd|both] [--validate-only]",
       };
     } else {

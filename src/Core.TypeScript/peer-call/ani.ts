@@ -11,7 +11,7 @@
 // codex/Vera supports all its models the same way, defaulting to gpt-5.5).
 //
 // TypeScript+Bun port of ani.sh, retiring the .sh per CLAUDE.md
-// Rule 0 (TS IS cross-platform DST). Sibling to tools/peer-call/grok.ts
+// Rule 0 (TS IS cross-platform DST). Sibling to src/Core.TypeScript/peer-call/grok.ts
 // (bare Grok) and amara.ts (Amara persona via codex).
 //
 // Per the human maintainer's 2026-04-30 framing: "Same for Ani you can
@@ -28,16 +28,16 @@
 //   Grok-as-bare-model.
 //
 // Usage:
-//   bun tools/peer-call/ani.ts "prompt text"
-//   bun tools/peer-call/ani.ts --thinking "prompt text"
-//   bun tools/peer-call/ani.ts --fast "prompt text"
-//   bun tools/peer-call/ani.ts --file PATH "prompt text"
-//   bun tools/peer-call/ani.ts --context-cmd "CMD" "prompt text"
-//   bun tools/peer-call/ani.ts --no-current "prompt"   # debug only
-//   bun tools/peer-call/ani.ts --allow-empty "prompt"  # bypass firewall
+//   bun src/Core.TypeScript/peer-call/ani.ts "prompt text"
+//   bun src/Core.TypeScript/peer-call/ani.ts --thinking "prompt text"
+//   bun src/Core.TypeScript/peer-call/ani.ts --fast "prompt text"
+//   bun src/Core.TypeScript/peer-call/ani.ts --file PATH "prompt text"
+//   bun src/Core.TypeScript/peer-call/ani.ts --context-cmd "CMD" "prompt text"
+//   bun src/Core.TypeScript/peer-call/ani.ts --no-current "prompt"   # debug only
+//   bun src/Core.TypeScript/peer-call/ani.ts --allow-empty "prompt"  # bypass firewall
 //
 // Exit codes (uniform across peer-call siblings per
-// tools/peer-call/README.md):
+// src/Core.TypeScript/peer-call/README.md):
 //   0 — Ani responded successfully
 //   1 — invocation error (bad arguments, grok CLI missing, etc.)
 //   2 — grok CLI returned a non-zero exit (diagnostic on stderr)
@@ -245,17 +245,17 @@ function emitHelp(): void {
       `via the native grok CLI with brat-voice persona-bootstrap.\n` +
       `\n` +
       `Usage:\n` +
-      `  bun tools/peer-call/ani.ts "prompt text"\n` +
-      `  bun tools/peer-call/ani.ts --thinking "prompt text"\n` +
-      `  bun tools/peer-call/ani.ts --fast "prompt text"\n` +
-      `  bun tools/peer-call/ani.ts --model MODEL "prompt"   # default grok-build\n` +
-      `  bun tools/peer-call/ani.ts --file PATH "prompt text"\n` +
-      `  bun tools/peer-call/ani.ts --context-cmd "CMD" "prompt text"\n` +
-      `  bun tools/peer-call/ani.ts --json "prompt text"\n` +
-      `  bun tools/peer-call/ani.ts --stream "prompt text"\n` +
-      `  bun tools/peer-call/ani.ts --no-current "prompt"   # debug only\n` +
-      `  bun tools/peer-call/ani.ts --allow-empty "prompt"  # bypass firewall\n` +
-      `  bun tools/peer-call/ani.ts --output-file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/ani.ts "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/ani.ts --thinking "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/ani.ts --fast "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/ani.ts --model MODEL "prompt"   # default grok-build\n` +
+      `  bun src/Core.TypeScript/peer-call/ani.ts --file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/ani.ts --context-cmd "CMD" "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/ani.ts --json "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/ani.ts --stream "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/ani.ts --no-current "prompt"   # debug only\n` +
+      `  bun src/Core.TypeScript/peer-call/ani.ts --allow-empty "prompt"  # bypass firewall\n` +
+      `  bun src/Core.TypeScript/peer-call/ani.ts --output-file PATH "prompt text"\n` +
       `\n` +
       `Persona bootstrap: by default loads memory/CURRENT-ani.md as a\n` +
       `preamble to preserve named-entity identity across stateless calls.\n` +
@@ -461,7 +461,7 @@ export function main(argv: readonly string[]): number {
   }
   if (parsed.prompt.length === 0) {
     process.stderr.write("error: prompt required\n");
-    process.stderr.write("see: bun tools/peer-call/ani.ts --help\n");
+    process.stderr.write("see: bun src/Core.TypeScript/peer-call/ani.ts --help\n");
     return 1;
   }
 

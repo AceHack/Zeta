@@ -201,7 +201,7 @@ function makeRevertOpts(surfacesPath: string, page = new FakeRevertPage("octocat
 describe("appendEntry", () => {
   test("defaults to the repository hygiene-history log path", () => {
     expect(DEFAULT_LOG_PATH).toBe(
-      resolve(import.meta.dir, "..", "..", "..", "docs/hygiene-history/playwright-mutations/log.jsonl"),
+      resolve(import.meta.dir, "..", "..", "..", "..", "docs/hygiene-history/playwright-mutations/log.jsonl"),
     );
   });
 

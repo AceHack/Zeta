@@ -1,4 +1,4 @@
-# `tools/crypto/better-git-crypt/` — 081KSNY2Z0008QG0R002JKH50A v1 (Phase 2: real crypto)
+# `src/Core.TypeScript/crypto/better-git-crypt/` — 081KSNY2Z0008QG0R002JKH50A v1 (Phase 2: real crypto)
 
 Post-quantum (Noble + XWing + ML-DSA-65 + CBOR envelope) replacement for legacy git-crypt, per [081KSNY2Z0008QG0R002JKH50A](../../../docs/backlog/P1/081KSNY2Z0008QG0R002JKH50A-better-gitcrypt-post-quantum-lattice-based-retraction-native-diff-readable-bouncy-castle-patterns-aaron-2026-05-28.md) + [v1 design memo](../../../docs/research/2026-05-28-b-0883-v1-design-memo-noble-xwing-mldsa65-cbor-envelope-with-locked-decisions.md).
 
@@ -62,13 +62,13 @@ Fields: `version` (1), `context` (`"zeta.git-crypt.file.v1"`), `algKem`, `algKdf
 
 ```bash
 # List ALG_REGISTRY by class
-bun tools/crypto/better-git-crypt/cli/main.ts --list-algs
+bun src/Core.TypeScript/crypto/better-git-crypt/cli/main.ts --list-algs
 
 # Validate registry invariants (unique ids; ships-v1 algs present for each class)
-bun tools/crypto/better-git-crypt/cli/main.ts --validate
+bun src/Core.TypeScript/crypto/better-git-crypt/cli/main.ts --validate
 
 # Dry-run envelope construction (synthetic FileEnvelope using ships-v1 primary algorithms)
-bun tools/crypto/better-git-crypt/cli/main.ts --dry-run-envelope
+bun src/Core.TypeScript/crypto/better-git-crypt/cli/main.ts --dry-run-envelope
 ```
 
 ### File encryption (real PQ crypto — `files.ts` wiring `crypto.ts`)
@@ -81,15 +81,15 @@ deferred integration.
 ```bash
 # 1. Generate a keypair (you run this; you hold the secret bundle).
 #    Writes <id>.recipient.json (PUBLIC, shareable) + <id>.secret.json (SECRET, 0600).
-bun tools/crypto/better-git-crypt/cli/main.ts --gen-recipient you@zeta --out-dir ~/.zeta-keys
+bun src/Core.TypeScript/crypto/better-git-crypt/cli/main.ts --gen-recipient you@zeta --out-dir ~/.zeta-keys
 
 # 2. Self-encrypt a file (sender = sole recipient = you → only you can decrypt).
-bun tools/crypto/better-git-crypt/cli/main.ts \
+bun src/Core.TypeScript/crypto/better-git-crypt/cli/main.ts \
   --encrypt-file notes.txt --self-key ~/.zeta-keys/you@zeta.secret.json
 #    → notes.txt.zc (commit this; keep notes.txt out of git)
 
 # 3. Decrypt (round-trips byte-for-byte).
-bun tools/crypto/better-git-crypt/cli/main.ts \
+bun src/Core.TypeScript/crypto/better-git-crypt/cli/main.ts \
   --decrypt-file notes.txt.zc --key ~/.zeta-keys/you@zeta.secret.json --out notes.txt
 
 # Multi-recipient: add --recipient <other.recipient.json> (repeatable) on encrypt;
@@ -136,15 +136,15 @@ writes) to preview.
 
 ```bash
 # 1. one-time keygen (the agent never sees the secret):
-bun tools/crypto/better-git-crypt/cli/main.ts --gen-recipient <identity> --out-dir ~/.zeta-keys
+bun src/Core.TypeScript/crypto/better-git-crypt/cli/main.ts --gen-recipient <identity> --out-dir ~/.zeta-keys
 #    → ~/.zeta-keys/<identity>.{recipient,secret}.json   (.zeta-keys/ is gitignored)
 
 # 2. self-encrypt (the key owner runs this; keep plaintext in a gitignored dir):
-bun tools/crypto/better-git-crypt/memory-encrypt-loop.ts \
+bun src/Core.TypeScript/crypto/better-git-crypt/memory-encrypt-loop.ts \
   --keys ~/.zeta-keys/<identity>.secret.json --in <in-dir> --out <out-dir>
 
 # preview without a key (agent-safe — no writes):
-bun tools/crypto/better-git-crypt/memory-encrypt-loop.ts --dry-run --in <in-dir> --out <out-dir>
+bun src/Core.TypeScript/crypto/better-git-crypt/memory-encrypt-loop.ts --dry-run --in <in-dir> --out <out-dir>
 ```
 
 `--in <dir>` / `--out <dir>` (required), `--keys <secret-bundle>` (required unless
@@ -155,7 +155,7 @@ agent commits the `.zc` (plaintext never leaves the gitignored input dir).
 ## Tests
 
 ```bash
-bun test tools/crypto/better-git-crypt/
+bun test src/Core.TypeScript/crypto/better-git-crypt/
 ```
 
 Invariants checked: unique alg ids; ships-v1 presence for each class (kem/signature/kdf/aead); registry catches duplicate ids + missing ships-v1; envelope catches wrong version + context mismatch + unknown algs + wrong-class-references + empty recipient set + empty signerIdentity; encryption context catches empty recipient set + sender-not-in-recipients + unsupported algs + invalid keys.

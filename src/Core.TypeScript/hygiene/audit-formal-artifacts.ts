@@ -6,8 +6,8 @@
 // reference index (avoids per-artifact grep spawning).
 //
 // Usage:
-//   bun tools/hygiene/audit-formal-artifacts.ts
-//   bun tools/hygiene/audit-formal-artifacts.ts --json
+//   bun src/Core.TypeScript/hygiene/audit-formal-artifacts.ts
+//   bun src/Core.TypeScript/hygiene/audit-formal-artifacts.ts --json
 
 import { readFileSync } from "node:fs";
 import { dirname, resolve, extname } from "node:path";

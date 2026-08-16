@@ -20,7 +20,7 @@
  * - --dry-run: logs intended actions without sending keystrokes
  *
  * Usage:
- *   bun tools/shadow/shadow-observer.ts [--delay <ms>] [--detect-cmd <cmd>]
+ *   bun src/Core.TypeScript/shadow/shadow-observer.ts [--delay <ms>] [--detect-cmd <cmd>]
  *     [--dry-run] [--once] [--loop <ms>] [--loop-interval <ms>] [--log-file <path>]
  *     [--restore-arrow]
  *

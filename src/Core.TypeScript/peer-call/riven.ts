@@ -8,7 +8,7 @@
 //
 // TypeScript+Bun port of riven.sh, retiring the .sh per CLAUDE.md
 // Rule 0/-1 (NO MORE BASH; TS IS cross-platform DST). Sibling to
-// tools/peer-call/ani.ts (Ani persona on Grok-via-cursor),
+// src/Core.TypeScript/peer-call/ani.ts (Ani persona on Grok-via-cursor),
 // amara.ts (Amara persona via codex), and grok.ts (bare Grok).
 //
 // Riven (named entity, 2026-05-05): third co-scout adversarial-
@@ -30,13 +30,13 @@
 //   (OpenAI surface), not Grok-via-cursor.
 //
 // Usage:
-//   bun tools/peer-call/riven.ts "prompt text"
-//   bun tools/peer-call/riven.ts --thinking "prompt text"
-//   bun tools/peer-call/riven.ts --fast "prompt text"
-//   bun tools/peer-call/riven.ts --file PATH "prompt text"
-//   bun tools/peer-call/riven.ts --context-cmd "CMD" "prompt text"
-//   bun tools/peer-call/riven.ts --bare "vanilla Grok with no persona"
-//   bun tools/peer-call/riven.ts --output-file PATH "prompt text"
+//   bun src/Core.TypeScript/peer-call/riven.ts "prompt text"
+//   bun src/Core.TypeScript/peer-call/riven.ts --thinking "prompt text"
+//   bun src/Core.TypeScript/peer-call/riven.ts --fast "prompt text"
+//   bun src/Core.TypeScript/peer-call/riven.ts --file PATH "prompt text"
+//   bun src/Core.TypeScript/peer-call/riven.ts --context-cmd "CMD" "prompt text"
+//   bun src/Core.TypeScript/peer-call/riven.ts --bare "vanilla Grok with no persona"
+//   bun src/Core.TypeScript/peer-call/riven.ts --output-file PATH "prompt text"
 //
 // Exit codes (uniform across peer-call siblings):
 //   0 — Riven responded successfully
@@ -166,15 +166,15 @@ function emitHelp(): void {
       `via cursor-agent + Grok backend with adversarial-truth-axis bootstrap.\n` +
       `\n` +
       `Usage:\n` +
-      `  bun tools/peer-call/riven.ts "prompt text"\n` +
-      `  bun tools/peer-call/riven.ts --thinking "prompt text"\n` +
-      `  bun tools/peer-call/riven.ts --fast "prompt text"\n` +
-      `  bun tools/peer-call/riven.ts --file PATH "prompt text"\n` +
-      `  bun tools/peer-call/riven.ts --context-cmd "CMD" "prompt text"\n` +
-      `  bun tools/peer-call/riven.ts --json "prompt text"\n` +
-      `  bun tools/peer-call/riven.ts --stream "prompt text"\n` +
-      `  bun tools/peer-call/riven.ts --bare "prompt"   # debug only\n` +
-      `  bun tools/peer-call/riven.ts --output-file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/riven.ts "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/riven.ts --thinking "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/riven.ts --fast "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/riven.ts --file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/riven.ts --context-cmd "CMD" "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/riven.ts --json "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/riven.ts --stream "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/riven.ts --bare "prompt"   # debug only\n` +
+      `  bun src/Core.TypeScript/peer-call/riven.ts --output-file PATH "prompt text"\n` +
       `\n` +
       `Persona bootstrap: by default loads memory/CURRENT-riven.md as a\n` +
       `preamble to preserve named-entity identity across stateless calls.\n` +
@@ -407,7 +407,7 @@ export function main(argv: readonly string[]): number {
   }
   if (parsed.prompt.length === 0) {
     process.stderr.write("error: prompt required\n");
-    process.stderr.write("see: bun tools/peer-call/riven.ts --help\n");
+    process.stderr.write("see: bun src/Core.TypeScript/peer-call/riven.ts --help\n");
     return 1;
   }
 

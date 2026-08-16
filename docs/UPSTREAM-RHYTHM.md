@@ -4,7 +4,7 @@ This doc is **Zeta-specific** project configuration for the
 `fork-pr-workflow` skill. The skill itself is factory-generic
 and defers the upstream-cadence choice to project-level
 configuration (see
-`.claude/skills/fork-pr-workflow/SKILL.md` §"Optional
+`.claude/skills/workflows/blueprints/fork-pr-workflow.md` §"Optional
 overlay: batched upstream rhythm"). This doc is that
 configuration for Zeta.
 

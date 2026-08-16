@@ -15,8 +15,8 @@
 // stable runner, update ALLOWED_LABELS + bump LAST_VERIFIED.
 //
 // Usage:
-//   bun tools/lint/runner-version-freshness.ts             # all workflows
-//   bun tools/lint/runner-version-freshness.ts <file>...   # specific
+//   bun src/Core.TypeScript/lint/runner-version-freshness.ts             # all workflows
+//   bun src/Core.TypeScript/lint/runner-version-freshness.ts <file>...   # specific
 //
 // Exit codes:
 //   0  current (or freshness warning only — non-fatal)

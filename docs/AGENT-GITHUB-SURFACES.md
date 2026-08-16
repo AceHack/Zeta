@@ -43,7 +43,7 @@ surface-assignment):
 
 The "we need skills" directive is the meta-rule: codify *once*
 so future agents don't rediscover. Skill is at
-[`.claude/skills/github-surface-triage/SKILL.md`](../.claude/skills/github-surface-triage/SKILL.md).
+[`.claude/skills/workflows/blueprints/github-surface-triage.md`](../.claude/skills/workflows/blueprints/github-surface-triage.md).
 
 ## The ten surfaces at a glance
 
@@ -517,7 +517,7 @@ premature adoption.
 ## Round-close mechanical procedure
 
 One sweep per round-close covers all ten surfaces. The
-[`github-surface-triage`](../.claude/skills/github-surface-triage/SKILL.md)
+[`github-surface-triage`](../.claude/skills/workflows/blueprints/github-surface-triage.md)
 skill encodes the steps — this section is the human-readable
 version:
 
@@ -549,7 +549,7 @@ For each surface, classify, act, log. Surface findings up to
 agent** logs on-touch.
 
 The skill at
-[`.claude/skills/github-surface-triage/SKILL.md`](../.claude/skills/github-surface-triage/SKILL.md)
+[`.claude/skills/workflows/blueprints/github-surface-triage.md`](../.claude/skills/workflows/blueprints/github-surface-triage.md)
 operationalizes this doc so future agents don't rediscover the
 classification. Skill invocation at round-close and
 opportunistically on any tick that interacts with a GitHub
@@ -596,7 +596,7 @@ retired (with a row-history-preserved note, not deletion).
 - `docs/hygiene-history/pulse-snapshot.md` (to be seeded on first round-close)
 - `docs/hygiene-history/pages-history.md` (to be seeded on first Pages publish — gated on ADR)
 - `docs/github-repo-settings-snapshot.md` (to be seeded on first round-close)
-- [`.claude/skills/github-surface-triage/SKILL.md`](../.claude/skills/github-surface-triage/SKILL.md) —
+- [`.claude/skills/workflows/blueprints/github-surface-triage.md`](../.claude/skills/workflows/blueprints/github-surface-triage.md) —
   executable procedure
 - `.github/copilot-instructions.md` — reviewer-robot scope
   (factory-managed PR-reviewer input)

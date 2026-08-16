@@ -415,7 +415,7 @@ BP-07").
   the residual failure surface to their three-way intersection.
   The round-22 `InfoTheoreticSharder` cross-check is the anchor
   case. Routing triage lives in
-  `.claude/skills/formal-verification-expert/SKILL.md`. **stable**
+  `.claude/skills/formal-methods/blueprints/formal-verification-expert.md`. **stable**
   **External anchors:** (1) Herber, P. et al. (2018), *A Survey on Formal
   Verification Techniques for Safety-Critical Systems-on-Chip*, MDPI Electronics
   7(6) (<https://www.mdpi.com/2079-9292/7/6/81>) — peer-reviewed survey of six
@@ -434,7 +434,7 @@ BP-07").
 - **BP-17** *Every artifact in the repo has exactly one
   canonical home declared in the project's ontology (the
   canonical-home map in
-  `.claude/skills/canonical-home-auditor/SKILL.md`, anchored
+  `.claude/skills/governance/blueprints/canonical-home-auditor.md`, anchored
   by the founding ADR `2026-04-19-bp-home-rule-zero.md`).
   Artifacts out-of-place, duplicated across homes, or homeless
   are P0 findings. New artifact types require an ADR

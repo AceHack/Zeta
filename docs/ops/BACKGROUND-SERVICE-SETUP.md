@@ -13,7 +13,7 @@ launchd (fires every 60s)
         ├── heartbeat: git fetch, count claims/PRs/dirty
         └── work cycle (every CLAUDE_INTERVAL seconds):
               ├── open_prs == 0 → PICKUP mode
-              │     ├── bun tools/backlog/autonomous-pickup.ts --json
+              │     ├── bun src/Core.TypeScript/backlog/autonomous-pickup.ts --json
               │     │     → selects highest-priority buildable item
               │     └── claude -p <prompt> --permission-mode auto
               │           → implements item, creates PR, arms auto-merge
@@ -87,7 +87,7 @@ if (elapsed >= claudeIntervalMs) {
         if (workMode === "pickup") {
             // Use the deterministic backlog selector
             const pickup = run("bun", [
-                "tools/backlog/autonomous-pickup.ts", "--json"
+                "src/Core.TypeScript/backlog/autonomous-pickup.ts", "--json"
             ], 30_000);
             let executionPrompt = "";
             try {
@@ -174,7 +174,7 @@ Watch for:
 
 | Tool | Purpose |
 |---|---|
-| `tools/backlog/autonomous-pickup.ts` | Deterministic item selector — reads all backlog items, checks deps/claims, returns highest-priority buildable item with an execution prompt |
+| `src/Core.TypeScript/backlog/autonomous-pickup.ts` | Deterministic item selector — reads all backlog items, checks deps/claims, returns highest-priority buildable item with an execution prompt |
 | `tools/github/refresh-worldview.ts` | World model refresh — open PRs, recent merges, issues, git state as JSON |
 | `tools/github/poll-pr-gate-batch.ts` | PR gate checker — reports BLOCKED/MERGEABLE, thread counts, check status |
 | `claude -p --permission-mode auto` | Non-interactive Claude with auto-approve for safe actions |

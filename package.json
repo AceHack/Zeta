@@ -6,7 +6,7 @@
     "bun": ">=1.3.13"
   },
   "scripts": {
-    "tally:substrates": "bun ./tools/invariant-substrates/tally.ts",
+    "tally:substrates": "bun ./src/Core.TypeScript/invariant-substrates/tally.ts",
     "build-graph:affected": "bun ./src/Core.TypeScript/ace/build-graph.ts affected",
     "build-graph:derive": "bun ./src/Core.TypeScript/ace/build-graph.ts derive",
     "build-graph:quorum": "bun ./src/Core.TypeScript/ace/build-graph.ts quorum",
@@ -29,8 +29,8 @@
     "test:browser-admission": "bun ./src/Core.TypeScript/browser-node/browser-execution-admission-smoke.ts",
     "run:zetadb-node": "bun ./src/Core.TypeScript/zetadb/scheduled-node.ts",
     "run:proposal-device-relay": "bun ./src/Core.TypeScript/browser-node/browser-delegated-device-proposal-relay-host.ts",
-    "hygiene:sort-tick-history": "bun ./tools/hygiene/sort-tick-history-canonical.ts",
-    "hygiene:fix-markdown": "bun ./tools/hygiene/fix-markdown-md032-md026.ts",
+    "hygiene:sort-tick-history": "bun ./src/Core.TypeScript/hygiene/sort-tick-history-canonical.ts",
+    "hygiene:fix-markdown": "bun ./src/Core.TypeScript/hygiene/fix-markdown-md032-md026.ts",
     "hygiene:check-bash-retirement-inventory": "bun ./src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce",
     "hygiene:no-ambient-credential-hoist": "bun ./src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts",
     "measure": "bun ./src/Core.TypeScript/ledger/measure.ts",

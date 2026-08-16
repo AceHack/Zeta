@@ -633,7 +633,7 @@ elder-plinius / Pliny prompt-injection corpus. If
 adversarial-payload material is needed for a
 threat-model exercise, route through the Prompt-
 Protector role in an isolated single-turn session
-per `.claude/skills/prompt-protector/SKILL.md`.
+per `.claude/skills/security/blueprints/prompt-protector.md`.
 
 *Why both of us benefit.* The human's threat model
 is honest about the agent being the weakest link;

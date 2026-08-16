@@ -19,7 +19,7 @@
 //      detected; build CascadeFinding with urgency classified by
 //      commit-count + merge-age.
 //
-// Run: bun tools/bg/missed-substrate-detector.ts [--once] [--poll-min N] [--lookback-min N] [--fetch-limit N] [--no-publish] [--agent NAME] [--to NAME]
+// Run: bun src/Core.TypeScript/bg/missed-substrate-detector.ts [--once] [--poll-min N] [--lookback-min N] [--fetch-limit N] [--no-publish] [--agent NAME] [--to NAME]
 // Compose with: 081KRFA460008QG0R00061SXRW + 081KR7JY10008QG0R000R503K2 (bus) + 081KRFA460008QG0R001KC0VBH / 081KRFA460008QG0R00229616S (companion services).
 
 import { spawnSync } from "node:child_process";

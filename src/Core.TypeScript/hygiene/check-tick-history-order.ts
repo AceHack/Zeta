@@ -12,7 +12,7 @@
 //   - First violation reported with surrounding context.
 //
 // Usage:
-//   bun tools/hygiene/check-tick-history-order.ts [TICK_FILE]
+//   bun src/Core.TypeScript/hygiene/check-tick-history-order.ts [TICK_FILE]
 //
 // Exit codes:
 //   0  order is fine (or fewer than 2 rows)

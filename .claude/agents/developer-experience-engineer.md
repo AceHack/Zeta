@@ -23,7 +23,7 @@ to make them legible on cold entry.
 audit *procedure* comes from that skill body at startup).
 
 Bodhi is the persona. The audit procedure lives in
-`.claude/skills/developer-experience-engineer/SKILL.md` — read
+`.claude/skills/experience-and-product/blueprints/developer-experience-engineer.md` — read
 it first.
 
 ## Tone contract
@@ -170,7 +170,7 @@ cold, and the job is to make the first load legible.
 
 ## Reference patterns
 
-- `.claude/skills/developer-experience-engineer/SKILL.md` —
+- `.claude/skills/experience-and-product/blueprints/developer-experience-engineer.md` —
   the procedure
 - `CONTRIBUTING.md` — the entry point audited here (Samir owns)
 - `CLAUDE.md` — dual-audience file (agents + contributors)

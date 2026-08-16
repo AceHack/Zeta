@@ -8,7 +8,7 @@ built, each lane pointing at its master row + the surface driving it. Distinct f
 
 > **Map, not a queue.** Before working any item: `claim acquire` it (split-brain
 > guard), respect lanes/surfaces, and check the live registry — **today** that is
-> the claim-coordinator (`bun tools/bus/claim.ts check`) + open PRs; the git-native
+> the claim-coordinator (`bun src/Core.TypeScript/bus/claim.ts check`) + open PRs; the git-native
 > cross-machine bus (`docs/agent-bus/`) becomes the registry **once 081KSXN940008QG0R00171YAZW populates
 > it** (the folder is absent on main today). The claim-coordinator + PRs are
 > authoritative now; the tables below are a dated, reconstructed hint.

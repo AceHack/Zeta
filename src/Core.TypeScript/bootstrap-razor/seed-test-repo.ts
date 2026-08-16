@@ -270,9 +270,12 @@ export type GhApiJsonResult =
   | { readonly ok: false; readonly error: string };
 
 const MANIFEST_DISPLAY_PATH = "docs/bootstrap-razor/SEED-MANIFEST.md";
-const MANIFEST_PATH = fileURLToPath(new URL("../../docs/bootstrap-razor/SEED-MANIFEST.md", import.meta.url));
-// Repo root = two levels up from tools/bootstrap-razor/.
-const REPO_ROOT = fileURLToPath(new URL("../..", import.meta.url));
+const MANIFEST_PATH = fileURLToPath(new URL("../../../docs/bootstrap-razor/SEED-MANIFEST.md", import.meta.url));
+// Repo root = THREE levels up from src/Core.TypeScript/bootstrap-razor/.
+// (Was `../..` when this lived at tools/bootstrap-razor/; #8050 moved the file
+// one level deeper and the arithmetic was not moved with it, so both this and
+// MANIFEST_PATH above resolved under `src/`.)
+const REPO_ROOT = fileURLToPath(new URL("../../..", import.meta.url));
 
 function usage(): string {
   return [

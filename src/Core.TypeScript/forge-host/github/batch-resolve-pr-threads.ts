@@ -87,7 +87,7 @@ function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
 
 function commandAvailable(cmd: string): boolean {
   // Match bash `command -v <cmd>` semantics (PATH existence) — same shape
-  // as siblings in tools/peer-call/.
+  // as siblings in src/Core.TypeScript/peer-call/.
   const result = spawnSync("/bin/sh", ["-c", `command -v "${cmd}"`], {
     stdio: "ignore",
   });

@@ -12,8 +12,8 @@
  * Anthropic's base AutoDream allows.
  *
  * Usage:
- *   bun tools/memory/reindex-memory-md.ts            # write MEMORY.md
- *   bun tools/memory/reindex-memory-md.ts --check    # dry-run; exit 2 if stale
+ *   bun src/Core.TypeScript/memory/reindex-memory-md.ts            # write MEMORY.md
+ *   bun src/Core.TypeScript/memory/reindex-memory-md.ts --check    # dry-run; exit 2 if stale
  *
  * Heap-state-acceptable: memory files commit with frontmatter
  * but do NOT require synchronous MEMORY.md paired-edit. This

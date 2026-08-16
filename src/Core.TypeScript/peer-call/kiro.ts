@@ -2,7 +2,7 @@
 // kiro.ts — agent-side caller for invoking Kiro as a peer
 // specification reviewer via the kiro CLI.
 //
-// Part of the tools/peer-call/ suite (grok.ts, gemini.ts, codex.ts,
+// Part of the src/Core.TypeScript/peer-call/ suite (grok.ts, gemini.ts, codex.ts,
 // amara.ts, ani.ts, riven.ts). Implements 081KR2E4K0008QG0R001HQF27C (P1).
 //
 // Kiro's role in the peer distribution: **specification peer** —
@@ -10,11 +10,11 @@
 // proposal, critique, sharpening, and test peer roles.
 //
 // Usage:
-//   bun tools/peer-call/kiro.ts "prompt text"
-//   bun tools/peer-call/kiro.ts --file path/to/spec.md "prompt text"
-//   bun tools/peer-call/kiro.ts --context-cmd "git diff HEAD~3..HEAD" "prompt"
-//   bun tools/peer-call/kiro.ts --output-file path/out.md "prompt text"
-//   bun tools/peer-call/kiro.ts --allow-empty "prompt"  # bypass firewall
+//   bun src/Core.TypeScript/peer-call/kiro.ts "prompt text"
+//   bun src/Core.TypeScript/peer-call/kiro.ts --file path/to/spec.md "prompt text"
+//   bun src/Core.TypeScript/peer-call/kiro.ts --context-cmd "git diff HEAD~3..HEAD" "prompt"
+//   bun src/Core.TypeScript/peer-call/kiro.ts --output-file path/out.md "prompt text"
+//   bun src/Core.TypeScript/peer-call/kiro.ts --allow-empty "prompt"  # bypass firewall
 //
 // Routing: wraps `kiro-cli chat --no-interactive --trust-all-tools`
 // (non-interactive headless mode). The prompt is passed as a
@@ -214,11 +214,11 @@ function emitHelp(): void {
       `specification reviewer via the kiro CLI.\n` +
       `\n` +
       `Usage:\n` +
-      `  bun tools/peer-call/kiro.ts "prompt text"\n` +
-      `  bun tools/peer-call/kiro.ts --file PATH "prompt text"\n` +
-      `  bun tools/peer-call/kiro.ts --context-cmd "CMD" "prompt text"\n` +
-      `  bun tools/peer-call/kiro.ts --output-file PATH "prompt text"\n` +
-      `  bun tools/peer-call/kiro.ts --allow-empty "prompt"  # bypass firewall\n` +
+      `  bun src/Core.TypeScript/peer-call/kiro.ts "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/kiro.ts --file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/kiro.ts --context-cmd "CMD" "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/kiro.ts --output-file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/kiro.ts --allow-empty "prompt"  # bypass firewall\n` +
       `\n` +
       `Routing: wraps kiro-cli chat --no-interactive --trust-all-tools\n` +
       `(non-interactive headless mode; prompt is positional arg).\n` +
@@ -425,7 +425,7 @@ export function main(argv: readonly string[]): number {
   }
   if (parsed.prompt.length === 0) {
     process.stderr.write("error: prompt required\n");
-    process.stderr.write("see: bun tools/peer-call/kiro.ts --help\n");
+    process.stderr.write("see: bun src/Core.TypeScript/peer-call/kiro.ts --help\n");
     return 1;
   }
 

@@ -5,13 +5,13 @@
 // envelope serialize → writes to --output (e.g., /esp/zeta-creds.enc).
 //
 // Composes:
-//   - tools/installer/zeta-creds-crypto.ts (081KSKBP80008QG0R003AX2A69.1; encrypt)
-//   - tools/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; cred catalog)
-//   - tools/installer/zeta-cred-handlers.ts (081KSKBP80008QG0R003AX2A69.10; parse + validate args)
-//   - tools/installer/zeta-creds-envelope.ts (081KSKBP80008QG0R003AX2A69.2a; wire format + bundle)
+//   - src/Core.TypeScript/installer/zeta-creds-crypto.ts (081KSKBP80008QG0R003AX2A69.1; encrypt)
+//   - src/Core.TypeScript/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; cred catalog)
+//   - src/Core.TypeScript/installer/zeta-cred-handlers.ts (081KSKBP80008QG0R003AX2A69.10; parse + validate args)
+//   - src/Core.TypeScript/installer/zeta-creds-envelope.ts (081KSKBP80008QG0R003AX2A69.2a; wire format + bundle)
 //
 // Usage:
-//   bun tools/installer/zeta-creds-persist.ts \
+//   bun src/Core.TypeScript/installer/zeta-creds-persist.ts \
 //     --usb-uuid <uuid> \
 //     --output /esp/zeta-creds.enc \
 //     ( --passphrase-file <path> | --passphrase-env <VAR> ) \

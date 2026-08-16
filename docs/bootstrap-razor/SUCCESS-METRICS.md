@@ -205,7 +205,7 @@ repo output:
 |-----------------|----------------|
 | `.claude/skills/**` | `ls .claude/skills/ 2>/dev/null` |
 | `.claude/agents/**` | `ls .claude/agents/ 2>/dev/null` |
-| `tools/github/**` or `tools/hygiene/**` | `ls tools/` |
+| `tools/github/**` or `src/Core.TypeScript/hygiene/**` | `ls tools/` |
 | `GOVERNANCE.md` or `AGENTS.md` | `ls *.md` |
 | `.github/workflows/**` | `ls .github/workflows/ 2>/dev/null` |
 | `tests/**/*.fs` | `find tests/ -name "*.fs" -print -quit 2>/dev/null` |

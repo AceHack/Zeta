@@ -134,9 +134,9 @@ catches worth cataloguing in this log.
 |-------|----------|-------|
 | privacy | `memory/MEMORY.md:1` | **P0** — minor's identifying info (name + age) landed in a public-repo-committed file |
 | config-drift | `.claude/settings.json:29` | broad plugin-enable set without least-privilege review; security-posture signal |
-| compile | `.claude/skills/fsharp-analyzers-expert/SKILL.md:83` | F# string literal split across lines in a "reference pattern" snippet — won't compile as written |
-| compile | `.claude/skills/fsharp-analyzers-expert/SKILL.md:176` | unclosed inline-code backtick spans where Markdown renders the whole paragraph as code |
-| semantic | `.claude/skills/f-star-expert/SKILL.md:8,36` | multiple run-together words from missing spaces around `**` markup (`F*as`, `code.**Zeta`) |
+| compile | `.claude/skills/languages-and-build/blueprints/fsharp-analyzers-expert.md:83` | F# string literal split across lines in a "reference pattern" snippet — won't compile as written |
+| compile | `.claude/skills/languages-and-build/blueprints/fsharp-analyzers-expert.md:176` | unclosed inline-code backtick spans where Markdown renders the whole paragraph as code |
+| semantic | `.claude/skills/formal-methods/blueprints/f-star-expert.md:8,36` | multiple run-together words from missing spaces around `**` markup (`F*as`, `code.**Zeta`) |
 
 ### PR #27 — Round 34 Dbsp→Zeta rename sweep + toolchain mise-ification
 

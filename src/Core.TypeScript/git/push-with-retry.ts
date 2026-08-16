@@ -15,9 +15,9 @@
 // `docs/research/dst-accepted-boundaries.md` §3 and Otto-168.
 //
 // Usage:
-//   bun tools/git/push-with-retry.ts [git push args...]
-//   bun tools/git/push-with-retry.ts
-//   bun tools/git/push-with-retry.ts --set-upstream origin my-branch
+//   bun src/Core.TypeScript/git/push-with-retry.ts [git push args...]
+//   bun src/Core.TypeScript/git/push-with-retry.ts
+//   bun src/Core.TypeScript/git/push-with-retry.ts --set-upstream origin my-branch
 //
 // Exit codes:
 //   0   push succeeded (possibly after retries)

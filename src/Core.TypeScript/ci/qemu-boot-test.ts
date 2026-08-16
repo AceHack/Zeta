@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * tools/ci/qemu-boot-test.ts
+ * src/Core.TypeScript/ci/qemu-boot-test.ts
  *
  * QEMU boot smoke-test for the canonical Zeta installer ISO.
  *
@@ -16,8 +16,8 @@
  * stack.
  *
  * Usage:
- *   bun tools/ci/qemu-boot-test.ts <iso-path>
- *   bun tools/ci/qemu-boot-test.ts --usb-image <zflash-raw.img>
+ *   bun src/Core.TypeScript/ci/qemu-boot-test.ts <iso-path>
+ *   bun src/Core.TypeScript/ci/qemu-boot-test.ts --usb-image <zflash-raw.img>
  *
  * Exit codes:
  *   0 — boot succeeded (login prompt observed within timeout)
@@ -60,8 +60,8 @@ interface BootMedia {
 }
 
 function usage(): never {
-  console.error("usage: bun tools/ci/qemu-boot-test.ts <iso-path> [--arch x86_64|aarch64]");
-  console.error("       bun tools/ci/qemu-boot-test.ts --usb-image <zflash-raw.img> [--arch x86_64|aarch64]");
+  console.error("usage: bun src/Core.TypeScript/ci/qemu-boot-test.ts <iso-path> [--arch x86_64|aarch64]");
+  console.error("       bun src/Core.TypeScript/ci/qemu-boot-test.ts --usb-image <zflash-raw.img> [--arch x86_64|aarch64]");
   process.exit(2);
 }
 

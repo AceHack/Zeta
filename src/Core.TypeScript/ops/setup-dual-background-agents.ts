@@ -6,7 +6,7 @@
 // so they don't conflict. Both write to the same model-ratings.jsonl
 // via append (atomic on POSIX for lines under PIPE_BUF = 4096 bytes).
 //
-// Usage: bun tools/ops/setup-dual-background-agents.ts [--dry-run]
+// Usage: bun src/Core.TypeScript/ops/setup-dual-background-agents.ts [--dry-run]
 
 import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -158,5 +158,5 @@ console.log(`Two background agents registered:`);
 console.log(`  Opus:   ${agents[0]!.label} → ${agents[0]!.worktree}`);
 console.log(`  Sonnet: ${agents[1]!.label} → ${agents[1]!.worktree}`);
 console.log(`\nBoth write ratings to their respective state dirs.`);
-console.log(`Report: bun tools/ops/model-rating-report.ts --reviews`);
+console.log(`Report: bun src/Core.TypeScript/ops/model-rating-report.ts --reviews`);
 if (dryRun) console.log(`\n(DRY RUN — no changes made)`);

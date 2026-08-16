@@ -18,8 +18,8 @@
 //
 // Usage:
 //
-//   bun tools/hygiene/check-shard-before-push.ts <shard-path>...
-//   bun tools/hygiene/check-shard-before-push.ts docs/hygiene-history/ticks/2026/05/16/0340Z.md
+//   bun src/Core.TypeScript/hygiene/check-shard-before-push.ts <shard-path>...
+//   bun src/Core.TypeScript/hygiene/check-shard-before-push.ts docs/hygiene-history/ticks/2026/05/16/0340Z.md
 //
 // Exit codes:
 //
@@ -131,7 +131,7 @@ function runRelativePathAudit(file: string): boolean {
   const r = spawnSync(
     "bun",
     [
-      "tools/hygiene/audit-tick-shard-relative-paths.ts",
+      "src/Core.TypeScript/hygiene/audit-tick-shard-relative-paths.ts",
       "--files",
       file,
     ],

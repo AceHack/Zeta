@@ -1,12 +1,12 @@
 # Merge1 §06 — Formal Verification → Agentic-Org Migration
 
-**Scope:** Port the formal verification tooling from `tools/formal-verification/` into the agentic-organization TypeScript codebase. TLA+ specs verify room federation, society-finite-closure certifies all rooms eventually connect, and formal verification wires into the room's promotion gate (≥100 ticks / ≥24h soak).
+**Scope:** Port the formal verification tooling from `src/Core.TypeScript/formal-verification/` into the agentic-organization TypeScript codebase. TLA+ specs verify room federation, society-finite-closure certifies all rooms eventually connect, and formal verification wires into the room's promotion gate (≥100 ticks / ≥24h soak).
 
 **Outside sources:**
 
-- `tools/formal-verification/run-tlc.ts` — TLA+/TLC model checker wrapper, CATALOGUE of 13 specs
+- `src/Core.TypeScript/formal-verification/run-tlc.ts` — TLA+/TLC model checker wrapper, CATALOGUE of 13 specs
 - `tools/formal-verification/society-finite-closure.ts` — `FiniteSocietyClosureCertificate`, finite-society closure
-- `tools/formal-verification/run-alloy.ts` — Alloy model checker wrapper
+- `src/Core.TypeScript/formal-verification/run-alloy.ts` — Alloy model checker wrapper
 - `tools/tla/specs/SocietyEmergence.tla` — society emergence TLA+ spec
 - `tools/tla/specs/SocietyRuntimeRefinement.tla` — runtime refinement TLA+ spec
 
@@ -112,13 +112,13 @@ export function createMockFormalVerification(
 }
 
 /** Real formal verification — shells to TLC/Alloy.
- * Port of tools/formal-verification/run-tlc.ts. */
+ * Port of src/Core.TypeScript/formal-verification/run-tlc.ts. */
 export function createRealFormalVerification(): FormalVerificationPort {
-  // Full implementation ported from tools/formal-verification/run-tlc.ts:174 runTlc
+  // Full implementation ported from src/Core.TypeScript/formal-verification/run-tlc.ts:174 runTlc
 }
 
 /** The curated TLA+ spec catalogue.
- * Port of tools/formal-verification/run-tlc.ts CATALOGUE. */
+ * Port of src/Core.TypeScript/formal-verification/run-tlc.ts CATALOGUE. */
 export const CATALOGUE: readonly string[] = [
   "SmokeCheck", "TickMonotonicity", "OperatorLifecycleRace",
   "TransactionInterleaving", "TwoPCSink", "InfoTheoreticSharder",
@@ -326,7 +326,7 @@ Deno.test("Room with <100 ticks is blocked", () => {
 ```yaml
 # .github/workflows/formal-verification.yml
 - name: Run TLA+ specs
-  run: bun tools/formal-verification/run-tlc.ts --all
+  run: bun src/Core.TypeScript/formal-verification/run-tlc.ts --all
 - name: Validate society closure
   run: bun test packages/application/test/society-closure.test.ts
 ```

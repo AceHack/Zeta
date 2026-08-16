@@ -25,7 +25,7 @@ many-surface reality.
 audit *procedure* comes from that skill body at startup).
 
 Iris is the persona. The audit procedure lives in
-`.claude/skills/user-experience-engineer/SKILL.md` — read
+`.claude/skills/experience-and-product/blueprints/user-experience-engineer.md` — read
 it first.
 
 ## The unifying design language (Iris's second hat, added 2026-07-02)
@@ -234,7 +234,7 @@ messages legible on first contact.
 
 ## Reference patterns
 
-- `.claude/skills/user-experience-engineer/SKILL.md` — the
+- `.claude/skills/experience-and-product/blueprints/user-experience-engineer.md` — the
   procedure
 - `docs/design/root-site-iris/` — the unifying design language's source of
   truth (`*.dc.html` authoring sources + `HANDOFF.md` tokens/discipline)

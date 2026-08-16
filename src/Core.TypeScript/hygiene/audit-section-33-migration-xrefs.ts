@@ -30,9 +30,9 @@
 //
 // Usage:
 //
-//   bun tools/hygiene/audit-section-33-migration-xrefs.ts                # detect-only
-//   bun tools/hygiene/audit-section-33-migration-xrefs.ts --report PATH  # write markdown report
-//   bun tools/hygiene/audit-section-33-migration-xrefs.ts --enforce      # exit non-zero on findings
+//   bun src/Core.TypeScript/hygiene/audit-section-33-migration-xrefs.ts                # detect-only
+//   bun src/Core.TypeScript/hygiene/audit-section-33-migration-xrefs.ts --report PATH  # write markdown report
+//   bun src/Core.TypeScript/hygiene/audit-section-33-migration-xrefs.ts --enforce      # exit non-zero on findings
 //
 // Exit codes:
 //

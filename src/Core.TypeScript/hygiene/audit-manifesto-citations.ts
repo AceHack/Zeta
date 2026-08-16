@@ -25,15 +25,15 @@
 //
 // Usage:
 //
-//   bun tools/hygiene/audit-manifesto-citations.ts                # detect-only, exit 0 always
-//   bun tools/hygiene/audit-manifesto-citations.ts --report PATH  # write markdown report
-//   bun tools/hygiene/audit-manifesto-citations.ts --json         # machine-readable
-//   bun tools/hygiene/audit-manifesto-citations.ts --snapshot     # write today's snapshot
+//   bun src/Core.TypeScript/hygiene/audit-manifesto-citations.ts                # detect-only, exit 0 always
+//   bun src/Core.TypeScript/hygiene/audit-manifesto-citations.ts --report PATH  # write markdown report
+//   bun src/Core.TypeScript/hygiene/audit-manifesto-citations.ts --json         # machine-readable
+//   bun src/Core.TypeScript/hygiene/audit-manifesto-citations.ts --snapshot     # write today's snapshot
 //                                                                   to docs/hygiene-history/
 //                                                                   manifesto-citations/YYYY-MM-DD.json
-//   bun tools/hygiene/audit-manifesto-citations.ts --snapshot --date 2026-05-23  # override date
-//   bun tools/hygiene/audit-manifesto-citations.ts --delta        # delta vs most-recent prior snapshot
-//   bun tools/hygiene/audit-manifesto-citations.ts --delta --json # machine-readable delta
+//   bun src/Core.TypeScript/hygiene/audit-manifesto-citations.ts --snapshot --date 2026-05-23  # override date
+//   bun src/Core.TypeScript/hygiene/audit-manifesto-citations.ts --delta        # delta vs most-recent prior snapshot
+//   bun src/Core.TypeScript/hygiene/audit-manifesto-citations.ts --delta --json # machine-readable delta
 //
 // Exit codes:
 //
@@ -298,7 +298,7 @@ function renderReport(result: AuditResult, now: Date): string {
     lines.push("manifesto in load-bearing decisions; promotion-readiness emerges from accumulated");
     lines.push("signal over time, not from a single snapshot.");
     lines.push("");
-    lines.push("Composes with `tools/hygiene/audit-rule-cross-refs.ts` pattern (count-then-classify");
+    lines.push("Composes with `src/Core.TypeScript/hygiene/audit-rule-cross-refs.ts` pattern (count-then-classify");
     lines.push("discipline). False positives (e.g., 'Constraint N' from non-manifesto contexts)");
     lines.push("are bounded by per-surface visibility — the human-classifiable layer is the");
     lines.push("snippet column in the JSON output.");

@@ -14,10 +14,10 @@
 // and emits one line per commit.
 //
 // Usage:
-//   bun tools/alignment/audit_commit.ts                   # HEAD
-//   bun tools/alignment/audit_commit.ts HEAD~5..HEAD      # range
-//   bun tools/alignment/audit_commit.ts --json            # JSON output
-//   bun tools/alignment/audit_commit.ts --out DIR         # per-commit JSON
+//   bun src/Core.TypeScript/alignment/audit_commit.ts                   # HEAD
+//   bun src/Core.TypeScript/alignment/audit_commit.ts HEAD~5..HEAD      # range
+//   bun src/Core.TypeScript/alignment/audit_commit.ts --json            # JSON output
+//   bun src/Core.TypeScript/alignment/audit_commit.ts --out DIR         # per-commit JSON
 //
 // Exit codes:
 //   0  All checks clean

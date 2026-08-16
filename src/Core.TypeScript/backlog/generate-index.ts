@@ -10,9 +10,9 @@
 // short pointer index sorted by (priority, id).
 //
 // Usage:
-//   bun tools/backlog/generate-index.ts              # writes docs/BACKLOG.md
-//   bun tools/backlog/generate-index.ts --check      # exit 2 if drift vs committed
-//   bun tools/backlog/generate-index.ts --stdout     # print to stdout, no write
+//   bun src/Core.TypeScript/backlog/generate-index.ts              # writes docs/BACKLOG.md
+//   bun src/Core.TypeScript/backlog/generate-index.ts --check      # exit 2 if drift vs committed
+//   bun src/Core.TypeScript/backlog/generate-index.ts --stdout     # print to stdout, no write
 //
 // Exit codes:
 //   0  success

@@ -11,12 +11,12 @@
 // Then invokes zeta-creds-persist with the collected --bake-cred args.
 //
 // Composes:
-//   - tools/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; iteration source)
-//   - tools/installer/zeta-cred-handlers.ts (081KSKBP80008QG0R003AX2A69.10; per-cred source validation)
-//   - tools/installer/zeta-creds-persist.ts (081KSKBP80008QG0R003AX2A69.2b; downstream consumer)
+//   - src/Core.TypeScript/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; iteration source)
+//   - src/Core.TypeScript/installer/zeta-cred-handlers.ts (081KSKBP80008QG0R003AX2A69.10; per-cred source validation)
+//   - src/Core.TypeScript/installer/zeta-creds-persist.ts (081KSKBP80008QG0R003AX2A69.2b; downstream consumer)
 //
 // Usage (called from zeta-install.sh Step 6.95-picker or operator terminal):
-//   bun tools/installer/zeta-creds-picker.ts \
+//   bun src/Core.TypeScript/installer/zeta-creds-picker.ts \
 //     --usb-uuid <uuid> \
 //     --output /mnt/boot/zeta-creds.enc \
 //     ( --passphrase-file <path> | --passphrase-env <VAR> ) \
@@ -115,7 +115,7 @@ export function buildVerifyArgs(
   tmpTargetRoot: string,
 ): readonly string[] {
   const args = [
-    "tools/installer/zeta-creds-restore.ts",
+    "src/Core.TypeScript/installer/zeta-creds-restore.ts",
     "--usb-uuid", parsed.usbUuid,
     "--input", parsed.output,
     "--target-root", tmpTargetRoot,
@@ -236,7 +236,7 @@ async function main(): Promise<number> {
     console.log(`  --bake-cred ${id}=<redacted>`);
   }
   const persistArgs = [
-    "tools/installer/zeta-creds-persist.ts",
+    "src/Core.TypeScript/installer/zeta-creds-persist.ts",
     "--usb-uuid", parsed.usbUuid,
     "--output", parsed.output,
   ];
@@ -253,7 +253,7 @@ async function main(): Promise<number> {
     // the logged string. Sibling discipline to zeta-creds-persist.ts
     // + zeta-creds-restore.ts P0 fix on PR #5422.
     console.log(`\n=== DRY RUN — would invoke: ===`);
-    let displayCmd = `  bun tools/installer/zeta-creds-persist.ts --usb-uuid <set> --output <set>`;
+    let displayCmd = `  bun src/Core.TypeScript/installer/zeta-creds-persist.ts --usb-uuid <set> --output <set>`;
     if (parsed.passphraseFile) displayCmd += ` --passphrase-file <REDACTED>`;
     if (parsed.passphraseEnv) displayCmd += ` --passphrase-env <REDACTED>`;
     if (parsed.persona) displayCmd += ` --persona <set>`;
