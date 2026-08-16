@@ -1,0 +1,12 @@
+{
+  "pr_number": 10955,
+  "archive_path": "docs/history/pr-reviews/PR-10955-docs-research-dominance-lift-inventory-3-live-does-not-qualify-aggregation-sites.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T16:34:40.210Z",
+  "schema_version": "v1",
+  "commit_sha": "e39f426078204b7b3e4354e4557f81b324dfc4eb",
+  "title": "docs(research): Dominance Lift inventory — 3 live does-not-qualify aggregation sites, worst fails toward approve",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T16:34:06Z",
+  "head_ref": "shadow/dominance-lift-aggregation-inventory"
+}
