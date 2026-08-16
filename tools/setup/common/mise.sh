@@ -167,6 +167,18 @@ for shim_dir in \
   fi
 done
 
+# The mise Rust backend installs an exact rustup toolchain, but exporting only
+# its shim directory does not carry mise's RUSTUP_TOOLCHAIN selection into this
+# child shell. Without the exact selection, rustc/rustup may refresh the channel
+# manifest before using an already-installed compiler, making an offline cache
+# depend on static.rust-lang.org. Pin the resolved mise version for every Rust
+# probe below; exact installed toolchains remain usable while the CDN is down.
+rustup_toolchain="$(cd "$REPO_ROOT" && mise current rust 2>/dev/null || true)"
+if [ -n "$rustup_toolchain" ]; then
+  export RUSTUP_TOOLCHAIN="$rustup_toolchain"
+  echo "✓ rustup exact toolchain selected: $RUSTUP_TOOLCHAIN"
+fi
+
 # Print the resolved versions so the log is useful on a first run.
 (cd "$REPO_ROOT" && mise current)
 

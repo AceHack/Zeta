@@ -20,6 +20,12 @@ set -euo pipefail
 
 RUST_VERSION="${RUST_VERSION:-1.87.0}"
 
+# Select the exact pinned toolchain before any rustc/rustup probe. A bare
+# rustup proxy may otherwise refresh channel metadata even when this version
+# and its components are already cached, turning an idempotent install into a
+# network dependency during static.rust-lang.org outages.
+export RUSTUP_TOOLCHAIN="$RUST_VERSION"
+
 # Step 1: Install rustup if not present
 if ! command -v rustup >/dev/null 2>&1; then
   echo "Installing rustup (Rust ${RUST_VERSION})..."
