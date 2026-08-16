@@ -15,6 +15,7 @@
  */
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import { writePagesArtifactEvidence } from "./identity-dla-pages-artifact";
 import { stagePagesWasmAssets } from "./identity-dla-pages-wasm-assets";
 
 const repoRoot = process.cwd();
@@ -85,4 +86,7 @@ rmSync(artifactTarget, { recursive: true, force: true });
 mkdirSync(artifactTarget, { recursive: true });
 cpSync(builtSite, artifactTarget, { recursive: true });
 stagePagesWasmAssets(repoRoot, artifactTarget);
-console.log(`[pages] Race Mode artifact ready: ${artifactTarget}`);
+const revision = new TextDecoder().decode(Bun.spawnSync(["git", "rev-parse", "HEAD"], { cwd: repoRoot }).stdout).trim();
+if (!/^[0-9a-f]{40}$/i.test(revision)) throw new Error("teaching error: Pages build could not bind its artifact evidence to an immutable Git revision");
+const evidence = writePagesArtifactEvidence(artifactTarget, revision);
+console.log(`[pages] Race Mode artifact ready: ${artifactTarget} (${evidence.entryAsset}; ${evidence.wasmAssets.length} WASM assets verified)`);
