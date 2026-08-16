@@ -42,17 +42,17 @@ None is fixed here; changing them is not a drive-by, for the reason each row giv
 
 | tool | what a stray flag buys | both properties, or only (1)? |
 |---|---|---|
-| `hygiene/healers/run-tier0.ts` | rewrites markdown across the repo, bounded by `--max-files` | **(1) only** — invoked bare by `agent-heartbeat.yml:124` by design |
-| `hygiene/mutation-runner.ts` | writes a mutant into a source file, restores at line 271 — a crash between leaves the mutant in tree | **(1) only** — invoked by `agent-heartbeat.yml:257` by design |
-| `migrations/b0266-review-policy-ruleset.ts` | creates/updates **GitHub rulesets** live and re-snapshots `expected.json` | both |
-| `migrations/b0267-safety-ruleset.ts` | same, and can **DELETE** the Default ruleset | both |
-| `migrations/b0267-branch-safety-ruleset.ts` | same class | both |
-| `ops/setup-dual-background-agents.ts` | writes launchd plists and calls `launchctl` on the operator's machine | both |
-| `zflash/flash-usb-windows.ts` | **flashes a USB device.** Has `--help`, but no unknown-arg rejection; needs a positional device + admin, which is the only thing standing between a typo and a wiped disk | both |
-| `observe/backfill-tick-shards.ts` | backfills tick shards (`main(argv)`, no direct `writeFileSync` — delegated; confirm the write path before fixing) | both, pending that confirmation |
+| `src/Core.TypeScript/hygiene/healers/run-tier0.ts` | rewrites markdown across the repo, bounded by `--max-files` | **(1) only** — invoked bare by `agent-heartbeat.yml:124` by design |
+| `src/Core.TypeScript/hygiene/mutation-runner.ts` | writes a mutant into a source file, restores at line 271 — a crash between leaves the mutant in tree | **(1) only** — invoked by `agent-heartbeat.yml:257` by design |
+| `src/Core.TypeScript/migrations/b0266-review-policy-ruleset.ts` | creates/updates **GitHub rulesets** live and re-snapshots `expected.json` | both |
+| `src/Core.TypeScript/migrations/b0267-safety-ruleset.ts` | same, and can **DELETE** the Default ruleset | both |
+| `src/Core.TypeScript/migrations/b0267-branch-safety-ruleset.ts` | same class | both |
+| `src/Core.TypeScript/ops/setup-dual-background-agents.ts` | writes launchd plists and calls `launchctl` on the operator's machine | both |
+| `src/Core.TypeScript/zflash/flash-usb-windows.ts` | **flashes a USB device.** Has `--help`, but no unknown-arg rejection; needs a positional device + admin, which is the only thing standing between a typo and a wiped disk | both |
+| `src/Core.TypeScript/observe/backfill-tick-shards.ts` | backfills tick shards (`main(argv)`, no direct `writeFileSync` — delegated; confirm the write path before fixing) | both, pending that confirmation |
 
 Checked and **excluded** as not this defect:
-`forge-host/github/create-branch-safety-ruleset.ts` — absence of `--dry-run` reaches
+`src/Core.TypeScript/forge-host/github/create-branch-safety-ruleset.ts` — absence of `--dry-run` reaches
 `ERROR: live mode not implemented` and exits non-zero. Safe, though by accident of an
 unimplemented feature rather than by a guard.
 
@@ -66,7 +66,7 @@ would be exactly the un-metered blast radius the class is about.
 
 ## The mechanical check that already exists
 
-`hygiene/audit-workflow-cli-flags.ts` (from `081M005VXY6087G0R001T04ATY`) statically
+`src/Core.TypeScript/hygiene/audit-workflow-cli-flags.ts` (from `081M005VXY6087G0R001T04ATY`) statically
 refuses a workflow that passes a flag a tool rejects — but **only for tools whose
 parser demonstrably rejects unknown flags**, detected by an `unknown arg` diagnostic in
 the source. So every tool in the table above is currently *skipped* by that audit: the

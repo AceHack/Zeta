@@ -260,3 +260,148 @@ module MachZehnderWSetHeat =
 
     let openArm (sink: IHeatSink) (source: string) : Result<Measurement, Feedback> =
         MachZehnderWSet.openArmAmplitudes () |> measure sink source
+
+/// Integer specialization of `FourCornerTrace` with an injected heat boundary.
+/// The generic trace remains pure so non-integer reference calculations do not inherit
+/// a finite integer-domain profile. This adapter meters the consolidations that remove
+/// annihilated rows and preserves the completed/pending sequence for exact retry.
+/// Each event advances interpretation in one direction; its negative rows revise the
+/// emitted reading of immutable history rather than reversing or mutating that history.
+[<RequireQualifiedAccess>]
+module FourCornerTraceHeat =
+
+    [<RequireQualifiedAccess>]
+    type Stage =
+        | OpeningConsolidation
+        | DeltaConsolidation
+        | StateConsolidation
+
+    type HeatEmission =
+        { Stage: Stage
+          Signature: HeatSignature }
+
+    type Candidate<'I, 'K when 'K: comparison> =
+        { State: FourCornerTrace.Traced<'I, 'K, int64>
+          Emission: WSet.WSet<'K, int64> }
+
+    type Measurement<'I, 'K when 'K: comparison> =
+        { Candidate: Candidate<'I, 'K>
+          Heat: HeatEmission list }
+
+    type Feedback<'I, 'K when 'K: comparison> =
+        { Candidate: Candidate<'I, 'K>
+          Completed: HeatEmission list
+          Pending: HeatEmission list
+          Sink: HeatSinkFeedback }
+
+    let private stageToken =
+        function
+        | Stage.OpeningConsolidation -> "opening-consolidation"
+        | Stage.DeltaConsolidation -> "delta-consolidation"
+        | Stage.StateConsolidation -> "state-consolidation"
+
+    let private asEmission eventId stage (result: WSetHeat.Metered<'T>) =
+        result.Heat
+        |> Option.map (fun signature ->
+            { Stage = stage
+              Signature =
+                { signature with
+                    Detail =
+                        signature.Detail
+                        + ";trace-event="
+                        + eventId
+                        + ";trace-stage="
+                        + stageToken stage } })
+
+    let rec private emitPending
+        (sink: IHeatSink)
+        (candidate: Candidate<'I, 'K>)
+        (completed: HeatEmission list)
+        (pending: HeatEmission list)
+        : Result<Measurement<'I, 'K>, Feedback<'I, 'K>> =
+        match pending with
+        | [] ->
+            Ok
+                { Candidate = candidate
+                  Heat = completed }
+        | next :: remaining ->
+            match sink.Emit next.Signature with
+            | Ok() -> emitPending sink candidate (completed @ [ next ]) remaining
+            | Error feedback ->
+                Error
+                    { Candidate = candidate
+                      Completed = completed
+                      Pending = pending
+                      Sink = feedback }
+
+    let private run
+        (sink: IHeatSink)
+        (candidate: Candidate<'I, 'K>)
+        (pending: HeatEmission option list)
+        : Result<Measurement<'I, 'K>, Feedback<'I, 'K>> =
+        pending |> List.choose id |> emitPending sink candidate []
+
+    /// Retry only the signatures not accepted by the previous sink. The candidate
+    /// trace state and already accepted prefix remain bit-identical.
+    let resume
+        (sink: IHeatSink)
+        (feedback: Feedback<'I, 'K>)
+        : Result<Measurement<'I, 'K>, Feedback<'I, 'K>> =
+        emitPending sink feedback.Candidate feedback.Completed feedback.Pending
+
+    /// `eventId` is stable for replay and distinct for each forward trace turn.
+    let start
+        (sink: IHeatSink)
+        (source: string)
+        (eventId: string)
+        (ring: IStarRing<int64>)
+        (isZero: int64 -> bool)
+        (gen: FourCornerTrace.Generator<'H, 'I, 'K, int64>)
+        (history: 'H)
+        (interpretation: 'I)
+        : Result<Measurement<'I, 'K>, Feedback<'I, 'K>> =
+        let opening = FourCornerTrace.openingUnconsolidated gen history interpretation
+        let consolidated = WSetHeat.consolidate source ring isZero opening
+
+        let candidate =
+            { State =
+                { Interpretation = interpretation
+                  Emitted = consolidated.Value }
+              Emission = consolidated.Value }
+
+        run sink candidate [ asEmission eventId Stage.OpeningConsolidation consolidated ]
+
+    /// `eventId` is stable for replay and distinct for each forward trace turn.
+    let step
+        (sink: IHeatSink)
+        (source: string)
+        (eventId: string)
+        (ring: IStarRing<int64>)
+        (isZero: int64 -> bool)
+        (gen: FourCornerTrace.Generator<'H, 'I, 'K, int64>)
+        (update: 'I -> 'F -> 'I)
+        (history: 'H)
+        (feedback: 'F)
+        (state: FourCornerTrace.Traced<'I, 'K, int64>)
+        : Result<Measurement<'I, 'K>, Feedback<'I, 'K>> =
+        let after = update state.Interpretation feedback
+
+        let delta =
+            FourCornerTrace.deltaUnconsolidated ring gen history state.Interpretation after
+            |> WSetHeat.consolidate source ring isZero
+
+        let emitted =
+            FourCornerTrace.cumulativeUnconsolidated state.Emitted delta.Value
+            |> WSetHeat.consolidate source ring isZero
+
+        let candidate =
+            { State =
+                { Interpretation = after
+                  Emitted = emitted.Value }
+              Emission = delta.Value }
+
+        run
+            sink
+            candidate
+            [ asEmission eventId Stage.DeltaConsolidation delta
+              asEmission eventId Stage.StateConsolidation emitted ]

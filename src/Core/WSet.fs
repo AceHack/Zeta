@@ -163,6 +163,30 @@ module FourCornerTrace =
           /// the consolidated running sum of the opening emission plus every delta since
           Emitted: WSet.WSet<'K, 'W> }
 
+    /// Pure assembly functions shared by the reference trace and source-owned adapters.
+    /// Consolidation remains at the caller boundary so adapters can meter that destructive phase.
+    let internal openingUnconsolidated
+        (gen: Generator<'H, 'I, 'K, 'W>)
+        (history: 'H)
+        (interpretation: 'I)
+        : WSet.WSet<'K, 'W> =
+        gen interpretation history
+
+    let internal deltaUnconsolidated
+        (ring: IStarRing<'W>)
+        (gen: Generator<'H, 'I, 'K, 'W>)
+        (history: 'H)
+        (before: 'I)
+        (after: 'I)
+        : WSet.WSet<'K, 'W> =
+        WSet.plus (WSet.negate ring (gen before history)) (gen after history)
+
+    let internal cumulativeUnconsolidated
+        (emitted: WSet.WSet<'K, 'W>)
+        (delta: WSet.WSet<'K, 'W>)
+        : WSet.WSet<'K, 'W> =
+        WSet.plus emitted delta
+
     /// Open the loop: read the history once under the starting interpretation and EMIT it.
     /// Returns the state and that opening emission — opening is an emission like any other, so the
     /// invariant `Emitted = consolidate (gen interpretation history)` holds from turn zero (an
@@ -174,7 +198,7 @@ module FourCornerTrace =
         (history: 'H)
         (interpretation: 'I)
         : Traced<'I, 'K, 'W> * WSet.WSet<'K, 'W> =
-        let emitted = gen interpretation history |> WSet.consolidate ring isZero
+        let emitted = openingUnconsolidated gen history interpretation |> WSet.consolidate ring isZero
         { Interpretation = interpretation; Emitted = emitted }, emitted
 
     /// The reinterpretation **delta**: `−gen(before, history) + gen(after, history)`, consolidated.
@@ -188,8 +212,7 @@ module FourCornerTrace =
         (before: 'I)
         (after: 'I)
         : WSet.WSet<'K, 'W> =
-        WSet.plus (WSet.negate ring (gen before history)) (gen after history)
-        |> WSet.consolidate ring isZero
+        deltaUnconsolidated ring gen history before after |> WSet.consolidate ring isZero
 
     /// ONE turn of the trace: feedback arrives on the input channel, `update` moves the interpretation,
     /// the generator re-reads the SAME history, and the delta (retractions + new emissions) is both
@@ -211,7 +234,7 @@ module FourCornerTrace =
         : Traced<'I, 'K, 'W> * WSet.WSet<'K, 'W> =
         let after = update st.Interpretation fb
         let d = delta ring isZero gen history st.Interpretation after
-        let emitted = WSet.plus st.Emitted d |> WSet.consolidate ring isZero
+        let emitted = cumulativeUnconsolidated st.Emitted d |> WSet.consolidate ring isZero
         { Interpretation = after; Emitted = emitted }, d
 
     /// Run a whole feedback sequence through the loop, keeping every emitted delta in order.
