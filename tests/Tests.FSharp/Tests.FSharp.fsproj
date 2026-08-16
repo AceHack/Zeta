@@ -184,6 +184,7 @@
     <Compile Include="Conjugate.Tests.fs" />
     <Compile Include="BitGan.Tests.fs" />
     <Compile Include="AntiSybil.Tests.fs" />
+    <Compile Include="ReportTriage.Tests.fs" />
     <Compile Include="AntiSybilCaveatA.Property.Tests.fs" />
     <Compile Include="ChshBand.Property.Tests.fs" />
     <Compile Include="LeibnizAntiSybil.Tests.fs" />
