@@ -1,0 +1,14 @@
+{
+  "id": "080d005709163010a0130008f3cab458",
+  "at": "2026-08-16T14:02:01.798Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05E28P5087G0R003JAXC2W",
+    "type": "bug",
+    "title": "github-settings-drift reports success on every run while detecting real drift (continue-on-error masks exit 1)",
+    "slug": "github-settings-drift-reports-success-on-every-run-while-det",
+    "priority": "P2",
+    "filename": "081M05E28P5087G0R003JAXC2W-github-settings-drift-reports-success-on-every-run-while-det.md"
+  }
+}

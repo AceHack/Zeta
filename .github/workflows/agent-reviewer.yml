@@ -58,13 +58,16 @@ jobs:
           PR_BASE: ${{ github.event.pull_request.base.sha }}
           PR_HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
+          set -euo pipefail
           CHANGED=$(git diff --name-only "$PR_BASE" "$PR_HEAD")
           echo "Changed files:"
           echo "$CHANGED"
 
           UNSAFE=""
+          INSPECTED=0
           while IFS= read -r f; do
             [ -z "$f" ] && continue
+            INSPECTED=$((INSPECTED + 1))
             case "$f" in
               docs/observe-events/*.json) ;;
               data/tick-history.json) ;;
@@ -73,10 +76,20 @@ jobs:
             esac
           done <<< "$CHANGED"
 
-          if [ -n "$UNSAFE" ]; then
+          # FAIL-CLOSED ON AN EMPTY DIFF (shadow, 2026-08-16). `UNSAFE` is empty in
+          # BOTH of two very different worlds: "every changed file was sovereign" and
+          # "no file was examined at all". The old `else` branch flattened them and
+          # emitted `sovereign=true` — an assertion that the diff is event-only, made
+          # having inspected zero files, which then gates the auto-approval below.
+          # A check that concludes the safe answer from no evidence is not a check.
+          if [ "$INSPECTED" -eq 0 ]; then
+            echo "::warning::Empty diff between $PR_BASE and $PR_HEAD — nothing was verified, so sovereignty is NOT asserted."
+            echo "sovereign=false" >> "$GITHUB_OUTPUT"
+          elif [ -n "$UNSAFE" ]; then
             echo "::warning::Non-sovereign paths: $UNSAFE"
             echo "sovereign=false" >> "$GITHUB_OUTPUT"
           else
+            echo "[reviewer] $INSPECTED changed file(s), all on sovereign paths."
             echo "sovereign=true" >> "$GITHUB_OUTPUT"
           fi
 
@@ -86,9 +99,12 @@ jobs:
           PR_BASE: ${{ github.event.pull_request.base.sha }}
           PR_HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
+          set -euo pipefail
           CHANGED=$(git diff --name-only "$PR_BASE" "$PR_HEAD" -- 'docs/observe-events/')
+          VALIDATED=0
           while IFS= read -r f; do
             [ -z "$f" ] && continue
+            VALIDATED=$((VALIDATED + 1))
             BASENAME=$(basename "$f")
             if ! echo "$BASENAME" | grep -qE '^[0-9a-f]{32}\.json$'; then
               echo "::error::Invalid filename (not ZetaId): $f"
@@ -104,7 +120,16 @@ jobs:
               exit 1
             fi
           done <<< "$CHANGED"
-          echo "All event files valid."
+          # Same fail-closed guard as the sovereign-path step: "no file failed" and
+          # "no file was checked" are different outcomes and must not print the same
+          # sentence. Reaching here with zero files means the prior step said the diff
+          # was sovereign while this one found no event files in it — a contradiction
+          # worth failing on, not a pass.
+          if [ "$VALIDATED" -eq 0 ]; then
+            echo "::error::No event files found in the diff — the sovereign-path step passed but there is nothing to validate."
+            exit 1
+          fi
+          echo "All $VALIDATED event file(s) valid."
 
       - name: Approve (you don't approve your own heartbeats)
         if: steps.verify.outputs.sovereign == 'true'

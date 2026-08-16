@@ -1,0 +1,14 @@
+{
+  "id": "080d00570d2f4810a013000804fd8b7d",
+  "at": "2026-08-16T14:02:35.369Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05E39F7087G0R002F00H6Q",
+    "type": "bug",
+    "title": "smoke-13-toolchains.sh is unwired from CI while claiming gate.yml runs it — oracles 8-13 have no functional smoke gate",
+    "slug": "smoke-13-toolchains-sh-is-unwired-from-ci-while-claiming-gat",
+    "priority": "P2",
+    "filename": "081M05E39F7087G0R002F00H6Q-smoke-13-toolchains-sh-is-unwired-from-ci-while-claiming-gat.md"
+  }
+}
