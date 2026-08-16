@@ -333,6 +333,75 @@ Filed as a bug row rather than fixed in this PR (this is a design deliverable; t
 whoever owns the model). Under `.claude/rules/every-bug-has-economic-value.md` the ΔU is the removal
 of a false discharge from a closed row.
 
+### 4.1 Fixed 2026-08-16 (shadow) — and the defect was wider than §4 stated
+
+`081M05M1R97087G0R0023Z4F9D` is closed. Three things came out of the fix, and the first is a
+correction to §4 above.
+
+**(a) Six properties were insensitive, not two — and one of them was this section's proposed
+remedy.** §4 named the two `Landauer accounting` properties and then said the sibling property
+`... forward then reverse restores retained wires` *"is a real falsifier and does the work the
+accounting properties were credited with."* **That was wrong, and it was checked before being
+repeated.** Every `ToffoliGateStep` is an involution — no step targets one of its own controls —
+and the reverse-order composition of involutions is the inverse. So `forward then reverse restores
+the wires` holds for **every** gate list, including the empty one; it is a theorem about the
+interpreter, not a measurement of the circuit. Deleting every gate leaves it green. It is
+falsifiable only by a malformed gate (`Target` equal to one of its own controls), never by anything
+the circuit computes.
+
+**(b) The definition adopted.** Erasure is not an event inside a reversible network — a bijection
+destroys nothing, which is why every "no bits were erased while running" assertion is unfalsifiable.
+The quantity Landauer's principle prices sits at the **boundary**: ancilla allocated in a known
+state and **not returned to it**, which must be reset (an irreversible erase, kT·ln2 each) before
+the hardware can run the next operation. Operationally
+
+```
+garbage(C) = | { w ∈ Ancilla(C) : final(w) ≠ initial(w) } |
+```
+
+over wires designated ancilla — excluding the caller's operands (retained) and the output register
+(carried away). This is what Bennett's compute → copy-out → uncompute schedule exists to drive to
+zero, and it is exactly what a map-key-deletion count was never going to see.
+
+**(c) The consequence, stated plainly: the shipped model does not have zero garbage.**
+`modelWeightMul` / `modelJoinCircuit` are **keep-all-garbage** circuits — no uncompute pass — so
+under the corrected definition their garbage is large and grows with the partial-product count. The
+zero-erasure claim was not merely unmeasured; **it is false of that artifact.** `unmetered` → the
+honest reading is now a test that asserts garbage is *positive* there. `modelWeightMulUncomputed` /
+`modelJoinCircuitUncomputed` (new) carry the Bennett schedule and do measure zero, at 2× gates.
+
+This does **not** overturn §2. It changes what §2 rests on: "the join uncomputes cleanly" is now a
+tested property of a **constructed schedule** rather than an inference from a model that had no
+uncompute pass at all.
+
+**(d) The properties ship in PAIRS, because either half alone is still weak.** Zero garbage is
+satisfied by a circuit that computes nothing; a correct product is satisfied by a circuit that
+leaves every helper dirty. Mutation table — five mutants, both assertion sets, each cell an actual
+test run in this repo:
+
+| mutant | L1–L4 (old assertions) | garbage = 0 | product oracle | verdict |
+|---|---|---|---|---|
+| M0 baseline | pass | pass | pass | — |
+| M1 delete every gate | **pass** | **pass** | **FAIL** | killed by the oracle |
+| M2 drop one partial-product gate | **pass** | **pass** | **FAIL** | killed by the oracle |
+| M3 invert a Toffoli control | **pass** | **pass** | **FAIL** | killed by the oracle |
+| M4 skip the uncompute pass | **pass** | **FAIL** | pass | killed by the garbage count |
+| M5 leave one ancilla dirty | **pass** | **FAIL** | pass | killed by the garbage count |
+
+**Old assertions: 0 of 5 mutants killed. New assertions: 5 of 5.** The diagonal is the whole point —
+neither new property alone kills more than three, which is why neither ships alone.
+
+Four of the five mutants are also resident in the suite as permanent falsifier demonstrations, so
+the metric cannot silently return to being a tautology. Two mutants had to be *replaced* during
+construction because they were semantically inert (dropping the last forward gate routes a zero
+carry into a zero column; inverting a control that was already firing changes nothing) — a mutant a
+correct circuit is entitled to survive is not evidence, and those were fixed rather than accommodated.
+
+**Register.** The accounting is `metered` **as a bit count** — it has a falsifier, demonstrated in
+both directions. It is **not** a joule measurement and nothing here changes §8: an FPGA still cannot
+see kT·ln2, and a zero-garbage circuit on a DC rail still dissipates the full CV² per transition,
+twice.
+
 ---
 
 ## 5. The design
@@ -747,8 +816,8 @@ merely cited.
 | **Bennett 1973**, *Logical Reversibility of Computation* | compute → copy → uncompute; ancilla return to zero | **entailment checked** — used for the construction (§2), and explicitly *not* for any energy claim about irreversible hardware executing it. |
 | **Bennett 1989**, space-time tradeoff / pebble game | Strategy B, ancilla O(W) at 2× gate cost (§3.2) | **cited, construction re-derived here.** The specific per-lane figures are ours, not Bennett's. |
 | **Toffoli 1980**; **Fredkin & Toffoli 1982**, conservative logic | the universal reversible gate; ancilla necessity | **entailment checked** — universality *with ancilla* is what forces §3 to be a budget rather than a footnote. |
-| **Cuccaro, Draper, Kutin & Moulton 2004**, ripple-carry addition | the 1-ancilla in-place reversible adder used in §2.3 / §3.2 | **cited from standing knowledge, NOT page-checked.** The 1-ancilla figure is load-bearing for the Strategy A budget and is the first thing to verify before any RTL is written. Flagged rather than assumed. |
-| **Frank 2017**, *Throwing Computing Into Reverse* (IEEE Spectrum), and the adiabatic-CMOS line (Younis 1994; Vieri; Frank's S2LAL, arXiv:2009.00448) | reversible computing requires charge recovery, not merely reversible logic | **entailment checked against the position, from the search abstract; the papers are not page-read.** This anchor carries §8, so it is the second thing to verify properly. |
+| **Cuccaro, Draper, Kutin & Moulton 2004**, *A new quantum ripple-carry addition circuit*, arXiv:quant-ph/0410184 | the 1-ancilla in-place reversible adder used in §2.3 / §3.2 | **PAGE-CHECKED 2026-08-16 (shadow) — claim supported.** Abstract, verbatim: *"Previous addition circuits required linearly many ancillary qubits; our new adder uses only a single ancillary qubit."* Gate set is *"negations, CNOTs, and Toffoli gates"* — purely classical-reversible, which is what makes it usable in this non-quantum Toffoli network at all. The addend **is** retained: the UMA block *"restores a_i to A_i and c_i to A_{i-1} and writes s_i to B_i"*, so the map is `(a, b) ↦ (a, a+b)` and §2.3's `(acc, p) ↦ (acc + p, p)` is exactly that with `p = a`. **Two clarifications the budget needs:** (i) the single ancilla `X` is *in addition to* a high-bit output location `Z` for `s_n` — "1 ancilla" is not "no extra wires"; (ii) a zero-ancilla variant exists but requires the output bit be initialised to zero. Costs for n ≥ 2: **2n−1 Toffoli, 5n−3 CNOT, 2n−4 NOT, depth 2n+4.** |
+| **Frank 2017**, IEEE Spectrum — online title *The Future of Computing Depends on Making It Reversible*, **print** title *Throwing Computing Into Reverse* (25 Aug 2017); and the adiabatic-CMOS line (Younis 1994; Vieri; **Frank, Brocato, Tierney, Missert & Hsia**, *Reversible Computing with Fast, Fully Static, Fully Adiabatic CMOS*, arXiv:2009.00448, 2020) | reversible computing requires charge recovery, not merely reversible logic | **CHECKED 2026-08-16 (shadow) — citation corrected, claim RE-ANCHORED.** Two corrections. **(1)** The title used was the print title only; both are given above. **(2)** The Spectrum article **does not state the load-bearing sentence in that form.** What it supplies is the *gap*: Landauer's floor of *"17-thousandths of an electron volt at room temperature"* against present-day CMOS at *"something in the neighborhood of 5,000 electron volts per bit erased"*, with improved standard CMOS *"never able to get much below about 500 eV"*, plus *"conventional CMOS transistors ... leak too much current to make very efficient adiabatic circuits."* That independently corroborates §8's order-of-magnitude argument; it does not by itself assert that reversible *logic* is insufficient. The anchor for **that** sentence is **S2LAL**, whose abstract states it directly: *"To advance the energy efficiency of general digital computing far beyond the thermodynamic limits that apply to conventional digital circuits will require utilizing the principles of reversible computing ... reversible computing based on adiabatic switching is possible in CMOS, although almost all of the 'adiabatic' CMOS logic families in the literature are not actually fully adiabatic, which limits their achievable energy savings."* **Register:** the Spectrum article was read; **S2LAL is abstract-read only, body not page-read.** §8's position stands on the re-anchored citation. |
 | adiabatic power-clock literature (four-phase / resonant power-clock generators) | that charge recovery requires a ramped *supply*, which an FPGA does not have | **entailment checked from abstracts.** The claim used is narrow and uncontested: adiabatic logic is supplied by a ramped/resonant power-clock rather than a DC rail. |
 | **Bérut et al., Nature 483 (2012)** | single-bit Landauer verification | **cited, not page-checked** — inherited caveat from `key-erasure-meter.ts:49-52`. Not load-bearing here; nothing in this design rests on it. |
 | **Budiu et al., DBSP (VLDB 2023)** | the Z-set join being modelled | in-repo, checked against `src/Core/ZSet.fs` |
@@ -783,6 +852,11 @@ cleanly), §3 bounds the cost (O(W²) ancilla, constant in N), §5–§7 specify
 fairness constraints. What must happen before RTL: verify the Cuccaro 1-ancilla figure (§12), and
 fix or retire the vacuous zero-erasure properties (§4) so the model's central claim has a falsifier
 behind it.
+
+> **Both discharged 2026-08-16** — see §12 (Cuccaro page-checked; Frank re-anchored) and §4.1
+> (the accounting rebuilt on a definition that can fail). §4.1 also changes what §2's "it uncomputes
+> cleanly" rests on: it is now a *tested property of a constructed schedule*, not an inference from
+> the keep-all-garbage model.
 
 ---
 

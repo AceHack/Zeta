@@ -4,7 +4,9 @@ namespace Zeta.Core
 ///
 /// The Toffoli gate (a, b, c) → (a, b, c ⊕ (a ∧ b)) is the canonical
 /// universal reversible gate. It is self-inverse: applying it twice
-/// returns the original input. No bits are erased.
+/// returns the original input, so it erases nothing internally — which is
+/// true of every reversible gate and is therefore not a claim about
+/// dissipation. That claim lives at the boundary: see `garbageBitCount`.
 ///
 /// Z-set assert (+1) maps to Toffoli forward; retract (-1) maps to
 /// Toffoli reverse — which is identical to forward (self-inverse).
@@ -43,9 +45,13 @@ type ZSetGateOp =
 //   - ToffoliCircuit.Ancilla >= 0.
 //   - Ancilla records the allocated wire capacity for this closed model.
 //     Wire indices occupy 0 .. Ancilla-1 by convention.
-//   - No bit erasure: the retained wires carry the inverse function, so the
-//     circuit is reversible over its full wire set. ("Ancilla" names the
-//     total allocated capacity here, not a helper-wire subset.)
+//   - The retained wires carry the inverse function, so the circuit is
+//     reversible over its full wire set. ("Ancilla" names the total allocated
+//     capacity here, not a helper-wire subset.)
+//   - This says NOTHING about erasure cost. A reversible network erases nothing
+//     internally by construction; what Landauer prices is ancilla left dirty at
+//     the boundary. See the garbage-accounting note below and, for the reason
+//     this correction exists, 081M05M1R97087G0R0023Z4F9D.
 
 /// Integer index identifying a wire in a ToffoliCircuit.
 type WireId = int
@@ -70,9 +76,11 @@ type ToffoliGateStep = {
 /// Gates:   ordered sequence of gate applications (wire-index based).
 /// Wires:   current bit state of every named wire.
 /// Ancilla: allocated wire capacity for this closed reversible circuit.
-///          By convention, wire indices occupy 0 .. Ancilla-1. The
-///          retained wires carry the inverse function — no bits are erased
-///          when the circuit runs.
+///          By convention, wire indices occupy 0 .. Ancilla-1. This is a
+///          CAPACITY, not a garbage count, and it is not evidence of anything:
+///          it is set to the allocator's wire counter, so `Ancilla = Wires.Count`
+///          is a restatement of construction, not a property. For the quantity
+///          Landauer's principle actually prices, see `garbageBitCount`.
 type ToffoliCircuit = {
     Gates   : ToffoliGateStep list
     Wires   : WireMap
@@ -97,6 +105,74 @@ type ToffoliCircuitFragment = {
     IntermediateWires     : WireId list
     CarryWires            : WireId list
     PeresChains           : ToffoliGateStep list list
+}
+
+
+// ── Landauer garbage accounting (081M05M1R97087G0R0023Z4F9D) ────────────────────────────────
+//
+// WHAT ERASURE MEANS HERE, and what it does not.
+//
+// A reversible gate network erases nothing *internally* — that is true by construction
+// (a bijection destroys no information) and it is therefore not a measurable property:
+// any assertion of the form "this Toffoli network erased no bits while running" holds for
+// every possible gate list and cannot fail. Counting wire ids that disappear from the wire
+// map is the same non-property wearing a data-structure costume: the interpreter's
+// `Map.add` never removes a key, so the count is identically zero.
+//
+// The quantity Landauer's principle actually prices sits at the circuit's BOUNDARY, not
+// inside it. Helper (ancilla) wires are allocated in a KNOWN state. To run the next
+// operation on the same hardware those wires must be returned to that known state, and
+// resetting a wire whose value is unknown is a logically irreversible erasure costing
+// kT·ln2 each (Landauer 1961). Bennett's compute → copy-out → uncompute schedule
+// (Bennett 1973, 1989) exists precisely to drive that count to zero.
+//
+// So, operationally:
+//
+//     garbage(C) = | { w ∈ Ancilla(C) : final(w) ≠ initial(w) } |
+//
+// measured after the circuit's FULL schedule has run, over the wires designated ancilla —
+// excluding the caller's input wires (retained, not erased) and the output register
+// (carried away, not erased). This has real falsifiers: skip the uncompute pass, drop a
+// gate, invert a control, or leave one ancilla dirty and the count goes positive.
+//
+// Consequence, stated plainly: `modelWeightMul` is a KEEP-ALL-GARBAGE circuit. It has no
+// uncompute pass, so under this definition its garbage is LARGE, not zero — every partial
+// product and every carry ends dirty. `modelWeightMulUncomputed` is the Bennett-scheduled
+// variant, and it is the one for which zero garbage is a claim with evidence behind it.
+
+/// A Bennett-scheduled fragment: compute → copy the result out → uncompute.
+///
+/// The three gate phases are kept separate so a test can mutate one of them
+/// (skip the uncompute pass; drop a gate) and observe the garbage count move.
+///
+/// InputWires   — the caller's operands. Read-only; retained, never erased.
+/// OutputWires  — a fresh register receiving a copy of the result. Carried away.
+/// AncillaWires — every helper allocated at a known constant, INCLUDING the in-circuit
+///                product wires: after copy-out they are uncomputed back to their
+///                allocation value, which is the whole point of the schedule.
+type UncomputedFragment = {
+    Circuit               : ToffoliCircuit
+    Source                : ToffoliCircuitFragment
+    InputWires            : WireId list
+    OutputSignWire        : WireId
+    OutputMagnitudeWires  : WireId list
+    AncillaWires          : WireId list
+    ForwardGates          : ToffoliGateStep list
+    CopyOutGates          : ToffoliGateStep list
+    UncomputeGates        : ToffoliGateStep list
+}
+
+/// A Z-set join circuit assembled from Bennett-scheduled fragments at disjoint
+/// wire offsets. Carries the wire roles the bare `ToffoliCircuit` cannot express,
+/// which is what makes a garbage count possible at all.
+type UncomputedJoinCircuit = {
+    Circuit      : ToffoliCircuit
+    InputWires   : WireId list
+    OutputWires  : WireId list
+    AncillaWires : WireId list
+    /// Per matched key: the offset-shifted output register plus the two operands,
+    /// so a test can compute the expected product independently of the circuit.
+    Outputs      : (WireId * WireId list * Weight * Weight) list
 }
 
 
@@ -355,3 +431,192 @@ module ToffoliGate =
                 { Gates = globalGates
                   Wires = globalWires
                   Ancilla = offset }
+
+    // ── Interpreter + Landauer garbage accounting (081M05M1R97087G0R0023Z4F9D) ──────────
+
+    /// Apply one Toffoli step to a wire map:
+    ///   Wires[Target] ← Wires[Target] ⊕ (Wires[ControlA] ∧ Wires[ControlB]).
+    ///
+    /// Deliberately TOTAL-ON-VALID-INPUT ONLY: a step naming a wire that was never
+    /// allocated raises rather than silently defaulting the missing wire to Zero. A
+    /// dangling wire reference is a malformed circuit, and a model that quietly invents
+    /// a value for it would hide exactly the class of defect these laws exist to catch.
+    let step (wires: WireMap) (s: ToffoliGateStep) : WireMap =
+        let target =
+            if wires.[s.ControlA] = One && wires.[s.ControlB] = One then
+                match wires.[s.Target] with
+                | Zero -> One
+                | One -> Zero
+            else
+                wires.[s.Target]
+
+        wires |> Map.add s.Target target
+
+    /// Run a gate sequence over a wire map.
+    let run (gates: ToffoliGateStep list) (wires: WireMap) : WireMap =
+        gates |> List.fold step wires
+
+    /// The wires Landauer's principle prices: ancilla NOT returned to their
+    /// allocation value. See the type-level note above `UncomputedFragment`.
+    ///
+    /// This is a boundary measurement, not an internal one. It says nothing about
+    /// whether the network is a bijection (it always is); it says how many known-state
+    /// helper wires ended dirty and would have to be dissipated to reuse the hardware.
+    let garbageWires (initial: WireMap) (final: WireMap) (ancilla: WireId list) : WireId list =
+        ancilla |> List.filter (fun w -> final.[w] <> initial.[w])
+
+    /// Count of ancilla wires that did not return to their allocation value.
+    /// Zero is the Bennett-clean result; anything else is bits that must be erased.
+    let garbageBitCount (initial: WireMap) (final: WireMap) (ancilla: WireId list) : int =
+        garbageWires initial final ancilla |> List.length
+
+    /// The ancilla of a keep-all-garbage fragment: every helper wire allocated at a
+    /// known constant that is not one of the caller's operands.
+    ///
+    /// The product wires are NOT counted here because `modelWeightMul` has no
+    /// copy-out — in that circuit the product wires are the output register. In the
+    /// Bennett-scheduled variant they become ancilla, which is the difference the
+    /// schedule buys.
+    let keepAllAncillaWires (fragment: ToffoliCircuitFragment) : WireId list =
+        (fragment.ConstantOneWire :: fragment.IntermediateWires) @ fragment.CarryWires
+
+    /// The caller's operand wires — retained by the circuit, never erased.
+    let operandWires (fragment: ToffoliCircuitFragment) : WireId list =
+        (fragment.LeftSignWire :: fragment.LeftMagnitudeWires)
+        @ (fragment.RightSignWire :: fragment.RightMagnitudeWires)
+
+    /// Bennett-schedule a weight-multiplication fragment: compute → copy out → uncompute.
+    ///
+    /// A fresh output register (sign + 2W magnitude wires, all allocated Zero) receives a
+    /// copy of the product via CNOTs — realised as Toffoli gates with the fragment's
+    /// constant-one wire as the second control, which is how this model already spells
+    /// CNOT. The output register is touched by no forward gate, so running the forward
+    /// gates in reverse afterwards restores every other wire exactly: each step is an
+    /// involution (no step targets one of its own controls), and the reverse-order
+    /// composition of involutions is the inverse.
+    ///
+    /// Result: the product leaves on the output register and every ancilla returns to its
+    /// allocation value — Landauer garbage zero, at 2× the gate count. That factor of two
+    /// is the honest price of the schedule and is not an implementation inefficiency.
+    ///
+    /// Anchor: Bennett, "Logical Reversibility of Computation", IBM J. Res. Dev. 17(6),
+    /// 1973; and "Time/Space Trade-offs for Reversible Computation", SIAM J. Comput.
+    /// 18(4), 1989 for the space-time tradeoff this schedule sits at one end of.
+    let modelWeightMulUncomputed (left: Weight) (right: Weight) : UncomputedFragment =
+        let fragment = modelWeightMul left right
+        let baseCircuit = fragment.Circuit
+        let outputSignWire = baseCircuit.Ancilla
+        let outputMagnitudeWires =
+            fragment.ProductMagnitudeWires
+            |> List.mapi (fun index _ -> baseCircuit.Ancilla + 1 + index)
+
+        let outputWires = outputSignWire :: outputMagnitudeWires
+
+        let wires =
+            outputWires
+            |> List.fold (fun (m: WireMap) w -> Map.add w Zero m) baseCircuit.Wires
+
+        let forwardGates = baseCircuit.Gates
+
+        let copyOutGates =
+            { ControlA = fragment.ProductSignWire
+              ControlB = fragment.ConstantOneWire
+              Target = outputSignWire }
+            :: List.map2
+                (fun productWire outputWire ->
+                    { ControlA = productWire
+                      ControlB = fragment.ConstantOneWire
+                      Target = outputWire })
+                fragment.ProductMagnitudeWires
+                outputMagnitudeWires
+
+        let uncomputeGates = List.rev forwardGates
+
+        let ancillaWires =
+            keepAllAncillaWires fragment
+            @ (fragment.ProductSignWire :: fragment.ProductMagnitudeWires)
+
+        { Circuit =
+            { Gates = forwardGates @ copyOutGates @ uncomputeGates
+              Wires = wires
+              Ancilla = baseCircuit.Ancilla + List.length outputWires }
+          Source = fragment
+          InputWires = operandWires fragment
+          OutputSignWire = outputSignWire
+          OutputMagnitudeWires = outputMagnitudeWires
+          AncillaWires = ancillaWires
+          ForwardGates = forwardGates
+          CopyOutGates = copyOutGates
+          UncomputeGates = uncomputeGates }
+
+    /// Bennett-schedule a whole Z-set join: one uncomputed multiplication fragment per
+    /// matched key, at disjoint wire offsets.
+    ///
+    /// This is the shape the closed row 081KRA5AR0008QG0R000CYY9ZN's "0 erased bits"
+    /// criterion was reaching for. The bare `modelJoinCircuit` cannot support that
+    /// criterion at all — it carries no wire-role information, so there is nothing to
+    /// count against.
+    let modelJoinCircuitUncomputed<'K when 'K : comparison>
+        (a: ZSet<'K>)
+        (b: ZSet<'K>)
+        : UncomputedJoinCircuit =
+        let sa = a.AsSpan()
+        let sb = b.AsSpan()
+        let pairs = ResizeArray<Weight * Weight>()
+
+        if not (sa.IsEmpty || sb.IsEmpty) then
+            let cmp = KeyComparerCache<'K>.Instance
+            let mutable i = 0
+            let mutable j = 0
+            while i < sa.Length && j < sb.Length do
+                let c = cmp.Compare(sa.[i].Key, sb.[j].Key)
+                if c < 0 then i <- i + 1
+                elif c > 0 then j <- j + 1
+                else
+                    pairs.Add(sa.[i].Weight, sb.[j].Weight)
+                    i <- i + 1
+                    j <- j + 1
+
+        let shift offset (s: ToffoliGateStep) =
+            { ControlA = s.ControlA + offset
+              ControlB = s.ControlB + offset
+              Target = s.Target + offset }
+
+        let mutable gates = []
+        let mutable wires : WireMap = Map.empty
+        let mutable inputs = []
+        let mutable outputs = []
+        let mutable ancilla = []
+        let mutable outputGroups = []
+        let mutable offset = 0
+
+        for (wA, wB) in pairs do
+            let fragment = modelWeightMulUncomputed wA wB
+            let o = offset
+            gates <- gates @ (fragment.Circuit.Gates |> List.map (shift o))
+            for KeyValue(wireId, value) in fragment.Circuit.Wires do
+                wires <- Map.add (wireId + o) value wires
+            inputs <- inputs @ (fragment.InputWires |> List.map (fun w -> w + o))
+            let shiftedSign = fragment.OutputSignWire + o
+            let shiftedMagnitude = fragment.OutputMagnitudeWires |> List.map (fun w -> w + o)
+            outputs <- outputs @ (shiftedSign :: shiftedMagnitude)
+            outputGroups <- outputGroups @ [ shiftedSign, shiftedMagnitude, wA, wB ]
+            ancilla <- ancilla @ (fragment.AncillaWires |> List.map (fun w -> w + o))
+            offset <- offset + fragment.Circuit.Ancilla
+
+        { Circuit = { Gates = gates; Wires = wires; Ancilla = offset }
+          InputWires = inputs
+          OutputWires = outputs
+          AncillaWires = ancilla
+          Outputs = outputGroups }
+
+    /// The signed-magnitude encoding a correct product must land on the output register:
+    /// sign bit, then little-endian magnitude over leftWidth + rightWidth bits.
+    ///
+    /// Independent of the circuit — computed from the integers directly, so it is a
+    /// genuine oracle for the circuit's output rather than a restatement of it.
+    let expectedProductBits (left: Weight) (right: Weight) : Bit * Bit list =
+        let width = magnitudeBitWidth (magnitude left) + magnitudeBitWidth (magnitude right)
+        let product = left * right
+        let sign = if product < 0L then One else Zero
+        sign, magnitudeBits width (magnitude product)

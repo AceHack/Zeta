@@ -1,0 +1,10 @@
+{
+  "id": "080d005b74e29010a01300081d99735c",
+  "at": "2026-08-16T16:36:33.490Z",
+  "by": "otto-cli",
+  "kind": "closed",
+  "payload": {
+    "workItemId": "081M05M1R97087G0R0023Z4F9D",
+    "reason": "erasure redefined at the circuit boundary; falsifiers demonstrated both directions (5 mutants x 2 assertion sets)"
+  }
+}
