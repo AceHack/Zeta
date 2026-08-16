@@ -1,0 +1,116 @@
+# Prove the pinned Ollama install actually works — on a real runner, before it reaches the
+# heartbeat lane.
+#
+# WHY THIS LANE EXISTS. agent-heartbeat.yml is the society's liveness path; a broken install
+# step there degrades every tick until someone notices. A pin is also the kind of change that
+# LOOKS right in review and can only be falsified by running it. So a pin is not merged on the
+# strength of a plausible diff: it is merged on the strength of this run.
+#
+# It runs automatically on any PR that touches the pin or the verifier, and on demand:
+#     gh workflow run verify-ollama-pin.yml --ref <branch>
+#
+# It exercises BOTH directions, deliberately:
+#   1. unit falsifiers — wrong bytes, empty bytes, short digest, shadowing binary
+#   2. the live refusal — a real fetch whose digest does not match MUST be rejected
+#   3. the happy path  — install, serve, pull, complete (what the heartbeat does)
+# Without (1) and (2) this workflow could not tell a working check from an absent one, which is
+# the defect class the pin exists to remove. Do not delete them to save a minute.
+name: verify-ollama-pin
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/ollama-pin.json
+      - .github/workflows/verify-ollama-pin.yml
+      - src/Core.TypeScript/ace/pinned-artifact.ts
+      - src/Core.TypeScript/ace/install-pinned-artifact.ts
+      - src/Core.TypeScript/ace/refresh-ollama-pin.ts
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-ollama-pin-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: pinned install works end-to-end
+    # SAME image as agent-heartbeat.yml. Verifying on a different runner than the one that will
+    # run it is how #9890 shipped broken — a scratch environment that differed from production
+    # in exactly the way that decided the outcome.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Unit falsifiers (the refusal is the half that matters)
+        run: bun test src/Core.TypeScript/ace/pinned-artifact.test.ts
+
+      - name: Show the pin under test
+        run: |
+          bun -e '
+            const p = await Bun.file(".github/ollama-pin.json").json();
+            console.log("version        ", p.entry.version);
+            console.log("contentAddress ", p.entry.contentAddress);
+            console.log("url            ", p.artifact.url);
+            console.log("sizeBytes      ", p.artifact.sizeBytes);
+          '
+
+      - name: LIVE REFUSAL — a real fetch with a wrong digest must be rejected
+        run: |
+          # Point the installer at a small real file (the release's own sha256sum.txt) while
+          # leaving the tarball's digest in place. The download succeeds; the comparison must
+          # not. Cheap on purpose: it proves the check is live end-to-end, through the real
+          # network and filesystem effects, without a second 1.4GB fetch.
+          bun -e '
+            const p = await Bun.file(".github/ollama-pin.json").json();
+            // Concatenation, not a template literal: a bare-dollar interpolation inside this
+            // single-quoted shell argument trips shellcheck SC2016, and actionlint escalates
+            // that to a gate failure.
+            p.artifact.url = "https://github.com/ollama/ollama/releases/download/" + p.artifact.tag + "/sha256sum.txt";
+            await Bun.write("/tmp/tampered-pin.json", JSON.stringify(p, null, 2));
+          '
+          set +e
+          bun src/Core.TypeScript/ace/install-pinned-artifact.ts --pin /tmp/tampered-pin.json
+          RC=$?
+          set -e
+          if [ "$RC" -eq 0 ]; then
+            echo "::error title=ollama pin::The installer ACCEPTED a payload whose SHA-256 does not match the pin. The digest check is not doing anything."
+            exit 1
+          fi
+          echo "[verify] live refusal OK (rc=$RC) — the digest check can fail"
+
+      - name: HAPPY PATH — install the pinned build
+        run: bun src/Core.TypeScript/ace/install-pinned-artifact.ts --pin .github/ollama-pin.json
+
+      - name: Serve and pull the heartbeat model
+        run: |
+          # Exactly what agent-heartbeat.yml does after the install, so this lane fails for the
+          # same reasons that one would. Only the 0.5b model is pulled: the 7b comes from the
+          # same registry over the same client, so pulling 5GB here would re-test the same path
+          # at 12x the cost. A stated limit of this verification, not an oversight.
+          ollama serve &
+          for _ in $(seq 1 30); do
+            if ollama list >/dev/null 2>&1; then break; fi
+            sleep 1
+          done
+          ollama --version
+          ollama pull qwen2.5:0.5b
+          ollama list
+
+      - name: Smoke — the model actually answers
+        run: |
+          # `ollama list` proves a download landed, not that inference works. The heartbeat's
+          # observe loop needs a completion, so ask for one.
+          OUT=$(ollama run qwen2.5:0.5b "Reply with the single word: alive" 2>&1)
+          echo "$OUT"
+          [ -n "$OUT" ] || { echo "::error::empty completion from qwen2.5:0.5b"; exit 1; }

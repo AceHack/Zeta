@@ -1,0 +1,70 @@
+{
+  "_doc": [
+    "PINNED OLLAMA RELEASE — the only Ollama artifact the CI lanes may install.",
+    "",
+    "WHY. Until 2026-08-16 every heartbeat tick ran `curl -fsSL https://ollama.com/install.sh | sh`:",
+    "a remote script fetched over the network and handed straight to a shell, on a 15-minute cron,",
+    "on a job holding contents:write and pull-requests:write. Whatever that URL served at that",
+    "instant executed with the runner's token in the environment. That is influence entering",
+    "through an undeclared, unmetered channel — manifesto §13, noninterference / entropy",
+    "quarantine — and it was the sharpest instance in the egress inventory.",
+    "",
+    "SHAPE. This file is an ace PackageEntry (src/Core.TypeScript/ace/ace-cli.ts) plus the",
+    "artifact locator ace does not model yet. A content-addressed install IS a hash-pinned",
+    "install, so the pin is written in the shape ace will eventually consume rather than in an",
+    "ad-hoc format someone would later have to unwind. `entry` is verbatim-shaped for ace;",
+    "`artifact` is the part ace has no field for today. NOTHING IN ACE READS THIS FILE YET —",
+    "see `aceGaps`. Claiming otherwise would be the vacuous-check shape.",
+    "",
+    "REFRESH (the maintenance path):",
+    "  1. bun src/Core.TypeScript/ace/refresh-ollama-pin.ts [--tag vX.Y.Z]  # rewrites entry + artifact",
+    "  2. commit on a branch, push, open a PR",
+    "  3. verify-ollama-pin.yml runs ON THAT PR automatically and proves the pin on a real",
+    "     ubuntu-24.04 runner — install, serve, pull, complete, plus the REFUSAL path",
+    "  4. merge only after it is green",
+    "The refresher cross-checks the digest against TWO independent sources (the release's own",
+    "sha256sum.txt and GitHub's API-reported asset digest) and refuses to write if they",
+    "disagree. Hashing the file you just downloaded and pinning that is a check that cannot fail.",
+    "",
+    "FAILURE MODE WHEN UPSTREAM MOVES: nothing happens. The URL is version-addressed, so a new",
+    "upstream release does not touch us — the pin goes stale, it does not break. It fails only if",
+    "the tagged asset is deleted or its bytes change, and then the install step goes RED and the",
+    "tick continues WITHOUT a model. It never falls back to the unpinned installer."
+  ],
+  "entry": {
+    "name": "ollama",
+    "version": "0.32.13",
+    "contentAddress": "sha256:0fd1dece38a1c6242e8013ce20b597345c5de072ae6b320160edb0e729ef1de1",
+    "weight": 1,
+    "packageManager": "ace",
+    "lastUpdated": "2026-08-16T00:00:00Z"
+  },
+  "artifact": {
+    "tag": "v0.32.13",
+    "asset": "ollama-linux-amd64.tar.zst",
+    "url": "https://github.com/ollama/ollama/releases/download/v0.32.13/ollama-linux-amd64.tar.zst",
+    "platform": "linux/x86_64",
+    "sizeBytes": 1421793186,
+    "publishedAt": "2026-08-14T19:16:07Z",
+    "digestSources": [
+      "release sha256sum.txt",
+      "GitHub API asset digest"
+    ],
+    "installsInto": "/usr/local",
+    "layout": "bin/ollama + lib/ollama/*",
+    "verify": {
+      "binary": "ollama",
+      "versionArgs": [
+        "--version"
+      ]
+    }
+  },
+  "aceGaps": [
+    "ace-cli.ts install() performs NO download and NO filesystem write — it is a pure Z-set delta over a 4-row hardcoded STUB_REGISTRY whose contentAddresses are literals ('sha256:abc123'). Verified by reading the source 2026-08-16, and its own header says so.",
+    "ace.ts DOES have a real fetch + package_hash-verified install with lock-pin refusal — but it fetches `.text()`, i.e. JSON package manifests. It has no binary-artifact path, so a 1.4GB .tar.zst is out of scope for it today.",
+    "PackageEntry has no artifact locator (url/asset/platform) and no archive-extraction concept. `artifact` above is exactly the field set ace would need to own this row.",
+    "PackageEntry.packageManager is the union \"ace\"|\"helm\"|\"npm\"|\"cargo\"|\"nix\"; there is no member for a vendor release binary. \"ace\" is recorded here as the least-wrong value, not as a claim that ace manages it.",
+    "graphMerkleRoot() is a 32-bit non-cryptographic string hash, so ace's graph root is not today an integrity primitive. The integrity here rests on the SHA-256 in `entry.contentAddress`, checked by src/Core.TypeScript/ace/pinned-artifact.ts — not on ace.",
+    "`artifact.verify` (binary + versionArgs) is a post-install proof that the thing on PATH came out of the archive we verified. ace has no equivalent: its `verify` compares a recorded contentAddress against the registry, which cannot notice that an older build is shadowing the installed one."
+  ]
+}

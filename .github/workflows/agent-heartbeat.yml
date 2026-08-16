@@ -74,11 +74,84 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Install Ollama + pull models
+      # PINNED INSTALL (2026-08-16). This step used to be:
+      #     curl -fsSL https://ollama.com/install.sh | sh
+      # a remote script fetched and handed straight to a shell, every 15 minutes, three times
+      # over (one per matrix agent), in a job holding contents:write and pull-requests:write.
+      # Whatever that URL served at that instant executed with the runner's token in the
+      # environment, and nothing in the repo could have told us it had changed. That is
+      # influence entering through an undeclared, unmetered channel — manifesto §13,
+      # noninterference — and it was the sharpest instance in the egress inventory.
+      #
+      # It now installs ONE named release asset by version, verifies its SHA-256 against
+      # .github/ollama-pin.json, and refuses to install anything that does not match. The
+      # installer script is gone from the loop entirely, which also drops the behaviours we
+      # never wanted on an ephemeral GPU-less runner: a systemd unit, a service user, and an
+      # apt-based NVIDIA/ROCm driver install. The server is started by hand below, as before.
+      #
+      # THE TENSION, DECIDED EXPLICITLY. A pin fails closed when upstream moves, and on this
+      # lane failing closed means the tick stops — which .claude/rules.bak/tick-must-never-stop.md
+      # forbids (a lapse cost 12 hours once). Three options, and the third is not available:
+      #   fail the tick               — maximum safety, violates tick-must-never-stop
+      #   fall back to unpinned       — FORBIDDEN. A check with a bypass is not a check.
+      #   fail loudly, tick continues — CHOSEN.
+      # So `continue-on-error: true`: the step goes red in the run UI and emits an ::error::
+      # annotation, the job carries on, and the tick runs WITHOUT a model. Every downstream
+      # consumer of the model already degrades rather than dies (the observe tick and the
+      # codegen step both end in `|| echo "... (non-fatal)"`), and the healer, mutation runner,
+      # cadence measurement, attestation, archive and push do not use a model at all. A
+      # model-less tick is a large loss; a stopped society is a total one.
+      #
+      # Note this is strictly SAFER than what it replaced in the liveness sense too: a failed
+      # `ollama pull` used to kill the whole job, because the pulls sat under `set -e` in the
+      # same step as the install. They no longer do.
+      #
+      # TYPESCRIPT, NOT A SHELL SCRIPT, and that is not a style preference. A SHA-256 pin
+      # reaches naturally for shell (curl + sha256sum + compare + branch) at exactly the moment
+      # this repo is retiring bash — registering new shell in the retained-shell allowlist would
+      # have been the locally-easy, strategically-wrong move. The allowlist exists for scripts
+      # that run BEFORE bun is available; this one does not (bun install runs above). And a
+      # shell one-liner in a workflow cannot be unit-tested, while the verifier can be and is:
+      # src/Core.TypeScript/ace/pinned-artifact.test.ts drives it through injected effects and
+      # proves the REFUSAL, which is the only half that matters. Neutering the digest comparison
+      # turns 5 of those tests red — checked, not assumed.
+      #
+      # Refresh path, failure modes, and why the pin is written in ace's PackageEntry shape:
+      # see the `_doc` block in .github/ollama-pin.json. A pin bump is proved on a real runner
+      # by verify-ollama-pin.yml BEFORE it merges — that workflow runs automatically on any PR
+      # touching the pin.
+      - name: Install Ollama (pinned, checksum-verified)
+        continue-on-error: true
+        run: bun src/Core.TypeScript/ace/install-pinned-artifact.ts --pin .github/ollama-pin.json
+
+      - name: Start Ollama + pull models
+        continue-on-error: true
+        env:
+          AGENT: ${{ matrix.agent }}
         run: |
-          curl -fsSL https://ollama.com/install.sh | sh
+          if ! command -v ollama >/dev/null 2>&1; then
+            echo "::error title=heartbeat degraded::The pinned Ollama install did not complete, so this tick runs WITHOUT a model. The observe and codegen steps will produce nothing; every other duty still runs. Fix the pin (.github/ollama-pin.json) — do not restore the unpinned installer."
+            {
+              echo "### ${AGENT:-agent}: DEGRADED TICK — no model"
+              echo ""
+              echo "The pinned Ollama install failed; see the install step above."
+              echo "Ticking continues without inference."
+              echo ""
+              echo "Refresh:  bun src/Core.TypeScript/ace/refresh-ollama-pin.ts"
+              echo "Prove it: open a PR — verify-ollama-pin.yml runs on it"
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
           ollama serve &
-          sleep 5
+          # Poll for readiness instead of `sleep 5`. The old fixed sleep was a race the tick
+          # lost silently whenever the runner was slow — the pulls simply failed against a
+          # server that had not bound yet.
+          for _ in $(seq 1 30); do
+            if ollama list >/dev/null 2>&1; then break; fi
+            sleep 1
+          done
+
           # Tiny model for heartbeat (fast, 400MB)
           ollama pull qwen2.5:0.5b
           # Smart model for codegen/decompose work (5GB, fits in 7GB runner)
