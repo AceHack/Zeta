@@ -1,10 +1,16 @@
-// tools/agent-heartbeats/merge-heartbeats-to-main.test.ts — 081KSKBP80008QG0R001KK9WV6.4 merge-tool tests.
+// src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.test.ts — heartbeat merge-tool tests.
 
 import { describe, expect, it } from "bun:test";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { armOutcome, armingEnabled, heartbeatMergePrBody, parseArgs } from "./merge-heartbeats-to-main";
 import { main as validateAgencySignature } from "../hygiene/validate-agencysignature-pr-body";
 
 const TEST_ENV = {} as NodeJS.ProcessEnv;
+const HEARTBEAT_WORKFLOW = readFileSync(
+  join(import.meta.dir, "..", "..", "..", ".github", "workflows", "agent-heartbeat.yml"),
+  "utf8",
+);
 
 describe("parseArgs", () => {
   it("zero args returns built-in defaults", () => {
@@ -56,7 +62,11 @@ describe("armOutcome", () => {
   });
 
   it("arming failed -> STILL a success shape, carrying the PR and the reason", () => {
-    const r = armOutcome(pr, 1, "  GraphQL: Resource not accessible by personal access token (enablePullRequestAutoMerge)\n");
+    const r = armOutcome(
+      pr,
+      1,
+      "  GraphQL: Resource not accessible by personal access token (enablePullRequestAutoMerge)\n",
+    );
     // The load-bearing assertion: the PR survives an arming failure.
     expect(r.number).toBe(10397);
     expect(r.url).toBe(pr.url);
@@ -92,6 +102,37 @@ describe("armingEnabled", () => {
   });
 });
 
+describe("heartbeat workflow credential split", () => {
+  it("keeps branch writes on the proven workflow credential", () => {
+    const tickCheckout = HEARTBEAT_WORKFLOW.slice(
+      HEARTBEAT_WORKFLOW.indexOf("- name: Checkout"),
+      HEARTBEAT_WORKFLOW.indexOf("- name: Setup bun"),
+    );
+    const pushStep = HEARTBEAT_WORKFLOW.slice(
+      HEARTBEAT_WORKFLOW.indexOf("- name: Push heartbeat branch"),
+      HEARTBEAT_WORKFLOW.indexOf("flush-to-main:"),
+    );
+
+    expect(tickCheckout).not.toContain("\n          token:");
+    expect(pushStep).toContain('run: git push --force-with-lease origin "heartbeat/$AGENT"');
+    expect(pushStep).not.toContain("FALLBACK_TOKEN");
+  });
+
+  it("dispatches the required gate before arming auto-merge", () => {
+    const flushClosure = HEARTBEAT_WORKFLOW.slice(
+      HEARTBEAT_WORKFLOW.indexOf("- name: Dispatch gate for heartbeat head"),
+      HEARTBEAT_WORKFLOW.indexOf("- name: Fail if a heartbeat PR is old"),
+    );
+    const dispatchIndex = flushClosure.indexOf("gh workflow run gate.yml");
+    const mergeIndex = flushClosure.indexOf("gh pr merge");
+
+    expect(flushClosure).toContain("GH_TOKEN: ${{ secrets.ZETA_SOCIETY_DISPATCH_TOKEN }}");
+    expect(flushClosure).toContain("GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}");
+    expect(dispatchIndex).toBeGreaterThan(-1);
+    expect(mergeIndex).toBeGreaterThan(dispatchIndex);
+  });
+});
+
 // ---------------------------------------------------------------------------
 // The lane signs its own PRs (2026-08-15).
 //
@@ -105,12 +146,7 @@ describe("armingEnabled", () => {
 // wrong before -- the body always LOOKED fine to a human reader.
 // ---------------------------------------------------------------------------
 describe("heartbeatMergePrBody", () => {
-  const AFTER_CUTOVER = [
-    "--pr-created-at",
-    "2026-08-16T00:00:00Z",
-    "--grandfather-cutover",
-    "2026-08-15T00:00:00Z",
-  ];
+  const AFTER_CUTOVER = ["--pr-created-at", "2026-08-16T00:00:00Z", "--grandfather-cutover", "2026-08-15T00:00:00Z"];
 
   // The real validator's real `main()`, over the real generated string.
   function validate(body: string): { readonly status: number; readonly out: string } {
@@ -132,9 +168,7 @@ describe("heartbeatMergePrBody", () => {
   }
 
   it("passes the real pre-merge validator", () => {
-    const { status, out } = validate(
-      heartbeatMergePrBody("main", "2026-08-15T00:00:00.000Z", "AceHack"),
-    );
+    const { status, out } = validate(heartbeatMergePrBody("main", "2026-08-15T00:00:00.000Z", "AceHack"));
     expect(out).toContain("PASS: AgencySignature v1");
     expect(status).toBe(0);
   });
@@ -151,15 +185,9 @@ describe("heartbeatMergePrBody", () => {
     // The workflow's token is `ZETA_TELEMETRY_FLUSH_TOKEN || ZETA_PR_ARCHIVE_TOKEN
     // || GITHUB_TOKEN`, so the identity is a runtime fact. Hardcoding one would
     // have been a false claim in two of the three cases.
-    expect(heartbeatMergePrBody("main", "t", "AceHack")).toContain(
-      "Credential-Mode: shared",
-    );
-    expect(heartbeatMergePrBody("main", "t", "github-actions[bot]")).toContain(
-      "Credential-Mode: dedicated-agent",
-    );
-    expect(heartbeatMergePrBody("main", "t", "unknown")).toContain(
-      "Credential-Mode: unknown",
-    );
+    expect(heartbeatMergePrBody("main", "t", "AceHack")).toContain("Credential-Mode: shared");
+    expect(heartbeatMergePrBody("main", "t", "github-actions[bot]")).toContain("Credential-Mode: dedicated-agent");
+    expect(heartbeatMergePrBody("main", "t", "unknown")).toContain("Credential-Mode: unknown");
   });
 
   it("uses `***` for the rule, never `---`", () => {

@@ -16,8 +16,8 @@ name: agent-heartbeat
 
 on:
   schedule:
-    - cron: '*/15 * * * *'  # every 15 minutes
-  workflow_dispatch:         # manual trigger for testing
+    - cron: "*/15 * * * *" # every 15 minutes
+  workflow_dispatch: # manual trigger for testing
 
 permissions:
   contents: write
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     strategy:
-      fail-fast: false  # both agents tick independently
+      fail-fast: false # both agents tick independently
       matrix:
         agent: [alexa, otto, soraya]
 
@@ -61,9 +61,8 @@ jobs:
           # throughout the outage. Workflow-level `permissions:` already grants
           # `contents: write`.
           #
-          # Re-apply #10850's approach ONLY after the PAT is granted `contents: write`
-          # (081M05G8D36087G0R0034D3QPA). Until then a degraded lane — telemetry lands on
-          # the branch, `gate (required)` does not start on the flush PR — beats a dead one.
+          # The flush job dispatches gate.yml explicitly at this branch head, so gate
+          # scheduling no longer depends on the identity that authored this push.
           persist-credentials: true
 
       - name: Setup bun
@@ -813,13 +812,12 @@ jobs:
             echo "[work] No new work produced this tick"
           fi
 
-
-  # ═══ Flush: merge heartbeat events to main (hourly, per agent) ═══════════════
-  #
-  # CORPORATE MODE: creates a PR per agent. The agent-reviewer workflow
-  # cross-verifies (the symmetric NFT attestation) then approves.
-  #
-  # SOVEREIGN MODE (goal): direct push, cross-verification stays as attestation-only.
+      # ═══ Flush: merge heartbeat events to main (hourly, per agent) ═══════════════
+      #
+      # CORPORATE MODE: creates a PR per agent. The agent-reviewer workflow
+      # cross-verifies (the symmetric NFT attestation) then approves.
+      #
+      # SOVEREIGN MODE (goal): direct push, cross-verification stays as attestation-only.
       # THE PUSH IS LAST, DELIBERATELY — see the ordering audit of 2026-08-01.
       #
       # This job has exactly ONE push. Every step that produces an artifact must therefore run
@@ -955,7 +953,8 @@ jobs:
         # and was tried and reverted on 2026-08-16 (PR #10913 → #10914): actions/checkout's
         # persisted `http.<url>.extraheader` is what git authenticates with, and re-pointing
         # the remote URL at `x-access-token:<other>` did not displace it — the retry was denied
-        # as the same identity in production. Change the checkout's token, not the push step.
+        # as the same identity in production. Keep the branch write on GITHUB_TOKEN; the flush
+        # job requests gate.yml independently with the Actions-scoped credential.
         run: git push --force-with-lease origin "heartbeat/$AGENT"
 
   flush-to-main:
@@ -1191,6 +1190,47 @@ jobs:
             exit 1
           fi
 
+      - name: Dispatch gate for heartbeat head
+        if: steps.check.outputs.skip != 'true'
+        env:
+          AGENT: ${{ matrix.agent }}
+          # This fine-grained credential owns Actions dispatch only. It does not
+          # need repository contents write, and the browser/device relay remains
+          # unable to merge or push main directly.
+          GH_TOKEN: ${{ secrets.ZETA_SOCIETY_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error title=Heartbeat gate dispatch unavailable::ZETA_SOCIETY_DISPATCH_TOKEN is not configured"
+            exit 1
+          fi
+          gh workflow run gate.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref "heartbeat/$AGENT"
+          echo "[flush] $AGENT: dispatched gate.yml for heartbeat/$AGENT"
+
+      - name: Arm heartbeat PR auto-merge
+        if: steps.check.outputs.skip != 'true'
+        env:
+          AGENT: ${{ matrix.agent }}
+          # The workflow token has contents:write and is already proven by the
+          # earlier merge-duty step to arm automation-only PRs. The scoped PAT
+          # intentionally cannot perform enablePullRequestAutoMerge.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR=$(gh pr list \
+            --repo "$GITHUB_REPOSITORY" \
+            --state open \
+            --head "heartbeat/$AGENT" \
+            --base main \
+            --json number \
+            --jq '.[0].number // empty')
+          if [ -z "$PR" ]; then
+            echo "::error title=Heartbeat flush PR missing::$AGENT has events to flush but no open PR"
+            exit 1
+          fi
+          gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --auto --delete-branch
+          echo "[flush] $AGENT: armed auto-merge on PR #$PR"
+
       - name: Fail if a heartbeat PR is old and gate never started
         if: always() && matrix.agent == 'alexa'
         env:
@@ -1200,4 +1240,12 @@ jobs:
           # lie: gate never started. This exits 1 when a heartbeat/* PR older
           # than one tick has no `gate (required)` in its rollup. Young PRs
           # are ignored — the check may not have been scheduled yet.
+          set +e
           bun src/Core.TypeScript/forge-host/github/required-check-started.ts --min-age-min 20
+          RC=$?
+          set -e
+          if [ "$RC" -eq 2 ]; then
+            echo "::warning title=Heartbeat gate state unavailable::GitHub did not answer after bounded retries; gate absence is unmeasured, not disproven"
+            exit 0
+          fi
+          exit "$RC"

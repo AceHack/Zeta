@@ -35,7 +35,7 @@ Two failure modes, and the second is the one that matters:
 1. **Silent total data loss.** It satisfies `ITransport` completely, never throws and never logs, so
    a caller who adds it to `OracleTransport.emitAll` gets a successful-looking emit that delivered
    nothing to anyone.
-2. **The fabricated latency corrupts the fused result.** `EmitAsync` returns how long it *slept*,
+2. **The fabricated latency corrupts the fused result.** `EmitAsync` returns how long it _slept_,
    and under `ρ = 1/(1+L)` a large `L` reads as high Condorcet independence. So this stub takes the
    **largest weight in the posterior** of any transport in the table while having measured nothing —
    a stub that plainly failed would be strictly safer than one that lies upward.
@@ -55,9 +55,9 @@ misled; it is not a fix.
 
 - **The link must be injected, not reached for** (§13 noninterference / `dv2-data-split-discipline`).
   `WebSocketTransport(sendFn: string -> Task<unit>)` in the same file is the pattern to copy, and
-  `discovery/reticulum-transport.ts` already states the same discipline for the TS side (*"the
-  Reticulum core imports no socket"*). An implementation that opens its own socket would be a new
-  defect, not a fix.
+  `src/Core.TypeScript/discovery/reticulum-transport.ts` already states the same discipline for the
+  TS side (_"the Reticulum core imports no socket"_). An implementation that opens its own socket
+  would be a new defect, not a fix.
 - **`Task.Delay` must go.** It currently blocks the `emitAll` fan-out for `nominalHops × 0.5`
   seconds of fiction. See `async-all-the-way-truthful-signatures`.
 - **Do not let the nominal latency reach the ρ math.** Return the measured round-trip only, or
@@ -72,5 +72,5 @@ misled; it is not a fix.
 - `docs/research/2026-08-16-isociety-iworld-the-map-and-minimal-declarations.md` §"Honest labels on
   maturity" — where the placeholder was first recorded, plus the 2026-08-16 update note.
 - `081KT2T2J0008QG0R002R72323` / `081KQZVQW0008QG0R001CQPQ0E` — the gated transport work; a real
-  Reticulum path for *strangers over the wire* inherits the encryption-floor and threat-model gates
+  Reticulum path for _strangers over the wire_ inherits the encryption-floor and threat-model gates
   recorded in `SybilBftProtocol.fs`.
