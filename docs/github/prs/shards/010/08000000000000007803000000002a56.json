@@ -1,0 +1,12 @@
+{
+  "pr_number": 10838,
+  "archive_path": "docs/history/pr-reviews/PR-10838-fix-accelerator-make-the-move-next-workflow-fail-by-name-and-repoint-8-dead-doc-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T20:00:02.271Z",
+  "schema_version": "v1",
+  "commit_sha": "711bab897aa1b9901045cca3fd55131a2be471f6",
+  "title": "fix(accelerator): make the move-next workflow fail by name, and repoint 8 dead doc references",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:59:25Z",
+  "head_ref": "shadow/accelerator-move-next-honesty-fix-2026-08-15"
+}
