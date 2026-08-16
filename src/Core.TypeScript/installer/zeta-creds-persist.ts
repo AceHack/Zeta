@@ -13,6 +13,8 @@
 // Usage:
 //   bun src/Core.TypeScript/installer/zeta-creds-persist.ts \
 //     --usb-uuid <uuid> \
+//     [--usb-iserial <serial>] \
+//     [--uefi-keyfile <path>] \
 //     --output /esp/zeta-creds.enc \
 //     ( --passphrase-file <path> | --passphrase-env <VAR> ) \
 //     [--persona <name>] \
@@ -31,9 +33,12 @@ import { encrypt } from "./zeta-creds-crypto";
 import { DEFAULT_HANDLERS, resolveBakeCred } from "./zeta-cred-handlers";
 import { encodeBundle, serializeEnvelope, type CredBundle } from "./zeta-creds-envelope";
 import { DEFAULT_MANIFEST } from "./zeta-creds-manifest";
+import { selectCliBindingMaterial } from "./installer-binding-cli.ts";
 
 interface Args {
-  readonly usbUuid: string;
+  readonly usbUuid: string | null;
+  readonly usbISerial: string | null;
+  readonly bindingMaterial: string;
   readonly output: string;
   readonly passphrase: string;
   readonly persona: string | null;
@@ -53,6 +58,8 @@ interface Args {
  */
 export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args | { readonly error: string } {
   let usbUuid: string | null = null;
+  let usbISerial: string | null = null;
+  let uefiKeyfilePath: string | null = null;
   let output: string | null = null;
   let passphraseFile: string | null = null;
   let passphraseEnv: string | null = null;
@@ -67,6 +74,8 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args
     };
     try {
       if (arg === "--usb-uuid") usbUuid = next();
+      else if (arg === "--usb-iserial") usbISerial = next();
+      else if (arg === "--uefi-keyfile") uefiKeyfilePath = next();
       else if (arg === "--output") output = next();
       else if (arg === "--passphrase-file") passphraseFile = next();
       else if (arg === "--passphrase-env") passphraseEnv = next();
@@ -78,8 +87,20 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args
     }
   }
 
-  if (!usbUuid) return { error: "--usb-uuid required" };
   if (!output) return { error: "--output required" };
+
+  let uefiKeyfileBytes: Uint8Array | null = null;
+  if (uefiKeyfilePath !== null) {
+    if (!existsSync(uefiKeyfilePath)) return { error: "--uefi-keyfile not found" };
+    try {
+      uefiKeyfileBytes = readFileSync(uefiKeyfilePath);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      return { error: `--uefi-keyfile read failed: ${msg}` };
+    }
+  }
+  const binding = selectCliBindingMaterial({ usbUuid, usbISerial, uefiKeyfileBytes });
+  if ("error" in binding) return { error: binding.error };
 
   // Resolve passphrase source. Interactive prompt is NOT implemented in this
   // entry-point — caller must supply --passphrase-file or --passphrase-env.
@@ -106,11 +127,22 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args
       error: "passphrase source required: pass --passphrase-file <path> or --passphrase-env <VAR>",
     };
 
-  return { usbUuid, output, passphrase, persona, bakeCredArgs };
+  return {
+    usbUuid,
+    usbISerial,
+    bindingMaterial: binding.material,
+    output,
+    passphrase,
+    persona,
+    bakeCredArgs,
+  };
 }
 
 /** Compose a CredBundle from --bake-cred args + manifest. Pure (in test mode). */
-export function composeBundle(args: Args): CredBundle | { readonly error: string } {
+export function composeBundle(args: {
+  readonly persona: string | null;
+  readonly bakeCredArgs: readonly string[];
+}): CredBundle | { readonly error: string } {
   const globalCreds: Record<string, Buffer> = {};
   const personaCreds: Record<string, Record<string, Buffer>> = {};
 
@@ -135,9 +167,9 @@ export function composeBundle(args: Args): CredBundle | { readonly error: string
 }
 
 /** Pure pipeline (no FS write): bundle → encrypt → serialize. */
-export function buildBlob(bundle: CredBundle, usbUuid: string, passphrase: string): Buffer {
+export function buildBlob(bundle: CredBundle, bindingMaterial: string, passphrase: string): Buffer {
   const plaintext = encodeBundle(bundle);
-  const env = encrypt(plaintext, usbUuid, passphrase);
+  const env = encrypt(plaintext, bindingMaterial, passphrase);
   return serializeEnvelope(env);
 }
 
@@ -153,7 +185,7 @@ async function main(): Promise<number> {
     console.error(`zeta-creds-persist: ${bundle.error}`);
     return 3;
   }
-  const blob = buildBlob(bundle, parsed.usbUuid, parsed.passphrase);
+  const blob = buildBlob(bundle, parsed.bindingMaterial, parsed.passphrase);
   try {
     writeFileSync(parsed.output, blob);
   } catch (err) {

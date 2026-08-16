@@ -5,8 +5,9 @@
  * Pure: no I/O. Composes with zeta-creds-crypto.ts (scrypt → HKDF → AES-GCM).
  *
  * Shipped today: `usbUuid` (FAT filesystem UUID — breaks on reformat).
- * Research: `usbISerial`, `tpmSeal`. `uefiKeyfile` ESP persist planner
- * landed (`uefi-keyfile-esp.ts`); still not the default persist path.
+ * Research: `tpmSeal`. `uefiKeyfile` ESP persist planner landed
+ * (`uefi-keyfile-esp.ts`). `usbISerial` sysfs probe landed
+ * (`usb-iserial-probe.ts`). Neither is the default persist path.
  */
 
 import {

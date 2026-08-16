@@ -13,7 +13,8 @@ Next concrete action: **minimize metal** — S6 physical first-login +
 WiFi radio / Touch ID / TPM (human-gated). Software deepen landed:
 per-federation threat-model stub + optional QEMU UEFI menu-boot smoke
 (`qemu-uefi-menu-smoke.ts`) + UEFI keyfile ESP persist planner
-(`uefi-keyfile-esp.ts`; not default `usbUuid` binding).
+(`uefi-keyfile-esp.ts`) + USB iSerial sysfs probe (`usb-iserial-probe.ts`;
+not default `usbUuid` binding).
 See `docs/security/USB-IDENTITY-THREAT-MODEL.md` <!-- STALE-REF: ../../security/USB-IDENTITY-THREAT-MODEL.md -->:
 traveler → cluster → federation → ISociety/CTM, self-similar.
 Cluster/federation glossary promoted (`docs/SEED-VOCABULARY.md` +

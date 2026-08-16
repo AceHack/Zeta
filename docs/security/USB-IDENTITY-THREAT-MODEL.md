@@ -122,7 +122,7 @@ See `zeta-creds-crypto.ts` + research note on ephemeral UUID rebind.
 |---|---|---|---|---|---|
 | Passphrase only | Operator knowledge | Yes | Yes | No | Partial (with UUID today) |
 | USB FAT UUID | This filesystem instance | **No** (reformat breaks) | No | No | **Shipped — known flaw** |
-| USB iSerial | This physical stick | Yes | No | Probe-only | Research |
+| USB iSerial | This physical stick | Yes | No | Probe-only | Sysfs probe landed (`usb-iserial-probe.ts`); optional `--usb-iserial`; not default |
 | UEFI keyfile on ESP | Stick + firmware layout | Depends | No | No (QEMU-testable) | Planner + FAT round-trip landed (`uefi-keyfile-esp.ts`); not default persist |
 | TPM / PCR seal | This machine | Yes | Yes (wrong machine fails) | Yes for real TPM | Phase 3 |
 | Touch ID / FIDO | Human traveler present | Yes | Yes | Yes | Metal-gated |
@@ -237,8 +237,13 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
    `grub-mkimage` EFI; skip locally when tooling is absent; required in CI.
 3. **UEFI keyfile on ESP** — planner + FAT round-trip landed
    (`src/Core.TypeScript/installer/uefi-keyfile-esp.ts`). Writes
-   `/EFI/ZETA/keyfile` (32 bytes → hex HKDF material). Not the default
-   `usbUuid` persist path. No TPM / Touch ID claim.
+   `/EFI/ZETA/keyfile` (32 bytes → hex HKDF material). Optional
+   `--uefi-keyfile` on persist/restore. Not the default `usbUuid` path.
+   No TPM / Touch ID claim.
+4. **USB iSerial probe** — sysfs injectable probe landed
+   (`src/Core.TypeScript/installer/usb-iserial-probe.ts`). Unique
+   non-hub serial or fail closed. Optional `--usb-iserial` on
+   persist/restore. QEMU-injectable; no physical-stick claim.
 
 Cluster/federation vocabulary promoted to operational glossary
 (`docs/SEED-VOCABULARY.md` carved kernel + `docs/GLOSSARY.md` §Society

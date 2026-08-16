@@ -27,9 +27,19 @@ describe("parsePersistArgs", () => {
     expect(result.bakeCredArgs.length).toBe(1);
   });
 
-  it("rejects missing --usb-uuid", () => {
+  it("rejects missing binding factor", () => {
     const result = parsePersistArgs(["--output", "/tmp/x", "--passphrase-env", "PP"], { PP: "x" });
     expect("error" in result).toBe(true);
+  });
+
+  it("accepts --usb-iserial without --usb-uuid", () => {
+    const result = parsePersistArgs(
+      ["--usb-iserial", "ZETA-STICK-001", "--output", "/tmp/blob", "--passphrase-env", "TP"],
+      { TP: PASS },
+    );
+    if ("error" in result) throw new Error(result.error);
+    expect(result.bindingMaterial).toBe("ZETA-STICK-001");
+    expect(result.usbISerial).toBe("ZETA-STICK-001");
   });
 
   it("rejects missing --output", () => {
@@ -153,6 +163,29 @@ describe("persist → restore round-trip via tmpdir", () => {
     const ghPath = resolveCredPaths(DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli")!, restoreRoot)[0]!;
     const restored = readFileSync(ghPath, "utf8");
     expect(restored).toBe("PERSISTED-TOKEN-VALUE");
+  });
+
+  it("round-trips when bound to usb iSerial instead of FAT UUID", () => {
+    const serial = "ZETA-STICK-001";
+    const persistArgs = {
+      usbUuid: UUID,
+      output: join(tmp, "blob-iserial.enc"),
+      passphrase: PASS,
+      persona: null,
+      bakeCredArgs: ["gh-cli=ISERIAL-TOKEN"],
+    };
+    const bundle = composeBundle(persistArgs);
+    if ("error" in bundle) throw new Error(bundle.error);
+    const blob = buildBlob(bundle, serial, persistArgs.passphrase);
+    writeFileSync(persistArgs.output, blob);
+
+    const restoreRoot = join(tmp, "restore-iserial");
+    const wrongUuid = planRestore(readFileSync(persistArgs.output), UUID, PASS, null, restoreRoot);
+    expect("error" in wrongUuid).toBe(true);
+
+    const plan = planRestore(readFileSync(persistArgs.output), serial, PASS, null, restoreRoot);
+    if ("error" in plan) throw new Error(plan.error);
+    expect(applyPlan(plan)).toBe(1);
   });
 
   it("keeps ESP blob usable across root reformat and skips already-present restores", () => {
