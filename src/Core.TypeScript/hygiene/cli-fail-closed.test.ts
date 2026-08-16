@@ -123,20 +123,27 @@ describe("enrolment in audit-workflow-cli-flags", () => {
   }
 
   /**
-   * The fragility above, pinned as a fact about the auditor rather than left as a note.
+   * CLOSED 2026-08-16. This was a DEFECT PIN: it asserted, deliberately, that `hasClosedFlagSet`
+   * was fooled by prose — "so the day that stops being true is visible." PR #10860 made
+   * `hasClosedFlagSet` read `stripComments(source)`, so the day arrived and the pin fired: it went
+   * red on `main` (`Expected: true, Received: false`). That is exactly what a pin is for.
    *
-   * This is NOT a fix — tightening `hasClosedFlagSet` changes which tools the audit polices, and
-   * that belongs in its own change with its own reading. Measured at the time of writing: zero
-   * tools in the repo are currently enrolled by a comment alone, so the tightening would be a
-   * no-op today. This test exists so the day that stops being true is visible.
+   * What was missing is the other half of the handshake — a pin that fires must be REWRITTEN to
+   * assert the fix, not left red. So the same input now pins the FIXED behaviour, in both
+   * directions: a file that only discusses unknown arguments in a comment no longer reads as
+   * having a closed parser, and the detector is insensitive to whether the caller stripped
+   * comments first (it strips them itself, so pre-stripped text must give the same answer).
    */
-  test("hasClosedFlagSet is fooled by prose — a tool with no parser can read as closed", () => {
+  test("hasClosedFlagSet is NOT fooled by prose — a comment alone does not read as a parser", () => {
     const noParserAtAll = [
       "// This tool does not reject an unknown arg. It has no parser.",
       'const dryRun = process.argv.includes("--dry-run");',
     ].join("\n");
-    expect(hasClosedFlagSet(noParserAtAll)).toBe(true);
+    expect(hasClosedFlagSet(noParserAtAll)).toBe(false);
     expect(hasClosedFlagSet(stripComments(noParserAtAll))).toBe(false);
+    // …and it still recognises the real thing, so the tightening did not simply
+    // turn the detector off.
+    expect(hasClosedFlagSet("throw new Error(`unknown arg: ${a}`);")).toBe(true);
   });
 });
 
