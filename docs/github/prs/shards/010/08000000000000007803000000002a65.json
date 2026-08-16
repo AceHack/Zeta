@@ -1,0 +1,12 @@
+{
+  "pr_number": 10853,
+  "archive_path": "docs/history/pr-reviews/PR-10853-fix-cli-eight-destructive-tools-stop-reading-an-unknown-flag-as-consent.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T02:45:48.168Z",
+  "schema_version": "v1",
+  "commit_sha": "a34fd84cce3ebf635c4d559c08400c730b8f39be",
+  "title": "fix(cli): eight destructive tools stop reading an unknown flag as consent",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T02:45:10Z",
+  "head_ref": "shadow/fail-closed-unknown-flags-siblings"
+}
