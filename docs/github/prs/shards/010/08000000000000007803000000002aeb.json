@@ -1,0 +1,12 @@
+{
+  "pr_number": 10987,
+  "archive_path": "docs/history/pr-reviews/PR-10987-fix-ci-cache-the-pinned-rustup-toolchain-the-install-hit-still-refetched-the-cdn.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:00:24.634Z",
+  "schema_version": "v1",
+  "commit_sha": "2d57927414f47342f8f9f79e156069df75ea9562",
+  "title": "fix(ci): cache the pinned rustup toolchain — the install-* hit still refetched the CDN",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T17:59:49Z",
+  "head_ref": "shadow/cache-rustup-toolchain"
+}
