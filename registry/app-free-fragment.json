@@ -1,0 +1,51 @@
+{
+  "schema": "zeta-registry/v1",
+  "description": "The declared scope of the `app`-free Arrow fragment on the CHIP-8 cost-prediction path. `app` here is Hughes's ArrowApply operator (`Generalising Monads to Arrows`, SCP 37, 2000, sig `a (a b c, b) c`), NOT the CCC evaluation morphism and NOT applicative `ap`. Hughes's theorem `ArrowApply` is-equivalent-to `Monad` is what makes the fragment load-bearing: an arrow WITHOUT `app` has its pipeline shape fixed at construction, so cost is statically computable; an arrow WITH `app` can select its continuation from a runtime value and no static cost analysis survives. This file is the ALLOWLIST, and the allowlist is the content: the defect it replaces was a one-time grep over one 33-line module whose scope was never written down (docs/research/2026-08-15-the-app-free-fragment-was-a-one-time-grep-not-a-check-and-by-construction-is-false-for-isr.md). Adding or removing a path here is a visible diff and a decision someone made. Enforced by tests/Tests.FSharp/AppFreeFragment.Tests.fs, which runs under `dotnet test Zeta.sln -c Release` in the gate's build-and-test job -- a lane inside `gate (required)`.",
+  "claim": "Every module listed in `fragment` stays inside Hughes's `app`-free Arrow fragment: it exposes arr-like lifts and >=>-composition, and exposes NO operation whose result arrow is selected by a runtime value carried in the arrow's own value channel.",
+  "notClaimed": "NOT `app`-free BY CONSTRUCTION. `ISR<'A,'B> = IntrCtx -> 'A -> Task<Result<'B, InterruptFeedback>>` is a Kleisli arrow over a monad, and Hughes 2000 gives `Kleisli m` as an ArrowApply instance for ANY monad m, so `app` is definable in one line and compiles. The property is `app`-free BY ABSENCE, maintained by this checker rather than by the type system.",
+  "structuralAllowedTypesNote": "Escape hatch for the C2 STRUCTURAL layer, which is assembly-wide rather than path-scoped (a .NET type cannot be mapped back to its source file by reflection, and an arrow arriving through a value channel is not something that should appear quietly anywhere in Zeta.Core). Entries are .NET type full names, e.g. `Zeta.Core.SagaBuilder`. EMPTY today: no member of Zeta.Core has the ArrowApply shape, measured by reflection on the Release build 2026-08-15. Adding an entry is the honest way to write `app` deliberately -- and it obliges whatever static-cost claim rests on the fragment to be re-stated.",
+  "structuralAllowedTypes": [],
+  "fragment": [
+    {
+      "path": "src/Core/IntrCtx.fs",
+      "reason": "Defines the arrow itself -- `ISR<'A,'B>` (line 34) and Kleisli composition `>=>` (line 41). `>=>` takes two arrows and returns an arrow, but both operands are supplied at CONSTRUCTION; no arrow reaches it through the value channel. This is the module the original grep covered second, and the module whose docstring (line 17, 'the error channel for the ISR monad') is the reason the `by construction` claim was false."
+    },
+    {
+      "path": "src/Core/IsrLift.fs",
+      "reason": "The `arr` lifts -- `ofPure : ('a -> 'b) -> ISR<'a,'b>` (its own docstring: 'the unit of the Kleisli structure -- arr in arrow terms') and `ofPolicy`. This is the 33-line module the original one-time grep actually covered, and the module the mutation test injects `app` into to prove the check can fail."
+    },
+    {
+      "path": "src/Core/SoftScheduler.fs",
+      "reason": "The ISR run loop: `Handler`, `handler`, `drive`, `runDeterministic`. `drive` folds state through a FIXED array of handlers registered before the run starts, in registration order -- the pipeline shape is known before the first tick, which is exactly the property the predictor needs. Carries an unchecked boundary case; see `uncheckedCaveats`.",
+      "uncheckedCaveats": [
+        "`HandlerK.RunK : InterruptKind -> ISR<'S,'S>` (line 113) selects an arrow from a runtime value -- the arriving interrupt -- and `driveK` applies it per arrival. That is the bind-continuation SHAPE, and it is the closest thing to `app` anywhere in the declared fragment. Neither checker flags it, and neither can by type: `InterruptKind -> ISR<'S,'S>` is type-indistinguishable from an ordinary construction-time-parameterised builder such as `SoftChip8Scheduler.timerIsr : int -> ISR<Frame,Frame>`, which is legitimate. Distinguishing them needs dataflow (does the argument originate inside the pipeline?), which neither layer does. Recorded here rather than silently passed: the fragment claim holds for `Handler`/`drive` and is UNVERIFIED for `HandlerK`/`driveK`."
+      ]
+    },
+    {
+      "path": "src/Core/SoftChip8Scheduler.fs",
+      "reason": "The CHIP-8 client whose cost the predictor computes -- `timerIsr` (one 60Hz frame: Chip8Cow.tick then SoftChip8.lookAhead) and `timerHandler`. This is the module the whole predictivity claim is ABOUT, so it belongs in the declared scope even though the original grep never reached it. `timerIsr`'s `cyclesPerTick` is a construction-time parameter, not a value from the pipeline."
+    },
+    {
+      "path": "src/Core/SoftIsr.fs",
+      "reason": "Soft-value arrows over the same carrier -- `certain`, `ofWeighted`, `observeWith`, `resolveAt`, `mustResolveAt`, all of shape `ISR<_, SoftValue>`. Uncertainty travels in the VALUE channel, never in the arrow's shape, which is precisely the property that keeps the pipeline statically analysable while the values stay distributional."
+    }
+  ],
+  "outside": [
+    {
+      "path": "src/Core/SagaBuilder.fs",
+      "reason": "The deliberate DOOR OUT of the fragment, and the reason a repo-wide ban would be wrong. Three `member _.Bind` overloads (lines 19, 28, 37) plus `let saga = SagaBuilder()` (line 83) plus `liftISR : ISR<'A,'B> -> 'A -> Saga<'B>` (line 86) -- it takes an ISR arrow and hands it to genuinely monadic composition. By Hughes's theorem this is outside the `app`-free fragment BY DESIGN. Code written in `saga { ... }` is not statically cost-analysable and must not be claimed to be."
+    },
+    {
+      "path": "src/Core/Meno.fs",
+      "reason": "`MenoBuilder.Bind` (line 170) whose body selects a continuation arrow from a runtime value -- `let (MenoArrow h) = g span.[i].Key`. This is genuine value-dependent arrow selection, so `Meno` is outside the fragment by the same theorem. It is listed here rather than left unmentioned because it is the standing proof that this check is SCOPED: a lint that flagged legitimate monadic code would be disabled the first week. `Meno`'s arrow is a different carrier (`Arrow<'a,'b>` over ZSet) and is not on the ISR path at all."
+    },
+    {
+      "path": "src/Core/AgentIntegrate.fs",
+      "reason": "Carries a `.Bind` member. Not on the ISR path and not on the CHIP-8 prediction path; listed so the `.Bind` inventory in the source doc is fully accounted for rather than partially."
+    },
+    {
+      "path": "src/Core/Result.fs",
+      "reason": "Carries a `.Bind` member -- ordinary `Result` monadic plumbing used repo-wide. Not on the ISR path. Listed for the same completeness reason as AgentIntegrate.fs."
+    }
+  ]
+}

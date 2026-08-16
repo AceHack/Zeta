@@ -664,6 +664,7 @@
     <Compile Include="ZetaToolStore.Tests.fs" />
     <Compile Include="ZetaToolStore.Golden.Tests.fs" />
     <Compile Include="AdinkraClock.Tests.fs" />
+    <Compile Include="AppFreeFragment.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
