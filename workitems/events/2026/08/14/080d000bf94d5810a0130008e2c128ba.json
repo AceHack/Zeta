@@ -1,0 +1,14 @@
+{
+  "id": "080d000bf94d5810a0130008e2c128ba",
+  "at": "2026-08-14T18:18:26.091Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00QYADA087G0R00354VR6W",
+    "type": "task",
+    "title": "Subshare transport port: contract + envelope + spool adapter unblocks the three-house FROST reshare ceremony",
+    "slug": "subshare-transport-port-contract-envelope-spool-adapter-unbl",
+    "priority": "P2",
+    "filename": "081M00QYADA087G0R00354VR6W-subshare-transport-port-contract-envelope-spool-adapter-unbl.md"
+  }
+}
