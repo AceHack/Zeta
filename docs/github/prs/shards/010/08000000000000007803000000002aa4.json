@@ -1,0 +1,12 @@
+{
+  "pr_number": 10916,
+  "archive_path": "docs/history/pr-reviews/PR-10916-feat-ci-optional-qemu-uefi-multiboot-menu-smoke.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:04:57.481Z",
+  "schema_version": "v1",
+  "commit_sha": "9649f94940c4e9e37b73d8081d9274fe7d98c02b",
+  "title": "feat(ci): optional QEMU UEFI multiboot menu smoke",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:04:24Z",
+  "head_ref": "riven/qemu-uefi-menu-smoke"
+}
