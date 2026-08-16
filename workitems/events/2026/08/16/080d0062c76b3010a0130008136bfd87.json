@@ -1,0 +1,14 @@
+{
+  "id": "080d0062c76b3010a0130008136bfd87",
+  "at": "2026-08-16T20:52:29.670Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M065HVB5087G0R002N9NPFA",
+    "type": "bug",
+    "title": "four-corner dilationFactor is blind to loss rate: a 0%-loss lane and a 100%-loss lane both compute dilationFactor 0 (the metric is agreement rate, not autocorrelation)",
+    "slug": "four-corner-dilationfactor-is-blind-to-loss-rate-a-0-loss-la",
+    "priority": "P2",
+    "filename": "081M065HVB5087G0R002N9NPFA-four-corner-dilationfactor-is-blind-to-loss-rate-a-0-loss-la.md"
+  }
+}
