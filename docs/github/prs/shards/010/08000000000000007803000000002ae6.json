@@ -1,0 +1,12 @@
+{
+  "pr_number": 10982,
+  "archive_path": "docs/history/pr-reviews/PR-10982-fix-installer-keep-warm-rust-caches-offline.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T17:51:14.391Z",
+  "schema_version": "v1",
+  "commit_sha": "c32c27ea6985b19f3eaf70bb6fde6770f9dbcf89",
+  "title": "fix(installer): keep warm Rust caches offline",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T17:50:41Z",
+  "head_ref": "codex/rustup-component-offline"
+}
