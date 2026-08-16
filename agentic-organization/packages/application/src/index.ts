@@ -103,8 +103,10 @@ export {
   type ObserveWorkItemResult,
 } from "./observe-work-item.ts";
 export {
+  ReviewGateBasis,
   ReviewGateFeedbackReason,
   evaluateReviewGate,
+  type AdvisoryFinding,
   type ReviewGateResult,
 } from "./review-gate.ts";
 export {
