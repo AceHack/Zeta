@@ -1,0 +1,14 @@
+{
+  "id": "080d000bb23c5810a013000826a1d972",
+  "at": "2026-08-14T18:08:43.915Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00QCHWA087G0R000GKKRXD",
+    "type": "task",
+    "title": "consolidate the two cluster trees: infra/ is stale and collides with full-ai-cluster/ on the argocd/zeta-root identity",
+    "slug": "consolidate-the-two-cluster-trees-infra-is-stale-and-collide",
+    "priority": "P1",
+    "filename": "081M00QCHWA087G0R000GKKRXD-consolidate-the-two-cluster-trees-infra-is-stale-and-collide.md"
+  }
+}

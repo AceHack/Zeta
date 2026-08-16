@@ -55,6 +55,10 @@ on:
       - "src/Core.TypeScript/cluster/argocd-health-test.test.ts"
       - "full-ai-cluster/dev-cluster/**"
       - "full-ai-cluster/k8s/applications/**/Application.yaml"
+      - "full-ai-cluster/k8s/bootstrap/**"
+      - "full-ai-cluster/k8s/single-node-budget.json"
+      - "src/Core.TypeScript/cluster/single-node-readiness.ts"
+      - "src/Core.TypeScript/cluster/single-node-readiness.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -68,6 +72,10 @@ on:
       - "src/Core.TypeScript/cluster/argocd-health-test.test.ts"
       - "full-ai-cluster/dev-cluster/**"
       - "full-ai-cluster/k8s/applications/**/Application.yaml"
+      - "full-ai-cluster/k8s/bootstrap/**"
+      - "full-ai-cluster/k8s/single-node-budget.json"
+      - "src/Core.TypeScript/cluster/single-node-readiness.ts"
+      - "src/Core.TypeScript/cluster/single-node-readiness.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -119,6 +127,24 @@ jobs:
 
       - name: Run 081KSXN940008QG0R000SCP2H1 harness unit tests
         run: bun test src/Core.TypeScript/cluster/argocd-health-test.test.ts
+
+      # Single-node readiness (081M02QMJPA087G0R000J9M39E). Lives in THIS job
+      # rather than a job of its own: the toolchain and bun deps are already
+      # installed here, so the marginal cost is the ~2s the two commands take.
+      # A separate job would pay a fresh runner + cache restore + install.sh
+      # (~3 min) to run a 2-second offline check.
+      #
+      # NOT `continue-on-error`. It is green on main today against the
+      # checked-in ledger; it fails on DRIFT away from that ledger. Proof it
+      # can go red: single-node-readiness.test.ts pairs every green case with
+      # the red case, and four deliberate manifest breaks were run against the
+      # live tree (over-budget PVC, unacknowledged replicas>1, tab-indented
+      # YAML, a third app-of-apps root) -- all exit 1.
+      - name: Run single-node readiness unit tests
+        run: bun test src/Core.TypeScript/cluster/single-node-readiness.test.ts
+
+      - name: Audit single-node readiness against the checked-in budget ledger
+        run: bun src/Core.TypeScript/cluster/single-node-readiness.ts
 
       - name: Build ArgoCD health dry-run plan
         env:

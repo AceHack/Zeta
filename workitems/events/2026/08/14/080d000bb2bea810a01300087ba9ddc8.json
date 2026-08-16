@@ -1,0 +1,14 @@
+{
+  "id": "080d000bb2bea810a01300087ba9ddc8",
+  "at": "2026-08-14T18:08:48.085Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00QCNYM087G0R000ZS3CE2",
+    "type": "bug",
+    "title": "14 ArgoCD Applications are applied to every CI cluster and asserted by nothing -- two unlinked exclusion lists",
+    "slug": "14-argocd-applications-are-applied-to-every-ci-cluster-and-a",
+    "priority": "P1",
+    "filename": "081M00QCNYM087G0R000ZS3CE2-14-argocd-applications-are-applied-to-every-ci-cluster-and-a.md"
+  }
+}
