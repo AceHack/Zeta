@@ -2404,9 +2404,35 @@ different substrates. The universal is the substrate; the particular is the filt
 | The mask (lithographic pattern) | The schema / fingerprint |
 | EUV light source (coherent) | The generator (coherent source, deterministic) |
 | The resist (records where light hit) | The Z-set (records weight +1/-1) |
-| Multi-patterning (compose filters for resolution) | Multiple lenses/schemas composing for precision |
+| Multi-patterning (split one layer across exposures to get an *effective* k₁ below the 0.25 single-exposure floor — paid for in overlay budget) | Multiple lenses/schemas composing — **no resolution limit is modelled on our side, so nothing is being beaten and nothing is being paid** (see the register note) |
 | TSMC fab (calibrated environment) | The factory (calibrated agents, verified oracles) |
 | Packaged chip (ready to slot in) | ACE package (deployed time-crystal, self-sustaining) |
+
+**Register note (2026-08-15) — the table is analogy register (§B), and its optical half is `unmetered`.**
+Two rows were claiming more than the code supports, so they are qualified here rather than removed:
+
+- **Multi-patterning.** In lithography the resolution of a single exposure is bounded by the Rayleigh
+  form half-pitch = k₁·λ/NA, and k₁ **cannot go below 0.25** for a single exposure (ASML, *The Rayleigh
+  criterion for resolution*). Multi-patterning exists **only** because of that floor: it decomposes one
+  dense layer into several sparser exposures, and the price is that **overlay error moves into the CD /
+  edge-placement budget** instead of being a separate control. The earlier row imported the workaround
+  and dropped the constraint that motivates it. `src/Core/PolarityFilter.fs` — the module this row maps
+  onto — carries Malus's law `cos²(Δθ)` and an `n`-step sweep over `[0, π)`, and **has no notion of
+  resolution, limit, or smoothness**: `n` is an arbitrarily refinable *sampling* step, not a lower bound
+  on distinguishability, so two orientations closer than `π/n` are separated exactly by raising `n`.
+  There is no analogue of λ, of NA, or of an overlay budget anywhere in it — and it exposes **no
+  composition operator** (`transmit` · `findOrientation` · `dominantOrientation`), so the "composing"
+  in that row is either absent or refers to `Optic.compose`, which composes functional lenses
+  *exactly* (get/put) and therefore has no tolerance to spend either.
+- **"The shadow IS the image" / "the projection IS the data."** An `IS` there is a **losslessness**
+  claim, and whether a projection is lossless is a *resolution* question — so it depends on exactly the
+  quantity the previous bullet says we do not have. Read it as the intended shape (the filter reveals
+  structure that was already present), not as a proven identity.
+
+**The open requirement, stated rather than filled:** a resolution analogue would be a metric `d` on
+projections plus a stated bound — a smallest difference the substrate can resolve, and an alignment
+error charged per composed filter — such that a composition can **fail** the bound and a test can catch
+it. No module computes either today, and no number is invented here to stand in for one.
 
 ### Quasi-time-crystals in DST
 
