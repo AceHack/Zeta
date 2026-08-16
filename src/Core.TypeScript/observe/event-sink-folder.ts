@@ -48,6 +48,7 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pack, DEFAULT_ENV, type SimulationEnvironment } from "../zeta-id/zeta-id";
+import { isCanonicalZetaIdHex } from "../zeta-id/canonical-hex";
 import {
   Category,
   IdVersion,
@@ -83,9 +84,17 @@ export function mintObserveEventIdHex(env: SimulationEnvironment = DEFAULT_ENV, 
   return pack(obs, env).toString(16).padStart(32, "0");
 }
 
-/** A canonical observe-event id is 32 lowercase hex chars (mintObserveEventIdHex output). */
+/**
+ * A canonical observe-event id is 32 lowercase hex chars that DECODE as a ZetaId
+ * (`mintObserveEventIdHex` output).
+ *
+ * This was a bare `/^[0-9a-f]{32}$/`. That tests the encoding and never the value, so it
+ * accepted any 32 hex characters — including the hex-encoded JSON that a hashless "mint"
+ * in `emit-attestation.ts` produced (`7b22` = `{"`). The shape check remains necessary
+ * and is now not the whole check; `isCanonicalZetaIdHex` decodes via the codec.
+ */
 export function isCanonicalEventId(id: string): boolean {
-  return /^[0-9a-f]{32}$/.test(id);
+  return isCanonicalZetaIdHex(id);
 }
 
 /** Entropy snapshot carried per event (the thermodynamic cost-of-commit accounting). */

@@ -13,6 +13,8 @@ import { join } from "node:path";
 import { loadWorld as loadWorldReal, readEventActions } from "./load-world";
 import { observe, type BacklogItem, type NextAction } from "./observe";
 import { defaultNodeSession } from "./first-session";
+import { mintObserveEventIdHex } from "./event-sink-folder";
+import { DETERMINISTIC_ENV } from "../zeta-id/zeta-id";
 
 function loadWorld(opts: Parameters<typeof loadWorldReal>[0]): ReturnType<typeof loadWorldReal> {
   return loadWorldReal({
@@ -29,7 +31,16 @@ afterEach(() => {
   rmSync(dir, { recursive: true, force: true });
 });
 
-const ID = (c: string): string => c.repeat(32);
+/**
+ * A distinct, stable, GENUINELY DECODABLE id per key character.
+ *
+ * This was `c.repeat(32)` — 32 valid hex characters that are not ZetaIds (`"a".repeat(32)`
+ * decodes to version 21; `"1".repeat(32)` to version 2). Those fixtures passed only while
+ * the reader's id check was a bare `/^[0-9a-f]{32}$/`; the reader now decodes, so the
+ * fixtures mint real ids. `DETERMINISTIC_ENV` keeps them reproducible (DST) and the
+ * per-character timestamp keeps them distinct.
+ */
+const ID = (c: string): string => mintObserveEventIdHex(DETERMINISTIC_ENV, 1_700_000_000_000 + (c.codePointAt(0) ?? 0));
 function writeEvent(id: string, at: string, action: NextAction): void {
   writeFileSync(join(dir, `${id}.json`), `${JSON.stringify({ id, at, by: "otto-cli", action }, null, 2)}\n`);
 }

@@ -27,10 +27,23 @@ afterEach(() => {
 // shadow payload) that isn't assignable to the discriminated union (Codex #6283 P1; bun strips
 // types so it ran green, tsc catches it).
 type ShadowCatchEnvelope = Extract<AgentBusEnvelope, { topic: "shadow-catch" }>;
+
+/**
+ * A distinct, stable, GENUINELY DECODABLE bus id per sequence number.
+ *
+ * These fixtures used zero-padded literals such as `"01".padStart(32, "0")` — 32 valid hex
+ * characters whose decoded version is 0, a version that does not exist. They passed only
+ * while `isCanonicalBusId`
+ * was a bare `/^[0-9a-f]{32}$/`; `subscribe.ts` now decodes. Minting from an increasing
+ * timestamp preserves the property these tests actually rely on — LEXICAL id order
+ * matches mint order — because the timestamp field sits above the randomness field.
+ */
+const BUS_ID = (seq: number): string => mintBusZetaIdHex(DETERMINISTIC_ENV, 1_700_000_000_000 + seq);
+
 const env = (over: Partial<ShadowCatchEnvelope> = {}): AgentBusEnvelope => ({
   topic: "shadow-catch",
   payload: { content: "hi" },
-  id: "00000000000000000000000000000001",
+  id: BUS_ID(1),
   from: "otto-cli",
   to: "*",
   timestamp: "2026-05-31T12:00:00.000Z",
@@ -88,14 +101,14 @@ describe("writeEnvelope — G-Set CRDT semantics (atomic, no TOCTOU)", () => {
     expect(writeEnvelope(env({ payload: { content: "DIFFERENT" } }), ROOT, at).kind).toBe("collision");
   });
   it("disjoint ids -> disjoint files (grow-only set, conflict-free)", () => {
-    writeEnvelope(env({ id: "00000000000000000000000000000001" }), ROOT, at);
-    writeEnvelope(env({ id: "00000000000000000000000000000002" }), ROOT, at);
+    writeEnvelope(env({ id: BUS_ID(1) }), ROOT, at);
+    writeEnvelope(env({ id: BUS_ID(2) }), ROOT, at);
     expect(readEnvelopesSince(ROOT)).toHaveLength(2);
   });
   it("defaults the date partition to the envelope's OWN timestamp, not wall-clock (Copilot #6283)", () => {
     // No explicit `at` -> partition must come from env.timestamp so an idempotent
     // re-publish always lands the same file, even near a UTC-midnight boundary.
-    const id = "dd".padStart(32, "0");
+    const id = BUS_ID(13);
     const r = writeEnvelope(env({ id, timestamp: "2026-05-31T23:59:00.000Z" }), ROOT);
     expect(r.path).toBe(join(ROOT, "otto-cli", "2026", "05", "31", `${id}.json`));
   });
@@ -107,9 +120,9 @@ describe("writeEnvelope — G-Set CRDT semantics (atomic, no TOCTOU)", () => {
 describe("readEnvelopesSince", () => {
   const at = new Date("2026-05-31T12:00:00Z");
   const seed = () => {
-    writeEnvelope(env({ id: "01".padStart(32, "0"), timestamp: "2026-05-31T10:00:00.000Z" }), ROOT, at);
-    writeEnvelope(env({ id: "02".padStart(32, "0"), timestamp: "2026-05-31T11:00:00.000Z" }), ROOT, at);
-    writeEnvelope(env({ id: "03".padStart(32, "0"), timestamp: "2026-05-31T12:00:00.000Z" }), ROOT, at);
+    writeEnvelope(env({ id: BUS_ID(1), timestamp: "2026-05-31T10:00:00.000Z" }), ROOT, at);
+    writeEnvelope(env({ id: BUS_ID(2), timestamp: "2026-05-31T11:00:00.000Z" }), ROOT, at);
+    writeEnvelope(env({ id: BUS_ID(3), timestamp: "2026-05-31T12:00:00.000Z" }), ROOT, at);
   };
 
   it("returns all envelopes sorted by timestamp when no cursor", () => {
@@ -130,21 +143,21 @@ describe("readEnvelopesSince", () => {
   it("nextCursor is the newest envelope's compound cursor", () => {
     seed();
     const envs = readEnvelopesSince(ROOT);
-    expect(nextCursor(envs)).toBe(`2026-05-31T12:00:00.000Z|${"03".padStart(32, "0")}`);
+    expect(nextCursor(envs)).toBe(`2026-05-31T12:00:00.000Z|${BUS_ID(3)}`);
   });
   it("does NOT drop a later same-millisecond envelope — compound (timestamp, id) cursor", () => {
     const sameTs = "2026-05-31T12:00:00.000Z";
-    const e1 = env({ id: "aa".padStart(32, "0"), timestamp: sameTs });
-    const e2 = env({ id: "bb".padStart(32, "0"), timestamp: sameTs });
+    const e1 = env({ id: BUS_ID(10), timestamp: sameTs });
+    const e2 = env({ id: BUS_ID(11), timestamp: sameTs });
     writeEnvelope(e1, ROOT, at);
     writeEnvelope(e2, ROOT, at);
     expect(readEnvelopesSince(ROOT, envelopeCursor(e1)).map((e) => e.id)).toEqual([e2.id]);
   });
   it("filters to a recipient (addressed-to-me + broadcast *, never others) — Codex #6283", () => {
-    const A1 = "a1".padStart(32, "0");
-    const A3 = "a3".padStart(32, "0");
+    const A1 = BUS_ID(21);
+    const A3 = BUS_ID(23);
     writeEnvelope(env({ id: A1, to: "otto-cli" }), ROOT, at);
-    writeEnvelope(env({ id: "a2".padStart(32, "0"), to: "otto-windows" }), ROOT, at);
+    writeEnvelope(env({ id: BUS_ID(22), to: "otto-windows" }), ROOT, at);
     writeEnvelope(env({ id: A3, to: "*" }), ROOT, at);
     const cmp = (a: string, b: string) => a.localeCompare(b);
     expect(readEnvelopesSince(ROOT, undefined, "otto-cli").map((e) => e.id).sort(cmp)).toEqual([A1, A3].sort(cmp));
@@ -166,7 +179,7 @@ describe("readEnvelopesSince", () => {
   });
   it("skips an envelope whose timestamp isn't canonical ISO (would corrupt ordering) — Copilot #6283", () => {
     writeEnvelope(env(), ROOT, at);
-    const id = "dddddddddddddddddddddddddddddddd";
+    const id = BUS_ID(13);
     const bad = join(ROOT, "otto-cli", "2026", "05", "31", `${id}.json`);
     mkdirSync(dirname(bad), { recursive: true });
     // valid JSON, has id + timestamp strings, but timestamp is non-ISO (sorts wrong)
