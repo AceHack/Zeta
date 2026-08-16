@@ -1,0 +1,12 @@
+{
+  "pr_number": 10745,
+  "archive_path": "docs/history/pr-reviews/PR-10745-fix-zeta-id-readers-accepted-any-32-hex-chars-as-a-canonical-id-decode-instead.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:07:47.581Z",
+  "schema_version": "v1",
+  "commit_sha": "003b43e6ca2c2a867f59ea2bafe016a4255f8dec",
+  "title": "fix(zeta-id): readers accepted any 32 hex chars as a canonical id — decode instead",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:07:16Z",
+  "head_ref": "shadow/reader-side-zetaid-validation"
+}
