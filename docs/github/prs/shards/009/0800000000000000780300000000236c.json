@@ -1,0 +1,12 @@
+{
+  "pr_number": 9068,
+  "archive_path": "docs/history/pr-reviews/PR-9068-fix-db-vivify-missing-db-anchor-for-only-the-irreducible-is-primitive-generate-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:39:52.636Z",
+  "schema_version": "v1",
+  "commit_sha": "ccccbf7be404af4e736328498b98c9374df47969",
+  "title": "fix(db): vivify missing db/ anchor for [[only-the-irreducible-is-primitive-generate-the-rest]]",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T22:59:09Z",
+  "head_ref": "otto/vivify-db-anchor-only-the-irreducible"
+}

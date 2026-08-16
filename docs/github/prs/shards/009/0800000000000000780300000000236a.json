@@ -1,0 +1,12 @@
+{
+  "pr_number": 9066,
+  "archive_path": "docs/history/pr-reviews/PR-9066-docs-backlog-record-decided-zset-unification-dispatch-strategy-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:39:48.403Z",
+  "schema_version": "v1",
+  "commit_sha": "ccccbf7be404af4e736328498b98c9374df47969",
+  "title": "docs(backlog): record decided ZSet-unification dispatch strategy (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T22:52:57Z",
+  "head_ref": "otto/zset-unification-dispatch-strategy-decided-081KWFXTHJY"
+}
