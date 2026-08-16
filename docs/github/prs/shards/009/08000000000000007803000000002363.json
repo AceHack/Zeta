@@ -1,0 +1,12 @@
+{
+  "pr_number": 9059,
+  "archive_path": "docs/history/pr-reviews/PR-9059-docs-archive-drain-16-pr-review-archives-from-automation-branches-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:30:48.026Z",
+  "schema_version": "v1",
+  "commit_sha": "cedd590a01c1ee507c6f75f96cd85fb4b4bd6f15",
+  "title": "docs(archive): drain 16 pr-review archives from automation branches (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T21:51:34Z",
+  "head_ref": "otto/drain-16-pr-archives-2026-07"
+}
