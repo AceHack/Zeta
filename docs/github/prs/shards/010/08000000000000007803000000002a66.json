@@ -1,0 +1,12 @@
+{
+  "pr_number": 10854,
+  "archive_path": "docs/history/pr-reviews/PR-10854-fix-core-the-dashing-is-not-the-code-quotient-code-vs-dashing-torsor-and-aut-8-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:05:10.696Z",
+  "schema_version": "v1",
+  "commit_sha": "8825c8a182e902b95d50245a639bdacfc4feb5d6",
+  "title": "fix(core): the dashing is not the code — quotient code vs dashing torsor, and Aut([8,4,4]) identified as AGL(3,2)",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:04:36Z",
+  "head_ref": "shadow/adinkraviz-quotient-vs-torsor"
+}
