@@ -25,6 +25,30 @@ import {
   V1_SHIP_SHA_DEFAULT,
 } from "./audit-agencysignature-main-tip";
 
+/**
+ * A COMPLETE, VALID block — all ten keys, contiguous, canonical values.
+ *
+ * The fixtures below used to be two-key stubs (`Agency-Signature-Version: 1` +
+ * `Agent:`), which passed only because the auditor's entire notion of "signed"
+ * was a regex for the version key. It now shares `validateBlock` with the
+ * pre-merge gate, which has always required all ten — so a stub is honestly
+ * INVALID-VALUES, and a test asserting CORRECT needs a real block. Both facts
+ * are pinned: the real block below, and the stub's new status in the
+ * taxonomy tests.
+ */
+const VALID_BLOCK = [
+  `${CANONICAL_VERSION_KEY}: 1`,
+  "Agent: the shadow",
+  "Agent-Runtime: Claude Code",
+  "Agent-Model: claude-opus-5",
+  "Credential-Identity: AceHack via gh",
+  "Credential-Mode: dedicated-agent",
+  "Human-Review: not-implied-by-credential",
+  "Human-Review-Evidence: none",
+  "Action-Mode: supervised",
+  "Task: none",
+].join("\n");
+
 describe("hasAgentCoauthorTrailer", () => {
   test.each([
     "Co-authored-by: Claude <noreply@anthropic.com>",
@@ -296,7 +320,12 @@ describe("fail-closed classification (the falsifiers)", () => {
   test("a signed commit is CORRECT whoever co-authored it", () => {
     expect(
       classify({
-        message: `feat: x\n\n${CANONICAL_VERSION_KEY}: 1\nAgent: the shadow\nCo-authored-by: the shadow <shadow@zeta.agents>\n`,
+        // `trailers` is what `git log --pretty=%(trailers)` returns — supplied
+        // because this test is about the CO-AUTHOR rule, not the parse route.
+        // With it empty the honest answer is RECOVERED-MALFORMED, which the
+        // taxonomy tests below pin separately.
+        trailers: `${VALID_BLOCK}\nCo-authored-by: the shadow <shadow@zeta.agents>\n`,
+        message: `feat: x\n\n${VALID_BLOCK}\nCo-authored-by: the shadow <shadow@zeta.agents>\n`,
       }).status,
     ).toBe("CORRECT");
   });
@@ -354,7 +383,8 @@ describe(`the ${MISSPELLED_VERSION_KEY} misspelling`, () => {
   test("the canonical key wins when both spellings are present", () => {
     expect(
       classify({
-        message: `fix: x\n\n${MISSPELLED_VERSION_KEY}: 1\n${CANONICAL_VERSION_KEY}: 1\nCo-authored-by: the shadow <shadow@zeta.agents>\n`,
+        trailers: `${MISSPELLED_VERSION_KEY}: 1\n${VALID_BLOCK}\nCo-authored-by: the shadow <shadow@zeta.agents>\n`,
+        message: `fix: x\n\n${MISSPELLED_VERSION_KEY}: 1\n${VALID_BLOCK}\nCo-authored-by: the shadow <shadow@zeta.agents>\n`,
       }).status,
     ).toBe("CORRECT");
   });
@@ -427,7 +457,7 @@ const PLANTED: readonly Planted[] = [
   },
   {
     subject: "c3 signed persona",
-    body: `${CANONICAL_VERSION_KEY}: 1\nAgent: the shadow\nCo-authored-by: the shadow <shadow@zeta.agents>`,
+    body: `${VALID_BLOCK}\nCo-authored-by: the shadow <shadow@zeta.agents>`,
     date: "2026-08-20T00:08:00Z",
     expected: "CORRECT",
   },

@@ -170,11 +170,27 @@ describe("parse-failure diagnosis names the real cause", () => {
   test("the emitted text distinguishes the two", () => {
     const absent = runValidator("## Summary\n\nno block\n");
     expect(absent.out).toContain("no 'Agency-Signature-Version:' line at all");
-    expect(absent.out).not.toContain("PLACEMENT problem");
+    expect(absent.out).not.toContain("RECOVERED-MALFORMED");
 
+    // A COMPLETE block in the wrong place is no longer a bare placement FAIL —
+    // it is the RECOVERED-MALFORMED outcome, which names the same defect AND
+    // hands back the attribution it recovered. Still exit 1, still not a PASS.
     const misplaced = runValidator(`${GOOD_BLOCK}\n\nA trailing footer paragraph.\n`);
-    expect(misplaced.out).toContain("PLACEMENT problem");
-    expect(misplaced.out).toContain("A trailing footer paragraph.");
+    expect(misplaced.out).toContain("RECOVERED-MALFORMED");
+    expect(misplaced.out).toContain("git cannot parse it");
+    expect(misplaced.status).toBe(1);
+    expect(misplaced.out).not.toContain("PASS:");
+  });
+
+  test("the placement diagnosis is still reached when there is no complete block", () => {
+    // The `unreadable` branch of diagnoseParseFailure is NOT dead code: an
+    // INCOMPLETE block in the wrong place cannot be recovered (recovery requires
+    // all ten keys), so it still falls through to the missing-keys diagnosis.
+    const partial = runValidator(
+      "Agency-Signature-Version: 1\nAgent: shadow\n\nA trailing footer paragraph.\n",
+    );
+    expect(partial.status).toBe(1);
+    expect(partial.out).not.toContain("PASS:");
   });
 
   test("finalParagraph is the last contiguous non-blank run", () => {

@@ -48,15 +48,85 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join as joinPath } from "node:path";
 
+// THE canonical rule. Both this auditor and the pre-merge PR-body validator
+// import from here, so they cannot disagree about what a valid block is.
+import {
+  CANONICAL_SHAPE,
+  findSignatureBlock,
+  validateBlock,
+  REQUIRED_KEYS,
+  type Violation,
+} from "./agencysignature-block.ts";
+
 type ExitCode = 0 | 1 | 2;
 type Mode = "head" | "commit" | "max" | "since";
 type Status =
   | "CORRECT"
+  | "RECOVERED-MALFORMED"
+  | "RECOVERED-PARTIAL"
+  | "INVALID-VALUES"
   | "LEGACY"
   | "HUMAN-AUTHORED-EXEMPT"
   | "HUMAN-ROSTER-EXEMPT"
   | "MACHINE-LANE-EXEMPT"
   | "REGRESSION";
+
+// ---------------------------------------------------------------------------
+// RECOVERY IS NOT ACCEPTANCE (2026-08-16)
+// ---------------------------------------------------------------------------
+// This auditor has ALWAYS had a lenient fallback: `classifySigned` tried the
+// parsed trailers and then, failing that, scanned the raw commit message. What
+// it did NOT do is say which one fired — both returned `CORRECT`, so a commit
+// whose signature git cannot parse was indistinguishable in the summary from one
+// it can. That is the shape this repo has spent the week removing: a check that
+// recovers from a defect and then reports the defect as absent.
+//
+// MEASURED on `main` 2026-08-16, over the 6990 commits after the v1 ship anchor:
+//
+//    296  CORRECT             — strict git-trailer parse succeeds
+//    716  RECOVERED-MALFORMED — a complete, contiguous 10-key block exists in the
+//                               message and git parses NONE of it. 551 of those
+//                               are the identical shape: a blank line between the
+//                               block and a trailing `Co-authored-by:`, which
+//                               makes git treat only the `Co-authored-by:` as the
+//                               trailer block and all 10 keys become invisible.
+//    976  RECOVERED-PARTIAL   — the version key appears in the message but NO
+//                               complete 10-key block does. These were reported
+//                               `CORRECT` with the reason "AgencySignature block
+//                               present in commit message" — a claim that is
+//                               false for all 976: there is a key, not a block.
+//
+// So 1692 of the 1988 signed commits on `main` (85%) were passing on the lenient
+// path while the summary said the strict one. The taxonomy below splits them and
+// counts them separately. It deliberately turns NOTHING red that was green — the
+// enforcement level is a policy call reserved to Aaron (see
+// `RECOVERED_STATUSES_ARE_REGRESSIONS` and `--fail-on-recovered`).
+// ---------------------------------------------------------------------------
+
+/**
+ * Whether a recovered signature counts as a regression (exit 1).
+ *
+ * FALSE by default, and the default is the honest one rather than the timid one:
+ * flipping it to `true` today reddens 1692 commits of already-merged history,
+ * which is a decision about what `main` is allowed to look like, not a bug fix.
+ * The outcome is *visible and separately counted* either way — which is the part
+ * that was actually broken. Flip this constant, or pass `--fail-on-recovered`,
+ * to enforce; no other line changes.
+ */
+export const RECOVERED_STATUSES_ARE_REGRESSIONS = false as boolean;
+
+/**
+ * Whether a block that parses but breaks the canonical VALUE rules (enum set,
+ * `Human-Review` ⇄ `Human-Review-Evidence`) counts as a regression.
+ *
+ * Same reasoning as above, and the same one-line flip. The auditor never checked
+ * values at all before this change, so 420 commits on `main` carry combinations
+ * the pre-merge gate rejects; enforcing on the post-merge side today would red-X
+ * the next commit from any lane still emitting them, and no lane is fixed in
+ * this PR. What changes now is that the divergence is IMPOSSIBLE — both
+ * instruments call `validateBlock` — and visible.
+ */
+export const INVALID_VALUES_ARE_REGRESSIONS = false as boolean;
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
@@ -206,6 +276,8 @@ interface ParsedArgs {
   readonly failClosedCutover: string;
   /** `"1"` when --require-shipped was passed; empty otherwise. */
   readonly requireShipped: string;
+  /** `"1"` when --fail-on-recovered was passed; empty otherwise. */
+  readonly failOnRecovered: string;
 }
 
 function gitOutput(args: readonly string[]): {
@@ -248,6 +320,7 @@ interface MutableArgs {
   v1ShipDate: string;
   failClosedCutover: string;
   requireShipped: string;
+  failOnRecovered: string;
 }
 
 // Derived from MutableArgs so adding/removing string fields cannot drift
@@ -267,6 +340,10 @@ type ArgStep =
 // refuses to run without a ship anchor rather than passing.
 const BOOLEAN_ARGS: Readonly<Record<string, StringArgKey>> = {
   "--require-shipped": "requireShipped",
+  // The enforcement switch for the recovered / invalid-value classes. A FLAG as
+  // well as a constant so CI can turn it on per-lane without a code change, and
+  // so turning it on is a reviewable diff either way.
+  "--fail-on-recovered": "failOnRecovered",
 };
 
 function classifyArg(arg: string, next: string | undefined): ArgStep {
@@ -305,6 +382,7 @@ function parseArgs(argv: readonly string[]): ArgParseResult {
     v1ShipDate: "",
     failClosedCutover: FAIL_CLOSED_CUTOVER_DEFAULT,
     requireShipped: "",
+    failOnRecovered: "",
   };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i] ?? "";
@@ -441,21 +519,78 @@ export interface Classification {
   readonly reason: string;
 }
 
+/**
+ * Which route produced the signature — the distinction the old code threw away.
+ *
+ * 1. STRICT: `git log --pretty=%(trailers)` yields the version key. The substrate
+ *    can parse it, so it is `CORRECT` and nothing else needs saying.
+ * 2. RECOVERED-MALFORMED: strict yields nothing, and a complete contiguous 10-key
+ *    block is nonetheless present in the message. The ATTRIBUTION IS RECOVERED —
+ *    every field is readable — and the DEFECT IS REPORTED, because `git log
+ *    --pretty=%(trailers:key=...)`, which is how the convention is meant to be
+ *    queried at scale (spec Section 3.5), returns nothing for this commit.
+ * 3. RECOVERED-PARTIAL: strict yields nothing and there is no complete block
+ *    either, only the version key loose in the message. Weaker than 2 and named
+ *    separately, because the old reason string claimed a "block present" for
+ *    exactly this case and that claim was false 976 times.
+ */
+/** `[first violation, ""]` rendered for a reason string, or `null` when valid. */
+function firstViolation(blockText: string): Violation | null {
+  const violations = validateBlock(blockText);
+  return violations.length === 0 ? null : (violations[0] ?? null);
+}
+
 function classifySigned(record: CommitRecord): Classification | null {
   const hasV2 =
     hasAgencySignatureV2(record.trailers) || hasAgencySignatureV2(record.message);
+  const version = hasV2 ? "v2" : "v1";
+
+  // Route 1 — STRICT. The substrate parses it; that is the whole bar.
   if (hasAgencySignature(record.trailers)) {
-    return { status: "CORRECT", reason: hasV2 ? "trailer present (v2)" : "trailer present (v1)" };
+    const bad = firstViolation(record.trailers);
+    if (bad !== null) {
+      return {
+        status: "INVALID-VALUES",
+        reason:
+          `trailer parses (${version}) but FAILS the canonical value rules: ${bad.message}. ` +
+          "The pre-merge PR-body gate rejects this exact block; before 2026-08-16 this " +
+          "auditor accepted it, which is how a block could be invalid at PR time and " +
+          "valid on main. Both now call the same validateBlock().",
+      };
+    }
+    return { status: "CORRECT", reason: `trailer present (${version})` };
   }
-  if (hasAgencySignature(record.message)) {
+
+  if (!hasAgencySignature(record.message)) return null;
+
+  // Route 2 — LENIENT. Recover the DATA; never silence the DEFECT.
+  const block = findSignatureBlock(record.message);
+  if (block !== null) {
+    const bad = firstViolation(block.join("\n"));
+    const suffix =
+      bad === null ? "" : ` The recovered block ALSO fails a value rule: ${bad.message}.`;
     return {
-      status: "CORRECT",
-      reason: hasV2
-        ? "AgencySignature v2 block present in commit message"
-        : "AgencySignature block present in commit message",
+      status: "RECOVERED-MALFORMED",
+      reason:
+        `attribution RECOVERED (${version}): a complete ${String(REQUIRED_KEYS.length)}-key block is present ` +
+        "in the message but git parses NONE of it — `git log " +
+        `--pretty='%(trailers:key=${CANONICAL_VERSION_KEY})'\` returns empty for this ` +
+        "commit, so the convention is unqueryable at scale (spec Section 3.5). " +
+        "Commonest cause: a blank line between the block and a trailing " +
+        "`Co-authored-by:`, which makes git read only the `Co-authored-by:` as the " +
+        `trailer block.${suffix}`,
     };
   }
-  return null;
+
+  // Route 3 — the version key alone. Named separately because the old reason
+  // string claimed "block present in commit message" here, and that was false.
+  return {
+    status: "RECOVERED-PARTIAL",
+    reason:
+      `attribution PARTIALLY recovered (${version}): '${CANONICAL_VERSION_KEY}' appears in the ` +
+      "message, but no complete contiguous 10-key block does — so most attribution " +
+      "fields are absent, not merely unparseable.",
+  };
 }
 
 /**
@@ -640,18 +775,25 @@ function emitHelp(): ExitCode {
   process.stdout.write("  bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --v1-ship-date DATE\n");
   process.stdout.write("  bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --fail-closed-cutover DATE\n");
   process.stdout.write("  bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --require-shipped     # CI: refuse to pass without a v1 anchor\n");
+  process.stdout.write("  bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --fail-on-recovered   # treat RECOVERED-*/INVALID-VALUES as regressions\n");
   return 0;
 }
 
 interface AuditCounts {
   correct: number;
   correctV2: number;
+  recoveredMalformed: number;
+  recoveredPartial: number;
+  invalidValues: number;
   legacy: number;
   human: number;
   humanRoster: number;
   machineLane: number;
   regression: number;
   regressions: string[];
+  /** Shas in the non-blocking-by-default classes, so they are countable, not just printed. */
+  recoveredShas: string[];
+  invalidShas: string[];
 }
 
 function emitHeader(
@@ -689,6 +831,18 @@ function tallyCommit(status: Status, short: string, counts: AuditCounts, isV2 = 
     counts.correct++;
     if (isV2) counts.correctV2++;
   }
+  else if (status === "RECOVERED-MALFORMED") {
+    counts.recoveredMalformed++;
+    counts.recoveredShas.push(short);
+  }
+  else if (status === "RECOVERED-PARTIAL") {
+    counts.recoveredPartial++;
+    counts.recoveredShas.push(short);
+  }
+  else if (status === "INVALID-VALUES") {
+    counts.invalidValues++;
+    counts.invalidShas.push(short);
+  }
   else if (status === "LEGACY") counts.legacy++;
   else if (status === "HUMAN-AUTHORED-EXEMPT") counts.human++;
   else if (status === "HUMAN-ROSTER-EXEMPT") counts.humanRoster++;
@@ -713,12 +867,17 @@ function auditCommits(
   const counts: AuditCounts = {
     correct: 0,
     correctV2: 0,
+    recoveredMalformed: 0,
+    recoveredPartial: 0,
+    invalidValues: 0,
     legacy: 0,
     human: 0,
     humanRoster: 0,
     machineLane: 0,
     regression: 0,
     regressions: [],
+    recoveredShas: [],
+    invalidShas: [],
   };
   let cachedShipTs: number | null = ship?.tsCache ?? null;
   for (const sha of commits) {
@@ -736,9 +895,24 @@ function auditCommits(
   return { counts, toolingError: false };
 }
 
-function emitSummary(counts: AuditCounts): ExitCode {
+/**
+ * Whether the run is clean. Reads `failOnRecovered` rather than the constant so
+ * `--fail-on-recovered` and the constant are ONE decision with two switches.
+ */
+export function isClean(counts: AuditCounts, failOnRecovered: boolean): boolean {
+  if (counts.regression > 0) return false;
+  const recovered = counts.recoveredMalformed + counts.recoveredPartial;
+  if ((failOnRecovered || RECOVERED_STATUSES_ARE_REGRESSIONS) && recovered > 0) return false;
+  if ((failOnRecovered || INVALID_VALUES_ARE_REGRESSIONS) && counts.invalidValues > 0) return false;
+  return true;
+}
+
+function emitSummary(counts: AuditCounts, failOnRecovered: boolean): ExitCode {
   process.stdout.write("\nSummary:\n");
   process.stdout.write(`  CORRECT:                ${String(counts.correct)}\n`);
+  process.stdout.write(`  RECOVERED-MALFORMED:    ${String(counts.recoveredMalformed)}   (attribution readable; git parses none of it)\n`);
+  process.stdout.write(`  RECOVERED-PARTIAL:      ${String(counts.recoveredPartial)}   (version key only; no complete block)\n`);
+  process.stdout.write(`  INVALID-VALUES:         ${String(counts.invalidValues)}   (parses, but breaks the canonical value rules)\n`);
   process.stdout.write(`  LEGACY:                 ${String(counts.legacy)}\n`);
   process.stdout.write(`  HUMAN-AUTHORED-EXEMPT:  ${String(counts.human)}   (pre-cutover legacy rule)\n`);
   process.stdout.write(`  HUMAN-ROSTER-EXEMPT:    ${String(counts.humanRoster)}\n`);
@@ -750,9 +924,62 @@ function emitSummary(counts: AuditCounts): ExitCode {
       `  version share:          v1: ${String(v1)}  v2: ${String(counts.correctV2)}  (phase-8 contract wants v1 -> 0)\n`,
     );
   }
-  if (counts.regression === 0) {
+  // A recovery is NEVER folded into a clean PASS. Even when it does not block,
+  // it prints its own banner above the verdict and names the shas — otherwise
+  // the fallback becomes a second place for a check to quietly not fail, which
+  // is the defect this change exists to remove rather than relocate.
+  const recovered = counts.recoveredMalformed + counts.recoveredPartial;
+  if (recovered > 0) {
+    process.stdout.write(
+      `\nRECOVERED: ${String(recovered)} commit(s) carry attribution git cannot parse:${counts.recoveredShas
+        .map((s) => ` ${s}`)
+        .join("")}\n`,
+    );
+    process.stdout.write(`  Canonical shape: ${CANONICAL_SHAPE}\n`);
+    process.stdout.write(
+      "  The attribution was recovered by a lenient whole-message scan. The DATA is\n",
+    );
+    process.stdout.write(
+      "  intact; the DEFECT is real — `git log --pretty='%(trailers:key=...)'` returns\n",
+    );
+    process.stdout.write("  nothing for these commits, so the convention is unqueryable at scale.\n");
+  }
+  if (counts.invalidValues > 0) {
+    process.stdout.write(
+      `\nINVALID VALUES: ${String(counts.invalidValues)} commit(s) parse but break the canonical value rules:${counts.invalidShas
+        .map((s) => ` ${s}`)
+        .join("")}\n`,
+    );
+    process.stdout.write(
+      "  These are blocks the PRE-merge gate rejects and this auditor used to accept.\n",
+    );
+    process.stdout.write(
+      "  Both instruments now call the same validateBlock(), so that divergence is\n",
+    );
+    process.stdout.write("  no longer possible — see agencysignature-block.ts.\n");
+  }
+  if (isClean(counts, failOnRecovered)) {
+    if (recovered > 0 || counts.invalidValues > 0) {
+      process.stdout.write(
+        "\nPASS (with recovered/invalid findings above — non-blocking by default; pass\n",
+      );
+      process.stdout.write(
+        "      --fail-on-recovered, or flip RECOVERED_STATUSES_ARE_REGRESSIONS /\n",
+      );
+      process.stdout.write("      INVALID_VALUES_ARE_REGRESSIONS, to enforce)\n");
+      return 0;
+    }
     process.stdout.write("\nPASS: no regressions detected\n");
     return 0;
+  }
+  if (counts.regression === 0) {
+    // Blocking solely because --fail-on-recovered / a flipped constant is on.
+    process.stdout.write(
+      `\nFAIL: ${String(recovered + counts.invalidValues)} recovered/invalid signature(s), and enforcement is ON\n`,
+    );
+    process.stdout.write(`  Fix:   ${CANONICAL_SHAPE}\n`);
+    process.stdout.write(`  Spec:  ${SPEC_DOC} Section 7.4 + Section 5.3\n`);
+    return 1;
   }
   const regressionList = counts.regressions.map((s) => ` ${s}`).join("");
   process.stdout.write(
@@ -889,7 +1116,7 @@ export function main(argv: readonly string[]): ExitCode {
   emitHeader(args, targetRev, ship, roster);
   const { counts, toolingError } = auditCommits(commits, ship, cutoverTs, roster);
   if (toolingError) return 2;
-  return emitSummary(counts);
+  return emitSummary(counts, args.failOnRecovered !== "");
 }
 
 if (import.meta.main) {

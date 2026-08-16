@@ -46,7 +46,35 @@
 // just had to stop being implicit.
 
 import { spawnSync } from "node:child_process";
-import { parse as parseActorRef } from "../identity/actor-ref.ts";
+
+// THE canonical rule — one implementation, two call sites (this pre-merge gate
+// and the post-merge auditor). Before 2026-08-16 each file carried its own copy
+// of REQUIRED_KEYS / ENUMS / the cross-field constraint, and they DIVERGED: this
+// validator rejected `Human-Review: not-implied-by-credential` +
+// `Human-Review-Evidence: chat` while the auditor accepted it, so a block was
+// invalid at PR time and valid on main. Making them agree once would not have
+// fixed that, because two implementations of one rule drift again — which is how
+// the divergence arose. Now there is no second opinion to hold.
+import {
+  CANONICAL_SHAPE,
+  CANONICAL_VERSION_KEY,
+  ENUMS,
+  MISSPELLED_VERSION_KEY,
+  REQUIRED_KEYS,
+  blockValue as getValue,
+  findSignatureBlock,
+  hasMisspelledVersionKey,
+  isUnfilledPlaceholder,
+  missingRequiredKeys,
+  validateBlock,
+  type Violation,
+} from "./agencysignature-block.ts";
+
+// Re-exported so this module's public surface is unchanged by the extraction.
+// The existing test-suite imports these from here; they now resolve to the
+// SHARED implementations, which is itself a small proof that the delegation is
+// real rather than a parallel copy left behind.
+export { hasMisspelledVersionKey, isUnfilledPlaceholder };
 
 type ExitCode = 0 | 1 | 2;
 
@@ -57,71 +85,8 @@ const SPEC_DOC =
 const ADR_DOC =
   "docs/DECISIONS/2026-07-03-persona-cell-identity-unification.md";
 
-const REQUIRED_KEYS: readonly string[] = [
-  "Agency-Signature-Version",
-  "Agent",
-  "Agent-Runtime",
-  "Agent-Model",
-  "Credential-Identity",
-  "Credential-Mode",
-  "Human-Review",
-  "Human-Review-Evidence",
-  "Action-Mode",
-  "Task",
-];
-
 const FENCE_RE = /^[\t ]*```[A-Za-z]*[\t ]*$/;
 const BLANK_RE = /^[\t ]*$/;
-/**
- * What may name the work a commit belongs to.
- *
- * WIDENED 2026-08-14, from measurement rather than taste. The previous pattern was
- * `^(?:none|Otto-\d+|task-#?\d+|#?\d+|[A-Za-z][A-Za-z0-9]*-\d+)$` — ticket-shaped ids only,
- * written before this repo retired sequential `B-NNNN` ids for ZetaIds. Counted over every
- * `Task:` value in the last 300 commits on `main` (363 values):
- *
- *   143  passed the old pattern
- *    12  were bare ZetaIds — the repo's OWN canonical work-item key, which the pattern could
- *        not express at all (26 chars, Crockford base32, digit-initial, no dash)
- *   208  were slugs naming the work, or a ZetaId joined to one
- *
- * So it rejected 57% of established practice, including the id format
- * `.claude/rules/workitems-mint-with-zetaid.md` mandates. Wired to CI unchanged (#10594) it
- * would have reddened the majority of correct commits at the cutover — and a gate that fires
- * mostly on correct work gets switched off, which is strictly worse than no gate, because a
- * disabled check still occupies the slot where a real one would go.
- *
- * The field's job is to NAME the work, so a slug always was a legitimate name; shape was
- * never the property worth enforcing. What must stay caught is the UNFILLED TEMPLATE, and
- * that is now `PLACEHOLDER_TASK_RE` below — so widening the shape does not widen the escape.
- *
- * The dashed alternative is case-INSENSITIVE deliberately: the commonest real form is a
- * ZetaId joined to a slug (`081KZZYWBN2087G0R003NAQQAF-exact-cyclotomic-amplitude-carrier`,
- * and the reverse order too), and a lowercase-only slug rule rejected all 23 of those.
- */
-const ZETA_ID = "[0-9][0-9A-HJKMNP-TV-Z]{25}";
-const TASK_RE = new RegExp(
-  `^(?:none|${ZETA_ID}|task-#?\\d+|#?\\d+|[A-Za-z0-9]+(?:-[A-Za-z0-9]+)+)$`,
-);
-
-/**
- * The unfilled template, which must stay rejected however the shape widens.
- *
- * Complements `PLACEHOLDER_RE` below rather than duplicating it: that one catches the
- * angle-bracket skeleton `<task>` across every required key, while these are the words a
- * human or agent types when they have not decided yet — `TODO`, `tbd`, `task` — none of
- * which contain angle brackets and all of which would satisfy the widened shape.
- */
-const PLACEHOLDER_TASK_RE = /^(?:<[^>]*>|todo|tbd|xxx+|task|placeholder|fixme|n\/a|-+)$/i;
-
-const ENUMS: readonly { readonly key: string; readonly allowed: readonly string[] }[] = [
-  { key: "Agency-Signature-Version", allowed: ["1", "2"] },
-  { key: "Credential-Mode", allowed: ["shared", "dedicated-agent", "human-only", "unknown"] },
-  { key: "Human-Review", allowed: ["explicit", "not-implied-by-credential", "none"] },
-  { key: "Human-Review-Evidence", allowed: ["chat", "pr-review", "pr-comment", "signed-policy", "none"] },
-  { key: "Action-Mode", allowed: ["autonomous-fail-open", "human-directed", "supervised"] },
-];
-
 function readStdin(): string {
   // Bun.stdin / process.stdin sync read via fd 0 + readFileSync.
   // node:fs readFileSync(0) is the canonical sync stdin read.
@@ -250,89 +215,18 @@ function nonBlankLinesAfter(input: string, lineNum: number): readonly string[] {
   return lines.slice(lineNum).filter((l) => !BLANK_RE.test(l));
 }
 
-function trimSpaceTab(s: string): string {
-  let start = 0;
-  while (start < s.length) {
-    const c = s.charCodeAt(start);
-    if (c !== 0x20 && c !== 0x09) break;
-    start++;
-  }
-  let end = s.length;
-  while (end > start) {
-    const c = s.charCodeAt(end - 1);
-    if (c !== 0x20 && c !== 0x09) break;
-    end--;
-  }
-  return s.slice(start, end);
-}
-
-function getValue(trailers: string, key: string): string {
-  const prefix = `${key.toLowerCase()}:`;
-  for (const line of trailers.split("\n")) {
-    if (!line.toLowerCase().startsWith(prefix)) continue;
-    const idx = line.indexOf(":");
-    if (idx < 0) continue;
-    return trimSpaceTab(line.slice(idx + 1));
-  }
-  return "";
-}
-
 // An UNFILLED TEMPLATE PLACEHOLDER, e.g. `Agent: <persona>`. The PR template
 // ships the trailer block pre-populated so the block survives squash-merge —
 // which means the easy failure is now shipping the SKELETON. A block that
 // validates while saying `Agent: <persona>` is attribution to nobody: the
 // enforcement passes and the provenance is still absent, which is the same
 // silent-green shape as the audit that exempted the whole fleet (#10564).
-const PLACEHOLDER_RE = /^<.*>$/;
-
-/** True when a required trailer's value is still an unfilled `<...>` placeholder. */
-export function isUnfilledPlaceholder(value: string): boolean {
-  return PLACEHOLDER_RE.test(value.trim());
-}
-
-function checkPlaceholders(trailers: string): ExitCode | null {
-  const unfilled = REQUIRED_KEYS.filter((key) =>
-    isUnfilledPlaceholder(getValue(trailers, key)),
-  );
-  if (unfilled.length === 0) return null;
-  process.stdout.write(
-    `FAIL: AgencySignature trailer values are still template placeholders: ${unfilled.join(" ")}\n`,
-  );
-  for (const key of unfilled) {
-    process.stdout.write(`  ${key}: ${getValue(trailers, key)}\n`);
-  }
-  process.stdout.write(
-    "  Cause:  the block was copied from .github/PULL_REQUEST_TEMPLATE.md and\n",
-  );
-  process.stdout.write(
-    "          not filled in. A block that validates while saying `Agent: <persona>`\n",
-  );
-  process.stdout.write(
-    "          is attribution to nobody — the check passes, the provenance is\n",
-  );
-  process.stdout.write("          still missing.\n");
-  process.stdout.write(
-    "  Fix:    replace every `<...>` with the real persona / runtime / model /\n",
-  );
-  process.stdout.write("          credential identity.\n");
-  return 1;
-}
-
 // `Agency-Signature-Version` is the canonical key (REQUIRED_KEYS above, the
 // spec doc, the post-merge auditor, the four cadence workflows that echo it).
 // `Agent-Signature-Version` is a hand-composition slip that reached main three
 // times on 2026-08-13/14 — and because the post-merge auditor used to exempt
 // anything it did not recognise, such a commit was unsigned AND exempt at once.
 // Say the misspelling out loud here so the pre-merge side names it too.
-const MISSPELLED_VERSION_KEY = "Agent-Signature-Version";
-const CANONICAL_VERSION_KEY = "Agency-Signature-Version";
-const MISSPELLED_VERSION_RE = /^Agent-Signature-Version:\s*\d/im;
-
-/** True when the PR body carries the misspelled version key. */
-export function hasMisspelledVersionKey(body: string): boolean {
-  return MISSPELLED_VERSION_RE.test(body);
-}
-
 /** The last contiguous run of non-blank lines — the paragraph git reads trailers from. */
 export function finalParagraph(text: string): readonly string[] {
   const lines = text.split("\n");
@@ -575,6 +469,155 @@ function emitEnumFailure(key: string, found: string, allowed: readonly string[])
   return 1;
 }
 
+/**
+ * Render ONE violation decided by the shared rule. This file no longer decides
+ * *whether* a block is valid — `validateBlock` does, and the auditor calls the
+ * same function — it decides only how the failure READS. Keeping the rich
+ * diagnostics is the point of a renderer: the two instruments must agree on the
+ * verdict, not on the prose.
+ */
+function emitViolation(v: Violation, body: string): ExitCode {
+  if (v.code === "missing-keys") return emitMissingKeys(v.key.split(" "), body);
+  if (v.code === "invalid-enum") {
+    const spec = ENUMS.find((e) => e.key === v.key);
+    return emitEnumFailure(v.key, v.found, spec?.allowed ?? []);
+  }
+  if (v.code === "placeholder-value") {
+    process.stdout.write(
+      `FAIL: AgencySignature trailer values are still template placeholders: ${v.key}\n`,
+    );
+    process.stdout.write(`  ${v.key}: ${v.found}\n`);
+    process.stdout.write(
+      "  Cause:  the block was copied from .github/PULL_REQUEST_TEMPLATE.md and\n",
+    );
+    process.stdout.write(
+      "          not filled in. A block that validates while saying `Agent: <persona>`\n",
+    );
+    process.stdout.write(
+      "          is attribution to nobody — the check passes, the provenance is\n",
+    );
+    process.stdout.write("          still missing.\n");
+    process.stdout.write(
+      "  Fix:    replace every `<...>` with the real persona / runtime / model /\n",
+    );
+    process.stdout.write("          credential identity.\n");
+    return 1;
+  }
+  if (v.code === "placeholder-task" || v.code === "invalid-task") {
+    process.stdout.write(
+      v.code === "placeholder-task"
+        ? "FAIL: Task is an unfilled placeholder\n"
+        : "FAIL: invalid Task value\n",
+    );
+    process.stdout.write(`  Found:    '${v.found}'\n`);
+    process.stdout.write(
+      "  Expected: a ZetaId work-item key (26 chars, e.g. 081M0085XQT087G0R003W4KFS4),\n",
+    );
+    process.stdout.write("            a slug naming the work (e.g. fix-merge-duty-ordering),\n");
+    process.stdout.write("            a ticket-id (Otto-NN, task-#NNN, #NNN, FOO-NN),\n");
+    process.stdout.write("            or the literal 'none' fallback\n");
+    process.stdout.write(`  Spec:     ${SPEC_DOC} Section 9.2 (Task: none fallback)\n`);
+    return 1;
+  }
+  if (
+    v.code === "review-evidence-without-explicit" ||
+    v.code === "explicit-without-evidence"
+  ) {
+    process.stdout.write(`FAIL: ${v.message}\n`);
+    process.stdout.write(
+      "  Fix:    set Human-Review-Evidence to 'none', or set Human-Review to 'explicit'\n",
+    );
+    process.stdout.write("          and cite chat | pr-review | pr-comment | signed-policy\n");
+    process.stdout.write(`  Spec:   ${SPEC_DOC} Section 5.3 / 7.6\n`);
+    return 1;
+  }
+  // v2-*: missing Cell, Persona mismatch, unparseable Agent/Cell pair.
+  process.stdout.write(`FAIL: ${v.message}\n`);
+  process.stdout.write(
+    "  Law:    treaty Article 1 — projections are produced/parsed by exactly one module\n",
+  );
+  process.stdout.write(`  Spec:   ${ADR_DOC} phase 4\n`);
+  return 1;
+}
+
+/**
+ * The RECOVERY outcome — the lenient half, and the reason it is not a loosening.
+ *
+ * Reported with its own banner and a NON-`PASS:` first token, so nothing that
+ * greps this output can mistake a recovered block for a clean one. The data is
+ * recovered because throwing away a complete, correct, human-written attribution
+ * over a blank line helps nobody; the defect is reported because a fallback that
+ * reports success is a second place for a check to quietly not fail.
+ *
+ * Blocking by default: unlike the post-merge auditor (which would have to repaint
+ * merged history), this is the PRE-merge gate, so enforcing here costs one edit
+ * to a PR body that is still open and stops the next malformed block from
+ * reaching `main` at all. That is the design lock doing its job going forward,
+ * which is what Aaron asked for; the 1692 already on `main` are untouched.
+ */
+export const RECOVERED_BLOCK_BLOCKS_PRE_MERGE = true as boolean;
+
+/**
+ * The recovery attempt, extracted from `main()` so the branch has a name and a
+ * single responsibility. Returns `null` when recovery does not apply, so the
+ * caller falls through to the ordinary strict path unchanged.
+ */
+function tryRecover(stripped: string, trailers: string): ExitCode | null {
+  const strictIncomplete = trailers === "" || missingRequiredKeys(trailers).length > 0;
+  if (!strictIncomplete) return null;
+  const block = findSignatureBlock(stripped);
+  if (block === null) return null;
+  // A recovered block is still held to the SAME value rules. Recovery recovers
+  // placement, never validity — otherwise "put a blank line in it" would become
+  // the way to skip enum checking.
+  const first = validateBlock(block.join("\n"))[0];
+  if (first !== undefined) return emitViolation(first, stripped);
+  return emitRecovered(block, findKeyPrefixLineNumber(stripped, CANONICAL_VERSION_KEY));
+}
+
+function emitRecovered(block: readonly string[], keyLine: number): ExitCode {
+  const verdict = RECOVERED_BLOCK_BLOCKS_PRE_MERGE ? "FAIL" : "WARN";
+  process.stdout.write(
+    `${verdict}: RECOVERED-MALFORMED — the AgencySignature block is complete and readable,\n`,
+  );
+  process.stdout.write("      but git cannot parse it.\n");
+  process.stdout.write("  Class:  Trailer Contiguity Survival Failure (recovered)\n");
+  process.stdout.write(
+    `  Found:  all ${String(REQUIRED_KEYS.length)} required keys, contiguous, starting at line ${String(keyLine)} of the body.\n`,
+  );
+  process.stdout.write("  Recovered attribution:\n");
+  for (const key of REQUIRED_KEYS) {
+    process.stdout.write(`    ${key.padEnd(26)}${getValue(block.join("\n"), key)}\n`);
+  }
+  process.stdout.write(
+    "  Cause:  `git interpret-trailers` reads only the FINAL paragraph, and this\n",
+  );
+  process.stdout.write(
+    "          block is not it. On main the same shape appears 716 times, 551 of\n",
+  );
+  process.stdout.write(
+    "          them a blank line between the block and a trailing `Co-authored-by:`\n",
+  );
+  process.stdout.write(
+    "          — which makes git parse ONLY the `Co-authored-by:` and none of the 10 keys.\n",
+  );
+  process.stdout.write(`  Fix:    ${CANONICAL_SHAPE}\n`);
+  process.stdout.write(
+    "  Note:   this is reported as its OWN outcome, never folded into PASS. The\n",
+  );
+  process.stdout.write(
+    "          attribution above was recovered so you do not have to retype it.\n",
+  );
+  process.stdout.write(
+    "  Maxim:  A governance convention is not shipped when humans can read it.\n",
+  );
+  process.stdout.write(
+    "          It is shipped when the target substrate can parse it.\n",
+  );
+  process.stdout.write(`  Spec:   ${SPEC_DOC} Section 7.4 (canonical shape)\n`);
+  return RECOVERED_BLOCK_BLOCKS_PRE_MERGE ? 1 : 0;
+}
+
 function checkTerminalBlock(stripped: string, trailers: string): ExitCode | null {
   const lastTrailer = lastNonBlankLine(trailers);
   if (lastTrailer === "") return null;
@@ -588,135 +631,6 @@ function checkTerminalBlock(stripped: string, trailers: string): ExitCode | null
 
   const after = nonBlankLinesAfter(stripped, tailLine);
   if (after.length > 0) return emitNonTrailerAfterFailure(after);
-  return null;
-}
-
-function checkRequiredKeys(trailers: string, body = ""): ExitCode | null {
-  const missing: string[] = [];
-  for (const key of REQUIRED_KEYS) {
-    const prefix = `${key.toLowerCase()}:`;
-    const found = trailers
-      .split("\n")
-      .some((l) => l.toLowerCase().startsWith(prefix));
-    if (!found) missing.push(key);
-  }
-  if (missing.length === 0) return null;
-  return emitMissingKeys(missing, body);
-}
-
-function checkEnums(trailers: string): ExitCode | null {
-  for (const { key, allowed } of ENUMS) {
-    const value = getValue(trailers, key);
-    if (!allowed.includes(value)) return emitEnumFailure(key, value, allowed);
-  }
-  return null;
-}
-
-function checkTaskPattern(trailers: string): ExitCode | null {
-  const value = getValue(trailers, "Task");
-  // Placeholder first, and independently of shape: `task` and `todo` both satisfy the widened
-  // pattern, and an unfilled template passing validation is the exact defect this validator
-  // exists to catch — attribution to nobody, wearing a green check.
-  if (PLACEHOLDER_TASK_RE.test(value)) {
-    process.stdout.write("FAIL: Task is an unfilled placeholder\n");
-    process.stdout.write(`  Found:    '${value}'\n`);
-    process.stdout.write("  Expected: the work this commit belongs to, or the literal 'none'\n");
-    process.stdout.write(`  Spec:     ${SPEC_DOC} Section 9.2 (Task: none fallback)\n`);
-    return 1;
-  }
-  if (TASK_RE.test(value)) return null;
-  process.stdout.write("FAIL: invalid Task value\n");
-  process.stdout.write(`  Found:    '${value}'\n`);
-  process.stdout.write(
-    "  Expected: a ZetaId work-item key (26 chars, e.g. 081M0085XQT087G0R003W4KFS4),\n",
-  );
-  process.stdout.write("            a slug naming the work (e.g. fix-merge-duty-ordering),\n");
-  process.stdout.write("            a ticket-id (Otto-NN, task-#NNN, #NNN, FOO-NN),\n");
-  process.stdout.write("            or the literal 'none' fallback\n");
-  process.stdout.write(`  Spec:     ${SPEC_DOC} Section 9.2 (Task: none fallback)\n`);
-  return 1;
-}
-
-function checkHumanReviewConsistency(trailers: string): ExitCode | null {
-  const hr = getValue(trailers, "Human-Review");
-  const hre = getValue(trailers, "Human-Review-Evidence");
-  if (hr !== "explicit" && hre !== "none") {
-    process.stdout.write(
-      "FAIL: Human-Review-Evidence must be 'none' when Human-Review is not 'explicit'\n",
-    );
-    process.stdout.write(`  Human-Review:          '${hr}'\n`);
-    process.stdout.write(`  Human-Review-Evidence: '${hre}'\n`);
-    process.stdout.write(`  Spec:                  ${SPEC_DOC} Section 5.3 / 7.6\n`);
-    process.stdout.write(
-      "  Reason: the evidence pointer attaches to actual review claims;\n",
-    );
-    process.stdout.write(
-      "          a non-explicit review state has no evidence to point at\n",
-    );
-    return 1;
-  }
-  if (hr === "explicit" && hre === "none") {
-    process.stdout.write(
-      "FAIL: Human-Review: explicit requires Human-Review-Evidence != 'none'\n",
-    );
-    process.stdout.write(
-      "  Reason: an explicit review claim must cite where the evidence lives\n",
-    );
-    process.stdout.write(
-      "  Fix:    set Human-Review-Evidence to chat | pr-review | pr-comment | signed-policy\n",
-    );
-    process.stdout.write(
-      `  Spec:   ${SPEC_DOC} Section 5.3 (closes the 'explicit according to whom' gap)\n`,
-    );
-    return 1;
-  }
-  return null;
-}
-
-
-const V2_REQUIRED_EXTRA: readonly string[] = ["Cell"];
-
-function checkV2(trailers: string): ExitCode | null {
-  const version = getValue(trailers, "Agency-Signature-Version");
-  if (version !== "2") return null; // v1: Cell/Persona ignored (forward-compat)
-
-  const missing = V2_REQUIRED_EXTRA.filter((key) => {
-    const prefix = `${key.toLowerCase()}:`;
-    return !trailers.split("\n").some((l) => l.toLowerCase().startsWith(prefix));
-  });
-  if (missing.length > 0) {
-    process.stdout.write(`FAIL: missing required AgencySignature v2 trailer keys: ${missing.join(" ")}\n`);
-    process.stdout.write("  Cause:  Agency-Signature-Version: 2 requires the Cell trailer\n");
-    process.stdout.write("  Fix:    add `Cell: <surface>[/<instance>][@<node>]` (e.g. Cell: cowork/main@machine-a)\n");
-    process.stdout.write(`  Spec:   ${ADR_DOC} phase 4\n`);
-    return 1;
-  }
-
-  const agent = getValue(trailers, "Agent");
-  const persona = getValue(trailers, "Persona");
-  if (persona !== "" && persona !== agent) {
-    process.stdout.write("FAIL: Persona trailer must equal Agent when both are present\n");
-    process.stdout.write(`  Agent:   '${agent}'\n`);
-    process.stdout.write(`  Persona: '${persona}'\n`);
-    process.stdout.write("  Reason:  Persona is v2's explicit alias of v1's Agent key — one identity, two spellings\n");
-    process.stdout.write(`  Spec:    ${ADR_DOC} phase 4\n`);
-    return 1;
-  }
-
-  const cell = getValue(trailers, "Cell");
-  try {
-    // THE one parser (treaty Article 1): validate by reconstructing the
-    // canonical projection `<persona>/<cell>`. No local string surgery.
-    parseActorRef(`${agent}/${cell}`);
-  } catch (err) {
-    process.stdout.write("FAIL: invalid Agent/Cell pair for AgencySignature v2\n");
-    process.stdout.write(`  Agent:  '${agent}' (must be a bare lowercase PersonaId from registry/personas.yaml)\n`);
-    process.stdout.write(`  Cell:   '${cell}' (canonical cell projection: <surface>[/<instance>][@<node>])\n`);
-    process.stdout.write(`  Parser: ${err instanceof Error ? err.message : String(err)}\n`);
-    process.stdout.write("  Law:    treaty Article 1 — projections are produced/parsed by exactly one module\n");
-    process.stdout.write(`  Spec:   ${ADR_DOC} phase 4\n`);
-    return 1;
-  }
   return null;
 }
 
@@ -1051,28 +965,29 @@ export function main(argv: readonly string[] = [], body?: string): ExitCode {
   const parsed = parseTrailers(stripped);
   if (!parsed.ok) return emitToolingParseFailure(parsed.stderr);
   const trailers = parsed.trailers;
+
+  // ---------------------------------------------------------------------
+  // STRICT FIRST, then RECOVER — never the other way round.
+  //
+  // The lenient scan runs ONLY when the strict parse could not produce a
+  // complete block. Running it first, or merging the two, would let a body whose
+  // trailers git CAN read be validated against some other paragraph — the
+  // fallback silently becoming the primary path, which is how a recovery turns
+  // into a gate that cannot fail.
+  // ---------------------------------------------------------------------
+  const recoveryResult = tryRecover(stripped, trailers);
+  if (recoveryResult !== null) return recoveryResult;
   if (trailers === "") return emitParseFailure(stripped);
 
   const terminalCheck = checkTerminalBlock(stripped, trailers);
   if (terminalCheck !== null) return terminalCheck;
 
-  const requiredCheck = checkRequiredKeys(trailers, stripped);
-  if (requiredCheck !== null) return requiredCheck;
-
-  const placeholderCheck = checkPlaceholders(trailers);
-  if (placeholderCheck !== null) return placeholderCheck;
-
-  const enumCheck = checkEnums(trailers);
-  if (enumCheck !== null) return enumCheck;
-
-  const v2Check = checkV2(trailers);
-  if (v2Check !== null) return v2Check;
-
-  const taskCheck = checkTaskPattern(trailers);
-  if (taskCheck !== null) return taskCheck;
-
-  const consistencyCheck = checkHumanReviewConsistency(trailers);
-  if (consistencyCheck !== null) return consistencyCheck;
+  // ONE rule, shared with the post-merge auditor. Everything this validator used
+  // to decide locally — required keys, placeholders, enums, v2 Cell, Task shape,
+  // the Human-Review cross-field constraint — is decided by `validateBlock`.
+  const violations = validateBlock(trailers);
+  const first = violations[0];
+  if (first !== undefined) return emitViolation(first, stripped);
 
   return emitPass(trailers);
 }
