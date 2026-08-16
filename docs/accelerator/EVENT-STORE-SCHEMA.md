@@ -1,11 +1,18 @@
 # Accelerator — git-event-store schema (Action Item 2)
 
 > The concrete shape of a **move-next transition as an append-only Git event**.
-> Composes with `tools/agent-loop/state-machine.ts` (the `AgentState` +
-> `MenuOption` DUs + pure `transition`), 081KSKBP80008QG0R000B3Y19A (128-bit-unique-IDs, append-only),
+> Composes with [`src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts`](../../src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts)
+> (the `AgentState` + `MenuOption` DUs + pure `transition`), 081KSKBP80008QG0R000B3Y19A (128-bit-unique-IDs, append-only),
 > 081KSNY2Z0008QG0R003X1QWYG (no-PR swarm via GH-Actions-recursion), and the 2026-05-29 razor-flow
-> substrate (forgiveness-budget + schema-in-the-stream). Concrete types:
-> [`tools/accelerator/event-store-schema.ts`](../../tools/accelerator/event-store-schema.ts).
+> substrate (forgiveness-budget + schema-in-the-stream).
+>
+> **The concrete `@1` types are NOT on the build path.** This doc previously
+> pointed at `tools/accelerator/event-store-schema.ts`, which does not exist —
+> the accelerator branch that carried it was pruned. The only surviving copy is a
+> pre-migration snapshot, build- and lint-excluded, at
+> [`docs/recovered-orphan-branches-2026-05/tools/accelerator/event-store-schema.ts`](../recovered-orphan-branches-2026-05/tools/accelerator/event-store-schema.ts).
+> Treat the schema below as the specification and that file as an unlanded
+> reference implementation. Restoring it is tracked by 081KSNY2Z0008QG0R003X1QWYG (P1, open).
 
 ## Design goals (in priority order)
 
@@ -123,7 +130,7 @@ unbounded `.git/` growth at swarm scale.
 
 The *mechanism* for the compaction/tiering above is the **two-layer razor +
 past-as-generator** architecture (Aaron + Ani 2026-05-29, preserved in
-[`docs/research/2026-05-29-two-layer-razor-past-as-generator-...md`](../research/2026-05-29-two-layer-razor-past-as-generator-forgiveness-cost-compression-causal-order-vs-purpose-within-partition-aaron-ani-otto.md)):
+[`docs/research/2026-05-29-two-layer-razor-past-as-generator-forgiveness-cost-compression-causal-order-vs-purpose-within-partition-aaron-ani-otto.md`](../research/2026-05-29-two-layer-razor-past-as-generator-forgiveness-cost-compression-causal-order-vs-purpose-within-partition-aaron-ani-otto.md)):
 
 - **Layer 1 (Forgiveness Razor — Origin vs Purpose)** is the retraction above: it
   decides what's accidental and retracts it. Its cost is the stored retracted trace.
@@ -219,9 +226,9 @@ GraphQL PR-mutation rate-limit bottleneck that is the "git monster."
 
 ## Composes with
 
-- `tools/agent-loop/state-machine.ts` (the move-next DUs this schema persists)
-- `tools/accelerator/event-store-schema.ts` (the concrete `@1` types)
+- `src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts` (the move-next DUs this schema persists)
+- `docs/recovered-orphan-branches-2026-05/tools/accelerator/event-store-schema.ts` (the concrete `@1` types — **quarantined, not on the build path**)
 - 081KSKBP80008QG0R000B3Y19A (128-bit-unique-IDs, append-only) + 081KSNY2Z0008QG0R003X1QWYG (no-PR swarm) + 081KSKBP80008QG0R001KK9WV6 (heartbeat)
-- `docs/research/2026-05-29-rodneys-razor-is-a-compression-engine-...md` (Insights 3+4)
-- `docs/accelerator/SUBSTRATE-GROUNDING.md` (Action Item 1) + `docs/accelerator/README.md` (charter)
+- `docs/research/2026-05-29-rodneys-razor-is-a-compression-engine-fix-point-perfect-ordering-retraction-physical-cost-schema-in-stream-aaron-ani-otto.md` (Insights 3+4)
+- `docs/accelerator/SUBSTRATE-GROUNDING.md` (Action Item 1). *(There is no `docs/accelerator/README.md`; the charter it named was never landed.)*
 - AgencySignature v1 trailer (CLAUDE.md) — each event-commit composes with it
