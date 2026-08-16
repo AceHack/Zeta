@@ -103,19 +103,93 @@ describe("armingEnabled", () => {
 });
 
 describe("heartbeat workflow credential split", () => {
-  it("keeps branch writes on the proven workflow credential", () => {
+  // RE-AIMED 2026-08-16. This block used to pin `tickCheckout` as carrying NO
+  // `token:` -- branch writes ride the default GITHUB_TOKEN. That invariant was
+  // deliberately REVERSED: a `pull_request` run whose triggering actor is
+  // `github-actions[bot]` is created and immediately parked in `action_required`,
+  // so `gate (required)` never ran on a heartbeat/* flush PR. Measured, then fixed
+  // by putting the PAT back so the push actor is a human account.
+  //
+  // The old pin was not wrong about the code; it was wrong about what the code
+  // should do. Deleting it would have traded a stale pin for no coverage over the
+  // exact split that cost the fleet ~16.75h in #10850, so it is re-aimed at the
+  // properties that are load-bearing NOW. Each assertion below names the specific
+  // regression it exists to catch.
+  it("degrades when the PAT is absent instead of dying", () => {
     const tickCheckout = HEARTBEAT_WORKFLOW.slice(
       HEARTBEAT_WORKFLOW.indexOf("- name: Checkout"),
+      HEARTBEAT_WORKFLOW.indexOf("- name: Preflight the push credential"),
+    );
+
+    // The `||` ladder is the ABSENCE half of degrade-don't-halt: an unset secret
+    // evaluates to "" and falls through to GITHUB_TOKEN. A bare
+    // `token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}` would check out with an
+    // empty credential and kill every lane -- which is the #10850 outage shape.
+    expect(tickCheckout).toContain("token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}");
+  });
+
+  it("probes the real remote and RE-PROBES after falling back", () => {
+    const preflight = HEARTBEAT_WORKFLOW.slice(
+      HEARTBEAT_WORKFLOW.indexOf("- name: Preflight the push credential"),
       HEARTBEAT_WORKFLOW.indexOf("- name: Setup bun"),
     );
+
+    // The UNAUTHORIZED half, which the `||` ladder cannot cover: #10850 shipped a
+    // token that was present and powerless. Only a real request to the real remote
+    // distinguishes those -- #10913 asserted this against a stubbed git and died on
+    // its first real tick. `--dry-run` still performs the authorization handshake.
+    expect(preflight).toContain("git push --dry-run origin");
+
+    // THE VACUITY GUARD, and the reason this test replaces the old pin. A fallback
+    // that is applied and never re-checked looks identical to one that worked:
+    // #10913's fallback ran, logged that it ran, and was denied under the same
+    // identity. Two `$(probe)` call sites = probe, then re-probe after the swap.
+    const probeCalls = preflight.match(/\$\(probe\)/g) ?? [];
+    expect(probeCalls.length).toBeGreaterThanOrEqual(2);
+
+    // ORDERING, not just presence -- this assertion is Otto's, from the competing
+    // #11023, and it is strictly stronger than my count above: two probes prove
+    // nothing if both run BEFORE the credential is swapped. The re-probe only
+    // means anything if it tests the credential that replaced the denied one.
+    const swapIndex = preflight.indexOf("git config --local --replace-all");
+    const reprobeIndex = preflight.indexOf("if OUT2=$(probe); then");
+    expect(swapIndex).toBeGreaterThan(-1);
+    expect(reprobeIndex).toBeGreaterThan(swapIndex);
+
+    // The swap must be reachable ONLY on a credential answer. Swapping on ANY
+    // failure would hide a network or ruleset error behind a credential story.
+    expect(preflight).toContain("denied to|Authentication failed|Invalid username or token|error: 403");
+
+    // The fallback must be visible when it happens. A silent degrade is the same
+    // defect class as the missing gate: a lane that looks healthy and is not.
+    expect(preflight).toContain("::error title=Heartbeat PAT cannot push::");
+
+    // The token must never reach the log, including via its base64 form.
+    expect(preflight).toContain("::add-mask::");
+    expect(preflight).not.toContain('echo "$FALLBACK_TOKEN"');
+  });
+
+  it("keeps the credential decision out of the push step and off the flush checkout", () => {
     const pushStep = HEARTBEAT_WORKFLOW.slice(
       HEARTBEAT_WORKFLOW.indexOf("- name: Push heartbeat branch"),
       HEARTBEAT_WORKFLOW.indexOf("flush-to-main:"),
     );
+    const flushCheckout = HEARTBEAT_WORKFLOW.slice(
+      HEARTBEAT_WORKFLOW.indexOf("- name: Checkout main"),
+      HEARTBEAT_WORKFLOW.indexOf("- name: Check if heartbeat branch has events to flush"),
+    );
 
-    expect(tickCheckout).not.toContain("\n          token:");
+    // The push stays a plain push. #10913's in-step credential swap was denied
+    // under the same identity in production for reasons never established, so the
+    // decision belongs in the preflight where it is verified, not here.
     expect(pushStep).toContain('run: git push --force-with-lease origin "heartbeat/$AGENT"');
     expect(pushStep).not.toContain("FALLBACK_TOKEN");
+
+    // #10850's SECOND, latent break: it put the PAT on the flush checkout too.
+    // That credential pushes nothing -- every git call in the flush job is
+    // read-only -- so it gets no push rights. This half of the original pin is
+    // still exactly right and is kept.
+    expect(flushCheckout).not.toContain("\n          token:");
   });
 
   it("dispatches the required gate before arming auto-merge", () => {
