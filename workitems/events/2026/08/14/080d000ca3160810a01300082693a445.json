@@ -1,0 +1,14 @@
+{
+  "id": "080d000ca3160810a01300082693a445",
+  "at": "2026-08-14T18:41:36.961Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00S8RP0087G0R001Y9K723",
+    "type": "task",
+    "title": "Per-cell Unix users on Linux nodes for cell-scoped resources only",
+    "slug": "per-cell-unix-users-on-linux-nodes-for-cell-scoped-resources",
+    "priority": "P2",
+    "filename": "081M00S8RP0087G0R001Y9K723-per-cell-unix-users-on-linux-nodes-for-cell-scoped-resources.md"
+  }
+}
