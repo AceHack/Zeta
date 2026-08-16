@@ -1,0 +1,12 @@
+{
+  "pr_number": 10936,
+  "archive_path": "docs/history/pr-reviews/PR-10936-docs-dogfooding-inventory-where-zeta-runs-on-others-tooling-vs-its-own.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:48:18.638Z",
+  "schema_version": "v1",
+  "commit_sha": "fc835533aef73137e88680dc7604d7123a13b339",
+  "title": "docs(dogfooding): inventory where Zeta runs on others' tooling vs its own",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:47:50Z",
+  "head_ref": "shadow/dogfooding-inventory-2026-08-16"
+}
