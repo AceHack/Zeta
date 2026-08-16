@@ -13,7 +13,11 @@ namespace Zeta.Core
 /// step of a Linear Congruential Generator (LCG) or the Permuted Congruential Generator (PCG),
 /// which relies on `state = state * multiplier + increment`.
 ///
-/// THE NEW OP (provably outside the v3 grammar — see the necessity proof in ZetaIrV4.Tests):
+/// THE NEW OP (outside the v3 grammar; the argument is the paragraph above — the 0-fixing
+/// invariant — and its FALSIFIER is `every non-Add op sequence fixes 0, and Add does not` in
+/// `tests/Tests.FSharp/ZetaIrMinimalSet.Tests.fs`, which draws random non-`add` sequences at
+/// both widths. The similarly-named test in `ZetaIrV4.Tests` is an illustration of three fixed
+/// instances, not a proof: it never builds an op sequence and passes with `Add` deleted):
 ///   { "op": "add", "k": <int> }   // x += k mod 2^width
 ///
 /// THE v4 ENVELOPE (canonical key order; the frozen v4 contract):

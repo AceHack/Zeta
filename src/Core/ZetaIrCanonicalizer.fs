@@ -13,29 +13,40 @@ module ZetaIrCanonicalizer =
         | _, 0L  -> [ ZetaIrV4.Mul a ]
         | _, _   -> [ ZetaIrV4.Mul a; ZetaIrV4.Add b ]
 
-    /// Converts a PolyF2Rot back to an XRotXor op
+    /// Converts a `PolyF2Rot` back into core-four ops.
+    ///
+    /// A `PolyF2Rot` denotes the F2-linear map `x |-> XOR_{k in Terms} rotl(x, k)`, i.e. the
+    /// polynomial `SUM_{k in Terms} X^k` in `F2[X]/(X^W - 1)` where `X` is `rotl(.,1)`.
+    /// `XRotXor rs` denotes `x ^ rotl(x,r_1) ^ ...`, so its polynomial is `1 + SUM X^{r_i}` —
+    /// the constant term `1` is ALWAYS present. Three cases therefore have to be split, and
+    /// blindly dropping `0` from the term set (the previous behaviour) is wrong in two of them:
+    ///
+    ///  - `Terms = {}`        — the ZERO map. `XRotXor []` denotes the IDENTITY, not zero, and is
+    ///                          also rejected by `ZetaIrV4.validate` (term lists must be non-empty).
+    ///                          The core-four spelling of the zero map is `Mul 0`.
+    ///  - `0 IN Terms`        — directly representable: emit the other terms.
+    ///  - `0 NOT IN Terms`    — reachable: the constant term CAN cancel under composition, e.g. at
+    ///                          W=64 `(1 + X^63)(1 + X)  =  1 + X + X^63 + X^64  =  X + X^63`
+    ///                          (because `X^64 = 1`). Factor out the lowest monomial `X^r`
+    ///                          (spelled `XRotXor [0; r]`, whose polynomial is `1 + 1 + X^r = X^r`)
+    ///                          and emit the cofactor `X^-r * poly`, which does contain `0`.
     let fromPolyF2Rot (poly: SymbolicAlgebra.PolyF2Rot) : ZetaIrV4.Op list =
-        if poly.IsIdentity() then []
+        let emitContainingZero (terms: Set<int>) : ZetaIrV4.Op list =
+            // Precondition: `0 IN terms`. `{0}` is the identity, so it emits nothing.
+            let rs = terms |> Set.remove 0 |> Set.toList |> List.sort |> List.map int64
+            if List.isEmpty rs then [] else [ ZetaIrV4.XRotXor rs ]
+
+        if poly.IsZero() then
+            [ ZetaIrV4.Mul 0L ]
+        elif poly.IsIdentity() then
+            []
+        elif Set.contains 0 poly.Terms then
+            emitContainingZero poly.Terms
         else
-            // A PolyF2Rot represents: sum_{k in Terms} x^k
-            // But XRotXor semantics is: x ^= rotl(x, r1) ^ rotl(x, r2) ...
-            // This means XRotXor ALREADY includes x implicitly (which is X^0).
-            // So if 0 is in the terms, we emit the OTHER terms.
-            // If 0 is NOT in the terms, we cannot represent it purely as a single XRotXor
-            // because XRotXor always includes x. Wait, XRotXor rs computes: x ^ (x <<< rs[0]) ^ ...
-            // If 0 is not in the terms, it means the output does NOT contain x.
-            // This is actually impossible to reach by composing XRotXors!
-            // Proof: XRotXor always has an EVEN number of terms if you don't count the implicit x,
-            // meaning including x it has an ODD number of terms.
-            // Multiplying two polynomials with an ODD number of terms yields a polynomial with an ODD number of terms.
-            // Therefore, 0 will always be in the result if we only compose XRotXors, or it will be representable.
-            // Actually, wait. XRotXor rs computes: x ^ rotl(x, rs[0]) ^ ...
-            // So the polynomial is 1 + X^{rs[0]} + ...
-            // So we just remove 0 from the terms, and the rest are the rotation amounts.
-            let rs = poly.Terms |> Set.remove 0 |> Set.toList |> List.sort |> List.map int
-            // XRotXor takes a list of int64? Wait, let me check ZetaIrV4.fs. No, it should be int list or int64 list? Let me check.
-            // Wait, let's just map it to int64.
-            [ ZetaIrV4.XRotXor (rs |> List.map int64) ]
+            let w = poly.Width
+            let r = Set.minElement poly.Terms
+            let cofactor = poly.Terms |> Set.map (fun t -> ((t - r) % w + w) % w)
+            ZetaIrV4.XRotXor [ 0L; int64 r ] :: emitContainingZero cofactor
 
     /// Normalizes and fuses operations. Slice 1 & 2: Ring Fusion (Mul/Add) and F2 Fusion (XRotXor).
     let rec fuseOps (width: int) (ops: ZetaIrV4.Op list) : ZetaIrV4.Op list =
@@ -86,12 +97,19 @@ module ZetaIrCanonicalizer =
                 fuseOps width (fromAffine fused @ tail)
             | _ -> ZetaIrV4.Mul a :: ZetaIrV4.Add b :: fuseOps width rest
             
-        // F2 fusion using PolyF2Rot
+        // F2 fusion using PolyF2Rot.
+        // The rewrite must make PROGRESS: `fromPolyF2Rot` needs two ops whenever the product's
+        // constant term cancelled (see its docstring), and rewriting two XRotXor ops into two
+        // XRotXor ops would re-enter this same case forever. So fuse only when the result is
+        // strictly shorter than the pair it replaces; otherwise leave the pair alone.
         | ZetaIrV4.XRotXor a :: ZetaIrV4.XRotXor b :: rest ->
             let f = SymbolicAlgebra.PolyF2Rot.FromRotations(width, 0 :: (a |> List.map int))
             let g = SymbolicAlgebra.PolyF2Rot.FromRotations(width, 0 :: (b |> List.map int))
-            let fused = f.Compose(g)
-            fuseOps width (fromPolyF2Rot fused @ rest)
+            let fused = fromPolyF2Rot (f.Compose(g))
+            if List.length fused < 2 then
+                fuseOps width (fused @ rest)
+            else
+                ZetaIrV4.XRotXor a :: fuseOps width (ZetaIrV4.XRotXor b :: rest)
 
         // Pass through
         | head :: tail -> head :: fuseOps width tail
