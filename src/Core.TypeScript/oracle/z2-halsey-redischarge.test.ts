@@ -97,20 +97,63 @@ describe("Z-2 re-discharge: multifractal spectrum", () => {
 });
 
 describe("Z-2 re-discharge: falsifier", () => {
-  it("Z2-9: falsifier fires for a uniform harmonic measure (negative control)", () => {
-    // A uniform harmonic measure has τ(3) ≈ 2 (monofractal limit)
-    // but β from ∑μᵢ³ = 1/N³ * N = 1/N² gives β = 2*log(N)/log(N) = 2
-    // The gap should be small for a uniform measure — this tests the machinery
+  it("Z2-9: uniform harmonic measure (negative control) gives β = τ(3) = 2", () => {
+    // A uniform measure over N sites has ∑μᵢ³ = N·(1/N)³ = N⁻², so
+    // −log(∑μᵢ³)/log(N) = 2 exactly. Pin the value, not a bound: the previous
+    // assertions here were `gap >= 0` (gap is a Math.abs, so this holds for every
+    // possible input) and `typeof falsifierFires === "boolean"` (holds for every
+    // possible implementation). Neither could fail, so neither was a control.
     const cluster = generateDlaCluster(42, 200);
     const n = cluster.sites.length;
-    // Synthetic uniform measure
     const mu = new Float64Array(n).fill(1 / n);
     const hm = { mu, sites: cluster.sites };
     const tm = computeThirdMomentBeta(hm, cluster);
-    // The result should be deterministic and have a finite gap
-    expect(tm.gap).toBeGreaterThanOrEqual(0);
+    expect(tm.beta).toBeCloseTo(2, 10);
+    expect(tm.tau3).toBeCloseTo(2, 10);
     expect(tm.nSites).toBe(n);
-    expect(typeof tm.falsifierFires).toBe("boolean");
+  });
+
+  // ── DEFECT PIN ─────────────────────────────────────────────────────────────
+  // This test asserts BROKEN behaviour on purpose, so that fixing it turns the
+  // suite RED and forces the register row to be revisited. Delete it (and this
+  // comment) in the same change that makes β an independent estimator.
+  //
+  // computeMultifractalSpectrum computes  τ(q) = log(∑μᵢ^q) / −log(N_pos)
+  // computeThirdMomentBeta   computes  β    = −log(∑μᵢ³)  /  log(n_pos)
+  // At q = 3 these are the SAME EXPRESSION over the same inputs, so
+  //   gap = |β − τ(3)| ≡ 0  and  falsifierFires = (0 > 0.1) ≡ false
+  // for every possible harmonic measure. The scaling-level falsifier that
+  // docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md row `n` cites as implemented
+  // ("a falsifier that COULD have fired") cannot fire.
+  it("Z2-9b: DEFECT — β and τ(3) are one expression, so the falsifier can never fire", () => {
+    const cluster = generateDlaCluster(42, 200);
+    const n = cluster.sites.length;
+    const norm = (a: Float64Array): Float64Array => {
+      let t = 0;
+      for (const v of a) t += v;
+      return a.map((v) => v / t) as Float64Array;
+    };
+    // Four measures with radically different multifractal character. If β were an
+    // independent estimate of the third-moment exponent, they could not all agree
+    // with τ(3) to the last bit.
+    const uniform = new Float64Array(n).fill(1 / n);
+    const concentrated = new Float64Array(n).fill(1e-12);
+    concentrated[0] = 1 - 1e-12 * (n - 1);
+    const powerlaw = norm(Float64Array.from({ length: n }, (_, i) => (i + 1) ** -2));
+    let s = 7;
+    const rng = (): number => {
+      s ^= s << 13;
+      s ^= s >>> 17;
+      s ^= s << 5;
+      return (s >>> 0) / 4294967296;
+    };
+    const random = norm(Float64Array.from({ length: n }, () => rng()));
+
+    for (const mu of [uniform, concentrated, powerlaw, random]) {
+      const tm = computeThirdMomentBeta({ mu, sites: cluster.sites }, cluster);
+      expect(tm.gap).toBe(0); // exact — not "small"
+      expect(tm.falsifierFires).toBe(false);
+    }
   });
 
   it("Z2-10: falsifier tolerance is 0.1", () => {
@@ -136,10 +179,13 @@ describe("Z-2 re-discharge: falsifier", () => {
   });
 
   it("Z2-13: inconclusive result for tiny cluster", () => {
-    // Very few walkers → too few boundary sites → INCONCLUSIVE
+    // Very few walkers → too few boundary sites → INCONCLUSIVE.
+    // `toContain([...all three verdicts])` was the whole assertion here; the
+    // union it tested against is the declared type of the field, so it accepted
+    // every value the function can return, including the ones the test is named
+    // for NOT getting. Assert the verdict this input actually produces.
     const r = runZ2Discharge(42, 5, 10);
-    // Either INCONCLUSIVE (too few sites) or a valid result
-    expect(["SUPPORTED", "FALSIFIED", "INCONCLUSIVE"]).toContain(r.conjecture);
+    expect(r.conjecture).toBe("INCONCLUSIVE");
   });
 });
 
@@ -207,10 +253,30 @@ describe("Z-2 HL amplitude test (Halsey 2026, arXiv:2607.02216)", () => {
     expect(hla.nSites).toBe(cluster.sites.length);
   });
 
-  it("Z2-HL-8: relativeGap is non-negative", () => {
-    const cluster = generateDlaCluster(42, 400);
-    const hm = computeHarmonicMeasure(cluster, 150, 43);
-    const hla = computeHLAmplitude(hm, cluster);
-    expect(hla.relativeGap).toBeGreaterThanOrEqual(0);
+  // `relativeGap >= 0` was the assertion here; relativeGap is |x−y|/y with y > 0,
+  // so it is non-negative by construction and cannot fail. What the number is
+  // actually saying is the finding: the HL amplitude falsifier FIRES — the
+  // discrete approximation misses aλ₀/D by ~87–92% on every seed tried
+  // (1, 7, 42, 99, 12345), and runZ2Discharge still returns SUPPORTED because its
+  // verdict branch reads only `thirdMoment.falsifierFires` (which is the ≡false
+  // tautology pinned in Z2-9b). Assert the firing so it stops being invisible.
+  it("Z2-HL-8: HL amplitude falsifier FIRES — discrete approximation misses aλ₀/D", () => {
+    for (const seed of [1, 42, 12345]) {
+      const cluster = generateDlaCluster(seed, 400);
+      const hm = computeHarmonicMeasure(cluster, 150, seed + 1);
+      const hla = computeHLAmplitude(hm, cluster);
+      expect(hla.relativeGap).toBeGreaterThan(HL_AMPLITUDE_TOLERANCE);
+      expect(hla.falsifierFires).toBe(true);
+    }
+  });
+
+  it("Z2-HL-9: the SUPPORTED verdict ignores the one falsifier that fires", () => {
+    // Documents the gap between the two levels, not an endorsement of it:
+    // scaling-level (tautological, never fires) decides the verdict; the
+    // amplitude-level (fires every seed) does not reach it.
+    const r = runZ2Discharge(42, 300, 100);
+    expect(r.thirdMoment.falsifierFires).toBe(false);
+    expect(r.hlAmplitude.falsifierFires).toBe(true);
+    expect(r.conjecture).toBe("SUPPORTED");
   });
 });
