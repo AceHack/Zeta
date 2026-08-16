@@ -102,3 +102,62 @@ work-item id so it is visible and diffable in the meantime.
 - [ ] Maintainer confirms `full-ai-cluster/` is the surviving tree.
 - [ ] `infra/k8s/` and `infra/nixos/` deleted; citing docs corrected in the same commit.
 - [ ] `acknowledgedRootAppDuplicates` is empty and the auditor still exits 0.
+- [ ] **The two CODE consumers below are migrated in the same commit** (added by
+      verification 2026-08-16 — the original consumer list was docs-only and
+      incomplete).
+
+---
+
+## Verification pass (shadow, 2026-08-16) — one row of the evidence table is FALSE
+
+Re-measured against the tree at `ab2d4acb96`. The finding's core holds; one
+supporting row does not, and it is the row the deletion plan rests on.
+
+**Held, re-measured directly:**
+
+| claim                                                                                                           | verdict                                                                                       |
+| --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| two `Application/argocd/zeta-root` objects, different `spec.source.path`, both `prune: true` + `selfHeal: true` | **held** — read both manifests                                                                |
+| `infra/` ArgoCD Applications = 7                                                                                | **held** — 7                                                                                  |
+| `infra/` NixOS modules = 4, VM tests = 0                                                                        | **held** — 4 / 0                                                                              |
+| `full-ai-cluster/` is far larger and carries the empirically-earned k3s fixes                                   | **held** — 45 Applications, 23 modules, 4 VM tests (counts drifted from 43/24/4 since filing) |
+
+**FALSE — "referenced outside its own tree: only `infra/README.md` + docs":**
+
+`infra/` has **two live CODE consumers** the evidence table misses, and deleting
+the tree without migrating them breaks the repo:
+
+1. **`flake.nix` (repo root)** — `nixosConfigurations.control-plane`,
+   `.worker-gpu-01`, `.worker-gpu-02` import
+   `./infra/nixos/hosts/*/configuration.nix`, and `nixosModules.{common,
+k3s-server, k3s-agent, gpu}` ARE `./infra/nixos/modules/*.nix`. Deleting
+   `infra/nixos/` breaks `nix flake check` and every documented
+   `nixos-rebuild switch --flake .#control-plane`. Note the root flake and
+   `full-ai-cluster/flake.nix` are two separate flakes — the same two-trees
+   split, one level up.
+2. **`src/Core.TypeScript/ace/deps.ts:429`** — `generateArgoCD()` emits
+   Applications whose `spec.source.path` is
+   `` `infra/k8s/applications/${chart}` ``. It ships in the `ace` CLI
+   (`ace.ts:2011`) and is exercised by `deps.test.ts:348`. After the deletion
+   this generator emits manifests pointing at a path that no longer exists — and
+   the test does not assert the path, so **nothing goes red**. It fails silently,
+   in generated output, at deploy time.
+
+So the deletion is a **migration, not a sweep**. Consolidation still looks
+right; the _plan_ was under-scoped.
+
+**Could not enumerate** (stated rather than glossed): whether any machine
+outside this repo — the PoC box, an operator laptop, a flashed USB image —
+already tracks `.#control-plane` from the root flake. That is off-repo state,
+not knowable from here, and it is why the flake row matters beyond CI.
+
+**Not done here, deliberately.** Deletion is gated on the maintainer sign-off
+this item already names, and the tree is now _proven referenced by code_ rather
+than merely suspected — so the ambiguity is recorded and the tree stays in
+place. Nothing was deleted.
+
+**Separately confirmed while measuring:** `single-node-readiness.ts` exits 1 on
+`main` today — a `false-redundancy` blocker for `full-ai-cluster/kubevirt`
+(`replicas: 2`, no anti-affinity), introduced by #11089 after the ledger was
+written. Already being fixed on `fix/ledger-ack-kubevirt-false-redundancy`;
+noted here only so the next reader knows the auditor's red is that, not this.

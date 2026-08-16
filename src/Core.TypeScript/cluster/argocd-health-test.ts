@@ -25,10 +25,9 @@
 import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
-import {
-  bootstrapKindClusterInProcess,
-  bootstrapK3dClusterInProcess,
-} from "./harness/bootstrap.ts";
+import { parse as parseYaml } from "yaml";
+import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
+import { DEFAULT_ROOT_DEV_CATALOG } from "./ports.ts";
 
 export type Provider = "k3d" | "kind";
 export type Mode = "dry-run" | "preflight" | "run";
@@ -200,7 +199,6 @@ const MODE_FLAGS: Readonly<Record<string, Mode>> = {
 const STRING_FLAGS = new Set(["--git-ref", "--cluster-name", "--config"]);
 const INTEGER_FLAGS = new Set(["--timeout-sec", "--poll-sec"]);
 const K3D_CLUSTER_NAME_PATTERN = /^\s+name:\s*([A-Za-z\d-]+)\s*$/;
-const APPLICATION_NAME_PATTERN = /^\s+name:\s*([A-Za-z\d_.-]+)\s*$/;
 const DNS_LABEL_PATTERN = /^[a-z\d]([-a-z\d]*[a-z\d])?$/;
 const SMOKE_MIN_APPLICATIONS = 20;
 
@@ -224,6 +222,99 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   "spire", // Vault upstream CA + kind PVC wiring not ready in included CI (081KSXN940008QG0R000SCP2H1)
   "temporal",
 ]);
+
+/**
+ * The two exclusion lists, linked (081M00QCNYM087G0R000ZS3CE2).
+ *
+ * There are TWO independent lists governing this lane and nothing used to keep
+ * them in agreement:
+ *
+ *   1. WHAT ARGOCD APPLIES  - `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` (ports.ts).
+ *      Ground truth: a directory named there never reaches the CI cluster.
+ *   2. WHAT THE HARNESS ASSERTS - `DEV_EXCLUDED_DIRS` +
+ *      `DEV_INCLUDED_PROOF_DEFERRED_DIRS` + the derived "references
+ *      `storageClass: longhorn`" rule, via `isExcludedFromIncludedProof`.
+ *
+ * The difference between them is a SHADOW: Applications that are applied to
+ * every CI cluster and asserted by nothing. Measured on 2026-08-16 it was 14
+ * directories wide, and it contained most of the stateful core of the hardware
+ * PoC (cockroachdb, vault, nats, redis, spire, ...). `cockroachdb` cannot even
+ * sync in that lane - it wants `storageClass: longhorn`, and `longhorn` is
+ * glob-excluded, so the StorageClass never exists and the Application hangs
+ * `Missing` forever while the harness reports `ok: true`.
+ *
+ * The shadow is not a bug on its own - deferring an Application is legitimate.
+ * The bug is that the deferral was IMPLICIT, so it could grow silently. This
+ * registry makes each one explicit and REASONED, and
+ * `auditAppliedButUnasserted` goes red the moment the two lists drift apart in
+ * either direction: a newly-applied Application nobody asserted, or a stale
+ * entry here for a directory that no longer exists.
+ *
+ * Adding an entry is cheap and honest; adding one WITHOUT a reason is refused.
+ */
+export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new Map([
+  [
+    "arc-runner-set",
+    "needs a GitHub App credential + a live runner registration; CI has no secret to bind (081KSXN940008QG0R000SCP2H1).",
+  ],
+  [
+    "cockroachdb",
+    "requests storageClass: longhorn, which is glob-excluded from the dev catalog, so the StorageClass never exists in this lane.",
+  ],
+  ["forgejo", "deferred until dev wiring exists (DEV_INCLUDED_PROOF_DEFERRED_DIRS)."],
+  ["headscale", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
+  ["hindsight", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
+  ["kube-prometheus-stack", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
+  ["mimir", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
+  ["nats", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
+  ["oz", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
+  ["redis", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
+  ["spire", "Vault upstream CA + kind PVC wiring not ready in included CI (DEV_INCLUDED_PROOF_DEFERRED_DIRS)."],
+  ["tempo", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
+  ["vault", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
+  ["weaviate", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
+]);
+
+/**
+ * Directories the dev/CI app-of-apps root never applies, derived FROM the
+ * `excludeGlob` rather than restated by hand — the whole point is that there is
+ * one source of truth for "what reaches the cluster".
+ */
+export function rootDevCatalogExcludedDirs(
+  excludeGlob: string = DEFAULT_ROOT_DEV_CATALOG.excludeGlob,
+): ReadonlySet<string> {
+  return new Set(
+    excludeGlob
+      .replace(/^\{/, "")
+      .replace(/\}$/, "")
+      .split(",")
+      .map((entry) => entry.trim().replace(/\/\*\*$/, ""))
+      .filter((entry) => entry.length > 0),
+  );
+}
+
+export interface AppliedButUnassertedDrift {
+  /** Applied to the CI cluster, not asserted, and carrying no stated reason. */
+  readonly unexplained: readonly string[];
+  /** Listed in the registry but no longer applied-but-unasserted (stale entry). */
+  readonly stale: readonly string[];
+}
+
+/**
+ * Compare the two lists. Returns the drift in BOTH directions; empty/empty is
+ * the green state. Pure, offline, reads only the checked-in manifests.
+ */
+export function auditAppliedButUnasserted(repoRoot = REPO_ROOT): AppliedButUnassertedDrift {
+  const globExcluded = rootDevCatalogExcludedDirs();
+  const applied = discoverExpectedApplications(repoRoot).filter((app) => !globExcluded.has(app.dir));
+  const unasserted = applied.filter((app) => app.excludedFromDev).map((app) => app.dir);
+  const unassertedSet = new Set(unasserted);
+
+  return {
+    unexplained: unasserted.filter((dir) => !APPLIED_BUT_UNASSERTED_REASONS.has(dir)).sort(),
+    stale: [...APPLIED_BUT_UNASSERTED_REASONS.keys()].filter((dir) => !unassertedSet.has(dir)).sort(),
+  };
+}
 
 export function isIncludedScope(scope: Scope): boolean {
   return scope === "included" || scope === "full";
@@ -457,7 +548,9 @@ function validateOptions(options: CliOptions): Failure | null {
     return usageFailure("k3d + podman is not wired yet; use --provider kind --runtime podman for the Podman lane");
   }
   if (options.provider === "kind" && options.scope === "full") {
-    return usageFailure("kind provider supports smoke or included scope; use --scope included or --provider k3d for full");
+    return usageFailure(
+      "kind provider supports smoke or included scope; use --scope included or --provider k3d for full",
+    );
   }
   const configFile = basename(options.configPath).toLowerCase();
   if (options.provider === "kind" && configFile.includes("k3d")) {
@@ -511,21 +604,30 @@ export function parseK3dClusterName(configText: string): string | null {
   return null;
 }
 
+/**
+ * Read `metadata.name` with a real YAML parser (081M00QCNYM087G0R000ZS3CE2).
+ *
+ * This used to be a line regex anchored after a `metadata:` line. On every
+ * manifest currently in the tree the regex and a real parse agree (measured
+ * 2026-08-16: 46 Application.yaml files, 0 disagreements), so this is a
+ * defect-CLASS fix, not a live wrong answer — the same class PR #10647 removed
+ * from infra/k8s/tests/validate-applications.ts. The regex takes the first
+ * `name:` at any indentation inside `metadata:`, so a nested block that carries
+ * its own `name` key (`labels:`, `ownerReferences:`) silently wins over the
+ * real one, and a quoted or flow-mapped name is missed entirely.
+ */
 export function parseApplicationName(yamlText: string): string | null {
-  const lines = yamlText.split("\n");
-  let inMetadata = false;
-  for (const line of lines) {
-    if (/^metadata:\s*$/.test(line)) {
-      inMetadata = true;
-      continue;
-    }
-    if (inMetadata && /^[A-Za-z]/.test(line)) {
-      return null;
-    }
-    const match = inMetadata ? APPLICATION_NAME_PATTERN.exec(line) : null;
-    if (match !== null) return match[1] ?? null;
+  let document: unknown;
+  try {
+    document = parseYaml(yamlText);
+  } catch {
+    return null;
   }
-  return null;
+  if (typeof document !== "object" || document === null) return null;
+  const metadata = (document as { metadata?: unknown }).metadata;
+  if (typeof metadata !== "object" || metadata === null) return null;
+  const name = (metadata as { name?: unknown }).name;
+  return typeof name === "string" && name.length > 0 ? name : null;
 }
 
 export function discoverExpectedApplications(repoRoot = REPO_ROOT): readonly ExpectedApplication[] {

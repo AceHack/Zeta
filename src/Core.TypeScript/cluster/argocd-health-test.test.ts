@@ -1,9 +1,20 @@
 import { describe, expect, test } from "bun:test";
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
 import {
+  chmodSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import {
+  APPLIED_BUT_UNASSERTED_REASONS,
   architectureFailure,
+  auditAppliedButUnasserted,
   buildPlan,
   classifyApplications,
   classifySmokeApplications,
@@ -17,6 +28,7 @@ import {
   parseArgs,
   parseK3dClusterName,
   preflightFailure,
+  rootDevCatalogExcludedDirs,
   runHarness,
 } from "./argocd-health-test.ts";
 
@@ -259,6 +271,134 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
+  });
+
+  /**
+   * 081M00QCNYM087G0R000ZS3CE2 — the two exclusion lists, linked.
+   *
+   * `excludeGlob` (ports.ts) decides what ArgoCD APPLIES; the harness lists
+   * decide what is ASSERTED. Nothing used to keep them in agreement, so the
+   * difference — Applications applied to every CI cluster and asserted by
+   * nothing — could grow silently. These tests are the link. They are pure and
+   * offline: zero CI seconds, red the moment the lists drift.
+   */
+  test("every applied-but-unasserted Application carries a stated reason", () => {
+    const drift = auditAppliedButUnasserted();
+    expect(drift.unexplained).toEqual([]);
+  });
+
+  test("no stale reasons linger for Applications that are asserted or no longer applied", () => {
+    const drift = auditAppliedButUnasserted();
+    expect(drift.stale).toEqual([]);
+  });
+
+  test("every stated reason is non-empty — an entry without a why is not an explanation", () => {
+    for (const [dir, reason] of APPLIED_BUT_UNASSERTED_REASONS) {
+      expect(reason.trim().length, `reason for ${dir}`).toBeGreaterThan(0);
+    }
+  });
+
+  test("the applied set is derived FROM excludeGlob, not restated by hand", () => {
+    // The glob is the ground truth for what reaches the cluster. If it parses
+    // to something other than the directories it names, every downstream
+    // conclusion about the shadow set is wrong.
+    expect(rootDevCatalogExcludedDirs("{alpha/**,beta/**}")).toEqual(new Set(["alpha", "beta"]));
+    expect(rootDevCatalogExcludedDirs()).toEqual(
+      new Set([
+        "agent-memory",
+        "cilium",
+        "cilium-lb-ipam",
+        "deepseek-coder",
+        "gitlab",
+        "longhorn",
+        "ollama",
+        "orleans",
+        "platform",
+        "qwen-coder",
+        "temporal",
+        "vllm",
+      ]),
+    );
+  });
+
+  test("the shadow set stays covered when a new Application lands unasserted", () => {
+    // Proof this can go red: an Application that is applied (not in the glob)
+    // and excluded from the proof (references longhorn) but has no reason on
+    // file must be reported as unexplained.
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-drift-"));
+    try {
+      const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/newcomer");
+      mkdirSync(appDir, { recursive: true });
+      writeFileSync(
+        join(appDir, "Application.yaml"),
+        "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: newcomer\nspec:\n  source:\n    helm:\n      values: |\n        storageClass: longhorn\n",
+      );
+      const drift = auditAppliedButUnasserted(repoRoot);
+      expect(drift.unexplained).toContain("newcomer");
+    } finally {
+      rmSync(repoRoot, { recursive: true, force: true });
+    }
+  });
+
+  /**
+   * A third shadow, found while linking the two lists above and NOT yet fixed.
+   *
+   * `discoverExpectedApplications()` enumerates `<dir>/Application.yaml` at
+   * depth 1 only. The tree currently declares one Application BELOW that depth
+   * — `game-hosting/gmod/Application.yaml` — whose own header says "The
+   * App-of-Apps root picks up this Application.yaml". So the harness's
+   * expectation set omits an Application the tree intends to deploy, and
+   * `game-hosting` appears in neither exclusion list, so nothing records it as
+   * deferred either.
+   *
+   * This test does NOT fix that. Deepening discovery would change what the
+   * live `--scope included` lane asserts, and that cannot be verified from a
+   * laptop without a real cluster. What it does is PIN the gap at its measured
+   * size so it cannot grow silently: add a second nested Application and this
+   * goes red, forcing the decision instead of absorbing it.
+   */
+  test("the depth-1 discovery gap stays exactly one known Application", () => {
+    const appsDir = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/applications");
+    const nested = readdirSync(appsDir, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .flatMap((entry) =>
+        readdirSync(join(appsDir, entry.name), { withFileTypes: true })
+          .filter(
+            (child) => child.isDirectory() && existsSync(join(appsDir, entry.name, child.name, "Application.yaml")),
+          )
+          .map((child) => `${entry.name}/${child.name}`),
+      )
+      .sort();
+
+    expect(nested).toEqual(["game-hosting/gmod"]);
+    // And it is genuinely invisible to the harness today.
+    expect(discoverExpectedApplications().some((app) => app.name === "gmod")).toBe(false);
+  });
+
+  test("metadata.name is read by a YAML parser, not by first-name-wins line scanning", () => {
+    // A nested block inside metadata that carries its own `name` key. The old
+    // line regex returned the first `name:` it saw at any indentation, so it
+    // answered "not-the-app"; a real parse answers the actual object name.
+    const nestedName = [
+      "apiVersion: argoproj.io/v1alpha1",
+      "kind: Application",
+      "metadata:",
+      "  labels:",
+      "    name: not-the-app",
+      "  name: real-app",
+      "spec: {}",
+      "",
+    ].join("\n");
+    expect(parseApplicationName(nestedName)).toBe("real-app");
+
+    // A quoted name never matched the regex character class at all.
+    expect(parseApplicationName('kind: Application\nmetadata:\n  name: "quoted-app"\n')).toBe("quoted-app");
+
+    // A flow mapping is legal YAML the line scanner could not enter.
+    expect(parseApplicationName("kind: Application\nmetadata: { name: flow-app }\n")).toBe("flow-app");
+
+    // Malformed input still yields null rather than throwing.
+    expect(parseApplicationName("metadata:\n\tname: tabbed\n  - broken\n")).toBeNull();
   });
 
   test("smoke scope accepts a broad graph with lightweight healthy anchors", () => {

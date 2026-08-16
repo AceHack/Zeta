@@ -1,11 +1,12 @@
 ---
 id: 081M00QCNYM087G0R000ZS3CE2
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: 14-argocd-applications-are-applied-to-every-ci-cluster-and-a
 title: "14 ArgoCD Applications are applied to every CI cluster and asserted by nothing -- two unlinked exclusion lists"
 created: 2026-08-14T18:08:48.084Z
+completed: 2026-08-16T23:24:41.666Z
 depends_on: []
 composes_with: []
 ---
@@ -84,6 +85,60 @@ class of defect that PR #10647 removed from
 
 ## Done when
 
-- [ ] One list is derived from the other, or a unit test fails on any drift between them.
-- [ ] Every applied-but-unasserted Application is either asserted or carries a stated reason.
-- [ ] `discoverExpectedApplications()` uses a real YAML parser.
+- [x] One list is derived from the other, or a unit test fails on any drift between them.
+- [x] Every applied-but-unasserted Application is either asserted or carries a stated reason.
+- [x] `discoverExpectedApplications()` uses a real YAML parser.
+
+---
+
+## Closed (shadow, 2026-08-16)
+
+**The finding reproduced exactly.** Re-measured against `ab2d4acb96`: 12
+glob-excluded, **14 applied-but-not-asserted, the same 14 names** as filed. The
+asserted count moved 17 → 19 only because `cdi` + `kubevirt` landed since
+(#11089); the shadow itself did not move.
+
+**What landed** (`src/Core.TypeScript/cluster/argocd-health-test.ts` + its test):
+
+- `rootDevCatalogExcludedDirs()` derives the applied set FROM
+  `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` instead of restating it — one source of
+  truth for what reaches the cluster.
+- `APPLIED_BUT_UNASSERTED_REASONS` — all 14 with a stated reason. Eleven are one
+  root cause: they want `storageClass: longhorn` and `longhorn` is glob-excluded,
+  so the StorageClass cannot exist in that lane.
+- `auditAppliedButUnasserted()` reports drift in **both** directions — a newly
+  applied Application nobody asserted (`unexplained`) and a stale entry for a
+  directory that is no longer in the shadow (`stale`). Pure, offline, zero CI
+  seconds.
+- `parseApplicationName` now uses a real YAML parser.
+
+**Falsifiers, verified by mutation** (a test that cannot fail is not a check):
+
+| mutation                          | result                                              |
+| --------------------------------- | --------------------------------------------------- |
+| remove one reason entry (`vault`) | drift test **fails**, naming `vault`                |
+| restore the line regex            | parser test **fails** on the nested-`name` manifest |
+
+**Honest scope — what this does NOT do.** It does not make the 14 pass; they are
+still applied and still unproven. It converts an _implicit_ shadow into an
+_explicit, reasoned, drift-guarded_ one so it cannot grow silently. Actually
+proving them needs the Longhorn-or-substitute StorageClass question answered,
+which is hardware-PoC work, not harness work.
+
+**Honest measurement — the YAML swap fixed a defect CLASS, not a live bug.**
+Across all 46 `Application.yaml` files the old regex and a real parse **agree**
+(0 disagreements). The regex is still wrong in principle — it takes the first
+`name:` at any indentation inside `metadata:`, so a `labels:`/`ownerReferences:`
+block carrying its own `name` would silently win, and a quoted or flow-mapped
+name is missed. No current manifest has that shape. Saying otherwise would be
+rounding a latent risk up into a caught bug.
+
+**Found while measuring, NOT fixed — a third shadow.**
+`discoverExpectedApplications()` enumerates `<dir>/Application.yaml` at depth 1
+only, and the tree declares one Application _below_ that:
+`game-hosting/gmod/Application.yaml`, whose own header says the App-of-Apps root
+picks it up. It is in neither exclusion list, so it is invisible to the harness
+AND unrecorded as deferred. Deepening discovery would change what the live
+`--scope included` lane asserts and cannot be verified without a real cluster,
+so instead the gap is **pinned at its measured size** by a test that goes red if
+a second nested Application appears. Left open deliberately; worth its own item.
