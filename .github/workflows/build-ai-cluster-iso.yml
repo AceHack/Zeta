@@ -182,6 +182,25 @@ jobs:
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L --print-build-logs --fallback
 
+      # NODE-LEVEL platform fixes. This check existed in the flake since
+      # PR #6966 and was invoked by NOTHING — `grep -rn platform-fixes
+      # .github/workflows/` returned empty. So every regression it guards was
+      # unguarded in CI: rpfilter off (the pod->host black-hole), open-iscsi
+      # present, k3s --disable=local-storage, the loose rp_filter sysctl, and
+      # the iscsiadm FHS shim that Longhorn's nsenter needs.
+      #
+      # That gap is the same shape as the bug it now catches: a signal that
+      # reads green because nothing is actually checking. longhorn-manager
+      # crash-looped 16495 times over 62 days on node-5b2dfa with every CI
+      # lane green, because the one test that would have caught it never ran.
+      #
+      # Hermetic (no internet), ~2 min, so it runs early beside the other
+      # fast node-level check rather than behind the ~15-min ISO build.
+      - name: NixOS test — node platform fixes are live (rpfilter/iscsi/storage flags)
+        timeout-minutes: 20
+        working-directory: full-ai-cluster
+        run: nix build .#checks.x86_64-linux.k3s-control-plane-platform-fixes -L --print-build-logs --fallback
+
       # TWO-NODE join proof (081KSNY2Z0008QG0R0008PN7RQ scenario 5, FIRST
       # blocker). Boots a server built from nixos/modules/k3s-server.nix and
       # an agent built from nixos/modules/k3s-agent.nix on ONE shared virtual
