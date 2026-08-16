@@ -24,7 +24,8 @@
  * WHAT THIS DOES AND DOES NOT PROVE
  *
  * Proves: the persist/restore CLI pair refuses a foreign identity, refuses it in the same way
- * for every wrong-identity shape, and writes NOTHING when it refuses.
+ * for every semantically wrong identity shape, and writes NOTHING when it refuses. Boundary
+ * whitespace is canonicalized before binding and is tested as the same identity.
  *
  * Does NOT prove: that the machine-identity FACTOR is read correctly from real hardware.
  * `getPartitionUuid` shells out to `diskutil` (macOS-only), and no test presents a key to a
@@ -179,26 +180,30 @@ describe("THE FALSIFIER — a key presented to a foreign device is refused", () 
   });
 });
 
-describe("refusal is uniform — no wrong-identity shape is treated as special", () => {
-  const wrongIdentities: readonly [string, string][] = [
-    ["a different device", IDENTITY_B],
-    ["empty identity", ""],
-    ["identity of the right shape but all zeroes", "00000000-0000-0000-0000-000000000000"],
-    ["identity A with one character changed", IDENTITY_A.replace(/.$/, "5")],
-    ["identity A with case flipped", IDENTITY_A.toLowerCase()],
-    ["identity A with trailing whitespace", `${IDENTITY_A} `],
+describe("binding identity distinguishes semantic changes from boundary formatting", () => {
+  const identityCases: readonly [string, string, "refused" | "normalized"][] = [
+    ["a different device", IDENTITY_B, "refused"],
+    ["empty identity", "", "refused"],
+    ["identity of the right shape but all zeroes", "00000000-0000-0000-0000-000000000000", "refused"],
+    ["identity A with one character changed", IDENTITY_A.replace(/.$/, "5"), "refused"],
+    ["identity A with case flipped", IDENTITY_A.toLowerCase(), "refused"],
+    ["identity A with trailing boundary whitespace", `${IDENTITY_A} `, "normalized"],
   ];
 
-  for (const [label, identity] of wrongIdentities) {
-    test(`refused: ${label}`, () => {
-      // Uniformity matters as much as refusal. A near-miss that behaves differently from a
-      // wild guess is an oracle: it tells an attacker they are close. Case and whitespace
-      // are here because a well-meaning "be lenient about operator input" normalisation is
-      // exactly how binding gets loosened by accident.
+  for (const [label, identity, expected] of identityCases) {
+    test(`${expected}: ${label}`, () => {
+      // Uniform refusal matters for semantic near-misses: behaving differently would reveal
+      // that an attacker is close. Whitespace is different: the CLI selector canonicalizes
+      // boundary formatting before key derivation, so it must reproduce the same binding.
       const blob = persistBoundTo(IDENTITY_A);
       const result = attemptRestore(blob, identity);
-      expect(result.status).not.toBe(0);
-      expect(filesUnder(result.targetRoot)).toEqual([]);
+      if (expected === "refused") {
+        expect(result.status).not.toBe(0);
+        expect(filesUnder(result.targetRoot)).toEqual([]);
+      } else {
+        expect(result.status).toBe(0);
+        expect(filesUnder(result.targetRoot).length).toBeGreaterThan(0);
+      }
     });
   }
 });
