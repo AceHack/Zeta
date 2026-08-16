@@ -1,0 +1,12 @@
+{
+  "pr_number": 11052,
+  "archive_path": "docs/history/pr-reviews/PR-11052-fix-ci-aarch64-boot-lane-is-intermittent-bound-the-wasted-time-with-a-stalled-ou.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:07:57.221Z",
+  "schema_version": "v1",
+  "commit_sha": "c24392a48caf2cc3f15fe25b16f3e786d3a480b1",
+  "title": "fix(ci): aarch64 boot lane is INTERMITTENT -- bound the wasted time with a STALLED outcome",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:07:22Z",
+  "head_ref": "shadow/qemu-aarch64-stall-detection"
+}
