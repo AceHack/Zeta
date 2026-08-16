@@ -1,0 +1,19 @@
+{
+  "pr_number": 10819,
+  "archive_path": "docs/history/pr-reviews/PR-10819-research-types-the-type-system-as-a-virtualized-runtime-lazy-yes-collection-only.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7h4qG7",
+    "comment:PRRC_kwDOSF9kNM7h4qG_",
+    "comment:PRRC_kwDOSF9kNM7h4qHC",
+    "thread:PRRT_kwDOSF9kNM6ZhWwc",
+    "thread:PRRT_kwDOSF9kNM6ZhWwf",
+    "thread:PRRT_kwDOSF9kNM6ZhWwg"
+  ],
+  "fetched_at": "2026-08-16T22:30:08.412Z",
+  "schema_version": "v1",
+  "commit_sha": "8fb001d1e3a899099e421ab7fe146ead13dc449f",
+  "title": "research(types): the type system as a virtualized runtime — lazy yes, collection only at ALC granularity, epochs as git's object/ref split",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:29:31Z",
+  "head_ref": "shadow/type-system-as-virtualized-runtime-alc-granularity-and-epochs"
+}
