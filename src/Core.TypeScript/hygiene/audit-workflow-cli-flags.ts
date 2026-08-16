@@ -20,11 +20,22 @@
  * SCOPE DISCIPLINE — why only "closed flag set" tools
  * -------------------------------------------------------------------------
  * We only enforce against tools whose arg parser demonstrably rejects unknown
- * flags (it contains an `unknown arg` diagnostic). For those tools, and only
- * those, "workflow passes a flag not in the accepted set" implies "this
- * invocation dies at argument parsing, always". Tools that silently ignore
- * unrecognised flags cannot be judged this way without false positives, so they
- * are skipped and reported as skipped rather than guessed at.
+ * flags (it contains an `unknown arg` diagnostic IN CODE — comments stripped,
+ * see `hasClosedFlagSet`). For those tools, and only those, "workflow passes a
+ * flag not in the accepted set" implies "this invocation dies at argument
+ * parsing, always". Tools that silently ignore unrecognised flags cannot be
+ * judged this way without false positives, so they are skipped and reported as
+ * skipped rather than guessed at.
+ *
+ * BOTH SIDES ARE READ WITH COMMENTS STRIPPED, and that symmetry is the point.
+ * The tool side goes through `stripComments`; the workflow side goes through
+ * `stripWorkflowComments`. Either half reading raw text reintroduces the same
+ * vacuity in a different costume — a guard that exists only in prose on one
+ * side, an invocation that exists only in prose on the other.
+ *
+ * Note this file is its own worked example: every `unknown arg` above is inside
+ * a comment, and `main` accepts no flags at all, so the fixed heuristic
+ * correctly reports it as NOT having a closed flag set.
  *
  * This is deliberately a STATIC check: it reads the parser's accepted-flag set
  * out of the source and the passed-flag set out of the workflow YAML. No network,
@@ -99,16 +110,78 @@ export function extractAcceptedFlags(source: string): Set<string> {
 /**
  * Does this parser reject unknown flags? Only then is an unaccepted flag
  * provably fatal rather than merely unused.
+ *
+ * READS THE SAME TEXT `extractAcceptedFlags` READS — comments stripped.
+ * An earlier revision tested the RAW source, and the divergence was the bug:
+ * a tool that merely *discusses* unknown arguments in prose read as having a
+ * closed parser, and the audit then policed workflow invocations against a
+ * parser that does not exist. A check that passes on a comment is the vacuity
+ * class this whole lint exists to close.
+ *
+ * Caught the sharpest possible way in PR #10853: that agent removed a guard
+ * from `setup-dual-background-agents.ts` to mutation-prove it, and the suite
+ * stayed green — because the comment ABOVE the guard, explaining why the phrase
+ * `unknown arg` matters, still contained the phrase. The explanation of the
+ * guard satisfied the guard-detector.
+ *
+ * The guard must be in CODE, not in prose. `stripComments` is shared with
+ * `extractAcceptedFlags` on purpose: two comment-strippers would be the same
+ * divergence one level down.
+ *
+ * RESIDUAL LIMIT, STATED SO NOBODY READS THIS AS SOUND. This matches a PHRASE,
+ * not a BEHAVIOUR, so a code string that merely *mentions* unknown flags still
+ * enrols a tool. This very file is the proof: `main` prints
+ * `"... skipped (parser tolerates unknown flags)"`, which says the opposite of
+ * having a closed parser and still matches. Stripping comments removes the
+ * largest and most tempting source of that error — prose written to explain a
+ * guard, which is exactly what a careful author adds — it does not remove the
+ * class. The mitigation stays the one the header states: enrolment can only
+ * ever cause a violation to be REPORTED against a flag the source never
+ * mentions, so a false enrolment is loud rather than silent.
  */
 export function hasClosedFlagSet(source: string): boolean {
-  return /unknown\s+(arg|argument|option|flag)/i.test(source);
+  return /unknown\s+(arg|argument|option|flag)/i.test(stripComments(source));
+}
+
+/**
+ * Drop whole-line `#` comments from a workflow body.
+ *
+ * THE SAME INCONSISTENCY, OTHER DIRECTION. `extractAcceptedFlags` strips
+ * comments out of the tool; nothing stripped them out of the *workflow*, so a
+ * commented-out invocation was scanned as if it ran. Measured on this repo:
+ * 7 of 121 scanned invocations came from `#` lines — worked examples in header
+ * comments (`scaffold-stage1-create-repos.yml` lines 20-22 document three
+ * `--dry-run` invocations; `agent-heartbeat.yml` line 897 names a tool in
+ * prose). None produced a violation today, so this is a latent false positive:
+ * the day a documented example drifts from the tool's real flag set, CI fails
+ * on a line that never executes.
+ *
+ * Whole-line only, deliberately. A trailing `#` inside a `run:` block is a
+ * shell comment, but `#` also appears inside quoted arguments and URLs, and
+ * guessing where a shell comment starts without a shell parser is how a
+ * stripper starts eating live code (see `stripComments`'s own scar). A line
+ * whose first non-space character is `#` is a comment in both YAML and shell,
+ * with no ambiguity to resolve.
+ *
+ * Runs BEFORE line-continuation joining: a commented-out invocation that spans
+ * continued lines has `#` on each of them, and joining first would splice the
+ * live remainder of a `\`-continued command onto a comment.
+ */
+export function stripWorkflowComments(workflowBody: string): string {
+  // Blanked, not deleted: the line COUNT is preserved so a future caller can
+  // still report `.github/workflows/x.yml:NNN` against the original file.
+  return workflowBody
+    .split("\n")
+    .map((line) => (/^\s*#/.test(line) ? "" : line))
+    .join("\n");
 }
 
 /**
  * Pull `bun <tool>.ts <args...>` invocations out of a workflow body.
  *
- * Shell line-continuations are joined first, because the real-world defect
- * spanned three lines with trailing backslashes.
+ * Whole-line `#` comments are removed first (see `stripWorkflowComments`), then
+ * shell line-continuations are joined — the real-world defect spanned three
+ * lines with trailing backslashes, and a commented-out example does too.
  *
  * Returns the full `args` token list as well as the `flags` subset. `args` is what
  * lets a caller replay a workflow's argv against the real parser (see
@@ -124,7 +197,7 @@ export function hasClosedFlagSet(source: string): boolean {
 export function extractInvocations(
   workflowBody: string,
 ): Array<{ tool: string; flags: string[]; args: string[] }> {
-  const joined = workflowBody.replace(/\\\r?\n\s*/g, " ");
+  const joined = stripWorkflowComments(workflowBody).replace(/\\\r?\n\s*/g, " ");
   const out: Array<{ tool: string; flags: string[]; args: string[] }> = [];
   const re = /\bbun\s+(?:run\s+)?(src\/[A-Za-z0-9_\-/.]+\.ts)([^\n]*)/g;
   let m: RegExpExecArray | null;

@@ -18,6 +18,7 @@ import {
   extractInvocations,
   hasClosedFlagSet,
   stripComments,
+  stripWorkflowComments,
 } from "./audit-workflow-cli-flags.ts";
 
 const REPO_ROOT = join(import.meta.dir, "..", "..", "..");
@@ -82,10 +83,72 @@ describe("stripComments", () => {
   });
 });
 
+/**
+ * The PR #10853 instance, reduced to two fixtures that differ by ONE thing:
+ * whether the refusal exists in code or only in the prose explaining it.
+ *
+ * `TOOL_BODY` always carries the comment. The parameter is the guard itself, so
+ * `GUARD_IN_PROSE_ONLY` is a tool with a doc comment about unknown arguments and
+ * no rejection at all — which is precisely the file shape that fooled the old
+ * detector: the explanation of the guard satisfied the guard-detector.
+ */
+const TOOL_BODY = (guard: string): string => `
+function parseArgs(argv) {
+  for (const a of argv) {
+    if (a === "--repo-root") continue;
+    // Anything else is refused. The phrase "unknown arg" appears in this
+    // comment because it is what the diagnostic below prints.
+    ${guard}
+  }
+}
+`;
+const GUARD_IN_CODE = TOOL_BODY('process.stderr.write("unknown arg: " + a); process.exit(2);');
+const GUARD_IN_PROSE_ONLY = TOOL_BODY("");
+
 describe("hasClosedFlagSet", () => {
   test("true only when the parser rejects unknown args", () => {
     expect(hasClosedFlagSet(CLOSED_TOOL)).toBe(true);
     expect(hasClosedFlagSet("const x = 1;")).toBe(false);
+  });
+
+  test("the two fixtures really do differ only in WHERE the phrase sits", () => {
+    // Fails-for-the-right-reason control. Without this, a fixture that silently
+    // lost the phrase altogether would make the test below pass while proving
+    // nothing — the same vacuity class the lint exists to close, committed in
+    // the lint's own harness.
+    expect(/unknown arg/i.test(GUARD_IN_PROSE_ONLY)).toBe(true);
+    expect(/unknown arg/i.test(stripComments(GUARD_IN_PROSE_ONLY))).toBe(false);
+    expect(/unknown arg/i.test(stripComments(GUARD_IN_CODE))).toBe(true);
+  });
+
+  test("a guard that exists only in a comment does NOT read as a closed flag set", () => {
+    expect(hasClosedFlagSet(GUARD_IN_PROSE_ONLY)).toBe(false);
+  });
+
+  test("POSITIVE CONTROL: the same tool with the guard in code does", () => {
+    expect(hasClosedFlagSet(GUARD_IN_CODE)).toBe(true);
+  });
+
+  test("a block comment fools it no more than a line comment does", () => {
+    const src = "/**\n * Rejects an unknown argument before writing.\n */\nconst x = 1;\n";
+    expect(/unknown argument/i.test(src)).toBe(true);
+    expect(hasClosedFlagSet(src)).toBe(false);
+  });
+});
+
+describe("stripWorkflowComments", () => {
+  test("blanks whole-line # comments and preserves the line count", () => {
+    expect(stripWorkflowComments("#  bun src/tools/demo.ts --owner X\nlive\n")).toBe("\nlive\n");
+    const body = "a\n#  b\n   # c\nd\n";
+    expect(stripWorkflowComments(body).split("\n").length).toBe(body.split("\n").length);
+  });
+
+  test("keeps a # that is inside a live line's arguments", () => {
+    // Guards the over-strip direction: `#` appears in quoted arguments, URL
+    // fragments and colour literals, and eating from the first `#` on a live
+    // line would silently truncate real invocations.
+    const line = '          bun src/tools/demo.ts --title "fix #10853"\n';
+    expect(stripWorkflowComments(line)).toBe(line);
   });
 });
 
@@ -106,6 +169,30 @@ describe("extractInvocations", () => {
     const got = extractInvocations("bun src/tools/demo.ts --owner $OWNER ${{ inputs.x }}\n");
     expect(got[0]?.flags).toEqual(["--owner"]);
   });
+
+  test("a commented-out invocation is not scanned as if it ran", () => {
+    // The same raw-vs-stripped inconsistency, other direction: the tool side was
+    // read with comments stripped, the workflow side was not. Real instances on
+    // this repo: scaffold-stage1-create-repos.yml documents three `--dry-run`
+    // invocations in its header, agent-heartbeat.yml names a tool in prose.
+    expect(extractInvocations("#   bun src/tools/demo.ts --owner X --batch 3\n")).toEqual([]);
+  });
+
+  test("POSITIVE CONTROL: the identical line uncommented IS scanned", () => {
+    // Without this the test above would pass against a regex that matches
+    // nothing at all.
+    const got = extractInvocations("    bun src/tools/demo.ts --owner X --batch 3\n");
+    expect(got.length).toBe(1);
+    expect(got[0]?.flags).toEqual(["--owner", "--batch"]);
+  });
+
+  test("a commented-out invocation spanning continuations is not spliced", () => {
+    // Order is load-bearing: joining continuations before dropping comment lines
+    // would weld the second line's flags onto the first and leave `--limit`
+    // looking live.
+    const body = "# bun src/tools/demo.ts --owner X \\\n#   --limit 3\nsteps: []\n";
+    expect(extractInvocations(body)).toEqual([]);
+  });
 });
 
 describe("auditWorkflowCliFlags — mutation proof", () => {
@@ -121,6 +208,29 @@ describe("auditWorkflowCliFlags — mutation proof", () => {
     const violations = auditWorkflowCliFlags(root).violations;
     expect(violations.length).toBe(1);
     expect(violations[0]?.flag).toBe("--batch");
+  });
+
+  test("END TO END: a tool guarded only in prose is skipped, not policed", () => {
+    // The payoff of the whole fix. Old detector: reads the comment, enrols the
+    // tool, and reports `--batch` as a guaranteed-fatal invocation — against a
+    // parser that does not exist. The tool in fact ignores `--batch` entirely,
+    // so the "violation" was a lint failing a workflow that works.
+    const workflow =
+      "jobs:\n  a:\n    steps:\n      - run: |\n          bun src/tools/demo.ts --repo-root . --batch 3\n";
+    const result = auditWorkflowCliFlags(fixture(GUARD_IN_PROSE_ONLY, workflow));
+    expect(result.violations).toEqual([]);
+    expect(result.toolsSkippedOpenParser).toContain("src/tools/demo.ts");
+    expect(result.toolsChecked).not.toContain("src/tools/demo.ts");
+  });
+
+  test("POSITIVE CONTROL: move the guard into code and the same flag IS caught", () => {
+    // Same workflow, same tool, one difference — the guard is real. This is what
+    // stops the test above from passing against a lint that checks nothing.
+    const workflow =
+      "jobs:\n  a:\n    steps:\n      - run: |\n          bun src/tools/demo.ts --repo-root . --batch 3\n";
+    const result = auditWorkflowCliFlags(fixture(GUARD_IN_CODE, workflow));
+    expect(result.toolsChecked).toContain("src/tools/demo.ts");
+    expect(result.violations.map((v) => v.flag)).toEqual(["--batch"]);
   });
 
   test("a tool that tolerates unknown flags is skipped, not guessed at", () => {
