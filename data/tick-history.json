@@ -3,7 +3,7 @@
     "generator": "tick-metrics-writer.ts",
     "mock": false,
     "derived_from": "data/tick-shards/**/*.json",
-    "shard_count": 781,
+    "shard_count": 787,
     "rollup_max_frames": 1000
   },
   "frames": [
@@ -9378,6 +9378,78 @@
       "t": "2026-08-16T21:37:14.050Z",
       "ticks_24h": 27,
       "total_events": 1340
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "explore",
+      "last_agent": "soraya",
+      "last_mode": "explore",
+      "t": "2026-08-16T21:51:06.244Z",
+      "ticks_24h": 29,
+      "total_events": 1342
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "explore",
+      "last_agent": "soraya",
+      "last_mode": "explore",
+      "t": "2026-08-16T22:04:48.035Z",
+      "ticks_24h": 30,
+      "total_events": 1343
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "explore",
+      "last_agent": "alexa",
+      "last_mode": "explore",
+      "t": "2026-08-16T22:07:55.082Z",
+      "ticks_24h": 33,
+      "total_events": 1346
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "explore",
+      "last_agent": "alexa",
+      "last_mode": "explore",
+      "t": "2026-08-16T22:23:48.100Z",
+      "ticks_24h": 35,
+      "total_events": 1348
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "explore",
+      "last_agent": "alexa",
+      "last_mode": "explore",
+      "t": "2026-08-16T22:38:36.768Z",
+      "ticks_24h": 35,
+      "total_events": 1348
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "attest_peer",
+      "last_agent": "alexa",
+      "last_mode": "work",
+      "t": "2026-08-16T22:51:37.215Z",
+      "ticks_24h": 40,
+      "total_events": 1353
     }
   ]
 }
