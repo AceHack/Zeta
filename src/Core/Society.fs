@@ -124,8 +124,37 @@ module Society =
 
     /// An **addressed** outbound message. The recipient is an `Address` drawn from the society's own
     /// membership — there is no `Via`, no `Broker`, no `Hub` field, and that absence is the design.
+    ///
+    /// ## `From` — the sender, added because a law needed it and could not compute it
+    ///
+    /// `Levels.Obligations.noConfiscation` states the hard-money rule — **spend** and **stake** are
+    /// the owner's to initiate, **confiscate** by anyone else never — and its entire discriminator is
+    /// *who initiates*, not whether a balance fell. With `To`/`Body` only, that question was not
+    /// readable from the substrate, so the predicate took a caller-supplied `ownerInitiated: 'msg ->
+    /// bool` witness and had to ship `confiscationCheckHasNoTeeth` alongside it to report when a
+    /// caller had talked the check out of existence. `From` makes the discriminator **derivable from
+    /// the envelope**, and the witness parameter is gone.
+    ///
+    /// **What this does NOT do — stated because the field is easy to over-read.** `From` is
+    /// *asserted data, not authentication*: nothing in this interface signs it, so a constructing
+    /// caller may write any address it likes. What changed is the shape of the lie, not its
+    /// possibility — a caller must now forge a **specific address per message**, which is inspectable
+    /// (`SocietyLaws.outboundIsSelfAttributed` refuses a member that stamps someone else's address on
+    /// its own outbound) and reportable (`confiscationCheckHasNoTeeth` survives, re-aimed at exactly
+    /// the self-attributed/forged case). Derivable ≠ unforgeable, and only the first was claimed.
+    ///
+    /// **The asymmetry that remains, named rather than papered over.** The envelope is the
+    /// **outbound** shape: `Deliver` *returns* `Addressed<'msg>` but *takes* a bare `'msg`. So a
+    /// member folding a delivered message still cannot see who sent it — delivery drops the envelope.
+    /// Obligations stated over what an aggregate **emits** are now self-contained; anything stated
+    /// over what a member **received** is not, and closing that would mean changing `Deliver`'s
+    /// argument to an envelope. That is a larger interface change and is deliberately not made here.
     type Addressed<'msg> =
-        { To: Address
+        {
+          /// The sender's routing address — **who initiated this message**, never a provenance id and
+          /// never a proof (see the type's docstring: asserted, unsigned, forgeable-but-inspectable).
+          From: Address
+          To: Address
           Body: 'msg }
 
     /// What a society is entitled to **report** about a candidate or a member.
@@ -289,6 +318,24 @@ module Society =
             let members = s.Members v |> Set.ofList
             let _, outbound = (s :> IMember<'view, 'msg>).Deliver(v, message)
             outbound |> List.forall (fun o -> Set.contains o.To members)
+
+        /// **A member stamps its OWN address on its outbound.** Every envelope `Deliver` returns must
+        /// carry `From = Address view` — a member that stamps a peer's address on its own outbound is
+        /// impersonating that peer, and the hard-money rule reads `From` to decide whether a balance
+        /// decrease was a permitted **spend** or a forbidden **confiscation**. So this is the guard
+        /// that keeps `From` worth reading.
+        ///
+        /// It is **not** authentication and must not be cited as any: it is decidable only for a
+        /// member you can *run*, and it says nothing about an envelope that arrived over a wire from
+        /// something you cannot. Signing is a transport-layer concern and this interface deliberately
+        /// has no transport. What this buys is that impersonation is a **law violation** with a
+        /// falsifier rather than an unremarked possibility — the same standing as
+        /// `outboundStaysInSociety`, which likewise catches a smuggled recipient without preventing
+        /// one.
+        let outboundIsSelfAttributed (m: IMember<'view, 'msg>) (v: 'view) (message: 'msg) : bool =
+            let self = m.Address v
+            let _, outbound = m.Deliver(v, message)
+            outbound |> List.forall (fun o -> compareAddress o.From self = 0)
 
         /// **The membership fold is collation-stable**: sorting the membership yields the byte-locked
         /// canonical order. The TS mirror must produce the identical sequence; if it cannot, the

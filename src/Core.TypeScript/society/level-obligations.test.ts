@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { type Ladder, levelLaws, obligations } from "./levels";
-import type { Address, Reading, Society } from "./society";
+import type { Address, Addressed, Reading, Society } from "./society";
 
 // ── Why these tests exist ─────────────────────────────────────────────────────────────────────
 //
@@ -26,14 +26,24 @@ import type { Address, Reading, Society } from "./society";
 
 /**
  * `confiscate` and `ownerSpend` have IDENTICAL effect on the balance and differ only in who
- * initiated them — which is the point of the no-confiscation rule, and the reason the predicate
- * needs a caller-supplied owner witness: the interface carries no sender.
+ * initiated them — the point of the no-confiscation rule.
+ *
+ * **They are now redundant, and that redundancy is the result.** #10968 needed two variants because
+ * the substrate carried no sender, so the *body* had to encode the initiator and a caller-supplied
+ * `ownerInitiated` witness read it back out. With `Addressed.from` the initiator is on the envelope,
+ * so one body under two senders suffices — see the single-body falsifier below. Both variants are
+ * kept because #10968's assertions are kept.
+ *
+ * `who` is the address whose budget moves — renamed from `from`, which now means the **sender** and
+ * lives on the envelope. `cross-spend` lowers TWO balances at once, to exhibit the gap the old
+ * whole-message boolean left open.
  */
 type Msg =
   | { readonly kind: "noop" }
   | { readonly kind: "revoke-route"; readonly hop: Address }
-  | { readonly kind: "confiscate"; readonly from: Address }
-  | { readonly kind: "owner-spend"; readonly from: Address };
+  | { readonly kind: "confiscate"; readonly who: Address }
+  | { readonly kind: "owner-spend"; readonly who: Address }
+  | { readonly kind: "cross-spend"; readonly payer: Address; readonly victim: Address };
 
 interface TestView {
   readonly roll: readonly Address[];
@@ -64,7 +74,9 @@ const society: Society<TestView, Msg> = {
         return [{ ...v, hops: v.hops.filter((h) => h !== m.hop) }, []] as const;
       case "confiscate":
       case "owner-spend":
-        return [spend(v, m.from), []] as const;
+        return [spend(v, m.who), []] as const;
+      case "cross-spend":
+        return [spend(spend(v, m.payer), m.victim), []] as const;
     }
   },
   merge: (l, _r) => l,
@@ -96,11 +108,7 @@ describe("exit preservation (Hirschman 1970 — removing the way out IS the stom
     expect(obligations.societyExitIsPreserved(society, view, "alpha", [revokeGamma])).toBe(false);
     // Evidence, not a bare false: WHICH message reduced it.
     expect(
-      obligations.exitReductionWitnesses(hopCount, act, view, [
-        noop,
-        revokeGamma,
-        { kind: "confiscate", from: "beta" },
-      ]),
+      obligations.exitReductionWitnesses(hopCount, act, view, [noop, revokeGamma, { kind: "confiscate", who: "beta" }]),
     ).toEqual([revokeGamma]);
   });
 
@@ -220,58 +228,131 @@ describe("the burden falls on the level that prevails (scrutiny scales with infl
 // ── 3. No confiscation ────────────────────────────────────────────────────────────────────────
 
 const balance = (v: TestView, who: Address): number => v.budget.get(who) ?? 0;
-const ownerInitiated = (m: Msg): boolean => m.kind === "owner-spend";
-const confiscateBeta: Msg = { kind: "confiscate", from: "beta" };
-const ownerSpendBeta: Msg = { kind: "owner-spend", from: "beta" };
+const confiscateBeta: Msg = { kind: "confiscate", who: "beta" };
+const ownerSpendBeta: Msg = { kind: "owner-spend", who: "beta" };
+
+/** The rung ABOVE alpha and beta — not a part, and the sender on every attempted stomp below. */
+const theLevel: Address = "level";
+
+/** An envelope. `from` is the initiator — the whole discriminator, now read off the substrate. */
+const envelope = (from: Address, to: Address, body: Msg): Addressed<Msg> => ({ from, to, body });
 
 describe("no confiscation (privacy budget is hard money: spend and stake yes, confiscate never)", () => {
   test("the level above may not take what a part earned -- but the owner may spend it", () => {
     const parts: readonly Address[] = ["alpha", "beta"];
 
-    // Red: the constructed violator. beta's balance falls and beta did not ask.
-    expect(obligations.noConfiscation(balance, ownerInitiated, act, parts, view, [confiscateBeta])).toBe(false);
+    // Red: the constructed violator. beta's balance falls and beta did not ask — and "beta did not
+    // ask" is now READ FROM THE ENVELOPE (`from = theLevel`), not asserted.
+    expect(obligations.noConfiscation(balance, act, parts, view, [envelope(theLevel, "beta", confiscateBeta)])).toBe(
+      false,
+    );
 
     // Green: IDENTICAL effect on the balance, permitted, because the rule is about who initiates.
     // A predicate that forbade any decrease would fail this line and would be the wrong law.
-    expect(obligations.noConfiscation(balance, ownerInitiated, act, parts, view, [ownerSpendBeta])).toBe(true);
+    expect(obligations.noConfiscation(balance, act, parts, view, [envelope("beta", "beta", ownerSpendBeta)])).toBe(
+      true,
+    );
 
-    // The two are indistinguishable inside `deliver` — the missing-sender finding, demonstrated.
+    // The two BODIES are indistinguishable inside `deliver` — still true, and now irrelevant to the
+    // verdict, because the verdict no longer reads the body.
     expect(balance(act(view, confiscateBeta), "beta")).toBeCloseTo(4, 12);
     expect(balance(act(view, ownerSpendBeta), "beta")).toBeCloseTo(4, 12);
 
     // Evidence, not a bare false.
     expect(
-      obligations.confiscationWitnesses(balance, ownerInitiated, act, parts, view, [
-        noop,
-        { kind: "owner-spend", from: "alpha" },
-        confiscateBeta,
+      obligations.confiscationWitnesses(balance, act, parts, view, [
+        envelope(theLevel, "alpha", noop),
+        envelope("alpha", "alpha", { kind: "owner-spend", who: "alpha" }),
+        envelope(theLevel, "beta", confiscateBeta),
       ]),
-    ).toEqual([confiscateBeta]);
+    ).toEqual([envelope(theLevel, "beta", confiscateBeta)]);
   });
 
-  test("the check is only as strong as its owner witness, and reports when it is not", () => {
+  test("THE SENDER IS THE DISCRIMINATOR: one body, two senders, opposite verdicts", () => {
+    // The falsifier the `from` field exists for, and the one the old code could not express: a
+    // single body sent twice with nothing differing but `from`. Under the old
+    // `ownerInitiated: (m: M) => boolean` signature both calls were the SAME call — one body, one
+    // boolean, one verdict — so no witness could separate them without being told the answer.
     const parts: readonly Address[] = ["alpha", "beta"];
-    const messages: readonly Msg[] = [{ kind: "confiscate", from: "alpha" }, confiscateBeta];
+    const body = confiscateBeta;
 
-    // Declare everything owner-initiated and the check passes having measured nothing...
-    expect(obligations.noConfiscation(balance, () => true, act, parts, view, messages)).toBe(true);
-    // ...and that is REPORTED, which is the price of the missing sender field made visible.
-    expect(obligations.confiscationCheckHasNoTeeth(() => true, messages)).toBe(true);
+    expect(obligations.noConfiscation(balance, act, parts, view, [envelope(theLevel, "beta", body)])).toBe(false);
+    expect(obligations.noConfiscation(balance, act, parts, view, [envelope("beta", "beta", body)])).toBe(true);
+    // ...with the effect on the balance byte-identical, because it is the same body.
+    expect(balance(act(view, body), "beta")).toBeCloseTo(4, 12);
 
-    // With an honest witness the same messages go red, and the check has teeth.
-    expect(obligations.noConfiscation(balance, ownerInitiated, act, parts, view, messages)).toBe(false);
-    expect(obligations.confiscationCheckHasNoTeeth(ownerInitiated, messages)).toBe(false);
+    // **Why the OLD code provably could not do this, asserted rather than argued.** The old
+    // discriminator had type `(m: M) => boolean`, so all it could see of these two calls is `body` —
+    // and the two bodies are EQUAL. Equal inputs give equal outputs, so no `ownerInitiated` could
+    // have returned `false` for the first and `true` for the second. The distinction is not merely
+    // unmade by the old code, it is unmakeable at that signature.
+    const taking = envelope(theLevel, "beta", body);
+    const spending = envelope("beta", "beta", body);
+    expect(taking.body).toEqual(spending.body);
+    expect(taking.from).not.toEqual(spending.from);
+
+    // A third party is not laundered by being *some* owner: alpha's signature does not license
+    // taking beta's budget.
+    expect(obligations.noConfiscation(balance, act, parts, view, [envelope("alpha", "beta", body)])).toBe(false);
+  });
+
+  test("the whole-message boolean excused CROSS-PART decreases; the per-part derivation does not", () => {
+    // `cross-spend` lowers alpha's balance AND beta's. Sent by alpha it is a genuine owner spend *of
+    // alpha's own budget*, so the old `ownerInitiated` boolean was true for it — and one true
+    // boolean excused the whole message, beta's loss included.
+    const cross = envelope("alpha", "beta", { kind: "cross-spend", payer: "alpha", victim: "beta" });
+
+    const after = act(view, cross.body);
+    expect(balance(after, "alpha")).toBeCloseTo(2, 12);
+    expect(balance(after, "beta")).toBeCloseTo(4, 12);
+
+    // Scoped to alpha alone it is exactly what it claims to be — alpha spending alpha's. Green.
+    expect(obligations.noConfiscation(balance, act, ["alpha"], view, [cross])).toBe(true);
+    // Scoped to both parts it is red: beta's decrease is checked against `from` on its own account.
+    expect(obligations.noConfiscation(balance, act, ["alpha", "beta"], view, [cross])).toBe(false);
+    expect(obligations.confiscationWitnesses(balance, act, ["alpha", "beta"], view, [cross])).toEqual([cross]);
+    // And it is NOT self-attributed, precisely because it lowers a balance that is not its sender's.
+    expect(obligations.confiscationCheckHasNoTeeth(balance, act, ["alpha", "beta"], view, [cross])).toBe(false);
+  });
+
+  test("the check is only as strong as its unsigned sender, and reports when it is not", () => {
+    const parts: readonly Address[] = ["alpha", "beta"];
+
+    // `from` is DERIVABLE but not SIGNED, so #10968's vacuity did not disappear — it changed shape.
+    // Instead of declaring one boolean true, a caller writes the victim's own address into `from` on
+    // every message (self-attribution) and the check passes having measured nothing...
+    const forged: readonly Addressed<Msg>[] = [
+      envelope("alpha", "alpha", { kind: "confiscate", who: "alpha" }),
+      envelope("beta", "beta", confiscateBeta),
+    ];
+    expect(obligations.noConfiscation(balance, act, parts, view, forged)).toBe(true);
+    // ...and that is REPORTED, which is why the guard was kept rather than deleted with the witness
+    // parameter it originally guarded.
+    expect(obligations.confiscationCheckHasNoTeeth(balance, act, parts, view, forged)).toBe(true);
+
+    // With honest senders the same bodies go red, and the check has teeth.
+    const honest: readonly Addressed<Msg>[] = [
+      envelope(theLevel, "alpha", { kind: "confiscate", who: "alpha" }),
+      envelope(theLevel, "beta", confiscateBeta),
+    ];
+    expect(obligations.noConfiscation(balance, act, parts, view, honest)).toBe(false);
+    expect(obligations.confiscationCheckHasNoTeeth(balance, act, parts, view, honest)).toBe(false);
 
     // An empty message list is likewise no discharge.
-    expect(obligations.confiscationCheckHasNoTeeth(ownerInitiated, [])).toBe(true);
+    expect(obligations.confiscationCheckHasNoTeeth(balance, act, parts, view, [])).toBe(true);
+
+    // A batch that touches no balance at all HAS teeth — it simply found nothing. Reporting it as
+    // toothless would conflate "measured and clean" with "could not measure".
+    expect(
+      obligations.confiscationCheckHasNoTeeth(balance, act, parts, view, [envelope(theLevel, "alpha", noop)]),
+    ).toBe(false);
   });
 
   test("confiscation is judged over the PARTS, not over the aggregate's own books", () => {
     // beta is not named as a part here, so the same message is not a confiscation FROM A PART.
     // Scoping to the supplied parts is what keeps this from becoming a general accounting check.
-    expect(obligations.noConfiscation(balance, ownerInitiated, act, ["alpha"], view, [confiscateBeta])).toBe(true);
-    expect(obligations.noConfiscation(balance, ownerInitiated, act, ["alpha", "beta"], view, [confiscateBeta])).toBe(
-      false,
-    );
+    const taking = envelope(theLevel, "beta", confiscateBeta);
+    expect(obligations.noConfiscation(balance, act, ["alpha"], view, [taking])).toBe(true);
+    expect(obligations.noConfiscation(balance, act, ["alpha", "beta"], view, [taking])).toBe(false);
   });
 });

@@ -17,7 +17,7 @@
  * **Register: `unmetered`** (`toy-is-free-metered-must-be-earned`) — predicates with no consumer.
  */
 import type { Chunk, Ctm } from "./ctm";
-import type { Address, Member, Reading, Society } from "./society";
+import { type Address, type Addressed, compareAddress, type Member, type Reading, type Society } from "./society";
 
 /**
  * **A ladder** — the levels a caller wants reasoned about, innermost first, each paired with its own
@@ -476,50 +476,81 @@ export const obligations = {
    * discriminator is *who initiates*, not whether the balance fell, so a predicate that forbade any
    * decrease would forbid the owner's own spend and would be a different, wrong law.
    *
-   * **The interface cannot supply the discriminator, and that is the finding.** `deliver` takes
-   * `(view, message)` and `Addressed` carries `to` and `body`: **there is no sender anywhere**, so
-   * `ownerInitiated` is a caller-supplied witness rather than something computed here. What the
-   * interface would need is a `from: Address` on `Addressed` — one field, and the rule becomes
-   * decidable without taking a caller's word for it. Attaching the witness attaches a *source*,
-   * which anyone may do; it is not authorization and this predicate grants none.
+   * **The discriminator is now read off the envelope.** `Addressed` carries `from: Address`, so
+   * "did the owner initiate this?" is `compareAddress(part, env.from) === 0` — computed here, not
+   * taken on a caller's word. The `ownerInitiated` parameter is **gone**; #10968 shipped it as an
+   * explicit hole and this is the hole closed.
    *
-   * `balance` is likewise caller-supplied: privacy budget, earned frost, accrued degree — the rule
-   * is indifferent to the currency, and the substrate declares none of them.
+   * **The derivation is per-PART, which is strictly stronger than the boolean it replaces — and
+   * that is a caught bug, not a free win.** The old witness judged a whole message, so
+   * `ownerInitiated(m) === true` excused *every* decrease that message caused, including decreases
+   * to parts that were not the initiator: one message spending the sender's own budget **and**
+   * taking a neighbour's passed. Here each lowered part is checked against `from` individually, so
+   * the neighbour's loss is a witness while the sender's own spend is not.
+   *
+   * **What `from` does not buy.** It is unsigned, caller-written data — derivable, not unforgeable.
+   * A caller may still name the victim as its own sender; that is a **per-message address forgery**
+   * rather than one flipped boolean, and {@link confiscationCheckHasNoTeeth} reports it. Source ≠
+   * authorization at the field level: the envelope carries who *claims* to have initiated, and a
+   * claim is not a right.
+   *
+   * `balance` is caller-supplied: privacy budget, earned frost, accrued degree — the rule is
+   * indifferent to the currency. `act` still takes the **body**, because a view transition is a
+   * function of the message, not of who addressed it; only the *permission* question reads the
+   * envelope.
    */
   confiscationWitnesses<V, M>(
     balance: (view: V, part: Address) => number,
-    ownerInitiated: (message: M) => boolean,
     act: (view: V, message: M) => V,
     parts: readonly Address[],
     view: V,
-    messages: readonly M[],
-  ): M[] {
-    return messages.filter((m) => {
-      if (ownerInitiated(m)) return false;
-      const after = act(view, m);
-      return parts.some((p) => balance(after, p) < balance(view, p));
+    messages: readonly Addressed<M>[],
+  ): Addressed<M>[] {
+    return messages.filter((env) => {
+      const after = act(view, env.body);
+      return parts.some((p) => balance(after, p) < balance(view, p) && compareAddress(p, env.from) !== 0);
     });
   },
 
   /** {@link confiscationWitnesses} with no witnesses. Read with {@link confiscationCheckHasNoTeeth}. */
   noConfiscation<V, M>(
     balance: (view: V, part: Address) => number,
-    ownerInitiated: (message: M) => boolean,
     act: (view: V, message: M) => V,
     parts: readonly Address[],
     view: V,
-    messages: readonly M[],
+    messages: readonly Addressed<M>[],
   ): boolean {
-    return this.confiscationWitnesses(balance, ownerInitiated, act, parts, view, messages).length === 0;
+    return this.confiscationWitnesses(balance, act, parts, view, messages).length === 0;
   },
 
   /**
-   * **The vacuity guard on the witness above.** A caller who declares *every* message
-   * owner-initiated gets a pass that measured nothing — the check has been talked out of existence
-   * rather than discharged. Same for an empty message list. This is the price of the missing sender
-   * field, made visible instead of absorbed.
+   * **The vacuity guard, kept and re-aimed.** Deleting it with the witness parameter it originally
+   * guarded would have been a *choice*, not a cleanup, and the wrong one: the failure mode did not
+   * go away, it changed shape. `from` is unsigned, so a caller can still hand every message a
+   * **self-attributed** sender — the victim's own address in `from` — and collect a pass that
+   * measured nothing.
+   *
+   * So this reports the envelope-level form of the same vacuity: **every message in the batch
+   * lowers some part's balance and names that very part as its sender**, so none of them could have
+   * been a witness whatever the arithmetic said. Same for an empty list. A batch containing anything
+   * else — a message that lowers nobody, or one whose `from` is a third party — has teeth.
+   *
+   * Read it as the strength of the pass, never as an accusation: a genuine batch of owner spends is
+   * self-attributed too and is indistinguishable from the forgery *at this interface*. The fact is
+   * "this pass carried no information"; which reading applies is the caller's.
    */
-  confiscationCheckHasNoTeeth<M>(ownerInitiated: (message: M) => boolean, messages: readonly M[]): boolean {
-    return messages.length === 0 || messages.every(ownerInitiated);
+  confiscationCheckHasNoTeeth<V, M>(
+    balance: (view: V, part: Address) => number,
+    act: (view: V, message: M) => V,
+    parts: readonly Address[],
+    view: V,
+    messages: readonly Addressed<M>[],
+  ): boolean {
+    const selfAttributed = (env: Addressed<M>): boolean => {
+      const after = act(view, env.body);
+      const lowered = parts.filter((p) => balance(after, p) < balance(view, p));
+      return lowered.length > 0 && lowered.every((p) => compareAddress(p, env.from) === 0);
+    };
+    return messages.length === 0 || messages.every(selfAttributed);
   },
 };

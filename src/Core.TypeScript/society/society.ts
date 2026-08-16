@@ -67,8 +67,35 @@ export function canonicalSortAddresses(addresses: readonly Address[]): Address[]
 /**
  * An **addressed** outbound message. The recipient is an `Address` drawn from the society's own
  * membership — there is no `via`, no `broker`, no `hub` field, and that absence is the design.
+ *
+ * ## `from` — the sender, added because a law needed it and could not compute it
+ *
+ * `obligations.noConfiscation` states the hard-money rule — **spend** and **stake** are the owner's
+ * to initiate, **confiscate** by anyone else never — and its entire discriminator is *who
+ * initiates*, not whether a balance fell. With `to`/`body` only that was not readable from the
+ * substrate, so the predicate took a caller-supplied `ownerInitiated` witness and shipped
+ * `confiscationCheckHasNoTeeth` alongside it to report when a caller had talked the check out of
+ * existence. `from` makes the discriminator **derivable from the envelope**; the witness is gone.
+ *
+ * **What this does NOT do.** `from` is *asserted data, not authentication*: nothing here signs it,
+ * so a constructing caller may write any address. What changed is the shape of the lie, not its
+ * possibility — forging now costs a **specific address per message**, it is inspectable
+ * (`SocietyLaws.outboundIsSelfAttributed`, F#) and it is still reported
+ * (`confiscationCheckHasNoTeeth`, re-aimed at exactly the self-attributed case). Derivable ≠
+ * unforgeable, and only the first is claimed.
+ *
+ * **The asymmetry that remains.** This is the **outbound** shape: `deliver` *returns*
+ * `Addressed<M>` but *takes* a bare `M`. A member folding a delivered message still cannot see who
+ * sent it — delivery drops the envelope. Obligations over what an aggregate **emits** are now
+ * self-contained; obligations over what a member **received** are not, and closing that would mean
+ * changing `deliver`'s argument to an envelope. Deliberately not done here.
  */
 export interface Addressed<M> {
+  /**
+   * The sender's routing address — **who initiated this message**, never a provenance id and never
+   * a proof (see above: asserted, unsigned, forgeable-but-inspectable).
+   */
+  readonly from: Address;
   readonly to: Address;
   readonly body: M;
 }

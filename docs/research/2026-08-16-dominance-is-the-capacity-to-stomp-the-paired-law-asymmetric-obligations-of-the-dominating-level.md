@@ -169,9 +169,39 @@ Better to name an undecidable obligation than ship a predicate that always retur
   when a caller has declared every message owner-initiated and thereby talked the check out of
   existence.
 
+  > **CLOSED — follow-up PR, 2026-08-16.** `From: Address` was added to `Addressed` in both oracles.
+  > `ownerInitiated` is **gone** and the discriminator is read off the envelope. The paragraph above
+  > is left standing as the record of the gap as it was seen; three corrections to it are worth
+  > carrying:
+  >
+  > 1. **The derivation is per-PART, not per-message — and that caught something.** The old boolean
+  >    judged a whole message, so a single message that spent the sender's own budget **and** took a
+  >    neighbour's was excused wholesale by one `true`. Checking each lowered part against `From`
+  >    individually makes the neighbour's loss a witness while leaving the sender's own spend
+  >    permitted. The fix was strictly stronger than the hole it filled, which was not the
+  >    expectation going in.
+  > 2. **Derivable ≠ unforgeable, and the difference was not rounded up.** `From` is unsigned,
+  >    caller-written data; nothing in this interface authenticates it. What changed is the shape of
+  >    the lie — a **per-message address forgery** instead of one flipped boolean — so
+  >    `confiscationCheckHasNoTeeth` was **kept and re-aimed** at the self-attributed case rather
+  >    than deleted as unreachable. Deleting it would have been a choice, not a cleanup.
+  >    `SocietyLaws.outboundIsSelfAttributed` was added as the companion guard: it refuses a member
+  >    that stamps a peer's address on its own outbound. That is a law with a falsifier, not
+  >    authentication, and it is not cited as any.
+  > 3. **A narrower gap remains, and it is the inbound half.** `Deliver` _returns_ `Addressed<'msg>`
+  >    but still _takes_ a bare `'msg` — delivery drops the envelope — so an obligation stated over
+  >    what a member **received** is still senderless. Closing that means changing `Deliver`'s
+  >    argument to an envelope, which is a larger interface change and was deliberately not made.
+
 - **Expulsion / forced exit** — considered and **not** decided here. Whether an aggregate may remove a
   member is a **values call** under §11, and the interface cannot distinguish a consented departure
   from a banishment for the same missing-sender reason. Left to policy.
+
+  > **Amended 2026-08-16 (same follow-up).** The mechanical half of that reason is gone: `From` now
+  > says whether the leaving member or the level above initiated the departure, which is the same
+  > discriminator `noConfiscation` reads. What is still missing is not a mechanism but a **decision**,
+  > and the substrate must not be the one to make it. Still out — now for the reason it was always
+  > really out.
 
 ## Register
 

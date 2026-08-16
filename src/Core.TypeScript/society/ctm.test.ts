@@ -33,7 +33,9 @@ const machine: Ctm<TestView, string, Address> = {
   submit: (v, tick) => entryChunk(v.roll[0] ?? "", tick, "gist", 1),
   rank,
   match: (l, r, draw) => probabilisticMatch(rank, l, r, draw),
-  broadcast: (v, _winner): readonly Addressed<Address>[] => v.roll.map((p) => ({ to: p, body: p })),
+  // The Down-Tree broadcasts FROM the machine itself, so every envelope is self-attributed.
+  broadcast: (v, _winner): readonly Addressed<Address>[] =>
+    v.roll.map((p) => ({ from: v.roll[0] ?? "", to: p, body: p })),
   links: (v, processor) => v.wires.get(processor) ?? [],
   address: (v) => v.roll[0] ?? "",
   deliver: (v, _m) => [v, []] as const,
@@ -47,7 +49,7 @@ const society: Society<TestView, Address> = {
   admit: (): Reading => ({ kind: "unmeasured" }),
   routes: (v) => v.roll,
   address: (v) => v.roll[0] ?? "",
-  deliver: (v, m) => [v, [{ to: m, body: m }]] as const,
+  deliver: (v, m) => [v, [{ from: v.roll[0] ?? "", to: m, body: m }]] as const,
   merge: (l, _r) => l,
   peers: (v) => v.roll,
 };

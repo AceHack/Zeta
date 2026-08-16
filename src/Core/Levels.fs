@@ -377,9 +377,12 @@ module Levels =
     ///   looking like a law. (`externalitySafe` in that file already carries a labelled units proxy
     ///   for the same missing operator; a second unlabelled one is not an improvement.)
     /// - **Expulsion / forced exit** — whether an aggregate may remove a member is a **values call**
-    ///   under §11, not an engineering one, and the interface cannot distinguish a consented departure
-    ///   from a banishment for the same reason `noConfiscation` below needs its owner-witness: there
-    ///   is no sender on a message. Left to policy rather than decided here.
+    ///   under §11, not an engineering one. The mechanical half of the old excuse is gone: the
+    ///   interface *can* now distinguish a consented departure from a banishment, because
+    ///   `Society.Addressed.From` says whether the leaving member or the level above initiated it —
+    ///   the same discriminator `noConfiscation` reads. What is still missing is not a mechanism but
+    ///   a **decision**, and the substrate must not be the one to make it. Left to policy, now for
+    ///   the reason it was always really left.
     ///
     /// **Register: `unmetered`** (`toy-is-free-metered-must-be-earned`). These are decidable
     /// predicates with falsifiers in `tests/Tests.FSharp/LevelObligations.Tests.fs` — each one goes
@@ -561,52 +564,92 @@ module Levels =
         /// initiates*, not whether the balance fell, and a predicate that simply forbade any decrease
         /// would forbid the owner's own spend and would be a different, wrong law.
         ///
-        /// **The interface cannot supply the discriminator, and that is the finding.**
-        /// `IMember.Deliver` takes `(view, message)`; `Addressed` carries `To` and `Body`. **There is
-        /// no sender anywhere**, so "did the owner initiate this?" is not readable from the substrate
-        /// — which is why `ownerInitiated` is a caller-supplied witness rather than something computed
-        /// here. Under `no-directives`, attaching that witness is attaching a *source*, which anyone
-        /// may do; it is not authorization, and this predicate grants it none. What the interface
-        /// would need to make the check self-contained is a `From: Address` on `Addressed` (or a
-        /// sender parameter on `Deliver`) — one field, and the whole rule becomes decidable without a
-        /// caller's word for it.
+        /// **The discriminator is now read off the envelope.** `Society.Addressed` carries
+        /// `From: Address`, so "did the owner initiate this?" is `compareAddress part env.From = 0` —
+        /// computed here, not taken on a caller's word. The `ownerInitiated: 'msg -> bool` parameter
+        /// this predicate used to take is **gone**; #10968 shipped it as an explicit hole and this is
+        /// the hole closed.
         ///
-        /// `balance` is likewise caller-supplied: privacy budget, earned frost, accrued degree — the
-        /// rule is indifferent to which currency, and the substrate declares none of them.
+        /// **The derivation is per-PART, which is strictly stronger than the boolean it replaces —
+        /// and that is not a free win, it is a caught bug.** The old witness judged a whole message:
+        /// `ownerInitiated m = true` excused *every* balance decrease that message caused, including
+        /// decreases to parts that were not the initiator. So a single message that spent the
+        /// sender's own budget **and** took a neighbour's passed, because one true boolean covered
+        /// both. Here each lowered part is checked against `From` individually, so the neighbour's
+        /// loss is a witness while the sender's own spend is not. `confiscationCrossesParts` in the
+        /// test suite is that message, and it is red here and green under the old shape.
+        ///
+        /// **What `From` does not buy.** It is unsigned, caller-written data — derivable, not
+        /// unforgeable (`Society.Addressed`'s docstring is explicit). A caller may still name the
+        /// victim as its own sender; that is now a **per-message address forgery** rather than one
+        /// flipped boolean, `Society.SocietyLaws.outboundIsSelfAttributed` refuses it for any member
+        /// that can be run, and `confiscationCheckHasNoTeeth` below reports it when it happens
+        /// anyway. Under `no-directives` this is source ≠ authorization at the field level: the
+        /// envelope carries who *claims* to have initiated, and a claim is not a right.
+        ///
+        /// `balance` is caller-supplied: privacy budget, earned frost, accrued degree — the rule is
+        /// indifferent to which currency, and the substrate declares none of them. `act` still takes
+        /// the **body**, because a view transition is a function of the message, not of who addressed
+        /// it; only the *permission* question reads the envelope.
         let confiscationWitnesses
             (balance: 'view -> Society.Address -> float)
-            (ownerInitiated: 'msg -> bool)
             (act: 'view -> 'msg -> 'view)
             (parts: Society.Address list)
             (view: 'view)
-            (messages: 'msg list)
-            : 'msg list =
+            (messages: Society.Addressed<'msg> list)
+            : Society.Addressed<'msg> list =
             messages
-            |> List.filter (fun m ->
-                if ownerInitiated m then
-                    false
-                else
-                    let after = act view m
-                    parts |> List.exists (fun p -> balance after p < balance view p))
+            |> List.filter (fun env ->
+                let after = act view env.Body
+
+                parts
+                |> List.exists (fun p ->
+                    balance after p < balance view p
+                    && Society.compareAddress p env.From <> 0))
 
         /// `confiscationWitnesses` with no witnesses. Read it together with
         /// `confiscationCheckHasNoTeeth`.
         let noConfiscation
             (balance: 'view -> Society.Address -> float)
-            (ownerInitiated: 'msg -> bool)
             (act: 'view -> 'msg -> 'view)
             (parts: Society.Address list)
             (view: 'view)
-            (messages: 'msg list)
+            (messages: Society.Addressed<'msg> list)
             : bool =
-            List.isEmpty (confiscationWitnesses balance ownerInitiated act parts view messages)
+            List.isEmpty (confiscationWitnesses balance act parts view messages)
 
-        /// **The vacuity guard on the witness above.** A caller who declares *every* message
-        /// owner-initiated gets a pass that measured nothing — the check has been talked out of
-        /// existence rather than discharged. Same for an empty message list.
+        /// **The vacuity guard, kept and re-aimed.** It would have been defensible to delete this
+        /// with the witness parameter it originally guarded — the sender is authoritative now, so the
+        /// "caller declares everything owner-initiated" move is gone. Deleting it would have been a
+        /// *choice*, not a cleanup, and the wrong one: the failure mode it detects did not go away,
+        /// it changed shape. `From` is unsigned, so a caller can still hand every message a
+        /// **self-attributed** sender — writing the victim's own address into `From` — and collect a
+        /// pass that measured nothing.
         ///
-        /// This is the price of the missing sender field, made visible instead of absorbed: the
-        /// predicate is only as strong as the witness, so the witness's strength is reported
-        /// alongside the verdict.
-        let confiscationCheckHasNoTeeth (ownerInitiated: 'msg -> bool) (messages: 'msg list) : bool =
-            List.isEmpty messages || List.forall ownerInitiated messages
+        /// So this now reports the envelope-level form of the same vacuity: **every message in the
+        /// batch lowers some part's balance and names that very part as its sender**, so no message
+        /// in it could have been a witness whatever the arithmetic said. Same for an empty list. A
+        /// batch containing anything else — a message that lowers nobody, or one whose `From` is a
+        /// third party — has teeth and this returns `false`, exactly as the boolean version did.
+        ///
+        /// Read it as the strength of the pass, never as an accusation: a genuine batch of owner
+        /// spends is self-attributed too, and is indistinguishable from the forgery *at this
+        /// interface*. That is the honest report, and it is `dual-use-detection-is-neutral` — the
+        /// fact is "this pass carried no information", and which reading applies is the caller's.
+        let confiscationCheckHasNoTeeth
+            (balance: 'view -> Society.Address -> float)
+            (act: 'view -> 'msg -> 'view)
+            (parts: Society.Address list)
+            (view: 'view)
+            (messages: Society.Addressed<'msg> list)
+            : bool =
+            let selfAttributed (env: Society.Addressed<'msg>) =
+                let after = act view env.Body
+
+                let lowered =
+                    parts |> List.filter (fun p -> balance after p < balance view p)
+
+                not (List.isEmpty lowered)
+                && lowered |> List.forall (fun p -> Society.compareAddress p env.From = 0)
+
+            List.isEmpty messages || List.forall selfAttributed messages

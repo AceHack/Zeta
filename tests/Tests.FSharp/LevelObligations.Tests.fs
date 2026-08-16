@@ -30,14 +30,23 @@ let private gamma = addr "gamma"
 let private delta = addr "delta"
 
 /// The protocol union. `Confiscate` and `OwnerSpend` have IDENTICAL effect on the balance and differ
-/// only in who initiated them — which is the whole point of the no-confiscation rule, and the reason
-/// the predicate needs a caller-supplied owner witness: the interface carries no sender, so nothing
-/// in `Deliver` can tell these two apart.
+/// only in who initiated them — which is the whole point of the no-confiscation rule.
+///
+/// **They are now redundant, and that redundancy is the result.** #10968 needed two DU cases because
+/// the substrate carried no sender, so the *body* had to encode the initiator and a caller-supplied
+/// `ownerInitiated` witness had to read it back out. With `Society.Addressed.From` the initiator is
+/// on the envelope, so one body under two senders is enough — see the single-body falsifier below,
+/// which is the sharper test. Both cases are kept because #10968's assertions are kept.
+///
+/// `CrossSpend(payer, victim)` lowers **two** balances at once. It exists to exhibit the gap the old
+/// whole-message boolean left open: as an owner spend by `payer` it was excused wholesale, victim
+/// included.
 type private Msg =
     | Noop
     | RevokeRoute of Society.Address
     | Confiscate of Society.Address
     | OwnerSpend of Society.Address
+    | CrossSpend of Society.Address * Society.Address
 
 type private TestView =
     { Roll: Society.Address list
@@ -68,6 +77,7 @@ let private society () =
               | RevokeRoute a -> { v with Hops = v.Hops |> List.filter (fun h -> h <> a) }, []
               | Confiscate a -> spend v a, []
               | OwnerSpend a -> spend v a, []
+              | CrossSpend(payer, victim) -> spend (spend v payer) victim, []
 
           member _.Merge(l, _r) = l
           member _.Peers v = v.Hops }
@@ -149,7 +159,13 @@ let private machine () =
             Ctm.probabilisticMatch (Ctm.rankByDisposition 0.0) left right draw
 
         member _.Broadcast(v, _winner) =
-            v.Processors |> List.map (fun p -> { Society.To = p; Society.Body = Noop })
+            let self = List.head v.Processors
+
+            v.Processors
+            |> List.map (fun p ->
+                { Society.From = self
+                  Society.To = p
+                  Society.Body = Noop })
 
         member _.Links(v, processor) =
             v.Wires
@@ -292,26 +308,34 @@ let ``a ladder with nothing below it owes nothing -- and reports false, never a 
 let private balance (v: TestView) (who: Society.Address) =
     v.Budget |> Map.tryFind who |> Option.defaultValue 0.0
 
-let private ownerInitiated =
-    function
-    | OwnerSpend _ -> true
-    | _ -> false
+/// The rung ABOVE alpha and beta — the aggregate whose messages the obligation judges. It is not a
+/// part, and it is the sender on every attempted stomp below.
+let private theLevel = addr "level"
+
+/// An envelope. `From` is the initiator — the whole discriminator of the hard-money rule, now read
+/// off the substrate rather than supplied as a caller's `ownerInitiated` predicate.
+let private envelope (sender: Society.Address) (recipient: Society.Address) (body: Msg) =
+    { Society.From = sender
+      Society.To = recipient
+      Society.Body = body }
 
 [<Fact>]
 let ``no confiscation: the level above may not take what a part earned -- but the owner may spend it`` () =
     let s = society ()
     let parts = [ alpha; beta ]
 
-    // Red: the constructed violator. `Confiscate beta` lowers beta's balance and beta did not ask.
-    Assert.False(Levels.Obligations.noConfiscation balance ownerInitiated (act s) parts view [ Confiscate beta ])
+    // Red: the constructed violator. `Confiscate beta` lowers beta's balance and beta did not ask —
+    // and now "beta did not ask" is READ FROM THE ENVELOPE (`From = theLevel`), not asserted.
+    Assert.False(Levels.Obligations.noConfiscation balance (act s) parts view [ envelope theLevel beta (Confiscate beta) ])
 
-    // Green: `OwnerSpend beta` has the IDENTICAL effect on the balance and is permitted, because the
-    // rule is about who initiates, not about whether the balance fell. A predicate that forbade any
-    // decrease would fail this line, and would be the wrong law.
-    Assert.True(Levels.Obligations.noConfiscation balance ownerInitiated (act s) parts view [ OwnerSpend beta ])
+    // Green: `OwnerSpend beta` sent BY beta has the IDENTICAL effect on the balance and is permitted,
+    // because the rule is about who initiates, not about whether the balance fell. A predicate that
+    // forbade any decrease would fail this line, and would be the wrong law.
+    Assert.True(Levels.Obligations.noConfiscation balance (act s) parts view [ envelope beta beta (OwnerSpend beta) ])
 
-    // The two messages are indistinguishable inside `Deliver` — same view out, both times. That is
-    // the missing-sender finding, demonstrated rather than asserted.
+    // The two BODIES are indistinguishable inside `Deliver` — same view out, both times. #10968
+    // recorded that as the missing-sender finding; it is still true of the bodies, and it is now
+    // irrelevant to the verdict, because the verdict no longer reads the body.
     Assert.Equal(4.0, balance (act s view (Confiscate beta)) beta, 12)
     Assert.Equal(4.0, balance (act s view (OwnerSpend beta)) beta, 12)
 
@@ -319,32 +343,103 @@ let ``no confiscation: the level above may not take what a part earned -- but th
     let witnesses =
         Levels.Obligations.confiscationWitnesses
             balance
-            ownerInitiated
             (act s)
             parts
             view
-            [ Noop; OwnerSpend alpha; Confiscate beta ]
+            [ envelope theLevel alpha Noop
+              envelope alpha alpha (OwnerSpend alpha)
+              envelope theLevel beta (Confiscate beta) ]
 
-    Assert.Equal<Msg list>([ Confiscate beta ], witnesses)
+    Assert.Equal<Society.Addressed<Msg> list>([ envelope theLevel beta (Confiscate beta) ], witnesses)
 
 [<Fact>]
-let ``the confiscation check is only as strong as its owner witness, and reports when it is not`` () =
+let ``THE SENDER IS THE DISCRIMINATOR: one body, two senders, opposite verdicts`` () =
+    // The falsifier the `From` field exists for, and the one the old code could not express. A single
+    // body is sent twice with nothing differing but `From`.
     let s = society ()
     let parts = [ alpha; beta ]
-    let messages = [ Confiscate alpha; Confiscate beta ]
+    let body = Confiscate beta
 
-    // Declare everything owner-initiated and the check passes having measured nothing. It is talked
-    // out of existence rather than discharged...
-    Assert.True(Levels.Obligations.noConfiscation balance (fun _ -> true) (act s) parts view messages)
-    // ...and that is REPORTED, which is the price of the missing sender field made visible.
-    Assert.True(Levels.Obligations.confiscationCheckHasNoTeeth (fun _ -> true) messages)
+    // From the level above: a taking. Red.
+    Assert.False(Levels.Obligations.noConfiscation balance (act s) parts view [ envelope theLevel beta body ])
+    // From beta itself: beta's own spend. Green.
+    Assert.True(Levels.Obligations.noConfiscation balance (act s) parts view [ envelope beta beta body ])
 
-    // With an honest witness the same messages go red, and the check has teeth.
-    Assert.False(Levels.Obligations.noConfiscation balance ownerInitiated (act s) parts view messages)
-    Assert.False(Levels.Obligations.confiscationCheckHasNoTeeth ownerInitiated messages)
+    // ...with the effect on the balance BYTE-IDENTICAL in both cases, because it is the same body.
+    Assert.Equal(4.0, balance (act s view body) beta, 12)
+
+    // **Why the OLD code provably could not do this, asserted rather than argued.** The old
+    // predicate's discriminator had type `'msg -> bool`, so the only thing it could see of these two
+    // calls is `.Body` — and the two bodies are EQUAL. A function of equal inputs returns equal
+    // outputs, so no `ownerInitiated` whatsoever could have returned `false` for the first and
+    // `true` for the second. The distinction is not merely unmade by the old code, it is
+    // unmakeable at that signature; the caller could only have supplied the answer by knowing it.
+    let taking = envelope theLevel beta body
+    let spending = envelope beta beta body
+    Assert.Equal<Msg>(taking.Body, spending.Body)
+    Assert.NotEqual<Society.Address>(taking.From, spending.From)
+
+    // And a third party is not laundered by being *some* owner: alpha's signature does not license
+    // taking beta's budget.
+    Assert.False(Levels.Obligations.noConfiscation balance (act s) parts view [ envelope alpha beta body ])
+
+[<Fact>]
+let ``the whole-message boolean excused CROSS-PART decreases; the per-part derivation does not`` () =
+    // The gap #10968's witness left open, exhibited. `CrossSpend(alpha, beta)` lowers alpha's balance
+    // AND beta's. Sent by alpha it is a genuine owner spend *of alpha's own budget* — so the old
+    // `ownerInitiated` boolean was true for it, and one true boolean excused the whole message,
+    // beta's loss included.
+    let s = society ()
+    let cross = envelope alpha beta (CrossSpend(alpha, beta))
+
+    // Both balances really do fall.
+    let after = act s view (CrossSpend(alpha, beta))
+    Assert.Equal(2.0, balance after alpha, 12)
+    Assert.Equal(4.0, balance after beta, 12)
+
+    // Scoped to alpha alone the message is exactly what it claims to be — alpha spending alpha's. Green.
+    Assert.True(Levels.Obligations.noConfiscation balance (act s) [ alpha ] view [ cross ])
+
+    // Scoped to both parts it is red, because beta's decrease is checked against `From` on its own
+    // account. This is the assertion that fails under a whole-message reading of the same envelope.
+    Assert.False(Levels.Obligations.noConfiscation balance (act s) [ alpha; beta ] view [ cross ])
+
+    // The witness names the envelope, and the check has teeth: `cross` is NOT self-attributed,
+    // precisely because it lowers a balance that is not its sender's.
+    Assert.Equal<Society.Addressed<Msg> list>(
+        [ cross ],
+        Levels.Obligations.confiscationWitnesses balance (act s) [ alpha; beta ] view [ cross ]
+    )
+
+    Assert.False(Levels.Obligations.confiscationCheckHasNoTeeth balance (act s) [ alpha; beta ] view [ cross ])
+
+[<Fact>]
+let ``the confiscation check is only as strong as its unsigned sender, and reports when it is not`` () =
+    let s = society ()
+    let parts = [ alpha; beta ]
+    let bodies = [ Confiscate alpha; Confiscate beta ]
+
+    // `From` is DERIVABLE but not SIGNED. So the vacuity of #10968 did not disappear, it changed
+    // shape: instead of declaring one boolean true, a caller writes the victim's own address into
+    // `From` on every message — self-attribution — and the check passes having measured nothing...
+    let forged = [ envelope alpha alpha (Confiscate alpha); envelope beta beta (Confiscate beta) ]
+    Assert.True(Levels.Obligations.noConfiscation balance (act s) parts view forged)
+    // ...and that is REPORTED, which is why the guard was kept rather than deleted with the witness
+    // parameter it originally guarded.
+    Assert.True(Levels.Obligations.confiscationCheckHasNoTeeth balance (act s) parts view forged)
+
+    // With honest senders the same bodies go red, and the check has teeth.
+    let honest = bodies |> List.map (fun b -> envelope theLevel beta b)
+    Assert.False(Levels.Obligations.noConfiscation balance (act s) parts view honest)
+    Assert.False(Levels.Obligations.confiscationCheckHasNoTeeth balance (act s) parts view honest)
 
     // An empty message list is likewise no discharge.
-    Assert.True(Levels.Obligations.confiscationCheckHasNoTeeth ownerInitiated [])
+    Assert.True(Levels.Obligations.confiscationCheckHasNoTeeth balance (act s) parts view [])
+
+    // A batch that touches no balance at all HAS teeth — it simply found nothing. Reporting it as
+    // toothless would conflate "measured and clean" with "could not measure", which is the exact
+    // conflation this guard exists to prevent.
+    Assert.False(Levels.Obligations.confiscationCheckHasNoTeeth balance (act s) parts view [ envelope theLevel alpha Noop ])
 
 [<Fact>]
 let ``confiscation is judged over the PARTS, not over the aggregate's own books`` () =
@@ -352,7 +447,48 @@ let ``confiscation is judged over the PARTS, not over the aggregate's own books`
     // gamma is not named as a part, so a message that only touches gamma is not a confiscation
     // FROM A PART — the predicate is about what the level above takes from the level below, and
     // scoping it to the supplied parts is what keeps it from becoming a general accounting check.
-    Assert.True(Levels.Obligations.noConfiscation balance ownerInitiated (act s) [ alpha ] view [ Confiscate beta ])
-    Assert.False(
-        Levels.Obligations.noConfiscation balance ownerInitiated (act s) [ alpha; beta ] view [ Confiscate beta ]
+    Assert.True(
+        Levels.Obligations.noConfiscation balance (act s) [ alpha ] view [ envelope theLevel beta (Confiscate beta) ]
     )
+
+    Assert.False(
+        Levels.Obligations.noConfiscation
+            balance
+            (act s)
+            [ alpha; beta ]
+            view
+            [ envelope theLevel beta (Confiscate beta) ]
+    )
+
+[<Fact>]
+let ``a member must stamp its OWN address on its outbound -- impersonation is a law violation`` () =
+    // The guard that keeps `From` worth reading. It is not authentication and is not cited as any:
+    // it is decidable for a member you can run, and says nothing about an envelope off a wire.
+    let honest =
+        { new Society.IMember<TestView, Msg> with
+            member _.Address v = List.head v.Roll
+            member _.Deliver(v, m) = v, [ envelope (List.head v.Roll) beta m ]
+            member _.Merge(l, _r) = l
+            member _.Peers v = v.Hops }
+
+    let impersonator =
+        { new Society.IMember<TestView, Msg> with
+            member _.Address v = List.head v.Roll
+            // Stamps BETA's address on its own outbound while being alpha.
+            member _.Deliver(v, m) = v, [ envelope beta beta m ]
+            member _.Merge(l, _r) = l
+            member _.Peers v = v.Hops }
+
+    Assert.True(Society.SocietyLaws.outboundIsSelfAttributed honest view Noop)
+    Assert.False(Society.SocietyLaws.outboundIsSelfAttributed impersonator view Noop)
+
+    // A member that sends nothing passes vacuously — stated, not hidden, in the same spirit as
+    // `nothingToPreserve` above: a pass here can mean "did not impersonate" or "did not speak".
+    let silent =
+        { new Society.IMember<TestView, Msg> with
+            member _.Address v = List.head v.Roll
+            member _.Deliver(v, _m) = v, []
+            member _.Merge(l, _r) = l
+            member _.Peers v = v.Hops }
+
+    Assert.True(Society.SocietyLaws.outboundIsSelfAttributed silent view Noop)

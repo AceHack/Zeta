@@ -40,8 +40,16 @@ let private machine (view0: TestView) =
         member _.Match(left, right, draw) =
             Ctm.probabilisticMatch (Ctm.rankByDisposition 0.0) left right draw
 
+        // The Down-Tree broadcasts FROM the machine itself, so every envelope is self-attributed to
+        // the machine's own address (`SocietyLaws.outboundIsSelfAttributed`).
         member _.Broadcast(v, _winner) =
-            v.Roll |> List.map (fun p -> { Society.To = p; Society.Body = p })
+            let self = List.head view0.Roll
+
+            v.Roll
+            |> List.map (fun p ->
+                { Society.From = self
+                  Society.To = p
+                  Society.Body = p })
 
         member _.Links(v, processor) =
             v.Wires
@@ -65,7 +73,11 @@ let private society () =
 
       interface Society.IMember<TestView, Society.Address> with
           member _.Address v = List.head v.Roll
-          member _.Deliver(v, m) = v, [ { Society.To = m; Society.Body = m } ]
+          member _.Deliver(v, m) =
+              v,
+              [ { Society.From = List.head v.Roll
+                  Society.To = m
+                  Society.Body = m } ]
           member _.Merge(l, _r) = l
           member _.Peers v = v.Roll }
 
