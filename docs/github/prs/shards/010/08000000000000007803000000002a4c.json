@@ -1,0 +1,12 @@
+{
+  "pr_number": 10828,
+  "archive_path": "docs/history/pr-reviews/PR-10828-fix-outreach-the-inverse-already-existed-bonsai-apply-correct-the-meijer-readme-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:59:36.104Z",
+  "schema_version": "v1",
+  "commit_sha": "29b77638494c09e57710dd8f0da8608a8bb67e87",
+  "title": "fix(outreach): the inverse already existed (Bonsai.apply) — correct the Meijer README's register",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:59:00Z",
+  "head_ref": "shadow/bonsai-reify-law-register-correction"
+}
