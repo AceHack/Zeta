@@ -42,6 +42,10 @@ import {
   EVIDENCE_RULES,
   DEFAULT_TIER,
   oracleOutputReviewerClass,
+  DERIVATION_INPUT_GLOBS,
+  DERIVER_PATH,
+  DERIVE_FIX_COMMAND,
+  derivationInputsTouched,
   type BuildGraph,
   type QuorumTier,
   type RequiredQuorum,
@@ -400,6 +404,13 @@ describe("the checked-in repo graph", () => {
     // identical graph. Slow BY ACCIDENT, so made fast rather than given a timeout
     // (081KZZ3JHP1087G0R00027ARRR).
     const derived = deriveGraph(REPO_ROOT, graph);
+    // The assertion below fails with a whole-file JSON diff and no instruction,
+    // so the fix is printed FIRST. Three PRs hit this gate on 2026-08-14 and each
+    // was fixed by this one command; a reader of the CI log should not have to
+    // come here to find it. `::error::` also annotates the run.
+    if (!graphsEqual(derived, graph)) {
+      console.error(`::error::${GRAPH_PATH} has drifted. Run: ${DERIVE_FIX_COMMAND}`);
+    }
     expect(serializeGraph(derived)).toBe(serializeGraph(graph));
     expect(graphsEqual(derived, graph)).toBe(true);
   });
@@ -827,4 +838,83 @@ describe("the checked-in repo graph — quorum", () => {
     const b = computeQuorums(REPO_ROOT, graph);
     expect(JSON.stringify([...a.entries()])).toBe(JSON.stringify([...b.entries()]));
   }, 30_000);
+});
+
+// The trigger in front of the drift gate: `drift-check` derives nothing unless the
+// change touches one of these paths, so a MISS here is silent — the guard stays
+// quiet and the author learns about the drift from CI, which is the exact failure
+// this trigger exists to remove. Every test below is therefore about the trigger
+// being unable to miss, not about it being tidy.
+describe("derivation input trigger (drift-check's predicate)", () => {
+  const graph = loadGraph(REPO_ROOT);
+
+  test("fires on every path the three 2026-08-14 drift PRs added", () => {
+    // Real paths from #10769, #10799, #10808 — the priced, repeating failure this
+    // guard was built for. If a rewrite of the rules stops covering these, the
+    // guard has silently regressed to covering nothing that has ever happened.
+    const historical = [
+      "tests/Tests.FSharp/Collation.CrossOracleTreaty.Tests.fs", // #10769
+      "tests/Tests.FSharp/Tests.FSharp.fsproj", // #10769
+      "tests/cross-verification/lcg32_glibc/_gen/gen.py", // #10799
+      "tests/cross-verification/lcg64_mmix/python-output.json", // #10799
+      "tests/cross-verification/zeta-id/gen-layout-drift.ts", // #10808
+    ];
+    expect([...derivationInputsTouched(historical)].sort()).toEqual([...historical].sort());
+  });
+
+  test("stays silent on a change that cannot move the graph", () => {
+    // The other half of the same claim: a trigger that fires on everything is a
+    // full derive on every push, which is the guard that gets deleted.
+    expect(
+      derivationInputsTouched([
+        "docs/research/2026-08-15-some-note.md",
+        "memory/feedback_something.md",
+        "src/Core/Collation.fs",
+        "README.md",
+        ".github/workflows/gate.yml",
+      ]),
+    ).toEqual([]);
+  });
+
+  test("COMPLETENESS: every path the checked-in graph cites as evidence is a trigger", () => {
+    // Derived from the artifact itself, so it cannot go stale by hand: every
+    // witness in build-graph.json is a real tracked file whose presence sets a
+    // tier. Add an evidence rule and forget the trigger, and the new rule's
+    // witnesses land here and fail — the guard cannot lose coverage quietly.
+    const witnesses = [...new Set(graph.targets.flatMap((t) => t.requiredQuorum.evidence.map((e) => e.witness)))];
+    expect(witnesses.length).toBeGreaterThan(0);
+    const missed = witnesses.filter((w) => derivationInputsTouched([w]).length === 0);
+    expect(missed).toEqual([]);
+  });
+
+  test("COMPLETENESS: every evidence-rule glob is part of the trigger set", () => {
+    // The rules are SPREAD into DERIVATION_INPUT_GLOBS rather than transcribed;
+    // this pins that. A second, hand-copied source of truth is how the trigger
+    // and the derivation drift apart.
+    for (const rule of EVIDENCE_RULES) {
+      for (const p of rule.paths) expect(DERIVATION_INPUT_GLOBS).toContain(p);
+    }
+  });
+
+  test("the manifest classes the deriver actually reads are all triggers", () => {
+    const forcing = [
+      "src/Core.CSharp/Core.CSharp.csproj", // deriveDotnetTargets + dotnetReviewerClasses
+      "tests/Tests.FSharp/Tests.FSharp.fsproj",
+      "src/Core.Rust.Merkle/Cargo.toml", // deriveRustTargets
+      "src/Core.Lean4/lakefile.toml", // deriveLeanTargets
+      "tests/cross-verification/zeta-id/rust-output.json", // oracleOutputReviewerClass
+      GRAPH_PATH, // the base rows, `always`, `inert`
+      DERIVER_PATH, // the derivation function itself
+    ];
+    expect([...derivationInputsTouched(forcing)].sort()).toEqual([...forcing].sort());
+  });
+
+  test("the fix command names the deriver that actually exists", () => {
+    // Requirement 2 of this guard, pinned: the message must name a command a
+    // reader can paste. A moved deriver with a stale instruction is worse than
+    // no instruction, because it costs the reader a search to find that out.
+    expect(DERIVE_FIX_COMMAND).toBe("bun src/Core.TypeScript/ace/build-graph.ts derive --write");
+    expect(DERIVE_FIX_COMMAND).toContain(DERIVER_PATH);
+    expect(existsSync(join(REPO_ROOT, DERIVER_PATH))).toBe(true);
+  });
 });

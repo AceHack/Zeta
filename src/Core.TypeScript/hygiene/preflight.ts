@@ -55,6 +55,13 @@ const CHECKS: readonly Check[] = [
     ],
   },
   { label: "auto-vivify check", cmd: ["bun", "src/Core.TypeScript/backlog/auto-vivify.ts", "--check"] },
+  // Self-scoping: it derives NOTHING unless this change touches a path
+  // build-graph.json is derived from (an evidence glob, a project/Cargo/Lake
+  // manifest, an oracle-output file, the graph or the deriver). ~0.03s when it
+  // does not apply, ~1.5s when it does — cheap enough to keep, which is the only
+  // property that matters for a check nobody is forced to run. Added after three
+  // PRs failed the CI drift gate on 2026-08-14 for the identical reason.
+  { label: "ace build-graph drift", cmd: ["bun", "src/Core.TypeScript/ace/build-graph.ts", "drift-check"] },
   {
     label: "inventory items.json current",
     cmd: ["bun", "src/Core.TypeScript/inventory/generate-items-json.ts", "--check"],

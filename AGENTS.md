@@ -489,6 +489,27 @@ all in one pass. Tools absent locally (e.g. `golangci-lint`)
 report SKIP, not failure — they still run in CI. Source:
 `src/Core.TypeScript/hygiene/preflight.ts`.
 
+**Adding a file can drift a DERIVED artifact.**
+`src/Core.TypeScript/ace/build-graph.json` is derived from
+the tree, and CI's `cross-verify` gate asserts that
+re-deriving it reproduces the checked-in file byte-for-byte.
+So adding (or deleting) a test file, a golden vector,
+anything under `tests/cross-verification/`, or a
+`.fsproj`/`.csproj`/`Cargo.toml`/`lakefile.toml` can turn
+that gate red without you touching the JSON at all — it
+happened to three PRs on 2026-08-14. The fix is one command:
+
+```bash
+bun src/Core.TypeScript/ace/build-graph.ts derive --write
+bunx prettier --write src/Core.TypeScript/ace/build-graph.json
+```
+
+`preflight` now checks this for you (`ace build-graph drift`)
+and only re-derives when your change touches a path the graph
+derives from, so it costs nothing on a change that cannot
+drift it. To check on its own:
+`bun src/Core.TypeScript/ace/build-graph.ts drift-check`.
+
 ## Code style and conventions (short form)
 
 - **F# first for data-plane code, C# wrapper where

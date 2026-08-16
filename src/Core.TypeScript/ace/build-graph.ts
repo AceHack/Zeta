@@ -68,6 +68,7 @@
 import { readFileSync, readdirSync, existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { trackedFiles as sharedTrackedFiles } from "../git/tracked-files";
+import { changedFiles } from "../git/changed-files";
 
 // ── Schema ────────────────────────────────────────────────────────────────
 
@@ -1322,6 +1323,69 @@ export function loadGraph(root: string): BuildGraph {
   return JSON.parse(readFileSync(join(root, GRAPH_PATH), "utf8")) as BuildGraph;
 }
 
+// ── The derivation's INPUT SET (the pre-push trigger) ────────────────────
+
+/** The deriver itself: edit it and every derived row is suspect. */
+export const DERIVER_PATH = "src/Core.TypeScript/ace/build-graph.ts";
+
+/**
+ * Every path whose ADDITION, REMOVAL or EDIT can change what `deriveGraph`
+ * produces — the derivation's input set, stated as globs.
+ *
+ * WHY IT EXISTS: `derive` is exact but whole-repo, and a check that runs
+ * unconditionally on every push is a check that gets switched off. This list is
+ * the cheap PREDICATE in front of it: no matching path in the change ⇒ the
+ * derived artifact provably cannot have moved ⇒ skip the derivation entirely.
+ *
+ * IT IS BUILT FROM THE RULES, NOT COPIED FROM THEM. `EVIDENCE_RULES` is spread in
+ * rather than transcribed, so adding an evidence row (the table is meant to grow —
+ * see its own note) extends the trigger in the same edit. A hand-copied list is a
+ * second source of truth that goes stale silently, which for a guard means going
+ * quiet — the failure mode with no symptom.
+ *
+ * The four hand-written classes are the derivation's OTHER readers, and each names
+ * the function that reads it:
+ *
+ *   - `*.fsproj` / `*.csproj`   `deriveDotnetTargets` (existence + `ProjectReference`)
+ *                               and `dotnetReviewerClasses` (which language reviews it)
+ *   - `Cargo.toml`             `deriveRustTargets` (existence + `path =` deps)
+ *   - `lakefile.toml`          `deriveLeanTargets` (existence)
+ *   - `*-output.json`          `oracleOutputReviewerClass` (which oracles participate)
+ *   - the graph + this file    the base rows, `always`/`inert`, and the deriver itself
+ *
+ * OVER- rather than under-approximate, deliberately: the globs ignore the depth
+ * limit in `findProjectFiles` and the `inert` filter in `directEvidence`, so some
+ * matches trigger a derivation that turns out clean. That costs ~1.3s. The opposite
+ * error costs a CI round trip and, worse, teaches an author the guard does not
+ * cover them.
+ */
+export const DERIVATION_INPUT_GLOBS: readonly string[] = [
+  ...EVIDENCE_RULES.flatMap((r) => r.paths),
+  "**/*.fsproj",
+  "**/*.csproj",
+  "**/Cargo.toml",
+  "**/lakefile.toml",
+  `**/*${ORACLE_OUTPUT_SUFFIX}`,
+  GRAPH_PATH,
+  DERIVER_PATH,
+];
+
+/**
+ * The subset of `changed` that can move the derived graph, ordinal-sorted. Empty
+ * means the change cannot have drifted `build-graph.json` — the only case in which
+ * skipping the derivation is sound.
+ */
+export function derivationInputsTouched(changed: readonly string[]): readonly string[] {
+  const out = new Set<string>();
+  for (const p of changed) {
+    const path = normalizePath(p);
+    if (matchesAny(DERIVATION_INPUT_GLOBS, path)) out.add(path);
+  }
+  const arr = [...out];
+  arr.sort(ordinalCompare);
+  return arr;
+}
+
 /**
  * Canonical serialization — the CONTENT lock the drift gate compares against.
  *
@@ -1353,6 +1417,12 @@ function usage(): string {
     "  derive [--write]",
     "      Regenerate the derived rows from the repo's own manifests.",
     "      Default exits 1 on drift (CI gate); --write updates the file.",
+    "",
+    "  drift-check [--base <ref>] [--changed <file>]",
+    "      Pre-push guard: run `derive` ONLY when the change touches a path the",
+    "      graph derives from. Scopes itself to <ref>..HEAD plus the index by",
+    "      default (--base defaults to origin/main); exits 1 on drift, naming",
+    "      the fix. Cheap no-op otherwise, which is why it can stay in preflight.",
     "",
     "  quorum [--changed <file>] [--json]",
     "      Read the changed-file set and print the required verification quorum:",
@@ -1393,7 +1463,62 @@ function runDerive(root: string, write: boolean): number {
   }
   console.error(
     `::error::${GRAPH_PATH} has drifted from the repo's declared build manifests.\n` +
-      `Run: bun src/Core.TypeScript/ace/build-graph.ts derive --write`,
+      `Run: ${DERIVE_FIX_COMMAND}`,
+  );
+  return 1;
+}
+
+/** The one line every drift message must carry: the fix, runnable as printed. */
+export const DERIVE_FIX_COMMAND = "bun src/Core.TypeScript/ace/build-graph.ts derive --write";
+
+/**
+ * Pre-push guard: run the exact drift check, but ONLY when the change touches a
+ * derivation input.
+ *
+ * The two halves are load-bearing in opposite directions. The predicate keeps the
+ * guard cheap enough to survive (a multi-minute check on every push is a check
+ * somebody deletes; ~0.2s when it does not apply is a check nobody notices). The
+ * derivation keeps it EXACT — it is the same `deriveGraph` the CI gate asserts, so
+ * a pass here means the gate passes, and there is no second, approximate notion of
+ * drift to disagree with the first.
+ *
+ * The message names the fix verbatim, because that is the whole value: on
+ * 2026-08-14 three PRs hit this gate in CI and all three were fixed in minutes by
+ * running exactly this one command.
+ */
+async function runDriftCheck(root: string, argv: readonly string[]): Promise<number> {
+  const explicit = argv.includes("--changed");
+  const base = flag(argv, "--base") ?? "origin/main";
+  const changed = explicit ? await readChanged(flag(argv, "--changed")) : changedFiles(root, base);
+
+  if (changed !== undefined) {
+    const touched = derivationInputsTouched(changed);
+    if (touched.length === 0) {
+      console.log(
+        `build-graph drift-check: no derivation input in ${String(changed.length)} changed path(s) — skipped.`,
+      );
+      return 0;
+    }
+    console.log(`build-graph drift-check: ${String(touched.length)} derivation input(s) touched, e.g.`);
+    for (const p of touched.slice(0, 3)) console.log(`  ${p}`);
+  } else {
+    // Unresolvable base (no `origin/main`, detached checkout). Check rather than
+    // skip: an unscoped guard that stays silent is the skipped-check-wearing-a-
+    // passed-check's-face failure this repo keeps paying for.
+    console.log(`build-graph drift-check: cannot scope the change against '${base}' — checking anyway.`);
+  }
+
+  const graph = loadGraph(root);
+  if (graphsEqual(deriveGraph(root, graph), graph)) {
+    console.log(`build-graph drift-check: ${GRAPH_PATH} is in sync. ✓`);
+    return 0;
+  }
+  console.error(
+    `::error::${GRAPH_PATH} has drifted from the repo's declared build manifests.\n` +
+      `This change adds or removes a file the graph derives from, so the checked-in\n` +
+      `artifact no longer reproduces. CI's cross-verify gate fails on exactly this.\n` +
+      `Run: ${DERIVE_FIX_COMMAND}\n` +
+      `Then: bunx prettier --write ${GRAPH_PATH}  (and commit it with the change)`,
   );
   return 1;
 }
@@ -1454,6 +1579,7 @@ export async function main(argv: readonly string[], root: string): Promise<numbe
     return cmd === undefined ? 1 : 0;
   }
   if (cmd === "derive") return runDerive(root, argv.includes("--write"));
+  if (cmd === "drift-check") return runDriftCheck(root, argv);
 
   const graph = loadGraph(root);
   if (cmd === "explain") {
