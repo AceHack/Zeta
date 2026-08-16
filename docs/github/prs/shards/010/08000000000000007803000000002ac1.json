@@ -1,0 +1,12 @@
+{
+  "pr_number": 10945,
+  "archive_path": "docs/history/pr-reviews/PR-10945-research-world-best-society-lifts-but-by-deference-not-by-condorcet-and-a-row-15.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:57:25.838Z",
+  "schema_version": "v1",
+  "commit_sha": "ed4550004c0f3d8d43ea053c389425222cdf8f37",
+  "title": "research: world > best society lifts — but by deference, not by Condorcet (and §A row 15 conflates two theorems)",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:56:52Z",
+  "head_ref": "shadow/world-vs-best-society-lift"
+}
