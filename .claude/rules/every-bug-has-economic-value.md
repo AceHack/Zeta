@@ -15,7 +15,7 @@ Carved sentence:
 
 ## Why
 
-Turns the bug apparatus (finders, adversarial verifiers, `BUGS.md`, the
+Turns the bug apparatus (finders, adversarial verifiers, `docs/BUGS.md`, the
 harsh-critic / silent-failure-hunter reviewers) into an **economy**: each confirmed
 bug is priced, each fix is a measured, committed, rewarded transaction. Aligns
 incentives with the manifesto — reducing uncertainty against the common cause is

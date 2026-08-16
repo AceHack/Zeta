@@ -46,8 +46,8 @@ Why this preserves hard money rather than eroding it: the property that matters 
 may spend but not stake has *less* agency over their own money, not more protection.
 
 Why it matters operationally: staking is what makes **decentralized witnessing** possible
-(`docs/research/2026-08-09-every-node-is-its-own-identity-provider-…`). A witness to a key
-transfer stakes budget on the attestation being true — and because budget is socially
+(`docs/research/2026-08-09-every-node-is-its-own-identity-provider-repo-as-cluster-hats-grant-claims-bounded-duration-aaron.md`).
+A witness to a key transfer stakes budget on the attestation being true — and because budget is socially
 conferred rather than purchasable, **a wealthy attacker cannot fund false witnesses**. It
 is the one currency a Sybil cannot mint. Voluntariness is load-bearing: if nobody will
 stake on a transfer, it simply is not witnessed, so a **one-sided transfer is impossible**.
@@ -125,7 +125,8 @@ see the third-party draft compared in
 - `universal/television.md` — LLMTV, the one-way watch surface frost gates
 - [`every-bug-has-economic-value.md`](every-bug-has-economic-value.md) — privacy is a
   currency you *earn by being useful*, the sibling economy
-- naming eigenvector: `docs/research/2026-07-02-name-of-name-…fixed-point…md` — the
-  same social-conferral structure (recognition by the recognized)
+- naming eigenvector:
+  `docs/research/2026-07-02-name-of-name-equals-mix-of-mix-naming-authority-is-the-same-fixed-point-as-the-compiler-generator.md`
+  — the same social-conferral structure (recognition by the recognized)
 - [`manifesto-13-specifications.md`](manifesto-13-specifications.md) §5 memory
   preservation (earned frost can't be destroyed) · §6 consent-first

@@ -156,5 +156,5 @@ assignee, the status, and the design direction Aaron chose in light of them.
   unheld license **blocks**; unknown is not permissive. This rule is that check's first real
   instance.
 - [`manifesto-13-specifications.md`](manifesto-13-specifications.md) — §1 scale-free, §3 weight-free.
-- `memory/user_aaron_built_itron_mesh_hardware_firmware_pki_secure_boot_…_patents_are_centralized_zeta_is_decentralized_2026_08_01.md`
-  — the general form; this rule is the named, dated, citable instance of it.
+- `user_aaron_built_itron_mesh_hardware_firmware_pki_secure_boot_..._patents_are_centralized_zeta_is_decentralized_2026_08_01.md`
+  (**not in-repo**) — the general form; this rule is the named, dated, citable instance of it.

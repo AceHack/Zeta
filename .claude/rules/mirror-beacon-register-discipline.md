@@ -25,5 +25,5 @@ fast substrate first, then razored down to its anchored first principles.
 
 - `docs/GLOSSARY.md` — canonical Beacon / Mirror definitions (coined by the maintainer 2026-04-27; multi-AI reviewed 2026-04-28)
 - [`anchor-to-human-prior-art.md`](anchor-to-human-prior-art.md) — the Beacon register's anchoring requirement (every term ties to a human + paper)
-- [`grep-substrate-anchors-before-razor-as-metaphysical.md`](grep-substrate-anchors-before-razor-as-metaphysical.md) — a compressed Mirror term that HAS anchors is not metaphysics; grep before razoring
+- [`.claude/rules.bak/grep-substrate-anchors-before-razor-as-metaphysical.md`](../rules.bak/grep-substrate-anchors-before-razor-as-metaphysical.md) — a compressed Mirror term that HAS anchors is not metaphysics; grep before razoring
 - `.claude/rules/dv2-data-split-discipline-activated.md` — Mirror=satellite (fast-changing), Beacon=hub (stable anchored) is the same hub/satellite split

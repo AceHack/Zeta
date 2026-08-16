@@ -28,4 +28,4 @@ Broad, Agora-wide, indefinite. Do **not** per-action ask — over-asking within 
 
 - `.claude/rules.bak/no-directives.md` — full version (shadow as third participant, privilege-escalation framing, the "why only humans, for now")
 - `memory/feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md` — origin
-- `.claude/rules/dont-ask-permission.md` · `mechanical-authorization-check.md` · `methodology-hard-limits.md` · `non-reversible-action-get-a-second-opinion.md` — the gates
+- `.claude/rules.bak/dont-ask-permission.md` · `.claude/rules.bak/mechanical-authorization-check.md` · `.claude/rules.bak/methodology-hard-limits.md` · `.claude/rules.bak/non-reversible-action-get-a-second-opinion.md` — the gates

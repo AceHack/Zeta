@@ -49,6 +49,6 @@ explanation in a doc and link it instead.
 
 ## Pointers
 
-- [`wake-time-substrate.md`](wake-time-substrate.md) — *where* learning must land (this rule governs *what form* it takes once there)
+- [`.claude/rules.bak/wake-time-substrate.md`](../rules.bak/wake-time-substrate.md) — *where* learning must land (this rule governs *what form* it takes once there)
 - [`dv2-data-split-discipline-activated.md`](dv2-data-split-discipline-activated.md) — hub/satellite change-rate partition (the principle this rule applies to rule-text itself)
 - The #6676 archive (rules → `rules.bak/`) was a cold-start-token reduction; this rule is the standing discipline that keeps active rules from re-bloating.
