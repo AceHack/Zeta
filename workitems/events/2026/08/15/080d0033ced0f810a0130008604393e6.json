@@ -1,0 +1,14 @@
+{
+  "id": "080d0033ced0f810a0130008604393e6",
+  "at": "2026-08-15T17:30:44.127Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M037KPGZ087G0R0009DS4R6",
+    "type": "task",
+    "title": "Multi-kubelet per machine — 2-3 K3S agents per box in different clusters for upgrade failure-domain isolation (recovered lost row B0723; PR 4955 closed unmerged, live row blocked on it)",
+    "slug": "multi-kubelet-per-machine-2-3-k3s-agents-per-box-in-differen",
+    "priority": "P3",
+    "filename": "081M037KPGZ087G0R0009DS4R6-multi-kubelet-per-machine-2-3-k3s-agents-per-box-in-differen.md"
+  }
+}

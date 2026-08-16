@@ -1,0 +1,14 @@
+{
+  "id": "080d0033cecf3010a0130008a76edc57",
+  "at": "2026-08-15T17:30:44.070Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M037KPF6087G0R003WBV46R",
+    "type": "task",
+    "title": "Git-native per-machine declared state + ACE PM as reconciler + biometric gate for system-level diffs (recovered lost row B0747; 18 live rows cite the never-landed id)",
+    "slug": "git-native-per-machine-declared-state-ace-pm-as-reconciler-b",
+    "priority": "P2",
+    "filename": "081M037KPF6087G0R003WBV46R-git-native-per-machine-declared-state-ace-pm-as-reconciler-b.md"
+  }
+}
