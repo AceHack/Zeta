@@ -4,11 +4,11 @@
  * SE-1..SE-4: basic society construction and statistics
  * SE-5..SE-8: evolutionary step (selection, reproduction, diversity)
  * SE-9..SE-10: reservoir readout
- * SE-11..SE-12: Adinkra ECC encoding
+ * SE-11..SE-12: single-parity-check [8,7,2] genome byte (NOT an adinkra code)
  */
 import { describe, test, expect } from "bun:test";
 import {
-  createAgent, createSociety, evolve, reservoirReadout, genomeToAdinkraByte,
+  createAgent, createSociety, evolve, reservoirReadout, genomeToParityByte,
   DEFAULT_EVOLUTION_PARAMS,
   type SocietyAgent,
 } from "./society-evolution";
@@ -181,32 +181,32 @@ describe("SocietyEvolution", () => {
     expect(readout.b).toBe(0);
   });
 
-  // SE-11: genomeToAdinkraByte is deterministic
-  test("SE-11: genomeToAdinkraByte is deterministic (same genome → same byte)", () => {
+  // SE-11: genomeToParityByte is deterministic
+  test("SE-11: genomeToParityByte is deterministic (same genome → same byte)", () => {
     const genome = founderGenome(0b10101010, 0b11001100, 0b11110000);
-    const b1 = genomeToAdinkraByte(genome);
-    const b2 = genomeToAdinkraByte(genome);
+    const b1 = genomeToParityByte(genome);
+    const b2 = genomeToParityByte(genome);
     expect(b1).toBe(b2);
   });
 
   // SE-12: byte-lock + the parity invariant the encoding actually claims.
   // `0 <= b <= 255` was the old assertion; the function is 8 bit-ors of 0/1
   // values, so it is a byte by construction. Mutant `return 0` at the top of
-  // genomeToAdinkraByte left SE-11 and SE-12 at 12 pass / 0 fail — the whole
+  // genomeToParityByte left SE-11 and SE-12 at 12 pass / 0 fail — the whole
   // encoding could be deleted with no test noticing.
-  test("SE-12: genomeToAdinkraByte byte-lock (channel MSBs at bits 0..6, parity at bit 7)", () => {
+  test("SE-12: genomeToParityByte byte-lock (channel MSBs at bits 0..6, parity at bit 7)", () => {
     // founderGenome fixes cmyk = {c:128, m:128, y:128, k:0} → MSBs 1,1,1,0 → bits 3,4,5 set.
     // rgb MSBs land at bits 0,1,2; bit 7 = XOR of the seven MSBs (even parity).
-    expect(genomeToAdinkraByte(founderGenome(0b10101010, 0b11001100, 0b11110000))).toBe(0b00111111);
-    expect(genomeToAdinkraByte(founderGenome(0, 0, 0))).toBe(0b10111000);
-    expect(genomeToAdinkraByte(founderGenome(255, 0, 0))).toBe(0b00111001);
-    expect(genomeToAdinkraByte(founderGenome(255, 255, 0))).toBe(0b10111011);
+    expect(genomeToParityByte(founderGenome(0b10101010, 0b11001100, 0b11110000))).toBe(0b00111111);
+    expect(genomeToParityByte(founderGenome(0, 0, 0))).toBe(0b10111000);
+    expect(genomeToParityByte(founderGenome(255, 0, 0))).toBe(0b00111001);
+    expect(genomeToParityByte(founderGenome(255, 255, 0))).toBe(0b10111011);
   });
 
   test("SE-12b: every codeword has even parity (the single-bit-error detection property)", () => {
     const popcount = (n: number): number => n.toString(2).split("").filter(c => c === "1").length;
     for (let i = 0; i < 10; i++) {
-      const b = genomeToAdinkraByte(founderGenome(i * 25, i * 20, i * 15));
+      const b = genomeToParityByte(founderGenome(i * 25, i * 20, i * 15));
       expect(b).toBeLessThanOrEqual(255);
       expect(popcount(b) % 2).toBe(0);
     }
@@ -214,8 +214,30 @@ describe("SocietyEvolution", () => {
 
   // SE-12c: the encoding must be sensitive to the bit it claims to encode.
   test("SE-12c: flipping a channel MSB flips its codeword bit and the parity bit", () => {
-    const lo = genomeToAdinkraByte(founderGenome(127, 0, 0)); // r MSB = 0
-    const hi = genomeToAdinkraByte(founderGenome(128, 0, 0)); // r MSB = 1
+    const lo = genomeToParityByte(founderGenome(127, 0, 0)); // r MSB = 0
+    const hi = genomeToParityByte(founderGenome(128, 0, 0)); // r MSB = 1
     expect(hi ^ lo).toBe(0b10000001); // bit 0 (r) and bit 7 (parity)
+  });
+
+  // SE-12d: the falsifier for the docstring's negative claim. The function was
+  // named genomeToAdinkraByte and documented as [8,4,4] extended Hamming; it is
+  // the single-parity-check [8,7,2]. The invariant that separates them is
+  // DOUBLY-EVEN (every codeword weight ≡ 0 mod 4), not the shared length 8.
+  // A weight-2 codeword exists ⇒ not doubly-even ⇒ not self-dual at length 8
+  // ⇒ not an adinkra code. If someone later "restores" the [8,4,4] claim in the
+  // docstring without changing the encoding, this test says so.
+  test("SE-12d: the code is NOT doubly-even (a weight-2 codeword exists) ⇒ not [8,4,4]", () => {
+    const popcount = (n: number): number => n.toString(2).split("").filter(c => c === "1").length;
+    // One channel MSB set, all others clear ⇒ 1 data bit + 1 parity bit = weight 2.
+    const oneChannelHigh = {
+      rgb: { r: 128, g: 0, b: 0 },
+      cmyk: { c: 0, m: 0, y: 0, k: 0 },
+      generation: 0,
+      parentIds: [],
+    };
+    const b = genomeToParityByte(oneChannelHigh);
+    expect(b).toBe(0b10000001);
+    expect(popcount(b)).toBe(2);       // even ⇒ a valid codeword of this code
+    expect(popcount(b) % 4).not.toBe(0); // but NOT doubly-even
   });
 });

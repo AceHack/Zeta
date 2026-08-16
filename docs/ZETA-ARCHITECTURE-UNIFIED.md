@@ -89,11 +89,11 @@ These three structures are the **mathematical substrate** of the system:
 
 **Adinkra [8,4,4] ECC** (`adinkra-ecc-prototype.ts`):
 
-- The [8,4,4] extended Hamming code is doubly-even and self-dual.
-- It encodes the 7-channel genome (RGB + CMYK) + 1 parity bit into an 8-bit codeword.
-- Error-correcting: recovers from 1-bit errors in gossip transmission.
+- The [8,4,4] extended Hamming code is doubly-even and self-dual — it is the *unique* doubly-even self-dual binary code of length 8, which is what makes it an adinkra code.
+- It carries **4 data bits** per 8-bit codeword (d=4), so it is error-**correcting**: recovers from 1-bit errors in gossip transmission.
 - Dual-use: the same code structure gives both ECC (protect from errors) and key material (protect from being seen).
-- The `genomeToAdinkraByte` function in `society-evolution.ts` implements this encoding.
+- `adinkra-ecc-prototype.ts` constructs it and *verifies* doubly-even + self-dual; `src/Core.Lean4/Lean4/CayleyDicksonDoublyEven.lean` is the proof layer.
+- **No production path uses it yet.** `society-evolution.ts`'s `genomeToParityByte` (formerly `genomeToAdinkraByte`) is **not** this code: it is the single-parity-check **[8,7,2]** — 7 channel MSBs + 1 parity bit, distance 2, **detection only**, not self-dual, not doubly-even. It was renamed 2026-08-16 because the old name asserted a structure the bytes do not have; sharing the length 8 identifies nothing.
 
 **Hexagonal quantum arithmetic** (`quantum-arith.ts`):
 
