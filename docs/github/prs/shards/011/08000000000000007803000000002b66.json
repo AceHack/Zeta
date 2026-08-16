@@ -1,0 +1,12 @@
+{
+  "pr_number": 11110,
+  "archive_path": "docs/history/pr-reviews/PR-11110-fix-ci-actually-run-the-platform-fixes-nixostest-it-was-defined-and-invoked-by-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T21:50:26.147Z",
+  "schema_version": "v1",
+  "commit_sha": "c297439c8b3387a7e967333ddde5f8d56d83de5c",
+  "title": "fix(ci): actually run the platform-fixes nixosTest — it was defined and invoked by nothing",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T21:49:50Z",
+  "head_ref": "fix/ci-run-platform-fixes-check"
+}
