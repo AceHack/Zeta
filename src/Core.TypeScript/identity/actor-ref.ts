@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { VALID_PERSONAS, type PersonaId } from "./generated-registry.ts";
 
 /**
@@ -339,23 +342,24 @@ export const GOLDEN_VECTORS: GoldenVector[] = [
 ];
 
 /**
- * Invalid-vector class of the treaty byte-lock floor: every oracle port
- * (F# ActorRef.fs, future langs) MUST reject each of these. Paired with
- * GOLDEN_VECTORS the same way vectors.yaml pairs valid/invalid in
- * tests/cross-verification/.
+ * Invalid-vector class of the treaty byte-lock floor. The list lives in
+ * `tests/cross-verification/actor-ref/vectors.json` — one file, every
+ * oracle. Adding a row there with no parser change must turn a test red
+ * (081M00J1EWW).
  */
-export const INVALID_VECTORS: readonly string[] = [
-  "otto/COWORK",        // uppercase segment
-  "otto//fg",           // empty surface
-  "otto/cli@a@b",       // multiple @
-  "otto@machine-a",     // node without surface
-  "kenji/cli",          // unknown persona
-  "otto/cli/fg/extra",  // too many segments
-  "otto-cowork",        // fused composite — the treaty's core prohibition
-  "otto/cli/FG",        // uppercase INSTANCE — added 2026-08-14; a mutant that
-                        // deleted the instance charset check survived without it
-  "otto/cli/",          // empty instance
-];
+export const ACTOR_REF_VECTORS_PATH = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "../../../tests/cross-verification/actor-ref/vectors.json",
+);
+
+function loadSharedInvalid(door: "parse" | "parseSpiffe"): readonly string[] {
+  const doc = JSON.parse(readFileSync(ACTOR_REF_VECTORS_PATH, "utf8")) as {
+    invalid: readonly { input: string; door: "parse" | "parseSpiffe" }[];
+  };
+  return doc.invalid.filter((v) => v.door === door).map((v) => v.input);
+}
+
+export const INVALID_VECTORS: readonly string[] = loadSharedInvalid("parse");
 
 /**
  * The SAME rejection class, expressed through the SPIFFE URI port.
@@ -372,21 +376,4 @@ export const INVALID_VECTORS: readonly string[] = [
  * port` in `tests/Tests.FSharp/ActorRef.Tests.fs`, which has asserted these
  * since the F# port landed. The F# oracle was right and this one was wrong.
  */
-export const INVALID_SPIFFE_VECTORS: readonly string[] = [
-  "spiffe://zeta/persona/otto/cell/COWORK",       // uppercase segment
-  "spiffe://zeta/persona/otto/cell//fg",          // empty surface
-  "spiffe://zeta/persona/otto/cell/cli@a@b",      // multiple @
-  "spiffe://zeta/persona/otto@machine-a",         // node without surface
-  "spiffe://zeta/persona/soraya@verifier-node",   // node without surface (F# vector)
-  "spiffe://zeta/persona/otto/cell/cli/fg@UPPER", // uppercase node (F# vector)
-  "spiffe://zeta/persona/otto/cell/cli@",         // empty node
-  "spiffe://zeta/persona/otto/cell/c li",         // space in segment
-  "spiffe://zeta/persona/otto/cell/cli/FG",       // uppercase instance
-  "spiffe://zeta/persona/otto/cell/cli/",         // empty instance
-  "spiffe://zeta/persona/kenji/cell/cli",         // unknown persona
-  "spiffe://zeta/persona/otto/cell/cli/fg/extra", // too many segments
-  "spiffe://zeta/persona/otto-cowork",            // fused composite
-  "http://zeta/persona/otto",                     // wrong scheme
-  "spiffe://zeta/persona/otto/invalid/cli",       // missing "cell" label
-  "spiffe://zeta/persona/otto/cell",              // missing surface kind
-];
+export const INVALID_SPIFFE_VECTORS: readonly string[] = loadSharedInvalid("parseSpiffe");

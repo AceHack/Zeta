@@ -90,6 +90,10 @@ import {
 import { describe as d2, expect as e2, test as t2 } from "bun:test";
 
 d2("invalid vectors — byte-lock floor rejection class", () => {
+  t2("the shared file is the only list (081M00J1EWW)", () => {
+    e2(INVALID_VECTORS.length).toBeGreaterThan(0);
+    e2(INVALID_SPIFFE_VECTORS.length).toBeGreaterThan(0);
+  });
   for (const bad of INVALID_VECTORS) {
     t2(`rejects ${bad}`, () => {
       e2(() => parseRef(bad)).toThrow();

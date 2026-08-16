@@ -1,7 +1,23 @@
 module Zeta.Tests.ActorRefTests
 
+open System.IO
+open System.Text.Json
 open Xunit
 open Zeta.Core
+
+let private repoRoot () =
+    let mutable dir = DirectoryInfo(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location))
+    while not (isNull dir) && not (File.Exists(Path.Join(dir.FullName, "Zeta.sln"))) do
+        dir <- dir.Parent
+    if isNull dir then failwith "Could not locate repo root (Zeta.sln)." else dir.FullName
+
+let private sharedInvalid (door: string) : string list =
+    let path = Path.Join(repoRoot (), "tests", "cross-verification", "actor-ref", "vectors.json")
+    Assert.True(File.Exists path, sprintf "shared actor-ref vectors missing: %s" path)
+    use doc = JsonDocument.Parse(File.ReadAllText path)
+    [ for v in doc.RootElement.GetProperty("invalid").EnumerateArray() do
+          if v.GetProperty("door").GetString() = door then
+              yield v.GetProperty("input").GetString() ]
 
 type GoldenVector =
     { StringProj: string
@@ -115,23 +131,17 @@ let ``Invalid SPIFFE URI formats return None`` () =
     Assert.True(ActorRef.parseSpiffe "spiffe://zeta/persona/otto/cell/cli/fg/extra" = None)
 
 [<Fact>]
-let ``Invalid vectors — byte-lock floor rejection class (TS oracle parity)`` () =
-    // Mirrors INVALID_VECTORS in src/Core.TypeScript/identity/actor-ref.ts.
-    // Every oracle port MUST reject each of these.
-    let invalidVectors =
-        [ "otto/COWORK"       // uppercase segment
-          "otto//fg"          // empty surface
-          "otto/cli@a@b"      // multiple @
-          "otto@machine-a"    // node without surface
-          "kenji/cli"         // unknown persona
-          "otto/cli/fg/extra" // too many segments
-          "otto-cowork" ]     // fused composite — the treaty's core prohibition
+let ``Invalid vectors — byte-lock floor rejection class (shared file)`` () =
+    // 081M00J1EWW: one file, every oracle. Adding a parse-door row with no
+    // parser change must turn this red.
+    let invalidVectors = sharedInvalid "parse"
+    Assert.True(List.isEmpty invalidVectors |> not, "shared file has no parse-door rows")
     for bad in invalidVectors do
         Assert.True(ActorRef.parse bad = None, sprintf "expected parse to reject %s" bad)
 
 [<Fact>]
 let ``Invalid SPIFFE vectors — same rejection class through the URI port`` () =
-    Assert.True(ActorRef.parseSpiffe "spiffe://zeta/persona/soraya@verifier-node" = None)
-    Assert.True(ActorRef.parseSpiffe "spiffe://zeta/persona/otto/cell/cli@a@b" = None)
-    Assert.True(ActorRef.parseSpiffe "spiffe://zeta/persona/otto/cell/COWORK" = None)
-    Assert.True(ActorRef.parseSpiffe "spiffe://zeta/persona/otto/cell/cli/fg@UPPER" = None)
+    let invalid = sharedInvalid "parseSpiffe"
+    Assert.True(List.isEmpty invalid |> not, "shared file has no parseSpiffe-door rows")
+    for bad in invalid do
+        Assert.True(ActorRef.parseSpiffe bad = None, sprintf "expected parseSpiffe to reject %s" bad)

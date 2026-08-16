@@ -1,11 +1,12 @@
 ---
 id: 081M00J1EWW087G0R000RJ6790
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: actorref-invalid-vector-class-is-hand-copied-per-oracle-not
 title: "ActorRef invalid-vector class is hand-copied per oracle, not a shared cross-verification vector file"
 created: 2026-08-14T16:35:17.532Z
+completed: 2026-08-15T22:52:05.512Z
 depends_on: []
 composes_with: []
 ---
@@ -80,3 +81,10 @@ closes the live divergence; this closes the class.
 - `.claude/rules/no-binary-in-proof-lineage.md` — text vectors, shared and diffable
 - `docs/writer-actor-routing-model.md` — a bus address is not identity; this is the parser
   for the address half
+
+## Resolution (2026-08-15)
+
+`tests/cross-verification/actor-ref/vectors.json` is the invalid class. TS
+`INVALID_VECTORS` / `INVALID_SPIFFE_VECTORS` are projections of that file by
+`door`. F# `ActorRef.Tests` reads the same file. Adding a row with no parser
+change turns the matching oracle red.
