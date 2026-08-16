@@ -116,7 +116,37 @@ function rulesMatch(
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
+// Every argument this migration understands. No positionals, no value-taking flags.
+const ACCEPTED_FLAGS: readonly string[] = ["--dry-run"];
+
+/**
+ * FAIL CLOSED ON AN UNRECOGNISED ARGUMENT — 081M03HRHBS087G0R001HRAFQ0.
+ *
+ * `process.argv.includes("--dry-run")` asks one question and reads EVERY other string as consent:
+ * `--dry-runn`, `--dryrun` and `--help` all meant "mutate branch protection on
+ * Lucent-Financial-Group/Zeta for real". The target repo is hardcoded, so a mistyped flag cannot
+ * land the change somewhere harmless.
+ *
+ * Called as the first statement of `main()`, above the first `ghApi` call — so a bad invocation
+ * makes no network request at all, mutating or otherwise.
+ */
+function firstUnknownArg(argv: readonly string[]): string | null {
+  for (const arg of argv) {
+    if (!ACCEPTED_FLAGS.includes(arg)) return arg;
+  }
+  return null;
+}
+
 export async function main(): Promise<number> {
+  const unknown = firstUnknownArg(process.argv.slice(2));
+  if (unknown !== null) {
+    console.error(
+      `unknown arg: ${unknown}\n` +
+        `REFUSED — no ruleset was read or modified. Accepted: ${ACCEPTED_FLAGS.join(" ")}`,
+    );
+    return 2;
+  }
+
   const dryRun = process.argv.includes("--dry-run");
 
   console.log("081KR2E4K0008QG0R002NYV33T: Branch Safety ruleset migration (slice 2 — live)");

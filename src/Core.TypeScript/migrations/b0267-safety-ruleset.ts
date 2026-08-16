@@ -110,7 +110,41 @@ const branchSafetyPayload = {
   ],
 };
 
+// Every argument this migration understands. No positionals, no value-taking flags.
+const ACCEPTED_FLAGS: readonly string[] = ["--dry-run"];
+
+/**
+ * FAIL CLOSED ON AN UNRECOGNISED ARGUMENT — 081M03HRHBS087G0R001HRAFQ0.
+ *
+ * `process.argv.includes("--dry-run")` asks one question and reads EVERY other string as consent:
+ * `--dry-runn`, `--dryrun` and `--help` all meant "go". This migration's live path can DELETE the
+ * Default ruleset outright when filtering empties it — the largest irreversible action in the
+ * sibling set — and the target repo is hardcoded, so no argument can misdirect it somewhere safe.
+ *
+ * `process.exit` rather than a return code because this `main` is typed `Promise<void>` and its
+ * `import.meta.main` handler has no channel for one. Nothing imports it (checked); the refusal
+ * must be unconditional rather than advisory.
+ *
+ * Called as the first statement of `main()`, above the first `ghApi` call — so a bad invocation
+ * makes no network request at all, mutating or otherwise.
+ */
+function firstUnknownArg(argv: readonly string[]): string | null {
+  for (const arg of argv) {
+    if (!ACCEPTED_FLAGS.includes(arg)) return arg;
+  }
+  return null;
+}
+
 export async function main(): Promise<void> {
+  const unknown = firstUnknownArg(process.argv.slice(2));
+  if (unknown !== null) {
+    console.error(
+      `unknown arg: ${unknown}\n` +
+        `REFUSED — no ruleset was read, modified or deleted. Accepted: ${ACCEPTED_FLAGS.join(" ")}`,
+    );
+    process.exit(2);
+  }
+
   const dryRun = process.argv.includes("--dry-run");
 
   console.log("081KR2E4K0008QG0R002NYV33T: Branch Safety ruleset migration");

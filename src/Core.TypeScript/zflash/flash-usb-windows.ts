@@ -712,8 +712,54 @@ function bail(code: 1 | 2, msg: string): never {
   process.exit(code);
 }
 
+/** Flags that stand alone. */
+export const BOOLEAN_FLAGS: readonly string[] = ["--short", "--dry-run", "--no-inject", "--help", "-h"];
+/** Flags that consume the following token as their value. */
+export const VALUE_FLAGS: readonly string[] = ["--ssh-key"];
+
+/**
+ * FAIL CLOSED ON AN UNRECOGNISED FLAG — 081M03HRHBS087G0R001HRAFQ0.
+ *
+ * The tool asks `argv.includes("--dry-run")` and then FILTERS every remaining `-`-prefixed token
+ * out of the positional list. So an unknown flag was not merely ignored — it was actively
+ * discarded, and `--dry-runn` meant "destroy the USB for real". Positional count was already
+ * bounded; flags were the hole.
+ *
+ * Returns the first unrecognised flag, or null. Positionals are NOT judged here: at most one ISO
+ * path is legal and the existing `positional.length > 1` check already covers that.
+ *
+ * Exported and pure because the destructive path is Windows-gated, so this is the surface a
+ * macOS/Linux test can exercise directly — see flash-usb-windows.test.ts.
+ */
+export function firstUnknownFlag(argv: readonly string[]): string | null {
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === undefined) continue;
+    if (VALUE_FLAGS.includes(arg)) {
+      i++; // its value is not a flag, whatever it looks like
+      continue;
+    }
+    if (BOOLEAN_FLAGS.includes(arg)) continue;
+    if (arg.startsWith("-")) return arg;
+  }
+  return null;
+}
+
 async function main(runner: CommandRunner = realRunner): Promise<void> {
   const argv = process.argv.slice(2);
+
+  // FIRST — above the elevation check, above disk enumeration, above every `runner.ps` call, so a
+  // mistyped flag cannot reach the machine at all. `unknown arg` is also the phrase
+  // `hygiene/audit-workflow-cli-flags.ts` looks for to decide this parser has a closed flag set.
+  const unknownFlag = firstUnknownFlag(argv);
+  if (unknownFlag !== null) {
+    bail(
+      2,
+      `unknown arg: ${unknownFlag} — REFUSED, no device was read or written. ` +
+        `Accepted: ${[...BOOLEAN_FLAGS, ...VALUE_FLAGS].sort().join(" ")} [iso-path]`,
+    );
+  }
+
   const short = argv.includes("--short");
   const dryRun = argv.includes("--dry-run");
   const noInject = argv.includes("--no-inject");
