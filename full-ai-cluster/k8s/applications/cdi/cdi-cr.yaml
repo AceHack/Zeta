@@ -1,0 +1,42 @@
+# CDI CR — Containerized Data Importer. Imports VM disk images (Windows
+# ISOs, golden images) into PVCs so KubeVirt VMs have something to boot.
+#
+# Spec captured VERBATIM from the live CR on node-5b2dfa (2026-08-16) via
+#   kubectl get cdi cdi -o json | jq '{...,spec}'
+# so adopting this Application is a no-op against the running cluster.
+#
+# HonorWaitForFirstConsumer matters here: the default StorageClass is
+# zeta-local-path (WaitForFirstConsumer), and without this gate CDI binds
+# the import PVC before the scheduler has picked a node.
+#
+# Cluster-scoped resource (no namespace) — the operator in the `cdi`
+# namespace watches it.
+#
+# sync-wave 1: the CRD + operator (wave 0, cdi-operator.yaml) must exist
+# before this CR is applied.
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: CDI
+metadata:
+  name: cdi
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  config:
+    featureGates:
+      - HonorWaitForFirstConsumer
+      - WebhookPvcRendering
+    podResourceRequirements:
+      limits:
+        cpu: "1"
+        memory: 2Gi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+  customizeComponents: {}
+  imagePullPolicy: IfNotPresent
+  infra:
+    nodeSelector:
+      kubernetes.io/os: linux
+  workload:
+    nodeSelector:
+      kubernetes.io/os: linux

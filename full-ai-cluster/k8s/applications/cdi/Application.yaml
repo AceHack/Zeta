@@ -1,0 +1,42 @@
+# CDI (Containerized Data Importer) — imports VM disk images into PVCs.
+# KubeVirt's companion: KubeVirt runs the guest, CDI is how the guest's
+# disk gets populated (Windows ISOs, virtio drivers, golden images).
+#
+# WHY THIS EXISTS: same story as the sibling kubevirt Application — CDI
+# was installed by hand on node-5b2dfa (2026-07-12) and existed nowhere
+# in git, so nothing about the Windows-guest pipeline was reproducible
+# from the USB installer.
+#
+# Vendored VERBATIM from the upstream release
+#   https://github.com/kubevirt/containerized-data-importer/releases/download/v1.65.0/cdi-operator.yaml
+# (no official Helm chart; pins the exact bytes running today —
+# quay.io/kubevirt/cdi-operator:v1.65.0, confirmed against the live
+# deployment). It creates the `cdi` namespace itself.
+#
+# NO automated sync — DELIBERATE, same reasoning as kubevirt: this adopts
+# a live operator underneath running production guests. Sync by hand once
+# after reading the diff:
+#   argocd app diff cdi
+#   argocd app sync cdi
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"   # alongside kubevirt, before VM workloads
+  name: cdi
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/cdi
+    directory:
+      include: '{cdi-operator,cdi-cr}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cdi
+  syncPolicy:
+    # No `automated:` block — see the header. Manual sync only.
+    syncOptions: [ ServerSideApply=true ]
