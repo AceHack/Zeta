@@ -21,16 +21,25 @@ import {
   createSoftwareFileShareAdapter,
   createTpmShareAdapter,
   defaultPointerOf,
+  describeAttachedPkcs11Tokens,
   FROST_SEALED_SHARE_SCHEMA_V1,
   INSECURE_FAKE_SEAL_ALG,
   isHardwareSealTier,
   parseCkTokenInfoIdentity,
+  resolveSlotForTokenIdentity,
   type ExtractingFrostShareAdapter,
   type FrostShareAdapter,
   type Pkcs11Lib,
   type Pkcs11PointerOf,
 } from "./frost-share-adapter.ts";
 import { frostSharePath, type FrostCaCustodyEffects } from "./frost-ca-custody.ts";
+import {
+  assertRosterSound,
+  collectSealBindings,
+  FROST_TOKEN_ROSTER_SCHEMA,
+  type FrostRosterEffects,
+  type FrostTokenRoster,
+} from "./frost-token-roster.ts";
 
 function sandboxFx(): { fx: FrostCaCustodyEffects; root: string; files: Map<string, string> } {
   const root = mkdtempSync(join(tmpdir(), "zeta-frost-adapter-"));
@@ -123,6 +132,62 @@ function mockToken(opts: { keyPresent?: boolean; serial?: string; label?: string
 
 /** Mocks never dereference, so a stub pointer is correct here and must be DECLARED. */
 const stubPointerOf: Pkcs11PointerOf = () => 1n;
+
+interface MockSlot {
+  readonly slotId: number;
+  readonly serial: string;
+  readonly label?: string;
+}
+
+/** CKR_SLOT_ID_INVALID -- what a real module returns for a slot that is not there. */
+const CKR_SLOT_ID_INVALID = 0x03n;
+
+/**
+ * A PKCS#11 MODULE with several slots, each holding a distinct token.
+ *
+ * mockToken() above models one device and answers C_GetTokenInfo the same way for every
+ * slot, which is fine for binding tests and useless for ADDRESSING tests -- a mock where
+ * every slot is the same device cannot tell a resolver that reached the right slot from
+ * one that reached slot 0 and got lucky. This mock can: slots are distinct, an
+ * unpopulated slot fails, and every opened slot is recorded so a test can assert on where
+ * the adapter actually went rather than only on what it returned.
+ */
+function mockModule(slots: readonly MockSlot[]): Pkcs11Lib & { readonly opened: number[] } {
+  const opened: number[] = [];
+  const base = mockToken();
+  const find = (slotId: number): MockSlot | undefined => slots.find((s) => s.slotId === slotId);
+  return {
+    ...base,
+    opened,
+    C_GetSlotList: (tokenPresent, pSlotList, pulCount) => {
+      // tokenPresent must be CK_TRUE: an empty reader is not an addressable device.
+      if (Number(tokenPresent) !== 1) return 0x05n;
+      const count = pulCount as BigUint64Array;
+      if (!pSlotList || pSlotList === 0n) {
+        count[0] = BigInt(slots.length);
+        return 0n;
+      }
+      const list = pSlotList as BigUint64Array;
+      slots.forEach((s, i) => {
+        list[i] = BigInt(s.slotId);
+      });
+      count[0] = BigInt(slots.length);
+      return 0n;
+    },
+    C_GetTokenInfo: (slotID, pInfo) => {
+      const s = find(Number(slotID));
+      if (s === undefined) return CKR_SLOT_ID_INVALID;
+      (pInfo as Uint8Array).set(mockCkTokenInfo(s.label ?? "zeta-guard", s.serial));
+      return 0n;
+    },
+    C_OpenSession: (slotID, _f, _a, _n, phSession) => {
+      opened.push(Number(slotID));
+      if (find(Number(slotID)) === undefined) return CKR_SLOT_ID_INVALID;
+      phSession[0] = 123n;
+      return 0n;
+    },
+  };
+}
 
 describe("FrostShareAdapter: storage round-trips", () => {
   test("FSA-1: software adapter round-trips share", () => {
@@ -225,6 +290,7 @@ describe("FrostShareAdapter: the fake cannot pass as hardware", () => {
     // Same directory, same ca, real (mock-backed) hardware tier reading a fake share.
     const hw = createPkcs11ShareAdapter(fx, root, "ca", {
       libraryPath: "/mock/lib.so",
+      slotId: 0,
       ffiLoader: () => mockToken(),
       pointerOf: stubPointerOf,
     });
@@ -259,6 +325,7 @@ describe("FrostShareAdapter: no-silent-downgrade", () => {
         requireTier: "hardware-pkcs11",
         pkcs11Opts: {
           libraryPath: "/mock/lib.so",
+          slotId: 0,
           ffiLoader: () => {
             sealAttempted = true;
             return mockToken({ keyPresent: false });
@@ -311,6 +378,7 @@ describe("FrostShareAdapter: integrity and honesty", () => {
       createInsecureFakeHsmShareAdapter(fx, root, "ca", { iUnderstandThisIsNotHardware: true, warn: () => {} }),
       createPkcs11ShareAdapter(fx, root, "ca", {
         libraryPath: "/mock/lib.so",
+        slotId: 0,
         ffiLoader: () => mockToken(),
         pointerOf: stubPointerOf,
       }),
@@ -338,6 +406,7 @@ describe("FrostShareAdapter: integrity and honesty", () => {
     const { fx, root, files } = sandboxFx();
     const opts = {
       libraryPath: "/mock/lib.so",
+      slotId: 0,
       ffiLoader: () => mockToken(),
       pointerOf: stubPointerOf,
     };
@@ -408,6 +477,7 @@ describe("FrostShareAdapter: integrity and honesty", () => {
 describe("FrostShareAdapter: multi-token roster", () => {
   const guard = (serial: string) => ({
     libraryPath: "/mock/pkcs11.so",
+    slotId: 0,
     keyLabel: "zeta-frost-wrap",
     ffiLoader: () => mockToken({ serial }),
     pointerOf: defaultPointerOf as Pkcs11PointerOf,
@@ -520,6 +590,280 @@ describe("FrostShareAdapter: multi-token roster", () => {
     );
     noIdentity.storeShare(REC, "ca");
     expect(noIdentity.loadShare(1)?.secretShare).toBe(REC.secretShare);
+  });
+});
+
+// ============================================================================
+// ADDRESSING -- which token, and what happens when it is not there
+// ============================================================================
+//
+// Addressing is NOT the security property. sealedByToken is; these tests sit on top of
+// it. What addressing buys, once the binding exists, is that a roster can be written in
+// terms of devices instead of USB positions, and that a device which is not present
+// produces a refusal instead of a conversation with whatever else was plugged in.
+//
+// FSA-36 is the load-bearing one. An absent token quietly resolving to slot 0 would undo
+// the binding FROM THE OUTSIDE -- the wrong device gets opened, and the operator sees a
+// PIN prompt from a token they did not mean to touch.
+
+describe("FrostShareAdapter: token addressing", () => {
+  const byIdentity = (identity: string, mod: Pkcs11Lib) => ({
+    libraryPath: "/mock/pkcs11.so",
+    keyLabel: "zeta-frost-wrap",
+    address: { by: "token-identity" as const, tokenIdentity: identity },
+    ffiLoader: () => mod,
+    pointerOf: stubPointerOf,
+  });
+
+  test("FSA-32: an options object that names no token is REFUSED, not defaulted to slot 0", () => {
+    // The regression guard for `opts.slotId ?? 0`. With that default, N adapters built for
+    // N tokens by a caller who forgot the field all addressed the SAME device, and the
+    // roster was N copies of one risk while every log line said hardware-pkcs11.
+    const { fx, root } = sandboxFx();
+    expect(() =>
+      createPkcs11ShareAdapter(fx, root, "ca", {
+        libraryPath: "/mock/pkcs11.so",
+        ffiLoader: () => mockModule([{ slotId: 0, serial: "YK-11111" }]),
+        pointerOf: stubPointerOf,
+      }),
+    ).toThrow(/no PKCS#11 token address/);
+    expect(() =>
+      createPkcs11ShareAdapter(fx, root, "ca", {
+        libraryPath: "/mock/pkcs11.so",
+        ffiLoader: () => mockModule([{ slotId: 0, serial: "YK-11111" }]),
+        pointerOf: stubPointerOf,
+      }),
+    ).toThrow(/There is no default/);
+  });
+
+  test("FSA-33: naming the token two ways at once is refused rather than resolved silently", () => {
+    const { fx, root } = sandboxFx();
+    expect(() =>
+      createPkcs11ShareAdapter(fx, root, "ca", {
+        libraryPath: "/mock/pkcs11.so",
+        slotId: 0,
+        address: { by: "token-identity", tokenIdentity: "zeta-guard#YK-11111" },
+        ffiLoader: () => mockModule([{ slotId: 0, serial: "YK-11111" }]),
+        pointerOf: stubPointerOf,
+      }),
+    ).toThrow(/Refusing to choose one silently/);
+  });
+
+  test("FSA-34: a token-identity address finds the device wherever it is plugged in", () => {
+    const { fx, root } = sandboxFx();
+    const mod = mockModule([
+      { slotId: 4, serial: "YK-11111" },
+      { slotId: 9, serial: "YK-22222" },
+    ]);
+    const a = createPkcs11ShareAdapter(fx, root, "ca", byIdentity("zeta-guard#YK-22222", mod));
+    a.storeShare(REC, "ca");
+    expect(a.loadShare(1)?.secretShare).toBe(REC.secretShare);
+    // It went to slot 9. Never slot 0, and never slot 4.
+    expect(new Set(mod.opened)).toEqual(new Set([9]));
+  });
+
+  test("FSA-35: a replug reorders the slots and the roster is unaffected", () => {
+    // The argument for identity addressing over slot addressing, made concrete. Two
+    // adapters, two devices, two shares. Then the tokens are pulled and re-inserted in
+    // the other order, which is the single most ordinary thing that can happen to a
+    // desk. Under slot addressing every share would now be addressed at the wrong device.
+    const { fx, root } = sandboxFx();
+    const before = mockModule([
+      { slotId: 0, serial: "YK-11111" },
+      { slotId: 1, serial: "YK-22222" },
+    ]);
+    createPkcs11ShareAdapter(fx, root, "ca", byIdentity("zeta-guard#YK-11111", before)).storeShare(
+      { ...REC, x: 1 },
+      "ca",
+    );
+    createPkcs11ShareAdapter(fx, root, "ca", byIdentity("zeta-guard#YK-22222", before)).storeShare(
+      { ...REC, x: 2 },
+      "ca",
+    );
+
+    const after = mockModule([
+      { slotId: 0, serial: "YK-22222" },
+      { slotId: 1, serial: "YK-11111" },
+    ]);
+    expect(
+      createPkcs11ShareAdapter(fx, root, "ca", byIdentity("zeta-guard#YK-11111", after)).loadShare(1)
+        ?.secretShare,
+    ).toBe(REC.secretShare);
+    expect(
+      createPkcs11ShareAdapter(fx, root, "ca", byIdentity("zeta-guard#YK-22222", after)).loadShare(2)
+        ?.secretShare,
+    ).toBe(REC.secretShare);
+  });
+
+  test("FSA-36: an ABSENT token throws and never falls back to slot 0", () => {
+    // The regression that would quietly undo the identity binding. A resolver that
+    // shrugged and used slot 0 would open a device this share is not bound to; the load
+    // would then fail on the binding, but the SEAL would have written a share to the
+    // wrong device with a confident label, and the operator would have been asked for the
+    // wrong token's PIN.
+    const { fx, root } = sandboxFx();
+    const mod = mockModule([
+      { slotId: 0, serial: "YK-11111" },
+      { slotId: 1, serial: "YK-22222" },
+    ]);
+    expect(() =>
+      createPkcs11ShareAdapter(fx, root, "ca", byIdentity("zeta-guard#YK-99999", mod)),
+    ).toThrow(/is not attached/);
+    // Not "it failed later". It never opened a session with any slot at all.
+    expect(mod.opened).toEqual([]);
+  });
+
+  test("FSA-37: the error names what IS attached, so the operator can fix it", () => {
+    const { fx, root } = sandboxFx();
+    const mod = mockModule([{ slotId: 7, serial: "YK-11111" }]);
+    expect(() =>
+      createPkcs11ShareAdapter(fx, root, "ca", byIdentity("zeta-guard#YK-99999", mod)),
+    ).toThrow(/slot 7: zeta-guard#YK-11111/);
+  });
+
+  test("FSA-38: two devices reporting ONE identity is refused, never guessed between", () => {
+    const { fx, root } = sandboxFx();
+    const mod = mockModule([
+      { slotId: 0, serial: "YK-11111" },
+      { slotId: 1, serial: "YK-11111" },
+    ]);
+    expect(() =>
+      createPkcs11ShareAdapter(fx, root, "ca", byIdentity("zeta-guard#YK-11111", mod)),
+    ).toThrow(/Refusing to guess/);
+  });
+
+  test("FSA-39: slot addressing with an expected identity refuses a swapped device", () => {
+    // The upgrade path for a caller that has a slot number and wants it checked: the slot
+    // is opened, the device is asked who it is, and a different answer is a refusal.
+    const { fx, root } = sandboxFx();
+    const mod = mockModule([{ slotId: 0, serial: "YK-22222" }]);
+    expect(() =>
+      createPkcs11ShareAdapter(fx, root, "ca", {
+        libraryPath: "/mock/pkcs11.so",
+        address: { by: "slot-index", slotId: 0, expectTokenIdentity: "zeta-guard#YK-11111" },
+        ffiLoader: () => mod,
+        pointerOf: stubPointerOf,
+      }).storeShare(REC, "ca"),
+    ).toThrow(/addressed to "zeta-guard#YK-11111"/);
+  });
+
+  test("FSA-40: enumeration reports identities, and an unidentifiable slot cannot be addressed", () => {
+    const mod = mockModule([
+      { slotId: 2, serial: "YK-11111" },
+      { slotId: 5, serial: "" }, // a token that reports no serial
+    ]);
+    const attached = describeAttachedPkcs11Tokens({
+      libraryPath: "/mock/pkcs11.so",
+      ffiLoader: () => mod,
+    });
+    expect(attached.map((t) => t.slotId)).toEqual([2, 5]);
+    expect(attached[0]?.tokenIdentity).toBe("zeta-guard#YK-11111");
+    // Reported, not dropped -- and null, so no address can ever match it.
+    expect(attached[1]?.tokenIdentity).toBeNull();
+    expect(attached[1]?.reason).toMatch(/empty serial/);
+    expect(() => resolveSlotForTokenIdentity(attached, "zeta-guard#")).toThrow(/is not attached/);
+  });
+
+  test("FSA-41: the sealed identity is the DEVICE'S report, not an echo of the address", () => {
+    // If tokenIdentity() returned the configured string, a token-identity address would
+    // be self-fulfilling: the artifact would name a device that was never asked to
+    // confirm it. Here the module reports a label the caller never typed, and that label
+    // is what lands in the artifact.
+    const { fx, root, files } = sandboxFx();
+    const mod = mockModule([{ slotId: 3, serial: "YK-11111", label: "house-a" }]);
+    createPkcs11ShareAdapter(fx, root, "ca", byIdentity("house-a#YK-11111", mod)).storeShare(REC, "ca");
+    expect(files.get(frostSharePath(root, 1)) ?? "").toContain('"sealedByToken": "house-a#YK-11111"');
+  });
+});
+
+// ============================================================================
+// END TO END -- seal on addressed devices, then CHECK the roster it produced
+// ============================================================================
+//
+// The two halves meet here. The adapter writes artifacts that name the device that sealed
+// them; the roster reads those artifacts back and does the arithmetic. Neither half is
+// trusted on its own: the roster is a claim a human wrote, the artifacts are the
+// evidence, and the check is whether they entail each other.
+
+describe("FrostShareAdapter x FrostTokenRoster: the roster is verified, not asserted", () => {
+  const DEVICES = [
+    { slot: 5, serial: "YK-11111", label: "house-a", x: 1 },
+    { slot: 2, serial: "YK-22222", label: "house-b", x: 2 },
+    { slot: 9, serial: "YK-33333", label: "house-c", x: 3 },
+  ] as const;
+
+  const identityOf = (d: (typeof DEVICES)[number]): string => `${d.label}#${d.serial}`;
+
+  /** One directory per device -- which is what actually happens: one directory travels
+   *  to one house. The directory name is never trusted; the artifact names its device. */
+  function sealAll(): { files: Map<string, string>; dirs: string[]; groupKey: string } {
+    const { fx, root, files } = sandboxFx();
+    const mod = mockModule(DEVICES.map((d) => ({ slotId: d.slot, serial: d.serial, label: d.label })));
+    const dirs: string[] = [];
+    for (const d of DEVICES) {
+      const dir = join(root, d.label);
+      dirs.push(dir);
+      createPkcs11ShareAdapter(fx, dir, "ca", {
+        libraryPath: "/mock/pkcs11.so",
+        keyLabel: "zeta-frost-wrap",
+        address: { by: "token-identity", tokenIdentity: identityOf(d) },
+        ffiLoader: () => mod,
+        pointerOf: stubPointerOf,
+      }).storeShare({ ...REC, x: d.x }, "ca");
+    }
+    return { files, dirs, groupKey: REC.groupPublicKeyHex };
+  }
+
+  function readerOver(files: Map<string, string>): FrostRosterEffects {
+    return {
+      exists: (p) => [...files.keys()].some((k) => k.startsWith(`${p}/`)),
+      readText: (p) => files.get(p) ?? "",
+      listFiles: (p) =>
+        [...files.keys()].filter((k) => k.startsWith(`${p}/`)).map((k) => k.slice(p.length + 1)),
+    };
+  }
+
+  const rosterFor = (groupKey: string): FrostTokenRoster => ({
+    schema: FROST_TOKEN_ROSTER_SCHEMA,
+    ca: "ca",
+    groupPublicKeyHex: groupKey,
+    threshold: 2,
+    totalShares: 3,
+    sealTier: "hardware-pkcs11",
+    participants: DEVICES.map((d) => ({ x: d.x, location: d.label, devices: [identityOf(d)] })),
+  });
+
+  test("FSA-42: shares sealed to addressed devices satisfy the roster that declares them", () => {
+    const { files, dirs, groupKey } = sealAll();
+    const observed = collectSealBindings(readerOver(files), dirs);
+    expect(observed.length).toBe(3);
+    expect(() => assertRosterSound(rosterFor(groupKey), observed)).not.toThrow();
+  });
+
+  test("FSA-43: MUTANT -- slot binding removed, so every share is sealed by one device", () => {
+    // The pre-addressing world: every adapter addressed slot 0 (or whatever answered),
+    // so all three shares carry ONE sealing identity. Each artifact is still perfectly
+    // bound and each still opens only under that device -- the cryptography is fine and
+    // the custody is 1-of-1. The roster is what notices.
+    const { fx, root, files } = sandboxFx();
+    const flat = mockModule([{ slotId: 0, serial: "YK-11111", label: "house-a" }]);
+    const dirs: string[] = [];
+    for (const d of DEVICES) {
+      const dir = join(root, d.label);
+      dirs.push(dir);
+      createPkcs11ShareAdapter(fx, dir, "ca", {
+        libraryPath: "/mock/pkcs11.so",
+        keyLabel: "zeta-frost-wrap",
+        slotId: 0, // one slot, one device, three shares
+        ffiLoader: () => flat,
+        pointerOf: stubPointerOf,
+      }).storeShare({ ...REC, x: d.x }, "ca");
+    }
+    const observed = collectSealBindings(readerOver(files), dirs);
+    expect(new Set(observed.map((o) => o.sealedByToken)).size).toBe(1);
+    expect(() => assertRosterSound(rosterFor(REC.groupPublicKeyHex), observed)).toThrow(
+      /undeclared-artifact/,
+    );
   });
 });
 

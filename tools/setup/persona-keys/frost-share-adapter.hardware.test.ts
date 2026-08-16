@@ -25,14 +25,26 @@
 //
 //   PKCS#11 MULTI-TOKEN (the one that tests the property a token PACK buys). Plug in
 //   two or more tokens, provision each with an AES-256 key labelled zeta-frost-wrap,
-//   and list their slots. Same PIN across tokens is fine -- in fact it is the case most
-//   worth testing, because identical PINs and identical key material are exactly how a
-//   roster silently collapses to 1-of-N:
+//   and NAME THEM. Same PIN across tokens is fine -- in fact it is the case most worth
+//   testing, because identical PINs and identical key material are exactly how a roster
+//   silently collapses to 1-of-N.
+//
+//   Step 1, discover the identities (label#serial, printed on the outside of the device;
+//   no key material is read or shown):
+//     bun tools/setup/persona-keys/frost-token-roster.ts tokens /opt/homebrew/lib/ykcs11.dylib
+//
+//   Step 2, name them. Identities, NOT slot numbers -- slot numbers move when anything
+//   is unplugged, and a roster written in slot numbers silently re-points itself:
 //     ZETA_FROST_HARDWARE_LANE=pkcs11-multi \
 //     ZETA_FROST_PKCS11_LIB=/opt/homebrew/lib/ykcs11.dylib \
 //     ZETA_FROST_PKCS11_PIN=... \
-//     ZETA_FROST_PKCS11_SLOTS=0,1,2 \
+//     ZETA_FROST_PKCS11_TOKENS='house-a#12345678,house-b#87654321' \
 //     bun test ./tools/setup/persona-keys/frost-share-adapter.hardware.test.ts
+//
+//   Optionally add a BACKUP token for participant 1, to exercise duplication. A share may
+//   live on N devices and is still ONE participant; the roster check is what enforces
+//   that the backup did not become a second position:
+//     ZETA_FROST_PKCS11_BACKUP_TOKEN='house-d#11112222'
 //
 //   TPM 2.0 (Linux only -- Apple Silicon has no TPM; see the adapter header):
 //     tpm2_createprimary -c primary.ctx
@@ -48,10 +60,19 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   createHsmShareAdapter,
+  describeAttachedPkcs11Tokens,
   isHardwareSealTier,
   type ExtractingFrostShareAdapter,
 } from "./frost-share-adapter.ts";
 import { frostSharePath, type FrostCaCustodyEffects } from "./frost-ca-custody.ts";
+import {
+  assertRosterSound,
+  attestRosterOnDevices,
+  collectSealBindings,
+  FROST_TOKEN_ROSTER_SCHEMA,
+  type FrostRosterEffects,
+  type FrostTokenRoster,
+} from "./frost-token-roster.ts";
 
 const LANE = process.env["ZETA_FROST_HARDWARE_LANE"] ?? "";
 const PKCS11_LANE = LANE === "pkcs11";
@@ -149,52 +170,63 @@ describe.if(TPM_LANE)("hardware lane: TPM 2.0", () => {
 // nothing in the artifact to show it. This lane proves the refusal on real hardware.
 
 describe.if(PKCS11_MULTI_LANE)("hardware lane: PKCS#11 multi-token roster", () => {
-  const slotsRaw: string = process.env["ZETA_FROST_PKCS11_SLOTS"] ?? "";
-  const slots: number[] = slotsRaw
+  const LIB: string = process.env["ZETA_FROST_PKCS11_LIB"] ?? "";
+  const tokens: string[] = (process.env["ZETA_FROST_PKCS11_TOKENS"] ?? "")
     .split(",")
     .map((s: string) => s.trim())
-    .filter((s: string) => s !== "")
-    .map((s: string) => Number(s));
+    .filter((s: string) => s !== "");
+  const backupToken: string = (process.env["ZETA_FROST_PKCS11_BACKUP_TOKEN"] ?? "").trim();
 
-  const optsForSlot = (slotId: number) => ({
-    libraryPath: process.env["ZETA_FROST_PKCS11_LIB"] ?? "",
+  /** Addressed by IDENTITY, never by slot: the point of the lane is that the roster
+   *  survives a replug, and a slot number is exactly what does not. */
+  const optsForToken = (tokenIdentity: string) => ({
+    libraryPath: LIB,
     pin: process.env["ZETA_FROST_PKCS11_PIN"] ?? "",
-    slotId,
+    address: { by: "token-identity" as const, tokenIdentity },
     keyLabel: process.env["ZETA_FROST_PKCS11_LABEL"] ?? "zeta-frost-wrap",
   });
 
-  test("HW-6: at least two tokens were actually declared", () => {
-    // Opting into the multi lane with one slot would test nothing about distribution.
-    expect(slots.length).toBeGreaterThanOrEqual(2);
-    expect(existsSync(process.env["ZETA_FROST_PKCS11_LIB"] ?? "")).toBe(true);
+  const adapterFor = (
+    tokenIdentity: string,
+    fx: FrostCaCustodyEffects,
+    dir: string,
+  ): ExtractingFrostShareAdapter =>
+    createHsmShareAdapter(fx, dir, "hw-ca", {
+      requireTier: "hardware-pkcs11",
+      pkcs11Opts: optsForToken(tokenIdentity),
+    });
+
+  /** One directory per device -- what actually happens when a device goes to a house. */
+  const dirFor = (root: string, tokenIdentity: string): string =>
+    join(root, tokenIdentity.replaceAll(/[^A-Za-z0-9_.-]/gu, "_"));
+
+  const rosterEffects = (files: Map<string, string>): FrostRosterEffects => ({
+    exists: (p) => [...files.keys()].some((k) => k.startsWith(`${p}/`)),
+    readText: (p) => files.get(p) ?? "",
+    listFiles: (p) => [...files.keys()].filter((k) => k.startsWith(`${p}/`)).map((k) => k.slice(p.length + 1)),
   });
 
-  test("HW-7: the declared slots are physically DISTINCT tokens", () => {
-    // Two slot numbers pointing at one token would make every later assertion vacuous,
-    // and is an easy mistake: slot ids are module-assigned and not stable identities.
-    const { fx, root, files } = sandboxFx();
-    const identities = slots.map((slotId: number, i: number) => {
-      const a = createHsmShareAdapter(fx, root, "hw-ca", {
-        requireTier: "hardware-pkcs11",
-        pkcs11Opts: optsForSlot(slotId),
-      });
-      a.storeShare({ ...REC, x: i + 1 }, "hw-ca");
-      const body = JSON.parse(files.get(frostSharePath(root, i + 1)) ?? "{}") as {
-        sealedByToken?: string;
-      };
-      return body.sealedByToken ?? "";
-    });
-    for (const id of identities) expect(id).not.toBe("");
-    expect(new Set(identities).size).toBe(slots.length);
+  test("HW-6: at least two tokens were actually named, by identity", () => {
+    // Opting into the multi lane with one token would test nothing about distribution.
+    expect(tokens.length).toBeGreaterThanOrEqual(2);
+    expect(existsSync(LIB)).toBe(true);
+    // Named by identity, not by slot. A bare number here means the operator is still
+    // thinking positionally, which is the habit this lane exists to break.
+    for (const t of tokens) expect(t).toMatch(/#/u);
+  });
+
+  test("HW-7: every named token is ATTACHED, and they are physically distinct", () => {
+    const attached = describeAttachedPkcs11Tokens({ libraryPath: LIB });
+    const present = new Set(attached.map((a) => a.tokenIdentity).filter((i): i is string => i !== null));
+    for (const t of tokens) expect([...present]).toContain(t);
+    // Two names for one chip would make every later assertion vacuous.
+    expect(new Set(tokens).size).toBe(tokens.length);
   });
 
   test("HW-8: each token opens its OWN share", () => {
     const { fx, root } = sandboxFx();
-    slots.forEach((slotId: number, i: number) => {
-      const a = createHsmShareAdapter(fx, root, "hw-ca", {
-        requireTier: "hardware-pkcs11",
-        pkcs11Opts: optsForSlot(slotId),
-      });
+    tokens.forEach((t: string, i: number) => {
+      const a = adapterFor(t, fx, dirFor(root, t));
       a.storeShare({ ...REC, x: i + 1 }, "hw-ca");
       expect(a.loadShare(i + 1)?.secretShare).toBe(REC.secretShare);
     });
@@ -202,23 +234,115 @@ describe.if(PKCS11_MULTI_LANE)("hardware lane: PKCS#11 multi-token roster", () =
 
   test("HW-9: no token opens ANOTHER token's share -- one compromise, one share", () => {
     const { fx, root } = sandboxFx();
-    slots.forEach((slotId: number, i: number) => {
-      createHsmShareAdapter(fx, root, "hw-ca", {
-        requireTier: "hardware-pkcs11",
-        pkcs11Opts: optsForSlot(slotId),
-      }).storeShare({ ...REC, x: i + 1 }, "hw-ca");
+    // Every share in EVERY directory, so the cross-product below is a real attempt to
+    // open another participant's artifact rather than a file-not-found.
+    tokens.forEach((t: string, i: number) => {
+      for (const dir of tokens.map((o: string) => dirFor(root, o))) {
+        adapterFor(t, fx, dir).storeShare({ ...REC, x: i + 1 }, "hw-ca");
+      }
     });
-    // Every token against every share that is not its own.
-    slots.forEach((slotId: number, i: number) => {
-      const attacker = createHsmShareAdapter(fx, root, "hw-ca", {
-        requireTier: "hardware-pkcs11",
-        pkcs11Opts: optsForSlot(slotId),
-      });
-      slots.forEach((_: number, j: number) => {
+    tokens.forEach((attackerToken: string, i: number) => {
+      const attacker = adapterFor(attackerToken, fx, dirFor(root, attackerToken));
+      tokens.forEach((_: string, j: number) => {
         if (i === j) return;
         expect(() => attacker.loadShare(j + 1)).toThrow(/wrong token for share x=/);
       });
     });
+  });
+
+  test("HW-10: the roster the ceremony produced is VERIFIED, not asserted", () => {
+    const { fx, root, files } = sandboxFx();
+    tokens.forEach((t: string, i: number) => {
+      adapterFor(t, fx, dirFor(root, t)).storeShare({ ...REC, x: i + 1 }, "hw-ca");
+    });
+    const declared: FrostTokenRoster = {
+      schema: FROST_TOKEN_ROSTER_SCHEMA,
+      ca: "hw-ca",
+      groupPublicKeyHex: REC.groupPublicKeyHex,
+      threshold: REC.threshold,
+      totalShares: tokens.length,
+      sealTier: "hardware-pkcs11",
+      participants: tokens.map((t: string, i: number) => ({ x: i + 1, devices: [t] })),
+    };
+    const observed = collectSealBindings(
+      rosterEffects(files),
+      tokens.map((t: string) => dirFor(root, t)),
+    );
+    expect(observed.length).toBe(tokens.length);
+    assertRosterSound(declared, observed);
+  });
+
+  test("HW-11: the N x N matrix is attested on the real chips", () => {
+    // The strongest available form of "verifiably distributed": not that the headers
+    // agree, but that the devices actually behave that way.
+    const { fx, root } = sandboxFx();
+    tokens.forEach((t: string, i: number) => {
+      adapterFor(t, fx, dirFor(root, t)).storeShare({ ...REC, x: i + 1 }, "hw-ca");
+    });
+    const declared: FrostTokenRoster = {
+      schema: FROST_TOKEN_ROSTER_SCHEMA,
+      ca: "hw-ca",
+      groupPublicKeyHex: REC.groupPublicKeyHex,
+      threshold: REC.threshold,
+      totalShares: tokens.length,
+      sealTier: "hardware-pkcs11",
+      participants: tokens.map((t: string, i: number) => ({ x: i + 1, devices: [t] })),
+    };
+    const findings = attestRosterOnDevices(declared, (device: string, x: number) => {
+      const owner = tokens[x - 1] ?? "";
+      try {
+        return adapterFor(device, fx, dirFor(root, owner)).loadShare(x) === null ? "refused" : "opened";
+      } catch {
+        return "refused";
+      }
+    });
+    expect(findings).toEqual([]);
+  });
+
+  test.if(backupToken !== "")("HW-12: a BACKUP device is one participant, not a new position", () => {
+    // Duplication for availability: the same share on two devices, in two houses. The
+    // roster must accept that as ONE position -- and must refuse the spelling that counts
+    // it as two, which is how a threshold silently drops.
+    const { fx, root, files } = sandboxFx();
+    tokens.forEach((t: string, i: number) => {
+      adapterFor(t, fx, dirFor(root, t)).storeShare({ ...REC, x: i + 1 }, "hw-ca");
+    });
+    // The SAME share x=1, sealed a second time to the backup device.
+    adapterFor(backupToken, fx, dirFor(root, backupToken)).storeShare({ ...REC, x: 1 }, "hw-ca");
+    expect(adapterFor(backupToken, fx, dirFor(root, backupToken)).loadShare(1)?.secretShare).toBe(
+      REC.secretShare,
+    );
+
+    const dirs = [...tokens, backupToken].map((t: string) => dirFor(root, t));
+    const observed = collectSealBindings(rosterEffects(files), dirs);
+    const base = {
+      schema: FROST_TOKEN_ROSTER_SCHEMA,
+      ca: "hw-ca",
+      groupPublicKeyHex: REC.groupPublicKeyHex,
+      threshold: REC.threshold,
+      totalShares: tokens.length,
+      sealTier: "hardware-pkcs11" as const,
+    };
+    // ONE participant, two devices: sound.
+    const asOneParticipant: FrostTokenRoster = {
+      ...base,
+      participants: tokens.map((t: string, i: number) => ({
+        x: i + 1,
+        devices: i === 0 ? [t, backupToken] : [t],
+      })),
+    };
+    assertRosterSound(asOneParticipant, observed);
+
+    // The same devices, spelled as an extra position: refused.
+    const asExtraPosition: FrostTokenRoster = {
+      ...base,
+      totalShares: tokens.length + 1,
+      participants: [
+        ...tokens.map((t: string, i: number) => ({ x: i + 1, devices: [t] })),
+        { x: 1, devices: [backupToken] },
+      ],
+    };
+    expect(() => assertRosterSound(asExtraPosition, observed)).toThrow(/duplicate-participant-index/);
   });
 });
 

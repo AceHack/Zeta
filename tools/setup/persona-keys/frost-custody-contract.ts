@@ -159,9 +159,19 @@ export interface ShareContract {
    */
   readonly gateControlledBy?: string;
   /**
-   * PKCS#11 slot for a chip-held share. Per-share slot binding is what makes a
-   * multi-token threshold real: without it every share resolves to the same
-   * slot and "three shares" is one custody unit wearing three hats.
+   * PKCS#11 slot for a chip-held share. ADDRESSING, NOT A SECURITY PROPERTY: a
+   * slot index says which device you talk to, and it is positional -- replug two
+   * tokens in the other order and the same index is a different device.
+   *
+   * An earlier version of this comment said per-share slot binding "is what makes
+   * a multi-token threshold real". It is not, and believing that is the failure it
+   * warned about wearing the fix's clothes: distinct slots with one shared wrapping
+   * key still gives a roster where any one token opens every share -- distributed
+   * in the addressing, 1-of-N in fact, and worse than an obviously-undistributed
+   * roster because it reads as done. What actually makes the threshold real is the
+   * IDENTITY BINDING (frost-share-adapter.ts, FrostSealedShareFileV2.sealedByToken),
+   * which seals each share to the identity the device reports for itself and
+   * refuses to open it on any other. Addressing is worth having only on top of that.
    */
   readonly slotId?: number;
   /** Token/HSM serial. Used by assertOneTokenOneRole; not a secret. */

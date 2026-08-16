@@ -597,14 +597,97 @@ const CKR_USER_ALREADY_LOGGED_IN = 0x100n;
 
 export const PKCS11_SEAL_ALG = "PKCS11:AES-256-CBC-PAD";
 
+// ============================================================================
+// ADDRESSING A TOKEN -- and what addressing is NOT
+// ============================================================================
+//
+// Read this together with FrostSealedShareFileV2.sealedByToken. That field is the
+// SECURITY property: share i is openable only by the token that sealed it, checked
+// against the device's own reported identity. Nothing below weakens or replaces it.
+//
+// What is below is ADDRESSING: how a caller says WHICH token it wants to reach. It is
+// not a security property. Addressing decides which device you talk to; the binding
+// decides whether the artifact opens. A roster that only addresses shares to different
+// slots -- with no identity binding -- looks distributed and is not, which is worse than
+// obviously-undistributed because it reads as done. So addressing is worth having only
+// ON TOP of the binding, which is the order these two landed in.
+//
+// Two ways to name a token, and they are not equals:
+//
+//   by: "token-identity"  -- ROSTER-GRADE. Name the device ("YubiKey PIV #12345678").
+//        Resolution enumerates the attached tokens (C_GetSlotList + C_GetTokenInfo) and
+//        finds the slot currently holding THAT device. Stable across replug, across
+//        reboot, across "someone unplugged the printer dongle and everything shifted
+//        down one". If the named device is not attached, resolution THROWS. There is no
+//        nearest-match and no fall-through to slot 0.
+//
+//   by: "slot-index"      -- DISCOVERY-GRADE. A raw index into the module's slot list.
+//        Positional, module-assigned, and NOT an identity: replug two tokens in the
+//        other order and slot 0 is a different device. Keep it for bootstrap ("what is
+//        in slot 0 right now, so I can learn its identity and write it into a roster")
+//        and for single-token hosts. `expectTokenIdentity` upgrades it: the slot is
+//        opened, the device is asked who it is, and a mismatch throws.
+//
+// THERE IS NO DEFAULT. The previous `opts.slotId ?? 0` meant an options object that
+// simply forgot to say where the token was addressed slot 0 -- so N adapters built for N
+// tokens all quietly addressed the SAME device, and (before the identity binding) sealed
+// N shares to one risk while every log line said "hardware-pkcs11". An undeclared
+// address is refused.
+
+export type Pkcs11TokenAddress =
+  | {
+      readonly by: "token-identity";
+      /** "label#serial" exactly as parseCkTokenInfoIdentity reports it. */
+      readonly tokenIdentity: string;
+    }
+  | {
+      readonly by: "slot-index";
+      readonly slotId: number;
+      /** When given, the device in that slot must report this identity or the call throws. */
+      readonly expectTokenIdentity?: string;
+    };
+
 export interface Pkcs11SealEffectsOptions {
   readonly libraryPath: string;
   readonly pin?: string;
+  /**
+   * WHICH token. Required -- see the addressing note above for why there is no default.
+   * `slotId` remains as a shorthand for `{ by: "slot-index", slotId }`; supplying neither
+   * throws, and supplying both throws rather than silently preferring one.
+   */
+  readonly address?: Pkcs11TokenAddress;
+  /** Shorthand for `{ by: "slot-index", slotId }`. Positional, not an identity. */
   readonly slotId?: number;
   readonly keyLabel?: string;
   readonly ffiLoader?: (libraryPath: string) => Pkcs11Lib;
   /** Injected on purpose. See Pkcs11PointerOf. */
   readonly pointerOf?: Pkcs11PointerOf;
+}
+
+/**
+ * Normalise the two spellings into one address, refusing both the undeclared case and
+ * the ambiguous case.
+ *
+ * Exported because "what happens when the caller says nothing" is precisely the
+ * behaviour the old `?? 0` got wrong, and a defaulting expression buried in a factory is
+ * not something a test can point at.
+ */
+export function resolvePkcs11Address(opts: Pkcs11SealEffectsOptions): Pkcs11TokenAddress {
+  if (opts.address !== undefined && opts.slotId !== undefined) {
+    throw new Error(
+      "frost-share-adapter: both `address` and the `slotId` shorthand were given. Refusing " +
+        "to choose one silently -- an ambiguous token address is how a roster ends up " +
+        "pointing somewhere nobody declared.",
+    );
+  }
+  if (opts.address !== undefined) return opts.address;
+  if (opts.slotId !== undefined) return { by: "slot-index", slotId: opts.slotId };
+  throw new Error(
+    "frost-share-adapter: no PKCS#11 token address. Declare one: " +
+      '{ address: { by: "token-identity", tokenIdentity: "label#serial" } } for a roster, or ' +
+      '{ slotId: n } for single-token discovery. There is no default: defaulting to slot 0 ' +
+      "made every adapter in an N-token roster address the same device.",
+  );
 }
 
 function buildFindKeyTemplate(label: string, pointerOf: Pkcs11PointerOf) {
@@ -667,6 +750,104 @@ export function parseCkTokenInfoIdentity(info: Uint8Array): string {
   return `${label}#${serial}`;
 }
 
+/** CK_TRUE for C_GetSlotList's tokenPresent argument: list only slots WITH a token in
+ *  them. An empty reader is not a device, so it must not appear as an addressable one. */
+const CK_TRUE = 1;
+
+/** One attached token, as the module currently sees it. */
+export interface Pkcs11AttachedToken {
+  /** Where it is RIGHT NOW. Changes on replug. Never store this as an identity. */
+  readonly slotId: number;
+  /** "label#serial", or null when the device could not be identified (see reason). */
+  readonly tokenIdentity: string | null;
+  readonly reason?: string;
+}
+
+/**
+ * Enumerate the tokens attached to this module, with the identity each one reports.
+ *
+ * This is the first and only caller of C_GetSlotList, which the FFI table has declared
+ * since this file was written and which nothing ever invoked -- so "which tokens are
+ * attached" was a question the code could not ask, and every adapter addressed a slot
+ * number instead. Uses the standard two-call idiom: NULL first to learn the count, then
+ * a buffer.
+ *
+ * Enumeration is a SEARCH, never an ASSIGNMENT. It is used to locate a device the caller
+ * already named; it must not be used to hand out roster positions in enumeration order,
+ * because that order is whatever the module felt like today.
+ *
+ * A slot whose token cannot be identified (empty serial, C_GetTokenInfo failure) is
+ * reported with tokenIdentity null rather than dropped, so a caller's error message can
+ * say what WAS there. It can never satisfy a token-identity address, which is the safe
+ * direction: an unidentifiable device is not proof of being the named one.
+ */
+export function enumeratePkcs11Tokens(lib: Pkcs11Lib): readonly Pkcs11AttachedToken[] {
+  const count = new BigUint64Array(1);
+  let rv = lib.C_GetSlotList(CK_TRUE, 0n, count);
+  if (!rvOk(rv)) throw new Error(`frost-share-adapter: C_GetSlotList (count) failed: ${rv}`);
+  const n = Number(count[0] ?? 0n);
+  if (n === 0) return [];
+  const slots = new BigUint64Array(n);
+  rv = lib.C_GetSlotList(CK_TRUE, slots, count);
+  if (!rvOk(rv)) throw new Error(`frost-share-adapter: C_GetSlotList (list) failed: ${rv}`);
+  const found: Pkcs11AttachedToken[] = [];
+  for (let i = 0; i < Number(count[0] ?? 0n); i++) {
+    const slotId = Number(slots[i] ?? 0n);
+    const info = new Uint8Array(CK_TOKEN_INFO_SIZE);
+    const irv = lib.C_GetTokenInfo(BigInt(slotId), info);
+    if (!rvOk(irv)) {
+      found.push({ slotId, tokenIdentity: null, reason: `C_GetTokenInfo failed: ${irv}` });
+      continue;
+    }
+    try {
+      found.push({ slotId, tokenIdentity: parseCkTokenInfoIdentity(info) });
+    } catch (err) {
+      found.push({ slotId, tokenIdentity: null, reason: (err as Error).message });
+    }
+  }
+  return found;
+}
+
+/**
+ * Which slot currently holds the named token. THROWS when it is not attached.
+ *
+ * The throw is the no-silent-downgrade invariant applied to addressing. A resolver that
+ * fell back to slot 0 when the expected token was absent would undo the identity binding
+ * from the outside: the wrong device would be opened, the seal would be attempted against
+ * it, and the operator would see a PIN prompt from a token they did not mean to use.
+ * Absent token is a refusal, never a substitution.
+ *
+ * Two attached devices reporting the SAME identity is also a refusal. It should be
+ * impossible with real serials, and if it happens the roster's one-device-one-position
+ * accounting is already void, so guessing between them is the last thing to do.
+ */
+export function resolveSlotForTokenIdentity(
+  attached: readonly Pkcs11AttachedToken[],
+  tokenIdentity: string,
+): number {
+  const matches = attached.filter((t) => t.tokenIdentity === tokenIdentity);
+  if (matches.length > 1) {
+    throw new Error(
+      `frost-share-adapter: ${matches.length} attached tokens report the identity ` +
+        `"${tokenIdentity}" (slots ${matches.map((m) => m.slotId).join(", ")}). Refusing to ` +
+        "guess: two devices with one identity means the roster cannot count positions.",
+    );
+  }
+  const only = matches[0];
+  if (only === undefined) {
+    const seen = attached
+      .map((t) => `slot ${t.slotId}: ${t.tokenIdentity ?? `<unidentifiable: ${t.reason ?? "?"}>`}`)
+      .join("; ");
+    throw new Error(
+      `frost-share-adapter: token "${tokenIdentity}" is not attached. Attached now: ` +
+        `${seen === "" ? "(no tokens)" : seen}. Refusing -- there is no fallback slot. ` +
+        "Falling back to slot 0 here would open a DIFFERENT device than the one this " +
+        "share is bound to, which is the whole defect the binding exists to stop.",
+    );
+  }
+  return only.slotId;
+}
+
 function findKey(lib: Pkcs11Lib, hSession: bigint | number, keyLabel: string, pointerOf: Pkcs11PointerOf): bigint {
   const held = buildFindKeyTemplate(keyLabel, pointerOf);
   let rv = lib.C_FindObjectsInit(hSession, held.template, 2n);
@@ -685,7 +866,7 @@ function findKey(lib: Pkcs11Lib, hSession: bigint | number, keyLabel: string, po
 
 export function createPkcs11SealEffects(opts: Pkcs11SealEffectsOptions): FrostShareSealEffects {
   const pin = opts.pin ?? "";
-  const slotId = opts.slotId ?? 0;
+  const address = resolvePkcs11Address(opts);
   const keyLabel = opts.keyLabel ?? "zeta-frost-wrap";
   const loader = opts.ffiLoader ?? defaultFfiLoader;
   const pointerOf = opts.pointerOf ?? defaultPointerOf;
@@ -696,10 +877,37 @@ export function createPkcs11SealEffects(opts: Pkcs11SealEffectsOptions): FrostSh
     return cachedLib;
   };
 
+  /**
+   * Where the addressed token is, RIGHT NOW. Never cached, for the same reason
+   * tokenIdentity() is never cached: slot ids are module-assigned and shift when devices
+   * are added or removed, so a cached resolution would let a replug silently redirect an
+   * adapter at a different device between two calls. Requires C_Initialize to have been
+   * called already.
+   */
+  const currentSlot = (lib: Pkcs11Lib): number => {
+    if (address.by === "slot-index") return address.slotId;
+    return resolveSlotForTokenIdentity(enumeratePkcs11Tokens(lib), address.tokenIdentity);
+  };
+
+  /** Read the identity of the device in a slot. Its OWN report, never an echo of config. */
+  const identityInSlot = (lib: Pkcs11Lib, slotId: number): string => {
+    const info = new Uint8Array(CK_TOKEN_INFO_SIZE);
+    const rv = lib.C_GetTokenInfo(BigInt(slotId), info);
+    if (!rvOk(rv)) throw new Error(`C_GetTokenInfo failed for slot ${slotId}: ${rv}`);
+    return parseCkTokenInfoIdentity(info);
+  };
+
   /** Open a logged-in session, run body, always tear down. */
   const withSession = <T>(body: (lib: Pkcs11Lib, hSession: bigint) => T): T => {
     const lib = getLib();
     lib.C_Initialize(0n);
+    let slotId: number;
+    try {
+      slotId = currentSlot(lib);
+    } catch (err) {
+      lib.C_Finalize(0n);
+      throw err;
+    }
     const phSession = new BigUint64Array(1);
     const rv = lib.C_OpenSession(BigInt(slotId), CKF_SERIAL_SESSION | CKF_RW_SESSION, 0n, 0n, phSession);
     if (!rvOk(rv)) {
@@ -737,20 +945,33 @@ export function createPkcs11SealEffects(opts: Pkcs11SealEffectsOptions): FrostSh
     },
 
     /**
-     * WHICH token is in the configured slot. Read fresh on every call rather than cached,
-     * because slot IDs are assigned by the module and are NOT stable identities: replug
-     * two tokens in the other order and slot 0 is a different device. Caching the first
-     * answer would let a swapped token inherit the previous one's identity, which is the
-     * precise failure this binding exists to catch.
+     * WHICH token this adapter is talking to. Read fresh on every call rather than
+     * cached, because slot IDs are assigned by the module and are NOT stable identities:
+     * replug two tokens in the other order and slot 0 is a different device. Caching the
+     * first answer would let a swapped token inherit the previous one's identity, which
+     * is the precise failure this binding exists to catch.
+     *
+     * The returned string is always the DEVICE'S OWN report from C_GetTokenInfo, never
+     * the identity string the caller configured. Returning the configured string would
+     * make a token-identity address self-fulfilling: the seal would record the name of a
+     * device that was never asked to confirm it, and an absent token would still produce
+     * a confidently-labelled artifact.
      */
     tokenIdentity(): string {
       const lib = getLib();
       lib.C_Initialize(0n);
       try {
-        const info = new Uint8Array(CK_TOKEN_INFO_SIZE);
-        const rv = lib.C_GetTokenInfo(BigInt(slotId), info);
-        if (!rvOk(rv)) throw new Error(`C_GetTokenInfo failed for slot ${slotId}: ${rv}`);
-        return parseCkTokenInfoIdentity(info);
+        const slotId = currentSlot(lib);
+        const reported = identityInSlot(lib, slotId);
+        const expected =
+          address.by === "token-identity" ? address.tokenIdentity : address.expectTokenIdentity;
+        if (expected !== undefined && reported !== expected) {
+          throw new Error(
+            `frost-share-adapter: slot ${slotId} holds "${reported}" but this adapter is ` +
+              `addressed to "${expected}". Refusing rather than using whichever device answered.`,
+          );
+        }
+        return reported;
       } finally {
         lib.C_Finalize(0n);
       }
@@ -865,6 +1086,28 @@ export function createTpmSealEffects(opts: TpmSealEffectsOptions): FrostShareSea
       unsealKey();
     },
   };
+}
+
+/**
+ * List the tokens attached to a PKCS#11 module and the identity each reports.
+ *
+ * The discovery step a roster is WRITTEN from: run it, read the identities off the
+ * output, and put them in the roster by hand. Deliberately not a roster generator --
+ * generating a roster from enumeration order would make the roster a restatement of
+ * today's USB topology, and the whole point of a roster is that it is a declaration a
+ * human made and the machine checks. Returns labels and serials only; those are printed
+ * on the outside of the device and are not key material.
+ */
+export function describeAttachedPkcs11Tokens(
+  opts: Pick<Pkcs11SealEffectsOptions, "libraryPath" | "ffiLoader">,
+): readonly Pkcs11AttachedToken[] {
+  const lib = (opts.ffiLoader ?? defaultFfiLoader)(opts.libraryPath);
+  lib.C_Initialize(0n);
+  try {
+    return enumeratePkcs11Tokens(lib);
+  } finally {
+    lib.C_Finalize(0n);
+  }
 }
 
 export function createPkcs11ShareAdapter(
