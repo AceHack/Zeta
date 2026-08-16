@@ -1,0 +1,12 @@
+{
+  "pr_number": 10998,
+  "archive_path": "docs/history/pr-reviews/PR-10998-task-workitem-declare-rust-components-wasm32-target-in-mise-toml-mise-supports-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:38:18.365Z",
+  "schema_version": "v1",
+  "commit_sha": "8684de660aecfc88c8a4b8c2614737d6bd9d8c95",
+  "title": "task(workitem): declare rust components + wasm32 target in .mise.toml — mise supports it, checked",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T18:37:41Z",
+  "head_ref": "shadow/workitem-rust-components-declarative"
+}
