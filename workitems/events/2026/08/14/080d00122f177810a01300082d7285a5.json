@@ -1,0 +1,14 @@
+{
+  "id": "080d00122f177810a01300082d7285a5",
+  "at": "2026-08-14T21:55:29.647Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M014BRQF087G0R000NSY559",
+    "type": "bug",
+    "title": "emit-attestation minted ids with no hash: peer attestations silently discarded and hex-JSON filenames in docs/observe-events",
+    "slug": "emit-attestation-minted-ids-with-no-hash-peer-attestations-s",
+    "priority": "P2",
+    "filename": "081M014BRQF087G0R000NSY559-emit-attestation-minted-ids-with-no-hash-peer-attestations-s.md"
+  }
+}

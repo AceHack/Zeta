@@ -1137,6 +1137,15 @@ jobs:
       - name: Run audit-dangling-symlinks (Pages/Jekyll guard)
         run: bun src/Core.TypeScript/hygiene/audit-dangling-symlinks.ts
 
+      # docs/observe-events/ holds three filename schemes; only one of them (32-hex ZetaId)
+      # carries no prefix, so a name that is hex-but-not-an-id is indistinguishable from an
+      # id by shape. Three such names arrived 2026-08-09 from an id "mint" that did no
+      # hashing, passed every `/^[0-9a-f]{32}$/` check in the repo, and produced a false
+      # positive in a ZetaId audit (#10690). This decodes the version field instead of
+      # trusting the regex, and carries a scan floor so it cannot pass by inspecting nothing.
+      - name: Run audit-observe-event-filenames (ZetaId-vs-hex ambiguity guard)
+        run: bun src/Core.TypeScript/hygiene/audit-observe-event-filenames.ts
+
       # 081KTSZN10008QG0R002J0GE0Z Reticulum-only clause: files marked SEALED-ROOM carry zero ambient-channel
       # tokens (fs/process/network/clock/entropy/Task.Run); falsifiers waive per-line, visibly.
       - name: Run audit-sealed-rooms (081KTSZN10008QG0R002J0GE0Z Reticulum-only lint half)
