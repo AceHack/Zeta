@@ -47,6 +47,7 @@
     <Compile Include="MutualFalsification.Tests.fs" />
     <Compile Include="CondorcetBoundary.Tests.fs" />
     <Compile Include="FigureEightEnsemble.Tests.fs" />
+    <Compile Include="FigureEightTangleClass.Tests.fs" />
     <Compile Include="LagrangeCondorcet.Tests.fs" />
     <Compile Include="ArrowEscape.Tests.fs" />
     <Compile Include="Integration.Tests.fs" />

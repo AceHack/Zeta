@@ -344,6 +344,7 @@
     <Compile Include="Cl3.Tests.fs" />
     <Compile Include="Fixpoint.Tests.fs" />
     <Compile Include="Orbit.Tests.fs" />
+    <Compile Include="TangleNavigator.Tests.fs" />
     <Compile Include="SoftMem.Tests.fs" />
     <Compile Include="SoftDrive.Tests.fs" />
     <Compile Include="SoftScope.Tests.fs" />
