@@ -37,7 +37,7 @@
 gh run list --workflow build-ai-cluster-iso.yml --branch main --limit 5 \
   --json databaseId,conclusion,createdAt --jq '.[] | select(.conclusion=="success") | .databaseId' | head -1
 
-# Then download the artifact:
+# Then download the artifact — see the 2026-08-16 correction below for the REAL name:
 gh run download <run-id> --name zeta-installer-iso -D ~/Downloads/
 
 # Option B: trigger fresh build (slower; ~10-15 min CI)
@@ -51,6 +51,28 @@ ls -la ~/Downloads/zeta-installer-*.iso
 **Success criterion:** `~/Downloads/zeta-installer-*.iso` exists; size ~1.5-2 GiB; file dated within last 30 minutes.
 
 **Failure recovery:** if CI is red, fix the failing build (separate fix-fwd row) before retrying. Don't proceed with stale ISO.
+
+> **Correction, 2026-08-16 (verified against run 31954188104).** `--name zeta-installer-iso` above
+> **does not resolve** — no artifact by that name exists. nixpkgs 25.11 names the ISO derivation from
+> its own default rather than from `isoImage.isoName`, so the x86_64 artifact is
+> `nixos-minimal-<version>-x86_64-linux.iso` (plus a `.cosign` sibling holding the sigstore bundle),
+> and since the aarch64 job landed a run carries **two** ISOs. Download the x86_64 one **by exact
+> name** and rename it into the `zeta-installer-` prefix, or `zflash`'s auto-discovery
+> (`ISO_GLOB_PREFIX = "zeta-installer-"`, `cli.ts:86`) will not see it — which is the real cause of
+> the unexplained "ISO not found" listed under CP-2 failure recovery.
+>
+> ```bash
+> RUN=$(gh run list --workflow build-ai-cluster-iso.yml --branch main --limit 5 \
+>   --json databaseId,conclusion --jq '[.[] | select(.conclusion=="success")][0].databaseId')
+> gh api "repos/Lucent-Financial-Group/Zeta/actions/runs/$RUN/artifacts" --jq '.artifacts[].name'
+> gh run download "$RUN" -R Lucent-Financial-Group/Zeta \
+>   -n '<the x86_64 iso name from above>' -n '<same>.cosign' -D /tmp/zeta-iso
+> mv /tmp/zeta-iso/nixos-minimal-*/nixos-minimal-*x86_64*.iso \
+>    ~/Downloads/zeta-installer-25.11-ci$RUN-$(date +%F)-x86_64.iso
+> ```
+>
+> Full pre-flight state, plus the operator-only checklist:
+> [`2026-08-16-first-metal-bringup-preflight.md`](2026-08-16-first-metal-bringup-preflight.md).
 
 ---
 
@@ -86,8 +108,14 @@ bun src/Core.TypeScript/zflash/cli.ts --agent 2>&1 | tail -100
 **Failure recovery:**
 
 - Touch ID prompt times out → re-run `zflash --agent`; if persistent, fall back to Path A operator-only flow (`zflash` without `--agent`)
-- Auto-detected wrong USB → `bun zflash.ts --agent --usb /dev/diskN` with explicit target
-- ISO not found → `~/Downloads/zeta-installer-*.iso` missing or wrong name; verify CP-1 succeeded
+- Auto-detected wrong USB → **there is no `--usb` flag** (corrected 2026-08-16; the only
+  device-adjacent flag in `cli.ts` is `--usb-uuid`). Unplug every other external disk so exactly one
+  candidate remains, then re-run.
+- ISO not found → `~/Downloads/zeta-installer-*.iso` missing or wrong name; verify CP-1 succeeded —
+  and see the CP-1 correction, the artifact is **not** named `zeta-installer-iso`
+- Wrong architecture flashed (x86 target reports "no bootable device") → the iter-4.3 CI auto-pull
+  selects the first `.iso` it walks with **no architecture filter**, and a run now holds both x86_64
+  and aarch64. Pass the ISO path explicitly, or `--skip-iso-pull`.
 
 ---
 

@@ -1,11 +1,29 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-06-21
+Last refreshed: 2026-06-21 (credential-presence spot-check 2026-08-16 — see the box below)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
 Next concrete action: round-trip harness in flight (otto/onboarding-roundtrip-harness — sandboxed new-fork setup→teardown→re-setup ×N, surfaces the rotate-command gap). Then smart cascading teardown (cascade-with-warnings; extra-care warn on memories/hardware-state/unrecoverable-encrypted; OWNER-consent-gated memory delete; user-sovereign encryption can't be force-reset; each user = own git repo — see `docs/research/2026-06-21-smart-cascading-teardown-user-sovereign-deletion-…`). All 3 vaults now Active+Standby (rotation-ready: Lucent/Personal/CA, 2 service accounts each in Keychain). CA-recovery hardware (FIDO/HSM/N-of-M) = post-investor next layer. Live wipe + clean re-onboard once the harness is tight. Teardown primitive shipped (#9000).
+
+## 2026-08-16 — presence spot-check ahead of first-metal bringup (the shadow)
+
+The 2026-06-21 section below claims "CA + machine key + user key + N+M-correct device cert, all
+registered." Checked by **filename and mtime only** — no key material was read, printed, copied, or
+decrypted, and no credential store (`op`, Keychain) was touched:
+
+| Claim | Observed | Verdict |
+|---|---|---|
+| CA registered | `~/.config/zeta/ca/` present (2026-06-21); `maintainers/zeta/ssh-ca.pub` tracked | **holds** |
+| machine key | `~/.config/zeta/machine/` present (2026-06-21) | **holds** |
+| device cert registered | `machines/acehacks-mac-studio.local{,-cert}.pub` tracked on `main` | **holds** — one machine |
+| Touch ID gate live | `/etc/pam.d/sudo` line 1 carries `auth sufficient pam_tid.so` | **holds** |
+| teardown surface `~/.config/zeta/{ca,machine,keyring,keyset}` | only `ca/` and `machine/` exist | **partially** — `keyring`/`keyset` absent; not determined whether they are created later in a flow or simply not part of this machine's state |
+| Aaron has registered cluster nodes | `maintainers/{Addisons820,maximdolphin}/cluster-nodes/` each hold two; `maintainers/aaron/` holds none | **does not hold** — the Step 6.9 self-registration path has never run under Aaron's identity |
+
+The last row is the one that matters for bringup: it is the least-travelled step of the first
+install. Detail + the operator checklist: [`docs/runbooks/2026-08-16-first-metal-bringup-preflight.md`](../../runbooks/2026-08-16-first-metal-bringup-preflight.md).
 
 ## 2026-06-21 — Identity+Crypto onboarding consolidated; one-fingerprint vision
 
