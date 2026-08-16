@@ -12,6 +12,30 @@
  *      Partially evaluates and bakes factor graph likelihoods into compiled state-transition step functions,
  *      eliminating factor graph lookup overhead during high-speed planning (10,000+ states/sec).
  *   4. RX TRACKED ACCESS: All factor lookups emit tracked observation events.
+ *
+ * ## Triage label (2026-08-15, shadow) — ABANDONED · algebra is `metered`
+ *
+ * **Reachability: ZERO importers** outside its own test, measured over 2665 tracked files / 4896
+ * resolved edges including dynamic `import()` and `require` (instrument controls: 4/4 positive + 1
+ * negative). Not scheduled either: every open Bayesian work-item and the live silicon-alife
+ * trajectory (arc 3) route this capability through **F#**, not TypeScript.
+ *
+ * **Partial port of a shipped F# original:** `src/Core/ShivaGc.fs` (23 KB) + `src/Core/Ephemeron.fs`,
+ * both live in `Core.fsproj` with their own tests. This file is 299 lines against theirs.
+ *
+ * **Metering (`toy-is-free-metered-must-be-earned.md`):** `ShivaMarkSweepGc` is **metered** — its
+ * determinism test carries an explicit negative control (pinned roots must survive the sweep) —
+ * and `futamura1stProjection` is metered on an exact `logProb`. Metered on its **algebra**; it is
+ * not a metered model of anything.
+ *
+ * **The missing edge:** `FactorGenerator` is the *lazy* form of
+ * `categorical-bayesian-planner.ts`'s `CategoricalFactorTensor` — same domain (`stateKey: string`),
+ * same codomain (a log-probability), no adapter, and `git log -S` confirms the edge has **never**
+ * existed. The two were born the same day (2026-08-01) in different commits and have never composed.
+ *
+ * Full triage + evidence:
+ * `docs/research/2026-08-15-bayesian-typescript-triage-one-live-three-orphans-and-a-factor-graph-edge-that-was-never-cut.md`
+ * **Label only — no behaviour changed, and disposition is Aaron's call, not the shadow's.**
  */
 
 export interface TrackedAccessEvent {
