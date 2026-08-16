@@ -1,0 +1,12 @@
+{
+  "pr_number": 10749,
+  "archive_path": "docs/history/pr-reviews/PR-10749-deps-bump-actions-upload-artifact-from-4-6-2-to-7-0-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:08:04.337Z",
+  "schema_version": "v1",
+  "commit_sha": "4ec9229487c486d2598cdd8837350714714d5d73",
+  "title": "deps: bump actions/upload-artifact from 4.6.2 to 7.0.1",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:07:30Z",
+  "head_ref": "dependabot/github_actions/actions/upload-artifact-7.0.1"
+}
