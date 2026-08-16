@@ -1,0 +1,12 @@
+{
+  "pr_number": 10878,
+  "archive_path": "docs/history/pr-reviews/PR-10878-fix-ci-two-gates-that-could-not-fail-agent-reviewer-s-empty-diff-fail-open-smoke.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:20:03.690Z",
+  "schema_version": "v1",
+  "commit_sha": "b822b89d87a1c1031680f1f4a8d6cf03cc76f357",
+  "title": "fix(ci): two gates that could not fail — agent-reviewer's empty-diff fail-open, smoke-13's zig check",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:19:28Z",
+  "head_ref": "shadow/vacuous-ci-gates-sweep"
+}
