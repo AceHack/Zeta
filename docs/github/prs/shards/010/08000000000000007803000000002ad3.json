@@ -1,0 +1,12 @@
+{
+  "pr_number": 10963,
+  "archive_path": "docs/history/pr-reviews/PR-10963-fix-toffoli-landauer-accounting-measured-at-the-boundary-0-5-mutants-killed-befo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T16:52:36.100Z",
+  "schema_version": "v1",
+  "commit_sha": "f4b3bc7c59738d5257e2acc9eb942b0dad52e7aa",
+  "title": "fix(toffoli): Landauer accounting measured at the boundary — 0/5 mutants killed before, 5/5 after",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T16:52:01Z",
+  "head_ref": "shadow/toffoli-landauer-garbage-accounting"
+}
