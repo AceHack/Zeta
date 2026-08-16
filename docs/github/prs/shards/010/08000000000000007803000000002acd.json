@@ -1,0 +1,12 @@
+{
+  "pr_number": 10957,
+  "archive_path": "docs/history/pr-reviews/PR-10957-fix-review-gate-stop-approving-on-withheld-findings-carry-them-as-advisories.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T16:47:17.522Z",
+  "schema_version": "v1",
+  "commit_sha": "09d3d037a202618bc33e1c036827f2a2ef4b995c",
+  "title": "fix(review-gate): stop approving on withheld findings; carry them as advisories",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T16:46:48Z",
+  "head_ref": "shadow/review-gate-fail-open-no-quorum"
+}
