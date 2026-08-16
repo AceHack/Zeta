@@ -1,0 +1,12 @@
+{
+  "pr_number": 11119,
+  "archive_path": "docs/history/pr-reviews/PR-11119-docs-security-bind-the-grant-never-the-act-correct-an-ambiguous-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:04:15.320Z",
+  "schema_version": "v1",
+  "commit_sha": "d47d9a50ff303286a60096359954fb1ca03039a1",
+  "title": "docs(security): bind the GRANT, never the ACT — correct an ambiguous §0",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:03:43Z",
+  "head_ref": "shadow/webauthn-grant-not-act"
+}
