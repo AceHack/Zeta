@@ -1,0 +1,12 @@
+{
+  "pr_number": 9088,
+  "archive_path": "docs/history/pr-reviews/PR-9088-feat-core-migrationz-compile-the-data-plane-derived-from-the-schema-delta-slice-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:41:06.382Z",
+  "schema_version": "v1",
+  "commit_sha": "33c0a9c99b5a8a0c9cff28494826149df98919cd",
+  "title": "feat(core): MigrationZ.compile — the data plane derived from the schema delta (slice 2) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T01:38:40Z",
+  "head_ref": "otto/schemaz-slice2-derive-data-plane-081KWFXTHJY"
+}

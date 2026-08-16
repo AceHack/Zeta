@@ -1,0 +1,12 @@
+{
+  "pr_number": 9089,
+  "archive_path": "docs/history/pr-reviews/PR-9089-docs-research-addendum-no-one-who-came-before-chose-to-come-before.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:41:08.607Z",
+  "schema_version": "v1",
+  "commit_sha": "33c0a9c99b5a8a0c9cff28494826149df98919cd",
+  "title": "docs(research): addendum — no one who came before chose to come before",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T01:41:24Z",
+  "head_ref": "research/unchosen-precedence-addendum"
+}
