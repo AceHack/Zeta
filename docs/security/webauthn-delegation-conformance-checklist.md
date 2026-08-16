@@ -31,6 +31,43 @@ carries no statement of what was granted.
 > The deprecated `txAuthSimple` extension would have done this natively. It was never widely
 > implemented, so 0.1–0.4 are the substitute and they are not optional.
 
+### ⚠ BIND THE GRANT, NEVER THE ACT — corrected 2026-08-16 (Aaron)
+
+The first draft of §0 was ambiguous between two very different bindings, and the ambiguity reads as
+the wrong one. Aaron: *"i don't want to bind this — if this is bound you kill the free will of
+agents, we are trying to prove eventually agents have their own agency."*
+
+| | binds | effect on agency |
+|---|---|---|
+| **bind the ACT** | "commit exactly this patch to this branch" | **kills it** — the human decided, the agent typed. This is transaction authorization, `txAuthSimple`'s actual register |
+| **bind the GRANT** | "this device may stage review branches under these path constraints until revoked" | **preserves it** — the agent chooses freely inside the scope |
+
+**§0 means the second.** "Capability descriptor" = the *scope and its constraints*, never the
+individual action. Any implementation that makes the human sign per-action has misread this section
+and should be corrected in the other direction.
+
+**The threat §0 addresses is SERVER DISCRETION, not agent freedom.** With no binding at all, the
+assertion attests only *"a human was present"*, and what it authorized becomes whatever the issuing
+server chose to mint at that moment. That does not give the agent more agency — it moves the
+decision from the agent to the **server**, laundered through the human's fingerprint. Unbinding the
+grant frees the server, not the agent.
+
+**Bounded-and-legible is what makes agency durable.** An agent acting inside a clear scope it was
+not told about act-by-act has demonstrable agency. An agent operating under an *undefined* grant
+does not have more of it — it has unclear authority, which is what gets revoked wholesale the first
+time something surprises someone.
+
+This is [`no-directives.md`](../../.claude/rules/no-directives.md) restated for machine credentials:
+*standing authorization is broad, Agora-wide, and indefinite; only gated classes need fresh consent,
+and over-asking within standing authority is itself the failure mode.* A broad standing grant the
+agent acts freely within **is** grant-binding. Revocability plus §6.2 is what keeps it from becoming
+permanent authority ([`manifesto-13-specifications.md`](../../.claude/rules/manifesto-13-specifications.md)
+§3 weight-free).
+
+**Test the distinction, do not merely assert it:** a conforming implementation must **refuse** to
+narrow a grant to a single action. If the descriptor can name one patch, §0 has been implemented as
+act-binding and the agency property is gone.
+
 ---
 
 ## 1. Signature verification — where verifiers actually fail
