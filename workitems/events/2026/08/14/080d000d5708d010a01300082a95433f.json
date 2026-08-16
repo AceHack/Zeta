@@ -1,0 +1,14 @@
+{
+  "id": "080d000d5708d010a01300082a95433f",
+  "at": "2026-08-14T19:06:11.098Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00TNR8S087G0R00245QH02",
+    "type": "task",
+    "title": "Backpressure control inputs: name the conservation law or mark the input correlated",
+    "slug": "backpressure-control-inputs-name-the-conservation-law-or-mar",
+    "priority": "P2",
+    "filename": "081M00TNR8S087G0R00245QH02-backpressure-control-inputs-name-the-conservation-law-or-mar.md"
+  }
+}
