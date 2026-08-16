@@ -1,0 +1,14 @@
+{
+  "id": "080d005a0610f010a0130008c37dcd08",
+  "at": "2026-08-16T15:46:28.510Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05M1GGX087G0R003HZS04V",
+    "type": "task",
+    "title": "OracleTransport's Reticulum ITransport is a Task.Delay stub that discards the reading — implement it or delete it",
+    "slug": "oracletransport-s-reticulum-itransport-is-a-task-delay-stub",
+    "priority": "P2",
+    "filename": "081M05M1GGX087G0R003HZS04V-oracletransport-s-reticulum-itransport-is-a-task-delay-stub.md"
+  }
+}
