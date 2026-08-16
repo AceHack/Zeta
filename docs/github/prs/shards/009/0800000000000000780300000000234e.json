@@ -1,0 +1,15 @@
+{
+  "pr_number": 9038,
+  "archive_path": "docs/history/pr-reviews/PR-9038-docs-archive-backfill-959-orphaned-pr-review-archives-automation-bucket.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7QuZyM",
+    "thread:PRRT_kwDOSF9kNM6NZ-oy"
+  ],
+  "fetched_at": "2026-08-16T18:08:13.079Z",
+  "schema_version": "v1",
+  "commit_sha": "89bb4fb9ffccabce01fd5f00d837d69e30ab051f",
+  "title": "docs(archive): backfill 959 orphaned PR-review archives (automation bucket)",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T20:58:49Z",
+  "head_ref": "consume-pr-archives-backfill-2026-06-30"
+}

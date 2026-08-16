@@ -1,0 +1,12 @@
+{
+  "pr_number": 9048,
+  "archive_path": "docs/history/pr-reviews/PR-9048-docs-github-archive-pr-9047.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:08:14.341Z",
+  "schema_version": "v1",
+  "commit_sha": "89bb4fb9ffccabce01fd5f00d837d69e30ab051f",
+  "title": "docs(github): archive PR 9047",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T18:43:25Z",
+  "head_ref": "automation/pr-archive-9047-run-28539613608-attempt-1"
+}
