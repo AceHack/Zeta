@@ -1,0 +1,12 @@
+{
+  "pr_number": 10734,
+  "archive_path": "docs/history/pr-reviews/PR-10734-fix-observe-the-attestation-id-mint-did-no-hashing-so-peers-could-not-be-atteste.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:07:55.004Z",
+  "schema_version": "v1",
+  "commit_sha": "ce7cdc4134a0a88041aeeb89c4b8af110370e80f",
+  "title": "fix(observe): the attestation id \"mint\" did no hashing, so peers could not be attested and the filenames were hex-encoded JSON",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:07:19Z",
+  "head_ref": "shadow/observe-events-filename-hygiene"
+}
