@@ -17,7 +17,7 @@
  *   bun src/Core.TypeScript/backlog/rebuild-legacy-b-id-aliases.ts
  */
 
-import { readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { legacyZetaIdFromBId, parentBId, timestampForLegacyBId } from "./legacy-b-id-zetaid";
@@ -153,15 +153,27 @@ function inheritSubItems(map: Map<string, string>): void {
 function scanRemainingBIds(): Set<string> {
   const found = new Set<string>();
   function walk(dir: string) {
-    for (const entry of readdirSync(dir)) {
+    let entries: readonly import("node:fs").Dirent[];
+    try {
+      entries = readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const dirent of entries) {
+      const entry = dirent.name;
       if (SKIP_DIR_NAMES.has(entry)) continue;
       const full = join(dir, entry);
-      let st;
-      try { st = statSync(full); } catch { continue; }
-      if (st.isDirectory()) walk(full);
-      else if (APPLY_EXTENSIONS.has(entry.slice(entry.lastIndexOf(".")))) {
+      if (dirent.isDirectory()) walk(full);
+      else if (dirent.isFile() && APPLY_EXTENSIONS.has(entry.slice(entry.lastIndexOf(".")))) {
         if (SKIP_FILES.has(entry)) continue;
-        const text = readFileSync(full, "utf8");
+        // Let the read BE the check: a stat-then-read is check-then-act, and the
+        // file can vanish in between (js/file-system-race).
+        let text: string;
+        try {
+          text = readFileSync(full, "utf8");
+        } catch {
+          continue;
+        }
         for (const m of text.matchAll(B_ID_RE)) found.add(m[1]!);
       }
     }
@@ -231,7 +243,7 @@ console.log(`Alias map: ${Object.keys(sorted).length} entries (${remaining.size}
 
 let changed = 0;
 /**
- * Rewrite walk — scoped to the SAME trees `lint-no-b-refs.ts` polices.
+ * Rewrite walk — scoped to the SAME trees `lint-b-refs-resolve.ts` polices.
  *
  * Previously this skipped only `node_modules`/`.git`, so the remedy the linter
  * advertises was strictly wider than the linter itself: it rewrote the recovered
@@ -239,22 +251,50 @@ let changed = 0;
  * the generated PR mirror — all trees the linter deliberately refuses to police.
  * Observed live: ~1,700 files modified, and the run exceeded 500s and was killed
  * mid-rewrite. A remedy must not have a larger blast radius than its check.
+ *
+ * Symlinks are NOT followed (`Dirent.isFile()` is false for a symlink), and for
+ * a REWRITING tool that is the safer reading rather than a regression: writing
+ * through `universal/*.md → db/shapes/*.md` would apply the rewrite twice to one
+ * file, and `statSync` used to follow `tests/…/link_to_parent → ..`, a genuine
+ * cycle that recursed until PATH_MAX stopped it.
  */
 function applyWalk(dir: string) {
   if (shouldSkipDir(dir.slice(REPO_ROOT.length + 1))) return;
-  for (const entry of readdirSync(dir)) {
+  let entries: readonly import("node:fs").Dirent[];
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return;
+  }
+  for (const dirent of entries) {
+    const entry = dirent.name;
     if (SKIP_DIR_NAMES.has(entry)) continue;
     const full = join(dir, entry);
-    let st;
-    try { st = statSync(full); } catch { continue; }
-    if (st.isDirectory()) applyWalk(full);
-    else if (APPLY_EXTENSIONS.has(entry.slice(entry.lastIndexOf("."))) && !SKIP_FILES.has(entry)) {
-      const original = readFileSync(full, "utf8");
+    if (dirent.isDirectory()) applyWalk(full);
+    else if (
+      dirent.isFile() &&
+      APPLY_EXTENSIONS.has(entry.slice(entry.lastIndexOf("."))) &&
+      !SKIP_FILES.has(entry)
+    ) {
+      // Let the read BE the check (js/file-system-race): a stat-then-read is
+      // check-then-act, and a rewriting tool must not act on a stale check.
+      let original: string;
+      try {
+        original = readFileSync(full, "utf8");
+      } catch {
+        continue;
+      }
       let modified = replaceReferences(original, map);
       if (full.includes("docs/backlog/") && entry.endsWith(".md")) modified = cleanFrontmatter(modified);
       if (modified !== original) {
+        if (!DRY_RUN) {
+          try {
+            writeFileSync(full, modified);
+          } catch {
+            continue;
+          }
+        }
         changed++;
-        if (!DRY_RUN) writeFileSync(full, modified);
       }
     }
   }

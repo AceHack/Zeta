@@ -18,9 +18,9 @@ composes_with: []
 
 ## Observation
 
-`src/Core.TypeScript/backlog/rebuild-legacy-b-id-aliases.ts` is the remedy
-`lint-no-b-refs.ts` prints on failure. It is not runnable inside an ordinary
-agent tick:
+`src/Core.TypeScript/backlog/rebuild-legacy-b-id-aliases.ts` is the remedy the
+legacy-id gate prints on failure. It is not runnable inside an ordinary agent
+tick:
 
 - Aaron, 2026-08-14: a full run **exceeded a 500s timeout and was killed
   mid-rewrite**, having already modified 1,693 files.
@@ -59,3 +59,16 @@ exists so that limitation is on the record rather than assumed fixed.
 
 Measure before optimising — the attribution above is inferred from the
 dry-run/full-run comparison, not from a profile.
+
+## Update 2026-08-15 — pressure reduced, item still stands
+
+`lint-no-b-refs.ts` was replaced by `lint-b-refs-resolve.ts`, which permits a
+legacy reference and checks that it resolves. Two consequences for this item:
+
+- The gate's failure mode is now **per-reference** ("this id points at
+  nothing") rather than **whole-tree** ("some legacy token exists"), so the
+  ordinary fix is to correct one reference by hand. The bulk rewrite is no
+  longer the advertised first move, and `--report` is what an agent reaches for.
+- The runtime defect is **unchanged**. `rebuild-legacy-b-id-aliases.ts` is still
+  the only bulk remedy and still mines git history per run, so this item is not
+  closed by that change — only made less frequently load-bearing.

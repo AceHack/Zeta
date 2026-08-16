@@ -2,7 +2,7 @@
  * b-ref-scope.ts — the ONE definition of which trees the legacy-B-NNNN tooling
  * may read and rewrite.
  *
- * Why this module exists: `lint-no-b-refs.ts` (which reports drift) and
+ * Why this module exists: `lint-b-refs-resolve.ts` (which reports drift) and
  * `rebuild-legacy-b-id-aliases.ts` (the remedy the linter tells you to run)
  * had *no* shared scope. The linter deliberately skipped four archival trees;
  * the remedy skipped only `node_modules` and `.git`. So the advertised fix was
@@ -16,7 +16,14 @@
  * Membership rule: a prefix belongs here only if the tree is ARCHIVAL (a record
  * of what something said at the time) or GENERATED (re-materialised by a tool,
  * so edits do not survive). Never add a live authored surface — that would make
- * the lint unfalsifiable. Boundary tests in `lint-no-b-refs.test.ts` pin this.
+ * the lint unfalsifiable. Boundary tests in `lint-b-refs-resolve.test.ts` pin
+ * this.
+ *
+ * Note the asymmetry with `b-ref-resolve.ts`: the recovered-orphan-branch
+ * archive is exempt from being POLICED (it is a record, and rewriting it would
+ * falsify an archive — manifesto §5) while still counting as a RESOLUTION
+ * target. A ref into the archive points at a real file; the archive's own refs
+ * are history and are left alone.
  */
 
 /** Repo-relative directory prefixes exempt from legacy-id policing and rewriting. */

@@ -135,10 +135,22 @@ committed row files. Same pattern as
 B-named file appears under `docs/backlog/` or `workitems/`.
 Use `new-workitem.ts` for current work instead.
 
-`lint-no-b-refs.ts` fails if any `B-NNNN` token remains outside
-the frozen alias maps (`b-to-zetaid-map.json`,
-`b-id-renumber-aliases.json`). Resolve stragglers with
+`lint-b-refs-resolve.ts` lets prose NAME a legacy `B-NNNN` and
+fails if the reference does not RESOLVE — to a live row via the
+frozen alias maps (`b-to-zetaid-map.json`,
+`b-id-renumber-aliases.json`), or to a surviving artifact under
+`docs/recovered-orphan-branches-2026-05/`. Alias-map presence
+alone is not resolution: that map was mined from git history and
+carries ids that were never rows. Inspect with `--report`;
+bulk-rewrite stragglers to ZetaIds with
 `rebuild-legacy-b-id-aliases.ts`.
+
+It replaced `lint-no-b-refs.ts`, which banned the mention. The ban
+could not fail on a *stale* reference because it did not permit any
+reference to exist — it bought green by deleting its own subject.
+Naming an id is now allowed **and checked**; minting with one is
+not: a legacy id in a row's frontmatter fails here, and a B-named
+file fails in `lint-no-new-bnnnn.ts`.
 
 ## Retirement
 
