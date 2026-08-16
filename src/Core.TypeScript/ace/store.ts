@@ -16,6 +16,14 @@ export interface AceManifest {
   readonly description?: string;
   readonly signature?: { readonly algo: string; readonly key_id: string; readonly sig: string };
   readonly dependencies?: ReadonlyArray<AceDependency>;
+  /**
+   * SELF-DECLARED capability list — what this package's own publisher says the code may touch.
+   * A DECLARATION, not an authorization and not an enforcement: see capability-manifest.ts for
+   * the full statement of what it does and does not mean. No signing change was needed to bind
+   * it, because signing.ts covers the whole manifest minus `signature`; an entry added, edited,
+   * or stripped after signing is `bad-signature`.
+   */
+  readonly capabilities?: ReadonlyArray<string>;
 }
 
 export interface InstalledPackage {
