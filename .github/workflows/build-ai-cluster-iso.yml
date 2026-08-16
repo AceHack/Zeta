@@ -696,6 +696,27 @@ jobs:
                 echo "(exit 1) for that, and that DOES fail the job."
               } >> "$GITHUB_STEP_SUMMARY"
               ;;
+            4)
+              # STALLED -- serial silent past the kernel handoff for the
+              # stall window. This lane is measured INTERMITTENT: job
+              # 95208551157 sat silent 4184s and never booted, job
+              # 95218377728 booted in 192s, same image and runner type.
+              #
+              # ADVISORY, and it should stay advisory: on this evidence a
+              # stall is at least as likely to be a starved runner as a
+              # broken image, and blocking on it would red the ISO lane for
+              # runner contention. The harness reports the silence as a
+              # fact and does not diagnose it; BOOT-FAILED (exit 1) is the
+              # bucket that carries positive evidence and that one blocks.
+              echo "::warning::aarch64 QEMU boot: STALLED -- serial produced nothing for the stall window after the kernel handoff. This lane is intermittent (192s on a good run); the harness does not claim whether the guest hung or was starved."
+              {
+                echo "aarch64 QEMU boot: **STALLED (advisory)** -- silent past the EFI stub."
+                echo ""
+                echo "This lane is measured intermittent: 192s end-to-end on a good run, and one"
+                echo "run silent for 4184s. Stopping early bounds the wasted runner time; it is"
+                echo "not a diagnosis. See the stage ladder in the step log."
+              } >> "$GITHUB_STEP_SUMMARY"
+              ;;
             *)
               echo "::error::aarch64 QEMU boot: BOOT-FAILED (harness exit $rc) -- positive evidence the ISO did not boot, not a slow runner."
               echo "aarch64 QEMU boot: **BOOT-FAILED** (harness exit $rc)" >> "$GITHUB_STEP_SUMMARY"

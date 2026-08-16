@@ -27,6 +27,10 @@
  *   3 — TIMEOUT     (budget exhausted while the guest was demonstrably
  *                    still progressing through the boot; NOT evidence of
  *                    a broken image)
+ *   4 — STALLED     (the guest reached the kernel handoff and then emitted
+ *                    NOTHING for STALL_SECONDS. This reports the FACT --
+ *                    prolonged silence -- and deliberately does not claim
+ *                    whether the guest is hung or starved of CPU.)
  *
  * ── WHY 1 AND 3 ARE DIFFERENT EXIT CODES (2026-08-16) ───────────────
  * They used to be the same code with only a free-text `reason` to tell
@@ -73,15 +77,39 @@ const TIMEOUT_SECONDS = 300; // 5 min — generous; typical x86_64 KVM boot is 6
 //   TCG -cpu neoverse-n1 ..... 63s
 //   TCG -cpu max,pauth-impdef  62s   (no win — hypothesis tested, refuted)
 // So the CPU MODEL is not the lever; host speed and QEMU version are.
-// CI runs QEMU 8.2.2 on a 4-vCPU Ampere runner and blew past 1800s with
-// the serial parked at `EFI stub: Exiting boot services` — i.e. still
-// inside the kernel handoff. The implied slowdown vs this measurement is
-// >31x, which is larger than a CPU-model tweak can close, so the budget
-// is raised and INSTRUMENTED (stage ladder with elapsed seconds) instead
-// of guessed at. The job's own `timeout-minutes: 120` bounds the blast
-// radius; ~6 min of that is checkout/nix/apt/build.
+// CI runs QEMU 8.2.2 on a 4-vCPU Ampere runner.
+//
+// TWO instrumented CI runs, and they DISAGREE — which is the finding:
+//   job 95208551157: t=1s firmware | t=16s bootloader | t=17s efi-stub
+//                    | then NOTHING for 4184s. Never booted.
+//   job 95218377728: t=1s firmware | t=16s bootloader | t=17s efi-stub
+//                    | login t=192s. BOOTED.
+// Same image, same workflow, same runner type. Identical to the EFI stub
+// (and identical to the local host); then the SAME segment takes 175s on
+// one run and >4184s on the other — a >24x swing.
+//
+// So the aarch64 TCG lane is INTERMITTENT, not uniformly slow and not
+// deterministically broken. That vindicates the original 2026-06-12 note
+// this file already carried (two 900s timeouts parked in the EFI stub,
+// then the identical commit passed on rerun once the runner pool freed).
+// I briefly concluded "deterministic hang" from the single bad run; the
+// good run refutes that, and one observation was never enough to support
+// it.
+//
+// The budget stays generous because a good run finishes in ~192s and a
+// contended one may legitimately need far more.
 const AARCH64_TCG_TIMEOUT_SECONDS = 4200; // 70 min
 const POLL_INTERVAL_MS = 1000;
+// How long the serial may stay COMPLETELY SILENT past the kernel handoff
+// before we stop waiting. This is a cost bound, NOT a diagnosis: it ends
+// a futile 70-minute burn early, and it deliberately does not claim to
+// know whether the guest is hung or merely starved.
+//
+// Sizing it honestly against both runs: a healthy CI boot is ~192s END TO
+// END, and the bad run emitted nothing for 4184s. 1200s is >6x a whole
+// healthy boot, which leaves real room for a contended-but-progressing
+// run, while still cutting the wasted budget from 70min to ~20min.
+const DEFAULT_STALL_SECONDS = 1200;
 const MEMORY_MB = 2048; // installer needs >= 1GB; 2GB gives headroom for nix
 const KVM_PATH = "/dev/kvm";
 
@@ -145,7 +173,7 @@ export function detectFailureMarker(serial: string): string | null {
   return null;
 }
 
-export type BootOutcome = "BOOTED" | "BOOT-FAILED" | "TIMEOUT";
+export type BootOutcome = "BOOTED" | "BOOT-FAILED" | "STALLED" | "TIMEOUT";
 
 export interface BootClassification {
   readonly outcome: BootOutcome;
@@ -161,6 +189,13 @@ export interface ClassifyInput {
   /** The time budget has been exhausted. */
   readonly deadlineReached: boolean;
   readonly timeoutSeconds: number;
+  /**
+   * Seconds since the serial log last GREW. Undefined means "not
+   * tracked" and disables stall detection.
+   */
+  readonly secondsSinceSerialGrowth?: number;
+  /** Silence threshold; defaults to DEFAULT_STALL_SECONDS. */
+  readonly stallSeconds?: number;
 }
 
 /**
@@ -189,6 +224,36 @@ export function classifyBoot(input: ClassifyInput): BootClassification {
       outcome: "BOOT-FAILED",
       stage,
       reason: `Boot failed — ${failure} (furthest stage: ${stage})`,
+    };
+  }
+
+  // STALL: the guest handed off to the kernel and then emitted nothing
+  // for a long time.
+  //
+  // This is a COST BOUND on a lane measured to be intermittent (see the
+  // two disagreeing runs noted at DEFAULT_STALL_SECONDS): one run sat
+  // silent for 4184s and never booted, another booted in 192s. Sitting
+  // out the full 4200s budget on the bad runs costs 70 minutes of
+  // arm-runner time and produces no more information than stopping
+  // earlier does.
+  //
+  // It reports the FACT (silence of N seconds at stage X) and leaves the
+  // reading — hung vs starved — to whoever looks. Detection is not a
+  // verdict.
+  if (
+    input.secondsSinceSerialGrowth !== undefined &&
+    input.secondsSinceSerialGrowth >= (input.stallSeconds ?? DEFAULT_STALL_SECONDS) &&
+    stageAtLeast(stage, "efi-stub")
+  ) {
+    return {
+      outcome: "STALLED",
+      stage,
+      reason:
+        `Stalled at stage ${stage} — the serial console produced nothing for ` +
+        `${input.secondsSinceSerialGrowth}s after the kernel handoff. Reference points: the ` +
+        `same image boots end-to-end in ~192s on a good CI run and ~52s on a local TCG host. ` +
+        `This reports the SILENCE, not a diagnosis — the guest may be hung or merely starved ` +
+        `of CPU on a contended runner, and this harness cannot tell those apart.`,
     };
   }
 
@@ -228,9 +293,10 @@ export function classifyBoot(input: ClassifyInput): BootClassification {
   return { outcome: "TIMEOUT", stage, reason: "still running" };
 }
 
-export function outcomeExitCode(outcome: BootOutcome): 0 | 1 | 3 {
+export function outcomeExitCode(outcome: BootOutcome): 0 | 1 | 3 | 4 {
   if (outcome === "BOOTED") return 0;
   if (outcome === "BOOT-FAILED") return 1;
+  if (outcome === "STALLED") return 4;
   return 3;
 }
 
@@ -389,6 +455,7 @@ interface WatchResult extends BootClassification {
 async function watchBoot(
   serialLogPath: string,
   timeoutSeconds: number,
+  stallSeconds: number,
   qemuState: () => { exited: boolean; exitCode: number | null },
 ): Promise<WatchResult> {
   const started = Date.now();
@@ -409,10 +476,20 @@ async function watchBoot(
     }
   };
 
+  // Serial-growth tracking, for stall detection.
+  let lastSerialLength = -1;
+  let lastGrowthAt = started;
+
   for (;;) {
     const serial = read();
     const q = qemuState();
     const deadlineReached = Date.now() >= deadline;
+
+    if (serial.length !== lastSerialLength) {
+      lastSerialLength = serial.length;
+      lastGrowthAt = Date.now();
+    }
+    const secondsSinceSerialGrowth = Math.round((Date.now() - lastGrowthAt) / 1000);
 
     const stage = furthestBootStage(serial);
     if (stage !== announced) {
@@ -426,11 +503,14 @@ async function watchBoot(
       qemuExitCode: q.exitCode,
       deadlineReached,
       timeoutSeconds,
+      secondsSinceSerialGrowth,
+      stallSeconds,
     });
 
     const settled =
       classification.outcome === "BOOTED" ||
       classification.outcome === "BOOT-FAILED" ||
+      classification.outcome === "STALLED" ||
       deadlineReached;
 
     if (settled) {
@@ -480,6 +560,15 @@ async function main(): Promise<never> {
     argv.splice(tmoFlag, 2);
   }
 
+  const stallFlag = argv.indexOf("--stall-seconds");
+  let stallSeconds = DEFAULT_STALL_SECONDS;
+  if (stallFlag >= 0) {
+    const v = Number(argv[stallFlag + 1]);
+    if (!Number.isFinite(v) || v <= 0) usage();
+    stallSeconds = v;
+    argv.splice(stallFlag, 2);
+  }
+
   const bootMedia = parseBootMedia(argv);
   if (!bootMedia) usage();
 
@@ -508,7 +597,7 @@ async function main(): Promise<never> {
 
   console.log(`[qemu-boot-test] Boot media: ${bootMedia.kind} ${bootMedia.path}`);
   console.log(`[qemu-boot-test] Serial log: ${serialLogPath}`);
-  console.log(`[qemu-boot-test] Memory: ${MEMORY_MB}MB; timeout: ${timeoutSeconds}s`);
+  console.log(`[qemu-boot-test] Memory: ${MEMORY_MB}MB; timeout: ${timeoutSeconds}s; stall-after: ${stallSeconds}s`);
   console.log(`[qemu-boot-test] Expecting login prompt: "${EXPECTED_LOGIN_PROMPT}"`);
   console.log(`[qemu-boot-test] Arch: ${arch}`);
 
@@ -533,7 +622,7 @@ async function main(): Promise<never> {
     console.log(`[qemu-boot-test] QEMU exited with code ${code}`);
   });
 
-  const result = await watchBoot(serialLogPath, timeoutSeconds, () => ({
+  const result = await watchBoot(serialLogPath, timeoutSeconds, stallSeconds, () => ({
     exited: qemuExited,
     exitCode: qemuExitCode,
   }));

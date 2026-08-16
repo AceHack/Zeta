@@ -201,6 +201,86 @@ describe("classifyBoot — TIMEOUT and BOOT-FAILED are distinguishable", () => {
   });
 });
 
+describe("STALLED — a cost bound on an intermittent lane, not a diagnosis", () => {
+  // TWO instrumented CI runs disagree, and that disagreement IS the
+  // finding:
+  //   job 95208551157 — efi-stub at t=17s, then nothing for 4184s, never booted
+  //   job 95218377728 — efi-stub at t=17s, login at t=192s, booted
+  // Same image, same runner type, >24x swing in the same segment. So the
+  // lane is intermittent. STALLED bounds the wasted time on the bad runs;
+  // it does NOT claim to know whether the guest hung or was starved.
+  const stalled = (serial: string, silentFor: number) =>
+    classifyBoot({
+      serial,
+      qemuExited: false,
+      qemuExitCode: null,
+      deadlineReached: false,
+      timeoutSeconds: 4200,
+      secondsSinceSerialGrowth: silentFor,
+    });
+
+  it("calls the real CI signature STALLED, not TIMEOUT", () => {
+    const c = stalled(CI_TIMEOUT, 4184);
+    expect(c.outcome).toBe("STALLED");
+    expect(c.stage).toBe("efi-stub");
+    expect(outcomeExitCode(c.outcome)).toBe(4);
+  });
+
+  it("does not fire before the silence threshold", () => {
+    expect(stalled(CI_TIMEOUT, 1199).outcome).not.toBe("STALLED");
+  });
+
+  it("fires at the threshold", () => {
+    expect(stalled(CI_TIMEOUT, 1200).outcome).toBe("STALLED");
+  });
+
+  // The measured good run booted end-to-end in 192s. The threshold must
+  // sit far enough above a whole healthy boot that a contended-but-
+  // progressing run is not cut off and mislabelled.
+  it("leaves >6x headroom over a whole healthy CI boot (192s)", () => {
+    expect(stalled(CI_TIMEOUT, 192).outcome).not.toBe("STALLED");
+    expect(stalled(CI_TIMEOUT, 1000).outcome).not.toBe("STALLED");
+  });
+
+  // Detection is dual-use: report the fact, do not attach the verdict.
+  it("states the silence as a FACT and does not assert 'hang'", () => {
+    const c = stalled(CI_TIMEOUT, 4184);
+    expect(c.reason).toContain("produced nothing for 4184s");
+    expect(c.reason).toContain("cannot tell those apart");
+  });
+
+  it("does NOT fire below the kernel handoff — that is BOOT-FAILED territory", () => {
+    // Silence in the firmware is a different fact and must not be
+    // relabelled a kernel hang.
+    const c = stalled("UEFI firmware (version ...)\n", 4184);
+    expect(c.outcome).not.toBe("STALLED");
+  });
+
+  it("never fires on a booted guest, however long it has been quiet", () => {
+    expect(stalled(HEALTHY_BOOT, 99999).outcome).toBe("BOOTED");
+  });
+
+  it("is disabled when growth is not tracked (undefined)", () => {
+    const c = classifyBoot({
+      serial: CI_TIMEOUT,
+      qemuExited: false,
+      qemuExitCode: null,
+      deadlineReached: true,
+      timeoutSeconds: 4200,
+    });
+    expect(c.outcome).toBe("TIMEOUT");
+  });
+
+  it("STALLED, TIMEOUT and BOOT-FAILED are three distinct exit codes", () => {
+    const codes = new Set([
+      outcomeExitCode("BOOT-FAILED"),
+      outcomeExitCode("TIMEOUT"),
+      outcomeExitCode("STALLED"),
+    ]);
+    expect(codes.size).toBe(3);
+  });
+});
+
 describe("detectFailureMarker", () => {
   it("names the UEFI Shell fallthrough", () => {
     expect(detectFailureMarker(NO_BOOT_MEDIA)).toContain("UEFI Shell");
@@ -218,6 +298,7 @@ describe("outcomeExitCode — the contract the workflow branches on", () => {
     expect(outcomeExitCode("BOOTED")).toBe(0);
     expect(outcomeExitCode("BOOT-FAILED")).toBe(1);
     expect(outcomeExitCode("TIMEOUT")).toBe(3);
+    expect(outcomeExitCode("STALLED")).toBe(4);
   });
 });
 
