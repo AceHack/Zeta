@@ -1,0 +1,12 @@
+{
+  "pr_number": 11100,
+  "archive_path": "docs/history/pr-reviews/PR-11100-fix-ace-refresh-the-derived-build-graph-main-was-red-on-a-floor-check.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T21:24:23.755Z",
+  "schema_version": "v1",
+  "commit_sha": "96c43f3bbe6586e478e11de7a5fdc7636dd1a4d6",
+  "title": "fix(ace): refresh the derived build graph — main was red on a floor check",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T21:23:50Z",
+  "head_ref": "shadow/fix-ace-graph-drift"
+}
