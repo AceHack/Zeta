@@ -45,8 +45,6 @@
 // framework was built for this; the seam already existed and the author identity
 // just had to stop being implicit.
 
-import { spawnSync } from "node:child_process";
-
 // THE canonical rule — one implementation, two call sites (this pre-merge gate
 // and the post-merge auditor). Before 2026-08-16 each file carried its own copy
 // of REQUIRED_KEYS / ENUMS / the cross-field constraint, and they DIVERGED: this
@@ -56,17 +54,14 @@ import { spawnSync } from "node:child_process";
 // fixed that, because two implementations of one rule drift again — which is how
 // the divergence arose. Now there is no second opinion to hold.
 import {
-  CANONICAL_SHAPE,
   CANONICAL_VERSION_KEY,
   ENUMS,
   MISSPELLED_VERSION_KEY,
   REQUIRED_KEYS,
   blockValue as getValue,
-  findSignatureBlock,
   hasMisspelledVersionKey,
   isUnfilledPlaceholder,
-  missingRequiredKeys,
-  validateBlock,
+  validateText,
   type Violation,
 } from "./agencysignature-block.ts";
 
@@ -77,8 +72,6 @@ import {
 export { hasMisspelledVersionKey, isUnfilledPlaceholder };
 
 type ExitCode = 0 | 1 | 2;
-
-const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
 const SPEC_DOC =
   "docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md";
@@ -99,120 +92,11 @@ function readStdin(): string {
   }
 }
 
-function gitAvailable(): boolean {
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const result = spawnSync("git", ["--version"], {
-    encoding: "utf8",
-    maxBuffer: SPAWN_MAX_BUFFER,
-  });
-  return result.status === 0;
-}
-
 function stripCodeFences(input: string): string {
   return input
     .split("\n")
     .filter((line) => !FENCE_RE.test(line))
     .join("\n");
-}
-
-/**
- * `--no-divider` is LOAD-BEARING. Read this before removing it.
- *
- * `git interpret-trailers` reads stdin as a commit message with a PATCH POSSIBLY
- * APPENDED (that is what it is for — `git commit --verbose` templates). So by
- * default it treats a line that is `---`, or begins `--- `, as the diff boundary
- * and DISCARDS EVERYTHING AFTER IT. A PR body is not a commit message with a
- * patch appended, so here that rule is pure artifact: one ordinary markdown
- * horizontal rule anywhere above the block made a perfectly well-formed trailer
- * block invisible, and this validator then blamed blank-line discipline —
- * pointing a hundred lines away from the actual cause. Nobody diagnoses that.
- *
- * MEASURED 2026-08-15 across the open PR set: nine bodies carried a bare `---`,
- * including all five dependabot PRs (it is in their template footer). Confirmed
- * at the shell — `printf 'B\n\n---\n\nAgency-Signature-Version: 1\n' |
- * git interpret-trailers --parse` prints nothing; adding `--no-divider` prints
- * the block.
- *
- * AND IT IS THE RIGHT FIX RATHER THAN A LOOSENING, because of PARITY with the
- * post-merge side — which was measured, not assumed. In a scratch repo the same
- * day, a commit whose message contains a bare `---` above the block still yields
- * the whole block from `git log -1 --pretty='%(trailers)'`: git does NOT apply
- * the divider rule to a stored commit message, only to interpret-trailers'
- * stdin. So the strict behaviour was the pre-merge gate predicting a post-merge
- * failure that does not occur — rejecting bodies whose trailers the auditor
- * reads without complaint. `--no-divider` makes the paired instruments agree,
- * which is the only property this gate has to offer.
- *
- * Requires git >= 2.24 (when the flag landed). An older git exits non-zero,
- * which the status check below reports as a TOOLING error (exit 2) instead of
- * silently reading as "this PR body has no trailers".
- */
-const TRAILER_PARSE_ARGS: readonly string[] = [
-  "interpret-trailers",
-  "--no-divider",
-  "--parse",
-];
-
-type TrailerParse =
-  | { readonly ok: true; readonly trailers: string }
-  | { readonly ok: false; readonly stderr: string };
-
-function parseTrailers(stripped: string): TrailerParse {
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const result = spawnSync("git", [...TRAILER_PARSE_ARGS], {
-    encoding: "utf8",
-    maxBuffer: SPAWN_MAX_BUFFER,
-    input: stripped,
-  });
-  // git interpret-trailers exits 0 with EMPTY OUTPUT when it finds no trailers.
-  // A NON-zero status is a categorically different event — unsupported flag,
-  // missing git, spawn failure — and the old code, which took `result.stdout`
-  // unconditionally, reported a broken tool as a broken PR body.
-  if (result.status !== 0) {
-    return { ok: false, stderr: (result.stderr ?? "").trim() };
-  }
-  return { ok: true, trailers: result.stdout };
-}
-
-function lastNonBlankLine(text: string): string {
-  const lines = text.split("\n");
-  for (let i = lines.length - 1; i >= 0; i--) {
-    const line = lines[i] ?? "";
-    if (!BLANK_RE.test(line)) return line;
-  }
-  return "";
-}
-
-function findExactLineNumber(input: string, target: string): number {
-  // 1-indexed line number of the LAST exact match in input. Returns 0 if not found.
-  const lines = input.split("\n");
-  for (let i = lines.length - 1; i >= 0; i--) {
-    if (lines[i] === target) return i + 1;
-  }
-  return 0;
-}
-
-function findKeyPrefixLineNumber(input: string, key: string): number {
-  // 1-indexed line number of the LAST line that starts (case-insensitive)
-  // with `${key}:`. Returns 0 if not found.
-  const prefix = `${key.toLowerCase()}:`;
-  const lines = input.split("\n");
-  for (let i = lines.length - 1; i >= 0; i--) {
-    const line = lines[i] ?? "";
-    if (line.toLowerCase().startsWith(prefix)) return i + 1;
-  }
-  return 0;
-}
-
-function trailerLineKey(line: string): string {
-  const idx = line.indexOf(":");
-  if (idx <= 0) return "";
-  return line.slice(0, idx);
-}
-
-function nonBlankLinesAfter(input: string, lineNum: number): readonly string[] {
-  const lines = input.split("\n");
-  return lines.slice(lineNum).filter((l) => !BLANK_RE.test(l));
 }
 
 // An UNFILLED TEMPLATE PLACEHOLDER, e.g. `Agent: <persona>`. The PR template
@@ -336,87 +220,6 @@ function emitParseFailure(stripped: string): ExitCode {
   return 1;
 }
 
-function emitToolingParseFailure(stderr: string): ExitCode {
-  process.stderr.write("error: `git interpret-trailers` failed\n");
-  process.stderr.write(`  git said: ${stderr === "" ? "(nothing)" : stderr}\n`);
-  process.stderr.write(
-    "  This validator passes --no-divider, which requires git >= 2.24.\n",
-  );
-  process.stderr.write(
-    "  Reported as a TOOLING error, never as a PR-body failure: a check that\n",
-  );
-  process.stderr.write(
-    "  could not run must not be reported as one that ran and found nothing.\n",
-  );
-  return 2;
-}
-
-function emitLookupFailure(): ExitCode {
-  process.stdout.write(
-    "FAIL: terminal-block check could not locate trailer tail in PR body\n",
-  );
-  process.stdout.write(
-    "  Class:    Validator-Lookup Failure (fail-closed per codex P1 review on PR #24)\n",
-  );
-  process.stdout.write(
-    "  Cause:    parsed trailer line did not match any stripped-input line\n",
-  );
-  process.stdout.write(
-    "            via either exact-match or key-prefix-match strategy.\n",
-  );
-  process.stdout.write(
-    "            Likely cause: parser normalized the trailer (multi-line\n",
-  );
-  process.stdout.write(
-    "            continuation, non-ASCII whitespace, case-fold collision).\n",
-  );
-  process.stdout.write(
-    "  Fix:      simplify PR-body trailer block (single-line trailers,\n",
-  );
-  process.stdout.write(
-    "            literal Key: value, ASCII whitespace) OR extend this\n",
-  );
-  process.stdout.write(
-    "            validator's lookup-fallback chain. Do NOT silently skip.\n",
-  );
-  return 1;
-}
-
-function emitNonTrailerAfterFailure(after: readonly string[]): ExitCode {
-  process.stdout.write(
-    "FAIL: non-trailer content found after the trailer block in PR body\n",
-  );
-  process.stdout.write(
-    "  Class:    Trailer Contiguity Survival Failure (Substrate Truth Principle invariant)\n",
-  );
-  process.stdout.write(
-    "  Cause:    text after the trailer block can push trailers out of the\n",
-  );
-  process.stdout.write(
-    "            terminal-block position when GitHub squash-merge inherits\n",
-  );
-  process.stdout.write(
-    "            the PR description as the squash commit body\n",
-  );
-  process.stdout.write(
-    "  Fix:      move the trailer block to the very END of the PR body;\n",
-  );
-  process.stdout.write(
-    "            no non-trailer non-whitespace content may follow it\n",
-  );
-  process.stdout.write("  Found after trailer block:\n");
-  for (const line of after.slice(0, 5)) process.stdout.write(`    ${line}\n`);
-  process.stdout.write("  Principle: Substrate Truth Principle\n");
-  process.stdout.write(
-    "             A governance convention has not shipped until the parser\n",
-  );
-  process.stdout.write(
-    "             extracts the expected trailers as a contiguous terminal block.\n",
-  );
-  process.stdout.write(`  Spec:      ${SPEC_DOC} Section 7.5 (Squash-Merge Invariant)\n`);
-  return 1;
-}
-
 function emitMissingKeys(missing: readonly string[], body = ""): ExitCode {
   process.stdout.write(
     `FAIL: missing required AgencySignature v1 trailer keys: ${missing.join(" ")}\n`,
@@ -531,6 +334,36 @@ function emitViolation(v: Violation, body: string): ExitCode {
     process.stdout.write(`  Spec:   ${SPEC_DOC} Section 5.3 / 7.6\n`);
     return 1;
   }
+  if (v.code === "block-disagreement") {
+    process.stdout.write("FAIL: AgencySignature blocks disagree on a governance-critical field\n");
+    process.stdout.write(`  Fields:   ${v.key}\n`);
+    process.stdout.write(`  Values:   ${v.found}\n`);
+    process.stdout.write(
+      "  Cause:    this body carries more than one complete block (a multi-commit\n",
+    );
+    process.stdout.write(
+      "            squash concatenates each commit's message) and they make\n",
+    );
+    process.stdout.write("            MUTUALLY EXCLUSIVE claims about the same change.\n");
+    process.stdout.write(
+      "  Why not just pick one: these fields decide how much AUTHORITY the change\n",
+    );
+    process.stdout.write(
+      "            carries. Silently taking either end can record a human review that\n",
+    );
+    process.stdout.write(
+      "            the other block denies — manufacturing authorization nobody gave.\n",
+    );
+    process.stdout.write(
+      "            Disagreement on incidental fields (Agent, Task, ...) is accepted\n",
+    );
+    process.stdout.write("            silently; these are not those.\n");
+    process.stdout.write(
+      "  Fix:      make the blocks agree on the fields above, or leave ONE block.\n",
+    );
+    process.stdout.write(`  Spec:     ${SPEC_DOC} Section 5.3 / 7.6\n`);
+    return 1;
+  }
   // v2-*: missing Cell, Persona mismatch, unparseable Agent/Cell pair.
   process.stdout.write(`FAIL: ${v.message}\n`);
   process.stdout.write(
@@ -538,100 +371,6 @@ function emitViolation(v: Violation, body: string): ExitCode {
   );
   process.stdout.write(`  Spec:   ${ADR_DOC} phase 4\n`);
   return 1;
-}
-
-/**
- * The RECOVERY outcome — the lenient half, and the reason it is not a loosening.
- *
- * Reported with its own banner and a NON-`PASS:` first token, so nothing that
- * greps this output can mistake a recovered block for a clean one. The data is
- * recovered because throwing away a complete, correct, human-written attribution
- * over a blank line helps nobody; the defect is reported because a fallback that
- * reports success is a second place for a check to quietly not fail.
- *
- * Blocking by default: unlike the post-merge auditor (which would have to repaint
- * merged history), this is the PRE-merge gate, so enforcing here costs one edit
- * to a PR body that is still open and stops the next malformed block from
- * reaching `main` at all. That is the design lock doing its job going forward,
- * which is what Aaron asked for; the 1692 already on `main` are untouched.
- */
-export const RECOVERED_BLOCK_BLOCKS_PRE_MERGE = true as boolean;
-
-/**
- * The recovery attempt, extracted from `main()` so the branch has a name and a
- * single responsibility. Returns `null` when recovery does not apply, so the
- * caller falls through to the ordinary strict path unchanged.
- */
-function tryRecover(stripped: string, trailers: string): ExitCode | null {
-  const strictIncomplete = trailers === "" || missingRequiredKeys(trailers).length > 0;
-  if (!strictIncomplete) return null;
-  const block = findSignatureBlock(stripped);
-  if (block === null) return null;
-  // A recovered block is still held to the SAME value rules. Recovery recovers
-  // placement, never validity — otherwise "put a blank line in it" would become
-  // the way to skip enum checking.
-  const first = validateBlock(block.join("\n"))[0];
-  if (first !== undefined) return emitViolation(first, stripped);
-  return emitRecovered(block, findKeyPrefixLineNumber(stripped, CANONICAL_VERSION_KEY));
-}
-
-function emitRecovered(block: readonly string[], keyLine: number): ExitCode {
-  const verdict = RECOVERED_BLOCK_BLOCKS_PRE_MERGE ? "FAIL" : "WARN";
-  process.stdout.write(
-    `${verdict}: RECOVERED-MALFORMED — the AgencySignature block is complete and readable,\n`,
-  );
-  process.stdout.write("      but git cannot parse it.\n");
-  process.stdout.write("  Class:  Trailer Contiguity Survival Failure (recovered)\n");
-  process.stdout.write(
-    `  Found:  all ${String(REQUIRED_KEYS.length)} required keys, contiguous, starting at line ${String(keyLine)} of the body.\n`,
-  );
-  process.stdout.write("  Recovered attribution:\n");
-  for (const key of REQUIRED_KEYS) {
-    process.stdout.write(`    ${key.padEnd(26)}${getValue(block.join("\n"), key)}\n`);
-  }
-  process.stdout.write(
-    "  Cause:  `git interpret-trailers` reads only the FINAL paragraph, and this\n",
-  );
-  process.stdout.write(
-    "          block is not it. On main the same shape appears 716 times, 551 of\n",
-  );
-  process.stdout.write(
-    "          them a blank line between the block and a trailing `Co-authored-by:`\n",
-  );
-  process.stdout.write(
-    "          — which makes git parse ONLY the `Co-authored-by:` and none of the 10 keys.\n",
-  );
-  process.stdout.write(`  Fix:    ${CANONICAL_SHAPE}\n`);
-  process.stdout.write(
-    "  Note:   this is reported as its OWN outcome, never folded into PASS. The\n",
-  );
-  process.stdout.write(
-    "          attribution above was recovered so you do not have to retype it.\n",
-  );
-  process.stdout.write(
-    "  Maxim:  A governance convention is not shipped when humans can read it.\n",
-  );
-  process.stdout.write(
-    "          It is shipped when the target substrate can parse it.\n",
-  );
-  process.stdout.write(`  Spec:   ${SPEC_DOC} Section 7.4 (canonical shape)\n`);
-  return RECOVERED_BLOCK_BLOCKS_PRE_MERGE ? 1 : 0;
-}
-
-function checkTerminalBlock(stripped: string, trailers: string): ExitCode | null {
-  const lastTrailer = lastNonBlankLine(trailers);
-  if (lastTrailer === "") return null;
-
-  let tailLine = findExactLineNumber(stripped, lastTrailer);
-  if (tailLine === 0) {
-    const key = trailerLineKey(lastTrailer);
-    if (key !== "") tailLine = findKeyPrefixLineNumber(stripped, key);
-  }
-  if (tailLine === 0) return emitLookupFailure();
-
-  const after = nonBlankLinesAfter(stripped, tailLine);
-  if (after.length > 0) return emitNonTrailerAfterFailure(after);
-  return null;
 }
 
 function emitPass(trailers: string): ExitCode {
@@ -915,10 +654,6 @@ function parseOptions(argv: readonly string[]): ValidatorOptions | null {
  *   process boundary.)
  */
 export function main(argv: readonly string[] = [], body?: string): ExitCode {
-  if (!gitAvailable()) {
-    process.stderr.write("error: git not found on PATH\n");
-    return 2;
-  }
   const options = parseOptions(argv);
   if (options === null) {
     process.stderr.write(
@@ -962,34 +697,33 @@ export function main(argv: readonly string[] = [], body?: string): ExitCode {
     return 2;
   }
   const stripped = stripCodeFences(input);
-  const parsed = parseTrailers(stripped);
-  if (!parsed.ok) return emitToolingParseFailure(parsed.stderr);
-  const trailers = parsed.trailers;
 
   // ---------------------------------------------------------------------
-  // STRICT FIRST, then RECOVER — never the other way round.
+  // LAYOUT TOLERANCE (Aaron 2026-08-16: *"any layout is fine with me, as long as
+  // we have the needed fields is what matters most"* / *"yes this sounds good"*).
   //
-  // The lenient scan runs ONLY when the strict parse could not produce a
-  // complete block. Running it first, or merging the two, would let a body whose
-  // trailers git CAN read be validated against some other paragraph — the
-  // fallback silently becoming the primary path, which is how a recovery turns
-  // into a gate that cannot fail.
+  // The block no longer has to be the final paragraph, and text after it is
+  // legal. The forcing case is that THE AUTHOR CANNOT PREVENT THE APPEND: an IDE
+  // adds `Made with [Cursor](https://cursor.com)` below the body (Riven's PRs,
+  // and Aaron's own #10949 hit it), and the forge re-emits `Co-authored-by:`
+  // after a blank line. Failing a PR for a tagline it did not write is a gate
+  // firing on correct work, which gets the gate switched off.
+  //
+  // What is NOT relaxed: the ten fields are still required, contiguity INSIDE
+  // the block is still required, and every value rule still applies. This is
+  // layout tolerance, not field tolerance.
+  //
+  // `validateText` is the one entry point — it takes the LAST complete block
+  // (taglines append after the real block; quoted examples appear before it) and
+  // raises `block-disagreement` before validating anything.
   // ---------------------------------------------------------------------
-  const recoveryResult = tryRecover(stripped, trailers);
-  if (recoveryResult !== null) return recoveryResult;
-  if (trailers === "") return emitParseFailure(stripped);
+  const verdict = validateText(stripped);
+  if (verdict.block === null) return emitParseFailure(stripped);
 
-  const terminalCheck = checkTerminalBlock(stripped, trailers);
-  if (terminalCheck !== null) return terminalCheck;
-
-  // ONE rule, shared with the post-merge auditor. Everything this validator used
-  // to decide locally — required keys, placeholders, enums, v2 Cell, Task shape,
-  // the Human-Review cross-field constraint — is decided by `validateBlock`.
-  const violations = validateBlock(trailers);
-  const first = violations[0];
+  const first = verdict.violations[0];
   if (first !== undefined) return emitViolation(first, stripped);
 
-  return emitPass(trailers);
+  return emitPass(verdict.block.join("\n"));
 }
 
 if (import.meta.main) {

@@ -172,14 +172,15 @@ describe("parse-failure diagnosis names the real cause", () => {
     expect(absent.out).toContain("no 'Agency-Signature-Version:' line at all");
     expect(absent.out).not.toContain("RECOVERED-MALFORMED");
 
-    // A COMPLETE block in the wrong place is no longer a bare placement FAIL —
-    // it is the RECOVERED-MALFORMED outcome, which names the same defect AND
-    // hands back the attribution it recovered. Still exit 1, still not a PASS.
+    // REVERSED 2026-08-16 by Aaron's layout-tolerance ruling, and kept here as
+    // the before/after record rather than deleted. In #10922 this body FAILED
+    // (RECOVERED-MALFORMED, exit 1). It now PASSES: the block is complete and
+    // every value is valid, and the author cannot control what a forge or an IDE
+    // appends below it. Trailing text is a layout fact, not a defect.
     const misplaced = runValidator(`${GOOD_BLOCK}\n\nA trailing footer paragraph.\n`);
-    expect(misplaced.out).toContain("RECOVERED-MALFORMED");
-    expect(misplaced.out).toContain("git cannot parse it");
-    expect(misplaced.status).toBe(1);
-    expect(misplaced.out).not.toContain("PASS:");
+    expect(misplaced.status).toBe(0);
+    expect(misplaced.out).toContain("PASS:");
+    expect(misplaced.out).not.toContain("RECOVERED-MALFORMED");
   });
 
   test("the placement diagnosis is still reached when there is no complete block", () => {

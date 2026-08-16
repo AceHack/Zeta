@@ -20,9 +20,12 @@ import {
   ENUMS,
   REQUIRED_KEYS,
   blockValue,
+  detectBlockDisagreement,
+  findAllSignatureBlocks,
   findSignatureBlock,
   missingRequiredKeys,
   validateBlock,
+  validateText,
 } from "./agencysignature-block.ts";
 import { classifyCommitRecord, loadIdentityRoster } from "./audit-agencysignature-main-tip.ts";
 import { main as validatePrBody } from "./validate-agencysignature-pr-body.ts";
@@ -224,38 +227,26 @@ describe("findSignatureBlock (the lenient recovery scan)", () => {
   });
 });
 
-describe("FALSIFIER: a recovered block never reports as a clean PASS", () => {
-  test("pre-merge: the orphaned-block body is not accepted silently", () => {
-    const orphaned = `## Summary\n\nWork.\n\n${block()}\n\nCo-authored-by: shadow <s@z.agents>\n`;
-    const chunks: string[] = [];
-    const capture = (chunk: unknown): boolean => {
-      chunks.push(String(chunk));
-      return true;
-    };
-    const realOut = process.stdout.write;
-    const realErr = process.stderr.write;
-    process.stdout.write = capture as typeof process.stdout.write;
-    process.stderr.write = capture as typeof process.stderr.write;
-    let status: number;
-    try {
-      status = validatePrBody([], orphaned);
-    } finally {
-      process.stdout.write = realOut;
-      process.stderr.write = realErr;
-    }
-    const out = chunks.join("");
-    // The brief's second required falsifier: RECOVERED must never read as PASS.
-    expect(out).not.toContain("PASS:");
-    expect(out).toContain("RECOVERED-MALFORMED");
-    expect(status).toBe(1);
+describe("LAYOUT TOLERANCE: trailing text is legal (Aaron 2026-08-16)", () => {
+  test("FALSIFIER: a block followed by an IDE tagline PASSES", () => {
+    // The forcing case. Riven's PRs carry `Made with [Cursor](https://cursor.com)`
+    // appended below the body; Aaron's own #10949 hit it. The author cannot stop
+    // the append, so failing for it is a gate firing on correct work.
+    // BEFORE this change this body FAILED; that is the direction of the mutation.
+    const body = `## Summary\n\nWork.\n\n${block()}\n\nMade with [Cursor](https://cursor.com)\n`;
+    expect(preMergeAccepts(body)).toBe(true);
   });
 
-  test("post-merge: the same shape classifies RECOVERED-MALFORMED, not CORRECT", () => {
+  test("FALSIFIER: a block followed by a forge-re-emitted Co-authored-by PASSES", () => {
+    const body = `feat: x\n\n${block()}\n\nCo-authored-by: shadow <s@z.agents>\n`;
+    expect(preMergeAccepts(body)).toBe(true);
+  });
+
+  test("post-merge: the same shape is CORRECT, not a defect", () => {
     const message = `feat: x\n\n${block()}\n\nCo-authored-by: shadow <s@z.agents>\n`;
     const result = classifyCommitRecord(
       {
-        // Empty, because that is precisely what git returns for this shape.
-        trailers: "",
+        trailers: "", // exactly what git returns for this shape
         message,
         timestamp: Date.parse("2026-08-20T00:00:00Z") / 1000,
         isoDate: "2026-08-20T00:00:00Z",
@@ -267,14 +258,16 @@ describe("FALSIFIER: a recovered block never reports as a clean PASS", () => {
       Date.parse("2026-08-15T00:00:00Z") / 1000,
       loadIdentityRoster(),
     );
-    expect(result.status).toBe("RECOVERED-MALFORMED");
-    expect(result.status).not.toBe("CORRECT");
-    expect(result.reason).toContain("RECOVERED");
+    expect(result.status).toBe("CORRECT");
   });
 
-  test("post-merge: a version key with NO complete block is RECOVERED-PARTIAL", () => {
-    // 976 commits on main. Previously reported CORRECT with the reason
-    // "AgencySignature block present in commit message" — a false statement.
+  test("LAYOUT tolerance is not FIELD tolerance — a short block still fails", () => {
+    // The guard on the guard: relaxing placement must not relax the ten fields.
+    const body = "## Summary\n\nAgency-Signature-Version: 1\nAgent: shadow\n\ntagline\n";
+    expect(preMergeAccepts(body)).toBe(false);
+  });
+
+  test("post-merge: a version key with NO complete block is still RECOVERED-PARTIAL", () => {
     const result = classifyCommitRecord(
       {
         trailers: "",
@@ -290,6 +283,88 @@ describe("FALSIFIER: a recovered block never reports as a clean PASS", () => {
       loadIdentityRoster(),
     );
     expect(result.status).toBe("RECOVERED-PARTIAL");
+  });
+});
+
+describe("LAST-WINS: the last complete block is authoritative", () => {
+  const quoted = block({ Agent: "example-persona", Task: "quoted-template" });
+  const real = block({ Agent: "shadow", Task: "the-real-work" });
+
+  test("FALSIFIER: a quoted example BEFORE the real block does not win", () => {
+    // This is why last-wins and trailing-text-legality are ONE decision: once
+    // text may follow the block, taking the first would let a doc PR that quotes
+    // the template outrank the signature of the PR itself.
+    const text = `docs: show the template\n\n${quoted}\n\nand here is ours:\n\n${real}\n\nMade with Cursor\n`;
+    const found = findSignatureBlock(text);
+    expect(blockValue((found ?? []).join("\n"), "Agent")).toBe("shadow");
+    expect(blockValue((found ?? []).join("\n"), "Task")).toBe("the-real-work");
+  });
+
+  test("findAllSignatureBlocks returns every block in document order", () => {
+    const all = findAllSignatureBlocks(`x\n\n${quoted}\n\ny\n\n${real}\n`);
+    expect(all.length).toBe(2);
+    expect(blockValue((all[0] ?? []).join("\n"), "Agent")).toBe("example-persona");
+    expect(blockValue((all[1] ?? []).join("\n"), "Agent")).toBe("shadow");
+  });
+
+  test("a single block is still that block", () => {
+    expect(blockValue((findSignatureBlock(`x\n\n${real}\n`) ?? []).join("\n"), "Agent")).toBe(
+      "shadow",
+    );
+  });
+});
+
+describe("BLOCK-DISAGREEMENT: contradictory governance claims are loud", () => {
+  test("FALSIFIER: two blocks disagreeing on Human-Review is an ERROR, not a pick", () => {
+    // Live shape on main: c417b28c6357 has `Human-Review: none` and `explicit`.
+    // Last-wins would RECORD A REVIEW THE OTHER BLOCK DENIES.
+    const a = block({ "Human-Review": "none", "Human-Review-Evidence": "none" });
+    const z = block({ "Human-Review": "explicit", "Human-Review-Evidence": "pr-review" });
+    const text = `chore: squash\n\n${a}\n\n* second\n\n${z}\n`;
+    const d = detectBlockDisagreement(text);
+    expect(d).not.toBeNull();
+    expect(d?.keys).toContain("Human-Review");
+    const v = validateText(text).violations;
+    expect(v[0]?.code).toBe("block-disagreement");
+    expect(preMergeAccepts(text)).toBe(false);
+  });
+
+  test("FALSIFIER: Action-Mode disagreement is an error", () => {
+    const a = block({ "Action-Mode": "supervised" });
+    const z = block({ "Action-Mode": "autonomous-fail-open" });
+    expect(detectBlockDisagreement(`x\n\n${a}\n\ny\n\n${z}\n`)).not.toBeNull();
+  });
+
+  test("INCIDENTAL disagreement is ACCEPTED silently — Task, Agent, runtime", () => {
+    // 17 of the 47 disagreements on main are incidental-only (28 involve Task).
+    // Erroring on those would be false alarms on every multi-author squash.
+    const a = block({ Agent: "vera", Task: "081M0085XQT087G0R003W4KFS4", "Agent-Runtime": "Codex" });
+    const z = block({ Agent: "shadow", Task: "other-work", "Agent-Runtime": "Claude Code" });
+    const text = `chore: squash\n\n${a}\n\n* second\n\n${z}\n`;
+    expect(detectBlockDisagreement(text)).toBeNull();
+    expect(preMergeAccepts(text)).toBe(true);
+  });
+
+  test("identical repeated blocks do not disagree", () => {
+    const b = block();
+    expect(detectBlockDisagreement(`x\n\n${b}\n\ny\n\n${b}\n`)).toBeNull();
+  });
+
+  test("disagreement is detected across ALL blocks, not just first vs last", () => {
+    // Three blocks where the ends AGREE and the middle contradicts both.
+    const ends = block({ "Action-Mode": "supervised" });
+    const mid = block({ "Action-Mode": "human-directed" });
+    const text = `x\n\n${ends}\n\na\n\n${mid}\n\nb\n\n${ends}\n`;
+    expect(detectBlockDisagreement(text)).not.toBeNull();
+  });
+
+  test("disagreement is checked BEFORE value validation", () => {
+    // A contradiction must not be masked by the last block being well-formed.
+    const a = block({ "Human-Review": "none", "Human-Review-Evidence": "none" });
+    const z = block({ "Human-Review": "explicit", "Human-Review-Evidence": "pr-review" });
+    const v = validateText(`x\n\n${a}\n\ny\n\n${z}\n`).violations;
+    expect(v.length).toBe(1);
+    expect(v[0]?.code).toBe("block-disagreement");
   });
 });
 

@@ -52,8 +52,8 @@ import { join as joinPath } from "node:path";
 // import from here, so they cannot disagree about what a valid block is.
 import {
   CANONICAL_SHAPE,
-  findSignatureBlock,
   validateBlock,
+  validateText,
   REQUIRED_KEYS,
   type Violation,
 } from "./agencysignature-block.ts";
@@ -62,8 +62,8 @@ type ExitCode = 0 | 1 | 2;
 type Mode = "head" | "commit" | "max" | "since";
 type Status =
   | "CORRECT"
-  | "RECOVERED-MALFORMED"
   | "RECOVERED-PARTIAL"
+  | "BLOCK-DISAGREEMENT"
   | "INVALID-VALUES"
   | "LEGACY"
   | "HUMAN-AUTHORED-EXEMPT"
@@ -72,42 +72,49 @@ type Status =
   | "REGRESSION";
 
 // ---------------------------------------------------------------------------
-// RECOVERY IS NOT ACCEPTANCE (2026-08-16)
+// LAYOUT TOLERANCE, FIELD STRICTNESS (2026-08-16, Aaron: "yes this sounds good")
 // ---------------------------------------------------------------------------
-// This auditor has ALWAYS had a lenient fallback: `classifySigned` tried the
-// parsed trailers and then, failing that, scanned the raw commit message. What
-// it did NOT do is say which one fired — both returned `CORRECT`, so a commit
-// whose signature git cannot parse was indistinguishable in the summary from one
-// it can. That is the shape this repo has spent the week removing: a check that
-// recovers from a defect and then reports the defect as absent.
+// This auditor has ALWAYS had a lenient fallback: it tried the parsed trailers
+// and then scanned the raw message. What it did not do is say which fired —
+// both returned `CORRECT`. #10922 split them; this change then settled which of
+// the splits is actually a DEFECT.
 //
-// MEASURED on `main` 2026-08-16, over the 6990 commits after the v1 ship anchor:
+// The answer is that LAYOUT IS NOT. The forge, not the author, decides what
+// surrounds the block: GitHub's squash-merge deletes every `Co-authored-by:`,
+// recomputes the contributing set from account topology and re-emits it after a
+// blank line; IDEs append taglines below the body. A status that fires on that
+// fires on correct work, and a gate that mostly fires on correct work gets
+// switched off. So a complete block found by the canonical scan is `CORRECT`.
 //
-//    296  CORRECT             — strict git-trailer parse succeeds
-//    716  RECOVERED-MALFORMED — a complete, contiguous 10-key block exists in the
-//                               message and git parses NONE of it. 551 of those
-//                               are the identical shape: a blank line between the
-//                               block and a trailing `Co-authored-by:`, which
-//                               makes git treat only the `Co-authored-by:` as the
-//                               trailer block and all 10 keys become invisible.
-//    976  RECOVERED-PARTIAL   — the version key appears in the message but NO
-//                               complete 10-key block does. These were reported
-//                               `CORRECT` with the reason "AgencySignature block
-//                               present in commit message" — a claim that is
-//                               false for all 976: there is a key, not a block.
+// FIELDS still are. Measured on `main` after the v1 ship anchor (2026-08-16):
 //
-// So 1692 of the 1988 signed commits on `main` (85%) were passing on the lenient
-// path while the summary said the strict one. The taxonomy below splits them and
-// counts them separately. It deliberately turns NOTHING red that was green — the
-// enforcement level is a policy call reserved to Aaron (see
-// `RECOVERED_STATUSES_ARE_REGRESSIONS` and `--fail-on-recovered`).
+//    976  RECOVERED-PARTIAL   — a version key but NO complete block anywhere, so
+//                               most attribution fields are simply absent. These
+//                               were once reported CORRECT with the reason
+//                               "AgencySignature block present in commit
+//                               message" — false for all 976.
+//    420  INVALID-VALUES      — a complete block breaking an enum or the
+//                               Human-Review cross-field rule.
+//     30  BLOCK-DISAGREEMENT  — of the 154 commits carrying more than one
+//                               complete block, 30 make MUTUALLY EXCLUSIVE
+//                               governance claims (e.g. c417b28c6357:
+//                               `Human-Review: none` in one block and `explicit`
+//                               in another). Never resolved by picking an end of
+//                               the message; picking would manufacture an
+//                               authorization that the other block denies.
+//                               (17 more disagree only on incidental fields —
+//                               mostly `Task:` — and are accepted silently.)
+//
+// Enforcement of these remains a policy call reserved to Aaron; see
+// `RECOVERED_STATUSES_ARE_REGRESSIONS` / `INVALID_VALUES_ARE_REGRESSIONS` and
+// `--fail-on-recovered`. Nothing already green turns red by default.
 // ---------------------------------------------------------------------------
 
 /**
  * Whether a recovered signature counts as a regression (exit 1).
  *
  * FALSE by default, and the default is the honest one rather than the timid one:
- * flipping it to `true` today reddens 1692 commits of already-merged history,
+ * flipping it to `true` today reddens ~1000 commits of already-merged history,
  * which is a decision about what `main` is allowed to look like, not a bug fix.
  * The outcome is *visible and separately counted* either way — which is the part
  * that was actually broken. Flip this constant, or pass `--fail-on-recovered`,
@@ -520,21 +527,28 @@ export interface Classification {
 }
 
 /**
- * Which route produced the signature — the distinction the old code threw away.
+ * How the signature is read, after the 2026-08-16 layout-tolerance ruling.
  *
- * 1. STRICT: `git log --pretty=%(trailers)` yields the version key. The substrate
- *    can parse it, so it is `CORRECT` and nothing else needs saying.
- * 2. RECOVERED-MALFORMED: strict yields nothing, and a complete contiguous 10-key
- *    block is nonetheless present in the message. The ATTRIBUTION IS RECOVERED —
- *    every field is readable — and the DEFECT IS REPORTED, because `git log
- *    --pretty=%(trailers:key=...)`, which is how the convention is meant to be
- *    queried at scale (spec Section 3.5), returns nothing for this commit.
- * 3. RECOVERED-PARTIAL: strict yields nothing and there is no complete block
- *    either, only the version key loose in the message. Weaker than 2 and named
- *    separately, because the old reason string claimed a "block present" for
- *    exactly this case and that claim was false 976 times.
+ * LAYOUT IS NO LONGER A DEFECT. `RECOVERED-MALFORMED` is gone: a complete block
+ * that git cannot parse is now simply `CORRECT`, because the forge — not the
+ * author — decides what surrounds the block (squash-merge recomputes and
+ * re-emits `Co-authored-by:` after a blank line from account topology; an IDE
+ * appends a tagline). A status that fires on something no author can control is
+ * a gate firing on correct work.
+ *
+ * WHAT IS GIVEN UP, stated rather than glossed: `git log
+ * --pretty='%(trailers:key=Agency-Signature-Version)'` is no longer a complete
+ * query over signed commits, so spec Section 3.5's queryable-verification
+ * property now belongs to `findSignatureBlock`, not to git's trailer parser.
+ * That cost is real and is the price of the ruling; the summary still COUNTS
+ * how many commits git cannot parse so the size of it stays visible.
+ *
+ * Still defects, because they are about FIELDS rather than layout:
+ *   * `RECOVERED-PARTIAL` — a version key but no complete block; fields missing.
+ *   * `INVALID-VALUES`    — a complete block breaking a value rule.
+ *   * `BLOCK-DISAGREEMENT` — several complete blocks making mutually exclusive
+ *     governance claims. Never resolved by picking; see `detectBlockDisagreement`.
  */
-/** `[first violation, ""]` rendered for a reason string, or `null` when valid. */
 function firstViolation(blockText: string): Violation | null {
   const violations = validateBlock(blockText);
   return violations.length === 0 ? null : (violations[0] ?? null);
@@ -545,7 +559,22 @@ function classifySigned(record: CommitRecord): Classification | null {
     hasAgencySignatureV2(record.trailers) || hasAgencySignatureV2(record.message);
   const version = hasV2 ? "v2" : "v1";
 
-  // Route 1 — STRICT. The substrate parses it; that is the whole bar.
+  // Contradiction first: a squash whose constituents disagree about the
+  // authority behind the change must not come out clean because the block that
+  // happened to be last is internally well-formed.
+  const verdict = validateText(record.message);
+  const disagreement = verdict.violations.find((v) => v.code === "block-disagreement");
+  if (disagreement !== undefined) {
+    return {
+      status: "BLOCK-DISAGREEMENT",
+      reason:
+        `${disagreement.message} Incidental disagreement (Agent / Task / runtime) is ` +
+        "accepted silently — a multi-author squash honestly has several; these fields " +
+        "are not those.",
+    };
+  }
+
+  // STRICT — git parses it. Still reported distinctly in the summary count.
   if (hasAgencySignature(record.trailers)) {
     const bad = firstViolation(record.trailers);
     if (bad !== null) {
@@ -555,41 +584,43 @@ function classifySigned(record: CommitRecord): Classification | null {
           `trailer parses (${version}) but FAILS the canonical value rules: ${bad.message}. ` +
           "The pre-merge PR-body gate rejects this exact block; before 2026-08-16 this " +
           "auditor accepted it, which is how a block could be invalid at PR time and " +
-          "valid on main. Both now call the same validateBlock().",
+          "valid on main. Both now call the same rule.",
       };
     }
-    return { status: "CORRECT", reason: `trailer present (${version})` };
+    return { status: "CORRECT", reason: `trailer present (${version}), git-parseable` };
   }
 
   if (!hasAgencySignature(record.message)) return null;
 
-  // Route 2 — LENIENT. Recover the DATA; never silence the DEFECT.
-  const block = findSignatureBlock(record.message);
-  if (block !== null) {
-    const bad = firstViolation(block.join("\n"));
-    const suffix =
-      bad === null ? "" : ` The recovered block ALSO fails a value rule: ${bad.message}.`;
+  // LAYOUT-TOLERANT — the canonical scan finds the LAST complete block.
+  if (verdict.block !== null) {
+    const bad = verdict.violations[0];
+    if (bad !== undefined) {
+      return {
+        status: "INVALID-VALUES",
+        reason: `block found by canonical scan (${version}) but FAILS a value rule: ${bad.message}`,
+      };
+    }
+    const multi =
+      verdict.blockCount > 1
+        ? ` ${String(verdict.blockCount)} complete blocks present; the LAST is authoritative and they agree on every governance field.`
+        : "";
     return {
-      status: "RECOVERED-MALFORMED",
+      status: "CORRECT",
       reason:
-        `attribution RECOVERED (${version}): a complete ${String(REQUIRED_KEYS.length)}-key block is present ` +
-        "in the message but git parses NONE of it — `git log " +
-        `--pretty='%(trailers:key=${CANONICAL_VERSION_KEY})'\` returns empty for this ` +
-        "commit, so the convention is unqueryable at scale (spec Section 3.5). " +
-        "Commonest cause: a blank line between the block and a trailing " +
-        "`Co-authored-by:`, which makes git read only the `Co-authored-by:` as the " +
-        `trailer block.${suffix}`,
+        `complete ${String(REQUIRED_KEYS.length)}-key block (${version}) found by canonical scan; ` +
+        "git's trailer parser does not see it (the forge decides what surrounds the " +
+        `block, not the author) — layout is not a defect.${multi}`,
     };
   }
 
-  // Route 3 — the version key alone. Named separately because the old reason
-  // string claimed "block present in commit message" here, and that was false.
+  // A version key alone. Still a defect: the FIELDS are missing, not the layout.
   return {
     status: "RECOVERED-PARTIAL",
     reason:
       `attribution PARTIALLY recovered (${version}): '${CANONICAL_VERSION_KEY}' appears in the ` +
       "message, but no complete contiguous 10-key block does — so most attribution " +
-      "fields are absent, not merely unparseable.",
+      "fields are absent. This is a FIELD defect, not a layout one.",
   };
 }
 
@@ -782,8 +813,8 @@ function emitHelp(): ExitCode {
 interface AuditCounts {
   correct: number;
   correctV2: number;
-  recoveredMalformed: number;
   recoveredPartial: number;
+  disagreement: number;
   invalidValues: number;
   legacy: number;
   human: number;
@@ -831,9 +862,9 @@ function tallyCommit(status: Status, short: string, counts: AuditCounts, isV2 = 
     counts.correct++;
     if (isV2) counts.correctV2++;
   }
-  else if (status === "RECOVERED-MALFORMED") {
-    counts.recoveredMalformed++;
-    counts.recoveredShas.push(short);
+  else if (status === "BLOCK-DISAGREEMENT") {
+    counts.disagreement++;
+    counts.invalidShas.push(short);
   }
   else if (status === "RECOVERED-PARTIAL") {
     counts.recoveredPartial++;
@@ -867,8 +898,8 @@ function auditCommits(
   const counts: AuditCounts = {
     correct: 0,
     correctV2: 0,
-    recoveredMalformed: 0,
     recoveredPartial: 0,
+    disagreement: 0,
     invalidValues: 0,
     legacy: 0,
     human: 0,
@@ -901,17 +932,22 @@ function auditCommits(
  */
 export function isClean(counts: AuditCounts, failOnRecovered: boolean): boolean {
   if (counts.regression > 0) return false;
-  const recovered = counts.recoveredMalformed + counts.recoveredPartial;
+  const recovered = counts.recoveredPartial;
   if ((failOnRecovered || RECOVERED_STATUSES_ARE_REGRESSIONS) && recovered > 0) return false;
-  if ((failOnRecovered || INVALID_VALUES_ARE_REGRESSIONS) && counts.invalidValues > 0) return false;
+  if (
+    (failOnRecovered || INVALID_VALUES_ARE_REGRESSIONS) &&
+    counts.invalidValues + counts.disagreement > 0
+  ) {
+    return false;
+  }
   return true;
 }
 
 function emitSummary(counts: AuditCounts, failOnRecovered: boolean): ExitCode {
   process.stdout.write("\nSummary:\n");
   process.stdout.write(`  CORRECT:                ${String(counts.correct)}\n`);
-  process.stdout.write(`  RECOVERED-MALFORMED:    ${String(counts.recoveredMalformed)}   (attribution readable; git parses none of it)\n`);
-  process.stdout.write(`  RECOVERED-PARTIAL:      ${String(counts.recoveredPartial)}   (version key only; no complete block)\n`);
+  process.stdout.write(`  RECOVERED-PARTIAL:      ${String(counts.recoveredPartial)}   (version key only; no complete block — a FIELD defect)\n`);
+  process.stdout.write(`  BLOCK-DISAGREEMENT:     ${String(counts.disagreement)}   (>1 block, mutually exclusive governance claims)\n`);
   process.stdout.write(`  INVALID-VALUES:         ${String(counts.invalidValues)}   (parses, but breaks the canonical value rules)\n`);
   process.stdout.write(`  LEGACY:                 ${String(counts.legacy)}\n`);
   process.stdout.write(`  HUMAN-AUTHORED-EXEMPT:  ${String(counts.human)}   (pre-cutover legacy rule)\n`);
@@ -928,10 +964,10 @@ function emitSummary(counts: AuditCounts, failOnRecovered: boolean): ExitCode {
   // it prints its own banner above the verdict and names the shas — otherwise
   // the fallback becomes a second place for a check to quietly not fail, which
   // is the defect this change exists to remove rather than relocate.
-  const recovered = counts.recoveredMalformed + counts.recoveredPartial;
+  const recovered = counts.recoveredPartial;
   if (recovered > 0) {
     process.stdout.write(
-      `\nRECOVERED: ${String(recovered)} commit(s) carry attribution git cannot parse:${counts.recoveredShas
+      `\nINCOMPLETE: ${String(recovered)} commit(s) carry a version key but no complete block:${counts.recoveredShas
         .map((s) => ` ${s}`)
         .join("")}\n`,
     );
@@ -944,9 +980,9 @@ function emitSummary(counts: AuditCounts, failOnRecovered: boolean): ExitCode {
     );
     process.stdout.write("  nothing for these commits, so the convention is unqueryable at scale.\n");
   }
-  if (counts.invalidValues > 0) {
+  if (counts.invalidValues + counts.disagreement > 0) {
     process.stdout.write(
-      `\nINVALID VALUES: ${String(counts.invalidValues)} commit(s) parse but break the canonical value rules:${counts.invalidShas
+      `\nINVALID: ${String(counts.invalidValues + counts.disagreement)} commit(s) break a value rule or carry contradictory blocks:${counts.invalidShas
         .map((s) => ` ${s}`)
         .join("")}\n`,
     );

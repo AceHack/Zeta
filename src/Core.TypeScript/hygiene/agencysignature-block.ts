@@ -56,9 +56,11 @@ export const MISSPELLED_VERSION_KEY = "Agent-Signature-Version";
  * future one quote the same sentence.
  */
 export const CANONICAL_SHAPE =
-  "Exactly one blank line BEFORE the block, ZERO blank lines anywhere inside it, " +
-  "and `Co-authored-by:` (which is itself a trailer) INSIDE the same contiguous " +
-  "run — not separated from it by a blank line. Nothing but trailers after it.";
+  "The ten required fields, contiguous (no blank line inside the block). Layout is " +
+  "otherwise free: the block need NOT be the final paragraph, and text after it — an " +
+  "IDE tagline, a forge footer, a `Co-authored-by:` the forge re-emitted — is fine. " +
+  "When a message carries several complete blocks the LAST one is authoritative, and " +
+  "blocks that disagree on a governance-critical field are an error, not a pick.";
 
 /** The ten v1 keys, in canonical (spec Section 7.4) order. */
 export const REQUIRED_KEYS: readonly string[] = [
@@ -174,17 +176,43 @@ export function missingRequiredKeys(blockText: string): readonly string[] {
  * which is why no widening is needed here.
  * Evidence: docs/research/2026-08-16-the-forge-is-the-producer-squash-merge-recomputes-the-co-author-trailer-set-and-the-fields-always-survive.md
  *
- * KNOWN OPEN AMBIGUITY (named, not decided): a multi-commit squash concatenates
- * each commit's message, so one message can carry SEVERAL complete blocks. This
- * returns the FIRST. On `main` today 159 commits carry more than one complete
- * block, and 38 of those disagree between first and last on a governance field
- * (`Human-Review`, `Action-Mode`). Which of N signatures is THE signature of a
- * squashed commit is a real semantic question, and changing the pick would change
- * the recorded verdict on 38 landed commits — so it is left open rather than
- * settled by a parser detail.
+ * MULTI-BLOCK RESOLUTION — settled 2026-08-16 (Aaron: *"yes this sounds good"*).
+ * A multi-commit squash concatenates each commit's message, so one message can
+ * carry SEVERAL complete blocks. This returns the **LAST**, and the reason is
+ * specifically that trailing text is now legal:
+ *
+ *   * appended taglines land AFTER the real block (an IDE's `Made with Cursor`,
+ *     a forge footer) — the author cannot prevent them;
+ *   * quoted examples land BEFORE it (a doc PR showing the template, a PR whose
+ *     subject IS the block format).
+ *
+ * So last-wins is correct *precisely because* trailing text is legal: taking the
+ * first would let a quoted example outrank the signature it is quoting. The two
+ * decisions are one decision and must not be separated.
+ *
+ * Measured before changing it (this repo, post-v1-ship commits on `main`,
+ * 2026-08-16): 154 commits carry more than one complete block; 47 of those
+ * disagree between first and last on some field; 30 disagree on a
+ * GOVERNANCE-critical field. Those 30 do not silently flip — they now raise
+ * `block-disagreement` (see `detectBlockDisagreement`), because a squash whose
+ * constituents claim `Human-Review: none` and `Human-Review: explicit` cannot be
+ * resolved by a parser preferring one end of the message.
  */
 export function findSignatureBlock(text: string): readonly string[] | null {
+  const all = findAllSignatureBlocks(text);
+  return all.length === 0 ? null : (all[all.length - 1] ?? null);
+}
+
+/**
+ * Every complete block in the text, in document order.
+ *
+ * Contiguity is still required INSIDE each run for the reason given above; what
+ * changed is only WHICH complete run is authoritative, and that several may
+ * exist at all.
+ */
+export function findAllSignatureBlocks(text: string): readonly (readonly string[])[] {
   const lines = text.split("\n");
+  const found: (readonly string[])[] = [];
   let i = 0;
   while (i < lines.length) {
     if (BLANK_LINE_RE.test(lines[i] ?? "")) {
@@ -194,10 +222,89 @@ export function findSignatureBlock(text: string): readonly string[] | null {
     let j = i;
     while (j < lines.length && !BLANK_LINE_RE.test(lines[j] ?? "")) j++;
     const paragraph = lines.slice(i, j);
-    if (missingRequiredKeys(paragraph.join("\n")).length === 0) return paragraph;
+    if (missingRequiredKeys(paragraph.join("\n")).length === 0) found.push(paragraph);
     i = j;
   }
-  return null;
+  return found;
+}
+
+// ---------------------------------------------------------------------------
+// GOVERNANCE-CRITICAL vs INCIDENTAL fields
+// ---------------------------------------------------------------------------
+// The split is not "important vs unimportant" — every required field is
+// required, and `missingRequiredKeys` is unchanged. It answers one narrow
+// question: WHEN TWO BLOCKS IN ONE SQUASH DISAGREE, is that a contradiction or
+// just two true statements about different constituent commits?
+//
+// The discriminator is ESCALATION, which is `.claude/rules/no-directives.md`'s
+// line applied to a parser: the shadow may inherit authority, never extend it.
+//
+//   GOVERNANCE-CRITICAL — the value is a claim about how much AUTHORITY this
+//   change carries. Silently picking one manufactures authorization nobody gave.
+//   Measured live on `main`: c417b28c6357 has `Human-Review: none` in its first
+//   block and `explicit` in its last; 620a1729cb5f goes `pending` -> `explicit`.
+//   Last-wins there would RECORD A HUMAN REVIEW THAT THE OTHER BLOCK DENIES.
+//   That is the privilege-escalation shape, so it must be loud, not resolved.
+//
+//   INCIDENTAL — two different values are both TRUE, of different constituent
+//   commits, and neither grants anything. A squash of work by two agents
+//   honestly has two `Agent:` values; a squash spanning two work-items honestly
+//   has two `Task:` values (28 of the 47 disagreements are `Task:` alone —
+//   erroring on those would be 28 false alarms teaching people to ignore the
+//   check). `Credential-Identity` is here for a stated reason rather than by
+//   feel: spec Section 7.5's Identity Demarcation Rule already forbids using an
+//   identity field as proof of human action, so it cannot escalate by itself.
+//
+// Consequence, stated so the tradeoff is visible: a disagreement confined to
+// incidental fields is ACCEPTED and the last block wins. That loses the other
+// constituents' attribution detail. It is the right trade only because the
+// alternative — erroring on every multi-author squash — makes the check useless.
+
+export const GOVERNANCE_KEYS: readonly string[] = [
+  "Agency-Signature-Version", // schema discriminator: changes how all the rest is read
+  "Credential-Mode", // whether the credential implies a human at all
+  "Human-Review", // THE accountability claim
+  "Human-Review-Evidence", // where that claim's evidence lives (spec Section 5.3)
+  "Action-Mode", // autonomous vs supervised vs human-directed
+];
+
+export const INCIDENTAL_KEYS: readonly string[] = REQUIRED_KEYS.filter(
+  (k) => !GOVERNANCE_KEYS.includes(k),
+);
+
+export interface BlockDisagreement {
+  /** Governance-critical keys whose values differ across the blocks. */
+  readonly keys: readonly string[];
+  /** `key: 'a' | 'b'` for each disagreeing key, for the error message. */
+  readonly details: readonly string[];
+  readonly blockCount: number;
+}
+
+/**
+ * Detect a governance-critical disagreement among the complete blocks.
+ *
+ * Compares ALL blocks pairwise-by-key rather than only first vs last: with three
+ * blocks, a contradiction between #1 and #2 is just as real as one between #1
+ * and #3, and comparing only the ends would miss it.
+ *
+ * Returns `null` when there are fewer than two blocks, or when they agree on
+ * every governance key — the ordinary multi-author squash, which stays quiet.
+ */
+export function detectBlockDisagreement(text: string): BlockDisagreement | null {
+  const blocks = findAllSignatureBlocks(text);
+  if (blocks.length < 2) return null;
+  const keys: string[] = [];
+  const details: string[] = [];
+  for (const key of GOVERNANCE_KEYS) {
+    const values = [...new Set(blocks.map((b) => blockValue(b.join("\n"), key)))];
+    if (values.length > 1) {
+      keys.push(key);
+      const quoted = values.map((v) => "'" + v + "'").join(" vs ");
+      details.push(`${key}: ${quoted}`);
+    }
+  }
+  if (keys.length === 0) return null;
+  return { keys, details, blockCount: blocks.length };
 }
 
 /** A single way a block fails the canonical rule. Data, not a printed message. */
@@ -212,7 +319,8 @@ export interface Violation {
     | "explicit-without-evidence"
     | "v2-missing-cell"
     | "v2-persona-mismatch"
-    | "v2-invalid-cell";
+    | "v2-invalid-cell"
+    | "block-disagreement";
   /** The key at fault, or `""` when the violation spans fields. */
   readonly key: string;
   readonly found: string;
@@ -301,6 +409,51 @@ export function validateBlock(blockText: string): readonly Violation[] {
   if (crossField !== null) return [crossField];
 
   return violations;
+}
+
+export interface TextVerdict {
+  /** The authoritative block (the LAST complete one), or `null` if none exists. */
+  readonly block: readonly string[] | null;
+  /** Violations of the authoritative block, plus any `block-disagreement`. */
+  readonly violations: readonly Violation[];
+  /** How many complete blocks the text carried. */
+  readonly blockCount: number;
+}
+
+/**
+ * THE whole-message entry point. Both instruments call this, so last-wins and
+ * the disagreement check cannot be implemented once and forgotten once.
+ *
+ * Order is load-bearing: DISAGREEMENT IS CHECKED BEFORE the block is validated.
+ * A squash whose constituents contradict each other on `Human-Review` must not
+ * be able to come out clean merely because the block that happened to be last
+ * is internally well-formed — that would be the contradiction hiding behind a
+ * green check, which is the shape this whole module exists to remove.
+ */
+export function validateText(text: string): TextVerdict {
+  const blocks = findAllSignatureBlocks(text);
+  const block = blocks.length === 0 ? null : (blocks[blocks.length - 1] ?? null);
+  const disagreement = detectBlockDisagreement(text);
+  if (disagreement !== null) {
+    return {
+      block,
+      blockCount: blocks.length,
+      violations: [
+        {
+          code: "block-disagreement",
+          key: disagreement.keys.join(" "),
+          found: disagreement.details.join("; "),
+          message:
+            `${String(disagreement.blockCount)} complete AgencySignature blocks disagree on a ` +
+            `governance-critical field — ${disagreement.details.join("; ")}. These are ` +
+            "mutually exclusive claims about the authority behind ONE change, so no " +
+            "parser may pick between them; the squash must state a single answer.",
+        },
+      ],
+    };
+  }
+  if (block === null) return { block: null, blockCount: 0, violations: [] };
+  return { block, blockCount: blocks.length, violations: validateBlock(block.join("\n")) };
 }
 
 /**
