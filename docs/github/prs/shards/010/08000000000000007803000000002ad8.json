@@ -1,0 +1,12 @@
+{
+  "pr_number": 10968,
+  "archive_path": "docs/history/pr-reviews/PR-10968-feat-core-asymmetric-obligations-of-the-dominating-level-the-paired-law-to-domin.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T17:08:03.270Z",
+  "schema_version": "v1",
+  "commit_sha": "474a9a7637e91c55dc444956ea2dda9a81ecd3bb",
+  "title": "feat(core): asymmetric obligations of the dominating level — the paired law to Dominance Lift",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T17:07:25Z",
+  "head_ref": "shadow/asymmetric-obligations-of-the-dominant-level"
+}
