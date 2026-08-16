@@ -13,8 +13,8 @@
  *   7. Sub-item inheritance (B-0620.4 → B-0620)
  *
  * Usage:
- *   bun src/Core.TypeScript/backlog/rebuild-legacy-b-id-aliases.ts --dry-run
- *   bun src/Core.TypeScript/backlog/rebuild-legacy-b-id-aliases.ts
+ *   bun src/Core.TypeScript/backlog/rebuild-legacy-b-id-aliases.ts            # dry run (default)
+ *   bun src/Core.TypeScript/backlog/rebuild-legacy-b-id-aliases.ts --write    # rewrite ~1,700 files
  */
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -23,11 +23,62 @@ import { spawnSync } from "node:child_process";
 import { legacyZetaIdFromBId, parentBId, timestampForLegacyBId } from "./legacy-b-id-zetaid";
 import { SKIP_DIR_NAMES, shouldSkipDir } from "./b-ref-scope";
 
+const USAGE = `rebuild-legacy-b-id-aliases.ts — rebuild the B-NNNN → ZetaId alias map and rewrite stragglers.
+
+  --write      APPLY the rewrite (writes the alias map and edits files in place)
+  --dry-run    report only; the DEFAULT, accepted for explicitness
+  --verbose    print alias conflicts and residual B-ids
+  --help, -h   this text
+
+Writing is opted INTO by name. Absence of a flag is never a write run.`;
+
+/**
+ * Argument parsing — FAIL CLOSED, and the destructive mode must be NAMED.
+ *
+ * Two properties, and the second is the load-bearing one:
+ *
+ *   1. An unrecognised argument is an error: print, exit 2, BEFORE any filesystem
+ *      write. This tool previously derived intent from flag ABSENCE
+ *      (`DRY_RUN = argv.includes("--dry-run")`), so `--help` — which it did not
+ *      have — was read as "go" and began a full ~1,700-file rewrite of the repo
+ *      (PR #10832, killed before any file changed). A rewriting tool that treats an
+ *      unknown flag as consent has no way to distinguish a typo from an intention.
+ *
+ *   2. Writing requires `--write`. Property 1 alone still leaves a tool that
+ *      rewrites the repo when you FORGET a flag; only an explicit opt-in makes the
+ *      safe mode the default. `--dry-run` is still accepted — it is now a no-op
+ *      that says out loud what the default already is — so every previously-safe
+ *      invocation stays safe and every previously-writing invocation (bare) becomes
+ *      safe rather than silently changing meaning.
+ *
+ * Parsed at module scope, above every `writeFileSync` in this file, so the exit
+ * cannot be reached after a partial rewrite.
+ */
+const ARGS = process.argv.slice(2);
+const KNOWN_FLAGS = new Set(["--write", "--dry-run", "--verbose", "--help", "-h"]);
+
+if (ARGS.includes("--help") || ARGS.includes("-h")) {
+  console.log(USAGE);
+  process.exit(0);
+}
+
+const UNKNOWN = ARGS.filter((a) => !KNOWN_FLAGS.has(a));
+if (UNKNOWN.length > 0) {
+  process.stderr.write(`unknown arg: ${UNKNOWN.join(" ")}\n\n${USAGE}\n`);
+  process.exit(2);
+}
+
+const WRITE = ARGS.includes("--write");
+if (WRITE && ARGS.includes("--dry-run")) {
+  process.stderr.write(`--write and --dry-run are contradictory; refusing to guess\n`);
+  process.exit(2);
+}
+
 const REPO_ROOT = process.cwd();
 const MAP_PATH = join(REPO_ROOT, "src", "Core.TypeScript", "backlog", "b-to-zetaid-map.json");
 const MANUAL_PATH = join(REPO_ROOT, "src", "Core.TypeScript", "backlog", "b-id-renumber-aliases.json");
-const DRY_RUN = process.argv.includes("--dry-run");
-const VERBOSE = process.argv.includes("--verbose");
+const DRY_RUN = !WRITE;
+const VERBOSE = ARGS.includes("--verbose");
 
 const SKIP_FILES = new Set([
   "b-to-zetaid-map.json",
@@ -301,7 +352,11 @@ function applyWalk(dir: string) {
 }
 applyWalk(REPO_ROOT);
 
-console.log(`${DRY_RUN ? "[DRY RUN] Would change" : "Changed"}: ${changed} files`);
+console.log(
+  DRY_RUN
+    ? `[DRY RUN] Would change: ${changed} files (nothing written — pass --write to apply)`
+    : `Changed: ${changed} files`,
+);
 const still = scanRemainingBIds().size;
 console.log(`Remaining B-ids in repo (excl. skip files): ${still}`);
 if (still > 0 && VERBOSE) {

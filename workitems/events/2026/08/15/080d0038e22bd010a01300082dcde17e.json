@@ -1,0 +1,14 @@
+{
+  "id": "080d0038e22bd010a01300082dcde17e",
+  "at": "2026-08-15T20:28:08.442Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M03HRHBS087G0R001HRAFQ0",
+    "type": "bug",
+    "title": "Eight more CLI tools infer destructive intent from flag absence and do not fail closed on unknown args",
+    "slug": "eight-more-cli-tools-infer-destructive-intent-from-flag-abse",
+    "priority": "P2",
+    "filename": "081M03HRHBS087G0R001HRAFQ0-eight-more-cli-tools-infer-destructive-intent-from-flag-abse.md"
+  }
+}

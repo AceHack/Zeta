@@ -143,7 +143,12 @@ frozen alias maps (`b-to-zetaid-map.json`,
 alone is not resolution: that map was mined from git history and
 carries ids that were never rows. Inspect with `--report`;
 bulk-rewrite stragglers to ZetaIds with
-`rebuild-legacy-b-id-aliases.ts`.
+`rebuild-legacy-b-id-aliases.ts --write`.
+
+That remedy is **dry-run by default and fails closed on an unrecognised
+flag** (exit 2, before any write). It used to infer intent from flag
+*absence*, so `--help` — a flag it does not have — read as "go" and started
+a ~1,700-file rewrite. Writing is now opted into by name.
 
 It replaced `lint-no-b-refs.ts`, which banned the mention. The ban
 could not fail on a *stale* reference because it did not permit any
