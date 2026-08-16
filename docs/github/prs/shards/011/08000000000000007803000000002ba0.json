@@ -1,0 +1,12 @@
+{
+  "pr_number": 11168,
+  "archive_path": "docs/history/pr-reviews/PR-11168-fix-collation-green-the-culture-sensitive-ratchet-allowlist-two-study-files-fix-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:12:03.026Z",
+  "schema_version": "v1",
+  "commit_sha": "ab2d4acb96c1776d98f3d8796e17e43dad6cd249",
+  "title": "fix(collation): green the culture-sensitive ratchet — allowlist two study files, fix nine real violations",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:11:30Z",
+  "head_ref": "fix/collation-ratchet-green"
+}
