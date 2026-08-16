@@ -4,7 +4,7 @@
 
 import { describe, expect, it } from "bun:test";
 import { existsSync } from "node:fs";
-import { parseArgs, runPicker, buildVerifyArgs } from "./zeta-creds-picker";
+import { parseArgs, runPicker, buildVerifyArgs, buildPersistArgs } from "./zeta-creds-picker";
 
 describe("parseArgs", () => {
   it("accepts well-formed args with --passphrase-env", () => {
@@ -28,9 +28,35 @@ describe("parseArgs", () => {
     expect(r.passphraseFile).toBe("/pp");
   });
 
-  it("rejects missing --usb-uuid", () => {
+  it("rejects missing binding factor", () => {
     const r = parseArgs(["--output", "/o", "--passphrase-env", "P"]);
     expect("error" in r).toBe(true);
+  });
+
+  it("accepts --usb-iserial without --usb-uuid", () => {
+    const r = parseArgs(["--usb-iserial", "ZETA-STICK-001", "--output", "/o", "--passphrase-env", "P"]);
+    if ("error" in r) throw new Error(r.error);
+    expect(r.usbISerial).toBe("ZETA-STICK-001");
+    expect(r.usbUuid).toBe(null);
+  });
+
+  it("accepts --uefi-keyfile without --usb-uuid", () => {
+    const r = parseArgs(["--uefi-keyfile", "/esp/EFI/ZETA/keyfile", "--output", "/o", "--passphrase-env", "P"]);
+    if ("error" in r) throw new Error(r.error);
+    expect(r.uefiKeyfile).toBe("/esp/EFI/ZETA/keyfile");
+    expect(r.usbUuid).toBe(null);
+  });
+
+  it("rejects --usb-iserial and --uefi-keyfile together", () => {
+    const r = parseArgs([
+      "--usb-iserial", "ZETA-STICK-001",
+      "--uefi-keyfile", "/esp/EFI/ZETA/keyfile",
+      "--output", "/o",
+      "--passphrase-env", "P",
+    ]);
+    expect("error" in r).toBe(true);
+    if (!("error" in r)) return;
+    expect(r.error).toContain("mutually exclusive");
   });
 
   it("rejects missing --output", () => {
@@ -92,6 +118,47 @@ describe("buildVerifyArgs", () => {
     const args = buildVerifyArgs(parsed, "/tmp/t");
     expect(args).toContain("--persona");
     expect(args).toContain("otto");
+  });
+
+  it("forwards --usb-iserial and omits --usb-uuid when uuid was not given", () => {
+    const parsed = parseArgs(["--usb-iserial", "ZETA-STICK-001", "--output", "/o", "--passphrase-env", "P"]);
+    if ("error" in parsed) throw new Error(parsed.error);
+    const args = buildVerifyArgs(parsed, "/tmp/t");
+    expect(args).toContain("--usb-iserial");
+    expect(args).toContain("ZETA-STICK-001");
+    expect(args).not.toContain("--usb-uuid");
+  });
+});
+
+describe("buildPersistArgs", () => {
+  it("default uuid path still forwards --usb-uuid", () => {
+    const parsed = parseArgs(["--usb-uuid", "u1", "--output", "/o", "--passphrase-env", "P"]);
+    if ("error" in parsed) throw new Error(parsed.error);
+    const args = buildPersistArgs(parsed, ["gh-cli=x"]);
+    expect(existsSync(args[0]!)).toBe(true);
+    expect(args).toContain("--usb-uuid");
+    expect(args).toContain("u1");
+    expect(args).not.toContain("--usb-iserial");
+    expect(args).toContain("--bake-cred");
+    expect(args).toContain("gh-cli=x");
+  });
+
+  it("forwards --usb-iserial so persist binds the stick, not the FAT UUID", () => {
+    const parsed = parseArgs(["--usb-iserial", "ZETA-STICK-001", "--output", "/o", "--passphrase-env", "P"]);
+    if ("error" in parsed) throw new Error(parsed.error);
+    const args = buildPersistArgs(parsed, []);
+    expect(args).toContain("--usb-iserial");
+    expect(args).toContain("ZETA-STICK-001");
+    expect(args).not.toContain("--usb-uuid");
+  });
+
+  it("forwards --uefi-keyfile", () => {
+    const parsed = parseArgs(["--uefi-keyfile", "/esp/EFI/ZETA/keyfile", "--output", "/o", "--passphrase-file", "/pp"]);
+    if ("error" in parsed) throw new Error(parsed.error);
+    const args = buildPersistArgs(parsed, []);
+    expect(args).toContain("--uefi-keyfile");
+    expect(args).toContain("/esp/EFI/ZETA/keyfile");
+    expect(args).not.toContain("--usb-uuid");
   });
 });
 

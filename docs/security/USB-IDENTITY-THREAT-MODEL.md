@@ -238,12 +238,14 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
 3. **UEFI keyfile on ESP** — planner + FAT round-trip landed
    (`src/Core.TypeScript/installer/uefi-keyfile-esp.ts`). Writes
    `/EFI/ZETA/keyfile` (32 bytes → hex HKDF material). Optional
-   `--uefi-keyfile` on persist/restore. Not the default `usbUuid` path.
+   `--uefi-keyfile` on persist/restore and picker. Not the default `usbUuid` path.
    No TPM / Touch ID claim.
 4. **USB iSerial probe** — sysfs injectable probe landed
    (`src/Core.TypeScript/installer/usb-iserial-probe.ts`). Unique
    non-hub serial or fail closed. Optional `--usb-iserial` on
-   persist/restore. QEMU-injectable; no physical-stick claim.
+   persist/restore **and the install-time picker** (`zeta-creds-picker.ts`
+   forwards the same flags; default path remains `--usb-uuid`).
+   QEMU-injectable; no physical-stick claim.
 
 Cluster/federation vocabulary promoted to operational glossary
 (`docs/SEED-VOCABULARY.md` carved kernel + `docs/GLOSSARY.md` §Society
