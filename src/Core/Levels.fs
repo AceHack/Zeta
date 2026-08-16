@@ -190,6 +190,74 @@ module Levels =
             let fromProcessor = processorMember.Peers processorView |> Set.ofList
             fromMachine = fromProcessor
 
+    /// **Aggregation — where "beats its parts" actually lives, and it is NOT the level.**
+    ///
+    /// The sibling result (PR #10945, the **Dominance Lift Theorem**) is that an aggregation rule
+    /// beats its best part **iff it can imitate its best part** — i.e. every projection `pi_i` lies in
+    /// the class the rule is optimal over. The theorem carries **no `n`, no `c`, no correlation
+    /// parameter and no identical-agents assumption**, which is why it inducts to arbitrary depth.
+    ///
+    /// The consequence for this file, in the relaying agent's words: **`deferential` belongs to the
+    /// aggregation RULE, not to the level.** So there is deliberately no `CtmDominance` and no
+    /// `WorldDominance` — there is **one predicate about a rule**, and `LevelLaws.holdsAtEveryLevel`
+    /// is what quantifies it over levels. Writing a per-level dominance law would have been the exact
+    /// duplication the theorem makes unnecessary.
+    ///
+    /// **What is deliberately absent: any correlation threshold.** The same sibling PR showed that
+    /// `rho` is **not a sufficient statistic for the verdict** — a counterexample at `m = 9`,
+    /// `rho = 0.2495` sits *inside* the published safe `rho*(9) = 0.25` and still loses, over 40M
+    /// trials. A law predicated on `rho &lt; rho*` would therefore be **unsound**, so no law here takes
+    /// a correlation parameter, and none should be added.
+    [<RequireQualifiedAccess>]
+    module Aggregation =
+
+        /// **The Dominance Lift hypothesis, made decidable.**
+        ///
+        /// `witnesses.[i]` is the input under which the rule must reproduce projection `i`: the rule
+        /// applied to that input must equal the projection of that input's `i`th part. Supplying the
+        /// witness is the caller's job, because "can imitate" is an existential and a predicate that
+        /// searched for it would either be undecidable or be a check that cannot fail.
+        ///
+        /// **This is the hypothesis, not the conclusion.** Discharging it says the rule *can* imitate
+        /// every part. Concluding that the rule *dominates* its best part additionally needs the
+        /// theorem's optimality-class premise, which is the sibling's to state and is not checked
+        /// here. Under `toy-is-free-metered-must-be-earned` a discharge of this predicate must never
+        /// be cited as a dominance result.
+        let canImitateEveryProjection
+            (eq: 'result -> 'result -> bool)
+            (rule: 'part list -> 'result)
+            (project: 'part -> 'result)
+            (witnesses: 'part list list)
+            : bool =
+            not (List.isEmpty witnesses)
+            && witnesses
+               |> List.mapi (fun i input ->
+                   match List.tryItem i input with
+                   | None -> false
+                   | Some part -> eq (rule input) (project part))
+               |> List.forall id
+
+        /// **The CTM tournament's imitation witness: concentrate the rank mass.**
+        ///
+        /// Because `f` is additive under a match and a chunk wins with probability proportional to
+        /// `f`, an input in which processor `i` carries **all** the rank mass makes the tournament
+        /// return chunk `i` with probability 1, for every supplied draw. So the concentrated input is
+        /// the witness `canImitateEveryProjection` asks for, and it is derived from the paper's own
+        /// competition rule rather than constructed to pass.
+        ///
+        /// Returns the submissions re-valued so that only `keep` carries mass. The caller then hands
+        /// the result in as that index's witness.
+        let concentrateMassOn
+            (keep: Society.Address)
+            (submissions: Ctm.Chunk<'gist> list)
+            : Ctm.Chunk<'gist> list =
+            submissions
+            |> List.map (fun c ->
+                if c.Address = keep then
+                    c
+                else
+                    { c with Intensity = 0.0; Mood = 0.0 })
+
     /// **World laws — `SocietyLaws` at the outermost rung, plus closure. Nothing else.**
     ///
     /// Every definition below is written in terms of something already shipped. That is deliberate

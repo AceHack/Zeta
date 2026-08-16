@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { type Chunk, type Ctm, entryChunk, probabilisticMatch, rankByDisposition, tournament } from "./ctm";
-import { type Ladder, levelLaws, worldLaws } from "./levels";
+import { aggregation, type Ladder, levelLaws, worldLaws } from "./levels";
 import type { Address, Addressed, Reading, Society } from "./society";
 
 // ── Why these tests exist ─────────────────────────────────────────────────────────────────────
@@ -168,5 +168,30 @@ describe("the level-generic lift", () => {
       [society, thin],
     ];
     expect(levelLaws.failingLevels((level, v) => level.members(v).length >= 3, mixed)).toEqual([1]);
+  });
+});
+
+describe("the Dominance Lift HYPOTHESIS (sibling PR #10945) — a law about the RULE, not the level", () => {
+  const submissions = [alpha, beta, gamma];
+  const draws = [0.9, 0.1];
+  const rule = (chunks: readonly Chunk<string>[]): string | undefined => tournament(machine, draws, chunks)?.address;
+  const project = (c: Chunk<string>): string | undefined => c.address;
+  const eq = (a: string | undefined, b: string | undefined): boolean => a === b;
+
+  test("the CTM tournament can imitate every projection — the witness is mass concentration", () => {
+    const witnesses = submissions.map((c) => aggregation.concentrateMassOn(c.address, submissions));
+    expect(aggregation.canImitateEveryProjection(eq, rule, project, witnesses)).toBe(true);
+  });
+
+  test("it is a falsifier, not a label: unconcentrated inputs fail, and an empty list is not a discharge", () => {
+    expect(
+      aggregation.canImitateEveryProjection(
+        eq,
+        rule,
+        project,
+        submissions.map(() => submissions),
+      ),
+    ).toBe(false);
+    expect(aggregation.canImitateEveryProjection(eq, rule, project, [])).toBe(false);
   });
 });

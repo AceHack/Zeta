@@ -16,7 +16,7 @@
  *
  * **Register: `unmetered`** (`toy-is-free-metered-must-be-earned`) — predicates with no consumer.
  */
-import type { Ctm } from "./ctm";
+import type { Chunk, Ctm } from "./ctm";
 import type { Address, Member, Society } from "./society";
 
 /**
@@ -144,6 +144,60 @@ export const levelLaws = {
     if (fromMachine.size !== fromProcessor.size) return false;
     for (const a of fromMachine) if (!fromProcessor.has(a)) return false;
     return true;
+  },
+};
+
+/**
+ * **Aggregation — where "beats its parts" lives, and it is NOT the level.**
+ *
+ * The sibling result (PR #10945, the **Dominance Lift Theorem**): an aggregation rule beats its best
+ * part **iff it can imitate its best part** — every projection `pi_i` lies in the class the rule is
+ * optimal over. No `n`, no `c`, no correlation parameter, no identical-agents assumption, which is
+ * why it inducts to arbitrary depth.
+ *
+ * So `deferential` belongs to the aggregation **rule**, not to the level: there is deliberately no
+ * `ctmDominance` and no `worldDominance`, just one predicate about a rule, with
+ * `levelLaws.holdsAtEveryLevel` doing the quantification over levels.
+ *
+ * **No correlation threshold appears here, and none should be added.** The same PR showed `rho` is
+ * not a sufficient statistic for the verdict — a counterexample at `m = 9`, `rho = 0.2495` sits
+ * inside the published safe `rho*(9) = 0.25` and still loses over 40M trials. A law predicated on
+ * `rho < rho*` would be unsound.
+ */
+export const aggregation = {
+  /**
+   * **The Dominance Lift hypothesis, made decidable.**
+   *
+   * `witnesses[i]` is the input under which the rule must reproduce projection `i`. Supplying the
+   * witness is the caller's job: "can imitate" is an existential, and a predicate that went looking
+   * for it would either be undecidable or be a check that cannot fail.
+   *
+   * **This is the hypothesis, not the conclusion.** Discharging it says the rule *can* imitate every
+   * part. Concluding that it *dominates* its best part additionally needs the theorem's
+   * optimality-class premise, which is not checked here and must not be implied by a pass.
+   */
+  canImitateEveryProjection<P, R>(
+    eq: (a: R, b: R) => boolean,
+    rule: (parts: readonly P[]) => R,
+    project: (part: P) => R,
+    witnesses: readonly (readonly P[])[],
+  ): boolean {
+    if (witnesses.length === 0) return false;
+    return witnesses.every((input, i) => {
+      const part = input[i];
+      if (part === undefined) return false;
+      return eq(rule(input), project(part));
+    });
+  },
+
+  /**
+   * **The CTM tournament's imitation witness: concentrate the rank mass.** Because `f` is additive
+   * under a match and a chunk wins with probability proportional to `f`, an input in which one
+   * processor carries all the mass makes the tournament return that chunk with probability 1, for
+   * every draw. Derived from the paper's competition rule, not constructed to pass.
+   */
+  concentrateMassOn<G>(keep: Address, submissions: readonly Chunk<G>[]): Chunk<G>[] {
+    return submissions.map((c) => (c.address === keep ? c : { ...c, intensity: 0, mood: 0 }));
   },
 };
 

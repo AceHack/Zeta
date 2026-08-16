@@ -285,3 +285,64 @@ Vlissides (1994), Composite — the recursive is-a · Liskov and Wing (1994), be
 the standard the refuted claim was measured against · Goguen and Meseguer (1982), noninterference —
 the injected-entropy door · Shapiro et al. (2011), CRDTs — the merge laws · Barabási and Albert
 (1999) — emergent, unappointed hubs.
+
+---
+
+## 10. Addendum — the sibling's Dominance Lift result, applied (2026-08-16, after #10950 merged)
+
+Relayed from PR #10945 (merged): the **Dominance Lift Theorem** — an aggregation rule beats its best
+part **iff it can imitate its best part**, i.e. every projection `pi_i` lies in the class the rule is
+optimal over. No `n`, no `c`, no correlation parameter, no identical-agents assumption, so it inducts
+to arbitrary depth. Union qualifies; log-odds-weighted majority qualifies (Nitzan–Paroush 1982);
+unweighted majority does not.
+
+**The constraint it puts on this law surface:** `deferential` belongs to the aggregation **rule**,
+not to the level. The genericity lives in _quantifying one law over levels_, not in writing parallel
+`SocietyLaws` / `WorldLaws` modules.
+
+**Checked against what shipped in #10950 — no redirect was needed, and one thing was added.**
+
+- `LevelLaws.holdsAtEveryLevel` is already exactly "one law, quantified over levels"; it is the
+  module's stated purpose.
+- `WorldLaws` is **not** a parallel law module. All three of its definitions are written in terms of
+  predicates #10925 already shipped (`isWorld` _is_ `isClosed`). The naming is nonetheless an
+  attractor for future duplication, so: **a per-level dominance law must not be added.** That is now
+  written at the declaration site.
+- **Added** `Levels.Aggregation` (F# and TS): `canImitateEveryProjection` — the theorem's hypothesis
+  as a decidable predicate over caller-supplied witnesses — and `concentrateMassOn`, the CTM's
+  witness.
+
+**The CTM tournament discharges the hypothesis, and the witness is derived rather than constructed.**
+Because `f` is additive under a match and a chunk wins with probability proportional to `f`, an input
+in which one processor carries all the rank mass makes the tournament return that chunk with
+probability 1, for _every_ draw. So mass concentration is the imitation witness, and it falls out of
+the paper's own competition rule. Tested in both oracles, including the two ways the predicate could
+have been vacuous: unconcentrated inputs **fail**, and an empty witness list is **not** a discharge.
+
+**Register discipline on that discharge:** it is the **hypothesis**, not the conclusion. Concluding
+that the CTM's global broadcast _dominates_ its best processor additionally needs the theorem's
+optimality-class premise, which is the sibling's and is not checked here. A pass on
+`canImitateEveryProjection` must never be cited as a dominance result. Stated at the declaration site
+too.
+
+**No correlation threshold was encoded, and none should be.** The same PR showed `rho` is not a
+sufficient statistic for the verdict — a counterexample at `m = 9`, `rho = 0.2495` sits inside the
+published safe `rho*(9) = 0.25` and still loses over 40M trials. A law predicated on `rho < rho*`
+would be unsound. No law in `Levels.fs` or `Ctm.fs` takes a correlation parameter.
+
+### One point held, not conceded
+
+The relay says _"`ISociety <: CTM` can be Liskov-sound at the interface while the parameterisation
+stays two-level. (That subtyping claim remains §B open.)"_ The first half is right and useful — the
+subtyping claim does not have to carry the statistics, and their non-composition result does not bear
+on it either way.
+
+The second half is where the registers differ, and the difference is evidence rather than preference.
+§3 above does not leave the claim open: it **refutes** it, by a counterexample in this repo. The
+gossip salon is a working society with no competition and no global broadcast, so `ISociety <: ICtm`
+cannot hold **unconditionally**. What remains genuinely open — and is worth keeping open — is whether
+some _particular_ societies are CTMs, and the adjunction row. Those are different statements from the
+one the 07-04 doc made.
+
+Nothing in the sibling's proof rests on the subtyping claim, so this disagreement costs their result
+nothing. It is recorded here so the discharge table is corrected once rather than argued twice.

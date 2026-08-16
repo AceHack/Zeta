@@ -203,3 +203,32 @@ let ``the level-generic lift: one predicate, every rung, with the failing rungs 
 let ``an empty ladder is not a world -- a check that cannot fail is not a check`` () =
     let empty: Levels.Ladder<TestView, Society.Address> = []
     Assert.False(Levels.WorldLaws.ladderTerminatesInAWorld empty [] [])
+
+[<Fact>]
+let ``the CTM tournament discharges the Dominance Lift HYPOTHESIS -- it can imitate every projection`` () =
+    let m = machine view
+    let submissions = [ alpha; beta; gamma ]
+    let draws = [ 0.9; 0.1 ]
+
+    // The rule: the tournament, reported by the winning chunk's address. The projection: "just take
+    // this part". The witness for index i concentrates all rank mass on part i, which -- because f is
+    // additive and win probability is proportional to f -- makes the tournament return part i with
+    // probability 1, for EVERY draw. The witness is derived from the paper's competition rule, not
+    // constructed to pass.
+    let rule (chunks: Ctm.Chunk<string> list) =
+        Ctm.tournament m draws chunks |> Option.map (fun c -> c.Address)
+
+    let project (c: Ctm.Chunk<string>) = Some c.Address
+
+    let witnesses =
+        [ for c in submissions -> Levels.Aggregation.concentrateMassOn c.Address submissions ]
+
+    Assert.True(Levels.Aggregation.canImitateEveryProjection (=) rule project witnesses)
+
+    // The predicate is a falsifier, not a label: an input that does NOT concentrate the mass fails
+    // for at least one index, so the check can distinguish.
+    let notWitnesses = [ for _ in submissions -> submissions ]
+    Assert.False(Levels.Aggregation.canImitateEveryProjection (=) rule project notWitnesses)
+
+    // And an empty witness list is NOT a discharge -- vacuous truth is the failure mode this guards.
+    Assert.False(Levels.Aggregation.canImitateEveryProjection (=) rule project [])
