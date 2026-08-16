@@ -1,11 +1,20 @@
 namespace Zeta.Bayesian
 
-/// **`ReticulumBusMeter` — real mesh telemetry feeds the light-cone regime (shadow*, 2026-07-04).**
+/// **`ReticulumBusMeter` — mesh link telemetry feeds the light-cone regime (shadow*, 2026-07-04).**
 ///
 /// Closes the loop Aaron greenlit: `AntiSybil.priceAgainstSocietyMetered` had verdicts but no
-/// production meter source; `ReticulumTransport` had real per-link RTT telemetry but fed only the
-/// Condorcet latency map. This bridge folds a `MeshSnapshot`'s RTTs into `BusRegime.Meter`s, so
-/// the armed readout runs on the actual wire, end to end.
+/// meter source; `MeshLatencyModel` (then misnamed `ReticulumTransport`) held per-link RTT
+/// telemetry but fed only the Condorcet latency map. This bridge folds a `MeshSnapshot`'s RTTs
+/// into `BusRegime.Meter`s, so the armed readout is driven by link measurements rather than
+/// constants.
+///
+/// **What "real telemetry" does and does not mean here (corrected 2026-08-16).** This header said
+/// the readout "runs on the actual wire, end to end". It does not, and nothing in this repo did:
+/// `MeshLatencyModel` is a pure telemetry→latency projection with no link of its own, so the wire
+/// end of that claim was never attached. The meter is honest about the *fold* — RTT in, regime out,
+/// conservative direction — and says nothing about where the RTTs came from. Supply real ones and
+/// the readout is real; the tests supply hand-built snapshots, so under
+/// `toy-is-free-metered-must-be-earned` this path is **unmetered** end to end.
 ///
 /// EPISTEMIC LIMIT, stated up front: a single node's snapshot sees only ITS OWN links. Any link
 /// it observes beating the deadline soundly forces `InCone` (a signal path existed). But
@@ -18,17 +27,17 @@ namespace Zeta.Bayesian
 module ReticulumBusMeter =
 
     /// Fold one link's telemetry into a meter (RTT seconds → integer ms, floor at 0).
-    let foldLink (meter: BusRegime.Meter) (telemetry: ReticulumTransport.LinkTelemetry) : BusRegime.Meter =
+    let foldLink (meter: BusRegime.Meter) (telemetry: MeshLatencyModel.LinkTelemetry) : BusRegime.Meter =
         BusRegime.foldSample meter (int (max 0.0 telemetry.RttSeconds * 1000.0))
 
     /// Meter for one specific peer link, when per-pair judgment is wanted.
-    let meterOfLink (telemetry: ReticulumTransport.LinkTelemetry) : BusRegime.Meter =
+    let meterOfLink (telemetry: MeshLatencyModel.LinkTelemetry) : BusRegime.Meter =
         foldLink BusRegime.empty telemetry
 
     /// Mesh-wide meter from this node's view: fold EVERY active link's RTT. The regime it yields
     /// is governed by the fastest crossing anywhere this node can see — the sound direction for
     /// society-level verdicts (one fast link anywhere falsifies out-of-cone).
-    let meterOfSnapshot (snapshot: ReticulumTransport.MeshSnapshot) : BusRegime.Meter =
+    let meterOfSnapshot (snapshot: MeshLatencyModel.MeshSnapshot) : BusRegime.Meter =
         snapshot.ActiveLinks
         |> Map.toList
         |> List.map snd
@@ -36,7 +45,7 @@ module ReticulumBusMeter =
 
     /// The regime of this node's mesh view against a decision deadline (ms).
     /// Uses `regimeOfTerrestrial` (δ_max = 0 — safe for all terrestrial links).
-    let regimeOfSnapshot (snapshot: ReticulumTransport.MeshSnapshot) (decisionDeadlineMs: int) : BusRegime.Regime =
+    let regimeOfSnapshot (snapshot: MeshLatencyModel.MeshSnapshot) (decisionDeadlineMs: int) : BusRegime.Regime =
         BusRegime.regimeOfTerrestrial (meterOfSnapshot snapshot) decisionDeadlineMs
 
     // ── Orbital-aware regime (caveat (b) fix, 2026-08-04) ─────────────────────────────────────────
@@ -59,7 +68,7 @@ module ReticulumBusMeter =
     ///
     /// For terrestrial links, pass `link = None` — falls back to δ_max = 0.
     let regimeOfSnapshotOrbital
-        (snapshot: ReticulumTransport.MeshSnapshot)
+        (snapshot: MeshLatencyModel.MeshSnapshot)
         (decisionDeadlineMs: int)
         (link: OrbitalLink option) : BusRegime.Regime =
         let deltaMaxMs =
@@ -78,7 +87,7 @@ module ReticulumBusMeter =
         (newBelief: Gaussian)
         (senderHistory: Gaussian list)
         (societyHistories: AntiSybil.StreamHistory list)
-        (snapshot: ReticulumTransport.MeshSnapshot)
+        (snapshot: MeshLatencyModel.MeshSnapshot)
         (decisionDeadlineMs: int) : float<InformationValue.iv> * BusRegime.Verdict =
 
         AntiSybil.priceAgainstSocietyMetered
@@ -92,7 +101,7 @@ module ReticulumBusMeter =
         (newBelief: Gaussian)
         (senderHistory: Gaussian list)
         (societyHistories: AntiSybil.StreamHistory list)
-        (snapshot: ReticulumTransport.MeshSnapshot)
+        (snapshot: MeshLatencyModel.MeshSnapshot)
         (decisionDeadlineMs: int)
         (link: OrbitalLink option) : float<InformationValue.iv> * BusRegime.Verdict =
         let deltaMaxMs =

@@ -13,16 +13,16 @@ module IntegrationTests =
 
     [<Fact>]
     let ``RT-1: High RTT yields higher latency map value`` () =
-        let fastTelemetry = { ReticulumTransport.RttSeconds = 0.1; ReticulumTransport.Snr = 10.0; ReticulumTransport.Rssi = -50.0; ReticulumTransport.CapacityBps = 1000.0 }
-        let slowTelemetry = { ReticulumTransport.RttSeconds = 2.5; ReticulumTransport.Snr = 5.0; ReticulumTransport.Rssi = -80.0; ReticulumTransport.CapacityBps = 100.0 }
+        let fastTelemetry = { MeshLatencyModel.RttSeconds = 0.1; MeshLatencyModel.Snr = 10.0; MeshLatencyModel.Rssi = -50.0; MeshLatencyModel.CapacityBps = 1000.0 }
+        let slowTelemetry = { MeshLatencyModel.RttSeconds = 2.5; MeshLatencyModel.Snr = 5.0; MeshLatencyModel.Rssi = -80.0; MeshLatencyModel.CapacityBps = 100.0 }
         
         let snapshot = { 
-            ReticulumTransport.MeshSnapshot.LocalNodeId = "Local"
-            ReticulumTransport.MeshSnapshot.ActiveLinks = 
+            MeshLatencyModel.MeshSnapshot.LocalNodeId = "Local"
+            MeshLatencyModel.MeshSnapshot.ActiveLinks = 
                 Map.ofList [ ("FastRemote", fastTelemetry); ("SlowRemote", slowTelemetry) ] 
         }
         
-        let latencyMap = ReticulumTransport.buildLatencyMap snapshot
+        let latencyMap = MeshLatencyModel.buildLatencyMap snapshot
         
         let fastLatency = Map.find ("Local", "FastRemote") latencyMap
         let slowLatency = Map.find ("Local", "SlowRemote") latencyMap
@@ -33,14 +33,14 @@ module IntegrationTests =
 
     [<Fact>]
     let ``RT-2: Latency map is symmetric`` () =
-        let telemetry = { ReticulumTransport.RttSeconds = 1.5; ReticulumTransport.Snr = 8.0; ReticulumTransport.Rssi = -60.0; ReticulumTransport.CapacityBps = 500.0 }
+        let telemetry = { MeshLatencyModel.RttSeconds = 1.5; MeshLatencyModel.Snr = 8.0; MeshLatencyModel.Rssi = -60.0; MeshLatencyModel.CapacityBps = 500.0 }
         
         let snapshot = { 
-            ReticulumTransport.MeshSnapshot.LocalNodeId = "A"
-            ReticulumTransport.MeshSnapshot.ActiveLinks = Map.ofList [ ("B", telemetry) ] 
+            MeshLatencyModel.MeshSnapshot.LocalNodeId = "A"
+            MeshLatencyModel.MeshSnapshot.ActiveLinks = Map.ofList [ ("B", telemetry) ] 
         }
         
-        let latencyMap = ReticulumTransport.buildLatencyMap snapshot
+        let latencyMap = MeshLatencyModel.buildLatencyMap snapshot
         
         let ab = Map.find ("A", "B") latencyMap
         let ba = Map.find ("B", "A") latencyMap
@@ -105,14 +105,14 @@ module IntegrationTests =
     [<Fact>]
     let ``E2E-1: Full stack integration (Telemetry -> Settlement)`` () =
         // 1. PHYSICAL LAYER: Reticulum Telemetry
-        let telemetry = { ReticulumTransport.RttSeconds = 2.0; ReticulumTransport.Snr = 10.0; ReticulumTransport.Rssi = -50.0; ReticulumTransport.CapacityBps = 1000.0 }
+        let telemetry = { MeshLatencyModel.RttSeconds = 2.0; MeshLatencyModel.Snr = 10.0; MeshLatencyModel.Rssi = -50.0; MeshLatencyModel.CapacityBps = 1000.0 }
         let snapshot = { 
-            ReticulumTransport.MeshSnapshot.LocalNodeId = "Buyer"
-            ReticulumTransport.MeshSnapshot.ActiveLinks = Map.ofList [ ("Seller", telemetry) ] 
+            MeshLatencyModel.MeshSnapshot.LocalNodeId = "Buyer"
+            MeshLatencyModel.MeshSnapshot.ActiveLinks = Map.ofList [ ("Seller", telemetry) ] 
         }
         
         // 2. TRANSPORT: Convert telemetry to latency map
-        let latencyMap = ReticulumTransport.buildLatencyMap snapshot
+        let latencyMap = MeshLatencyModel.buildLatencyMap snapshot
         Assert.Equal(2.0, Map.find ("Buyer", "Seller") latencyMap)
         
         // 3. COGNITION: Agents have beliefs — need multi-point histories for correlation

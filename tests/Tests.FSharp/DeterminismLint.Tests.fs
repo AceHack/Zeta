@@ -49,7 +49,7 @@ let private allowlist =
       // counter) — this row is only its live-mode door. Transport/velocity uses are live-emit metadata +
       // latency instrumentation; verified none feed the rho/Condorcet math, none run on the DST/seed path.
       "DebouncedOracle.fs", "DateTime.UtcNow", 1, "live-mode debounce rate-control door (local timing, not shared-fold evidence); the SyncContext=Some DST path uses a deterministic pump-tick counter"
-      "OracleTransport.fs", "DateTimeOffset.UtcNow", 7, "reading-timestamp display metadata (1) + live Git/WebSocket/Reticulum emit-latency instrumentation (6); observability only, live-emit path never DST — the rho/Condorcet math uses none of it"
+      "OracleTransport.fs", "DateTimeOffset.UtcNow", 7, "reading-timestamp display metadata (1) + emit-latency instrumentation in GitFileDropTransport/WebSocketTransport/SimulatedReticulumLatencyTransport (6); observability only, live-emit path never DST — the rho/Condorcet math uses none of it"
       "MoneyVelocityOracle.fs", "DateTimeOffset.UtcNow", 1, "reading-timestamp display field; rho/bonus/velocity are computed from UTXO age + M2, not the timestamp — observability only" ]
 
 [<Fact>]

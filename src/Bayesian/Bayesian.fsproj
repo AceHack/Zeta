@@ -47,7 +47,7 @@
     <Compile Include="FigureEightEnsemble.fs" />
     <Compile Include="LagrangeCondorcet.fs" />
     <Compile Include="AskBidClearing.fs" />
-    <Compile Include="ReticulumTransport.fs" />
+    <Compile Include="MeshLatencyModel.fs" />
     <Compile Include="ReticulumBusMeter.fs" />
     <Compile Include="GossipTelemetry.fs" />
     <Compile Include="KeptClaimOracle.fs" />

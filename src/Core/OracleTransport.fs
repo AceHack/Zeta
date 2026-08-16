@@ -28,6 +28,25 @@ module Zeta.Core.OracleTransport
 /// `EmitAsync(reading: OracleReading) : Task<unit>`. Any channel that can
 /// carry a JSON blob implements it. The oracle computation is identical
 /// regardless of transport; only the L (and therefore ρ) changes.
+///
+/// ## Maturity of the implementations in this file (audited 2026-08-16)
+///
+/// The `ITransport` **interface** is real. Of the three implementations, **one is**:
+///
+/// | type | what it actually does | status |
+/// |---|---|---|
+/// | `WebSocketTransport` | `do! sendFn json` — delivers through an **injected** send function | **real** |
+/// | `GitFileDropTransport` | writes a local JSON file; a separate CI step pushes it | **half** — no git call here |
+/// | `SimulatedReticulumLatencyTransport` | `Task.Delay`; the reading is **discarded** | **stub** — sends nothing |
+///
+/// The latter two were named `GitTransport` and `ReticulumTransport` and were renamed because those
+/// names asserted capabilities the code does not have. Read each type's docstring before wiring it
+/// to anything — in particular, a stub's returned latency still flows into `ρ = 1/(1+L)`, so an
+/// unimplemented transport left in a fan-out list does not merely fail to deliver, it takes the
+/// **largest** Condorcet weight in the posterior while having measured nothing.
+///
+/// The ρ table below (`transportRhoTable`) is a table of **nominal** per-channel latencies for
+/// reference. It is not a claim that this file implements those channels.
 
 open System
 open System.Text.Json
@@ -167,24 +186,40 @@ type ITransport =
 
 // ── Built-in transports ───────────────────────────────────────────────────────
 
-/// Git transport: push a JSON file to a branch via the REST git-data API.
-/// L ≈ minutes (GitHub Actions round-trip). High Condorcet bonus.
-/// This is the same transport used by the heartbeat workflow.
-type GitTransport(repo: string, branch: string, pathPrefix: string) =
+/// **`GitFileDropTransport` — writes the reading to a LOCAL FILE. It does not touch git.**
+///
+/// **HALF-IMPLEMENTED — renamed from `GitTransport` 2026-08-16.** The old name asserted a
+/// capability this code does not have: there is no push, no REST call, no network of any kind
+/// below. `EmitAsync` serialises the reading to `{pathPrefix}/{agentId}/oracle-*.json` and returns,
+/// which is a *real and useful* half — a separate CI step is what picks the file up and pushes it
+/// via the GitHub REST git-data API (the `write-heartbeat.ts pushHeartbeatViaRest` pattern). So the
+/// file drop is genuine; the delivery is somebody else's job and is **not** performed here.
+///
+/// Two consequences a caller must know before wiring this up:
+///
+///   - **`NominalLatencySeconds = 120.0` is a constant about a round-trip this class never makes.**
+///     The returned `EmitAsync` latency measures a local file write (sub-millisecond) and is
+///     therefore NOT the `L` in `ρ = 1/(1+L)`. Feeding the returned value into the Condorcet
+///     weighting would credit this transport with independence it has not demonstrated.
+///   - **Without the CI step, emitting here delivers nothing to anyone.** The reading is on local
+///     disk and no peer will ever see it.
+///
+/// Under `toy-is-free-metered-must-be-earned`: **unmetered**. No test exercises it, and no test
+/// would fail if the file write were removed.
+type GitFileDropTransport(repo: string, branch: string, pathPrefix: string) =
 
-    /// Nominal latency: 2 minutes (GitHub Actions typical round-trip).
+    /// Nominal latency: 2 minutes (GitHub Actions typical round-trip) — a claim about the CI step
+    /// that ships the dropped file, NOT about anything this class does. See the type docstring.
     let nominalLatency = 120.0
 
     interface ITransport with
-        member _.Name = $"git:{repo}@{branch}"
+        member _.Name = $"git-file-drop:{repo}@{branch}"
         member _.NominalLatencySeconds = nominalLatency
 
         member _.EmitAsync(reading: OracleReading) =
             task {
-                // In production, this calls the GitHub REST git-data API
-                // (same pattern as write-heartbeat.ts pushHeartbeatViaRest).
-                // Here we write to a local path for testing; the CI step
-                // picks it up and pushes via the REST API.
+                // Writes a local file ONLY. The push is a separate CI step (see type docstring);
+                // nothing here contacts GitHub.
                 let t0 = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
                 let json = OracleReading.toJson reading
                 let filename = $"oracle-{reading.OracleIndex}-{reading.Seed:x}-{t0}.json"
@@ -218,26 +253,48 @@ type WebSocketTransport(sendFn: string -> Task<unit>) =
             }
 
 
-/// Reticulum transport: store-and-forward mesh, delay = hop-count × avg-hop-delay.
-/// L = variable (1 hop ≈ 0.5s, 10 hops ≈ 5s). Variable Condorcet bonus.
-/// This is the highest-independence transport for geographically distributed oracles.
-type ReticulumTransport(destinationHash: string, nominalHops: int) =
+/// **`SimulatedReticulumLatencyTransport` — NOT IMPLEMENTED. Sleeps, discards the reading, returns
+/// the time it slept.**
+///
+/// **STUB — renamed from `ReticulumTransport` 2026-08-16.** This is the most dangerous shape in the
+/// defect class and the reason the rename is not cosmetic: it satisfies `ITransport` completely,
+/// never throws, never logs, and returns a latency that looks exactly like a successful mesh
+/// round-trip. A caller who wires it into `OracleTransport.emitAll` gets **silent total data loss** —
+/// `reading` is not read, not serialised, and not sent anywhere. `Task.Delay` is the entire body.
+///
+/// It is worth being precise about why the old name was worse than merely inaccurate. A stub named
+/// `ReticulumTransport` in a fan-out list is indistinguishable at the call site from the working
+/// `WebSocketTransport` beside it, and its **fabricated latency propagates into the science**:
+/// `ρ = 1/(1+L)` would credit this class with the *highest* Condorcet independence of any transport
+/// in the table, so a fusion posterior computed with it in the list is weighted most heavily by the
+/// one participant that measured nothing. The `Name` and `NominalLatencySeconds` members now
+/// announce the simulation so a log line cannot be mistaken for a delivery.
+///
+/// Implementing it (Reticulum Python API over subprocess or named pipe, store-and-forward routing,
+/// measured RTT replacing the nominal) is **separate work and is deliberately not done here** — this
+/// change makes the gap legible, it does not close it. Note also that `Task.Delay` blocks the fan-out
+/// for `nominalHops × 0.5` seconds of pure fiction, and that a real implementation must take its
+/// socket as an injected dependency (§13 noninterference) rather than reaching for one ambiently —
+/// the pattern `WebSocketTransport(sendFn)` above already follows.
+///
+/// Under `toy-is-free-metered-must-be-earned`: **toy**, not unmetered — there is no mechanism here
+/// that could be falsified.
+type SimulatedReticulumLatencyTransport(destinationHash: string, nominalHops: int) =
 
-    /// Nominal latency: 0.5s per hop (Reticulum typical).
+    /// Nominal latency: 0.5s per hop (Reticulum typical) — the duration this stub SLEEPS for.
+    /// It is not a measurement, and no packet is in flight during it.
     let nominalLatency = float nominalHops * 0.5
 
     interface ITransport with
-        member _.Name = $"reticulum:{destinationHash[..7]}"
+        member _.Name = $"SIMULATED-reticulum(unimplemented):{destinationHash[..7]}"
         member _.NominalLatencySeconds = nominalLatency
 
         member _.EmitAsync(reading: OracleReading) =
             task {
-                // In production, this calls the Reticulum Python API via
-                // a subprocess or named pipe. The Reticulum node handles
-                // store-and-forward routing. The measured latency is the
-                // actual round-trip time, not the nominal.
-                //
-                // For now, simulate the latency with a delay.
+                // NOT IMPLEMENTED. `reading` is intentionally unused: nothing is serialised and
+                // nothing is transmitted. This sleeps for the nominal hop delay and reports how
+                // long it slept. See the type docstring before wiring this to anything.
+                ignore reading
                 let t0 = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
                 do! Task.Delay(int (nominalLatency * 1000.0))
                 let elapsed = float (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - t0) / 1000.0

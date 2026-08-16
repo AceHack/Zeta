@@ -101,6 +101,17 @@ git-data API` comment (`:184-193`), and `ReticulumTransport.EmitAsync` is `do! T
 simulated latency (`:235-244`). Under `toy-is-free-metered-must-be-earned` these are **unmetered**;
 the `ITransport` *interface* is real, two of its instances are placeholders.
 
+> **UPDATE 2026-08-16 (shadow, PR "truthful transport names").** Acted on. `GitTransport` →
+> `GitFileDropTransport`, `ReticulumTransport` → `SimulatedReticulumLatencyTransport`, both with
+> explicit not-implemented markers; `src/Bayesian/ReticulumTransport.fs` → `MeshLatencyModel.fs`
+> (which also dissolves the name collision noted in §1a). Two corrections to the rows above, from
+> re-reading the code: the stub is **not** merely unmetered but a `toy` — it discards `reading`
+> entirely, so a caller in `emitAll` gets silent data loss *and* its fabricated latency takes the
+> largest Condorcet weight in the posterior. And `udp-lossy-transport.ts` was **not** renamed: it is
+> a genuine transport over an injected `{broadcast,onMessage}` substrate (`lossyUdpMeshTransport()`
+> supplies the real socket), so its name is honest — the §1a row's "not a wire" reading is right
+> about the imports and wrong as a verdict on the name.
+
 ---
 
 ## 2. The observer loop
