@@ -38,10 +38,12 @@ import {
   closeSync,
   existsSync,
   fstatSync,
+  mkdtempSync,
   openSync,
   readdirSync,
   readFileSync,
   readSync,
+  rmSync,
   statSync,
   unlinkSync,
   writeFileSync,
@@ -552,14 +554,17 @@ const realRunner: CommandRunner = {
     });
   },
   diskpart(script: string): string {
-    // diskpart reads its commands from a script file (`/s`). Use a temp file.
-    const tmp = join(tmpdir(), `zeta-diskpart-${process.pid}-${Date.now()}.txt`);
+    // diskpart reads its commands from a script file (`/s`). Use a temp dir + file
+    // (mkdtemp — CodeQL insecure-temporary-file; 081KRFA460008QG0R0022THSDJ pattern).
+    const dir = mkdtempSync(join(tmpdir(), "zeta-diskpart-"));
+    const tmp = join(dir, "script.txt");
     writeFileSync(tmp, script.endsWith("\r\n") ? script : script + "\r\n", "ascii");
     try {
       return execFileSync("diskpart", ["/s", tmp], { encoding: "utf8", maxBuffer: 4 * 1024 * 1024 });
     } finally {
       try {
         unlinkSync(tmp);
+        rmSync(dir, { recursive: true });
       } catch {
         /* best-effort cleanup */
       }
