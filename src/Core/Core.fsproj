@@ -313,6 +313,7 @@
     <Compile Include="DelayDecorrelation.fs" />
     <Compile Include="DebouncedOracle.fs" />
     <Compile Include="OracleTransport.fs" />
+    <Compile Include="Society.fs" />
     <Compile Include="MoneyVelocityOracle.fs" />
     <Compile Include="Chip8.fs" />
     <Compile Include="Chip8Cow.fs" />
