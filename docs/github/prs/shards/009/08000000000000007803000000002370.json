@@ -1,0 +1,12 @@
+{
+  "pr_number": 9072,
+  "archive_path": "docs/history/pr-reviews/PR-9072-feat-core-land-zsetw-k-w-sorted-array-polymorphic-z-set-core-unification-step-2-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T20:26:40.435Z",
+  "schema_version": "v1",
+  "commit_sha": "55d9e21dc988e280a8fab912bd2ec4ab86e1eab9",
+  "title": "feat(core): land ZSetW<'K,'W> sorted-array polymorphic Z-set core — unification step 2 (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T23:24:24Z",
+  "head_ref": "otto/zsetw-impl-step2-sorted-array-core-081KWFXTHJY"
+}
