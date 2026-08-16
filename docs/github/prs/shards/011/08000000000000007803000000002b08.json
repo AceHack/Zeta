@@ -1,0 +1,12 @@
+{
+  "pr_number": 11016,
+  "archive_path": "docs/history/pr-reviews/PR-11016-feat-installer-usb-iserial-sysfs-probe-optional-persist-binding.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:58:21.402Z",
+  "schema_version": "v1",
+  "commit_sha": "69a22becc6ae4985939ef27d2f07d169a0c01bfb",
+  "title": "feat(installer): USB iSerial sysfs probe + optional persist binding",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T18:57:47Z",
+  "head_ref": "riven/usb-iserial-probe"
+}
