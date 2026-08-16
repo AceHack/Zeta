@@ -97,6 +97,69 @@ is one observation wearing four costumes. What would meter it is named in the sp
 
 `DynamicValue.fs` and the golden vectors were not touched.
 
+## Progress — 2026-08-15 (the shadow), branch `shadow/eve-partial-morphisms-non-isomorphic-case`
+
+Ask 4 (the non-isomorphic case) closed — **with a negative result, which is the finding.** Doc:
+`docs/research/2026-08-15-partial-semiotic-morphisms-the-non-isomorphic-case-and-why-the-imposition-budget-does-not-measure-loss.md`.
+No code shipped (docs + workitems scope); `DynamicValue.fs`, the golden vectors, and
+`eve-invariant-table.json` all untouched.
+
+**The instance is shipped, not hypothetical.** `DynamicValue.toCanonicalJson` is a literal partial
+semiotic morphism with typed refusals (`EncodeError.FloatDeferred` / `BytesDeferred` — the source
+calls itself *"a partial projection (6/8 shapes)"*), and `src/Core.Rust.Observe/src/json.rs` is the
+coarser party (6 tags vs 8). Three shipped codecs give three ways to be non-isomorphic: CBOR/Arrow
+**total**; JSON **tag-level partial**; XML **value-level partial** (`NonRepresentable`).
+
+**What replaces `|Aut|`:** `Aut` of the **meeting structure** `M = A/ker φ ≅ im φ`. The torsor
+theorem applies verbatim — bijectivity was never its load-bearing hypothesis. So the budget
+**generalises as a measurement with no new mathematics, and breaks as a criterion.**
+
+**The measurement (uncontested ladder, from the shipped rung table):**
+
+| meeting structure | budget | live rungs |
+|---|---|---|
+| full 8-tag lattice (baseline) | 1.0000 | 4/4 |
+| `toCanonicalJson` domain **(shipped)** | **0.0000** | 3/4 |
+| collapse route (not shipped) | **0.0000** | 3/4 |
+| degenerate — all tags to one | **0.0000** | **0/4** |
+| drop Array+Object, merge Null+Float | **6.9069** | **0/4** |
+
+Same budget / different loss (rows 2-4) **and** same loss / 7-bit budget gap (rows 4-5):
+**independence exhibited in both directions.** 37.0% of all 21145 meeting structures score a perfect
+0.0000 bits, and the degenerate morphism attains it at level 0 before any invariant is checked —
+*silence is the cheapest vocabulary.* Also **26.1% of coarsenings cost MORE** (max 6.9069 bits),
+because rungs are shared infrastructure: a merge in one corner un-pins tags elsewhere. **Loss is
+non-local.**
+
+**Loss is measurable but not as a scalar** — it is the named set of rungs that stop being live
+(**destroyed** = profile not constant on a block; **vacuous** = separates nothing). Two candidate
+scalars refuted: the absorbed-automorphism subgroup `K(φ)` (= trivial on the real instance while the
+loss is large — rigidity and expressivity are independent), and the budget read backwards.
+
+**Fairness:** symmetric loss is the **wrong target** (levelling-down). The richer party always pays
+and the loss is always one-sided — generic, not coercive. The condition is the repo's existing
+**cede / defer / strip** shape (who initiates) plus **exit** (Hirschman), and the checkable red flag
+is narrower: *the party that chose the meeting structure is the party that loses nothing.* It does
+not fire on the shipped pair.
+
+**Named blind spot:** value-level partiality is invisible to any tag-lattice budget. `toCanonicalXml`
+is a tag-level **isomorphism** and a value-level **partial** morphism at once — this method reports
+0 rung deaths and an unchanged budget while a whole class of values cannot cross.
+
+**Register unchanged:** `log₂|Aut|`-as-coercion is still **toy**, and this work *lowers* what the
+number is claimed to do. The new tempting promotion is named and refused too: Goguen's text agreeing
+with the computation is corroboration, not a falsifier — neither could have refuted the other. What
+would meter it is still two parties who have never shared a seed.
+
+**Ask status:** 1 done · 2 done · 3 done · **4 done (negative result)** · 5 done · **6 STILL OPEN**
+(`docs/SEED-VOCABULARY.md`). Rung 5 remains contested and is untouched — note it *vanishes* on the
+JSON domain, which resolves nothing.
+
+**New follow-on this work produced (not done here, docs-only scope):** land the preservation profile
+as an executable gate — a `preservation-profile.ts` beside `aut-budget.ts` computing rung
+descent/liveness for a declared meeting structure, refusing a budget reported without its
+rung-death set, with a planted-defect table proving it fails.
+
 ## Asks
 
 1. **Write the mechanism spec** for the label half and land it under `docs/` against
