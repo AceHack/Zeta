@@ -62,6 +62,15 @@ Ordered by dependency (each needs the finite-entropy Mathlib def first):
    from information theory to chaos**, and it is the formal home of the **3-body / CTM
    "simulate-don't-solve"** note — a chaotic system's KS-entropy is *why* you replay (DST) rather than
    solve. CSLib tie-in: dynamical-systems entropy meeting the Mathlib Shannon entropy.
+   **Now filed as an enumerated open conjecture: `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B-ks
+   (Conjecture KS-1), `h_KS(ISociety) ≥ Σᵢ λᵢ⁺`** *(shadow 2026-08-16)*. It is the conjectured
+   **information-theoretic foundation of the Condorcet bonus** — i.e. of the closed **§A row 15,
+   "Generalized Condorcet / ΔU-aggregation theorem — society > best individual"**
+   (`src/Core/SocietyUsefulWork.fs`, `tests/Tests.FSharp/CondorcetBoundary.Tests.fs`). **Direction:
+   row 15 does NOT depend on this rung** — row 15 is closed on its own analytic + FsCheck proof; this
+   rung would *explain* it, not support it. Working code on the λ side: `src/Core/Orbit.fs`
+   (`largestLyapunov`, `classifyDynamics`). Longer statement:
+   `docs/research/2026-07-04-tick-sources-strange-attractors-eve-ks-entropy-ctm-isociety-connections.md` §3/§3a.
 6. **Kolmogorov complexity (CS leg)** — algorithmic information as the computational reading of
    entropy; the formal backstop for `only-the-irreducible-is-primitive` / generate-the-derivable
    (the irreducible = the incompressible = the identity-bearing entropy).

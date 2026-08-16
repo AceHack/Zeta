@@ -37,10 +37,20 @@ OR (for non-floor members) a proof / byte-lock / conformance anchor that is clos
 | 12 | **Invariant S1: Topological Soft-Mode Stability** — prevention of belief collapse | The factor graph topology guarantees that no agent can collapse to a Dirac delta (infinite precision). The EP probit factor ensures that product precision strictly exceeds each factor (learning), but product variance is strictly less (bounded confidence). The fixed point is always a proper Gaussian. This is the structural guarantee of **mutual empowerment**: every agent's prior strictly influences the shared marginal, and no agent can become so rigid that it erases the causal power of its neighbors. **✅ PROVEN (FsCheck + Z3), 2026-07-03**: Computational bounds (`SoftMode.Tests.fs` SM-1 to SM-4) + algebraic bounds (`Z3.Laws.Tests.fs` SM-Z3-1 to SM-Z3-5) + Causal Power bridge (`SM-Z3-B1` to `B3`). **✅ Gate T3 CLOSED (FsCheck), 2026-07-03**: `Stream<Gaussian>` satisfies DBSP D∘I=id and I∘D=id over the Gaussian group (natural-parameter multiplication). T3-1 through T3-5 all pass 100/100 (`BeliefStream.Tests.fs`). The belief stream of a Zeta agent is a well-typed DBSP stream; the temporal dimension of mutual empowerment is algebraically sound. | `SoftMode.Tests.fs`, `Z3.Laws.Tests.fs`, `BeliefStream.Tests.fs` |
 | 13 | **Invariant S2: Uptime Stability via Schema Evolution** — 0-downtime structural integrity | Topological soft-mode stability is meaningless if a schema migration forces a cold restart that collapses all in-flight beliefs to their priors. Schema evolution must be an *algebra* over `DynamicValue` that preserves structural invariants across version boundaries. **✅ PROVEN (FsCheck), 2026-07-03**: Forward compat (old reader ignores unknown fields), backward compat (new reader supplies defaults), involutive rename, and composition of migration chains (`SchemaEvolution.Tests.fs`). **✅ S1+S2 temporal integration CLOSED (FsCheck), 2026-07-03**: Schema evolution preserves Gaussian belief properness mid-convergence (not just at rest). SM-6 (Fact) and SM-6b (Property, 100/100) prove that `addField` applied between rounds of `runToFixpoint` leaves the belief proper and numerically identical. The live-migration scenario is formally covered. | `SchemaEvolution.Tests.fs`, `SoftMode.Tests.fs` |
 | 14 | **Tick primitive (Gate T2 / Byte-lock)** — canonical 8-byte big-endian `Versionstamp` codec | The DBSP tick index (`[<Measure>] type tick`) encoded as an unsigned 64-bit integer in network byte order. **✅ PROVEN (4-lang), 2026-07-03**: The codec byte-locks across F#, C#, TypeScript, and Rust via `src/Core.TypeScript/clock/tick-codec-golden-vectors.json`. Gate T2 is formally closed. | `tick-codec-golden-vectors.json` + 4-lang oracles |
-| 15 | **Generalized Condorcet / ΔU-aggregation theorem** — society > best individual | The formal proof of the society-emergence model (`SocietyUsefulWork.fs`). For a group of size `n` with competence `c` and correlation `ρ`, the expected utility of the society strictly exceeds the expected utility of its best individual when `ρ < ρ*` and `c > c*`. **✅ PROVEN (FsCheck + analytic), 2026-07-03**: The boundary conditions are exact and tested across 11 properties in `CondorcetBoundary.Tests.fs`. This is the mathematical anchor for "mutual empowerment": independent weak agents out-perform a correlated strong agent. | `CondorcetBoundary.Tests.fs` |
+| 15 | **Generalized Condorcet / ΔU-aggregation theorem** — **society > best individual** <br/>*(this is the individual-vs-society ordering result. Search aliases: **individual vs society** · **society greater than individual** · **no individual exceeds the society** · **the collective outperforms its best member** · **ordering** · **dominance** · **mutual empowerment** · **wisdom of crowds** · **jury theorem**.)* | The formal proof of the society-emergence model. For a group of size `n` with competence `c` and pairwise error-correlation `ρ`, the expected useful work of the society strictly exceeds that of its best individual. **✅ PROVEN (FsCheck + analytic), 2026-07-03.** **Two models, both closed — do not conflate their boundaries:** **(A) ΔU-aggregation / union model** (`src/Core/SocietyUsefulWork.fs`): `ΔU(n,c,ρ) = (1−ρ)(1−c)(1−(1−c)^(n−1))·Σvⱼ`, and `ΔU > 0 ⟺ ρ < 1 ∧ 0 < c < 1 ∧ n ≥ 2` — so **`ρ* = 1` is the hard boundary**, and **`c*` in this model is the interior *argmax* (`c* = 0.5` at n=2), NOT a threshold**; 11 properties (`Condorcet-1` … `Condorcet-8`) in `tests/Tests.FSharp/CondorcetBoundary.Tests.fs`. **(B) correlated majority-vote model** (`src/Bayesian/CondorcetBoundary.fs`): `N_eff = N/(1+(N−1)ρ)`, society beats best iff `P(majority \| N_eff, c) > c` — here `ρ*` and `c*` **are** genuine thresholds, with `ρ*(N) = (N−3)/(3(N−1)) → 1/3`; 15 tests (`COND-1`…`COND-10`, `RHO-STAR-1`…`RHO-STAR-5`) in `tests/Bayesian.Tests/CondorcetBoundary.Tests.fs`. The mathematical anchor for **"mutual empowerment"**: independent weak agents out-perform a correlated strong agent. **Information-theoretic foundation — OPEN, see §B-ks (KS-entropy / Lyapunov). Row 15 does NOT depend on it** (see the A-method note "Row 15 ⟂ §B-ks" below). **Physical mechanism that pushes ρ into the admissible regime: row 19, Delay-Decorrelation.** | `tests/Tests.FSharp/CondorcetBoundary.Tests.fs`, `tests/Bayesian.Tests/CondorcetBoundary.Tests.fs`, `src/Core/SocietyUsefulWork.fs`, `src/Bayesian/CondorcetBoundary.fs` |
 | 16 | **Eve's Small-Rooms Principle (Thermodynamic Test Design)** | "Rooms should be small so you can know easily what went wrong and was uncertain" (Eve, 2026-07-04). A small room (test/boundary) has low entropy, minimizing the microstates (possible explanations for failure). By Landauer's principle, resolving this uncertainty costs fewer bits/joules. Small rooms are not just testing heuristics; they are the thermodynamically optimal topology for minimizing Heat (wasted compute where IV ≈ 0). **✅ PROVEN (Analytic consequence of Landauer + Shannon)**: The number of bits required to isolate a fault scales with the log of the failure surface volume; minimizing the surface volume minimizes the isolation cost. | `ComputeReceipt.Tests.fs` |
 
 > If it isn't in this table, **do not build load-bearing work on it yet.** That's the whole point.
+>
+> **Row numbers have drifted — cite §A rows by TITLE, not by number** *(shadow 2026-08-16, observed
+> while cross-linking row 15)*. Rows were inserted over time and older documents were not renumbered,
+> so several in-repo `§A #N` references now point at the wrong row: **`§A #22` in the B-zeta section
+> and in the 2026-08-08/09 Lumen docs means the T-1/12 Euler–Maclaurin tick-sampling theorem, which
+> is now row 23**; **`§A #23` in the TravelerRankLedger note means the ADF Gaussian-probit streaming
+> update**, not T-1/12. These references are recorded here as a redirect rather than mass-renumbered,
+> because renumbering would break every external citation at once. **New cross-references should
+> name the row title** (e.g. *"§A row 15, Generalized Condorcet / ΔU-aggregation"*), which survives
+> insertion.
 >
 > **Promoted 2026-06-05:** Traveler-frame Layer 0 is **COMPLETE** — consistency law (#8, `TravelerFrame`),
 > clock-with-uncertainty (#10, `UncertainClock`), and the group law (#11, `FrameDelta`). The causal-join
@@ -52,6 +62,108 @@ OR (for non-floor members) a proof / byte-lock / conformance anchor that is clos
 > **No open Layer-0 sub-legs remain.**
 
 ---
+
+### A-method note — Row 15 ⟂ §B-ks: the KS-entropy / Lyapunov rung EXPLAINS the Condorcet bonus, it does not SUPPORT it
+
+*(shadow 2026-08-16, Aaron-authorized. Written because three agents in one day searched for the
+individual-vs-society result and concluded it did not exist — it is row 15, indexed under
+"Condorcet".)*
+
+**The one sentence a future reader must not be able to misread:**
+
+> **§A row 15 is proven independently and completely; the open KS-entropy/Lyapunov rung (§B-ks)
+> would supply an information-theoretic *explanation* of why the Condorcet bonus exists, and if
+> §B-ks were falsified tomorrow row 15 would be untouched.**
+
+The direction of the arrow, stated three ways so it cannot invert in transmission:
+
+- **Wrong (and it corrupts §A's meaning):** *"the Condorcet theorem awaits the KS-entropy proof."*
+  §A's contract is *nothing here rests on anything open* — writing this would put an open rung
+  underneath a closed row and silently unfreeze the core.
+- **Right:** row 15 ⊢ (nothing from §B-ks). §B-ks, if discharged, ⊢ *a reason* for row 15.
+- **Operationally:** you may build on row 15 today. You may not build on §B-ks at all.
+
+**Where the two meet.** §B-ks conjectures `h_KS(ISociety) ≥ Σᵢ λᵢ⁺` (Pesin's identity applied to
+the society as one dynamical system). Row 15 says a decorrelated ensemble banks more ΔU than a
+correlated one. The *conjectured* bridge is that these are the same statement in two vocabularies —
+correlation collapses N agents into one closed loop wearing N masks, so their joint information
+production rate collapses to a single agent's. That bridge is exactly the open part.
+
+### A-method note — Row 15's metered boundary: metered as MATHEMATICS, unmetered as a claim about Zeta's actual agents
+
+*(shadow 2026-08-16; `toy-is-free-metered-must-be-earned` applied to §A row 15.)*
+
+Row 15 is **metered as mathematics** — it has a falsifier that fires (mutation-verified 2026-08-16;
+see below). What it is **not** is a measured claim about any real society, including ours:
+
+- The theorem holds **given** its regime (`ρ < ρ*`, `c > c*` in model B; `ρ < 1`, `0 < c < 1`, `n ≥ 2`
+  in model A). **Whether Zeta's actual agents sit inside that regime is unmeasured.** Nobody has
+  estimated ρ or c for the live fleet.
+- **The open empirical question (Aaron, live):** a GitHub-Actions society of small free LLMs running
+  in runner RAM may be drawn from **few distinct base models**, which would mean **high ρ** — possibly
+  on the wrong side of `ρ*`. Same weights + same prompt ⇒ correlated errors ⇒ a society that is
+  arithmetically many and informationally one. **This is not answered by row 15 and row 15 does not
+  claim to answer it.**
+- **What is metered and adjacent:** the effective-independence law
+  `N_eff = N/(1 + (N−1)ρ)`, which **saturates at `1/ρ` as N → ∞** — see
+  `src/Bayesian/CondorcetBoundary.fs:79-86` (`effectiveN`) and `RHO-STAR-1` in
+  `tests/Bayesian.Tests/CondorcetBoundary.Tests.fs`. This is the sentence that prices a fleet once ρ
+  is known: **at ρ = 0.5 a thousand agents are worth two.** Adding agents cannot buy past `1/ρ`;
+  only *decorrelating* them can.
+- **Row 15 + row 19 together (nothing previously stated them together, and the pair is the stronger
+  claim).** Row 15 says *decorrelation pays*. **Row 19 (Delay-Decorrelation Theorem)** says
+  *network delay enforces decorrelation* — it is the **physical mechanism** that drives ρ down toward
+  the admissible regime rather than an assumption that it is already there. Read as one statement:
+  **a distributed society is not merely permitted to beat its best member, it is pushed toward the
+  regime where it does, by the latency it cannot avoid.** The honest seam is that row 19 supplies a
+  *direction*, not a *measurement* — it does not tell you the fleet's current ρ.
+
+**Measuring ρ for the live fleet is the named open work** (empirical, not formal — it does not gate
+row 15 and it is not §B-ks). Instrument: `AntiSybil.fs` already computes stream correlation, and
+`src/Core/Orbit.fs` (`largestLyapunov`) already measures divergence rates.
+
+### A-method note — Row 15 falsifier audit (mutation, 2026-08-16): the properties are NOT vacuous
+
+*(shadow 2026-08-16. Run, not read — every row below was produced by editing
+`src/Core/SocietyUsefulWork.fs`, rebuilding, and running the suite. All mutations reverted.)*
+
+Baseline: **17/17 green** (`Condorcet-1` … `Condorcet-8` in `tests/Tests.FSharp/CondorcetBoundary.Tests.fs`
+plus 6 in `tests/Tests.FSharp/SocietyUsefulWork.Tests.fs`). Filter:
+`FullyQualifiedName~CondorcetBoundaryTests|FullyQualifiedName~SocietyUsefulWork`.
+
+| # | Mutant applied to `SocietyUsefulWork.fs` | Result | Tests caught |
+|---|---|---|---|
+| M1 | perturb ρ boundary: `(1.0 - rho)` → `(1.0 - 0.9 * rho)` in `expectedGain` | **KILLED** | 2 (`Condorcet-2a`; `expectedGain collapses to zero…`) |
+| M2 | invert the sign of `expectedGain` | **KILLED** | 7 (`Condorcet-1`, `-3`, `-4`, `-5a`, `-5b`, `-8`, `expectedGain is strictly positive…`) |
+| M3 | perturb c: `(1.0 - c)` → `(1.0 - 0.9 * c)` in `expectedGain` | **KILLED** | 3 (`Condorcet-2c`, `-5a`, `expectedGain collapses to zero…`) |
+| M4 | delete the diversity factor `(1 − (1−c)^(n−1))` → `1.0` | **KILLED** | 4 (`Condorcet-2b`, `-5a`, `-5b`, `expectedGain collapses to zero…`) |
+| M5 | off-by-one guard: `if n < 2` → `if n < 1` in `expectedGain` | **survived — EQUIVALENT MUTANT, not a gap** | 0 |
+| M6 | off-by-one exponent: `(n − 1)` → `n` in `expectedGain` | **KILLED** | 1 (`Condorcet-5a`) |
+| M7 | swap the ρ mixing in `expectedSocietyIdentical`: `ρc + (1−ρ)U` → `(1−ρ)c + ρU` | **KILLED** | 4 (`Condorcet-6`, `-7`, and both `expectedSocietyIdentical` / simulation tests) |
+| M8 | off-by-one union exponent: `(1−c)^n` → `(1−c)^(n+1)` | **KILLED** | 2 (both `expectedSocietyIdentical` / simulation tests) |
+
+**M5 is equivalent, verified rather than assumed.** The only input it can change is `n = 1`, and at
+`n = 1` the formula evaluates to `(1−ρ)(1−c)·(1 − (1−c)⁰)·Σv = (1−ρ)(1−c)·0·Σv = 0`, which is what
+the original guard returns. Checked by running the expression over a grid of (c, ρ, Σv) including
+the `c = 0` / `c = 1` corners: max |difference| = **0** exactly, and `Math.Pow(0.0, 0.0) = 1.0` on
+.NET as required. So no test *could* distinguish it, and no test *should* be added for it.
+
+**Verdict: §A row 15 survives its own falsifier.** 7 of 7 semantically-distinct mutants died; the
+one survivor is provably equivalent. This is not the Z-2 failure mode (a discharge check that was a
+literal tautology and could never fire) — these properties fire.
+
+**Two honest thinnesses found, recorded rather than papered over** (neither demotes the row):
+
+1. **The ρ boundary is pinned only by exact-value `Fact`s, not by the property sweep.** M1 moved
+   `ρ*` from 1 to 1.111 and was caught *only* by the tests that evaluate at exactly `ρ = 1`
+   (`Condorcet-2a`). No property caught it — because the mutant is still positive on the interior
+   and still monotone decreasing in ρ, which is all `Condorcet-1`, `-3`, `-4` and `-8` require. The
+   interior *shape* in ρ is therefore under-constrained: any positive, ρ-decreasing function
+   vanishing at ρ = 1 would pass the sweep.
+2. **The n-dependence rests on a single test.** M6 (wrong exponent ⇒ wrong scaling in society size)
+   was caught by `Condorcet-5a` alone — a `Fact` at n = 2, not a property. A `Condorcet-9`-style
+   property pinning `ΔU` as a function of n (e.g. strict monotonicity in n for fixed c, ρ, and the
+   `n → ∞` limit `ΔU → (1−ρ)(1−c)Σv`) would close this, and is worth filing.
 
 ### A-method note — Four-Corner = Traced Monoidal Category = ZSet Retraction = Weyl Reflection
 
@@ -249,6 +361,64 @@ All natural Zeta process spectra were enumerated and all fail requirement (a) �
 - DLA boundary (this session): mode count scales as ε^{−D_f} (power law, D_f ≈ 1.322), not linearly in n.
 
 The only physical candidate for Iₙ ∝ n is a quantum harmonic oscillator (QHO) — the Casimir vacuum energy spectrum. The Zeta tick source is a cron (classical periodic process), not a QHO. Tick boundaries are engineering parameters, not mode quantization conditions. **The falsifier for (a) is robust and decisive.** Requirements (b) and (c) are moot. Z-1 is **CLOSED**. The −1/12 lives only as the T-1/12 Δ² coefficient (§A #22, proven). Any future citation of −1/12 in this codebase must specify: sampling *coefficient* (§A #22, proven) or regularized *total* (Z-1, **falsified**). See `docs/letters/to-lumen-z1-conjecture-discharge.md`.
+
+### B-ks. KS-entropy / Lyapunov lower bound for `ISociety` — the information-theoretic foundation of the Condorcet bonus (Otto handoff 2026-06-20; Aaron/Lumen 2026-07-04; filed as a row by shadow 2026-08-16)
+
+*(Search aliases: **KS-entropy** · **Kolmogorov–Sinai entropy** · **Lyapunov exponent** ·
+**Pesin identity** · **chaos leg** · **3-body bridge** · **information-theoretic foundation of the
+Condorcet bonus** · **why society beats the individual** · **information production rate of a
+society**.)*
+
+**Conjecture KS-1.** The Kolmogorov–Sinai entropy of the `ISociety` dynamical system is bounded
+below by the sum of its member agents' positive Lyapunov exponents:
+
+> `h_KS(ISociety) ≥ Σᵢ λᵢ⁺`
+
+and this bound is the **information-theoretic foundation of the Condorcet bonus** — i.e. it explains
+*why* §A row 15 holds, in the vocabulary of information production rate rather than of
+error-correlation.
+
+**Status: OPEN.** It was stated as a discharge target in prose on 2026-06-20 and again on
+2026-07-04 and had **no register row until 2026-08-16** — which is why it was hard to find from
+either end. Filing it here makes it enumerated rather than buried.
+
+**Direction of dependence (load-bearing — read before citing this row).**
+**§A row 15 does NOT depend on KS-1.** Row 15 is closed on its own analytic + FsCheck proof; KS-1
+would add an *explanation*, not missing support. Falsifying KS-1 leaves row 15 exactly where it is.
+See the A-method note *"Row 15 ⟂ §B-ks"* in §A. Do not write "the Condorcet theorem awaits the
+KS-entropy proof" — that is false and it would corrupt §A's contract that nothing in §A rests on
+anything open.
+
+**Discharge =** a proof (Lean/CSLib route preferred, per the information-theory tower) of the
+inequality for a stated class of `ISociety` dynamics, *plus* an explicit derivation connecting
+`h_KS` to `ΔU(n, c, ρ)` — the bridge is the whole point and is where the conjecture actually lives.
+Pesin's identity (`h_KS = Σ λᵢ⁺` for smooth systems with an SRB measure) is the classical half; the
+open half is that `ISociety` satisfies the hypotheses and that the correlation parameter ρ of row 15
+is the right coordinate on the resulting entropy.
+
+**Named falsifier.** Construct an `ISociety` instance whose agents each have `λᵢ⁺ > 0` but whose
+joint `h_KS` is strictly below `Σᵢ λᵢ⁺`. A society of N *synchronized* agents (ρ → 1) is the obvious
+candidate: it is one trajectory in N masks, so its `h_KS` should equal a single agent's while
+`Σᵢ λᵢ⁺` grows linearly in N — which, taken at face value, **falsifies the inequality as literally
+stated** and suggests the correct claim is a decorrelation-conditioned bound
+(`h_KS ≥ Σᵢ λᵢ⁺` only in the ρ → 0 limit, interpolating to `max λᵢ⁺` at ρ = 1). Sharpening the
+statement so that it survives its own obvious counterexample is part of the discharge, not a
+formality.
+
+**Anchors (Beacon).** Kolmogorov (1958) and Sinai (1959), metric entropy of a dynamical system;
+Pesin (1977), `h_KS = Σ λᵢ⁺`; Condorcet (1785), the jury theorem; Poincaré, the 3-body problem as
+the canonical positive-KS-entropy system.
+
+**Pointers.**
+`docs/research/2026-07-04-tick-sources-strange-attractors-eve-ks-entropy-ctm-isociety-connections.md` §3
+(the origin statement) ·
+`docs/research/2026-06-20-information-theory-tower-shannon-root-four-entropy-readings-mathlib-cslib-routing.md`
+rung 5 (the routing: chaos leg, CSLib target) ·
+`docs/research/2026-07-04-ferry-aaron-verbatim-companion-time-warp-cockroachdb-v8-polymorphic-eve-anchor-completion-to-lumens-synthesis.md`
+(the "is" is conjecture-strength) · **§A row 15** (the result this would explain) · **§A row 19**
+(delay ⇒ decorrelation, the physical half) · `src/Core/Orbit.fs` (`largestLyapunov`,
+`classifyDynamics` — the code that already measures the λ side) · `src/Core/SocietyUsefulWork.fs`
+(the ΔU side).
 
 ### B-frame. The traveler self-frame over DBSP (Aaron's load-bearing target, 2026-06-05)
 

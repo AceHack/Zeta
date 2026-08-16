@@ -99,7 +99,7 @@ The connection to `ISociety`:
   useful work than a correlated one. This is the information-theoretic statement that
   decorrelated agents have higher KS-entropy than correlated ones (correlated agents
   are one closed loop in N masks — their joint KS-entropy collapses to a single agent's).
-- The **delay-decorrelation theorem** (§A #18, proven) says: network delay enforces
+- The **delay-decorrelation theorem** (§A **row 19**, proven) says: network delay enforces
   decorrelation. Reticulum delay is the physical mechanism of mutual empowerment. This
   is the physical mechanism by which the 3-body problem's sensitivity to initial conditions
   (which grows with separation) maps onto the Condorcet bonus (which grows with
@@ -109,6 +109,51 @@ The tower rung `KS-entropy/Lyapunov (chaos/3-body bridge)` (Otto handoff, 2026-0
 is the formal discharge target: prove that the KS-entropy of the `ISociety` dynamical
 system is bounded below by the sum of individual agents' Lyapunov exponents, and that
 this bound is the information-theoretic foundation of the Condorcet bonus.
+
+### 3a. Where this is indexed — the two ends of the link (shadow, 2026-08-16)
+
+*(Added because on 2026-08-16 three agents independently searched for the individual-vs-society
+result and concluded it did not exist. It exists; it is indexed under "Condorcet", and nobody
+searching in **ordering** vocabulary was landing on it. Aaron found it instantly with the key
+"mutual empowerment".)*
+
+**The closed result this rung would explain — `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §A
+row 15, "Generalized Condorcet / ΔU-aggregation theorem — society > best individual"**
+(✅ PROVEN, FsCheck + analytic, 2026-07-03; mutation-verified 2026-08-16):
+
+| where | what |
+|---|---|
+| `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §A row 15 | the register row (the closed theorem) |
+| `src/Core/SocietyUsefulWork.fs` | the ΔU-aggregation proof: `ΔU(n,c,ρ) = (1−ρ)(1−c)(1−(1−c)^(n−1))·Σvⱼ` |
+| `tests/Tests.FSharp/CondorcetBoundary.Tests.fs` | the 11 properties `Condorcet-1` … `Condorcet-8` |
+| `src/Bayesian/CondorcetBoundary.fs` | the correlated majority-vote model; `N_eff = N/(1+(N−1)ρ) → 1/ρ` (lines 79–86); `ρ*(N) = (N−3)/(3(N−1)) → 1/3` |
+| `tests/Bayesian.Tests/CondorcetBoundary.Tests.fs` | `COND-1`…`COND-10`, `RHO-STAR-1`…`RHO-STAR-5` |
+| §A row 19, Delay-Decorrelation | the *physical* mechanism that drives ρ toward the admissible regime |
+| `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` **§B-ks** | **this rung, now filed as an enumerated open conjecture (KS-1)** |
+
+**Search aliases that previously failed and now resolve** — the same result is findable as:
+**individual vs society** · **society greater than individual** · **no individual exceeds the
+society** · **the collective outperforms its best member** · **ordering** · **dominance** ·
+**mutual empowerment** · **wisdom of crowds** · **jury theorem** · **Condorcet bonus** ·
+**information-theoretic foundation of the Condorcet bonus**.
+
+**The dependency direction — do not invert it.**
+
+> **§A row 15 is proven independently and completely. The KS-entropy/Lyapunov rung would supply an
+> information-theoretic *explanation* of why the Condorcet bonus holds — added insight, not missing
+> support. If this rung were falsified tomorrow, row 15 would be untouched.**
+
+Row 15 lives in §A, whose contract is *"closed — build on this, nothing here rests on anything
+open."* Writing "the Condorcet theorem awaits the KS-entropy proof" would be **false** and would
+put an open rung underneath a closed row. The paragraph above ("the formal discharge target") is a
+statement about **this rung's** obligation, not about row 15's status.
+
+**Metered boundary.** Row 15 is metered **as mathematics**. Its application to any real society —
+including Zeta's own — is **unmeasured**: nobody has estimated ρ or c for the live fleet, and a
+GitHub-Actions society of small free LLMs drawn from **few distinct base models** could plausibly
+sit at **high ρ**, on the wrong side of `ρ*`. `N_eff → 1/ρ` is what says how much such a society is
+actually worth once ρ is known (at ρ = 0.5, a thousand agents are worth two). That measurement is
+open empirical work; it does not gate row 15 and it is not this rung.
 
 ---
 
