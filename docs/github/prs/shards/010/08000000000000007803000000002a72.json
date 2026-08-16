@@ -1,0 +1,12 @@
+{
+  "pr_number": 10866,
+  "archive_path": "docs/history/pr-reviews/PR-10866-label-observe-the-l2-composer-is-unmetered-measured-adopted-in-0-of-504-worlds-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:04:22.787Z",
+  "schema_version": "v1",
+  "commit_sha": "34c206bd57f02419dd5d49b8332c3ed2d16ee10d",
+  "title": "label(observe): the L2 composer is `unmetered` — measured adopted in 0 of 504 worlds, so labelled rather than tuned",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:03:47Z",
+  "head_ref": "shadow/composer-weights-unmetered-register"
+}
