@@ -1,0 +1,12 @@
+{
+  "pr_number": 11096,
+  "archive_path": "docs/history/pr-reviews/PR-11096-feat-trace-add-explicit-reversible-witnesses.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T21:33:44.945Z",
+  "schema_version": "v1",
+  "commit_sha": "59142bd8de08e17c084263e09e913fd43bc2b7c7",
+  "title": "feat(trace): add explicit reversible witnesses",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T21:33:08Z",
+  "head_ref": "codex/four-corner-reversible-trace"
+}
