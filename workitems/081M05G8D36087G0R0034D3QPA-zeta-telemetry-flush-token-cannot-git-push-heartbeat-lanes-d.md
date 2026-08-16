@@ -75,14 +75,50 @@ liveness ref reads as the standing-by failure by construction. The dogfooding tr
 
 ## What already shipped alongside this item
 
-The **artifact** half is fixed in-repo: the push step now attempts the PAT first (identical to
-#10850's intent once the PAT is granted `contents: write`) and, **on a credential denial only**,
-falls back to GITHUB_TOKEN so the lane keeps recording. A non-fast-forward / ruleset / network
-failure stays fatal — verified against a stubbed `git` in all three modes.
+### Attempt 1 — PR #10913 — DID NOT WORK, owned and reverted
 
-The **test** half is deliberately left strict: `required-check-started.ts` in the flush job still
-fails the workflow while `gate (required)` never starts. So this item does **not** get to look
-green by being worked around; the fallback keeps telemetry alive, the assertion keeps shouting.
+The first fix kept #10850's PAT on the checkout and added an in-step fallback: on a 403, unset
+`http.https://github.com/.extraheader`, re-point `origin` at
+`https://x-access-token:$GITHUB_TOKEN@github.com/…`, retry. It was verified against a **stubbed**
+`git` in three modes (ok / denied / non-fast-forward) and every mode behaved as designed.
+
+It still failed in production (run `31954669720`, 2026-08-16T15:08Z). The detection fired and the
+warning printed, and then the **retry was denied as the same identity**:
+
+```
+remote: Permission to ... denied to AceHack.       <- primary (PAT)
+##[warning][heartbeat] ZETA_TELEMETRY_FLUSH_TOKEN cannot push ... falling back
+remote: Permission to ... denied to AceHack.       <- fallback, SAME identity
+```
+
+The stub could not have caught this: it modelled the *control flow*, not the *credential
+resolution*, so it proved the branch was taken and nothing about which token git actually used.
+That is the same defect class as the rest of today's sweep — a test that cannot fail on the thing
+it is for. Two facts established afterwards, by local experiment rather than reasoning:
+
+- `git config --unset-all "http.https://github.com/.extraheader"` **does** remove that key
+  (exit 0, key gone) — so the naive "the unset silently failed" story is not established either.
+- `git -c http.<url>.extraheader=…` **appends** rather than overrides (`--get-all` returns both),
+  so the obvious "just override it" repair is also wrong.
+
+The root reason the retry kept AceHack's identity is **not** established. What is established is
+that swapping credentials *inside the step* did not work, so the mechanism was removed rather than
+iterated on.
+
+### Attempt 2 — the shipped fix
+
+Drop the `token:` override from **both** checkouts so the persisted credential is the default
+GITHUB_TOKEN, which is **proven** to push `heartbeat/*` in this repo: `society-heartbeat.yml` and
+`tick-metrics.yml` do exactly this and their refs kept updating throughout the outage. The PAT
+stays where it actually belongs — as `GH_TOKEN` on the flush step, which is what `gh` reads for PR
+creation, and which is the split those two working workflows already use.
+
+This also fixes a **latent second break**: #10850 put the PAT on the flush job's checkout too, and
+that credential authenticates `flush-via-staging.ts`'s `git push … HEAD:refs/heads/<lane>`. It had
+not surfaced only because the tick job was producing no events to flush.
+
+The **test** half is deliberately untouched: `required-check-started.ts` still fails the flush
+while `gate (required)` never starts. This item does not get to look green by being worked around.
 
 ## Done when
 

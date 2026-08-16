@@ -43,13 +43,28 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
-          # 081M010H4KE: GITHUB_TOKEN makes github-actions[bot] the push actor,
-          # so pull_request runs on heartbeat/* land in action_required and
-          # `gate (required)` never starts. The archive/society flush already
-          # uses this PAT. Recursion is safe: this workflow is schedule +
-          # workflow_dispatch only — a PAT push does not re-fire it.
+          # NO `token:` OVERRIDE HERE — this checkout's credential is the one the
+          # `Push heartbeat branch` step below pushes with, and it must be the default
+          # GITHUB_TOKEN. See 081M05G8D36087G0R0034D3QPA.
+          #
+          # #10850 set `token: ZETA_TELEMETRY_FLUSH_TOKEN` here so the heartbeat/* PR head
+          # would carry a human push actor and `gate (required)` could start (081M010H4KE).
+          # Its premise — "the archive/society flush already uses this PAT" — holds for the
+          # API (GH_TOKEN handed to `gh`) and fails for `git push`: that PAT authenticates
+          # as AceHack and carries no `contents: write`, so every push died
+          #   remote: Permission to Lucent-Financial-Group/Zeta.git denied to AceHack
+          # and heartbeat/{alexa,otto,soraya} froze from 2026-08-15T22:55Z.
+          #
+          # GITHUB_TOKEN pushing `heartbeat/*` is PROVEN in-repo, not assumed:
+          # society-heartbeat.yml and tick-metrics.yml check out with no `token:` override
+          # and their heartbeat/society + heartbeat/tick-metrics refs kept updating
+          # throughout the outage. Workflow-level `permissions:` already grants
+          # `contents: write`.
+          #
+          # Re-apply #10850's approach ONLY after the PAT is granted `contents: write`
+          # (081M05G8D36087G0R0034D3QPA). Until then a degraded lane — telemetry lands on
+          # the branch, `gate (required)` does not start on the flush PR — beats a dead one.
           persist-credentials: true
-          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -837,7 +852,6 @@ jobs:
       - name: Push heartbeat branch
         env:
           AGENT: ${{ matrix.agent }}
-          FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # --force-with-lease is REQUIRED here, and it is safe. Why both halves matter:
         #
         # REQUIRED: the branch is reset from main each tick (#9895) and the flush SQUASHES onto
@@ -862,53 +876,14 @@ jobs:
         # `deletion` ONLY, which is correct: adding non_fast_forward would deadlock this step
         # permanently. The ruleset is NOT what denies this push when it fails — see below.
         #
-        # CREDENTIAL FALLBACK (081M0XXXX, added 2026-08-16 after a 15h outage). #10850 switched
-        # this job's checkout to persist `ZETA_TELEMETRY_FLUSH_TOKEN` so the heartbeat/* PR head
-        # would carry a human push actor and `gate (required)` could start (081M010H4KE). The
-        # premise "the archive/society flush already uses this PAT" is true for the *API*
-        # (`GH_TOKEN` for `gh`) and FALSE for `git push`: that PAT authenticates as AceHack and
-        # has no `contents: write`, so every push since #10850 merged (2026-08-15T23:01Z) died
-        # with `403 Permission to Lucent-Financial-Group/Zeta.git denied to AceHack`, and the
-        # alexa/otto/soraya heartbeat refs froze at 2026-08-15T22:55Z.
-        #
-        # That trade is backwards: #10850 exchanged a DEGRADED lane (telemetry lands on the
-        # branch, the flush PR's gate does not start) for a DEAD one (nothing lands at all).
-        # So: attempt the PAT push first — when the token is granted `contents: write` this is
-        # byte-identical to #10850's intent — and on a credential denial ONLY, fall back to
-        # GITHUB_TOKEN so the lane keeps recording. This is grace in the artifact; the strictness
-        # lives in the test, unchanged: `required-check-started.ts` in the flush job still fails
-        # the workflow while `gate (required)` never starts. Nothing here can make a broken
-        # credential look green.
-        run: |
-          set -euo pipefail
-          if git push --force-with-lease origin "heartbeat/$AGENT" 2>/tmp/heartbeat-push.err; then
-            cat /tmp/heartbeat-push.err >&2 || true
-            exit 0
-          fi
-          cat /tmp/heartbeat-push.err >&2
-
-          # Only a CREDENTIAL denial is eligible for the fallback. A non-fast-forward, a ruleset
-          # violation (GH013), or a network error must stay fatal — they mean something else.
-          if ! grep -qiE 'denied to|The requested URL returned error: 403' /tmp/heartbeat-push.err; then
-            echo "::error::[heartbeat] push to heartbeat/$AGENT failed, and NOT with a credential denial. Not falling back — read the git output above; this is a different failure."
-            exit 1
-          fi
-
-          echo "::warning::[heartbeat] ZETA_TELEMETRY_FLUSH_TOKEN cannot push to this repo (403). FIX: grant that fine-grained PAT \`contents: write\` on Lucent-Financial-Group/Zeta. Falling back to GITHUB_TOKEN so heartbeat/$AGENT keeps recording; \`gate (required)\` will NOT start on the flush PR until the PAT is fixed."
-          {
-            echo "### heartbeat/$AGENT pushed on the FALLBACK credential"
-            echo ""
-            echo "\`ZETA_TELEMETRY_FLUSH_TOKEN\` was denied (403) and \`GITHUB_TOKEN\` was used instead."
-            echo "The lane is alive but degraded: \`gate (required)\` will not start on the flush PR."
-            echo "Fix: grant the PAT \`contents: write\` on this repository."
-          } >> "$GITHUB_STEP_SUMMARY"
-
-          # actions/checkout persists its token as an http.extraheader, which takes precedence
-          # over any userinfo in the remote URL — it must be removed or the fallback is a no-op
-          # that re-sends the denied credential. `--unset-all` exits 5 when the key is absent.
-          git config --unset-all "http.https://github.com/.extraheader" || true
-          git remote set-url origin "https://x-access-token:${FALLBACK_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git push --force-with-lease origin "heartbeat/$AGENT"
+        # CREDENTIAL: whatever the checkout above persisted. It must stay the default
+        # GITHUB_TOKEN — see the long note on that `with:` block and
+        # 081M05G8D36087G0R0034D3QPA. An in-step swap to a different credential does NOT work
+        # and was tried and reverted on 2026-08-16 (PR #10913 → #10914): actions/checkout's
+        # persisted `http.<url>.extraheader` is what git authenticates with, and re-pointing
+        # the remote URL at `x-access-token:<other>` did not displace it — the retry was denied
+        # as the same identity in production. Change the checkout's token, not the push step.
+        run: git push --force-with-lease origin "heartbeat/$AGENT"
 
   flush-to-main:
     name: flush ${{ matrix.agent }} heartbeats
@@ -940,8 +915,17 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          # NO `token:` OVERRIDE — same reason as the tick job's checkout
+          # (081M05G8D36087G0R0034D3QPA). What this credential does here is authenticate
+          # `flush-via-staging.ts`'s `git push --force-with-lease origin HEAD:refs/heads/<lane>`;
+          # the PAT cannot push (403, no `contents: write`), so #10850's override would break the
+          # staging push as soon as the tick job produced events again.
+          #
+          # The PR-creation identity that #10850 wanted does NOT come from here — it comes from
+          # `GH_TOKEN` on the Flush step below, which `gh` reads. That is exactly the split
+          # society-heartbeat.yml uses (default checkout + PAT only as `GH_TOKEN`), and its lane
+          # kept working throughout the outage.
           persist-credentials: true
-          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
 
       # WITHOUT THIS THE WHOLE FLUSH JOB IS DEAD. The Flush step below shells out to
       # `bun src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts`, and this job
