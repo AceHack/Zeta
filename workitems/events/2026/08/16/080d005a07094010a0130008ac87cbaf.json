@@ -1,0 +1,14 @@
+{
+  "id": "080d005a07094010a0130008ac87cbaf",
+  "at": "2026-08-16T15:46:36.456Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05M1R97087G0R0023Z4F9D",
+    "type": "bug",
+    "title": "ToffoliGate Landauer-accounting properties cannot fail — erasedWireCount is identically zero",
+    "slug": "toffoligate-landauer-accounting-properties-cannot-fail-erase",
+    "priority": "P2",
+    "filename": "081M05M1R97087G0R0023Z4F9D-toffoligate-landauer-accounting-properties-cannot-fail-erase.md"
+  }
+}
