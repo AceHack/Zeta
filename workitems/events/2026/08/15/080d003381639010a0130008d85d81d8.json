@@ -1,0 +1,14 @@
+{
+  "id": "080d003381639010a0130008d85d81d8",
+  "at": "2026-08-15T17:20:09.842Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0370B3H087G0R002SZ2APY",
+    "type": "task",
+    "title": "Thin slice: ONE markdown file that starts as a spec naming a target that does not exist yet, resolves the name on execution, emits an execution event, and renders its own mini-DORA in a query block — the smallest artifact that demonstrates spec-becomes-running-file end to end",
+    "slug": "thin-slice-one-markdown-file-that-starts-as-a-spec-naming-a",
+    "priority": "P2",
+    "filename": "081M0370B3H087G0R002SZ2APY-thin-slice-one-markdown-file-that-starts-as-a-spec-naming-a.md"
+  }
+}

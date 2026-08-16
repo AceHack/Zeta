@@ -1,0 +1,14 @@
+{
+  "id": "080d00337f79b010a0130008abdadb03",
+  "at": "2026-08-15T17:19:54.166Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M036ZVSP087G0R001RQD2TH",
+    "type": "task",
+    "title": "Resolution register for markdown names: a backticked filename in prose is a MENTION, a link is a POINTER, and evidence about a deleted file is a CITATION — auto-vivify treats all three alike and mis-roots 11 of 12 unmarked mentions under db/; mark the register syntactically instead of inferring it",
+    "slug": "resolution-register-for-markdown-names-a-backticked-filename",
+    "priority": "P2",
+    "filename": "081M036ZVSP087G0R001RQD2TH-resolution-register-for-markdown-names-a-backticked-filename.md"
+  }
+}

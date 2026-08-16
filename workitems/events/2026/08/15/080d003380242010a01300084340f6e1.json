@@ -1,0 +1,14 @@
+{
+  "id": "080d003380242010a01300084340f6e1",
+  "at": "2026-08-15T17:19:59.620Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0370143087G0R003H36RDE",
+    "type": "task",
+    "title": "Markdown execution is a PORT, not a Runme dependency: define the executor interface (block in, result plus effect-record out) with Runme v3.17.4 as the first adapter and a native adapter as the second, so the choice of execution engine is an adapter swap and DoP=1 replay stays possible",
+    "slug": "markdown-execution-is-a-port-not-a-runme-dependency-define-t",
+    "priority": "P2",
+    "filename": "081M0370143087G0R003H36RDE-markdown-execution-is-a-port-not-a-runme-dependency-define-t.md"
+  }
+}

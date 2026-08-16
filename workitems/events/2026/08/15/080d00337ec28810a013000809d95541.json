@@ -1,0 +1,14 @@
+{
+  "id": "080d00337ec28810a013000809d95541",
+  "at": "2026-08-15T17:19:48.305Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M036ZP2G087G0R000N01N9Z",
+    "type": "bug",
+    "title": "auto-vivify extracts pointers from inside code spans and fenced code blocks: the bash test [[ -f ]] in workitems/081M00VMS1E087G0R0001SCSAH is parsed as a wikilink and would vivify db/-f — fabricated syntax counted among the 12 dangling refs that are red on main",
+    "slug": "auto-vivify-extracts-pointers-from-inside-code-spans-and-fen",
+    "priority": "P2",
+    "filename": "081M036ZP2G087G0R000N01N9Z-auto-vivify-extracts-pointers-from-inside-code-spans-and-fen.md"
+  }
+}
