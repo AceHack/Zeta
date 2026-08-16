@@ -1,0 +1,286 @@
+{
+  "format": "lattice-voa-graded-dimensions-v1",
+  "description": "Byte-lock for the GRADED DIMENSIONS of the lattice VOA V_L over the in-tree E8 lattice (E8Lattice = Construction A over AdinkraCode.generator). dim (V_L)_n are the coefficients of theta_L(q) / eta(q)^8 with the q^(-1/3) prefactor stripped. Integer-only: every value is an exact int64 recorded as BOTH a decimal string and a zero-padded 16-digit big-endian hex string (hex-in-JSON per no-binary-in-proof-lineage; no float ever enters this path). SCOPE: this file locks a sequence of integers. It does NOT assert that this repo implements vertex operators, the VOA axioms, the Frenkel-Kac isomorphism, the affine E8 action, or anything about the Monster. Zhu's modular-invariance theorem quantifies over C2-cofinite VOAs; we have no VOA, so modularity is NOT claimed here.",
+  "generatedBy": "src/Core/LatticeVoa.fs (F# is the generating oracle / treaty)",
+  "rank": 8,
+  "terms": 9,
+  "lanes": {
+    "routeL": {
+      "id": "lattice-theta-times-eta-pow-minus-8-geometric",
+      "how": "thetaByEnumeration (depth-first point count over Construction A from AdinkraCode.generator) * etaPowMinus8Geometric (8-colour partition recurrence)",
+      "reads": "the in-tree binary code and nothing else"
+    },
+    "routeM": {
+      "id": "eisenstein-e4-times-eta-pow-minus-8-pentagonal",
+      "how": "eisensteinE4 (1 + 240 * sum sigma_3(m) q^m, divisor sums) * etaPowMinus8Pentagonal (Euler pentagonal expansion, three squarings, series inversion)",
+      "reads": "number theory only; no lattice point is enumerated"
+    },
+    "published": {
+      "id": "oeis-a007245",
+      "how": "the published external reference sequence, transcribed",
+      "reads": "OEIS A007245 terms 0..8, retrieved 2026-08-15"
+    },
+    "cube": {
+      "id": "convolution-cube-equals-oeis-a000521",
+      "how": "the convolution cube of the graded dimensions must equal the coefficients of the modular function j",
+      "reads": "OEIS A000521 terms (offset -1) 0..8, retrieved 2026-08-15 - a datum neither route consumed"
+    }
+  },
+  "independenceCaveat": "The two routes' NUMERATORS are genuinely disjoint (lattice point counting vs. divisor sums, sharing no input). The two routes' DENOMINATORS are the same mathematical object computed by disjoint algorithms - algorithmic independence, not derivational. The cube lane is independent of both. Stated so the falsifier is not oversold.",
+  "anchors": [
+    "I. Frenkel & V. Kac, Basic representations of affine Lie algebras and dual resonance models, Invent. Math. 62 (1980)",
+    "Frenkel-Lepowsky-Meurman, Vertex Operator Algebras and the Monster (1988) - the functor L |-> V_L for even positive-definite L",
+    "Conway & Sloane, SPLAG ch. 4-5 - Construction A; the theta series of E8",
+    "Euler, pentagonal number theorem",
+    "OEIS A007245 - McKay-Thompson series of class 3C for the Monster group; formula line: expand E_2(z)/Delta(z)^(1/3) in Gunning's notation, i.e. E_4/eta^8; example line: G.f. = 1 + 248*x + 4124*x^2 + ...; formula line: convolution cube is A000521",
+    "OEIS A000521 - coefficients of the modular function j",
+    "no-binary-in-proof-lineage rule; toy-is-free-metered-must-be-earned (this vector is what makes the graded dimensions metered)"
+  ],
+  "gradedDimensions": [
+    {
+      "n": 0,
+      "dec": "1",
+      "hex": "0000000000000001"
+    },
+    {
+      "n": 1,
+      "dec": "248",
+      "hex": "00000000000000f8"
+    },
+    {
+      "n": 2,
+      "dec": "4124",
+      "hex": "000000000000101c"
+    },
+    {
+      "n": 3,
+      "dec": "34752",
+      "hex": "00000000000087c0"
+    },
+    {
+      "n": 4,
+      "dec": "213126",
+      "hex": "0000000000034086"
+    },
+    {
+      "n": 5,
+      "dec": "1057504",
+      "hex": "00000000001022e0"
+    },
+    {
+      "n": 6,
+      "dec": "4530744",
+      "hex": "0000000000452238"
+    },
+    {
+      "n": 7,
+      "dec": "17333248",
+      "hex": "0000000001087c00"
+    },
+    {
+      "n": 8,
+      "dec": "60655377",
+      "hex": "00000000039d8711"
+    }
+  ],
+  "thetaSeries": {
+    "note": "theta_L indexed by m = (x.x)/4, the E8-normalised half-norm; theta[1] = 240 is the in-tree kissing number. Both routes must produce this.",
+    "values": [
+      {
+        "n": 0,
+        "dec": "1",
+        "hex": "0000000000000001"
+      },
+      {
+        "n": 1,
+        "dec": "240",
+        "hex": "00000000000000f0"
+      },
+      {
+        "n": 2,
+        "dec": "2160",
+        "hex": "0000000000000870"
+      },
+      {
+        "n": 3,
+        "dec": "6720",
+        "hex": "0000000000001a40"
+      },
+      {
+        "n": 4,
+        "dec": "17520",
+        "hex": "0000000000004470"
+      },
+      {
+        "n": 5,
+        "dec": "30240",
+        "hex": "0000000000007620"
+      },
+      {
+        "n": 6,
+        "dec": "60480",
+        "hex": "000000000000ec40"
+      },
+      {
+        "n": 7,
+        "dec": "82560",
+        "hex": "0000000000014280"
+      },
+      {
+        "n": 8,
+        "dec": "140400",
+        "hex": "0000000000022470"
+      }
+    ]
+  },
+  "etaPowMinus8": {
+    "note": "prod (1 - q^k)^(-8); partitions into parts of 8 colours. Both routes must produce this.",
+    "values": [
+      {
+        "n": 0,
+        "dec": "1",
+        "hex": "0000000000000001"
+      },
+      {
+        "n": 1,
+        "dec": "8",
+        "hex": "0000000000000008"
+      },
+      {
+        "n": 2,
+        "dec": "44",
+        "hex": "000000000000002c"
+      },
+      {
+        "n": 3,
+        "dec": "192",
+        "hex": "00000000000000c0"
+      },
+      {
+        "n": 4,
+        "dec": "726",
+        "hex": "00000000000002d6"
+      },
+      {
+        "n": 5,
+        "dec": "2464",
+        "hex": "00000000000009a0"
+      },
+      {
+        "n": 6,
+        "dec": "7704",
+        "hex": "0000000000001e18"
+      },
+      {
+        "n": 7,
+        "dec": "22528",
+        "hex": "0000000000005800"
+      },
+      {
+        "n": 8,
+        "dec": "62337",
+        "hex": "000000000000f381"
+      }
+    ]
+  },
+  "oeisA007245": {
+    "note": "published reference terms 0..8, transcribed from OEIS on 2026-08-15",
+    "values": [
+      {
+        "n": 0,
+        "dec": "1",
+        "hex": "0000000000000001"
+      },
+      {
+        "n": 1,
+        "dec": "248",
+        "hex": "00000000000000f8"
+      },
+      {
+        "n": 2,
+        "dec": "4124",
+        "hex": "000000000000101c"
+      },
+      {
+        "n": 3,
+        "dec": "34752",
+        "hex": "00000000000087c0"
+      },
+      {
+        "n": 4,
+        "dec": "213126",
+        "hex": "0000000000034086"
+      },
+      {
+        "n": 5,
+        "dec": "1057504",
+        "hex": "00000000001022e0"
+      },
+      {
+        "n": 6,
+        "dec": "4530744",
+        "hex": "0000000000452238"
+      },
+      {
+        "n": 7,
+        "dec": "17333248",
+        "hex": "0000000001087c00"
+      },
+      {
+        "n": 8,
+        "dec": "60655377",
+        "hex": "00000000039d8711"
+      }
+    ]
+  },
+  "convolutionCubeA000521": {
+    "note": "the graded dimensions convolved with themselves twice; must equal the published j coefficients (OEIS A000521, offset -1, terms 0..8)",
+    "values": [
+      {
+        "n": 0,
+        "dec": "1",
+        "hex": "0000000000000001"
+      },
+      {
+        "n": 1,
+        "dec": "744",
+        "hex": "00000000000002e8"
+      },
+      {
+        "n": 2,
+        "dec": "196884",
+        "hex": "0000000000030114"
+      },
+      {
+        "n": 3,
+        "dec": "21493760",
+        "hex": "000000000147f800"
+      },
+      {
+        "n": 4,
+        "dec": "864299970",
+        "hex": "0000000033842bc2"
+      },
+      {
+        "n": 5,
+        "dec": "20245856256",
+        "hex": "00000004b6bf4000"
+      },
+      {
+        "n": 6,
+        "dec": "333202640600",
+        "hex": "0000004d946cced8"
+      },
+      {
+        "n": 7,
+        "dec": "4252023300096",
+        "hex": "000003de0056a000"
+      },
+      {
+        "n": 8,
+        "dec": "44656994071935",
+        "hex": "0000289d8444b57f"
+      }
+    ]
+  }
+}

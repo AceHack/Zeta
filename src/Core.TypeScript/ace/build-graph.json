@@ -287,7 +287,7 @@
             "rule": "golden-vectors",
             "kind": "golden-vector",
             "witness": "src/Core/golden-vectors-deltacodec.json",
-            "count": 1,
+            "count": 2,
             "holder": "dotnet:src/Core"
           },
           {
@@ -333,7 +333,7 @@
             "rule": "golden-vectors",
             "kind": "golden-vector",
             "witness": "src/Core/golden-vectors-deltacodec.json",
-            "count": 1,
+            "count": 2,
             "holder": "dotnet:src/Core"
           },
           {
@@ -1444,7 +1444,7 @@
             "rule": "golden-vectors",
             "kind": "golden-vector",
             "witness": "src/Core/golden-vectors-deltacodec.json",
-            "count": 1,
+            "count": 2,
             "holder": "dotnet:src/Core"
           },
           {
@@ -1513,7 +1513,7 @@
             "rule": "golden-vectors",
             "kind": "golden-vector",
             "witness": "src/Core/golden-vectors-deltacodec.json",
-            "count": 1,
+            "count": 2,
             "holder": "dotnet:src/Core"
           },
           {
