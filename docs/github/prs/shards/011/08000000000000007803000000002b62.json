@@ -1,0 +1,12 @@
+{
+  "pr_number": 11106,
+  "archive_path": "docs/history/pr-reviews/PR-11106-docs-security-webauthn-device-delegation-conformance-checklist.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T21:41:16.582Z",
+  "schema_version": "v1",
+  "commit_sha": "fc337888418600c13e90e7530bdc05fcc8eed1bc",
+  "title": "docs(security): WebAuthn device-delegation conformance checklist",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T21:40:42Z",
+  "head_ref": "shadow/webauthn-delegation-checklist"
+}
