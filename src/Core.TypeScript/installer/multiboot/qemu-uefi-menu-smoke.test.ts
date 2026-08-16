@@ -5,6 +5,7 @@ import {
   detectSmokeTooling,
   firstExistingPath,
   grubMkimageArgs,
+  kvmIsUsable,
   missingSmokeTools,
   resolveOvmfPaths,
   smokeGrubCfg,
@@ -37,6 +38,20 @@ describe("qemu-uefi-menu-smoke planning", () => {
     });
   });
 
+  it("prefers a matched 4M CODE/VARS pair over mixed sizes", () => {
+    const present = new Set([
+      "/usr/share/OVMF/OVMF_CODE_4M.fd",
+      "/usr/share/OVMF/OVMF_VARS_4M.fd",
+      "/usr/share/OVMF/OVMF_CODE.fd",
+      "/usr/share/OVMF/OVMF_VARS.fd",
+    ]);
+    const resolved = resolveOvmfPaths((p) => present.has(p));
+    expect(resolved).toEqual({
+      codePath: "/usr/share/OVMF/OVMF_CODE_4M.fd",
+      varsPath: "/usr/share/OVMF/OVMF_VARS_4M.fd",
+    });
+  });
+
   it("lists every missing tool", () => {
     const missing = missingSmokeTools({
       qemu: false,
@@ -56,21 +71,45 @@ describe("qemu-uefi-menu-smoke planning", () => {
     expect(missingSmokeTools(tools).length).toBe(5);
   });
 
+  it("kvmIsUsable is false when the probe cannot open the device", () => {
+    expect(
+      kvmIsUsable(() => {
+        throw new Error("EACCES");
+      }),
+    ).toBe(false);
+    expect(kvmIsUsable(() => undefined)).toBe(true);
+  });
+
   it("firstExistingPath returns null when none exist", () => {
     expect(firstExistingPath(["/nope-a", "/nope-b"], () => false)).toBeNull();
   });
 
   it("reuses planQemuUeFiBootArgs for the smoke image", () => {
     const planned = planQemuUeFiBootArgs({
-      outputImagePath: "/tmp/zeta-multiboot.img",
+      outputImagePath: "/tmp/zeta-esp",
       ovmfCodePath: "/usr/share/OVMF/OVMF_CODE.fd",
       ovmfVarsPath: "/tmp/OVMF_VARS.fd",
       serialLogPath: "/tmp/serial.log",
+      media: "vfat-dir",
     });
     expect(planned.ok).toBe(true);
     if (!planned.ok) return;
-    expect(planned.args.join(" ")).toContain("OVMF_CODE.fd");
-    expect(planned.args.join(" ")).toContain("zeta-multiboot.img");
-    expect(planned.args.join(" ")).toContain("serial.log");
+    const joined = planned.args.join(" ");
+    expect(joined).toContain("OVMF_CODE.fd");
+    expect(joined).toContain("fat:rw:/tmp/zeta-esp");
+    expect(joined).toContain("serial.log");
+    expect(joined).toContain("virtio-blk-pci");
+    expect(joined).toContain("-display none");
+    expect(joined).not.toContain("-nographic");
+  });
+
+  it("rejects a vfat-dir path that would break the QEMU fat: parser", () => {
+    const planned = planQemuUeFiBootArgs({
+      outputImagePath: "/tmp/esp,dir",
+      ovmfCodePath: "/usr/share/OVMF/OVMF_CODE.fd",
+      ovmfVarsPath: "/tmp/OVMF_VARS.fd",
+      media: "vfat-dir",
+    });
+    expect(planned.ok).toBe(false);
   });
 });

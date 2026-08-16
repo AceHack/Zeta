@@ -265,6 +265,9 @@ describe("planAssembleFatImage", () => {
     expect(planned.args[0]).toBe("qemu-system-x86_64");
     expect(planned.args.join(" ")).toContain("edk2-x86_64-code.fd");
     expect(planned.args.join(" ")).toContain("zeta-multiboot.img");
+    expect(planned.args.join(" ")).toContain("-display none");
+    expect(planned.args.join(" ")).not.toContain("-nographic");
+    expect(planned.args.join(" ")).toContain("if=virtio");
   });
 
   it("rejects unresolved grub placeholders and missing artifacts", () => {

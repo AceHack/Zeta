@@ -110,6 +110,8 @@ export function planQemuUeFiBootArgs(input: {
   readonly ovmfCodePath: string;
   readonly ovmfVarsPath: string;
   readonly serialLogPath?: string;
+  /** virtio whole-disk, USB mass-storage, or QEMU vvfat directory (OVMF BOOTX64 search). */
+  readonly media?: "virtio" | "usb" | "vfat-dir";
 }): { readonly ok: true; readonly args: readonly string[] } | { readonly ok: false; readonly error: string } {
   if (input.outputImagePath.trim().length === 0) {
     return { ok: false, error: "outputImagePath is required" };
@@ -117,27 +119,54 @@ export function planQemuUeFiBootArgs(input: {
   if (input.ovmfCodePath.trim().length === 0 || input.ovmfVarsPath.trim().length === 0) {
     return { ok: false, error: "ovmfCodePath and ovmfVarsPath are required" };
   }
-  const args = [
-    "qemu-system-x86_64",
-    "-machine",
-    "q35",
-    "-m",
-    "1024",
-    "-drive",
-    `if=pflash,format=raw,readonly=on,file=${input.ovmfCodePath}`,
-    "-drive",
-    `if=pflash,format=raw,file=${input.ovmfVarsPath}`,
-    "-drive",
-    `file=${input.outputImagePath},format=raw,if=virtio`,
-    "-nographic",
-  ];
-  if (input.serialLogPath !== undefined && input.serialLogPath.trim().length > 0) {
-    return {
-      ok: true,
-      args: [...args, "-serial", `file:${input.serialLogPath}`],
-    };
+  const media = input.media ?? "virtio";
+  if (media === "vfat-dir" && input.outputImagePath.includes(",")) {
+    return { ok: false, error: "vfat-dir path must not contain a comma (QEMU fat: parser)" };
   }
-  return { ok: true, args };
+  const disk =
+    media === "usb"
+      ? ([
+          "-device",
+          "qemu-xhci,id=xhci",
+          "-device",
+          "usb-storage,bus=xhci.0,drive=stick,bootindex=1",
+          "-drive",
+          `if=none,id=stick,file=${input.outputImagePath},format=raw`,
+        ] as const)
+      : media === "vfat-dir"
+        ? ([
+            "-drive",
+            `if=none,id=esp,file=fat:rw:${input.outputImagePath},format=raw`,
+            "-device",
+            "virtio-blk-pci,drive=esp,bootindex=1",
+          ] as const)
+        : ([
+            "-drive",
+            `file=${input.outputImagePath},format=raw,if=virtio`,
+          ] as const);
+  // `-nographic` already attaches UART0 to stdio. Adding `-serial file:`
+  // creates UART1; GRUB `serial --unit=0` then never hits the log.
+  // File capture uses `-display none -serial file:` instead.
+  const consoleArgs =
+    input.serialLogPath !== undefined && input.serialLogPath.trim().length > 0
+      ? (["-display", "none", "-serial", `file:${input.serialLogPath}`] as const)
+      : (["-nographic"] as const);
+  return {
+    ok: true,
+    args: [
+      "qemu-system-x86_64",
+      "-machine",
+      "q35",
+      "-m",
+      "1024",
+      "-drive",
+      `if=pflash,format=raw,readonly=on,file=${input.ovmfCodePath}`,
+      "-drive",
+      `if=pflash,format=raw,file=${input.ovmfVarsPath}`,
+      ...disk,
+      ...consoleArgs,
+    ],
+  };
 }
 
 /**
