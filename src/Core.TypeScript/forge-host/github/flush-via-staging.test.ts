@@ -1,4 +1,6 @@
 import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 import { describe, expect, test } from "bun:test";
 
@@ -7,6 +9,9 @@ import {
   assertNoSkipCi,
   signedFlushMessage,
 } from "./flush-via-staging";
+
+const WORKFLOW_DIR = join(import.meta.dir, "..", "..", "..", "..", ".github", "workflows");
+const workflow = (name: string): string => readFileSync(join(WORKFLOW_DIR, name), "utf8");
 
 // The telemetry lanes that flush through this tool.
 const LANES = ["tick-metrics", "society", "red-state"] as const;
@@ -111,4 +116,120 @@ describe("AgencySignature on telemetry flushes", () => {
     // PR hangs unmergeable forever.
     expect(assertNoSkipCi(signedFlushMessage("metrics: append tick frame", "society"))).toBeNull();
   });
+});
+
+// ---------------------------------------------------------------------------
+// THE PUSH CREDENTIAL ON THE LANES THAT FLUSH THROUGH THIS TOOL (2026-08-16).
+//
+// `flush()` above runs `git push --force-with-lease origin HEAD:refs/heads/
+// heartbeat/<lane>` with whatever credential the calling workflow's checkout
+// persisted. That push's ACTOR decides whether `gate (required)` ever runs on the
+// flush PR: a `pull_request` run whose triggering actor is `github-actions[bot]`
+// is created and then parked — `completed`/`action_required` — so it never
+// executes and never contributes a check.
+//
+// Measured on this tool's own lanes before the fix (2026-08-16):
+//   heartbeat/tick-metrics  PR #10588 head c79a60c8 — 34 `pull_request` runs, ALL
+//                           `completed/action_required`, actor=github-actions[bot];
+//                           6 check-runs in the rollup, no gate row; open and
+//                           unmergeable since 2026-08-14.
+//   heartbeat/society       PR #10708 head e0f031ae — identical reading.
+// And the positive control, agent-heartbeat's lane after #10986 put the PAT on the
+// checkout that pushes: `gate | pull_request | actor=AceHack`, 72 check-runs.
+//
+// These assertions are the pin. Each one names the regression it catches, and the
+// ORDERING assertion is the load-bearing one — #10913's fallback ran, logged that
+// it ran, and was denied under the same identity, so a repair that is applied and
+// never re-checked is indistinguishable from one that worked.
+// ---------------------------------------------------------------------------
+
+/** Lanes whose workflow has been given the verified push credential. */
+const TREATED = [{ lane: "tick-metrics", file: "tick-metrics.yml" }] as const;
+
+/**
+ * Lanes deliberately left on the old credential as an UNTREATED CONTROL.
+ *
+ * This is not an oversight and the assertion below exists so it cannot decay into
+ * one. #10850 broke three lanes at once for ~16.75h by changing them together;
+ * one lane treated against one lane untouched is what makes the next real-tick
+ * reading attributable. WHEN YOU TREAT `society-heartbeat.yml`: move its entry
+ * from CONTROL into TREATED in the same commit as the yaml change, and record the
+ * before/after gate reading for that lane in the PR. Do not simply delete the
+ * assertion — the control is a claim about what we know, not paperwork.
+ */
+const CONTROL = [{ lane: "society", file: "society-heartbeat.yml" }] as const;
+
+describe("telemetry-lane push credential (the held-gate cure)", () => {
+  for (const { lane, file } of TREATED) {
+    describe(`${lane} (${file})`, () => {
+      const yaml = workflow(file);
+      const preflight = yaml.slice(
+        yaml.indexOf("- name: Preflight the push credential"),
+        yaml.indexOf("- name: Install bun"),
+      );
+
+      test("the checkout that pushes carries the PAT, with an absence ladder", () => {
+        // The `||` ladder is the ABSENCE half of degrade-don't-halt: an unset
+        // secret evaluates to "" and falls through to GITHUB_TOKEN. A bare
+        // `token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}` would check out with
+        // an empty credential and kill the lane — the #10850 outage shape.
+        expect(yaml).toContain(
+          "token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}",
+        );
+        expect(yaml).toContain("persist-credentials: true");
+      });
+
+      test("the preflight probes the REAL remote, not a stub", () => {
+        // The UNAUTHORIZED half, which the `||` ladder cannot cover: #10850
+        // shipped a token that was present and powerless. Only a real request to
+        // the real remote distinguishes those — #10913 asserted this against a
+        // stubbed git and died on its first real tick. `--dry-run` still performs
+        // the authorization handshake.
+        expect(preflight).toContain("git push --dry-run origin");
+        // A `credprobe/` ref, never the live lane branch: HEAD is main and the
+        // lane has diverged, so a permission answer would be indistinguishable
+        // from a non-fast-forward ancestry answer.
+        expect(preflight).toContain("refs/heads/credprobe/");
+        expect(preflight).not.toContain("refs/heads/heartbeat/");
+      });
+
+      test("RE-PROBES after the swap, and the re-probe FOLLOWS it", () => {
+        // Two probe sites = probe, then re-probe. Presence alone is not enough:
+        // two probes prove nothing if both run BEFORE the credential is swapped,
+        // so the ordering is asserted, not the count only.
+        const probeCalls = preflight.match(/\$\(probe\)/g) ?? [];
+        expect(probeCalls.length).toBeGreaterThanOrEqual(2);
+
+        const swapIndex = preflight.indexOf("git config --local --replace-all");
+        const reprobeIndex = preflight.indexOf("if OUT2=$(probe); then");
+        expect(swapIndex).toBeGreaterThan(-1);
+        expect(reprobeIndex).toBeGreaterThan(swapIndex);
+      });
+
+      test("swaps ONLY on a credential answer", () => {
+        // Swapping on ANY failure would let a network blip silently re-point the
+        // credential and hide a different fault behind a credential story.
+        expect(preflight).toContain(
+          "denied to|Authentication failed|Invalid username or token|error: 403",
+        );
+        expect(preflight).toContain("preflight inconclusive");
+      });
+
+      test("the degrade is loud and the token never reaches the log", () => {
+        // A silent degrade is the same defect class as the missing gate: a lane
+        // that looks healthy and is not.
+        expect(preflight).toContain("::error title=tick-metrics PAT cannot push::");
+        expect(preflight).toContain("::add-mask::");
+        expect(preflight).not.toContain('echo "$FALLBACK_TOKEN"');
+      });
+    });
+  }
+
+  for (const { lane, file } of CONTROL) {
+    test(`${lane} (${file}) is the DECLARED untreated control — see CONTROL above`, () => {
+      const yaml = workflow(file);
+      expect(yaml).not.toContain("ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN");
+      expect(yaml).not.toContain("- name: Preflight the push credential");
+    });
+  }
 });
