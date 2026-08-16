@@ -17,6 +17,12 @@
 #      AND zeta-local-path were BOTH marked default (invalid, ambiguous
 #      binding). Assert the flag is on the k3s command line.     (PR #6966)
 #   4. rp_filter sysctl is not strict (1) — the loose value Cilium requires.
+#   5. iscsiadm resolvable on the CONTAINER PATH that longhorn-manager's
+#      nsenter uses — not merely on a login shell's PATH. Assertion 2 above
+#      was green on node-5b2dfa while longhorn-manager crash-looped 16495
+#      times over 62 days and every `longhorn` PVC sat Pending; `command -v`
+#      resolved via /run/current-system/sw/bin, which Longhorn never sees.
+#      (2026-08-16 — see modules/longhorn-prereqs.nix FHS shim.)
 #
 # Hermetic: runs in the Nix build sandbox with no internet, so (like
 # k3s-cluster-init.nix) we drop the image-pull bootstrap manifests. All four
@@ -80,6 +86,25 @@ pkgs.testers.nixosTest {
     server.succeed("test -d /var/lib/longhorn")           # data path exists
     # iscsi_tcp is requested via boot.kernelModules; it must be loadable.
     server.succeed("modinfo iscsi_tcp >/dev/null 2>&1 || lsmod | grep -q iscsi_tcp")
+
+    # ── FIX 5: iscsiadm reachable on LONGHORN'S path, not just a shell ───
+    # The `command -v iscsiadm` assertion above is NOT evidence that Longhorn
+    # works: it resolves through /run/current-system/sw/bin, which is on a
+    # login shell's PATH and on NOTHING else. longhorn-manager nsenters into
+    # the host PID-1 namespace and execs iscsiadm with the CONTAINER's PATH,
+    # where NixOS provides nothing — so it crash-looped 16495 times over 62
+    # days on node-5b2dfa while this test stayed green and every `longhorn`
+    # PVC sat Pending ("storageclass longhorn not found").
+    #
+    # Reproduce Longhorn's exact resolution: empty env, container PATH only.
+    # Pre-shim this fails; post-shim it resolves via /usr/local/bin.
+    longhorn_path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    server.succeed("test -x /usr/local/bin/iscsiadm")
+    server.succeed(f"env -i PATH={longhorn_path} iscsiadm --version")
+
+    # RWX (NFSv4) volumes cross the same nsenter boundary.
+    for helper in ["mount.nfs", "mount.nfs4", "umount.nfs", "umount.nfs4"]:
+        server.succeed(f"test -x /usr/local/bin/{helper}")
 
     # ── FIX 3: exactly the k3s flags that fix the dup default class +CNI ─
     flags = server.succeed("systemctl cat k3s.service")
