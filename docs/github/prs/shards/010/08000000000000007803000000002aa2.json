@@ -1,0 +1,12 @@
+{
+  "pr_number": 10914,
+  "archive_path": "docs/history/pr-reviews/PR-10914-fix-setup-keep-cached-rust-toolchains-offline.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:52:21.839Z",
+  "schema_version": "v1",
+  "commit_sha": "801384094412dc51c8b1599d51a18853a9444f78",
+  "title": "fix(setup): keep cached Rust toolchains offline",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:51:50Z",
+  "head_ref": "codex/rustup-offline-cache"
+}
