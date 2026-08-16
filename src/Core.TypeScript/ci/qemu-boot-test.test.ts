@@ -2,11 +2,13 @@ import { describe, expect, it } from "bun:test";
 import {
   buildQemuArgsPure,
   classifyBoot,
+  combineTranscripts,
   detectFailureMarker,
   furthestBootStage,
   outcomeExitCode,
   stageAtLeast,
   timeoutSecondsFor,
+  X86_FIRMWARE_DEBUGCON_PORT,
   type BootStage,
 } from "./qemu-boot-test.ts";
 import { QEMU_USB_TEST_SERIAL } from "../installer/qemu-usb-storage.ts";
@@ -74,8 +76,8 @@ describe("furthestBootStage — the ladder that separates slow from broken", () 
     expect(furthestBootStage(HEALTHY_BOOT)).toBe("login");
   });
 
-  it("reads `efi-stub` off the real CI timeout tail", () => {
-    expect(furthestBootStage(CI_TIMEOUT)).toBe("efi-stub");
+  it("reads `kernel` off the real CI timeout tail", () => {
+    expect(furthestBootStage(CI_TIMEOUT)).toBe("kernel");
   });
 
   it("reads `firmware` off a non-bootable image — the firmware never handed off", () => {
@@ -96,7 +98,7 @@ describe("furthestBootStage — the ladder that separates slow from broken", () 
 
 describe("stageAtLeast", () => {
   const cases: [BootStage, BootStage, boolean][] = [
-    ["efi-stub", "bootloader", true],
+    ["kernel", "bootloader", true],
     ["bootloader", "bootloader", true],
     ["firmware", "bootloader", false],
     ["none", "firmware", false],
@@ -117,7 +119,7 @@ describe("classifyBoot — TIMEOUT and BOOT-FAILED are distinguishable", () => {
   it("a slow-but-progressing boot is TIMEOUT, not a boot failure", () => {
     const c = timedOut(CI_TIMEOUT);
     expect(c.outcome).toBe("TIMEOUT");
-    expect(c.stage).toBe("efi-stub");
+    expect(c.stage).toBe("kernel");
     expect(outcomeExitCode(c.outcome)).toBe(3);
   });
 
@@ -205,8 +207,8 @@ describe("classifyBoot — TIMEOUT and BOOT-FAILED are distinguishable", () => {
 describe("STALLED — a cost bound on an intermittent lane, not a diagnosis", () => {
   // TWO instrumented CI runs disagree, and that disagreement IS the
   // finding:
-  //   job 95208551157 — efi-stub at t=17s, then nothing for 4184s, never booted
-  //   job 95218377728 — efi-stub at t=17s, login at t=192s, booted
+  //   job 95208551157 — kernel handoff at t=17s, then nothing for 4184s, never booted
+  //   job 95218377728 — kernel handoff at t=17s, login at t=192s, booted
   // Same image, same runner type, >24x swing in the same segment. So the
   // lane is intermittent. STALLED bounds the wasted time on the bad runs;
   // it does NOT claim to know whether the guest hung or was starved.
@@ -223,7 +225,7 @@ describe("STALLED — a cost bound on an intermittent lane, not a diagnosis", ()
   it("calls the real CI signature STALLED, not TIMEOUT", () => {
     const c = stalled(CI_TIMEOUT, 4184);
     expect(c.outcome).toBe("STALLED");
-    expect(c.stage).toBe("efi-stub");
+    expect(c.stage).toBe("kernel");
     expect(outcomeExitCode(c.outcome)).toBe(4);
   });
 
@@ -377,5 +379,248 @@ describe("buildQemuArgsPure", () => {
     });
     expect(args.join(" ")).toContain("usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1");
     expect(args.join(" ")).toContain(`serial=${QEMU_USB_TEST_SERIAL}`);
+  });
+});
+
+// ── x86_64: the same crux on the other boot road ────────────────────
+// Everything above was measured on aarch64 (EDK2 → GRUB → EFI stub).
+// x86_64 takes a different road entirely — SeaBIOS → ISOLINUX → a BIOS
+// kernel handoff — and the aarch64 ladder could not see any of it.
+//
+// Fixtures are VERBATIM lines from real captures, 2026-08-16:
+//   X86_HEALTHY  — run 31975465756's uploaded `qemu-full-install-serial.log`
+//                  (170KB, a SUCCESSFUL x86_64 boot).
+//   X86_NO_BOOT  — SeaBIOS rel-1.17.0 under QEMU 11.0.1 on this machine,
+//                  booting a 1MB image with no 0x55AA signature over the
+//                  harness's own xhci/usb-storage chain. Reached
+//                  `No bootable device.` at t=1s while QEMU STAYED ALIVE.
+
+const X86_HEALTHY = [
+  "ISOLINUX 6.04   Copyright (C) 1994-2015 H. Peter Anvin et al",
+  "Loading /boot//nix/store/jb4hy7pal9zx0r417y8bkb5lhhj8fml0-linux-6.12.90/bzImage... ok",
+  "[    0.000000] Linux version 6.12.90 (nixbld@localhost) (gcc (GCC) 14.3.0) #1-NixOS SMP",
+  "<<< Welcome to NixOS 25.11.20260522.b77b3de (x86_64) - ttyS0 >>>",
+  "zeta-installer login: nixos (automatic login)",
+].join("\n");
+
+// The firmware transcript, not the serial log — SeaBIOS speaks on the
+// debugcon channel. Note it contains THREE "Boot failed:" lines and then
+// the terminal verdict; that ordering is the whole reason the harness
+// matches only the last one.
+const X86_NO_BOOT_FIRMWARE = [
+  "SeaBIOS (version rel-1.17.0-0-gb52ca86e094d-prebuilt.qemu.org)",
+  "Booting from Hard Disk...",
+  "Boot failed: not a bootable disk",
+  "Booting from DVD/CD...",
+  "Boot failed: Could not read from CDROM (code 0003)",
+  "Booting from Floppy...",
+  "Boot failed: could not read the boot disk",
+  "No bootable device.",
+].join("\n");
+
+// A healthy boot whose USB device is not SeaBIOS's first candidate: the
+// firmware rejects the hard disk, then boots the real image. This is the
+// false-positive shape that "Boot failed:" would have produced.
+const X86_HEALTHY_AFTER_REJECTED_CANDIDATE = combineTranscripts(
+  X86_HEALTHY,
+  ["SeaBIOS (version rel-1.17.0-0-gb52ca86e094d-prebuilt.qemu.org)", "Booting from Hard Disk...", "Boot failed: not a bootable disk", "Booting from USB..."].join("\n"),
+);
+
+describe("x86_64 boot road — the ladder must not read a constant", () => {
+  // THE DEFECT. Before 2026-08-16 the ladder's firmware/bootloader/
+  // kernel rungs matched EDK2, GRUB and EFI-stub strings, none of which
+  // a NixOS x86_64 BIOS boot emits. Counted on the real 170KB log:
+  // "UEFI firmware" 0, "Booting `NixOS" 0, "EFI stub: Exiting boot
+  // services" 0. So the ladder could only report `none` or `login`, and
+  // 19 consecutive CI runs confirmed it by printing exactly one stage
+  // line each. An instrument reading a constant is not an instrument.
+  it("does not match ANY aarch64-road marker on a real x86_64 boot", () => {
+    for (const aarch64Marker of ["UEFI firmware", "Booting `NixOS", "EFI stub: Exiting boot services"]) {
+      expect(X86_HEALTHY.includes(aarch64Marker)).toBe(false);
+    }
+  });
+
+  it("climbs every rung on a real successful x86_64 log", () => {
+    expect(furthestBootStage(X86_HEALTHY)).toBe("login");
+    // Each prefix must land on its own rung — the point is that the
+    // intermediate rungs are now REACHABLE, not merely that the top is.
+    const lines = X86_HEALTHY.split("\n");
+    expect(furthestBootStage(lines[0]!)).toBe("bootloader");
+    expect(furthestBootStage(lines.slice(0, 3).join("\n"))).toBe("kernel");
+    expect(furthestBootStage(lines.slice(0, 4).join("\n"))).toBe("userspace");
+  });
+
+  it("reads `firmware` off SeaBIOS's banner — the rung x86_64 never had", () => {
+    expect(furthestBootStage("SeaBIOS (version rel-1.17.0-0-gb52ca86e094d-prebuilt.qemu.org)")).toBe(
+      "firmware",
+    );
+  });
+});
+
+describe("x86_64 BOOT-FAILED vs TIMEOUT — demonstrated live, pinned here", () => {
+  // Live 2026-08-16 through the real harness on real QEMU:
+  //   no-signature image  -> BOOT-FAILED, exit 1, stage firmware, t=10s
+  //   bootloader fixture  -> TIMEOUT,     exit 3, stage bootloader, budget 20s
+  // These pin the classification those runs produced.
+  it("calls SeaBIOS's exhausted-boot-options verdict BOOT-FAILED", () => {
+    const c = classifyBoot({
+      serial: combineTranscripts("", X86_NO_BOOT_FIRMWARE),
+      qemuExited: false, // it does NOT exit — that is the whole crux
+      qemuExitCode: null,
+      deadlineReached: false,
+      timeoutSeconds: 300,
+    });
+    expect(c.outcome).toBe("BOOT-FAILED");
+    expect(outcomeExitCode(c.outcome)).toBe(1);
+    expect(c.reason).toContain("no bootable device");
+  });
+
+  it("settles BOOT-FAILED with the clock untouched — the point is not waiting", () => {
+    // deadlineReached false and qemuExited false: the verdict comes from
+    // evidence alone. Without the firmware channel this input is the
+    // empty string, which cannot settle at all.
+    const withChannel = classifyBoot({
+      serial: combineTranscripts("", X86_NO_BOOT_FIRMWARE),
+      qemuExited: false,
+      qemuExitCode: null,
+      deadlineReached: false,
+      timeoutSeconds: 300,
+    });
+    const withoutChannel = classifyBoot({
+      serial: "",
+      qemuExited: false,
+      qemuExitCode: null,
+      deadlineReached: false,
+      timeoutSeconds: 300,
+    });
+    expect(withChannel.outcome).toBe("BOOT-FAILED");
+    expect(withoutChannel.reason).toBe("still running");
+  });
+
+  it("a partly-booted x86_64 guest out of budget is TIMEOUT, not BOOT-FAILED", () => {
+    const c = classifyBoot({
+      serial: "ISOLINUX 6.04   Copyright (C) 1994-2015 H. Peter Anvin et al\n",
+      qemuExited: false,
+      qemuExitCode: null,
+      deadlineReached: true,
+      timeoutSeconds: 300,
+    });
+    expect(c.outcome).toBe("TIMEOUT");
+    expect(outcomeExitCode(c.outcome)).toBe(3);
+  });
+
+  it("x86_64 STALLED needs the kernel rung, which `Linux version` now supplies", () => {
+    const stalledInput = {
+      serial: X86_HEALTHY.split("\n").slice(0, 3).join("\n"),
+      qemuExited: false,
+      qemuExitCode: null,
+      deadlineReached: false,
+      timeoutSeconds: 300,
+      secondsSinceSerialGrowth: 60,
+      stallSeconds: 8,
+    } as const;
+    const c = classifyBoot(stalledInput);
+    expect(c.outcome).toBe("STALLED");
+    expect(c.stage).toBe("kernel");
+    expect(outcomeExitCode(c.outcome)).toBe(4);
+  });
+
+  it("the four x86_64 outcomes hold four distinct exit codes", () => {
+    const codes = new Set([
+      outcomeExitCode("BOOTED"),
+      outcomeExitCode("BOOT-FAILED"),
+      outcomeExitCode("TIMEOUT"),
+      outcomeExitCode("STALLED"),
+    ]);
+    expect(codes.size).toBe(4);
+  });
+});
+
+describe("detectFailureMarker on the x86_64 road", () => {
+  it("names SeaBIOS's terminal verdict", () => {
+    expect(detectFailureMarker(X86_NO_BOOT_FIRMWARE)).toContain("no bootable device");
+  });
+
+  // THE FALSE-POSITIVE GUARD. SeaBIOS prints "Boot failed:" once per
+  // rejected candidate and then carries on to the next one, so matching
+  // it would fail healthy images whose USB device is not tried first.
+  // This lane is a blocking gate; a false BOOT-FAILED here stops the
+  // ISO shipping.
+  it("stays silent on a HEALTHY boot that rejected an earlier candidate", () => {
+    expect(X86_HEALTHY_AFTER_REJECTED_CANDIDATE).toContain("Boot failed: not a bootable disk");
+    expect(detectFailureMarker(X86_HEALTHY_AFTER_REJECTED_CANDIDATE)).toBeNull();
+  });
+
+  it("and that log still classifies as BOOTED", () => {
+    const c = classifyBoot({
+      serial: X86_HEALTHY_AFTER_REJECTED_CANDIDATE,
+      qemuExited: false,
+      qemuExitCode: null,
+      deadlineReached: true,
+      timeoutSeconds: 300,
+    });
+    expect(c.outcome).toBe("BOOTED");
+  });
+
+  it("stays silent on the real successful x86_64 log", () => {
+    expect(detectFailureMarker(X86_HEALTHY)).toBeNull();
+  });
+});
+
+describe("combineTranscripts — two files, one transcript", () => {
+  it("cannot invent a marker neither file contained", () => {
+    expect(furthestBootStage(combineTranscripts("", ""))).toBe("none");
+  });
+
+  it("returns the serial unchanged when the firmware said nothing", () => {
+    expect(combineTranscripts(X86_HEALTHY, "")).toBe(X86_HEALTHY);
+  });
+
+  it("lets the firmware supply a rung the serial log lacks", () => {
+    expect(furthestBootStage("")).toBe("none");
+    expect(furthestBootStage(combineTranscripts("", X86_NO_BOOT_FIRMWARE))).toBe("firmware");
+  });
+});
+
+describe("buildQemuArgsPure — the x86_64 firmware channel", () => {
+  const usb = { kind: "usb-image", path: "/tmp/x.img" } as const;
+  const host = { kvmAvailable: false, hostArch: "x64" } as const;
+
+  it("wires isa-debugcon to the firmware log when one is requested", () => {
+    const args = buildQemuArgsPure("x86_64", usb, "/tmp/s.log", host, "/tmp/fw.log").join(" ");
+    expect(args).toContain("file,id=zetafwlog,path=/tmp/fw.log");
+    expect(args).toContain(`isa-debugcon,iobase=${X86_FIRMWARE_DEBUGCON_PORT},chardev=zetafwlog`);
+  });
+
+  it("adds nothing at all when no firmware log is requested", () => {
+    const withOut = buildQemuArgsPure("x86_64", usb, "/tmp/s.log", host);
+    expect(withOut.join(" ")).not.toContain("isa-debugcon");
+  });
+
+  // Measuring must not move the thing measured: this lane is a blocking
+  // gate that has passed 19 consecutive runs, so the instrument must be
+  // additive only. The guest's own UART and boot chain are untouched.
+  it("leaves the guest-visible device model byte-identical", () => {
+    const withOut = buildQemuArgsPure("x86_64", usb, "/tmp/s.log", host);
+    const withIn = buildQemuArgsPure("x86_64", usb, "/tmp/s.log", host, "/tmp/fw.log");
+    const stripped = withIn.filter(
+      (a, i) =>
+        !a.startsWith("file,id=zetafwlog") &&
+        !a.startsWith("isa-debugcon") &&
+        !(a === "-chardev" && withIn[i + 1]?.startsWith("file,id=zetafwlog")) &&
+        !(a === "-device" && withIn[i + 1]?.startsWith("isa-debugcon")),
+    );
+    expect(stripped).toEqual(withOut);
+  });
+
+  it("never wires a firmware channel on aarch64 — EDK2 already uses the PL011", () => {
+    const args = buildQemuArgsPure(
+      "aarch64",
+      { kind: "iso", path: "/tmp/x.iso" },
+      "/tmp/s.log",
+      { kvmAvailable: false, hostArch: "arm64" },
+      "/tmp/fw.log",
+    );
+    expect(args.join(" ")).not.toContain("isa-debugcon");
   });
 });

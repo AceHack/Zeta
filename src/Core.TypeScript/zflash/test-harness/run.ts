@@ -262,6 +262,32 @@ function runHarnessScript(relPath: string, args: readonly string[]): { ok: boole
   return { ok: result.status === 0, exitCode: result.status };
 }
 
+/**
+ * Names the outcome behind a `qemu-boot-test.ts` exit code.
+ *
+ * That harness deliberately reports FOUR distinct outcomes (0 BOOTED /
+ * 1 BOOT-FAILED / 3 TIMEOUT / 4 STALLED) precisely so a broken image and
+ * a slow runner stop reading the same. Scenario 1 was collapsing all of
+ * them back into "exit N" in the one line a CI reader actually sees, so
+ * the distinction was being paid for and then thrown away at the last
+ * step. The blocking policy is UNCHANGED — every non-zero code still
+ * fails the scenario — only the reporting is repaired. Loosening the
+ * gate would need evidence the x86_64 lane is flaky, and the evidence
+ * says the opposite: 19 consecutive runs, 21-24s each, 300s budget.
+ */
+export function describeBootExit(exitCode: number | null): string {
+  if (exitCode === null) return "harness missing";
+  const named: Readonly<Record<number, string>> = {
+    0: "BOOTED",
+    1: "BOOT-FAILED — positive evidence the image did not boot",
+    2: "usage error",
+    3: "TIMEOUT — budget exhausted while the guest was still progressing",
+    4: "STALLED — serial silent past the kernel handoff",
+  };
+  const name = named[exitCode];
+  return name === undefined ? `exit ${exitCode}` : `exit ${exitCode}: ${name}`;
+}
+
 function runInitialFormatScenario(isoPath: string): ScenarioResult {
   const start = Date.now();
   const absIso = resolve(isoPath);
@@ -306,7 +332,7 @@ function runInitialFormatScenario(isoPath: string): ScenarioResult {
       id: "initial-format",
       status: "failed",
       durationMs,
-      message: `QEMU boot smoke-test failed (exit ${boot.exitCode ?? "missing harness"}) after ${steps.join(" → ")}`,
+      message: `QEMU boot smoke-test failed (${describeBootExit(boot.exitCode)}) after ${steps.join(" → ")}`,
     };
   }
 

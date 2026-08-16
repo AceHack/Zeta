@@ -50,6 +50,8 @@ on:
       - "src/Core.TypeScript/ci/audit-installer-substrate.ts"
       - "src/Core.TypeScript/ci/audit-installer-iso-content.ts"
       - "src/Core.TypeScript/ci/qemu-boot-test.ts"
+      - "src/Core.TypeScript/ci/qemu-x86-marker-image.ts"
+      - "src/Core.TypeScript/ci/qemu-x86-discriminator-selftest.ts"
       - "src/Core.TypeScript/ci/qemu-full-install-test.ts"
       - "src/Core.TypeScript/ci/test-iter-54-install-flow.test.ts"
       - "src/Core.TypeScript/zflash/test-harness/**"
@@ -72,6 +74,8 @@ on:
       - "src/Core.TypeScript/ci/audit-installer-substrate.ts"
       - "src/Core.TypeScript/ci/audit-installer-iso-content.ts"
       - "src/Core.TypeScript/ci/qemu-boot-test.ts"
+      - "src/Core.TypeScript/ci/qemu-x86-marker-image.ts"
+      - "src/Core.TypeScript/ci/qemu-x86-discriminator-selftest.ts"
       - "src/Core.TypeScript/ci/qemu-full-install-test.ts"
       - "src/Core.TypeScript/ci/test-iter-54-install-flow.test.ts"
       - "src/Core.TypeScript/zflash/test-harness/**"
@@ -330,6 +334,29 @@ jobs:
         # qemu-utils for qemu-img (cascade #6 Slice 1 virtual hard disk)
         # mtools for zflash file-backed ESP writes (081KSNY2Z0008QG0R0008PN7RQ scenario 1 bake)
         run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils mtools ovmf
+
+      # 081KZETP6AT08QG0R003MG1VYN — prove the instrument BEFORE trusting it.
+      #
+      # Scenario 1 below is a blocking gate whose only input is the real
+      # ISO, and the real ISO can only ever produce BOOTED. So until now
+      # nothing on this lane exercised BOOT-FAILED or TIMEOUT, and the
+      # x86_64 boot-stage ladder read a constant through NINETEEN
+      # consecutive green runs (31964938508 … 31977504172, each printing
+      # exactly one stage line: `stage → login`) without any check
+      # noticing. Unit tests could not notice either: the defect was that
+      # the strings we asserted on were not the strings the guest emits.
+      #
+      # This boots two 1MB synthetic images — one refused by the
+      # firmware, one that runs and then makes no progress — and requires
+      # them to land on DIFFERENT verdicts, each within a settle-time
+      # bound so a verdict reached by running out of clock cannot pass as
+      # one reached from evidence. Runs before scenario 1 so a blind
+      # instrument fails here rather than mis-reporting the real ISO.
+      #
+      # ~30s. Advisory-free on purpose: if the discriminator is broken,
+      # every downstream x86_64 boot verdict on this runner is untrusted.
+      - name: 081KZETP6AT08QG0R003MG1VYN x86_64 boot-discriminator self-test
+        run: bun src/Core.TypeScript/ci/qemu-x86-discriminator-selftest.ts
 
       - name: 081KSNY2Z0008QG0R0008PN7RQ scenario 1 — initial format (audit + zflash --test + QEMU boot)
         working-directory: full-ai-cluster

@@ -58,6 +58,26 @@
  * GitHub Actions context: ubuntu-24.04 (x86_64) runners have /dev/kvm.
  * The ubuntu-24.04-arm runners DO NOT — confirmed in the job log, which
  * prints the TCG warning below — so the aarch64 lane is pure TCG.
+ *
+ * ── THE SAME CRUX, ON x86_64 (2026-08-16) ───────────────────────────
+ * The discriminator above was built and measured on the aarch64 road and
+ * it did not transfer: on x86_64 the ladder read a CONSTANT. Two
+ * measurements, neither inferred from the diff:
+ *
+ *   1. Nineteen consecutive successful x86_64 CI runs (31964938508 …
+ *      31977504172) each printed exactly ONE stage line — `stage → login`
+ *      — because three of the five rungs matched EDK2/GRUB/EFI-stub
+ *      strings that a SeaBIOS + ISOLINUX + BIOS boot never emits.
+ *   2. A non-bootable image on this machine, on the harness's own
+ *      xhci/usb-storage chain: serial log 0 bytes, QEMU still alive at
+ *      25s. Identical presentation to a healthy boot that has not
+ *      reached userspace yet — the aarch64 defect, unfixed on x86_64.
+ *
+ * Both are addressed here rather than in a second harness: per-road
+ * markers on the same rungs, plus a firmware diagnostic channel that
+ * gives SeaBIOS somewhere to say `No bootable device.` (it lands at
+ * t=1s). The x86_64 lane is also, unlike aarch64, NOT intermittent —
+ * those same 19 runs booted in 21-24s against a 300s budget.
  */
 
 import { spawn } from "node:child_process";
@@ -118,20 +138,64 @@ const KVM_PATH = "/dev/kvm";
 // Ordered floor-to-ceiling. `furthestBootStage` reports the highest rung
 // whose marker appears, which is what separates "did not boot" from
 // "was still booting when the clock ran out".
+//
+// ── WHY EACH RUNG CARRIES SEVERAL MARKERS (x86_64, 2026-08-16) ──────
+// The rungs above were written against the aarch64 boot road — EDK2 →
+// GRUB → EFI stub — and THREE OF THE FIVE cannot occur on the x86_64
+// road, which is SeaBIOS → ISOLINUX → a BIOS (not EFI) kernel handoff.
+// Counted on a REAL, SUCCESSFUL x86_64 CI serial log (run 31975465756
+// artifact `qemu-full-install-serial.log`, 170KB):
+//
+//   "UEFI firmware" ................... 0 occurrences
+//   "Booting `NixOS" .................. 0
+//   "EFI stub: Exiting boot services" . 0
+//   "Welcome to NixOS" ................ 1
+//   "login:" .......................... 2
+//   "ISOLINUX " ....................... 1   (the real bootloader banner)
+//   "Linux version " .................. 1   (the real kernel handoff)
+//
+// So on x86_64 the ladder could only ever read `none` or `login`, and
+// the CI logs confirm it: across NINETEEN consecutive successful runs
+// (31964938508 … 31977504172) the harness printed exactly one stage
+// line every time — `t=2Ns stage → login`. Never firmware, never
+// bootloader, never userspace. The instrument that separates "slow"
+// from "broken" on aarch64 was, on x86_64, reading a constant.
+//
+// The fix is per-road markers on the SAME rungs rather than a second
+// harness: the two vocabularies are disjoint (no NixOS x86_64 boot
+// prints "UEFI firmware"; no aarch64 EDK2 boot prints "SeaBIOS ("), so
+// a rung matching ANY of its markers stays unambiguous and the API
+// stays arch-blind.
+//
+// `efi-stub` was renamed to `kernel`. The rung means "the kernel took
+// over from the bootloader", which on aarch64 is the EFI stub exiting
+// boot services and on x86_64 BIOS is the kernel's first console line.
+// Calling a BIOS boot's rung `efi-stub` would be a false name in every
+// CI log line it printed.
 export type BootStage =
   | "none"
   | "firmware"
   | "bootloader"
-  | "efi-stub"
+  | "kernel"
   | "userspace"
   | "login";
 
-export const BOOT_STAGE_LADDER: readonly { readonly stage: BootStage; readonly marker: string }[] = [
-  { stage: "firmware", marker: "UEFI firmware" },
-  { stage: "bootloader", marker: "Booting `NixOS" },
-  { stage: "efi-stub", marker: "EFI stub: Exiting boot services" },
-  { stage: "userspace", marker: "Welcome to NixOS" },
-  { stage: "login", marker: EXPECTED_LOGIN_PROMPT },
+export const BOOT_STAGE_LADDER: readonly {
+  readonly stage: BootStage;
+  readonly markers: readonly string[];
+}[] = [
+  // aarch64: EDK2's banner. x86_64: SeaBIOS's banner — which only
+  // reaches us because we now give SeaBIOS a diagnostic channel (see
+  // X86_FIRMWARE_DEBUGCON_PORT); by default it talks to the VGA
+  // console and the serial log stays empty.
+  { stage: "firmware", markers: ["UEFI firmware", "SeaBIOS ("] },
+  // aarch64: GRUB. x86_64: ISOLINUX (`ISOLINUX 6.04  Copyright (C) …`
+  // is literally the first line of the real x86_64 serial log).
+  { stage: "bootloader", markers: ["Booting `NixOS", "ISOLINUX ", "Loading /boot/"] },
+  // The kernel has the console.
+  { stage: "kernel", markers: ["EFI stub: Exiting boot services", "Linux version "] },
+  { stage: "userspace", markers: ["Welcome to NixOS"] },
+  { stage: "login", markers: [EXPECTED_LOGIN_PROMPT] },
 ];
 
 export const BOOT_STAGE_ORDER: readonly BootStage[] = [
@@ -143,7 +207,7 @@ export const BOOT_STAGE_ORDER: readonly BootStage[] = [
 export function furthestBootStage(serial: string): BootStage {
   let reached: BootStage = "none";
   for (const rung of BOOT_STAGE_LADDER) {
-    if (serial.includes(rung.marker)) reached = rung.stage;
+    if (rung.markers.some((m) => serial.includes(m))) reached = rung.stage;
   }
   return reached;
 }
@@ -161,6 +225,18 @@ export const FAILURE_MARKERS: readonly { readonly marker: string; readonly meani
   // Reproduced 2026-08-16 with a /dev/urandom image.
   { marker: "startup.nsh", meaning: "UEFI Shell reached — firmware found no bootable boot option" },
   { marker: "Shell> ", meaning: "UEFI Shell prompt — firmware found no bootable boot option" },
+  // SeaBIOS's TERMINAL verdict, printed only after every boot option has
+  // been tried and has failed. Reproduced 2026-08-16 on this machine
+  // (QEMU 11.0.1, SeaBIOS rel-1.17.0) with a 4MB /dev/urandom image on
+  // the harness's own xhci/usb-storage chain: the line appears at t=1s
+  // and QEMU STAYS ALIVE — the x86_64 twin of the EDK2 shell park.
+  //
+  // NOT a marker, deliberately: "Boot failed:". SeaBIOS prints it once
+  // PER REJECTED BOOT CANDIDATE and then goes on to try the next one, so
+  // a perfectly healthy boot whose USB device is not the first candidate
+  // contains it. Matching on it would fail good images. `detectFailureMarker`
+  // has a test pinning exactly that.
+  { marker: "No bootable device", meaning: "SeaBIOS exhausted every boot option — no bootable device" },
   { marker: "Kernel panic", meaning: "kernel panic" },
   { marker: "Synchronous Exception at", meaning: "firmware synchronous exception" },
   { marker: "ASSERT_EFI_ERROR", meaning: "EDK2 assertion failure" },
@@ -244,15 +320,21 @@ export function classifyBoot(input: ClassifyInput): BootClassification {
   if (
     input.secondsSinceSerialGrowth !== undefined &&
     input.secondsSinceSerialGrowth >= (input.stallSeconds ?? DEFAULT_STALL_SECONDS) &&
-    stageAtLeast(stage, "efi-stub")
+    stageAtLeast(stage, "kernel")
   ) {
     return {
       outcome: "STALLED",
       stage,
+      // The reference points used to be baked in here as "~192s on a
+      // good CI run and ~52s on a local TCG host". Those are the
+      // aarch64 TCG numbers, and this classifier is arch-blind — on the
+      // x86_64 lane, where a healthy boot is 21-24s, printing them
+      // states a measurement that was never taken on that lane. Removed
+      // rather than duplicated per-arch: the silence is the fact, and
+      // the budget already prints beside it.
       reason:
         `Stalled at stage ${stage} — the serial console produced nothing for ` +
-        `${input.secondsSinceSerialGrowth}s after the kernel handoff. Reference points: the ` +
-        `same image boots end-to-end in ~192s on a good CI run and ~52s on a local TCG host. ` +
+        `${input.secondsSinceSerialGrowth}s after the kernel handoff. ` +
         `This reports the SILENCE, not a diagnosis — the guest may be hung or merely starved ` +
         `of CPU on a contended runner, and this harness cannot tell those apart.`,
     };
@@ -354,12 +436,37 @@ export interface HostCapabilities {
   readonly efiPath?: string;
 }
 
+// ── The x86_64 firmware diagnostic channel ──────────────────────────
+// SeaBIOS talks to the VGA console, NOT to COM1, so on x86_64 the
+// firmware's own verdict never reached the serial log. Measured here
+// 2026-08-16 (QEMU 11.0.1, macOS/TCG, the harness's exact xhci
+// usb-storage chain, 4MB /dev/urandom image):
+//
+//   without this channel: serial log = 0 bytes, QEMU still alive at 25s
+//   with    this channel: `No bootable device.` in the log at t=1s
+//
+// That zero-byte log is precisely the aarch64 defect wearing x86_64
+// clothes — a broken image and a slow-but-healthy one both present as
+// "nothing yet", so only the budget could settle it and the verdict cost
+// the whole 300s.
+//
+// Port 0x402 is QEMU's conventional SeaBIOS debug console. It is chosen
+// over the alternative (`-fw_cfg name=etc/sercon-port`, which also works
+// — verified) BECAUSE it is a SEPARATE device on a SEPARATE file: the
+// guest's own UART is left byte-for-byte as it was, so the healthy boot
+// path — a blocking CI gate that has passed 19 consecutive runs — cannot
+// be perturbed by this instrument. Measuring must not move the thing
+// measured.
+export const X86_FIRMWARE_DEBUGCON_PORT = "0x402";
+const X86_FIRMWARE_CHARDEV_ID = "zetafwlog";
+
 /** Pure arg construction — no filesystem probing, so it is testable. */
 export function buildQemuArgsPure(
   arch: Arch,
   bootMedia: BootMedia,
   serialLogPath: string,
   host: HostCapabilities,
+  firmwareLogPath?: string,
 ): string[] {
   if (arch === "aarch64") {
     if (bootMedia.kind === "usb-image") {
@@ -408,6 +515,15 @@ export function buildQemuArgsPure(
     // BIOS requires no extra firmware package.
   ];
 
+  if (firmwareLogPath !== undefined) {
+    args.push(
+      "-chardev",
+      `file,id=${X86_FIRMWARE_CHARDEV_ID},path=${firmwareLogPath}`,
+      "-device",
+      `isa-debugcon,iobase=${X86_FIRMWARE_DEBUGCON_PORT},chardev=${X86_FIRMWARE_CHARDEV_ID}`,
+    );
+  }
+
   if (bootMedia.kind === "usb-image") {
     const usb = qemuUsbStorageDeviceArg("zflashboot");
     if (!usb.ok) {
@@ -454,11 +570,24 @@ export function timeoutSecondsFor(arch: Arch, host: HostCapabilities): number {
 
 interface WatchResult extends BootClassification {
   readonly serialTail: string;
+  readonly firmwareTail: string;
+  readonly firmwareBytes: number;
   readonly elapsedSeconds: number;
+}
+
+/**
+ * The firmware channel is a SEPARATE file, so classification reads the
+ * union of the two transcripts. Both are append-only text and the
+ * classifier only ever asks `includes`, so concatenation order carries
+ * no meaning and cannot create a marker that neither file contained.
+ */
+export function combineTranscripts(serial: string, firmware: string): string {
+  return firmware.length === 0 ? serial : `${firmware}\n${serial}`;
 }
 
 async function watchBoot(
   serialLogPath: string,
+  firmwareLogPath: string | undefined,
   timeoutSeconds: number,
   stallSeconds: number,
   qemuState: () => { exited: boolean; exitCode: number | null },
@@ -472,10 +601,10 @@ async function watchBoot(
   // "we guessed the budget was too small".
   let announced: BootStage = "none";
 
-  const read = (): string => {
-    if (!existsSync(serialLogPath)) return "";
+  const readFile = (path: string | undefined): string => {
+    if (path === undefined || !existsSync(path)) return "";
     try {
-      return readFileSync(serialLogPath, "utf8");
+      return readFileSync(path, "utf8");
     } catch {
       return ""; // log in transit; retry on next poll
     }
@@ -484,9 +613,15 @@ async function watchBoot(
   // Serial-growth tracking, for stall detection.
   let lastSerialLength = -1;
   let lastGrowthAt = started;
+  let lastFirmware = "";
+  let lastSerialOnly = "";
 
   for (;;) {
-    const serial = read();
+    const serialOnly = readFile(serialLogPath);
+    const firmware = readFile(firmwareLogPath);
+    lastFirmware = firmware;
+    lastSerialOnly = serialOnly;
+    const serial = combineTranscripts(serialOnly, firmware);
     const q = qemuState();
     const deadlineReached = Date.now() >= deadline;
 
@@ -521,7 +656,15 @@ async function watchBoot(
     if (settled) {
       return {
         ...classification,
-        serialTail: serial.length > 0 ? serial.slice(-2000) : "(serial log empty or never created)",
+        serialTail:
+          lastSerialOnly.length > 0
+            ? lastSerialOnly.slice(-2000)
+            : "(serial log empty or never created)",
+        firmwareTail:
+          lastFirmware.length > 0
+            ? lastFirmware.slice(-1200)
+            : "(no firmware transcript — channel absent, or the firmware wrote nothing)",
+        firmwareBytes: lastFirmware.length,
         elapsedSeconds: elapsed(),
       };
     }
@@ -590,6 +733,10 @@ async function main(): Promise<never> {
 
   const tmpDir = mkdtempSync(join(tmpdir(), "zeta-qemu-boot-test-"));
   const serialLogPath = join(tmpDir, "serial.log");
+  // aarch64's EDK2 already speaks on the PL011 the guest uses, so it
+  // needs no side channel; x86_64's SeaBIOS does not (see
+  // X86_FIRMWARE_DEBUGCON_PORT).
+  const firmwareLogPath = arch === "x86_64" ? join(tmpDir, "firmware.log") : undefined;
 
   const host = probeHost(arch);
   const timeoutSeconds = timeoutOverride ?? timeoutSecondsFor(arch, host);
@@ -602,13 +749,16 @@ async function main(): Promise<never> {
 
   console.log(`[qemu-boot-test] Boot media: ${bootMedia.kind} ${bootMedia.path}`);
   console.log(`[qemu-boot-test] Serial log: ${serialLogPath}`);
+  if (firmwareLogPath !== undefined) {
+    console.log(`[qemu-boot-test] Firmware log (debugcon ${X86_FIRMWARE_DEBUGCON_PORT}): ${firmwareLogPath}`);
+  }
   console.log(`[qemu-boot-test] Memory: ${MEMORY_MB}MB; timeout: ${timeoutSeconds}s; stall-after: ${stallSeconds}s`);
   console.log(`[qemu-boot-test] Expecting login prompt: "${EXPECTED_LOGIN_PROMPT}"`);
   console.log(`[qemu-boot-test] Arch: ${arch}`);
 
   let qemuArgs: string[];
   try {
-    qemuArgs = buildQemuArgsPure(arch, bootMedia, serialLogPath, host);
+    qemuArgs = buildQemuArgsPure(arch, bootMedia, serialLogPath, host, firmwareLogPath);
   } catch (error) {
     console.error(`[qemu-boot-test] ${error instanceof Error ? error.message : String(error)}`);
     process.exit(2);
@@ -627,10 +777,13 @@ async function main(): Promise<never> {
     console.log(`[qemu-boot-test] QEMU exited with code ${code}`);
   });
 
-  const result = await watchBoot(serialLogPath, timeoutSeconds, stallSeconds, () => ({
-    exited: qemuExited,
-    exitCode: qemuExitCode,
-  }));
+  const result = await watchBoot(
+    serialLogPath,
+    firmwareLogPath,
+    timeoutSeconds,
+    stallSeconds,
+    () => ({ exited: qemuExited, exitCode: qemuExitCode }),
+  );
 
   if (!qemuExited) {
     console.log(`[qemu-boot-test] Killing QEMU (PID ${qemu.pid})`);
@@ -649,9 +802,22 @@ async function main(): Promise<never> {
   console.log(`Elapsed: ${result.elapsedSeconds}s (budget ${timeoutSeconds}s)`);
   console.log(`Exit code: ${exitCode}`);
   console.log(`Reason: ${result.reason}`);
+  if (firmwareLogPath !== undefined) {
+    // Printed ALWAYS, including on success, and including when it is 0.
+    // A diagnostic channel that silently produces nothing is worse than
+    // no channel: it degrades the harness back to the budget-only verdict
+    // while still reading as instrumented. A zero here is the signal that
+    // this runner's SeaBIOS was built without debug output.
+    console.log(`Firmware transcript: ${result.firmwareBytes} bytes`);
+  }
   console.log("");
   console.log("=== Serial log tail ===");
   console.log(result.serialTail);
+  if (firmwareLogPath !== undefined && result.outcome !== "BOOTED") {
+    console.log("");
+    console.log("=== Firmware transcript tail (SeaBIOS) ===");
+    console.log(result.firmwareTail);
+  }
 
   process.exit(exitCode);
 }
