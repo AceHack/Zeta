@@ -8,6 +8,7 @@ export interface ToyState {
   readonly playerY: number;
   readonly moves: number;
   readonly won: boolean;
+  readonly causalMask: boolean[];
 }
 
 export type ToyAction = "move_up" | "move_down" | "move_left" | "move_right";
@@ -31,7 +32,11 @@ export function createLevel(width: number, height: number, layout: string[]): To
     }
   }
 
-  return { width, height, grid, playerX: pX, playerY: pY, moves: 0, won: false };
+  const causalMask: boolean[] = new Array(width * height).fill(false);
+  // Initial player position is always causally relevant
+  causalMask[pY * width + pX] = true;
+
+  return { width, height, grid, playerX: pX, playerY: pY, moves: 0, won: false, causalMask };
 }
 
 export function stepToy(state: ToyState, action: ToyAction): ToyState {
@@ -52,9 +57,13 @@ export function stepToy(state: ToyState, action: ToyAction): ToyState {
 
   const nIdx = ny * state.width + nx;
   const targetCell = state.grid[nIdx];
+  const newCausalMask = [...state.causalMask];
+
+  // The cell the player tried to move into is causally relevant (even if they bounced)
+  newCausalMask[nIdx] = true;
 
   if (targetCell === "wall") {
-    return { ...state, moves: state.moves + 1 }; // Hit wall, no movement
+    return { ...state, moves: state.moves + 1, causalMask: newCausalMask }; // Hit wall, no movement
   }
 
   const won = targetCell === "target";
@@ -72,7 +81,8 @@ export function stepToy(state: ToyState, action: ToyAction): ToyState {
     playerX: nx,
     playerY: ny,
     moves: state.moves + 1,
-    won
+    won,
+    causalMask: newCausalMask
   };
 }
 
@@ -88,4 +98,33 @@ export function mapToyToMemory(state: ToyState): Uint8Array {
     }
   }
   return mem;
+}
+
+/** 
+ * Playable Quote memory mapping erases the "soft regime" (irrelevant data) 
+ * leaving only the "solid ground" causally evaluated memory. 
+ */
+export function mapPlayableQuoteMemory(state: ToyState): Uint8Array {
+  const mem = mapToyToMemory(state);
+  for (let i = 0; i < mem.length; i++) {
+    if (!state.causalMask[i]) {
+      mem[i] = 0; // Erase unaccessed/irrelevant memory
+    }
+  }
+  return mem;
+}
+
+/** 
+ * Tool-assisted ram write capability (Cheat Engine). 
+ */
+export function writeToyMemory(state: ToyState, idx: number, value: number): ToyState {
+  if (idx < 0 || idx >= state.grid.length) return state;
+  const newGrid = [...state.grid];
+  switch (value) {
+    case 0: newGrid[idx] = "empty"; break;
+    case 1: newGrid[idx] = "player"; break;
+    case 2: newGrid[idx] = "target"; break;
+    case 3: newGrid[idx] = "wall"; break;
+  }
+  return { ...state, grid: newGrid };
 }

@@ -168,6 +168,8 @@ export interface World {
   readonly history?: readonly HistoryEvent[];
   /** The "Cheat Engine" memory map, providing Lensography-like read-only access to toy/environment internals */
   readonly cheatEngine?: { readonly memorySectors: Uint8Array[] };
+  /** Capability labels restricting what channels this agent/world instance can access */
+  readonly agentCapabilities?: string[];
 }
 
 /** KPI attached to a `do_item` (ARC-AGI grid scoring). */
@@ -284,7 +286,8 @@ export type NextAction =
   | { kind: "scope_cartography"; direction: "in" | "out"; reason: string } // Bumper resolution zoom
   | { kind: "retract_time"; reason: string } // Undo/retract event (LT)
   | { kind: "replay_time"; reason: string } // Redo/replay event (RT)
-  | { kind: "read_memory_sector"; sectorIndex: number; length: number; reason: string }; // CheatEngine lensography mapping
+  | { kind: "read_memory_sector"; sectorIndex: number; length: number; reason: string } // CheatEngine lensography mapping
+  | { kind: "write_memory_sector"; sectorIndex: number; offset: number; value: number; reason: string }; // CheatEngine tool-assisted ram write
 
 /**
  * Pure controller. Priority: operator > offered-work > forward-default.
@@ -743,7 +746,11 @@ export function simulate(world: World, action: NextAction): World {
           timeOffset: (world.cartography?.timeOffset ?? 0) + 1 
         } 
       };
-    case "read_memory_sector":
+    case "read_memory_sector": {
+      const caps = world.agentCapabilities ?? [];
+      if (!caps.includes("ram_read_all") && !caps.includes("vram_read")) {
+         return world; // Blocked by capability constraints
+      }
       return {
         ...world,
         cartography: {
@@ -753,6 +760,22 @@ export function simulate(world: World, action: NextAction): World {
           inspections: ((world.cartography as any)?.inspections ?? 0) + 1
         }
       };
+    }
+    case "write_memory_sector": {
+      const caps = world.agentCapabilities ?? [];
+      if (!caps.includes("ram_write")) {
+         return world; // Blocked by capability constraints
+      }
+      return {
+        ...world,
+        cartography: {
+          ...world.cartography,
+          scopeLevel: world.cartography?.scopeLevel ?? 0,
+          timeOffset: world.cartography?.timeOffset ?? 0,
+          inspections: ((world.cartography as any)?.inspections ?? 0) + 1
+        }
+      };
+    }
   }
 }
 

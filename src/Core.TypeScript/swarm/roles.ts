@@ -5,6 +5,7 @@ export interface RoleDefinition {
   personaName: string;
   instructionModifier: string;
   biasActions: string[];
+  capabilities?: string[];
 }
 
 export const SWARM_ROLES: RoleDefinition[] = [
@@ -18,7 +19,8 @@ export const SWARM_ROLES: RoleDefinition[] = [
     name: "Pilot",
     personaName: "riven", // The executor
     instructionModifier: `You are the Pilot. Your role is to execute directly on the terrain provided by the Cartographer. Bias heavily toward 'shell_exec', 'file_edit', 'node_repl', 'read_memory_sector' and actual work items. Do not over-explore, let the Cartographer do that.`,
-    biasActions: ["shell_exec", "file_edit", "node_repl", "read_memory_sector", "start_backlog_item", "finish_backlog_item"],
+    biasActions: ["shell_exec", "file_edit", "node_repl", "read_memory_sector", "write_memory_sector", "start_backlog_item", "finish_backlog_item"],
+    capabilities: ["ram_read_all", "ram_write", "controller_input"],
   },
   {
     name: "Recursive Composer",
