@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 // Keep the Windows install graph in sync + symmetric with Unix (operator 2026-05-30): every
@@ -242,7 +242,6 @@ test("NixOS and USB installer surfaces delegate agent/runtime drift to install g
   );
   const zetaInstall = readFileSync(join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "zeta-install.sh"), "utf8");
   const fullClusterFlake = readFileSync(join(repoRoot, "full-ai-cluster", "flake.nix"), "utf8");
-  const usbInstallerFlake = readFileSync(join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "flake.nix"), "utf8");
 
   // Installed NixOS gets declarative system packages from Nix, but runtime/agent CLI drift
   // comes from the same install.sh manifest graph as dev machines and CI.
@@ -258,7 +257,11 @@ test("NixOS and USB installer surfaces delegate agent/runtime drift to install g
   expect(installerNix).toContain("gh");
   expect(installerNix).toContain("mtools");
   expect(fullClusterFlake).toContain("qemu mtools");
-  expect(usbInstallerFlake).toContain("mtools");
+  // 081KZKS9A6B08QG0R0008EG72M retired full-ai-cluster/usb-nixos-installer/flake.nix
+  // (it built the installer with no mise-pin overlay, so it shipped a different ISO
+  // than CI). full-ai-cluster/flake.nix is now the single definition — asserted here
+  // so this test can never be satisfied by a re-added duplicate.
+  expect(existsSync(join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "flake.nix"))).toBe(false);
   expect(zetaInstall).toContain("ZETA_INSTALL_NIXOS_MODE=installed");
   expect(zetaInstall).toContain("ZETA_INSTALL_FULL=1");
   expect(zetaInstall).toContain("tools/setup/manifests/from-bun-global");

@@ -85,8 +85,12 @@
     {
       # NixOS configurations: installer image + per-host targets.
       nixosConfigurations = {
-        # USB installer ISO — identical to the standalone
-        # usb-nixos-installer/ flake at the parent level.
+        # USB installer ISO — THE only definition. 081KZKS9A6B08QG0R0008EG72M
+        # retired the standalone usb-nixos-installer/flake.nix, which built
+        # this same configuration.nix but applied no overlays, so it shipped
+        # nixpkgs' mise (2025.11.7 at the locked rev) instead of the pinned
+        # 2026.6.12 — below .mise.toml's min_version, fatal at first boot.
+        # Enforced by src/Core.TypeScript/hygiene/mise-pin-parity.test.ts.
         installer = mkSystem {
           modules = [
             ./usb-nixos-installer/nixos/installer/configuration.nix

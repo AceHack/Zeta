@@ -38,7 +38,7 @@ infra/
 # From any machine with Nix installed (canonical AI-cluster installer
 # substrate at full-ai-cluster/usb-nixos-installer/ — root-flake
 # installer-iso package retired 2026-05-26 in USB cleanup PR 2):
-cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso
+cd full-ai-cluster && nix build .#installer-iso
 # Output at result/iso/zeta-installer-*.iso
 ```
 

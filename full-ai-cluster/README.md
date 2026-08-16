@@ -1,15 +1,21 @@
 # full-ai-cluster
 
 End-to-end declarative AI cluster. Starts with the USB bootstrap
-(identical snippet at `./usb-nixos-installer/`) and continues
-through every layer up to running AI workloads.
+(`./usb-nixos-installer/`) and continues through every layer up to
+running AI workloads.
+
+**One flake.** `./flake.nix` is the *only* definition of the installer
+ISO — `nix build .#installer-iso` from **this** directory is what CI
+builds and what an operator should run. `usb-nixos-installer/` holds the
+installer's NixOS configuration, not a flake of its own
+(081KZKS9A6B08QG0R0008EG72M).
 
 ## What's inside
 
 ```
 full-ai-cluster/
-├── usb-nixos-installer/        ← byte-identical copy of ../usb-nixos-installer
-├── flake.nix                   ← cluster flake (host configs + linux-builder)
+├── usb-nixos-installer/        ← installer NixOS config (no flake of its own)
+├── flake.nix                   ← THE flake: installer ISO + host configs + linux-builder
 ├── nixos/
 │   ├── modules/                ← shared NixOS modules
 │   │   ├── common.nix
