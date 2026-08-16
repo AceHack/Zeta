@@ -1,0 +1,12 @@
+{
+  "pr_number": 11105,
+  "archive_path": "docs/history/pr-reviews/PR-11105-fix-ace-regenerate-build-graph-cross-oracle-witness-count-drifted-288-290.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T21:34:20.559Z",
+  "schema_version": "v1",
+  "commit_sha": "4e0173f2fb19aa98325e0c4d82d5c3edcdb71b2f",
+  "title": "fix(ace): regenerate build-graph — cross-oracle witness count drifted 288 -> 290",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T21:33:52Z",
+  "head_ref": "fix/ace-graph-drift-kubevirt-cdi"
+}
