@@ -429,6 +429,94 @@ Each states the request, the expected refusal, and the mutation that proves the 
 
 ---
 
+## 4a. Closure log — what has been fixed since this audit was written
+
+> Added 2026-08-16 by Otto (shadow), on a follow-up pass. The findings above are left **exactly as
+> originally recorded** — this section is the delta, not a rewrite. Each row below was re-verified
+> as still-open against `main` before it was touched.
+
+| audit finding | state | what closed it |
+|---|---|---|
+| §6.5 — receipt omits the descriptor (`→ descriptor` breaks) | **CLOSED** | `delegationDigest` added to the receipt; schema `zeta.proposal-receipt.v3` → **v4** |
+| §6.3 caveat 1 — `revokedDevices` never exercised from registry bytes | **CLOSED (unit)** | DDP-14/15/16 load a fixture registry **from disk** through `loadProposalAuthorRegistry` |
+| §6.3 caveat 2 — sequence-bump is not a revoke (operator trap) | **CLOSED** | DDP-11/12/13 pin the asymmetry; a docstring at `validateDelegation` names the levers that do work |
+| §6.1a / **T-1** — `maxPatchBytes` refusal has no test | **STILL OPEN** | not attempted on this pass |
+| **T-2, T-3, T-4, T-5** | **STILL OPEN** | still require a live capability / local machine state |
+
+### §6.5 — the `→ descriptor` leg
+
+`proposal-gated-commit-runner.ts` now builds receipts through an exported, pure
+`proposalReceipt()` and records `delegationDigest` — SHA-256 over the canonical delegation intent,
+which covers `action`, `baseRef`, `branchPrefix`, `maxPatchBytes`, `pathPolicy` and `validity`
+along with the device key and authority. The value recorded is the one
+`validateProposalShape` has **already verified** equals `deviceDelegationDigest(delegation)`, so
+the receipt pins a checked value rather than an attacker-supplied one.
+
+The audit's own non-vacuity note — *"without such a script the field is decoration"* — is answered
+by `receiptBindsDelegation(receipt, delegation)`, which recomputes the digest and compares it in
+constant time, failing closed on a missing or malformed value. PGCR-7 shows a receipt carrying a
+**different** delegation's digest is refused.
+
+**Schema migration cost: zero.** Nothing in the repo parses `zeta.proposal-receipt.v3`, and per
+§6.5 above there are still **no receipts on `main`**, so there is no v3 artifact to migrate.
+
+### §6.3 — the two caveats
+
+DDP-9 already exercised `revokedDevices`, but against an **in-memory registry object**, which skips
+the JSON loader entirely. DDP-14 writes a registry to a real file, loads it through the production
+`loadProposalAuthorRegistry`, and only then verifies — so parse, `validRevocations`, and the
+loader's propagation of the field are all on the path. DDP-15 is the control that keeps it honest
+(same file *without* `revokedDevices` must verify `ok: true`, otherwise the refusal could be a load
+failure wearing a revocation's clothes). DDP-16 pins that a malformed entry fails the **load**.
+
+The sequence asymmetry is now pinned by DDP-11 (bump ⇒ still valid), DDP-12 (the `>` clause is
+live), and DDP-13 (`revoked` / `revokedDevices` still bite at the bumped sequence).
+
+### Mutation results (each change has a failing mutant)
+
+| # | mutation | tests killed |
+|---|---|---|
+| M1 | `authorRegistrySequence > registry.sequence` → `!==` | DDP-11, DDP-13 |
+| M2 | device-revocation condition → `if (false)` | DDP-9, DDP-13, **DDP-14** |
+| M3 | drop `revokedDevices` validation from `validateProposalAuthorRegistry` | DDP-16 |
+| M4 | loader drops `revokedDevices` from the registry it returns | **DDP-14 only** |
+| M5 | receipt omits `delegationDigest` (i.e. revert to v3 content) | PGCR-5, PGCR-7 |
+| M6 | `receiptBindsDelegation` → `return true` | PGCR-7, PGCR-8 |
+| M7 | `canonicalDeviceDelegationIntentBytes` drops `capability` | PGCR-6 |
+
+M4 is the load-bearing one for the §6.3 caveat: it is a defect **DDP-9 cannot see**, because DDP-9
+never goes through the loader. That is the evidence the new test covers genuinely new ground rather
+than restating existing coverage.
+
+### An owned error from this pass
+
+**PGCR-6 was vacuous when first written, and M7 caught it.** The first draft compared two separate
+`fixture()` calls with different `maxPatchBytes` and asserted their digests differed. They did —
+but for the wrong reason: each `fixture()` call generates fresh keypairs, so the digests differ
+whatever you vary. M7 (dropping `capability` from the canonical bytes entirely) left the whole
+suite green. The test now varies **exactly one field off a single fixture**, and M7 kills it. The
+trap is documented in `delegated-device-proposal-fixture.ts` so the next author does not repeat it.
+
+This is worth recording rather than quietly fixing: the mutation requirement is what caught it, and
+without M7 a decorative test would have shipped attached to a real fix — the exact shape this
+audit's evidence-class table exists to prevent.
+
+### Still unexercised, stated plainly
+
+**The end-to-end path remains unexercised.** There are still **zero receipts** under
+`docs/observe-events/proposal-receipts/` — the directory does not exist on `main`. No receipt has
+ever been *written by the workflow*; the receipts in these tests are built by calling
+`proposalReceipt()` directly. So:
+
+- the receipt **shape** and the descriptor binding are **VERIFIED** (unit, with failing mutants);
+- the receipt **being written during a real staged proposal** remains **DOCUMENTED-UNVERIFIED**,
+  and T-6 stays open until a proposal is staged end-to-end.
+
+`applyPlan()` — the function that writes the file, commits and pushes — is still untested, because
+it shells out to `git` and reads `GITHUB_EVENT_PATH`. Extracting `proposalReceipt()` shrank the
+untested surface to the I/O around it; it did not eliminate it. No claim here should be read as
+end-to-end coverage.
+
 ## 5. What I deliberately did not do
 
 - **Did not mint, request, or attempt a capability.** That requires the Touch ID ceremony, which is

@@ -184,6 +184,38 @@ function validCapability(value: unknown): value is DeviceProposalCapability {
   );
 }
 
+/**
+ * Validate a device delegation against the registry.
+ *
+ * ## Bumping `sequence` does NOT revoke a device delegation — use `revokedDevices`
+ *
+ * The sequence check below is `authorRegistrySequence > registry.sequence` (reject only a
+ * delegation bound to a *newer* authority revision than the one on protected main). It is
+ * deliberately **not** the `!==` used on the v2 proposal path
+ * (`verifySignedProposal` → `registry.sequence !== proposal.authorRegistrySequence`), and the
+ * asymmetry is intended:
+ *
+ * | path | check | effect of bumping `registry.sequence` |
+ * |---|---|---|
+ * | v2 proposal | `!==` | **invalidates** every outstanding proposal |
+ * | device delegation | `>` | **no effect** — older sequences stay valid |
+ *
+ * A delegation declares `validity: "until-authority-revoked"`, so its lifetime is governed by
+ * revocation, not by registry revision. Tying it to `!==` would silently kill every enrolled
+ * device on any unrelated registry edit (adding an author, correcting a typo).
+ *
+ * **The operator trap this comment exists to prevent:** bumping `sequence` *looks* like an
+ * emergency revoke and is not one. A device delegated at sequence 2 keeps working at sequence 3,
+ * 4, 99. The two levers that actually revoke are:
+ *
+ * - `registry.revoked[<authorityCredentialId>]` → `revoked-author` — revokes the root passkey and
+ *   with it every device delegated from it;
+ * - `registry.revokedDevices[<deviceId>]` → `device-key` — revokes one device.
+ *
+ * Pinned by DDP-11/DDP-12/DDP-13 in `delegated-device-proposal.test.ts`; mutating this `>` to
+ * `!==` fails DDP-11, which is what keeps the asymmetry documented by a test rather than only by
+ * this comment.
+ */
 function validateDelegation(
   delegation: SignedDeviceDelegation,
   registry: ProposalAuthorRegistry,

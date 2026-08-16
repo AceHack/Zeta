@@ -1,5 +1,14 @@
 import { describe, expect, test } from "bun:test";
-import { createGatedReviewPullRequest, planProposalIssue, type HandoffExec } from "./proposal-gated-commit-runner";
+import {
+  createGatedReviewPullRequest,
+  planProposalIssue,
+  proposalReceipt,
+  receiptBindsDelegation,
+  PROPOSAL_RECEIPT_SCHEMA,
+  type HandoffExec,
+} from "./proposal-gated-commit-runner";
+import { deviceDelegationDigest, encodeDelegatedDeviceProposalIssueBody } from "./delegated-device-proposal";
+import { fixture, FIXTURE_BASE_SHA, FIXTURE_NOW } from "./delegated-device-proposal-fixture";
 import type { ProposalAuthorRegistry } from "./proposal-verifier";
 
 const EMPTY_REGISTRY: ProposalAuthorRegistry = {
@@ -82,5 +91,102 @@ describe("proposal gated-commit runner handoff", () => {
     );
 
     expect(result).toMatchObject({ ok: false, code: "device-carrier", retraction: { weight: -1 } });
+  });
+});
+
+/**
+ * §6.5 — the audit record must reconstruct `action → capability → descriptor → assertion`.
+ *
+ * Receipt v3 pinned the credential, the device and the patch digest, and stopped there: an auditor
+ * reading it could not tell which capability descriptor the use ran under. v4 adds
+ * `delegationDigest`, which pins `action`, `baseRef`, `branchPrefix`, `maxPatchBytes`,
+ * `pathPolicy` and `validity` in 32 hex-encoded bytes.
+ *
+ * PGCR-7 is the test that stops the field being decoration: a receipt is only evidence if a
+ * *mismatched* digest is refused by something.
+ */
+describe("proposal receipt pins the capability descriptor", () => {
+  test("PGCR-5: a delegated plan's receipt records the descriptor digest under schema v4", () => {
+    const value = fixture();
+    const plan = planProposalIssue(
+      encodeDelegatedDeviceProposalIssueBody(value.submission),
+      FIXTURE_BASE_SHA,
+      value.registry,
+      FIXTURE_NOW,
+    );
+    expect(plan).toMatchObject({ branch: expect.stringContaining("heartbeat/proposal-") });
+    if ("ok" in plan) throw new Error(`planning failed: ${JSON.stringify(plan)}`);
+
+    const receipt = proposalReceipt(plan, "https://github.test/issues/1", FIXTURE_NOW);
+
+    expect(receipt.schema).toBe(PROPOSAL_RECEIPT_SCHEMA);
+    expect(receipt.delegationDigest).toBe(value.submission.proposal.delegationDigest);
+    expect(receiptBindsDelegation(receipt, value.submission.delegation)).toBeTrue();
+  });
+
+  test("PGCR-6: the recorded digest actually discriminates the descriptor it claims to pin", () => {
+    // The delegation is varied in EXACTLY ONE field — maxPatchBytes — off a single fixture, so the
+    // two digests share keys, device, authority, nonce and timestamps. Anything but the capability
+    // is held constant; if the digest did not cover the descriptor these would be equal and the
+    // receipt would pin nothing.
+    //
+    // Building this from two separate fixture() calls does NOT work and is the vacuity trap: each
+    // call generates fresh keypairs, so the digests would differ for reasons that have nothing to
+    // do with the capability, and the test would survive a mutant that drops `capability` from
+    // `canonicalDeviceDelegationIntentBytes`.
+    const { submission } = fixture();
+    const narrow = submission.delegation;
+    const wide = { ...narrow, capability: { ...narrow.capability, maxPatchBytes: 32 * 1024 } };
+
+    expect(narrow.capability.maxPatchBytes).not.toBe(wide.capability.maxPatchBytes);
+    expect(deviceDelegationDigest(wide)).not.toBe(deviceDelegationDigest(narrow));
+    expect(deviceDelegationDigest(narrow)).toBe(submission.proposal.delegationDigest);
+  });
+
+  test("PGCR-7 FAULT INJECTION: a receipt carrying a foreign delegation's digest is refused", () => {
+    const mine = fixture();
+    const theirs = fixture();
+    const receipt = proposalReceipt(
+      {
+        proposalId: mine.submission.proposal.proposalId,
+        baseSha: mine.submission.proposal.baseSha,
+        changeDigest: mine.submission.proposal.patchDigest,
+        authorityCredentialId: mine.submission.delegation.authorityCredentialId,
+        authorRegistrySequence: mine.submission.delegation.authorRegistrySequence,
+        nonce: mine.submission.proposal.nonce,
+        deviceId: mine.submission.proposal.deviceId,
+        delegationDigest: theirs.submission.proposal.delegationDigest,
+      },
+      "https://github.test/issues/2",
+      FIXTURE_NOW,
+    );
+
+    expect(receiptBindsDelegation(receipt, mine.submission.delegation)).toBeFalse();
+    expect(receiptBindsDelegation(receipt, theirs.submission.delegation)).toBeTrue();
+  });
+
+  test("PGCR-8 FAULT INJECTION: a receipt with no descriptor digest fails closed", () => {
+    const value = fixture();
+
+    expect(receiptBindsDelegation({}, value.submission.delegation)).toBeFalse();
+    expect(receiptBindsDelegation({ delegationDigest: "not-a-digest" }, value.submission.delegation)).toBeFalse();
+  });
+
+  test("PGCR-9: the v2 passkey path has no delegation, so it records no descriptor digest", () => {
+    const receipt = proposalReceipt(
+      {
+        proposalId: "22222222-2222-4222-8222-222222222222",
+        baseSha: FIXTURE_BASE_SHA,
+        changeDigest: "b".repeat(64),
+        authorityCredentialId: "credential",
+        authorRegistrySequence: 1,
+        nonce: "nonce",
+      },
+      "https://github.test/issues/3",
+      FIXTURE_NOW,
+    );
+
+    expect(receipt).not.toHaveProperty("delegationDigest");
+    expect(receipt).not.toHaveProperty("deviceId");
   });
 });

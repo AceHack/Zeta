@@ -4,8 +4,11 @@ import { dirname, resolve } from "node:path";
 import {
   DEVICE_PROPOSAL_ISSUE_MARKER,
   decodeDelegatedDeviceProposalIssueBody,
+  deviceDelegationDigest,
+  equalDeviceDigest,
   verifyDelegatedDeviceProposal,
   type DelegatedDeviceProposalTeachingError,
+  type SignedDeviceDelegation,
 } from "./delegated-device-proposal";
 import { loadProposalAuthorRegistry, planGatedCommit, type GatedCommitRejection } from "./proposal-gated-commit";
 import type { ProposalTeachingError } from "./proposal-verifier";
@@ -27,6 +30,92 @@ interface StagedProposalPlan {
   readonly authorRegistrySequence: number;
   readonly authorityCredentialId: string;
   readonly deviceId?: string;
+  /**
+   * SHA-256 over the canonical delegation intent — i.e. over the *capability descriptor* the use
+   * was granted under (`action`, `baseRef`, `branchPrefix`, `maxPatchBytes`, `pathPolicy`,
+   * `validity`) together with the device key and authority it was issued to. Present only on the
+   * delegated-device path; the v2 passkey path has no delegation and therefore no descriptor.
+   */
+  readonly delegationDigest?: string;
+}
+
+export const PROPOSAL_RECEIPT_SCHEMA = "zeta.proposal-receipt.v4";
+
+export interface ProposalReceipt {
+  readonly schema: typeof PROPOSAL_RECEIPT_SCHEMA;
+  readonly proposalId: string;
+  readonly issue: string;
+  readonly baseSha: string;
+  readonly changeDigest: string;
+  readonly authorityCredentialId: string;
+  readonly authorRegistrySequence: number;
+  readonly nonce: string;
+  readonly deviceId?: string;
+  readonly delegationDigest?: string;
+  readonly receivedAt: string;
+}
+
+/**
+ * The §6.5 audit record: `action → capability → descriptor → assertion`.
+ *
+ * `delegationDigest` is the `→ descriptor` leg. Without it the receipt pins *which credential* and
+ * *which device*, but not *the capability the use was granted under* — so an auditor reading a
+ * receipt could not tell whether the proposal ran under a 16 KiB budget or a 32 KiB one, under
+ * this path policy or another. Recording the digest pins the whole descriptor in 32 bytes and
+ * keeps the proof lineage text (hex-in-JSON), per `no-binary-in-proof-lineage`.
+ *
+ * It is a *checkable* field rather than a decorative one because `receiptBindsDelegation` can
+ * recompute it from a retained delegation and refuse a mismatch.
+ */
+export function proposalReceipt(
+  plan: Pick<
+    StagedProposalPlan,
+    | "proposalId"
+    | "baseSha"
+    | "changeDigest"
+    | "authorityCredentialId"
+    | "authorRegistrySequence"
+    | "nonce"
+    | "deviceId"
+    | "delegationDigest"
+  >,
+  issue: string,
+  receivedAt: Date,
+): ProposalReceipt {
+  return {
+    schema: PROPOSAL_RECEIPT_SCHEMA,
+    proposalId: plan.proposalId,
+    issue,
+    baseSha: plan.baseSha,
+    changeDigest: plan.changeDigest,
+    authorityCredentialId: plan.authorityCredentialId,
+    authorRegistrySequence: plan.authorRegistrySequence,
+    nonce: plan.nonce,
+    ...(plan.deviceId === undefined ? {} : { deviceId: plan.deviceId }),
+    ...(plan.delegationDigest === undefined ? {} : { delegationDigest: plan.delegationDigest }),
+    receivedAt: receivedAt.toISOString(),
+  };
+}
+
+/**
+ * Audit check for the `→ descriptor` leg: does this receipt's `delegationDigest` actually name the
+ * supplied delegation? Recomputes the digest from the delegation's own canonical bytes and compares
+ * in constant time. A receipt carrying a digest from a *different* delegation is refused, which is
+ * what makes the recorded field evidence rather than decoration.
+ *
+ * Fails closed: a receipt with no `delegationDigest`, a non-SHA-256 value, or a delegation whose
+ * canonical bytes cannot be produced all return `false`.
+ */
+export function receiptBindsDelegation(
+  receipt: { readonly delegationDigest?: unknown },
+  delegation: SignedDeviceDelegation,
+): boolean {
+  if (typeof receipt.delegationDigest !== "string") return false;
+  try {
+    return equalDeviceDigest(receipt.delegationDigest, deviceDelegationDigest(delegation));
+  } catch {
+    return false;
+  }
 }
 
 export type HandoffExec = (
@@ -159,6 +248,7 @@ export function planProposalIssue(
       authorRegistrySequence: submission.delegation.authorRegistrySequence,
       authorityCredentialId: submission.delegation.authorityCredentialId,
       deviceId: submission.proposal.deviceId,
+      delegationDigest: submission.proposal.delegationDigest,
     };
   }
   const plan = planGatedCommit({ issueBody: body, currentMainSha, registry, now });
@@ -207,22 +297,7 @@ async function applyPlan(): Promise<void> {
   try {
     writeFileSync(
       receiptAbsolutePath,
-      `${JSON.stringify(
-        {
-          schema: "zeta.proposal-receipt.v3",
-          proposalId: plan.proposalId,
-          issue: event.url,
-          baseSha: plan.baseSha,
-          changeDigest: plan.changeDigest,
-          authorityCredentialId: plan.authorityCredentialId,
-          authorRegistrySequence: plan.authorRegistrySequence,
-          nonce: plan.nonce,
-          ...(plan.deviceId === undefined ? {} : { deviceId: plan.deviceId }),
-          receivedAt: new Date().toISOString(),
-        },
-        null,
-        2,
-      )}\n`,
+      `${JSON.stringify(proposalReceipt(plan, event.url, new Date()), null, 2)}\n`,
       { encoding: "utf8", flag: "wx" },
     );
   } catch {
