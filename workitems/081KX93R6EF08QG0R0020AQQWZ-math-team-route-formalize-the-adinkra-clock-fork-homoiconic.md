@@ -114,3 +114,67 @@ this are the **Rx guys** (`docs/PRIOR-ART-LIST.md` "the Rx guys" cluster): **Bar
 eventually. In-repo route: **Lumen** (the μF/νF ↔ adinkra mapping) + **Soraya** (formal proof /
 refutation). Anchors: Faux–Gates adinkras; the SUSY algebra `{Q,Q}=2∂_τ`; Meijer μF/νF + Rx duality;
 `AdinkraCode.fs`, `VirtualTimeScheduler.fs`, `AdinkraClock.fs` (#9713).
+
+## Lumen's answer to Q1 / Q4 (2026-08-14) — the fork is a factorization, not a choice
+
+Full derivation: `docs/research/2026-08-14-adinkra-minimal-homoiconicity-the-half-rotation-tower-and-where-the-obstruction-actually-lives-lumen.md`.
+Register: **§B / CONJECTURE**, falsifiers attached, nothing promoted.
+
+**Q1 (the precise categorical condition).** Homoiconicity, made checkable: a **homoiconic pair** is
+`(A, M, rho)` with `A` a unital algebra, `M` a left `A`-module, `rho : A -> M` an `A`-module
+isomorphism — i.e. `M` is the **regular representation** of `A`. Then:
+
+- The **uncoded N-cube adinkra IS the left regular representation of `Cl(0,N)`** (2^N vertices = 2^N
+  blades; `Q_I` = left multiplication by `gamma_I` permuting blades with the dashing sign). So it is
+  homoiconic in the strict sense — a theorem, sharper than "equations drawn as pictures", which only
+  says the picture *encodes* the operator rather than *being an element of the same space*.
+- **But over the full SUSY algebra `S = R<Q_1..Q_N, d_tau>`, no adinkra is homoiconic, ever.** `S` is
+  infinite-dimensional (`d_tau` generates a polynomial subalgebra); an adinkra's vertex module is
+  finite-dimensional. A finite-dimensional module is never isomorphic to an infinite-dimensional
+  algebra. **B is the correct description of the object.**
+- Homoiconicity becomes *possible* only after `S / (d_tau - 1) = Cl(0,N)` — i.e. after **fixing a unit
+  of time**. And that quotient is exactly the **valise** condition (`L_I R_J + L_J R_I = 2 delta_IJ 1`
+  — the identity on the right, `d_tau` already normalized to 1).
+
+> **A = B / (d_tau = 1).** The adinkra is what-remains. Homoiconicity is what you get after
+> normalizing the clock to one tick. The injected scheduler is not an alternative reading of the
+> structure — it IS the normalization that makes the homoiconic reading available.
+
+`LayeringBToA` was therefore the right **name** for the wrong reason: the layering is the `d_tau = 1`
+quotient, an algebraic operation, not something a probe computed.
+
+**On the Q1 sharpening (mu-F / nu-F, and Aaron's FourCorner objection).** My earlier "yes, exactly
+mu-F/nu-F" was too fast and Otto/Aaron were right to hold it at arm's length. The correct statement is
+narrower and does not need the Meijer duality at all: the fork is **regular-representation vs
+non-regular module**, plus a **clock normalization**. That is a statement about module freeness, not
+about data/codata. Aaron's structural objection stands independently and is not answered here.
+
+**Q4 (the independence statement), and a discriminator that can fail.** Two routes sharing no
+intermediate:
+
+- **Route S (structure only, never mentions time):** build `L_I, R_I` from graph + dashing; let
+  `A_graph` be the unital algebra they generate inside `End(R^V)`; compute `d_A = dim A_graph`; test
+  whether `R^V` is free of rank 1 (`d_A = |V|` and some vector has trivial annihilator).
+- **Route T (time only, never mentions freeness):** form `P = (1/2){Q_I, Q_I}` and ask whether it acts
+  as an invertible scalar, a nonzero nilpotent (height shift), or differently per colour.
+
+**Predicted disagreement at N = 4** — which is what makes it a discriminator rather than a
+tautology: for the N=4 valise (code `d4`, k = 1) Route T says `P = id` while Route S says
+`dim A_graph = 16` (`Cl(0,4) = M_2(H)`) against `|V| = 8`, so the module is **not** free of rank 1.
+
+**And this explains the N=1 silence from a second, independent direction.** At N=1,
+`dim Cl(0,1) = 2 = |V|`, so the two routes genuinely coincide — the N=1 valise is simultaneously (a)
+the `d_tau = 1` quotient and (b) the one N where the code is forced trivial (a nonzero doubly-even
+codeword needs weight 4, so k = 0 for N <= 3). The probe was handed **both** special cases at once. The
+self-review's code-path finding stands unchanged; this is an algebraic route to the same verdict, not
+a re-derivation of it.
+
+**Q3 (N-extended) gets a partial answer for free:** the code dimension k is exactly what breaks
+freeness, so the N=4 / [8,4] cases are where the fork separates. The multiple colours do not change
+the tick structure; the **quotient** does.
+
+**Conjectures proposed for §B (not §A, not self-promoted):** Z-hom-1 (homoiconic iff k=0 and
+`d_tau = id`), Z-hom-2 (`A = B / (d_tau = 1)`), Z-hom-3 (Clifford vs Cayley-Dickson separated by
+whether the twisting 2-cochain is a cocycle). Work-items: `081M00WD2KG087G0R0038MX9HW` (the
+discriminator), `081M00WD6GM087G0R000ZC8S3K` (the tower separation, for Soraya),
+`081M00WD6HD087G0R0016TCD56` (the minimality category).
