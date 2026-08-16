@@ -1,0 +1,12 @@
+{
+  "pr_number": 10862,
+  "archive_path": "docs/history/pr-reviews/PR-10862-fix-migrations-flasher-spent-migrations-stop-being-runnable-the-stale-flasher-fo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T03:04:34.905Z",
+  "schema_version": "v1",
+  "commit_sha": "4e8f9816cbb4c418613f8456c654826298b0546b",
+  "title": "fix(migrations,flasher): spent migrations stop being runnable; the stale flasher fork loses its HIGH CodeQL finding",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T03:04:02Z",
+  "head_ref": "shadow/spent-migrations-and-flasher-fork"
+}
