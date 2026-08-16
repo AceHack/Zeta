@@ -1,0 +1,12 @@
+{
+  "pr_number": 10926,
+  "archive_path": "docs/history/pr-reviews/PR-10926-fix-ci-my-10913-fallback-did-not-work-in-production-use-the-credential-that-is-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:30:44.594Z",
+  "schema_version": "v1",
+  "commit_sha": "8721129a6d18ca0f98281ddf1c514690ed181356",
+  "title": "fix(ci): my #10913 fallback did not work in production — use the credential that is proven to push",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:30:12Z",
+  "head_ref": "shadow/heartbeat-push-use-github-token"
+}
