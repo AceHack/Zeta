@@ -3,23 +3,51 @@
  * Default remains usbUuid. Optional --usb-iserial / --uefi-keyfile override.
  * Mutually exclusive extras. No TPM / Touch ID.
  *
- * PRESENCE MAY BE TRIMMED; MATERIAL MAY NOT.
+ * BOUNDARY WHITESPACE IS REJECTED, NOT REWRITTEN AND NOT ACCEPTED.
  *
- * These are two different questions and conflating them loosened the device binding
- * for a day (#11016 -> this fix). "Was a factor supplied?" is an operator-input
- * question and a whitespace-only value answers no. "What bytes go into the KDF?" is a
- * cryptographic question and the answer is the operator's bytes, verbatim.
+ * This function has been the site of three positions in one day, and the third is the
+ * one that satisfies both concerns instead of trading them:
  *
- * When `material` was `.trim()`-ed, `--usb-uuid "<A> "` and `--usb-uuid "<A>"` derived
- * the SAME key, so a blob bound to one restored on the other. That is a near-miss
- * identity being silently accepted, which is exactly the oracle
- * `key-refusal-falsifier.test.ts` exists to forbid, and its
- * "identity A with trailing whitespace" case caught it on `main`.
+ *   #11016  `material: input.usbUuid.trim()` -- silently REWRITE. `--usb-uuid "<A> "`
+ *           and `--usb-uuid "<A>"` derived the same key.
+ *   #11111  `material: input.usbUuid`        -- silently ACCEPT. Different keys, so the
+ *           binding held, but an operator who bound with a stray space and later typed
+ *           it without one was locked out of their own blob with no diagnosis.
+ *   here    reject with an error             -- FAIL CLOSED, and say why.
  *
- * Nothing needed the trim: the sysfs probe already normalises at the source
- * (`trimOrNull` in usb-iserial-probe.ts, where the trailing newline is an artefact of
- * reading a sysfs attribute), and the keyfile path never went through a string at all.
- * Normalise where the artefact is introduced, never where the key is derived.
+ * Why rewriting is wrong: this string is KDF input. Silently changing key material is
+ * the "be lenient about operator input" move that `key-refusal-falsifier.test.ts` was
+ * written to forbid, and it makes the accepted-input set larger than the identity set.
+ *
+ * Why bare acceptance is also wrong: it converts a typo into an unrecoverable footgun,
+ * discovered later, at restore time, on a machine the operator may no longer have. That
+ * is a real cost and the argument for trimming was right to weigh it.
+ *
+ * Rejecting pays neither cost. The operator is told immediately, at the moment the
+ * mistake is made and while the input is still in front of them; nothing is written; no
+ * key material is ever rewritten behind their back.
+ *
+ * WHY NOTHING LEGITIMATE IS REFUSED -- and this is the load-bearing check, not a
+ * plausibility argument: a real binding value CANNOT carry boundary whitespace, because
+ * every source canonicalizes at the point the artefact is introduced.
+ *
+ *   - FAT UUID:  `parseUuidFromDiskutilInfo` (zflash/lib.ts) trims diskutil's column
+ *                padding AND then requires /^[0-9a-fA-F]{4}-[0-9a-fA-F]{4}$/, a total
+ *                regex that cannot match a string with a space. Whitespace is not merely
+ *                stripped there, it is unrepresentable downstream.
+ *   - iSerial:   `trimOrNull` (usb-iserial-probe.ts) strips the trailing newline that is
+ *                an artefact of reading a sysfs attribute.
+ *   - keyfile:   bytes, never a string.
+ *
+ * So there is EXACTLY ONE canonicalization per source and it lives where the artefact is
+ * born. The CLI trim was a second, redundant one sitting on top of the first -- which is
+ * why removing it broke nothing real, and why re-adding it would buy nothing real either.
+ * Boundary whitespace reaching this function means a hand-typed or mis-quoted value, and
+ * the honest response to that is an error message.
+ *
+ * Guarded by `probe-canonicalization-is-the-single-authority` in
+ * installer-binding-cli.test.ts: if a probe ever stops canonicalizing, that test fails
+ * here rather than letting this rejection start refusing real devices.
  */
 
 import type { CredentialBindingFactorKind } from "./credential-binding-model.ts";
@@ -29,6 +57,16 @@ export type CliBindingSelection = {
   readonly factor: CredentialBindingFactorKind;
   readonly material: string;
 };
+
+/**
+ * True when `value` has leading or trailing whitespace. Interior whitespace is NOT
+ * checked: a USB iSerial may legitimately contain a space, and this function has no
+ * business inventing an opinion about the middle of an identity. Only the boundary --
+ * exactly the class the old `.trim()` was silently absorbing -- is refused.
+ */
+function hasBoundaryWhitespace(value: string): boolean {
+  return value !== value.trim();
+}
 
 export function selectCliBindingMaterial(input: {
   readonly usbUuid: string | null;
@@ -45,12 +83,24 @@ export function selectCliBindingMaterial(input: {
     if (isUefiKeyfileError(material)) return { error: material.error };
     return { factor: "uefiKeyfile", material };
   }
-  // Material is the operator's bytes verbatim -- see the header. The `.trim()` above is
-  // a presence test only; it must never reach the value handed to the KDF.
   if (hasIserial) {
+    if (hasBoundaryWhitespace(input.usbISerial!)) {
+      return {
+        error:
+          "--usb-iserial has leading or trailing whitespace; pass the serial exactly as the " +
+          "device reports it (refusing rather than trimming, because this value is key material)",
+      };
+    }
     return { factor: "usbISerial", material: input.usbISerial! };
   }
   if (input.usbUuid !== null && input.usbUuid.trim().length > 0) {
+    if (hasBoundaryWhitespace(input.usbUuid)) {
+      return {
+        error:
+          "--usb-uuid has leading or trailing whitespace; pass the UUID exactly as diskutil " +
+          "reports it (refusing rather than trimming, because this value is key material)",
+      };
+    }
     return { factor: "usbUuid", material: input.usbUuid };
   }
   return { error: "binding factor required: --usb-uuid, --usb-iserial, or --uefi-keyfile" };

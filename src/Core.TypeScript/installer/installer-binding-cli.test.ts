@@ -1,6 +1,8 @@
 import { describe, expect, it } from "bun:test";
 import { selectCliBindingMaterial } from "./installer-binding-cli.ts";
 import { UEFI_KEYFILE_BYTES } from "./uefi-keyfile-esp.ts";
+import { readUsbSysfsDevice } from "./usb-iserial-probe.ts";
+import { parseUuidFromDiskutilInfo } from "../zflash/lib.ts";
 
 describe("selectCliBindingMaterial", () => {
   it("defaults to usbUuid", () => {
@@ -46,58 +48,122 @@ describe("selectCliBindingMaterial", () => {
   });
 });
 
-describe("binding material is the operator's bytes, verbatim", () => {
-  // These are the fast falsifier for the loosening that reached main on 2026-08-16.
-  // key-refusal-falsifier.test.ts already catches it end-to-end, but that test spawns two
-  // CLIs and pays scrypt N=2^17 twice (~600ms), so it is the wrong place to find out.
-  // Here it is a string comparison.
+describe("boundary whitespace is REJECTED -- not rewritten, not accepted", () => {
+  // The fast falsifier for a value that reached main twice in one day in two different
+  // directions. key-refusal-falsifier.test.ts covers it end-to-end, but that test spawns
+  // two CLIs and pays scrypt N=2^17 twice (~600ms); here it is a string comparison.
   //
-  // The property under test is DISCRIMINATION, not formatting: two identities that differ
-  // by any byte -- including a byte that looks like nothing -- must derive different keys.
-  // Whitespace is the case that matters because "be lenient about operator input" is the
-  // most plausible way someone reintroduces the trim in good faith.
+  // The property is that key material is never silently altered AND never silently
+  // mis-taken. `.trim()` fails the first; bare acceptance fails the second, by turning a
+  // typo into a lockout discovered at restore time. An error fails neither.
   const uuid = "AAAAAAAA-1111-2222-3333-444444444444";
 
-  it("does NOT trim a trailing space off usbUuid material", () => {
+  it("refuses a usbUuid with a trailing space rather than trimming it", () => {
     const selected = selectCliBindingMaterial({
       usbUuid: `${uuid} `,
       usbISerial: null,
       uefiKeyfileBytes: null,
     });
-    expect("error" in selected).toBe(false);
-    if ("error" in selected) return;
-    expect(selected.material).toBe(`${uuid} `);
+    expect("error" in selected).toBe(true);
   });
 
-  it("a whitespace-differing usbUuid is a DIFFERENT binding, not the same one", () => {
-    const bare = selectCliBindingMaterial({ usbUuid: uuid, usbISerial: null, uefiKeyfileBytes: null });
-    const spaced = selectCliBindingMaterial({ usbUuid: ` ${uuid}`, usbISerial: null, uefiKeyfileBytes: null });
-    expect("error" in bare).toBe(false);
-    expect("error" in spaced).toBe(false);
-    if ("error" in bare || "error" in spaced) return;
-    expect(spaced.material).not.toBe(bare.material);
+  it("refuses a usbUuid with a leading space too -- the boundary, not just the tail", () => {
+    const selected = selectCliBindingMaterial({
+      usbUuid: ` ${uuid}`,
+      usbISerial: null,
+      uefiKeyfileBytes: null,
+    });
+    expect("error" in selected).toBe(true);
   });
 
-  it("does NOT trim usbISerial material either", () => {
+  it("refuses a usbISerial with a trailing newline rather than trimming it", () => {
     const selected = selectCliBindingMaterial({
       usbUuid: null,
       usbISerial: "ZETA-STICK-001\n",
       uefiKeyfileBytes: null,
     });
+    expect("error" in selected).toBe(true);
+  });
+
+  it("says WHY, so the operator can fix it instead of being locked out later", () => {
+    // The whole argument for rejecting over accepting is that the operator finds out now,
+    // with the input still in front of them. A bare non-zero exit would not deliver that,
+    // so the message is part of the contract and gets an assertion.
+    const selected = selectCliBindingMaterial({
+      usbUuid: `${uuid} `,
+      usbISerial: null,
+      uefiKeyfileBytes: null,
+    });
+    expect("error" in selected).toBe(true);
+    if (!("error" in selected)) return;
+    expect(selected.error).toContain("whitespace");
+    expect(selected.error).toContain("--usb-uuid");
+  });
+
+  it("passes a clean value through byte-for-byte", () => {
+    // The rejection must not become its own quiet normalization. A value with no boundary
+    // whitespace reaches the KDF exactly as supplied.
+    const selected = selectCliBindingMaterial({ usbUuid: uuid, usbISerial: null, uefiKeyfileBytes: null });
     expect("error" in selected).toBe(false);
     if ("error" in selected) return;
-    expect(selected.material).toBe("ZETA-STICK-001\n");
+    expect(selected.material).toBe(uuid);
+  });
+
+  it("leaves INTERIOR whitespace alone -- a serial may legitimately contain a space", () => {
+    // Scope discipline: only the class the old `.trim()` silently absorbed is refused.
+    // Inventing an opinion about the middle of an identity would refuse real devices.
+    const selected = selectCliBindingMaterial({
+      usbUuid: null,
+      usbISerial: "ZETA STICK 001",
+      uefiKeyfileBytes: null,
+    });
+    expect("error" in selected).toBe(false);
+    if ("error" in selected) return;
+    expect(selected.material).toBe("ZETA STICK 001");
   });
 
   it("still treats a whitespace-ONLY value as no factor at all", () => {
-    // Presence may be trimmed: "   " carries no identity, it is a typo or an empty shell
-    // variable, and failing closed there is right. This is the half of the old behaviour
-    // that was correct, kept deliberately so the fix does not read as "trim is banned".
+    // "   " carries no identity -- it is a typo or an empty shell variable -- so it is
+    // absence, not a malformed value. Different error, deliberately.
     const selected = selectCliBindingMaterial({
       usbUuid: "   ",
       usbISerial: null,
       uefiKeyfileBytes: null,
     });
     expect("error" in selected).toBe(true);
+    if (!("error" in selected)) return;
+    expect(selected.error).toContain("binding factor required");
+  });
+});
+
+describe("probe-canonicalization-is-the-single-authority", () => {
+  // This is the test the rejection above LEANS ON, and without it that rejection is a
+  // plausibility argument rather than a checked one.
+  //
+  // Refusing boundary whitespace is only safe because no real device can present it: each
+  // source canonicalizes where the artefact is born, so the CLI never sees one. If a probe
+  // ever stops doing that, the rejection would begin refusing genuine hardware -- a
+  // self-inflicted outage that would look like a hardware fault. So the probes' guarantee
+  // is pinned here, next to the code that depends on it, rather than assumed.
+  it("diskutil parsing cannot emit boundary whitespace, even from padded input", () => {
+    const padded = "   Volume UUID:               ABCD-1234   \n";
+    const parsed = parseUuidFromDiskutilInfo(padded);
+    expect(parsed).not.toBeNull();
+    expect(parsed).toBe("ABCD-1234");
+    expect(parsed).toBe(parsed!.trim());
+  });
+
+  it("a diskutil value that survived with whitespace would be rejected as malformed", () => {
+    // Belt and braces: the UUID regex is total, so a spaced value cannot get through at
+    // all. This pins that it fails CLOSED (null) rather than falling back to the raw text.
+    expect(parseUuidFromDiskutilInfo("Volume UUID:  ABCD 1234\n")).toBeNull();
+  });
+
+  it("sysfs iSerial parsing strips the trailing newline at the source", () => {
+    const device = readUsbSysfsDevice("/sys/bus/usb/devices", "1-1", (path) =>
+      path.endsWith("/serial") ? "ZETA-STICK-001\n" : null,
+    );
+    expect(device.serial).toBe("ZETA-STICK-001");
+    expect(device.serial).toBe(device.serial!.trim());
   });
 });
