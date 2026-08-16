@@ -156,7 +156,14 @@
  *
  * ## Connection to the Adinkra physics
  *   - The [8,4,4] code is the concrete Adinkra code from AdinkraCode.fs.
- *   - The generator matrix rows are the 4 SUSY generators of the N=4 Adinkra graph.
+ *   - **N = 8, not 4** (label corrected 2026-08-15). This line previously read "the generator
+ *     matrix rows are the 4 SUSY generators of the N=4 Adinkra graph" — two errors in one clause.
+ *     N is the code LENGTH (8), not its dimension; and the generator ROWS are a GF(2) basis of the
+ *     code, not supercharges. The supercharges are the 8 COORDINATES: the adinkra is `GF(2)^8`
+ *     quotiented by this code, giving 16 nodes each of valence 8, one edge colour per `Q_I`, and
+ *     `C(8,2) = 28` anticommuting pairs. See `AdinkraCode.supercharges` / `.anticommutingPairs`.
+ *   - Nothing in this transport changes: it uses the matrix as a rate-1/2 erasure code over
+ *     4 data + 4 parity packets, which is a `k`-side fact and was always correct.
  *   - The parity packets are the "shadow" of the data packets — the joint parity bit
  *     that lives in the pair, not in either half (ferry-25 repair).
  *   - Using this code for UDP means the transport layer and the physics layer share

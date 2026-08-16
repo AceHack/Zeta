@@ -5,9 +5,15 @@ namespace Zeta.Core
 /// Aaron: *"we should be able to bit like adinkras on top of our 1-bit, or use our 1-bit to generate with
 /// adinkras."* The 1-bit identity stream (drift / `BitGan` / the phasor-qubit, the irreducible identity bit of
 /// the anti-Sybil arc) is grouped into 4-bit messages and encoded by `AdinkraCode` (the published Gates
-/// adinkra ↔ **doubly-even binary code** correspondence; the canonical N=4 generator = the [8,4] extended
-/// Hamming code, doubly-even + self-dual). Each 4 identity bits → an 8-bit **doubly-even codeword** — an
-/// **error-correcting layer over identity** generated *from* the 1-bit.
+/// adinkra ↔ **doubly-even binary code** correspondence; the canonical **N=8** generator = the [8,4,4]
+/// extended Hamming code, doubly-even + self-dual). Each 4 identity bits → an 8-bit **doubly-even
+/// codeword** — an **error-correcting layer over identity** generated *from* the 1-bit.
+///
+/// **N label corrected 2026-08-15:** this said "the canonical N=4 generator". That 4 was `k` — the code
+/// DIMENSION, i.e. `AdinkraCode.dimension`, the 4-bit message width this module chunks to — read as `N`.
+/// In the adinkra correspondence N is the code LENGTH, so N = 8 (`AdinkraCode.supercharges`). The
+/// chunking below is unaffected and was always right: it groups by `AdinkraCode.dimension` because that
+/// is the message width, and it already names that constant correctly.
 ///
 /// **Why this is more than cute:** Gates et al. famously found **doubly-even error-correcting codes embedded
 /// in the SUSY (adinkra) equations** — the result that fuelled the "is reality a simulation?" discussion. Our

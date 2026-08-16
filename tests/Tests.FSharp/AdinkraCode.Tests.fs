@@ -158,3 +158,89 @@ let ``MacWilliams transform of weight enumerator matches the known formula x^8 +
     for w in [1;2;3;5;6;7] do
         let c = transformed |> Map.tryFind w |> Option.defaultValue 0.0
         Assert.InRange(c, -1e-6, 1e-6)
+
+// ═══════════════════════════════════════════════════════════════════════════════════════════════
+// N IS THE CODE LENGTH, NOT THE DIMENSION (2026-08-15).
+//
+// `AdinkraCode.fs` and `BitAdinkra.fs` labelled this code "N=4" for its whole life. That 4 is `k`,
+// the dimension, read as `N`. Nothing checked the label, which is why it survived — so these tests
+// pin it, and they pin it STRUCTURALLY rather than by restating the constant: the quotient graph is
+// built from the codewords and MEASURED. Mutating `supercharges`, `adinkraNodes`, `adinkraValence`
+// or `anticommutingPairs` fails at least one of them.
+//
+// The coincidence that hid the error is named explicitly below: this adinkra and the plain 4-cube
+// adinkra of `AdinkraViz.fs` BOTH have 16 nodes. Node count does not discriminate. Valence does.
+//
+// Existence (the other invariant) is already pinned in `AdinkraIdentity.Tests.fs`
+// ("WHY N=8: the minimal length of a doubly-even self-dual code") — lengths 2/4/6 exhaustively
+// yield nothing, length 8 yields this code. It is not duplicated here.
+//
+// Anchor: Doran, Faux, Gates, Hübsch, Iga, Landweber, *Relating doubly-even error-correcting codes,
+// graphs, and irreducible representations of N-extended supersymmetry* (J. Phys. A 41, 2008;
+// arXiv:0806.0051) — N colours, N-cube quotient, code length = N. Gleason / Mallows–Sloane —
+// doubly-even self-dual ⇒ length ≡ 0 (mod 8).
+// ═══════════════════════════════════════════════════════════════════════════════════════════════
+
+/// Codewords as bitmasks over GF(2)^n (bit i = coordinate i).
+let private codeMasks : int list =
+    AK.allCodewords |> List.map (fun c -> Array.foldBack (fun b acc -> (acc <<< 1) ||| (b &&& 1)) c 0)
+
+/// Canonical representative of the coset v + C — the quotient GF(2)^n / C is the adinkra's nodes.
+let private coset (v: int) : int = codeMasks |> List.map (fun c -> v ^^^ c) |> List.min
+
+[<Fact>]
+let ``N is the code LENGTH: the quotient GF(2)^N / C is N-regular, so valence = 8 = length, not 4 = dimension`` () =
+    // The adinkra is the N-cube quotiented by C; its edge colours ARE the N coordinates. The
+    // quotient is N-regular exactly when the N weight-1 vectors fall in N distinct cosets, which
+    // holds because d = 4 >= 3. Valence is therefore N, measured rather than asserted.
+    let nodes = [ 0 .. (1 <<< AK.length) - 1 ] |> List.map coset |> List.distinct
+    let valences =
+        nodes
+        |> List.map (fun u -> [ 0 .. AK.length - 1 ] |> List.map (fun i -> coset (u ^^^ (1 <<< i))) |> List.distinct |> List.length)
+        |> List.distinct
+    Assert.Equal<int list>([ AK.length ], valences)              // every node: exactly 8 distinct neighbours
+    Assert.Equal(AK.supercharges, List.exactlyOne valences)      // N = measured valence
+    Assert.Equal(AK.adinkraValence, List.exactlyOne valences)
+    Assert.Equal(8, AK.supercharges)
+    Assert.NotEqual(AK.dimension, AK.supercharges)               // the conflation this test exists to block
+
+[<Fact>]
+let ``node count 2^(N-k) = 16 does NOT identify the adinkra — the 4-cube has 16 nodes too; valence separates them`` () =
+    // numerology-vs-number-theory, in place: 16 is a count both objects share, which is exactly why
+    // "N=4" survived. The 4-cube (AdinkraViz.fs) is 4-regular with 32 edges; this one is 8-regular
+    // with 64. Same cardinality, different structure.
+    let nodes = [ 0 .. (1 <<< AK.length) - 1 ] |> List.map coset |> List.distinct
+    Assert.Equal(AK.adinkraNodes, List.length nodes)
+    Assert.Equal(16, AK.adinkraNodes)
+    Assert.Equal(16, 1 <<< 4)                                    // the 4-cube's node count — the same number
+    let edges = List.length nodes * AK.adinkraValence / 2
+    Assert.Equal(64, edges)                                      // the 4-cube has 32; this is the discriminator
+    Assert.NotEqual(4 * (1 <<< 4) / 2, edges)
+
+[<Fact>]
+let ``anticommuting supercharge pairs are C(N,2) = C(8,2) = 28 — the retired N=4 label would have given 6`` () =
+    // {Q_I, Q_J} for I < J, one pair per unordered pair of edge colours.
+    let pairsFromColours =
+        [ for i in 0 .. AK.supercharges - 1 do for j in i + 1 .. AK.supercharges - 1 -> (i, j) ]
+    Assert.Equal(AK.anticommutingPairs, List.length pairsFromColours)
+    Assert.Equal(28, AK.anticommutingPairs)
+    Assert.NotEqual(4 * 3 / 2, AK.anticommutingPairs)            // 6 — the value the "N=4" label implied
+
+[<Fact>]
+let ``boson/fermion bipartition is well-defined on the quotient and splits 8/8 — a 16-node N=8 adinkra`` () =
+    // Coordinate-weight parity descends to the quotient iff every codeword has EVEN weight, which
+    // doubly-even gives for free. So the 16 nodes are 8 bosons + 8 fermions.
+    let parity = System.Collections.Generic.Dictionary<int, int>()
+    let mutable wellDefined = true
+    for v in 0 .. (1 <<< AK.length) - 1 do
+        let c = coset v
+        let p = (System.Numerics.BitOperations.PopCount(uint32 v)) % 2
+        match parity.TryGetValue c with
+        | true, q -> if q <> p then wellDefined <- false
+        | _ -> parity.[c] <- p
+    Assert.True(wellDefined, "weight parity must descend to GF(2)^8 / C (every codeword has even weight)")
+    let bosons = parity.Values |> Seq.filter (fun p -> p = 0) |> Seq.length
+    let fermions = parity.Values |> Seq.filter (fun p -> p = 1) |> Seq.length
+    Assert.Equal(AK.adinkraNodes / 2, bosons)
+    Assert.Equal(AK.adinkraNodes / 2, fermions)
+    Assert.Equal(8, bosons)
