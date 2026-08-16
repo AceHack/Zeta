@@ -1,0 +1,12 @@
+{
+  "pr_number": 10847,
+  "archive_path": "docs/history/pr-reviews/PR-10847-test-polarity-f2-the-lipschitz-smoothness-falsifier-run-on-the-consumers-two-rec.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:14:45.658Z",
+  "schema_version": "v1",
+  "commit_sha": "0a2ffac8ba46c7e5e9122f0c3c9bfabeef530cfe",
+  "title": "test(polarity): F2 — the Lipschitz smoothness falsifier, run on the consumers (two recorded breaks)",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:14:11Z",
+  "head_ref": "shadow/f2-polarity-filter-smoothness"
+}
