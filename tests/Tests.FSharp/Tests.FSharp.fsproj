@@ -245,6 +245,7 @@
     <Compile Include="SwarmBoardAnsi.Tests.fs" />
     <Compile Include="SimLoopTelemetry.Tests.fs" />
     <Compile Include="WheelRoom.Tests.fs" />
+    <Compile Include="Ctm.Tests.fs" />
     <Compile Include="Chip9Planes.Tests.fs" />
     <Compile Include="ZetaMax.Tests.fs" />
     <Compile Include="Chip9Phys.Tests.fs" />

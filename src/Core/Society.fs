@@ -79,6 +79,8 @@ module Society =
     [<Struct>]
     type Address = Address of string
 
+    /// **Reachable only from inside this file** — use `Society.compareAddress` /
+    /// `Society.canonicalSortAddresses` below from anywhere else, and see the note there for why.
     [<RequireQualifiedAccess>]
     module Address =
 
@@ -100,6 +102,25 @@ module Society =
         /// the byte-lock is gone.
         let canonicalSort (addresses: Address seq) : Address list =
             addresses |> Seq.sortWith compare |> List.ofSeq
+
+    /// **The treaty comparator, as a name that actually resolves.**
+    ///
+    /// `Society.Address.compare` does **not** compile from any other file, and the reason is a name
+    /// collision that is invisible at the declaration site: `Address` is a union **case constructor**
+    /// as well as a type and a module, so the path `Society.Address` binds to the case and the module
+    /// is shadowed. Verified directly against the built assembly on 2026-08-16 by the first consumer
+    /// (`Ctm.fs`): `error FS0039: The field, constructor or member 'compare' is not defined`.
+    ///
+    /// That made every "MUST sort through `Address.canonicalSort`" instruction in this file
+    /// unfollowable outside it — a check nobody could run. These two functions are the reachable
+    /// surface; they delegate, so there is one implementation and no second place to drift. They also
+    /// carry the **same names as the TypeScript mirror** (`compareAddress`,
+    /// `canonicalSortAddresses` in `society.ts`), which is how it should have read from the start.
+    let compareAddress (a: Address) (b: Address) : int = Address.compare a b
+
+    /// Canonical order for any address set entering a fold. The reachable name for
+    /// `Address.canonicalSort`; see `compareAddress` for why the alias exists.
+    let canonicalSortAddresses (addresses: Address seq) : Address list = Address.canonicalSort addresses
 
     /// An **addressed** outbound message. The recipient is an `Address` drawn from the society's own
     /// membership — there is no `Via`, no `Broker`, no `Hub` field, and that absence is the design.
