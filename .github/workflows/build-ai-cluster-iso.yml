@@ -627,9 +627,30 @@ jobs:
       - name: Install QEMU (aarch64 system emulator + EDK2 UEFI firmware)
         run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-arm qemu-efi-aarch64
 
+      # ── Blocking on a BOOT BREAK, advisory on a BUDGET overrun ────────
+      # `continue-on-error: true` used to sit here, and it made the step
+      # report a green check while the boot proof failed — a check that
+      # cannot fail. It is removed. But the step is NOT simply flipped to
+      # blocking, because this lane is pure TCG (the ubuntu-24.04-arm
+      # runners do not expose /dev/kvm) and a hard red on a slow runner
+      # would buy a flaky lane instead of a proof.
+      #
+      # Instead the harness now distinguishes the two, so the POLICY can:
+      #   exit 0 — BOOTED       -> pass
+      #   exit 1 — BOOT-FAILED  -> FAIL the job (positive evidence the image
+      #                           is broken: no bootable option, panic, or
+      #                           the guest exited before the prompt)
+      #   exit 3 — TIMEOUT      -> warn only (the guest was demonstrably
+      #                           still progressing when the clock ran out)
+      #
+      # Honest limit, stated rather than papered over: a boot break that
+      # manifests as a silent HANG past the bootloader still lands in the
+      # advisory TIMEOUT bucket. This gate catches images that fail to
+      # boot, not images that hang. The stage ladder printed in the log is
+      # what makes that case visible to a reader; tightening it further
+      # needs the CI boot to first land reliably under budget.
       - name: QEMU aarch64 boot smoke-test (081KTSZN10008QG0R00349SM6P slice 1 floor)
         working-directory: full-ai-cluster
-        continue-on-error: true # advisory — build+flake are load-bearing; login prompt is flaky in CI
         run: |
           set -euo pipefail
           mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
@@ -639,7 +660,29 @@ jobs:
           fi
           iso_abs=$(readlink -f "${iso_candidates[0]}")
           echo "Booting aarch64 ISO: $iso_abs"
-          bun ../src/Core.TypeScript/ci/qemu-boot-test.ts "$iso_abs" --arch aarch64
+
+          rc=0
+          bun ../src/Core.TypeScript/ci/qemu-boot-test.ts "$iso_abs" --arch aarch64 || rc=$?
+
+          case "$rc" in
+            0)
+              echo "aarch64 QEMU boot: **BOOTED**" >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            3)
+              echo "::warning::aarch64 QEMU boot: TIMEOUT -- the guest was still booting when the budget expired. This is a BUDGET result, not a boot failure; see the stage ladder in the step log for where the time went."
+              {
+                echo "aarch64 QEMU boot: **TIMEOUT (advisory)** -- budget exhausted while still booting."
+                echo ""
+                echo "This does NOT mean the image is broken. The harness reports BOOT-FAILED"
+                echo "(exit 1) for that, and that DOES fail the job."
+              } >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            *)
+              echo "::error::aarch64 QEMU boot: BOOT-FAILED (harness exit $rc) -- positive evidence the ISO did not boot, not a slow runner."
+              echo "aarch64 QEMU boot: **BOOT-FAILED** (harness exit $rc)" >> "$GITHUB_STEP_SUMMARY"
+              exit 1
+              ;;
+          esac
 
       - name: Upload aarch64 ISO artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
