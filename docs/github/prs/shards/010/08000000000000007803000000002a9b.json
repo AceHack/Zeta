@@ -1,0 +1,12 @@
+{
+  "pr_number": 10907,
+  "archive_path": "docs/history/pr-reviews/PR-10907-test-pages-reject-stale-bundles-and-invalid-wasm.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:01:56.244Z",
+  "schema_version": "v1",
+  "commit_sha": "bd0f9a9e779fde856d410eab016de24c44a7b240",
+  "title": "test(pages): reject stale bundles and invalid wasm",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:01:21Z",
+  "head_ref": "fix/pages-artifact-evidence"
+}
