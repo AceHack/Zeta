@@ -1,0 +1,12 @@
+{
+  "agents_active": 3,
+  "claims_pending": 3,
+  "entropy_heat": 0,
+  "entropy_state": 0,
+  "last_action": "explore",
+  "last_agent": "soraya",
+  "last_mode": "explore",
+  "t": "2026-08-14T13:26:55.324Z",
+  "ticks_24h": 16,
+  "total_events": 1309
+}
