@@ -18,6 +18,7 @@
  * That is Conjecture Z-7: binary_size ⊥ D_f.
  */
 import { useState, useEffect, useRef, useCallback } from "react";
+import { acceptsWasmResult, beginWasmExecution, cancelWasmExecution, idleWasmExecution, type WasmExecutionController } from "@/lib/wasmExecutionController";
 
 const pagesWasmUrl = (file: string): string => `${import.meta.env.BASE_URL}wasm/${file}`;
 const ASC_WASM_URL = pagesWasmUrl("dla-asc.wasm");
@@ -72,7 +73,7 @@ interface CompilerResult {
   df: number;
   clusterSize: number;
   elapsed: number;
-  status: "pending" | "loading" | "running" | "done" | "error";
+  status: "pending" | "loading" | "running" | "done" | "cancelled" | "error";
   error?: string;
   cells?: Uint8Array;
 }
@@ -98,8 +99,8 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
   );
   const onResultRef = useRef(onResult);
   useEffect(() => { onResultRef.current = onResult; }, [onResult]);
-  const runningRef = useRef(false);
-  const seedRef = useRef(seed);
+  const executionRef = useRef<WasmExecutionController>(idleWasmExecution);
+  const [execution, setExecution] = useState<WasmExecutionController>(idleWasmExecution);
 
   const updateResult = useCallback((i: number, patch: Partial<CompilerResult>) => {
     setResults(prev => prev.map((r, j) => j === i ? { ...r, ...patch } : r));
@@ -283,25 +284,42 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     return null;
   }, [updateResult]);
 
-  // ── Run all seven compilers in parallel ──────────────────────────────────────
-  useEffect(() => {
-    if (runningRef.current && seedRef.current === seed) return;
-    seedRef.current = seed;
-    runningRef.current = true;
-    setResults(COMPILERS.map(c => ({ ...c, df: 0, clusterSize: 0, elapsed: 0, status: "pending" as const })));
+  const stop = useCallback(() => {
+    const next = cancelWasmExecution(executionRef.current);
+    executionRef.current = next;
+    setExecution(next);
+    setResults(previous => previous.map(result => result.status === "done" || result.status === "error" ? result : { ...result, status: "cancelled" }));
+  }, []);
 
+  const start = useCallback(() => {
+    if (executionRef.current.running) return;
+    const next = beginWasmExecution(executionRef.current);
+    executionRef.current = next;
+    setExecution(next);
+    setResults(COMPILERS.map(c => ({ ...c, df: 0, clusterSize: 0, elapsed: 0, status: "pending" as const })));
+    const generation = next.generation;
     const run = async () => {
-      const [watDf, zigDf, emccDf, llvmDf, rustDf, ascDf, goDf] = await Promise.all([
-        runWAT(seed), runZig(seed), runEmcc(seed), runLLVM(seed), runRust(seed), runASC(seed), runGo(seed),
-      ]);
-      const dfs = [watDf, zigDf, emccDf, llvmDf, rustDf, ascDf, goDf].filter((d): d is number => d !== null && d > 0);
-      if (dfs.length > 0 && onResultRef.current) {
-        onResultRef.current(dfs.reduce((a, b) => a + b, 0) / dfs.length);
+      const runners = [runWAT, runZig, runEmcc, runLLVM, runRust, runASC, runGo] as const;
+      const values: number[] = [];
+      for (const runner of runners) {
+        if (!acceptsWasmResult(executionRef.current, generation)) return;
+        const value = await runner(seed);
+        if (!acceptsWasmResult(executionRef.current, generation)) return;
+        if (value !== null && value > 0) values.push(value);
+        await new Promise<void>(resolve => window.setTimeout(resolve, 0));
       }
-      runningRef.current = false;
+      if (!acceptsWasmResult(executionRef.current, generation)) return;
+      const complete = cancelWasmExecution(executionRef.current);
+      executionRef.current = complete;
+      setExecution(complete);
+      if (values.length > 0) onResultRef.current?.(values.reduce((a, b) => a + b, 0) / values.length);
     };
-    run();
+    void run();
   }, [seed, runWAT, runZig, runEmcc, runLLVM, runRust, runASC, runGo]);
+
+  useEffect(() => {
+    if (!executionRef.current.running) setResults(COMPILERS.map(c => ({ ...c, df: 0, clusterSize: 0, elapsed: 0, status: "pending" as const })));
+  }, [seed]);
 
   // ── Canvas refs (one per compiler) ───────────────────────────────────────────
   const canvasRefs = [
@@ -344,7 +362,12 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
       {/* Header */}
       <div style={{ fontSize: "0.6rem", color: "var(--muted-foreground)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-        Seven compilers · Same algorithm · Same sticking threshold ρ = 1/(3√2) · Same D_f · Conjecture Z-7
+        Six compiled modules · explicit start · sequential execution · cancellable between modules
+      </div>
+      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+        <button type="button" onClick={start} disabled={execution.running} style={{ padding: "0.5rem 0.75rem", border: "1px solid #2dd4bf", background: execution.running ? "rgba(45,212,191,0.1)" : "rgba(45,212,191,0.2)", color: "#ccfbf1", font: "inherit" }}>{execution.running ? "running…" : "run compiler experiment"}</button>
+        <button type="button" onClick={stop} disabled={!execution.running} style={{ padding: "0.5rem 0.75rem", border: "1px solid #f59e0b", background: "rgba(245,158,11,0.12)", color: "#fde68a", font: "inherit" }}>stop after current module</button>
+        <span style={{ alignSelf: "center", color: "var(--muted-foreground)", fontSize: "0.55rem" }}>No compiler module runs merely because this page rendered.</span>
       </div>
 
       {/* Compiler panels — 2×2 grid */}
@@ -371,6 +394,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
                 {r.status === "loading" && "loading…"}
                 {r.status === "running" && "running…"}
                 {r.status === "done" && `${r.elapsed.toFixed(2)}s`}
+                {r.status === "cancelled" && "cancelled"}
                 {r.status === "error" && "error"}
               </span>
             </div>
