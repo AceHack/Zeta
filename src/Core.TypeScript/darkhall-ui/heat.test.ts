@@ -19,8 +19,14 @@ import {
   MAX_TEMPERATURE_PPM,
   blackBodyRadianceReading,
   blackBodyRadiancePpm,
+  UNREPORTED_FIDELITY,
+  type ChannelFidelity,
+  type HeatRow,
+  type TemperatureReadout,
+  heatReceiptFromRow,
   heatReceiptPpm,
   heatReceiptScale,
+  reportedFidelity,
   temperatureBand,
   temperatureBandReading,
   temperatureReadout,
@@ -299,5 +305,127 @@ describe("blackBodyRadianceReading — stated domain: integers [0, MAX_TEMPERATU
     for (const bad of [-1, 1_000_001, Number.NaN, 0.5]) {
       expect(blackBodyRadianceReading(bad).fidelity).toBe("out-of-domain");
     }
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SITE E — the schema-evolution decision (081M010WYE5087G0R003J89QVF §2 +
+// 081M01400RZ087G0R000PS3VJG). Decision record:
+// docs/research/2026-08-14-how-a-published-four-oracle-schema-acquires-a-field.md
+//
+// Two properties are under test, and they are the two halves of the policy:
+//   1. an optional key's ABSENT-READING is distinguishable from every present
+//      reading, and in particular is never `exact`;
+//   2. `heatReceiptFromRow` no longer paints a blind counter as a genuine zero.
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("reportedFidelity — the declared absent-reading of an optional treaty key", () => {
+  it("returns 'exact' if and ONLY if the producer said 'exact'", () => {
+    // The whole invariant, exhaustive over the value domain plus absence.
+    const all: readonly (ChannelFidelity | undefined)[] = [
+      "exact",
+      "saturated",
+      "below-resolution",
+      "out-of-domain",
+      undefined,
+    ];
+
+    for (const value of all) {
+      expect(reportedFidelity(value) === "exact").toBe(value === "exact");
+    }
+  });
+
+  it("gives absence its own token rather than folding it into a measured one", () => {
+    const measured: readonly ChannelFidelity[] = ["exact", "saturated", "below-resolution", "out-of-domain"];
+
+    for (const value of measured) {
+      expect(reportedFidelity(value)).toBe(value);
+      expect(reportedFidelity(undefined)).not.toBe(reportedFidelity(value));
+    }
+
+    expect(reportedFidelity(undefined)).toBe(UNREPORTED_FIDELITY);
+    // Five distinct readings from four measured tokens plus absence.
+    expect(new Set([...measured, undefined].map(reportedFidelity)).size).toBe(5);
+  });
+
+  it("reads an F#-produced v1 readout — eight keys, no fidelity — as unreported, not as exact", () => {
+    // Verbatim shape of `TranscriptTemperatureReadout` as emitted by
+    // `src/Core/DarkHallRoomTranscript.fs` BEFORE the fidelity key was added.
+    // Instances of this shape are what makes the key optional rather than
+    // required: PR #10722 declared it required and this parse then produced
+    // `fidelity === undefined` under a type asserting one of four literals.
+    const publishedV1 = JSON.parse(
+      `{"schema":"zeta.temperature.readout.v1","source":"darkhall","temperaturePpm":62500,` +
+        `"band":"warm","heatPpm":62500,"uncertaintyPpm":0,"pressurePpm":62500,"attentionPpm":0}`,
+    ) as TemperatureReadout;
+
+    expect(Object.keys(publishedV1)).toHaveLength(8);
+    expect(publishedV1.fidelity).toBeUndefined();
+    expect(reportedFidelity(publishedV1.fidelity)).toBe("unreported");
+    expect(reportedFidelity(publishedV1.fidelity)).not.toBe("exact");
+  });
+});
+
+describe("heatReceiptFromRow — the receipt rails no longer paint a blind counter as a genuine zero", () => {
+  const row = (over: Partial<HeatRow>): HeatRow => ({
+    tick: 1,
+    roomName: "darkhall",
+    heatRejected: 0,
+    backpressured: 0,
+    storageErrors: 0,
+    heatKinds: [],
+    reasons: [],
+    ...over,
+  });
+
+  it("separates a blind heat counter from a genuinely idle one (pre-fix: byte-identical)", () => {
+    const idle = heatReceiptFromRow(row({ heatRejected: 0 }));
+    const blind = heatReceiptFromRow(row({ heatRejected: Number.NaN }));
+
+    // Every published VALUE key agrees — which is precisely why the ppm channel
+    // alone could never tell these apart.
+    expect(blind.heatPpm).toBe(idle.heatPpm);
+    expect(blind.outcome).toBe(idle.outcome);
+
+    expect(idle.heatFidelity).toBe("exact");
+    expect(blind.heatFidelity).toBe("out-of-domain");
+    expect(reportedFidelity(blind.heatFidelity)).not.toBe(reportedFidelity(idle.heatFidelity));
+  });
+
+  it("reports each rail independently rather than folding three counters into one verdict", () => {
+    // A fold to the worst fidelity would be a fresh non-injective encoder:
+    // (exact, exact, out-of-domain) and (out-of-domain, out-of-domain,
+    // out-of-domain) would render identically. That is the defect class this
+    // whole lane exists to remove, so the receipt carries one per rail.
+    const storageBlind = heatReceiptFromRow(row({ storageErrors: Number.NaN }));
+
+    expect(storageBlind.heatFidelity).toBe("exact");
+    expect(storageBlind.pressureFidelity).toBe("exact");
+    expect(storageBlind.storageFidelity).toBe("out-of-domain");
+
+    const allBlind = heatReceiptFromRow(
+      row({ heatRejected: Number.NaN, backpressured: Number.NaN, storageErrors: Number.NaN }),
+    );
+
+    expect(allBlind.storageFidelity).toBe(storageBlind.storageFidelity);
+    expect(allBlind.heatFidelity).not.toBe(storageBlind.heatFidelity);
+  });
+
+  it("marks a pinned rail as saturated rather than as a high reading", () => {
+    const pinned = heatReceiptFromRow(row({ backpressured: HEAT_RECEIPT_CEILING_UNITS + 1 }));
+    const atCeiling = heatReceiptFromRow(row({ backpressured: HEAT_RECEIPT_CEILING_UNITS }));
+
+    expect(pinned.pressurePpm).toBe(atCeiling.pressurePpm);
+    expect(atCeiling.pressureFidelity).toBe("exact");
+    expect(pinned.pressureFidelity).toBe("saturated");
+  });
+
+  it("leaves a healthy receipt reading exact on every rail — no false alarm", () => {
+    const healthy = heatReceiptFromRow(row({ heatRejected: 3, backpressured: 1, storageErrors: 0 }));
+
+    expect(healthy.heatFidelity).toBe("exact");
+    expect(healthy.pressureFidelity).toBe("exact");
+    expect(healthy.storageFidelity).toBe("exact");
+    expect(healthy.heatPpm).toBe(heatReceiptPpm(3));
   });
 });

@@ -106,7 +106,9 @@ module DarkHallRoomTranscript =
           [<JsonPropertyName("pressurePpm")>]
           PressurePpm: int
           [<JsonPropertyName("attentionPpm")>]
-          AttentionPpm: int }
+          AttentionPpm: int
+          [<JsonPropertyName("fidelity")>]
+          Fidelity: string }
 
     type TranscriptBlackBodyReadout =
         { [<JsonPropertyName("schema")>]
@@ -488,7 +490,8 @@ module DarkHallRoomTranscript =
           HeatPpm = readout.HeatPpm
           UncertaintyPpm = readout.UncertaintyPpm
           PressurePpm = readout.PressurePpm
-          AttentionPpm = readout.AttentionPpm }
+          AttentionPpm = readout.AttentionPpm
+          Fidelity = readout.Fidelity }
 
     let private coreTemperatureReadout (readout: TranscriptTemperatureReadout) : Zeta.Core.TemperatureReadout =
         { Schema = readout.Schema
@@ -498,7 +501,8 @@ module DarkHallRoomTranscript =
           HeatPpm = readout.HeatPpm
           UncertaintyPpm = readout.UncertaintyPpm
           PressurePpm = readout.PressurePpm
-          AttentionPpm = readout.AttentionPpm }
+          AttentionPpm = readout.AttentionPpm
+          Fidelity = readout.Fidelity }
 
     let private transcriptTemperatureReadoutOfCore
         (readout: Zeta.Core.TemperatureReadout)
@@ -510,7 +514,8 @@ module DarkHallRoomTranscript =
           HeatPpm = readout.HeatPpm
           UncertaintyPpm = readout.UncertaintyPpm
           PressurePpm = readout.PressurePpm
-          AttentionPpm = readout.AttentionPpm }
+          AttentionPpm = readout.AttentionPpm
+          Fidelity = readout.Fidelity }
 
     let private transcriptBlackBodyReadoutOfCore (readout: Zeta.Core.BlackBodyReadout) : TranscriptBlackBodyReadout =
         { Schema = readout.Schema

@@ -711,7 +711,7 @@ export function collectSourceFiles(root: string, dirs: readonly string[]): reado
 }
 
 function exceptionKey(schema: string, key: string, presentIn: string, absentFrom: string): string {
-  return `${schema} ${key} ${presentIn} ${absentFrom}`;
+  return `${schema}\u0000${key}\u0000${presentIn}\u0000${absentFrom}`;
 }
 
 export function compare(

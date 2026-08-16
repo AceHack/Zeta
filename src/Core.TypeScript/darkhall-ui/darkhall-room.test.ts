@@ -61,6 +61,7 @@ const heatTreaty = JSON.parse(
     readonly attentionPpm: number;
     readonly temperaturePpm: number;
     readonly band: "cold" | "warm" | "hot" | "critical";
+    readonly fidelity: "exact" | "saturated" | "below-resolution" | "out-of-domain";
   }[];
   readonly blackBodyCases: readonly {
     readonly id: string;
@@ -434,6 +435,15 @@ describe("Dark Hall CSS room UI", () => {
       signals: ["denied"],
       heatKinds: ["room-boundary.door-denied"],
       reasons: ["darkhall -> glass refused"],
+      // Appended by the schema-evolution decision
+      // (docs/research/2026-08-14-how-a-published-four-oracle-schema-acquires-a-field.md):
+      // three OPTIONAL per-rail fidelity keys on `zeta.heat.receipt.v1`. Every
+      // value key above is unchanged — this row is a healthy receipt, so all
+      // three read `exact`, and the diff against the pre-decision expectation is
+      // purely additive. `081M01400RZ087G0R000PS3VJG`.
+      heatFidelity: "exact",
+      pressureFidelity: "exact",
+      storageFidelity: "exact",
     });
     expect(heatReceiptFromRow(horizonHeat).outcome).toBe("storage-error");
     expect(heatReceiptFromRow(horizonHeat).policy).toBe("host-export");
@@ -671,6 +681,11 @@ describe("Dark Hall CSS room UI", () => {
         temperaturePpm: vector.temperaturePpm,
         band: vector.band,
         attentionPpm: vector.attentionPpm,
+        // The TypeScript encoder must agree with the committed treaty vector on
+        // `fidelity` too, not only on the value keys. This is the cross-oracle
+        // half: `src/Core/Heat.fs` `TemperatureReadout.fidelityOfPpm` is pinned
+        // to the same rows by `QSharpOracle.Tests.fs`.
+        fidelity: vector.fidelity,
       });
     }
 

@@ -342,6 +342,38 @@ module TemperatureBand =
         | TemperatureBand.Critical -> 3
 
 
+/// Why a ppm channel value may fail to faithfully represent the input it
+/// encodes. The mirror of TypeScript's `ChannelFidelity`
+/// (`src/Core.TypeScript/darkhall-ui/heat.ts`).
+///
+/// `Exact` is the only case that asserts the channel round-trips the input's
+/// ordering. The other three are the DECLARED half of the injectivity
+/// discipline: a saturating or quantising encoder is honest exactly when it
+/// says so.
+///
+/// F# reaches three of the four cases. `BelowResolution` is not reachable from
+/// `TemperatureReadout` (the ppm lane has no sub-unit quantisation to declare)
+/// and is present so the token alphabet is one alphabet across oracles rather
+/// than two that happen to overlap.
+[<RequireQualifiedAccess>]
+type ChannelFidelity =
+    | Exact
+    | Saturated
+    | BelowResolution
+    | OutOfDomain
+
+
+[<RequireQualifiedAccess>]
+module ChannelFidelity =
+
+    let token =
+        function
+        | ChannelFidelity.Exact -> "exact"
+        | ChannelFidelity.Saturated -> "saturated"
+        | ChannelFidelity.BelowResolution -> "below-resolution"
+        | ChannelFidelity.OutOfDomain -> "out-of-domain"
+
+
 type TemperatureReadout =
     { Schema: string
       Source: string
@@ -350,7 +382,11 @@ type TemperatureReadout =
       HeatPpm: int
       UncertaintyPpm: int
       PressurePpm: int
-      AttentionPpm: int }
+      AttentionPpm: int
+      /// What the clamp absorbed. Declared last so the emitted JSON key order is
+      /// unchanged and the wire diff against a pre-fidelity `v1` instance is
+      /// purely additive.
+      Fidelity: string }
 
 
 type BlackBodyReadout =
@@ -388,6 +424,32 @@ module TemperatureReadout =
         else
             TemperatureBand.Critical
 
+    /// What `clampPpm` absorbed across the four input channels.
+    ///
+    /// Mirrors TypeScript's rule in `temperatureReadout`, restricted to the
+    /// inputs an `int` can actually hold: a negative input is out of the treaty
+    /// domain `[0, MaxPpm]`; an input above `MaxPpm` saturates. `NaN` and
+    /// `Infinity` — the motivating cases on the TypeScript side — are not
+    /// representable in `int`, so `OutOfDomain` here is reached by the negative
+    /// branch alone.
+    ///
+    /// Out-of-domain outranks saturated: an input that is not a measurement at
+    /// all is a worse fault than one the channel merely could not hold.
+    ///
+    /// This is the half of the fidelity question that is NOT a TypeScript
+    /// encoder concern. `max 0 |> min MaxPpm` discarded a negative and an
+    /// above-ceiling input exactly as silently as the TypeScript clamp did
+    /// before PR #10722, and nothing said so.
+    let fidelityOfPpm (heatPpm: int) (uncertaintyPpm: int) (pressurePpm: int) (attentionPpm: int) : ChannelFidelity =
+        let inputs = [ heatPpm; uncertaintyPpm; pressurePpm; attentionPpm ]
+
+        if inputs |> List.exists (fun value -> value < 0) then
+            ChannelFidelity.OutOfDomain
+        elif inputs |> List.exists (fun value -> value > MaxPpm) then
+            ChannelFidelity.Saturated
+        else
+            ChannelFidelity.Exact
+
     let thermalPpm (heatPpm: int) (uncertaintyPpm: int) (pressurePpm: int) : int =
         [ heatPpm; uncertaintyPpm; pressurePpm ]
         |> List.map clampPpm
@@ -414,7 +476,10 @@ module TemperatureReadout =
           HeatPpm = heat
           UncertaintyPpm = uncertainty
           PressurePpm = pressure
-          AttentionPpm = attention }
+          AttentionPpm = attention
+          Fidelity =
+            fidelityOfPpm heatPpm uncertaintyPpm pressurePpm attentionPpm
+            |> ChannelFidelity.token }
 
     let ofHeatSignature (signature: HeatSignature) : TemperatureReadout =
         let pressure =

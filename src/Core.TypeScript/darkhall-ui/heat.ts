@@ -99,6 +99,32 @@ export interface HeatReceipt {
   readonly signals: readonly HeatSignal[];
   readonly heatKinds: readonly string[];
   readonly reasons: readonly string[];
+  /**
+   * The faithfulness of `heatPpm` / `pressurePpm` / `storagePpm`, one per rail.
+   *
+   * `081M01400RZ087G0R000PS3VJG`: the receipt rails painted a blind counter as
+   * a genuine zero. `heatReceiptFromRow` encoded through {@link heatReceiptPpm},
+   * which discards the `fidelity` {@link heatReceiptScale} had already computed,
+   * so `heatRejected: NaN` and `heatRejected: 0` both rendered `heatPpm: 0` and
+   * no reader could separate them.
+   *
+   * **Three keys, not one folded `fidelity`**, deliberately. The receipt
+   * publishes three independent counters, so a fold to the worst of them would
+   * be a fresh non-injective encoder — `(exact, exact, out-of-domain)` and
+   * `(out-of-domain, out-of-domain, out-of-domain)` would render identically —
+   * which is the exact defect class this lane has spent the week removing. One
+   * fidelity per independently-encoded channel value.
+   *
+   * **Optional, with the same declared absent-reading** as
+   * `TemperatureReadout.fidelity`: absence means *not reported*, never *fine*.
+   * Read through {@link reportedFidelity}. Optional rather than required
+   * because `zeta.heat.receipt.v1` is published and instances without these
+   * keys already exist — see
+   * `docs/research/2026-08-14-how-a-published-four-oracle-schema-acquires-a-field.md`.
+   */
+  readonly heatFidelity?: ChannelFidelity;
+  readonly pressureFidelity?: ChannelFidelity;
+  readonly storageFidelity?: ChannelFidelity;
 }
 
 export interface TemperatureReadout {
@@ -117,8 +143,51 @@ export interface TemperatureReadout {
    * integer — including `NaN` and `Infinity`, both of which the clamp silently
    * turned into `0`, i.e. into `cold`. A dead sensor read as a calm room; this
    * field is what separates the two.
+   *
+   * **OPTIONAL, and the `?` is load-bearing** — see
+   * `docs/research/2026-08-14-how-a-published-four-oracle-schema-acquires-a-field.md`.
+   * `zeta.temperature.readout.v1` is a PUBLISHED id: instances of it already
+   * exist without this key (every transcript `src/Core/Heat.fs` emitted before
+   * the key was added, and the `temperatureCases` of the Q# treaty). PR #10722
+   * declared it REQUIRED here while F#'s record kept eight fields, which made
+   * this type FALSE about its own wire format — `JSON.parse(fsharpTranscript)`
+   * yields `fidelity === undefined` while the type asserts one of four string
+   * literals. Optional is what makes the type true.
+   *
+   * **Absent-reading, declared:** absence means *this producer did not report*,
+   * NEVER *this producer reports the channel is faithful*. Read it through
+   * {@link reportedFidelity} rather than testing it directly, so that
+   * `undefined` cannot be mistaken for `exact` — the exact conflation that
+   * `081M01400RZ087G0R000PS3VJG` is about.
    */
-  readonly fidelity: ChannelFidelity;
+  readonly fidelity?: ChannelFidelity;
+}
+
+/**
+ * What an absent `fidelity` reads as.
+ *
+ * A published schema's optional key needs a declared absent-reading or the
+ * optionality is a dodge: a reader that treats "not reported" as "fine" has
+ * reintroduced the fault the key was added to fix, one level up. This is the
+ * same refusal as `TemperatureBandReading.verdict` and
+ * `society-heat-readout.ts` `declareBand` publishing `"indeterminate"` rather
+ * than a band its evidence cannot support.
+ */
+export const UNREPORTED_FIDELITY = "unreported";
+
+export type ReportedFidelity = ChannelFidelity | typeof UNREPORTED_FIDELITY;
+
+/**
+ * Read an optional fidelity as a total value.
+ *
+ * **The invariant, and it is the whole point:** the result is `"exact"` if and
+ * only if the producer said `"exact"`. An absent value becomes
+ * `"unreported"` — a fifth token that is distinguishable from all four
+ * measured ones, so no renderer, operator or agent can cite a faithfulness
+ * nothing measured.
+ */
+export function reportedFidelity(fidelity: ChannelFidelity | undefined): ReportedFidelity {
+  return fidelity ?? UNREPORTED_FIDELITY;
 }
 
 export interface BlackBodyReadout {
@@ -357,6 +426,13 @@ export function heatReceiptFromRow(
 ): HeatReceipt {
   const signals = heatSignals(row);
 
+  // Encode through `heatReceiptScale`, not `heatReceiptPpm`. The accessor
+  // computes the fidelity and then throws it away, which is how a blind counter
+  // came to render as a genuine zero (081M01400RZ087G0R000PS3VJG).
+  const heat = heatReceiptScale(row.heatRejected, options.maxUnits);
+  const pressure = heatReceiptScale(row.backpressured, options.maxUnits);
+  const storage = heatReceiptScale(row.storageErrors, options.maxUnits);
+
   return {
     schema: HEAT_RECEIPT_SCHEMA,
     source: options.source ?? row.roomName,
@@ -364,12 +440,15 @@ export function heatReceiptFromRow(
     roomName: row.roomName,
     outcome: receiptOutcome(signals, row),
     policy: receiptPolicy(signals),
-    heatPpm: heatReceiptPpm(row.heatRejected, options.maxUnits),
-    pressurePpm: heatReceiptPpm(row.backpressured, options.maxUnits),
-    storagePpm: heatReceiptPpm(row.storageErrors, options.maxUnits),
+    heatPpm: heat.ppm,
+    pressurePpm: pressure.ppm,
+    storagePpm: storage.ppm,
     signals,
     heatKinds: row.heatKinds,
     reasons: row.reasons,
+    heatFidelity: heat.fidelity,
+    pressureFidelity: pressure.fidelity,
+    storageFidelity: storage.fidelity,
   };
 }
 
