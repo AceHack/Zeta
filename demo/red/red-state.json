@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAtIso": "2026-08-16T06:36:44.370Z",
-  "commit": "02a8f5f9b",
+  "generatedAtIso": "2026-08-16T12:36:28.808Z",
+  "commit": "4cf7be051",
   "totals": {
     "findings": 7,
     "bySeverity": {
@@ -39,79 +39,79 @@
           "summary": "7 of the last 40 runs on main failed.",
           "findings": [
             {
-              "id": "ci:31931748240",
+              "id": "ci:31947420614",
               "title": "pr-manifest-integrity",
               "severity": "failing",
-              "locus": "02a8f5f9b — 2026-08-16 06:34",
+              "locus": "4cf7be051 — 2026-08-16 12:34",
               "evidence": [
                 "pr-manifest-integrity",
-                "run id 31931748240"
+                "run id 31947420614"
               ],
               "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
             },
             {
-              "id": "ci:31931631913",
+              "id": "ci:31947067445",
               "title": "agent-heartbeat",
               "severity": "failing",
-              "locus": "02a8f5f9b — 2026-08-16 06:31",
+              "locus": "4cf7be051 — 2026-08-16 12:26",
               "evidence": [
                 "agent-heartbeat",
-                "run id 31931631913"
+                "run id 31947067445"
               ],
               "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
             },
             {
-              "id": "ci:31930895606",
+              "id": "ci:31946255702",
               "title": "agent-heartbeat",
               "severity": "failing",
-              "locus": "02a8f5f9b — 2026-08-16 06:13",
+              "locus": "4cf7be051 — 2026-08-16 12:08",
               "evidence": [
                 "agent-heartbeat",
-                "run id 31930895606"
+                "run id 31946255702"
               ],
               "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
             },
             {
-              "id": "ci:31930208767",
+              "id": "ci:31945487761",
               "title": "agent-heartbeat",
               "severity": "failing",
-              "locus": "02a8f5f9b — 2026-08-16 05:56",
+              "locus": "4cf7be051 — 2026-08-16 11:51",
               "evidence": [
                 "agent-heartbeat",
-                "run id 31930208767"
+                "run id 31945487761"
               ],
               "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
             },
             {
-              "id": "ci:31929657922",
+              "id": "ci:31944885985",
               "title": "agent-heartbeat",
               "severity": "failing",
-              "locus": "02a8f5f9b — 2026-08-16 05:42",
+              "locus": "4cf7be051 — 2026-08-16 11:38",
               "evidence": [
                 "agent-heartbeat",
-                "run id 31929657922"
+                "run id 31944885985"
               ],
               "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
             },
             {
-              "id": "ci:31929012003",
+              "id": "ci:31944242788",
               "title": "agent-heartbeat",
               "severity": "failing",
-              "locus": "02a8f5f9b — 2026-08-16 05:26",
+              "locus": "4cf7be051 — 2026-08-16 11:24",
               "evidence": [
                 "agent-heartbeat",
-                "run id 31929012003"
+                "run id 31944242788"
               ],
               "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
             },
             {
-              "id": "ci:31928383856",
+              "id": "ci:31943430967",
               "title": "agent-heartbeat",
               "severity": "failing",
-              "locus": "02a8f5f9b — 2026-08-16 05:10",
+              "locus": "4cf7be051 — 2026-08-16 11:06",
               "evidence": [
                 "agent-heartbeat",
-                "run id 31928383856"
+                "run id 31943430967"
               ],
               "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
             }
