@@ -1,0 +1,12 @@
+{
+  "pr_number": 10940,
+  "archive_path": "docs/history/pr-reviews/PR-10940-docs-workitems-file-the-reticulum-itransport-stub-left-by-10934.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:49:48.330Z",
+  "schema_version": "v1",
+  "commit_sha": "78a785749bb866c48df303c7e1116b8453f27993",
+  "title": "docs(workitems): file the Reticulum ITransport stub left by #10934",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:49:15Z",
+  "head_ref": "shadow/file-reticulum-stub-workitem"
+}
