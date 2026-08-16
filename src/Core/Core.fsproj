@@ -316,6 +316,7 @@
     <Compile Include="Society.fs" />
     <Compile Include="Ctm.fs" />
     <Compile Include="Levels.fs" />
+    <Compile Include="AggregationRule.fs" />
     <Compile Include="MoneyVelocityOracle.fs" />
     <Compile Include="Chip8.fs" />
     <Compile Include="Chip8Cow.fs" />
