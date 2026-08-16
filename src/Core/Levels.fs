@@ -158,6 +158,38 @@ module Levels =
             |> List.filter (fun (_, (level, view)) -> not (law level view))
             |> List.map fst
 
+        /// **Lift a law about a PAIR of adjacent rungs over the whole ladder.** `holdsAtEveryLevel`
+        /// quantifies a law about *one* level; an obligation the outer rung owes the inner one is a
+        /// relation between *two*, so it needs this lift and not a second module (`Obligations`
+        /// below is written entirely against it).
+        ///
+        /// The pairs are `(inner, outer)`, matching `ladderIsWellFormed`'s reading of the ladder as
+        /// innermost-first. **A ladder of fewer than two rungs is `false`, not `true`**: there is no
+        /// adjacent pair, so there is no asymmetry to check, and reporting a vacuous pass would be
+        /// exactly the check-that-cannot-fail this file removes elsewhere.
+        let holdsBetweenAdjacentLevels
+            (law:
+                Society.ISociety<'view, 'msg> * 'view -> Society.ISociety<'view, 'msg> * 'view -> bool)
+            (ladder: Ladder<'view, 'msg>)
+            : bool =
+            match ladder with
+            | []
+            | [ _ ] -> false
+            | _ -> ladder |> List.pairwise |> List.forall (fun (inner, outer) -> law inner outer)
+
+        /// The same, naming **which adjacent pairs fail** by the index of their inner rung. A ladder
+        /// that inverts at exactly one joint is a different fact from one that inverts everywhere.
+        let failingAdjacentPairs
+            (law:
+                Society.ISociety<'view, 'msg> * 'view -> Society.ISociety<'view, 'msg> * 'view -> bool)
+            (ladder: Ladder<'view, 'msg>)
+            : int list =
+            ladder
+            |> List.pairwise
+            |> List.indexed
+            |> List.filter (fun (_, (inner, outer)) -> not (law inner outer))
+            |> List.map fst
+
         /// **Exit at every rung.** `k &gt;= 2` is the Hirschman discriminator: a level with exactly one
         /// route to a destination is one whose members must defer, whether or not anyone appointed
         /// the node they defer to. Checked at *every* rung because a ladder with exit at the top and
@@ -300,3 +332,281 @@ module Levels =
             : 'msg list =
             messages
             |> List.filter (fun m -> not (Society.SocietyLaws.outboundStaysInSociety level view m))
+
+    /// **Obligations — the dual of dominance. The level that can imitate its parts owes them more.**
+    ///
+    /// `Aggregation.canImitateEveryProjection` above is the **capacity** half: the Dominance Lift
+    /// Theorem (PR #10945) says an aggregation rule beats its best part exactly when it can imitate
+    /// that part. Aaron's observation, 2026-08-14, is that this is precisely the capacity to *stomp*,
+    /// and that it must come paired:
+    ///
+    /// &gt; *"the one thing we still need to make sure that society knows it's greater so it has
+    /// &gt; stricter rules since the relationship [is] asymmetric and also same for world to society,
+    /// &gt; the more powerful needs to have some restrictions not to be able to stomp on the less
+    /// &gt; powerful."*
+    ///
+    /// So: **power and restriction rise together**. The predicates here are what the dominating rung
+    /// owes the rung below, and they are deliberately **one family quantified over levels**
+    /// (`LevelLaws.holdsBetweenAdjacentLevels`) rather than a society module and a world module — the
+    /// same reason there is no `CtmDominance` and no `WorldDominance`. A society's obligation to a
+    /// member and a world's obligation to a society are the same law at different rungs.
+    ///
+    /// **Nothing here restates or weakens the Dominance Lift Theorem**, and nothing here takes a
+    /// correlation parameter — `rho` is not a sufficient statistic for that verdict (the `m = 9`,
+    /// `rho = 0.2495` counterexample sits *inside* the published safe `rho*(9) = 0.25`), so a
+    /// threshold-shaped obligation would be unsound in the same way.
+    ///
+    /// ## Asymmetric by construction — why these are not the society laws again
+    ///
+    /// `SocietyLaws` are **symmetric**: every level must merge idempotently, route only through
+    /// members, fold in the treaty order. Every rung owes them equally. The predicates below are the
+    /// opposite shape — each is a relation between **two** rungs in which the outer one is held to a
+    /// standard the inner one is not. That asymmetry is the content; a version that applied equally
+    /// to both would be a `SocietyLaws` entry and would say nothing about power.
+    ///
+    /// ## What is deliberately NOT here (and what the interface would need)
+    ///
+    /// - **Floor non-violation** — *"I cannot buy my upside with your downside"*
+    ///   (`src/Core.TypeScript/planning/empowerment-bound.ts`). **Undecidable over these interfaces.**
+    ///   `trustBound` is a function of a member's `CalibrationPosterior`, and `ISociety` has no way to
+    ///   read one: `Members` returns addresses, `Admit` returns a `Reading`, and neither carries a
+    ///   posterior or a declared floor. It would need one new accessor — a member-declared floor on
+    ///   `IMember` (declared, never inferred, per that file's hard constraint) — and until it exists
+    ///   the honest report is that the obligation cannot be checked here. Writing it against a
+    ///   caller-supplied posterior would have moved the whole claim into the caller's hands while
+    ///   looking like a law. (`externalitySafe` in that file already carries a labelled units proxy
+    ///   for the same missing operator; a second unlabelled one is not an improvement.)
+    /// - **Expulsion / forced exit** — whether an aggregate may remove a member is a **values call**
+    ///   under §11, not an engineering one, and the interface cannot distinguish a consented departure
+    ///   from a banishment for the same reason `noConfiscation` below needs its owner-witness: there
+    ///   is no sender on a message. Left to policy rather than decided here.
+    ///
+    /// **Register: `unmetered`** (`toy-is-free-metered-must-be-earned`). These are decidable
+    /// predicates with falsifiers in `tests/Tests.FSharp/LevelObligations.Tests.fs` — each one goes
+    /// red on a constructed violator — but **no implementation is gated on them yet**, so nothing in
+    /// production fails when one is violated. Promotion to `metered` needs a consumer that refuses.
+    ///
+    /// Anchors (Beacon): Hirschman (1970), *Exit, Voice, and Loyalty* — exit is what disciplines a
+    /// concentration, and removing it is the stomp · Goodhart (1975) — a self-reported scrutiny count
+    /// becomes a target, which is why `attestedSources` is labelled as necessary and not sufficient ·
+    /// Klyubin, Polani and Nehaniv (2005), empowerment — the floor obligation that could not be
+    /// checked here · Blum and Blum, PNAS 119(21) e2115934119 (2022) — the CTM whose newborn has no
+    /// exit at all.
+    [<RequireQualifiedAccess>]
+    module Obligations =
+
+        // ── 1. Exit preservation ──────────────────────────────────────────────────────────────
+
+        /// **The aggregate's action must not REDUCE a part's exit.** Returns the messages that do —
+        /// evidence, not a bare `false`, in the shape `WorldLaws.openWitnesses` already uses.
+        ///
+        /// Everything is caller-supplied and nothing is reached for: `exitCount` reads how many ways
+        /// out exist from a view, `act` applies one message to a view. That generality is the point —
+        /// the same predicate covers a society's `Routes` (exit within the society) and a CTM's
+        /// `Links` (exit that bypasses STM), which are the same notion one rung apart and would
+        /// otherwise have needed two laws.
+        ///
+        /// Each message is applied to the **same** starting view rather than folded, because the
+        /// obligation is about what a single action of the aggregate may do. A fold would test a
+        /// trajectory and could hide a reduction behind a later restoration.
+        ///
+        /// **This is a monotonicity obligation, not a threshold.** It deliberately does *not* say the
+        /// part has exit — see `nothingToPreserve` for why that distinction is the whole newborn-CTM
+        /// question.
+        let exitReductionWitnesses
+            (exitCount: 'view -> int)
+            (act: 'view -> 'msg -> 'view)
+            (view: 'view)
+            (messages: 'msg list)
+            : 'msg list =
+            let before = exitCount view
+            messages |> List.filter (fun m -> exitCount (act view m) < before)
+
+        /// `exitReductionWitnesses` with no witnesses. The obligation itself.
+        let exitIsPreserved
+            (exitCount: 'view -> int)
+            (act: 'view -> 'msg -> 'view)
+            (view: 'view)
+            (messages: 'msg list)
+            : bool =
+            List.isEmpty (exitReductionWitnesses exitCount act view messages)
+
+        /// **The honest hole: a part with no exit has none to preserve, so this obligation is
+        /// VACUOUS for it — and that is exactly the newborn's position.**
+        ///
+        /// `Ctm.fs` records the finding rather than patching it: *"The CTM has no links (between
+        /// processors) at birth"*, links form Hebbian-ly, so at `t = 0` every crossing is mediated by
+        /// the single STM slot and `CtmLaws.hasUnmediatedExit` is **false**. Nothing here weakens
+        /// that; the `Ctm.Tests` assertion that a newborn has no exit still passes unchanged.
+        ///
+        /// What this function adds is the observation that the *obligation* and the *level* are
+        /// different predicates, and that they fail in opposite directions:
+        ///
+        /// | | newborn (exit = 0) | adult (exit = k) |
+        /// |---|---|---|
+        /// | `CtmLaws.hasUnmediatedExit` — has the part earned exit? | **false** | true |
+        /// | `exitIsPreserved` — did the aggregate take any? | **true, vacuously** | falsifiable |
+        ///
+        /// So preservation passes at birth **because there is nothing left to take**, which is the
+        /// most dangerous configuration in the file and the one a bare `true` would conceal. The
+        /// resolution is *not* an age qualifier on the predicate — an `if age &gt; n` would make the law
+        /// silent exactly where the asymmetry is largest. It is to **report the vacuity** so a caller
+        /// can see that a pass carried no information, and to note that at zero exit the load falls
+        /// entirely on the obligations that still have teeth there (`burdenIsOnTheDominantLevel` and
+        /// `noConfiscation` both bite at `t = 0`).
+        let nothingToPreserve (exitCount: 'view -> int) (view: 'view) : bool = exitCount view <= 0
+
+        /// **Exit preservation for a society, over its own offered routes.** The specialisation of
+        /// `exitIsPreserved` whose `exitCount` is the number of *distinct* next hops toward
+        /// `destination` and whose `act` is one delivery.
+        ///
+        /// Scope, stated because a reader will otherwise assume more: this covers the exit the
+        /// aggregate **mediates**. A part's private `IMember.Peers` is read from the *part's* view,
+        /// which the aggregate's action does not touch and this predicate cannot see — so an
+        /// out-of-band removal is outside the witness set. The aggregate cannot take what it does not
+        /// route, but neither can this check see it if some other channel does.
+        let societyExitIsPreserved
+            (level: Society.ISociety<'view, 'msg>)
+            (view: 'view)
+            (destination: Society.Address)
+            (messages: 'msg list)
+            : bool =
+            let exitCount (v: 'view) =
+                level.Routes(v, destination) |> List.distinct |> List.length
+
+            let act (v: 'view) (m: 'msg) =
+                fst ((level :> Society.IMember<'view, 'msg>).Deliver(v, m))
+
+            exitIsPreserved exitCount act view messages
+
+        // ── 2. Asymmetric burden of proof / scrutiny scaling ──────────────────────────────────
+
+        /// **Evidential load, read off a `Reading`.** Only `Deduplicated` names a number of distinct
+        /// provenance keys; every other case is scored **0**, including `Unmeasured`.
+        ///
+        /// That last part is the design. `Society.fs` says `Unmeasured` is *"the honest default —
+        /// never read as 'fine'"*, so an aggregate that has measured nothing must not out-rank a
+        /// member that measured three sources. `NotAttested` counts atoms, not sources, and by its own
+        /// docstring could not rule out redundancy; `SourcesConflict`, `AboveThreshold` and
+        /// `SameSourceAsKnown` are facts of other kinds and carry no source count. Scoring any of them
+        /// above zero would let an aggregate discharge its burden by returning a different *sort* of
+        /// answer.
+        ///
+        /// **Necessary, not sufficient — two limits, both already on file.** (a) `Deduplicated`'s own
+        /// docstring: *"deduplication removes REDUNDANCY, never CORRELATION, and is not a certificate
+        /// of independence"*, so a high count can still be one echo counted many times. (b) The count
+        /// is **self-reported** by the level's own `Admit`, so it is Goodhart-exposed the moment
+        /// anything depends on it — the influence-weighted-scrutiny doc names this exactly, and says
+        /// the measure must be effect-derived rather than self-declared. Neither is fixable at this
+        /// interface; both are reasons to read a pass as "the necessary condition held".
+        let attestedSources (reading: Society.Reading) : int =
+            match reading with
+            | Society.Deduplicated sources -> max 0 sources
+            | Society.Unmeasured
+            | Society.NotAttested _
+            | Society.SourcesConflict _
+            | Society.AboveThreshold _
+            | Society.SameSourceAsKnown _ -> 0
+
+        /// **The burden falls on the level that will prevail.** Both rungs read the *same* subject;
+        /// the outer one must bring **strictly more** attested sources than the inner one.
+        ///
+        /// Strict, not `&gt;=`: equal bars are the status quo the
+        /// `influence-weighted-scrutiny` doc was written against — *"the founder's PR gets the least
+        /// real scrutiny"* — and an obligation satisfied by treating the powerful exactly like the
+        /// powerless is not an obligation. It is also why the comparison is on a shared subject: two
+        /// rungs answering about different candidates are not disagreeing, and requiring more evidence
+        /// for an unrelated claim would be arithmetic rather than fairness.
+        ///
+        /// Note the direction this runs. The outer rung prevails **by default**, because its `Admit`
+        /// is the one that gates the inner rung's membership; the inner rung has no reciprocal gate.
+        /// That default is precisely why the evidential load is placed on the outer one — the burden
+        /// goes where the power already is.
+        let burdenIsOnTheDominantLevel
+            (inner: Society.ISociety<'view, 'msg>, innerView: 'view)
+            (outer: Society.ISociety<'view, 'msg>, outerView: 'view)
+            (subject: Society.Address)
+            : bool =
+            let outerLoad = attestedSources (outer.Admit(outerView, subject))
+            let innerLoad = attestedSources (inner.Admit(innerView, subject))
+            outerLoad > innerLoad
+
+        /// **The paired law, quantified over the ladder**: at every joint, the outer rung carries the
+        /// heavier evidential load for the same subject. World-to-society and society-to-member are
+        /// the same clause, which is the whole reason this is one predicate and not two modules.
+        ///
+        /// A ladder of fewer than two rungs is `false` (`holdsBetweenAdjacentLevels`): one level has
+        /// no one below it to owe anything to.
+        let scrutinyScalesUpTheLadder (subject: Society.Address) (ladder: Ladder<'view, 'msg>) : bool =
+            LevelLaws.holdsBetweenAdjacentLevels
+                (fun inner outer -> burdenIsOnTheDominantLevel inner outer subject)
+                ladder
+
+        /// The same, naming **which joints invert** by the index of the inner rung — so "the top two
+        /// rungs are fine and the bottom one is rubber-stamped" is reportable as the different fact it
+        /// is.
+        let invertedJoints (subject: Society.Address) (ladder: Ladder<'view, 'msg>) : int list =
+            LevelLaws.failingAdjacentPairs
+                (fun inner outer -> burdenIsOnTheDominantLevel inner outer subject)
+                ladder
+
+        // ── 3. No confiscation ────────────────────────────────────────────────────────────────
+
+        /// **What a part earned, the level above may not take.** Returns the messages that lower some
+        /// part's balance without being owner-initiated.
+        ///
+        /// `privacy-budget-is-hard-money-earned-by-others` gives three operations and forbids exactly
+        /// one: **spend** (the owner frosts a region) and **stake** (the owner wagers it) are the
+        /// owner's to initiate; **confiscate** — anyone else — never. So the discriminator is *who
+        /// initiates*, not whether the balance fell, and a predicate that simply forbade any decrease
+        /// would forbid the owner's own spend and would be a different, wrong law.
+        ///
+        /// **The interface cannot supply the discriminator, and that is the finding.**
+        /// `IMember.Deliver` takes `(view, message)`; `Addressed` carries `To` and `Body`. **There is
+        /// no sender anywhere**, so "did the owner initiate this?" is not readable from the substrate
+        /// — which is why `ownerInitiated` is a caller-supplied witness rather than something computed
+        /// here. Under `no-directives`, attaching that witness is attaching a *source*, which anyone
+        /// may do; it is not authorization, and this predicate grants it none. What the interface
+        /// would need to make the check self-contained is a `From: Address` on `Addressed` (or a
+        /// sender parameter on `Deliver`) — one field, and the whole rule becomes decidable without a
+        /// caller's word for it.
+        ///
+        /// `balance` is likewise caller-supplied: privacy budget, earned frost, accrued degree — the
+        /// rule is indifferent to which currency, and the substrate declares none of them.
+        let confiscationWitnesses
+            (balance: 'view -> Society.Address -> float)
+            (ownerInitiated: 'msg -> bool)
+            (act: 'view -> 'msg -> 'view)
+            (parts: Society.Address list)
+            (view: 'view)
+            (messages: 'msg list)
+            : 'msg list =
+            messages
+            |> List.filter (fun m ->
+                if ownerInitiated m then
+                    false
+                else
+                    let after = act view m
+                    parts |> List.exists (fun p -> balance after p < balance view p))
+
+        /// `confiscationWitnesses` with no witnesses. Read it together with
+        /// `confiscationCheckHasNoTeeth`.
+        let noConfiscation
+            (balance: 'view -> Society.Address -> float)
+            (ownerInitiated: 'msg -> bool)
+            (act: 'view -> 'msg -> 'view)
+            (parts: Society.Address list)
+            (view: 'view)
+            (messages: 'msg list)
+            : bool =
+            List.isEmpty (confiscationWitnesses balance ownerInitiated act parts view messages)
+
+        /// **The vacuity guard on the witness above.** A caller who declares *every* message
+        /// owner-initiated gets a pass that measured nothing — the check has been talked out of
+        /// existence rather than discharged. Same for an empty message list.
+        ///
+        /// This is the price of the missing sender field, made visible instead of absorbed: the
+        /// predicate is only as strong as the witness, so the witness's strength is reported
+        /// alongside the verdict.
+        let confiscationCheckHasNoTeeth (ownerInitiated: 'msg -> bool) (messages: 'msg list) : bool =
+            List.isEmpty messages || List.forall ownerInitiated messages
