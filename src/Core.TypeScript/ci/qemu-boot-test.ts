@@ -64,6 +64,7 @@ import { spawn } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { qemuUsbStorageDeviceArg } from "../installer/qemu-usb-storage.ts";
 
 const EXPECTED_HOSTNAME = "zeta-installer";
 export const EXPECTED_LOGIN_PROMPT = `${EXPECTED_HOSTNAME} login:`;
@@ -408,13 +409,17 @@ export function buildQemuArgsPure(
   ];
 
   if (bootMedia.kind === "usb-image") {
+    const usb = qemuUsbStorageDeviceArg("zflashboot");
+    if (!usb.ok) {
+      throw new Error(usb.error);
+    }
     args.push(
       "-drive",
       `file=${bootMedia.path},if=none,format=raw,readonly=on,id=zflashboot`,
       "-device",
       "qemu-xhci,id=xhci",
       "-device",
-      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
+      usb.device,
     );
   } else {
     args.push("-cdrom", bootMedia.path, "-boot", "d");

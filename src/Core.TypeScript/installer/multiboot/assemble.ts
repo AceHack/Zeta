@@ -13,6 +13,7 @@
  */
 
 import type { MultibootPlan } from "./plan.ts";
+import { qemuUsbStorageDeviceArg } from "../qemu-usb-storage.ts";
 
 /** Removable-media UEFI default loader path (FAT). */
 export const GRUB_EFI_IMAGE_PATH = "/EFI/BOOT/BOOTX64.EFI" as const;
@@ -112,6 +113,8 @@ export function planQemuUeFiBootArgs(input: {
   readonly serialLogPath?: string;
   /** virtio whole-disk, USB mass-storage, or QEMU vvfat directory (OVMF BOOTX64 search). */
   readonly media?: "virtio" | "usb" | "vfat-dir";
+  /** Guest-visible USB iSerial. Ignored unless media is usb. Default QEMU_USB_TEST_SERIAL. */
+  readonly usbSerial?: string;
 }): { readonly ok: true; readonly args: readonly string[] } | { readonly ok: false; readonly error: string } {
   if (input.outputImagePath.trim().length === 0) {
     return { ok: false, error: "outputImagePath is required" };
@@ -123,27 +126,31 @@ export function planQemuUeFiBootArgs(input: {
   if (media === "vfat-dir" && input.outputImagePath.includes(",")) {
     return { ok: false, error: "vfat-dir path must not contain a comma (QEMU fat: parser)" };
   }
-  const disk =
-    media === "usb"
-      ? ([
-          "-device",
-          "qemu-xhci,id=xhci",
-          "-device",
-          "usb-storage,bus=xhci.0,drive=stick,bootindex=1",
-          "-drive",
-          `if=none,id=stick,file=${input.outputImagePath},format=raw`,
-        ] as const)
-      : media === "vfat-dir"
-        ? ([
-            "-drive",
-            `if=none,id=esp,file=fat:rw:${input.outputImagePath},format=raw`,
-            "-device",
-            "virtio-blk-pci,drive=esp,bootindex=1",
-          ] as const)
-        : ([
-            "-drive",
-            `file=${input.outputImagePath},format=raw,if=virtio`,
-          ] as const);
+  let disk: readonly string[];
+  if (media === "usb") {
+    const usb = qemuUsbStorageDeviceArg("stick", input.usbSerial);
+    if (!usb.ok) return { ok: false, error: usb.error };
+    disk = [
+      "-device",
+      "qemu-xhci,id=xhci",
+      "-device",
+      usb.device,
+      "-drive",
+      `if=none,id=stick,file=${input.outputImagePath},format=raw`,
+    ];
+  } else if (media === "vfat-dir") {
+    disk = [
+      "-drive",
+      `if=none,id=esp,file=fat:rw:${input.outputImagePath},format=raw`,
+      "-device",
+      "virtio-blk-pci,drive=esp,bootindex=1",
+    ];
+  } else {
+    disk = [
+      "-drive",
+      `file=${input.outputImagePath},format=raw,if=virtio`,
+    ];
+  }
   // `-nographic` already attaches UART0 to stdio. Adding `-serial file:`
   // creates UART1; GRUB `serial --unit=0` then never hits the log.
   // File capture uses `-display none -serial file:` instead.

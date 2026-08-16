@@ -39,6 +39,7 @@ import {
   prepareBootImage,
 } from "../zflash/test-harness/prepare-boot-image";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
+import { qemuUsbStorageDeviceArg } from "../installer/qemu-usb-storage.ts";
 import {
   firstSessionPhase3Enabled,
   phase3BootMarkersSatisfied,
@@ -405,13 +406,17 @@ export function buildQemuInstallArgsPure(
     "-device", "virtio-net-pci,netdev=net0",
   ];
   if (bootMedia.kind === "usb-image") {
+    const usb = qemuUsbStorageDeviceArg("zflashboot");
+    if (!usb.ok) {
+      throw new Error(usb.error);
+    }
     args.push(
       "-drive",
       `file=${bootMedia.path},if=none,format=raw,readonly=on,id=zflashboot`,
       "-device",
       "qemu-xhci,id=xhci",
       "-device",
-      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
+      usb.device,
     );
   } else {
     args.push("-cdrom", bootMedia.path, "-boot", "d");

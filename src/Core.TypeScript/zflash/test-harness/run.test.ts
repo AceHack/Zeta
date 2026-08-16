@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { join, resolve } from "node:path";
 import { exitCodeForResults, isPassing, runPathForkRuntime, runRetentionRuntime, type ScenarioResult } from "./run";
-import type { Qcow2RetentionExecutionStep, QemuCommand, QemuCommandExecution } from "./qemu-state";
+import { qemuUsbStorageDeviceArg } from "../../installer/qemu-usb-storage.ts";
 
 const SCRIPT = join(import.meta.dir, "run.ts");
 
@@ -20,6 +20,12 @@ function run(...args: string[]): { readonly stdout: string; readonly stderr: str
 
 function successfulExecution(step: Qcow2RetentionExecutionStep, command: QemuCommand): QemuCommandExecution {
   return { step, command, exitCode: 0, stdout: `${step} ok`, stderr: "" };
+}
+
+function zflashUsbDeviceArg(): string {
+  const usb = qemuUsbStorageDeviceArg("zflashboot");
+  if (!usb.ok) throw new Error(usb.error);
+  return usb.device;
 }
 
 describe("081KSNY2Z0008QG0R0008PN7RQ test-harness dispatcher", () => {
@@ -126,7 +132,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ test-harness dispatcher", () => {
     expect(migrate?.qemuBootCommand?.args).toContain(
       "file=/tmp/zflash-boot.img,if=none,format=raw,readonly=on,id=zflashboot",
     );
-    expect(migrate?.qemuBootCommand?.args).toContain("usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1");
+    expect(migrate?.qemuBootCommand?.args).toContain(zflashUsbDeviceArg());
     expect(fresh?.missingRuntimeRequirements).toEqual([]);
     expect(fresh?.qemuBootCommand?.args).not.toContain("-cdrom");
     expect(fresh?.qemuBootCommand?.args).toContain(
@@ -183,9 +189,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ test-harness dispatcher", () => {
       "file=/tmp/zflash-boot.img,if=none,format=raw,readonly=on,id=zflashboot",
     );
     expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).toContain("qemu-xhci,id=xhci");
-    expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).toContain(
-      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
-    );
+    expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).toContain(zflashUsbDeviceArg());
     expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).not.toContain("-cdrom");
     for (const marker of [
       "[081KSNY2Z0008QG0R0008PN7RQ-retention]   found pre-baked zeta-creds.enc on boot USB ESP",

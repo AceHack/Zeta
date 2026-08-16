@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { planQemuUeFiBootArgs } from "./assemble.ts";
+import { QEMU_USB_TEST_SERIAL } from "../qemu-usb-storage.ts";
 import {
   UEFI_MENU_MARKER,
   detectSmokeTooling,
@@ -101,6 +102,32 @@ describe("qemu-uefi-menu-smoke planning", () => {
     expect(joined).toContain("virtio-blk-pci");
     expect(joined).toContain("-display none");
     expect(joined).not.toContain("-nographic");
+  });
+
+  it("usb media carries a guest-visible iSerial (host sysfs is still fake-tree)", () => {
+    const planned = planQemuUeFiBootArgs({
+      outputImagePath: "/tmp/stick.img",
+      ovmfCodePath: "/usr/share/OVMF/OVMF_CODE.fd",
+      ovmfVarsPath: "/tmp/OVMF_VARS.fd",
+      media: "usb",
+    });
+    expect(planned.ok).toBe(true);
+    if (!planned.ok) return;
+    const joined = planned.args.join(" ");
+    expect(joined).toContain("usb-storage,bus=xhci.0,drive=stick,bootindex=1");
+    expect(joined).toContain(`serial=${QEMU_USB_TEST_SERIAL}`);
+    expect(joined).not.toContain("virtio-blk-pci");
+  });
+
+  it("rejects a USB serial that cannot be QEMU -device parser input", () => {
+    const planned = planQemuUeFiBootArgs({
+      outputImagePath: "/tmp/stick.img",
+      ovmfCodePath: "/usr/share/OVMF/OVMF_CODE.fd",
+      ovmfVarsPath: "/tmp/OVMF_VARS.fd",
+      media: "usb",
+      usbSerial: "bad,serial",
+    });
+    expect(planned.ok).toBe(false);
   });
 
   it("rejects a vfat-dir path that would break the QEMU fat: parser", () => {

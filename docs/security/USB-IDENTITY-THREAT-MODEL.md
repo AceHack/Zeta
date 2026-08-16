@@ -245,7 +245,8 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
    non-hub serial or fail closed. Optional `--usb-iserial` on
    persist/restore **and the install-time picker** (`zeta-creds-picker.ts`
    forwards the same flags; default path remains `--usb-uuid`).
-   QEMU-injectable; no physical-stick claim.
+   QEMU `usb-storage,serial=` is guest sysfs (`qemu-usb-storage.ts`);
+   host probe stays injectable. No physical-stick claim.
 
 Cluster/federation vocabulary promoted to operational glossary
 (`docs/SEED-VOCABULARY.md` carved kernel + `docs/GLOSSARY.md` §Society

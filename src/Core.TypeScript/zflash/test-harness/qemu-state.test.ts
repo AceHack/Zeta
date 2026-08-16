@@ -24,6 +24,7 @@ import {
   type QemuCommandExecution,
   type SpawnSyncQemuCommandOptions,
 } from "./qemu-state";
+import { qemuUsbStorageDeviceArg } from "../../installer/qemu-usb-storage.ts";
 
 function retentionPlan(): Qcow2SnapshotRetentionPlan {
   const result = planQcow2SnapshotRetention({
@@ -134,7 +135,9 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       "file=/tmp/zflash-boot.img,if=none,format=raw,readonly=on,id=zflashboot",
     );
     expect(result.ok.restartFromIsoWithDisk.args).toContain("qemu-xhci,id=xhci");
-    expect(result.ok.restartFromIsoWithDisk.args).toContain("usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1");
+    const usb = qemuUsbStorageDeviceArg("zflashboot");
+    if (!usb.ok) throw new Error(usb.error);
+    expect(result.ok.restartFromIsoWithDisk.args).toContain(usb.device);
     expect(result.ok.restartFromIsoWithDisk.args).toContain("file=/tmp/zeta.qcow2,if=virtio,format=qcow2");
     for (const marker of B0891_RETENTION_USB_SERIAL_MARKERS) {
       expect(result.ok.requiredSerialMarkers).toContain(marker);

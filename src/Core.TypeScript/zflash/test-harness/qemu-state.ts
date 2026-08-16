@@ -1,5 +1,6 @@
 import { spawn as nodeSpawn, spawnSync as nodeSpawnSync, type SpawnOptions } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import { qemuUsbStorageDeviceArg } from "../../installer/qemu-usb-storage.ts";
 import {
   B0891_RETENTION_USB_SERIAL_MARKERS,
   HOSTNAME_AUTOGENERATION_SERIAL_MARKERS,
@@ -296,13 +297,17 @@ export function buildQemuSystemBootArgs(input: QemuSystemBootArgsInput): readonl
   ];
 
   if (input.bootMedia.kind === "usb-image") {
+    const usb = qemuUsbStorageDeviceArg("zflashboot");
+    if (!usb.ok) {
+      throw new Error(usb.error);
+    }
     args.push(
       "-drive",
       `file=${input.bootMedia.path},if=none,format=raw,readonly=on,id=zflashboot`,
       "-device",
       "qemu-xhci,id=xhci",
       "-device",
-      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
+      usb.device,
     );
   } else {
     args.push("-cdrom", input.bootMedia.path, "-boot", "d");

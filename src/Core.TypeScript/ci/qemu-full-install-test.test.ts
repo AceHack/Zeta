@@ -20,6 +20,7 @@ import {
   OVMF_FIRMWARE_CANDIDATES,
   PHASE2_SERIAL_SEPARATOR,
 } from "./qemu-full-install-test.ts";
+import { QEMU_USB_TEST_SERIAL } from "../installer/qemu-usb-storage.ts";
 
 describe("validateSelfRegCiCoherent", () => {
   it("accepts matching maintainer/node/tree-path lines", () => {
@@ -104,6 +105,7 @@ describe("qemu-full-install-test phase 1 boot media QEMU args", () => {
       false,
     );
     expect(args.join(" ")).toContain("usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1");
+    expect(args.join(" ")).toContain(`serial=${QEMU_USB_TEST_SERIAL}`);
     expect(args.join(" ")).toContain("file=/tmp/zflash-wifi.img,if=none,format=raw,readonly=on,id=zflashboot");
     expect(args.join(" ")).not.toContain("-cdrom");
   });

@@ -9,6 +9,7 @@ import {
   timeoutSecondsFor,
   type BootStage,
 } from "./qemu-boot-test.ts";
+import { QEMU_USB_TEST_SERIAL } from "../installer/qemu-usb-storage.ts";
 
 // ── Fixtures ────────────────────────────────────────────────────────
 // Excerpts from THREE REAL serial logs captured 2026-08-16, not
@@ -375,5 +376,6 @@ describe("buildQemuArgsPure", () => {
       hostArch: "x64",
     });
     expect(args.join(" ")).toContain("usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1");
+    expect(args.join(" ")).toContain(`serial=${QEMU_USB_TEST_SERIAL}`);
   });
 });
