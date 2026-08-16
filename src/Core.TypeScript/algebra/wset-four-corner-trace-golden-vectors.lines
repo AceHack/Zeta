@@ -1,0 +1,49 @@
+# wset-four-corner-trace-golden-vectors.lines — the FourCornerTrace treaty golden vectors.
+#
+# The F# module `FourCornerTrace` (src/Core/WSet.fs, #10992) is the SOURCE OF TRUTH; every other
+# oracle conforms to these bytes. Conformers:
+#   src/Core.TypeScript/algebra/wset-four-corner-trace.test.ts   (TS)
+#   tests/Tests.FSharp/WSetFourCornerTraceTreaty.Tests.fs        (F#)
+#
+# Instantiation: string keys, ℤ weights, a relabelling interpretation. Format:
+#   wsettrace/turn/1 <TAB> {sequence} <TAB> {raw}:{label} <TAB> {delta}
+#   wsettrace/state/1 <TAB> {nextSequence} <TAB> {interpretation} <TAB> {emitted}
+# A set/map field is "-" when EMPTY, else "+" + "k=v" pairs joined by ";".
+# Escapes: \\  \t  \n  \r  \;  \=   Lines starting with # are comments.
+#
+# TWO PROPERTIES ARE LOAD-BEARING IN THIS FILE, and both are visible as bytes:
+#
+# 1. EMPTY DELTAS ARE STILL RECORDED. A turn whose feedback changed nothing is a line ending in
+#    "-", NOT an absent line. Receiving idempotent feedback is part of the causal record even
+#    when it does not move the materialized view. There are 7 turn lines below for 7 feedbacks;
+#    a fold that skipped no-ops would emit 5 and this file would go red.
+#
+# 2. COLLATION IS ORDINAL / CODEPOINT, never locale. The keys were chosen so the two disagree:
+#    ordinal is  B(U+0042) < Z(U+005A) < _(U+005F) < a(U+0061) < é(U+00E9),
+#    while every locale collation puts `_` first and interleaves case. `localeCompare` or
+#    `Intl.Collator` on the TS side makes the first state line below fail. (081KT07NV0008QG0R001YDB73K
+#    is the live instance of that bug class; a sweep landed 2026-08-16 enforcing this repo-wide.)
+
+# scenario 1 — opening-only: `start` alone, no feedback. Locks the opening emission + ordinal sort.
+wsettrace/state/1	0	-	+B=1;Z=1;_=1;a=2;é=1
+
+# scenario 2 — empty-delta-is-recorded: feedback (q,Q) touches nothing in the history, and is
+# still recorded at sequence 12 with an empty delta.
+wsettrace/turn/1	12	q:Q	-
+wsettrace/turn/1	13	a:Z	+Z=1;a=-1
+wsettrace/state/1	14	+a=Z;q=Q	+B=1;Z=1
+
+# scenario 3 — idempotent-replay: re-delivering (a,é) emits an EMPTY delta (L2) and is recorded.
+wsettrace/turn/1	100	a:é	+a=-2;é=2
+wsettrace/turn/1	101	a:é	-
+wsettrace/state/1	102	+a=é	+B=1;é=2
+
+# scenario 4 — correction-appends: the later reinterpretation retracts the EARLIER EMISSION at a
+# LARGER sequence; it never rewrites turn 7. Logical order, not wall time.
+wsettrace/turn/1	7	a:B	+B=1;a=-1
+wsettrace/turn/1	8	a:Z	+B=-1;Z=1
+wsettrace/state/1	9	+a=Z	+Z=1
+
+# scenario 5 — escaping: keys carrying the field separators (= and ;) and a tab survive round-trip.
+wsettrace/turn/1	0	k\=1:new\tline	+k\=1=-1;new\tline=1
+wsettrace/state/1	1	+k\=1=new\tline	+new\tline=1;s\;t=1

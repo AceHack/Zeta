@@ -1,0 +1,14 @@
+{
+  "id": "080d005ffe065810a013000845b035aa",
+  "at": "2026-08-16T19:15:05.547Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05ZZG6A087G0R001PBBKDX",
+    "type": "bug",
+    "title": "wset.ts consolidateWSet does not sort by key; F# WSet.consolidate ends with List.sortBy fst",
+    "slug": "wset-ts-consolidatewset-does-not-sort-by-key-f-wset-consolid",
+    "priority": "P2",
+    "filename": "081M05ZZG6A087G0R001PBBKDX-wset-ts-consolidatewset-does-not-sort-by-key-f-wset-consolid.md"
+  }
+}

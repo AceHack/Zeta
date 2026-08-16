@@ -218,6 +218,7 @@
     <Compile Include="FourCorner.Tests.fs" />
     <Compile Include="FourCornerFusion.Tests.fs" />
     <Compile Include="FourCornerTreaty.Tests.fs" />
+    <Compile Include="WSetFourCornerTraceTreaty.Tests.fs" />
     <Compile Include="SoftScheduler.Tests.fs" />
     <Compile Include="SoftThrottle.Tests.fs" />
     <Compile Include="Vision.Tests.fs" />
