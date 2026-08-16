@@ -226,8 +226,11 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
 
 ## 8. Software-only next slices (no metal)
 
-1. **Per-federation threat-model stub template** — same section shape
-   as §3, filled per Lodge/charter when a federation is chartered.
+1. **Per-federation threat-model stub template** — landed
+   (`docs/security/federation-threat-model-stub.TEMPLATE.md` +
+   `src/Core.TypeScript/installer/federation-threat-model-stub.ts`).
+   Fill a copy under `docs/security/federations/` when a Lodge is
+   chartered; validator refuses empty exits.
 2. **QEMU UEFI menu-boot CI** (optional) — run OVMF against a composite
    built with a real `grub-mkimage` EFI (layout+embed path already lands).
 

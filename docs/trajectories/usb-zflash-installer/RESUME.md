@@ -9,10 +9,12 @@ Current blocker: none for software/QEMU deepen slices landed 2026-07-31
 radio claim, hostname uniqueness contract, multiboot FAT assemble + EFI
 embed path, credential-binding model tests). Physical S6 UX feel + real
 WiFi association remain metal-gated.
-Next concrete action: **minimize metal** — per-federation threat-model
-stub template (see
-`docs/security/USB-IDENTITY-THREAT-MODEL.md` <!-- STALE-REF: ../../security/USB-IDENTITY-THREAT-MODEL.md -->:
-traveler → cluster → federation → ISociety/CTM, self-similar).
+Next concrete action: **minimize metal** — optional QEMU UEFI menu-boot
+CI smoke (OVMF + real `grub-mkimage` EFI; planner already lands).
+Per-federation threat-model stub template landed
+(`docs/security/federation-threat-model-stub.TEMPLATE.md`).
+See `docs/security/USB-IDENTITY-THREAT-MODEL.md` <!-- STALE-REF: ../../security/USB-IDENTITY-THREAT-MODEL.md -->:
+traveler → cluster → federation → ISociety/CTM, self-similar.
 Cluster/federation glossary promoted (`docs/SEED-VOCABULARY.md` +
 `docs/GLOSSARY.md` §Society identity). Credential binding model tests
 landed (`credential-binding-model.ts`). Multiboot scaffold + hermetic
@@ -82,7 +84,7 @@ bringup.
 
 ## Current Next Action
 
-QEMU scenarios 1–4 green; scenario 2 asserts first-session serial markers on **push** (phase-3 promoted after [run 27862943618](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/27862943618)). **Post-login:** [FIRST-SESSION.md](./FIRST-SESSION.md) slices 1–4 landed; **next** paper/mock-terminal review of the S6 co-design draft plus physical first-login boot; slice 5 CODEOWNERS follows when teams are confirmed.
+QEMU scenarios 1–4 green; scenario 2 asserts first-session serial markers on **push** (phase-3 promoted after [run 27862943618](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/27862943618)). **Post-login:** [FIRST-SESSION.md](./FIRST-SESSION.md) slices 1–4 landed; S6 paper/mock accepted (physical boot still human-gated). **Next software:** optional QEMU UEFI menu-boot CI; slice 5 CODEOWNERS when teams are confirmed.
 
 - ESP hostname + credential injection now has QEMU-testable planning/serial-marker assertions; WiFi radio association remains physical-gated, but a future ESP WiFi blob can reuse the same write-plan + serial-marker pattern.
 
