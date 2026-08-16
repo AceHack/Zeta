@@ -1,0 +1,12 @@
+{
+  "pr_number": 10986,
+  "archive_path": "docs/history/pr-reviews/PR-10986-fix-ci-restore-the-flush-pat-on-the-tick-checkout-so-gate-stops-being-held.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T17:59:42.533Z",
+  "schema_version": "v1",
+  "commit_sha": "f5cc9f1b28ca9a60b33c9dbbaa66d5243cadffb8",
+  "title": "fix(ci): restore the flush PAT on the tick checkout so gate stops being held",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T17:59:07Z",
+  "head_ref": "shadow/heartbeat-pat-gate-restart"
+}
