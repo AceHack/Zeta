@@ -88,10 +88,13 @@ export function checkZflashToolchain(): string | null {
 }
 
 export function writeTestCredentialBlob(outputPath: string): void {
+  // `composeBundle` takes only { persona, bakeCredArgs }. This literal also carried
+  // usbUuid / output / passphrase, which it never read: the uuid and passphrase are
+  // passed separately to `buildBlob` below, and `outputPath` is used by the caller.
+  // They were silently ignored until TypeScript's excess-property check (which fires
+  // on object LITERALS but not on variables — which is why `composeBundle(parsed)` in
+  // cli.ts never flagged) reported them.
   const bundle = composeBundle({
-    usbUuid: DEFAULT_QEMU_USB_UUID,
-    output: outputPath,
-    passphrase: DEFAULT_QEMU_PASSPHRASE,
     persona: null,
     bakeCredArgs: ["gh-cli=test-token-for-qemu-b0891"],
   });

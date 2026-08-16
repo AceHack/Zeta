@@ -683,6 +683,15 @@ function writeCredBlobToEsp(mountPoint: string, espPart: string, credBake: CredB
   if ("error" in bundle) {
     throw new Error(bundle.error);
   }
+  // `parsed.usbUuid` is `string | null` because `--usb-uuid` is optional in general.
+  // Here it cannot be null: `persistArgv` above always carries `--usb-uuid`, and the
+  // value came from the non-null `usbUuid` guarded at the top of this function. This
+  // is a real narrowing rather than a `!` assertion, so that if `parsePersistArgs`
+  // ever stops round-tripping the flag, it fails loudly here instead of handing a
+  // null to `buildBlob`.
+  if (parsed.usbUuid === null) {
+    throw new Error(`--usb-uuid did not survive argument parsing for ${espPart}`);
+  }
   const blob = buildBlob(bundle, parsed.usbUuid, parsed.passphrase);
 
   try {
