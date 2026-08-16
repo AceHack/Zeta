@@ -235,14 +235,14 @@ jobs:
           ollama pull qwen2.5:7b
           ollama list
 
-      - name: Reset heartbeat branch from main (staleness impossible by construction)
+      - name: Accumulate unflushed heartbeat state over current main
         env:
           AGENT: ${{ matrix.agent }}
-        run: |
-          # ALWAYS start from current main. The flush (#9890) pushes events
-          # directly to main now, so no events are stranded on the branch.
-          # This makes staleness IMPOSSIBLE — the agent always runs the latest code.
-          git checkout -B "heartbeat/$AGENT" origin/main
+        # The lane ticks every 15 minutes but flushes about hourly. Rebuilding it directly from
+        # main discarded the intervening ticks. The source-owned preparer starts from current main
+        # and squash-carries the previous lane's final tree delta. Already-flushed state is empty;
+        # unflushed state is staged; a content conflict stops before the remote ref can be moved.
+        run: bun src/Core.TypeScript/agent-heartbeats/prepare-heartbeat-branch.ts --agent "$AGENT"
 
       - name: Run observe tick (local-llm, heartbeat mode)
         env:
@@ -257,7 +257,7 @@ jobs:
             --event-dir docs/observe-events \
             --participant local-llm || echo "[heartbeat] tick failed (non-fatal)"
 
-      - name: Commit heartbeat event
+      - name: Commit accumulated heartbeat tick
         env:
           AGENT: ${{ matrix.agent }}
         run: |
@@ -267,10 +267,10 @@ jobs:
           if git diff --cached --quiet; then
             echo "[heartbeat] no new events to commit"
           else
-            git commit --no-verify -m "heartbeat($AGENT): tick $(date -u +%Y-%m-%dT%H:%M:%SZ)
+            git commit --no-verify -m "heartbeat($AGENT): accumulated tick $(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-          Autonomous observe loop heartbeat. Free-tier Ollama (qwen2.5:0.5b).
-          Agent: $AGENT. Symmetric pair (cross-verified by peer).
+          Carries any prior unflushed lane delta over current main, then adds this tick.
+          Free-tier Ollama (qwen2.5:0.5b). Agent: $AGENT.
 
           Co-Authored-By: Kiro <noreply@kiro.dev>"
           fi
@@ -1003,20 +1003,14 @@ jobs:
           AGENT: ${{ matrix.agent }}
         # --force-with-lease is REQUIRED here, and it is safe. Why both halves matter:
         #
-        # REQUIRED: the branch is reset from main each tick (#9895) and the flush SQUASHES onto
-        # main. A squash creates a NEW commit, so the branch's previous tip is never an ancestor
-        # of the new main:
-        #     tick 1:  branch = main@A + event1        -> push fast-forwards, fine
-        #     flush:   squash event1 onto main         -> main@B, which does NOT contain A+event1
-        #     tick 2:  checkout -B from B, + event2    -> remote is still A+event1, NOT an ancestor
-        #                                              -> plain push REJECTED (non-fast-forward)
-        # So an unforced push works exactly once after each flush and fails every tick after.
-        # Verified against the live repo: the pre-flush tip 80cf58075 is not an ancestor of main.
+        # REQUIRED: the branch is rebuilt over current main each tick, with its previous final
+        # tree delta squash-carried by prepare-heartbeat-branch.ts. Both that rebuild and the
+        # flush's squash create new commit identities, so the new lane tip is not generally a
+        # descendant of its remote predecessor even when every file is preserved.
         #
-        # SAFE: the heartbeat branch is scratch space, not a record. The flush has already landed
-        # its content on main before the next reset, so nothing unique lives here to lose.
-        # --force-with-lease (not --force) still refuses if someone else moved the ref underneath
-        # us — it declines a surprise, it just does not require ancestry.
+        # SAFE: before the rebuild, the preparer three-way merges the remote lane over current main
+        # and stages every unflushed change. A conflict stops the tick without pushing. The lease
+        # then refuses if another writer moved the remote ref after that observation.
         #
         # CONFIG NOTE: this is why `heartbeat/*` must NOT carry a `non_fast_forward` ruleset.
         # Ruleset 16934633 ("Heartbeat Branch Protection") now targets `refs/heads/heartbeat/*`

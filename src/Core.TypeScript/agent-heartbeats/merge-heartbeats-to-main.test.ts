@@ -244,10 +244,19 @@ describe("heartbeat workflow credential split", () => {
     expect(pushStep).not.toContain("FALLBACK_TOKEN");
 
     // #10850's SECOND, latent break: it put the PAT on the flush checkout too.
-    // That credential pushes nothing -- every git call in the flush job is
-    // read-only -- so it gets no push rights. This half of the original pin is
-    // still exactly right and is kept.
+    // The checkout's workflow token now creates only the immutable snapshot ref;
+    // the PAT remains scoped to the PR operation and is not persisted into git.
     expect(flushCheckout).not.toContain("\n          token:");
+  });
+
+  it("prepares each tick by carrying the previous unflushed tree over current main", () => {
+    const prepareStep = HEARTBEAT_WORKFLOW.slice(
+      HEARTBEAT_WORKFLOW.indexOf("- name: Accumulate unflushed heartbeat state"),
+      HEARTBEAT_WORKFLOW.indexOf("- name: Run observe tick"),
+    );
+    expect(prepareStep).toContain("prepare-heartbeat-branch.ts");
+    expect(prepareStep).toContain('--agent "$AGENT"');
+    expect(prepareStep).not.toContain('git checkout -B "heartbeat/$AGENT" origin/main');
   });
 
   it("dispatches the required gate before arming auto-merge", () => {
