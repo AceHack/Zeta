@@ -1,0 +1,12 @@
+{
+  "pr_number": 10846,
+  "archive_path": "docs/history/pr-reviews/PR-10846-test-dilation-chip-8-time-dilation-already-exists-as-fast-forward-through-recurr.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T20:38:34.570Z",
+  "schema_version": "v1",
+  "commit_sha": "9a46a543594464cf6bf6c89eb3b85910ed1e4853",
+  "title": "test(dilation): CHIP-8 time dilation already exists as fast-forward through recurrence — λ does not predict the skip, and a hole manufactures the orbit",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T20:37:57Z",
+  "head_ref": "shadow/dilation"
+}
