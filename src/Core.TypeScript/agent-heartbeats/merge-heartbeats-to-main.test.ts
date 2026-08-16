@@ -3,7 +3,15 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { armOutcome, armingEnabled, heartbeatMergePrBody, parseArgs } from "./merge-heartbeats-to-main";
+import {
+  armOutcome,
+  armingEnabled,
+  heartbeatMergePrBody,
+  heartbeatMergePrTitle,
+  heartbeatSnapshot,
+  heartbeatSnapshotOutput,
+  parseArgs,
+} from "./merge-heartbeats-to-main";
 import { main as validateAgencySignature } from "../hygiene/validate-agencysignature-pr-body";
 
 const TEST_ENV = {} as NodeJS.ProcessEnv;
@@ -17,8 +25,9 @@ describe("parseArgs", () => {
     const r = parseArgs([], TEST_ENV);
     if ("error" in r) throw new Error(r.error);
     expect(r.repo).toBe("Lucent-Financial-Group/Zeta");
-    expect(r.head).toBe("agent-heartbeats");
+    expect(r.head).toBe("heartbeat/alexa");
     expect(r.base).toBe("main");
+    expect(r.sourceSha).toBeUndefined();
     expect(r.dryRun).toBe(false);
   });
 
@@ -30,11 +39,16 @@ describe("parseArgs", () => {
   });
 
   it("CLI flags override env + defaults", () => {
-    const r = parseArgs(["--repo", "x/y", "--head", "h", "--base", "b", "--dry-run"], TEST_ENV);
+    const sha = "a".repeat(40);
+    const r = parseArgs(
+      ["--repo", "x/y", "--head", "heartbeat/h", "--base", "b", "--source-sha", sha, "--dry-run"],
+      TEST_ENV,
+    );
     if ("error" in r) throw new Error(r.error);
     expect(r.repo).toBe("x/y");
-    expect(r.head).toBe("h");
+    expect(r.head).toBe("heartbeat/h");
     expect(r.base).toBe("b");
+    expect(r.sourceSha).toBe(sha);
     expect(r.dryRun).toBe(true);
   });
 
@@ -44,6 +58,10 @@ describe("parseArgs", () => {
 
   it("rejects unknown flag", () => {
     expect("error" in parseArgs(["--bogus"], TEST_ENV)).toBe(true);
+  });
+
+  it("rejects a non-canonical source SHA", () => {
+    expect("error" in parseArgs(["--source-sha", "ABC123"], TEST_ENV)).toBe(true);
   });
 });
 
@@ -99,6 +117,46 @@ describe("armingEnabled", () => {
     for (const v of ["true", "yes", "0", "", "on"]) {
       expect(armingEnabled({ ZETA_FLUSH_ARM_AUTOMERGE: v } as NodeJS.ProcessEnv)).toBe(false);
     }
+  });
+});
+
+describe("immutable heartbeat snapshots", () => {
+  const SHA_A = "a".repeat(40);
+  const SHA_B = "b".repeat(40);
+
+  it("maps one mutable head SHA to one deterministic heartbeat ref", () => {
+    const first = heartbeatSnapshot("heartbeat/alexa", SHA_A);
+    const replay = heartbeatSnapshot("heartbeat/alexa", SHA_A);
+    if ("error" in first || "error" in replay) throw new Error("valid snapshot rejected");
+    expect(first.ok).toEqual(replay.ok);
+    expect(first.ok.snapshotRef).toBe(`heartbeat/alexa-flush-${SHA_A}`);
+    expect(first.ok.snapshotRef).not.toBe(first.ok.sourceHead);
+  });
+
+  it("a later mutable tip cannot move or reuse the older checked ref", () => {
+    const first = heartbeatSnapshot("heartbeat/alexa", SHA_A);
+    const later = heartbeatSnapshot("heartbeat/alexa", SHA_B);
+    if ("error" in first || "error" in later) throw new Error("valid snapshot rejected");
+    expect(first.ok.snapshotRef).not.toBe(later.ok.snapshotRef);
+    expect(first.ok.sourceSha).toBe(SHA_A);
+    expect(later.ok.sourceSha).toBe(SHA_B);
+  });
+
+  it("rejects unsafe lane names and non-canonical SHAs as values", () => {
+    expect("error" in heartbeatSnapshot("alexa", SHA_A)).toBe(true);
+    expect("error" in heartbeatSnapshot("heartbeat/alexa/../../main", SHA_A)).toBe(true);
+    expect("error" in heartbeatSnapshot("heartbeat/alexa..next", SHA_A)).toBe(true);
+    expect("error" in heartbeatSnapshot("heartbeat/alexa.lock", SHA_A)).toBe(true);
+    expect("error" in heartbeatSnapshot("heartbeat/alexa", "ABC123")).toBe(true);
+  });
+
+  it("emits the exact ref and PR number consumed by the workflow", () => {
+    const snapshot = heartbeatSnapshot("heartbeat/vera", SHA_A);
+    if ("error" in snapshot) throw new Error(snapshot.error);
+    expect(heartbeatSnapshotOutput(snapshot.ok, 11096)).toBe(
+      `skip=false\nsource_head=heartbeat/vera\nsource_sha=${SHA_A}\n` +
+        `snapshot_ref=heartbeat/vera-flush-${SHA_A}\npr_number=11096\n`,
+    );
   });
 });
 
@@ -205,6 +263,21 @@ describe("heartbeat workflow credential split", () => {
     expect(dispatchIndex).toBeGreaterThan(-1);
     expect(mergeIndex).toBeGreaterThan(dispatchIndex);
   });
+
+  it("dispatches and merges the immutable outputs, never the mutable heartbeat head", () => {
+    const flushClosure = HEARTBEAT_WORKFLOW.slice(
+      HEARTBEAT_WORKFLOW.indexOf("- name: Flush to main"),
+      HEARTBEAT_WORKFLOW.indexOf("- name: Fail if a heartbeat PR is old"),
+    );
+    const checkedClosure = flushClosure.slice(flushClosure.indexOf("- name: Dispatch gate for heartbeat head"));
+    expect(flushClosure).toContain("id: flush");
+    expect(flushClosure).toContain('git push origin "$SOURCE_SHA:refs/heads/$SNAPSHOT_REF"');
+    expect(flushClosure).toContain('--source-sha "$SOURCE_SHA"');
+    expect(checkedClosure).toContain("steps.flush.outputs.snapshot_ref");
+    expect(checkedClosure).toContain("steps.flush.outputs.pr_number");
+    expect(checkedClosure).not.toContain('--ref "heartbeat/$AGENT"');
+    expect(checkedClosure).not.toContain("gh pr list");
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -245,6 +318,15 @@ describe("heartbeatMergePrBody", () => {
     const { status, out } = validate(heartbeatMergePrBody("main", "2026-08-15T00:00:00.000Z", "AceHack"));
     expect(out).toContain("PASS: AgencySignature v1");
     expect(status).toBe(0);
+  });
+
+  it("does not claim the mixed tick branch is telemetry-only or skip normal review", () => {
+    const title = heartbeatMergePrTitle("main", "t");
+    const body = heartbeatMergePrBody("main", "t", "AceHack");
+    expect(title).toContain("[heartbeat-batch-merge]");
+    expect(title).not.toContain("[skip-review]");
+    expect(body).toContain("Apply normal review policy");
+    expect(body).not.toContain("ONLY touches");
   });
 
   it("MUTATION: the same body WITHOUT its block is rejected", () => {

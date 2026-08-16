@@ -47,7 +47,7 @@ agent heartbeat was ever a candidate, and the only peer any agent could attest w
 
 `7b22` is `{"`. Those filenames were the event's own JSON, hex-encoded — content wearing
 an identifier's clothes. They match `/^[0-9a-f]{32}$/`, so `isCanonicalEventId` and
-`observe/load-world.ts` accepted them: structurally valid, semantically meaningless.
+`src/Core.TypeScript/observe/load-world.ts` accepted them: structurally valid, semantically meaningless.
 
 ## What was done
 
@@ -55,9 +55,9 @@ an identifier's clothes. They match `/^[0-9a-f]{32}$/`, so `isCanonicalEventId` 
   in the randomness field, window end in the timestamp field; 80 bits), per the
   derived-vs-minted discipline in
   `docs/research/2026-08-14-zetaid-universal-pointer-derived-vs-minted-declared-sort-fields-and-why-v3-is-not-needed.md`
-  §6a and the worked pattern in `forge-host/github/pr-manifest-shards.ts`.
+  §6a and the worked pattern in `src/Core.TypeScript/forge-host/github/pr-manifest-shards.ts`.
 - `selectRecentEvents` — recency from the parsed `at`, never the filename.
-- `hygiene/audit-observe-event-filenames.ts` — decodes the version field instead of
+- `src/Core.TypeScript/hygiene/audit-observe-event-filenames.ts` — decodes the version field instead of
   trusting the regex; scan floor of 500; wired into `gate.yml`.
 - `docs/observe-events/README.md` — the three schemes and the three frozen legacy names.
 

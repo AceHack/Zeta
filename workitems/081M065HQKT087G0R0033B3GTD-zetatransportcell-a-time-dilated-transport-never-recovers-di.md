@@ -44,7 +44,7 @@ mechanism. Nothing in the class resets `dilationFactor`.
 
 ## Why it matters beyond the outage
 
-The docstring in `ferry-throttler/four-corner-feedback.ts` calls this "the AIMD backoff (same as the UDP
+The docstring in `src/Core.TypeScript/ferry-throttler/four-corner-feedback.ts` calls this "the AIMD backoff (same as the UDP
 transport)". AIMD's defining half is the **additive increase** — `udp-lossy-transport.ts:1063-1066`
 walks the gap back down by `GAP_STEP_MS` per clean window. This path has no increase term at all, so
 the two are not the same mechanism and behave oppositely on a healed link. See
