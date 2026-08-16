@@ -1,0 +1,12 @@
+{
+  "pr_number": 11002,
+  "archive_path": "docs/history/pr-reviews/PR-11002-research-zeta-mint-the-zeta-values-table-and-audit-our-own-zetas-by-register.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:32:06.032Z",
+  "schema_version": "v1",
+  "commit_sha": "39b68da9bd3aca93f57c95c5c9265f37a6ac3c61",
+  "title": "research(zeta): mint the zeta-values table and audit our own zetas by register",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T18:31:30Z",
+  "head_ref": "shadow/zeta-across-domains-hall"
+}
