@@ -1,0 +1,12 @@
+{
+  "pr_number": 9071,
+  "archive_path": "docs/history/pr-reviews/PR-9071-docs-workitems-start-gate-audit-on-the-auto-vivify-row-shipped-vs-pending-in-pro.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:52:22.971Z",
+  "schema_version": "v1",
+  "commit_sha": "4bf226e0deff8beaaac3a9d21b633300e4a9a8f6",
+  "title": "docs(workitems): start-gate audit on the auto-vivify row — shipped vs pending (in-progress, not drift)",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T23:11:16Z",
+  "head_ref": "otto/status-audit-auto-vivify-row"
+}
