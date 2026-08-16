@@ -2,12 +2,13 @@
 /**
  * swarm-controller.ts
  * 
- * Orchestrates the 4-Role Swarm over the UDP Lossy Mesh.
+ * Orchestrates the 4-Hat Swarm over the UDP Lossy Mesh.
  * Instantiates Cartographer, Pilot, Recursive Composer, and Chronologist.
  */
 
 import { observeWithLlm, simulate, type World, type NextAction } from "../observe/observe";
-import { SWARM_ROLES, buildRoleInstruction } from "./roles";
+import { SWARM_HATS, buildHatInstruction } from "./hats";
+import type { HatDefinition } from "./hats";
 import { fetchTransport } from "../model-backend/fetch-transport";
 import { openAiCompatBackend } from "../model-backend/backend";
 import { getPersona, localLlmPersona } from "../service/persona-registry";
@@ -28,14 +29,14 @@ function createLossyUdpMesh(size: number, _dropRate: number): UdpMeshNode[] {
   }));
 }
 
-interface RoleNode {
-  role: typeof SWARM_ROLES[0];
+interface SwarmNode {
+  hat: HatDefinition;
   mesh: UdpMeshNode;
   backend: any;
 }
 
 export class SwarmController {
-  private nodes: RoleNode[] = [];
+  private nodes: SwarmNode[] = [];
   private hwRegistry: HardwareRegistry;
   
   constructor() {
@@ -48,26 +49,26 @@ export class SwarmController {
     const useLocalLlm = process.env.ZETA_SWARM_USE_LOCAL_LLM === "1";
     
     for (let i = 0; i < 4; i++) {
-      const role = SWARM_ROLES[i]!;
-      let config = getPersona(role.personaName);
-      if (!config) throw new Error(`Missing persona: ${role.personaName}`);
+      const hat = SWARM_HATS[i]!;
+      let config = getPersona(hat.personaName);
+      if (!config) throw new Error(`Missing persona: ${hat.personaName}`);
       
       // Override for free GitHub Actions tier
       if (useLocalLlm) {
-        console.log(`[SwarmController] Forcing local-llm for role ${role.name}`);
-        config = localLlmPersona(role.personaName, { model: "qwen2.5:0.5b" });
+        console.log(`[SwarmController] Forcing local-llm for hat ${hat.name}`);
+        config = localLlmPersona(hat.personaName, { model: "qwen2.5:0.5b" });
       }
       
       const transport = fetchTransport();
       const backend = openAiCompatBackend({ baseUrl: config.harness.host ?? "http://localhost:11434", apiKey: "dummy", model: config.preferredModel }, transport);
       
-      this.nodes.push({ role, mesh: meshNodes[i]!, backend });
+      this.nodes.push({ hat, mesh: meshNodes[i]!, backend });
     }
   }
   
   /**
    * Run one tick of the swarm.
-   * All 4 roles observe the world simultaneously.
+   * All 4 hats observe the world simultaneously.
    * The Priority Queue resolves conflicts: Chronologist > Composer > Pilot > Cartographer
    */
   async tick(world: World): Promise<World> {
@@ -80,21 +81,21 @@ export class SwarmController {
       node.mesh.send(Buffer.from(JSON.stringify(world)));
     }
     
-    // Concurrently ask all 4 roles for their preferred NextAction
+    // Concurrently ask all 4 hats for their preferred NextAction
     const promises = this.nodes.map(async (node) => {
-      const instruction = buildRoleInstruction(node.role);
+      const instruction = buildHatInstruction(node.hat);
       const action = await observeWithLlm(world, node.backend, instruction);
-      console.log(`[${node.role.name} / ${node.role.personaName}] chose: ${action.kind}`);
-      return { role: node.role, action };
+      console.log(`[${node.hat.name} / ${node.hat.personaName}] chose: ${action.kind}`);
+      return { hat: node.hat, action };
     });
     
     const results = await Promise.all(promises);
     
     // Resolve Priority
-    const chronologist = results.find(r => r.role.name === "Chronologist");
-    const composer = results.find(r => r.role.name === "Recursive Composer");
-    const pilot = results.find(r => r.role.name === "Pilot");
-    const cartographer = results.find(r => r.role.name === "Cartographer");
+    const chronologist = results.find(r => r.hat.name === "Chronologist");
+    const composer = results.find(r => r.hat.name === "Recursive Composer");
+    const pilot = results.find(r => r.hat.name === "Pilot");
+    const cartographer = results.find(r => r.hat.name === "Cartographer");
     
     let chosenAction: NextAction | null = null;
     let chosenBy = "";
@@ -102,27 +103,22 @@ export class SwarmController {
     // 1. Chronologist wins if retracting time
     if (chronologist && (chronologist.action.kind === "retract_time" || chronologist.action.kind === "replay_time")) {
       chosenAction = chronologist.action;
-      chosenBy = chronologist.role.name;
+      chosenBy = chronologist.hat.name;
     } 
     // 2. Composer wins if decomposing
     else if (composer && composer.action.kind === "decompose") {
       chosenAction = composer.action;
-      chosenBy = composer.role.name;
+      chosenBy = composer.hat.name;
     }
     // 3. Pilot gets default right of way for execution
-    // NOTE: this was `pilot.action.kind !== "pass"`, but "pass" is not a member of
-    // NextAction["kind"] — the comparison was ALWAYS true and excluded nothing. Reduced to the
-    // behaviour it actually had, rather than inventing the abstention it was reaching for. If
-    // roles should be able to abstain, that needs a real `pass` action in the union.
     else if (pilot) {
       chosenAction = pilot.action;
-      chosenBy = pilot.role.name;
+      chosenBy = pilot.hat.name;
     }
     // 4. Cartographer explores if idle
-    // Same vacuous "pass" comparison as above; same reduction.
     else if (cartographer) {
       chosenAction = cartographer.action;
-      chosenBy = cartographer.role.name;
+      chosenBy = cartographer.hat.name;
     }
     else {
       // Fallback to Pilot
@@ -134,7 +130,7 @@ export class SwarmController {
     
     if (chosenAction.kind === "decompose") {
       console.log(`[SwarmController] Decompose won. Requesting semantic sub-tasks from ${chosenBy}...`);
-      const decomposerNode = results.find(r => r.role.name === chosenBy)?.role ? this.nodes.find(n => n.role.name === chosenBy) : this.nodes[0];
+      const decomposerNode = results.find(r => r.hat.name === chosenBy)?.hat ? this.nodes.find(n => n.hat.name === chosenBy) : this.nodes[0];
       if (decomposerNode) {
         const item = chosenAction.item;
         
@@ -172,7 +168,7 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
       }
     } else if (chosenAction.kind === "do_item") {
       console.log(`[SwarmController] Pilot won with do_item. Requesting deterministic grid tool calls from ${chosenBy}...`);
-      const pilotNode = results.find(r => r.role.name === chosenBy)?.role ? this.nodes.find(n => n.role.name === chosenBy) : this.nodes[0];
+      const pilotNode = results.find(r => r.hat.name === chosenBy)?.hat ? this.nodes.find(n => n.hat.name === chosenBy) : this.nodes[0];
       if (pilotNode) {
         const item = chosenAction.item;
         

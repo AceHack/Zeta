@@ -2,7 +2,7 @@ import { createLevel, stepToy, mapToyToMemory } from "./toy-environment";
 import { runLoop, classify } from "../observe/observe";
 import type { World, BacklogItem, NextAction } from "../observe/observe";
 import { ollamaBackend } from "../accelerator/local-llm";
-import { SWARM_ROLES, buildRoleInstruction } from "./roles";
+import { SWARM_HATS, buildHatInstruction } from "./hats";
 
 async function main() {
   const layout = [
@@ -16,7 +16,7 @@ async function main() {
   console.log("Initial Toy Environment State:");
   console.log(layout.join("\n"));
   
-  // Set up world with the Pilot role instruction injected into the backlog 
+  // Set up world with the Pilot hat instruction injected into the backlog 
   // (In a real run, this would be passed through the chooser directly)
   const initialWorld: World = {
     backlog: [{
