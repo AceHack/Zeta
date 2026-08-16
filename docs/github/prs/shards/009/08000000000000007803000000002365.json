@@ -1,0 +1,15 @@
+{
+  "pr_number": 9061,
+  "archive_path": "docs/history/pr-reviews/PR-9061-chore-081kll7-post-8992-bookkeeping-resume-handoff.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RK4t0",
+    "thread:PRRT_kwDOSF9kNM6NutIb"
+  ],
+  "fetched_at": "2026-08-16T18:45:35.487Z",
+  "schema_version": "v1",
+  "commit_sha": "5cf9d840fa2058448794f9f2eece349fe89be956",
+  "title": "chore(081KLL7): post-#8992 bookkeeping + resume handoff",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T23:46:34Z",
+  "head_ref": "chore/081KLL7-post-8992-bookkeeping"
+}

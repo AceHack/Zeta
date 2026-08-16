@@ -1,0 +1,15 @@
+{
+  "pr_number": 9062,
+  "archive_path": "docs/history/pr-reviews/PR-9062-ci-hygiene-retire-legacy-backlog-id-gate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RK7bT",
+    "thread:PRRT_kwDOSF9kNM6NuvFX"
+  ],
+  "fetched_at": "2026-08-16T18:45:39.887Z",
+  "schema_version": "v1",
+  "commit_sha": "5cf9d840fa2058448794f9f2eece349fe89be956",
+  "title": "ci(hygiene): retire legacy backlog ID gate",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T22:51:36Z",
+  "head_ref": "codex/fix-main-backlog-id"
+}
