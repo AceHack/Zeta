@@ -1,0 +1,12 @@
+{
+  "pr_number": 9084,
+  "archive_path": "docs/history/pr-reviews/PR-9084-perf-bench-string-key-loh-dispatch-benchmarks-zsetw-variance-tables-in-benchmark.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:26:14.682Z",
+  "schema_version": "v1",
+  "commit_sha": "7436d9a60b344394c072c9a6a75c84addb3b36fe",
+  "title": "perf(bench): string-key + LOH dispatch benchmarks; ZSetW variance tables in BENCHMARKS.md (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T01:15:20Z",
+  "head_ref": "otto/naledi-followups-string-loh-benchmarks-081KWFXTHJY"
+}

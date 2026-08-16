@@ -1,0 +1,12 @@
+{
+  "pr_number": 9085,
+  "archive_path": "docs/history/pr-reviews/PR-9085-docs-research-schema-as-events-design-migrations-become-deltas-down-becomes-nega.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:26:17.055Z",
+  "schema_version": "v1",
+  "commit_sha": "7436d9a60b344394c072c9a6a75c84addb3b36fe",
+  "title": "docs(research): schema-as-events design — migrations become deltas, Down becomes negate (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T01:20:39Z",
+  "head_ref": "otto/schema-as-events-design-note-081KWFXTHJY"
+}
