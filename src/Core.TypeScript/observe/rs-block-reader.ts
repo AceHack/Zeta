@@ -61,7 +61,11 @@ export function loadBlockIndex(path: string): BlockIndex {
     if (line.length === 0) continue;
     try {
       const record = JSON.parse(line) as BlockRecord;
-      if (Array.isArray(record.coded) && record.coded.length === N) {
+      if (Array.isArray(record.coded) && record.coded.length === N &&
+          // HARDENED (adversarial review 2026-08-16): validate that coded values are
+          // valid GF(17) elements. Out-of-range values would produce garbage through
+          // extractInfo without error.
+          record.coded.every((v) => Number.isSafeInteger(v) && v >= 0 && v <= 16)) {
         blocks.push(record);
       }
     } catch { /* skip malformed */ }

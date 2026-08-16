@@ -329,10 +329,34 @@ async function main(): Promise<number> {
   const rsResumeBuffer = (() => {
     try {
       const raw = JSON.parse(require("node:fs").readFileSync(rsBufferPath, "utf-8"));
-      if (Array.isArray(raw.buffer) && Number.isSafeInteger(raw.seq)) {
-        return { resumeBuffer: raw.buffer, startSeq: raw.seq };
+      // VALIDATION (adversarial review 2026-08-16): a corrupted buffer file must not
+      // inject garbage into the next block. Check structure, types, and range.
+      if (!Array.isArray(raw.buffer) || !Number.isSafeInteger(raw.seq) || raw.seq < 0) {
+        console.warn(`[rs-ecc] buffer file malformed (seq or structure) — starting fresh`);
+        return undefined;
       }
-    } catch { /* no saved buffer — fresh start */ }
+      // Validate each stamp in the buffer
+      for (const stamp of raw.buffer) {
+        if (!stamp || !Number.isSafeInteger(stamp.phase) || stamp.phase < 0 ||
+            !Number.isSafeInteger(stamp.derived)) {
+          console.warn(`[rs-ecc] buffer file contains invalid stamp — starting fresh`);
+          return undefined;
+        }
+      }
+      // Validate monotonicity (phases should be non-decreasing)
+      for (let i = 1; i < raw.buffer.length; i++) {
+        if (raw.buffer[i].phase < raw.buffer[i - 1].phase) {
+          console.warn(`[rs-ecc] buffer file has non-monotonic phases — starting fresh`);
+          return undefined;
+        }
+      }
+      if (raw.buffer.length > 11) {
+        // Buffer should never have more than K-1=11 stamps (it emits at 12)
+        console.warn(`[rs-ecc] buffer file oversized (${raw.buffer.length} > 11) — starting fresh`);
+        return undefined;
+      }
+      return { resumeBuffer: raw.buffer, startSeq: raw.seq };
+    } catch { /* no saved buffer or parse error — fresh start */ }
     return undefined;
   })();
   const rsAccumulator = createRSAccumulator(rsResumeBuffer);
@@ -361,12 +385,17 @@ async function main(): Promise<number> {
   } else {
     console.log(`[rs-ecc] buffered ${rsResult.buffered}/12 toward next block`);
   }
-  // Save the buffer state for the next tick
+  // Save the buffer state for the next tick — ATOMIC via write-to-tmp + rename.
+  // writeFileSync is not atomic on crash (truncated file). rename() is atomic on POSIX.
+  // (adversarial review 2026-08-16: non-atomic write lost up to 11 stamps on crash)
   try {
-    require("node:fs").writeFileSync(rsBufferPath, JSON.stringify({
+    const tmpPath = rsBufferPath + `.tmp.${process.pid}`;
+    const content = JSON.stringify({
       buffer: rsAccumulator.buffer,
       seq: rsAccumulator.emittedCount,
-    }));
+    });
+    require("node:fs").writeFileSync(tmpPath, content);
+    require("node:fs").renameSync(tmpPath, rsBufferPath);
   } catch { /* non-fatal — the block will just restart next time */ }
 
   if (!result.ok) {

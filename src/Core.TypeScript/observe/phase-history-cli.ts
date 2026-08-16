@@ -106,10 +106,16 @@ function detectGaps(blocks: readonly BlockRecord[]): GapInfo[] {
       const from = prev.endPhase + 1;
       const to = curr.startPhase - 1;
       const size = to - from + 1;
-      // A gap within a single block's parity window (≤ 4 symbols) is recoverable
-      // A gap spanning multiple blocks is NOT recoverable from blocks alone
-      // (but may be recoverable via peer observation / HLC merge)
-      gaps.push({ from, to, size, recoverable: size <= 4 });
+      // CORRECTED (adversarial review 2026-08-16): inter-block gaps are NOT
+      // ECC-recoverable. The RS [16,12] code recovers erasures WITHIN a single
+      // 16-symbol codeword — missing coded symbols from a block that WAS emitted.
+      // A gap BETWEEN blocks means those phases were never encoded into ANY
+      // codeword, so there is nothing to interpolate from. Recovery requires
+      // peer observation (HLC merge) or own-anchor resume, not RS ECC.
+      //
+      // The old code said `recoverable: size <= 4` which confused "4 erasures
+      // within a block" with "4 missed ticks between blocks" — different things.
+      gaps.push({ from, to, size, recoverable: false });
     }
   }
   return gaps;
@@ -161,23 +167,22 @@ function displayTimeline(index: BlockIndex, agent: string, from: number | null, 
     }
   }
 
-  // Summary
+    // Summary
   console.log();
   if (gaps.length === 0) {
     console.log("  ✓ No gaps — continuous coverage in this range.");
   } else {
-    const recoverable = gaps.filter((g) => g.recoverable).length;
-    const permanent = gaps.length - recoverable;
-    console.log(`  Gaps: ${gaps.length} total (${recoverable} recoverable, ${permanent} need peer data)`);
+    console.log(`  Gaps: ${gaps.length} total — all require peer data or anchor resume (NOT ECC-recoverable)`);
+    console.log(`  (RS ECC recovers missing symbols WITHIN a block, not missing ticks BETWEEN blocks)`);
   }
 
   // Recovery paths reminder
   if (gaps.length > 0) {
     console.log();
-    console.log("  Recovery paths for missed phases:");
-    console.log("    1. RS ECC — up to 4 per block (automatic, no peers needed)");
-    console.log("    2. Peer observation — HLC merge from any peer who was ahead");
-    console.log("    3. Own anchor resume — pick up from last known phase");
+    console.log("  Recovery paths for inter-block gaps:");
+    console.log("    1. Peer observation — HLC merge from any peer who was ahead");
+    console.log("    2. Own anchor resume — pick up from last known phase");
+    console.log("    NOTE: RS ECC only helps with missing symbols inside an emitted block");
   }
 }
 
