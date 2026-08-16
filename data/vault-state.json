@@ -2,23 +2,23 @@
   "schema": "zeta.vault-state.v1",
   "status": "cold",
   "reason": "no recent activity",
-  "generated_at_ms": 1786903686688,
+  "generated_at_ms": 1786905045085,
   "tick_frame_t": "2026-08-14T12:48:15.568Z",
-  "total_events_read": 1314,
+  "total_events_read": 1317,
   "max_phase": 78,
   "vaults": [
     {
       "id": "observatory",
       "status": "live",
       "confidence": {
-        "value": 0.7124999999999999,
+        "value": 0.75,
         "epsilon": 0.1
       },
       "rooms": [
         {
           "id": "signal-triage",
           "confidence": {
-            "value": 0.73,
+            "value": 0.82,
             "epsilon": 0.1
           },
           "activity_log": [
@@ -41,14 +41,14 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-16T18:08:00.861Z",
+              "at": "2026-08-16T18:30:39.334Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-14T19:25:57.150Z",
-              "agent": "otto",
+              "at": "2026-08-16T18:08:14.832Z",
+              "agent": "alexa",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             }
@@ -58,7 +58,7 @@
         {
           "id": "demand-forecast",
           "confidence": {
-            "value": 0.73,
+            "value": 0.82,
             "epsilon": 0.1
           },
           "activity_log": [
@@ -81,14 +81,14 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-16T18:08:00.861Z",
+              "at": "2026-08-16T18:30:39.334Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-14T19:25:57.150Z",
-              "agent": "otto",
+              "at": "2026-08-16T18:08:14.832Z",
+              "agent": "alexa",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             }
@@ -124,15 +124,15 @@
           "dwellers": [
             {
               "agent_id": "otto",
-              "last_seen": "2026-08-16T18:08:00.861Z",
+              "last_seen": "2026-08-16T18:30:39.334Z",
               "hat_id": "healer",
               "last_action": {
                 "kind": "explore",
-                "at": "2026-08-16T18:08:00.861Z"
+                "at": "2026-08-16T18:30:39.334Z"
               },
               "reputation": {
                 "value": 0.1,
-                "epsilon": -0.12126781251816648,
+                "epsilon": -0.1203858530857692,
                 "silent": false
               },
               "reputation_history": [
@@ -142,7 +142,7 @@
                 0.20833333333333334,
                 0.020833333333333332,
                 0.020833333333333332,
-                0.010416666666666666
+                0.020833333333333332
               ]
             }
           ]
@@ -160,8 +160,8 @@
         {
           "id": "merge-floor",
           "confidence": {
-            "value": 0.5,
-            "epsilon": 0.5
+            "value": 0.73,
+            "epsilon": 0.1
           },
           "activity_log": [
             {
@@ -169,6 +169,12 @@
               "agent": "alexa",
               "kind": "attest_peer",
               "summary": "attest_peer: verified 1 events from society"
+            },
+            {
+              "at": "2026-08-16T18:08:14.832Z",
+              "agent": "alexa",
+              "kind": "explore",
+              "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
               "at": "2026-08-14T19:24:31.909Z",
@@ -187,26 +193,20 @@
               "agent": "alexa",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
-            },
-            {
-              "at": "2026-08-13T15:09:47.910Z",
-              "agent": "alexa",
-              "kind": "edit_grammar",
-              "summary": "edit_grammar: propose extending the action grammar"
             }
           ],
           "dwellers": [
             {
               "agent_id": "alexa",
-              "last_seen": "2026-08-14T19:24:31.909Z",
+              "last_seen": "2026-08-16T18:08:14.832Z",
               "hat_id": "merge",
               "last_action": {
                 "kind": "explore",
-                "at": "2026-08-14T19:24:31.909Z"
+                "at": "2026-08-16T18:08:14.832Z"
               },
               "reputation": {
                 "value": 0.1,
-                "epsilon": -0.12309149097933272,
+                "epsilon": -0.12216944435630522,
                 "silent": false
               },
               "reputation_history": [
@@ -216,7 +216,7 @@
                 0.2604166666666667,
                 0.020833333333333332,
                 0.010416666666666666,
-                0
+                0.010416666666666666
               ]
             }
           ]
@@ -224,8 +224,8 @@
         {
           "id": "archive-stacks",
           "confidence": {
-            "value": 0.5,
-            "epsilon": 0.5
+            "value": 0.73,
+            "epsilon": 0.1
           },
           "activity_log": [
             {
@@ -233,6 +233,12 @@
               "agent": "soraya",
               "kind": "attest_peer",
               "summary": "attest_peer: verified 1 events from society"
+            },
+            {
+              "at": "2026-08-16T18:07:58.746Z",
+              "agent": "soraya",
+              "kind": "explore",
+              "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
               "at": "2026-08-14T19:24:16.847Z",
@@ -251,26 +257,20 @@
               "agent": "soraya",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
-            },
-            {
-              "at": "2026-08-13T15:40:33.669Z",
-              "agent": "soraya",
-              "kind": "explore",
-              "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             }
           ],
           "dwellers": [
             {
               "agent_id": "soraya",
-              "last_seen": "2026-08-14T19:24:16.847Z",
+              "last_seen": "2026-08-16T18:07:58.746Z",
               "hat_id": "archive",
               "last_action": {
                 "kind": "explore",
-                "at": "2026-08-14T19:24:16.847Z"
+                "at": "2026-08-16T18:07:58.746Z"
               },
               "reputation": {
                 "value": 0.1,
-                "epsilon": -0.12126781251816648,
+                "epsilon": -0.1203858530857692,
                 "silent": false
               },
               "reputation_history": [
@@ -280,7 +280,7 @@
                 0.20833333333333334,
                 0.020833333333333332,
                 0.010416666666666666,
-                0
+                0.010416666666666666
               ]
             }
           ]
@@ -305,15 +305,15 @@
           "dwellers": [
             {
               "agent_id": "alexa",
-              "last_seen": "2026-08-14T19:24:31.909Z",
+              "last_seen": "2026-08-16T18:08:14.832Z",
               "hat_id": "codegen",
               "last_action": {
                 "kind": "explore",
-                "at": "2026-08-14T19:24:31.909Z"
+                "at": "2026-08-16T18:08:14.832Z"
               },
               "reputation": {
                 "value": 0.1,
-                "epsilon": -0.12309149097933272,
+                "epsilon": -0.12216944435630522,
                 "silent": false
               },
               "reputation_history": [
@@ -323,7 +323,7 @@
                 0.2604166666666667,
                 0.020833333333333332,
                 0.010416666666666666,
-                0
+                0.010416666666666666
               ]
             }
           ]
@@ -341,7 +341,7 @@
         {
           "id": "reputation-engine",
           "confidence": {
-            "value": 0.73,
+            "value": 0.82,
             "epsilon": 0.1
           },
           "activity_log": [
@@ -364,14 +364,14 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-16T18:08:00.861Z",
+              "at": "2026-08-16T18:30:39.334Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-14T19:25:57.150Z",
-              "agent": "otto",
+              "at": "2026-08-16T18:08:14.832Z",
+              "agent": "alexa",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             }
