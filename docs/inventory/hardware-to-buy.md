@@ -1,4 +1,11 @@
+<!-- hardware-surface: class=wishlist; owned=false -->
+
 # `hardware-to-buy.md` — procurement shortlist (the "no more buying willy nilly" surface)
+
+> **Provenance class: WISHLIST — hardware we do NOT own.** Kept in `docs/inventory/` because the buy
+> decision is driven by the owned inventory, but it must never be reconciled into the register or
+> counted as an asset. Declared explicitly so it cannot be mistaken for one
+> (081M00R59KS087G0R001W3837V).
 
 The buy-side companion to the owned-inventory draft
 ([`hardware-2026-05-27-addison-draft.md`](hardware-2026-05-27-addison-draft.md)). Backs

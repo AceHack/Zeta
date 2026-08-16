@@ -1,0 +1,17 @@
+{
+  "note": "Known hardware-inventory cross-surface divergences that are deliberately held OPEN, each with the work-item that owns it. Read by src/Core.TypeScript/inventory/reconcile-surfaces.ts. Anti-rot: an entry whose finding NO LONGER REPRODUCES fails the check, so a suppression cannot outlive its cause. Adding an entry is how you accept a divergence; it is not how you hide one.",
+  "open": [
+    {
+      "check": "HWR-2",
+      "key": "b0:41:6f:17:87:cc",
+      "workitem": "081M00R59KS087G0R001W3837V",
+      "why": "maintainers/maximdolphin/cluster-nodes/node-5b2dfa and node-f82aa6 both self-registered on 2026-06-14 (5h apart, same 185H/22-core/66G hardware block) reporting one MAC. Two readings, and choosing between them from the repo alone would be inference: either one machine re-registered under a fresh node id after a rebuild (probe surface over-counts by one), or a manifest was copied and one hardware block is fiction. Max owns the answer; the substrate must not guess it. Held open rather than deleted because a node.yaml is a self-report and deleting someone's self-report to make a check green is the wrong direction of repair."
+    },
+    {
+      "check": "HWR-5",
+      "key": "register-coverage",
+      "workitem": "081M00R59KS087G0R001W3837V",
+      "why": "The ZetaId register holds 0 non-sample rows against 206 units audited in the 2026-05-27 snapshot. This gap is held open ON PURPOSE: Aaron 2026-08-14 - Addison is re-doing the inventory, and bulk-importing the superseded snapshot would hand her 206 rows to re-verify against her own fresh audit. Her re-audit is the source of truth; the register is the target. The gap closes when her numbers land, not before. The magnitude is printed on every run so the number cannot quietly stop being reported."
+    }
+  ]
+}

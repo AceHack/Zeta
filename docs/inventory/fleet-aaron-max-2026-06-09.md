@@ -1,4 +1,13 @@
+<!-- hardware-surface: class=declaration; probe-nodes=4; register=inventory/items/ -->
+
 # Fleet inventory — Aaron + Max (declared, 2026-06-09)
+
+> **Provenance class: DECLARATION** — what the operator *says* is deployed, consent-only, never
+> scanned. It is not the probe surface and it is not the register. `probe-nodes` in the header above
+> is the number of self-registrations this doc accounts for;
+> `bun src/Core.TypeScript/inventory/reconcile-surfaces.ts` fails when a node registers and this doc
+> has not been updated — which is exactly how the "Max — not yet self-registered" line below went
+> stale for two months.
 
 The first **declared-hardware** entry for the Zeta hardware network map
 ([`../research/2026-06-09-zeta-hardware-network-map-...`](../research/2026-06-09-zeta-hardware-network-map-consent-only-self-registration-plus-declared-never-scan-comet-kvm-plus-nodes-hardware-onboard-blueprint-day-0-1-2-100.md)).
@@ -24,8 +33,16 @@ manifests, not a flat file).
 - **1× mini-PC, 14-series** (same hardware family as Aaron's, one generation back).
 - **NVIDIA eGPU** — different model from Aaron's.
 - **Remote-power ("remote fingers")** + **GL.iNet Comet KVM**.
-- **Not yet self-registered** — when Max boots his house cluster on his `maximdolphin` creds, a
-  `maintainers/maximdolphin/cluster-nodes/` subtree appears (the federation goes live, #7245/#7260).
+- **Self-registered 2026-06-14** (this line said "not yet self-registered" until 2026-08-16; the
+  subtree had existed for two months — corrected under 081M00R59KS087G0R001W3837V). The
+  `maintainers/maximdolphin/cluster-nodes/` subtree carries **two** registrations,
+  `node-5b2dfa` (22:20:16Z) and `node-f82aa6` (17:10:55Z), both `Intel Core Ultra 9 185H`,
+  both `registered-via: 081KSKBP80008QG0R000GPC0TB.2-postboot`.
+  **Both report the same MAC `b0:41:6f:17:87:cc`**, so the two registrations are not two machines.
+  Which of the two readings holds is Max's to say and is not inferred here: either one machine
+  re-registered under a fresh node id after a rebuild (the declared fleet is right at 1× mini-PC and
+  the probe surface over-counts), or a second machine's manifest was copied and its hardware block
+  is wrong. Held open as `HWR-2` in `inventory/reconciliation-open.json`.
 
 ## Shared shape
 

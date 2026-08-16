@@ -833,6 +833,29 @@ jobs:
         # are CI-safe. This is what would have caught #8216's stale snapshot.
         run: bun test src/Core.TypeScript/hygiene/
 
+      - name: Hardware-inventory cross-surface reconciliation (drift)
+        # 081M00R59KS087G0R001W3837V. Hardware inventory lives on several surfaces
+        # with different provenance (a ZetaId register, a human audit snapshot, an
+        # operator declaration, machine self-registrations, SSH host keys) and
+        # nothing reconciled them. This does NOT merge them — it checks the
+        # invariants that hold ACROSS them (dangling machine references, one NIC
+        # counted as two nodes, a surface that never says what it is, a snapshot
+        # edited without moving its own counts, a declaration gone stale against
+        # the probe surface) and reports the register-coverage gap.
+        #
+        # Drift, not a gate, by design: this job is not in the gate-required
+        # roll-up, so a red here is signal, not a block (drift-and-heal ADR).
+        # Divergences we deliberately hold open are ledgered in
+        # inventory/reconciliation-open.json, and a ledger entry that no longer
+        # reproduces fails too — a suppression cannot outlive its cause.
+        run: bun run inventory:reconcile
+
+      - name: Inventory unit tests
+        # These existed (generate-items-json.test.ts) and NO workflow ran them —
+        # found while wiring the reconciliation check. Same shape as the #8216 gap
+        # the hygiene step above closes, one directory over.
+        run: bun test src/Core.TypeScript/inventory/
+
   lint-workflows:
     # actionlint catches .github/workflows/*.yml bugs: unknown
     # context refs, invalid runner labels, shellcheck-style warnings

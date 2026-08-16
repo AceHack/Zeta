@@ -12,6 +12,60 @@ composes_with: []
 
 # hardware inventory lives on three surfaces that do not know about each other — reconcile into the ZetaId register
 
+## MEASURED 2026-08-16 — it is six surfaces, not three
+
+Before building anything, the surfaces were enumerated and counted. The framing above was wrong in
+two ways that change the answer, so it is corrected here rather than edited away:
+
+| surface | provenance class | measured |
+|---|---|---|
+| `inventory/items/` | **register** (identity of record) | 2 rows, **both `sample: true`** → **0 real assets** |
+| `docs/inventory/hardware-2026-05-27-addison-draft.md` | **snapshot** (human audit, point-in-time) | **188 line items / 206 physical units** across 14 sections |
+| `docs/inventory/fleet-aaron-max-2026-06-09.md` | **declaration** (operator says) | 2 fleets |
+| `docs/inventory/hardware-to-buy.md` | **wishlist** (not owned) | n/a |
+| `maintainers/*/cluster-nodes/*/node.yaml` | **probe** (machine self-report) | **4 registrations, 3 distinct MACs** |
+| `machines/*.pub` | **hostkey** (SSH host-cert identity) | **1** |
+
+**Correction 1 — the count.** This item said "~40 assets" (15 mini-PCs + 24 GPUs). The snapshot
+actually carries **206 units**; the GPU and mini-PC sections are 41 of them. A bulk import would
+have been 5× the expected size.
+
+**Correction 2 — the third surface is not an inventory.** `docs/HARDWARE-CAPABILITY-MATRIX.md` is
+keyed by **target class** (`linux-x64`, `qemu-aarch64`, `nvidia-gpu`), never by asset. There is no
+common key on which to reconcile it against an asset register, so it is deliberately **not**
+reconciled. Its only asset content is prose asides ("hardware IN HAND … RTX 4090 + RTX 3090"), and
+those are the drift risk, not the table.
+
+Two surfaces the item did not name at all — the **probe** and **hostkey** surfaces — are where the
+live divergences actually are.
+
+### The divergences found
+
+1. **`node-5b2dfa` and `node-f82aa6` report the same MAC `b0:41:6f:17:87:cc`.** Two self-registrations
+   on 2026-06-14, 5h apart, identical hardware blocks. Either one machine re-registered under a fresh
+   node id (the probe surface over-counts the fleet by 25%) or a manifest was copied. Max owns the
+   answer; not inferred here. Ledgered as `HWR-2`.
+2. **The fleet declaration said "Max — not yet self-registered"** while his subtree had carried two
+   registrations for two months. Corrected in the doc, and `HWR-6` now fails when a node registers and
+   the declaration is not updated.
+3. **The two machine-identity surfaces are disjoint.** 4 self-registered cluster nodes have **zero**
+   host keys in `machines/`; the one machine with a host key is not a cluster node. Overlap = 0.
+4. **The register covers 0 of 206 audited units.** Held open on purpose (see below), printed on every
+   run so it cannot quietly stop being reported.
+5. **`src/Core.TypeScript/inventory/*.test.ts` was never run by any workflow** — found while wiring CI.
+   Now wired.
+
+### What was built
+
+`src/Core.TypeScript/inventory/reconcile-surfaces.ts` + `reconcile-surfaces.test.ts`, wired as
+**drift, not a gate** (it is not in the `gate-required` roll-up). It reconciles; it does **not**
+merge. Known-open divergences are ledgered in `inventory/reconciliation-open.json`, and a ledger
+entry whose finding **no longer reproduces** fails too — a suppression cannot outlive its cause.
+
+Original framing, kept verbatim below.
+
+---
+
 ## The three surfaces
 
 Hardware inventory exists in three places, none of which references the others:
