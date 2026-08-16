@@ -1,0 +1,12 @@
+{
+  "pr_number": 10834,
+  "archive_path": "docs/history/pr-reviews/PR-10834-feat-orbit-consume-the-orbit-classifier-for-steering-stuck-is-a-2x2-and-a-quorum.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:59:47.805Z",
+  "schema_version": "v1",
+  "commit_sha": "208018b93d7a2c313f01bd1dff1bab65a1fc3a44",
+  "title": "feat(orbit): consume the orbit classifier for steering — \"stuck\" is a 2x2, and a quorum's floor is decorrelation",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:59:12Z",
+  "head_ref": "shadow/tangle-navigation-grouping"
+}
