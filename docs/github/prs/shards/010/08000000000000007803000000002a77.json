@@ -1,0 +1,12 @@
+{
+  "pr_number": 10871,
+  "archive_path": "docs/history/pr-reviews/PR-10871-test-bayesian-the-planner-s-joint-log-likelihood-assertion-could-not-fail.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:04:13.070Z",
+  "schema_version": "v1",
+  "commit_sha": "6e4c8d05480e35a0b256d60fa0120234634c5d86",
+  "title": "test(bayesian): the planner's joint-log-likelihood assertion could not fail",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:03:41Z",
+  "head_ref": "fix/vacuous-jointloglikelihood-assertion"
+}
