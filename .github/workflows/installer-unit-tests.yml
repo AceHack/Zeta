@@ -61,6 +61,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        # The path list and key MUST stay byte-identical to gate.yml's
+        # `install-v2-*` blocks: actions/cache identity is (key, version) and
+        # the version is a hash of the path list, so any divergence silently
+        # forks this into a SECOND ~1.5 GB entry under the same key.
+        # Rust-path rationale lives in the gate.yml header comment.
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
@@ -70,7 +75,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         env:

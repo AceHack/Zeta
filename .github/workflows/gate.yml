@@ -34,6 +34,26 @@
 #   - fail-fast: false so one OS failure doesn't hide another.
 #   - NuGet cache keyed on Directory.Packages.props hash; runner.os
 #     prefixed so macOS + Linux caches don't collide.
+#   - Rust toolchain cache (`install-v2-*` / `full-verify-v2-*`, added
+#     2026-08-16). mise's rust backend wraps rustup, and its install dir
+#     `~/.local/share/mise/installs/rust/1.87.0` is a SYMLINK to
+#     `~/.cargo/bin` holding 0 bytes — the real toolchain (656 MB) lives
+#     in `~/.rustup/toolchains/`, which was in NO cache path anywhere.
+#     So a full `install-*` cache HIT still re-fetched
+#     https://static.rust-lang.org/dist/channel-rust-1.87.0.toml on every
+#     job (~50 s each) and took three PRs down on 2026-08-16 (#10903,
+#     #10930, #10963) — each reported under the name of a lint that never
+#     executed. Cached paths are `~/.rustup/toolchains/1.87.0-*`,
+#     `settings.toml`, `update-hashes`, `~/.cargo`.
+#     ONLY the pinned toolchain: the ubuntu-24.04 image already ships
+#     `~/.rustup/toolchains/stable-*` (624 MB) that RUSTUP_TOOLCHAIN never
+#     selects. Measured on the runner — whole-dir 1681 MB vs pinned-only
+#     1486 MB against a 1270 MB baseline, i.e. +216 MB instead of +411 MB.
+#     `1.87.0` here must stay in sync with `rust` in `.mise.toml`; a stale
+#     glob degrades to the pre-2026-08-16 behaviour (CDN fetch), never to a
+#     wrong toolchain. `!`-exclusion was tried and measured as INERT —
+#     `path: ~/.rustup/toolchains` + `!~/.rustup/toolchains/stable-*`
+#     stored the full 1681 MB, so the explicit glob is load-bearing.
 #   - Three-way parity per GOVERNANCE §24: dev laptop, CI runner,
 #     and (future) devcontainer all bootstrap via the same
 #     `tools/setup/install.sh`. This makes TLC + Alloy jars, Lean/
@@ -496,7 +516,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Single source of truth for toolchain state. mise installs
@@ -542,7 +566,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: ./tools/setup/install.sh
@@ -649,7 +677,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Installs shellcheck via mise (pinned in .mise.toml). Single
@@ -748,7 +780,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise's pin in .mise.toml. The inventory guard is
@@ -864,7 +900,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise's pin in .mise.toml. Same pattern as
@@ -908,7 +948,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise's pin in .mise.toml. Same pattern as
@@ -956,7 +1000,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise's pin in .mise.toml. Same pattern as
@@ -1001,7 +1049,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: ./tools/setup/install.sh
@@ -1174,7 +1226,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # See lint-shell job above for retry rationale (Aaron 2026-04-28
@@ -1258,7 +1314,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise's `bun = "1.3"` pin in .mise.toml.
@@ -1317,7 +1377,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
           set -euo pipefail
@@ -1353,7 +1417,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
           set -euo pipefail
@@ -1389,7 +1457,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
           set -euo pipefail
@@ -1425,7 +1497,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
           set -euo pipefail
@@ -1461,7 +1537,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
           set -euo pipefail
@@ -1512,7 +1592,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise (.mise.toml pin); shellenv wires BASH_ENV so later run: steps
@@ -1634,7 +1718,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise's `bun = "1.3"` pin in .mise.toml.
@@ -1713,8 +1801,11 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
             ~/.cargo
-          key: full-verify-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: full-verify-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain (all 7 languages + E-prover)
         run: |

@@ -173,6 +173,17 @@ done
 # manifest before using an already-installed compiler, making an offline cache
 # depend on static.rust-lang.org. Pin the resolved mise version for every Rust
 # probe below; exact installed toolchains remain usable while the CDN is down.
+#
+# HALF A GUARD UNTIL 2026-08-16: this selection only helps if an offline copy of
+# ~/.rustup/toolchains actually exists, and on CI it did not — no workflow cached
+# any rustup path, so every job re-synced the channel and three PRs died on a CDN
+# blip (#10903, #10930, #10963). The missing half now lives in the
+# `install-v2-*` / `full-verify-v2-*` cache path lists (gate.yml,
+# installer-unit-tests.yml). Do not remove those paths without also removing
+# this comment's claim: measured 2026-08-16, with them restored and
+# static.rust-lang.org blackholed, `ensure_rust_components` below prints
+# "component rustfmt is up to date" and install.sh completes offline; without
+# them it prints "syncing channel updates" and exits 1.
 rustup_toolchain="$(cd "$REPO_ROOT" && mise current rust 2>/dev/null || true)"
 if [ -n "$rustup_toolchain" ]; then
   export RUSTUP_TOOLCHAIN="$rustup_toolchain"
