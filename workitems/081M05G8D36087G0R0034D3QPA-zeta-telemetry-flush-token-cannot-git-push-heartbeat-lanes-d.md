@@ -120,10 +120,55 @@ not surfaced only because the tick job was producing no events to flush.
 The **test** half is deliberately untouched: `required-check-started.ts` still fails the flush
 while `gate (required)` never starts. This item does not get to look green by being worked around.
 
+## 2026-08-16 — the operator grant landed, and the recorded MECHANISM was wrong
+
+The operator granted the PAT `Contents: R+W`, `Pull requests: R+W`, `Actions: R+W`,
+`Commit statuses: R`, `Metadata: R` (no `Workflows: Write`). **Verified, not assumed** —
+a real tick's preflight dry-run push against the real remote reported
+`[preflight] alexa: push credential is authorized for this repository.`
+(run `31962679616`, 2026-08-16T17:48:25Z), and the subsequent real push succeeded.
+
+Correcting the record while re-applying: the standing explanation for why gate never
+started — *"GitHub does not trigger workflow runs from `GITHUB_TOKEN` pushes"* — is **not
+what the API shows**. Measured on `heartbeat/alexa`:
+
+```
+pull_request      gate  completed/action_required  actor=github-actions[bot]
+workflow_dispatch gate  completed/success          actor=AceHack   (SAME head sha)
+```
+
+The run **is** created; it is created and immediately parked in `action_required`, so it
+never executes and never contributes a check to the rollup. The cure is the same — a human
+push actor — but the mechanism differs, and a wrong mechanism in the record is how the
+wrong fix gets copied forward.
+
+Also corrected: the "latent second break" paragraph above says the flush job's checkout
+credential authenticates `flush-via-staging.ts`'s push. **Stale.** This workflow's flush job
+runs the API-only `merge-heartbeats-to-main.ts`; `flush-via-staging.ts` belongs to
+`society-heartbeat.yml` / `tick-metrics.yml`. Checked: the only `git push` in
+`agent-heartbeat.yml` is the tick job's, and every git call in the flush job is read-only
+(`fetch`/`rev-list`/`log`/`config`). Keeping the PAT off that checkout is still right —
+least privilege, a credential that pushes nothing gets no push rights — but for that
+reason, not the one written down.
+
+Re-applied in **#10986**, with a preflight that dry-run pushes to the real remote every
+tick and falls back (then **re-probes**) on a credential denial, so a mis-scoped or revoked
+PAT costs a degraded lane rather than the dead one #10850 produced.
+
 ## Done when
 
-- [ ] `ZETA_TELEMETRY_FLUSH_TOKEN` carries `contents: write` on this repository (**operator**)
-- [ ] an `agent-heartbeat` run pushes without emitting the fallback `::warning::`
+- [x] `ZETA_TELEMETRY_FLUSH_TOKEN` carries `contents: write` on this repository (**operator**)
+      — granted 2026-08-16, verified by a real-tick preflight probe, not by inspection
+- [x] an `agent-heartbeat` run pushes without emitting the fallback `::warning::`
+      — run `31962679616`, all three lanes `success`, preflight reported authorized
 - [ ] `gate (required)` appears in the check rollup of a `heartbeat/*` flush PR
+      — the *run* now executes under `actor=AceHack` instead of being parked (gate
+        `31962755672`, 2026-08-16T17:49:31Z); the rollup line is confirmed only once
+        #10986 is on main so the **scheduled** tick also pushes with the PAT
 - [ ] #10709 / #10710 / #10711 merge, or are superseded by a tick that can flush
 - [ ] the dogfooding RESUME's Tier-1 row 1 claim is re-verified rather than assumed
+- [ ] `society-heartbeat.yml` + `tick-metrics.yml` push their lanes with `GITHUB_TOKEN`
+      too, so `heartbeat/society` and `heartbeat/tick-metrics` flush PRs have the same
+      held-gate defect. **Deliberately out of scope here**: those two lanes stayed alive
+      through the outage, this exact change has broken the society twice, and one lane
+      proven on a real tick beats three changed at once.

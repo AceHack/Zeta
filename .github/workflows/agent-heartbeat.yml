@@ -43,27 +43,105 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
-          # NO `token:` OVERRIDE HERE — this checkout's credential is the one the
-          # `Push heartbeat branch` step below pushes with, and it must be the default
-          # GITHUB_TOKEN. See 081M05G8D36087G0R0034D3QPA.
+          # THIS CHECKOUT'S CREDENTIAL IS THE ONE THAT PUSHES `heartbeat/$AGENT`
+          # (the `Push heartbeat branch` step below), and that push's actor is what
+          # decides whether `gate (required)` ever runs on the flush PR.
           #
-          # #10850 set `token: ZETA_TELEMETRY_FLUSH_TOKEN` here so the heartbeat/* PR head
-          # would carry a human push actor and `gate (required)` could start (081M010H4KE).
-          # Its premise — "the archive/society flush already uses this PAT" — holds for the
-          # API (GH_TOKEN handed to `gh`) and fails for `git push`: that PAT authenticates
-          # as AceHack and carries no `contents: write`, so every push died
-          #   remote: Permission to Lucent-Financial-Group/Zeta.git denied to AceHack
-          # and heartbeat/{alexa,otto,soraya} froze from 2026-08-15T22:55Z.
+          # WHY THE PAT IS BACK (081M05G8D36087G0R0034D3QPA, 081M010H4KE):
+          # a `pull_request` run whose triggering actor is `github-actions[bot]` is
+          # created and then immediately parked — status `completed`, conclusion
+          # `action_required` — so it never executes and never contributes a check to
+          # the PR's rollup. Measured on heartbeat/alexa, not inferred:
+          #   pull_request     gate  action_required  actor=github-actions[bot]
+          #   workflow_dispatch gate success          actor=AceHack   (SAME head sha)
+          # That is why every heartbeat/* flush PR has had 6 checks and no
+          # `gate (required)`. The earlier reading — "GITHUB_TOKEN pushes do not
+          # trigger workflows at all" — is not what the API shows: the run IS created,
+          # it is held. Either way the cure is the same, a push actor that is a human
+          # account, which is what this PAT is.
           #
-          # GITHUB_TOKEN pushing `heartbeat/*` is PROVEN in-repo, not assumed:
-          # society-heartbeat.yml and tick-metrics.yml check out with no `token:` override
-          # and their heartbeat/society + heartbeat/tick-metrics refs kept updating
-          # throughout the outage. Workflow-level `permissions:` already grants
-          # `contents: write`.
+          # WHY IT IS SAFE TO TRY AGAIN: #10850 did exactly this and killed all three
+          # lanes for ~16.75h because the PAT had no `contents: write`. That grant was
+          # made by the operator on 2026-08-16 (Contents R+W, Pull requests R+W,
+          # Actions R+W, Commit statuses R, Metadata R; no Workflows: Write). This
+          # workflow does NOT take that grant on faith — the preflight step below
+          # probes it against the real remote on every tick and falls back if it is
+          # wrong, so a mis-scoped or revoked PAT costs a degraded lane, never a dead
+          # one. `.claude/rules/tick-must-never-stop.md`.
           #
-          # The flush job dispatches gate.yml explicitly at this branch head, so gate
-          # scheduling no longer depends on the identity that authored this push.
+          # The `||` ladder covers ABSENCE (secret unset -> empty string -> default
+          # GITHUB_TOKEN). It cannot cover UNAUTHORIZED — a present-but-powerless token
+          # is exactly what #10850 shipped — which is the preflight's whole job.
           persist-credentials: true
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
+
+      # THE FALSIFIER FOR THE CREDENTIAL, RUN IN PRODUCTION ON EVERY TICK.
+      #
+      # #10913 verified a credential fix against a STUBBED git and it failed on the
+      # first real tick, because a stub models control flow and says nothing about
+      # which token git actually authenticates with. So this check is not a stub and
+      # not a mock: it is a real `git push` to the real remote over the real network,
+      # with `--dry-run` so it updates nothing. GitHub performs repository-write
+      # authorization at the `git-receive-pack` advertisement, before any ref is
+      # considered, so a dry run gets the true 403/200 answer. Verified locally
+      # against this repo before shipping: a valid extraheader dry-runs clean, a
+      # deliberately invalid one fails with `Authentication failed`.
+      #
+      # It probes a `credprobe/` ref, never `heartbeat/$AGENT`: at this point HEAD is
+      # main and the remote lane branch has diverged (the flush squashes), so probing
+      # the real lane would be rejected as non-fast-forward and a permission answer
+      # would be indistinguishable from an ancestry answer. A ref that does not exist
+      # yet has no ancestry question to get wrong. `--dry-run` creates nothing.
+      - name: Preflight the push credential
+        env:
+          AGENT: ${{ matrix.agent }}
+          FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+
+          probe() { git push --dry-run origin "HEAD:refs/heads/credprobe/heartbeat-$AGENT" 2>&1; }
+
+          if OUT=$(probe); then
+            echo "[preflight] $AGENT: push credential is authorized for this repository."
+            exit 0
+          fi
+          echo "$OUT"
+
+          # Only a CREDENTIAL answer is eligible for the swap. A network blip or an
+          # unexpected refusal must NOT silently re-point the credential — that would
+          # hide a different failure behind a credential story.
+          if ! printf '%s' "$OUT" | grep -qiE 'denied to|Authentication failed|Invalid username or token|error: 403'; then
+            echo "::warning title=Heartbeat preflight inconclusive::$AGENT: the probe failed, but not with a credential answer. Leaving the credential as-is; the real push below will report the true error."
+            exit 0
+          fi
+
+          echo "::error title=Heartbeat PAT cannot push::ZETA_TELEMETRY_FLUSH_TOKEN was denied by the remote. FIX: grant that fine-grained PAT 'Contents: read and write' on Lucent-Financial-Group/Zeta. Falling back to GITHUB_TOKEN: the lane keeps recording, but 'gate (required)' will NOT start on the flush PR (081M010H4KE)."
+
+          # Swap the credential the way actions/checkout itself sets it — one
+          # `--replace-all` of the extraheader, which is the key git actually
+          # authenticates with. `git -c http.<url>.extraheader=` APPENDS rather than
+          # overrides, and re-pointing the remote URL alone did not displace it in
+          # production (#10913), so neither of those is used here.
+          HDR_B64=$(printf 'x-access-token:%s' "$FALLBACK_TOKEN" | base64 | tr -d '\n')
+          echo "::add-mask::$HDR_B64"
+          git config --local --replace-all "http.https://github.com/.extraheader" "AUTHORIZATION: basic $HDR_B64"
+
+          # RE-PROBE. Without this the fallback is the vacuity class: a repair that is
+          # applied and never checked looks identical to one that worked. #10913's
+          # fallback ran, logged that it ran, and was denied under the same identity.
+          if OUT2=$(probe); then
+            echo "[preflight] $AGENT: fallback credential verified against the remote; lane is DEGRADED but alive."
+            {
+              echo "### heartbeat/$AGENT is running on the FALLBACK credential"
+              echo ""
+              echo "\`ZETA_TELEMETRY_FLUSH_TOKEN\` was denied by the remote; \`GITHUB_TOKEN\` is verified and in use."
+              echo "Telemetry still lands. \`gate (required)\` will NOT start on the flush PR until the PAT can push."
+              echo "Fix: grant that fine-grained PAT **Contents: read and write** on this repository."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo "$OUT2"
+          echo "::error title=Heartbeat has no working push credential::$AGENT: BOTH the PAT and GITHUB_TOKEN were denied. This is worse than #10850 and the lane is about to fail its push. Not exiting here so the tick still records locally and the push reports the authoritative error."
 
       - name: Setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -947,14 +1025,21 @@ jobs:
         # `deletion` ONLY, which is correct: adding non_fast_forward would deadlock this step
         # permanently. The ruleset is NOT what denies this push when it fails — see below.
         #
-        # CREDENTIAL: whatever the checkout above persisted. It must stay the default
-        # GITHUB_TOKEN — see the long note on that `with:` block and
-        # 081M05G8D36087G0R0034D3QPA. An in-step swap to a different credential does NOT work
-        # and was tried and reverted on 2026-08-16 (PR #10913 → #10914): actions/checkout's
-        # persisted `http.<url>.extraheader` is what git authenticates with, and re-pointing
-        # the remote URL at `x-access-token:<other>` did not displace it — the retry was denied
-        # as the same identity in production. Keep the branch write on GITHUB_TOKEN; the flush
-        # job requests gate.yml independently with the Actions-scoped credential.
+        # CREDENTIAL: whatever the `Preflight the push credential` step left in place —
+        # `ZETA_TELEMETRY_FLUSH_TOKEN` normally, GITHUB_TOKEN if the remote refused it.
+        # By the time this step runs the credential has ALREADY been dry-run against the
+        # real remote, so this push is not where a credential problem is discovered.
+        # That ordering is the point: #10850's bad credential surfaced here, at the end
+        # of the tick, once per lane per 15 minutes, for 16.75 hours.
+        #
+        # Do NOT add an in-step credential swap. One was tried and reverted on
+        # 2026-08-16 (#10913 → #10926): it was denied under the same identity in
+        # production, and the reason was never established. Both repair mechanisms
+        # (`--unset-all` + inline-URL creds, and `--replace-all` of the extraheader) do
+        # work under real git locally — checked against this repo 2026-08-16 — so the
+        # bench does NOT reproduce the production failure and cannot be trusted to
+        # predict it. The preflight above therefore never assumes its own repair worked;
+        # it re-probes the remote and says so out loud either way.
         run: git push --force-with-lease origin "heartbeat/$AGENT"
 
   flush-to-main:
@@ -987,16 +1072,25 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
-          # NO `token:` OVERRIDE — same reason as the tick job's checkout
-          # (081M05G8D36087G0R0034D3QPA). What this credential does here is authenticate
-          # `flush-via-staging.ts`'s `git push --force-with-lease origin HEAD:refs/heads/<lane>`;
-          # the PAT cannot push (403, no `contents: write`), so #10850's override would break the
-          # staging push as soon as the tick job produced events again.
+          # NO `token:` OVERRIDE — DELIBERATE, and for a different reason than the tick job's.
           #
-          # The PR-creation identity that #10850 wanted does NOT come from here — it comes from
-          # `GH_TOKEN` on the Flush step below, which `gh` reads. That is exactly the split
-          # society-heartbeat.yml uses (default checkout + PAT only as `GH_TOKEN`), and its lane
-          # kept working throughout the outage.
+          # The tick checkout got the PAT back (081M05G8D36087G0R0034D3QPA) because its
+          # credential performs the `heartbeat/$AGENT` push whose ACTOR decides whether gate
+          # runs. This one does not push anything. Checked, not assumed: the only `git push`
+          # in this workflow is the tick job's; every git call in this job is read-only
+          # (`fetch`, `rev-list`, `log`, `config`), which the default GITHUB_TOKEN does fine.
+          #
+          # #10850 put the PAT here too, and that was its second, latent break. Correcting the
+          # record while I am here: #10926 justified reverting it by saying this credential
+          # authenticates `flush-via-staging.ts`'s push. That is stale — this job runs
+          # `merge-heartbeats-to-main.ts`, which is API-only; `flush-via-staging.ts` belongs to
+          # society-heartbeat.yml and tick-metrics.yml. The conclusion was right, the stated
+          # reason was not, and a reason nobody can check is how the wrong thing gets copied
+          # forward next time.
+          #
+          # The PR-creation identity does NOT come from here — it comes from `GH_TOKEN` on the
+          # Flush step below, which `gh` reads. Least privilege: a credential that pushes
+          # nothing gets no push rights.
           persist-credentials: true
 
       # WITHOUT THIS THE WHOLE FLUSH JOB IS DEAD. The Flush step below shells out to
