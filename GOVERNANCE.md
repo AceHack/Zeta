@@ -33,7 +33,7 @@ than renumbering the rest.
 
 4. **Skills are created and tuned through `skill-creator`.**
    No ad-hoc edits to other skills' SKILL.md files. The
-   `.claude/skills/skill-creator/SKILL.md` workflow is the
+   `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` workflow is the
    canonical path: draft → prompt-protector review →
    dry-run → commit. Mechanical renames and injection-lint
    fixes are the only allowed skip-the-workflow edits.
@@ -62,7 +62,7 @@ than renumbering the rest.
    single-turn session with no memory carryover for
    pen-testing; the lighter-weight isolated-instance
    experimental pathway is additive, not replacement. See
-   `.claude/skills/prompt-protector/SKILL.md` and
+   `.claude/skills/security/blueprints/prompt-protector.md` and
    `memory/feedback_pliny_corpus_restriction_relaxed_isolated_instances_allowed_for_experiments_kill_switch_safety_2026_04_25.md`.
 
 6. **Round naming stays in the history log.** "Round N" is
@@ -268,7 +268,7 @@ than renumbering the rest.
     libraries (`Zeta.Core`, `Zeta.Core.CSharp`,
     `Zeta.Bayesian`) must be reviewed by the
     public-api-designer (Ilyana) before it lands. See
-    `.claude/skills/public-api-designer/SKILL.md` for
+    `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` for
     the review template; her verdicts are ACCEPT /
     ACCEPT_WITH_CONDITIONS / REJECT. Review is advisory,
     not a hard gate, but "flip it to public because a
@@ -817,7 +817,7 @@ than renumbering the rest.
       `docs/aurora/*.md` is author-time advisory: absorbing
       agents include the four header labels at write time, and
       reviewers spot gaps during PR review. A dedicated lint
-      script (e.g. `tools/alignment/audit_archive_headers.ts`)
+      script (e.g. `src/Core.TypeScript/alignment/audit_archive_headers.ts`)
       and a corresponding `docs/FACTORY-HYGIENE.md` row are
       not yet landed; both are tracked as follow-up work and
       must ship together with their cross-references in the

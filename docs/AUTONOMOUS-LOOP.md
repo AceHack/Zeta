@@ -257,7 +257,7 @@ wait for instruction. Priority ladder:
    <trigger>` into this tick's shard.
 
    **Check 0c — authorization check** (081KR2E4K0008QG0R002S3FDXN): runs
-   `bun tools/authorization/check-authorization.ts` which
+   `bun src/Core.TypeScript/authorization/check-authorization.ts` which
    composes the pace-extractor (081KR2E4K0008QG0R0007CFSZ7) and resolver (081KR2E4K0008QG0R003CF4YHE).
    Prints two-layer DX output: raw JSON (Layer 1) then labeled
    interpretation (Layer 2). If `operative: null`, the never-idle

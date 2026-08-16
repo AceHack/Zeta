@@ -20,7 +20,7 @@ auto-delete, no force-push, no permanent state changes).
 | Action | Description | Reversible | Precondition |
 |--------|-------------|------------|--------------|
 | Resolve phantom review threads | Resolve automated-reviewer threads (Codex/Copilot) on research/memory PRs where the findings are stale or non-blocking | Yes (threads can be re-opened) | Thread author is bot, PR is docs-only |
-| Regenerate BACKLOG.md index | Run `bun tools/backlog/generate-index.ts` when a backlog row was added without index update | Yes (regenerate again) | Index drift CI check failed |
+| Regenerate BACKLOG.md index | Run `bun src/Core.TypeScript/backlog/generate-index.ts` when a backlog row was added without index update | Yes (regenerate again) | Index drift CI check failed |
 | Re-run failed CI | `gh run rerun N --failed` when failure pattern matches known transient (5m15s timeout) | Yes (just re-runs) | Same failure pattern as prior transient, DST-logged |
 
 ## Tier 3 — future expansion

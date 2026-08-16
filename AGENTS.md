@@ -305,10 +305,10 @@ These apply to any AI harness.
   a full AgencySignature v1 trailer block per
   `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md`
   §10 (auditable via
-  `bun tools/hygiene/audit-agencysignature-main-tip.ts`),
+  `bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts`),
   OR (b) a lightweight heartbeat record on the
   `agent-heartbeats` branch via
-  `./tools/agent-heartbeats/write-heartbeat.ts` with no args
+  `src/Core.TypeScript/agent-heartbeats/write-heartbeat.ts` with no args
   (composes with `src/Core.TypeScript/zeta-id/zeta-id.ts` 128-bit
   ZetaID + `registry/categories.yaml` Heartbeat = category 3).
   Heartbeat default branch bypasses the 4 main-targeting rulesets
@@ -525,7 +525,7 @@ Detail lives in:
 ## PR / commit discipline
 
 - Commit messages follow the project shape — see
-  `.claude/skills/commit-message-shape/` for the
+  `.claude/skills/workflows/blueprints/commit-message-shape.md` for the
   canonical form (Claude-Code path; same shape
   applies in every harness).
 - Keep commits focused. One logical change per

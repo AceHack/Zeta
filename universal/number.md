@@ -93,5 +93,6 @@ Coercion is a convenience for inert data; for living things, decline by default.
 
 - [`universal/algebra.md`](algebra.md) (`ISemiring` — the algebra sibling) · [`universal/README.md`](README.md).
 - `src/Core.FSharp.TriBoolean/Float.fs` (the built middle-out number — candidate concrete carrier).
-- `docs/research/2026-06-10-physics-of-floats-room-boundary-is-a-bit-budget-...` (Resolution / unum / the bit budget).
+- `docs/research/2026-06-10-physics-of-floats-room-boundary-is-a-bit-budget-shared-resolution-primitive-unum-significance.md`
+  (Resolution / unum / the bit budget).
 - Gustafson unum/posit (universal number) · .NET generic math (`INumberBase`/`IFloatingPointIeee754`).

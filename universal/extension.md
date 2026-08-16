@@ -39,4 +39,5 @@ law at the type level) · HTML's "unknown elements render as inline" (the web's 
 ## Pointers
 
 - `universal/color.md` (honest capability — the sibling rule) · `gen/action-grammar.md` (backends bind
-  at declared capability) · the ZORK/Z-machine doc (`docs/research/2026-06-11-etch-a-sketch-lite-brite-zork-zmachine-...md`).
+  at declared capability) · the ZORK/Z-machine doc
+  (`docs/research/2026-06-11-etch-a-sketch-lite-brite-zork-zmachine-nsew-directionality-support-the-format-extension-interface.md`).
