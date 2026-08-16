@@ -1,0 +1,12 @@
+{
+  "pr_number": 10825,
+  "archive_path": "docs/history/pr-reviews/PR-10825-docs-research-census-triage-of-lost-b-nnnn-work-on-recovered-orphan-branches-min.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:59:17.884Z",
+  "schema_version": "v1",
+  "commit_sha": "b00e973998dc101ed541851faccbd7e7e6a3741c",
+  "title": "docs(research): census + triage of lost B-NNNN work on recovered orphan branches; mint 3 of 63",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:58:44Z",
+  "head_ref": "shadow/lost-bnnnn-recovered-branch-sweep-2026-08-15"
+}
