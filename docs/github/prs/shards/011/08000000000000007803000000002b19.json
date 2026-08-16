@@ -1,0 +1,12 @@
+{
+  "pr_number": 11033,
+  "archive_path": "docs/history/pr-reviews/PR-11033-research-evidence-type-the-negative-claim-artifact-class-vs-intrinsic-class.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:28:50.087Z",
+  "schema_version": "v1",
+  "commit_sha": "6c2402a60144fb1f35be4cbea8acd4e72e495317",
+  "title": "research(evidence): type the negative claim — artifact-class vs intrinsic-class",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:28:15Z",
+  "head_ref": "shadow/supports-absence-negative-claim"
+}
