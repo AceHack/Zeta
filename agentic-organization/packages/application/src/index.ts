@@ -107,6 +107,7 @@ export {
   ReviewGateFeedbackReason,
   evaluateReviewGate,
   type AdvisoryFinding,
+  type ReportedFinding,
   type ReviewGateResult,
 } from "./review-gate.ts";
 export {

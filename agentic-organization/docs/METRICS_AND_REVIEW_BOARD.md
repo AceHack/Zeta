@@ -47,40 +47,93 @@ the verdict is the review board's.
 
 ## Qualitative — the 3-agent review board
 
-`packages/metrics/src/review-board.ts`. A candidate finding becomes a published
-comment only when a **quorum of distinct reviewer agents agree**. Reviewers vote
-along explicit `ReviewDimension`s — `correctness`, `solid`,
+`packages/metrics/src/review-board.ts`. The board **declares its aggregation
+rule** as an `AggregationRule` value (`src/Core.TypeScript/society/aggregation-rule.ts`)
+and its objective as a `Purpose`, and the pairing is machine-checked by
+`classify` before anything is decided:
+
+```text
+DEFAULT_REVIEW_RULE   = union                 (k = 1)
+REVIEW_BOARD_PURPOSE  = { kind: "recall" }
+classify(purpose, rule) -> "dominates:recall"
+```
+
+Reviewers vote along explicit `ReviewDimension`s — `correctness`, `solid`,
 `architecture_adherence`, `performance`, `testing` — the discussion axes the
 operator named.
 
 ```text
-CandidateFinding[]  +  ReviewerVote[]  ->  evaluateReviewBoard({ findings, votes, quorum? })
-                                              -> per finding: FindingDecision
+CandidateFinding[] + ReviewerVote[] -> evaluateReviewBoard({ findings, votes, quorum?, rule? })
+                                          -> per finding: FindingDecision
 ```
+
+### Two numbers that used to be one number
+
+`DEFAULT_REVIEW_QUORUM = 3` used to be **both** the minimum board size and the
+agreement threshold. PR #10974 named what falls out of that: at the minimum
+convening size the agreement threshold is `k = n`, which `ofKOfN` normalises to
+`veto` — and a veto on a **discovery** task is `mirror-mismatch(recall, safety)`.
+The rule did not merely fail to dominate; it dominated on the opposite axis.
+
+They are now separate:
+
+- **`quorum`** — an **attendance floor** only. How many distinct reviewers must
+  show up before the board may sit. In `AggregationRule` terms a
+  `liveness-precondition`, explicitly not an accuracy claim. Still 3; the board
+  still returns `feedback` (`too_few_reviewers`) below it.
+- **`rule`** — decides adoption, defaults to `union`, and is caller-overridable.
 
 `FindingDecision.state` is an explicit DU:
 
-- **adopted** — ≥ quorum *distinct* reviewers agreed and fewer than quorum
-  disagreed; the comment is published
-- **withheld** — too few distinct agreers; the comment is dropped (no
-  single reviewer can force a comment through)
-- **contested** — quorum agreed *and* quorum disagreed; escalate rather than
-  silently pick a side
+- **adopted** — the rule was satisfied. Under `union` that means *any* reviewer
+  agreed; a solitary true finding is no longer dropped.
+- **withheld** — the rule was not satisfied. Under `union` that means **nobody**
+  agreed (union is `k = 1`, not `k = 0`: it is not a check that cannot fail).
+- **contested** — both sides satisfied the rule. Under a **recall-dominant** rule
+  this is an annotation on an adopted finding, not an escalation: letting one
+  disagreeing reviewer suppress a discovery would reinstate the mirror defect
+  through the back door. Under any other rule it escalates, as before.
 
-The board returns `feedback` (`too_few_reviewers`) if fewer than quorum distinct
-reviewers participated at all — a 2-agent board cannot adopt anything when quorum
-is 3.
+### Agreement is published, not spent
+
+Every decision carries a `FindingConfidence`: `distinctAgree`,
+`distinctDisagree`, `distinctAbstain`, `reviewerCount`, `agreementRatio`,
+`contested`. **Nothing branches on it** — not in the board, not in the review
+gate. A 1-of-3 finding and a 3-of-3 finding reach the same gate outcome and are
+never indistinguishable. That is the point: the old quorum gate *consumed* this
+number, and a withheld finding that is dropped is erasure.
+
+`distinct` counting is unchanged and is not a consequence of the threshold: one
+agent voting three times still counts once, so the confidence annotation cannot
+be self-amplified.
+
+### No weights
+
+`toBooleanRule` returns `undefined` for a `weighted` rule, so a weighted rule is
+**structurally unusable** here rather than merely discouraged — the board returns
+`feedback` (`aggregation_rule_not_applicable`). Weighted aggregation waits on a
+measured-competence ledger; no site in this repo has one, and calibration is not
+competence.
+
+### The declaration is checked, not trusted
+
+A rule classifying as `mirror-mismatch` against the board's purpose is refused
+outright (`aggregation_rule_mirror_mismatch`). Setting the rule back to `veto`,
+or writing `ofKOfN(n, n, ...)`, now fails mechanically. Weaker verdicts are
+permitted — a caller may legitimately pin `threshold(k, ...)`, and the tests do
+exactly that so the assertions written for the pre-union regime stay under test.
 
 ### Why this is the constitution gate again
 
-The agreement rule is identical in shape to
-`governance/src/constitution-gate.ts`: **distinct** agreers (one agent voting
-three times counts once — no self-amplification), quorum-gated, with disagreement
-able to veto. The constitution gate ratifies *rule sets*; the review board
-ratifies *review findings*. Same multi-oracle principle, two scopes. They live in
-different packages (no cross-import across the boundary), so the logic is restated
-rather than shared — but the semantics are deliberately the same, and both are
-explicit DUs with no buried thresholds.
+The **distinct-agreer** discipline is identical in shape to
+`governance/src/constitution-gate.ts`: one agent voting three times counts once,
+no self-amplification. The constitution gate ratifies *rule sets*; the review
+board ratifies *review findings*. What differs, deliberately, is the aggregation
+rule: ratification is a **legitimacy** question (a threshold is the right shape),
+discovery is a **recall** question (union is). Same multi-oracle principle, two
+purposes, and now each says which one it is. The vote-counting logic is restated
+across the package boundary; the **algebra** is imported, so the classification
+has one source of truth and cannot drift.
 
 This is also why a review board sits naturally on the observe/compose keystone:
 "publish this review comment" is exactly the kind of side effect that should pass

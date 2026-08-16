@@ -24,12 +24,16 @@
  *   2. findings were raised and WITHHELD    -> information exists, and reading it
  *      for lack of quorum agreement            as approval DISCARDS it.
  *
- * The upstream board (`review-board.ts`) withholds any finding fewer than
- * `quorum` distinct reviewers agree on, so state 2 is the normal case for a
- * solitary true finding by the single reviewer who spotted it. Approving on it
- * ships the bug AND erases the report. The `basis` field below is the state,
- * named; `recommendedGateOutcome` is derived from it rather than from a count
- * that cannot tell the two apart.
+ * The upstream board withheld any finding fewer than `quorum` distinct reviewers
+ * agreed on, so state 2 was the normal case for a solitary true finding by the
+ * single reviewer who spotted it. Approving on it ships the bug AND erases the
+ * report. The `basis` field below is the state, named; `recommendedGateOutcome`
+ * is derived from it rather than from a count that cannot tell the two apart.
+ *
+ * That distinction is still load-bearing and is still tested — it is just no
+ * longer the *default* path, because the board now adopts on `union` (see the
+ * section below). State 2 is reached whenever a caller pins a threshold rule, and
+ * whenever the rule is not satisfied at all.
  *
  * ## Withheld findings are carried, not deleted
  *
@@ -45,30 +49,48 @@
  * true — rejecting would assert it. ChangesRequested says "someone must look",
  * which is the weakest outcome that is not silent approval.
  *
- * ## Open question this module deliberately does NOT decide
+ * ## The open question this module deferred — now decided upstream
  *
- * The upstream aggregation rule is still `AND`-of-3 (`review-board.ts`). For a
- * recall-shaped task like bug-finding the dominant rule is `OR`/union, and an
- * unweighted k-of-n count defers toward neither accept nor reject — so the
- * quorum is arguably the complement of the right rule, not merely a strict one.
- * Changing it alters what blocks merges repo-wide, so it is not this module's
- * call. Evidence and options: `docs/research/2026-08-16-dominance-lift-
- * aggregation-inventory-where-unweighted-majority-already-bites.md` §1.1.A.
- * What is fixed here is only the fail-open: whatever the quorum rule ends up
- * being, a withheld finding must not read as approval and must not be erased.
+ * This header used to record that the upstream aggregation rule was still
+ * `AND`-of-3, that union is the dominant rule for a recall-shaped task, and that
+ * changing it "alters what blocks merges repo-wide, so it is not this module's
+ * call". That call has since been made, in `review-board.ts`: the board declares
+ * `AggregationRule.union` against `Purpose.recall`, and adopts every finding any
+ * reviewer raises. Nothing in the fail-open fix depended on the quorum rule —
+ * the invariant here was always "a withheld finding must not read as approval
+ * and must not be erased", and it holds unchanged under union.
+ *
+ * **What that changes for this module.** Under union, the ordinary path for a
+ * solitary true finding is now `Adopted`, not `Withheld` — so it flows through
+ * `AdoptedBlockingOrMajor` and the gate returns `Rejected` where it previously
+ * returned `ChangesRequested`. The basis -> outcome mapping below is
+ * **unchanged**; only which basis a given input reaches has moved. The
+ * `Unadopted*` bases remain live and remain tested: they are what a caller gets
+ * when it pins a threshold rule, which the tests do precisely so the assertions
+ * written for the pre-union regime stay under test rather than being deleted.
+ *
+ * The restraint recorded below ("rejecting would assert it") applied to a rule
+ * under which non-adoption was the alternative. Under union, adoption means
+ * "some reviewer found this", and how well corroborated it is is published on
+ * `confidence` rather than spent as a gate. Corroboration is an annotation here
+ * too: this module does **not** branch on the agreement count, because doing so
+ * would reintroduce a k-of-n threshold one layer up.
  *
  * Lives in the application layer because it composes two packages (domain's
  * QualityGateOutcome + metrics' review board); metrics stays dependency-free and
  * domain stays unaware of the board. Pure; no I/O.
  */
 
+import type { Rule } from "../../../../src/Core.TypeScript/society/aggregation-rule.ts";
 import { QualityGateOutcome } from "../../domain/src/index.ts";
 import {
   FindingDecisionState,
+  ReviewBoardFeedbackReason,
   ReviewSeverity,
   ReviewStance,
   evaluateReviewBoard,
   type CandidateFinding,
+  type FindingConfidence,
   type FindingDecision,
   type ReviewBoardOutcome,
   type ReviewDimension,
@@ -77,6 +99,8 @@ import {
 
 export const ReviewGateFeedbackReason = {
   BoardCouldNotConvene: "board_could_not_convene",
+  /** The board refused the declared aggregation rule (mirror mismatch, or no boolean reading). */
+  AggregationRuleRefused: "aggregation_rule_refused",
 } as const;
 export type ReviewGateFeedbackReason =
   (typeof ReviewGateFeedbackReason)[keyof typeof ReviewGateFeedbackReason];
@@ -102,25 +126,42 @@ export const ReviewGateBasis = {
 export type ReviewGateBasis = (typeof ReviewGateBasis)[keyof typeof ReviewGateBasis];
 
 /**
- * A finding the board raised but did not adopt, carried forward instead of
- * discarded. Non-blocking on its own; the gate outcome is decided by `basis`.
+ * A finding the board decided on, carried forward with attribution instead of
+ * reduced to an id. Used for **both** halves of the output — adopted and
+ * advisory — because under `union` the interesting question is no longer
+ * "did it survive the count" but "who raised it, and who else agreed".
  */
-export type AdvisoryFinding = {
+export type ReportedFinding = {
   findingId: string;
   dimension: ReviewDimension;
   severity: ReviewSeverity;
   subject: string;
   comment: string;
-  /** Withheld (short of quorum) or Contested (quorum both ways — escalate). */
+  /** Adopted, Withheld (rule unsatisfied), or Contested (both sides satisfied it — escalate). */
   state: FindingDecisionState;
   distinctAgree: number;
   distinctDisagree: number;
+  /** The board's attendance floor. Not an agreement threshold (see review-board.ts). */
   quorum: number;
+  /**
+   * The agreement count as an annotation. Present on adopted findings too: this
+   * is the "1 of 3 agreed" vs "3 of 3 agreed" distinction that the old quorum
+   * gate consumed. Nothing in this module branches on it.
+   */
+  confidence: FindingConfidence;
   /** Attribution: the distinct reviewer agents who agreed / disagreed. Sorted, ordinal. */
   agreedBy: readonly string[];
   disagreedBy: readonly string[];
   boardReason: string;
 };
+
+/**
+ * A finding the board raised but did not adopt, carried forward instead of
+ * discarded. Non-blocking on its own; the gate outcome is decided by `basis`.
+ * Structurally identical to `ReportedFinding`; the name is kept because it is
+ * the vocabulary #10957 established for the carried-not-erased half.
+ */
+export type AdvisoryFinding = ReportedFinding;
 
 export type ReviewGateResult =
   | {
@@ -130,6 +171,8 @@ export type ReviewGateResult =
       basis: ReviewGateBasis;
       board: ReviewBoardOutcome;
       adoptedFindingIds: readonly string[];
+      /** Every adopted finding with its attribution and agreement count. */
+      adoptedFindings: readonly ReportedFinding[];
       /** Every raised-but-not-adopted finding, with attribution. Never silently dropped. */
       advisoryFindings: readonly AdvisoryFinding[];
       reason: string;
@@ -158,7 +201,7 @@ function agentsWithStance(
   return [...agents].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 }
 
-function toAdvisory(decision: FindingDecision, votes: readonly ReviewerVote[]): AdvisoryFinding {
+function toReported(decision: FindingDecision, votes: readonly ReviewerVote[]): ReportedFinding {
   return {
     findingId: decision.finding.findingId,
     dimension: decision.finding.dimension,
@@ -169,6 +212,7 @@ function toAdvisory(decision: FindingDecision, votes: readonly ReviewerVote[]): 
     distinctAgree: decision.distinctAgree,
     distinctDisagree: decision.distinctDisagree,
     quorum: decision.quorum,
+    confidence: decision.confidence,
     agreedBy: agentsWithStance(votes, decision.finding.findingId, ReviewStance.Agree),
     disagreedBy: agentsWithStance(votes, decision.finding.findingId, ReviewStance.Disagree),
     boardReason: decision.reason,
@@ -207,26 +251,32 @@ export function evaluateReviewGate(input: {
   findings: readonly CandidateFinding[];
   votes: readonly ReviewerVote[];
   quorum?: number;
+  /** Override the board's declared aggregation rule. Omit for `union` (the recall-dominant default). */
+  rule?: Rule;
 }): ReviewGateResult {
-  const boardResult =
-    input.quorum === undefined
-      ? evaluateReviewBoard({ findings: input.findings, votes: input.votes })
-      : evaluateReviewBoard({ findings: input.findings, votes: input.votes, quorum: input.quorum });
+  const boardResult = evaluateReviewBoard({
+    findings: input.findings,
+    votes: input.votes,
+    ...(input.quorum === undefined ? {} : { quorum: input.quorum }),
+    ...(input.rule === undefined ? {} : { rule: input.rule }),
+  });
 
   if (boardResult.outcome === "feedback") {
-    return {
-      outcome: "feedback",
-      feedback: { reason: ReviewGateFeedbackReason.BoardCouldNotConvene, message: boardResult.feedback.message },
-    };
+    const reason =
+      boardResult.feedback.reason === ReviewBoardFeedbackReason.TooFewReviewers
+        ? ReviewGateFeedbackReason.BoardCouldNotConvene
+        : ReviewGateFeedbackReason.AggregationRuleRefused;
+    return { outcome: "feedback", feedback: { reason, message: boardResult.feedback.message } };
   }
 
   const adopted = boardResult.board.adopted;
   const adoptedFindingIds = adopted.map((decision) => decision.finding.findingId);
+  const adoptedFindings = adopted.map((decision) => toReported(decision, input.votes));
 
-  // Everything the board raised but did not adopt: withheld (short of quorum) and
-  // contested (quorum both ways). Carried forward with attribution, never dropped.
+  // Everything the board raised but did not adopt: withheld (rule unsatisfied) and
+  // contested (both sides satisfied it). Carried forward with attribution, never dropped.
   const notAdopted = boardResult.board.withheld;
-  const advisoryFindings = notAdopted.map((decision) => toAdvisory(decision, input.votes));
+  const advisoryFindings = notAdopted.map((decision) => toReported(decision, input.votes));
   const contestedCount = notAdopted.filter((d) => d.state === FindingDecisionState.Contested).length;
 
   // Count what was RAISED, not just what survived aggregation: a zero here means
@@ -248,12 +298,12 @@ export function evaluateReviewGate(input: {
     basis = ReviewGateBasis.UnadoptedBlockingOrMajor;
     const severeCount = notAdopted.filter(isBlockingOrMajor).length;
     reason =
-      `no finding reached quorum agreement, but ${severeCount} major/blocking finding(s) were raised ` +
+      `no finding satisfied the board's aggregation rule, but ${severeCount} major/blocking finding(s) were raised ` +
       `(${contestedCount} contested); carried as advisory, changes requested`;
   } else {
     basis = ReviewGateBasis.UnadoptedMinorOrInfoOnly;
     reason =
-      `no finding reached quorum agreement; ${notAdopted.length} minor/info finding(s) ` +
+      `no finding satisfied the board's aggregation rule; ${notAdopted.length} minor/info finding(s) ` +
       `(${contestedCount} contested) carried as advisory; gate approved`;
   }
 
@@ -263,6 +313,7 @@ export function evaluateReviewGate(input: {
     basis,
     board: boardResult.board,
     adoptedFindingIds,
+    adoptedFindings,
     advisoryFindings,
     reason,
   };
