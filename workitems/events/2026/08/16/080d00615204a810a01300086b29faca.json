@@ -1,0 +1,14 @@
+{
+  "id": "080d00615204a810a01300086b29faca",
+  "at": "2026-08-16T20:01:30.773Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M062MG4M087G0R0039ZXG2C",
+    "type": "bug",
+    "title": "shadow's squash commit lost its AgencySignature git trailers: GitHub appended a co-author section after the block",
+    "slug": "shadow-s-squash-commit-lost-its-agencysignature-git-trailers",
+    "priority": "P2",
+    "filename": "081M062MG4M087G0R0039ZXG2C-shadow-s-squash-commit-lost-its-agencysignature-git-trailers.md"
+  }
+}
