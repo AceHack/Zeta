@@ -1,0 +1,12 @@
+{
+  "pr_number": 10827,
+  "archive_path": "docs/history/pr-reviews/PR-10827-docs-ir-idiomatic-emission-needs-no-new-format-bonsai-s-fold-node-already-exists.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:59:27.123Z",
+  "schema_version": "v1",
+  "commit_sha": "996acb7d94fb89bda7cf5dab14af7f99adcb0bc5",
+  "title": "docs(ir): idiomatic emission needs no new format — Bonsai's fold node already exists, and target hints cannot live in the IR",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:58:51Z",
+  "head_ref": "shadow/idiomatic-emission-bonsai-level"
+}
