@@ -1,0 +1,12 @@
+{
+  "pr_number": 10824,
+  "archive_path": "docs/history/pr-reviews/PR-10824-test-app-free-falsifier-for-the-arrowapply-free-fragment-declared-scope-a-shape-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:12:31.502Z",
+  "schema_version": "v1",
+  "commit_sha": "a724fc34fb6f7b6ca41532ac3f68598bb7a6cfc0",
+  "title": "test(app-free): falsifier for the ArrowApply-free fragment — declared scope + a shape check that survives renaming",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:11:59Z",
+  "head_ref": "shadow/app-free-fragment-falsifier"
+}
