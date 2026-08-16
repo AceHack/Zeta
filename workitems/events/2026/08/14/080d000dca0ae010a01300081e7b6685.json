@@ -1,0 +1,14 @@
+{
+  "id": "080d000dca0ae010a01300081e7b6685",
+  "at": "2026-08-14T19:21:53.244Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00VJGAV087G0R00393F6X5",
+    "type": "task",
+    "title": "Self-fabricated TKey: become-our-own-vendor provisioning path (UDS + tkey-verification fork)",
+    "slug": "self-fabricated-tkey-become-our-own-vendor-provisioning-path",
+    "priority": "P2",
+    "filename": "081M00VJGAV087G0R00393F6X5-self-fabricated-tkey-become-our-own-vendor-provisioning-path.md"
+  }
+}
