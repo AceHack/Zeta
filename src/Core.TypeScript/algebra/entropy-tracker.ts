@@ -53,10 +53,15 @@
  * is **deliberately not guarded**, because the guard would break shipped callers that do
  * exactly this:
  *
- * - `physics-traits.ts` `createNonAdjMap.put/delete` calls `measure(1)` with no preceding
- *   `branch()` — three ordinary operations drive `entropy_state` to `-3`.
- * - `observe/event-sink-folder.ts` calls `entropy.measure(1)` per append with no `branch()`,
- *   and stamps the resulting negative `entropy_state` into durable event envelopes.
+ * - `physics-traits.ts` `createNonAdjMap.put/delete` calls `measure(...)` with no preceding
+ *   `branch()` — three ordinary operations drive `entropy_state` negative. Still true as of
+ *   2026-08-14; only the bit count changed (it is derived now, not the literal `1`).
+ * - `observe/event-sink-folder.ts` **no longer does this.** It called `entropy.measure(1)` per
+ *   append and stamped the resulting negative `entropy_state` into durable event envelopes. The
+ *   append is an append-only G-Set write — injective, so nothing is erased — and the charge is
+ *   now a derived `0`. The bits it used to erase without admitting were never destroyed by it;
+ *   the collapse it was charging for happens in the chooser, upstream, and is now supplied
+ *   explicitly via `decisionCandidates` when a caller knows the menu size.
  *
  * Those callers erase uncertainty drawn from an ambient possibility space this tracker never
  * saw. That is a §13 noninterference gap on the **caller** side (entropy entering through an
@@ -66,8 +71,19 @@
  * mid-stream tracker is legitimate or a modelling defect. `key-erasure-meter.ts` is the guarded
  * path for callers that want admission enforced.
  *
+ * ## The input was asserted too, and now is not (2026-08-14)
+ *
+ * Repairing `verifyLandauer` fixed the **instrument**; `measure(bitsErased)` still took its bit
+ * count on trust, and every shipped caller handed it a constant. A sound meter with an asserted
+ * input is the same defect one layer in. The number is now derived from the operation —
+ * `erasure-derivation.ts`, `bits = log2(largest fibre)`, the same rule
+ * `WSet.ErasureClassification.Laws.Tests.fs` uses on the F# side — and two of the shipped charges
+ * turned out to be pointed at **bijections** (`FerryQueue.dequeue`, `FerryQueue.flush`), where a
+ * Landauer meter must read zero for every input forever. This tracker's `permutation()` is the
+ * correct door for those, and they use it now.
+ *
  * `measure(k)` with `k < 0` un-pays heat, which no caller has a legitimate reason to do (every
- * shipped call site passes a literal, a length, or a bit count). It is likewise accepted rather
+ * shipped call site passes a derived figure). It is likewise accepted rather
  * than thrown — the house rule is Result-over-exception and this is a `void` counter — but it
  * is the one thing that falsifies `second_law_satisfied`, so it can no longer pass silently.
  *

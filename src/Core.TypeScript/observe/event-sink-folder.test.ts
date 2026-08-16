@@ -256,15 +256,19 @@ describe("folderSink — entropy tracker wiring", () => {
     const r = await sink.append(freeTime);
     expect(r.ok).toBe(true);
 
-    // The append IS a measurement (1 bit erased). Post-commit state:
-    // entropy_state = 3 - 1 = 2, entropy_heat = 0 + 1 = 1
+    // The append is NOT a measurement (corrected 2026-08-14). It adds a fact to an append-only
+    // log: the post-state contains the event, so the pre-state is the post-state minus it, and a
+    // re-append of the same id is the identity — both injective, so the derived charge is 0
+    // (`APPEND_ONLY_ERASURE_BITS`). The old `measure(1)` was a literal justified by a collapse
+    // that happens upstream, in the chooser, which this sink never sees. Ledger unchanged:
+    // entropy_state stays 3, entropy_heat stays 0.
     const env = JSON.parse(readFileSync(join(dir, `${ID_ENT}.json`), "utf-8")) as EventEnvelope;
     expect(env.entropy).toBeDefined();
-    expect(env.entropy?.entropy_state).toBe(2);
-    expect(env.entropy?.entropy_heat).toBe(1);
+    expect(env.entropy?.entropy_state).toBe(3);
+    expect(env.entropy?.entropy_heat).toBe(0);
   });
 
-  it("cumulative heat grows with each append (Landauer: heat is monotone)", async () => {
+  it("appends pay nothing, at any count — an append-only log erases nothing", async () => {
     const tracker = createEntropyTracker();
     tracker.branch(); tracker.branch(); tracker.branch(); tracker.branch(); // 4 bits
 
@@ -280,13 +284,53 @@ describe("folderSink — entropy tracker wiring", () => {
       entropy: tracker,
     });
 
-    await sink.append(freeTime); // measure(1): state=3, heat=1
-    await sink.append({ kind: "explore", reason: "fwd" }); // measure(1): state=2, heat=2
+    await sink.append(freeTime);
+    await sink.append({ kind: "explore", reason: "fwd" });
 
-    // After 2 appends: 2 bits of heat paid
-    expect(tracker.state.entropy_heat).toBe(2);
-    expect(tracker.state.entropy_state).toBe(2);
+    expect(tracker.state.entropy_heat).toBe(0);
+    expect(tracker.state.hard_measurements).toBe(0);
+    // And the deficit the old literal created is gone: nothing is erased that was never admitted.
+    // (entropy-tracker.ts header named this sink as one of the two callers driving that negative.)
+    expect(tracker.state.entropy_state).toBe(4);
+    expect(tracker.state.bits_erased).toBe(0);
     expect(tracker.state.second_law_satisfied).toBe(true);
+  });
+
+  it("a caller that KNOWS the menu size charges the real erasure: log2(N), not 1", async () => {
+    const tracker = createEntropyTracker();
+    const ID_DEC = "7".repeat(32);
+    const sink = folderSink({
+      eventDir: dir,
+      by: "alexa",
+      mint: () => ID_DEC,
+      now: () => FIXED,
+      commit: okCommit,
+      entropy: tracker,
+      // observe.ts `buildMenu` produced 8 candidates and exactly one was recorded.
+      decisionCandidates: () => 8,
+    });
+    await sink.append(freeTime);
+
+    expect(tracker.state.entropy_heat).toBe(3); // log2(8) — three times the literal that shipped
+    expect(tracker.state.hard_measurements).toBe(1);
+  });
+
+  it("a declared menu of one is not a decision, and is charged as one: zero", async () => {
+    const tracker = createEntropyTracker();
+    const ID_ONE = "8".repeat(32);
+    const sink = folderSink({
+      eventDir: dir,
+      by: "alexa",
+      mint: () => ID_ONE,
+      now: () => FIXED,
+      commit: okCommit,
+      entropy: tracker,
+      decisionCandidates: () => 1,
+    });
+    await sink.append(freeTime);
+
+    expect(tracker.state.entropy_heat).toBe(0);
+    expect(tracker.state.hard_measurements).toBe(0);
   });
 
   it("without entropy tracker, envelope has no entropy field (backward-compatible)", async () => {
@@ -322,6 +366,7 @@ describe("folderSink — entropy tracker wiring", () => {
     expect(r.ok).toBe(true);
 
     const env = JSON.parse(readFileSync(join(dir, `${ID_E2E}.json`), "utf-8")) as EventEnvelope;
-    expect(env.entropy).toEqual({ entropy_state: 1, entropy_heat: 1 });
+    // Unchanged by the append: recording a fact is not erasing one.
+    expect(env.entropy).toEqual({ entropy_state: 2, entropy_heat: 0 });
   });
 });

@@ -56,6 +56,25 @@ that nothing in the substrate is checked against. Either bridge it to the ZSet
 path or say plainly that it is a reference model. Not a defect; an unstated
 status.
 
+## Status 2026-08-14 — the derivation landed; two of six charges were on bijections
+
+`src/Core.TypeScript/algebra/erasure-derivation.ts` now computes the figure by the same rule
+the WSet sweep uses (group by observable output, `bits = log2(largest fibre)`), and every
+`measure()` call site takes its number from it. Per call site:
+
+| call site | was | derived | verdict |
+|---|---|---|---|
+| `key-erasure-meter.meterKeyErasure` | `record.bits` | `record.bits` | already derived — exact |
+| `physics-traits` `NonAdjMap.put` / `.delete` | `1` | `log2(\|V\|+1)` | `1` was the FLOOR of an uncomputed quantity; exact once `valueDomainBits` is declared |
+| `physics-traits` `FerryQueue.dequeue` | `1` | `0` | **meter on a bijection** — the item is returned |
+| `physics-traits` `FerryQueue.flush` | `batchSize` | `0` | **meter on a bijection** — the batch is returned |
+| `observe/event-sink-folder.append` | `1` | `0` | **meter on a bijection** — append-only G-Set; the erasure is the chooser's `log2(N)`, added as `decisionCandidates` |
+| `spec-weight-view.measure` | pass-through | n/a | asserts nothing; separately fixed to stop discharging its window on a zero-bit measure |
+
+Remaining: 081M00QTT79087G0R001TJZ70D (the queue's asserted `branch()` admission unit, the
+missing reversible-egress door, and the operation-level vs per-instance boundary). The
+ToffoliGate note below is untouched and still open.
+
 ## Anchors
 
 Landauer 1961; Bennett 1973; `src/Core.Lean4/Lean4/LandauerFloor.lean` (§
