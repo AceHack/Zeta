@@ -1,0 +1,14 @@
+{
+  "id": "080d000d4cb78010a0130008b401b884",
+  "at": "2026-08-14T19:04:46.576Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00TK5QG087G0R0031J243E",
+    "type": "bug",
+    "title": "SEED-VOCABULARY carries stale arity: six disciplines and 11 specifications, contradicting itself and the rules",
+    "slug": "seed-vocabulary-carries-stale-arity-six-disciplines-and-11-s",
+    "priority": "P2",
+    "filename": "081M00TK5QG087G0R0031J243E-seed-vocabulary-carries-stale-arity-six-disciplines-and-11-s.md"
+  }
+}

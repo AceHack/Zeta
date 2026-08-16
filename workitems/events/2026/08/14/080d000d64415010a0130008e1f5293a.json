@@ -1,0 +1,14 @@
+{
+  "id": "080d000d64415010a0130008e1f5293a",
+  "at": "2026-08-14T19:07:59.402Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00TS219087G0R0016S5PMC",
+    "type": "task",
+    "title": "The lane classifier: derive edit type from structure not declaration; unsure routes to the judgment lane",
+    "slug": "the-lane-classifier-derive-edit-type-from-structure-not-decl",
+    "priority": "P2",
+    "filename": "081M00TS219087G0R0016S5PMC-the-lane-classifier-derive-edit-type-from-structure-not-decl.md"
+  }
+}

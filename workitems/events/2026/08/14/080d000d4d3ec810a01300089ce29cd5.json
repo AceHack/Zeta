@@ -1,0 +1,14 @@
+{
+  "id": "080d000d4d3ec810a01300089ce29cd5",
+  "at": "2026-08-14T19:04:50.905Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00TK9YR087G0R001MQXA3C",
+    "type": "task",
+    "title": "Skill claim layer: BP-NN-shaped stable-id claims as the only Z-set-mergeable fraction of a skill",
+    "slug": "skill-claim-layer-bp-nn-shaped-stable-id-claims-as-the-only",
+    "priority": "P2",
+    "filename": "081M00TK9YR087G0R001MQXA3C-skill-claim-layer-bp-nn-shaped-stable-id-claims-as-the-only.md"
+  }
+}

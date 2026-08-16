@@ -1,0 +1,14 @@
+{
+  "id": "080d000d4db08010a0130008d1a4d6d8",
+  "at": "2026-08-14T19:04:54.544Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00TKDGG087G0R00271D93E",
+    "type": "task",
+    "title": "Version the codebook the seed compresses against: the shared prior is an unversioned dependency",
+    "slug": "version-the-codebook-the-seed-compresses-against-the-shared",
+    "priority": "P2",
+    "filename": "081M00TKDGG087G0R00271D93E-version-the-codebook-the-seed-compresses-against-the-shared.md"
+  }
+}
