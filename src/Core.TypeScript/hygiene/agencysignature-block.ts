@@ -158,6 +158,30 @@ export function missingRequiredKeys(blockText: string): readonly string[] {
  * from ten different paragraphs could "recover" a signature nobody wrote — a
  * worse failure than the one being fixed, and the precise way a fallback turns
  * into a gate that cannot fail.
+ *
+ * WHY THE SURROUNDINGS DRIFT — mechanism established 2026-08-16, 116/116 held-out
+ * predictions, zero mispredictions. GitHub's squash-merge does not pass the message
+ * through. It DELETES every `Co-authored-by:` line from the composed body,
+ * recomputes the set of contributing identities MINUS the squash commit's own
+ * author, and re-emits that set after a blank line — synthesizing lines the branch
+ * never carried, and emitting nothing at all when the set comes out empty (which is
+ * why some merged commits parse and others do not; they are not the same shape).
+ * The blank line is produced by the forge from ACCOUNT TOPOLOGY, not by the author
+ * from message text, so no authoring discipline can prevent it. This scan is
+ * therefore the supported reader for merged commits, not a fallback for sloppy
+ * authoring. Measured across 150 merged PRs, branch commit vs landed squash: all
+ * ten field VALUES survived intact 150/150 and the block was recoverable 150/150 —
+ * which is why no widening is needed here.
+ * Evidence: docs/research/2026-08-16-the-forge-is-the-producer-squash-merge-recomputes-the-co-author-trailer-set-and-the-fields-always-survive.md
+ *
+ * KNOWN OPEN AMBIGUITY (named, not decided): a multi-commit squash concatenates
+ * each commit's message, so one message can carry SEVERAL complete blocks. This
+ * returns the FIRST. On `main` today 159 commits carry more than one complete
+ * block, and 38 of those disagree between first and last on a governance field
+ * (`Human-Review`, `Action-Mode`). Which of N signatures is THE signature of a
+ * squashed commit is a real semantic question, and changing the pick would change
+ * the recorded verdict on 38 landed commits — so it is left open rather than
+ * settled by a parser detail.
  */
 export function findSignatureBlock(text: string): readonly string[] | null {
   const lines = text.split("\n");
