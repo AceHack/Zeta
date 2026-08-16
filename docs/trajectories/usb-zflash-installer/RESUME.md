@@ -9,10 +9,10 @@ Current blocker: none for software/QEMU deepen slices landed 2026-07-31
 radio claim, hostname uniqueness contract, multiboot FAT assemble + EFI
 embed path, credential-binding model tests). Physical S6 UX feel + real
 WiFi association remain metal-gated.
-Next concrete action: **minimize metal** — optional QEMU UEFI menu-boot
-CI smoke (OVMF + real `grub-mkimage` EFI; planner already lands).
-Per-federation threat-model stub template landed
-(`docs/security/federation-threat-model-stub.TEMPLATE.md`).
+Next concrete action: **minimize metal** — S6 physical first-login +
+WiFi radio / Touch ID / TPM (human-gated). Software deepen landed:
+per-federation threat-model stub + optional QEMU UEFI menu-boot smoke
+(`qemu-uefi-menu-smoke.ts`).
 See `docs/security/USB-IDENTITY-THREAT-MODEL.md` <!-- STALE-REF: ../../security/USB-IDENTITY-THREAT-MODEL.md -->:
 traveler → cluster → federation → ISociety/CTM, self-similar.
 Cluster/federation glossary promoted (`docs/SEED-VOCABULARY.md` +
@@ -21,7 +21,8 @@ landed (`credential-binding-model.ts`). Multiboot scaffold + hermetic
 planner + FAT assemble + EFI embed path landed
 (`src/Core.TypeScript/installer/multiboot/` — `--plan` / `--assemble`
 /`--grub-efi`). Real GRUB EFI binary comes from nix/`grub-mkimage` (not
-vendored). QEMU UEFI menu boot with that binary is optional CI smoke.
+vendored). QEMU UEFI menu-boot smoke is optional CI
+(`qemu-uefi-menu-smoke.ts`).
 **Physical boot** only when ready
 for residual hardware (S6 feel, radio associate, Touch ID / TPM). Paper/mock
 S6 flow accepted 2026-07-08 (GitHub → local → done; skip-gh continue
@@ -84,7 +85,7 @@ bringup.
 
 ## Current Next Action
 
-QEMU scenarios 1–4 green; scenario 2 asserts first-session serial markers on **push** (phase-3 promoted after [run 27862943618](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/27862943618)). **Post-login:** [FIRST-SESSION.md](./FIRST-SESSION.md) slices 1–4 landed; S6 paper/mock accepted (physical boot still human-gated). **Next software:** optional QEMU UEFI menu-boot CI; slice 5 CODEOWNERS when teams are confirmed.
+QEMU scenarios 1–4 green; scenario 2 asserts first-session serial markers on **push** (phase-3 promoted after [run 27862943618](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/27862943618)). Optional multiboot UEFI menu smoke on installer/multiboot path PRs. **Post-login:** [FIRST-SESSION.md](./FIRST-SESSION.md) slices 1–4 landed; S6 paper/mock accepted (physical boot still human-gated). Slice 5 CODEOWNERS when teams are confirmed.
 
 - ESP hostname + credential injection now has QEMU-testable planning/serial-marker assertions; WiFi radio association remains physical-gated, but a future ESP WiFi blob can reuse the same write-plan + serial-marker pattern.
 

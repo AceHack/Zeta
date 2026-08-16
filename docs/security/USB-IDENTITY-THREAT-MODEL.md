@@ -231,8 +231,10 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
    `src/Core.TypeScript/installer/federation-threat-model-stub.ts`).
    Fill a copy under `docs/security/federations/` when a Lodge is
    chartered; validator refuses empty exits.
-2. **QEMU UEFI menu-boot CI** (optional) — run OVMF against a composite
-   built with a real `grub-mkimage` EFI (layout+embed path already lands).
+2. **QEMU UEFI menu-boot CI** (optional) — landed
+   (`src/Core.TypeScript/installer/multiboot/qemu-uefi-menu-smoke.ts` +
+   `.github/workflows/multiboot-qemu-uefi-smoke.yml`). OVMF + real
+   `grub-mkimage` EFI; skip locally when tooling is absent; required in CI.
 
 Cluster/federation vocabulary promoted to operational glossary
 (`docs/SEED-VOCABULARY.md` carved kernel + `docs/GLOSSARY.md` §Society
