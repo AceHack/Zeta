@@ -341,9 +341,13 @@ async function runObserveInline(): Promise<string> {
     // 1. Load world from event log + backlog
     const world = loadWorld({ eventDir, repoRoot: worktree });
 
-    const { defaultComposer } = await import("../observe/composer");
-    // 2. Choose action (tiered cascade)
-    const result = await choose(world, { composer: defaultComposer });
+    const { unmeteredDefaultComposer } = await import("../observe/composer");
+    // 2. Choose action (tiered cascade). The L2 backend is `unmetered` — five
+    // hand-set weights with no falsifier; measured 2026-08-15 to be scored in 156
+    // of 504 enumerated worlds and adopted in 0 of them (its confidence tops out
+    // at 0.4272 against the 0.7 threshold, so `choose` falls back to the oracle
+    // pick). See observe/composer.ts's header and composer-register.test.ts.
+    const result = await choose(world, { composer: unmeteredDefaultComposer });
     const label = renderAction(result.action);
     log(`observe-inline: tier=${result.tier} confidence=${result.confidence.toFixed(2)} action=${label}`);
 

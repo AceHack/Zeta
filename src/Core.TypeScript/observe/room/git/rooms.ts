@@ -10,7 +10,7 @@
 import type { World, BacklogItem } from "../../observe";
 import type { ChooserResult } from "../../chooser";
 import { choose } from "../../chooser";
-import { defaultComposer } from "../../composer";
+import { unmeteredDefaultComposer } from "../../composer";
 import type { Room, RoomState } from "../room";
 
 export interface BacklogRoomState extends RoomState {
@@ -26,7 +26,7 @@ export function createBacklogRoom(item: BacklogItem): Room {
     scope: { backlogIds: new Set([item.id]), prNumbers: new Set(), operatorAccess: false, writeAccess: true },
     state,
     tick: async (scopedWorld: World): Promise<ChooserResult> => {
-      const result = await choose(scopedWorld, { composer: defaultComposer });
+      const result = await choose(scopedWorld, { composer: unmeteredDefaultComposer });
       const s = state as BacklogRoomState;
       s.ticksInStep++;
       s.lastAction = result.action.kind;
