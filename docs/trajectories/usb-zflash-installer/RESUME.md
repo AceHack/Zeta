@@ -17,7 +17,8 @@ per-federation threat-model stub + optional QEMU UEFI menu-boot smoke
 not default `usbUuid` binding). Persist picker now forwards
 `--usb-iserial` / `--uefi-keyfile` the same way persist/restore already
 did. QEMU USB boot argv now carries `serial=ZETA-QEMU-001` (guest
-sysfs; host probe stays injectable).
+sysfs; host probe stays injectable). Guest installer 6.95d prints the
+sysfs probe report to the serial log (assertable; live QEMU after clone).
 See `docs/security/USB-IDENTITY-THREAT-MODEL.md` <!-- STALE-REF: ../../security/USB-IDENTITY-THREAT-MODEL.md -->:
 traveler → cluster → federation → ISociety/CTM, self-similar.
 Cluster/federation glossary promoted (`docs/SEED-VOCABULARY.md` +

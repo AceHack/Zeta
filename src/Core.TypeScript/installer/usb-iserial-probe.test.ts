@@ -1,10 +1,15 @@
 import { describe, expect, it } from "bun:test";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import {
   USB_ISERIAL_SERIAL,
+  formatUsbISerialReport,
   isUsbDeviceDirName,
   probeUsbISerial,
   readUsbSysfsDevice,
+  runUsbISerialProbeCli,
   selectUniqueUsbISerial,
+  usbISerialValueMarker,
   type UsbSysfsDevice,
 } from "./usb-iserial-probe.ts";
 
@@ -90,5 +95,57 @@ describe("usb-iserial-probe", () => {
     expect(probed.ok).toBe(true);
     if (!probed.ok) return;
     expect(probed.serial).toBe("QEMU-USB-SERIAL-42");
+  });
+
+  it("formats guest serial-log lines without claiming metal", () => {
+    const found = formatUsbISerialReport({
+      ok: true,
+      serial: "ZETA-QEMU-001",
+      dirName: "1-1",
+    });
+    expect(found).toContain(USB_ISERIAL_SERIAL.found);
+    expect(found).toContain(usbISerialValueMarker("ZETA-QEMU-001"));
+    expect(found).toContain(USB_ISERIAL_SERIAL.noMetalClaim);
+    expect(found.join("\n")).not.toMatch(/Touch ID|TPM/i);
+
+    const missing = formatUsbISerialReport({
+      ok: false,
+      error: "no USB iSerial in sysfs",
+      marker: USB_ISERIAL_SERIAL.missing,
+    });
+    expect(missing).toContain(USB_ISERIAL_SERIAL.missing);
+    expect(missing.join("\n")).not.toContain("serial=ZETA-QEMU-001");
+  });
+
+  it("CLI prints the same report the guest installer will log", () => {
+    const io = mapIo(
+      {
+        "/sys/bus/usb/devices/1-1/serial": "ZETA-QEMU-001\n",
+        "/sys/bus/usb/devices/1-1/bDeviceClass": "00\n",
+        "/sys/bus/usb/devices/usb1/bDeviceClass": "09\n",
+      },
+      ["usb1", "1-1", "1-1:1.0"],
+    );
+    const ran = runUsbISerialProbeCli([], io);
+    expect(ran.exitCode).toBe(0);
+    expect(ran.lines).toContain(USB_ISERIAL_SERIAL.found);
+    expect(ran.lines).toContain(usbISerialValueMarker("ZETA-QEMU-001"));
+  });
+
+  it("CLI unknown flags fail closed without probing", () => {
+    const ran = runUsbISerialProbeCli(["--bogus"], mapIo({}, []));
+    expect(ran.exitCode).toBe(2);
+    expect(ran.lines.join("\n")).toContain("unknown flag");
+  });
+
+  it("zeta-install.sh still invokes the probe CLI and prints the skip markers", () => {
+    const script = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
+      "utf8",
+    );
+    expect(script).toContain("src/Core.TypeScript/installer/usb-iserial-probe.ts");
+    expect(script).toContain("[usb-iserial] ── probing guest USB iSerial via sysfs ──");
+    expect(script).toContain(USB_ISERIAL_SERIAL.helperUnavailable);
+    expect(script).toContain(USB_ISERIAL_SERIAL.helperAbsent);
   });
 });

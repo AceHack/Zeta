@@ -6,6 +6,8 @@
  * image carries (or omits) /zeta-creds.enc on the ESP.
  */
 
+import { USB_ISERIAL_SERIAL, usbISerialValueMarker } from "../../installer/usb-iserial-probe.ts";
+
 /** zeta-install.sh emits these when the boot USB ESP already has zeta-creds.enc. */
 export const B0891_RETENTION_USB_SERIAL_MARKERS: readonly string[] = [
   "[081KSNY2Z0008QG0R0008PN7RQ-retention]   found pre-baked zeta-creds.enc on boot USB ESP",
@@ -244,4 +246,33 @@ export function assertSkipGhFirstSessionSerial(serialOutput: string): FirstSessi
 /** serial-getty autologin on ttyS0 can appear before mirrored first-boot output. */
 export function serialFirstBootInProgress(serialOutput: string): boolean {
   return FIRST_BOOT_PROGRESS_SERIAL_MARKERS.some((marker) => serialOutput.includes(marker));
+}
+
+export type UsbISerialGuestSerialResult =
+  | { readonly ok: true; readonly matchedMarkers: readonly string[] }
+  | { readonly ok: false; readonly reason: string; readonly missingMarkers: readonly string[] };
+
+/**
+ * Guest serial log after zeta-install.sh runs the sysfs probe.
+ * Requires found + exact serial= + no-metal-claim. Does not require an ISO rebuild
+ * to unit-test; live QEMU USB install sees this after the helper is on the clone.
+ */
+export function assertUsbISerialGuestSerial(
+  serialOutput: string,
+  expectedSerial: string,
+): UsbISerialGuestSerialResult {
+  const required = [
+    USB_ISERIAL_SERIAL.found,
+    usbISerialValueMarker(expectedSerial),
+    USB_ISERIAL_SERIAL.noMetalClaim,
+  ];
+  const missingMarkers = required.filter((marker) => !serialOutput.includes(marker));
+  if (missingMarkers.length > 0) {
+    return {
+      ok: false,
+      reason: `usb iSerial guest markers missing: ${missingMarkers.join("; ")}`,
+      missingMarkers,
+    };
+  }
+  return { ok: true, matchedMarkers: required };
 }

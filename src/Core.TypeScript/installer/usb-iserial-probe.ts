@@ -7,6 +7,8 @@
  * is present (ambiguous stick). Not the default persist path. No metal claim.
  */
 
+import { readdirSync, readFileSync } from "node:fs";
+
 export const USB_SYSFS_DEVICES_DIR = "/sys/bus/usb/devices" as const;
 
 /** USB hub class (skip; root hubs are not the installer stick). */
@@ -17,6 +19,8 @@ export const USB_ISERIAL_SERIAL = {
   missing: "[usb-iserial] no USB iSerial in sysfs; factor unavailable",
   ambiguous: "[usb-iserial] multiple USB serials in sysfs; refuse to guess",
   noMetalClaim: "[usb-iserial] probe-only; QEMU-injectable; no physical-stick claim",
+  helperUnavailable: "[usb-iserial] probe helper unavailable (bun/runtime missing); factor not probed",
+  helperAbsent: "[usb-iserial] probe helper absent; skipping",
 } as const;
 
 export type UsbSysfsDevice = {
@@ -105,4 +109,63 @@ export function probeUsbISerial(
     devices.push(readUsbSysfsDevice(devicesDir, name, io.readFile));
   }
   return selectUniqueUsbISerial(devices);
+}
+
+export function usbISerialValueMarker(serial: string): string {
+  return `[usb-iserial] serial=${serial}`;
+}
+
+/** Serial-log lines the guest installer prints. No metal / Touch ID / TPM claim. */
+export function formatUsbISerialReport(result: UsbISerialProbeResult): readonly string[] {
+  if (result.ok) {
+    return [USB_ISERIAL_SERIAL.found, usbISerialValueMarker(result.serial), USB_ISERIAL_SERIAL.noMetalClaim];
+  }
+  return [result.marker, USB_ISERIAL_SERIAL.noMetalClaim];
+}
+
+export function createNodeUsbSysfsIo(): UsbSysfsIo {
+  return {
+    readDir: (dir) => readdirSync(dir),
+    readFile: (path) => {
+      try {
+        return readFileSync(path, "utf8");
+      } catch {
+        return null;
+      }
+    },
+  };
+}
+
+function parseProbeCliArgs(argv: readonly string[]): { readonly sysfsDir: string } | { readonly error: string } {
+  let sysfsDir = USB_SYSFS_DEVICES_DIR;
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i]!;
+    if (arg === "--sysfs-dir") {
+      if (i + 1 >= argv.length) return { error: "--sysfs-dir requires a path" };
+      sysfsDir = argv[++i]!;
+    } else {
+      return { error: `unknown flag: ${arg}` };
+    }
+  }
+  return { sysfsDir };
+}
+
+export function runUsbISerialProbeCli(
+  argv: readonly string[],
+  io: UsbSysfsIo = createNodeUsbSysfsIo(),
+): { readonly exitCode: number; readonly lines: readonly string[] } {
+  const parsed = parseProbeCliArgs(argv);
+  if ("error" in parsed) {
+    return { exitCode: 2, lines: [`usb-iserial-probe: ${parsed.error}`] };
+  }
+  const result = probeUsbISerial(io, parsed.sysfsDir);
+  return { exitCode: 0, lines: formatUsbISerialReport(result) };
+}
+
+if (import.meta.main) {
+  const ran = runUsbISerialProbeCli(process.argv.slice(2));
+  for (const line of ran.lines) {
+    console.log(line);
+  }
+  process.exit(ran.exitCode);
 }

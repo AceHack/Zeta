@@ -1701,6 +1701,21 @@ if [ -d "$ZETA_HOME" ]; then
     fi
   fi
 
+  # ── Step 6.95d: USB iSerial guest sysfs probe (QEMU-testable; no metal claim) ──
+  # Reads guest /sys/bus/usb/devices/*/serial. QEMU usb-storage,serial=ZETA-QEMU-001
+  # is what the guest sees; host sysfs is not this. Does not change default persist
+  # (still FAT UUID). A failed probe must not fail the install.
+  ISERIAL_HELPER="$ZETA_HOME/Zeta/src/Core.TypeScript/installer/usb-iserial-probe.ts"
+  echo "[usb-iserial] ── probing guest USB iSerial via sysfs ──"
+  if [ -f "$ISERIAL_HELPER" ]; then
+    sudo --preserve-env=PATH -u "#$ZETA_UID" HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
+      MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
+      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun '$ISERIAL_HELPER'" \
+      || echo "[usb-iserial] probe helper unavailable (bun/runtime missing); factor not probed"
+  else
+    echo "[usb-iserial] probe helper absent; skipping"
+  fi
+
   # 6.95-picker — 081KSKBP80008QG0R003AX2A69.3a cred-picker (operator interactive at setup time)
   # Operator 2026-05-27 framing: "human interactive at setup time" + "ask what declared
   # creds you want to bake in vs go through device flow".

@@ -114,3 +114,30 @@ describe("wifi ESP install serial markers", () => {
     }
   });
 });
+
+describe("usb iSerial guest serial markers", () => {
+  test("accepts the probe report for the QEMU test serial", async () => {
+    const { assertUsbISerialGuestSerial } = await import("./serial-markers");
+    const { formatUsbISerialReport } = await import("../../installer/usb-iserial-probe.ts");
+    const { QEMU_USB_TEST_SERIAL } = await import("../../installer/qemu-usb-storage.ts");
+    const serial = formatUsbISerialReport({
+      ok: true,
+      serial: QEMU_USB_TEST_SERIAL,
+      dirName: "1-1",
+    }).join("\n");
+    const result = assertUsbISerialGuestSerial(serial, QEMU_USB_TEST_SERIAL);
+    expect(result.ok).toBe(true);
+  });
+
+  test("fails closed when the serial value is a different stick", async () => {
+    const { assertUsbISerialGuestSerial } = await import("./serial-markers");
+    const { formatUsbISerialReport } = await import("../../installer/usb-iserial-probe.ts");
+    const serial = formatUsbISerialReport({
+      ok: true,
+      serial: "OTHER-STICK",
+      dirName: "1-1",
+    }).join("\n");
+    const result = assertUsbISerialGuestSerial(serial, "ZETA-QEMU-001");
+    expect(result.ok).toBe(false);
+  });
+});
