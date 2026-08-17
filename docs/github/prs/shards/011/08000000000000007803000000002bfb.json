@@ -1,0 +1,12 @@
+{
+  "pr_number": 11259,
+  "archive_path": "docs/history/pr-reviews/PR-11259-feat-zflash-the-linux-arm-a-printed-sudo-dd-is-not-a-safety-rail.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T01:56:02.987Z",
+  "schema_version": "v1",
+  "commit_sha": "c558c54fbf75e19d56e985d8cefd3083994f1a2c",
+  "title": "feat(zflash): the Linux arm — a printed `sudo dd` is not a safety rail",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T01:55:22Z",
+  "head_ref": "feat/zflash-linux-variant"
+}
