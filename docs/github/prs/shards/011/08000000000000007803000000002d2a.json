@@ -1,0 +1,12 @@
+{
+  "pr_number": 11562,
+  "archive_path": "docs/history/pr-reviews/PR-11562-fix-pages-the-zig-byte-lock-test-inherited-bun-s-5000ms-default-which-sat-inside.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T16:57:04.052Z",
+  "schema_version": "v1",
+  "commit_sha": "4e921dcc941dd3007beb3eaca5a0fb44c677446f",
+  "title": "fix(pages): the Zig byte-lock test inherited bun's 5000ms default, which sat inside its range",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T16:56:30Z",
+  "head_ref": "shadow/zig-dla-oracle-test-budget"
+}
