@@ -1281,10 +1281,33 @@ jobs:
           # lesser credential — losing `gate (required)` on its flush PR — on the strength
           # of a transient blip. 5xx and transport failures are therefore left alone and
           # reported as inconclusive rather than acted on.
-          # Captures stderr (where `gh` writes "HTTP 404") and discards stdout. Braces make
-          # the order unambiguous; the bare `2>&1 >/dev/null` form means the same thing but
-          # trips SC2069 because it is far more often written by mistake than on purpose.
-          probe_api() { { gh api "repos/$GITHUB_REPOSITORY" --jq .full_name >/dev/null; } 2>&1; }
+          # PROBE THE SCOPE THE WORK ACTUALLY USES, NOT MERELY "can I see the repo".
+          #
+          # The first version of this probe called `GET /repos/{owner}/{repo}`, and it was
+          # VACUOUS for the fault it guards. Measured on run 32044425464 (16:07Z 2026-08-17),
+          # the first heartbeat after that fix landed: the probe PASSED — neither the denial
+          # warning nor the inconclusive warning appears anywhere in the log — and the very
+          # next call still died on `compare failed: gh: Not Found (HTTP 404)`. A check that
+          # cannot fail under the condition it exists to detect is not a check.
+          #
+          # The reason is a scope boundary. `GET /repos/{owner}/{repo}` is satisfied by
+          # Metadata alone, which this fine-grained PAT has. `GET /repos/{...}/compare/...`
+          # is a CONTENTS-scope endpoint, which it does not. So the credential can see the
+          # repository and cannot read its commits — and GitHub renders that second refusal
+          # as 404, not 403.
+          #
+          # That also sharpens the diagnosis rather than replacing it: the fault is not "the
+          # token sees no repository", it is precisely the missing **Contents** permission
+          # named in 081M010H4KE.
+          #
+          # The probe is `commits?per_page=1`: a Contents-scope read, one page, one request.
+          # `compare/main...main` was tried first and REJECTED — it 404s even under a fully
+          # authorized credential (verified by hand against this repository), so it would
+          # have reported denial unconditionally and demoted every lane forever. That is a
+          # worse failure than the vacuous probe it replaced: a check that cannot pass is as
+          # useless as one that cannot fail, and it does damage on the way. Both directions
+          # were therefore checked against a real credential before this shipped.
+          probe_api() { { gh api "repos/$GITHUB_REPOSITORY/commits?per_page=1" --jq '.[0].sha' >/dev/null; } 2>&1; }
           if ! OUT=$(probe_api); then
             if printf '%s' "$OUT" | grep -qE 'HTTP (401|403|404)'; then
               echo "::warning title=Heartbeat API credential denied::$AGENT: ZETA_TELEMETRY_FLUSH_TOKEN cannot read this repository over the API; falling back to GITHUB_TOKEN. FIX: grant that fine-grained PAT 'Contents: read and write' on Lucent-Financial-Group/Zeta (081M010H4KE)."
@@ -1507,10 +1530,33 @@ jobs:
         run: |
           # Authorization answers only — see the flush step for why a bare 404 is not
           # sufficient evidence of denial during a GitHub degradation.
-          # Captures stderr (where `gh` writes "HTTP 404") and discards stdout. Braces make
-          # the order unambiguous; the bare `2>&1 >/dev/null` form means the same thing but
-          # trips SC2069 because it is far more often written by mistake than on purpose.
-          probe_api() { { gh api "repos/$GITHUB_REPOSITORY" --jq .full_name >/dev/null; } 2>&1; }
+          # PROBE THE SCOPE THE WORK ACTUALLY USES, NOT MERELY "can I see the repo".
+          #
+          # The first version of this probe called `GET /repos/{owner}/{repo}`, and it was
+          # VACUOUS for the fault it guards. Measured on run 32044425464 (16:07Z 2026-08-17),
+          # the first heartbeat after that fix landed: the probe PASSED — neither the denial
+          # warning nor the inconclusive warning appears anywhere in the log — and the very
+          # next call still died on `compare failed: gh: Not Found (HTTP 404)`. A check that
+          # cannot fail under the condition it exists to detect is not a check.
+          #
+          # The reason is a scope boundary. `GET /repos/{owner}/{repo}` is satisfied by
+          # Metadata alone, which this fine-grained PAT has. `GET /repos/{...}/compare/...`
+          # is a CONTENTS-scope endpoint, which it does not. So the credential can see the
+          # repository and cannot read its commits — and GitHub renders that second refusal
+          # as 404, not 403.
+          #
+          # That also sharpens the diagnosis rather than replacing it: the fault is not "the
+          # token sees no repository", it is precisely the missing **Contents** permission
+          # named in 081M010H4KE.
+          #
+          # The probe is `commits?per_page=1`: a Contents-scope read, one page, one request.
+          # `compare/main...main` was tried first and REJECTED — it 404s even under a fully
+          # authorized credential (verified by hand against this repository), so it would
+          # have reported denial unconditionally and demoted every lane forever. That is a
+          # worse failure than the vacuous probe it replaced: a check that cannot pass is as
+          # useless as one that cannot fail, and it does damage on the way. Both directions
+          # were therefore checked against a real credential before this shipped.
+          probe_api() { { gh api "repos/$GITHUB_REPOSITORY/commits?per_page=1" --jq '.[0].sha' >/dev/null; } 2>&1; }
           if ! OUT=$(probe_api); then
             if printf '%s' "$OUT" | grep -qE 'HTTP (401|403|404)'; then
               echo "::warning title=Heartbeat gate-check credential denied::ZETA_TELEMETRY_FLUSH_TOKEN cannot read this repository over the API; falling back to GITHUB_TOKEN before judging gate state."
