@@ -1,0 +1,17 @@
+{
+  "pr_number": 10799,
+  "archive_path": "docs/history/pr-reviews/PR-10799-test-cross-verify-close-the-four-self-verified-ir-primitives-pin-two-unchecked-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7h4J9D",
+    "comment:PRRC_kwDOSF9kNM7h4J9E",
+    "thread:PRRT_kwDOSF9kNM6Zg_-k",
+    "thread:PRRT_kwDOSF9kNM6Zg_-l"
+  ],
+  "fetched_at": "2026-08-17T04:10:33.366Z",
+  "schema_version": "v1",
+  "commit_sha": "a5d271a4330189061636c93c34954751fa3667cd",
+  "title": "test(cross-verify): close the four self-verified IR primitives, pin two unchecked anchors",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T04:09:56Z",
+  "head_ref": "shadow/ir-anchor-check-oracle-less-primitives"
+}
