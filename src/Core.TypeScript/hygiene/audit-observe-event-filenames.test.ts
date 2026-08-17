@@ -7,7 +7,10 @@
  */
 import { describe, expect, test } from "bun:test";
 
+import { SOCIETY_BNN_FILENAME } from "../planning/society-bnn";
+
 import {
+  COMPANION_NAMES,
   FROZEN_LEGACY_NAMES,
   SCAN_FLOOR,
   auditFilename,
@@ -92,5 +95,36 @@ describe("auditFilenames — corpus assertions", () => {
     // A floor of 0 would make the floor check unfailable — the defect this pattern exists
     // to prevent. Stated as a test so lowering it to nothing is a deliberate, visible act.
     expect(SCAN_FLOOR).toBeGreaterThan(100);
+  });
+});
+
+describe("companion files are allowed by NAME, and the names are held to their producers", () => {
+  // `bnn-state.json` reached main via #10708 and turned `lint (structural hygiene)` red
+  // for every open PR, because the gate that would have caught it on the society lane had
+  // itself been parked for days (#11227). Allowing it is right — it is a rollup, not an
+  // event — but an allowlist that drifts from its producer is how an exception quietly
+  // becomes a hole, so the link is asserted rather than commented.
+
+  test("the bnn companion entry IS the producer's exported constant", () => {
+    // Rename `SOCIETY_BNN_FILENAME` and this fails here, loudly, instead of the audit
+    // silently allowing a filename nothing writes any more while rejecting the new one.
+    expect(COMPANION_NAMES.has(SOCIETY_BNN_FILENAME)).toBe(true);
+  });
+
+  test("each companion is accepted", () => {
+    for (const name of COMPANION_NAMES) {
+      expect(auditFilename(name)).toBeNull();
+    }
+  });
+
+  test("the allowlist is a CLOSED list of names, not a `*-state.json` pattern", () => {
+    // The load-bearing assertion. Had the fix widened the shape instead of naming the
+    // file, this would pass with a null — and the audit would have stopped catching the
+    // class it exists for. A lookalike must still be refused.
+    const finding = auditFilename("bnn-state-2.json");
+    expect(finding).not.toBeNull();
+    expect(finding?.problem).toContain("matches no known scheme");
+
+    expect(auditFilename("other-state.json")).not.toBeNull();
   });
 });

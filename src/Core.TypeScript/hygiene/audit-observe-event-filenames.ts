@@ -69,7 +69,30 @@ export const FROZEN_LEGACY_NAMES: readonly string[] = [
 const ZETA_ID_NAME = /^[0-9a-f]{32}\.json$/;
 const SOCIETY_NAME = /^society-[0-9a-z]+\.json$/;
 const RS_BUFFER_NAME = /^\.rs-buffer-[A-Za-z0-9_-]+\.json$/;
-const INDEX_NAME = "society-index.json";
+/**
+ * Named non-event companions of the society runner. NOT a scheme and not a pattern: a
+ * CLOSED list of specific filenames, each of which must name its producer here.
+ *
+ * `bnn-state.json` was added 2026-08-17 after it reached main via #10708 and turned
+ * `lint (structural hygiene)` red for every open PR. It is not an event — it is the
+ * dimensional-BNN rollup written by `planning/society-bnn.ts`
+ * (`SOCIETY_BNN_FILENAME`, path built in `bnnStatePath`) — so it belongs in exactly the
+ * category `society-index.json` already occupies rather than in a widened event regex.
+ *
+ * Two things this does NOT do, deliberately:
+ *   - It does not relax `ZETA_ID_NAME` or invent a `*-state.json` pattern. Widening a
+ *     shape is how this audit would stop catching the hex-JSON class it exists for.
+ *   - It does not settle whether a state rollup should live in an EVENTS folder at all.
+ *     Relocating it changes the producer's write path and every reader, which is a
+ *     larger call than unblocking main; this keeps the audit honest until that is made.
+ *
+ * `audit-observe-event-filenames.test.ts` asserts this set against the producers' own
+ * exported constants, so a rename on either side fails there instead of drifting.
+ */
+export const COMPANION_NAMES = new Set([
+  "society-index.json", // planning/society-event-index-rebuild.ts — the index scheme 2 maintains
+  "bnn-state.json", // planning/society-bnn.ts — SOCIETY_BNN_FILENAME
+]);
 /** Folder documentation, not an event — `README.md` explains the schemes above. */
 const DOC_NAMES = new Set(["README.md"]);
 
@@ -86,7 +109,7 @@ export interface AuditFinding {
  * actually distinguishes an id from arbitrary hex.
  */
 export function auditFilename(file: string): AuditFinding | null {
-  if (file === INDEX_NAME || DOC_NAMES.has(file)) return null;
+  if (COMPANION_NAMES.has(file) || DOC_NAMES.has(file)) return null;
   if (SOCIETY_NAME.test(file) || RS_BUFFER_NAME.test(file)) return null;
   if (FROZEN_LEGACY_NAMES.includes(file)) return null;
 
