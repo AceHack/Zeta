@@ -1,0 +1,12 @@
+{
+  "pr_number": 11489,
+  "archive_path": "docs/history/pr-reviews/PR-11489-feat-pages-build-the-go-wasm-oracle-and-derive-its-status-from-the-artifact.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:32:43.033Z",
+  "schema_version": "v1",
+  "commit_sha": "a62c3afcd53a41fdf714359115ece3d0ae706ff8",
+  "title": "feat(pages): build the Go WASM oracle, and derive its status from the artifact",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:32:04Z",
+  "head_ref": "shadow/pages-builds-the-go-wasm-oracle"
+}
