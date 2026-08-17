@@ -1,0 +1,12 @@
+{
+  "pr_number": 10676,
+  "archive_path": "docs/history/pr-reviews/PR-10676-feat-persona-keys-address-shares-by-token-identity-and-make-the-roster-check-its.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:31:03.726Z",
+  "schema_version": "v1",
+  "commit_sha": "5231c0eca167d8d07af85bdb022493577c75f346",
+  "title": "feat(persona-keys): address shares by token identity, and make the roster check itself",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:30:27Z",
+  "head_ref": "nazar/frost-slot-token-addressing"
+}
