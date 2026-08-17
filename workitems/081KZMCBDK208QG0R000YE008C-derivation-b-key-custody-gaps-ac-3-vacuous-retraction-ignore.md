@@ -68,12 +68,22 @@ touching `src/Core.TypeScript/key-custody/` (#10245, the original).
 |---|---|---|
 | **AC#3 vacuous** | **closed** | Vacuity proven mechanically: the falsifying input `priorCustodianRetainsPreFork: false` does not compile (`TS2322: Type 'false' is not assignable to type 'true'`). Field replaced by `priorCustodian: Ownership`; `evaluateForkRead` decides against content lineage. Pre-fork ref → allowed, post-fork ref → denied. |
 | **Retraction ignored** | **closed** | Confirmed by execution first: folded state was byte-identical with and without retractions, and a grant retracted at phase 4 still authorized at phase 100. `foldEvents` now consumes `key-retracted` + `grant-expired`. |
-| **Grant span unbounded** | **open** | Untouched. `expiresAtPhase: Number.MAX_SAFE_INTEGER` still constructible; no `MaxSpan` in B. Spec amendment A2 states the requirement. |
-| **Deny cites wrong grant** | **open** | Untouched. `authorize` still cites `matching[0]` rather than the longest-lived grant. |
+| **Grant span unbounded** | **closed** (2nd pass) | `MAX_GRANT_SPAN_PHASES = 65536` stated; `Grant` branded so a literal will not type-check (`TS2741: Property '[grantBrand]' is missing`), making indefinite authority unconstructible rather than merely undefaulted. `tryIssueGrant` returns `Result`. The event stream is not a bypass — the fold refuses over-long grants and records the refusal. |
+| **Deny cites wrong grant** | **closed** (2nd pass) | `authorize` cites the longest-lived matching grant; citation no longer depends on stream order, and a not-yet-issued grant is no longer described as "expired". |
 
-Also unmet and untouched: **AC#4** — `validateTransfer` still cannot return `false` for any
-`CustodyTransfer` that type-checks. That is the same vacuity class as AC#3 was, on the
-witness-stake axis, and it needs the same treatment.
+**AC#4 — closed in the 2nd pass, and the original diagnosis was partly wrong.** The filed
+claim (and the combine doc) said `validateTransfer` "cannot return `false` for any
+`CustodyTransfer` that type-checks". Checked by construction, two of its three guards were
+unreachable (`witness: undefined`, `voluntary: false`) but the third was **live**
+(`resource: ""` type-checks and did deny). The serious defect was one no guard covered:
+nothing checked the witness was a party *other than the two transacting*, so the prior
+custodian could witness her own transfer away and the beneficiary could witness the transfer
+to himself — both returned `allowed: true`. `voluntary` is now `boolean` so a compelled stake
+is representable and refusable; distinctness from both custodians is enforced.
+
+Scope, exactly: this checks a transfer *record*. No attestation is signed and no stake is
+escrowed, held, or slashed. Which resources count as socially-conferred and non-purchasable
+is a policy roster, deliberately not invented here.
 
 **Honest scope of the AC#3 fix:** `evaluateForkRead` is an authorization *decision*, not an
 enforcement mechanism. Nothing in this module is cryptographic — no signature is produced or

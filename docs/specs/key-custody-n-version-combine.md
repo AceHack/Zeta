@@ -56,6 +56,18 @@ header comment is not a checked artifact.
 
 ## 2. ⚠ Acceptance criterion 3 has ZERO real coverage
 
+> **CORRECTION 2026-08-17 — both criteria have since been closed in B; see the status
+> updates in [`key-custody-and-rotation-cleanroom-spec.md`](key-custody-and-rotation-cleanroom-spec.md).**
+> The AC3 finding below stands exactly as written and was reproduced before being fixed.
+> **The AC4 sentence at the end of this section is an over-statement**, and checking it by
+> construction is what found the real defect. Two of `validateTransfer`'s three guards were
+> indeed unreachable (`witness: undefined` and `voluntary: false` are both unassignable) —
+> but the third was live: `resource: ""` type-checks and did correctly deny. The serious
+> hole was one that no guard covered: **nothing checked that the witness was a party other
+> than the two transacting**, so a custodian could witness her own transfer away and a
+> beneficiary could witness the transfer to himself. Left in place rather than edited away,
+> because "the claim was too strong *and* the truth was worse" is the part worth keeping.
+
 A **defers** it. B satisfies it with `priorCustodianRetainsPreFork: true` — a field whose
 type is the literal `true`, so no test asserting it can fail.
 

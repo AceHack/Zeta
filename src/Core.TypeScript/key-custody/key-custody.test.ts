@@ -16,6 +16,9 @@ import {
   foldEvents,
   evaluateForkRead,
   isKeyValidPostFork,
+  tryIssueGrant,
+  describeGrantError,
+  MAX_GRANT_SPAN_PHASES,
   type KeySlots,
   type KeyDescriptor,
   type Grant,
@@ -31,26 +34,37 @@ function makeKey(id: string, principal: string, phase: number): KeyDescriptor {
   return { id, class: "node", owner: { principalId: principal, since: phase }, publicKey: `pub-${id}` };
 }
 
+/**
+ * Test helper: a `Grant` can no longer be written as an object literal (the
+ * brand is what enforces R8's ceiling), so tests go through the constructor
+ * and assert the happy path succeeded.
+ */
+function makeGrant(id: string, principalId: string, capability: string, issuedAtPhase: number, expiresAtPhase: number): Grant {
+  const result = tryIssueGrant({ id, principalId, capability, issuedAtPhase, expiresAtPhase });
+  if (!result.ok) throw new Error(`test fixture is not a valid grant: ${describeGrantError(result.error)}`);
+  return result.value;
+}
+
 // ═══ Acceptance 1: grant stops at expiry with no revocation message ══════════
 
 describe("Acceptance 1: time-bounded grants expire without coordination", () => {
   test("grant is live before expiry", () => {
-    const grant: Grant = { id: "g1", principalId: "alice", capability: "read", issuedAtPhase: 10, expiresAtPhase: 20 };
+    const grant = makeGrant("g1", "alice", "read", 10, 20);
     expect(isGrantLive(grant, 15)).toBe(true);
   });
 
   test("grant is dead at expiry phase — NO revocation message needed", () => {
-    const grant: Grant = { id: "g1", principalId: "alice", capability: "read", issuedAtPhase: 10, expiresAtPhase: 20 };
+    const grant = makeGrant("g1", "alice", "read", 10, 20);
     expect(isGrantLive(grant, 20)).toBe(false); // expires AT 20, not after
   });
 
   test("grant is dead after expiry — no message sent, still expired", () => {
-    const grant: Grant = { id: "g1", principalId: "alice", capability: "read", issuedAtPhase: 10, expiresAtPhase: 20 };
+    const grant = makeGrant("g1", "alice", "read", 10, 20);
     expect(isGrantLive(grant, 100)).toBe(false);
   });
 
   test("authorize explains WHY it denied (R12)", () => {
-    const grant: Grant = { id: "g1", principalId: "alice", capability: "read", issuedAtPhase: 10, expiresAtPhase: 20 };
+    const grant = makeGrant("g1", "alice", "read", 10, 20);
     const decision = authorize([grant], "read", "alice", 25);
     expect(decision.allowed).toBe(false);
     expect(decision.reason).toContain("expired at phase 20");
@@ -204,8 +218,225 @@ describe("Acceptance 3: custody fork — prior reads pre-fork, cannot read post-
 });
 
 // ═══ Acceptance 4: custody transfer CANNOT complete without witness stake ════
+//
+// The combine doc recorded that `validateTransfer` "cannot return
+// allowed: false for any CustodyTransfer that type-checks". Checking that by
+// construction found it was an over-statement, and found the real hole:
+//
+//   !transfer.witness            UNREACHABLE — `undefined` not assignable
+//   !transfer.witness.voluntary  UNREACHABLE — `false` not assignable to `true`
+//   !transfer.witness.resource   REACHABLE   — `resource: ""` type-checks
+//
+// So one guard was live. What NOTHING checked was whether the witness was a
+// party OTHER than the two transacting — alice witnessing her own transfer
+// away, and bob witnessing the transfer to himself, both returned allowed.
+// That is the one-sided transfer R10 exists to prevent.
 
-describe("Acceptance 4: transfer requires witness with unpurchasable stake", () => {
+function makeTransfer(witness: WitnessStake): CustodyTransfer {
+  return {
+    fork: {
+      ancestorRef: "ref-1",
+      newCustodian: { principalId: "bob", since: 100 },
+      priorCustodian: { principalId: "alice", since: 1 },
+      keysInvalidatedPostFork: ["k1"],
+    },
+    witness,
+    events: [],
+  };
+}
+
+describe("Acceptance 4: the witness must be a distinct, willing third party", () => {
+  test("THE HOLE: the prior custodian cannot witness her own transfer away", () => {
+    const decision = validateTransfer(
+      makeTransfer({ witnessId: "alice", resource: "reputation", voluntary: true, attestedAtPhase: 100 }),
+    );
+    expect(decision.allowed).toBe(false);
+    expect(decision.reason).toContain("prior custodian");
+  });
+
+  test("THE HOLE: the beneficiary cannot witness the transfer to himself", () => {
+    const decision = validateTransfer(
+      makeTransfer({ witnessId: "bob", resource: "reputation", voluntary: true, attestedAtPhase: 100 }),
+    );
+    expect(decision.allowed).toBe(false);
+    expect(decision.reason).toContain("beneficiary");
+  });
+
+  test("a genuine third-party witness is accepted (the control)", () => {
+    const decision = validateTransfer(
+      makeTransfer({ witnessId: "carol", resource: "reputation", voluntary: true, attestedAtPhase: 100 }),
+    );
+    expect(decision.allowed).toBe(true);
+  });
+
+  test("an INVOLUNTARY stake is refused — this guard was dead code before", () => {
+    // `voluntary` was typed as the literal `true`, so this input could not be
+    // written. A compelled stake must be representable in order to be refused.
+    const decision = validateTransfer(
+      makeTransfer({ witnessId: "carol", resource: "reputation", voluntary: false, attestedAtPhase: 100 }),
+    );
+    expect(decision.allowed).toBe(false);
+    expect(decision.reason).toContain("voluntary");
+  });
+
+  test("an empty staked resource is refused (the one guard that already worked)", () => {
+    const decision = validateTransfer(
+      makeTransfer({ witnessId: "carol", resource: "", voluntary: true, attestedAtPhase: 100 }),
+    );
+    expect(decision.allowed).toBe(false);
+  });
+
+  test("whitespace is not a stake", () => {
+    const decision = validateTransfer(
+      makeTransfer({ witnessId: "carol", resource: "   ", voluntary: true, attestedAtPhase: 100 }),
+    );
+    expect(decision.allowed).toBe(false);
+  });
+
+  test("an unnamed witness is refused", () => {
+    const decision = validateTransfer(
+      makeTransfer({ witnessId: "  ", resource: "reputation", voluntary: true, attestedAtPhase: 100 }),
+    );
+    expect(decision.allowed).toBe(false);
+    expect(decision.reason).toContain("name the witness");
+  });
+});
+
+// ═══ R8 / spec amendment A2: the grant span is bounded, unconstructibly ══════
+//
+// B carried an `expiresAtPhase` field and called R8 satisfied. But
+// `Number.MAX_SAFE_INTEGER` was constructible, so indefinite authority was
+// reachable — the capture R8 exists to prevent. A2: "a maximum span MUST be
+// stated as a constant, and no public constructor may yield a grant exceeding
+// it... indefinite authority is unconstructible through the public surface."
+//
+// The brand on `Grant` is what makes that true rather than merely intended:
+// a `Grant` object literal is now a COMPILE error, so `tryIssueGrant` is the
+// only way to obtain one. See the PR body for the tsc output proving it.
+
+describe("R8/A2: indefinite authority is unconstructible", () => {
+  test("THE INPUT IT MUST REJECT: a span to MAX_SAFE_INTEGER", () => {
+    const result = tryIssueGrant({
+      id: "g-forever",
+      principalId: "alice",
+      capability: "deploy",
+      issuedAtPhase: 0,
+      expiresAtPhase: Number.MAX_SAFE_INTEGER,
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error.kind).toBe("span-exceeds-maximum");
+      expect(describeGrantError(result.error)).toContain("exceeds the maximum");
+    }
+  });
+
+  test("a span one phase over the ceiling is refused", () => {
+    const result = tryIssueGrant({
+      id: "g-over",
+      principalId: "alice",
+      capability: "deploy",
+      issuedAtPhase: 10,
+      expiresAtPhase: 10 + MAX_GRANT_SPAN_PHASES + 1,
+    });
+    expect(result.ok).toBe(false);
+  });
+
+  test("a span exactly at the ceiling is allowed (the boundary is not off by one)", () => {
+    const result = tryIssueGrant({
+      id: "g-max",
+      principalId: "alice",
+      capability: "deploy",
+      issuedAtPhase: 10,
+      expiresAtPhase: 10 + MAX_GRANT_SPAN_PHASES,
+    });
+    expect(result.ok).toBe(true);
+  });
+
+  test("Infinity is refused — it would sail past a naive span comparison", () => {
+    const result = tryIssueGrant({
+      id: "g-inf",
+      principalId: "alice",
+      capability: "deploy",
+      issuedAtPhase: 0,
+      expiresAtPhase: Number.POSITIVE_INFINITY,
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.kind).toBe("phase-not-finite-integer");
+  });
+
+  test("a zero-length or reversed span is refused", () => {
+    expect(tryIssueGrant({ id: "g0", principalId: "a", capability: "c", issuedAtPhase: 10, expiresAtPhase: 10 }).ok).toBe(false);
+    expect(tryIssueGrant({ id: "g0", principalId: "a", capability: "c", issuedAtPhase: 10, expiresAtPhase: 5 }).ok).toBe(false);
+  });
+
+  test("the EVENT STREAM is not a bypass — the fold refuses an over-long grant", () => {
+    // A peer that emits an unbounded grant must not smuggle it past the
+    // ceiling by having it folded in.
+    const events: CustodyEvent[] = [
+      { id: "e1", kind: "grant-issued", principalId: "mallory", phase: 0, payload: { grantId: "g-forever", capability: "deploy", expiresAtPhase: Number.MAX_SAFE_INTEGER } },
+    ];
+    const state = foldEvents(events);
+    expect(state.grants.length).toBe(0);
+    // and it is REFUSED OUT LOUD, not silently dropped
+    expect(state.refusals.length).toBe(1);
+    expect(state.refusals[0]!.reason).toContain("exceeds the maximum");
+    expect(authorize(state.grants, "deploy", "mallory", 5).allowed).toBe(false);
+  });
+
+  test("a bounded grant in the stream is still admitted (the control)", () => {
+    const events: CustodyEvent[] = [
+      { id: "e1", kind: "grant-issued", principalId: "alice", phase: 0, payload: { grantId: "g-ok", capability: "deploy", expiresAtPhase: 500 } },
+    ];
+    const state = foldEvents(events);
+    expect(state.grants.length).toBe(1);
+    expect(state.refusals.length).toBe(0);
+  });
+});
+
+// ═══ R12: the denial must cite the grant that actually decided it ════════════
+
+describe("R12: authorize cites the correct grant", () => {
+  test("THE BUG: with grants expiring at 5 and 100, a denial cites 100 not 5", () => {
+    const short = makeGrant("g-short", "alice", "deploy", 0, 5);
+    const long = makeGrant("g-long", "alice", "deploy", 0, 100);
+    const decision = authorize([short, long], "deploy", "alice", 200);
+    expect(decision.allowed).toBe(false);
+    // `matching[0]` was the short one — stream order, not relevance.
+    expect(decision.reason).toContain("expired at phase 100");
+    expect(decision.reason).not.toContain("expired at phase 5");
+    expect(decision.grant?.id).toBe("g-long");
+  });
+
+  test("the citation does not depend on stream order", () => {
+    const short = makeGrant("g-short", "alice", "deploy", 0, 5);
+    const long = makeGrant("g-long", "alice", "deploy", 0, 100);
+    expect(authorize([long, short], "deploy", "alice", 200).grant?.id).toBe("g-long");
+    expect(authorize([short, long], "deploy", "alice", 200).grant?.id).toBe("g-long");
+  });
+
+  test("a not-yet-issued grant is not described as 'expired'", () => {
+    const future = makeGrant("g-future", "alice", "deploy", 100, 200);
+    const decision = authorize([future], "deploy", "alice", 50);
+    expect(decision.allowed).toBe(false);
+    expect(decision.reason).toContain("not yet in force");
+    expect(decision.reason).not.toContain("expired");
+  });
+
+  test("the denial says how many grants matched when more than one did", () => {
+    const a = makeGrant("g-a", "alice", "deploy", 0, 5);
+    const b = makeGrant("g-b", "alice", "deploy", 0, 100);
+    expect(authorize([a, b], "deploy", "alice", 200).reason).toContain("2 grants matched");
+  });
+
+  test("a live grant is still cited as the one that allowed it", () => {
+    const live = makeGrant("g-live", "alice", "deploy", 0, 100);
+    const decision = authorize([live], "deploy", "alice", 50);
+    expect(decision.allowed).toBe(true);
+    expect(decision.grant?.id).toBe("g-live");
+  });
+});
+
+describe("Acceptance 4 (original shape retained)", () => {
   test("valid transfer with witness succeeds", () => {
     const transfer: CustodyTransfer = {
       fork: {
@@ -402,7 +633,7 @@ describe("R6/A3: retraction changes the fold (not decorative)", () => {
 
 describe("Acceptance 6: two principals with skewed clocks agree (phase not wall-clock)", () => {
   test("both principals at same phase agree on liveness", () => {
-    const grant: Grant = { id: "g1", principalId: "alice", capability: "write", issuedAtPhase: 10, expiresAtPhase: 30 };
+    const grant = makeGrant("g1", "alice", "write", 10, 30);
     // Principal A's clock: phase 25
     // Principal B's clock: also phase 25 (agreed phase)
     // They AGREE: grant is live
@@ -411,7 +642,7 @@ describe("Acceptance 6: two principals with skewed clocks agree (phase not wall-
   });
 
   test("phase-based expiry prevents clock-skew disagreement", () => {
-    const grant: Grant = { id: "g1", principalId: "alice", capability: "write", issuedAtPhase: 10, expiresAtPhase: 30 };
+    const grant = makeGrant("g1", "alice", "write", 10, 30);
     // The function takes PHASE not wall-clock — if both principals
     // have converged to the same phase (via HLC observe), they agree.
     // If they haven't converged, they have different phases — and the
@@ -489,7 +720,7 @@ describe("SABOTAGE CONTROL: verify tests are non-vacuous", () => {
   test("if isGrantLive returned true always, acceptance 1 would FAIL", () => {
     // This test verifies that our acceptance 1 test is falsifiable:
     // a grant at phase 20 with current phase 25 MUST return false.
-    const grant: Grant = { id: "g1", principalId: "a", capability: "x", issuedAtPhase: 10, expiresAtPhase: 20 };
+    const grant = makeGrant("g1", "a", "x", 10, 20);
     const result = isGrantLive(grant, 25);
     // If this were true, the implementation would be wrong
     expect(result).toBe(false);

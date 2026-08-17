@@ -55,12 +55,98 @@ export interface KeySlots {
 
 // ═══ R8/R9: Time-bounded grants (phase-based, not wall-clock) ═══════════════
 
+/** Repo idiom: errors surface as values, never exceptions on a decision path. */
+export type Result<T, E> = { readonly ok: true; readonly value: T } | { readonly ok: false; readonly error: E };
+
+/**
+ * The stated ceiling on a grant's span, in phases (R8 / spec amendment A2:
+ * "a maximum span MUST be stated as a constant, and no public constructor may
+ * yield a grant exceeding it").
+ *
+ * PROVENANCE — this value is **taken from derivation A**, which enforced
+ * `MaxSpan = 65536L`, as recorded in the combine work item. It is adopted
+ * rather than independently chosen, so that the two derivations agree on a
+ * dial rather than inventing two. The *number* is a policy dial and remains
+ * the maintainer's to retune; what this module owes R8 is that the ceiling
+ * exists and cannot be evaded, not that 65536 is the right ceiling.
+ */
+export const MAX_GRANT_SPAN_PHASES = 65536;
+
+declare const grantBrand: unique symbol;
+
+export type GrantError =
+  | { readonly kind: "span-exceeds-maximum"; readonly requestedSpan: number; readonly maximum: number }
+  | { readonly kind: "span-not-positive"; readonly requestedSpan: number }
+  | { readonly kind: "phase-not-finite-integer"; readonly field: string; readonly value: number };
+
+/**
+ * A grant of authority, bounded by construction.
+ *
+ * The brand is why the bound holds. A plain interface is STRUCTURALLY typed,
+ * so `const g: Grant = { ..., expiresAtPhase: Number.MAX_SAFE_INTEGER }` was a
+ * public construction path that no constructor could police — which is how B
+ * satisfied "carries an expiry" while indefinite authority stayed reachable.
+ * The branded field cannot be written outside this module, so `tryIssueGrant`
+ * is the ONLY way to obtain a `Grant`, and it refuses spans over
+ * `MAX_GRANT_SPAN_PHASES`. That is A2's actual test: indefinite authority is
+ * *unconstructible through the public surface*, not merely undefaulted.
+ */
 export interface Grant {
+  readonly [grantBrand]: true;
   readonly id: string;
   readonly principalId: string;
   readonly capability: string;
   readonly issuedAtPhase: number;
-  readonly expiresAtPhase: number; // MUST be bounded (R8)
+  readonly expiresAtPhase: number; // bounded by MAX_GRANT_SPAN_PHASES (R8)
+}
+
+/**
+ * The only public constructor for a `Grant` (R8 / A2).
+ *
+ * Refuses a span exceeding the stated ceiling, a non-positive span (a grant
+ * that never grants is a mistake worth surfacing, not a safe default), and
+ * non-integral or non-finite phases — `Infinity` would otherwise sail past a
+ * naive span comparison, which is the same evasion in a different costume.
+ */
+export function tryIssueGrant(params: {
+  readonly id: string;
+  readonly principalId: string;
+  readonly capability: string;
+  readonly issuedAtPhase: number;
+  readonly expiresAtPhase: number;
+}): Result<Grant, GrantError> {
+  for (const [field, value] of [["issuedAtPhase", params.issuedAtPhase], ["expiresAtPhase", params.expiresAtPhase]] as const) {
+    if (!Number.isSafeInteger(value)) {
+      return { ok: false, error: { kind: "phase-not-finite-integer", field, value } };
+    }
+  }
+  const span = params.expiresAtPhase - params.issuedAtPhase;
+  if (span <= 0) {
+    return { ok: false, error: { kind: "span-not-positive", requestedSpan: span } };
+  }
+  if (span > MAX_GRANT_SPAN_PHASES) {
+    return { ok: false, error: { kind: "span-exceeds-maximum", requestedSpan: span, maximum: MAX_GRANT_SPAN_PHASES } };
+  }
+  const grant = {
+    id: params.id,
+    principalId: params.principalId,
+    capability: params.capability,
+    issuedAtPhase: params.issuedAtPhase,
+    expiresAtPhase: params.expiresAtPhase,
+  } as Grant;
+  return { ok: true, value: grant };
+}
+
+/** Human-readable form of a refusal, for reasons and logs. */
+export function describeGrantError(error: GrantError): string {
+  switch (error.kind) {
+    case "span-exceeds-maximum":
+      return `grant span ${error.requestedSpan} exceeds the maximum of ${error.maximum} phases (R8)`;
+    case "span-not-positive":
+      return `grant span ${error.requestedSpan} is not positive — a grant must be live for at least one phase`;
+    case "phase-not-finite-integer":
+      return `'${error.field}' must be a finite safe integer, got ${error.value}`;
+  }
 }
 
 /**
@@ -79,6 +165,20 @@ export interface AuthzDecision {
   readonly grant?: Grant;
 }
 
+/**
+ * R12: an authorization decision carries the reason.
+ *
+ * The reason must cite the grant that actually decided it. This cited
+ * `matching[0]` — arbitrary stream order — so with grants expiring at 5 and
+ * 100, a denial at phase 200 reported "expired at phase 5". The outcome was
+ * right and the explanation was wrong, which is worse than a bare deny: it
+ * sends the reader to the wrong grant. On denial the binding constraint is
+ * the LONGEST-LIVED matching grant, because that is the one whose absence of
+ * authority is decisive.
+ *
+ * A grant can also fail to be live by not having started yet, which the old
+ * message described as "expired". Those are distinguished now.
+ */
 export function authorize(grants: readonly Grant[], capability: string, principalId: string, currentPhase: number): AuthzDecision {
   const matching = grants.filter((g) => g.principalId === principalId && g.capability === capability);
   if (matching.length === 0) {
@@ -86,8 +186,24 @@ export function authorize(grants: readonly Grant[], capability: string, principa
   }
   const live = matching.find((g) => isGrantLive(g, currentPhase));
   if (!live) {
-    const expired = matching[0]!;
-    return { allowed: false, reason: `grant expired at phase ${expired.expiresAtPhase}, current phase is ${currentPhase}` };
+    // Not live ⇒ started-and-finished, or not started. The partition is total.
+    const expired = matching.filter((g) => currentPhase >= g.expiresAtPhase);
+    const notYetInForce = matching.filter((g) => currentPhase < g.issuedAtPhase);
+    const plural = matching.length > 1 ? ` (${matching.length} grants matched; citing the longest-lived)` : "";
+    if (expired.length > 0) {
+      const longestLived = expired.reduce((a, b) => (b.expiresAtPhase > a.expiresAtPhase ? b : a));
+      return {
+        allowed: false,
+        reason: `grant '${longestLived.id}' expired at phase ${longestLived.expiresAtPhase}, current phase is ${currentPhase}${plural}`,
+        grant: longestLived,
+      };
+    }
+    const earliest = notYetInForce.reduce((a, b) => (b.issuedAtPhase < a.issuedAtPhase ? b : a));
+    return {
+      allowed: false,
+      reason: `grant '${earliest.id}' is not yet in force (issued at phase ${earliest.issuedAtPhase}, current phase is ${currentPhase})${plural}`,
+      grant: earliest,
+    };
   }
   return { allowed: true, reason: `grant '${live.id}' is live (expires phase ${live.expiresAtPhase})`, grant: live };
 }
@@ -233,7 +349,17 @@ export interface WitnessStake {
   readonly witnessId: string;
   /** The socially-conferred, non-purchasable resource being staked. */
   readonly resource: string; // e.g. "reputation", "identity-continuity", "citizenship"
-  readonly voluntary: true; // MUST be voluntary (R10)
+  /**
+   * Whether the witness staked voluntarily. R10 requires that they did.
+   *
+   * This was typed as the literal `true`, which made the guard reading it
+   * dead code: `voluntary: false` was not assignable, so no input could reach
+   * the refusal. Same defect as AC#3's `priorCustodianRetainsPreFork`. It is
+   * `boolean` now so that a coerced stake is REPRESENTABLE and can therefore
+   * be REFUSED — a property the substrate must be able to check, not assert
+   * (a stake must never be compelled: privacy-budget hard-money rule).
+   */
+  readonly voluntary: boolean;
   readonly attestedAtPhase: number;
 }
 
@@ -244,20 +370,56 @@ export interface CustodyTransfer {
 }
 
 /**
- * R10: A custody transfer cannot complete without a witness who stakes something
- * unpurchasable. Returns the validation result.
+ * ACCEPTANCE #4 (R10): a custody transfer cannot complete without a witness
+ * who stakes something unpurchasable.
+ *
+ * WHAT WAS WRONG, precisely — the combine doc recorded that this function
+ * "cannot return `allowed: false` for any `CustodyTransfer` that type-checks".
+ * That was an over-statement, and checking it by construction found the real
+ * shape. Of the three original guards:
+ *
+ *   - `!transfer.witness`           UNREACHABLE (`undefined` not assignable)
+ *   - `!transfer.witness.voluntary` UNREACHABLE (`false` not assignable to `true`)
+ *   - `!transfer.witness.resource`  REACHABLE — `resource: ""` type-checks and
+ *                                   did correctly deny.
+ *
+ * So one third of the criterion was live. The serious defect was elsewhere and
+ * neither guard covered it: **nothing checked that the witness was a party
+ * other than the two transacting.** Alice witnessing her own transfer away,
+ * and Bob witnessing the transfer to himself, both returned `allowed: true` —
+ * which is exactly the one-sided transfer R10 exists to prevent.
+ *
+ * Making `voluntary` a `boolean` (above) revives the second guard; the
+ * distinctness checks below close the hole.
+ *
+ * HONEST SCOPE — nothing here is cryptographic. No attestation is signed and
+ * no stake is escrowed, held, or slashed. This checks that a transfer RECORD
+ * names a distinct, willing witness and a non-empty resource. It cannot tell
+ * you the named witness actually consented, or that the resource is real.
  */
 export function validateTransfer(transfer: CustodyTransfer): AuthzDecision {
+  // Retained though unreachable from TypeScript: this module is also callable
+  // from plain JS and across a JSON boundary, where the type is not enforced.
   if (!transfer.witness) {
     return { allowed: false, reason: "custody transfer requires a witness stake (R10)" };
   }
   if (!transfer.witness.voluntary) {
-    return { allowed: false, reason: "witness stake must be voluntary (R10)" };
+    return { allowed: false, reason: "witness stake must be voluntary — a compelled stake is not a stake (R10)" };
   }
-  if (!transfer.witness.resource) {
+  if (transfer.witness.resource.trim().length === 0) {
     return { allowed: false, reason: "witness must stake a non-purchasable resource (R10)" };
   }
-  return { allowed: true, reason: `transfer witnessed by '${transfer.witness.witnessId}' staking '${transfer.witness.resource}'` };
+  const witnessId = transfer.witness.witnessId;
+  if (witnessId.trim().length === 0) {
+    return { allowed: false, reason: "witness stake must name the witness (R10)" };
+  }
+  if (witnessId === transfer.fork.priorCustodian.principalId) {
+    return { allowed: false, reason: `witness '${witnessId}' is the prior custodian of this transfer — a party cannot witness its own transfer, which is the one-sided transfer R10 exists to prevent` };
+  }
+  if (witnessId === transfer.fork.newCustodian.principalId) {
+    return { allowed: false, reason: `witness '${witnessId}' is the new custodian and the beneficiary of this transfer — a beneficiary cannot be its own witness (R10)` };
+  }
+  return { allowed: true, reason: `transfer witnessed by '${witnessId}' staking '${transfer.witness.resource}'` };
 }
 
 // ═══ R5: Rotation with three slots ══════════════════════════════════════════
@@ -389,10 +551,16 @@ export interface CustodyState {
   readonly retiredGrants: Grant[];
   readonly forks: CustodyFork[];
   readonly events: CustodyEvent[];
+  /**
+   * Events the fold declined to apply, with why. Refusing an event silently
+   * is indistinguishable from never receiving it; this makes the refusal
+   * observable and therefore testable.
+   */
+  readonly refusals: { readonly eventId: string; readonly reason: string }[];
 }
 
 export function emptyCustodyState(): CustodyState {
-  return { keys: new Map(), retiredKeys: new Map(), slots: new Map(), grants: [], retiredGrants: [], forks: [], events: [] };
+  return { keys: new Map(), retiredKeys: new Map(), slots: new Map(), grants: [], retiredGrants: [], forks: [], events: [], refusals: [] };
 }
 
 /**
@@ -452,13 +620,23 @@ export function foldEvents(events: readonly CustodyEvent[]): CustodyState {
         break;
       }
       case "grant-issued": {
-        state.grants.push({
+        // R8/A2: the event stream is a public construction path too. A peer
+        // that emits a grant spanning to MAX_SAFE_INTEGER must not be able to
+        // smuggle indefinite authority past the ceiling by folding it in.
+        const issued = tryIssueGrant({
           id: event.payload.grantId as string,
           principalId: event.principalId,
           capability: event.payload.capability as string,
           issuedAtPhase: event.phase,
           expiresAtPhase: event.payload.expiresAtPhase as number,
         });
+        if (issued.ok) {
+          state.grants.push(issued.value);
+        } else {
+          // Refused, and SAID SO — a silently dropped event is the failure
+          // class this module has already been caught in twice.
+          state.refusals.push({ eventId: event.id, reason: describeGrantError(issued.error) });
+        }
         break;
       }
       case "key-retracted": {
