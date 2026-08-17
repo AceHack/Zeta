@@ -137,7 +137,9 @@ export function createNodeUsbSysfsIo(): UsbSysfsIo {
 }
 
 function parseProbeCliArgs(argv: readonly string[]): { readonly sysfsDir: string } | { readonly error: string } {
-  let sysfsDir = USB_SYSFS_DEVICES_DIR;
+  // Annotated `string`, not inferred: `USB_SYSFS_DEVICES_DIR` is `as const`, so inference would
+  // narrow this to the literal `"/sys/bus/usb/devices"` and `--sysfs-dir` could never assign to it.
+  let sysfsDir: string = USB_SYSFS_DEVICES_DIR;
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
     if (arg === "--sysfs-dir") {

@@ -4,7 +4,6 @@ import { join, resolve } from "node:path";
 import { exitCodeForResults, isPassing, runPathForkRuntime, runRetentionRuntime, type ScenarioResult } from "./run";
 import type { Qcow2RetentionExecutionStep, QemuCommand, QemuCommandExecution } from "./qemu-state";
 import { qemuUsbStorageDeviceArg } from "../../installer/qemu-usb-storage.ts";
-import type { Qcow2RetentionExecutionStep, QemuCommand, QemuCommandExecution } from "./qemu-state";
 
 const SCRIPT = join(import.meta.dir, "run.ts");
 
