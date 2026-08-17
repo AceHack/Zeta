@@ -14,6 +14,8 @@ import {
   validateTransfer,
   selfIssueCredential,
   foldEvents,
+  evaluateForkRead,
+  isKeyValidPostFork,
   type KeySlots,
   type KeyDescriptor,
   type Grant,
@@ -21,6 +23,8 @@ import {
   type CustodyFork,
   type WitnessStake,
   type CustodyEvent,
+  type ContentDag,
+  type ContentNode,
 } from "./key-custody";
 
 function makeKey(id: string, principal: string, phase: number): KeyDescriptor {
@@ -104,19 +108,98 @@ describe("Acceptance 2: rotation leaves previous verifiable for bounded window",
 });
 
 // ═══ Acceptance 3: custody fork preserves prior access, blocks post-fork ═════
+//
+// This block previously asserted `expect(fork.priorCustodianRetainsPreFork)
+// .toBe(true)` on a field typed as the literal `true`. That assertion passed
+// for every input that type-checked — `false` was not assignable, so no
+// counterexample could even be written. It was the vacuity class: a check
+// that cannot fail is not a check (spec amendment A4).
+//
+// The named observable is now `evaluateForkRead`, and the two inputs that
+// make its output differ are a pre-fork ref and a post-fork ref.
+//
+//   g0 ── g1 ── g2(ancestorRef) ── b1 ── b2      (b* = new custodian's branch)
+
+const preForkLineage: ContentDag = new Map<string, ContentNode>([
+  ["g0", { ref: "g0", parents: [] }],
+  ["g1", { ref: "g1", parents: ["g0"] }],
+  ["g2", { ref: "g2", parents: ["g1"] }],
+  ["b1", { ref: "b1", parents: ["g2"] }],
+  ["b2", { ref: "b2", parents: ["b1"] }],
+]);
+
+function makeFork(): CustodyFork {
+  return {
+    ancestorRef: "g2",
+    newCustodian: { principalId: "bob", since: 50 },
+    priorCustodian: { principalId: "alice", since: 1 },
+    keysInvalidatedPostFork: ["key-alice-1", "key-alice-2"],
+  };
+}
 
 describe("Acceptance 3: custody fork — prior reads pre-fork, cannot read post-fork", () => {
-  test("fork structure preserves prior custodian's pre-fork access", () => {
+  test("prior custodian CAN read pre-fork content (R3 — transfer is non-destructive)", () => {
+    const decision = evaluateForkRead(makeFork(), preForkLineage, "alice", "g1");
+    expect(decision.allowed).toBe(true);
+    expect(decision.reason).toContain("retains pre-fork");
+  });
+
+  test("prior custodian CAN read the fork point itself (ancestor-or-SELF)", () => {
+    expect(evaluateForkRead(makeFork(), preForkLineage, "alice", "g2").allowed).toBe(true);
+  });
+
+  test("THE INPUT IT MUST REJECT: prior custodian CANNOT read post-fork content (R4)", () => {
+    const decision = evaluateForkRead(makeFork(), preForkLineage, "alice", "b1");
+    expect(decision.allowed).toBe(false);
+    expect(decision.reason).toContain("post-fork");
+  });
+
+  test("post-fork denial holds deeper down the new custodian's branch", () => {
+    expect(evaluateForkRead(makeFork(), preForkLineage, "alice", "b2").allowed).toBe(false);
+  });
+
+  test("new custodian CAN read their own post-fork branch", () => {
+    expect(evaluateForkRead(makeFork(), preForkLineage, "bob", "b2").allowed).toBe(true);
+  });
+
+  test("a stranger is denied on both sides of the boundary", () => {
+    expect(evaluateForkRead(makeFork(), preForkLineage, "mallory", "g1").allowed).toBe(false);
+    expect(evaluateForkRead(makeFork(), preForkLineage, "mallory", "b2").allowed).toBe(false);
+  });
+
+  test("unknown content ref is DENIED — unknown is not permissive", () => {
+    const decision = evaluateForkRead(makeFork(), preForkLineage, "alice", "no-such-ref");
+    expect(decision.allowed).toBe(false);
+    expect(decision.reason).toContain("not present in the supplied lineage");
+  });
+
+  test("the decision is driven by lineage, not by the reader's name", () => {
+    // Same reader, same fork, two refs — opposite outcomes. If this pair ever
+    // agrees, the function has stopped discriminating and AC#3 is vacuous again.
+    const fork = makeFork();
+    const pre = evaluateForkRead(fork, preForkLineage, "alice", "g0").allowed;
+    const post = evaluateForkRead(fork, preForkLineage, "alice", "b1").allowed;
+    expect(pre).not.toBe(post);
+  });
+
+  test("R4 key half: an invalidated key does not verify post-fork", () => {
+    const fork = makeFork();
+    expect(isKeyValidPostFork(fork, "key-alice-1").allowed).toBe(false);
+    expect(isKeyValidPostFork(fork, "key-bob-1").allowed).toBe(true);
+  });
+
+  test("cyclic lineage input terminates and denies rather than hanging", () => {
+    const cyclic: ContentDag = new Map<string, ContentNode>([
+      ["x", { ref: "x", parents: ["y"] }],
+      ["y", { ref: "y", parents: ["x"] }],
+    ]);
     const fork: CustodyFork = {
-      ancestorRef: "content-hash-abc123",
+      ancestorRef: "x",
       newCustodian: { principalId: "bob", since: 50 },
-      priorCustodianRetainsPreFork: true,
-      keysInvalidatedPostFork: ["key-alice-1", "key-alice-2"],
+      priorCustodian: { principalId: "alice", since: 1 },
+      keysInvalidatedPostFork: [],
     };
-    // Prior custodian retains pre-fork (structural — the field IS the guarantee)
-    expect(fork.priorCustodianRetainsPreFork).toBe(true);
-    // Keys invalidated post-fork — prior custodian cannot use them after
-    expect(fork.keysInvalidatedPostFork).toContain("key-alice-1");
+    expect(evaluateForkRead(fork, cyclic, "alice", "z").allowed).toBe(false);
   });
 });
 
@@ -128,7 +211,7 @@ describe("Acceptance 4: transfer requires witness with unpurchasable stake", () 
       fork: {
         ancestorRef: "ref-1",
         newCustodian: { principalId: "bob", since: 100 },
-        priorCustodianRetainsPreFork: true,
+        priorCustodian: { principalId: "alice", since: 1 },
         keysInvalidatedPostFork: ["k1"],
       },
       witness: {
@@ -150,7 +233,7 @@ describe("Acceptance 4: transfer requires witness with unpurchasable stake", () 
       fork: {
         ancestorRef: "ref-1",
         newCustodian: { principalId: "bob", since: 100 },
-        priorCustodianRetainsPreFork: true,
+        priorCustodian: { principalId: "alice", since: 1 },
         keysInvalidatedPostFork: ["k1"],
       },
       witness: null as unknown as WitnessStake,
@@ -193,6 +276,125 @@ describe("Acceptance 5: deterministic replay from empty", () => {
     expect(state.keys.has("k-node1")).toBe(true);
     expect(state.slots.has("node-1")).toBe(true);
     expect(state.slots.get("node-1")!.current.id).toBe("k-node1");
+  });
+});
+
+// ═══ R6 / spec amendment A3: a retraction MUST change the fold ═══════════════
+//
+// `rotateKey` emitted `key-retracted` events that `foldEvents` handled in
+// `default: break`. Removing every retraction from a stream left the folded
+// state byte-identical, so the retraction was decorative — the fold kept a
+// belief nobody asserted any more. A3 states the test executably: removing
+// the retraction events must CHANGE the folded state.
+
+const retractionStream: CustodyEvent[] = [
+  { id: "e1", kind: "key-issued", principalId: "alice", phase: 1, payload: { keyId: "k1", class: "node", publicKeyRef: "pub1" } },
+  { id: "e2", kind: "key-issued", principalId: "alice", phase: 2, payload: { keyId: "k2", class: "node", publicKeyRef: "pub2" } },
+  { id: "e3", kind: "grant-issued", principalId: "alice", phase: 3, payload: { grantId: "g1", capability: "deploy", expiresAtPhase: 5000 } },
+  // k1 is withdrawn (say, compromised); g1 is withdrawn LONG before its
+  // expiry phase — the early-withdrawal case an ignored retraction loses.
+  { id: "e4", kind: "key-retracted", principalId: "alice", phase: 4, payload: { retractedKeyId: "k1", supersededBy: "k2" } },
+  { id: "e5", kind: "grant-expired", principalId: "alice", phase: 4, payload: { grantId: "g1" } },
+];
+
+const withoutRetractions = retractionStream.filter(
+  (e) => e.kind !== "key-retracted" && e.kind !== "grant-expired",
+);
+
+/**
+ * Serialize the folded state WITHOUT the raw event log. The log trivially
+ * differs when events are removed — that is the input echoed back, not the
+ * fold honouring anything. Everything compared here is derived state.
+ */
+function foldedStateSansEventLog(events: readonly CustodyEvent[]): string {
+  const s = foldEvents(events);
+  return JSON.stringify({
+    keys: [...s.keys.entries()].sort(),
+    retiredKeys: [...s.retiredKeys.entries()].sort(),
+    slots: [...s.slots.entries()].sort(),
+    grants: s.grants,
+    retiredGrants: s.retiredGrants,
+    forks: s.forks,
+  });
+}
+
+describe("R6/A3: retraction changes the fold (not decorative)", () => {
+  test("THE FALSIFIER: removing the retractions changes the folded state", () => {
+    const withRetractions = foldedStateSansEventLog(retractionStream);
+    const without = foldedStateSansEventLog(withoutRetractions);
+    // If these are ever byte-identical again, the retraction is being ignored.
+    expect(withRetractions).not.toBe(without);
+  });
+
+  test("a retracted key leaves the active set", () => {
+    const state = foldEvents(retractionStream);
+    expect(state.keys.has("k1")).toBe(false);
+    expect(state.keys.has("k2")).toBe(true);
+  });
+
+  test("a retracted key is RETAINED, not deleted (§5 memory preservation)", () => {
+    const state = foldEvents(retractionStream);
+    expect(state.retiredKeys.has("k1")).toBe(true);
+    expect(state.retiredKeys.get("k1")!.publicKey).toBe("pub1");
+    // and the event itself is still in the log — retraction, not erasure
+    expect(state.events.some((e) => e.kind === "key-retracted")).toBe(true);
+  });
+
+  test("without the retraction the key would still be active (the control)", () => {
+    const state = foldEvents(withoutRetractions);
+    expect(state.keys.has("k1")).toBe(true);
+    expect(state.retiredKeys.size).toBe(0);
+  });
+
+  test("SECURITY CONSEQUENCE: an early-retracted grant no longer authorizes", () => {
+    const state = foldEvents(retractionStream);
+    // g1 says it expires at phase 5000 and we ask at phase 100 — only the
+    // retraction can deny this.
+    const decision = authorize(state.grants, "deploy", "alice", 100);
+    expect(decision.allowed).toBe(false);
+    expect(state.retiredGrants.map((g) => g.id)).toContain("g1");
+  });
+
+  test("the control: with the retraction removed, that same grant DOES authorize", () => {
+    const state = foldEvents(withoutRetractions);
+    expect(authorize(state.grants, "deploy", "alice", 100).allowed).toBe(true);
+  });
+
+  test("replaying a retraction twice has the same effect as once (idempotency #6)", () => {
+    const doubled = [...retractionStream, retractionStream[3]!, retractionStream[4]!];
+    expect(foldedStateSansEventLog(doubled)).toBe(foldedStateSansEventLog(retractionStream));
+  });
+
+  test("retraction does not retroactively unmake the previous-slot window (R5)", () => {
+    // Retracting a key ends its forward use; whether already-signed material
+    // still verifies is the bounded window, a separate question.
+    const slots: KeySlots = {
+      previous: makeKey("k1", "alice", 1),
+      current: makeKey("k2", "alice", 2),
+      next: null,
+      previousExpiresAtPhase: 15,
+    };
+    expect(verifyAgainstSlots(slots, "k1", 12).allowed).toBe(true);
+  });
+
+  test("rotation's own retraction is consumed by the fold end to end", () => {
+    const issued: CustodyEvent[] = [
+      { id: "i1", kind: "key-issued", principalId: "alice", phase: 1, payload: { keyId: "k1", class: "node", publicKeyRef: "p1" } },
+      { id: "i2", kind: "key-issued", principalId: "alice", phase: 2, payload: { keyId: "k2", class: "node", publicKeyRef: "p2" } },
+      { id: "i3", kind: "key-issued", principalId: "alice", phase: 2, payload: { keyId: "k3", class: "node", publicKeyRef: "p3" } },
+    ];
+    const slots: KeySlots = {
+      previous: null,
+      current: makeKey("k1", "alice", 1),
+      next: makeKey("k2", "alice", 2),
+      previousExpiresAtPhase: null,
+    };
+    const rotation = rotateKey(slots, makeKey("k3", "alice", 2), 10, 5);
+    const state = foldEvents([...issued, ...rotation.events]);
+    expect(state.slots.get("alice")!.current.id).toBe("k2");
+    // the rotated-away key was retracted by rotateKey and the fold honoured it
+    expect(state.keys.has("k1")).toBe(false);
+    expect(state.retiredKeys.has("k1")).toBe(true);
   });
 });
 

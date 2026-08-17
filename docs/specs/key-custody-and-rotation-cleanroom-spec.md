@@ -255,3 +255,40 @@ and could not have known — the wall blocks prior art, not the repo's own conve
 type-level assertions. Custody transfer, the custody fork, and the staking witness remain
 **unbuilt** — and one of the two derivations reports otherwise. Any future work must treat
 R1–R4 and R10 as green-field.
+
+### STATUS UPDATE 2026-08-17 — A3, and A4 as it applies to AC3, discharged in derivation B
+
+Two of the four filed gaps (081KZMCBDK208QG0R000YE008C) are closed **in derivation B only**;
+derivation A is untouched. Both were re-confirmed live by execution on `main` first.
+
+- **A3 (a retraction must change the fold) — CLOSED.** `foldEvents` now consumes
+  `key-retracted` and `grant-expired`, moving their subject out of the asserted set and into
+  a retained `retiredKeys` / `retiredGrants` (retraction, not erasure — §5). The executable
+  test A3 demands now exists: removing every retraction event from a stream changes the
+  folded state, and an early-retracted grant stops authorizing.
+- **A4 as it applies to AC3 — CLOSED.** `priorCustodianRetainsPreFork: true` is gone. The
+  fork names `priorCustodian`, and `evaluateForkRead` is the named observable, with a
+  pre-fork ref (allowed) and a post-fork ref (denied) as the two inputs that make its output
+  differ.
+
+**Still unmet, unchanged by this pass:** AC4 (`validateTransfer` still cannot return `false`
+for any `CustodyTransfer` that type-checks — the witness-stake criterion is still type-level),
+R8/A2 (`expiresAtPhase: Number.MAX_SAFE_INTEGER` is still constructible in B; no `MaxSpan` is
+enforced), and R12's wrong-grant citation (`authorize` cites `matching[0]`, not the
+longest-lived grant). R1–R2 and R10 remain green-field.
+
+**Scope of the AC3 claim — read this before citing it.** `evaluateForkRead` is an
+authorization *decision over declared lineage*. It is not a confidentiality mechanism: no
+content is encrypted, no key is cryptographically revoked, and nothing stops a party holding
+post-fork bytes from reading them. AC3's "unable to read" is demonstrated **as a decision the
+module returns**, not as an enforced impossibility. Nothing in this module is cryptographic —
+see the header comment in `key-custody.ts`.
+
+**N-version note.** The work item filed these gaps rather than fixing them, on the ground that
+patching B would make the reviewer a third derivation touching the second. That constraint
+governed the *pre-combine* window: independence buys its evidence at combine time, and the
+combine has since landed (amendments A1–A6 above). Fixing B afterwards cannot retract evidence
+already extracted. Disclosure per the clean-room handoff discipline: the agent making this
+change read `key-custody-n-version-combine.md`, which describes A's approach in prose, and did
+**not** open A's source. The retirement-set design used here differs from A's described
+slot-clearing, and is **not** offered as a third independent derivation.

@@ -6,6 +6,19 @@
  *
  * This is derivation B of the N-version protocol. The implementer (Kiro/Alexa)
  * has NOT seen derivation A's code or branch.
+ *
+ * ── WHAT THIS MODULE DOES NOT DO (read before citing it as a custody guarantee)
+ *
+ * Nothing here is cryptographic. No signature is produced, no signature is
+ * verified, no content is encrypted, and no key material is ever handled — a
+ * `publicKey` is an opaque string that is stored and compared, never used.
+ * Every function below is a **bookkeeping decision over declared records**:
+ * it answers "does this record say this is permitted?", never "is this
+ * cryptographically bound?". `verifyAgainstSlots` matches a key IDENTIFIER
+ * against three slots; it does not verify anything signed. `evaluateForkRead`
+ * decides read authorization from a declared lineage; it does not make
+ * post-fork content unreadable — no confidentiality mechanism exists here.
+ * Enforcement of these decisions is the caller's, and is not built.
  */
 
 // ═══ R1: Ownership as a first-class type ═════════════════════════════════════
@@ -105,10 +118,113 @@ export interface CustodyFork {
   readonly ancestorRef: string; // content-address of the shared history
   /** The new custodian's branch. */
   readonly newCustodian: Ownership;
-  /** The prior custodian retains read access to pre-fork content (R3). */
-  readonly priorCustodianRetainsPreFork: true;
+  /**
+   * The custodian who relinquished. NAMED, not asserted.
+   *
+   * This field replaces `priorCustodianRetainsPreFork: true`, which was typed
+   * as the literal `true` and therefore could not be false for any input that
+   * type-checked. AC#3 was "satisfied" by an assertion no test could fail
+   * (spec amendment A4). R3's retention property is now decided by
+   * `evaluateForkRead` against this identity and the content lineage, so it
+   * has inputs that make its output differ.
+   */
+  readonly priorCustodian: Ownership;
   /** No key is valid across the fork in both directions (R4). */
   readonly keysInvalidatedPostFork: readonly string[];
+}
+
+// ═══ Content lineage — the structure AC#3 is decided against ═════════════════
+
+/**
+ * A node in the content-addressed history (R4). `parents` are the refs this
+ * node was derived from; the fork's `ancestorRef` is the shared boundary.
+ */
+export interface ContentNode {
+  readonly ref: string;
+  readonly parents: readonly string[];
+}
+
+export type ContentDag = ReadonlyMap<string, ContentNode>;
+
+/**
+ * Is `candidateRef` the same as, or an ancestor of, `descendantRef`?
+ *
+ * Walks parent edges from `descendantRef`. A ref absent from the DAG
+ * terminates that walk (it is not treated as a match) — unknown is not
+ * permissive. The visited set makes this total even on malformed cyclic
+ * input, which a genuine content-addressed store cannot produce but a caller
+ * can hand us.
+ */
+export function isAncestorOrSelf(dag: ContentDag, candidateRef: string, descendantRef: string): boolean {
+  const visited = new Set<string>();
+  const frontier: string[] = [descendantRef];
+  while (frontier.length > 0) {
+    const ref = frontier.pop()!;
+    if (ref === candidateRef) return true;
+    if (visited.has(ref)) continue;
+    visited.add(ref);
+    const node = dag.get(ref);
+    if (!node) continue;
+    for (const parent of node.parents) frontier.push(parent);
+  }
+  return false;
+}
+
+/**
+ * ACCEPTANCE #3, made falsifiable: may `readerPrincipalId` read `contentRef`
+ * given this fork?
+ *
+ * The two inputs that make the output differ (spec amendment A4): for the
+ * prior custodian, a ref that is an ancestor-or-self of `fork.ancestorRef`
+ * is ALLOWED (R3 — the transfer must not destroy what they held) and a ref
+ * on the post-fork branch is DENIED (R4 — no key crosses the boundary in
+ * both directions).
+ *
+ * HONEST SCOPE — this is an authorization DECISION, not an enforcement
+ * mechanism. It returns "denied" for post-fork content; it does not encrypt
+ * that content, does not revoke any key, and cannot stop a party that holds
+ * the bytes from reading them. A caller that does not consult this function
+ * is not constrained by it. Whether refusal is *enforceable* is a separate,
+ * unbuilt concern.
+ */
+export function evaluateForkRead(
+  fork: CustodyFork,
+  dag: ContentDag,
+  readerPrincipalId: string,
+  contentRef: string,
+): AuthzDecision {
+  if (!dag.has(contentRef)) {
+    return { allowed: false, reason: `content '${contentRef}' is not present in the supplied lineage — unknown is not permissive` };
+  }
+  const isPreFork = isAncestorOrSelf(dag, contentRef, fork.ancestorRef);
+
+  if (readerPrincipalId === fork.priorCustodian.principalId) {
+    if (isPreFork) {
+      return { allowed: true, reason: `prior custodian '${readerPrincipalId}' retains pre-fork content '${contentRef}' (shared ancestor '${fork.ancestorRef}') — R3` };
+    }
+    return { allowed: false, reason: `content '${contentRef}' is post-fork (not an ancestor of '${fork.ancestorRef}'); prior custodian '${readerPrincipalId}' does not carry across the fork boundary — R4` };
+  }
+
+  if (readerPrincipalId === fork.newCustodian.principalId) {
+    return { allowed: true, reason: `new custodian '${readerPrincipalId}' holds the post-fork branch and its shared ancestry — R4` };
+  }
+
+  return { allowed: false, reason: `principal '${readerPrincipalId}' is neither the prior nor the new custodian of this fork` };
+}
+
+/**
+ * R4's key half: a key the fork declared invalid does not verify on the
+ * post-fork branch.
+ *
+ * "Invalidated" here means *declared invalid by this fork record* — it is a
+ * list membership test. No key is cryptographically revoked, and no
+ * revocation is published anywhere.
+ */
+export function isKeyValidPostFork(fork: CustodyFork, keyId: string): AuthzDecision {
+  if (fork.keysInvalidatedPostFork.includes(keyId)) {
+    return { allowed: false, reason: `key '${keyId}' was invalidated at the fork boundary and is not valid post-fork — R4` };
+  }
+  return { allowed: true, reason: `key '${keyId}' was not invalidated by this fork` };
 }
 
 // ═══ R10: Witness with unpurchasable stake ═══════════════════════════════════
@@ -227,8 +343,14 @@ export function selfIssueCredential(principalId: string, publicKey: string, keyC
 // ═══ Verification (R5 — accept previous within window) ══════════════════════
 
 /**
- * Verify a signature against a principal's key slots. Accepts `previous`
- * if within the bounded window, `current` always, `next` never (not yet active).
+ * Decide whether a key IDENTIFIER is acceptable for a principal at this
+ * phase: `previous` within the bounded window, `current` always, `next`
+ * never (published but not yet active).
+ *
+ * This verifies NO SIGNATURE. It compares `signingKeyId` against three slot
+ * ids — an eligibility check that a caller would run *before* a real
+ * signature verification it must perform itself. The previous docstring said
+ * "verify a signature", which this function has never done.
  */
 export function verifyAgainstSlots(slots: KeySlots, signingKeyId: string, currentPhase: number): AuthzDecision {
   if (slots.current.id === signingKeyId) {
@@ -252,20 +374,47 @@ export function verifyAgainstSlots(slots: KeySlots, signingKeyId: string, curren
 // ═══ Fold: replay events from empty → final state (acceptance #5) ════════════
 
 export interface CustodyState {
+  /** Keys asserted active: issued and not since retracted. */
   readonly keys: Map<string, KeyDescriptor>;
+  /**
+   * Keys whose assertion was withdrawn by a `key-retracted` event. RETAINED,
+   * not deleted (§5 memory preservation, R6: "retraction rather than
+   * deletion keeps history intact while changing the fold's result").
+   */
+  readonly retiredKeys: Map<string, KeyDescriptor>;
   readonly slots: Map<string, KeySlots>; // principalId → slots
+  /** Grants still asserted: issued and not since retracted. */
   readonly grants: Grant[];
+  /** Grants withdrawn by a `grant-expired` retraction — retained for audit. */
+  readonly retiredGrants: Grant[];
   readonly forks: CustodyFork[];
   readonly events: CustodyEvent[];
 }
 
 export function emptyCustodyState(): CustodyState {
-  return { keys: new Map(), slots: new Map(), grants: [], forks: [], events: [] };
+  return { keys: new Map(), retiredKeys: new Map(), slots: new Map(), grants: [], retiredGrants: [], forks: [], events: [] };
 }
 
 /**
  * Acceptance #5: replay from empty reproduces the same final state (deterministic).
  * This is the fold function — applies events sequentially to produce state.
+ *
+ * RETRACTIONS ARE CONSUMED (R6, spec amendment A3). `key-retracted` and
+ * `grant-expired` move their subject out of the asserted set and into the
+ * retired set. Removing every retraction event from a stream therefore
+ * CHANGES the folded state — which is the executable test A3 states, and the
+ * one this fold previously failed by handling both kinds in `default: break`.
+ *
+ * Retraction is *correction*, not a duplicate-guard: it withdraws an
+ * assertion nobody stands behind any more. Membership sets rather than
+ * integer Z-set weights are used deliberately, so that replaying the same
+ * retraction twice has the same effect as once (discipline #6 idempotency);
+ * integer weights would make a redelivered retraction reach −1 and diverge.
+ *
+ * What retraction does NOT govern: whether already-signed material still
+ * verifies. That is the bounded `previous`-slot window (R5), a separate
+ * question with a separate answer — see `verifyAgainstSlots`. Retracting a
+ * key ends its forward use; it does not retroactively unmake what it signed.
  */
 export function foldEvents(events: readonly CustodyEvent[]): CustodyState {
   const state = emptyCustodyState();
@@ -310,6 +459,30 @@ export function foldEvents(events: readonly CustodyEvent[]): CustodyState {
           issuedAtPhase: event.phase,
           expiresAtPhase: event.payload.expiresAtPhase as number,
         });
+        break;
+      }
+      case "key-retracted": {
+        // R6: withdraw the assertion. The key leaves the active set; the
+        // descriptor is retained so history is not destroyed (§5).
+        const retractedKeyId = event.payload.retractedKeyId as string;
+        const key = state.keys.get(retractedKeyId);
+        if (key) {
+          state.keys.delete(retractedKeyId);
+          state.retiredKeys.set(retractedKeyId, key);
+        }
+        break;
+      }
+      case "grant-expired": {
+        // R6: a retraction of authority. Withdraws the grant even when its
+        // `expiresAtPhase` has not been reached — the early-withdrawal case
+        // is exactly where an ignored retraction leaves `authorize` granting
+        // a capability nobody asserts any more.
+        const retractedGrantId = event.payload.grantId as string;
+        const index = state.grants.findIndex((g) => g.id === retractedGrantId);
+        if (index >= 0) {
+          state.retiredGrants.push(state.grants[index]!);
+          state.grants.splice(index, 1);
+        }
         break;
       }
       case "custody-forked": {

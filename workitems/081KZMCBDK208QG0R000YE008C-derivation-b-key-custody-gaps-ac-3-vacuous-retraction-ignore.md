@@ -57,3 +57,32 @@ fixing the spec is the higher-value output.
 
 The combine pass has ruled on each of the four, and the spec has been amended where the
 divergence showed it was ambiguous (phase model first).
+
+## Progress 2026-08-17 — two of four closed in derivation B
+
+Both were **re-verified live on `main` before any change** (these rows are 8 days old and
+stale items are common). Neither had been fixed: `git log` shows exactly one commit ever
+touching `src/Core.TypeScript/key-custody/` (#10245, the original).
+
+| Gap | Status | Evidence |
+|---|---|---|
+| **AC#3 vacuous** | **closed** | Vacuity proven mechanically: the falsifying input `priorCustodianRetainsPreFork: false` does not compile (`TS2322: Type 'false' is not assignable to type 'true'`). Field replaced by `priorCustodian: Ownership`; `evaluateForkRead` decides against content lineage. Pre-fork ref → allowed, post-fork ref → denied. |
+| **Retraction ignored** | **closed** | Confirmed by execution first: folded state was byte-identical with and without retractions, and a grant retracted at phase 4 still authorized at phase 100. `foldEvents` now consumes `key-retracted` + `grant-expired`. |
+| **Grant span unbounded** | **open** | Untouched. `expiresAtPhase: Number.MAX_SAFE_INTEGER` still constructible; no `MaxSpan` in B. Spec amendment A2 states the requirement. |
+| **Deny cites wrong grant** | **open** | Untouched. `authorize` still cites `matching[0]` rather than the longest-lived grant. |
+
+Also unmet and untouched: **AC#4** — `validateTransfer` still cannot return `false` for any
+`CustodyTransfer` that type-checks. That is the same vacuity class as AC#3 was, on the
+witness-stake axis, and it needs the same treatment.
+
+**Honest scope of the AC#3 fix:** `evaluateForkRead` is an authorization *decision*, not an
+enforcement mechanism. Nothing in this module is cryptographic — no signature is produced or
+verified, no content is encrypted, no key is revoked. "Prior custodian cannot read post-fork"
+is now a decision the module *returns*, not an impossibility it *enforces*.
+
+**Open question for the maintainer** (not decided here, per no-directives — this is a policy
+call, not an implementation gap): should a custody transfer be *required* to invalidate at
+least one key across the fork boundary? R4 says "no key is valid across the fork in both
+directions", and today `keysInvalidatedPostFork: []` is accepted by `validateTransfer`. A
+degenerate fork of an empty custody legitimately has zero keys, so requiring ≥1 is a policy
+choice with a real false-positive, and it was left unmade rather than guessed.
