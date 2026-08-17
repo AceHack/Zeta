@@ -187,6 +187,42 @@ describe("prepareHeartbeatBranch", () => {
     expect(lines).not.toContain("<<<<<<< HEAD");
   });
 
+  it("carries the RS block log, which several lanes append to under a per-row writer", () => {
+    // The path that wedged otto and soraya at 16:43Z on 2026-08-17 (run 32046921903), while the
+    // flush outage had the lanes running many ticks ahead of main — which is precisely the
+    // partial-flush window these attributes exist for.
+    //
+    // Distinct from the manifest above in what justifies it: there is no enforced uniqueness
+    // check here. The argument is append-only (12/12 commits `+1 -0`) plus single-writer PER ROW
+    // — the `agent` field names the lane that emitted the row, and a lane appends only its own.
+    const { work } = fixture();
+    const p = "data/rs-blocks.jsonl";
+    seedAttributes(work);
+    // Main holds another lane's row interleaved with this lane's flushed row; the lane has since
+    // emitted one more of its own. Union must keep all three, in order, exactly once.
+    partialFlush(
+      work,
+      p,
+      '{"agent":"alexa","seq":1}\n{"agent":"otto","seq":1}\n',
+      '{"agent":"alexa","seq":1}\n{"agent":"otto","seq":1}\n{"agent":"alexa","seq":2}\n',
+    );
+
+    const result = prepareHeartbeatBranch("alexa", work);
+    expect(result).toMatchObject({ ok: true, value: { remoteFound: true, carried: true } });
+
+    const lines = readFileSync(join(work, p), "utf8").split("\n").filter(Boolean);
+    expect(lines).toEqual([
+      '{"agent":"alexa","seq":1}',
+      '{"agent":"otto","seq":1}',
+      '{"agent":"alexa","seq":2}',
+    ]);
+    // The duplication fear made explicit: the two rows present on BOTH sides must appear once.
+    // Git resolves an identical addition on both sides as one change; if that ever stopped being
+    // true, this assertion is what catches it rather than a comment claiming it.
+    expect(lines.filter((l) => l === '{"agent":"otto","seq":1}')).toHaveLength(1);
+    expect(lines).not.toContain("<<<<<<< HEAD");
+  });
+
   it("keeps a regenerated snapshot parseable when both sides rewrote it", () => {
     const { work } = fixture();
     const p = "docs/observe-events/.rs-buffer-alexa.json";

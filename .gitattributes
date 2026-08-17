@@ -119,6 +119,34 @@ db/mutation-findings/*.jsonl            merge=union
 # and `pr-manifest-integrity` would catch the duplicate if that ever changed.
 docs/github/prs/manifest.jsonl           merge=union
 #
+# `data/rs-blocks.jsonl` — added 2026-08-17 after it wedged otto's and soraya's ticks at 16:43Z
+# (run 32046921903) with `CONFLICT (content): Merge conflict in data/rs-blocks.jsonl`. Fifth
+# member of the same class, surfaced the same way: the preparer's typed backpressure refused an
+# undeclared conflicting path, which is the design working, not a regression. It surfaced now
+# because the flush outage let the lanes run many ticks ahead of main, widening exactly the
+# partial-flush window this block exists for.
+#
+# Measured on this tip, not assumed:
+#   - append-only — the last 12 commits touching it are each `+1 -0`, no line ever modified
+#   - 13 rows, 13 distinct `(agent, seq)` — the key is per-agent-sequential
+#   - written by otto, alexa and soraya, so this is NOT single-writer by file; it is
+#     single-writer PER ROW: the `agent` field names the lane that emitted it, and a lane only
+#     ever appends its own rows. Main's copy therefore holds this lane's already-flushed rows
+#     plus other lanes' rows, never a rival edit to the same row.
+#
+# The partial-flush case is where a naive reading fears duplication: after a flush, main and the
+# lane both contain the same row. Git resolves an identical addition on both sides as ONE change
+# and emits a single copy — the same mechanism already verified in production for the four paths
+# above. Union duplicates only when the two sides add DIFFERENT lines, which is the case we want.
+#
+# STATED LIMIT, because the manifest entry above gets to make a stronger claim and this one does
+# not: `(agent, seq)` uniqueness is NOT enforced by any check. `verify-rs-blocks.ts` does run in
+# this workflow, but it verifies each block's Reed-Solomon syndrome — corruption of a row's
+# contents — which is a different property and would not notice a duplicated row. Union is safe
+# here on the append-only + per-row-single-writer argument alone; if rows ever become editable,
+# this line must go.
+data/rs-blocks.jsonl                     merge=union
+#
 # Regenerated-per-tick snapshots -> `theirs` (the lane's). `union` is WRONG for these and was
 # measured producing two concatenated objects, i.e. invalid JSON: .rs-buffer-*.json is a
 # single-line rolling buffer and vault-state/roster are whole-file rollups. The tick rewrites
