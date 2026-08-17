@@ -23,6 +23,7 @@ import {
   type CheckId,
   type Finding,
 } from "./reconcile-surfaces";
+import { ITEMS_JSON_REL, renderItemsJson } from "./generate-items-json";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Fixture: a miniature repo carrying one of each provenance class, all reconciled.
@@ -107,6 +108,12 @@ assigned_machine: host-a.local
 `,
   );
   w("inventory/reconciliation-open.json", JSON.stringify({ open: [] }) + "\n");
+
+  // The DERIVED surface, written by the same derivation the check compares against.
+  // Deliberately not a hand-written literal: a fixture that hardcoded the expected
+  // JSON would pass by agreeing with a copy rather than with the generator — the
+  // failure mode under test, wearing a test's clothes.
+  w(ITEMS_JSON_REL, renderItemsJson(root).json);
 
   return { root, cleanup: () => rmSync(root, { recursive: true, force: true }) };
 }
@@ -326,6 +333,92 @@ describe("mutants", () => {
       expect(hits.length).toBe(1);
       expect(hits[0]!.detail).toContain("probe-nodes=1");
       expect(hits[0]!.detail).toContain("2 node registrations");
+    } finally {
+      f.cleanup();
+    }
+  });
+
+  // ── HWR-7 ──────────────────────────────────────────────────────────────────
+  // The divergence this whole check was added for, in the exact shape it took on
+  // main: edit the register, leave the published projection alone. Before HWR-7
+  // this left `reconcile` green AND all 23 inventory unit tests passing, because
+  // the reconciler read the register from the .md files and no workflow ran the
+  // generator's own `--check`.
+  test("HWR-7: the register is edited and the published read-model is not regenerated", () => {
+    const f = makeFixture();
+    try {
+      write(
+        f.root,
+        "inventory/items/0EFJ9RW179ZFT9WBMXZZNYM92A-thing.md",
+        `---
+id: 0EFJ9RW179ZFT9WBMXZZNYM92A
+name: Thing
+qty: 1
+status: active
+value_usd: 999999
+assigned_machine: host-a.local
+---
+`,
+      );
+      const hits = findingsFor(f.root, "HWR-7");
+      expect(hits.length).toBe(1);
+      expect(hits[0]!.key).toBe(ITEMS_JSON_REL);
+      expect(hits[0]!.detail).toContain("not what the register derives");
+    } finally {
+      f.cleanup();
+    }
+  });
+
+  test("HWR-7: the read-model is hand-edited while the register stays put", () => {
+    // The other direction, and the one a checked-in generated file invites: someone
+    // fixes a price in the published JSON because that is the file they were looking
+    // at. A check that only caught register-side edits would miss it.
+    const f = makeFixture();
+    try {
+      write(f.root, ITEMS_JSON_REL, renderItemsJson(f.root).json.replace('"name": "Thing"', '"name": "Thingg"'));
+      const hits = findingsFor(f.root, "HWR-7");
+      expect(hits.length).toBe(1);
+      expect(hits[0]!.detail).toContain("not what the register derives");
+    } finally {
+      f.cleanup();
+    }
+  });
+
+  test("HWR-7: an absent read-model is stale, not vacuously fine", () => {
+    // The vacuity trap for any compare-to-a-file check: a missing expectation must
+    // never read as agreement.
+    const f = makeFixture();
+    try {
+      rmSync(join(f.root, ITEMS_JSON_REL));
+      const hits = findingsFor(f.root, "HWR-7");
+      expect(hits.length).toBe(1);
+      expect(hits[0]!.detail).toContain("absent");
+    } finally {
+      f.cleanup();
+    }
+  });
+
+  test("HWR-7: a register row the generator rejects is reported, not silently dropped", () => {
+    // `generate` returns errors instead of items for a malformed row. Without this
+    // branch the derived side would be the empty string, the committed side would
+    // still hold real rows, and the finding would read as ordinary staleness —
+    // pointing the reader at "re-run the generator", which would also fail.
+    const f = makeFixture();
+    try {
+      write(
+        f.root,
+        "inventory/items/0EFJ9RW179ZFT9WBMXZZNYM92A-thing.md",
+        `---
+id: 0EFJ9RW179ZFT9WBMXZZNYM92A
+name: Thing
+qty: 1
+status: on-fire
+---
+`,
+      );
+      const hits = findingsFor(f.root, "HWR-7");
+      expect(hits.length).toBeGreaterThan(0);
+      expect(hits.map((h) => h.detail).join(" ")).toContain("rejected by the generator");
     } finally {
       f.cleanup();
     }

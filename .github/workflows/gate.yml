@@ -901,6 +901,19 @@ jobs:
         # reproduces fails too — a suppression cannot outlive its cause.
         run: bun run inventory:reconcile
 
+      - name: Inventory read-model is derived, not drifted (081M00R59KS087G0R001W3837V)
+        # `inventory/items.json` is a COMMITTED PROJECTION of `inventory/items/*.md`,
+        # and it is the only inventory surface a reader actually sees — the Pages
+        # viewer fetches it and never opens an item file. It has always had a
+        # `--check` mode and NO workflow ran it: measured 2026-08-17, editing an
+        # item's value_usd left `inventory:reconcile` green and all 23 inventory unit
+        # tests passing while the published price stayed wrong.
+        #
+        # Third instance of the same class in this one job (the hygiene suite #8216,
+        # the inventory unit tests one step down, now this): a check that exists,
+        # can fail, and is wired to nothing reads exactly like a check that passed.
+        run: bun run inventory:items-check
+
       - name: Inventory unit tests
         # These existed (generate-items-json.test.ts) and NO workflow ran them —
         # found while wiring the reconciliation check. Same shape as the #8216 gap

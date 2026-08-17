@@ -9,6 +9,11 @@
 //
 //   register     inventory/items/*.md                    identity of record; ZetaId-keyed,
 //                                                        git-as-database. Slow (hub).
+//   read-model   inventory/items.json                    DERIVED from the register by
+//                                                        generate-items-json.ts. The only
+//                                                        surface a reader actually SEES (the
+//                                                        Pages viewer fetches it). Not a
+//                                                        provenance class — a projection.
 //   snapshot     docs/inventory/hardware-*-draft.md      a human audit at a point in time.
 //                                                        Immutable; superseded wholesale.
 //   declaration  docs/inventory/fleet-*.md               what the operator SAYS is deployed.
@@ -36,6 +41,7 @@
 
 import { readFileSync, readdirSync, existsSync, writeFileSync } from "node:fs";
 import { join, normalize } from "node:path";
+import { ITEMS_JSON_REL, readCommittedItemsJson, renderItemsJson } from "./generate-items-json";
 
 const REPO_ROOT = normalize(join(__dirname, "..", "..", ".."));
 
@@ -46,6 +52,7 @@ export const CHECKS = {
   "HWR-4": "a snapshot's header (counts + body-sha256) still describes its body",
   "HWR-5": "register coverage of the audited unit count",
   "HWR-6": "a declaration's probe-nodes count matches the probe surface",
+  "HWR-7": "the published read-model is what the generator derives from the register",
 } as const;
 
 export type CheckId = keyof typeof CHECKS;
@@ -168,6 +175,11 @@ export interface Surfaces {
   undeclaredDocs: string[];
   probes: ProbeNode[];
   hostkeys: string[];
+  /** The DERIVED surface. `derived` is what the generator emits from the register
+   *  right now; `committed` is what is actually published. They are compared, never
+   *  merged — and both are produced by the generator's own single derivation, so
+   *  this check cannot drift from the tool that fixes it. */
+  readModel: { file: string; committed: string; derived: string; errors: string[] };
 }
 
 function listMarkdown(dir: string): string[] {
@@ -249,6 +261,9 @@ export function collect(root: string = REPO_ROOT): Surfaces {
       ].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
     : [];
 
+  // ── read-model (derived from the register) ──────────────────────────────────
+  const rendered = renderItemsJson(root);
+
   return {
     registerRows,
     registerRealRows,
@@ -258,6 +273,12 @@ export function collect(root: string = REPO_ROOT): Surfaces {
     undeclaredDocs,
     probes,
     hostkeys,
+    readModel: {
+      file: ITEMS_JSON_REL,
+      committed: readCommittedItemsJson(root),
+      derived: rendered.json,
+      errors: rendered.errors,
+    },
   };
 }
 
@@ -339,6 +360,40 @@ export function reconcile(s: Surfaces): Finding[] {
     }
   }
 
+  // HWR-7 — the published read-model no longer equals what the register derives.
+  //
+  // This is the one divergence on this whole map that is NOT a difference of
+  // provenance: `items.json` is not another party's account of the hardware, it is
+  // a PROJECTION of the register, so any difference is pure staleness and the
+  // repair is mechanical (re-run the generator). It is also the surface that is
+  // actually READ — the Pages viewer fetches items.json and never opens an item
+  // file — so a stale projection is the one drift a human is guaranteed to see and
+  // guaranteed not to notice.
+  //
+  // Measured before this check existed: editing an item's `value_usd` in the
+  // register left the reconciler green and all 23 inventory unit tests passing,
+  // because the reconciler counted the register from the .md files and nothing in
+  // any workflow ran the generator's own `--check`. The published price stayed
+  // wrong and every check said the inventory reconciled.
+  if (s.readModel.errors.length > 0) {
+    for (const e of s.readModel.errors) {
+      findings.push({
+        check: "HWR-7",
+        key: `invalid:${e.split(":")[0]}`,
+        detail: `register row rejected by the generator, so the read-model cannot be derived: ${e}`,
+      });
+    }
+  } else if (s.readModel.committed !== s.readModel.derived) {
+    findings.push({
+      check: "HWR-7",
+      key: s.readModel.file,
+      detail:
+        s.readModel.committed.length === 0
+          ? `${s.readModel.file} is absent, but the register derives one — run: bun src/Core.TypeScript/inventory/generate-items-json.ts`
+          : `${s.readModel.file} is not what the register derives (${s.readModel.committed.length} bytes committed, ${s.readModel.derived.length} derived) — it is a projection of inventory/items/, so re-run: bun src/Core.TypeScript/inventory/generate-items-json.ts`,
+    });
+  }
+
   // HWR-5 — the coverage gap. Reported as a single finding with a stable key so
   // the magnitude can move (Addison's re-audit will change it) without the
   // suppression silently re-arming.
@@ -418,6 +473,9 @@ function main(): number {
   console.log("  surface          class          count");
   console.log(
     `  inventory/items/ register       ${s.registerRealRows} real (${s.registerRows} incl. sample placeholders)`,
+  );
+  console.log(
+    `  inventory/items.json read-model ${s.readModel.committed === s.readModel.derived ? "in step with the register" : "STALE against the register"}`,
   );
   console.log(`  docs/inventory/  snapshot       ${auditedUnits} units across ${s.snapshots.length} audit snapshot(s)`);
   console.log(`  docs/inventory/  declaration    ${s.declarations.length} operator declaration(s)`);

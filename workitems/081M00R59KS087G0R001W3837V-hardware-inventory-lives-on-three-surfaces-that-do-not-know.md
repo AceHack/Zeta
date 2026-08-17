@@ -39,6 +39,49 @@ those are the drift risk, not the table.
 Two surfaces the item did not name at all — the **probe** and **hostkey** surfaces — are where the
 live divergences actually are.
 
+## MEASURED 2026-08-17 — the surface enumeration above missed the one that is READ
+
+The 2026-08-16 pass counted six surfaces and reconciled them. It missed a seventh, and it is the
+only one an outside reader ever sees.
+
+`inventory/items.json` is a **committed projection** of `inventory/items/*.md`, emitted by
+`generate-items-json.ts`. The Pages viewer (`inventory/lib/inventory-viewer.js:57`) does
+`fetch("items.json")` and never opens an item file. The reconciler counted the register from the
+`.md` files and never looked at the published copy, so the two could disagree freely.
+
+**Reproduced on `main` before the fix.** Set `value_usd: 999999` on the RTX 4090 row:
+
+| check | result |
+|---|---|
+| `bun run inventory:reconcile` | **exit 0** — "✓ no unaccounted divergence" |
+| `bun test src/Core.TypeScript/inventory/` | **23 pass / 0 fail** |
+| `inventory/items.json` | unchanged: `"value_usd": 1599`, `"total_value_usd": 8198` |
+| `generate-items-json.ts --check` | exit 1 — the one check that catches it |
+
+The `--check` mode had existed since the file was written and **no workflow ran it** — the same
+class as the two gaps this job already documents (the #8216 hygiene suite, and the inventory unit
+tests found unwired on 2026-08-16). A check that exists, can fail, and is wired to nothing reads
+exactly like a check that passed.
+
+**Fixed as class (b) — generator emits, drift caught at build.** Class (a) is not reachable here:
+`items.json` cannot be eliminated, because a browser fetching a static site cannot list
+`inventory/items/`. So the committed projection is necessary, and the honest move is to make the
+derivation the only definition of it:
+
+- `generate-items-json.ts` now exports `renderItemsJson(root)` — **one** definition of the derived
+  bytes, called by write, by `--check`, and by the reconciler. Re-deriving the payload in the
+  checker would have rebuilt this exact bug one level up: two copies, agreeing today.
+- `reconcile-surfaces.ts` gains **HWR-7** (read-model == what the register derives), so the surface
+  map stops under-reporting and the projection is visible in the printed report either way.
+- `gate.yml` runs `bun run inventory:items-check` in `lint-bash-retirement-inventory` — the same
+  non-blocking job the other inventory steps live in. **Not** added to the `gate-required` floor:
+  that is a treaty-amendment consent path, and this change did not take it.
+
+Mutation evidence: with HWR-7 replaced by an always-false comparison, **24 pass / 3 fail**;
+restored, **27 pass / 0 fail**. Four HWR-7 mutants are pinned — register edited, read-model
+hand-edited, read-model absent (missing must not read as agreement), and a register row the
+generator rejects.
+
 ### The divergences found
 
 1. **`node-5b2dfa` and `node-f82aa6` report the same MAC `b0:41:6f:17:87:cc`.** Two self-registrations
