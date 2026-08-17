@@ -667,6 +667,15 @@ export function main(argv: readonly string[] = [], body?: string): ExitCode {
     options.authorIdentity,
     loadExternalActors(),
   );
+  // DRAIN STDIN BEFORE ANY EARLY RETURN. The caller pipes a producer into this tool
+  // (`gh api ... | bun this`). Returning without reading closes the read end, the
+  // producer dies of SIGPIPE, and under `set -o pipefail` the STEP exits 141 — even
+  // though this validator succeeded and printed GRANDFATHERED. Measured: every
+  // pre-cutover PR (e.g. #10717, #10741, both created 2026-08-14) failed that way,
+  // so the grandfather clause — which exists precisely so old PRs are NOT blocked —
+  // was blocking them. A guard that fails the thing it exempts is worse than no guard.
+  // Only drain when stdin is actually the source; `--body` callers pipe nothing.
+  const stdinText = body === undefined ? readStdin() : "";
   if (external !== null) return emitRepoAssertedAttribution(external);
   if (
     options.createdAt !== "" &&
@@ -688,7 +697,7 @@ export function main(argv: readonly string[] = [], body?: string): ExitCode {
     process.stdout.write("  from the cutover onward IS checked.\n");
     return 0;
   }
-  const input = body ?? readStdin();
+  const input = body ?? stdinText;
   if (input === "") {
     process.stderr.write("error: no input on stdin\n");
     process.stderr.write(
