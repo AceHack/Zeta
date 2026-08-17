@@ -1,0 +1,12 @@
+{
+  "pr_number": 9145,
+  "archive_path": "docs/history/pr-reviews/PR-9145-docs-prior-art-schubert-1949-prime-decomposition-of-knots-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T09:49:00.348Z",
+  "schema_version": "v1",
+  "commit_sha": "c0d3d4c064da8373f6cc4e3178b4997903a5f29d",
+  "title": "docs(prior-art): Schubert 1949 — prime decomposition of knots (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T15:35:04Z",
+  "head_ref": "docs/prior-art-schubert"
+}
