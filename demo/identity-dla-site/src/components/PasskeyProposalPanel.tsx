@@ -10,6 +10,11 @@ import {
   type DeviceCapability,
   type PasskeyEnrollment,
 } from "../lib/passkeyProposal";
+import {
+  canQueueGeneratedVerification,
+  canQueueSuppliedProposal,
+  queueHarmlessVerification,
+} from "../lib/verificationPatch";
 
 const CREDENTIAL_STORAGE_KEY = "zeta-proposal-passkey-credential-id";
 type PanelState = "idle" | "binding" | "enrolling" | "authorizing" | "ready" | "submitting" | "submitted" | "error";
@@ -110,11 +115,11 @@ export default function PasskeyProposalPanel() {
       setMessage(error instanceof Error ? error.message : "This device was not authorized.");
     }
   };
-  const queue = async () => {
+  const queue = async (payloadToSubmit = payload) => {
     if (!capability || registrySequence === null) return;
     setState("submitting");
     try {
-      const result = await submitAutomaticProposal({ capability, baseSha, payload });
+      const result = await submitAutomaticProposal({ capability, baseSha, payload: payloadToSubmit });
       setState("submitted");
       setMessage(`${result.message} Proposal ${result.proposalId.slice(0, 8)} is staged for bounded Action review delivery.`);
     } catch (error) {
@@ -122,7 +127,22 @@ export default function PasskeyProposalPanel() {
       setMessage(error instanceof Error ? error.message : "Automatic proposal delivery failed.");
     }
   };
-  const enabled = Boolean(capability) && registrySequence !== null && isCommitSha(baseSha) && payload.trim().length > 0;
+  const queueVerification = async () => {
+    try {
+      await queueHarmlessVerification({
+        baseSha,
+        submit: async (generated) => {
+          setPayload(generated);
+          await queue(generated);
+        },
+      });
+    } catch (error) {
+      setState("error");
+      setMessage(error instanceof Error ? error.message : "The local verification agent could not generate a bounded patch.");
+    }
+  };
+  const canGenerate = canQueueGeneratedVerification({ capability, registrySequence, baseSha });
+  const canSupply = canQueueSuppliedProposal({ capability, registrySequence, baseSha, payload });
   const buttonStyle = (active: boolean): CSSProperties => ({
     background: active ? "rgba(16,185,129,0.12)" : "rgba(71,85,105,0.16)",
     border: `1px solid ${active ? "#059669" : "#475569"}`,
@@ -251,8 +271,17 @@ export default function PasskeyProposalPanel() {
             }}
           />
           <label style={{ display: "block", color: "#64748b", margin: "0.35rem 0 0.1rem" }}>
-            Local agent output — exact bounded unified Git patch
+            Automatic local-agent verification
           </label>
+          <button
+            onClick={queueVerification}
+            disabled={!canGenerate || state === "submitting"}
+            style={{ ...buttonStyle(canGenerate), marginBottom: "0.35rem" }}
+          >
+            {state === "submitting" ? "queueing automatic proposal…" : "queue harmless verification"}
+          </button>
+          <details style={{ marginTop: "0.08rem" }}>
+            <summary style={{ color: "#64748b", cursor: "pointer" }}>advanced: supply an exact local-agent unified patch</summary>
           <textarea
             value={payload}
             onChange={(event) => setPayload(event.target.value)}
@@ -275,9 +304,10 @@ export default function PasskeyProposalPanel() {
               lineHeight: 1.45,
             }}
           />
+          </details>
           <div style={{ marginTop: "0.32rem" }}>
-            <button onClick={queue} disabled={!enabled || state === "submitting"} style={buttonStyle(enabled)}>
-              {state === "submitting" ? "queueing automatic proposal…" : "queue bounded proposal"}
+            <button onClick={() => void queue()} disabled={!canSupply || state === "submitting"} style={buttonStyle(canSupply)}>
+              {state === "submitting" ? "queueing automatic proposal…" : "queue supplied proposal"}
             </button>
           </div>
           <div style={{ color: statusColor, fontSize: "0.48rem", marginTop: "0.32rem" }}>{message}</div>
