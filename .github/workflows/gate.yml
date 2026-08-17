@@ -1731,7 +1731,45 @@ jobs:
             tests/cross-verification/_harness/generated-star-ring-laws.test.ts \
             tests/cross-verification/_harness/generated-kleene-laws.test.ts
 
-  test-typescript:
+  test-typescript-hermetic:
+    # ══ TIER 1 OF 2: HERMETIC ═══════════════════════════════════════════════════════════
+    #
+    # A RED X HERE MEANS A REAL REGRESSION. That is the entire claim of this job, and it is
+    # the property the tier split was built to establish. Nothing below depends on a venv,
+    # a cluster, a container, a physical device, an attached ISO, or the invoking user's
+    # home directory. Toolchain comes from install.sh, which is the same script a laptop and
+    # a devcontainer run (GOVERNANCE §24), so a developer reproduces this verdict exactly.
+    #
+    # WHY THE SPLIT. MEASURED 2026-08-16 across the 53 most recent completed `gate` runs:
+    # the old undivided `test (TS suite)` was red in 17 of them (32%), and in 15 of those the
+    # ENTIRE cause was one deterministic test -- `folderSink -- entropy tracker wiring`, a
+    # genuine regression that rode along across sixteen merges because this job sits outside
+    # `gate (required)` and a red X nobody must clear is a red X nobody reads.
+    #
+    # The reason nobody read it was not in CI. MEASURED the same day on a FRESH CLONE of main
+    # (macOS, `bun install` only), `bun test` gave 4 failures + 1 unhandled error and ZERO of
+    # them were code defects: 4x cross-verify-ir (no Q# venv; no .NET SDK 10.0.302) and 1x
+    # esp-inject (EPERM scandir ~/Downloads, thrown at module scope under macOS TCC). So the
+    # SAME command was red-for-environment where people work and red-for-regression where it
+    # mattered, with nothing in either output separating the two. The prior "this suite is
+    # always red" is learned on the laptop and spent on the pull request. Splitting the tiers
+    # is how that prior is retired: after this change, red here is red everywhere, for the
+    # same reason.
+    #
+    # WHAT MOVED, AND WHERE IT WENT. Exactly the two files above, to
+    # `test (TS environment-dependent)` below -- which still runs on every PR. Each is
+    # declared with the NAME of the dependency it needs in
+    # registry/environment-dependent-test-files.json, and
+    # src/Core.TypeScript/hygiene/environment-dependent-test-files.ts is red if an exclusion
+    # is undeclared, unattributed, or reached by no lane at all. Excluding a file from this
+    # tier while nothing else runs it would be a deletion wearing a split's face; that is the
+    # condition the checker exists to make unlandable.
+    #
+    # PROMOTION. This job is STILL absent from the `gate-required` needs list -- branch
+    # protection is a treaty amendment, not a workflow edit. It is now the tier that is
+    # eligible: adding `- test-typescript-hermetic` to `gate-required.needs` is the one-line
+    # change, once the maintainer consents.
+    #
     # THE GAP THIS CLOSES. Before this job, CI executed roughly 130 of the repo's 900-plus
     # `*.test.ts` files. Whole directories -- discovery/, planning/, browser-node/,
     # ferry-throttler/, model-backend/, oracle/, forge-host/ -- were never executed by any
@@ -1747,10 +1785,17 @@ jobs:
     # of the same defect: forge-host/ fell outside the previous globs precisely because
     # someone had to remember to add it. A bare invocation cannot have that bug -- a new
     # directory is covered the moment it exists. Deliberate exclusions therefore live in
-    # exactly one place, the pathIgnorePatterns of bunfig.toml, and each one must carry a
-    # written reason in registry/unexecuted-test-files.json.
+    # exactly one place, the pathIgnorePatterns of a bunfig, and each one must carry a
+    # written reason in a registry.
     # hygiene/unexecuted-test-files.ts enforces both halves and fails on an undeclared,
     # unreasoned, or stale entry.
+    #
+    # `--config=bunfig.hermetic.toml` DOES NOT BREAK THAT RULE, for the same reason: it is still a
+    # bare, filter-less invocation, and the tier's exclusions are still a written list in a
+    # bunfig under a registry-backed checker. bun has no exclude-filter form, so a second
+    # config is the only way to say "everything except these" without reintroducing the
+    # include-list defect. bunfig.hermetic.toml is asserted to be a strict superset of
+    # bunfig.toml on every PR, so the two cannot drift apart in silence.
     #
     # WHY A SEPARATE JOB rather than a step inside `lint (TS)`. That job type-checks; folding
     # behaviour into it puts two different failures behind one red X, which is the attribution
@@ -1773,7 +1818,7 @@ jobs:
     # drift signal. Promotion to the floor is a separate treaty amendment, once this job has
     # a track record. The blocking subset is unchanged: build-and-test, cross-verify,
     # full-verify and lint (semgrep) keep their existing named steps and their floor status.
-    name: test (TS suite)
+    name: test (TS hermetic)
     timeout-minutes: 20
     runs-on: ubuntu-24.04
 
@@ -1816,16 +1861,12 @@ jobs:
             sleep "$backoff"
           done
 
-      - name: QDK venv setup (uv sync)
-        # Same step full-verify runs, for the same reason, and this job needs it for the
-        # same test. `bun test` here includes cross-verify-ir, whose Q# lane executes
-        # through src/Core.Python/.venv/bin/python3 — a gitignored venv, not a PATH tool.
-        # Without this step that lane cannot run, and until the per-route floor landed it
-        # went dark silently: six of seven lanes satisfied an aggregate `>= 6` floor on the
-        # seventh's behalf, so the job reported a 7-language byte-lock it never checked.
-        # The floor now names a dark lane and fails, which is what turned this absence from
-        # invisible into visible. uv comes from install.sh above, as it does in full-verify.
-        run: uv sync --project src/Core.Python
+      # NO `uv sync` STEP HERE, ON PURPOSE. It provisioned the gitignored Q# venv at
+      # src/Core.Python/.venv for cross-verify-ir, which is the single largest reason a
+      # laptop run of this suite came back red: 4 of the 5 failures on a fresh clone. That
+      # file now runs in `test (TS environment-dependent)`, which does the uv sync, and in
+      # full-verify, which is in the required floor. A tier whose green depends on a venv
+      # the reader has never created cannot be the tier whose red means a regression.
 
       - name: Install npm devDependencies
         # Several suites import devDependencies directly (z3-solver among them) and
@@ -1839,10 +1880,117 @@ jobs:
         # ~/.local/bin. No-op when PATH already meets the floor.
         run: bun src/Core.TypeScript/ace/setup-realizers/install-pinned-smt.ts
 
-      - name: Whole TypeScript suite
-        # No path filters: see the header. Exclusions live in bunfig.toml and every one of
-        # them is declared with a reason in registry/unexecuted-test-files.json.
-        run: bun test
+      - name: Tier manifest (what the hermetic tier deliberately does not run, and why)
+        # Printed BEFORE the suite, pass or fail, so the log states the tier's own boundary
+        # instead of leaving a reader to infer it from an absence. It also exits non-zero on
+        # an undeclared, unattributed, or run-nowhere exclusion, which is the guard that
+        # keeps the split from becoming a quiet mute list.
+        run: bun src/Core.TypeScript/hygiene/environment-dependent-test-files.ts
+
+      - name: Whole TypeScript suite (hermetic tier)
+        # No path filters: see the header. Exclusions live in bunfig.hermetic.toml, and each
+        # one is declared with a reason in registry/unexecuted-test-files.json (runs nowhere)
+        # or registry/environment-dependent-test-files.json (runs in the tier below).
+        run: bun --config=bunfig.hermetic.toml test
+
+  test-typescript-environment:
+    # ══ TIER 2 OF 2: ENVIRONMENT-DEPENDENT ══════════════════════════════════════════════
+    #
+    # A RED X HERE MEANS EITHER a real regression OR that this runner could not provide a
+    # dependency the test needs. That ambiguity is exactly why these files are not in the
+    # tier above -- it is not removed, it is CONCENTRATED, into a job whose name says so and
+    # whose manifest names every dependency involved. Two red X's that mean different things
+    # are readable; one red X that means either is not, and that was the state this replaced.
+    #
+    # THIS IS NOT A DUMPING GROUND, AND THE CHECKER MAKES THAT STRUCTURAL. Every file listed
+    # below must appear in registry/environment-dependent-test-files.json with a non-empty
+    # `dependency` naming the concrete missing thing (an SDK version, a venv, a device) and a
+    # `reason` for why it cannot be assumed present. hygiene/environment-dependent-test-files
+    # .ts is red if a hermetic-tier exclusion is undeclared, unattributed, listed in BOTH
+    # registries, or -- the load-bearing one -- executed by no pull_request-lane invocation.
+    # Moving a flaky test here to make it quiet does not work: it still runs, still here,
+    # still red, and now with your name on the reason.
+    #
+    # WHY NOT `continue-on-error`. It renders a job green while it failed. An absent check
+    # and a passing check must not look alike; that is the same defect as the one this whole
+    # split exists to fix, so this job reports honestly and is simply not in the floor.
+    #
+    # THE FILE LIST IS EXPLICIT, unlike the tier above. Here that is correct rather than the
+    # include-list defect the header of that job warns about: this is a hand-curated
+    # exception set by construction, and the derivation in hygiene/environment-dependent-test
+    # -files.ts reads THIS list out of the workflow to prove each registry entry actually
+    # runs. A file silently dropped from this list becomes an "excluded from hermetic and run
+    # by nothing" finding on the next PR.
+    #
+    # COST. Two files, seconds of test time; the minutes are the shared install.sh bootstrap
+    # plus the uv sync that the hermetic tier no longer pays for.
+    name: test (TS environment-dependent)
+    timeout-minutes: 20
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Same retry rationale as every other install.sh step in this file
+        # (Aaron 2026-04-28 PR #23 mise+bun-1.3.13 502).
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
+
+      - name: QDK venv setup (uv sync)
+        # The dependency that makes cross-verify-ir environment-dependent, provided here and
+        # nowhere else in the TS lane. Same step full-verify runs, for the same reason: the
+        # Q# lane executes through src/Core.Python/.venv/bin/python3 — a gitignored venv, not
+        # a PATH tool. Without it that lane cannot run, and until the per-route floor landed
+        # it went dark SILENTLY: six of seven lanes satisfied an aggregate `>= 6` floor on the
+        # seventh's behalf, so the job reported a 7-language byte-lock it never checked. The
+        # floor now names a dark lane and fails. uv comes from install.sh above.
+        run: uv sync --project src/Core.Python
+
+      - name: Install npm devDependencies
+        run: bun install --frozen-lockfile
+
+      - name: Tier manifest (which dependency each file below needs)
+        run: bun src/Core.TypeScript/hygiene/environment-dependent-test-files.ts
+
+      - name: Environment-dependent tests
+        # Every path here is an entry in registry/environment-dependent-test-files.json, and
+        # the checker above fails if a registry entry is not reached by an invocation in a
+        # pull_request lane — i.e. if someone excludes a file from the hermetic tier and
+        # forgets to add it here.
+        run: |
+          bun test \
+            tests/cross-verification/_harness/cross-verify-ir.test.ts \
+            src/Core.TypeScript/zflash/esp-inject.test.ts
 
   # ═══════════════════════════════════════════════════════════════════
   # Full Verification Gate — 7-language oracle + cost + proofs

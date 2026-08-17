@@ -1,5 +1,5 @@
 import { test, expect, describe } from "bun:test";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 // WHY THIS EXISTS. `bunfig.toml` carried `[test] timeout = 20000` for months. bun 1.3.14
@@ -22,8 +22,20 @@ import { join } from "node:path";
 
 const REPO_ROOT = join(import.meta.dir, "..", "..", "..");
 
-describe("bunfig.toml does not declare a test timeout bun will ignore", () => {
-  const text = readFileSync(join(REPO_ROOT, "bunfig.toml"), "utf8");
+// EVERY bunfig, not just the default one. The tier split (2026-08-16) added
+// `bunfig.hermetic.toml`, and a second config file is a second place for the same lie to
+// reappear -- a guard scoped to one filename would go quietly vacuous the moment the lane
+// people actually gate on stops being the file it reads. Adding a bunfig without adding it
+// here is caught by the manifest test below.
+const CONFIGS = ["bunfig.toml", "bunfig.hermetic.toml"] as const;
+
+test("the guard covers every bunfig in the repo root", () => {
+  const present = readdirSync(REPO_ROOT).filter((f) => /^bunfig(\..+)?\.toml$/.test(f)).sort();
+  expect(present).toEqual([...CONFIGS].sort());
+});
+
+for (const config of CONFIGS) describe(config + " does not declare a test timeout bun will ignore", () => {
+  const text = readFileSync(join(REPO_ROOT, config), "utf8");
 
   test("the file is the one we think it is -- a vacuous pass is not a pass", () => {
     expect(text).toContain("[test]");

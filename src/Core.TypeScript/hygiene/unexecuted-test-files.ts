@@ -347,7 +347,23 @@ export function joinContinuation(lines: readonly string[], start: number): strin
 const CONTINUE = String.fromCharCode(92);
 
 const SCRIPT_REF = /\b(?:bun|npm|pnpm|yarn)\s+run\s+([A-Za-z0-9:_-]+)/g;
-const BUN_TEST = /\bbun\s+test\b/;
+/**
+ * A `bun test` invocation, INCLUDING one carrying bun-level flags before the subcommand.
+ *
+ * WHY THE FLAG ALLOWANCE. This was `/\bbun\s+test\b/` until 2026-08-16, and that regex
+ * cannot see `bun --config=bunfig.hermetic.toml test` — the form the hermetic tier needs,
+ * because `-c/--config` is a bun-level flag and bun rejects it after the subcommand
+ * (MEASURED against bun 1.3.14: `bun test -c bunfig.hermetic.toml` reads the path as a
+ * positional FILTER and matches no test files). The old regex is exactly the class of defect
+ * this checker exists to close, one level up: an invocation form it cannot parse is a lane it
+ * reports as running nothing, so adding the hermetic job made 817 files read as unexecuted
+ * while they were in fact being run.
+ *
+ * `(?:-\S+\s+)*` admits only FLAG-SHAPED tokens between the two words, so `bun run test:foo`
+ * and `bun x test` still do not match — the point is to see a subcommand invocation wearing
+ * flags, not to loosen what counts as one.
+ */
+const BUN_TEST = /\bbun\s+(?:-\S+\s+)*test\b/;
 
 const YAML_EXT = /\.(?:yml|yaml)$/;
 

@@ -27,6 +27,7 @@ import {
   covers,
   executes,
   findings,
+  invocationsInStep,
   isHiddenPath,
   joinContinuation,
   listItems,
@@ -103,6 +104,20 @@ describe("argument parsing keeps flags out of the filter set", () => {
     const both = cmd("alpha/", "beta/");
     expect(bunTestFilters(both)).toEqual(["alpha/", "beta/"]);
   });
+
+  /**
+   * A BUN-LEVEL FLAG BEFORE THE SUBCOMMAND is still a `bun test` invocation.
+   *
+   * `-c/--config` must precede `test` — bun rejects it after (MEASURED, bun 1.3.14: it reads
+   * the path as a positional filter and matches nothing). The hermetic tier in gate.yml uses
+   * that form, and until 2026-08-16 the invocation regex could not see it, so a lane running
+   * 817 files reported as running none. An invocation form the parser cannot see is a lane
+   * this checker silently writes off, which is its own defect class one level up.
+   */
+  test("a bun-level flag before the subcommand does not hide the invocation", () => {
+    const flagged = ["bun", "--config=bunfig.hermetic.toml", "test", "alpha/"].join(" ");
+    expect(bunTestFilters(flagged)).toEqual(["alpha/"]);
+  });
 });
 
 /** A synthetic workflow, assembled line by line so no real file has to hold the fixture. */
@@ -125,6 +140,8 @@ const FIXTURE = [
   "        run: |",
   "          echo hello",
   "          bun test one.test.ts two.test.ts",
+  "      - name: flagged",
+  "        run: bun --config=bunfig.hermetic.toml test",
 ].join("\n");
 
 describe("workflow parsing", () => {
@@ -140,13 +157,25 @@ describe("workflow parsing", () => {
 
   const runSteps = listItems(FIXTURE).filter((b) => runScripts(b).length > 0);
 
-  test("exactly three run steps are found, and no other list item is taken for one", () => {
-    expect(runSteps.length).toBe(3);
+  test("exactly four run steps are found, and no other list item is taken for one", () => {
+    expect(runSteps.length).toBe(4);
   });
 
   test("a step keeps its own working-directory", () => {
     const dirs = runSteps.map(workDirOf);
-    expect(dirs).toEqual(["", "nested/dir", ""]);
+    expect(dirs).toEqual(["", "nested/dir", "", ""]);
+  });
+
+  /**
+   * END-TO-END on the fixture, not only on `bunTestFilters`: the flagged form has to survive
+   * `invocationsInStep`, whose own regex is the thing that could not see it before
+   * 2026-08-16. A filter-less invocation means "runs everything discoverable", which is
+   * exactly what the hermetic tier is.
+   */
+  test("a bun-level flag before the subcommand still yields a filter-less invocation", () => {
+    const flagged = runSteps[3] ?? { indent: 0, lines: [] };
+    const found = invocationsInStep(flagged, new Map(), "fixture.yml", bothTriggers);
+    expect(found.map((i) => i.filters)).toEqual([[]]);
   });
 
   test("a block scalar is unwrapped, so filters inside it are seen", () => {
