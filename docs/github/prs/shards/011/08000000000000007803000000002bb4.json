@@ -1,0 +1,12 @@
+{
+  "pr_number": 11188,
+  "archive_path": "docs/history/pr-reviews/PR-11188-inventory-reconcile-the-hardware-surfaces-instead-of-merging-them-081m00r59ks087.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:41:36.885Z",
+  "schema_version": "v1",
+  "commit_sha": "55345ceece323ec6ce92b76cb6377eade6b87070",
+  "title": "inventory: reconcile the hardware surfaces instead of merging them (081M00R59KS087G0R001W3837V)",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:41:02Z",
+  "head_ref": "shadow/hardware-inventory-surface-reconciliation"
+}
