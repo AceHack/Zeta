@@ -84,7 +84,7 @@ describe("tokenizeShell", () => {
 describe("collectFunctionNames", () => {
   test("finds both definition spellings", () => {
     const names = collectFunctionNames("foo() {\n :\n}\nfunction bar () {\n :\n}\n");
-    expect([...names].sort((a, b) => a.localeCompare(b))).toEqual(["bar", "foo"]);
+    expect([...names].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))).toEqual(["bar", "foo"]);
   });
 });
 
@@ -276,8 +276,8 @@ describe("the retained allowlist, measured for real", () => {
     expect(
       rankExposures(exposures)
         .map((exposure) => exposure.path)
-        .sort((a, b) => a.localeCompare(b)),
-    ).toEqual([...EXPECTED_RETAINED_SHELL].sort((a, b) => a.localeCompare(b)));
+        .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)),
+    ).toEqual([...EXPECTED_RETAINED_SHELL].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)));
   });
 
   /**

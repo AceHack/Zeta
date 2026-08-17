@@ -1050,12 +1050,12 @@ export function measureScriptExposure(path: string, text: string): ScriptExposur
 
   return {
     path,
-    findings: deduped.toSorted((left, right) => left.line - right.line || left.kind.localeCompare(right.kind)),
+    findings: deduped.toSorted((left, right) => left.line - right.line || (left.kind < right.kind ? -1 : left.kind > right.kind ? 1 : 0)),
     material,
     channel,
     tier: tierOf(material, channel),
-    provenSecretVariables: [...taint.proven].sort((a, b) => a.localeCompare(b)),
-    declaredSecretVariables: [...taint.declared].sort((a, b) => a.localeCompare(b)),
+    provenSecretVariables: [...taint.proven].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)),
+    declaredSecretVariables: [...taint.declared].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)),
   };
 }
 
@@ -1094,7 +1094,7 @@ export function rankExposures(exposures: readonly ScriptExposure[]): readonly Sc
     if (byChannel !== 0) return byChannel;
     const byKinds = distinctKeyKinds(right) - distinctKeyKinds(left);
     if (byKinds !== 0) return byKinds;
-    return left.path.localeCompare(right.path);
+    return left.path < right.path ? -1 : left.path > right.path ? 1 : 0;
   });
 }
 
