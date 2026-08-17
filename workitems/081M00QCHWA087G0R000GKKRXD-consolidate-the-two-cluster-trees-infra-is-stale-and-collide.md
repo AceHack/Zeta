@@ -161,3 +161,105 @@ place. Nothing was deleted.
 (`replicas: 2`, no anti-affinity), introduced by #11089 after the ledger was
 written. Already being fixed on `fix/ledger-ack-kubevirt-false-redundancy`;
 noted here only so the next reader knows the auditor's red is that, not this.
+
+---
+
+## Verification pass (shadow, 2026-08-17) — the consumer list was incomplete AGAIN
+
+Re-measured against `038d5e2829`. The collision holds. **The 2026-08-16 pass
+above corrected the original evidence table's "docs-only" consumer list, and
+then made the same error one size smaller**: it named two code consumers and
+closed the list. There are nine binding surfaces, not two. The check written to
+guard against drift had drift inside it.
+
+### Re-measured, held
+
+| claim                                                                                     | verdict                                                                                                                                                                                          |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| two `Application/argocd/zeta-root`, different `spec.source.path`, both `prune`+`selfHeal` | **held** — emptying `acknowledgedRootAppDuplicates` makes `single-node-readiness.ts` exit 1 with `[blocker] root-app-collision`                                                                  |
+| `full-ai-cluster/` is what the deploy path installs                                       | **held** — `zeta-install.sh:1514` is `--flake "/mnt/etc/zeta/full-ai-cluster#$HOST"`                                                                                                             |
+| `infra/` k8s Applications = 7                                                             | **held** — 7                                                                                                                                                                                     |
+| `full-ai-cluster/` is far larger                                                          | **held** — 46 `Application.yaml` + the bootstrap root; 23 NixOS modules vs 5                                                                                                                     |
+| `flake.nix` (root) really does depend on `infra/nixos`                                    | **held, and now RUN** — `nix flake check --no-build --show-trace` at the repo root evaluates `nixosConfigurations.{control-plane,worker-gpu-01,worker-gpu-02}` and all four `nixosModules` today |
+
+### New — four consumers neither pass found
+
+1. **`.github/workflows/helm-validate.yml` is keyed on the stale tree.** The
+   entire workflow — PR and push path filters plus four invocations — runs
+   `bun infra/k8s/tests/validate-applications.ts`, a validator that lives
+   _inside_ `infra/k8s/`. This is the mutation-proven GitOps lane rewritten
+   2026-08-14, and it has **never seen the live tree**. MEASURED: pointed at
+   `full-ai-cluster/k8s/applications` with the existing `--apps-dir` flag it
+   reports **224 passed, 14 failed** (missing `prune`/`selfHeal` on cdi,
+   forgejo, kubevirt, ollama, vllm; missing `CreateNamespace=true` on cdi,
+   cilium-lb-ipam, kubevirt; and the root app is at `k8s/bootstrap/`, not in
+   `applications/`). So repointing it is not a one-line change, and the 14 are a
+   coverage gap that exists **today**, independent of any deletion.
+2. **`.github/workflows/gate.yml`** passes `infra/k8s` as a literal path to
+   `yamllint` and to a `find` piped into `kubeconform`. `find` errors on a
+   missing directory.
+3. **`src/wasm-dla/README.md` names content unique to the stale tree.** It
+   states the byte-lock toolchain is declared in
+   `infra/nixos/modules/common.nix`. That is **true today and it is the only
+   NixOS module that declares it** — `full-ai-cluster/nixos/modules/common.nix`
+   contains none of `wabt`, `binaryen`, `emscripten`, `zig`, `rustup`. This is
+   the "preserve what is unique" case, not a stale citation: deleting
+   `infra/nixos/` deletes the only NixOS declaration of the byte-lock
+   toolchain. (The root `flake.nix` devShell also declares it, so a contributor
+   in `nix develop` is unaffected; a _node_ is.)
+4. **There is no root `flake.lock`.** `git ls-files` tracks exactly one lock,
+   `full-ai-cluster/flake.lock`. The root flake's own header says "The
+   flake.lock pins the entire universe"; it does not exist, so
+   `nixos-rebuild switch --flake .#control-plane` resolves
+   `github:NixOS/nixpkgs/nixos-24.11` at whatever the branch head is that day.
+   Related: **CI never evaluates the root flake** — both `nix flake check`
+   steps in `build-ai-cluster-iso.yml` run with
+   `working-directory: full-ai-cluster`. The stale tree's flake is unpinned
+   _and_ unchecked.
+
+Also stale, found while measuring: `build-ai-cluster-iso.yml`'s header cites a
+sibling workflow `build-installer-iso.yml` targeting
+`infra/nixos/hosts/installer/`. Neither exists.
+
+### Why nothing was deleted, again — and what changed so the next pass is different
+
+The deletion is gated on `Done when` item 1 (maintainer confirms the surviving
+tree), and the discipline is that a deleted file something still reads is worse
+than the collision. The reference list is **not** empty: nine binding surfaces,
+one of which (`flake.nix`) cannot be migrated without a decision that touches
+off-repo state, and one of which (`helm-validate.yml`) needs 14 manifest fixes
+first.
+
+What changed is that the list is no longer a grep somebody ran once:
+
+- `src/Core.TypeScript/hygiene/audit-cluster-tree-consumers.ts` **derives** the
+  consumer set with `git grep` and checks it against
+  `cluster-tree-consumers.json`. A new file coupling to the stale tree fails
+  (`unrostered-consumer`); a rostered file that no longer couples also fails
+  (`stale-roster-entry`), so the roster can never over-claim safety.
+- It prints `blocking+derived`, currently **9**. **Deletion is provably safe at 0.** That is the precondition this item has been missing.
+- Runs in `gate.yml`'s `lint (yaml/k8s)` job with its mutation suite beside it.
+
+### Which tree is canonical — settled or not?
+
+**Settled for k8s.** Deploy path, size, and the fact that `infra/k8s`'s
+longhorn/cockroachdb values cannot come up on one node all point one way.
+
+**Not settled for NixOS, and this is the maintainer question.** The root flake
+declares `control-plane` / `worker-gpu-01` / `worker-gpu-02` from `infra/nixos`;
+`full-ai-cluster/flake.nix` declares `control-plane` / `worker-gpu` from
+`full-ai-cluster/nixos` — the same two-trees split one level up, across a
+nixpkgs 24.11 / 25.11 boundary. Three options, none of which an agent should
+pick unilaterally:
+
+- **(a) Drop the root flake's `nixosConfigurations` + `nixosModules`.** Cleanest.
+  Breaks any machine already tracking `.#control-plane` from the root flake —
+  **off-repo state, not knowable from here.**
+- **(b) Repoint them at `full-ai-cluster/nixos`.** Crosses a nixpkgs major; the
+  host names do not correspond (`worker-gpu-01/02` vs `worker-gpu`).
+- **(c) Keep the root flake as the maintainer-workstation surface**
+  (`darwinConfigurations.zeta-mac` + devShell already live there) and delete only
+  `infra/k8s`, treating `infra/nixos` as a separate, later question.
+
+Surfaced and stopped here. Whichever is chosen, the byte-lock toolchain block in
+`infra/nixos/modules/common.nix` needs a home first.

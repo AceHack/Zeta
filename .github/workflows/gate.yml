@@ -606,6 +606,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Set up bun (for the cluster-tree consumer audit)
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      # 081M00QCHWA087G0R000GKKRXD — the repo carries TWO declarations of one
+      # cluster, and they collide on Application/argocd/zeta-root. Consolidation
+      # has been deferred twice for the same reason: nobody could show the list
+      # of things still reading the stale tree was COMPLETE (a 2026-08-16 pass
+      # named two code consumers; there were nine). This audit derives that list
+      # with `git grep` and fails when a NEW file couples to the stale tree, or
+      # when the roster over-claims by naming a file that no longer does.
+      #
+      # It needs no network and no toolchain beyond bun + git, and it needs no
+      # `bun install` (node builtins only). MEASURED 2026-08-17, warm: 0.9 s
+      # wall for a full content scan of the 15,711 tracked files outside the
+      # excluded prefixes. That is why it sits in this narrow job rather than
+      # earning one of its own.
+      - name: Cluster-tree consumer roster (no new coupling to the stale tree)
+        run: bun src/Core.TypeScript/hygiene/audit-cluster-tree-consumers.ts
+
+      # The audit above is only worth its slot if it can go red. The suite
+      # plants each failure mode in a throwaway git tree and asserts exit 1 with
+      # the specific reason, plus a control case asserting exit 0 so an audit
+      # that failed unconditionally could not pass. MEASURED: 2.4 s, 8 cases.
+      - name: Cluster-tree consumer roster — mutation suite (proves it goes red)
+        run: bun test src/Core.TypeScript/hygiene/audit-cluster-tree-consumers.test.ts
+
       - name: Install narrow YAML lint tools
         run: |
           set -euo pipefail
