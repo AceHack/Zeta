@@ -1,0 +1,12 @@
+{
+  "pr_number": 9090,
+  "archive_path": "docs/history/pr-reviews/PR-9090-feat-core-registry-schema-plane-projection-version-prefix-operational-step-5-com.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T00:35:34.815Z",
+  "schema_version": "v1",
+  "commit_sha": "e1bb195b4ea4a7594de7e190e0c701fe39caff55",
+  "title": "feat(core): registry schema-plane projection — version = prefix, operational (step 5 COMPLETE) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T01:46:22Z",
+  "head_ref": "otto/schemaz-slice3-registry-fold-081KWFXTHJY"
+}
