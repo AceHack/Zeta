@@ -1,0 +1,12 @@
+{
+  "pr_number": 9162,
+  "archive_path": "docs/history/pr-reviews/PR-9162-docs-visibility-reconciliation-resolved-addison-agrees-open-by-default-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T11:42:52.281Z",
+  "schema_version": "v1",
+  "commit_sha": "4f718eef6a2a19b8184dd07c299756f02282ace4",
+  "title": "docs: visibility reconciliation RESOLVED — Addison agrees, open-by-default (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T17:07:17Z",
+  "head_ref": "docs/visibility-reconciliation-resolved"
+}
