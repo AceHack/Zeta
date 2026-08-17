@@ -369,6 +369,7 @@
     <Compile Include="Chip9SelfTrace.fs" />
     <Compile Include="TelemetrySource.fs" />
     <Compile Include="SimLoop.fs" />
+    <Compile Include="SimVerb.fs" />
     <Compile Include="WheelRoom.fs" />
     <Compile Include="Chip8Observer.fs" />
     <Compile Include="Chip8PredictionRoom.fs" />

@@ -246,6 +246,7 @@
     <Compile Include="SwarmBoardMesh.Tests.fs" />
     <Compile Include="SwarmBoardAnsi.Tests.fs" />
     <Compile Include="SimLoopTelemetry.Tests.fs" />
+    <Compile Include="SimVerb.Tests.fs" />
     <Compile Include="WheelRoom.Tests.fs" />
     <Compile Include="Ctm.Tests.fs" />
     <Compile Include="LevelObligations.Tests.fs" />
