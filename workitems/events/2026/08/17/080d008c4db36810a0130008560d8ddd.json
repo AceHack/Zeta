@@ -1,0 +1,14 @@
+{
+  "id": "080d008c4db36810a0130008560d8ddd",
+  "at": "2026-08-17T21:03:52.941Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M08RKDKC087G0R000XR4DTE",
+    "type": "task",
+    "title": "Identity self-claim drift detection: contradiction over self-authored identity claims, charity gradient in the type, no threshold",
+    "slug": "identity-self-claim-drift-detection-contradiction-over-self",
+    "priority": "P2",
+    "filename": "081M08RKDKC087G0R000XR4DTE-identity-self-claim-drift-detection-contradiction-over-self.md"
+  }
+}

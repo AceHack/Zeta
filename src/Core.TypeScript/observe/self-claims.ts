@@ -22,6 +22,14 @@
  * This IS the probabilistic liveness mechanism: P(commit | history) → 1 as
  * track_record_length → ∞ for agents that consistently deliver.
  *
+ * SCOPE — this file is the DELIVERY-COMMITMENT instance of the self-claim principle, not the principle.
+ * Its claims carry a deadline and resolve met/missed. The general case — contradiction between a
+ * subject's own IDENTITY claims ("I am X" / "I do not do Y" / "my purpose is Z"), where the operation is
+ * "these two self-descriptions cannot both be true" rather than "was it delivered on time" — lives in
+ * src/Core.TypeScript/observe/identity-claims.ts. That module shares the VOLUNTARY / OBSERVABLE
+ * properties above and adds the ones a reliability ratio cannot carry: the charity gradient in the type,
+ * supersession so growth never reads as drift, and no threshold.
+ *
  * Composes with:
  *   - src/Core.TypeScript/observe/observe.ts (NextAction union — self_claim is a new kind)
  *   - src/Core.TypeScript/observe/execute.ts (EventSink — claims are events)
