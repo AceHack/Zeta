@@ -25,6 +25,16 @@
 #
 # The preflight itself is ../../../tools/nvidia-open-preflight.ts (`bun` it) — run
 # it on the candidate node, while the closed module is still loaded.
+#
+# NO FALSIFIER COVERS THIS COPY. Its twin at
+# full-ai-cluster/nixos/modules/nvidia-open-guard.nix (byte-identical below the
+# header) is exercised by full-ai-cluster/nixos/tests/nvidia-open-guard-gate.nix
+# under `nix flake check --no-build`. This tree's hosts hang off the ROOT flake,
+# whose `checks` is empty and whose `nix flake check` no workflow runs — both CI
+# invocations are `working-directory: full-ai-cluster`. So a mutation making the
+# assertions below vacuous would be caught over there and NOT here, and the two
+# files staying in sync is a convention, not a check.
+# 081M00QP33F087G0R001JKB5QM records this as an open gap.
 
 { config, lib, pkgs, ... }:
 

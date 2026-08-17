@@ -157,3 +157,126 @@ no container-toolkit check, no GPU pod scheduled, no node rolled. The boot-time 
 executed on real hardware. What *is* verified is the eval behaviour (all four gate states, both
 module trees) and the preflight's decision logic against stubbed rosters, including a mutation run
 proving the 7.5 threshold test can go red.
+
+---
+
+## Status 2026-08-17 — the eval gate now has a falsifier that CI runs; flip still NOT made
+
+Item stays open, blocked on the same thing. Nothing was flipped. What changed is that the gate this
+item shipped stopped being a claim and became a check.
+
+### The gap this closes
+
+The 2026-08-16 entry above says the eval behaviour "*is* verified — all four gate states, both
+module trees". That was true, and it was verified **once, by hand, and by nothing since**:
+
+```
+$ grep -rln "openModulePreflight\|nvidia-open" full-ai-cluster/nixos/tests/ infra/nixos/tests/ \
+    .github/workflows/ src/Core.TypeScript/
+(no output)
+```
+
+No test, no workflow step, no flake check referenced the guard. A gate nobody re-runs can go vacuous
+in a refactor and still read as enforcement — which is this repo's named standing-by failure (a check
+that did not run looking like one that passed). The gate is the only thing standing between an
+unattested flip and a node that may not boot a driver, so it is exactly the wrong thing to leave
+unwitnessed.
+
+### What shipped
+
+`full-ai-cluster/nixos/tests/nvidia-open-guard-gate.nix`, wired as
+`checks.x86_64-linux.nvidia-open-guard-gate`. Eight expectations over the four gate states,
+evaluated against the **real** `nixosConfigurations.worker-gpu` via `extendModules` — not a stub
+that could drift from the shipping module set.
+
+It is **eval-only, no VM**. It therefore runs inside the `nix flake check --no-build` step that
+`build-ai-cluster-iso.yml` already performs on every PR touching `full-ai-cluster/nixos/**` (the
+path filter covers the guard module), at no added CI cost. Confirmed, not assumed:
+
+```
+$ nix flake check --no-build --all-systems
+evaluating 'checks.x86_64-linux.nvidia-open-guard-gate'...
+✅ checks.x86_64-linux.nvidia-open-guard-gate
+```
+
+(`--all-systems` only because this was run from darwin, where plain `flake check` reports
+`warning: The check omitted these incompatible systems: aarch64-linux, x86_64-linux`. The CI runner
+is `ubuntu-24.04`, i.e. x86_64-linux, so the check is in-system there and needs no flag. **That last
+sentence is inference from the runner label, not something observed on a CI run.**)
+
+States as measured against the shipping `worker-gpu` config:
+
+| state | `hardware.nvidia.open` | preflight | failing assertions | boot-time unit |
+|---|---|---|---|---|
+| A — as shipped | `false` | — | 0 | absent |
+| B — unattested flip | `true` | not passed | **1** (preflight gate) | present |
+| C — asserted, unevidenced | `true` | passed, evidence `""` | **1** (evidence gate) | present |
+| D — fully attested | `true` | passed + evidence | 0 | present |
+
+Counts are compared to state A as a **baseline** rather than to a literal 0, so an unrelated module
+adding its own assertion cannot silently turn this test into a liar.
+
+### Mutation run (the test's own falsifier)
+
+| run | guard | result |
+|---|---|---|
+| baseline | unmodified | **0 of 8** failed — `nvidia-open-guard-gate.drv` evaluates |
+| mutation 1 | `assertion = useOpen -> cfg.passed` → `assertion = true` | **2 of 8** failed (both B expectations) |
+| mutation 2 | `assertion = cfg.passed -> (cfg.evidence != "")` → `assertion = true` | **2 of 8** failed (both C expectations) |
+| restored | unmodified | **0 of 8** — identical drv path to baseline (`dm3g6zy7…`) |
+
+Each mutation is the vacuity mutation for one gate, and each was caught by the expectations for that
+gate alone — so the two halves are independently witnessed, not jointly.
+
+### Still blocked on the same thing, re-confirmed
+
+The audited register `inventory/items/` holds **one** GPU, and it is explicitly not in a node:
+
+```yaml
+name: RTX 4090 Founders Edition
+device_type: gpu
+status: storage
+location: lab-shelf
+assignment_purpose: k3s gpu node (pending rack)
+assigned_machine:            # empty
+sample: true
+```
+
+`assigned_machine` empty, `status: storage`, and `sample: true` — seed data for a card on a shelf.
+`inventory/items.json` (the derived projection) carries the same single GPU. Every
+`--node-label=zeta.io/gpu-model=…` in every GPU host is still commented out; every
+`hardware-configuration.nix` is still a placeholder. So the per-node binding this item needs does
+not exist yet, `081M00R59KS087G0R001W3837V` is still open in `workitems/`, and flipping now would
+be an unattested guess — which is precisely what the gate above refuses, correctly.
+
+### Unverified, and not to be read otherwise
+
+No GPU ran anything. The driver was not loaded, no node booted, no CUDA context was created, no pod
+was scheduled. The boot-time driver-bound unit has still never executed on real hardware. This entry
+verifies **module evaluation only** — that the gate refuses what it claims to refuse.
+
+### Open gap this leaves: the `infra/` copy of the guard is still unwitnessed
+
+The falsifier covers **one** of the two module trees. `infra/nixos/modules/nvidia-open-guard.nix`
+is byte-identical to its `full-ai-cluster/` twin below the header comment, but its hosts
+(`worker-gpu-01`, `worker-gpu-02`) hang off the **root** flake, whose `checks` is `{ }` and whose
+`nix flake check` no workflow invokes — both CI invocations are `working-directory: full-ai-cluster`:
+
+```
+$ grep -rn "flake check" .github/workflows/
+.github/workflows/build-ai-cluster-iso.yml:170:        run: nix flake check --no-build --show-trace
+.github/workflows/build-ai-cluster-iso.yml:687:        run: nix flake check --no-build --show-trace
+```
+
+A check was deliberately **not** added to the root flake's empty `checks`, because nothing would run
+it — that is the vacuity class, and manufacturing the appearance of coverage is worse than recording
+its absence. Closing this properly needs a CI step that runs the root flake's check, which is its own
+change with its own review surface. The gap is noted in the `infra/` module's own header so it is
+legible where someone would edit it.
+
+### Correction to this item's own citation
+
+The "Why" section cites `docs/HARDWARE-CAPABILITY-MATRIX.md:26` for "RTX 4090 + RTX 3090 in hand".
+The claim is in that file but at **line 40**, not 26. Worth noting because line 12 of the same file
+flags those asides as "asset claims living in a non-asset surface" — the matrix itself says it is
+not the register, which is the whole reason this item is blocked on one.

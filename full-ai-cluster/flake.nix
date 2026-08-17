@@ -277,6 +277,18 @@
           # See nixos/tests/longhorn-volume-binds.nix.
           longhorn-volume-binds =
             import ./nixos/tests/longhorn-volume-binds.nix { inherit pkgs; };
+
+          # EVAL-ONLY (no VM, no boot): asserts that the preflight-attestation
+          # gate in nixos/modules/nvidia-open-guard.nix still REFUSES an
+          # unattested `hardware.nvidia.open = true`. Runs under the existing
+          # `nix flake check --no-build` step, so it costs a PR nothing.
+          # 081M00QP33F087G0R001JKB5QM shipped that gate and nothing re-checked
+          # it. See nixos/tests/nvidia-open-guard-gate.nix.
+          nvidia-open-guard-gate =
+            import ./nixos/tests/nvidia-open-guard-gate.nix {
+              inherit pkgs;
+              nixosConfig = self.nixosConfigurations.worker-gpu;
+            };
         };
 
         devShells.default = pkgs.mkShell {

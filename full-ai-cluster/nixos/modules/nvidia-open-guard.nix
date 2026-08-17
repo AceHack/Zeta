@@ -25,6 +25,12 @@
 #
 # The preflight itself is ../../../tools/nvidia-open-preflight.ts (`bun` it) — run
 # it on the candidate node, while the closed module is still loaded.
+#
+# The EVAL-TIME gate has a falsifier: ../tests/nvidia-open-guard-gate.nix, wired as
+# `checks.x86_64-linux.nvidia-open-guard-gate` and evaluated by the
+# `nix flake check --no-build` step in .github/workflows/build-ai-cluster-iso.yml.
+# Making either assertion below vacuous turns that check red. The BOOT-TIME half
+# has no automated falsifier — it needs real NVIDIA silicon.
 
 { config, lib, pkgs, ... }:
 
