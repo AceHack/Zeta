@@ -348,7 +348,8 @@ produce — and it is worth more than the intuition or the deflation taken alone
 
 ### Why the math probably keeps deflating — and why that is NOT evidence against him
 
-There is a structural reason, and it is close to a theorem rather than a failure of skill:
+There is a structural reason — though see the narrowing immediately below, which matters more than
+the reason does:
 
 **Any retrocausal account that reproduces quantum statistics is empirically equivalent to a
 forward-causal one.** No-signalling guarantees that the correlations carry no usable
@@ -356,6 +357,45 @@ backward-directed information — which is the same fact the video spends 2:03�
 formalisation attempt that starts from the phenomenology and ends in "a more plausible emulation"
 is producing **exactly what you would expect even if retrocausality were true.** The statistics do
 not discriminate; that is the whole reason these positions are called *interpretations*.
+
+#### NARROWING (added after review) — this is weaker than it first reads, and the correction favours Aaron
+
+Two things are wrong with the paragraph above as originally written, and both were caught only when
+a reviewer restated it back as "the deflation theorem."
+
+**1. It is not a theorem, and calling it "close to a theorem" overstated it.** No-signalling *is* a
+theorem. The sentence in bold is not: read carefully, it is close to a **tautology** — *if* an
+account reproduces the statistics, *then* it is by construction empirically indistinguishable on
+those statistics. True, but shallow, and it earns none of the authority the word "theorem" lends.
+The bold claim should be read as a definition of what makes something an *interpretation*, not as a
+result about the world.
+
+**2. Its antecedent fails for the very proposal this document ferries — and that is the
+interesting part.** Hossenfelder is explicit at 3:33 that the two-time paper **"does not make
+exactly the same predictions as ordinary quantum mechanics"**: it predicts a tiny
+distance-dependent excess correlation between two independent entangled-photon sources, which
+standard QM forbids. So it does **not** reproduce quantum statistics, the conditional above does not
+apply to it, and it is **testable**.
+
+**The consequence corrects the comfort the original paragraph offered.** I told Aaron, in effect,
+*"your math would deflate anyway, so the deflation says nothing."* That is only true for the
+**interpretation** class. It divides:
+
+| class | reproduces QM statistics? | is the deflation informative? |
+|---|---|---|
+| retrocausal **interpretation** (Cramer, Price-style) | yes, by construction | **no** — deflation is expected either way |
+| retrocausal **theory** (the ferried paper, and anything with a predicted excess correlation) | **no** | **yes** — it makes different predictions, so it can be right or wrong |
+
+So if Aaron's intuition points at something in the second row, his repeated deflations are
+**informative after all**: they would be telling him that each attempt keeps landing in the
+interpretation class — reproducing the statistics — rather than producing a theory that predicts
+something new. That is a sharper and more useful reading of his own reported experience than "the
+math would deflate anyway," and it suggests a concrete next move: **when a formalisation deflates,
+ask what it would have to predict differently in order not to.**
+
+Neither reading is established. Both are recorded because the first one is what I wrote, the second
+is what survived checking it, and the difference between them is exactly the "absence of necessity
+is not absence" symmetry stated further down.
 
 Anchors worth having (Beacon):
 
@@ -365,6 +405,12 @@ Anchors worth having (Beacon):
   backward-in-time formalism that makes standard predictions.
 - **Wharton & Argaman, "Colloquium: Bell's theorem and locally mediated reformulations of quantum
   mechanics" (Rev. Mod. Phys. 2020)** — the current survey of retrocausal / all-at-once accounts.
+
+**Citation status: CITED, NOT CHECKED.** All three were written from recall and none has been
+opened. The anchor discipline requires anchors to be *checked* — an entailment check that the work
+supports the claim attached to it — and that has not been done here. They are recorded as leads for
+someone to verify, not as support. A real paper attached to a claim it does not prove keeps a model
+in `toy`, and this one is in `toy`.
 
 **The consequence for the register is symmetric, and both halves matter:**
 
@@ -390,3 +436,77 @@ Kept as a coincidence-index entry with its register attached, per
 [`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md): an unlabelled
 coincidence in long-term memory is a belief you never decided to hold. This one is labelled, and it
 is a belief Aaron *did* decide to hold, which is a different and legitimate thing.
+
+---
+
+## Observation 7 — CPT, the middle ground, and "one or the other or both"
+
+### Verbatim
+
+> "so for me this is closely related to CPT symmetry and holding both truths open to create the
+> middle ground since either pole is indistingusible from there just being a single monopople it
+> could be 'one or the other or both' that is what quantium means to me in folk langugae."
+
+### What is solid here, and it is more than a metaphor
+
+**The monopole half is a real physical fact, and it is stronger than the analogy needs.** You
+cannot isolate a single magnetic pole. Cut a magnet and you get two magnets, never one pole; no
+magnetic monopole has ever been observed despite dedicated searches. So "either pole is
+indistinguishable from there just being a single monopole" points at something true and sharp:
+**the middle ground is not a choice, it is forced** — nature does not supply the isolated pole to
+collapse to. (Dirac 1931 showed a monopole *would* explain charge quantisation, which is why people
+keep looking; they have not found one.)
+
+**The CPT half is a genuine theorem** — Lüders, Pauli, and Bell (c. 1954–55): CPT is an exact
+symmetry of any local, Lorentz-invariant quantum field theory. And the detail that matters for
+Aaron's use is that **T alone is not a symmetry** — direct T-violation was measured (BaBar, 2012),
+and CP violation is long established. So the *combined* operation is the invariant while the
+individual reversals are not. That is a real instance of the shape he is describing: the pair is
+lawful where neither member is.
+
+**Register: the CPT connection is an ANALOGY and is labelled one.** CPT states that a specific
+threefold operation leaves the physics invariant. It does not state "hold both truths open," and no
+step of the theorem entails an epistemic policy. What transfers is the *shape* — invariance living
+in the pair rather than in either member — not a derivation. Per the standing discipline: a
+matching shape is not an identification.
+
+### The folk definition is unusually good, and has one place it misleads
+
+*"One or the other or both"* is closer to superposition than most folk renderings, and it is
+precisely right about the thing that actually fails: **exclusive disjunction**. Classically A xor B
+is exhaustive and you may assume the unmeasured value was already one of them; quantum mechanically
+you may not, and that assumption's failure — **counterfactual definiteness** — is exactly what Bell
+tests rule out. So the folk phrasing lands on the correct casualty.
+
+**Where it can mislead, stated because the distinction is the one Bell tests measure:** a
+superposition is **not** a classical "both are true." It is not a mixture. `|A⟩ + |B⟩` and a
+50/50 statistical mixture of A and B are *different states with different measurable consequences*,
+and telling them apart is the whole content of an interference experiment. "Or both" read as *both
+obtain* is the mixture; superposition is a third thing that "or both" in English has no word for.
+
+That is not a correction to the intuition so much as a boundary on it — and it is worth having
+because the ferried paper's proposed test (Observation 1) is exactly a correlation measurement,
+i.e. the kind of experiment whose entire job is distinguishing these two cases.
+
+### Where this already exists in the tree — measured, and it landed today
+
+The "hold both open rather than collapse" principle stopped being only a stance today. **PR #11579
+introduced `Epistemic` in `src/Core/SimVerb.fs` — the first five-way known/unknown/assumed/disputed/
+decided type in the repository.** Before it, `Disputed` had **zero** occurrences in any `.fs` or
+`.ts`; `Assumed` had two, both unrelated (Assumed Density Filtering in `TravelerRankLedger.fs`).
+
+That is the middle ground as a **type**: a claim can be *disputed* without being forced to true or
+false, and *assumed* without being promoted to known. A room that collapsed every claim to a binary
+at tick boundaries would be doing precisely what Aaron says the physics forbids — and it would also
+not be a Room in Addison Cooper's sense, which defines one as an uncertainty engine holding exactly
+those five states.
+
+So the honest summary is: **the physics analogy is unproven and the engineering instantiation is
+real.** The five-way type is not evidence for the CPT reading; it is an independent commitment to
+the same discipline, and it is the half we can actually check.
+
+### Pointers added
+
+- `src/Core/SimVerb.fs` — `Epistemic`, the five-way state (PR #11579, 2026-08-17)
+- Addison Cooper, *Genesis Concepts* — Room as "uncertainty engine", the source of the five states
+- `docs/CONCEPT-REGISTRY.md` — the registry those definitions now live in (PR #11566)
