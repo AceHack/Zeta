@@ -237,6 +237,29 @@ not run.
 I am recording this as an open cell rather than guessing, because guessing here is exactly the
 failure mode the brief called out.
 
+#### 4.4a Cell closed 2026-08-17 — and the probe above would have answered it wrongly
+
+Measured under `081M00QP7G7087G0R002PZB5T2`. **RDRAND is credited for the initial seed on these
+nodes, unconditionally.** The cell resolves to *trusted*, not to *unknown*.
+
+The correction that matters more than the answer: **`CONFIG_RANDOM_TRUST_CPU` does not exist in this
+kernel.** Occurrences of `RANDOM_TRUST` in upstream `drivers/char/Kconfig` — v6.0: 2, v6.1: 2,
+**v6.2: 0**, v6.6: 0, v6.12: 0. It was removed in 6.2, which is exactly the boundary nixpkgs'
+`whenOlder "6.2"` encodes; that expression is a shim for kernels we do not run, not a live setting.
+The behaviour stayed: `drivers/char/random.c` v6.12 has `static bool trust_cpu __initdata = true;`
+with `early_param("random.trust_cpu", …)` as the only override, and the evaluated `kernelParams` for
+all three cluster hosts set neither `random.trust_cpu=` nor `random.trust_bootloader=`.
+
+So `zcat /proc/config.gz | grep RANDOM_TRUST` on a 6.12 node prints **nothing** and exits non-zero —
+an empty result that reads as "not enabled" while the true state is "enabled and not expressible in
+the config at all". A check that did not run, looking like one that passed. Do not run it; it
+answers the opposite of the truth.
+
+For §5.3 below this sharpens the ceiling from *un-metered* to **on by default and not switchable
+from desired-state Nix config** — only from the kernel command line. Full measurement, method, and
+the deliberate decision **not** to set `random.trust_cpu=0`:
+`workitems/081M00QP7G7087G0R002PZB5T2-*.md` §6.
+
 ---
 
 ## 5. Which existing claims these quietly cap
@@ -273,6 +296,29 @@ The secure-boot doc already states this honestly in §6.1 ("the chain of trust e
 root can `insmod` anything"). I found nothing overstated. Recording it here so the *cap* is on one
 list with the others: **any node attestation covers boot, not runtime.** The GPU driver is on the
 unmeasured side of that line, along with everything else in userspace.
+
+**Measured 2026-08-17 (`081M00QP7G7087G0R002PZB5T2`) — the cap is wider than "modules", and the
+premise needed a correction.** Read out of the generated kernel config the cluster's own flake
+resolves to (`/nix/store/4dq737q0ip6v1py1cqz6g9fw6kfnmkd4-linux-config-6.12.90`, shared by
+`control-plane`, `worker-gpu` and `installer`):
+
+- `CONFIG_KEXEC=y`, `CONFIG_KEXEC_FILE=y`, **`CONFIG_KEXEC_SIG` not set.** Root does not merely load
+  a module into the signed kernel — root can **replace the running kernel** with an arbitrary
+  unsigned image via `kexec`: no signature check, no reboot, no ESP write, no firmware interaction.
+  "The kernel that booted is the one we signed" stays true and stops mattering one `kexec` later.
+  The legacy `kexec_load` syscall is unrestricted regardless, because that restriction is a
+  *lockdown* behaviour and lockdown is not compiled.
+- `INTEGRITY_PLATFORM_KEYRING` and `LOAD_UEFI_KEYS` are **absent from the config entirely** (not
+  `n` — never offered), because `INTEGRITY_SIGNATURE` and `SYSTEM_BLACKLIST_KEYRING` are off. So
+  §3.2's "escapable with a custom kernel build carrying `SYSTEM_TRUSTED_KEYS`" is right but
+  under-priced: four more symbols must come on before `LOAD_UEFI_KEYS` is even reachable.
+- **The premise:** there is no UKI today. `lanzaboote` is not imported by any host
+  (`081M00KTH58087G0R00120WT6F` is unshipped), so the chain does not *end* at the UKI — it does not
+  start. This cap is a property of a **proposed** configuration.
+
+Method, the full symbol table, and the observed-vs-documented split:
+`workitems/081M00QP7G7087G0R002PZB5T2-*.md`. No boot was measured; none can be from a macOS host
+with no TPM.
 
 ### 5.3 §13 noninterference — "entropy only through declared, metered channels"
 

@@ -292,6 +292,33 @@ The honest counterpart: because lockdown is off, **the chain of trust ends at th
 guarantees "the kernel and initrd that booted are the ones we signed." It does *not* seal the running kernel —
 root can `insmod` anything. Do not oversell what this buys.
 
+#### 6.1a Measured 2026-08-17 — confirmed, and "insmod" was the smaller half
+
+Measured under `081M00QP7G7087G0R002PZB5T2` by reading the **generated kernel `.config`** that this
+repo's own flake resolves to, rather than `common-config.nix`:
+`/nix/store/4dq737q0ip6v1py1cqz6g9fw6kfnmkd4-linux-config-6.12.90`, shared by `control-plane`,
+`worker-gpu` and the installer ISO. `# CONFIG_MODULE_SIG is not set` and
+`# CONFIG_SECURITY_LOCKDOWN_LSM is not set` — this section is **confirmed as written**. Three
+additions:
+
+- **`kexec`, not just `insmod`.** `CONFIG_KEXEC=y`, `CONFIG_KEXEC_FILE=y`, `CONFIG_KEXEC_SIG`
+  **not set** — root can replace the entire running kernel with an arbitrary unsigned image, no
+  signature check, no reboot, no ESP write. Strictly stronger than loading a module into the signed
+  kernel, and the sentence above should be read as naming the weaker case.
+- **Nothing measures userspace either.** `CONFIG_IMA`, `CONFIG_EVM`, `CONFIG_INTEGRITY_SIGNATURE`
+  all off; `CONFIG_DM_VERITY=m` exists and is unused; no `luks|verity|tpm2|cryptenroll` anywhere in
+  `full-ai-cluster/nixos/`.
+- **`lockdown` is also absent from the runtime LSM list.** The hosts evaluate to
+  `lsm=landlock,yama,bpf` (an upstream default, set nowhere in this repo) — it could not contain
+  `lockdown`, since the LSM is not compiled. And `boot.initrd.systemd` is `disabled` on all three,
+  so the `systemd-pcrphase` route to measured boot is a second change, not a flag on the first.
+
+Citation note for anyone re-checking the quote above: `820-823` matches the **branch tip** of
+`nixos-25.11`; at the rev pinned in `full-ai-cluster/flake.lock`
+(`b77b3de8775677f84492abe84635f87b0e153f0f`) the same four lines are `821-824`. Same text, moving
+branch. Full method, the symbol table, and what could **not** be measured (no boot, no PCR, no TPM
+on the measuring host): `workitems/081M00QP7G7087G0R002PZB5T2-*.md`.
+
 ### 6.2 Rollback: preserved, with two sharp edges
 
 Lanzaboote signs **every** generation's UKI on the ESP, so `nixos-rebuild --rollback` and the boot-menu
