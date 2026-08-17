@@ -1,0 +1,12 @@
+{
+  "pr_number": 11494,
+  "archive_path": "docs/history/pr-reviews/PR-11494-fix-inventory-the-surface-a-reader-sees-was-not-in-the-surface-map-items-json-co.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:38:02.144Z",
+  "schema_version": "v1",
+  "commit_sha": "5d79de9568384f1b0914d972c881cb597dc2014c",
+  "title": "fix(inventory): the surface a reader SEES was not in the surface map — items.json could drift from the register with every check green",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:37:25Z",
+  "head_ref": "shadow/one-hardware-inventory-source"
+}
