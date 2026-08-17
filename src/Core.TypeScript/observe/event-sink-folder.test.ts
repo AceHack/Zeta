@@ -270,7 +270,10 @@ describe("folderSink — entropy tracker wiring", () => {
 
   it("appends pay nothing, at any count — an append-only log erases nothing", async () => {
     const tracker = createEntropyTracker();
-    tracker.branch(); tracker.branch(); tracker.branch(); tracker.branch(); // 4 bits
+    tracker.branch();
+    tracker.branch();
+    tracker.branch();
+    tracker.branch(); // 4 bits
 
     let callCount = 0;
     // Distinct real ids per call (was `"4".repeat(31) + n` — valid hex, not a ZetaId).
@@ -298,7 +301,7 @@ describe("folderSink — entropy tracker wiring", () => {
 
   it("a caller that KNOWS the menu size charges the real erasure: log2(N), not 1", async () => {
     const tracker = createEntropyTracker();
-    const ID_DEC = "7".repeat(32);
+    const ID_DEC = ID("7");
     const sink = folderSink({
       eventDir: dir,
       by: "alexa",
@@ -309,15 +312,16 @@ describe("folderSink — entropy tracker wiring", () => {
       // observe.ts `buildMenu` produced 8 candidates and exactly one was recorded.
       decisionCandidates: () => 8,
     });
-    await sink.append(freeTime);
+    const result = await sink.append(freeTime);
 
+    expect(result.ok).toBe(true);
     expect(tracker.state.entropy_heat).toBe(3); // log2(8) — three times the literal that shipped
     expect(tracker.state.hard_measurements).toBe(1);
   });
 
   it("a declared menu of one is not a decision, and is charged as one: zero", async () => {
     const tracker = createEntropyTracker();
-    const ID_ONE = "8".repeat(32);
+    const ID_ONE = ID("8");
     const sink = folderSink({
       eventDir: dir,
       by: "alexa",
@@ -327,8 +331,9 @@ describe("folderSink — entropy tracker wiring", () => {
       entropy: tracker,
       decisionCandidates: () => 1,
     });
-    await sink.append(freeTime);
+    const result = await sink.append(freeTime);
 
+    expect(result.ok).toBe(true);
     expect(tracker.state.entropy_heat).toBe(0);
     expect(tracker.state.hard_measurements).toBe(0);
   });
@@ -350,7 +355,8 @@ describe("folderSink — entropy tracker wiring", () => {
 
   it("composes with execute: entropy is stamped on the appended event end-to-end", async () => {
     const tracker = createEntropyTracker();
-    tracker.branch(); tracker.branch(); // 2 bits uncertainty
+    tracker.branch();
+    tracker.branch(); // 2 bits uncertainty
 
     const ID_E2E = ID("6");
     const sink = folderSink({
