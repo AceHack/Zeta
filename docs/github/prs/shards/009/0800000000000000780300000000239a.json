@@ -1,0 +1,12 @@
+{
+  "pr_number": 9114,
+  "archive_path": "docs/history/pr-reviews/PR-9114-feat-core-provenance-x-iring-lineage-rides-the-atom-retracts-by-construction-r2-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T05:18:39.478Z",
+  "schema_version": "v1",
+  "commit_sha": "579d7bd7b86cfe86eb067d9503146c7b8ea8748e",
+  "title": "feat(core): Provenance ℤ[X] IRing — lineage rides the atom, retracts by construction (R2 safe-fragment) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T04:47:27Z",
+  "head_ref": "otto/r2-provenance-semiring-safe-fragment"
+}

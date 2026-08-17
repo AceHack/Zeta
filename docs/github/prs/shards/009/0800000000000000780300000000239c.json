@@ -1,0 +1,19 @@
+{
+  "pr_number": 9116,
+  "archive_path": "docs/history/pr-reviews/PR-9116-docs-research-cell-scheduler-design-cells-on-the-deterministic-soft-loop-dop-1-n.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RPvUt",
+    "comment:PRRC_kwDOSF9kNM7RPvUv",
+    "comment:PRRC_kwDOSF9kNM7RPvUy",
+    "thread:PRRT_kwDOSF9kNM6NyO1Y",
+    "thread:PRRT_kwDOSF9kNM6NyO1a",
+    "thread:PRRT_kwDOSF9kNM6NyO1d"
+  ],
+  "fetched_at": "2026-08-17T05:18:44.404Z",
+  "schema_version": "v1",
+  "commit_sha": "579d7bd7b86cfe86eb067d9503146c7b8ea8748e",
+  "title": "docs(research): cell-scheduler design — cells on the deterministic soft loop, DoP=1→N (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T04:55:37Z",
+  "head_ref": "otto/cell-scheduler-design-note-081KTG5S0M9"
+}
