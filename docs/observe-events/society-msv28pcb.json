@@ -1,0 +1,56 @@
+{
+  "id": "society-msv28pcb",
+  "at": "2026-08-16T00:22:12.299Z",
+  "by": "society",
+  "kind": "evolution",
+  "generation": 1,
+  "agents": [
+    {
+      "id": "society",
+      "fitness": 0.6342294761488506,
+      "generation": 0
+    },
+    {
+      "id": "soraya",
+      "fitness": 0,
+      "generation": 0
+    },
+    {
+      "id": "gen1-0",
+      "fitness": 0,
+      "generation": 2
+    },
+    {
+      "id": "gen1-1",
+      "fitness": 0,
+      "generation": 2
+    }
+  ],
+  "meanFitness": 0.15855736903721265,
+  "fitnessSpread": 0.6342294761488506,
+  "geneticDiversity": 113.16145032254389,
+  "priorHints": [
+    {
+      "dimension": "calibration",
+      "mu": 1.928571667959928,
+      "sigma2": 0.05112392043777772,
+      "robustnessWeight": 1.3308793860452743,
+      "obsCount": 17,
+      "senderZid": "society-runner"
+    }
+  ],
+  "heatReadout": {
+    "band": "indeterminate",
+    "pointBand": "cold",
+    "lowBand": "cold",
+    "highBand": "warm",
+    "transportMu": 0,
+    "transportSigma": 1,
+    "transportPpm": 0,
+    "transportPpmSigma": 250000,
+    "robustnessWeight": 1,
+    "obsCount": 0,
+    "evidence": "prior",
+    "trend": "indeterminate"
+  }
+}
