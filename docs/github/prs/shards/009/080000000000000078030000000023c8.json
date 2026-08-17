@@ -1,0 +1,12 @@
+{
+  "pr_number": 9160,
+  "archive_path": "docs/history/pr-reviews/PR-9160-feat-pages-rule-frost-on-llmtv-privacy-is-hard-money-socially-earned-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T11:27:09.451Z",
+  "schema_version": "v1",
+  "commit_sha": "743eeb04889e3aad636467d349be2ee2a02c444c",
+  "title": "feat(pages+rule): frost on LLMTV — privacy is hard money, socially earned (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T17:00:52Z",
+  "head_ref": "feat/llmtv-frost-hard-money-privacy"
+}

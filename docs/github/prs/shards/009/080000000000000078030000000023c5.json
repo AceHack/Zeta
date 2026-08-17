@@ -1,0 +1,12 @@
+{
+  "pr_number": 9157,
+  "archive_path": "docs/history/pr-reviews/PR-9157-test-adinkra-codewords-as-society-member-identity-why-n-8-self-correcting-identi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T11:11:25.390Z",
+  "schema_version": "v1",
+  "commit_sha": "5b023bc9bc189f5529d400285e2e822ed01c9976",
+  "title": "test: adinkra codewords as society-member identity — why N=8, self-correcting identity",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T16:51:02Z",
+  "head_ref": "otto/adinkra-doubly-even-code-member-identity"
+}

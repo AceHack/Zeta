@@ -1,0 +1,12 @@
+{
+  "pr_number": 9156,
+  "archive_path": "docs/history/pr-reviews/PR-9156-feat-pages-the-dark-hall-additive-design-language-landing-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T11:11:23.944Z",
+  "schema_version": "v1",
+  "commit_sha": "5b023bc9bc189f5529d400285e2e822ed01c9976",
+  "title": "feat(pages): the Dark Hall — additive design-language landing (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T16:47:24Z",
+  "head_ref": "feat/gh-pages-dark-hall-integration"
+}
