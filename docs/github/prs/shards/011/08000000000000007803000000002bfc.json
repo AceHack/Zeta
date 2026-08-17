@@ -1,0 +1,12 @@
+{
+  "pr_number": 11260,
+  "archive_path": "docs/history/pr-reviews/PR-11260-fix-pages-enable-generated-verification-after-authorize.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T03:09:46.410Z",
+  "schema_version": "v1",
+  "commit_sha": "2d1ebb50481e4333829191d9b516f5f7a2a54c64",
+  "title": "fix(pages): enable generated verification after authorize",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T03:09:14Z",
+  "head_ref": "cursor/pages-queue-verification-enable-f633"
+}
