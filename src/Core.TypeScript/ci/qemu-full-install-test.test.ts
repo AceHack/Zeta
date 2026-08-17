@@ -114,14 +114,44 @@ describe("qemu-full-install-test phase 1 boot media QEMU args", () => {
 });
 
 describe("qemu-full-install-test usb iSerial phase-1 contract", () => {
-  it("accepts found + serial=ZETA-QEMU-001 + no-metal-claim", () => {
+  it("accepts found + serial=ZETA-QEMU-001 + no-metal-claim + persist-default uuid", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.found,
+      usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      USB_ISERIAL_SERIAL.persistDefaultUuid,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    expect(assertUsbISerialPhase1Contract(serial).ok).toBe(true);
+  });
+
+  it("fails when persist silently switches to iSerial on the default QEMU path", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.found,
+      usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      USB_ISERIAL_SERIAL.persistOptInIserial,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUsbISerialPhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("persist-opt-in");
+    }
+  });
+
+  it("fails when probe succeeded but persist-default marker is missing", () => {
     const serial = [
       USB_ISERIAL_SERIAL.found,
       usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
       USB_ISERIAL_SERIAL.noMetalClaim,
       "ZETA CLUSTER NODE INSTALL COMPLETE",
     ].join("\n");
-    expect(assertUsbISerialPhase1Contract(serial).ok).toBe(true);
+    const result = assertUsbISerialPhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("persist-default");
+    }
   });
 
   it("fails on ISO-only serial that never ran the probe (do not call this on cdrom)", () => {

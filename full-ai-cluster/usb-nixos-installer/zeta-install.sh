@@ -1761,16 +1761,28 @@ if [ -d "$ZETA_HOME" ]; then
   # ── Step 6.95d: USB iSerial guest sysfs probe (QEMU-testable; no metal claim) ──
   # Reads guest /sys/bus/usb/devices/*/serial. QEMU usb-storage,serial=ZETA-QEMU-001
   # is what the guest sees; host sysfs is not this. Does not change default persist
-  # (still FAT UUID). A failed probe must not fail the install.
+  # (still FAT UUID). ZETA_BIND_USB_ISERIAL=1 opt-in binds the probed serial when
+  # the probe actually produced one. A failed probe must not fail the install.
   ISERIAL_HELPER="$ZETA_HOME/Zeta/src/Core.TypeScript/installer/usb-iserial-probe.ts"
+  ISERIAL_SERIAL_FILE=/tmp/zeta-usb-iserial
+  rm -f "$ISERIAL_SERIAL_FILE"
   echo "[usb-iserial] ── probing guest USB iSerial via sysfs ──"
   if [ -f "$ISERIAL_HELPER" ]; then
     sudo --preserve-env=PATH -u "#$ZETA_UID" HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
       MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
-      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun '$ISERIAL_HELPER'" \
+      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun '$ISERIAL_HELPER' --serial-file '$ISERIAL_SERIAL_FILE'" \
       || echo "[usb-iserial] probe helper unavailable (bun/runtime missing); factor not probed"
   else
     echo "[usb-iserial] probe helper absent; skipping"
+  fi
+  # Persist-factor markers always print (picker may be skipped). Default stays
+  # FAT UUID. Opt-in bind is env-gated and requires a non-empty serial file.
+  if [ "${ZETA_BIND_USB_ISERIAL:-0}" = "1" ] && [ -s "$ISERIAL_SERIAL_FILE" ]; then
+    echo "[usb-iserial] persist-opt-in --usb-iserial (ZETA_BIND_USB_ISERIAL=1)"
+  elif [ "${ZETA_BIND_USB_ISERIAL:-0}" = "1" ]; then
+    echo "[usb-iserial] persist-opt-in requested but probe failed; staying --usb-uuid"
+  else
+    echo "[usb-iserial] persist-default remains --usb-uuid"
   fi
 
   # 6.95-picker — 081KSKBP80008QG0R003AX2A69.3a cred-picker (operator interactive at setup time)
@@ -1827,8 +1839,14 @@ if [ -d "$ZETA_HOME" ]; then
   fi
   if [ "$PICKER_OPT_OUT" = "0" ]; then
     USB_UUID="$(cat /etc/zeta/usb-uuid)"
+    PICKER_BIND_FLAG="--usb-uuid"
+    PICKER_BIND_VALUE="$USB_UUID"
+    if [ "${ZETA_BIND_USB_ISERIAL:-0}" = "1" ] && [ -s "$ISERIAL_SERIAL_FILE" ]; then
+      PICKER_BIND_FLAG="--usb-iserial"
+      PICKER_BIND_VALUE="$(cat "$ISERIAL_SERIAL_FILE")"
+    fi
     echo "[iter-5.5.0] ── 6.95-picker: 081KSKBP80008QG0R003AX2A69.3a cred-picker (DEFAULT-ON per 081KSKBP80008QG0R003AX2A69.3c) ──"
-    echo "[iter-5.5.0]   passphrase from Step 6.56; usb-uuid from 081KSKBP80008QG0R003AX2A69.3a-prep"
+    echo "[iter-5.5.0]   passphrase from Step 6.56; binding $PICKER_BIND_FLAG (default FAT UUID; iSerial only if ZETA_BIND_USB_ISERIAL=1 and probe succeeded)"
     echo "[iter-5.5.0]   to opt out: set ZETA_CREDS_PICKER=0 OR touch /etc/zeta/no-picker"
     # mise activate inside bash -c matches sibling 6.95a-claude/gemini/codex
     # patterns at lines 1119-1141; without it, bun is not on the PATH the
@@ -1850,7 +1868,7 @@ if [ -d "$ZETA_HOME" ]; then
     # See SECURITY block above for full lifecycle.
     ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL" sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
       HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
-      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun src/Core.TypeScript/installer/zeta-creds-picker.ts --usb-uuid '$USB_UUID' --output /mnt/boot/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
+      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun src/Core.TypeScript/installer/zeta-creds-picker.ts $PICKER_BIND_FLAG '$PICKER_BIND_VALUE' --output /mnt/boot/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
         echo "[iter-5.5.0]   WARN: picker exited non-zero; cred-blob may be partial"
   else
     echo "[iter-5.5.0]   SKIP 6.95-picker: $PICKER_SKIP_REASON"

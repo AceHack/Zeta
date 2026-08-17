@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
-import { selectCliBindingMaterial } from "./installer-binding-cli.ts";
+import { selectCliBindingMaterial, selectInstallPersistBinding } from "./installer-binding-cli.ts";
 import { UEFI_KEYFILE_BYTES } from "./uefi-keyfile-esp.ts";
-import { readUsbSysfsDevice } from "./usb-iserial-probe.ts";
+import { readUsbSysfsDevice, USB_ISERIAL_SERIAL } from "./usb-iserial-probe.ts";
 import { parseUuidFromDiskutilInfo } from "../zflash/lib.ts";
 
 describe("selectCliBindingMaterial", () => {
@@ -206,5 +206,56 @@ describe("probe-canonicalization-is-the-single-authority", () => {
     );
     expect(device.serial).toBe("ZETA-STICK-001");
     expect(device.serial).toBe(device.serial!.trim());
+  });
+});
+
+describe("selectInstallPersistBinding", () => {
+  it("keeps FAT UUID when the opt-in is off even if a serial was probed", () => {
+    const selected = selectInstallPersistBinding({
+      usbUuid: "uuid-1",
+      probedISerial: "ZETA-QEMU-001",
+      bindUsbISerial: false,
+    });
+    expect("error" in selected).toBe(false);
+    if ("error" in selected) return;
+    expect(selected.factor).toBe("usbUuid");
+    expect(selected.flag).toBe("--usb-uuid");
+    expect(selected.material).toBe("uuid-1");
+    expect(selected.marker).toBe(USB_ISERIAL_SERIAL.persistDefaultUuid);
+  });
+
+  it("binds probed iSerial only when ZETA_BIND_USB_ISERIAL is on", () => {
+    const selected = selectInstallPersistBinding({
+      usbUuid: "uuid-1",
+      probedISerial: "ZETA-QEMU-001",
+      bindUsbISerial: true,
+    });
+    expect("error" in selected).toBe(false);
+    if ("error" in selected) return;
+    expect(selected.factor).toBe("usbISerial");
+    expect(selected.flag).toBe("--usb-iserial");
+    expect(selected.material).toBe("ZETA-QEMU-001");
+    expect(selected.marker).toBe(USB_ISERIAL_SERIAL.persistOptInIserial);
+  });
+
+  it("falls back to UUID when opt-in is on but the probe produced nothing", () => {
+    const selected = selectInstallPersistBinding({
+      usbUuid: "uuid-1",
+      probedISerial: null,
+      bindUsbISerial: true,
+    });
+    expect("error" in selected).toBe(false);
+    if ("error" in selected) return;
+    expect(selected.factor).toBe("usbUuid");
+    expect(selected.marker).toBe(USB_ISERIAL_SERIAL.persistOptInFallbackUuid);
+  });
+
+  it("refuses to bind an iSerial with boundary whitespace rather than trimming it", () => {
+    const selected = selectInstallPersistBinding({
+      usbUuid: "uuid-1",
+      probedISerial: "ZETA-QEMU-001\n",
+      bindUsbISerial: true,
+    });
+    expect("error" in selected).toBe(true);
   });
 });

@@ -52,6 +52,7 @@
 
 import type { CredentialBindingFactorKind } from "./credential-binding-model.ts";
 import { isUefiKeyfileError, keyfileBindingMaterial } from "./uefi-keyfile-esp.ts";
+import { USB_ISERIAL_SERIAL } from "./usb-iserial-probe.ts";
 
 export type CliBindingSelection = {
   readonly factor: CredentialBindingFactorKind;
@@ -104,4 +105,56 @@ export function selectCliBindingMaterial(input: {
     return { factor: "usbUuid", material: input.usbUuid };
   }
   return { error: "binding factor required: --usb-uuid, --usb-iserial, or --uefi-keyfile" };
+}
+
+export type InstallPersistBinding = {
+  readonly factor: "usbUuid" | "usbISerial";
+  readonly flag: "--usb-uuid" | "--usb-iserial";
+  readonly material: string;
+  readonly marker: string;
+};
+
+/**
+ * Install-time persist factor. Default stays FAT UUID. ZETA_BIND_USB_ISERIAL=1
+ * binds the probed iSerial only when the probe actually produced one.
+ * Probe failure with the opt-in set falls back to UUID; it does not fail install
+ * and it does not silently skip to an empty factor.
+ */
+export function selectInstallPersistBinding(input: {
+  readonly usbUuid: string | null;
+  readonly probedISerial: string | null;
+  readonly bindUsbISerial: boolean;
+}): InstallPersistBinding | { readonly error: string } {
+  const probed =
+    input.probedISerial !== null && input.probedISerial.length > 0 ? input.probedISerial : null;
+  if (input.bindUsbISerial && probed !== null) {
+    const selected = selectCliBindingMaterial({
+      usbUuid: input.usbUuid,
+      usbISerial: probed,
+      uefiKeyfileBytes: null,
+    });
+    if ("error" in selected) return selected;
+    if (selected.factor === "usbISerial") {
+      return {
+        factor: "usbISerial",
+        flag: "--usb-iserial",
+        material: selected.material,
+        marker: USB_ISERIAL_SERIAL.persistOptInIserial,
+      };
+    }
+  }
+  const selected = selectCliBindingMaterial({
+    usbUuid: input.usbUuid,
+    usbISerial: null,
+    uefiKeyfileBytes: null,
+  });
+  if ("error" in selected) return selected;
+  return {
+    factor: "usbUuid",
+    flag: "--usb-uuid",
+    material: selected.material,
+    marker: input.bindUsbISerial
+      ? USB_ISERIAL_SERIAL.persistOptInFallbackUuid
+      : USB_ISERIAL_SERIAL.persistDefaultUuid,
+  };
 }

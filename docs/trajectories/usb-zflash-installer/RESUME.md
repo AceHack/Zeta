@@ -18,9 +18,11 @@ not default `usbUuid` binding). Persist picker now forwards
 `--usb-iserial` / `--uefi-keyfile` the same way persist/restore already
 did. QEMU USB boot argv now carries `serial=ZETA-QEMU-001` (guest
 sysfs; host probe stays injectable). Guest installer 6.95d prints the
-sysfs probe report to the serial log. Opt-in `QEMU_USB_ISERIAL_PHASE1=1`
-(also implied by wifi ESP USB boot) asserts those markers; ISO/cdrom
-does not. Not on `gate (required)`.
+sysfs probe report to the serial log and writes `--serial-file` on
+success. Default persist remains FAT UUID. `ZETA_BIND_USB_ISERIAL=1`
+forwards `--usb-iserial` to the picker only when the probe succeeded.
+Opt-in `QEMU_USB_ISERIAL_PHASE1=1` asserts probe markers **and**
+persist-default UUID; ISO/cdrom does not. Not on `gate (required)`.
 See `docs/security/USB-IDENTITY-THREAT-MODEL.md` <!-- STALE-REF: ../../security/USB-IDENTITY-THREAT-MODEL.md -->:
 traveler → cluster → federation → ISociety/CTM, self-similar.
 Cluster/federation glossary promoted (`docs/SEED-VOCABULARY.md` +

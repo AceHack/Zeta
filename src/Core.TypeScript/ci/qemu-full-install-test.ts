@@ -44,6 +44,7 @@ import {
 } from "../zflash/test-harness/prepare-boot-image";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import { QEMU_USB_TEST_SERIAL, qemuUsbStorageDeviceArg } from "../installer/qemu-usb-storage.ts";
+import { USB_ISERIAL_SERIAL } from "../installer/usb-iserial-probe.ts";
 import {
   firstSessionPhase3Enabled,
   phase3BootMarkersSatisfied,
@@ -174,8 +175,9 @@ export function usbISerialGuestEnabled(): boolean {
 
 /**
  * When USB boot is on, phase-1 serial must show found + serial=ZETA-QEMU-001
- * + no-metal-claim from zeta-install.sh 6.95d. Live QEMU only sees this after
- * the ISO/clone carries 6.95d; helper-unavailable is a fail, not a skip.
+ * + no-metal-claim from zeta-install.sh 6.95d, and persist-default remains
+ * FAT UUID (ZETA_BIND_USB_ISERIAL is off on this gate). Live QEMU only sees
+ * this after the ISO/clone carries 6.95d; helper-unavailable is a fail, not a skip.
  */
 export function assertUsbISerialPhase1Contract(phase1Serial: string): {
   readonly ok: true;
@@ -183,6 +185,22 @@ export function assertUsbISerialPhase1Contract(phase1Serial: string): {
   const result = assertUsbISerialGuestSerial(phase1Serial, QEMU_USB_TEST_SERIAL);
   if (!result.ok) {
     return { ok: false, reason: result.reason };
+  }
+  if (phase1Serial.includes(USB_ISERIAL_SERIAL.persistOptInIserial)) {
+    return {
+      ok: false,
+      reason:
+        "usb iSerial persist-opt-in appeared on the default QEMU phase-1 path; " +
+        "FAT UUID must remain the persist factor unless ZETA_BIND_USB_ISERIAL=1",
+    };
+  }
+  if (!phase1Serial.includes(USB_ISERIAL_SERIAL.persistDefaultUuid)) {
+    return {
+      ok: false,
+      reason:
+        `usb iSerial persist-default marker missing ("${USB_ISERIAL_SERIAL.persistDefaultUuid}"). ` +
+        "QEMU phase-1 must keep FAT UUID persist unless ZETA_BIND_USB_ISERIAL=1 is set.",
+    };
   }
   return { ok: true };
 }

@@ -138,6 +138,32 @@ describe("usb-iserial-probe", () => {
     expect(ran.lines.join("\n")).toContain("unknown flag");
   });
 
+  it("CLI writes --serial-file only when the probe found a unique serial", () => {
+    const io = mapIo(
+      {
+        "/sys/bus/usb/devices/1-1/serial": "ZETA-QEMU-001\n",
+        "/sys/bus/usb/devices/1-1/bDeviceClass": "00\n",
+      },
+      ["1-1"],
+    );
+    const written: Record<string, string> = {};
+    const ran = runUsbISerialProbeCli(["--serial-file", "/tmp/zeta-usb-iserial"], io, (path, contents) => {
+      written[path] = contents;
+    });
+    expect(ran.exitCode).toBe(0);
+    expect(written["/tmp/zeta-usb-iserial"]).toBe("ZETA-QEMU-001");
+  });
+
+  it("CLI does not write --serial-file when the probe finds nothing", () => {
+    const written: Record<string, string> = {};
+    const ran = runUsbISerialProbeCli(["--serial-file", "/tmp/zeta-usb-iserial"], mapIo({}, []), (path, contents) => {
+      written[path] = contents;
+    });
+    expect(ran.exitCode).toBe(0);
+    expect(written).toEqual({});
+    expect(ran.lines).toContain(USB_ISERIAL_SERIAL.missing);
+  });
+
   it("zeta-install.sh still invokes the probe CLI and prints the skip markers", () => {
     const script = readFileSync(
       resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
@@ -145,7 +171,13 @@ describe("usb-iserial-probe", () => {
     );
     expect(script).toContain("src/Core.TypeScript/installer/usb-iserial-probe.ts");
     expect(script).toContain("[usb-iserial] ── probing guest USB iSerial via sysfs ──");
+    expect(script).toContain("--serial-file");
     expect(script).toContain(USB_ISERIAL_SERIAL.helperUnavailable);
     expect(script).toContain(USB_ISERIAL_SERIAL.helperAbsent);
+    expect(script).toContain(USB_ISERIAL_SERIAL.persistDefaultUuid);
+    expect(script).toContain(USB_ISERIAL_SERIAL.persistOptInIserial);
+    expect(script).toContain(USB_ISERIAL_SERIAL.persistOptInFallbackUuid);
+    expect(script).toContain("ZETA_BIND_USB_ISERIAL");
+    expect(script).toContain("PICKER_BIND_FLAG");
   });
 });

@@ -7,7 +7,7 @@
  * is present (ambiguous stick). Not the default persist path. No metal claim.
  */
 
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 
 export const USB_SYSFS_DEVICES_DIR = "/sys/bus/usb/devices" as const;
 
@@ -21,6 +21,10 @@ export const USB_ISERIAL_SERIAL = {
   noMetalClaim: "[usb-iserial] probe-only; QEMU-injectable; no physical-stick claim",
   helperUnavailable: "[usb-iserial] probe helper unavailable (bun/runtime missing); factor not probed",
   helperAbsent: "[usb-iserial] probe helper absent; skipping",
+  persistDefaultUuid: "[usb-iserial] persist-default remains --usb-uuid",
+  persistOptInIserial: "[usb-iserial] persist-opt-in --usb-iserial (ZETA_BIND_USB_ISERIAL=1)",
+  persistOptInFallbackUuid:
+    "[usb-iserial] persist-opt-in requested but probe failed; staying --usb-uuid",
 } as const;
 
 export type UsbSysfsDevice = {
@@ -136,31 +140,47 @@ export function createNodeUsbSysfsIo(): UsbSysfsIo {
   };
 }
 
-function parseProbeCliArgs(argv: readonly string[]): { readonly sysfsDir: string } | { readonly error: string } {
+function parseProbeCliArgs(
+  argv: readonly string[],
+): { readonly sysfsDir: string; readonly serialFile: string | null } | { readonly error: string } {
   // Annotated `string`, not inferred: `USB_SYSFS_DEVICES_DIR` is `as const`, so inference would
   // narrow this to the literal `"/sys/bus/usb/devices"` and `--sysfs-dir` could never assign to it.
   let sysfsDir: string = USB_SYSFS_DEVICES_DIR;
+  let serialFile: string | null = null;
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
     if (arg === "--sysfs-dir") {
       if (i + 1 >= argv.length) return { error: "--sysfs-dir requires a path" };
       sysfsDir = argv[++i]!;
+    } else if (arg === "--serial-file") {
+      if (i + 1 >= argv.length) return { error: "--serial-file requires a path" };
+      serialFile = argv[++i]!;
     } else {
       return { error: `unknown flag: ${arg}` };
     }
   }
-  return { sysfsDir };
+  return { sysfsDir, serialFile };
+}
+
+export type ProbeCliWriteFile = (path: string, contents: string) => void;
+
+function defaultProbeCliWriteFile(path: string, contents: string): void {
+  writeFileSync(path, contents, "utf8");
 }
 
 export function runUsbISerialProbeCli(
   argv: readonly string[],
   io: UsbSysfsIo = createNodeUsbSysfsIo(),
+  writeFile: ProbeCliWriteFile = defaultProbeCliWriteFile,
 ): { readonly exitCode: number; readonly lines: readonly string[] } {
   const parsed = parseProbeCliArgs(argv);
   if ("error" in parsed) {
     return { exitCode: 2, lines: [`usb-iserial-probe: ${parsed.error}`] };
   }
   const result = probeUsbISerial(io, parsed.sysfsDir);
+  if (result.ok && parsed.serialFile !== null) {
+    writeFile(parsed.serialFile, result.serial);
+  }
   return { exitCode: 0, lines: formatUsbISerialReport(result) };
 }
 
