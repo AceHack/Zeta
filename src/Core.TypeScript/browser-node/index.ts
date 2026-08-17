@@ -39,6 +39,8 @@ export {
   type BrowserCheckpointInvalidation,
   type BrowserCheckpointInvalidationMessage,
   type BrowserCheckpointInvalidationOperation,
+  type BrowserCausalCorrectionMessage,
+  type BrowserCausalCorrectionNotice,
   type BrowserDatabaseInvalidation,
   type BrowserDatabaseInvalidationMessage,
   type BrowserDatabaseExecutionReceiptMessage,
@@ -54,6 +56,17 @@ export {
   type BrowserTabPresenceMessage,
   type BrowserTabProbeMessage,
 } from "./browser-tab-coordinator";
+
+export {
+  BROWSER_CAUSAL_CORRECTION_LEDGER_SCHEMA,
+  createBrowserCausalCorrectionLedger,
+  foldBrowserCausalCorrection,
+  foldBrowserCausalCorrections,
+  validateBrowserCausalCorrectionNotice,
+  type BrowserCausalCorrectionLedger,
+  type BrowserCausalCorrectionLedgerFeedback,
+  type BrowserCausalCorrectionLedgerResult,
+} from "./browser-causal-correction-ledger";
 
 export { createNativeBroadcastTabChannel } from "./browser-broadcast-channel";
 

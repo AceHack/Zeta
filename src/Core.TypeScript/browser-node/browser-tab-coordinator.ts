@@ -10,7 +10,7 @@ import {
   type BrowserTabState,
 } from "./browser-node";
 
-export const BROWSER_TAB_COORDINATOR_SCHEMA = "zeta.browser-tab-coordinator.v4" as const;
+export const BROWSER_TAB_COORDINATOR_SCHEMA = "zeta.browser-tab-coordinator.v5" as const;
 
 export interface BrowserTabPresenceMessage {
   readonly schema: typeof BROWSER_TAB_COORDINATOR_SCHEMA;
@@ -73,12 +73,27 @@ export interface BrowserDatabaseExecutionReceiptMessage {
   readonly receipt: BrowserDatabaseExecutionReceiptNotice;
 }
 
+export interface BrowserCausalCorrectionNotice {
+  readonly sourceTabId: string;
+  readonly sequence: string;
+  readonly reinterpretsThrough: string;
+  readonly deltaRows: number;
+}
+
+export interface BrowserCausalCorrectionMessage {
+  readonly schema: typeof BROWSER_TAB_COORDINATOR_SCHEMA;
+  readonly nodeId: string;
+  readonly kind: "causal-correction";
+  readonly correction: BrowserCausalCorrectionNotice;
+}
+
 export type BrowserTabChannelMessage =
   | BrowserTabPresenceMessage
   | BrowserTabProbeMessage
   | BrowserCheckpointInvalidationMessage
   | BrowserDatabaseInvalidationMessage
-  | BrowserDatabaseExecutionReceiptMessage;
+  | BrowserDatabaseExecutionReceiptMessage
+  | BrowserCausalCorrectionMessage;
 
 export interface BrowserTabCoordinatorFeedback {
   readonly severity: "backpressure" | "heat";
@@ -111,6 +126,7 @@ export interface BrowserTabCoordinatorFeedback {
     | "checkpoint-invalidation-observer-failed"
     | "database-invalidation-observer-failed"
     | "database-receipt-observer-failed"
+    | "causal-correction-observer-failed"
     | "coordinator-configuration-invalid"
     | "coordinator-stopped";
   readonly detail: string;
@@ -143,6 +159,7 @@ export interface BrowserTabCoordinatorOptions {
   readonly onCheckpointInvalidated?: (invalidation: BrowserCheckpointInvalidation) => void;
   readonly onDatabaseInvalidated?: (invalidation: BrowserDatabaseInvalidation) => void;
   readonly onDatabaseExecutionReceipt?: (receipt: BrowserDatabaseExecutionReceiptNotice) => void;
+  readonly onCausalCorrection?: (correction: BrowserCausalCorrectionNotice) => void;
 }
 
 export interface BrowserTabCoordinatorReadout {
@@ -175,6 +192,10 @@ export interface BrowserTabCoordinator {
   publishDatabaseExecutionReceipt(
     receipt: Omit<BrowserDatabaseExecutionReceiptNotice, "sourceTabId">,
   ): BrowserTabOperationResult<BrowserTabCoordinatorReadout>;
+  /** Broadcast one later correction; retained history remains local and immutable. */
+  publishCausalCorrection(
+    correction: Omit<BrowserCausalCorrectionNotice, "sourceTabId">,
+  ): BrowserTabOperationResult<BrowserTabCoordinatorReadout>;
   stop(sequence: number): BrowserTabOperationResult<BrowserTabCoordinatorReadout>;
 }
 
@@ -206,6 +227,20 @@ function isSequence(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
 }
 
+function decimalSequence(value: unknown): bigint | null {
+  if (typeof value !== "string" || value.length > 128 || !/^(0|[1-9]\d*)$/.test(value)) return null;
+  return BigInt(value);
+}
+
+function isCausalCorrection(value: unknown): value is BrowserCausalCorrectionNotice {
+  if (!isRecord(value) || !isIdentifier(value.sourceTabId)) return false;
+  const sequence = decimalSequence(value.sequence);
+  const reinterpretsThrough = decimalSequence(value.reinterpretsThrough);
+  return (
+    sequence !== null && reinterpretsThrough !== null && sequence > reinterpretsThrough && isSequence(value.deltaRows)
+  );
+}
+
 export function decodeBrowserTabChannelMessage(value: unknown): BrowserTabOperationResult<BrowserTabChannelMessage> {
   if (
     !isRecord(value) ||
@@ -215,7 +250,8 @@ export function decodeBrowserTabChannelMessage(value: unknown): BrowserTabOperat
       value.kind !== "probe" &&
       value.kind !== "checkpoint-invalidated" &&
       value.kind !== "database-invalidated" &&
-      value.kind !== "database-execution-receipt")
+      value.kind !== "database-execution-receipt" &&
+      value.kind !== "causal-correction")
   ) {
     return failed("tab-message-invalid", "A browser tab channel message did not match the coordinator schema.");
   }
@@ -310,6 +346,18 @@ export function decodeBrowserTabChannelMessage(value: unknown): BrowserTabOperat
     });
   }
 
+  if (value.kind === "causal-correction") {
+    if (!isCausalCorrection(value.correction)) {
+      return failed("tab-message-invalid", "A causal correction carried invalid forward-order evidence.");
+    }
+    return succeeded({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: value.nodeId,
+      kind: "causal-correction",
+      correction: { ...value.correction },
+    });
+  }
+
   const presence = value.presence;
   if (
     !isRecord(presence) ||
@@ -388,6 +436,19 @@ function databaseExecutionReceiptMessage(
   };
 }
 
+function causalCorrectionMessage(
+  nodeId: string,
+  sourceTabId: string,
+  correction: Omit<BrowserCausalCorrectionNotice, "sourceTabId">,
+): BrowserCausalCorrectionMessage {
+  return {
+    schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+    nodeId,
+    kind: "causal-correction",
+    correction: { ...correction, sourceTabId },
+  };
+}
+
 function validateOptions(options: BrowserTabCoordinatorOptions): BrowserTabOperationResult<null> {
   if (!isIdentifier(options.nodeId) || !isIdentifier(options.tabId)) {
     return failed("coordinator-configuration-invalid", "Node and tab identifiers must be non-empty strings.");
@@ -429,6 +490,7 @@ export function startBrowserTabCoordinator(
   let checkpointObserverFailure: BrowserTabCoordinatorFeedback | null = null;
   let databaseObserverFailure: BrowserTabCoordinatorFeedback | null = null;
   let databaseReceiptObserverFailure: BrowserTabCoordinatorFeedback | null = null;
+  let causalCorrectionObserverFailure: BrowserTabCoordinatorFeedback | null = null;
 
   const project = (eventFeedback: readonly BrowserTabCoordinatorFeedback[] = []): BrowserTabCoordinatorReadout => {
     const node = planBrowserNode({
@@ -451,6 +513,7 @@ export function startBrowserTabCoordinator(
         ...(checkpointObserverFailure === null ? [] : [checkpointObserverFailure]),
         ...(databaseObserverFailure === null ? [] : [databaseObserverFailure]),
         ...(databaseReceiptObserverFailure === null ? [] : [databaseReceiptObserverFailure]),
+        ...(causalCorrectionObserverFailure === null ? [] : [causalCorrectionObserverFailure]),
         ...eventFeedback,
       ],
     };
@@ -573,6 +636,29 @@ export function startBrowserTabCoordinator(
           severity: "heat",
           code: "database-receipt-observer-failed",
           detail: "The injected database receipt observer threw; channel delivery continued.",
+        };
+        notify(project());
+      }
+      return;
+    }
+
+    if (message.kind === "causal-correction") {
+      if (message.correction.sourceTabId === options.tabId) {
+        const collision = failed(
+          "tab-id-collision",
+          `Another channel participant published causal correction evidence for locally owned tab ${options.tabId}.`,
+        );
+        if (!collision.ok) notify(project([collision.feedback]));
+        return;
+      }
+      if (options.onCausalCorrection === undefined) return;
+      try {
+        options.onCausalCorrection(message.correction);
+      } catch {
+        causalCorrectionObserverFailure = {
+          severity: "heat",
+          code: "causal-correction-observer-failed",
+          detail: "The injected causal correction observer threw; channel delivery continued.",
         };
         notify(project());
       }
@@ -738,6 +824,20 @@ export function startBrowserTabCoordinator(
         );
       }
       const published = publish(databaseExecutionReceiptMessage(options.nodeId, options.tabId, receipt));
+      if (!published.ok) return published;
+      return succeeded(project());
+    },
+    publishCausalCorrection: (correction) => {
+      const running = ensureRunning();
+      if (!running.ok) return running;
+      const message = causalCorrectionMessage(options.nodeId, options.tabId, correction);
+      if (!isCausalCorrection(message.correction)) {
+        return failed(
+          "coordinator-configuration-invalid",
+          "A causal correction requires canonical decimal order after retained history and a non-negative safe row count.",
+        );
+      }
+      const published = publish(message);
       if (!published.ok) return published;
       return succeeded(project());
     },

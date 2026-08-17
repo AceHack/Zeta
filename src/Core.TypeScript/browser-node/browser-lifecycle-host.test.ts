@@ -289,6 +289,25 @@ describe("browser lifecycle host", () => {
       },
     });
 
+    expect(
+      host.publishCausalCorrection({
+        sequence: "9007199254740994",
+        reinterpretsThrough: "9007199254740993",
+        deltaRows: 2,
+      }),
+    ).toMatchObject({ ok: true });
+    expect(channel.published.at(-1)).toEqual({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: "llmtv-room-a",
+      kind: "causal-correction",
+      correction: {
+        sourceTabId: "tab-a",
+        sequence: "9007199254740994",
+        reinterpretsThrough: "9007199254740993",
+        deltaRows: 2,
+      },
+    });
+
     expect(host.stop().ok).toBe(true);
     expect(host.publishCheckpointInvalidation("removed", 21)).toMatchObject({
       ok: false,
@@ -309,6 +328,10 @@ describe("browser lifecycle host", () => {
         duplicates: 0,
       }),
     ).toMatchObject({ ok: false, feedback: { code: "host-stopped" } });
+    expect(host.publishCausalCorrection({ sequence: "23", reinterpretsThrough: "22", deltaRows: 1 })).toMatchObject({
+      ok: false,
+      feedback: { code: "host-stopped" },
+    });
   });
 
   test("backpressures rather than wrapping an exhausted sequence", () => {

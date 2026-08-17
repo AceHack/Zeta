@@ -81,7 +81,7 @@ excluding archived PR-review history:
 
 11 files for murmur3, 13 for glibc, plus a directory rename each.
 
-**`generator-registry-id/vectors.yaml` does NOT byte-lock either name** — checked;
+**`tests/cross-verification/generator-registry-id/vectors.yaml` does NOT byte-lock either name** — checked;
 neither has a row there, so the id treaty lane is untouched. The
 `treaty-byte-lock-vectors` pre-push floor **does** fire (any
 `tests/cross-verification/` diff trips it), so the rename lands with the oracles

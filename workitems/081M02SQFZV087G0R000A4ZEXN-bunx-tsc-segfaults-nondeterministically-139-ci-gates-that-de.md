@@ -85,7 +85,7 @@ axioms'` would prove each audit actually printed an axiom set. It needs someone 
 
 ## Pointers
 
-- `docs/research/2026-08-15-139-and-134-are-signal-deaths-a-crash-produces-the-same-output-as-a-pass.md`
+- `docs/research/2026-08-15-139-and-134-are-signal-deaths-147-of-them-in-one-week-on-one-machine.md`
 - `src/Core.TypeScript/hygiene/signal-death.ts` · `run-checked.ts` · `lint-no-decide-by-grep.ts`
 - `.claude/rules/dv2-data-split-discipline-activated.md` — §4 DST, §7 noninterference
 - PR #10759 — the `dotnet fsi` SIGSEGV + `MSB4166`, recorded honestly in a PR body

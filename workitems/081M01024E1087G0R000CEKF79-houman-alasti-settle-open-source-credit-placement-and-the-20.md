@@ -38,7 +38,7 @@ The two surfaces that do exist and are already load-bearing:
 | commit `Co-authored-by:` (AgencySignature v1) | per-commit | mechanical; not a standing credit |
 
 **Recommendation: do not create a new file.** The Diana precedent is good and already works, and a
-`CONTRIBUTORS.md` invented for one person is the elaborate answer to a small question. If a general
+a contributor registry invented for one person is the elaborate answer to a small question. If a general
 acknowledgement is what he wants, the minimal move is **one subsection under the existing
 `README.md` §Acknowledgements** naming human collaborators and what they anchor — additive, no new
 surface, and it gives Chris King / Diana / Houman one consistent home.
@@ -48,7 +48,7 @@ ask-don't-infer failure the rest of this record is disciplined against.
 
 ## Published work: none located — and the near-misses are a trap, not a lead
 
-`engagement-profiles-public-work-only-not-surveillance-dossiers.md` permits compiling his **chosen-public**
+`.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md` permits compiling his **chosen-public**
 professional output. A search for published work (patents / papers / talks) under **"Houman Alasti"**
 returned **nothing matching him**. What it did return was **several different people who share the first
 name** — Houman Behzadi, Houman Azarm, Houman Hassani Jalilian, Houman Younessi — with unrelated patents

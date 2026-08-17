@@ -5,6 +5,7 @@ import {
   type BrowserTabChannel,
   type BrowserTabChannelMessage,
   type BrowserCheckpointInvalidation,
+  type BrowserCausalCorrectionNotice,
   type BrowserDatabaseExecutionReceiptNotice,
   type BrowserDatabaseInvalidation,
   type BrowserTabCoordinator,
@@ -84,6 +85,7 @@ function options(
   onCheckpointInvalidated?: (invalidation: BrowserCheckpointInvalidation) => void,
   onDatabaseInvalidated?: (invalidation: BrowserDatabaseInvalidation) => void,
   onDatabaseExecutionReceipt?: (receipt: BrowserDatabaseExecutionReceiptNotice) => void,
+  onCausalCorrection?: (correction: BrowserCausalCorrectionNotice) => void,
 ): BrowserTabCoordinatorOptions {
   return {
     nodeId: "llmtv-room-a",
@@ -97,6 +99,7 @@ function options(
     ...(onCheckpointInvalidated === undefined ? {} : { onCheckpointInvalidated }),
     ...(onDatabaseInvalidated === undefined ? {} : { onDatabaseInvalidated }),
     ...(onDatabaseExecutionReceipt === undefined ? {} : { onDatabaseExecutionReceipt }),
+    ...(onCausalCorrection === undefined ? {} : { onCausalCorrection }),
   };
 }
 
@@ -344,6 +347,50 @@ describe("browser tab coordinator", () => {
       },
     ]);
     expect(JSON.stringify(peerReceipts)).not.toContain("rows");
+    expect(tabA.stop(2).ok).toBe(true);
+    expect(tabB.stop(2).ok).toBe(true);
+  });
+
+  test("broadcasts forward-only causal correction evidence without retained state", () => {
+    const bus = new FakeBus();
+    const localCorrections: BrowserCausalCorrectionNotice[] = [];
+    const peerCorrections: BrowserCausalCorrectionNotice[] = [];
+    const tabA = started(
+      startBrowserTabCoordinator(
+        options("tab-a", undefined, undefined, undefined, undefined, (value) => localCorrections.push(value)),
+        bus.connect(),
+      ),
+    );
+    const tabB = started(
+      startBrowserTabCoordinator(
+        options("tab-b", undefined, undefined, undefined, undefined, (value) => peerCorrections.push(value)),
+        bus.connect(),
+      ),
+    );
+
+    expect(
+      tabA.publishCausalCorrection({
+        sequence: "9007199254740994",
+        reinterpretsThrough: "9007199254740993",
+        deltaRows: 2,
+      }),
+    ).toMatchObject({ ok: true });
+    expect(localCorrections).toEqual([]);
+    expect(peerCorrections).toEqual([
+      {
+        sourceTabId: "tab-a",
+        sequence: "9007199254740994",
+        reinterpretsThrough: "9007199254740993",
+        deltaRows: 2,
+      },
+    ]);
+    expect(JSON.stringify(peerCorrections)).not.toMatch(/before|after|delta(?!Rows)/);
+
+    expect(tabA.publishCausalCorrection({ sequence: "9", reinterpretsThrough: "9", deltaRows: 1 })).toMatchObject({
+      ok: false,
+      feedback: { code: "coordinator-configuration-invalid" },
+    });
+    expect(peerCorrections).toHaveLength(1);
     expect(tabA.stop(2).ok).toBe(true);
     expect(tabB.stop(2).ok).toBe(true);
   });

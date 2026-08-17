@@ -10,6 +10,7 @@ import { BROWSER_NODE_SCHEMA } from "../browser-node/browser-node";
 import {
   BROWSER_TAB_COORDINATOR_SCHEMA,
   type BrowserTabChannel,
+  type BrowserCausalCorrectionNotice,
   type BrowserCheckpointInvalidation,
   type BrowserTabCoordinatorReadout,
 } from "../browser-node/browser-tab-coordinator";
@@ -169,6 +170,7 @@ function createStarter(
   readonly databaseUpdates: DarkHallDatabaseReadout[];
   readonly checkpointUpdates: string[];
   readonly checkpointInvalidations: BrowserCheckpointInvalidation[];
+  readonly causalCorrections: Omit<BrowserCausalCorrectionNotice, "sourceTabId">[];
   readonly runtime: DarkHallBrowserRuntime;
 } {
   const starts: DarkHallBrowserBootstrapOptions[] = [];
@@ -176,6 +178,7 @@ function createStarter(
   const databaseUpdates: DarkHallDatabaseReadout[] = [];
   const checkpointUpdates: string[] = [];
   const checkpointInvalidations: BrowserCheckpointInvalidation[] = [];
+  const causalCorrections: Omit<BrowserCausalCorrectionNotice, "sourceTabId">[] = [];
   let stopped = false;
   let checkpoint: "none" | "volatile" | "durable" = "none";
   const host: BrowserLifecycleHost = {
@@ -207,6 +210,10 @@ function createStarter(
     },
     publishDatabaseInvalidation: () => ({ ok: true, value: host.read() }),
     publishDatabaseExecutionReceipt: () => ({ ok: true, value: host.read() }),
+    publishCausalCorrection: (correction) => {
+      causalCorrections.push(correction);
+      return { ok: true, value: host.read() };
+    },
     stop: () => {
       stopped = true;
       return { ok: true, value: hostReadout(true) };
@@ -236,6 +243,7 @@ function createStarter(
     databaseUpdates,
     checkpointUpdates,
     checkpointInvalidations,
+    causalCorrections,
     runtime,
     start: (startOptions) => {
       starts.push(startOptions);
@@ -267,14 +275,20 @@ describe("durable Dark Hall browser runtime", () => {
       close: () => ({ ok: true, value: null }),
     };
     const onTabReadout = () => ({ ok: true as const, value: null });
+    const onCausalCorrection = (): void => undefined;
     const port = new MemoryCheckpointPort();
     const starter = createStarter();
 
-    const started = await startDurableDarkHallBrowser({ ...options(), channel, onTabReadout }, port, starter.start);
+    const started = await startDurableDarkHallBrowser(
+      { ...options(), channel, onTabReadout, onCausalCorrection },
+      port,
+      starter.start,
+    );
 
     expect(started.ok).toBe(true);
     expect(starter.starts[0]?.channel).toBe(channel);
     expect(starter.starts[0]?.onTabReadout).toBe(onTabReadout);
+    expect(starter.starts[0]?.onCausalCorrection).toBe(onCausalCorrection);
   });
 
   test("starts cold, checkpoints an advanced transcript, and retracts to the initial room", async () => {
@@ -299,6 +313,11 @@ describe("durable Dark Hall browser runtime", () => {
       value: { database: databaseReadout },
     });
     expect(starter.databaseUpdates).toEqual([databaseReadout]);
+
+    expect(
+      started.value.publishCausalCorrection({ sequence: "14", reinterpretsThrough: "12", deltaRows: 2 }),
+    ).toMatchObject({ ok: true });
+    expect(starter.causalCorrections).toEqual([{ sequence: "14", reinterpretsThrough: "12", deltaRows: 2 }]);
 
     const advanced: RoomRunTranscript = {
       ...initialTranscript,
