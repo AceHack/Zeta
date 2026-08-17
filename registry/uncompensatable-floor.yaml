@@ -34,3 +34,22 @@ entries:
     description: "Functional build/test failure in the PR's OWN scope — downstream lanes consume the break this tick; never blocks on pre-existing whole-repo drift (Vera review, #9601 P1)"
     detector: "gate build-and-test, scoped to the diff"
     rationale: erasure-class
+  - id: typescript-type-break
+    description: >-
+      TypeScript type errors in the PR's own diff. Admitted 2026-08-17 on Aaron's explicit consent
+      ("yes add lint (TS) to the required floor"), via the treaty-amendment path this file names.
+      Precedent is this class recurring after its gate was removed: the `lint-typescript` job was
+      created because "Slice 9 (PR #882) shipped a real TS2322 to main", the drift-and-heal flip
+      later dropped it from the blocking list, and on 2026-08-17 the identical class shipped again —
+      TS2322 in installer/usb-iserial-probe.ts plus six TS2300s in zflash/test-harness/run.test.ts,
+      live on main while `gate (required)` reported SUCCESS (PR #11268 merged 02:05:47Z with
+      `lint (TS)` FAILURE). The job's own header states the principle: codified rules without a gate
+      are not a control.
+    detector: "gate lint-typescript (tsc --noEmit, tsconfig strict mode)"
+    rationale: >-
+      NOT erasure-class, and recorded as such rather than relabelled to fit. Admitted on the adjacent
+      `scoped-build-test-break` rationale — a functional break downstream lanes consume this tick. The
+      honest limit: a pre-merge floor checks each branch against main-as-it-was, so it cannot catch the
+      two-PR semantic collision that prompted the amendment (both 2026-08-17 PRs were individually
+      green; the duplicate import existed only in the merged tree). That class needs a merge queue.
+      This entry closes the single-PR case only.

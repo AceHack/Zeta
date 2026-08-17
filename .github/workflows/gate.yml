@@ -1997,9 +1997,39 @@ jobs:
     # hygiene/scoped-lint.ts locally; heals converge via certified healers
     # (hygiene/healer-harness.ts). Re-adding a job to this list = adding to
     # the floor = treaty-amendment consent path.
+    #
+    # ── AMENDMENT 2026-08-17 (Aaron, explicit: "yes add lint (TS) to the
+    # required floor"). `lint-typescript` re-enters the floor. The consent path
+    # named above is why this comment exists rather than a silent list edit.
+    #
+    # The evidence is this job's own header, twenty lines up from its `name:`:
+    # it was created because "Slice 9 (PR #882) shipped a real TS2322 to main",
+    # and it says "codified rules (tsconfig strict mode) without a gate aren't a
+    # control." It was then taken off the blocking list by the drift-and-heal
+    # flip — and on 2026-08-17 the identical class recurred, same error code:
+    # TS2322 in `installer/usb-iserial-probe.ts` plus six TS2300s in
+    # `zflash/test-harness/run.test.ts`, live on main, while `gate (required)`
+    # reported SUCCESS (measured on PR #11268, merged 02:05:47Z with
+    # `lint (TS)` FAILURE alongside a green gate).
+    #
+    # HONEST SCOPE — this does NOT close the case that produced it. Both PRs
+    # behind the 2026-08-17 breakage were individually green; the duplicate
+    # import existed only in the MERGED tree. A pre-merge floor checks each
+    # branch against main-as-it-was, so a two-PR semantic collision is out of
+    # its reach by construction. What this DOES close is the single-PR case: a
+    # branch carrying its own type error can no longer merge past a red
+    # `lint (TS)`. The collision class needs a merge queue, not a bigger floor,
+    # and is deliberately left open here rather than papered over.
+    #
+    # Register note: the registry derives the floor as the ERASURE class, and a
+    # type error is not erasure — it is fully reconstructible. This entry is
+    # admitted on the adjacent `scoped-build-test-break` rationale (a break
+    # downstream lanes consume this tick), not on erasure. Stated so the
+    # registry's derivation stays honest rather than being quietly widened.
     needs:
       - build-and-test
       - lint
+      - lint-typescript
       - cross-verify
       - full-verify
     steps:
