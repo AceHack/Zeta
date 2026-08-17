@@ -247,9 +247,10 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
    forwards the same flags; default path remains `--usb-uuid`).
    QEMU `usb-storage,serial=` is guest sysfs (`qemu-usb-storage.ts`);
    host probe stays injectable. Guest installer prints the probe report
-   (`usb-iserial-probe.ts` CLI from `zeta-install.sh` 6.95d) so QEMU serial
-   logs can assert `serial=ZETA-QEMU-001` after the next ISO/clone. No
-   physical-stick claim.
+   (`usb-iserial-probe.ts` CLI from `zeta-install.sh` 6.95d). Opt-in
+   `QEMU_USB_ISERIAL_PHASE1=1` (also implied by wifi ESP USB boot)
+   asserts `serial=ZETA-QEMU-001` on the phase-1 serial log; ISO/cdrom
+   cascade-5 does not. Not on `gate (required)`. No physical-stick claim.
 
 Cluster/federation vocabulary promoted to operational glossary
 (`docs/SEED-VOCABULARY.md` carved kernel + `docs/GLOSSARY.md` §Society

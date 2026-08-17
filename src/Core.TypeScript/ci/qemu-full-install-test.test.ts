@@ -8,6 +8,7 @@ import {
   INSTALL_SH_FINAL_FAILURE_MARKER,
   INSTALL_SH_START_MARKER,
   assertGeneratedNodeHostnameContract,
+  assertUsbISerialPhase1Contract,
   assertWifiEspPhase1Contract,
   buildQemuDiskBootArgsPure,
   buildQemuInstallArgsPure,
@@ -21,6 +22,7 @@ import {
   PHASE2_SERIAL_SEPARATOR,
 } from "./qemu-full-install-test.ts";
 import { QEMU_USB_TEST_SERIAL } from "../installer/qemu-usb-storage.ts";
+import { USB_ISERIAL_SERIAL, usbISerialValueMarker } from "../installer/usb-iserial-probe.ts";
 
 describe("validateSelfRegCiCoherent", () => {
   it("accepts matching maintainer/node/tree-path lines", () => {
@@ -108,6 +110,40 @@ describe("qemu-full-install-test phase 1 boot media QEMU args", () => {
     expect(args.join(" ")).toContain(`serial=${QEMU_USB_TEST_SERIAL}`);
     expect(args.join(" ")).toContain("file=/tmp/zflash-wifi.img,if=none,format=raw,readonly=on,id=zflashboot");
     expect(args.join(" ")).not.toContain("-cdrom");
+  });
+});
+
+describe("qemu-full-install-test usb iSerial phase-1 contract", () => {
+  it("accepts found + serial=ZETA-QEMU-001 + no-metal-claim", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.found,
+      usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    expect(assertUsbISerialPhase1Contract(serial).ok).toBe(true);
+  });
+
+  it("fails on ISO-only serial that never ran the probe (do not call this on cdrom)", () => {
+    const result = assertUsbISerialPhase1Contract("ZETA CLUSTER NODE INSTALL COMPLETE\n");
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("usb iSerial guest markers missing");
+      expect(result.reason).toContain(USB_ISERIAL_SERIAL.found);
+    }
+  });
+
+  it("fails helper-unavailable instead of treating skip as success", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.helperUnavailable,
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUsbISerialPhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain(usbISerialValueMarker(QEMU_USB_TEST_SERIAL));
+    }
   });
 });
 
