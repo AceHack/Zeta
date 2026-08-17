@@ -1,0 +1,12 @@
+{
+  "pr_number": 11521,
+  "archive_path": "docs/history/pr-reviews/PR-11521-feat-hygiene-sequence-the-sh-deprecation-by-measured-key-exposure-a-pure-lexer-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T15:19:48.959Z",
+  "schema_version": "v1",
+  "commit_sha": "974bd549c385bf14bf9ad26b556ff99f4d66478b",
+  "title": "feat(hygiene): sequence the .sh deprecation by MEASURED key exposure — a pure lexer over script text, not a hand ranking",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T15:19:01Z",
+  "head_ref": "shadow/sequence-sh-deprecation-by-key-exposure"
+}
