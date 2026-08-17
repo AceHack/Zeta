@@ -1,0 +1,12 @@
+{
+  "pr_number": 9095,
+  "archive_path": "docs/history/pr-reviews/PR-9095-feat-core-c-ergonomics-per-the-iris-event-storm-pascalcase-valuetuples-conflict-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T00:51:23.385Z",
+  "schema_version": "v1",
+  "commit_sha": "fbe1adebd62723964e184606a41703b4fb3265dc",
+  "title": "feat(core): C# ergonomics per the Iris event-storm — PascalCase, ValueTuples, conflict payloads (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T02:07:31Z",
+  "head_ref": "otto/iris-ux-fixes-compiledname-valuetuple-conflicts-081KWFXTHJY"
+}
