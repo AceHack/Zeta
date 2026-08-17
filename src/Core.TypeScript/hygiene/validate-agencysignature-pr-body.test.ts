@@ -1,9 +1,11 @@
 import { spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import { describe, expect, test } from "bun:test";
 
+import { type CoverageEnv } from "./agencysignature-commit-coverage.ts";
 import {
   diagnoseParseFailure,
   finalParagraph,
@@ -39,6 +41,25 @@ const SCRIPT = join(import.meta.dir, "validate-agencysignature-pr-body.ts");
  * off disk, writes the same bytes — the only substitution is stdin. The process
  * boundary itself is covered once, by the CLI smoke test below.
  */
+/**
+ * The environment these cases run in, stated rather than inherited.
+ *
+ * `main()` now consults the environment for COMMIT COVERAGE (see
+ * agencysignature-commit-coverage.ts). Left ambient, this whole file would read
+ * `GITHUB_ACTIONS` / the Actions event payload when it runs INSIDE CI and behave
+ * differently there than on a laptop — a test suite whose verdict depends on
+ * where it runs, which is the §13 leak the coverage module itself refuses. So
+ * the env is injected and empty: these cases judge one authored body and make no
+ * completeness claim. The coverage behaviour is tested where it belongs, in
+ * agencysignature-commit-coverage.test.ts.
+ */
+const HERMETIC_ENV: CoverageEnv = {
+  vars: {},
+  readFile: () => {
+    throw new Error("no ambient environment in this suite");
+  },
+};
+
 function runValidator(
   body: string,
   args: readonly string[] = [],
@@ -53,24 +74,74 @@ function runValidator(
   process.stdout.write = capture as typeof process.stdout.write;
   process.stderr.write = capture as typeof process.stderr.write;
   try {
-    return { status: main(args, body), out: chunks.join("") };
+    return { status: main(args, body, HERMETIC_ENV), out: chunks.join("") };
   } finally {
     process.stdout.write = realOut;
     process.stderr.write = realErr;
   }
 }
 
-// The one subprocess test. Everything else calls `main()` directly, so this is
+/**
+ * The ONE place a subprocess is spawned. Both smoke tests go through it, and the
+ * environment is always STATED rather than inherited: inside CI the ambient
+ * `GITHUB_ACTIONS` + `GITHUB_EVENT_PATH` would put the child in the commit-
+ * coverage lane and make a verdict depend on the host PR's commit count. Same
+ * reason as `HERMETIC_ENV` above.
+ */
+function runScript(
+  input: string,
+  overrides: Readonly<Record<string, string>>,
+): { readonly status: number | null; readonly stdout: string } {
+  const result = spawnSync("bun", [SCRIPT, "--author-identity", "AceHack"], {
+    input,
+    encoding: "utf8",
+    maxBuffer: 16 * 1024 * 1024,
+    env: { ...process.env, GITHUB_ACTIONS: "", GITHUB_EVENT_NAME: "", ...overrides },
+  });
+  return { status: result.status, stdout: result.stdout };
+}
+
+// The subprocess test. Everything else calls `main()` directly, so this is
 // what proves the shebang, the argv slice, the stdin read and the exit-code
 // propagation are wired — i.e. that the thing CI actually invokes runs.
 test("CLI smoke: the script itself validates a good body over real stdin", () => {
-  const result = spawnSync("bun", [SCRIPT, "--author-identity", "AceHack"], {
-    input: `## Summary\n\nWork.\n\n---\n\n${GOOD_BLOCK}\n`,
-    encoding: "utf8",
-    maxBuffer: 16 * 1024 * 1024,
-  });
+  const result = runScript(`## Summary\n\nWork.\n\n---\n\n${GOOD_BLOCK}\n`, {});
   expect(result.stdout).toContain("PASS: AgencySignature v1");
   expect(result.status).toBe(0);
+});
+
+// The second subprocess test, and the one that pins the CI wiring: a real
+// process, a real event payload on disk, a real underscan. This is the shape
+// `.github/workflows/agencysignature-enforcement.yml` runs in — a `pull_request`
+// event whose PR has more commits than `pulls/{n}/commits` can return — and the
+// exit code that must come back is 3 (REFUSED, UNMEASURED), never 0.
+test("CLI smoke: an underscanned commit list REFUSES through the process boundary", () => {
+  // `mkdtempSync`, NOT `join(tmpdir(), <predictable name>)`. The first version of
+  // this test keyed the filename on `process.pid` and CodeQL was right to flag it
+  // (js/insecure-temporary-file, high, alert #721 on PR #11630): a predictable path
+  // in a world-writable directory, written with no O_EXCL, follows whatever symlink
+  // a local attacker left there first (CWE-377/CWE-378). `mkdtempSync` creates the
+  // directory atomically, mode 0700, with a random suffix — the pattern the rest of
+  // this repo already uses (check-bash-retirement-inventory.test.ts, audit-worktree-
+  // survey.ts, and ~10 more).
+  const eventDir = mkdtempSync(join(tmpdir(), "zeta-agencysignature-underscan-"));
+  const eventPath = join(eventDir, "event.json");
+  // 475 is not a placeholder: it is PR #11528's real commit count, measured
+  // 2026-08-17 against a forge that returned 250 of them.
+  writeFileSync(eventPath, JSON.stringify({ pull_request: { number: 11528, commits: 475 } }));
+  try {
+    const result = runScript(`${GOOD_BLOCK}\n`, {
+      GITHUB_ACTIONS: "true",
+      GITHUB_EVENT_NAME: "pull_request",
+      GITHUB_EVENT_PATH: eventPath,
+      PR_BODY: "a different text — this stdin is the squash preimage, not the body",
+    });
+    expect(result.stdout).toContain("REFUSED (UNMEASURED)");
+    expect(result.stdout).not.toContain("PASS: AgencySignature");
+    expect(result.status).toBe(3);
+  } finally {
+    rmSync(eventDir, { recursive: true, force: true });
+  }
 });
 
 /** A valid, contiguous, terminal v1 block. */

@@ -32,6 +32,13 @@
 //       rostered external actor carrying a repo-asserted attribution
 //   1 — validation failed (specific failure printed)
 //   2 — tooling / input error
+//   3 — REFUSED, UNMEASURED: the commit list handed in does not cover the whole
+//       proposal (or its size could not be established), so a PASS would be a
+//       claim about text nobody read. Distinct from 1 on purpose — "your block
+//       is wrong" and "I could not see all of it" are different sentences, and
+//       collapsing them is how an underscan gets filed as a normal failure and
+//       worked around. See agencysignature-commit-coverage.ts for the measured
+//       defect (PR #11528: 475 commits, 250 readable).
 //
 // SOVEREIGN-MODE SEAM (Aaron 2026-08-15: "we want all their checks to be able to
 // run anywhere on our git-native / ZetaDB-native stuff … GitHub's dependabot is
@@ -54,6 +61,13 @@
 // fixed that, because two implementations of one rule drift again — which is how
 // the divergence arose. Now there is no second opinion to hold.
 import {
+  commitCoverage,
+  refusesPass,
+  renderRefusal,
+  resolveCoverageFacts,
+  type CoverageEnv,
+} from "./agencysignature-commit-coverage.ts";
+import {
   CANONICAL_VERSION_KEY,
   ENUMS,
   MISSPELLED_VERSION_KEY,
@@ -71,7 +85,7 @@ import {
 // real rather than a parallel copy left behind.
 export { hasMisspelledVersionKey, isUnfilledPlaceholder };
 
-type ExitCode = 0 | 1 | 2;
+type ExitCode = 0 | 1 | 2 | 3;
 
 const SPEC_DOC =
   "docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md";
@@ -616,32 +630,70 @@ interface ValidatorOptions {
   readonly cutover: string;
   /** The proposal AUTHOR's identity. Forge-agnostic string; empty means unknown. */
   readonly authorIdentity: string;
+  /** Commits the forge says the proposal has. `null` = not stated on the command line. */
+  readonly commitTotal: number | null;
+  /** Commit messages the caller actually piped in. `null` = the caller cannot say. */
+  readonly commitsSupplied: number | null;
 }
 
+/** A non-negative integer, or `null` if the text is not one. */
+function parseCount(text: string): number | null {
+  if (!/^\d+$/.test(text)) return null;
+  const n = Number.parseInt(text, 10);
+  return Number.isSafeInteger(n) ? n : null;
+}
+
+/**
+ * Every flag this tool takes carries exactly one value, so the parse is a table
+ * walk rather than a chain of branches — one row per flag, and an unknown flag
+ * or a missing value is a usage error.
+ *
+ * A malformed COUNT is a usage error too, never a silently-ignored flag:
+ * `--commit-total ""` degrading to "no coverage claim was made" would be an
+ * underscan you could buy with a typo.
+ */
 function parseOptions(argv: readonly string[]): ValidatorOptions | null {
-  let createdAt = "";
-  let cutover = "";
-  let authorIdentity = "";
-  for (let i = 0; i < argv.length; i++) {
-    const arg = argv[i] ?? "";
-    const next = argv[i + 1];
-    if (arg === "--pr-created-at") {
-      if (next === undefined) return null;
-      createdAt = next;
-      i++;
-    } else if (arg === "--grandfather-cutover") {
-      if (next === undefined) return null;
-      cutover = next;
-      i++;
-    } else if (arg === "--author-identity") {
-      if (next === undefined) return null;
-      authorIdentity = next;
-      i++;
-    } else {
-      return null;
+  const text = new Map<string, string>([
+    ["--pr-created-at", ""],
+    ["--grandfather-cutover", ""],
+    ["--author-identity", ""],
+  ]);
+  const counts = new Map<string, number | null>([
+    ["--commit-total", null],
+    ["--commits-supplied", null],
+  ]);
+  for (let i = 0; i < argv.length; i += 2) {
+    const flag = argv[i] ?? "";
+    const value = argv[i + 1];
+    if (value === undefined) return null;
+    if (text.has(flag)) {
+      text.set(flag, value);
+      continue;
     }
+    if (!counts.has(flag)) return null;
+    const count = parseCount(value);
+    if (count === null) return null;
+    counts.set(flag, count);
   }
-  return { createdAt, cutover, authorIdentity };
+  return {
+    createdAt: text.get("--pr-created-at") ?? "",
+    cutover: text.get("--grandfather-cutover") ?? "",
+    authorIdentity: text.get("--author-identity") ?? "",
+    commitTotal: counts.get("--commit-total") ?? null,
+    commitsSupplied: counts.get("--commits-supplied") ?? null,
+  };
+}
+
+/** Ambient process environment, read ONCE and only here (noninterference §13). */
+function processEnv(): CoverageEnv {
+  return {
+    vars: process.env,
+    readFile: (path: string): string => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const fs = require("node:fs") as typeof import("node:fs");
+      return fs.readFileSync(path, "utf8");
+    },
+  };
 }
 
 /**
@@ -653,11 +705,15 @@ function parseOptions(argv: readonly string[]): ValidatorOptions | null {
  *   fix is not a trade worth making, and one CLI smoke test still covers the
  *   process boundary.)
  */
-export function main(argv: readonly string[] = [], body?: string): ExitCode {
+export function main(
+  argv: readonly string[] = [],
+  body?: string,
+  env: CoverageEnv = processEnv(),
+): ExitCode {
   const options = parseOptions(argv);
   if (options === null) {
     process.stderr.write(
-      "usage: ... | validate-agencysignature-pr-body.ts [--pr-created-at ISO] [--grandfather-cutover ISO] [--author-identity ID]\n",
+      "usage: ... | validate-agencysignature-pr-body.ts [--pr-created-at ISO] [--grandfather-cutover ISO] [--author-identity ID] [--commit-total N] [--commits-supplied N]\n",
     );
     return 2;
   }
@@ -731,6 +787,35 @@ export function main(argv: readonly string[] = [], body?: string): ExitCode {
 
   const first = verdict.violations[0];
   if (first !== undefined) return emitViolation(first, stripped);
+
+  // ---------------------------------------------------------------------
+  // COVERAGE — the last gate, and it guards exactly ONE outcome: the PASS.
+  //
+  // Everything above judges the text that arrived. This asks whether the text
+  // that arrived is all of it. Measured 2026-08-17 on PR #11528, the squash
+  // preimage step handed this validator the oldest 250 of 475 commit messages
+  // and got the ordinary verdict back — a check that did not fully run,
+  // reported as one that passed.
+  //
+  // Placed HERE, after validation, on purpose:
+  //   * a FAIL over a truncated prefix is SOUND (the violating commit is really
+  //     in the PR), so it is still reported as a FAIL and keeps its diagnosis;
+  //   * the GRANDFATHERED and REPO-ASSERTED exits above are declared exemptions
+  //     that measure nothing and say so loudly — they are not passes;
+  //   * only the PASS makes the claim "every block in this proposal is valid",
+  //     and only that claim needs the whole proposal to have been read.
+  // ---------------------------------------------------------------------
+  const coverage = commitCoverage(
+    resolveCoverageFacts(
+      { commitTotal: options.commitTotal, commitsSupplied: options.commitsSupplied },
+      input,
+      env,
+    ),
+  );
+  if (refusesPass(coverage)) {
+    process.stdout.write(renderRefusal(coverage));
+    return 3;
+  }
 
   return emitPass(verdict.block.join("\n"));
 }
