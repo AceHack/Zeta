@@ -132,6 +132,32 @@ export function planAgentProposal(input: {
       generator: "bindCurrentMainAndGeneratePatch",
     };
   }
+  // THIS CHECK IS CORRECT AND, AS DEPLOYED TODAY, CANNOT FIRE. Recorded here rather than in a
+  // note nobody reads, because the next person to audit this chain will otherwise count it as
+  // protection that is present.
+  //
+  // Measured 2026-08-17: the ONLY production caller is `agent-proposal-runner.ts`, and it builds
+  // both sides of this comparison out of the same local variable --
+  // `patchDigest: sha256(payload.trim())` in the intent, `payload` as the payload. The comparison
+  // is therefore `sha256(x.trim()) !== sha256(x.trim())`, false by construction. The workflow
+  // declares three inputs (`agent_proposal_id`, `agent_base_sha`, `agent_patch_b64`) and no
+  // digest, so there is no channel by which an independently-declared digest could arrive.
+  //
+  // The unit test at agent-proposal.test.ts (`${PATCH}# injected`) is NOT vacuous -- it supplies
+  // an intent digest taken from the un-injected patch, which is exactly the tamper this rejects.
+  // The function has a real falsifier. What is missing is a caller that gives it two independent
+  // inputs to compare.
+  //
+  // WHAT IT WOULD BUY, stated honestly, because the answer is narrower than "integrity": whoever
+  // can dispatch this workflow can already choose the patch bytes, so this is not a defence
+  // against the dispatcher. Its value is the link between the bytes the operator APPROVED on the
+  // Pages device and the bytes that get applied here -- the "approved, not run" property the
+  // gated-review design exists to provide. Today, if the device approves patch P and the delivery
+  // path presents P', nothing in this file notices.
+  //
+  // Closing it is a producer-side change (the Pages device would emit the digest it signed as a
+  // fourth workflow input) and so is deliberately NOT made here: adding a required input would
+  // break the existing three-input producer on the next dispatch. Flagged for Aaron 2026-08-17.
   if (intent.patchDigest !== digest(input.payload)) {
     return reject("agent-digest", "teaching error: agent patch bytes differ from the declared digest; generator: re-hash the exact unified patch before staging", "agent-proposal-digest", "createAgentProposalIntent");
   }
