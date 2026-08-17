@@ -186,10 +186,15 @@ async function main() {
 
   // ── 1. Platform gate ───────────────────────────────────────
   if (platform() !== "darwin") {
+    // This used to print a raw `lsblk; sudo dd …` line for the operator to type by hand —
+    // a command with none of the rails above it: no bus check, no boot-disk check, no size
+    // bound, no runtime consent. The Linux arm now exists and carries the same contract
+    // (081M037KPG1087G0R0005ANAFV), so point at it rather than at a hand-typed dd.
     bail(
       2,
-      "this script only supports macOS. For Linux, use the manual flow:\n" +
-        "  lsblk; sudo dd if=<iso> of=/dev/<device> bs=4M status=progress conv=fsync",
+      "this script only supports macOS. Use the platform arm for this host:\n" +
+        "  Linux:   bun src/Core.TypeScript/zflash/flash-usb-linux.ts <path-to-iso>\n" +
+        "  Windows: bun src/Core.TypeScript/zflash/flash-usb-windows.ts <path-to-iso>",
     );
   }
 

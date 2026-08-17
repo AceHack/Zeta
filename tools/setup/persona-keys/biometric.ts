@@ -32,6 +32,7 @@
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { platform as osPlatform } from "node:os";
+import { analyzePamAuthChain } from "../../../src/Core.TypeScript/pam/auth-chain.ts";
 
 /** The biometric platforms we know how to gate on. `unsupported` ⇒ fail-closed. */
 export type BiometricPlatform = "macos-touchid" | "windows-hello" | "unsupported";
@@ -233,55 +234,18 @@ export function analyzeSudoAuthChain(
   read: (path: string) => string,
   service = "sudo",
 ): SudoAuthChainAnalysis {
-  const competingEntries: string[] = [];
-  const unresolvedIncludes: string[] = [];
-  const seen = new Set<string>();
-  let touchIdConfigured = false;
-
-  const walk = (svc: string, depth: number): void => {
-    // Cycle + runaway guard: a policy that includes itself must terminate, not hang.
-    if (depth > 8 || seen.has(svc)) {
-      unresolvedIncludes.push(svc);
-      return;
-    }
-    seen.add(svc);
-    let text: string;
-    try {
-      text = read(`/etc/pam.d/${svc}`);
-    } catch {
-      unresolvedIncludes.push(svc);
-      return;
-    }
-    for (const rawLine of text.split("\n")) {
-      // pam.conf(5): "anything to the right of a '#' sign" is a comment.
-      const line = (rawLine.split("#")[0] ?? "").trim();
-      if (line === "") continue;
-      const fields = line.split(/\s+/);
-      const [functionClass, controlFlag, modulePath] = fields;
-      if (functionClass !== "auth") continue;
-      if (controlFlag === undefined || modulePath === undefined) continue;
-      if (controlFlag === "include") {
-        // pam.conf(5): `function-class include other-service-name` splices that chain in.
-        walk(modulePath, depth + 1);
-        continue;
-      }
-      // Compare on the basename so a full module path is recognised too.
-      const moduleName = modulePath.split("/").pop() ?? modulePath;
-      if (moduleName === "pam_tid.so") {
-        if (controlFlag === "sufficient") touchIdConfigured = true;
-        continue;
-      }
-      competingEntries.push(`${controlFlag} ${moduleName}`);
-    }
-  };
-
-  walk(service, 0);
+  const analysis = analyzePamAuthChain(read, {
+    service,
+    targetModule: "pam_tid.so",
+    // macOS ships OpenPAM: `auth include <service>` only. Reading this host's files with
+    // the Linux dialect would honour `@include`/`substack` forms OpenPAM does not define.
+    syntax: "openpam",
+  });
   return {
-    touchIdConfigured,
-    competingEntries,
-    unresolvedIncludes,
-    touchIdIsOnlySatisfier:
-      touchIdConfigured && competingEntries.length === 0 && unresolvedIncludes.length === 0,
+    touchIdConfigured: analysis.targetConfigured,
+    competingEntries: analysis.competingEntries,
+    unresolvedIncludes: analysis.unresolvedIncludes,
+    touchIdIsOnlySatisfier: analysis.targetIsOnlySatisfier,
   };
 }
 

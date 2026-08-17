@@ -1,7 +1,7 @@
 ---
 id: 081M037KPG1087G0R0005ANAFV
 type: task
-state: backlog
+state: in-progress
 priority: P3
 slug: zflash-linux-variant-lsblk-device-enumeration-pam-fprintd-bi
 title: "zflash Linux variant — lsblk device enumeration + pam_fprintd biometric gate + pkexec fallback (flash-usb.ts is darwin-only today; recovered lost row B0738)"
@@ -73,3 +73,42 @@ it survives triage at P3 despite low ceremony.
 
 - Census + method: `docs/research/2026-08-15-lost-bnnnn-work-on-recovered-orphan-branches-census-and-triage.md`
 - Sibling that landed: `src/Core.TypeScript/zflash/flash-usb-windows.ts`
+
+## Status — 2026-08-17 (slice 1 landed)
+
+`state: in-progress`. The FLASHER is built and merged; the wrapper integration is not.
+
+**Landed**
+
+- `src/Core.TypeScript/zflash/flash-usb-linux.ts` — lsblk enumeration + every rail the
+  macOS and Windows arms carry (whole-disk only, `tran=usb`, not read-only, size bounds,
+  no system mount point, not the disk backing `/`, exactly one candidate) + the runtime
+  nonce consent gate + `pam_fprintd` gate with `pkexec`/polkit fallback.
+- `src/Core.TypeScript/pam/auth-chain.ts` — the PAM `auth`-chain resolver, generalized out
+  of `tools/setup/persona-keys/biometric.ts`'s `analyzeSudoAuthChain` so both hosts ask the
+  same question of their own target module. Copying it would have been *wrong*: the macOS
+  parser knows only OpenPAM's `auth include`, so on Debian/Ubuntu — which splice sudo's
+  chain in with `@include common-auth` — it resolves to an EMPTY chain and would conclude
+  the fingerprint was the only possible factor.
+- `flash-usb.ts` and `cli.ts` no longer print a bare `sudo dd` line for Linux operators;
+  they point at the arm that carries the rails.
+- 57 tests in `flash-usb-linux.test.ts` + 19 in `pam/auth-chain.test.ts`, all running on
+  ANY OS with no USB stick, no root and no fingerprint.
+
+**Honest limits**
+
+- The gate reports `unattributed`, not `biometric`, on every mainstream Linux stack, and
+  says why: `pam_unix.so` shares the chain with `pam_fprintd.so`, and neither `sudo` nor
+  `pkexec` reports which module satisfied PAM. Same seam, same honesty as
+  081M06DSQ0Q087G0R000H91391 established for macOS.
+- NOT executed against real hardware. Every decision is unit-tested; no ISO has been
+  written to a physical stick by this arm.
+
+**Remaining (why this row is in-progress, not done)**
+
+- `zflash` (`cli.ts`) still refuses on Linux: its ESP pubkey-injection step is
+  diskutil-shaped and has no Linux path.
+- `tools/setup/linux.sh` has no `zflash` touchpoint yet.
+- A QEMU test-harness scenario driving `flash-usb-linux.ts` end to end against a
+  file-backed device (`test-harness/prepare-boot-image.ts` already builds images without
+  physical USB).

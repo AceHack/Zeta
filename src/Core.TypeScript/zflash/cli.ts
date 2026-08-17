@@ -872,7 +872,16 @@ async function injectPubkeyToUsb(
 
 async function main() {
   if (platform() !== "darwin") {
-    bail(2, "zflash is macOS-only; for Linux see the manual flow in flash-usb.ts header");
+    // The zflash WRAPPER (ISO freshness, auto-download, ESP pubkey injection) is still
+    // macOS-only — its ESP mount path is diskutil-shaped. The FLASH step now has a Linux
+    // arm with the same rails (081M037KPG1087G0R0005ANAFV); routing the wrapper's
+    // remaining steps through it is the next slice, named rather than implied.
+    bail(
+      2,
+      "zflash is macOS-only. On Linux, flash with the Linux arm directly:\n" +
+        "  bun src/Core.TypeScript/zflash/flash-usb-linux.ts <path-to-iso>\n" +
+        "(the wrapper's ESP pubkey-injection step has no Linux path yet)",
+    );
   }
 
   // Strict arg validation (Copilot P0 catch): wrapper for destructive tool
