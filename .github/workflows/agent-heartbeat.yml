@@ -242,7 +242,27 @@ jobs:
         # main discarded the intervening ticks. The source-owned preparer starts from current main
         # and squash-carries the previous lane's final tree delta. Already-flushed state is empty;
         # unflushed state is staged; a content conflict stops before the remote ref can be moved.
-        run: bun src/Core.TypeScript/agent-heartbeats/prepare-heartbeat-branch.ts --agent "$AGENT"
+        run: |
+          # OUTAGE 2026-08-16 23:05 UTC: all three lanes died here every tick for ~1h.
+          # Observed, from the run log:
+          #     prepare-heartbeat-branch: carry unflushed heartbeat state failed:
+          #     *** Please tell me who you are.  /  fatal: empty ident name
+          # The preparer's carry step needs a committer identity, and the identity was set only in
+          # `Commit accumulated heartbeat tick` -- a LATER step. #11160 moved this work out of that
+          # step into the preparer without moving the identity with it, so from 23:01:40 onward the
+          # first git operation of every tick ran without one. `society` and `tick-metrics`, which
+          # do not use this preparer, stayed healthy throughout -- which is what localises it here.
+          #
+          # NOT claimed: which git internal demands the ident. A local `git merge --squash
+          # --no-commit` over a divergent branch succeeds WITHOUT one, so the plain-merge
+          # explanation does not reproduce and is deliberately not asserted. What is established is
+          # the failure, its message, and that setting the identity before the preparer removes it.
+          #
+          # The rule that generalises: set the identity before the FIRST git operation that needs
+          # it, not before the commit that happens to come last.
+          git config user.name "${AGENT}[bot]"
+          git config user.email "${AGENT}[bot]@users.noreply.github.com"
+          bun src/Core.TypeScript/agent-heartbeats/prepare-heartbeat-branch.ts --agent "$AGENT"
 
       - name: Run observe tick (local-llm, heartbeat mode)
         env:
