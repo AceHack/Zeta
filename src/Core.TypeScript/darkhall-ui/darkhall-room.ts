@@ -1,6 +1,6 @@
 import {
   blackBodyReadout,
-  heatReceiptPpm,
+  heatReceiptScale,
   heatReceiptsFromRows,
   heatSignals,
   summarizeHeatRows,
@@ -36,6 +36,7 @@ export {
   clampTemperaturePpm,
   heatReceiptFromRow,
   heatReceiptPpm,
+  heatReceiptScale,
   heatReceiptsFromRows,
   heatSignals,
   heatSignalsFromKinds,
@@ -45,6 +46,8 @@ export {
   temperatureReadout,
   temperatureTreatyBundle,
   thermalPpm,
+  worstFidelity,
+  type ChannelFidelity,
   type HeatReadout,
   type HeatReceipt,
   type HeatReceiptOutcome,
@@ -599,15 +602,33 @@ function roomTemperatureTreaty(
   transcript: RoomRunTranscript,
   heat: HeatReadout | ReturnType<typeof summarizeHeatRows>,
 ) {
+  // Encode via `heatReceiptScale`, NOT the lossy `heatReceiptPpm` accessor: the
+  // scale carries whether the count was in-domain, and that fact is destroyed by
+  // the accessor. Feeding the accessor's output straight into `temperatureReadout`
+  // made a blind counter (NaN / Infinity / negative) arrive as a plain `0` and be
+  // reported back as `fidelity: "exact"` — a dead sensor rendered as a calm room,
+  // with a field actively asserting the reading was faithful.
+  // 081M010WYE5087G0R003J89QVF §1.
+  const heatScale = heatReceiptScale(heat.heatRejected);
+  const uncertaintyScale = heatReceiptScale(heat.storageErrors);
+  const pressureScale = heatReceiptScale(heat.backpressured);
+  const attentionScale = heatReceiptScale(selectedControllerCells(transcript));
+
   const sourceTemperature =
     transcript.temperatureTreaty?.temperature ??
     transcript.temperatureReadout ??
     temperatureReadout({
       source: transcript.roomName,
-      heatPpm: heatReceiptPpm(heat.heatRejected),
-      uncertaintyPpm: heatReceiptPpm(heat.storageErrors),
-      pressurePpm: heatReceiptPpm(heat.backpressured),
-      attentionPpm: heatReceiptPpm(selectedControllerCells(transcript)),
+      heatPpm: heatScale.ppm,
+      uncertaintyPpm: uncertaintyScale.ppm,
+      pressurePpm: pressureScale.ppm,
+      attentionPpm: attentionScale.ppm,
+      upstreamFidelity: [
+        heatScale.fidelity,
+        uncertaintyScale.fidelity,
+        pressureScale.fidelity,
+        attentionScale.fidelity,
+      ],
     });
   const sourceBlackBody = transcript.temperatureTreaty?.blackBody ?? transcript.blackBodyReadout;
 
@@ -753,6 +774,10 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     attr("data-temperature-feedback", temperatureFeedback),
     attr("data-temperature-ppm", temperature?.temperaturePpm),
     attr("data-temperature-band", temperature?.band),
+    // The band alone cannot distinguish an idle room from a blind one — both read
+    // `cold`. The fidelity attribute is what makes the difference visible on the
+    // surface rather than merely present in the value. 081M010WYE5087G0R003J89QVF §1.
+    attr("data-temperature-fidelity", temperature?.fidelity),
     attr("data-black-body-readout", blackBody?.schema),
     attr("data-black-body-radiance", blackBody?.radiancePpm),
     attr("data-black-body-peak-frequency", blackBody?.peakFrequencyPpm),

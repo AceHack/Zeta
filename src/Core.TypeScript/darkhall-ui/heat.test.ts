@@ -33,6 +33,7 @@ import {
   temperatureBand,
   temperatureBandReading,
   temperatureReadout,
+  worstFidelity,
 } from "./heat";
 
 /** Treaty band cuts, restated here so a drift in `heat.ts` fails loudly. */
@@ -558,5 +559,107 @@ describe("heatReceiptReading — zero observations is UNKNOWN, never the healthy
     // Pre-fix this set has 4 members (reported-empty == blind, and one token == two
     // duplicate tokens). Every input here is genuinely distinct, so 6 is the honest number.
     expect(published.size).toBe(6);
+  });
+});
+
+// SITE E — fidelity LAUNDERING across composition (081M010WYE5087G0R003J89QVF §1).
+//
+// 081M00TYT8N087G0R003MPMRX9 gave each encoder a `fidelity` / `verdict` channel.
+// It did not make the channel SURVIVE COMPOSITION. `darkhall-room.ts:558-565`
+// feeds the LOSSY accessor `heatReceiptPpm(...)` into `temperatureReadout(...)`,
+// so the out-of-domain fact is destroyed one call before the readout is built and
+// the readout then reports `fidelity: "exact"`.
+//
+// That is strictly worse than the silence it replaced: an unwired fidelity field
+// does not merely omit the fault, it POSITIVELY ASSERTS exactness about a reading
+// no instrument produced. A field that always says `exact` is the vacuity class.
+//
+// Every test below FAILS against `origin/main@0cb3642eb`.
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("worstFidelity — a composed reading is only as faithful as its worst input", () => {
+  it("ranks the four fidelities by how badly they mislead about magnitude", () => {
+    expect(worstFidelity([])).toBe("exact");
+    expect(worstFidelity(["exact", "exact"])).toBe("exact");
+    expect(worstFidelity(["exact", "below-resolution"])).toBe("below-resolution");
+    expect(worstFidelity(["below-resolution", "saturated"])).toBe("saturated");
+    expect(worstFidelity(["saturated", "out-of-domain"])).toBe("out-of-domain");
+    expect(worstFidelity(["out-of-domain", "exact"])).toBe("out-of-domain");
+  });
+
+  it("is order-independent and idempotent (a fold over a set, not a sequence)", () => {
+    expect(worstFidelity(["saturated", "exact"])).toBe(worstFidelity(["exact", "saturated"]));
+    expect(worstFidelity(["saturated", "saturated"])).toBe(worstFidelity(["saturated"]));
+  });
+});
+
+describe("temperatureReadout — must not re-declare a known-blind input as exact", () => {
+  it("accepts upstream fidelity and takes the worst (pre-fix: ignored, reported 'exact')", () => {
+    const blindScale = heatReceiptScale(Number.NaN);
+    expect(blindScale.fidelity).toBe("out-of-domain");
+
+    const readout = temperatureReadout({
+      source: "room",
+      heatPpm: heatReceiptPpm(Number.NaN),
+      uncertaintyPpm: 0,
+      pressurePpm: 0,
+      attentionPpm: 0,
+      upstreamFidelity: [blindScale.fidelity],
+    });
+
+    expect(readout.fidelity).toBe("out-of-domain");
+  });
+
+  it("separates a blind room from an idle one after the lossy accessor has run", () => {
+    const build = (units: number) => {
+      const scale = heatReceiptScale(units);
+      return temperatureReadout({
+        source: "room",
+        heatPpm: scale.ppm,
+        uncertaintyPpm: 0,
+        pressurePpm: 0,
+        attentionPpm: 0,
+        upstreamFidelity: [scale.fidelity],
+      });
+    };
+
+    const blind = build(Number.NaN);
+    const idle = build(0);
+
+    // The band token is treaty-locked and identical by design — that is exactly
+    // why the fidelity channel has to carry the difference.
+    expect(blind.band).toBe(idle.band);
+    expect(blind.temperaturePpm).toBe(idle.temperaturePpm);
+    expect(blind.fidelity).not.toBe(idle.fidelity);
+    expect(idle.fidelity).toBe("exact");
+  });
+
+  it("still reports 'exact' when every input really is in-domain (no false alarm)", () => {
+    const scale = heatReceiptScale(5);
+    expect(scale.fidelity).toBe("exact");
+
+    const readout = temperatureReadout({
+      source: "room",
+      heatPpm: scale.ppm,
+      uncertaintyPpm: 0,
+      pressurePpm: 0,
+      attentionPpm: 0,
+      upstreamFidelity: [scale.fidelity],
+    });
+
+    expect(readout.fidelity).toBe("exact");
+    expect(readout.band).toBe("warm");
+  });
+
+  it("keeps reporting its OWN out-of-domain inputs when no upstream fidelity is given", () => {
+    const readout = temperatureReadout({
+      source: "room",
+      heatPpm: Number.NaN,
+      uncertaintyPpm: 0,
+      pressurePpm: 0,
+      attentionPpm: 0,
+    });
+
+    expect(readout.fidelity).toBe("out-of-domain");
   });
 });

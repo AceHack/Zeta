@@ -14,6 +14,7 @@
 import {
   MAX_TEMPERATURE_PPM,
   heatReceiptReading,
+  type ChannelFidelity,
   type HeatReceipt,
   type HeatSignal,
   type TemperatureTreatyBundle,
@@ -171,6 +172,39 @@ function renderFrost(frost: FrostRegion): string {
   ].join("");
 }
 
+/**
+ * The words appended to a band label when the reading is not faithful.
+ *
+ * The band token alone cannot say this — the four tokens are a four-oracle treaty
+ * and `cold` is what a blind sensor and an idle room BOTH produce. A colour
+ * change alone would not say it either: `cold` already renders in the muted
+ * `--txt3`, so a reader has no way to know whether the muteness means "quiet" or
+ * "not measured". The text is the part an operator can actually check.
+ *
+ * `exact` adds nothing, so a healthy lane is unchanged.
+ */
+function fidelitySuffix(fidelity: ChannelFidelity | undefined): string {
+  switch (fidelity) {
+    case "out-of-domain":
+      return " · SENSOR FAULT · no reading";
+    case "saturated":
+      return " · PINNED · at or above ceiling";
+    case "below-resolution":
+      return " · below resolution";
+    case "exact":
+      return "";
+    // `fidelity` is OPTIONAL on the value (`heat.ts` — `readonly fidelity?:`),
+    // so `undefined` reaches here whenever a producer never classified the
+    // channel. It must not share the `exact` branch: an empty suffix is the
+    // readout for a channel we checked and found faithful, and reusing it for
+    // one we never checked is this file's own defect — the encoder saying
+    // "exact" about a sensor whose state it does not know. Unreported and
+    // clean are different claims, so they get different readouts.
+    default:
+      return " · fidelity not reported";
+  }
+}
+
 function renderTemperatureMetric(label: string, kind: string, ppm: number): string {
   return [
     `<span class="temp-metric"`,
@@ -262,11 +296,15 @@ function renderTemperatureLane(treaty: TemperatureTreatyBundle): string {
     `<div class="temp-lane"`,
     attr("data-temperature-lane", "present"),
     attr("data-temperature-band", temperature.band),
+    // Without this the lane paints a blind sensor exactly like an idle room: both
+    // are `cold`, and the CSS below has no other hook to tell them apart.
+    // 081M010WYE5087G0R003J89QVF §1.
+    attr("data-temperature-fidelity", temperature.fidelity),
     attr("data-temperature-source", temperature.source),
     attr("data-temperature-oracle", treaty.referenceOracle),
     ">",
     '<div class="temp-band">',
-    `<span>black-body · ${escapeHtml(temperature.band)}</span>`,
+    `<span>black-body · ${escapeHtml(temperature.band)}${escapeHtml(fidelitySuffix(temperature.fidelity))}</span>`,
     "<i></i>",
     "</div>",
     '<div class="temp-stack">',
@@ -313,6 +351,7 @@ export function renderDweller(mind: DwellerMind, seed: string): string {
     attr("data-temperature-feedback", temperatureFeedback),
     attr("data-temperature-ppm", temperature?.temperaturePpm),
     attr("data-temperature-band", temperature?.band),
+    attr("data-temperature-fidelity", temperature?.fidelity),
     attr("data-black-body-readout", blackBody?.schema),
     attr("data-black-body-radiance", blackBody?.radiancePpm),
     attr("data-black-body-peak-frequency", blackBody?.peakFrequencyPpm),
@@ -501,6 +540,14 @@ export const LLMTV_INLINE_CSS = `
     .temp-lane[data-temperature-band="warm"] { --thermal:var(--c-warm); }
     .temp-lane[data-temperature-band="hot"] { --thermal:var(--c-hot); }
     .temp-lane[data-temperature-band="critical"] { --thermal:var(--c-bad); }
+    /* fidelity OVERRIDES band colour: an unfaithful reading must not be painted as
+       a measurement. Declared after the band rules so it wins on specificity ties.
+       A blind sensor and an idle room are both cold; only this tells them apart. */
+    .temp-lane[data-temperature-fidelity="out-of-domain"] { --thermal:var(--c-bad); border-top-color:var(--c-bad); }
+    .temp-lane[data-temperature-fidelity="out-of-domain"] .temp-band span { font-weight:700; }
+    .temp-lane[data-temperature-fidelity="out-of-domain"] .rail i { opacity:0.25; }
+    .temp-lane[data-temperature-fidelity="saturated"] { --thermal:var(--c-hot); }
+    .temp-lane[data-temperature-fidelity="below-resolution"] { --thermal:var(--txt2); }
     .temp-band { display:flex; align-items:center; gap:0.4rem; font-family:var(--mono); font-size:0.56rem; letter-spacing:0.14em; text-transform:uppercase; }
     .temp-band span { color:currentColor; white-space:nowrap; }
     .temp-band i { flex:1; height:1px; background:linear-gradient(90deg, currentColor, transparent); opacity:0.55; }

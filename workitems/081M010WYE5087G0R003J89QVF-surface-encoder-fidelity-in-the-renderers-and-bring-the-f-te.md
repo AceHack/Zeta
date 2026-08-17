@@ -81,6 +81,108 @@ already-published `v1` is a breaking change by the ordinary schema-evolution rul
 Residual scope of the audit itself (two oracles of four, 6 of 78 schema ids, F# optionality
 undetected) is filed as **081M013X907087G0R0037FPC5S**.
 
+---
+
+## Progress — §1 DONE (shadow, 2026-08-14, branch `shadow/fail-dangerous-nan-encoder-paths`)
+
+§2 is untouched (a sibling agent holds the schema question on
+`shadow/treaty-cannot-see-key-set-divergence`) and §3 is untouched. All numbers
+below were produced by running the code against `origin/main@0cb3642eb`.
+
+### Re-measurement first — two of the reported defects had already been fixed
+
+The brief for this pass listed six fail-dangerous readings. Re-measured before
+changing anything, because asserting a stale defect is the failure this work-item
+exists to prevent:
+
+| reported                                          | still reproduces on `main@0cb3642eb`?                                                                                                                                                                                                                               |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `temperatureBand(NaN \| Infinity \| -1) = "cold"` | **partly, and by design** — the bare accessor still returns `cold` (the four tokens are a four-oracle treaty and must not move), but `temperatureBandReading(NaN).verdict = "out-of-domain"` now separates it from `temperatureBandReading(0).verdict = "in-range"` |
+| `heatReceiptPpm(NaN \| Infinity) = 0`             | **partly, and by design** — accessor still `0`; `heatReceiptScale(NaN).fidelity = "out-of-domain"` vs `heatReceiptScale(0).fidelity = "exact"`                                                                                                                      |
+| F# `pct(nan)` → a confident 0% bar                | **NO — fixed.** `pct` no longer exists; `UnitInterval.tryOf nan = None` and `render` emits `brokenBar`                                                                                                                                                              |
+| F# `pct(infinity)` → a confident 100% bar         | **NO — fixed.** Same route                                                                                                                                                                                                                                          |
+
+`dotnet test --filter "FullyQualifiedName~SocietalDoraSvg"` → `Failed: 0, Passed:
+10`, exit `0`. The F# half of the brief was already discharged by
+081M00TYT8N087G0R003MPMRX9 and is reported as such rather than re-fixed.
+
+### The live defect, which is worse than what was reported
+
+Fixing the encoders did not make the fidelity channel survive **composition**.
+`darkhall-room.ts` fed the lossy accessor straight into `temperatureReadout`:
+
+```
+heatRejected=0         scale.fidelity=exact          -> ppm=0 -> readout.fidelity=exact
+heatRejected=NaN       scale.fidelity=out-of-domain  -> ppm=0 -> readout.fidelity=exact
+heatRejected=Infinity  scale.fidelity=out-of-domain  -> ppm=0 -> readout.fidelity=exact
+heatRejected=-1        scale.fidelity=out-of-domain  -> ppm=0 -> readout.fidelity=exact
+```
+
+The encoder **knew**, and the readout reported `exact` anyway. That is strictly
+worse than the silence it replaced: an unwired fidelity field does not merely omit
+the fault, it **positively asserts** a faithfulness nothing measured. A field that
+can only ever say `exact` is the vacuity class — a check that cannot fail — and it
+is more dangerous than no field, because an operator or an agent can now cite it.
+
+### What changed
+
+- **`worstFidelity` + `FIDELITY_SEVERITY` (`heat.ts`)** — a declared severity
+  order (`exact` < `below-resolution` < `saturated` < `out-of-domain`) and a max
+  over it. Idempotent, commutative, associative, so it folds over a _set_ of
+  inputs and arrival order cannot change a rendered verdict.
+- **`temperatureReadout` takes `upstreamFidelity?`** — an _argument_, not a schema
+  field; `TemperatureReadout`'s shape is deliberately unchanged so as not to
+  collide with the sibling agent holding §2. The readout takes the worst of what
+  it can see and what it is told.
+- **`darkhall-room.ts` encodes via `heatReceiptScale`**, not `heatReceiptPpm`, and
+  forwards all four fidelities.
+- **`data-temperature-fidelity`** on the room element, the TV lane and the dweller
+  element; a worded suffix (`· SENSOR FAULT · no reading`, `· PINNED · at or above
+ceiling`, `· below resolution`); and CSS that repaints an out-of-domain lane.
+  Words as well as colour, because `cold` already renders in the muted `--txt3` —
+  a colour change alone cannot say whether muteness means _quiet_ or _not
+  measured_.
+
+### Evidence the tests discriminate
+
+Assertions expressible against the **pre-fix** API (`upstreamFidelity` is simply
+an unread extra property there, so the harness runs against both revisions):
+
+```
+check                                                    | pre-fix | post-fix
+a NaN heat count does not report fidelity 'exact'        | FAIL    | PASS
+blind room and idle room differ in fidelity              | FAIL    | PASS
+an Infinity heat count does not report fidelity 'exact'  | FAIL    | PASS
+blind room reports fidelity 'out-of-domain'              | FAIL    | PASS
+an above-ceiling count reports 'saturated', not 'exact'  | FAIL    | PASS
+--- controls, must pass BOTH ways ---
+an idle room still reports 'exact'                       | PASS    | PASS
+a healthy room still reports 'exact'                     | PASS    | PASS
+a healthy room still reads band 'warm'                   | PASS    | PASS
+```
+
+5 of 5 discriminate; the 3 controls hold, so the fix is not just "alarm on
+everything". Renderer side: with the sources reverted to `origin/main` and the new
+tests kept, `bun test darkhall-tv.test.ts` → `17 pass, 6 fail`, exit `1`; with the
+fix, `246 pass, 0 fail`, exit `0` across all 21 test files that touch the changed
+modules. `bun run typecheck` and `bun run lint:typescript` → exit `0`.
+
+**Owned limit on one of those tests.** _"leaves a healthy lane unmarked"_ also
+fails pre-fix, because it asserts the `data-temperature-fidelity="exact"`
+attribute that pre-fix does not emit. It is therefore a weaker control than the
+three in the harness above, which are attribute-independent. Recorded rather than
+presented as a clean both-ways control.
+
+### Residual filed
+
+**081M01400RZ087G0R000PS3VJG** — `HeatReceipt` has no fidelity channel, so the
+receipt rails still paint a blind counter as a genuine zero. Not fixed here
+because it needs a field on the published `zeta.heat.receipt.v1`, and adding a
+required field to a `v1` schema unilaterally is the same move §2 below is open
+about. It should be decided together with §2.
+
+---
+
 ## 3. `thermalPpm` remains a non-injective fold
 
 `max(heat, uncertainty, pressure)` — defect 4 in the parent work-item, untouched here. The cause is

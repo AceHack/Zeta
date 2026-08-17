@@ -45,6 +45,52 @@ export type TemperatureBand = "cold" | "warm" | "hot" | "critical";
  */
 export type ChannelFidelity = "exact" | "saturated" | "below-resolution" | "out-of-domain";
 
+/**
+ * How badly each fidelity misleads a reader about magnitude — the severity order
+ * used to combine fidelities across a composition.
+ *
+ * Declared rather than inferred, because the ordering is a judgement and a reader
+ * is entitled to see it:
+ *
+ *   - `exact` (0) — the channel round-trips the input's ordering.
+ *   - `below-resolution` (1) — a BOUNDED loss: the true value lies in a known
+ *     interval below a declared floor. The reader is misled by at most that floor.
+ *   - `saturated` (2) — an UNBOUNDED loss above a declared ceiling. Worse than
+ *     `below-resolution` because no bound can be put on what was hidden.
+ *   - `out-of-domain` (3) — worst: there was no measurement at all. Every other
+ *     value still describes a reading; this one describes its absence.
+ */
+export const FIDELITY_SEVERITY: Readonly<Record<ChannelFidelity, number>> = {
+  exact: 0,
+  "below-resolution": 1,
+  saturated: 2,
+  "out-of-domain": 3,
+};
+
+/**
+ * The worst fidelity in a set — how a composed reading inherits its inputs' faults.
+ *
+ * **Why this exists.** 081M00TYT8N087G0R003MPMRX9 gave each encoder a fidelity
+ * channel but did not make the channel survive COMPOSITION. A caller that runs a
+ * lossy accessor and then builds a readout from its output destroys the fault one
+ * call before the readout is constructed, and the readout then reports `exact` —
+ * which is worse than reporting nothing, because it positively asserts a
+ * faithfulness no instrument established. A fidelity field that can only ever say
+ * `exact` is a check that cannot fail.
+ *
+ * Idempotent, commutative and associative (a max over a total order), so it is a
+ * fold over a SET of inputs — order of arrival cannot change a rendered verdict.
+ * That is the noninterference / idempotency discipline applied to the fault
+ * channel itself.
+ */
+export function worstFidelity(values: readonly ChannelFidelity[]): ChannelFidelity {
+  let worst: ChannelFidelity = "exact";
+  for (const value of values) {
+    if (FIDELITY_SEVERITY[value] > FIDELITY_SEVERITY[worst]) worst = value;
+  }
+  return worst;
+}
+
 export type HeatReceiptOutcome =
   | "cold"
   | "paid"
@@ -516,8 +562,7 @@ export interface HeatReceiptScale {
 }
 
 export function heatReceiptScale(units: number, maxUnits = HEAT_RECEIPT_CEILING_UNITS): HeatReceiptScale {
-  const ceilingUnits =
-    Number.isInteger(maxUnits) && maxUnits >= 1 ? maxUnits : HEAT_RECEIPT_CEILING_UNITS;
+  const ceilingUnits = Number.isInteger(maxUnits) && maxUnits >= 1 ? maxUnits : HEAT_RECEIPT_CEILING_UNITS;
 
   if (!Number.isInteger(units) || units < 0) {
     return { units, ppm: 0, fidelity: "out-of-domain", ceilingUnits, protocol: HEAT_RECEIPT_PROTOCOL };
@@ -673,6 +718,22 @@ export function temperatureReadout(input: {
   readonly uncertaintyPpm: number;
   readonly pressurePpm: number;
   readonly attentionPpm: number;
+  /**
+   * Fidelities already established UPSTREAM, for callers that encoded their
+   * inputs before handing them over.
+   *
+   * This is an argument, not a schema field: `TemperatureReadout`'s shape is
+   * unchanged. It exists because the ppm values a caller passes may already have
+   * been through a lossy accessor — `heatReceiptPpm(NaN)` is `0`, and by the time
+   * that `0` arrives here it is indistinguishable from a genuine idle room. Since
+   * this function cannot recover what it was never told, a caller that DOES know
+   * must be able to say so, and the readout takes the worst of what it can see
+   * and what it is told (`worstFidelity`).
+   *
+   * Omitting it is safe but not free: the readout then reports only the faults
+   * visible in its own four arguments.
+   */
+  readonly upstreamFidelity?: readonly ChannelFidelity[];
 }): TemperatureReadout {
   const heatPpm = clampTemperaturePpm(input.heatPpm);
   const uncertaintyPpm = clampTemperaturePpm(input.uncertaintyPpm);
@@ -686,11 +747,16 @@ export function temperatureReadout(input: {
   const verdicts = [input.heatPpm, input.uncertaintyPpm, input.pressurePpm, input.attentionPpm].map(
     (value) => temperatureBandReading(value).verdict,
   );
-  const fidelity: ChannelFidelity = verdicts.includes("out-of-domain")
+  const ownFidelity: ChannelFidelity = verdicts.includes("out-of-domain")
     ? "out-of-domain"
     : verdicts.includes("over-ceiling")
       ? "saturated"
       : "exact";
+
+  // A composed reading is only as faithful as its worst input. Without this fold
+  // the readout would report `exact` for a caller that already knew its input was
+  // NaN — asserting a faithfulness nothing measured.
+  const fidelity = worstFidelity([ownFidelity, ...(input.upstreamFidelity ?? [])]);
 
   return {
     schema: TEMPERATURE_READOUT_SCHEMA,
@@ -750,8 +816,7 @@ export interface BlackBodyRadianceReading {
 
 export function blackBodyRadianceReading(temperaturePpm: number): BlackBodyRadianceReading {
   const radiancePpm = blackBodyRadiancePpm(temperaturePpm);
-  const inDomain =
-    Number.isInteger(temperaturePpm) && temperaturePpm >= 0 && temperaturePpm <= MAX_TEMPERATURE_PPM;
+  const inDomain = Number.isInteger(temperaturePpm) && temperaturePpm >= 0 && temperaturePpm <= MAX_TEMPERATURE_PPM;
 
   const fidelity: ChannelFidelity = !inDomain
     ? "out-of-domain"
@@ -780,7 +845,10 @@ export function blackBodyPeakFrequencyPpm(temperaturePpm: number): number {
   return clampTemperaturePpm(temperaturePpm);
 }
 
-export function blackBodyReadout(input: { readonly source: string; readonly temperaturePpm: number }): BlackBodyReadout {
+export function blackBodyReadout(input: {
+  readonly source: string;
+  readonly temperaturePpm: number;
+}): BlackBodyReadout {
   const temperaturePpm = clampTemperaturePpm(input.temperaturePpm);
 
   return {
@@ -800,11 +868,14 @@ export function temperatureTreatyBundle(input: {
   readonly heatReceipts?: readonly HeatReceipt[];
 }): TemperatureTreatyBundle {
   const blackBody =
-    input.blackBody ?? blackBodyReadout({ source: input.temperature.source, temperaturePpm: input.temperature.temperaturePpm });
+    input.blackBody ??
+    blackBodyReadout({ source: input.temperature.source, temperaturePpm: input.temperature.temperaturePpm });
 
   return {
     heatReadoutSchema: HEAT_READOUT_SCHEMA,
-    ...(input.heatReceipts === undefined ? {} : { heatReceiptSchema: HEAT_RECEIPT_SCHEMA, heatReceipts: input.heatReceipts }),
+    ...(input.heatReceipts === undefined
+      ? {}
+      : { heatReceiptSchema: HEAT_RECEIPT_SCHEMA, heatReceipts: input.heatReceipts }),
     temperatureReadoutSchema: TEMPERATURE_READOUT_SCHEMA,
     blackBodyReadoutSchema: BLACK_BODY_READOUT_SCHEMA,
     qsharpTreaty: HEAT_SIGNAL_TREATY_PATH,
