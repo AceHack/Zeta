@@ -1,0 +1,12 @@
+{
+  "pr_number": 11629,
+  "archive_path": "docs/history/pr-reviews/PR-11629-measure-chip8-does-the-consult-path-post-select-for-continuation-register-row-r-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T20:24:12.974Z",
+  "schema_version": "v1",
+  "commit_sha": "b6aca18baa8b6c8c68b32f56a8348214fc1f255f",
+  "title": "measure(chip8): does the CONSULT path post-select for continuation? (register row R-1)",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T20:23:35Z",
+  "head_ref": "shadow/consult-path-postselection-measurement"
+}
