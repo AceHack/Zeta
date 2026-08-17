@@ -3,7 +3,12 @@ import {
   createBrowserCausalCorrectionLedger,
   foldBrowserCausalCorrection,
 } from "../browser-node/browser-causal-correction-ledger";
-import { DARK_HALL_CAUSAL_READOUT_SCHEMA, darkHallCausalReadout } from "./darkhall-causal-readout";
+import {
+  DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA,
+  DARK_HALL_CAUSAL_READOUT_SCHEMA,
+  darkHallCausalHandoffReadout,
+  darkHallCausalReadout,
+} from "./darkhall-causal-readout";
 
 describe("Dark Hall causal readout", () => {
   test("projects bounded ledger capacity and source-attributed corrections", () => {
@@ -69,5 +74,35 @@ describe("Dark Hall causal readout", () => {
 
     (readout.corrections[0] as { sourceTabId: string }).sourceTabId = "mutated";
     expect(admitted.value.corrections[0]?.sourceTabId).toBe("tab-a");
+  });
+
+  test("projects the observed peer edge without upgrading an offer into delivery", () => {
+    const feedback = {
+      severity: "backpressure" as const,
+      code: "causal-correction-capacity-exhausted" as const,
+      detail: "capacity retained",
+    };
+    const readout = darkHallCausalHandoffReadout("tab-a", 2, {
+      status: "backpressured",
+      direction: "inbound",
+      peerTabId: "tab-b",
+      correctionCount: 2,
+      admittedCorrections: 0,
+      feedback,
+    });
+
+    expect(readout).toEqual({
+      schema: DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA,
+      localTabId: "tab-a",
+      maxCorrections: 2,
+      status: "backpressured",
+      direction: "inbound",
+      peerTabId: "tab-b",
+      correctionCount: 2,
+      admittedCorrections: 0,
+      feedback,
+    });
+    (readout.feedback as { detail: string }).detail = "mutated";
+    expect(feedback.detail).toBe("capacity retained");
   });
 });

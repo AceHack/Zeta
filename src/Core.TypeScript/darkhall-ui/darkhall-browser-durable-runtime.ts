@@ -41,7 +41,13 @@ import type {
   BrowserDatabaseInvalidation,
 } from "../browser-node/browser-tab-coordinator";
 import type { DarkHallDatabaseReadout } from "./darkhall-database-readout";
-import { darkHallCausalReadout, type DarkHallCausalReadout } from "./darkhall-causal-readout";
+import {
+  darkHallCausalHandoffReadout,
+  darkHallCausalReadout,
+  type DarkHallCausalHandoffReadout,
+  type DarkHallCausalHandoffState,
+  type DarkHallCausalReadout,
+} from "./darkhall-causal-readout";
 import {
   startNativeDarkHallBrowser,
   type DarkHallBrowserBootstrapFeedback,
@@ -51,7 +57,7 @@ import {
 } from "./darkhall-browser-bootstrap";
 import type { RoomRunTranscript } from "./darkhall-room";
 
-export const DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA = "zeta.darkhall.browser-durable-runtime.v3" as const;
+export const DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA = "zeta.darkhall.browser-durable-runtime.v4" as const;
 
 const MAX_CAUSAL_CHECKPOINT_SAVE_ATTEMPTS = 4;
 
@@ -127,6 +133,7 @@ export interface DarkHallBrowserDurableReadout {
   };
   readonly database: DarkHallDatabaseReadout | null;
   readonly causal: DarkHallCausalReadout;
+  readonly causalHandoff: DarkHallCausalHandoffReadout;
   readonly causalCheckpoint: {
     readonly state: "idle" | "saving" | "saved" | "failed";
     readonly recoveredRevision: number | null;
@@ -380,6 +387,14 @@ export async function startDurableDarkHallBrowser(
 
   let causalLedger: BrowserCausalCorrectionLedger = selectedCausalLedger.value;
   let causalFeedback: BrowserCausalCorrectionLedgerFeedback | null = null;
+  let causalHandoffState: DarkHallCausalHandoffState = {
+    status: "idle",
+    direction: "none",
+    peerTabId: null,
+    correctionCount: 0,
+    admittedCorrections: 0,
+    feedback: null,
+  };
   let causalRenderFeedback: DarkHallBrowserDurableFeedback | null = null;
   let causalCheckpointRecord = recoveredCausalCheckpoint.value;
   let causalCheckpointPendingWrites = 0;
@@ -544,16 +559,44 @@ export async function startDurableDarkHallBrowser(
     if (admitted.ok) {
       causalLedger = admitted.value;
       causalFeedback = null;
+      const admittedCorrections = causalLedger.corrections.length - previous.corrections.length;
+      causalHandoffState = {
+        status: admittedCorrections === 0 ? "duplicate" : "received",
+        direction: "inbound",
+        peerTabId: replay.sourceTabId,
+        correctionCount: replay.corrections.length,
+        admittedCorrections,
+        feedback: null,
+      };
       if (causalLedger !== previous) scheduleCausalCheckpoint();
     } else {
       causalFeedback = admitted.feedback;
+      causalHandoffState = {
+        status: admitted.feedback.severity === "backpressure" ? "backpressured" : "heat",
+        direction: "inbound",
+        peerTabId: replay.sourceTabId,
+        correctionCount: replay.corrections.length,
+        admittedCorrections: 0,
+        feedback: admitted.feedback,
+      };
     }
     renderCausalProjection();
   };
 
   const causalCorrectionReplay: BrowserCausalCorrectionReplayPort = {
     maxCorrections: options.maxCausalCorrections,
-    snapshot: () => causalLedger.corrections.map((correction) => ({ ...correction })),
+    snapshot: (targetTabId) => {
+      const corrections = causalLedger.corrections.map((correction) => ({ ...correction }));
+      causalHandoffState = {
+        status: "offered",
+        direction: "outbound",
+        peerTabId: targetTabId ?? null,
+        correctionCount: corrections.length,
+        admittedCorrections: 0,
+        feedback: null,
+      };
+      return corrections;
+    },
     receive: receiveCausalCorrectionReplay,
   };
 
@@ -614,6 +657,7 @@ export async function startDurableDarkHallBrowser(
     room: roomSummary(currentTranscript),
     database: databaseReadout,
     causal: darkHallCausalReadout(causalLedger, causalFeedback),
+    causalHandoff: darkHallCausalHandoffReadout(options.tabId, options.maxCausalCorrections, causalHandoffState),
     causalCheckpoint: {
       ...causalCheckpointSync,
       feedback:

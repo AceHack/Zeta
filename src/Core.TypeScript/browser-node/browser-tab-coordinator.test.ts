@@ -402,6 +402,7 @@ describe("browser tab coordinator", () => {
   test("replays bounded causal history to a late-joining tab without changing correction identity", () => {
     const bus = new FakeBus();
     const received: BrowserCausalCorrectionReplayNotice[] = [];
+    const replayTargets: (string | undefined)[] = [];
     const retained: readonly BrowserCausalCorrectionNotice[] = [
       { sourceTabId: "tab-origin", sequence: "14", reinterpretsThrough: "12", deltaRows: 2 },
       { sourceTabId: "tab-a", sequence: "18", reinterpretsThrough: "14", deltaRows: 1 },
@@ -410,7 +411,10 @@ describe("browser tab coordinator", () => {
       startBrowserTabCoordinator(
         options("tab-a", undefined, undefined, undefined, undefined, undefined, {
           maxCorrections: 2,
-          snapshot: () => retained,
+          snapshot: (targetTabId) => {
+            replayTargets.push(targetTabId);
+            return retained;
+          },
           receive: () => undefined,
         }),
         bus.connect(),
@@ -435,6 +439,7 @@ describe("browser tab coordinator", () => {
         corrections: retained,
       },
     ]);
+    expect(replayTargets).toEqual(["tab-b"]);
     expect(received[0]?.corrections[0]?.sourceTabId).toBe("tab-origin");
     expect(tabA.stop(2).ok).toBe(true);
     expect(tabB.stop(2).ok).toBe(true);

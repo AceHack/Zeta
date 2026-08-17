@@ -11,7 +11,7 @@ import type {
 import type { ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 import type { BrowserDatabaseIntentReadout } from "./browser-database-intent-outbox";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v11" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v12" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -127,6 +127,7 @@ export interface BrowserMultitabSmokeTranscript {
     readonly removed: boolean;
   };
   readonly afterRetraction: {
+    readonly pageC: BrowserMultitabPageObservation;
     readonly pageD: BrowserMultitabPageObservation;
   };
   readonly intentRecovery: {
@@ -395,6 +396,28 @@ async function waitForSinglePage(page: Page, tabId: string): Promise<void> {
       );
     },
     tabId,
+    { timeout: timeoutMs },
+  );
+}
+
+async function waitForCausalHandoff(
+  page: Page,
+  direction: "outbound" | "inbound",
+  status: "offered" | "received" | "duplicate",
+  peerTabId: string,
+): Promise<void> {
+  await page.waitForFunction(
+    (expected) => {
+      const root = globalThis as unknown as Partial<BrowserSmokeGlobal>;
+      const source = root.__zetaBrowserSmoke?.read();
+      const handoff = source?.ok === true ? source.value.causal.handoff : null;
+      return (
+        handoff?.direction === expected.direction &&
+        handoff.status === expected.status &&
+        handoff.peerTabId === expected.peerTabId
+      );
+    },
+    { direction, status, peerTabId },
     { timeout: timeoutMs },
   );
 }
@@ -687,6 +710,35 @@ function validateCausalCheckpointRestart(transcript: BrowserMultitabSmokeTranscr
       failures.push(`${label} did not recover the exact independent causal correction checkpoint`);
     }
   }
+
+  if (transcript.afterRetraction.pageC.source.ok) {
+    const offered = transcript.afterRetraction.pageC.source.value.causal.handoff;
+    if (
+      offered.status !== "offered" ||
+      offered.direction !== "outbound" ||
+      offered.peerTabId !== "tab-d" ||
+      offered.correctionCount !== 1 ||
+      offered.admittedCorrections !== 0 ||
+      offered.feedback !== null
+    ) {
+      failures.push("page C did not expose its recovered causal history as an outbound peer offer");
+    }
+  } else {
+    failures.push("page C failed while exposing the causal peer offer");
+  }
+  if (transcript.afterRetraction.pageD.source.ok) {
+    const received = transcript.afterRetraction.pageD.source.value.causal.handoff;
+    if (
+      received.status !== "duplicate" ||
+      received.direction !== "inbound" ||
+      received.peerTabId !== "tab-c" ||
+      received.correctionCount !== 1 ||
+      received.admittedCorrections !== 0 ||
+      received.feedback !== null
+    ) {
+      failures.push("page D did not expose idempotent admission of page C's recovered causal history");
+    }
+  }
 }
 
 function validateCheckpointRetraction(transcript: BrowserMultitabSmokeTranscript, failures: string[]): void {
@@ -701,8 +753,8 @@ function validateCheckpointRetraction(transcript: BrowserMultitabSmokeTranscript
       failures.push("page D retained semantic room checkpoint state after retraction");
     if (restarted.host.coordinator.liveness.checkpoint !== "none")
       failures.push("page D reported durable continuity after checkpoint retraction");
-    if (restarted.host.coordinator.tabs.map((tab) => tab.tabId).join(",") !== "tab-d")
-      failures.push("page D restored obsolete tab-presence state");
+    if (restarted.host.coordinator.liveness.liveTabIds.join(",") !== "tab-c,tab-d")
+      failures.push("page D did not distinguish its live peer from obsolete tab-presence state");
   } else {
     failures.push("page D did not start after checkpoint retraction");
   }
@@ -974,27 +1026,29 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     });
     if (!retraction.ok) return failed("smoke-failed", retraction.feedback.detail);
 
-    await pageC.evaluate(() => {
-      const root = globalThis as unknown as BrowserSmokeGlobal;
-      root.__zetaBrowserSmoke.stop();
-      root.ZetaMesh.destroy();
-    });
-    await pageC.close();
     const pageD = await context.newPage();
     await pageD.addInitScript(initIrisId("iris-d"));
     await pageD.goto(`${baseUrl}?tab=tab-d&sequence=500`);
     await waitForReady(pageD);
     await pageD.evaluate("globalThis.ZetaMesh.announce()");
-    await waitForSinglePage(pageD, "tab-d");
+    await Promise.all([waitForTwoPages(pageC), waitForTwoPages(pageD)]);
+    await Promise.all([
+      waitForCausalHandoff(pageC, "outbound", "offered", "tab-d"),
+      waitForCausalHandoff(pageD, "inbound", "duplicate", "tab-c"),
+    ]);
 
-    stage = "observe final cold restart";
-    const pageDAfterRetraction = await observe(pageD);
-    await pageD.evaluate(() => {
-      const root = globalThis as unknown as BrowserSmokeGlobal;
-      root.__zetaBrowserSmoke.stop();
-      root.ZetaMesh.destroy();
-    });
-    await pageD.close();
+    stage = "observe final peer handoff after room retraction";
+    const [pageCAfterPeerHandoff, pageDAfterRetraction] = await Promise.all([observe(pageC), observe(pageD)]);
+    await Promise.all(
+      [pageC, pageD].map((page) =>
+        page.evaluate(() => {
+          const root = globalThis as unknown as BrowserSmokeGlobal;
+          root.__zetaBrowserSmoke.stop();
+          root.ZetaMesh.destroy();
+        }),
+      ),
+    );
+    await Promise.all([pageC.close(), pageD.close()]);
 
     stage = "recover persisted intent after writer page closes";
     const intentRecovery = await runIntentRecoveryProof(context, baseUrl);
@@ -1021,7 +1075,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
       stoppedPageA: stoppedA.value,
       afterRestart: { pageC: pageCAfterRestart },
       retraction: retraction.value,
-      afterRetraction: { pageD: pageDAfterRetraction },
+      afterRetraction: { pageC: pageCAfterPeerHandoff, pageD: pageDAfterRetraction },
       intentRecovery,
     };
     const failures = validateTranscript(transcript);

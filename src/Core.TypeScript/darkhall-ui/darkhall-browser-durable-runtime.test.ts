@@ -392,6 +392,106 @@ describe("durable Dark Hall browser runtime", () => {
     });
   });
 
+  test("offers recovered history through the peer port and reports admission without losing identity", async () => {
+    const correction = { sourceTabId: "tab-origin", sequence: "8", reinterpretsThrough: "5", deltaRows: 3 };
+    const senderPort = new MemoryCheckpointPort(causalCheckpointRecord(1, [correction]));
+    const senderStarter = createStarter();
+    const sender = await startDurableDarkHallBrowser(
+      { ...options(), tabId: "tab-sender" },
+      senderPort,
+      senderStarter.start,
+    );
+    const receiverStarter = createStarter();
+    const receiver = await startDurableDarkHallBrowser(
+      { ...options(), tabId: "tab-receiver" },
+      new MemoryCheckpointPort(),
+      receiverStarter.start,
+    );
+    expect(sender.ok).toBe(true);
+    expect(receiver.ok).toBe(true);
+    if (!sender.ok || !receiver.ok) return;
+
+    const snapshot = senderStarter.starts[0]?.causalCorrectionReplay?.snapshot("tab-receiver") ?? [];
+    expect(snapshot).toEqual([correction]);
+    expect(sender.value.read().causalHandoff).toMatchObject({
+      status: "offered",
+      direction: "outbound",
+      localTabId: "tab-sender",
+      peerTabId: "tab-receiver",
+      correctionCount: 1,
+      admittedCorrections: 0,
+      feedback: null,
+    });
+
+    const replay = {
+      sourceTabId: "tab-sender",
+      targetTabId: "tab-receiver",
+      maxCorrections: 2,
+      corrections: snapshot,
+    };
+    receiverStarter.starts[0]?.causalCorrectionReplay?.receive(replay);
+    expect(receiver.value.read()).toMatchObject({
+      causal: { corrections: [correction] },
+      causalHandoff: {
+        status: "received",
+        direction: "inbound",
+        peerTabId: "tab-sender",
+        correctionCount: 1,
+        admittedCorrections: 1,
+        feedback: null,
+      },
+    });
+
+    receiverStarter.starts[0]?.causalCorrectionReplay?.receive(replay);
+    expect(receiver.value.read()).toMatchObject({
+      causal: { corrections: [correction] },
+      causalHandoff: { status: "duplicate", admittedCorrections: 0 },
+    });
+  });
+
+  test("exposes peer backpressure and conflicting identity as distinct handoff outcomes", async () => {
+    const starter = createStarter();
+    const started = await startDurableDarkHallBrowser(
+      { ...options(), tabId: "tab-receiver", maxCausalCorrections: 1 },
+      new MemoryCheckpointPort(),
+      starter.start,
+    );
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+    expect(
+      started.value.publishCausalCorrection({ sequence: "2", reinterpretsThrough: "1", deltaRows: 1 }),
+    ).toMatchObject({ ok: true });
+
+    starter.starts[0]?.causalCorrectionReplay?.receive({
+      sourceTabId: "tab-sender",
+      targetTabId: "tab-receiver",
+      maxCorrections: 1,
+      corrections: [{ sourceTabId: "tab-sender", sequence: "4", reinterpretsThrough: "3", deltaRows: 1 }],
+    });
+    expect(started.value.read()).toMatchObject({
+      causal: { corrections: [{ sourceTabId: "tab-receiver", sequence: "2" }] },
+      causalHandoff: {
+        status: "backpressured",
+        direction: "inbound",
+        peerTabId: "tab-sender",
+        correctionCount: 1,
+        admittedCorrections: 0,
+        feedback: { severity: "backpressure", code: "causal-correction-capacity-exhausted" },
+      },
+    });
+
+    starter.starts[0]?.causalCorrectionReplay?.receive({
+      sourceTabId: "tab-sender",
+      targetTabId: "tab-receiver",
+      maxCorrections: 1,
+      corrections: [{ sourceTabId: "tab-receiver", sequence: "2", reinterpretsThrough: "1", deltaRows: 2 }],
+    });
+    expect(started.value.read().causalHandoff).toMatchObject({
+      status: "heat",
+      feedback: { severity: "heat", code: "causal-correction-conflict" },
+    });
+  });
+
   test("persists causal corrections separately and recovers them after every tab closes", async () => {
     const port = new MemoryCheckpointPort();
     const starter = createStarter();

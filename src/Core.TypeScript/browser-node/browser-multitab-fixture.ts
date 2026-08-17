@@ -30,7 +30,7 @@ import type {
   BrowserTabCoordinatorReadout,
 } from "./browser-tab-coordinator";
 
-export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v7" as const;
+export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v8" as const;
 
 type BrowserMultitabFeedback =
   | DarkHallBrowserDurableFeedback
@@ -69,6 +69,7 @@ export interface BrowserMultitabCheckpointReadout {
 
 export interface BrowserMultitabCausalReadout {
   readonly ledger: DarkHallBrowserDurableReadout["causal"];
+  readonly handoff: DarkHallBrowserDurableReadout["causalHandoff"];
   readonly checkpoint: DarkHallBrowserDurableReadout["causalCheckpoint"];
 }
 
@@ -202,6 +203,7 @@ function read(runtime: DarkHallBrowserDurableRuntime): BrowserMultitabFixtureRea
 function causalReadout(current: DarkHallBrowserDurableReadout): BrowserMultitabCausalReadout {
   return {
     ledger: current.causal,
+    handoff: current.causalHandoff,
     checkpoint: current.causalCheckpoint,
   };
 }

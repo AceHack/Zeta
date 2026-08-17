@@ -112,7 +112,7 @@ export type BrowserTabChannelMessage =
 
 export interface BrowserCausalCorrectionReplayPort {
   readonly maxCorrections: number;
-  snapshot(): readonly BrowserCausalCorrectionNotice[];
+  snapshot(targetTabId?: string): readonly BrowserCausalCorrectionNotice[];
   receive(replay: BrowserCausalCorrectionReplayNotice): void;
 }
 
@@ -654,7 +654,7 @@ export function startBrowserTabCoordinator(
 
     let snapshot: unknown;
     try {
-      snapshot = replayPort.snapshot();
+      snapshot = replayPort.snapshot(message.requesterTabId);
     } catch {
       notify(
         project([
