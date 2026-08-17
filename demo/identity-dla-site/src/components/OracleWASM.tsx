@@ -19,6 +19,7 @@
  */
 import { useState, useEffect, useRef, useCallback } from "react";
 import { acceptsWasmResult, beginWasmExecution, cancelWasmExecution, idleWasmExecution, type WasmExecutionController } from "@/lib/wasmExecutionController";
+import { installGoRuntimeBridge, probeGoOracle, readGoOracle } from "@/lib/goWasmOracle";
 
 const pagesWasmUrl = (file: string): string => `${import.meta.env.BASE_URL}wasm/${file}`;
 const ASC_WASM_URL = pagesWasmUrl("dla-asc.wasm");
@@ -27,6 +28,11 @@ const ZIG_WASM_URL = pagesWasmUrl("dla-zig.wasm");
 const EMCC_WASM_URL = pagesWasmUrl("dla-emcc.wasm");
 const LLVM_WASM_URL = pagesWasmUrl("dla-llvm.wasm");
 const RUST_WASM_URL = pagesWasmUrl("dla-rust.wasm");
+// The Go pair. Unlike the six above, these are BUILT during the Pages deploy (the module
+// is ~1.9 MB) — so whether they exist is a fact about the deployed artifact, discovered
+// at run time by `probeGoOracle`, never assumed here.
+const GO_WASM_URL = pagesWasmUrl("dla-go.wasm");
+const GO_BRIDGE_URL = pagesWasmUrl("wasm_exec.js");
 
 const W = 100, H = 100;
 const N_WALKERS = 800;
@@ -278,10 +284,58 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
   }, [updateResult]);
 
   // ── Run Go oracle (index 6) ──────────────────────────────────────────────────
+  //
+  // Until 2026-08-17 this function's whole body was a hardcoded
+  //   "pending: Pages build does not yet produce the Go module"
+  // which was TRUE — no workflow compiled Go — and which would have stayed on screen
+  // unchanged on the day that stopped being true. The status is now derived from the
+  // artifact: `probeGoOracle` fetches the module and its runtime bridge, and every
+  // outcome (absent, half-published, not a module, degenerate run, measured D_f) is
+  // reported as what was actually found.
   const runGo = useCallback(async (s: number) => {
-    void s;
-    updateResult(6, { status: "error", error: "pending: Pages build does not yet produce the Go module" });
-    return null;
+    updateResult(6, { status: "loading" });
+    const t0 = performance.now();
+    try {
+      // Wrapped, not passed bare: an unbound `fetch` loses its `this` and throws
+      // "Illegal invocation" in a browser.
+      const probe = await probeGoOracle((url: string) => fetch(url), GO_WASM_URL, GO_BRIDGE_URL);
+      if (!probe.available) {
+        updateResult(6, { status: "error", error: probe.reason });
+        return null;
+      }
+      // `wasm_exec.js` is the Go runtime's JS half; it defines `globalThis.Go`.
+      installGoRuntimeBridge(probe.bridgeSource);
+      const goRuntime = (globalThis as unknown as { Go: new () => { importObject: WebAssembly.Imports; run: (instance: WebAssembly.Instance) => Promise<void> } }).Go;
+      const go = new goRuntime();
+      const { instance } = await WebAssembly.instantiate(probe.moduleBytes, go.importObject);
+      updateResult(6, { status: "running" });
+      // `main()` registers the dla_* globals and then blocks on `select {}`, so this
+      // promise never settles — awaiting it would hang the panel forever.
+      void go.run(instance);
+      const registered = globalThis as unknown as {
+        dla_init: (seed: number) => void;
+        dla_run: () => void;
+        dla_get_cluster_size: () => number;
+      };
+      registered.dla_init(s);
+      registered.dla_run();
+      const reading = readGoOracle(registered.dla_get_cluster_size(), computeDf);
+      if (reading.kind === "degenerate") {
+        updateResult(6, { status: "error", error: reading.reason });
+        return null;
+      }
+      updateResult(6, {
+        df: reading.df,
+        clusterSize: reading.clusterSize,
+        elapsed: (performance.now() - t0) / 1000,
+        status: "done",
+        cells: radialCells(reading.clusterSize),
+      });
+      return reading.df;
+    } catch (e) {
+      updateResult(6, { status: "error", error: String(e) });
+      return null;
+    }
   }, [updateResult]);
 
   const stop = useCallback(() => {
@@ -362,7 +416,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
       {/* Header */}
       <div style={{ fontSize: "0.6rem", color: "var(--muted-foreground)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-        Six compiled modules · explicit start · sequential execution · cancellable between modules
+        {results.length} compiled modules · explicit start · sequential execution · cancellable between modules
       </div>
       <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
         <button type="button" onClick={start} disabled={execution.running} style={{ padding: "0.5rem 0.75rem", border: "1px solid #2dd4bf", background: execution.running ? "rgba(45,212,191,0.1)" : "rgba(45,212,191,0.2)", color: "#ccfbf1", font: "inherit" }}>{execution.running ? "running…" : "run compiler experiment"}</button>

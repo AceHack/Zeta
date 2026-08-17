@@ -1,6 +1,6 @@
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { PAGES_WASM_ASSETS } from "./identity-dla-pages-wasm-assets";
+import { GO_PAGES_ASSET, GO_PAGES_BRIDGE, PAGES_WASM_ASSETS } from "./identity-dla-pages-wasm-assets";
 
 const WASM_MAGIC = [0x00, 0x61, 0x73, 0x6d] as const;
 const CURRENT_PROPOSAL_MARKER = "authorize this device";
@@ -11,6 +11,13 @@ export type PagesArtifactEvidence = Readonly<{
   readonly authorizationAsset: string;
   readonly proposalMarker: typeof CURRENT_PROPOSAL_MARKER;
   readonly wasmAssets: readonly string[];
+  /**
+   * DERIVED BY LOOKING, never declared. The Go substrate is built during the Pages
+   * build rather than committed, so whether it shipped is a property of THIS artifact.
+   * Writing `"published"` unconditionally would reproduce, in the evidence file, the
+   * exact defect this field exists to close in the UI.
+   */
+  readonly goOracle: "published" | "absent";
 }>;
 
 function assertWasmMagic(file: string): void {
@@ -42,11 +49,24 @@ export function verifyPagesArtifact(artifactRoot: string): PagesArtifactEvidence
     throw new Error("teaching error: Pages artifact still contains the retired GitHub issue-form proposal transport");
   }
   for (const asset of PAGES_WASM_ASSETS) assertWasmMagic(join(artifactRoot, asset.published));
+
+  // The Go pair: present ⇒ verified and listed; absent ⇒ said out loud. A module
+  // published without its runtime bridge counts as ABSENT, because it cannot run —
+  // "the file is there" is not the property the page depends on.
+  const goModule = join(artifactRoot, GO_PAGES_ASSET.published);
+  const goBridge = join(artifactRoot, GO_PAGES_BRIDGE.published);
+  const goPublished = existsSync(goModule) && existsSync(goBridge);
+  if (goPublished) assertWasmMagic(goModule);
+
   return {
     entryAsset,
     authorizationAsset,
     proposalMarker: CURRENT_PROPOSAL_MARKER,
-    wasmAssets: PAGES_WASM_ASSETS.map(asset => asset.published),
+    wasmAssets: [
+      ...PAGES_WASM_ASSETS.map(asset => asset.published),
+      ...(goPublished ? [GO_PAGES_ASSET.published, GO_PAGES_BRIDGE.published] : []),
+    ],
+    goOracle: goPublished ? "published" : "absent",
   };
 }
 

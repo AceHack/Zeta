@@ -29,6 +29,11 @@
 *.a
 *.rcgu.o
 wasm_exec.js
+# The Pages build copies the JS bridge out of the $GOROOT that compiled the module, so it
+# is a build output under a distinct name — the committed `wasm_exec.js` beside it is a
+# Go 1.22-era file and MEASURED 2026-08-17 to differ from Go 1.26.4's. Two names keeps
+# that difference visible instead of letting one overwrite the other.
+wasm-exec-pages.js
 go.sum
 
 # Build artifacts

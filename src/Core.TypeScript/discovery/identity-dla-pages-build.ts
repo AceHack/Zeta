@@ -16,6 +16,7 @@
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { writePagesArtifactEvidence } from "./identity-dla-pages-artifact";
+import { buildGoWasmOracle } from "./identity-dla-pages-go-build";
 import { stagePagesWasmAssets } from "./identity-dla-pages-wasm-assets";
 
 const repoRoot = process.cwd();
@@ -76,6 +77,17 @@ function pnpm(...args: readonly string[]): void {
   run(process.execPath, ["x", `pnpm@${pnpmVersion}`, ...args], siteRoot);
 }
 
+// Oracle 10's seventh substrate is compiled here rather than committed (~1.9 MB). It runs
+// BEFORE the Vite build so the staging step below has something to stage. `ZETA_PAGES_REQUIRE_GO`
+// is set by `pages-deploy.yml`, where an `actions/setup-go` step guarantees the toolchain:
+// there, a missing `go` is a hard failure rather than a quietly smaller artifact.
+const goBuild = buildGoWasmOracle(repoRoot, (process.env.ZETA_PAGES_REQUIRE_GO ?? "") !== "");
+console.log(
+  goBuild.kind === "built"
+    ? `[pages] Go WASM oracle built: ${goBuild.module} (${String(goBuild.moduleBytes)} bytes) + bridge from ${goBuild.goRoot}`
+    : `[pages] Go WASM oracle SKIPPED: ${goBuild.reason}`,
+);
+
 console.log(`[pages] identity-dla-site: using pnpm@${pnpmVersion} (declared by the site manifest)`);
 pnpm("install", "--frozen-lockfile");
 pnpm("check");
@@ -85,8 +97,9 @@ if (!existsSync(builtSite)) throw new Error("teaching error: Race Mode Vite buil
 rmSync(artifactTarget, { recursive: true, force: true });
 mkdirSync(artifactTarget, { recursive: true });
 cpSync(builtSite, artifactTarget, { recursive: true });
-stagePagesWasmAssets(repoRoot, artifactTarget);
+const staging = stagePagesWasmAssets(repoRoot, artifactTarget);
+for (const missing of staging.absent) console.log(`[pages] WASM asset NOT published — ${missing}`);
 const revision = new TextDecoder().decode(Bun.spawnSync(["git", "rev-parse", "HEAD"], { cwd: repoRoot }).stdout).trim();
 if (!/^[0-9a-f]{40}$/i.test(revision)) throw new Error("teaching error: Pages build could not bind its artifact evidence to an immutable Git revision");
 const evidence = writePagesArtifactEvidence(artifactTarget, revision);
-console.log(`[pages] Race Mode artifact ready: ${artifactTarget} (${evidence.entryAsset}; ${evidence.wasmAssets.length} WASM assets verified)`);
+console.log(`[pages] Race Mode artifact ready: ${artifactTarget} (${evidence.entryAsset}; ${evidence.wasmAssets.length} WASM assets verified; Go oracle ${evidence.goOracle})`);
