@@ -1,0 +1,12 @@
+{
+  "pr_number": 10829,
+  "archive_path": "docs/history/pr-reviews/PR-10829-feat-ir-bonsai-the-bonsai-target-edge-and-cond-labelled-as-two-disciplines-with-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T03:38:23.185Z",
+  "schema_version": "v1",
+  "commit_sha": "8fb6821bc834ea27da2481fec1ebe6f7474ebcc0",
+  "title": "feat(ir,bonsai): the Bonsai→target edge, and `Cond` labelled as two disciplines with substitution refused",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T03:37:48Z",
+  "head_ref": "shadow/bonsai-emission-edge-arrest-at-target-level"
+}
