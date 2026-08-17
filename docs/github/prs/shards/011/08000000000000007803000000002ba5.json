@@ -1,0 +1,12 @@
+{
+  "pr_number": 11173,
+  "archive_path": "docs/history/pr-reviews/PR-11173-fix-ledger-acknowledge-kubevirt-false-redundancy-virt-operator-ships-replicas-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:24:36.515Z",
+  "schema_version": "v1",
+  "commit_sha": "66f3849e9a029c4c25500da97c89669b82563594",
+  "title": "fix(ledger): acknowledge kubevirt false-redundancy — virt-operator ships replicas=2",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:23:57Z",
+  "head_ref": "fix/ledger-ack-kubevirt-false-redundancy"
+}
