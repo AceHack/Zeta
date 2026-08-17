@@ -172,6 +172,7 @@ export type VMSpec = {
 
 export type NetworkTopology =
   | { kind: "shared-bridge"; bridgeName: string }
+  | { kind: "shared-socket-segment"; host: string; port: number }
   | { kind: "vlan-isolated"; vlanId: number; gatewayVm: string }
   | { kind: "host-only"; subnet: string };
 
@@ -208,7 +209,13 @@ export const DEFAULT_MULTI_VM: MultiVMOrchestrationSubstrate = {
       vcpus: 2,
     },
   ],
-  networkTopology: { kind: "shared-bridge", bridgeName: "zflash-test-br0" },
+  // Was `{ kind: "shared-bridge", bridgeName: "zflash-test-br0" }` -- a
+  // topology no emitted argument implemented and no hosted runner could
+  // deliver, because creating a bridge needs root on the host. A QEMU-to-QEMU
+  // socket segment carries the same L2 frames with no root, no tap device and
+  // no host configuration, so this is the topology the harness can actually
+  // build. The port is the rendezvous both VMs name; see buildQemuNetworkDeviceArgs.
+  networkTopology: { kind: "shared-socket-segment", host: "127.0.0.1", port: 21084 },
   // k3s's join is the join (Aaron 2026-08-13, closing the open question on
   // PR #10493: "k3s's join is the join, don't invent our own").
   //

@@ -88,8 +88,13 @@ describe("MultiVMOrchestrationSubstrate (scenario 5)", () => {
     expect(roles).toContain("joining-node");
   });
 
-  test("DEFAULT_MULTI_VM uses shared-bridge network", () => {
-    expect(DEFAULT_MULTI_VM.networkTopology.kind).toBe("shared-bridge");
+  // A bridge needs root on the host, so the previous default described a
+  // topology no runner could build. The socket segment is buildable.
+  test("DEFAULT_MULTI_VM uses a rootless shared socket segment", () => {
+    expect(DEFAULT_MULTI_VM.networkTopology.kind).toBe("shared-socket-segment");
+    if (DEFAULT_MULTI_VM.networkTopology.kind === "shared-socket-segment") {
+      expect(DEFAULT_MULTI_VM.networkTopology.port).toBeGreaterThan(0);
+    }
   });
 
   test("DEFAULT_MULTI_VM joins with k3s's own token, not a Zeta-invented protocol", () => {
@@ -108,8 +113,9 @@ describe("MultiVMOrchestrationSubstrate (scenario 5)", () => {
       { kind: "shared-bridge", bridgeName: "br0" },
       { kind: "vlan-isolated", vlanId: 100, gatewayVm: "gw" },
       { kind: "host-only", subnet: "10.0.0.0/24" },
+      { kind: "shared-socket-segment", host: "127.0.0.1", port: 21084 },
     ];
-    expect(topologies).toHaveLength(3);
+    expect(topologies).toHaveLength(4);
   });
 
   test("JoinProtocol variants are exhaustive", () => {

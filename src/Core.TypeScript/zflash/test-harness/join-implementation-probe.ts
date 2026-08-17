@@ -167,11 +167,15 @@ export function describePromotionSignal(sightings: readonly JoinMarkerSighting[]
     "cluster-join serial markers, so the FIRST blocker on scenario 5 " +
     "(cluster-joining) has cleared. " +
     `Observed: ${where}. ` +
-    "Next: the SECOND blocker is still open — buildQemuSystemBootArgs emits only " +
-    "per-VM `-netdev user` (SLIRP NAT, no shared segment) and " +
-    "executeMultiVMRuntimePlan boots the VMs serially, terminating each on " +
-    "marker match. Give the VMs a shared L2 segment and a DoP-knobbed concurrent " +
-    "boot, THEN dispatch the scenario. Do not dispatch it before both are done."
+    "Next: buildQemuSystemBootArgs now accepts injected netdev specs and " +
+    "planMultiVMRuntime puts the two VMs on one QEMU socket L2 segment with " +
+    "distinct MACs, so the SLIRP NAT isolation is no longer what stops this. " +
+    "Still open: no frame has EVER crossed that segment, because " +
+    "executeMultiVMRuntimePlan boots the VMs serially and terminates each on " +
+    "marker match -- the listener is dead before the connector starts. And a " +
+    "zflash-prepared image still installs HOST=control-plane, so the joining " +
+    "VM would run no k3s agent to join with. Give the VMs a DoP-knobbed " +
+    "concurrent boot and a worker role, THEN dispatch. Not before."
   );
 }
 

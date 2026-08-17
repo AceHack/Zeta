@@ -163,7 +163,7 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
     ],
     gates: [],
     notes:
-      "FIRST blocker CLEARED 2026-08-13: a join now exists to observe. k3s's join is the join (Aaron, closing PR #10493's open question), so full-ai-cluster/nixos/modules/k3s-join-observer.nix witnesses k3s's own agent-to-server join and emits B0891_CLUSTER_JOIN_SERIAL_MARKERS to serial; nixos/tests/k3s-agent-join.nix proves it two-node against the shipped modules. Checked mechanically by join-implementation-probe.ts. STILL BLOCKED on three named items (see JoinBlocker): joining-node-role-provisioning — a zflash-prepared image installs HOST=control-plane, so the joining VM runs no k3s agent at all; shared-l2-segment — buildQemuSystemBootArgs emits per-VM SLIRP NAT; concurrent-vm-lifecycle — executeMultiVMRuntimePlan boots serially and kills each VM on marker match. Dispatching before all three clear would report a failure that has nothing to do with joining.",
+      "FIRST blocker CLEARED 2026-08-13: a join now exists to observe. k3s's join is the join (Aaron, closing PR #10493's open question), so full-ai-cluster/nixos/modules/k3s-join-observer.nix witnesses k3s's own agent-to-server join and emits B0891_CLUSTER_JOIN_SERIAL_MARKERS to serial; nixos/tests/k3s-agent-join.nix proves it two-node against the shipped modules. Checked mechanically by join-implementation-probe.ts. STILL BLOCKED on three named items (see JoinBlocker): joining-node-role-provisioning — a zflash-prepared image installs HOST=control-plane, so the joining VM runs no k3s agent at all; shared-l2-segment — the netdev args and the socket-segment plan now exist (distinct MACs, listen/connect), but no frame has ever crossed the segment because nothing runs the VMs concurrently; concurrent-vm-lifecycle — executeMultiVMRuntimePlan boots serially and kills each VM on marker match. Dispatching before all three clear would report a failure that has nothing to do with joining.",
   },
 ];
 
@@ -223,8 +223,14 @@ export function findScenario(id: ScenarioId): Scenario | undefined {
  *   per-flash `--role` flag to v2 scope of 081KSGS9H0008QG0R002T3BJ2R. So a zflash-prepared boot
  *   image installs a second control-plane, which joins nothing and runs no
  *   k3s agent — and therefore no join observer.
- * - `shared-l2-segment` — `buildQemuSystemBootArgs` emits only per-VM
- *   `-netdev user` (SLIRP NAT); the two VMs cannot address each other.
+ * - `shared-l2-segment` — the ARGUMENT half has cleared:
+ *   `buildQemuSystemBootArgs` now accepts injected netdev specs and
+ *   `planMultiVMRuntime` puts the two VMs on one rootless QEMU socket segment
+ *   (`listen` on the existing node, `connect` on the joining node) with
+ *   distinct MACs. What has NOT cleared is the PROOF half: no frame has ever
+ *   crossed that segment, because nothing has run the two VMs at once. It
+ *   stays listed until a real join is observed over it — a planned topology
+ *   that has never carried traffic is a claim, not a capability.
  * - `concurrent-vm-lifecycle` — `executeMultiVMRuntimePlan` boots the VMs
  *   serially and `runManagedCommandUntilSerialMarkers` SIGTERMs each VM on
  *   marker match, so the existing node is dead before the joining node boots.

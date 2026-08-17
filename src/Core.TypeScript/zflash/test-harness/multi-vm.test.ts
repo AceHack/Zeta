@@ -85,3 +85,55 @@ describe("081KSNY2Z0008QG0R0008PN7RQ multi-VM runtime planner", () => {
     }
   });
 });
+
+describe("scenario 5 shared L2 segment planning", () => {
+  test("the two VMs are planned onto one segment, not two SLIRP islands", () => {
+    const result = planMultiVMRuntime(validInput({ bootImagePath: "run/boot.img" }));
+    expect("ok" in result).toBe(true);
+    if (!("ok" in result)) {
+      return;
+    }
+    const existing = result.ok.vms.find((v) => v.role === "cluster-existing");
+    const joining = result.ok.vms.find((v) => v.role === "joining-node");
+    const existingArgs = existing?.qemuBootCommand?.args ?? [];
+    const joiningArgs = joining?.qemuBootCommand?.args ?? [];
+
+    const listen = existingArgs.find((a) => a.startsWith("socket,id=net1,listen="));
+    const connect = joiningArgs.find((a) => a.startsWith("socket,id=net1,connect="));
+    expect(listen).toBeDefined();
+    expect(connect).toBeDefined();
+    // Same rendezvous port on both sides, or they are not on one segment.
+    const port = listen?.split(":").pop();
+    expect(connect?.endsWith(`:${String(port)}`)).toBe(true);
+  });
+
+  test("the two nodes present different MACs on the shared segment", () => {
+    const result = planMultiVMRuntime(validInput({ bootImagePath: "run/boot.img" }));
+    expect("ok" in result).toBe(true);
+    if (!("ok" in result)) {
+      return;
+    }
+    const macOf = (role: string): string | undefined =>
+      result.ok.vms
+        .find((v) => v.role === role)
+        ?.qemuBootCommand?.args.find((a) => a.startsWith("virtio-net-pci,netdev=net1,mac="));
+    const existingMac = macOf("cluster-existing");
+    const joiningMac = macOf("joining-node");
+    expect(existingMac).toBeDefined();
+    expect(joiningMac).toBeDefined();
+    expect(existingMac).not.toBe(joiningMac);
+  });
+
+  test("each VM keeps its outbound NAT NIC alongside the segment NIC", () => {
+    const result = planMultiVMRuntime(validInput({ bootImagePath: "run/boot.img" }));
+    expect("ok" in result).toBe(true);
+    if (!("ok" in result)) {
+      return;
+    }
+    for (const vm of result.ok.vms) {
+      const args = vm.qemuBootCommand?.args ?? [];
+      expect(args).toContain("user,id=net0");
+      expect(args.filter((a) => a === "-netdev")).toHaveLength(2);
+    }
+  });
+});

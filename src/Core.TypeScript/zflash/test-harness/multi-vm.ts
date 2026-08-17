@@ -7,12 +7,14 @@
  * that topology planning and coordination executable.
  */
 
-import { DEFAULT_MULTI_VM, type VMSpec } from "./extensions";
+import { DEFAULT_MULTI_VM, type NetworkTopology, type VMSpec } from "./extensions";
 import { B0891_CLUSTER_JOIN_SERIAL_MARKERS } from "./serial-markers";
 import {
   RETENTION_ABSENT_TERMINAL_MARKERS,
   RETENTION_FAILURE_SERIAL_MARKERS,
   buildQemuSystemBootArgs,
+  DEFAULT_QEMU_NETWORK_DEVICES,
+  type QemuNetworkDevice,
   type Qcow2RetentionExecutor,
   type QemuCommand,
   type QemuCommandExecution,
@@ -45,7 +47,7 @@ export interface MultiVMRuntimeVMPlan {
 export interface MultiVMRuntimePlan {
   readonly isoPath: string;
   readonly bootImagePath?: string;
-  readonly networkTopology: typeof DEFAULT_MULTI_VM.networkTopology;
+  readonly networkTopology: NetworkTopology;
   readonly joinProtocol: typeof DEFAULT_MULTI_VM.joinProtocol;
   readonly orchestrator: typeof DEFAULT_MULTI_VM.orchestrator;
   readonly vms: readonly MultiVMRuntimeVMPlan[];
@@ -112,6 +114,55 @@ interface NormalizedMultiVMRuntimeInput {
   readonly kvmAvailable: boolean;
 }
 
+/**
+ * Per-VM MACs for the shared segment. Distinct by construction: QEMU would
+ * otherwise give both nodes 52:54:00:12:34:56 and the segment would carry two
+ * NICs claiming one address. Locally administered (bit 1 of octet 0 set) and
+ * unicast (bit 0 clear), so they cannot collide with a real vendor NIC.
+ */
+const CLUSTER_EXISTING_SEGMENT_MAC = "52:54:00:7a:f1:01";
+const JOINING_NODE_SEGMENT_MAC = "52:54:00:7a:f1:02";
+
+/** NIC ids: net0 keeps outbound NAT, net1 is the cluster segment. */
+const NAT_NETDEV_ID = "net0";
+const SEGMENT_NETDEV_ID = "net1";
+
+/**
+ * The two NICs a scenario-5 VM gets.
+ *
+ * net0 stays SLIRP NAT so the guest keeps outbound reachability exactly as it
+ * had before. net1 is the shared L2 segment the two VMs meet on: the existing
+ * cluster node LISTENS and the joining node CONNECTS, which fixes a real
+ * ordering obligation on the executor -- the listener must be accepting before
+ * the connector starts or QEMU exits immediately on the connect side. That
+ * obligation is why `concurrent-vm-lifecycle` has to clear before this
+ * topology can carry a single frame.
+ */
+function segmentNetworkDevices(role: VMSpec["role"], topology: NetworkTopology): readonly QemuNetworkDevice[] {
+  if (topology.kind !== "shared-socket-segment") {
+    return DEFAULT_QEMU_NETWORK_DEVICES;
+  }
+  const nat: QemuNetworkDevice = { id: NAT_NETDEV_ID, backend: { kind: "user-nat" } };
+  if (role === "cluster-existing") {
+    return [
+      nat,
+      {
+        id: SEGMENT_NETDEV_ID,
+        backend: { kind: "l2-socket-listen", port: topology.port },
+        mac: CLUSTER_EXISTING_SEGMENT_MAC,
+      },
+    ];
+  }
+  return [
+    nat,
+    {
+      id: SEGMENT_NETDEV_ID,
+      backend: { kind: "l2-socket-connect", host: topology.host, port: topology.port },
+      mac: JOINING_NODE_SEGMENT_MAC,
+    },
+  ];
+}
+
 export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeResult {
   const invalid = validateInput(input);
   if (invalid) {
@@ -131,8 +182,11 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
     kvmAvailable: input.kvmAvailable ?? false,
   };
 
+  const networkTopology = DEFAULT_MULTI_VM.networkTopology;
+
   const vms = DEFAULT_MULTI_VM.vms.map((vmSpec): MultiVMRuntimeVMPlan => {
     const isExisting = vmSpec.role === "cluster-existing";
+    const networkDevices = segmentNetworkDevices(vmSpec.role, networkTopology);
     const diskPath = isExisting ? normalized.existingDiskPath : normalized.joiningDiskPath;
     const serialLogPath = isExisting ? normalized.existingSerialLogPath : normalized.joiningSerialLogPath;
 
@@ -158,6 +212,7 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
           cpuCount: normalized.cpuCount,
           kvmAvailable: normalized.kvmAvailable,
           bootMedia: { kind: "iso", path: normalized.isoPath },
+          networkDevices,
         }),
       };
     } else {
@@ -173,6 +228,7 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
             cpuCount: normalized.cpuCount,
             kvmAvailable: normalized.kvmAvailable,
             bootMedia: { kind: "usb-image", path: normalized.bootImagePath },
+            networkDevices,
           }),
         };
       }

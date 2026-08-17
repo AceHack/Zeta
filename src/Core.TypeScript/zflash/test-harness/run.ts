@@ -844,8 +844,11 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
         //      writes no firstboot config to the ESP. So the "joining" VM
         //      would come up as a second control-plane, run no k3s agent, and
         //      therefore run no observer.
-        //   2. shared-l2-segment. buildQemuSystemBootArgs emits only per-VM
-        //      `-netdev user` (SLIRP NAT); the VMs cannot address each other.
+        //   2. shared-l2-segment. The args half has cleared:
+        //      buildQemuSystemBootArgs takes injected netdev specs and
+        //      planMultiVMRuntime puts both VMs on one rootless QEMU socket
+        //      segment with distinct MACs. The proof half has not: no frame
+        //      has crossed it, because nothing runs the VMs concurrently.
         //   3. concurrent-vm-lifecycle. executeMultiVMRuntimePlan boots the
         //      VMs serially and SIGTERMs each on marker match, so the existing
         //      node is dead before the joining node starts.
@@ -863,10 +866,11 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
             "and nixos/tests/k3s-agent-join.nix proves the two-node join. Still blocked on " +
             "three items, none of them the join: (1) joining-node-role-provisioning — a " +
             "zflash-prepared image installs HOST=control-plane, so the joining VM runs no " +
-            "k3s agent; (2) shared-l2-segment — buildQemuSystemBootArgs emits per-VM SLIRP " +
-            "NAT; (3) concurrent-vm-lifecycle — executeMultiVMRuntimePlan boots serially and " +
-            "kills each VM on marker match. All three must clear before this scenario can " +
-            "honestly report passed or failed.",
+            "k3s agent; (2) shared-l2-segment — the netdev args and socket-segment plan now " +
+            "exist with distinct MACs, but no frame has crossed the segment because nothing " +
+            "boots the VMs concurrently; (3) concurrent-vm-lifecycle — executeMultiVMRuntimePlan " +
+            "boots serially and kills each VM on marker match. All three must clear before this " +
+            "scenario can honestly report passed or failed.",
         };
       }
       return reportScaffolded(scenario);

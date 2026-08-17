@@ -70,14 +70,18 @@ describe("probeJoinImplementation", () => {
     expect(result.kind).toBe("join-markers-absent");
   });
 
-  test("describePromotionSignal names both blockers, in order", () => {
+  test("describePromotionSignal names the blockers that actually remain", () => {
     const message = describePromotionSignal([{ filePath: "guest/join.txt", marker: "m" }]);
 
     expect(message).toContain("PROMOTION SIGNAL");
     expect(message).toContain("FIRST blocker");
-    expect(message).toContain("SECOND blocker");
-    expect(message).toContain("SLIRP NAT");
-    expect(message).toContain("Do not dispatch it before both are done");
+    // The SLIRP isolation is cleared: the planner now emits a shared socket
+    // segment. Asserting it as an open blocker would pin a false statement.
+    expect(message).toContain("no longer what stops this");
+    // What genuinely remains, and the message must keep saying so.
+    expect(message).toContain("serially");
+    expect(message).toContain("control-plane");
+    expect(message).toContain("Not before");
   });
 });
 

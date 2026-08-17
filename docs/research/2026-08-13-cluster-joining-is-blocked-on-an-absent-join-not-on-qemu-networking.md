@@ -34,6 +34,14 @@ That reorders the work, and it changes the answer to the container question.
 
 ## 1. What was measured (CHECKED)
 
+> **STATUS UPDATE 2026-08-16.** The "VMs cannot see each other" row above is no
+> longer current. `buildQemuSystemBootArgs` now accepts an injected netdev spec
+> (`QemuNetworkDevice`), and `planMultiVMRuntime` puts the two VMs on one
+> rootless QEMU socket L2 segment with distinct MACs. The row's *proof* half
+> still stands: nothing has run the two VMs concurrently, so no frame has ever
+> crossed that segment. The serial-execution row and the role-provisioning gap
+> (a zflash-prepared image installs `HOST=control-plane`) are untouched.
+
 | observation                                                     | evidence                                                                                                                                                                                        |
 | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Nothing in the guest tree emits the join markers                | `probeJoinImplementation` over `full-ai-cluster/nixos` plus `full-ai-cluster/usb-nixos-installer`: **45 files scanned, 0 sightings**                                                            |
