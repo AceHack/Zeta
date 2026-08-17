@@ -1,0 +1,12 @@
+{
+  "pr_number": 11174,
+  "archive_path": "docs/history/pr-reviews/PR-11174-test-longhorn-prove-a-pvc-actually-binds-the-closest-thing-to-prod-without-prod.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:29:45.796Z",
+  "schema_version": "v1",
+  "commit_sha": "853246f7d5a4e96e2356956e263085293876f4fb",
+  "title": "test(longhorn): prove a PVC actually BINDS — the closest thing to prod without prod",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:29:05Z",
+  "head_ref": "feat/longhorn-volume-binds-test"
+}
