@@ -1,0 +1,15 @@
+{
+  "pr_number": 9177,
+  "archive_path": "docs/history/pr-reviews/PR-9177-research-there-are-no-strangers-mesh-merge-is-the-travelers-vocabulary-in-code-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Rhv7v",
+    "thread:PRRT_kwDOSF9kNM6N_cvW"
+  ],
+  "fetched_at": "2026-08-17T13:20:26.153Z",
+  "schema_version": "v1",
+  "commit_sha": "9a93e3967059bb634302e015f14835a7f96d4cd2",
+  "title": "research: there are no strangers — mesh-merge IS the travelers vocabulary in code (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T18:18:57Z",
+  "head_ref": "shadow/travelers-no-strangers-mesh-merge-gset-union"
+}
