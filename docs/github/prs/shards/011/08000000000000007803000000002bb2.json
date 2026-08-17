@@ -1,0 +1,12 @@
+{
+  "pr_number": 11186,
+  "archive_path": "docs/history/pr-reviews/PR-11186-fix-cluster-link-the-two-argocd-dev-exclusion-lists-14-applications-applied-and-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:40:08.184Z",
+  "schema_version": "v1",
+  "commit_sha": "dd62aa08c46c4b109fe3698a3fb4d2309cf049e4",
+  "title": "fix(cluster): link the two ArgoCD dev exclusion lists — 14 Applications applied and asserted by nothing",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:39:33Z",
+  "head_ref": "shadow/link-argocd-dev-exclusion-lists"
+}
