@@ -344,6 +344,79 @@ let ``L4 trace: inverse delta reconstructs each witnessed prior view``
         |> WSet.consolidate intStar isZeroI
         |> (=) turn.Before.Emitted)
 
+// A correction may read an earlier immutable history boundary, but the correction itself is
+// appended later. This is the executable distinction between retrospective recomputation and
+// information flowing backward.
+[<Fact>]
+let ``L4 trace: causal correction reinterprets earlier history as a later event`` () =
+    let history = [ 3 ]
+    let before = startT history
+    let snapshot = FourCornerTrace.captureHistory 12I history
+
+    let correction =
+        match
+            FourCornerTrace.appendCorrection
+                13I
+                intStar
+                isZeroI
+                reread
+                update
+                snapshot
+                (3, 30)
+                before
+        with
+        | Ok value -> value
+        | Error error -> failwithf "unexpected causal-order refusal: %A" error
+
+    correction.Sequence |> should equal 13I
+    correction.ReinterpretsThrough |> should equal 12I
+    (correction.Sequence > correction.ReinterpretsThrough) |> should equal true
+    correction.Before |> should equal before
+    correction.Delta |> should equal [ 3, -1L; 30, 1L ]
+    correction.After.Emitted |> should equal [ 30, 1L ]
+    history |> should equal [ 3 ]
+
+// Invalid order refuses before either caller-supplied function runs. Besides being Result-only,
+// this prevents a failed correction from leaking a partial reinterpretation.
+[<Fact>]
+let ``L4 trace: causal correction refuses equal or earlier sequence without executing`` () =
+    let mutable calls = 0
+
+    let guardedReread: FourCornerTrace.Generator<int list, Interp, int, int64> =
+        fun _ _ ->
+            calls <- calls + 1
+            []
+
+    let guardedUpdate (interp: Interp) (_: int * int) =
+        calls <- calls + 1
+        interp
+
+    let snapshot = FourCornerTrace.captureHistory 12I [ 3 ]
+
+    let before: FourCornerTrace.Traced<Interp, int, int64> =
+        { Interpretation = Map.empty
+          Emitted = [] }
+
+    for correctionSequence in [ 11I; 12I ] do
+        let actual =
+            FourCornerTrace.appendCorrection
+                correctionSequence
+                intStar
+                isZeroI
+                guardedReread
+                guardedUpdate
+                snapshot
+                (3, 30)
+                before
+
+        match actual with
+        | Error(FourCornerTrace.CorrectionDoesNotFollowHistory(throughSequence, refusedSequence)) ->
+            throughSequence |> should equal 12I
+            refusedSequence |> should equal correctionSequence
+        | Ok correction -> failwithf "unexpected correction at sequence %A" correction.Sequence
+
+    calls |> should equal 0
+
 // ═══════════════════════════════════════════════════════════════════
 // (L5) THE C₄ CORNER WITNESS over ℂ — retraction = i²
 // ═══════════════════════════════════════════════════════════════════

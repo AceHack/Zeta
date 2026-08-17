@@ -31,6 +31,8 @@ import { complexRing, type Complex } from "./star-ring.ts";
 import { consolidateWSet, discardWSet, type WElement, type WSet } from "./wset.ts";
 import {
   IntegerTraceRing,
+  appendCorrection,
+  captureHistory,
   delta,
   fold,
   foldRecorded,
@@ -71,16 +73,12 @@ const numOps: TraceOps<number, bigint> = {
 const reread: Generator<readonly number[], Interp, number, bigint> = (interp, history) =>
   history.map((x): WElement<number, bigint> => ({ key: interp.get(x) ?? x, weight: 1n }));
 
-const update = (interp: Interp, [raw, label]: readonly [number, number]): Interp =>
-  new Map(interp).set(raw, label);
+const update = (interp: Interp, [raw, label]: readonly [number, number]): Interp => new Map(interp).set(raw, label);
 
 const startT = (history: readonly number[]) =>
   start(numOps, reread, history, new Map<number, number>() as Interp).state;
-const stepT = (
-  history: readonly number[],
-  fb: readonly [number, number],
-  st: Traced<Interp, number, bigint>,
-) => step(numOps, reread, update, history, fb, st);
+const stepT = (history: readonly number[], fb: readonly [number, number], st: Traced<Interp, number, bigint>) =>
+  step(numOps, reread, update, history, fb, st);
 const foldT = (
   history: readonly number[],
   fbs: readonly (readonly [number, number])[],
@@ -104,10 +102,7 @@ function* cases(): Generator2 {
   const pick = (n: number) => Math.floor(rnd() * n);
   for (let i = 0; i < 200; i++) {
     const history = Array.from({ length: pick(7) }, () => pick(5));
-    const fbs = Array.from(
-      { length: pick(6) },
-      () => [pick(5), 10 + pick(5)] as readonly [number, number],
-    );
+    const fbs = Array.from({ length: pick(6) }, () => [pick(5), 10 + pick(5)] as readonly [number, number]);
     yield { history, fbs };
   }
 }
@@ -214,8 +209,7 @@ describe("L3 — mass bookkeeping", () => {
       const after = update(before, fb);
       const d = delta(numOps, reread, history, before, after);
       expect(discardWSet(IntegerTraceRing, d)).toBe(
-        discardWSet(IntegerTraceRing, reread(after, history)) -
-          discardWSet(IntegerTraceRing, reread(before, history)),
+        discardWSet(IntegerTraceRing, reread(after, history)) - discardWSet(IntegerTraceRing, reread(before, history)),
       );
     }
   });
@@ -288,15 +282,7 @@ describe("L4 — path-independence and the four-corner packaging", () => {
       [30, 1n],
     ]);
 
-    const later = foldRecorded(
-      first.nextSequence,
-      numOps,
-      reread,
-      update,
-      history,
-      [[3, 40] as const],
-      first.state,
-    );
+    const later = foldRecorded(first.nextSequence, numOps, reread, update, history, [[3, 40] as const], first.state);
 
     // The old turn is immutable; the correction is a new turn in the only time direction.
     expect(first.turns[0]).toBe(earlier);
@@ -322,9 +308,7 @@ describe("L4 — path-independence and the four-corner packaging", () => {
       const recorded = foldRecorded(100n, numOps, reread, update, history, fbs, st0);
       expect(pairs(recorded.state.emitted)).toEqual(pairs(expected.state.emitted));
       expect(recorded.nextSequence).toBe(100n + BigInt(fbs.length));
-      expect(recorded.turns.map((t) => t.sequence)).toEqual(
-        fbs.map((_, i) => 100n + BigInt(i)),
-      );
+      expect(recorded.turns.map((t) => t.sequence)).toEqual(fbs.map((_, i) => 100n + BigInt(i)));
       expect(recorded.turns.map((t) => t.feedback)).toEqual(fbs.map((f) => f));
       expect(recorded.turns.map((t) => pairs(t.delta))).toEqual(expected.deltas.map(pairs));
     }
@@ -374,6 +358,72 @@ describe("L4 — path-independence and the four-corner packaging", () => {
       }
     }
   });
+
+  it("causal correction reinterprets earlier history as a later event", () => {
+    const history = [3] as const;
+    const before = startT(history);
+    const snapshot = captureHistory(12n, history);
+    const result = appendCorrection(13n, numOps, reread, update, snapshot, [3, 30] as const, before);
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    expect(result.correction.sequence).toBe(13n);
+    expect(result.correction.reinterpretsThrough).toBe(12n);
+    expect(result.correction.sequence > result.correction.reinterpretsThrough).toBe(true);
+    expect(result.correction.before).toBe(before);
+    expect(pairs(result.correction.delta)).toEqual([
+      [3, -1n],
+      [30, 1n],
+    ]);
+    expect(pairs(result.correction.after.emitted)).toEqual([[30, 1n]]);
+    expect(history).toEqual([3]);
+    expect(Object.isFrozen(snapshot)).toBe(true);
+    expect(Object.isFrozen(result)).toBe(true);
+    expect(Object.isFrozen(result.correction)).toBe(true);
+  });
+
+  it("causal correction refuses equal or earlier sequence without executing", () => {
+    let calls = 0;
+    const guardedReread: Generator<readonly number[], Interp, number, bigint> = () => {
+      calls += 1;
+      return [];
+    };
+    const guardedUpdate = (interpretation: Interp): Interp => {
+      calls += 1;
+      return interpretation;
+    };
+    const snapshot = captureHistory(12n, [3] as const);
+    const before: Traced<Interp, number, bigint> = {
+      interpretation: new Map<number, number>(),
+      emitted: [],
+    };
+
+    for (const correctionSequence of [11n, 12n]) {
+      const result = appendCorrection(
+        correctionSequence,
+        numOps,
+        guardedReread,
+        guardedUpdate,
+        snapshot,
+        [3, 30] as const,
+        before,
+      );
+
+      expect(result).toEqual({
+        ok: false,
+        error: {
+          kind: "correction-does-not-follow-history",
+          throughSequence: 12n,
+          correctionSequence,
+        },
+      });
+      expect(Object.isFrozen(result)).toBe(true);
+      if (!result.ok) expect(Object.isFrozen(result.error)).toBe(true);
+    }
+
+    expect(calls).toBe(0);
+  });
 });
 
 // ════════════════════════════════════════════════════════════════════════════════════════════
@@ -384,7 +434,11 @@ describe("R1 — empty deltas are still recorded", () => {
   it("a no-op feedback occupies a turn and a sequence number", () => {
     const history = [3, 5];
     // (9,90) touches nothing in the history; (3,30) then (3,30) again is an idempotent replay.
-    const fbs = [[9, 90], [3, 30], [3, 30]] as const;
+    const fbs = [
+      [9, 90],
+      [3, 30],
+      [3, 30],
+    ] as const;
     const rec = foldRecorded(0n, numOps, reread, update, history, fbs, startT(history));
 
     // THREE turns for THREE feedbacks — two of them with an empty delta.
@@ -490,10 +544,7 @@ describe("L5 — the ℂ corner", () => {
     s.map((e) => ({ key: e.key, weight: complexRing.mul(e.weight, i) }));
   const closeC = (a: WSet<number, Complex>, b: WSet<number, Complex>) =>
     a.length === b.length &&
-    a.every(
-      (e, n) =>
-        e.key === b[n]!.key && isZeroC(complexRing.add(e.weight, complexRing.negate(b[n]!.weight))),
-    );
+    a.every((e, n) => e.key === b[n]!.key && isZeroC(complexRing.add(e.weight, complexRing.negate(b[n]!.weight))));
 
   const amp: Complex = { re: 1 / Math.sqrt(2), im: 0 };
   const s: WSet<number, Complex> = [

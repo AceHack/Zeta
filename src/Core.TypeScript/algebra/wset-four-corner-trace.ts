@@ -195,6 +195,42 @@ export interface WitnessedFold<I, F, K, W> {
 }
 
 /**
+ * An immutable-history read boundary. The caller supplies the retained history value and the
+ * last logical sequence it contains. The shell is frozen; generic `H` follows the module's
+ * immutable-state contract because TypeScript cannot deeply freeze an arbitrary caller value.
+ */
+export interface HistorySnapshot<H> {
+  readonly throughSequence: bigint;
+  readonly history: H;
+}
+
+/** Typed refusal for a correction placed at or before the history it reads. */
+export interface CausalOrderError {
+  readonly kind: "correction-does-not-follow-history";
+  readonly throughSequence: bigint;
+  readonly correctionSequence: bigint;
+}
+
+/** A correction appended in the only execution direction. */
+export interface CausalCorrection<I, F, K, W> {
+  readonly sequence: bigint;
+  readonly reinterpretsThrough: bigint;
+  readonly feedback: F;
+  readonly before: Traced<I, K, W>;
+  readonly after: Traced<I, K, W>;
+  readonly delta: WSet<K, W>;
+}
+
+export type AppendCorrectionResult<I, F, K, W> =
+  | { readonly ok: true; readonly correction: CausalCorrection<I, F, K, W> }
+  | { readonly ok: false; readonly error: CausalOrderError };
+
+/** Pair a retained history value with the logical boundary it contains. */
+export function captureHistory<H>(throughSequence: bigint, history: H): HistorySnapshot<H> {
+  return Object.freeze({ throughSequence, history });
+}
+
+/**
  * F# returns `Traced * WSet` from `start` and `step`. TS has no structural tuple-record sugar
  * worth the ambiguity, so the pair is named. Mechanical divergence, no semantic content.
  */
@@ -307,6 +343,43 @@ export function step<H, I, F, K, W>(
   const d = delta(ops, gen, history, st.interpretation, after);
   const emitted = consolidateOrdered(ops, cumulativeUnconsolidated(st.emitted, d));
   return { state: { interpretation: after, emitted }, delta: d };
+}
+
+/**
+ * Append a correction that reinterprets a retained history snapshot. The correction is a new
+ * forward event: its sequence must be strictly greater than the snapshot boundary. Invalid order
+ * returns before `update` or `gen` runs, so no partial correction can escape.
+ */
+export function appendCorrection<H, I, F, K, W>(
+  correctionSequence: bigint,
+  ops: TraceOps<K, W>,
+  gen: Generator<H, I, K, W>,
+  update: (interpretation: I, feedback: F) => I,
+  snapshot: HistorySnapshot<H>,
+  feedback: F,
+  before: Traced<I, K, W>,
+): AppendCorrectionResult<I, F, K, W> {
+  if (correctionSequence <= snapshot.throughSequence) {
+    return Object.freeze({
+      ok: false,
+      error: Object.freeze({
+        kind: "correction-does-not-follow-history",
+        throughSequence: snapshot.throughSequence,
+        correctionSequence,
+      }),
+    });
+  }
+
+  const result = step(ops, gen, update, snapshot.history, feedback, before);
+  const correction = freezeCausalCorrection({
+    sequence: correctionSequence,
+    reinterpretsThrough: snapshot.throughSequence,
+    feedback,
+    before,
+    after: result.state,
+    delta: result.delta,
+  });
+  return Object.freeze({ ok: true, correction });
 }
 
 /**
@@ -454,6 +527,13 @@ function freezeWitnessedTurn<I, F, K, W>(turn: WitnessedTurn<I, F, K, W>): Witne
   return Object.freeze(turn);
 }
 
+/** Freeze the correction shell and its owned delta; generic state values remain caller-owned. */
+function freezeCausalCorrection<I, F, K, W>(correction: CausalCorrection<I, F, K, W>): CausalCorrection<I, F, K, W> {
+  for (const element of correction.delta) Object.freeze(element);
+  Object.freeze(correction.delta);
+  return Object.freeze(correction);
+}
+
 // ─── The TREATY codec (string keys × ℤ weights) ──────────────────────────────────────────────
 // Canonical text wire form for the string-key instantiation. The F# conformer builds the SAME
 // scenarios and must emit byte-identical lines against ./wset-four-corner-trace-golden-vectors.lines
@@ -534,10 +614,8 @@ export type Relabel = ReadonlyMap<string, string>;
  * The generator of the worked loop: re-read the WHOLE history under the current labels, one unit
  * of weight per observation. Unlabelled observations read as themselves.
  */
-export const rereadRelabelled: Generator<readonly string[], Relabel, string, bigint> = (
-  interp,
-  history,
-) => history.map((x): WElement<string, bigint> => ({ key: interp.get(x) ?? x, weight: 1n }));
+export const rereadRelabelled: Generator<readonly string[], Relabel, string, bigint> = (interp, history) =>
+  history.map((x): WElement<string, bigint> => ({ key: interp.get(x) ?? x, weight: 1n }));
 
 /** Upsert-by-key — idempotent by construction (discipline #6), which is what makes L2 hold. */
 export function updateRelabel(interp: Relabel, [raw, label]: readonly [string, string]): Relabel {

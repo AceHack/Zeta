@@ -193,6 +193,32 @@ module FourCornerTrace =
           NextSequence: bigint
           Turns: WitnessedTurn<'I, 'F, 'K, 'W> list }
 
+    /// An immutable-history read boundary. The caller supplies the retained history value and
+    /// the last logical sequence it contains; later corrections may reinterpret this value but
+    /// cannot claim to have happened at or before its boundary.
+    type HistorySnapshot<'H> =
+        { ThroughSequence: bigint
+          History: 'H }
+
+    /// Typed refusal for a correction that would place its cause at or before the history it reads.
+    type CausalOrderError =
+        | CorrectionDoesNotFollowHistory of throughSequence: bigint * correctionSequence: bigint
+
+    /// A correction appended in the only execution direction. `ReinterpretsThrough` identifies
+    /// the immutable history boundary being reread; `Sequence` is strictly greater by construction.
+    type CausalCorrection<'I, 'F, 'K, 'W when 'K: comparison> =
+        { Sequence: bigint
+          ReinterpretsThrough: bigint
+          Feedback: 'F
+          Before: Traced<'I, 'K, 'W>
+          After: Traced<'I, 'K, 'W>
+          Delta: WSet.WSet<'K, 'W> }
+
+    /// Pair a retained history value with the logical boundary it contains.
+    let captureHistory (throughSequence: bigint) (history: 'H) : HistorySnapshot<'H> =
+        { ThroughSequence = throughSequence
+          History = history }
+
     /// Pure assembly functions shared by the reference trace and source-owned adapters.
     /// Consolidation remains at the caller boundary so adapters can meter that destructive phase.
     let internal openingUnconsolidated
@@ -266,6 +292,33 @@ module FourCornerTrace =
         let d = delta ring isZero gen history st.Interpretation after
         let emitted = cumulativeUnconsolidated st.Emitted d |> WSet.consolidate ring isZero
         { Interpretation = after; Emitted = emitted }, d
+
+    /// Append a correction that reinterprets a retained history snapshot. The correction is a
+    /// new forward event: its sequence must be strictly greater than the snapshot boundary.
+    /// Invalid order is returned as data before `update` or `gen` runs, so no computation is
+    /// modeled as executing backward and no partial correction can escape.
+    let appendCorrection
+        (correctionSequence: bigint)
+        (ring: IStarRing<'W>)
+        (isZero: 'W -> bool)
+        (gen: Generator<'H, 'I, 'K, 'W>)
+        (update: 'I -> 'F -> 'I)
+        (snapshot: HistorySnapshot<'H>)
+        (fb: 'F)
+        (st: Traced<'I, 'K, 'W>)
+        : Result<CausalCorrection<'I, 'F, 'K, 'W>, CausalOrderError> =
+        if correctionSequence <= snapshot.ThroughSequence then
+            Error(CorrectionDoesNotFollowHistory(snapshot.ThroughSequence, correctionSequence))
+        else
+            let after, d = step ring isZero gen update snapshot.History fb st
+
+            Ok
+                { Sequence = correctionSequence
+                  ReinterpretsThrough = snapshot.ThroughSequence
+                  Feedback = fb
+                  Before = st
+                  After = after
+                  Delta = d }
 
     /// Run a whole feedback sequence through the loop, keeping every emitted delta in order.
     /// Deterministic (a left fold over the given order): DST replays it byte-identically.

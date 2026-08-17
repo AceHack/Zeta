@@ -285,9 +285,11 @@ let private runTlcUnlocked (model: PinnedModel) : int * string =
     psi.RedirectStandardError <- true
     psi.UseShellExecute <- false
     use p = Process.Start psi
-    let stdout = p.StandardOutput.ReadToEnd()
-    let _stderr = p.StandardError.ReadToEnd()
+    let stdoutTask = p.StandardOutput.ReadToEndAsync()
+    let stderrTask = p.StandardError.ReadToEndAsync()
     p.WaitForExit()
+    let stdout = stdoutTask.GetAwaiter().GetResult()
+    let stderr = stderrTask.GetAwaiter().GetResult()
     try Directory.Delete(tempDir, true) with _ -> ()
     // Clean up TLC trace dumps so repeated runs do not litter the repo.
     // TLC emits both a `.tla` mini-spec and a `.bin` state dump whenever
@@ -299,7 +301,7 @@ let private runTlcUnlocked (model: PinnedModel) : int * string =
         try File.Delete f with _ -> ()
     for f in Directory.GetFiles(specsPath, "MC*.tla") do
         try File.Delete f with _ -> ()
-    p.ExitCode, stdout
+    p.ExitCode, stdout + stderr
 
 
 let private runTlc (model: PinnedModel) : int * string =

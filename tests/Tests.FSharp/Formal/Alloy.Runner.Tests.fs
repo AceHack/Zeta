@@ -138,11 +138,17 @@ let private runAlloy (specName: string) : int * string =
     psi.ArgumentList.Add "AlloyRunner"
     psi.ArgumentList.Add specFile
     use p = Process.Start psi
-    let stdout = p.StandardOutput.ReadToEnd()
-    let stderr = p.StandardError.ReadToEnd()
-    if not (p.WaitForExit(60_000)) then
+    let stdoutTask = p.StandardOutput.ReadToEndAsync()
+    let stderrTask = p.StandardError.ReadToEndAsync()
+    let completed = p.WaitForExit(60_000)
+    if not completed then
         try p.Kill(true) with _ -> ()
-        failwithf "Alloy runner for %s timed out after 60 s" specName
+        p.WaitForExit()
+    let stdout = stdoutTask.GetAwaiter().GetResult()
+    let stderr = stderrTask.GetAwaiter().GetResult()
+    if not completed then
+        failwithf "Alloy runner for %s timed out after 60 s. Output:\n%s"
+            specName (stdout + stderr)
     p.ExitCode, stdout + stderr
 
 

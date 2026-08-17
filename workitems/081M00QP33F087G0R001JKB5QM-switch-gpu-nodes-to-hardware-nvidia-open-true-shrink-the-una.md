@@ -67,7 +67,8 @@ nix eval --impure --raw --expr 'let f = builtins.getFlake "github:NixOS/nixpkgs/
 
 ### The measured closure delta
 
-`nixos/modules/hardware/video/nvidia.nix` at that rev makes exactly one substitution:
+The upstream nixpkgs `nvidia.nix` module under `nixos/modules/hardware/video/` at that rev makes
+exactly one substitution:
 `boot.extraModulePackages = if open then [ nvidia_x11.open ] else [ nvidia_x11.bin ]`.
 Evaluated against **this repo's own** `gpu.nix`, both ways:
 
@@ -139,7 +140,7 @@ wrong in both directions depending on hardware nobody has recorded, which is the
 3. Both `gpu.nix` files keep `open = lib.mkDefault false`, with the stale comment
    ("works on RTX 20-series and newer", silent on Blackwell) replaced by the measured position.
 
-The preflight was first written as `tools/nvidia-open-preflight.sh` and the bash-retirement
+The preflight was first written as `nvidia-open-preflight.sh` under `tools/`, and the bash-retirement
 inventory guard rejected it. It was **rewritten in TypeScript rather than allowlisted**, because
 the allowlist's stated bar is "runs before Bun is available", and that is factually not this
 script's situation: `full-ai-cluster/usb-nixos-installer/zeta-install.sh` Step 6.95a runs
