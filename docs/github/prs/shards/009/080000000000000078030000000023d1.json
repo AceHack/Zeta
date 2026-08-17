@@ -1,0 +1,12 @@
+{
+  "pr_number": 9169,
+  "archive_path": "docs/history/pr-reviews/PR-9169-feat-pages-a-live-dark-hall-room-rendered-by-the-substrate-zero-js-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T12:12:38.259Z",
+  "schema_version": "v1",
+  "commit_sha": "8c60a0dd73775e230cf0f42208d7a1ebb5767e96",
+  "title": "feat(pages): a live Dark Hall room — rendered BY the substrate, zero JS (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T17:32:38Z",
+  "head_ref": "feat/hall-live-darkhall-room"
+}

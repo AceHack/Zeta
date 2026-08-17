@@ -1,0 +1,12 @@
+{
+  "pr_number": 9165,
+  "archive_path": "docs/history/pr-reviews/PR-9165-test-formalize-the-chip-8-self-prediction-artin-mazur-zeta-of-the-real-vm-step-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T11:55:23.148Z",
+  "schema_version": "v1",
+  "commit_sha": "8909fc866bd0d851bb841f9074a6ecfee90492cb",
+  "title": "test: formalize the CHIP-8 self-prediction - Artin-Mazur zeta of the real VM step-map",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T17:13:51Z",
+  "head_ref": "otto/chip8-dynamical-zeta-formal-predictor"
+}

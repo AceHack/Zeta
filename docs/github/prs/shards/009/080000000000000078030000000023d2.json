@@ -1,0 +1,15 @@
+{
+  "pr_number": 9170,
+  "archive_path": "docs/history/pr-reviews/PR-9170-test-leibniz-to-anti-sybil-pinned-to-antisybil-fs-cpt-invariance-of-identity.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Rg686",
+    "thread:PRRT_kwDOSF9kNM6N-2XY"
+  ],
+  "fetched_at": "2026-08-17T12:12:40.175Z",
+  "schema_version": "v1",
+  "commit_sha": "8c60a0dd73775e230cf0f42208d7a1ebb5767e96",
+  "title": "test: Leibniz to anti-Sybil, pinned to AntiSybil.fs (+ CPT invariance of identity)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T17:39:34Z",
+  "head_ref": "otto/leibniz-antisybil-identity-of-indiscernibles"
+}
