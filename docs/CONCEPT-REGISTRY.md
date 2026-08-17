@@ -1418,11 +1418,38 @@ their owners.
    states; deviation then becomes a measurable rather than an analogy, and this row can be
    re-registered against whatever that measurement says — including against it.
 
-   **Known fracture line, disclosed rather than buried.** This entry leans on "path" and
-   "transport" in a way that shares a joint with a separate open question: whether
-   path-independence in a commutative merge is genuinely the same object as zero holonomy,
-   or a pun on the word *path* — holonomy requires a connection on a bundle, and a monoid has
-   neither. Two agents were dispatched on 2026-08-17 specifically to try to **break** that
-   identification, at Aaron's instruction and under his own rule that *too many correlations
-   is a warning, not a confirmation signal*. If they break it, this entry's geometric framing
-   weakens with it and should be amended, not defended.
+   **The fracture line was disclosed, tested, and it BROKE — amended here, as promised.**
+   This entry originally flagged that it leans on "path" and "transport" in a way sharing a
+   joint with an open question: whether path-independence in a commutative merge is the same
+   object as zero holonomy, or a pun on the word *path*. Two agents were dispatched the same
+   day to try to break that identification, under Aaron's rule that *too many correlations is
+   a warning, not a confirmation signal*. **They broke it** — see
+   `docs/research/2026-08-17-path-independence-is-four-properties-refuting-the-monoid-bell-holonomy-calm-identification.md`
+   (PR #11711) and the prior-art scout's companion (PR #11712). The suspicion was right, and
+   the shared element really was the English word *path*.
+
+   **What broke, recorded rather than quietly dropped — a retracted claim is only useful if a
+   reader can still see what it was.** Commutativity is a property of the *group*; flatness is
+   a property of the *edge assignment*, and a monoid has no edge assignment — ℤ/4 (abelian)
+   with one nontrivial link is curved, S₃ (non-abelian) with the trivial connection is flat.
+   The probabilistic leg is worse than wrong, it is **vacuous**: by Fine (1982) a structure
+   whose reads all commute has nothing incompatible, and incompatibility is the entire source
+   of the CHSH bound, so `S ≤ 2` holds while asserting nothing. `src/Core/BellTest.fs` already
+   reaches `S = 4` from a shared seed, refuting "shared state = λ" from inside our own tree.
+
+   **And the corollary was INVERTED, which is the correction that matters for this entry.**
+   The conversational framing held that a disagreement-preserving structure is
+   path-*dependent* and therefore curves. It is the opposite: Dynamo siblings and SPPF forests
+   merge by **union** and are the *most* order-independent structures on offer — retaining
+   concurrent versions is *how* you make a merge commutative. **You buy order-independence by
+   keeping more, not less.**
+
+   **What survives is the part Aaron actually ruled on.** The ruling — that under §11 the
+   default is free fall, so divergence between travelers is curvature rather than a force one
+   applied to the other — rests on the geodesic-deviation anchor **directly** and never
+   depended on the monoid/holonomy identification. Nothing above touches it. What was refuted
+   was scaffolding Otto built around it in conversation, and the register at the head of this
+   entry (no metric, no connection, no computed curvature quantity) was already the correct
+   disposition — the refutation **confirms** that register rather than changing it. Read the
+   "same statement as *never collapse*" line above for what it is: two disciplines agreeing in
+   disposition, not one derived from the other.
