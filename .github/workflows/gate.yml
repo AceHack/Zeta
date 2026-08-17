@@ -520,6 +520,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
@@ -570,6 +571,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
@@ -668,6 +670,30 @@ jobs:
         # tools/setup/** (install logic itself) so changes to either
         # invalidate cache → vanilla install path gets re-tested
         # whenever the install discipline changes.
+        #
+        # `~/.cache/zeta/from-autotools-tarball/*.tgz` added 2026-08-17.
+        # That directory is where `from-autotools-tarball.ts` parks upstream
+        # source tarballs — today only E prover 3.2.0, fetched from
+        # `github.com/eprover/eprover/archive/refs/tags/`. It was NOT in this
+        # list, so the "comprehensive cache" claim above was false for the one
+        # component fetched straight from github.com rather than a CDN: every
+        # ubuntu job re-downloaded it cold. On 2026-08-17 GitHub answered 429
+        # and PRs #11470, #11472 and #11475 went red on `lint (tick-shard
+        # relative-paths)` with `curl fetch failed (22)` — three PRs whose
+        # diffs had nothing to do with a theorem prover. curl retried thirteen
+        # times over five minutes and lost, because a rate-limit window is
+        # longer than any retry budget worth spending; not fetching is the only
+        # fix that scales.
+        #
+        # Two properties make this safe to cache rather than merely faster.
+        # The key already hashes `tools/setup/**`, which contains the manifest
+        # holding the URL and the sha256 pin, so a version bump cannot be
+        # served a stale tarball — it lands on a different key. And the
+        # realizer now verifies the pin on the RESTORED file too, not only on
+        # a fresh download, so a corrupt or substituted entry is discarded
+        # instead of compiled into the prover that signs our FOL proofs.
+        # Only `*.tgz` is cached: the sibling `<key>-build/` extraction dirs
+        # are rebuilt every run and would add hundreds of MB of churn.
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
@@ -681,6 +707,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
@@ -784,6 +811,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
@@ -950,6 +978,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
@@ -998,6 +1027,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
@@ -1050,6 +1080,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
@@ -1099,6 +1130,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
@@ -1309,6 +1341,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
@@ -1397,6 +1430,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
@@ -1460,6 +1494,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
@@ -1500,6 +1535,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
@@ -1540,6 +1576,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
@@ -1580,6 +1617,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
@@ -1620,6 +1658,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
@@ -1675,6 +1714,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
@@ -1877,6 +1917,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
@@ -1983,6 +2024,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
@@ -2063,6 +2105,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: full-verify-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain (all 7 languages + E-prover)

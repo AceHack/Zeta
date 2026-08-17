@@ -79,6 +79,7 @@ jobs:
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
