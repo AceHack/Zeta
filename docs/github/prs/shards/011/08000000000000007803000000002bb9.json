@@ -1,0 +1,12 @@
+{
+  "pr_number": 11193,
+  "archive_path": "docs/history/pr-reviews/PR-11193-feat-installer-qemu-usb-storage-carries-a-guest-visible-iserial.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:51:26.217Z",
+  "schema_version": "v1",
+  "commit_sha": "f43409b60de0a66c68fa2f4735ad408ff709d2f1",
+  "title": "feat(installer): QEMU usb-storage carries a guest-visible iSerial",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:50:48Z",
+  "head_ref": "riven/qemu-usb-storage-serial"
+}
