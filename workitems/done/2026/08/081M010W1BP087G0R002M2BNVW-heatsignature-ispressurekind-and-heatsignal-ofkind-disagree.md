@@ -82,3 +82,27 @@ token class; none change. The falsifier constructs dual-token kinds by
 concatenation (so a kind-literal lint does not fire) and asserts the two
 routes agree on the live corpus and the product of forget × pressure
 tokens. `forget-backpressure` now reports `PressurePpm = MaxPpm`.
+
+## Standing guard (2026-08-17)
+
+The resolution above is now enforced, not just recorded:
+`src/Core.TypeScript/hygiene/lint-heat-kind-classifier-agreement.ts`, wired into the
+`lint (no empty dirs)` gate job.
+
+- **PART A** — no emitted heat-kind literal may carry both a forgetting and a pressure token.
+  The ordered chain resolves those by branch *position*, not meaning, so the honest guard keeps
+  the ambiguous input class **empty** rather than pretending the ordering is a decision. Under
+  this work-item's chosen order a dual-token kind reads `Backpressure => Deferred`, so a kind
+  literally named `*.prune-backpressure` would claim a composition law it does not satisfy.
+- **PART B** — the classifier is **discovered, never named**: exactly one binding in `Heat.fs`
+  may consume the raw substring probes. It also refuses an inline `kindContains` probe, an
+  orphan token predicate nothing reads, and a membership split between the two remaining
+  pressure tables (`isPressureKind` over `KindClass`, `isPressure` over `HeatSignal`), including
+  a miswired `ofKind` arm.
+
+All of it demonstrated failing against the real `src/Core/Heat.fs` — eight mutants including
+this work-item's original defect restored verbatim (`isPressureKind = isBackpressureKind ||
+isDeniedKind`), all eight caught.
+
+**Not closed by that lint:** the pressure bit is still enumerated in two agreeing tables rather
+than one. Filed as `081M07Z23EX087G0R003N676FT`.

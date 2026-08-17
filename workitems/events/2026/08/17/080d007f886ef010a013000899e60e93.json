@@ -1,0 +1,14 @@
+{
+  "id": "080d007f886ef010a013000899e60e93",
+  "at": "2026-08-17T13:37:31.102Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M07Z23EX087G0R003N676FT",
+    "type": "task",
+    "title": "Derive HeatSignal.isPressure from one pressure table so the bit is enumerated once, not twice-agreeing",
+    "slug": "derive-heatsignal-ispressure-from-one-pressure-table-so-the",
+    "priority": "P2",
+    "filename": "081M07Z23EX087G0R003N676FT-derive-heatsignal-ispressure-from-one-pressure-table-so-the.md"
+  }
+}

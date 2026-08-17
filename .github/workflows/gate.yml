@@ -1240,6 +1240,20 @@ jobs:
       - name: Run no-empty-dirs
         run: bun src/Core.TypeScript/lint/no-empty-dirs.ts
 
+      # 081M010W1BP087G0R002M2BNVW — Heat.fs decided "is this kind pressure?" twice, by two
+      # independent routes that disagreed on kinds carrying both a forgetting and a pressure
+      # token. That bit is the discriminator for the composition law (deferral composes,
+      # destruction does not), so two answers defeat the point of the law being decidable.
+      # #10804 collapsed both routes onto one ordered chain; this is the standing guard that a
+      # second one cannot come back. PART A refuses a dual-token kind literal; PART B
+      # DISCOVERS the single classifier — it never pins the name, because pinning `ofKind` is
+      # exactly what made the first draft of this lint go red on a correct main — and refuses
+      # a second decider, an inline substring probe, an orphan probe, and a membership split
+      # between the two pressure tables. Every extraction route carries its own scan floor, so
+      # a route that goes dark fails instead of reading OK.
+      - name: Guard — one classifier for the heat deferral/destruction bit (081M010W1BP087G0R002M2BNVW)
+        run: bun src/Core.TypeScript/hygiene/lint-heat-kind-classifier-agreement.ts
+
       - name: Guard — discharge rows may not contradict their own certificates
         # 2026-08-01: five rows were written "§A — DISCHARGED" while Z-2's own cited
         # certificate said status:"OPEN" (94.7% error vs a 25% threshold). The script
