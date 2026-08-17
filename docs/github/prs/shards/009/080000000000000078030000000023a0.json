@@ -1,0 +1,12 @@
+{
+  "pr_number": 9120,
+  "archive_path": "docs/history/pr-reviews/PR-9120-feat-core-cellscheduler-slice-2-dop-n-via-ferrythrottler-the-run-1-run-n-law.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T06:03:12.998Z",
+  "schema_version": "v1",
+  "commit_sha": "6590c82d2a2f77d12fc9ec15e8bbc09d546f1eae",
+  "title": "feat(core): CellScheduler slice 2 — DoP=N via FerryThrottler, the run(1)==run(N) law",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T05:39:43Z",
+  "head_ref": "otto/cell-scheduler-slice2-dopn-invariance"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9122,
+  "archive_path": "docs/history/pr-reviews/PR-9122-feat-core-cellscheduler-slice-4-soft-cells-snap-only-at-the-edge.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T06:03:15.987Z",
+  "schema_version": "v1",
+  "commit_sha": "6590c82d2a2f77d12fc9ec15e8bbc09d546f1eae",
+  "title": "feat(core): CellScheduler slice 4 — soft cells, snap only at the edge",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T05:50:48Z",
+  "head_ref": "otto/cell-scheduler-slice4-soft-cells"
+}
