@@ -374,6 +374,7 @@
     <Compile Include="Chip8Observer.fs" />
     <Compile Include="Chip8PredictionRoom.fs" />
     <Compile Include="Chip8CrossRunStore.fs" />
+    <Compile Include="Chip8ConsultCensus.fs" />
     <Compile Include="CelegansController.fs" />
     <Compile Include="CelegansChip8Room.fs" />
     <Compile Include="SoftController.fs" />

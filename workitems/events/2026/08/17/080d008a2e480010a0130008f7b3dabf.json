@@ -1,0 +1,14 @@
+{
+  "id": "080d008a2e480010a0130008f7b3dabf",
+  "at": "2026-08-17T19:49:41.248Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M08MBJ7Z087G0R001JB5H74",
+    "type": "task",
+    "title": "Consult-path post-selection census: compare verdict distribution of orbits READ against orbits STORED",
+    "slug": "consult-path-post-selection-census-compare-verdict-distribut",
+    "priority": "P2",
+    "filename": "081M08MBJ7Z087G0R001JB5H74-consult-path-post-selection-census-compare-verdict-distribut.md"
+  }
+}

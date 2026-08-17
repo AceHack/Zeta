@@ -325,6 +325,7 @@
     <Compile Include="MetaCart.Tests.fs" />
     <Compile Include="Chip8SelfSim.Tests.fs" />
     <Compile Include="Chip8CrossRunStore.Tests.fs" />
+    <Compile Include="Chip8ConsultCensus.Tests.fs" />
     <Compile Include="SoftChip8Scheduler.Tests.fs" />
     <Compile Include="BitAdinkra.Tests.fs" />
     <Compile Include="PrivacyAndMeno.Tests.fs" />

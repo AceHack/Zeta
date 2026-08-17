@@ -59,9 +59,28 @@ prefix **refuses**; answering would promote the precompute budget into a claim a
 Regenerate: `Chip8CrossRunStore.precompute` with an attributed budget; the filename is
 `artifactFileName key`, so a rewrite is an upsert of identical bytes (idempotency #6).
 
+## Does the READ side sample these evenly?
+
+The table above is the **stored** distribution, and the store is complete with respect to how orbits end —
+`open-at-bound` is a distinct constructor, so a bound can never be recorded as a closure. **Completeness of
+the store is not unbiasedness of the sample**: if only continuing orbits are ever *read*, the effective
+sample is post-selected even though these files are not, and a criterion of the form *"useful = the run
+continues"* would then be measuring its own filter. The census for that is
+`src/Core/Chip8ConsultCensus.fs` / `src/Core.TypeScript/chip9/consult-census.ts`; run it with
+
+```bash
+bun src/Core.TypeScript/chip9/consult-census-report.ts
+```
+
+As of 2026-08-17 it reports the read side as **n/a, not zero** — no consult path is wired, so no orbit has
+ever been read and there is no distribution to compare. That is an absence, and the report says so rather
+than printing a reassuring `0.000`.
+
 ## Pointers
 
 - `docs/research/2026-08-17-chip8-cross-run-superdeterministic-memo-store-orbit-memoization-not-retrocausality.md`
+- `src/Core/Chip8ConsultCensus.fs` + `src/Core.TypeScript/chip9/consult-census.ts` — the consult-path
+  post-selection census (register row R-1; work item 081M08MBJ7Z087G0R001JB5H74)
 - `src/Core/Chip8CrossRunStore.fs` · `tests/Tests.FSharp/Chip8CrossRunStore.Tests.fs`
 - `src/Core.TypeScript/chip9/chip8-cross-run-store.ts` (+ `.test.ts`) — the TS reader/verifier parity
 - `src/Core/SoftChip8.fs` — `lookAhead`, the *within-run* half this completes
