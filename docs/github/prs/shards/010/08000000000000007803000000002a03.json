@@ -1,0 +1,12 @@
+{
+  "pr_number": 10755,
+  "archive_path": "docs/history/pr-reviews/PR-10755-fix-heat-a-receipt-that-observed-nothing-said-cold-the-signal-channel-now-carrie.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T03:35:26.914Z",
+  "schema_version": "v1",
+  "commit_sha": "e27f4a44eae417a99b29df6e9fbdd155f9b3bd44",
+  "title": "fix(heat): a receipt that observed nothing said \"cold\" — the signal channel now carries its denominator",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T03:34:46Z",
+  "head_ref": "shadow/heat-receipt-blind-counter"
+}
