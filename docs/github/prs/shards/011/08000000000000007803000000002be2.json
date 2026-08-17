@@ -1,0 +1,12 @@
+{
+  "pr_number": 11234,
+  "archive_path": "docs/history/pr-reviews/PR-11234-fix-persona-keys-the-biometric-gate-said-touchid-for-any-factor-that-satisfied-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T01:16:42.339Z",
+  "schema_version": "v1",
+  "commit_sha": "17cdc15f90a17fa0b9bcb4783fe931a210c8d422",
+  "title": "fix(persona-keys): the biometric gate said \"touchid\" for any factor that satisfied sudo",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T01:16:07Z",
+  "head_ref": "shadow/biometric-gate-reports-macos-touchid-for-any-sufficient-pam"
+}
