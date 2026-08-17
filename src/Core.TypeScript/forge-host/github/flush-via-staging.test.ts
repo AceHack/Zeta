@@ -133,9 +133,28 @@ describe("AgencySignature on telemetry flushes", () => {
 //                           `completed/action_required`, actor=github-actions[bot];
 //                           6 check-runs in the rollup, no gate row; open and
 //                           unmergeable since 2026-08-14.
-//   heartbeat/society       PR #10708 head e0f031ae — identical reading.
+//   heartbeat/society       PR #10708 head 46ec2994 (2026-08-17) — 36/36 parked,
+//                           same actor, 6 check-runs, no gate row, 964 parked runs
+//                           on 2026-08-16 alone; MERGEABLE/BLOCKED with auto-merge
+//                           already armed, i.e. the missing gate and nothing else.
 // And the positive control, agent-heartbeat's lane after #10986 put the PAT on the
 // checkout that pushes: `gate | pull_request | actor=AceHack`, 72 check-runs.
+//
+// THE CONTROL #11034 DECLARED WAS READ OUT, and it is why `society` moved into
+// TREATED below. #11034 treated tick-metrics and left society byte-identical on
+// purpose; the same-day real-tick reading, ~10 minutes apart on one repository:
+//   heartbeat/tick-metrics 00:14Z + 00:32Z (TREATED)   gate actor=AceHack, EXECUTES
+//   heartbeat/society      00:21Z (UNTREATED CONTROL)  gate actor=gh-actions[bot], PARKED
+// One variable, two lanes, one hour. That is the attribution the control bought.
+//
+// THE MECHANISM, refined by what red-state showed (see UNTREATED): the run's actor
+// is the identity that produced the event. A `pull_request` **opened** event comes
+// from `gh pr create` (the PAT -> AceHack), so a lane whose flush PR lands every
+// run always opens a fresh, executing PR. A **synchronize** event comes from the
+// `git push`, so once a flush PR is stuck open, every subsequent flush is a
+// GITHUB_TOKEN-actored synchronize and parks. That is self-sustaining: parked
+// gate -> unmergeable PR -> never re-created -> next flush is another synchronize.
+// Society sat in that loop for three days. The push credential is what breaks it.
 //
 // These assertions are the pin. Each one names the regression it catches, and the
 // ORDERING assertion is the load-bearing one — #10913's fallback ran, logged that
@@ -144,29 +163,62 @@ describe("AgencySignature on telemetry flushes", () => {
 // ---------------------------------------------------------------------------
 
 /** Lanes whose workflow has been given the verified push credential. */
-const TREATED = [{ lane: "tick-metrics", file: "tick-metrics.yml" }] as const;
+const TREATED = [
+  { lane: "tick-metrics", file: "tick-metrics.yml" },
+  { lane: "society", file: "society-heartbeat.yml" },
+] as const;
 
 /**
- * Lanes deliberately left on the old credential as an UNTREATED CONTROL.
+ * Lanes deliberately still on the default credential, and WHY.
  *
  * This is not an oversight and the assertion below exists so it cannot decay into
- * one. #10850 broke three lanes at once for ~16.75h by changing them together;
- * one lane treated against one lane untouched is what makes the next real-tick
- * reading attributable. WHEN YOU TREAT `society-heartbeat.yml`: move its entry
- * from CONTROL into TREATED in the same commit as the yaml change, and record the
- * before/after gate reading for that lane in the PR. Do not simply delete the
- * assertion — the control is a claim about what we know, not paperwork.
+ * one. #10850 broke three lanes at once for ~16.75h by changing them together, so
+ * lanes are treated one at a time with a reading in between.
+ *
+ * `red-state` is NOT a control showing the defect — it is a lane where the defect
+ * is LATENT, and saying so is the honest register. Measured 2026-08-17: 92
+ * `pull_request` runs on `heartbeat/red-state`, only 12 parked and all 12 dated
+ * 2026-08-14; every run since is `actor=AceHack` and executes. The reason is in
+ * the mechanism note above — its flush PRs MERGE (#11067, #11010, #10872, #10870,
+ * #10858 all landed on 2026-08-16), so each run opens a fresh PR under the PAT and
+ * never reaches a synchronize push. The defect returns the moment one of its PRs
+ * stalls, which is exactly how society entered its loop. Treat it on a stall, or
+ * pre-emptively with its own before/after reading — do not treat it blind.
+ *
+ * WHEN YOU TREAT A LANE: move its entry from UNTREATED into TREATED in the same
+ * commit as the yaml change, and record the before/after gate reading for that lane
+ * in the PR. Do not simply delete the assertion — this list is a claim about what
+ * we know, not paperwork.
  */
-const CONTROL = [{ lane: "society", file: "society-heartbeat.yml" }] as const;
+const UNTREATED = [{ lane: "red-state", file: "proof-closure-drift.yml" }] as const;
+
+/**
+ * The preflight step's body: from its `- name:` up to the next step's `- name:`.
+ *
+ * Sliced structurally rather than to a named following step — tick-metrics.yml has
+ * `Install bun` next and society-heartbeat.yml has `Setup bun`, and hardcoding
+ * either made the other lane's slice run to the end of the file, which silently
+ * widens what the `not.toContain` assertions are looking at.
+ */
+function preflightOf(yaml: string): string {
+  const start = yaml.indexOf("      - name: Preflight the push credential");
+  if (start < 0) return "";
+  const next = yaml.indexOf("\n      - name: ", start + 1);
+  return next < 0 ? yaml.slice(start) : yaml.slice(start, next);
+}
 
 describe("telemetry-lane push credential (the held-gate cure)", () => {
+  test("every lane that flushes through this tool is classified", () => {
+    // A new lane added to LANES with no credential decision is the silent-default
+    // failure: it inherits GITHUB_TOKEN and parks its gate, and nothing says so.
+    const classified = [...TREATED, ...UNTREATED].map((l) => l.lane).sort();
+    expect(classified).toEqual([...LANES].sort());
+  });
+
   for (const { lane, file } of TREATED) {
     describe(`${lane} (${file})`, () => {
       const yaml = workflow(file);
-      const preflight = yaml.slice(
-        yaml.indexOf("- name: Preflight the push credential"),
-        yaml.indexOf("- name: Install bun"),
-      );
+      const preflight = preflightOf(yaml);
 
       test("the checkout that pushes carries the PAT, with an absence ladder", () => {
         // The `||` ladder is the ABSENCE half of degrade-don't-halt: an unset
@@ -215,18 +267,28 @@ describe("telemetry-lane push credential (the held-gate cure)", () => {
         expect(preflight).toContain("preflight inconclusive");
       });
 
-      test("the degrade is loud and the token never reaches the log", () => {
+      test("the degrade is loud, lane-attributed, and leaks no token", () => {
         // A silent degrade is the same defect class as the missing gate: a lane
-        // that looks healthy and is not.
-        expect(preflight).toContain("::error title=tick-metrics PAT cannot push::");
+        // that looks healthy and is not. The title carries THIS lane's name — a
+        // copied block still saying `tick-metrics` would send the operator to the
+        // wrong workflow while the annotation looked correct.
+        expect(preflight).toContain(`::error title=${lane} PAT cannot push::`);
+        expect(preflight).toContain(`::error title=${lane} has no working push credential::`);
+        expect(preflight).toContain(`::warning title=${lane} preflight inconclusive::`);
         expect(preflight).toContain("::add-mask::");
         expect(preflight).not.toContain('echo "$FALLBACK_TOKEN"');
+      });
+
+      test("the probe ref is namespaced to THIS lane", () => {
+        // Two lanes sharing one `credprobe/` ref would race their dry runs against
+        // each other's ancestry rather than against the credential.
+        expect(preflight).toContain(`refs/heads/credprobe/${lane}`);
       });
     });
   }
 
-  for (const { lane, file } of CONTROL) {
-    test(`${lane} (${file}) is the DECLARED untreated control — see CONTROL above`, () => {
+  for (const { lane, file } of UNTREATED) {
+    test(`${lane} (${file}) is DECLARED untreated — see UNTREATED above`, () => {
       const yaml = workflow(file);
       expect(yaml).not.toContain("ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN");
       expect(yaml).not.toContain("- name: Preflight the push credential");
