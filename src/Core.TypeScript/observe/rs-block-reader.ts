@@ -13,6 +13,7 @@
 
 import { readFileSync } from "node:fs";
 import { extractInfo, N, K } from "./rs-phase-codec";
+import { isValidCodeword } from "./rs-syndrome";
 
 // ═══ Types ════════════════════════════════════════════════════════════════════
 
@@ -84,7 +85,26 @@ export function loadBlockIndex(path: string): BlockIndex {
     list.sort((a, b) => a.seq - b.seq);
   }
 
-  return { blocks, byAgent, count: blocks.length };
+  // DEDUP overlapping blocks (adversarial review 2026-08-16, finding #3):
+  // If two blocks for the same agent have the same seq, keep the LAST one seen
+  // (append-only file = later entry is more recent). If phase ranges overlap
+  // between different seqs, keep the higher seq (it's the correction).
+  for (const [agent, list] of byAgent) {
+    const deduped: BlockRecord[] = [];
+    const seenSeqs = new Set<number>();
+    // Iterate in reverse (last seen wins for same seq)
+    for (let i = list.length - 1; i >= 0; i--) {
+      const b = list[i]!;
+      if (!seenSeqs.has(b.seq)) {
+        seenSeqs.add(b.seq);
+        deduped.unshift(b);
+      }
+    }
+    byAgent.set(agent, deduped);
+  }
+
+  const dedupedBlocks = [...byAgent.values()].flat();
+  return { blocks: dedupedBlocks, byAgent, count: dedupedBlocks.length };
 }
 
 // ═══ Queries ══════════════════════════════════════════════════════════════════
@@ -106,6 +126,13 @@ export function queryPhase(index: BlockIndex, query: PhaseQuery): PhaseQueryResu
       const positionInBlock = query.phase - block.startPhase;
       if (positionInBlock < 0 || positionInBlock >= K) {
         continue; // shouldn't happen, but defensive
+      }
+
+      // SYNDROME GATE (adversarial review 2026-08-16): refuse to answer from a
+      // corrupt block. Without this check, a silently corrupted symbol causes
+      // extractInfo to return wrong values without warning.
+      if (!isValidCodeword(block.coded)) {
+        return { found: false, reason: `block seq=${block.seq} has non-zero syndrome (corrupted — refusing to decode)` };
       }
 
       // Extract the info values from the coded block

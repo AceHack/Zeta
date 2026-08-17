@@ -1028,6 +1028,19 @@ jobs:
             echo "::warning::[rs-verify] ECC verification FAILED — at least one block is not recoverable"
           fi
 
+      - name: Phase coverage summary (gap visibility per tick)
+        env:
+          AGENT: ${{ matrix.agent }}
+        run: |
+          # Only otto reports (same as verify — avoid 3x duplicate output)
+          if [ "$AGENT" != "otto" ]; then
+            exit 0
+          fi
+          if [ ! -f data/rs-blocks.jsonl ]; then
+            exit 0
+          fi
+          bun src/Core.TypeScript/observe/phase-history-cli.ts --summary 2>&1 || true
+
       - name: Push heartbeat branch
         env:
           AGENT: ${{ matrix.agent }}
