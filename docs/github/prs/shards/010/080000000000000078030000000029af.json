@@ -1,0 +1,12 @@
+{
+  "pr_number": 10671,
+  "archive_path": "docs/history/pr-reviews/PR-10671-feat-economy-the-conservation-invariant-the-symmetric-custody-model-rests-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:48:44.605Z",
+  "schema_version": "v1",
+  "commit_sha": "bd9cee29fc6a0e793b11444d40d0e87915c1f5dc",
+  "title": "feat(economy): the conservation invariant the symmetric custody model rests on",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:48:09Z",
+  "head_ref": "shadow/custody-conservation-ledger"
+}
