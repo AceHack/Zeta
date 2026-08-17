@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -32,9 +32,25 @@ function fixture(): { readonly root: string; readonly work: string } {
 }
 
 function commitFile(work: string, path: string, content: string, message: string): void {
-  writeFileSync(join(work, path), content);
+  const full = join(work, path);
+  mkdirSync(join(full, ".."), { recursive: true });
+  writeFileSync(full, content);
   git(work, "add", path);
   git(work, "commit", "-m", message);
+}
+
+/**
+ * The REPOSITORY's own `.gitattributes`, not a hand-written copy.
+ *
+ * The lane's merge semantics are declared there, so a fixture that restated them would keep
+ * passing after someone deleted the real lines -- exactly the vacuity these tests exist to catch.
+ */
+const REPO_GITATTRIBUTES = readFileSync(join(import.meta.dir, "..", "..", "..", ".gitattributes"), "utf8");
+
+/** Seed a fixture main with the shipped attributes, as the preparer's `checkout -B` would see them. */
+function seedAttributes(work: string): void {
+  commitFile(work, ".gitattributes", REPO_GITATTRIBUTES, "attributes");
+  git(work, "push", "origin", "main");
 }
 
 function pushLane(work: string): void {
@@ -110,6 +126,74 @@ describe("prepareHeartbeatBranch", () => {
     if (result.ok) throw new Error("conflicting state was accepted");
     expect(result.error).toContain("carry unflushed heartbeat state failed");
     expect(git(work, "ls-remote", "origin", "refs/heads/heartbeat/alexa").split("\t")[0]).toBe(remoteBefore);
+  });
+
+  // --- PARTIAL FLUSH (2026-08-16 lane wedge) ------------------------------------------------
+  // The pre-existing "already landed by squash" test above only covers a TOTAL flush. The lanes
+  // wedged on the partial case: main lands a strict PREFIX of the lane's delta because the lane
+  // keeps ticking while the flush PR is in flight.
+
+  /** Drive main + lane to the exact divergence that wedged alexa/otto/soraya. */
+  function partialFlush(work: string, path: string, main: string, lane: string): void {
+    git(work, "switch", "-c", "heartbeat/alexa");
+    commitFile(work, path, lane, "lane ticks past the flush snapshot");
+    pushLane(work);
+
+    git(work, "switch", "main");
+    commitFile(work, path, main, "partial flush: only the snapshot reached main");
+    git(work, "push", "origin", "main");
+  }
+
+  it("carries an append-only lane whose flush landed only a prefix", () => {
+    const { work } = fixture();
+    const p = "db/mutation-findings/alexa.jsonl";
+    seedAttributes(work);
+    partialFlush(work, p, '{"n":1}\n{"n":2}\n', '{"n":1}\n{"n":2}\n{"n":3}\n');
+
+    const result = prepareHeartbeatBranch("alexa", work);
+    expect(result).toMatchObject({ ok: true, value: { remoteFound: true, carried: true } });
+
+    // `union` is exactly set-union here: nothing from either side is dropped, nothing duplicated.
+    const lines = readFileSync(join(work, p), "utf8").split("\n").filter(Boolean);
+    expect(lines).toEqual(['{"n":1}', '{"n":2}', '{"n":3}']);
+    expect(lines).not.toContain("<<<<<<< HEAD");
+  });
+
+  it("keeps a regenerated snapshot parseable when both sides rewrote it", () => {
+    const { work } = fixture();
+    const p = "docs/observe-events/.rs-buffer-alexa.json";
+    seedAttributes(work);
+    // Single-line whole-file rewrites. `union` would concatenate them into two objects; the
+    // assertion below is what makes that wrong answer fail instead of merely looking merged.
+    partialFlush(work, p, '{"buffer":[1,2],"seq":2}', '{"buffer":[1,2,3],"seq":3}');
+
+    const result = prepareHeartbeatBranch("alexa", work);
+    expect(result).toMatchObject({ ok: true, value: { remoteFound: true, carried: true } });
+
+    const merged = readFileSync(join(work, p), "utf8");
+    expect(() => JSON.parse(merged) as unknown).not.toThrow();
+    expect(JSON.parse(merged) as unknown).toEqual({ buffer: [1, 2, 3], seq: 3 });
+  });
+
+  it("registers the theirs driver, which git does not provide", () => {
+    const { work } = fixture();
+    seedAttributes(work);
+    expect(prepareHeartbeatBranch("alexa", work).ok).toBe(true);
+    // Without this, `merge=theirs` is silently ignored and the snapshot paths keep wedging --
+    // the attributes block alone is NOT the fix.
+    expect(git(work, "config", "--local", "merge.theirs.driver")).toBe("cp -f -- %B %A");
+  });
+
+  it("still refuses a conflict outside the declared lane paths", () => {
+    const { work } = fixture();
+    seedAttributes(work);
+    // Same partial-flush shape on an undeclared path: backpressure must survive the fix.
+    partialFlush(work, "shared/report.md", "main line\n", "lane line\n");
+
+    const result = prepareHeartbeatBranch("alexa", work);
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("an undeclared conflicting path was auto-resolved");
+    expect(result.error).toContain("carry unflushed heartbeat state failed");
   });
 
   it("rejects an unsafe lane name as a value", () => {
