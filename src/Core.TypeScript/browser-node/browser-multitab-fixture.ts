@@ -230,6 +230,7 @@ const started = serviceWorkerChannel.ok
       initialSequence: Number(queryParameter("sequence") ?? "0"),
       maxTrackedTabs: 8,
       maxFeedback: 8,
+      maxCausalCorrections: 64,
       capabilities: ["css", "javascript", "service-worker", "indexed-db"],
       onDatabaseInvalidated,
       onTabReadout,

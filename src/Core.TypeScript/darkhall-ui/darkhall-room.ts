@@ -15,6 +15,7 @@ import {
 import type { BrowserTabCoordinatorReadout } from "../browser-node/browser-tab-coordinator";
 import type { BrowserTabTransportReadout } from "../browser-node/browser-tab-channel-selector";
 import type { DwellerMind, LlmtvTranscript, MindPrediction, MindTemp, PhaseClockReadout } from "./darkhall-tv";
+import type { DarkHallCausalReadout } from "./darkhall-causal-readout";
 import type { DarkHallDatabaseReadout } from "./darkhall-database-readout";
 
 export {
@@ -134,20 +135,6 @@ export interface TranscriptContinuationReadout {
   readonly admissionFeedback: readonly string[];
 }
 
-export interface TranscriptCausalCorrection {
-  readonly sequence: string;
-  readonly reinterpretsThrough: string;
-  readonly deltaRows: number;
-}
-
-export interface TranscriptCausalReadout {
-  readonly schema: "zeta.darkhall.causal-readout.v1";
-  readonly executionDirection: "forward-only";
-  readonly appendOnly: true;
-  readonly rewritesHistory: false;
-  readonly corrections: readonly TranscriptCausalCorrection[];
-}
-
 export interface RoomRunTranscript {
   readonly schema: "zeta.darkhall.room-ui.v1";
   readonly roomName: string;
@@ -162,7 +149,7 @@ export interface RoomRunTranscript {
   readonly travelerFrame?: TranscriptTravelerFrame;
   readonly phaseClock?: PhaseClockReadout;
   readonly continuationReadout?: TranscriptContinuationReadout;
-  readonly causalReadout?: TranscriptCausalReadout;
+  readonly causalReadout?: DarkHallCausalReadout;
   readonly browserTabReadout?: BrowserTabCoordinatorReadout;
   readonly browserTransportReadout?: BrowserTabTransportReadout;
   readonly databaseReadout?: DarkHallDatabaseReadout;
@@ -357,8 +344,10 @@ function renderContinuationReadout(readout: TranscriptContinuationReadout | unde
   ].join("");
 }
 
-function renderCausalReadout(readout: TranscriptCausalReadout | undefined): string {
+function renderCausalReadout(readout: DarkHallCausalReadout | undefined): string {
   if (readout === undefined) return "";
+
+  const feedback = readout.feedback;
 
   return [
     `<section class="zeta-room-causality"`,
@@ -368,15 +357,25 @@ function renderCausalReadout(readout: TranscriptCausalReadout | undefined): stri
     attr("data-append-only", readout.appendOnly),
     attr("data-rewrites-history", readout.rewritesHistory),
     attr("data-correction-count", readout.corrections.length),
+    attr("data-correction-capacity", readout.maxCorrections),
+    attr("data-correction-remaining", readout.remainingCapacity),
+    attr("data-correction-admission", readout.admission),
+    attr("data-correction-feedback", feedback?.code),
     ">",
+    '<header class="zeta-causal-header">',
+    "<h2>causal corrections</h2>",
+    `<p>${readout.corrections.length.toString()} / ${readout.maxCorrections.toString()} retained · ${escapeHtml(readout.admission)}</p>`,
+    "</header>",
     '<ol class="zeta-causal-corrections">',
     ...readout.corrections.map((correction) =>
       [
         '<li class="zeta-causal-correction"',
+        attr("data-correction-source", correction.sourceTabId),
         attr("data-correction-sequence", correction.sequence),
         attr("data-reinterprets-through", correction.reinterpretsThrough),
         attr("data-delta-rows", correction.deltaRows),
         ">",
+        `<span>source ${escapeHtml(correction.sourceTabId)}</span>`,
         `<span>history ${escapeHtml(correction.reinterpretsThrough)}</span>`,
         `<span>correction ${escapeHtml(correction.sequence)}</span>`,
         `<span>delta ${correction.deltaRows.toString()}</span>`,
@@ -384,6 +383,9 @@ function renderCausalReadout(readout: TranscriptCausalReadout | undefined): stri
       ].join(""),
     ),
     "</ol>",
+    feedback === null
+      ? ""
+      : `<p class="zeta-causal-feedback" data-severity="${feedback.severity}">${escapeHtml(feedback.code)}: ${escapeHtml(feedback.detail)}</p>`,
     "</section>",
   ].join("");
 }
@@ -712,6 +714,7 @@ export function roomTranscriptToLlmtv(
     predictions: roomPredictions(transcript, heat, temperatureTreaty.temperature),
     phaseClock,
     temperatureTreaty,
+    ...(transcript.causalReadout === undefined ? {} : { causalReadout: transcript.causalReadout }),
   };
   const mind = { ...baseMind, frame };
 
@@ -798,6 +801,10 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     attr("data-execution-direction", causality?.executionDirection),
     attr("data-rewrites-history", causality?.rewritesHistory),
     attr("data-correction-count", causality?.corrections.length),
+    attr("data-correction-capacity", causality?.maxCorrections),
+    attr("data-correction-remaining", causality?.remainingCapacity),
+    attr("data-correction-admission", causality?.admission),
+    attr("data-correction-feedback", causality?.feedback?.code),
     attr("data-browser-tab-readout", browser?.schema),
     attr("data-browser-node", browser?.nodeId),
     attr("data-browser-local-tab", browser?.localTabId),

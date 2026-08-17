@@ -40,6 +40,7 @@ import {
   type RoomRunTranscript,
 } from "./darkhall-room";
 import { renderLlmtvDocument } from "./darkhall-tv";
+import { DARK_HALL_CAUSAL_READOUT_SCHEMA } from "./darkhall-causal-readout";
 import { DARK_HALL_DATABASE_READOUT_SCHEMA, type DarkHallDatabaseReadout } from "./darkhall-database-readout";
 
 const css = readFileSync(join(import.meta.dir, "darkhall-room.css"), "utf-8");
@@ -298,35 +299,54 @@ describe("Dark Hall CSS room UI", () => {
   });
 
   it("renders later corrections without implying backward execution or history rewrites", () => {
-    const html = renderDarkHallRoomHtml({
+    const withCausalReadout: RoomRunTranscript = {
       ...transcript,
       causalReadout: {
-        schema: "zeta.darkhall.causal-readout.v1",
+        schema: DARK_HALL_CAUSAL_READOUT_SCHEMA,
+        sourceSchema: "zeta.browser-causal-correction-ledger.v1",
         executionDirection: "forward-only",
         appendOnly: true,
         rewritesHistory: false,
+        maxCorrections: 4,
+        remainingCapacity: 3,
+        admission: "open",
         corrections: [
           {
+            sourceTabId: "tab-b",
             sequence: "9007199254740994",
             reinterpretsThrough: "9007199254740993",
             deltaRows: 2,
           },
         ],
+        feedback: null,
       },
-    });
+    };
+    const html = renderDarkHallRoomHtml(withCausalReadout);
 
-    expect(html).toContain('data-causal-readout="zeta.darkhall.causal-readout.v1"');
+    expect(html).toContain(`data-causal-readout="${DARK_HALL_CAUSAL_READOUT_SCHEMA}"`);
     expect(html).toContain('data-execution-direction="forward-only"');
     expect(html).toContain('data-rewrites-history="false"');
     expect(html).toContain('data-correction-count="1"');
+    expect(html).toContain('data-correction-capacity="4"');
+    expect(html).toContain('data-correction-remaining="3"');
+    expect(html).toContain('data-correction-admission="open"');
+    expect(html).toContain('data-correction-source="tab-b"');
     expect(html).toContain('data-correction-sequence="9007199254740994"');
     expect(html).toContain('data-reinterprets-through="9007199254740993"');
     expect(html).toContain("<dt>direction</dt><dd>forward-only</dd>");
     expect(html).toContain("history 9007199254740993");
     expect(html).toContain("correction 9007199254740994");
+    expect(html).toContain("source tab-b");
     expect(css).toContain(".zeta-room-causality");
     expect(css).toContain(".zeta-causal-correction");
     expect(css).not.toContain("animation:");
+
+    const llmtv = renderLlmtvDocument(roomTranscriptToLlmtv(withCausalReadout));
+    expect(llmtv).toContain(`data-causal-readout="${DARK_HALL_CAUSAL_READOUT_SCHEMA}"`);
+    expect(llmtv).toContain('data-correction-admission="open"');
+    expect(llmtv).toContain('data-correction-count="1"');
+    expect(llmtv).toContain('data-source="tab-b"');
+    expect(llmtv).toContain("9007199254740993 &rarr; 9007199254740994");
   });
 
   it("keeps causal rendering additive for transcripts without a readout", () => {

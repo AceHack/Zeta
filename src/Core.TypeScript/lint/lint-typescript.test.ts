@@ -31,9 +31,9 @@ describe("packageBaseName", () => {
 });
 
 describe("TypeScript compiler runtime", () => {
-  it("executes the checked-in compiler under Bun without the Node-shebang launcher", () => {
+  it("executes the checked-in compiler under Node to avoid Bun teardown crashes", () => {
     expect(TYPESCRIPT_COMPILER_COMMAND).toEqual([
-      "bun",
+      "node",
       "node_modules/typescript/bin/tsc",
       "--noEmit",
       "--pretty",

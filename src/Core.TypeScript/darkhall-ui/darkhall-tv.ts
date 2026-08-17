@@ -19,6 +19,7 @@ import {
   type HeatSignal,
   type TemperatureTreatyBundle,
 } from "./heat";
+import type { DarkHallCausalReadout } from "./darkhall-causal-readout";
 
 /// Attention temperature — where a prediction sits on the LLMTV salience axis.
 /// hot = high-salience / rising attention, cool = settled. A DU, not a hand-coded
@@ -54,6 +55,7 @@ export interface DwellerMind {
   readonly frame?: number; // transcript-tick id (the still frame's number)
   readonly phaseClock?: PhaseClockReadout;
   readonly temperatureTreaty?: TemperatureTreatyBundle;
+  readonly causalReadout?: DarkHallCausalReadout;
 }
 
 export type PhaseClockBasis = "seed-phase";
@@ -158,6 +160,35 @@ function renderPrediction(pred: MindPrediction): string {
 
 function renderRequiredBand(hat: string): string {
   return `<div class="band"><span class="k req" data-kind="required">required · ${escapeHtml(hat)}</span><span class="hr"></span></div>`;
+}
+
+function renderCausalLane(readout: DarkHallCausalReadout): string {
+  const feedback = readout.feedback;
+  return [
+    `<div class="causal-lane"`,
+    attr("data-causal-readout", readout.schema),
+    attr("data-causal-source", readout.sourceSchema),
+    attr("data-correction-admission", readout.admission),
+    attr("data-correction-count", readout.corrections.length),
+    attr("data-correction-capacity", readout.maxCorrections),
+    attr("data-correction-remaining", readout.remainingCapacity),
+    attr("data-correction-feedback", feedback?.code),
+    ">",
+    '<div class="causal-band">',
+    `<span>causal corrections · ${escapeHtml(readout.admission)}</span>`,
+    `<i></i><b>${readout.corrections.length.toString()} / ${readout.maxCorrections.toString()}</b>`,
+    "</div>",
+    '<ol class="causal-rows">',
+    ...readout.corrections.map(
+      (correction) =>
+        `<li data-source="${escapeHtml(correction.sourceTabId)}" data-sequence="${escapeHtml(correction.sequence)}"><span>${escapeHtml(correction.sourceTabId)}</span><span>${escapeHtml(correction.reinterpretsThrough)} &rarr; ${escapeHtml(correction.sequence)}</span><b>+${correction.deltaRows.toString()}</b></li>`,
+    ),
+    "</ol>",
+    feedback === null
+      ? ""
+      : `<p data-severity="${feedback.severity}">${escapeHtml(feedback.code)}: ${escapeHtml(feedback.detail)}</p>`,
+    "</div>",
+  ].join("");
 }
 
 /// The frost pair: the "personal · frosted" band + the opaque veil. The veil shows
@@ -329,6 +360,7 @@ export function renderDweller(mind: DwellerMind, seed: string): string {
   const blackBody = temperatureTreaty?.blackBody;
   const heatReceipts = temperatureTreaty?.heatReceipts;
   const phaseClock = mind.phaseClock;
+  const causalReadout = mind.causalReadout;
   const temperatureFeedback =
     temperatureTreaty === undefined || temperatureTreaty.referenceFeedback.length === 0
       ? undefined
@@ -356,6 +388,10 @@ export function renderDweller(mind: DwellerMind, seed: string): string {
     attr("data-black-body-radiance", blackBody?.radiancePpm),
     attr("data-black-body-peak-frequency", blackBody?.peakFrequencyPpm),
     attr("data-heat-receipts", heatReceipts === undefined ? undefined : heatReceipts.length),
+    attr("data-causal-readout", causalReadout?.schema),
+    attr("data-correction-admission", causalReadout?.admission),
+    attr("data-correction-count", causalReadout?.corrections.length),
+    attr("data-correction-capacity", causalReadout?.maxCorrections),
     ">",
     `<div class="tv-head">`,
     `<div class="who">${escapeHtml(mind.name)} <small>${escapeHtml(mind.role)}</small></div>`,
@@ -364,6 +400,7 @@ export function renderDweller(mind: DwellerMind, seed: string): string {
     `<div class="mind">`,
     renderRequiredBand(mind.hat),
     ...mind.predictions.map(renderPrediction),
+    causalReadout === undefined ? "" : renderCausalLane(causalReadout),
     temperatureTreaty === undefined ? "" : renderTemperatureLane(temperatureTreaty),
     mind.frost ? renderFrost(mind.frost) : "",
     "</div>",
@@ -534,6 +571,17 @@ export const LLMTV_INLINE_CSS = `
     .band .k { font-family:var(--mono); font-size:0.56rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--txt3); }
     .band .k.req { color:var(--c-warm); } .band .k.pers { color:var(--c-cool); }
     .band .hr { flex:1; height:1px; background:var(--line); }
+    .causal-lane { margin:0.7rem -0.85rem 0; padding:0.62rem 0.85rem 0; border-top:1px solid var(--line); }
+    .causal-lane[data-correction-admission="backpressure"] { border-top-color:var(--c-hot); }
+    .causal-band { display:flex; align-items:center; gap:0.4rem; font-family:var(--mono); font-size:0.56rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--c-cool); }
+    .causal-lane[data-correction-admission="backpressure"] .causal-band { color:var(--c-hot); }
+    .causal-band i { flex:1; height:1px; background:currentColor; opacity:0.45; }
+    .causal-band b { color:currentColor; font-weight:400; white-space:nowrap; }
+    .causal-rows { display:grid; gap:0.25rem; margin:0.45rem 0 0; padding:0; list-style:none; }
+    .causal-rows li { display:grid; grid-template-columns:minmax(3rem,0.7fr) minmax(0,1.4fr) minmax(2rem,0.35fr); gap:0.35rem; color:var(--txt2); font-size:0.56rem; }
+    .causal-rows li span { min-width:0; overflow-wrap:anywhere; }
+    .causal-rows li b { color:var(--txt); font-weight:400; text-align:right; }
+    .causal-lane p { margin:0.45rem 0 0; color:var(--c-hot); font-family:var(--mono); font-size:0.54rem; line-height:1.35; overflow-wrap:anywhere; }
     /* temperature treaty: information-temperature and black-body reference readout, visible from attrs */
     .temp-lane { --thermal:var(--c-cool); margin:0.7rem -0.85rem 0; padding:0.62rem 0.85rem 0; border-top:1px solid var(--line); color:var(--thermal); }
     .temp-lane[data-temperature-band="cold"] { --thermal:var(--txt3); }

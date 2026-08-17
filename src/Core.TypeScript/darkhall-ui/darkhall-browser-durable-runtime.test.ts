@@ -156,6 +156,7 @@ function options(): DarkHallBrowserDurableOptions {
     initialSequence: 0,
     maxTrackedTabs: 4,
     maxFeedback: 4,
+    maxCausalCorrections: 2,
     capabilities: ["css", "javascript", "indexed-db"],
   };
 }
@@ -275,7 +276,10 @@ describe("durable Dark Hall browser runtime", () => {
       close: () => ({ ok: true, value: null }),
     };
     const onTabReadout = () => ({ ok: true as const, value: null });
-    const onCausalCorrection = (): void => undefined;
+    const observedCausalCorrections: BrowserCausalCorrectionNotice[] = [];
+    const onCausalCorrection = (correction: BrowserCausalCorrectionNotice): void => {
+      observedCausalCorrections.push(correction);
+    };
     const port = new MemoryCheckpointPort();
     const starter = createStarter();
 
@@ -288,7 +292,19 @@ describe("durable Dark Hall browser runtime", () => {
     expect(started.ok).toBe(true);
     expect(starter.starts[0]?.channel).toBe(channel);
     expect(starter.starts[0]?.onTabReadout).toBe(onTabReadout);
-    expect(starter.starts[0]?.onCausalCorrection).toBe(onCausalCorrection);
+    expect(starter.starts[0]?.onCausalCorrection).not.toBe(onCausalCorrection);
+    starter.starts[0]?.onCausalCorrection?.({
+      sourceTabId: "tab-b",
+      sequence: "2",
+      reinterpretsThrough: "1",
+      deltaRows: 1,
+    });
+    expect(started.ok && started.value.read().causal.corrections).toEqual([
+      { sourceTabId: "tab-b", sequence: "2", reinterpretsThrough: "1", deltaRows: 1 },
+    ]);
+    expect(observedCausalCorrections).toEqual([
+      { sourceTabId: "tab-b", sequence: "2", reinterpretsThrough: "1", deltaRows: 1 },
+    ]);
   });
 
   test("starts cold, checkpoints an advanced transcript, and retracts to the initial room", async () => {
@@ -299,13 +315,23 @@ describe("durable Dark Hall browser runtime", () => {
     if (!started.ok) return;
 
     expect(starter.starts[0]?.checkpoint).toBe("none");
-    expect(starter.starts[0]?.transcript).toEqual(initialTranscript);
+    expect(starter.starts[0]?.transcript).toMatchObject({
+      ...initialTranscript,
+      causalReadout: { admission: "open", corrections: [], maxCorrections: 2 },
+    });
     expect(started.value.read()).toMatchObject({
       schema: DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA,
       recoveredRevision: null,
       currentRevision: null,
       room: { roomName: "browser-room", latestTick: 1 },
       database: null,
+      causal: {
+        schema: "zeta.darkhall.causal-readout.v2",
+        admission: "open",
+        maxCorrections: 2,
+        remainingCapacity: 2,
+        corrections: [],
+      },
     });
 
     expect(started.value.updateDatabaseReadout(databaseReadout)).toMatchObject({
@@ -318,6 +344,14 @@ describe("durable Dark Hall browser runtime", () => {
       started.value.publishCausalCorrection({ sequence: "14", reinterpretsThrough: "12", deltaRows: 2 }),
     ).toMatchObject({ ok: true });
     expect(starter.causalCorrections).toEqual([{ sequence: "14", reinterpretsThrough: "12", deltaRows: 2 }]);
+    expect(started.value.read().causal).toMatchObject({
+      remainingCapacity: 1,
+      corrections: [{ sourceTabId: "tab-a", sequence: "14", reinterpretsThrough: "12", deltaRows: 2 }],
+    });
+    expect(starter.updates[0]).toMatchObject({
+      roomName: "browser-room",
+      causalReadout: { corrections: [{ sourceTabId: "tab-a", sequence: "14" }] },
+    });
 
     const advanced: RoomRunTranscript = {
       ...initialTranscript,
@@ -326,7 +360,11 @@ describe("durable Dark Hall browser runtime", () => {
     };
     const saved = await started.value.checkpoint(2, advanced);
     expect(saved.ok).toBe(true);
-    expect(starter.updates).toEqual([advanced]);
+    expect(starter.updates).toHaveLength(2);
+    expect(starter.updates[1]).toMatchObject({
+      roomName: "advanced-room",
+      causalReadout: { corrections: [{ sourceTabId: "tab-a", sequence: "14" }] },
+    });
     expect(starter.checkpointUpdates).toEqual(["durable"]);
     expect(starter.checkpointInvalidations).toEqual([{ sourceTabId: "tab-a", operation: "saved", revision: 2 }]);
     expect(started.value.read()).toMatchObject({
@@ -339,7 +377,11 @@ describe("durable Dark Hall browser runtime", () => {
     const staleRetraction = await started.value.retract(1);
     expect(staleRetraction).toMatchObject({ ok: false, feedback: { code: "checkpoint-revision-conflict" } });
     expect(await started.value.retract(2)).toEqual({ ok: true, value: true });
-    expect(starter.updates).toEqual([advanced, initialTranscript]);
+    expect(starter.updates).toHaveLength(3);
+    expect(starter.updates[2]).toMatchObject({
+      roomName: "browser-room",
+      causalReadout: { corrections: [{ sourceTabId: "tab-a", sequence: "14" }] },
+    });
     expect(starter.checkpointUpdates).toEqual(["durable", "none"]);
     expect(starter.checkpointInvalidations).toEqual([
       { sourceTabId: "tab-a", operation: "saved", revision: 2 },
@@ -350,6 +392,63 @@ describe("durable Dark Hall browser runtime", () => {
       host: { coordinator: { liveness: { checkpoint: "none" } } },
       room: { roomName: "browser-room" },
     });
+  });
+
+  test("converges peer corrections and backpressures instead of forgetting retained evidence", async () => {
+    const port = new MemoryCheckpointPort();
+    const starter = createStarter();
+    const started = await startDurableDarkHallBrowser(options(), port, starter.start);
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+
+    starter.starts[0]?.onCausalCorrection?.({
+      sourceTabId: "tab-c",
+      sequence: "4",
+      reinterpretsThrough: "3",
+      deltaRows: 2,
+    });
+    starter.starts[0]?.onCausalCorrection?.({
+      sourceTabId: "tab-b",
+      sequence: "2",
+      reinterpretsThrough: "1",
+      deltaRows: 1,
+    });
+
+    const readout = started.value.read().causal;
+    expect(readout.corrections.map((correction) => `${correction.sourceTabId}/${correction.sequence}`)).toEqual([
+      "tab-b/2",
+      "tab-c/4",
+    ]);
+    expect(readout).toMatchObject({ admission: "backpressure", remainingCapacity: 0, feedback: null });
+
+    (readout.corrections[0] as { sourceTabId: string }).sourceTabId = "mutated";
+    expect(started.value.read().causal.corrections[0]?.sourceTabId).toBe("tab-b");
+
+    expect(
+      started.value.publishCausalCorrection({ sequence: "6", reinterpretsThrough: "5", deltaRows: 3 }),
+    ).toMatchObject({
+      ok: false,
+      feedback: { severity: "backpressure", code: "causal-correction-capacity-exhausted" },
+    });
+    expect(starter.causalCorrections).toEqual([]);
+    expect(started.value.read().causal).toMatchObject({
+      admission: "backpressure",
+      feedback: { code: "causal-correction-capacity-exhausted" },
+      corrections: [{ sourceTabId: "tab-b" }, { sourceTabId: "tab-c" }],
+    });
+  });
+
+  test("rejects an invalid causal capacity before starting the browser host", async () => {
+    const port = new MemoryCheckpointPort();
+    const starter = createStarter();
+    const started = await startDurableDarkHallBrowser({ ...options(), maxCausalCorrections: 0 }, port, starter.start);
+
+    expect(started).toMatchObject({
+      ok: false,
+      feedback: { source: "causal-ledger", code: "causal-correction-ledger-configuration-invalid" },
+    });
+    expect(starter.starts).toEqual([]);
+    expect(port.closeCalls).toBe(1);
   });
 
   test("recovers the persisted transcript before the browser host starts", async () => {
@@ -377,7 +476,10 @@ describe("durable Dark Hall browser runtime", () => {
     if (!started.ok) return;
 
     expect(starter.starts[0]?.checkpoint).toBe("durable");
-    expect(starter.starts[0]?.transcript).toEqual(recoveredTranscript);
+    expect(starter.starts[0]?.transcript).toMatchObject({
+      ...recoveredTranscript,
+      causalReadout: { admission: "open", corrections: [], maxCorrections: 2 },
+    });
     expect(started.value.read()).toMatchObject({
       recoveredRevision: 7,
       currentRevision: 7,
@@ -414,7 +516,11 @@ describe("durable Dark Hall browser runtime", () => {
         room: { roomName: "peer-room", latestTick: 9 },
       },
     });
-    expect(starter.updates).toEqual([peerTranscript]);
+    expect(starter.updates).toHaveLength(1);
+    expect(starter.updates[0]).toMatchObject({
+      ...peerTranscript,
+      causalReadout: { admission: "open", corrections: [], maxCorrections: 2 },
+    });
 
     const newerTranscript = { ...peerTranscript, roomName: "newer-than-notice" };
     port.record = checkpointRecord(10, newerTranscript);
@@ -559,7 +665,11 @@ describe("durable Dark Hall browser runtime", () => {
     });
     expect(port.record?.revision).toBe(4);
     expect(starter.checkpointUpdates).toEqual(["durable"]);
-    expect(starter.updates).toEqual([advanced]);
+    expect(starter.updates).toHaveLength(1);
+    expect(starter.updates[0]).toMatchObject({
+      ...advanced,
+      causalReadout: { admission: "open", corrections: [], maxCorrections: 2 },
+    });
     expect(started.value.read()).toMatchObject({
       currentRevision: 4,
       host: { coordinator: { liveness: { checkpoint: "none" } } },

@@ -18,6 +18,12 @@ import {
 } from "../browser-node/browser-room-checkpoint";
 import type { BrowserLifecycleHostFeedback, BrowserLifecycleHostReadout } from "../browser-node/browser-lifecycle-host";
 import type { BrowserCheckpoint } from "../browser-node/browser-node";
+import {
+  createBrowserCausalCorrectionLedger,
+  foldBrowserCausalCorrection,
+  type BrowserCausalCorrectionLedger,
+  type BrowserCausalCorrectionLedgerFeedback,
+} from "../browser-node/browser-causal-correction-ledger";
 import type {
   BrowserCausalCorrectionNotice,
   BrowserCheckpointInvalidation,
@@ -25,6 +31,7 @@ import type {
   BrowserDatabaseInvalidation,
 } from "../browser-node/browser-tab-coordinator";
 import type { DarkHallDatabaseReadout } from "./darkhall-database-readout";
+import { darkHallCausalReadout, type DarkHallCausalReadout } from "./darkhall-causal-readout";
 import {
   startNativeDarkHallBrowser,
   type DarkHallBrowserBootstrapFeedback,
@@ -34,15 +41,21 @@ import {
 } from "./darkhall-browser-bootstrap";
 import type { RoomRunTranscript } from "./darkhall-room";
 
-export const DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA = "zeta.darkhall.browser-durable-runtime.v1" as const;
+export const DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA = "zeta.darkhall.browser-durable-runtime.v2" as const;
 
-type DurableRuntimeSource = "browser-runtime" | "checkpoint-store" | "room-checkpoint" | "room-render";
+type DurableRuntimeSource =
+  | "browser-runtime"
+  | "checkpoint-store"
+  | "room-checkpoint"
+  | "room-render"
+  | "causal-ledger";
 type UnderlyingFeedback =
   | BrowserCheckpointFeedback
   | NativeIndexedDbCheckpointFeedback
   | BrowserRoomCheckpointFeedback
   | BrowserLifecycleHostFeedback
-  | DarkHallBrowserBootstrapFeedback;
+  | DarkHallBrowserBootstrapFeedback
+  | BrowserCausalCorrectionLedgerFeedback;
 
 export interface DarkHallBrowserDurableFeedback {
   readonly severity: "backpressure" | "heat";
@@ -67,6 +80,7 @@ export interface DarkHallBrowserDurableOptions extends Omit<
   "checkpoint" | "onCheckpointInvalidated" | "transcript"
 > {
   readonly initialTranscript: RoomRunTranscript;
+  readonly maxCausalCorrections: number;
 }
 
 export interface NativeDarkHallBrowserDurableOptions
@@ -95,6 +109,8 @@ export interface DarkHallBrowserDurableReadout {
     readonly continuationToken: string | null;
   };
   readonly database: DarkHallDatabaseReadout | null;
+  readonly causal: DarkHallCausalReadout;
+  readonly causalRenderFeedback: DarkHallBrowserDurableFeedback | null;
 }
 
 export interface DarkHallBrowserDurableRuntime {
@@ -263,7 +279,9 @@ function bootstrapOptions(
   options: DarkHallBrowserDurableOptions,
   checkpoint: "none" | "durable",
   transcript: DurableRoomRunTranscript,
+  causalReadout: DarkHallCausalReadout,
   onCheckpointInvalidated: (invalidation: BrowserCheckpointInvalidation) => void,
+  onCausalCorrection: (correction: BrowserCausalCorrectionNotice) => void,
 ): DarkHallBrowserBootstrapOptions {
   return {
     root: options.root,
@@ -277,14 +295,14 @@ function bootstrapOptions(
     maxFeedback: options.maxFeedback,
     capabilities: options.capabilities,
     checkpoint,
-    transcript,
+    transcript: { ...transcript, causalReadout },
     onCheckpointInvalidated,
+    onCausalCorrection,
     ...(options.onTabReadout === undefined ? {} : { onTabReadout: options.onTabReadout }),
     ...(options.onDatabaseInvalidated === undefined ? {} : { onDatabaseInvalidated: options.onDatabaseInvalidated }),
     ...(options.onDatabaseExecutionReceipt === undefined
       ? {}
       : { onDatabaseExecutionReceipt: options.onDatabaseExecutionReceipt }),
-    ...(options.onCausalCorrection === undefined ? {} : { onCausalCorrection: options.onCausalCorrection }),
   };
 }
 
@@ -306,6 +324,53 @@ export async function startDurableDarkHallBrowser(
   const selectedTranscript = transcriptForCheckpoint(recovered.value, initial.value);
   if (!selectedTranscript.ok) return closeAfterFailure(checkpointPort, selectedTranscript);
 
+  const createdCausalLedger = createBrowserCausalCorrectionLedger(options.maxCausalCorrections);
+  if (!createdCausalLedger.ok) {
+    return closeAfterFailure(checkpointPort, failed("causal-ledger", createdCausalLedger.feedback));
+  }
+  let causalLedger: BrowserCausalCorrectionLedger = createdCausalLedger.value;
+  let causalFeedback: BrowserCausalCorrectionLedgerFeedback | null = null;
+  let causalRenderFeedback: DarkHallBrowserDurableFeedback | null = null;
+  let browserRuntimeForCausalRender: DarkHallBrowserRuntime | null = null;
+  let transcriptForCausalRender = selectedTranscript.value;
+
+  const renderCausalProjection = (): void => {
+    if (browserRuntimeForCausalRender === null) return;
+    try {
+      const rendered = browserRuntimeForCausalRender.updateTranscript({
+        ...transcriptForCausalRender,
+        causalReadout: darkHallCausalReadout(causalLedger, causalFeedback),
+      });
+      causalRenderFeedback = rendered.ok
+        ? null
+        : {
+            severity: "heat",
+            code: "room-render-failed",
+            source: "room-render",
+            detail: rendered.detail,
+            cleanup: [],
+          };
+    } catch {
+      causalRenderFeedback = thrown(
+        "browser-runtime",
+        "browser-runtime-operation-threw",
+        "rendering a causal correction readout",
+      ).feedback;
+    }
+  };
+
+  const onCausalCorrection = (correction: BrowserCausalCorrectionNotice): void => {
+    const admitted = foldBrowserCausalCorrection(causalLedger, correction);
+    if (admitted.ok) {
+      causalLedger = admitted.value;
+      causalFeedback = null;
+    } else {
+      causalFeedback = admitted.feedback;
+    }
+    renderCausalProjection();
+    options.onCausalCorrection?.(correction);
+  };
+
   let receiveCheckpointInvalidation: ((invalidation: BrowserCheckpointInvalidation) => void) | null = null;
   let startupInvalidation: BrowserCheckpointInvalidation | null = null;
   const onCheckpointInvalidated = (invalidation: BrowserCheckpointInvalidation): void => {
@@ -323,7 +388,9 @@ export async function startDurableDarkHallBrowser(
         options,
         recovered.value === null ? "none" : "durable",
         selectedTranscript.value,
+        darkHallCausalReadout(causalLedger, causalFeedback),
         onCheckpointInvalidated,
+        onCausalCorrection,
       ),
     );
   } catch {
@@ -334,6 +401,7 @@ export async function startDurableDarkHallBrowser(
   }
 
   const browserRuntime = started.value;
+  browserRuntimeForCausalRender = browserRuntime;
   const recoveredRevision = recovered.value?.revision ?? null;
   let currentRecord = recovered.value;
   let currentTranscript = selectedTranscript.value;
@@ -357,25 +425,34 @@ export async function startDurableDarkHallBrowser(
     checkpointSync,
     room: roomSummary(currentTranscript),
     database: databaseReadout,
+    causal: darkHallCausalReadout(causalLedger, causalFeedback),
+    causalRenderFeedback:
+      causalRenderFeedback === null ? null : { ...causalRenderFeedback, cleanup: [...causalRenderFeedback.cleanup] },
   });
 
   const updateRenderedTranscript = (nextTranscript: DurableRoomRunTranscript): DarkHallBrowserDurableResult<null> => {
+    transcriptForCausalRender = nextTranscript;
     try {
-      const rendered = browserRuntime.updateTranscript(nextTranscript);
-      return rendered.ok
-        ? succeeded(null)
-        : {
-            ok: false,
-            feedback: {
-              severity: "heat",
-              code: "room-render-failed",
-              source: "room-render",
-              detail: rendered.detail,
-              cleanup: [],
-            },
-          };
+      const rendered = browserRuntime.updateTranscript({
+        ...nextTranscript,
+        causalReadout: darkHallCausalReadout(causalLedger, causalFeedback),
+      });
+      if (rendered.ok) {
+        causalRenderFeedback = null;
+        return succeeded(null);
+      }
+      causalRenderFeedback = {
+        severity: "heat",
+        code: "room-render-failed",
+        source: "room-render",
+        detail: rendered.detail,
+        cleanup: [],
+      };
+      return { ok: false, feedback: causalRenderFeedback };
     } catch {
-      return thrown("browser-runtime", "browser-runtime-operation-threw", "rendering a room transcript");
+      const failure = thrown("browser-runtime", "browser-runtime-operation-threw", "rendering a room transcript");
+      causalRenderFeedback = failure.feedback;
+      return failure;
     }
   };
 
@@ -636,12 +713,23 @@ export async function startDurableDarkHallBrowser(
           detail: "The durable browser room runtime has already stopped.",
         });
       }
+      const notice: BrowserCausalCorrectionNotice = { sourceTabId: options.tabId, ...correction };
+      const admitted = foldBrowserCausalCorrection(causalLedger, notice);
+      if (!admitted.ok) {
+        causalFeedback = admitted.feedback;
+        renderCausalProjection();
+        return failed("causal-ledger", admitted.feedback);
+      }
       try {
         const published = browserRuntime.host.publishCausalCorrection(correction);
-        return published.ok ? succeeded(read()) : failed("browser-runtime", published.feedback);
+        if (!published.ok) return failed("browser-runtime", published.feedback);
       } catch {
         return thrown("browser-runtime", "browser-runtime-operation-threw", "publishing causal correction");
       }
+      causalLedger = admitted.value;
+      causalFeedback = null;
+      const rendered = updateRenderedTranscript(currentTranscript);
+      return rendered.ok ? succeeded(read()) : rendered;
     },
     stop: () => {
       if (finalized) return succeeded(read());

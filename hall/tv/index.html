@@ -86,6 +86,17 @@
     .band .k { font-family:var(--mono); font-size:0.56rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--txt3); }
     .band .k.req { color:var(--c-warm); } .band .k.pers { color:var(--c-cool); }
     .band .hr { flex:1; height:1px; background:var(--line); }
+    .causal-lane { margin:0.7rem -0.85rem 0; padding:0.62rem 0.85rem 0; border-top:1px solid var(--line); }
+    .causal-lane[data-correction-admission="backpressure"] { border-top-color:var(--c-hot); }
+    .causal-band { display:flex; align-items:center; gap:0.4rem; font-family:var(--mono); font-size:0.56rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--c-cool); }
+    .causal-lane[data-correction-admission="backpressure"] .causal-band { color:var(--c-hot); }
+    .causal-band i { flex:1; height:1px; background:currentColor; opacity:0.45; }
+    .causal-band b { color:currentColor; font-weight:400; white-space:nowrap; }
+    .causal-rows { display:grid; gap:0.25rem; margin:0.45rem 0 0; padding:0; list-style:none; }
+    .causal-rows li { display:grid; grid-template-columns:minmax(3rem,0.7fr) minmax(0,1.4fr) minmax(2rem,0.35fr); gap:0.35rem; color:var(--txt2); font-size:0.56rem; }
+    .causal-rows li span { min-width:0; overflow-wrap:anywhere; }
+    .causal-rows li b { color:var(--txt); font-weight:400; text-align:right; }
+    .causal-lane p { margin:0.45rem 0 0; color:var(--c-hot); font-family:var(--mono); font-size:0.54rem; line-height:1.35; overflow-wrap:anywhere; }
     /* temperature treaty: information-temperature and black-body reference readout, visible from attrs */
     .temp-lane { --thermal:var(--c-cool); margin:0.7rem -0.85rem 0; padding:0.62rem 0.85rem 0; border-top:1px solid var(--line); color:var(--thermal); }
     .temp-lane[data-temperature-band="cold"] { --thermal:var(--txt3); }

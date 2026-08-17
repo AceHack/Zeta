@@ -97,10 +97,10 @@ interface Step {
   readonly cmd: readonly [string, ...string[]];
 }
 
-// `bun x tsc` follows TypeScript's Node shebang. Execute the checked-in compiler
-// entry point with Bun directly so type checking stays on the repository runtime.
+// Execute TypeScript under Node. Bun 1.3.14 can crash during teardown after a
+// successful large-repository traversal, turning a clean check into SIGTRAP.
 export const TYPESCRIPT_COMPILER_COMMAND: readonly [string, ...string[]] = [
-  "bun",
+  "node",
   "node_modules/typescript/bin/tsc",
   "--noEmit",
   "--pretty",

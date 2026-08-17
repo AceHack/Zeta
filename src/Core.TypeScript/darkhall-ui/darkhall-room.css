@@ -582,6 +582,35 @@ body {
   border-block: 1px solid var(--room-line);
 }
 
+.zeta-causal-header {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.55rem;
+}
+
+.zeta-causal-header h2,
+.zeta-causal-header p,
+.zeta-causal-feedback {
+  margin: 0;
+}
+
+.zeta-causal-header h2 {
+  font-size: 0.9rem;
+}
+
+.zeta-causal-header p,
+.zeta-causal-feedback {
+  color: var(--room-muted);
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+}
+
+.zeta-room-causality[data-correction-admission="backpressure"] {
+  border-color: color-mix(in srgb, var(--room-pressure), var(--room-line) 45%);
+}
+
 .zeta-causal-corrections {
   display: grid;
   gap: 0.4rem;
@@ -592,7 +621,7 @@ body {
 
 .zeta-causal-correction {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.75rem;
   font-family: ui-monospace, monospace;
   font-size: 0.8rem;
@@ -600,6 +629,11 @@ body {
 
 .zeta-causal-correction span {
   min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.zeta-causal-feedback {
+  margin-top: 0.55rem;
   overflow-wrap: anywhere;
 }
 
