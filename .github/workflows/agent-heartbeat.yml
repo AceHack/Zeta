@@ -1330,6 +1330,32 @@ jobs:
             exit 1
           fi
 
+          # RETIRE WHAT THIS FLUSH REPLACED. Reached only on rc=0 — i.e. only once
+          # the replacement PR is open. The tool re-checks that itself and retires
+          # nothing if the keeper is absent from the open set, so a half-failed
+          # flush cannot strand a predecessor behind a closed PR.
+          #
+          # Without this the open set grew monotonically: on 2026-08-17 eight
+          # heartbeat PRs were open at once, three for the same lane, the oldest
+          # hours stale. That is not cosmetic — an abandoned flush PR whose gate
+          # never starts fails `required-check-started`, which took THIS VERY JOB
+          # red every ~25 minutes until the stale PR was closed by hand (#11369,
+          # #11426).
+          #
+          # Non-fatal by construction: this tick's telemetry is already safely on
+          # an open PR by the time we get here, so failing the flush over
+          # unfinished HOUSEKEEPING would trade a real success for a cosmetic
+          # failure.
+          set +e
+          bun src/Core.TypeScript/agent-heartbeats/retire-superseded-flush-prs.ts \
+            --agent "$AGENT" \
+            --keep-sha "$SOURCE_SHA"
+          RETIRE_RC=$?
+          set -e
+          if [ "$RETIRE_RC" -ne 0 ]; then
+            echo "::warning title=Superseded flush PRs not retired::$AGENT: retire step exited $RETIRE_RC. The flush itself SUCCEEDED; stale flush PRs may accumulate until the next tick."
+          fi
+
       # THE GATE DISPATCH BELT THAT USED TO SIT HERE WAS REMOVED 2026-08-16, AND THE
       # REASON IS NOT "IT IS REDUNDANT". IT WAS INERT. Measured, not inferred.
       #
