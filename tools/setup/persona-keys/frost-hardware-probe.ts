@@ -50,6 +50,27 @@
  * this host honour a hardware tier", because that is the only question the adapter can
  * act on. It is ADVISORY: it never selects a tier for a caller.
  *
+ * ============================================================================
+ * THE TPM PATH IS A STATE, NOT A BOOLEAN (2026-08-17, 081M00VN9P1087G0R000FYTTVS)
+ * ============================================================================
+ *
+ * `probeTpm2` used to answer `{ available: boolean }` from `existsSync` on three paths.
+ * That reproduced the driver-is-not-a-device error one layer down and added a second:
+ *
+ *   - `existsSync` returns `false` for EVERY error, so a permission denial and an
+ *     unreadable sysfs both read as "no TPM" — a check that could not run looking exactly
+ *     like a check that ran and said no.
+ *   - `/dev/tpm0` is also the device node of a TPM **1.2**. `exists(node) ⇒ TPM 2.0` is
+ *     the same false inference as `library on disk ⇒ token attached`: TPM 1.2 has no
+ *     `tpm2_unseal` and cannot honour `hardware-tpm2` at all.
+ *
+ * The Linux path now lives in `./tpm2-linux-probe.ts` as a capture/classify pair and
+ * answers a five-way `Tpm2State` — `present` / `absent` / `unreadable` / `unavailable` /
+ * `indeterminate` — carried through this file as `tpm2State`. `tpm2Available` survives as
+ * the narrow question the adapter asks, and it is true for `present` ONLY: a confirmed
+ * family-2.0 reading AND a device node. Read `tpm2Reason` before reporting "no TPM"
+ * anywhere, because three of the other four states are not findings about the hardware.
+ *
  * Noninterference (manifesto §13): every reading of the outside world — filesystem,
  * subprocess, platform string — enters through the injected `HardwareProbeEffects` door.
  * The default door is the real host; tests inject a fake host and therefore assert on
@@ -60,6 +81,13 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { platform as osPlatform } from "node:os";
 import type { FrostSealTier } from "./frost-share-adapter.ts";
+import {
+  probeTpm2Linux,
+  realTpm2LinuxEffects,
+  tpm2CheckRan,
+  type Tpm2LinuxEffects,
+  type Tpm2State,
+} from "./tpm2-linux-probe.ts";
 
 /**
  * The ONLY door through which this module reads the outside world (§13 noninterference).
@@ -74,6 +102,13 @@ export interface HardwareProbeEffects {
   readonly run: (cmd: string, args: readonly string[]) => string;
   /** node:os platform string ("darwin" | "linux" | "win32" | …). */
   readonly platform: string;
+  /**
+   * The Linux TPM 2.0 surface has its OWN door, because the three coarse operations above
+   * cannot express what that probe must not lose: `exists` collapses a permission denial
+   * into `false`, and `run` collapses "the tool is not installed" into the same throw as
+   * "the tool ran and refused". See `./tpm2-linux-probe.ts`.
+   */
+  readonly tpm2: Tpm2LinuxEffects;
 }
 
 /** The real host. The only place in this module that touches fs/subprocess directly. */
@@ -85,12 +120,24 @@ export function realProbeEffects(): HardwareProbeEffects {
     run: (cmd, args) =>
       execFileSync(cmd, [...args], { encoding: "utf8", timeout: 5000, stdio: ["ignore", "pipe", "ignore"] }),
     platform: osPlatform(),
+    tpm2: realTpm2LinuxEffects(),
   };
 }
 
 export interface HardwareProbeResult {
   readonly timestamp: string;
+  /**
+   * A TPM 2.0 is PRESENT — family 2.0 confirmed AND a device node to open. True for the
+   * `present` state and nothing else, so it is never true on the strength of a node alone
+   * (which a TPM 1.2 also has) and never false on the strength of a denial or a missing
+   * tool (which are not answers). When it is false, `tpm2State` says which of the four
+   * "not present" it is and `tpm2Reason` says what to do about it.
+   */
   readonly tpm2Available: boolean;
+  /** The five-way answer. See `./tpm2-linux-probe.ts`. */
+  readonly tpm2State: Tpm2State;
+  /** One sentence naming the cause of `tpm2State`, in terms an operator can act on. */
+  readonly tpm2Reason: string;
   readonly tpmDeviceNode?: string | undefined;
   readonly yubikeyDetected: boolean;
   readonly yubikeySerial?: string | undefined;
@@ -136,31 +183,27 @@ const PKCS11_LIBRARY_PATHS: readonly string[] = [
 const USB_CCID_INTERFACE_CLASS = "0b";
 
 /**
- * Probes for physical TPM 2.0 device nodes. LINUX ONLY: Apple Silicon has a Secure
- * Enclave, not a TPM 2.0, so this correctly reports false on macOS.
+ * Probes for a usable TPM 2.0. LINUX ONLY — Apple Silicon has a Secure Enclave, which is
+ * not a TPM 2.0 — and on any other platform the answer is `unavailable` ("we did not ask")
+ * rather than `absent` ("we asked and there is none").
+ *
+ * `available` is true for the `present` state ONLY. The four other states are all "not
+ * present" and only ONE of them (`absent`) is a finding about the hardware; report
+ * `reason`, never a bare "no TPM", when it is false.
  */
 export function probeTpm2(fx: HardwareProbeEffects = realProbeEffects()): {
   available: boolean;
   path?: string;
+  state: Tpm2State;
+  reason: string;
 } {
-  if (fx.exists("/dev/tpmrm0")) {
-    return { available: true, path: "/dev/tpmrm0" };
-  }
-  if (fx.exists("/dev/tpm0")) {
-    return { available: true, path: "/dev/tpm0" };
-  }
-  if (fx.exists("/sys/class/tpm")) {
-    try {
-      const entries = fx.readDir("/sys/class/tpm");
-      const first = entries[0];
-      if (first !== undefined) {
-        return { available: true, path: `/dev/${first}` };
-      }
-    } catch {
-      // Unreadable /sys/class/tpm — report absent rather than guess.
-    }
-  }
-  return { available: false };
+  const res = probeTpm2Linux(fx.tpm2);
+  return {
+    available: res.state === "present",
+    ...(res.deviceNode !== undefined ? { path: res.deviceNode } : {}),
+    state: res.state,
+    reason: res.reason,
+  };
 }
 
 /**
@@ -291,6 +334,8 @@ export function probeHardwareSecurity(fx: HardwareProbeEffects = realProbeEffect
   return {
     timestamp: new Date().toISOString(),
     tpm2Available: tpm.available,
+    tpm2State: tpm.state,
+    tpm2Reason: tpm.reason,
     tpmDeviceNode: tpm.path,
     yubikeyDetected: yubi.detected,
     yubikeySerial: yubi.serial,
@@ -337,11 +382,17 @@ export function assertHardwareSealTierAvailable(tier: HardwareSealTier, res: Har
   if (availableHardwareSealTiers(res).includes(tier)) return;
   const why: string[] = [];
   if (tier === "hardware-tpm2" && !res.tpm2Available) {
+    // The refusal must name WHICH not-present this is. "no TPM 2.0 device node" was the
+    // old message for all four, and it is a false statement in three of them: it asserts
+    // a finding about the hardware where the probe obtained no answer at all.
     why.push(
-      res.secureEnclaveAvailable
-        ? "no TPM 2.0 device node (this host has an Apple Secure Enclave, which is NOT a TPM 2.0 and which no seal tier can use)"
-        : "no TPM 2.0 device node (/dev/tpmrm0, /dev/tpm0, /sys/class/tpm)",
+      `TPM 2.0 is not PRESENT here — state ${res.tpm2State.toUpperCase()}` +
+        (tpm2CheckRan(res.tpm2State) ? "" : " (the check did NOT run — this is not a finding about the hardware)") +
+        `: ${res.tpm2Reason}`,
     );
+    if (res.secureEnclaveAvailable) {
+      why.push("this host has an Apple Secure Enclave, which is NOT a TPM 2.0 and which no seal tier can use");
+    }
   }
   if (tier === "hardware-pkcs11") {
     if (!res.pkcs11ModuleFound) why.push("no PKCS#11 module on disk");
@@ -359,7 +410,12 @@ if (import.meta.main) {
   const res = probeHardwareSecurity();
   const tiers = availableHardwareSealTiers(res);
   console.log(`[Hardware Security Probe] Result:`);
-  console.log(`  TPM 2.0:            ${res.tpm2Available ? res.tpmDeviceNode : "Not found"}`);
+  // NOT "Not found": three of the four not-present states are not findings about the
+  // hardware, and printing one word for all four is how the gap became invisible.
+  console.log(`  TPM 2.0:            ${res.tpm2Available ? res.tpmDeviceNode : res.tpm2State.toUpperCase()}`);
+  console.log(
+    `                      ${tpm2CheckRan(res.tpm2State) ? "(the check ran)" : "(THE CHECK DID NOT RUN)"} ${res.tpm2Reason}`,
+  );
   console.log(
     `  YubiKey / token:    ${res.yubikeyDetected ? `Detected${res.yubikeySerial ? ` (S/N: ${res.yubikeySerial})` : " (no serial; ykman absent)"}` : "Not detected"}`,
   );

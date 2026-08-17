@@ -12,12 +12,41 @@ import {
   realProbeEffects,
   type HardwareProbeEffects,
 } from "./frost-hardware-probe.ts";
+import type { ListOutcome, PathOutcome, Tpm2LinuxEffects } from "./tpm2-linux-probe.ts";
 
 // These tests used to be four `expect(typeof x).toBe("boolean")` assertions. Every one of
 // them passed on any machine, in any state, for any implementation that returned an
 // object — including an implementation that always answered "hardware present". They
 // could not fail, so they proved nothing. The probe now takes an injected host
 // (§13 noninterference), so a test can describe a machine and assert the ANSWER.
+
+/**
+ * The Linux TPM door, defaulting to a machine whose kernel exposes the tpm class and
+ * registers no chip — i.e. a REAL negative (`absent`), not a "we could not look".
+ * `tpm2Present()` below is the opposite pole. The states themselves, and the four causes
+ * that must never collapse into each other, are tested in `tpm2-linux-probe.test.ts`.
+ */
+function tpm2Absent(over: Partial<Tpm2LinuxEffects> = {}): Tpm2LinuxEffects {
+  return {
+    platform: "linux",
+    statPath: () => ({ kind: "not-found" }),
+    readText: () => ({ kind: "not-found" }),
+    listDir: (p) => (p === "/sys/class/tpm" ? { kind: "listed", entries: [] } : { kind: "not-found" }),
+    run: () => ({ kind: "not-installed" }),
+    ...over,
+  };
+}
+
+/** A machine with a TPM 2.0: a node AND a confirmed family. Both are required. */
+function tpm2Present(): Tpm2LinuxEffects {
+  const found: PathOutcome = { kind: "found" };
+  const chips: ListOutcome = { kind: "listed", entries: ["tpm0", "tpmrm0"] };
+  return tpm2Absent({
+    statPath: () => found,
+    listDir: (p) => (p === "/sys/class/tpm" ? chips : { kind: "not-found" }),
+    readText: (p) => (p.endsWith("tpm_version_major") ? { kind: "read", text: "2\n" } : { kind: "not-found" }),
+  });
+}
 
 /** A machine with nothing on it. Individual tests add only what they are about. */
 function host(over: Partial<HardwareProbeEffects> = {}): HardwareProbeEffects {
@@ -32,6 +61,9 @@ function host(over: Partial<HardwareProbeEffects> = {}): HardwareProbeEffects {
     },
     platform: "linux",
     ...over,
+    // The TPM door defaults to the SAME platform as the outer host, so a darwin fake does
+    // not accidentally describe a machine that is Linux to one probe and macOS to another.
+    tpm2: over.tpm2 ?? tpm2Absent({ platform: over.platform ?? "linux" }),
   };
 }
 
@@ -253,30 +285,81 @@ describe("the Secure Enclave is reported and is not a tier", () => {
 });
 
 describe("TPM 2.0 detection", () => {
-  it("finds /dev/tpmrm0 and offers hardware-tpm2", () => {
-    const linuxTpm = host({ exists: (p) => p === "/dev/tpmrm0" });
-    expect(probeTpm2(linuxTpm)).toEqual({ available: true, path: "/dev/tpmrm0" });
+  it("finds a confirmed TPM 2.0 and offers hardware-tpm2", () => {
+    const linuxTpm = host({ tpm2: tpm2Present() });
+    expect(probeTpm2(linuxTpm)).toMatchObject({ available: true, path: "/dev/tpmrm0", state: "present" });
     const res = probeHardwareSecurity(linuxTpm);
     expect(res.noHardwareDetected).toBeFalse();
     expect(availableHardwareSealTiers(res)).toEqual(["hardware-tpm2"]);
     expect(() => assertHardwareSealTierAvailable("hardware-tpm2", res)).not.toThrow();
   });
 
-  it("falls back to /sys/class/tpm and names the entry it found", () => {
-    const sysfsTpm = host({
-      exists: (p) => p === "/sys/class/tpm",
-      readDir: (p) => (p === "/sys/class/tpm" ? ["tpm0"] : []),
+  it("a device node alone does NOT offer hardware-tpm2 — /dev/tpm0 is also a TPM 1.2 node", () => {
+    // This machine used to be reported `{ available: true, path: "/dev/tpm0" }`. A node is
+    // not a family, and hardware-tpm2 needs 2.0 specifically (there is no tpm2_unseal on
+    // a 1.2 chip). Fail-closed: the tier is withheld and the preflight says why.
+    const nodeOnly = host({
+      tpm2: tpm2Absent({
+        statPath: (p) => (p === "/dev/tpm0" ? { kind: "found" } : { kind: "not-found" }),
+        listDir: (p) => (p === "/sys/class/tpm" ? { kind: "listed", entries: ["tpm0"] } : { kind: "not-found" }),
+      }),
     });
-    expect(probeTpm2(sysfsTpm)).toEqual({ available: true, path: "/dev/tpm0" });
+    const probe = probeTpm2(nodeOnly);
+    expect(probe.available).toBeFalse();
+    expect(probe.state).toBe("indeterminate");
+    const res = probeHardwareSecurity(nodeOnly);
+    expect(availableHardwareSealTiers(res)).toEqual([]);
+    expect(() => {
+      assertHardwareSealTierAvailable("hardware-tpm2", res);
+    }).toThrow(/INDETERMINATE/);
   });
 
-  it("reports absent when /sys/class/tpm exists but is empty", () => {
-    const emptySysfs = host({ exists: (p) => p === "/sys/class/tpm", readDir: () => [] });
-    expect(probeTpm2(emptySysfs).available).toBeFalse();
-  });
-
-  it("reports absent on a bare machine", () => {
+  it("reports absent when /sys/class/tpm enumerates no chip", () => {
+    expect(probeTpm2(host()).state).toBe("absent");
     expect(probeTpm2(host()).available).toBeFalse();
+  });
+
+  it("the four not-present states reach the caller intact, and only one is a hardware finding", () => {
+    // The whole point of routing the TPM path through a state: `assertHardwareSealTierAvailable`
+    // used to say "no TPM 2.0 device node" for all four, which is a false claim in three.
+    const machines = {
+      unavailable: tpm2Absent({ listDir: () => ({ kind: "not-found" }) }),
+      unreadable: tpm2Absent({
+        statPath: () => ({ kind: "permission-denied" }),
+        listDir: (p) => (p === "/sys/class/tpm" ? { kind: "listed", entries: ["tpm0"] } : { kind: "not-found" }),
+      }),
+      absent: tpm2Absent(),
+      indeterminate: tpm2Absent({ statPath: () => ({ kind: "found" }) }),
+    };
+    const seen = new Set<string>();
+    for (const [expected, tpm2] of Object.entries(machines)) {
+      const res = probeHardwareSecurity(host({ tpm2 }));
+      expect(res.tpm2State).toBe(expected as typeof res.tpm2State);
+      expect(res.tpm2Available).toBeFalse();
+      expect(availableHardwareSealTiers(res)).toEqual([]);
+      // The reason reaches the throw, so the operator is told which of the four it is.
+      let thrown = "";
+      try {
+        assertHardwareSealTierAvailable("hardware-tpm2", res);
+      } catch (e) {
+        thrown = String(e);
+      }
+      expect(thrown).toContain(expected.toUpperCase());
+      // Only `absent` may assert anything about the hardware.
+      const claimsCheckRan = !thrown.includes("the check did NOT run");
+      expect(claimsCheckRan).toBe(expected === "absent" || expected === "indeterminate");
+      seen.add(res.tpm2Reason);
+    }
+    // Four distinct reasons. One shared string would be the collapse wearing a state's clothes.
+    expect(seen.size).toBe(4);
+  });
+
+  it("darwin is UNAVAILABLE, not ABSENT — macOS was never asked", () => {
+    const mac = host({ platform: "darwin" });
+    const probe = probeTpm2(mac);
+    expect(probe.available).toBeFalse();
+    expect(probe.state).toBe("unavailable");
+    expect(probe.reason).toContain("NOT consulted");
   });
 });
 
@@ -288,9 +371,10 @@ describe("the derivation itself", () => {
         for (const driver of [false, true]) {
           const fx = host({
             platform: "linux",
-            exists: (p) => (tpm && p === "/dev/tpmrm0") || (driver && p === "/usr/lib/libykcs11.so"),
+            exists: (p) => driver && p === "/usr/lib/libykcs11.so",
             readDir: (p) => (reader && p === "/sys/bus/usb/devices" ? ["1-1:1.0"] : []),
             readFile: () => (reader ? "0b\n" : "03\n"),
+            tpm2: tpm ? tpm2Present() : tpm2Absent(),
           });
           const res = probeHardwareSecurity(fx);
           expect(res.noHardwareDetected).toBe(!(tpm || reader));
@@ -303,7 +387,7 @@ describe("the derivation itself", () => {
   });
 
   it("never returns a tier that its own preflight would reject", () => {
-    const fx = host({ exists: (p) => p === "/dev/tpmrm0" });
+    const fx = host({ tpm2: tpm2Present() });
     const res = probeHardwareSecurity(fx);
     for (const tier of availableHardwareSealTiers(res)) {
       expect(() => assertHardwareSealTierAvailable(tier, res)).not.toThrow();
@@ -331,10 +415,20 @@ describe("the real host", () => {
     if (res.noHardwareDetected) expect(tiers).toEqual([]);
   });
 
-  it("agrees with the platform: darwin never has a TPM 2.0", () => {
+  it("agrees with the platform: darwin never has a TPM 2.0, and says it was not asked", () => {
     const fx = realProbeEffects();
     if (fx.platform === "darwin") {
-      expect(probeTpm2(fx).available).toBeFalse();
+      const probe = probeTpm2(fx);
+      expect(probe.available).toBeFalse();
+      // Not `absent`. The true statement about a Mac is "there is no Linux TPM interface
+      // to consult", and the probe is required to say the true one.
+      expect(probe.state).toBe("unavailable");
     }
+  });
+
+  it("never reports tpm2Available without a device node on THIS machine", () => {
+    const res = probeHardwareSecurity(realProbeEffects());
+    if (res.tpm2Available) expect(res.tpmDeviceNode).toBeDefined();
+    expect(res.tpm2Reason.length).toBeGreaterThan(0);
   });
 });

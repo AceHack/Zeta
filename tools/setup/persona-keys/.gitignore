@@ -12,3 +12,7 @@ id_*
 !golden-vectors-keyring.json
 !golden-vectors-keyring-4x4.json
 !shamir-golden-vectors.json
+# Captured readings of a host's TPM surface: path existence, errnos, and tpm2_getcap
+# stdout. No key material by construction — the probe never opens the TPM, it stats paths
+# and reads the family indicator. Replayed as fixtures by tpm2-linux-probe.test.ts.
+!tpm2-linux-captures.json
