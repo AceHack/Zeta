@@ -1,0 +1,12 @@
+{
+  "pr_number": 9171,
+  "archive_path": "docs/history/pr-reviews/PR-9171-research-the-homoiconic-page-breaks-the-chinese-room-shared-referent-not-instruc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T12:29:23.846Z",
+  "schema_version": "v1",
+  "commit_sha": "87d76547b4dc8cb90431f1dfd1b70f51f851bf05",
+  "title": "research: the homoiconic page breaks the Chinese Room — shared referent, not instructions (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T17:42:05Z",
+  "head_ref": "research/homoiconic-breaks-chinese-room"
+}
