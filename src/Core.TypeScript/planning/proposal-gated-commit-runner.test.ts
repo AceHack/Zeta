@@ -41,6 +41,8 @@ describe("proposal gated-commit runner handoff", () => {
     expect(captured?.command).toBe("gh");
     expect(captured?.args).toContain("heartbeat/proposal-example");
     expect(captured?.args.join(" ")).not.toContain("pr-only-secret");
+    expect(captured?.args.join("\n")).toContain("Agency-Signature-Version: 1");
+    expect(captured?.args.join("\n")).toContain("Co-authored-by: zeta-pages-operator <zeta-pages-operator@zeta.agents>");
     expect(captured?.options.env.GH_TOKEN).toBe("pr-only-secret");
   });
 

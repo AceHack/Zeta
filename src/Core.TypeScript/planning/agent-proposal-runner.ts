@@ -74,7 +74,7 @@ async function stage(): Promise<void> {
   git(["apply", "--check", "--whitespace=error", patchPath]);
   git(["apply", "--whitespace=error", patchPath]);
 
-  const receipt = resolve(repoRoot, "docs/observe-events/agent-proposal-receipts", `${proposalId}.json`);
+  const receipt = resolve(repoRoot, "docs/automation/agent-proposal-receipts", `${proposalId}.json`);
   mkdirSync(dirname(receipt), { recursive: true });
   try {
     writeFileSync(receipt, `${JSON.stringify({

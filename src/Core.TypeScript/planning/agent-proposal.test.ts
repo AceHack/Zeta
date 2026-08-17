@@ -28,6 +28,11 @@ describe("Action-native agent proposal planner", () => {
   test("AAP-1: a protected-main workflow can stage a bounded review branch", () => {
     const result = planAgentProposal({ intent: intent(), payload: PATCH, currentMainSha: BASE_SHA });
     expect(result).toMatchObject({ ok: true, branch: "agent-proposal/society-42", paths: ["docs/example.md"] });
+    if (!result.ok) throw new Error(`planning failed: ${JSON.stringify(result)}`);
+    expect(result.commitMessage).toContain("Agency-Signature-Version: 1");
+    expect(result.commitMessage).toContain("Agent: zeta-pages-operator");
+    expect(result.commitMessage).toContain("Credential-Mode: dedicated-agent");
+    expect(result.commitMessage.endsWith("Co-authored-by: zeta-pages-operator[bot] <zeta-pages-operator[bot]@users.noreply.github.com>")).toBeTrue();
   });
 
   test("AAP-2 FAULT INJECTION: a branch workflow cannot impersonate a trusted main source", () => {
