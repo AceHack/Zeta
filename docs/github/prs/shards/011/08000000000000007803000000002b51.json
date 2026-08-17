@@ -1,0 +1,12 @@
+{
+  "pr_number": 11089,
+  "archive_path": "docs/history/pr-reviews/PR-11089-feat-kubevirt-declare-kubevirt-cdi-the-vm-layer-that-existed-only-on-one-box.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T21:06:12.674Z",
+  "schema_version": "v1",
+  "commit_sha": "f40ade65696cb51c55d77bbf953daafb2e144d0c",
+  "title": "feat(kubevirt): declare KubeVirt + CDI — the VM layer that existed only on one box",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T21:05:36Z",
+  "head_ref": "feat/kubevirt-cdi-declared"
+}
