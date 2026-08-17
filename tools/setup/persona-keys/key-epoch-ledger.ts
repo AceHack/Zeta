@@ -558,6 +558,95 @@ export function detectEquivocation(
   return out.sort((a, b) => (a.keyId === b.keyId ? a.epoch - b.epoch : stringCompare(a.keyId, b.keyId)));
 }
 
+// ── the gap probe ───────────────────────────────────────────────────────────
+
+/**
+ * What a replica should ASK FOR. The only two things this type can say are
+ * "nothing" and "send me epoch n" — there is deliberately no constructor that
+ * expresses a refusal. See {@link chainGapProbe} for why that matters.
+ */
+export type ChainGapProbe =
+  | { readonly kind: "nothing-to-request" }
+  | {
+      readonly kind: "request-epoch";
+      readonly keyId: string;
+      /** The single missing link: exactly one past where the chain stopped. */
+      readonly epoch: number;
+      /** Epochs of admissible, unfollowed elements for this keyId. The evidence. */
+      readonly unattachedEpochs: readonly number[];
+    };
+
+/**
+ * `foldChain` reports `current` in two situations a verifier must not confuse:
+ * it walked to the head of the chain, and it stopped because the next link is
+ * MISSING. Measured on the code as it stands (2026-08-17): a replica pinned at
+ * epoch 0 holding a genuine, admissible epoch-2 transition for its own keyId —
+ * with epoch 1 suppressed — folds to `{status:"current", epoch:0, advanced:0,
+ * retiredIndices:[]}`, which is field-for-field what a replica that heard
+ * NOTHING AT ALL returns. It goes on accepting the retired key (that is KL-11's
+ * honest limit) while holding, in its own ledger, signed evidence that its chain
+ * continued past it. The evidence was discarded without being reported.
+ *
+ * That is the suppress-one-link attack: withhold a single element from a target
+ * and its "I am up to date" is indistinguishable from the truth. This function
+ * gives the replica the one thing it was missing — knowing WHAT TO ASK FOR.
+ *
+ * WHAT THIS FACT IS WORTH, STATED HONESTLY. Unattached-ahead evidence is NOT
+ * proof that the replica is behind, and it is NOT authenticated as being about
+ * its chain. A party holding no shares of this key at all can mint an admissible
+ * element for any `keyId` at any epoch by generating its own group and signing a
+ * transition under it — `admit` verifies the signature against the key named
+ * INSIDE the element, which is deliberate (header property 1) and is what keeps
+ * merge commutative. So this is a dual-use recognition
+ * (`.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`): the honest
+ * reading is "I am being eclipsed, go fetch", the adversarial one is "an
+ * attacker made me distrust a key I hold correctly".
+ *
+ * WHICH IS WHY THE RETURN TYPE CANNOT SAY "REJECT". Wiring this to fail-closed
+ * would hand any party with no shares a free denial of service on every verifier
+ * that listens. The type therefore offers only `nothing-to-request` and
+ * `request-epoch`: fetching a missing element is safe under forgery (worst case
+ * a wasted request), and refusing is not. This is a shape, not an enforcement —
+ * a caller can still ignore the type and refuse on its own; nothing here can
+ * stop that. What it removes is the vocabulary that would make refusing look
+ * like the intended use.
+ *
+ * Pure in (pin, ledger): no clock, no arrival order. It reports what to REQUEST
+ * and never filters what enters `foldChain`
+ * (`.claude/rules/local-time-never-enters-the-shared-fold.md`).
+ */
+export function chainGapProbe(pin: KeyPin, ledger: RevocationLedger): ChainGapProbe {
+  const fold = foldChain(pin, ledger);
+  // A fork is not a gap. `foldChain` already reports it, and the remedy is the
+  // out-of-band re-pin, not another element.
+  if (fold.status === "forked") return { kind: "nothing-to-request" };
+
+  const ahead = new Set<number>();
+  for (const e of ledger) {
+    let st: SignedTransition;
+    try {
+      st = decodeSignedTransition(e);
+    } catch {
+      continue;
+    }
+    if (st.statement.keyId !== pin.keyId) continue;
+    // Strictly ahead of where the walk stopped. Elements at or below the stop
+    // epoch are either already followed or superseded history.
+    if (st.statement.epoch > fold.epoch) ahead.add(st.statement.epoch);
+  }
+  if (ahead.size === 0) return { kind: "nothing-to-request" };
+
+  return {
+    kind: "request-epoch",
+    keyId: pin.keyId,
+    // Exactly one link, never a range: the chain is dense (KL-12b), so the only
+    // element that can move this replica is the one at stop + 1. Asking for a
+    // span would let a forged far-future element inflate the request.
+    epoch: fold.epoch + 1,
+    unattachedEpochs: [...ahead].sort((a, b) => a - b),
+  };
+}
+
 /**
  * LOCAL BEHAVIOUR ONLY — the one place a wall clock appears, and it decides only
  * what THIS replica does, never what enters the fold.

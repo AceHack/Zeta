@@ -12,6 +12,7 @@ import { frostKeygen, frostThresholdSign, frostVerify, type FrostKeyShare } from
 import { runDeltaRotationInProcess } from "./frost-delta-rotation.ts";
 import {
   admit,
+  chainGapProbe,
   decodeSignedTransition,
   detectEquivocation,
   emptyLedger,
@@ -462,5 +463,137 @@ describe("what the chain does and does not survive", () => {
     expect(freshnessAction(1_000, 499, 500)).toBe("fail-closed");
     expect(freshnessAction(Number.NaN, 0, 500)).toBe("fail-closed");
     expect(freshnessAction(1_000, 900, -1)).toBe("fail-closed");
+  });
+});
+
+describe("the gap probe: knowing you are stalled, without letting that be a verdict", () => {
+  test("KL-15: THE SUPPRESSED LINK — a stalled replica and a deaf one fold IDENTICALLY, and the probe is what separates them", () => {
+    // The measured defect. Withhold exactly one element from a target: its fold
+    // output is field-for-field what a replica that heard nothing returns, so
+    // "I am up to date" and "I am being eclipsed" are the same answer.
+    const kg = frostKeygen(2, 4, lcg(300));
+    const r1 = rotate(KEY_ID, 1, kg.groupPublicKey, kg.shares.slice(0, 2), kg.shares.slice(0, 2), 2, [1, 2, 3], [4], 301);
+    const r2 = rotate(KEY_ID, 2, r1.newKey, r1.newShares.slice(0, 2), r1.newShares.slice(0, 2), 2, [1, 2], [3], 303);
+    const pin: KeyPin = { keyId: KEY_ID, epoch: 0, groupPublicKey: kg.groupPublicKey };
+
+    const stalled = foldChain(pin, ledgerOf([r2.element])); // epoch 1 suppressed
+    const deaf = foldChain(pin, emptyLedger());
+    expect(admit(r2.element)).toBe(true); // the withheld-from replica holds REAL evidence
+    expect(stalled.status === "current" && deaf.status === "current").toBe(true);
+    expect(stalled.status === "current" && stalled.epoch).toBe(0);
+    expect(stalled.status === "current" && stalled.advanced).toBe(0);
+    expect(deaf.status === "current" && deaf.epoch).toBe(0);
+    // ...and the retired holder still signs a key the stalled replica accepts.
+    const revoked = [kg.shares[2] as FrostKeyShare, kg.shares[3] as FrostKeyShare];
+    const sig = frostThresholdSign(kg.groupPublicKey, revoked, MSG, lcg(305), 2);
+    expect(stalled.status === "current" && frostVerify(stalled.groupPublicKey, MSG, sig)).toBe(true);
+
+    // The probe is the only thing that tells them apart, and it names the ONE
+    // element to ask for.
+    const probe = chainGapProbe(pin, ledgerOf([r2.element]));
+    expect(probe.kind).toBe("request-epoch");
+    if (probe.kind !== "request-epoch") return;
+    expect(probe.epoch).toBe(1); // the missing link, not the epoch it can see
+    expect(probe.unattachedEpochs).toEqual([2]);
+    expect(probe.keyId).toBe(KEY_ID);
+
+    // Non-vacuity on BOTH sides: heard nothing => nothing to request; heard
+    // everything => nothing to request. Only the gap speaks.
+    expect(chainGapProbe(pin, emptyLedger()).kind).toBe("nothing-to-request");
+    expect(chainGapProbe(pin, ledgerOf([r1.element, r2.element])).kind).toBe("nothing-to-request");
+
+    // And the fetch closes it: supplying exactly the requested epoch advances the chain.
+    const healed = foldChain(pin, ledgerMerge(ledgerOf([r2.element]), ledgerOf([r1.element])));
+    expect(healed.status === "current" && healed.epoch).toBe(2);
+    expect(healed.status === "current" && healed.retiredIndices).toEqual([3, 4]);
+    expect(healed.status === "current" && frostVerify(healed.groupPublicKey, MSG, sig)).toBe(false);
+  });
+
+  test("KL-16: THE HONEST NEGATIVE — a party with NO shares can manufacture the gap signal, so it must never gate acceptance", () => {
+    // This is why `ChainGapProbe` has no "reject" case. An attacker generates
+    // its OWN group and signs a transition for the victim's keyId at a high
+    // epoch; `admit` passes it, because admission is a pure function of the
+    // element (header property 1). If the probe were wired to fail closed, that
+    // one element would be a denial of service on every listening verifier.
+    const kg = frostKeygen(2, 3, lcg(310));
+    const impostor = frostKeygen(2, 3, lcg(311));
+    const forged = rotate(KEY_ID, 42, impostor.groupPublicKey, impostor.shares.slice(0, 2), impostor.shares.slice(0, 2), 2, [1, 2], [3], 312);
+    expect(admit(forged.element)).toBe(true); // forgeable at will
+
+    const pin: KeyPin = { keyId: KEY_ID, epoch: 0, groupPublicKey: kg.groupPublicKey };
+    const probe = chainGapProbe(pin, ledgerOf([forged.element]));
+    expect(probe.kind).toBe("request-epoch");
+    if (probe.kind !== "request-epoch") return;
+    // It asks for ONE link, never the far-future epoch the forgery named — a
+    // forged element cannot inflate the request into a scan.
+    expect(probe.epoch).toBe(1);
+    expect(probe.unattachedEpochs).toEqual([42]);
+
+    // THE PROPERTY THAT MATTERS: the probe changed no acceptance decision. The
+    // fold is byte-for-byte what it was without the forgery.
+    const withForgery = foldChain(pin, ledgerOf([forged.element]));
+    const without = foldChain(pin, emptyLedger());
+    expect(withForgery.status === "current" && withForgery.epoch).toBe(0);
+    expect(withForgery.status === "current" && without.status === "current" && eq(withForgery.groupPublicKey, without.groupPublicKey)).toBe(true);
+  });
+
+  test("KL-17: an element at the RIGHT epoch with the WRONG predecessor is still a gap — having AN element is not having THE link", () => {
+    // The subtle one. The replica holds something at epoch 1, so a naive "do I
+    // have epoch n+1?" check would call itself satisfied and stop asking, while
+    // the element it holds chains to a key it is not on (KL-12).
+    const kg = frostKeygen(2, 3, lcg(320));
+    const impostor = frostKeygen(2, 3, lcg(321));
+    const offChain = rotate(KEY_ID, 1, impostor.groupPublicKey, impostor.shares.slice(0, 2), impostor.shares.slice(0, 2), 2, [1, 2], [3], 322);
+    const pin: KeyPin = { keyId: KEY_ID, epoch: 0, groupPublicKey: kg.groupPublicKey };
+
+    const probe = chainGapProbe(pin, ledgerOf([offChain.element]));
+    expect(probe.kind).toBe("request-epoch");
+    if (probe.kind !== "request-epoch") return;
+    expect(probe.epoch).toBe(1); // still asking for epoch 1 — the one that CHAINS
+    expect(probe.unattachedEpochs).toEqual([1]);
+  });
+
+  test("KL-18: the probe is a pure function of (pin, set) — no arrival order, no clock, and another keyId is not our gap", () => {
+    const kg = frostKeygen(2, 4, lcg(330));
+    const r1 = rotate(KEY_ID, 1, kg.groupPublicKey, kg.shares.slice(0, 2), kg.shares.slice(0, 2), 2, [1, 2, 3], [4], 331);
+    const r2 = rotate(KEY_ID, 2, r1.newKey, r1.newShares.slice(0, 2), r1.newShares.slice(0, 2), 2, [1, 2, 5], [3], 333);
+    const r3 = rotate(KEY_ID, 3, r2.newKey, r2.newShares.slice(0, 2), r2.newShares.slice(0, 2), 2, [1, 2, 6], [5], 335);
+    const pin: KeyPin = { keyId: KEY_ID, epoch: 0, groupPublicKey: kg.groupPublicKey };
+
+    // Same set, three arrival orders => the same request.
+    const a = chainGapProbe(pin, ledgerOf([r2.element, r3.element]));
+    const b = chainGapProbe(pin, ledgerOf([r3.element, r2.element]));
+    const c = chainGapProbe(pin, ledgerMerge(ledgerOf([r3.element]), ledgerOf([r2.element])));
+    expect(JSON.stringify(a)).toBe(JSON.stringify(b));
+    expect(JSON.stringify(a)).toBe(JSON.stringify(c));
+    expect(a.kind === "request-epoch" && a.epoch).toBe(1);
+    expect(a.kind === "request-epoch" && a.unattachedEpochs).toEqual([2, 3]);
+
+    // Walking one link forward moves the request forward with it.
+    const after1 = chainGapProbe(pin, ledgerOf([r1.element, r3.element]));
+    expect(after1.kind === "request-epoch" && after1.epoch).toBe(2);
+    expect(after1.kind === "request-epoch" && after1.unattachedEpochs).toEqual([3]);
+
+    // Evidence about someone ELSE's keyId is not our gap. It must sit ABOVE our
+    // walked epoch, or dropping the keyId filter would change nothing and this
+    // assertion would be unable to fail — the first draft of this line put it at
+    // epoch 1 under a chain walked to 3, and the mutation survived.
+    const stranger = frostKeygen(2, 3, lcg(336));
+    const other = rotate("other-key", 9, stranger.groupPublicKey, stranger.shares.slice(0, 2), stranger.shares.slice(0, 2), 2, [1, 2], [3], 337);
+    expect(admit(other.element)).toBe(true);
+    expect(chainGapProbe(pin, ledgerOf([r1.element, r2.element, r3.element, other.element])).kind).toBe("nothing-to-request");
+
+    // A fork is not a gap: foldChain already reports it and the remedy is a
+    // re-pin. Same trap — there must be an element ABOVE the fork epoch, or
+    // "the fork short-circuits" and "there is nothing ahead anyway" are the
+    // same observation.
+    const forkA = rotate(KEY_ID, 1, kg.groupPublicKey, kg.shares.slice(0, 2), kg.shares.slice(0, 2), 2, [1, 2, 3], [4], 341);
+    const forkB = rotate(KEY_ID, 1, kg.groupPublicKey, kg.shares.slice(0, 2), kg.shares.slice(0, 2), 2, [1, 2], [3, 4], 343);
+    const afterFork = rotate(KEY_ID, 2, forkA.newKey, forkA.newShares.slice(0, 2), forkA.newShares.slice(0, 2), 2, [1, 2], [3], 345);
+    const forkLedger = ledgerOf([forkA.element, forkB.element, afterFork.element]);
+    const forked = foldChain(pin, forkLedger);
+    expect(forked.status).toBe("forked");
+    expect(forked.status === "forked" && forked.epoch).toBe(1);
+    expect(chainGapProbe(pin, forkLedger).kind).toBe("nothing-to-request");
   });
 });
