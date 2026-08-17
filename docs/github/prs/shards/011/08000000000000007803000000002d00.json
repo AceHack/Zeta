@@ -1,0 +1,12 @@
+{
+  "pr_number": 11520,
+  "archive_path": "docs/history/pr-reviews/PR-11520-fix-heat-one-pressure-table-derive-heatsignal-ispressure-instead-of-enumerating-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T15:15:03.556Z",
+  "schema_version": "v1",
+  "commit_sha": "f952567a70d090e6d36724d769a8594e19e9c8e0",
+  "title": "fix(heat): one pressure table — derive HeatSignal.isPressure instead of enumerating it twice",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T15:14:24Z",
+  "head_ref": "shadow/one-pressure-table"
+}
