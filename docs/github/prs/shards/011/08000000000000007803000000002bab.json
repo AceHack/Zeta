@@ -1,0 +1,12 @@
+{
+  "pr_number": 11179,
+  "archive_path": "docs/history/pr-reviews/PR-11179-fix-delegation-close-the-three-6-audit-gaps-receipt-descriptor-revocation-from-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:35:54.716Z",
+  "schema_version": "v1",
+  "commit_sha": "fa55f219381759d6fdf822eb393a1f47ec49cad9",
+  "title": "fix(delegation): close the three §6 audit gaps — receipt descriptor, revocation from disk, sequence trap",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:35:18Z",
+  "head_ref": "shadow/delegation-receipt-descriptor-and-revocation-asymmetry"
+}
