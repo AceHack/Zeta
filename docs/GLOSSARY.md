@@ -1258,6 +1258,13 @@ cross-refs `docs/ROADMAP.md`, `docs/INSTALLED.md`.
 
 ## Society identity (Genesis Concepts — Iris / Addison UI)
 
+**The concept list itself lives in [`docs/CONCEPT-REGISTRY.md`](CONCEPT-REGISTRY.md)** — one
+editable table of Addison Cooper's 23 published concepts plus the newer ones, each with its
+author and date, checked against the published page by
+`src/Core.TypeScript/hygiene/audit-concept-registry-drift.ts`. Add a concept there.
+The four entries below are the ones this glossary carries in full prose; note they are
+registered as **not yet on the published page**.
+
 Canonical UI source:
 [`docs/design/root-site-iris/Genesis Concepts.dc.html`](design/root-site-iris/Genesis%20Concepts.dc.html).
 Operational threat-model use:

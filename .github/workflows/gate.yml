@@ -1818,6 +1818,18 @@ jobs:
       - name: No raw NUL in tracked source (an audit must be able to read the file)
         run: bun src/Core.TypeScript/hygiene/audit-no-raw-nul-in-source.ts
 
+      # Addison Cooper's Genesis concept vocabulary is published as a static page that is
+      # hand-copied into a DIFFERENT repository (lucent-financial-group.github.io) — no build
+      # step, no CI, nothing connecting it back here. It drifted exactly as you would expect:
+      # four society-identity terms landed in docs/GLOSSARY.md on 2026-07-31 and never reached
+      # the page, and nobody found out until Aaron asked.
+      #
+      # docs/CONCEPT-REGISTRY.md is now the single list. This step is what keeps it honest —
+      # it fails when the registry and the page disagree in EITHER direction, including a
+      # silently reworded definition, which is the case a term-name-only check would miss.
+      - name: Concept registry vs published page (docs/CONCEPT-REGISTRY.md)
+        run: bun src/Core.TypeScript/hygiene/audit-concept-registry-drift.ts
+
       # Executes mumps_zeta_id.m (subset interpreter). compare.ts already pins
       # the committed JSON; this step runs the routine so a layout edit in the
       # .m file cannot hide behind a stale mumps-output.json.
