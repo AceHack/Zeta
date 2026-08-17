@@ -1,0 +1,12 @@
+{
+  "pr_number": 11243,
+  "archive_path": "docs/history/pr-reviews/PR-11243-fix-hygiene-bnn-state-json-is-a-society-companion-file-not-an-unclassifiable-eve.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T01:33:37.745Z",
+  "schema_version": "v1",
+  "commit_sha": "87bb28957091db0ff79984e317a5709c6516b42f",
+  "title": "fix(hygiene): bnn-state.json is a society companion file, not an unclassifiable event name",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T01:33:00Z",
+  "head_ref": "shadow/bnn-state-is-a-society-companion-file"
+}
