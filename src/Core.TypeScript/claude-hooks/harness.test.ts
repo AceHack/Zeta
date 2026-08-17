@@ -1,4 +1,6 @@
 import { describe, expect, test } from "bun:test";
+import { tmpdir } from "node:os";
+import { basename, dirname } from "node:path";
 
 import { sessionReadLogPath, OTTO343_READLOG_TAG } from "../../../.claude/hooks/harness";
 
@@ -33,12 +35,14 @@ describe("sessionReadLogPath — Otto-343 read-log keying", () => {
     const b = sessionReadLogPath({ session_id: "sess-abc-123" });
     expect(a).toBe(b);
     expect(a).toContain(OTTO343_READLOG_TAG);
-    // sonarjs/publicly-writable-directories: this literal is an ASSERTION TARGET, not a path
-    // this file writes to. The rule fires here for the first time only because moving the
-    // file out of `.claude/` brought it into eslint's scope -- eslint skips dot-prefixed
-    // directories by default, the same invisibility that kept the test unexecuted.
-    // eslint-disable-next-line sonarjs/publicly-writable-directories
-    expect(a.startsWith("/tmp/zeta-reads-")).toBe(true);
+    // Assert the INVARIANT -- a tagged log file directly inside the OS temp dir --
+    // not the literal "/tmp". Pinning the POSIX spelling is what let the Windows
+    // break hide: native Bun resolves a leading `/` against the current drive, so
+    // post-read-track's write threw ENOENT, its "non-fatal" catch swallowed it, the
+    // log was never created, and pre-edit-recent-read then denied EVERY Edit. A
+    // test that pins a platform-specific path cannot catch a platform-specific bug.
+    expect(dirname(a)).toBe(tmpdir());
+    expect(basename(a).startsWith("zeta-reads-")).toBe(true);
   });
 
   test("different sessions ⇒ different paths (no cross-session bleed)", () => {
@@ -53,13 +57,18 @@ describe("sessionReadLogPath — Otto-343 read-log keying", () => {
 
   test("sanitises the key to a single safe component (no path traversal)", () => {
     const p = sessionReadLogPath({ session_id: "../../etc/passwd" });
-    // sonarjs/publicly-writable-directories: this assertion IS the safe-use check the rule
-    // asks for -- it pins that a traversal-shaped session id stays inside one flat, tagged
-    // filename under /tmp and never escapes it (the next three assertions).
-    // eslint-disable-next-line sonarjs/publicly-writable-directories
-    expect(p.startsWith("/tmp/zeta-reads-")).toBe(true);
-    expect(p).not.toContain("..");
-    expect(p).not.toContain("/etc/");
+    // The safe-use check: a traversal-shaped session id must collapse to ONE flat,
+    // tagged filename directly inside the temp dir and never escape it. Expressed
+    // via dirname/basename so it holds on every platform, not just POSIX.
+    expect(dirname(p)).toBe(tmpdir());
+    expect(basename(p).startsWith("zeta-reads-")).toBe(true);
+    expect(basename(p)).not.toContain("..");
+    // The escape-proof property is the absence of SEPARATORS, not of the word
+    // "etc": the traversal is flattened to `______etc_passwd`, which contains
+    // "etc" harmlessly and cannot leave the directory. Checking the substring
+    // instead would fail on a safe input.
+    expect(basename(p)).not.toContain("/");
+    expect(basename(p)).not.toContain("\\");
     expect(p.endsWith(".json")).toBe(true);
   });
 
