@@ -265,7 +265,6 @@ mechanically checkable prediction:
 > possibility space silently — the vacuity class, again — or is asserting the global knowledge
 > Manchak proves unavailable.
 
-
 ##### Provenance of that formal work — Aaron, same session (verbatim)
 
 > "we did a lot of formal anaysis on this with this repo was first opened up, in lean4 and other we
@@ -284,7 +283,6 @@ Zeta — an F# implementation of DBSP for .NET 10"), and there are **46** commit
 and reading 2026-06-13 as "when the Lean4 work started" would be exactly the kind of
 measurement-artifact-mistaken-for-a-fact this whole document is about. Aaron's "early" is consistent
 with the evidence; the precise start date is **not established here** and I am not asserting one.
-
 
 ##### Where that truncation already lives — Aaron, same session (verbatim)
 
@@ -3748,3 +3746,135 @@ I also read in the comments that TOE listeners also gain from replaying. So how 
 
 2:14:40
 you re-listen on one of those platforms? If you're using platforms like iTunes, Spotify, Google Podcasts, whatever podcast catcher you use, I'm there with you. Thank you for listening.
+
+---
+
+## Continuation ferry — the God point, and the ontology question (2026-08-17)
+
+Aaron forwarded a further segment of the same interview, with his own framing attached. Preserved
+verbatim below, then the observations, each with its register named.
+
+### Aaron's framing (verbatim)
+
+> "This is very good and close to our base tranvler frame ontology."
+
+and, on the ontology question specifically:
+
+> "the GR ontology, the base manifold of events and the rest"
+
+> "for me those events are the agent commuications and changes interactions with external interfaces
+> which themselves are memories in other systems and our own, so like i've said everything is pair
+> wise relative memory between each other."
+
+### Transcript segment (verbatim, ~57:28–1:00:34)
+
+> **57:28** Yeah, yeah, yeah. So a God point is a point, it's an event in space-time such that the
+> past light cone of the event is the entire universe. So you can see everything. And when I say
+> everything, I mean everything, and that includes the future to this point. And so what that means
+> is that there's necessarily going to be time travel going on, because if you can see your future,
+> if you go back in your past far enough and you arrive at your future, there's some really weird
+> causal stuff going on.
+>
+> And so, yeah, I would say space-time has a God point if there's a point like that. I use this idea
+> as a very minimal condition. I say, let's restrict attention to space-times that don't have God
+> points, and then I will go off and maybe prove a theorem or something. But the reason why the
+> condition is introduced is because if you do have a God point, well, then a lot of this
+> unknowability of the universe stuff doesn't go through because you can see everything. You have
+> access to everything.
+>
+> **58:48** *[Q: What is the ontology according to GR? What is the universe?]*
+>
+> Yeah, I don't know. I mean, I don't know what is meant by that. I mean, I'm sure you could make
+> sense of that in a number of different ways. I'm very close — I like to tie myself very close to
+> the physics and the mathematics that I'm working with. So, as I just mentioned, I'm working with a
+> space-time manifold with a metric on top, via Einstein's equation. We have some matter field there.
+> That's the ontology. If you want me to expound on that, well, what does that mean? Then this is
+> where I get very uncomfortable and I say, I don't know. I don't want to go past that.
+>
+> The ontology of GR is you start with a manifold of events and you have a metric that provides some
+> causal structure and some additional structure. You have a matter field that's related to the
+> geometry via Einstein's equation, and that's what there is.
+>
+> **59:59** *[Q on substantivalism vs relationalism]* Okay, so there are some people who are
+> substantivalists and then there are some people who are relationalists. The substantivalists will
+> say that space points exist and they exist independently of matter, and then some people who are on
+> the relational side — and you can also correct me if I'm incorrect — will say that it's all
+> spatiotemporal relations between events and that's what's real.
+>
+> Yeah. And my understanding is, historically, these can be seen as progenitors, broadly speaking,
+> from Newton as the substance person, and then Leibniz as a relationalist. Now, whether or not
+> that's historically accurate, that's at least the folklore. So, do you have a dog in that fight?
+
+### Observation 1 — Aaron takes the relationalist side, explicitly
+
+**Register: a stated position on a named philosophical fork. Not a claim about physics.**
+
+Manchak declines to take a side. Aaron does not: *"those events are the agent communications and
+changes/interactions with external interfaces … everything is pairwise relative memory between each
+other."*
+
+Read against the fork the transcript sets up, this is **Leibniz, not Newton**. There are no
+independently-existing points that events happen *at*; there are only relations — and in Zeta the
+relation is a **pairwise memory**. The substrate has no absolute frame to be located in, which is the
+same commitment as manifesto §1 (no central point) restated as an ontology rather than an
+architecture.
+
+Consistency check against his own prior statements: this is the third time the same claim appears,
+which is evidence it is a held position rather than a passing analogy — cf. his earlier *"this is
+also exactly what I say about the pairwise memory and coincidences being our causally related
+topology of our memory space/time."* Recorded as consistent, not as corroborated: three statements by
+one person are one observation, not three (see the too-many-correlations guard in
+`.claude/rules/numerology-vs-number-theory.md`).
+
+**The mapping, stated so it can be checked or refuted:**
+
+| GR ontology (Manchak) | Aaron's claimed Zeta counterpart |
+|---|---|
+| manifold of **events** | agent communications; interactions with external interfaces |
+| **metric** giving causal structure | pairwise relative memory between agents |
+| **matter field**, tied to geometry | the memories themselves, held in other systems and ours |
+
+**This is an ANALOGY and is labelled as one.** No part of it is proved. What would promote it is a
+statement of which structure on the memory relation plays the metric's role, and a demonstration that
+it satisfies the properties a metric must have. Until then it is a resonance doing its proper job as
+a generator. See `src/Core/TravelerFrame.fs` for the existing traveler-frame code the claim is about.
+
+### Observation 2 — we HAVE a God point, and its placement is the whole design
+
+**Register: structural, and checkable in-tree.**
+
+Manchak's God point is an event whose past light cone is the **entire universe including its own
+future** — total access, and he *excludes* it by hypothesis precisely because his unknowability
+results do not survive it.
+
+Zeta has one, deliberately, and it is already named that way in-repo:
+`docs/research/2026-06-08-staged-coincidence-gan-the-dst-harness-is-the-omniscient-observer.md`. The
+DST harness sees the whole run and can replay it — total access to a trajectory including what, from
+inside, is still future.
+
+**The load-bearing detail is that it sits OUTSIDE the simulated universe.** That placement is what
+buys both properties at once:
+
+- *Inside*, no agent is a God point, so unknowability holds for agents — which is the honest
+  epistemic situation we want them to reason in.
+- *Outside*, the harness is a God point, which is exactly why replay yields knowledge no in-universe
+  agent could have.
+
+**And that yields a falsifiable design constraint, which is the useful part:** if any in-universe
+component ever gains God-point access — a room that can read the harness's full trace, an agent handed
+the complete future of its own run — then Manchak's condition is violated *inside*, and the
+unknowability guarantees we rely on there collapse. That is not a metaphor; it is a boundary someone
+can check and a test someone can write.
+
+**Not asserted:** that our God point has the causal pathologies Manchak describes (his follows from
+the light-cone geometry; ours is a harness with a recording). The shared property is total access, not
+closed timelike curves.
+
+### Standing correction carried forward
+
+The earlier MH section of this document said a continuation's antecedent "could have an infinite
+future in it passed through as an immutable value." Measurement since: `Chip8SelfSim.Tests.fs` T4
+confirms the **immutable/COW** half, and T3 — *"the future is simulated within a METERED budget
+(funded steps only)"* — **refutes the infinite half for shipped code.** What exists today is the
+bounded case. The route by which an infinite future could legitimately be carried is aperiodicity plus
+undecidability (Berger 1966; Cook 2004), which is under formal analysis and is **not** a result yet.
