@@ -1,10 +1,12 @@
 {
   "version": 1,
-  "generatedAtIso": "2026-08-16T19:59:56.979Z",
-  "commit": "2b705e63f",
+  "generatedAtIso": "2026-08-17T00:38:23.079Z",
+  "commit": "e1bb195b4",
   "totals": {
-    "findings": 0,
-    "bySeverity": {}
+    "findings": 3,
+    "bySeverity": {
+      "failing": 3
+    }
   },
   "territories": [
     {
@@ -34,8 +36,42 @@
         {
           "id": "main-failures",
           "name": "main — recent runs",
-          "summary": "All of the last 40 runs on main concluded green.",
-          "findings": []
+          "summary": "3 of the last 40 runs on main failed.",
+          "findings": [
+            {
+              "id": "ci:31982497982",
+              "title": "pr-manifest-integrity",
+              "severity": "failing",
+              "locus": "e1bb195b4 — 2026-08-17 00:36",
+              "evidence": [
+                "pr-manifest-integrity",
+                "run id 31982497982"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:31982385678",
+              "title": "agent-heartbeat",
+              "severity": "failing",
+              "locus": "e1bb195b4 — 2026-08-17 00:33",
+              "evidence": [
+                "agent-heartbeat",
+                "run id 31982385678"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:31981674777",
+              "title": "agent-heartbeat",
+              "severity": "failing",
+              "locus": "a21b7bbf0 — 2026-08-17 00:19",
+              "evidence": [
+                "agent-heartbeat",
+                "run id 31981674777"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            }
+          ]
         }
       ]
     }
