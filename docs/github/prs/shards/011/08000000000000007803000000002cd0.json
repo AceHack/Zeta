@@ -1,0 +1,12 @@
+{
+  "pr_number": 11472,
+  "archive_path": "docs/history/pr-reviews/PR-11472-archive-pr-reviews-drain-the-1-100-genuinely-orphaned-archives-supersedes-10346.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:00:43.501Z",
+  "schema_version": "v1",
+  "commit_sha": "f3ffbc4b135205646838c44792ac8456a1e38f43",
+  "title": "archive(pr-reviews): drain the 1,100 genuinely-orphaned archives — supersedes #10346",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:00:06Z",
+  "head_ref": "shadow/drain-orphaned-pr-review-archives"
+}
