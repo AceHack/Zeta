@@ -1,0 +1,12 @@
+{
+  "pr_number": 9127,
+  "archive_path": "docs/history/pr-reviews/PR-9127-feat-design-sync-design-ethics-guidelines-shipped-to-the-design-project-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T06:54:09.938Z",
+  "schema_version": "v1",
+  "commit_sha": "4a4fe1d497f250e4970693170799b5e57464d50f",
+  "title": "feat(design-sync): design-ethics guidelines shipped to the design project (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T12:37:40Z",
+  "head_ref": "design-sync/guidelines-design-ethics"
+}
