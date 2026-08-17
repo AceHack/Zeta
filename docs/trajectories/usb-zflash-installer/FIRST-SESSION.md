@@ -24,6 +24,8 @@ which credentials to set up, which to skip, whether to stay local-only.
 | `src/Core.TypeScript/observe/first-session-run.ts` | Post-login CLI conductor (menu / --llm / --demo) |
 | `src/Core.TypeScript/observe/first-session-executor.ts` | Cred probe + gh/claude/codex/gemini executors |
 | `src/Core.TypeScript/observe/first-session-run.test.ts` | S0 demo/dry-run + probe tests |
+| `src/Core.TypeScript/observe/tick-budget.ts` | `TickBudget` — the injected, attributed tick bound (the TS shape of `SimLoop.Budget`) |
+| `src/Core.TypeScript/observe/first-session-budget.test.ts` | Measures the machine's diameter (6 over 115 states), proves the budget is read, and exercises the **real** marker write |
 | `full-ai-cluster/nixos/modules/zeta-first-session.nix` | profile.d hook on first interactive zeta login |
 
 | `src/Core.TypeScript/observe/load-node-session.ts` | Probe marker + creds → optional World channel |

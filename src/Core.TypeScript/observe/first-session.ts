@@ -18,6 +18,7 @@
  */
 
 import { chooseIndex, type ModelBackend } from "../accelerator/local-llm";
+import { clampTicks, type TickBudget } from "./tick-budget";
 
 export type CredVendor = "gh" | "claude" | "codex" | "gemini";
 
@@ -317,14 +318,51 @@ export function foldFirstSession(
   return events.reduce(simulateFirstSession, initial);
 }
 
-/** Choose → simulate loop until complete or maxTicks — mirrors observe.runLoop. */
+/**
+ * The longest advancing path through this state machine, MEASURED — not chosen.
+ *
+ * `first-session-budget.test.ts` walks every state reachable from
+ * `defaultNodeSession()` under the menu the operator is actually offered, and
+ * takes the longest simple path. It comes out at 6 today, by the witness
+ * `setup gh → offer cloud → setup claude → setup codex → setup gemini →
+ * complete` over 115 reachable states. The constant is pinned here and the test
+ * recomputes it: add an action kind that lengthens the path and the test goes
+ * red rather than the loop silently truncating a legitimate session.
+ */
+export const FIRST_SESSION_ADVANCING_TICKS = 6;
+
+/**
+ * Budget for the pure choose→simulate loop.
+ *
+ * Exactly the measured diameter, with no headroom, and that is a *measurement*
+ * rather than a preference: every menu action changes the state (0 non-advancing
+ * transitions across all 115 reachable states — the test checks this), so this
+ * loop cannot spend a tick without progressing, and a tick past the diameter
+ * could only ever run on an already-complete session.
+ *
+ * Replaces a bare `maxTicks = 12`. 12 was not wrong — it was unexplained, and
+ * twice the number needed with nothing recording why.
+ */
+export const FIRST_SESSION_LLM_TICK_BUDGET: TickBudget = {
+  name: "first-session-llm-loop",
+  maxTicks: FIRST_SESSION_ADVANCING_TICKS,
+  chosenBy: "Otto (shadow), 2026-08-17 — derived, not picked",
+  rationale:
+    "Equal to the measured longest advancing path (6) because this loop has no " +
+    "non-advancing tick: every action in buildFirstSessionMenu changes the " +
+    "session, verified exhaustively over all 115 reachable states. Headroom here " +
+    "would buy nothing but unexplained slack.",
+};
+
+/** Choose → simulate loop until the session completes or the budget is spent. */
 export async function runFirstSessionLoop(
   initial: NodeSessionState,
   backend: ModelBackend,
-  maxTicks = 12,
+  budget: TickBudget = FIRST_SESSION_LLM_TICK_BUDGET,
 ): Promise<{ readonly trace: FirstSessionAction[]; readonly finalSession: NodeSessionState }> {
   let session = initial;
   const trace: FirstSessionAction[] = [];
+  const maxTicks = clampTicks(budget);
   for (let i = 0; i < maxTicks; i++) {
     if (session.complete) break;
     const action = await firstSessionWithLlm(session, backend);

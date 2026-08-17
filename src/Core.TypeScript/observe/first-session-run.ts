@@ -21,6 +21,7 @@ import { ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
 import {
   buildFirstSessionMenu,
   defaultNodeSession,
+  FIRST_SESSION_ADVANCING_TICKS,
   firstSessionLabel,
   firstSessionOracle,
   firstSessionWithLlm,
@@ -29,6 +30,7 @@ import {
   type FirstSessionAction,
   type NodeSessionState,
 } from "./first-session";
+import { clampTicks, type TickBudget } from "./tick-budget";
 import { resolveIdentityAuthMode } from "../ci/identity-auth-provider";
 import {
   SERIAL_PREFIX,
@@ -52,6 +54,43 @@ export function logSerial(line: string): void {
   }
 }
 
+/**
+ * Retries the operator gets at each credential-setup step before the conductor
+ * gives up. This one is a CHOICE, not a measurement, and is recorded as such:
+ * three attempts is enough to survive a mistyped device code or a cancelled
+ * browser flow, and few enough that a genuinely broken vendor (gh missing from
+ * PATH, network down) stops the loop instead of holding a fresh node hostage.
+ */
+export const SETUP_RETRIES_PER_CREDENTIAL = 3;
+
+/** The four credential-setup steps on the longest path: gh, claude, codex, gemini. */
+export const SETUP_STEPS_ON_LONGEST_PATH = 4;
+
+/**
+ * Budget for the interactive/demo conductor.
+ *
+ * = measured advancing diameter (6) + retry allowance (3 × 4 = 12) = 18.
+ *
+ * The conductor needs the retry term and the pure loop does not, which is why
+ * these two budgets stay DIFFERENT rather than being unified: `applyAction`
+ * returns the session UNCHANGED when `executeSetupCredential` reports `failed`
+ * ("pick another option"), so this loop — unlike the pure one — can spend a tick
+ * without advancing. That is the whole reason for the gap, and it is now written
+ * down instead of being the difference between an unexplained 24 and an
+ * unexplained 12.
+ */
+export const FIRST_SESSION_RUN_TICK_BUDGET: TickBudget = {
+  name: "first-session-conductor",
+  maxTicks:
+    FIRST_SESSION_ADVANCING_TICKS + SETUP_RETRIES_PER_CREDENTIAL * SETUP_STEPS_ON_LONGEST_PATH,
+  chosenBy: "Otto (shadow), 2026-08-17 — measured floor, chosen retry allowance",
+  rationale:
+    "6 measured advancing ticks (the state machine's longest simple path) plus " +
+    "3 retries at each of the 4 credential-setup steps, because a failed setup " +
+    "leaves the session unchanged and burns a tick. Was a bare 24 with no " +
+    "comment; 24 was survivable but nobody had chosen it on the record.",
+};
+
 export interface RunOptions {
   readonly markerPath: string;
   readonly dryRun: boolean;
@@ -61,6 +100,8 @@ export interface RunOptions {
   readonly home: string;
   readonly runner: ShellRunner;
   readonly backend: ModelBackend;
+  /** Injected, never chosen inline — see FIRST_SESSION_RUN_TICK_BUDGET. */
+  readonly tickBudget: TickBudget;
 }
 
 export function parseArgs(argv: string[]): RunOptions {
@@ -97,6 +138,7 @@ export function parseArgs(argv: string[]): RunOptions {
     home,
     runner: defaultShellRunner(),
     backend: ollamaBackend({ timeoutMs: 30_000 }),
+    tickBudget: FIRST_SESSION_RUN_TICK_BUDGET,
   };
 }
 
@@ -257,7 +299,7 @@ export async function runFirstSession(opts: RunOptions): Promise<NodeSessionStat
   let session = sessionFromProbe(opts.runner, opts.home);
   const demoQueue = opts.demo ? [...opts.demoScript] : [];
 
-  const maxTicks = 24;
+  const maxTicks = clampTicks(opts.tickBudget);
   for (let tick = 0; tick < maxTicks; tick++) {
     if (session.complete) break;
 
