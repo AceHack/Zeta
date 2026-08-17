@@ -107,7 +107,14 @@ export function isValidHostname(s: string): boolean {
   return VALID_HOSTNAME_REGEX.test(s);
 }
 
-function isPhysicalDevicePath(path: string): boolean {
+/**
+ * Whether a path names a raw block device rather than a file.
+ *
+ * Exported (2026-08-17) so `linux-arm.ts` refuses the same shapes the file-backed path
+ * refuses. Duplicating the predicate would let the two paths drift into disagreeing
+ * about what counts as a device — the worst possible thing for them to disagree about.
+ */
+export function isPhysicalDevicePath(path: string): boolean {
   const trimmed = path.trim();
   const windowsDevicePath = trimmed.replace(/\//g, "\\");
   return /^\/dev\//.test(trimmed) || /^\\\\\.\\PhysicalDrive\d+(?:\\|$)/i.test(windowsDevicePath);

@@ -72,9 +72,20 @@ import {
 } from "../installer/zeta-creds-persist";
 import {
   composeAuthorizedKeysFileContent,
+  detectIsohybridEspOffsetBytes,
+  ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
   parseUuidFromDiskutilInfo,
   resolveZetaTestInfraPubkeyFromZflashModule,
 } from "./lib.ts";
+import { runFileBackedZflashCli } from "./file-backed.ts";
+import {
+  flashUsbLinuxArgv,
+  linuxBakeIsRequired,
+  linuxWrapperRefusals,
+  LINUX_FLASH_SCRIPT_BASENAME,
+  planLinuxBakedImagePath,
+  requireLinuxBakeTools,
+} from "./linux-arm.ts";
 import {
   deviceKeyPath,
   userKeyringPublicPath,
@@ -455,10 +466,15 @@ function findFlashUsbPath(): string {
   // fileURLToPath() to get a decoded filesystem path (handles spaces +
   // unicode in the checkout path correctly; raw new URL().pathname
   // would leave percent-encoding intact and existsSync would fail).
+  //
+  // 081M037KPG1087G0R0005ANAFV: the arm is platform-selected. flash-usb-linux.ts owns
+  // every wrong-disk rail on Linux exactly as flash-usb.ts does on macOS; this wrapper
+  // picks which one runs and never makes a device decision itself.
+  const basename = platform() === "linux" ? LINUX_FLASH_SCRIPT_BASENAME : "flash-usb.ts";
   const here = fileURLToPath(import.meta.url);
-  const sibling = join(dirname(here), "flash-usb.ts");
+  const sibling = join(dirname(here), basename);
   if (!existsSync(sibling)) {
-    bail(1, `flash-usb.ts not found at expected sibling path: ${sibling}`);
+    bail(1, `${basename} not found at expected sibling path: ${sibling}`);
   }
   return sibling;
 }
@@ -870,19 +886,99 @@ async function injectPubkeyToUsb(
   }
 }
 
+/** Absolute path of a program on PATH, or null. `command -v` is POSIX; `which` is optional. */
+function whichTool(program: string): string | null {
+  try {
+    const out = execFileSync("/bin/sh", ["-c", 'command -v -- "$1"', "sh", program], {
+      encoding: "utf8",
+    }).trim();
+    return out.startsWith("/") ? out : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Linux ESP injection — bake the payload into a keyed COPY of the ISO, before the flash.
+ *
+ * This is the Linux replacement for `injectPubkeyToUsb`, and the shape difference is the
+ * point: macOS flashes and then mounts the stick to write the ESP; Linux writes the ESP
+ * into an image file with `mcopy` and then flashes that. No mount, no partition choice,
+ * no second chance to pick the wrong target. `flash-usb-linux.ts` remains the only code
+ * that decides which device is written.
+ *
+ * Returns the path of the baked image, which becomes the ISO handed to the flash arm.
+ * Any failure BAILS — never returns the un-keyed ISO, because flashing that would look
+ * exactly like success and produce a node the operator cannot log into.
+ */
+function bakeEspPayloadForLinux(
+  isoPath: string,
+  pubkeyPath: string | null,
+  hostOverride: string | null,
+  testMode: boolean,
+): string {
+  const tools = {
+    qemuImg: whichTool("qemu-img"),
+    mcopy: whichTool("mcopy"),
+    mdir: whichTool("mdir"),
+  };
+  const toolCheck = requireLinuxBakeTools(tools);
+  if (!toolCheck.ok) bail(2, toolCheck.error);
+
+  // The ESP lives at a byte offset inside the isohybrid image; mcopy addresses it as
+  // `image@@offset`. Detect from the ISO head, with lib.ts's fallback when the MBR does
+  // not declare it.
+  let espOffsetBytes: number;
+  try {
+    const headSize = Math.max(512, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 512);
+    espOffsetBytes = detectIsohybridEspOffsetBytes(readFileSync(isoPath).subarray(0, headSize));
+  } catch (e) {
+    bail(3, `could not read the ESP offset from ${isoPath}: ${e instanceof Error ? e.message : String(e)}`);
+  }
+
+  const workDir = mkdtempSync(join(tmpdir(), "zflash-linux-bake-"));
+  const planned = planLinuxBakedImagePath({
+    isoPath,
+    workDir,
+    nonceHex: process.pid.toString(16).padStart(4, "0").slice(-8),
+  });
+  if (!planned.ok) bail(3, `ESP bake planning failed: ${planned.error}`);
+
+  process.stdout.write(
+    `\nzflash(linux): baking ESP payload into a keyed copy (mount-free, mcopy @@${String(espOffsetBytes)})\n` +
+      `  source ISO : ${isoPath} (left pristine)\n` +
+      `  keyed image: ${planned.value}\n`,
+  );
+
+  const result = runFileBackedZflashCli({
+    isoPath,
+    outputImagePath: planned.value,
+    espOffsetBytes,
+    ...(pubkeyPath === null ? {} : { pubkeyPath }),
+    ...(hostOverride === null ? {} : { hostname: hostOverride }),
+    ...(testMode ? { testMode: true } : {}),
+  });
+  if (!result.ok) {
+    // Includes the 081KZHJPJCF read-back failure: mcopy exited 0 but the file is not on
+    // the ESP. That must abort, not warn — a silent drop is the whole reason the
+    // verification exists.
+    bail(3, `ESP bake failed: ${result.error}`);
+  }
+
+  process.stdout.write(`  ESP writes verified on the keyed image (mdir read-back).\n`);
+  return planned.value;
+}
+
 async function main() {
-  if (platform() !== "darwin") {
-    // The zflash WRAPPER (ISO freshness, auto-download, ESP pubkey injection) is still
-    // macOS-only — its ESP mount path is diskutil-shaped. The FLASH step now has a Linux
-    // arm with the same rails (081M037KPG1087G0R0005ANAFV); routing the wrapper's
-    // remaining steps through it is the next slice, named rather than implied.
+  const host = platform();
+  if (host !== "darwin" && host !== "linux") {
     bail(
       2,
-      "zflash is macOS-only. On Linux, flash with the Linux arm directly:\n" +
-        "  bun src/Core.TypeScript/zflash/flash-usb-linux.ts <path-to-iso>\n" +
-        "(the wrapper's ESP pubkey-injection step has no Linux path yet)",
+      `zflash supports macOS and Linux; running on ${host}.\n` +
+        "On Windows use src/Core.TypeScript/zflash/flash-usb-windows.ts.",
     );
   }
+  const isLinux = host === "linux";
 
   // Strict arg validation (Copilot P0 catch): wrapper for destructive tool
   // must NOT silently accept unknown flags or extra positionals; a typo
@@ -1099,6 +1195,20 @@ async function main() {
     process.exit(0);
   }
 
+  // 081M037KPG1087G0R0005ANAFV — refuse unsupported wrapper features on Linux BEFORE any
+  // download, freshness check or device work. Checked early so the operator learns the
+  // request cannot be serviced while nothing has happened yet, and never after a flash.
+  if (isLinux) {
+    const refusals = linuxWrapperRefusals({
+      injectPubkey: !noInject,
+      hostname: hostOverride,
+      bakeCredCount: credBake.bakeCredArgs.length,
+    });
+    if (refusals.length > 0) {
+      bail(2, `zflash(linux) cannot service this request:\n  - ${refusals.join("\n  - ")}`);
+    }
+  }
+
   // iter-4.3 freshness check: bail if local install-substrate is behind
   // origin/main. Skip if explicitly opted out OR if not in a git checkout
   // (zflash run from a copied-out location). Skip in destructive path
@@ -1273,9 +1383,37 @@ async function main() {
   //
   // Touch ID PAM gate is PRESERVED — agent cannot bypass biometric
   // physical-presence proof on the operator's Mac.
-  const flashUsbArgs = willInject
-    ? [flashUsb, "--short", "--no-eject", isoPath]
-    : [flashUsb, "--short", isoPath];
+  // 081M037KPG1087G0R0005ANAFV — the two arms need different argv AND a different ORDER.
+  //
+  // macOS: flash, then mount the stick and write the ESP (`--no-eject` keeps it attached
+  // for that second step).
+  //
+  // Linux: bake the ESP writes into a keyed copy FIRST, then flash that copy. There is no
+  // post-flash step, so there is nothing to keep attached — and `--no-eject` is not even a
+  // flag the Linux arm accepts, so passing the macOS argv would abort every flash at the
+  // child's allowlist. `flashUsbLinuxArgv` cannot emit it.
+  let flashUsbArgs: string[];
+  if (isLinux) {
+    let effectiveIso = isoPath;
+    // `--no-inject` suppresses the hostname write too, exactly as it does on macOS. The
+    // hostname is passed to linuxBakeIsRequired only when injection is on, so the two
+    // platforms cannot disagree about what --no-inject means.
+    const bakeRequest = {
+      injectPubkey: willInject,
+      hostname: willInject ? hostOverride : null,
+      bakeCredCount: 0,
+    };
+    if (linuxBakeIsRequired(bakeRequest)) {
+      effectiveIso = bakeEspPayloadForLinux(isoPath, pubkeyPath, hostOverride, testMode);
+    }
+    const argv = flashUsbLinuxArgv(flashUsb, effectiveIso, { short: true });
+    if (!argv.ok) bail(2, argv.error);
+    flashUsbArgs = [...argv.argv];
+  } else {
+    flashUsbArgs = willInject
+      ? [flashUsb, "--short", "--no-eject", isoPath]
+      : [flashUsb, "--short", isoPath];
+  }
   if (agentMode) {
     process.stdout.write(
       "\nzflash: --agent mode active — will auto-type challenge response\n" +
@@ -1334,7 +1472,29 @@ async function main() {
     }
   }
 
-  if (willInject) {
+  if (isLinux) {
+    // The ESP payload was baked into the flashed image BEFORE the write and verified by
+    // an mdir read-back, so there is no post-flash step here. injectPubkeyToUsb is
+    // diskutil-shaped and must never run on this path.
+    if (tempPubkeyPath && existsSync(tempPubkeyPath)) {
+      try {
+        rmSync(tempPubkeyPath, { force: true });
+      } catch { /* ignore */ }
+    }
+    if (willInject) {
+      process.stdout.write(
+        "\nzflash(linux): ESP payload was baked into the flashed image (pre-flash, verified).\n",
+      );
+    } else {
+      process.stdout.write("\n(ESP bake skipped per --no-inject or missing pubkey)\n");
+      if (hostOverride !== null) {
+        process.stdout.write(
+          `(hostname inject ALSO skipped — --host ${hostOverride} requires --no-inject NOT set;\n` +
+            ` re-run without --no-inject if you want the hostname to land on the USB ESP)\n`,
+        );
+      }
+    }
+  } else if (willInject) {
     try {
       await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode);
     } finally {

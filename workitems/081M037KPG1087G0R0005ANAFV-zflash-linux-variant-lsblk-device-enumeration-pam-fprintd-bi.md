@@ -107,10 +107,61 @@ it survives triage at P3 despite low ceremony.
 
 **Remaining (why this row is in-progress, not done)**
 
-- `zflash` (`cli.ts`) still refuses on Linux: its ESP pubkey-injection step is
-  diskutil-shaped and has no Linux path.
 - `tools/setup/linux.sh` has no `zflash` touchpoint yet.
 - A QEMU test-harness scenario driving `flash-usb-linux.ts` end to end against a
   file-backed device
   (`src/Core.TypeScript/zflash/test-harness/prepare-boot-image.ts` already builds images
   without physical USB).
+
+## Status — 2026-08-17 (slice 2 landed: the wrapper reaches the arm)
+
+`cli.ts` no longer refuses on Linux. The slice-1 arm existed but was unreachable through
+`zflash`, which is the state this slice closes.
+
+**The design decision worth reading**
+
+The ESP pubkey-injection step was NOT ported verb-for-verb. The macOS flow is
+flash → rescan → find FAT partition → `diskutil mount` → `sudo tee` → unmount → eject, and
+the literal Linux translation (`lsblk` → `mount -t vfat` → write → `umount`) would have
+introduced a **second wrong-target surface**: picking and mounting a partition on a device
+whose partition table the kernel has just re-read, one step after `selectUsbCandidate`
+finished guaranteeing which disk we may touch.
+
+Instead the ESP writes are **baked into a keyed COPY of the ISO before the flash**, using
+the mount-free `qemu-img` + `mtools` pipeline `lib.ts` already drives for the file-backed
+(QEMU) path — `mcopy -i <image>@@<espOffset>` writes into the FAT ESP at a byte offset with
+no mount, no partition choice and no root. The device write is then delegated to
+`flash-usb-linux.ts` unchanged.
+
+This is the third platform to arrive at bake-before-write: the Windows arm
+(`flash-and-inject.ts`, 2026-06-14) was forced there by handle invalidation after the raw
+write. Linux chooses it because it *deletes a destructive-target decision*.
+
+**Landed**
+
+- `src/Core.TypeScript/zflash/linux-arm.ts` — pure wiring: `flashUsbLinuxArgv` (which
+  structurally cannot emit `--no-eject` — a flag the Linux arm's allowlist rejects, so the
+  macOS argv would have aborted every Linux flash at the child), `planLinuxBakedImagePath`
+  (refuses a device path, a non-`.iso` name, and baking in place over the operator's
+  pristine cached ISO), `linuxWrapperRefusals`, `linuxBakeIsRequired`,
+  `requireLinuxBakeTools` (missing `qemu-img`/`mcopy`/`mdir` REFUSES the flash — a stick
+  written without the key boots a node the operator cannot log into).
+- `cli.ts` — platform-selected flash arm, pre-flash bake on Linux, `injectPubkeyToUsb`
+  (diskutil-shaped) never runs on the Linux path, and `--bake-cred` is refused BY NAME
+  rather than silently dropped.
+- `lib.ts` — `isPhysicalDevicePath` exported so both paths refuse the same shapes rather
+  than drifting apart on what counts as a device.
+- 29 tests in `linux-arm.test.ts`, including cross-module contract tests asserted against
+  `flash-usb-linux.ts`'s **own** exported `validateIso` and `buildShortChallenge` (a
+  hand-copied expectation would keep passing after the arm changed). Suite: 401 pass.
+
+**Honest limits**
+
+- The ESP bake MECHANISM is executed and verified: against a synthetic isohybrid ISO
+  (MBR 0xEF at LBA 276 + a real `mformat` FAT), the bake wrote `zeta-authorized-keys.pub`
+  and `zeta-hostname.txt`, `mdir` read both back, and the source ISO's ESP was confirmed
+  still empty. That ran on **macOS**, on the same cross-platform code path Linux uses.
+- **Unverified:** no Linux host was involved. `lsblk` enumeration, the `pam_fprintd` gate,
+  the escalation, and the `dd` write to a real block device remain executed-nowhere. The
+  wiring is typechecked and unit-tested; it has never selected a real disk.
+- `--bake-cred` has no Linux path and refuses.
