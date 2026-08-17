@@ -35,7 +35,9 @@
  *   stated floor. What is checked is *the comparison*, not any physical erasure.
  * - **PROPOSED / unpopulated** — `attested` (vendor trust root) and `fused` (OTP state) evidence.
  *   The data shapes exist so an exhaustive `switch` covers them; **no verifier exists**, and they
- *   read as `no-information` rather than as a stub returning fake success.
+ *   read as `no-information` rather than as a stub returning fake success. `attested` now *names*
+ *   its root (`VendorTrustRoot`, see `vendor-trust-root.ts`) instead of carrying a free `string`.
+ *   Naming is not chaining: nothing here builds or checks a certificate chain.
  * - **NOT CLAIMED** — no thermodynamic guarantee is asserted by anything here. Nothing in this
  *   repository has measured a joule. `MeasuredDissipation` is a shape for an instrument that does
  *   not exist here; supplying one by hand supplies a claim, not a measurement, and the honest
@@ -58,6 +60,7 @@
 
 import type { EntropyTracker } from "./entropy-tracker";
 import { stringCompare } from "../collation/collation";
+import { describeVendorTrustRoot, type VendorTrustRoot } from "./vendor-trust-root";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -443,7 +446,16 @@ export interface AttestedEvidence {
   readonly keyId: string;
   readonly deletionCertificate: string;
   readonly nonExtractableGenerationCertificate: string;
-  readonly trustRoot: string;
+  /**
+   * **The named root, required.** A `VendorTrustRoot` — not a `string`. This field used to be a
+   * bare `string`, so `""`, `"unknown"` and `"r"` were all type-correct roots; an attestation
+   * claim that named no root was representable. It no longer is: `VendorTrustRoot` is branded and
+   * can only come from `VENDOR_TRUST_ROOTS` or from `declareVendorTrustRoot`, which refuses a
+   * blank vendor or an empty chain.
+   *
+   * It carries the root's NAME, not a proof. Nothing chains here — see `vendor-trust-root.ts`.
+   */
+  readonly trustRoot: VendorTrustRoot;
 }
 
 /**
@@ -528,10 +540,13 @@ export function readEvidence(evidence: FrozenEvidence): Reading {
         reading: "no-information",
         member: "attested",
         why:
-          "no attestation verifier exists in this substrate; verifying would require a vendor trust " +
-          `root ('${evidence.trustRoot}') and a chain check of both the deletion and the ` +
-          "non-extractable-generation certificates. Unpopulated by design — a stub returning success " +
-          "would be fake evidence",
+          "no attestation verifier exists in this substrate; verifying would require walking to the " +
+          `named ${describeVendorTrustRoot(evidence.trustRoot)}, and a chain check of both the ` +
+          "deletion and the non-extractable-generation certificates. Unpopulated by design — a stub " +
+          "returning success would be fake evidence. The root is NAMED here, which is not the same " +
+          "as chained: nothing in this substrate has verified a signature against it, and the " +
+          `ceiling if one did is '${evidence.trustRoot.vendorName} says this is genuine ` +
+          `${evidence.trustRoot.vendorName} silicon running this measurement'`,
       };
     case "fused":
       return {

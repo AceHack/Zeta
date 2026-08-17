@@ -20,6 +20,7 @@ import {
   type FrozenEvidence,
   type DissipationTest,
 } from "./key-erasure-meter";
+import { VENDOR_TRUST_ROOTS } from "./vendor-trust-root";
 
 const ROOM_TEMPERATURE_K = 300;
 
@@ -318,10 +319,14 @@ describe("evidence-type polymorphism — the family, and the unpopulated members
       keyId: "k",
       deletionCertificate: "cert-a",
       nonExtractableGenerationCertificate: "cert-b",
-      trustRoot: "vendor-root",
+      trustRoot: VENDOR_TRUST_ROOTS["amd-ark"],
     });
     expect(attested.reading).toBe("no-information");
     expect(attested.why).toContain("no attestation verifier");
+    // The reading NAMES the root it would have to chain to — the whole point of 081M00QP7FB.
+    expect(attested.why).toContain("ARK (AMD Root Key, self-signed)");
+    // ...and refuses to let "named" read as "chained".
+    expect(attested.why).toContain("NAMED here, which is not the same as chained");
 
     const fused = readEvidence({
       member: "fused",
@@ -353,7 +358,7 @@ describe("evidence-type polymorphism — the family, and the unpopulated members
         keyId: "k",
         deletionCertificate: "c",
         nonExtractableGenerationCertificate: "g",
-        trustRoot: "r",
+        trustRoot: VENDOR_TRUST_ROOTS["tpm-manufacturer-ek-ca"],
       },
       { member: "fused", keyId: "k", fuseBankReading: "0xFF", attestedByBootChain: "b" },
       {

@@ -54,3 +54,33 @@ root. None exists.
 ## Anchor
 
 `docs/research/2026-08-14-what-a-full-rewrite-cannot-remove-binding-dependencies-and-the-claims-they-cap.md` §5.1
+
+## Status (2026-08-17)
+
+**The declared scope above — items 1, 2 and 3, all documentation — was already delivered** by
+`a619ee9bd1` / PR #10685, which added §"Vendor roots cap every attestation claim" to the ladder doc
+(a five-row CHECKED table separating the irreducible **trust root** from the avoidable
+**verification service**), named the root at the L3 and L5 rungs, and marked §1 scale-free as a
+software-layer guarantee that does not extend to the metal. This item's row was never moved out of
+`backlog` afterwards. Verified before changing anything, per the item's own honesty standard.
+
+**What was still open was the code**, which the item did not scope. `AttestedEvidence.trustRoot` in
+`src/Core.TypeScript/algebra/key-erasure-meter.ts` was a bare `string`, so `""`, `"   "`,
+`"unknown"`, `"r"` and `"trust me bro"` were all type-correct roots and all produced an identical
+reading — the doc said "name the root" and the type could not hold anyone to it. Its own tests
+passed `"vendor-root"` and `"r"`.
+
+Closed by making the root a branded `VendorTrustRoot` (`src/Core.TypeScript/algebra/vendor-trust-root.ts`)
+whose roster is transcribed from the CHECKED table above. An attestation claim naming no root is now
+a **compile error**, not a lint. Deliberately carries no root-key fingerprints: a digest written from
+memory is a fabricated anchor.
+
+**Explicitly still not done, and not claimed:** no verifier exists. Nothing in this substrate builds
+or checks a certificate chain, so `attested` still reads `no-information`. The root is **named**,
+which is a precondition for chaining and is not chaining.
+
+Surveyed and found already correct: `FrostDeviceAttestationV1` (`tools/setup/persona-keys/frost-ca-custody.ts`)
+names its root as `groupPublicKeyHex` — a Zeta-native FROST root, not a vendor one; and
+`src/Bayesian/Attested.fs`, a different sense of the word (evidence provenance), where `FromSource`
+already requires a named source and `Unattested` is the explicit un-named case that can never be
+deduplicated.
