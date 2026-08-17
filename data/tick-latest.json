@@ -1,9 +1,9 @@
 {
-  "t": "2026-08-17T17:56:36.409Z",
-  "total_events": 1660,
+  "t": "2026-08-17T18:18:53.042Z",
+  "total_events": 1663,
   "last_action": "attest_peer",
   "last_mode": "work",
-  "last_agent": "otto",
+  "last_agent": "alexa",
   "entropy_state": 0,
   "entropy_heat": 0,
   "ticks_24h": 347,
