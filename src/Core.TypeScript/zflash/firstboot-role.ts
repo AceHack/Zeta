@@ -46,11 +46,20 @@
  * module carries k3s's parameters and defines no handshake of its own.
  */
 
+import { resolveClusterSegmentAssignment } from "./cluster-address";
+
 /** ESP destination for the firstboot config. Read by `zeta-first-boot.sh`. */
 export const ZETA_FIRSTBOOT_CONF_ESP_DESTINATION = "/zeta-firstboot.conf";
 
 /** ESP destination for k3s node-token material, when the operator supplies it. */
 export const ZETA_JOIN_TOKEN_ESP_DESTINATION = "/zeta-join-token";
+
+/**
+ * 081KSNY2Z0008QG0R0008PN7RQ `joining-node-address-assignment`: the addressing
+ * half. A role told a node WHAT it is; without this it still had no address on
+ * the shared segment and no way to resolve the name in its own `--server` URL.
+ * Derivation is in `cluster-address.ts`; this module only carries the result.
+ */
 
 /**
  * Where a joiner's token must land on the INSTALLED system.
@@ -105,16 +114,35 @@ const MAX_TCP_PORT = 65535;
  * There is no "worker with no cluster to join" — that is a joiner missing its
  * endpoint, and it is refused below rather than defaulted into existence.
  */
+/**
+ * Static addressing for the shared cluster segment, when the medium carries it.
+ *
+ * Optional on both variants: a node flashed for a LAN that already has DHCP and
+ * DNS needs none of this, and forcing an address on it would be worse than the
+ * gap. Omitted, no addressing lines are emitted at all and the guest's existing
+ * NetworkManager/DHCP behaviour is untouched.
+ */
+export interface ZetaFirstbootClusterSegment {
+  /** MAC of the segment NIC — the only stable handle on a two-NIC guest. */
+  readonly segmentNicMac: string;
+  /** Host index within the /24. Defaults per role; see `cluster-address.ts`. */
+  readonly hostIndex?: number;
+}
+
 export type ZetaFirstbootRole =
   | {
       readonly kind: "first-control-plane";
       /** Defaults to {@link DEFAULT_FIRST_CONTROL_PLANE_FLAKE_HOST}. */
       readonly flakeHost?: string;
+      /** Static segment addressing; omitted, the node keeps DHCP. */
+      readonly clusterSegment?: ZetaFirstbootClusterSegment;
     }
   | {
       readonly kind: "joiner";
       /** Defaults to {@link DEFAULT_JOINER_FLAKE_HOST}. */
       readonly flakeHost?: string;
+      /** Static segment addressing; omitted, the node keeps DHCP. */
+      readonly clusterSegment?: ZetaFirstbootClusterSegment;
       /** k3s `--server` URL of the existing control plane, e.g. `https://control-plane.local:6443`. */
       readonly serverUrl: string;
       /**
@@ -132,6 +160,12 @@ export interface ZetaFirstbootConfig {
   readonly flakeHost: string;
   readonly joinServerUrl?: string;
   readonly joinTokenEspPath?: string;
+  /** This node's address on the cluster segment, e.g. `10.88.0.2/24`. */
+  readonly clusterNodeAddressCidr?: string;
+  /** MAC of the NIC the address above belongs to. */
+  readonly clusterSegmentMac?: string;
+  /** The founder's segment address, for the `/etc/hosts` entry. */
+  readonly clusterControlPlaneAddress?: string;
 }
 
 export type ZetaFirstbootConfigResult =
@@ -219,6 +253,61 @@ export function validateTokenEspPath(tokenEspPath: string): string | null {
   return checkShellSafe("token ESP path", trimmed);
 }
 
+/** The three addressing fields, or none of them. Never a partial set. */
+interface ClusterSegmentFields {
+  readonly clusterNodeAddressCidr?: string;
+  readonly clusterSegmentMac?: string;
+  readonly clusterControlPlaneAddress?: string;
+}
+
+type OptionalClusterSegmentResult =
+  | { readonly ok: true; readonly fields: ClusterSegmentFields }
+  | { readonly ok: false; readonly error: string };
+
+/**
+ * Resolve the optional static addressing.
+ *
+ * All three fields or none: a config carrying an address but no MAC would be
+ * applied to whichever NIC the consumer guessed, and a config carrying a MAC
+ * but no control-plane address would leave a joiner able to speak on the
+ * segment and unable to name what it is joining. Partial addressing is worse
+ * than none, so it is not representable in the output.
+ */
+function resolveOptionalClusterSegment(role: ZetaFirstbootRole): OptionalClusterSegmentResult {
+  if (role.clusterSegment === undefined) {
+    return { ok: true, fields: {} };
+  }
+  const assignment = resolveClusterSegmentAssignment({
+    role: role.kind,
+    segmentNic: { mac: role.clusterSegment.segmentNicMac },
+    ...(role.clusterSegment.hostIndex === undefined ? {} : { hostIndex: role.clusterSegment.hostIndex }),
+  });
+  if (!assignment.ok) {
+    return { ok: false, error: assignment.error };
+  }
+  // Re-checked against the bash allowlist even though `cluster-address.ts`
+  // composed them: this is the last guard before the value is `.`-sourced by
+  // a root shell, and "a trusted producer" is not a property the ESP has.
+  for (const [label, value] of [
+    ["cluster node address", assignment.value.nodeAddressCidr],
+    ["cluster segment MAC", assignment.value.segmentMac],
+    ["cluster control-plane address", assignment.value.controlPlaneAddress],
+  ] as const) {
+    const unsafe = checkShellSafe(label, value);
+    if (unsafe !== null) {
+      return { ok: false, error: unsafe };
+    }
+  }
+  return {
+    ok: true,
+    fields: {
+      clusterNodeAddressCidr: assignment.value.nodeAddressCidr,
+      clusterSegmentMac: assignment.value.segmentMac,
+      clusterControlPlaneAddress: assignment.value.controlPlaneAddress,
+    },
+  };
+}
+
 /**
  * Apply defaults and validate. Total: every rejection is a typed refusal, so
  * a bad role can never reach the ESP as a silently-corrected one.
@@ -239,8 +328,17 @@ export function resolveFirstbootConfig(role: ZetaFirstbootRole): ZetaFirstbootCo
     );
   }
 
+  // Addressing is resolved BEFORE the role split so both variants get the same
+  // refusals from the same code path — a founder with a bad MAC and a joiner
+  // with a bad MAC must fail identically, or the two halves of one segment are
+  // validated to two different standards.
+  const segment = resolveOptionalClusterSegment(role);
+  if (!segment.ok) {
+    return refuse(segment.error);
+  }
+
   if (role.kind === "first-control-plane") {
-    return { ok: true, value: { role: "first-control-plane", flakeHost } };
+    return { ok: true, value: { role: "first-control-plane", flakeHost, ...segment.fields } };
   }
 
   const serverUrl = role.serverUrl.trim();
@@ -251,13 +349,16 @@ export function resolveFirstbootConfig(role: ZetaFirstbootRole): ZetaFirstbootCo
 
   const tokenEspPath = role.tokenEspPath?.trim();
   if (tokenEspPath === undefined || tokenEspPath.length === 0) {
-    return { ok: true, value: { role: "joiner", flakeHost, joinServerUrl: serverUrl } };
+    return { ok: true, value: { role: "joiner", flakeHost, joinServerUrl: serverUrl, ...segment.fields } };
   }
   const tokenError = validateTokenEspPath(tokenEspPath);
   if (tokenError !== null) {
     return refuse(tokenError);
   }
-  return { ok: true, value: { role: "joiner", flakeHost, joinServerUrl: serverUrl, joinTokenEspPath: tokenEspPath } };
+  return {
+    ok: true,
+    value: { role: "joiner", flakeHost, joinServerUrl: serverUrl, joinTokenEspPath: tokenEspPath, ...segment.fields },
+  };
 }
 
 /** Flat, stringly-typed flags as a CLI collects them. */
@@ -266,6 +367,10 @@ export interface FirstbootRoleFlags {
   readonly flakeHost?: string;
   readonly joinServerUrl?: string;
   readonly joinTokenSourcePath?: string;
+  /** `--cluster-segment-mac` — opts the medium into static segment addressing. */
+  readonly clusterSegmentMac?: string;
+  /** `--cluster-host-index` — explicit allocation for a second/third joiner. */
+  readonly clusterHostIndex?: string;
 }
 
 export type FirstbootRoleFlagsResult =
@@ -286,9 +391,13 @@ export function firstbootRoleFromFlags(flags: FirstbootRoleFlags): FirstbootRole
   const flakeHost = flags.flakeHost?.trim();
   const joinServerUrl = flags.joinServerUrl?.trim();
   const joinTokenSourcePath = flags.joinTokenSourcePath?.trim();
+  const clusterSegmentMac = flags.clusterSegmentMac?.trim();
+  const clusterHostIndexRaw = flags.clusterHostIndex?.trim();
   const hasServerUrl = joinServerUrl !== undefined && joinServerUrl.length > 0;
   const hasToken = joinTokenSourcePath !== undefined && joinTokenSourcePath.length > 0;
   const hasFlakeHost = flakeHost !== undefined && flakeHost.length > 0;
+  const hasSegmentMac = clusterSegmentMac !== undefined && clusterSegmentMac.length > 0;
+  const hasHostIndex = clusterHostIndexRaw !== undefined && clusterHostIndexRaw.length > 0;
 
   if (role === undefined || role.length === 0) {
     if (hasServerUrl) {
@@ -300,7 +409,27 @@ export function firstbootRoleFromFlags(flags: FirstbootRoleFlags): FirstbootRole
     if (hasFlakeHost) {
       return refuse("--flake-host requires --role");
     }
+    if (hasSegmentMac || hasHostIndex) {
+      return refuse("--cluster-segment-mac / --cluster-host-index require --role");
+    }
     return { ok: true, value: undefined };
+  }
+
+  // A host index with no MAC is the partial-addressing shape again, arriving
+  // through the flag surface: it names WHICH address without naming WHICH NIC,
+  // so it is refused here rather than silently ignored.
+  if (hasHostIndex && !hasSegmentMac) {
+    return refuse("--cluster-host-index requires --cluster-segment-mac (an address needs a NIC to live on)");
+  }
+  let clusterSegment: ZetaFirstbootClusterSegment | undefined;
+  if (hasSegmentMac) {
+    if (hasHostIndex && !/^[0-9]+$/.test(clusterHostIndexRaw)) {
+      return refuse(`--cluster-host-index must be a non-negative integer, got ${JSON.stringify(clusterHostIndexRaw)}`);
+    }
+    clusterSegment = {
+      segmentNicMac: clusterSegmentMac,
+      ...(hasHostIndex ? { hostIndex: Number(clusterHostIndexRaw) } : {}),
+    };
   }
 
   if (role === "first-control-plane") {
@@ -310,7 +439,14 @@ export function firstbootRoleFromFlags(flags: FirstbootRoleFlags): FirstbootRole
     if (hasToken) {
       return refuse("--join-token is meaningless for --role first-control-plane (it mints the token)");
     }
-    return { ok: true, value: { kind: "first-control-plane", ...(hasFlakeHost ? { flakeHost } : {}) } };
+    return {
+      ok: true,
+      value: {
+        kind: "first-control-plane",
+        ...(hasFlakeHost ? { flakeHost } : {}),
+        ...(clusterSegment === undefined ? {} : { clusterSegment }),
+      },
+    };
   }
 
   if (role === "joiner") {
@@ -324,6 +460,7 @@ export function firstbootRoleFromFlags(flags: FirstbootRoleFlags): FirstbootRole
         serverUrl: joinServerUrl,
         ...(hasFlakeHost ? { flakeHost } : {}),
         ...(hasToken ? { tokenEspPath: ZETA_JOIN_TOKEN_ESP_DESTINATION } : {}),
+        ...(clusterSegment === undefined ? {} : { clusterSegment }),
       },
     };
   }
@@ -361,6 +498,18 @@ export function composeFirstbootConfFileContent(config: ZetaFirstbootConfig): st
   }
   if (config.joinTokenEspPath !== undefined) {
     lines.push(`ZETA_JOIN_TOKEN_ESP_PATH=${shellQuote(config.joinTokenEspPath)}`);
+  }
+  // Addressing, when the medium carries it. Emitted last and as a block, so a
+  // reader can see at a glance whether a node was flashed with static
+  // addressing or left on DHCP.
+  if (config.clusterNodeAddressCidr !== undefined) {
+    lines.push(`ZETA_CLUSTER_NODE_CIDR=${shellQuote(config.clusterNodeAddressCidr)}`);
+  }
+  if (config.clusterSegmentMac !== undefined) {
+    lines.push(`ZETA_CLUSTER_SEGMENT_MAC=${shellQuote(config.clusterSegmentMac)}`);
+  }
+  if (config.clusterControlPlaneAddress !== undefined) {
+    lines.push(`ZETA_CLUSTER_CONTROL_PLANE_IP=${shellQuote(config.clusterControlPlaneAddress)}`);
   }
   return `${lines.join("\n")}\n`;
 }

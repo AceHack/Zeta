@@ -151,12 +151,14 @@ describe("081KSNY2Z0008QG0R0008PN7RQ scenario 5 role provisioning", () => {
     expect(scenario5FirstbootRole("cluster-existing")).toEqual({
       kind: "first-control-plane",
       flakeHost: SCENARIO5_EXISTING_NODE_HOSTNAME,
+      clusterSegment: { segmentNicMac: "52:54:00:7a:f1:01" },
     });
     expect(scenario5FirstbootRole("joining-node")).toEqual({
       kind: "joiner",
       flakeHost: "worker-template",
       serverUrl: SCENARIO5_JOIN_SERVER_URL,
       tokenEspPath: "/zeta-join-token",
+      clusterSegment: { segmentNicMac: "52:54:00:7a:f1:02" },
     });
   });
 
@@ -166,15 +168,53 @@ describe("081KSNY2Z0008QG0R0008PN7RQ scenario 5 role provisioning", () => {
     // at a name the founder never took dials nothing.
     const founder = scenario5FirstbootRole("cluster-existing");
     expect(founder.kind).toBe("first-control-plane");
-    expect(SCENARIO5_JOIN_SERVER_URL).toContain(`${SCENARIO5_EXISTING_NODE_HOSTNAME}.local`);
+    expect(SCENARIO5_JOIN_SERVER_URL).toBe(`https://${SCENARIO5_EXISTING_NODE_HOSTNAME}:6443`);
   });
 
-  test("the joiner URL is mDNS-resolvable in shape (.local), not a bare label", () => {
-    // nss-mdns answers for `.local` only; the shared socket segment has no
-    // DHCP and no DNS, so a bare `https://control-plane:6443` would not
-    // resolve there. UNVERIFIED end-to-end; this pins the shape only.
+  test("the joiner URL is the BARE label the API certificate covers, not .local", () => {
+    // Corrected with the joining-node-address-assignment blocker. `.local`
+    // was doubly wrong: mDNS was already recorded as not working on this
+    // stack, AND `k3s-server.nix` ships only `--tls-san=control-plane`, so a
+    // `.local` name fails certificate verification even if it resolves.
+    // Resolution now comes from static addressing + an injected /etc/hosts
+    // entry, so the bare label is correct rather than merely shorter.
     expect(SCENARIO5_JOIN_SERVER_URL.startsWith("https://")).toBe(true);
-    expect(SCENARIO5_JOIN_SERVER_URL.endsWith(".local:6443")).toBe(true);
+    expect(SCENARIO5_JOIN_SERVER_URL).not.toContain(".local");
+    expect(SCENARIO5_JOIN_SERVER_URL.endsWith(":6443")).toBe(true);
+  });
+
+  test("each VM's medium carries the SAME MAC its QEMU command line pins", () => {
+    // The failure this pins is silent and total: if the address is configured
+    // against the NAT NIC instead of the segment NIC, both nodes come up
+    // "configured" and cannot see each other.
+    const result = planMultiVMRuntime(validInput({ bootImagePath: "run/boot.img" }));
+    expect("ok" in result).toBe(true);
+    if (!("ok" in result)) {
+      return;
+    }
+    for (const vm of result.ok.vms) {
+      const mac = vm.firstbootRole.clusterSegment?.segmentNicMac;
+      expect(mac).toBeDefined();
+      const args = vm.qemuBootCommand?.args ?? [];
+      expect(args.some((arg) => arg.includes(`mac=${String(mac)}`))).toBe(true);
+    }
+  });
+
+  test("the founder takes .1 and the joiner derives it without asking", () => {
+    const founder = planFirstbootConfFileContent(scenario5FirstbootRole("cluster-existing"));
+    const joiner = planFirstbootConfFileContent(scenario5FirstbootRole("joining-node"));
+    expect(founder.ok).toBe(true);
+    expect(joiner.ok).toBe(true);
+    if (!founder.ok || !joiner.ok) {
+      return;
+    }
+    expect(founder.config.clusterNodeAddressCidr).toBe("10.88.0.1/24");
+    expect(joiner.config.clusterNodeAddressCidr).toBe("10.88.0.2/24");
+    // The joiner's view of the founder equals the founder's own address.
+    expect(joiner.config.clusterControlPlaneAddress).toBe("10.88.0.1");
+    expect(founder.config.clusterNodeAddressCidr).toContain(
+      String(joiner.config.clusterControlPlaneAddress),
+    );
   });
 
   test("both scenario-5 roles compose to a valid firstboot config", () => {

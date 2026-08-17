@@ -18,6 +18,13 @@
     # pointed at instead of k3s-agent.nix's build-time default. No-op on hosts
     # with no /etc/zeta/cluster-join-server-url and on every k3s server.
     ./injected-join-server.nix
+    # 081KSNY2Z0008QG0R0008PN7RQ `joining-node-address-assignment`: the join
+    # endpoint above is a NAME, and the cluster segment has no DHCP and no DNS
+    # to turn it into an address. This module applies the static addressing
+    # zflash derived from the role and injects the `control-plane -> <ip>`
+    # /etc/hosts entry that `k3s-server.nix` calls "the robust path". No-op on
+    # hosts with no /etc/zeta/cluster-segment-* files — they keep DHCP.
+    ./injected-cluster-address.nix
     ./login-banner.nix
     # 081M00KTH58087G0R00120WT6F: the option surface for Secure Boot desired
     # state. At its default phase ("off") it sets NO boot option and contributes

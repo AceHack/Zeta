@@ -628,6 +628,57 @@ if [ -n "$PUBKEY_FILE" ]; then
     fi
   fi
 
+  # ── joining-node-address-assignment: static segment addressing pickup ──────
+  #
+  # Same conf, three more scalars (src/Core.TypeScript/zflash/cluster-address.ts):
+  #
+  #   ZETA_CLUSTER_NODE_CIDR         this node's address, e.g. 10.88.0.2/24
+  #   ZETA_CLUSTER_SEGMENT_MAC       which NIC it belongs to
+  #   ZETA_CLUSTER_CONTROL_PLANE_IP  the founder, for the /etc/hosts entry
+  #
+  # WHY these exist: the cluster segment has no DHCP server and no DNS, so
+  # without them a joiner comes up with an RFC-3927 link-local address at best
+  # and cannot resolve the name in its own --server URL. mDNS was already tried
+  # on this stack and recorded as not working (see nixos/modules/k3s-server.nix).
+  #
+  # ALL THREE OR NONE. A node given an address but no MAC would configure some
+  # arbitrary NIC; a node given a MAC but no control-plane address could speak
+  # on the segment and not name what it is joining. Partial addressing fails in
+  # ways that read as network faults, so it is refused as a set.
+  ZETA_CLUSTER_NODE_CIDR=""
+  ZETA_CLUSTER_SEGMENT_MAC=""
+  ZETA_CLUSTER_CONTROL_PLANE_IP=""
+  if sudo test -f "$BOOT_USB_FIRSTBOOT_CONF"; then
+    ZETA_CLUSTER_NODE_CIDR=$(sudo sed -n "s/^ZETA_CLUSTER_NODE_CIDR='\([^']*\)'\$/\1/p" \
+      "$BOOT_USB_FIRSTBOOT_CONF" | head -1 || true)
+    ZETA_CLUSTER_SEGMENT_MAC=$(sudo sed -n "s/^ZETA_CLUSTER_SEGMENT_MAC='\([^']*\)'\$/\1/p" \
+      "$BOOT_USB_FIRSTBOOT_CONF" | head -1 || true)
+    ZETA_CLUSTER_CONTROL_PLANE_IP=$(sudo sed -n "s/^ZETA_CLUSTER_CONTROL_PLANE_IP='\([^']*\)'\$/\1/p" \
+      "$BOOT_USB_FIRSTBOOT_CONF" | head -1 || true)
+  fi
+  if [ -n "$ZETA_CLUSTER_NODE_CIDR$ZETA_CLUSTER_SEGMENT_MAC$ZETA_CLUSTER_CONTROL_PLANE_IP" ]; then
+    # Shapes re-checked here even though zflash validated them before writing:
+    # the values came off a FAT filesystem that anyone with physical possession
+    # of the stick can rewrite. Same reasoning as the join-server-url check.
+    if ! echo "$ZETA_CLUSTER_NODE_CIDR" | grep -Eq '^[0-9]{1,3}(\.[0-9]{1,3}){3}/[0-9]{1,2}$' \
+      || ! echo "$ZETA_CLUSTER_SEGMENT_MAC" | grep -Eq '^[0-9a-f]{2}(:[0-9a-f]{2}){5}$' \
+      || ! echo "$ZETA_CLUSTER_CONTROL_PLANE_IP" | grep -Eq '^[0-9]{1,3}(\.[0-9]{1,3}){3}$'; then
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-addr]   WARN: refusing incomplete/malformed cluster addressing" >&2
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-addr]          cidr='$ZETA_CLUSTER_NODE_CIDR' mac='$ZETA_CLUSTER_SEGMENT_MAC' cp='$ZETA_CLUSTER_CONTROL_PLANE_IP'" >&2
+    else
+      sudo mkdir -p /mnt/etc/zeta
+      echo "$ZETA_CLUSTER_NODE_CIDR" | sudo tee /mnt/etc/zeta/cluster-segment-address >/dev/null
+      echo "$ZETA_CLUSTER_SEGMENT_MAC" | sudo tee /mnt/etc/zeta/cluster-segment-mac >/dev/null
+      echo "$ZETA_CLUSTER_CONTROL_PLANE_IP" | sudo tee /mnt/etc/zeta/cluster-control-plane-address >/dev/null
+      sudo chmod 0644 /mnt/etc/zeta/cluster-segment-address \
+        /mnt/etc/zeta/cluster-segment-mac \
+        /mnt/etc/zeta/cluster-control-plane-address
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-addr]   staged $ZETA_CLUSTER_NODE_CIDR on NIC $ZETA_CLUSTER_SEGMENT_MAC; control-plane at $ZETA_CLUSTER_CONTROL_PLANE_IP"
+    fi
+  else
+    echo "[081KSNY2Z0008QG0R0008PN7RQ-addr]   no cluster addressing on ESP (node keeps DHCP)"
+  fi
+
   # The token's destination is not a choice made here: nixos/modules/k3s-agent.nix
   # sets services.k3s.tokenFile = "/var/lib/rancher/k3s/agent/token". Landing it
   # anywhere else produces a node that boots, runs an agent, and never joins.

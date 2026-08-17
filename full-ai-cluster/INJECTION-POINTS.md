@@ -107,6 +107,50 @@ be provisioned as a joiner.
 **UNEXERCISED.** The composer is unit-tested; the bash and Nix halves have not
 been booted. See `JoinBlocker` in `src/Core.TypeScript/zflash/test-harness/scenarios.ts`.
 
+### 5b. Cluster segment addressing — plaintext on ESP, NOT secret, but TAMPERABLE
+
+| Property | Value |
+|---|---|
+| **Stage** | flash time → USB ESP write, inside `zeta-firstboot.conf` |
+| **Content class** | Public identifiers (an IPv4 address, a prefix length, a MAC) — **not secret material** |
+| **Conf keys** | `ZETA_CLUSTER_NODE_CIDR`, `ZETA_CLUSTER_SEGMENT_MAC`, `ZETA_CLUSTER_CONTROL_PLANE_IP` |
+| **Composer** | `src/Core.TypeScript/zflash/cluster-address.ts` (pure; unit-tested in `cluster-address.test.ts`) |
+| **Consumer** | `zeta-install.sh` re-validates and stages `/mnt/etc/zeta/cluster-segment-address`, `…-segment-mac`, `…-control-plane-address`; `nixos/modules/injected-cluster-address.nix` reads them at Nix evaluation time |
+| **Validation** | derived (never free-typed): founder `.1`, joiner `.2+` in `10.88.0.0/24`; MAC must be six lowercase hex octets **and unicast**; shape re-checked independently in TypeScript, in bash, and in Nix |
+| **Iter / backlog** | 081KSNY2Z0008QG0R0008PN7RQ scenario 5, `joining-node-address-assignment` |
+
+**Why it exists:** the shared cluster segment has no DHCP server and no DNS, so
+a joining node had no address and could not resolve the host in its own
+`--server` URL. mDNS is not the fix — `k3s-server.nix` records that it was
+tried and never resolved, and it ships only `--tls-san=control-plane`, so a
+`.local` name would fail certificate verification even if it did resolve.
+
+**HONEST CAVEAT — plaintext and tamperable, stated rather than shipped quietly.**
+Unlike point 6, nothing here is secret: an address and a MAC leak nothing by
+being readable. The exposure is the other direction — **anyone with physical
+possession of the stick can REWRITE these values**, and the obvious attack is
+repointing `ZETA_CLUSTER_CONTROL_PLANE_IP` at a rogue node so a joiner dials it.
+What limits that, and what does not:
+
+- It **does not** buy a silent takeover of the joiner. The joiner still verifies
+  the API certificate against the name `control-plane`, and a rogue node cannot
+  present a certificate for it without the cluster CA. The join fails rather
+  than succeeding against the wrong cluster.
+- It **does** buy denial of service and misdirection — a joiner sent to an
+  address that answers nothing, or to a node that can now see its connection
+  attempts. Neither is authenticated away by anything on the medium.
+- The same physical access already reaches the point-6 join token, which is the
+  strictly worse exposure. This is recorded as **not making that any better**,
+  not as being safe on its own.
+- The long-term home is the same one point 6 names: the AES-256-GCM cred blob
+  bound to a passphrase and the USB UUID (081KSKBP80008QG0R003AX2A69).
+
+**UNEXERCISED.** The derivation is unit-tested with no network and no QEMU. The
+`injected-cluster-address.nix` no-op path is evaluated (it yields `{}`); the
+populated path, the NetworkManager keyfile pickup, MAC-based NIC selection, and
+reachability of 6443 across the segment are **UNVERIFIED**. See `JoinBlocker`
+in `src/Core.TypeScript/zflash/test-harness/scenarios.ts`.
+
 ### 6. k3s node-token (joiner) — plaintext on ESP, opt-in
 
 | Property | Value |

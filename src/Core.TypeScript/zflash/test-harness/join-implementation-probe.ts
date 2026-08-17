@@ -174,10 +174,14 @@ export function describePromotionSignal(sightings: readonly JoinMarkerSighting[]
     "executeMultiVMRuntimePlan boots the VMs serially and terminates each on " +
     "marker match -- the listener is dead before the connector starts. Role " +
     "provisioning now has a carrier (zflash writes /zeta-firstboot.conf and " +
-    "/zeta-join-token; zeta-first-boot.sh prefers the ESP copy), but no guest " +
-    "has booted from a joiner-flashed image, so it is unexercised rather than " +
-    "working. Give the VMs a DoP-knobbed concurrent boot and OBSERVE a booted " +
-    "joiner, THEN dispatch. Not before."
+    "/zeta-join-token; zeta-first-boot.sh prefers the ESP copy), and so does " +
+    "ADDRESSING (cluster-address.ts derives a static address from the role, " +
+    "zeta-install.sh stages it, injected-cluster-address.nix applies it plus " +
+    "the control-plane /etc/hosts entry -- the segment has no DHCP and no DNS, " +
+    "and mDNS was already recorded as not resolving on this stack). But no " +
+    "guest has booted from a joiner-flashed image, so both are unexercised " +
+    "rather than working. Give the VMs a DoP-knobbed concurrent boot and " +
+    "OBSERVE a booted joiner reaching the founder, THEN dispatch. Not before."
   );
 }
 
