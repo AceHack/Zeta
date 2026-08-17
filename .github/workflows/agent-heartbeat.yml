@@ -1242,8 +1242,65 @@ jobs:
           # opened by a fine-grained PAT (pull_requests: write + metadata: read). If the
           # secret is absent this degrades to GITHUB_TOKEN, `gh pr create` fails, and the
           # events wait safely on the staging branch — same posture as before, just red.
+          #
+          # "ABSENT" IS NOT THE CONDITION THAT OCCURS (2026-08-17). `||` in this expression
+          # selects on the secret being EMPTY, never on it being DENIED, and the production
+          # failure is denial: the PAT is set and unauthorized. On 2026-08-17 that put every
+          # lane — otto, alexa AND soraya — into `compare failed: gh: Not Found (HTTP 404)`
+          # at 13:46 and again at 14:10. GitHub answers 404, not 403, for a resource the
+          # token cannot see, so a denied PAT looks exactly like a missing repository.
+          #
+          # Measured, so this is not inferred from the error string alone: the identical
+          # `gh api repos/{repo}/compare/main...heartbeat/otto-flush-<sha>` call returns
+          # `status=diverged` under an authorized credential. Endpoint, URL form and the
+          # slash-bearing branch name are all fine; only the credential differs.
+          #
+          # The preflight step above already solves this for GIT, and solves it properly —
+          # probe, swap the extraheader, then RE-PROBE, with its own comment naming the
+          # vacuity class it is avoiding. It repairs `git push` only. `gh api` kept the
+          # denied PAT, which is why the log shows the snapshot branch pushing successfully
+          # and the very next compare 404ing. The preamble below extends that same
+          # discipline to the API credential.
           GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+          FALLBACK_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Probe → swap → RE-PROBE, mirroring the git preflight. The re-probe is the part
+          # that matters: a fallback that is applied and never checked is indistinguishable
+          # from one that worked, and #10913 was exactly that failure.
+          #
+          # ONLY AN AUTHORIZATION ANSWER IS ELIGIBLE FOR THE SWAP — the same rule the git
+          # preflight states, and for the same reason: "a network blip or an unexpected
+          # refusal must NOT silently re-point the credential — that would hide a different
+          # failure behind a credential story."
+          #
+          # This is not hypothetical here. During the GitHub degradation on 2026-08-17
+          # (429s, then 503/504 on action downloads) `rerun-cancelled-gate` took a bare
+          # `{"message":"Not Found","status":"404"}` while running under an ordinary,
+          # perfectly valid GITHUB_TOKEN. So a 404 alone does not prove denial, and a probe
+          # that swapped on ANY failure would have quietly demoted a healthy lane to the
+          # lesser credential — losing `gate (required)` on its flush PR — on the strength
+          # of a transient blip. 5xx and transport failures are therefore left alone and
+          # reported as inconclusive rather than acted on.
+          # Captures stderr (where `gh` writes "HTTP 404") and discards stdout. Braces make
+          # the order unambiguous; the bare `2>&1 >/dev/null` form means the same thing but
+          # trips SC2069 because it is far more often written by mistake than on purpose.
+          probe_api() { { gh api "repos/$GITHUB_REPOSITORY" --jq .full_name >/dev/null; } 2>&1; }
+          if ! OUT=$(probe_api); then
+            if printf '%s' "$OUT" | grep -qE 'HTTP (401|403|404)'; then
+              echo "::warning title=Heartbeat API credential denied::$AGENT: ZETA_TELEMETRY_FLUSH_TOKEN cannot read this repository over the API; falling back to GITHUB_TOKEN. FIX: grant that fine-grained PAT 'Contents: read and write' on Lucent-Financial-Group/Zeta (081M010H4KE)."
+              export GH_TOKEN="$FALLBACK_GH_TOKEN"
+              if OUT2=$(probe_api); then
+                echo "[flush] $AGENT: fallback API credential verified; lane is DEGRADED but alive."
+              else
+                echo "$OUT2"
+                echo "::error title=Heartbeat has no working API credential::$AGENT: BOTH the PAT and GITHUB_TOKEN were refused by the API. Not a credential-swap case — do not treat this as the known PAT denial."
+              fi
+            else
+              echo "$OUT"
+              echo "::warning title=Heartbeat API probe inconclusive::$AGENT: the probe failed, but not with an authorization answer. Leaving the credential alone — this is not evidence of denial."
+            fi
+          fi
+
           AHEAD=$(git rev-list --count "origin/main..origin/heartbeat/$AGENT")
           echo "[flush] $AGENT: $AHEAD heartbeat commits to flush"
 
@@ -1439,8 +1496,33 @@ jobs:
       - name: Fail if a heartbeat PR is old and gate never started
         if: always() && matrix.agent == 'alexa'
         env:
+          # Same denied-vs-absent defect as the flush step above, and the same repair. This
+          # one matters differently: the check's whole job is to READ a PR's check rollup, so
+          # a denied credential does not merely degrade it — it makes the instrument report
+          # on nothing while still going red, which is how a credential fault gets misread as
+          # a gate fault. The rollup tool distinguishes "unavailable" (rc=2) from "absent",
+          # but it cannot distinguish either from "I was handed a token that sees no repo."
           GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+          FALLBACK_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Authorization answers only — see the flush step for why a bare 404 is not
+          # sufficient evidence of denial during a GitHub degradation.
+          # Captures stderr (where `gh` writes "HTTP 404") and discards stdout. Braces make
+          # the order unambiguous; the bare `2>&1 >/dev/null` form means the same thing but
+          # trips SC2069 because it is far more often written by mistake than on purpose.
+          probe_api() { { gh api "repos/$GITHUB_REPOSITORY" --jq .full_name >/dev/null; } 2>&1; }
+          if ! OUT=$(probe_api); then
+            if printf '%s' "$OUT" | grep -qE 'HTTP (401|403|404)'; then
+              echo "::warning title=Heartbeat gate-check credential denied::ZETA_TELEMETRY_FLUSH_TOKEN cannot read this repository over the API; falling back to GITHUB_TOKEN before judging gate state."
+              export GH_TOKEN="$FALLBACK_GH_TOKEN"
+              probe_api >/dev/null \
+                || echo "::error title=Gate check has no working credential::BOTH credentials were refused; the verdict below is about the credential, not about the gate."
+            else
+              echo "$OUT"
+              echo "::warning title=Gate-check API probe inconclusive::the probe failed without an authorization answer; leaving the credential alone."
+            fi
+          fi
+
           # 081M010H4KE / 081M005FXAB. "All present checks are green" was the
           # lie: gate never started. This exits 1 when a heartbeat/* PR older
           # than one tick has no `gate (required)` in its rollup. Young PRs
