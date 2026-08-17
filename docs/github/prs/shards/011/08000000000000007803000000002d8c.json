@@ -1,0 +1,12 @@
+{
+  "pr_number": 11660,
+  "archive_path": "docs/history/pr-reviews/PR-11660-measure-r-1a-the-four-corner-trace-is-real-code-that-no-shipping-room-runs-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T21:50:58.242Z",
+  "schema_version": "v1",
+  "commit_sha": "977575b2fe7701af3f4cfbc2ebbc2e0e49de60e4",
+  "title": "measure(r-1a): the four-corner trace is real code that no shipping room runs on",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T21:50:24Z",
+  "head_ref": "shadow/four-corner-trace-completeness"
+}
