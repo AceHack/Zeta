@@ -1,0 +1,12 @@
+{
+  "pr_number": 9148,
+  "archive_path": "docs/history/pr-reviews/PR-9148-research-test-ihara-zeta-the-noncommutative-upgrade-primitive-geodesics-bass-det.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T10:14:41.348Z",
+  "schema_version": "v1",
+  "commit_sha": "18a29baee15e1579593d7399c09216df69f1c35e",
+  "title": "research+test: Ihara zeta — the noncommutative upgrade (primitive geodesics, Bass determinant)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T16:10:11Z",
+  "head_ref": "otto/ihara-zeta-noncommutative-upgrade"
+}
