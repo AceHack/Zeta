@@ -1,0 +1,39 @@
+{
+  "note": [
+    "The CLOSED check vocabulary for git-native build receipts (work-item 081KYYJEJ4X08QG0R003P8GXSY).",
+    "",
+    "A receipt may NAME a check from this file; it may never DEFINE one. An open vocabulary",
+    "would let a signer attest `everything-is-fine=pass` — true, signed, and constraining",
+    "nothing, which is the vacuity class this repo treats as a defect rather than a stub.",
+    "`verify-build-receipt.ts` refuses `unknown-check` for any id absent here.",
+    "",
+    "ADDING A ROW is a real decision: it means a signer may henceforth make a signed claim",
+    "about that id, and every peer will accept the id as meaningful. Each row must name the",
+    "EXACT command a `pass` claims to have run to completion with a zero exit status.",
+    "The command is documentation for the human running it, not something any tool executes —",
+    "nothing in the verifier runs these, and nothing may, because a verifier that ran the",
+    "build would be a gate wearing a receipt's clothes."
+  ],
+  "checks": {
+    "dotnet-build": {
+      "command": "dotnet build -c Release",
+      "means": "Zero warnings and zero errors (TreatWarningsAsErrors is on)."
+    },
+    "dotnet-test": {
+      "command": "dotnet test Zeta.sln -c Release",
+      "means": "The .NET test suite completed with no failures."
+    },
+    "ts-lint": {
+      "command": "bun src/Core.TypeScript/lint/lint-typescript.ts",
+      "means": "tsc + eslint + prettier + stylelint all clean."
+    },
+    "bun-test": {
+      "command": "bun test",
+      "means": "The TypeScript test suite completed with no failures."
+    },
+    "agencysignature-audit": {
+      "command": "bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts",
+      "means": "The commit under attestation carries a valid AgencySignature block."
+    }
+  }
+}
