@@ -1,0 +1,12 @@
+{
+  "pr_number": 11284,
+  "archive_path": "docs/history/pr-reviews/PR-11284-ferry-alexa-lorentz-transformable-pairwise-memories-the-z-set-minus-sign-consens.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T02:47:27.193Z",
+  "schema_version": "v1",
+  "commit_sha": "29cdbdabeccb5e65e4be2520f34c4704f200c57d",
+  "title": "ferry(alexa): Lorentz-transformable pairwise memories, the Z-set minus sign, consensus-gated c",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T02:46:51Z",
+  "head_ref": "shadow/ferry-alexa-lorentz-pairwise-memories"
+}
