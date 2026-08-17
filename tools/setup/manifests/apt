@@ -158,9 +158,11 @@ llvm
 
 # ── Rust (rustup) — wasm32-unknown-unknown target ─────────────────────────────
 # rustup is NOT in apt — installed via https://sh.rustup.rs. The wasm32 target
-# is added via `rustup target add wasm32-unknown-unknown`. Declared here for
+# needs no manual `rustup target add` step: it is DECLARED on the mise rust
+# entry (`targets = ["wasm32-unknown-unknown"]`). Declared here for
 # single-source-of-truth. Actual install: mise rust plugin (wraps rustup).
-# See .mise.toml `rust = "1.87.0"`. Produces the Rust WASM substrate (7.4KB opt).
+# See .mise.toml `rust = { version = "1.87.0", components = [...], targets = [...] }`.
+# Produces the Rust WASM substrate (7.4KB opt).
 # rust/cargo — installed via mise rust plugin (wraps rustup, not apt)
 
 # ── pandoc (document conversion — book/EPUB build) ────────────────────────────

@@ -181,9 +181,22 @@ done
 # `install-v2-*` / `full-verify-v2-*` cache path lists (gate.yml,
 # installer-unit-tests.yml). Do not remove those paths without also removing
 # this comment's claim: measured 2026-08-16, with them restored and
-# static.rust-lang.org blackholed, `ensure_rust_components` below prints
-# "component rustfmt is up to date" and install.sh completes offline; without
-# them it prints "syncing channel updates" and exits 1.
+# static.rust-lang.org blackholed, the then-current
+# `ensure-rust-components.sh` printed "component rustfmt is up to date" and
+# install.sh completed offline; without them it printed "syncing channel
+# updates" and exited 1.
+#
+# 081M05X126V087G0R0014GR9KQ (2026-08-16) retired that script: `rustfmt`,
+# `clippy` and `wasm32-unknown-unknown` are now DECLARED on the rust entry in
+# `.mise.toml`, so the `mise install` above provisions them and nothing tops
+# them up here. The measurement above is left standing as the cache-path
+# guard's stated reason, but note what carries the offline property NOW: mise
+# skips an already-installed `rust@<version>` outright. Measured on mise
+# 2026.6.14 against an isolated install: the second `mise install rust` returned
+# in 0.04s with no output — no rustup invocation and no channel sync at all,
+# which is a stronger offline property than the probe-first script it replaces.
+# Honest limit: the /etc/hosts blackhole falsifier has NOT been re-run against
+# this shape, so the end-to-end CDN-down claim is inherited, not re-measured.
 rustup_toolchain="$(cd "$REPO_ROOT" && mise current rust 2>/dev/null || true)"
 if [ -n "$rustup_toolchain" ]; then
   export RUSTUP_TOOLCHAIN="$rustup_toolchain"
@@ -192,5 +205,3 @@ fi
 
 # Print the resolved versions so the log is useful on a first run.
 (cd "$REPO_ROOT" && mise current)
-
-bash "$REPO_ROOT/tools/setup/common/ensure-rust-components.sh"

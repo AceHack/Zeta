@@ -15,8 +15,16 @@
 # zig: wasm32-freestanding substrate (Oracle 11, 951B binary)
 zig = "0.13.0"
 # rust: wasm32-unknown-unknown substrate (Oracle 12, 7.4KB binary)
-# After mise install, run: rustup target add wasm32-unknown-unknown
-rust = "1.87.0"
+#
+# MUST stay byte-identical to the `rust = { ... }` entry in `.mise.toml`
+# (081M05X126V087G0R0014GR9KQ). Measured on mise 2026.6.14: this file is loaded
+# alongside `.mise.toml` and its `tools.rust` entry WINS — with a bare
+# `rust = "1.87.0"` here, `mise config get tools.rust` resolves to the bare
+# string and the components/targets declared in `.mise.toml` are silently
+# dropped. A partial mirror is therefore not a harmless duplicate; it is an
+# override that disarms the base-tier declaration on every host carrying both
+# files. Re-check this if the mirror is ever reduced back to a version pin.
+rust = { version = "1.87.0", components = ["rustfmt", "clippy"], targets = ["wasm32-unknown-unknown"] }
 
 # -- Kubernetes tooling (full-tier only) --
 k3d = "5.8.3"

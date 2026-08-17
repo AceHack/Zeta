@@ -179,7 +179,10 @@ if command -v rustup >/dev/null 2>&1; then
     echo "  wasm32-unknown-unknown: installed"
   else
     echo "  WARNING: wasm32-unknown-unknown target not installed"
-    echo "  Fix: rustup target add wasm32-unknown-unknown"
+    # The target is DECLARED on the mise rust entry (.mise.toml + .mise.full.toml,
+    # 081M05X126V087G0R0014GR9KQ) — so a miss here means the declaration did not
+    # take, not that a human forgot a step. Re-run the declarative install.
+    echo "  Fix: mise install rust  (target declared in .mise.toml; do NOT hand-add it)"
     if [ "${CI:-}" = "true" ]; then
       echo "FAIL: wasm32-unknown-unknown target required in CI" >&2
       exit 1

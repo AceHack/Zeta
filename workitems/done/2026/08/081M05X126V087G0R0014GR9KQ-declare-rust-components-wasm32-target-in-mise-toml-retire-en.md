@@ -1,11 +1,12 @@
 ---
 id: 081M05X126V087G0R0014GR9KQ
 type: task
-state: backlog
+state: done
 priority: P2
 slug: declare-rust-components-wasm32-target-in-mise-toml-retire-en
 title: "Declare rust components + wasm32 target in .mise.toml — retire ensure-rust-components.sh and the manual comment"
 created: 2026-08-16T18:23:31.035Z
+completed: 2026-08-17T00:58:51.571Z
 depends_on: []
 composes_with: []
 ---

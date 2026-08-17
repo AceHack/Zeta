@@ -150,10 +150,11 @@ zig
 llvm tier=standard
 
 # ── Rust (rustup) — wasm32-unknown-unknown target ─────────────────────────────
-# rustup is the canonical Rust toolchain manager. The wasm32 target is added
-# via `rustup target add wasm32-unknown-unknown` after install.
+# rustup is the canonical Rust toolchain manager. The wasm32 target needs no
+# manual `rustup target add` step: it is DECLARED on the mise rust entry
+# (`targets = ["wasm32-unknown-unknown"]`), so `mise install` provisions it.
 # NOTE: brew has a `rust` formula but it does NOT include rustup or target mgmt.
-# Use the official rustup.rs installer (already in mise via `rust = "1.87.0"`).
+# Use the official rustup.rs installer (already in mise via the `rust` entry).
 # rust — installed via mise rust plugin (wraps rustup, not brew)
 
 # ── pandoc (document conversion — book/EPUB build) ────────────────────────────
