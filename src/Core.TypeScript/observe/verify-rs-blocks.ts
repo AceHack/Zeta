@@ -19,6 +19,7 @@
 
 import { readFileSync } from "node:fs";
 import { recoverPhaseBlock, N } from "./rs-phase-codec";
+import { isValidCodeword } from "./rs-syndrome";
 
 interface BlockRecord {
   agent: string;
@@ -90,6 +91,16 @@ function main(): void {
 
     if (!Array.isArray(block.coded) || block.coded.length !== N) {
       console.warn(`[verify-rs] line ${i + 1}: invalid coded array (expected ${N} symbols), skipping`);
+      continue;
+    }
+
+    // INTEGRITY CHECK (syndrome): detect silent corruption BEFORE attempting recovery.
+    // A non-zero syndrome means at least one symbol is wrong — the block cannot be trusted.
+    if (!isValidCodeword(block.coded)) {
+      console.error(
+        `[verify-rs] CORRUPT block seq=${block.seq} agent=${block.agent}: syndrome non-zero (silent corruption detected)`,
+      );
+      failed++;
       continue;
     }
 
