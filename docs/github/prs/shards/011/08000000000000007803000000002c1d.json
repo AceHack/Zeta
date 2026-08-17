@@ -1,0 +1,12 @@
+{
+  "pr_number": 11293,
+  "archive_path": "docs/history/pr-reviews/PR-11293-docs-research-retract-my-not-found-on-the-firefly-field-i-searched-one-surface.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T02:58:51.999Z",
+  "schema_version": "v1",
+  "commit_sha": "4916bebd4b215be1400c7dfef3484379deb64a08",
+  "title": "docs(research): RETRACT my \"NOT FOUND\" on the firefly field — I searched one surface",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T02:58:19Z",
+  "head_ref": "shadow/correct-my-grounding-note-firefly-is-real"
+}
