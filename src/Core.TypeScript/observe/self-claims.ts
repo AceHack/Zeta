@@ -13,6 +13,20 @@
  *   3. The fleet KPI overlay uses as the DORA-like measure (the measure-first
  *      principle: measure before restricting)
  *
+ * MEASURED 2026-08-17 — the three consumers above are INTENT, not wiring. `computeReliability`
+ * and `schedulingWindowForDependency` have ZERO non-test callers; `adjustPressureByReliability`
+ * in `ferry-throttler/optimal-cadence.ts` takes a bare `windowMultiplier: number` and nothing
+ * computes one for it. The one real consumer of this module is `planning/calibration-bridge.ts`,
+ * which uses the LEDGER (`recordClaim` / `markClaimMet` / `resolveAtTick`) and not the score —
+ * it folds outcomes into `CalibrationLedger` and `TravelerRankLedger` instead. Read the list
+ * above as a design intent with (1) and (2) unbuilt and (3) unbuilt.
+ *
+ * Note for anyone tempted to wire (1): `computeReliability` reads only the claiming agent's own
+ * claims, and `markClaimMet` records no labeler — so its number is not CONFERRED, which is the
+ * standing requirement for anything another party depends on. The composition read-path
+ * (`planning/composition-read.ts`) therefore reads the conferred competence event source, not
+ * this score.
+ *
  * Self-claims are:
  *   - VOLUNTARY (NCI: never auto-generated, never forced)
  *   - OBSERVABLE (in the event log, visible to all peers via fold)
