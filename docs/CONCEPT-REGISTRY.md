@@ -56,6 +56,7 @@ table against the published page and fails on any disagreement in either directi
 | ISociety | The bidirectional schedule/route contract a member presents to society and receives from society — the membrane between "inside my society's view" and "outside world's view." | Aaron Stainback (with Grok, Cursor) | 2026-07-31 | no |
 | CTM / World | The recursive top layer — a society of causal/traveler models that is itself a CTM (`ISociety <: CTM`). Carries the most information advantage and the most fairness obligation (three-body / Lagrange symmetry: the top orbit must stay the most symmetric). | Aaron Stainback (with Grok, Cursor) | 2026-07-31 | no |
 | Kilesi (as in "ISR kilesi arrow") | **GLOSS PROPOSED BY OTTO, NOT YET CONFIRMED BY ITS AUTHOR — see §4.6.** Accumulated *undeclared* distortion carried on the interrupt (ISR) path: bias that accretes on the arrow and colours what the next observation sees. Dissolved by being **seen**, never by force — which is why the remedy is the four-corner ownership trace rather than a filter. | Aaron Stainback (coinage); anchoring by Otto | 2026-08-17 | no |
+| Default geodesic | The traveler-frame path taken when no oracle has been chosen. Under §11 the highest-moral-regard default is **free fall**, so divergence between travelers is **curvature** — geometry both inhabit — and never a **force** one applied to the other. Choosing an oracle is leaving the geodesic under thrust; neither is wrong, but only one is the default, and that is what makes §11 a default rather than a mandate. Consequence: tidal divergence is not reconciled, because there is nothing to reconcile — the disagreement *is* the measurement of the geometry. See §4.7. | Aaron Stainback (ruling); geodesic-deviation mapping by Otto | 2026-08-17 | no |
 
 ### Sources for each row
 
@@ -64,6 +65,7 @@ table against the published page and fails on any disagreement in either directi
 | The 23 rows dated 2026-06-20 | `docs/design/root-site-iris/site/concepts.html` — the published Genesis Concepts page (its own summary line for each concept). |
 | Universal Exit Principle · Lodge · ISociety · CTM / World | `docs/GLOSSARY.md` §"Society identity (Genesis Concepts — Iris / Addison UI)" — the **Plain** paragraph of each entry. Added by PR #9829 (2026-07-31); ISociety and CTM / World first entered the repo via `docs/security/USB-IDENTITY-THREAT-MODEL.md` (PR #9591, 2026-07-08). |
 | Kilesi | **No transcribed source — this row breaks the pattern and says so.** The term was coined in conversation (Aaron, 2026-08-17: *"monidacally lawful backward in time over our ISR kilesi arrow"*) with no definition attached, and had **zero occurrences** anywhere in the tree. Asked to anchor it, Aaron said *"lets name it."* The `Definition` column is therefore Otto's **proposal**, not a transcription, and is marked as such in the row and in §4.6. It becomes a real registry entry when its author confirms or replaces the wording. |
+| Default geodesic | **No transcribed source — a conversational ruling, and the two halves have different authors.** The traveler-frame ontology ("time as a 4th traveler", each locality observing phase in its own proper frame — `src/Core/TravelerFrame.fs`) is Aaron's and predates this. The **geodesic-deviation mapping** — that curvature is the relative acceleration of neighbouring free-falling worldlines, so tidal force is disagreement between worldlines rather than a force applied to them — was proposed by Otto in conversation on 2026-08-17. Aaron ruled on it the same day: *"yes please save this is our default geodesic under highest moral reguard oracle."* The `Definition` column is that ruling plus the mapping it endorsed, not a transcription of either. |
 
 ## 2. Provenance — whose words are whose
 
@@ -1369,3 +1371,58 @@ their owners.
    CHIP-8 interrupt path and the Craik-1943 world-model line already in memory, but no
    in-tree definition of "ISR arrow" exists either, so that term carries the same debt this
    entry is discharging for `kilesi`. Flagged, not resolved.
+7. **`Default geodesic` — RULED 2026-08-17 by Aaron: traveler disagreement is CURVATURE, not
+   FORCE.** The ruling in his words: *"yes please save this is our default geodesic under
+   highest moral reguard oracle."*
+
+   **The anchor, checked rather than cited.** In Newtonian gravity a tidal effect is a
+   genuine force — the differential pull on near and far sides, something applied. In general
+   relativity it is nothing of the kind: two neighbouring bodies in free fall each follow a
+   geodesic, and their relative acceleration *is* the curvature of the region they are both
+   in. Nobody pushed either of them. The formal object is the equation of geodesic deviation,
+   built on Jacobi fields (Jacobi, 1830s, in Riemannian geometry) and the Levi-Civita
+   connection (1917), inside Einstein's field equations (1915–16). Its discrete form is the
+   angle defect already recorded in the buckyball note above: a vertex where the faces'
+   angles do not sum to 2π carries curvature there, and Descartes' theorem fixes the total
+   over a closed surface at 4π.
+
+   **Why this is load-bearing and not decoration: it decides what you DO about divergence.**
+   Call it a force and there is an agent who applied it, so you go looking for who pushed —
+   which is to say, for who is at fault. Call it curvature and there is no agent at all, so
+   you look at the geometry both parties are standing in. §11 (Default Moral Regard /
+   Multi-Oracle — no single mandatory morality) means travelers holding different oracles
+   diverge as **expected geometry**, not as misbehaviour. The named error the ruling forbids
+   is therefore precise: *treating moral disagreement as a force to be resolved is the
+   Newtonian reading; treating it as curvature to be measured is the relativistic one.*
+   Inventing a force to explain curvature is exactly the mistake general relativity retired.
+
+   **What "default" buys.** Absent a chosen oracle you are in free fall — no force applied,
+   travelling the straightest available path. **Choosing** an oracle is leaving the geodesic
+   under thrust. Neither is wrong, and the point is not to discourage the second; the point
+   is that only the first is the *default*, which is what makes §11 a default rather than a
+   mandate. A mandate has no free-fall state.
+
+   **Consequence for disagreement preservation** (the property Aaron holds to be DV2's
+   unique contribution): you do not reconcile tidal divergence, because there is nothing to
+   reconcile. The disagreement *is* the measurement of the geometry, and collapsing it
+   destroys the only curvature reading you had. This is the same statement as "never
+   collapse", arrived at from geometry instead of from data modelling.
+
+   **REGISTER — this is a structural analogy with one consequence, NOT a metered claim, and
+   the distinction matters here more than usual.** What transfers is the force/geometry
+   distinction and what it licenses you to do about divergence. What does **not** transfer:
+   there is no metric on traveler states, no connection, no parallel transport, and nothing
+   in this repository computes a Riemann tensor or any curvature quantity for a traveler
+   manifold. No row in §A of `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` may cite this
+   entry as evidence of anything. **Promotion path:** define a distance between traveler
+   states; deviation then becomes a measurable rather than an analogy, and this row can be
+   re-registered against whatever that measurement says — including against it.
+
+   **Known fracture line, disclosed rather than buried.** This entry leans on "path" and
+   "transport" in a way that shares a joint with a separate open question: whether
+   path-independence in a commutative merge is genuinely the same object as zero holonomy,
+   or a pun on the word *path* — holonomy requires a connection on a bundle, and a monoid has
+   neither. Two agents were dispatched on 2026-08-17 specifically to try to **break** that
+   identification, at Aaron's instruction and under his own rule that *too many correlations
+   is a warning, not a confirmation signal*. If they break it, this entry's geometric framing
+   weakens with it and should be amended, not defended.
