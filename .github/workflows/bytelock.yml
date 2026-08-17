@@ -143,6 +143,18 @@ jobs:
           # Lower this ONLY together with removing a substrate from the roster — an honestly
           # smaller N is worth more than a padded one, but the two numbers must move as one.
           BYTELOCK_MIN_SUBSTRATES: "9"
+          # PER-ROUTE FLOOR. The aggregate above catches *count* regressions; this list
+          # catches *identity* regressions — a renamed substrate that passes the count but
+          # never actually ran. A missing one fails and is named.
+          #
+          # The list belongs here rather than in the runner because which toolchains exist
+          # is a property of THIS environment: the apt step above installs wabt and lua5.4,
+          # node is preinstalled, and the six .wasm modules are committed.
+          #
+          # Go is DECLARED ABSENT, not silently missing: `run-go-wasm.mjs` needs
+          # `dla-canonical-go.wasm`, which is not committed and is not built here, so Go has
+          # never been exercised in CI. Add it to this list in the same change that builds it.
+          BYTELOCK_REQUIRED_SUBSTRATES: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4"
         run: node run-bytelock-ci.mjs
 
       # THE NEGATIVE CONTROLS HAD NEVER RUN EITHER. `test-fault-injection.mjs` is the suite

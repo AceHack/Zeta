@@ -24,7 +24,12 @@ import { execFileSync } from "node:child_process";
 // Scope note: this checks the REPO's own agent-facing surfaces. It cannot constrain what a
 // human types, and it is not meant to — it removes the *automated* path.
 
-const SEARCH_ROOTS = [".github", "src/Core.TypeScript", "clis", "skills", ".claude"] as const;
+// Each entry is an INDEPENDENT route into the corpus, and each carries its own floor
+// below — see the per-root tests for why a single total over these is not enough.
+// `skills` was here and contributed zero (all markdown, which ALLOWED excludes); it was
+// removed in 081M01J3NPE087G0R000KXXQSM. Executable skill surfaces live under
+// `.claude/skills`, covered by the `.claude` root.
+const SEARCH_ROOTS = [".github", "src/Core.TypeScript", "clis", ".claude"] as const;
 
 /**
  * Forbidden INVOCATIONS, with why each matters.
@@ -68,9 +73,13 @@ function trackedFilesUnder(root: string): readonly string[] {
 }
 
 describe("no automated path can bypass the required gate", () => {
-    const files = SEARCH_ROOTS.flatMap(trackedFilesUnder).filter(
-        (f) => !ALLOWED.some((re) => re.test(f)),
+    const perRoot = new Map<string, readonly string[]>(
+        SEARCH_ROOTS.map((root) => [
+            root,
+            trackedFilesUnder(root).filter((f) => !ALLOWED.some((re) => re.test(f))),
+        ]),
     );
+    const files = [...perRoot.values()].flat();
 
     // READ ONCE, MATCH MANY. The first version read every file inside each pattern's test,
     // so ~1700 tracked files were read once PER PATTERN -- four full passes over the tree to
@@ -96,6 +105,46 @@ describe("no automated path can bypass the required gate", () => {
         // Hoisting the reads adds a second way to go vacuous: every read could fail and the
         // patterns would then match nothing. Pin the readable set too.
         expect(sources.length).toBeGreaterThan(100);
+    });
+
+    // PER-ROOT, BECAUSE THE AGGREGATE ABOVE CANNOT SEE ONE ROOT GO DARK.
+    //
+    // The corpus is a UNION of independent `git ls-files <root>` calls, and
+    // `src/Core.TypeScript` alone contributes 1678 of the 1763 files. Any other root
+    // could be renamed, moved, or emptied and the total would still clear 100 — the
+    // aggregate floor sums independent instruments, so it cannot detect the failure of
+    // any one. Measured on unmodified main (2026-08-15):
+    //
+    //   .github 69 · src/Core.TypeScript 1678 · clis 1 · .claude 15
+    //
+    // The floor is ONE PER ROOT and deliberately not a tuned number. One is the
+    // non-vacuity boundary — "this root still contributes" — and it is the only value
+    // that is not a guess about how big each root ought to be. `clis` contributes
+    // exactly 1 (`clis/Verbs.fs`; the rest is markdown), which is what the honest floor
+    // has to tolerate.
+    //
+    // THIS CHECK ALREADY HAD A DARK ROUTE and the aggregate floor showed green over it:
+    // `skills` was in SEARCH_ROOTS and contributed ZERO, because both of its tracked
+    // files are `.md` and ALLOWED excludes markdown by design. It is removed rather than
+    // floored — a root that can only ever contribute excluded files is not coverage, it
+    // is the appearance of coverage — and nothing is lost, because the skills that do
+    // carry executable surface live under `.claude/skills`, inside the `.claude` root
+    // (2 non-md tracked files there).
+    for (const root of SEARCH_ROOTS) {
+        test(`root ${root} still contributes to the corpus — a dark root is invisible in a total`, () => {
+            expect(perRoot.get(root)?.length ?? 0).toBeGreaterThanOrEqual(1);
+        });
+    }
+
+    test("every root's files were actually READ — an unreadable root is a dark root too", () => {
+        // The read is the second, independent way a root goes dark: `ls-files` can list a
+        // root that then fails to read (submodule, symlink farm, permissions). Attribute
+        // the readable set back to its root so that failure is named too.
+        const readable = new Set(sources.map((s) => s.path));
+        const emptyAfterRead = SEARCH_ROOTS.filter(
+            (root) => (perRoot.get(root) ?? []).filter((f) => readable.has(f)).length === 0,
+        );
+        expect(emptyAfterRead).toEqual([]);
     });
 
     for (const { pattern, why } of FORBIDDEN) {

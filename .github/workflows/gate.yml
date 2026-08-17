@@ -841,6 +841,15 @@ jobs:
         # regression cannot report success the way `lint:markdown` did (#10712).
         run: bun run hygiene:no-decide-by-grep
 
+      - name: Scan-floor route audit (the floors are themselves enumerable)
+        # Inventories every scan floor in the repo through four INDEPENDENT
+        # recognizers and requires each to contribute at least one site. An
+        # enumerating check is exactly the shape that goes blind — a rename or a
+        # reworded failure message kills one recognizer while the other three keep
+        # returning a plausible-looking inventory — so the floor here is
+        # per-recognizer, never a total. Exits 3 naming the one that went dark.
+        run: bun run hygiene:scan-floor-routes
+
       - name: Hygiene unit-test suite (closes the per-PR coverage gap)
         # Runs every src/Core.TypeScript/hygiene/*.test.ts. These are
         # fixture/in-memory tests (no MEMORY.md / user-scope deps), so they

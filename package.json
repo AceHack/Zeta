@@ -36,6 +36,7 @@
     "hygiene:no-ambient-credential-hoist": "bun ./src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts",
     "hygiene:no-culture-sensitive-collation": "bun ./src/Core.TypeScript/hygiene/lint-no-culture-sensitive-collation.ts",
     "hygiene:no-decide-by-grep": "bun ./src/Core.TypeScript/hygiene/lint-no-decide-by-grep.ts",
+    "hygiene:scan-floor-routes": "bun ./src/Core.TypeScript/hygiene/audit-scan-floor-routes.ts",
     "inventory:reconcile": "bun ./src/Core.TypeScript/inventory/reconcile-surfaces.ts",
     "inventory:repin": "bun ./src/Core.TypeScript/inventory/reconcile-surfaces.ts --repin",
     "measure": "bun ./src/Core.TypeScript/ledger/measure.ts",

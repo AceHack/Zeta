@@ -562,6 +562,20 @@ if (malformedSubs.length > 0) {
 // byte-lock going GREEN WHILE VERIFYING NOTHING (missing .wasm, every substrate skipped).
 // "Verified 0 of 10 substrates" must never read as success. That is the exact false-green
 // shape that put six unfalsifiable "discharges" into the frozen core on 2026-08-01.
+//
+// THE AGGREGATE FLOOR IS NOT ENOUGH ON ITS OWN, AND THIS IS THE INSTRUMENT THAT SHOWS IT.
+// `executed >= 2` sums NINE independent instruments. Seven substrates can go dark and the
+// count still clears the floor — an aggregate floor cannot detect the failure of any one
+// route, because redundancy in the numerator hides a zero. Measured on this repo
+// (2026-08-15, a clean macOS checkout): 6 PASS, 1 FAIL, 2 TOOLING-ABSENT — Lua and Go were
+// never exercised and the run exited 0. `dla-canonical-go.wasm` is not committed at all, so
+// Go has never been exercised in CI either, and nothing said so.
+//
+// So the aggregate floor stays (it is not weakened — it still catches a total blackout) and
+// a PER-ROUTE floor is added on top: BYTELOCK_REQUIRED_SUBSTRATES names the substrates that
+// MUST have executed in this environment. The list belongs to the environment — which
+// toolchains are installed is a property of the runner, not of this file — so CI declares it
+// in bytelock.yml and a laptop run leaves it unset and behaves exactly as before.
 const MIN_SUBSTRATES = Number(process.env.BYTELOCK_MIN_SUBSTRATES ?? 2);
 const executed = report.summary.pass + report.summary.fail;
 if (executed < MIN_SUBSTRATES) {
@@ -572,6 +586,43 @@ if (executed < MIN_SUBSTRATES) {
     );
   }
   process.exit(2); // 2 = did not run, distinct from 1 = diverged
+}
+
+// ── PER-ROUTE LIVENESS FLOOR — every NAMED substrate must have executed ─────────
+const requiredRaw = (process.env.BYTELOCK_REQUIRED_SUBSTRATES ?? "").trim();
+if (requiredRaw !== "") {
+  const required = requiredRaw.split(",").map((s) => s.trim()).filter((s) => s !== "");
+  const known = new Set([...WASM_SUBSTRATES, ...SCRIPT_SUBSTRATES].map((s) => s.name));
+
+  // A TYPO IN THE REQUIRED LIST WOULD REQUIRE NOTHING. "Lua" does not name the substrate
+  // ("Lua 5.4" does), and a per-route floor that silently matches no route is the same blind
+  // instrument one layer up. An unknown name is a hard error, never a skipped requirement.
+  const unknown = required.filter((name) => !known.has(name));
+  if (unknown.length > 0) {
+    console.error(
+      `\nCONFIG ERROR: BYTELOCK_REQUIRED_SUBSTRATES names substrate(s) that do not exist: ` +
+        `${unknown.join(", ")}. Known: ${[...known].join(", ")}.`,
+    );
+    process.exit(2);
+  }
+
+  const executedNames = new Set(
+    report.substrates.filter((s) => s.status === "PASS" || s.status === "FAIL").map((s) => s.name),
+  );
+  const missing = required.filter((name) => !executedNames.has(name));
+  if (missing.length > 0) {
+    const why = (name) => {
+      const sub = report.substrates.find((s) => s.name === name);
+      return sub ? (sub.reason ?? sub.status ?? "not executed") : "not reached";
+    };
+    console.error(
+      `\nLIVENESS FAILURE (per-route): ${missing.length} required substrate(s) did not execute:\n` +
+        missing.map((name) => `  ${name} — ${why(name)}`).join("\n") +
+        `\nThe aggregate count (${executed}) cleared its floor (${MIN_SUBSTRATES}) anyway, which is` +
+        `\nwhy this check exists: a total cannot see one route go dark.`,
+    );
+    process.exit(2);
+  }
 }
 
 // Divergence is reported, not fatal — this is a drift signal. Set BYTELOCK_STRICT=1 to
