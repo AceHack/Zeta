@@ -292,7 +292,17 @@ jobs:
           Carries any prior unflushed lane delta over current main, then adds this tick.
           Free-tier Ollama (qwen2.5:0.5b). Agent: $AGENT.
 
-          Co-Authored-By: Kiro <noreply@kiro.dev>"
+          Agency-Signature-Version: 1
+          Agent: $AGENT
+          Agent-Runtime: github-actions/.github/workflows/agent-heartbeat.yml
+          Agent-Model: qwen2.5:0.5b
+          Credential-Identity: AceHack
+          Credential-Mode: shared
+          Human-Review: not-implied-by-credential
+          Human-Review-Evidence: none
+          Action-Mode: autonomous-fail-open
+          Task: 081KSKBP80008QG0R001KK9WV6
+          Co-authored-by: Kiro <noreply@kiro.dev>"
           fi
 
       - name: Run Tier-0 self-healers (automated drift correction)

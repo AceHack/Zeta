@@ -169,7 +169,13 @@ describe("parse-failure diagnosis names the real cause", () => {
 
   test("the emitted text distinguishes the two", () => {
     const absent = runValidator("## Summary\n\nno block\n");
-    expect(absent.out).toContain("no 'Agency-Signature-Version:' line at all");
+    // Wording updated 2026-08-17: the message used to say "PR body" while the check
+    // reads COMMIT MESSAGES (it pipes `pulls/N/commits`). That misdirection cost a
+    // real debugging round — a heartbeat PR with a perfect block in its DESCRIPTION
+    // was told the block "was never added". The assertion tracks the distinguishing
+    // phrase, not the prose, so a future rewording does not silently drop coverage.
+    expect(absent.out).toContain("no commit on this PR carries a");
+    expect(absent.out).toContain("COMMIT MESSAGES, not the PR description");
     expect(absent.out).not.toContain("RECOVERED-MALFORMED");
 
     // REVERSED 2026-08-16 by Aaron's layout-tolerance ruling, and kept here as

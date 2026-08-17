@@ -162,20 +162,20 @@ export function diagnoseParseFailure(stripped: string): ParseFailureDiagnosis {
 
 function emitParseFailure(stripped: string): ExitCode {
   const d = diagnoseParseFailure(stripped);
-  process.stdout.write("FAIL: no parseable git trailers found in PR body\n");
+  process.stdout.write("FAIL: no parseable git trailers found in the PR's COMMIT MESSAGES\n");
   process.stdout.write("  Class:  Trailer Contiguity Survival Failure\n");
   if (d.cause === "absent") {
     process.stdout.write(
-      `  Cause:  the body carries no '${CANONICAL_VERSION_KEY}:' line at all — the\n`,
+      `  Cause:  no commit on this PR carries a '${CANONICAL_VERSION_KEY}:' line. NOTE:\n`,
     );
     process.stdout.write(
-      "          AgencySignature block was never added. This is not a formatting\n",
+      "          this check reads COMMIT MESSAGES, not the PR description — a perfect\n",
     );
-    process.stdout.write("          problem; the attribution is simply absent.\n");
+    process.stdout.write("          block in the PR description does NOT satisfy it.\n");
     process.stdout.write(
       "  Fix:    append the 10-trailer block (see .github/PULL_REQUEST_TEMPLATE.md)\n",
     );
-    process.stdout.write("          at the very bottom of the PR body.\n");
+    process.stdout.write("          at the very bottom of the COMMIT MESSAGE (not the PR description).\n");
   } else {
     process.stdout.write(
       `  Cause:  '${CANONICAL_VERSION_KEY}:' IS present, at line ${String(d.keyLine)} of the\n`,
