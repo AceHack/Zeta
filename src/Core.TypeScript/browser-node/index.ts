@@ -71,6 +71,16 @@ export {
   type BrowserCausalCorrectionLedgerResult,
 } from "./browser-causal-correction-ledger";
 
+export {
+  BROWSER_CAUSAL_CORRECTION_CHECKPOINT_SCHEMA,
+  MAX_BROWSER_CAUSAL_CORRECTION_CHECKPOINT_BYTES,
+  browserCausalCorrectionCheckpointNodeId,
+  decodeBrowserCausalCorrectionCheckpoint,
+  encodeBrowserCausalCorrectionCheckpoint,
+  type BrowserCausalCorrectionCheckpointFeedback,
+  type BrowserCausalCorrectionCheckpointResult,
+} from "./browser-causal-correction-checkpoint";
+
 export { createNativeBroadcastTabChannel } from "./browser-broadcast-channel";
 
 export {
@@ -109,6 +119,7 @@ export {
 
 export {
   BROWSER_CHECKPOINT_RECORD_SCHEMA,
+  browserCheckpointRecordNodeId,
   browserCheckpointFailed,
   browserCheckpointSucceeded,
   copyBrowserCheckpointRecord,
@@ -119,6 +130,7 @@ export {
   type BrowserCheckpointPort,
   type BrowserCheckpointRecord,
   type BrowserCheckpointRemovalDecision,
+  type BrowserCheckpointRecordKind,
   type BrowserCheckpointResult,
   type BrowserCheckpointSaveDecision,
 } from "./browser-checkpoint-port";

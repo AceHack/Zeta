@@ -366,7 +366,8 @@ $ bun tools/setup/persona-keys/frost-hardware-probe.ts
 
 (`ls /dev/tpm*` → no matches, as expected on Darwin.) Specifically not measured:
 
-1. **Any real boot.** No PCR was read, no event log parsed, no `/proc/config.gz` opened. Every §2
+1. **Any real boot.** No PCR was read, no event log parsed, and no running node's procfs kernel
+   configuration was opened. Every §2
    row is what the kernel *will be built with*, never what a node *did*.
 2. **The kernel binary.** The `.config` was **substituted** from `cache.nixos.org`, not built
    locally — there is no `x86_64-linux` builder here. It is the output of the same derivation a node

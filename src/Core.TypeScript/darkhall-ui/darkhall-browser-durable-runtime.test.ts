@@ -1,10 +1,21 @@
 import { describe, expect, test } from "bun:test";
 import {
   BROWSER_CHECKPOINT_RECORD_SCHEMA,
+  browserCheckpointRecordNodeId,
+  decideBrowserCheckpointRemoval,
+  decideBrowserCheckpointSave,
   type BrowserCheckpointPort,
   type BrowserCheckpointRecord,
   type BrowserCheckpointResult,
 } from "../browser-node/browser-checkpoint-port";
+import {
+  browserCausalCorrectionCheckpointNodeId,
+  encodeBrowserCausalCorrectionCheckpoint,
+} from "../browser-node/browser-causal-correction-checkpoint";
+import {
+  createBrowserCausalCorrectionLedger,
+  foldBrowserCausalCorrections,
+} from "../browser-node/browser-causal-correction-ledger";
 import { encodeBrowserRoomCheckpoint } from "../browser-node/browser-room-checkpoint";
 import { BROWSER_NODE_SCHEMA } from "../browser-node/browser-node";
 import {
@@ -106,36 +117,61 @@ function copyRecord(record: BrowserCheckpointRecord): BrowserCheckpointRecord {
 }
 
 class MemoryCheckpointPort implements BrowserCheckpointPort {
-  record: BrowserCheckpointRecord | null;
+  private readonly stored = new Map<string, BrowserCheckpointRecord>();
   closeCalls = 0;
   rejectLoad = false;
   loadOverride: ((nodeId: string) => Promise<BrowserCheckpointResult<BrowserCheckpointRecord | null>>) | null = null;
+  saveOverride:
+    | ((record: BrowserCheckpointRecord) => Promise<BrowserCheckpointResult<BrowserCheckpointRecord>>)
+    | null = null;
 
-  constructor(record: BrowserCheckpointRecord | null = null) {
-    this.record = record === null ? null : copyRecord(record);
+  constructor(records: BrowserCheckpointRecord | readonly BrowserCheckpointRecord[] | null = null) {
+    for (const record of records === null ? [] : Array.isArray(records) ? records : [records]) {
+      this.stored.set(record.nodeId, copyRecord(record));
+    }
+  }
+
+  get record(): BrowserCheckpointRecord | null {
+    return this.recordFor(browserCheckpointRecordNodeId("room", "node-a"));
+  }
+
+  set record(record: BrowserCheckpointRecord | null) {
+    if (record === null) this.stored.delete(browserCheckpointRecordNodeId("room", "node-a"));
+    else this.stored.set(record.nodeId, copyRecord(record));
+  }
+
+  recordFor(nodeId: string): BrowserCheckpointRecord | null {
+    const record = this.stored.get(nodeId);
+    return record === undefined ? null : copyRecord(record);
+  }
+
+  setRecord(record: BrowserCheckpointRecord): void {
+    this.stored.set(record.nodeId, copyRecord(record));
+  }
+
+  records(): readonly BrowserCheckpointRecord[] {
+    return [...this.stored.values()].map(copyRecord);
   }
 
   load(nodeId: string): Promise<BrowserCheckpointResult<BrowserCheckpointRecord | null>> {
     if (this.rejectLoad) return Promise.reject(new Error("injected load rejection"));
     if (this.loadOverride !== null) return this.loadOverride(nodeId);
-    if (this.record !== null && this.record.nodeId !== nodeId) return Promise.resolve(succeeded(null));
-    return Promise.resolve(succeeded(this.record === null ? null : copyRecord(this.record)));
+    return Promise.resolve(succeeded(this.recordFor(nodeId)));
   }
 
   save(record: BrowserCheckpointRecord): Promise<BrowserCheckpointResult<BrowserCheckpointRecord>> {
-    if (this.record !== null && record.revision < this.record.revision) {
-      return Promise.resolve(conflict("The stored checkpoint is newer."));
-    }
-    this.record = copyRecord(record);
-    return Promise.resolve(succeeded(copyRecord(record)));
+    if (this.saveOverride !== null) return this.saveOverride(record);
+    const decision = decideBrowserCheckpointSave(this.recordFor(record.nodeId), record);
+    if (!decision.ok) return Promise.resolve(decision);
+    this.stored.set(record.nodeId, copyRecord(decision.value.record));
+    return Promise.resolve(succeeded(copyRecord(decision.value.record)));
   }
 
-  remove(_nodeId: string, throughRevision: number): Promise<BrowserCheckpointResult<boolean>> {
-    if (this.record === null) return Promise.resolve(succeeded(false));
-    if (this.record.revision > throughRevision) {
-      return Promise.resolve(conflict("The stored checkpoint is newer than the retraction."));
-    }
-    this.record = null;
+  remove(nodeId: string, throughRevision: number): Promise<BrowserCheckpointResult<boolean>> {
+    const decision = decideBrowserCheckpointRemoval(this.recordFor(nodeId), nodeId, throughRevision);
+    if (!decision.ok) return Promise.resolve(decision);
+    if (decision.value.action === "missing") return Promise.resolve(succeeded(false));
+    this.stored.delete(nodeId);
     return Promise.resolve(succeeded(true));
   }
 
@@ -259,7 +295,26 @@ function checkpointRecord(revision: number, transcript: RoomRunTranscript): Brow
   if (!encoded.ok) throw new Error(encoded.feedback.detail);
   return {
     schema: BROWSER_CHECKPOINT_RECORD_SCHEMA,
-    nodeId: "node-a",
+    nodeId: browserCheckpointRecordNodeId("room", "node-a"),
+    revision,
+    payload: encoded.value,
+  };
+}
+
+function causalCheckpointRecord(
+  revision: number,
+  corrections: readonly BrowserCausalCorrectionNotice[],
+  maxCorrections = 2,
+): BrowserCheckpointRecord {
+  const created = createBrowserCausalCorrectionLedger(maxCorrections);
+  if (!created.ok) throw new Error(created.feedback.detail);
+  const folded = foldBrowserCausalCorrections(created.value, corrections);
+  if (!folded.ok) throw new Error(folded.feedback.detail);
+  const encoded = encodeBrowserCausalCorrectionCheckpoint(folded.value);
+  if (!encoded.ok) throw new Error(encoded.feedback.detail);
+  return {
+    schema: BROWSER_CHECKPOINT_RECORD_SCHEMA,
+    nodeId: browserCausalCorrectionCheckpointNodeId("node-a"),
     revision,
     payload: encoded.value,
   };
@@ -335,6 +390,147 @@ describe("durable Dark Hall browser runtime", () => {
         corrections: [{ sourceTabId: "tab-origin", sequence: "8", reinterpretsThrough: "5", deltaRows: 3 }],
       },
     });
+  });
+
+  test("persists causal corrections separately and recovers them after every tab closes", async () => {
+    const port = new MemoryCheckpointPort();
+    const starter = createStarter();
+    const started = await startDurableDarkHallBrowser(options(), port, starter.start);
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+
+    expect(
+      started.value.publishCausalCorrection({ sequence: "14", reinterpretsThrough: "12", deltaRows: 2 }),
+    ).toMatchObject({ ok: true, value: { causalCheckpoint: { state: "saving" } } });
+    expect(started.value.stop()).toMatchObject({
+      ok: false,
+      feedback: { severity: "backpressure", code: "causal-checkpoint-pending" },
+    });
+    expect(port.closeCalls).toBe(0);
+
+    expect(await started.value.drainCausalCorrectionCheckpoint()).toMatchObject({
+      ok: true,
+      value: {
+        causalCheckpoint: {
+          state: "saved",
+          recoveredRevision: null,
+          currentRevision: 1,
+          feedback: null,
+        },
+      },
+    });
+    expect(port.record).toBeNull();
+    expect(port.recordFor(browserCausalCorrectionCheckpointNodeId("node-a"))).toMatchObject({ revision: 1 });
+    expect(started.value.stop()).toMatchObject({ ok: true });
+
+    const reopenedPort = new MemoryCheckpointPort(port.records());
+    const reopenedStarter = createStarter();
+    const reopened = await startDurableDarkHallBrowser(
+      { ...options(), tabId: "tab-reopened" },
+      reopenedPort,
+      reopenedStarter.start,
+    );
+    expect(reopened.ok).toBe(true);
+    if (!reopened.ok) return;
+    expect(reopenedStarter.starts[0]?.checkpoint).toBe("none");
+    expect(reopened.value.read()).toMatchObject({
+      recoveredRevision: null,
+      currentRevision: null,
+      causal: {
+        corrections: [{ sourceTabId: "tab-a", sequence: "14", reinterpretsThrough: "12", deltaRows: 2 }],
+      },
+      causalCheckpoint: { state: "saved", recoveredRevision: 1, currentRevision: 1 },
+    });
+  });
+
+  test("merges a concurrent causal checkpoint instead of replacing peer evidence", async () => {
+    const port = new MemoryCheckpointPort();
+    const starter = createStarter();
+    const started = await startDurableDarkHallBrowser(options(), port, starter.start);
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+
+    const peerRecord = causalCheckpointRecord(1, [
+      { sourceTabId: "tab-peer", sequence: "8", reinterpretsThrough: "7", deltaRows: 1 },
+    ]);
+    port.saveOverride = (record) => {
+      port.saveOverride = null;
+      port.setRecord(peerRecord);
+      return Promise.resolve(conflict(`Revision ${String(record.revision)} raced a peer write.`));
+    };
+
+    expect(
+      started.value.publishCausalCorrection({ sequence: "6", reinterpretsThrough: "5", deltaRows: 2 }),
+    ).toMatchObject({ ok: true });
+    expect(await started.value.drainCausalCorrectionCheckpoint()).toMatchObject({
+      ok: true,
+      value: {
+        causal: {
+          corrections: [
+            { sourceTabId: "tab-a", sequence: "6" },
+            { sourceTabId: "tab-peer", sequence: "8" },
+          ],
+        },
+        causalCheckpoint: { state: "saved", currentRevision: 2 },
+      },
+    });
+  });
+
+  test("backpressures recovery when local capacity cannot retain every persisted correction", async () => {
+    const port = new MemoryCheckpointPort(
+      causalCheckpointRecord(3, [
+        { sourceTabId: "tab-a", sequence: "4", reinterpretsThrough: "3", deltaRows: 1 },
+        { sourceTabId: "tab-b", sequence: "8", reinterpretsThrough: "7", deltaRows: 1 },
+      ]),
+    );
+    const starter = createStarter();
+    const started = await startDurableDarkHallBrowser({ ...options(), maxCausalCorrections: 1 }, port, starter.start);
+
+    expect(started).toMatchObject({
+      ok: false,
+      feedback: { source: "causal-ledger", severity: "backpressure", code: "causal-correction-capacity-exhausted" },
+    });
+    expect(starter.starts).toEqual([]);
+    expect(port.closeCalls).toBe(1);
+    expect(port.recordFor(browserCausalCorrectionCheckpointNodeId("node-a"))).toMatchObject({ revision: 3 });
+  });
+
+  test("keeps failed correction persistence visible and allows an explicit retry", async () => {
+    const port = new MemoryCheckpointPort();
+    port.saveOverride = () =>
+      Promise.resolve({
+        ok: false,
+        feedback: {
+          severity: "heat",
+          code: "checkpoint-write-failed",
+          detail: "injected correction checkpoint failure",
+        },
+      });
+    const starter = createStarter();
+    const started = await startDurableDarkHallBrowser(options(), port, starter.start);
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+
+    expect(
+      started.value.publishCausalCorrection({ sequence: "6", reinterpretsThrough: "5", deltaRows: 1 }),
+    ).toMatchObject({ ok: true });
+    expect(await started.value.drainCausalCorrectionCheckpoint()).toMatchObject({
+      ok: false,
+      feedback: { source: "checkpoint-store", code: "checkpoint-write-failed" },
+    });
+    expect(started.value.stop()).toMatchObject({
+      ok: false,
+      feedback: { source: "checkpoint-store", code: "checkpoint-write-failed" },
+    });
+    expect(port.closeCalls).toBe(0);
+
+    port.saveOverride = null;
+    expect(await started.value.drainCausalCorrectionCheckpoint()).toMatchObject({
+      ok: true,
+      value: { causalCheckpoint: { state: "saved", currentRevision: 1, feedback: null } },
+    });
+    expect(started.value.stop()).toMatchObject({ ok: true });
+    expect(port.closeCalls).toBe(1);
   });
 
   test("starts cold, checkpoints an advanced transcript, and retracts to the initial room", async () => {
@@ -422,6 +618,9 @@ describe("durable Dark Hall browser runtime", () => {
       host: { coordinator: { liveness: { checkpoint: "none" } } },
       room: { roomName: "browser-room" },
     });
+    expect(await started.value.drainCausalCorrectionCheckpoint()).toMatchObject({ ok: true });
+    expect(port.record).toBeNull();
+    expect(port.recordFor(browserCausalCorrectionCheckpointNodeId("node-a"))).toMatchObject({ revision: 1 });
   });
 
   test("converges peer corrections and backpressures instead of forgetting retained evidence", async () => {
@@ -636,7 +835,7 @@ describe("durable Dark Hall browser runtime", () => {
 
     const corruptPort = new MemoryCheckpointPort({
       schema: BROWSER_CHECKPOINT_RECORD_SCHEMA,
-      nodeId: "node-a",
+      nodeId: browserCheckpointRecordNodeId("room", "node-a"),
       revision: 1,
       payload: new TextEncoder().encode("not-json"),
     });
@@ -646,6 +845,20 @@ describe("durable Dark Hall browser runtime", () => {
       feedback: { source: "room-checkpoint", code: "room-checkpoint-decode-failed" },
     });
     expect(corruptPort.closeCalls).toBe(1);
+    expect(starter.starts).toHaveLength(0);
+
+    const corruptCausalPort = new MemoryCheckpointPort({
+      schema: BROWSER_CHECKPOINT_RECORD_SCHEMA,
+      nodeId: browserCausalCorrectionCheckpointNodeId("node-a"),
+      revision: 1,
+      payload: new TextEncoder().encode("not-json"),
+    });
+    const corruptCausal = await startDurableDarkHallBrowser(options(), corruptCausalPort, starter.start);
+    expect(corruptCausal).toMatchObject({
+      ok: false,
+      feedback: { source: "causal-checkpoint", code: "causal-checkpoint-decode-failed" },
+    });
+    expect(corruptCausalPort.closeCalls).toBe(1);
     expect(starter.starts).toHaveLength(0);
   });
 
