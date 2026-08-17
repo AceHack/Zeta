@@ -1,0 +1,14 @@
+{
+  "id": "080d0084fecb0010a0130008c39d73e8",
+  "at": "2026-08-17T16:48:26.464Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M089ZPAY087G0R001MYXM7N",
+    "type": "task",
+    "title": "CHIP-8 cross-run store: room-loop auto-consult, IO adapter, and Dark Hall browser injection",
+    "slug": "chip-8-cross-run-store-room-loop-auto-consult-io-adapter-and",
+    "priority": "P2",
+    "filename": "081M089ZPAY087G0R001MYXM7N-chip-8-cross-run-store-room-loop-auto-consult-io-adapter-and.md"
+  }
+}

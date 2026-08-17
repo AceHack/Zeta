@@ -1,0 +1,14 @@
+{
+  "id": "080d0083b7738810a0130008b73d0cf3",
+  "at": "2026-08-17T16:03:44.881Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M087DVKF087G0R002DDHMPR",
+    "type": "task",
+    "title": "CHIP-8 cross-run superdeterministic memo store: persist run-1 orbit results so run 2 can consult them",
+    "slug": "chip-8-cross-run-superdeterministic-memo-store-persist-run-1",
+    "priority": "P2",
+    "filename": "081M087DVKF087G0R002DDHMPR-chip-8-cross-run-superdeterministic-memo-store-persist-run-1.md"
+  }
+}
