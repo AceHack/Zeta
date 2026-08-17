@@ -1,0 +1,12 @@
+{
+  "pr_number": 11529,
+  "archive_path": "docs/history/pr-reviews/PR-11529-fix-hygiene-ordinal-collation-in-the-shell-exposure-measure-main-was-red.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T15:43:47.380Z",
+  "schema_version": "v1",
+  "commit_sha": "b424f62d387417e89a571f12a4a151e799655a2a",
+  "title": "fix(hygiene): ordinal collation in the shell-exposure measure — main was red",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T15:43:06Z",
+  "head_ref": "shadow/ordinal-collation-in-shell-exposure-measure"
+}
