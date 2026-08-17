@@ -1,0 +1,12 @@
+{
+  "pr_number": 9119,
+  "archive_path": "docs/history/pr-reviews/PR-9119-feat-shapes-shape-sybil-verdict-the-chsh-oracle-drawn-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T05:46:36.548Z",
+  "schema_version": "v1",
+  "commit_sha": "0a49b8bc8f2302ed0e36843ba2ab5ed09f386750",
+  "title": "feat(shapes): shape-sybil-verdict — the CHSH oracle drawn (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T05:17:25Z",
+  "head_ref": "feat/sybil-verdict-cartridge"
+}
