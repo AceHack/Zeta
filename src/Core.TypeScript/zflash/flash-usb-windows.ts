@@ -329,7 +329,7 @@ export function parseGetPartitionJson(jsonText: string): WinPartition[] {
     // DriveLetter serializes as a single char, 0, null, or "" when unset.
     const dl = o.DriveLetter;
     const driveLetter =
-      dl == null || dl === 0 || dl === "0" || dl === " " ? "" : String(dl).trim().replace(/[:\\]/g, "");
+      dl == null || dl === 0 || dl === "0" || dl === "\u0000" ? "" : String(dl).trim().replace(/[:\\]/g, "");
     const gpt = flat(o.GptType).toLowerCase().replace(/[{}]/g, "");
     const mbrRaw = o.MbrType;
     return {

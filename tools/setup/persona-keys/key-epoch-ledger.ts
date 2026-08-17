@@ -529,7 +529,7 @@ export function detectEquivocation(
     } catch {
       continue;
     }
-    const k = `${st.statement.keyId} ${String(st.statement.epoch)} ${toHex(st.statement.prevGroupPublicKey)}`;
+    const k = `${st.statement.keyId}\u0000${String(st.statement.epoch)}\u0000${toHex(st.statement.prevGroupPublicKey)}`;
     const g = groups.get(k);
     if (g === undefined) {
       groups.set(k, {

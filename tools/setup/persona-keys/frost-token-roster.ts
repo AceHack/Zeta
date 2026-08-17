@@ -60,6 +60,11 @@
 
 import type { FrostSealTier } from "./frost-share-adapter.ts";
 import { FROST_SEALED_SHARE_SCHEMA, isHardwareSealTier } from "./frost-share-adapter.ts";
+// TYPE-ONLY on purpose: erased at runtime, so this module keeps its zero-dependency,
+// no-key-material shape and cannot be made to verify a signature it does not own. The
+// caller does the cryptography (key-epoch-ledger.ts admits and folds); this module reads
+// the verdict. See checkRosterAgainstEpochChain for why that split is the honest one.
+import type { ChainFold } from "./key-epoch-ledger.ts";
 
 export const FROST_TOKEN_ROSTER_SCHEMA = "zeta-frost-token-roster-v1" as const;
 
@@ -106,7 +111,11 @@ export type RosterFindingCode =
   | "artifact-tier-mismatch"
   | "artifact-schema-mismatch"
   | "artifact-wrong-ca"
-  | "artifact-wrong-group-key";
+  | "artifact-wrong-group-key"
+  | "roster-key-unreadable"
+  | "roster-key-not-current"
+  | "roster-chain-forked"
+  | "roster-index-retired-upstream";
 
 export interface RosterFinding {
   readonly code: RosterFindingCode;
@@ -524,6 +533,163 @@ export function verifyRosterAgainstArtifacts(
 }
 
 // ============================================================================
+// THE ROSTER'S OWN FRESHNESS -- checked against the SIGNED epoch chain
+// ============================================================================
+//
+// Everything above compares a declaration against artifacts. Both can agree perfectly and
+// both can be OUT OF DATE: the shares were re-issued by a delta rotation, the roster was
+// never rewritten, and `verify` still prints OK because every artifact it finds is the one
+// the roster names. That is the same defect shape 081M00NSP0Q087G0R003R89Y5K found in
+// `foldChain` -- a fold that reported "current" for a replica that had simply stopped
+// hearing. A check whose clean answer is reachable by not knowing anything is not a check.
+//
+// The discriminator that exists is the GROUP PUBLIC KEY, and it is cryptographic rather
+// than clerical: a revoking delta rotation moves the group key to A' = A + [delta]B, and
+// key-epoch-ledger.ts carries that move as a transition statement THRESHOLD-SIGNED BY THE
+// OLD QUORUM. `foldChain` walks a pinned key forward through those signatures. So the
+// question "is this roster still the current custody set" has an answer nobody can forge
+// without reaching the old threshold, and this function asks it.
+//
+// ----------------------------------------------------------------------------
+// `retiredIndices` IS NOT AN IDENTITY BLOCKLIST -- and this is the trap
+// ----------------------------------------------------------------------------
+//
+// `foldChain` returns the grow-only UNION of every index retired along the chain. The
+// tempting check is "refuse a roster that declares a retired index". It is wrong, and it
+// is wrong in the direction that locks out an honest operator:
+//
+//   A PARTICIPANT INDEX IS A SLOT, NOT A PARTY.
+//
+// Retire index 3 at epoch 1 and re-issue index 3 to a new device at epoch 2, and the union
+// still contains 3 while slot 3 holds a live, current share. Treating the union as a
+// blocklist would refuse a correct roster forever, and no later evidence could clear it
+// because the set never forgets. So a declared index appearing in the union is reported at
+// `info` -- worth a human's eye, never a refusal. The refusal is the group key, which
+// tracks the actual state of the secret rather than the history of the numbering.
+//
+// ----------------------------------------------------------------------------
+// THE LIMIT, NAMED: a group-key-preserving refresh leaves NO discriminator
+// ----------------------------------------------------------------------------
+//
+// This check catches a roster stranded by a REVOKING rotation, because that changes the
+// group key. It does NOT catch a stale share after a `zeroDelta` proactive refresh, which
+// preserves the group key on purpose and revokes nothing. After such a refresh a
+// pre-refresh artifact has the identical ca, x, threshold, groupPublicKeyHex and
+// sealedByToken as its replacement -- every field the roster and the sealed-share header
+// carry. There is nothing in any artifact to tell them apart, so this module cannot, and
+// says so rather than implying a freshness it does not check. Closing it needs a
+// refresh-generation field in the sealed-share AAD, which is a schema change and a
+// separate item; destroying the superseded artifacts remains the operative control, and
+// that control is a CEREMONY, not a check.
+//
+// ----------------------------------------------------------------------------
+// WHAT IS ENFORCED VS WHAT IS BOOKKEEPING (say it plainly)
+// ----------------------------------------------------------------------------
+//
+//   ENFORCED by cryptography, upstream of this function:
+//     * which token may open a share -- FrostSealedShareFileV2.sealedByToken is in the AAD
+//       and in the sealed bind string; a different token fails the unseal.
+//     * which group key is current -- transitions are threshold-signed by the old quorum
+//       and `foldChain` follows only signatures it verified from a caller-held pin.
+//
+//   BOOKKEEPING, and no amount of checking changes it:
+//     * the roster FILE itself. It is unsigned JSON that a human writes. This function can
+//       prove a roster is stale; nothing here proves a roster is AUTHORISED. Who may
+//       change a roster, and what signs the change, is an open custody decision -- see the
+//       work item; it is deliberately not decided in code here.
+//     * `location`, and the fact that two named devices are in two different buildings.
+
+/** 32-byte ed25519 point, lowercase hex, no prefix -- what bytesToHex/toHex both emit. */
+const GROUP_KEY_HEX = /^[0-9a-f]{64}$/u;
+
+function foldKeyHex(bytes: Uint8Array): string {
+  let s = "";
+  for (const b of bytes) s += b.toString(16).padStart(2, "0");
+  return s;
+}
+
+/**
+ * Check the roster's pinned group key against the signed epoch chain.
+ *
+ * `fold` is a {@link ChainFold} the CALLER obtained from `foldChain(pin, ledger)` -- this
+ * module never verifies a signature itself, so it can hold no key material and can be read
+ * as pure arithmetic. The security therefore rests on the caller having folded from a pin
+ * it actually trusts; a fold from an attacker-chosen pin proves nothing here or anywhere.
+ *
+ * Returns findings; `assertRosterSound` turns the errors into a refusal.
+ */
+export function checkRosterAgainstEpochChain(
+  roster: FrostTokenRoster,
+  fold: ChainFold,
+): readonly RosterFinding[] {
+  const findings: RosterFinding[] = [];
+
+  // An entry that cannot be checked must not pass AS checked. A roster whose key is not
+  // readable as a group public key is not "probably fine" -- it is unverifiable, and the
+  // vacuity failure here would be to compare two strings that were never keys and report
+  // agreement.
+  if (!GROUP_KEY_HEX.test(roster.groupPublicKeyHex)) {
+    findings.push({
+      code: "roster-key-unreadable",
+      severity: "error",
+      message:
+        `the roster's groupPublicKeyHex is not 64 lowercase hex characters, so it cannot be ` +
+        "compared to the chain's key at all. An unreadable pin is refused rather than " +
+        "skipped: a comparison that cannot run must not report agreement.",
+    });
+    return findings;
+  }
+
+  if (fold.status === "forked") {
+    findings.push({
+      code: "roster-chain-forked",
+      severity: "error",
+      message:
+        `the epoch chain for "${fold.keyId}" FORKS at epoch ${String(fold.epoch)} ` +
+        `(${String(fold.candidates.length)} ` +
+        "distinct signed transitions extend the same key). There is no single current group " +
+        "key, so no roster can be shown current against it. Equivocation at the threshold is " +
+        "the compromise case: re-pin out of band, do not pick a branch.",
+    });
+    return findings;
+  }
+
+  const current = foldKeyHex(fold.groupPublicKey);
+  if (current !== roster.groupPublicKeyHex) {
+    findings.push({
+      code: "roster-key-not-current",
+      severity: "error",
+      message:
+        `the roster is pinned to group key ${roster.groupPublicKeyHex} but the signed chain for ` +
+        `"${fold.keyId}" is at epoch ${String(fold.epoch)} with key ${current} ` +
+        `(${String(fold.advanced)} transition(s) followed from the pin). The shares this roster ` +
+        "describes were superseded by a rotation the roster never learned about. Every " +
+        "artifact check above can still pass while this is true, which is exactly why it is " +
+        "checked separately.",
+    });
+  }
+
+  // INFO, never an error -- see the header. A slot is not a party.
+  const retired = new Set(fold.retiredIndices);
+  for (const p of roster.participants) {
+    if (!retired.has(p.x)) continue;
+    findings.push({
+      code: "roster-index-retired-upstream",
+      severity: "info",
+      x: p.x,
+      message:
+        `index x=${String(p.x)} appears in the chain's retired union. This is NOT a refusal: an ` +
+        "index " +
+        "is a slot, not a party, and a slot retired at one epoch may have been re-issued to a " +
+        "new device at a later one. Confirm by hand that this position was re-issued rather " +
+        "than assuming either way.",
+    });
+  }
+
+  return findings;
+}
+
+// ============================================================================
 // CLI -- the two commands a custody ceremony needs
 // ============================================================================
 //
@@ -613,10 +779,12 @@ export function rosterErrors(findings: readonly RosterFinding[]): readonly Roste
 export function assertRosterSound(
   roster: FrostTokenRoster,
   observed?: readonly ObservedSealBinding[],
+  fold?: ChainFold,
 ): void {
   const findings = [
     ...checkRoster(roster),
     ...(observed === undefined ? [] : verifyRosterAgainstArtifacts(roster, observed)),
+    ...(fold === undefined ? [] : checkRosterAgainstEpochChain(roster, fold)),
   ];
   const errors = rosterErrors(findings);
   if (errors.length === 0) return;

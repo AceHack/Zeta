@@ -1166,7 +1166,7 @@ module DynamicValue =
         let mutable pos = 0
         let len = xml.Length
 
-        let at () : char = if pos < len then xml.[pos] else ' '
+        let at () : char = if pos < len then xml.[pos] else '\u0000'
 
         // Unescape XML content/attribute: the inverse of escapeXmlText/escapeXmlAttr.
         // Accepts the entities + numeric char-refs this codec emits (and common named

@@ -22,6 +22,7 @@ import {
   assertRosterSound,
   attestRosterOnDevices,
   checkRoster,
+  checkRosterAgainstEpochChain,
   collectSealBindings,
   devicePositionReach,
   FROST_TOKEN_ROSTER_SCHEMA,
@@ -37,6 +38,18 @@ import {
   type RosterFindingCode,
 } from "./frost-token-roster.ts";
 import { FROST_SEALED_SHARE_SCHEMA } from "./frost-share-adapter.ts";
+import { frostKeygen, type FrostKeyShare } from "./frost.ts";
+import { runDeltaRotationInProcess } from "./frost-delta-rotation.ts";
+import {
+  admit,
+  emptyLedger,
+  encodeSignedTransition,
+  foldChain,
+  ledgerOf,
+  signTransition,
+  type KeyPin,
+  type KeyTransition,
+} from "./key-epoch-ledger.ts";
 
 const GROUP_KEY = "ab".repeat(32);
 
@@ -500,5 +513,185 @@ describe("FrostTokenRoster: the checks refuse to be vacuous", () => {
       listFiles: () => ["share-01.json"],
     };
     expect(collectSealBindings(fx, [dir])[0]?.sealedByToken).toBe(A);
+  });
+});
+
+// ============================================================================
+// THE ROSTER'S OWN FRESHNESS -- against a REAL threshold-signed chain
+// ============================================================================
+//
+// These build actual FROST keys, run an actual delta rotation, and have the actual old
+// quorum sign the transition. Nothing is mocked: the refusal in FTR-34 is produced by a
+// signature that a party without the old threshold could not have made. That matters
+// because the claim being tested is a cryptographic one -- "this roster is stale, and the
+// evidence is unforgeable" -- and a hand-written ChainFold would have tested only that an
+// if-statement compares two strings.
+
+describe("FrostTokenRoster: current against the signed epoch chain", () => {
+  const KEY_ID = "zeta-ca-frost";
+  const hex = (b: Uint8Array): string =>
+    Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("");
+  const lcg = (seed: number): (() => number) => {
+    let s = seed >>> 0;
+    return () => {
+      s = (s * 1664525 + 1013904223) >>> 0;
+      return s / 0x1_0000_0000;
+    };
+  };
+
+  /** genesis 2-of-3 */
+  const genesis = frostKeygen(2, 3, lcg(7));
+  const pin: KeyPin = { keyId: KEY_ID, epoch: 0, groupPublicKey: genesis.groupPublicKey };
+
+  /** One whole rotation: run the ceremony, then have the OLD quorum sign the statement. */
+  function rotate(
+    epoch: number,
+    oldKey: Uint8Array,
+    oldShares: readonly FrostKeyShare[],
+    newIndices: readonly number[],
+    retiredIndices: readonly number[],
+    seed: number,
+  ): { element: string; newKey: Uint8Array; newShares: readonly FrostKeyShare[] } {
+    const quorum = oldShares.filter((s) => !retiredIndices.includes(s.x)).slice(0, 2);
+    const out = runDeltaRotationInProcess(
+      oldKey,
+      quorum,
+      { newIndices, newThreshold: 2, retiredIndices },
+      lcg(seed),
+    );
+    const statement: KeyTransition = {
+      keyId: KEY_ID,
+      epoch,
+      prevGroupPublicKey: oldKey,
+      nextGroupPublicKey: out.newGroupPublicKey,
+      retiredIndices: [...retiredIndices].sort((a, b) => a - b),
+      transcriptHash: out.transcriptHash,
+      reason: "house C token seized",
+    };
+    const signed = signTransition(statement, quorum, 2, lcg(seed + 1));
+    return { element: encodeSignedTransition(signed), newKey: out.newGroupPublicKey, newShares: out.shares };
+  }
+
+  /** Genesis roster: pinned to the genesis key, matching its artifacts. */
+  const atGenesis = roster({ groupPublicKeyHex: hex(genesis.groupPublicKey) });
+
+  /** The three artifacts the genesis roster names -- all present, bound, and CORRECT. */
+  const genesisArtifacts = (): readonly ObservedSealBinding[] => [
+    observation(1, A, { groupPublicKeyHex: atGenesis.groupPublicKeyHex }),
+    observation(2, B, { groupPublicKeyHex: atGenesis.groupPublicKeyHex }),
+    observation(3, C, { groupPublicKeyHex: atGenesis.groupPublicKeyHex }),
+  ];
+
+  test("FTR-33: a roster pinned to the chain's current key raises no error", () => {
+    const fold = foldChain(pin, emptyLedger());
+    expect(fold.status).toBe("current");
+    expect(rosterErrors(checkRosterAgainstEpochChain(atGenesis, fold))).toEqual([]);
+  });
+
+  test("FTR-34: after a signed rotation the stale roster is refused -- while EVERY artifact check still passes", () => {
+    const r1 = rotate(1, genesis.groupPublicKey, genesis.shares, [1, 2, 4], [3], 101);
+    const fold = foldChain(pin, ledgerOf([r1.element]));
+    expect(fold.status).toBe("current");
+    if (fold.status !== "current") throw new Error("unreachable");
+    expect(fold.epoch).toBe(1);
+    expect(hex(fold.groupPublicKey)).not.toBe(hex(genesis.groupPublicKey));
+
+    // The artifact-facing half is CLEAN: the roster names three artifacts and all three
+    // are present, correctly bound, right tier, right ca, right (old) group key. This is
+    // the whole point -- "OK" from `verify` was reachable while the shares were superseded.
+    const artifacts = genesisArtifacts();
+    expect(rosterErrors(checkRoster(atGenesis))).toEqual([]);
+    expect(rosterErrors(verifyRosterAgainstArtifacts(atGenesis, artifacts))).toEqual([]);
+
+    // Only the chain check sees it.
+    expect(codes(rosterErrors(checkRosterAgainstEpochChain(atGenesis, fold)))).toContain(
+      "roster-key-not-current",
+    );
+  });
+
+  test("FTR-35: assertRosterSound REFUSES the stale roster rather than warning", () => {
+    const r1 = rotate(1, genesis.groupPublicKey, genesis.shares, [1, 2, 4], [3], 101);
+    const fold = foldChain(pin, ledgerOf([r1.element]));
+    const artifacts = genesisArtifacts();
+    // Without the fold it passes; with it, it throws. Same roster, same artifacts.
+    expect(() => {
+      assertRosterSound(atGenesis, artifacts);
+    }).not.toThrow();
+    expect(() => {
+      assertRosterSound(atGenesis, artifacts, fold);
+    }).toThrow(/roster-key-not-current/);
+  });
+
+  test("FTR-36: the roster REWRITTEN to the new key passes the same fold that refused the old one", () => {
+    // The discriminator has to cut both ways or it is just a check that always fails.
+    const r1 = rotate(1, genesis.groupPublicKey, genesis.shares, [1, 2, 4], [3], 101);
+    const fold = foldChain(pin, ledgerOf([r1.element]));
+    const current = roster({
+      groupPublicKeyHex: hex(r1.newKey),
+      participants: [
+        { x: 1, devices: [A] },
+        { x: 2, devices: [B] },
+        { x: 4, devices: [C_BACKUP] },
+      ],
+    });
+    expect(rosterErrors(checkRosterAgainstEpochChain(current, fold))).toEqual([]);
+  });
+
+  test("FTR-37: a RETIRED-THEN-REISSUED index is accepted -- a slot is not a party", () => {
+    // 081M00NSP0Q087G0R003R89Y5K: `retiredIndices` is a grow-only union and must never be
+    // used as an identity blocklist. Retire 3 at epoch 1; re-issue 3 at epoch 2.
+    const r1 = rotate(1, genesis.groupPublicKey, genesis.shares, [1, 2, 4], [3], 101);
+    const r2 = rotate(2, r1.newKey, r1.newShares, [1, 2, 3], [], 202);
+    const fold = foldChain(pin, ledgerOf([r1.element, r2.element]));
+    if (fold.status !== "current") throw new Error("unreachable");
+    expect(fold.epoch).toBe(2);
+    expect(fold.retiredIndices).toContain(3); // the union still says 3 was retired
+    const current = roster({
+      groupPublicKeyHex: hex(r2.newKey),
+      participants: [
+        { x: 1, devices: [A] },
+        { x: 2, devices: [B] },
+        { x: 3, devices: [C_BACKUP] }, // slot 3, new device, live share
+      ],
+    });
+    const findings = checkRosterAgainstEpochChain(current, fold);
+    expect(rosterErrors(findings)).toEqual([]); // NOT refused
+    expect(codes(findings)).toContain("roster-index-retired-upstream"); // reported, at info
+    expect(findings.every((f) => f.code !== "roster-index-retired-upstream" || f.severity === "info")).toBe(true);
+  });
+
+  test("FTR-38: a FORKED chain refuses the roster and picks no branch", () => {
+    // Two distinct valid transitions extending the same key at the same epoch: the
+    // adversary reached the old threshold. There is no current key to be current against.
+    const a = rotate(1, genesis.groupPublicKey, genesis.shares, [1, 2, 4], [3], 101);
+    const b = rotate(1, genesis.groupPublicKey, genesis.shares, [1, 2, 5], [3], 999);
+    const fold = foldChain(pin, ledgerOf([a.element, b.element]));
+    expect(fold.status).toBe("forked");
+    const findings = checkRosterAgainstEpochChain(atGenesis, fold);
+    expect(codes(rosterErrors(findings))).toEqual(["roster-chain-forked"]);
+  });
+
+  test("FTR-39: an UNREADABLE pin is refused, never skipped as agreement", () => {
+    const fold = foldChain(pin, emptyLedger());
+    if (fold.status !== "current") throw new Error("unreachable");
+    for (const bad of ["", "AB".repeat(32), "ab".repeat(31), "zz".repeat(32), `0x${"ab".repeat(32)}`]) {
+      const findings = checkRosterAgainstEpochChain(roster({ groupPublicKeyHex: bad }), fold);
+      expect(codes(rosterErrors(findings))).toEqual(["roster-key-unreadable"]);
+    }
+  });
+
+  test("FTR-40: the transition really is threshold-signed -- a forged element never enters the ledger", () => {
+    // Anchors the claim that FTR-34's refusal is cryptographic. Corrupt one signature byte
+    // and `admit` drops the element, so the fold stays at the pin: the chain cannot be
+    // advanced by a party that did not reach the old threshold.
+    const r1 = rotate(1, genesis.groupPublicKey, genesis.shares, [1, 2, 4], [3], 101);
+    const head = r1.element.slice(0, -1);
+    const tail = r1.element.slice(-1);
+    const forged = head + (tail === "0" ? "1" : "0");
+    expect(admit(forged)).toBe(false);
+    const fold = foldChain(pin, ledgerOf([forged]));
+    if (fold.status !== "current") throw new Error("unreachable");
+    expect(fold.epoch).toBe(0);
+    expect(hex(fold.groupPublicKey)).toBe(hex(genesis.groupPublicKey));
   });
 });

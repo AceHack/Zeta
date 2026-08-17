@@ -495,7 +495,7 @@ module ClaimLane =
     ///
     /// Returns the resulting Z-set of atoms with their integer weights.
     let lane1Merge (baseDoc: ClaimDoc) (sites: (string * ClaimDoc) list) : (string * float) list =
-        let baseQ = QuorumAlgebra.single " base" [ for c in baseDoc.Claims |> Map.toList |> List.map snd -> atomOf c, weight 1.0 ]
+        let baseQ = QuorumAlgebra.single "\u0000base" [ for c in baseDoc.Claims |> Map.toList |> List.map snd -> atomOf c, weight 1.0 ]
         let q =
             sites
             |> List.map (fun (name, doc) -> QuorumAlgebra.single name (contributionOf baseDoc doc))

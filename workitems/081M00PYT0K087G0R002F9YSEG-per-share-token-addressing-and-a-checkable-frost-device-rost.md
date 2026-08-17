@@ -66,3 +66,73 @@ obviously-undistributed one because it reads as done.
   without hardware.
 - `attestRosterOnDevices` needs every device present at once, so it is a ceremony step,
   not a load-path check.
+
+## Second pass (shadow, 2026-08-17): the roster's OWN freshness
+
+The addressing half above landed in #10676 and is verified present: `Pkcs11TokenAddress`,
+`enumeratePkcs11Tokens`, `frost-token-roster.ts` with `checkRoster` / `seizureWitness` /
+`verifyRosterAgainstArtifacts` / `attestRosterOnDevices`, 32 passing tests. Nothing in the
+"What landed" section was found to be overstated.
+
+What it could NOT do was notice that it was out of date. `checkRoster` and
+`verifyRosterAgainstArtifacts` compare a declaration against artifacts; both can agree
+perfectly while the shares have been re-issued underneath them. `verify` printed `OK` for a
+custody set whose secret had moved — the same shape as the `foldChain` defect in
+081M00NSP0Q087G0R003R89Y5K, where "current" was reachable by not having heard anything.
+
+- `checkRosterAgainstEpochChain(roster, fold)` — the roster's pinned group key against the
+  THRESHOLD-SIGNED epoch chain (`key-epoch-ledger.ts`). `roster-key-not-current` /
+  `roster-chain-forked` / `roster-key-unreadable` are refusals; `assertRosterSound` takes
+  the fold as a third argument. Imported `type`-only, so this module still holds no key
+  material and verifies no signature itself — the caller folds from a pin it trusts.
+- **`retiredIndices` is explicitly NOT a blocklist.** A declared index in the chain's
+  grow-only retired union is reported at `info`. Retire slot 3 at epoch 1 and re-issue it
+  at epoch 2 and the union still names 3 while slot 3 holds a live share; a blocklist would
+  refuse a correct roster forever, and the set never forgets, so nothing could clear it.
+  FTR-37 is that exact two-rotation scenario, and mutating the severity to `error` kills it.
+- 8 new tests (FTR-33…FTR-40) built on real `frostKeygen` + `runDeltaRotationInProcess` +
+  `signTransition` — the refusal in FTR-34 is produced by a signature a party below the old
+  threshold could not have made, not by a hand-written fold.
+
+## Mutation results, second pass (12 planted, 12 dead, 0 survivors)
+
+| mutant | killed by |
+| --- | --- |
+| stale group key accepted (check removed) | FTR-34, FTR-35 |
+| `retiredIndices` used as an identity blocklist | FTR-37 |
+| a forked chain silently treated as current | FTR-38 |
+| unreadable pin skipped instead of refused | FTR-39 |
+| `assertRosterSound` ignores the chain fold | FTR-35 |
+| pin format check made permissive | FTR-39 |
+| forged transition admitted into the ledger | FTR-40 |
+| NUL detector never fires | NUL-1,2,3,4,8 |
+| line numbers not tracked | NUL-2, NUL-4 |
+| per-line NUL count collapsed to one | NUL-3 |
+| scope check accepts every path | NUL-9 |
+| repo scan enumerates nothing (vacuous clean) | NUL-10 |
+
+## Enforced vs bookkeeping (stated, not implied)
+
+ENFORCED by cryptography: which token may open a share (`sealedByToken` is in the AAD and
+the sealed bind string); which group key is current (transitions are threshold-signed by
+the old quorum, and `foldChain` follows only signatures it verified from a held pin).
+
+BOOKKEEPING: the roster FILE. It is unsigned JSON a human writes. This apparatus can now
+prove a roster is STALE; nothing proves a roster is AUTHORISED. `location` is decoration.
+
+## Open — and the custody decision NOT taken here
+
+- **Who may change a roster, and what signs the change.** A signed roster would be the
+  natural next object (threshold-signed by the same group, so a roster is an artifact of
+  the custody set rather than a note about it) — but that is a custody decision about
+  authority, not an engineering choice, and it is deliberately left open rather than
+  decided in code.
+- **A group-key-preserving refresh leaves no discriminator.** `zeroDelta` proactive refresh
+  preserves the group key and revokes nothing, so a pre-refresh artifact is field-identical
+  to its replacement in ca, x, threshold, groupPublicKeyHex and sealedByToken. Nothing in
+  any artifact distinguishes them, so the roster cannot, and says so instead of implying a
+  freshness it does not check. Closing it needs a refresh-generation field in the
+  sealed-share AAD — a schema change, and a separate item. Destroying the superseded
+  artifacts stays the operative control, and that control is a CEREMONY, not a check.
+- The multi-token hardware lane (`pkcs11-multi`, HW-6…HW-12) still cannot run: no YubiKey
+  bundle. UNVERIFIED on hardware, as before.

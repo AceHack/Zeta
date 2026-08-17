@@ -257,7 +257,7 @@ function zsmOrderChanged(seed: unknown, cmp: (a: string, b: string) => number): 
   let changed = 0;
   for (const v of g.vectors) {
     const keys = zsmSupport(v.entries);
-    if (keys.slice().sort(cmp).join(" ") !== keys.slice().sort(utf8Compare).join(" ")) changed++;
+    if (keys.slice().sort(cmp).join("\u0000") !== keys.slice().sort(utf8Compare).join("\u0000")) changed++;
   }
   return changed;
 }
@@ -321,7 +321,7 @@ function ladderStates(seed: unknown): string[][] {
 function ladderOrderChanged(seed: unknown, cmp: (a: string, b: string) => number): number {
   let changed = 0;
   for (const keys of ladderStates(seed)) {
-    if (keys.slice().sort(cmp).join(" ") !== keys.join(" ")) changed++;
+    if (keys.slice().sort(cmp).join("\u0000") !== keys.join("\u0000")) changed++;
   }
   return changed;
 }
@@ -686,7 +686,7 @@ const dynamicValueCborTreaty: TreatyDeclaration = {
         for (const v of g.vectors) {
           if (v.value.t !== "obj") continue;
           const keys = (v.value.v as [string, unknown][]).map(([k]) => k);
-          if (keys.join(" ") !== keys.slice().sort(utf8Compare).join(" ")) changed++;
+          if (keys.join("\u0000") !== keys.slice().sort(utf8Compare).join("\u0000")) changed++;
         }
         return changed;
       },

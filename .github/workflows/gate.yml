@@ -1809,6 +1809,15 @@ jobs:
       - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
         run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
 
+      # A tracked source file holding a raw 0x00 byte reads as BINARY to grep/rg, so every
+      # text audit silently skips it -- a check that did not run, looking exactly like one
+      # that passed. `rg 'foldChain' key-epoch-ledger.ts` printed "binary file matches" and
+      # exit 0 while ten real matches were invisible, in the revocation ledger of all files.
+      # The \u0000 escape is byte-identical at runtime and keeps the file searchable, so the
+      # rule is total and needs no allowlist. Ten tracked files failed this when written.
+      - name: No raw NUL in tracked source (an audit must be able to read the file)
+        run: bun src/Core.TypeScript/hygiene/audit-no-raw-nul-in-source.ts
+
       # Executes mumps_zeta_id.m (subset interpreter). compare.ts already pins
       # the committed JSON; this step runs the routine so a layout edit in the
       # .m file cannot hide behind a stale mumps-output.json.

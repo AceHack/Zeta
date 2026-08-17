@@ -428,7 +428,7 @@ export interface Triage {
 }
 
 export function triage(findings: Finding[], open: OpenEntry[]): Triage {
-  const key = (c: string, k: string): string => `${c} ${k}`;
+  const key = (c: string, k: string): string => `${c}\u0000${k}`;
   const openKeys = new Set(open.map((o) => key(o.check, o.key)));
   const foundKeys = new Set(findings.map((f) => key(f.check, f.key)));
   return {
