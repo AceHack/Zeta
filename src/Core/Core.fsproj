@@ -382,6 +382,7 @@
     <Compile Include="AmplitudeEmu.fs" />
     <Compile Include="CyclotomicAmplitude.fs" />
     <Compile Include="QuorumAlgebra.fs" />
+    <Compile Include="ClaimLane.fs" />
     <Compile Include="HlAmplitudeEmu.fs" />
     <Compile Include="QuantumArith.fs" />
     <Compile Include="QuantumObservableTreaty.fs" />
