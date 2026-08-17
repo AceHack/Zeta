@@ -1,0 +1,15 @@
+{
+  "pr_number": 9143,
+  "archive_path": "docs/history/pr-reviews/PR-9143-docs-handoffs-session-resume-checkpoint-design-language-identity-arc-shadow.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RdoLO",
+    "thread:PRRT_kwDOSF9kNM6N8dRs"
+  ],
+  "fetched_at": "2026-08-17T09:20:18.078Z",
+  "schema_version": "v1",
+  "commit_sha": "cd311bfb5fb1a9b6cc66f727cc707b5e7795245a",
+  "title": "docs(handoffs): session resume checkpoint — design-language/identity arc (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T15:19:05Z",
+  "head_ref": "handoffs/session-resume-2026-07-02"
+}

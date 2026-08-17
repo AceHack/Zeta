@@ -1,0 +1,12 @@
+{
+  "pr_number": 9142,
+  "archive_path": "docs/history/pr-reviews/PR-9142-feat-qsharp-oracle-mirror-the-dbsp-operator-set-to-the-q-reference-oracle.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T09:20:15.588Z",
+  "schema_version": "v1",
+  "commit_sha": "cd311bfb5fb1a9b6cc66f727cc707b5e7795245a",
+  "title": "feat(qsharp-oracle): mirror the DBSP operator set to the Q# reference oracle",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T15:09:53Z",
+  "head_ref": "otto/dbsp-operators-qsharp-oracle"
+}
