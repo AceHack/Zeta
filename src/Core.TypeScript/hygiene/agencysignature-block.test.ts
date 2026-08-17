@@ -388,6 +388,44 @@ describe("validateBlock", () => {
     }
   });
 
+  // Added 2026-08-17, maintainer-authorized. Two producers independently coined
+  // `autonomous-fail-closed` and a third `operator-delegated` before either was
+  // legal here, and mapping them onto the nearest allowed value would have
+  // recorded something false — `operator-delegated`→`shared` loses the
+  // delegation, `autonomous-fail-closed`→`autonomous-fail-open` claims a reach
+  // on error the actor does not take.
+  describe("the 2026-08-17 vocabulary extension", () => {
+    test("operator-delegated is a legal Credential-Mode", () => {
+      expect(validateBlock(block({ "Credential-Mode": "operator-delegated" }))).toEqual([]);
+    });
+
+    test("autonomous-fail-closed is a legal Action-Mode", () => {
+      expect(validateBlock(block({ "Action-Mode": "autonomous-fail-closed" }))).toEqual([]);
+    });
+
+    // ADDITIONS, never renames: nothing previously valid may become invalid,
+    // or this change would retroactively condemn commits already on main.
+    test("every pre-extension value is still accepted", () => {
+      for (const mode of ["shared", "dedicated-agent", "human-only", "unknown"]) {
+        expect(validateBlock(block({ "Credential-Mode": mode }))).toEqual([]);
+      }
+      for (const mode of ["autonomous-fail-open", "human-directed", "supervised"]) {
+        expect(validateBlock(block({ "Action-Mode": mode }))).toEqual([]);
+      }
+    });
+
+    // Widening a vocabulary must not widen it to everything.
+    test("the sets are still closed — a near-miss is still refused", () => {
+      expect(validateBlock(block({ "Action-Mode": "autonomous-fail-cloed" }))[0]?.code).toBe(
+        "invalid-enum",
+      );
+      expect(validateBlock(block({ "Credential-Mode": "operator-delegate" }))[0]?.code).toBe(
+        "invalid-enum",
+      );
+      expect(validateBlock(block({ "Action-Mode": "fail-closed" }))[0]?.code).toBe("invalid-enum");
+    });
+  });
+
   test("CANONICAL_SHAPE names the Co-authored-by placement the spec omits", () => {
     // Spec Section 7.4's block ends at `Task:` and never says where
     // Co-authored-by goes; that omission is the upstream cause of 551 commits.

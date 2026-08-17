@@ -79,18 +79,65 @@ export const REQUIRED_KEYS: readonly string[] = [
 /** v2 adds `Cell` (ADR docs/DECISIONS/2026-07-03-persona-cell-identity-unification.md phase 4). */
 export const V2_REQUIRED_EXTRA: readonly string[] = ["Cell"];
 
+/**
+ * `Credential-Mode` — WHOSE credential performed the act.
+ *
+ *   shared             a credential more than one actor may use (a human's, used by an agent)
+ *   dedicated-agent    a credential belonging to one automated actor (`*[bot]`)
+ *   human-only         a human acted directly; no agent involved
+ *   operator-delegated an agent acting under an operator's EXPLICIT delegation (added
+ *                      2026-08-17, maintainer-authorized). Narrower than `shared`: shared
+ *                      says only that the credential is not agent-exclusive, while this
+ *                      says the operator deliberately handed it over for this class of act.
+ *   unknown            not determined — the honest floor, never a default to hide behind
+ *
+ * `Action-Mode` — HOW MUCH human direction the act carried, and what it does on error.
+ *
+ *   autonomous-fail-open    autonomous; on error it PROCEEDS (degrades, keeps going)
+ *   autonomous-fail-closed  autonomous; on error it STOPS (added 2026-08-17,
+ *                           maintainer-authorized). Strictly SAFER than fail-open, and the
+ *                           distinction is load-bearing: an autonomous actor that halts on
+ *                           error claims less reach than one that continues past it, and a
+ *                           vocabulary that cannot say so forces the safer actor to
+ *                           overstate itself.
+ *   human-directed          a human asked for this specific change
+ *   supervised              a human watched it happen
+ *
+ * WHY THESE TWO WERE ADDED RATHER THAN THE PRODUCERS BENT TO FIT. Two independent authors
+ * — `.github/workflows/zetadb-scheduled-node.yml` and the shadow lane by hand — reached for
+ * `autonomous-fail-closed`, and a third for `operator-delegated`, before either existed
+ * here. Coinage arrived at independently, twice, is evidence the vocabulary was missing a
+ * distinction its users needed, not that its users were careless. Mapping them onto the
+ * nearest legal value would have recorded something FALSE: `operator-delegated` collapsed
+ * to `shared` loses the delegation, and `autonomous-fail-closed` collapsed to
+ * `autonomous-fail-open` claims a reach on error the actor does not take.
+ *
+ * These are ADDITIONS, never renames. Every previously-valid block stays valid, so nothing
+ * on main is invalidated by this change.
+ */
 export const ENUMS: readonly {
   readonly key: string;
   readonly allowed: readonly string[];
 }[] = [
   { key: "Agency-Signature-Version", allowed: ["1", "2"] },
-  { key: "Credential-Mode", allowed: ["shared", "dedicated-agent", "human-only", "unknown"] },
+  {
+    key: "Credential-Mode",
+    allowed: ["shared", "dedicated-agent", "operator-delegated", "human-only", "unknown"],
+  },
   { key: "Human-Review", allowed: ["explicit", "not-implied-by-credential", "none"] },
   {
     key: "Human-Review-Evidence",
     allowed: ["chat", "pr-review", "pr-comment", "signed-policy", "none"],
   },
-  { key: "Action-Mode", allowed: ["autonomous-fail-open", "human-directed", "supervised"] },
+  {
+    key: "Action-Mode",
+    allowed: [
+      "autonomous-fail-open",
+      "autonomous-fail-closed",
+      "human-directed",
+      "supervised",
+    ],
+  },
 ];
 
 const BLANK_LINE_RE = /^[\t ]*$/;
