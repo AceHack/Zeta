@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { join, resolve } from "node:path";
 import { exitCodeForResults, isPassing, runPathForkRuntime, runRetentionRuntime, type ScenarioResult } from "./run";
+import type { Qcow2RetentionExecutionStep, QemuCommand, QemuCommandExecution } from "./qemu-state";
 import { qemuUsbStorageDeviceArg } from "../../installer/qemu-usb-storage.ts";
 
 const SCRIPT = join(import.meta.dir, "run.ts");
