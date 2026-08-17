@@ -21,11 +21,14 @@ import type { BrowserCheckpoint } from "../browser-node/browser-node";
 import {
   createBrowserCausalCorrectionLedger,
   foldBrowserCausalCorrection,
+  foldBrowserCausalCorrections,
   type BrowserCausalCorrectionLedger,
   type BrowserCausalCorrectionLedgerFeedback,
 } from "../browser-node/browser-causal-correction-ledger";
 import type {
   BrowserCausalCorrectionNotice,
+  BrowserCausalCorrectionReplayNotice,
+  BrowserCausalCorrectionReplayPort,
   BrowserCheckpointInvalidation,
   BrowserDatabaseExecutionReceiptNotice,
   BrowserDatabaseInvalidation,
@@ -77,7 +80,7 @@ type DarkHallBrowserDurableFailure = Extract<DarkHallBrowserDurableResult<never>
 
 export interface DarkHallBrowserDurableOptions extends Omit<
   DarkHallBrowserBootstrapOptions,
-  "checkpoint" | "onCheckpointInvalidated" | "transcript"
+  "causalCorrectionReplay" | "checkpoint" | "onCheckpointInvalidated" | "transcript"
 > {
   readonly initialTranscript: RoomRunTranscript;
   readonly maxCausalCorrections: number;
@@ -282,6 +285,7 @@ function bootstrapOptions(
   causalReadout: DarkHallCausalReadout,
   onCheckpointInvalidated: (invalidation: BrowserCheckpointInvalidation) => void,
   onCausalCorrection: (correction: BrowserCausalCorrectionNotice) => void,
+  causalCorrectionReplay: BrowserCausalCorrectionReplayPort,
 ): DarkHallBrowserBootstrapOptions {
   return {
     root: options.root,
@@ -298,6 +302,7 @@ function bootstrapOptions(
     transcript: { ...transcript, causalReadout },
     onCheckpointInvalidated,
     onCausalCorrection,
+    causalCorrectionReplay,
     ...(options.onTabReadout === undefined ? {} : { onTabReadout: options.onTabReadout }),
     ...(options.onDatabaseInvalidated === undefined ? {} : { onDatabaseInvalidated: options.onDatabaseInvalidated }),
     ...(options.onDatabaseExecutionReceipt === undefined
@@ -333,9 +338,14 @@ export async function startDurableDarkHallBrowser(
   let causalRenderFeedback: DarkHallBrowserDurableFeedback | null = null;
   let browserRuntimeForCausalRender: DarkHallBrowserRuntime | null = null;
   let transcriptForCausalRender = selectedTranscript.value;
+  let causalRenderPending = false;
 
   const renderCausalProjection = (): void => {
-    if (browserRuntimeForCausalRender === null) return;
+    if (browserRuntimeForCausalRender === null) {
+      causalRenderPending = true;
+      return;
+    }
+    causalRenderPending = false;
     try {
       const rendered = browserRuntimeForCausalRender.updateTranscript({
         ...transcriptForCausalRender,
@@ -371,6 +381,23 @@ export async function startDurableDarkHallBrowser(
     options.onCausalCorrection?.(correction);
   };
 
+  const receiveCausalCorrectionReplay = (replay: BrowserCausalCorrectionReplayNotice): void => {
+    const admitted = foldBrowserCausalCorrections(causalLedger, replay.corrections);
+    if (admitted.ok) {
+      causalLedger = admitted.value;
+      causalFeedback = null;
+    } else {
+      causalFeedback = admitted.feedback;
+    }
+    renderCausalProjection();
+  };
+
+  const causalCorrectionReplay: BrowserCausalCorrectionReplayPort = {
+    maxCorrections: options.maxCausalCorrections,
+    snapshot: () => causalLedger.corrections.map((correction) => ({ ...correction })),
+    receive: receiveCausalCorrectionReplay,
+  };
+
   let receiveCheckpointInvalidation: ((invalidation: BrowserCheckpointInvalidation) => void) | null = null;
   let startupInvalidation: BrowserCheckpointInvalidation | null = null;
   const onCheckpointInvalidated = (invalidation: BrowserCheckpointInvalidation): void => {
@@ -391,6 +418,7 @@ export async function startDurableDarkHallBrowser(
         darkHallCausalReadout(causalLedger, causalFeedback),
         onCheckpointInvalidated,
         onCausalCorrection,
+        causalCorrectionReplay,
       ),
     );
   } catch {
@@ -402,6 +430,7 @@ export async function startDurableDarkHallBrowser(
 
   const browserRuntime = started.value;
   browserRuntimeForCausalRender = browserRuntime;
+  if (causalRenderPending) renderCausalProjection();
   const recoveredRevision = recovered.value?.revision ?? null;
   let currentRecord = recovered.value;
   let currentTranscript = selectedTranscript.value;

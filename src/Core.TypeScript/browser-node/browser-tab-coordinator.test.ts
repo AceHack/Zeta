@@ -6,6 +6,8 @@ import {
   type BrowserTabChannelMessage,
   type BrowserCheckpointInvalidation,
   type BrowserCausalCorrectionNotice,
+  type BrowserCausalCorrectionReplayNotice,
+  type BrowserCausalCorrectionReplayPort,
   type BrowserDatabaseExecutionReceiptNotice,
   type BrowserDatabaseInvalidation,
   type BrowserTabCoordinator,
@@ -86,6 +88,7 @@ function options(
   onDatabaseInvalidated?: (invalidation: BrowserDatabaseInvalidation) => void,
   onDatabaseExecutionReceipt?: (receipt: BrowserDatabaseExecutionReceiptNotice) => void,
   onCausalCorrection?: (correction: BrowserCausalCorrectionNotice) => void,
+  causalCorrectionReplay?: BrowserCausalCorrectionReplayPort,
 ): BrowserTabCoordinatorOptions {
   return {
     nodeId: "llmtv-room-a",
@@ -100,6 +103,7 @@ function options(
     ...(onDatabaseInvalidated === undefined ? {} : { onDatabaseInvalidated }),
     ...(onDatabaseExecutionReceipt === undefined ? {} : { onDatabaseExecutionReceipt }),
     ...(onCausalCorrection === undefined ? {} : { onCausalCorrection }),
+    ...(causalCorrectionReplay === undefined ? {} : { causalCorrectionReplay }),
   };
 }
 
@@ -391,6 +395,125 @@ describe("browser tab coordinator", () => {
       feedback: { code: "coordinator-configuration-invalid" },
     });
     expect(peerCorrections).toHaveLength(1);
+    expect(tabA.stop(2).ok).toBe(true);
+    expect(tabB.stop(2).ok).toBe(true);
+  });
+
+  test("replays bounded causal history to a late-joining tab without changing correction identity", () => {
+    const bus = new FakeBus();
+    const received: BrowserCausalCorrectionReplayNotice[] = [];
+    const retained: readonly BrowserCausalCorrectionNotice[] = [
+      { sourceTabId: "tab-origin", sequence: "14", reinterpretsThrough: "12", deltaRows: 2 },
+      { sourceTabId: "tab-a", sequence: "18", reinterpretsThrough: "14", deltaRows: 1 },
+    ];
+    const tabA = started(
+      startBrowserTabCoordinator(
+        options("tab-a", undefined, undefined, undefined, undefined, undefined, {
+          maxCorrections: 2,
+          snapshot: () => retained,
+          receive: () => undefined,
+        }),
+        bus.connect(),
+      ),
+    );
+    const tabB = started(
+      startBrowserTabCoordinator(
+        options("tab-b", undefined, undefined, undefined, undefined, undefined, {
+          maxCorrections: 2,
+          snapshot: () => [],
+          receive: (replay) => received.push(replay),
+        }),
+        bus.connect(),
+      ),
+    );
+
+    expect(received).toEqual([
+      {
+        sourceTabId: "tab-a",
+        targetTabId: "tab-b",
+        maxCorrections: 2,
+        corrections: retained,
+      },
+    ]);
+    expect(received[0]?.corrections[0]?.sourceTabId).toBe("tab-origin");
+    expect(tabA.stop(2).ok).toBe(true);
+    expect(tabB.stop(2).ok).toBe(true);
+  });
+
+  test("backpressures an oversized replay provider without truncating history", () => {
+    const bus = new FakeBus();
+    const readouts: BrowserTabCoordinatorReadout[] = [];
+    const received: BrowserCausalCorrectionReplayNotice[] = [];
+    const oversized: readonly BrowserCausalCorrectionNotice[] = [
+      { sourceTabId: "tab-a", sequence: "2", reinterpretsThrough: "1", deltaRows: 1 },
+      { sourceTabId: "tab-a", sequence: "3", reinterpretsThrough: "2", deltaRows: 1 },
+    ];
+    const tabA = started(
+      startBrowserTabCoordinator(
+        options("tab-a", (readout) => readouts.push(readout), undefined, undefined, undefined, undefined, {
+          maxCorrections: 1,
+          snapshot: () => oversized,
+          receive: () => undefined,
+        }),
+        bus.connect(),
+      ),
+    );
+    const tabB = started(
+      startBrowserTabCoordinator(
+        options("tab-b", undefined, undefined, undefined, undefined, undefined, {
+          maxCorrections: 1,
+          snapshot: () => [],
+          receive: (replay) => received.push(replay),
+        }),
+        bus.connect(),
+      ),
+    );
+
+    expect(received).toEqual([]);
+    expect(readouts.flatMap((readout) => readout.feedback)).toContainEqual({
+      severity: "backpressure",
+      code: "causal-correction-replay-capacity-exhausted",
+      detail: "The replay provider returned 2 corrections for capacity 1.",
+    });
+    expect(tabA.stop(2).ok).toBe(true);
+    expect(tabB.stop(2).ok).toBe(true);
+  });
+
+  test("backpressures replay that exceeds the joining tab capacity", () => {
+    const bus = new FakeBus();
+    const readouts: BrowserTabCoordinatorReadout[] = [];
+    const received: BrowserCausalCorrectionReplayNotice[] = [];
+    const retained: readonly BrowserCausalCorrectionNotice[] = [
+      { sourceTabId: "tab-a", sequence: "2", reinterpretsThrough: "1", deltaRows: 1 },
+      { sourceTabId: "tab-a", sequence: "3", reinterpretsThrough: "2", deltaRows: 1 },
+    ];
+    const tabA = started(
+      startBrowserTabCoordinator(
+        options("tab-a", undefined, undefined, undefined, undefined, undefined, {
+          maxCorrections: 2,
+          snapshot: () => retained,
+          receive: () => undefined,
+        }),
+        bus.connect(),
+      ),
+    );
+    const tabB = started(
+      startBrowserTabCoordinator(
+        options("tab-b", (readout) => readouts.push(readout), undefined, undefined, undefined, undefined, {
+          maxCorrections: 1,
+          snapshot: () => [],
+          receive: (replay) => received.push(replay),
+        }),
+        bus.connect(),
+      ),
+    );
+
+    expect(received).toEqual([]);
+    expect(readouts.flatMap((readout) => readout.feedback)).toContainEqual({
+      severity: "backpressure",
+      code: "causal-correction-replay-capacity-exhausted",
+      detail: "Peer tab-a offered 2 corrections for local capacity 1.",
+    });
     expect(tabA.stop(2).ok).toBe(true);
     expect(tabB.stop(2).ok).toBe(true);
   });

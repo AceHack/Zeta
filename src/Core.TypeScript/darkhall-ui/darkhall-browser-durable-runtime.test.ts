@@ -305,6 +305,36 @@ describe("durable Dark Hall browser runtime", () => {
     expect(observedCausalCorrections).toEqual([
       { sourceTabId: "tab-b", sequence: "2", reinterpretsThrough: "1", deltaRows: 1 },
     ]);
+    expect(starter.starts[0]?.causalCorrectionReplay?.maxCorrections).toBe(2);
+    expect(starter.starts[0]?.causalCorrectionReplay?.snapshot()).toEqual([
+      { sourceTabId: "tab-b", sequence: "2", reinterpretsThrough: "1", deltaRows: 1 },
+    ]);
+  });
+
+  test("applies a synchronous late-join replay before returning the browser runtime", async () => {
+    const port = new MemoryCheckpointPort();
+    const starter = createStarter();
+    const startWithSynchronousReplay: DarkHallBrowserStarter = (startOptions) => {
+      startOptions.causalCorrectionReplay?.receive({
+        sourceTabId: "tab-b",
+        targetTabId: "tab-a",
+        maxCorrections: 2,
+        corrections: [{ sourceTabId: "tab-origin", sequence: "8", reinterpretsThrough: "5", deltaRows: 3 }],
+      });
+      return starter.start(startOptions);
+    };
+
+    const started = await startDurableDarkHallBrowser(options(), port, startWithSynchronousReplay);
+
+    expect(started.ok).toBe(true);
+    expect(started.ok && started.value.read().causal.corrections).toEqual([
+      { sourceTabId: "tab-origin", sequence: "8", reinterpretsThrough: "5", deltaRows: 3 },
+    ]);
+    expect(starter.updates.at(-1)).toMatchObject({
+      causalReadout: {
+        corrections: [{ sourceTabId: "tab-origin", sequence: "8", reinterpretsThrough: "5", deltaRows: 3 }],
+      },
+    });
   });
 
   test("starts cold, checkpoints an advanced transcript, and retracts to the initial room", async () => {

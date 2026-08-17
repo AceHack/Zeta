@@ -7,6 +7,7 @@ import {
   BROWSER_TAB_COORDINATOR_SCHEMA,
   startBrowserTabCoordinator,
   type BrowserCausalCorrectionNotice,
+  type BrowserCausalCorrectionReplayNotice,
   type BrowserCheckpointInvalidation,
   type BrowserDatabaseInvalidation,
   type BrowserTabChannel,
@@ -147,6 +148,11 @@ describe("native service-worker browser channel", () => {
     const databaseInvalidationsB: BrowserDatabaseInvalidation[] = [];
     const causalCorrectionsA: BrowserCausalCorrectionNotice[] = [];
     const causalCorrectionsB: BrowserCausalCorrectionNotice[] = [];
+    const causalReplaysA: BrowserCausalCorrectionReplayNotice[] = [];
+    const causalReplaysB: BrowserCausalCorrectionReplayNotice[] = [];
+    const retainedCorrections: readonly BrowserCausalCorrectionNotice[] = [
+      { sourceTabId: "tab-origin", sequence: "8", reinterpretsThrough: "5", deltaRows: 3 },
+    ];
     const options = {
       nodeId: "llmtv-room-service-worker",
       initialState: "foreground" as const,
@@ -163,6 +169,11 @@ describe("native service-worker browser channel", () => {
           onCheckpointInvalidated: (value) => invalidationsA.push(value),
           onDatabaseInvalidated: (value) => databaseInvalidationsA.push(value),
           onCausalCorrection: (value) => causalCorrectionsA.push(value),
+          causalCorrectionReplay: {
+            maxCorrections: 2,
+            snapshot: () => retainedCorrections,
+            receive: (value) => causalReplaysA.push(value),
+          },
         },
         channelA,
       ),
@@ -176,6 +187,11 @@ describe("native service-worker browser channel", () => {
           onCheckpointInvalidated: (value) => invalidationsB.push(value),
           onDatabaseInvalidated: (value) => databaseInvalidationsB.push(value),
           onCausalCorrection: (value) => causalCorrectionsB.push(value),
+          causalCorrectionReplay: {
+            maxCorrections: 2,
+            snapshot: () => [],
+            receive: (value) => causalReplaysB.push(value),
+          },
         },
         channelB,
       ),
@@ -184,6 +200,15 @@ describe("native service-worker browser channel", () => {
     await mesh.drain();
     expect(coordinatorA.read().liveness.liveTabIds).toEqual(["tab-a", "tab-b"]);
     expect(coordinatorB.read().liveness.liveTabIds).toEqual(["tab-a", "tab-b"]);
+    expect(causalReplaysA).toEqual([]);
+    expect(causalReplaysB).toEqual([
+      {
+        sourceTabId: "tab-a",
+        targetTabId: "tab-b",
+        maxCorrections: 2,
+        corrections: retainedCorrections,
+      },
+    ]);
 
     expect(coordinatorA.publishCheckpointInvalidation("saved", 42).ok).toBe(true);
     await mesh.drain();
