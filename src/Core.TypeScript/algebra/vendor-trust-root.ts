@@ -71,6 +71,15 @@ declare const vendorTrustRootBrand: unique symbol;
  * The roster of attestation root authorities. A closed union: an authority not on this list cannot
  * be spelled, which is the point — `"unlisted"` is the one way to name a root we have not checked,
  * and it still requires the root to be *named* (see `declareVendorTrustRoot`).
+ *
+ * `"self-vendored"` is a SEPARATE member and the distinction is load-bearing, not cosmetic. Before
+ * it existed, a root **we hold ourselves** (a self-fabricated device we provisioned — work-item
+ * 081M00VJGAV087G0R00393F6X5) came back from `declareVendorTrustRoot` as `"unlisted"` with
+ * `onCheckedRoster: false`, and rendered as *"caller-declared, not on the checked roster"*. That
+ * sentence is true and misleading: it reads as **third-party provenance we have not verified**,
+ * when in fact there is **no third party at all**. Those are opposite epistemic situations —
+ * `"unlisted"` means someone else vouches and we did not check them; `"self-vendored"` means
+ * nobody else vouches. Collapsing them lets a self-signature read as an external credential.
  */
 export type VendorRootAuthority =
   | "amd-ark"
@@ -78,7 +87,8 @@ export type VendorRootAuthority =
   | "nvidia-device-identity-ca"
   | "tpm-manufacturer-ek-ca"
   | "aws-nitro-enclaves-root-g1"
-  | "unlisted";
+  | "unlisted"
+  | "self-vendored";
 
 /**
  * A NAMED attestation root. Every field is required and no field may be blank; there is no member
@@ -170,7 +180,7 @@ export const VENDOR_TRUST_ROOTS = Object.freeze({
     "Root cert published for download; attestation documents carry their own CA bundle, so verification is offline",
     true,
   ),
-} satisfies Record<Exclude<VendorRootAuthority, "unlisted">, VendorTrustRoot>);
+} satisfies Record<Exclude<VendorRootAuthority, "unlisted" | "self-vendored">, VendorTrustRoot>);
 
 /** Why a proposed root was refused. Refusal is the falsifier for this whole module. */
 export type VendorTrustRootRefusal =
@@ -219,6 +229,32 @@ export function declareVendorTrustRoot(input: {
   };
 }
 
+/**
+ * Declare the root for a device **we** provisioned — a self-fabricated device whose UDS we
+ * generated, so no manufacturer CA exists anywhere in its lineage.
+ *
+ * The same refusals as `declareVendorTrustRoot` apply (a self-held root still has to be NAMED; an
+ * anonymous self-signature is the worst of both). What differs is only the resulting `authority`,
+ * and therefore what `describeVendorTrustRoot` will say about it.
+ *
+ * **This function creates no key, signs nothing, and provisions nothing.** It records the name of a
+ * root, exactly as its sibling does. Whether such a root should exist at all, and who would hold
+ * it, are decisions outside this module — see `self-vendored-provisioning.ts`, which refuses to
+ * advance a ceremony while custody is undecided rather than picking a holder.
+ */
+export function declareSelfVendoredTrustRoot(input: {
+  readonly vendorName: string;
+  readonly chainToRoot: readonly string[];
+  readonly verificationService: string;
+}): VendorTrustRootResult {
+  const declared = declareVendorTrustRoot(input);
+  if (!declared.ok) return declared;
+  return {
+    ok: true,
+    root: root("self-vendored", input.vendorName, declared.root.chainToRoot, input.verificationService, false),
+  };
+}
+
 /** The name a verifier would have to terminate at: the LAST element of the chain. */
 export function rootAuthorityName(trustRoot: VendorTrustRoot): string {
   return trustRoot.chainToRoot[trustRoot.chainToRoot.length - 1] ?? trustRoot.vendorName;
@@ -231,7 +267,12 @@ export function rootAuthorityName(trustRoot: VendorTrustRoot): string {
  * *"this node is genuine"*.
  */
 export function describeVendorTrustRoot(trustRoot: VendorTrustRoot): string {
-  const provenance = trustRoot.onCheckedRoster ? "checked roster" : "caller-declared, not on the checked roster";
+  const provenance = trustRoot.onCheckedRoster
+    ? "checked roster"
+    : trustRoot.authority === "self-vendored"
+      ? "SELF-VENDORED: we hold this root, so no third party vouches for it and only parties who " +
+        "already trust us can verify against it"
+      : "caller-declared, not on the checked roster";
   return (
     `root '${rootAuthorityName(trustRoot)}' held by ${trustRoot.vendorName} ` +
     `(authority '${trustRoot.authority}', ${provenance}); ` +
@@ -259,11 +300,11 @@ export function parseVendorTrustRoot(value: unknown): VendorTrustRootResult {
   if (typeof authority !== "string") {
     return { ok: false, why: { refused: "unknown-authority", authority: String(authority) } };
   }
-  if (authority !== "unlisted" && authority in VENDOR_TRUST_ROOTS) {
-    const key = authority as Exclude<VendorRootAuthority, "unlisted">;
+  if (authority !== "unlisted" && authority !== "self-vendored" && authority in VENDOR_TRUST_ROOTS) {
+    const key = authority as Exclude<VendorRootAuthority, "unlisted" | "self-vendored">;
     return { ok: true, root: VENDOR_TRUST_ROOTS[key] };
   }
-  if (authority !== "unlisted") {
+  if (authority !== "unlisted" && authority !== "self-vendored") {
     return { ok: false, why: { refused: "unknown-authority", authority } };
   }
   const vendorName = candidate.vendorName;
@@ -277,7 +318,12 @@ export function parseVendorTrustRoot(value: unknown): VendorTrustRootResult {
     if (typeof element !== "string") return { ok: false, why: { refused: "blank-chain-element", index: i } };
     chainStrings.push(element);
   }
-  return declareVendorTrustRoot({
+  // Route by the authority that was READ, not by a default. Sending a `self-vendored` record
+  // through `declareVendorTrustRoot` would silently re-label it `unlisted` on the way in — the
+  // exact conflation this member exists to remove, reintroduced at the boundary where the type
+  // system is absent.
+  const declare = authority === "self-vendored" ? declareSelfVendoredTrustRoot : declareVendorTrustRoot;
+  return declare({
     vendorName,
     chainToRoot: chainStrings,
     verificationService: typeof service === "string" ? service : "",

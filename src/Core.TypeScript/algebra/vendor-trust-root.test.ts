@@ -11,6 +11,7 @@
 import { describe, test, expect } from "bun:test";
 import {
   VENDOR_TRUST_ROOTS,
+  declareSelfVendoredTrustRoot,
   declareVendorTrustRoot,
   describeVendorTrustRoot,
   parseVendorTrustRoot,
@@ -172,5 +173,55 @@ describe("parseVendorTrustRoot is the JSON boundary guard (no brand out there)",
       verificationService: "s",
     });
     expect(good.ok).toBe(true);
+  });
+
+  test("a self-vendored authority survives the boundary as self-vendored, not as unlisted", () => {
+    const r = parseVendorTrustRoot({
+      authority: "self-vendored",
+      vendorName: "Zeta (self-vendored)",
+      chainToRoot: ["device identity", "our vendor root"],
+      verificationService: "our own tkey-verification instance",
+    });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.root.authority).toBe("self-vendored");
+  });
+
+  test("a self-vendored authority still has to name a vendor and a chain", () => {
+    expect(parseVendorTrustRoot({ authority: "self-vendored", vendorName: "", chainToRoot: ["r"] }).ok).toBe(false);
+    expect(parseVendorTrustRoot({ authority: "self-vendored", vendorName: "V", chainToRoot: [] }).ok).toBe(false);
+  });
+});
+
+describe("self-vendored is a SEPARATE case from unlisted (081M00VJGAV087G0R00393F6X5)", () => {
+  const declared = declareSelfVendoredTrustRoot({
+    vendorName: "Zeta (self-vendored)",
+    chainToRoot: ["measured-app identity", "our vendor root"],
+    verificationService: "our own tkey-verification instance",
+  });
+
+  test("a root we hold is not labelled as an unchecked third-party root", () => {
+    expect(declared.ok).toBe(true);
+    if (!declared.ok) return;
+    expect(declared.root.authority).toBe("self-vendored");
+    expect(declared.root.onCheckedRoster).toBe(false);
+  });
+
+  test("its description says nobody else vouches — the whole reason the member exists", () => {
+    expect(declared.ok).toBe(true);
+    if (!declared.ok) return;
+    const d = describeVendorTrustRoot(declared.root);
+    expect(d).toContain("SELF-VENDORED");
+    expect(d).toContain("no third party vouches");
+    expect(d).not.toContain("caller-declared, not on the checked roster");
+  });
+
+  test("it inherits every naming refusal — a self-held root still has to be NAMED", () => {
+    expect(declareSelfVendoredTrustRoot({ vendorName: " ", chainToRoot: ["r"], verificationService: "s" }).ok).toBe(false);
+    expect(declareSelfVendoredTrustRoot({ vendorName: "V", chainToRoot: [], verificationService: "s" }).ok).toBe(false);
+    expect(declareSelfVendoredTrustRoot({ vendorName: "V", chainToRoot: ["a", " "], verificationService: "s" }).ok).toBe(false);
+  });
+
+  test("it is NOT on the checked roster record — the roster is checked third-party roots only", () => {
+    expect(Object.keys(VENDOR_TRUST_ROOTS)).not.toContain("self-vendored");
   });
 });
