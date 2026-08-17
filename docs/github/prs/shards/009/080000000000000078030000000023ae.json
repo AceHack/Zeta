@@ -1,0 +1,15 @@
+{
+  "pr_number": 9134,
+  "archive_path": "docs/history/pr-reviews/PR-9134-fix-anti-sybil-finite-sample-honesty-for-chshsybil-soraya-s-finding-locked-shado.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RbtmR",
+    "thread:PRRT_kwDOSF9kNM6N7C7Y"
+  ],
+  "fetched_at": "2026-08-17T07:50:45.322Z",
+  "schema_version": "v1",
+  "commit_sha": "21e8a7bd74709a43c661a2d6cb6d7b4c9c792b7f",
+  "title": "fix(anti-sybil): finite-sample honesty for chshSybil — Soraya's finding locked (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T14:06:32Z",
+  "head_ref": "fix/chshsybil-finite-sample-honesty"
+}

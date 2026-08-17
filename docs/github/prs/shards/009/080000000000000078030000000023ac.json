@@ -1,0 +1,15 @@
+{
+  "pr_number": 9132,
+  "archive_path": "docs/history/pr-reviews/PR-9132-feat-darkhall-s-lanes-the-coordination-board-in-the-room-ui-shadow.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RZhDR",
+    "thread:PRRT_kwDOSF9kNM6N5bum"
+  ],
+  "fetched_at": "2026-08-17T07:50:41.431Z",
+  "schema_version": "v1",
+  "commit_sha": "21e8a7bd74709a43c661a2d6cb6d7b4c9c792b7f",
+  "title": "feat(darkhall): S-lanes — the coordination board in the room UI (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T12:48:23Z",
+  "head_ref": "feat/darkhall-s-lanes"
+}
