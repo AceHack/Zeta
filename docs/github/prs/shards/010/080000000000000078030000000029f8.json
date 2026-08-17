@@ -1,0 +1,12 @@
+{
+  "pr_number": 10744,
+  "archive_path": "docs/history/pr-reviews/PR-10744-fix-hygiene-an-aggregate-scan-floor-sums-independent-instruments-so-it-cannot-se.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T05:33:56.695Z",
+  "schema_version": "v1",
+  "commit_sha": "e676a25015b91419d74cabb67955ed2092b57ff2",
+  "title": "fix(hygiene): an aggregate scan floor sums independent instruments, so it cannot see one route go dark",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T05:33:21Z",
+  "head_ref": "shadow/scan-floors-must-be-per-route"
+}
