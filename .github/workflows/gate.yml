@@ -827,6 +827,20 @@ jobs:
         # cannot report success the way `lint:markdown` did (#10712).
         run: bun run hygiene:no-ambient-credential-hoist
 
+      - name: Decide-by-grep guard (a crash must not read as a pass)
+        # Refuses `if TOOL ... | grep -q PAT; then fail; fi` in a workflow. A
+        # pipeline's exit status is the LAST command's, so TOOL's status is
+        # discarded; when TOOL dies on a signal (139 = 128+11 SIGSEGV, 134 =
+        # 128+6 SIGABRT) it prints nothing, the grep matches nothing, and the
+        # gate PASSES having checked nothing. Measured 2026-08-15: replaying
+        # lean-proof.yml's axiom-audit step with a `lake` that SIGSEGVs on every
+        # call exited 0 and printed "axiom audit clean (no sorryAx)" — 20 proof
+        # gates green with no prover output at all.
+        # Only the DENY polarity is flagged; `if ! ... | grep -q` is fail-closed.
+        # Exits 2 if it scans fewer workflows than its floor, so a scope
+        # regression cannot report success the way `lint:markdown` did (#10712).
+        run: bun run hygiene:no-decide-by-grep
+
       - name: Hygiene unit-test suite (closes the per-PR coverage gap)
         # Runs every src/Core.TypeScript/hygiene/*.test.ts. These are
         # fixture/in-memory tests (no MEMORY.md / user-scope deps), so they

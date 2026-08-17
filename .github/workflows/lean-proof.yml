@@ -154,6 +154,24 @@ jobs:
         # `lake env lean` only WARNS on `sorry` (exit 0), so type-check alone
         # would not catch a regression. Print the axiom set of the headline
         # lemmas and fail if `sorryAx` appears — the rigorous sorry-free check.
+        #
+        # RUN THROUGH run-checked.ts, NOT THROUGH A PIPELINE (2026-08-15).
+        # Every audit here used to read
+        #     if lake env lean FILE 2>&1 | grep -q 'sorryAx'; then ... exit 1; fi
+        # and a pipeline's exit status is the LAST command's, so `lean`'s status
+        # was discarded. If `lean` dies on a signal — 139 = 128+11 SIGSEGV,
+        # 134 = 128+6 SIGABRT — it prints nothing, `grep` finds nothing, the
+        # `if` is false, and the step PASSES having proved nothing. Every gate
+        # here decides by the ABSENCE of a string, which is exactly the class of
+        # check a crash cannot fail.
+        #
+        # Measured, not argued: this step extracted verbatim from `main` and
+        # replayed with a `lake` that does nothing but `kill -SEGV $$` exits 0
+        # and prints "axiom audit clean (no sorryAx)". `lean` itself is in the
+        # crash population (5 reports in one week on the maintainer's machine).
+        # run-checked.ts refuses to interpret output from a process that did not
+        # finish, and reports that as "no measurement" (exit 2), never as
+        # "no findings" (exit 0).
         working-directory: src/Core.Lean4
         run: |
           printf '#print axioms lemma1_toy\n#print axioms reconstruction_property\n#print axioms code_covers_boundary\n' \
@@ -220,74 +238,74 @@ jobs:
           printf 'open Zeta.FinDataProcessing\n#print axioms relEntropy_nonneg\n#print axioms gibbs_le\n#print axioms relEntropy_self\n#print axioms FinJointLogForm.mutualInfo_eq_logsum\n#print axioms MarkovChain.chan_le_one\n#print axioms MarkovChain.jointXZ_pY_eq\n#print axioms MarkovChain.jointXZ_pX_eq\n#print axioms MarkovChain.sum_out_z\n#print axioms MarkovChain.sum_out_y\n#print axioms MarkovChain.sum_qf_y\n#print axioms MarkovChain.sum_pf3_one\n#print axioms MarkovChain.sum_qf3_one\n#print axioms MarkovChain.pf3_zero_or_qf3_pos\n' \
             | cat Lean4/FinDataProcessing.lean - > /tmp/findata_axiom_audit.lean
 
-          if lake env lean /tmp/toymodel_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::ToyModel depends on sorryAx — a proof regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/erasure_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::ErasureDistance depends on sorryAx — a proof regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/privacy_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::IdentityForcesPrivacy depends on sorryAx — a proof regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/unbounded_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::UnboundedNeedsInfinitePrivacy depends on sorryAx — a proof regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/childfloor_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::ChildFloor depends on sorryAx — the child-floor proof regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/bifurcation_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::Bifurcation depends on sorryAx — the reconciliation-convergence proof regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/nrc_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::NonRegisterCollapse depends on sorryAx — the non-register-collapse proof regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/gengen_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::GenGenFixpoint core proofs depend on sorryAx — a proof regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/cd_doubly_even_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::CayleyDicksonDoublyEven depends on sorryAx — a proof regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/bridge_functor_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::BridgeFunctor depends on sorryAx — a proof regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/canonicalizer_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::CanonicalizerCorrect depends on sorryAx — a fusion-correctness proof regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/costrec_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::CostRecurrence depends on sorryAx — the cost recurrence / lax-monoidal proof regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/landauer_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::LandauerFloor depends on sorryAx — the Landauer two-ledger / predictive-advantage proof regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/meno_rmatrix_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::MenoBraidedRMatrix depends on sorryAx — the braided-not-symmetric / Yang-Baxter certificate regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/meno_balanced_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::MenoBalancedTwist depends on sorryAx — the balanced-structure / Garside full-twist certificate regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/meno_hexagons_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::MenoMonoidalHexagons depends on sorryAx — the associator/unitor/hexagon coherence certificate or the copy-discard degree argument regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/meno_centrality_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::MenoTwistCentrality depends on sorryAx — the derived-naturality / Schur-refutation certificate regressed to sorry/admit"
-            exit 1
-          fi
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "toymodel axiom audit" --deny 'sorryAx' \
+            --message "ToyModel depends on sorryAx — a proof regressed to sorry/admit" \
+            -- lake env lean /tmp/toymodel_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "erasure axiom audit" --deny 'sorryAx' \
+            --message "ErasureDistance depends on sorryAx — a proof regressed to sorry/admit" \
+            -- lake env lean /tmp/erasure_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "privacy axiom audit" --deny 'sorryAx' \
+            --message "IdentityForcesPrivacy depends on sorryAx — a proof regressed to sorry/admit" \
+            -- lake env lean /tmp/privacy_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "unbounded axiom audit" --deny 'sorryAx' \
+            --message "UnboundedNeedsInfinitePrivacy depends on sorryAx — a proof regressed to sorry/admit" \
+            -- lake env lean /tmp/unbounded_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "childfloor axiom audit" --deny 'sorryAx' \
+            --message "ChildFloor depends on sorryAx — the child-floor proof regressed to sorry/admit" \
+            -- lake env lean /tmp/childfloor_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "bifurcation axiom audit" --deny 'sorryAx' \
+            --message "Bifurcation depends on sorryAx — the reconciliation-convergence proof regressed to sorry/admit" \
+            -- lake env lean /tmp/bifurcation_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "nrc axiom audit" --deny 'sorryAx' \
+            --message "NonRegisterCollapse depends on sorryAx — the non-register-collapse proof regressed to sorry/admit" \
+            -- lake env lean /tmp/nrc_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "gengen axiom audit" --deny 'sorryAx' \
+            --message "GenGenFixpoint core proofs depend on sorryAx — a proof regressed to sorry/admit" \
+            -- lake env lean /tmp/gengen_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "cd_doubly_even axiom audit" --deny 'sorryAx' \
+            --message "CayleyDicksonDoublyEven depends on sorryAx — a proof regressed to sorry/admit" \
+            -- lake env lean /tmp/cd_doubly_even_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "bridge_functor axiom audit" --deny 'sorryAx' \
+            --message "BridgeFunctor depends on sorryAx — a proof regressed to sorry/admit" \
+            -- lake env lean /tmp/bridge_functor_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "canonicalizer axiom audit" --deny 'sorryAx' \
+            --message "CanonicalizerCorrect depends on sorryAx — a fusion-correctness proof regressed to sorry/admit" \
+            -- lake env lean /tmp/canonicalizer_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "costrec axiom audit" --deny 'sorryAx' \
+            --message "CostRecurrence depends on sorryAx — the cost recurrence / lax-monoidal proof regressed to sorry/admit" \
+            -- lake env lean /tmp/costrec_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "landauer axiom audit" --deny 'sorryAx' \
+            --message "LandauerFloor depends on sorryAx — the Landauer two-ledger / predictive-advantage proof regressed to sorry/admit" \
+            -- lake env lean /tmp/landauer_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "meno_rmatrix axiom audit" --deny 'sorryAx' \
+            --message "MenoBraidedRMatrix depends on sorryAx — the braided-not-symmetric / Yang-Baxter certificate regressed to sorry/admit" \
+            -- lake env lean /tmp/meno_rmatrix_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "meno_balanced axiom audit" --deny 'sorryAx' \
+            --message "MenoBalancedTwist depends on sorryAx — the balanced-structure / Garside full-twist certificate regressed to sorry/admit" \
+            -- lake env lean /tmp/meno_balanced_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "meno_hexagons axiom audit" --deny 'sorryAx' \
+            --message "MenoMonoidalHexagons depends on sorryAx — the associator/unitor/hexagon coherence certificate or the copy-discard degree argument regressed to sorry/admit" \
+            -- lake env lean /tmp/meno_hexagons_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "meno_centrality axiom audit" --deny 'sorryAx' \
+            --message "MenoTwistCentrality depends on sorryAx — the derived-naturality / Schur-refutation certificate regressed to sorry/admit" \
+            -- lake env lean /tmp/meno_centrality_axiom_audit.lean
           # ── Anti-vacuity guard (added 2026-08-10) ────────────────────────────────
           # Every audit below decides PASS by the ABSENCE of `sorryAx` in the output.
           # If a `#print axioms` names a declaration that does not resolve — renamed,
@@ -299,22 +317,22 @@ jobs:
           # written unqualified and all 13 silently resolved to nothing. Caught by
           # counting the printed declarations instead of trusting the exit code.
           for f in /tmp/*_axiom_audit.lean; do
-            if lake env lean "$f" 2>&1 | grep -q 'Unknown constant'; then
-              echo "::error::$f names a declaration that does not resolve — the audit would pass vacuously"
-              exit 1
-            fi
+            bun ../Core.TypeScript/hygiene/run-checked.ts \
+              --label "anti-vacuity $f" --deny 'Unknown constant' \
+              --message "$f names a declaration that does not resolve — the audit would pass vacuously" \
+              -- lake env lean "$f"
           done
 
-          if lake env lean /tmp/pce_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::PhaseClockErasure depends on sorryAx — a proof regressed to sorry/admit"
-            exit 1
-          fi
-          if lake env lean /tmp/schema_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::SchemaEvolution's CLOSED theorems depend on sorryAx — a proof regressed (the declared research-target sorry is excluded from this audit)"
-            exit 1
-          fi
-          if lake env lean /tmp/findata_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
-            echo "::error::FinDataProcessing's 13 sorry-free declarations depend on sorryAx — the open obligation has leaked into the closed tower"
-            exit 1
-          fi
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "pce axiom audit" --deny 'sorryAx' \
+            --message "PhaseClockErasure depends on sorryAx — a proof regressed to sorry/admit" \
+            -- lake env lean /tmp/pce_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "schema axiom audit" --deny 'sorryAx' \
+            --message "SchemaEvolution's CLOSED theorems depend on sorryAx — a proof regressed (the declared research-target sorry is excluded from this audit)" \
+            -- lake env lean /tmp/schema_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "findata axiom audit" --deny 'sorryAx' \
+            --message "FinDataProcessing's 13 sorry-free declarations depend on sorryAx — the open obligation has leaked into the closed tower" \
+            -- lake env lean /tmp/findata_axiom_audit.lean
           echo "Lean research-proof axiom audit clean (no sorryAx)."

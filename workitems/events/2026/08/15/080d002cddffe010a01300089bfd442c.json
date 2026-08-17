@@ -1,0 +1,14 @@
+{
+  "id": "080d002cddffe010a01300089bfd442c",
+  "at": "2026-08-15T13:28:08.444Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M02SQFZV087G0R000A4ZEXN",
+    "type": "bug",
+    "title": "bunx tsc segfaults nondeterministically (139); CI gates that decide by grep read a crash as a pass",
+    "slug": "bunx-tsc-segfaults-nondeterministically-139-ci-gates-that-de",
+    "priority": "P2",
+    "filename": "081M02SQFZV087G0R000A4ZEXN-bunx-tsc-segfaults-nondeterministically-139-ci-gates-that-de.md"
+  }
+}
