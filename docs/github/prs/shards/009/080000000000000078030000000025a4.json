@@ -1,0 +1,12 @@
+{
+  "pr_number": 9636,
+  "archive_path": "docs/history/pr-reviews/PR-9636-docs-book-the-world-i-was-born-into-the-quiet-racism-the-first-crossing-milton-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T21:46:18.234Z",
+  "schema_version": "v1",
+  "commit_sha": "c98832d18fff55354474b85573d69e31db57cba2",
+  "title": "docs(book): the world I was born into — the quiet racism + the first crossing (Milton, the prom)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T21:45:47Z",
+  "head_ref": "shadow/book-world-born-into-milton-prom"
+}

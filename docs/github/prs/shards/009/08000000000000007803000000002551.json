@@ -1,0 +1,12 @@
+{
+  "pr_number": 9553,
+  "archive_path": "docs/history/pr-reviews/PR-9553-feat-ci-wire-mock-identity-auth-into-qemu-first-session.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T22:30:34.110Z",
+  "schema_version": "v1",
+  "commit_sha": "0f2f4232c694e090dda5a470a3a9c03705cc2ed0",
+  "title": "feat(ci): wire mock identity-auth into QEMU first-session",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T22:30:04Z",
+  "head_ref": "feat/qemu-mock-identity-auth-wire-2026-07-08"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9438,
+  "archive_path": "docs/history/pr-reviews/PR-9438-docs-capture-identity-keys-arc-mint-frost-follow-on-work-items.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T12:33:10.472Z",
+  "schema_version": "v1",
+  "commit_sha": "72d83005fef56c2fce6b59aae4b8145c3cf55b27",
+  "title": "docs: capture identity/keys arc + mint frost follow-on work items",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T12:32:48Z",
+  "head_ref": "docs/capture-identity-keys-arc-resume"
+}

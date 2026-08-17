@@ -1,0 +1,12 @@
+{
+  "pr_number": 9964,
+  "archive_path": "docs/history/pr-reviews/PR-9964-docs-research-g1-bipartite-mach-zehnder-lift-lumen-handoff.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T15:20:31.772Z",
+  "schema_version": "v1",
+  "commit_sha": "d8a909bdd33e85f3b3e921e71c0ec3072e693b75",
+  "title": "docs(research): G1 bipartite Mach-Zehnder lift — Lumen handoff",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T15:20:03Z",
+  "head_ref": "otto/g1-bipartite-mz-lift-lumen-handoff"
+}

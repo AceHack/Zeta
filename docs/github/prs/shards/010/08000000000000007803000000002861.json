@@ -1,0 +1,12 @@
+{
+  "pr_number": 10337,
+  "archive_path": "docs/history/pr-reviews/PR-10337-cleanup-drop-four-spent-codemods-make-the-thrash-guard-announce-its-refusal.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T08:06:21.129Z",
+  "schema_version": "v1",
+  "commit_sha": "783343749f88cb5a1abb5b5e79239138622b8b41",
+  "title": "cleanup: drop four spent codemods; make the thrash guard announce its refusal",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T08:05:36Z",
+  "head_ref": "cleanup-patch-scripts-and-thrash-guard-signal"
+}

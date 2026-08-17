@@ -1,0 +1,12 @@
+{
+  "pr_number": 9432,
+  "archive_path": "docs/history/pr-reviews/PR-9432-feat-persona-keys-frost-ca-custody-device-attestation.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T06:50:33.919Z",
+  "schema_version": "v1",
+  "commit_sha": "007ce27f5a2fbe77ff8dd64522d4958ef09ad02d",
+  "title": "feat(persona-keys): frost CA custody + device attestation",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T06:50:10Z",
+  "head_ref": "feat/frost-ca-custody"
+}

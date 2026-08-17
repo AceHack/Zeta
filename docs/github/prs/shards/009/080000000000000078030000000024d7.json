@@ -1,0 +1,12 @@
+{
+  "pr_number": 9431,
+  "archive_path": "docs/history/pr-reviews/PR-9431-docs-ferry-bank-the-universal-meaning-interface-copilot-wave-theory-cpt-symmetri.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T06:37:38.985Z",
+  "schema_version": "v1",
+  "commit_sha": "7811fc2014bc61d67e49e8ca013205d6818b634e",
+  "title": "docs(ferry): bank the Universal Meaning Interface — copilot wave theory, CPT-symmetric, earned quotient (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T06:37:11Z",
+  "head_ref": "otto/bank-universal-meaning-interface-copilot-wave-cpt"
+}

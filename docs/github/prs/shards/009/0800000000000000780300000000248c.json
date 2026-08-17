@@ -1,0 +1,12 @@
+{
+  "pr_number": 9356,
+  "archive_path": "docs/history/pr-reviews/PR-9356-feat-ephemeron-weak-value-table-on-the-shiva-gc-collect-on-strong-ref-drop-shado.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T20:19:51.885Z",
+  "schema_version": "v1",
+  "commit_sha": "8d909110732de3972ac25198ecec1c15f517780c",
+  "title": "feat(ephemeron): weak-value table on the Shiva GC — collect on strong-ref-drop (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T20:19:30Z",
+  "head_ref": "otto/ephemeron-weak-value-table"
+}

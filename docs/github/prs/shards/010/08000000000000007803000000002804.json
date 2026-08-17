@@ -1,0 +1,12 @@
+{
+  "pr_number": 10244,
+  "archive_path": "docs/history/pr-reviews/PR-10244-docs-spec-n-version-protocol-two-independent-derivations-then-combine.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T22:40:46.947Z",
+  "schema_version": "v1",
+  "commit_sha": "6e880c444a882bf1bb77d8bfa45fdc485f8fa70e",
+  "title": "docs(spec): N-version protocol — two INDEPENDENT derivations, then combine",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T22:40:17Z",
+  "head_ref": "shadow/spec-n-version-protocol"
+}

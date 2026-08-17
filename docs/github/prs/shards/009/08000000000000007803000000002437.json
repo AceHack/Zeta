@@ -1,0 +1,12 @@
+{
+  "pr_number": 9271,
+  "archive_path": "docs/history/pr-reviews/PR-9271-feat-parse-cogen-the-3rd-futamura-projection-realized-in-domain-gen-gen-gen-shad.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:10:47.093Z",
+  "schema_version": "v1",
+  "commit_sha": "3696616f9e153b9b29f6eaceed0795799d724323",
+  "title": "feat(parse): Cogen — the 3rd Futamura projection realized in-domain (gen(gen)==gen) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:10:22Z",
+  "head_ref": "otto/futamura-lvl3-cogen"
+}

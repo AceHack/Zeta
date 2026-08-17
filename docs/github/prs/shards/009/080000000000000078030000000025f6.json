@@ -1,0 +1,12 @@
+{
+  "pr_number": 9718,
+  "archive_path": "docs/history/pr-reviews/PR-9718-feat-installer-assemble-zeta-multiboot-img-fat-layout.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T17:59:40.927Z",
+  "schema_version": "v1",
+  "commit_sha": "150bba5a600df33c0dda35413b6edff7206b6625",
+  "title": "feat(installer): assemble zeta-multiboot.img FAT layout",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T17:59:09Z",
+  "head_ref": "feat/multiboot-assemble-2026-07-11"
+}

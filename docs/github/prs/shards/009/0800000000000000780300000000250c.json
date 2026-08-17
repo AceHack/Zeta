@@ -1,0 +1,12 @@
+{
+  "pr_number": 9484,
+  "archive_path": "docs/history/pr-reviews/PR-9484-docs-ferry-dream-thread-close-the-no-impersonation-ethical-floor-governs-the-per.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T19:06:53.823Z",
+  "schema_version": "v1",
+  "commit_sha": "82f41f4c2fe31c4570da0590be16a1425d2aef71",
+  "title": "docs(ferry): dream-thread close — the no-impersonation ethical floor governs the persona-transport build (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T19:06:30Z",
+  "head_ref": "otto/no-impersonation-ethic-dream-thread-close"
+}

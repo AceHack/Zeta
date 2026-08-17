@@ -1,0 +1,12 @@
+{
+  "pr_number": 10157,
+  "archive_path": "docs/history/pr-reviews/PR-10157-review-algebra-lior-b689da6be-wset-ts-discardwset-counit-divergence-laws-unteste.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T19:54:32.160Z",
+  "schema_version": "v1",
+  "commit_sha": "95b42f43ba354f22b96db37167f782d58ff3a09c",
+  "title": "review(algebra): Lior b689da6be wset.ts — discardWSet counit divergence + laws untested",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T19:53:56Z",
+  "head_ref": "shadow/review-lior-wset-b689da6be"
+}

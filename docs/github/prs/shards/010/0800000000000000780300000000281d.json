@@ -1,0 +1,12 @@
+{
+  "pr_number": 10269,
+  "archive_path": "docs/history/pr-reviews/PR-10269-docs-combine-the-n-3-run-three-correct-implementations-that-cannot-verify-each-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T01:21:00.052Z",
+  "schema_version": "v1",
+  "commit_sha": "8719e1f464b1cef6031447a2cf820f07d99043cf",
+  "title": "docs(combine): the N=3 run — three correct implementations that cannot verify each other",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T01:20:24Z",
+  "head_ref": "shadow/n3-combine"
+}

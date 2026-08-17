@@ -1,0 +1,12 @@
+{
+  "pr_number": 9701,
+  "archive_path": "docs/history/pr-reviews/PR-9701-docs-book-remove-stray-sed-fragment-from-intake-log-next-up-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T15:27:00.780Z",
+  "schema_version": "v1",
+  "commit_sha": "ba0ee26e1a81bad4d2a74a23b2f59924aba47f41",
+  "title": "docs(book): remove stray sed fragment from INTAKE-LOG NEXT-UP (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T15:26:34Z",
+  "head_ref": "fix-intake-log-stray-fragment"
+}

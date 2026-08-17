@@ -1,0 +1,12 @@
+{
+  "pr_number": 10277,
+  "archive_path": "docs/history/pr-reviews/PR-10277-research-e8-part-iv-the-complete-tier-law-nothing-left-open.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T05:08:32.601Z",
+  "schema_version": "v1",
+  "commit_sha": "3fd182cccb37cf8a12603963fb145954a91c3b6d",
+  "title": "research(e8): Part IV — the complete tier law; nothing left open",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T05:08:00Z",
+  "head_ref": "otto/e8-complete-tier-law"
+}

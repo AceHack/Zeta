@@ -1,0 +1,12 @@
+{
+  "pr_number": 9952,
+  "archive_path": "docs/history/pr-reviews/PR-9952-fix-design-two-live-prescriptions-still-used-the-retired-vocabulary.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T01:15:06.945Z",
+  "schema_version": "v1",
+  "commit_sha": "d27bfdb10c23ba97bd5c2d372e01a2f1b7b155ea",
+  "title": "fix(design): two live prescriptions still used the retired vocabulary",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T01:14:37Z",
+  "head_ref": "shadow/design-doc-retired-vocab-prescriptions"
+}

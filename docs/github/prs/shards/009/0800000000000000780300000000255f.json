@@ -1,0 +1,12 @@
+{
+  "pr_number": 9567,
+  "archive_path": "docs/history/pr-reviews/PR-9567-feat-3-agent-heartbeat-reviewer-doesn-t-self-approve.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T23:06:41.891Z",
+  "schema_version": "v1",
+  "commit_sha": "5a6ef8d9dc379fdc96d53450e31a39338fcbcc29",
+  "title": "feat: 3-agent heartbeat + reviewer doesn't self-approve",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T23:06:11Z",
+  "head_ref": "claim/kiro-3-agent-heartbeat-2026-07-08"
+}

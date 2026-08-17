@@ -1,0 +1,12 @@
+{
+  "pr_number": 9301,
+  "archive_path": "docs/history/pr-reviews/PR-9301-docs-handoffs-otto-cowork-session-handoff-2026-07-02-next-otto.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T13:34:40.854Z",
+  "schema_version": "v1",
+  "commit_sha": "dfce350caf517121e6a551de40cf9f607d7735b0",
+  "title": "docs(handoffs): Otto Cowork session handoff 2026-07-02 → next Otto",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T13:34:17Z",
+  "head_ref": "otto/handoff-cowork-2026-07-02"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9370,
+  "archive_path": "docs/history/pr-reviews/PR-9370-codex-add-universal-temperature-readout-treaty.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T22:42:36.489Z",
+  "schema_version": "v1",
+  "commit_sha": "8cd21a3d5af1d037b140a5f3ba1067b55bf31cee",
+  "title": "[codex] add universal temperature readout treaty",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T22:42:08Z",
+  "head_ref": "codex/temperature-readout-treaty"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10050,
+  "archive_path": "docs/history/pr-reviews/PR-10050-book-stage-held-optional-raw-the-anti-cult-structural-guard-the-1-on-the-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T22:43:53.520Z",
+  "schema_version": "v1",
+  "commit_sha": "7154b3623f8116556bfe69e2789f7b71cf6f7eda",
+  "title": "book: stage HELD/OPTIONAL RAW — the anti-cult structural guard (the −1 on the −1)",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T22:43:20Z",
+  "head_ref": "docs/book-held-anti-cult-structural-guard-raw-20260804"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10131,
+  "archive_path": "docs/history/pr-reviews/PR-10131-ci-installer-gate-the-usb-zflash-provisioning-unit-tests.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T19:17:46.857Z",
+  "schema_version": "v1",
+  "commit_sha": "fcd9464ca98d8af2da01388caf89bf4c207f4917",
+  "title": "ci(installer): gate the USB/zflash provisioning unit tests",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T19:17:07Z",
+  "head_ref": "shadow/gate-installer-unit-tests"
+}

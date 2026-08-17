@@ -1,0 +1,12 @@
+{
+  "pr_number": 9877,
+  "archive_path": "docs/history/pr-reviews/PR-9877-feat-planning-two-invariants-for-the-flat-society-maximin-floor-hat-non-transfer.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:33:34.142Z",
+  "schema_version": "v1",
+  "commit_sha": "827f83474d79d2ff90944a56802bed95514e34c5",
+  "title": "feat(planning): two invariants for the flat society — maximin floor + hat non-transferability",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T13:33:04Z",
+  "head_ref": "shadow/society-invariants-maximin-and-hat-residue"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9838,
+  "archive_path": "docs/history/pr-reviews/PR-9838-chore-workitem-close-the-braided-monoidal-work-item-every-specified-leg-landed-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T04:07:49.541Z",
+  "schema_version": "v1",
+  "commit_sha": "10cc524b2d660fc55fa6eac2fa477e4c4b3d3046",
+  "title": "chore(workitem): close the braided-monoidal work-item — every specified leg landed and gated",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T04:07:21Z",
+  "head_ref": "shadow/close-braided-workitem"
+}

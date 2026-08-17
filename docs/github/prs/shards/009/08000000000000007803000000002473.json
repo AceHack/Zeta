@@ -1,0 +1,12 @@
+{
+  "pr_number": 9331,
+  "archive_path": "docs/history/pr-reviews/PR-9331-docs-research-ferry-the-arrow-escape-collective-binary-decisions-are-local-zeta-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T18:04:19.377Z",
+  "schema_version": "v1",
+  "commit_sha": "265e32396c6fe2125215dc8ae135991b9b63b772",
+  "title": "docs(research): ferry the Arrow-escape — collective binary decisions are local, Zeta is belief aggregation not social choice (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T18:03:56Z",
+  "head_ref": "otto/ferry-arrow-escape-society-emergence"
+}

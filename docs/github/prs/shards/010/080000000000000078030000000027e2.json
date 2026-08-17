@@ -1,0 +1,12 @@
+{
+  "pr_number": 10210,
+  "archive_path": "docs/history/pr-reviews/PR-10210-docs-handoff-otto-lumen-errors-teach-mutual-empowerment-online-bnn-soraya-math-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:08:17.455Z",
+  "schema_version": "v1",
+  "commit_sha": "251a8c0eff29f3baf5d363c2688522a20ab5bed8",
+  "title": "docs(handoff): Otto → Lumen — errors-teach / mutual-empowerment / online-BNN (+ Soraya/math-team routing)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T19:07:44Z",
+  "head_ref": "shadow/handoff-lumen-errors-empowerment-bnn"
+}

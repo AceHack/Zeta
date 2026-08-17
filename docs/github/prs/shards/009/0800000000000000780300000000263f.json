@@ -1,0 +1,17 @@
+{
+  "pr_number": 9791,
+  "archive_path": "docs/history/pr-reviews/PR-9791-docs-workitems-ferry-soraya-s-braided-monoidal-earning-spec-into-a-tracked-work-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7cC4Xc",
+    "comment:PRRC_kwDOSF9kNM7cC4YD",
+    "thread:PRRT_kwDOSF9kNM6VeC6r",
+    "thread:PRRT_kwDOSF9kNM6VeC7J"
+  ],
+  "fetched_at": "2026-07-31T16:07:43.225Z",
+  "schema_version": "v1",
+  "commit_sha": "6894ed1ed16498d212b02f46313138ba118ca3c3",
+  "title": "docs(workitems): ferry Soraya's braided-monoidal earning spec into a tracked work-item",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T16:03:32Z",
+  "head_ref": "shadow/ferry-soraya-braided-spec"
+}

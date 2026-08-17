@@ -1,0 +1,12 @@
+{
+  "pr_number": 10242,
+  "archive_path": "docs/history/pr-reviews/PR-10242-docs-cleanroom-two-team-rule-clean-room-spec-for-key-custody-rotation-identity-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T22:35:34.502Z",
+  "schema_version": "v1",
+  "commit_sha": "ae5d4a771eabbfbd519c48505e3c7746017b483e",
+  "title": "docs(cleanroom): two-team rule + clean-room spec for key custody/rotation + identity homoiconicity",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T22:35:00Z",
+  "head_ref": "shadow/cleanroom-two-team-discipline"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9713,
+  "archive_path": "docs/history/pr-reviews/PR-9713-feat-core-adinkraclock-fork-probe-q-q-falls-out-as-scheduler-advanceby-verdict-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T17:25:04.443Z",
+  "schema_version": "v1",
+  "commit_sha": "5905d78e3acbcd96a5b3dadd99bafac483e9ab94",
+  "title": "feat(core): AdinkraClock fork-probe — ∂_τ={Q,Q} falls out as scheduler AdvanceBy; verdict LayeringBToA (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T17:24:34Z",
+  "head_ref": "adinkra-clock-fork-probe"
+}

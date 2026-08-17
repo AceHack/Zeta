@@ -1,0 +1,12 @@
+{
+  "pr_number": 9361,
+  "archive_path": "docs/history/pr-reviews/PR-9361-feat-shiva-gc-pause-not-death-the-virtual-actor-gc-criterion-orleans-over-reticu.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T20:44:36.277Z",
+  "schema_version": "v1",
+  "commit_sha": "75b279391abf15bbf3faa8232afa3b01ec10e8a5",
+  "title": "feat(shiva-gc): pause not death + the virtual-actor GC criterion (Orleans over Reticulum) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T20:44:10Z",
+  "head_ref": "otto/shiva-pause-not-death-resumable"
+}

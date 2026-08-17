@@ -1,0 +1,12 @@
+{
+  "pr_number": 10234,
+  "archive_path": "docs/history/pr-reviews/PR-10234-research-e8-part-ii-the-fragment-group-is-d-c-the-quantization-follows-subalgebr.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T21:52:37.947Z",
+  "schema_version": "v1",
+  "commit_sha": "35233b05b519fbcb5109492e23f9ec87c3dc7f7d",
+  "title": "research(e8): Part II — the fragment group is D₈×C₂; the quantization follows subalgebra signature",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T21:52:08Z",
+  "head_ref": "otto/e8-fragment-group-d8xc2"
+}

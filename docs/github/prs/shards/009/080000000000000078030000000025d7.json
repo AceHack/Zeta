@@ -1,0 +1,12 @@
+{
+  "pr_number": 9687,
+  "archive_path": "docs/history/pr-reviews/PR-9687-docs-book-intake-log-resume-marker-two-track-preservation-rule-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T13:10:26.354Z",
+  "schema_version": "v1",
+  "commit_sha": "0f1b1268e844f81c613ea11af1a4f2e8967cd037",
+  "title": "docs(book): intake-log resume marker + two-track preservation rule (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T13:09:58Z",
+  "head_ref": "book-intake-log-resume-marker"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9194,
+  "archive_path": "docs/history/pr-reviews/PR-9194-feat-core-eventenvelope-cloudevents-debezium-categories-debezium-op-z-set-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T20:24:19.271Z",
+  "schema_version": "v1",
+  "commit_sha": "a6ddbb9ac830579b0fe865f9ae719fc9e0d28256",
+  "title": "feat(core): EventEnvelope — CloudEvents + Debezium categories, Debezium op ≈ Z-set ±1",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T20:23:57Z",
+  "head_ref": "otto/event-envelope-cloudevents-debezium"
+}

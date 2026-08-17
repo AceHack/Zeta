@@ -1,0 +1,12 @@
+{
+  "pr_number": 9390,
+  "archive_path": "docs/history/pr-reviews/PR-9390-feat-reticulum-bus-meter-real-mesh-telemetry-arms-the-f-readout-end-to-end.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T01:05:21.805Z",
+  "schema_version": "v1",
+  "commit_sha": "05dd82137b7b47d796e0ecc76ec6840b61fc8944",
+  "title": "feat(reticulum-bus-meter): real mesh telemetry arms the F# readout end-to-end",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T01:04:57Z",
+  "head_ref": "shadow/reticulum-bus-meter"
+}

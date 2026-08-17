@@ -1,0 +1,12 @@
+{
+  "pr_number": 9324,
+  "archive_path": "docs/history/pr-reviews/PR-9324-codex-test-qsharp-lock-heat-signal-treaty.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T16:02:00.919Z",
+  "schema_version": "v1",
+  "commit_sha": "41b26f236f2fef9e1090dddc6ebea641bd58499c",
+  "title": "[codex] test(qsharp): lock heat signal treaty",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T16:01:36Z",
+  "head_ref": "codex/qsharp-heat-signal-treaty"
+}

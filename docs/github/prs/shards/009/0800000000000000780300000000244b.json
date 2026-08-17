@@ -1,0 +1,12 @@
+{
+  "pr_number": 9291,
+  "archive_path": "docs/history/pr-reviews/PR-9291-feat-work-items-dora-bag-folds-over-event-g-set-081ksxn-slice-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T06:38:43.058Z",
+  "schema_version": "v1",
+  "commit_sha": "73b14be9fef998ee3464490a6cf43da4ca37090d",
+  "title": "feat(work-items): DORA Bag-folds over event G-Set (081KSXN slice 3)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T06:38:17Z",
+  "head_ref": "feat/081KSXN-workitem-dora-bag-folds"
+}

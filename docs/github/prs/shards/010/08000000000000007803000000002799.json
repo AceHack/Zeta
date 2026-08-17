@@ -1,0 +1,12 @@
+{
+  "pr_number": 10137,
+  "archive_path": "docs/history/pr-reviews/PR-10137-feat-browser-synchronize-checkpoint-invalidations-across-tabs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T19:43:22.085Z",
+  "schema_version": "v1",
+  "commit_sha": "d648129a1541e11acbac2dc133c70fceee30e21d",
+  "title": "feat(browser): synchronize checkpoint invalidations across tabs",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T19:42:45Z",
+  "head_ref": "claim/task-browser-checkpoint-invalidation"
+}

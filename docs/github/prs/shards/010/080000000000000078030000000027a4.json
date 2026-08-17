@@ -1,0 +1,12 @@
+{
+  "pr_number": 10148,
+  "archive_path": "docs/history/pr-reviews/PR-10148-feat-browser-wire-production-service-worker-tab-transport.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T18:44:50.130Z",
+  "schema_version": "v1",
+  "commit_sha": "fa50bdbd05a0ab40820944e81f46db478cc21cc7",
+  "title": "feat(browser): wire production service-worker tab transport",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T18:44:17Z",
+  "head_ref": "codex/browser-pwa-checkpoint-transport"
+}

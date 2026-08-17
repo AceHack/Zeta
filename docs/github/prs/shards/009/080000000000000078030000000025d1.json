@@ -1,0 +1,12 @@
+{
+  "pr_number": 9681,
+  "archive_path": "docs/history/pr-reviews/PR-9681-bug-workitem-diskspine-content-addressed-handles-need-ref-counting-p1-from-9680-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T12:24:02.877Z",
+  "schema_version": "v1",
+  "commit_sha": "e678e9a2fbc06e3f1944874b102a6e37f435937a",
+  "title": "bug(workitem): DiskSpine content-addressed handles need ref-counting (P1 from #9680) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T12:23:36Z",
+  "head_ref": "diskspine-refcount-p1-followup"
+}

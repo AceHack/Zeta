@@ -1,0 +1,12 @@
+{
+  "pr_number": 9669,
+  "archive_path": "docs/history/pr-reviews/PR-9669-task-workitem-fork-request-to-the-creator-f-hott-gap-routed-build-deferred-shado.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T07:18:03.131Z",
+  "schema_version": "v1",
+  "commit_sha": "c0694233434bdf259782af0198a13d1aa0ed0758",
+  "title": "task(workitem): fork-request to the creator — F#→HoTT gap; routed, build deferred (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T07:17:33Z",
+  "head_ref": "shadow/workitem-fork-request-fsharp-hott"
+}

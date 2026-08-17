@@ -1,0 +1,12 @@
+{
+  "pr_number": 10317,
+  "archive_path": "docs/history/pr-reviews/PR-10317-darkhall-accept-an-explicit-sequence-of-0-pin-the-boundary.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T02:26:18.707Z",
+  "schema_version": "v1",
+  "commit_sha": "60aeaa6f060c8ed986131656f0587c9026f338ec",
+  "title": "darkhall: accept an explicit sequence of 0 — pin the boundary",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T02:25:47Z",
+  "head_ref": "darkhall-sequence-zero-boundary"
+}

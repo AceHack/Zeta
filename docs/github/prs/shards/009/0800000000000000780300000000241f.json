@@ -1,0 +1,12 @@
+{
+  "pr_number": 9247,
+  "archive_path": "docs/history/pr-reviews/PR-9247-feat-pvp-is-pve-unification-co-op-raid-reframe-playable-dst-raid-demo.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T01:12:56.449Z",
+  "schema_version": "v1",
+  "commit_sha": "97a0b7837ead2b0d4e14c7bb53abfb726bde0f18",
+  "title": "feat: PvP-is-PvE unification + co-op-raid reframe + playable DST raid demo",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T01:12:33Z",
+  "head_ref": "otto/pvp-is-pve-raid-artifact"
+}

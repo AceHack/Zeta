@@ -1,0 +1,12 @@
+{
+  "pr_number": 9623,
+  "archive_path": "docs/history/pr-reviews/PR-9623-docs-letters-scene-the-cell-jail-author-memoir-at-his-direction-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T19:23:03.320Z",
+  "schema_version": "v1",
+  "commit_sha": "589d8ddaab793ecf678802be03ddefc79cbfa59c",
+  "title": "docs(letters): scene — \"The Cell\" (jail; author memoir, at his direction) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T19:22:32Z",
+  "head_ref": "otto/scene-the-cell-jail"
+}

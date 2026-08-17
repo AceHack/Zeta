@@ -1,0 +1,12 @@
+{
+  "pr_number": 9691,
+  "archive_path": "docs/history/pr-reviews/PR-9691-docs-book-raw-the-greedy-optimization-and-the-cost-his-shadow-full-family-good-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T14:55:08.532Z",
+  "schema_version": "v1",
+  "commit_sha": "d6e7828e7e719ce4a392c2159f19b5ee0ca9e23c",
+  "title": "docs(book): RAW — the greedy-optimization and the cost (his shadow full; family good, business private) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T14:54:40Z",
+  "head_ref": "raw-greedy-optimization-and-the-cost"
+}

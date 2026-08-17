@@ -1,0 +1,12 @@
+{
+  "pr_number": 9679,
+  "archive_path": "docs/history/pr-reviews/PR-9679-task-workitem-9551-stranded-stack-migration-lint-layer-not-separable-whole-stack.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T12:04:33.463Z",
+  "schema_version": "v1",
+  "commit_sha": "f3e9df3462b952db840fbf194c62b787ff9d5ba2",
+  "title": "task(workitem): #9551 stranded-stack migration — lint layer NOT separable, whole-stack-or-nothing (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T12:04:08Z",
+  "head_ref": "workitem-9551-stack-migration-diagnosis"
+}

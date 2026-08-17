@@ -1,0 +1,12 @@
+{
+  "pr_number": 9792,
+  "archive_path": "docs/history/pr-reviews/PR-9792-feat-menobraided-the-genuine-conjugation-rack-braiding-earns-braided-not-symmetr.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T16:14:00.876Z",
+  "schema_version": "v1",
+  "commit_sha": "03ceba2a5277f46c9b8e42126521da93dd6b7dd0",
+  "title": "feat(MenoBraided): the genuine (conjugation-rack) braiding — earns braided, not symmetric (Increment 1)",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T16:12:44Z",
+  "head_ref": "shadow/menobraided-genuine-braiding"
+}

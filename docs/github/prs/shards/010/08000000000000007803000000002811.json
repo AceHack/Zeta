@@ -1,0 +1,12 @@
+{
+  "pr_number": 10257,
+  "archive_path": "docs/history/pr-reviews/PR-10257-docs-research-today-s-two-remainders-are-1984-relocating-and-each-has-an-owner.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T00:12:50.279Z",
+  "schema_version": "v1",
+  "commit_sha": "51094aeb7afffda1c4609a1c882c22651a3cea98",
+  "title": "docs(research): today's two remainders are 1984 relocating — and each has an owner",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T00:12:13Z",
+  "head_ref": "shadow/escalation-and-availability-relocation"
+}

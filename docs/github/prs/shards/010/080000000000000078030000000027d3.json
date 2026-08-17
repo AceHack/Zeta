@@ -1,0 +1,12 @@
+{
+  "pr_number": 10195,
+  "archive_path": "docs/history/pr-reviews/PR-10195-docs-workitem-file-flake-parity-debt-usb-nixos-installer-flake-nix-omits-the-mis.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T17:33:12.814Z",
+  "schema_version": "v1",
+  "commit_sha": "1182af19a0e1675f86259800adbfe676e41951d7",
+  "title": "docs(workitem): file flake-parity DEBT — usb-nixos-installer/flake.nix omits the mise-pin overlay",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T17:32:38Z",
+  "head_ref": "shadow/file-flake-parity-debt"
+}

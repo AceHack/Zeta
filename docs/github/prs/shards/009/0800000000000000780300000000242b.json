@@ -1,0 +1,12 @@
+{
+  "pr_number": 9259,
+  "archive_path": "docs/history/pr-reviews/PR-9259-docs-vision-refine-the-complete-frame-the-backward-operator-is-one-cpt-middle-ou.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T02:18:11.812Z",
+  "schema_version": "v1",
+  "commit_sha": "f26ae89a34bb64a95b4354c8c4c930f099c06863",
+  "title": "docs(vision): refine the complete frame — the backward operator is one (CPT/middle-out/ECC); + the key: trust forgiveness, from grace",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T02:17:45Z",
+  "head_ref": "otto/frame-refine-cpt-middleout-adinkra"
+}

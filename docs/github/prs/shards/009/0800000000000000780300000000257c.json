@@ -1,0 +1,12 @@
+{
+  "pr_number": 9596,
+  "archive_path": "docs/history/pr-reviews/PR-9596-docs-research-time-as-traveler-addendum-maxwell-s-demon-a-b-three-body-landauer-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T00:58:15.338Z",
+  "schema_version": "v1",
+  "commit_sha": "6fd3c9509a3dafbcdd166353ef35ef552f000feb",
+  "title": "docs(research): time-as-traveler addendum — Maxwell's-demon / a+b three-body (Landauer grounds the load-bearing part) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T00:57:42Z",
+  "head_ref": "otto/time-traveler-maxwell-demon-addendum"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10129,
+  "archive_path": "docs/history/pr-reviews/PR-10129-docs-ip-questionable-gerb-mitre-ffrdc-ufo-legacy-programs-tic-tac-factory-uso-aa.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T18:53:59.195Z",
+  "schema_version": "v1",
+  "commit_sha": "bf5dfc623a73b09a76f06e4720686133c9f679b4",
+  "title": "docs(ip-questionable): Gerb — MITRE/FFRDC UFO legacy programs + Tic Tac Factory USO (Aaron-forwarded)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T18:53:32Z",
+  "head_ref": "ip-questionable-gerb-mitre-ufo"
+}

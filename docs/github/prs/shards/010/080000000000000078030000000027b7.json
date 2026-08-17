@@ -1,0 +1,12 @@
+{
+  "pr_number": 10167,
+  "archive_path": "docs/history/pr-reviews/PR-10167-fix-lint-guard-unchecked-index-in-k8s-validate-applications-ts-ts2532-ts18048.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T20:50:01.238Z",
+  "schema_version": "v1",
+  "commit_sha": "5a984b5cf88b2378dfd7dde8873740eb25014036",
+  "title": "fix(lint): guard unchecked-index in k8s validate-applications.ts (TS2532/TS18048)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T20:49:31Z",
+  "head_ref": "shadow/fix-validate-applications-unchecked-index"
+}

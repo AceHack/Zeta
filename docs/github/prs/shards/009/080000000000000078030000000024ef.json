@@ -1,0 +1,12 @@
+{
+  "pr_number": 9455,
+  "archive_path": "docs/history/pr-reviews/PR-9455-codex-render-llmtv-temperature-treaty-lane.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T16:59:19.766Z",
+  "schema_version": "v1",
+  "commit_sha": "2e257519f92b924fa86f9fa3ccab96285f140c64",
+  "title": "[codex] render LLMTV temperature treaty lane",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T16:58:52Z",
+  "head_ref": "codex/llmtv-temperature-visual-lane"
+}

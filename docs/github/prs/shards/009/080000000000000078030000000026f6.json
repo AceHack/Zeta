@@ -1,0 +1,12 @@
+{
+  "pr_number": 9974,
+  "archive_path": "docs/history/pr-reviews/PR-9974-feat-browser-node-persist-bounded-room-checkpoints.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T17:48:51.794Z",
+  "schema_version": "v1",
+  "commit_sha": "f88407d564c4eb3fe5fc282d8e202a9c19f2f679",
+  "title": "feat(browser-node): persist bounded room checkpoints",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T17:48:24Z",
+  "head_ref": "claim/task-browser-room-checkpoint-codec"
+}

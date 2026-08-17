@@ -1,0 +1,12 @@
+{
+  "pr_number": 10201,
+  "archive_path": "docs/history/pr-reviews/PR-10201-docs-workitem-file-install-sh-ci-parity-gap-no-root-bun-install-causes-phantom-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T18:26:42.084Z",
+  "schema_version": "v1",
+  "commit_sha": "189c41b49d9b9d8466804bc6d9b63bb013310a45",
+  "title": "docs(workitem): file install.sh/CI parity gap — no root bun install causes phantom TS2307s",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T18:26:09Z",
+  "head_ref": "shadow/file-install-sh-bun-install-parity-gap"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9278,
+  "archive_path": "docs/history/pr-reviews/PR-9278-feat-isa-the-isa-as-data-homoiconic-instruction-sets-sonic-mario-path-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:34:39.391Z",
+  "schema_version": "v1",
+  "commit_sha": "b6d856f25afc97baeb0fae1e4aa037d5abde7f0f",
+  "title": "feat(isa): the ISA as data — homoiconic instruction sets (sonic/mario path) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:34:15Z",
+  "head_ref": "otto/homoiconic-isa-spec-as-data"
+}

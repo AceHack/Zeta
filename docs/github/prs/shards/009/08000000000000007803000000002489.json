@@ -1,0 +1,12 @@
+{
+  "pr_number": 9353,
+  "archive_path": "docs/history/pr-reviews/PR-9353-docs-research-the-bernoulli-bridge-map-where-the-1-12-connection-is-really-there.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T19:39:30.311Z",
+  "schema_version": "v1",
+  "commit_sha": "a596b3bafdfe9cc59ec2e52d1a21425e37f261cd",
+  "title": "docs(research): the Bernoulli bridge map — where the −1/12 connection is really there",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T19:39:08Z",
+  "head_ref": "shadow/bernoulli-bridge-map"
+}

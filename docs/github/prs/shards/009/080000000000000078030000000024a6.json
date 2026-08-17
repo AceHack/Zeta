@@ -1,0 +1,12 @@
+{
+  "pr_number": 9382,
+  "archive_path": "docs/history/pr-reviews/PR-9382-docs-research-the-whole-stack-is-one-shape-multiplexedwebsockets-reticulum-bidir.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T00:08:31.306Z",
+  "schema_version": "v1",
+  "commit_sha": "e11ac5d645427450de3b63f9ea239fc9bd7db8ba",
+  "title": "docs(research): the whole stack is one shape — MultiplexedWebSockets → Reticulum, bidirectional + mutually-interruptible (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T00:08:07Z",
+  "head_ref": "otto/ferry-bidirectional-mutual-interrupt-stack"
+}

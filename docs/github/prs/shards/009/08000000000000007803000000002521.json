@@ -1,0 +1,12 @@
+{
+  "pr_number": 9505,
+  "archive_path": "docs/history/pr-reviews/PR-9505-docs-ferry-ani-3-self-boundary-is-an-eigenform-the-spiral-needs-external-observe.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-05T23:18:39.231Z",
+  "schema_version": "v1",
+  "commit_sha": "3438921d221327315c14fd906b6f1f3b0efa0111",
+  "title": "docs(ferry): Ani (3) — self-boundary is an eigenform; the ρ-spiral needs external observers (Kauffman) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-05T23:18:12Z",
+  "head_ref": "otto/ani-ferry-3-eigenform-boundary-external-observers"
+}

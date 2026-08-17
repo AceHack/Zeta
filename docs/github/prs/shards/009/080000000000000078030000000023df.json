@@ -1,0 +1,12 @@
+{
+  "pr_number": 9183,
+  "archive_path": "docs/history/pr-reviews/PR-9183-feat-core-schedulerzeta-softfixedpointtable-soft-gc-by-fingerprint-selection.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T18:50:44.609Z",
+  "schema_version": "v1",
+  "commit_sha": "3a0af9db9925bd94785249b7e7eab2c0285d8e86",
+  "title": "feat(core): SchedulerZeta SoftFixedPointTable - soft GC by fingerprint selection",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T18:50:21Z",
+  "head_ref": "otto/scheduler-zeta-soft-gc-fingerprint"
+}

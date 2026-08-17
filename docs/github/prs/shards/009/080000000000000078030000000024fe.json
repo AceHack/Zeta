@@ -1,0 +1,12 @@
+{
+  "pr_number": 9470,
+  "archive_path": "docs/history/pr-reviews/PR-9470-test-fsharp-soraya-s-equivariance-lyapunov-pair-soft-regime-is-invariant-not-att.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T18:04:33.865Z",
+  "schema_version": "v1",
+  "commit_sha": "a49e5ef38fadea38fee1e63c202ecd93c2dace5f",
+  "title": "test(fsharp): Soraya's equivariance+Lyapunov pair — soft regime is invariant, NOT attracting (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T18:04:10Z",
+  "head_ref": "otto/fscheck-equivariance-lyapunov-pair"
+}

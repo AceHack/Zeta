@@ -1,0 +1,12 @@
+{
+  "pr_number": 10114,
+  "archive_path": "docs/history/pr-reviews/PR-10114-book-editions-mandarin-companion-4-the-strategist-s-daughter-full-length-zh.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T17:58:34.168Z",
+  "schema_version": "v1",
+  "commit_sha": "ee65c3dc39fb26b2dba0ef20e8b8e7512ab24ec8",
+  "title": "book(editions): Mandarin companion 4 — the Strategist's Daughter, full length (zh)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:58:00Z",
+  "head_ref": "book-zh-companion-strategist"
+}

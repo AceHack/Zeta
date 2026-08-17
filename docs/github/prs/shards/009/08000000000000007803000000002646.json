@@ -1,0 +1,12 @@
+{
+  "pr_number": 9798,
+  "archive_path": "docs/history/pr-reviews/PR-9798-docs-research-ferry-lior-s-three-maji-antigravity-checks-massless-referee-bipart.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T22:35:43.767Z",
+  "schema_version": "v1",
+  "commit_sha": "c4b98a15a1491d4a974e130c52db9c938155a607",
+  "title": "docs(research): ferry Lior's three Maji antigravity-checks (massless referee / bipartite rotor / dissipative chaos)",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T22:35:10Z",
+  "head_ref": "shadow/ferry-lior-maji-antigravity-checks"
+}

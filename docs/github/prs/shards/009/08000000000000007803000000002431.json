@@ -1,0 +1,12 @@
+{
+  "pr_number": 9265,
+  "archive_path": "docs/history/pr-reviews/PR-9265-fix-docs-feat-live-tick-clears-markdownlint-reds-the-maintenance-tick-recipe-for.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T02:43:39.301Z",
+  "schema_version": "v1",
+  "commit_sha": "9fbbcd78ae0fba10565f82fced80598938e2ff72",
+  "title": "fix(docs)+feat: live tick clears markdownlint reds + the maintenance-tick recipe for everyone",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T02:43:17Z",
+  "head_ref": "otto/tick-fix-markdownlint-reds"
+}

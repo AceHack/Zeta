@@ -1,0 +1,12 @@
+{
+  "pr_number": 9535,
+  "archive_path": "docs/history/pr-reviews/PR-9535-fix-heartbeat-flush-to-main-hourly-was-daily.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T21:35:59.327Z",
+  "schema_version": "v1",
+  "commit_sha": "b750798da05c93ddf36b2ea3a829380f5220b3a7",
+  "title": "fix(heartbeat): flush to main hourly (was daily)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T21:35:32Z",
+  "head_ref": "claim/kiro-hourly-flush-2026-07-08"
+}

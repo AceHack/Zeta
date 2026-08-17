@@ -1,0 +1,12 @@
+{
+  "pr_number": 9360,
+  "archive_path": "docs/history/pr-reviews/PR-9360-docs-prior-art-anchor-futamura-hayes-ephemerons-ferry-the-geo-distributed-db-of-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T20:39:49.058Z",
+  "schema_version": "v1",
+  "commit_sha": "c28e244b60c765dc394197b782fa8edc41d20b43",
+  "title": "docs(prior-art): anchor Futamura + Hayes ephemerons; ferry the geo-distributed-DB-of-intelligence synthesis (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T20:39:22Z",
+  "head_ref": "otto/anchor-futamura-ephemeron-prior-art"
+}

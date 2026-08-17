@@ -1,0 +1,12 @@
+{
+  "pr_number": 10246,
+  "archive_path": "docs/history/pr-reviews/PR-10246-docs-workitem-usb-bugs-reproducible-wifi-2-consecutive-green-install-sh-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T22:56:15.016Z",
+  "schema_version": "v1",
+  "commit_sha": "6cfbe5fb97a5756d808ef783c8fbc651dba74cd1",
+  "title": "docs(workitem): USB bugs reproducible — wifi 2 consecutive green, install.sh 4",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T22:55:46Z",
+  "head_ref": "shadow/usb-bugs-reproducibility-confirmed"
+}

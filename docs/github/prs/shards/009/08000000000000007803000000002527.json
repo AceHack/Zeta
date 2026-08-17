@@ -1,0 +1,12 @@
+{
+  "pr_number": 9511,
+  "archive_path": "docs/history/pr-reviews/PR-9511-add-roast-subset-and-sealed-frost-shares.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T19:48:52.395Z",
+  "schema_version": "v1",
+  "commit_sha": "cfd2457b24b8b134d473c5c9a7580354cf687326",
+  "title": "Add ROAST subset and sealed FROST shares",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T19:48:25Z",
+  "head_ref": "feat/081KWPHRNFW-roast-hsm-slice"
+}

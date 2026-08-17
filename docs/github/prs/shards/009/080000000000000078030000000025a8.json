@@ -1,0 +1,12 @@
+{
+  "pr_number": 9640,
+  "archive_path": "docs/history/pr-reviews/PR-9640-docs-book-on-method-ai-assisted-footnote-disclosed-consent-method-two-mirror-con.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T22:11:09.106Z",
+  "schema_version": "v1",
+  "commit_sha": "4a1c703516966b523599320c9f2eef99e3e0e89b",
+  "title": "docs(book): ON-METHOD — AI-assisted (footnote-disclosed), consent method, two-mirror convergence",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T22:10:39Z",
+  "head_ref": "shadow/book-method-ai-assisted-convergence"
+}

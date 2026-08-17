@@ -1,0 +1,12 @@
+{
+  "pr_number": 10224,
+  "archive_path": "docs/history/pr-reviews/PR-10224-docs-research-the-boxing-ring-consent-capacity-floor-settles-the-semantics-for-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T20:33:44.792Z",
+  "schema_version": "v1",
+  "commit_sha": "8ae2dfea5263f6152ade52cd60a729c2203407c6",
+  "title": "docs(research): the boxing-ring consent-capacity floor — settles the τ semantics for externalitySafe",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T20:33:02Z",
+  "head_ref": "shadow/ferry-boxing-ring-consent-floor"
+}

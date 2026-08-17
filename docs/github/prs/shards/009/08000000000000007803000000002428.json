@@ -1,0 +1,12 @@
+{
+  "pr_number": 9256,
+  "archive_path": "docs/history/pr-reviews/PR-9256-feat-linked-clone-the-protocol-consent-first-exit-guaranteed-by-construction-sha.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T01:58:38.244Z",
+  "schema_version": "v1",
+  "commit_sha": "acafe223972973e98af3476dfc1966d439b2b94c",
+  "title": "feat(linked-clone): the protocol — consent-first, exit guaranteed by construction (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T01:58:13Z",
+  "head_ref": "shadow/linked-clone-protocol-consent-first"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9244,
+  "archive_path": "docs/history/pr-reviews/PR-9244-feat-moral-gym-the-ethics-corpus-made-executable-dst-replayable.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T01:00:36.435Z",
+  "schema_version": "v1",
+  "commit_sha": "0544764436f3ceedbcf63d127db8557d44a664da",
+  "title": "feat(moral-gym): the ethics corpus made executable + DST-replayable",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T01:00:14Z",
+  "head_ref": "otto/moral-gym-dst-sim"
+}

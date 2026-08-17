@@ -1,0 +1,12 @@
+{
+  "pr_number": 10169,
+  "archive_path": "docs/history/pr-reviews/PR-10169-bug-usb-disentangle-iso-dispatch-failures-install-sh-intermittent-vs-wifi-esp-co.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T20:59:43.988Z",
+  "schema_version": "v1",
+  "commit_sha": "df5450c6f4e83ba27f68ae0bca94deff9079e000",
+  "title": "bug(usb): disentangle ISO-dispatch failures — install.sh intermittent vs wifi-ESP consistent",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T20:59:18Z",
+  "head_ref": "shadow/disentangle-iso-dispatch-failures"
+}

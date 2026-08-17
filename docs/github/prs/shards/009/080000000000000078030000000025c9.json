@@ -1,0 +1,12 @@
+{
+  "pr_number": 9673,
+  "archive_path": "docs/history/pr-reviews/PR-9673-task-workitem-route-four-primitives-fourcorner-c4-question-to-the-math-team-shad.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T19:04:29.527Z",
+  "schema_version": "v1",
+  "commit_sha": "7dff45faf2f939ccc0a64e5bbcfaf438de95085e",
+  "title": "task(workitem): route four-primitives↔FourCorner-C4 question to the math team (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T19:03:52Z",
+  "head_ref": "route-four-primitives-c4-math-team"
+}

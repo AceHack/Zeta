@@ -1,0 +1,12 @@
+{
+  "pr_number": 10336,
+  "archive_path": "docs/history/pr-reviews/PR-10336-feat-observe-rs-block-reader-session-resume-update.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T07:28:10.323Z",
+  "schema_version": "v1",
+  "commit_sha": "67e4a7ff41782595326d17c1f2e8b22a88dcd56e",
+  "title": "feat(observe): RS block reader + session resume update",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T07:27:34Z",
+  "head_ref": "alexa/rs-reader-and-updates"
+}

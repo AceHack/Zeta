@@ -1,0 +1,12 @@
+{
+  "pr_number": 9392,
+  "archive_path": "docs/history/pr-reviews/PR-9392-fix-model-backend-confirmed-live-shapes-our-device-login-streaming-subscription-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T01:27:59.218Z",
+  "schema_version": "v1",
+  "commit_sha": "1a76c0952d4cff6ed22f5f775bdea0f4e8462426",
+  "title": "fix(model-backend): confirmed-live shapes — our device login + streaming subscription responses WORK (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T01:27:36Z",
+  "head_ref": "otto/confirmed-live-codex-subscription-streaming"
+}

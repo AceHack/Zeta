@@ -1,0 +1,12 @@
+{
+  "pr_number": 9328,
+  "archive_path": "docs/history/pr-reviews/PR-9328-fix-clock-gate-t2-golden-vectors-int64-versions-as-decimal-strings-all-readers-u.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T17:02:16.904Z",
+  "schema_version": "v1",
+  "commit_sha": "03817efa1447db16d90a1e1ba32b92e60fd4ada5",
+  "title": "fix(clock): Gate T2 golden vectors — int64 versions as decimal STRINGS; all readers updated (float64 precision bug)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T17:01:52Z",
+  "head_ref": "otto/fix-tick-codec-tsc"
+}

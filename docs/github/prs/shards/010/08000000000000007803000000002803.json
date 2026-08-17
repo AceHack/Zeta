@@ -1,0 +1,12 @@
+{
+  "pr_number": 10243,
+  "archive_path": "docs/history/pr-reviews/PR-10243-docs-handoff-clean-side-handoff-for-key-custody-rotation-routable-to-kiro.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T22:38:15.001Z",
+  "schema_version": "v1",
+  "commit_sha": "14e7cc9716cdd5b9a58e08e564cac15b697666bc",
+  "title": "docs(handoff): CLEAN-SIDE handoff for key custody & rotation (routable to Kiro)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T22:37:39Z",
+  "head_ref": "shadow/handoff-cleanside-key-custody"
+}

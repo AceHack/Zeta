@@ -1,0 +1,12 @@
+{
+  "pr_number": 10166,
+  "archive_path": "docs/history/pr-reviews/PR-10166-fix-lint-remove-two-unused-test-imports-green-ts6133-drift-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T20:44:37.814Z",
+  "schema_version": "v1",
+  "commit_sha": "edbbe724109816f159a7bf273afca2aefc261b54",
+  "title": "fix(lint): remove two unused test imports (green TS6133 drift on main)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T20:44:10Z",
+  "head_ref": "shadow/fix-ts6133-lint-drift"
+}

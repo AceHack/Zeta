@@ -1,0 +1,12 @@
+{
+  "pr_number": 9558,
+  "archive_path": "docs/history/pr-reviews/PR-9558-feat-zflash-deepen-qemu-scenarios-3-4-cred-retention-markers.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T22:40:43.541Z",
+  "schema_version": "v1",
+  "commit_sha": "ef3ae6a70dc87b60e6e2d242905ca9665fc329e0",
+  "title": "feat(zflash): deepen QEMU scenarios 3–4 cred retention markers",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T22:40:13Z",
+  "head_ref": "feat/qemu-scenario-3-4-creds-path-fix-2026-07-08"
+}

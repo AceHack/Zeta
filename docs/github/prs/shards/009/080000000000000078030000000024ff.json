@@ -1,0 +1,12 @@
+{
+  "pr_number": 9471,
+  "archive_path": "docs/history/pr-reviews/PR-9471-docs-observer-triangle-spec-register-absorbs-today-s-verdicts-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T18:08:04.843Z",
+  "schema_version": "v1",
+  "commit_sha": "247aec45c0045aa403f652bfdbd66f3bc5320c81",
+  "title": "docs: observer-triangle spec + register absorbs today's verdicts (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T18:07:41Z",
+  "head_ref": "otto/observer-triangle-spec-plus-register-absorb"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9274,
+  "archive_path": "docs/history/pr-reviews/PR-9274-docs-research-ferry-futamura-two-columns-general-mix-intrinsic-hardware-isa-inte.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:16:21.358Z",
+  "schema_version": "v1",
+  "commit_sha": "baac5b1525885f79656e8e8930dae6ad6bf530dc",
+  "title": "docs(research): ferry — Futamura two columns (general mix + intrinsic hardware); ISA-interpreter is the one object (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:15:54Z",
+  "head_ref": "otto/ferry-futamura-two-column-general-mix-intrinsic-hardware"
+}

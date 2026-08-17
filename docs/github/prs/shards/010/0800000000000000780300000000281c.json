@@ -1,0 +1,12 @@
+{
+  "pr_number": 10268,
+  "archive_path": "docs/history/pr-reviews/PR-10268-feat-browser-hydrate-zetadb-before-active-page-startup.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T01:07:37.717Z",
+  "schema_version": "v1",
+  "commit_sha": "f29bfa0537508cf98c9220f9cb17e88dc9de389e",
+  "title": "feat(browser): hydrate ZetaDB before active page startup",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T01:07:03Z",
+  "head_ref": "codex/browser-zetadb-active-page"
+}

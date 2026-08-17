@@ -1,0 +1,12 @@
+{
+  "pr_number": 9219,
+  "archive_path": "docs/history/pr-reviews/PR-9219-docs-workitems-chip9-cart-captures-the-exhaustive-superdeterministic-search-rati.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T23:36:30.574Z",
+  "schema_version": "v1",
+  "commit_sha": "2a31007370a8fd4eb380fc8326f4e25202207c9b",
+  "title": "docs(workitems): chip9-cart captures — the exhaustive superdeterministic search rationale",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T23:36:07Z",
+  "head_ref": "otto/chip9-capture-superdeterministic-search-rationale"
+}

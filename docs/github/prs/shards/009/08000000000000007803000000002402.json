@@ -1,0 +1,12 @@
+{
+  "pr_number": 9218,
+  "archive_path": "docs/history/pr-reviews/PR-9218-feat-core-slr-slr-1-parser-backend-grammar-ir-an-executable-parser-the-ladder-s-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T23:35:54.719Z",
+  "schema_version": "v1",
+  "commit_sha": "27543e0a4adbb8cca78a22cca3fbf7c91ce793ef",
+  "title": "feat(core): Slr — SLR(1) parser backend; Grammar IR → an executable parser (the ladder's payoff)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T23:35:33Z",
+  "head_ref": "otto/slr-parser-backend"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9192,
+  "archive_path": "docs/history/pr-reviews/PR-9192-feat-reticulum-rns-transport-self-certifying-address-announce-path-mesh-bridging.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T19:53:58.840Z",
+  "schema_version": "v1",
+  "commit_sha": "c474afdbd210ed1352656fee9358a19d48d573ba",
+  "title": "feat(reticulum): RNS transport — self-certifying address + announce/path, mesh-bridging (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T19:53:33Z",
+  "head_ref": "shadow/reticulum-transport-rns-addressing-announce"
+}

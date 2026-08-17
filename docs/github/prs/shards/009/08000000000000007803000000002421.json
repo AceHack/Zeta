@@ -1,0 +1,12 @@
+{
+  "pr_number": 9249,
+  "archive_path": "docs/history/pr-reviews/PR-9249-feat-llmtv-render-root-site-replay-state.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T01:46:03.958Z",
+  "schema_version": "v1",
+  "commit_sha": "74ce582ab48269e62d7c7f605c08770a507e8252",
+  "title": "feat(llmtv): render root-site replay state",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T01:45:42Z",
+  "head_ref": "codex/llmtv-root-site-reader"
+}

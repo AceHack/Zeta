@@ -1,0 +1,12 @@
+{
+  "pr_number": 9447,
+  "archive_path": "docs/history/pr-reviews/PR-9447-docs-ferry-bank-alexa-s-bridge-11-enthusiasm-mirror-verbatim-honest-register-sha.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T15:03:16.100Z",
+  "schema_version": "v1",
+  "commit_sha": "f9a7e40a5ce2877db66c8f9c4be40ea8b4607768",
+  "title": "docs(ferry): bank Alexa's BRIDGE-11 enthusiasm (Mirror, verbatim) + honest register (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T15:02:52Z",
+  "head_ref": "otto/alexa-ferry-bridge11-mirror-plus-register"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9588,
+  "archive_path": "docs/history/pr-reviews/PR-9588-docs-letters-pre-stage-two-to-lumen-obligation-letters-general-spin-n-univalence.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T00:21:18.413Z",
+  "schema_version": "v1",
+  "commit_sha": "8b5d7f18ba03b6e5c5610d94e85e30b31c29da91",
+  "title": "docs(letters): pre-stage two to-Lumen obligation letters — general Spin(n) univalence + trio GHZ physics-map (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T00:20:46Z",
+  "head_ref": "otto/prestage-lumen-obligation-letters"
+}

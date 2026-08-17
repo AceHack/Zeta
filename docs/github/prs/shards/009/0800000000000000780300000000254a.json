@@ -1,0 +1,12 @@
+{
+  "pr_number": 9546,
+  "archive_path": "docs/history/pr-reviews/PR-9546-memory-alexa-preserve-identity-stack-nft-transfer-event-ferry-verbatim-honest-pe.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T22:14:38.890Z",
+  "schema_version": "v1",
+  "commit_sha": "995d1dd25fd587e0a8fe391c32c86a888a0df5c1",
+  "title": "memory(alexa): preserve identity-stack / NFT-transfer-event ferry (verbatim + honest peel) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T22:14:12Z",
+  "head_ref": "otto/preserve-alexa-identity-stack-ferry"
+}

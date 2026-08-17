@@ -1,0 +1,12 @@
+{
+  "pr_number": 10313,
+  "archive_path": "docs/history/pr-reviews/PR-10313-bftconsensus-check-liveness-in-the-only-form-the-spec-is-entitled-to-item-5.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T01:35:20.837Z",
+  "schema_version": "v1",
+  "commit_sha": "e61b94658002931d8c46880e73edb778ec58200b",
+  "title": "BftConsensus: check liveness in the only form the spec is entitled to (item 5)",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T01:34:47Z",
+  "head_ref": "bft-consensus-liveness"
+}

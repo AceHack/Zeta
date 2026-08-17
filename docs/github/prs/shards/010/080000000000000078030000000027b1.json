@@ -1,0 +1,12 @@
+{
+  "pr_number": 10161,
+  "archive_path": "docs/history/pr-reviews/PR-10161-test-chsh-z3-gate-agreement-lemma-companion-gate-bp-16-second-tool.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T20:14:39.556Z",
+  "schema_version": "v1",
+  "commit_sha": "c12ef27c9903934c994d79ade802ca64c77364fa",
+  "title": "test(chsh): Z3 gate-agreement lemma + companion gate (BP-16 second tool)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T20:14:06Z",
+  "head_ref": "shadow/z3-chsh-band-gate-lemma"
+}

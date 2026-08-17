@@ -1,0 +1,12 @@
+{
+  "pr_number": 10075,
+  "archive_path": "docs/history/pr-reviews/PR-10075-book-stage-restraint-felonies-cops-and-the-thesis-in-vernacular-architecture-f-q.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T01:57:01.723Z",
+  "schema_version": "v1",
+  "commit_sha": "6646ebeacc70bce33a64ca72e059e02cfca84f35",
+  "title": "book: stage restraint, felonies, cops, and the thesis-in-vernacular (+ architecture, F#/Q# in-repo)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T01:56:32Z",
+  "head_ref": "docs/book-ferry-restraint-felonies-cops-and-the-thesis-math"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9949,
+  "archive_path": "docs/history/pr-reviews/PR-9949-feat-four-corner-duality-as-an-involution-the-law-that-makes-four-corners-checka.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T00:36:07.886Z",
+  "schema_version": "v1",
+  "commit_sha": "ce7ec29195e7e9f74cfcf967c20f5f1889e7e1a3",
+  "title": "feat(four-corner): duality as an involution — the law that makes \"four corners\" checkable",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T00:35:39Z",
+  "head_ref": "shadow/four-corner-duality-involution"
+}

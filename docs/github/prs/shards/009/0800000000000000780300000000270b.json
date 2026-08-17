@@ -1,0 +1,12 @@
+{
+  "pr_number": 9995,
+  "archive_path": "docs/history/pr-reviews/PR-9995-docs-register-leak-audit-fixes-5-findings-external-mirror-reviewed-verified.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T20:49:46.518Z",
+  "schema_version": "v1",
+  "commit_sha": "82b418d933157e947f3f26b4f923b2f48f53c752",
+  "title": "docs: register-leak audit fixes (5 findings, external-mirror reviewed + verified)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T20:49:17Z",
+  "head_ref": "docs/register-leak-audit-fixes-20260802"
+}

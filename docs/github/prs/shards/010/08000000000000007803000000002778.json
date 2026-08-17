@@ -1,0 +1,12 @@
+{
+  "pr_number": 10104,
+  "archive_path": "docs/history/pr-reviews/PR-10104-book-editions-professional-book-typography-all-4-mandarin-content-pass-1-fix-sta.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T17:30:00.122Z",
+  "schema_version": "v1",
+  "commit_sha": "6bcb7f724ceb0561809f6c01f81ba9a425beb3a7",
+  "title": "book(editions): professional book typography (all 4) + Mandarin content pass 1 + fix stale banners",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:29:19Z",
+  "head_ref": "book-editions-typography-zh-content"
+}

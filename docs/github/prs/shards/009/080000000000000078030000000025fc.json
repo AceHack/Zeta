@@ -1,0 +1,12 @@
+{
+  "pr_number": 9724,
+  "archive_path": "docs/history/pr-reviews/PR-9724-feat-darkhall-project-continuation-readout-into-room-ui.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T18:33:10.989Z",
+  "schema_version": "v1",
+  "commit_sha": "e2703b67bc2b7982ecd968b1a2448fb09c3c1840",
+  "title": "feat(darkhall): project continuation readout into room UI",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T18:32:41Z",
+  "head_ref": "codex/darkhall-room-continuation-ts-readout"
+}

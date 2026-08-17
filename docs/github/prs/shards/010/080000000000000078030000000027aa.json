@@ -1,0 +1,12 @@
+{
+  "pr_number": 10154,
+  "archive_path": "docs/history/pr-reviews/PR-10154-feat-healer-tier-1-unchecked-index-ts2532.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T20:23:37.257Z",
+  "schema_version": "v1",
+  "commit_sha": "3377112f3cf0217af1cd1ad9393f8ff915f117dc",
+  "title": "feat(healer): Tier-1 unchecked-index (TS2532)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T20:23:06Z",
+  "head_ref": "claim/tier1-healer-unchecked-index"
+}

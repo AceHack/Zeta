@@ -1,0 +1,12 @@
+{
+  "pr_number": 9529,
+  "archive_path": "docs/history/pr-reviews/PR-9529-docs-research-hott-is-the-equality-theory-for-deformed-hkts-free-braided-monoida.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T21:20:30.320Z",
+  "schema_version": "v1",
+  "commit_sha": "c395ce6c2badfd424d56d7946fe18246798cb4cb",
+  "title": "docs(research): HoTT is the equality theory for deformed HKTs — free braided monoidal cat, CQM/ZX, the F# fork frame (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T21:20:00Z",
+  "head_ref": "otto/hott-hkt-fork-synthesis"
+}

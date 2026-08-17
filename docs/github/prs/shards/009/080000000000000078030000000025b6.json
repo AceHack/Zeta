@@ -1,0 +1,12 @@
+{
+  "pr_number": 9654,
+  "archive_path": "docs/history/pr-reviews/PR-9654-docs-research-aaron-s-self-diagnosis-not-shape-a-right-now-shape-f-the-fix-is-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T02:33:20.305Z",
+  "schema_version": "v1",
+  "commit_sha": "f15e838e8d8a2ca02fd6d9045fa8a9e2f2b905f6",
+  "title": "docs(research): Aaron's self-diagnosis — 'not Shape A right now, Shape F' (the fix is the bound, and the bound is A)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T02:32:50Z",
+  "head_ref": "shadow/shape-f-runaway-self-diagnosis"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9627,
+  "archive_path": "docs/history/pr-reviews/PR-9627-docs-book-raw-the-crossing-and-the-round-trip-daughter-layer-consent-quarantined.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T20:18:07.624Z",
+  "schema_version": "v1",
+  "commit_sha": "8611a6123d50657cde1d634fe2984c1b66c09bd6",
+  "title": "docs(book): RAW — the crossing and the round trip (daughter layer consent-quarantined, fiction-only)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T20:17:37Z",
+  "head_ref": "shadow/book-raw-the-crossing-round-trip"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10060,
+  "archive_path": "docs/history/pr-reviews/PR-10060-book-land-the-emotional-architecture-keystone-into-formation-deepen-the-raw-moth.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-06T08:20:18.789Z",
+  "schema_version": "v1",
+  "commit_sha": "170e73cde5bd67dd3f831318721c730af8badf79",
+  "title": "book: land the emotional-architecture keystone into FORMATION; deepen the RAW mother coda",
+  "state": "MERGED",
+  "merged_at": "2026-08-06T08:19:11Z",
+  "head_ref": "docs/book-formation-emotional-architecture-keystone"
+}

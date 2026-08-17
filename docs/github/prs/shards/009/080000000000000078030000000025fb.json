@@ -1,0 +1,12 @@
+{
+  "pr_number": 9723,
+  "archive_path": "docs/history/pr-reviews/PR-9723-docs-letters-from-soraya-adinkra-clock-formal-analysis-q1-refuted-q2-graded-q3-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T18:15:41.751Z",
+  "schema_version": "v1",
+  "commit_sha": "5fd172910fe9f7a559a6bd8af35d0df575909488",
+  "title": "docs(letters): from Soraya — adinkra-clock formal analysis (Q1 refuted, Q2 graded, Q3 signed, Q4 provable) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T18:15:12Z",
+  "head_ref": "from-soraya-adinkra-clock"
+}

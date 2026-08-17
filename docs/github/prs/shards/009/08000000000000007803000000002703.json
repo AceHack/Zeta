@@ -1,0 +1,12 @@
+{
+  "pr_number": 9987,
+  "archive_path": "docs/history/pr-reviews/PR-9987-docs-research-daredevil-invincibility-as-disconfirmation-resistance-wound-as-bad.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T20:01:49.416Z",
+  "schema_version": "v1",
+  "commit_sha": "bb73d69111332838d78a12e39bd6df8dfa669c0d",
+  "title": "docs(research): daredevil invincibility as disconfirmation-resistance (wound-as-badge; Unbreakable anchor)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T20:01:16Z",
+  "head_ref": "research/decorrelation-band-daredevil-invincibility-20260802"
+}

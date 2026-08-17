@@ -1,0 +1,12 @@
+{
+  "pr_number": 9515,
+  "archive_path": "docs/history/pr-reviews/PR-9515-docs-usb-s6-first-login-ux-co-design-draft.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T19:55:46.603Z",
+  "schema_version": "v1",
+  "commit_sha": "ddfaf29a1e198808b271c4099408871f8249e7e3",
+  "title": "docs(usb): S6 first-login UX co-design draft",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T19:55:21Z",
+  "head_ref": "feat/usb-s6-ux-copy-draft"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9769,
+  "archive_path": "docs/history/pr-reviews/PR-9769-docs-persona-provenance-flag-on-the-lumen-mappings-validity-level-math-shape-cor.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-16T01:43:21.573Z",
+  "schema_version": "v1",
+  "commit_sha": "8885f23501776c5ab47650486e07c47ced639737",
+  "title": "docs(persona): provenance flag on the Lumen mappings — validity-level math-shape correspondence (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-16T01:42:53Z",
+  "head_ref": "shadow/lumen-mappings-provenance-flag"
+}

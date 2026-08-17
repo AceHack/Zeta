@@ -1,0 +1,12 @@
+{
+  "pr_number": 9670,
+  "archive_path": "docs/history/pr-reviews/PR-9670-docs-research-math-discharge-rank-4-greek-primitives-the-1-forget-remember-memor.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T08:53:55.493Z",
+  "schema_version": "v1",
+  "commit_sha": "8d1bac17e1a3ea26a57adf85e769834abaa02f20",
+  "title": "docs(research): math discharge — rank-4 Greek primitives + the ±1 forget/remember memory basis (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T08:53:29Z",
+  "head_ref": "math-discharge-meno-rank4-forget-remember-basis"
+}

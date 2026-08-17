@@ -1,0 +1,12 @@
+{
+  "pr_number": 10088,
+  "archive_path": "docs/history/pr-reviews/PR-10088-book-pages-english-edition-pass-3-chapters-9-12-stories-sampler-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T05:16:07.553Z",
+  "schema_version": "v1",
+  "commit_sha": "e63a6a815939daf3f4e28fc1cee1c82b2cd65fd7",
+  "title": "book(pages): English edition pass 3 — Chapters 9–12 + stories sampler (complete)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T05:15:35Z",
+  "head_ref": "docs/book-pages-english-p3"
+}

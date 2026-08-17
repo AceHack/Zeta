@@ -1,0 +1,12 @@
+{
+  "pr_number": 9655,
+  "archive_path": "docs/history/pr-reviews/PR-9655-docs-book-internal-family-systems-schwartz-psychology-anchor-for-zeta-is-my-mind.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T02:38:24.509Z",
+  "schema_version": "v1",
+  "commit_sha": "8ff0cfd63595bde38aef0dca43d9f4ebfb958281",
+  "title": "docs(book): Internal Family Systems (Schwartz) — psychology anchor for 'Zeta is my mind externalized'; Self = Shape A",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T02:37:57Z",
+  "head_ref": "shadow/book-ifs-anchor-self-leadership"
+}

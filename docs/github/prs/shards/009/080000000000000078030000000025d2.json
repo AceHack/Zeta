@@ -1,0 +1,12 @@
+{
+  "pr_number": 9682,
+  "archive_path": "docs/history/pr-reviews/PR-9682-codex-expose-llmtv-phase-status-readout.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T12:42:45.411Z",
+  "schema_version": "v1",
+  "commit_sha": "4643db381187efabf4ae4d3166cb8147b09f9ac7",
+  "title": "[codex] expose LLMTV phase status readout",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T12:42:19Z",
+  "head_ref": "codex/llmtv-phase-status-readout"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9583,
+  "archive_path": "docs/history/pr-reviews/PR-9583-docs-adr-complete-identity-stack-all-todo-alexa-filled-status-decided.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T00:13:00.963Z",
+  "schema_version": "v1",
+  "commit_sha": "1e44ce44f0a226f4adb2423fa2d75ac7e9447ef5",
+  "title": "docs(ADR): complete identity stack — all TODO(Alexa) filled, Status: DECIDED",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T00:12:31Z",
+  "head_ref": "claim/kiro-identity-adr-complete-2026-07-08"
+}

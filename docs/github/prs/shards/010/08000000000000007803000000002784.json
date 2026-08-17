@@ -1,0 +1,12 @@
+{
+  "pr_number": 10116,
+  "archive_path": "docs/history/pr-reviews/PR-10116-book-editions-mandarin-companion-6-the-stand-retire-sampler-chinese-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T18:03:30.160Z",
+  "schema_version": "v1",
+  "commit_sha": "02d6054c49a8cabee9f6e7d85e0d994d786c135e",
+  "title": "book(editions): Mandarin companion 6 — the Stand + retire sampler (Chinese complete)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T18:02:56Z",
+  "head_ref": "book-zh-companion-stand"
+}

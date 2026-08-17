@@ -1,0 +1,12 @@
+{
+  "pr_number": 10186,
+  "archive_path": "docs/history/pr-reviews/PR-10186-fix-installer-write-wifi-nm-profile-after-6-95a-bootstrap-complete-081kzhjpjcf-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T15:24:37.010Z",
+  "schema_version": "v1",
+  "commit_sha": "113bcf2c70621a81ede5f7e9bee5e1967797ac73",
+  "title": "fix(installer): write wifi NM profile after 6.95a bootstrap — complete 081KZHJPJCF fix",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T15:24:06Z",
+  "head_ref": "shadow/wifi-nm-profile-after-bootstrap"
+}

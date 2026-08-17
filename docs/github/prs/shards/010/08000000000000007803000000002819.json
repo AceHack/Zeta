@@ -1,0 +1,12 @@
+{
+  "pr_number": 10265,
+  "archive_path": "docs/history/pr-reviews/PR-10265-spec-clean-room-threshold-signature-verification-the-n-3-derivation-spec.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T00:48:15.677Z",
+  "schema_version": "v1",
+  "commit_sha": "20a14e7c7d6a38a850b789a2b199d5e7f7ba5a01",
+  "title": "spec(clean-room): threshold signature verification — the N=3 derivation spec",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T00:47:49Z",
+  "head_ref": "shadow/threshold-sig-verification-spec"
+}

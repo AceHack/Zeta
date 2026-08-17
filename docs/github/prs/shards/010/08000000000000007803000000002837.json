@@ -1,0 +1,12 @@
+{
+  "pr_number": 10295,
+  "archive_path": "docs/history/pr-reviews/PR-10295-feat-browser-db-add-atomic-row-replacement.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T23:07:32.189Z",
+  "schema_version": "v1",
+  "commit_sha": "4ab1f8d9a78dd80900ca176946c4842fdef79553",
+  "title": "feat(browser-db): add atomic row replacement",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T23:06:56Z",
+  "head_ref": "codex/browser-database-cas-replace"
+}

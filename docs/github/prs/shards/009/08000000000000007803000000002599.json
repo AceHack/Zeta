@@ -1,0 +1,12 @@
+{
+  "pr_number": 9625,
+  "archive_path": "docs/history/pr-reviews/PR-9625-docs-letters-the-cell-the-first-day-the-kneel-excessive-force-on-a-disclosed-inj.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T19:32:22.968Z",
+  "schema_version": "v1",
+  "commit_sha": "f7f32888031f31dfccd4afcde888bc459bbb5126",
+  "title": "docs(letters): The Cell — the first day (the kneel + excessive force on a disclosed injury) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T19:31:54Z",
+  "head_ref": "otto/the-cell-first-day-kneel"
+}

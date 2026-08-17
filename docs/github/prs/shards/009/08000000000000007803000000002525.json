@@ -1,0 +1,17 @@
+{
+  "pr_number": 9509,
+  "archive_path": "docs/history/pr-reviews/PR-9509-codex-replay-room-transcripts-through-llmtv.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7TZ3f8",
+    "comment:PRRC_kwDOSF9kNM7TaLav",
+    "thread:PRRT_kwDOSF9kNM6PW8Z2",
+    "thread:PRRT_kwDOSF9kNM6PXK-X"
+  ],
+  "fetched_at": "2026-07-08T20:08:52.939Z",
+  "schema_version": "v1",
+  "commit_sha": "0e1afd427b91fcddfeb514f1825053d30c76b9ae",
+  "title": "[codex] Replay room transcripts through LLMTV",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T20:08:21Z",
+  "head_ref": "codex/darkhall-replay-readout"
+}

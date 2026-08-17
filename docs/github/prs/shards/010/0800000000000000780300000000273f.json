@@ -1,0 +1,12 @@
+{
+  "pr_number": 10047,
+  "archive_path": "docs/history/pr-reviews/PR-10047-book-companion-land-the-wild-youth-thread-the-organizer-at-scale-the-dual-use-ne.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T22:07:44.536Z",
+  "schema_version": "v1",
+  "commit_sha": "a7b6c7aaa2c355e147d46cb667e59aed2ec091e1",
+  "title": "book(companion): land the wild-youth thread — THE-ORGANIZER-AT-SCALE (the dual-use network gift)",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T22:07:12Z",
+  "head_ref": "docs/book-organizer-at-scale-wild-youth-companion-20260804"
+}

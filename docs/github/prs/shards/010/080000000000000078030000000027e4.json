@@ -1,0 +1,12 @@
+{
+  "pr_number": 10212,
+  "archive_path": "docs/history/pr-reviews/PR-10212-fix-mise-node-compile-false-take-the-prebuilt-stop-source-building-node-on-first.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:22:17.473Z",
+  "schema_version": "v1",
+  "commit_sha": "2a9b0cab0ec9db4ce1a87065d83d0f805f0b3e1e",
+  "title": "fix(mise): node.compile=false — take the prebuilt, stop source-building node on first boot",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T19:21:45Z",
+  "head_ref": "shadow/mise-node-compile-false"
+}

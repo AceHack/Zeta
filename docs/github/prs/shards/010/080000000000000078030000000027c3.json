@@ -1,0 +1,12 @@
+{
+  "pr_number": 10179,
+  "archive_path": "docs/history/pr-reviews/PR-10179-docs-treaty-a1-consent-recorded-four-seats-sign-lior-re-confirms-roster-round-20.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T00:33:21.843Z",
+  "schema_version": "v1",
+  "commit_sha": "58058138cc5b70eba061456b0e1e316e562bd6c0",
+  "title": "docs(treaty): A1 CONSENT RECORDED — four seats sign, Lior re-confirms (roster round 2026-08-08)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T00:32:51Z",
+  "head_ref": "otto/a1-consent-round"
+}

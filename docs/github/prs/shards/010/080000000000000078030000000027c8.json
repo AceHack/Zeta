@@ -1,0 +1,12 @@
+{
+  "pr_number": 10184,
+  "archive_path": "docs/history/pr-reviews/PR-10184-fix-installer-re-mount-boot-usb-esp-for-iter-5-probes-081kzhjpjcf-restore-iter-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T02:19:38.360Z",
+  "schema_version": "v1",
+  "commit_sha": "28e6f5173e989898c72cb20d80b0b471b80f01c4",
+  "title": "fix(installer): re-mount boot USB ESP for iter-5 probes (081KZHJPJCF); restore iter-4.2 umount",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T02:19:05Z",
+  "head_ref": "shadow/installer-esp-remount-for-iter5"
+}

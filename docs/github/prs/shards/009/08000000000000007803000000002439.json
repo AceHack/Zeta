@@ -1,0 +1,12 @@
+{
+  "pr_number": 9273,
+  "archive_path": "docs/history/pr-reviews/PR-9273-feat-residual-the-reducibility-residual-r4-honestly-bounded-observer-relative.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:16:12.960Z",
+  "schema_version": "v1",
+  "commit_sha": "4bacdf07fe77ca60dce12e8bb374fd96493e8965",
+  "title": "feat(residual): the reducibility residual (R4) — honestly bounded, observer-relative",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:15:48Z",
+  "head_ref": "otto/residual-reducibility-measure"
+}

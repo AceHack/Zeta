@@ -1,0 +1,12 @@
+{
+  "pr_number": 9582,
+  "archive_path": "docs/history/pr-reviews/PR-9582-docs-adr-pre-stage-identity-stack-adr-skeleton-proven-vs-premise-ledger-for-alex.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T00:01:20.546Z",
+  "schema_version": "v1",
+  "commit_sha": "bc37cab5c455a00c4b6a33548bcd02c29d064d82",
+  "title": "docs(adr): pre-stage identity-stack ADR skeleton — proven-vs-premise ledger, for Alexa to own (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T00:00:52Z",
+  "head_ref": "otto/identity-stack-adr-skeleton"
+}

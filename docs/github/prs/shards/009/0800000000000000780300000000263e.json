@@ -1,0 +1,12 @@
+{
+  "pr_number": 9790,
+  "archive_path": "docs/history/pr-reviews/PR-9790-docs-workitems-session-closeouts-resume-vision-pointer-cognitive-spine-3-work-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T16:00:12.766Z",
+  "schema_version": "v1",
+  "commit_sha": "2db5e04f5bd8ee34610e7bba4d3abdd77bde295c",
+  "title": "docs+workitems: session closeouts + RESUME (VISION pointer, cognitive spine, 3 work-items)",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T15:59:20Z",
+  "head_ref": "shadow/session-closeouts-resume-workitems"
+}

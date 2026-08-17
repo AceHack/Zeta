@@ -1,0 +1,12 @@
+{
+  "pr_number": 9747,
+  "archive_path": "docs/history/pr-reviews/PR-9747-docs-book-raw-most-gullible-yearbook-caption-names-the-whole-trait-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T21:46:48.281Z",
+  "schema_version": "v1",
+  "commit_sha": "818a91229b726717ea9b6e640a363996236afa62",
+  "title": "docs(book): RAW — 'Most Gullible' yearbook caption names the whole trait (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T21:46:23Z",
+  "head_ref": "raw-most-gullible"
+}

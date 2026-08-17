@@ -1,0 +1,12 @@
+{
+  "pr_number": 9686,
+  "archive_path": "docs/history/pr-reviews/PR-9686-fix-ci-repair-zeta-ir-and-catalog-gates.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T13:08:21.621Z",
+  "schema_version": "v1",
+  "commit_sha": "3d2ebafeb173ea4a6718338e311ab10954fc9bc5",
+  "title": "fix(ci): repair zeta-ir and catalog gates",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T13:07:52Z",
+  "head_ref": "codex/fix-zeta-ir-v2-and-semgrep"
+}

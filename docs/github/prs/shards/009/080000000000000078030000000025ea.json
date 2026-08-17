@@ -1,0 +1,12 @@
+{
+  "pr_number": 9706,
+  "archive_path": "docs/history/pr-reviews/PR-9706-docs-research-multi-planet-convergence-3-drift-axes-3-mechanisms-1-attack-vector.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T16:17:42.887Z",
+  "schema_version": "v1",
+  "commit_sha": "9960b501d8030d0a2e4750f6cdb7e3464bf12b79",
+  "title": "docs(research): multi-planet convergence — 3 drift axes, 3 mechanisms, 1 attack vector (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T16:17:11Z",
+  "head_ref": "multi-planet-convergence-three-drift-axes"
+}

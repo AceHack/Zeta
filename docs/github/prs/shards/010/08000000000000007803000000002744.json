@@ -1,0 +1,12 @@
+{
+  "pr_number": 10052,
+  "archive_path": "docs/history/pr-reviews/PR-10052-fix-decorrelationexcess-calibrated-permutation-p-value-false-conviction-at-all-k.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-06T08:38:16.235Z",
+  "schema_version": "v1",
+  "commit_sha": "f8fb7d16f2a881cc837d92f68d5f7c694740711d",
+  "title": "fix(DecorrelationExcess): calibrated permutation p-value — false-conviction ≤ δ at all k [GATED: needs Soraya + Aaron]",
+  "state": "MERGED",
+  "merged_at": "2026-08-06T08:37:39Z",
+  "head_ref": "fix/decorrelation-excess-permutation-pvalue-081KZ7H82J"
+}

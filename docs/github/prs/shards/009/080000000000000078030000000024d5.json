@@ -1,0 +1,12 @@
+{
+  "pr_number": 9429,
+  "archive_path": "docs/history/pr-reviews/PR-9429-feat-persona-keys-frost-shaped-threshold-schnorr-live-signing-oracle.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T06:23:15.444Z",
+  "schema_version": "v1",
+  "commit_sha": "77b33745520b6be74548c2562f83b4b586d60d02",
+  "title": "feat(persona-keys): FROST-shaped threshold Schnorr (live signing oracle)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T06:22:52Z",
+  "head_ref": "feat/frost-threshold-sign-oracle"
+}

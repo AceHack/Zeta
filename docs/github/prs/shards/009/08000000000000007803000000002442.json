@@ -1,0 +1,12 @@
+{
+  "pr_number": 9282,
+  "archive_path": "docs/history/pr-reviews/PR-9282-feat-isa-spec-driven-mix-partial-evaluation-over-any-isa-as-data-generalized-dyn.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:48:23.715Z",
+  "schema_version": "v1",
+  "commit_sha": "b3addf64ca9d646bb5dcc9e6a104c20f78fdf427",
+  "title": "feat(isa): spec-driven mix — partial evaluation over ANY ISA-as-data (generalized dynarec) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:48:01Z",
+  "head_ref": "otto/spec-driven-mix-any-isa"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9880,
+  "archive_path": "docs/history/pr-reviews/PR-9880-bug-expand-arm64-crash-investigation-across-runtimes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:57:33.708Z",
+  "schema_version": "v1",
+  "commit_sha": "48da085374793ed97c9d3161ab973d49927b161b",
+  "title": "bug: expand arm64 crash investigation across runtimes",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T13:56:59Z",
+  "head_ref": "codex/expand-arm64-crash-investigation"
+}

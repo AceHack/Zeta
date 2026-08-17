@@ -1,0 +1,12 @@
+{
+  "pr_number": 9746,
+  "archive_path": "docs/history/pr-reviews/PR-9746-docs-total-regard-bounded-scope-regard-commitment-orthogonal-knobs-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T21:45:15.394Z",
+  "schema_version": "v1",
+  "commit_sha": "052c6bc4a0414d0ee99c1686a89006ac3d1c140d",
+  "title": "docs: total regard, bounded scope — regard⊥commitment orthogonal knobs (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T21:44:49Z",
+  "head_ref": "total-regard-bounded-scope"
+}

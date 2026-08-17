@@ -1,0 +1,12 @@
+{
+  "pr_number": 9554,
+  "archive_path": "docs/history/pr-reviews/PR-9554-feat-model-backend-github-authprovider-device-flow-behind-the-hexagonal-auth-por.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T01:13:33.352Z",
+  "schema_version": "v1",
+  "commit_sha": "c801b4f1791663db3e7a83aa9080af3af8c61f89",
+  "title": "feat(model-backend): GitHub AuthProvider — device flow behind the hexagonal auth port",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T01:12:58Z",
+  "head_ref": "otto/github-auth-provider"
+}

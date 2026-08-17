@@ -1,0 +1,12 @@
+{
+  "pr_number": 9749,
+  "archive_path": "docs/history/pr-reviews/PR-9749-docs-influence-weighted-scrutiny-a-stronger-node-tier-must-be-a-fairer-one-shado.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T00:06:20.465Z",
+  "schema_version": "v1",
+  "commit_sha": "a20eb034799b5665c3ac036bcb8ec99e5fc91910",
+  "title": "docs: influence-weighted scrutiny — a stronger node/tier must be a fairer one (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T00:05:52Z",
+  "head_ref": "influence-weighted-scrutiny"
+}

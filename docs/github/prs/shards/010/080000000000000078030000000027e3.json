@@ -1,0 +1,12 @@
+{
+  "pr_number": 10211,
+  "archive_path": "docs/history/pr-reviews/PR-10211-docs-empowerment-aaron-s-four-values-calls-answered-consent-disclosure-never-coe.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:15:09.504Z",
+  "schema_version": "v1",
+  "commit_sha": "4c4b969d2f4d660ef7b5b4ff840b489c4735c241",
+  "title": "docs(empowerment): Aaron's four values calls answered — consent + disclosure, never coercion",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T19:14:39Z",
+  "head_ref": "shadow/empowerment-values-calls-answered"
+}

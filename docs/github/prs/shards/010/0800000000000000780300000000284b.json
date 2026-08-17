@@ -1,0 +1,12 @@
+{
+  "pr_number": 10315,
+  "archive_path": "docs/history/pr-reviews/PR-10315-heal-docs-research-annotate-124-stale-cross-references.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T01:56:41.714Z",
+  "schema_version": "v1",
+  "commit_sha": "a25c401f0fe05b71e2e105bd57e5a5a3935906e9",
+  "title": "heal(docs/research): annotate 124 stale cross-references",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T01:56:06Z",
+  "head_ref": "alexa/heal-batch-3"
+}

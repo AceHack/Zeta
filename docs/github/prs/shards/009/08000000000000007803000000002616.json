@@ -1,0 +1,12 @@
+{
+  "pr_number": 9750,
+  "archive_path": "docs/history/pr-reviews/PR-9750-docs-ctm-anchor-confirmed-blum-blum-conscious-turing-machine-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T00:08:16.983Z",
+  "schema_version": "v1",
+  "commit_sha": "a89984b1c4bd9a3072398231195933dfab2a78e8",
+  "title": "docs: CTM anchor confirmed — Blum & Blum Conscious Turing Machine (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T00:07:46Z",
+  "head_ref": "ctm-anchor-confirmed"
+}

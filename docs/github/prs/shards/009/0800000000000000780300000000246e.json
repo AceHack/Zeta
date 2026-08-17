@@ -1,0 +1,12 @@
+{
+  "pr_number": 9326,
+  "archive_path": "docs/history/pr-reviews/PR-9326-docs-prior-art-beacon-anchors-for-the-executable-ethics-corpus-capture-pipeline-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T16:49:47.770Z",
+  "schema_version": "v1",
+  "commit_sha": "73f92e9fffbeeaab87302f1ae461ef6480ae8986",
+  "title": "docs(prior-art): Beacon anchors for the executable-ethics corpus + capture pipeline (081KQ8P5D0008QG0R000N718AC slice)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T16:49:24Z",
+  "head_ref": "otto/prior-art-executable-ethics-capture"
+}

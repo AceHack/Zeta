@@ -1,0 +1,12 @@
+{
+  "pr_number": 9758,
+  "archive_path": "docs/history/pr-reviews/PR-9758-docs-gossip-and-the-ferry-throttle-are-one-primitive-deterministic-gossip-via-do.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T02:35:14.297Z",
+  "schema_version": "v1",
+  "commit_sha": "c334a4ed0dbdf6ef4ae3c1aa768c9b1c3c5a5b5d",
+  "title": "docs: gossip and the ferry throttle are one primitive — deterministic gossip via DoP=1 (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T02:34:48Z",
+  "head_ref": "gossip-is-the-ferry-throttle"
+}

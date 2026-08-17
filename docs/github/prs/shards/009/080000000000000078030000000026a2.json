@@ -1,0 +1,12 @@
+{
+  "pr_number": 9890,
+  "archive_path": "docs/history/pr-reviews/PR-9890-fix-heartbeat-sovereign-mode-flush-direct-push-no-pr-ceremony-unblocks-the-live-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T16:01:41.227Z",
+  "schema_version": "v1",
+  "commit_sha": "428c719bb0019f6d7a85d69cf200be06cc38f1e0",
+  "title": "fix(heartbeat): sovereign-mode flush — direct push, no PR ceremony (unblocks the live society)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T16:01:10Z",
+  "head_ref": "shadow/sovereign-flush-direct-push"
+}

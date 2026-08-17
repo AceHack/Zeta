@@ -1,0 +1,12 @@
+{
+  "pr_number": 9196,
+  "archive_path": "docs/history/pr-reviews/PR-9196-feat-core-frontmatter-lossless-metadata-payload-split-surfaces-canonical-only-ya.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T20:36:41.295Z",
+  "schema_version": "v1",
+  "commit_sha": "f452957ca983b963c7d9cb39e1d81c5c3fc59ce9",
+  "title": "feat(core): Frontmatter — lossless metadata⊕payload split; surfaces canonical-only-YAML finding",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T20:36:16Z",
+  "head_ref": "otto/frontmatter-metadata-payload-split"
+}

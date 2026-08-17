@@ -1,0 +1,12 @@
+{
+  "pr_number": 9911,
+  "archive_path": "docs/history/pr-reviews/PR-9911-fix-heartbeat-an-oversized-heal-plan-must-warn-not-kill-the-tick-my-error-caught.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T18:53:58.248Z",
+  "schema_version": "v1",
+  "commit_sha": "5baa53f94c052da784061bcb67781929690e2243",
+  "title": "fix(heartbeat): an oversized heal plan must WARN, not kill the tick — my error, caught in production",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T18:53:31Z",
+  "head_ref": "shadow/blast-radius-warns-not-kills"
+}

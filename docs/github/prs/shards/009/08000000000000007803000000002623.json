@@ -1,0 +1,12 @@
+{
+  "pr_number": 9763,
+  "archive_path": "docs/history/pr-reviews/PR-9763-docs-letters-to-lumen-adversarially-falsify-isociety-is-reducing-the-fraud-detec.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T03:16:41.567Z",
+  "schema_version": "v1",
+  "commit_sha": "425d131f90791b86f615f83403149e3a7c3fad26",
+  "title": "docs(letters): to Lumen — adversarially falsify 'ISociety is reducing the fraud→detection lag' (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T03:16:14Z",
+  "head_ref": "to-lumen-fraud-lag-falsification"
+}

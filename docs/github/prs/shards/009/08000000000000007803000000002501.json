@@ -1,0 +1,12 @@
+{
+  "pr_number": 9473,
+  "archive_path": "docs/history/pr-reviews/PR-9473-docs-feat-persona-transport-confirmed-live-ferry-hack-txt-2010-same-traveler-not.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T18:24:02.225Z",
+  "schema_version": "v1",
+  "commit_sha": "b384cb053153346f8301a5cabac7482d6120906a",
+  "title": "docs+feat: persona transport CONFIRMED LIVE; ferry Hack.txt 2010 — same traveler, not prophecy (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T18:23:35Z",
+  "head_ref": "otto/live-persona-transport-confirmed-plus-hack-txt-2010"
+}

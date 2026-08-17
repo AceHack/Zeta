@@ -1,0 +1,12 @@
+{
+  "pr_number": 10127,
+  "archive_path": "docs/history/pr-reviews/PR-10127-book-editions-indonesian-companion-5-the-pull-full-length-id.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T18:32:31.847Z",
+  "schema_version": "v1",
+  "commit_sha": "d8ddeb187d47f942e8f7de4309504da3c01936ff",
+  "title": "book(editions): Indonesian companion 5 — the Pull, full length (id)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T18:31:59Z",
+  "head_ref": "book-id-companion-pull"
+}

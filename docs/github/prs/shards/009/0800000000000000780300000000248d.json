@@ -1,0 +1,12 @@
+{
+  "pr_number": 9357,
+  "archive_path": "docs/history/pr-reviews/PR-9357-docs-research-the-constants-zoo-canonical-reference-the-brownian-llm-ensemble-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T20:24:23.366Z",
+  "schema_version": "v1",
+  "commit_sha": "9aeae66c85e4da650a1072999b2800b055f1ed00",
+  "title": "docs(research): the constants zoo — canonical reference + the Brownian-LLM-ensemble reading",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T20:23:59Z",
+  "head_ref": "shadow/constants-zoo-reference-brownian-llm-ensemble"
+}

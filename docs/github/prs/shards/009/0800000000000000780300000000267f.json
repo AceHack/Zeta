@@ -1,0 +1,12 @@
+{
+  "pr_number": 9855,
+  "archive_path": "docs/history/pr-reviews/PR-9855-test-observe-the-never-trapped-law-totality-of-the-wall-grammar-over-worlds-nobo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T12:14:24.568Z",
+  "schema_version": "v1",
+  "commit_sha": "2f3cc06fda073bbd5cbd1921ff10e913c61356cf",
+  "title": "test(observe): the NEVER-TRAPPED law — totality of the wall grammar over worlds nobody wrote",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T12:13:57Z",
+  "head_ref": "shadow/observe-totality-never-trapped"
+}

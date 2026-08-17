@@ -1,0 +1,12 @@
+{
+  "pr_number": 9943,
+  "archive_path": "docs/history/pr-reviews/PR-9943-feat-browser-persist-node-checkpoints-in-indexeddb.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T23:37:31.743Z",
+  "schema_version": "v1",
+  "commit_sha": "98984fd5919ea7ddb636d8c4f0ec5a4ef9714977",
+  "title": "feat(browser): persist node checkpoints in IndexedDB",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T23:37:04Z",
+  "head_ref": "claim/task-browser-indexeddb-checkpoint"
+}

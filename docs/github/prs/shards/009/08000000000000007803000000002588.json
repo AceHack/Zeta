@@ -1,0 +1,12 @@
+{
+  "pr_number": 9608,
+  "archive_path": "docs/history/pr-reviews/PR-9608-docs-workitems-free-github-3-body-improvement-plan-4-workitems-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T03:00:41.690Z",
+  "schema_version": "v1",
+  "commit_sha": "9bae18447ae6e1a7bb578b3f645c513dcc11e8d3",
+  "title": "docs+workitems: free-GitHub 3-body improvement plan + 4 workitems (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T03:00:17Z",
+  "head_ref": "otto/3-body-improvement-workitems"
+}

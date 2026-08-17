@@ -1,0 +1,12 @@
+{
+  "pr_number": 9650,
+  "archive_path": "docs/history/pr-reviews/PR-9650-docs-book-wild-youth-the-organizer-at-scale-extroverted-hsp-parties-dwi-expunged.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T01:43:33.707Z",
+  "schema_version": "v1",
+  "commit_sha": "41415f1ed3fb07f1dc17ace1973a55370685f277",
+  "title": "docs(book): wild youth — the organizer at scale (extroverted HSP); parties, DWI, expunged matter, the studied one",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T01:43:08Z",
+  "head_ref": "shadow/book-wild-youth-organizer-at-scale"
+}

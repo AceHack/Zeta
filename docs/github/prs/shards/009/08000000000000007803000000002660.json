@@ -1,0 +1,12 @@
+{
+  "pr_number": 9824,
+  "archive_path": "docs/history/pr-reviews/PR-9824-feat-core-the-four-corner-trace-over-wset-reinterpretation-emits-retractions-inc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T03:00:45.418Z",
+  "schema_version": "v1",
+  "commit_sha": "97c1c3b9550e9a8b2feae57bc313b11569bf9920",
+  "title": "feat(Core): the four-corner TRACE over WSet — reinterpretation emits retractions (increment 2)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T03:00:16Z",
+  "head_ref": "shadow/wset-corners-and-trace"
+}

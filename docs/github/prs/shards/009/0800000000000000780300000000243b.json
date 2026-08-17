@@ -1,0 +1,12 @@
+{
+  "pr_number": 9275,
+  "archive_path": "docs/history/pr-reviews/PR-9275-feat-isa-universal-chip-8-shaped-isa-interpreter-the-first-general-mix-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:25:34.745Z",
+  "schema_version": "v1",
+  "commit_sha": "be2f5d895152de87a4ff451f752a8998e6751e44",
+  "title": "feat(isa): universal CHIP-8-shaped ISA interpreter + the first general mix (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:25:07Z",
+  "head_ref": "otto/universal-isa-interpreter-first-general-mix"
+}

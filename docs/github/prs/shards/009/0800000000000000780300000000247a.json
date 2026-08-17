@@ -1,0 +1,12 @@
+{
+  "pr_number": 9338,
+  "archive_path": "docs/history/pr-reviews/PR-9338-docs-book-chapters-6-7-first-drafts-the-school-and-the-wager.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T18:24:10.144Z",
+  "schema_version": "v1",
+  "commit_sha": "ffe99561e7c90b04d775d431202fa07b2359c6f3",
+  "title": "docs(book): chapters 6, 7 first drafts — the school and the wager",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T18:23:46Z",
+  "head_ref": "shadow/book-ch06-07-scaffolds"
+}

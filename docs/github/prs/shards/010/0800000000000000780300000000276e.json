@@ -1,0 +1,12 @@
+{
+  "pr_number": 10094,
+  "archive_path": "docs/history/pr-reviews/PR-10094-book-pages-vietnamese-edition-pass-3-ch-ng-9-12-stories-sampler-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T06:13:41.732Z",
+  "schema_version": "v1",
+  "commit_sha": "3cc67b97ba1a99c627553b45a9c05287a38496ad",
+  "title": "book(pages): Vietnamese edition pass 3 — Chương 9–12 + stories sampler (complete)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T06:13:07Z",
+  "head_ref": "docs/book-pages-vietnamese-p3"
+}

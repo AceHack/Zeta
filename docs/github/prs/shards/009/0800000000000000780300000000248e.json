@@ -1,0 +1,12 @@
+{
+  "pr_number": 9358,
+  "archive_path": "docs/history/pr-reviews/PR-9358-docs-prior-art-bernoulli-zeta-bridges-brownian-expert-anchors.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T20:30:52.053Z",
+  "schema_version": "v1",
+  "commit_sha": "71128b9a7a16b9a2891e49c19c2e686325c99ef8",
+  "title": "docs(prior-art): Bernoulli/zeta bridges + Brownian-expert anchors",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T20:30:30Z",
+  "head_ref": "shadow/prior-art-brownian-bernoulli-anchors"
+}

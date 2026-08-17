@@ -1,0 +1,12 @@
+{
+  "pr_number": 9418,
+  "archive_path": "docs/history/pr-reviews/PR-9418-docs-research-a-f-shape-taxonomy-skeleton-fixed-points-as-nation-state-rollable-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T05:23:35.648Z",
+  "schema_version": "v1",
+  "commit_sha": "08607068824ff23bd5aeaebf68a042dd1b1726df",
+  "title": "docs(research): A-F shape taxonomy skeleton — fixed points as nation-state rollable security keys (grounded + gaps) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T05:23:13Z",
+  "head_ref": "otto/a-f-shape-taxonomy-skeleton-rollable-security-keys"
+}

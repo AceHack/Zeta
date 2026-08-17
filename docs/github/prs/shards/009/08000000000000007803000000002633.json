@@ -1,0 +1,15 @@
+{
+  "pr_number": 9779,
+  "archive_path": "docs/history/pr-reviews/PR-9779-fix-semgrep-clear-two-pre-existing-file-read-without-size-cap-findings-recovery-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7b9pTt",
+    "thread:PRRT_kwDOSF9kNM6VaaqR"
+  ],
+  "fetched_at": "2026-07-31T15:47:09.424Z",
+  "schema_version": "v1",
+  "commit_sha": "1a64b5ac947be06ea5b3e6d9e0d5b48595a09114",
+  "title": "fix(semgrep): clear two pre-existing file-read-without-size-cap findings (recovery, no admin) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T15:46:40Z",
+  "head_ref": "shadow/fix-preexisting-semgrep-file-read-caps"
+}

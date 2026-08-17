@@ -1,0 +1,12 @@
+{
+  "pr_number": 10074,
+  "archive_path": "docs/history/pr-reviews/PR-10074-book-stage-farm-childhood-freedom-root-granny-fire-the-two-failures-guilt-archit.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T01:49:38.530Z",
+  "schema_version": "v1",
+  "commit_sha": "86b13356774966d59e64cad7576c33dd9b49c21e",
+  "title": "book: stage farm childhood — freedom root, Granny, fire, the two failures, guilt architecture",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T01:49:03Z",
+  "head_ref": "docs/book-ferry-farm-freedom-granny-fire"
+}

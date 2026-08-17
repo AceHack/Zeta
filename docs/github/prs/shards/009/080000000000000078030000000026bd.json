@@ -1,0 +1,12 @@
+{
+  "pr_number": 9917,
+  "archive_path": "docs/history/pr-reviews/PR-9917-test-darkhall-connect-native-browser-tabs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T19:15:34.946Z",
+  "schema_version": "v1",
+  "commit_sha": "3f381aea882a25c5dc352173a48e895afb7d83d3",
+  "title": "test(darkhall): connect native browser tabs",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T19:15:00Z",
+  "head_ref": "claim/task-darkhall-browser-multitab"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9323,
+  "archive_path": "docs/history/pr-reviews/PR-9323-feat-economy-the-vampire-s-countdown-as-a-toy-produce-extract-game-horizon-is-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T15:50:14.239Z",
+  "schema_version": "v1",
+  "commit_sha": "792b230c3d0395882cacf22e775f2896a772a540",
+  "title": "feat(economy): the vampire's countdown as a toy — produce/extract game, horizon is the theorem",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T15:49:48Z",
+  "head_ref": "shadow/produce-extract-toy-game"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9454,
+  "archive_path": "docs/history/pr-reviews/PR-9454-feat-four-corner-multiplexedduplextransport-n-channels-over-one-transport-zetaid.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T16:15:48.919Z",
+  "schema_version": "v1",
+  "commit_sha": "989553e1b4655a5ed248158195742d0f5da50910",
+  "title": "feat(four-corner): MultiplexedDuplexTransport — N channels over one transport, ZetaId-keyed (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T16:15:28Z",
+  "head_ref": "otto/multiplexed-duplex-transport-zetaid-keyed"
+}

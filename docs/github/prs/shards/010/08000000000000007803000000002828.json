@@ -1,0 +1,12 @@
+{
+  "pr_number": 10280,
+  "archive_path": "docs/history/pr-reviews/PR-10280-feat-browser-route-zetadb-through-controller-commands.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T05:38:56.380Z",
+  "schema_version": "v1",
+  "commit_sha": "91aeab788be659f3e6827b88c150ac8eb0a293f5",
+  "title": "feat(browser): route ZetaDB through controller commands",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T05:38:15Z",
+  "head_ref": "codex/browser-zetadb-controller-commands"
+}

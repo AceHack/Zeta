@@ -1,0 +1,12 @@
+{
+  "pr_number": 10095,
+  "archive_path": "docs/history/pr-reviews/PR-10095-book-weave-formation-cluster-free-range-freedom-granny-the-teacher-the-still-poi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T07:00:47.207Z",
+  "schema_version": "v1",
+  "commit_sha": "b327c53ec7a7e95b021538663f92745ef8926c9c",
+  "title": "book(weave): formation cluster — free-range freedom, Granny-the-teacher, the still point, the two failures",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T07:00:18Z",
+  "head_ref": "book-weave-formation-cluster"
+}

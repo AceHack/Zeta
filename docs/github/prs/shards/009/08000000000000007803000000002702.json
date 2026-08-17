@@ -1,0 +1,12 @@
+{
+  "pr_number": 9986,
+  "archive_path": "docs/history/pr-reviews/PR-9986-docs-research-cognitive-simulation-cluster-dreams-astral-as-directed-rollout-of-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T19:23:32.387Z",
+  "schema_version": "v1",
+  "commit_sha": "b0477533c07f98283b044a8fc2fa4c8ee14545cf",
+  "title": "docs(research): cognitive-simulation cluster — dreams/astral as directed rollout of the prediction engine",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T19:22:56Z",
+  "head_ref": "research/cognitive-simulation-cluster-20260802"
+}

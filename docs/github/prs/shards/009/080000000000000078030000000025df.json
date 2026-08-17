@@ -1,0 +1,12 @@
+{
+  "pr_number": 9695,
+  "archive_path": "docs/history/pr-reviews/PR-9695-docs-research-grace-first-is-the-strategy-anti-sybil-floor-is-the-backstop-shado.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T15:12:37.087Z",
+  "schema_version": "v1",
+  "commit_sha": "578ef950a567669a3b0efe4d24b20016408a086b",
+  "title": "docs(research): grace-first is the strategy, anti-Sybil floor is the backstop (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T15:11:51Z",
+  "head_ref": "frost-grace-first-anti-sybil-is-backstop"
+}

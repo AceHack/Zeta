@@ -1,0 +1,12 @@
+{
+  "pr_number": 9415,
+  "archive_path": "docs/history/pr-reviews/PR-9415-feat-hooks-manus-commit-msg-sanitizer-install-flake-ace-ci.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T05:02:09.752Z",
+  "schema_version": "v1",
+  "commit_sha": "e64cf0cb7428428a3e5c9261d9703617b2a700a0",
+  "title": "feat(hooks): Manus commit-msg sanitizer (install + flake + ACE + CI)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T05:01:47Z",
+  "head_ref": "feat/commit-msg-hook-manus-sanitize"
+}

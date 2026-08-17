@@ -1,0 +1,12 @@
+{
+  "pr_number": 10113,
+  "archive_path": "docs/history/pr-reviews/PR-10113-book-editions-mandarin-companion-3-the-organizer-full-length-zh.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T17:56:32.476Z",
+  "schema_version": "v1",
+  "commit_sha": "ec557e718e68e39a790a253e0eba61ba27365e03",
+  "title": "book(editions): Mandarin companion 3 — the Organizer, full length (zh)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:56:00Z",
+  "head_ref": "book-zh-companion-organizer"
+}

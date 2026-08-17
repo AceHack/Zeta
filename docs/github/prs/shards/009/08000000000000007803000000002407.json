@@ -1,0 +1,12 @@
+{
+  "pr_number": 9223,
+  "archive_path": "docs/history/pr-reviews/PR-9223-fix-docs-markdownlint-red-on-main-quantum-phase5-handoff.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T04:03:26.845Z",
+  "schema_version": "v1",
+  "commit_sha": "b0398ca519c93e330f43b2982a58589ba49379ad",
+  "title": "fix(docs): markdownlint red on main — quantum-phase5 handoff",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T04:03:05Z",
+  "head_ref": "otto/fix-markdownlint-handoffs-quantum-phase5"
+}

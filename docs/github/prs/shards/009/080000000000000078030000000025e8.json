@@ -1,0 +1,12 @@
+{
+  "pr_number": 9704,
+  "archive_path": "docs/history/pr-reviews/PR-9704-docs-book-run-pulls-a-all-27-sockets-filled-with-aaron-s-verbatim-11-chapters-sh.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T16:02:51.626Z",
+  "schema_version": "v1",
+  "commit_sha": "e894d802dd31abc3487d7740a6e932a11f152663",
+  "title": "docs(book): RUN PULLS (A) — all 27 sockets filled with Aaron's verbatim, 11 chapters (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T16:02:19Z",
+  "head_ref": "pull-all-chapters-verbatim"
+}

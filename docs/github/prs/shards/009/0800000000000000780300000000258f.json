@@ -1,0 +1,23 @@
+{
+  "pr_number": 9615,
+  "archive_path": "docs/history/pr-reviews/PR-9615-feat-model-backend-github-login-cli-first-consumer-of-the-github-authprovider.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Tu9mB",
+    "comment:PRRC_kwDOSF9kNM7Tu9mN",
+    "comment:PRRC_kwDOSF9kNM7TvK11",
+    "comment:PRRC_kwDOSF9kNM7TvKzW",
+    "comment:PRRC_kwDOSF9kNM7TvRZl",
+    "comment:PRRC_kwDOSF9kNM7TvRZv",
+    "thread:PRRT_kwDOSF9kNM6PmPY0",
+    "thread:PRRT_kwDOSF9kNM6PmPY7",
+    "thread:PRRT_kwDOSF9kNM6PmdwK",
+    "thread:PRRT_kwDOSF9kNM6PmdwU"
+  ],
+  "fetched_at": "2026-07-09T14:34:45.540Z",
+  "schema_version": "v1",
+  "commit_sha": "a27e1cb69af89b8d631f4d9e09c8b4182352660a",
+  "title": "feat(model-backend): github-login-cli — first consumer of the GitHub AuthProvider",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T14:34:16Z",
+  "head_ref": "otto/github-login-cli"
+}

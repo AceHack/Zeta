@@ -1,0 +1,12 @@
+{
+  "pr_number": 10223,
+  "archive_path": "docs/history/pr-reviews/PR-10223-fix-usb-installer-cd-into-the-repo-before-the-wifi-converter-mise-shim-needs-pro.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T20:06:29.781Z",
+  "schema_version": "v1",
+  "commit_sha": "9ee8ed8a959a632de9ad97bcdf1f8c5af9b4d9ed",
+  "title": "fix(usb-installer): cd into the repo before the wifi converter — mise shim needs project context (bug A fixed)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T20:05:56Z",
+  "head_ref": "shadow/wifi-converter-cd-repo-for-mise-context"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9598,
+  "archive_path": "docs/history/pr-reviews/PR-9598-docs-letters-to-alexa-handoff-wire-traveler-into-the-github-3-agent-system-softv.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T01:09:45.380Z",
+  "schema_version": "v1",
+  "commit_sha": "cbe7691b705552a29d1b43f933bf8a02249a0e4c",
+  "title": "docs(letters): to-Alexa handoff — wire Traveler into the GitHub 3-agent system (+ SoftValue/factor-graph thread) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T01:09:17Z",
+  "head_ref": "otto/to-alexa-traveler-handoff"
+}

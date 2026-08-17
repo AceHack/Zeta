@@ -1,0 +1,12 @@
+{
+  "pr_number": 9398,
+  "archive_path": "docs/history/pr-reviews/PR-9398-feat-model-backend-the-real-fetch-transport-post-get-streaming-poststream-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T02:21:07.988Z",
+  "schema_version": "v1",
+  "commit_sha": "97a9ad17a686665eccecf778fcfb7b8a098f93c5",
+  "title": "feat(model-backend): the real fetch transport — post/get + streaming postStream (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T02:20:39Z",
+  "head_ref": "otto/real-fetch-transport-poststream"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10102,
+  "archive_path": "docs/history/pr-reviews/PR-10102-book-weave-5b-notoriety-felonies-cops-the-anti-cult-guard-the-protector-s-second.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T17:08:41.406Z",
+  "schema_version": "v1",
+  "commit_sha": "065b2213a6be497a68d993d0f8a7c2fea627be8d",
+  "title": "book(weave): 5b — notoriety/felonies/cops, the anti-cult guard, the protector's second setting, the restraint self-model, the hacker lineage",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:08:10Z",
+  "head_ref": "book-weave-5b-organizer"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9806,
+  "archive_path": "docs/history/pr-reviews/PR-9806-test-bridge-close-the-forger-map-rung-dynamics-braid-entropy-meet-at-log-2-618.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T00:26:48.000Z",
+  "schema_version": "v1",
+  "commit_sha": "9a37addfabcf1f044b8de6623c4bce2e91bdac07",
+  "title": "test(bridge): close the forger-map rung — dynamics ⇄ braid entropy meet at log 2.618",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T00:26:21Z",
+  "head_ref": "shadow/forger-map-cross-check-bridge"
+}

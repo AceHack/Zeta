@@ -1,0 +1,12 @@
+{
+  "pr_number": 9842,
+  "archive_path": "docs/history/pr-reviews/PR-9842-feat-browser-node-observe-progressive-runtime-capabilities.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T04:22:34.068Z",
+  "schema_version": "v1",
+  "commit_sha": "da89c1d7b5997cb00807ebbaef0f57e4811ff17b",
+  "title": "feat(browser-node): observe progressive runtime capabilities",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T04:22:00Z",
+  "head_ref": "claim/task-browser-runtime-probe"
+}

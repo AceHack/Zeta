@@ -1,0 +1,12 @@
+{
+  "pr_number": 10237,
+  "archive_path": "docs/history/pr-reviews/PR-10237-docs-trajectory-external-dependency-baseline-115-and-the-6-where-reduction-and-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T21:55:05.078Z",
+  "schema_version": "v1",
+  "commit_sha": "a9687f1453979ddeca41b188f02c9ca3c18b22d6",
+  "title": "docs(trajectory): external-dependency baseline — ~115, and the 6 where reduction and security agree",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T21:54:36Z",
+  "head_ref": "shadow/dogfood-dependency-baseline"
+}

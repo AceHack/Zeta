@@ -1,0 +1,12 @@
+{
+  "pr_number": 10240,
+  "archive_path": "docs/history/pr-reviews/PR-10240-docs-research-itron-transfer-anchor-concept-only-3-key-rotation-rationale-privac.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T22:28:18.719Z",
+  "schema_version": "v1",
+  "commit_sha": "60f84e59e44befcc0a20745d80d1bcc96eda9a25",
+  "title": "docs(research): Itron transfer anchor (concept-only), 3-key rotation rationale, privacy-budget witness",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T22:27:46Z",
+  "head_ref": "shadow/itron-keytransfer-anchor"
+}

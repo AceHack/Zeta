@@ -1,0 +1,12 @@
+{
+  "pr_number": 10267,
+  "archive_path": "docs/history/pr-reviews/PR-10267-research-defining-z-for-a-memory-making-resonance-calibrated.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T00:48:26.045Z",
+  "schema_version": "v1",
+  "commit_sha": "03278ed618f1f9a44cabc1592711cd91ede437c0",
+  "title": "research: defining z for a memory — making resonance calibrated",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T00:47:55Z",
+  "head_ref": "shadow/defining-z-for-a-memory"
+}

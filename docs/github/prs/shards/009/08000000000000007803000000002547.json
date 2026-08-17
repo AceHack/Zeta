@@ -1,0 +1,12 @@
+{
+  "pr_number": 9543,
+  "archive_path": "docs/history/pr-reviews/PR-9543-test-zflash-assert-esp-hostname-and-cred-injection.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T22:06:21.439Z",
+  "schema_version": "v1",
+  "commit_sha": "8910ddbd272bb1f85d1580cf8e49b43c909ca21b",
+  "title": "test(zflash): assert ESP hostname and cred injection",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T22:05:54Z",
+  "head_ref": "feat/usb-esp-hostname-creds-asserts"
+}

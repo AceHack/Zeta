@@ -1,0 +1,12 @@
+{
+  "pr_number": 9730,
+  "archive_path": "docs/history/pr-reviews/PR-9730-docs-research-the-bat-is-uncomputable-on-the-2-corner-q1-engineering-teeth-fourc.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T19:00:47.882Z",
+  "schema_version": "v1",
+  "commit_sha": "291358f9f16cda5a2e652b88da0a6d8e7e0917c2",
+  "title": "docs(research): the bat is uncomputable on the 2-corner (Q1 engineering teeth) + FourCorner's 10-year provenance (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T19:00:18Z",
+  "head_ref": "feedback-corner-bat-teeth-provenance"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9787,
+  "archive_path": "docs/history/pr-reviews/PR-9787-docs-book-raw-raising-kids-to-escape-the-superego-freedom-thesis-lived.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T15:15:19.357Z",
+  "schema_version": "v1",
+  "commit_sha": "7853972ce2df24a25eaf945088ba05218b4899c8",
+  "title": "docs(book): RAW — raising kids to escape the superego (freedom thesis, lived)",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T15:11:32Z",
+  "head_ref": "shadow/book-raw-raising-kids-freedom-thesis"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9637,
+  "archive_path": "docs/history/pr-reviews/PR-9637-docs-book-all-worlds-border-crosser-milton-whole-maker-war-wallets-lillian-prote.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T21:52:28.000Z",
+  "schema_version": "v1",
+  "commit_sha": "e62dccf117e35bd184b2eef290e218d743fd20f4",
+  "title": "docs(book): all-worlds border-crosser + Milton whole (maker/war/wallets); Lillian protected",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T21:51:58Z",
+  "head_ref": "shadow/book-prom-crowd-cover-note"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9409,
+  "archive_path": "docs/history/pr-reviews/PR-9409-docs-ferry-generator-pilot-wave-self-locus-of-now-private-index-qualia-as-hard-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T04:31:47.683Z",
+  "schema_version": "v1",
+  "commit_sha": "88619c2b99d8ddb3ae8091b5162a9da6c4bba831",
+  "title": "docs(ferry): generator=pilot wave, self=locus of now; private index (qualia) as hard money (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T04:31:24Z",
+  "head_ref": "otto/ferry-pilot-wave-locus-of-now-private-index-hard-money-qualia"
+}

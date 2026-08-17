@@ -1,0 +1,12 @@
+{
+  "pr_number": 10026,
+  "archive_path": "docs/history/pr-reviews/PR-10026-fix-core-caveat-a-follow-up-hac-estimator-multi-block-gate-subset-machine-check-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T15:17:02.561Z",
+  "schema_version": "v1",
+  "commit_sha": "0cc4985039c8593ce23b9b4a36c918b6ad5b00fe",
+  "title": "fix(core): Caveat-A follow-up — HAC estimator + multi-block gate + subset machine-check (Soraya's holes)",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T15:16:33Z",
+  "head_ref": "fix/antisybil-caveat-a-hac-estimator-and-multiblock-gate-20260804"
+}

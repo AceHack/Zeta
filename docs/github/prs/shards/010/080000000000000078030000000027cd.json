@@ -1,0 +1,12 @@
+{
+  "pr_number": 10189,
+  "archive_path": "docs/history/pr-reviews/PR-10189-docs-correct-max-facing-core-technology-doc-accuracy-pass.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T16:09:25.845Z",
+  "schema_version": "v1",
+  "commit_sha": "95509b406e37c51c62266114c8243c1be91dcc67",
+  "title": "docs: correct Max-facing core-technology doc (accuracy pass)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T16:08:54Z",
+  "head_ref": "shadow/fix-max-core-doc-corrections"
+}

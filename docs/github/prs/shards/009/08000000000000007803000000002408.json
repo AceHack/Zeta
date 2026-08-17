@@ -1,0 +1,12 @@
+{
+  "pr_number": 9224,
+  "archive_path": "docs/history/pr-reviews/PR-9224-feat-core-slr-glr-fallback-parse-ambiguous-slr-conflicting-grammars-by-forking.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T23:47:21.620Z",
+  "schema_version": "v1",
+  "commit_sha": "bfafa3dc653b9a2e5ea68a0be4cdf49523fad16a",
+  "title": "feat(core): Slr GLR fallback — parse ambiguous / SLR-conflicting grammars by forking",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T23:47:00Z",
+  "head_ref": "otto/glr-fallback"
+}

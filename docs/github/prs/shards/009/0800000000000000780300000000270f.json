@@ -1,0 +1,12 @@
+{
+  "pr_number": 9999,
+  "archive_path": "docs/history/pr-reviews/PR-9999-feat-core-decorrelationmetrology-spacelike-commit-pair-sensor-layer-metrology-me.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T21:26:12.180Z",
+  "schema_version": "v1",
+  "commit_sha": "847d1b8bcc90b5b89b344716e6fd90511aee1dea",
+  "title": "feat(core): DecorrelationMetrology — spacelike commit-pair sensor layer (metrology ≠ meter)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T21:25:39Z",
+  "head_ref": "feat/decorrelation-meter-spacelike-commit-pairs-20260802"
+}

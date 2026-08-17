@@ -1,0 +1,12 @@
+{
+  "pr_number": 10164,
+  "archive_path": "docs/history/pr-reviews/PR-10164-docs-decisions-ratify-drift-and-heal-adr-accepted-operator-5-persona-signatures.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T20:34:27.904Z",
+  "schema_version": "v1",
+  "commit_sha": "71c8b1474c33fdc215c72f618112e70905106072",
+  "title": "docs(decisions): RATIFY drift-and-heal ADR — Accepted, operator + 5 persona signatures",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T20:33:54Z",
+  "head_ref": "otto/ratify-drift-and-heal"
+}

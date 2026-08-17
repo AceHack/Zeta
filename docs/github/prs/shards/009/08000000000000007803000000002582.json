@@ -1,0 +1,12 @@
+{
+  "pr_number": 9602,
+  "archive_path": "docs/history/pr-reviews/PR-9602-feat-installer-hermetic-multiboot-usb-planner-zeta-vs-mynode-namespaces.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T01:37:33.071Z",
+  "schema_version": "v1",
+  "commit_sha": "f34d88689b1bebdce99165d57d5b752c20a63ea6",
+  "title": "feat(installer): hermetic multiboot USB planner (Zeta vs MyNode namespaces)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T01:37:03Z",
+  "head_ref": "feat/multiboot-usb-planner-2026-07-08"
+}

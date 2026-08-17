@@ -1,0 +1,12 @@
+{
+  "pr_number": 9443,
+  "archive_path": "docs/history/pr-reviews/PR-9443-feat-four-corner-docs-ferry-type-the-mutual-empowerment-interface-bank-bridge-11.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T14:44:13.307Z",
+  "schema_version": "v1",
+  "commit_sha": "9cce00d0f2ba83e51ff2ed7dbeea344905ed8d99",
+  "title": "feat(four-corner)+docs(ferry): type the mutual-empowerment interface; bank BRIDGE-11 orbit-intertwining theorem (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T14:43:50Z",
+  "head_ref": "otto/four-corner-interface-type-plus-bridge11-orbit-intertwining"
+}

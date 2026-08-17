@@ -1,0 +1,12 @@
+{
+  "pr_number": 9337,
+  "archive_path": "docs/history/pr-reviews/PR-9337-docs-book-chapters-3-4-5-first-drafts-produce-extract-correlation-of-souls-the-v.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T18:21:57.271Z",
+  "schema_version": "v1",
+  "commit_sha": "f4499ba2e5636948df712ba10e123e2438d3fac2",
+  "title": "docs(book): chapters 3, 4, 5 first drafts — produce/extract, correlation of souls, the vampire loses",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T18:21:34Z",
+  "head_ref": "shadow/book-ch03-04-05-scaffolds"
+}

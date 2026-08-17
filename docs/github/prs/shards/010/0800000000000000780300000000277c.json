@@ -1,0 +1,12 @@
+{
+  "pr_number": 10108,
+  "archive_path": "docs/history/pr-reviews/PR-10108-book-editions-full-content-pass-4-the-strategist-s-daughter-companion-full-lengt.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T17:47:45.633Z",
+  "schema_version": "v1",
+  "commit_sha": "e0e9705b46b977016639cabddd8ec0ab5a058f45",
+  "title": "book(editions): full-content pass 4 — the Strategist's Daughter companion, full length (English)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:43:06Z",
+  "head_ref": "book-en-fullcontent-strategist"
+}

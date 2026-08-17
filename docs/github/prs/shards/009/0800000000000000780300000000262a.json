@@ -1,0 +1,12 @@
+{
+  "pr_number": 9770,
+  "archive_path": "docs/history/pr-reviews/PR-9770-docs-research-primary-source-anchor-for-entropic-relational-time-barontini-2026-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-16T01:51:31.905Z",
+  "schema_version": "v1",
+  "commit_sha": "8bd5f4a90f9b4986d9a84717657f0d4011db2b06",
+  "title": "docs(research): primary-source anchor for entropic/relational time — Barontini 2026 (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-16T01:51:05Z",
+  "head_ref": "shadow/barontini-relational-time-primary-source-anchor"
+}

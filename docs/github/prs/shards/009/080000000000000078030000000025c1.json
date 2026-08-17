@@ -1,0 +1,12 @@
+{
+  "pr_number": 9665,
+  "archive_path": "docs/history/pr-reviews/PR-9665-docs-research-soraya-discharge-routing-ground-the-session-keeps-cites-rejects-ov.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T05:17:15.699Z",
+  "schema_version": "v1",
+  "commit_sha": "421e4828a6ed850b6552c5d077cd9ff03d276392",
+  "title": "docs(research): Soraya discharge routing — ground the session; keeps/cites/rejects/overclaims (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T05:16:49Z",
+  "head_ref": "shadow/soraya-discharge-routing-grounding-the-session"
+}

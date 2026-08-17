@@ -1,0 +1,12 @@
+{
+  "pr_number": 9835,
+  "archive_path": "docs/history/pr-reviews/PR-9835-fix-ts-main-is-red-on-lint-ts-42-tsc-errors-from-three-unrelated-causes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T03:47:57.764Z",
+  "schema_version": "v1",
+  "commit_sha": "f6c37f71a3d800153ed33bcec8f330251e5fdfea",
+  "title": "fix(ts): main is RED on lint (TS) — 42 tsc errors from three unrelated causes",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T03:47:26Z",
+  "head_ref": "shadow/fix-main-red-typescript-lint"
+}

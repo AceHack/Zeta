@@ -1,0 +1,12 @@
+{
+  "pr_number": 10326,
+  "archive_path": "docs/history/pr-reviews/PR-10326-fix-ci-drop-the-orphan-data-arc-agi-gitlink-that-was-breaking-every-checkout.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T04:20:59.053Z",
+  "schema_version": "v1",
+  "commit_sha": "97679d4547fe60c1f561bb17219f5c8cbfe72371",
+  "title": "fix(ci): drop the orphan data/ARC-AGI gitlink that was breaking every checkout",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T04:20:24Z",
+  "head_ref": "fix-orphan-arc-agi-gitlink"
+}

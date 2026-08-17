@@ -1,0 +1,12 @@
+{
+  "pr_number": 10303,
+  "archive_path": "docs/history/pr-reviews/PR-10303-feat-observe-rs-phase-accumulator-wire-codec-into-tick-stream.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-11T01:23:12.104Z",
+  "schema_version": "v1",
+  "commit_sha": "3835aa4f6f50438fd281043fee1f95c300a50689",
+  "title": "feat(observe): RS phase accumulator — wire codec into tick stream",
+  "state": "MERGED",
+  "merged_at": "2026-08-11T01:22:34Z",
+  "head_ref": "alexa/wire-rs-codec"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9773,
+  "archive_path": "docs/history/pr-reviews/PR-9773-build-deps-dev-bump-vitest-from-2-1-9-to-4-1-10-in-src-renderers-website-in-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T23:29:35.365Z",
+  "schema_version": "v1",
+  "commit_sha": "9537c55403157f4556f562936758637ad1da0e21",
+  "title": "build(deps-dev): Bump vitest from 2.1.9 to 4.1.10 in /src/Renderers/website in the npm_and_yarn group across 1 directory",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T23:29:05Z",
+  "head_ref": "dependabot/npm_and_yarn/src/Renderers/website/npm_and_yarn-bc9680511c"
+}

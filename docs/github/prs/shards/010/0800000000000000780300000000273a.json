@@ -1,0 +1,12 @@
+{
+  "pr_number": 10042,
+  "archive_path": "docs/history/pr-reviews/PR-10042-book-formation-fold-in-the-dual-use-builder-loop-honestly-correct-the-companion-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T20:37:43.315Z",
+  "schema_version": "v1",
+  "commit_sha": "59096c671a7949f2565b8cf04451f32ff4f19cba",
+  "title": "book(formation): fold in the dual-use builder loop + honestly correct the companion's scope",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T20:36:53Z",
+  "head_ref": "docs/book-formation-fold-dualuse-loop-and-correct-scope-20260804"
+}

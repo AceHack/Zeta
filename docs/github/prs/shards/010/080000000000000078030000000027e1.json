@@ -1,0 +1,12 @@
+{
+  "pr_number": 10209,
+  "archive_path": "docs/history/pr-reviews/PR-10209-feat-drift-bd001-build-drift-detector-on-main-s-tick-detector-half-of-081kzhgp45.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:18:53.756Z",
+  "schema_version": "v1",
+  "commit_sha": "f7aec9eaaf704a8c1c9e55bedc3a967433af8e13",
+  "title": "feat(drift): BD001 build-drift detector on main's tick — detector half of 081KZHGP45V",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T19:18:23Z",
+  "head_ref": "otto/bd001-build-drift-detector"
+}

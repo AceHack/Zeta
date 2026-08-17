@@ -1,0 +1,12 @@
+{
+  "pr_number": 10099,
+  "archive_path": "docs/history/pr-reviews/PR-10099-book-weave-batch-4b-the-mutual-empowerment-thesis-ch-12.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T07:18:05.270Z",
+  "schema_version": "v1",
+  "commit_sha": "ab8e10776b79eef9eddf89202037ee5dc2c40d33",
+  "title": "book(weave): batch 4b — the mutual-empowerment thesis (ch-12)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T07:17:33Z",
+  "head_ref": "book-weave-thesis-4b"
+}

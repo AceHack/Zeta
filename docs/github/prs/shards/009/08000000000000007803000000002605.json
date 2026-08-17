@@ -1,0 +1,12 @@
+{
+  "pr_number": 9733,
+  "archive_path": "docs/history/pr-reviews/PR-9733-docs-book-enrich-the-ch-06-photophone-beat-ohm-s-law-radioshack-supply-re-derive.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T19:14:20.286Z",
+  "schema_version": "v1",
+  "commit_sha": "331bdc2dd9c76bc6fc3438617571140dbd147064",
+  "title": "docs(book): enrich the ch-06 photophone beat — Ohm's law + RadioShack supply + re-derived Bell (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T19:13:53Z",
+  "head_ref": "book-ch06-photophone-enriched"
+}

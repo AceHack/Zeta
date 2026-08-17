@@ -1,0 +1,12 @@
+{
+  "pr_number": 10092,
+  "archive_path": "docs/history/pr-reviews/PR-10092-book-pages-vietnamese-edition-pass-1-ch-ng-1-4-at-vi-4-way-language-links.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T06:00:15.340Z",
+  "schema_version": "v1",
+  "commit_sha": "ce00ea82185e81f03d6851ac36192abb1eb36c36",
+  "title": "book(pages): Vietnamese edition pass 1 (Chương 1–4) at /vi/ + 4-way language links",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T05:59:46Z",
+  "head_ref": "docs/book-pages-vietnamese-p1"
+}

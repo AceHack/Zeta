@@ -1,0 +1,12 @@
+{
+  "pr_number": 9963,
+  "archive_path": "docs/history/pr-reviews/PR-9963-docs-research-chsh-interference-monitor-audit-toy-production-gap-g1-g4.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T15:14:03.702Z",
+  "schema_version": "v1",
+  "commit_sha": "2542b926c28b8cdaed0ab2e32c6bd086fd6730ca",
+  "title": "docs(research): CHSH/interference-monitor audit — toy→production gap (G1–G4)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T15:13:35Z",
+  "head_ref": "otto/chsh-interference-monitor-audit-g1-g4"
+}

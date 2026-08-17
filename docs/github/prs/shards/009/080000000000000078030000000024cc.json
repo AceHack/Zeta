@@ -1,0 +1,12 @@
+{
+  "pr_number": 9420,
+  "archive_path": "docs/history/pr-reviews/PR-9420-fix-gates-restore-post-merge-lint-and-oracle-checks.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T05:40:50.421Z",
+  "schema_version": "v1",
+  "commit_sha": "c24d82efd9c4c0f5636ebf3ccbec095f1f895624",
+  "title": "fix(gates): restore post-merge lint and oracle checks",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T05:40:26Z",
+  "head_ref": "codex/fix-post-9417-gates"
+}

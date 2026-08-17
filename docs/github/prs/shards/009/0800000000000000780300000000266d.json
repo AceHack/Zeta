@@ -1,0 +1,12 @@
+{
+  "pr_number": 9837,
+  "archive_path": "docs/history/pr-reviews/PR-9837-docs-setup-never-github-the-forge-is-a-plugin-the-anchor-mechanism-is-already-gi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T03:57:56.002Z",
+  "schema_version": "v1",
+  "commit_sha": "1f48ba5ad15d6dd5fc58976ee679695335ff1993",
+  "title": "docs(setup): NEVER GitHub — the forge is a PLUGIN; the anchor mechanism is already git-native",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T03:57:20Z",
+  "head_ref": "shadow/forgehost-plugin-never-github"
+}

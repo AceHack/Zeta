@@ -1,0 +1,12 @@
+{
+  "pr_number": 9678,
+  "archive_path": "docs/history/pr-reviews/PR-9678-docs-research-c-test-verdict-four-primitives-are-not-c-a-real-2-2-sub-structure-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T10:26:20.901Z",
+  "schema_version": "v1",
+  "commit_sha": "2837c7405aa811b6d716803b14c6d5666ed03054",
+  "title": "docs(research): C₄ test verdict — four primitives are NOT C₄; a real 2+2 sub-structure survives (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T10:25:55Z",
+  "head_ref": "c4-test-four-primitives-verdict"
+}

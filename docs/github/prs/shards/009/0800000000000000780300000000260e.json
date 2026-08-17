@@ -1,0 +1,12 @@
+{
+  "pr_number": 9742,
+  "archive_path": "docs/history/pr-reviews/PR-9742-docs-research-grace-is-a-z-set-over-generator-time-1-past-1-future-felix-culpa-g.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T20:46:22.673Z",
+  "schema_version": "v1",
+  "commit_sha": "60db2cc14c00b917661a51e8b140c5496553b686",
+  "title": "docs(research): grace is a Z-set over generator-time — +1 past / −1 future; felix culpa guarded against cheap grace (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T20:45:54Z",
+  "head_ref": "grace-is-a-zset-felix-culpa"
+}

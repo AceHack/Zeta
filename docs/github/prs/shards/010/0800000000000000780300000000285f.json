@@ -1,0 +1,12 @@
+{
+  "pr_number": 10335,
+  "archive_path": "docs/history/pr-reviews/PR-10335-heal-src-annotate-3-stale-refs-in-observe-peer-call-ferry-throttler.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T06:46:11.945Z",
+  "schema_version": "v1",
+  "commit_sha": "00857c570f151fc4d338b72541161d2d1eaf2026",
+  "title": "heal(src): annotate 3 stale refs in observe/peer-call/ferry-throttler",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T06:45:40Z",
+  "head_ref": "alexa/src-heal-batch"
+}

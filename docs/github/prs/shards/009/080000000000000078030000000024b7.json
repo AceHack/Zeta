@@ -1,0 +1,12 @@
+{
+  "pr_number": 9399,
+  "archive_path": "docs/history/pr-reviews/PR-9399-docs-research-tolines-is-a-delay-tracker-framing-is-temporal-newline-silence-ove.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T02:38:39.735Z",
+  "schema_version": "v1",
+  "commit_sha": "4942ef3e6946b65422481581242533a2a8a205f1",
+  "title": "docs(research): toLines is a delay tracker — framing is temporal, newline = silence over threshold (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T02:38:17Z",
+  "head_ref": "otto/ferry-tolines-delay-tracker-temporal-framing"
+}

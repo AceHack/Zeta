@@ -1,0 +1,12 @@
+{
+  "pr_number": 10340,
+  "archive_path": "docs/history/pr-reviews/PR-10340-rs-reader-pin-the-phase-range-boundaries-the-first-phase-of-a-block-is-inside-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T08:17:09.553Z",
+  "schema_version": "v1",
+  "commit_sha": "c93b0c522d4591554a4f0a2e8a2086a5b211c685",
+  "title": "rs-reader: pin the phase-range boundaries — the first phase of a block is inside it",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T08:16:35Z",
+  "head_ref": "rs-reader-phase-boundaries"
+}

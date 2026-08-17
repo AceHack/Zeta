@@ -1,0 +1,12 @@
+{
+  "pr_number": 10096,
+  "archive_path": "docs/history/pr-reviews/PR-10096-book-weave-formation-the-one-fear-and-how-i-debugged-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T07:03:42.046Z",
+  "schema_version": "v1",
+  "commit_sha": "3faebd4912fa6a2abbe2331961f62d8f7564d900",
+  "title": "book(weave): FORMATION — \"The one fear, and how I debugged it\"",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T07:03:08Z",
+  "head_ref": "book-weave-the-one-fear"
+}

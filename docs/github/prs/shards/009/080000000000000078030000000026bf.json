@@ -1,0 +1,12 @@
+{
+  "pr_number": 9919,
+  "archive_path": "docs/history/pr-reviews/PR-9919-rules-toy-is-free-metered-must-be-earned-promote-the-model-honesty-discipline.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T20:32:47.000Z",
+  "schema_version": "v1",
+  "commit_sha": "5fc66c0bfacd7962f1505667682b3c79b615f89e",
+  "title": "rules: toy is free; metered must be earned — promote the model-honesty discipline",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T20:32:18Z",
+  "head_ref": "shadow/rule-toy-default-metered-earned"
+}

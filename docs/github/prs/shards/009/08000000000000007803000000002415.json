@@ -1,0 +1,12 @@
+{
+  "pr_number": 9237,
+  "archive_path": "docs/history/pr-reviews/PR-9237-docs-research-aaron-s-anti-toxicity-ethic-the-trained-cooperator-strategy.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T00:40:33.862Z",
+  "schema_version": "v1",
+  "commit_sha": "a227a9805304a360eecf821438540f406d0ca546",
+  "title": "docs(research): Aaron's anti-toxicity ethic — the trained-cooperator strategy",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T00:40:12Z",
+  "head_ref": "otto/research-antitox-ethic-provokable-disclose"
+}

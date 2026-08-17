@@ -1,0 +1,12 @@
+{
+  "pr_number": 9941,
+  "archive_path": "docs/history/pr-reviews/PR-9941-docs-research-hypothesis-in-template-form-a-domain-indexed-placeholder-an-expert.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T00:06:31.822Z",
+  "schema_version": "v1",
+  "commit_sha": "39964a6449dfd656b0bd20e6ed58cd6da5bcff9f",
+  "title": "docs(research): hypothesis-in-template-form — a domain-indexed placeholder an expert can argue with",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T00:05:58Z",
+  "head_ref": "shadow/hypothesis-in-template-form"
+}

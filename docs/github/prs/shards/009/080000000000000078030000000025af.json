@@ -1,0 +1,12 @@
+{
+  "pr_number": 9647,
+  "archive_path": "docs/history/pr-reviews/PR-9647-docs-book-chameleon-protean-self-name-rodney-aaron-ra-dna-open-source-commitment.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T01:15:55.097Z",
+  "schema_version": "v1",
+  "commit_sha": "58b471fe6f8cd3e62dcd4b3cae1e417e59c5a836",
+  "title": "docs(book): chameleon/protean self + name (Rodney Aaron/RA) + DNA open-source commitment (family approval pending)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T01:15:27Z",
+  "head_ref": "shadow/book-chameleon-and-dna-commitment"
+}

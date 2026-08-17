@@ -1,0 +1,12 @@
+{
+  "pr_number": 9832,
+  "archive_path": "docs/history/pr-reviews/PR-9832-fix-codegen-use-squash-for-pr-merge-repo-policy.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T03:34:24.215Z",
+  "schema_version": "v1",
+  "commit_sha": "fceabbb88a671da794314dfc817bc1bae7df726c",
+  "title": "fix(codegen): use --squash for PR merge (repo policy)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T03:33:57Z",
+  "head_ref": "claim/kiro-fix-squash-merge-2026-07-11"
+}

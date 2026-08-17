@@ -1,0 +1,12 @@
+{
+  "pr_number": 9652,
+  "archive_path": "docs/history/pr-reviews/PR-9652-docs-book-zeta-is-my-mind-externalized-anchor-the-architecture-to-hawkins-thousa.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T01:52:38.853Z",
+  "schema_version": "v1",
+  "commit_sha": "627bc3d153cf858e02a75af698c4af4ae3b2d325",
+  "title": "docs(book): 'Zeta is my mind externalized' — anchor the architecture to Hawkins Thousand Brains",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T01:52:12Z",
+  "head_ref": "shadow/book-hawkins-thousand-brains-anchor"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10001,
+  "archive_path": "docs/history/pr-reviews/PR-10001-docs-book-consent-ledger-diana-pdw-meter-sim-co-builder-consent-requested.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T21:27:36.942Z",
+  "schema_version": "v1",
+  "commit_sha": "0dac908d0da9817142cf240a678aa2544b9c2ea0",
+  "title": "docs(book): CONSENT-LEDGER — Diana (PDW meter-sim co-builder) consent requested",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T21:27:03Z",
+  "head_ref": "book/consent-ledger-diana-requested-20260802"
+}

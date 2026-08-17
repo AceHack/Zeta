@@ -1,0 +1,12 @@
+{
+  "pr_number": 10259,
+  "archive_path": "docs/history/pr-reviews/PR-10259-docs-research-the-bankerbot-exploit-is-an-nci-violation-and-the-encoding-was-tri.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T00:23:36.471Z",
+  "schema_version": "v1",
+  "commit_sha": "b7131c66265be853f8e275cdd67afccd6ad16499",
+  "title": "docs(research): the BankerBot exploit is an NCI violation — and the encoding was trivial",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T00:23:03Z",
+  "head_ref": "shadow/bankerbot-steganographic-authority-laundering"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 9339,
+  "archive_path": "docs/history/pr-reviews/PR-9339-feat-persona-keys-shamir-k-of-n-ca-custody-wiring.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7R5EN-",
+    "thread:PRRT_kwDOSF9kNM6OQdOH"
+  ],
+  "fetched_at": "2026-07-03T23:05:56.003Z",
+  "schema_version": "v1",
+  "commit_sha": "e323810b18f884605313276ccc859d8d74b6ac57",
+  "title": "feat(persona-keys): Shamir k-of-n CA custody wiring",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T23:05:30Z",
+  "head_ref": "feat/shamir-ca-custody"
+}

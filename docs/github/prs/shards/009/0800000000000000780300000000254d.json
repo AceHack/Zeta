@@ -1,0 +1,12 @@
+{
+  "pr_number": 9549,
+  "archive_path": "docs/history/pr-reviews/PR-9549-fix-setup-mise-musl-fallback-for-old-glibc-hosts-linux-sh-libc-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T01:03:48.680Z",
+  "schema_version": "v1",
+  "commit_sha": "1d0f6c26a86d504c90019f08421b3c4763016b37",
+  "title": "fix(setup): mise musl fallback for old-glibc hosts (linux.sh libc gate)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T01:03:16Z",
+  "head_ref": "otto/mise-musl-fallback-old-glibc"
+}

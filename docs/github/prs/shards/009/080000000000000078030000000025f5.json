@@ -1,0 +1,12 @@
+{
+  "pr_number": 9717,
+  "archive_path": "docs/history/pr-reviews/PR-9717-feat-darkhall-expose-transcript-continuation-readout.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T17:54:34.715Z",
+  "schema_version": "v1",
+  "commit_sha": "442e2768f3656192c7fa976d5d4f6415f26a8344",
+  "title": "feat(darkhall): expose transcript continuation readout",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T17:54:07Z",
+  "head_ref": "codex/darkhall-transcript-continuation-readout"
+}

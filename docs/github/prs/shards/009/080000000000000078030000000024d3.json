@@ -1,0 +1,12 @@
+{
+  "pr_number": 9427,
+  "archive_path": "docs/history/pr-reviews/PR-9427-docs-book-recording-script-pass-pulls-inlined-into-all-12-chapters.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T06:16:40.948Z",
+  "schema_version": "v1",
+  "commit_sha": "1c217628abeb7e94b13ef5d20c716bde7c484821",
+  "title": "docs(book): recording-script pass — pulls inlined into all 12 chapters",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T06:16:14Z",
+  "head_ref": "shadow/book-recording-scripts"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10205,
+  "archive_path": "docs/history/pr-reviews/PR-10205-docs-research-teaching-is-unconditional-belief-is-earned-closes-the-outbound-tea.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:00:01.709Z",
+  "schema_version": "v1",
+  "commit_sha": "07856e8f1c1a0b93266a555eaa068783b13f8aeb",
+  "title": "docs(research): teaching is unconditional, belief is earned — closes the outbound teaching question",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T18:59:31Z",
+  "head_ref": "shadow/ferry-teaching-unconditional-belief-earned"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9335,
+  "archive_path": "docs/history/pr-reviews/PR-9335-docs-book-pulls-md-the-glass-halo-record-chapter-mapped-for-recording.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T18:18:32.917Z",
+  "schema_version": "v1",
+  "commit_sha": "d5493ed99bfca58ae5bcf64bc46d5fe6b4d65464",
+  "title": "docs(book): PULLS.md — the glass-halo record, chapter-mapped for recording",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T18:18:10Z",
+  "head_ref": "shadow/book-pulls"
+}

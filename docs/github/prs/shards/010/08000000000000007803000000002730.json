@@ -1,0 +1,12 @@
+{
+  "pr_number": 10032,
+  "archive_path": "docs/history/pr-reviews/PR-10032-docs-research-close-the-independence-assumption-soundness-audit.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T16:41:17.892Z",
+  "schema_version": "v1",
+  "commit_sha": "b59a3a840dc4383566475e6083dba313dd235291",
+  "title": "docs(research): close the independence-assumption soundness audit",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T16:40:41Z",
+  "head_ref": "docs/independence-assumption-soundness-audit-close-20260804"
+}

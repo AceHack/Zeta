@@ -1,0 +1,12 @@
+{
+  "pr_number": 9783,
+  "archive_path": "docs/history/pr-reviews/PR-9783-fix-cross-verify-rebuild-drifted-lumen-persona-snapshot-ace-drift-guard.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T14:01:07.207Z",
+  "schema_version": "v1",
+  "commit_sha": "d28c87cf7066fa3c9666e2a0a0a49fa1501ac8a8",
+  "title": "fix(cross-verify): rebuild drifted Lumen persona snapshot (ace drift guard)",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T14:00:35Z",
+  "head_ref": "shadow/fix-cross-verify-lumen-persona-drift"
+}

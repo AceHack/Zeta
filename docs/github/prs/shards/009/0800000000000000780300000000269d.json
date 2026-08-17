@@ -1,0 +1,12 @@
+{
+  "pr_number": 9885,
+  "archive_path": "docs/history/pr-reviews/PR-9885-feat-browser-drive-room-readout-from-page-lifecycle.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T14:54:54.060Z",
+  "schema_version": "v1",
+  "commit_sha": "21ee7a6a1b3549c3ca3251a440ccd862bded9505",
+  "title": "feat(browser): drive room readout from page lifecycle",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T14:54:22Z",
+  "head_ref": "codex/browser-lifecycle-host-adapter"
+}

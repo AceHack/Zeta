@@ -1,0 +1,12 @@
+{
+  "pr_number": 9204,
+  "archive_path": "docs/history/pr-reviews/PR-9204-research-dirty-reticulum-s-metered-entropy-is-the-coordination-readout-linked-cl.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T21:46:49.280Z",
+  "schema_version": "v1",
+  "commit_sha": "5ef0d58bdec56ce72a3897ee492bd1a611d101c3",
+  "title": "research: dirty Reticulum's metered entropy IS the coordination readout; linked clones as metered channels with exit (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T21:46:25Z",
+  "head_ref": "shadow/dirty-reticulum-metered-entropy-linked-clone-coordination"
+}

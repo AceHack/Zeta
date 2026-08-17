@@ -1,0 +1,12 @@
+{
+  "pr_number": 9641,
+  "archive_path": "docs/history/pr-reviews/PR-9641-fix-ts-manus-smoke-test-transport-missing-httptransport-get-ts2741-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T22:16:07.309Z",
+  "schema_version": "v1",
+  "commit_sha": "f32202f3d48bad8434b8d89dac1bdab6b209e1d7",
+  "title": "fix(ts): manus-smoke-test transport missing HttpTransport.get (TS2741 on main)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T22:15:36Z",
+  "head_ref": "shadow/fix-ts2741-manus-smoke-test"
+}

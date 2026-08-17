@@ -1,0 +1,12 @@
+{
+  "pr_number": 10263,
+  "archive_path": "docs/history/pr-reviews/PR-10263-test-e8-rc-3-measures-48-and-now-identifies-it-plus-numerology-vs-number-theory.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T00:40:10.519Z",
+  "schema_version": "v1",
+  "commit_sha": "b325b25c40a5725be6c71e6791b58cce877dd345",
+  "title": "test(e8): RC-3 measures 48 and now identifies it — plus numerology-vs-number-theory",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T00:39:36Z",
+  "head_ref": "shadow/rc3-measured-48-d4-plus-d4"
+}

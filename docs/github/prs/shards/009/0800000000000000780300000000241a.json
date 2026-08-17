@@ -1,0 +1,12 @@
+{
+  "pr_number": 9242,
+  "archive_path": "docs/history/pr-reviews/PR-9242-feat-core-sppf-outside-marginals-full-inside-outside-belief-propagation-on-the-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T00:50:42.996Z",
+  "schema_version": "v1",
+  "commit_sha": "5d126bcfdaa708796b84d67079831d2797f73d3f",
+  "title": "feat(core): Sppf.outside + marginals — full inside–outside = belief propagation on the parse forest",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T00:50:20Z",
+  "head_ref": "otto/sppf-outside-marginals"
+}

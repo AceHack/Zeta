@@ -1,0 +1,12 @@
+{
+  "pr_number": 9599,
+  "archive_path": "docs/history/pr-reviews/PR-9599-docs-research-time-as-traveler-addendum-2-time-agent-vs-what-acts-what-remains-v.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T01:13:22.724Z",
+  "schema_version": "v1",
+  "commit_sha": "df534227b3517fc6b5d9a900d00a18aa41a9005d",
+  "title": "docs(research): time-as-traveler addendum 2 — time/agent vs what-acts/what-remains vs the adinkra (near-duality, arrow-broken) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T01:12:53Z",
+  "head_ref": "otto/time-traveler-acts-remains-adinkra-addendum"
+}

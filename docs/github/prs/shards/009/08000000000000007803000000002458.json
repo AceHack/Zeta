@@ -1,0 +1,12 @@
+{
+  "pr_number": 9304,
+  "archive_path": "docs/history/pr-reviews/PR-9304-docs-bugs-file-two-bus-beacon-findings-unsigned-discovery-wire-grow-only-relay-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T13:46:29.698Z",
+  "schema_version": "v1",
+  "commit_sha": "8af4602dd5749126c631e79ecf0f41bdfa8051f4",
+  "title": "docs(bugs): file two bus-beacon findings — unsigned discovery wire + grow-only relay set (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T13:46:07Z",
+  "head_ref": "otto/bus-beacon-auth-findings"
+}

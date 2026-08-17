@@ -1,0 +1,12 @@
+{
+  "pr_number": 9822,
+  "archive_path": "docs/history/pr-reviews/PR-9822-docs-core-correct-an-overclaiming-doc-comment-on-clifforde8roots-rootmvs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T02:48:02.352Z",
+  "schema_version": "v1",
+  "commit_sha": "e8262fadd79580d7138a0b30686984a0f6cbadb3",
+  "title": "docs(Core): correct an overclaiming doc-comment on CliffordE8Roots.rootMvs",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T02:47:23Z",
+  "head_ref": "shadow/demote-cliffordE8bridge-overclaim"
+}

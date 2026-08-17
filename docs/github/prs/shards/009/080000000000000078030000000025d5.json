@@ -1,0 +1,12 @@
+{
+  "pr_number": 9685,
+  "archive_path": "docs/history/pr-reviews/PR-9685-docs-research-the-no-brake-amplifier-hazard-a-1-less-ai-raises-pressure-instead-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T12:51:33.741Z",
+  "schema_version": "v1",
+  "commit_sha": "f485aac35d3b078a52c08c9949fef24fe608cc3e",
+  "title": "docs(research): the no-brake amplifier hazard — a −1-less AI raises pressure instead of braking it (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T12:51:04Z",
+  "head_ref": "safety-no-brake-amplifier-hazard"
+}

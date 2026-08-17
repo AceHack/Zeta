@@ -1,0 +1,12 @@
+{
+  "pr_number": 9869,
+  "archive_path": "docs/history/pr-reviews/PR-9869-fix-demo-retract-the-fabricated-tsirelson-threshold-from-the-public-proofs-galle.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:12:02.724Z",
+  "schema_version": "v1",
+  "commit_sha": "0fff88e11418cb8204f9647a2f9b3d04ae84a8b4",
+  "title": "fix(demo): retract the fabricated \"Tsirelson threshold\" from the PUBLIC proofs gallery",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T13:11:33Z",
+  "head_ref": "shadow/retract-fabricated-tsirelson-public-site"
+}

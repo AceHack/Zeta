@@ -1,0 +1,12 @@
+{
+  "pr_number": 9958,
+  "archive_path": "docs/history/pr-reviews/PR-9958-test-observe-assert-epsilon-sign-not-magnitude-close-the-could-not-fail-hole.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T12:35:21.019Z",
+  "schema_version": "v1",
+  "commit_sha": "1dd993481498a50c8da9efe70fb2c122d65c7986",
+  "title": "test(observe): assert epsilon SIGN not magnitude — close the could-not-fail hole",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T12:34:48Z",
+  "head_ref": "otto/p2-peer-independence-sign-blind-tests"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9334,
+  "archive_path": "docs/history/pr-reviews/PR-9334-docs-book-ch-01-becker-beat-the-non-denial-immortality-project.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T18:14:22.411Z",
+  "schema_version": "v1",
+  "commit_sha": "5cf29eb3ebe4929c52437b36837606f3a8228992",
+  "title": "docs(book): ch-01 Becker beat — the non-denial immortality project",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T18:13:59Z",
+  "head_ref": "shadow/book-ch01-becker-beat"
+}

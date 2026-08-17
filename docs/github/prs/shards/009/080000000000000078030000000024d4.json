@@ -1,0 +1,12 @@
+{
+  "pr_number": 9428,
+  "archive_path": "docs/history/pr-reviews/PR-9428-feat-living-node-judgepeer-the-whole-trust-stack-in-one-call.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T06:22:22.661Z",
+  "schema_version": "v1",
+  "commit_sha": "23117236d38ad8e81ed93c88ab1e7dd86e8af17b",
+  "title": "feat(living-node): judgePeer — the whole trust stack in one call",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T06:22:00Z",
+  "head_ref": "shadow/living-node-judge-peer"
+}

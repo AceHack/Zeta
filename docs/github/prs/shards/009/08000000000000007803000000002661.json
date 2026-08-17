@@ -1,0 +1,25 @@
+{
+  "pr_number": 9825,
+  "archive_path": "docs/history/pr-reviews/PR-9825-build-sdk-global-json-10-0-301-10-0-302-rollforward-disable-verified-per-the-to-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7cNTRU",
+    "comment:PRRC_kwDOSF9kNM7cNcDD",
+    "comment:PRRC_kwDOSF9kNM7cNcDJ",
+    "comment:PRRC_kwDOSF9kNM7cNcDN",
+    "comment:PRRC_kwDOSF9kNM7cNcwE",
+    "comment:PRRC_kwDOSF9kNM7cNcwM",
+    "thread:PRRT_kwDOSF9kNM6VlLS5",
+    "thread:PRRT_kwDOSF9kNM6VlRum",
+    "thread:PRRT_kwDOSF9kNM6VlRur",
+    "thread:PRRT_kwDOSF9kNM6VlRuu",
+    "thread:PRRT_kwDOSF9kNM6VlSQN",
+    "thread:PRRT_kwDOSF9kNM6VlSQS"
+  ],
+  "fetched_at": "2026-08-01T04:50:00.156Z",
+  "schema_version": "v1",
+  "commit_sha": "8b2cb34d07f1f06dda5e184f3bf1c06de911d985",
+  "title": "build(sdk): global.json 10.0.301 → 10.0.302, rollForward disable — verified per the to-otto plan",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T04:49:32Z",
+  "head_ref": "otto/sdk-10-0-302-global-json"
+}

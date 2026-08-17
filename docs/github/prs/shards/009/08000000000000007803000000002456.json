@@ -1,0 +1,12 @@
+{
+  "pr_number": 9302,
+  "archive_path": "docs/history/pr-reviews/PR-9302-chore-settings-enable-frontend-design-plugin.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T13:42:30.734Z",
+  "schema_version": "v1",
+  "commit_sha": "f77a75ae2cbcd0f744691052cb6b73ff3ebc29f9",
+  "title": "chore(settings): enable frontend-design plugin",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T13:42:07Z",
+  "head_ref": "shadow/enable-frontend-design-plugin"
+}

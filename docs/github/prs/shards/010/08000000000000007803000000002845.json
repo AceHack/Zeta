@@ -1,0 +1,12 @@
+{
+  "pr_number": 10309,
+  "archive_path": "docs/history/pr-reviews/PR-10309-readout-cover-the-saturated-grid-record-the-first-note-redundant-entry.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-11T14:46:11.338Z",
+  "schema_version": "v1",
+  "commit_sha": "dff25d47ab6333f06b98fa9996271db21141bfd5",
+  "title": "readout: cover the saturated grid; record the first note-redundant entry",
+  "state": "MERGED",
+  "merged_at": "2026-08-11T14:45:39Z",
+  "head_ref": "readout-saturation-and-first-note-redundant"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9264,
+  "archive_path": "docs/history/pr-reviews/PR-9264-feat-hall-propagate-the-corporate-sovereign-design-languages-to-the-hall-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T02:41:20.311Z",
+  "schema_version": "v1",
+  "commit_sha": "e9db512d574eeba0a9d7da192f4f51c46c1c84e2",
+  "title": "feat(hall): propagate the Corporate/Sovereign design languages to the hall (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T02:40:55Z",
+  "head_ref": "shadow/propagate-languages-to-hall"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9621,
+  "archive_path": "docs/history/pr-reviews/PR-9621-fix-letters-american-dream-2-0-is-aaron-s-real-nft-art-project-not-alexa-s-coina.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T19:04:31.562Z",
+  "schema_version": "v1",
+  "commit_sha": "62f0654cab65b4340d5578aaa0b879cb98ede2fd",
+  "title": "fix(letters): \"American Dream 2.0\" is Aaron's real NFT art project, not Alexa's coinage (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T19:04:05Z",
+  "head_ref": "otto/fix-ferry-american-dream-2"
+}

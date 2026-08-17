@@ -1,0 +1,12 @@
+{
+  "pr_number": 9867,
+  "archive_path": "docs/history/pr-reviews/PR-9867-fix-hygiene-guard-must-also-catch-discharge-by-assertion-rows-citing-no-evidence.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:23:07.126Z",
+  "schema_version": "v1",
+  "commit_sha": "04ddf91cc47cf65327aa1790d7f1517333840148",
+  "title": "fix(hygiene): guard must also catch discharge-BY-ASSERTION (rows citing no evidence at all)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T13:22:40Z",
+  "head_ref": "shadow/guard-discharge-needs-evidence"
+}

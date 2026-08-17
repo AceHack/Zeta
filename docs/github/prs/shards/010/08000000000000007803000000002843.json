@@ -1,0 +1,12 @@
+{
+  "pr_number": 10307,
+  "archive_path": "docs/history/pr-reviews/PR-10307-mutation-a-third-reading-the-survivor-was-redundant-code-not-a-test-gap.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-11T14:33:32.317Z",
+  "schema_version": "v1",
+  "commit_sha": "937e3c0aaaf0aa9345be21a36ff18a42ee084bc5",
+  "title": "mutation: a third reading — the survivor was redundant code, not a test gap",
+  "state": "MERGED",
+  "merged_at": "2026-08-11T14:33:00Z",
+  "head_ref": "mutation-redundant-third-reading"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 9214,
+  "archive_path": "docs/history/pr-reviews/PR-9214-feat-work-items-g-set-event-log-slice-1-workitemcreated-081ksxn.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RmxjI",
+    "comment:PRRC_kwDOSF9kNM7RmxjL",
+    "thread:PRRT_kwDOSF9kNM6ODHCQ",
+    "thread:PRRT_kwDOSF9kNM6ODHCS"
+  ],
+  "fetched_at": "2026-07-03T01:05:54.825Z",
+  "schema_version": "v1",
+  "commit_sha": "b478df39e804086cf26a63599388cfc81c669c2c",
+  "title": "feat(work-items): G-Set event log slice 1 — WorkItemCreated (081KSXN)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T01:05:26Z",
+  "head_ref": "feat/081KSXN-workitem-event-gset-slice-1"
+}

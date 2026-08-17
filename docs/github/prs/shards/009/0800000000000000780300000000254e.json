@@ -1,0 +1,12 @@
+{
+  "pr_number": 9550,
+  "archive_path": "docs/history/pr-reviews/PR-9550-docs-identity-persona-x-cell-unification-adr-proposed-treaty-amendment-a1.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T22:34:17.974Z",
+  "schema_version": "v1",
+  "commit_sha": "1514a925ae5b0ebd285878f51836700e955d5915",
+  "title": "docs(identity): Persona x Cell unification ADR + proposed treaty + amendment A1",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T22:33:50Z",
+  "head_ref": "otto/persona-cell-identity-adr-treaty-phase1"
+}

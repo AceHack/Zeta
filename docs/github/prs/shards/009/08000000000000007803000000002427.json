@@ -1,0 +1,12 @@
+{
+  "pr_number": 9255,
+  "archive_path": "docs/history/pr-reviews/PR-9255-feat-core-lowering-as-the-kleisli-descent-softvalue-is-the-distribution-monad-pa.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T01:57:12.628Z",
+  "schema_version": "v1",
+  "commit_sha": "9d4283533ce66588dde47284427a68ff8ba3ba69",
+  "title": "feat(core): lowering as the Kleisli descent — SoftValue is the distribution monad; ParseSoft.lower",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T01:56:47Z",
+  "head_ref": "otto/parse-lowering-kleisli-descent"
+}

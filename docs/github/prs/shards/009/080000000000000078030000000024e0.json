@@ -1,0 +1,12 @@
+{
+  "pr_number": 9440,
+  "archive_path": "docs/history/pr-reviews/PR-9440-feat-persona-keys-openssh-certkeys-encoder-frost-cert-pub.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T12:56:35.804Z",
+  "schema_version": "v1",
+  "commit_sha": "086b49c0f640061ab59ec6c8db37621e479849c4",
+  "title": "feat(persona-keys): OpenSSH certkeys encoder (frost -cert.pub)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T12:56:12Z",
+  "head_ref": "feat/081KWPHRNE-openssh-certkeys-frost"
+}

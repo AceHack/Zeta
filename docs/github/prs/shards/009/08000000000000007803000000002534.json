@@ -1,0 +1,12 @@
+{
+  "pr_number": 9524,
+  "archive_path": "docs/history/pr-reviews/PR-9524-feat-observe-s6-local-default-cloud-after-ask-aaron-decisions.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T20:28:50.663Z",
+  "schema_version": "v1",
+  "commit_sha": "f11d2aa2add7824c09531127b7a6353dae01619d",
+  "title": "feat(observe): S6 local-default + cloud-after-ask (Aaron decisions)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T20:28:25Z",
+  "head_ref": "feat/usb-s6-aaron-copy-decisions"
+}

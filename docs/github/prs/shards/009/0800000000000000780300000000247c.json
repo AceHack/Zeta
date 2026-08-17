@@ -1,0 +1,12 @@
+{
+  "pr_number": 9340,
+  "archive_path": "docs/history/pr-reviews/PR-9340-docs-book-chapters-9-10-11-first-drafts-the-heart-chapters-skeleton-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T18:27:17.382Z",
+  "schema_version": "v1",
+  "commit_sha": "85d47d00fb72b9020381b58b2cb7a0e68ef33e10",
+  "title": "docs(book): chapters 9, 10, 11 first drafts — the heart chapters; skeleton complete",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T18:26:51Z",
+  "head_ref": "shadow/book-ch09-10-11-scaffolds"
+}

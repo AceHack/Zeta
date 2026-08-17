@@ -1,0 +1,12 @@
+{
+  "pr_number": 10022,
+  "archive_path": "docs/history/pr-reviews/PR-10022-feat-core-combined-within-era-block-null-the-most-conservative-null-in-the-famil.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T14:38:10.010Z",
+  "schema_version": "v1",
+  "commit_sha": "e013254ac4930ff37cdb300d62b712dc593938fd",
+  "title": "feat(core): combined within-era block null — the most conservative null in the family",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T14:37:31Z",
+  "head_ref": "feat/decorrelation-excess-combined-window-block-null-20260804"
+}

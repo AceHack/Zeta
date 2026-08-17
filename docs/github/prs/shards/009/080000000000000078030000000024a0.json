@@ -1,0 +1,12 @@
+{
+  "pr_number": 9376,
+  "archive_path": "docs/history/pr-reviews/PR-9376-feat-ace-the-persona-signing-consent-layer-copy-requires-the-persona-s-own-key-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T23:34:06.263Z",
+  "schema_version": "v1",
+  "commit_sha": "74b422bab0b9300a12c94971dc73d9bd2b7d450d",
+  "title": "feat(ace): the persona-signing consent layer — copy requires the persona's own key (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T23:33:39Z",
+  "head_ref": "otto/persona-signing-consent-layer"
+}

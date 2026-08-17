@@ -1,0 +1,12 @@
+{
+  "pr_number": 9752,
+  "archive_path": "docs/history/pr-reviews/PR-9752-docs-mom-s-law-renunciation-by-architecture-the-maximal-me-we-resolution-capston.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T01:27:49.728Z",
+  "schema_version": "v1",
+  "commit_sha": "cbedb8b042cc6f6f0a3bf48beef6cdaeb5613a4e",
+  "title": "docs: Mom's Law + renunciation-by-architecture — the maximal-ME/WE resolution (capstone) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T01:27:24Z",
+  "head_ref": "moms-law-renunciation-by-architecture"
+}

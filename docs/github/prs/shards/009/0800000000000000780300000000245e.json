@@ -1,0 +1,12 @@
+{
+  "pr_number": 9310,
+  "archive_path": "docs/history/pr-reviews/PR-9310-feat-chsh-delay-the-shape-of-s-under-bus-delay-the-light-cone-appears-in-the-toy.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T14:34:18.313Z",
+  "schema_version": "v1",
+  "commit_sha": "20596ed77c3fb4fcccdd2ad53f08bbced0c871c6",
+  "title": "feat(chsh-delay): the shape of S under bus delay — the light cone appears in the toy model",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T14:33:54Z",
+  "head_ref": "shadow/chsh-delay-shape"
+}

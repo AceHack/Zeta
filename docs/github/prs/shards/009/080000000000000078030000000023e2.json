@@ -1,0 +1,12 @@
+{
+  "pr_number": 9186,
+  "archive_path": "docs/history/pr-reviews/PR-9186-feat-llmtv-make-it-live-udp-mesh-node-ties-discovery-broadcast-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T19:33:27.015Z",
+  "schema_version": "v1",
+  "commit_sha": "86970bc8c23cfe6c4baf71c79711d262162ef361",
+  "title": "feat(llmtv): make it live — UDP mesh node ties discovery + broadcast (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T19:33:04Z",
+  "head_ref": "shadow/llmtv-live-over-the-mesh-udp-node"
+}

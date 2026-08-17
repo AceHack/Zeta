@@ -1,0 +1,12 @@
+{
+  "pr_number": 9368,
+  "archive_path": "docs/history/pr-reviews/PR-9368-feat-bus-regime-the-light-cone-armed-in-f-regime-aware-antisybil-pricing-the-lio.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T22:33:14.186Z",
+  "schema_version": "v1",
+  "commit_sha": "66bc8f2285a5de57339d10664ed7e12bad1a8549",
+  "title": "feat(bus-regime): the light cone armed in F# — regime-aware AntiSybil pricing + the Lior ferry",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T22:32:48Z",
+  "head_ref": "shadow/antisybil-light-cone-regime"
+}

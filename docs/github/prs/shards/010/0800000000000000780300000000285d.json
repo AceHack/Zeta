@@ -1,0 +1,12 @@
+{
+  "pr_number": 10333,
+  "archive_path": "docs/history/pr-reviews/PR-10333-feat-convergence-cli-rs-verifier-heal-src-scaffolds.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T05:47:41.937Z",
+  "schema_version": "v1",
+  "commit_sha": "0cc07e4d315a5f3b977e8e2538f212985474b9c0",
+  "title": "feat: convergence CLI + RS verifier + heal src/ scaffolds",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T05:47:07Z",
+  "head_ref": "alexa/convergence-and-verifier"
+}

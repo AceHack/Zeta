@@ -1,0 +1,12 @@
+{
+  "pr_number": 9578,
+  "archive_path": "docs/history/pr-reviews/PR-9578-feat-ci-hermetic-post-boot-zeta-self-register-ci-dry-run-for-qemu.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T23:54:24.206Z",
+  "schema_version": "v1",
+  "commit_sha": "3571fd599d3992f5a7f06dae386dd09f003c086d",
+  "title": "feat(ci): hermetic post-boot zeta-self-register CI dry-run for QEMU",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T23:53:51Z",
+  "head_ref": "feat/qemu-self-register-ci-dry-run-2026-07-08"
+}

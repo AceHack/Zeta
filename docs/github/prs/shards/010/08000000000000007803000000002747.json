@@ -1,0 +1,12 @@
+{
+  "pr_number": 10055,
+  "archive_path": "docs/history/pr-reviews/PR-10055-fix-make-main-green-unsatisfiable-clone-gate-dead-miscomputed-bigphi-one-blank-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-06T01:38:43.205Z",
+  "schema_version": "v1",
+  "commit_sha": "d7f1531092f094f9c0d7b37533a122c79dff651e",
+  "title": "fix: make main green — unsatisfiable clone-gate, dead miscomputed bigPhi, one blank line",
+  "state": "MERGED",
+  "merged_at": "2026-08-06T01:38:13Z",
+  "head_ref": "fix/traveler-rank-ledger-dead-bigphi"
+}

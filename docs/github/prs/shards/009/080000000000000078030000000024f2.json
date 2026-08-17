@@ -1,0 +1,12 @@
+{
+  "pr_number": 9458,
+  "archive_path": "docs/history/pr-reviews/PR-9458-docs-retract-the-over-peel-of-the-bell-quantum-row-it-s-a-grounded-executable-qu.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T16:44:33.810Z",
+  "schema_version": "v1",
+  "commit_sha": "e67ad3d83d722381e2d37dee9f56b0a227bd6fc3",
+  "title": "docs: retract the over-peel of the Bell/quantum row — it's a grounded executable quantum ISA (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T16:44:07Z",
+  "head_ref": "otto/correct-bell-peel-quantum-isa-grounded"
+}

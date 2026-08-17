@@ -1,0 +1,12 @@
+{
+  "pr_number": 10059,
+  "archive_path": "docs/history/pr-reviews/PR-10059-book-raw-add-the-coda-the-text-to-his-mother-care-past-the-crisis.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-06T08:15:30.690Z",
+  "schema_version": "v1",
+  "commit_sha": "8781b5b6e629f34fa09ef4fa75c20471dbeef64a",
+  "title": "book(RAW): add the coda — the text to his mother (care past the crisis)",
+  "state": "MERGED",
+  "merged_at": "2026-08-06T08:14:58Z",
+  "head_ref": "docs/book-raw-add-mother-text-coda"
+}

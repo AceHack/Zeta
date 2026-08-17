@@ -1,0 +1,12 @@
+{
+  "pr_number": 10033,
+  "archive_path": "docs/history/pr-reviews/PR-10033-docs-test-guardian-runnable-grid-trust-demonstration-refresh-the-max-explainer.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T16:56:45.934Z",
+  "schema_version": "v1",
+  "commit_sha": "a2935e477bc9b8f17c685c85ae57fe2a7966d3d9",
+  "title": "docs+test(guardian): runnable grid-trust demonstration + refresh the Max explainer",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T16:56:08Z",
+  "head_ref": "docs/guardian-grid-trust-demonstration-and-explainer-refresh-20260804"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9510,
+  "archive_path": "docs/history/pr-reviews/PR-9510-workitem-081kx1kwd7n-smart-cascading-teardown.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T19:42:33.326Z",
+  "schema_version": "v1",
+  "commit_sha": "618b376a7a4c5bebcd5f728a2e99349a11e5f30a",
+  "title": "workitem(081KX1KWD7N): smart cascading teardown",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T19:42:06Z",
+  "head_ref": "feat/081KX1KWD7N-workitem"
+}

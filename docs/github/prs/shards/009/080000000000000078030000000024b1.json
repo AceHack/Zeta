@@ -1,0 +1,12 @@
+{
+  "pr_number": 9393,
+  "archive_path": "docs/history/pr-reviews/PR-9393-feat-model-backend-the-usable-subscription-backend-read-our-store-auto-refresh-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T01:33:21.683Z",
+  "schema_version": "v1",
+  "commit_sha": "e04b7e28d9f53bfa19b3d4850551d1f0b7f0f503",
+  "title": "feat(model-backend): the usable subscription backend — read our store, auto-refresh on 401 (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T01:32:56Z",
+  "head_ref": "otto/subscription-chat-store-wiring"
+}

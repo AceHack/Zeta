@@ -1,0 +1,12 @@
+{
+  "pr_number": 9231,
+  "archive_path": "docs/history/pr-reviews/PR-9231-feat-core-parsesoft-the-ambiguous-parse-forest-as-a-softvalue-superposition-infe.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T00:23:37.665Z",
+  "schema_version": "v1",
+  "commit_sha": "8bcb30d1849a4e26e8826180f287712f469ebfac",
+  "title": "feat(core): ParseSoft — the ambiguous parse forest as a SoftValue superposition (inference rung, step 1)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T00:23:15Z",
+  "head_ref": "otto/parse-forest-to-softvalue"
+}

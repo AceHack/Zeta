@@ -1,0 +1,12 @@
+{
+  "pr_number": 9236,
+  "archive_path": "docs/history/pr-reviews/PR-9236-feat-core-sppf-shared-packed-parse-forest-ambiguity-nodes-the-nodedistribution-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T00:38:54.239Z",
+  "schema_version": "v1",
+  "commit_sha": "d201a47cfde961783d2c90ad1d0d2d322f534645",
+  "title": "feat(core): Sppf — shared packed parse forest; ambiguity nodes = the NodeDistribution / factor-graph variables",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T00:38:33Z",
+  "head_ref": "otto/sppf-shared-packed-forest"
+}

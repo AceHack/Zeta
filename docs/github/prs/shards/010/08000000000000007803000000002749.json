@@ -1,0 +1,12 @@
+{
+  "pr_number": 10057,
+  "archive_path": "docs/history/pr-reviews/PR-10057-book-resolve-the-rolesville-anonymization-call-name-the-town-aaron-s-decision.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-06T08:04:16.034Z",
+  "schema_version": "v1",
+  "commit_sha": "c6c9831ced54203f5e33ac22ff543d80763d0249",
+  "title": "book: resolve the Rolesville anonymization call — name the town (Aaron's decision)",
+  "state": "MERGED",
+  "merged_at": "2026-08-06T08:03:45Z",
+  "head_ref": "docs/book-raw-name-rolesville-pd-aaron-decision"
+}

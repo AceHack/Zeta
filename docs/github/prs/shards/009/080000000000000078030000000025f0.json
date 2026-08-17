@@ -1,0 +1,12 @@
+{
+  "pr_number": 9712,
+  "archive_path": "docs/history/pr-reviews/PR-9712-docs-prior-art-consolidate-the-rx-guys-meijer-beckman-desmet-milewski-cluster-sh.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T17:17:04.722Z",
+  "schema_version": "v1",
+  "commit_sha": "0dfdb980e21f6ddd29d7412b8853d8d5bd553771",
+  "title": "docs(prior-art): consolidate \"the Rx guys\" — Meijer/Beckman/DeSmet/Milewski cluster (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T17:16:37Z",
+  "head_ref": "consolidate-rx-guys-prior-art"
+}

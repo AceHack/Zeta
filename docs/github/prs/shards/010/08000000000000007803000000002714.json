@@ -1,0 +1,12 @@
+{
+  "pr_number": 10004,
+  "archive_path": "docs/history/pr-reviews/PR-10004-feat-core-decorrelationmeter-the-fusion-layer-chsh-over-spacelike-pairs-calibrat.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T22:02:13.850Z",
+  "schema_version": "v1",
+  "commit_sha": "6abe4d6dcaf764063ed5df7431a0409a7f64d364",
+  "title": "feat(core): DecorrelationMeter — the fusion layer (CHSH over spacelike pairs, calibrated null)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T22:01:40Z",
+  "head_ref": "feat/decorrelation-meter-fusion-20260802"
+}

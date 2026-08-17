@@ -1,0 +1,27 @@
+{
+  "pr_number": 9279,
+  "archive_path": "docs/history/pr-reviews/PR-9279-docs-design-preserve-iris-root-site-sources.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RpjED",
+    "comment:PRRC_kwDOSF9kNM7RpjEL",
+    "comment:PRRC_kwDOSF9kNM7RpjEQ",
+    "comment:PRRC_kwDOSF9kNM7RpjEb",
+    "comment:PRRC_kwDOSF9kNM7RpjEk",
+    "comment:PRRC_kwDOSF9kNM7RpjEo",
+    "comment:PRRC_kwDOSF9kNM7RpjEs",
+    "thread:PRRT_kwDOSF9kNM6OFIH7",
+    "thread:PRRT_kwDOSF9kNM6OFIHn",
+    "thread:PRRT_kwDOSF9kNM6OFIHu",
+    "thread:PRRT_kwDOSF9kNM6OFIHy",
+    "thread:PRRT_kwDOSF9kNM6OFIIE",
+    "thread:PRRT_kwDOSF9kNM6OFIIH",
+    "thread:PRRT_kwDOSF9kNM6OFIIK"
+  ],
+  "fetched_at": "2026-07-03T03:54:47.861Z",
+  "schema_version": "v1",
+  "commit_sha": "f64fe7c093b0f7546f7efebd2516e47097613152",
+  "title": "docs(design): preserve iris root-site sources",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:54:25Z",
+  "head_ref": "codex/root-site-iris-sources"
+}

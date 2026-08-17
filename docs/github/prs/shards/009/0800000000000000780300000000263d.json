@@ -1,0 +1,12 @@
+{
+  "pr_number": 9789,
+  "archive_path": "docs/history/pr-reviews/PR-9789-refactor-celeganscontroller-address-the-two-copilot-p2-nits-on-the-csv-size-cap.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T15:51:00.114Z",
+  "schema_version": "v1",
+  "commit_sha": "4581e52aa84cb62d72191af52bfa7ef7985ecfe4",
+  "title": "refactor(CelegansController): address the two Copilot P2 nits on the CSV size cap",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T15:50:26Z",
+  "head_ref": "shadow/celegans-sizecap-copilot-nits"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10135,
+  "archive_path": "docs/history/pr-reviews/PR-10135-fix-installer-restore-non-fatal-first-boot-install-errexit-9937-regression-unblo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T19:46:51.964Z",
+  "schema_version": "v1",
+  "commit_sha": "93a4f434feb674738dc94d9f423aa693b301840a",
+  "title": "fix(installer): restore non-fatal first-boot install (errexit #9937 regression, unblocks x86_64 build-iso)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T19:46:14Z",
+  "head_ref": "shadow/fix-firstboot-install-errexit-regression"
+}

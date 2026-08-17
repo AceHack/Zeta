@@ -1,0 +1,12 @@
+{
+  "pr_number": 10329,
+  "archive_path": "docs/history/pr-reviews/PR-10329-feat-browser-archive-database-execution-receipts.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T04:33:09.167Z",
+  "schema_version": "v1",
+  "commit_sha": "1f5a038f7a46a9f7f37d264a5219b0b9d79d3622",
+  "title": "feat(browser): archive database execution receipts",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T04:32:36Z",
+  "head_ref": "codex/browser-database-receipt-archive"
+}

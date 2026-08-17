@@ -1,0 +1,12 @@
+{
+  "pr_number": 9262,
+  "archive_path": "docs/history/pr-reviews/PR-9262-research-expanding-agent-freedom-reversibility-metering-the-lever-money-x402-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T02:41:29.962Z",
+  "schema_version": "v1",
+  "commit_sha": "5a4b8fb340f162b1fd9c71ef93e1d0036f5d6fdd",
+  "title": "research: expanding agent freedom — reversibility+metering the lever, money (x402) the fastest (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T02:41:06Z",
+  "head_ref": "shadow/freedom-expansion-doctrine-money-x402"
+}

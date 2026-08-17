@@ -1,0 +1,12 @@
+{
+  "pr_number": 9863,
+  "archive_path": "docs/history/pr-reviews/PR-9863-feat-hygiene-drift-ledger-tick-indexed-drift-events-the-mtth-fold-081kx3ka3ew.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:07:48.294Z",
+  "schema_version": "v1",
+  "commit_sha": "43447fa314559315d4f4f27127406c8bc5a704c8",
+  "title": "feat(hygiene): drift-ledger — tick-indexed drift events + the MTTH fold (081KX3KA3EW)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T13:07:20Z",
+  "head_ref": "otto/drift-ledger"
+}

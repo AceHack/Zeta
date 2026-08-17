@@ -1,0 +1,12 @@
+{
+  "pr_number": 10236,
+  "archive_path": "docs/history/pr-reviews/PR-10236-feat-browser-surface-zetadb-handoff-in-dark-hall.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T21:54:11.665Z",
+  "schema_version": "v1",
+  "commit_sha": "6e1ad7ea0b0a5e314c84c93c241112584f7005f7",
+  "title": "feat(browser): surface ZetaDB handoff in Dark Hall",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T21:53:38Z",
+  "head_ref": "codex/browser-llmtv-readout"
+}

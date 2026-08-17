@@ -1,0 +1,12 @@
+{
+  "pr_number": 10130,
+  "archive_path": "docs/history/pr-reviews/PR-10130-docs-register-3-route-chsh-soundness-finding-to-decorrelationexcess.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T19:03:12.918Z",
+  "schema_version": "v1",
+  "commit_sha": "573e74aa2505df0679ae08df31e7fbd7e0f59fae",
+  "title": "docs(register-3): route CHSH-soundness finding to DecorrelationExcess",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T19:02:43Z",
+  "head_ref": "shadow/route-chsh-soundness-to-decorrelation-excess"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 10178,
+  "archive_path": "docs/history/pr-reviews/PR-10178-feat-realtime-websocket-client-for-instant-heartbeat-push.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7fC6_g",
+    "comment:PRRC_kwDOSF9kNM7fC7qc",
+    "thread:PRRT_kwDOSF9kNM6Xh_jf",
+    "thread:PRRT_kwDOSF9kNM6XiAHY"
+  ],
+  "fetched_at": "2026-08-09T18:14:41.386Z",
+  "schema_version": "v1",
+  "commit_sha": "1df4d22a56072d11c1f17c156c00df95b018b3ed",
+  "title": "feat(realtime): WebSocket client for instant heartbeat push",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T18:14:07Z",
+  "head_ref": "claim/realtime-ws-transport"
+}

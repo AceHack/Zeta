@@ -1,0 +1,12 @@
+{
+  "pr_number": 9364,
+  "archive_path": "docs/history/pr-reviews/PR-9364-feat-shiva-gc-generational-collection-the-die-young-tier-lieberman-hewitt-ungar-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T22:04:47.497Z",
+  "schema_version": "v1",
+  "commit_sha": "6136dda08d7aa3fe3815c552f2e5c879674d18a8",
+  "title": "feat(shiva-gc): generational collection — the die-young tier (Lieberman-Hewitt/Ungar) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T22:04:22Z",
+  "head_ref": "otto/shiva-generational-die-young"
+}

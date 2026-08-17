@@ -1,0 +1,12 @@
+{
+  "pr_number": 9490,
+  "archive_path": "docs/history/pr-reviews/PR-9490-docs-experience-over-mechanism-lucid-dreaming-transmission-chip-is-accelerator-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T19:30:47.415Z",
+  "schema_version": "v1",
+  "commit_sha": "0cd23f2881ec237a555355e1b91c06153535fd13",
+  "title": "docs: experience over mechanism — lucid-dreaming transmission; chip is accelerator not prerequisite (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T19:30:21Z",
+  "head_ref": "otto/experience-transmission-lucid-dreaming-coach"
+}

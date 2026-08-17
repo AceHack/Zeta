@@ -1,0 +1,12 @@
+{
+  "pr_number": 9395,
+  "archive_path": "docs/history/pr-reviews/PR-9395-feat-model-backend-true-token-by-token-streaming-respondstream-the-observable-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T01:44:36.965Z",
+  "schema_version": "v1",
+  "commit_sha": "06db18a873c5f293f565c803c07441207e9f45d7",
+  "title": "feat(model-backend): true token-by-token streaming — respondStream, the observable primitive (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T01:44:10Z",
+  "head_ref": "otto/true-streaming-respondstream-observable"
+}

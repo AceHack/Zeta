@@ -1,0 +1,12 @@
+{
+  "pr_number": 10002,
+  "archive_path": "docs/history/pr-reviews/PR-10002-feat-core-decorrelationmetrology-parserevlistparents-git-read-parser-pure-input-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T21:38:08.777Z",
+  "schema_version": "v1",
+  "commit_sha": "ed145a785e4706094a9c156d5898bf9ea2143383",
+  "title": "feat(core): DecorrelationMetrology.parseRevListParents — git-read parser (pure input pipeline)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T21:37:39Z",
+  "head_ref": "feat/decorrelation-metrology-parse-revlist-20260802"
+}

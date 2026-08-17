@@ -1,0 +1,12 @@
+{
+  "pr_number": 9391,
+  "archive_path": "docs/history/pr-reviews/PR-9391-feat-gossip-telemetry-the-salon-telemetry-as-gossip-kept-unkept-self-claims.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T01:14:17.029Z",
+  "schema_version": "v1",
+  "commit_sha": "e7b3654d4a9246d9f76b97d2cafb1f878b357404",
+  "title": "feat(gossip-telemetry): the salon — telemetry as gossip, kept/unkept self-claims",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T01:13:54Z",
+  "head_ref": "shadow/gossip-telemetry-salon"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9295,
+  "archive_path": "docs/history/pr-reviews/PR-9295-feat-sequential-column-b-rung-3-clocked-state-flip-flops-circuits-that-evolve-ov.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T05:44:34.664Z",
+  "schema_version": "v1",
+  "commit_sha": "241e8219373f457079cb4b2f67ce2da5810cdcae",
+  "title": "feat(sequential): Column B rung 3 — clocked state (flip-flops); circuits that evolve over cycles (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T05:44:11Z",
+  "head_ref": "otto/sequential-logic-clocked-netlist"
+}

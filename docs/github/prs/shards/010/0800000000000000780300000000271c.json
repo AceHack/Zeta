@@ -1,0 +1,12 @@
+{
+  "pr_number": 10012,
+  "archive_path": "docs/history/pr-reviews/PR-10012-docs-explain-the-decorrelation-meter-to-max-grid-trust-framing.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-03T02:06:38.784Z",
+  "schema_version": "v1",
+  "commit_sha": "acdfe8228eafae1c753f57484f08bdd00297da7c",
+  "title": "docs: explain the decorrelation meter to Max (grid-trust framing)",
+  "state": "MERGED",
+  "merged_at": "2026-08-03T02:06:08Z",
+  "head_ref": "docs/decorrelation-meter-grid-trust-for-max-20260802"
+}

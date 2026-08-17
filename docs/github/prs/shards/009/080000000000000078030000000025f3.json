@@ -1,0 +1,12 @@
+{
+  "pr_number": 9715,
+  "archive_path": "docs/history/pr-reviews/PR-9715-fix-honest-register-self-review-adinkraclock-probe-verdict-is-tautological-does-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T17:41:59.064Z",
+  "schema_version": "v1",
+  "commit_sha": "cd25b12614387127f1e0d93154969e55073cc403",
+  "title": "fix(honest-register): self-review — AdinkraClock probe verdict is tautological, does NOT discriminate the fork (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T17:41:32Z",
+  "head_ref": "adinkra-clock-self-review-correction"
+}

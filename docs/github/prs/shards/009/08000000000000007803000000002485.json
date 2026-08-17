@@ -1,0 +1,12 @@
+{
+  "pr_number": 9349,
+  "archive_path": "docs/history/pr-reviews/PR-9349-docs-research-register-addendum-on-conjecture-z-1-the-falsifier-travels-with-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T19:26:27.637Z",
+  "schema_version": "v1",
+  "commit_sha": "26ca2e664b13f54d25a0e14640f9d38d4c9cf0c5",
+  "title": "docs(research): register addendum on Conjecture Z-1 — the falsifier travels with the claim",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T19:26:05Z",
+  "head_ref": "shadow/zeta-reg-conjecture-register-addendum"
+}

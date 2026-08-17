@@ -1,0 +1,12 @@
+{
+  "pr_number": 10196,
+  "archive_path": "docs/history/pr-reviews/PR-10196-fix-nixos-nix-ld-for-foreign-binaries-assert-first-boot-provisioning-081kzetp6at.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T18:05:19.736Z",
+  "schema_version": "v1",
+  "commit_sha": "f9ecc1cc6226eb8ac5f6f3576dc7069c6bef6133",
+  "title": "fix(nixos): nix-ld for foreign binaries + assert first-boot provisioning (081KZETP6AT)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T18:04:48Z",
+  "head_ref": "shadow/nix-ld-foreign-binaries-and-provisioning-assert"
+}

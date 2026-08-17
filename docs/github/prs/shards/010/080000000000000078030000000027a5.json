@@ -1,0 +1,12 @@
+{
+  "pr_number": 10149,
+  "archive_path": "docs/history/pr-reviews/PR-10149-book-th-thai-6th-edition-of-you-born-at-the-hinge-th-preview.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T19:01:02.078Z",
+  "schema_version": "v1",
+  "commit_sha": "9d70eada496d2ef5ab981e0a2966bd30974c35d0",
+  "title": "book(th): Thai 6th edition of \"You, Born at the Hinge\" + /th/ preview",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T19:00:31Z",
+  "head_ref": "shadow/book-thai-6th-edition"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10322,
+  "archive_path": "docs/history/pr-reviews/PR-10322-heal-memory-annotate-119-stale-cross-references.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T03:34:15.053Z",
+  "schema_version": "v1",
+  "commit_sha": "66891e7afc0d90180932e4adf9a8df3e418ab662",
+  "title": "heal(memory): annotate 119 stale cross-references",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T03:33:41Z",
+  "head_ref": "alexa/heal-batch-4"
+}

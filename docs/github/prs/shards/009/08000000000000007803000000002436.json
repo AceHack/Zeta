@@ -1,0 +1,12 @@
+{
+  "pr_number": 9270,
+  "archive_path": "docs/history/pr-reviews/PR-9270-research-produce-extract-is-a-spectrum-51-least-action-by-others-do-not-reduce-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:05:44.416Z",
+  "schema_version": "v1",
+  "commit_sha": "2406e44b294886cb2e23aa30becf188c3a13010e",
+  "title": "research: produce/extract is a SPECTRUM — 51%, least-action-by-others, do-not-reduce (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:05:12Z",
+  "head_ref": "shadow/produce-extract-spectrum-least-action-by-others"
+}

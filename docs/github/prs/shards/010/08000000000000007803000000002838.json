@@ -1,0 +1,15 @@
+{
+  "pr_number": 10296,
+  "archive_path": "docs/history/pr-reviews/PR-10296-feat-healer-stale-doc-cross-ref-detect-broken-markdown-links.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7fxZum",
+    "thread:PRRT_kwDOSF9kNM6YEq50"
+  ],
+  "fetched_at": "2026-08-10T23:56:48.766Z",
+  "schema_version": "v1",
+  "commit_sha": "900fc0941eee5a2bf679d3330c0605366a251652",
+  "title": "feat(healer): stale-doc-cross-ref — detect broken markdown links",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T23:56:13Z",
+  "head_ref": "alexa/stale-doc-healer"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9745,
+  "archive_path": "docs/history/pr-reviews/PR-9745-fix-docs-clear-main-markdown-list-spacing.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T21:12:39.330Z",
+  "schema_version": "v1",
+  "commit_sha": "39be86937aadcfddff60785f192485b6d27f2ba2",
+  "title": "fix(docs): clear main markdown list spacing",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T21:12:13Z",
+  "head_ref": "codex/fix-main-markdownlint-md032"
+}

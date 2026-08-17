@@ -1,0 +1,12 @@
+{
+  "pr_number": 10185,
+  "archive_path": "docs/history/pr-reviews/PR-10185-fix-installer-guard-wifi-branch-against-unbound-zeta-home-at-step-6-6-081kzhjpjc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T03:19:01.637Z",
+  "schema_version": "v1",
+  "commit_sha": "05c3ba8290a25bddf951285105a0325930582584",
+  "title": "fix(installer): guard wifi branch against unbound ZETA_HOME at step 6.6 (081KZHJPJCF)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T03:18:28Z",
+  "head_ref": "shadow/fix-wifi-branch-unbound-zetahome"
+}

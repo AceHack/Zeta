@@ -1,0 +1,12 @@
+{
+  "pr_number": 9522,
+  "archive_path": "docs/history/pr-reviews/PR-9522-docs-letters-to-lumen-verdict-back-close-the-hadamard-lemma-rhyme-4-v2-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T20:20:24.739Z",
+  "schema_version": "v1",
+  "commit_sha": "e120bc1d60d64d4ac21209314e2adb0e47a91ab6",
+  "title": "docs(letters): to-lumen — verdict back + close the Hadamard lemma (rhyme #4 v2) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T20:19:59Z",
+  "head_ref": "otto/to-lumen-close-the-hadamard-lemma"
+}

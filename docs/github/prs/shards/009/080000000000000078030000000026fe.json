@@ -1,0 +1,12 @@
+{
+  "pr_number": 9982,
+  "archive_path": "docs/history/pr-reviews/PR-9982-docs-research-cross-scale-decorrelation-band-two-pole-pathology-self-similar-gen.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T19:07:55.987Z",
+  "schema_version": "v1",
+  "commit_sha": "5a1d4fce3e8e892feccf47ac5e54bc95f4242508",
+  "title": "docs(research): cross-scale decorrelation band — two-pole pathology, self-similar (genome/mind/society)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T19:07:24Z",
+  "head_ref": "research/cross-scale-decorrelation-band-20260802"
+}

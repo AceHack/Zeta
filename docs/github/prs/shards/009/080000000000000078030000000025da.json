@@ -1,0 +1,12 @@
+{
+  "pr_number": 9690,
+  "archive_path": "docs/history/pr-reviews/PR-9690-docs-book-raw-the-reader-reading-people-the-honest-edge-dual-use-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T13:25:35.844Z",
+  "schema_version": "v1",
+  "commit_sha": "97e0e2ff5b91e31d0a176f9c3b3725a5c3c74c93",
+  "title": "docs(book): RAW — the reader (reading people + the honest edge, dual-use) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T13:25:07Z",
+  "head_ref": "raw-the-reader-and-the-honest-edge"
+}

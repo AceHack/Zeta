@@ -1,0 +1,12 @@
+{
+  "pr_number": 9380,
+  "archive_path": "docs/history/pr-reviews/PR-9380-docs-research-ferry-the-v2-ichatcompleter-stream-interface-stream-not-ping-pong-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T00:00:58.914Z",
+  "schema_version": "v1",
+  "commit_sha": "0f131d17ab456e8d7ab9ae4c96f943bf9e47d5b0",
+  "title": "docs(research): ferry the V2 IChatCompleter stream interface — stream not ping-pong (Aaron's blazor-samples prior art) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T00:00:32Z",
+  "head_ref": "otto/ferry-blazor-samples-stream-interface"
+}

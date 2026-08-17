@@ -1,0 +1,12 @@
+{
+  "pr_number": 9736,
+  "archive_path": "docs/history/pr-reviews/PR-9736-feat-llmtv-carry-room-phase-clock-in-status.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T19:59:30.160Z",
+  "schema_version": "v1",
+  "commit_sha": "fa10fd7ef0e15d044250bbf647afe60554ae2e10",
+  "title": "feat(llmtv): carry room phase clock in status",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T19:59:02Z",
+  "head_ref": "codex/llmtv-room-status-phase-clock"
+}

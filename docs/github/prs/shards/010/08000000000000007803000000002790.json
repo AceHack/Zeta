@@ -1,0 +1,12 @@
+{
+  "pr_number": 10128,
+  "archive_path": "docs/history/pr-reviews/PR-10128-book-editions-indonesian-companion-6-the-stand-retire-sampler-all-four-editions-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T18:35:30.430Z",
+  "schema_version": "v1",
+  "commit_sha": "fbf38e9a6972a261ca74433a878f6979ad990708",
+  "title": "book(editions): Indonesian companion 6 — the Stand + retire sampler (ALL FOUR editions complete)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T18:34:52Z",
+  "head_ref": "book-id-companion-stand"
+}

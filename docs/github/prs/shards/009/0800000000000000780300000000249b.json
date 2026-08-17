@@ -1,0 +1,12 @@
+{
+  "pr_number": 9371,
+  "archive_path": "docs/history/pr-reviews/PR-9371-feat-persona-keys-cluster-trust-root-rotate-peer-preserving.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T23:09:59.887Z",
+  "schema_version": "v1",
+  "commit_sha": "98f495e76a1558570c0a85a93b3a0cf8d11faa71",
+  "title": "feat(persona-keys): cluster-trust-root rotate (peer-preserving)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T23:09:38Z",
+  "head_ref": "feat/cluster-trust-root-rotate"
+}

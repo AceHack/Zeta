@@ -1,0 +1,12 @@
+{
+  "pr_number": 9492,
+  "archive_path": "docs/history/pr-reviews/PR-9492-docs-correction-the-email-in-dream-vision-is-the-bidirectional-bci-write-of-real.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T19:36:35.504Z",
+  "schema_version": "v1",
+  "commit_sha": "a0a03826c15837d71bf45d103de7a99576fe29d4",
+  "title": "docs: correction — the email-in-dream VISION is the bidirectional BCI-write of REAL emails (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T19:36:08Z",
+  "head_ref": "otto/bci-write-vision-correction"
+}

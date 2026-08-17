@@ -1,0 +1,12 @@
+{
+  "pr_number": 10323,
+  "archive_path": "docs/history/pr-reviews/PR-10323-observe-remove-the-ambient-clock-from-the-fold-restores-the-event-sourcing-prope.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T03:44:09.064Z",
+  "schema_version": "v1",
+  "commit_sha": "76a28583f8b8e36370201c45a98376cdcdc529e4",
+  "title": "observe: remove the ambient clock from the fold — restores the event-sourcing property",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T03:43:37Z",
+  "head_ref": "fix-ambient-clock-in-observe-fold"
+}

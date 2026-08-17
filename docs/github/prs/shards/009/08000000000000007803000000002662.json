@@ -1,0 +1,12 @@
+{
+  "pr_number": 9826,
+  "archive_path": "docs/history/pr-reviews/PR-9826-feat-observe-durable-store-realtime-server-db-git-convergence-websocket.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T03:14:12.076Z",
+  "schema_version": "v1",
+  "commit_sha": "63368f40100d9db913af8056d3fe79037ee9866f",
+  "title": "feat(observe): durable-store + realtime-server (DB/git convergence + WebSocket)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T03:13:36Z",
+  "head_ref": "claim/kiro-durable-store-realtime-2026-07-11"
+}

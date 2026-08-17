@@ -1,0 +1,12 @@
+{
+  "pr_number": 9541,
+  "archive_path": "docs/history/pr-reviews/PR-9541-zflash-plan-wifi-credential-esp-injection.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T21:57:21.601Z",
+  "schema_version": "v1",
+  "commit_sha": "62bb9dca4651e4694c6f819f3752966027582fd6",
+  "title": "zflash: plan wifi credential ESP injection",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T21:56:55Z",
+  "head_ref": "feat/081KSGS9-wifi-esp-plumbing"
+}

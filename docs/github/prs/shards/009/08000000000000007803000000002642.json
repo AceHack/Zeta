@@ -1,0 +1,12 @@
+{
+  "pr_number": 9794,
+  "archive_path": "docs/history/pr-reviews/PR-9794-feat-menobraided-n-strand-rep-realizes-b-ybe-far-commute-faithful-braided-arc-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T16:28:14.692Z",
+  "schema_version": "v1",
+  "commit_sha": "750f99775b4b9ab1212f44d064b3db859605f784",
+  "title": "feat(MenoBraided): n-strand rep ρ realizes Bₙ — YBE + far-commute + faithful (braided arc, Increment 3)",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T16:24:26Z",
+  "head_ref": "shadow/menobraided-nstrand-rep-realizes-bn"
+}

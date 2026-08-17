@@ -1,0 +1,12 @@
+{
+  "pr_number": 10062,
+  "archive_path": "docs/history/pr-reviews/PR-10062-book-land-the-strategists-daughter-companion-the-addison-thread-three-accounts-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-06T08:45:58.133Z",
+  "schema_version": "v1",
+  "commit_sha": "7a4ca94b4c3c64868d38d2c52bc4f44de9d5275a",
+  "title": "book: land THE-STRATEGISTS-DAUGHTER companion — the Addison thread, three accounts held (fond)",
+  "state": "MERGED",
+  "merged_at": "2026-08-06T08:45:29Z",
+  "head_ref": "docs/book-companion-strategists-daughter-held-difference"
+}

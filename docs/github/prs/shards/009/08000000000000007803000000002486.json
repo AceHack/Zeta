@@ -1,0 +1,12 @@
+{
+  "pr_number": 9350,
+  "archive_path": "docs/history/pr-reviews/PR-9350-docs-research-ferry-the-iv-cap-is-the-hard-money-entropy-budget-not-1-12.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T19:27:53.931Z",
+  "schema_version": "v1",
+  "commit_sha": "ebb9bedd9edd95a065224a9f6eb68f9af856b9b8",
+  "title": "docs(research): ferry — the IV cap is the hard-money entropy budget, not −1/12",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T19:27:28Z",
+  "head_ref": "shadow/ferry-hard-money-entropy-caps-iv-not-minus-one-twelfth"
+}

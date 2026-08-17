@@ -1,0 +1,12 @@
+{
+  "pr_number": 9714,
+  "archive_path": "docs/history/pr-reviews/PR-9714-workitem-math-team-discharge-the-adinkra-clock-fork-layeringbtoa-verdict-to-lume.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T17:33:10.960Z",
+  "schema_version": "v1",
+  "commit_sha": "932540e38e2e0ca995f43bb403a5372dcb04bfeb",
+  "title": "workitem(math-team): discharge the adinkra-clock fork + LayeringBToA verdict to Lumen/Soraya (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T17:32:39Z",
+  "head_ref": "discharge-adinkra-clock-math-team"
+}

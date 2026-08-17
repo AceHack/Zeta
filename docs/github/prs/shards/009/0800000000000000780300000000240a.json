@@ -1,0 +1,12 @@
+{
+  "pr_number": 9226,
+  "archive_path": "docs/history/pr-reviews/PR-9226-research-predictive-entropy-szilard-sagawa-ueda-finite-time-cslib-physics-mappin.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T23:57:30.613Z",
+  "schema_version": "v1",
+  "commit_sha": "d04d3ed3c4dc6740c040db51c37fe6022d29f8e3",
+  "title": "research: predictive entropy (Szilard/Sagawa-Ueda/finite-time) + CSLib->physics mapping (Adj vs non-Adj)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T23:57:08Z",
+  "head_ref": "soraya/phase5-ferry-ledger-b-membrane"
+}

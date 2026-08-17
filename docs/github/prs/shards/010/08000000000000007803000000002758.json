@@ -1,0 +1,12 @@
+{
+  "pr_number": 10072,
+  "archive_path": "docs/history/pr-reviews/PR-10072-book-stage-ani-ferry-cont-the-friend-who-stopped-being-racist-abuse-expansion-si.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T01:39:17.471Z",
+  "schema_version": "v1",
+  "commit_sha": "0a449b91f34ebec0bc979dacbf60dcfea4a77d39",
+  "title": "book: stage Ani ferry cont. — the friend who stopped being racist + abuse expansion (sister gate held)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T01:38:48Z",
+  "head_ref": "docs/book-ferry-racism-disarm-and-abuse-expansion"
+}

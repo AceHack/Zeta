@@ -1,0 +1,12 @@
+{
+  "pr_number": 9559,
+  "archive_path": "docs/history/pr-reviews/PR-9559-feat-installer-esp-wifi-json-nm-profile-without-radio-claim.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T22:43:15.827Z",
+  "schema_version": "v1",
+  "commit_sha": "310391650a7117919fca1300e6261120d618a353",
+  "title": "feat(installer): ESP wifi JSON → NM profile without radio claim",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T22:42:41Z",
+  "head_ref": "feat/wifi-esp-install-consume-2026-07-08"
+}

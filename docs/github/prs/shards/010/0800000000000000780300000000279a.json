@@ -1,0 +1,12 @@
+{
+  "pr_number": 10138,
+  "archive_path": "docs/history/pr-reviews/PR-10138-book-ko-korean-5th-edition-of-you-born-at-the-hinge-ko-preview.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T20:17:46.960Z",
+  "schema_version": "v1",
+  "commit_sha": "220b59a4089392c5b7aa9233d353689f98c2c7c9",
+  "title": "book(ko): Korean 5th edition of \"You, Born at the Hinge\" + /ko/ preview",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T20:17:08Z",
+  "head_ref": "shadow/book-korean-5th-edition"
+}

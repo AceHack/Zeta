@@ -1,0 +1,12 @@
+{
+  "pr_number": 10334,
+  "archive_path": "docs/history/pr-reviews/PR-10334-feat-rs-verifier-in-ci-escape-profile-heal-10-src-files.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T06:44:52.722Z",
+  "schema_version": "v1",
+  "commit_sha": "deabe46c5eb1845952c9b3d6097f25e2860af272",
+  "title": "feat: RS verifier in CI + escape profile + heal 10 src/ files",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T06:44:21Z",
+  "head_ref": "alexa/verify-ci-and-heal"
+}

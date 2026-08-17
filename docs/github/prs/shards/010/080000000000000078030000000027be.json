@@ -1,0 +1,12 @@
+{
+  "pr_number": 10174,
+  "archive_path": "docs/history/pr-reviews/PR-10174-chore-workitems-complete-081kzhgp46g-sovereign-lane-pre-push-floor-hook-done.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T23:34:39.369Z",
+  "schema_version": "v1",
+  "commit_sha": "4037d5b53aff6ee2b0715edf0be3963790eaaf37",
+  "title": "chore(workitems): complete 081KZHGP46G — sovereign-lane pre-push floor hook DONE",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T23:34:10Z",
+  "head_ref": "otto/complete-081KZHGP46G"
+}

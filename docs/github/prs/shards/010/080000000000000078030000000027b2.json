@@ -1,0 +1,12 @@
+{
+  "pr_number": 10162,
+  "archive_path": "docs/history/pr-reviews/PR-10162-review-algebra-close-081kzheyckh-lior-fixed-both-wset-ts-p1s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T20:16:37.476Z",
+  "schema_version": "v1",
+  "commit_sha": "163d2a31cdbb4700e947d2d8ec7c66e71d52a808",
+  "title": "review(algebra): close 081KZHEYCKH — Lior fixed both wset.ts P1s",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T20:16:07Z",
+  "head_ref": "shadow/close-lior-wset-review"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9566,
+  "archive_path": "docs/history/pr-reviews/PR-9566-fix-ace-add-two-cubical-lane-files-missed-in-9560-bash-retirement-inventory-mani.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T23:02:47.015Z",
+  "schema_version": "v1",
+  "commit_sha": "b4c089f4afb5247aff05f738749138014f0a8218",
+  "title": "fix(ace): add two cubical-lane files missed in #9560 (bash-retirement inventory + manifest-symmetry .js twin) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T23:02:18Z",
+  "head_ref": "otto/cubical-lane-fixup-missing-two-files"
+}

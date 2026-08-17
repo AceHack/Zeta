@@ -1,0 +1,12 @@
+{
+  "pr_number": 9464,
+  "archive_path": "docs/history/pr-reviews/PR-9464-docs-band-addendum-correlated-enough-to-be-useful-not-too-correlated-to-be-borin.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T17:24:51.419Z",
+  "schema_version": "v1",
+  "commit_sha": "e5824ff7130a8b2899fc7d46327b1d86a36a7943",
+  "title": "docs: ρ-band addendum — 'correlated enough to be useful, not too correlated to be boring' (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T17:24:28Z",
+  "head_ref": "otto/rho-band-useful-not-boring"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10299,
+  "archive_path": "docs/history/pr-reviews/PR-10299-feat-observe-slice-4-oauth-export-localtrustview-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-11T00:36:13.408Z",
+  "schema_version": "v1",
+  "commit_sha": "2328514b593b61d189065d72780f2d7b4f797e3c",
+  "title": "feat(observe): slice 4 — OAuth export (LocalTrustView complete)",
+  "state": "MERGED",
+  "merged_at": "2026-08-11T00:35:35Z",
+  "head_ref": "alexa/oauth-export"
+}

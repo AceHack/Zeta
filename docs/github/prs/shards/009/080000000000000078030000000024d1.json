@@ -1,0 +1,12 @@
+{
+  "pr_number": 9425,
+  "archive_path": "docs/history/pr-reviews/PR-9425-feat-alloy-identityreissuable-threshold-path-existence.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T06:06:41.363Z",
+  "schema_version": "v1",
+  "commit_sha": "a1290d13db8101dfde0ec1beab5b6d18a1e9e09d",
+  "title": "feat(alloy): IdentityReissuable threshold path-existence",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T06:06:18Z",
+  "head_ref": "feat/alloy-identity-reissuable"
+}

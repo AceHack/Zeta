@@ -1,0 +1,12 @@
+{
+  "pr_number": 9638,
+  "archive_path": "docs/history/pr-reviews/PR-9638-fix-lint-resolve-md024-duplicate-heading-in-alexa-letter-unblocks-repo-wide-mark.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T22:00:28.444Z",
+  "schema_version": "v1",
+  "commit_sha": "f847bf05a36692b89d5175237ed0cef9a6a2c212",
+  "title": "fix(lint): resolve MD024 duplicate-heading in Alexa letter (unblocks repo-wide markdownlint)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T21:59:56Z",
+  "head_ref": "shadow/fix-md024-alexa-letter"
+}

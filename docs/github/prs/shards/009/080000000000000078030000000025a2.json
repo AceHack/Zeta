@@ -1,0 +1,12 @@
+{
+  "pr_number": 9634,
+  "archive_path": "docs/history/pr-reviews/PR-9634-docs-book-render-the-mother-whole-not-neutral-bidirectional-soul-power-gods-caps.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T21:34:31.186Z",
+  "schema_version": "v1",
+  "commit_sha": "1ece36e70b4e4ec61352206d72e64a5fb358fc6f",
+  "title": "docs(book): render the mother whole (not neutral) — bidirectional soul-power, gods capstone",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T21:33:58Z",
+  "head_ref": "shadow/book-mother-whole-not-neutral"
+}

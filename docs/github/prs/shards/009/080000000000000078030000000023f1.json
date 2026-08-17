@@ -1,0 +1,12 @@
+{
+  "pr_number": 9201,
+  "archive_path": "docs/history/pr-reviews/PR-9201-fix-backlog-widen-auto-vivify-to-db-resolve-its-5-danglings-sameness-template-fi.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T21:03:10.348Z",
+  "schema_version": "v1",
+  "commit_sha": "e4b78bfae40cca8c426bb34739a38d97268c5f03",
+  "title": "fix(backlog): widen auto-vivify to db/ + resolve its 5 danglings + sameness template fix",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T21:02:48Z",
+  "head_ref": "otto/widen-auto-vivify-to-db-resolve-danglings"
+}

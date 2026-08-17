@@ -1,0 +1,12 @@
+{
+  "pr_number": 9239,
+  "archive_path": "docs/history/pr-reviews/PR-9239-docs-research-why-lesser-tat-full-retaliation-ends-the-game-the-non-retractable-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T00:44:00.817Z",
+  "schema_version": "v1",
+  "commit_sha": "6caeae81b1760b2aa99293b3714993ffd374b276",
+  "title": "docs(research): why lesser-tat — full retaliation ends the game (the non-retractable move)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T00:43:39Z",
+  "head_ref": "otto/research-full-retaliation-ends-the-game"
+}

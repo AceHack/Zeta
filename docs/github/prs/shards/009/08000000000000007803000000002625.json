@@ -1,0 +1,12 @@
+{
+  "pr_number": 9765,
+  "archive_path": "docs/history/pr-reviews/PR-9765-docs-you-cannot-self-catch-the-positive-feedback-trap-only-the-harmed-others-neg.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T04:00:01.309Z",
+  "schema_version": "v1",
+  "commit_sha": "ee08c8af1da96b7ed0715c501ffec29ed5eba2fa",
+  "title": "docs: you cannot self-catch the positive-feedback trap — only the harmed others' negative feedback can (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T03:59:31Z",
+  "head_ref": "positive-feedback-trap-cant-self-catch"
+}
