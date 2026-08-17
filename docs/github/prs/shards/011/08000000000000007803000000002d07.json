@@ -1,0 +1,12 @@
+{
+  "pr_number": 11527,
+  "archive_path": "docs/history/pr-reviews/PR-11527-ferry-ip-questionable-manchak-on-unknowability-heraclitus-space-times-and-the-li.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T16:03:02.342Z",
+  "schema_version": "v1",
+  "commit_sha": "8d35c757cbdbcd384b01c044c7b17a8b0acf513d",
+  "title": "ferry(ip-questionable): Manchak on unknowability, Heraclitus space-times, and the limits of measurement",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T16:02:18Z",
+  "head_ref": "shadow/ferry-manchak-unknowability-limits-of-measurement"
+}
