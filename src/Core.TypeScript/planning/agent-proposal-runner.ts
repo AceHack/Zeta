@@ -15,11 +15,37 @@ function environment(name: string): string {
   return value;
 }
 
+/**
+ * Terminates the final line of a unified patch. Exported because it is the whole of a real
+ * rejection, and an unexported helper is one no test can reach.
+ *
+ * WHY THIS IS NOT LAXITY (2026-08-17, proposal 60b7c599). The first live Pages delivery was
+ * rejected with `corrupt patch at line 12` on a patch that was otherwise exactly right: correct
+ * headers, `@@ -0,0 +1,7 @@` matching its seven `+` lines, the bounded `docs/` path. Its last
+ * line simply carried no terminating newline, and `git apply` reads a unified diff as a
+ * line-oriented format in which every line, including the last, is terminated.
+ *
+ * That missing byte cannot express an intent. A target file that genuinely lacks a trailing
+ * newline is stated by an explicit `\ No newline at end of file` LINE inside the patch -- itself
+ * terminated -- so the patch text's own final byte carries no information about the result. The
+ * two candidate readings of a patch missing it are "apply these seven lines" and "reject", and
+ * only the first is a change anyone could have meant.
+ *
+ * AND IT DOES NOT MOVE THE AUTHORITY BINDING, which is the part worth checking rather than
+ * assuming: `planAgentProposal` compares `sha256(payload.trim())`, and `.trim()` already removes
+ * trailing whitespace including this newline. Normalizing here is digest-invariant by
+ * construction, so it cannot make a patch pass a binding that the un-normalized bytes would fail.
+ * Pinned by a test, because that invariance is the entire safety argument.
+ */
+export function normalizeUnifiedPatch(patch: string): string {
+  return patch.endsWith("\n") ? patch : `${patch}\n`;
+}
+
 function patchFromBase64(value: string): string {
   try {
     const patch = Buffer.from(value, "base64url").toString("utf8");
     if (patch.length === 0) throw new Error("empty");
-    return patch;
+    return normalizeUnifiedPatch(patch);
   } catch {
     throw new Error("teaching error: agent patch is not non-empty base64url UTF-8; generator: encode the exact unified patch before invoking the workflow");
   }
@@ -71,7 +97,18 @@ async function stage(): Promise<void> {
   git(["switch", "-c", plan.branch]);
   const patchPath = resolve(repoRoot, ".git", "zeta-agent-proposal.patch");
   writeFileSync(patchPath, payload, "utf8");
-  git(["apply", "--check", "--whitespace=error", patchPath]);
+  // `git apply` is the one rejection in this runner that used to report as a raw execFileSync
+  // stack: `status: 128`, a `pid`, and Bun's formatter echoing THIS FILE'S OWN SOURCE around the
+  // throw site -- which is what the 12:28 run printed, and it reads like the runner crashed rather
+  // than like the patch was refused. Every other refusal here states what was wrong and names a
+  // generator. This one now does too; git's own stderr is kept verbatim because it carries the
+  // line number, which is the only part that localises the defect for the producer.
+  try {
+    git(["apply", "--check", "--whitespace=error", patchPath]);
+  } catch (error) {
+    const detail = (error as { stderr?: string }).stderr?.trim() ?? String(error);
+    throw new Error(`teaching error: agent patch is not applicable to bound main as a unified diff (${detail}); generator: regenerate with \`git diff\` against the bound base SHA rather than hand-authoring the hunk`, { cause: error });
+  }
   git(["apply", "--whitespace=error", patchPath]);
 
   const receipt = resolve(repoRoot, "docs/automation/agent-proposal-receipts", `${proposalId}.json`);
