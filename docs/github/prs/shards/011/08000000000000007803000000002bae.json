@@ -1,0 +1,12 @@
+{
+  "pr_number": 11182,
+  "archive_path": "docs/history/pr-reviews/PR-11182-perf-heartbeat-drop-the-gate-dispatch-belt-its-checks-never-reached-the-pr-rollu.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:38:21.641Z",
+  "schema_version": "v1",
+  "commit_sha": "5c1609f93c1afa81baa034eb4e0df4cb85f9ec70",
+  "title": "perf(heartbeat): drop the gate dispatch belt — its checks never reached the PR rollup",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:37:49Z",
+  "head_ref": "shadow/heartbeat-gate-dispatch-is-inert-remove-the-duplicate"
+}
