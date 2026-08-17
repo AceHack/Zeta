@@ -103,6 +103,22 @@ export function operatorNetworkTeachingError(error: unknown): Error {
   );
 }
 
+/** A reviewed passkey endures; the browser-held delegation intentionally does not. */
+export function operatorCapabilityExpiryTeachingError(): Error {
+  return new Error(
+    "teaching error: the short-lived delegated device capability has expired; retract -1 operator-proposal; generator: keep the reviewed passkey, authorize this device again, then retry the bounded proposal.",
+  );
+}
+
+export function isExpiredDeviceCapability(capability: DeviceCapability, now = new Date()): boolean {
+  const expiry = Date.parse(capability.expiresAt);
+  return !Number.isFinite(expiry) || expiry <= now.getTime();
+}
+
+export function isOperatorCapabilityExpiry(error: unknown): boolean {
+  return error instanceof Error && error.message.includes("the operator capability has expired");
+}
+
 async function operatorFetch(path: string, init?: RequestInit): Promise<Response> {
   try {
     return await fetch(`${ZETA_OPERATOR_HARNESS_ORIGIN}${path}`, { ...init, cache: "no-store", mode: "cors" });

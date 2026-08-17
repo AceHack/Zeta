@@ -3,7 +3,10 @@ import {
   authorizeOperatorDevice,
   downloadJson,
   enrollProposalPasskey,
+  isExpiredDeviceCapability,
   isCommitSha,
+  isOperatorCapabilityExpiry,
+  operatorCapabilityExpiryTeachingError,
   submitAutomaticProposal,
   ZETA_DEVICE_DELEGATION_STORAGE_KEY,
   ZETA_REPOSITORY,
@@ -108,7 +111,7 @@ export default function PasskeyProposalPanel() {
       localStorage.setItem(ZETA_DEVICE_DELEGATION_STORAGE_KEY, JSON.stringify(result));
       setState("ready");
       setMessage(
-        "This device is authorized until its root passkey is revoked. Browser-local agents can queue bounded patches without another biometric prompt.",
+        `The reviewed passkey remains your durable authority. This browser now holds a delegated capability until ${new Date(result.expiresAt).toLocaleTimeString()}; after expiry or revocation, authorize this device again before queuing a bounded patch.`,
       );
     } catch (error) {
       setState("error");
@@ -117,12 +120,26 @@ export default function PasskeyProposalPanel() {
   };
   const queue = async (payloadToSubmit = payload) => {
     if (!capability || registrySequence === null) return;
+    if (isExpiredDeviceCapability(capability)) {
+      localStorage.removeItem(ZETA_DEVICE_DELEGATION_STORAGE_KEY);
+      setCapability(null);
+      setState("ready");
+      setMessage(operatorCapabilityExpiryTeachingError().message);
+      return;
+    }
     setState("submitting");
     try {
       const result = await submitAutomaticProposal({ capability, baseSha, payload: payloadToSubmit });
       setState("submitted");
       setMessage(`${result.message} Proposal ${result.proposalId.slice(0, 8)} is staged for bounded Action review delivery.`);
     } catch (error) {
+      if (isOperatorCapabilityExpiry(error)) {
+        localStorage.removeItem(ZETA_DEVICE_DELEGATION_STORAGE_KEY);
+        setCapability(null);
+        setState("ready");
+        setMessage(operatorCapabilityExpiryTeachingError().message);
+        return;
+      }
       setState("error");
       setMessage(error instanceof Error ? error.message : "Automatic proposal delivery failed.");
     }
@@ -201,9 +218,10 @@ export default function PasskeyProposalPanel() {
               color: "#a7f3d0",
             }}
           >
-            <strong>Routine path: authorize once, then automate.</strong> A reviewed passkey grants a short-lived
-            device capability; browser-local agents submit bounded patches directly to the trusted verifier. No
-            loopback companion, GitHub issue form, or browser-held repository key is involved.
+            <strong>Routine path: durable passkey, short-lived delegation.</strong> The reviewed passkey is the
+            persistent authority. A user-verified prompt mints this browser a deliberately short-lived delegated
+            capability; browser-local agents use that delegation to submit bounded patches directly to the trusted
+            verifier. No loopback companion, GitHub issue form, or browser-held repository key is involved.
           </div>
           <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap", marginBottom: "0.35rem" }}>
             <button
@@ -245,7 +263,7 @@ export default function PasskeyProposalPanel() {
               {state === "authorizing"
                 ? "device passkey prompt…"
                 : capability
-                  ? "device authorized"
+                  ? "delegated capability active"
                   : "authorize this device"}
             </button>
           </div>
@@ -312,8 +330,9 @@ export default function PasskeyProposalPanel() {
           </div>
           <div style={{ color: statusColor, fontSize: "0.48rem", marginTop: "0.32rem" }}>{message}</div>
           <div style={{ color: "#475569", fontSize: "0.44rem", marginTop: "0.25rem" }}>
-            The executor rejects an unrecognized or revoked authority, stale base SHA, oversize/non-unified patch,
-            protected-path edit, replay, or origin/RP-ID mismatch before creating any review branch.
+            The executor rejects an expired, unrecognized, or revoked delegated authority; stale base SHA;
+            oversize/non-unified patch; protected-path edit; replay; or origin/RP-ID mismatch before creating any
+            review branch. Expiry removes only the local delegation, never the reviewed passkey enrollment.
           </div>
         </div>
       )}
