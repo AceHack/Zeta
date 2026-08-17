@@ -308,6 +308,31 @@ describe("appNameFor tree-qualifies, so two trees never merge", () => {
   ])("%s -> %s", (path, expected) => {
     expect(appNameFor(path as string)).toBe(expected as string);
   });
+
+  // A Windows-shaped path must yield the SAME identity as its POSIX twin.
+  //
+  // Nothing asserted this, and the cost was total on Windows: `relative()`
+  // returns backslashes there, the old `relPath.split("/")` produced ONE part,
+  // the `applications` anchor was never found, and identity degenerated to
+  // `<wholepath>/<wholepath>`. That matches no ledger key, so every
+  // long-acknowledged app -- cockroachdb, vault, nats, redis, platform -- read
+  // as a fresh violation and the suite failed 5 tests for a reason that had
+  // nothing to do with the cluster. The ledger was fine; the parser was not.
+  //
+  // Same shape as the "/tmp" literal in harness.test.ts: an assertion written
+  // in one platform's spelling cannot catch that platform's absence.
+  test.each([
+    ["full-ai-cluster\\k8s\\applications\\cockroachdb\\Application.yaml", "full-ai-cluster/cockroachdb"],
+    ["full-ai-cluster\\k8s\\applications\\kubevirt\\kubevirt-operator.yaml", "full-ai-cluster/kubevirt"],
+    ["full-ai-cluster\\k8s\\bootstrap\\root-application.yaml", "full-ai-cluster/root-application"],
+  ])("backslash-separated %s -> %s", (path, expected) => {
+    expect(appNameFor(path as string)).toBe(expected as string);
+  });
+
+  test("backslash and forward-slash spellings agree", () => {
+    const posix = "full-ai-cluster/k8s/applications/vault/Application.yaml";
+    expect(appNameFor(posix.split("/").join("\\"))).toBe(appNameFor(posix));
+  });
 });
 
 describe("auditAll end-to-end over a synthetic tree", () => {

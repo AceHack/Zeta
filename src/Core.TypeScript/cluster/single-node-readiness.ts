@@ -46,7 +46,7 @@
 // Whether that is acceptable for a PoC is the ledger's (human's) call.
 
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
-import { join, relative, resolve } from "node:path";
+import { join, relative, resolve, sep } from "node:path";
 import { parseAllDocuments } from "yaml";
 // Ordinal (code-point) ordering, per .claude/rules/culture-invariant-by-default.md.
 // NOT localeCompare: it is culture-SENSITIVE, so the same keys sort differently
@@ -458,7 +458,13 @@ export function loadManifests(roots: readonly string[], repoRoot = REPO_ROOT): r
     const abs = resolve(repoRoot, root);
     if (!existsSync(abs)) continue;
     for (const file of listYaml(abs)) {
-      const rel = relative(repoRoot, file);
+      // POSIX-normalise before anything derives identity from it. `relative()`
+      // returns backslashes on Windows, and every downstream consumer -- the
+      // `applications` anchor split in appNameFor, the ledger's
+      // acknowledgedRootAppDuplicates keys, the reported finding paths -- is
+      // written in forward slashes. Normalising once here keeps `app` and
+      // `path` platform-independent, so the ledger matches on every OS.
+      const rel = relative(repoRoot, file).split(sep).join("/");
       const text = readFileSync(file, "utf8");
       out.push({ app: appNameFor(rel), path: rel, docs: parseYamlDocuments(text, rel) });
     }
@@ -475,7 +481,12 @@ export function loadManifests(roots: readonly string[], repoRoot = REPO_ROOT): r
  * two-tree drift this auditor exists to surface.
  */
 export function appNameFor(relPath: string): string {
-  const parts = relPath.split("/");
+  // Split on EITHER separator. loadManifests already POSIX-normalises, but this
+  // is exported and called directly by tests and other callers; splitting on
+  // "/" alone silently degenerates on a Windows-shaped path (one part, anchor
+  // never found, identity becomes `<wholepath>/<wholepath>`), which matches no
+  // ledger key and made every acknowledged app read as a fresh violation.
+  const parts = relPath.split(/[\\/]/);
   const anchor = parts.findIndex((part) => part === "applications" || part === "bootstrap");
   const tree = parts[0] ?? "?";
   if (anchor < 0 || anchor + 1 >= parts.length) return `${tree}/${parts[parts.length - 1] ?? relPath}`;
