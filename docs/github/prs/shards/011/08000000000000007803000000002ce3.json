@@ -1,0 +1,12 @@
+{
+  "pr_number": 11491,
+  "archive_path": "docs/history/pr-reviews/PR-11491-fix-heartbeat-the-api-credential-fallback-triggers-on-absent-never-on-denied.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T16:02:21.430Z",
+  "schema_version": "v1",
+  "commit_sha": "d5f754d48f7b131257a4f3d7a18b526298e7e7b6",
+  "title": "fix(heartbeat): the API credential fallback triggers on absent, never on denied",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T16:01:41Z",
+  "head_ref": "shadow/heartbeat-api-credential-denied-not-absent"
+}
