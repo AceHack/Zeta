@@ -1,0 +1,12 @@
+{
+  "pr_number": 11231,
+  "archive_path": "docs/history/pr-reviews/PR-11231-task-setup-declare-rust-components-wasm32-target-in-mise-retire-ensure-rust-comp.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T01:13:31.331Z",
+  "schema_version": "v1",
+  "commit_sha": "17f91615349d3d4514652bc9e6151da368009fef",
+  "title": "task(setup): declare rust components + wasm32 target in mise — retire ensure-rust-components.sh",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T01:12:54Z",
+  "head_ref": "shadow/declare-rust-components-wasm32-in-mise"
+}
