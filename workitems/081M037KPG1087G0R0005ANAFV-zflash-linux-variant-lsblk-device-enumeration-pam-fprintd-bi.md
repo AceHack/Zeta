@@ -92,8 +92,9 @@ it survives triage at P3 despite low ceremony.
   the fingerprint was the only possible factor.
 - `flash-usb.ts` and `cli.ts` no longer print a bare `sudo dd` line for Linux operators;
   they point at the arm that carries the rails.
-- 57 tests in `flash-usb-linux.test.ts` + 19 in `pam/auth-chain.test.ts`, all running on
-  ANY OS with no USB stick, no root and no fingerprint.
+- 57 tests in `flash-usb-linux.test.ts` + 19 in
+  `src/Core.TypeScript/pam/auth-chain.test.ts`, all running on ANY OS with no USB stick,
+  no root and no fingerprint.
 
 **Honest limits**
 
@@ -110,5 +111,6 @@ it survives triage at P3 despite low ceremony.
   diskutil-shaped and has no Linux path.
 - `tools/setup/linux.sh` has no `zflash` touchpoint yet.
 - A QEMU test-harness scenario driving `flash-usb-linux.ts` end to end against a
-  file-backed device (`test-harness/prepare-boot-image.ts` already builds images without
-  physical USB).
+  file-backed device
+  (`src/Core.TypeScript/zflash/test-harness/prepare-boot-image.ts` already builds images
+  without physical USB).

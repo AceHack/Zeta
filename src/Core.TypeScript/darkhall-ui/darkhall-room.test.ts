@@ -297,6 +297,45 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain(`<code>${continuationToken}</code>`);
   });
 
+  it("renders later corrections without implying backward execution or history rewrites", () => {
+    const html = renderDarkHallRoomHtml({
+      ...transcript,
+      causalReadout: {
+        schema: "zeta.darkhall.causal-readout.v1",
+        executionDirection: "forward-only",
+        appendOnly: true,
+        rewritesHistory: false,
+        corrections: [
+          {
+            sequence: "9007199254740994",
+            reinterpretsThrough: "9007199254740993",
+            deltaRows: 2,
+          },
+        ],
+      },
+    });
+
+    expect(html).toContain('data-causal-readout="zeta.darkhall.causal-readout.v1"');
+    expect(html).toContain('data-execution-direction="forward-only"');
+    expect(html).toContain('data-rewrites-history="false"');
+    expect(html).toContain('data-correction-count="1"');
+    expect(html).toContain('data-correction-sequence="9007199254740994"');
+    expect(html).toContain('data-reinterprets-through="9007199254740993"');
+    expect(html).toContain("<dt>direction</dt><dd>forward-only</dd>");
+    expect(html).toContain("history 9007199254740993");
+    expect(html).toContain("correction 9007199254740994");
+    expect(css).toContain(".zeta-room-causality");
+    expect(css).toContain(".zeta-causal-correction");
+    expect(css).not.toContain("animation:");
+  });
+
+  it("keeps causal rendering additive for transcripts without a readout", () => {
+    const html = renderDarkHallRoomHtml(transcript);
+
+    expect(html).not.toContain("zeta-room-causality");
+    expect(html).not.toContain("data-causal-readout");
+  });
+
   it("projects browser tab ownership and liveness into CSS-addressable room state", () => {
     const html = renderDarkHallRoomHtml({ ...transcript, browserTabReadout });
 

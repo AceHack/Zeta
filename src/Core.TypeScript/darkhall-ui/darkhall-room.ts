@@ -131,6 +131,20 @@ export interface TranscriptContinuationReadout {
   readonly admissionFeedback: readonly string[];
 }
 
+export interface TranscriptCausalCorrection {
+  readonly sequence: string;
+  readonly reinterpretsThrough: string;
+  readonly deltaRows: number;
+}
+
+export interface TranscriptCausalReadout {
+  readonly schema: "zeta.darkhall.causal-readout.v1";
+  readonly executionDirection: "forward-only";
+  readonly appendOnly: true;
+  readonly rewritesHistory: false;
+  readonly corrections: readonly TranscriptCausalCorrection[];
+}
+
 export interface RoomRunTranscript {
   readonly schema: "zeta.darkhall.room-ui.v1";
   readonly roomName: string;
@@ -145,6 +159,7 @@ export interface RoomRunTranscript {
   readonly travelerFrame?: TranscriptTravelerFrame;
   readonly phaseClock?: PhaseClockReadout;
   readonly continuationReadout?: TranscriptContinuationReadout;
+  readonly causalReadout?: TranscriptCausalReadout;
   readonly browserTabReadout?: BrowserTabCoordinatorReadout;
   readonly browserTransportReadout?: BrowserTabTransportReadout;
   readonly databaseReadout?: DarkHallDatabaseReadout;
@@ -335,6 +350,37 @@ function renderContinuationReadout(readout: TranscriptContinuationReadout | unde
     `<div><dt>feedback</dt><dd>${escapeHtml(feedback)}</dd></div>`,
     `<div><dt>token</dt><dd><code>${escapeHtml(token)}</code></dd></div>`,
     "</dl>",
+    "</section>",
+  ].join("");
+}
+
+function renderCausalReadout(readout: TranscriptCausalReadout | undefined): string {
+  if (readout === undefined) return "";
+
+  return [
+    `<section class="zeta-room-causality"`,
+    attr("aria-label", "Causal correction readout"),
+    attr("data-causal-readout", readout.schema),
+    attr("data-execution-direction", readout.executionDirection),
+    attr("data-append-only", readout.appendOnly),
+    attr("data-rewrites-history", readout.rewritesHistory),
+    attr("data-correction-count", readout.corrections.length),
+    ">",
+    '<ol class="zeta-causal-corrections">',
+    ...readout.corrections.map((correction) =>
+      [
+        '<li class="zeta-causal-correction"',
+        attr("data-correction-sequence", correction.sequence),
+        attr("data-reinterprets-through", correction.reinterpretsThrough),
+        attr("data-delta-rows", correction.deltaRows),
+        ">",
+        `<span>history ${escapeHtml(correction.reinterpretsThrough)}</span>`,
+        `<span>correction ${escapeHtml(correction.sequence)}</span>`,
+        `<span>delta ${correction.deltaRows.toString()}</span>`,
+        "</li>",
+      ].join(""),
+    ),
+    "</ol>",
     "</section>",
   ].join("");
 }
@@ -684,6 +730,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
   const travelerFrame = transcript.travelerFrame;
   const phaseClock = phaseClockReadout(transcript);
   const continuation = transcript.continuationReadout;
+  const causality = transcript.causalReadout;
   const continuationStatusValue = continuation === undefined ? undefined : continuationStatus(continuation);
   const browser = transcript.browserTabReadout;
   const browserTransport = transcript.browserTransportReadout;
@@ -722,6 +769,10 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     attr("data-continuation-stop", continuation?.stopReason),
     attr("data-continuation-next-lap", continuation?.nextLap),
     attr("data-continuation-resume-base-tick", continuation?.resumeBaseTick),
+    attr("data-causal-readout", causality?.schema),
+    attr("data-execution-direction", causality?.executionDirection),
+    attr("data-rewrites-history", causality?.rewritesHistory),
+    attr("data-correction-count", causality?.corrections.length),
     attr("data-browser-tab-readout", browser?.schema),
     attr("data-browser-node", browser?.nodeId),
     attr("data-browser-local-tab", browser?.localTabId),
@@ -753,6 +804,12 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     `<div><dt>frame</dt><dd>${phaseClock.phase.toString()}</dd></div>`,
     `<div><dt>skew</dt><dd>${phaseClock.skewBoundTicks.toString()}</dd></div>`,
     `<div><dt>resume</dt><dd>${escapeHtml(continuationStatusValue ?? "none")}</dd></div>`,
+    ...(causality === undefined
+      ? []
+      : [
+          `<div><dt>direction</dt><dd>${escapeHtml(causality.executionDirection)}</dd></div>`,
+          `<div><dt>corrections</dt><dd>${causality.corrections.length.toString()}</dd></div>`,
+        ]),
     `<div><dt>signals</dt><dd>${escapeHtml(heat.signals.join(", ") || "cold")}</dd></div>`,
     ...(browser === undefined
       ? []
@@ -780,6 +837,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     ...(transcript.heatRows.length === 0 ? ['<p class="zeta-room-cold">cold</p>'] : []),
     "</section>",
     renderContinuationReadout(continuation),
+    renderCausalReadout(causality),
     renderBrowserTabReadout(browser, browserTransport),
     renderDatabaseReadout(database),
     ...(transcript.sLanes && transcript.sLanes.length > 0

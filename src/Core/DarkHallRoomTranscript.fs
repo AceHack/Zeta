@@ -34,6 +34,9 @@ module DarkHallRoomTranscript =
     [<Literal>]
     let ContinuationReadoutSchema = "zeta.darkhall.continuation-readout.v1"
 
+    [<Literal>]
+    let CausalReadoutSchema = "zeta.darkhall.causal-readout.v1"
+
     type ControllerCell =
         { [<JsonPropertyName("cell")>]
           Cell: int
@@ -206,6 +209,26 @@ module DarkHallRoomTranscript =
           [<JsonPropertyName("admissionFeedback")>]
           AdmissionFeedback: string list }
 
+    type TranscriptCausalCorrection =
+        { [<JsonPropertyName("sequence")>]
+          Sequence: string
+          [<JsonPropertyName("reinterpretsThrough")>]
+          ReinterpretsThrough: string
+          [<JsonPropertyName("deltaRows")>]
+          DeltaRows: int }
+
+    type TranscriptCausalReadout =
+        { [<JsonPropertyName("schema")>]
+          Schema: string
+          [<JsonPropertyName("executionDirection")>]
+          ExecutionDirection: string
+          [<JsonPropertyName("appendOnly")>]
+          AppendOnly: bool
+          [<JsonPropertyName("rewritesHistory")>]
+          RewritesHistory: bool
+          [<JsonPropertyName("corrections")>]
+          Corrections: TranscriptCausalCorrection list }
+
     type TranscriptTick =
         { [<JsonPropertyName("tick")>]
           Tick: int
@@ -247,6 +270,8 @@ module DarkHallRoomTranscript =
           PhaseClock: TranscriptPhaseClock
           [<JsonPropertyName("continuationReadout")>]
           ContinuationReadout: TranscriptContinuationReadout
+          [<JsonPropertyName("causalReadout")>]
+          CausalReadout: TranscriptCausalReadout
           [<JsonPropertyName("heatRows")>]
           HeatRows: HeatRow list
           [<JsonPropertyName("generatedBy")>]
@@ -254,6 +279,40 @@ module DarkHallRoomTranscript =
 
     let private jsonOptions =
         JsonSerializerOptions(WriteIndented = true)
+
+    let emptyCausalReadout : TranscriptCausalReadout =
+        { Schema = CausalReadoutSchema
+          ExecutionDirection = "forward-only"
+          AppendOnly = true
+          RewritesHistory = false
+          Corrections = [] }
+
+    /// Add one validated causal correction to a room transcript. Sequence values
+    /// remain decimal strings at the browser boundary so JavaScript cannot round
+    /// a long-lived `bigint` beyond `Number.MAX_SAFE_INTEGER`.
+    let appendCausalCorrection
+        (correction: FourCornerTrace.CausalCorrection<'I, 'F, 'K, 'W>)
+        (transcript: Transcript)
+        : Result<Transcript, FourCornerTrace.CausalOrderError> =
+        if correction.Sequence <= correction.ReinterpretsThrough then
+            Error(
+                FourCornerTrace.CausalOrderError.CorrectionDoesNotFollowHistory(
+                    correction.ReinterpretsThrough,
+                    correction.Sequence
+                )
+            )
+        else
+            let row =
+                { Sequence = correction.Sequence.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                  ReinterpretsThrough =
+                    correction.ReinterpretsThrough.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                  DeltaRows = correction.Delta.Length }
+
+            Ok
+                { transcript with
+                    CausalReadout =
+                        { transcript.CausalReadout with
+                            Corrections = transcript.CausalReadout.Corrections @ [ row ] } }
 
     let private actionClassName =
         function
@@ -708,6 +767,7 @@ module DarkHallRoomTranscript =
           TravelerFrame = travelerFrame
           PhaseClock = phaseClockReadout generatedBy seed travelerFrame
           ContinuationReadout = noContinuationReadout generatedBy "" "not-simloop"
+          CausalReadout = emptyCausalReadout
           HeatRows = heatRows }
 
     let ofBoundaryState seed generatedBy (state: Scheduler.BoundaryScheduledRoomState<'K>) : Transcript =
@@ -739,6 +799,7 @@ module DarkHallRoomTranscript =
           TravelerFrame = travelerFrame
           PhaseClock = phaseClockReadout generatedBy seed travelerFrame
           ContinuationReadout = noContinuationReadout generatedBy "" "not-simloop"
+          CausalReadout = emptyCausalReadout
           HeatRows = rows }
 
     let ofHeatBoardOutcome
@@ -782,6 +843,7 @@ module DarkHallRoomTranscript =
           TravelerFrame = travelerFrame
           PhaseClock = phaseClockReadout generatedBy seed travelerFrame
           ContinuationReadout = continuation
+          CausalReadout = emptyCausalReadout
           HeatRows = heatRows }
 
     let ofUnifiedHeatRun seed generatedBy (run: RoomRun.UnifiedHeatRun<'K>) : Transcript =
@@ -819,6 +881,7 @@ module DarkHallRoomTranscript =
           TravelerFrame = travelerFrame
           PhaseClock = phaseClockReadout generatedBy seed travelerFrame
           ContinuationReadout = noContinuationReadout generatedBy "" "not-simloop"
+          CausalReadout = emptyCausalReadout
           HeatRows = heatRows }
 
     let ofUnifiedHorizonRun seed generatedBy (run: RoomRun.UnifiedHorizonRun<'K, 'S>) : Transcript =
