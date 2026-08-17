@@ -90,6 +90,41 @@ The `full-verify` job in `.github/workflows/gate.yml` runs the
 outputs from source and validates each binary. This ensures Conjecture Z-7
 is reproducible in CI, not just on the developer's machine.
 
+## Why `bytelock/` contains committed `.wasm` files
+
+`src/wasm-dla/bytelock/` — the canonical-spec byte-lock, a different and later thing from the
+Oracle 10 sources above — holds six committed WebAssembly modules. They look like a violation
+of `.claude/rules/no-binary-in-proof-lineage.md` ("verification artifacts are TEXT") and are
+flagged as one by OpenSSF Scorecard's Binary-Artifacts check. They are not, and the reason is
+worth stating once so it is not re-litigated:
+
+**The evidence is text; the thing under test is not evidence.** `run-bytelock-ci.mjs` *loads
+and executes* each module and compares the trajectory it computes against
+`testdata/golden-seed-*.json` — hex-in-JSON, diffable, exactly what the rule requires. The
+binaries are the experiment, not the proof. You review them through their committed sources
+(`dla-canonical.{wat,c,rs,ts,zig}`), which is how anyone would review a WebAssembly module
+anyway.
+
+They are *committed* rather than *built* because `bytelock.yml` installs only wabt, lua5.4 and
+Go; five of the six have no toolchain on the runner, and a substrate CI cannot build is a
+substrate CI silently skips. That trade is written down in `bytelock/.gitignore`, and the
+exception is conditioned and machine-checked — see the rule's §"The one exception" and
+`src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts`, which runs in the `cross-verify`
+floor job on every PR.
+
+### The 478 KB Rust module, explained
+
+`dla-canonical-rust.wasm` is 478,353 bytes against ~1–5 KB for the other five. Measured by
+walking its section table (2026-08-16), **472,394 bytes — 98.8% — are DWARF**: `.debug_str`
+265,057 · `.debug_info` 150,552 · `.debug_ranges` 46,518 · `.debug_line` 7,818 · `.debug_abbrev`
+2,449. Its actual **code section is 1,996 bytes**, in family with the others.
+
+So the size gap is not a different kind of artifact — it is a missing `-C debuginfo=0` in the
+Rust recipe in `build-substrates.mjs`. (The strings are rustc-remapped to `/rustc/<hash>/…`, so
+no builder-machine paths leak.) The fix is one flag plus a re-derived artefact, which needs a
+`wasm32-unknown-unknown` toolchain; until then the audit pins it with a named, ceilinged
+exemption so it can only shrink and so the next unstripped substrate fails instead.
+
 ## Dependencies (Desired-State)
 
 All four compilers are declared in desired-state config:

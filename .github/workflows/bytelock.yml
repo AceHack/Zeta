@@ -25,6 +25,22 @@ name: bytelock
 #   exit 1 = diverged AND BYTELOCK_STRICT=1 (not set here)
 #   exit 2 = LIVENESS FAILURE — too few substrates ran. This is the failure that matters.
 #   exit 3 = MALFORMED ARTEFACT — a substrate binary is not loadable, so it verified nothing.
+#   exit 4 = REFERENCE DRIFT — reference.mjs no longer reproduces a COMMITTED golden vector.
+#
+# WHAT EXIT 4 IS FOR (added 2026-08-16, and it was a live hole, not a hypothetical):
+#   `testdata/golden-seed-{1,42,100,999}.json` are the byte-lock's hex-in-JSON vectors — the
+#   artifact `.claude/rules/no-binary-in-proof-lineage.md` exists to require. NOTHING READ THEM.
+#   The runner recomputed its expectation from `reference.mjs` on every run, so it was grading
+#   its own homework: edit the reference, rebuild the substrates from source, and all nine agree
+#   with the new answer. "Byte-lock AGREED — 9 of 9", green, with the locked trajectory moved and
+#   no diff anywhere a reviewer looks. The four files that would have shown it as a readable hex
+#   diff were sitting in the directory, unopened.
+#
+#   So the pin is HARD while divergence stays soft, and it runs BEFORE any substrate. A
+#   substrate disagreeing is a finding about a compiler and you want it delivered. The reference
+#   disagreeing with its own committed vector is a finding about the MEASURING STICK, and every
+#   comparison downstream of it is unearned — the same asymmetry that makes exit 3 hard.
+#   Intended trajectory change → regenerate the vectors in the same commit.
 #
 # WHAT EXIT 3 IS FOR (added 2026-08-15, and it had already happened):
 #   `dla-canonical-zig.wasm` was committed as an `ar` archive (`!<arch>`), the unlinked
@@ -139,6 +155,11 @@ jobs:
       # It mutates files in the working tree (reference.mjs, run-bytelock-ci.mjs, the Zig
       # artefact) and restores them in `finally`, so it runs AFTER the real byte-lock and
       # before the report is emitted.
+      #
+      # Eight controls since 2026-08-16, not seven: #8 is the reference-drift pin (exit 4). It
+      # also forced faults 1-3 to be honest — they used to move the EXPECTATION and call the
+      # result a substrate divergence, which the pin now catches as drift. They corrupt what a
+      # substrate returns instead, and each asserts the blast radius is exactly one substrate.
       - name: Run the fault-injection negative controls
         working-directory: src/wasm-dla/bytelock
         run: node test-fault-injection.mjs

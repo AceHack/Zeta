@@ -9,10 +9,25 @@
 # `dla-canonical-zig.wasm` was committed as an `ar` archive and nobody re-derived it,
 # because everyone read this heading and assumed it was built fresh. If you commit a
 # substrate here, `git add -f` it AND record why it is tracked rather than built.
+#
+# WHY THE SIX ARE TRACKED, recorded here as that sentence asks (2026-08-16). `bytelock.yml`
+# installs only wabt, lua5.4 and Go; it has no clang-wasm32, emcc, rustc+wasm32, asc or zig.
+# Those five substrates therefore CANNOT be rebuilt on the runner, and a substrate CI cannot
+# build is a substrate CI would silently SKIP. They are committed so the roster's nine are
+# nine. That is a trade — reproducibility given up for coverage — and it is the reason the
+# exception in `.claude/rules/no-binary-in-proof-lineage.md` is conditioned on a committed
+# build recipe and machine-checked by `hygiene/audit-proof-lineage-binaries.ts` rather than
+# just asserted. Add a toolchain to the workflow and the corresponding file should stop being
+# tracked, not start being trusted.
+#
+# `*.rcgu.o` is rustc's per-codegen-unit intermediate. One
+# (`dla_canonical_rust.…-cgu.0.rcgu.o`) was committed by accident and sat here unreferenced
+# until the audit above named it; the pattern below keeps the next one out.
 *.wasm
 *.wasm.o
 *.o
 *.a
+*.rcgu.o
 wasm_exec.js
 go.sum
 

@@ -14,6 +14,8 @@
  * Exit code 3 = MALFORMED ARTEFACT — a substrate's binary is not loadable, so it verified
  *               nothing. Distinct from 1 (compared and disagreed) and from 2 (too few ran):
  *               here the instrument itself is broken.
+ * Exit code 4 = REFERENCE DRIFT — `reference.mjs` no longer reproduces a COMMITTED golden
+ *               vector in testdata/. Hard, and checked before any substrate runs; see below.
  *
  * Usage:
  *   node run-bytelock-ci.mjs
@@ -108,6 +110,87 @@ if (seedsFileArg) {
 
 // ── Import reference ──────────────────────────────────────────────────────────
 const { runDLA, toGoldenVector, verify } = await import(join(__dir, "reference.mjs"));
+
+// ── REFERENCE PIN — the committed golden vectors must actually be READ ─────────
+//
+// THE HOLE THIS CLOSES (found 2026-08-16). Everything below compares each substrate to
+// `toGoldenVector(seed, runDLA(seed))` — the reference recomputed live, in this same commit.
+// `testdata/golden-seed-{1,42,100,999}.json` were committed as the byte-lock's hex-in-JSON
+// vectors and NOTHING OPENED THEM. Not this runner, not `reference.mjs`, not the tests:
+// `grep -rn golden-seed src .github` returned zero hits outside the files themselves.
+//
+// What that costs is not hypothetical, and it is not "the substrates might be wrong":
+//
+//   Edit reference.mjs (a PRNG constant, a spawn radius, a rounding rule) and rebuild the
+//   substrates from their sources. Every substrate now agrees with the NEW reference, the
+//   runner prints "Byte-lock AGREED — 9 of 9", and the locked trajectory has moved with no
+//   diff anywhere a reviewer would look. The four vectors that would have shown it in a
+//   readable hex diff were sitting right there, unread.
+//
+// That is precisely the failure `.claude/rules/no-binary-in-proof-lineage.md` was written to
+// prevent — "every byte-lock change is a readable diff" — defeated not by a binary but by a
+// text vector nobody consulted. A golden vector that nothing reads is the vacuity class in its
+// purest form: it looks like compliance and constrains nothing.
+//
+// HARD, not a drift signal, and deliberately asymmetric with divergence below. A substrate
+// disagreeing is a finding about a COMPILER and you want it delivered. The reference
+// disagreeing with its own committed vector is a finding about THE MEASURING STICK, and every
+// comparison downstream of it is unearned — the same reasoning that makes a malformed artefact
+// exit 3 rather than count as a divergence.
+//
+// If a trajectory change is INTENDED, regenerate the vectors in the same commit
+// (`node reference.mjs <seed> > testdata/golden-seed-<seed>.json`) so the move shows up as a
+// reviewable hex diff. That is the whole point.
+const goldenPinFailures = [];
+let goldenPinChecked = 0;
+
+for (const seed of CI_SEEDS) {
+  const pinPath = join(__dir, "testdata", `golden-seed-${seed}.json`);
+  if (!existsSync(pinPath)) continue; // Large-corpus seed sweeps have no committed vector.
+  let committed;
+  try {
+    committed = JSON.parse(readFileSync(pinPath, "utf8"));
+  } catch (e) {
+    goldenPinFailures.push(`seed=${seed}: testdata/golden-seed-${seed}.json is unreadable — ${e.message}`);
+    continue;
+  }
+  goldenPinChecked++;
+  // `verify` is the same comparator the substrates are held to, so the pin cannot be weaker
+  // than the check it guards: same fields, same per-entry trajectory diff.
+  const live = toGoldenVector(seed, runDLA(seed));
+  const pin = verify(committed, live);
+  if (!pin.pass) {
+    goldenPinFailures.push(
+      `seed=${seed}: reference.mjs no longer reproduces testdata/golden-seed-${seed}.json\n` +
+        pin.divergences.slice(0, 8).map((d) => `      ${d}`).join("\n") +
+        (pin.divergences.length > 8 ? `\n      … and ${pin.divergences.length - 8} more` : ""),
+    );
+  }
+}
+
+// The pin must not be able to pass by checking nothing. If not one CI seed has a committed
+// vector, the runner is back to grading its own homework and must say so rather than proceed.
+if (goldenPinChecked === 0) {
+  console.error(
+    `\nGOLDEN-VECTOR PIN VACUOUS — none of the ${CI_SEEDS.length} seed(s) requested has a\n` +
+      `committed vector under testdata/. The reference would be compared to itself, which is\n` +
+      `not a check. Run a seed that has one (1, 42, 100, 999), or commit the vector for the\n` +
+      `seed you are running: node reference.mjs <seed> > testdata/golden-seed-<seed>.json`,
+  );
+  process.exit(4);
+}
+
+if (goldenPinFailures.length > 0) {
+  console.error(
+    `\nREFERENCE DRIFT — reference.mjs disagrees with ${goldenPinFailures.length} committed golden\n` +
+      `vector(s). The measuring stick moved, so nothing measured against it this run is earned:\n` +
+      goldenPinFailures.map((f) => `  ${f}`).join("\n") +
+      `\n\nIf the trajectory change is INTENDED, regenerate the vectors in the same commit so the\n` +
+      `move lands as a readable hex diff (.claude/rules/no-binary-in-proof-lineage.md):\n` +
+      `  node reference.mjs <seed> > testdata/golden-seed-<seed>.json`,
+  );
+  process.exit(4); // 4 = reference drift, distinct from 3 = malformed, 2 = did not run, 1 = diverged
+}
 
 // ── Substrate definitions ─────────────────────────────────────────────────────
 const WASM_SUBSTRATES = [
@@ -229,12 +312,24 @@ function runScriptSubstrate(cmd, scriptArgs, seed) {
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
-const report = { seeds: CI_SEEDS, substrates: [], summary: { pass: 0, fail: 0, skip: 0 } };
+const report = {
+  seeds: CI_SEEDS,
+  // Recorded, not just asserted: a reader of the JSON report can see HOW MANY of the seeds
+  // this run were pinned to a committed vector, which is the difference between "the
+  // substrates agree with each other" and "the substrates agree with the locked trajectory".
+  golden_pin: { checked: goldenPinChecked, of_seeds: CI_SEEDS.length },
+  substrates: [],
+  summary: { pass: 0, fail: 0, skip: 0 },
+};
 let anyFail = false;
 
 if (!jsonMode) {
   console.log(`\nN-Oracle Byte-Lock CI — ${CI_SEEDS.length} seeds × ${WASM_SUBSTRATES.length + SCRIPT_SUBSTRATES.length} substrates\n`);
   console.log("Seed(s):", CI_SEEDS.join(", "));
+  console.log(
+    `Reference pinned to ${goldenPinChecked} of ${CI_SEEDS.length} committed golden vector(s) ` +
+      `in testdata/ — the substrates below are compared to a trajectory that is itself locked.`,
+  );
   console.log("");
 }
 

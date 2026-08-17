@@ -1678,6 +1678,21 @@ jobs:
       - name: Cross-language byte-lock + golden-vector oracles
         run: bun src/Core.TypeScript/ci/cross-verify-all.ts
 
+      # The `.claude/rules/no-binary-in-proof-lineage.md` exception, enforced rather than
+      # asserted. `src/wasm-dla/bytelock/` holds six committed `.wasm` substrate modules; they
+      # are the artifact UNDER TEST, not golden vectors, and the rule now says so — but a
+      # documented exception with no scope is a licence. This derives the allowed set from the
+      # byte-lock runner's own roster and the build script's own declared outputs, so a new
+      # binary in that directory is red until it is wired into both.
+      #
+      # Two of its checks are here rather than in `bytelock.yml` on purpose. That workflow is
+      # `push: main` — POST-MERGE by construction — so the malformed-artefact guard that would
+      # have caught `dla-canonical-zig.wasm` shipping as an `ar` archive could only ever fire
+      # after the fact, and it did, for two weeks. The header check and the golden-vector text
+      # check need no toolchain, so they belong on the pre-merge floor.
+      - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
+        run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
+
       # Executes mumps_zeta_id.m (subset interpreter). compare.ts already pins
       # the committed JSON; this step runs the routine so a layout edit in the
       # .m file cannot hide behind a stale mumps-output.json.
