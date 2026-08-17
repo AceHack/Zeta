@@ -150,6 +150,20 @@ describe("value shape — the authority lives where the number is WRITTEN", () =
     expect(valueShape("200 * 1024 * 1024")).toBe("literal");
   });
 
+  test("a DIGIT SEPARATOR is not an identifier — `1_000` is a literal, not a derived binding", () => {
+    // The regression: `_` starts an identifier, so `1_000` lexed as the literal `1` plus an
+    // identifier `_000`, and every underscore-separated constant was silently dropped from the
+    // scan as "derived". 32 budget-named declarations repo-wide were invisible for this reason
+    // alone, `SimLoop.defaultBudget`'s `MaxTicks = 1_000_000` among them.
+    expect(valueShape("1_000")).toBe("literal");
+    expect(valueShape("1_000_000")).toBe("literal");
+    expect(valueShape("300_000L")).toBe("literal"); // F# int64 suffix
+    expect(valueShape("60_000")).toBe("literal");
+    // and the discrimination it must NOT lose: a real identifier still reads as derived
+    expect(valueShape("BASE_TIMEOUT_MS * 1_000")).toBe("derived");
+    expect(valueShape("Number(process.env.X ?? 30_000)")).toBe("defaulting");
+  });
+
   test("a literal in the fallback position is a DIAL — the override is the exit", () => {
     expect(valueShape("Number(process.env.BYTELOCK_MIN_SUBSTRATES ?? 2)")).toBe("defaulting");
     expect(valueShape("config.oracleThreshold ?? 0.9")).toBe("defaulting");

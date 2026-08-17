@@ -294,7 +294,16 @@ export function valueShape(code: string): ValueShape {
     .replace(/\/\/.*$/, "")
     .replace(/;\s*$/, "");
   const defaulting = new RegExp(String.raw`(?:\?\?|:)\s*\(?\s*(?:${NUMERIC})\s*\)?\s*[),;]?\s*$`).test(stripped);
-  const idents = [...stripped.matchAll(/[A-Za-z_$][\w$.]*/g)]
+  // BLANK THE NUMERIC LITERALS BEFORE LOOKING FOR IDENTIFIERS. A digit separator is an
+  // underscore, and `_` starts an identifier, so `1_000` was read as the literal `1`
+  // followed by an identifier named `_000` — which made every underscore-separated
+  // constant "derived" and dropped it from the scan entirely. Measured before the fix:
+  // 32 budget-named declarations repo-wide were invisible for this reason alone,
+  // including `SimLoop.defaultBudget`'s own `MaxTicks = 1_000_000` and `MaxMillis =
+  // 300_000L`. Blanking first is the same move the string/comment strips above already
+  // make: remove what is definitionally not an identifier, then ask what is left.
+  const withoutNumbers = stripped.replace(new RegExp(String.raw`(?<![\w.])(?:${NUMERIC})[LUlu]*`, "g"), " ");
+  const idents = [...withoutNumbers.matchAll(/[A-Za-z_$][\w$.]*/g)]
     .map((m) => m[0].split(".")[0] ?? "")
     .filter((t) => t !== "" && !VALUE_NEUTRAL.test(t));
   if (idents.length === 0) return "literal";
@@ -610,6 +619,14 @@ if (import.meta.main) process.exit(main(process.argv.slice(2)));
 // describe, and because this audit REPORTS rather than gates, so the cost of the false
 // positive is one line of triage rather than a blocked merge. If it is ever wired to a
 // gate, vendored-tree detection must be derived (e.g. from a vendor manifest), not listed.
+//
+// HEX LITERALS LEX WRONG, AND THE BUG IS RECORDED RATHER THAN FIXED. In `NUMERIC` the decimal
+// branch precedes the hex branch, so `0xffffffff` matches as `0` and leaves `xffffffff` looking
+// like an identifier. Measured impact today: three hex-valued budget-named declarations exist
+// repo-wide (`pr-manifest-shards.ts` `MAX_PR_NUMBER`, `IndexFormat.fs`, `NovelMath.fs`) and none of
+// them currently reaches the gating test, so reordering the branches would change nothing anyone
+// can observe. A change with no falsifier available is an unmetered change; it is named here so the
+// next hex budget constant does not get reported with the value `0`.
 //
 // THE ATTRIBUTION TEST IS SYNTACTIC. It reads whether a provenance marker is PRESENT,
 // never whether the provenance is TRUE. A comment saying "measured" over a value nobody

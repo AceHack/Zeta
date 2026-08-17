@@ -123,6 +123,69 @@ let ``no configuration disables the rails: adversarial zero/negative budgets sti
     }
     :> Task
 
+// ── defaultBudget's rail reachability: the derivation behind the attribution in SimLoop.fs ───────
+//
+// The rails are tested laps → ticks → clock, so a secondary rail must trip at a lap index of at most
+// `MaxLaps - 1` or the lap rail closes first. With per-lap increment `k` and limit `L` the secondary
+// rail is reachable iff `k >= ceil(L / (MaxLaps - 1))`. Both tests below RUN the loop on both sides
+// of the boundary rather than asserting the arithmetic — an asserted derivation is worse than an
+// honest "this is a choice", and the ceiling plus the `- 1` are exactly where an assertion would
+// have been wrong. `MaxTicks / MaxLaps` = 1000, and 1000 is not the answer.
+
+/// A room that emits nothing and changes nothing: only the rails can stop it, and a million ticks of
+/// it stay cheap. (`everyTick` + `counter` would measure the scheduler, not the rails.)
+let private inert: SoftScheduler.HandlerK<int> =
+    SoftScheduler.handlerK "inert" (fun _ -> true) (fun _ _ s -> Task.FromResult(Ok s))
+
+let private silent: SoftScheduler.Source = fun _ -> []
+
+[<Fact>]
+let ``defaultBudget's tick rail is DORMANT until ticksPerLap reaches ceil(MaxTicks / (MaxLaps - 1)) — measured at both sides`` () =
+    task {
+        let b = SimLoop.defaultBudget
+        let crossover = (b.MaxTicks + (b.MaxLaps - 1) - 1) / (b.MaxLaps - 1)
+        Assert.Equal(1002, crossover) // NOT MaxTicks / MaxLaps = 1000; the `- 1` and the ceiling both bite
+
+        let runAt perLap =
+            SimLoop.run [ inert ] silent id (fun _ _ -> true) (fun _ -> 0L) b ctx 1L perLap 0
+
+        // one below the boundary: the LAP rail closes it, and the tick rail never fires
+        let! below = runAt (crossover - 1)
+        Assert.Equal(SimLoop.LapBudget, below.Stopped)
+        Assert.Equal(b.MaxLaps, List.length below.Laps)
+
+        // at the boundary: the TICK rail fires first, one lap earlier than the lap rail would have
+        let! at = runAt crossover
+        Assert.Equal(SimLoop.TickBudget, at.Stopped)
+        Assert.Equal(b.MaxLaps - 1, List.length at.Laps)
+
+        // and every ticksPerLap this repo actually passes is far below the boundary
+        let! typical = runAt 25
+        Assert.Equal(SimLoop.LapBudget, typical.Stopped)
+    }
+    :> Task
+
+[<Fact>]
+let ``the same law governs the 5-minute clock rail: 300 ms/lap never reaches it, 301 ms/lap trips it at lap 997`` () =
+    task {
+        let b = SimLoop.defaultBudget
+        let laps1 = int64 (b.MaxLaps - 1)
+        let crossoverMs = (b.MaxMillis + laps1 - 1L) / laps1
+        Assert.Equal(301L, crossoverMs)
+
+        let runAtClock k =
+            SimLoop.run [ inert ] silent id (fun _ _ -> true) (fun lap -> int64 lap * k) b ctx 1L 1 0
+
+        let! below = runAtClock (crossoverMs - 1L)
+        Assert.Equal(SimLoop.LapBudget, below.Stopped)
+        Assert.Equal(b.MaxLaps, List.length below.Laps)
+
+        let! at = runAtClock crossoverMs
+        Assert.Equal(SimLoop.ClockBudget, at.Stopped)
+        Assert.Equal(997, List.length at.Laps) // ceil(300_000 / 301)
+    }
+    :> Task
+
 [<Fact>]
 let ``proprioception closes the loop: the body's felt pressure is the cut — the room stops BY FEELING heat`` () =
     task {
