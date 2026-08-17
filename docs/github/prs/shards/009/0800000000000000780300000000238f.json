@@ -1,0 +1,15 @@
+{
+  "pr_number": 9103,
+  "archive_path": "docs/history/pr-reviews/PR-9103-test-formal-semiring-ring-law-pack-the-lies-witnessed-before-the-split-pr-a-shad.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ROOhv",
+    "thread:PRRT_kwDOSF9kNM6NxIV-"
+  ],
+  "fetched_at": "2026-08-17T03:34:33.978Z",
+  "schema_version": "v1",
+  "commit_sha": "d00b6b7c69769d7949924ea41117add8f2cfa9d9",
+  "title": "test(formal): semiring/ring law pack — the lies witnessed before the split (PR A) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T02:54:52Z",
+  "head_ref": "otto/iring-split-pr-a-law-pack-081KWG9JQ9H"
+}

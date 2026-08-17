@@ -1,0 +1,15 @@
+{
+  "pr_number": 9101,
+  "archive_path": "docs/history/pr-reviews/PR-9101-docs-backlog-bank-ilyana-s-approve-with-conditions-all-three-iring-split-gates-g.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ROByi",
+    "thread:PRRT_kwDOSF9kNM6Nw_34"
+  ],
+  "fetched_at": "2026-08-17T01:35:06.302Z",
+  "schema_version": "v1",
+  "commit_sha": "2839dd336ddabbf3a1e6bf4f4ecdb5f17134f91b",
+  "title": "docs(backlog): bank Ilyana's APPROVE-WITH-CONDITIONS — all three IRing-split gates green (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T02:39:39Z",
+  "head_ref": "otto/bank-ilyana-approval-iring-split-081KWG9JQ9H"
+}
