@@ -32,6 +32,7 @@
     "hygiene:sort-tick-history": "bun ./src/Core.TypeScript/hygiene/sort-tick-history-canonical.ts",
     "hygiene:fix-markdown": "bun ./src/Core.TypeScript/hygiene/fix-markdown-md032-md026.ts",
     "hygiene:check-bash-retirement-inventory": "bun ./src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce",
+    "hygiene:measure-shell-key-exposure": "bun ./src/Core.TypeScript/hygiene/measure-shell-key-exposure.ts",
     "hygiene:mise-pin-parity": "bun ./src/Core.TypeScript/hygiene/mise-pin-parity.ts",
     "hygiene:no-ambient-credential-hoist": "bun ./src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts",
     "hygiene:no-culture-sensitive-collation": "bun ./src/Core.TypeScript/hygiene/lint-no-culture-sensitive-collation.ts",

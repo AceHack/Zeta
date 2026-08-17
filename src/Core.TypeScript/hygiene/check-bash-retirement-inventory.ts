@@ -212,8 +212,17 @@ function runGit(args: readonly string[], cwd?: string): string {
   return result.stdout;
 }
 
+/**
+ * The repository root, from `git` rather than from a relative path guess.
+ * Exported so sibling tools (e.g. `measure-shell-key-exposure.ts`) resolve the
+ * allowlist's repo-relative paths against the same root this file uses.
+ */
+export function repoRootFromGit(cwd?: string): string {
+  return runGit(["rev-parse", "--show-toplevel"], cwd).trim();
+}
+
 export function trackedNonLeanShellFilesFromGit(cwd?: string): readonly string[] {
-  const repoRoot = runGit(["rev-parse", "--show-toplevel"], cwd).trim();
+  const repoRoot = repoRootFromGit(cwd);
   return trackedGitFiles(repoRoot)
     .filter(({ path }) => existsSync(join(repoRoot, path)))
     .filter(({ path }) => !isInactiveShellInventoryPath(path))
