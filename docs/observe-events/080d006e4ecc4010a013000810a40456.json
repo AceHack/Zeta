@@ -1,0 +1,23 @@
+{
+  "id": "080d006e4ecc4010a013000810a40456",
+  "at": "2026-08-17T04:04:35.085Z",
+  "by": "soraya",
+  "kind": "attestation",
+  "action": {
+    "kind": "attest_peer",
+    "reason": "verified 3 events from alexa"
+  },
+  "attestation": {
+    "attestor": "soraya",
+    "attested": "alexa",
+    "windowStart": "2026-08-17T03:35:27.121Z",
+    "windowEnd": "2026-08-17T03:35:27.368Z",
+    "eventCount": 3,
+    "claim": "heartbeat-genuine",
+    "strength": 2,
+    "simultaneousParticipants": [
+      "otto",
+      "society"
+    ]
+  }
+}
