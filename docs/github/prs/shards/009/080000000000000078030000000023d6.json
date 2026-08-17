@@ -1,0 +1,15 @@
+{
+  "pr_number": 9174,
+  "archive_path": "docs/history/pr-reviews/PR-9174-feat-discovery-the-udp-discovery-beacon-transport-agnostic-protocol-core-shadow.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Rhcnv",
+    "thread:PRRT_kwDOSF9kNM6N_O8W"
+  ],
+  "fetched_at": "2026-08-17T12:53:09.693Z",
+  "schema_version": "v1",
+  "commit_sha": "196b08e9aa58bcf89f9bbad8ee481691c655c733",
+  "title": "feat(discovery): the UDP discovery beacon — transport-agnostic protocol core (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T18:03:44Z",
+  "head_ref": "feat/udp-discovery-beacon-slice1"
+}
