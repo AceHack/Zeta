@@ -100,6 +100,25 @@ genesis/index.html  linguist-generated=true
 # directions with zero duplicate lines against the live alexa and otto lanes.
 db/mutation-findings/*.jsonl            merge=union
 #
+# `docs/github/prs/manifest.jsonl` — added 2026-08-17 after it wedged soraya's tick at 02:43Z
+# (run 31988867656). The 2026-08-16 fix worked exactly as designed on that run: the declared
+# `db/mutation-findings/soraya.jsonl` reported `Auto-merging`, and the tick still failed because a
+# FOURTH append-only file, not in the declared set, conflicted. That is the preparer's typed
+# backpressure doing its job -- an undeclared conflicting path must fail the tick -- so this is a
+# new member of the class, not a regression of the fix.
+#
+# The justification here is NOT single-writer, and saying so matters: two workflows append to it
+# (`pr-archive-on-merge.yml`, `agent-heartbeat.yml`) plus the derive/migrate tools. It is safe for a
+# different and STRONGER reason -- append-only with a globally unique key, and that key's uniqueness
+# is ENFORCED rather than assumed: `pr-manifest-integrity.yml` fails on a "duplicate-keyed shard".
+# So if `union` ever did duplicate a row, an existing check goes red. Measured on this tip:
+# 6776 lines, 6776 distinct `pr_number` -- one row per PR, exactly the shape set-union preserves.
+#
+# The failure mode this does NOT cover, stated: union is wrong for an EDIT to an existing row (it
+# would keep both versions). Nothing edits rows today -- archival appends once per PR on merge --
+# and `pr-manifest-integrity` would catch the duplicate if that ever changed.
+docs/github/prs/manifest.jsonl           merge=union
+#
 # Regenerated-per-tick snapshots -> `theirs` (the lane's). `union` is WRONG for these and was
 # measured producing two concatenated objects, i.e. invalid JSON: .rs-buffer-*.json is a
 # single-line rolling buffer and vault-state/roster are whole-file rollups. The tick rewrites

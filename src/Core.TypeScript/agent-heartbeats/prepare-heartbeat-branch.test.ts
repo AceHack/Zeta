@@ -159,6 +159,34 @@ describe("prepareHeartbeatBranch", () => {
     expect(lines).not.toContain("<<<<<<< HEAD");
   });
 
+  it("carries the PR manifest, which is append-only but NOT lane-scoped", () => {
+    // The path that wedged soraya at 02:43Z on 2026-08-17 (run 31988867656), after the three
+    // declared paths were already merging clean. Distinct from the lane files above: two workflows
+    // append to this one, so the single-writer argument does not apply. It is safe because rows are
+    // append-only under a globally unique `pr_number`, and `pr-manifest-integrity` fails on a
+    // duplicate key — so a union that ever duplicated a row would be caught by an existing check.
+    const { work } = fixture();
+    const p = "docs/github/prs/manifest.jsonl";
+    seedAttributes(work);
+    partialFlush(
+      work,
+      p,
+      '{"pr_number":1}\n{"pr_number":2}\n',
+      '{"pr_number":1}\n{"pr_number":2}\n{"pr_number":3}\n',
+    );
+
+    // Must be the lane the fixture actually pushed: with a different agent name `remoteFound` is
+    // false, NO MERGE RUNS, and the assertions below pass without exercising the attribute at all.
+    // The first draft of this test did exactly that and survived deleting the `.gitattributes`
+    // line it exists to defend — vacuous, and caught by mutating the attribute away.
+    const result = prepareHeartbeatBranch("alexa", work);
+    expect(result).toMatchObject({ ok: true, value: { remoteFound: true, carried: true } });
+
+    const lines = readFileSync(join(work, p), "utf8").split("\n").filter(Boolean);
+    expect(lines).toEqual(['{"pr_number":1}', '{"pr_number":2}', '{"pr_number":3}']);
+    expect(lines).not.toContain("<<<<<<< HEAD");
+  });
+
   it("keeps a regenerated snapshot parseable when both sides rewrote it", () => {
     const { work } = fixture();
     const p = "docs/observe-events/.rs-buffer-alexa.json";
