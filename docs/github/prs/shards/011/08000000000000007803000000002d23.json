@@ -1,0 +1,12 @@
+{
+  "pr_number": 11555,
+  "archive_path": "docs/history/pr-reviews/PR-11555-fix-flush-lane-the-telemetry-branch-merged-itself-every-tick-accumulating-444-co.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T16:45:26.493Z",
+  "schema_version": "v1",
+  "commit_sha": "79d3e16da3ea5a56aeb16a90dd3326a82c21d821",
+  "title": "fix(flush-lane): the telemetry branch merged itself every tick, accumulating 444 commits",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T16:44:44Z",
+  "head_ref": "shadow/flush-lane-history-accumulation"
+}
