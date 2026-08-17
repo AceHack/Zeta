@@ -58,7 +58,7 @@ fake work. So each instrument was controlled *before* it was believed, and two f
 | **stem identity** | — | **KNOWN FALSE-NEGATIVE, corrected** |
 
 **The alias-map control failed first, and it was my expectation that was wrong, not the code.** I
-asserted `B-9999` was a fabricated id; it is a **real alias** (`081KED9T0X008QG0R003SZN0FB`). The
+asserted `B-9999` was a fabricated id; it is a **real alias** (`081KED9T0X008QG0R003SZN0FB`). The <!-- b-ref-adjudicated: B-9999 never-a-row src/Core.TypeScript/backlog/b-to-zetaid-map.json -->
 harness refused to report a population result while any control failed, which is exactly what a
 control is for. Re-controlled with `B-ZZZZ`, then run.
 
@@ -98,9 +98,9 @@ cycle. The enumeration terminated finitely at 20,176 rows.
 
 | id | verdict | evidence |
 |---|---|---|
-| **B-0282** autonomous-pickup tick integration | **LANDED as code** | `src/Core.TypeScript/backlog/autonomous-pickup.ts` + `.test.ts`, trajectory `docs/trajectories/autonomous-backlog-pickup/RESUME.md` |
-| **B-0080** `gate.yml` cache clobbers tracked paths | **ABANDONED-CORRECTLY — the risk is gone** | every `actions/cache` step in `gate.yml` now uses `~/…` home paths; `tools/tla` and `tools/alloy` hold **only `.gitkeep`** (specs moved to `src/Core.TLA/specs/`), so there is nothing tracked left to clobber |
-| **B-0094** escrow the Aurora Immune Governance flywheel thesis | **SUPERSEDED — the escrow was discharged** | trajectory `docs/trajectories/aurora-immune-reground/RESUME.md` is active (status 2026-06-19, §B row landed, partial §C promotion) and is grounded on `docs/research/aurora-immune-math-standardization-2026-04-26.md`, which is on `main` |
+| **B-0282** autonomous-pickup tick integration | **LANDED as code** | `src/Core.TypeScript/backlog/autonomous-pickup.ts` + `.test.ts`, trajectory `docs/trajectories/autonomous-backlog-pickup/RESUME.md` <!-- b-ref-adjudicated: B-0282 landed-as-code src/Core.TypeScript/backlog/autonomous-pickup.ts --> |
+| **B-0080** `gate.yml` cache clobbers tracked paths | **ABANDONED-CORRECTLY — the risk is gone** | every `actions/cache` step in `gate.yml` now uses `~/…` home paths; `tools/tla` and `tools/alloy` hold **only `.gitkeep`** (specs moved to `src/Core.TLA/specs/`), so there is nothing tracked left to clobber <!-- b-ref-adjudicated: B-0080 abandoned .github/workflows/gate.yml --> |
+| **B-0094** escrow the Aurora Immune Governance flywheel thesis | **SUPERSEDED — the escrow was discharged** | trajectory `docs/trajectories/aurora-immune-reground/RESUME.md` is active (status 2026-06-19, §B row landed, partial §C promotion) and is grounded on `docs/research/aurora-immune-math-standardization-2026-04-26.md`, which is on `main` <!-- b-ref-adjudicated: B-0094 superseded docs/trajectories/aurora-immune-reground/RESUME.md --> |
 
 B-0094 is worth dwelling on because it is the one I most expected to be live: Aaron's own words,
 *"This is not rejected. It is escrowed."* The escrow condition was *"until prototype passes"* — and

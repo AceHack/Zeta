@@ -32,6 +32,46 @@
  *    reference still points at a file a reader can open (B-0747).
  * 3. **unresolved** — neither. The reference points at nothing. FAIL.
  *
+ * ## The fourth rung: a document whose SUBJECT is the dangling id
+ *
+ * The ladder above has a blind spot, and it went red on `main` (2026-08-16):
+ * `docs/research/2026-08-15-the-archive-tag-corpus-characterized-…md` is an
+ * **audit of ids that resolve to nothing**. Its table's whole content is
+ * *"B-0282 landed as code · B-0080 was correctly abandoned · B-0094's escrow was
+ * discharged"*. The gate's advertised remedy — *"cite the ZetaId of the row that
+ * carries the work, or drop the id"* — is unsatisfiable there by construction:
+ * there is no row to cite (that is the finding), and dropping the ids would
+ * delete the audit's subject matter to turn a linter green.
+ *
+ * The check's FACT was correct in every one of those four cases; only its
+ * VERDICT was misapplied. So the fix is not an exclusion — an exclusion is the
+ * vacuity class and this gate's own docstring exists to condemn it — but a way
+ * for a mention to **carry its own disposition**, machine-checked:
+ *
+ *   `<!-- b-ref-adjudicated: B-0282 landed-as-code src/…/autonomous-pickup.ts -->`
+ *
+ * `checkAdjudication` accepts one only when **all five** hold, so the escape
+ * cannot be used to smuggle a genuinely dangling reference through:
+ *
+ * 1. **Same line.** The annotation sits on the line where the id is mentioned,
+ *    with the id present outside the comment. A reader meets the disposition
+ *    where they meet the id; a blanket footer cannot cover a whole file.
+ * 2. **Closed vocabulary.** The disposition is one of {`landed-as-code`,
+ *    `superseded`, `abandoned`, `never-a-row`}. Free prose would let "reasons"
+ *    be typed that nothing can check.
+ * 3. **Evidence exists on disk.** The cited path is read from the filesystem.
+ *    An adjudication citing a path that is not there is itself a violation.
+ * 4. **No self-citation.** The evidence may not be the annotated file. A
+ *    document may not be its own proof.
+ * 5. **STALE fails.** If the id *does* resolve — a row landed later — the
+ *    adjudication is now false and goes red. The escape cannot rot into a
+ *    permanent exemption, which is the failure mode of every allowlist.
+ *
+ * Derived, not listed: the exempt set is computed from what each document
+ * declares and each declaration is independently checked, exactly as
+ * `hygiene/audit-proof-lineage-binaries.ts` derives its exempt binaries from the
+ * byte-lock runner's own roster instead of a hand-written list.
+ *
  * Presence in `b-to-zetaid-map.json` is deliberately **not** sufficient. That
  * map was rebuilt by mining git history for `B-NNNN` tokens, so it contains
  * ids in the B-2xxx / B-8xxx / B-9xxx bands that were never rows at all.
@@ -230,4 +270,135 @@ export function frontmatterOf(text: string): string {
   if (!text.startsWith("---\n")) return "";
   const end = text.indexOf("\n---", 4);
   return end === -1 ? "" : text.slice(4, end);
+}
+
+// ── Adjudication: a mention that carries its own disposition ───────────────
+// See the module docstring, "The fourth rung". Everything below exists so that
+// a document REPORTING an id as dangling is distinguishable from a document
+// merely CONTAINING a dangling id — mechanically, not by an author's say-so.
+
+/**
+ * The closed disposition vocabulary. Free prose here would be unfalsifiable:
+ * any sentence would "explain" any id. These four are the dispositions the
+ * audit that forced this mechanism actually reached, and adding a fifth is a
+ * deliberate edit to a vocabulary — not a per-id exemption that drifts.
+ */
+export const ADJUDICATION_DISPOSITIONS: ReadonlySet<string> = new Set([
+  /** The work shipped, as code rather than as a row. Evidence: the code. */
+  "landed-as-code",
+  /** A successor carries it. Evidence: the successor. */
+  "superseded",
+  /** Dropped on purpose; the need is gone. Evidence: what makes it moot. */
+  "abandoned",
+  /** An alias-map entry whose row never landed. Evidence: the map. */
+  "never-a-row",
+]);
+
+/**
+ * Ordinal (codepoint) comparison — never `localeCompare`, which is
+ * culture-sensitive and orders differently per machine. See
+ * `.claude/rules/culture-invariant-by-default.md`.
+ */
+function ordinal(a: string, b: string): number {
+  if (a < b) return -1;
+  return a > b ? 1 : 0;
+}
+
+/** `<!-- b-ref-adjudicated: <B-id> <disposition> <evidence-path> -->` */
+const ADJUDICATION_RE = /<!--\s*b-ref-adjudicated:\s*(B-\d{4}(?:\.\d+)*)\s+(\S+)\s+(\S+)\s*-->/g;
+
+export interface Adjudication {
+  readonly bId: string;
+  readonly disposition: string;
+  /** Repo-relative path offered as evidence for the disposition. */
+  readonly evidence: string;
+  /** 0-based index of the line the annotation sits on. */
+  readonly line: number;
+  /** That line with every annotation stripped — where the id must still appear. */
+  readonly lineWithoutAnnotations: string;
+}
+
+/** Every adjudication annotation in `text`, in document order. */
+export function parseAdjudications(text: string): readonly Adjudication[] {
+  const out: Adjudication[] = [];
+  const lines = text.split("\n");
+  for (const [i, line] of lines.entries()) {
+    const stripped = line.replace(ADJUDICATION_RE, " ");
+    if (stripped === line) continue;
+    for (const [, bId, disposition, evidence] of line.matchAll(ADJUDICATION_RE)) {
+      if (bId === undefined || disposition === undefined || evidence === undefined) continue;
+      out.push({
+        bId: bId.toUpperCase(),
+        disposition,
+        evidence,
+        line: i,
+        lineWithoutAnnotations: stripped,
+      });
+    }
+  }
+  return out;
+}
+
+export type AdjudicationCheck =
+  | { readonly ok: true; readonly disposition: string; readonly evidence: string }
+  | { readonly ok: false; readonly reason: string };
+
+/**
+ * Decide whether `adj` earns the escape for `ref` in `relFile`.
+ *
+ * `resolution` is what the ordinary ladder said. A resolving id with an
+ * adjudication is STALE and refused: the point of the annotation is to record
+ * that the id names nothing, so the moment it names something the record is a
+ * false claim sitting in a document. That is the clause that stops this from
+ * becoming a permanent, rotting allowlist.
+ *
+ * `evidenceExists` is injected rather than read here so the predicate stays
+ * pure and testable; the linter passes a filesystem probe.
+ */
+export function checkAdjudication(
+  ref: string,
+  relFile: string,
+  adj: Adjudication,
+  resolution: BRefResolution,
+  evidenceExists: (relPath: string) => boolean,
+): AdjudicationCheck {
+  if (adj.bId !== ref.toUpperCase()) {
+    return { ok: false, reason: `adjudication names ${adj.bId}, not ${ref}` };
+  }
+  if (!adj.lineWithoutAnnotations.includes(ref)) {
+    return {
+      ok: false,
+      reason:
+        "ADJUDICATION MISPLACED — the annotation must sit on a line that also mentions " +
+        `${ref} outside the comment; a reader must meet the disposition where they meet the id`,
+    };
+  }
+  if (!ADJUDICATION_DISPOSITIONS.has(adj.disposition)) {
+    const known = [...ADJUDICATION_DISPOSITIONS].sort(ordinal);
+    return {
+      ok: false,
+      reason: `ADJUDICATION DISPOSITION UNKNOWN — "${adj.disposition}" is not one of ${known.join(", ")}`,
+    };
+  }
+  if (adj.evidence === relFile) {
+    return {
+      ok: false,
+      reason: "ADJUDICATION SELF-CITED — a document may not be its own evidence",
+    };
+  }
+  if (!evidenceExists(adj.evidence)) {
+    return {
+      ok: false,
+      reason: `ADJUDICATION EVIDENCE MISSING — "${adj.evidence}" is not a file in this tree`,
+    };
+  }
+  if (resolution.kind !== "unresolved") {
+    return {
+      ok: false,
+      reason:
+        `ADJUDICATION STALE — ${ref} now resolves (${resolution.kind}); ` +
+        "the annotation records that it names nothing, and that is no longer true",
+    };
+  }
+  return { ok: true, disposition: adj.disposition, evidence: adj.evidence };
 }

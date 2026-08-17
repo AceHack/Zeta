@@ -236,6 +236,132 @@ test("a symlinked DIRECTORY is not descended into", () => {
   expect(r.status).toBe(0);
 });
 
+// ── 3c. Adjudication: a document REPORTING a dangling id ───────────────────
+//
+// The escape hatch is the most dangerous thing in this file, so it gets the
+// densest harness. The property under test is NOT "the annotation works" — it
+// is that **every way of misusing the annotation still goes red**. If any of
+// the negative tests below stops firing, the gate has acquired a licence and
+// the whole check is back to being decorative.
+//
+// The positive test alone would be the vacuity class: an escape that always
+// succeeds is an exclusion with extra syntax.
+
+const ADJ = (id: string, disp: string, ev: string) =>
+  `<!-- b-ref-adjudicated: ${id} ${disp} ${ev} -->`;
+
+/** The evidence path every adjudication fixture below cites; it exists. */
+const EVIDENCE = "src/Core.TypeScript/backlog/autonomous-pickup.ts";
+const WITH_EVIDENCE = { [EVIDENCE]: "// the code the work landed as\n" };
+
+test("PASSES a dangling id whose mention carries a checked adjudication", () => {
+  const r = runIn(
+    fixture({
+      ...WITH_EVIDENCE,
+      "docs/research/audit.md": `| ${ROTTED_B} | landed as code | ${ADJ(ROTTED_B, "landed-as-code", EVIDENCE)} |\n`,
+    }),
+  );
+  expect(r.status).toBe(0);
+  expect(r.stdout).toContain("adjudicated as dangling with checked evidence");
+});
+
+// ── the four ways to abuse it, each still red ─────────────────────────────
+
+test("FIRES when the adjudication's evidence path does not exist", () => {
+  const r = runIn(
+    fixture({
+      "docs/research/audit.md": `${ROTTED_B} ${ADJ(ROTTED_B, "landed-as-code", "src/does/not/exist.ts")}\n`,
+    }),
+  );
+  expect(r.status).toBe(1);
+  expect(r.stderr).toContain("ADJUDICATION EVIDENCE MISSING");
+});
+
+test("FIRES when the disposition is outside the closed vocabulary", () => {
+  const r = runIn(
+    fixture({
+      ...WITH_EVIDENCE,
+      "docs/research/audit.md": `${ROTTED_B} ${ADJ(ROTTED_B, "it-is-fine-honestly", EVIDENCE)}\n`,
+    }),
+  );
+  expect(r.status).toBe(1);
+  expect(r.stderr).toContain("ADJUDICATION DISPOSITION UNKNOWN");
+});
+
+test("FIRES when the document cites ITSELF as the evidence", () => {
+  const r = runIn(
+    fixture({
+      "docs/research/audit.md": `${ROTTED_B} ${ADJ(ROTTED_B, "abandoned", "docs/research/audit.md")}\n`,
+    }),
+  );
+  expect(r.status).toBe(1);
+  expect(r.stderr).toContain("ADJUDICATION SELF-CITED");
+});
+
+test("FIRES when the annotation is not on a line that mentions the id (no blanket footer)", () => {
+  const r = runIn(
+    fixture({
+      ...WITH_EVIDENCE,
+      "docs/research/audit.md": `a paragraph naming ${ROTTED_B}\n\n${ADJ(ROTTED_B, "landed-as-code", EVIDENCE)}\n`,
+    }),
+  );
+  expect(r.status).toBe(1);
+  expect(r.stderr).toContain("ADJUDICATION MISPLACED");
+});
+
+test("FIRES as STALE when the adjudicated id actually RESOLVES", () => {
+  // The clause that stops the escape rotting into a permanent exemption: the
+  // moment a row lands for the id, the recorded "it names nothing" is false.
+  const r = runIn(
+    fixture({
+      ...WITH_EVIDENCE,
+      "docs/research/audit.md": `${MIGRATED_B} ${ADJ(MIGRATED_B, "landed-as-code", EVIDENCE)}\n`,
+    }),
+  );
+  expect(r.status).toBe(1);
+  expect(r.stderr).toContain("ADJUDICATION STALE");
+});
+
+test("an adjudication for ONE id does not excuse a DIFFERENT dangling id in the same file", () => {
+  const r = runIn(
+    fixture({
+      ...WITH_EVIDENCE,
+      "docs/research/audit.md":
+        `${ROTTED_B} ${ADJ(ROTTED_B, "landed-as-code", EVIDENCE)}\nand also ${FABRICATED_B}\n`,
+    }),
+  );
+  expect(r.status).toBe(1);
+  expect(r.stderr).toContain(FABRICATED_B);
+  expect(r.stderr).not.toContain(ROTTED_B);
+});
+
+test("the adjudication escape does NOT open the KEY-POSITION door", () => {
+  // Frontmatter is judged before resolution, so an annotation cannot buy a
+  // legacy id a place as a row key. Minting stays shut.
+  const r = runIn(
+    fixture({
+      ...WITH_EVIDENCE,
+      "workitems/081KSE6WT0008QG0R00102H071-a-row.md":
+        `---\nid: ${ROTTED_B} ${ADJ(ROTTED_B, "landed-as-code", EVIDENCE)}\n---\n\nbody\n`,
+    }),
+  );
+  expect(r.status).toBe(1);
+  expect(r.stderr).toContain("KEY POSITION");
+});
+
+test("--report names the disposition and the evidence, so a reader can check it", () => {
+  const r = runIn(
+    fixture({
+      ...WITH_EVIDENCE,
+      "docs/research/audit.md": `${ROTTED_B} ${ADJ(ROTTED_B, "superseded", EVIDENCE)}\n`,
+    }),
+    TOOL,
+    ["--report"],
+  );
+  expect(r.status).toBe(0);
+  expect(r.stdout).toContain(`${ROTTED_B} → superseded, evidence ${EVIDENCE}`);
+});
+
 // ── 4. Scope: the surfaces the gate must still police ──────────────────────
 // If any of these stops firing, the check has become decorative by narrowing
 // rather than by banning — the same defect wearing different clothes.
