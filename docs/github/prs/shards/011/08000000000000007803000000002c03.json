@@ -1,0 +1,12 @@
+{
+  "pr_number": 11267,
+  "archive_path": "docs/history/pr-reviews/PR-11267-ci-split-the-ts-suite-into-a-hermetic-tier-and-an-environment-dependent-tier.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T02:53:36.377Z",
+  "schema_version": "v1",
+  "commit_sha": "48d3f4ed0aafc87171a7100b11cb438e43b13650",
+  "title": "ci: split the TS suite into a hermetic tier and an environment-dependent tier",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T02:52:59Z",
+  "head_ref": "ci/ts-suite-hermetic-tier"
+}
