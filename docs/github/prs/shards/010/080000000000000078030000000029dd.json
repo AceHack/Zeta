@@ -1,0 +1,12 @@
+{
+  "pr_number": 10717,
+  "archive_path": "docs/history/pr-reviews/PR-10717-docs-consent-houman-alasti-book-consent-granted-relayed-open-source-credit-reque.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T03:53:12.527Z",
+  "schema_version": "v1",
+  "commit_sha": "ccd590533857a6acad99d6d0a0ff0895d354208e",
+  "title": "docs(consent): Houman Alasti — book consent GRANTED (relayed), open-source credit REQUESTED and unplaced",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T03:52:35Z",
+  "head_ref": "shadow/houman-alasti-consent-and-open-source-credit"
+}
