@@ -53,6 +53,57 @@ function isRejection(value: readonly string[] | GatedCommitRejection): value is 
 }
 
 /**
+ * The AgencySignature v1 block this lane signs its commits with.
+ *
+ * WHY IT IS HERE. `agent-proposal-gated-commit.yml` commits `commitMessage`
+ * verbatim (`git commit -m`), and the required `agencysignature (PR body)` check
+ * reads COMMIT MESSAGES, not the PR description. Before this, every commit this
+ * planner produced carried no block at all, so every proposal PR it opened was
+ * structurally unmergeable — measured on PR #11469, whose only commit body is
+ * `workflow: …` / `patch-digest: …` and nothing else. A lane that can open a PR
+ * but can never merge one is a check firing on correct work, which is the shape
+ * that gets checks switched off.
+ *
+ * WHY THESE VALUES. Each is what is true of this producer, not what is
+ * convenient (spec Section 7.5's Identity Demarcation Rule — an identity field
+ * is never proof of human action):
+ *
+ *   Credential-Identity / Credential-Mode — MEASURED, not assumed: the workflow
+ *     configures `git config user.name/email` to `zeta-pages-operator[bot]`, and
+ *     the commit on #11469 carries exactly that author and committer. It is a
+ *     credential dedicated to this agent, hence `dedicated-agent`.
+ *   Human-Review / Human-Review-Evidence — a human dispatches the workflow with
+ *     a patch; nobody reviews the staged commit before it is pushed. So the
+ *     credential implies no review (`not-implied-by-credential`) and there is no
+ *     evidence pointer to cite (`none`). The cross-field constraint in
+ *     `hygiene/agencysignature-block.ts` requires exactly that pairing.
+ *   Action-Mode — once dispatched, the staging runs unattended and pushes
+ *     without a gate: `autonomous-fail-open`.
+ *   Task — a FIXED slug naming the lane, deliberately not the `proposalId`.
+ *     `validProposalId` admits ids with no hyphen (`society`), which the
+ *     canonical `TASK_RE` rejects; deriving Task from that input would trade
+ *     today's always-invalid block for a sometimes-invalid one, in the lane
+ *     whose whole defect was structural unmergeability.
+ *
+ * The block is emitted as its own contiguous paragraph at the BOTTOM. Layout is
+ * otherwise free (CANONICAL_SHAPE), but contiguity INSIDE the block is not: a
+ * blank line anywhere within it hides every key from the parser.
+ */
+export const AGENT_PROPOSAL_SIGNATURE_BLOCK = [
+  "Agency-Signature-Version: 1",
+  "Agent: zeta-pages-operator",
+  "Agent-Runtime: github-actions/src/Core.TypeScript/planning/agent-proposal.ts",
+  "Agent-Model: deterministic TypeScript",
+  "Credential-Identity: zeta-pages-operator[bot]",
+  "Credential-Mode: dedicated-agent",
+  "Human-Review: not-implied-by-credential",
+  "Human-Review-Evidence: none",
+  "Action-Mode: autonomous-fail-open",
+  "Task: agent-proposal-gated-commit",
+  "Co-authored-by: zeta-pages-operator[bot] <zeta-pages-operator[bot]@users.noreply.github.com>",
+].join("\n");
+
+/**
  * Plans a bounded agent-originated change. The workflow source is the authority:
  * only code already running from protected main may use the ephemeral Action token.
  * It can create a review branch, never write protected main, workflows, or author keys.
@@ -89,7 +140,7 @@ export function planAgentProposal(input: {
   return {
     ok: true,
     branch: `agent-proposal/${intent.proposalId}`,
-    commitMessage: `agent-proposal: ${intent.proposalId}\n\nworkflow: ${intent.workflowRef}\npatch-digest: ${intent.patchDigest}`,
+    commitMessage: `agent-proposal: ${intent.proposalId}\n\nworkflow: ${intent.workflowRef}\npatch-digest: ${intent.patchDigest}\n\n${AGENT_PROPOSAL_SIGNATURE_BLOCK}`,
     paths,
   };
 }
