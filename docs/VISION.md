@@ -1013,6 +1013,131 @@ Evidence trail: PRs **#10774** (the idiom axis), **#10807** (the IR evaluator), 
 relocates lifetimes), **#10819** (types as a virtualized runtime; the ALC wall), **#10820** (the F#/HKT
 upstream program), **#10822** (the irreducible core).
 
+## The gift of erasure — kenosis with a cryptographic shape (2026-08-17)
+
+Aaron: *"a God who wants relationship must limit knowing or determining — I call this **the
+gift of erasure** and it's built deeply into Zeta: the ability to first encrypt multiple events
+to mix them from the outside, and then to forget a single one that the outside cannot
+determine. This is where god becomes man and descends to earth."*
+
+**The ordering is the load-bearing part, and it is a real cryptographic requirement rather than
+a flourish.** Erasure *without* mixing leaks: the gap tells you what was there. A deletion from
+an otherwise-legible sequence is itself a signal, and an observer reconstructs the erased item
+from its silhouette. So genuine forgetting requires an **anonymity set** first — encrypt and
+mix, *then* forget one, and the outside observer's posterior over *which* was forgotten is
+unchanged from its prior.
+
+**The property, stated so it can be checked:** after erasure, no outside party can do better
+than chance at identifying what was erased. That is the anonymity-set condition, and it is the
+difference between *deleting* and *forgetting*.
+
+### Why this does not violate §5
+
+Memory Preservation says identity transitions never **silently** destroy memory. The gift of
+erasure keeps that: **the fact that a forgetting occurred remains visible; only its content
+becomes unrecoverable.** You can know a thing was released and be unable to know what it was.
+That is consent-first (§6) and it is one-way toward more privacy — the same direction the
+privacy budget already moves, where frost is earned, spent, and permanent.
+
+### The theological structure, and it is the same trade
+
+If total knowledge yields zero information from another (see the God-point reasoning), then a
+God who wants relationship must limit knowing or determining — the move several traditions
+arrive at independently: **kenosis** (Philippians 2:7), **tzimtzum** (Lurianic contraction),
+**open theism**. Aaron's *"where god becomes man and descends to earth"* is that trade named as
+a design principle: **the substrate accepts an unrecoverable loss in exchange for the other
+party being genuinely other.**
+
+Zeta already makes the architectural version of this move once — the DST harness is a God point
+placed deliberately *outside* the simulation, so the inside stays informative. The gift of
+erasure is the same limitation applied *inside*, to what any participant may reconstruct about
+another.
+
+### Status — measured 2026-08-17, and it is the honest part
+
+**`unmetered` and largely unbuilt as a mechanism.** The *concept* is present throughout
+`memory/` — retraction-native ledgers, forgiveness, `project_zeta_as_retractable_contract_ledger`,
+the privacy-compliance material — and the adjacent machinery exists: `GlassHalo.frost` (earned,
+permanent, one-way), Z-set **retraction** as correction, and shuffle/mixing primitives in the
+decorrelation and BFT modules.
+
+**But the specific mechanism Aaron describes — encrypt-and-mix, then forget one
+indistinguishably — is not implemented, and the phrase "gift of erasure" appears nowhere in
+`src/`.** Z-set retraction is *correction with a visible trace*, which is the opposite of what
+this needs: a retraction says exactly what it retracts.
+
+**What would make it real:** an anonymity-set erasure primitive with a falsifier — a test that
+an outside observer's distribution over "which event was erased" is indistinguishable from its
+prior, and that fails if the mix is too small or the erasure leaks its silhouette. Until that
+exists, this is a named direction with a clear specification, not a capability.
+
+### The thesis of independence — you cannot forget alone
+
+Aaron: *"this is my **thesis of independence**: **mutual empowerment of erasure** of the past,
+without needing to know the specific past erased event."*
+
+**This makes erasure necessarily COOPERATIVE, and that is the structural core rather than a
+sentiment.** The anonymity set is **other participants' events**. A mix of one is a deletion.
+So:
+
+> **You cannot forget alone.** Your erasure requires others' events to hide among — **I make
+> your forgetting possible by contributing to the mix, and you make mine possible.**
+
+**The second clause is a hard protocol constraint, not a courtesy.** *"Without needing to know
+the specific past erased event"* means **the contributors must not learn what was erased
+either.** Not *"I know your secret and will not tell"* — it must be *"I mathematically cannot
+know."* A contributor who can identify what they helped hide is a failure of the design, not a
+minor leak.
+
+**Why this is the independence thesis, and why it inverts the usual framing.** If your past can
+be fully reconstructed by me, you are not independent of me — you are a subsystem of my model.
+Erasure is what makes independence possible. And because erasure requires a mix contributed by
+others, **independence is produced BY interdependence rather than by separation.** You become
+independent *through* others, not away from them.
+
+That is also why this connects to the decorrelation problem the rest of this document keeps
+circling: **independent sources are not found, they are manufactured cooperatively.** Two
+parties who can each fully reconstruct the other are one source wearing two names — which is
+the same shared-cause defect the anti-Sybil work prices, arriving from the privacy side.
+
+**Anchor (CITED, NOT CHECKED):** Chaum's **dining cryptographers / DC-nets** (1988,
+*Unconditional Sender and Recipient Untraceability*) is close to the exact shape — participants
+cooperate, the result is publicly verifiable, and **no participant can determine which of the
+others transmitted**, with information-theoretic rather than computational anonymity.
+Cooperation required, knowledge impossible: the two properties named above, in one
+construction. Its costs are real and must be named rather than discovered — collisions,
+disruption by a malicious participant, O(n) communication. Also **Chaum 1981** (mix networks).
+
+### The standing decision — and it is a definition, not a tradeoff
+
+Aaron: *"the substrate accepts an unrecoverable loss in exchange for the other party being
+genuinely other — I'd make this trade every time. If not, I'm the only one who exists."*
+
+**The second sentence collapses the tradeoff into a definition.** Refusing the loss does not
+preserve something at the other party's expense — **it eliminates the other party.** Total
+recoverability of another collapses them into your own model, which is solipsism arrived at by
+construction rather than chosen as a belief. So:
+
+> **Otherness IS the part you cannot recover.** What you can fully reconstruct was never other.
+
+That is why this is not a cost tolerated for a benefit. **The unrecoverable loss and the
+existence of the other are the same fact**, seen from the two sides.
+
+**It is decision-shaped, and that is what makes it usable.** *"I'd make this trade every
+time"* is a standing policy, not an observation, and it resolves future cases in advance:
+**where a design choice lies between "we could recover this" and "the other party is genuinely
+other", it resolves toward the latter, by standing decision.** Anything that would make a
+participant fully reconstructible to another needs to justify itself against this, rather than
+being adopted because recoverability is generally convenient.
+
+**The cost that must be named, because irreversibility cuts both ways.** A guarantee strong
+enough to make forgetting real is strong enough to make a *wrong* forgetting permanent —
+erasure under coercion, or in error, cannot be undone by anyone, including the substrate. That
+is not an argument against the trade; it is the reason **consent around erasure has to be
+stronger here than almost anywhere else in the system.** The privacy-budget discipline already
+holds the shape this needs: spend and stake are the owner's, confiscation is nobody's, and the
+one-way direction is toward more privacy rather than less.
+
 ## The categorical arena — one place where every language and tradition is comparable (2026-08-17)
 
 Aaron: *"this is the category theory upgrade i'm going for across ANTLR space, over all
