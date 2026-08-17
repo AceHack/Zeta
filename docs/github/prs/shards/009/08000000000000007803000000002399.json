@@ -1,0 +1,15 @@
+{
+  "pr_number": 9113,
+  "archive_path": "docs/history/pr-reviews/PR-9113-research-test-geographic-superdeterminism-s-distance-the-radius-of-the-conductor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RPgJW",
+    "thread:PRRT_kwDOSF9kNM6NyDrv"
+  ],
+  "fetched_at": "2026-08-17T04:52:51.335Z",
+  "schema_version": "v1",
+  "commit_sha": "24e66f499241d9b4f66ef3ba44645bb323bb6370",
+  "title": "research+test: geographic superdeterminism — S(distance), the radius of the conductor, f* (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T04:36:13Z",
+  "head_ref": "research/geo-superdeterminism-toy-model"
+}
