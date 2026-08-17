@@ -1,0 +1,12 @@
+{
+  "pr_number": 11485,
+  "archive_path": "docs/history/pr-reviews/PR-11485-fix-attestation-an-attestation-claim-with-no-named-vendor-root-was-type-correct.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:17:12.538Z",
+  "schema_version": "v1",
+  "commit_sha": "dcd8b297eb0ecba934ff83b124f906ed1c7a45a4",
+  "title": "fix(attestation): an attestation claim with no named vendor root was type-correct",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:16:31Z",
+  "head_ref": "shadow/name-the-vendor-root-in-attestation"
+}
