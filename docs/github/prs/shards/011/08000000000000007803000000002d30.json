@@ -1,0 +1,12 @@
+{
+  "pr_number": 11568,
+  "archive_path": "docs/history/pr-reviews/PR-11568-fix-heartbeat-declare-data-rs-blocks-jsonl-the-fifth-append-only-lane-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T17:05:05.798Z",
+  "schema_version": "v1",
+  "commit_sha": "aa748ab036206011ca765aab45e5a825caa71b8f",
+  "title": "fix(heartbeat): declare data/rs-blocks.jsonl, the fifth append-only lane path",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T17:03:07Z",
+  "head_ref": "shadow/rs-blocks-fifth-append-only-lane-path"
+}
