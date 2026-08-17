@@ -1,12 +1,15 @@
 import { spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { describe, expect, test } from "bun:test";
+import { afterAll, describe, expect, test } from "bun:test";
 
 import {
+  accumulatedHistoryError,
   agencySignatureBlock,
   assertNoSkipCi,
+  prepare,
   signedFlushMessage,
 } from "./flush-via-staging";
 
@@ -49,6 +52,138 @@ describe("assertNoSkipCi", () => {
   test("accepts a clean message", () => {
     expect(assertNoSkipCi("metrics: append tick frame")).toBeNull();
   });
+});
+
+// ---------------------------------------------------------------------------
+// HISTORY ACCUMULATION — the defect measured on `heartbeat/tick-metrics`
+// 2026-08-17 (444 commits ahead of main, 164 of them self-merges).
+// ---------------------------------------------------------------------------
+
+describe("accumulatedHistoryError", () => {
+  test("a branch sitting exactly on origin/main is the only accepted state", () => {
+    expect(accumulatedHistoryError(0, 0)).toBeNull();
+  });
+
+  test("one non-merge commit already violates it — prepare must not commit", () => {
+    expect(accumulatedHistoryError(1, 0)).not.toBeNull();
+  });
+
+  test("the live shape (444 ahead, 164 merges) is refused", () => {
+    const v = accumulatedHistoryError(444, 164);
+    expect(v).not.toBeNull();
+    expect(v?.error).toContain("444");
+    expect(v?.error).toContain("164");
+  });
+
+  // FAILS CLOSED. An unparseable `rev-list --count` reaches this as NaN, and NaN
+  // must never read as "zero commits, all clear" — a measurement that did not
+  // happen must not look like one that passed.
+  test("NaN (an unreadable measurement) is refused, never treated as zero", () => {
+    expect(accumulatedHistoryError(Number.NaN, Number.NaN)).not.toBeNull();
+  });
+});
+
+// The integration proof. `prepare` is a git-effect function, so the falsifier has
+// to be real git: run the lane's actual prepare/flush cycle N times against a real
+// origin and assert the branch does not grow. Reverting `--squash` to a plain
+// `merge` in flush-via-staging.ts makes this go red (measured: 9 ahead / 4 merges).
+describe("the flush lane does not accumulate history (real git)", () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-flush-lane-"));
+  afterAll(() => {
+    rmSync(tmp, { recursive: true, force: true });
+  });
+
+  const g = (cwd: string, ...args: readonly string[]): string => {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    const r = spawnSync("git", [...args], { cwd, encoding: "utf8" });
+    return r.stdout.trim();
+  };
+
+  test("five prepare/flush cycles leave exactly one commit and zero merges", () => {
+    const originDir = join(tmp, "origin.git");
+    const workDir = join(tmp, "work");
+    const seedDir = join(tmp, "seed");
+
+    g(tmp, "init", "--quiet", "--bare", originDir);
+    g(tmp, "init", "--quiet", seedDir);
+    g(seedDir, "config", "user.email", "lane@zeta.local");
+    g(seedDir, "config", "user.name", "lane");
+    writeFileSync(join(seedDir, "base.txt"), "base\n");
+    g(seedDir, "add", "-A");
+    g(seedDir, "commit", "--quiet", "-m", "base");
+    g(seedDir, "branch", "-M", "main");
+    g(seedDir, "push", "--quiet", originDir, "main");
+
+    g(tmp, "clone", "--quiet", originDir, workDir);
+    g(workDir, "config", "user.email", "lane@zeta.local");
+    g(workDir, "config", "user.name", "lane");
+
+    for (let i = 1; i <= 5; i++) {
+      // ANOTHER AGENT lands on main between ticks, with genuinely different
+      // governance fields. This is what leaked into PR #11528's commit list.
+      g(workDir, "fetch", "--quiet", "origin", "main");
+      g(workDir, "checkout", "--quiet", "-B", "other", "origin/main");
+      writeFileSync(join(workDir, `other-${String(i)}.txt`), `other ${String(i)}\n`);
+      g(workDir, "add", "-A");
+      g(
+        workDir,
+        "commit",
+        "--quiet",
+        "-m",
+        `feat: another agent's work ${String(i)}\n\nAgency-Signature-Version: 1\nCredential-Mode: shared\nAction-Mode: human-directed\n`,
+      );
+      g(workDir, "push", "--quiet", "origin", "other:main");
+
+      // --- THE FUNCTION UNDER TEST, called for real. Not a re-implementation of
+      // it: `prepare` operates on process.cwd(), so the test moves there rather
+      // than copying its git calls, which would make the mutation unfalsifiable.
+      const cwd = process.cwd();
+      let prepared: number;
+      try {
+        process.chdir(workDir);
+        prepared = prepare("lane");
+      } finally {
+        process.chdir(cwd);
+      }
+      expect(prepared).toBe(0);
+
+      // --- the generator appends a tick frame
+      const prior = i === 1 ? "" : readFileSync(join(workDir, "telemetry.json"), "utf8");
+      writeFileSync(join(workDir, "telemetry.json"), `${prior}tick ${String(i)}\n`);
+
+      // --- flush
+      g(workDir, "add", "--", "telemetry.json");
+      g(
+        workDir,
+        "commit",
+        "--quiet",
+        "-m",
+        signedFlushMessage("metrics: append tick frame", "tick-metrics"),
+      );
+      g(workDir, "push", "--quiet", "--force-with-lease", "origin", "HEAD:refs/heads/heartbeat/lane");
+    }
+
+    g(workDir, "fetch", "--quiet", "origin", "main");
+    const ahead = g(workDir, "rev-list", "--count", "origin/main..origin/heartbeat/lane");
+    const merges = g(workDir, "rev-list", "--count", "--merges", "origin/main..origin/heartbeat/lane");
+
+    // The branch is a DISPOSABLE DELTA, not a growing ledger.
+    expect(ahead).toBe("1");
+    expect(merges).toBe("0");
+    expect(accumulatedHistoryError(Number.parseInt(ahead, 10) - 1, Number.parseInt(merges, 10))).toBeNull();
+
+    // ... and the telemetry the union exists to protect is preserved in full.
+    // This is the property the fix must not trade away.
+    expect(g(workDir, "show", "origin/heartbeat/lane:telemetry.json")).toBe(
+      "tick 1\ntick 2\ntick 3\ntick 4\ntick 5",
+    );
+
+    // The squash preimage carries exactly ONE governance block, so no other
+    // agent's `Credential-Mode: shared` can enter this PR's commit list.
+    const preimage = g(workDir, "log", "origin/main..origin/heartbeat/lane", "--format=%B");
+    const modes = [...preimage.matchAll(/^Credential-Mode: (.+)$/gm)].map((m) => m[1]);
+    expect([...new Set(modes)]).toEqual(["dedicated-agent"]);
+  }, 60_000);
 });
 
 // These lanes used to emit UNSIGNED commits, which the post-merge auditor could

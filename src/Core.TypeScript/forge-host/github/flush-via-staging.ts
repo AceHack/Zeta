@@ -166,15 +166,79 @@ export function signedFlushMessage(message: string, lane: string): string {
 }
 
 /**
- * Reset the working tree to `origin/main` and union in anything already parked on the
- * lane's staging branch.
+ * After `prepare`, the staging branch must sit EXACTLY on `origin/main` — the lane's
+ * unlanded payload carried as INDEX state, never as commits of its own.
  *
- * The union matters because the flush PR is asynchronous: a run can generate telemetry
- * while the previous run's PR is still waiting on `gate`. Without the union the next run
- * would reset to main, regenerate, and force-push over content that had not landed yet.
- * `-X ours` is safe here and only fires on a true overlap: lane payloads are either
- * per-write ZetaId-keyed files (no two writers ever touch one path — nothing to conflict)
- * or a single regenerated snapshot (latest-wins is the correct resolution).
+ * THE DEFECT THIS RATCHET CLOSES (measured 2026-08-17 on `heartbeat/tick-metrics`).
+ * `prepare` used to union the previous run's staging tip with a real `git merge`, which
+ * records a MERGE COMMIT whose second parent is that tip's entire history. Since every
+ * run re-merged the branch it had itself pushed the run before, the branch never reset —
+ * it accumulated, unboundedly, one self-merge per tick:
+ *
+ *     git rev-list --count origin/main..origin/heartbeat/tick-metrics   -> 444
+ *     git rev-list --count --merges  (same range)                       -> 164
+ *     ... 164 of them literally "Merge remote-tracking branch
+ *         'origin/heartbeat/tick-metrics' into staging-tick-metrics"
+ *
+ * That is a defect on its own terms — a telemetry flush is a small disposable delta —
+ * and it broke two things downstream that are worth naming, because both are the
+ * silent-green class rather than a visible failure:
+ *
+ *   1. THE SQUASH PREIMAGE BECAME THE WHOLE BRANCH. `squash_merge_commit_message` is
+ *      `COMMIT_MESSAGES`, so GitHub concatenates every commit message in the PR. Landed
+ *      commit `71444e1cd0` on `main` is 2470 lines carrying 176 identical AgencySignature
+ *      blocks. The convention's artifact became noise it is impossible to read.
+ *   2. OTHER AGENTS' COMMITS ENTERED THE PR'S OWN COMMIT LIST. Because the accumulated
+ *      history carries older `main` states, `GET /pulls/{n}/commits` for PR #11528
+ *      returned 14 commits that are ALREADY MERGED INTO `main` (authored by Otto, Vera,
+ *      otto-shadow, pr-archive-on-merge). Those carry `Credential-Mode: shared` and
+ *      `Action-Mode: human-directed | autonomous-fail-closed`, so the cross-commit
+ *      governance-consistency check reported a disagreement — correctly. All six
+ *      disagreeing commits were among those 14; `origin/main..HEAD` contained ZERO.
+ *      The check was not wrong and was deliberately NOT narrowed: it validates the text
+ *      GitHub actually squashes from, which is the whole reason it exists.
+ *   3. The list is capped at 250 by GitHub, and the branch was 444 ahead — so the check
+ *      could not even see all of its own subject.
+ *
+ * THE FIX IS ONE WORD: `--squash`. It computes the IDENTICAL tree by the identical
+ * strategy against the identical merge base, but records no commit and no second parent,
+ * leaving the union in the index for the flush's single commit to capture. Telemetry
+ * preservation is bit-for-bit unchanged — which is the property that mattered — while
+ * the branch returns to `origin/main` + exactly one commit every run. Simulated over
+ * five cycles: 9 commits / 4 merges before, 1 commit / 0 merges after, same payload.
+ *
+ * NOTE ON HISTORY. This changes only what FUTURE runs push. Nothing here rewrites the
+ * existing branch: `flush` already force-pushes `heartbeat/<lane>` every single run by
+ * design (see the `--force-with-lease` note below), and the telemetry payload survives
+ * the union either way. What stops being republished is the redundant commit history of
+ * flushes that already landed on `main` as squashes.
+ *
+ * The union itself is still needed and still correct: the flush PR is asynchronous, so a
+ * run can generate telemetry while the previous run's PR is still waiting on `gate`.
+ * Without it the next run would reset to main, regenerate, and force-push over content
+ * that had not landed yet. `-X ours` only fires on a true overlap: lane payloads are
+ * either per-write ZetaId-keyed files (no two writers ever touch one path) or a single
+ * regenerated snapshot (latest-wins is the correct resolution).
+ */
+export function accumulatedHistoryError(
+  aheadCount: number,
+  mergeCount: number,
+): { readonly error: string } | null {
+  if (aheadCount === 0 && mergeCount === 0) return null;
+  return {
+    error:
+      `staging branch carries ${String(aheadCount)} commit(s) (${String(mergeCount)} merge(s)) ` +
+      "of its own after prepare; it must sit exactly on origin/main with the lane's unlanded " +
+      "payload staged, not committed. This is the history-accumulation defect: a flush branch " +
+      "that grows per tick drags already-landed commits by OTHER agents into its own PR commit " +
+      "list, where their governance fields legitimately disagree with the lane's.",
+  };
+}
+
+/**
+ * Reset the working tree to `origin/main` and union in anything already parked on the
+ * lane's staging branch — as INDEX state, leaving no commits. See
+ * `accumulatedHistoryError` for the defect this shape exists to prevent.
  */
 export function prepare(lane: string): number {
   const ref = stagingRef(lane);
@@ -194,16 +258,38 @@ export function prepare(lane: string): number {
     process.stdout.write(`[flush] no existing staging branch ${ref} — starting from main\n`);
     return 0;
   }
-  const merge = git("merge", "-X", "ours", "--no-edit", `origin/${ref}`);
+  const merge = git("merge", "--squash", "-X", "ours", `origin/${ref}`);
   if (merge.status !== 0) {
     process.stdout.write(
       `[flush] could not union ${ref} onto main (likely already landed and history diverged); ` +
         `continuing from main — no telemetry is lost, the generator recomputes it\n`,
     );
-    const abort = git("merge", "--abort");
-    if (abort.status !== 0) git("reset", "--hard", "origin/main");
+    // `git merge --abort` CANNOT clean this up and must not be tried first: `--squash`
+    // never writes MERGE_HEAD, so abort exits 128 ("There is no merge to abort") and
+    // leaves the conflicted index in place. Verified 2026-08-17 against a real
+    // modify/delete + file/directory conflict. `reset --hard` is the working cleanup.
+    git("reset", "--hard", "origin/main", "--quiet");
     return 0;
   }
+
+  // THE RATCHET. Fires BEFORE the generator runs, so refusing costs zero telemetry —
+  // this is the fail-closed point of the lane. A `prepare` that has left commits behind
+  // is the accumulation bug returning, and continuing would push it to the forge.
+  const ahead = git("rev-list", "--count", "origin/main..HEAD");
+  const merges = git("rev-list", "--count", "--merges", "origin/main..HEAD");
+  if (ahead.status !== 0 || merges.status !== 0) {
+    process.stderr.write("flush-via-staging: could not measure staging history depth\n");
+    return 3;
+  }
+  const accumulated = accumulatedHistoryError(
+    Number.parseInt(ahead.stdout.trim(), 10),
+    Number.parseInt(merges.stdout.trim(), 10),
+  );
+  if (accumulated) {
+    process.stderr.write(`flush-via-staging: ${accumulated.error}\n`);
+    return 3;
+  }
+
   process.stdout.write(`[flush] unioned pending ${ref} content onto origin/main\n`);
   return 0;
 }
