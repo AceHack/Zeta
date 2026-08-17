@@ -74,6 +74,34 @@ module TickBoundaryProbe =
           Log = ""
           Otel = System.Diagnostics.ActivityContext() }
 
+    /// Probe ANY scheduler on the port: run `repeats` times over the SAME seed, SAME initial value,
+    /// SAME budget, and compare every outcome to the first. `probeHandlers` and the four-corner
+    /// `driveF` shape both go through this, so there is ONE instrument rather than a family of them.
+    ///
+    /// Both `sched` and `initial` are *thunks* on purpose: a shared scheduler object or a shared
+    /// mutable initial value would itself be an undeclared channel between the repeats, and the probe
+    /// would then be measuring its own instrument.
+    let probeScheduler
+        (label: string)
+        (sched: unit -> SoftScheduler.ISoftScheduler<'T>)
+        (seed: int64)
+        (initial: unit -> 'T)
+        (budget: int)
+        (repeats: int)
+        : Task<Crossing<'T>> =
+        task {
+            let ctx = probeCtx label
+            let! first = (sched ()).Run ctx seed (initial ()) budget
+            let mutable verdict = DeclaredOnly first
+            let mutable i = 1
+            while i < repeats && not (detected verdict) do
+                let! again = (sched ()).Run ctx seed (initial ()) budget
+                if again <> first then
+                    verdict <- UndeclaredDetected(i, first, again)
+                i <- i + 1
+            return verdict
+        }
+
     /// Probe a handler set directly: run `repeats` times over the SAME seed, SAME source, SAME initial
     /// state, SAME budget, and compare every outcome to the first.
     ///
@@ -88,18 +116,7 @@ module TickBoundaryProbe =
         (budget: int)
         (repeats: int)
         : Task<Crossing<'S>> =
-        task {
-            let ctx = probeCtx label
-            let! first = (SoftScheduler.driveK handlers source).Run ctx seed (initial ()) budget
-            let mutable verdict = DeclaredOnly first
-            let mutable i = 1
-            while i < repeats && not (detected verdict) do
-                let! again = (SoftScheduler.driveK handlers source).Run ctx seed (initial ()) budget
-                if again <> first then
-                    verdict <- UndeclaredDetected(i, first, again)
-                i <- i + 1
-            return verdict
-        }
+        probeScheduler label (fun () -> SoftScheduler.driveK handlers source) seed initial budget repeats
 
     /// Probe a `SimFramework.Room` — the shipped room shape. `Room.Initial : int64 -> 'S` is already a
     /// function of the seed, so the room type gives the fresh-initial-state property for free.

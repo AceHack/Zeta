@@ -234,6 +234,7 @@
     <Compile Include="SoftIsr.Tests.fs" />
     <Compile Include="SimFramework.Tests.fs" />
     <Compile Include="TickBoundaryProbe.Tests.fs" />
+    <Compile Include="FourCornerTickBoundary.Tests.fs" />
     <Compile Include="MeshPong.Tests.fs" />
     <Compile Include="MeshPongTreaty.Tests.fs" />
     <Compile Include="MembraneLogTreaty.Tests.fs" />

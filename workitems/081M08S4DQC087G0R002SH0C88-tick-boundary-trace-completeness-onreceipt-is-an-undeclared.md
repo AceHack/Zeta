@@ -62,3 +62,23 @@ so option 3 alone does not close it.
 exhibits it directly. Harm is still unproven because `CelegansChip8Room.wormRoom` never completes a
 tick, and `Celegans*` has no other tests. Closing it means threading the oscillator through `'S` — but
 the room does not run, so the honest order is: make the room run first, then thread the state.
+
+## Update 2026-08-17 — the design question is answered; the metering decision is NOT
+
+Work item `081M08WE9R3087G0R003PAK63F` shipped the `T Feedback In` corner at the tick boundary
+(`SoftScheduler.CoOwnedCorner` / `HandlerF` / `driveF`, additive; `ReceiptScheduler.wrapHandlerF` as
+the one adopted site). Design + research:
+`docs/research/2026-08-17-t-feedback-in-the-co-owned-fourth-corner-at-the-tick-boundary.md`.
+
+What that changes about **this** row: the note above says option 2 was not taken "because changing a
+shipped signature is a bigger move than the measurement warranted." That reason is now gone —
+`wrapHandlerF` is a new function beside the two `-> unit` ones, both of which are untouched and still
+work. So option 2 is available and measured (FIN-1: the TICK-3 room rebuilt on the corner reports
+`DeclaredOnly` while the reader still reads the receipts).
+
+**The choice among 1 / 2 / 3 is still open and still Aaron's** — specifically whether the `-> unit`
+overloads get *retired*. Nothing here retires them.
+
+`CelegansController` is unchanged, for the reason this row already gives: the room does not tick, so
+threading the oscillator would be an unfalsifiable change. Note also that the corner is the wrong home
+for it — an oscillator is room-private state and belongs in `'S`.
