@@ -1,0 +1,12 @@
+{
+  "pr_number": 11180,
+  "archive_path": "docs/history/pr-reviews/PR-11180-fix-installer-collapse-the-duplicate-installer-flake-one-iso-definition-one-mise.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:37:56.590Z",
+  "schema_version": "v1",
+  "commit_sha": "0761ff97bafa1001ba3acedf3f1f9aa749ad3210",
+  "title": "fix(installer): collapse the duplicate installer flake — one ISO definition, one mise pin",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:37:21Z",
+  "head_ref": "shadow/usb-installer-flake-mise-pin-parity"
+}
