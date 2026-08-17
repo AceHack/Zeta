@@ -55,6 +55,7 @@ table against the published page and fails on any disagreement in either directi
 | Lodge | A federation charter — a named federation instance with its own constitution (example in the UI: The Aperture Lodge). | Addison Cooper | 2026-07-31 | no |
 | ISociety | The bidirectional schedule/route contract a member presents to society and receives from society — the membrane between "inside my society's view" and "outside world's view." | Aaron Stainback (with Grok, Cursor) | 2026-07-31 | no |
 | CTM / World | The recursive top layer — a society of causal/traveler models that is itself a CTM (`ISociety <: CTM`). Carries the most information advantage and the most fairness obligation (three-body / Lagrange symmetry: the top orbit must stay the most symmetric). | Aaron Stainback (with Grok, Cursor) | 2026-07-31 | no |
+| Kilesi (as in "ISR kilesi arrow") | **GLOSS PROPOSED BY OTTO, NOT YET CONFIRMED BY ITS AUTHOR — see §4.6.** Accumulated *undeclared* distortion carried on the interrupt (ISR) path: bias that accretes on the arrow and colours what the next observation sees. Dissolved by being **seen**, never by force — which is why the remedy is the four-corner ownership trace rather than a filter. | Aaron Stainback (coinage); anchoring by Otto | 2026-08-17 | no |
 
 ### Sources for each row
 
@@ -62,6 +63,7 @@ table against the published page and fails on any disagreement in either directi
 |---|---|
 | The 23 rows dated 2026-06-20 | `docs/design/root-site-iris/site/concepts.html` — the published Genesis Concepts page (its own summary line for each concept). |
 | Universal Exit Principle · Lodge · ISociety · CTM / World | `docs/GLOSSARY.md` §"Society identity (Genesis Concepts — Iris / Addison UI)" — the **Plain** paragraph of each entry. Added by PR #9829 (2026-07-31); ISociety and CTM / World first entered the repo via `docs/security/USB-IDENTITY-THREAT-MODEL.md` (PR #9591, 2026-07-08). |
+| Kilesi | **No transcribed source — this row breaks the pattern and says so.** The term was coined in conversation (Aaron, 2026-08-17: *"monidacally lawful backward in time over our ISR kilesi arrow"*) with no definition attached, and had **zero occurrences** anywhere in the tree. Asked to anchor it, Aaron said *"lets name it."* The `Definition` column is therefore Otto's **proposal**, not a transcription, and is marked as such in the row and in §4.6. It becomes a real registry entry when its author confirms or replaces the wording. |
 
 ## 2. Provenance — whose words are whose
 
@@ -128,3 +130,47 @@ their owners.
    page.** On the page it appears only inside the body of `Contract`; in the glossary and
    seed kernel it is a standalone, load-bearing term. Promoting it on the page is a
    publishing decision, not a repo decision.
+5. **`Agent` conflicts between the glossary and Addison's page.** `docs/GLOSSARY.md` says
+   an agent is *"an instance of Claude … running a skill or expert prompt"*; Addison says
+   *"a persistent AI identity — never its job, its hat, or its vault"*, adding that *death
+   is unrecoverable identity loss, not process inactivity*. An instance-of-a-prompt is
+   close to what her definition says an agent **is not**. Given "agents, not bots" is a
+   standing convention, this one wants a ruling rather than a silent merge.
+6. **`Kilesi` is the first row here whose definition was NOT transcribed — it is a
+   proposal awaiting its author.** The term appeared in conversation with no definition
+   ("ISR kilesi arrow", Aaron 2026-08-17) and had zero occurrences in the tree; asked to
+   anchor it, Aaron said *"lets name it."* What follows is the anchoring work, offered so
+   he can accept, amend, or reject it — the coinage is his, and the registry's own rule is
+   that no one rewords another's concept.
+
+   **The human anchor.** Pali **kilesa** / Sanskrit **kleśa** — "defilement",
+   "affliction" — a mental state that *obscures clear seeing* and thereby distorts what
+   follows. Three roots in the Theravāda Abhidhamma: **lobha** (greed), **dosa**
+   (aversion), **moha** (delusion); systematised canonically by **Buddhaghosa,
+   *Visuddhimagga*** (5th c. CE). The Sanskrit form also carries five **kleśas** in
+   **Patañjali's *Yoga Sūtras* 2.3**, rooted in **avidyā** (ignorance).
+
+   **Why the import is structural rather than decorative — and this is the load-bearing
+   part.** A kilesa is not a debt to be repaid or a fault to be punished; it is a
+   *distortion removed by being seen clearly* (vipassanā = insight), never by force. That
+   is **exactly the argument Aaron made about the four-corner trace** in the same session:
+   the remedy for hidden influence is a trace that makes hiding impossible, not a filter
+   that suppresses. The tradition and the mechanism agree on the method, which is what
+   distinguishes a real anchor from physics-as-metaphor.
+
+   **The engineering peer term (Beacon register), so the concept is not import-only.**
+   **Integrator windup** in control theory — an integral term that accumulates error while
+   saturated and then distorts subsequent response — is the closest standard object:
+   accumulated distortion carried on a feedback path. Adjacent: DC offset / drift in
+   signal processing; confounding in statistics. In Zeta's own vocabulary a kilesi is an
+   **undeclared accumulated influence**, which is precisely what §13 noninterference
+   forbids and what the four-corner trace surfaces.
+
+   **Proposed gloss (Aaron's to confirm):** *accumulated undeclared distortion carried on
+   the interrupt (ISR) path — bias that accretes on the arrow and colours what the next
+   observation sees; dissolved by being seen, not by force.*
+
+   **What is still unanchored even after this:** the *arrow* half. "ISR arrow" ties to the
+   CHIP-8 interrupt path and the Craik-1943 world-model line already in memory, but no
+   in-tree definition of "ISR arrow" exists either, so that term carries the same debt this
+   entry is discharging for `kilesi`. Flagged, not resolved.
