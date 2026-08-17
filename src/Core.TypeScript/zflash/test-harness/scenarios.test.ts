@@ -169,6 +169,14 @@ describe("081KSNY2Z0008QG0R0008PN7RQ determineRunnability discriminator", () => 
     if (verdict.kind === "blocked-on-multi-vm-orchestration") {
       expect([...verdict.remainingBlockers].sort()).toEqual([
         "concurrent-vm-lifecycle",
+        // Named 2026-08-17 while wiring role provisioning: the shared socket
+        // segment has no DHCP and no DNS, so a bare `control-plane` label
+        // cannot resolve on it even once both VMs are up.
+        "joining-node-address-assignment",
+        // Still listed although the CARRIER now exists (firstboot-role.ts,
+        // /zeta-firstboot.conf, /zeta-join-token, injected-join-server.nix):
+        // nothing has booted from a joiner-flashed image, so the chain is
+        // unit-tested and unexercised.
         "joining-node-role-provisioning",
         "shared-l2-segment",
       ]);

@@ -163,7 +163,7 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
     ],
     gates: [],
     notes:
-      "FIRST blocker CLEARED 2026-08-13: a join now exists to observe. k3s's join is the join (Aaron, closing PR #10493's open question), so full-ai-cluster/nixos/modules/k3s-join-observer.nix witnesses k3s's own agent-to-server join and emits B0891_CLUSTER_JOIN_SERIAL_MARKERS to serial; nixos/tests/k3s-agent-join.nix proves it two-node against the shipped modules. Checked mechanically by join-implementation-probe.ts. STILL BLOCKED on three named items (see JoinBlocker): joining-node-role-provisioning — a zflash-prepared image installs HOST=control-plane, so the joining VM runs no k3s agent at all; shared-l2-segment — the netdev args and the socket-segment plan now exist (distinct MACs, listen/connect), but no frame has ever crossed the segment because nothing runs the VMs concurrently; concurrent-vm-lifecycle — executeMultiVMRuntimePlan boots serially and kills each VM on marker match. Dispatching before all three clear would report a failure that has nothing to do with joining.",
+      "FIRST blocker CLEARED 2026-08-13: a join now exists to observe. k3s's join is the join (Aaron, closing PR #10493's open question), so full-ai-cluster/nixos/modules/k3s-join-observer.nix witnesses k3s's own agent-to-server join and emits B0891_CLUSTER_JOIN_SERIAL_MARKERS to serial; nixos/tests/k3s-agent-join.nix proves it two-node against the shipped modules. Checked mechanically by join-implementation-probe.ts. STILL BLOCKED on four named items (see JoinBlocker): joining-node-role-provisioning — a carrier now exists (zflash writes /zeta-firstboot.conf + /zeta-join-token; zeta-first-boot.sh prefers the ESP copy; injected-join-server.nix overrides serverAddr for agents) but NOTHING HAS BOOTED FROM IT, so the chain is unit-tested and unexercised; joining-node-address-assignment — the shared socket segment has no DHCP and no DNS, and nss-mdns answers for .local names only, so k3s-agent.nix's bare `control-plane` default cannot resolve there; shared-l2-segment — the netdev args and the socket-segment plan now exist (distinct MACs, listen/connect), but no frame has ever crossed the segment because nothing runs the VMs concurrently; concurrent-vm-lifecycle — executeMultiVMRuntimePlan boots serially and kills each VM on marker match. Dispatching before all three clear would report a failure that has nothing to do with joining.",
   },
 ];
 
@@ -214,15 +214,34 @@ export function findScenario(id: ScenarioId): Scenario | undefined {
  * orchestration" as a single phrase hid an entire provisioning gap once
  * already, which is what PR #10493 was about.
  *
- * - `joining-node-role-provisioning` — the joining VM cannot be provisioned
- *   as a WORKER. `zeta-first-boot.sh` reads its role from the ISO's own
- *   `/etc/zeta-firstboot.conf`, which ships `HOST=control-plane`; the role
- *   prompt is interactive on tty1 with a timed default; and zflash writes no
- *   firstboot config to the ESP (zero matches for "firstboot" under
- *   `src/Core.TypeScript/zflash/`). The installer ISO itself defers the
- *   per-flash `--role` flag to v2 scope of 081KSGS9H0008QG0R002T3BJ2R. So a zflash-prepared boot
- *   image installs a second control-plane, which joins nothing and runs no
- *   k3s agent — and therefore no join observer.
+ * - `joining-node-role-provisioning` — the MECHANISM half has cleared, the
+ *   PROOF half has not. Until 2026-08-17 there was no carrier at all: zflash
+ *   could write four ESP files and none of them named a role, so the decision
+ *   was made at ISO-BUILD time by `/etc/zeta-firstboot.conf` (`HOST=control-plane`)
+ *   and a zflash-prepared image installed a second control plane. There is now
+ *   a carrier — `firstboot-role.ts` composes `/zeta-firstboot.conf`,
+ *   `planFileBackedZflashImage` writes it plus an optional `/zeta-join-token`,
+ *   `zeta-first-boot.sh` sources the ESP copy in preference to the ISO's,
+ *   `zeta-install.sh` installs the token at the path `k3s-agent.nix` reads,
+ *   and `injected-join-server.nix` overrides `serverAddr` for agents.
+ *   NONE OF THAT HAS BEEN BOOTED. Every step is unit-tested as a pure
+ *   function and zero steps are observed on a running guest, so the blocker
+ *   stays listed: a provisioning chain that has never provisioned anything is
+ *   a claim, not a capability — the same standard `shared-l2-segment` is held
+ *   to below. What would clear it is a guest that boots from a joiner-flashed
+ *   image and logs `role=joiner` on serial.
+ * - `joining-node-address-assignment` — noticed while wiring the above, and
+ *   named rather than left to be discovered at dispatch. The shared segment is
+ *   a bare QEMU socket: no DHCP server, no DNS, no router. Two guests on it get
+ *   IPv4 link-local addresses at best, and the only name service present is
+ *   Avahi/nss-mdns (`nssmdns4` in `nixos/modules/common.nix`), which answers
+ *   for `.local` names ONLY. So `k3s-agent.nix`'s default
+ *   `https://control-plane:6443` — a bare single label — cannot resolve there
+ *   even once both VMs are up. `SCENARIO5_JOIN_SERVER_URL` therefore uses
+ *   `control-plane.local`, and the existing node must be flashed
+ *   `--host control-plane` (without it `zeta-install.sh` generates a random
+ *   `node-<6hex>`). Whether mDNS actually completes over IPv4LL on this
+ *   segment is UNMEASURED.
  * - `shared-l2-segment` — the ARGUMENT half has cleared:
  *   `buildQemuSystemBootArgs` now accepts injected netdev specs and
  *   `planMultiVMRuntime` puts the two VMs on one rootless QEMU socket segment
@@ -235,7 +254,11 @@ export function findScenario(id: ScenarioId): Scenario | undefined {
  *   serially and `runManagedCommandUntilSerialMarkers` SIGTERMs each VM on
  *   marker match, so the existing node is dead before the joining node boots.
  */
-export type JoinBlocker = "joining-node-role-provisioning" | "shared-l2-segment" | "concurrent-vm-lifecycle";
+export type JoinBlocker =
+  | "joining-node-role-provisioning"
+  | "joining-node-address-assignment"
+  | "shared-l2-segment"
+  | "concurrent-vm-lifecycle";
 
 /**
  * RunnabilityVerdict — discriminated union for whether a scenario can
@@ -347,7 +370,12 @@ export function determineRunnability(
         // type-level edit rather than a quiet prose change.
         return {
           kind: "blocked-on-multi-vm-orchestration",
-          remainingBlockers: ["joining-node-role-provisioning", "shared-l2-segment", "concurrent-vm-lifecycle"],
+          remainingBlockers: [
+            "joining-node-role-provisioning",
+            "joining-node-address-assignment",
+            "shared-l2-segment",
+            "concurrent-vm-lifecycle",
+          ],
         };
       }
       // Default scaffolded blocker:

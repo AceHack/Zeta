@@ -8,6 +8,11 @@
  */
 
 import { DEFAULT_MULTI_VM, type NetworkTopology, type VMSpec } from "./extensions";
+import {
+  DEFAULT_JOINER_FLAKE_HOST,
+  ZETA_JOIN_TOKEN_ESP_DESTINATION,
+  type ZetaFirstbootRole,
+} from "../firstboot-role";
 import { B0891_CLUSTER_JOIN_SERIAL_MARKERS } from "./serial-markers";
 import {
   RETENTION_ABSENT_TERMINAL_MARKERS,
@@ -34,9 +39,57 @@ export interface MultiVMRuntimeInput {
   readonly kvmAvailable?: boolean;
 }
 
+/**
+ * The hostname the scenario-5 existing node must install under, and therefore
+ * the name the joining node dials.
+ *
+ * Load-bearing and easy to get wrong: `zeta-install.sh` GENERATES a random
+ * `node-<6hex>` hostname when no `zeta-hostname.txt` is on the ESP (the
+ * iter-5.2.2 path, added so one USB could install many machines). A joiner
+ * pointed at a name the founder never took would dial nothing. So the
+ * existing node must be flashed with `--host control-plane`, and this
+ * constant is the single place both halves read that from.
+ *
+ * `.local` because resolution on the shared L2 segment can only be mDNS:
+ * the segment is a bare QEMU socket with no DHCP server and no DNS, so
+ * NetworkManager falls back to IPv4 link-local and Avahi (`nssmdns4`, on in
+ * `nixos/modules/common.nix`) is the only name service present — and nss-mdns
+ * answers for `.local` names only, never for a bare single label.
+ *
+ * UNVERIFIED: no frame has crossed that segment. This is derived from the
+ * committed guest configuration, not observed.
+ */
+export const SCENARIO5_EXISTING_NODE_HOSTNAME = "control-plane";
+export const SCENARIO5_JOIN_SERVER_URL = `https://${SCENARIO5_EXISTING_NODE_HOSTNAME}.local:6443`;
+
+/**
+ * The firstboot role each scenario-5 VM's medium must carry.
+ *
+ * Pure function of the VM's declared role, so the mapping is checkable
+ * without QEMU: the existing node founds the cluster, the joining node joins
+ * it and expects its k3s node-token at the ESP path zflash writes.
+ */
+export function scenario5FirstbootRole(role: VMSpec["role"]): ZetaFirstbootRole {
+  if (role === "cluster-existing") {
+    return { kind: "first-control-plane", flakeHost: SCENARIO5_EXISTING_NODE_HOSTNAME };
+  }
+  return {
+    kind: "joiner",
+    flakeHost: DEFAULT_JOINER_FLAKE_HOST,
+    serverUrl: SCENARIO5_JOIN_SERVER_URL,
+    tokenEspPath: ZETA_JOIN_TOKEN_ESP_DESTINATION,
+  };
+}
+
 export interface MultiVMRuntimeVMPlan {
   readonly name: string;
   readonly role: VMSpec["role"];
+  /**
+   * What the VM's boot medium must be flashed with for this plan to mean what
+   * it says. Carried on the plan rather than left implicit so that "the
+   * joining node is a joiner" is a value a test can assert, not a hope.
+   */
+  readonly firstbootRole: ZetaFirstbootRole;
   readonly restoreStartingState?: QemuCommand;
   readonly qemuBootCommand?: QemuCommand;
   readonly stopCondition: QemuSerialStopCondition;
@@ -202,6 +255,8 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
     let qemuBootCommand: QemuCommand | undefined;
     const missingRuntimeRequirements: string[] = [];
 
+    const firstbootRole = scenario5FirstbootRole(vmSpec.role);
+
     if (isExisting) {
       qemuBootCommand = {
         bin: "qemu-system-x86_64",
@@ -217,7 +272,19 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
       };
     } else {
       if (normalized.bootImagePath === undefined) {
-        missingRuntimeRequirements.push("zflash-prepared boot image containing joining credentials");
+        // Names the role, not just "credentials": the medium has to carry
+        // `/zeta-firstboot.conf` with `ZETA_ROLE=joiner` and
+        // `HOST=worker-template`, or the VM installs a second control plane
+        // and runs no agent — which is the failure this plan exists to stop.
+        const tokenSource =
+          DEFAULT_MULTI_VM.joinProtocol.kind === "explicit-join-token"
+            ? DEFAULT_MULTI_VM.joinProtocol.tokenSource
+            : "the existing node's k3s node-token";
+        missingRuntimeRequirements.push(
+          `zflash-prepared boot image flashed with --role joiner ` +
+            `--join-server-url ${SCENARIO5_JOIN_SERVER_URL} ` +
+            `--join-token <k3s node-token from ${tokenSource} on the existing node>`,
+        );
       } else {
         qemuBootCommand = {
           bin: "qemu-system-x86_64",
@@ -241,6 +308,7 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
     return {
       name: vmSpec.name,
       role: vmSpec.role,
+      firstbootRole,
       ...(restoreStartingState ? { restoreStartingState } : {}),
       ...(qemuBootCommand ? { qemuBootCommand } : {}),
       stopCondition: {

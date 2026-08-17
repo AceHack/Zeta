@@ -594,6 +594,58 @@ if [ -n "$PUBKEY_FILE" ]; then
     echo "[081KSNY2Z0008QG0R0008PN7RQ-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal"
   fi
 
+  # ── 081KSNY2Z0008QG0R0008PN7RQ scenario 5: role-provisioning pickup ─────────
+  #
+  # zflash can bake two role-provisioning files onto the boot USB ESP
+  # (src/Core.TypeScript/zflash/firstboot-role.ts):
+  #
+  #   /zeta-firstboot.conf  ZETA_ROLE / HOST / ZETA_JOIN_SERVER_URL /
+  #                         ZETA_JOIN_TOKEN_ESP_PATH. zeta-first-boot.sh sources
+  #                         it and exports the join values; this block re-reads
+  #                         it so a MANUAL `zeta-install` gets the same
+  #                         provisioning.
+  #   /zeta-join-token      the k3s node-token a joining node needs.
+  #
+  # The conf is NOT sourced here. It is parsed with a strict pattern and the
+  # value re-checked against the same conservative shape zflash validated
+  # before writing. Sourcing would add a second execution surface to buy two
+  # scalars, which is not a trade worth making on a script that is about to
+  # partition a disk.
+  BOOT_USB_FIRSTBOOT_CONF="$(dirname "$PUBKEY_FILE")/zeta-firstboot.conf"
+  if [ -z "${ZETA_JOIN_SERVER_URL:-}" ] && sudo test -f "$BOOT_USB_FIRSTBOOT_CONF"; then
+    ZETA_JOIN_SERVER_URL=$(sudo sed -n "s/^ZETA_JOIN_SERVER_URL='\([^']*\)'\$/\1/p" \
+      "$BOOT_USB_FIRSTBOOT_CONF" | head -1 || true)
+  fi
+  if [ -n "${ZETA_JOIN_SERVER_URL:-}" ]; then
+    if echo "$ZETA_JOIN_SERVER_URL" | grep -Eq '^https://[A-Za-z0-9._:-]+$'; then
+      sudo mkdir -p /mnt/etc/zeta
+      echo "$ZETA_JOIN_SERVER_URL" | sudo tee /mnt/etc/zeta/cluster-join-server-url >/dev/null
+      sudo chmod 0644 /mnt/etc/zeta/cluster-join-server-url
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   staged join server $ZETA_JOIN_SERVER_URL → /mnt/etc/zeta/cluster-join-server-url"
+    else
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   WARN: refusing malformed join server URL '$ZETA_JOIN_SERVER_URL'" >&2
+      ZETA_JOIN_SERVER_URL=""
+    fi
+  fi
+
+  # The token's destination is not a choice made here: nixos/modules/k3s-agent.nix
+  # sets services.k3s.tokenFile = "/var/lib/rancher/k3s/agent/token". Landing it
+  # anywhere else produces a node that boots, runs an agent, and never joins.
+  BOOT_USB_JOIN_TOKEN="$(dirname "$PUBKEY_FILE")/zeta-join-token"
+  if sudo test -f "$BOOT_USB_JOIN_TOKEN"; then
+    if sudo test -s "$BOOT_USB_JOIN_TOKEN"; then
+      sudo install -D -m 0600 "$BOOT_USB_JOIN_TOKEN" /mnt/var/lib/rancher/k3s/agent/token
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   installed k3s node-token → /mnt/var/lib/rancher/k3s/agent/token"
+    else
+      # An empty token file is worse than an absent one: k3s would start,
+      # present an empty credential, and fail the join for a reason that reads
+      # nothing like "the flash carried no token".
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   WARN: zeta-join-token on ESP is EMPTY; not installing it" >&2
+    fi
+  else
+    echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   no zeta-join-token on boot USB ESP (founding node, or token provisioned elsewhere)"
+  fi
+
   sudo umount "$PROBE_MOUNT" 2>/dev/null || true
   if [ "$PUBKEY_LINE_COUNT" -gt 0 ]; then
     INJECT_OK=1
@@ -1404,6 +1456,11 @@ maybe_symlink() {
 }
 maybe_symlink "$HOSTNAME_DST" /etc/zeta/cluster-node-id
 maybe_symlink /mnt/etc/zeta/operator-authorized-keys /etc/zeta/operator-authorized-keys
+# 081KSNY2Z0008QG0R0008PN7RQ scenario 5: injected-join-server.nix is the same bug
+# class — it readFile's /etc/zeta/cluster-join-server-url at EVALUATION time, so
+# without this symlink a joiner's serverAddr would silently stay at the
+# k3s-agent.nix default and the node would dial the wrong host.
+maybe_symlink /mnt/etc/zeta/cluster-join-server-url /etc/zeta/cluster-join-server-url
 
 # 081KSNY2Z0008QG0R0008PN7RQ QEMU phase-3: non-interactive CI installs enable boot-time first-session
 # demo (systemd oneshot tees markers to ttyS0; qemu-full-install-test asserts them).

@@ -12,6 +12,7 @@ import {
   planFileBackedZflashImageExecution,
   resolveZetaTestInfraPubkeyFromZflashModule,
 } from "./lib.ts";
+import { firstbootRoleFromFlags, type ZetaFirstbootRole } from "./firstboot-role.ts";
 import type {
   FileBackedZflashImageExecution,
   FileBackedZflashImageExecutionFeedback,
@@ -31,6 +32,9 @@ export interface FileBackedZflashCliOptions {
   readonly wifiSsid?: string;
   readonly wifiPassword?: string;
   readonly inlineStagingDirectory?: string;
+  /** 081KSNY2Z0008QG0R0008PN7RQ scenario 5 — see firstboot-role.ts. */
+  readonly firstbootRole?: ZetaFirstbootRole;
+  readonly joinTokenSourcePath?: string;
 }
 
 export type FileBackedZflashCliParseResult =
@@ -69,7 +73,11 @@ const USAGE =
   "  --wifi-credentials <path>    write /zeta-wifi-credentials.json from {ssid,password} JSON\n" +
   "  --wifi-ssid <ssid>           write wifi credentials from flags (requires --wifi-password)\n" +
   "  --wifi-password <password>   write wifi credentials from flags (requires --wifi-ssid)\n" +
-  "  --inline-staging-dir <path>  optional staging root for inline content files\n";
+  "  --inline-staging-dir <path>  optional staging root for inline content files\n" +
+  "  --role <first-control-plane|joiner>  write /zeta-firstboot.conf naming the node's role\n" +
+  "  --flake-host <attr>          flake host attribute for --role (defaults per role)\n" +
+  "  --join-server-url <url>      https://host[:port] of the existing control plane (joiner only)\n" +
+  "  --join-token <path>          copy k3s node-token material to /zeta-join-token (joiner only)\n";
 
 function resolveTestInfraPubkeyPath(): string {
   return resolveZetaTestInfraPubkeyFromZflashModule(import.meta.url);
@@ -158,6 +166,10 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   let wifiSsid: string | undefined;
   let wifiPassword: string | undefined;
   let inlineStagingDirectory: string | undefined;
+  let roleFlag: string | undefined;
+  let flakeHostFlag: string | undefined;
+  let joinServerUrlFlag: string | undefined;
+  let joinTokenSourcePath: string | undefined;
   let testMode = false;
 
   for (let index = 0; index < args.length; index++) {
@@ -178,7 +190,11 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       arg === "--wifi-credentials" ||
       arg === "--wifi-ssid" ||
       arg === "--wifi-password" ||
-      arg === "--inline-staging-dir"
+      arg === "--inline-staging-dir" ||
+      arg === "--role" ||
+      arg === "--flake-host" ||
+      arg === "--join-server-url" ||
+      arg === "--join-token"
     ) {
       const value = requireValue(args, index, arg);
       if (typeof value !== "string") return { kind: "error", error: value.error };
@@ -196,6 +212,10 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       else if (arg === "--wifi-credentials") wifiCredentialsPath = value;
       else if (arg === "--wifi-ssid") wifiSsid = value;
       else if (arg === "--wifi-password") wifiPassword = value;
+      else if (arg === "--role") roleFlag = value;
+      else if (arg === "--flake-host") flakeHostFlag = value;
+      else if (arg === "--join-server-url") joinServerUrlFlag = value;
+      else if (arg === "--join-token") joinTokenSourcePath = value;
       else inlineStagingDirectory = value;
       index++;
       continue;
@@ -207,6 +227,14 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   if (isoPath === undefined) return { kind: "error", error: "--iso is required" };
   if (outputImagePath === undefined) return { kind: "error", error: "--output is required" };
   if (espOffsetBytes === undefined) return { kind: "error", error: "--esp-offset-bytes is required" };
+
+  const firstbootRole = firstbootRoleFromFlags({
+    ...(roleFlag === undefined ? {} : { role: roleFlag }),
+    ...(flakeHostFlag === undefined ? {} : { flakeHost: flakeHostFlag }),
+    ...(joinServerUrlFlag === undefined ? {} : { joinServerUrl: joinServerUrlFlag }),
+    ...(joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath }),
+  });
+  if (!firstbootRole.ok) return { kind: "error", error: firstbootRole.error };
 
   return {
     kind: "run",
@@ -222,6 +250,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       ...(wifiSsid === undefined ? {} : { wifiSsid }),
       ...(wifiPassword === undefined ? {} : { wifiPassword }),
       ...(inlineStagingDirectory === undefined ? {} : { inlineStagingDirectory }),
+      ...(firstbootRole.value === undefined ? {} : { firstbootRole: firstbootRole.value }),
+      ...(joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath }),
     },
   };
 }
@@ -273,6 +303,8 @@ export function runFileBackedZflashCli(
     ...(options.hostname === undefined ? {} : { hostname: options.hostname }),
     ...(options.credentialBlobPath === undefined ? {} : { credentialBlobPath: options.credentialBlobPath }),
     ...(wifiCredentials === undefined ? {} : { wifiCredentials }),
+    ...(options.firstbootRole === undefined ? {} : { firstbootRole: options.firstbootRole }),
+    ...(options.joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath: options.joinTokenSourcePath }),
   };
   const planned = planFileBackedZflashImage(planInput);
   if (!planned.ok) return { ok: false, error: planned.error };

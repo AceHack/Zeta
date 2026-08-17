@@ -833,23 +833,37 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
         // on every agent-role node. nixos/tests/k3s-agent-join.nix proves that
         // end-to-end against the shipped modules, two nodes on one segment.
         //
-        // The status stays `skipped` anyway, because three separate things
+        // The status stays `skipped` anyway, because four separate things
         // still stand between this harness and an honest verdict — and none of
         // them is the join:
         //
-        //   1. joining-node-role-provisioning. A zflash-prepared boot image
-        //      installs HOST=control-plane: zeta-first-boot.sh reads the role
-        //      from the ISO's own /etc/zeta-firstboot.conf, the tty1 role
-        //      prompt takes its timed default under automation, and zflash
-        //      writes no firstboot config to the ESP. So the "joining" VM
-        //      would come up as a second control-plane, run no k3s agent, and
-        //      therefore run no observer.
-        //   2. shared-l2-segment. The args half has cleared:
+        //   1. joining-node-role-provisioning. Until 2026-08-17 zflash wrote
+        //      no firstboot config at all, so a prepared image installed
+        //      HOST=control-plane and the "joining" VM came up as a second
+        //      control plane running no agent and therefore no observer.
+        //      A carrier now exists end to end on paper: firstboot-role.ts
+        //      composes /zeta-firstboot.conf, planFileBackedZflashImage writes
+        //      it (plus an optional /zeta-join-token), zeta-first-boot.sh
+        //      sources the ESP copy in preference to the ISO's,
+        //      zeta-install.sh installs the token where k3s-agent.nix reads
+        //      it, and injected-join-server.nix overrides serverAddr on
+        //      agents. NOT ONE OF THOSE STEPS HAS BEEN OBSERVED ON A BOOTED
+        //      GUEST — they are unit-tested pure functions and untested bash
+        //      and Nix. The blocker stands until a guest logs `role=joiner`.
+        //   2. joining-node-address-assignment. The shared segment is a bare
+        //      QEMU socket: no DHCP, no DNS, no router. Avahi/nss-mdns is the
+        //      only name service on the guests and it answers for `.local`
+        //      names only, so k3s-agent.nix's default
+        //      https://control-plane:6443 cannot resolve there. The scenario-5
+        //      plan therefore uses control-plane.local and requires the
+        //      existing node to be flashed --host control-plane; whether mDNS
+        //      completes over IPv4 link-local on that segment is UNMEASURED.
+        //   3. shared-l2-segment. The args half has cleared:
         //      buildQemuSystemBootArgs takes injected netdev specs and
         //      planMultiVMRuntime puts both VMs on one rootless QEMU socket
         //      segment with distinct MACs. The proof half has not: no frame
         //      has crossed it, because nothing runs the VMs concurrently.
-        //   3. concurrent-vm-lifecycle. executeMultiVMRuntimePlan boots the
+        //   4. concurrent-vm-lifecycle. executeMultiVMRuntimePlan boots the
         //      VMs serially and SIGTERMs each on marker match, so the existing
         //      node is dead before the joining node starts.
         //
@@ -864,13 +878,16 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
             "NOT RUN (counts as non-passing): the join itself is no longer the blocker — " +
             "k3s-join-observer.nix emits B0891_CLUSTER_JOIN_SERIAL_MARKERS on agent nodes " +
             "and nixos/tests/k3s-agent-join.nix proves the two-node join. Still blocked on " +
-            "three items, none of them the join: (1) joining-node-role-provisioning — a " +
-            "zflash-prepared image installs HOST=control-plane, so the joining VM runs no " +
-            "k3s agent; (2) shared-l2-segment — the netdev args and socket-segment plan now " +
-            "exist with distinct MACs, but no frame has crossed the segment because nothing " +
-            "boots the VMs concurrently; (3) concurrent-vm-lifecycle — executeMultiVMRuntimePlan " +
-            "boots serially and kills each VM on marker match. All three must clear before this " +
-            "scenario can honestly report passed or failed.",
+            "four items, none of them the join: (1) joining-node-role-provisioning — zflash " +
+            "can now write /zeta-firstboot.conf and /zeta-join-token and the guest reads both, " +
+            "but nothing has BOOTED from a joiner-flashed image, so the chain is unit-tested " +
+            "and unexercised; (2) joining-node-address-assignment — the socket segment has no " +
+            "DHCP and no DNS and nss-mdns answers for .local only, so a bare control-plane " +
+            "label cannot resolve there; (3) shared-l2-segment — the netdev args and " +
+            "socket-segment plan now exist with distinct MACs, but no frame has crossed the " +
+            "segment because nothing boots the VMs concurrently; (4) concurrent-vm-lifecycle — " +
+            "executeMultiVMRuntimePlan boots serially and kills each VM on marker match. All " +
+            "four must clear before this scenario can honestly report passed or failed.",
         };
       }
       return reportScaffolded(scenario);

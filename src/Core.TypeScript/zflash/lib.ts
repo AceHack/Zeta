@@ -5,6 +5,13 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import {
+  planFirstbootConfFileContent,
+  ZETA_FIRSTBOOT_CONF_ESP_DESTINATION,
+  ZETA_JOIN_TOKEN_ESP_DESTINATION,
+  type ZetaFirstbootRole,
+} from "./firstboot-role.ts";
+
 /**
  * RFC1123 hostname regex.
  *
@@ -168,7 +175,15 @@ export interface FileBackedEspWrite {
     | "/zeta-authorized-keys.pub"
     | "/zeta-hostname.txt"
     | "/zeta-creds.enc"
-    | "/zeta-wifi-credentials.json";
+    | "/zeta-wifi-credentials.json"
+    // 081KSNY2Z0008QG0R0008PN7RQ scenario 5 role provisioning: the role the
+    // flashed medium provisions, and the k3s node-token when it travels with
+    // the medium. Before these two, a flash could carry keys, a hostname,
+    // credentials and wifi — but never an answer to "am I founding a cluster
+    // or joining one", which is why a second node installed as a second
+    // control plane. See firstboot-role.ts.
+    | "/zeta-firstboot.conf"
+    | "/zeta-join-token";
   readonly sourcePath?: string;
   readonly content?: string;
 }
@@ -195,6 +210,20 @@ export interface FileBackedZflashImagePlanInput {
   readonly hostname?: string;
   readonly credentialBlobPath?: string;
   readonly wifiCredentials?: WifiCredentials;
+  /**
+   * When set, writes `/zeta-firstboot.conf` so the booting node learns
+   * whether it founds a cluster or joins one. Omitted → unchanged behaviour:
+   * the node falls back to the ISO's own `/etc/zeta-firstboot.conf`, which
+   * ships `HOST=control-plane`.
+   */
+  readonly firstbootRole?: ZetaFirstbootRole;
+  /**
+   * Host path to k3s node-token material to copy onto the ESP as
+   * `/zeta-join-token`. Only meaningful for a joiner whose role names that
+   * same ESP path — a token with no config pointing at it is a file nothing
+   * reads, so the combination is refused rather than written.
+   */
+  readonly joinTokenSourcePath?: string;
 }
 
 export interface FileBackedInlineFile {
@@ -386,6 +415,45 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
       destination: "/zeta-wifi-credentials.json",
     });
   }
+  // 081KSNY2Z0008QG0R0008PN7RQ role provisioning. Ordered AFTER the existing
+  // writes so adding a role cannot disturb the byte-for-byte shape of a plan
+  // that does not ask for one.
+  const joinTokenSourcePath = input.joinTokenSourcePath?.trim();
+  if (input.firstbootRole !== undefined) {
+    const firstboot = planFirstbootConfFileContent(input.firstbootRole);
+    if (!firstboot.ok) {
+      return { ok: false, error: firstboot.error };
+    }
+    if (joinTokenSourcePath !== undefined && joinTokenSourcePath.length > 0) {
+      // The config must NAME the token path, or the token lands on the ESP
+      // and nothing goes looking for it. Refusing here is the whole point:
+      // a write nobody reads looks like provisioning and provisions nothing.
+      if (firstboot.config.joinTokenEspPath !== ZETA_JOIN_TOKEN_ESP_DESTINATION) {
+        return {
+          ok: false,
+          error:
+            `joinTokenSourcePath was given but the firstboot role does not name ` +
+            `${ZETA_JOIN_TOKEN_ESP_DESTINATION} as its token path ` +
+            `(role token path: ${firstboot.config.joinTokenEspPath ?? "none"}); ` +
+            `the token would land on the ESP with nothing configured to read it`,
+        };
+      }
+      espWrites.push({
+        destination: ZETA_JOIN_TOKEN_ESP_DESTINATION,
+        sourcePath: joinTokenSourcePath,
+      });
+    }
+    espWrites.push({
+      content: firstboot.value,
+      destination: ZETA_FIRSTBOOT_CONF_ESP_DESTINATION,
+    });
+  } else if (joinTokenSourcePath !== undefined && joinTokenSourcePath.length > 0) {
+    return {
+      ok: false,
+      error: "joinTokenSourcePath requires a joiner firstbootRole; a token with no role config is never read",
+    };
+  }
+
   if (espWrites.length === 0) {
     return { ok: false, error: "at least one ESP write is required" };
   }

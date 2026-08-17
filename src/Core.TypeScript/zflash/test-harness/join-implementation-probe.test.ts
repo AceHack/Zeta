@@ -80,7 +80,13 @@ describe("probeJoinImplementation", () => {
     expect(message).toContain("no longer what stops this");
     // What genuinely remains, and the message must keep saying so.
     expect(message).toContain("serially");
-    expect(message).toContain("control-plane");
+    // Was `toContain("control-plane")`, pinning "a zflash-prepared image still
+    // installs HOST=control-plane". That statement became FALSE on 2026-08-17
+    // when zflash gained a role carrier, so the assertion moved to the claim
+    // that is now true and is the one worth guarding: the carrier exists and
+    // has never been exercised. Rounding that up to "role provisioning works"
+    // is the failure this line exists to catch.
+    expect(message).toContain("unexercised rather than working");
     expect(message).toContain("Not before");
   });
 });

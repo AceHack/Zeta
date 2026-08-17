@@ -44,7 +44,56 @@ fi
 
 CONF=/etc/zeta-firstboot.conf
 [[ -f "$CONF" ]] && . "$CONF"
+
+# ── 081KSNY2Z0008QG0R0008PN7RQ scenario 5: ESP-provided role overrides the ISO's ──
+#
+# The line above sources a file baked into the ISO's read-only Nix store, which
+# ships HOST=control-plane. That made the role an ISO-BUILD-time decision, so
+# every medium cut from one ISO installed a control plane and a second node
+# could never be provisioned as a joiner (the installer's own comment deferred a
+# per-flash --role to "v2").
+#
+# zflash now writes /zeta-firstboot.conf to the boot ESP
+# (src/Core.TypeScript/zflash/firstboot-role.ts). Source it AFTER the ISO's copy
+# so the flash wins, which is the whole point: the role travels with the flash.
+#
+# Strictly additive and fail-safe — if no ESP conf is found, everything below is
+# byte-identical to the previous behaviour. The ESP is mounted read-only; every
+# value in that file passed a conservative allowlist at flash time (no $, no
+# backtick, no ;, no quotes, no newline) and is emitted single-quoted, because
+# this line SOURCES it as bash.
+ZETA_ROLE_SOURCE="iso:/etc/zeta-firstboot.conf"
+ESP_CONF_MOUNT=/run/zeta-boot-esp
+zeta_source_esp_firstboot_conf() {
+  local part conf
+  mkdir -p "$ESP_CONF_MOUNT" 2>/dev/null || return 1
+  for part in /dev/disk/by-label/* /dev/sd?[0-9] /dev/nvme?n?p[0-9] /dev/vd?[0-9] /dev/mmcblk?p[0-9]; do
+    [[ -b "$part" ]] || continue
+    mount -t vfat -o ro "$part" "$ESP_CONF_MOUNT" 2>/dev/null || continue
+    conf="$ESP_CONF_MOUNT/zeta-firstboot.conf"
+    if [[ -f "$conf" ]]; then
+      # shellcheck disable=SC1090
+      . "$conf"
+      ZETA_ROLE_SOURCE="esp:$part"
+      umount "$ESP_CONF_MOUNT" 2>/dev/null || true
+      return 0
+    fi
+    umount "$ESP_CONF_MOUNT" 2>/dev/null || true
+  done
+  return 1
+}
+zeta_source_esp_firstboot_conf || true
+
 HOST="${HOST:-control-plane}"
+ZETA_ROLE="${ZETA_ROLE:-first-control-plane}"
+echo "[081KSNY2Z0008QG0R0008PN7RQ-role] role=${ZETA_ROLE} host=${HOST} source=${ZETA_ROLE_SOURCE}"
+if [[ "${ZETA_ROLE}" == "joiner" ]]; then
+  echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   join server: ${ZETA_JOIN_SERVER_URL:-<unset>}"
+  echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   token on ESP: ${ZETA_JOIN_TOKEN_ESP_PATH:-<unset>}"
+  export ZETA_JOIN_SERVER_URL="${ZETA_JOIN_SERVER_URL:-}"
+  export ZETA_JOIN_TOKEN_ESP_PATH="${ZETA_JOIN_TOKEN_ESP_PATH:-}"
+fi
+export ZETA_ROLE
 REPO_URL="${REPO_URL:-https://github.com/Lucent-Financial-Group/Zeta}"
 ETHERNET_WAIT_SECS="${ETHERNET_WAIT_SECS:-30}"
 ROLE_PROMPT_SECS="${ROLE_PROMPT_SECS:-10}"
@@ -79,11 +128,16 @@ EOF
 ROLE_KEY=""
 read -n 1 -s -t "${ROLE_PROMPT_SECS}" ROLE_KEY || true
 case "${ROLE_KEY,,}" in
-  c) HOST=control-plane ;;
-  w) HOST=worker-gpu ;;
+  # 081KSNY2Z0008QG0R0008PN7RQ: an operator keypress moves ZETA_ROLE too. Without
+  # this the two could disagree — HOST=control-plane with ZETA_ROLE=joiner —
+  # and the install would found a cluster while every later step believed it
+  # was joining one.
+  c) HOST=control-plane; ZETA_ROLE=first-control-plane ;;
+  w) HOST=worker-gpu; ZETA_ROLE=joiner ;;
   *) ;;  # keep default
 esac
-echo "Role selected: ${HOST}"
+export ZETA_ROLE
+echo "Role selected: ${HOST} (role=${ZETA_ROLE})"
 echo
 
 drop_to_shell() {

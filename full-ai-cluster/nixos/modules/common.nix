@@ -13,6 +13,11 @@
   # diagnostic discipline.
   imports = [
     ./injected-hostname.nix
+    # 081KSNY2Z0008QG0R0008PN7RQ scenario 5: the same injection shape for the
+    # k3s join endpoint, so a flashed joiner dials the founder it was actually
+    # pointed at instead of k3s-agent.nix's build-time default. No-op on hosts
+    # with no /etc/zeta/cluster-join-server-url and on every k3s server.
+    ./injected-join-server.nix
     ./login-banner.nix
     # 081KZETP6AT: FHS loader (nix-ld) for foreign dynamically-linked ELFs — mise's
     # prebuilt toolchains and the vendor agent CLIs. Needed on INSTALLED nodes too,

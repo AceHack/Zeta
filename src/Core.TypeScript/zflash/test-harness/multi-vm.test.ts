@@ -1,5 +1,13 @@
 import { describe, expect, test } from "bun:test";
-import { planMultiVMRuntime, executeMultiVMRuntimePlan, type MultiVMRuntimeInput } from "./multi-vm";
+import {
+  planMultiVMRuntime,
+  executeMultiVMRuntimePlan,
+  scenario5FirstbootRole,
+  SCENARIO5_EXISTING_NODE_HOSTNAME,
+  SCENARIO5_JOIN_SERVER_URL,
+  type MultiVMRuntimeInput,
+} from "./multi-vm";
+import { planFirstbootConfFileContent } from "../firstboot-role";
 
 function validInput(overrides: Partial<MultiVMRuntimeInput> = {}): MultiVMRuntimeInput {
   return {
@@ -135,5 +143,62 @@ describe("scenario 5 shared L2 segment planning", () => {
       expect(args).toContain("user,id=net0");
       expect(args.filter((a) => a === "-netdev")).toHaveLength(2);
     }
+  });
+});
+
+describe("081KSNY2Z0008QG0R0008PN7RQ scenario 5 role provisioning", () => {
+  test("the existing node founds the cluster, the joining node joins it", () => {
+    expect(scenario5FirstbootRole("cluster-existing")).toEqual({
+      kind: "first-control-plane",
+      flakeHost: SCENARIO5_EXISTING_NODE_HOSTNAME,
+    });
+    expect(scenario5FirstbootRole("joining-node")).toEqual({
+      kind: "joiner",
+      flakeHost: "worker-template",
+      serverUrl: SCENARIO5_JOIN_SERVER_URL,
+      tokenEspPath: "/zeta-join-token",
+    });
+  });
+
+  test("the joiner dials the name the founder is flashed to take", () => {
+    // The failure this pins: zeta-install.sh generates a random node-<6hex>
+    // hostname when no zeta-hostname.txt is on the ESP, so a joiner pointed
+    // at a name the founder never took dials nothing.
+    const founder = scenario5FirstbootRole("cluster-existing");
+    expect(founder.kind).toBe("first-control-plane");
+    expect(SCENARIO5_JOIN_SERVER_URL).toContain(`${SCENARIO5_EXISTING_NODE_HOSTNAME}.local`);
+  });
+
+  test("the joiner URL is mDNS-resolvable in shape (.local), not a bare label", () => {
+    // nss-mdns answers for `.local` only; the shared socket segment has no
+    // DHCP and no DNS, so a bare `https://control-plane:6443` would not
+    // resolve there. UNVERIFIED end-to-end; this pins the shape only.
+    expect(SCENARIO5_JOIN_SERVER_URL.startsWith("https://")).toBe(true);
+    expect(SCENARIO5_JOIN_SERVER_URL.endsWith(".local:6443")).toBe(true);
+  });
+
+  test("both scenario-5 roles compose to a valid firstboot config", () => {
+    for (const role of ["cluster-existing", "joining-node"] as const) {
+      const planned = planFirstbootConfFileContent(scenario5FirstbootRole(role));
+      expect(planned.ok).toBe(true);
+    }
+  });
+
+  test("the plan carries each VM's role so a test can assert it", () => {
+    const result = planMultiVMRuntime(validInput({ bootImagePath: "run/boot.img" }));
+    expect("ok" in result).toBe(true);
+    if (!("ok" in result)) return;
+    const joining = result.ok.vms.find((vm) => vm.role === "joining-node");
+    expect(joining?.firstbootRole.kind).toBe("joiner");
+    const existing = result.ok.vms.find((vm) => vm.role === "cluster-existing");
+    expect(existing?.firstbootRole.kind).toBe("first-control-plane");
+  });
+
+  test("a missing boot image names the role the flash must carry", () => {
+    const result = planMultiVMRuntime(validInput());
+    expect("ok" in result).toBe(true);
+    if (!("ok" in result)) return;
+    const joining = result.ok.vms.find((vm) => vm.role === "joining-node");
+    expect(joining?.missingRuntimeRequirements.join(" ")).toContain("--role joiner");
   });
 });

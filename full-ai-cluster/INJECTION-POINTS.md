@@ -85,6 +85,54 @@ NixOS module (declarative reader) + iter/backlog tag.
 | **Iter / backlog** | sibling exception in `zeta-first-boot.sh` (per `zeta-install.sh` line 392 comment) |
 | **Why console-only** | Same constitutional rail; WiFi PSK is secret |
 
+### 5. Node role (first control plane vs joiner)
+
+| Property | Value |
+|---|---|
+| **Stage** | macOS/Linux at flash time → USB ESP write |
+| **Content class** | Public identifier (role, flake host attribute, join endpoint) |
+| **Operator-driven via** | `--role first-control-plane\|joiner` `--flake-host <attr>` `--join-server-url https://host[:port]` on the file-backed zflash CLI and `prepare-boot-image.ts` |
+| **ESP filename** | `zeta-firstboot.conf` |
+| **NixOS reader module** | none — the conf is read by **bash**: `zeta-first-boot.sh` sources it in preference to the ISO's `/etc/zeta-firstboot.conf`, then execs `zeta-install "$HOST"`. The join URL half is read at Nix evaluation time by `full-ai-cluster/nixos/modules/injected-join-server.nix`. |
+| **Backed by file** | `/mnt/etc/zeta/cluster-join-server-url` (extracted from the conf by `zeta-install.sh`) |
+| **Composer** | `src/Core.TypeScript/zflash/firstboot-role.ts` (pure; unit-tested in `firstboot-role.test.ts`) |
+| **Validation** | flake host must match `VALID_FLAKE_HOST_ATTRIBUTE_REGEX`; join URL must be `https` host-and-port; **every emitted value passes `SHELL_SAFE_CONF_VALUE_REGEX` and is single-quoted**, because the file is `.`-sourced by bash |
+| **Iter / backlog** | 081KSNY2Z0008QG0R0008PN7RQ scenario 5; supersedes the "per-flash `--role` deferred to v2" note in `usb-nixos-installer/nixos/installer/configuration.nix` |
+
+**Why it exists:** before this, the role was fixed at ISO-BUILD time
+(`environment.etc."zeta-firstboot.conf"` ships `HOST=control-plane`), so every
+medium cut from one ISO installed a control plane and a second node could not
+be provisioned as a joiner.
+
+**UNEXERCISED.** The composer is unit-tested; the bash and Nix halves have not
+been booted. See `JoinBlocker` in `src/Core.TypeScript/zflash/test-harness/scenarios.ts`.
+
+### 6. k3s node-token (joiner) — plaintext on ESP, opt-in
+
+| Property | Value |
+|---|---|
+| **Stage** | flash time → USB ESP write, **only when explicitly requested** |
+| **Content class** | **Secret material, stored PLAINTEXT** — see the caveat below |
+| **Operator-driven via** | `--join-token <path>` (requires `--role joiner`) |
+| **ESP filename** | `zeta-join-token` |
+| **Consumer** | `zeta-install.sh` copies it to `/mnt/var/lib/rancher/k3s/agent/token` (0600), which is exactly the path `nixos/modules/k3s-agent.nix` sets as `services.k3s.tokenFile` |
+| **Source of the value** | the founding server's `/var/lib/rancher/k3s/server/node-token` |
+
+**CONSTITUTIONAL-RAIL CAVEAT — read before using this on real hardware.** Point
+7's "Encrypted cred-blob" earns its place on the ESP by being AES-256-GCM
+encrypted and bound to an operator passphrase plus the USB UUID. **This one is
+not.** A k3s node-token written here sits in the clear on a FAT filesystem that
+anyone with physical possession of the stick can read, and it grants cluster
+membership. That is a weaker bar than the rail sets for secret material, and it
+is recorded as a gap rather than argued away:
+
+- It is **never written implicitly** — only when the operator passes `--join-token`.
+- It is intended for the QEMU harness, where the token is deterministic test
+  material and the "stick" is a file in `/tmp`.
+- The correct long-term home is the existing encrypted blob path
+  (081KSKBP80008QG0R003AX2A69), which already has the passphrase + UUID binding
+  this needs. Folding the join token into that blob is the follow-up.
+
 ## Operator-driven `zflash` flag inventory (current)
 
 Allowlist from `zflash.ts`:
@@ -106,7 +154,7 @@ Allowlist from `zflash.ts`:
 
 ## In-flight injection points (substrate-engineering targets — not yet shipped)
 
-### 5. Encrypted cred-blob on USB ESP (081KSKBP80008QG0R003AX2A69 Phase 1, in-flight)
+### 7. Encrypted cred-blob on USB ESP (081KSKBP80008QG0R003AX2A69 Phase 1, in-flight)
 
 | Property | Value |
 |---|---|
@@ -144,7 +192,7 @@ HKDF binds the stretched secret to the USB UUID via IKM concatenation. Wrong USB
 
 Both layers must reproduce identically at decrypt time for the AES-GCM auth tag to verify; salt is per-blob (generated at encrypt time; stored in envelope; required at decrypt).
 
-### 6. GitHub-creds-at-flash-time variants (081KSKBP80008QG0R003AX2A69 picker options 1 + 3)
+### 8. GitHub-creds-at-flash-time variants (081KSKBP80008QG0R003AX2A69 picker options 1 + 3)
 
 Per operator 2026-05-27 verbatim: *"the current ones on my machine OR a token i generate on the website."*
 
