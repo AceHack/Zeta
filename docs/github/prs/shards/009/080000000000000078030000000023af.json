@@ -1,0 +1,12 @@
+{
+  "pr_number": 9135,
+  "archive_path": "docs/history/pr-reviews/PR-9135-docs-handoffs-soraya-s-routing-verdict-preserved-verbatim-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T08:19:25.792Z",
+  "schema_version": "v1",
+  "commit_sha": "d17709f7b09c0bd423e6d3718b3e0310da2e4d1f",
+  "title": "docs(handoffs): Soraya's routing verdict preserved verbatim (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T14:07:56Z",
+  "head_ref": "handoffs/soraya-routing-verdict"
+}
