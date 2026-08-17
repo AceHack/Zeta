@@ -1,4 +1,6 @@
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -31,6 +33,21 @@ describe("automatic Pages verification patch", () => {
     expect(patch).toContain(`Immutable base: \`${baseSha}\``);
     expect(patch).toContain("Direct writes to `main`: prohibited.");
     expect(patch.length).toBeLessThan(24_000);
+  });
+
+  it("conforms to Git's real patch parser, including the terminal newline", () => {
+    const directory = mkdtempSync(join(tmpdir(), "zeta-pages-patch-"));
+    try {
+      execFileSync("git", ["init", "--quiet", directory]);
+      const patchPath = join(directory, "verification.patch");
+      writeFileSync(patchPath, createAutomaticVerificationPatch(baseSha), "utf8");
+      expect(() => execFileSync("git", ["-C", directory, "apply", "--check", "--whitespace=error", patchPath])).not.toThrow();
+      const truncated = readFileSync(patchPath, "utf8").trimEnd();
+      writeFileSync(patchPath, truncated, "utf8");
+      expect(() => execFileSync("git", ["-C", directory, "apply", "--check", "--whitespace=error", patchPath])).toThrow();
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
   });
 
   it("FAULT INJECTION: refuses a non-immutable base", () => {
