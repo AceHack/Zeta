@@ -218,3 +218,79 @@ describe("full document — self-contained, zero JS at rest", () => {
     expect(doc).toContain("never taken away");
   });
 });
+
+// ═══════════════════════════════════════════════════════════════════════════
+// The receipt rails must not paint a blind counter as a genuine zero.
+// Work-item 081M01400RZ087G0R000PS3VJG.
+//
+// Measured on unmodified `main`, the two dwellers below rendered BYTE-IDENTICAL
+// HTML, and the un-measured one carried the word `cold` — the healthy word on a
+// reading nothing produced. Every `it` in this block fails against that revision.
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("heat receipt rails — observed nothing vs observed zero", () => {
+  const quiet = {
+    tick: 1,
+    roomName: "atrium",
+    heatRejected: 0,
+    backpressured: 0,
+    storageErrors: 0,
+    heatKinds: [] as readonly string[],
+    reasons: [] as readonly string[],
+  };
+
+  const dwellerWith = (rows: readonly HeatRow[]): DwellerMind => ({
+    ...alexa,
+    temperatureTreaty: temperatureTreatyBundle({
+      temperature: temperatureReadout({
+        source: "llmtv/alexa",
+        heatPpm: 0,
+        uncertaintyPpm: 0,
+        pressurePpm: 0,
+        attentionPpm: 0,
+      }),
+      heatReceipts: heatReceiptsFromRows(rows, { source: "llmtv/alexa" }),
+    }),
+  });
+
+  const measuredZeroHtml = renderDweller(dwellerWith([{ ...quiet, signals: [] }]), "S4");
+  const observedNothingHtml = renderDweller(dwellerWith([quiet]), "S4");
+
+  it("renders a blind receipt differently from a measured-quiet one (pre-fix: byte-identical)", () => {
+    expect(observedNothingHtml).not.toBe(measuredZeroHtml);
+  });
+
+  it("says it in WORDS, not only in colour — a quiet receipt already renders muted", () => {
+    expect(observedNothingHtml).toContain("NOT MEASURED");
+    expect(observedNothingHtml).toContain("0 observations");
+    expect(observedNothingHtml).toContain("unknown, not cold");
+  });
+
+  it("emits the reading as an attribute the CSS and an auditor can both read", () => {
+    expect(observedNothingHtml).toContain('data-signal-reading="unknown"');
+    expect(observedNothingHtml).toContain('data-signal-source="inferred"');
+    expect(observedNothingHtml).toContain('data-signal-observations="0"');
+    expect(measuredZeroHtml).toContain('data-signal-reading="measured"');
+    expect(measuredZeroHtml).toContain('data-signal-source="reported"');
+  });
+
+  it("leaves a measured receipt unworded — no false alarm, and no chartjunk", () => {
+    expect(measuredZeroHtml).not.toContain("NOT MEASURED");
+    expect(renderDweller(alexaWithTemperature, "S4")).not.toContain("NOT MEASURED");
+  });
+
+  it("carries a CSS rule that repaints an unknown receipt", () => {
+    const doc = renderLlmtvDocument({
+      schema: "zeta.darkhall.llmtv.v1",
+      seed: "S4",
+      generatedBy: "test",
+      dwellers: [dwellerWith([quiet])],
+    });
+    expect(doc).toContain('.heat-receipt[data-signal-reading="unknown"]');
+  });
+
+  it("does not move the treaty-locked outcome token — the third state is a separable channel", () => {
+    expect(observedNothingHtml).toContain('data-outcome="cold"');
+    expect(measuredZeroHtml).toContain('data-outcome="cold"');
+  });
+});

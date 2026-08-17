@@ -11,7 +11,13 @@
 // the generator renders only its public veil label (blurred), NEVER its contents.
 // Consent-first (§6): the substrate cannot emit what was frosted.
 
-import { MAX_TEMPERATURE_PPM, type HeatReceipt, type HeatSignal, type TemperatureTreatyBundle } from "./heat";
+import {
+  MAX_TEMPERATURE_PPM,
+  heatReceiptReading,
+  type HeatReceipt,
+  type HeatSignal,
+  type TemperatureTreatyBundle,
+} from "./heat";
 
 /// Attention temperature — where a prediction sits on the LLMTV salience axis.
 /// hot = high-salience / rising attention, cool = settled. A DU, not a hand-coded
@@ -182,6 +188,21 @@ function compactText(values: readonly string[], fallback: string): string {
   return values.length === 0 ? fallback : values.join(", ");
 }
 
+/**
+ * The worded half of the third state.
+ *
+ * Colour alone cannot carry it: a quiet receipt already renders muted, so a
+ * receipt that was never measured would render muted too and the eye could not
+ * tell "nothing happened" from "nothing was looked at". The words are the
+ * channel that separates them; the attribute is what CSS and an auditor read.
+ */
+function receiptReadingNote(receipt: HeatReceipt): string {
+  const reading = heatReceiptReading(receipt);
+  if (reading === "measured") return "";
+  if (reading === "unreported") return " · signal provenance not reported";
+  return ` · NOT MEASURED · ${(receipt.signalObservations ?? 0).toString()} observations — unknown, not cold`;
+}
+
 function renderHeatReceipt(receipt: HeatReceipt): string {
   const reason = compactText(receipt.reasons, compactText(receipt.heatKinds, "no detail"));
 
@@ -194,6 +215,9 @@ function renderHeatReceipt(receipt: HeatReceipt): string {
     attr("data-room", receipt.roomName),
     attr("data-tick", receipt.tick),
     attr("data-signals", compactText(receipt.signals, "cold")),
+    attr("data-signal-reading", heatReceiptReading(receipt)),
+    attr("data-signal-source", receipt.signalSource),
+    attr("data-signal-observations", receipt.signalObservations),
     attr(
       "style",
       `--heat:${ppmRatio(receipt.heatPpm)};--pressure:${ppmRatio(receipt.pressurePpm)};--storage:${ppmRatio(receipt.storagePpm)}`,
@@ -202,7 +226,7 @@ function renderHeatReceipt(receipt: HeatReceipt): string {
     `<b>${escapeHtml(receipt.outcome)}</b>`,
     '<span class="receipt-rails"><i></i><i></i><i></i></span>',
     `<em>${escapeHtml(receipt.policy)}</em>`,
-    `<small>${escapeHtml(reason)}</small>`,
+    `<small>${escapeHtml(reason + receiptReadingNote(receipt))}</small>`,
     "</span>",
   ].join("");
 }
@@ -503,6 +527,12 @@ export const LLMTV_INLINE_CSS = `
     .receipt-rails i:nth-child(3)::before { width:calc(var(--storage) * 100%); opacity:0.54; }
     .heat-receipt em { min-width:0; font-style:normal; color:var(--txt3); font-size:0.53rem; overflow-wrap:anywhere; }
     .heat-receipt small { min-width:0; color:var(--txt2); font-size:0.53rem; line-height:1.25; overflow-wrap:anywhere; }
+    /* UNKNOWN = zero observations. A quiet receipt is ALREADY muted, so muteness cannot
+       carry "not measured" — the rails are struck through and the note says it in words. */
+    .heat-receipt[data-signal-reading="unknown"] { border-style:dashed; }
+    .heat-receipt[data-signal-reading="unknown"] .receipt-rails i {
+      background:repeating-linear-gradient(135deg, var(--line2) 0 3px, transparent 3px 6px); }
+    .heat-receipt[data-signal-reading="unknown"] small { color:var(--txt); }
     /* FROST: personal mind-parts a dweller earned permanent privacy over — priced privacy,
        never decoration; the blur means content withheld, its permanence = earned + inviolable */
     .frost { position:relative; margin:0.2rem 0; border:1px solid var(--line2); border-radius:6px; overflow:hidden;

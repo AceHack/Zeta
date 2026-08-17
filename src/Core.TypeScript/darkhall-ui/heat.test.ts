@@ -25,8 +25,11 @@ import {
   type TemperatureReadout,
   heatReceiptFromRow,
   heatReceiptPpm,
+  heatReceiptReading,
   heatReceiptScale,
   reportedFidelity,
+  heatSignalEvidence,
+  heatSignals,
   temperatureBand,
   temperatureBandReading,
   temperatureReadout,
@@ -427,5 +430,133 @@ describe("heatReceiptFromRow — the receipt rails no longer paint a blind count
     expect(healthy.pressureFidelity).toBe("exact");
     expect(healthy.storageFidelity).toBe("exact");
     expect(healthy.heatPpm).toBe(heatReceiptPpm(3));
+  });
+});
+
+// SITE E — the receipt's signal channel carries its own denominator
+// Work-item 081M01400RZ087G0R000PS3VJG (filed by PR #10732, resolved in part here).
+//
+// Pre-fix: `heatSignals` returned `[]` BOTH for a producer that reported an
+// empty signal set and for a producer with no `signals` key at all, and the
+// receipt published `signals: []` either way. Measured on unmodified `main`
+// over seven distinct HeatRow inputs: 4 distinct published receipts, two
+// collision groups. After: 6 distinct, one group (NaN-vs-zero, which is the
+// separate fidelity lane held by PR #10742).
+//
+// #10735's shape, reused rather than re-invented: a reading with zero
+// observations is a THIRD state — unknown — not the healthy one.
+// ═══════════════════════════════════════════════════════════════════════════
+
+const quietRow = {
+  tick: 7,
+  roomName: "atrium",
+  heatRejected: 0,
+  backpressured: 0,
+  storageErrors: 0,
+  heatKinds: [] as readonly string[],
+  reasons: [] as readonly string[],
+};
+
+describe("heatSignalEvidence — the signal set with the denominator it was folded from", () => {
+  it("separates a reported empty set from no signal channel at all (pre-fix: both `[]`, indistinguishable)", () => {
+    const reported = heatSignalEvidence({ ...quietRow, signals: [] });
+    const absent = heatSignalEvidence(quietRow);
+
+    expect(reported.signals).toEqual(absent.signals); // the fold is unchanged, deliberately
+    expect(reported.source).toBe("reported");
+    expect(absent.source).toBe("inferred");
+  });
+
+  it("counts the evidence the inference actually consulted, not the conclusion it reached", () => {
+    // Two kinds in, one signal token out: the denominator is 2, not 1.
+    const inferred = heatSignalEvidence({ ...quietRow, heatKinds: ["a.stale", "b.stale"] });
+    expect(inferred.signals).toEqual(["stale"]);
+    expect(inferred.observations).toBe(2);
+
+    // Each counter that fired is one more observation.
+    expect(heatSignalEvidence({ ...quietRow, backpressured: 1, storageErrors: 1 }).observations).toBe(2);
+  });
+
+  it("reports zero observations exactly when the inference ran on nothing", () => {
+    expect(heatSignalEvidence(quietRow).observations).toBe(0);
+    expect(heatSignalEvidence({ ...quietRow, heatKinds: ["x.stale"] }).observations).toBe(1);
+  });
+
+  it("keeps `heatSignals` value-identical — the accessor is lossy, not wrong", () => {
+    for (const row of [
+      quietRow,
+      { ...quietRow, signals: ["stale"] },
+      { ...quietRow, heatKinds: ["soft-emu.prune"] },
+      { ...quietRow, backpressured: 3 },
+      { ...quietRow, storageErrors: 2 },
+      { ...quietRow, signals: ["nonsense-token"] },
+    ]) {
+      expect(heatSignals(row)).toEqual(heatSignalEvidence(row).signals);
+    }
+  });
+});
+
+describe("heatReceiptReading — zero observations is UNKNOWN, never the healthy reading", () => {
+  it("reads a blind receipt as unknown and a measured-quiet one as measured (pre-fix: byte-identical)", () => {
+    const blind = heatReceiptFromRow(quietRow, { source: "atrium" });
+    const measuredZero = heatReceiptFromRow({ ...quietRow, signals: [] }, { source: "atrium" });
+
+    expect(heatReceiptReading(blind)).toBe("unknown");
+    expect(heatReceiptReading(measuredZero)).toBe("measured");
+    expect(JSON.stringify(blind)).not.toBe(JSON.stringify(measuredZero));
+  });
+
+  it("treats an inference WITH evidence as measured — this is not alarm-on-everything", () => {
+    const inferredWithEvidence = heatReceiptFromRow({ ...quietRow, heatKinds: ["soft-emu.prune"] }, { source: "atrium" });
+    expect(heatReceiptReading(inferredWithEvidence)).toBe("measured");
+    expect(inferredWithEvidence.signalObservations).toBe(1);
+  });
+
+  it("reads an absent key as `unreported`, NEVER as measured (the conservative absent-reading)", () => {
+    const legacy = { ...heatReceiptFromRow({ ...quietRow, signals: [] }, { source: "atrium" }) };
+    delete (legacy as { signalSource?: unknown }).signalSource;
+    delete (legacy as { signalObservations?: unknown }).signalObservations;
+
+    expect(heatReceiptReading(legacy)).toBe("unreported");
+    expect(heatReceiptReading(legacy)).not.toBe("measured");
+  });
+
+  it("reads a HALF-present pair as unreported — a partial claim is not a claim", () => {
+    const half = { ...heatReceiptFromRow(quietRow, { source: "atrium" }) };
+    delete (half as { signalObservations?: unknown }).signalObservations;
+    expect(heatReceiptReading(half)).toBe("unreported");
+  });
+
+  it("neither new key alone separates the cases — both are load-bearing, neither is vacuous", () => {
+    const rows = [
+      { id: "reported-empty", row: { ...quietRow, signals: [] as readonly string[] } },
+      { id: "inferred-blind", row: quietRow },
+      { id: "inferred-with-evidence", row: { ...quietRow, heatKinds: ["a.stale", "b.stale"] } },
+      { id: "reported-nonempty", row: { ...quietRow, signals: ["stale"] as readonly string[] } },
+    ];
+    const receipts = rows.map((entry) => heatReceiptFromRow(entry.row, { source: "atrium" }));
+
+    // `signalObservations` alone cannot separate reported-empty from inferred-blind:
+    expect(receipts[0]?.signalObservations).toBe(receipts[1]?.signalObservations);
+    // `signalSource` alone cannot separate reported-empty from reported-nonempty:
+    expect(receipts[0]?.signalSource).toBe(receipts[3]?.signalSource);
+    // Together they are injective over the four cases:
+    const cells = receipts.map((r) => `${String(r.signalSource)}/${String(r.signalObservations)}`);
+    expect(new Set(cells).size).toBe(4);
+  });
+
+  it("makes the receipt encoder more injective, measured rather than asserted", () => {
+    const inputs = [
+      { ...quietRow, signals: [] as readonly string[] },
+      quietRow,
+      { ...quietRow, heatKinds: ["a.stale", "b.stale"] },
+      { ...quietRow, signals: ["stale"] as readonly string[] },
+      { ...quietRow, signals: ["stale", "stale"] as readonly string[] },
+      { ...quietRow, heatRejected: 11, signals: [] as readonly string[] },
+    ];
+    const published = new Set(inputs.map((row) => JSON.stringify(heatReceiptFromRow(row, { source: "atrium" }))));
+    // Pre-fix this set has 4 members (reported-empty == blind, and one token == two
+    // duplicate tokens). Every input here is genuinely distinct, so 6 is the honest number.
+    expect(published.size).toBe(6);
   });
 });

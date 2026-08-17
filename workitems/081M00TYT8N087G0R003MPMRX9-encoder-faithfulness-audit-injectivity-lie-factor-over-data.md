@@ -199,3 +199,42 @@ test can see); and `thermalPpm` remains the non-injective fold of defect 4.
 
 Filed as **081M010W1BP087G0R002M2BNVW**: `HeatSignature.isPressureKind` vs `HeatSignal.ofKind`
 disagree on dual-token kinds (3 of 6 probed kinds), found in passing and left alone.
+
+## Follow-on (2026-08-15) — the receipt's SIGNAL channel had no denominator
+
+`081M01400RZ087G0R000PS3VJG` was filed by PR #10732 as *"the receipt rails paint a blind counter
+as a genuine zero"*. It has two halves and they are held by two changes:
+
+- the **counter** half — `heatRejected: NaN` and `heatRejected: 0` both render `heatPpm: 0` — is
+  PR #10742, which publishes one `ChannelFidelity` per rail.
+- the **signal** half, fixed here: `heatSignals` returned `[]` both for a producer that reported an
+  empty `signals` array and for a producer with **no `signals` key at all**, where the set was
+  reconstructed from zero kinds and zero counters, i.e. from no evidence. The receipt published
+  `signals: []` either way and the renderer labelled both `cold` — the healthy word on a reading
+  nothing produced.
+
+Measured on unmodified `main` over seven genuinely distinct `HeatRow` inputs: **4 distinct
+published receipts, two collision groups**. After: **6 distinct, one group** (that one is the
+NaN-vs-zero pair, #10742's lane, named rather than absorbed).
+
+The fix is two optional keys with a conservative absent-reading — `signalSource`
+(`reported | inferred`) and `signalObservations` (the denominator) — read through
+`heatReceiptReading`, which returns `measured | unknown | unreported`. Neither key is derivable
+from the other: `signalObservations = 0` occurs under both sources, and `signalSource = reported`
+occurs at every observation count, so a single folded verdict would have been a fresh
+non-injective encoder.
+
+### Residuals — deliberately not fixed here
+
+- **`DarkHallRoomTranscript.coldHeatRow` fabricates `Signals = []`.** That row is synthesised for a
+  resumable continuation with **zero measured ticks**, so on the wire it claims `reported` — a
+  measurement it never made. The producer knows and the wire shape gives it no way to say so:
+  F#'s `HeatRow.Signals` is `string list`, not an option, so making the absence expressible is a
+  change to a shape F# produces and TypeScript consumes, i.e. the same published-schema decision
+  PR #10742 settled for `zeta.temperature.readout.v1`. **Not made unilaterally here.** Today's
+  mitigation is only that the fabricated row never reaches `Transcript.HeatRows` and so never
+  becomes a receipt; that is a property of one call site, not a guarantee.
+- **The rails still publish no scale.** `heatReceiptScale` computes `ceilingUnits` and `protocol`
+  and `heatReceiptFromRow` discards both, so a reader cannot invert the `log1p` to recover the
+  count and the ppm value is a ratio with an unstated denominator. Two receipts produced under
+  different `maxUnits` are indistinguishable on the wire and mean different things.

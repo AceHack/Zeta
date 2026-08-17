@@ -483,6 +483,14 @@ describe("Dark Hall CSS room UI", () => {
       heatFidelity: "exact",
       pressureFidelity: "exact",
       storageFidelity: "exact",
+      // 081M01400RZ087G0R000PS3VJG — the two optional signal-provenance keys.
+      // This row carries `signals: ["denied"]` on the wire, so the channel was READ
+      // (`reported`) and it handed over one token. Pinned here rather than left to
+      // the key-set audit: `zeta.heat.receipt.v1` is bound by TypeScript alone, so
+      // no cross-oracle key-set check compares it and the value vector is the only
+      // guard that an oracle quietly dropping these keys would trip.
+      signalSource: "reported",
+      signalObservations: 1,
     });
     expect(heatReceiptFromRow(horizonHeat).outcome).toBe("storage-error");
     expect(heatReceiptFromRow(horizonHeat).policy).toBe("host-export");

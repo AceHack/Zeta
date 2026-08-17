@@ -227,10 +227,39 @@ function isHeatReceiptPolicy(value: unknown): boolean {
   return value === "no-forget" || value === "bounded-forget" || value === "host-export" || value === "unknown";
 }
 
+/**
+ * The optional signal-provenance pair, validated on VALUE rather than presence.
+ *
+ * Optionality buys compatibility at the cost of key-set enforcement: a producer
+ * that quietly stops emitting these keys is indistinguishable from one that
+ * never did, and no key-set check can see it. So the obligation moves here — no
+ * obligation to be PRESENT, a full obligation to be CORRECT when present.
+ *
+ * The pair is checked JOINTLY on purpose. `heatReceiptReading` returns
+ * `"unreported"` when either half is missing, so a half-present pair would read
+ * as "not reported" while looking, to a human reading the JSON, like it had been
+ * reported. Either both or neither.
+ */
+function isHeatSignalProvenance(record: Record<string, unknown>): boolean {
+  const source = record.signalSource;
+  const observations = record.signalObservations;
+
+  if (source === undefined && observations === undefined) return true;
+  if (source === undefined || observations === undefined) return false;
+
+  return (
+    (source === "reported" || source === "inferred") &&
+    isFiniteNumber(observations) &&
+    Number.isInteger(observations) &&
+    observations >= 0
+  );
+}
+
 function isHeatReceipt(value: unknown): boolean {
   const record = asRecord(value);
   return (
     record !== null &&
+    isHeatSignalProvenance(record) &&
     record.schema === HEAT_RECEIPT_SCHEMA &&
     typeof record.source === "string" &&
     isFiniteNumber(record.tick) &&

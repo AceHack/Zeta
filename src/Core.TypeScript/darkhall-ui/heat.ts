@@ -59,6 +59,57 @@ export type HeatReceiptOutcome =
 
 export type HeatReceiptPolicy = "no-forget" | "bounded-forget" | "host-export" | "unknown";
 
+/**
+ * Where a receipt's `signals` set came from.
+ *
+ * `reported` — the producer put a `signals` array on the wire. An EMPTY reported
+ * array is a genuine measured zero: a channel that exists and said nothing.
+ *
+ * `inferred` — there was no `signals` key at all, so {@link heatSignals}
+ * reconstructed one from `heatKinds` and the counters. When those are also empty
+ * the reconstruction consumed NO evidence, and the resulting `[]` is not a
+ * measurement of anything.
+ */
+export type HeatSignalSource = "reported" | "inferred";
+
+/**
+ * The third state, in the vocabulary the bus snapshot uses for the same problem.
+ *
+ * `measured` · `unknown` · `unreported`. Deliberately NOT two states: a reading
+ * with zero observations is not the healthy one.
+ */
+export type HeatSignalReading = "measured" | "unknown" | "unreported";
+
+/**
+ * A signal set together with the denominator it was folded from.
+ *
+ * `081M01400RZ087G0R000PS3VJG`. {@link heatSignals} returns `[]` for BOTH a
+ * producer that reported an empty signal set and a producer with no signal
+ * channel at all, and the receipt then published `signals: []` either way — so
+ * "observed nothing" and "observed zero" were byte-identical on the wire and the
+ * rails rendered the un-measured case with the word `cold`, i.e. as health.
+ *
+ * `observations` is the denominator that makes the zero CHECKABLE rather than
+ * asserted: it is the number of evidence items the set was folded from.
+ *
+ *   - `reported`: the length of the array the producer handed over. `0` here is
+ *     a real zero — the channel was read and was empty.
+ *   - `inferred`: `heatKinds.length` plus one for each counter that fired, i.e.
+ *     exactly the inputs {@link heatSignals} consulted. `0` here means the
+ *     inference ran on nothing.
+ *
+ * **Stated injectivity property:** `(source, observations)` separates the four
+ * cases that previously shared one `[]` — reported-empty, reported-nonempty,
+ * inferred-with-evidence, inferred-from-nothing. Neither field alone does:
+ * `observations = 0` occurs under both sources, and `source = reported` occurs at
+ * every observation count.
+ */
+export interface HeatSignalEvidence {
+  readonly signals: readonly HeatSignal[];
+  readonly source: HeatSignalSource;
+  readonly observations: number;
+}
+
 export interface HeatRow {
   readonly tick: number;
   readonly roomName: string;
@@ -125,6 +176,33 @@ export interface HeatReceipt {
   readonly heatFidelity?: ChannelFidelity;
   readonly pressureFidelity?: ChannelFidelity;
   readonly storageFidelity?: ChannelFidelity;
+  /**
+   * Where `signals` came from, and how many observations backed it.
+   *
+   * `081M01400RZ087G0R000PS3VJG`: the receipt rails painted a blind counter as a
+   * genuine zero. `signals: []` was published both by a producer that reported an
+   * empty signal set and by one with no signal channel at all, and the renderer
+   * labelled both `cold` — the un-measured case wearing the healthy word.
+   *
+   * **Two keys, not one folded verdict**, because neither is derivable from the
+   * other: `signalObservations = 0` occurs under both sources, and
+   * `signalSource = "reported"` occurs at every observation count. A single
+   * folded field would be a fresh non-injective encoder, which is the defect
+   * class this lane exists to remove.
+   *
+   * **OPTIONAL, with a declared absent-reading.** `zeta.heat.receipt.v1` is a
+   * published id and instances without these keys already exist, so a required
+   * key would be `v2`. Absence reads `"unreported"` — never `"measured"`. Read
+   * through {@link heatReceiptReading}, never by testing the field directly.
+   *
+   * Policy — a published `vN` acquires a new field ONLY as an optional key with a
+   * declared absent-reading; a required key is `vN+1` — is PR #10742, which was
+   * still open when this landed. Its decision record
+   * (`docs/research/2026-08-14-how-a-published-four-oracle-schema-acquires-a-field.md`)
+   * arrives with it; this comment is the pointer until then.
+   */
+  readonly signalSource?: HeatSignalSource;
+  readonly signalObservations?: number;
 }
 
 export interface TemperatureReadout {
@@ -285,10 +363,20 @@ export function normalizeHeatSignals(signals: readonly string[] | undefined): re
   return signals === undefined ? undefined : distinct(signals.map(normalizeHeatSignal));
 }
 
-export function heatSignals(row: HeatRow): readonly HeatSignal[] {
+/**
+ * The signal set together with its provenance and denominator.
+ *
+ * Value-identical to {@link heatSignals} on the `signals` field — the fold is
+ * unchanged — but it also reports the two facts the fold was discarding.
+ */
+export function heatSignalEvidence(row: HeatRow): HeatSignalEvidence {
   const supplied = normalizeHeatSignals(row.signals);
   if (supplied !== undefined) {
-    return supplied;
+    // The channel exists and was read. `[]` here is a measurement whose value is
+    // zero, and the denominator is what the producer actually handed over
+    // (before normalisation and de-duplication — it is the size of the evidence,
+    // not the size of the conclusion).
+    return { signals: supplied, source: "reported", observations: row.signals?.length ?? 0 };
   }
 
   const inferred: HeatSignal[] = [...heatSignalsFromKinds(row.heatKinds)];
@@ -301,7 +389,41 @@ export function heatSignals(row: HeatRow): readonly HeatSignal[] {
     inferred.push("storage-error");
   }
 
-  return distinct(inferred);
+  // Exactly the inputs the branch above consulted — `heatKinds`, plus one per
+  // counter that fired. When this is `0` the reconstruction ran on nothing.
+  const observations =
+    row.heatKinds.length + (row.backpressured > 0 ? 1 : 0) + (row.storageErrors > 0 ? 1 : 0);
+
+  return { signals: distinct(inferred), source: "inferred", observations };
+}
+
+/**
+ * The signal set alone, for callers that only render the tokens.
+ *
+ * Value-identical to the pre-fix encoder, deliberately. Prefer
+ * {@link heatSignalEvidence}: this accessor cannot tell a producer that reported
+ * an empty signal set from one that has no signal channel at all.
+ */
+export function heatSignals(row: HeatRow): readonly HeatSignal[] {
+  return heatSignalEvidence(row).signals;
+}
+
+/**
+ * How to read a receipt's signal set — the third state made explicit.
+ *
+ * The absent-reading is CONSERVATIVE and that is the load-bearing half: a
+ * receipt minted before these keys existed reads `"unreported"`, never
+ * `"measured"`. Without that clause optionality would just move the original
+ * fault up one level — a field that can only ever say "fine".
+ */
+export function heatReceiptReading(receipt: HeatReceipt): HeatSignalReading {
+  if (receipt.signalSource === undefined || receipt.signalObservations === undefined) {
+    return "unreported";
+  }
+
+  if (receipt.signalSource === "reported") return "measured";
+
+  return receipt.signalObservations > 0 ? "measured" : "unknown";
 }
 
 export function summarizeHeatRows(rows: readonly HeatRow[]): HeatSummary {
@@ -424,7 +546,8 @@ export function heatReceiptFromRow(
   row: HeatRow,
   options: { readonly source?: string; readonly maxUnits?: number } = {},
 ): HeatReceipt {
-  const signals = heatSignals(row);
+  const evidence = heatSignalEvidence(row);
+  const signals = evidence.signals;
 
   // Encode through `heatReceiptScale`, not `heatReceiptPpm`. The accessor
   // computes the fidelity and then throws it away, which is how a blind counter
@@ -449,6 +572,8 @@ export function heatReceiptFromRow(
     heatFidelity: heat.fidelity,
     pressureFidelity: pressure.fidelity,
     storageFidelity: storage.fidelity,
+    signalSource: evidence.source,
+    signalObservations: evidence.observations,
   };
 }
 

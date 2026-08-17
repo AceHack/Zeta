@@ -286,3 +286,51 @@ describe("toLlmtvTranscript — the live feed reuses the still-frame generator",
     expect(html).not.toContain("SECRET private hope"); // the frosted content
   });
 });
+
+// ═══════════════════════════════════════════════════════════════════════════
+// The optional signal-provenance pair is guarded on VALUE, not on presence.
+// Work-item 081M01400RZ087G0R000PS3VJG.
+//
+// `zeta.heat.receipt.v1` is bound by TypeScript alone, so the cross-oracle
+// key-set audit never compares it — there is no key-set check to lean on and the
+// reader is the guard. An optional key carries no obligation to be PRESENT and a
+// full obligation to be CORRECT when present.
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("heat receipt signal provenance on the wire", () => {
+  const wireWithReceipt = (patch: (receipt: Record<string, unknown>) => void): string => {
+    const msg = JSON.parse(encode(publishFrame(alexa, 1, 3341, alexaMind))) as {
+      msg: { mind: { temperatureTreaty: { heatReceipts: Record<string, unknown>[] } } };
+    };
+    const receipt = msg.msg.mind.temperatureTreaty.heatReceipts[0];
+    if (receipt === undefined) throw new Error("fixture must carry a heat receipt");
+    patch(receipt);
+    return JSON.stringify(msg);
+  };
+
+  it("accepts a receipt that carries both keys", () => {
+    expect(decode(wireWithReceipt(() => undefined))).not.toBeNull();
+  });
+
+  it("accepts a receipt that carries NEITHER key — instances predating them are valid v1", () => {
+    expect(
+      decode(
+        wireWithReceipt((receipt) => {
+          delete receipt.signalSource;
+          delete receipt.signalObservations;
+        }),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("rejects a HALF-present pair — a partial claim reads as unreported while looking reported", () => {
+    expect(decode(wireWithReceipt((receipt) => delete receipt.signalObservations))).toBeNull();
+    expect(decode(wireWithReceipt((receipt) => delete receipt.signalSource))).toBeNull();
+  });
+
+  it("rejects an out-of-domain value on either key", () => {
+    expect(decode(wireWithReceipt((receipt) => (receipt.signalSource = "guessed")))).toBeNull();
+    expect(decode(wireWithReceipt((receipt) => (receipt.signalObservations = -1)))).toBeNull();
+    expect(decode(wireWithReceipt((receipt) => (receipt.signalObservations = 1.5)))).toBeNull();
+  });
+});
