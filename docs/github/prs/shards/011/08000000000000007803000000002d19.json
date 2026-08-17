@@ -1,0 +1,12 @@
+{
+  "pr_number": 11545,
+  "archive_path": "docs/history/pr-reviews/PR-11545-ferry-ip-questionable-manchak-s-god-point-and-the-ontology-aaron-answers-as-a-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T16:25:03.051Z",
+  "schema_version": "v1",
+  "commit_sha": "c862769cc5432e199a076cb08e4e2e38b92e7946",
+  "title": "ferry(ip-questionable): Manchak's God point, and the ontology Aaron answers as a relationalist",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T16:24:33Z",
+  "head_ref": "shadow/ferry-manchak-god-point-relational-ontology"
+}
