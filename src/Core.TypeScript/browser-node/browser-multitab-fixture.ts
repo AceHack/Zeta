@@ -1,6 +1,7 @@
 import {
   startNativeDurableDarkHallBrowser,
   type DarkHallBrowserDurableFeedback,
+  type DarkHallBrowserDurableReadout,
   type DarkHallBrowserDurableRuntime,
 } from "../darkhall-ui/darkhall-browser-durable-runtime";
 import { zetaDbTickToDarkHallDatabaseReadout } from "../darkhall-ui/darkhall-database-readout";
@@ -23,9 +24,13 @@ import {
   type BrowserZetaDbTabFeedback,
   type BrowserZetaDbTabRuntime,
 } from "./browser-zetadb-tab-runtime";
-import type { BrowserDatabaseInvalidation, BrowserTabCoordinatorReadout } from "./browser-tab-coordinator";
+import type {
+  BrowserCausalCorrectionNotice,
+  BrowserDatabaseInvalidation,
+  BrowserTabCoordinatorReadout,
+} from "./browser-tab-coordinator";
 
-export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v6" as const;
+export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v7" as const;
 
 type BrowserMultitabFeedback =
   | DarkHallBrowserDurableFeedback
@@ -42,6 +47,7 @@ export type BrowserMultitabFixtureReadout =
         readonly schema: typeof BROWSER_MULTITAB_FIXTURE_SCHEMA;
         readonly host: BrowserLifecycleHostReadout;
         readonly checkpoint: BrowserMultitabCheckpointReadout;
+        readonly causal: BrowserMultitabCausalReadout;
         readonly database: ReturnType<DarkHallBrowserDurableRuntime["read"]>["database"];
       };
     }
@@ -59,6 +65,11 @@ export interface BrowserMultitabCheckpointReadout {
     readonly latestTick: number | null;
     readonly continuationToken: string | null;
   } | null;
+}
+
+export interface BrowserMultitabCausalReadout {
+  readonly ledger: DarkHallBrowserDurableReadout["causal"];
+  readonly checkpoint: DarkHallBrowserDurableReadout["causalCheckpoint"];
 }
 
 export type BrowserMultitabFixtureStopResult =
@@ -85,6 +96,10 @@ export interface BrowserMultitabFixtureApi {
   read(): BrowserMultitabFixtureReadout;
   checkpoint(revision: number): Promise<BrowserMultitabCheckpointResult<BrowserCheckpointRecord>>;
   removeCheckpoint(throughRevision: number): Promise<BrowserMultitabCheckpointResult<boolean>>;
+  publishCausalCorrection(
+    correction: Omit<BrowserCausalCorrectionNotice, "sourceTabId">,
+  ): BrowserMultitabCheckpointResult<BrowserMultitabCausalReadout>;
+  drainCausalCorrectionCheckpoint(): Promise<BrowserMultitabCheckpointResult<BrowserMultitabCausalReadout>>;
   databaseTick(deltas: readonly ZetaDbDelta[]): Promise<BrowserMultitabDatabaseResult>;
   databaseExecutionHeld(): boolean;
   readDatabaseOutbox(): Promise<BrowserMultitabDatabaseOutboxResult>;
@@ -178,8 +193,16 @@ function read(runtime: DarkHallBrowserDurableRuntime): BrowserMultitabFixtureRea
         payloadBytes: current.payloadBytes,
         room: current.currentRevision === null ? null : current.room,
       },
+      causal: causalReadout(current),
       database: current.database,
     },
+  };
+}
+
+function causalReadout(current: DarkHallBrowserDurableReadout): BrowserMultitabCausalReadout {
+  return {
+    ledger: current.causal,
+    checkpoint: current.causalCheckpoint,
   };
 }
 
@@ -253,6 +276,8 @@ if (!started.ok) {
     read: () => failure,
     checkpoint: () => Promise.resolve(failure),
     removeCheckpoint: () => Promise.resolve(failure),
+    publishCausalCorrection: () => failure,
+    drainCausalCorrectionCheckpoint: () => Promise.resolve(failure),
     databaseTick: () => Promise.resolve(failure),
     databaseExecutionHeld: () => false,
     readDatabaseOutbox: () => Promise.resolve(failure),
@@ -323,6 +348,8 @@ if (!started.ok) {
       read: () => failure,
       checkpoint: () => Promise.resolve(failure),
       removeCheckpoint: () => Promise.resolve(failure),
+      publishCausalCorrection: () => failure,
+      drainCausalCorrectionCheckpoint: () => Promise.resolve(failure),
       databaseTick: () => Promise.resolve(failure),
       databaseExecutionHeld: () => false,
       readDatabaseOutbox: () => Promise.resolve(failure),
@@ -349,6 +376,14 @@ if (!started.ok) {
       read: () => read(runtime),
       checkpoint: (revision) => runtime.checkpoint(revision, transcriptAtRevision(revision)),
       removeCheckpoint: (throughRevision) => runtime.retract(throughRevision),
+      publishCausalCorrection: (correction) => {
+        const published = runtime.publishCausalCorrection(correction);
+        return published.ok ? { ok: true, value: causalReadout(published.value) } : published;
+      },
+      drainCausalCorrectionCheckpoint: async () => {
+        const drained = await runtime.drainCausalCorrectionCheckpoint();
+        return drained.ok ? { ok: true, value: causalReadout(drained.value) } : drained;
+      },
       databaseTick: (deltas) => database.tick(deltas),
       databaseExecutionHeld: () => databaseExecutionHeld,
       readDatabaseOutbox: () => database.readOutbox(),

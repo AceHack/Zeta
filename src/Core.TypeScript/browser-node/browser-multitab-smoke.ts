@@ -3,11 +3,15 @@ import { chromium, type Browser, type BrowserContext, type Page } from "playwrig
 import type { DarkHallBrowserDurableFeedback } from "../darkhall-ui/darkhall-browser-durable-runtime";
 import type { DarkHallDatabaseReadout } from "../darkhall-ui/darkhall-database-readout";
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
-import type { BrowserMultitabFixtureApi, BrowserMultitabFixtureReadout } from "./browser-multitab-fixture";
+import type {
+  BrowserMultitabCausalReadout,
+  BrowserMultitabFixtureApi,
+  BrowserMultitabFixtureReadout,
+} from "./browser-multitab-fixture";
 import type { ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 import type { BrowserDatabaseIntentReadout } from "./browser-database-intent-outbox";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v10" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v11" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -113,6 +117,7 @@ export interface BrowserMultitabSmokeTranscript {
     };
     readonly staleWrite: DarkHallBrowserDurableFeedback;
   };
+  readonly causalCheckpoint: BrowserMultitabCausalReadout;
   readonly stoppedPageA: BrowserLifecycleHostReadout;
   readonly afterRestart: {
     readonly pageC: BrowserMultitabPageObservation;
@@ -641,6 +646,49 @@ function validateCheckpointRestart(transcript: BrowserMultitabSmokeTranscript, f
   if (transcript.afterRestart.pageC.iris.tabs !== 1) failures.push("Iris page C did not restart as one live tab");
 }
 
+function validateCausalCheckpointRestart(transcript: BrowserMultitabSmokeTranscript, failures: string[]): void {
+  const hasExpectedCorrection = (causal: BrowserMultitabCausalReadout): boolean => {
+    const correction = causal.ledger.corrections[0];
+    return (
+      causal.ledger.corrections.length === 1 &&
+      correction?.sourceTabId === "tab-a" &&
+      correction.sequence === "300" &&
+      correction.reinterpretsThrough === "250" &&
+      correction.deltaRows === 2
+    );
+  };
+  if (
+    transcript.causalCheckpoint.checkpoint.state !== "saved" ||
+    transcript.causalCheckpoint.checkpoint.recoveredRevision !== null ||
+    transcript.causalCheckpoint.checkpoint.currentRevision !== 1 ||
+    transcript.causalCheckpoint.checkpoint.payloadBytes === null ||
+    transcript.causalCheckpoint.checkpoint.payloadBytes <= 0 ||
+    !hasExpectedCorrection(transcript.causalCheckpoint)
+  ) {
+    failures.push("page A did not persist the exact causal correction checkpoint before shutdown");
+  }
+
+  for (const [label, observation] of [
+    ["page C", transcript.afterRestart.pageC],
+    ["page D", transcript.afterRetraction.pageD],
+  ] as const) {
+    if (!observation.source.ok) {
+      failures.push(`${label} did not start after causal checkpoint recovery`);
+      continue;
+    }
+    const causal = observation.source.value.causal;
+    if (
+      causal.checkpoint.state !== "saved" ||
+      causal.checkpoint.recoveredRevision !== 1 ||
+      causal.checkpoint.currentRevision !== 1 ||
+      causal.checkpoint.payloadBytes !== transcript.causalCheckpoint.checkpoint.payloadBytes ||
+      !hasExpectedCorrection(causal)
+    ) {
+      failures.push(`${label} did not recover the exact independent causal correction checkpoint`);
+    }
+  }
+}
+
 function validateCheckpointRetraction(transcript: BrowserMultitabSmokeTranscript, failures: string[]): void {
   if (transcript.retraction.staleDelete.code !== "checkpoint-revision-conflict")
     failures.push("the checkpoint store did not reject a stale removal revision");
@@ -708,6 +756,7 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
   validateSurvivingPage(transcript, failures);
   validateSavedCheckpoint(transcript, failures);
   validateCheckpointRestart(transcript, failures);
+  validateCausalCheckpointRestart(transcript, failures);
   validateCheckpointRetraction(transcript, failures);
   validateIntentRecovery(transcript, failures);
   return failures;
@@ -822,6 +871,18 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     });
     if (!databaseSurvivor.ok) return failed("smoke-failed", databaseSurvivor.feedback.detail);
     const pageAAfterStop = await observe(pageA);
+    stage = "persist causal correction checkpoint";
+    const causalCheckpoint = await pageA.evaluate(async () => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      const published = root.__zetaBrowserSmoke.publishCausalCorrection({
+        sequence: "300",
+        reinterpretsThrough: "250",
+        deltaRows: 2,
+      });
+      if (!published.ok) return published;
+      return root.__zetaBrowserSmoke.drainCausalCorrectionCheckpoint();
+    });
+    if (!causalCheckpoint.ok) return failed("smoke-failed", causalCheckpoint.feedback.detail);
     stage = "persist restart checkpoint";
     const checkpoint = await pageA.evaluate(async () => {
       const root = globalThis as unknown as BrowserSmokeGlobal;
@@ -956,6 +1017,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
       },
       afterStop: { pageA: pageAAfterStop },
       checkpoint: { ...checkpoint.value, room: checkpointRoom },
+      causalCheckpoint: causalCheckpoint.value,
       stoppedPageA: stoppedA.value,
       afterRestart: { pageC: pageCAfterRestart },
       retraction: retraction.value,
