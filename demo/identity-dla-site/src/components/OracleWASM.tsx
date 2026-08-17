@@ -2,20 +2,27 @@
  * Oracle 10 — Multi-Compiler WebAssembly DLA
  * Design: Dark Matter Observatory
  *
- * Seven compilers, same algorithm, same sticking threshold, same D_f.
- * Each WASM binary was compiled from a different source language:
+ * Seven compilers, each WASM binary compiled from a different source language:
  *
  *   WAT   Hand-written WebAssembly Text Format → WASM (697 bytes, bare metal)
- *   Zig   Systems language → wasm32-freestanding (951 bytes, no runtime)
+ *   Zig   Systems language → wasm32-freestanding (1.3 KB, no runtime)
  *   C     Emscripten (clang → WASM, standalone) (~1.1 KB)
  *   LLVM  C → LLVM IR bitcode → llc-18 -march=wasm32 → wasm-ld-18 (1.4 KB)
  *   Rust  cargo build --target wasm32-unknown-unknown --release + wasm-opt (7.4 KB)
  *   ASC   AssemblyScript (TypeScript subset) → WASM (~6 KB)
  *   Go    GOOS=js GOARCH=wasm (1.5 MB, includes full Go runtime)
  *
- * Size gradient: 697B → 951B → 1.1KB → 1.4KB → 6KB → 7.4KB → 1.5MB (2,257x range)
- * D_f gradient:  1.322 → 1.322 → 1.322 → 1.322 → 1.322 → 1.322 → 1.322 (zero variance)
- * That is Conjecture Z-7: binary_size ⊥ D_f.
+ * Conjecture Z-7 is that binary_size ⊥ D_f. Testing it requires every panel to run the SAME
+ * algorithm; only then does a size-vs-D_f spread mean anything. FOUR do today — WAT, Zig,
+ * AssemblyScript and Go all implement src/wasm-dla/CANONICAL_SPEC.md and agree exactly
+ * (cluster 345 at seed 4, 800 walkers), pinned by bytelock/testdata/golden-seed-*.json.
+ *
+ * The other three do NOT yet, and this header claimed "same algorithm, same D_f, zero variance"
+ * while they did not. Measured 2026-08-17 at seed 4 against the canonical 345: C = 1
+ * (DEGENERATE — it does not diffuse), LLVM = 1642, Rust = 462. The Zig panel was a fourth such
+ * case, at cluster 1, until it was moved onto the canonical substrate — the same move #11489
+ * made for Go. Until C / LLVM / Rust follow, the cross-panel spread is an algorithm difference
+ * and not evidence about binary size.
  */
 import { useState, useEffect, useRef, useCallback } from "react";
 import { acceptsWasmResult, beginWasmExecution, cancelWasmExecution, idleWasmExecution, type WasmExecutionController } from "@/lib/wasmExecutionController";
@@ -86,7 +93,7 @@ interface CompilerResult {
 
 const COMPILERS: Pick<CompilerResult, "name" | "lang" | "color" | "binarySize" | "binarySizeBytes">[] = [
   { name: "WAT", lang: "WebAssembly Text Format (bare metal)", color: "#f59e0b", binarySize: "697 B", binarySizeBytes: 697 },
-  { name: "Zig", lang: "wasm32-freestanding (no runtime)", color: "#f97316", binarySize: "951 B", binarySizeBytes: 951 },
+  { name: "Zig", lang: "wasm32-freestanding (no runtime)", color: "#f97316", binarySize: "1.3 KB", binarySizeBytes: 1314 },
   { name: "C", lang: "Emscripten (clang → WASM, standalone)", color: "#a78bfa", binarySize: "1.1 KB", binarySizeBytes: 1166 },
   { name: "LLVM", lang: "C → LLVM IR → llc-18 -march=wasm32 → wasm-ld-18", color: "#e879f9", binarySize: "1.4 KB", binarySizeBytes: 1389 },
   { name: "Rust", lang: "cargo build --target wasm32-unknown-unknown + wasm-opt", color: "#fb923c", binarySize: "7.4 KB", binarySizeBytes: 7428 },
@@ -139,26 +146,30 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
   }, [updateResult]);
 
   // ── Run Zig oracle (index 1) ─────────────────────────────────────────────────
+  // This panel used to load `src/wasm-dla/zig/dla.wasm`, a second Zig DLA on its own PRNG and
+  // its own spawn rule, in no byte-lock roster and pinned by no golden vector. It reported
+  // cluster size 1 at every seed — its LCG's low two bits have period 4, so `prng % 4` cycled
+  // 3,2,1,0 and each walker returned to its spawn point every four steps. It now loads the
+  // canonical Zig substrate, which agrees with WAT and AssemblyScript exactly.
   const runZig = useCallback(async (s: number) => {
     updateResult(1, { status: "loading" });
     const t0 = performance.now();
     try {
       const buf = await fetchVerifiedWasm(ZIG_WASM_URL);
-      const { instance } = await WebAssembly.instantiate(buf, {});
+      // Zig's `extern fn` on wasm32-freestanding imports from "env"; the canonical spec keeps
+      // cos/sin on the HOST so every substrate shares one set of f32 trig bits.
+      const { instance } = await WebAssembly.instantiate(buf, { env: { cos_f32: Math.cos, sin_f32: Math.sin } });
       const exp = instance.exports as {
         init: (seed: number) => void;
-        step: (n: number) => number;
+        run: () => void;
         get_cluster_size: () => number;
-        get_cell_export: (x: number, y: number) => number;
-        get_df: () => number;
       };
       updateResult(1, { status: "running" });
       exp.init(s);
-      exp.step(N_WALKERS);
+      exp.run();
       const clusterSize = exp.get_cluster_size();
       const df = computeDf(clusterSize);
-      const cells = new Uint8Array(W * H);
-      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) cells[y * W + x] = exp.get_cell_export(x, y);
+      const cells = radialCells(clusterSize);
       updateResult(1, { df, clusterSize, elapsed: (performance.now() - t0) / 1000, status: "done", cells });
       return df;
     } catch (e) {

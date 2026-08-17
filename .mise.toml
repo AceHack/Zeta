@@ -58,7 +58,12 @@ golangci-lint = "2.12.2"
 # offline path to a CDN fetch.
 rust = { version = "1.87.0", components = ["rustfmt", "clippy"], targets = ["wasm32-unknown-unknown"] }
 # Zig 0.13.0 -- wasm32-freestanding compiler substrate (Oracle 11).
-# Produces 951B DLA binary: `zig build-exe -target wasm32-freestanding`.
+# Builds the 1,314-byte `src/wasm-dla/bytelock/dla-canonical-zig.wasm` byte-lock
+# substrate; the exact command lives in `bytelock/build-substrates.mjs`. Verified
+# byte-identical on rebuild under this pin (sha256 c28210dc..., 2026-08-17).
+# The 951-byte figure quoted here previously was a SECOND, non-canonical Zig module
+# under `src/wasm-dla/zig/`, removed 2026-08-17: it was in no byte-lock roster, was
+# pinned by no golden vector, and returned cluster size 1 at every seed.
 # mise zig plugin downloads the official release tarball.
 zig = "0.13.0"
 python = "3.14.6"

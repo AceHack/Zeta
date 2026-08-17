@@ -7,16 +7,34 @@ export type PagesWasmAsset = Readonly<{
   readonly source: string;
   readonly published: string;
   readonly requiredExports: readonly string[];
+  /**
+   * True when the module both implements `src/wasm-dla/CANONICAL_SPEC.md` AND exposes it
+   * through the bare `init` / `run` / `get_cluster_size` ABI, so a test can instantiate it
+   * and compare its cluster size to `testdata/golden-seed-*.json` directly. This is an
+   * ABI claim, not only a spec claim — the Go asset below implements the same canonical
+   * algorithm but reaches it through the Go runtime bridge and `globalThis`, so it is not
+   * directly instantiable and is `false` here. See `identity-dla-pages-wasm-behavior.test.ts`.
+   */
+  readonly canonicalAbi: boolean;
 }>;
 
 /** Repository-owned modules copied byte-for-byte into the Pages artifact. */
 export const PAGES_WASM_ASSETS: readonly PagesWasmAsset[] = [
-  { name: "WAT", source: "src/wasm-dla/bytelock/dla-canonical-wat.wasm", published: "wasm/dla-wat.wasm", requiredExports: ["init", "run", "get_cluster_size"] },
-  { name: "Zig", source: "src/wasm-dla/zig/dla.wasm", published: "wasm/dla-zig.wasm", requiredExports: ["init", "step", "get_cluster_size", "get_cell_export"] },
-  { name: "C", source: "src/wasm-dla/c/dla-emcc.wasm", published: "wasm/dla-emcc.wasm", requiredExports: ["init", "step", "get_cluster_size", "get_cell"] },
-  { name: "LLVM", source: "src/wasm-dla/c/dla-llvm-opt.wasm", published: "wasm/dla-llvm.wasm", requiredExports: ["init_dla", "run_dla"] },
-  { name: "Rust", source: "src/wasm-dla/rust/dla-opt.wasm", published: "wasm/dla-rust.wasm", requiredExports: ["init", "step", "get_cluster_size", "get_cell"] },
-  { name: "AssemblyScript", source: "src/wasm-dla/bytelock/dla-canonical-asc.wasm", published: "wasm/dla-asc.wasm", requiredExports: ["init", "run", "getClusterSize"] },
+  { name: "WAT", source: "src/wasm-dla/bytelock/dla-canonical-wat.wasm", published: "wasm/dla-wat.wasm", requiredExports: ["init", "run", "get_cluster_size"], canonicalAbi: true },
+  // Zig used to stage `src/wasm-dla/zig/dla.wasm` — a SECOND, divergent Zig DLA with its own
+  // PRNG and its own spawn rule, outside the byte-lock roster and therefore judged by no golden
+  // vector. It returned cluster size 1 at every seed (measured 2026-08-17): its LCG's low two
+  // bits have period 4 (1664525 ≡ 1, 1013904223 ≡ 3, mod 4), so `prng % 4` cycled 3,2,1,0 and
+  // every walker returned to its spawn point. It now stages the canonical Zig substrate.
+  { name: "Zig", source: "src/wasm-dla/bytelock/dla-canonical-zig.wasm", published: "wasm/dla-zig.wasm", requiredExports: ["init", "run", "get_cluster_size", "get_max_r_bits", "get_trajectory_entry"], canonicalAbi: true },
+  // C / LLVM / Rust are pre-byte-lock substrates on their own algorithms. Measured at seed 4,
+  // 800 walkers, against the canonical 345: C = 1 (degenerate, same defect class as the Zig one
+  // above and NOT yet fixed), LLVM = 1642, Rust = 462. They are staged as-is and are held only
+  // to the structural contract until they are brought onto the canonical spec.
+  { name: "C", source: "src/wasm-dla/c/dla-emcc.wasm", published: "wasm/dla-emcc.wasm", requiredExports: ["init", "step", "get_cluster_size", "get_cell"], canonicalAbi: false },
+  { name: "LLVM", source: "src/wasm-dla/c/dla-llvm-opt.wasm", published: "wasm/dla-llvm.wasm", requiredExports: ["init_dla", "run_dla"], canonicalAbi: false },
+  { name: "Rust", source: "src/wasm-dla/rust/dla-opt.wasm", published: "wasm/dla-rust.wasm", requiredExports: ["init", "step", "get_cluster_size", "get_cell"], canonicalAbi: false },
+  { name: "AssemblyScript", source: "src/wasm-dla/bytelock/dla-canonical-asc.wasm", published: "wasm/dla-asc.wasm", requiredExports: ["init", "run", "getClusterSize"], canonicalAbi: true },
 ];
 
 /**
@@ -38,6 +56,11 @@ export const GO_PAGES_ASSET: PagesWasmAsset = {
   source: GO_ORACLE_MODULE,
   published: "wasm/dla-go.wasm",
   requiredExports: ["run", "resume", "mem"],
+  // Canonical ALGORITHM (it is built from `bytelock/dla-canonical.go`, which the byte-lock
+  // runner pins), but NOT the canonical ABI: the DLA functions live on `globalThis` after
+  // `go.run()`, so it cannot be instantiated and read the way the six above can. The
+  // byte-lock runner already covers it via `run-go-wasm.mjs`.
+  canonicalAbi: false,
 };
 
 export const GO_PAGES_BRIDGE = { source: GO_ORACLE_BRIDGE, published: "wasm/wasm_exec.js" } as const;
