@@ -62,8 +62,16 @@ That is the same line in different costume:
 you can feed a computed value back in to choose the next computation, you have bought exactly the
 expressive power that costs you static predictability. Wolfram's computational irreducibility is
 the same statement from the cellular-automaton side, and Ismael's is the same statement from the
-embedded-agent side. **Three independent derivations of one boundary is the interesting fact
-here** — more interesting than any of them individually.
+embedded-agent side.
+
+The draft called that *"three independent derivations of one boundary"* and leaned on the
+convergence. **That overclaims, and Aaron caught it** — his name for the failure is
+*"tele-port-leap"*: three words that all mean the same motion, looking like a triple and not being
+one. *"Not an accurate triple, just a funny close miss."*
+
+See [§ Is it actually three?](#is-it-actually-three--the-triple-is-a-near-miss) — the honest count
+is **two routes sharing a root, plus one genuinely different in kind**, and knowing which is which
+turns out to matter for what we can measure.
 
 ## The reframe: not "prove it wrong", chart it
 
@@ -99,14 +107,68 @@ And it still is not Ismael's device — because **coupling is not the discrimina
 
 Her construction is a system programmed to do the **opposite** of the prediction: `f(p) = ¬p`,
 which has **no fixed point**. That absence *is* the paradox; nothing else in the setup does any
-work. A throttle loop is the other sign: producers adapt *toward* what the feedback says, so the
-loop is a contraction and a fixed point exists. You cannot predict what the producer would have
-done in isolation — but you were never asked to. You can predict the **equilibrium**, and the
-equilibrium is the thing a throttler is actually for.
+work.
 
-> **The discriminator is fixed-point existence, not feedback presence.** Converging feedback leaves
-> prediction intact (predict the fixed point). Inverting feedback destroys it. Ismael's result
-> attaches to the second and says nothing about the first.
+### …and here the first draft of this note got the value sign backwards
+
+The draft continued: *"a throttle loop is a contraction, a fixed point exists, and the equilibrium
+is the thing a throttler is actually for."* Aaron:
+
+> *"so is ours — we have a fixed point registry so we can **avoid** all fixed points, not to get
+> stuck. This is being frozen in time, quasi time crystal. Only aperiodic is 'alive' in our
+> system."*
+
+He is right, and this repo had already written it down. **A reached fixed point is not the goal;
+it is death.** `2026-08-15-navigating-the-chaotic-regime-*.md` records the same reversal in Aaron's
+words two days ago — *"the thing to avoid is getting stuck, not the chaotic regime"* — and measures
+it: the identical steering search that cuts a stall by **7.6×** in the chaotic regime finds
+**nothing at any perturbation size** in the ordered one. Sensitive dependence is not the hazard, it
+is the control authority. A design that flees chaos flees its own steering.
+
+I reproduced an error that was corrected on file 48 hours earlier. Recorded rather than quietly
+fixed, because it is the *attractive* error — "the system converged" reads as success in almost
+every other engineering context, and it is precisely wrong here.
+
+### The registry exists, and it is a four-way, not a two-way
+
+`src/Core/Orbit.fs` already classifies exactly this — and per the 2026-08-15 grouping it was
+**built and consumed by nothing**:
+
+| `Orbit.fs` | dynamics | predictable? | alive? |
+|---|---|---|---|
+| **`Fixed`** | `s = step s` — period 1, the DC/stationary mode, what `Fixpoint` finds | fully — predict the equilibrium | **no. This is stuck** |
+| **`Crystal n`** | `s = stepⁿ s`, `n > 1` — a standing wave in time, discrete-time-crystal candidate | fully — predict the phase | barely; it repeats |
+| **`Quasiperiodic`** | no period ≤ `maxPeriod` — ordered but aperiodic, a time *quasi*crystal | not in closed form | **yes** — Aaron's "quasi time crystal" |
+| **`Chaotic λ`** | `λ > 0`; survivable when `Σλ < 0`, explosive otherwise | per-step only | **yes, and steerable *because* of λ** |
+
+This reclassifies everything above, including Ismael:
+
+**Her counter-predictive device is `Crystal 2`.** `f(p) = ¬p` has no fixed point, but it has a
+period-2 orbit — the simplest possible non-fixed behaviour. So her construction does not exhibit
+chaos at all; it exhibits the smallest available limit cycle, and its unpredictability is entirely
+the *self-reference*, not the dynamics. That is a sharper statement of her result than the
+interview gives, and it means **her device is not in the regime Zeta lives in.**
+
+**The 80/20 split lands on the table cleanly:**
+
+- the **~80%** is `Fixed` + `Crystal n` — reducible, because you can answer with an equilibrium or
+  a phase instead of a trajectory
+- the **~20%** is `Quasiperiodic` + `Chaotic` — irreducible, per-step, *and the only regimes that
+  are alive*
+
+Which inverts the framing this note started with. The three systems are **not** trying to prove
+Ismael wrong. They are deliberately operating in the regime where her incompleteness **holds**,
+because it is the only regime that is both alive and steerable. **Zeta wants the 20%.** The
+fixed-point registry is the instrument that keeps it out of the 80% — not an oracle for reaching
+equilibrium, an alarm for having reached one.
+
+> **The discriminator is fixed-point existence — but the desirable value is the opposite of the
+> obvious one.** Converging feedback leaves prediction intact and buys it with stuckness. Inverting
+> feedback destroys prediction. Zeta targets neither: *ordered aperiodicity*, where the measure
+> partially concentrates — enough structure to steer, never enough to freeze.
+
+That last clause is also what "quasi" is doing in "quasi time crystal", and it is not decoration:
+a quasicrystal has **long-range order without periodicity**. Structure and non-repetition at once.
 
 This is the polarity-inversion shape again, and this module already carries a precedent for it: its
 header records that Geometry of Interaction / the `Int` construction was **considered and retracted**
@@ -116,20 +178,58 @@ construction. Exactly the distinction being drawn here, one level up.
 
 **So the revised reading of the three systems:**
 
-- **`ferry-throttler`** — heavily coupled, **cooperatively**. Ismael's obstruction does not apply.
-  Its irreducible remainder, whatever it measures, is not interference.
-- **`drain-scheduler` / `heat-aware-scheduler`** — both live *inside* `ferry-throttler/`, so
-  "the zeta scheduler" and "the ferry throttler" may be one subsystem rather than two. The only
-  scheduler found outside it is `zetadb/scheduled-node.ts`. Worth Aaron confirming which he meant;
-  it changes whether this is three independent probes of the boundary or two.
-- **chip8/9 predictor** — uncoupled: a CHIP-8 program does not read its predictor. Whatever
-  irreducibility it measures is honest Wolfram-style irreducibility, and it is therefore the
-  **cleanest instrument of the three** for measuring the intrinsic 20%.
+- **scheduler and throttler share a mechanism but are not one subsystem** — and I over-collapsed
+  them. §1a of the 2026-08-15 grouping says `Vision.boatGrowth` charges future branches against a
+  byte-denominated `SoftThrottle.Tank` and splits them `Boarded` / `Deferred`, i.e. *"the
+  scheduler's branch pruning **is** the ferry throttle."* True **mechanically**. Aaron, on reading
+  that restated here:
 
-**The falsifier that survives:** build a lane whose producer is wired to *invert* the throttle
-suggestion — do the opposite of the recommended lane — and the throttler should become unable to
-predict its own equilibrium, not merely slower to reach it. If it still converges, the fixed-point
-account above is wrong and coupling sign is not the discriminator after all.
+  > *"ferry throttler is more like logistics, and scheduler is more like cooperative / green-thread
+  > scheduling — but more enforced because of our arrow."*
+
+  So: one boarding mechanism, two roles. The **ferry** is *logistics* — moving things under a
+  capacity constraint. The **scheduler** is *execution* — deciding what runs next. Capacity-limited
+  boarding is the shared shape, not a shared job, and "same shape" was doing more work in my
+  sentence than it earns.
+
+  **And the trailing clause is the one that matters.** Cooperative/green-thread scheduling has a
+  single classic weakness: it depends on tasks *voluntarily* yielding, so one task that never
+  yields starves the rest. The usual fix is preemption, which needs interrupts — and interrupts are
+  hidden coordination, the thing this substrate is built to avoid. **The Arrow removes the
+  dilemma.** Because the computation's structure is legible *before* it runs, the scheduler can
+  enforce yield points instead of trusting them: preemptive safety with cooperative determinism,
+  and no interrupt.
+
+  That is this note's own boundary paying out. Enforceable-without-interrupts is available exactly
+  in the statically-analysable Applicative/Arrow fragment — **the 80%**. In the Kleisli fragment the
+  next step is not visible until the previous value exists, so there is nothing to enforce against
+  ahead of time, and you are back to per-step navigation — **the 20%**. The scheduler's
+  enforceability is not a separate design win; it is what being in the reducible region *buys*.
+
+  **On independence, held to the same standard as the triple above:** distinct roles do not make
+  them independent probes. They share `boatGrowth` / `Tank` / `Boarded` / `Deferred`, so a defect in
+  boarding shows up in both. Correlated instruments, different jobs.
+- **the ferry/scheduler** — heavily and *cooperatively* coupled, so Ismael's `Crystal 2` obstruction
+  does not apply to it. But cooperative coupling is precisely what drives a loop toward `Fixed`,
+  which is the failure the registry exists to catch. Its risk is **stuckness, not paradox.**
+- **chip8/9 predictor** — uncoupled: a CHIP-8 program does not read its predictor. Whatever
+  irreducibility it measures is honest Wolfram-style irreducibility, so it is the **cleanest
+  instrument for measuring the intrinsic 20%**.
+
+**The falsifier that survives, restated for the corrected sign.** The interesting experiment is no
+longer "can we make it fail to converge" — convergence is the hazard. It is:
+
+> Run `Orbit.fs` classification **on the ferry/scheduler's own control loop** and record the
+> distribution over `Fixed` / `Crystal n` / `Quasiperiodic` / `Chaotic`. The 2026-08-15 grouping
+> says the classifier is built and **consumed by nothing**, so this is wiring, not research.
+>
+> - If the loop sits in `Fixed` or low-period `Crystal n` under normal load, the cooperative
+>   feedback is doing exactly the freezing this section predicts, and the 20% is being *suppressed*
+>   rather than measured.
+> - If it sits in `Quasiperiodic` / `Chaotic λ` with `Σλ < 0`, the design is already where Aaron
+>   says it should be, and the claim in this note is confirmed rather than assumed.
+
+That is a real measurement with a real way to come out against me, and it needs no new machinery.
 
 ## Aaron's reconciliation: the indefinitely-many futures are an integrand, not a gap
 
@@ -154,6 +254,12 @@ criterion:
 | the ~80% | the sum **concentrates** — one path dominates, stationary phase is valid | predict the dominant path; the rest cancels and never needed enumerating |
 | the ~20% | the sum **does not concentrate** — many comparable contributions, no dominant path | no shortcut exists; you must carry the whole family forward step by step. *This is what per-step navigation IS* |
 
+**And by the correction below, full concentration is the death condition, not the win condition.**
+A measure that collapses entirely onto one path is `Fixed` — perfectly predictable and completely
+stuck. What Zeta wants is the middle: *partial* concentration, ordered but never collapsing. In
+this vocabulary that is what `Quasiperiodic` means, and it is why the target is a **quasi**crystal
+rather than a crystal.
+
 **Register — this is an analogy with an exact classical cousin, and the cousin is the honest
 citation.** Ismael's setting is deliberately classical, so it is not literally a quantum amplitude
 sum: hers is a *set* of classical models, the path integral is a *weighted sum* of quantum
@@ -176,9 +282,97 @@ much?** That is not a rebuttal of her result. It is the measurement her result l
 is the one we actually need, because a substrate does not care that 100% is unreachable — it cares
 whether the reachable fraction is 80% or 8%.
 
-This is also the third independent route to the same boundary, which is the pattern worth noting:
-`ArrowApply ≡ Monad` from types, computational irreducibility from automata, non-concentration of
-the measure from analysis. Three vocabularies, one line.
+## Is it actually three? — the triple is a near miss
+
+The draft banked on convergence: `ArrowApply ≡ Monad` from types, computational irreducibility
+from automata, non-concentration of the measure from analysis — *"three vocabularies, one line."*
+Aaron:
+
+> *"tele-port-leap lol — this is not an accurate triple, just a funny close miss."*
+
+Three words that all name the same motion. Checking it against the repo's own standard for when
+convergence counts:
+
+| route | domain | what it actually rests on |
+|---|---|---|
+| `ArrowApply ≡ Monad` | type theory | feeding a *computed value* back in to choose the next computation — i.e. general recursion |
+| computational irreducibility | cellular automata | most systems are computation-**universal**, so no shortcut to state *n* |
+| non-concentration of the measure | analysis | the integral over the family fails to collapse onto a minimiser |
+
+**Routes 1 and 2 are not independent.** Both are downstream of Turing universality: `ArrowApply`
+buys general recursion, which buys a universal machine; Wolfram's principle *is* the claim that
+universality is generic. Remove undecidability and both fall together. They are one result in two
+notations — the tele-port half of the joke.
+
+**Route 3 is genuinely different in kind**, and the difference is checkable rather than asserted:
+the logistic map at `r = 4` is chaotic and non-concentrating while being nowhere near
+computation-universal; and conversely, a universal machine can have a sharply concentrated measure
+over typical inputs. Neither direction implies the other. So the honest count is **two correlated
+routes plus one independent one.**
+
+**Why this matters more than a scoring correction.** Independence is exactly what makes convergence
+evidential — it is the assumption under the aggregation results this repo rests on, and the
+costume experiment already measured what happens when it fails: ρ̂ = **0.651** across personas
+sharing weights versus **0.096** across weights. Three derivations sharing a root are correlated
+derivations. **Shared root is shared weights, one level up.** Treating them as three would have
+been the same error the costume experiment exists to prevent, committed in prose instead of in a
+probe set.
+
+**And the payoff runs the other way from the deflation.** Routes 1 and 2 are *binary*: they say a
+boundary exists. Route 3 is *quantitative*: the degree of concentration is a number. So the one
+route that survives as independent is also the only one that can ever produce **80/20 as a
+measurement rather than a feeling**. If we want the split to stop being an estimate, analysis is
+the instrument, and the type-level and automata arguments are corroboration that cost nothing and
+add nothing.
+
+`Orbit.fs`'s classifier sits in route 3's family, not its own — Lyapunov exponents are a measure
+statement. That is a fourth vocabulary, not a fourth route, and worth saying so before someone
+counts it.
+
+## The middle path was already a primitive — `YinYang.Cell`
+
+This note reached "partial concentration: ordered, never collapsing" from Ismael's side and
+presented it as a conclusion. Aaron:
+
+> *"yes, the middle path — encoded. This was one of the first things we talked about, and we even
+> have a yin-yang cell lol."*
+
+He is right that it is not a conclusion here; it is the **basis**. `src/Core/YinYang.fs`,
+2026-06-07:
+
+```fsharp
+type Cell = { Remains: DynamicValue; Acts: Bonsai.Expr }
+```
+
+- **yin = `Remains`** — the static canonical value tree. What persists.
+- **yang = `Acts`** — the reactive engine, a `Bonsai.Expr`. What acts.
+
+And per the two-primitive reduction of the same day, the whole substrate's basis is **ZetaId +
+YinYang** — identity plus the sharp↔soft value duality — with everything else composed from those
+two.
+
+**The structural point, which is the part worth adding.** `Cell` is a **product**, not a sum. Both
+fields exist, always. A discriminated union would permit collapse to one side; a record forbids it
+by construction. Read against the orbit table:
+
+| collapse | what it would be | why the type forbids it |
+|---|---|---|
+| all `Remains`, no `Acts` | data with no engine — `Fixed`, frozen, stuck | `Acts` is not optional |
+| all `Acts`, no `Remains` | an engine with no state — no identity to address | `Remains` is not optional |
+
+So *"only aperiodic is alive"* is not a policy the scheduler has to be talked into. **It is the
+shape of the cell.** The design cannot represent the death condition without changing the type —
+which is a much stronger guarantee than a registry that detects `Fixed` after the fact, and it
+means the registry's job is catching *dynamics* that have degenerated, never *structure* that has.
+
+This is also Meijer's `IEnumerable ⇄ IObservable` duality with the field names saying so out loud —
+what-remains ⇄ what-acts — which is the anchor the rest of Aaron's reactive apparatus hangs from.
+
+**Register:** the collapse-table above is **derivable** from the record definition. The claim that
+this makes the *running loop* aperiodic is **not** — a product type forbids structural collapse, not
+dynamical convergence, and the `Orbit.fs` measurement proposed above is still the thing that would
+tell us. Type-level safety here is necessary, not sufficient, and conflating the two would be the
+vacuity class: a guarantee that cannot fail because it was never about the quantity in question.
 
 ## Where this touches things already carved
 
@@ -211,11 +405,29 @@ the measure from analysis. Three vocabularies, one line.
 | the 80/20 boundary is where the measure stops concentrating | **CONJECTURE** — the sharpest available statement of Aaron's split, and unlike the raw ratio it is in principle computable |
 | Ismael missed the path-integral reading | **likely false** — she brackets the quantum substructure explicitly; she had no need of the question, which is different from not seeing it |
 | coupling presence makes a system counter-predictive | **false** — the discriminator is fixed-point existence. Cooperative coupling converges; only inverting coupling removes the fixed point |
+| reaching a fixed point is the win condition | **FALSE, and it was my error** — `Fixed` is stuck. Corrected by Aaron 2026-08-17; already on file 2026-08-15 with a 7.6× measurement behind it |
+| Ismael's device is `Crystal 2`, not chaos | **derivable** — `f(p) = ¬p` has no fixed point but a period-2 orbit; the unpredictability is the self-reference, not the dynamics |
+| the ~20% is the alive region, and Zeta targets it deliberately | **Aaron's design intent**, consistent with `Orbit.fs` + the 2026-08-15 steering measurement; the distribution itself is **unmeasured** |
+| scheduler and ferry throttler are one subsystem | **over-collapsed, corrected by Aaron** — one boarding *mechanism*, two *roles*: ferry = logistics, scheduler = green-thread execution. Correlated as probes, not identical as jobs |
+| the Arrow makes cooperative scheduling *enforceable* without interrupts | **derivable** — static structure is visible before the run, so yields are enforced rather than trusted. Available only in the reducible fragment, which is the 80% paying out |
+| three independent routes converge on the boundary | **OVERCLAIMED, and it was my error** — routes 1 and 2 share a Turing-universality root. Two correlated + one independent. Aaron's "funny close miss" |
+| non-concentration is the independent route | **derivable** — logistic map at `r=4` is non-concentrating without universality; a universal machine can concentrate on typical inputs. Neither implies the other |
+| only the analytic route can measure the split | **derivable** — routes 1 and 2 are binary (a boundary exists); concentration is a degree. 80/20 becomes measurable only through route 3 |
 
 ## Pointers
 
-- `src/Core.TypeScript/ferry-throttler/` · `src/Core.TypeScript/**/drain-scheduler.ts` ·
-  `**/heat-aware-scheduler.ts` — the three coupling checks above
+- `src/Core/Orbit.fs` — the classifier: `Fixed` / `Crystal n` / `Quasiperiodic` / `Chaotic λ`,
+  `largestLyapunov`, `divergenceRate2D`. **The fixed-point registry.** Built; consumed by nothing
+- `src/Core/Vision.fs` (`boatGrowth`, `SoftThrottle.Tank`) · `PredictionScheduler.fs` ·
+  `FerryThrottler.fs` — the scheduler *and* throttle, one mechanism
+- `src/Core.TypeScript/ferry-throttler/` — the TS arm, incl. `four-corner-feedback.ts` (the
+  prescriptive feedback corner) and the `drain-scheduler` / `heat-aware-scheduler` inside it
+- [`2026-08-15-navigating-the-chaotic-regime-the-map-of-what-exists-stuck-is-a-2x2-and-the-quorum-floor-is-decorrelation.md`](2026-08-15-navigating-the-chaotic-regime-the-map-of-what-exists-stuck-is-a-2x2-and-the-quorum-floor-is-decorrelation.md)
+  — the sign reversal, the 7.6× steering measurement, and §1a (scheduler ≡ ferry)
+- [`2026-08-02-pilot-wave-done-right-homeostat-lifesupport-floor-free-hold-quasi-time-crystal-chip8-orbit-sandbox.md`](2026-08-02-pilot-wave-done-right-homeostat-lifesupport-floor-free-hold-quasi-time-crystal-chip8-orbit-sandbox.md)
+  — the quasi-time-crystal frame this note arrives at from Ismael's side
+- [`2026-06-08-time-generator-as-long-division-in-the-interrupt-rationality-periodicity-catchability-class.md`](2026-06-08-time-generator-as-long-division-in-the-interrupt-rationality-periodicity-catchability-class.md)
+  — periodicity as a catchability class; rational ⇒ eventually periodic ⇒ catchable
 - [`2026-08-16-avoiding-app-is-what-buys-replay-interrupt-prediction-and-the-structure-value-membrane.md`](2026-08-16-avoiding-app-is-what-buys-replay-interrupt-prediction-and-the-structure-value-membrane.md)
   — the membrane this note identifies with Aaron's 80/20 line
 - [`2026-08-16-middle-out-applied-to-sampling-choose-the-scale-where-the-variance-lives.md`](2026-08-16-middle-out-applied-to-sampling-choose-the-scale-where-the-variance-lives.md)
