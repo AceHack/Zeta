@@ -53,14 +53,29 @@
 //         `is*Kind` token predicates. A second classifier that inlines `kindContains
 //         "backpressure"` would slip past B1 entirely; this closes that door. The name-pinned
 //         first draft had this hole too.
-//     B3  THE PRESSURE BIT IS ENUMERATED CONSISTENTLY. Two exhaustive tables still name which
-//         cases are pressure — one over `KindClass`, one over `HeatSignal` — and `ofKind` is
-//         the map between their domains. B3 parses all three and requires the pressure sets to
-//         correspond under that map. This is the residual of #10804: the two tables cannot
-//         disagree on an INPUT (both funnel through `classifyKind`) but they can still disagree
-//         on MEMBERSHIP if someone adds a case to one and not the other. Stated honestly, B3
-//         guards "two agreeing tables", which is weaker than "one table" — see
-//         081M07Z23EX087G0R003N676FT for the derive that would make it one.
+//     B3  THE PRESSURE BIT IS ENUMERATED ONCE. Rewritten by 081M07Z23EX087G0R003N676FT, which
+//         landed the derive this check used to only ask for. B3 used to guard "two agreeing
+//         tables" — one over `KindClass`, one over `HeatSignal`, compared under `ofKind`. That
+//         is strictly weaker than "one table", and Heat.fs now has one:
+//
+//           HeatSignature.isPressureClass : KindClass -> bool     the ONE table
+//           HeatSignal.classOf            : HeatSignal -> KindClass   correspondence, decides nothing
+//           HeatSignal.isPressure         = classOf >> isPressureClass
+//
+//         So B3's subject changed rather than disappearing, and it splits in two:
+//
+//         B3a  EXACTLY ONE pressure table exists, and it is the `KindClass`-keyed one. A
+//              `HeatSignal`-keyed `-> true` table reappearing IS the membership split coming
+//              back, and it is now a part-B failure rather than something to be compared.
+//              (Keeping the old "do the two tables agree?" comparison after the derive would be
+//              the vacuity class: with one table there is nothing to disagree with.)
+//         B3b  THE CORRESPONDENCE IS A BIJECTION. `ofKind` maps KindClass -> HeatSignal and
+//              `classOf` maps HeatSignal -> KindClass; B3b parses both and requires them to be
+//              MUTUAL INVERSES. This is where the teeth moved to. The derive trades a
+//              membership split the compiler could not see for a miswire the compiler also
+//              cannot see (`classOf` is exhaustive whatever it maps to), and this is the check
+//              that refuses the miswire. It strictly subsumes the old comparison: the old one
+//              only saw miswires that changed a PRESSURE arm, this one sees every arm.
 //
 // SCAN FLOORS. Both parts exit non-zero if they inspected fewer sites than the stated
 // minimum. A guard whose extraction patterns quietly stop matching reports "clean" forever;
@@ -255,8 +270,7 @@ export function kindContainsCallers(heatSource: string): readonly string[] {
 
 /**
  * The `KindClass -> HeatSignal` correspondence, read off the binding that maps between them
- * (`HeatSignal.ofKind`). B3 needs it to compare the two pressure tables, which are keyed on
- * different types — and parsing it also means a MISWIRED arm
+ * (`HeatSignal.ofKind`). Half of B3b's subject: parsing it means a MISWIRED arm
  * (`KindClass.Backpressure -> HeatSignal.Forgotten`) is caught, which no name-pin could see.
  */
 export function classToSignalMap(heatSource: string): ReadonlyMap<string, string> {
@@ -264,6 +278,26 @@ export function classToSignalMap(heatSource: string): ReadonlyMap<string, string
   const out = new Map<string, string>();
   const re =
     /\|\s*(?:[A-Za-z0-9_]+\.)*KindClass\.([A-Za-z0-9_]+)\s*->\s*(?:[A-Za-z0-9_]+\.)*HeatSignal\.([A-Za-z0-9_]+)/g;
+  for (const m of text.matchAll(re)) {
+    if (m[1] === undefined || m[2] === undefined) continue;
+    if (!out.has(m[1])) out.set(m[1], m[2]);
+  }
+  return out;
+}
+
+/**
+ * The other half: the `HeatSignal -> KindClass` correspondence (`HeatSignal.classOf`), which is
+ * what lets the signal route read the single `KindClass`-keyed pressure table instead of keeping
+ * a second copy of it.
+ *
+ * `[^\n>]*?` between the pattern and the arrow admits a payload binder (`HeatSignal.Other _`)
+ * while the excluded `>` stops the match from stepping over an arrow into the next line's arm.
+ */
+export function signalToClassMap(heatSource: string): ReadonlyMap<string, string> {
+  const text = stripFSharpComments(heatSource);
+  const out = new Map<string, string>();
+  const re =
+    /\|\s*(?:[A-Za-z0-9_]+\.)*HeatSignal\.([A-Za-z0-9_]+)[^\n>]*?->\s*(?:[A-Za-z0-9_]+\.)*KindClass\.([A-Za-z0-9_]+)/g;
   for (const m of text.matchAll(re)) {
     if (m[1] === undefined || m[2] === undefined) continue;
     if (!out.has(m[1])) out.set(m[1], m[2]);
@@ -487,58 +521,92 @@ export function run(read: (p: string) => string | null): {
     }
   }
 
-  // ── PART B3 — the pressure bit is enumerated consistently ──
+  // ── PART B3a — exactly ONE pressure table, and it is the KindClass-keyed one ──
   //
-  // Both tables funnel through the one classifier so they cannot disagree on an INPUT any more.
-  // They can still disagree on MEMBERSHIP — add a case to `KindClass` and mark it pressure in
-  // one table only. Discovered by shape (a `-> true` arm over the union), compared under the
-  // `ofKind` map. Honest register: this guards "two agreeing tables", not "one table".
+  // 081M07Z23EX087G0R003N676FT. `HeatSignal.isPressure` is now `classOf >> isPressureClass`, so
+  // the bit is written down once. The regression this guards is the second table coming BACK:
+  // any binding with a `-> true` arm over `HeatSignal` is, by shape, a second enumeration of the
+  // same bit — which is the membership split #10804 left behind and this work-item removed.
   const classTables = pressureTables(heat, "KindClass");
   const signalTables = pressureTables(heat, "HeatSignal");
   const classToSignal = classToSignalMap(heat);
+  const signalToClass = signalToClassMap(heat);
 
-  if (classTables.size !== 1 || signalTables.size !== 1 || classToSignal.size === 0) {
+  if (classTables.size !== 1) {
     failures.push({
       part: "floor",
       message:
-        `PART B3 could not read the pressure tables out of ${HEAT_FS} ` +
-        `(KindClass-keyed=${classTables.size}, HeatSignal-keyed=${signalTables.size}, ` +
-        `classToSignal arms=${classToSignal.size}; each needs exactly 1, 1, and >0). ` +
-        `Either a THIRD pressure table appeared, or the shapes changed and this check is blind.`,
+        `PART B3 expected exactly ONE KindClass-keyed pressure table in ${HEAT_FS} and found ` +
+        `${classTables.size} [${[...classTables.keys()].join(", ")}]. Zero means the single table ` +
+        `moved or the shape changed and this check is blind; more than one means the split is ` +
+        `back inside the KindClass domain itself.`,
+    });
+  }
+
+  for (const [name, cases] of signalTables) {
+    failures.push({
+      part: "B",
+      message:
+        `'${name}' in ${HEAT_FS} enumerates pressure over HeatSignal ([${cases.join(", ")}] -> true). ` +
+        `Since 081M07Z23EX087G0R003N676FT the bit is named exactly once, over KindClass ` +
+        `(${[...classTables.keys()].join(", ") || "<missing>"}), and the signal route derives from ` +
+        `it via HeatSignal.classOf. A second table keyed on HeatSignal cannot disagree on an ` +
+        `INPUT but can disagree on MEMBERSHIP — add a case, mark it pressure here only — which ` +
+        `is 081M010W1BP087G0R002M2BNVW one level up. Derive it instead: classOf >> isPressureClass.`,
+    });
+  }
+
+  // ── PART B3b — the KindClass <-> HeatSignal correspondence is a BIJECTION ──
+  //
+  // The derive moves the residual rather than deleting it: `classOf` is exhaustive whatever it
+  // maps to, so `HeatSignal.Denied -> KindClass.Forgotten` type-checks and answers the pressure
+  // question wrong. Neither direction alone can see that; the two together can, because they
+  // must be mutual inverses. Strictly stronger than the pressure-set comparison this replaces,
+  // which was blind to any miswire among the non-pressure arms.
+  if (classToSignal.size === 0 || signalToClass.size === 0) {
+    failures.push({
+      part: "floor",
+      message:
+        `PART B3b could not read the KindClass <-> HeatSignal correspondence out of ${HEAT_FS} ` +
+        `(ofKind arms=${classToSignal.size}, classOf arms=${signalToClass.size}; both need >0). ` +
+        `The signal route derives its pressure answer through that correspondence, so an ` +
+        `unparsed direction means a miswire would pass unseen and a clean result would be a lie.`,
     });
   } else {
-    const [classTableName, pressureClasses] = [...classTables][0] as [string, readonly string[]];
-    const [signalTableName, pressureSignals] = [...signalTables][0] as [string, readonly string[]];
-
-    const unmapped = pressureClasses.filter((c) => !classToSignal.has(c));
-    for (const c of unmapped) {
+    if (classToSignal.size !== signalToClass.size) {
       failures.push({
         part: "B",
         message:
-          `'${classTableName}' calls KindClass.${c} pressure, but ${HEAT_FS} has no arm ` +
-          `mapping KindClass.${c} to a HeatSignal. The two pressure tables are keyed on ` +
-          `different types and the map between them is incomplete, so they cannot be compared ` +
-          `— which is how a membership disagreement hides.`,
+          `the KindClass -> HeatSignal map has ${classToSignal.size} arms but the ` +
+          `HeatSignal -> KindClass map has ${signalToClass.size}. They must be mutual inverses ` +
+          `over the same case set; unequal arm counts means one union carries a case the other ` +
+          `cannot represent, and the derived pressure answer for it is whatever classOf guessed.`,
       });
     }
 
-    const expected = new Set(pressureClasses.map((c) => classToSignal.get(c)).filter((s): s is string => !!s));
-    const actual = new Set(pressureSignals);
-    const missing = [...expected].filter((s) => !actual.has(s));
-    const extra = [...actual].filter((s) => !expected.has(s));
-
-    if (missing.length > 0 || extra.length > 0) {
+    for (const [cls, signal] of classToSignal) {
+      const back = signalToClass.get(signal);
+      if (back === cls) continue;
       failures.push({
         part: "B",
         message:
-          `the two pressure enumerations in ${HEAT_FS} disagree on MEMBERSHIP. ` +
-          `'${classTableName}' calls [${[...pressureClasses].join(", ")}] pressure, which maps ` +
-          `under ofKind to [${[...expected].join(", ")}], but '${signalTableName}' calls ` +
-          `[${[...actual].join(", ")}] pressure` +
-          (missing.length > 0 ? ` (missing: ${missing.join(", ")})` : "") +
-          (extra.length > 0 ? ` (extra: ${extra.join(", ")})` : "") +
-          `. That is 081M010W1BP087G0R002M2BNVW one level up: same bit, two tables, ` +
-          `and the kind-string route now answers differently from the signal route.`,
+          `the KindClass <-> HeatSignal correspondence in ${HEAT_FS} is NOT a bijection: ofKind ` +
+          `sends KindClass.${cls} -> HeatSignal.${signal}, but classOf sends HeatSignal.${signal} -> ` +
+          `${back === undefined ? "nothing (no arm)" : `KindClass.${back}`}. HeatSignal.isPressure ` +
+          `reads the one pressure table THROUGH classOf, so a miswired arm silently answers the ` +
+          `deferral-vs-destruction question wrong for that case — the same defect as two ` +
+          `disagreeing tables, wearing a correspondence instead.`,
+      });
+    }
+
+    for (const [signal, cls] of signalToClass) {
+      if (classToSignal.has(cls)) continue;
+      failures.push({
+        part: "B",
+        message:
+          `classOf sends HeatSignal.${signal} -> KindClass.${cls}, but ofKind has no arm for ` +
+          `KindClass.${cls}. The correspondence is not total in that direction, so the class the ` +
+          `pressure table is keyed on is not the class the signal route can reach.`,
       });
     }
   }
@@ -561,7 +629,9 @@ if (import.meta.main) {
     console.log(
       `heat-kind classifier agreement OK — ${kindsInspected} distinct kinds inspected, ` +
         `${predicatesFound} token predicates parsed, one pressure classifier ` +
-        `(HeatSignature.${classifier ?? "?"}), pressure enumerated consistently across both tables.`,
+        `(HeatSignature.${classifier ?? "?"}), the pressure bit enumerated in exactly one table ` +
+        `(KindClass-keyed, none over HeatSignal), and the two correspondence directions are ` +
+        `mutual inverses.`,
     );
     process.exit(0);
   }

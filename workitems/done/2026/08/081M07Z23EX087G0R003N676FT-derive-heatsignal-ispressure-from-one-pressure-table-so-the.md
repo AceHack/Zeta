@@ -1,11 +1,12 @@
 ---
 id: 081M07Z23EX087G0R003N676FT
 type: task
-state: backlog
+state: done
 priority: P2
 slug: derive-heatsignal-ispressure-from-one-pressure-table-so-the
 title: "Derive HeatSignal.isPressure from one pressure table so the bit is enumerated once, not twice-agreeing"
 created: 2026-08-17T13:37:31.101Z
+completed: 2026-08-17T15:00:01.953Z
 depends_on: []
 composes_with: []
 ---
@@ -72,6 +73,37 @@ and the `ofKind` map between their domains, and fails on any membership split �
 `HeatSignal.Denied` from the signal table, and routing `KindClass.Denied -> HeatSignal.Forgotten`,
 both exit 1. So the drift is caught; it is just caught by a lint rather than made
 unrepresentable by the types, and the lint says so in its own header.
+
+## How it was closed
+
+The shape above, taken as filed. `HeatSignature.isPressureClass : KindClass -> bool` is now the
+only place the bit is named; `isPressureKind = classifyKind >> isPressureClass` and
+`HeatSignal.isPressure = classOf >> HeatSignature.isPressureClass`. `HeatSignal.isPressure`
+keeps its `HeatSignal -> bool` signature, so no caller moved.
+
+The direction of the derive is **forced, not chosen**: F# compiles `HeatSignature` before
+`HeatSignal`, so the table cannot live on the signal side and call `ofKind`. Recorded because it
+is the answer to "why not key the one table on `HeatSignal` and drop `classOf`?".
+
+**What the derive trades, stated honestly.** The membership split is gone — there is no second
+`-> true` to split from. What replaces it is a *miswire* risk in `classOf`
+(`HeatSignal.Denied -> KindClass.Forgotten` is exhaustive and type-checks). That residual is
+smaller and it is falsified twice, by construction rather than by inspection:
+
+- `DarkHallScheduler.Tests.fs` — the round-trip law `classOf (ofKind k) = classifyKind k`, over
+  one representative kind per class including `Other`.
+- `lint-heat-kind-classifier-agreement.ts` PART **B3b** — parses `ofKind` and `classOf` out of
+  the file and requires them to be **mutual inverses**.
+
+**PART B3 was rewritten, not deleted, and not kept as-is** (the vacuity question the work-item
+implies). With one table, "do the two tables agree?" can no longer fail — keeping it would have
+been a check that cannot fail. What replaced it:
+
+- **B3a** — exactly one `KindClass`-keyed pressure table and **zero** `HeatSignal`-keyed ones.
+  A second table reappearing is now the failure itself, *even when it agrees*.
+- **B3b** — the bijection check above. Strictly stronger than the old comparison, which only saw
+  miswires on a *pressure* arm; B3b sees every arm (verified: swapping `Stale`/`Expired` in
+  `classOf` fails B3b and would have passed the old B3).
 
 ## Related
 

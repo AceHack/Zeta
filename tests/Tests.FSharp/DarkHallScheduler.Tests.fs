@@ -403,6 +403,52 @@ let ``heat pressure classifiers agree on live kinds and on dual-token kinds`` ()
     Assert.Equal(TemperatureReadout.MaxPpm, TemperatureReadout.ofHeatSignature(dualSig).PressurePpm)
 
 [<Fact>]
+let ``HeatSignal.classOf inverts ofKind on every class, so the one pressure table is read correctly`` () =
+    // 081M07Z23EX. `HeatSignal.isPressure` no longer enumerates the pressure bit; it recovers
+    // the KindClass with `classOf` and reads `HeatSignature.isPressureClass`. That removes the
+    // membership split and leaves exactly one residual the COMPILER CANNOT SEE: `classOf` is
+    // exhaustive whatever it maps to, so a miswired arm (`Denied -> KindClass.Forgotten`) type-
+    // checks and silently answers the pressure question wrong. This is that falsifier.
+    //
+    // The law is stated through the real string chain rather than as `classOf x = <literal>`,
+    // which would only restate `classOf`'s own table back at itself:
+    //
+    //     for every kind k:  classOf (ofKind k) = classifyKind k
+    //
+    // One representative kind per class, Other included (no vocabulary token appears in it).
+    let perClass =
+        [ "backpressure", HeatSignature.KindClass.Backpressure
+          "denied", HeatSignature.KindClass.Denied
+          "forgotten", HeatSignature.KindClass.Forgotten
+          "storage", HeatSignature.KindClass.StorageError
+          "invalid", HeatSignature.KindClass.Invalid
+          "expired", HeatSignature.KindClass.Expired
+          "stale", HeatSignature.KindClass.Stale
+          "hall.opened", HeatSignature.KindClass.Other ]
+
+    // Every class is covered — a shrunk list would make the loop below pass by not looking.
+    Assert.Equal(8, perClass |> List.map snd |> List.distinct |> List.length)
+
+    for kind, expectedClass in perClass do
+        Assert.Equal(expectedClass, HeatSignature.classifyKind kind)
+
+        let roundTripped = kind |> HeatSignal.ofKind |> HeatSignal.classOf
+
+        Assert.True(
+            (roundTripped = expectedClass),
+            sprintf "classOf (ofKind %s) = %A, expected %A — the correspondence is miswired" kind roundTripped expectedClass
+        )
+
+        // The consequence that matters: the derived signal route reads the one table correctly.
+        Assert.Equal(
+            HeatSignature.isPressureKind kind,
+            kind |> HeatSignal.ofKind |> HeatSignal.isPressure
+        )
+
+    // The payload-carrying case is a correspondence too, and its payload is irrelevant to it.
+    Assert.Equal(HeatSignature.KindClass.Other, HeatSignal.classOf(HeatSignal.Other "anything at all"))
+
+[<Fact>]
 let ``heat rows export through an injected host heat sink`` () =
     let rows: Scheduler.HeatBoundaryRow list =
         [ { Tick = 1

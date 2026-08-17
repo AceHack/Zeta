@@ -100,7 +100,9 @@ module HeatSignature =
         kindContains "stale" kind
 
     /// Single ordered classification of a kind string. Both `isPressureKind` and
-    /// `HeatSignal.ofKind` read this; they cannot disagree (081M010W1BP).
+    /// `HeatSignal.ofKind` read this; they cannot disagree (081M010W1BP). And since
+    /// 081M07Z23EX they also share ONE pressure table (`isPressureClass`), so they cannot
+    /// disagree on membership either.
     ///
     /// Dual-token kinds that carry both a forgetting token and a pressure token
     /// are **pressure**. Missing a pressure signal is fail-dangerous:
@@ -128,10 +130,22 @@ module HeatSignature =
         elif isStaleKind kind then KindClass.Stale
         else KindClass.Other
 
-    /// Derived from `classifyKind`. A kind is pressure iff the single classifier
-    /// said so — never a second, independent substring test.
-    let isPressureKind (kind: string) : bool =
-        match classifyKind kind with
+    /// **The pressure bit, enumerated once for the whole tree** (081M07Z23EX087G0R003N676FT).
+    ///
+    /// Nothing else in the repo may write `-> true` for pressure over any union: the
+    /// `HeatSignal`-keyed route (`HeatSignal.isPressure`) recovers the class with
+    /// `HeatSignal.classOf` and reads *this* table. Before that derive there were two
+    /// exhaustive tables — one per union — which post-#10804 could no longer disagree on an
+    /// INPUT but could still disagree on MEMBERSHIP: add a case, mark it pressure in one table
+    /// only. That split is now unrepresentable rather than merely detectable, because there is
+    /// no second table to split from.
+    ///
+    /// The table is keyed on `KindClass` and not on `HeatSignal` because F#'s declaration order
+    /// forces it: `HeatSignature` is compiled before `HeatSignal`, so this module cannot call
+    /// `HeatSignal.ofKind`, while `HeatSignal` can call back into here. The direction of the
+    /// derive is a fact about the file, not a preference.
+    let isPressureClass =
+        function
         | KindClass.Backpressure
         | KindClass.Denied -> true
         | KindClass.Forgotten
@@ -140,6 +154,10 @@ module HeatSignature =
         | KindClass.Expired
         | KindClass.Stale
         | KindClass.Other -> false
+
+    /// Derived from `classifyKind`. A kind is pressure iff the single classifier
+    /// said so — never a second, independent substring test.
+    let isPressureKind (kind: string) : bool = kind |> classifyKind |> isPressureClass
 
     let ofMass (source: string) (kind: string) (units: int) (mass: double) (detail: string) : HeatSignature =
         let ppm =
@@ -215,16 +233,34 @@ module HeatSignal =
         | HeatSignal.Stale -> "stale"
         | HeatSignal.Other _ -> "other"
 
-    let isPressure =
+    /// The inverse of `ofKind`'s case correspondence: recovers the `KindClass` a signal stands
+    /// for. It **decides nothing** — no ordering, no predicate, no `true` — it is the mechanical
+    /// name-for-name map that lets `isPressure` read `HeatSignature.isPressureClass` instead of
+    /// keeping a second copy of the pressure table (081M07Z23EX087G0R003N676FT).
+    ///
+    /// Honest register on what this trades: the membership split is gone, and what remains is
+    /// that `classOf` could be MISWIRED (`HeatSignal.Denied -> KindClass.Forgotten`) — the
+    /// compiler checks exhaustiveness, never correspondence. That residual is a strictly smaller
+    /// and more visible class than the split it replaces, and it is falsified twice: by the
+    /// round-trip law `classOf (ofKind k) = classifyKind k` in `DarkHallScheduler.Tests.fs`, and
+    /// by PART B3 of `lint-heat-kind-classifier-agreement.ts`, which reads both directions out
+    /// of this file and requires them to be mutual inverses.
+    let classOf =
         function
-        | HeatSignal.Backpressure
-        | HeatSignal.Denied -> true
-        | HeatSignal.Forgotten
-        | HeatSignal.StorageError
-        | HeatSignal.Invalid
-        | HeatSignal.Expired
-        | HeatSignal.Stale
-        | HeatSignal.Other _ -> false
+        | HeatSignal.Backpressure -> HeatSignature.KindClass.Backpressure
+        | HeatSignal.Denied -> HeatSignature.KindClass.Denied
+        | HeatSignal.Forgotten -> HeatSignature.KindClass.Forgotten
+        | HeatSignal.StorageError -> HeatSignature.KindClass.StorageError
+        | HeatSignal.Invalid -> HeatSignature.KindClass.Invalid
+        | HeatSignal.Expired -> HeatSignature.KindClass.Expired
+        | HeatSignal.Stale -> HeatSignature.KindClass.Stale
+        | HeatSignal.Other _ -> HeatSignature.KindClass.Other
+
+    /// Pressure, over the signal union. Derived — `HeatSignature.isPressureClass` is the only
+    /// place the bit is named. Signature unchanged (`HeatSignal -> bool`): `DarkHallScheduler`,
+    /// `dispositionOfKind`, `ofCounts`, and `SchedulerShedHeat.Tests` all call it as before.
+    let isPressure (signal: HeatSignal) : bool =
+        signal |> classOf |> HeatSignature.isPressureClass
 
     let ofSignature (signature: HeatSignature) : HeatSignal =
         ofKind signature.Kind

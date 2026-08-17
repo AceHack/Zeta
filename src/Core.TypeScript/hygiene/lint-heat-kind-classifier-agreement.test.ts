@@ -3,6 +3,7 @@ import {
   bindings,
   casesMappedToTrue,
   classToSignalMap,
+  signalToClassMap,
   kindContainsCallers,
   kindLiterals,
   pressureDecidingBindings,
@@ -13,9 +14,10 @@ import {
 } from "./lint-heat-kind-classifier-agreement.ts";
 
 /**
- * A minimal `Heat.fs` in the shape main ACTUALLY has after #10804: `classifyKind` is the one
- * ordered chain and the only consumer of the raw probes, and BOTH routes derive from it —
- * `HeatSignature.isPressureKind` over `KindClass`, `HeatSignal.ofKind` over `HeatSignal`.
+ * A minimal `Heat.fs` in the shape main ACTUALLY has after #10804 + 081M07Z23EX087G0R003N676FT:
+ * `classifyKind` is the one ordered chain and the only consumer of the raw probes, ONE table
+ * (`isPressureClass`, keyed on `KindClass`) names the pressure bit, and both routes derive —
+ * `isPressureKind = classifyKind >> isPressureClass`, `isPressure = classOf >> isPressureClass`.
  *
  * The first draft of this lint fixtured the *pre*-#10804 shape (`ofKind` as the classifier) and
  * pinned that name, which is why it went red on a correct main. The fixture is the model; if it
@@ -59,8 +61,8 @@ module HeatSignature =
         elif isStaleKind kind then KindClass.Stale
         else KindClass.Other
 
-    let isPressureKind (kind: string) : bool =
-        match classifyKind kind with
+    let isPressureClass =
+        function
         | KindClass.Backpressure
         | KindClass.Denied -> true
         | KindClass.Forgotten
@@ -69,6 +71,8 @@ module HeatSignature =
         | KindClass.Expired
         | KindClass.Stale
         | KindClass.Other -> false
+
+    let isPressureKind (kind: string) : bool = kind |> classifyKind |> isPressureClass
 
 [<RequireQualifiedAccess>]
 module HeatSignal =
@@ -84,16 +88,19 @@ module HeatSignal =
         | HeatSignature.KindClass.Stale -> HeatSignal.Stale
         | HeatSignature.KindClass.Other -> HeatSignal.Other kind
 
-    let isPressure =
+    let classOf =
         function
-        | HeatSignal.Backpressure
-        | HeatSignal.Denied -> true
-        | HeatSignal.Forgotten
-        | HeatSignal.StorageError
-        | HeatSignal.Invalid
-        | HeatSignal.Expired
-        | HeatSignal.Stale
-        | HeatSignal.Other _ -> false
+        | HeatSignal.Backpressure -> HeatSignature.KindClass.Backpressure
+        | HeatSignal.Denied -> HeatSignature.KindClass.Denied
+        | HeatSignal.Forgotten -> HeatSignature.KindClass.Forgotten
+        | HeatSignal.StorageError -> HeatSignature.KindClass.StorageError
+        | HeatSignal.Invalid -> HeatSignature.KindClass.Invalid
+        | HeatSignal.Expired -> HeatSignature.KindClass.Expired
+        | HeatSignal.Stale -> HeatSignature.KindClass.Stale
+        | HeatSignal.Other _ -> HeatSignature.KindClass.Other
+
+    let isPressure (signal: HeatSignal) : bool =
+        signal |> classOf |> HeatSignature.isPressureClass
 `;
 
 /**
@@ -102,17 +109,9 @@ module HeatSignal =
  * and every relaxation below is judged against it.
  */
 const HEAT_TWO_CLASSIFIERS = HEAT_FIXED.replace(
+  `    let isPressureKind (kind: string) : bool = kind |> classifyKind |> isPressureClass`,
   `    let isPressureKind (kind: string) : bool =
-        match classifyKind kind with
-        | KindClass.Backpressure
-        | KindClass.Denied -> true`,
-  `    let isPressureKind (kind: string) : bool =
-        isBackpressureKind kind || isDeniedKind kind
-
-    let legacyTable (kind: string) : bool =
-        match classifyKind kind with
-        | KindClass.Backpressure
-        | KindClass.Denied -> true`,
+        isBackpressureKind kind || isDeniedKind kind`,
 );
 
 describe("stripFSharpComments", () => {
@@ -141,11 +140,13 @@ describe("tokenPredicates", () => {
 });
 
 describe("bindings", () => {
-  test("finds the chain, both derived routes, and the probes", () => {
+  test("finds the chain, the one table, both derived routes, and the correspondence", () => {
     const names = [...bindings(HEAT_FIXED).keys()];
     expect(names).toContain("classifyKind");
+    expect(names).toContain("isPressureClass");
     expect(names).toContain("isPressureKind");
     expect(names).toContain("ofKind");
+    expect(names).toContain("classOf");
     expect(names).toContain("isPressure");
   });
 });
@@ -177,12 +178,30 @@ describe("kindContainsCallers", () => {
   });
 });
 
-describe("classToSignalMap / casesMappedToTrue / pressureTables", () => {
+describe("classToSignalMap / signalToClassMap / casesMappedToTrue / pressureTables", () => {
   test("the KindClass -> HeatSignal correspondence is read off ofKind", () => {
     const map = classToSignalMap(HEAT_FIXED);
     expect(map.get("Backpressure")).toBe("Backpressure");
     expect(map.get("Denied")).toBe("Denied");
     expect(map.size).toBe(8);
+  });
+
+  test("the HeatSignal -> KindClass correspondence is read off classOf, payload binder and all", () => {
+    const map = signalToClassMap(HEAT_FIXED);
+    expect(map.get("Backpressure")).toBe("Backpressure");
+    expect(map.get("Denied")).toBe("Denied");
+    // `| HeatSignal.Other _ -> HeatSignature.KindClass.Other` — the binder must not defeat the parse.
+    expect(map.get("Other")).toBe("Other");
+    expect(map.size).toBe(8);
+  });
+
+  test("neither direction's regex swallows the other's arms", () => {
+    // ofKind and classOf sit in the same file and mirror each other; a regex that matched both
+    // would report a bijection no matter how either was wired.
+    const ofKindOnly = `| HeatSignature.KindClass.Denied -> HeatSignal.Denied`;
+    expect(signalToClassMap(ofKindOnly).size).toBe(0);
+    const classOfOnly = `| HeatSignal.Denied -> HeatSignature.KindClass.Denied`;
+    expect(classToSignalMap(classOfOnly).size).toBe(0);
   });
 
   test("or-patterns grouped before a single arrow are all collected", () => {
@@ -193,10 +212,14 @@ describe("classToSignalMap / casesMappedToTrue / pressureTables", () => {
     expect(cases).toEqual(["Backpressure", "Denied"]);
   });
 
-  test("the pressure tables are discovered by SHAPE, so a rename cannot hide one", () => {
-    const renamed = HEAT_FIXED.replace("let isPressureKind (kind: string)", "let deferralBit (kind: string)");
+  test("the one pressure table is discovered by SHAPE, so a rename cannot hide it", () => {
+    const renamed = HEAT_FIXED.replace("let isPressureClass", "let deferralBit");
     expect([...pressureTables(renamed, "KindClass").keys()]).toEqual(["deferralBit"]);
-    expect([...pressureTables(renamed, "HeatSignal").keys()]).toEqual(["isPressure"]);
+  });
+
+  test("post-derive there is NO HeatSignal-keyed pressure table at all", () => {
+    // 081M07Z23EX. `isPressure` is a composition now; nothing enumerates the bit over HeatSignal.
+    expect([...pressureTables(HEAT_FIXED, "HeatSignal").keys()]).toEqual([]);
   });
 });
 
@@ -292,40 +315,102 @@ describe("run", () => {
     );
   });
 
-  test("PART B3 — the two pressure tables disagree on MEMBERSHIP", () => {
-    const dropped = HEAT_FIXED.replace(
-      `        | HeatSignal.Backpressure
+  test("PART B3a — THE MEMBERSHIP SPLIT COMING BACK: a second table keyed on HeatSignal", () => {
+    // Exactly the shape 081M07Z23EX removed. Before the derive this was the *expected* shape and
+    // B3 only asked whether the two tables agreed; now its existence is the failure, because a
+    // table that agrees today is a table that can be edited out of agreement tomorrow.
+    const reintroduced = HEAT_FIXED.replace(
+      `    let isPressure (signal: HeatSignal) : bool =
+        signal |> classOf |> HeatSignature.isPressureClass`,
+      `    let isPressure =
+        function
+        | HeatSignal.Backpressure
         | HeatSignal.Denied -> true
-        | HeatSignal.Forgotten`,
-      `        | HeatSignal.Backpressure -> true
-        | HeatSignal.Denied
-        | HeatSignal.Forgotten`,
+        | HeatSignal.Forgotten
+        | HeatSignal.StorageError
+        | HeatSignal.Invalid
+        | HeatSignal.Expired
+        | HeatSignal.Stale
+        | HeatSignal.Other _ -> false`,
     );
-    const { failures } = run(reader({ ...cleanCorpus, "src/Core/Heat.fs": dropped }));
-    expect(failures.some((f) => f.part === "B" && f.message.includes("MEMBERSHIP"))).toBe(true);
+    const { failures } = run(reader({ ...cleanCorpus, "src/Core/Heat.fs": reintroduced }));
+    expect(
+      failures.some((f) => f.part === "B" && f.message.includes("enumerates pressure over HeatSignal")),
+    ).toBe(true);
   });
 
-  test("PART B3 — a MISWIRED ofKind arm, which no name-pin could ever see", () => {
+  test("PART B3a — the membership split it would have hidden: agreeing tables ALSO fail now", () => {
+    // The honest version of the same point. The reintroduced table above is in perfect agreement
+    // with `isPressureClass`; the old B3 would have passed it. One table or none is the rule.
+    const agreeing = HEAT_FIXED.replace(
+      `    let isPressure (signal: HeatSignal) : bool =
+        signal |> classOf |> HeatSignature.isPressureClass`,
+      `    let isPressure =
+        function
+        | HeatSignal.Backpressure
+        | HeatSignal.Denied -> true
+        | HeatSignal.Other _ -> false`,
+    );
+    const { failures } = run(reader({ ...cleanCorpus, "src/Core/Heat.fs": agreeing }));
+    const split = failures.find((f) => f.part === "B" && f.message.includes("enumerates pressure over HeatSignal"));
+    expect(split).toBeDefined();
+    expect(split?.message).toContain("'isPressure'");
+    // …and it is the ONLY complaint: the tables genuinely agree, so nothing else has anything
+    // to say about them. That is the whole point — agreement is no longer a defence.
+    expect(failures.filter((f) => f.part === "B").length).toBe(1);
+    expect(failures.filter((f) => f.part === "floor").length).toBe(0);
+  });
+
+  test("PART B3a — a SECOND KindClass-keyed table is a floor failure, not a silent pass", () => {
+    const second = HEAT_FIXED.replace(
+      "    let classifyKind",
+      `    let alsoPressureClass =
+        function
+        | KindClass.Backpressure -> true
+        | KindClass.Other -> false
+
+    let classifyKind`,
+    );
+    const { failures } = run(reader({ ...cleanCorpus, "src/Core/Heat.fs": second }));
+    expect(failures.some((f) => f.part === "floor" && f.message.includes("PART B3"))).toBe(true);
+  });
+
+  test("PART B3b — a MISWIRED ofKind arm, which no name-pin could ever see", () => {
     const miswired = HEAT_FIXED.replace(
       "| HeatSignature.KindClass.Denied -> HeatSignal.Denied",
       "| HeatSignature.KindClass.Denied -> HeatSignal.Forgotten",
     );
     const { failures } = run(reader({ ...cleanCorpus, "src/Core/Heat.fs": miswired }));
-    expect(failures.some((f) => f.part === "B" && f.message.includes("MEMBERSHIP"))).toBe(true);
+    expect(failures.some((f) => f.part === "B" && f.message.includes("NOT a bijection"))).toBe(true);
   });
 
-  test("PART B3 — a THIRD pressure table is a floor failure, not a silent pass", () => {
-    const third = HEAT_FIXED.replace(
-      "    let ofKind",
-      `    let isAlsoPressure =
-        function
-        | HeatSignal.Backpressure -> true
-        | HeatSignal.Other _ -> false
-
-    let ofKind`,
+  test("PART B3b — a MISWIRED classOf arm: the residual the derive CREATED", () => {
+    // This is the honest cost of 081M07Z23EX. `classOf` is exhaustive whatever it maps to, so
+    // this compiles and `isPressure HeatSignal.Denied` quietly becomes false — a room under
+    // genuine backpressure reading cold, which is the fail-dangerous direction #10804 fixed.
+    const miswired = HEAT_FIXED.replace(
+      "| HeatSignal.Denied -> HeatSignature.KindClass.Denied",
+      "| HeatSignal.Denied -> HeatSignature.KindClass.Forgotten",
     );
-    const { failures } = run(reader({ ...cleanCorpus, "src/Core/Heat.fs": third }));
-    expect(failures.some((f) => f.part === "floor" && f.message.includes("PART B3"))).toBe(true);
+    const { failures } = run(reader({ ...cleanCorpus, "src/Core/Heat.fs": miswired }));
+    expect(failures.some((f) => f.part === "B" && f.message.includes("NOT a bijection"))).toBe(true);
+  });
+
+  test("PART B3b — a miswire among NON-pressure arms, which the old pressure-set compare missed", () => {
+    // Strictly-stronger evidence: the pre-derive B3 compared pressure SETS, so swapping Stale and
+    // Expired was invisible to it. The bijection check sees every arm.
+    const swapped = HEAT_FIXED.replace(
+      "| HeatSignal.Stale -> HeatSignature.KindClass.Stale",
+      "| HeatSignal.Stale -> HeatSignature.KindClass.Expired",
+    );
+    const { failures } = run(reader({ ...cleanCorpus, "src/Core/Heat.fs": swapped }));
+    expect(failures.some((f) => f.part === "B" && f.message.includes("NOT a bijection"))).toBe(true);
+  });
+
+  test("PART B3b — losing classOf entirely is a floor failure, not a silent pass", () => {
+    const noClassOf = HEAT_FIXED.replace(/    let classOf =[\s\S]*?\n\n/, "");
+    const { failures } = run(reader({ ...cleanCorpus, "src/Core/Heat.fs": noClassOf }));
+    expect(failures.some((f) => f.part === "floor" && f.message.includes("PART B3b"))).toBe(true);
   });
 
   test("FLOOR — an empty corpus fails instead of reporting clean", () => {
