@@ -1,0 +1,17 @@
+{
+  "pr_number": 9138,
+  "archive_path": "docs/history/pr-reviews/PR-9138-feat-cross-verify-mirror-ikleenealgebra-to-the-six-oracle-treaty-close-081kwghqw.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RcXTm",
+    "comment:PRRC_kwDOSF9kNM7RcXTt",
+    "thread:PRRT_kwDOSF9kNM6N7hwN",
+    "thread:PRRT_kwDOSF9kNM6N7hwR"
+  ],
+  "fetched_at": "2026-08-17T08:48:58.718Z",
+  "schema_version": "v1",
+  "commit_sha": "ace0fa4debc2f46ae1d299bbd5d14aab7b49ce53",
+  "title": "feat(cross-verify): mirror IKleeneAlgebra to the six-oracle treaty; close 081KWGHQW5",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T14:31:33Z",
+  "head_ref": "otto/ikleenealgebra-oracle-mirror"
+}

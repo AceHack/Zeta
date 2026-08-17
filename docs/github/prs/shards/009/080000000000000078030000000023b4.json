@@ -1,0 +1,15 @@
+{
+  "pr_number": 9140,
+  "archive_path": "docs/history/pr-reviews/PR-9140-ci-algebra-mirror-the-semiring-ring-kleene-tower-drift-check-to-ci.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Rc_nM",
+    "thread:PRRT_kwDOSF9kNM6N7_dT"
+  ],
+  "fetched_at": "2026-08-17T08:49:02.323Z",
+  "schema_version": "v1",
+  "commit_sha": "ace0fa4debc2f46ae1d299bbd5d14aab7b49ce53",
+  "title": "ci(algebra): mirror the semiring→ring→kleene tower drift-check to CI",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T14:52:42Z",
+  "head_ref": "otto/kleene-tower-drift-check-ci"
+}

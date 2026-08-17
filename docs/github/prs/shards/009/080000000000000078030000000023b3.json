@@ -1,0 +1,12 @@
+{
+  "pr_number": 9139,
+  "archive_path": "docs/history/pr-reviews/PR-9139-feat-anti-sybil-soraya-batch-2-the-n-calibration-bugs-p1-closed-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T08:49:00.469Z",
+  "schema_version": "v1",
+  "commit_sha": "ace0fa4debc2f46ae1d299bbd5d14aab7b49ce53",
+  "title": "feat(anti-sybil): Soraya batch 2 — the ε(n) calibration; BUGS P1 closed (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T14:31:35Z",
+  "head_ref": "feat/chsh-epsilon-calibration"
+}
