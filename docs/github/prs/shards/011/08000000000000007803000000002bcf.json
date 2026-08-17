@@ -1,0 +1,12 @@
+{
+  "pr_number": 11215,
+  "archive_path": "docs/history/pr-reviews/PR-11215-fix-cluster-normalise-path-separators-the-readiness-auditor-was-broken-on-window.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T00:41:37.049Z",
+  "schema_version": "v1",
+  "commit_sha": "22dff28873a90d79d82057d8b8465fbb11ffb4a8",
+  "title": "fix(cluster): normalise path separators — the readiness auditor was broken on Windows",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T00:41:01Z",
+  "head_ref": "fix/readiness-path-separators"
+}
