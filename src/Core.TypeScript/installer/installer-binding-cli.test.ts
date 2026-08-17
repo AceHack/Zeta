@@ -134,6 +134,47 @@ describe("boundary whitespace is REJECTED -- not rewritten, not accepted", () =>
     if (!("error" in selected)) return;
     expect(selected.error).toContain("binding factor required");
   });
+
+  // The above decides "whitespace-only == absence". That is deliberate and it is the rule
+  // this block follows. What was never written down is what the rule COSTS when a second
+  // factor is present, and the cost is not obvious from either the rule or the header.
+  it("a whitespace-only iserial is absence, so it does not conflict with a keyfile", () => {
+    const selected = selectCliBindingMaterial({
+      usbUuid: null,
+      usbISerial: "   ",
+      uefiKeyfileBytes: new Uint8Array(UEFI_KEYFILE_BYTES).fill(1),
+    });
+
+    // Not an error: `hasIserial` is false, so the mutual-exclusion guard never fires and
+    // the keyfile is the only factor left standing. Consistent with "absence".
+    expect("error" in selected).toBe(false);
+    if ("error" in selected) return;
+    expect(selected.factor).toBe("uefiKeyfile");
+  });
+
+  it("...which means an unset shell variable silently CHANGES the binding factor", () => {
+    // `--usb-iserial "$SERIAL" --uefi-keyfile k` with SERIAL unset. The operator asked to
+    // bind to a specific USB device; the blob is bound to the keyfile instead, with no
+    // diagnostic. Nobody is locked out -- the factor is recorded, so restore agrees -- but
+    // the binding an operator BELIEVES they have is not the one they have.
+    //
+    // This test does not argue for changing that. It pins the consequence so the choice is
+    // visible: if "absence" is right, this passes and documents the trade; if the trade is
+    // judged wrong, this is the test that turns red and names exactly what changed.
+    const asked = selectCliBindingMaterial({
+      usbUuid: null,
+      usbISerial: "",
+      uefiKeyfileBytes: new Uint8Array(UEFI_KEYFILE_BYTES).fill(1),
+    });
+    const supplied = selectCliBindingMaterial({
+      usbUuid: null,
+      usbISerial: null,
+      uefiKeyfileBytes: new Uint8Array(UEFI_KEYFILE_BYTES).fill(1),
+    });
+
+    // Passing the flag with an empty value is indistinguishable from never passing it.
+    expect(asked).toEqual(supplied);
+  });
 });
 
 describe("probe-canonicalization-is-the-single-authority", () => {
