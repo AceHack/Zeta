@@ -1,0 +1,12 @@
+{
+  "pr_number": 11445,
+  "archive_path": "docs/history/pr-reviews/PR-11445-fix-heartbeat-a-queued-gate-is-not-a-stuck-one-and-a-replaced-flush-should-retir.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T12:33:50.364Z",
+  "schema_version": "v1",
+  "commit_sha": "9abea585e662c717a499aa62d889369d416f7b26",
+  "title": "fix(heartbeat): a queued gate is not a stuck one, and a replaced flush should retire",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T12:33:16Z",
+  "head_ref": "shadow/required-check-existence-and-flush-retirement"
+}
