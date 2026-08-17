@@ -1,0 +1,12 @@
+{
+  "pr_number": 10693,
+  "archive_path": "docs/history/pr-reviews/PR-10693-research-measure-backpressure-no-single-algebra-deferral-composes-destruction-do.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:31:19.813Z",
+  "schema_version": "v1",
+  "commit_sha": "d9fc515c58d84ff90b0dc37b4744c8a03a85c932",
+  "title": "research+measure(backpressure): no single algebra — deferral composes, destruction does not; bandwidth isolation decorrelates the channel, not the common cause",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:30:45Z",
+  "head_ref": "otto/backpressure-algebra-bandwidth-isolation-decorrelation"
+}
