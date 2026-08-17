@@ -1,53 +1,58 @@
 {
-  "generatedAt": "2026-05-14T13:16:13.824Z",
-  "source": "tools/bus/export-cb-snapshot.ts",
+  "generatedAt": "2026-08-14T21:52:18.487Z",
+  "source": "src/Core.TypeScript/bus/export-cb-snapshot.ts",
   "busDir": "/tmp/zeta-bus",
-  "envelopeCount": 73,
+  "envelopeCount": 0,
   "entries": [
     {
       "model": "Otto",
       "harness": "Claude Code",
-      "state": "CLOSED",
+      "state": "UNKNOWN",
       "consecutiveFailures": 0,
       "threshold": 5,
-      "lastCheck": "2026-05-14T13:14:21.460Z",
-      "note": "Active work detected — normal operation"
+      "observations": 0,
+      "lastCheck": null,
+      "note": "No bus activity observed — health UNKNOWN, not healthy"
     },
     {
       "model": "Alexa",
       "harness": "Kiro / Qwen",
-      "state": "CLOSED",
+      "state": "UNKNOWN",
       "consecutiveFailures": 0,
       "threshold": 5,
-      "lastCheck": "2026-05-14T13:16:13.824Z",
-      "note": "No recent bus activity — assuming healthy"
+      "observations": 0,
+      "lastCheck": null,
+      "note": "No bus activity observed — health UNKNOWN, not healthy"
     },
     {
       "model": "Lior",
       "harness": "Gemini",
-      "state": "CLOSED",
+      "state": "UNKNOWN",
       "consecutiveFailures": 0,
       "threshold": 5,
-      "lastCheck": "2026-05-14T13:16:13.824Z",
-      "note": "No recent bus activity — assuming healthy"
+      "observations": 0,
+      "lastCheck": null,
+      "note": "No bus activity observed — health UNKNOWN, not healthy"
     },
     {
       "model": "Vera",
       "harness": "Codex / GPT",
-      "state": "CLOSED",
+      "state": "UNKNOWN",
       "consecutiveFailures": 0,
       "threshold": 5,
-      "lastCheck": "2026-05-13T22:38:20.254Z",
-      "note": "Active work detected — normal operation"
+      "observations": 0,
+      "lastCheck": null,
+      "note": "No bus activity observed — health UNKNOWN, not healthy"
     },
     {
       "model": "Riven",
       "harness": "Grok",
-      "state": "CLOSED",
+      "state": "UNKNOWN",
       "consecutiveFailures": 0,
       "threshold": 5,
-      "lastCheck": "2026-05-14T13:16:13.824Z",
-      "note": "No recent bus activity — assuming healthy"
+      "observations": 0,
+      "lastCheck": null,
+      "note": "No bus activity observed — health UNKNOWN, not healthy"
     }
   ]
 }
