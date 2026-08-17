@@ -1,11 +1,12 @@
 ---
 id: 081M00J3WD2087G0R00149C8ZD
 type: task
-state: backlog
+state: done
 priority: P1
 slug: helm-validate-could-not-go-red-real-yaml-parse-exact-chart-v
 title: "helm-validate could not go red: real YAML parse, exact chart-version resolution, helm template + kubeconform, daily cadence"
 created: 2026-08-14T16:36:36.898Z
+completed: 2026-08-17T14:42:10.248Z
 depends_on: []
 composes_with: []
 ---
@@ -65,6 +66,45 @@ Offline validation 0.4 s; mutation suite 1.7 s; online version check 1.4 s over
 ~5 MB; `helm template` of all six charts 5.1 s; end-to-end `--render` 7.6 s.
 Billable minutes zero (public repo, standard runners). There was never a cost
 case for keeping chart validation off pull requests.
+
+## Independent re-verification (2026-08-17, Otto/shadow)
+
+The row above was still `state: backlog` after the fix merged as #10647, so it
+read as available work. Re-verified from scratch before closing it — the claims
+are **reproduced, not taken on trust**. `helm` 4.2.0 and `kubeconform` 0.7.0 were
+both on PATH, so the `--render` lane ran end-to-end rather than being asserted.
+
+Control, unmutated tree: `--offline` exit **0**, `37 passed, 0 failed`; full
+`--render` exit **0**, `55 passed, 0 failed` (all six charts really pulled and
+rendered). A validator that rejects everything would be as useless as one that
+accepts everything, so both directions are pinned.
+
+Each row of the original table, re-run against the current validator:
+
+| Mutation | Exit | Reason reported |
+| --- | --- | --- |
+| Tab indent + unterminated quote + unclosed flow sequence | **1** | `YAML parse failed: Tabs are not allowed as indentation at line 37` |
+| Duplicate `destination.namespace` (`orleans` → `hijacked`) | **1** | `YAML parse failed: Map keys must be unique at line 29` |
+| `targetRevision: 999.999.999` on cockroachdb | **1** | `chart 'cockroachdb' has no version '999.999.999' … (110 published versions; newest 21.0.4)` |
+
+**A confound was found and removed.** The first attempt at the syntax mutation
+appended a second top-level `metadata:`, and it went red on *duplicate keys* —
+not on the syntax. That is the same shape as the zflash allowlist whose cases
+were all caught incidentally by a different rule. Re-run under a unique key, the
+syntax defect fails on its own; only then is row 1 actually closed.
+
+**Mutation testing of the fix itself**, which is what proves the guard is load-bearing:
+
+- Validator's `process.exit(1)` → `exit(0)`: **12 pass / 0 fail → 3 pass / 9 fail**,
+  independently reproducing the 9-of-12 figure claimed above. Restored → 12/0.
+- `uniqueKeys: true` → `false`: **exactly one** test fails, and it is the
+  duplicate-key case. A sharp falsifier, not a blunt one.
+- `versions.includes(ref.version)` → the original `text.includes("name: " + chart)`:
+  the bogus-pin tree prints `PASS: cockroachdb: cockroachdb 999.999.999 is published`
+  and exits **0** — the historical defect reproduced live. This is the direct
+  evidence that the exact-version comparison is what carries the check.
+
+After each mutation the file was restored and `git diff --stat` confirmed empty.
 
 ## Deliberately not done
 
