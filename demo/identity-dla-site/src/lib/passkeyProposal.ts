@@ -96,6 +96,21 @@ async function jsonResponse<T>(response: Response): Promise<T> {
   return body;
 }
 
+export function operatorNetworkTeachingError(error: unknown): Error {
+  const detail = error instanceof Error && error.message.length > 0 ? error.message : "the browser could not reach the verifier";
+  return new Error(
+    `teaching error: the Pages verifier transport is unavailable (${detail}); retract -1 operator-proposal; generator: reload the current lightweight authorization page, authorize this device again, then retry the bounded proposal.`,
+  );
+}
+
+async function operatorFetch(path: string, init?: RequestInit): Promise<Response> {
+  try {
+    return await fetch(`${ZETA_OPERATOR_HARNESS_ORIGIN}${path}`, { ...init, cache: "no-store", mode: "cors" });
+  } catch (error) {
+    throw operatorNetworkTeachingError(error);
+  }
+}
+
 export function isCommitSha(value: string): boolean {
   return /^[0-9a-f]{40}$/i.test(value);
 }
@@ -244,7 +259,7 @@ export async function authorizeOperatorDevice(
   if (window.location.origin !== ZETA_PAGES_ORIGIN)
     throw new Error("Device authorization is bound to the published GitHub Pages origin.");
   const challenge = await jsonResponse<{ challenge: string; challengeToken: string }>(
-    await fetch(`${ZETA_OPERATOR_HARNESS_ORIGIN}/api/github-app/operator/challenge`),
+    await operatorFetch("/api/github-app/operator/challenge"),
   );
   const credential = await navigator.credentials.get({
     publicKey: {
@@ -260,7 +275,7 @@ export async function authorizeOperatorDevice(
   if (!(response instanceof AuthenticatorAssertionResponse))
     throw new Error("The browser did not return a passkey authentication assertion.");
   const capability = await jsonResponse<DeviceCapability>(
-    await fetch(`${ZETA_OPERATOR_HARNESS_ORIGIN}/api/github-app/operator/session`, {
+    await operatorFetch("/api/github-app/operator/session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -286,7 +301,7 @@ export async function submitAutomaticProposal(input: {
 }): Promise<{ proposalId: string; message: string }> {
   const proposalId = crypto.randomUUID();
   const accepted = await jsonResponse<{ readonly ok: true; readonly proposalId: string; readonly message: string }>(
-    await fetch(`${ZETA_OPERATOR_HARNESS_ORIGIN}/api/github-app/operator/proposals`, {
+    await operatorFetch("/api/github-app/operator/proposals", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${input.capability.capability}` },
       body: JSON.stringify({ proposalId, baseSha: input.baseSha, payload: input.payload }),

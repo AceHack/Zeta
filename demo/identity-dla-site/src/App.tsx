@@ -37,6 +37,19 @@ function Router() {
 }
 
 function App() {
+  useEffect(() => {
+    const reloadKey = "zeta-pages-lazy-chunk-recovery";
+    const onLazyChunkError = (event: Event) => {
+      const preloadEvent = event as Event & { preventDefault(): void };
+      preloadEvent.preventDefault();
+      if (sessionStorage.getItem(reloadKey) === "reloaded") return;
+      sessionStorage.setItem(reloadKey, "reloaded");
+      window.location.reload();
+    };
+    window.addEventListener("vite:preloadError", onLazyChunkError);
+    return () => window.removeEventListener("vite:preloadError", onLazyChunkError);
+  }, []);
+
   return (
     <ErrorBoundary>
       <WouterRouter hook={useHashLocation}>
