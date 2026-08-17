@@ -1013,6 +1013,87 @@ Evidence trail: PRs **#10774** (the idiom axis), **#10807** (the IR evaluator), 
 relocates lifetimes), **#10819** (types as a virtualized runtime; the ALC wall), **#10820** (the F#/HKT
 upstream program), **#10822** (the irreducible core).
 
+## The categorical arena — one place where every language and tradition is comparable (2026-08-17)
+
+Aaron: *"this is the category theory upgrade i'm going for across ANTLR space, over all
+computer language and english, to expand it into natural language — we will expand from there
+to other languages."* And on status: *"we are trying to expand this past conjecture."*
+
+**Register: this is a DIRECTION with named anchors, not an achievement.** Everything below is
+`unmetered` unless it says otherwise. The point of writing it here is that the anchors are
+real and old, so the work is *joining* an existing programme rather than starting one — and
+that is what makes "past conjecture" a reachable ask rather than an aspiration.
+
+### The arena is already carved
+
+`.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md`: the **free object**
+(free monoidal category / operad) is primitive, and *"every structured special case — Clifford,
+E8, a Lie algebra — is an **earned quotient** obtained by declaring its relations."*
+
+So the arena exists as a rule: **the free structure is the arena, each tradition is a
+quotient, and its declared relations are what distinguish it.** What is missing is that the
+verb surface (`clis/Verbs.fs`) is not connected to it — and, measured 2026-08-17, is
+referenced by no `.fsproj` or `.sln`, so no compiler has ever read it.
+
+### The formal-language half needs no bridge
+
+**Context-free grammars are initial algebras of their production functor** — a CFG's language
+*is* the free algebra on its signature. "All computer languages" and "the free object is
+primitive" are therefore not two ideas requiring a connection; the second is the standard
+algebraic account of the first. **ANTLR's `grammars-v4` is the population** — hundreds of
+grammars, externally maintained, curated by nobody here.
+
+### The natural-language half has a programme, and it is old
+
+- **Lambek (1958), *The Mathematics of Sentence Structure*** — the syntactic calculus; the
+  original bridge between category theory and grammar.
+- **Lambek (1999), pregroup grammars** — compact closed categories as grammar.
+- **Coecke, Sadrzadeh & Clark (2010), DisCoCat** — pregroup grammar composed with vector-space
+  meaning in a compact closed category. **If "state of the art AI before LLMs" has a
+  categorical representative, this is it.**
+
+**CITED, NOT CHECKED** — recorded from recall; none opened at time of writing. Verification is
+part of the work, not a formality.
+
+### What would be genuinely new
+
+Comparing structures across fields in a common arena is **what category theory was invented
+for** (Eilenberg & Mac Lane, 1945) — so the ambition is not novel in kind, and that is good
+news: there is machinery rather than a blank page.
+
+**The possible contribution is narrower and sharper: an arena where the comparison is
+EXECUTABLE and BYTE-LOCKED across oracles.** This repo already does exactly that for
+serializers — four languages, golden vectors, bit-identical. Doing it for *algebraic
+structure*, where *"these two traditions agree"* is **a test that runs** rather than a claim in
+a paper, is the part that would not already exist.
+
+That is also the concrete meaning of *"expand this past conjecture"*: a conjecture becomes a
+result here when it acquires a falsifier, and the falsifier for a claimed correspondence is an
+executed instance — not a well-argued analogy.
+
+### The in-tree hit worth pulling on first
+
+**`src/Core/Sppf.fs`** — the Shared Packed Parse Forest (Billot–Lang; Scott 2008), whose own
+header calls it *"rung 3, the factor-graph prerequisite"*, framed by Aaron's SSAS
+decision-forest model. Two properties make it the natural first thread:
+
+1. An SPPF **retains every valid parse of an ambiguous input** instead of resolving to one
+   tree — **disagreement preservation at the parsing layer**, the same commitment as DV2
+   satellites, CAS surfacing a failed swap, and persuasive-not-binding jurisdictions.
+2. *"Factor-graph prerequisite"* is the inference side: a shared packed forest is the
+   structure you run Bayesian inference **over**. So the arena half and the inference half
+   already meet here, at least as a claim. **Whether `Sppf` has real consumers is measured,
+   not assumed** — several surfaces in this repo have turned out declaration-only when
+   checked.
+
+### The standing bar
+
+This material makes unification **easy to assert**. The rule is unchanged and applies with
+extra force: **do not claim the verb family, CFGs, and natural-language grammar are one
+structure without exhibiting an instance.** Naming precisely where the correspondence *stops*
+is worth more than a clean story — and under `numerology-vs-number-theory.md`, a matching
+shape is not an identification until the invariants that exclude the alternatives are named.
+
 ## The four products in the initial split (evolving trajectory)
 
 Aaron, 2026-04-30: *"substrate IS one of our products … 4
