@@ -49,6 +49,12 @@ jobs:
           cp docs/books/you-born-at-the-hinge/site/index.my.html dist/books/you-born-at-the-hinge/my/index.html
       - name: Generate eBooks
         run: bun run docs/books/you-born-at-the-hinge/scripts/build_ebooks.ts
+      # Runs AFTER the book copy on purpose: the language pages only sit at their served
+      # location (books/<lang>/index.html) once copied, and that is where their ../<lang>/
+      # switcher links resolve. Checking here covers ~3x the links of checking right after
+      # pages:build. Guards the 2026-08-14 hall-card class — see the script header.
+      - name: Audit internal links in the artifact
+        run: bun src/Core.TypeScript/hygiene/audit-dist-internal-links.ts --dist dist --base /Zeta/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:

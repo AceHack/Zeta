@@ -119,6 +119,14 @@
 </aside>
 <!-- zeta-llmtv-status-card:end -->
       <div class="cards">
+        <!-- The ../ cards below are CORRECT — do not "fix" them by repointing.
+             2026-08-14: they were reported as 404, but the 404s were on the ORG-ROOT site
+             (lucent-financial-group.github.io/hall/), which serves an independent, stale copy
+             of this page out of the separate lucent-financial-group.github.io repo — a repo
+             that has no demo/, genesis/ or inventory/ for ../ to reach. On Zeta's own site
+             (lucent-financial-group.github.io/Zeta/hall/) all four return 200.
+             Repointing them here would break the working site to paper over another repo.
+             Guarded by src/Core.TypeScript/hygiene/audit-dist-internal-links.ts. -->
         <a class="card" href="../demo/index.html"><h3>Factory Dashboard</h3><p>Autonomous software factory operations, BFT agent-array metrics, alignment substrate tracking.</p><span class="pill">operations</span></a>
         <a class="card" href="../genesis/index.html"><h3>Genesis</h3><p>The settlement console — the amber-and-teal control surface.</p><span class="pill">console</span></a>
         <a class="card" href="../inventory/index.html"><h3>Inventory</h3><p>The fleet and equipment ledger.</p><span class="pill">ledger</span></a>
