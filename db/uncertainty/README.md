@@ -58,9 +58,13 @@ Four refusals, each a falsifier (removing any one kills a test in `measure.test.
 ## Status — what is shipped here, and what is not (audited 2026-08-15)
 
 - **Shipped:** the `measure` verb above, and the entries in this folder.
-- **Not shipped:** `sim`, the ephemeral half of the pair, is an **unwired pure-interface stub** in
+- **Not shipped:** `sim`, the ephemeral half of the pair, is a **pure-interface stub** in
   `clis/Verbs.fs` (`IMeasurement = interface end`; the file says so itself). `db/sims/` holds a README
-  and no sims.
+  and no sims. The word "unwired" used to lead that sentence and is no longer accurate:
+  since `081M08VM385087G0R001DTM0K6` the file is **compiled** (`clis/Zeta.Clis.fsproj`, in `Zeta.sln`)
+  and type-checked by `tests/Tests.FSharp/Clis/Verbs.Tests.fs`. Compiled is not implemented — the
+  family still has no introduction form for `ISim<'a>` (that test proves it by reflection), so
+  nothing here changes what is shipped.
 - **Related but separate:** `src/Core/Finalizer.fs` (`TickResult.DeltaU`), `ComputeReceipt.fs`
   (`DeltaU = IV − ΔJ`) and `SocietyUsefulWork.fs` all compute a ΔU, but **in memory, per tick or per
   computation** — none of them is keyed to a bug-fix and none reads or writes this folder. Do not cite

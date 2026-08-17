@@ -471,6 +471,21 @@ entering a shared fold. Worth stating before the code exists, which is that rule
    documented loop (§3), and nothing catches that because no project includes it. `SimVerb.ISimVerb`
    now occupies the same conceptual slot with types that compile. Reconciling them is a decision I
    should not make unilaterally.
+
+   > **ANSWERED 2026-08-17 — compile it.** Aaron: *"clis/Verbs.fs this is our ultimate dogfood
+   > surface plus our universal interfaces."* Shipped under `081M08VM385087G0R001DTM0K6`:
+   > `clis/Zeta.Clis.fsproj`, in `Zeta.sln`, with a composition witness at
+   > `tests/Tests.FSharp/Clis/Verbs.Tests.fs`.
+   >
+   > Two halves of this question remain open and were **not** answered by that ruling:
+   > **(a) what `Sim` returns** — still undecided, and §3's break is worse than recorded here. A
+   > **second, independent** break was measured: `ICutVerb.Cut` consumes `ISim<'a>`, not `mea`'s
+   > `IMeasurement`, so `sim |> mea |> cut` fails to typecheck *even given* an `ISim` from
+   > elsewhere. Fixing the missing producer alone would not make the pipe compose.
+   > **(b) the reconciliation with `SimVerb.ISimVerb`** — still mine-not-to-make. Aaron's stated
+   > preference is the free-object reading (*"one arena where they can all work together"*,
+   > `.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md`); the shapes are
+   > *consistent with* it but no instance has been exhibited, so it stays a shape correspondence.
 2. **Should `Room` and `Vault` get `GLOSSARY.md` entries reconciled to Addison's definitions?** §5a
    says the society half was reconciled and the state-and-truth half was not. This looks like a real
    omission rather than a deliberate split, but confirming that is yours.

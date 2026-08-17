@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The dogfood verb surface (Aaron 2026-08-17: "clis/Verbs.fs this is our ultimate
+       dogfood surface plus our universal interfaces") compiled for the first time.
+
+       Until 081M08VM385087G0R001DTM0K6 this folder was referenced by no .fsproj and no
+       .sln, so no compiler had ever read `Verbs.fs`. An interface surface everything else
+       is meant to conform to, that nothing type-checks, is a claim rather than a contract:
+       the family's own documented loop `sim |> mea |> cut` does not compose (see the
+       header comment in Verbs.fs), and nothing could tell us.
+
+       Zero PackageReference and zero ProjectReference on purpose. `Verbs.fs` opens only
+       `System`, and the point of the surface is that it is pure shape — the rules of the
+       game (.claude/rules/interfaces-free-classes-earned-under-rules.md), free and
+       weight-free. A dependency here would be weight the surface has not earned. -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Zeta.Clis</RootNamespace>
+    <AssemblyName>Zeta.Clis</AssemblyName>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Verbs.fs" />
+  </ItemGroup>
+
+</Project>

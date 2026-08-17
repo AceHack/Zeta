@@ -89,6 +89,44 @@
       }
     },
     {
+      "id": "dotnet:clis",
+      "kind": "dotnet",
+      "sources": [
+        "clis/**"
+      ],
+      "dependsOn": [],
+      "legs": [
+        "gate/build-and-test"
+      ],
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": [
+          "reviewer:fsharp"
+        ],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 30,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 6,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
+    },
+    {
       "id": "dotnet:samples/CrmSample",
       "kind": "dotnet",
       "sources": [
@@ -1767,6 +1805,7 @@
         "tests/Tests.FSharp/**"
       ],
       "dependsOn": [
+        "dotnet:clis",
         "dotnet:src/Bayesian",
         "dotnet:src/Core",
         "dotnet:src/Core.CSharp",

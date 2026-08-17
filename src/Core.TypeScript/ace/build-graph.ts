@@ -932,7 +932,15 @@ function projectFilesIn(root: string, rel: string): readonly string[] {
  */
 function findProjectFiles(root: string): readonly string[] {
   const out: string[] = [];
-  for (const top of ["src", "tests", "bench", "samples", "vocab"]) {
+  // NOTE: this roster is hand-maintained and can drift from `Zeta.sln`. `clis` was added
+  // 2026-08-17 (081M08VM385087G0R001DTM0K6) when `clis/Zeta.Clis.fsproj` became the first new
+  // *root-level* project since the roster was written. The failure mode is worth knowing: a
+  // missing root does not produce a missing node quietly — `Tests.FSharp` references the project,
+  // so `deriveDotnetTargets` emits the EDGE `dotnet:clis` while the NODE is never scanned, and the
+  // graph's own "every dependsOn edge points at a target that exists" test goes red. That test is
+  // the guard on this list; deriving the roster from the solution instead would remove the need
+  // for one, at the cost of a bounded solution parse.
+  for (const top of ["clis", "src", "tests", "bench", "samples", "vocab"]) {
     out.push(...projectFilesIn(root, top));
     for (const dir of listDirs(root, top)) out.push(...projectFilesIn(root, `${top}/${dir}`));
   }
