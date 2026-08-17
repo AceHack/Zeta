@@ -1,0 +1,14 @@
+{
+  "id": "080d008c91b77010a01300085ae8ddfd",
+  "at": "2026-08-17T21:13:10.126Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M08S4DQC087G0R002SH0C88",
+    "type": "task",
+    "title": "Tick-boundary trace completeness: onReceipt is an undeclared egress and no shipping room instantiates the four corners",
+    "slug": "tick-boundary-trace-completeness-onreceipt-is-an-undeclared",
+    "priority": "P2",
+    "filename": "081M08S4DQC087G0R002SH0C88-tick-boundary-trace-completeness-onreceipt-is-an-undeclared.md"
+  }
+}
