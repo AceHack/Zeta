@@ -10,9 +10,38 @@
 # `Agent-Signature-Version` (#10564 / #10573).
 #
 # TWO JOBS, TWO MOMENTS
-#   validate-pr-body  — pre-merge. GitHub squash-merge takes the PR BODY as the
-#                       commit message, so the body is where the trailer block
-#                       has to be for it to survive the merge at all.
+#   validate-pr-body  — pre-merge. Validates the PR body AND the squash preimage
+#                       (see THE FALSE PREMISE below).
+#
+# THE FALSE PREMISE, corrected 2026-08-17 (Aaron authorised the long-term call)
+# This block used to read: "GitHub squash-merge takes the PR BODY as the commit
+# message, so the body is where the trailer block has to be for it to survive
+# the merge at all." That is FALSE for this repository, and it was the premise
+# the whole pre-merge check rested on. Measured:
+#
+#     gh api repos/Lucent-Financial-Group/Zeta
+#       → squash_merge_commit_message = COMMIT_MESSAGES
+#
+# GitHub builds the squash commit from the PR's COMMIT MESSAGES, concatenated
+# with `---------` separators. The PR body never reaches it. So a PR could carry
+# a perfect block in its body, go green on `agencysignature (PR body)`, and land
+# a squash commit with no block at all — which `audit-main-tip` then correctly
+# reddens on `main`, where it cannot be fixed without rewriting history.
+#
+# That is exactly what happened: PR #11267 had the block in its body, passed
+# this job, and landed `48d3f4ed0aaf` with zero occurrences of
+# `Agency-Signature-Version`. A green check that structurally cannot protect the
+# invariant it appears to protect.
+#
+# WHY THE FIX IS "VALIDATE THE COMMITS", NOT "FLIP THE SETTING TO PR_BODY".
+# Flipping `squash_merge_commit_message` to PR_BODY would make the old sentence
+# true with one setting change, and it is the wrong call: GitHub does NOT re-run
+# checks when a PR body is edited. Pass green → edit the body → merge would
+# produce a blockless squash behind a green check, on text this file already
+# labels ATTACKER-CONTROLLED. Commit messages cannot be changed without a push,
+# and a push re-triggers the checks. Binding the signature to the commit is both
+# what actually lands and the only tamper-evident option — and the commit is
+# where `audit-main-tip` reads it anyway, so the two jobs now judge ONE artifact.
 #   audit-main-tip    — post-merge. Judges only the commit that just landed
 #                       (`--commit HEAD`), so it says nothing about history and
 #                       cannot be reddened by pre-existing debt.
@@ -47,6 +76,10 @@ on:
 
 permissions:
   contents: read
+  # Least privilege, added 2026-08-17 for the squash-preimage step only: it
+  # reads `pulls/<n>/commits` to reconstruct what GitHub will squash. Read-only;
+  # this workflow never writes a PR.
+  pull-requests: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -99,6 +132,42 @@ jobs:
         run: |
           set -euo pipefail
           printf '%s' "$PR_BODY" \
+            | bun src/Core.TypeScript/hygiene/validate-agencysignature-pr-body.ts \
+                --pr-created-at "$PR_CREATED_AT" \
+                --grandfather-cutover "$CUTOVER" \
+                --author-identity "$PR_AUTHOR"
+
+      # THE SQUASH PREIMAGE — the artifact that actually lands (see THE FALSE
+      # PREMISE in the header). `squash_merge_commit_message = COMMIT_MESSAGES`,
+      # so GitHub concatenates the PR's commit messages; this reconstructs that
+      # text and runs it through the SAME validator, so a green body can no
+      # longer certify a blockless commit.
+      #
+      # The commit list comes from the API, NOT from `git log`. `actions/checkout`
+      # is shallow by default, so `BASE..HEAD` would not resolve here, and
+      # `fetch-depth: 0` on this repo is an expensive way to buy a list GitHub
+      # will hand over directly. It is also the same source GitHub squashes from.
+      #
+      # This is a CONSERVATIVE reconstruction, not a byte-exact one: the
+      # validator needs the ten keys contiguous somewhere in the text, and
+      # concatenating messages cannot manufacture that block if no commit
+      # carries it. Eliminating the false GREEN is the point; a red here means a
+      # commit really is missing its block, which is true and worth blocking on.
+      #
+      # Same security posture as the body step: commit messages are also
+      # author-controlled, so they travel via stdin, never interpolated.
+      - name: Validate the AgencySignature block in the squash preimage
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_CREATED_AT: ${{ github.event.pull_request.created_at }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          CUTOVER: "2026-08-15T00:00:00Z"
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          gh api --paginate \
+              "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/commits" \
+              --jq '.[].commit.message' \
             | bun src/Core.TypeScript/hygiene/validate-agencysignature-pr-body.ts \
                 --pr-created-at "$PR_CREATED_AT" \
                 --grandfather-cutover "$CUTOVER" \
