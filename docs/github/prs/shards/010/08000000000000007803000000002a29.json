@@ -1,0 +1,12 @@
+{
+  "pr_number": 10793,
+  "archive_path": "docs/history/pr-reviews/PR-10793-design-tick-dial-agent-control-optimization-axes-as-a-closed-du-disjoint-from-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T04:02:08.516Z",
+  "schema_version": "v1",
+  "commit_sha": "a6bd426e3aca09ff88c78eb6f7af6788368cb41b",
+  "title": "design(tick-dial): agent-control optimization axes as a closed DU, disjoint from the shipped gate",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T04:01:29Z",
+  "head_ref": "shadow/tick-dial-agent-control-axes"
+}
