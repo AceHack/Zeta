@@ -27,13 +27,35 @@ export const PAGES_WASM_ASSETS: readonly PagesWasmAsset[] = [
   // bits have period 4 (1664525 ≡ 1, 1013904223 ≡ 3, mod 4), so `prng % 4` cycled 3,2,1,0 and
   // every walker returned to its spawn point. It now stages the canonical Zig substrate.
   { name: "Zig", source: "src/wasm-dla/bytelock/dla-canonical-zig.wasm", published: "wasm/dla-zig.wasm", requiredExports: ["init", "run", "get_cluster_size", "get_max_r_bits", "get_trajectory_entry"], canonicalAbi: true },
-  // C / LLVM / Rust are pre-byte-lock substrates on their own algorithms. Measured at seed 4,
-  // 800 walkers, against the canonical 345: C = 1 (degenerate, same defect class as the Zig one
-  // above and NOT yet fixed), LLVM = 1642, Rust = 462. They are staged as-is and are held only
-  // to the structural contract until they are brought onto the canonical spec.
-  { name: "C", source: "src/wasm-dla/c/dla-emcc.wasm", published: "wasm/dla-emcc.wasm", requiredExports: ["init", "step", "get_cluster_size", "get_cell"], canonicalAbi: false },
-  { name: "LLVM", source: "src/wasm-dla/c/dla-llvm-opt.wasm", published: "wasm/dla-llvm.wasm", requiredExports: ["init_dla", "run_dla"], canonicalAbi: false },
-  { name: "Rust", source: "src/wasm-dla/rust/dla-opt.wasm", published: "wasm/dla-rust.wasm", requiredExports: ["init", "step", "get_cluster_size", "get_cell"], canonicalAbi: false },
+  // C / LLVM / Rust were the last three panels on pre-byte-lock substrates of their own. Each
+  // staged a SECOND implementation of the algorithm — its own grid size, spawn rule, kill radius
+  // and walker budget — in no byte-lock roster and pinned by no golden vector. Measured at seed 4,
+  // 800 walkers, against the canonical 345 (2026-08-17, reproduced before any change):
+  //
+  //   src/wasm-dla/c/dla-emcc.wasm      = 1     DEGENERATE at every seed tried (1, 4, 42, 100, 999)
+  //   src/wasm-dla/c/dla-llvm-opt.wasm  = 1642  ran 3000 walkers — a compile-time constant the panel
+  //                                             could not set; its `run_dla(seed)` takes no count
+  //   src/wasm-dla/rust/dla-opt.wasm    = 462   128 -> 100 grid and `rem_euclid` indexing, i.e. a
+  //                                             TORUS, so no walker can ever leave
+  //
+  // The C module's defect is the Zig one exactly (#11530): its LCG has a = 1664525 ≡ 1 and
+  // c = 1013904223 ≡ 3 (mod 4), so the state advances by a constant 3 mod 4 and `prng % 4` cycles
+  // 1,0,3,2,… — each four steps apply +x, -x, +y, -y once and cancel. MAX_STEPS = 10000 is divisible
+  // by 4, so every walker ends on its spawn cell and the cluster stays the seed cell alone.
+  //
+  // All three now stage the canonical substrate that `run-bytelock-ci.mjs` already loads and
+  // `testdata/golden-seed-*.json` already pins — the same move #11530 made for Zig and #11489 for
+  // Go. Fixing the divergent modules instead would have produced three more plausible wrong numbers
+  // that nothing in the tree could contradict.
+  //
+  // MEASURED AFTER THE CHANGE, by staging this artifact and driving each published module with the
+  // panel's own import object and call sequence: C = 345, LLVM = 345, Rust = 345 — with WAT, Zig and
+  // AssemblyScript also at 345. Every panel in this list now agrees with the byte-lock, and
+  // `identity-dla-pages-wasm-behavior.test.ts` re-checks all six against the committed vectors at
+  // seeds 1 and 42 on every run. NO panel in this list still disagrees.
+  { name: "C", source: "src/wasm-dla/bytelock/dla-canonical-emcc.wasm", published: "wasm/dla-emcc.wasm", requiredExports: ["init", "run", "get_cluster_size", "get_max_r_bits", "get_trajectory_entry"], canonicalAbi: true },
+  { name: "LLVM", source: "src/wasm-dla/bytelock/dla-canonical-llvm.wasm", published: "wasm/dla-llvm.wasm", requiredExports: ["init", "run", "get_cluster_size", "get_max_r_bits", "get_trajectory_entry"], canonicalAbi: true },
+  { name: "Rust", source: "src/wasm-dla/bytelock/dla-canonical-rust.wasm", published: "wasm/dla-rust.wasm", requiredExports: ["init", "run", "get_cluster_size", "get_max_r_bits", "get_trajectory_entry"], canonicalAbi: true },
   { name: "AssemblyScript", source: "src/wasm-dla/bytelock/dla-canonical-asc.wasm", published: "wasm/dla-asc.wasm", requiredExports: ["init", "run", "getClusterSize"], canonicalAbi: true },
 ];
 

@@ -60,11 +60,37 @@ const SUBSTRATES = [
     output: "dla-canonical-emcc.wasm",
     check: () => existsSync(join(__dir, "dla-canonical-emcc.wasm")),
     build: () => {
+      // CORRECTED 2026-08-17. This recipe was `-s SIDE_MODULE=1 -s EXPORTED_FUNCTIONS=['_run']`,
+      // and on emscripten 5.0.7 that does not reproduce the committed `dla-canonical-emcc.wasm`:
+      // it emits a RELOCATABLE side module that imports `env.__memory_base` and exports no
+      // `memory`, so the byte-lock harness cannot instantiate it at all —
+      // `LinkError: imported global env:__memory_base must be a number`. The committed module is
+      // a standalone one: two imports (`env.cos_f32`, `env.sin_f32`), its own memory, and
+      // `_initialize` / `stackSave` in its export list.
+      //
+      // So condition 3 of `.claude/rules/no-binary-in-proof-lineage.md` — "reproducible from
+      // committed source" — did not actually hold for this substrate. A recipe that cannot
+      // produce a loadable module is not a reproduction, and nothing checked, because the
+      // artifact is committed and the build is only run by hand.
+      //
+      // The flags below were bisected against the committed artifact's own import/export shape
+      // and confirmed by MEASUREMENT rather than inspection: rebuilt here they return
+      // 332 / 345 / 339 at seeds 1 / 4 / 42 — identical to the committed module.
+      //
+      // Honest limit: still NOT byte-identical on this toolchain (emcc 5.0.7-git), so the
+      // reproduction is behavioural, not bitwise. Which emscripten produced the committed bytes
+      // is recorded nowhere; pinning it is separate work.
+      //
+      // ERROR_ON_UNDEFINED_SYMBOLS=0 is load-bearing rather than a silencer: `cos_f32`/`sin_f32`
+      // are deliberately host-provided — the spec keeps trig on the host so every substrate
+      // shares one set of f32 bits — so they MUST link undefined and arrive as imports.
       run("emcc", [
         "-O2",
         "-s", "WASM=1",
-        "-s", "SIDE_MODULE=1",
-        "-s", "EXPORTED_FUNCTIONS=['_run']",
+        "-s", "STANDALONE_WASM=1",
+        "--no-entry",
+        "-s", "ERROR_ON_UNDEFINED_SYMBOLS=0",
+        "-s", "EXPORTED_FUNCTIONS=['_init','_run','_get_cluster_size','_get_max_r_bits','_get_trajectory_entry']",
         "-o", "dla-canonical-emcc.wasm",
         "dla-canonical.c",
       ]);

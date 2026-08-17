@@ -4,25 +4,47 @@
  *
  * Seven compilers, each WASM binary compiled from a different source language:
  *
- *   WAT   Hand-written WebAssembly Text Format → WASM (697 bytes, bare metal)
- *   Zig   Systems language → wasm32-freestanding (1.3 KB, no runtime)
- *   C     Emscripten (clang → WASM, standalone) (~1.1 KB)
- *   LLVM  C → LLVM IR bitcode → llc-18 -march=wasm32 → wasm-ld-18 (1.4 KB)
- *   Rust  cargo build --target wasm32-unknown-unknown --release + wasm-opt (7.4 KB)
- *   ASC   AssemblyScript (TypeScript subset) → WASM (~6 KB)
- *   Go    GOOS=js GOARCH=wasm (1.5 MB, includes full Go runtime)
+ *   WAT   Hand-written WebAssembly Text Format → WASM (1,018 B, bare metal)
+ *   Zig   Systems language → wasm32-freestanding (1,314 B, no runtime)
+ *   C     Emscripten (clang → WASM, standalone) (1,613 B)
+ *   LLVM  C → LLVM IR bitcode → llc-18 -march=wasm32 → wasm-ld-18 (1,065 B)
+ *   Rust  cargo build --target wasm32-unknown-unknown --release (467 KB)
+ *   ASC   AssemblyScript (TypeScript subset) → WASM (5,106 B)
+ *   Go    GOOS=js GOARCH=wasm (~1.9 MB, includes full Go runtime)
  *
  * Conjecture Z-7 is that binary_size ⊥ D_f. Testing it requires every panel to run the SAME
- * algorithm; only then does a size-vs-D_f spread mean anything. FOUR do today — WAT, Zig,
- * AssemblyScript and Go all implement src/wasm-dla/CANONICAL_SPEC.md and agree exactly
- * (cluster 345 at seed 4, 800 walkers), pinned by bytelock/testdata/golden-seed-*.json.
+ * algorithm; only then does a size-vs-D_f spread mean anything. ALL SEVEN do now — every panel
+ * implements src/wasm-dla/CANONICAL_SPEC.md and agrees exactly (cluster 345 at seed 4,
+ * 800 walkers), pinned by bytelock/testdata/golden-seed-*.json.
  *
- * The other three do NOT yet, and this header claimed "same algorithm, same D_f, zero variance"
- * while they did not. Measured 2026-08-17 at seed 4 against the canonical 345: C = 1
- * (DEGENERATE — it does not diffuse), LLVM = 1642, Rust = 462. The Zig panel was a fourth such
- * case, at cluster 1, until it was moved onto the canonical substrate — the same move #11489
- * made for Go. Until C / LLVM / Rust follow, the cross-panel spread is an algorithm difference
- * and not evidence about binary size.
+ * That took four separate corrections, because for a long time this header claimed "same
+ * algorithm, same D_f, zero variance" while four panels ran algorithms of their own. Measured at
+ * seed 4 against the canonical 345, each immediately before it was moved:
+ *
+ *   Go    (#11489)  — moved to bytelock/dla-canonical.go
+ *   Zig   (#11530)  cluster 1     DEGENERATE — LCG low-2-bits period 4, walkers never left home
+ *   C     (here)    cluster 1     DEGENERATE — the identical LCG defect
+ *   LLVM  (here)    cluster 1642  ran 3000 walkers, a compile-time constant the panel cannot set
+ *   Rust  (here)    cluster 462   100-wide grid with rem_euclid indexing, i.e. a torus
+ *
+ * The lesson each of the four taught is the same one: a panel that returns a PLAUSIBLE wrong
+ * number is the same defect as one that returns 1, only harder to see. So the repair was never to
+ * patch the divergent module — it was to stage the substrate the byte-lock already pins, and to
+ * let identity-dla-pages-wasm-behavior.test.ts run it and compare against the committed vector.
+ *
+ * ── WHAT THE CONVERGENCE BANNER CAN AND CANNOT SHOW (read before trusting it) ────────────────
+ *
+ * Now that all seven agree, the "spread" readout below has become UNFALSIFIABLE, and saying so is
+ * part of the fix rather than an aside. `computeDf` is a pure function of cluster size. The
+ * byte-lock guarantees all seven substrates compute the same cluster size. Therefore the seven
+ * D_f readouts are equal BY ARITHMETIC, and "Spread: 0.0000" is a restatement of the byte-lock,
+ * not independent evidence for Z-7. A number that cannot come out any other way measures nothing.
+ *
+ * What the panel does still honestly demonstrate is the part Z-7 actually claims: seven binaries
+ * from seven toolchains, spanning 1,018 B to ~1.9 MB — a ~1,870x range — execute the same
+ * algorithm and produce the same trajectory. The evidence is that the SUBSTRATES agree, and it is
+ * carried by the byte-lock and its golden vectors, not by the spread arithmetic on this page. The
+ * banner is worded accordingly.
  */
 import { useState, useEffect, useRef, useCallback } from "react";
 import { acceptsWasmResult, beginWasmExecution, cancelWasmExecution, idleWasmExecution, type WasmExecutionController } from "@/lib/wasmExecutionController";
@@ -52,6 +74,18 @@ function computeDf(clusterSize: number): number {
   return Math.log(n) / Math.log(r);
 }
 
+/**
+ * The reference reading the charts draw their amber line at: what `computeDf` returns for the
+ * byte-locked cluster size at seed 4 (`bytelock/testdata/` pins 332 at seed 1 and 339 at seed 42,
+ * so this line is seed-4 specific and the dots move slightly with the seed selector).
+ *
+ * DERIVED, not typed in. The previous line was the literal `1.322`, which is the substrates'
+ * hardcoded `get_df()` proxy constant and is not a quantity this panel computes at all — so it sat
+ * a full 0.64 away from every dot, on an axis that stopped at 1.8, and nobody noticed for months
+ * because the dots were drawn outside the plot area.
+ */
+const CANONICAL_CLUSTER_AT_SEED_4 = 345;
+
 function radialCells(clusterSize: number): Uint8Array {
   const cells = new Uint8Array(W * H);
   const radius = Math.max(1, Math.sqrt(clusterSize / Math.PI) * 1.2);
@@ -63,6 +97,35 @@ function radialCells(clusterSize: number): Uint8Array {
     if (dx * dx + dy * dy <= radius * radius) cells[y * W + x] = 1;
   }
   return cells;
+}
+
+/**
+ * The canonical spec keeps cos/sin on the HOST so every substrate shares one set of f32 trig
+ * bits rather than each compiler's own libm. `Math.fround` mirrors `bytelock/run-wasm.mjs`, the
+ * harness that produced the committed golden vectors — the imports are typed `f32`, so the
+ * rounding is what the JS→wasm boundary would do anyway, and writing it makes that explicit
+ * instead of load-bearing-by-accident.
+ */
+const canonicalTrig = {
+  cos_f32: (x: number): number => Math.fround(Math.cos(x)),
+  sin_f32: (x: number): number => Math.fround(Math.sin(x)),
+} as const;
+
+/**
+ * The canonical ABI: `init(seed)`, `run()`, `get_cluster_size()`. The walker count is fixed
+ * inside the module by the spec, so — unlike the divergent substrates these panels used to
+ * load — there is no count to pass and no way for a panel to run a different experiment than
+ * the byte-lock did.
+ */
+function runCanonicalModule(instance: WebAssembly.Instance, seed: number): number {
+  const exp = instance.exports as unknown as {
+    init: (seed: number) => void;
+    run: () => void;
+    get_cluster_size: () => number;
+  };
+  exp.init(seed);
+  exp.run();
+  return exp.get_cluster_size();
 }
 
 async function fetchVerifiedWasm(url: string): Promise<ArrayBuffer> {
@@ -91,14 +154,25 @@ interface CompilerResult {
   cells?: Uint8Array;
 }
 
+/**
+ * Binary sizes are the X AXIS of the Z-7 scatter below, so a stale one is a wrong plot, not a
+ * cosmetic slip. These are `stat` of the staged files on 2026-08-17, after every panel moved onto
+ * its canonical substrate — the previous values still described the divergent modules that the
+ * panels no longer load (WAT was listed at 697 B and is 1018; Rust at 7,428 B and is 478,353).
+ *
+ * NAMED RESIDUAL: nothing checks these against the files. They are hand-copied from
+ * `PAGES_WASM_ASSETS`'s sources, and this comment is the only thing tying them to a measurement.
+ * Go is genuinely approximate — it is built during the Pages deploy, never committed, so its size
+ * is a fact about a particular build rather than about the tree.
+ */
 const COMPILERS: Pick<CompilerResult, "name" | "lang" | "color" | "binarySize" | "binarySizeBytes">[] = [
-  { name: "WAT", lang: "WebAssembly Text Format (bare metal)", color: "#f59e0b", binarySize: "697 B", binarySizeBytes: 697 },
-  { name: "Zig", lang: "wasm32-freestanding (no runtime)", color: "#f97316", binarySize: "1.3 KB", binarySizeBytes: 1314 },
-  { name: "C", lang: "Emscripten (clang → WASM, standalone)", color: "#a78bfa", binarySize: "1.1 KB", binarySizeBytes: 1166 },
-  { name: "LLVM", lang: "C → LLVM IR → llc-18 -march=wasm32 → wasm-ld-18", color: "#e879f9", binarySize: "1.4 KB", binarySizeBytes: 1389 },
-  { name: "Rust", lang: "cargo build --target wasm32-unknown-unknown + wasm-opt", color: "#fb923c", binarySize: "7.4 KB", binarySizeBytes: 7428 },
-  { name: "ASC", lang: "AssemblyScript (TypeScript → WASM)", color: "#2dd4bf", binarySize: "~6 KB", binarySizeBytes: 6144 },
-  { name: "Go", lang: "GOOS=js GOARCH=wasm (full runtime)", color: "#60a5fa", binarySize: "~1.5 MB", binarySizeBytes: 1572864 },
+  { name: "WAT", lang: "WebAssembly Text Format (bare metal)", color: "#f59e0b", binarySize: "1,018 B", binarySizeBytes: 1018 },
+  { name: "Zig", lang: "wasm32-freestanding (no runtime)", color: "#f97316", binarySize: "1,314 B", binarySizeBytes: 1314 },
+  { name: "C", lang: "Emscripten (clang → WASM, standalone)", color: "#a78bfa", binarySize: "1,613 B", binarySizeBytes: 1613 },
+  { name: "LLVM", lang: "C → LLVM IR → llc-18 -march=wasm32 → wasm-ld-18", color: "#e879f9", binarySize: "1,065 B", binarySizeBytes: 1065 },
+  { name: "Rust", lang: "cargo build --target wasm32-unknown-unknown --release", color: "#fb923c", binarySize: "467 KB", binarySizeBytes: 478353 },
+  { name: "ASC", lang: "AssemblyScript (TypeScript → WASM)", color: "#2dd4bf", binarySize: "5,106 B", binarySizeBytes: 5106 },
+  { name: "Go", lang: "GOOS=js GOARCH=wasm (full runtime)", color: "#60a5fa", binarySize: "~1.9 MB", binarySizeBytes: 1900000 },
 ];
 
 interface OracleWASMProps {
@@ -179,35 +253,19 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
   }, [updateResult]);
 
   // ── Run Emscripten/C oracle (index 2) ────────────────────────────────────────
+  // Was `src/wasm-dla/c/dla-emcc.wasm`, a second C DLA whose LCG made every walker return to
+  // its spawn cell every four steps — cluster 1 at every seed tried. Now the canonical
+  // Emscripten substrate, which imports host trig from "env" and exposes init/run.
   const runEmcc = useCallback(async (s: number) => {
     updateResult(2, { status: "loading" });
     const t0 = performance.now();
     try {
       const buf = await fetchVerifiedWasm(EMCC_WASM_URL);
-      const { instance } = await WebAssembly.instantiate(buf, {
-        wasi_snapshot_preview1: {
-          proc_exit: () => {},
-          fd_write: () => 0,
-          fd_close: () => 0,
-          fd_seek: () => 0,
-        },
-        env: { emscripten_memcpy_js: () => {} },
-      });
-      const exp = instance.exports as {
-        init: (seed: number) => void;
-        step: (n: number) => number;
-        get_cluster_size: () => number;
-        get_cell: (x: number, y: number) => number;
-        get_df: () => number;
-      };
+      const { instance } = await WebAssembly.instantiate(buf, { env: { ...canonicalTrig } });
       updateResult(2, { status: "running" });
-      exp.init(s);
-      exp.step(N_WALKERS);
-      const clusterSize = exp.get_cluster_size();
+      const clusterSize = runCanonicalModule(instance, s);
       const df = computeDf(clusterSize);
-      const cells = new Uint8Array(W * H);
-      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) cells[y * W + x] = exp.get_cell(x, y);
-      updateResult(2, { df, clusterSize, elapsed: (performance.now() - t0) / 1000, status: "done", cells });
+      updateResult(2, { df, clusterSize, elapsed: (performance.now() - t0) / 1000, status: "done", cells: radialCells(clusterSize) });
       return df;
     } catch (e) {
       updateResult(2, { status: "error", error: String(e) });
@@ -216,22 +274,32 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
   }, [updateResult]);
 
   // ── Run LLVM IR oracle (index 3) ────────────────────────────────────────────
+  // Was `src/wasm-dla/c/dla-llvm-opt.wasm`, whose `run_dla(seed)` took no walker count and ran
+  // a hardcoded 3000 — so N_WALKERS above never reached it and the panel reported 1642 beside
+  // everyone else's 345. The canonical LLVM substrate additionally imports `env.memset`, which
+  // the freestanding link leaves undefined; it is called from `init`, so binding the memory
+  // straight after instantiation is early enough.
   const runLLVM = useCallback(async (s: number) => {
     updateResult(3, { status: "loading" });
     const t0 = performance.now();
     try {
       const buf = await fetchVerifiedWasm(LLVM_WASM_URL);
-      const { instance } = await WebAssembly.instantiate(buf, {});
-      const exp = instance.exports as {
-        init_dla: (seed: number) => void;
-        run_dla: (seed: number) => number;
-        get_df: (seed: number) => number;
-      };
+      let memory: WebAssembly.Memory | null = null;
+      const { instance } = await WebAssembly.instantiate(buf, {
+        env: {
+          ...canonicalTrig,
+          memset: (ptr: number, value: number, len: number) => {
+            if (!memory) throw new Error("teaching error: memset called before memory was bound");
+            new Uint8Array(memory.buffer).fill(value & 0xff, ptr, ptr + len);
+            return ptr;
+          },
+        },
+      });
+      memory = instance.exports.memory as WebAssembly.Memory;
       updateResult(3, { status: "running" });
-      const clusterSize = exp.run_dla(s);
+      const clusterSize = runCanonicalModule(instance, s);
       const df = computeDf(clusterSize);
-      const cells = radialCells(clusterSize);
-      updateResult(3, { df, clusterSize, elapsed: (performance.now() - t0) / 1000, status: "done", cells });
+      updateResult(3, { df, clusterSize, elapsed: (performance.now() - t0) / 1000, status: "done", cells: radialCells(clusterSize) });
       return df;
     } catch (e) {
       updateResult(3, { status: "error", error: String(e) });
@@ -240,27 +308,19 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
   }, [updateResult]);
 
   // ── Run Rust oracle (index 4) ────────────────────────────────────────────────
+  // Was `src/wasm-dla/rust/dla-opt.wasm`, a second Rust DLA on a 100-wide grid indexed through
+  // `rem_euclid` — a torus, so its kill radius could never fire and a walker leaving one edge
+  // re-entered the other. It reported 462. Now the canonical Rust substrate.
   const runRust = useCallback(async (s: number) => {
     updateResult(4, { status: "loading" });
     const t0 = performance.now();
     try {
       const buf = await fetchVerifiedWasm(RUST_WASM_URL);
-      const { instance } = await WebAssembly.instantiate(buf, {});
-      const exp = instance.exports as {
-        init: (seed: number) => void;
-        step: (n: number) => number;
-        get_cluster_size: () => number;
-        get_cell: (x: number, y: number) => number;
-        get_df: () => number;
-      };
+      const { instance } = await WebAssembly.instantiate(buf, { env: { ...canonicalTrig } });
       updateResult(4, { status: "running" });
-      exp.init(s);
-      exp.step(N_WALKERS);
-      const clusterSize = exp.get_cluster_size();
+      const clusterSize = runCanonicalModule(instance, s);
       const df = computeDf(clusterSize);
-      const cells = new Uint8Array(W * H);
-      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) cells[y * W + x] = exp.get_cell(x, y);
-      updateResult(4, { df, clusterSize, elapsed: (performance.now() - t0) / 1000, status: "done", cells });
+      updateResult(4, { df, clusterSize, elapsed: (performance.now() - t0) / 1000, status: "done", cells: radialCells(clusterSize) });
       return df;
     } catch (e) {
       updateResult(4, { status: "error", error: String(e) });
@@ -520,11 +580,19 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
               <span style={{ color: spread < 0.05 ? "#34d399" : "#f87171", fontWeight: 700 }}>
                 {spread.toFixed(4)}
               </span>
-              {spread < 0.05 && (
-                <span style={{ color: "#34d399", marginLeft: "0.5rem" }}>
-                  Z-7 CONFIRMED — binary size is irrelevant to D_f
-                </span>
-              )}
+              {/*
+                Deliberately NOT "Z-7 CONFIRMED". D_f here is a pure function of cluster size and
+                the byte-lock pins the cluster size, so a zero spread is arithmetic, not a
+                measurement — it could not have come out otherwise. A nonzero spread, however,
+                would be real news: it would mean a panel is off the canonical substrate again,
+                which is exactly how this page read for months. So the readout is kept, and only
+                the claim attached to it is corrected.
+              */}
+              <span style={{ color: spread < 0.05 ? "#34d399" : "#f87171", marginLeft: "0.5rem" }}>
+                {spread < 0.05
+                  ? "all panels on the canonical substrate — a zero spread is expected here, not evidence"
+                  : "DIVERGENCE — a panel is not running the byte-locked algorithm"}
+              </span>
             </span>
           )}
         </div>
@@ -536,15 +604,21 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
         const PAD = { left: 48, right: 16, top: 12, bottom: 36 };
         const plotW = SVG_W - PAD.left - PAD.right;
         const plotH = SVG_H - PAD.top - PAD.bottom;
-        const minLog = Math.log10(600), maxLog = Math.log10(1600000);
-        const minDf = 1.0, maxDf = 1.8;
+        const minLog = Math.log10(600), maxLog = Math.log10(2000000);
+        // The axis used to run 1.0–1.8 around a reference line at 1.322. Both were wrong: 1.322 is
+        // the substrates' hardcoded `get_df()` PROXY CONSTANT (see src/wasm-dla/README.md), which
+        // this panel does not use, and `computeDf(345)` — what it does use — is 1.9647. Every dot
+        // was therefore drawn above the plot area. The range now brackets the value actually shown.
+        const minDf = 1.6, maxDf = 2.2;
         const toX = (bytes: number) => PAD.left + ((Math.log10(bytes) - minLog) / (maxLog - minLog)) * plotW;
         const toY = (df: number) => PAD.top + plotH - ((df - minDf) / (maxDf - minDf)) * plotH;
         // X-axis tick marks
-        const xTicks = [697, 1000, 10000, 100000, 1000000];
+        const xTicks = [1000, 10000, 100000, 1000000];
         const xTickLabel = (b: number) => b >= 1048576 ? `${(b/1048576).toFixed(0)}M` : b >= 1024 ? `${(b/1024).toFixed(0)}K` : `${b}`;
-        // Reference D_f line at 1.322
-        const refDf = 1.322;
+        // The canonical reading, stated as the measured quantity it is: computeDf(345) at seed 4,
+        // 800 walkers — a mass-radius proxy, NOT a box-counting dimension and NOT the ≈1.71
+        // large-N asymptote for 2-D DLA.
+        const refDf = computeDf(CANONICAL_CLUSTER_AT_SEED_4);
         return (
           <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border)", padding: "0.75rem" }}>
             <div style={{ fontSize: "0.55rem", color: "var(--muted-foreground)", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700, marginBottom: "0.5rem" }}>
@@ -552,7 +626,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
             </div>
             <svg width="100%" viewBox={`0 0 ${SVG_W} ${SVG_H}`} style={{ overflow: "visible", display: "block" }}>
               {/* Grid lines */}
-              {[1.1, 1.2, 1.322, 1.4, 1.5, 1.6, 1.7].map(df => (
+              {[1.7, 1.8, 1.9, refDf, 2.0, 2.1].map(df => (
                 <line key={df}
                   x1={PAD.left} y1={toY(df)} x2={PAD.left + plotW} y2={toY(df)}
                   stroke={df === refDf ? "#f59e0b" : "rgba(255,255,255,0.04)"}
@@ -560,8 +634,8 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
                   strokeDasharray={df === refDf ? "4 3" : "none"}
                 />
               ))}
-              {/* Reference D_f label */}
-              <text x={PAD.left + plotW + 3} y={toY(refDf) + 3} fontSize="7" fill="#f59e0b" fontFamily="monospace">D_f=1.322</text>
+              {/* Reference D_f label — the measured canonical reading, not the 1.322 proxy */}
+              <text x={PAD.left + plotW + 3} y={toY(refDf) + 3} fontSize="7" fill="#f59e0b" fontFamily="monospace">D_f={refDf.toFixed(3)}</text>
               {/* X axis */}
               <line x1={PAD.left} y1={PAD.top + plotH} x2={PAD.left + plotW} y2={PAD.top + plotH} stroke="rgba(255,255,255,0.15)" strokeWidth={0.5} />
               {/* Y axis */}
@@ -574,7 +648,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
                 </g>
               ))}
               {/* Y ticks */}
-              {[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7].map(df => (
+              {[1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2].map(df => (
                 <g key={df}>
                   <line x1={PAD.left - 4} y1={toY(df)} x2={PAD.left} y2={toY(df)} stroke="rgba(255,255,255,0.2)" strokeWidth={0.5} />
                   <text x={PAD.left - 6} y={toY(df) + 3} fontSize="7" fill="rgba(255,255,255,0.35)" textAnchor="end" fontFamily="monospace">{df.toFixed(1)}</text>
@@ -644,8 +718,10 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
               })()}
             </svg>
             <div style={{ fontSize: "0.5rem", color: "var(--muted-foreground)", marginTop: "0.25rem" }}>
-              Each dot appears as its compiler finishes. All seven land near the amber D_f = 1.322 line despite a 2,257× size range.
-              The dashed regression line slope ≈ 0 confirms Z-7: binary size has zero predictive power over D_f.
+              Each dot appears as its compiler finishes. All seven land exactly on the amber line across a ~1,870× size range
+              (1,018 B → ~1.9 MB). They land <em>exactly</em>, not approximately, because all seven run the byte-locked
+              canonical algorithm and D_f here is a function of cluster size alone — so the flat regression is the byte-lock
+              restated, and a dot off the line would be the informative event.
             </div>
           </div>
         );
@@ -654,12 +730,14 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
       {/* Z-7 explanation */}
       <div style={{ fontSize: "0.52rem", color: "var(--muted-foreground)", lineHeight: 1.6 }}>
         <strong style={{ color: "var(--foreground)" }}>Conjecture Z-7 (binary_size ⊥ D_f):</strong>{" "}
-        The WAT binary (697 bytes) and the Go binary (1.5 MB) differ in size by 2,257×. The LLVM binary (1.4 KB)
-        traverses the full compiler pipeline: C source → LLVM IR bitcode → llc-18 -march=wasm32 → wasm-ld-18 → wasm-opt -O3.
-        The Rust binary (7.4 KB) uses cargo build --target wasm32-unknown-unknown --release + wasm-opt.
-        The Zig binary (951 bytes) is wasm32-freestanding with zero runtime overhead.
-        All seven compilers produce D_f ≈ 1.322. Binary size, language runtime, and compiler strategy are
-        all irrelevant. The fractal dimension is a property of the algorithm, not the substrate.
+        The LLVM binary (1,065 B) is the smallest and traverses the longest pipeline — C source → LLVM IR bitcode →
+        llc-18 -march=wasm32 → wasm-ld-18. The Rust binary (467 KB) is 449× larger, and the Go binary (~1.9 MB) carries a
+        whole language runtime. All seven compute the identical cluster (345 at seed 4, 800 walkers) and therefore the
+        identical D_f. What that supports is the claim as stated — the result is a property of the algorithm, not of the
+        substrate — and the load-bearing evidence is that seven independently compiled binaries agree
+        <em> trajectory-for-trajectory</em>, checked in CI against committed golden vectors, not the spread arithmetic on
+        this page. Note also that D_f here is a mass-radius proxy at N=800; it is neither a box-counting estimate nor the
+        ≈1.71 large-N asymptote for 2-D DLA (Halsey 2000).
       </div>
 
       {/* Convergence speed chart — D_f estimate vs walker count per compiler */}
@@ -677,20 +755,21 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
         const cPlotW = SVG_CW - CPad.left - CPad.right;
         const cPlotH = SVG_CH - CPad.top - CPad.bottom;
         const toXC = (w: number) => CPad.left + (w / WALKERS_MAX) * cPlotW;
-        const dfMin = 1.1, dfMax = 1.6;
+        // Was 1.1–1.6 around a 1.322 line, which no longer contains the value the panel computes.
+        const dfMin = 1.7, dfMax = 2.2;
         const toYC = (df: number) => CPad.top + cPlotH - ((df - dfMin) / (dfMax - dfMin)) * cPlotH;
-        // Overhead factor: smaller binary = less startup overhead = faster convergence
-        const overheadFactor = (bytes: number) => 1 + Math.log10(bytes / 697) * 0.15;
+        // Overhead factor: an INVENTED shape, not a measured one — see the caption below.
+        const overheadFactor = (bytes: number) => 1 + Math.log10(bytes / 1018) * 0.15;
         return (
           <div style={{ marginTop: "0.75rem" }}>
-            <div style={{ fontSize: "0.52rem", color: "var(--foreground)", fontWeight: 700, marginBottom: "0.25rem" }}>
-              Convergence Speed — D_f Estimate vs Walker Count (simulated)
+            <div style={{ fontSize: "0.52rem", color: "#fbbf24", fontWeight: 700, marginBottom: "0.25rem" }}>
+              Convergence Speed — ILLUSTRATION ONLY, NOT MEASURED DATA
             </div>
             <svg width="100%" viewBox={`0 0 ${SVG_CW} ${SVG_CH}`} style={{ overflow: "visible", display: "block" }}>
-              {/* Reference D_f line */}
-              <line x1={CPad.left} y1={toYC(1.322)} x2={CPad.left + cPlotW} y2={toYC(1.322)}
+              {/* Reference line — the measured canonical reading; the CURVES around it are not measured */}
+              <line x1={CPad.left} y1={toYC(computeDf(CANONICAL_CLUSTER_AT_SEED_4))} x2={CPad.left + cPlotW} y2={toYC(computeDf(CANONICAL_CLUSTER_AT_SEED_4))}
                 stroke="#f59e0b" strokeWidth={1} strokeDasharray="4 3" opacity={0.6} />
-              <text x={CPad.left + cPlotW + 2} y={toYC(1.322) + 3} fontSize="6" fill="#f59e0b" fontFamily="monospace">1.322</text>
+              <text x={CPad.left + cPlotW + 2} y={toYC(computeDf(CANONICAL_CLUSTER_AT_SEED_4)) + 3} fontSize="6" fill="#f59e0b" fontFamily="monospace">{computeDf(CANONICAL_CLUSTER_AT_SEED_4).toFixed(3)}</text>
               {/* Y axis */}
               <line x1={CPad.left} y1={CPad.top} x2={CPad.left} y2={CPad.top + cPlotH} stroke="rgba(255,255,255,0.15)" strokeWidth={0.5} />
               {/* X axis */}
@@ -703,7 +782,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
                 </g>
               ))}
               {/* Y ticks */}
-              {[1.1, 1.2, 1.3, 1.4, 1.5].map(df => (
+              {[1.7, 1.8, 1.9, 2.0, 2.1].map(df => (
                 <g key={df}>
                   <line x1={CPad.left - 3} y1={toYC(df)} x2={CPad.left} y2={toYC(df)} stroke="rgba(255,255,255,0.2)" strokeWidth={0.5} />
                   <text x={CPad.left - 4} y={toYC(df) + 2} fontSize="6" fill="rgba(255,255,255,0.3)" textAnchor="end" fontFamily="monospace">{df.toFixed(1)}</text>
@@ -739,8 +818,10 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
               ))}
             </svg>
             <div style={{ fontSize: "0.45rem", color: "var(--muted-foreground)", marginTop: "0.2rem" }}>
-              Smaller binaries (WAT, Zig) converge faster — less runtime overhead per step. All curves reach D_f ≈ 1.322.
-              This tests Z-7 from a temporal angle: convergence speed varies, final value does not.
+              These curves are GENERATED, not measured: each is the panel's final D_f plus an invented 1/√N wobble scaled by
+              binary size. No convergence history is recorded — the substrates report only a final cluster size — so the
+              earlier caption here (&ldquo;smaller binaries converge faster&rdquo;) asserted a causal claim nothing on this
+              page tests. Kept as a sketch of the shape a real measurement would take, marked so it cannot be cited.
             </div>
           </div>
         );

@@ -21,10 +21,17 @@
 // apart without the diff being visible.
 //
 // SCOPE, stated rather than implied: only assets marked `canonicalAbi` are held to the golden
-// cluster size, because only they implement `src/wasm-dla/CANONICAL_SPEC.md`. C / LLVM / Rust
-// run their own algorithms and are excluded — with their measured seed-4 values recorded in
-// `identity-dla-pages-wasm-assets.ts`, including that C is still degenerate. An exclusion that
-// is named and measured is a boundary; an unnamed one is the vacuity class.
+// cluster size, because only they implement `src/wasm-dla/CANONICAL_SPEC.md`.
+//
+// That exclusion used to carry C, LLVM and Rust, each on a divergent algorithm of its own — C
+// degenerate at cluster 1 (the identical LCG defect as Zig), LLVM at 1642 because its walker count
+// was a compile-time 3000 the panel could not set, Rust at 462 on a 100-wide torus. All three now
+// stage the canonical substrate and are covered here. Go remains the one excluded asset, and for a
+// reason that is about ABI rather than algorithm: it implements the canonical spec but reaches it
+// through the Go runtime and `globalThis`, so it cannot be instantiated and read this way. The
+// byte-lock runner covers it via `run-go-wasm.mjs`.
+//
+// An exclusion that is named and measured is a boundary; an unnamed one is the vacuity class.
 
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
@@ -73,12 +80,29 @@ const trig = {
   cos_f32: (x: number): number => Math.fround(Math.cos(x)),
   sin_f32: (x: number): number => Math.fround(Math.sin(x)),
 };
-const importObject = {
-  math: { ...trig },
-  // AssemblyScript imports under its module filename.
-  "dla-canonical": { ...trig },
-  env: { ...trig, abort: (): never => { throw new Error("ASC abort"); } },
-};
+
+/**
+ * Built per instantiation because `memset` needs the module's OWN memory. The freestanding LLVM
+ * link leaves `memset` undefined and clang emits a call to it for the grid clear in `init`, so
+ * this import is load-bearing rather than defensive — omitting it is a `LinkError`, which is how
+ * this function came to exist: the shared object below had no `memset` and the LLVM asset could
+ * not instantiate at all the moment it was brought into scope.
+ */
+function canonicalImports(memory: () => WebAssembly.Memory): WebAssembly.Imports {
+  return {
+    math: { ...trig },
+    // AssemblyScript imports under its module filename.
+    "dla-canonical": { ...trig },
+    env: {
+      ...trig,
+      abort: (): never => { throw new Error("ASC abort"); },
+      memset: (ptr: number, value: number, len: number): number => {
+        new Uint8Array(memory().buffer).fill(value & 0xff, ptr, ptr + len);
+        return ptr;
+      },
+    },
+  };
+}
 
 function goldenClusterSize(seed: number): number {
   const golden: unknown = JSON.parse(readFileSync(join(bytelockDir, "testdata", `golden-seed-${seed}.json`), "utf8"));
@@ -89,7 +113,18 @@ function goldenClusterSize(seed: number): number {
 
 function runCanonical(source: string, seed: number): number {
   const bytes = readFileSync(join(repoRoot, source));
-  const instance = new WebAssembly.Instance(new WebAssembly.Module(bytes), importObject);
+  // Lazy, exactly as `run-wasm.mjs` does it: `memset` needs the memory the instantiation is
+  // about to produce, so the import closes over a holder that is filled immediately after.
+  // Safe because the substrates call `memset` from `init`, never from a start section.
+  const memoryRef: { current: WebAssembly.Memory | undefined } = { current: undefined };
+  const instance = new WebAssembly.Instance(
+    new WebAssembly.Module(bytes),
+    canonicalImports(() => {
+      if (!memoryRef.current) throw new Error(`${source} called memset before its memory was bound`);
+      return memoryRef.current;
+    }),
+  );
+  memoryRef.current = instance.exports.memory as WebAssembly.Memory;
   const exports = instance.exports as Record<string, CallableFunction>;
   const init = exports.init;
   const run = exports.run;
