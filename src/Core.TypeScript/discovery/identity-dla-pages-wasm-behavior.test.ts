@@ -34,8 +34,39 @@ import { PAGES_WASM_ASSETS } from "./identity-dla-pages-wasm-assets";
 const repoRoot = join(import.meta.dir, "..", "..", "..");
 const bytelockDir = join(repoRoot, "src", "wasm-dla", "bytelock");
 
-/** Byte-lock seeds with a committed golden vector. Kept small: the Zig substrate runs ~3s/seed. */
+/** Byte-lock seeds with a committed golden vector. Kept small — see PER_RUN_BUDGET_MS. */
 const SEEDS = [1, 42] as const;
+
+/**
+ * PER-TEST TIME BUDGET — attributed, because a bare number deciding a byte-lock verdict is
+ * the hidden-oracle defect `src/Core.TypeScript/hygiene/audit-hidden-oracles.ts` (#11534)
+ * exists to find.
+ *
+ * WHAT WAS MEASURED (2026-08-17, bun 1.3.14, and again on CI runners in #11530 / #11546).
+ * All six substrates compute the identical trajectory, so all execute the same walker-step
+ * count; only the per-step cost differs:
+ *
+ *     WAT 22.7 ns/step · LLVM/C 11.5 · Emscripten 11.7 · Rust 15.5 · ASC 25.2 · Zig 20,279
+ *
+ * In wall-clock, one `run()`: WAT ~3 ms, Zig 2.5–3.1 s locally and 3.5–6.8 s on a CI runner.
+ * Compile is 0.25 ms and instantiate 0.08 ms, so this is execution, not startup. The Zig
+ * outlier is a real, unexplained performance defect tracked as 081M089HKQ7087G0R003H2G8JF —
+ * it is NOT a correctness problem (Zig agrees with the golden vectors at every seed).
+ *
+ * WHY THIS VALUE. Before it existed these tests inherited bun's 5,000 ms default, which sat
+ * *inside* the Zig range: #11546 recorded `Zig at seed 42 ... [5138.05ms] timed out after
+ * 5000ms` on a green tree. That is not a loosened ratchet being restored — an inherited
+ * default nobody chose was deciding a byte-lock verdict by runner load. So the budget is set
+ * FAR from the boundary (≈9x the worst run yet observed, 6.8 s) precisely so that the clock
+ * never decides: the assertion does.
+ *
+ * WHY IT IS NOT TIGHTER. It must not double as a performance assertion. A degenerate
+ * substrate is also a slow one — no walker sticks, so every one burns the full 50,000-step
+ * budget, and the mutation run of this file took 13.6 minutes to reach its assertion. A tight
+ * timeout would report that as "too slow" when the fact worth reporting is "returned 1".
+ * Regressions in speed belong to the work-item above, not to this clock.
+ */
+const PER_RUN_BUDGET_MS = 60_000;
 
 /** The canonical spec's host trig, f32-rounded — identical to `run-wasm.mjs`'s harness. */
 const trig = {
@@ -80,20 +111,22 @@ describe("staged Pages WASM modules reproduce the byte-locked trajectory", () =>
     expect(canonicalAssets.length).toBeGreaterThan(0);
   });
 
+  // ONE run per (asset, seed), two assertions off it. Running the module a third time just to
+  // ask "did it diffuse" would have cost another ~7 s of CI per asset to learn nothing the
+  // first run did not already know.
   for (const asset of canonicalAssets) {
     for (const seed of SEEDS) {
-      test(`${asset.name} at seed ${seed} matches the committed golden cluster size`, () => {
-        expect(runCanonical(asset.source, seed)).toBe(goldenClusterSize(seed));
-      });
+      test(
+        `${asset.name} at seed ${seed} matches the committed golden cluster size`,
+        () => {
+          const measured = runCanonical(asset.source, seed);
+          // Checked first so the DEGENERATE case — the defect this file exists for — reports
+          // itself as "never diffused" rather than as an ordinary numeric disagreement.
+          expect(measured, `${asset.name} did not diffuse: cluster is the seed cell alone`).toBeGreaterThan(1);
+          expect(measured, `${asset.name} disagrees with golden-seed-${seed}.json`).toBe(goldenClusterSize(seed));
+        },
+        PER_RUN_BUDGET_MS,
+      );
     }
-  }
-
-  // The specific shape of the defect this file was written for: a module that runs, exports
-  // everything it promises, and never diffuses. Stated separately from the equality above so
-  // the failure message says WHICH thing broke.
-  for (const asset of canonicalAssets) {
-    test(`${asset.name} diffuses — cluster size is not the degenerate seed cell alone`, () => {
-      expect(runCanonical(asset.source, SEEDS[0])).toBeGreaterThan(1);
-    });
   }
 });
