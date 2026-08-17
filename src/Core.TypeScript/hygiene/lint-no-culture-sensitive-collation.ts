@@ -188,6 +188,11 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
     reason: "pins that tracked-file order is ordinal by exhibiting the locale order it must not be",
   },
   {
+    file: "src/Core.TypeScript/ace/ace-cli-collation.test.ts",
+    reason:
+      "asserts that `graphMerkleRoot`'s entry order DIVERGES from localeCompare; the single call computes the cultural order the root must NOT match, and is the premise the test asserts rather than assumes. Same shape as society.test.ts above.",
+  },
+  {
     file: "src/Core.TypeScript/hygiene/treaty-rule-alternatives.ts",
     reason:
       "the treaty-rule register — locale collation IS the alternative under evaluation. All three uses sit inside `evaluate:` callbacks that measure how many pinned vectors change if an implementer had chosen Intl.Collator instead of ordinal; the file exists to prove the vectors discriminate the two. Same shape as collation.test.ts above.",

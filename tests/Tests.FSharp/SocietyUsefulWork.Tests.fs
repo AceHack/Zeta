@@ -91,3 +91,67 @@ let ``heterogeneous simulation shows society exceeds best individual agent under
     let simVal = SUW.simulateHeterogeneous n competences rho testFacts 10000 99UL
     
     Assert.True(simVal > bestInd, sprintf "Society work %f should exceed best individual expected work %f" simVal bestInd)
+
+// ── Effective sample size: the two counts, and why both exist ───────────────────────────────────
+//
+// These pin `effectiveTrialCount` (Kish) and `unionEquivalentAgentCount` (the exact inverse of the
+// shipped union formula) AGAINST `expectedSocietyIdentical` rather than against restated algebra,
+// so a change to the shipped formula breaks them. The final test asserts the two counts DISAGREE
+// in the interior — without it, the whole pair could collapse to one function and every other test
+// here would still pass.
+
+[<Fact>]
+let ``effectiveTrialCount is n when runs are independent`` () =
+    Assert.Equal(10.0, SUW.effectiveTrialCount 10 0.0, 12)
+
+[<Fact>]
+let ``effectiveTrialCount collapses to one when runs are perfectly correlated`` () =
+    // The whole point: ten runs of a perfectly-correlated config is ONE observation.
+    Assert.Equal(1.0, SUW.effectiveTrialCount 10 1.0, 12)
+
+[<Fact>]
+let ``effectiveTrialCount is monotonically decreasing in rho`` () =
+    let counts = [ 0.0; 0.25; 0.5; 0.75; 1.0 ] |> List.map (SUW.effectiveTrialCount 10)
+    counts
+    |> List.pairwise
+    |> List.iter (fun (a, b) -> Assert.True(b < a, sprintf "expected strictly decreasing, got %f then %f" a b))
+
+[<Fact>]
+let ``unionEquivalentAgentCount agrees with the shipped union formula at both endpoints`` () =
+    let n = 10
+    let c = 0.3
+    // rho = 0: the society formula IS the independent union, so the equivalent count is n.
+    Assert.Equal(double n, SUW.unionEquivalentAgentCount n c 0.0, 8)
+    // rho = 1: the society formula reduces to a single agent, so the equivalent count is 1.
+    Assert.Equal(1.0, SUW.unionEquivalentAgentCount n c 1.0, 8)
+
+[<Fact>]
+let ``unionEquivalentAgentCount inverts expectedSocietyIdentical exactly`` () =
+    // Round-trip against the SHIPPED function: feeding the equivalent count back in as an
+    // independent (rho = 0) society must reproduce the correlated society's expected work.
+    let n = 8
+    let c = 0.25
+    let rho = 0.4
+    let correlated = SUW.expectedSocietyIdentical n c rho testFacts
+    let m = SUW.unionEquivalentAgentCount n c rho
+    let total = testFacts |> Array.sumBy (fun f -> f.Value)
+    let reconstructed = (1.0 - Math.Pow(1.0 - c, m)) * total
+    Assert.Equal(correlated, reconstructed, 8)
+
+[<Fact>]
+let ``the two effective counts disagree in the interior -- they answer different questions`` () =
+    // Endpoints agree (tested above), so agreement alone would not discriminate. If these two
+    // ever coincided across the interior, one of them would be redundant and the distinction this
+    // module documents would be fictional.
+    let n = 10
+    let c = 0.3
+    let rho = 0.5
+    let kish = SUW.effectiveTrialCount n rho
+    let union = SUW.unionEquivalentAgentCount n c rho
+    Assert.True(abs (kish - union) > 0.5,
+                sprintf "expected the two counts to differ materially; kish=%f union=%f" kish union)
+
+[<Fact>]
+let ``degenerate competence has no finite union-equivalent count`` () =
+    Assert.Equal(0.0, SUW.unionEquivalentAgentCount 10 0.0 0.5, 12)
+    Assert.Equal(0.0, SUW.unionEquivalentAgentCount 10 1.0 0.5, 12)
