@@ -1,0 +1,12 @@
+{
+  "pr_number": 11296,
+  "archive_path": "docs/history/pr-reviews/PR-11296-fix-ci-the-agencysignature-pre-merge-check-validated-an-artifact-that-never-land.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T03:09:37.832Z",
+  "schema_version": "v1",
+  "commit_sha": "d7e432b0fc7a3b69f8d95d8b57ac2b6b50c34612",
+  "title": "fix(ci): the AgencySignature pre-merge check validated an artifact that never lands",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T03:09:04Z",
+  "head_ref": "shadow/agencysignature-validate-the-squash-preimage"
+}
