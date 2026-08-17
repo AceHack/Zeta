@@ -59,7 +59,7 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import { caPublicKeyPath } from "./ca.ts";
 import { trustedUserCaKeysPath } from "./setup-cluster.ts";
-import { requireBiometric, type BiometricAuth, type BiometricResult } from "./biometric.ts";
+import { establishedFactor, requireBiometric, type BiometricAuth, type BiometricResult } from "./biometric.ts";
 export type { BiometricAuth, BiometricResult } from "./biometric.ts";
 
 /** The host-environment doors — the ONLY channel for ambient influence (noninterference §13). Every
@@ -490,7 +490,10 @@ export function formatClusterTeardown(res: ClusterTeardownResult): string {
   if (res.dryRun) {
     lines.push("  Re-run with --confirm (and approve the biometric) to execute the cluster teardown.");
   } else if (res.confirmed && res.biometric?.ok === true) {
-    lines.push(`  Biometric: 1 approval covered the whole destructive run (${res.biometric.platform}).`);
+    lines.push(
+      `  Operator approval: 1 approval covered the whole destructive run ` +
+        `(mechanism ${res.biometric.platform}, factor established: ${establishedFactor(res.biometric)}).`,
+    );
     lines.push(
       `  Unregistered (staged for PR): ${res.unregisteredPaths.length} path(s). Commit + open a PR to land the removal.`,
     );

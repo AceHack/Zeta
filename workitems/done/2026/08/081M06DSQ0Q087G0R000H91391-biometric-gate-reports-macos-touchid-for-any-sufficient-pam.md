@@ -1,11 +1,12 @@
 ---
 id: 081M06DSQ0Q087G0R000H91391
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: biometric-gate-reports-macos-touchid-for-any-sufficient-pam
 title: "biometric gate reports 'macos-touchid' for any sufficient PAM factor that satisfies sudo"
 created: 2026-08-16T23:16:35.991Z
+completed: 2026-08-17T00:58:48.662Z
 depends_on: []
 composes_with: []
 ---
