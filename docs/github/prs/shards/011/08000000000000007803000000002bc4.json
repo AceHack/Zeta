@@ -1,0 +1,12 @@
+{
+  "pr_number": 11204,
+  "archive_path": "docs/history/pr-reviews/PR-11204-fix-heartbeat-set-the-committer-identity-before-the-preparer-three-lanes-down-1h.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T00:06:31.271Z",
+  "schema_version": "v1",
+  "commit_sha": "8de7d53617c8afa32f64dad517b94883c161480a",
+  "title": "fix(heartbeat): set the committer identity before the preparer — three lanes down ~1h",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T00:05:55Z",
+  "head_ref": "shadow/heartbeat-committer-ident-before-merge"
+}
