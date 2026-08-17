@@ -1,0 +1,12 @@
+{
+  "pr_number": 11509,
+  "archive_path": "docs/history/pr-reviews/PR-11509-measure-attestation-the-post-uki-gap-measured-from-the-generated-kernel-config-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:59:28.120Z",
+  "schema_version": "v1",
+  "commit_sha": "3b30399908dfd6c8baa91f971083957d3f17063e",
+  "title": "measure(attestation): the post-UKI gap, measured from the generated kernel config — and there is no UKI",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:58:45Z",
+  "head_ref": "shadow/measure-post-uki-attestation-gap"
+}
