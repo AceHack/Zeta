@@ -1,0 +1,12 @@
+{
+  "pr_number": 11327,
+  "archive_path": "docs/history/pr-reviews/PR-11327-fix-hygiene-the-grandfather-clause-was-failing-the-prs-it-exempts-sigpipe-141.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T04:06:14.422Z",
+  "schema_version": "v1",
+  "commit_sha": "bf6cf5c2ef5d064132fbd559f80321635a7751ae",
+  "title": "fix(hygiene): the grandfather clause was FAILING the PRs it exempts (SIGPIPE 141)",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T04:05:40Z",
+  "head_ref": "fix/agencysignature-sigpipe-on-grandfathered"
+}
