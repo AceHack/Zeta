@@ -12,10 +12,11 @@
  * "too many correlations is a warning, not a confirmation signal").
  *
  * The HAND-WRITTEN ports are the independent oracle. Each primitive dir under
- * `tests/cross-verification/` carries five hand-authored language ports
- * (`_gen/gen.{fsx,csx,go,py,rs}`) that re-derive the algorithm from its published
- * reference with no IR in the loop. Diffing IR-GENERATED output against those is
- * what falsifies IR *adequacy* — and that is the rung this file implements.
+ * `tests/cross-verification/` carries at least one hand-authored language port
+ * (`_gen/gen.{fsx,csx,go,py,rs}`; the older five carry all five, the four added
+ * under zeta-ir-v4 carry Python) that re-derives the algorithm from its
+ * published reference with no IR in the loop. Diffing IR-GENERATED output
+ * against those is what falsifies IR *adequacy* — the rung this file implements.
  *
  * WHAT IT DOES, PER PRIMITIVE
  * ---------------------------
@@ -171,35 +172,46 @@ export function handWrittenLanes(dir: string): CommittedLane[] {
  * hand-written port must be removed from this list; a new bare one must be added
  * deliberately, not silently).
  *
- * WHY THIS IS NOT BOOKKEEPING — an unchecked-anchor finding rides on it
- * --------------------------------------------------------------------
- * With no port to disagree, nothing in the repo can notice that a primitive's
- * NAME claims more than its ops deliver. Two live examples, both from this list,
- * stated in the honest register — the IRs compute exactly what their op lists
- * say, so neither is an arithmetic bug; what is unverified is whether the cited
- * human anchor ENTAILS those ops (`.claude/rules/anchor-to-human-prior-art.md`:
- * an anchor must be checked, not cited):
+ * NOW EMPTY, AND THAT IS A CLAIM ABOUT ARITHMETIC ONLY
+ * ---------------------------------------------------
+ * The four entries that used to sit here — `lcg32_glibc`,
+ * `lcg32_numerical_recipes`, `lcg64_mmix`, `murmur3_32_tail` — each now carry an
+ * independently written `_gen/gen.py` (from the published recurrence / reference
+ * source, never from the IR), so every IR-carrying primitive in the tree has
+ * something that can disagree with it: bar 1 on the committed vectors and bar 2
+ * over 2000 differential inputs.
+ *
+ * What that buys is IR ADEQUACY ON ARITHMETIC — a wrong width, a dropped or
+ * transposed op, a mistyped constant. It does NOT buy anchor entailment, and the
+ * distinction is not academic here, because two of those four are named for
+ * anchors they do not implement:
  *
  *   * `rng.lcg32_glibc` is `(x * 1103515245 + 12345) mod 2^32`. glibc's TYPE_0
- *     `rand()` reduces mod 2^31 — `((state * 1103515245) + 12345) & 0x7fffffff`
- *     (glibc `stdlib/random_r.c`). Under that reading 4 of the 10 committed
- *     vectors differ (x-2, x-3, x-6, x-7 — the ones whose product exceeds 2^31).
- *     The mod-2^32 form matches the ANSI C example `rand()` instead. Either
- *     rename or re-derive; this harness only records that no oracle can tell.
+ *     reduces mod 2^31 AND writes the masked value back into the state —
+ *     `int32_t val = ((read_state(state,0) * 1103515245U) + 12345U) & 0x7fffffff;
+ *     write_state(state, 0, val);` (glibc `stdlib/random_r.c`, verified against
+ *     the current source). Under that reading 4 of the 10 committed vectors
+ *     differ: x-2, x-3, x-6, x-7. Further, glibc's default `rand()` is TYPE_3
+ *     (degree-31 additive-feedback trinomial, `stdlib/random.c`), not an LCG at
+ *     all.
  *   * `hash.murmur3_32_tail` is `rotl(h,13); h = h*5 + 0xe6546b64`, which in
- *     MurmurHash3_x86_32 is the BODY-block mix-combine. The "tail" in that
- *     algorithm is the leftover-bytes path and contains none of these three ops.
+ *     `MurmurHash3_x86_32` is the BODY-block mix-combine (verified against
+ *     Appleby's `smhasher/src/MurmurHash3.cpp`). The section that reference
+ *     labels `// tail` is the leftover-bytes path and contains none of these
+ *     three ops.
  *
- * Neither is resolved here — renaming a committed generator changes its derived
- * ZetaId and its golden bytes, which is an owner's call, not a side effect of a
- * harness PR.
+ * Neither is renamed here: `idOf name version` is a pure function of the name,
+ * so a rename moves the generator's ZetaId and every golden byte derived from
+ * it, and it requires editing `src/Core/ZetaIrV4.fs`, which is owned by another
+ * agent in flight. Both findings are instead PINNED AS EXECUTABLE ASSERTIONS in
+ * `anchor-entailment.test.ts` — prose in a comment is exactly the register that
+ * let them sit unnoticed, and a fact that no test holds is a fact that decays.
+ * The rename itself is priced and filed as work-item 081M02YCNMA087G0R003TK7AEW.
+ *
+ * If a new bare IR primitive lands, add it here deliberately; the paired test
+ * asserts this list equals the scan in both directions, so it cannot drift.
  */
-export const NO_INDEPENDENT_ORACLE: readonly string[] = [
-  "lcg32_glibc",
-  "lcg32_numerical_recipes",
-  "lcg64_mmix",
-  "murmur3_32_tail",
-];
+export const NO_INDEPENDENT_ORACLE: readonly string[] = [];
 
 // ─── the differential corpus ─────────────────────────────────────────────────
 
