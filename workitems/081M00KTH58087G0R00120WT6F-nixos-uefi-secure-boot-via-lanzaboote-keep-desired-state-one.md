@@ -16,14 +16,41 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081M00KTH58087G0R00120WT6F-*.md` glob. -->
 
-## Status: RESEARCH landed, BLOCKED on human sign-off
+## Status: RESEARCH landed + the desired-state MODEL landed; still BLOCKED on human sign-off
 
 Design doc:
 `docs/research/2026-08-14-nixos-secure-boot-lanzaboote-declarative-desired-state-with-one-firmware-ceremony.md`
 
-No boot configuration changed. Nothing lands until Aaron answers the seven numbered
-open questions in §9 of the doc (round-29 discipline: no CI/boot decision lands
-without human sign-off).
+No boot configuration changed. Nothing that touches a boot path lands until Aaron
+answers the seven numbered open questions in §9 of the doc (round-29 discipline: no
+CI/boot decision lands without human sign-off).
+
+### Increment 1 (2026-08-17) — the one-desired-state half, with the boot half still gated
+
+Landed, and none of it signs, enrols, or verifies anything:
+
+- `full-ai-cluster/nixos/modules/secure-boot-phase-model.nix` — the single source of
+  truth: a phase enum (`off` / `provision` / `enforce`), a pure `derivePlan` that
+  derives every other setting from it, and `assess`, which compares a declared phase
+  against an OBSERVED firmware state. Firmware is a measurement, never a declaration
+  (§3.2), so "unmeasured" is its own outcome and cannot read as "agree".
+- `full-ai-cluster/nixos/modules/secure-boot.nix` — the option surface
+  (`zeta.secureBoot.phase`, default `off`; `zeta.secureBoot.plan`, read-only/derived).
+  Imported by `common.nix`, sets **no** `boot.*` option at any phase, and **fails
+  closed** on any phase other than `off`, naming §9 Q2/Q3/Q4/Q5/Q6 as the blocker.
+- `full-ai-cluster/nixos/tests/secure-boot-desired-state-eval-test.nix` — 18 properties,
+  forced during evaluation by `checks.<system>.secure-boot-desired-state-model`, so
+  `nix flake check --no-build` (already in `build-ai-cluster-iso.yml`) runs them.
+
+UNVERIFIED and untouched: lanzaboote itself (no flake input), signing, key generation,
+enrolment, the firmware ceremony, and every claim about how a real node boots. No
+hardware was booted; no `nixos-rebuild` evaluated any of this.
+
+Still blocked, and deliberately not chosen by an agent: **key custody** — where the
+PK/KEK/db private keys live at rest, whether Microsoft's UEFI CA enters `db`, and
+whether enrolment/signing is operator-approved. §9 Q3/Q4/Q5 are the questions; §6.4 is
+the reason Q4 is the sharp one (a db key on unencrypted ext4 defeats Secure Boot
+against a physical adversary regardless of what the config says).
 
 ### Answer in one line
 

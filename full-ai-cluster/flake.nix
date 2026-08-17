@@ -213,7 +213,30 @@
         # nixosTest driver boots an x86_64 VM (and our cluster nodes are
         # x86_64). Run one with:
         #   nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L
-        checks = nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
+        checks = {
+          # 081M00KTH58087G0R00120WT6F — properties of the Secure Boot
+          # desired-state model (nixos/modules/secure-boot-phase-model.nix).
+          #
+          # NOT a VM test and NOT a boot test: it proves things about Nix
+          # values only — that `enforce` refuses unsigned images, that a
+          # non-"off" phase fails closed on the missing key-custody decision,
+          # and that no derived plan can carry a custody decision at all.
+          # Nothing in this repo signs or enrols anything, so nothing here
+          # can speak to whether a node boots.
+          #
+          # Unlike the VM checks below it costs no VM and runs on every
+          # system, and the assertions fire during EVALUATION — so
+          # `nix flake check --no-build` (the cheap CI step) already runs it.
+          secure-boot-desired-state-model =
+            let
+              report = import ./nixos/tests/secure-boot-desired-state-eval-test.nix {
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "secure-boot-desired-state-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+        } // nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
           # Regression test for the k3s --cluster-init token deadlock:
           # boots the control-plane k3s module in QEMU and asserts the API
           # comes all the way up (see nixos/tests/k3s-cluster-init.nix).

@@ -19,6 +19,13 @@
     # with no /etc/zeta/cluster-join-server-url and on every k3s server.
     ./injected-join-server.nix
     ./login-banner.nix
+    # 081M00KTH58087G0R00120WT6F: the option surface for Secure Boot desired
+    # state. At its default phase ("off") it sets NO boot option and contributes
+    # one always-true assertion, so this import leaves the boot path byte-for-byte
+    # unchanged. What it buys is that every host EVALUATES the option on
+    # `nix flake check`, and that any future non-"off" phase fails closed on the
+    # missing key-custody decision rather than quietly enabling an unbuilt path.
+    ./secure-boot.nix
     # 081KZETP6AT: FHS loader (nix-ld) for foreign dynamically-linked ELFs — mise's
     # prebuilt toolchains and the vendor agent CLIs. Needed on INSTALLED nodes too,
     # not only on the ISO: the lazy first-login `mise install` recovery in this file
