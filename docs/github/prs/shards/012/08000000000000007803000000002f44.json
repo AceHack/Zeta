@@ -1,0 +1,12 @@
+{
+  "pr_number": 12100,
+  "archive_path": "docs/history/pr-reviews/PR-12100-feat-browser-acknowledge-causal-handoff-admission.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T21:22:05.068Z",
+  "schema_version": "v1",
+  "commit_sha": "19220c0f6cafa2cf52e2074a9802249f4f2595b3",
+  "title": "feat(browser): acknowledge causal handoff admission",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T21:21:20Z",
+  "head_ref": "codex/browser-causal-handoff-ack"
+}
