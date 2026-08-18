@@ -80,7 +80,17 @@ const DEFAULT_ARCHIVE_DIR = "docs/history/pr-reviews";
 const DEFAULT_SHARD_DIR = "docs/github/prs/shards";
 const DEFAULT_OWNER = "Lucent-Financial-Group";
 const DEFAULT_REPO = "Zeta";
-const ARCHIVER = "src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts";
+/**
+ * The archiver, resolved relative to THIS FILE rather than to the target repo root.
+ *
+ * It used to be the repo-relative string and the spawn used `cwd: repoRoot`, which works
+ * only when the repo being reconciled is also the repo the tool lives in. Running against
+ * any other checkout produced `Module not found` — and because the sweep treats an archiver
+ * failure as non-fatal (a `::warning::`), that would have been a lane that fails quietly on
+ * every tick while the step still reports success. Same silent-no-op family as the `--batch`
+ * defect this workflow already ate once. The archiver is a sibling module; resolve it as one.
+ */
+export const ARCHIVER = join(import.meta.dir, "archive-pr-reviews.ts");
 
 /** `| Total threads | 12 |` — the archive's own recorded count. */
 export const RECORDED_THREADS_RE = /^\|\s*Total threads\s*\|\s*(\d+)\s*\|\s*$/m;

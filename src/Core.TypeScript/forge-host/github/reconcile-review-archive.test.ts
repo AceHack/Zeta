@@ -16,7 +16,10 @@
 // Mutation-tested: see the work-item / PR body for the mutants killed.
 
 import { describe, expect, test } from "bun:test";
+import { existsSync } from "node:fs";
+import { isAbsolute } from "node:path";
 import {
+  ARCHIVER,
   buildBatchQuery,
   classify,
   decideCheckVerdict,
@@ -402,3 +405,19 @@ describe("buildBatchQuery / parseBatchResponse — batched, cap-free counts", ()
   });
 });
 
+describe("ARCHIVER — the path the sweep actually spawns", () => {
+  test("is absolute and resolved against this module, not the target repo", () => {
+    // CAUGHT IN A SANDBOX RUN, not by reasoning. The path was the repo-relative string
+    // "src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts" and the spawn used
+    // `cwd: repoRoot`, so reconciling any checkout other than the one the tool lives in
+    // died with `Module not found`. The sweep treats an archiver failure as a non-fatal
+    // ::warning::, so that would have been a lane failing quietly on every tick while the
+    // step still reported success — the silent-no-op family this workflow has eaten before.
+    expect(isAbsolute(ARCHIVER)).toBe(true);
+    expect(ARCHIVER.endsWith("archive-pr-reviews.ts")).toBe(true);
+  });
+
+  test("points at a file that exists", () => {
+    expect(existsSync(ARCHIVER)).toBe(true);
+  });
+});
