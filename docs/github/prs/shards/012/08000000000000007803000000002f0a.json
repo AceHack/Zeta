@@ -1,0 +1,12 @@
+{
+  "pr_number": 12042,
+  "archive_path": "docs/history/pr-reviews/PR-12042-fix-security-frost-hardware-probe-was-blind-to-the-yubihsm-and-paired-any-module.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T20:33:58.278Z",
+  "schema_version": "v1",
+  "commit_sha": "0795e3f33030a1687e668bcbc77c8b5ffb243ff6",
+  "title": "fix(security): frost-hardware-probe was blind to the YubiHSM, and paired any module with any device",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T20:30:19Z",
+  "head_ref": "fix/frost-probe-blind-to-yubihsm-plus-hardware-readiness-runbook"
+}
