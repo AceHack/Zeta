@@ -28,10 +28,11 @@
     "THE DELETION ITSELF IS GATED on maintainer sign-off — see the work item's",
     "`Done when` list. This roster does not authorize it; it makes it checkable."
   ],
-
-  "stalePatterns": ["infra/k8s", "infra/nixos"],
+  "stalePatterns": [
+    "infra/k8s",
+    "infra/nixos"
+  ],
   "survivingTree": "full-ai-cluster",
-
   "$comment_excludedPrefixes": [
     "Prose archives and the stale tree itself. These are frozen records (merged",
     "PR reviews, research ferries, work-item bodies) — rewriting them would",
@@ -47,7 +48,6 @@
     "docs/research/",
     "workitems/"
   ],
-
   "$comment_dispositions": [
     "blocking — deleting the stale tree BREAKS this, or makes it emit output that",
     "           points at a path that no longer exists. Must be migrated first.",
@@ -57,7 +57,6 @@
     "self     — this guard, its roster, and its mutation suite. They name the stale",
     "           tree because their subject IS the stale tree."
   ],
-
   "consumers": [
     {
       "path": "flake.nix",
@@ -151,6 +150,12 @@
       "path": "src/Core.TypeScript/hygiene/audit-cluster-tree-consumers.test.ts",
       "disposition": "self",
       "note": "The mutation suite proving the audit can go red."
+    },
+    {
+      "path": "db/uncertainty/081M0BH05N7087G0R0037KFCJD-k8s-bootstrap-never-deployed-argocd-install-was-a-kustomize.md",
+      "disposition": "prose",
+      "note": "A ΔU ledger entry recording that the infra/k8s bootstrap never deployed (argocd-install.yaml was a kustomize Kustomization, a build-time input, not an API object). It names infra/k8s because it DOCUMENTS AN EVENT IN THAT TREE — it is a historical record, not a live consumer, and nothing imports or resolves against the path.",
+      "migrateTo": "NONE — do not repoint. The bug happened in infra/k8s and the record must stay accurate about where it happened; rewriting it to name full-ai-cluster would make the ledger lie about history. Leave the row when the tree goes; the entry is keyed and idempotent."
     }
   ]
 }
