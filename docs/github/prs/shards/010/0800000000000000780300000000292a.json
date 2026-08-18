@@ -1,0 +1,12 @@
+{
+  "pr_number": 10538,
+  "archive_path": "docs/history/pr-reviews/PR-10538-math-meno-v-is-balanced-theta-the-garside-full-twist-and-the-ladder-stops-there.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T15:13:10.610Z",
+  "schema_version": "v1",
+  "commit_sha": "51e7a27d7539b86a37b40d608fe79170930f3ff2",
+  "title": "math(meno): <V> IS balanced -- theta = the Garside full twist, and the ladder stops there",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T10:18:15Z",
+  "head_ref": "soraya/meno-balanced-garside-twist-q1-q3"
+}
