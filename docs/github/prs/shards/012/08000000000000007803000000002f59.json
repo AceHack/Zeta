@@ -1,0 +1,12 @@
+{
+  "pr_number": 12121,
+  "archive_path": "docs/history/pr-reviews/PR-12121-docs-soft-g-del-localized-to-a-known-junction-and-entanglement-accrues-pairwise.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T22:01:12.755Z",
+  "schema_version": "v1",
+  "commit_sha": "3348490768a9fad1d38640115aeb7debbc7c08b2",
+  "title": "docs(soft): Gödel localized to a known junction, and entanglement accrues pairwise",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T22:00:28Z",
+  "head_ref": "shadow/godel-junction-and-pairwise-entanglement"
+}
