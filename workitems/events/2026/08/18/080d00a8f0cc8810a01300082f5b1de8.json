@@ -1,0 +1,14 @@
+{
+  "id": "080d00a8f0cc8810a01300082f5b1de8",
+  "at": "2026-08-18T13:44:49.297Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0AHW6CH087G0R001F1V9RY",
+    "type": "task",
+    "title": "Correct factually wrong claims in context-startup-loaded .claude/rules surfaces",
+    "slug": "correct-factually-wrong-claims-in-context-startup-loaded-cla",
+    "priority": "P2",
+    "filename": "081M0AHW6CH087G0R001F1V9RY-correct-factually-wrong-claims-in-context-startup-loaded-cla.md"
+  }
+}

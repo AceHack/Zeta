@@ -27,5 +27,5 @@ incentives with the manifesto — reducing uncertainty against the common cause 
   — full model, Beacon anchors (bug bounties, mechanism design, proof-of-entropy, Ostrom, Shannon), peels.
 - `src/Core.TypeScript/ledger/measure.ts` (+ `.test.ts`) — the verb. Its **refusals** are the falsifiers.
 - `db/uncertainty/README.md` — the entry schema, the ordinal-not-cardinal register, and what is still unshipped
-  (`sim`, the ephemeral half, is an unwired interface stub in `clis/Verbs.fs` — `measure` is the shipped half).
+  (`sim`, the ephemeral half, is a *compiled* stub in `clis/Verbs.fs` — no `ISim<'a>` introduction form, so its documented pipe does not typecheck; `measure` is the shipped half).
 - [`dv2-data-split-discipline-activated.md`](dv2-data-split-discipline-activated.md) — #6 idempotency (a fix's ΔU is keyed; re-measuring is upsert, not double-pay).
