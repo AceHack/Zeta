@@ -51,6 +51,62 @@
  * act on. It is ADVISORY: it never selects a tier for a caller.
  *
  * ============================================================================
+ * A YubiHSM 2 IS NOT A YubiKey, AND A MODULE MUST MATCH ITS DEVICE
+ * (2026-08-18, Nazar — written before the hardware landed, so the probe is not the
+ * thing that has to be debugged on ceremony day)
+ * ============================================================================
+ *
+ * Two devices arrived in the same conversation and they are not interchangeable at any
+ * layer — bus, tool, module, or custody gate:
+ *
+ *   - A **YubiKey** is a CCID smart card. The reader probe sees it, `ykman` names it, and
+ *     `ykcs11`/OpenSC drive it. It has a touch sensor, so it can carry a
+ *     `human-touch-present` custody gate.
+ *   - A **YubiHSM 2** is a USB **bulk** device (Yubico's own documentation is explicit
+ *     that it is not CCID). It is reached through `yubihsm-connector` or libusb and driven
+ *     by `yubihsm_pkcs11`. It has **no button and no biometric**, so it can only carry an
+ *     `autonomous-hsm` gate — which is precisely why the approval it acts under has to be
+ *     gated somewhere else (see the readiness note).
+ *
+ * Two consequences are encoded below rather than left to be discovered at 2am:
+ *
+ *   1. `probeYubiHsm2` exists because NOTHING else in this file can see one. Without it a
+ *      host with an HSM plugged in reports `Device present: NO`.
+ *   2. `pkcs11MatchedPair` exists because "a module is on disk AND a device is on the bus"
+ *      is not the same claim as "this module can drive this device". Installing
+ *      yubico-piv-tool and attaching a YubiHSM 2 satisfies the first and not the second.
+ *
+ * ============================================================================
+ * THE FIRST VERSION OF THAT FIX WAS WRONG ON THE FIRST REAL DEVICE
+ * (2026-08-18, Nazar — measured, same day, hardware attached)
+ * ============================================================================
+ *
+ * `probeYubiHsm2` originally read the macOS USB bus like this:
+ *
+ *     try { return fx.run("system_profiler", ["SPUSBDataType"]).includes(MARKER); }
+ *     catch { return false; }
+ *
+ * On the maintainer's Mac, with a YubiHSM attached and `yubihsm_pkcs11` installed, the
+ * probe reported "Not detected". Measured cause:
+ *
+ *     $ system_profiler SPUSBDataType | wc -l
+ *     0                      # EXIT STATUS 0 -- it succeeded and said nothing
+ *     $ ioreg -p IOUSB -w0   # ... +-o YubiHSM@00142200
+ *
+ * The empty string never throws, so the `catch` was dead code, and `"".includes(marker)`
+ * is a clean `false`. **"No device", "the enumerator returned nothing", and "the enumerator
+ * failed" were one value.** That is the same defect this file was already written to
+ * refuse, committed by the fix for it — a check that could not run, wearing the answer of
+ * a check that ran and said no. The marker was never the problem: `yubihsm` matches
+ * `YubiHSM@00142200` on sight. There was simply no text to match against.
+ *
+ * Corrected by giving the question three answers (`YubiHsm2State`) exactly as the TPM path
+ * already does (`Tpm2State`), and by preferring `ioreg` — which reads the IOKit registry
+ * directly — over `system_profiler`, which is a formatter above it that demonstrably
+ * returns nothing here. `SPSmartCardsDataType` and `SPHardwareDataType` both work on the
+ * same host, so this is specific to that one data type and not a broken binary.
+ *
+ * ============================================================================
  * THE TPM PATH IS A STATE, NOT A BOOLEAN (2026-08-17, 081M00VN9P1087G0R000FYTTVS)
  * ============================================================================
  *
@@ -155,6 +211,24 @@ export interface HardwareProbeResult {
   readonly pkcs11ModuleFound: boolean;
   readonly pkcs11LibraryPath?: string | undefined;
   /**
+   * A YubiHSM 2 is CONFIRMED attached. It is a bulk-USB device, not CCID, so it is
+   * invisible to `smartCardReaderAttached` and to `ykman` -- this is the only field that
+   * reports it. False includes "could not look": read `yubiHsm2State` before reporting a
+   * negative to anyone.
+   */
+  readonly yubiHsm2Detected: boolean;
+  /** `attached` / `absent` / `indeterminate`. Only the first two are findings. */
+  readonly yubiHsm2State: YubiHsm2State;
+  /** One sentence naming the cause of `yubiHsm2State`, in terms an operator can act on. */
+  readonly yubiHsm2Reason: string;
+  /**
+   * The YubiHSM 2 own PKCS#11 module exists on disk. A DRIVER, not a device: it never
+   * clears `noHardwareDetected`, and it is tracked apart from `pkcs11ModuleFound` because
+   * a token module cannot drive an HSM nor an HSM module a token.
+   */
+  readonly yubiHsm2Pkcs11ModuleFound: boolean;
+  readonly yubiHsm2Pkcs11LibraryPath?: string | undefined;
+  /**
    * An Apple Secure Enclave is present. Real hardware, and NO `FrostSealTier` can reach
    * it, so it does not clear `noHardwareDetected` either. See the header.
    */
@@ -168,7 +242,9 @@ export interface HardwareProbeResult {
 }
 
 /**
- * Standard PKCS#11 library locations across macOS and Linux systems.
+ * PKCS#11 modules that drive a CCID **token** (a YubiKey's PIV applet via ykcs11, or any
+ * smart card via OpenSC). NONE of these can drive a YubiHSM 2 — see
+ * `YUBIHSM2_PKCS11_LIBRARY_PATHS` and the MATCHED PAIR section of the header.
  */
 const PKCS11_LIBRARY_PATHS: readonly string[] = [
   "/usr/local/lib/ykcs11.dylib",
@@ -179,8 +255,34 @@ const PKCS11_LIBRARY_PATHS: readonly string[] = [
   "/usr/lib/libykcs11.so",
 ];
 
+/**
+ * The YubiHSM 2's OWN PKCS#11 module, shipped in the YubiHSM SDK. A SEPARATE list from the
+ * token modules above, because the two are not interchangeable in either direction:
+ * `ykcs11` speaks PIV to a CCID card and cannot address a YubiHSM 2, and `yubihsm_pkcs11`
+ * speaks the YubiHSM session protocol (over yubihsm-connector or libusb) and cannot address
+ * a YubiKey. One flat list would let the module for one device vouch for the presence of
+ * the other.
+ */
+const YUBIHSM2_PKCS11_LIBRARY_PATHS: readonly string[] = [
+  "/usr/local/lib/yubihsm_pkcs11.dylib",
+  "/opt/homebrew/lib/yubihsm_pkcs11.dylib",
+  "/usr/local/lib/pkcs11/yubihsm_pkcs11.dylib",
+  "/usr/lib/x86_64-linux-gnu/pkcs11/yubihsm_pkcs11.so",
+  "/usr/local/lib/pkcs11/yubihsm_pkcs11.so",
+  "/usr/lib/pkcs11/yubihsm_pkcs11.so",
+];
+
 /** USB interface class 0x0B is "Smart Card" (USB-IF CCID). */
 const USB_CCID_INTERFACE_CLASS = "0b";
+
+/**
+ * Substring identifying a YubiHSM 2 in a USB product string, matched case-insensitively so
+ * "YubiHSM", "YubiHSM 2" and vendor casing variants all hit. Deliberately a product STRING
+ * and not a numeric VID/PID: the numeric pair is named but not printed in the Yubico
+ * documents checked while writing this, and an unverified magic constant inside a presence
+ * check is exactly how a probe becomes confidently wrong.
+ */
+const YUBIHSM2_USB_PRODUCT_MARKER = "yubihsm";
 
 /**
  * Probes for a usable TPM 2.0. LINUX ONLY — Apple Silicon has a Secure Enclave, which is
@@ -299,6 +401,188 @@ export function probePkcs11(fx: HardwareProbeEffects = realProbeEffects()): {
 }
 
 /**
+ * The outcome of asking the OS to enumerate the USB bus. THREE outcomes, because the
+ * question "did we get an answer" is not the same question as "what was the answer".
+ *
+ *  - `enumerated` — the enumerator ran and produced device text. Only this can support a
+ *    confident negative.
+ *  - `empty` — the enumerator ran, EXITED ZERO, and produced nothing. Not an answer.
+ *  - `unavailable` — the enumerator could not be run at all. Not an answer.
+ */
+export type UsbEnumerationOutcome =
+  | { readonly kind: "enumerated"; readonly text: string; readonly source: string }
+  | { readonly kind: "empty"; readonly source: string }
+  | { readonly kind: "unavailable"; readonly reason: string };
+
+/**
+ * Ask macOS to enumerate USB, preferring `ioreg` and falling back to `system_profiler`.
+ *
+ * MEASURED ON THE MAINTAINER MACHINE 2026-08-18, with a YubiHSM attached and healthy:
+ *
+ *     $ system_profiler SPUSBDataType | wc -l
+ *     0                       # and exit status 0
+ *     $ ioreg -p IOUSB -w0 | grep -oE '\+-o [^<]+'
+ *     ... +-o YubiHSM@00142200
+ *
+ * `system_profiler SPUSBDataType` returned NOTHING and SUCCEEDED. `SPSmartCardsDataType`
+ * and `SPHardwareDataType` both work on the same host, so the binary is fine; it is that
+ * one data type which yields nothing here (Apple Silicon, device behind two hub levels on
+ * a Thunderbolt dock). An empty success is the worst shape a probe input can take: it does
+ * not throw, so a `catch` never sees it, and `"".includes(marker)` is a clean `false`.
+ *
+ * `ioreg` reads the IOKit registry directly; `system_profiler` is a formatter layered over
+ * it. Fewer moving parts, and it demonstrably works where the formatter does not — so it
+ * is the primary and the formatter is the fallback, not the other way round.
+ */
+export function enumerateDarwinUsb(fx: HardwareProbeEffects): UsbEnumerationOutcome {
+  const attempts: readonly { cmd: string; args: readonly string[] }[] = [
+    { cmd: "ioreg", args: ["-p", "IOUSB", "-w0"] },
+    { cmd: "system_profiler", args: ["SPUSBDataType"] },
+  ];
+  const failures: string[] = [];
+  for (const a of attempts) {
+    let out: string;
+    try {
+      out = fx.run(a.cmd, a.args);
+    } catch {
+      failures.push(`${a.cmd} could not be run`);
+      continue;
+    }
+    if (out.trim() === "") {
+      // Ran, exited zero, said nothing. NOT a negative finding.
+      failures.push(`${a.cmd} produced EMPTY output (exit 0)`);
+      continue;
+    }
+    return { kind: "enumerated", text: out, source: a.cmd };
+  }
+  const allUnavailable = failures.every((f) => f.endsWith("could not be run"));
+  return allUnavailable
+    ? { kind: "unavailable", reason: failures.join("; ") }
+    : { kind: "empty", source: failures.join("; ") };
+}
+
+/**
+ * Is a YubiHSM 2 attached? THREE answers, and only two of them are findings.
+ *
+ *  - `attached`      — an enumerator produced device text and it names a YubiHSM.
+ *  - `absent`        — an enumerator produced device text and it does NOT. A real negative.
+ *  - `indeterminate` — no enumerator produced any text. **The check did not run.**
+ */
+export type YubiHsm2State = "attached" | "absent" | "indeterminate";
+
+/** True when the state is an ANSWER about the hardware, rather than a failure to look. */
+export function yubiHsm2CheckRan(state: YubiHsm2State): boolean {
+  return state === "attached" || state === "absent";
+}
+
+/**
+ * Probes for an ATTACHED YubiHSM 2, distinguishing "not there" from "could not look".
+ *
+ * The first version of this function collapsed both into `false`, which reproduced the very
+ * error its own header condemns — a check that could not run, reported as a check that ran
+ * and said no. It shipped, and it was WRONG on the first real device it met: the HSM was on
+ * the bus, `yubihsm_pkcs11` was installed, and the probe said "Not detected".
+ */
+export function probeYubiHsm2State(fx: HardwareProbeEffects = realProbeEffects()): {
+  state: YubiHsm2State;
+  reason: string;
+} {
+  if (fx.platform === "darwin") {
+    const usb = enumerateDarwinUsb(fx);
+    if (usb.kind === "unavailable") {
+      return {
+        state: "indeterminate",
+        reason: `no USB enumerator could be run (${usb.reason}) — this is NOT a finding about the hardware`,
+      };
+    }
+    if (usb.kind === "empty") {
+      return {
+        state: "indeterminate",
+        reason:
+          `every USB enumerator returned EMPTY output while exiting successfully (${usb.source}) — ` +
+          "an empty success is not a negative finding; attach-state is unknown",
+      };
+    }
+    if (usb.text.toLowerCase().includes(YUBIHSM2_USB_PRODUCT_MARKER)) {
+      return { state: "attached", reason: `a YubiHSM was named in the ${usb.source} USB enumeration` };
+    }
+    return { state: "absent", reason: `${usb.source} enumerated the USB bus and named no YubiHSM` };
+  }
+
+  if (fx.platform === "linux") {
+    let entries: readonly string[];
+    try {
+      entries = fx.readDir("/sys/bus/usb/devices");
+    } catch {
+      return {
+        state: "indeterminate",
+        reason: "/sys/bus/usb/devices could not be listed — the USB tree was NOT consulted",
+      };
+    }
+    if (entries.length === 0) {
+      // A live Linux host always has at least a root hub here. An empty listing is a
+      // broken view of the bus, not a bus with nothing on it.
+      return {
+        state: "indeterminate",
+        reason: "/sys/bus/usb/devices listed ZERO entries — not even a root hub, so the view is unusable",
+      };
+    }
+    let readAny = false;
+    for (const dev of entries) {
+      try {
+        const product = fx.readFile(`/sys/bus/usb/devices/${dev}/product`);
+        readAny = true;
+        if (product.toLowerCase().includes(YUBIHSM2_USB_PRODUCT_MARKER)) {
+          return { state: "attached", reason: `sysfs product string of ${dev} names a YubiHSM` };
+        }
+      } catch {
+        // Interface dirs legitimately have no `product` file — next.
+      }
+    }
+    return readAny
+      ? { state: "absent", reason: "sysfs USB product strings were read and none names a YubiHSM" }
+      : {
+          state: "indeterminate",
+          reason: "the USB tree listed entries but NO product string could be read — nothing was actually inspected",
+        };
+  }
+
+  return {
+    state: "indeterminate",
+    reason: `platform ${JSON.stringify(fx.platform)} has no USB enumeration path here — it was NOT consulted`,
+  };
+}
+
+/**
+ * Narrow boolean form: is a YubiHSM 2 CONFIRMED attached?
+ *
+ * `false` here means "not confirmed", which includes `indeterminate`. Callers that must
+ * distinguish "no device" from "could not look" — anything that reports to an operator or
+ * refuses a ceremony — MUST read `probeYubiHsm2State` instead. This function is kept narrow
+ * on purpose: it is the question the adapter asks (can a tier be honoured), and a tier can
+ * never be honoured on an unconfirmed device.
+ */
+export function probeYubiHsm2(fx: HardwareProbeEffects = realProbeEffects()): boolean {
+  return probeYubiHsm2State(fx).state === "attached";
+}
+
+/**
+ * Probes for the YubiHSM 2 own PKCS#11 module on disk. A DRIVER, not a device -- the same
+ * rule as `probePkcs11`, and it never clears `noHardwareDetected` on its own.
+ */
+export function probeYubiHsm2Pkcs11(fx: HardwareProbeEffects = realProbeEffects()): {
+  found: boolean;
+  path?: string;
+} {
+  for (const libPath of YUBIHSM2_PKCS11_LIBRARY_PATHS) {
+    if (fx.exists(libPath)) {
+      return { found: true, path: libPath };
+    }
+  }
+  return { found: false };
+}
+
+/**
  * Probes for an Apple Secure Enclave via the IOKit registry (AppleSEPManager). Real
  * hardware that no seal tier can currently use — reported, never counted as a tier.
  */
@@ -325,11 +609,13 @@ export function probeHardwareSecurity(fx: HardwareProbeEffects = realProbeEffect
   const yubi = probeYubikey(fx);
   const reader = yubi.detected || probeSmartCardReader(fx);
   const pkcs11 = probePkcs11(fx);
+  const hsm = probeYubiHsm2State(fx);
+  const hsmPkcs11 = probeYubiHsm2Pkcs11(fx);
   const sep = probeSecureEnclave(fx);
 
   // A driver on disk is NOT a device, and the Secure Enclave is a device no tier reaches.
-  // Neither belongs in this disjunction.
-  const deviceAvailable = tpm.available || yubi.detected || reader;
+  // Neither belongs in this disjunction. A YubiHSM 2 IS a device and does belong.
+  const deviceAvailable = tpm.available || yubi.detected || reader || hsm.state === "attached";
 
   return {
     timestamp: new Date().toISOString(),
@@ -342,6 +628,11 @@ export function probeHardwareSecurity(fx: HardwareProbeEffects = realProbeEffect
     smartCardReaderAttached: reader,
     pkcs11ModuleFound: pkcs11.found,
     pkcs11LibraryPath: pkcs11.path,
+    yubiHsm2Detected: hsm.state === "attached",
+    yubiHsm2State: hsm.state,
+    yubiHsm2Reason: hsm.reason,
+    yubiHsm2Pkcs11ModuleFound: hsmPkcs11.found,
+    yubiHsm2Pkcs11LibraryPath: hsmPkcs11.path,
     secureEnclaveAvailable: sep,
     noHardwareDetected: !deviceAvailable,
   };
@@ -367,10 +658,31 @@ export type HardwareSealTier = Extract<FrostSealTier, "hardware-pkcs11" | "hardw
 export function availableHardwareSealTiers(res: HardwareProbeResult): readonly HardwareSealTier[] {
   const tiers: HardwareSealTier[] = [];
   if (res.tpm2Available) tiers.push("hardware-tpm2");
-  if (res.pkcs11ModuleFound && (res.yubikeyDetected || res.smartCardReaderAttached)) {
-    tiers.push("hardware-pkcs11");
-  }
+  if (pkcs11MatchedPair(res) !== undefined) tiers.push("hardware-pkcs11");
   return tiers;
+}
+
+/**
+ * A PKCS#11 module and the device it can actually drive, or `undefined` when no such pair
+ * is present. THE PAIR IS THE UNIT: `module && device` over a flat list is a third
+ * instance of the bug this file exists to refuse.
+ *
+ * Concretely, and this is reachable on the maintainer machine the moment both devices are
+ * on the desk: `brew install yubico-piv-tool` puts `ykcs11.dylib` on disk, and plugging in
+ * a YubiHSM 2 puts a device on the bus. Flat-list logic reads `module found && device
+ * present` and reports `hardware-pkcs11` honourable — but `ykcs11` speaks PIV to a CCID
+ * card and cannot address a YubiHSM 2, so the seal attempt dies inside an FFI call having
+ * promised at preflight that it would not. Matching the module to the device it drives is
+ * what makes the preflight answer mean anything.
+ */
+export function pkcs11MatchedPair(res: HardwareProbeResult): { module: string; device: string } | undefined {
+  if (res.pkcs11ModuleFound && (res.yubikeyDetected || res.smartCardReaderAttached)) {
+    return { module: res.pkcs11LibraryPath ?? "(token PKCS#11 module)", device: "CCID token / smart-card reader" };
+  }
+  if (res.yubiHsm2Pkcs11ModuleFound && res.yubiHsm2Detected) {
+    return { module: res.yubiHsm2Pkcs11LibraryPath ?? "(yubihsm_pkcs11)", device: "YubiHSM 2" };
+  }
+  return undefined;
 }
 
 /**
@@ -395,9 +707,44 @@ export function assertHardwareSealTierAvailable(tier: HardwareSealTier, res: Har
     }
   }
   if (tier === "hardware-pkcs11") {
-    if (!res.pkcs11ModuleFound) why.push("no PKCS#11 module on disk");
-    if (!res.yubikeyDetected && !res.smartCardReaderAttached) {
-      why.push("no smart-card reader or token attached (a PKCS#11 driver alone is not a device)");
+    const anyModule = res.pkcs11ModuleFound || res.yubiHsm2Pkcs11ModuleFound;
+    const anyDevice = res.yubikeyDetected || res.smartCardReaderAttached || res.yubiHsm2Detected;
+    if (!anyModule) why.push("no PKCS#11 module on disk (neither a token module nor yubihsm_pkcs11)");
+    if (!anyDevice) {
+      // Two SEPARATE facts, and both belong in the refusal:
+      //   (a) nothing is CONFIRMED, so a driver on disk still buys nothing -- the
+      //       invariant this file has always enforced;
+      //   (b) whether the bus was even readable, which decides if (a) is a finding about
+      //       the hardware or merely the absence of one.
+      // An earlier revision of this branch replaced (a) with (b) and lost the
+      // driver-is-not-a-device statement entirely.
+      why.push("no CONFIRMED smart-card reader, token, or YubiHSM 2 (a PKCS#11 driver alone is not a device)");
+      if (res.yubiHsm2State === "indeterminate") {
+        // "Nothing is attached" is a CLAIM ABOUT THE HARDWARE and is only true if the bus
+        // was actually enumerated. This exact sentence was printed, unqualified, on a host
+        // that had a YubiHSM plugged into it.
+        why.push(
+          "and the USB bus was NOT successfully enumerated, so a YubiHSM 2's attach-state is UNKNOWN " +
+            `(${res.yubiHsm2Reason}) -- absence was NOT established`,
+        );
+        if (res.yubiHsm2Pkcs11ModuleFound) {
+          why.push(
+            "note that yubihsm_pkcs11 IS installed, so the unknown attach-state is the only thing between " +
+              "this host and an honourable tier -- confirm the device by hand before concluding anything",
+          );
+        }
+      }
+    }
+    if (anyModule && anyDevice) {
+      // Both halves present and still refused: the module cannot drive the device that is
+      // here. Naming the mismatch is the whole point -- "module found, device attached,
+      // refused" with no reason is indistinguishable from a broken check.
+      why.push(
+        "a PKCS#11 module and a device are both present but they are NOT a matched pair: " +
+          (res.yubiHsm2Detected && !res.yubiHsm2Pkcs11ModuleFound
+            ? "a YubiHSM 2 is attached and yubihsm_pkcs11 is not installed (ykcs11/OpenSC cannot drive an HSM)"
+            : "a CCID token is attached and no token module (ykcs11/OpenSC) is installed (yubihsm_pkcs11 cannot drive a token)"),
+      );
     }
   }
   throw new Error(
@@ -422,6 +769,25 @@ if (import.meta.main) {
   console.log(`  Smart-card reader:  ${res.smartCardReaderAttached ? "Attached" : "None attached"}`);
   console.log(
     `  PKCS#11 module:     ${res.pkcs11ModuleFound ? `${res.pkcs11LibraryPath} (a DRIVER — not evidence of a device)` : "Not found"}`,
+  );
+  // NOT "Not detected" for both negatives: `indeterminate` is not a finding, and printing
+  // one phrase for both is precisely how an attached device was reported as absent.
+  console.log(
+    `  YubiHSM 2:          ${
+      res.yubiHsm2Detected
+        ? "ATTACHED (bulk USB — invisible to the reader/ykman probes above)"
+        : res.yubiHsm2State.toUpperCase()
+    }`,
+  );
+  console.log(
+    `                      ${yubiHsm2CheckRan(res.yubiHsm2State) ? "(the check ran)" : "(THE CHECK DID NOT RUN)"} ${res.yubiHsm2Reason}`,
+  );
+  console.log(
+    `  yubihsm_pkcs11:     ${res.yubiHsm2Pkcs11ModuleFound ? `${res.yubiHsm2Pkcs11LibraryPath} (a DRIVER — not evidence of a device)` : "Not found"}`,
+  );
+  const pair = pkcs11MatchedPair(res);
+  console.log(
+    `  PKCS#11 pair:       ${pair ? `${pair.module} drives ${pair.device}` : "(no matched module+device pair)"}`,
   );
   console.log(
     `  Secure Enclave:     ${res.secureEnclaveAvailable ? "Present (no seal tier can use it — see header)" : "Not present"}`,
