@@ -44,6 +44,12 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
       - "infra/k8s/**"
+      # ADDED 2026-08-18: the `services.k3s.manifests` roster that decides which
+      # bootstrap manifests K3S applies on first boot lives in
+      # infra/nixos/modules/k3s-server.nix, so a rename or deletion THERE breaks
+      # the bootstrap without touching infra/k8s/**. validate-bootstrap.ts
+      # checks both directions of that roster and needs to see those edits.
+      - "infra/nixos/**"
       - ".github/workflows/helm-validate.yml"
       - ".mise.toml"
       - ".mise.full.toml"
@@ -53,6 +59,8 @@ on:
     branches: [main]
     paths:
       - "infra/k8s/**"
+      # See the note on the pull_request trigger above.
+      - "infra/nixos/**"
       - ".github/workflows/helm-validate.yml"
       - ".mise.toml"
       - ".mise.full.toml"
@@ -128,6 +136,25 @@ jobs:
         # Verified 2026-08-14 by stubbing out the validator's non-zero exit:
         # 9 of the 12 cases went red immediately. 1.7 s.
         run: bun test infra/k8s/tests/validate-applications.test.ts
+
+      - name: Validate K3S first-boot bootstrap manifests
+        # ADDED 2026-08-18. This lane already TRIGGERED on `infra/k8s/**`, so a
+        # change to infra/k8s/bootstrap/ ran it — but the validator above only
+        # ever scanned infra/k8s/applications/, so the bootstrap set was never
+        # looked at. A lane that runs and cannot fail on the file that changed
+        # reports green, which is how `argocd-install.yaml` sat on main as a
+        # kustomize Kustomization that K3S's auto-deploy cannot apply.
+        # MEASURED on real K3S v1.31.4+k3s1: ArgoCD never installed, so nothing
+        # under infra/k8s/applications/ ever deployed either. Offline, ~0.2 s.
+        run: bun infra/k8s/tests/validate-bootstrap.ts
+
+      - name: Prove the bootstrap validator can go red (mutation suite)
+        # Same discipline as the step above it: 10 cases, one mutation each,
+        # asserting exit 1 AND the specific reason, plus an unmutated control
+        # asserting exit 0. The load-bearing case restores the retired
+        # Kustomization verbatim — if it ever goes green, the cluster can
+        # silently stop bootstrapping again. 2.0 s measured locally.
+        run: bun test infra/k8s/tests/validate-bootstrap.test.ts
 
   charts:
     # Network half: does the pinned chart:version actually exist, does it
