@@ -3,10 +3,13 @@ import {
   type BrowserCausalCorrectionLedger,
   type BrowserCausalCorrectionLedgerFeedback,
 } from "../browser-node/browser-causal-correction-ledger";
-import type { BrowserCausalCorrectionNotice } from "../browser-node/browser-tab-coordinator";
+import type {
+  BrowserCausalCorrectionNotice,
+  BrowserCausalCorrectionReplayFeedback,
+} from "../browser-node/browser-tab-coordinator";
 
 export const DARK_HALL_CAUSAL_READOUT_SCHEMA = "zeta.darkhall.causal-readout.v2" as const;
-export const DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA = "zeta.darkhall.causal-handoff-readout.v1" as const;
+export const DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA = "zeta.darkhall.causal-handoff-readout.v2" as const;
 
 export interface DarkHallCausalReadout {
   readonly schema: typeof DARK_HALL_CAUSAL_READOUT_SCHEMA;
@@ -22,12 +25,13 @@ export interface DarkHallCausalReadout {
 }
 
 export interface DarkHallCausalHandoffState {
-  readonly status: "idle" | "offered" | "received" | "duplicate" | "backpressured" | "heat";
+  readonly status: "idle" | "offered" | "acknowledged" | "received" | "duplicate" | "backpressured" | "heat";
   readonly direction: "none" | "outbound" | "inbound";
+  readonly handoffId: string | null;
   readonly peerTabId: string | null;
   readonly correctionCount: number;
   readonly admittedCorrections: number;
-  readonly feedback: BrowserCausalCorrectionLedgerFeedback | null;
+  readonly feedback: BrowserCausalCorrectionReplayFeedback | null;
 }
 
 export interface DarkHallCausalHandoffReadout extends DarkHallCausalHandoffState {

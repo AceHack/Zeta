@@ -321,6 +321,26 @@ function causalCheckpointRecord(
 }
 
 describe("durable Dark Hall browser runtime", () => {
+  test("keeps an empty late-join snapshot idle because no replay is transmitted", async () => {
+    const starter = createStarter();
+    const started = await startDurableDarkHallBrowser(options(), new MemoryCheckpointPort(), starter.start);
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+
+    expect(starter.starts[0]?.causalCorrectionReplay?.snapshot("tab-peer")).toEqual({
+      handoffId: "replay/1",
+      corrections: [],
+    });
+    expect(started.value.read().causalHandoff).toMatchObject({
+      status: "idle",
+      direction: "none",
+      handoffId: null,
+      peerTabId: null,
+      correctionCount: 0,
+      admittedCorrections: 0,
+    });
+  });
+
   test("forwards the injected channel and tab observer through the durable boundary", async () => {
     const channel: BrowserTabChannel = {
       publish: () => ({ ok: true, value: null }),
@@ -361,9 +381,10 @@ describe("durable Dark Hall browser runtime", () => {
       { sourceTabId: "tab-b", sequence: "2", reinterpretsThrough: "1", deltaRows: 1 },
     ]);
     expect(starter.starts[0]?.causalCorrectionReplay?.maxCorrections).toBe(2);
-    expect(starter.starts[0]?.causalCorrectionReplay?.snapshot()).toEqual([
-      { sourceTabId: "tab-b", sequence: "2", reinterpretsThrough: "1", deltaRows: 1 },
-    ]);
+    expect(starter.starts[0]?.causalCorrectionReplay?.snapshot("tab-peer")).toEqual({
+      handoffId: "replay/1",
+      corrections: [{ sourceTabId: "tab-b", sequence: "2", reinterpretsThrough: "1", deltaRows: 1 }],
+    });
   });
 
   test("applies a synchronous late-join replay before returning the browser runtime", async () => {
@@ -371,6 +392,7 @@ describe("durable Dark Hall browser runtime", () => {
     const starter = createStarter();
     const startWithSynchronousReplay: DarkHallBrowserStarter = (startOptions) => {
       startOptions.causalCorrectionReplay?.receive({
+        handoffId: "handoff/startup",
         sourceTabId: "tab-b",
         targetTabId: "tab-a",
         maxCorrections: 2,
@@ -411,12 +433,14 @@ describe("durable Dark Hall browser runtime", () => {
     expect(receiver.ok).toBe(true);
     if (!sender.ok || !receiver.ok) return;
 
-    const snapshot = senderStarter.starts[0]?.causalCorrectionReplay?.snapshot("tab-receiver") ?? [];
-    expect(snapshot).toEqual([correction]);
+    const snapshot = senderStarter.starts[0]?.causalCorrectionReplay?.snapshot("tab-receiver");
+    expect(snapshot).toEqual({ handoffId: "replay/1", corrections: [correction] });
+    if (snapshot === undefined) return;
     expect(sender.value.read().causalHandoff).toMatchObject({
       status: "offered",
       direction: "outbound",
       localTabId: "tab-sender",
+      handoffId: "replay/1",
       peerTabId: "tab-receiver",
       correctionCount: 1,
       admittedCorrections: 0,
@@ -431,17 +455,20 @@ describe("durable Dark Hall browser runtime", () => {
     });
 
     const replay = {
+      handoffId: snapshot.handoffId,
       sourceTabId: "tab-sender",
       targetTabId: "tab-receiver",
       maxCorrections: 2,
-      corrections: snapshot,
+      corrections: snapshot.corrections,
     };
-    receiverStarter.starts[0]?.causalCorrectionReplay?.receive(replay);
+    const admission = receiverStarter.starts[0]?.causalCorrectionReplay?.receive(replay);
+    expect(admission).toEqual({ disposition: "admitted", admittedCorrections: 1, feedback: null });
     expect(receiver.value.read()).toMatchObject({
       causal: { corrections: [correction] },
       causalHandoff: {
         status: "received",
         direction: "inbound",
+        handoffId: "replay/1",
         peerTabId: "tab-sender",
         correctionCount: 1,
         admittedCorrections: 1,
@@ -456,7 +483,38 @@ describe("durable Dark Hall browser runtime", () => {
       },
     });
 
-    receiverStarter.starts[0]?.causalCorrectionReplay?.receive(replay);
+    if (admission !== undefined) {
+      senderStarter.starts[0]?.causalCorrectionReplay?.acknowledge({
+        ...admission,
+        handoffId: "replay/stale",
+        sourceTabId: "tab-receiver",
+        targetTabId: "tab-sender",
+        correctionCount: snapshot.corrections.length,
+      });
+      expect(sender.value.read().causalHandoff.status).toBe("offered");
+      senderStarter.starts[0]?.causalCorrectionReplay?.acknowledge({
+        ...admission,
+        handoffId: snapshot.handoffId,
+        sourceTabId: "tab-receiver",
+        targetTabId: "tab-sender",
+        correctionCount: snapshot.corrections.length,
+      });
+    }
+    expect(sender.value.read().causalHandoff).toMatchObject({
+      status: "acknowledged",
+      direction: "outbound",
+      handoffId: "replay/1",
+      peerTabId: "tab-receiver",
+      correctionCount: 1,
+      admittedCorrections: 1,
+      feedback: null,
+    });
+
+    expect(receiverStarter.starts[0]?.causalCorrectionReplay?.receive(replay)).toEqual({
+      disposition: "duplicate",
+      admittedCorrections: 0,
+      feedback: null,
+    });
     expect(receiver.value.read()).toMatchObject({
       causal: { corrections: [correction] },
       causalHandoff: { status: "duplicate", admittedCorrections: 0 },
@@ -480,6 +538,7 @@ describe("durable Dark Hall browser runtime", () => {
     ).toMatchObject({ ok: true });
 
     starter.starts[0]?.causalCorrectionReplay?.receive({
+      handoffId: "handoff/capacity",
       sourceTabId: "tab-sender",
       targetTabId: "tab-receiver",
       maxCorrections: 1,
@@ -498,6 +557,7 @@ describe("durable Dark Hall browser runtime", () => {
     });
 
     starter.starts[0]?.causalCorrectionReplay?.receive({
+      handoffId: "handoff/conflict",
       sourceTabId: "tab-sender",
       targetTabId: "tab-receiver",
       maxCorrections: 1,

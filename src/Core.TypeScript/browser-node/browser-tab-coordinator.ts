@@ -10,7 +10,7 @@ import {
   type BrowserTabState,
 } from "./browser-node";
 
-export const BROWSER_TAB_COORDINATOR_SCHEMA = "zeta.browser-tab-coordinator.v6" as const;
+export const BROWSER_TAB_COORDINATOR_SCHEMA = "zeta.browser-tab-coordinator.v7" as const;
 
 export interface BrowserTabPresenceMessage {
   readonly schema: typeof BROWSER_TAB_COORDINATOR_SCHEMA;
@@ -88,6 +88,7 @@ export interface BrowserCausalCorrectionMessage {
 }
 
 export interface BrowserCausalCorrectionReplayNotice {
+  readonly handoffId: string;
   readonly sourceTabId: string;
   readonly targetTabId: string;
   readonly maxCorrections: number;
@@ -101,6 +102,39 @@ export interface BrowserCausalCorrectionReplayMessage {
   readonly replay: BrowserCausalCorrectionReplayNotice;
 }
 
+export interface BrowserCausalCorrectionReplayFeedback {
+  readonly severity: "backpressure" | "heat";
+  readonly code: string;
+  readonly detail: string;
+}
+
+export type BrowserCausalCorrectionReplayDisposition = "admitted" | "duplicate" | "backpressured" | "heat";
+
+export interface BrowserCausalCorrectionReplayAdmission {
+  readonly disposition: BrowserCausalCorrectionReplayDisposition;
+  readonly admittedCorrections: number;
+  readonly feedback: BrowserCausalCorrectionReplayFeedback | null;
+}
+
+export interface BrowserCausalCorrectionReplayAcknowledgement extends BrowserCausalCorrectionReplayAdmission {
+  readonly handoffId: string;
+  readonly sourceTabId: string;
+  readonly targetTabId: string;
+  readonly correctionCount: number;
+}
+
+export interface BrowserCausalCorrectionReplayAcknowledgementMessage {
+  readonly schema: typeof BROWSER_TAB_COORDINATOR_SCHEMA;
+  readonly nodeId: string;
+  readonly kind: "causal-correction-replay-acknowledged";
+  readonly acknowledgement: BrowserCausalCorrectionReplayAcknowledgement;
+}
+
+export interface BrowserCausalCorrectionReplayOffer {
+  readonly handoffId: string;
+  readonly corrections: readonly BrowserCausalCorrectionNotice[];
+}
+
 export type BrowserTabChannelMessage =
   | BrowserTabPresenceMessage
   | BrowserTabProbeMessage
@@ -108,12 +142,14 @@ export type BrowserTabChannelMessage =
   | BrowserDatabaseInvalidationMessage
   | BrowserDatabaseExecutionReceiptMessage
   | BrowserCausalCorrectionMessage
-  | BrowserCausalCorrectionReplayMessage;
+  | BrowserCausalCorrectionReplayMessage
+  | BrowserCausalCorrectionReplayAcknowledgementMessage;
 
 export interface BrowserCausalCorrectionReplayPort {
   readonly maxCorrections: number;
-  snapshot(targetTabId?: string): readonly BrowserCausalCorrectionNotice[];
-  receive(replay: BrowserCausalCorrectionReplayNotice): void;
+  snapshot(targetTabId: string): BrowserCausalCorrectionReplayOffer;
+  receive(replay: BrowserCausalCorrectionReplayNotice): BrowserCausalCorrectionReplayAdmission;
+  acknowledge(acknowledgement: BrowserCausalCorrectionReplayAcknowledgement): void;
 }
 
 export interface BrowserTabCoordinatorFeedback {
@@ -150,6 +186,9 @@ export interface BrowserTabCoordinatorFeedback {
     | "causal-correction-observer-failed"
     | "causal-correction-replay-provider-failed"
     | "causal-correction-replay-observer-failed"
+    | "causal-correction-replay-admission-invalid"
+    | "causal-correction-replay-acknowledgement-observer-failed"
+    | "causal-correction-replay-unavailable"
     | "causal-correction-replay-capacity-exhausted"
     | "coordinator-configuration-invalid"
     | "coordinator-stopped";
@@ -248,6 +287,16 @@ function isIdentifier(value: unknown): value is string {
   return typeof value === "string" && value.length > 0;
 }
 
+function isBoundedText(value: unknown, maxLength: number): value is string {
+  return (
+    typeof value === "string" && value.length > 0 && value.length <= maxLength && !/[\u0000-\u001f\u007f]/.test(value)
+  );
+}
+
+function isHandoffId(value: unknown): value is string {
+  return isBoundedText(value, 2048);
+}
+
 function isSequence(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
 }
@@ -269,6 +318,7 @@ function isCausalCorrection(value: unknown): value is BrowserCausalCorrectionNot
 function isCausalCorrectionReplay(value: unknown): value is BrowserCausalCorrectionReplayNotice {
   return (
     isRecord(value) &&
+    isHandoffId(value.handoffId) &&
     isIdentifier(value.sourceTabId) &&
     isIdentifier(value.targetTabId) &&
     value.sourceTabId !== value.targetTabId &&
@@ -277,6 +327,58 @@ function isCausalCorrectionReplay(value: unknown): value is BrowserCausalCorrect
     Array.isArray(value.corrections) &&
     value.corrections.length <= value.maxCorrections &&
     value.corrections.every(isCausalCorrection)
+  );
+}
+
+function isCausalCorrectionReplayFeedback(value: unknown): value is BrowserCausalCorrectionReplayFeedback {
+  return (
+    isRecord(value) &&
+    (value.severity === "backpressure" || value.severity === "heat") &&
+    isBoundedText(value.code, 256) &&
+    isBoundedText(value.detail, 4096)
+  );
+}
+
+function isCausalCorrectionReplayAdmission(
+  value: unknown,
+  correctionCount: number,
+): value is BrowserCausalCorrectionReplayAdmission {
+  if (
+    !isRecord(value) ||
+    (value.disposition !== "admitted" &&
+      value.disposition !== "duplicate" &&
+      value.disposition !== "backpressured" &&
+      value.disposition !== "heat") ||
+    !isSequence(value.admittedCorrections) ||
+    value.admittedCorrections > correctionCount
+  ) {
+    return false;
+  }
+  if (value.disposition === "admitted") {
+    return value.admittedCorrections > 0 && value.feedback === null;
+  }
+  if (value.disposition === "duplicate") {
+    return value.admittedCorrections === 0 && value.feedback === null;
+  }
+  return (
+    value.admittedCorrections === 0 &&
+    isCausalCorrectionReplayFeedback(value.feedback) &&
+    value.feedback.severity === (value.disposition === "backpressured" ? "backpressure" : "heat")
+  );
+}
+
+function isCausalCorrectionReplayAcknowledgement(
+  value: unknown,
+): value is BrowserCausalCorrectionReplayAcknowledgement {
+  return (
+    isRecord(value) &&
+    isHandoffId(value.handoffId) &&
+    isIdentifier(value.sourceTabId) &&
+    isIdentifier(value.targetTabId) &&
+    value.sourceTabId !== value.targetTabId &&
+    isSequence(value.correctionCount) &&
+    value.correctionCount > 0 &&
+    isCausalCorrectionReplayAdmission(value, value.correctionCount)
   );
 }
 
@@ -291,7 +393,8 @@ export function decodeBrowserTabChannelMessage(value: unknown): BrowserTabOperat
       value.kind !== "database-invalidated" &&
       value.kind !== "database-execution-receipt" &&
       value.kind !== "causal-correction" &&
-      value.kind !== "causal-correction-replay")
+      value.kind !== "causal-correction-replay" &&
+      value.kind !== "causal-correction-replay-acknowledged")
   ) {
     return failed("tab-message-invalid", "A browser tab channel message did not match the coordinator schema.");
   }
@@ -410,10 +513,26 @@ export function decodeBrowserTabChannelMessage(value: unknown): BrowserTabOperat
       nodeId: value.nodeId,
       kind: "causal-correction-replay",
       replay: {
+        handoffId: value.replay.handoffId,
         sourceTabId: value.replay.sourceTabId,
         targetTabId: value.replay.targetTabId,
         maxCorrections: value.replay.maxCorrections,
         corrections: value.replay.corrections.map((correction) => ({ ...correction })),
+      },
+    });
+  }
+
+  if (value.kind === "causal-correction-replay-acknowledged") {
+    if (!isCausalCorrectionReplayAcknowledgement(value.acknowledgement)) {
+      return failed("tab-message-invalid", "A causal correction replay acknowledgement carried invalid evidence.");
+    }
+    return succeeded({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: value.nodeId,
+      kind: "causal-correction-replay-acknowledged",
+      acknowledgement: {
+        ...value.acknowledgement,
+        feedback: value.acknowledgement.feedback === null ? null : { ...value.acknowledgement.feedback },
       },
     });
   }
@@ -511,6 +630,7 @@ function causalCorrectionMessage(
 
 function causalCorrectionReplayMessage(
   nodeId: string,
+  handoffId: string,
   sourceTabId: string,
   targetTabId: string,
   maxCorrections: number,
@@ -521,10 +641,26 @@ function causalCorrectionReplayMessage(
     nodeId,
     kind: "causal-correction-replay",
     replay: {
+      handoffId,
       sourceTabId,
       targetTabId,
       maxCorrections,
       corrections: corrections.map((correction) => ({ ...correction })),
+    },
+  };
+}
+
+function causalCorrectionReplayAcknowledgementMessage(
+  nodeId: string,
+  acknowledgement: BrowserCausalCorrectionReplayAcknowledgement,
+): BrowserCausalCorrectionReplayAcknowledgementMessage {
+  return {
+    schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+    nodeId,
+    kind: "causal-correction-replay-acknowledged",
+    acknowledgement: {
+      ...acknowledgement,
+      feedback: acknowledgement.feedback === null ? null : { ...acknowledgement.feedback },
     },
   };
 }
@@ -582,6 +718,7 @@ export function startBrowserTabCoordinator(
   let databaseReceiptObserverFailure: BrowserTabCoordinatorFeedback | null = null;
   let causalCorrectionObserverFailure: BrowserTabCoordinatorFeedback | null = null;
   let causalCorrectionReplayObserverFailure: BrowserTabCoordinatorFeedback | null = null;
+  let causalCorrectionReplayAcknowledgementObserverFailure: BrowserTabCoordinatorFeedback | null = null;
 
   const project = (eventFeedback: readonly BrowserTabCoordinatorFeedback[] = []): BrowserTabCoordinatorReadout => {
     const node = planBrowserNode({
@@ -606,6 +743,9 @@ export function startBrowserTabCoordinator(
         ...(databaseReceiptObserverFailure === null ? [] : [databaseReceiptObserverFailure]),
         ...(causalCorrectionObserverFailure === null ? [] : [causalCorrectionObserverFailure]),
         ...(causalCorrectionReplayObserverFailure === null ? [] : [causalCorrectionReplayObserverFailure]),
+        ...(causalCorrectionReplayAcknowledgementObserverFailure === null
+          ? []
+          : [causalCorrectionReplayAcknowledgementObserverFailure]),
         ...eventFeedback,
       ],
     };
@@ -667,19 +807,19 @@ export function startBrowserTabCoordinator(
       );
       return;
     }
-    if (!Array.isArray(snapshot)) {
+    if (!isRecord(snapshot) || !isHandoffId(snapshot.handoffId) || !Array.isArray(snapshot.corrections)) {
       notify(
         project([
           {
             severity: "heat",
             code: "causal-correction-replay-provider-failed",
-            detail: "The replay provider did not return a finite correction array.",
+            detail: "The replay provider did not return an identified finite correction offer.",
           },
         ]),
       );
       return;
     }
-    const corrections: readonly unknown[] = snapshot;
+    const corrections: readonly unknown[] = snapshot.corrections;
     if (corrections.length > replayPort.maxCorrections) {
       notify(
         project([
@@ -708,6 +848,7 @@ export function startBrowserTabCoordinator(
     const replayed = publish(
       causalCorrectionReplayMessage(
         options.nodeId,
+        snapshot.handoffId,
         options.tabId,
         message.requesterTabId,
         replayPort.maxCorrections,
@@ -715,6 +856,22 @@ export function startBrowserTabCoordinator(
       ),
     );
     if (!replayed.ok) notify(project([replayed.feedback]));
+  };
+
+  const acknowledgeReplay = (
+    replay: BrowserCausalCorrectionReplayNotice,
+    admission: BrowserCausalCorrectionReplayAdmission,
+  ): void => {
+    const published = publish(
+      causalCorrectionReplayAcknowledgementMessage(options.nodeId, {
+        ...admission,
+        handoffId: replay.handoffId,
+        sourceTabId: options.tabId,
+        targetTabId: replay.sourceTabId,
+        correctionCount: replay.corrections.length,
+      }),
+    );
+    if (!published.ok) notify(project([published.feedback]));
   };
 
   const receive = (value: unknown): void => {
@@ -834,18 +991,38 @@ export function startBrowserTabCoordinator(
         return;
       }
       const replayPort = options.causalCorrectionReplay;
-      if (replayPort === undefined) return;
-      if (message.replay.corrections.length > replayPort.maxCorrections) {
-        const capacity = failed(
-          "causal-correction-replay-capacity-exhausted",
-          `Peer ${message.replay.sourceTabId} offered ${String(message.replay.corrections.length)} corrections for local capacity ${String(replayPort.maxCorrections)}.`,
-          "backpressure",
-        );
-        if (!capacity.ok) notify(project([capacity.feedback]));
+      if (replayPort === undefined) {
+        const feedback: BrowserTabCoordinatorFeedback = {
+          severity: "backpressure",
+          code: "causal-correction-replay-unavailable",
+          detail: `Tab ${options.tabId} has no causal correction replay port.`,
+        };
+        const unavailable: BrowserCausalCorrectionReplayAdmission = {
+          disposition: "backpressured",
+          admittedCorrections: 0,
+          feedback,
+        };
+        acknowledgeReplay(message.replay, unavailable);
+        notify(project([feedback]));
         return;
       }
+      if (message.replay.corrections.length > replayPort.maxCorrections) {
+        const feedback: BrowserTabCoordinatorFeedback = {
+          severity: "backpressure",
+          code: "causal-correction-replay-capacity-exhausted",
+          detail: `Peer ${message.replay.sourceTabId} offered ${String(message.replay.corrections.length)} corrections for local capacity ${String(replayPort.maxCorrections)}.`,
+        };
+        acknowledgeReplay(message.replay, {
+          disposition: "backpressured",
+          admittedCorrections: 0,
+          feedback,
+        });
+        notify(project([feedback]));
+        return;
+      }
+      let admission: unknown;
       try {
-        replayPort.receive({
+        admission = replayPort.receive({
           ...message.replay,
           corrections: message.replay.corrections.map((correction) => ({ ...correction })),
         });
@@ -854,6 +1031,45 @@ export function startBrowserTabCoordinator(
           severity: "heat",
           code: "causal-correction-replay-observer-failed",
           detail: "The injected causal correction replay observer threw; channel delivery continued.",
+        };
+        notify(project());
+        return;
+      }
+      if (!isCausalCorrectionReplayAdmission(admission, message.replay.corrections.length)) {
+        causalCorrectionReplayObserverFailure = {
+          severity: "heat",
+          code: "causal-correction-replay-admission-invalid",
+          detail: "The injected causal correction replay observer returned an invalid finite admission outcome.",
+        };
+        notify(project());
+        return;
+      }
+      acknowledgeReplay(message.replay, admission);
+      return;
+    }
+
+    if (message.kind === "causal-correction-replay-acknowledged") {
+      if (message.acknowledgement.targetTabId !== options.tabId) return;
+      if (message.acknowledgement.sourceTabId === options.tabId) {
+        const collision = failed(
+          "tab-id-collision",
+          `Another channel participant acknowledged causal replay evidence for locally owned tab ${options.tabId}.`,
+        );
+        if (!collision.ok) notify(project([collision.feedback]));
+        return;
+      }
+      const replayPort = options.causalCorrectionReplay;
+      if (replayPort === undefined) return;
+      try {
+        replayPort.acknowledge({
+          ...message.acknowledgement,
+          feedback: message.acknowledgement.feedback === null ? null : { ...message.acknowledgement.feedback },
+        });
+      } catch {
+        causalCorrectionReplayAcknowledgementObserverFailure = {
+          severity: "heat",
+          code: "causal-correction-replay-acknowledgement-observer-failed",
+          detail: "The injected causal correction replay acknowledgement observer threw; channel delivery continued.",
         };
         notify(project());
       }

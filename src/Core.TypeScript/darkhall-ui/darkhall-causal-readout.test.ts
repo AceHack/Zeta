@@ -85,6 +85,7 @@ describe("Dark Hall causal readout", () => {
     const readout = darkHallCausalHandoffReadout("tab-a", 2, {
       status: "backpressured",
       direction: "inbound",
+      handoffId: "handoff/pressure",
       peerTabId: "tab-b",
       correctionCount: 2,
       admittedCorrections: 0,
@@ -97,6 +98,7 @@ describe("Dark Hall causal readout", () => {
       maxCorrections: 2,
       status: "backpressured",
       direction: "inbound",
+      handoffId: "handoff/pressure",
       peerTabId: "tab-b",
       correctionCount: 2,
       admittedCorrections: 0,

@@ -326,6 +326,7 @@ describe("Dark Hall CSS room UI", () => {
         maxCorrections: 4,
         status: "offered",
         direction: "outbound",
+        handoffId: "handoff/room",
         peerTabId: "tab-b",
         correctionCount: 1,
         admittedCorrections: 0,
@@ -351,6 +352,7 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain(`data-causal-handoff-readout="${DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA}"`);
     expect(html).toContain('data-causal-handoff-status="offered"');
     expect(html).toContain('data-causal-handoff-direction="outbound"');
+    expect(html).toContain('data-causal-handoff-id="handoff/room"');
     expect(html).toContain('data-causal-handoff-peer="tab-b"');
     expect(html).toContain('data-causal-handoff-corrections="1"');
     expect(html).toContain('data-causal-handoff-admitted="0"');
@@ -370,6 +372,7 @@ describe("Dark Hall CSS room UI", () => {
     expect(llmtv).toContain(`data-causal-handoff-readout="${DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA}"`);
     expect(llmtv).toContain('data-causal-handoff-status="offered"');
     expect(llmtv).toContain('data-causal-handoff-direction="outbound"');
+    expect(llmtv).toContain('data-causal-handoff-id="handoff/room"');
     expect(llmtv).toContain('data-causal-handoff-peer="tab-b"');
     expect(llmtv).toContain("handoff · offered");
   });

@@ -7,6 +7,8 @@ import {
   BROWSER_TAB_COORDINATOR_SCHEMA,
   startBrowserTabCoordinator,
   type BrowserCausalCorrectionNotice,
+  type BrowserCausalCorrectionReplayAcknowledgement,
+  type BrowserCausalCorrectionReplayAdmission,
   type BrowserCausalCorrectionReplayNotice,
   type BrowserCheckpointInvalidation,
   type BrowserDatabaseInvalidation,
@@ -16,6 +18,10 @@ import {
 } from "./browser-tab-coordinator";
 
 type NativeListener = (event: { readonly data?: unknown }) => void;
+
+function admitted(admittedCorrections: number): BrowserCausalCorrectionReplayAdmission {
+  return { disposition: "admitted", admittedCorrections, feedback: null };
+}
 
 function invalidation(sourceTabId = "tab-a", revision = 9): BrowserTabChannelMessage {
   return {
@@ -150,6 +156,7 @@ describe("native service-worker browser channel", () => {
     const causalCorrectionsB: BrowserCausalCorrectionNotice[] = [];
     const causalReplaysA: BrowserCausalCorrectionReplayNotice[] = [];
     const causalReplaysB: BrowserCausalCorrectionReplayNotice[] = [];
+    const causalAcknowledgementsA: BrowserCausalCorrectionReplayAcknowledgement[] = [];
     const retainedCorrections: readonly BrowserCausalCorrectionNotice[] = [
       { sourceTabId: "tab-origin", sequence: "8", reinterpretsThrough: "5", deltaRows: 3 },
     ];
@@ -171,8 +178,12 @@ describe("native service-worker browser channel", () => {
           onCausalCorrection: (value) => causalCorrectionsA.push(value),
           causalCorrectionReplay: {
             maxCorrections: 2,
-            snapshot: () => retainedCorrections,
-            receive: (value) => causalReplaysA.push(value),
+            snapshot: () => ({ handoffId: "handoff/service-worker", corrections: retainedCorrections }),
+            receive: (value) => {
+              causalReplaysA.push(value);
+              return admitted(value.corrections.length);
+            },
+            acknowledge: (value) => causalAcknowledgementsA.push(value),
           },
         },
         channelA,
@@ -189,8 +200,12 @@ describe("native service-worker browser channel", () => {
           onCausalCorrection: (value) => causalCorrectionsB.push(value),
           causalCorrectionReplay: {
             maxCorrections: 2,
-            snapshot: () => [],
-            receive: (value) => causalReplaysB.push(value),
+            snapshot: () => ({ handoffId: "handoff/empty", corrections: [] }),
+            receive: (value) => {
+              causalReplaysB.push(value);
+              return admitted(value.corrections.length);
+            },
+            acknowledge: () => undefined,
           },
         },
         channelB,
@@ -203,10 +218,22 @@ describe("native service-worker browser channel", () => {
     expect(causalReplaysA).toEqual([]);
     expect(causalReplaysB).toEqual([
       {
+        handoffId: "handoff/service-worker",
         sourceTabId: "tab-a",
         targetTabId: "tab-b",
         maxCorrections: 2,
         corrections: retainedCorrections,
+      },
+    ]);
+    expect(causalAcknowledgementsA).toEqual([
+      {
+        handoffId: "handoff/service-worker",
+        sourceTabId: "tab-b",
+        targetTabId: "tab-a",
+        correctionCount: 1,
+        disposition: "admitted",
+        admittedCorrections: 1,
+        feedback: null,
       },
     ]);
 
