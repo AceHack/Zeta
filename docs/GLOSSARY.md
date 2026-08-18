@@ -517,6 +517,91 @@ ES vocabulary helps disambiguate (see §3 of
 **Do not confuse with** *expert* or *agent persona* — those
 are agent-side.
 
+### Surface (= host-boundary seam; the metered port)
+
+**Plain:** *Where* something runs — cli / ide / cell / container.
+The no-roles "where" component of a bus address
+(`persona ⊕ surface ⊕ instance ⊕ topology`).
+
+**Technical, and this is the load-bearing half:** a surface **is a
+host-boundary seam** — the hexagonal **port** through which we plug
+in and through which **§13-metered entropy crosses**. Surface and
+*host* are the same thing seen from two sides: the surface is the
+port, the host is what sits behind it
+(`docs/writer-actor-routing-model.md` §"The Host abstraction").
+
+**Consequence worth stating, because it is easy to re-derive badly:**
+since a surface is by definition the metered port, *"different
+surfaces at different access levels"* is **not** an access-control
+scheme layered on top of the topology — it is what a surface already
+is. Authority differences belong at the port because the port is
+where the metering happens. Enumerating surfaces is enumerating
+**seams**, not processes.
+
+**Rooms contain surfaces**, and a surface is **simulated in tests,
+real in prod** (Aaron 2026-08-18). Same seam, two implementations —
+which is exactly the DST discipline: the port is where you swap the
+real channel for a metered fake, so one code path runs deterministic
+at DoP=1 and live at DoP=N with no special case.
+
+**That gives the term a falsifier, which is the useful part.** Asking
+*"is X a surface?"* is not a matter of taste:
+
+> **Can you substitute a simulated X in a test without changing the
+> code path?** If **yes**, X is a surface — a declared port. If
+> **no**, X is an **ambient channel**, and §13 says it should not
+> exist.
+
+So simulability is not a testing convenience that happens to be nice
+to have; it is the **evidence** that a thing is a declared channel at
+all. A seam you cannot fake was never a port.
+
+Aaron settled this as the standing term 2026-08-18 ("surfaces is a
+good name to land on for the different tick sources and interaction
+models").
+
+### Tick source
+
+**Plain:** What *drives* an actor — the thing that makes it take a
+step.
+
+**Technical:** A tick source **crosses at a surface**, which makes it
+a **declared, metered channel** in the §13 noninterference sense
+rather than an ambient clock. That is why "different tick sources
+with different access levels" is a restatement of §13 and not a new
+concept: influence enters through the port, and the port is where it
+is metered.
+
+**Not an actor.** A tick source drives an actor; it is not one. See
+the disambiguation below.
+
+### Actor / entity / persona — the routing-model senses (disambiguation)
+
+`docs/writer-actor-routing-model.md` uses a specific vocabulary that
+**collides with two other in-repo senses**. Always qualify:
+
+| routing-model term | means | contrast |
+|---|---|---|
+| **persona** = *owner* | **what remains** — spans surfaces, not located at any one | **not** the *agent persona / expert* sense above, and **not** *user persona* |
+| **actor** = clone/loop | **what acts** — `persona ⊕ surface ⊕ instance` | **not** the ES-native *actor* used above as a synonym for *user persona* |
+| **surface** | the metered seam (above) | — |
+| **tick source** | what drives an actor (above) | — |
+
+**The collision to watch:** the `Persona (overloaded)` entry above
+recommends *actor* for the **consumer/user-archetype** side. The
+routing model uses *actor* for the **running clone/loop**. These are
+different objects. In routing/topology prose, *actor* means the
+running instance; in product/UX prose it means the user archetype.
+Bare *actor* in newly-written prose is a lint smell for the same
+reason bare *persona* is.
+
+**An entity is not a service.** One entity (routing-model persona)
+holds **a set of (tick source, authority) pairs** across several
+surfaces at once, and may span a cluster boundary — so a service
+decomposition enumerates **surfaces an entity acts through**, never
+the entities themselves. And a **bus/routing address is not
+identity** (`.claude/rules/shared-checkout-is-view-only.md`).
+
 ### Hook
 
 **Plain:** An automation point that runs a check or a tool at a
