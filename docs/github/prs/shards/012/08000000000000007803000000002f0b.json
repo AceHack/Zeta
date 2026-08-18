@@ -1,0 +1,12 @@
+{
+  "pr_number": 12043,
+  "archive_path": "docs/history/pr-reviews/PR-12043-fix-zetadb-make-the-journal-fold-commutative-and-the-checkpoint-byte-canonical.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T21:44:31.719Z",
+  "schema_version": "v1",
+  "commit_sha": "91b73b0e7b02f444e6ddc30e8c73474bc3af57e8",
+  "title": "fix(zetadb): make the journal fold commutative and the checkpoint byte-canonical",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T21:39:38Z",
+  "head_ref": "zetadb-canonical-commutative-fold-081KZM0FTJM"
+}
