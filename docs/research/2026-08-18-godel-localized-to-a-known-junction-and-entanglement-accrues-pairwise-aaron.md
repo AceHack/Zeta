@@ -373,3 +373,65 @@ Three consequences, and they are design properties rather than metaphors:
 falsifier. The Landauer pricing in 6f is an **analogy with one metered consequence** — the
 cheap-to-add / costly-to-erase asymmetry, which is checkable in the substrate's own behaviour. The
 physics is where the shape was noticed; it is not a warrant.
+
+## 7. The positive residue read as translation — and the prediction it makes
+
+Aaron, on Lumen's unpredicted residue (a coded adinkra **is** free of rank 1 over a `Cl(0,N−k)`
+subalgebra — homoiconic for a **sub-language of its own colours**, with exactly `k` colours acting
+without being named):
+
+> *"oh shit, this is how we translate from English to other languages. I'm assuming English is the
+> source because there is more training data on the internet for that, but it could change over
+> time to some AI symbolic language if more content is generated for that. I assume more content
+> ≈ more resolution over time."*
+
+### 7a. The structural part, and it is tight
+
+The residue says a coded object is **transparent to itself over a sub-language**, while a definite
+number of its operators **act without being nameable in that sub-language**. Read as translation:
+
+| algebra | translation |
+|---|---|
+| the `N−k` named colours | what the source language can express |
+| the `k` unnamed colours | operations that still **act** but are not sayable in the source |
+| `defect = 2^k` | the size of the untranslatable residue |
+| the choice of information set | the choice of source language |
+
+**The sharp consequence is Lumen's measurement, not my reading:** *which* colours go unnamed is a
+**convention** — 56 of the 70 four-colour subalgebras work at `N = 8`. So **which things are
+untranslatable depends on the choice of base, not on the languages.** That matches the linguistic
+commonplace that untranslatability is usually an artefact of the framing chosen rather than an
+intrinsic gap between tongues.
+
+### 7b. Changing the base changes WHICH, not HOW MANY
+
+The prediction, and it is falsifiable:
+
+> Switching the source language — English today, a generated symbolic language later —
+> **re-chooses the information set**. That changes *which* operations fall into the unnamed set. It
+> does **not** change `k`, because `k` is fixed by the code, not by the choice.
+
+A shift of base **relocates** the residue; it does not shrink it. A proposed new base language
+claiming to *reduce* rather than *move* the residue is checkable and, on this model, wrong.
+
+### 7c. The one correction — two quantities that must not merge
+
+Aaron pairs the structural point with *"more content ≈ more resolution."* Those are **different
+quantities**, and merging them is the numerology error in its ordinary working form:
+
+- **more data reduces UNCERTAINTY ABOUT THE MAPPING** — an estimator-variance claim; with a bigger
+  corpus you know the translation better.
+- **more data does not reduce `k`.** The defect is structural: `dim A / dim M = 2^k`, quantised to
+  powers of two, equal to 1 only for the trivial code. No corpus drives a power of two to a
+  non-power of two.
+
+**And that difference is a falsifier for the whole analogy.** If translation loss behaves like a
+data-limited quantity — shrinking smoothly toward zero with corpus size — the mapping to a code
+quotient is **wrong**, because a quotient's defect is quantised and stubborn. If it **plateaus** at a
+structural level while variance keeps falling, the analogy has content. That is a runnable
+experiment, and it is why the two claims are kept apart rather than letting *"more data helps"*
+absorb *"the residue is structural."*
+
+**Register:** 7a–7b are **analogy with one metered consequence** (the which-not-how-many prediction,
+following from the convention measurement). 7c's separation is **structural** — it is the defect
+formula. The corpus-size claim is **unmetered**, and stays that way until someone measures a plateau.
