@@ -218,7 +218,7 @@ export function scanSource(src: string): Omit<Violation, "path">[] {
       });
     }
   }
-  found.sort((a, b) => a.line - b.line || a.callee.localeCompare(b.callee));
+  found.sort((a, b) => a.line - b.line || (a.callee < b.callee ? -1 : a.callee > b.callee ? 1 : 0));
   return found;
 }
 
