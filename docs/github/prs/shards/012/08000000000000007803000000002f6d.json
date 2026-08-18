@@ -1,0 +1,12 @@
+{
+  "pr_number": 12141,
+  "archive_path": "docs/history/pr-reviews/PR-12141-fix-hygiene-the-ambient-time-guard-s-own-sort-was-culture-sensitive.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T22:15:20.850Z",
+  "schema_version": "v1",
+  "commit_sha": "030132da76e6ac1d4c067be99b4a1d22c9b9dd03",
+  "title": "fix(hygiene): the ambient-time guard's own sort was culture-sensitive",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T22:14:45Z",
+  "head_ref": "shadow/fix-guard-locale-sort"
+}
