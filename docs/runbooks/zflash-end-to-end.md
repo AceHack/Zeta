@@ -71,6 +71,14 @@ ls -la ~/Downloads/zeta-installer-*.iso
 >    ~/Downloads/zeta-installer-25.11-ci$RUN-$(date +%F)-x86_64.iso
 > ```
 >
+> **Superseded 2026-08-18 — you no longer need any of the above.** `zflash` now selects the ISO by
+> architecture itself: it collects every `.iso` in the run, picks the one matching `--iso-arch`
+> (default `x86_64`), refuses instead of guessing when the tree is ambiguous, and caches it as
+> `zeta-installer-<rel>-ci<run>-<date>-<arch>.iso` — already carrying the `zeta-installer-` prefix
+> auto-discovery globs on. Plain `zflash` is now the supported path; the block above is kept only as
+> the manual fallback for an offline machine. Hand-renaming an ISO is exactly the kind of step this
+> runbook should not be asking a human to perform.
+>
 > Full pre-flight state, plus the operator-only checklist:
 > [`2026-08-16-first-metal-bringup-preflight.md`](2026-08-16-first-metal-bringup-preflight.md).
 

@@ -111,7 +111,9 @@ bun src/Core.TypeScript/zflash/cli.ts \
   ~/Downloads/zeta-installer-25.11-ci31954188104-2026-08-16-x86_64.iso
 ```
 
-**Pass the ISO path explicitly** — do not rely on auto-pull. Reason in §4 (known unknown #2).
+**Pass the ISO path explicitly if you want to be certain which image you flash.** Auto-pull is
+architecture-aware as of 2026-08-18 (§4 known unknown #2, now closed), so the bare form is safe;
+an explicit path remains the way to pin a specific build.
 
 **Expected, in order:**
 
@@ -212,9 +214,17 @@ the `k3s-cluster-online` NixOS test makes in CI, so a green here means metal rep
 
 ## 4. Known unknowns — named, not smoothed
 
-**#1 — The aarch64 boot smoke-test reports green while timing out, but the image is NOT broken.**
+**#1 — The aarch64 boot smoke-test used to report green while timing out. Fixed since this was
+written; the paragraph below is kept because its conclusion still stands.**
 
-The CI step is `continue-on-error: true`, so the job is green whatever happens. In the latest `main`
+> **Update 2026-08-18.** `continue-on-error: true` is **gone** from that step. The workflow now
+> reads the harness exit code and routes it: `0` BOOTED passes, `1` BOOT-FAILED **fails the job**,
+> `3` TIMEOUT and `4` STALLED warn only. So a boot *break* now blocks and a *budget* overrun does
+> not — which is the distinction the paragraph below was arguing for. The honest limit the workflow
+> states in its own comment: a break that manifests as a silent hang past the bootloader still lands
+> in the advisory bucket.
+
+The step was `continue-on-error: true`, so the job was green whatever happened. In `main`
 run (31954188104) that step ran **exactly 1800 s** — `15:15:21Z → 15:45:22Z` — and its log ends:
 
 ```
@@ -257,20 +267,27 @@ Riven's PR #10959 (`riven/fix-qemu-uefi-serial`, merged) touches
 `src/Core.TypeScript/ci/qemu-boot-test.ts`, so this aarch64 step is a different, still-open lane.
 Nothing in that branch was modified here.
 
-**#2 — `zflash`'s CI auto-pull is architecture-blind.**
+**#2 — `zflash` CI auto-pull was architecture-blind. CLOSED 2026-08-18.**
 
-`autoDownloadFreshIsoIfNeeded` runs `gh run download <id>` with **no artifact filter**, then
-`findIsoUnder` returns the **first** file ending in `.iso` in `readdirSync` order. Since the aarch64
-job was added, a run contains **two** ISOs, and nothing in that walk prefers x86_64. The destination
-name it writes — `zeta-installer-25.11-ci<run>-<date>.iso` — records no architecture either.
+`autoDownloadFreshIsoIfNeeded` ran `gh run download <id>` with **no artifact filter**, then
+`findIsoUnder` returned the **first** file ending in `.iso` in `readdirSync` order. Since the
+aarch64 job was added a run carries **two** ISOs, and nothing in that walk preferred x86_64. The
+destination name it wrote — `zeta-installer-25.11-ci<run>-<date>.iso` — recorded no architecture
+either, so a wrong pick also became the newest file in `~/Downloads` and won every **later**
+auto-discovery. Sticky, and invisible in the filename.
 
-Reproduced the directory layout locally and the walk returned the x86_64 one — but `readdirSync`
-order on APFS is directory-hash order, not alphabetical, so **that is one observation, not a
-guarantee**. Failure signature if it ever picks wrong: the x86 target says "no bootable device" and
-the ISO filename gives no hint why.
+The fix (PR on `dejan/zflash-iso-arch-selection`): selection is now a pure, tested function.
+`selectIsoForArch` collects **every** `.iso` in the download tree, sorts them so the verdict does
+not depend on `readdirSync` order, and reads the architecture from the whole path — the artifact
+DIRECTORY as well as the name, because `configuration.nix` `mkForce`s an `isoName` carrying no arch
+token. It **refuses rather than guesses**: only-wrong-arch and genuinely-ambiguous trees are errors
+that name the failure, not picks. The cached copy is now stamped `...-<arch>.iso`, and
+`autoDiscoverIso` filters `~/Downloads` by arch so a stale wrong-arch file can no longer win on
+mtime alone. `--iso-arch x86_64|aarch64|host` overrides; the default is **x86_64**, because the
+cluster nodes are x86_64 and deriving it from the host would pick aarch64 on your Mac every time.
 
-Mitigation, and the reason step A2 passes a path: an explicit ISO argument (or `--skip-iso-pull`)
-bypasses the pull entirely.
+Falsifier: mutate `selectIsoForArch` back to "return the first ISO" and 7 tests in
+`src/Core.TypeScript/zflash/lib.test.ts` go red. Verified.
 
 **#3 — `~/.config/zeta/{keyring,keyset}` do not exist.** The
 `cluster-encryption-credential-substrate` RESUME (last refreshed 2026-06-21) describes a teardown

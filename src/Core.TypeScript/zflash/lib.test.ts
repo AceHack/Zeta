@@ -20,9 +20,11 @@ import { describe, expect, test } from "bun:test";
 import {
   composeAuthorizedKeysFileContent,
   composeWifiCredentialsFileContent,
+  detectIsoArchFromPath,
   detectIsohybridEspOffsetBytes,
   executeFileBackedZflashImageExecutionPlan,
   generateRandomNodeName,
+  hostIsoArch,
   ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
   isValidHostname,
   parseFatPartitionFromDiskutilList,
@@ -31,6 +33,9 @@ import {
   planFileBackedZflashImage,
   planFileBackedZflashImageExecution,
   resolveZetaTestInfraPubkeyFromZflashModule,
+  selectDownloadedIsoForArch,
+  selectIsoForArch,
+  stampedCiIsoFileName,
   VALID_HOSTNAME_REGEX,
   ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH,
 } from "./lib.ts";
@@ -818,5 +823,201 @@ describe("parseOutputFileMarker", () => {
 
   test("trims trailing whitespace from path", () => {
     expect(parseOutputFileMarker("OUTPUT-FILE: /tmp/out.md   ")).toBe("/tmp/out.md");
+  });
+});
+
+// ── ISO architecture selection (2026-08-18) ───────────────────────────────
+// The defect these pin: zflash's CI-ISO pull walked the download tree and
+// returned the first `.iso` in readdirSync order, which since the aarch64 job
+// landed is a coin flip between two architectures. The cached copy then carried
+// no arch in its name, so a wrong pick became the newest ISO in the Downloads
+// folder and won every subsequent auto-discovery.
+//
+// Each test fails against the pre-fix behaviour ("return the first .iso found"),
+// which is what makes them falsifiers rather than decoration.
+describe("ISO architecture selection", () => {
+  // Real shapes: the x86_64 ISO is nixos-minimal-<ver>-x86_64-linux.iso (nixpkgs
+  // 25.11 names the derivation from its own default, not from the mkForce'd
+  // isoImage.isoName); the aarch64 job uploads under zeta-installer-aarch64-iso.
+  const X86_ISO = "dl/nixos-minimal-25.11-x86_64-linux.iso/nixos-minimal-25.11-x86_64-linux.iso";
+  const ARM_ISO = "dl/zeta-installer-aarch64-iso/nixos-minimal-25.11-aarch64-linux.iso";
+
+  describe("detectIsoArchFromPath", () => {
+    test("reads x86_64 from the ISO name", () => {
+      expect(detectIsoArchFromPath(X86_ISO)).toBe("x86_64");
+    });
+
+    test("reads aarch64 from the ISO name", () => {
+      expect(detectIsoArchFromPath(ARM_ISO)).toBe("aarch64");
+    });
+
+    // Load-bearing: configuration.nix mkForces isoName to a name carrying no
+    // arch token. If a future nixpkgs honours that on both arches the two inner
+    // names collide and the enclosing directory is the only signal left.
+    test("falls back to the enclosing directory when the name has no arch", () => {
+      expect(detectIsoArchFromPath("dl/zeta-installer-aarch64-iso/zeta-installer-25.11.iso")).toBe("aarch64");
+    });
+
+    test("accepts amd64 and arm64 spellings", () => {
+      expect(detectIsoArchFromPath("d/installer-amd64.iso")).toBe("x86_64");
+      expect(detectIsoArchFromPath("d/installer-arm64.iso")).toBe("aarch64");
+    });
+
+    test("returns null rather than guessing when no token is present", () => {
+      expect(detectIsoArchFromPath("dl/zeta-installer-25.11.iso")).toBeNull();
+    });
+
+    test("returns null when a path claims both architectures", () => {
+      expect(detectIsoArchFromPath("x86_64-builder/nixos-aarch64.iso")).toBeNull();
+    });
+
+    // Token boundaries keep this safe from substring accidents.
+    test("does not match an arch token embedded in a longer word", () => {
+      expect(detectIsoArchFromPath("farm64/zeta-installer-25.11.iso")).toBeNull();
+      expect(detectIsoArchFromPath("warmed/zeta-installer-25.11.iso")).toBeNull();
+    });
+  });
+
+  describe("selectIsoForArch", () => {
+    // THE REGRESSION TEST. Both ISOs present, x86_64 wanted. Pre-fix this
+    // returned whichever readdirSync happened to yield first.
+    test("picks the x86_64 ISO out of a two-arch download tree", () => {
+      const r = selectIsoForArch([ARM_ISO, X86_ISO], "x86_64");
+      expect(r.ok).toBe(true);
+      if (r.ok) {
+        expect(r.path).toBe(X86_ISO);
+        expect(r.arch).toBe("x86_64");
+        expect(r.warning).toBeNull();
+      }
+    });
+
+    test("picks the aarch64 ISO from the same tree when that is what is wanted", () => {
+      const r = selectIsoForArch([ARM_ISO, X86_ISO], "aarch64");
+      expect(r.ok).toBe(true);
+      if (r.ok) expect(r.path).toBe(ARM_ISO);
+    });
+
+    // Order-independence IS the fix: the original defect was an order-dependent
+    // pick, so a selection still depending on input order would be relabelled,
+    // not repaired.
+    test("is independent of candidate order", () => {
+      const a = selectIsoForArch([ARM_ISO, X86_ISO], "x86_64");
+      const b = selectIsoForArch([X86_ISO, ARM_ISO], "x86_64");
+      expect(a.ok && b.ok && a.path === b.path).toBe(true);
+    });
+
+    // The case that used to silently produce an unbootable stick.
+    test("REFUSES when only the wrong architecture is available", () => {
+      const r = selectIsoForArch([ARM_ISO], "x86_64");
+      expect(r.ok).toBe(false);
+      if (!r.ok) {
+        expect(r.error).toContain("no bootable device");
+        expect(r.error).toContain("aarch64");
+      }
+    });
+
+    test("REFUSES when two ISOs both claim the wanted arch", () => {
+      const dup = "dl/other/nixos-minimal-25.11-x86_64-linux.iso";
+      const r = selectIsoForArch([X86_ISO, dup], "x86_64");
+      expect(r.ok).toBe(false);
+      if (!r.ok) expect(r.error).toContain("refusing to guess");
+    });
+
+    test("REFUSES an empty candidate set", () => {
+      expect(selectIsoForArch([], "x86_64").ok).toBe(false);
+    });
+
+    // Backwards compatibility: pre-aarch64 runs and hand-renamed ISOs carry no
+    // arch token, and refusing those would break a path that works today.
+    // Accept, but say so out loud.
+    test("accepts a lone arch-less ISO with a warning rather than refusing", () => {
+      const r = selectIsoForArch(["dl/zeta-installer-25.11.iso"], "x86_64");
+      expect(r.ok).toBe(true);
+      if (r.ok) {
+        expect(r.arch).toBeNull();
+        expect(r.warning).toContain("no bootable device");
+      }
+    });
+
+    // ...but an arch-less ISO beside a known-wrong-arch one is exactly the
+    // ambiguous tree we must not resolve by coin flip.
+    test("REFUSES an arch-less ISO when a wrong-arch sibling is present", () => {
+      const r = selectIsoForArch(["dl/zeta-installer-25.11.iso", ARM_ISO], "x86_64");
+      expect(r.ok).toBe(false);
+      if (!r.ok) expect(r.error).toContain("refusing to guess");
+    });
+  });
+
+  describe("hostIsoArch", () => {
+    test("maps Node arch strings", () => {
+      expect(hostIsoArch("x64")).toBe("x86_64");
+      expect(hostIsoArch("arm64")).toBe("aarch64");
+    });
+
+    test("returns null for an arch we build no installer for", () => {
+      expect(hostIsoArch("ppc64")).toBeNull();
+    });
+  });
+
+  describe("stampedCiIsoFileName", () => {
+    // Without the arch tag a wrong-arch pull outranks every correct older ISO
+    // in autoDiscoverIso newest-by-mtime sort, permanently.
+    test("carries the architecture so the cached copy is self-describing", () => {
+      const n = stampedCiIsoFileName("25.11", 31954188104, "2026-08-16T15:45:22Z", "x86_64");
+      expect(n).toBe("zeta-installer-25.11-ci31954188104-2026-08-16-x86_64.iso");
+    });
+
+    test("omits the tag when arch is unknown rather than inventing one", () => {
+      const n = stampedCiIsoFileName("25.11", 1, "2026-08-16T00:00:00Z", null);
+      expect(n).toBe("zeta-installer-25.11-ci1-2026-08-16.iso");
+    });
+
+    test("keeps the zeta-installer- prefix autoDiscoverIso globs on", () => {
+      const n = stampedCiIsoFileName("25.11", 7, "2026-08-16T00:00:00Z", "aarch64");
+      expect(n.startsWith("zeta-installer-")).toBe(true);
+    });
+  });
+
+  // The Downloads folder is an open-ended history, so this policy is lenient
+  // where the download-tree policy refuses. Both behaviours are pinned.
+  describe("selectDownloadedIsoForArch", () => {
+    test("prefers the newest ISO naming the wanted arch", () => {
+      const r = selectDownloadedIsoForArch([ARM_ISO, X86_ISO], "x86_64");
+      expect(r.ok && r.path).toBe(X86_ISO);
+    });
+
+    test("respects newest-first order among same-arch candidates", () => {
+      const newer = "dl/zeta-installer-25.11-ci2-2026-08-16-x86_64.iso";
+      const older = "dl/zeta-installer-25.11-ci1-2026-06-09-x86_64.iso";
+      const r = selectDownloadedIsoForArch([newer, older], "x86_64");
+      expect(r.ok && r.path).toBe(newer);
+    });
+
+    // Does NOT refuse here: the preflight records two eight-week-old arch-less
+    // ISOs in the operator Downloads folder, and refusing would break a path
+    // that works today.
+    test("falls back to an arch-less ISO with a warning, not a refusal", () => {
+      const r = selectDownloadedIsoForArch(["dl/zeta-installer-25.11.iso"], "x86_64");
+      expect(r.ok).toBe(true);
+      if (r.ok) expect(r.warning).toContain("cannot be read");
+    });
+
+    // The sticky-bad state the missing arch tag used to create.
+    test("REFUSES when every candidate names a different arch", () => {
+      const r = selectDownloadedIsoForArch([ARM_ISO], "x86_64");
+      expect(r.ok).toBe(false);
+      if (!r.ok) expect(r.error).toContain("no bootable device");
+    });
+
+    // The regression that motivated the arch tag: a wrong-arch pull used to be
+    // the newest file and therefore won every later auto-discovery.
+    test("does not let a newer wrong-arch ISO outrank an older correct one", () => {
+      const r = selectDownloadedIsoForArch([ARM_ISO, X86_ISO], "x86_64");
+      expect(r.ok && r.path).toBe(X86_ISO);
+    });
+
+    test("REFUSES an empty candidate set", () => {
+      expect(selectDownloadedIsoForArch([], "x86_64").ok).toBe(false);
+    });
   });
 });

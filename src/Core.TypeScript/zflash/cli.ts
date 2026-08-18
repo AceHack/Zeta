@@ -61,7 +61,16 @@
 //   finger on the actual trackpad.
 
 import { execFileSync, spawn } from "node:child_process";
-import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import {
+  copyFileSync,
+  existsSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { homedir, platform, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -73,9 +82,14 @@ import {
 import {
   composeAuthorizedKeysFileContent,
   detectIsohybridEspOffsetBytes,
+  hostIsoArch,
   ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
   parseUuidFromDiskutilInfo,
   resolveZetaTestInfraPubkeyFromZflashModule,
+  selectDownloadedIsoForArch,
+  selectIsoForArch,
+  stampedCiIsoFileName,
+  type IsoArch,
 } from "./lib.ts";
 import { runFileBackedZflashCli } from "./file-backed.ts";
 import {
@@ -102,7 +116,7 @@ function bail(code: number, msg: string): never {
   process.exit(code);
 }
 
-function autoDiscoverIso(): string {
+function autoDiscoverIso(wantArch: IsoArch): string {
   const dl = join(homedir(), "Downloads");
   if (!existsSync(dl)) {
     bail(2, `~/Downloads does not exist; pass an ISO path explicitly`);
@@ -127,11 +141,15 @@ function autoDiscoverIso(): string {
     );
   }
 
-  // Pick newest by mtime.
+  // Pick newest by mtime, then let arch decide among them (2026-08-18).
+  // Sorting first keeps "newest" the tiebreak it always was; the arch filter
+  // only prevents a wrong-arch ISO from winning purely by being recent, which
+  // is what an untagged CI pull used to do permanently.
   candidates.sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs);
-  const chosen = candidates[0];
-  if (chosen === undefined) bail(2, "internal: candidates list non-empty but [0] is undefined");
-  return chosen;
+  const picked = selectDownloadedIsoForArch(candidates, wantArch);
+  if (!picked.ok) bail(2, picked.error);
+  if (picked.warning !== null) process.stderr.write(`zflash: WARNING ${picked.warning}\n`);
+  return picked.path;
 }
 
 // ── iter-4.3 freshness checks (081KSGS9H0008QG0R002T3BJ2R follow-on) ──────────────────
@@ -354,7 +372,7 @@ function checkLocalCheckoutFreshness(repoRoot: string): void {
   process.stdout.write("zflash: local checkout matches origin/main on install substrate ✓\n");
 }
 
-function autoDownloadFreshIsoIfNeeded(localIso: string): string {
+function autoDownloadFreshIsoIfNeeded(localIso: string, wantArch: IsoArch): string {
   // Check the latest successful build-ai-cluster-iso workflow run on main.
   // If its updated_at > localIso.mtime, download via gh run download +
   // return the new path. Offline / no-gh → falls back to local silently.
@@ -403,41 +421,56 @@ function autoDownloadFreshIsoIfNeeded(localIso: string): string {
         ["run", "download", String(latest.id), "--dir", dlDir, "-R", ZETA_REPO_GH],
         { stdio: "inherit" },
       );
-      // gh run download puts artifact into a directory NAMED after the artifact.
-      // Walk dlDir to find the .iso file.
-      const findIsoUnder = (d: string): string | null => {
-        if (!existsSync(d)) return null;
-        const entries = readdirSync(d);
-        for (const e of entries) {
+      // gh run download places each artifact in a directory NAMED after the
+      // artifact, so a run now yields BOTH the x86_64 ISO and the aarch64 one
+      // (artifact `zeta-installer-aarch64-iso`). Collect every .iso and let
+      // selectIsoForArch decide — it refuses rather than guessing, because the
+      // old "first .iso in readdirSync order" pick was a coin flip whose
+      // failure surfaced only as "no bootable device" on the target board.
+      const collectIsosUnder = (d: string, acc: string[] = []): string[] => {
+        if (!existsSync(d)) return acc;
+        for (const e of readdirSync(d).sort()) {
           const p = join(d, e);
           try {
             const s = statSync(p);
-            if (s.isFile() && e.endsWith(".iso")) return p;
-            if (s.isDirectory()) {
-              const inner = findIsoUnder(p);
-              if (inner) return inner;
-            }
+            if (s.isFile() && e.endsWith(".iso")) acc.push(p);
+            else if (s.isDirectory()) collectIsosUnder(p, acc);
           } catch {
-            /* skip */
+            /* unreadable entry — skip */
           }
         }
-        return null;
+        return acc;
       };
-      const ciIsoSrc = findIsoUnder(dlDir);
-      if (!ciIsoSrc) {
+      const found = collectIsosUnder(dlDir);
+      if (found.length === 0) {
         process.stderr.write(`zflash: (CI artifact downloaded to ${dlDir} but no .iso found; falling back to local)\n`);
         return localIso;
       }
-      // Copy to ~/Downloads with a date+run-stamped name so future runs
-      // pick the right one. Don't overwrite the original (operator's
-      // download history is preserved).
+      const chosen = selectIsoForArch(found, wantArch);
+      if (!chosen.ok) {
+        process.stderr.write(`zflash: ${chosen.error}\n`);
+        process.stderr.write("zflash: (falling back to the local ISO)\n");
+        return localIso;
+      }
+      if (chosen.warning !== null) {
+        process.stderr.write(`zflash: WARNING ${chosen.warning}\n`);
+      }
+      const ciIsoSrc = chosen.path;
+      // Copy to ~/Downloads under a run+date+ARCH stamped name. The arch tag is
+      // load-bearing, not cosmetic: autoDiscoverIso picks newest-by-mtime, so an
+      // untagged wrong-arch pull used to outrank every correct older ISO on every
+      // later run. Do not overwrite an existing file — the operator download
+      // history is preserved.
       dlDest = join(
         homedir(),
         "Downloads",
-        `zeta-installer-25.11-ci${latest.id}-${latest.updated_at.slice(0, 10)}.iso`,
+        stampedCiIsoFileName("25.11", latest.id, latest.updated_at, chosen.arch),
       );
       if (!existsSync(dlDest)) {
-        execFileSync("cp", [ciIsoSrc, dlDest], { stdio: "inherit" });
+        // copyFileSync, not execFileSync("cp"): zflash has a Windows path
+        // (flash-usb-windows.ts) where no `cp` binary exists, and shelling out
+        // for a file copy the runtime already provides is a needless dependency.
+        copyFileSync(ciIsoSrc, dlDest);
       }
       process.stdout.write(`zflash: fresh ISO at ${dlDest}\n`);
     } finally {
@@ -992,6 +1025,7 @@ async function main() {
     "--no-inject",
     "--skip-freshness-check",
     "--skip-iso-pull",
+    "--iso-arch",
     "--host",
     "--agent",
     "--test",
@@ -1007,6 +1041,11 @@ async function main() {
   let noInject = false;
   let skipFreshnessCheck = false;
   let skipIsoPull = false;
+  // Default x86_64: the cluster nodes are x86_64 (full-ai-cluster/flake.nix gates the
+  // NixOS checks to x86_64-linux for exactly that reason), and the operator flashes
+  // from an arm64 Mac -- so deriving this from the HOST arch would pick aarch64 and
+  // be wrong every time. Use --iso-arch aarch64 for the Raspberry Pi rung.
+  let isoArch: IsoArch = "x86_64";
   let hostOverride: string | null = null;
   let agentMode = false;
   let testMode = false;
@@ -1044,6 +1083,20 @@ async function main() {
     }
     if (a === "--skip-iso-pull") {
       skipIsoPull = true;
+      continue;
+    }
+    if (a === "--iso-arch") {
+      const v = argv[++i];
+      if (v === undefined) bail(2, "--iso-arch requires a value (x86_64 | aarch64 | host)");
+      if (v === "host") {
+        const h = hostIsoArch(process.arch);
+        if (h === null) bail(2, `--iso-arch host: no installer is built for ${process.arch}`);
+        isoArch = h;
+      } else if (v === "x86_64" || v === "aarch64") {
+        isoArch = v;
+      } else {
+        bail(2, `--iso-arch: expected x86_64 | aarch64 | host, got ${v}`);
+      }
       continue;
     }
     if (a === "--agent") {
@@ -1167,6 +1220,7 @@ async function main() {
         "  --no-inject               skip the iter-4.2 ESP pubkey write (v1 manual-edit fallback)\n" +
         "  --skip-freshness-check    bypass iter-4.3 stale-checkout detection (NOT recommended)\n" +
         "  --skip-iso-pull           bypass iter-4.3 CI-ISO auto-download (use local newest)\n" +
+        "  --iso-arch <arch>         x86_64 (default; the cluster nodes) | aarch64 (Pi) | host\n" +
         "  --host <name>             iter-5.2 inject node hostname (RFC1123); decoupled from\n" +
         "                            role-stack — e.g., --host pikachu installs as pikachu\n" +
         "                            regardless of flake role config. Default: flake config name\n" +
@@ -1227,13 +1281,13 @@ async function main() {
   }
 
   const explicit = positional[0];
-  let isoPath = explicit ? resolve(explicit) : autoDiscoverIso();
+  let isoPath = explicit ? resolve(explicit) : autoDiscoverIso(isoArch);
 
   // iter-4.3 CI-ISO auto-download: if local newest is older than the latest
   // successful CI build on main, pull the fresh artifact. Skip when explicit
   // ISO path passed (operator overrides), when opted out, or on failure.
   if (!explicit && !skipIsoPull) {
-    isoPath = autoDownloadFreshIsoIfNeeded(isoPath);
+    isoPath = autoDownloadFreshIsoIfNeeded(isoPath, isoArch);
   }
 
   const flashUsb = findFlashUsbPath();

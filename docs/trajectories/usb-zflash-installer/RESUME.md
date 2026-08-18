@@ -9,6 +9,13 @@ Current blocker: none for software/QEMU deepen slices landed 2026-07-31
 radio claim, hostname uniqueness contract, multiboot FAT assemble + EFI
 embed path, credential-binding model tests). Physical S6 UX feel + real
 WiFi association remain metal-gated.
+2026-08-18: `zflash` ISO acquisition is now architecture-aware (`--iso-arch`,
+default x86_64). Before this a run carrying both the x86_64 and aarch64 ISOs
+was resolved by `readdirSync` order — a coin flip whose only symptom was "no
+bootable device" after a full flash-and-walk-to-the-box cycle, and whose
+untagged cache name made a wrong pick win every later auto-discovery. Closes
+known-unknown #2 of the first-metal preflight; that runbook no longer asks the
+operator to hand-download and hand-rename an ISO.
 Next concrete action: **minimize metal** — S6 physical first-login +
 WiFi radio / Touch ID / TPM (human-gated). Software deepen landed:
 per-federation threat-model stub + optional QEMU UEFI menu-boot smoke
