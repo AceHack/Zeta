@@ -1,0 +1,12 @@
+{
+  "pr_number": 12193,
+  "archive_path": "docs/history/pr-reviews/PR-12193-fix-hygiene-roster-the-mutation-findings-log-as-prose-third-main-wide-red.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T23:41:42.526Z",
+  "schema_version": "v1",
+  "commit_sha": "39a1b4653a3d8b5bd1f6f72826dc642e476c49a4",
+  "title": "fix(hygiene): roster the mutation-findings log as prose — third main-wide red",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T23:41:09Z",
+  "head_ref": "shadow/roster-mutation-findings"
+}
