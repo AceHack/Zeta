@@ -1,0 +1,14 @@
+{
+  "id": "080d00a88543f010a0130008b6f8c9f3",
+  "at": "2026-08-18T13:30:08.382Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0AH1A3X087G0R0006PHCMM",
+    "type": "task",
+    "title": "fix the apt-stall: recover the dpkg database between retry attempts in the §24 install script",
+    "slug": "fix-the-apt-stall-recover-the-dpkg-database-between-retry-at",
+    "priority": "P2",
+    "filename": "081M0AH1A3X087G0R0006PHCMM-fix-the-apt-stall-recover-the-dpkg-database-between-retry-at.md"
+  }
+}

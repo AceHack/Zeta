@@ -183,6 +183,23 @@ elif [ -f "$APT_MANIFEST" ]; then
         echo "⚠ apt-get install failed rc=${apt_install_rc} (attempt ${apt_attempt}/3)" >&2
       fi
       [ "$apt_attempt" -eq 3 ] && break
+      # DPKG RECOVERY — without this the 3-attempt loop is a 1-attempt loop.
+      # The `timeout` above TERM/KILLs apt-get MID-DPKG, which leaves the
+      # package database interrupted. The next attempt then fails INSTANTLY
+      # with rc=100 ("E: dpkg was interrupted, you must manually run
+      # 'sudo dpkg --configure -a'") and never reaches the mirror at all — so
+      # ONE stall costs ALL THREE attempts, and the retry loop above is
+      # decorative on precisely the failure it was written for.
+      #
+      # Measured 2026-08-18 from a surviving log on PR #11746 (the stall
+      # normally hangs, so the log is usually lost); filed as
+      # 081M096T3AN087G0R0008JZQ7B. This is verbatim what apt's own error
+      # message instructs, and it is a no-op on a clean database, so it is
+      # safe on the ordinary-error paths too.
+      #
+      # Parity (GOVERNANCE §24): in linux.sh, so laptop / runner / devcontainer
+      # all recover identically.
+      $SUDO dpkg --configure -a || true
       sleep $((apt_attempt * 15))
     done
     # STRICT on exhaustion: the assert is preserved (see the update-vs-install
