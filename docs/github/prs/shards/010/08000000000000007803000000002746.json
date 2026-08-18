@@ -1,0 +1,12 @@
+{
+  "pr_number": 10054,
+  "archive_path": "docs/history/pr-reviews/PR-10054-fix-heartbeat-gate-flush-on-elapsed-time-not-an-unsatisfiable-cron-string.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T09:16:51.852Z",
+  "schema_version": "v1",
+  "commit_sha": "5f866d973670ce2dfa785f4dbc764aebc25edf8a",
+  "title": "fix(heartbeat): gate flush on elapsed time, not an unsatisfiable cron string",
+  "state": "MERGED",
+  "merged_at": "2026-08-06T00:12:59Z",
+  "head_ref": "fix/heartbeat-flush-gate"
+}
