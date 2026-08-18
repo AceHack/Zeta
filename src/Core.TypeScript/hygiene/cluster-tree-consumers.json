@@ -156,6 +156,12 @@
       "disposition": "prose",
       "note": "A ΔU ledger entry recording that the infra/k8s bootstrap never deployed (argocd-install.yaml was a kustomize Kustomization, a build-time input, not an API object). It names infra/k8s because it DOCUMENTS AN EVENT IN THAT TREE — it is a historical record, not a live consumer, and nothing imports or resolves against the path.",
       "migrateTo": "NONE — do not repoint. The bug happened in infra/k8s and the record must stay accurate about where it happened; rewriting it to name full-ai-cluster would make the ledger lie about history. Leave the row when the tree goes; the entry is keyed and idempotent."
+    },
+    {
+      "path": "db/mutation-findings/soraya.jsonl",
+      "disposition": "prose",
+      "note": "An append-only mutation-findings log: 110 records of {source, test, mutation, outcome, address}. It names the stale tree in exactly TWO entries — infra/k8s/tests/validate-bootstrap.ts and its .test.ts — recording that a mutation was run against the bootstrap validator. Nothing resolves against those paths; they are the SUBJECT of a past run, logged. Landed via #12091.",
+      "migrateTo": "NONE — do not repoint. The mutation genuinely ran against that file at that path, and rewriting the log to name full-ai-cluster would falsify what was measured. Drop the row with the tree; the log is append-only and its records are content-addressed."
     }
   ]
 }
