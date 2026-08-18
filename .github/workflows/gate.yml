@@ -904,6 +904,30 @@ jobs:
         # per-recognizer, never a total. Exits 3 naming the one that went dark.
         run: bun run hygiene:scan-floor-routes
 
+      - name: Ambient-time-in-tests guard (no test verdict may depend on wall-clock)
+        # A test that sleeps 10ms and then asserts is asserting that 10ms was enough on THIS
+        # runner. MEASURED 2026-08-16: poll-pr-gate-batch.test.ts, 14 pure in-memory tests with
+        # injected fakes and no I/O, ran 1366ms idle and 5.46s under load on the same machine
+        # class -- a 4x spread on identical code -- and went red at exactly the 5000ms per-test
+        # cap on six open PRs. Every one of those reds was false. In this repo's vocabulary a
+        # real timer in a test is an undeclared ambient time channel: DST #4 and
+        # noninterference #7, and the test-suite form of
+        # local-time-never-enters-the-shared-fold.
+        #
+        # NOT a Semgrep or ESLint rule, though either could match the pattern. Their suppression
+        # is an inline comment -- invisible in any roster, added by the same edit that
+        # introduces the violation. This reads registry/wall-clock-test-allowlist.json, which
+        # pins EXACT per-file occurrence counts, so a new sleep hiding behind a justified one
+        # fails and so does a row that has gone stale. Same mechanism, and the same reason, as
+        # tests/Tests.FSharp/DeterminismLint.Tests.fs uses for src/Core.
+        #
+        # Zero-delay yields stay legal: a setTimeout of 0 grants one event-loop turn on a fast
+        # machine and one on a loaded one. It is a NON-ZERO delay that encodes a guess.
+        #
+        # Its own falsifier runs in the step below: audit-ambient-time-in-tests.test.ts feeds
+        # the detector a deliberately-introduced ambient-time test and requires it to go red,
+        # in both ratchet directions.
+        run: bun run hygiene:no-ambient-time-in-tests
       - name: Hygiene unit-test suite (closes the per-PR coverage gap)
         # Runs every src/Core.TypeScript/hygiene/*.test.ts. These are
         # fixture/in-memory tests (no MEMORY.md / user-scope deps), so they

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, test } from "bun:test";
+import { yieldTurns } from "../testing/deterministic-async";
 import type { BrowserLifecycleEventType } from "../browser-node/browser-lifecycle-host";
 import type { BrowserTabChannel, BrowserTabChannelMessage } from "../browser-node/browser-tab-coordinator";
 import {
@@ -117,10 +118,14 @@ function unwrap(result: ReturnType<typeof startNativeDarkHallBrowser>): DarkHall
   return result.value;
 }
 
+// Already the right SHAPE -- a condition poll rather than a fixed sleep -- and the poll
+// interval was the last wall-clock in it. a 2ms `Bun.sleep` made the budget "200ms of machine
+// time", which shrinks under load; `yieldTurns(1)` makes it "100 event-loop turns", which does
+// not. Everything this waits on is in-process, so a turn is the correct unit.
 async function waitFor(label: string, predicate: () => boolean): Promise<void> {
   for (let attempt = 0; attempt < 100; attempt += 1) {
     if (predicate()) return;
-    await Bun.sleep(2);
+    await yieldTurns(1);
   }
   throw new Error(`Timed out waiting for ${label}.`);
 }

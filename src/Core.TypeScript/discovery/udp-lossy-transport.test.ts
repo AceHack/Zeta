@@ -5,6 +5,7 @@
  * negative controls (2+ erasures → unrecoverable).
  */
 import { describe, it, expect } from "bun:test";
+import { yieldTurns } from "../testing/deterministic-async";
 import fc from "fast-check";
 import {
   MAX_NACK_GAP,
@@ -355,18 +356,46 @@ describe("udp-lossy-transport", () => {
   });
 
   // ── ULT-14: Gossip debounce fires within jitter window ────────────────────────────────
-  it("ULT-14: gossip debounce fires within jitter window", async () => {
+  //
+  // ASSERTION STRENGTHENED. This test used to schedule a real 10-30ms timer, sleep 50ms, and
+  // assert `fired === true`. Two defects in one line: on a loaded runner 50ms of wall-clock is
+  // not enough for a 30ms timer to be DELIVERED, so it went red for the machine; and it never
+  // checked the jitter window its own name claims -- a bug that fired at 30 SECONDS would have
+  // been caught, a bug that fired at 1ms would not. With the timer injected the delay itself is
+  // the observable, so the window is now actually asserted, and no wall-clock elapses at all.
+  it("ULT-14: gossip debounce fires within the jitter window, at both ends of it", () => {
+    for (const [r, expected] of [[0, 10], [0.5, 20], [0.999, 29.98]] as const) {
+      let fired = false;
+      let scheduledDelay = Number.NaN;
+      const cancel = scheduleGossipRebroadcast(() => { fired = true; }, 10, 30, {
+        random: () => r,
+        setTimeout: (fn, ms) => { scheduledDelay = ms; fn(); return 1; },
+        clearTimeout: () => {},
+      });
+      expect(fired).toBe(true);
+      expect(scheduledDelay).toBeCloseTo(expected, 1);
+      // The contract: never below the floor, never at or above the ceiling.
+      expect(scheduledDelay).toBeGreaterThanOrEqual(10);
+      expect(scheduledDelay).toBeLessThan(30);
+      cancel(); // no-op since already fired
+    }
+  });
+
+  it("ULT-14b: cancelling before the timer fires means the callback never runs", () => {
     let fired = false;
-    const cancel = scheduleGossipRebroadcast(
-      () => {
-        fired = true;
-      },
-      10,
-      30,
-    );
-    await new Promise((r) => setTimeout(r, 50));
+    let scheduled: (() => void) | undefined;
+    let cleared = false;
+    const cancel = scheduleGossipRebroadcast(() => { fired = true; }, 10, 30, {
+      random: () => 0.5,
+      setTimeout: (fn) => { scheduled = fn; return 7; },
+      clearTimeout: (h) => { cleared = h === 7; },
+    });
+    cancel();
+    expect(cleared).toBe(true);
+    // ANTI-VACUITY: prove the callback was real and would have fired had it not been cancelled.
+    expect(fired).toBe(false);
+    scheduled?.();
     expect(fired).toBe(true);
-    cancel(); // no-op since already fired
   });
 
   it("ULT-15: teaching NACKs retain and update the supplied Bayesian state", async () => {
@@ -447,7 +476,14 @@ describe("udp-lossy-transport", () => {
     // Constructed for its SIDE EFFECT: the channel registers the transport's message handler, which
     // is what `receive` below invokes. Nothing calls a method on it, hence the void.
     void new LossyUdpChannel(transport, "receiver", bnn);
-    const settle = () => new Promise((r) => setTimeout(r, 50));
+    // SETTLE, IN TURNS RATHER THAN MILLISECONDS. Everything this waits on is in-memory: the
+    // receiver's message handler and the promise chain it kicks off. A macrotask turn is a turn
+    // on any machine, so `yieldTurns` drains that chain identically on an idle laptop and a
+    // contended runner -- where the 10ms sleep it replaces was a bet on how fast the runner was.
+    // MEASURED: one turn is enough for every settle site in this file (51 pass at yieldTurns(1)),
+    // so eight is 8x headroom in a unit that does not shrink under load. It costs microseconds:
+    // each turn is a ZERO-delay timer, which is the whole point.
+    const settle = () => yieldTurns(8);
 
     // FIRST prove the teaching path is live, so a later zero cannot be mistaken for a dead path —
     // that would be a vacuous pass. A well-formed teaching object must advance obsCount.
@@ -829,7 +865,7 @@ describe("udp-lossy-transport", () => {
       );
       receive(JSON.stringify({ type: "lossy-udp", zid: "liar", pkt: pkt.toString("base64") }), "liar");
     }
-    await new Promise((r) => setTimeout(r, 10));
+    await yieldTurns(8); // in turns, not milliseconds -- see the settle() note above
     expect(delivered.length).toBe(4);
     for (let i = 0; i < 4; i++) expect(Array.from(delivered[i]!)).toEqual(Array.from(data[i]!));
   });
@@ -1006,7 +1042,14 @@ describe("udp-lossy-transport: separated loss signals", () => {
     };
     const nacksSoFar = (): Array<{ nack: number[]; teaching: { cause: string; why: string } }> =>
       sent.map((t) => JSON.parse(t) as Record<string, unknown>).filter((e) => e["type"] === "lossy-udp-nack") as never;
-    const settle = (): Promise<unknown> => new Promise((r) => setTimeout(r, 10));
+    // SETTLE, IN TURNS RATHER THAN MILLISECONDS. Everything this waits on is in-memory: the
+    // receiver's message handler and the promise chain it kicks off. A macrotask turn is a turn
+    // on any machine, so `yieldTurns` drains that chain identically on an idle laptop and a
+    // contended runner -- where the 10ms sleep it replaces was a bet on how fast the runner was.
+    // MEASURED: one turn is enough for every settle site in this file (51 pass at yieldTurns(1)),
+    // so eight is 8x headroom in a unit that does not shrink under load. It costs microseconds:
+    // each turn is a ZERO-delay timer, which is the whole point.
+    const settle = (): Promise<unknown> => yieldTurns(8);
 
     receive(wire(0), "sender");
     receive(wire(3), "sender"); // gap: 1 and 2 are missing
@@ -1077,7 +1120,14 @@ describe("udp-lossy-transport: separated loss signals", () => {
     };
     const nacks = (): Array<{ nack: number[]; teaching: { cause: string; why: string } }> =>
       sent.map((t) => JSON.parse(t) as Record<string, unknown>).filter((e) => e["type"] === "lossy-udp-nack") as never;
-    const settle = (): Promise<unknown> => new Promise((r) => setTimeout(r, 10));
+    // SETTLE, IN TURNS RATHER THAN MILLISECONDS. Everything this waits on is in-memory: the
+    // receiver's message handler and the promise chain it kicks off. A macrotask turn is a turn
+    // on any machine, so `yieldTurns` drains that chain identically on an idle laptop and a
+    // contended runner -- where the 10ms sleep it replaces was a bet on how fast the runner was.
+    // MEASURED: one turn is enough for every settle site in this file (51 pass at yieldTurns(1)),
+    // so eight is 8x headroom in a unit that does not shrink under load. It costs microseconds:
+    // each turn is a ZERO-delay timer, which is the whole point.
+    const settle = (): Promise<unknown> => yieldTurns(8);
 
     send(frame(0));
     await settle();
@@ -1207,7 +1257,14 @@ describe("udp-lossy-transport: separated loss signals", () => {
         .map((t) => JSON.parse(t) as { type?: string; teaching?: { cause?: string } })
         .filter((e) => e.type === "lossy-udp-nack")
         .map((e) => e.teaching?.cause ?? "");
-    const settle = (): Promise<unknown> => new Promise((r) => setTimeout(r, 10));
+    // SETTLE, IN TURNS RATHER THAN MILLISECONDS. Everything this waits on is in-memory: the
+    // receiver's message handler and the promise chain it kicks off. A macrotask turn is a turn
+    // on any machine, so `yieldTurns` drains that chain identically on an idle laptop and a
+    // contended runner -- where the 10ms sleep it replaces was a bet on how fast the runner was.
+    // MEASURED: one turn is enough for every settle site in this file (51 pass at yieldTurns(1)),
+    // so eight is 8x headroom in a unit that does not shrink under load. It costs microseconds:
+    // each turn is a ZERO-delay timer, which is the whole point.
+    const settle = (): Promise<unknown> => yieldTurns(8);
 
     send(frame(0)); // expectedSeq -> 1
     send(corruptFrame(1)); // refused; expectedSeq stays 1
@@ -1275,7 +1332,14 @@ describe("udp-lossy-transport: separated loss signals", () => {
         .map((t) => JSON.parse(t) as { type?: string; teaching?: { cause?: string } })
         .filter((e) => e.type === "lossy-udp-nack")
         .map((e) => e.teaching?.cause ?? "");
-    const settle = (): Promise<unknown> => new Promise((r) => setTimeout(r, 10));
+    // SETTLE, IN TURNS RATHER THAN MILLISECONDS. Everything this waits on is in-memory: the
+    // receiver's message handler and the promise chain it kicks off. A macrotask turn is a turn
+    // on any machine, so `yieldTurns` drains that chain identically on an idle laptop and a
+    // contended runner -- where the 10ms sleep it replaces was a bet on how fast the runner was.
+    // MEASURED: one turn is enough for every settle site in this file (51 pass at yieldTurns(1)),
+    // so eight is 8x headroom in a unit that does not shrink under load. It costs microseconds:
+    // each turn is a ZERO-delay timer, which is the whole point.
+    const settle = (): Promise<unknown> => yieldTurns(8);
 
     send(frame(0));
     send(corruptFrame(1));

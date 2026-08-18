@@ -1163,14 +1163,35 @@ export function buildSenderBlock(blockSeq: number, data: readonly Uint8Array[]):
 
 /** Schedule a gossip re-broadcast with random jitter to prevent broadcast storms.
  *  Returns a cancel function. */
+/** The two ambient sources this function reaches for, named so a caller can supply them.
+ *
+ *  Both default to the real thing, so every existing call site is unchanged. The point is not
+ *  configurability -- nothing in production passes these -- it is that the jitter WINDOW becomes
+ *  observable. A test given only the global timer can assert "it fired eventually" and nothing
+ *  more; with the timer injected it can assert the delay actually landed inside
+ *  [jitterMin, jitterMax), which is what this function claims and what its test could not check.
+ *  `.claude/rules/dv2-data-split-discipline-activated.md` #7: entropy through declared channels. */
+export interface GossipJitterSources {
+  /** Defaults to the global `setTimeout`. */
+  readonly setTimeout?: (fn: () => void, ms: number) => unknown;
+  /** Defaults to the global `clearTimeout`. */
+  readonly clearTimeout?: (handle: unknown) => void;
+  /** Defaults to `Math.random`; must return a value in [0, 1). */
+  readonly random?: () => number;
+}
+
 export function scheduleGossipRebroadcast(
   fn: () => void,
   jitterMinMs = JITTER_MIN_MS,
   jitterMaxMs = JITTER_MAX_MS,
+  sources: GossipJitterSources = {},
 ): () => void {
-  const delay = jitterMinMs + Math.random() * (jitterMaxMs - jitterMinMs);
-  const handle = setTimeout(fn, delay);
-  return () => clearTimeout(handle);
+  const random = sources.random ?? Math.random;
+  const setT = sources.setTimeout ?? ((f: () => void, ms: number): unknown => setTimeout(f, ms));
+  const clearT = sources.clearTimeout ?? ((h: unknown): void => { clearTimeout(h as ReturnType<typeof setTimeout>); });
+  const delay = jitterMinMs + random() * (jitterMaxMs - jitterMinMs);
+  const handle = setT(fn, delay);
+  return () => clearT(handle);
 }
 
 // ── High-level LossyUdpChannel ────────────────────────────────────────────────────────────

@@ -49,114 +49,14 @@ and 8 Z3 lemmas. Superseded: the TLA+ leg alone is now 52 gated model runs.
 
 ## Pruning log
 
+- 2026-08-18 (ambient-time lane): pruned Round 41, Safety-floor arc, Vacuity/Landauer
+  round and the Z-EPS run to hold the 3000-word cap after two same-day entries merged.
+
 - Round 21: seeded. First prune review: round 24.
 
 ---
 
-## Round 41 — RecursiveSigned tool-coverage audit
-
-Targets:
-
-- `src/Core/RecursiveSigned.fs` (82 LOC skeleton, not in Core.fsproj)
-- `tools/tla/specs/RecursiveSignedSemiNaive.tla` (233 LOC, real Step)
-- `tools/tla/specs/RecursiveSignedSemiNaive.cfg` (PosOne baseline,
-  NegOne/PosTwo/NegTwo exercised round 35)
-- Sibling: `tools/tla/specs/RecursiveCountingLFP.tla` (shipped)
-
-### Per-property tool verdict
-
-| Property | Primary | Cross-check | Rationale |
-|---|---|---|---|
-| S1 Terminates-in-bound | TLC | none | State-bound safety; TLC sweet spot. P1 (non-P0). |
-| S2 FixpointAtTerm | TLC | Z3 (QF_LIA) | Load-bearing algebraic claim `total = Seed + Body(total)` at done; P0 per BP-16 (silent fixpoint drift is unrecoverable). TLC checks over bounded Keys; Z3 discharges the pointwise identity independently of state enumeration. |
-| S3 GapMonotone | TLC | none | Pure state invariant on `total`; P1. |
-| S3' DeltaSingleSigned | TLC | none | Pure state invariant on `delta`; P1. Redundant-looking but catches a wrong-step bug S3 would miss (delta could be wrong while total stays in {0, SeedWeight} on a lucky trace). Keep. |
-| SupportMonotone | TLC | Alloy (optional) | Structural/shape claim; TLC is fine under the bounded chain body. Alloy at bound 4-6 is cheaper if the body ever generalises beyond a successor chain. Do not add Alloy today. |
-| S4 Sign-distribution | FsCheck (Z-linearity + negation over ZSet generator) | Lean (deferred) | Two-trace quantification (`total(-w) = -total(+w)`) is NOT a TLA+ property — TLC would need to enumerate the product state space of two runs, which is O(states^2) for a property F# can check in milliseconds. Anti-TLA+-hammer: hard no on stuffing S4 into this spec. Lean is the escalation path only if FsCheck finds a counterexample the team cannot triangulate. |
-| Refinement to counting (SeedWeight = 1) | FsCheck cross-trace | TLA+ refinement mapping (deferred) | See below. |
-
-### Round-35 author's plan — verdict: **right, with one tightening.**
-
-TLC for S1+S2+S3+S3'+SupportMonotone: correct. FsCheck for S4:
-correct. Tightening: **S2 needs a Z3 cross-check** under BP-16. S2
-is the only P0 on this spec (silent fixpoint drift corrupts
-downstream total, unrecoverable). Single-tool P0 evidence is
-insufficient (BP-16); TLC-only would ship if TLC's bounded scope
-accidentally dodges a pointwise identity failure. Z3 lemma on
-`total = Seed + Body(total)` at arbitrary SeedWeight closes the
-arithmetic axis TLC only samples. Effort: S (pointwise identity,
-add to `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`). S1/S3/S3'/
-SupportMonotone are P1 — single tool is fine.
-
-### Refinement mapping — FsCheck cross-trace wins
-
-Three candidates:
-
-1. **TLA+ refinement mapping** (signed -> counting under SeedWeight=1).
-   Correct in theory; TLAPS-grade work, L effort, and the claim is
-   already visible by construction in the spec comments (closure[k] =
-   total[k], paths[k] = total[k]). Over-broad. **No.**
-2. **Lean lemma.** Would require lifting both iterations into Lean;
-   the counting spec has no Lean counterpart. Over-broad. **No.**
-3. **FsCheck cross-trace property** — run both `RecursiveCounting`
-   and `RecursiveSignedDelta` on the same (seed, body) under
-   SeedWeight = 1; assert `counting.closure[k] = signed.total[k]`
-   at every tick. Effort: S. Executes real code, catches divergence
-   between the two shipped combinators, and discharges the refinement
-   claim at the implementation level where it bites. **Yes.** Lives
-   in `tests/Tests.FSharp/Formal/` next to existing cross-checks.
-   Cites BP-16 (two independent tools on a P0-adjacent claim).
-
-### Readiness gate — TLA+ spec is ready to model-check
-
-`.cfg` has `SPECIFICATION Spec`, `INVARIANT Safety`, concrete
-constants (`MaxKey=3 MaxIter=6 SeedWeight<-PosOne`). Safety bundles
-TypeOK + TerminatesInBound + FixpointAtTerm + GapMonotone +
-DeltaSingleSigned + SupportMonotone. State space is bounded (Keys
-= 0..3, Weights = -4..4, MaxIter = 6); well under TLC's knee.
-Round-35 header comment records "All four values were verified
-round 35 (all invariants pass, 6 states / depth 5)" — spec is
-already model-checked at four SeedWeight points. **No pre-TLC pass
-needed.** One small follow-up for round 42: add `PROPERTY
-EventuallyDone` to the .cfg to exercise the liveness claim
-(currently only Safety is in the invariant list). Optional, not a
-blocker.
-
-### Graduation verdict — CONDITIONAL PASS
-
-`RecursiveSigned.fs` may graduate from skeleton to shipped in round
-42 subject to both:
-
-(a) **Tool-coverage prereqs landed in CI**, in priority order:
-
-    1. Wire `RecursiveSignedSemiNaive.cfg` into the TLC CI job
-       alongside the sibling counting spec (round-42 opener task).
-    2. Add Z3 lemma for S2 (`total = Seed + Body(total)` at
-       fixpoint, arbitrary SeedWeight) to the formal-laws test
-       suite.
-    3. Add FsCheck property for S4 (sign-distribution, two-trace).
-    4. Add FsCheck cross-trace refinement (signed vs counting at
-       SeedWeight = 1).
-
-(b) **F# implementation landed by round-42 author** matching the
-    planned signature in the skeleton comment, with P1/P2/P3
-    enforced at the caller (compile-time phantom type preferred;
-    runtime reject of Distinct-in-body acceptable).
-
-Blockers: none at routing level. The F# file is currently
-zero-risk (not in csproj, comment-only); leaving it in place
-through round 42 costs nothing. The TLA+ spec is already
-model-checked and can land in the CI gate today independently of
-the F# landing.
-
-### Portfolio delta
-
-Round 41 numerator grows by 1 (new TLA+ spec enters gate). Round
-42 numerator grows by 3 (Z3 lemma + two FsCheck properties).
-Denominator grows by 1 at round 41 (BUGS.md gains nothing; this
-was already on the "needs formal coverage" list since round 35).
-Ratio trends up. Routing keeping up with claim intake.
-
+## Round 41 -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
 
 ## Trigger Recognition Log (081KSBMG30008QG0R000WJ9FMP landing — round-69 routing decision)
 
@@ -173,87 +73,9 @@ Format: table with columns `Round | Trigger | Outcome | Artifact`. One row per r
 If this section saturates (NOTEBOOK approaches 3000-word cap from log entries alone), revisit Option 3: create a separate cross-cutting ledger (e.g., `docs/research/verification-routing-decisions.md` — does not yet exist; hypothetical destination).
 
 
-## Safety-floor arc — full 3-leg BP-16 across all four floors (2026-06-07)
+## Safety-floor arc -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
 
-Persisted via the shadow's writer clone (the formal-verification-expert role has no Write tool;
-the verification + close were done live in the view but the view is read-only — this is the durable
-record on origin). All figures below were verified by EXECUTION, not source-reading (verify-before-record).
-
-**non-register-collapse** (workitem 081KTFFFQ1C, FROZEN-CORE §B → DISCHARGED) — full 3-leg BP-16:
-
-- Facet-1 TLA+ `tools/tla/specs/NonRegisterCollapse.tla` (no-capture `lastRaiser[t]=t`; consent-guarded
-  `Capture` unreachable in the weight-free base; `SelfRaiseRightOpen`). TLC-green, gated. PR #6721.
-- Facet-2 Lean `tools/lean4/Safety/NonRegisterCollapse.lean` (axiom-free `non_collapse` etc.; corollary
-  of `IdentityForcesPrivacy.private_is_persistent_locus`, priv:=standing). Gated + sorry-free. PR #6721.
-- Leg-3 FsCheck `tests/Tests.FSharp/Formal/NonRegisterCollapseCrossVerify.Tests.fs` over deployed
-  `GCounter.Merge` (my routing: shipped combinator, NOT Binding.Standing). 4 properties green. PR #6723.
-  Scope (mine, verbatim in registry): ANALOGUE not replay — GCounter is a pure register, no
-  commons/standing split; corroborates the CRDT-join premises, not the standing-locus semantics.
-
-**bifurcation** — the "missing FsCheck leg" was a STALE-REGISTRY miscount, not reality. The leg already
-existed (`BifurcationCrossVerify.Tests.fs` over deployed `Binding.Divvy`); the registry row just said
-"not yet done". Corrected (PR #6724) + the omitted **associativity** property added (the 081KT07NV0008QG0R001YDB73K class:
-commutative+idempotent-but-non-associative passes the old 2 properties yet diverges under reorder).
-Verified by execution: **5 properties green** (`Divvy.merge` is a lawful join). Sub-item closed.
-
-**Corrected ratios (supersede the earlier 0.75):**
-
-- Safety-floor BP-16-compliant (≥2 independent tools) = **4/4 = 1.00**.
-- Safety-floor full-3-leg = **4/4 = 1.00** (was mis-stated 3/4 from the stale bifurcation row).
-
-The four floors: child-floor, right-to-refuse-binding, bifurcation, non-register-collapse — each at all
-three legs. No open bifurcation routing item for Kenji (the Face-3 item is retired — it already existed).
-
-
-## Vacuity round — the Landauer lane (2026-08-13, PR pending)
-
-Third instance of the vacuity class this session, and the first one I fixed rather than flagged.
-Sibling cases: `QuorumCollateral` / `WagerSolvency` stutter (TLC deadlock checks vacuous, flagged
-against my own specs); B AC3 `= true` (2026-08-09 rule table).
-
-CHECKED, all by execution:
-
-- `entropy-tracker.ts` `verifyLandauer` — `heatPaid`, `floor`, `bitsErased` all read
-  `entropy_heat`, so the comparison was `x >= x`. #10476 named this.
-- **`second_law_satisfied` was ALSO vacuous, and #10476 did not name it.** The test was
-  `state + heat >= 0`; `measure(k)` moves `k` between ledgers and leaves the sum alone for
-  every `k`, so only `branch` (+1) ever moves it. Exhaustive sweep over the 6-op alphabet to
-  length 5: `false` occurred **zero times**. `holds` therefore reduced to `entropy_heat >= 0`.
-- `tools/Z3Verify/landauer-floor-lemma.smt2` — **vacuous**. Its second-law premise
-  `-k + heat >= 0` IS the conclusion `heat >= k`. Deleting only that premise flips the file
-  from unsat to **sat, model k=1.0 heat=0.0** (an erasure paying nothing). Header advertised
-  four lemmas F1-F4; the file contained one. **Not gated by any workflow** — that is why it
-  rotted unseen.
-- `LandauerFloor.lean` — NOT vacuous, but not faithful. Its `measure` carries `k <= s.state`,
-  which the TypeScript does not implement, and its heat-monotonicity theorems are discharged
-  by `Nat` rather than by the model. The implementation uses signed `number`, where the same
-  property is falsifiable — and was false. A formal artefact that discharges an obligation
-  using a type the implementation lacks has not discharged it. Gated (lean-proof.yml).
-
-Routing verdict: **no non-trivial Landauer invariant exists in normalized units** — the ledger
-pays exactly the floor by construction, so the honest fix is rename + narrow, not a stricter
-comparison. Real falsifiable invariants that DO exist here: heat monotonicity (arrow of time),
-heat non-negativity, erasures-fully-admitted. The third is **false in shipped callers by
-design** (`createNonAdjMap`, `event-sink-folder`), so it is reported, never enforced — a check
-that fails spuriously gets disabled, which is the other half of this defect class.
-
-Portfolio delta: Landauer lane goes from 1 gated artefact (Lean) to 2 (Lean + the SMT lemma,
-newly gated by `tools/Z3Verify/landauer-floor-lemma.test.ts`, z3 AND cvc5, BP-16). The SMT
-runner asserts the verdict sequence CONTAINS a `sat` — an all-unsat proof file is
-indistinguishable from a tautology, so non-vacuity is now a gate condition, not a review habit.
-
-Open for Kenji, CHECKED counts: 9 `.smt2` files. 4 now have an executing companion runner
-(chsh-band-gate-agreement, consolidate-quadratic-envelope, gen-denotation-splitmix64, and
-landauer as of this PR). 5 have none: externality-bound, light-time-endpoint-speed-envelope,
-predictive-advantage, privacy-budget-net-positive-regime, whitewash-economics.
-
-Sharper than the count: **every pre-existing runner asserts all-unsat**, so not one of them
-could have detected the defect I just found. An all-unsat expectation is satisfied by a
-tautology. The routing recommendation is that each lemma file carry a non-vacuity probe whose
-expected verdict is `sat`, and that the runner assert the SEQUENCE rather than "every verdict is
-unsat". That is a 4-file retrofit, not a rewrite.
-
----
+## Vacuity round -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
 
 ## 2026-08-14 -- Meno braided ladder: Q3 then Q1. Balanced, and it stops there.
 
@@ -304,48 +126,8 @@ root -- orphan guard checked, it is fine) to 1 gated + 2 routed
 Denominator unchanged. Also fixed a garbled sentence in `MenoBraided.fs` left by a bad edit on
 2026-08-13 -- the kind of damage that makes a docstring stop being readable evidence.
 
-## 2026-08-14 -- Z-EPS run: the AmplitudeEmu threshold drop SIGNALS. Verdict: conjecture HOLDS.
+## 2026-08-14 -- Z-EPS -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
 
-Handed by Lumen (PR #10551 open, docs/research/2026-08-14-the-quorum-fold-is-not-a-join-...).
-My doc: docs/research/2026-08-14-z-eps-run-the-threshold-drop-signals-...-soraya.md.
-Artefact: tests/Tests.FSharp/Formal/AmplitudeEmuSignalling.Tests.fs (12 tests, in-gate).
-
-ROUTING CALL. Property class is NOT on the table: IEEE-754 arithmetic near a hard threshold,
-and the claim is EXISTENTIAL. Route = analytic construction + executable witness on shipped
-code. Rejected: TLC (no reals; the exact carrier it would need makes the defect INVISIBLE --
-false green on a P0, the sharpest wrong-tool cost I have logged); Z3 (right for the 3-line
-non-linearity lemma, unknown for the claim); Lean (weeks, wrong object); FsCheck as primary
-(witness set is measure-zero -- a green run would have been a FALSE NEGATIVE). FsCheck is
-correct AFTER the witness -- Adaeze's lane, filed as open item 3.
-
-THE LESSON WORTH KEEPING: the offered framing was that the algebra might settle it without an
-experiment. It does not, and the error is a converse slip. "Linear implies no-signalling" has
-contrapositive "signalling implies nonlinear", NOT "nonlinear implies signalling" -- global
-renormalisation is nonlinear and signals nothing. Algebra voids the GUARANTEE; only a witness
-establishes the CLAIM. Gisin 1990 is a genericity result, not a theorem about a given map.
-Generalise: whenever a conjecture cites an impossibility theorem, check which direction of the
-implication the citation actually licenses before routing to a prover.
-
-RESULT. Bob-local, trace-preserving op moves Alice's marginal 0.2647 -> 0.0000 (26 points).
-Support flips [0;1] -> [0]. Survives on a unit-norm state (1.44e-12 -> exactly 0, support still
-flips). Control = the SAME RAY at 1e6 -- invariant to 1e-16, drop fired 0 times. Exact-integer
-arm gives 9/34 under both settings. Drop-fired asserted by branch count in BOTH arms.
-
-NON-VACUITY. Mutation check run: EPS := 0.0 kills exactly the 5 drop-dependent tests and leaves
-preconditions + controls + exact arm green. Correct kill pattern. Every arm calls shipped
-AmplitudeEmu.step -- the chsh-probe failure (own copy of the definitions) is not repeatable here.
-
-CONSEQUENCE. "Tune EPS" is dead as a class, not just inelegant: for any EPS > 0 there is a ray
-where the shift is order 1, because the shift is scale-dependent and the theory is not. Raises
-urgency on 081KZZYWBN2087G0R003NAQQAF (exact carrier) -- did NOT do it, separate item.
-
-RING NOTE. Nothing moved. Confirms the standing FsCheck ring caveat: random search is the wrong
-generator for measure-zero witness classes; it must be seeded by construction.
-
-DENOMINATOR. +1 path (AmplitudeEmu drop) flagged; +1 numerator (now in-gate). One NEW gap
-opened and named, not closed: WSet.consolidate carries its own isZero at 1e-12 on COMPONENTS,
-six orders tighter than AmplitudeEmu's on INTENSITY. Same shape, un-run. Do not assume it
-inherits this result.
 ## Round 2026-08-14 — the flags a spec is measured under ARE part of the claim
 
 Closed `081KZYRDMZW087G0R0012K4QA0`, which I raised and then raised P2 to P1 after it bit me.
@@ -452,3 +234,40 @@ wiring count. Reinstate once that tool reads the rosters.
 - Did not touch open PR #12014 (`CliffordPeriodicity`). Its two mod-8 predicates
   ARE the same predicate -- Aaron's own find; routing call is refactor, not test.
 - `CliffordPeriodicity.fs` is NOT on main as of 90e96dc542.
+
+## 2026-08-18 -- ambient time in TESTS is a routing target, and the tool is NOT a prover
+
+Aaron authorized a CLASS fix for the ambient-time-in-tests pattern (it 'leads to the worse bugs
+and scaling issues'). Established instance: poll-pr-gate-batch.test.ts, 14 pure in-memory tests,
+MEASURED 1366ms idle vs 5.46s under load on the same machine class, red at exactly the 5000ms
+per-test cap on six PRs. A 4x spread on identical code IS the finding.
+
+ROUTING CALL, and it is the one worth remembering. The property is 'no test asserts on
+wall-clock' -- LEXICAL over source text, not semantic over a state space. TLA+/Z3 are the wrong
+axis outright (no transition system, no arithmetic). The real contest was Semgrep vs ESLint vs a
+bun lint script, and the decider was NOT expressiveness -- all three match the pattern. It was
+the SUPPRESSION MECHANISM: nosemgrep and eslint-disable-next-line are inline comments,
+invisible in any roster, added by the same edit that introduces the violation. For a check whose
+whole purpose is that an allowlist cannot silently swallow a new violation, the tool that offers
+inline suppression defeats the check. Chose a count-pinned registry file, copying
+DeterminismLint.Tests.fs (which pins EXACT occurrence counts in src/Core, for the same stated
+reason). Ratchet bites both ways: a 7th sleep behind 6 justified ones fails, and so does a stale
+row that has stopped constraining anything.
+
+GENERALIZATION worth carrying: when routing a guard, ask what its ESCAPE HATCH looks like before
+asking what it can express. A checker is only as strong as the weakest way to silence it.
+
+SWEEP RESULT, honest: 1061 test files, 25 sites, 9 files. The F# suite is essentially CLEAN --
+most F# Thread.Sleep is filesystem-retry backoff or starting-gun jitter that cannot flip a
+verdict; the one genuine case (SystemClock ticks forward: Thread.Sleep 5 then t1 > t0) is a
+Windows timer-granularity latent on a continue-on-error leg. Did not manufacture more.
+
+MY OWN VACUITY, recorded because it is the useful part: the first anti-vacuity assertion I wrote
+for the ferry backpressure test SURVIVED its mutation (raising maxQueueSize 2 -> 10000 left it
+green), because an async enqueue always costs a microtask whether or not the queue is full. A
+check that cannot fail is not a check, and it looked exactly like one that could. Fixed by
+measuring in TURNS instead of microtasks. Turns are the right unit for load-independence.
+
+PORTFOLIO NOTE: this adds a cell in the adversarial-input/taint row that is CHEAPER than Semgrep
+for the allowlist-integrity reason above. The routing table's cheapest-credible-tool column
+should record that the SUPPRESSION SURFACE is part of a tool's cost, not a footnote.
