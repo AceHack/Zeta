@@ -1,11 +1,5 @@
 [
   {
-    "path": "src/Core.TypeScript/forge-host/github/poll-pr-gate-batch.test.ts",
-    "callee": "setTimeout",
-    "count": 3,
-    "reason": "NOT LEGITIMATE -- IN FLIGHT, AND THIS ROW IS A HANDOFF, NOT AN EXEMPTION. This file is the ESTABLISHED instance of the class this audit exists to end: its 14 tests are pure in-memory (injected fakes, Promise.resolve, no I/O) and measured 1366ms idle against 5.46s under load on the same machine class, failing at exactly the 5000ms per-test cap on six open PRs. Three sites remain: a staggered (6-pr)*5ms fan-out at line 131 and two 10ms sequencing sleeps. A separate lane owns the fix, so this change does not touch the file -- two agents editing one file is how a fix becomes a conflict. WHOEVER LANDS THAT FIX MUST DELETE THIS ROW: the count pin will report 'stale row, no longer constraining anything' the moment the sleeps go, and that red is the intended handoff signal rather than a defect. It is deliberately NOT worded as a justification, because it is not one."
-  },
-  {
     "path": "src/Core.TypeScript/shadow/shadow-observer.test.ts",
     "callee": "Bun.sleep",
     "count": 1,
