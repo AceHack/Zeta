@@ -60,6 +60,18 @@
 # (gate.yml "THE FLIP" note) — a human call, not mine. Until then this workflow
 # gives its own red X, which is signal, and does not lock unrelated lanes.
 #
+# ONE VALIDATOR, TWO ARTIFACTS -- SO EACH CALL DECLARES ITS OWN (`--source`)
+# Both steps below run the SAME binary over OPPOSITE texts: the PR description
+# and the squash preimage. Until 2026-08-18 the tool could not tell them apart
+# and its parse-failure text hardcoded "COMMIT MESSAGES", so when the PR-body
+# step emitted it every sentence was false for the artifact actually read -- and
+# it explicitly denied the fix that works (`gh pr edit`). Measured cost: PR
+# #11707 closed and its branch rebuilt chasing a commit-side defect that was not
+# there (#11710), and a second agent caught by the same sentence inside the hour
+# (#11712). `--source` is now REQUIRED at the command line: a step that forgets
+# it exits 2 before reading stdin, rather than printing a guess as a diagnosis.
+# Work item 081M092W2E7087G0R000KDKHWS.
+#
 # SECURITY (docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md): the PR body is
 # ATTACKER-CONTROLLED text. It is routed through `env:` and consumed as a quoted
 # shell variable piped to stdin; it is never interpolated into a `run:` block.
@@ -133,6 +145,7 @@ jobs:
           set -euo pipefail
           printf '%s' "$PR_BODY" \
             | bun src/Core.TypeScript/hygiene/validate-agencysignature-pr-body.ts \
+                --source pr-body \
                 --pr-created-at "$PR_CREATED_AT" \
                 --grandfather-cutover "$CUTOVER" \
                 --author-identity "$PR_AUTHOR"
@@ -169,6 +182,7 @@ jobs:
               "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/commits" \
               --jq '.[].commit.message' \
             | bun src/Core.TypeScript/hygiene/validate-agencysignature-pr-body.ts \
+                --source commit-messages \
                 --pr-created-at "$PR_CREATED_AT" \
                 --grandfather-cutover "$CUTOVER" \
                 --author-identity "$PR_AUTHOR"

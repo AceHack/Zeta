@@ -88,16 +88,41 @@ function runValidator(
  * coverage lane and make a verdict depend on the host PR's commit count. Same
  * reason as `HERMETIC_ENV` above.
  */
-function runScript(
+/**
+ * The ONE spawn in this file, with the argv stated EXACTLY. Everything that
+ * needs a real process goes through here -- including the case that must NOT
+ * carry `--source`, which is why the argv is a parameter rather than a constant.
+ */
+function runScriptRaw(
   input: string,
-  overrides: Readonly<Record<string, string>>,
-): { readonly status: number | null; readonly stdout: string } {
-  const result = spawnSync("bun", [SCRIPT, "--author-identity", "AceHack"], {
+  argv: readonly string[],
+  overrides: Readonly<Record<string, string>> = {},
+): { readonly status: number | null; readonly stdout: string; readonly stderr: string } {
+  const result = spawnSync("bun", [SCRIPT, ...argv], {
     input,
     encoding: "utf8",
     maxBuffer: 16 * 1024 * 1024,
     env: { ...process.env, GITHUB_ACTIONS: "", GITHUB_EVENT_NAME: "", ...overrides },
   });
+  return { status: result.status, stdout: result.stdout, stderr: result.stderr };
+}
+
+/**
+ * The ordinary CI shape: an author identity and a DECLARED artifact. `source`
+ * defaults to `pr-body` only because most cases here read like a description;
+ * the squash-preimage case states `commit-messages` explicitly, exactly as the
+ * workflow's second step does.
+ */
+function runScript(
+  input: string,
+  overrides: Readonly<Record<string, string>>,
+  source = "pr-body",
+): { readonly status: number | null; readonly stdout: string } {
+  const result = runScriptRaw(
+    input,
+    ["--author-identity", "AceHack", "--source", source],
+    overrides,
+  );
   return { status: result.status, stdout: result.stdout };
 }
 
@@ -130,12 +155,18 @@ test("CLI smoke: an underscanned commit list REFUSES through the process boundar
   // 2026-08-17 against a forge that returned 250 of them.
   writeFileSync(eventPath, JSON.stringify({ pull_request: { number: 11528, commits: 475 } }));
   try {
-    const result = runScript(`${GOOD_BLOCK}\n`, {
-      GITHUB_ACTIONS: "true",
-      GITHUB_EVENT_NAME: "pull_request",
-      GITHUB_EVENT_PATH: eventPath,
-      PR_BODY: "a different text — this stdin is the squash preimage, not the body",
-    });
+    const result = runScript(
+      `${GOOD_BLOCK}\n`,
+      {
+        GITHUB_ACTIONS: "true",
+        GITHUB_EVENT_NAME: "pull_request",
+        GITHUB_EVENT_PATH: eventPath,
+        PR_BODY: "a different text — this stdin is the squash preimage, not the body",
+      },
+      // This stdin IS the squash preimage, so it says so -- the same declaration
+      // the workflow's second step now makes.
+      "commit-messages",
+    );
     expect(result.stdout).toContain("REFUSED (UNMEASURED)");
     expect(result.stdout).not.toContain("PASS: AgencySignature");
     expect(result.status).toBe(3);
@@ -239,14 +270,19 @@ describe("parse-failure diagnosis names the real cause", () => {
   });
 
   test("the emitted text distinguishes the two", () => {
-    const absent = runValidator("## Summary\n\nno block\n");
+    const absent = runValidator("## Summary\n\nno block\n", [
+      "--source",
+      "commit-messages",
+    ]);
     // Wording updated 2026-08-17: the message used to say "PR body" while the check
-    // reads COMMIT MESSAGES (it pipes `pulls/N/commits`). That misdirection cost a
-    // real debugging round — a heartbeat PR with a perfect block in its DESCRIPTION
-    // was told the block "was never added". The assertion tracks the distinguishing
-    // phrase, not the prose, so a future rewording does not silently drop coverage.
+    // reads COMMIT MESSAGES (it pipes `pulls/N/commits`). Corrected again 2026-08-18:
+    // the artifact is now DECLARED by the caller rather than hardcoded, because one
+    // hardcoded provenance cannot be true for two opposite inputs — so this case
+    // must state which artifact it is asserting about. The assertion tracks the
+    // distinguishing phrase, not the prose, so a rewording does not silently drop
+    // coverage.
     expect(absent.out).toContain("no commit on this PR carries a");
-    expect(absent.out).toContain("COMMIT MESSAGES, not the PR description");
+    expect(absent.out).toContain("read the COMMIT MESSAGES and nothing else");
     expect(absent.out).not.toContain("RECOVERED-MALFORMED");
 
     // REVERSED 2026-08-16 by Aaron's layout-tolerance ruling, and kept here as
@@ -275,6 +311,126 @@ describe("parse-failure diagnosis names the real cause", () => {
     expect(finalParagraph("a\n\nb\nc\n\n\n")).toEqual(["b", "c"]);
     expect(finalParagraph("only\n")).toEqual(["only"]);
     expect(finalParagraph("\n\n")).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// DEFECT 3 -- ONE validator, TWO opposite artifacts, ONE hardcoded provenance.
+//
+// The workflow pipes the PR DESCRIPTION into this tool in one step and the
+// PR's COMMIT MESSAGES into it in the next. Until 2026-08-18 the parse-failure
+// text asserted COMMIT MESSAGES either way, so on the PR-body step every
+// sentence was false for the artifact actually read -- and the text explicitly
+// denied the fix that works ("a perfect block in the PR description does NOT
+// satisfy it"). It was the vacuity class inside the tool built to enforce
+// against it: a message that cannot be right for both inputs is evidence for
+// neither.
+//
+// Measured cost (2026-08-17, work item 081M092W2E7087G0R000KDKHWS): PR #11707
+// was CLOSED and its branch rebuilt chasing a commit-side defect that was not
+// the cause (#11710, which failed identically); the real remedy was one
+// `gh pr edit --body-file`. A second agent hit the same sentence within the
+// hour (#11712) and had to be intercepted mid-rebuild.
+//
+// THE FALSIFIER: the two invocations must not emit the same bytes, and each
+// must carry ONLY its own artifact's remedy. Before the `--source` option
+// existed the two outputs were byte-identical, so this describe block cannot
+// pass against the old code -- it is not a restatement of behaviour that was
+// already there.
+// ---------------------------------------------------------------------------
+describe("the failure text names the artifact it was actually handed", () => {
+  const NO_BLOCK = "## Summary\n\nWork with no trailer block at all.\n";
+
+  test("pr-body and commit-messages produce DIFFERENT text, each naming its own", () => {
+    const prBody = runValidator(NO_BLOCK, ["--source", "pr-body"]);
+    const commits = runValidator(NO_BLOCK, ["--source", "commit-messages"]);
+
+    // Same verdict -- only the diagnostic moves. Behaviour is unchanged.
+    expect(prBody.status).toBe(1);
+    expect(commits.status).toBe(1);
+
+    // ... and the diagnostic really does move.
+    expect(prBody.out).not.toEqual(commits.out);
+
+    expect(prBody.out).toContain("the PR DESCRIPTION");
+    expect(commits.out).toContain("the PR's COMMIT MESSAGES");
+  });
+
+  test("the pr-body path does NOT send the reader to edit the commit message", () => {
+    const prBody = runValidator(NO_BLOCK, ["--source", "pr-body"]);
+
+    // The remedy it names is the one that works for THIS job, and it is cheap.
+    expect(prBody.out).toContain("gh pr edit");
+
+    // The sentences that cost a closed PR. Each is the old hardcoded text, and
+    // each is false when the artifact read was the description.
+    expect(prBody.out).not.toContain("no commit on this PR carries a");
+    expect(prBody.out).not.toContain("COMMIT MESSAGES, not the PR description");
+    expect(prBody.out).not.toContain("at the very bottom of the COMMIT MESSAGE");
+
+    // Nor does it prescribe the commit-side verification ritual, which cannot
+    // fix a missing block in a description.
+    expect(prBody.out).not.toContain("git interpret-trailers");
+    expect(prBody.out).not.toContain("then push");
+  });
+
+  test("the commit-messages path keeps the commit-side remedy and drops the body one", () => {
+    const commits = runValidator(NO_BLOCK, ["--source", "commit-messages"]);
+
+    expect(commits.out).toContain("no commit on this PR carries a");
+    expect(commits.out).toContain("git interpret-trailers --parse");
+    // Editing the description cannot put a block in a commit message, so this
+    // path must not offer it.
+    expect(commits.out).not.toContain("gh pr edit");
+  });
+
+  test("BOTH requirements stay stated -- neither job claims to be the only one", () => {
+    // The fix must not read as "the block is only needed here". Each message
+    // says the other artifact is judged by a separate job and both are required.
+    for (const source of ["pr-body", "commit-messages"]) {
+      const out = runValidator(NO_BLOCK, ["--source", source]).out;
+      expect(out).toContain("SEPARATE job");
+      expect(out).toContain("BOTH are required");
+    }
+  });
+
+  test("an undeclared source names NEITHER artifact and prescribes both", () => {
+    // The in-process register. It is not a guess dressed as a diagnosis: it
+    // says out loud that nobody declared the artifact.
+    const out = runValidator(NO_BLOCK).out;
+    expect(out).toContain("the text this check was handed");
+    expect(out).toContain("did NOT");
+    expect(out).toContain("required in BOTH places");
+    expect(out).not.toContain("no commit on this PR carries a");
+    expect(out).not.toContain("the PR DESCRIPTION carries no");
+  });
+
+  test("an unknown --source value is a usage error, never a silent fallback", () => {
+    // A typo must not degrade to the neutral register -- that would put the
+    // provenance back under something other than the caller's statement.
+    expect(runValidator(NO_BLOCK, ["--source", "prbody"]).status).toBe(2);
+    expect(runValidator(NO_BLOCK, ["--source"]).status).toBe(2);
+  });
+
+  test("CLI smoke: an OMITTED --source fails closed at the process boundary", () => {
+    // The command line is the level the bug lived at, so it is the level that
+    // refuses: exit 2 (tooling / input error), before stdin is judged, rather
+    // than an undeclared-provenance diagnosis a reader might act on.
+    const omitted = runScriptRaw(NO_BLOCK, ["--author-identity", "AceHack"]);
+    expect(omitted.status).toBe(2);
+    expect(omitted.stderr).toContain("--source is required");
+    expect(omitted.stdout).not.toContain("FAIL");
+
+    // ... and the same input WITH the flag gets a real verdict, so the refusal
+    // above is the flag's absence and not a broken script.
+    const declared = runScriptRaw(NO_BLOCK, [
+      "--author-identity",
+      "AceHack",
+      "--source",
+      "pr-body",
+    ]);
+    expect(declared.status).toBe(1);
+    expect(declared.stdout).toContain("the PR DESCRIPTION");
   });
 });
 

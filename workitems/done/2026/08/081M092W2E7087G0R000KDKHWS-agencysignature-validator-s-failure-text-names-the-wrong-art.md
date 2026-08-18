@@ -1,11 +1,12 @@
 ---
 id: 081M092W2E7087G0R000KDKHWS
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: agencysignature-validator-s-failure-text-names-the-wrong-art
 title: "agencysignature validator's failure text names the wrong artifact — sends you to fix the commit when it read the PR body"
 created: 2026-08-18T00:03:22.183Z
+completed: 2026-08-18T13:38:55.707Z
 depends_on: []
 composes_with: []
 ---
