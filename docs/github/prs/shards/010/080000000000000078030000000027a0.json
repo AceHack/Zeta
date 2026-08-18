@@ -1,0 +1,12 @@
+{
+  "pr_number": 10144,
+  "archive_path": "docs/history/pr-reviews/PR-10144-deps-bump-g-research-fsharp-analyzers-and-4-others.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T09:46:01.063Z",
+  "schema_version": "v1",
+  "commit_sha": "ff8e408b1ee6bb7ff854840731bcc6fe46481414",
+  "title": "deps: Bump G-Research.FSharp.Analyzers and 4 others",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T08:56:15Z",
+  "head_ref": "dependabot/nuget/nuget-minor-patch-39e8491b88"
+}
