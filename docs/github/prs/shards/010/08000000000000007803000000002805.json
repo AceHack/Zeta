@@ -1,0 +1,12 @@
+{
+  "pr_number": 10245,
+  "archive_path": "docs/history/pr-reviews/PR-10245-feat-key-custody-clean-room-derivation-b-r1-r12-all-6-acceptance-criteria.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T10:27:45.857Z",
+  "schema_version": "v1",
+  "commit_sha": "aa1a43c455aedd67abb3cf7cfd21a5d24f692bc3",
+  "title": "feat(key-custody): clean-room derivation B — R1–R12 + all 6 acceptance criteria",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T22:52:45Z",
+  "head_ref": "claim/key-custody-derivation-b"
+}
