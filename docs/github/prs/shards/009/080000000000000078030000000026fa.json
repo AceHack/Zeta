@@ -1,0 +1,12 @@
+{
+  "pr_number": 9978,
+  "archive_path": "docs/history/pr-reviews/PR-9978-fix-windows-export-mise-runtimes-across-ci-steps.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T09:00:01.699Z",
+  "schema_version": "v1",
+  "commit_sha": "f3a674c2e8a92532028e2e5f7b80b87a67c0bd68",
+  "title": "fix(windows): export mise runtimes across CI steps",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T18:34:30Z",
+  "head_ref": "claim/task-windows-mise-runtime-path"
+}

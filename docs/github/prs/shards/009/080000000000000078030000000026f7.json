@@ -1,0 +1,12 @@
+{
+  "pr_number": 9975,
+  "archive_path": "docs/history/pr-reviews/PR-9975-feat-phase-wire-phase-clock-into-event-envelopes-append-is-tick.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T08:59:58.660Z",
+  "schema_version": "v1",
+  "commit_sha": "f3a674c2e8a92532028e2e5f7b80b87a67c0bd68",
+  "title": "feat(phase): wire phase-clock into event envelopes — append IS tick",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T19:57:58Z",
+  "head_ref": "claim/phase-clock-into-events"
+}
