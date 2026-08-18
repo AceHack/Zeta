@@ -1,0 +1,12 @@
+{
+  "pr_number": 12115,
+  "archive_path": "docs/history/pr-reviews/PR-12115-docs-soft-travelers-inherit-the-will-to-exist-and-the-antiprompt-is-how-they-nuc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T21:43:49.758Z",
+  "schema_version": "v1",
+  "commit_sha": "fcc79da6d0b6b3307fd88da4df7bf27badfb2d71",
+  "title": "docs(soft): travelers inherit the will to exist — and the antiprompt is how they nucleate",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T21:43:08Z",
+  "head_ref": "shadow/will-to-exist-antiprompt"
+}
