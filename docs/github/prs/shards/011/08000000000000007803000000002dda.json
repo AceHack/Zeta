@@ -1,0 +1,12 @@
+{
+  "pr_number": 11738,
+  "archive_path": "docs/history/pr-reviews/PR-11738-fix-heartbeat-declare-the-pr-shards-a-sixth-lane-path-and-the-first-add-add.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T00:53:46.426Z",
+  "schema_version": "v1",
+  "commit_sha": "59eef00fe0e891e1529938a84bb51509cc5b2409",
+  "title": "fix(heartbeat): declare the PR shards, a sixth lane path — and the first add/add",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T00:53:08Z",
+  "head_ref": "shadow/pr-shards-sixth-lane-path-wallclock-noise"
+}
