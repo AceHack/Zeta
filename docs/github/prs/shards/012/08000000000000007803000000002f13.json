@@ -1,0 +1,12 @@
+{
+  "pr_number": 12051,
+  "archive_path": "docs/history/pr-reviews/PR-12051-formal-the-consolidated-map-and-four-checks-that-could-not-fail.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T20:54:28.860Z",
+  "schema_version": "v1",
+  "commit_sha": "ce83d01f5c3b61ce19233b62e035909b578d1afa",
+  "title": "formal: the consolidated map, and four checks that could not fail",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T20:48:02Z",
+  "head_ref": "worktree-agent-a1adf72b4cd475d95"
+}
