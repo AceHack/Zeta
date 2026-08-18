@@ -158,3 +158,34 @@ data/rs-blocks.jsonl                     merge=union
 docs/observe-events/.rs-buffer-*.json   merge=theirs
 data/vault-state.json                   merge=theirs
 data/vault-roster.json                  merge=theirs
+#
+# `docs/github/prs/shards/**/*.json` — added 2026-08-18 after soraya's tick wedged on a run of
+# `CONFLICT (add/add)` across many shards at once. SIXTH member of the class, and the first that
+# is ADD/ADD rather than a content conflict: two branches each CREATED the same shard, so the
+# merge base has neither side.
+#
+# WHY TAKING ONE SIDE IS LOSSLESS HERE, and this is the repo's own rule rather than one invented
+# for the merge driver. Measured on the wedging pair (PR 9180, shard .../009/…23dc.json): both
+# files are 545 bytes and differ in EXACTLY TWO keys —
+#     fetched_at:  main 2026-07-02T18:35:46.863Z   lane 2026-08-17T13:47:37.443Z
+#     commit_sha:  main 764d57a2…                  lane 8ca0ad39…
+# `pr_number`, `archive_path`, `title`, `source_ids` and `schema_version` are byte-identical.
+# Those are precisely the two fields `pr-manifest-shards.ts` already excludes from equality, in
+# `equalModuloWallClockNoise`: "the two fields that drift between runs WITHOUT indicating any
+# substrate change — `fetched_at` (wall clock) and `commit_sha` (moves whenever main moves)."
+# The writer honours that rule and preserves existing bytes on a match. So the codebase ALREADY
+# declares these two records the same record; picking either is picking between two spellings of
+# one fact.
+#
+# WHY THE WRITER'S OWN GUARD COULD NOT PREVENT THIS, stated so nobody reads this as a writer bug:
+# `writeShard` can only preserve bytes it can SEE — its check is `existsSync(path)` in ONE
+# checkout. Two branches that each create the shard from a tree where it is absent never observe
+# each other, so the guard cannot engage. That is inherent to concurrent creation on divergent
+# branches, not a defect in `writeShard`, and it is why the resolution belongs at the merge layer.
+#
+# THE FAILURE MODE THIS DOES NOT COVER, stated because it is the real risk: if two sides ever
+# differ SUBSTANTIVELY — a different `archive_path` or `title` for the same `pr_number` — `theirs`
+# takes the lane's and drops main's silently. Nothing here detects that. It is not reachable by
+# the wall-clock drift above, and `pr-manifest-integrity` catches duplicate keys rather than
+# divergent values, so if shards ever become editable in place this line must be revisited.
+docs/github/prs/shards/**/*.json        merge=theirs

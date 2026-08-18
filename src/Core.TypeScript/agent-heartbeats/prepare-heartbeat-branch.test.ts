@@ -248,6 +248,41 @@ describe("prepareHeartbeatBranch", () => {
     expect(git(work, "config", "--local", "merge.theirs.driver")).toBe("cp -f -- %B %A");
   });
 
+  it("carries a PR shard both sides CREATED, keeping one whole record", () => {
+    // The shape that wedged soraya at 00:17Z on 2026-08-18: `CONFLICT (add/add)`, not a content
+    // conflict. Both branches created the same shard, so the merge base has NEITHER side — which
+    // is why this needs its own case instead of reusing `partialFlush` (that helper seeds the
+    // path on main first, producing the content-conflict shape this one is specifically not).
+    const { work } = fixture();
+    const p = "docs/github/prs/shards/009/080000000000000078030000000023dc.json";
+    seedAttributes(work);
+
+    // Byte-for-byte the live divergence: same record, two spellings of the wall clock.
+    const shard = (fetchedAt: string, commitSha: string): string =>
+      `${JSON.stringify({ pr_number: 9180, archive_path: "docs/history/pr-reviews/PR-9180.md", source_ids: [], fetched_at: fetchedAt, schema_version: "v1", commit_sha: commitSha, title: "feat(hall): LLMTV society grid" }, null, 2)}\n`;
+
+    git(work, "switch", "-c", "heartbeat/alexa");
+    commitFile(work, p, shard("2026-08-17T13:47:37.443Z", "8ca0ad39"), "lane creates the shard");
+    pushLane(work);
+
+    git(work, "switch", "main");
+    commitFile(work, p, shard("2026-07-02T18:35:46.863Z", "764d57a2"), "main creates the same shard");
+    git(work, "push", "origin", "main");
+
+    const result = prepareHeartbeatBranch("alexa", work);
+    expect(result).toMatchObject({ ok: true, value: { remoteFound: true, carried: true } });
+
+    // The point of `theirs` over `union` here: the result must be ONE parseable record, not two
+    // concatenated objects. Asserting `JSON.parse` is what makes the wrong driver fail loudly.
+    const merged = readFileSync(join(work, p), "utf8");
+    const parsed = JSON.parse(merged) as { pr_number: number; title: string; archive_path: string };
+    expect(parsed.pr_number).toBe(9180);
+    // The substantive fields are identical on both sides, so they must survive whichever side won.
+    expect(parsed.title).toBe("feat(hall): LLMTV society grid");
+    expect(parsed.archive_path).toBe("docs/history/pr-reviews/PR-9180.md");
+    expect(merged).not.toContain("<<<<<<< HEAD");
+  });
+
   it("still refuses a conflict outside the declared lane paths", () => {
     const { work } = fixture();
     seedAttributes(work);
