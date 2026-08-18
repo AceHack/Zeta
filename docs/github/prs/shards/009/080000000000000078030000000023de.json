@@ -1,10 +1,15 @@
 {
   "pr_number": 9182,
   "archive_path": "docs/history/pr-reviews/PR-9182-feat-llmtv-reticulum-broadcast-wiring-the-society-s-minds-on-the-mesh-one-way-sh.md",
-  "source_ids": [],
-  "fetched_at": "2026-07-02T18:42:24.637Z",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RiN76",
+    "comment:PRRC_kwDOSF9kNM7RiN7z",
+    "thread:PRRT_kwDOSF9kNM6N_yc9",
+    "thread:PRRT_kwDOSF9kNM6N_ydD"
+  ],
+  "fetched_at": "2026-08-17T13:47:44.203Z",
   "schema_version": "v1",
-  "commit_sha": "06a551e531e6bbc3a1a4c3aa486bd5025c879020",
+  "commit_sha": "8ca0ad39ea905023b38ce5620acb2e08fee35bd9",
   "title": "feat(llmtv): Reticulum broadcast wiring — the society's minds on the mesh, one-way (shadow*)",
   "state": "MERGED",
   "merged_at": "2026-07-02T18:41:57Z",
