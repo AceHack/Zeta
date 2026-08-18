@@ -147,6 +147,7 @@
     <Compile Include="ZetaIrV3.Tests.fs" />
     <Compile Include="ZetaIrV4.Tests.fs" />
     <Compile Include="ZetaIrMinimalSet.Tests.fs" />
+    <Compile Include="HomoiconicSeam.Tests.fs" />
     <Compile Include="ZetaIrNormalizer.Tests.fs" />
     <Compile Include="ZetaIrCanonicalizer.Tests.fs" />
     <Compile Include="ZetaIrEval.Tests.fs" />
