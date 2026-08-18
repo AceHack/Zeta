@@ -3,7 +3,7 @@
     "generator": "tick-metrics-writer.ts",
     "mock": false,
     "derived_from": "data/tick-shards/**/*.json",
-    "shard_count": 879,
+    "shard_count": 880,
     "rollup_max_frames": 1000
   },
   "frames": [
@@ -10554,6 +10554,18 @@
       "t": "2026-08-17T23:51:59.663Z",
       "ticks_24h": 395,
       "total_events": 1756
+    },
+    {
+      "agents_active": 6,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "attest_peer",
+      "last_agent": "otto",
+      "last_mode": "work",
+      "t": "2026-08-18T00:14:03.454Z",
+      "ticks_24h": 404,
+      "total_events": 1766
     }
   ]
 }
