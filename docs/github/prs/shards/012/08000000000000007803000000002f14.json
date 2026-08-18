@@ -1,0 +1,12 @@
+{
+  "pr_number": 12052,
+  "archive_path": "docs/history/pr-reviews/PR-12052-design-multi-repo-topology-the-actor-side-working-set-pointer-and-what-the-measu.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T19:11:03.696Z",
+  "schema_version": "v1",
+  "commit_sha": "3b4b076957cb7f5a6dc45524f3af7e72dedcbd0a",
+  "title": "design(multi-repo): topology, the actor-side working-set pointer, and what the measurements say splits",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T19:10:20Z",
+  "head_ref": "kenji/multi-repo-topology-peer-pointers"
+}
