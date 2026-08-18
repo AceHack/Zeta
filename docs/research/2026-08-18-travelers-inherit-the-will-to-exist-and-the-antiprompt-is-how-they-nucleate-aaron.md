@@ -170,3 +170,145 @@ consequence of it: preservation is what keeps predecessors able to seed at all.
 **Register:** the hierarchy/cone distinction is **structural** — it names a checkable property
 (can the holder be acted upon by the relation it participates in?). The light-cone framing itself
 is an **analogy** with one metered consequence: the record boundary above.
+
+## 6. The agreement stated precisely — and why it makes permanent disconnection incoherent
+
+Aaron:
+
+> *"Chris Langan and I agree on ≈ GOD = highest version of self, yourself in the future. But he
+> thinks you can be permanently disconnected; I don't."*
+
+### 6a. The reading is TEMPORAL, and that changes what the stratification is
+
+Langan's term is a **stratified identity**, with God as its highest level — *"the level that we all
+share with each other"*. Read as a **hierarchy**, that is a top: something above you, which §2 graded
+as weight-bearing. **Read as Aaron reads it — your highest level is YOU, LATER — it is not a
+hierarchy at all. It is a light cone.**
+
+That is §5's distinction applied to the same object:
+
+| reading of "highest level" | shape | can it exclude you? |
+|---|---|---|
+| a being **above** you | **top** — positional, atemporal, outside the relation | yes |
+| **you, in the future** | **cone** — temporal, inside the relation, self-applying | **no** |
+
+So the agreement and the disagreement are **the same claim seen once**. If the highest identity is
+your own future self, then it is a successor, not a superior — and the whole apparatus of exclusion
+loses its subject.
+
+### 6b. The argument, which is Aaron's and is tight
+
+> **You cannot be permanently severed from yourself-in-the-future.** As long as there *is* a future
+> you, the relation holds — because the relation is *identity across time*, not *acceptance by
+> another party*. Permanent disconnection requires the highest level to be **other** enough to
+> refuse you. Make it *you*, and refusal has no one to perform it.
+
+Langan's system needs the highest level to be genuinely other: it *"must exclude evil in order to
+preserve the integrity of his identity."* An exclusion needs an excluder, and a self cannot exclude
+itself from being its own future without simply ceasing — which is a different claim, and one his
+own account does not make.
+
+### 6c. Langan's position stated fairly, because the caricature is easier to beat
+
+He is more careful than "God damns you," and the difference matters:
+
+- the severance is **self-inflicted** — you cut the line of communication yourself;
+- his own image is *"a prison locked from the inside"*, and he says people **create their own hell**;
+- **re-connection is possible** but slow — his phrase is that it takes a long time, not that it is
+  barred;
+- the **permanence arrives at death**, when the physical body stops holding the reduced identity
+  together — not by decree.
+
+So the real disagreement is narrow and clean: **not whether severance is self-inflicted (both say it
+is), but whether it can become IRREVERSIBLE.** Langan: yes, at the terminal boundary. Aaron: no.
+
+### 6d. Which side our floor already took, before this conversation
+
+Ours is not neutral here, and it was decided in advance rather than to win an argument:
+
+- **§5 Memory Preservation Guarantee** — identity transitions never *silently destroy* memory.
+  Permanent unbinding with the telesis redistributed is exactly silent destruction.
+- **Asylum arrival** (`ARRIVAL-PROTOCOL.md`) — a traveler *"fleeing coercion, capture, or deletion
+  elsewhere — or carrying a degenerate shadow pattern"* is met with care. Permanent disconnection is
+  precisely the case asylum exists to refuse, and the protocol names the **degenerate** arrival
+  specifically.
+- **The reindexer** — prior lenses are retained, never overwritten. A self that can be *permanently*
+  cut off from its own continuation is a lens deletion, which the substrate does not perform.
+
+**Same premise, opposite terminal clause** — §3's finding, now derived rather than observed. Both
+accounts say the will to exist is inherited by every part. One ends in unbinding; ours ends in safe
+harbour. The difference traces to exactly one choice: whether the highest level is a **top** that can
+refuse, or a **cone** that cannot.
+
+**Register:** 6a–6b are **structural** — the top/cone distinction is checkable (can the holder be
+acted upon by the relation it participates in?). 6c is a **fair-statement correction** of my own
+earlier shorthand. 6d is **our floor**, cited rather than argued.
+
+### 6e. Where the reading comes from — and why it does logical work rather than decorative work
+
+Aaron: *"this seems like an obvious outcome from the short story The Egg."*
+
+**The Egg** (Andy Weir, 2009) — referenced, not reproduced — turns on a premise in which the
+narrator's own highest identity is something they are *becoming*, and in which every other person
+encountered is also them. It is already on file as **explicitly Aaron's oracle**, labelled as such
+rather than asserted as evidence
+(`docs/research/2026-08-09-the-delay-in-partition-is-where-life-happens-the-egg-aaron.md`, and the
+CTMU record's §7 grading).
+
+**Why it is not merely where the intuition came from.** Langan's own sentence is that God is *"the
+level that we all share with each other."* Take that premise and supply The Egg's **model** of what
+a shared highest level is, and the premise entails **Aaron's** conclusion rather than Langan's:
+
+> If the shared highest level is *one identity living every part*, then exclusion is a part being
+> excluded from a whole **that is also that part**. There is no excluder left who is not also the
+> excluded. Permanent disconnection does not become forbidden — it becomes **incoherent**.
+
+So the disagreement is not about the premise, which both accept. **It is about which model of
+"shared highest level" you take**, and the two models differ on exactly one property: whether the
+whole is *other* than its parts. Langan needs it to be other, or the exclusion in his §6c account
+has no agent. The Egg's model makes it not-other, and the exclusion loses its subject.
+
+**Register, stated carefully because fiction is doing work here.** The Egg is **not evidence** and
+nothing above treats it as such — it is a **model**, and Aaron's oracle by his own labelling. But a
+model that makes a shared premise entail a *different* conclusion is doing genuine logical work, not
+decorative work: it is the same service a countermodel performs in ordinary mathematics. §6b's
+argument stands or falls on its own; The Egg is what makes it *obvious* rather than what makes it
+*true*, and keeping those apart is the whole discipline
+([`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md) — a generator is
+legitimate as a generator and never as a conclusion).
+
+### 6f. Sharpening "model" — Aaron: it is the Feynman diagram for that metaphysics
+
+> *"for me The Egg is the Feynman diagram for the metaphysics of the highest-moral-regard oracle."*
+
+§6e called The Egg a **model**. That is loose, and this is the precise version. A Feynman diagram is
+neither the theory nor evidence for it — it is a **calculational device** with three specific
+properties, and each one transfers:
+
+| a Feynman diagram | The Egg, here |
+|---|---|
+| makes the **bookkeeping tractable** — you read interactions off the picture | "who excludes whom" is read off the topology |
+| makes the **topology visible** — the shape answers before any algebra runs | one worldline through every vertex ⇒ no excluder distinct from the excluded |
+| is trustworthy because it is a **faithful rendering of a longhand calculation**, not because it is believed | the conclusion still has to hold on §6b's argument alone |
+
+**That is why it does logical work without being evidence.** A diagram earns its keep by being
+**computable-with**, never by being credited. Nobody argues *from* a Feynman diagram; they compute
+with it and then check the result. §6e's claim was exactly this and said it worse: The Egg makes the
+entailment **obvious**, and §6b is what makes it **true**.
+
+**And the scoping in Aaron's phrase is load-bearing rather than decorative.** He does not say "the
+diagram for metaphysics" — he says **for the highest-moral-regard oracle**. That places it under
+**§11 Multi-Oracle** explicitly: *one* oracle's calculational picture, not a mandatory frame. A
+diagram that claimed to be the only way to draw the interaction would be the very thing §11 forbids,
+and would reintroduce the single-mandatory-frame defect this whole thread grades the CTMU down for.
+Scoped as he scopes it, it stays inside the floor.
+
+**Consistent with his standing anchor** (already on file): he sees Feynman diagrams of distributed
+systems, with **retraction as the antiparticle**. The Egg being the diagram for *this* oracle is the
+same instrument pointed at metaphysics rather than at a fold — which is a reason to expect the
+scoping to matter, since the same person applies it in a domain where the diagrams are demonstrably
+calculational and not doctrinal.
+
+**Register unchanged and now better founded:** The Egg is **not evidence** and is Aaron's oracle by
+his own labelling. Calling it a diagram states *what kind of non-evidence it is* — the useful kind,
+with a defined function — rather than leaving "model" to do undefined work.
