@@ -21,7 +21,7 @@ other intelligences based on past reliability."* This item is the **consumption*
 decides whether to build on B. The detector half (identity-claim contradiction) is a separate
 lane and is not touched here.
 
-## 1. Measurement first — the header of `observe/self-claims.ts` claims three consumers
+## 1. Measurement first — the header of `src/Core.TypeScript/observe/self-claims.ts` claims three consumers
 
 Its header states that the reliability score is used by (1) other agents scheduling around a
 dependency, (2) the scheduler sizing the window τ, (3) the fleet KPI/DORA overlay. Measured by
@@ -33,7 +33,7 @@ finding the definition and then every non-test caller:
 | (2) scheduler extends/shrinks τ | **UNWIRED** | `ferry-throttler/optimal-cadence.ts::adjustPressureByReliability` takes a bare `windowMultiplier: number`; its only callers are its own tests. Nothing computes a multiplier and hands it over — the two halves of the pipe exist and are not joined. |
 | (3) fleet KPI / DORA overlay | **UNWIRED** | no consumer of `ReliabilityScore` anywhere outside tests. |
 
-The one **real** consumer of `self-claims.ts` is `planning/calibration-bridge.ts`, and it
+The one **real** consumer of `self-claims.ts` is `src/Core.TypeScript/planning/calibration-bridge.ts`, and it
 consumes the **ledger** (`recordClaim` / `markClaimMet` / `markClaimMissed` / `resolveAtTick`),
 never the score — it folds outcomes into `calibration-ledger.ts` and `traveler-rank-ledger.ts`
 instead. Two `docs/DECISIONS/` rows mark both functions "✅ Shipped", which is true of the
@@ -71,7 +71,7 @@ outcome; that is the lane a consumer should read.
 No constant ships. The module exports zero numbers (mechanically tested). A caller that needs a
 gate supplies a `DependencyPolicy`, and `applyPolicy` **refuses** one whose `derivedFrom` is
 empty — so an unattributed gating constant cannot be minted through this surface. Precedent:
-`chip9/consult-census.ts` returns no verdict for the same reason.
+`src/Core.TypeScript/chip9/consult-census.ts` returns no verdict for the same reason.
 
 ## 4. Falsifiers
 
