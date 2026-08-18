@@ -24,6 +24,7 @@ import {
   type BusClaimsFn,
   type GateReport,
   type PollOutcome,
+  type ReadPRStateFn,
 } from "./poll-pr-gate-batch";
 import type { ClaimRecord } from "../../bus/claim.ts";
 
@@ -248,23 +249,31 @@ const fakeClaim: ClaimRecord = {
   expiresAt: "2026-05-14T00:00:00.000Z",
 };
 
+const emptyPriorState: ReadPRStateFn = () => ({ open: [], clean: [] });
+
 describe("main() — --with-bus-claims flag", () => {
   test("busClaimsFn is called and busClaims field is present when flag is passed", async () => {
     let called = false;
+    let priorStateReads = 0;
     const busClaimsFn: BusClaimsFn = () => { called = true; return [fakeClaim]; };
+    const readPRStateFn: ReadPRStateFn = () => {
+      priorStateReads++;
+      return { open: [], clean: [] };
+    };
     const pollFn = (pr: number): Promise<PollOutcome> =>
       Promise.resolve({ number: pr, report: mkReport({ number: pr }) });
 
     const cap = captureStdout();
     let code: number;
     try {
-      code = await main(["--with-bus-claims", "1"], busClaimsFn, pollFn);
+      code = await main(["--with-bus-claims", "1"], busClaimsFn, pollFn, readPRStateFn);
     } finally {
       cap.restore();
     }
 
     expect(code!).toBe(0);
     expect(called).toBe(true);
+    expect(priorStateReads).toBe(0);
     const batch = JSON.parse(cap.read()) as BatchReport;
     expect(Array.isArray(batch.busClaims)).toBe(true);
     expect(batch.busClaims).toHaveLength(1);
@@ -281,7 +290,7 @@ describe("main() — --with-bus-claims flag", () => {
     const cap = captureStdout();
     let code: number;
     try {
-      code = await main(["1"], busClaimsFn, pollFn);
+      code = await main(["1"], busClaimsFn, pollFn, emptyPriorState);
     } finally {
       cap.restore();
     }
@@ -304,7 +313,7 @@ describe("main() — --with-bus-claims flag", () => {
     const cap = captureStdout();
     let code: number;
     try {
-      code = await main(["--with-bus-claims", "2"], busClaimsFn, pollFn);
+      code = await main(["--with-bus-claims", "2"], busClaimsFn, pollFn, emptyPriorState);
     } finally {
       cap.restore();
     }

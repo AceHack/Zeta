@@ -15,7 +15,7 @@ import {
 import type { BrowserTabCoordinatorReadout } from "../browser-node/browser-tab-coordinator";
 import type { BrowserTabTransportReadout } from "../browser-node/browser-tab-channel-selector";
 import type { DwellerMind, LlmtvTranscript, MindPrediction, MindTemp, PhaseClockReadout } from "./darkhall-tv";
-import type { DarkHallCausalReadout } from "./darkhall-causal-readout";
+import type { DarkHallCausalHandoffReadout, DarkHallCausalReadout } from "./darkhall-causal-readout";
 import type { DarkHallDatabaseReadout } from "./darkhall-database-readout";
 
 export {
@@ -150,6 +150,7 @@ export interface RoomRunTranscript {
   readonly phaseClock?: PhaseClockReadout;
   readonly continuationReadout?: TranscriptContinuationReadout;
   readonly causalReadout?: DarkHallCausalReadout;
+  readonly causalHandoffReadout?: DarkHallCausalHandoffReadout;
   readonly browserTabReadout?: BrowserTabCoordinatorReadout;
   readonly browserTransportReadout?: BrowserTabTransportReadout;
   readonly databaseReadout?: DarkHallDatabaseReadout;
@@ -344,30 +345,57 @@ function renderContinuationReadout(readout: TranscriptContinuationReadout | unde
   ].join("");
 }
 
-function renderCausalReadout(readout: DarkHallCausalReadout | undefined): string {
-  if (readout === undefined) return "";
+function renderCausalReadout(
+  readout: DarkHallCausalReadout | undefined,
+  handoff: DarkHallCausalHandoffReadout | undefined,
+): string {
+  if (readout === undefined && handoff === undefined) return "";
 
-  const feedback = readout.feedback;
+  const corrections = readout?.corrections ?? [];
+  const maxCorrections = readout?.maxCorrections ?? handoff?.maxCorrections ?? 0;
+  const admission = readout?.admission ?? "open";
+  const feedback = readout?.feedback;
 
   return [
     `<section class="zeta-room-causality"`,
     attr("aria-label", "Causal correction readout"),
-    attr("data-causal-readout", readout.schema),
-    attr("data-execution-direction", readout.executionDirection),
-    attr("data-append-only", readout.appendOnly),
-    attr("data-rewrites-history", readout.rewritesHistory),
-    attr("data-correction-count", readout.corrections.length),
-    attr("data-correction-capacity", readout.maxCorrections),
-    attr("data-correction-remaining", readout.remainingCapacity),
-    attr("data-correction-admission", readout.admission),
+    attr("data-causal-readout", readout?.schema),
+    attr("data-execution-direction", readout?.executionDirection),
+    attr("data-append-only", readout?.appendOnly),
+    attr("data-rewrites-history", readout?.rewritesHistory),
+    attr("data-correction-count", corrections.length),
+    attr("data-correction-capacity", maxCorrections),
+    attr("data-correction-remaining", readout?.remainingCapacity),
+    attr("data-correction-admission", admission),
     attr("data-correction-feedback", feedback?.code),
+    attr("data-causal-handoff-readout", handoff?.schema),
+    attr("data-causal-handoff-status", handoff?.status),
+    attr("data-causal-handoff-direction", handoff?.direction),
+    attr("data-causal-handoff-peer", handoff?.peerTabId ?? undefined),
+    attr("data-causal-handoff-corrections", handoff?.correctionCount),
+    attr("data-causal-handoff-admitted", handoff?.admittedCorrections),
+    attr("data-causal-handoff-feedback", handoff?.feedback?.code),
     ">",
     '<header class="zeta-causal-header">',
     "<h2>causal corrections</h2>",
-    `<p>${readout.corrections.length.toString()} / ${readout.maxCorrections.toString()} retained · ${escapeHtml(readout.admission)}</p>`,
+    `<p>${corrections.length.toString()} / ${maxCorrections.toString()} retained · ${escapeHtml(admission)}</p>`,
     "</header>",
+    handoff === undefined
+      ? ""
+      : [
+          '<div class="zeta-causal-handoff"',
+          attr("data-handoff-status", handoff.status),
+          attr("data-handoff-direction", handoff.direction),
+          attr("data-handoff-peer", handoff.peerTabId ?? undefined),
+          ">",
+          "<span>peer handoff</span>",
+          `<strong>${escapeHtml(handoff.status)} · ${escapeHtml(handoff.direction)}</strong>`,
+          `<span>${escapeHtml(handoff.peerTabId ?? "no peer")} · ${handoff.correctionCount.toString()} records · ${handoff.admittedCorrections.toString()} new</span>`,
+          handoff.feedback === null ? "" : `<code>${escapeHtml(handoff.feedback.code)}</code>`,
+          "</div>",
+        ].join(""),
     '<ol class="zeta-causal-corrections">',
-    ...readout.corrections.map((correction) =>
+    ...corrections.map((correction) =>
       [
         '<li class="zeta-causal-correction"',
         attr("data-correction-source", correction.sourceTabId),
@@ -383,7 +411,7 @@ function renderCausalReadout(readout: DarkHallCausalReadout | undefined): string
       ].join(""),
     ),
     "</ol>",
-    feedback === null
+    feedback === undefined || feedback === null
       ? ""
       : `<p class="zeta-causal-feedback" data-severity="${feedback.severity}">${escapeHtml(feedback.code)}: ${escapeHtml(feedback.detail)}</p>`,
     "</section>",
@@ -715,6 +743,7 @@ export function roomTranscriptToLlmtv(
     phaseClock,
     temperatureTreaty,
     ...(transcript.causalReadout === undefined ? {} : { causalReadout: transcript.causalReadout }),
+    ...(transcript.causalHandoffReadout === undefined ? {} : { causalHandoffReadout: transcript.causalHandoffReadout }),
   };
   const mind = { ...baseMind, frame };
 
@@ -755,6 +784,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
   const phaseClock = phaseClockReadout(transcript);
   const continuation = transcript.continuationReadout;
   const causality = transcript.causalReadout;
+  const causalHandoff = transcript.causalHandoffReadout;
   const continuationStatusValue = continuation === undefined ? undefined : continuationStatus(continuation);
   const browser = transcript.browserTabReadout;
   const browserTransport = transcript.browserTransportReadout;
@@ -805,6 +835,13 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     attr("data-correction-remaining", causality?.remainingCapacity),
     attr("data-correction-admission", causality?.admission),
     attr("data-correction-feedback", causality?.feedback?.code),
+    attr("data-causal-handoff-readout", causalHandoff?.schema),
+    attr("data-causal-handoff-status", causalHandoff?.status),
+    attr("data-causal-handoff-direction", causalHandoff?.direction),
+    attr("data-causal-handoff-peer", causalHandoff?.peerTabId ?? undefined),
+    attr("data-causal-handoff-corrections", causalHandoff?.correctionCount),
+    attr("data-causal-handoff-admitted", causalHandoff?.admittedCorrections),
+    attr("data-causal-handoff-feedback", causalHandoff?.feedback?.code),
     attr("data-browser-tab-readout", browser?.schema),
     attr("data-browser-node", browser?.nodeId),
     attr("data-browser-local-tab", browser?.localTabId),
@@ -842,6 +879,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
           `<div><dt>direction</dt><dd>${escapeHtml(causality.executionDirection)}</dd></div>`,
           `<div><dt>corrections</dt><dd>${causality.corrections.length.toString()}</dd></div>`,
         ]),
+    ...(causalHandoff === undefined ? [] : [`<div><dt>handoff</dt><dd>${escapeHtml(causalHandoff.status)}</dd></div>`]),
     `<div><dt>signals</dt><dd>${escapeHtml(heat.signals.join(", ") || "cold")}</dd></div>`,
     ...(browser === undefined
       ? []
@@ -869,7 +907,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     ...(transcript.heatRows.length === 0 ? ['<p class="zeta-room-cold">cold</p>'] : []),
     "</section>",
     renderContinuationReadout(continuation),
-    renderCausalReadout(causality),
+    renderCausalReadout(causality, causalHandoff),
     renderBrowserTabReadout(browser, browserTransport),
     renderDatabaseReadout(database),
     ...(transcript.sLanes && transcript.sLanes.length > 0

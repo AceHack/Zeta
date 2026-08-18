@@ -40,7 +40,7 @@ import {
   type RoomRunTranscript,
 } from "./darkhall-room";
 import { renderLlmtvDocument } from "./darkhall-tv";
-import { DARK_HALL_CAUSAL_READOUT_SCHEMA } from "./darkhall-causal-readout";
+import { DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA, DARK_HALL_CAUSAL_READOUT_SCHEMA } from "./darkhall-causal-readout";
 import { DARK_HALL_DATABASE_READOUT_SCHEMA, type DarkHallDatabaseReadout } from "./darkhall-database-readout";
 
 const css = readFileSync(join(import.meta.dir, "darkhall-room.css"), "utf-8");
@@ -320,6 +320,17 @@ describe("Dark Hall CSS room UI", () => {
         ],
         feedback: null,
       },
+      causalHandoffReadout: {
+        schema: DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA,
+        localTabId: "tab-a",
+        maxCorrections: 4,
+        status: "offered",
+        direction: "outbound",
+        peerTabId: "tab-b",
+        correctionCount: 1,
+        admittedCorrections: 0,
+        feedback: null,
+      },
     };
     const html = renderDarkHallRoomHtml(withCausalReadout);
 
@@ -337,8 +348,17 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain("history 9007199254740993");
     expect(html).toContain("correction 9007199254740994");
     expect(html).toContain("source tab-b");
+    expect(html).toContain(`data-causal-handoff-readout="${DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA}"`);
+    expect(html).toContain('data-causal-handoff-status="offered"');
+    expect(html).toContain('data-causal-handoff-direction="outbound"');
+    expect(html).toContain('data-causal-handoff-peer="tab-b"');
+    expect(html).toContain('data-causal-handoff-corrections="1"');
+    expect(html).toContain('data-causal-handoff-admitted="0"');
+    expect(html).toContain("peer handoff");
+    expect(html).toContain("1 records · 0 new");
     expect(css).toContain(".zeta-room-causality");
     expect(css).toContain(".zeta-causal-correction");
+    expect(css).toContain(".zeta-causal-handoff");
     expect(css).not.toContain("animation:");
 
     const llmtv = renderLlmtvDocument(roomTranscriptToLlmtv(withCausalReadout));
@@ -347,6 +367,11 @@ describe("Dark Hall CSS room UI", () => {
     expect(llmtv).toContain('data-correction-count="1"');
     expect(llmtv).toContain('data-source="tab-b"');
     expect(llmtv).toContain("9007199254740993 &rarr; 9007199254740994");
+    expect(llmtv).toContain(`data-causal-handoff-readout="${DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA}"`);
+    expect(llmtv).toContain('data-causal-handoff-status="offered"');
+    expect(llmtv).toContain('data-causal-handoff-direction="outbound"');
+    expect(llmtv).toContain('data-causal-handoff-peer="tab-b"');
+    expect(llmtv).toContain("handoff · offered");
   });
 
   it("keeps causal rendering additive for transcripts without a readout", () => {
@@ -354,6 +379,7 @@ describe("Dark Hall CSS room UI", () => {
 
     expect(html).not.toContain("zeta-room-causality");
     expect(html).not.toContain("data-causal-readout");
+    expect(html).not.toContain("data-causal-handoff-readout");
   });
 
   it("projects browser tab ownership and liveness into CSS-addressable room state", () => {

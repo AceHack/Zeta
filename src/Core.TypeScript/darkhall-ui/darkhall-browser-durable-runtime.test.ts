@@ -422,6 +422,13 @@ describe("durable Dark Hall browser runtime", () => {
       admittedCorrections: 0,
       feedback: null,
     });
+    expect(senderStarter.updates.at(-1)).toMatchObject({
+      causalHandoffReadout: {
+        status: "offered",
+        direction: "outbound",
+        peerTabId: "tab-receiver",
+      },
+    });
 
     const replay = {
       sourceTabId: "tab-sender",
@@ -441,11 +448,21 @@ describe("durable Dark Hall browser runtime", () => {
         feedback: null,
       },
     });
+    expect(receiverStarter.updates.at(-1)).toMatchObject({
+      causalHandoffReadout: {
+        status: "received",
+        direction: "inbound",
+        peerTabId: "tab-sender",
+      },
+    });
 
     receiverStarter.starts[0]?.causalCorrectionReplay?.receive(replay);
     expect(receiver.value.read()).toMatchObject({
       causal: { corrections: [correction] },
       causalHandoff: { status: "duplicate", admittedCorrections: 0 },
+    });
+    expect(receiverStarter.updates.at(-1)).toMatchObject({
+      causalHandoffReadout: { status: "duplicate", admittedCorrections: 0 },
     });
   });
 

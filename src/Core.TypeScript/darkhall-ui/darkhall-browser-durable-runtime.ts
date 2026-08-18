@@ -327,6 +327,7 @@ function bootstrapOptions(
   checkpoint: "none" | "durable",
   transcript: DurableRoomRunTranscript,
   causalReadout: DarkHallCausalReadout,
+  causalHandoffReadout: DarkHallCausalHandoffReadout,
   onCheckpointInvalidated: (invalidation: BrowserCheckpointInvalidation) => void,
   onCausalCorrection: (correction: BrowserCausalCorrectionNotice) => void,
   causalCorrectionReplay: BrowserCausalCorrectionReplayPort,
@@ -343,7 +344,7 @@ function bootstrapOptions(
     maxFeedback: options.maxFeedback,
     capabilities: options.capabilities,
     checkpoint,
-    transcript: { ...transcript, causalReadout },
+    transcript: { ...transcript, causalReadout, causalHandoffReadout },
     onCheckpointInvalidated,
     onCausalCorrection,
     causalCorrectionReplay,
@@ -410,6 +411,9 @@ export async function startDurableDarkHallBrowser(
   let transcriptForCausalRender = selectedTranscript.value;
   let causalRenderPending = false;
 
+  const currentCausalHandoffReadout = (): DarkHallCausalHandoffReadout =>
+    darkHallCausalHandoffReadout(options.tabId, options.maxCausalCorrections, causalHandoffState);
+
   const renderCausalProjection = (): void => {
     if (browserRuntimeForCausalRender === null) {
       causalRenderPending = true;
@@ -420,6 +424,7 @@ export async function startDurableDarkHallBrowser(
       const rendered = browserRuntimeForCausalRender.updateTranscript({
         ...transcriptForCausalRender,
         causalReadout: darkHallCausalReadout(causalLedger, causalFeedback),
+        causalHandoffReadout: currentCausalHandoffReadout(),
       });
       causalRenderFeedback = rendered.ok
         ? null
@@ -595,6 +600,7 @@ export async function startDurableDarkHallBrowser(
         admittedCorrections: 0,
         feedback: null,
       };
+      renderCausalProjection();
       return corrections;
     },
     receive: receiveCausalCorrectionReplay,
@@ -618,6 +624,7 @@ export async function startDurableDarkHallBrowser(
         recovered.value === null ? "none" : "durable",
         selectedTranscript.value,
         darkHallCausalReadout(causalLedger, causalFeedback),
+        currentCausalHandoffReadout(),
         onCheckpointInvalidated,
         onCausalCorrection,
         causalCorrectionReplay,
@@ -657,7 +664,7 @@ export async function startDurableDarkHallBrowser(
     room: roomSummary(currentTranscript),
     database: databaseReadout,
     causal: darkHallCausalReadout(causalLedger, causalFeedback),
-    causalHandoff: darkHallCausalHandoffReadout(options.tabId, options.maxCausalCorrections, causalHandoffState),
+    causalHandoff: currentCausalHandoffReadout(),
     causalCheckpoint: {
       ...causalCheckpointSync,
       feedback:
@@ -675,6 +682,7 @@ export async function startDurableDarkHallBrowser(
       const rendered = browserRuntime.updateTranscript({
         ...nextTranscript,
         causalReadout: darkHallCausalReadout(causalLedger, causalFeedback),
+        causalHandoffReadout: currentCausalHandoffReadout(),
       });
       if (rendered.ok) {
         causalRenderFeedback = null;

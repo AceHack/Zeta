@@ -611,6 +611,38 @@ body {
   border-color: color-mix(in srgb, var(--room-pressure), var(--room-line) 45%);
 }
 
+.zeta-causal-handoff {
+  display: grid;
+  grid-template-columns: minmax(6rem, 0.7fr) minmax(7rem, 0.8fr) minmax(12rem, 1.5fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.6rem;
+  padding: 0.45rem 0.55rem;
+  border-inline-start: 2px solid var(--room-line);
+  color: var(--room-muted);
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+}
+
+.zeta-causal-handoff strong,
+.zeta-causal-handoff code {
+  color: var(--room-ready);
+  font: inherit;
+  overflow-wrap: anywhere;
+}
+
+.zeta-causal-handoff[data-handoff-status="backpressured"],
+.zeta-causal-handoff[data-handoff-status="heat"] {
+  border-inline-start-color: var(--room-pressure);
+}
+
+.zeta-causal-handoff[data-handoff-status="backpressured"] strong,
+.zeta-causal-handoff[data-handoff-status="backpressured"] code,
+.zeta-causal-handoff[data-handoff-status="heat"] strong,
+.zeta-causal-handoff[data-handoff-status="heat"] code {
+  color: var(--room-pressure);
+}
+
 .zeta-causal-corrections {
   display: grid;
   gap: 0.4rem;
@@ -953,6 +985,10 @@ body {
   }
 
   .zeta-causal-correction {
+    grid-template-columns: 1fr;
+  }
+
+  .zeta-causal-handoff {
     grid-template-columns: 1fr;
   }
 

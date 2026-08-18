@@ -115,6 +115,11 @@ agda
 #   Verified present: apt-cache show wabt (Noble 1.0.33-1).
 wabt
 #
+# lua5.4: Lua bytecode/script substrate (Oracle 15). It belongs in the guarded
+# manifest install, not a second late apt call after install.sh has completed
+# the shared runtime graph.
+lua5.4
+#
 # binaryen: wasm-opt, wasm-as, wasm-dis — WASM optimizer and toolchain.
 #   Noble: binaryen in universe apt. Used by AssemblyScript (asc) internally for
 #   optimization passes. Also provides wasm-opt for post-compile size reduction.

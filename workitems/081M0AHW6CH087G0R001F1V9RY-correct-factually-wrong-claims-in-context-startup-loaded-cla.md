@@ -22,7 +22,7 @@ Three factually-false or unresolvable claims in `.claude/rules/` — the surface
 pays for on every wake. Scope was narrow: **only what is verifiably false**; no emphasis,
 ordering, or doctrine touched.
 
-### 1. `every-bug-has-economic-value.md` — `sim` called an "unwired interface stub"
+### 1. `.claude/rules/every-bug-has-economic-value.md` — `sim` called an "unwired interface stub"
 
 **False since PR #11679** (merged 2026-08-17T22:59:53Z, work item
 `081M08VM385087G0R001DTM0K6`). Checks:
@@ -39,16 +39,17 @@ introduces an `ISim<'a>`. The satellite (`db/uncertainty/README.md` §Status) ha
 corrected; the hub had not. New text names the mechanical fact: compiled, no introduction form,
 pipe does not typecheck.
 
-### 2. `async-all-the-way-truthful-signatures.md` — named two live `Task.Run` sites that no longer exist
+### 2. `.claude/rules/async-all-the-way-truthful-signatures.md` — named two live `Task.Run` sites that no longer exist
 
 **False.** `grep -nE "Task\.(Run|Factory)" src/Core/Runtime.fs src/Core/SpineAsync.fs` → **no matches**
 (exit 1). Both files are on the ferry: `src/Core/Runtime.fs:48` `MaxDegreeOfParallelism = shardCount`
-+ `:68` `new FerryThrottler<int, unit>`, `src/Core/SpineAsync.fs:28` `MaxDegreeOfParallelism = 1`
-+ `:42` `new FerryThrottler<ZSet<'K>>`. `git log -S 'Task.Run'` on those two paths names the migration:
-`1e012b7273` *"Migrate raw Task.Run sites in DbspRuntime and SpineAsync to FerryThrottler"*.
-The rule was pointing at its own worked instance as if it were outstanding work.
 
-### 3. `toy-is-free-metered-must-be-earned.md` — `LagrangeCondorcet.fs` had no resolvable path
+- `:68` `new FerryThrottler<int, unit>`, `src/Core/SpineAsync.fs:28` `MaxDegreeOfParallelism = 1`
+- `:42` `new FerryThrottler<ZSet<'K>>`. `git log -S 'Task.Run'` on those two paths names the migration:
+  `1e012b7273` _"Migrate raw Task.Run sites in DbspRuntime and SpineAsync to FerryThrottler"_.
+  The rule was pointing at its own worked instance as if it were outstanding work.
+
+### 3. `.claude/rules/toy-is-free-metered-must-be-earned.md` — `LagrangeCondorcet.fs` had no resolvable path
 
 `find . -name 'LagrangeCondorcet*'` → `src/Bayesian/LagrangeCondorcet.fs`. The rule cited the bare
 filename, which `audit-rule-cross-refs.ts` cannot resolve (it was one of that audit's 14 candidates).
@@ -67,25 +68,26 @@ header, `:1810` the step). The six `.wasm` files, `run-bytelock-ci.mjs`, and `by
 `lint-no-new-bnnnn.ts` / `lint-b-refs-resolve.ts` are wired in `backlog-index-integrity.yml`.
 Symbols verified live: `GlassHalo.frost`, `RoomBoundary.frost`, `BeliefConvergence.observeAll` (and its
 in-file invariant comment), `CoordinationSpectrum.SpectrumMatch`/`SameSourceAsKnown`, `AntiSybil.SourceOf`
-+ `DistinctCount`, `DerivationProtocol.AssertedOnly`/`supportsClaim`/`Wall.Whitebox`/`whiteboxPermitted`,
-`Collation.binary`, RC-2/RC-3 in `CliffordE8BladeMask.Tests.fs`, and `TravelerRankLedger.fs`'s `0.5`
-prior / `≈0.35` whitewash value (TRL-13 pins it). The five `.editorconfig` CA severities are `error`.
-`human-anchor`, `glossary-anchor-keeper`, `missing-citations` exist as `.claude/skills/governance/blueprints/`.
+
+- `DistinctCount`, `DerivationProtocol.AssertedOnly`/`supportsClaim`/`Wall.Whitebox`/`whiteboxPermitted`,
+  `Collation.binary`, RC-2/RC-3 in `CliffordE8BladeMask.Tests.fs`, and `TravelerRankLedger.fs`'s `0.5`
+  prior / `≈0.35` whitewash value (TRL-13 pins it). The five `.editorconfig` CA severities are `error`.
+  `human-anchor`, `glossary-anchor-keeper`, `missing-citations` exist as `.claude/skills/governance/blueprints/`.
 
 ## Left alone deliberately (listed, not guessed)
 
-- **`culture-invariant-by-default.md`: "Implemented as `Collation.binary` in all four oracles."**
+- **`.claude/rules/culture-invariant-by-default.md`: "Implemented as `Collation.binary` in all four oracles."**
   F#/C#/TS have a named `binary` collation (`src/Core/Collation.fs:83`, `src/Core.CSharp/Collation.cs:115`,
   `src/Core.TypeScript/collation/collation.ts:41`). No Rust collation module exists — but
-  `tests/Tests.FSharp/Collation.CrossOracleTreaty.Tests.fs:115` says the canonical relation *is* what
+  `tests/Tests.FSharp/Collation.CrossOracleTreaty.Tests.fs:115` says the canonical relation _is_ what
   Rust's native `Ord for String` already gives. Whether "implemented" means a named module or the
   relation is a judgement call, not a fact check.
 - **13 remaining bare-filename pointers** flagged by `audit-rule-cross-refs.ts` (`new-workitem.ts`,
-  `dora-metrics.ts`, `CURRENT-*.md`, …). Each resolves uniquely by `find`; none is *wrong*, only
+  `dora-metrics.ts`, `CURRENT-*.md`, …). Each resolves uniquely by `find`; none is _wrong_, only
   path-less. Adding paths is a size decision on a cold-start surface, not a correction.
 - **Two work-item state inconsistencies.** `081KTF10R0108QG0R003P44BA2` sits in `workitems/done/2026/06/`
   with `state: backlog` in its frontmatter; `081M08VM385087G0R001DTM0K6` is `state: backlog` while its
   body reads "What this item shipped". Lifecycle bookkeeping, not rule text.
-- **`dv2-data-split-discipline-activated.md` ordering** — it leads with change-rate partitioning, while
+- **`.claude/rules/dv2-data-split-discipline-activated.md` ordering** — it leads with change-rate partitioning, while
   Aaron holds that **disagreement preservation** is what is unique to DV2. That is an emphasis call and
   his to make; untouched, and recorded here so it is not lost.

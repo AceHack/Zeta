@@ -470,13 +470,9 @@ fi
 # Substrates: WAT, LLVM/C, Emscripten, Rust, ASC, Zig (WASM)
 #             + JS/V8, Lua 5.4, Go (bytecode/script)
 #
-# wabt, lua5.4, golang-go are in Ubuntu apt; Zig and Rust need dedicated scripts.
+# WABT and Lua are declared in manifests/apt; Go is pinned cross-platform in
+# .mise.toml. Zig and Rust retain the dedicated idempotent verification scripts.
 if [ "$IS_NIXOS" != 1 ]; then
-  echo "-- installing wabt, lua5.4, golang-go via apt --"
-  SUDO=""
-  if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; fi
-  $SUDO apt-get install -y --no-install-recommends wabt lua5.4 golang-go 2>/dev/null || \
-    echo "⚠ apt install of wabt/lua5.4/golang-go failed — substrates will show TOOLING-ABSENT"
   echo "-- installing Zig (wasm32-freestanding substrate) --"
   bash "$SETUP_DIR/common/install-zig.sh"
   echo "-- installing Rust + wasm32-unknown-unknown target --"

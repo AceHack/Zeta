@@ -123,6 +123,10 @@ agda tier=standard
 #   Verified: brew formula `wabt` (2.0.36). Idempotent.
 wabt
 #
+# lua: Lua 5.4 bytecode/script substrate (Oracle 15). Homebrew's formula is the
+# macOS peer of apt's lua5.4 and the Windows manifest's lua package.
+lua
+#
 # binaryen: wasm-opt, wasm-as, wasm-dis — WASM optimizer and toolchain.
 #   Used by AssemblyScript (asc) internally. Bottled arm64+x86_64.
 #   Verified: brew formula `binaryen` (119). Idempotent.

@@ -11,7 +11,7 @@ import type {
 import type { ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 import type { BrowserDatabaseIntentReadout } from "./browser-database-intent-outbox";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v12" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v13" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -70,6 +70,13 @@ export interface BrowserMultitabPageObservation {
       readonly state: string;
     }[];
     readonly sourceLocalState: string;
+    readonly causalHandoff: {
+      readonly schema: string;
+      readonly status: string;
+      readonly direction: string;
+      readonly peerTabId: string;
+      readonly text: string;
+    };
     readonly irisLabel: string;
     readonly databaseExecutor: string;
     readonly databaseRevision: string;
@@ -239,6 +246,7 @@ async function observe(page: Page): Promise<BrowserMultitabPageObservation> {
     const root = globalThis as unknown as BrowserSmokeGlobal;
     const sourceElements = Array.from(root.document.querySelectorAll("[data-tab]"));
     const sourceRoot = root.document.querySelector("[data-browser-local-state]");
+    const causalHandoff = root.document.querySelector(".zeta-causal-handoff");
     const databaseRoot = root.document.querySelector("[data-database-readout]");
     const databaseRows = Array.from(root.document.querySelectorAll(".zeta-database-row"));
     const irisLabel = root.document.querySelector("#iris-mesh button");
@@ -258,6 +266,13 @@ async function observe(page: Page): Promise<BrowserMultitabPageObservation> {
           state: element.getAttribute("data-state") ?? "",
         })),
         sourceLocalState: sourceRoot?.getAttribute("data-browser-local-state") ?? "",
+        causalHandoff: {
+          schema: sourceRoot?.getAttribute("data-causal-handoff-readout") ?? "",
+          status: sourceRoot?.getAttribute("data-causal-handoff-status") ?? "",
+          direction: sourceRoot?.getAttribute("data-causal-handoff-direction") ?? "",
+          peerTabId: sourceRoot?.getAttribute("data-causal-handoff-peer") ?? "",
+          text: causalHandoff?.textContent?.trim() ?? "",
+        },
         irisLabel: irisLabel?.textContent?.trim() ?? "",
         databaseExecutor: databaseRoot?.getAttribute("data-database-executor") ?? "",
         databaseRevision: databaseRoot?.getAttribute("data-database-revision") ?? "",
@@ -411,10 +426,14 @@ async function waitForCausalHandoff(
       const root = globalThis as unknown as Partial<BrowserSmokeGlobal>;
       const source = root.__zetaBrowserSmoke?.read();
       const handoff = source?.ok === true ? source.value.causal.handoff : null;
+      const room = root.document?.querySelector("[data-causal-handoff-readout]");
       return (
         handoff?.direction === expected.direction &&
         handoff.status === expected.status &&
-        handoff.peerTabId === expected.peerTabId
+        handoff.peerTabId === expected.peerTabId &&
+        room?.getAttribute("data-causal-handoff-direction") === expected.direction &&
+        room.getAttribute("data-causal-handoff-status") === expected.status &&
+        room.getAttribute("data-causal-handoff-peer") === expected.peerTabId
       );
     },
     { direction, status, peerTabId },
@@ -723,6 +742,17 @@ function validateCausalCheckpointRestart(transcript: BrowserMultitabSmokeTranscr
     ) {
       failures.push("page C did not expose its recovered causal history as an outbound peer offer");
     }
+    const rendered = transcript.afterRetraction.pageC.rendered.causalHandoff;
+    if (
+      rendered.schema !== "zeta.darkhall.causal-handoff-readout.v1" ||
+      rendered.status !== "offered" ||
+      rendered.direction !== "outbound" ||
+      rendered.peerTabId !== "tab-d" ||
+      !rendered.text.includes("peer handoff") ||
+      !rendered.text.includes("offered · outbound")
+    ) {
+      failures.push("page C did not render the outbound causal peer offer on the room surface");
+    }
   } else {
     failures.push("page C failed while exposing the causal peer offer");
   }
@@ -737,6 +767,17 @@ function validateCausalCheckpointRestart(transcript: BrowserMultitabSmokeTranscr
       received.feedback !== null
     ) {
       failures.push("page D did not expose idempotent admission of page C's recovered causal history");
+    }
+    const rendered = transcript.afterRetraction.pageD.rendered.causalHandoff;
+    if (
+      rendered.schema !== "zeta.darkhall.causal-handoff-readout.v1" ||
+      rendered.status !== "duplicate" ||
+      rendered.direction !== "inbound" ||
+      rendered.peerTabId !== "tab-c" ||
+      !rendered.text.includes("peer handoff") ||
+      !rendered.text.includes("duplicate · inbound")
+    ) {
+      failures.push("page D did not render idempotent causal peer admission on the room surface");
     }
   }
 }

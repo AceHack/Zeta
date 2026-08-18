@@ -23,6 +23,11 @@ git    winget=Git.Git    choco=git
 # the `node` executable directly.
 nodejs    winget=OpenJS.NodeJS    choco=nodejs
 
+# Lua 5.4 bytecode/script substrate (Oracle 15), symmetric with apt `lua5.4`,
+# brew `lua`, and NixOS `lua5`. Scoop Main is the primary Windows source;
+# Chocolatey keeps the existing package-id fallback explicit.
+lua    choco=lua
+
 # USB/ISO QEMU acceptance substrate (B-0891). The Unix package split is
 # qemu-system-x86 + qemu-utils; Windows carries those binaries through qemu.
 qemu   winget=SoftwareFreedomConservancy.QEMU   choco=qemu

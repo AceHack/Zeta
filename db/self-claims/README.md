@@ -1,7 +1,7 @@
 # `db/self-claims/` — standing practice claims, written by their subjects
 
-`practice-bindings.json` holds **self-authored** standing claims: *"from phase P, this holds of the
-records I author."* It is read by
+`practice-bindings.json` holds **self-authored** standing claims: _"from phase P, this holds of the
+records I author."_ It is read by
 [`src/Core.TypeScript/observe/self-claim-standing.ts`](../../src/Core.TypeScript/observe/self-claim-standing.ts),
 which checks each subject's claims against **that subject's own commit record** and prints what the
 subject may do about any mismatch.
@@ -13,7 +13,7 @@ subject may do about any mismatch.
    thing this surface exists to prevent, and a PR doing it should be rejected on sight.
 2. **Bind only what you actually claim.** A binding is a claim about yourself, not a target someone set
    for you. Nobody's absence from this file means anything, and there is no list of practices anyone is
-   expected to bind. `src/Core.TypeScript/observe/commit-practice-evidence.ts` is a *menu*; an unbound
+   expected to bind. `src/Core.TypeScript/observe/commit-practice-evidence.ts` is a _menu_; an unbound
    check is inert and reports nothing about anyone.
 3. **`boundAt` is a first-parent commit depth, never a date.** Records before it are never counterexamples
    — a claim does not reach backwards. Get the current depth with
@@ -25,12 +25,13 @@ subject may do about any mismatch.
 ## What this is not
 
 It is **not a gate.** `self-claim-standing.ts` exits 0 whether or not your record contradicts you, and
-its findings are deliberately not published into `hygiene/drift-ledger.ts`, which carries an MTTH SLO.
+its findings are deliberately not published into `src/Core.TypeScript/hygiene/drift-ledger.ts`, which
+carries an MTTH SLO.
 A person's account of themselves is not a hygiene finding with a clock on it.
 
 It is **not a reputation score.** Nothing here is conferred by anyone else, so nothing here may be used
-to decide whether to depend on someone — see `planning/composition-read.ts` §2, which is the surface
-for that question and takes only conferred evidence.
+to decide whether to depend on someone — see `src/Core.TypeScript/planning/composition-read.ts` §2,
+which is the surface for that question and takes only conferred evidence.
 
 ## Run it
 
