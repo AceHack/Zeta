@@ -283,6 +283,43 @@ describe("prepareHeartbeatBranch", () => {
     expect(merged).not.toContain("<<<<<<< HEAD");
   });
 
+  it("carries a PR review archive both sides CREATED, keeping the copy that HAS the threads", () => {
+    // The shape that wedged soraya from 05:11Z on 2026-08-18 (run 32104099738): `CONFLICT
+    // (add/add)` on docs/history/pr-reviews/PR-####-*.md. Same add/add family as the shard case
+    // above, so it likewise cannot reuse `partialFlush`.
+    //
+    // This case exists to pin the MERGE DIRECTION, which is the thing that was gotten backwards
+    // when this path was first left undeclared. `prepareHeartbeatBranch` checks out main and
+    // merges the lane, so `theirs` is the LANE. The lane is the side holding the review threads;
+    // main's copy is the stale, thread-less one. If the direction were ever reversed, the
+    // `PRRT_` assertion below fails — which is the whole point of asserting on the thread id
+    // rather than on file size.
+    const { work } = fixture();
+    const p = "docs/history/pr-reviews/PR-9181-feat-core-schedulerzeta-weak-fixed-point.md";
+    seedAttributes(work);
+
+    // Abridged from the live pair: main records zero threads, the lane records a real one.
+    const mainCopy = "# PR 9181\n\n## Review threads\n\n_none recorded_\n";
+    const laneCopy = "# PR 9181\n\n## Review threads\n\n- PRRT_kwDOSF9kNM6N_x6l on src/Core/SchedulerZeta.fs\n";
+
+    git(work, "switch", "-c", "heartbeat/alexa");
+    commitFile(work, p, laneCopy, "lane archives the review WITH its thread");
+    pushLane(work);
+
+    git(work, "switch", "main");
+    commitFile(work, p, mainCopy, "main archives the same review, threads not fetched");
+    git(work, "push", "origin", "main");
+
+    const result = prepareHeartbeatBranch("alexa", work);
+    expect(result).toMatchObject({ ok: true, value: { remoteFound: true, carried: true } });
+
+    const merged = readFileSync(join(work, p), "utf8");
+    // The load-bearing assertion: the recorded thread survives. Taking main's side would lose it.
+    expect(merged).toContain("PRRT_kwDOSF9kNM6N_x6l");
+    expect(merged).not.toContain("_none recorded_");
+    expect(merged).not.toContain("<<<<<<< HEAD");
+  });
+
   it("still refuses a conflict outside the declared lane paths", () => {
     const { work } = fixture();
     seedAttributes(work);
