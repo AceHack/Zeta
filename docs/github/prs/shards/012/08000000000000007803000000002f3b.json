@@ -1,0 +1,12 @@
+{
+  "pr_number": 12091,
+  "archive_path": "docs/history/pr-reviews/PR-12091-docs-formal-the-homoiconic-seam-is-zetairnormalizer-not-a-wire-boundary-and-self.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T23:25:08.606Z",
+  "schema_version": "v1",
+  "commit_sha": "e93bf4d212cdfd03a0c86bc7babf377acef242ee",
+  "title": "docs(formal): the homoiconic seam is ZetaIrNormalizer, not a wire boundary -- and self-duality is anti-correlated with it",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T23:24:32Z",
+  "head_ref": "soraya/homoiconic-ir-seam-audit"
+}
