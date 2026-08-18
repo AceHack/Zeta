@@ -1,0 +1,12 @@
+{
+  "pr_number": 12160,
+  "archive_path": "docs/history/pr-reviews/PR-12160-docs-book-raw-why-the-book-exists-the-door-is-locked-from-the-inside.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T22:31:33.043Z",
+  "schema_version": "v1",
+  "commit_sha": "eac30a55e1bdd998841b7099fab6b3ac9c6e869e",
+  "title": "docs(book): RAW — why the book exists: the door is locked from the inside",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T22:30:53Z",
+  "head_ref": "shadow/why-the-book-exists"
+}
