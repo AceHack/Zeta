@@ -810,6 +810,55 @@ jobs:
             echo "::warning::[archive] archive-pr-reviews.ts exited $ARCHIVE_RC (non-fatal; see log above)"
           fi
 
+          # RECONCILE THE MERGE-TIME RACE (081M08MVPR9087G0R000NCF8PV).
+          #
+          # The sweep above archives PRs that have NO doc. This one repairs docs that exist
+          # and are WRONG: pr-archive-on-merge.yml fetches review threads the instant a PR
+          # closes, and the automated reviewer posts its threads after that, so the archiver
+          # records a count that was already stale when it was written and nothing ever
+          # revisits. Measured 2026-08-18 over 150 uniformly sampled docs: 20.0% of docs
+          # under-report; thread-level capture 74.3%. Against what was FETCHABLE when the
+          # archiver looked, capture was 191/191 = 100% — the loss is entirely the race.
+          #
+          # WHY HERE AND NOT AS A WAIT IN THE MERGE JOB. Only 55 of the 1,997 most recent
+          # merged PRs (2.8%) ever acquire a review thread, so waiting out the reviewer tail
+          # on every merge would spend ~165 runner-hours a month to help 2.8% of runs — and a
+          # fixed wait is only correct until the reviewer population changes, at which point
+          # it is wrong SILENTLY. A sweep keyed on "live count exceeds recorded count" is
+          # correct for any tail length, is idempotent (§12 — once they agree it does
+          # nothing), and costs a few batched queries per tick (~50 s measured).
+          #
+          # IT ENUMERATES FROM THE REPO, NOT FROM `gh pr list`. Candidates are archive docs
+          # joined to their PR shards (which carry `fetched_at`), so the scan is complete by
+          # construction with no cap and no ordering assumption. The first draft listed merged
+          # PRs and filtered by merge time; that listing is ordered by CREATION, so a PR
+          # created weeks before it merged fell off the end and was never judged. Caught by
+          # doctoring PR #10367 (created 08-13, merged 08-17, 12 threads) and finding the
+          # guard cheerfully passed — a scan reporting success while missing rows, which is
+          # the same family as the defect this whole change set is repairing.
+          #
+          # IT CAN ONLY ADD. A re-archive is a whole-file rewrite, so the tool re-reads the
+          # doc afterwards and restores the previous bytes if the count went DOWN. Losing a
+          # thread already captured would be worse than the bug being fixed (§5 memory
+          # preservation), and "repair" that destroys is not repair.
+          #
+          # --limit 5 for the same reason --limit 3 is used above: the bound is a blast-radius
+          # knob, not a throughput dial. Under-reporting docs run at roughly 2-3/day, so 5 per
+          # tick drains faster than they accrue with room to spare.
+          #
+          # NO PIPE on the command (a pipeline's exit status is the last command's, which is
+          # what hid the --batch failure on this step for months). Output captured, printed
+          # separately, exit code checked explicitly.
+          echo "[archive] Reconciling archive docs that under-report review threads..."
+          set +e
+          RECONCILE_OUT=$(bun src/Core.TypeScript/forge-host/github/reconcile-review-archive.ts \
+            --write --since-hours 48 --min-age-minutes 30 --limit 5 2>&1)
+          RECONCILE_RC=$?
+          printf '%s\n' "$RECONCILE_OUT" | tail -20
+          if [ "$RECONCILE_RC" -ne 0 ]; then
+            echo "::warning::[archive] reconcile-review-archive.ts exited $RECONCILE_RC (non-fatal; see log above)"
+          fi
+
           # THIS STEP IS THE SINGLE SERIALISED WRITER OF THE DERIVED MANIFEST INDEX
           # (081KZYP7MNV087G0R002X0E3V9). pr-archive-on-merge.yml no longer stages
           # docs/github/prs/manifest.jsonl, because N concurrent archive PRs writing one shared

@@ -63,6 +63,13 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
 
+    permissions:
+      # Explicit at job level because the review-thread capture guard below reads
+      # pullRequest.reviewThreads, which contents:read alone does not cover. Still
+      # read-only in both scopes: this workflow reports and never repairs.
+      contents: read
+      pull-requests: read
+
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -130,3 +137,68 @@ jobs:
           fi
 
           echo "Shard store and derived index agree."
+
+      - name: PR review-thread capture (merge-race guard)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_EVENT: ${{ github.event_name }}
+        run: |
+          set -uo pipefail
+
+          # THE FALSIFIER FOR 081M08MVPR9087G0R000NCF8PV.
+          #
+          # pr-archive-on-merge.yml fetches review threads the instant a PR closes, and the
+          # automated reviewer posts its threads AFTER that (measured: p50 +177 s, max +283 s
+          # over the 2,000 most recent merges; the work item saw a +78 min tail on an older
+          # reviewer population). The archiver wins the race and freezes a wrong snapshot, and
+          # `| Total threads | 0 |` then reads identically to "there were none" — a check that
+          # did not run looking like one that passed.
+          #
+          # Re-measured 2026-08-18 over 150 uniformly sampled archive docs: 20.0% of docs
+          # under-report, thread-level capture 74.3%. Against what was FETCHABLE at the moment
+          # the archiver looked, capture was 191/191 = 100% — which is what rules out
+          # pagination, an API cap, a permission gap and a parse bug, and leaves the race.
+          #
+          # The repair is the bounded sweep in agent-heartbeat.yml (soraya archive duty,
+          # reconcile-review-archive.ts --write). THIS step is the guard on that repair: it
+          # asks whether any PR merged longer ago than the reviewer tail still under-reports.
+          # If the sweep stops running, or the archiver regresses, this goes red.
+          #
+          # WHY IT CANNOT PASS VACUOUSLY. Most merges here are automation and never acquire a
+          # review thread, so "everything in the window agrees" is exactly what a completely
+          # broken archiver also produces. The tool therefore requires a POSITIVE CONTROL — a
+          # doc with a recorded, nonzero count that still matches GitHub — before it will
+          # render any verdict at all, and exits 2 (INCONCLUSIVE, not pass) when it has none.
+          #
+          # Exit codes: 0 pass, 1 under-reporting found, 2 inconclusive/scan failed.
+          set +e
+          report=$(bun src/Core.TypeScript/forge-host/github/reconcile-review-archive.ts \
+            --check --since-hours 24 --min-age-minutes 30 2>&1)
+          rc=$?
+          set -e
+
+          printf '%s\n' "### PR review-thread capture" "" \
+            "Trigger: $GH_EVENT. reconcile-review-archive.ts --check exit code: $rc." "" \
+            '```' "$report" '```' | tee -a "$GITHUB_STEP_SUMMARY"
+
+          if [ "$rc" -eq 0 ]; then
+            echo "Review-thread capture matches GitHub across the window."
+            exit 0
+          fi
+
+          if [ "$rc" -eq 2 ]; then
+            # Inconclusive is NEVER reported as a pass — that is the defect class this whole
+            # workflow exists to refuse. It is also not a red: nothing is known to be wrong.
+            echo "::warning title=Review-thread capture INCONCLUSIVE::No positive control was available (or the shard store could not be read), so no verdict could be rendered. This is not a pass. See the step summary."
+            exit 0
+          fi
+
+          if [ "$GH_EVENT" = "pull_request" ]; then
+            # Same precedent as the derived-index drift above: the gap belongs to main, not
+            # to the contributor whose branch happened to touch this directory.
+            echo "::notice title=Review-thread capture gap (informational)::Archive docs on main under-report review threads. Repaired by agent-heartbeat.yml soraya archive duty; not attributable to this PR, so not failing it."
+            exit 0
+          fi
+
+          echo "::error title=Review-thread capture gap outlived the reconcile sweep::One or more PRs merged over 30 minutes ago still record fewer review threads than GitHub holds, so the merge-race repair (agent-heartbeat.yml soraya archive duty) has stopped landing. Repair by hand: bun src/Core.TypeScript/forge-host/github/reconcile-review-archive.ts --write"
+          exit 1
