@@ -1,0 +1,12 @@
+{
+  "pr_number": 12046,
+  "archive_path": "docs/history/pr-reviews/PR-12046-design-resource-planner-cross-repo-planning-over-the-resource-that-actually-bind.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T21:02:28.978Z",
+  "schema_version": "v1",
+  "commit_sha": "d03777d97776cba28aa01302d9fa7a4c76f1879c",
+  "title": "design(resource-planner): cross-repo planning over the resource that actually binds — completion windows, not runner minutes",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T21:01:40Z",
+  "head_ref": "design/cross-repo-resource-planner-window-scarcity"
+}
