@@ -1,0 +1,12 @@
+{
+  "pr_number": 12045,
+  "archive_path": "docs/history/pr-reviews/PR-12045-feat-darkhall-render-causal-peer-handoff-state.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T20:09:56.776Z",
+  "schema_version": "v1",
+  "commit_sha": "c3abec06afa8e53f15e6e26501690fa7a3b775e6",
+  "title": "feat(darkhall): render causal peer handoff state",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T20:09:16Z",
+  "head_ref": "claim/task-browser-causal-handoff-ui"
+}
