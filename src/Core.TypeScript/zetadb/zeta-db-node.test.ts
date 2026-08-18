@@ -258,4 +258,43 @@ describe("event-driven ZetaDB node", () => {
       },
     ]);
   });
+
+  // 081KZM0FTJM moved the well-formedness check off the per-delta admission path (where
+  // its verdict depended on arrival order) and onto the end-of-batch fold. These two
+  // pin BOTH halves of that move: a genuine conflict must still be refused, and it must
+  // be refused from either arrival order — otherwise the check has been relocated into
+  // a place that cannot fire, which is worse than the ordering bug it replaced.
+  test("refuses a row key that ends the batch naming two live payloads, in either order", async () => {
+    const alpha: ZetaDbDelta = { eventId: "event/alpha", rowKey: "row/one", payload: "A", weight: 1 };
+    const beta: ZetaDbDelta = { eventId: "event/beta", rowKey: "row/one", payload: "B", weight: 1 };
+
+    for (const order of [
+      [alpha, beta],
+      [beta, alpha],
+    ]) {
+      const conflicted = await run(createInMemoryZetaDbImagePort(), "local-process", order);
+      expect(conflicted).toEqual({
+        ok: false,
+        feedback: {
+          severity: "heat",
+          code: "database-row-conflict",
+          detail: "Row key row/one names more than one payload. Row keys must identify complete row values.",
+        },
+      });
+    }
+  });
+
+  test("admits an update whose retraction and emission arrive in either order", async () => {
+    const seed: ZetaDbDelta = { eventId: "event/seed", rowKey: "row/one", payload: "A", weight: 1 };
+    const retract: ZetaDbDelta = { eventId: "event/retract", rowKey: "row/one", payload: "A", weight: -1 };
+    const emit: ZetaDbDelta = { eventId: "event/emit", rowKey: "row/one", payload: "B", weight: 1 };
+
+    for (const order of [
+      [seed, retract, emit],
+      [seed, emit, retract],
+    ]) {
+      const updated = await run(createInMemoryZetaDbImagePort(), "local-process", order);
+      expect(updated.ok && updated.value.rows).toEqual([{ rowKey: "row/one", payload: "B", weight: 1 }]);
+    }
+  });
 });
