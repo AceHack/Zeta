@@ -1,0 +1,12 @@
+{
+  "pr_number": 9912,
+  "archive_path": "docs/history/pr-reviews/PR-9912-chore-atomic-sweep-of-the-compiled-js-layer-949-files-every-one-with-a-live-ts-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T08:14:34.520Z",
+  "schema_version": "v1",
+  "commit_sha": "ac451bf07b79a0e57a6d34a8a3c3bddc414128be",
+  "title": "chore: atomic sweep of the compiled .js layer — 949 files, every one with a live .ts source",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T21:04:35Z",
+  "head_ref": "shadow/atomic-js-layer-sweep"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9923,
+  "archive_path": "docs/history/pr-reviews/PR-9923-vision-the-n-eff-scaling-bound-correlation-caps-a-fleet-at-a-constant.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T08:14:39.133Z",
+  "schema_version": "v1",
+  "commit_sha": "ac451bf07b79a0e57a6d34a8a3c3bddc414128be",
+  "title": "vision: the N_eff scaling bound — correlation caps a fleet at a constant",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T19:58:45Z",
+  "head_ref": "shadow/vision-neff-scaling-bound"
+}
