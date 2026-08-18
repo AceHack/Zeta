@@ -27,6 +27,13 @@ spec:
           jobEnabled: false
         defaultSettings:
           defaultDataPath: /var/lib/longhorn
+          # Honour the per-node disk set that nixos/modules/longhorn-disks.nix
+          # publishes as the node.longhorn.io/default-disks-config annotation.
+          # WITHOUT this, Longhorn ignores that annotation outright and every
+          # node falls back to defaultDataPath alone -- i.e. the boot disk only,
+          # with any extra NVMe sitting idle. The three parts (label, annotation,
+          # this setting) are all required; none works alone.
+          createDefaultDiskLabeledNodes: true
           # Single control-plane node today. A replica count > the number of
           # schedulable nodes leaves every volume permanently "Degraded"
           # (Longhorn can't place the extra replicas), which surfaces as
