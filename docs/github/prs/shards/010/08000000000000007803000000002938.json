@@ -1,0 +1,12 @@
+{
+  "pr_number": 10552,
+  "archive_path": "docs/history/pr-reviews/PR-10552-fix-transport-bound-the-receiver-s-block-memory-eviction-lived-inside-the-succes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T16:14:27.613Z",
+  "schema_version": "v1",
+  "commit_sha": "ebb1af729bc74c56bf7189c1d3a24be99d64f591",
+  "title": "fix(transport): bound the receiver's block memory -- eviction lived inside the success branch, so a block that never recovered was never evicted",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T11:33:44Z",
+  "head_ref": "fix/transport-bounded-receiver-block-retention"
+}

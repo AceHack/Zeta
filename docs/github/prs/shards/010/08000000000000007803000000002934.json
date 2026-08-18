@@ -1,0 +1,12 @@
+{
+  "pr_number": 10548,
+  "archive_path": "docs/history/pr-reviews/PR-10548-fix-tlc-pin-the-whole-invocation-52-of-53-configs-now-execute-19-ran-nowhere-081.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T15:47:28.431Z",
+  "schema_version": "v1",
+  "commit_sha": "42068dfc5d3e3c300005bcc63f470177b693bb6f",
+  "title": "fix(tlc): pin the whole invocation - 52 of 53 configs now execute, 19 ran nowhere (081KZYRDMZW087G0R0012K4QA0)",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T13:23:51Z",
+  "head_ref": "fix/tlc-pin-the-whole-invocation"
+}

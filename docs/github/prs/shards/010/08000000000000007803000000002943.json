@@ -1,0 +1,12 @@
+{
+  "pr_number": 10563,
+  "archive_path": "docs/history/pr-reviews/PR-10563-fix-bnn-the-second-unmeasured-nu-was-a-live-vote-an-interval-a-shadow-rung-and-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T16:47:08.065Z",
+  "schema_version": "v1",
+  "commit_sha": "c70624f89853ee222fde35ef948812c77a47b868",
+  "title": "fix(bnn): the second unmeasured nu was a live vote — an interval, a shadow rung, and a refusal",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T12:37:22Z",
+  "head_ref": "shadow/error-bnn-tail-interval-nu"
+}

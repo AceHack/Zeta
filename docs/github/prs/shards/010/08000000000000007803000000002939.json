@@ -1,0 +1,12 @@
+{
+  "pr_number": 10553,
+  "archive_path": "docs/history/pr-reviews/PR-10553-fix-bayesian-the-student-t-fold-discarded-every-observation-but-the-last.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T16:27:41.293Z",
+  "schema_version": "v1",
+  "commit_sha": "ebb1af729bc74c56bf7189c1d3a24be99d64f591",
+  "title": "fix(bayesian): the Student-t fold discarded every observation but the last",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T11:42:19Z",
+  "head_ref": "lumen/student-t-fold-accumulates-b2"
+}
