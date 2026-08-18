@@ -1,0 +1,12 @@
+{
+  "pr_number": 11776,
+  "archive_path": "docs/history/pr-reviews/PR-11776-skip-review-telemetry-flush-metrics-append-tick-frame.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T04:47:02.071Z",
+  "schema_version": "v1",
+  "commit_sha": "08188e2927c2ce1736a30dbcec74336ff72150a0",
+  "title": "[skip-review][telemetry-flush] metrics: append tick frame",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T04:46:25Z",
+  "head_ref": "heartbeat/tick-metrics"
+}
