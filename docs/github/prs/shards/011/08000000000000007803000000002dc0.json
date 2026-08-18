@@ -1,0 +1,12 @@
+{
+  "pr_number": 11712,
+  "archive_path": "docs/history/pr-reviews/PR-11712-research-prior-art-path-independence-in-four-costumes-the-bridge-is-abramsky-201.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T00:02:14.442Z",
+  "schema_version": "v1",
+  "commit_sha": "abb52772d7efc52b86c3c6516a347badfca5e51b",
+  "title": "research(prior-art): path-independence in four costumes — the bridge is Abramsky 2013, and the CALM leg's biconditional is false",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T00:01:36Z",
+  "head_ref": "research/path-independence-four-costumes-literature-scout"
+}
