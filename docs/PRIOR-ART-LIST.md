@@ -1240,3 +1240,90 @@ their content* is unverified. Recorded so the debt is visible rather than implie
   constraining the channel — the move an icons-first bootstrap is trying to avoid. The available escape
   is that the constraint be a property of the **world** (bandwidth, noise, a shared referent) rather than
   a decree from a **party**; "let it emerge and it will be legible" is contradicted by the literature.
+
+## Local-to-global obstruction — the databases ↔ Bell ↔ holonomy ↔ coordination anchors (added 2026-08-17, shadow)
+
+Found by the literature-scout run on Aaron's 2026-08-17 question ("is path-independence across CRDTs,
+Bell/CHSH, holonomy and CALM one fact in four costumes?"). Verdict + entailment checks + the refuted
+biconditional: `docs/research/2026-08-17-path-independence-in-four-costumes-crdt-bell-holonomy-calm-literature-scout-verdict.md`.
+
+- **Samson Abramsky (2013) — "Relational Databases and Bell's Theorem"** ⭐ (LNCS 8000:13–35, Buneman
+  Festschrift; arXiv:1208.6416). **The bridge we thought we were building already exists, and is
+  sharper.** A database instance admits a **universal relation** iff an empirical model admits a
+  **local hidden variable model** — same theorem, two vocabularies. Schema = measurement cover,
+  tuple = local section, universal relation = global section, **acyclicity = the Vorob'ev condition**.
+  Bell's theorem is the statement that the relational presheaf is **not a sheaf**. Read in full and
+  quoted verbatim in the research doc. Companions: **Abramsky & Brandenburger, NJP 13:113036 (2011)**
+  (the sheaf framework); **Abramsky, Studia Logica 101(2):411 (2013)** (probability-free);
+  **Abramsky–Mansfield–Barbosa, EPTCS 95:1 (2012)** and **Abramsky–Barbosa–Kishida–Lal–Mansfield,
+  CSL 2015** (the obstruction is a **Čech cohomology class**); **Abramsky–Gottlob–Kolaitis, IJCAI 2013**
+  (robust constraint satisfaction).
+- **N. N. Vorob'ev (1962) — "Consistent families of measures and their extensions"** (Theory Probab.
+  Appl. 7:147) ⭐ paired with **Beeri, Fagin, Maier & Yannakakis (1983) — "On the desirability of
+  acyclic database schemes"** (JACM 30(3):479). **Rui Soares Barbosa** showed the two conditions are
+  **the same condition**. Directly usable here: *whether local agreement forces global agreement is a
+  property of the shape of the cover (acyclic ⟹ always gluable), not of the merge operator* — a
+  structural criterion for schema/shard carving, i.e. DV2.0 with a theorem attached. Frontier:
+  **Kolaitis et al., "Consistency of Relations over Monoids," JACM 2025** (arXiv:2312.02023).
+- **Arthur Fine (1982) — "Hidden Variables, Joint Probability, and the Bell Inequalities"** (PRL
+  48:291). LHV ⟺ a single **global joint distribution** ⟺ all Bell inequalities hold; and CHSH is
+  **complete** for the (2,2,2) scenario. The correct citation for any "shared state as λ" claim —
+  strictly stronger than citing Bell 1964 for it.
+- **Itamar Pitowsky — *Quantum Probability — Quantum Logic* (LNP 321, 1989)** and **"Correlation
+  polytopes: their geometry and complexity" (Math. Prog. 50:395, 1991)**. Local behaviours form a
+  **polytope** with deterministic vertices; membership is **NP-complete** — the same hardness as
+  database join-consistency (**Honeyman, Ladner & Yannakakis, IPL 10:14, 1980**), which is a check on
+  Abramsky's correspondence rather than a coincidence.
+- **Stefano Pironio (2003) — "Violations of Bell inequalities as lower bounds on the communication cost
+  of nonlocal correlations"** (PRA 68:062102) ⭐ **The real quantitative Bell↔coordination bridge:
+  the degree of violation *is* a lower bound on the average communication needed to reproduce the
+  correlation classically, and the LP-dual-optimal inequality is the one that attains it.** Worked
+  number: maximal CHSH costs **√2−1 ≈ 0.4142 bits**, necessary and sufficient. Companion:
+  **Toner & Bacon, PRL 91:187904 (2003)** — exactly **one bit** simulates singlet correlations
+  (lineage: Maudlin 1992; Brassard–Cleve–Tapp, PRL 83:1874, 1999; Steiner 2000). Survey:
+  **Buhrman, Cleve, Massar & de Wolf, RMP 82:665 (2010)**.
+- **van Dam (2005/2013) vs Brassard–Buhrman–Linden–Méthot–Tapp–Unger (2006) — a standing mis-citation.**
+  **van Dam** (quant-ph/0501159; *Nat. Comput.* 12:9, 2013) proves only that **perfect** PR boxes make
+  communication complexity trivial (one bit for any Boolean function). The **noisy threshold is
+  Brassard et al., PRL 96:250401 (2006)**: p > ≈0.908, which is **the same number as the widely-quoted
+  CHSH ≈ 3.266** (`S = 8p − 4`), not a second result. **Brunner & Skrzypczyk, PRL 102:160403 (2009)**
+  is *not* the source of 3.266 — it is nonlocality **distillation** for correlated nonlocal boxes,
+  improving **Forster–Winkler–Wolf, PRL 102:120401 (2009)** which reaches only CHSH 3.
+- **Heger Arfaoui & Pierre Fraigniaud — "What can be computed without communications?"** (SIROCCO 2012,
+  LNCS 7355; ACM SIGACT News 45(3):82, 2014) ⭐ The **distributed-computing-native** statement of the
+  question: which tasks are solvable with **zero communication**, bounded by the non-signaling polytope.
+  Finding worth carrying: apart from CHSH, quantum correlations give **no advantage** over shared
+  randomness for 2-player games. Paired guard: **Gavoille, Kosowski & Markiewicz, "What can be observed
+  locally?" (DISC 2009, LNCS 5805; arXiv:0903.1133)** — the standing refutation of "entanglement solves
+  Leader Election / Consensus"; earlier claims changed the model, not the physics.
+- **CALM, with its scope attached.** Conjecture: **Hellerstein, "The declarative imperative," SIGMOD
+  Record 39(1):5 (2010)**. Proof: **Ameloot, Neven & Van den Bussche, "Relational transducers for
+  declarative networking," JACM 60(2):15 (2013)** (arXiv:1012.2858) — Cor. 13: coordination-free ⟺
+  oblivious ⟺ **monotone**, for *queries* over *relational transducer networks*, where
+  coordination-freeness is **∃-over-partitions** (an ideal data distribution may be chosen) and
+  *oblivious* = does not use `Id`/`All`. **Model-relativity: Ameloot, Ketsman, Neven & Zinn, TODS
+  40(4):21 (2015)** (arXiv:1202.0242) — more network knowledge yields *different* monotonicity classes,
+  so CALM is not an unconditional law. Practitioner restatement: **Hellerstein & Alvaro, CACM 63(9):72
+  (2020)**. Frontier + the hazard we share: **Laddad, Power, Milano, Cheung, Crooks & Hellerstein,
+  "Keep CALM and CRDT On," PVLDB 16(4):856 (2023)** — CRDT guarantees cover **merges, not reads**.
+- **Generalised Bell inequalities, by which axis each one generalises** (asked and answered):
+  **CGLMP — Collins, Gisin, Linden, Massar & Popescu, PRL 88:040404 (2002)** = **outcomes** (d-valued);
+  **MABK — Mermin, PRL 65:1838 (1990); Ardehali, PRA 46:5375 (1992); Belinskii & Klyshko, Phys. Usp.
+  36:653 (1993)** = **parties**; **Svetlichny, PRD 35:3066 (1987)** = parties *and* the kind of locality
+  (**genuine** multipartite, excluding hybrid models); **I₃₃₂₂ — Froissart, Nuovo Cim. B 64:241 (1981);
+  Collins & Gisin, J. Phys. A 37:1775 (2004)** = **settings**. Ceiling: **Cirel'son, LMP 4:93 (1980)**;
+  the S=4 box: **Popescu & Rohrlich, Found. Phys. 24:379 (1994)**. Review: **Brunner, Cavalcanti,
+  Pironio, Scarani & Wehner, "Bell nonlocality," RMP 86:419 (2014)**.
+- **Sidiney B. Montanhano — "Contextuality in the Bundle Approach, n-Contextuality, and the Role of
+  Holonomy"** (arXiv:2105.14132, 2021/2024). Contextuality ↔ **non-trivial holonomy group** of the frame
+  bundle over the measurement scenario. Classical anchors it specialises: **Ambrose & Singer, "A theorem
+  on holonomy," Trans. AMS 75:428 (1953)** (holonomy is generated by curvature) and **Kobayashi &
+  Nomizu (1963)** (flat ⟺ trivial holonomy — *on a simply connected base*; global path-independence
+  additionally needs π₁ to vanish). **Cited, not entailment-checked** — flagged as such in the doc.
+- **The other costumes of "path independence," recorded so the resemblance is not over-read.**
+  **M. H. A. Newman (1942), "On theories with a combinatorial definition of 'equivalence'"** (Ann. Math.
+  43:223) — Newman's Lemma / Church–Rosser confluence; **Charles R. Plott (1973), "Path Independence,
+  Rationality, and Social Choice"** (Econometrica 41:1075) — the phrase as a *named formal axiom*,
+  predating every CS use; and the vector-calculus root (conservative field ⟺ exact 1-form ⟺ zero curl,
+  Poincaré lemma). Six domains sharing "order doesn't matter" is evidence that **commutativity is widely
+  instantiated**, not that these are one theorem — the `numerology-vs-number-theory` warning, applied.
