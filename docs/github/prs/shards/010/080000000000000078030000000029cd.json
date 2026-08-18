@@ -1,0 +1,12 @@
+{
+  "pr_number": 10701,
+  "archive_path": "docs/history/pr-reviews/PR-10701-archive-pr-reviews-pr-10637-on-merge.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T22:56:11.632Z",
+  "schema_version": "v1",
+  "commit_sha": "13a5f0e78278885976ab528d26c6b72daa24b998",
+  "title": "archive(pr-reviews): PR #10637 on merge",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T19:50:53Z",
+  "head_ref": "automation/pr-archive-10637-run-31833388883-attempt-1"
+}
