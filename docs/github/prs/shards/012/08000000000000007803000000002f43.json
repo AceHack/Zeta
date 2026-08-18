@@ -1,0 +1,12 @@
+{
+  "pr_number": 12099,
+  "archive_path": "docs/history/pr-reviews/PR-12099-ferry-ip-questionable-levin-a-platonic-space-of-minds-and-memory-committed-to-sa.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T21:36:20.189Z",
+  "schema_version": "v1",
+  "commit_sha": "60eb976e5256bc520ecca7f0af04df229978066c",
+  "title": "ferry(ip-questionable): Levin — a Platonic space of MINDS, and memory committed to salience not fidelity",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T21:32:14Z",
+  "head_ref": "shadow/ferry-levin-platonic-minds"
+}
