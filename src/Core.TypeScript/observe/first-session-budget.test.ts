@@ -367,12 +367,14 @@ describe("first-session marker — the one durable side effect, exercised for re
     expect(final.complete).toBe(true);
     expect(log).toContain("zeta-first-session: already-complete");
 
-    // KNOWN GAP, pinned rather than blessed: the short-circuit returns
-    // `defaultNodeSession()` instead of probing, so it reports gh as "missing"
-    // even though this runner has gh authenticated. Nothing consumes the field
-    // today (`main` reads only `.complete`), so it is latent, not live — but it
-    // is a fabricated value on a real code path. Fixing it means probing here;
-    // this assertion is what will turn red when someone does, on purpose.
-    expect(final.credentials.gh).toBe("missing");
+    // GAP CLOSED 2026-08-18. This assertion previously pinned `"missing"` as a
+    // KNOWN GAP — the short-circuit returned `defaultNodeSession()` instead of
+    // probing, fabricating an all-missing credential set on a machine where gh
+    // was authenticated — and said in as many words that it would turn red when
+    // someone fixed it on purpose. It did, and this is that fix: the branch now
+    // probes for what is observable and replays the journal for what was chosen
+    // (`reconcileSessionRecord`). The runner here has gh authenticated, so the
+    // honest answer is "ready".
+    expect(final.credentials.gh).toBe("ready");
   });
 });

@@ -211,6 +211,40 @@ export function firstSessionLabel(action: FirstSessionAction): string {
   }
 }
 
+/**
+ * PURE. The name is the contract: this is the *simulation*, and it has never had
+ * a real-world effect for any action kind. Read the table below before assuming
+ * a passing test here says anything about whether a stranger's choice landed.
+ *
+ * ── Where the durable effects actually live ──────────────────────────────────
+ * `simulateFirstSession` is the transition function; `first-session-run.ts`
+ * (`applyAction` + the loop) is the only thing that touches disk or spawns a
+ * CLI. Per action kind, as of 2026-08-18:
+ *
+ * | action                     | real effect                                        | where              |
+ * |----------------------------|----------------------------------------------------|--------------------|
+ * | `setup_credential`         | vendor CLI runs (`gh auth login`, …) → credentials  | executor + journal |
+ * | `skip_credential`          | journal line                                        | journal            |
+ * | `skip_optional_credentials`| journal line                                        | journal            |
+ * | `offer_cloud_helpers`      | journal line                                        | journal            |
+ * | `use_local_llm_only`       | journal line + completion marker                    | journal + marker   |
+ * | `complete_first_session`   | journal line + completion marker                    | journal + marker   |
+ *
+ * Before the journal existed the middle four rows read "none" — they were pure
+ * state transitions over a record discarded at process exit, so a person who
+ * deliberately skipped GitHub and a person who never reached the question left
+ * byte-identical evidence. `first-session-journal.ts` closed that; the marker
+ * (an ISO timestamp) was and still is the only *other* durable artifact.
+ *
+ * Two things remain deliberately NOT real here, and both are decisions above
+ * this module's pay grade:
+ *   1. Credential acquisition is delegated to external vendor CLIs we do not
+ *      own — `executeSetupCredential` shells out. Nothing here verifies a token.
+ *   2. The journal is local, unsigned and unreplicated. Promoting "this person
+ *      chose local-only" to a claim any peer should trust is an identity /
+ *      attestation surface and belongs to the distributed-IdP work
+ *      (ADR 2026-07-08), not to a fold over a JSONL file.
+ */
 export function simulateFirstSession(session: NodeSessionState, action: FirstSessionAction): NodeSessionState {
   if (session.complete) {
     return session;

@@ -1,0 +1,14 @@
+{
+  "id": "080d00a89004c810a013000837c43d67",
+  "at": "2026-08-18T13:31:36.473Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0AH404R087G0R002YRV4KA",
+    "type": "task",
+    "title": "first-session actions have no durable effect: journal the stranger's choices so the loop does what it claims",
+    "slug": "first-session-actions-have-no-durable-effect-journal-the-str",
+    "priority": "P2",
+    "filename": "081M0AH404R087G0R002YRV4KA-first-session-actions-have-no-durable-effect-journal-the-str.md"
+  }
+}

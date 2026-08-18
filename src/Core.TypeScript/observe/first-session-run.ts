@@ -31,6 +31,12 @@ import {
   type NodeSessionState,
 } from "./first-session";
 import { clampTicks, type TickBudget } from "./tick-budget";
+import {
+  appendFirstSessionEvent,
+  journalPathFor,
+  reconcileSessionRecord,
+  replayFirstSession,
+} from "./first-session-journal";
 import { resolveIdentityAuthMode } from "../ci/identity-auth-provider";
 import {
   SERIAL_PREFIX,
@@ -239,18 +245,32 @@ async function pickAction(
   }
 }
 
+/**
+ * The outcome of one tick.
+ *
+ * `applied` is the action that ACTUALLY took effect, which is not always the one
+ * the person chose — a `setup_credential` the provider downgrades to `skipped`
+ * takes effect as a `skip_credential`, and a failed setup takes effect as
+ * nothing at all (`applied: null`). The journal records this field, never the
+ * chosen action, so the log cannot claim an effect that did not happen.
+ */
+interface AppliedAction {
+  readonly session: NodeSessionState;
+  readonly applied: FirstSessionAction | null;
+}
+
 async function applyAction(
   session: NodeSessionState,
   action: FirstSessionAction,
   opts: RunOptions,
-): Promise<NodeSessionState> {
+): Promise<AppliedAction> {
   if (action.kind === "setup_credential") {
     const authMode = resolveIdentityAuthMode();
     // dry-run skips live CLIs only. mock/skip still run so QEMU can prove the
     // CI auth fork without baking secrets (ADR 2026-07-08).
     if (opts.dryRun && authMode === "live") {
       logSerial(`${SERIAL_PREFIX} dry-run setup ${action.vendor}`);
-      return simulateFirstSession(session, action);
+      return { session: simulateFirstSession(session, action), applied: action };
     }
     const result = executeSetupCredential(action.vendor, opts.runner, opts.home, {
       authMode,
@@ -258,19 +278,22 @@ async function applyAction(
     });
     logSerial(`${SERIAL_PREFIX} setup-${action.vendor} outcome=${result.outcome}`);
     if (result.outcome === "ready") {
-      return simulateFirstSession(session, action);
+      return { session: simulateFirstSession(session, action), applied: action };
     }
     if (result.outcome === "skipped") {
       // CI explicit skip — mark vendor skipped so the menu can advance (same
       // as skip_credential), without claiming ready / self-register.
-      return simulateFirstSession(session, {
+      const downgraded: FirstSessionAction = {
         kind: "skip_credential",
         vendor: action.vendor,
         reason: result.message,
-      });
+      };
+      return { session: simulateFirstSession(session, downgraded), applied: downgraded };
     }
     console.log(`  (${result.message} — pick another option)`);
-    return session;
+    // Nothing happened: no state change, so nothing to journal. This is the
+    // non-advancing tick FIRST_SESSION_RUN_TICK_BUDGET's retry term pays for.
+    return { session, applied: null };
   }
 
   if (opts.dryRun) {
@@ -285,14 +308,65 @@ async function applyAction(
     console.log("  Tip: on this machine run the first-login helper again, or SSH in and set up GitHub there.");
     console.log("");
   }
-  return next;
+  return { session: next, applied: action };
+}
+
+/**
+ * The already-finished branch: report the session a completed first login left
+ * behind, without prompting.
+ *
+ * It used to return `defaultNodeSession()` — an all-missing credential set
+ * asserted on a machine nobody had looked at. Now it probes for what is
+ * observable and replays the journal for what was chosen.
+ */
+function sessionFromCompletedRun(opts: RunOptions, journalPath: string): NodeSessionState {
+  const replayed = replayFirstSession(journalPath);
+  if (replayed) {
+    // Probe for what is observable now, replay for what was chosen then.
+    // See reconcileSessionRecord for why neither source alone is enough.
+    const probed = sessionFromProbe(opts.runner, opts.home);
+    return { ...reconcileSessionRecord(probed, replayed), complete: true };
+  }
+  // No journal beside the marker. Two real causes: a node whose first login
+  // predates this file, and CI, which fabricates the marker with `echo`
+  // (.github/workflows/agent-heartbeat.yml). Both are legitimate, and neither
+  // gives us a record — so this returns the same all-missing default it always
+  // has. It is a KNOWN FABRICATION, kept only for the no-record case and
+  // labelled out loud rather than presented as an observation.
+  logSerial(`${SERIAL_PREFIX} already-complete no-journal (credentials unknown, reported missing)`);
+  return { ...defaultNodeSession(), complete: true };
+}
+
+/**
+ * Journal the APPLIED action, after its effect landed.
+ *
+ * Two guards, both load-bearing: `applied === null` means nothing happened (a
+ * refused credential setup), and journalling it would durably record a step the
+ * machine never took. `dryRun` means no durable effects, and the journal is a
+ * durable effect.
+ *
+ * A failed append is DEGRADED, not fatal — finishing first login on a fresh
+ * machine outranks keeping the record of it — but it is never silent.
+ */
+function recordApplied(
+  journalPath: string,
+  applied: FirstSessionAction | null,
+  dryRun: boolean,
+): void {
+  if (!applied || dryRun) return;
+  const appended = appendFirstSessionEvent(journalPath, applied);
+  if (!appended.ok) {
+    logSerial(`${SERIAL_PREFIX} journal-failed reason=${appended.reason}`);
+  }
 }
 
 /** Main loop — exported for tests. */
 export async function runFirstSession(opts: RunOptions): Promise<NodeSessionState> {
+  const journalPath = journalPathFor(opts.markerPath);
+
   if (existsSync(opts.markerPath) && !opts.demo && !opts.dryRun) {
     logSerial(`${SERIAL_PREFIX} already-complete marker=${opts.markerPath}`);
-    return { ...defaultNodeSession(), complete: true };
+    return sessionFromCompletedRun(opts, journalPath);
   }
 
   logSerial(`${SERIAL_PREFIX} begin`);
@@ -307,7 +381,10 @@ export async function runFirstSession(opts: RunOptions): Promise<NodeSessionStat
     if (!action) break;
 
     logSerial(`${SERIAL_PREFIX} choice kind=${action.kind}${"vendor" in action ? ` vendor=${action.vendor}` : ""}`);
-    session = await applyAction(session, action, opts);
+    const outcome = await applyAction(session, action, opts);
+    session = outcome.session;
+
+    recordApplied(journalPath, outcome.applied, opts.dryRun);
 
     if (session.complete) {
       if (!opts.dryRun) {
