@@ -1,0 +1,12 @@
+{
+  "pr_number": 12067,
+  "archive_path": "docs/history/pr-reviews/PR-12067-design-infra-yubihsm2-on-linux-the-cluster-is-nixos-so-the-apt-question-was-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T20:53:21.233Z",
+  "schema_version": "v1",
+  "commit_sha": "7fe1334c9a1f155716b385ddd8374c32adb36539",
+  "title": "design(infra): YubiHSM2 on Linux — the cluster is NixOS, so the apt question was the wrong question",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T20:52:40Z",
+  "head_ref": "design/yubihsm2-sdk-on-linux-node-vs-laptop-split"
+}
