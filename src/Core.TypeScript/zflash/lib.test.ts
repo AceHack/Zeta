@@ -1020,4 +1020,101 @@ describe("ISO architecture selection", () => {
       expect(selectDownloadedIsoForArch([], "x86_64").ok).toBe(false);
     });
   });
+
+  // ── The message must name the thing it is about ──────────────────────────
+  //
+  // Every test above this block asserts a SUBSTRING OF THE CONSTANT TAIL of
+  // these messages ("no bootable device", "cannot be read", "refusing to
+  // guess"). That is the vacuity class: the constant part cannot fail, so the
+  // suite stayed green (90 pass) while BOTH arch fallbacks shipped with their
+  // interpolations missing entirely --
+  //
+  //   "no ISO here names arch ; falling back to , whose arch cannot be read."
+  //
+  // -- and the operator Downloads folder hits that exact branch today (two
+  // arch-less 2026-06 ISOs, no x86_64-tagged one). The one signal that a flash
+  // cycle is about to be spent on the wrong architecture named neither the
+  // architecture nor the file. These tests assert the VARIABLE part.
+  describe("operator-facing selection messages name their subject", () => {
+    const UNTAGGED = "dl/zeta-installer-25.11-ci27887666934-2026-06-21.iso";
+
+    test("selectIsoForArch's arch-less fallback names the file and the wanted arch", () => {
+      const r = selectIsoForArch([UNTAGGED], "x86_64");
+      expect(r.ok).toBe(true);
+      if (r.ok && r.warning !== null) {
+        expect(r.warning).toContain(UNTAGGED);
+        expect(r.warning).toContain("x86_64");
+      } else {
+        throw new Error("expected an accepted selection carrying a warning");
+      }
+    });
+
+    test("selectDownloadedIsoForArch's arch-less fallback names the file and the wanted arch", () => {
+      const r = selectDownloadedIsoForArch([UNTAGGED], "aarch64");
+      expect(r.ok).toBe(true);
+      if (r.ok && r.warning !== null) {
+        expect(r.warning).toContain(UNTAGGED);
+        expect(r.warning).toContain("aarch64");
+      } else {
+        throw new Error("expected an accepted selection carrying a warning");
+      }
+    });
+
+    // The refusal is the case the module comment calls "the one worth stopping
+    // for", and it was built with \\n inside a template literal -- so it rendered
+    // as ONE line carrying literal backslash-n, with the candidate list inlined
+    // into the prose. A refusal an operator cannot read is a refusal that gets
+    // skipped.
+    test("selectDownloadedIsoForArch's refusal renders real newlines, not literal backslash-n", () => {
+      const r = selectDownloadedIsoForArch([ARM_ISO], "x86_64");
+      expect(r.ok).toBe(false);
+      if (!r.ok) {
+        expect(r.error).not.toContain(String.raw`\n`);
+        expect(r.error.split("\n").length).toBeGreaterThanOrEqual(4);
+        expect(r.error).toContain(ARM_ISO);
+      }
+    });
+
+    // The class-level guard. Enumerated over every branch that can emit a
+    // message, so a NEW branch added later with a bare-constant message fails
+    // here rather than shipping and being discovered on a target board.
+    test("no selector message is emitted without naming a candidate path", () => {
+      const cases: ReadonlyArray<{ readonly label: string; readonly msg: string; readonly paths: readonly string[] }> = [
+        (() => {
+          const r = selectIsoForArch([UNTAGGED], "x86_64");
+          return { label: "selectIsoForArch/sole-unknown", msg: r.ok ? (r.warning ?? "") : r.error, paths: [UNTAGGED] };
+        })(),
+        (() => {
+          const r = selectIsoForArch([X86_ISO, "dl/other-x86_64.iso"], "x86_64");
+          return { label: "selectIsoForArch/ambiguous", msg: r.ok ? (r.warning ?? "") : r.error, paths: [X86_ISO] };
+        })(),
+        (() => {
+          const r = selectIsoForArch([ARM_ISO], "x86_64");
+          return { label: "selectIsoForArch/only-wrong-arch", msg: r.ok ? (r.warning ?? "") : r.error, paths: [ARM_ISO] };
+        })(),
+        (() => {
+          const r = selectIsoForArch([UNTAGGED, ARM_ISO], "x86_64");
+          return { label: "selectIsoForArch/unresolvable", msg: r.ok ? (r.warning ?? "") : r.error, paths: [UNTAGGED, ARM_ISO] };
+        })(),
+        (() => {
+          const r = selectDownloadedIsoForArch([UNTAGGED], "x86_64");
+          return { label: "selectDownloadedIsoForArch/sole-unknown", msg: r.ok ? (r.warning ?? "") : r.error, paths: [UNTAGGED] };
+        })(),
+        (() => {
+          const r = selectDownloadedIsoForArch([ARM_ISO], "x86_64");
+          return { label: "selectDownloadedIsoForArch/only-wrong-arch", msg: r.ok ? (r.warning ?? "") : r.error, paths: [ARM_ISO] };
+        })(),
+      ];
+
+      for (const c of cases) {
+        expect(c.msg).not.toBe("");
+        const namesOne = c.paths.some((p) => c.msg.includes(p));
+        if (!namesOne) {
+          throw new Error(
+            `${c.label} emitted a message that names none of its candidates:\n  ${c.msg}`,
+          );
+        }
+      }
+    });
+  });
 });

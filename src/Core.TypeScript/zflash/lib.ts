@@ -824,7 +824,7 @@ export function selectIsoForArch(paths: readonly string[], want: IsoArch): IsoAr
       path: soleUnknown,
       arch: null,
       warning:
-        `could not read an architecture from  — assuming it is . ` +
+        `could not read an architecture from ${soleUnknown} — assuming it is ${want}. ` +
         `If the target board reports "no bootable device", this is the first thing to suspect.`,
     };
   }
@@ -902,16 +902,16 @@ export function selectDownloadedIsoForArch(
       path: newestUnknown,
       arch: null,
       warning:
-        `no ISO here names arch ; falling back to , whose arch cannot be read. ` +
+        `no ISO here names arch ${want}; falling back to ${newestUnknown}, whose arch cannot be read. ` +
         `If the target board reports "no bootable device", this is the first thing to suspect.`,
     };
   }
   return {
     ok: false,
     error:
-      `every candidate ISO names an architecture other than ${want}:\\n` +
-      candidatesNewestFirst.map((p) => `    ${p} (${detectIsoArchFromPath(p) ?? "unknown"})`).join("\\n") +
-      `\\n  Flashing any of these to a ${want} board yields "no bootable device".\\n` +
+      `every candidate ISO names an architecture other than ${want}:\n` +
+      candidatesNewestFirst.map((p) => `    ${p} (${detectIsoArchFromPath(p) ?? "unknown"})`).join("\n") +
+      `\n  Flashing any of these to a ${want} board yields "no bootable device".\n` +
       `  Download a ${want} ISO from a build-ai-cluster-iso run, or pass one explicitly.`,
   };
 }
