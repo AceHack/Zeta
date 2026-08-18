@@ -1265,6 +1265,10 @@ biconditional: `docs/research/2026-08-17-path-independence-in-four-costumes-crdt
   property of the shape of the cover (acyclic ⟹ always gluable), not of the merge operator* — a
   structural criterion for schema/shard carving, i.e. DV2.0 with a theorem attached. Frontier:
   **Kolaitis et al., "Consistency of Relations over Monoids," JACM 2025** (arXiv:2312.02023).
+  **SHIPPED 2026-08-18** as `src/Core.TypeScript/cover-acyclicity/` (GYO reduction + certificates +
+  the exhaustive semantic falsifier); the **BFMY** half is *checked by entailment* over 382 covers,
+  the **Vorob'ev** half is *cited only* and nothing in the code depends on it —
+  `docs/research/2026-08-18-the-shape-of-the-cover-decides-alpha-acyclicity-shipped-as-a-checkable-criterion.md`.
 - **Arthur Fine (1982) — "Hidden Variables, Joint Probability, and the Bell Inequalities"** (PRL
   48:291). LHV ⟺ a single **global joint distribution** ⟺ all Bell inequalities hold; and CHSH is
   **complete** for the (2,2,2) scenario. The correct citation for any "shared state as λ" claim —
