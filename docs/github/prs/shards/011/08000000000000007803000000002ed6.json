@@ -1,0 +1,19 @@
+{
+  "pr_number": 11990,
+  "archive_path": "docs/history/pr-reviews/PR-11990-feat-tradition-density-iterated-random-tradition-probe-density-over-draws-not-pe.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7i0nG5",
+    "comment:PRRC_kwDOSF9kNM7i0nHJ",
+    "comment:PRRC_kwDOSF9kNM7i0s6E",
+    "comment:PRRC_kwDOSF9kNM7i0szi",
+    "thread:PRRT_kwDOSF9kNM6aKY7I",
+    "thread:PRRT_kwDOSF9kNM6aKY7R"
+  ],
+  "fetched_at": "2026-08-18T15:30:02.563Z",
+  "schema_version": "v1",
+  "commit_sha": "3750b4617641ad13bbf379fa2e26195bab641c54",
+  "title": "feat(tradition-density): iterated random-tradition probe — density over draws, not per-draw confidence",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T15:29:27Z",
+  "head_ref": "shadow/tradition-density-probe-guard"
+}
