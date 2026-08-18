@@ -1,0 +1,12 @@
+{
+  "pr_number": 10473,
+  "archive_path": "docs/history/pr-reviews/PR-10473-ci-run-the-whole-typescript-suite-and-derive-check-that-no-test-file-escapes-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T11:13:01.045Z",
+  "schema_version": "v1",
+  "commit_sha": "a5b32e45c1c4ecfe6a1d7710730f82a6f3434829",
+  "title": "ci: run the whole TypeScript suite, and derive-check that no test file escapes it",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T00:55:26Z",
+  "head_ref": "dejan/run-the-typescript-suite-in-ci"
+}
