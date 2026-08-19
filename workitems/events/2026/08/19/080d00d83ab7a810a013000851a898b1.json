@@ -1,0 +1,14 @@
+{
+  "id": "080d00d83ab7a810a013000851a898b1",
+  "at": "2026-08-19T17:17:40.981Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DGENQM087G0R001NXRX40",
+    "type": "task",
+    "title": "Back the NixOS SSH-CA with a YubiHSM sign-ssh-certificate key: requires Aaron biometric-gated provisioning ceremony",
+    "slug": "back-the-nixos-ssh-ca-with-a-yubihsm-sign-ssh-certificate-ke",
+    "priority": "P1",
+    "filename": "081M0DGENQM087G0R001NXRX40-back-the-nixos-ssh-ca-with-a-yubihsm-sign-ssh-certificate-ke.md"
+  }
+}
