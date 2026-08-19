@@ -154,6 +154,81 @@ database inside out with Apache Samza" (2015); Nathan Marz on
 the lambda architecture; Datomic's append-dated model; Kafka
 Streams / ksqlDB; Materialize + Feldera on DBSP.
 
+## The junction discipline — force the ambient through a small named boundary (minimal form)
+
+*(2026-08-19, Aaron: "this is almost it in minimal linguistic form." Recorded at his request.)*
+
+**One idea, applied wherever something would otherwise be ambient and unlocatable:**
+
+> Take the thing that would otherwise be **ambient and unlocatable** — effects, failure,
+> time, undecidability — and **force it through a small, named, enumerable junction.**
+
+You do not escape the thing. You **localize** it. The difference is total:
+
+| | diffuse | localized |
+|---|---|---|
+| where it lives | unknown — anywhere | **one named junction** |
+| route around it | impossible — you cannot avoid what you cannot find | **yes** |
+| route *into* it deliberately | impossible | **yes — and that is the interesting half** |
+| audit story | "somewhere in here" | "**here**, and it is this small" |
+
+### The lineage — checked, not decorative
+
+**Tarski (1933), undefinability.** Truth for a language `L` is not definable *in* `L`, but is
+definable in a metalanguage. So the meta/object **junction is precisely where undecidability is
+forced to live** — concentrated at a boundary, not distributed through the theory. Aaron's move is
+Tarski's hierarchy made an **engineering discipline**: since the junction is where it must live,
+make the junction small, explicit, and enumerable.
+
+**Rx — Erik Meijer, Brian Beckman, Bart Desmet and colleagues.** The same idea applied three
+times, and the reason this section exists in minimal form. (Anchoring the humans, per
+`.claude/rules/anchor-to-human-prior-art.md`: Meijer derived the `IEnumerable`/`IObservable`
+duality; Beckman's public teaching on monads and the mathematical grounding; Desmet's published
+work on Rx internals and schedulers, incl. *C# 5.0 Unleashed*. Cited for their **public** output —
+attribution is to the team's published record, not to private testimony about who decided what.)
+
+1. **The minimal dual interface** — `IObservable<T>` has one method, `IObserver<T>` three. The
+   entire asynchronous, effectful world funnels through four methods, *derived* (the categorical
+   dual of `IEnumerable`) rather than designed, so minimality is by construction.
+2. **`OnError` as an explicit channel** — exceptions propagate *ambiently*: unwinding a stack,
+   arriving from anywhere. Rx made failure a **named arm of the contract**. The place where things
+   go wrong stopped being everywhere and became one enumerated case.
+3. **`IScheduler` as the single door for time and concurrency** — instead of time entering through
+   ambient sleeps, timers, and whatever thread you happen to be on, there is **one injected
+   parameter**.
+
+Zeta's injected `Source` / `IEffects` is (3) generalized, and **§13 noninterference is this
+discipline stated for entropy**: influence enters only through declared, metered channels.
+
+### Why it matters — get the junction wrong and you get a singularity
+
+Aaron 2026-08-19: *"if you get it wrong you get a singularity."*
+
+The failure mode is **not** that the system halts. It is that the system **answers**. An unmarked
+undecidable gets resolved rather than escalated, and everything derived from it inherits an
+unbounded error with no marker — because at the moment of entry it looked like an ordinary
+successful step. A marked junction is a bounded hole you route around; an unmarked one propagates
+through every downstream derivation.
+
+It compounds specifically in a **self-regenerating** architecture: if the generator IS the ECC
+(`gen(gen) == gen`), a correctly localized junction means regeneration **corrects** drift, and a
+mislocated one means regeneration **amplifies** it. Same operation, opposite sign, decided entirely
+by junction placement.
+
+**The falsifiable test — and it is cheap:** *where does the system actually defer?* Enumerate the
+points where it refuses to produce an answer and escalates — to an oracle, a human, a wager. If that
+set is empty, or does not match the junctions claimed to be localized, the junctions are not marked;
+they are only believed to be. `Evidence.AssertedOnly` and the gated classes requiring human
+authorization are the existing instances; the check is whether the **map** matches the **territory**.
+
+> **An undecidable point you can point at is a consent boundary. An undecidable point you cannot
+> locate is a silent failure.**
+
+Detail: `docs/research/2026-08-18-godel-localized-to-a-known-junction-and-entanglement-accrues-pairwise-aaron.md`
+· work item `081KQGDBJ0008QG0R003NDQTBM` (Tarski-stratification proof, P3, XL, may dissolve — the
+honest register) · `.claude/rules/dv2-data-split-discipline-activated.md` §7 noninterference ·
+`.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md` (the generator IS the ECC).
+
 ## The through-line — independence is the one precondition for honesty (the four-windows fusion)
 
 *(2026-06-19, Aaron — the line he'd been following internally before Zeta, now named: "amazing fusion.")*
