@@ -1,0 +1,14 @@
+{
+  "id": "080d00bd6a883810a01300082f7c0177",
+  "at": "2026-08-19T01:40:29.575Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0BTTM85087G0R003X6TWCD",
+    "type": "bug",
+    "title": "agent-reviewer never fires: its trigger matches flush/ but the fleet produces heartbeat/<agent>-flush-<sha>",
+    "slug": "agent-reviewer-never-fires-its-trigger-matches-flush-but-the",
+    "priority": "P2",
+    "filename": "081M0BTTM85087G0R003X6TWCD-agent-reviewer-never-fires-its-trigger-matches-flush-but-the.md"
+  }
+}
