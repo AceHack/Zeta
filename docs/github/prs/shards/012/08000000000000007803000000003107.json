@@ -1,0 +1,12 @@
+{
+  "pr_number": 12551,
+  "archive_path": "docs/history/pr-reviews/PR-12551-fix-viz-the-identicon-s-xor-fold-is-linear-an-observation-and-an-emission-drew-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T22:34:00.662Z",
+  "schema_version": "v1",
+  "commit_sha": "d08d20548aae3839cfb7e539b1123c73487152f6",
+  "title": "fix(viz): the identicon's XOR fold is linear — an Observation and an Emission drew the same face (zetaid.glyph v2)",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T22:33:23Z",
+  "head_ref": "kira/zetaidviz-glyph-32bit-truncation"
+}
