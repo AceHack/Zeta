@@ -17,10 +17,19 @@
 #     work; bumped from 22.04 on 2026-04-28 per the human
 #     maintainer's input + version-currency discipline —
 #     ubuntu-latest = 24.04 since Jan 2025).
-#     Windows legs run push-to-main only, as non-blocking DRIFT
-#     CHECKS (Aaron 2026-08-19 — quoted in full at the
+#     Windows AND macOS legs are non-blocking DRIFT CHECKS
+#     (Aaron 2026-08-19 — quoted in full at the
 #     `continue-on-error:` flag on `build-and-test`). They are not
 #     "deferred", which is what this line said until 2026-08-19.
+#     Cadence differs and that is deliberate: Windows runs
+#     push-to-main only, macOS runs on EVERY PR — a drift check is
+#     only worth its minutes where someone reads it, and the PR
+#     checks list is the surface humans actually open. Measured
+#     reason, not preference: of the last 500 completed gate push
+#     runs only 82 (16.4%) executed their matrix at all — the rest
+#     were cancelled by the concurrency group before any leg ran
+#     (data/platform-drift.json, 2026-08-19). Push-only cadence
+#     would have cut macOS observation by ~84%.
 #   - Third-party actions SHA-pinned by full 40-char commit SHA;
 #     trailing `# vX.Y.Z` comments for humans.
 #   - permissions: contents: read at the workflow level; no job
@@ -127,10 +136,23 @@ jobs:
           #   "required by branch protection's required-status-checks".
           #   It is not, and has not been since the drift-and-heal flip:
           #   the `CI Gate` ruleset requires exactly ONE context,
-          #   `gate (required)`. macos-26 blocks only transitively, by
+          #   `gate (required)`. macos-26 blocked only transitively, by
           #   being a leg of `build-and-test` with no continue-on-error.
-          #   Same outcome today, different mechanism — and the mechanism
-          #   is what anyone changing this has to reason about.
+          #   As of 2026-08-19 it no longer blocks at all — the flag now
+          #   covers it. The mechanism is still what anyone changing this
+          #   has to reason about.
+          # macos-26 STAYS on every PR even though it no longer blocks,
+          # and the reason is coverage rather than habit. The two
+          # post-merge surfaces that read drift legs
+          # (drift-sweep.yml's BD001 detector and
+          # platform-drift-report.ts) both query
+          # `branch=main&event=push`, and 418 of the last 500 such runs
+          # were CANCELLED by the concurrency group before a single leg
+          # executed — 16.4% coverage (data/platform-drift.json,
+          # 2026-08-19). The PR run is the one that reliably executes and
+          # the one a human already has open. Moving macOS to push-only
+          # would have been cheaper and would have made the check mostly
+          # unobserved, which is the vacuity class.
           # Push-to-main / workflow_dispatch: full surface adds the two
           # Windows legs. Those are DRIFT CHECKS — non-blocking
           # permanently and by intent (Aaron 2026-08-19), not
@@ -291,10 +313,16 @@ jobs:
     # so the prior fork/LFG cost-opt split (which kept macOS off LFG)
     # no longer applies.
     #
-    # Active legs (3):
-    #   - macos-26          macOS 26, Apple Silicon M1 (3 CPU, 7 GB)
+    # BLOCKING legs (2) — the only platforms a red leg still stops:
     #   - ubuntu-24.04      Ubuntu 24.04 LTS x64 (4 CPU, 16 GB)
     #   - ubuntu-24.04-arm  Ubuntu 24.04 LTS arm64 (4 CPU, 16 GB)
+    #
+    # DRIFT-CHECK legs (3) — run, report, block nothing:
+    #   - macos-26          macOS 26, Apple Silicon M1 (3 CPU, 7 GB)
+    #                       every PR + every push to main
+    #   - windows-2025      Windows Server 2025 x64 (4 CPU, 16 GB)
+    #   - windows-11-arm    Windows 11 arm64 (4 CPU, 16 GB)
+    #                       push to main / workflow_dispatch only
     #
     # Moved-to-nightly leg (per maintainer 2026-04-27):
     #   - ubuntu-slim       Ubuntu slim x64 (1 vCPU, 5 GB RAM;
@@ -312,12 +340,9 @@ jobs:
     #                       Reference:
     # https://github.blog/changelog/2026-01-22-1-vcpu-linux-runner-now-generally-available-in-github-actions/
     #
-    # Per-merge DRIFT-CHECK legs (added 2026-04-27 as "experimental";
-    # reclassified 2026-08-19 by the maintainer — see the note at
-    # `continue-on-error:` below):
-    #   - windows-2025      Windows Server 2025 x64 (4 CPU, 16 GB)
-    #   - windows-11-arm    Windows 11 arm64 (4 CPU, 16 GB)
-    # These run only on push-to-main / `workflow_dispatch`, NOT on
+    # The Windows legs (added 2026-04-27 as "experimental"; reclassified
+    # 2026-08-19 by the maintainer — see the note at `continue-on-error:`
+    # below) run only on push-to-main / `workflow_dispatch`, NOT on
     # `pull_request` (and NOT on a schedule — this workflow has no
     # `schedule:` trigger, which several comments here claimed until
     # 2026-08-19). They carry `continue-on-error: true`
@@ -325,6 +350,7 @@ jobs:
     # observed and deliberately non-blocking. "Experimental / while the
     # installer matures" was the old reading and is no longer the
     # reason — do not read the flag as a temporary accommodation.
+    # macos-26 joined them 2026-08-19 (same flag, per-PR cadence kept).
     #
     # fail-fast: false so one leg's failure doesn't cancel the
     # others — we want the full signal across the matrix.
@@ -343,21 +369,27 @@ jobs:
     # runs get Linux + macOS, push-to-main / workflow_dispatch get all
     # five.
     #
-    # ASYMMETRY, STATED SO NOBODY ASSUMES SYMMETRY (2026-08-19). Aaron
-    # named Windows and macOS together as drift checks, but they are NOT
-    # in the same state in this file, and only one half of that is
-    # implemented here:
-    #   - Windows: non-blocking (`continue-on-error` below), push-only.
-    #   - macOS:   BLOCKS. It carries no `continue-on-error`, so a red
-    #              macos-26 leg reds `build-and-test`, reds
-    #              `gate (required)` — the ONLY required context in the
-    #              `CI Gate` ruleset — and stops the merge. Observed
-    #              live: run 32138908732 (2026-08-18), macos-26 the only
-    #              failed leg, `gate (required)` failure.
-    # Making macOS non-blocking is a floor amendment, not a workflow
-    # edit, and is tracked as its own decision — see the work item
-    # linked at `continue-on-error:` below. It is deliberately NOT done
-    # in the same change that classified Windows.
+    # THE ASYMMETRY IS CLOSED (2026-08-19). This block used to say Windows
+    # and macOS were NOT in the same state — Windows non-blocking, macOS
+    # blocking transitively through `build-and-test`. It is now one state:
+    # both are drift checks, both carry the flag below. The floor amendment
+    # that closed it was authorized by Aaron the same day, verbatim:
+    #
+    #   "we are moving away from anything that blocks into drift checks
+    #    instead."
+    #
+    # What that cost, stated rather than left to be discovered: macOS runs
+    # PRE-merge, so unlike the Windows flip this one changes what can land.
+    # A macOS-only break now merges. Last time that would have mattered:
+    # run 32138908732 (2026-08-18), macos-26 the only failed leg and
+    # `gate (required)` failure — under this file it would be a green gate
+    # carrying a named non-blocking failure, and the break would be on main.
+    # Measured frequency of that event: 1 failure in 82 executed push runs
+    # (1.2%), clean streak 19, over 2026-08-15..2026-08-19
+    # (data/platform-drift.json). For contrast the Linux leg that still
+    # blocks, ubuntu-24.04, failed 2 (2.4%) over the same runs — macOS was
+    # never the noisy leg, it was a quiet leg holding gate authority.
+    # Work item: 081M0CPEH40087G0R0016GDSB6.
     name: build-and-test (${{ matrix.os }})
     timeout-minutes: 45
     needs: [matrix-setup, path-filter]
@@ -369,50 +401,78 @@ jobs:
     #    don't want to block on them. Also we are moving more and more away from PRs
     #    and more into sovereign mode without PRs."
     #
-    # So: the Windows legs are non-blocking PERMANENTLY AND BY INTENT. They are drift
-    # checks — deliberately observed, deliberately not gates. This is the steady state,
-    # not a tolerance being worked off, and flipping this expression to `false` would
-    # be reversing a maintainer decision, not cleaning up a leftover. If you believe it
-    # should block, that is a floor amendment and it goes through the consent path (the
-    # same one named at `gate-required`), not through an edit here.
+    # AMENDED 2026-08-19, same day, by Aaron directly — this is what moved macOS in:
+    #
+    #   "we are moving away from anything that blocks into drift checks instead."
+    #
+    # So: the Windows AND macOS legs are non-blocking PERMANENTLY AND BY INTENT. They
+    # are drift checks — deliberately observed, deliberately not gates. This is the
+    # steady state, not a tolerance being worked off, and narrowing this expression
+    # would be reversing a maintainer decision, not cleaning up a leftover. If you
+    # believe a platform should block, that is a floor amendment and it goes through
+    # the consent path (the same one named at `gate-required`), not through an edit
+    # here. The expression is pinned by a test —
+    # src/Core.TypeScript/ci/gate-scope-summary.test.ts, "the drift-check platform set
+    # is exactly what the maintainer classified" — so a silent narrowing fails there
+    # rather than being discovered by a merge that should not have landed.
     #
     # WHAT THE FLAG ACTUALLY DOES, since it must stay legible. This job IS in the
-    # `gate-required` floor, so the floor NAME OVERSTATES ITS COVERAGE on the Windows
-    # platform: a Windows build or test failure reaches `gate (required)` as SUCCESS.
-    # MEASURED over the 152 completed `gate` runs carrying Windows legs
+    # `gate-required` floor, and the floor NAME NOW OVERSTATES ITS COVERAGE ON EVERY
+    # PLATFORM BUT LINUX: a Windows or macOS build/test failure reaches
+    # `gate (required)` as SUCCESS. What the floor still covers pre-merge is
+    # ubuntu-24.04 and ubuntu-24.04-arm, and registry/uncompensatable-floor.yaml's
+    # `scoped-build-test-break` entry says so in the data rather than only here.
+    # MEASURED for Windows over the 152 completed `gate` runs carrying Windows legs
     # (2026-04-25..2026-08-19): windows-2025 failed 12 times (7.9%), windows-11-arm 9
     # (5.9%), 14 runs carried at least one (9.2%) — and in all 11 instances since
     # `gate-required` existed, the required check reported green beside the red leg.
     # One is committed as a fixture: run 31978270082, in
-    # src/Core.TypeScript/ci/fixtures/gate-run-jobs-windows-failed.json.
+    # src/Core.TypeScript/ci/fixtures/gate-run-jobs-windows-failed.json. That fixture
+    # is the empirical basis for the macOS half too: it proves the Actions API reports
+    # a continue-on-error leg's conclusion as `failure` (not `skipped`, not `neutral`),
+    # which is what every surface below derives from.
     #
     # THE OBLIGATION THAT COMES WITH "DON'T BLOCK" IS "THEN BE SEEN". A drift check
-    # nobody reads is the vacuity class wearing a different hat. Three surfaces carry
+    # nobody reads is the vacuity class wearing a different hat. FOUR surfaces carry
     # it, and each is deliberate:
+    #   0. The leg's OWN check run still concludes `failure` — a red X in the PR's
+    #      checks list, next to a green `gate (required)`. Verified against the live
+    #      API, not assumed: GET /commits/54492c95ec2e6e31105d698c7ef68d5884daaf38/
+    #      check-runs reports `build-and-test (windows-2025)` conclusion=failure for
+    #      the run above, while the same commit's `gate (required)` is success. This
+    #      is the surface that makes the macOS flip safe, because macOS runs per-PR.
     #   1. `gate (required)`'s step summary + warning annotation names any leg that
     #      failed non-blockingly (src/Core.TypeScript/ci/gate-scope-summary.ts) —
-    #      per-run, derived, knows no platform names.
+    #      per-run, derived, knows no platform names. It needed no edit for macOS,
+    #      which is the test that it was built generically rather than for Windows.
     #   2. `drift-sweep.yml`'s BD001 detector files a failed `build-and-test` leg on
     #      main into the drift ledger (docs/drift-events/) — but keyed to `Zeta.sln`,
     #      so WHICH leg is lost, and it reads one run, so it measures a level.
     #   3. src/Core.TypeScript/ci/platform-drift-report.ts folds the last N push runs
     #      into per-leg failure RATES, clean streaks, and — the number that turned out
-    #      to matter — COVERAGE: of the 300 most recent completed push runs, 265 were
-    #      `cancelled` before their legs ever ran. Published to data/platform-drift.json
-    #      and rendered on data/monitor.html.
+    #      to matter — COVERAGE: of the 500 most recent completed push runs, 418 were
+    #      `cancelled` before their legs ever ran (16.4% coverage). Published to
+    #      data/platform-drift.json and rendered on data/monitor.html. It will
+    #      reclassify `macos-26` from `blocking` to `non-blocking` the first time it
+    #      fails beside a green rollup — that classification is OBSERVED, not read off
+    #      this flag, so the ledger will disagree with this file until the evidence
+    #      arrives. That is correct and deliberate; do not "fix" the ledger either.
+    #
+    # Surfaces 2 and 3 both query `branch=main&event=push`, i.e. 16.4% coverage. That
+    # is why macOS keeps its per-PR cadence: surface 0 is the one that reliably fires.
     #
     # Decision record, with the measurements that informed it and the strategic context
     # (the move toward sovereign mode without PRs):
     # workitems/081M0BVAV2H087G0R000VXRYRQ-decide-whether-the-windows-build-and-test-legs-should-block.md
-    # macOS is the OTHER half of Aaron's sentence and is NOT in this state — it still
-    # blocks. Tracked separately: work item 081M0CPEH40087G0R0016GDSB6. See the
-    # asymmetry note in the header comment above.
+    # workitems/done/2026/08/081M0CPEH40087G0R0016GDSB6-make-the-macos-build-and-test-leg-non-blocking-floor-amendme.md
     #
-    # Note if you are here to make the legs run per-PR: Aaron allowed it ("fine to
-    # check per pr if we want") and it was PRICED and declined — ~355 PR gate runs/day
+    # Note if you are here to make the WINDOWS legs run per-PR: Aaron allowed it ("fine
+    # to check per pr if we want") and it was PRICED and declined — ~355 PR gate runs/day
     # × ~21 runner-minutes ≈ 124 runner-hours/day for a check that by decision cannot
-    # block. The reasoning is in the work item; re-open it there, not here.
-    continue-on-error: ${{ startsWith(matrix.os, 'windows-') }}
+    # block. The reasoning is in the work item; re-open it there, not here. macOS is not
+    # covered by that pricing: it was already running per-PR before this change, so
+    # keeping it there costs zero additional minutes.
+    continue-on-error: ${{ startsWith(matrix.os, 'windows-') || startsWith(matrix.os, 'macos-') }}
     strategy:
       fail-fast: false
       matrix:
@@ -2438,6 +2498,16 @@ jobs:
     # ── AMENDMENT 2026-08-17 (Aaron, explicit: "yes add lint (TS) to the
     # required floor"). `lint-typescript` re-enters the floor. The consent path
     # named above is why this comment exists rather than a silent list edit.
+    #
+    # ── AMENDMENT 2026-08-19 (Aaron, explicit: "we are moving away from anything
+    # that blocks into drift checks instead"). SUBTRACTION this time, via the same
+    # consent path: the `build-and-test` entry below stays in the floor but its
+    # PLATFORM coverage narrows to Linux. The macOS leg joins the Windows legs under
+    # `continue-on-error`, so a macos-26 build or test failure now reaches this
+    # rollup as success. The needs: list is unchanged — what changed is inside the
+    # matrix, which is exactly why the `Emit scope` step below exists: it names any
+    # leg that failed non-blockingly, so a green here still says which green it is.
+    # registry/uncompensatable-floor.yaml records the narrowed coverage in data.
     #
     # The evidence is this job's own header, twenty lines up from its `name:`:
     # it was created because "Slice 9 (PR #882) shipped a real TS2322 to main",

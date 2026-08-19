@@ -151,6 +151,113 @@ test("the non-blocking classification is derived, not windows-specific", () => {
   expect(blocking.nonBlockingFailures).toEqual([]);
 });
 
+
+// ── THE CLASSIFICATION ITSELF, PINNED ─────────────────────────────────────────────────
+//
+// Everything above tests the REPORTING of a non-blocking leg. These two test the
+// CLASSIFICATION that decides which legs are non-blocking in the first place, because
+// after 2026-08-19 that is a maintainer decision rather than an implementation detail,
+// and a decision with no falsifier is a decision that drifts back silently.
+//
+// Aaron 2026-08-19: "windows and mac are drift checks, it's fine to check per pr if we
+// want but we don't want to block on them", then, closing the macOS half the same day:
+// "we are moving away from anything that blocks into drift checks instead."
+
+/** Prefixes named by the `continue-on-error:` expression on `build-and-test`. */
+function driftCheckPrefixes(yamlText: string): string[] {
+  const jobAt = yamlText.indexOf("\n  build-and-test:");
+  if (jobAt < 0) throw new Error("build-and-test job not found in gate.yml");
+  const after = yamlText.slice(jobAt);
+  const flagAt = after.indexOf("\n    continue-on-error:");
+  if (flagAt < 0) throw new Error("build-and-test carries no continue-on-error: flag");
+  const line = after.slice(flagAt + 1, after.indexOf("\n", flagAt + 1));
+  const prefixes: string[] = [];
+  // Only the `startsWith(matrix.os, '<prefix>')` shape is understood. Anything else
+  // must fail loudly: a parser that shrugged at an expression it could not read would
+  // report "no drift checks" and pass, which is the vacuity class this file exists for.
+  const re = /startsWith\(matrix\.os,\s*'([^']+)'\)/g;
+  let m: RegExpExecArray | null;
+  let consumed = 0;
+  while ((m = re.exec(line)) !== null) {
+    prefixes.push(m[1] as string);
+    consumed += m[0].length;
+  }
+  const skeleton = line
+    .replace(/startsWith\(matrix\.os,\s*'[^']+'\)/g, "")
+    .replace(/^\s*continue-on-error:\s*\$\{\{/, "")
+    .replace(/\}\}\s*$/, "")
+    .replace(/\|\|/g, "")
+    .trim();
+  if (prefixes.length === 0 || skeleton.length > 0 || consumed === 0) {
+    throw new Error(`continue-on-error expression is not a pure startsWith disjunction: ${line.trim()}`);
+  }
+  return prefixes;
+}
+
+/** Every OS the `matrix-setup` job can emit, across both branches of its if/else. */
+function matrixOsValues(yamlText: string): string[] {
+  const out = new Set<string>();
+  for (const line of yamlText.split("\n")) {
+    const m = /echo 'os=(\[[^\]]*\])'/.exec(line);
+    if (m?.[1] === undefined) continue;
+    for (const os of JSON.parse(m[1]) as string[]) out.add(os);
+  }
+  if (out.size === 0) throw new Error("matrix-setup emitted no os list this test could read");
+  return [...out].sort();
+}
+
+test("the drift-check platform set is exactly what the maintainer classified", () => {
+  const prefixes = driftCheckPrefixes(gateYml).sort();
+  expect(prefixes).toEqual(["macos-", "windows-"]);
+
+  const all = matrixOsValues(gateYml);
+  const drift = all.filter((os) => prefixes.some((pre) => os.startsWith(pre)));
+  const blocking = all.filter((os) => !prefixes.some((pre) => os.startsWith(pre)));
+
+  // Every leg is classified, and the classification is the one on file. Adding a leg
+  // without deciding its class fails HERE, not at the merge that should not have landed.
+  expect(drift).toEqual(["macos-26", "windows-11-arm", "windows-2025"]);
+  expect(blocking).toEqual(["ubuntu-24.04", "ubuntu-24.04-arm"]);
+
+  // Restoring blocking authority to a drift platform is a floor amendment and goes
+  // through the consent path named at gate-required, not through an edit to the flag.
+  expect(blocking.some((os) => os.startsWith("macos-"))).toBe(false);
+});
+
+test("a failed macos-26 leg is NAMED, not swallowed, once macOS stops blocking", () => {
+  // Derived from the captured windows run rather than invented: same real job listing,
+  // with macos-26's conclusion flipped to failure. That is the exact shape the API
+  // produces for a continue-on-error leg -- the windows leg in this very fixture proves
+  // `failure` (not `skipped`, not `neutral`) is what a continue-on-error job reports.
+  const captured = fixture("gate-run-jobs-windows-failed.json");
+  const jobs: RunJob[] = captured.map((j) =>
+    j.name === "build-and-test (macos-26)" ? { ...j, conclusion: "failure" } : j,
+  );
+  expect(jobs.find((j) => j.name === "build-and-test (macos-26)")?.conclusion).toBe("failure");
+
+  const s = summarizeGate(needsOf(), jobs, gateYmlJobNames(gateYml));
+
+  // The rollup still reports success -- that is the whole point of the flip, and it is
+  // why the three assertions below are the ones that keep it from being vacuous.
+  expect(s.nonBlockingFailures).toContain("build-and-test (macos-26)");
+  expect(renderMarkdown(s)).toContain("build-and-test (macos-26)");
+  expect(renderMarkdown(s)).toContain("FAILED (non-blocking)");
+  expect(renderNotice(s)).toContain("NON-BLOCKING FAILURES:");
+  expect(renderNotice(s)).toContain("build-and-test (macos-26)");
+});
+
+test("macOS blocking again would be reported as a block, not as drift", () => {
+  // The converse, so the previous test cannot pass by naming everything. If the flag is
+  // ever narrowed back, macos-26's failure reds `build-and-test`, and this summary must
+  // stop calling it non-blocking rather than keep reassuring a reader it was tolerated.
+  const captured = fixture("gate-run-jobs-windows-failed.json");
+  const jobs: RunJob[] = captured.map((j) =>
+    j.name === "build-and-test (macos-26)" ? { ...j, conclusion: "failure" } : j,
+  );
+  const s = summarizeGate(needsOf({ "build-and-test": "failure" }), jobs, gateYmlJobNames(gateYml));
+  expect(s.nonBlockingFailures).toEqual([]);
+});
+
 test("a floor entry with no matching job is reported UNRESOLVED, not silently dropped", () => {
   const s = summarizeGate(
     { "a-job-that-never-ran": { result: "success" } },

@@ -31,8 +31,26 @@ entries:
     detector: ".semgrep-floor.yml via the gate's blocking lint (semgrep) job — this file IS the floor scan; the full set runs as non-blocking drift in lint (semgrep drift)"
     rationale: erasure-class
   - id: scoped-build-test-break
-    description: "Functional build/test failure in the PR's OWN scope — downstream lanes consume the break this tick; never blocks on pre-existing whole-repo drift (Vera review, #9601 P1)"
-    detector: "gate build-and-test, scoped to the diff"
+    description: >-
+      Functional build/test failure in the PR's OWN scope — downstream lanes consume the break this
+      tick; never blocks on pre-existing whole-repo drift (Vera review, #9601 P1).
+      PLATFORM COVERAGE IS NARROWER THAN THE ENTRY NAME, and is stated here so the registry does not
+      overstate itself: only the LINUX legs of `gate build-and-test` (ubuntu-24.04, ubuntu-24.04-arm)
+      can block. The windows-2025 / windows-11-arm legs (2026-08-19) and the macos-26 leg
+      (2026-08-19, same day, second amendment) carry `continue-on-error` and are DRIFT CHECKS by
+      maintainer classification — Aaron: "windows and mac are drift checks … we don't want to block
+      on them", then "we are moving away from anything that blocks into drift checks instead". Their
+      failures reach `gate (required)` as success and are reported, not enforced; the reporting path
+      is named in the detector field below. Narrowing coverage went through the same treaty-amendment
+      consent path this file requires for additions.
+    detector: >-
+      gate build-and-test, scoped to the diff — BLOCKING on ubuntu-24.04 + ubuntu-24.04-arm only.
+      Non-blocking legs are reported by src/Core.TypeScript/ci/gate-scope-summary.ts (per-run: the
+      `gate (required)` step summary + a warning annotation naming each leg that failed
+      non-blockingly), by drift-sweep.yml's BD001 detector (post-merge, into docs/drift-events/), and
+      by src/Core.TypeScript/ci/platform-drift-report.ts (rates + coverage → data/platform-drift.json
+      → data/monitor.html). The leg's own check run still concludes `failure`, so it is a visible red
+      X beside the green rollup.
     rationale: erasure-class
   - id: typescript-type-break
     description: >-
