@@ -17,7 +17,10 @@
 #     work; bumped from 22.04 on 2026-04-28 per the human
 #     maintainer's input + version-currency discipline —
 #     ubuntu-latest = 24.04 since Jan 2025).
-#     Windows legs deferred to peer-harness milestone.
+#     Windows legs run push-to-main only, as non-blocking DRIFT
+#     CHECKS (Aaron 2026-08-19 — quoted in full at the
+#     `continue-on-error:` flag on `build-and-test`). They are not
+#     "deferred", which is what this line said until 2026-08-19.
 #   - Third-party actions SHA-pinned by full 40-char commit SHA;
 #     trailing `# vX.Y.Z` comments for humans.
 #   - permissions: contents: read at the workflow level; no job
@@ -114,23 +117,27 @@ jobs:
         shell: bash
         run: |
           # Pre-merge (pull_request + merge_group): Linux + macos-26
-          # (~5 min wall clock with macos in parallel). macos-26 is
-          # required by branch protection's required-status-checks,
-          # so it runs on every PR — moved back to per-PR cadence
-          # 2026-04-28 after maintainer correction ("we pull out mac
-          # and codeql to merge to main time instead of per pr, and
-          # then moved it back to per pr"). The earlier per-merge-only
-          # split structurally blocked the PR queue.
-          # Push-to-main / workflow_dispatch: full surface adds Windows
-          # legs (peer-harness milestone seeding per maintainer
-          # 2026-04-27). Windows legs are gated by `continue-on-error:
-          # true` at the build-and-test job level so initial failures
-          # (e.g. missing tools/setup/install.ps1) don't block per-merge
-          # runs while the peer-agent polishes the path. Since 2026-08-19
-          # a failing Windows leg is NAMED in the `gate (required)` step
-          # summary and raises a warning annotation -- non-blocking is no
-          # longer the same as unreported. See the residue note at that
-          # `continue-on-error:` flag.
+          # (~5 min wall clock with macos in parallel). macos-26 runs on
+          # every PR — moved back to per-PR cadence 2026-04-28 after
+          # maintainer correction ("we pull out mac and codeql to merge
+          # to main time instead of per pr, and then moved it back to
+          # per pr"). The earlier per-merge-only split structurally
+          # blocked the PR queue.
+          #   CORRECTION 2026-08-19: this comment used to say macos-26 is
+          #   "required by branch protection's required-status-checks".
+          #   It is not, and has not been since the drift-and-heal flip:
+          #   the `CI Gate` ruleset requires exactly ONE context,
+          #   `gate (required)`. macos-26 blocks only transitively, by
+          #   being a leg of `build-and-test` with no continue-on-error.
+          #   Same outcome today, different mechanism — and the mechanism
+          #   is what anyone changing this has to reason about.
+          # Push-to-main / workflow_dispatch: full surface adds the two
+          # Windows legs. Those are DRIFT CHECKS — non-blocking
+          # permanently and by intent (Aaron 2026-08-19), not
+          # experimental legs waiting to be promoted. The full statement,
+          # quoted, is at the `continue-on-error:` flag on
+          # `build-and-test`; read it before changing either this matrix
+          # or that flag.
           if [ "${GH_EVENT}" = "pull_request" ] || [ "${GH_EVENT}" = "merge_group" ]; then
             echo 'os=["ubuntu-24.04","ubuntu-24.04-arm","macos-26"]' >> "$GITHUB_OUTPUT"
           else
@@ -305,54 +312,106 @@ jobs:
     #                       Reference:
     # https://github.blog/changelog/2026-01-22-1-vcpu-linux-runner-now-generally-available-in-github-actions/
     #
-    # Per-merge experimental legs (maintainer 2026-04-27 — replaces
-    # the prior 2026-04-24 deferral so Windows infrastructure is
-    # mostly-ready when the peer-mode agent comes online):
+    # Per-merge DRIFT-CHECK legs (added 2026-04-27 as "experimental";
+    # reclassified 2026-08-19 by the maintainer — see the note at
+    # `continue-on-error:` below):
     #   - windows-2025      Windows Server 2025 x64 (4 CPU, 16 GB)
     #   - windows-11-arm    Windows 11 arm64 (4 CPU, 16 GB)
-    # These run only on push-to-main / schedule / workflow_dispatch
-    # (not on PR — same cadence as macos-26). They carry
-    # `continue-on-error: true` while the native PowerShell installer
-    # and ARM64 package availability mature; failures remain visible
-    # without blocking the per-merge gate.
+    # These run only on push-to-main / `workflow_dispatch`, NOT on
+    # `pull_request` (and NOT on a schedule — this workflow has no
+    # `schedule:` trigger, which several comments here claimed until
+    # 2026-08-19). They carry `continue-on-error: true`
+    # permanently and by intent: they are drift checks, deliberately
+    # observed and deliberately non-blocking. "Experimental / while the
+    # installer matures" was the old reading and is no longer the
+    # reason — do not read the flag as a temporary accommodation.
     #
     # fail-fast: false so one leg's failure doesn't cancel the
     # others — we want the full signal across the matrix.
     #
-    # Per-PR / per-merge cadence split (maintainer 2026-04-27):
+    # Per-PR / per-merge cadence split:
     # - macos-26: developer-experience verification, NOT prod build.
-    #   Runs only on push-to-main + schedule + workflow_dispatch.
-    #   Same rationale as the Analyze (csharp) move below.
+    #   Runs on EVERY PR and every push-to-main. (The 2026-04-27
+    #   per-merge-only split was reverted 2026-04-28 by maintainer
+    #   correction — "we pull out mac and codeql to merge to main time
+    #   instead of per pr, and then moved it back to per pr". This
+    #   comment said "push-to-main + schedule + workflow_dispatch"
+    #   until 2026-08-19; it had been wrong for nearly four months.)
     # - ubuntu-24.04 + ubuntu-24.04-arm: production build path; runs
     #   on every PR + push-to-main.
-    # The matrix is built dynamically by `matrix-setup` so PR runs
-    # only get the Unix legs while push-to-main / schedule /
-    # workflow_dispatch run all five.
+    # The matrix is built dynamically by `matrix-setup`: PR + merge_group
+    # runs get Linux + macOS, push-to-main / workflow_dispatch get all
+    # five.
+    #
+    # ASYMMETRY, STATED SO NOBODY ASSUMES SYMMETRY (2026-08-19). Aaron
+    # named Windows and macOS together as drift checks, but they are NOT
+    # in the same state in this file, and only one half of that is
+    # implemented here:
+    #   - Windows: non-blocking (`continue-on-error` below), push-only.
+    #   - macOS:   BLOCKS. It carries no `continue-on-error`, so a red
+    #              macos-26 leg reds `build-and-test`, reds
+    #              `gate (required)` — the ONLY required context in the
+    #              `CI Gate` ruleset — and stops the merge. Observed
+    #              live: run 32138908732 (2026-08-18), macos-26 the only
+    #              failed leg, `gate (required)` failure.
+    # Making macOS non-blocking is a floor amendment, not a workflow
+    # edit, and is tracked as its own decision — see the work item
+    # linked at `continue-on-error:` below. It is deliberately NOT done
+    # in the same change that classified Windows.
     name: build-and-test (${{ matrix.os }})
     timeout-minutes: 45
     needs: [matrix-setup, path-filter]
-    # Windows legs remain experimental; mark them non-blocking while
-    # native installer and ARM64 package coverage mature. Unix legs block.
+    # ── THIS FLAG IS A CLASSIFICATION, NOT AN ACCOMMODATION. DO NOT "FIX" IT. ───────
     #
-    # THE RESIDUE, STATED PLAINLY (2026-08-19). This job IS in the `gate-required`
-    # floor, so this flag means the floor NAME OVERSTATES ITS COVERAGE ON ONE OF THREE
-    # PLATFORMS: a Windows build or test failure reaches `gate (required)` as SUCCESS.
-    # That is deliberate. What was NOT deliberate is that it was also invisible.
+    # Settled 2026-08-19 by the maintainer (Aaron), verbatim:
+    #
+    #   "windows and mac are drift checks, it's fine to check per pr if we want but we
+    #    don't want to block on them. Also we are moving more and more away from PRs
+    #    and more into sovereign mode without PRs."
+    #
+    # So: the Windows legs are non-blocking PERMANENTLY AND BY INTENT. They are drift
+    # checks — deliberately observed, deliberately not gates. This is the steady state,
+    # not a tolerance being worked off, and flipping this expression to `false` would
+    # be reversing a maintainer decision, not cleaning up a leftover. If you believe it
+    # should block, that is a floor amendment and it goes through the consent path (the
+    # same one named at `gate-required`), not through an edit here.
+    #
+    # WHAT THE FLAG ACTUALLY DOES, since it must stay legible. This job IS in the
+    # `gate-required` floor, so the floor NAME OVERSTATES ITS COVERAGE on the Windows
+    # platform: a Windows build or test failure reaches `gate (required)` as SUCCESS.
     # MEASURED over the 152 completed `gate` runs carrying Windows legs
     # (2026-04-25..2026-08-19): windows-2025 failed 12 times (7.9%), windows-11-arm 9
-    # (5.9%), 14 runs carried at least one (9.2%) -- and in all 11 instances since
+    # (5.9%), 14 runs carried at least one (9.2%) — and in all 11 instances since
     # `gate-required` existed, the required check reported green beside the red leg.
     # One is committed as a fixture: run 31978270082, in
     # src/Core.TypeScript/ci/fixtures/gate-run-jobs-windows-failed.json.
     #
-    # The rollup now NAMES these legs in its step summary and raises a warning
-    # annotation, so the residue is legible without changing what blocks. Whether it
-    # SHOULD block is a floor amendment (maintainer call, not a workflow edit) and is
-    # tracked with the evidence and a proposed promotion criterion in
-    # workitems/081M0BVAV2H087G0R000VXRYRQ-decide-whether-the-windows-build-and-test-legs-should-block.md.
-    # Note before reaching for the flag: Windows legs do not run on `pull_request` at
-    # all (see matrix-setup), so flipping it alone would red main after the fact rather
-    # than block any merge.
+    # THE OBLIGATION THAT COMES WITH "DON'T BLOCK" IS "THEN BE SEEN". A drift check
+    # nobody reads is the vacuity class wearing a different hat. Three surfaces carry
+    # it, and each is deliberate:
+    #   1. `gate (required)`'s step summary + warning annotation names any leg that
+    #      failed non-blockingly (src/Core.TypeScript/ci/gate-scope-summary.ts) —
+    #      per-run, derived, knows no platform names.
+    #   2. `drift-sweep.yml`'s BD001 detector files a failed `build-and-test` leg on
+    #      main into the drift ledger (docs/drift-events/) — but keyed to `Zeta.sln`,
+    #      so WHICH leg is lost, and it reads one run, so it measures a level.
+    #   3. src/Core.TypeScript/ci/platform-drift-report.ts folds the last N push runs
+    #      into per-leg failure RATES, clean streaks, and — the number that turned out
+    #      to matter — COVERAGE: of the 300 most recent completed push runs, 265 were
+    #      `cancelled` before their legs ever ran. Published to data/platform-drift.json
+    #      and rendered on data/monitor.html.
+    #
+    # Decision record, with the measurements that informed it and the strategic context
+    # (the move toward sovereign mode without PRs):
+    # workitems/081M0BVAV2H087G0R000VXRYRQ-decide-whether-the-windows-build-and-test-legs-should-block.md
+    # macOS is the OTHER half of Aaron's sentence and is NOT in this state — it still
+    # blocks. Tracked separately: work item 081M0CPEH40087G0R0016GDSB6. See the
+    # asymmetry note in the header comment above.
+    #
+    # Note if you are here to make the legs run per-PR: Aaron allowed it ("fine to
+    # check per pr if we want") and it was PRICED and declined — ~355 PR gate runs/day
+    # × ~21 runner-minutes ≈ 124 runner-hours/day for a check that by decision cannot
+    # block. The reasoning is in the work item; re-open it there, not here.
     continue-on-error: ${{ startsWith(matrix.os, 'windows-') }}
     strategy:
       fail-fast: false
