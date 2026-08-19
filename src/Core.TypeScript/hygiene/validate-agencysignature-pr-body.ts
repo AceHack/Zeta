@@ -494,6 +494,44 @@ function emitViolation(v: Violation, body: string, source: TrailerSource): ExitC
     process.stdout.write(
       "  Fix:      make the blocks agree on the fields above, or leave ONE block.\n",
     );
+    // The non-authoring maintainer's case, spelled out because the obvious two
+    // "fixes" available to them are both dishonest — copy the branch's block, or
+    // overwrite your own values with the branch's — and a diagnostic that stops
+    // at "make them agree" reads as an instruction to do exactly that.
+    process.stdout.write(
+      "  If you are MAINTAINING SOMEONE ELSE'S BRANCH (merging main in, rebasing):\n",
+    );
+    process.stdout.write(
+      "            * Carry NO block. A commit that makes no content decision asserts\n",
+    );
+    process.stdout.write(
+      "              nothing, contributes no block, and cannot disagree. Git's default\n",
+    );
+    process.stdout.write(
+      "              `Merge branch 'main' into X` message already passes this check.\n",
+    );
+    process.stdout.write(
+      "            * Do NOT copy the branch's block. Nothing here can tell a copied\n",
+    );
+    process.stdout.write(
+      "              attestation from an earned one — a copy is byte-identical — so the\n",
+    );
+    process.stdout.write("              only thing stopping it is you.\n");
+    process.stdout.write(
+      "            * If you DID decide content (resolved a conflict, fixed a lint), sign\n",
+    );
+    process.stdout.write(
+      "              as YOURSELF with your own honest values; and if that honest block\n",
+    );
+    process.stdout.write(
+      "              disagrees with the branch's, the disagreement is TRUE — hand the PR\n",
+    );
+    process.stdout.write(
+      "              back to its owner rather than editing either block to match.\n",
+    );
+    process.stdout.write(
+      "  Rule:     .claude/rules/maintenance-commit-on-another-agents-branch-carries-no-block.md\n",
+    );
     process.stdout.write(`  Spec:     ${SPEC_DOC} Section 5.3 / 7.6\n`);
     return 1;
   }

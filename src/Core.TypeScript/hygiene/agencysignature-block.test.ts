@@ -368,6 +368,120 @@ describe("BLOCK-DISAGREEMENT: contradictory governance claims are loud", () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// MAINTENANCE COMMITS — pinning the honest path that was only ACCIDENTAL.
+// ---------------------------------------------------------------------------
+// 2026-08-18. Several stale PRs looked blocked on a premise that turned out to
+// be false, and was MEASURED false: that a non-authoring agent cannot merge
+// `main` into someone else's branch without asserting trailer values it cannot
+// witness (`Credential-Mode: dedicated-agent`, `Human-Review: explicit`). It
+// can. `findAllSignatureBlocks` keeps paragraphs carrying all ten keys and
+// `detectBlockDisagreement` returns null below two blocks, so a blockless
+// maintenance commit contributes ZERO blocks and ZERO disagreement — git's
+// default `Merge branch 'main' into X` message asserts nothing and passes.
+//
+// SILENCE IS NOT A FALSE CLAIM. That is the property, and until this block
+// existed NOTHING asserted it. A future tightening — someone "fixing" the scan
+// to require every commit to be signed — would have silently deleted the only
+// honest maintenance path and re-created the blockage for real, leaving a
+// maintainer to choose between lying in a trailer and leaving PRs stuck. These
+// tests are what makes such a tightening fail loudly instead of quietly.
+//
+// The rule an agent reads before it ever gets here:
+// `.claude/rules/maintenance-commit-on-another-agents-branch-carries-no-block.md`.
+
+describe("MAINTENANCE COMMITS: silence asserts nothing, and that is the honest record", () => {
+  /** What git writes with no author input at all. Ten keys short, on purpose. */
+  const BLOCKLESS_MERGE = "Merge branch 'main' into vera/some-work";
+  const branchWork = `feat: the branch's own work\n\n${block({
+    Agent: "vera",
+    Task: "081M0085XQT087G0R003W4KFS4",
+  })}`;
+
+  /**
+   * The squash preimage as CI reconstructs it:
+   * `gh api .../pulls/N/commits --jq '.[].commit.message'` emits one message per
+   * jq record, so the text is a plain newline join, oldest commit first.
+   */
+  const preimage = (...messages: readonly string[]): string => messages.join("\n");
+
+  test("LOAD-BEARING: a blockless maintenance commit contributes no block and no disagreement", () => {
+    // If this goes red, the honest maintenance path has been removed and the
+    // only remaining way to merge `main` into another agent's branch is to
+    // assert something the maintaining agent cannot witness.
+    expect(findAllSignatureBlocks(BLOCKLESS_MERGE)).toEqual([]);
+    expect(detectBlockDisagreement(BLOCKLESS_MERGE)).toBeNull();
+    expect(validateText(BLOCKLESS_MERGE).blockCount).toBe(0);
+  });
+
+  test("LOAD-BEARING: branch block + blockless merge = ONE block, and it PASSES", () => {
+    const text = preimage(branchWork, BLOCKLESS_MERGE);
+    expect(findAllSignatureBlocks(text).length).toBe(1);
+    expect(detectBlockDisagreement(text)).toBeNull();
+    expect(validateText(text).violations).toEqual([]);
+    expect(preMergeAccepts(text)).toBe(true);
+
+    // Same verdict when GitHub composes the squash itself, `---------`-separated,
+    // and again when the merge commit is the OLDER of the two.
+    expect(preMergeAccepts([branchWork, BLOCKLESS_MERGE].join("\n\n---------\n\n"))).toBe(true);
+    expect(preMergeAccepts(preimage(BLOCKLESS_MERGE, branchWork))).toBe(true);
+  });
+
+  test("silence is legal ALONGSIDE authorship, never INSTEAD of it", () => {
+    // The guard on the guard. A blockless commit is quiet, not exempt: a
+    // proposal whose commits are ALL blockless carries no signature anywhere and
+    // is still refused. Without this, "silence is honest" would read as a licence
+    // to sign nothing at all.
+    expect(preMergeAccepts(BLOCKLESS_MERGE)).toBe(false);
+  });
+
+  test("a maintainer who DID decide content signs as itself — agreeing blocks pass", () => {
+    // Resolving a conflict or fixing a lint is authored work, so it carries a
+    // block with the maintaining agent's OWN honest values. Differing only on
+    // incidental fields (Agent, Task) is two true statements, not a conflict.
+    const maintainerWork = `fix: resolve the conflict in ThisFile.fs\n\n${block({
+      Agent: "shadow",
+      Task: "resolve-conflict-on-vera-branch",
+    })}`;
+    const text = preimage(branchWork, maintainerWork);
+    expect(findAllSignatureBlocks(text).length).toBe(2);
+    expect(detectBlockDisagreement(text)).toBeNull();
+    expect(preMergeAccepts(text)).toBe(true);
+  });
+
+  test("FALSIFIER: an HONEST maintenance block that disagrees on a governance key is LOUD", () => {
+    // And that is the mechanism WORKING. A maintaining agent that cannot read its
+    // credential records `Credential-Mode: unknown` — the honest floor, exactly
+    // as `heartbeatMergePrBody` degrades rather than asserting a convenient
+    // value. Against a branch claiming `dedicated-agent` that is a real
+    // contradiction about one change, so it must be loud. The remedy is to hand
+    // the PR back to its owner, never to overwrite the honest value.
+    const maintainerWork = `fix: resolve the conflict\n\n${block({
+      Agent: "shadow",
+      "Credential-Mode": "unknown",
+    })}`;
+    const text = preimage(branchWork, maintainerWork);
+    const d = detectBlockDisagreement(text);
+    expect(d?.keys).toContain("Credential-Mode");
+    expect(validateText(text).violations[0]?.code).toBe("block-disagreement");
+    expect(preMergeAccepts(text)).toBe(false);
+  });
+
+  test("ADMISSION, not a guard: two identical blocks PASS — a copy is byte-identical", () => {
+    // Stated out loud so nobody reads this pass as a licence. The parser CANNOT
+    // distinguish a copied attestation from an earned one: an agent that pastes
+    // the branch's block onto its own maintenance commit produces bytes
+    // indistinguishable from the branch author having written it, so no test here
+    // can ever catch it. Only the rule stops that —
+    // `.claude/rules/maintenance-commit-on-another-agents-branch-carries-no-block.md`
+    // — which is exactly why the rule has to live where an agent reads it at cold
+    // start, rather than in a check that reads the bytes.
+    const copied = preimage(branchWork, `chore: merge main\n\n${block({ Agent: "vera" })}`);
+    expect(detectBlockDisagreement(copied)).toBeNull();
+    expect(preMergeAccepts(copied)).toBe(true);
+  });
+});
+
 describe("validateBlock", () => {
   test("a canonical block has no violations", () => {
     expect(validateBlock(block())).toEqual([]);
