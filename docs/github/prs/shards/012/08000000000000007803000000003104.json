@@ -1,0 +1,12 @@
+{
+  "pr_number": 12548,
+  "archive_path": "docs/history/pr-reviews/PR-12548-feat-society-effectivetrialcount-gets-a-production-caller-3-agents-measure-as-1-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T22:11:29.108Z",
+  "schema_version": "v1",
+  "commit_sha": "68111962da358ff2ac390650376527e83e0a34be",
+  "title": "feat(society): effectiveTrialCount gets a production caller — 3 agents measure as 1.67",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T22:10:52Z",
+  "head_ref": "wire-effective-agent-count"
+}
