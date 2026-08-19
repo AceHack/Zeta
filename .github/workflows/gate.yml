@@ -2319,10 +2319,16 @@ jobs:
     name: gate (required)
     runs-on: ubuntu-24.04
     # Was 1 minute, when this job was three seconds of `grep` over `toJSON(needs)`.
-    # The scope summary below adds a sparse checkout (~11 s, measured across this
-    # workflow's other jobs), setup-bun (~3 s, measured), and one Actions-API call
-    # (~2 s) -- so the job now runs ~20 s. 5 is a RUNAWAY CAP, not a budget: nothing
-    # in this job retries, polls, or waits on anything that can hang open.
+    # The scope summary below adds a sparse checkout, setup-bun, and one Actions-API
+    # call. MEASURED on the first live run of this job's new shape (run 32207501412
+    # attempt 2, job 95940135217): 12 s total -- checkout 2 s, setup-bun 2 s, summary
+    # 3 s, verdict 0 s. The pre-land ESTIMATE in the landing PR was ~20 s, priced off
+    # the ~11 s full checkouts the other jobs in this workflow take; the sparse +
+    # `filter: blob:none` checkout is what closed the gap, and the number is corrected
+    # here rather than left as the guess. So the whole cost of making this check say
+    # what it covered is ~9 s per run.
+    # 5 is a RUNAWAY CAP, not a budget: nothing in this job retries, polls, or waits
+    # on anything that can hang open.
     timeout-minutes: 5
     if: always()
     # Job-scoped least privilege. The workflow default is `contents: read` and no
