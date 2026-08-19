@@ -123,7 +123,7 @@ Verified across every rendering module in `src/Core/`:
 | class | example | verdict |
 |---|---|---|
 | **index / layout** — conditions on loop or position indices, never on the encoded value | `AdinkraViz.fs:66,72` (`if col < 3`), `CoEmpowerGraphSvg.fs:34` and `MetaspaceGraphRender.fs:46` (`if j > i`, undirected-edge dedup) | **harmless** |
-| **total categorical** — data → nominal visual variable via a total lookup | `AdinkraViz.fs:64`; `ZetaIdViz.fs:45` (bit reversal, bijective) | **harmless; it *is* the encoding** |
+| **total categorical** — data → nominal visual variable via a total lookup | `AdinkraViz.fs:64`; `ZetaIdViz.fs:45` (bit reversal, bijective — but see the correction at the end: `:45` is not the encoder) | **harmless; it *is* the encoding** |
 | **non-injective magnitude** — clamp, saturate, threshold-to-band, max-fold | `SocietalDoraSvg.fs:22`, `heat.ts:237-242`, `heat.ts:278-284`, `heat.ts:286-288` | **the dangerous class** |
 
 Only class 3 is what "no if statements" is actually forbidding. Better named: **no saturating,
@@ -193,7 +193,7 @@ from naming. Line numbers are against `origin/main` at `fd02d1ee1`.
 | Adinkra glyph / dashing | `src/Core/AdinkraViz.fs:64`, `:100-116` | nominal shape + dash | **Faithful.** Total injective map onto a 2-element alphabet. The `if` is a lookup table. |
 | Adinkra layout | `AdinkraViz.fs:66,72` | — | index branch, harmless |
 | Co-empowerment / metaspace graphs | `CoEmpowerGraphSvg.fs:34`, `MetaspaceGraphRender.fs:46` | — | index branch (`j > i` undirected dedup), harmless |
-| ZetaId glyph | `src/Core/ZetaIdViz.fs:45` | nibble → glyph, bit-reversed | bijective, harmless |
+| ZetaId glyph | `src/Core/ZetaIdViz.fs:45` | nibble → glyph, bit-reversed | ~~bijective, harmless~~ **WRONG — see the correction below** |
 
 ### The confirmed instance of "correlated coincidence over time"
 
@@ -460,3 +460,44 @@ lands with the follow-up work-item rather than in this PR.*
 
 **Attribution:** Aaron 2026-08-14 set the observation and the claim (§1, verbatim). shadow (Otto)
 ferried it, wrote §2–§10, ran the encoder probes, and owns the errors in §9.
+
+---
+
+## CORRECTION 2026-08-19 — the ZetaId glyph row was wrong, and the error is a class
+
+**Verdict retracted.** Both rows above (`:126`, `:196`) cleared `ZetaIdViz` as "bijective, harmless"
+on the strength of `ZetaIdViz.fs:45`. That line is the **inner** nibble→byte bit-reversal, and the
+survey is right about it: 16 nibbles → 16 distinct bytes, a bijection.
+
+**Line 45 is not the encoder.** The encoder was line 41 — `(id >>> row*4) &&& 0xF` — which reads
+bits 0..31 of a 128-bit ZetaId and throws the other 96 away. Bits 0..31 are exactly the
+`Randomness` field (`Core.FSharp.ZetaId/BitLayout.fs`), so the identicon drew the CSPRNG suffix and
+nothing else. Measured against compiled `Zeta.Core`: **1000 ids differing only by timestamp drew
+ONE glyph; 42 ids spanning Category × Persona × Location drew ONE glyph.**
+
+`bijective(g)` does not give `injective(g ∘ f)` when `f` is lossy. A bijection applied *after* a
+projection is still a projection.
+
+**The class — inner-map injectivity asserted for the composition.** An audit that cites a
+`file:line` *inside* an encoder rather than the encoder's own domain→range is exposed to it: the
+check ran, it just was not checking the thing the verdict named. Same vacuity shape as an assertion
+that cannot fail. This survey's own stated standard — *"total, injective from the data's **actual
+domain**"* — is the correct test and would have caught it; it was not applied here because the
+domain examined was the nibble, not the id.
+
+Fixed in two steps. #12533 replaced the truncation with an XOR of the four 32-bit lanes — which
+removed the *truncation* and kept a *structure*, because XOR over GF(2) is linear and every ZetaId
+field is a contiguous bit-range, so any two bit positions exactly 32 apart cancel exactly. Measured
+on that fold: two ids differing only in timestamp by `1 + 2^32` ms drew a byte-identical glyph
+(16 of 16 such deltas), and an Observation and an Emission drew a byte-identical glyph when the
+category delta was cancelled by one timestamp bit. `zetaid.glyph` v2
+(081M0DYG9X9087G0R002JK171Z) folds through `fmix64` instead, so the 32-bit resolution is
+**declared** rather than accidental — which is what §"Refinement A" above asks for.
+
+**Second-order lesson, and the reason this correction is longer than the row it fixes:** the
+survey's three-class taxonomy (index / total-categorical / non-injective-magnitude) has no bin for
+*linear* encoders. A lane-XOR is not a clamp, not a threshold, not a lossy fold in the sense
+Refinement B means — it is total, branch-free, and every input bit reaches the output, so it passes
+every test the taxonomy offers and still collides on a 96-dimensional field-aligned subspace. A
+fourth class belongs here: **structure-preserving compressors**, where the failure is not that
+information is thrown away but that the *algebra of the input* survives into the output.

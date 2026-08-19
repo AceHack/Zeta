@@ -84,17 +84,75 @@ let ``the timestamp and category fields are visible, not just the nonce`` () =
 // collision RATE against the birthday prediction, so the glyph space is neither better nor worse
 // than the 32 bits declared by `ZetaIdViz.GlyphSpaceBits`.
 
+// ── The linear-fold falsifier (081M0DYG9X9087G0R002JK171Z) ─────────────────────────────────
+// The first repair (#12533) XOR-ed the four 32-bit lanes. XOR over GF(2) is LINEAR, so two ids
+// collide iff fold(a XOR b) = 0 — a 96-dimensional subspace of deltas. Every ZetaId field is a
+// contiguous bit-range, so that subspace lands ON the field boundaries: any two bit positions
+// exactly 32 apart cancel exactly. These two tests construct that, and they FAIL on the XOR fold.
+
 [<Fact>]
-let ``the 32-bit bound is exact — a collision can be constructed on demand`` () =
-    // XOR-folding four lanes means id and (id XOR (k <<< 32) XOR (k <<< 64)) fold identically for
-    // any k. This is the residual, exhibited rather than described. Anything treating the glyph as
-    // an identity is wrong, and this is the proof.
-    let k = System.UInt128.op_Implicit 0xA5A5A5A5UL
-    let a = System.UInt128.op_Implicit 0x0123456789ABCDEFUL
-    let b = a ^^^ (k <<< 32) ^^^ (k <<< 64)
-    Assert.NotEqual(a, b)
-    Assert.Equal<byte[]>(ZetaIdViz.glyphOf a, ZetaIdViz.glyphOf b)
+let ``a timestamp delta of (2^f | 2^(f+32)) cannot hide an id — the XOR fold hid all 16`` () =
+    // Global Timestamp field is bits 75..122. Field-local bits f and f+32 land at global 75+f
+    // (lane 2) and 107+f (lane 3) — the SAME position within their lanes, so XOR cancels them.
+    // Concretely at f = 0: two ids identical in every other field, 1 + 2^32 ms apart (49.7 days
+    // and one millisecond), drew a byte-identical face.
+    let withTs (t: uint64) =
+        (System.UInt128.op_Implicit 0x0BADC0DEUL) ||| (System.UInt128.op_Implicit t <<< 75)
+    let t0 = 0x1234ABCDUL
+    for f in 0 .. 15 do
+        let t1 = t0 ^^^ ((1UL <<< f) ||| (1UL <<< (f + 32)))
+        Assert.NotEqual(withTs t0, withTs t1)
+        Assert.NotEqual<byte[]>(ZetaIdViz.glyphOf (withTs t0), ZetaIdViz.glyphOf (withTs t1))
+
+[<Fact>]
+let ``a Category difference cannot be masked by a single timestamp bit`` () =
+    // Category is bits 65..68 (lane 2, positions 1..4). Global bit 97 is lane 3 position 1 — and
+    // 97 is INSIDE the Timestamp field. Under the XOR fold, Observation-at-T and Emission-at-
+    // (T XOR 2^22) drew the identical face: two different KINDS of thing, one picture.
+    let mk (cat: uint64) (ts: uint64) =
+        (System.UInt128.op_Implicit 0x0BADC0DEUL)
+        ||| (System.UInt128.op_Implicit cat <<< 65)
+        ||| (System.UInt128.op_Implicit ts <<< 75)
+    let ts = 0x1234ABCDUL
+    let observation = mk 0UL ts
+    let emission = mk 1UL (ts ^^^ (1UL <<< 22))
+    Assert.NotEqual(observation, emission)
+    Assert.NotEqual<byte[]>(ZetaIdViz.glyphOf observation, ZetaIdViz.glyphOf emission)
+
+[<Fact>]
+let ``the 32-bit bound is real — a collision EXISTS, and is found by search, not by construction`` () =
+    // The pigeonhole is genuine: 2^96 ids share each glyph. What is no longer true is that a
+    // colliding partner can be WRITTEN DOWN from the field layout — under the avalanche fold you
+    // have to go looking, which is the whole difference between a structured defect and a declared
+    // resolution. Deterministic SplitMix64 stream (no ambient entropy, DST-replayable).
+    // MEASURED: first collision at n = 91,570 — consistent with sqrt(pi*2^32/2) ~= 82,137 and
+    // NOT with the sqrt(2^32) = 65,536 that gets quoted (zero collisions had occurred by then).
+    let mutable state = 0x9E3779B97F4A7C15UL
+    let next () =
+        state <- state + 0x9E3779B97F4A7C15UL
+        let mutable z = state
+        z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
+        z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
+        z ^^^ (z >>> 31)
+    let seen = System.Collections.Generic.Dictionary<string, System.UInt128>(System.StringComparer.Ordinal)
+    let mutable found = None
+    let mutable i = 0
+    while found.IsNone && i < 400000 do
+        let id = System.UInt128(next (), next ())
+        let g = ZetaIdViz.glyphOf id |> Array.map (sprintf "%02x") |> String.concat ""
+        match seen.TryGetValue g with
+        | true, other -> found <- Some(other, id)
+        | _ -> seen.[g] <- id
+        i <- i + 1
+    match found with
+    | None -> Assert.Fail "no collision within 400000 draws — the glyph space is wider than the declared 32 bits"
+    | Some(a, b) ->
+        Assert.NotEqual(a, b)
+        Assert.Equal<byte[]>(ZetaIdViz.glyphOf a, ZetaIdViz.glyphOf b)
     Assert.Equal(32, ZetaIdViz.GlyphSpaceBits)
+    // ...and it took a search: nothing collided in the first 65536 draws, so "birthday at 65,536"
+    // is not what this bound says.
+    Assert.True(i > 65536, sprintf "first collision at %d — 65,536 is sqrt(N), not the expected first collision" i)
 
 [<Fact>]
 let ``the collision rate over 65536 ids matches the birthday prediction for 32 bits`` () =

@@ -31,7 +31,8 @@ let inputs =
       "boundary.glow@1", "boundary.glow", 1
       "boundary.glow@2", "boundary.glow", 2
       "kernel.rbf@1", "kernel.rbf", 1
-      "zetaid.glyph@1", "zetaid.glyph", 1 ]
+      "zetaid.glyph@1", "zetaid.glyph", 1
+      "zetaid.glyph@2", "zetaid.glyph", 2 ]
 
 let sb = StringBuilder()
 sb.AppendLine("{") |> ignore
