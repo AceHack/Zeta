@@ -34,11 +34,44 @@ module ZetaIdViz =
         | Category.ContentAddress -> 6uy // cyan family — content is observed, not commanded
         | _ -> 7uy // Extended / future: white until they earn a channel
 
-    /// The glyph: 8 rows of 8 bits, mirror-symmetric, derived from the id's low 32 bits (4 bits per
-    /// row → the left half; the right half mirrors). Deterministic; the id IS the picture.
+    /// Fold a 128-bit id down to the 32 bits the glyph can actually carry.
+    ///
+    /// WHY THIS EXISTS (fixed 2026-08-19). `glyphOf` used to read `id >>> (row * 4)` for rows 0..7,
+    /// i.e. **bits 0-31 only** — it discarded 96 of 128 bits. On the Observation layout that is not
+    /// a generic truncation, it is a specific one: `BitLayout` puts `Randomness` at offset 0 width
+    /// 32 (`GeneratedBitLayout.RandomnessOffset = 0<bit>`), so the picture was derived from the
+    /// **nonce and nothing else**. Two ids differing in timestamp, category, authority, persona,
+    /// location — every semantically meaningful field — drew the *identical* glyph. The header's
+    /// claim that "WHICH thing it is, is the pattern" was true only of the random field.
+    ///
+    /// XOR of the four 32-bit lanes is the minimal repair: every input bit now reaches the output,
+    /// and the mirror-symmetric 8x8 "face" (BoundaryLight `mirror`, and the reason a glyph reads as
+    /// a face) is untouched. XOR is chosen over a hash because this must stay O(1), allocation-free
+    /// and byte-identical across the F#/C#/TS oracles — a hash would need a fourth byte-lock.
+    ///
+    /// THE RESIDUAL IS REAL AND IS DECLARED, NOT PAPERED OVER. An 8x8 mirror-symmetric bitmap holds
+    /// 32 bits, so this removes the *truncation* and cannot remove the *pigeonhole*: 2^96 ids still
+    /// share each glyph and the birthday bound is ~2^16 = 65,536 ids. What changes is that a
+    /// collision is now a function of the whole id rather than "these two share a nonce", and that
+    /// the bound is a measured, tested fact rather than an accident. **Nothing may treat this glyph
+    /// as an identity.** It is a recognition aid; `ZetaId` itself is the identity.
+    /// (Widening it means dropping the mirror — which doubles capacity to 64 bits and costs the
+    /// face. That is a design call, not a defect fix: 081M0DNCXZK087G0R003DEY5KF.)
+    let internal foldTo32 (id: System.UInt128) : uint32 =
+        let lane (shift: int) = uint32 ((id >>> shift) &&& System.UInt128.op_Implicit 0xFFFFFFFFUL)
+        lane 0 ^^^ lane 32 ^^^ lane 64 ^^^ lane 96
+
+    /// The number of distinct glyphs this generator can draw. Stated so a caller can check the
+    /// bound instead of assuming the picture identifies an id. See `foldTo32`.
+    let GlyphSpaceBits = 32
+
+    /// The glyph: 8 rows of 8 bits, mirror-symmetric, derived from ALL 128 bits of the id folded to
+    /// 32 (4 bits per row → the left half; the right half mirrors). Deterministic; the id IS the
+    /// picture — up to the declared 32-bit glyph space, which is `GlyphSpaceBits`.
     let glyphOf (id: System.UInt128) : byte[] =
+        let folded = foldTo32 id
         [| for row in 0..7 ->
-               let nibble = byte ((id >>> (row * 4)) &&& System.UInt128.op_Implicit 0xFUL) &&& 0xFuy
+               let nibble = byte ((folded >>> (row * 4)) &&& 0xFu) &&& 0xFuy
                // left half = the nibble; right half = its bit-reverse (the mirror)
                let mutable rev = 0uy
                for b in 0..3 do

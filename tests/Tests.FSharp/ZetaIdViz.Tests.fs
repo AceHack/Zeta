@@ -31,11 +31,98 @@ let ``the glyph is deterministic and mirror-symmetric (the id IS the picture; th
             let r = (row >>> b) &&& 1uy
             Assert.Equal(l, r)
 
+// NOTE (2026-08-19): this test is kept because the property is wanted, but on its own it is weak
+// and it demonstrably was. Both operands are below 2^32, so it exercised only the bits `glyphOf`
+// already read and could never have caught the truncation the next three tests are about. A
+// "discriminating pair" chosen from inside the covered range is a check that cannot fail.
 [<Fact>]
 let ``distinct ids draw distinct glyphs (the discriminating pair)`` () =
     Assert.NotEqual<byte[]>(
         ZetaIdViz.glyphOf (System.UInt128.op_Implicit 0x12345678UL),
         ZetaIdViz.glyphOf (System.UInt128.op_Implicit 0x87654321UL))
+
+// ── The truncation falsifier ────────────────────────────────────────────────────────────────
+// `glyphOf` read `id >>> (row * 4)` for rows 0..7 — bits 0-31 only, discarding 96 of 128. On the
+// Observation layout `Randomness` sits at offset 0 width 32, so the picture was the NONCE and
+// nothing else: ids differing in timestamp, category, authority, persona or location drew the
+// same glyph. These three tests fail on the pre-2026-08-19 implementation.
+
+[<Fact>]
+let ``two ids differing ONLY above bit 31 draw different glyphs`` () =
+    // The exact mutant the "discriminating pair" test above cannot see. Identical low 32 bits.
+    let low = System.UInt128.op_Implicit 0xDEADBEEFUL
+    let a = low
+    let b = low ||| (System.UInt128.One <<< 64)
+    Assert.NotEqual<byte[]>(ZetaIdViz.glyphOf a, ZetaIdViz.glyphOf b)
+
+[<Fact>]
+let ``every one of the 128 bit positions reaches the picture`` () =
+    // Stronger than a sampled pair: flipping ANY single bit of the zero id must change the glyph.
+    // With the old truncation, positions 32..127 all failed this.
+    let zero = ZetaIdViz.glyphOf System.UInt128.Zero
+    for bit in 0..127 do
+        let flipped = ZetaIdViz.glyphOf (System.UInt128.One <<< bit)
+        Assert.True(
+            flipped <> zero,
+            sprintf "bit %d does not reach the glyph — that bit of the id is invisible" bit)
+
+[<Fact>]
+let ``the timestamp and category fields are visible, not just the nonce`` () =
+    // The defect in the terms that matter: two ids identical in their random field and different
+    // in the fields a reader cares about must not look the same.
+    let nonce = System.UInt128.op_Implicit 0x0BADC0DEUL
+    let withTimestamp = nonce ||| (System.UInt128.op_Implicit 0x1234UL <<< 75) // TimestampOffset
+    let withCategory = nonce ||| (System.UInt128.op_Implicit 0x3UL <<< 65) // CategoryOffset
+    Assert.NotEqual<byte[]>(ZetaIdViz.glyphOf nonce, ZetaIdViz.glyphOf withTimestamp)
+    Assert.NotEqual<byte[]>(ZetaIdViz.glyphOf nonce, ZetaIdViz.glyphOf withCategory)
+    Assert.NotEqual<byte[]>(ZetaIdViz.glyphOf withTimestamp, ZetaIdViz.glyphOf withCategory)
+
+// ── The residual, MEASURED rather than caveated ─────────────────────────────────────────────
+// Removing the truncation cannot remove the pigeonhole: an 8x8 mirror-symmetric bitmap holds 32
+// bits, so 2^96 ids still share each glyph. The two tests below make that bound a fact instead of
+// a footnote — the first by constructing a collision on demand, the second by measuring the
+// collision RATE against the birthday prediction, so the glyph space is neither better nor worse
+// than the 32 bits declared by `ZetaIdViz.GlyphSpaceBits`.
+
+[<Fact>]
+let ``the 32-bit bound is exact — a collision can be constructed on demand`` () =
+    // XOR-folding four lanes means id and (id XOR (k <<< 32) XOR (k <<< 64)) fold identically for
+    // any k. This is the residual, exhibited rather than described. Anything treating the glyph as
+    // an identity is wrong, and this is the proof.
+    let k = System.UInt128.op_Implicit 0xA5A5A5A5UL
+    let a = System.UInt128.op_Implicit 0x0123456789ABCDEFUL
+    let b = a ^^^ (k <<< 32) ^^^ (k <<< 64)
+    Assert.NotEqual(a, b)
+    Assert.Equal<byte[]>(ZetaIdViz.glyphOf a, ZetaIdViz.glyphOf b)
+    Assert.Equal(32, ZetaIdViz.GlyphSpaceBits)
+
+[<Fact>]
+let ``the collision rate over 65536 ids matches the birthday prediction for 32 bits`` () =
+    // DETERMINISTIC by construction: a fixed-seed SplitMix64 stream, no ambient entropy, so this
+    // replays identically (DST). At n = 2^16 over a 2^32 space the birthday expectation is
+    // n*(n-1)/(2*2^32) ~= 0.5 collisions, so the assertion is a BAND, not a point — a point
+    // assertion here would be a coin flip dressed as a check.
+    let n = 65536
+    let seen = System.Collections.Generic.HashSet<string>()
+    let mutable state = 0x9E3779B97F4A7C15UL
+    let next () =
+        state <- state + 0x9E3779B97F4A7C15UL
+        let mutable z = state
+        z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
+        z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
+        z ^^^ (z >>> 31)
+    for _ in 1..n do
+        let id = System.UInt128(next (), next ())
+        seen.Add(ZetaIdViz.glyphOf id |> Array.map (sprintf "%02x") |> String.concat "") |> ignore
+    let collisions = n - seen.Count
+    // Upper bound: a glyph space materially SMALLER than 32 bits would show far more collisions.
+    // 10 is ~20x the expectation and would be astronomically unlikely at a true 2^32.
+    Assert.True(
+        collisions <= 10,
+        sprintf "%d collisions over %d ids — the glyph space is smaller than the declared %d bits" collisions n ZetaIdViz.GlyphSpaceBits)
+    // Lower bound: 65536 distinct glyphs would mean the space is NOT 32 bits and this test is not
+    // measuring what it claims. It is here so the test cannot pass vacuously by measuring nothing.
+    Assert.True(seen.Count > 60000, "the sweep produced too few distinct glyphs to be meaningful")
 
 [<Fact>]
 let ``the visualizer is itself a registered generator — referenceable by ZetaId (shape A)`` () =
