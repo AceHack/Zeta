@@ -1,0 +1,12 @@
+{
+  "pr_number": 12458,
+  "archive_path": "docs/history/pr-reviews/PR-12458-ci-gate-macos-joins-windows-as-a-non-blocking-drift-check-the-floor-narrows-to-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T17:30:27.859Z",
+  "schema_version": "v1",
+  "commit_sha": "74cab93d1792582925f55607fb932bae4d51a805",
+  "title": "ci(gate): macOS joins Windows as a non-blocking drift check — the floor narrows to Linux",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T17:29:32Z",
+  "head_ref": "ci/macos-windows-legs-are-drift-checks"
+}
