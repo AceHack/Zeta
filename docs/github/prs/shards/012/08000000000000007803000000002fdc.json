@@ -1,0 +1,12 @@
+{
+  "pr_number": 12252,
+  "archive_path": "docs/history/pr-reviews/PR-12252-fix-ci-gate-required-publishes-which-green-it-is-and-names-the-legs-that-failed-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T02:48:34.019Z",
+  "schema_version": "v1",
+  "commit_sha": "ce28401587b4f2f492837071054eb1a34cd07506",
+  "title": "fix(ci): `gate (required)` publishes WHICH green it is, and names the legs that failed non-blockingly",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T02:47:57Z",
+  "head_ref": "dejan/gate-rollup-emits-executed-scope"
+}
