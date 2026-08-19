@@ -123,7 +123,7 @@ jobs:
 
           if ! gh label create heartbeat-liveness \
             --repo "$REPO" \
-            --description "Raised by .github/workflows/heartbeat-liveness.yml when no agent-heartbeat run has succeeded within the threshold" \
+            --description "Raised by heartbeat-liveness.yml when no agent-heartbeat run has succeeded within the threshold" \
             --color "B60205" 2>label_err.txt; then
             # Only "already exists" is benign. Permission and rate-limit failures must surface,
             # not be swallowed into a silent no-op.
