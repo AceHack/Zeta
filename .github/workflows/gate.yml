@@ -1332,6 +1332,18 @@ jobs:
       - name: Run audit-schema-key-set-parity (cross-oracle schema key sets)
         run: bun src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts --min-schemas 6
 
+      # Every Actions job must declare timeout-minutes. An unbounded job can hold a
+      # runner until the 6h platform cap: on 2026-08-18 lint-autofix held a slot 90+
+      # minutes and backlog-index-integrity 140.5, both stalled in install.sh on a hung
+      # apt mirror. Slots never freed, concurrency cancelled the constituent lint jobs,
+      # and gate (required) correctly read cancelled as failure — PRs went red with no
+      # real defect. GitHub has no repo-level default job timeout and workflow defaults:
+      # does not cover it, so per-job declaration is the only mechanism and this lint is
+      # what keeps the class closed. Carries a scan floor so it cannot pass by
+      # inspecting nothing.
+      - name: Run lint-workflow-job-timeouts (unbounded-runner-slot guard)
+        run: bun src/Core.TypeScript/hygiene/lint-workflow-job-timeouts.ts
+
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
     # forgotten artefact (an agent-created skill folder without a

@@ -74,6 +74,8 @@ env:
 
 jobs:
   move-next:
+    # Timeout basis: observed n=1 at 0.2m; validate + append-only event commit.
+    timeout-minutes: 10
     runs-on: ubuntu-24.04
     steps:
       - name: Validate inputs (allow-list agent, numeric iterations)

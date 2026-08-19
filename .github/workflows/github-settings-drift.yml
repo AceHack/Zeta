@@ -67,6 +67,8 @@ concurrency:
 jobs:
   check:
     name: check drift
+    # Timeout basis: observed med 0.3m / max 0.7m (n=38).
+    timeout-minutes: 5
     runs-on: ubuntu-24.04
     continue-on-error: true
     steps:

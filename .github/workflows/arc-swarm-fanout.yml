@@ -19,6 +19,8 @@ permissions:
 
 jobs:
   setup-matrix:
+    # Timeout basis: checkout (fetch-depth 0) + chunk-list generation only; no toolchain install.
+    timeout-minutes: 10
     runs-on: ubuntu-22.04
     outputs:
       chunks: ${{ steps.set-chunks.outputs.chunks }}

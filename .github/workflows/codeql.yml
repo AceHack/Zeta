@@ -158,6 +158,8 @@ jobs:
   # default branch.
   path-gate:
     name: Path gate
+    # Timeout basis: observed med 1.1m / p90 5.0m / max 7.5m (n=39); no install.sh in this job.
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
     permissions:
       contents: read
