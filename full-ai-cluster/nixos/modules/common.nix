@@ -47,6 +47,19 @@
     # `longhorn` PVC stays Pending and the whole stateful layer is dead.
     # Imported here so control-plane AND workers get them uniformly.
     ./longhorn-prereqs.nix
+    # Longhorn per-node DISK SET. Imported here, not only by the multi-disk
+    # hosts, because the chart runs with createDefaultDiskLabeledNodes=true:
+    # Longhorn then creates a default disk ONLY on nodes carrying
+    # `node.longhorn.io/create-default-disk`. An unlabelled node gets NO disk
+    # at all -- which would silently reproduce the 62-day outage on
+    # control-plane, the host the USB actually installs. Caught before merge
+    # on PR #12175: the multi-disk VM test passed precisely because it imports
+    # this module, while control-plane did not.
+    #
+    # zeta.longhorn.dataDisks defaults to [ "/var/lib/longhorn" ], so a
+    # single-disk host is labelled and declares exactly the path it already
+    # used. Multi-disk hosts extend the list via the disko shape.
+    ./longhorn-disks.nix
     # iter-5.4.0 (B-0794 homelab-mode): operator SSH pubkeys captured
     # via `gh ssh-key list` during zeta-install.sh Step 6.8. Composes
     # additively with iter-4.2 static maintainer keys.
