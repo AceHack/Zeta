@@ -162,6 +162,12 @@
       "disposition": "prose",
       "note": "An append-only mutation-findings log: 110 records of {source, test, mutation, outcome, address}. It names the stale tree in exactly TWO entries — infra/k8s/tests/validate-bootstrap.ts and its .test.ts — recording that a mutation was run against the bootstrap validator. Nothing resolves against those paths; they are the SUBJECT of a past run, logged. Landed via #12091.",
       "migrateTo": "NONE — do not repoint. The mutation genuinely ran against that file at that path, and rewriting the log to name full-ai-cluster would falsify what was measured. Drop the row with the tree; the log is append-only and its records are content-addressed."
+    },
+    {
+      "path": "db/mutation-findings/alexa.jsonl",
+      "disposition": "prose",
+      "note": "An append-only mutation-findings log, same class as soraya.jsonl above and rostered on the same reasoning. 202 records of {source, test, mutation, outcome, address}. It names the stale tree in exactly the same TWO paths — infra/k8s/tests/validate-bootstrap.ts and its .test.ts — recording that a mutation was run against the bootstrap validator. Nothing resolves against those paths; they are the SUBJECT of a past run, logged. Arrived on main via the agent-heartbeat batch merge #12466 and turned `lint (yaml/k8s)` red on main itself.",
+      "migrateTo": "NONE — do not repoint, for the reason already recorded on soraya.jsonl: the mutation genuinely ran against that file at that path, and rewriting the log to name full-ai-cluster would falsify what was measured. Drop the row with the tree; the log is append-only and content-addressed."
     }
   ]
 }
