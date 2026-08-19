@@ -1,0 +1,14 @@
+{
+  "id": "080d00d98b5c3810a01300086206c01d",
+  "at": "2026-08-19T18:03:38.759Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DK2TW6087G0R001GHD9MJ",
+    "type": "task",
+    "title": "Alloy: no-mandatory-hub -- every hub interaction is refusable by a node's local policy without loss of standing (exit made mechanical)",
+    "slug": "alloy-no-mandatory-hub-every-hub-interaction-is-refusable-by",
+    "priority": "P2",
+    "filename": "081M0DK2TW6087G0R001GHD9MJ-alloy-no-mandatory-hub-every-hub-interaction-is-refusable-by.md"
+  }
+}

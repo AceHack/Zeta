@@ -1,0 +1,14 @@
+{
+  "id": "080d00d967c56810a0130008a495a5a7",
+  "at": "2026-08-19T17:58:47.213Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DJSY5C087G0R00094DD3Z",
+    "type": "task",
+    "title": "FsCheck: the marginal-equivalent pair falsifier for claim-strength non-decomposability",
+    "slug": "fscheck-the-marginal-equivalent-pair-falsifier-for-claim-str",
+    "priority": "P2",
+    "filename": "081M0DJSY5C087G0R00094DD3Z-fscheck-the-marginal-equivalent-pair-falsifier-for-claim-str.md"
+  }
+}

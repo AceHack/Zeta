@@ -1,0 +1,14 @@
+{
+  "id": "080d00d967c74810a013000839a2b62a",
+  "at": "2026-08-19T17:58:47.273Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DJSY79087G0R002FH5140",
+    "type": "task",
+    "title": "TLA+: pair-strength monotone accrual under interleaving, with no local clock in the shared fold (claim 4)",
+    "slug": "tla-pair-strength-monotone-accrual-under-interleaving-with-n",
+    "priority": "P2",
+    "filename": "081M0DJSY79087G0R002FH5140-tla-pair-strength-monotone-accrual-under-interleaving-with-n.md"
+  }
+}
