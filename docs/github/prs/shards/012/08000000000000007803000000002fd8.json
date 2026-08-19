@@ -1,0 +1,12 @@
+{
+  "pr_number": 12248,
+  "archive_path": "docs/history/pr-reviews/PR-12248-fix-nixos-zeta-self-register-can-re-converge-the-marker-was-a-gate-now-it-is-a-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T03:33:02.529Z",
+  "schema_version": "v1",
+  "commit_sha": "6853720a59344d2700636d2829ffd13bd2219305",
+  "title": "fix(nixos): zeta-self-register can re-converge — the marker was a gate, now it is a receipt",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T03:32:23Z",
+  "head_ref": "fix/self-register-reconvergence"
+}
