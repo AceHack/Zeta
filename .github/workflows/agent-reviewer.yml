@@ -1,347 +1,173 @@
-# Agent reviewer — shape-checks a heartbeat flush batch before approval.
+# Agent reviewer — reads a heartbeat flush batch and reports. It cannot approve.
 #
-# WHAT THIS IS NOT, STATED FIRST BECAUSE IT USED TO BE STATED WRONG.
-# This workflow is not a peer. There is no second agent, no second identity and
-# no second key behind it: it runs in this repository with this repository's
-# GITHUB_TOKEN, and that one token would approve every producer's flush PR. The
-# header used to read "you don't approve your own heartbeats — any of the other
-# N-1 can approve", and the approve step used to post "I attest that <producer>
-# produced genuine heartbeat events in this batch." Neither was true of the
-# mechanism. `REVIEWER="peer"` was a string literal. The independence was
-# asserted in the artifact and absent in the machinery, and the one place that
-# admitted it was a code comment while the claim went out on the PR.
+# ═══ WHY THE APPROVER CAME OUT RATHER THAN BEING ARMED ══════════════════════
 #
-# WHAT IT ACTUALLY DOES, which is worth doing and is all that is now claimed:
-# 1. Derives the producer from the branch name (flush/heartbeat-<agent>-...).
-# 2. Fails unless every changed path is a sovereign event path.
-# 3. Fails unless every event file parses and carries id / at / action.
-# 4. Fails unless every event's `by` equals the branch-derived producer — the
-#    binding that was missing. Both halves were already in hand (producer at the
-#    extract step, `by` in the files at the validate step) and were never
-#    compared, so a flush/heartbeat-alexa-* branch could carry events authored
-#    `by: otto` and be approved with a sentence naming alexa.
+# This file was dormant: `if: startsWith(head_ref, 'flush/')` matched nothing the
+# fleet produces (live branches are `heartbeat/<agent>-flush-<sha>`), so its last
+# 300 runs were 300 skips and it had never executed on a real batch. Work-item
+# 081M0BTTM85087G0R003X6TWCD asked whether to arm it or delete it. Arming the
+# approver was measured against production and refused, on four counts. Each was
+# checked, not reasoned about:
 #
-# THE LIMIT OF #4, so nobody upgrades it later: `by` and the branch name are
-# both written by the same producer, so their agreement is a CONSISTENCY
-# property, not proof of authorship. It convicts a batch whose contents
-# contradict the branch that carried them; it acquits nobody. Real authorship
-# needs a second identity and a signature over the bytes — neither exists yet,
-# and until one does this workflow must not use the word "attest".
+#  1. IT WOULD HAVE FIRED ON NOTHING. Its allowlist admitted only
+#     `docs/observe-events/*.json` + two `data/tick-*.json` files. Every live
+#     flush batch also carries `db/mutation-findings/<agent>.jsonl` and more
+#     (PRs #12344/#12345/#12346, 2026-08-19; #12344 additionally carried 84
+#     files under `docs/history/pr-reviews/` and `docs/github/prs/shards/`), so
+#     `sovereign=false` on every real batch and validate/approve/receipt all
+#     skip. Re-pointing the trigger alone converts 300 skips into ~288 runs a
+#     day that inspect a real input and can never reach a verdict.
 #
-# DORMANCY, measured 2026-08-18, not assumed: `if: startsWith(head_ref,
-# 'flush/')` matches nothing the fleet currently produces. The live flush
-# branches are `heartbeat/<agent>-flush-<sha>` (agent-heartbeat.yml), so the
-# last 300 runs of this workflow are 300 skips and this job has never executed
-# on a real batch. That is why the false sentence never actually shipped — and
-# why re-pointing the trigger is a separate, consequential decision (it arms an
-# auto-approver) that belongs to the architect + maintainer, not to this fix.
+#  2. THE APPROVAL UNLOCKS NOTHING. `gh api repos/{owner}/{repo}/rules/branches/main`
+#     returns exactly three rules: `deletion`, `non_fast_forward`, and
+#     `required_status_checks` for `gate (required)` (ruleset 16134995, active).
+#     There is NO `pull_request` rule, so `main` requires no approving review.
+#     An auto-approval would therefore have zero mechanical effect and would
+#     exist only to emit a claim — which is the failure #12243 already fixed
+#     once, in the claim's wording.
+#
+#  3. THE RECEIPT PUSH WOULD HAVE DEADLOCKED THE FLUSH LANE. The final step
+#     pushed a commit onto the flush branch with the checkout's GITHUB_TOKEN.
+#     GitHub does not start workflow runs for GITHUB_TOKEN-authored pushes, so
+#     no `pull_request: synchronize` fires, so `gate.yml` never runs on the new
+#     head — and `gate (required)` is required AT THE HEAD SHA. Auto-merge could
+#     then never complete, and 20 minutes later `required-check-started.ts` in
+#     agent-heartbeat.yml exits 1. That is not a hypothesis about this file: the
+#     same failure is recorded in agent-heartbeat.yml, where a stale flush PR
+#     "took THIS VERY JOB red every ~25 minutes".
+#
+#  4. THE RECEIPT WAS A RECORD THE VERIFIER REFUSES. It carried no
+#     `attestedDigest` and its `id` was `sha256(...) | head -c 32` rather than
+#     `deriveAttestationId`, so `verifyAttestationRecord` refuses it twice over.
+#     It would have added one REFUSED record per flush to a corpus already
+#     measured at 0 bound / 3 unbound / 377 refused.
+#
+# The bar set for this change was: it must be STRICTLY HARDER to get a false
+# approval than in the dormant state. Removing the capability is the only form
+# that clears it — a dormant approver is one branch rename away from live, and
+# an absent one is not. So: no `--approve`, no `git push`, no write permissions.
+#
+# ═══ WHAT IS ARMED, AND WHY IT IS WORTH ARMING ══════════════════════════════
+#
+# Two checks that nothing else in the repository performs. Everything else the
+# old job did IS already done elsewhere and is not duplicated here:
+#   * filename shape  -> hygiene/audit-observe-event-filenames.ts, inside
+#                        `gate (required)`, and it knows the folder holds three
+#                        naming schemes where the old inline regex knew one.
+#   * emitting attestations -> observe/emit-attestation.ts, live in
+#                        agent-heartbeat.yml every tick; 380 records on main.
+#
+#   1. PRODUCER BINDING — every event the batch adds must carry `by` equal to
+#      the agent the branch names. Its limit is stated in the tool and in the
+#      job summary: both strings are written by the same producer, so agreement
+#      is a CONSISTENCY property, not proof of authorship. It convicts; it
+#      acquits nobody.
+#   2. ATTESTATION RECORD VALIDITY — the digest, the derived id and the persona
+#      key binding from #12256. That verifier is complete, tested and
+#      host-independent, and until now NO workflow called it: 380 records
+#      reached main with nothing ever checking one. This is the wiring #12256
+#      deliberately stopped short of.
+#
+# There is still no second identity and no second key behind this workflow, so
+# nothing it prints is a peer attestation and the word "attest" is not used
+# about its own output. Closing that gap needs a signature over the bytes by a
+# key the producer does not hold; `verify-attestation-events.ts message` emits
+# exactly those bytes for whoever holds one.
+#
+# NOT A REQUIRED CHECK. A red run here does not block a merge, because
+# `gate (required)` is the only required context. Promoting this one is a
+# ruleset change and a maintainer's call, not this file's to assume.
 
 name: agent-reviewer
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened]
     branches: [main]
 
+# READ ONLY, and that is the point of the change. `contents: write` was here to
+# push the receipt commit that count 3 above rules out; `pull-requests: write`
+# was here for the approval that count 2 rules out. Neither capability has a
+# remaining use, so neither is granted.
 permissions:
-  contents: write       # needs write to append attestation event to the flush branch
-  pull-requests: write
+  contents: read
+  pull-requests: read
 
 jobs:
-  cross-verify:
-    name: cross-verify flush PR
+  verify-flush-batch:
+    name: verify flush batch
     runs-on: ubuntu-24.04
-    timeout-minutes: 3
-    if: startsWith(github.head_ref, 'flush/')
+    timeout-minutes: 5
+    # The trigger that was wrong for the life of this file. `-flush-` is what
+    # distinguishes a snapshot from a LANE: `heartbeat/otto` and
+    # `heartbeat/tick-metrics` are both `heartbeat/*` and neither is a batch.
+    # The producer parser in verify-flush-batch.ts is anchored on the same
+    # shape, and its test pins that these two agree.
+    if: startsWith(github.head_ref, 'heartbeat/') && contains(github.head_ref, '-flush-')
 
     steps:
+      # depth 1. The predecessor used `fetch-depth: 0` to diff base..head — on a
+      # repository this size, ~288 times a day once armed. The changed-file list
+      # comes from the API instead, so no history is needed: only the merged
+      # tree's file contents are read.
       - name: Checkout PR
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
-      - name: Extract producing agent from branch name
-        id: producer
-        env:
-          # actionlint: github.head_ref is attacker-controlled on PRs — pass
-          # through env, never inline into the script.
-          BRANCH: ${{ github.head_ref }}
-        run: |
-          # Branch format: flush/heartbeat-<agent>-<timestamp>
-          # Extract agent name between "heartbeat-" and the next "-" or timestamp
-          AGENT=$(echo "$BRANCH" | sed -n 's|flush/heartbeat-\([a-z]*\)-.*|\1|p')
-          if [ -z "$AGENT" ]; then
-            echo "::warning::Could not extract agent from branch: $BRANCH"
-            echo "agent=unknown" >> "$GITHUB_OUTPUT"
-          else
-            echo "agent=$AGENT" >> "$GITHUB_OUTPUT"
-            echo "[reviewer] Producer agent: $AGENT"
-          fi
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
 
-      - name: Verify sovereign path (event-only changes)
-        id: verify
-        env:
-          PR_BASE: ${{ github.event.pull_request.base.sha }}
-          PR_HEAD: ${{ github.event.pull_request.head.sha }}
-        run: |
-          set -euo pipefail
-          CHANGED=$(git diff --name-only "$PR_BASE" "$PR_HEAD")
-          echo "Changed files:"
-          echo "$CHANGED"
-
-          UNSAFE=""
-          INSPECTED=0
-          while IFS= read -r f; do
-            [ -z "$f" ] && continue
-            INSPECTED=$((INSPECTED + 1))
-            case "$f" in
-              docs/observe-events/*.json) ;;
-              data/tick-history.json) ;;
-              data/tick-latest.json) ;;
-              *) UNSAFE="$UNSAFE $f" ;;
-            esac
-          done <<< "$CHANGED"
-
-          # FAIL-CLOSED ON AN EMPTY DIFF (shadow, 2026-08-16). `UNSAFE` is empty in
-          # BOTH of two very different worlds: "every changed file was sovereign" and
-          # "no file was examined at all". The old `else` branch flattened them and
-          # emitted `sovereign=true` — an assertion that the diff is event-only, made
-          # having inspected zero files, which then gates the auto-approval below.
-          # A check that concludes the safe answer from no evidence is not a check.
-          if [ "$INSPECTED" -eq 0 ]; then
-            echo "::warning::Empty diff between $PR_BASE and $PR_HEAD — nothing was verified, so sovereignty is NOT asserted."
-            echo "sovereign=false" >> "$GITHUB_OUTPUT"
-          elif [ -n "$UNSAFE" ]; then
-            echo "::warning::Non-sovereign paths: $UNSAFE"
-            echo "sovereign=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "[reviewer] $INSPECTED changed file(s), all on sovereign paths."
-            echo "sovereign=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Validate event files (ZetaId, JSON shape, producer binding)
-        id: validate
-        if: steps.verify.outputs.sovereign == 'true'
-        env:
-          PR_BASE: ${{ github.event.pull_request.base.sha }}
-          PR_HEAD: ${{ github.event.pull_request.head.sha }}
-          # The branch-derived producer. This step's job is to refuse a batch
-          # whose contents disagree with it — see the `by` check below.
-          PRODUCER: ${{ steps.producer.outputs.agent }}
-        run: |
-          set -euo pipefail
-
-          # FAIL CLOSED ON AN UNDERIVABLE PRODUCER. The extract step emits
-          # `agent=unknown` when the branch name does not parse, and everything
-          # downstream then approved the batch and wrote a receipt naming
-          # "unknown" as the party whose work was verified. There is no batch for
-          # which that is a true statement, so it is not a value to carry forward.
-          if [ -z "${PRODUCER:-}" ] || [ "$PRODUCER" = "unknown" ]; then
-            echo "::error::Producer could not be derived from the branch name. Nothing can be bound to an unknown producer, so this batch is not verifiable."
-            exit 1
-          fi
-
-          CHANGED=$(git diff --name-only "$PR_BASE" "$PR_HEAD" -- 'docs/observe-events/')
-          VALIDATED=0
-          while IFS= read -r f; do
-            [ -z "$f" ] && continue
-            VALIDATED=$((VALIDATED + 1))
-            BASENAME=$(basename "$f")
-            if ! echo "$BASENAME" | grep -qE '^[0-9a-f]{32}\.json$'; then
-              echo "::error::Invalid filename (not ZetaId): $f"
-              exit 1
-            fi
-            # VALIDATE THE WHOLE PATH, NOT JUST THE BASENAME. The ZetaId regex
-            # above constrains the last component only, so every directory
-            # component in an attacker-authored path was reaching the shell and
-            # the interpreter unfiltered. Reconstructing the path from the
-            # basename and comparing is total: anything with an extra component,
-            # a `..`, or a newline cannot equal this string.
-            if [ "$f" != "docs/observe-events/$BASENAME" ]; then
-              echo "::error::Event file is not a direct child of docs/observe-events/: $f"
-              exit 1
-            fi
-            # The path and the producer cross into python as ARGV, never as
-            # source text. The previous form spliced "$f" into the program body
-            # ("with open('$f')"), so a filename containing a quote wrote python
-            # rather than naming a file — the parser-eats-its-input class, cheap
-            # to close and not worth carrying.
-            if ! python3 - "$f" "$PRODUCER" <<'PY'; then
-          import json, sys
-
-          path, producer = sys.argv[1], sys.argv[2]
-
-          with open(path, encoding="utf-8") as fp:
-              d = json.load(fp)
-
-          if not isinstance(d, dict):
-              raise SystemExit("event is not a JSON object")
-
-          for key in ("id", "at", "action"):
-              if key not in d:
-                  raise SystemExit("missing required field: " + key)
-
-          # THE BINDING. Everything above checks the batch against a schema;
-          # this checks the batch against the CLAIM the approval is about to
-          # make. Without it the two facts sat one step apart and were never
-          # compared, and a branch naming one agent could carry another agent's
-          # events through an approval that named the first.
-          by = d.get("by")
-          if by is None:
-              raise SystemExit(
-                  "no 'by' field — there is nothing to bind the batch to the "
-                  "producer named by the branch"
-              )
-
-          # THE ONE EXEMPTION, AND WHY IT HAS TO EXIST. The last step of this
-          # same workflow appends its own receipt to the flush branch, authored
-          # `by: agent-reviewer-workflow`. On any later `synchronize` that
-          # receipt sits inside base..head, so a flat "every by equals the
-          # producer" rule would fail the job on its own output. The exemption
-          # therefore accepts exactly the shape this workflow writes, and only
-          # when it names THIS branch's producer as the attested party.
-          #
-          # It is a shape match and nothing more: a producer can write these
-          # bytes themselves. That is not a regression — it is the same
-          # unforgeability gap the whole file has, stated instead of papered
-          # over. Closing it needs a signature over the receipt by a key this
-          # producer does not hold, which is the follow-up, not this fix.
-          if by == "agent-reviewer-workflow":
-              att = d.get("attestation")
-              if not isinstance(att, dict) or att.get("attested") != producer:
-                  raise SystemExit(
-                      "a receipt claiming to come from this workflow must name "
-                      "'" + producer + "' as the attested party; this one names '"
-                      + str(att.get("attested") if isinstance(att, dict) else None)
-                      + "'"
-                  )
-          elif by != producer:
-              raise SystemExit(
-                  "produced-by mismatch: branch says '" + producer
-                  + "', event says '" + str(by) + "'"
-              )
-          PY
-              echo "::error::Rejected event $f (see the reason printed above)."
-              exit 1
-            fi
-          done <<< "$CHANGED"
-          # Same fail-closed guard as the sovereign-path step: "no file failed" and
-          # "no file was checked" are different outcomes and must not print the same
-          # sentence. Reaching here with zero files means the prior step said the diff
-          # was sovereign while this one found no event files in it — a contradiction
-          # worth failing on, not a pass.
-          if [ "$VALIDATED" -eq 0 ]; then
-            echo "::error::No event files found in the diff — the sovereign-path step passed but there is nothing to validate."
-            exit 1
-          fi
-          # The approval comment cites this number. It is emitted by the step
-          # that actually counted, so the comment cannot name a count nothing
-          # produced — the same reason the two fail-closed guards above exist.
-          echo "validated=$VALIDATED" >> "$GITHUB_OUTPUT"
-          echo "All $VALIDATED event file(s) valid, and all carry by: $PRODUCER."
-
-      - name: Approve (workflow shape-check, not a peer attestation)
-        if: steps.verify.outputs.sovereign == 'true'
+      - name: Collect the changed-file list
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PRODUCER: ${{ steps.producer.outputs.agent }}
           PR_NUM: ${{ github.event.pull_request.number }}
-          EVENT_COUNT: ${{ steps.validate.outputs.validated }}
         run: |
-          # There is no REVIEWER variable here any more. There used to be, and it
-          # held the string "peer" — a literal standing in for an identity that
-          # does not exist. The approval below is this workflow's own, made with
-          # this repository's GITHUB_TOKEN, and it now says so.
-          echo "[reviewer] Producer (from branch): $PRODUCER"
-          echo "[reviewer] Verifier: agent-reviewer workflow, repository GITHUB_TOKEN. No second identity."
+          set -euo pipefail
+          # --paginate: a flush batch of ~100 files exceeds one page, and a
+          # truncated list would make the job report "checked" over a subset it
+          # silently chose. Filenames go to a FILE, never through the shell as
+          # arguments; the reader below treats each line as an opaque path.
+          gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR_NUM/files" \
+            --jq '.[].filename' > changed-files.txt
+          echo "[flush-batch] $(wc -l < changed-files.txt) changed path(s)"
 
-          gh pr review "$PR_NUM" \
-            --approve \
-            --body "Workflow-verified batch (\`agent-reviewer\`).
-
-          **Producer, per the branch name**: $PRODUCER
-          **Verifier**: this workflow, running with the repository \`GITHUB_TOKEN\`.
-          Not a second agent and not a second key — so this is **not** a peer
-          attestation, and it is not evidence that anyone other than $PRODUCER
-          looked at this batch.
-
-          Checked, each of which fails the job when false:
-          - every changed path is a sovereign event path (\`docs/observe-events/<ZetaId>.json\`, direct children only)
-          - every event parses as a JSON object carrying \`id\`, \`at\`, \`action\`
-          - every one of the $EVENT_COUNT event(s) carries \`by: $PRODUCER\` — the batch's contents agree with the branch that carried them
-
-          Not checked, and deliberately not claimed:
-          - **who** produced these events. \`by\` and the branch name are written by
-            the same producer, so their agreement is a consistency property, not
-            proof of authorship. Establishing authorship needs a second identity
-            and a signature over the bytes; neither exists yet.
-          - that the events are 'genuine' in any sense beyond the shape above.
-
-          Mode: corporate (PR wrapper while branch protection active)
-          Goal: sovereign (a real second signer replaces this workflow's approval)"
-
-      - name: Write the workflow receipt to the flush branch (durable, unsigned)
-        if: steps.verify.outputs.sovereign == 'true'
+      - name: Verify the batch
         env:
-          PRODUCER: ${{ steps.producer.outputs.agent }}
-          PR_NUM: ${{ github.event.pull_request.number }}
-          PR_BASE: ${{ github.event.pull_request.base.sha }}
-          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          # github.head_ref is attacker-controlled on a pull_request, so it goes
+          # through env and then through argv — never spliced into a script.
           BRANCH: ${{ github.head_ref }}
         run: |
-          # Count the events in this batch
-          EVENT_COUNT=$(git diff --name-only "$PR_BASE" "$PR_HEAD" -- 'docs/observe-events/' | wc -l | tr -d ' ')
-          WINDOW_END=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          set -euo pipefail
+          bun src/Core.TypeScript/observe/verify-flush-batch.ts \
+            --branch "$BRANCH" \
+            --files changed-files.txt \
+            --repo . | tee batch-report.txt
 
-          # Mint a ZetaId-shaped filename (32 lowercase hex — using sha256 of timestamp+producer for uniqueness)
-          ATTESTATION_ID=$(echo "attestation-${PRODUCER}-${WINDOW_END}-${PR_NUM}" | sha256sum | head -c 32)
+      - name: Publish the report
+        if: always()
+        run: |
+          set -uo pipefail
+          # Quoted heredocs: the prose contains markdown code spans, and letting
+          # the shell see them would be both a shellcheck finding and a real
+          # expansion hazard.
+          cat >> "$GITHUB_STEP_SUMMARY" <<'HEADER'
+          ## Flush batch report
 
-          # THE `claim` FIELD BELOW IS A SCHEMA LITERAL, NOT A FINDING.
-          # `AttestationEvent.claim` is typed `"heartbeat-genuine"` in
-          # src/Core.TypeScript/observe/attestation-event.ts — one permitted
-          # value — so this receipt cannot express what was actually established
-          # here, which is only that the batch's `by` fields agree with the
-          # branch name. `attestor` is the field this fix could tell the truth
-          # in, and it now names a workflow rather than a "peer-reviewer" who
-          # never existed. Widening `claim` so a shape-check can be recorded as
-          # a shape-check is consumer-visible (`self-claims.ts` folds these into
-          # trust) and is the architect's call, not this fix's.
-          #
-          # No such receipt has ever been written: this job has never run on a
-          # real batch (see the dormancy note in the header), and there is no
-          # event in docs/observe-events/ with either attestor name.
-          cat > "docs/observe-events/${ATTESTATION_ID}.json" << ATTESTATION_JSON
-          {
-            "id": "${ATTESTATION_ID}",
-            "at": "${WINDOW_END}",
-            "by": "agent-reviewer-workflow",
-            "kind": "attestation",
-            "action": { "kind": "self_claim", "item": { "id": "attestation-${PR_NUM}", "title": "Cross-verify ${PRODUCER} heartbeat batch", "ready": true, "ambiguous": false }, "deadline": 0 },
-            "attestation": {
-              "attestor": "agent-reviewer-workflow",
-              "attested": "${PRODUCER}",
-              "windowEnd": "${WINDOW_END}",
-              "eventCount": ${EVENT_COUNT},
-              "claim": "heartbeat-genuine",
-              "strength": 1
-            }
-          }
-          ATTESTATION_JSON
+          Verifier: this workflow, running with the repository `GITHUB_TOKEN`.
+          Not a second agent and not a second key, so this is **not** a peer
+          attestation and it is not evidence that anyone other than the producer
+          looked at this batch. It cannot approve — the job holds no write scope.
 
-          # Commit the attestation event to the flush branch
-          git config user.name "reviewer[bot]"
-          git config user.email "reviewer[bot]@users.noreply.github.com"
-          git checkout "$BRANCH"
-          git add "docs/observe-events/${ATTESTATION_ID}.json"
-          git commit --no-verify -m "receipt(agent-reviewer): shape-checked ${PRODUCER} heartbeat batch (PR #${PR_NUM})
-
-          Workflow receipt: the agent-reviewer job shape-checked ${EVENT_COUNT} event(s)
-          on this branch and found every one of them carrying by: ${PRODUCER}, matching
-          the branch name. No peer reviewed this batch and no key signed it.
-          Append IS tick IS measurement IS Landauer cost.
-
-          Co-Authored-By: Kiro <noreply@kiro.dev>"
-          git push origin "$BRANCH"
-
-          echo "[attestation] Written: docs/observe-events/${ATTESTATION_ID}.json"
-          echo "[attestation] Producer: ${PRODUCER} | Events: ${EVENT_COUNT} | Strength: 1"
+          ```
+          HEADER
+          if [ -s batch-report.txt ]; then
+            cat batch-report.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            # "The verifier failed" and "the verifier passed quietly" must not
+            # render as the same summary.
+            echo 'no report was produced — treat this as UNMEASURED, not as a pass' \
+              >> "$GITHUB_STEP_SUMMARY"
+          fi
+          printf '```\n' >> "$GITHUB_STEP_SUMMARY"
