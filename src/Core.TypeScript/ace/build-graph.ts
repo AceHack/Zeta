@@ -967,7 +967,16 @@ function deriveDotnetTargets(root: string): readonly BuildTarget[] {
       // gate.yml builds the solution as one unit (`dotnet build Zeta.sln`), so
       // every .NET target shares one leg. The per-project edges are still
       // real and are what a finer-grained build would carve on.
-      legs: ["gate/build-and-test"],
+      //
+      // The two format legs are solution-scoped for the same reason, and were
+      // MISSING here until 2026-08-19: `lint/lint-fsharp.ts` and
+      // `lint/lint-csharp.ts` both run `dotnet format ... Zeta.sln`, i.e. over
+      // EVERY project in the solution, not over the language their name implies.
+      // Omitting them left `gate/lint-fsharp` and `gate/lint-csharp` claimed by
+      // no target at all, so selecting jobs from this graph would have stopped
+      // running both. Found by `hygiene/audit-build-graph-completeness.ts`
+      // direction C.
+      legs: ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       origin: "derived",
       requiredQuorum: PLACEHOLDER_QUORUM,
     });
@@ -986,10 +995,20 @@ function deriveRustTargets(root: string): readonly BuildTarget[] {
       kind: "rust",
       sources: [`${rel}/**`],
       dependsOn: parseCargoPathDeps(readFileSync(manifest, "utf8"), rel).map((p) => `rust:${p}`),
-      // Only Core.Rust.Observe is wired into gate.yml today (line 1583). The
-      // other 35 crates are graph-visible but leg-less: `legs: []` states that
-      // coverage gap honestly rather than implying coverage that does not exist.
-      legs: rel === "src/Core.Rust.Observe" ? ["gate/full-verify"] : [],
+      // CORRECTED 2026-08-19. This used to read `legs: []` for all but
+      // Core.Rust.Observe, with a comment calling that an honest statement of a
+      // coverage gap. It was the opposite: it UNDER-reported real coverage.
+      // `gate/lint-rust` runs `lint/lint-rust.ts`, which walks
+      // `findCargoTomls(SRC_DIR)` and runs `cargo fmt --check` plus
+      // `cargo clippy --all-targets -- -D warnings` on EVERY crate under src/.
+      // So all 36 crates do carry a mechanical check; only the `cargo test` leg
+      // (full-verify) is Observe-only. Stating `[]` made 35 targets invisible to
+      // job selection — a wired graph would never have run lint-rust for a crate
+      // change. Found by `hygiene/audit-build-graph-completeness.ts` direction A.
+      legs:
+        rel === "src/Core.Rust.Observe"
+          ? ["gate/full-verify", "gate/lint-rust"]
+          : ["gate/lint-rust"],
       origin: "derived",
       requiredQuorum: PLACEHOLDER_QUORUM,
     });
@@ -1007,8 +1026,16 @@ function deriveLeanTargets(root: string): readonly BuildTarget[] {
       kind: "lean",
       sources: [`${rel}/**`],
       dependsOn: [],
-      // Core.Lean4.Cslib is explicitly opt-in and not on the main gate.
-      legs: rel === "src/Core.Lean4" ? ["lean-proof/build"] : [],
+      // Core.Lean4.Cslib is explicitly opt-in and not on the main gate; it is
+      // rostered as UNCOVERED in `hygiene/audit-build-graph-completeness.ts`.
+      //
+      // The job id was WRONG until 2026-08-19: `lean-proof.yml` declares its job
+      // as `type-check`, not `build`, so `lean-proof/build` named nothing. A
+      // dangling leg can never be selected, which means a wired graph would have
+      // skipped the Lean proof on every Lean change while direction A counted
+      // the target as covered. Found by
+      // `hygiene/audit-build-graph-completeness.ts` direction B.
+      legs: rel === "src/Core.Lean4" ? ["lean-proof/type-check"] : [],
       origin: "derived",
       requiredQuorum: PLACEHOLDER_QUORUM,
     });
@@ -1177,6 +1204,35 @@ export function finestTargetsCovering(graph: BuildGraph, path: string): readonly
   let best = -1;
   const out: string[] = [];
   for (const t of graph.targets) {
+    // A LINT LEG NEVER HOLDS EVIDENCE. The paragraph above says a repo-wide glob
+    // is a lint leg and "a lint leg is not the artifact a byte-lock protects";
+    // until 2026-08-19 that was enforced only INDIRECTLY, by `globSpecificity`
+    // losing to a path-scoped target. That works while every leg is
+    // extension-scoped (`leg:markdown` = `**\/*.md`) and some path-scoped target
+    // happens to cover the evidence file. It collapses the moment a leg's glob is
+    // universal.
+    //
+    // MEASURED REGRESSION that forced this to become explicit (caught by
+    // `build-graph.test.ts` "a sample-app change does NOT", in the PR that
+    // introduced it): a `leg:tree-structure` target with `sources: ["**"]` --
+    // added because `lint-no-empty-dirs` and `lint-structural-hygiene` really are
+    // whole-tree properties -- became a covering target for EVERY file, so it
+    // absorbed `cross-oracle-bytelock` / `golden-vectors` / `treaty-transcript`
+    // evidence and went T3. Since it is also affected by every change, the
+    // required quorum for a README edit went from T1/2 reviewers to T3/4. Every
+    // change in the repo, not just the one the test sampled.
+    //
+    // The doctrine was right; only its implementation was incidental. Stated
+    // directly, it is total: a leg is a CI grouping, not an artifact, so it can
+    // never be the thing whose bytes are locked. `ts:repo` is deliberately NOT a
+    // leg -- it is a real source target and keeps inheriting T3 as before.
+    //
+    // What this gives up, stated rather than hidden: when an evidence file is
+    // covered by NO non-leg target, its evidence is now dropped instead of
+    // landing on the leg. That case is a real gap in the target set and deserves
+    // its own report; it does not deserve to be signalled by doubling the review
+    // quorum for the entire repository.
+    if (t.kind === "leg") continue;
     let spec = -1;
     for (const s of t.sources) {
       if (matchGlob(s, path)) spec = Math.max(spec, globSpecificity(s));

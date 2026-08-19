@@ -798,6 +798,39 @@ describe("the checked-in repo graph — quorum", () => {
     expect({ tier: q.tier, size: q.size }).toEqual({ tier: "T1", size: 2 });
   });
 
+  test("BLAST RADIUS: an ordinary change never demands the Byzantine quorum", () => {
+    // The test above samples ONE path, and a repo-wide over-promotion is invisible
+    // from one sample -- it looks like that path being special.
+    //
+    // Added 2026-08-19 after exactly that happened: a new `leg:tree-structure`
+    // target with `sources: ["**"]` became a covering target for every file, so it
+    // absorbed byte-lock evidence, went T3, and -- being affected by every change
+    // -- took the required quorum for a README edit from T1/2 to T3/4. Repo-wide.
+    // The single-sample test caught it only because `.fs` happened to be in the
+    // sampled path's extension set.
+    //
+    // This is the property that test was reaching for: over-review is ignored
+    // review, so the quorum must DISCRIMINATE across ordinary edits, not merely
+    // across one of them.
+    for (const path of [
+      "README.md",
+      "docs/research/some-note.md",
+      "memory/some-note.md",
+      "samples/CrmSample/Program.fs",
+      "samples/QuickStart/Program.cs",
+    ]) {
+      const q = requiredQuorumForChange(graph, affectedTargets(graph, [path]));
+      expect({ path, tier: q.tier }).not.toEqual({ path, tier: "T3" });
+    }
+
+    // ...and the gate is not vacuous: a real byte-lock artifact still demands T3.
+    const locked = requiredQuorumForChange(
+      graph,
+      affectedTargets(graph, ["src/Core.Rust.Merkle/tests/golden-vectors-merkle.json"]),
+    );
+    expect(locked.tier).toBe("T3");
+  });
+
   test("DRIFT GATE: a hand-edited tier contradicting the derivation fails derive", () => {
     // The same guard the declared edges already get. Pick a target the
     // derivation does NOT place at T3 and hand-promote it.

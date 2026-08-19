@@ -1393,6 +1393,70 @@ jobs:
             --enforce \
             --baseline src/Core.TypeScript/hygiene/audit-tick-shard-relative-paths.baseline.json
 
+  build-graph-completeness:
+    # The acceptance gate on wiring job selection to `ace/build-graph.json`.
+    #
+    # An affected-set query is only sound if the graph is COMPLETE over the CI
+    # domain: every target claims a leg, every leg resolves to a real job, every
+    # job is claimed by a target. Break any of those and selecting jobs from the
+    # graph SILENTLY SKIPS work -- and a job that should have run and did not is
+    # indistinguishable from one that ran and passed.
+    #
+    # It found three real defects when written (2026-08-19), all live on main:
+    #   * `lean-proof/build` and `tlaps-proof/tlaps` named jobs that do not exist
+    #     (they are `type-check` and `prove`), so a wired graph would have skipped
+    #     the Lean and TLA+ proofs entirely;
+    #   * 35 Rust crates carried `legs: []` while `gate/lint-rust` demonstrably
+    #     lints every crate under src/;
+    #   * 18 jobs -- including lint-fsharp, lint-csharp and lint-rust -- were
+    #     claimed by no target at all.
+    #
+    # BUN ONLY, on purpose, and the reason is this job's own subject matter: it
+    # needs one 178 MB runtime, and `./tools/setup/install.sh` provisions the union
+    # of every toolchain in the repo. Same rationale the lint-structural-hygiene
+    # job below already states.
+    name: lint (build-graph completeness)
+    timeout-minutes: 5
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Graph is complete over the CI domain (fails closed)
+        run: bun src/Core.TypeScript/hygiene/audit-build-graph-completeness.ts
+
+      # Manifesto §1 for repo topology: `ace` may be the good resolution path and
+      # may never be the only one. Guarded here rather than later because the guard
+      # is free while `ace` is optional and unretrofittable once the fleet depends
+      # on it. Rule: .claude/rules/clone-at-tag-stays-sufficient.md
+      - name: Clone-at-a-tag is still sufficient (no ace-as-resolver)
+        run: bun src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.ts
+
+      - name: Audit + selector unit tests (a check that cannot fail is not a check)
+        run: |
+          bun test \
+            src/Core.TypeScript/hygiene/audit-build-graph-completeness.test.ts \
+            src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.test.ts \
+            src/Core.TypeScript/ci/affected-legs.test.ts
+
+      # OBSERVE-ONLY. Nothing reads these outputs yet, and that is deliberate: the
+      # derivation is published and compared against what the gate actually ran, so
+      # it is checked against reality BEFORE any `if:` depends on it. Flipping the
+      # guards on an unproven selector is the same class of mistake as trusting an
+      # incomplete graph. The mapping is DERIVED here at run time and is never
+      # hand-maintained in this file -- a second copy of the graph written as `if:`
+      # expressions is how a wired graph becomes unwired again.
+      - name: Affected legs for this change (observe-only, nothing consumes it)
+        if: github.event_name == 'pull_request'
+        run: |
+          bun src/Core.TypeScript/ci/affected-legs.ts \
+            --base "${{ github.event.pull_request.base.sha }}" \
+            --head "${{ github.event.pull_request.head.sha }}"
+
   lint-structural-hygiene:
     # Keep repository-structure guards that are still active after the
     # docs/backlog cutover. Legacy backlog-ID uniqueness/status checks are
