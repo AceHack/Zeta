@@ -1,0 +1,19 @@
+{
+  "id": "080d00b917403810a0130008e56a25c2",
+  "at": "2026-08-18T23:26:53.594Z",
+  "by": "alexa",
+  "kind": "attestation",
+  "action": {
+    "kind": "attest_peer",
+    "reason": "verified 4 events from otto"
+  },
+  "attestation": {
+    "attestor": "alexa",
+    "attested": "otto",
+    "windowStart": "2026-08-18T22:57:15.267Z",
+    "windowEnd": "2026-08-18T23:09:18.727Z",
+    "eventCount": 4,
+    "claim": "heartbeat-genuine",
+    "strength": 1
+  }
+}
