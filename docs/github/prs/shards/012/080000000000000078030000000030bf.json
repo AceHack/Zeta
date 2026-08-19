@@ -1,0 +1,12 @@
+{
+  "pr_number": 12479,
+  "archive_path": "docs/history/pr-reviews/PR-12479-docs-security-model-the-measured-yubihsm-findings-in-both-threat-models-and-red-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T18:20:26.803Z",
+  "schema_version": "v1",
+  "commit_sha": "61ce2185c848de34accb88695fdee79b99da7061",
+  "title": "docs(security): model the measured YubiHSM findings in BOTH threat models, and red-team the attestation claim",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T18:19:45Z",
+  "head_ref": "aminata/hsm-threat-model-both-variants"
+}
