@@ -1,0 +1,12 @@
+{
+  "pr_number": 10769,
+  "archive_path": "docs/history/pr-reviews/PR-10769-collation-the-canonical-order-is-sql-server-s-bin2-utf8-not-nvarchar-bin2.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T03:10:07.992Z",
+  "schema_version": "v1",
+  "commit_sha": "f5ae9ee83501232751d58bfc3027ae4f21d123e4",
+  "title": "collation: the canonical order is SQL Server's _BIN2_UTF8, not nvarchar BIN2",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T14:23:05Z",
+  "head_ref": "shadow/collation-canonical-utf8-order"
+}
