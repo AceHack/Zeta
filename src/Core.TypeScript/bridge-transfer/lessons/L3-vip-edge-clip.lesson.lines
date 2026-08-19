@@ -1,0 +1,14 @@
+# L3 — COSMAC VIP edge semantics: the overhang is DROPPED, not wrapped.
+# The workitem that established this on CHIP-8 is 081KTZ4EF0008QG0R002WVTMMJ; a clipped pixel is
+# never drawn AND never collision-counted. The lesson is falsified by any machine that wraps the
+# overhang, because the wrapped pixels land on the already-lit left edge.
+meta	name	vip-edge-clip
+meta	claim	sprite pixels past the right edge are dropped, so they neither draw nor set VF
+meta	discovered-on	chip8
+meta	falsifier	no-clip
+mem	0300	ff
+rom	a30060006100d011603cd011
+assert	6	lit 0 0
+assert	6	lit 3 0
+assert	6	lit 60 0
+assert	6	vf 0
