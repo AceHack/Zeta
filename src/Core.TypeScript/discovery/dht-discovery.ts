@@ -20,6 +20,7 @@
 // TEXT wire (findNode/foundNodes are JSON). The routing table grows/refreshes idempotently.
 
 import type { RouteHint } from "./discovery-beacon";
+import type { ErasureProfile } from "../algebra/erasure-class";
 
 /// A node known to the DHT — its self-certifying destination hash, the identity behind it, an
 /// optional route hint (how to physically reach it), and when it was last heard (MRU / TTL).
@@ -91,6 +92,13 @@ export function emptyTable(self: string, k = 20): RoutingTable {
 /// the end = freshest), and if the bucket is full the OLDEST (least-recently-seen) is evicted —
 /// Kademlia's preference for long-lived nodes. Never inserts self. Idempotent per (dest, time):
 /// re-observing refreshes rather than duplicates.
+///
+/// Thermodynamic class: ERASING. The `slice` below drops the least-recently-seen entry and this
+/// module holds no second copy — no spill file, no parent edge, no orphaned object. That makes it
+/// the genuine article among the sites a lifecycle list would have called "eviction": the disk
+/// spine's quota eviction turns out to RELOCATE (the payload is written out and still loads), and
+/// this one really does destroy. "Eviction" was never the category; whether the payload is handed
+/// back is. See `dhtErasureProfiles`.
 export function observeNode(table: RoutingTable, node: DhtNode, nowMs: number): RoutingTable {
   if (node.dest === table.self) return table;
   const idx = bucketIndex(table.self, node.dest);
@@ -98,6 +106,7 @@ export function observeNode(table: RoutingTable, node: DhtNode, nowMs: number): 
   const withoutNode = bucket.filter((n) => n.dest !== node.dest);
   const refreshed: DhtNode = { ...node, lastSeenMs: nowMs };
   let next = [...withoutNode, refreshed]; // append = most-recently-seen at the end
+  // The erasure, in one line: the front of the bucket is dropped and nothing retains it.
   if (next.length > table.k) next = next.slice(next.length - table.k); // evict oldest (front)
   const buckets = new Map(table.buckets);
   buckets.set(idx, next);
@@ -126,6 +135,12 @@ export function closest(table: RoutingTable, target: string, count: number): rea
 }
 
 /// Drop nodes unheard past the TTL (pure; `nowMs` injected).
+///
+/// Thermodynamic class: ERASING, for the same reason and with a different trigger — a wall-clock
+/// deadline rather than a capacity bound. Worth one line of comment because the two are constantly
+/// filed together as "eviction" and they answer to different inputs: this one erases on the
+/// injected `nowMs`, which is exactly the sort of ambient-time dependence the noninterference
+/// discipline asks to be declared rather than assumed.
 export function expireNodes(table: RoutingTable, nowMs: number, ttlMs: number): RoutingTable {
   const buckets = new Map<number, readonly DhtNode[]>();
   for (const [idx, bucket] of table.buckets) {
@@ -221,3 +236,99 @@ export function lookup(
 export function found(nodes: readonly DhtNode[], target: string): DhtNode | undefined {
   return nodes.find((n) => n.dest === target);
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════════════════════
+// THE DECLARATION, beside the operations it classifies (`../algebra/erasure-class`).
+//
+// A DHT routing table cannot be swept exhaustively: node ids are destination hashes over a space
+// no test enumerates, `k` is a deployment parameter, and `nowMs` is a real clock. So the evidence
+// here is a BOUNDED MODEL SWEEP — the real functions, run on every point of a domain whose id
+// space and `k` are pinned small — and the pinning is named in the model string rather than
+// glossed over. What that does not cover: behaviour at production `k`, id-space collisions at 160
+// bits, and any bucket-splitting policy a future revision adds.
+//
+// The declaration is exported so the law pack can check it against a measurement rather than
+// trusting the comment above it. Both directions: a "reversible" op made lossy fails, and an
+// "erasing" op made bijective fails too.
+// ═══════════════════════════════════════════════════════════════════════════════════════════════
+
+export const dhtErasureProfiles: readonly ErasureProfile[] = [
+  {
+    representation: "dht-discovery routing table (k-bucket, MRU)",
+    operation: "observeNode",
+    observation: "the routing table returned by observeNode",
+    recoveryChannel:
+      "nothing for the evicted node — when a bucket is full the least-recently-seen entry is " +
+      "sliced off and no structure in this module retains it. Kademlia's preference for " +
+      "long-lived nodes is implemented by forgetting new ones, and the forgetting is real. But " +
+      "the eviction is NOT the whole cost: see the companion row below, which restricts the " +
+      "sweep to histories where no bucket ever fills and still measures 4 (2.000 bits). Eviction " +
+      "accounts for the difference from 6 (2.585) and no more — the rest was already in the " +
+      "idempotent refresh, which is the same finding as `plus` erasing inside an ordinary fold",
+    classification: "erasing",
+    evidence: {
+      kind: "bounded-model-sweep",
+      model:
+        "id space pinned to 2 hex characters and k pinned to 2; every table reachable by " +
+        "observing 0-3 nodes drawn from a 4-node universe at one pinned timestamp",
+      largestFibre: 6,
+      bitsErasedPpm: 2_584_963,
+    },
+  },
+  {
+    representation: "dht-discovery routing table (k-bucket, MRU)",
+    operation: "observeNode",
+    observation: "the routing table returned by observeNode, over histories in which no bucket ever fills",
+    recoveryChannel:
+      "nothing about WHICH history produced the table — a re-heard node is moved to the front of " +
+      "the bucket rather than duplicated, so `[a, a, b]` and `[a, b]` are one post-state with no " +
+      "eviction anywhere in sight. The refresh is idempotent, and idempotence is erasure: two " +
+      "pre-images, one image, log2(2) bits gone in the ordinary arithmetic of the fold",
+    classification: "erasing",
+    evidence: {
+      kind: "bounded-model-sweep",
+      model:
+        "id space pinned to 2 hex characters, k pinned to 2, and the node pool restricted to 2 " +
+        "so a bucket of capacity 2 never overflows; every history of 0-3 observations at one " +
+        "pinned timestamp",
+      largestFibre: 4,
+      bitsErasedPpm: 2_000_000,
+    },
+  },
+  {
+    representation: "dht-discovery routing table (k-bucket, MRU)",
+    operation: "expireNodes",
+    observation: "the routing table returned by expireNodes",
+    recoveryChannel:
+      "nothing for an expired node, and nothing about WHEN it was last heard either — the " +
+      "surviving entries carry their own lastSeenMs but the table records no deadline, so the " +
+      "post-state does not say which ttl produced it",
+    classification: "erasing",
+    evidence: {
+      kind: "bounded-model-sweep",
+      model:
+        "id space pinned to 2 hex characters and k pinned to 2; every table reachable by " +
+        "observing 0-3 nodes drawn from a 4-node universe at one pinned timestamp, expired past a pinned ttl",
+      largestFibre: 85,
+      bitsErasedPpm: 6_409_391,
+    },
+  },
+  {
+    representation: "dht-discovery routing table (k-bucket, MRU)",
+    operation: "emptyTable",
+    observation: "the routing table returned by emptyTable",
+    recoveryChannel:
+      "both arguments — the table records `self` and `k` verbatim, so the constructor is a " +
+      "bijection onto the tables it can produce. Included because the drift guard's criterion is " +
+      "mechanical (every exported function returning a RoutingTable) rather than a judgement " +
+      "about which ones look interesting, and because it is not vacuous: stop recording `k` on " +
+      "the table and this row goes from fibre 1 to fibre 3 on the next run",
+    classification: "reversible",
+    evidence: {
+      kind: "bounded-model-sweep",
+      model: "self drawn from {00, 01, ff} x k drawn from {1, 2, 20}",
+      largestFibre: 1,
+      bitsErasedPpm: 0,
+    },
+  },
+];

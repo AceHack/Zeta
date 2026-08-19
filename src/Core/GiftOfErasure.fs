@@ -386,6 +386,11 @@ module GiftOfErasure =
 
     /// **Step one: mix.** Admits a batch into an anonymity set, destroying arrival order and
     /// refusing every shape in which a later erasure would not actually hide.
+    ///
+    /// Thermodynamic class: ERASING, and the erased quantity is the arrival order — `List.sortWith
+    /// compareMembers` maps every permutation of a batch to one canonical set, a fibre of `k!`.
+    /// That is the mechanism, not a side effect: position in the produced list must carry nothing,
+    /// or a later erasure leaves a silhouette. See `GiftOfErasureDeclaration`.
     let mix (policy: MixPolicy) (setId: string) (members: SealedEvent list) : Result<AnonymitySet, Refusal> =
         let required = minAnonymitySet policy
         let colluders = maxColludingContributors policy
@@ -419,6 +424,14 @@ module GiftOfErasure =
 
     /// **Step two: forget.** The holder names its own memory with `chooser`; the member's sealed
     /// bytes are dropped from the set and a witness of the *fact* is appended.
+    ///
+    /// Thermodynamic class: ERASING with respect to the returned set — and `Unmeasured` with
+    /// respect to the process heap, which is the row that matters for a module whose entire
+    /// purpose is that the preimage be unrecoverable. `AnonymitySet` is an immutable value; this
+    /// function returns a *new* one and cannot reach the old. If the caller still holds the
+    /// pre-state, nothing has been forgotten at all. Erasure here is a property of the caller's
+    /// reachability graph, not of this function, and saying so is the difference between a
+    /// guarantee and a hope. See `GiftOfErasureDeclaration`.
     ///
     /// **Idempotent (§12) by design and for a second reason:** a chooser matching nothing is a no-op
     /// returning `Ok`, never an error — because an error would be a *presence oracle*, telling the
@@ -532,3 +545,65 @@ module GiftOfErasure =
     /// trivially flat, which is the vacuity this whole module is built to refuse.
     let indistinguishable (o: Observation) : bool =
         o.CandidateCount >= deletionFloor && o.ConsistentCount = o.CandidateCount
+
+
+/// **The declaration for `GiftOfErasure`, beside the operations it classifies** (`ErasureClass`).
+///
+/// F# modules cannot implement interfaces, so the declaration for a module lives in a companion
+/// type in the same file. The law pack's drift guard reflects the module's public surface and
+/// requires **every function that RETURNS an `AnonymitySet`** to appear here — a mechanical
+/// criterion applied to the type signature, not a judgement call about which functions "look
+/// like" they erase.
+///
+/// ## Why the criterion is "returns", and why that is not a convenient bin
+///
+/// A state transition that is non-injective **erases**: the pre-state is replaced and nothing
+/// reachable distinguishes the inputs. A *projection* that is non-injective **hides**: the
+/// pre-state is untouched, and the fibre measures what the viewer fails to learn rather than what
+/// the substrate destroyed. Those are different physical situations, and a meter that charges for
+/// the second one charges for reading.
+///
+/// `publicView` is the sharp case. As a function it is massively non-injective — and that
+/// non-injectivity IS the anonymity guarantee this module exists to provide, measured as an
+/// observer posterior in `GiftOfErasure.Tests.fs`. It destroys nothing. Classifying it here would
+/// have produced a row whose sweep is the identity function, which cannot fail and therefore
+/// checks nothing: the vacuity class, imported into the very pack built to refuse it.
+[<Sealed>]
+type GiftOfErasureDeclaration() =
+    interface IErasureDeclaring with
+        member _.ErasureProfiles =
+            [ { Representation = "GiftOfErasure"
+                Operation = "mix"
+                Observation = "the AnonymitySet returned by mix"
+                RecoveryChannel =
+                    "the members, all of them, unchanged — but NOT the order they arrived in: \
+                     every permutation of a batch produces one canonical set. Destroying arrival \
+                     order is the mechanism, since a position that carried information would be a \
+                     silhouette a later erasure could not hide behind"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.ExhaustiveSweep("all permutations of 3 distinct sealed members under a 2-of-1 policy", 6, 2_584_963L) }
+
+              { Representation = "GiftOfErasure"
+                Operation = "forget"
+                Observation = "the AnonymitySet returned by forget"
+                RecoveryChannel =
+                    "nothing of the released member — its sealed bytes are dropped and the witness \
+                     records only that a forgetting happened, with the anonymity that held at the \
+                     time and never an eraser name. Deliberate, cooperative, consented erasure: \
+                     the one place in this substrate where destroying the preimage is the goal"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.ExhaustiveSweep("every 3-subset of 4 distinct sealed members x each member chosen for release", 2, 1_000_000L) }
+
+              { Representation = "GiftOfErasure"
+                Operation = "forget"
+                Observation = "the reachable object graph of the calling process"
+                RecoveryChannel =
+                    "possibly everything — AnonymitySet is an immutable value and forget returns a \
+                     NEW one, so the pre-state survives for as long as any caller holds a \
+                     reference to it. This function cannot reach it, cannot overwrite it, and \
+                     cannot observe whether anyone kept it"
+                Classification = ErasureClass.ThermodynamicClass.Unmeasured
+                Evidence =
+                    ErasureClass.Evidence.NoAdmissibleMeasurement
+                        "erasure at the heap level is a property of the caller's reachability graph, which no sweep inside this function can observe; for a module whose purpose is unrecoverability this hole is the honest headline, not a footnote, and recording it as zero would let a ledger certify a forgetting that never happened" }
+ ]

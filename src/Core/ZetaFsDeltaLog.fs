@@ -208,6 +208,11 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
             )
 
         member _.TruncateAsync(throughSeqInclusive, _ct) =
+            // Thermodynamic class: ERASING through the read surface. The new tree object is
+            // written and the ref moved to it — but unlike `GitDeltaLog` this tree carries NO
+            // PARENT LINK, so the superseded tree becomes an orphaned loose object that nothing
+            // traverses to. The delta blobs are still on the disk and nothing collects them; that
+            // is not recoverability, it is litter. See the second row in `ErasureProfiles`.
             lock gate (fun () ->
                 let activeRef = getActiveRefName ()
                 let links = loadTree activeRef
@@ -217,6 +222,37 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
                 saveTree activeRef (builder.ToImmutable()) |> ignore
                 ValueTask.CompletedTask
             )
+
+    /// **The declaration, beside the operation it classifies** (`ErasureClass`).
+    ///
+    /// The instructive backend. It is content-addressed and never deletes an object, which makes
+    /// it *look* like the preserving case — and it is not, because preservation is about a channel
+    /// somebody can walk, not about bytes that happen to still be lying there. `GitDeltaLog` keeps
+    /// its truncated deltas by committing the new tree **with the old commit as parent**;
+    /// `saveTree` here just moves the ref. The difference is one edge in a DAG, and it is the
+    /// entire difference between Reversible and Erasing.
+    interface IErasureDeclaring with
+        member _.ErasureProfiles =
+            [ { Representation = "ZetaFsDeltaLog"
+                Operation = "IDeltaLog.TruncateAsync"
+                Observation = "the log's own read surface (ReplayAsync(0) plus HighWater), at a pinned truncation point"
+                RecoveryChannel =
+                    "none that anything can walk — the superseded tree object survives on disk as \
+                     an orphan with no ref and no parent edge pointing at it, so no reader can \
+                     reach it and no traversal will find it"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.BoundedModelSweep("truncate-through pinned at 2 (truncate everything); logs of 0-2 deltas over {empty, +a, -a}, on a real temp directory", 13, 3_700_440L) }
+
+              { Representation = "ZetaFsDeltaLog"
+                Operation = "IDeltaLog.TruncateAsync"
+                Observation = "the object store as a whole, including unreachable loose objects"
+                RecoveryChannel =
+                    "the orphaned tree and its delta blobs are byte-for-byte present under \
+                     objects/, so a reader with filesystem access and the old hash recovers them \
+                     exactly — which is why the bits are not yet dissipated even though the \
+                     fibre over the read surface has already collapsed"
+                Classification = ErasureClass.ThermodynamicClass.Reversible
+                Evidence = ErasureClass.Evidence.BoundedModelSweep("truncate-through pinned at 2 (truncate everything); logs of 0-2 deltas over {empty, +a, -a}, on a real temp directory", 1, 0L) } ]
 
     interface IRefDeltaLog<'K> with
         member _.CurrentRef = lock gate (fun () -> getActiveRefName ())

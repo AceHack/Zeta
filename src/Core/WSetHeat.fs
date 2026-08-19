@@ -11,10 +11,10 @@ open Zeta.Core.Abstractions
 [<RequireQualifiedAccess>]
 module WSetHeat =
 
-    [<RequireQualifiedAccess>]
-    type ThermodynamicClass =
-        | Reversible
-        | Erasing
+    /// The substrate-wide classification, not a local one. `ErasureClass` owns this vocabulary so
+    /// a delta log, a backing store and a WSet operation are all classified in the same units —
+    /// and so nothing can be free in one module's books and costly in another's.
+    type ThermodynamicClass = ErasureClass.ThermodynamicClass
 
     /// The exact specializations measured by the finite-domain law pack.
     /// `ApplyInjective` and `MapKeysInjective` deliberately name their premise;
@@ -128,6 +128,20 @@ module WSetHeat =
     let private signature (source: string) (operationProfile: ReferenceProfile) : HeatSignature option =
         match operationProfile.Classification with
         | ThermodynamicClass.Reversible -> None
+        | ThermodynamicClass.Unmeasured ->
+            // Unreachable for the nine measured WSet specializations, and deliberately NOT `None`.
+            // If a tenth ever lands unmeasured, the sink hears about it instead of the ledger
+            // recording a silent zero — an unknown cost must never present as a free one.
+            Some
+                { Source = source
+                  Kind = "wset." + operationProfile.WSetFunction + ".unmeasured"
+                  Units = 1
+                  MassPpm = operationProfile.BitsErasedPpm
+                  Detail =
+                    "unmeasured;specialization="
+                    + operationProfile.Specialization
+                    + ";no-admissible-sweep;must-not-be-read-as-zero"
+                  Disposition = None }
         | ThermodynamicClass.Erasing ->
             let detail =
                 System.String.Format(

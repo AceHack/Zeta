@@ -433,3 +433,149 @@ was doing rhetorical work the logic did not support.
 carry no `Skip`/`Ignore`, and are gated by `dotnet test Zeta.sln -c Release`, but non-vacuity is
 argued from the source's structure (exact-match on fibre *and* `BitsErasedPpm`, plus a reflection
 drift guard), not from an observed green run.
+
+## 12. §11g DISCHARGED (2026-08-19) — the machinery extended, and what it measured
+
+§11g named the replacement: *"Meter by injectivity, not by lifecycle stage. The declaration lives
+beside the operation, the measurement is an exhaustive sweep, and the two must agree in BOTH
+directions. Extend that existing machinery to the spine/log/eviction sites, which currently declare
+nothing; do not build a second list."* This section records what happened when that was done, in
+the order it should be read: **the two results that contradict this document first.**
+
+### 12a. The correction to the correction: quota eviction erases NOTHING
+
+§4 listed eviction. §11b demoted it from "erasing site" to "lifecycle category", but kept it in the
+frame as a plausible candidate. It is not a candidate. **`DiskSpine.fs` / `DiskSpineAsync.fs` quota
+eviction is measured `Reversible`, zero bits.** `spillLocked` writes the batch to the workspace file
+and records its path *before* removing the heap entry, so `Load` returns the identical Z-set
+afterwards. The falsifier is stated as a commuting square rather than a fibre, because that is the
+legible form: **the store's content function under a quota that spills on every save is
+byte-identical to the same store's content function under a quota that never spills.**
+
+Mutating `spillLocked` to drop the path turns that row from fibre 1 to fibre 8 and reddens three
+tests. Eviction is a *relocation*. This is the `FerryQueue.dequeue` finding again — the payload is
+handed back — and it means §4's list was wrong about eviction in the *opposite* direction from the
+one §11 assumed: not "incomplete", but naming an operation that is free.
+
+### 12b. The observation is load-bearing, and §11i understated how much
+
+§11i said the class is a property of the representation. True, and not sufficient. **The same
+representation, same operation, can carry opposite classes under two observations, and both are
+honest.** `ZetaFsDeltaLog.TruncateAsync` is:
+
+- `Erasing` (fibre 13, 3.700 bits) through the log's own read surface, and
+- `Reversible` (fibre 1) through the object store including unreachable loose objects,
+
+because it writes a new tree and moves the ref **with no parent edge**, orphaning the old tree on
+disk where nothing traverses to it and nothing collects it. The bytes are not dissipated; the
+recoverability is gone. Averaging those two into one class would be a guess wearing a measurement's
+clothes, so `(Representation, Operation, **Observation**)` is the key, and every row states what it
+was measured against. A class with no stated observation is not a claim.
+
+### 12c. Four classes for one interface method — the pin, now machine-checked
+
+`IDeltaLog.TruncateAsync`, one method, one call site (`RecoverableSpine.fs:74`):
+
+| representation | class through the read surface | why |
+|---|---|---|
+| `InMemoryDeltaLog` | **Erasing** (13, 3.700) | `list.RemoveAll`; nothing else holds them |
+| `DiskDeltaLog` | **Erasing** (9, 3.170) | files unlinked; `HighWater` is a field, so the *count* survives |
+| `ZetaFsDeltaLog` | **Erasing** (13, 3.700) | ref moved, old tree orphaned — litter, not recovery |
+| `GroupCommitDiskDeltaLog` | **Reversible** (1, 0.000) | a no-op; compaction is unimplemented in v1 |
+| `GitDeltaLog` | **Erasing** (9, 3.170) here, **Reversible** (1, 0.000) through the commit DAG | truncated tree committed **with the old commit as parent** |
+
+The Git row is the one worth stating twice. Through the log's own read surface Git is *exactly as
+erasing as everything else* — `ReplayAsync` reads the tip tree only. The two backends differ in what
+**other** channel survives, and saying so keeps the comparison honest instead of flattering. A test
+pins the disagreement itself, so a later refactor that unified truncation semantics would fail
+loudly rather than quietly making this section false.
+
+### 12d. Where the bits actually are, at every site examined
+
+The §11a headline — erasure lives in the ordinary arithmetic, not at GC boundaries — reproduced at
+three sites that had nothing to do with the four-corner algebra:
+
+- **`IBackingStore.Save`** is `Erasing` (fibre 2, 1.000 bit) and the eviction is not why. A
+  content-addressed upsert maps two pre-states onto one post-state: **idempotence is erasure.** The
+  bits in `Save` are in the content-addressing.
+- **`RecoverableSpine`'s fold** is `Erasing` (fibre 5, 2.322 bits) and fires on **every commit**,
+  not once per snapshot cadence. `ZSet.add` consolidates, so a delta and its retraction annihilate.
+- **`observeNode` in `discovery/dht-discovery.ts`** measures fibre 6 (2.585 bits) — and restricted
+  to histories where no bucket can ever fill it still measures **4 (2.000 bits)**. So the k-bucket
+  eviction accounts for 0.585 bits and the **idempotent refresh accounts for the other 2.000**. The
+  decomposition is a declared, swept row, not a remark: disabling eviction entirely leaves the
+  operation `Erasing`, which is the whole §11b thesis arriving from a direction nobody aimed at.
+
+### 12e. The design question §11i raised, and the answer taken
+
+*Where does a classification live when the same method has opposite classes per backend?*
+
+**On the implementation, expressed as an obligation the interface does not carry.** `IDeltaLog` is
+left alone — it is precisely the level at which the class is undecidable. A separate
+`IErasureDeclaring` is implemented by each concrete representation, and a reflection drift guard
+fails when a type implements a preimage-bearing interface (`IDeltaLog`, `IBackingStore`,
+`IAsyncBackingStore`) without also implementing it. A new backend must classify itself before it can
+merge; silence is not a passing state.
+
+The composite case is the sharp one. `RecoverableSpine` **derives** its class by reading the
+injected backend's declaration rather than asserting one, so:
+
+- over `InMemoryDeltaLog` the same code path measures `Erasing`;
+- over a preserving backend it measures `Reversible`;
+- over a backend that declares **nothing** it reports `Unmeasured` — never free.
+
+That last case is the drift guard at runtime, where a reflection test over our own assembly cannot
+reach a caller-supplied type. Mis-declaring `InMemoryDeltaLog` propagates through the inherited row
+and reddens the spine's test too, which is how the inheritance was verified as live rather than
+decorative.
+
+### 12f. `Unmeasured` is a class, and it is not zero
+
+§2's demon is a channel that reads as free because the ledger is closed. So an operation nobody has
+swept reports `bitsErasedPpm = None` — not `0` — and every caller that folds it into a ledger has to
+decide in the open. Five rows are `Unmeasured`, each with a written reason:
+
+- **the storage medium after an unlink** (`DiskDeltaLog`, `DiskBackingStore`,
+  `DiskAsyncBackingStore`) — journals, SSD block remapping, snapshots and backups are outside
+  anything a sweep inside the process can observe, and the swallowed `try ... with _ -> ()` on the
+  delete means even the unlink is not guaranteed.
+- **`WitnessDurableBackingStore.Release`** — the store has exactly one reachable state because
+  `Save` raises, so a sweep has a one-point domain and **cannot fail**. Declaring it `Reversible`
+  would have been a vacuous pass wearing evidence's clothes. This is §3 applied to our own pack.
+- **`GiftOfErasure.forget`, with respect to the process heap** — and this is the row that matters
+  most, because it is the one module whose entire *purpose* is that the preimage be unrecoverable.
+  `AnonymitySet` is an immutable value; `forget` returns a *new* one and cannot reach the old. **If
+  the caller still holds the pre-state, nothing has been forgotten.** Erasure there is a property of
+  the caller's reachability graph, which no sweep inside the function can see. Recording it as zero
+  would let a ledger certify a forgetting that never happened.
+
+`GiftOfErasure.mix` is separately `Erasing` (fibre 6, 2.585 bits): every permutation of a batch
+lands on one canonical set, so **destroying arrival order is the mechanism, not a side effect** — a
+position that carried information would be the silhouette a later erasure could not hide behind.
+§11i noted `mix` charges nothing; it now declares, and the declaration is measured.
+
+### 12g. What was NOT done, and why
+
+**No entropy charge.** `algebra/entropy-tracker.ts` is untouched. This work classifies; metering is
+a separate decision with its own review, and coupling them would have made a wrong classification
+expensive to unwind. The distinction is worth keeping for a second reason visible in 12a and 12d:
+two of the rows moved in the *opposite* direction from the intuition that motivated the thread, and
+a meter wired to the intuition would have been charging for months.
+
+**§11f's demon is untouched.** `Heat.fs:285` `dispositionOfKind` still reads
+`denied-list.compacted` and `rejection-sampler.evicted` as free. That is a charging decision and
+belongs with the metering work, not here.
+
+### 12h. Still unknown, still not "fine"
+
+- The Rust / C# / Q# oracles are unclassified (§11h's Bloom/CountMin entry, unchanged).
+- Production `k` in the DHT, id-space collisions at full width, and any future bucket-splitting
+  policy are outside the pinned model, which is named in each row's `model` string rather than
+  glossed.
+- Whether squash-merge destroys the preimage in this repo's configuration (§11h) — unchanged.
+
+**Falsifier for this section:** exhibit an operation in `src/Core` that destroys a preimage, is
+reachable from a shipped code path, and is neither declared nor caught by the drift guard. Or:
+exhibit a declared row whose class disagrees with what a sweep of its own representation measures —
+which is exactly the check the law packs run, so the honest form of this falsifier is *find a site
+the drift guard's interface list does not reach.*

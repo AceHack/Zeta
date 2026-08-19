@@ -71,6 +71,12 @@ type RecoverableSpine<'K when 'K : comparison>
             commitsSinceSnapshot <- commitsSinceSnapshot + 1
             if cadence > 0 && commitsSinceSnapshot >= cadence then
                 let! p = this.SnapshotAsync(ct)        // sets latest, resets counter
+                // The one snapshot-supersedes-log site in the repo. Its thermodynamic class is
+                // NOT a property of this line: `log` is injected, and `TruncateAsync` is Erasing
+                // under `InMemoryDeltaLog`, Reversible under `GitDeltaLog`, and
+                // Reversible-because-unimplemented under `GroupCommitDiskDeltaLog`. This code path
+                // is byte-identical in all three cases. See `ErasureProfiles` below, which reads
+                // the class off the injected backend rather than asserting one.
                 do! log.TruncateAsync(p.Seq, ct)       // GC the absorbed tail
             return seq
         }
@@ -114,6 +120,67 @@ type RecoverableSpine<'K when 'K : comparison>
     member internal _.ApplyReplayed(delta: ZSet<'K>, seq: int64) : unit =
         state <- ZSet.add state delta
         appliedSeq <- seq
+
+    /// **The declaration — and the interesting one, because it is DERIVED rather than asserted.**
+    ///
+    /// A composite has no thermodynamic class of its own. `CommitAsync`'s truncation is whatever
+    /// the injected `IDeltaLog` makes it, so this member *reads* the backend's declaration instead
+    /// of restating one. Three consequences worth the design:
+    ///
+    /// 1. **The same spine measures differently under different backends**, which is the fact that
+    ///    killed the name-keyed list. The law pack runs this exact type over `InMemoryDeltaLog`
+    ///    and over `GitDeltaLog` and gets opposite classes from identical code.
+    /// 2. **An undeclared backend makes the spine `Unmeasured`, never free.** A third-party
+    ///    `IDeltaLog` that does not implement `IErasureDeclaring` produces a row saying so — a
+    ///    visible hole rather than a silent zero. This is the drift guard at runtime, where a
+    ///    reflection test cannot reach a caller-supplied type.
+    /// 3. **The fold is declared separately and is erasing on its own.** `ZSet.add` consolidates,
+    ///    so a `+1` followed by a `-1` leaves nothing — indistinguishable from never-present. That
+    ///    erasure is in the ordinary arithmetic of the fold, not at the GC boundary, and it fires
+    ///    on every commit rather than once per snapshot cadence.
+    member _.ErasureProfiles: ErasureClass.Profile list =
+        let inheritedTruncation =
+            match box log with
+            | :? IErasureDeclaring as declaring ->
+                declaring.ErasureProfiles
+                |> List.filter (fun p ->
+                    p.Operation.EndsWith("TruncateAsync", System.StringComparison.Ordinal)
+                    // A backend may also declare a row measured over the truncation ARGUMENT. That
+                    // row does not transfer: the composite supplies the argument itself (the
+                    // snapshot's sequence number), so it is not an input to `CommitAsync` and its
+                    // fibre is not the composite's to inherit.
+                    && not (p.Observation.Contains("including the truncation argument", System.StringComparison.Ordinal)))
+                |> List.map (fun p ->
+                    { p with
+                        Representation = "RecoverableSpine over " + p.Representation
+                        Operation = "CommitAsync (snapshot-triggered log truncation)"
+                        RecoveryChannel = "inherited from the injected backend: " + p.RecoveryChannel })
+            | _ ->
+                [ { Representation = "RecoverableSpine over an undeclared IDeltaLog"
+                    Operation = "CommitAsync (snapshot-triggered log truncation)"
+                    Observation = "the log's own read surface: ReplayAsync(0) plus HighWater"
+                    RecoveryChannel =
+                        "unknown — the injected backend does not implement IErasureDeclaring, so \
+                         nothing here can say whether the truncated tail survives"
+                    Classification = ErasureClass.ThermodynamicClass.Unmeasured
+                    Evidence =
+                        ErasureClass.Evidence.NoAdmissibleMeasurement
+                            "the injected IDeltaLog declares no erasure profile; the composite inherits the hole rather than inventing a zero" } ]
+
+        inheritedTruncation
+        @ [ { Representation = "RecoverableSpine"
+              Operation = "CommitAsync / ApplyReplayed (the fold: ZSet.add into state)"
+              Observation = "the folded state returned by Consolidate()"
+              RecoveryChannel =
+                "none from the state alone — ZSet.add consolidates, so a delta and its retraction \
+                 annihilate and the result is byte-identical to never having applied either. The \
+                 deltas are recoverable only from the LOG, which is a different representation \
+                 with its own row above"
+              Classification = ErasureClass.ThermodynamicClass.Erasing
+              Evidence = ErasureClass.Evidence.ExhaustiveSweep("commit sequences of 0-2 deltas over {empty, +a, -a}", 5, 2_321_928L) } ]
+
+    interface IErasureDeclaring with
+        member this.ErasureProfiles = this.ErasureProfiles
 
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
