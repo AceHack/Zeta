@@ -272,3 +272,164 @@ part most likely to be dropped in retelling. 7e is an **engineering claim with a
   entropy*, Nature 474:61–63 — conditional erasure at zero or negative cost. §7c rests on this.
 - **Poincaré** — homoclinic tangle; **Smale** — the horseshoe. §7f.
 - **Lamport, Shostak & Pease** (1982) — Byzantine agreement; quorum as the practical form of §7b.
+
+---
+
+## 11. CORRECTION (2026-08-18, same day): §4's falsifier fired — the placement was wrong
+
+§4 offered a falsifier and it was taken up within hours. **It fired.** Recording the refutation in
+the document rather than quietly editing §4, because a placement claim that was corrected is worth
+more as a record than one that appears to have been right all along.
+
+### 11a. The refutation, on both clauses
+
+**Clause 1 — "find an operation that destroys a preimage and is NOT on that list."** Five, and they
+are not obscure. `src/Core/WSetHeat.fs:50–114` carries a **declared** thermodynamic class per
+operation, and `tests/Tests.FSharp/Formal/WSet.ErasureClassification.Laws.Tests.fs` **measures** it
+by exhaustive sweep (`bitsErased = log2(largest fibre)`), failing if declaration and measurement
+disagree *in either direction*:
+
+| operation | largest fibre | bits erased | on §4's list? |
+|---|---|---|---|
+| `negate` — **the retraction** | 1 | **0.000** | n/a — free, and this half was right |
+| `plus` — **the fold's own `+`** | 3 | **1.585** | **no** |
+| `consolidate` — **the Z-set constructor path** | 11 | **3.459** | **no** |
+| `bornProb` | 7 | 2.807 | **no** |
+| `discard` | 15 | 3.907 | **no** |
+| `tensor` | 85 | 6.409 | **no** |
+
+**The erasure lives in the ordinary arithmetic of the fold, not at a GC boundary.** `ZSet.ofSeq`
+runs `consolidate` on construction; `src/Core/ZSet.fs:211,216` drops a key whose accumulated weight
+reaches zero, so `+1` then `−1` leaves *nothing* — indistinguishable from never-present. §4's list
+was not merely incomplete; **it pointed away from the highest-frequency erasing operation in the
+substrate.**
+
+**Clause 2 — "show that one of the listed operations retains its preimage."** `FerryQueue.dequeue`
+and `flush` are eviction-shaped and are declared and measured **reversible** — `0` bits — because
+*the payload is returned*, so `(tail, head)` determines the queue.
+
+### 11b. What was actually wrong: I typed the list by lifecycle stage
+
+§4 grouped operations by **when they happen** — compaction, squash, snapshot, eviction. That is a
+lifecycle taxonomy wearing a thermodynamic one's clothes. The real invariant is **injectivity**:
+
+> **An operation erases iff it is non-injective. Not iff it is called garbage collection.**
+
+Eviction is not a thermodynamic category; *whether the payload is handed back* is. Addition is not
+a bookkeeping detail; forgetting the split point of an ordered pair costs `log2(3)` bits.
+
+### 11c. The part that survives, and it was already proved
+
+§4's **dichotomy** — retraction free, erasure elsewhere — is **CONFIRMED**: `negate` is fibre 1,
+0.000 bits. And the F# test file states the distinction directly, two to five days *before* this
+document was written:
+
+> *"the annihilation step is the ERASING one, even though the negation feeding it is not. Those two
+> facts are routinely read as one, and they are not."*
+
+**So the repo already held a machine-checked, CI-gated answer, and I asserted a placement without
+looking for it.** That is the failure `anchor-to-human-prior-art` exists to catch, committed against
+our own prior art rather than someone else's — the search that would have found `WSetHeat.fs` is the
+one I did not run. §5's `unmetered` label should be read as: **promoted for the dichotomy, corrected
+for the placement.**
+
+### 11d. §7e's falsifier was ill-formed — and the flaw is this document's own §3
+
+The §7e falsifier ("exhibit a quorum that erases with no member paying and no metered
+correlation-establishment anywhere") **can be satisfied trivially**: `SybilBft.decide`
+(`src/Core/SybilBft.fs:93`) folds a tally to one verdict, is non-injective, and nothing is charged
+anywhere. But that witness is produced by **absence of instrumentation, not by a fact about the
+world** — *any* unmetered quorum satisfies it.
+
+A falsifier that fires whenever the meter is missing measures **our books, not the second law**.
+That is precisely the vacuity class this document's §3 names, inverted and turned on the document
+itself. §7e must be restated as a claim about the ledger — *"no metered quorum may show erasure with
+zero total charge"* — not as a claim about existence.
+
+### 11e. §7e's *conditional* is CONFIRMED, and it is the real finding
+
+§7e warned: *"if our ledger meters compaction but not the establishment of witness correlations,
+then mutual witnessing looks free in our books."*
+
+**Our ledger meters neither.** Three distinct ledgers exist and none covers this:
+
+- `ledger/measure.ts` + `db/uncertainty/` — the **bug-fix ΔU** ledger, deliberately ordinal; meters
+  no physical erasure and is not the entropy ledger (I conflated them in §4).
+- `algebra/entropy-tracker.ts` — the real two-ledger Landauer accounting, with a Lean twin at
+  `Core.Lean4/Lean4/LandauerFloor.lean`. Charged at five sites; **none is compaction, squash,
+  snapshot-supersedes-log, or eviction.**
+- `src/Core/Heat.fs` — the shed-disposition ledger.
+
+`RecoverableSpine.fs:74` (`TruncateAsync … // GC the absorbed tail`) is the one genuine
+snapshot-supersedes-log site and charges nothing. And the repo states the §7c gap itself at
+`algebra/erasure-derivation.ts:49`: the finer figure *"requires modelling caller-retained side
+information, which the two-ledger tracker does not carry"* — side information is exactly the
+`H(A|B)` of §7c, and `FinConditionalEntropy.lean` / `FinMutualInfoNonneg.lean` formalise it in Lean
+without anything wiring them to the meter.
+
+**So the failure this document warns about is already built.**
+
+### 11f. A demon inside the meter — verified
+
+`src/Core/Heat.fs:285` `dispositionOfKind` matches on the **whole dotted kind including the source
+prefix**, and the file's own comment (lines 277–278) names the cases it catches:
+`denied-list.compacted`, `rejection-sampler.evicted`, `reject-cache.overwritten`,
+`backpressure-meter.erased`.
+
+**A compaction and an eviction that the meter can read as free** — under-charged in the *unsound*
+direction, already on file in the source. That is §3 exactly: a thing that looks free because the
+ledger is closed.
+
+### 11g. What replaces §4
+
+> **Meter by injectivity, not by lifecycle stage.** An operation is charged iff its fibres are
+> non-trivial. The declaration lives beside the operation (`WSetHeat.fs`), the measurement is an
+> exhaustive sweep, and the two must agree in **both** directions — a declaration that over-charges
+> is as wrong as one that under-charges. Extend that existing machinery to the spine/log/eviction
+> sites, which currently declare nothing; do not build a second list.
+
+### 11h. Marked unknown, not inferred
+
+Whether squash-merge destroys the preimage in this repo's actual configuration (PR commits and
+`consume-pr-archives.ts` may retain it); whether `git gc` runs on `refs/zeta/*`; and the
+Rust/C#/Q# oracles' Bloom/CountMin classifications, which were not swept. These are **unknown**,
+not "fine."
+
+### 11i. Amendment — the category error is deeper than §11b said, and §11e overstated
+
+A re-verification pass against `origin/main` (the first pass read a checkout 754 commits stale;
+every conclusion held, but two things sharpen and one was mis-stated).
+
+**The list is stated in operation NAMES; erasure is a property of the REPRESENTATION.**
+
+`IDeltaLog.TruncateAsync` is *one interface method with one call site*
+(`RecoverableSpine.fs:74`). It is preimage-**destroying** under `DeltaLog.fs:94–98`
+(`list.RemoveAll`) and preimage-**preserving** under `GitDeltaLog.fs:177–201`, which builds a tree
+with the low blobs removed and commits it **with the old commit as parent** — so every truncated
+delta stays reachable through the DAG. That file says so itself: *"git never rewrites history —
+Landauer-honest, Memory-Preservation §5."*
+
+**Same operation name, opposite thermodynamic class, decided by the injected backend.** So §11b's
+"meter by injectivity, not lifecycle stage" is right but not yet sharp enough: injectivity is a
+property of the *concrete implementation*, and no name-based list — mine or its replacement — can
+be completed or trusted. The declaration must live where the representation is chosen.
+
+**A whole category the list had no slot for.** `src/Core/GiftOfErasure.fs` (landed PR #11705, and
+absent from the stale tree) is *deliberate, cooperative, privacy-motivated forgetting* whose entire
+**purpose** is that the preimage be unrecoverable — it structurally removes sealed bytes and records
+only the fact. Not GC, not eviction, not a squash. And it is **quorum-shaped**: its thesis is
+literally *"you cannot forget alone."* So it is simultaneously §7's mutual-witness structure and
+§7e's falsifying witness — erasing with no member paying and no metered correlation-establishment
+anywhere (`mix` charges nothing). §7 was arguing about the very module that already implements it.
+
+**§11e overstated: §7e's conditional has a FALSE ANTECEDENT.** I wrote that the conditional *"if our
+ledger meters compaction but not witness-correlation formation"* is confirmed. It is not — the
+ledger meters **neither**, so the antecedent is false and a conditional with a false antecedent is
+not "confirmed," it is **unexercised**. The honest statement is that **the gap is both halves, and
+the worry was understated rather than validated.** Correcting my own correction, because "confirmed"
+was doing rhetorical work the logic did not support.
+
+**Unknown, not inferred:** whether the F# erasure tests pass on `main` today — they are compiled in,
+carry no `Skip`/`Ignore`, and are gated by `dotnet test Zeta.sln -c Release`, but non-vacuity is
+argued from the source's structure (exact-match on fibre *and* `BitsErasedPpm`, plus a reflection
+drift guard), not from an observed green run.
