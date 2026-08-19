@@ -50,6 +50,15 @@ building**, not two products. BASE is meaning; the languages are only chrome.
   glyph, an ASCII fallback, a label and a reason, and a required ARIA treatment.
   Canonical table: `src/Core.TypeScript/cluster/state-du.ts`.
 - **Type:** Space Grotesk (display), Space Mono (labels/data), Inter (body).
+- **Two marks that mean different things must differ in a channel that survives a glance** —
+  and *which* channel is set by the semantic distance: a difference in **claim class**
+  (observation / model / withheld) is carried by **base form**; a difference *within* a class
+  may be carried by **fill fraction**; **hue is never a channel on its own**; outline style and
+  fill texture are not channels at all at mark size. The mark alphabet is a **scarce** resource
+  (~36 reachable cells), so base-form separation is spent on the boundaries that must never be
+  confused. Mechanically checked — `bun src/Core.TypeScript/hygiene/audit-visual-confusability.ts`.
+  Full treatment + what fires today:
+  [`2026-08-19-confusable-shapes-are-the-babel-failure-relocated-a-skeleton-guard-for-the-mark-vocabulary.md`](2026-08-19-confusable-shapes-are-the-babel-failure-relocated-a-skeleton-guard-for-the-mark-vocabulary.md).
 - **QPG over DPI** — quality-per-glyph is the metric underneath all of it.
 
 BASE is what a new contributor learns first; the two languages are a one-token-block swap on
@@ -184,6 +193,8 @@ discipline (the case IS the attribute) applied to the design system itself.
 - `root-site-iris/_ds/design-system-*/zeta-state.css` — the DU's single source of truth for colour.
 - `src/Core.TypeScript/cluster/state-du.ts` — the DU's non-visual channel (glyph / ASCII / label /
   reason / ARIA); `state-du.test.ts` is what fails when the three claim classes collapse.
+- [`2026-08-19-confusable-shapes-are-the-babel-failure-relocated-a-skeleton-guard-for-the-mark-vocabulary.md`](2026-08-19-confusable-shapes-are-the-babel-failure-relocated-a-skeleton-guard-for-the-mark-vocabulary.md)
+  — the confusability criterion above, its UTS #39 skeleton guard, and the three collisions live today.
 - [`the-nested-surfaces-addison-business-otto-hall-llmtv-minds.md`](the-nested-surfaces-addison-business-otto-hall-llmtv-minds.md)
   — business-ops (Corporate) ⊃ game vault ⊃ dark hall ⊃ LLMTV (Sovereign) nesting.
 - `.claude/agents/user-experience-engineer.md` <!-- STALE-REF: ../../.claude/agents/user-experience-engineer.md -->

@@ -18,15 +18,10 @@
  */
 
 import { describe, expect, test } from "bun:test";
+import { skeletonOf, skeletonKey } from "../hygiene/visual-skeleton.ts";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import {
-  ABSENT_IS_NOT_A_MEMBER,
-  STATE_DU,
-  ariaAttributesFor,
-  renderStateText,
-  stateMember,
-} from "./state-du";
+import { ABSENT_IS_NOT_A_MEMBER, STATE_DU, ariaAttributesFor, renderStateText, stateMember } from "./state-du";
 
 const SELECTOR = '[data-state="unavailable"]';
 
@@ -34,8 +29,9 @@ const REPO_ROOT = join(import.meta.dir, "..", "..", "..");
 const DS_DIR = join(REPO_ROOT, "docs", "design", "root-site-iris", "_ds");
 
 function stateCss(): string {
-  const dir = readdirSync(DS_DIR, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && e.name.startsWith("design-system-"))[0]!;
+  const dir = readdirSync(DS_DIR, { withFileTypes: true }).filter(
+    (e) => e.isDirectory() && e.name.startsWith("design-system-"),
+  )[0]!;
   return readFileSync(join(DS_DIR, dir.name, "zeta-state.css"), "utf8");
 }
 
@@ -132,6 +128,51 @@ describe("the non-visual channel — strip the hue and the distinction must surv
     expect(new Set(asciis).size).toBe(asciis.length);
   });
 
+  // The assertion above compares CODEPOINTS, which is the machine's comparison. It passed while
+  // U+25CB/U+25CC and U+25D0/U+25CD were shipping as four glyphs and reading as two rings. Both
+  // properties are wanted, so this JOINS it rather than replacing it: distinct strings AND
+  // distinct silhouettes.
+  test("glyphs are unique under the PERCEPTUAL quotient, not just by codepoint", () => {
+    const keys = STATE_DU.map((m) => {
+      const s = skeletonOf(m.glyph);
+      // An unmodelled glyph is not a pass. If a future member uses a mark the table does not
+      // cover, this fails loudly rather than skipping it — the vacuity guard.
+      expect(s, `no skeleton row for ${m.id} "${m.glyph}" — add one before shipping it`).toBeDefined();
+      return skeletonKey(s!);
+    });
+    expect(new Set(keys).size, `colliding silhouettes: ${keys.join(", ")}`).toBe(keys.length);
+  });
+
+  test("BASE FORM separates the claim classes — the rule, asserted rather than described", () => {
+    // The capacity argument: base-form separation is scarce, so it is spent on the boundary that
+    // must never be confused. Two members of DIFFERENT claim classes must not share a base form.
+    for (const a of STATE_DU) {
+      for (const b of STATE_DU) {
+        if (a.id === b.id || a.claim === b.claim) continue;
+        const sa = skeletonOf(a.glyph)!;
+        const sb = skeletonOf(b.glyph)!;
+        if (sa.baseForm !== sb.baseForm) continue;
+        // Sharing a base form across classes is permitted ONLY when a strike separates them,
+        // because a full-diameter stroke changes the silhouette and survives blur. That is the
+        // one exemption, and `unavailable` ∅ against `cold` ○ is what it exists for.
+        expect(
+          sa.struck !== sb.struck,
+          `${a.id} (${a.claim}) and ${b.id} (${b.claim}) share base form "${sa.baseForm}" with no strike between them`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  test("the unknown fallback does not borrow a DU member's silhouette", () => {
+    // A failed lookup that draws itself as `cold` would mint the observation "watched, and
+    // nothing is there" out of a missing map entry.
+    const unknownGlyph = renderStateText("no-such-member").split(" ")[0]!;
+    const unknownKey = skeletonKey(skeletonOf(unknownGlyph)!);
+    for (const m of STATE_DU) {
+      expect(skeletonKey(skeletonOf(m.glyph)!)).not.toBe(unknownKey);
+    }
+  });
+
   test("unavailable and frost read differently with no colour at all", () => {
     // The falsifier for the whole finding: in a terminal there is no hue, and these two must
     // still be two different things.
@@ -210,9 +251,15 @@ describe("the authoring copy and the shipped copy do not drift", () => {
     // the authoring copy and not the shipped one is a design language that is correct only in
     // the repo, which is the one place nobody is confused by it.
     const shipped = join(
-      REPO_ROOT, "docs", "design", "root-site-iris", "site", "_ds",
-      readdirSync(DS_DIR, { withFileTypes: true })
-        .filter((e) => e.isDirectory() && e.name.startsWith("design-system-"))[0]!.name,
+      REPO_ROOT,
+      "docs",
+      "design",
+      "root-site-iris",
+      "site",
+      "_ds",
+      readdirSync(DS_DIR, { withFileTypes: true }).filter(
+        (e) => e.isDirectory() && e.name.startsWith("design-system-"),
+      )[0]!.name,
       "zeta-state.css",
     );
     expect(readFileSync(shipped, "utf8")).toBe(stateCss());

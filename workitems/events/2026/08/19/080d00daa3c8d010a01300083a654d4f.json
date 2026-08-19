@@ -1,0 +1,14 @@
+{
+  "id": "080d00daa3c8d010a01300083a654d4f",
+  "at": "2026-08-19T18:41:55.994Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DN8Y8R087G0R00101VSA2",
+    "type": "bug",
+    "title": "Two shape-catalog entries render byte-identical goldens: quantum-circuit-singlet-chsh and quantum-circuit-bell-coincidence-singlet",
+    "slug": "two-shape-catalog-entries-render-byte-identical-goldens-quan",
+    "priority": "P2",
+    "filename": "081M0DN8Y8R087G0R00101VSA2-two-shape-catalog-entries-render-byte-identical-goldens-quan.md"
+  }
+}

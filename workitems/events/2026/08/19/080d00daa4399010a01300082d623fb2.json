@@ -1,0 +1,14 @@
+{
+  "id": "080d00daa4399010a01300082d623fb2",
+  "at": "2026-08-19T18:41:59.602Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DN91SH087G0R003NKKCTB",
+    "type": "task",
+    "title": "Extend the confusability guard to the vector shape catalog with a low-pass occupancy skeleton",
+    "slug": "extend-the-confusability-guard-to-the-vector-shape-catalog-w",
+    "priority": "P2",
+    "filename": "081M0DN91SH087G0R003NKKCTB-extend-the-confusability-guard-to-the-vector-shape-catalog-w.md"
+  }
+}

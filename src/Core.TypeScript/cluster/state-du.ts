@@ -136,7 +136,9 @@ export const STATE_DU: readonly StateMember[] = [
     attribute: "data-withheld",
     claim: "withheld",
     token: "--state-withheld",
-    glyph: "◌",
+    // SQUARE, not a circle: the base form carries the CLAIM CLASS. See THE BASE-FORM RULE below.
+    // Empty, because nothing was measured — there is nothing in the box.
+    glyph: "□",
     ascii: "(?)",
     label: "unobserved",
     sentence: "no measurement was written here",
@@ -147,7 +149,8 @@ export const STATE_DU: readonly StateMember[] = [
     attribute: "data-withheld",
     claim: "withheld",
     token: "--state-withheld",
-    glyph: "◍",
+    // Partial: something exists here, it just has no operational content yet.
+    glyph: "▨",
     ascii: "(#)",
     label: "sealed",
     sentence: "there is nothing operational to say here yet",
@@ -158,7 +161,9 @@ export const STATE_DU: readonly StateMember[] = [
     attribute: "data-withheld",
     claim: "withheld",
     token: "--state-withheld",
-    glyph: "▨",
+    // Full: content IS present and is fully withheld. The most-filled mark in the register,
+    // because it is the only member with something actually behind it.
+    glyph: "■",
     ascii: "(/)",
     label: "withheld",
     // Deliberately does not name what is behind it, and deliberately does not apologise for it.
@@ -169,6 +174,55 @@ export const STATE_DU: readonly StateMember[] = [
 ] as const;
 
 /**
+ * THE BASE-FORM RULE — why the withheld register is squares and the observations are circles.
+ *
+ * Added 2026-08-19 after `audit-visual-confusability.ts` found that four of these glyphs
+ * collided in pairs, and that BOTH pairs crossed the observation/withheld boundary this file
+ * exists to hold: `cold` U+25CB and `unobserved` U+25CC both reduced to an empty ring, and
+ * `stale` U+25D0 and `sealed` U+25CD both reduced to a half-filled ring.
+ *
+ * The test below asserting glyph uniqueness was passing throughout, because it compares
+ * CODEPOINTS. U+25CB and U+25CC are different strings and the same ring. A codepoint check is
+ * the machine's comparison and the machine is not the reader at risk.
+ *
+ * THE RULE, and it is not a preference — it falls out of a capacity bound. The mark alphabet is
+ * SCARCE: under the perceptual quotient in `hygiene/visual-skeleton.ts` there are roughly 36
+ * reachable cells, so base-form separation has to be spent on the boundaries that must never be
+ * confused rather than spread evenly.
+ *
+ *     BASE FORM carries the CLAIM CLASS.  FILL FRACTION carries the gradation WITHIN a class.
+ *
+ *   observation -> CIRCLE    live ● full · stale ◐ partial · cold ○ empty
+ *   observation -> DIAMOND   heat ◆  — deliberately breaks form; the alarm should not be a
+ *                            degree of the others, and Bertin's nominal channel is the right
+ *                            place to say so
+ *   model       -> STRUCK    unavailable ∅ — a full-diameter strike survives blur, which is why
+ *                            it does not collide with cold ○ despite sharing a silhouette
+ *   withheld    -> SQUARE    unobserved □ empty · sealed ▨ partial · frost ■ full
+ *
+ * The withheld register's fill fraction tracks HOW MUCH IS ACTUALLY THERE, which is the honest
+ * ordering: nothing was measured (empty) -> something exists with no operational content yet
+ * (partial) -> content is present and deliberately withheld (full). `frost` is the most-filled
+ * mark in the register because it is the only member with something behind it.
+ *
+ * Note this improves on the fix originally proposed in work-item 081M0DN91RK087G0R002X8MBWM,
+ * which assigned `sealed` U+25A9 and left `sealed`/`frost` colliding as a within-class WARNING.
+ * Ordering the register by fill removes that too, so the DU now has zero collisions of any
+ * grade rather than zero errors and one warning.
+ *
+ * Anchor: Bertin, *Sémiologie Graphique* (1967) — shape is a NOMINAL visual variable and value
+ * is an ORDERED one, which is exactly the pairing above: a categorical difference on the
+ * categorical channel, a gradation on the ordered one.
+ *
+ * Register: the collision detection is METERED (`audit-visual-confusability.ts` fires on
+ * controls, and went red on these four glyphs before this change). That a reader confuses ○ and
+ * ◌ at 12px is UNMETERED — it is the quotient table's modelled claim, and no perceptual
+ * threshold has been measured. See that file's REGISTER section.
+ */
+export const BASE_FORM_CARRIES_THE_CLAIM_CLASS =
+  "base form carries the claim class; fill fraction carries the gradation within it" as const;
+
+/**
  * ABSENT is not a member, and that is a rule rather than an oversight.
  *
  * The correct rendering of "not applicable here" is nothing: it is not in the DOM and not in the
@@ -176,8 +230,7 @@ export const STATE_DU: readonly StateMember[] = [
  * the WITHHELD register and so tells the reader something is being kept from them when there is
  * nothing to keep. If a surface needs a token for absent, the model is wrong, not the palette.
  */
-export const ABSENT_IS_NOT_A_MEMBER =
-  "absent is not a state: an inapplicable thing does not render at all" as const;
+export const ABSENT_IS_NOT_A_MEMBER = "absent is not a state: an inapplicable thing does not render at all" as const;
 
 export type StateId = (typeof STATE_DU)[number]["id"];
 
@@ -207,7 +260,11 @@ export interface RenderTextOptions {
  */
 export function renderStateText(id: string, options: RenderTextOptions = {}): string {
   const member = stateMember(id);
-  if (member === undefined) return options.ascii === true ? "(?) unknown" : "◌ unknown";
+  // `unknown` is a LOOKUP FAILURE, not a DU member, so it deliberately takes a base form no
+  // member uses (diamond/empty — `heat` is the only diamond and it is full). It used to render
+  // as U+25CC, which under the base-form rule is now `cold`'s silhouette: a failed lookup would
+  // have drawn itself as the observation "watched, and nothing is there".
+  if (member === undefined) return options.ascii === true ? "(?) unknown" : "◇ unknown";
   const mark = options.ascii === true ? member.ascii : member.glyph;
   const head = `${mark} ${member.label}`;
   return options.withReason === false ? head : `${head} - ${member.sentence}`;
