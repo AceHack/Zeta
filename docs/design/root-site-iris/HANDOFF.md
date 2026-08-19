@@ -76,9 +76,29 @@ Corporate: ground `#0B0E16` · panel `#141A28` · line `#26304A` / `#323E5C` · 
 Arcade: ground `#0c0c10` (+1px/3px scanline overlay) · panel `#12131a` · line `#232a3d` / `#2f3850`.
 Shared state colors (a discriminated union, used as meaning, never decoration):
 amber `#E8B566` = working/rising · teal `#5EC8C2` = settled/active · violet `#9A8CE6` = hot/sealed
-· red `#E0746A` = attention/live · dim `#46506B` = idle.
+· red `#E0746A` = attention/live · dim `#46506B` = idle
+· neutral grey `#7F838B` = **unavailable** (the model register — added 2026-08-18).
 Soft values render as `(value, ε)` bars: fill = value, empty = admitted uncertainty.
 Frost (blur) means exactly one thing: content deliberately withheld, earned, permanent — never styling.
+
+**Three claim classes, and they must not collapse** (canonical:
+`docs/design/design-language-base-corporate-sovereign.md`):
+
+| class | members | claim | who could change it |
+|---|---|---|---|
+| observation | `live` `stale` `cold` `heat` | "we watched, and this is what we saw" | the world |
+| model | `unavailable` (grey, single strike) | "no valid configuration includes this" | nobody |
+| withheld | `unobserved` `sealed` `frost` (violet, hatch / blur) | "here but not for showing, or never measured" | the owner, by spending budget |
+
+`absent` ("not applicable") is not a member and has no token: it does not render at all.
+**Grey says "this cannot be", never "this is not for you."** Cascade fails safe: withheld
+outranks unavailable.
+
+Every member also carries a glyph, an ASCII fallback, a label, a reason and a required ARIA
+treatment — `src/Core.TypeScript/cluster/state-du.ts`, read by both the CSS and any text/CLI
+renderer. A distinction carried only by hue is not a distinction. Frost is a *rendering*, not an
+enforcement: blur does not touch the DOM or the accessibility tree, so frosted bytes must never
+be sent to a viewer not entitled to them.
 
 ## Data contract (for the CI team)
 
