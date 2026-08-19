@@ -1,0 +1,14 @@
+{
+  "id": "080d00bd5f241010a013000804627152",
+  "at": "2026-08-19T01:38:56.258Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0BTQS41087G0R001AYT8K3",
+    "type": "task",
+    "title": "Human-Review evidence: verify the explicit claim against the forge; propose the attested-unverifiable enum + pointer form (v2)",
+    "slug": "human-review-evidence-verify-the-explicit-claim-against-the",
+    "priority": "P2",
+    "filename": "081M0BTQS41087G0R001AYT8K3-human-review-evidence-verify-the-explicit-claim-against-the.md"
+  }
+}
