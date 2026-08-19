@@ -10,6 +10,18 @@ layer (we don't have one yet — multi-node is P2 roadmap);
 hardware side-channels and cryptographic primitives (we have
 no crypto today — revisit when crypto lands).
 
+**Scope amendment (round 38, 2026-08-19): "no hardware" is no
+longer true.** A YubiHSM 2 was exercised on hardware and its
+parsing surfaces measured (Nazar,
+[`2026-08-19-what-the-yubihsm-2-firmware-parses-*`](../research/2026-08-19-what-the-yubihsm-2-firmware-parses-measured-parsing-surfaces-usb-channel-and-key-custody-without-a-ca.md)).
+A hardware root of trust is arriving as the key-custody anchor
+for the NixOS fleet, which creates new assets, a new trust
+boundary, and a new dataflow. The out-of-scope line above still
+holds for *emanation* side-channels (EM / power / acoustic); it
+no longer holds for hardware **as a trusted component whose
+firmware parses our input**. See
+[§Hardware root of trust](#hardware-root-of-trust-round-38-expansion-measured).
+
 **Installer / USB / society identity:** see the sibling
 [`USB-IDENTITY-THREAT-MODEL.md`](./USB-IDENTITY-THREAT-MODEL.md)
 (self-similar traveler → cluster → federation → ISociety/CTM;
@@ -147,6 +159,9 @@ adversaries.
 | Arrow IPC wire | peer bytes → ArrowSerializer | T2 tampered schema, gadget deserialization | schema fixed-literal, no dynamic types | no authentication / HMAC |
 | On-disk spine | file → DiskBackingStore | T2 bit-flip, torn write, path traversal | CRC32C + `pathFor` canonicalisation | CRC32C detects corruption not tampering |
 | Checkpoint | file → Transaction.Checkpoint | T2 truncated, corrupt, wrong magic | magic tag + CRC | no signed manifest |
+| **B-HSM-Wire** (new §38) | anything reaching `yubihsm-connector` → USB → firmware | T1 unauthenticated fingerprinting; T2 pre-auth session exhaustion | SCP03 mandatory for object ops (**measured**: no plaintext-on-bus mode) | Connector scope is prose, not a tested control; `get-device-info` answers pre-session; session-exhaustion **unmetered** (081M0DJQ7BP087G0R002JDZF90) |
+| **B-HSM-Template** (new §38) | caller-stored DER / TLV template → firmware parser | T2 compromised tenant with `put-opaque`; T3 firmware parser bug below the repair boundary | Session + capability required; `opaque-x509-certificate` DER-validated client-side | Firmware parses attacker-shaped bytes **below a non-existent update boundary**; malformed-template path **unmetered**; capability composition unmodelled (081M0DJQ7AS087G0R001EDAAWN) |
+| **B-HSM-Attest-Consumer** (new §38) | attestation certificate → whatever believes it | T1 replay of published evidence; T2 evil-maid reset-and-reintroduce | None — no consumer exists yet | **The whole boundary is a gap.** No proof-of-possession, no nonce, `Not After 9999` (081M0DJQ79W087G0R001GNBTVP) |
 
 ## STRIDE × components
 
@@ -516,6 +531,235 @@ The **threat-model-critic** completed adversarial review of this section
 1 watch — all absorbed into this section above. Follow the escalation path in
 `docs/CONFLICT-RESOLUTION.md` for re-audit cadence.
 
+## Hardware root of trust (round-38 expansion, MEASURED)
+
+**Provenance.** This section consumes
+[`2026-08-19-what-the-yubihsm-2-firmware-parses-measured-parsing-surfaces-usb-channel-and-key-custody-without-a-ca.md`](../research/2026-08-19-what-the-yubihsm-2-firmware-parses-measured-parsing-surfaces-usb-channel-and-key-custody-without-a-ca.md)
+(Nazar, 2026-08-19; YubiHSM 2, fw 2.4.1, exercised on hardware
+under Aaron's authorization, device since reset). It does not
+re-derive those observations. It **models** them: adversaries,
+channels, and the walk around each stated defence. Rows marked
+**METERED** carry a hardware observation; rows marked
+**unmetered** name their falsifier and it was not run
+(`toy-is-free-metered-must-be-earned`). The distinction is
+load-bearing — a documentation claim about what firmware parses
+is not a measurement, and this section must never let one become
+the other by transcription.
+
+The organising taxonomy is the three undeclared channels from
+[the Xbox note](../research/2026-08-18-the-original-xbox-a-root-of-trust-below-the-update-boundary-and-a-parser-in-the-trusted-path.md):
+**parser in the trusted path** (input), **trusted peripheral**
+(authority), **physical channel**. The device supplies instances
+of all three.
+
+### Why this belongs in the shipped model, not only in research
+
+A hardware root of trust creates three things this document did
+not previously contain: a **new asset** (key material we do not
+hold and cannot read), a **new trust boundary** (the USB wire and
+the connector in front of it), and a **new dataflow** (an
+attestation certificate travelling from a device to something
+that believes it). Per the round-30 rule, each is modelled before
+the feature merges, not after.
+
+### Who can reach the device
+
+The question the model must answer, and the source note does not:
+**reachability**, which is what converts a parser into an attack
+surface.
+
+| Reacher | Gets | Needs | Tier |
+|---|---|---|---|
+| Any local process / user permitted the connector socket | Full pre-auth surface: `get-device-info`, `Create Session` framing | Local presence | T1 |
+| Any container sharing the node's network namespace | Same — **a shared connector is not a boundary** (#12178) | Co-tenancy | T2 |
+| **A web page the operator opens** | Same, if the connector's plain-HTTP listener is reachable from the browser (DNS-rebinding / CSRF class) | Operator browses | T1 |
+| A holder of a session with `put-opaque` | Writes template state the firmware interprets *later*, for *someone else's* key | One capability | T2 |
+| A holder of a session with `sign-attestation-certificate` | Drives the DER template parser inside the firmware | One capability | T2 |
+| Physical possession | **Erase**, cheaply and silently (reset ≈ seconds, no disassembly). Not extract at fw ≥ 2.4.1 | Hands on the node | T2/T3 |
+| Physical possession, fw ≤ 2.4.0 | **Extract** (EUCLEAK, CVE-2024-45678) — below the non-existent update boundary, so remediation is *replacement* | Hands + the flaw | T3 |
+
+The bus itself carries ciphertext: SCP03 is mandatory for object
+operations (**METERED** — every object operation required an open
+session). So USB leaks **traffic analysis**, not key material.
+That is a real improvement over a naively configured dTPM, and it
+is also the narrowest possible reading of "the wire is safe" — see
+HRT-5.
+
+### STRIDE × hardware root of trust
+
+| STRIDE | Vector | Mitigation today | Tier defended | Gap |
+|---|---|---|---|---|
+| **S** | Issuer field of an emitted attestation derives from a caller-supplied template (**METERED that the firmware parses one; the copy-vs-synthesize mechanism is NOT discriminated** — HRT-1) | None — nothing consumes attestations yet | — | Verifiers must pin the **key**, never the **name** (081M0DJQ28W087G0R003WZQ7KR) |
+| **S** | Attestation replay: no nonce, no challenge, `Not After 9999`, no device clock (**METERED**) | None | — | Proof-of-possession missing by design (081M0DJQ79W087G0R001GNBTVP) — HRT-3 |
+| **S** | Reset-and-reintroduce: wipe a node's device, re-enrol genuine on-device keys | None | — | Re-registration does not chain to the prior key — HRT-3 |
+| **T** | Caller-set `label` copied verbatim into signed extension `.9` (**METERED**) | None | — | Signed envelope lends authority to caller-authored text — HRT-2 |
+| **T** | Malformed template DER → firmware fault vs clean rejection | Well-formed parsing measured; **malformed path unmetered** | — | Below the repair boundary: a parser bug here is device replacement, not a patch |
+| **R** | 62-entry audit-log **ring**: 62 boring commands erase evidence of the 63rd-from-last (**METERED** that it is a 62-entry chained ring) | Hash chain (tamper-*evident*) | T2 for tampering | **Integrity ≠ retention** — no drain path exists — HRT-6 |
+| **R** | Log carries a monotonic `tick`, not wall-clock (**METERED**) | — | — | Tick↔clock correlation is an undeclared host-side trust step |
+| **I** | `get-device-info` answers **pre-session**: firmware version, serial, `Log used: N/62`, algorithms (**METERED**) | None — by design | — | Targeting oracle; picks the fw ≤ 2.4.0 node out of a fleet — HRT-5 |
+| **I** | Device serial is an unrotatable global identifier, and it rides inside every attestation | None | — | LINDDUN linkability: a privacy budget cannot frost a serial — HRT-5 |
+| **D** | `Create Session` allocates device state before authentication; sessions are a small fixed pool | SCP03 stops *damage*, not *allocation* | — | **unmetered**; falsifier filed (081M0DJQ7BP087G0R002JDZF90) — HRT-5 |
+| **D** | Reset needs only a session with reset capability — cheap, silent destruction of the node's identity | Capability model | T1 | Erase-not-extract is a *confidentiality* win and an *availability* loss; say both |
+| **E** | `put-opaque` writes state that `sign-attestation-certificate` later interprets — two narrow capabilities compose into one wide one (**METERED** that the namespace is `(id, type)` and that the template is read from the same ID) | Capability + domain model | T1 | Confused deputy across a revocation boundary — HRT-4 (081M0DJQ7AS087G0R001EDAAWN) |
+| **E** | S4 — SSH template TLV + cert-request parsing **and an in-firmware authorization decision** | Session capability | T1 | **unmetered, and the deepest surface**: it is the enforcement point the fleet's SSH trust would rest on |
+
+### Adversarial findings (HRT-1 … HRT-7)
+
+Numbered so they can be cited and closed. Severities use the
+`SDL-CHECKLIST.md` bug bar. None of these is a defect in the
+source note's measurements; they are the modelling the
+measurements now demand.
+
+**HRT-1 — the issuer-DN observation is under-determined, and the
+threat it implies is Spoofing, not just parsing.** *Medium as a
+defect, High as a model input.* The note reports the emitted
+issuer became `CN=YubiHSM Attestation id:<ID>` and reads that as
+"the subject DN of my template, copied". A synthesize-from-object-ID
+firmware produces byte-identical output, and `yubihsm-shell`
+generates templates with exactly that subject — so the experiment
+cannot separate the two mechanisms. A matching string is not an
+identification. **And if it *is* a copy, the class is wrong:** the
+note files it under LANGSEC (a parser that might have a bug),
+when the sharper threat needs no bug at all — a caller chooses a
+string that a verifier reads as provenance. This is X.509
+name-versus-key confusion (Marlinspike / Kaminsky 2009,
+CVE-2009-2408): a signature authenticates the *key*, never the
+*name*. Falsifier and disposition: 081M0DJQ28W087G0R003WZQ7KR.
+
+**HRT-2 — the attestation carries caller-authored text inside a
+signed envelope.** *Medium.* Extension `.9` is the label, and the
+note measured it appearing **verbatim**. So the "signed capability
+statement" contains at least one field the attested party wrote
+itself. Anything downstream that renders, logs, or matches on the
+label is consuming attacker-controlled content wearing the
+signature's authority — confused deputy, and the injection
+substrate every log viewer and policy engine is heir to. **Rule
+for consumers:** treat `.9` (and any DN string) as untrusted input
+that happens to be inside a trusted envelope. The signature says
+*who assembled the envelope*, not *that its contents are true*.
+
+**HRT-3 — an attestation is not a proof of possession, and
+nothing in it says so.** *High.* Three measured facts compose:
+no nonce or challenge in `Sign Attestation Certificate`; `Not
+After: 9999` with no device clock; reset is seconds and returns a
+factory credential. Therefore the certificate bytes are
+**replayable forever by anyone who has ever seen them** — and they
+are meant to be published, so "anyone" is the honest set. It
+proves a key once existed on a device; never that the presenter
+holds it, that it still exists, or that the device was not wiped
+in between. Two attacks follow: **replay** (present another node's
+attestation), and **reset-and-reintroduce** (evil maid wipes the
+device, re-enrols genuine on-device keys; if self-registration
+accepts a fresh attestation on a known serial, the wipe is
+indistinguishable from a rotation). The dual-use posture applies:
+the mechanism should report "known serial, unlinked key" as a
+neutral fact and let policy read it as *replacement* or *attack* —
+but today nothing computes it. Disposition:
+081M0DJQ79W087G0R001GNBTVP.
+
+**HRT-4 — `put-opaque` is transitively attestation-issuer-write.**
+*High/Medium (depends on HRT-1's outcome).* The namespace is
+`(id, type)`; the template is read from the same object ID as the
+attesting key; storing it is a *different* capability from using
+it. So a holder of `put-opaque` parks persistent, attacker-shaped
+state below the repair boundary that the firmware interprets later
+on behalf of a holder of `sign-attestation-certificate` — including
+after the writer's credential has been revoked. Least privilege is
+violated by a composition that neither capability's name discloses.
+The same shape almost certainly recurs at `put-template` ×
+`sign-ssh-certificate` (S4), where the template carries the
+principal white-list — which makes it the higher-value instance.
+Disposition: 081M0DJQ7AS087G0R001EDAAWN.
+
+**HRT-5 — reachability is the perimeter, and it was never
+modelled.** *Medium (leak) / High (DoS, if the connector is
+broadly reachable).* "Bind the connector to the narrowest possible
+scope" is advice; the model needs the reacher table above and a
+*tested* scope. Three consequences: the pre-auth self-description
+is a **targeting oracle** (firmware version selects the EUCLEAK-
+eligible node out of a fleet; `Log used: N/62` is a live activity
+counter readable without a credential); the **serial is an
+unrotatable identifier** present in every attestation, so every key
+a node ever issues is permanently linkable — a privacy budget can
+frost a name, never a serial; and **pre-authentication session
+allocation** is a plausible unauthenticated DoS against the node's
+own root of trust, which is unmetered and whose reclamation path
+matters more than the exhaustion itself. Disposition:
+081M0DJQ7BP087G0R002JDZF90.
+
+**HRT-6 — the audit log's integrity is metered; its retention is
+zero.** *Medium.* A 62-entry hash-chained ring is tamper-evident
+and **overwrite-happy**: an adversary hides one action by
+performing 62 unremarkable ones, and the chain still verifies
+perfectly across the gap. No exploit required. The control is a
+host-side drain faster than 62 commands with a "ring nearly
+wrapped" alarm; the device's force-audit posture (refuse commands
+while the log is full) trades silent evidence-loss for a loud
+availability failure — usually the right trade for a root of trust,
+and simultaneously a DoS knob an insider can pull. **unmetered**
+(read from public documentation). Same work item as HRT-5.
+
+**HRT-7 — the anti-DVD-drive property is a claim about the
+artifact and a silence about the consumer.** *High, and it is the
+finding this section exists for.* The source note argues the
+attestation is "checkable evidence rather than a boolean verdict",
+citing the Xbox class-2 lesson. The artifact half is correct and
+measured. But **the DVD drive was never the bug** — the bug was a
+console that reduced a rich response to "yes". Evidence does not
+defend itself; the verdict re-enters at the consumer, and there are
+at least four doors:
+
+1. **Collapse at verification.** `if (verifyChain(cert)) trust()`
+   converts the whole capability statement back into a boolean. A
+   richer artifact makes this *easier* to get wrong, because the
+   consumer feels it has done diligence.
+2. **Trusting the name instead of the key** (HRT-1) — a verifier
+   that matches on issuer DN is trusting a string the artifact
+   never authenticated.
+3. **Trusting a caller-authored field** (HRT-2) — the label is
+   inside the signature and authored by the subject.
+4. **Reading `origin: on-device` as third-party evidence.** For the
+   custom-attestation path this document endorses, the root is a
+   key *we* hold: our device asserts, and our key signs, that our
+   key was generated on our device. That is a **witnessed
+   assertion**, not independent evidence — the note says as much
+   about *authenticity* and then keeps calling the extensions
+   "checkable evidence" without carrying the qualification forward.
+   Integrity is self-rootable; **provenance is not**, and the
+   transparency-log/witness-staking design is the only thing that
+   makes it mean anything to a third party.
+
+**The honest statement the model should carry:** *the attestation
+is checkable evidence about a key's capabilities, witnessed by a
+root we publish. It answers "which key, which capabilities,
+generated where". It cannot answer "is this peer live", "is this
+binding valid", "what time is it", or "who is this node" — and a
+consumer that asks it those questions has rebuilt the Xbox 360.*
+Expiry, membership and liveness come from the cluster's
+phase-ordered fold; the device has no clock and must never be
+allowed to filter what enters that fold
+(`local-time-never-enters-the-shared-fold`, applied to hardware).
+
+### Formal-spec targets (per the one-spec-per-quadrant goal)
+
+- **Spoofing.** An attestation-consumption protocol where
+  `accept(peer, cert)` requires a fresh challenge signed by the
+  attested key, and replay of any transcript is refused. TLA+;
+  routes to Soraya for tool selection.
+- **Repudiation.** A log-drain invariant: the host's persisted
+  entry set is a superset of every entry the device ever wrote,
+  under a ring of size 62 and arbitrary command rates. This one is
+  a genuine liveness/rate property and is the more interesting spec.
+- **Elevation.** A capability-composition check: for every pair
+  (writer capability, interpreter capability) over a shared object
+  namespace, either the pair is authorised together or the
+  interpreted object is digest-pinned. Semgrep cannot see this —
+  it is a provisioning-model property, so it wants a spec, not a
+  lint.
+
+Aminata recommends; `.claude/rules`-governed tool choice is
+Soraya's call (BP-16).
+
 ## Build and release integrity (SLSA ladder)
 
 Zeta's SLSA target is **L1 now → L2 mid-term → L3 pre-v1.0
@@ -576,6 +820,10 @@ adversary tier it defends to. Forces honest tier scoring.
 | `packages.lock.json` (round 31) | — | ✅ | ✅ | ✅ |
 | SLSA L3 provenance (pre-v1.0) | — | — | — | ✅ |
 | OIDC publish (pre-v1.0) | — | — | ✅ | ✅ |
+| SCP03 mandatory on HSM object ops (**measured**) | ✅ | ✅ | ✅ | partial — defeats bus-sniffing, not a compromised host with a live session |
+| HSM erase-not-extract on physical possession (fw ≥ 2.4.1) | ✅ | ✅ | ✅ | partial — T3 with the device in hand still gets *denial*, cheaply |
+| Attestation proof-of-possession | — | — | — | ✅ (**not built** — 081M0DJQ79W087G0R001GNBTVP) |
+| Off-device audit-log drain before ring wrap | — | ✅ | ✅ | partial (**not built** — 081M0DJQ7BP087G0R002JDZF90) |
 
 ## Priorities
 
@@ -607,7 +855,15 @@ Carry-forward priorities:
    round-31).
 7. **P2** — Arrow IPC HMAC / mTLS (when multi-node lands).
 8. **P2** — AssemblyLoadContext isolation for plugin operators.
-9. **Pre-v1.0 blocker** — SLSA L3 provenance via
+9. **P1 (round 38, hardware)** — attestation consumers demand
+   proof-of-possession before an attestation means anything
+   (081M0DJQ79W087G0R001GNBTVP); discriminate the issuer-DN
+   mechanism (081M0DJQ28W087G0R003WZQ7KR); split or pin the
+   `put-opaque` × `sign-attestation-certificate` composition
+   (081M0DJQ7AS087G0R001EDAAWN); make the connector's
+   reachability a tested control and drain the log ring
+   (081M0DJQ7BP087G0R002JDZF90).
+10. **Pre-v1.0 blocker** — SLSA L3 provenance via
    `actions/attest-build-provenance`, OIDC-based NuGet publish
    (no long-lived API key), `Zeta.*` namespace pre-
    registration, signed-release discipline.
@@ -627,3 +883,19 @@ Carry-forward priorities:
 - shanhai666 NuGet time-bomb — Industrial Cyber / Socket
 - GitHub Actions cache poisoning — Adnan Khan
 - SLSA framework — https://slsa.dev/
+- Sassaman, Patterson, Bratus & Locasto, *Security Applications
+  of Formal Language Theory* (LANGSEC; IEEE Systems Journal
+  2013) — a parser in the trusted path is an interpreter
+- Andrew "bunnie" Huang, *Keeping Secrets in Hardware: The
+  Microsoft XBox Case Study* (CHES 2002) — the physical channel
+- Moxie Marlinspike, *More Tricks for Defeating SSL in Practice*
+  (Black Hat USA 2009); Dan Kaminsky, *PKI Layer Cake* (2009) —
+  X.509 **name**-vs-**key** confusion; CVE-2009-2408
+- Saltzer & Schroeder, *The Protection of Information in
+  Computer Systems* (Proc. IEEE 1975) — least privilege, and
+  why a capability *pair* can exceed either capability's name
+- LINDDUN (privacy threat taxonomy) — linkability /
+  identifiability of an unrotatable hardware serial
+- EUCLEAK (CVE-2024-45678, Thomas Roche / NinjaLab 2024) —
+  side-channel key extraction at YubiHSM fw ≤ 2.4.0, below a
+  non-existent update boundary
