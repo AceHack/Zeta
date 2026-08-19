@@ -15,22 +15,28 @@
  *
  * Scans the last 20 events, finds peers' recent events (last 30min), and
  * emits one attestation per peer that produced events in that window.
+ *
+ * ---------------------------------------------------------------------------
+ * WHAT THIS PRODUCER CAN AND CANNOT SAY (work-item 081M0BTG2M7087G0R0011X5ESW)
+ * ---------------------------------------------------------------------------
+ * It emits an UNBOUND record: `--attestor` / `$ZETA_AGENT_ID` is a plain string
+ * and nothing here holds a key, so the `by` field is a self-claim. That is stated
+ * on every write rather than hidden, and the record it writes is now SIGNABLE by
+ * whoever does hold the key — the canonical bytes, the persona binding and the
+ * verifier live in `attestation-record.ts`, and `verify-attestation-events.ts`
+ * prints the bytes for `ssh-keygen -Y sign`.
+ *
+ * What it CAN now say honestly: exactly WHICH events it read. Each attestation
+ * carries `attestedDigest`, a SHA-256 over the sorted set of the attested event
+ * ids, so a peer holding those events recomputes and gets identity or
+ * contradiction. Before this the record carried only `eventCount` — a count,
+ * which identifies nothing.
  */
 
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
-import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { buildAttestation } from "./attestation-event";
-import { pack, type SimulationEnvironment } from "../zeta-id/zeta-id";
-import {
-  Category,
-  Chromosome,
-  IdVersion,
-  LocationHint,
-  Persona,
-  type Milliseconds,
-  type ZetaObservation,
-} from "../zeta-id/types";
+import { attestedEventsDigest, deriveAttestationId, isPersonaName, verifyAttestationId } from "./attestation-record";
 
 /**
  * How many recent events to consider. This is a bound on work, NOT a time window —
@@ -42,53 +48,11 @@ const SCAN_LIMIT = 200;
 /** The attestation window: events older than this are not attested. */
 const WINDOW_MS = 30 * 60 * 1000;
 
-// ═══ Derived attestation id ════════════════════════════════════════════════════
-//
-// DERIVED mint, not MINTED — per the derived-vs-minted discipline in
-// `docs/research/2026-08-14-zetaid-universal-pointer-derived-vs-minted-declared-sort-fields-and-why-v3-is-not-needed.md`
-// §6a. The test there is "if two parties construct this independently, must they
-// agree?" For an attestation dedup key the answer is yes: re-running the tick must
-// re-derive the same id so the `flag: "wx"` write dedups (G-set idempotency) instead
-// of appending a duplicate fact.
-//
-// Discrimination is 80 bits: 48 bits of `timestamp` (the window end — a stable
-// property of the subject, which §6a-1 explicitly sanctions for a DERIVED mint) plus
-// 32 bits of `randomness` carrying a SHA-256 digest of the full subject tuple. The
-// same doc §7 puts 80 bits at p < 10⁻¹⁶ over a corpus this size.
-//
-// Pattern copied from `forge-host/github/pr-manifest-shards.ts` `shardZetaId`: the
-// `SimulationEnvironment` that `pack` requires is satisfied by the subject itself, so
-// this mint needs no DST boundary — there is no ambient non-determinism to inject.
-
-/**
- * Derive the attestation's ZetaId. PURE in (attestor, attested, windowEnd) — no clock,
- * no CSPRNG. Distinct subjects give distinct ids; identical subjects give the same id.
- */
-export function deriveAttestationId(attestor: string, attested: string, windowEnd: string): string {
-  // Length-prefixed so ("ab","c") and ("a","bc") cannot digest to the same bytes.
-  const subject = [attestor, attested, windowEnd].map((s) => `${s.length}:${s}`).join("|");
-  const digest = createHash("sha256").update(subject, "utf8").digest();
-  const rand = BigInt(digest.readUInt32BE(0));
-
-  const windowMs = Date.parse(windowEnd);
-  const keyEnv: SimulationEnvironment = { nextInt64: () => rand };
-  const obs: ZetaObservation = {
-    version: IdVersion.V1,
-    // The subject's own window end, not a mint clock: a timestamp that moved would
-    // move the attestation's identity and break the dedup this id exists to provide.
-    timestamp: (Number.isNaN(windowMs) ? 0 : windowMs) as Milliseconds,
-    chromosome: Chromosome.MetaCoherence,
-    // Same category as every other observe-event in this folder
-    // (`event-sink-folder.ts` `mintObserveEventIdHex`) — an attestation is a
-    // planning/workflow fact and sorts alongside its siblings.
-    category: Category.WorkItem,
-    authority: { type: "TrustedAgent" },
-    persona: Persona.FireflyCoherence,
-    momentum: { type: "Normal" },
-    location: LocationHint.EastUS_VA1,
-  };
-  return pack(obs, keyEnv).toString(16).padStart(32, "0");
-}
+// The derived-id mint moved to `attestation-record.ts` so the VERIFIER can
+// recompute it without importing this CLI module. Re-exported here because that is
+// where callers and tests have always found it, and because moving a function is
+// not a reason to break them.
+export { deriveAttestationId } from "./attestation-record";
 
 interface CliArgs {
   attestor: string;
@@ -109,6 +73,12 @@ function parseArgs(argv: string[]): CliArgs {
 
 /** The minimum an event must carry to be attestable. */
 export interface ObservedEvent {
+  /**
+   * The event's id — its filename stem, which is what a peer holding the folder
+   * sees. REQUIRED: without ids there is no set to digest, and an attestation
+   * that cannot name its subject is the vacuity class.
+   */
+  readonly id: string;
   readonly by: string;
   readonly at: string;
 }
@@ -117,6 +87,8 @@ export interface PeerWindow {
   count: number;
   earliest: string;
   latest: string;
+  /** The ids attested — the SET the digest is taken over. Deduplicated at digest time. */
+  ids: string[];
 }
 
 /**
@@ -144,17 +116,23 @@ export function selectRecentEvents(
   const peerEvents = new Map<string, PeerWindow>();
 
   for (const raw of events) {
-    if (!raw.by || !raw.at || raw.by === attestor) continue;
+    if (!raw.id || !raw.by || !raw.at || raw.by === attestor) continue;
+    // A peer's `by` becomes this attestation's `attested` AND every sibling's
+    // `simultaneousParticipants` entry. Six committed records name
+    // `/tmp/attest-<random>` as their attested peer because nothing checked here.
+    // A filesystem path is not a persona; refuse it before it becomes history.
+    if (!isPersonaName(raw.by)) continue;
     const eventTime = Date.parse(raw.at);
     if (Number.isNaN(eventTime) || eventTime < cutoff) continue;
 
     const existing = peerEvents.get(raw.by);
     if (existing) {
       existing.count++;
+      existing.ids.push(raw.id);
       if (raw.at < existing.earliest) existing.earliest = raw.at;
       if (raw.at > existing.latest) existing.latest = raw.at;
     } else {
-      peerEvents.set(raw.by, { count: 1, earliest: raw.at, latest: raw.at });
+      peerEvents.set(raw.by, { count: 1, earliest: raw.at, latest: raw.at, ids: [raw.id] });
     }
   }
   return peerEvents;
@@ -162,6 +140,26 @@ export function selectRecentEvents(
 
 function main(): void {
   const args = parseArgs(process.argv.slice(2));
+
+  // THE CHEAP GUARD, at the point where it is cheap. `--attestor` /
+  // `$ZETA_AGENT_ID` is a plain string, and on 2026-08-17 six attestations naming
+  // `/tmp/attest-<random>` as their attestor were written, committed, and merged
+  // to main. Binding the attestor to a key (`attestation-record.ts`) is the real
+  // fix and needs a key holder; refusing a value that is not even shaped like a
+  // persona needs a regex, and would have caught this on its own.
+  //
+  // FAIL CLOSED. This exits non-zero rather than skipping the tick: an attestor
+  // this process cannot name is not a peer-observation problem to route around,
+  // it is a caller bug, and writing nothing is the correct output.
+  if (!isPersonaName(args.attestor)) {
+    console.error(
+      `[attestation] REFUSED: attestor ${JSON.stringify(args.attestor)} is not a persona name ` +
+        "(lowercase ASCII, no slashes, no spaces). A filesystem path is not an identity.",
+    );
+    process.exitCode = 1;
+    return;
+  }
+
   const now = Date.now();
 
   // Read recent events
@@ -177,13 +175,27 @@ function main(): void {
   // in this folder (see `selectRecentEvents`), so the scan bound must be applied to
   // timestamps — applying it to filenames is what silenced peer attestation.
   const parsed: ObservedEvent[] = [];
+  let idMismatches = 0;
   for (const f of files) {
+    const stem = f.slice(0, -".json".length);
     try {
       const raw = JSON.parse(readFileSync(join(args.eventDir, f), "utf-8"));
-      if (typeof raw?.by === "string" && typeof raw?.at === "string") {
-        parsed.push({ by: raw.by, at: raw.at });
+      if (typeof raw?.by !== "string" || typeof raw?.at !== "string") continue;
+      // The id attested is the FILENAME STEM — that is what a peer holding this
+      // folder sees and what the digest must be recomputable from. When the record
+      // also carries an `id`, the two must agree: a file whose internal id names a
+      // different event is exactly the substitution this work-item is about, and
+      // attesting it would put a digest over ids nobody can reproduce. Skipped
+      // rather than dropped silently — the count is printed below.
+      if (typeof raw?.id === "string" && raw.id !== stem) {
+        idMismatches++;
+        continue;
       }
+      parsed.push({ id: stem, by: raw.by, at: raw.at });
     } catch { /* skip malformed */ }
+  }
+  if (idMismatches > 0) {
+    console.warn(`[attestation] skipped ${idMismatches} event(s) whose internal id disagreed with their filename`);
   }
   parsed.sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0));
   const recent = parsed.slice(-SCAN_LIMIT);
@@ -200,13 +212,20 @@ function main(): void {
   mkdirSync(args.eventDir, { recursive: true });
 
   for (const [peer, data] of peerEvents) {
+    // The evidence pointer: a SHA-256 over the sorted, deduplicated set of ids this
+    // attestation is about. `eventCount` alone is a count and identifies nothing.
+    const attestedDigest = attestedEventsDigest(data.ids);
+
     const attestation = buildAttestation({
       attestor: args.attestor,
       attested: peer,
       eventCount: data.count,
       windowStart: data.earliest,
       windowEnd: data.latest,
-      // All peers that we're attesting in this tick are simultaneous participants
+      attestedDigest,
+      // All peers that we're attesting in this tick are simultaneous participants.
+      // The subject itself is excluded (it is `peer`); the attestor is never in the
+      // map, since `selectRecentEvents` drops its own events.
       simultaneousParticipants: [...peerEvents.keys()].filter((p) => p !== peer),
     });
 
@@ -223,14 +242,30 @@ function main(): void {
       at: nowIso,
       by: args.attestor,
       kind: "attestation",
-      action: { kind: "attest_peer", reason: `verified ${data.count} events from ${peer}` },
+      // "read", not "verified": this producer lists a directory, parses JSON, and
+      // checks that `by`/`at` are strings. Nothing here establishes that an event is
+      // genuine, and the reason line must not say otherwise.
+      action: { kind: "attest_peer", reason: `read ${data.count} events from ${peer}` },
       attestation,
     };
+
+    // The producer checks its own id before writing. The id is the G-set dedup key,
+    // so a record whose id does not derive from its own fields is not deduplicable —
+    // and the only check downstream was `^[0-9a-f]{32}\.json$`, a shape standing in
+    // for a value. Cheap here; impossible to reconstruct later.
+    if (!verifyAttestationId({ id, attestation })) {
+      console.error(`[attestation] REFUSED to write ${id}.json — id does not derive from its own fields`);
+      continue;
+    }
 
     const filePath = join(args.eventDir, `${id}.json`);
     try {
       writeFileSync(filePath, JSON.stringify(envelope, null, 2) + "\n", { flag: "wx" });
-      console.log(`[attestation] ${args.attestor} → ${peer}: ${data.count} events attested (strength: ${attestation.strength.toFixed(2)})`);
+      console.log(
+        `[attestation] ${args.attestor} → ${peer}: ${data.count} events attested ` +
+          `(strength: ${attestation.strength.toFixed(2)}, digest: ${attestedDigest.slice(0, 19)}…) ` +
+          `— UNBOUND: no signature, so \`by\` is a self-claim until a key holder signs it`,
+      );
     } catch (err) {
       if ((err as NodeJS.ErrnoException).code === "EEXIST") {
         // Idempotent: same attestation already exists — that's fine (G-set dedup)

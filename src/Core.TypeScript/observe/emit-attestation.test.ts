@@ -26,6 +26,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import { deriveAttestationId, selectRecentEvents, type ObservedEvent } from "./emit-attestation";
+import { attestationCoversEvents, attestedEventsDigest, verifyAttestationId } from "./attestation-record";
 import { unpack } from "../zeta-id/zeta-id";
 import { Category, IdVersion, type ZetaId } from "../zeta-id/types";
 
@@ -102,31 +103,33 @@ describe("selectRecentEvents", () => {
 
   test("selects peers by the event's own `at`, never by filename order", () => {
     const events: ObservedEvent[] = [
-      { by: "alexa", at: iso(5) },
-      { by: "soraya", at: iso(10) },
-      { by: "society", at: iso(1) },
+      { id: "e1", by: "alexa", at: iso(5) },
+      { id: "e2", by: "soraya", at: iso(10) },
+      { id: "e3", by: "society", at: iso(1) },
     ];
     const peers = selectRecentEvents(events, "otto", now);
     expect([...peers.keys()].sort()).toEqual(["alexa", "society", "soraya"]);
   });
 
   test("excludes the attestor's own events (you do not attest yourself)", () => {
-    const peers = selectRecentEvents([{ by: "otto", at: iso(1) }], "otto", now);
+    const peers = selectRecentEvents([{ id: "e1", by: "otto", at: iso(1) }], "otto", now);
     expect(peers.size).toBe(0);
   });
 
   test("excludes events outside the window and keeps the earliest/latest bounds", () => {
     const events: ObservedEvent[] = [
-      { by: "alexa", at: iso(45) }, // outside the 30-min window
-      { by: "alexa", at: iso(20) },
-      { by: "alexa", at: iso(2) },
+      { id: "old", by: "alexa", at: iso(45) }, // outside the 30-min window
+      { id: "mid", by: "alexa", at: iso(20) },
+      { id: "new", by: "alexa", at: iso(2) },
     ];
     const peers = selectRecentEvents(events, "otto", now);
-    expect(peers.get("alexa")).toEqual({ count: 2, earliest: iso(20), latest: iso(2) });
+    // `ids` carries the SET the digest is taken over, and the out-of-window event is
+    // absent from it — so the digest cannot claim an event the attestation excluded.
+    expect(peers.get("alexa")).toEqual({ count: 2, earliest: iso(20), latest: iso(2), ids: ["mid", "new"] });
   });
 
   test("an unparseable `at` is dropped rather than treated as epoch-0 or now", () => {
-    const peers = selectRecentEvents([{ by: "alexa", at: "not-a-date" }], "otto", now);
+    const peers = selectRecentEvents([{ id: "e1", by: "alexa", at: "not-a-date" }], "otto", now);
     expect(peers.size).toBe(0);
   });
 
@@ -136,8 +139,8 @@ describe("selectRecentEvents", () => {
     // filename-sorted `slice(-50)` the heartbeat fell out of the window entirely and
     // `alexa` was unattestable. Ordering by `at` finds it.
     const events: ObservedEvent[] = [
-      { by: "alexa", at: iso(3) },
-      ...Array.from({ length: 60 }, (_, i) => ({ by: "society", at: iso(i % 25) })),
+      { id: "hb", by: "alexa", at: iso(3) },
+      ...Array.from({ length: 60 }, (_, i) => ({ id: `soc-${i}`, by: "society", at: iso(i % 25) })),
     ];
     const peers = selectRecentEvents(events, "otto", now);
     expect(peers.has("alexa")).toBe(true);
@@ -225,6 +228,149 @@ describe("emit-attestation CLI (end-to-end)", () => {
       run(dir);
       const second = written(dir).map((e) => e.id).sort();
       expect(second).toEqual(first);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  // ═══ 081M0BTG2M7087G0R0011X5ESW — the record now names what it attests ══════
+  //
+  // Before this, an emitted attestation said "I saw 60 events from society in this
+  // window" and carried nothing else. A count is not an identification: a peer
+  // holding society's actual events could not tell whether the attestation was about
+  // them, about a different 60, or about nothing at all.
+
+  test("every emitted attestation carries a digest over the ids it actually read", () => {
+    const dir = fixture();
+    try {
+      const idsBefore = readdirSync(dir).map((f) => f.slice(0, -".json".length));
+      run(dir);
+      const events = written(dir);
+      expect(events.length).toBe(3);
+
+      for (const e of events) {
+        const peer = e.attestation.attested as string;
+        // The set the producer should have digested: exactly this peer's ids.
+        const expected = idsBefore.filter((id) => {
+          const raw = JSON.parse(readFileSync(join(dir, `${id}.json`), "utf-8"));
+          return raw.by === peer;
+        });
+        expect(expected.length).toBeGreaterThan(0);
+        expect(e.attestation.attestedDigest).toBe(attestedEventsDigest(expected));
+        expect(e.attestation.eventCount).toBe(expected.length);
+        // The verifier a peer runs: recompute over the set it holds.
+        expect(attestationCoversEvents(e.attestation, expected)).toBe(true);
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("the digest DISCRIMINATES — one different event id and it no longer matches", () => {
+    const dir = fixture();
+    try {
+      const idsBefore = readdirSync(dir).map((f) => f.slice(0, -".json".length));
+      run(dir);
+      const e = written(dir).find((x) => x.attestation.attested === "alexa");
+      expect(e).toBeDefined();
+      const alexaIds = idsBefore.filter(
+        (id) => JSON.parse(readFileSync(join(dir, `${id}.json`), "utf-8")).by === "alexa",
+      );
+      // Same COUNT, different SET. This is the case `eventCount` could never separate,
+      // and it is the whole reason the digest exists.
+      const impostor = alexaIds.map((id) => `${id.slice(0, -1)}${id.endsWith("a") ? "b" : "a"}`);
+      expect(impostor.length).toBe(alexaIds.length);
+      expect(attestationCoversEvents(e.attestation, alexaIds)).toBe(true);
+      expect(attestationCoversEvents(e.attestation, impostor)).toBe(false);
+      // A superset does not match either — an attestation covers a SET, not a prefix.
+      expect(attestationCoversEvents(e.attestation, [...alexaIds, "extra"])).toBe(false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("every emitted id RE-DERIVES from the record's own fields", () => {
+    const dir = fixture();
+    try {
+      run(dir);
+      for (const e of written(dir)) {
+        // The check that was missing everywhere: `^[0-9a-f]{32}$` asks whether the
+        // name looks like an id, never whether it is THIS record's id.
+        expect(verifyAttestationId(e)).toBe(true);
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  // ═══ The write-time persona gate — the guard that needed no cryptography ═══
+  //
+  // Six committed attestations on `origin/main` (3465e2fc57) name
+  // `/tmp/attest-<random>` as their ATTESTOR, and six name one as their ATTESTED;
+  // eleven records in all, the sets overlapping. They are `mkdtempSync` fixture
+  // directories that reached the identity field of durable, foldable records and
+  // were merged on 2026-08-17. A fresh temp path per run means each one reads as a
+  // NEW distinct witness — accidental Sybil via temp-path entropy, and a
+  // deliberate one is indistinguishable.
+  //
+  // Binding the attestor to a key is the real fix and needs a key holder. These two
+  // tests cover the part that never did: a regex, at write time.
+
+  test("REFUSES to run when the attestor is a filesystem path, not a persona", () => {
+    const dir = fixture();
+    try {
+      const before = readdirSync(dir).length;
+      const r = Bun.spawnSync(["bun", CLI, "--attestor", "/tmp/attest-0rHTQr", "--event-dir", dir]);
+      // Fail CLOSED: an attestor this process cannot name is a caller bug, and
+      // writing nothing is the correct output.
+      expect(r.exitCode).not.toBe(0);
+      expect(r.stderr.toString()).toContain("not a persona name");
+      expect(readdirSync(dir).length).toBe(before);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("a peer whose `by` is a path is never attested and never a participant", () => {
+    const dir = fixture();
+    try {
+      // The other half of the live pollution: `alexa -> /tmp/attest-hqFnhO`. The
+      // peer's `by` becomes this record's `attested` AND every sibling's
+      // participant entry, so one unchecked value lands in several records.
+      const rogue = "0bbbbbbb00000000000000000000000f";
+      writeFileSync(
+        join(dir, `${rogue}.json`),
+        JSON.stringify({ id: rogue, at: new Date().toISOString(), by: "/tmp/attest-hqFnhO", action: {} }),
+      );
+      run(dir);
+      const events = written(dir).filter((e) => e.attestation !== undefined);
+      for (const e of events) {
+        expect(e.attestation.attested).not.toContain("/tmp/");
+        for (const p of e.attestation.simultaneousParticipants ?? []) {
+          expect(p).not.toContain("/tmp/");
+        }
+      }
+      // And it is genuinely absent, not merely un-matched by a weak assertion.
+      expect(events.some((e) => e.attestation.attested === "/tmp/attest-hqFnhO")).toBe(false);
+      expect(events.length).toBe(3);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("an event whose internal id disagrees with its filename is not attested", () => {
+    const dir = fixture();
+    try {
+      // A file claiming to be a different event. Attesting it would put a digest over
+      // an id set nobody else can reproduce, so it is skipped rather than folded in.
+      const rogueName = "0abcdef00000000000000000000000ff";
+      writeFileSync(
+        join(dir, `${rogueName}.json`),
+        JSON.stringify({ id: "some-other-event", at: new Date().toISOString(), by: "mallory", action: {} }),
+      );
+      run(dir);
+      const attested = new Set(written(dir).map((e) => e.attestation?.attested));
+      expect(attested.has("mallory")).toBe(false);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
