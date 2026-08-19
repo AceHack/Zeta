@@ -18,7 +18,11 @@ import {
   loadAttestationRecords,
   verifyAll,
 } from "./verify-attestation-events";
-import { attestedEventsDigest, deriveAttestationId } from "./attestation-record";
+import {
+  attestedEventsDigest,
+  deriveAttestationId,
+  verifyAttestationRecord,
+} from "./attestation-record";
 
 const REPO_ROOT = resolve(import.meta.dir, "..", "..", "..");
 
@@ -207,12 +211,58 @@ describe("the committed corpus", () => {
     const records = loadAttestationRecords(dir);
     // A check that inspects nothing is not a passing check.
     expect(records.length).toBeGreaterThan(300);
-    const report = verifyAll(records, buildPersonaRoster(discoverPersonaRosterPaths(REPO_ROOT)));
+    const roster = buildPersonaRoster(discoverPersonaRosterPaths(REPO_ROOT));
+    const report = verifyAll(records, roster);
+
+    // THE INVARIANT, and the only one this test may assert: nothing is cryptographically
+    // BOUND. No key holder has signed a record, so `bound` must be exactly zero.
     expect(report.bound).toBe(0);
-    // Every one of them predates `attestedDigest` or is a leaked fixture, so nothing
-    // is merely `unbound` yet either. Both facts are reported; neither is a pass.
-    expect(report.refused).toBe(records.length);
-  });
+
+    // What this test may NOT assert is the refused/unbound SPLIT. It originally read
+    // `expect(report.refused).toBe(records.length)` — true when written, because every
+    // record predated `attestedDigest`. New records emitted by the fixed `emit-attestation`
+    // DO carry a digest, so they verify as `unbound` (well-formed, merely unsigned) rather
+    // than `refused`. The split therefore moves every time the emitter runs, and pinning it
+    // makes a GREEN CI depend on nobody using the feature. That is the vacuity class
+    // inverted: a check that fails precisely when the thing it guards starts working.
+    //
+    // Reproduced on `origin/main` 2026-08-19: 380 records, 377 refused, 3 unbound — the
+    // three being the first digest-carrying records the emitter produced.
+    expect(report.refused + report.unbound).toBe(records.length);
+    // And the accounting is exhaustive: every record lands in exactly one band. This is
+    // NOT tautological arithmetic: it is an identity over `verifyAll`'s loop, and a stray
+    // `continue` in that six-line loop makes it false. Mutation-confirmed.
+    expect(report.bound + report.unbound + report.refused).toBe(records.length);
+
+    // UNPINNING THE SPLIT LEFT A HOLE, and this closes it. Once the refused/unbound split
+    // is no longer pinned, nothing constrains WHICH BAND a record lands in — and the bands
+    // are not interchangeable. `refused: missing-digest` means "not evidence"; `unbound`
+    // means "well-formed, merely unsigned", which is the band a trust fold is tempted to
+    // treat as nearly-good. Measured: make a digest-less record return `unbound` instead of
+    // refusing, and 369 records move from "not evidence" to "one signature away from
+    // usable" while all three assertions above stay GREEN.
+    //
+    // That is the sibling of the failure this test was fixed for. The original pinned a
+    // number and so failed when the feature started working; a bare re-count would stop
+    // constraining anything in the course of being made drift-proof. Both are the vacuity
+    // class; only the direction differs.
+    //
+    // So: recount `unbound` independently of the report, and require every member of that
+    // band to actually BE well-formed-but-unsigned — digest present, signature absent.
+    const unbound = records.filter(
+      (r) => verifyAttestationRecord(r.record, { roster }).status === "unbound",
+    );
+    expect(unbound.length).toBe(report.unbound);
+    for (const { file, record } of unbound) {
+      expect(typeof record.attestation.attestedDigest, file).toBe("string");
+      expect(record.signature, file).toBeUndefined();
+    }
+    // 30s, not the 5s default. Honest note on why: the recount is a SECOND full pass over
+    // the corpus, but measured it costs ~1.4s for the whole file — the 5s default was hit
+    // once on a cold cache, not by the work. The headroom is for corpus growth, not for a
+    // cost that exists today. Deriving `unbound` from the report would be cheaper and
+    // tautological, which is the one thing it must not be.
+  }, 30_000);
 
   test("the event dir constant points at a real directory", () => {
     expect(readdirSync(dir).length).toBeGreaterThan(0);
