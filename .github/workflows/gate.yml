@@ -126,7 +126,11 @@ jobs:
           # 2026-04-27). Windows legs are gated by `continue-on-error:
           # true` at the build-and-test job level so initial failures
           # (e.g. missing tools/setup/install.ps1) don't block per-merge
-          # runs while the peer-agent polishes the path.
+          # runs while the peer-agent polishes the path. Since 2026-08-19
+          # a failing Windows leg is NAMED in the `gate (required)` step
+          # summary and raises a warning annotation -- non-blocking is no
+          # longer the same as unreported. See the residue note at that
+          # `continue-on-error:` flag.
           if [ "${GH_EVENT}" = "pull_request" ] || [ "${GH_EVENT}" = "merge_group" ]; then
             echo 'os=["ubuntu-24.04","ubuntu-24.04-arm","macos-26"]' >> "$GITHUB_OUTPUT"
           else
@@ -329,6 +333,26 @@ jobs:
     needs: [matrix-setup, path-filter]
     # Windows legs remain experimental; mark them non-blocking while
     # native installer and ARM64 package coverage mature. Unix legs block.
+    #
+    # THE RESIDUE, STATED PLAINLY (2026-08-19). This job IS in the `gate-required`
+    # floor, so this flag means the floor NAME OVERSTATES ITS COVERAGE ON ONE OF THREE
+    # PLATFORMS: a Windows build or test failure reaches `gate (required)` as SUCCESS.
+    # That is deliberate. What was NOT deliberate is that it was also invisible.
+    # MEASURED over the 152 completed `gate` runs carrying Windows legs
+    # (2026-04-25..2026-08-19): windows-2025 failed 12 times (7.9%), windows-11-arm 9
+    # (5.9%), 14 runs carried at least one (9.2%) -- and in all 11 instances since
+    # `gate-required` existed, the required check reported green beside the red leg.
+    # One is committed as a fixture: run 31978270082, in
+    # src/Core.TypeScript/ci/fixtures/gate-run-jobs-windows-failed.json.
+    #
+    # The rollup now NAMES these legs in its step summary and raises a warning
+    # annotation, so the residue is legible without changing what blocks. Whether it
+    # SHOULD block is a floor amendment (maintainer call, not a workflow edit) and is
+    # tracked with the evidence and a proposed promotion criterion in
+    # workitems/081M0BVAV2H087G0R000VXRYRQ-decide-whether-the-windows-build-and-test-legs-should-block.md.
+    # Note before reaching for the flag: Windows legs do not run on `pull_request` at
+    # all (see matrix-setup), so flipping it alone would red main after the fact rather
+    # than block any merge.
     continue-on-error: ${{ startsWith(matrix.os, 'windows-') }}
     strategy:
       fail-fast: false
@@ -2294,8 +2318,32 @@ jobs:
   gate-required:
     name: gate (required)
     runs-on: ubuntu-24.04
-    timeout-minutes: 1
+    # Was 1 minute, when this job was three seconds of `grep` over `toJSON(needs)`.
+    # The scope summary below adds a sparse checkout (~11 s, measured across this
+    # workflow's other jobs), setup-bun (~3 s, measured), and one Actions-API call
+    # (~2 s) -- so the job now runs ~20 s. 5 is a RUNAWAY CAP, not a budget: nothing
+    # in this job retries, polls, or waits on anything that can hang open.
+    timeout-minutes: 5
     if: always()
+    # Job-scoped least privilege. The workflow default is `contents: read` and no
+    # other job elevates; this one adds exactly one read scope for one call:
+    #   contents: read -- sparse checkout of the summary script + this file
+    #   actions:  read -- GET /actions/runs/<THIS run>/jobs, the only source of
+    #                     PER-MATRIX-LEG results. The `needs` context collapses a
+    #                     whole matrix to one value, which is precisely what kept the
+    #                     Windows legs invisible. No write scope, no other repo, no
+    #                     other run.
+    permissions:
+      contents: read
+      actions: read
+    # Machine-readable scope, so "which green was this" is answerable without
+    # scraping a log. Empty when the summary step could not run -- see the
+    # `continue-on-error` note on it.
+    outputs:
+      scope: ${{ steps.scope.outputs.scope }}
+      floor-executed: ${{ steps.scope.outputs.floor-executed }}
+      floor-skipped: ${{ steps.scope.outputs.floor-skipped }}
+      nonblocking-failures: ${{ steps.scope.outputs.nonblocking-failures }}
     # ── THE FLIP (drift-and-heal ADR, Aaron 2026-08-01): blocking gates are
     # corporate mode; drift checks are sovereign mode. The gate now rolls up
     # ONLY the uncompensatable floor (registry/uncompensatable-floor.yaml):
@@ -2338,6 +2386,22 @@ jobs:
     # admitted on the adjacent `scoped-build-test-break` rationale (a break
     # downstream lanes consume this tick), not on erasure. Stated so the
     # registry's derivation stays honest rather than being quietly widened.
+    #
+    # ── WHICH GREEN IS THIS? (2026-08-19) ─────────────────────────────────────────
+    # Treating `skipped` as success is correct -- the path filter legitimately skips
+    # `full-verify` and the .NET build/test steps on a docs-only PR. But it made this
+    # check's SUCCESS TWO-VALUED while publishing neither value: a green here is
+    # either the full seven-language byte-lock or a materially smaller run, and to
+    # anything reading check status -- including armed auto-merge, which is how most
+    # things land here -- WALL-CLOCK DURATION WAS THE ONLY THING TELLING THEM APART.
+    # That is the vacuity class at the rollup level: a check that did not run looks
+    # exactly like a check that passed.
+    #
+    # The `Emit scope` step below therefore publishes WHICH floor jobs executed, which
+    # were skipped, which steps were skipped inside the ones that ran, and which legs
+    # failed non-blockingly -- to the step summary, to a warning/notice annotation, and
+    # to this job's outputs. Skipping stays legitimate and nothing new blocks; the
+    # green now carries its own scope.
     needs:
       - build-and-test
       - lint
@@ -2345,10 +2409,56 @@ jobs:
       - cross-verify
       - full-verify
     steps:
+      # Sparse: two paths, no blobs, one commit. The full checkout other jobs take
+      # measures ~11 s here; this one has no reason to pay for 36k files.
+      - name: Checkout (summary script + this workflow only)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            src/Core.TypeScript/ci/gate-scope-summary.ts
+            .github/workflows/gate.yml
+          sparse-checkout-cone-mode: false
+
+      # Bun only -- the summary script imports nothing but node built-ins, so this job
+      # never runs install.sh (~2-4 min) for a ~1 s render.
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Emit scope -- which floor jobs actually ran
+        id: scope
+        # OBSERVABILITY ONLY, AND DELIBERATELY NON-FATAL. The verdict is the next step
+        # and its logic is untouched; this one must never be able to turn a green gate
+        # red (or a red one green) because a summary failed to render or the API
+        # hiccuped. A failure here shows as a visible red step inside a job whose
+        # conclusion is still decided below.
+        continue-on-error: true
+        env:
+          # The AUTHORITATIVE floor list: this is literally the `needs:` block above,
+          # keyed by job id, with each result. Adding or removing a floor job updates
+          # the summary with no edit to the script -- there is no second copy to drift.
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          set -euo pipefail
+          gh api --paginate \
+            "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs?per_page=100" \
+            --jq '.jobs[]' \
+            | bun src/Core.TypeScript/ci/gate-scope-summary.ts
+
       - name: Check all gate jobs
+        env:
+          # Same value as above; printed by NAME here so the per-job verdict survives
+          # even if the summary step could not run. `needs.*.result` (used below,
+          # unchanged) is an unlabelled array -- it is what makes the verdict correct
+          # and what made it unreadable.
+          NEEDS_JSON: ${{ toJSON(needs) }}
         run: |
           # A job result is one of: success, failure, cancelled, skipped.
           # Skipped is acceptable (path-filter gated); failure/cancelled are not.
+          echo "Floor job results (by name):"
+          echo "${NEEDS_JSON}" | jq -r 'to_entries[] | "  \(.key): \(.value.result)"' \
+            || echo "${NEEDS_JSON}"
           results='${{ toJSON(needs.*.result) }}'
           echo "Job results: $results"
           if echo "$results" | grep -qE '"(failure|cancelled)"'; then
@@ -2356,3 +2466,5 @@ jobs:
             exit 1
           fi
           echo "All gate jobs passed or were skipped (docs-only). ✓"
+          echo "Scope of this green: see the \"gate (required)\" step summary --"
+          echo "a skipped floor job means this green covers less than a full-scope green."
