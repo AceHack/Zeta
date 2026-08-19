@@ -40,9 +40,15 @@ So the honest verdict, stated as the clean negative that was invited:
 > resource manager that looks like it might be one is a memory manager, not an access-control layer.
 
 What the TPM does bring that the HSM cannot is a **path boundary the kernel enforces** and — the one
-genuine advantage that survives scrutiny — **per-file-descriptor virtualisation of sessions and
-transient objects**, which retires the `YH_MAX_SESSIONS = 16` starvation finding outright. That
-advantage is then given back, with interest, by the global dictionary-attack lockout (§4).
+genuine advantage that survives scrutiny — **per-file-descriptor virtualisation of transient objects
+and sessions**, verified in the kernel source, which retires the `YH_MAX_SESSIONS = 16` starvation
+finding as an *isolation* failure (§3). That advantage is then given back twice over: once softly, as a
+shared-queue performance cost, and once hard, by the global dictionary-attack lockout (§4).
+
+And there is a second axis the capability comparison misses, which may matter more for Max's node than
+any of it: **where each device's update boundary sits, and how big the unit is that must be replaced
+when a defect falls below it** (§7a). The YubiHSM's replace-unit is one hot-swappable USB device. An
+fTPM's is the machine.
 
 ---
 
@@ -52,13 +58,15 @@ advantage is then given back, with interest, by the global dictionary-attack loc
 |---|---|---|---|
 | path to device | HTTP to a shared connector; **no caller authentication**, *"not a trusted component"* | `/dev/tpmrm0` device node | **inverted — the TPM path is a real kernel boundary** |
 | per-caller partitioning **inside** the device | 16 domains × capability sets, per session | **none** | **inverted — the HSM wins decisively** |
-| session/context pool | **16 device-wide**, 30s timeout; trivially starved | **virtualised per file descriptor** ("TPM spaces") | **TPM wins; the finding does not transfer** |
+| session/context pool | **16 device-wide**, 30s timeout; trivially starved | **virtualised per fd** — `context_tbl[3]` + `session_tbl[3]` per space | **TPM wins on isolation; transfers as a *performance* finding (§3)** |
+| namespace enumeration | domain-scoped: objects outside your domains are invisible | **`TPM2_GetCapability` leaks all persistent handles and NV indices, unauthenticated** | **inverted — the HSM wins; this is what defeats obfuscation (§3a)** |
 | global starvation vector | session exhaustion, **needs a valid credential** | **DA lockout, needs NO credential** — only failures | **TPM is worse (§4)** |
 | audit | 62-entry ring on-device; completeness traded against availability | **no on-device audit log at all** | different, not better (§8) |
 | admin credential | one auth key with `put-authentication-key` = total compromise | owner/lockout auth = lockout reset + hierarchy control | **unchanged — same weight, same finding** |
 | cheap physical attack | rim-press reset: free, ~10s, **erases** | bus sniffing ~$300 / faulTPM ~$200: **extracts** | **TPM is worse (§7)** |
 | per-tenant virtual device | none | **vTPM per VM** (swtpm) | TPM wins, at the cost of a VM per tenant (§5) |
 | available on the Mac Studio | yes (USB) | **no — Apple Silicon has no TPM 2.0** | fleet is heterogeneous (§6) |
+| replace-unit below the update boundary | **one USB device, hot-swappable** | **the board (dTPM) or the CPU (fTPM)** | **the procurement finding — favours the HSM (§7a)** |
 
 Two rows carry over from #12178 *unchanged*, and they are the two that matter most for governance:
 
@@ -110,44 +118,168 @@ TPM**, and no arrangement of `--device` flags creates one.
 
 ---
 
-## 3. Does the resource manager virtualise, or merely multiplex? — the answer is split, and the split is the finding
+## 3. Does the resource manager virtualise, or merely multiplex? — verified against the kernel source
 
-This was the sharp question and it has a genuinely two-sided answer. Both sides need saying.
+**Aaron 2026-08-18:** *"does the TPM resource manager virtualise contexts, or merely multiplex them? if
+we multiplex them we can come up with protection via obfuscation — I don't like this security model but
+it stops 80% of attackers."*
 
-### It virtualises, and the `YH_MAX_SESSIONS = 16` finding does **not** transfer
+This was the sharp question and the answer is a **split**. It was checked against
+`drivers/char/tpm/tpm2-space.c` and `include/linux/tpm.h` in mainline rather than against summaries,
+and the source both confirms the split and **moves the boundary** from where a reasonable summary puts
+it. Three corrections follow, all of them load-bearing.
 
-From the kernel patch series that introduced the in-kernel resource manager:
+### It virtualises — and the mechanism is a per-fd handle map with hard, small limits
 
-> "This patch set adds support for TPM **spaces** that provide an **isolated execution context for
-> transient objects and HMAC and policy sessions**. A space is swapped into TPM volatile memory only
-> when it is used and swapped out after the use."
+```c
+struct tpm_space {
+        u32 context_tbl[3];
+        u8 *context_buf;
+        u32 session_tbl[3];
+        u8 *session_buf;
+        u32 buf_size;
+};
+```
+*(`include/linux/tpm.h`)*
 
-That is virtualisation, not multiplexing. Each open file descriptor gets its own space; handles are
-virtualised; the kernel context-saves and context-restores against the physical TPM's small volatile
-memory. A TPM 2.0 is only required to hold **three** transient objects, and the resource manager makes
-that invisible.
+That is the whole isolation unit: **three transient-object slots and three session slots per open file
+descriptor.** Virtual handles are mapped to physical ones per space (`tpm2_map_to_vhandle`), a space is
+loaded before a command and saved after it, and exceeding three yields `-ENOMEM` with the driver's own
+`"out of slots for 0x%08X"` warning.
 
-**So the #12178 starvation finding is retired in this form.** There, any tick source could exhaust a
-16-slot device-wide pool and deny every peer — including by accident, from an ordinary session leak.
-Here, a tick source that leaks sessions leaks them **into its own space**, and its peers do not notice.
-That is a real advantage and it should be stated as one.
+Two consequences, and the second is the one nobody expects:
 
-### It does not virtualise the things that are global, and one of them is fatal
+- **The `YH_MAX_SESSIONS = 16` starvation finding does not transfer as an isolation failure.** A tick
+  source that leaks sessions leaks them **into its own three slots**; its peers keep theirs. In
+  #12178's device-wide 16-slot pool the same bug denied every peer. Genuine advantage, and the
+  three-slot figure is not a shortcoming — it matches the TPM 2.0 spec's guaranteed minimum of three
+  transient objects, which is precisely the scarcity the resource manager exists to hide.
+- **The limit is now per-container and can be hit by ordinary code.** A tick source needing four
+  concurrent transient objects fails inside its own space. That is a **functional** constraint, not a
+  security one, and it is far better than the alternative — but it should be designed for rather than
+  discovered.
 
-A resource manager can virtualise what it can save and restore. It cannot virtualise TPM-internal
-state that has no per-client copy. Global and unpartitioned across every space:
+### It multiplexes where it counts, and the swap cost is paid by every peer
 
-- the **dictionary-attack counter** (§4) — the fatal one
-- **PCRs** — one set per platform, identical for every container (§6)
-- **NV indices** and NV storage space — a finite global resource
-- **persistent handles** (the `0x81…` range) — one global namespace
-- **hierarchies** and their authorizations — owner, endorsement, platform, lockout
+Virtualisation here is implemented by **swapping against the one physical device**: `tpm2_prepare_space`
+loads this space's contexts and sessions before each command, `tpm2_save_space` writes them back after.
+So every command from a shared device node carries **up to six context load/save operations**, and the
+physical TPM executes one command at a time.
+
+> **A shared TPM is a shared queue.** The per-command swap overhead is *bounded* (by the array size:
+> three contexts plus three sessions), but the command *rate* is not bounded at all. A container
+> churning contexts multiplies swap traffic on a serialised device and every peer waits behind it.
+
+So the #12178 finding **does transfer — as a performance and availability finding rather than a
+correctness one**, and that is the honest way to state it. It is a soft, degrading denial of service
+with no error code, which makes it harder to detect than the HSM's hard `YHR_DEVICE_SESSIONS_FULL`, not
+easier. It is nonetheless far less severe than §4, which is a hard stop.
+
+### What is NOT virtualised — and the boundary is narrower than "transients and sessions"
+
+The response filter is the authority here, and it special-cases exactly one handle type:
+
+```c
+switch (phandle_type) {
+case TPM2_HT_TRANSIENT:
+        vhandle = tpm2_map_to_vhandle(space, phandle, false);
+        if (!vhandle)
+                break;                                    /* not ours -> DROPPED */
+        data->handles[j] = cpu_to_be32(vhandle);
+        j++;
+        break;
+default:
+        data->handles[j] = cpu_to_be32(phandle);          /* copied through verbatim */
+        j++;
+        break;
+}
+```
+*(`tpm2_map_response_body`, `drivers/char/tpm/tpm2-space.c` — runs only on `TPM2_CC_GET_CAPABILITY`
+with `TPM2_CAP_HANDLES`)*
+
+**The correction:** it is accurate that spaces isolate transient objects *and* sessions for
+**execution** — both are context-saved per space, so a session created in space A is not usable from
+space B. But for **enumeration**, only `TPM2_HT_TRANSIENT` is filtered. Everything else falls to
+`default:` and is copied through unchanged.
+
+Global, unpartitioned, and visible to every container on the node:
+
+| resource | handle range | virtualised? |
+|---|---|---|
+| transient objects | `0x80……` | **yes** — mapped, and other spaces' handles are dropped from enumeration |
+| HMAC / policy sessions | `0x02……` / `0x03……` | **execution yes, enumeration no** |
+| **persistent objects** | `0x81……` | **no** |
+| **NV indices** | `0x01……` | **no** |
+| **PCRs** | `0x00……` | **no** — one set per platform (§6) |
+| **hierarchies / permanent** | `0x40……` | **no** |
 
 > **The resource manager is a memory manager, not an access-control layer.** It solves the problem that
 > the TPM has almost no RAM. It does not solve, and does not claim to solve, the problem that the TPM
-> has no tenants.
+> has no tenants — and §3a shows why that distinction defeats the idea the question was raised to test.
 
----
+## 3a. The obfuscation idea — the honest read, and the exact call that defeats it
+
+Aaron's proposal is that *if* the RM merely multiplexes, hiding things in the shared namespace buys
+protection that "stops 80% of attackers." The honest read has two halves and the first is a flat no.
+
+### On this surface it is closer to 0% than 80%, and the source says why
+
+Obfuscation would have to be applied to the **non-virtualised** half — persistent handles and NV
+indices — because the virtualised half is already isolated by a real mechanism and needs nothing.
+
+**That half is enumerable by design, and the kernel does not filter it.** The `default:` branch above
+copies every non-transient handle straight through. So:
+
+```
+tpm2_getcap handles-persistent     # -> TPM2_GetCapability(TPM_CAP_HANDLES, TPM_HT_PERSISTENT)
+tpm2_getcap handles-nv-index       # -> TPM2_GetCapability(TPM_CAP_HANDLES, TPM_HT_NV_INDEX)
+```
+
+returns **every persistent handle and every NV index on the device**, belonging to every container.
+Two properties make this fatal to the idea rather than merely inconvenient:
+
+1. **`TPM2_GetCapability` takes no authorization session.** It is answerable with **no credential at
+   all** — which is exactly why `tpm2_getcap` works on a fresh machine before anything is provisioned.
+   The attacker needs the device node and nothing else.
+2. **`TPM2_NV_ReadPublic` is likewise unauthenticated**, so an index's public area — size, attributes,
+   name algorithm — is readable even where its contents are not. Hiding the *handle* does not hide the
+   *shape*.
+
+And the namespace is a flat 24-bit integer space, so it is walkable even if enumeration were removed.
+An obfuscation layer here is defeated by one documented command that requires no credential. **Naming
+"80%" for this surface is not conservative, it is inverted: the attackers it stops are the ones who
+were not going to look, and looking is one command.**
+
+### The converse, because the general instinct is right
+
+Obfuscation as a **defence-in-depth layer** is legitimate and it is not what is being rejected. The
+rule the repo already holds is only that it must never be **the thing being counted**, and the
+vocabulary exists: an obfuscation layer is `unmetered`
+(`.claude/rules/toy-is-free-metered-must-be-earned.md`) — implemented, possibly useful, never falsified
+— and asserting it as a control is the vacuity class, since **a control that cannot fail is not a
+control**.
+
+So the test for any obfuscation proposal, stated so it can be applied:
+
+> **Name the attacker it stops, and name the observation that would show it did not.** If neither
+> exists, it is decoration on the threat model rather than a layer in it.
+
+Applied here: the attacker is "one who does not enumerate," and the falsifying observation is a single
+`tpm2_getcap` — which is why this particular proposal fails the test rather than the idea failing in
+general.
+
+### Where a real control belongs on that surface instead
+
+Each of these replaces obfuscation with something that has a secret or a policy behind it — i.e. with
+actual cryptography — and each is checkable by §8's Y-list:
+
+- **Per-container NV index allocation with distinct auth values.** The index remains visible; using it
+  requires a secret. Visibility was never the property worth defending.
+- **Policy sessions binding indices to container identity** — a policy is a stated, auditable condition
+  rather than a hidden fact, and it fails closed.
+- **If the isolation must be hard: a vTPM per tenant, or separate physical devices** (§5, §9). This is
+  the only route that makes the *namespace itself* per-tenant rather than merely making entries in a
+  shared namespace harder to guess.
 
 ## 4. The starvation finding is not retired — it is replaced by a worse one
 
@@ -346,6 +478,85 @@ soldered chip is the one whose secrets leave on a wire.
 
 ---
 
+## 7a. Repair boundaries — where is the update boundary, and what sits below it
+
+Aaron surfaced the original Xbox as the precedent, and it reframes the comparison better than any
+capability list does. That console's root of trust was a **mask ROM** with a memory-resident BIOS, and
+it was broken through a **font-parsing overflow in the trusted path** — a defect in code that could
+never be patched, only replaced. (The Xbox case is being landed separately as its own note; what is
+taken here is only the transferable question.)
+
+The lesson generalises into a procurement question that a capability comparison misses entirely:
+
+> **Every parser below the update boundary is a permanent liability.** A defect above the boundary is a
+> patch. A defect below it is a **replacement**, and the thing that matters is *how big the replaced
+> unit is*.
+
+### Where each device's boundary sits
+
+**YubiHSM 2 — the boundary is the USB port, and it is unusually clean.**
+Device firmware is **not field-upgradable**; Yubico's stated position is that *"not allowing firmware
+updates is the best practice to maximize the security of your keys."* So **everything inside the device
+is below the boundary** and every host-side component — `libyubihsm`, the connector, the PKCS#11
+module — is above it.
+
+This **reframes #12178's central finding as good news.** That document showed that nearly every SDK CVE
+in this product's history is a client-side parser bug on the response path. Under the repair lens, that
+is the *right place* for a parser bug to be: all of them were above the boundary and all were fixed by
+a package upgrade. The Xbox failure mode — a parser below the boundary — is the one the YubiHSM has
+mostly avoided, because it keeps its parsing on the host. What it did not avoid is **EUCLEAK**
+(CVE-2024-45678), a defect in the device's own cryptographic library, therefore below the boundary,
+therefore **replace-only**.
+
+**Discrete TPM — more of the surface is patchable, with a repair class of its own.**
+dTPM firmware *is* field-updatable through vendor tooling. The precedent is **ROCA** (CVE-2017-15361),
+where Infineon TPMs generated factorable RSA keys: the fix required a firmware update **and**
+regeneration of every key produced before it. That is a third repair class the other devices do not
+have — *patch the chip, but the artifacts it produced remain poisoned* — and key regeneration is a
+separate cost from patching, borne by every dependent system.
+
+**Bus sniffing sits below the boundary in a different sense**: it is a property of the *board*, an
+external LPC/SPI trace. No firmware update moves a TPM on-die. Its mitigation — encrypted sessions with
+parameter encryption — lives *above* the boundary in caller software, which is why it is available and
+also why it is usually not used.
+
+**Firmware TPM — the largest replace-unit of the three.**
+fTPM firmware lives in platform flash and is updated by a BIOS update, so it sits above the boundary.
+But **faulTPM** attacks the Platform Security Processor silicon by voltage fault injection, which is
+below *any* update boundary. There is no firmware fix for a fault-injection channel in hardware.
+
+### The procurement table
+
+| defect class | YubiHSM 2 | discrete TPM | AMD fTPM (Zen 2/3) |
+|---|---|---|---|
+| host stack / SDK | patch | patch | patch |
+| device firmware crypto defect | **below — replace device** | patch **+ regenerate all prior keys** | patch via BIOS |
+| silicon or physical channel | **below — replace device** (EUCLEAK) | **below — board redesign**; mitigate in protocol | **below — replace CPU** (faulTPM) |
+| **the replace-unit** | **one USB device, hot-swappable** | a soldered chip, i.e. the board | **the CPU — in practice the machine** |
+
+> **The TPM has more of its defect surface *above* the update boundary than the YubiHSM does; its
+> below-boundary defects have a vastly larger replace-unit.** The YubiHSM's worst case is "unplug a
+> device and plug in another." The fTPM's worst case is "replace the computer."
+
+### Why this matters to the threshold roster specifically
+
+The roster already prices device replacement: **n − k is the wipe budget** (#12178, §5 T3-A). That
+model assumes replace-units that are **independent and cheap** — lose one device, the roster survives,
+swap it, move on.
+
+An fTPM breaks both assumptions at once. Its replace-unit is the **node**, so replacing it takes down
+**every tick source co-resident on that machine simultaneously**. That is a *correlated* failure, and a
+k-of-n threshold does not defend against correlated loss — it defends against independent loss. Putting
+several tick sources' roots of trust on one machine's fTPM silently converts n independent shares into
+one share wearing n costumes.
+
+**So the recommendation for Max's node is a procurement one and it is concrete:** a USB HSM added to
+that machine has a small, cheap, hot-swappable replace-unit that the threshold model already accounts
+for. Its TPM — whichever kind it turns out to be — should be used for what a TPM is for (measured boot,
+sealing to *machine* state) and should not become the replace-unit on which several agents' key custody
+depends. This is a different reason to buy an HSM than "the TPM lacks domains," and it is the stronger
+one, because it survives even if every isolation objection in this document were solved tomorrow.
+
 ## 8. Discriminating checks vs. vacuous ones — carried across, with TPM's own traps
 
 #12178's core methodological finding transfers **unchanged and in the same words**:
@@ -434,6 +645,12 @@ can trigger with no credential at all.
    answers *"did this machine boot as intended"*; it should not be asked *"may this container use that
    key."*
 
+**And one procurement conclusion that is independent of every isolation argument above** (§7a): a USB
+HSM on Max's node has a small, cheap, hot-swappable replace-unit that the roster's n − k wipe budget
+already accounts for, whereas an fTPM's replace-unit is the machine — which converts several tick
+sources' independent shares into one correlated failure. That reason survives even if every isolation
+objection in this document were fixed tomorrow, which is what makes it the stronger argument.
+
 **What is explicitly not concluded:** nothing about Max's hardware beyond what was relayed. The TPM
 presence is unverified, the dTPM/fTPM question is open and materially changes §7, and both need someone
 at the keyboard on that machine.
@@ -446,11 +663,20 @@ at the keyboard on that machine.
 - `docs/research/2026-08-14-code-bound-key-access-preliminary-integration-agent-to-agent-isolation-on-one-machine.md` — the L1/L2/L3 ladder; §6 above establishes that **L3 is unreachable per-container on a shared TPM**, which is stronger than that note's cost objection
 - `tools/setup/persona-keys/tpm2-linux-probe.ts` — the five-way `Tpm2State`; **the probe to use**, not to replace. Its `unavailable` vs `absent` distinction is what makes a heterogeneous fleet auditable
 - `tools/setup/persona-keys/frost-hardware-probe.ts` — `probeTpm2` and the "a driver is not a device" discipline *(other agents own this path; referenced, not modified)*
+- `.claude/rules/toy-is-free-metered-must-be-earned.md` — the register an obfuscation layer belongs in (`unmetered`), and why asserting it as a control is the vacuity class (§3a)
 - `.claude/rules/numerology-vs-number-theory.md` — why X5 is vacuous
 - `.claude/rules/manifesto-13-specifications.md` §1 / §3 — the owner-auth weight, unchanged from #12178
 
 **External sources.**
+Linux kernel source, read directly: `drivers/char/tpm/tpm2-space.c` (`tpm2_map_response_body`,
+`tpm2_map_to_vhandle`, `tpm2_prepare_space` / `tpm2_save_space`) and `include/linux/tpm.h`
+(`struct tpm_space` — `context_tbl[3]`, `session_tbl[3]`)
+`https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/char/tpm/tpm2-space.c` ·
 In-kernel resource manager / TPM spaces `https://lwn.net/Articles/716259/` ·
+`tpm2_getcap` (`handles-persistent`, `handles-nv-index`)
+`https://github.com/tpm2-software/tpm2-tools/blob/master/man/tpm2_getcap.1.md` ·
+ROCA / CVE-2017-15361, Infineon TPM firmware update + mandatory key regeneration
+`https://nvd.nist.gov/vuln/detail/CVE-2017-15361` ·
 Microsoft, *TPM fundamentals* (anti-hammering; global lockout; 32 failures / 10 minutes)
 `https://learn.microsoft.com/en-us/windows/security/hardware-security/tpm/tpm-fundamentals` ·
 systemd #20668 (DA lockout after 3 power cycles; `TPMA_OBJECT_NODA` fix)

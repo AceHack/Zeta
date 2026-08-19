@@ -60,6 +60,35 @@ Two sub-findings worth carrying separately:
 - **Verify whether Max's machine has a TPM at all**, using the existing five-way `Tpm2State` probe
   rather than a new one. Needs someone at the keyboard on that machine.
 
+## Second pass (Aaron's follow-up on virtualise-vs-multiplex)
+
+Verified the split against the kernel source rather than against summaries -- `tpm2-space.c` and
+`include/linux/tpm.h`. The source **moved the boundary** from where a reasonable summary puts it:
+
+- `struct tpm_space { u32 context_tbl[3]; u32 session_tbl[3]; ... }` -- the isolation unit is **three
+  transient slots and three session slots per open fd**, a hard compile-time limit.
+- Transients and sessions are isolated for **execution** (context save/load per space), but
+  `tpm2_map_response_body` filters **only** `TPM2_HT_TRANSIENT` from the capability response. Persistent
+  handles, NV indices, PCRs and hierarchies fall to `default:` and are copied through verbatim.
+- Virtualisation is implemented by **swapping against one serialised device**, so the HSM starvation
+  finding transfers as a **performance/availability** finding rather than a correctness one. Bounded per
+  command (3 + 3), unbounded in rate.
+
+**The obfuscation proposal fails on this surface, and the source shows why.** Obfuscation would apply to
+the non-virtualised half, and that half is enumerable by `TPM2_GetCapability`, which takes **no
+authorization session** -- `tpm2_getcap handles-persistent` / `handles-nv-index` lists every container's
+handles with no credential. Closer to 0% than 80%. The converse is recorded honestly: obfuscation as a
+defence-in-depth layer is legitimate and belongs in the `unmetered` register; the test is *name the
+attacker it stops and the observation that would show it did not*.
+
+**Repair boundaries (§7a)** -- added on Aaron's Xbox precedent. The YubiHSM's firmware is not
+field-upgradable, so its whole device is below the update boundary and its replace-unit is one
+hot-swappable USB device; #12178's "every SDK CVE is a client-side parser bug" is *good news* under this
+lens, since those parsers are all above the boundary. faulTPM is below any update boundary and its
+replace-unit is the CPU. **A threshold roster assumes independent, cheap replace-units; an fTPM makes
+the replace-unit the node and correlates every share on it.** That is a procurement argument for an HSM
+on Max's node that survives even if every isolation objection were fixed.
+
 ## Not this work-item's lane
 
 `tools/setup/` and `frost-hardware-probe.ts` / `tpm2-linux-probe.ts` are owned by the hardware-inventory
