@@ -155,9 +155,13 @@ in
   config = lib.mkIf (cfg.dataDisks != [ ]) {
     # 1. Make sure each mount directory exists with the right perms
     #    before kubelet / Longhorn try to access them.
+    # /var/lib/longhorn is deliberately EXCLUDED: longhorn-prereqs.nix already
+    # declares it (mode 0700), and two tmpfiles rules for one path with
+    # different modes is a conflict systemd resolves unpredictably. This module
+    # owns only the EXTRA data paths.
     systemd.tmpfiles.rules = lib.concatMap (path: [
       "d ${path} 0755 root root - -"
-    ]) cfg.dataDisks;
+    ]) (lib.filter (p: p != "/var/lib/longhorn") cfg.dataDisks);
 
     # 2. Node LABELS. `create-default-disk=config` is the opt-in Longhorn
     #    requires before it will read the disks annotation at all; without

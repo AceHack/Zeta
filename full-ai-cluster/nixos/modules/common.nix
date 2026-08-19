@@ -64,6 +64,22 @@
     # `longhorn` PVC stays Pending and the whole stateful layer is dead.
     # Imported here so control-plane AND workers get them uniformly.
     ./longhorn-prereqs.nix
+    # Longhorn per-node DISK SET. Imported here, not only by the multi-disk
+    # hosts, because the chart runs with createDefaultDiskLabeledNodes=true:
+    # Longhorn then creates a default disk ONLY on nodes carrying
+    # `node.longhorn.io/create-default-disk`. An unlabelled node gets NO disk
+    # at all -- which would silently reproduce the 62-day outage on
+    # control-plane, the host the USB actually installs. Caught before merge
+    # on PR #12175: the multi-disk VM test passed precisely because it imports
+    # this module, while control-plane did not.
+    #
+    # zeta.longhorn.dataDisks derives from the host's declared Longhorn
+    # mounts and falls back to [ "/var/lib/longhorn" ] when none exist
+    # (the committed control-plane placeholder). A host that only imports
+    # this file therefore still gets labelled and the annotator oneshot
+    # still fires. Multi-disk hosts extend the list via fileSystems or
+    # the disko shape.
+    ./longhorn-disks.nix
     # Cilium WireGuard node prerequisites (the wireguard kernel module + wg for
     # diagnosis) plus the boot-time preflight that says whether they took.
     # k8s/bootstrap/cilium-install.yaml installs Cilium with
