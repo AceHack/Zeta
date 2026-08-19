@@ -40,6 +40,7 @@
 //   3 — output couldn't be parsed
 
 import { spawnSync } from "node:child_process";
+import { statSync } from "node:fs";
 
 const SPAWN_MAX_BUFFER = 32 * 1024 * 1024; // 32 MiB
 
@@ -94,7 +95,28 @@ interface BranchState {
   ahead: number;
   behind: number;
   tracking: string | null;
+  /**
+   * When the remote-tracking ref was last actually FETCHED -- not when this tool ran.
+   *
+   * `behind` is computed against a local remote-tracking ref, which is only as fresh as
+   * the last fetch by anyone. Without this field the snapshot's `queriedAt` timestamps the
+   * wrong clock: a snapshot dated to the second can report `behind: 0` off a week-old ref,
+   * so the freshness stamp does not merely omit the staleness, it manufactures the
+   * appearance of currency. That is a check that did not run looking like one that passed.
+   *
+   * `null` means UNKNOWN (no FETCH_HEAD, no reflog) -- never "fresh". A consumer that
+   * cannot establish the age must treat `behind` as unverified rather than as zero.
+   */
+  trackingRefFetchedAt: string | null;
+  trackingRefAgeSeconds: number | null;
 }
+
+/**
+ * Age past which a remote-tracking ref is reported as STALE in the summary line. Not a
+ * hard failure -- this tool orients, it does not gate -- but the staleness is surfaced
+ * next to `behind` so the number is never read without its provenance.
+ */
+const TRACKING_REF_STALE_AFTER_SECONDS = 900;
 
 interface PendingCIRun {
   id: number;
@@ -343,7 +365,49 @@ function fetchBranchState(): BranchState {
     ahead = Number.parseInt(parts[1] ?? "0", 10) || 0;
   }
 
-  return { current, ahead, behind, tracking };
+  const { fetchedAt, ageSeconds } = readTrackingRefFreshness();
+
+  return {
+    current,
+    ahead,
+    behind,
+    tracking,
+    trackingRefFetchedAt: fetchedAt,
+    trackingRefAgeSeconds: ageSeconds,
+  };
+}
+
+/**
+ * When did we last fetch? Read from FETCH_HEAD's mtime, which git rewrites on every fetch.
+ *
+ * Deliberately returns nulls rather than a default on every failure path. An unknown age
+ * must stay unknown: substituting 0 here would reintroduce exactly the false-currency bug
+ * this function exists to expose.
+ */
+function readTrackingRefFreshness(): {
+  fetchedAt: string | null;
+  ageSeconds: number | null;
+} {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const pathResult = spawnSync("git", ["rev-parse", "--git-path", "FETCH_HEAD"], {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+  });
+  if (pathResult.status !== 0) return { fetchedAt: null, ageSeconds: null };
+
+  const fetchHeadPath = pathResult.stdout.trim();
+  if (!fetchHeadPath) return { fetchedAt: null, ageSeconds: null };
+
+  let mtimeMs: number;
+  try {
+    mtimeMs = statSync(fetchHeadPath).mtimeMs;
+  } catch {
+    // No FETCH_HEAD: this clone has never fetched, or the path is unreadable. Unknown.
+    return { fetchedAt: null, ageSeconds: null };
+  }
+
+  const ageSeconds = Math.max(0, Math.round((Date.now() - mtimeMs) / 1000));
+  return { fetchedAt: new Date(mtimeMs).toISOString(), ageSeconds };
 }
 
 function fetchPendingCI(owner: string, repo: string): PendingCIRun[] {
@@ -488,8 +552,30 @@ function buildSummary(
   if (gitState.uncommittedFiles.length > 0)
     parts.push(plural(gitState.uncommittedFiles.length, "dirty file"));
   if (branchState.behind > 0) parts.push(`${branchState.behind} behind`);
+  parts.push(describeTrackingRefFreshness(branchState));
   if (branchState.ahead > 0) parts.push(`${branchState.ahead} ahead`);
   return parts.join(", ");
+}
+
+/**
+ * Render the tracking ref's age so `behind` is never read without its provenance.
+ *
+ * Always emits something -- an omitted freshness note reads as "fine", which is the
+ * failure mode. Unknown is stated as unknown.
+ */
+function describeTrackingRefFreshness(branchState: BranchState): string {
+  const age = branchState.trackingRefAgeSeconds;
+  if (age === null) return "ref age UNKNOWN (never fetched here) -- `behind` unverified";
+  if (age > TRACKING_REF_STALE_AFTER_SECONDS)
+    return `ref STALE ${formatAge(age)} old -- run \`git fetch origin\`, \`behind\` is unverified`;
+  return `ref fetched ${formatAge(age)} ago`;
+}
+
+function formatAge(seconds: number): string {
+  if (seconds < 60) return `${seconds}s`;
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
+  if (seconds < 86_400) return `${Math.floor(seconds / 3600)}h`;
+  return `${Math.floor(seconds / 86_400)}d`;
 }
 
 // --- Main ---
