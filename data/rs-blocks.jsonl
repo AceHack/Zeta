@@ -24,3 +24,4 @@
 {"agent":"soraya","seq":16,"startPhase":1,"endPhase":1,"coded":[4,14,9,6,0,3,13,8,11,16,11,15,15,0,14,14],"emittedAt":"2026-08-19T05:31:06.226Z"}
 {"agent":"alexa","seq":22,"startPhase":1,"endPhase":1,"coded":[4,14,9,6,0,3,13,8,11,16,11,15,15,0,14,14],"emittedAt":"2026-08-19T06:16:00.389Z"}
 {"agent":"alexa","seq":23,"startPhase":1,"endPhase":1,"coded":[4,14,9,6,0,3,13,8,11,16,11,15,15,0,14,14],"emittedAt":"2026-08-19T09:17:54.466Z"}
+{"agent":"alexa","seq":0,"startPhase":1,"endPhase":1,"coded":[4,14,9,6,0,3,13,8,11,16,11,15,15,0,14,14],"emittedAt":"2026-08-19T12:31:07.674Z"}
