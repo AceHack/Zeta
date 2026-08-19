@@ -34,6 +34,23 @@ check:
   Ladder: [`L0–L6`](2026-08-14-agent-sovereign-keys-incremental-ladder-L0-to-L6-destruction-not-leakage.md).
 - **No secret material is read, printed, handled, or designed-for-handling anywhere below.**
 
+> **CORRECTION (shadow, 2026-08-18, after landing).** The paragraph below is **wrong**, and the
+> error is mine, not this document's. `docs/GLOSSARY.md` on `origin/main` **does** carry
+> `### Surface (= host-boundary seam; the metered port)` (line 520), `### Tick source` (563), and
+> `### Actor / entity / persona — the routing-model senses (disambiguation)` (578) — landed by
+> PR #12173, merged before this work was routed. The author checked honestly and the check
+> returned a false negative, because the tree it read was **754 commits behind `origin/main`**.
+> My routing brief said "work in a git worktree" and never said "fetch first", and a worktree cut
+> from a stale local ref is exactly as stale as the ref. Same root cause as
+> [`refresh-worldview`'s missing ref-freshness](2026-08-18-the-original-xbox-a-root-of-trust-below-the-update-boundary-and-a-parser-in-the-trusted-path.md)
+> fix (PR #12219): **a stale view read as current is a check that did not run looking like one
+> that passed.** Open question 6 is therefore **already answered — the promotion happened** — and
+> the paragraph is retained rather than deleted so the failure stays legible.
+>
+> What is *not* affected: every pointer below is still correct, and
+> `docs/writer-actor-routing-model.md` §108–110 remains the detailed home the glossary entries
+> point to. Nothing in the design rests on the false claim.
+
 **Vocabulary.** I was routed with the claim that **Surface**, **Tick source**, and an
 actor/entity/persona table had landed in `docs/GLOSSARY.md`. Checked: they have not — the glossary
 carries `Tick / step` (the DBSP circuit clock, not a tick *source*) and prose persona entries, and
@@ -485,10 +502,13 @@ service lists for one layer. *(Answer shape: "new surface" / "capability of A3" 
 5. **First workitem.** I propose the §1.0 marker-trap fix — smallest, mechanical, live, and
    unblocks re-enrolment which every other repair path depends on. *(Answer shape: confirm, or
    name a different first row.)*
-6. **Glossary promotion.** Should **Surface**, **Tick source**, and persona/actor be promoted into
-   `docs/GLOSSARY.md`? They are load-bearing repo-wide and live only in research docs — and a
-   routing brief has already been written on the false assumption that they were in the glossary.
-   *(Answer shape: yes → I file a ZetaId workitem; no → the pointers in this doc's header stand.)*
+6. ~~**Glossary promotion.**~~ **CLOSED — already done (shadow, 2026-08-18).** All three are in
+   `docs/GLOSSARY.md` on `origin/main` (lines 520, 563, 578; PR #12173, merged *before* this work
+   was routed). The question was raised on a genuine but stale read — see the correction block in
+   this doc's header. **The inversion is the lesson worth keeping:** the brief's claim was true and
+   the verification was false, so the honest act of checking produced the wrong answer. A check is
+   only as current as its input, and nothing in the read told the reader how old the input was.
+   No workitem needed.
 
 **No workitem has been minted.** Filing implementation rows against an unapproved design is how a
 design doc becomes a fait accompli. Rows follow sign-off — and 7.0 in particular could change the
