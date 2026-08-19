@@ -89,7 +89,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -505,7 +505,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -592,7 +592,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -840,7 +840,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -872,7 +872,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -904,7 +904,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -936,7 +936,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -985,7 +985,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -1017,7 +1017,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -1049,7 +1049,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -1081,7 +1081,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -1130,7 +1130,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -1449,7 +1449,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {

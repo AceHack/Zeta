@@ -70,6 +70,7 @@
     <Compile Include="SocietyEmergence.Tests.fs" />
     <Compile Include="SocietyUnbounded.Tests.fs" />
     <Compile Include="SocietyUsefulWork.Tests.fs" />
+    <Compile Include="SocietyUsefulWork.CrossVerify.Tests.fs" />
     <Compile Include="CondorcetBoundary.Tests.fs" />
     <Compile Include="BusDelaySim.Tests.fs" />
     <Compile Include="BusDelaySim.Orbital.Tests.fs" />
