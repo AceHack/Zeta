@@ -60,6 +60,15 @@ interface FileAssertion {
 interface SentinelAssertion {
   readonly path: string;
   readonly mustContain: readonly string[];
+  /**
+   * Strings whose PRESENCE is the defect (081M0BTFK85087G0R000A705AK). Some
+   * substrate properties are only expressible negatively — "this unit must not
+   * be gated on a local marker" cannot be written as a mustContain, and a
+   * positive-only sentinel set silently permits the exact regression it was
+   * added after. Use sparingly and only where the absent string names a defect,
+   * never merely an unused option.
+   */
+  readonly mustNotContain?: readonly string[];
   readonly rationale: string;
 }
 
@@ -163,23 +172,44 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
     path: "full-ai-cluster/nixos/modules/zeta-self-register.nix",
     mustContain: [
       "systemd.services.zeta-self-register", // service unit exists
-      "Type = \"oneshot\"", // fires once, not a loop
-      "ConditionPathExists", // marker gate permits retries across failed first-boot attempts
+      "Type = \"oneshot\"", // one convergence pass per activation; the TIMER supplies recurrence
+      "ConditionPathExists", // still guards script-present + the QEMU CI hand-off
       "Restart = \"on-failure\"", // transient failures retry instead of losing first-boot opportunity
       "RestartSec = \"30s\"", // bounded backoff before retrying registration intent
+      // 081M0BTFK85087G0R000A705AK bound 2: the in-boot retry must be capped, or a
+      // GitHub outage turns RestartSec into an unbounded 30s hammer.
+      "startLimitIntervalSec = 600", // retry window
+      "startLimitBurst = 5", // attempts per window
+      // 081M0BTFK85087G0R000A705AK: the re-convergence tick. Without this the unit
+      // is enrolment-only — it can never repair a registration lost after first boot.
+      "systemd.timers.zeta-self-register", // reconcile timer exists
+      "OnUnitActiveSec", // level-triggered recurrence
+      "RandomizedDelaySec", // bound 1: de-phases the fleet; no thundering herd
+      "ZETA_SELF_REGISTER_MIN_PR_INTERVAL", // bound 3: write-side attempt throttle reaches the script
       "network-online.target", // waits for network before registration intent
       "zeta-creds-restore.service", // ordered after restored creds when that service exists
       'default = "/etc/zeta";', // repoRoot = the install repo (flake source on the node)
       'default = "${cfg.repoRoot}/tools/installer/zeta-self-register.sh";', // scriptPath = the 081KSKBP80008QG0R000GPC0TB.2 bash impl
-      'default = "/var/lib/zeta-self-register/self-registered.marker";', // markerPath via systemd StateDirectory
+      'default = "/var/lib/zeta-self-register/self-registered.marker";', // receipt path via systemd StateDirectory
       "tools/installer/zeta-self-register.sh", // delegates implementation to the 081KSKBP80008QG0R000GPC0TB.2 bash script
-      'StateDirectory = "zeta-self-register"', // marker dir owned by the service user (cred-restore leaves ~/.config root-owned)
-      "ZETA_SELF_REGISTER_MARKER", // marker path exported to implementation
+      'StateDirectory = "zeta-self-register"', // receipt dir owned by the service user (cred-restore leaves ~/.config root-owned)
+      "ZETA_SELF_REGISTER_MARKER", // receipt path exported to implementation
       "systemd.services.zeta-self-register-ci", // QEMU CI dry-run sibling oneshot
       "ZETA_SELF_REGISTER_MODE=ci-dry-run", // hermetic compose; no live gh push
       "/etc/zeta/qemu-self-register-ci", // install-time WIPE marker gates CI service
     ],
-    rationale: "081KSKBP80008QG0R000GPC0TB.2 service must be a post-install marker-gated oneshot (bash impl) ordered after network and credential restore surfaces; QEMU CI dry-run sibling proves compose without live GitHub",
+    mustNotContain: [
+      // THE DEFECT ITSELF (081M0BTFK85087G0R000A705AK). This exact string gated the
+      // live unit off permanently once the marker existed, so a node whose
+      // registration was wiped after first boot could never re-register. The audit
+      // previously asserted this shape as CORRECT — it pinned the defect in place,
+      // which is why the negative sentinel exists rather than a reworded comment.
+      // The ci-dry-run sibling's own marker gate uses `"!${cfg.markerPath}"` too, so
+      // this is matched with the surrounding list context that only the live unit has.
+      '"!${cfg.markerPath}"\n          "!/etc/zeta/qemu-self-register-ci"',
+    ],
+    rationale:
+      "081KSKBP80008QG0R000GPC0TB.2 + 081M0BTFK85087G0R000A705AK: the live service must be a LEVEL-TRIGGERED converger — a oneshot pass driven by a jittered reconcile timer, ordered after network and credential restore, never gated on a local completion marker (a marker-gated oneshot cannot re-converge, and repair IS re-convergence). Its three storm bounds (read cadence, capped in-boot retry, write-side attempt throttle) are each asserted. QEMU CI dry-run sibling still proves compose without live GitHub",
   },
   {
     path: "full-ai-cluster/nixos/hosts/control-plane/hardware-configuration.nix",
@@ -221,7 +251,13 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
 ];
 
 interface AuditFailure {
-  readonly kind: "missing-file" | "empty-file" | "missing-sentinel" | "read-error" | "cross-file-mismatch";
+  readonly kind:
+    | "missing-file"
+    | "empty-file"
+    | "missing-sentinel"
+    | "forbidden-sentinel"
+    | "read-error"
+    | "cross-file-mismatch";
   readonly path: string;
   readonly detail: string;
 }
@@ -318,7 +354,7 @@ function auditFiles(): readonly AuditFailure[] {
 
 function auditSentinels(): readonly AuditFailure[] {
   const failures: AuditFailure[] = [];
-  for (const { path, mustContain, rationale } of REQUIRED_SENTINELS) {
+  for (const { path, mustContain, mustNotContain, rationale } of REQUIRED_SENTINELS) {
     const abs = join(ROOT, path);
     if (!existsSync(abs)) {
       failures.push({
@@ -345,6 +381,15 @@ function auditSentinels(): readonly AuditFailure[] {
           kind: "missing-sentinel",
           path,
           detail: `missing required sentinel string ${JSON.stringify(sentinel)} (rationale: ${rationale})`,
+        });
+      }
+    }
+    for (const sentinel of mustNotContain ?? []) {
+      if (content.includes(sentinel)) {
+        failures.push({
+          kind: "forbidden-sentinel",
+          path,
+          detail: `contains forbidden sentinel string ${JSON.stringify(sentinel)} (rationale: ${rationale})`,
         });
       }
     }
