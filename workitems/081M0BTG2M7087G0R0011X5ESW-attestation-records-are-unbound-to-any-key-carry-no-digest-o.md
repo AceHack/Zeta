@@ -111,21 +111,40 @@ parties. It MUST NEVER count distinct STRINGS: varying a string is free, which i
 how three temp directories became three apparent witnesses. Written into the field's
 doc comment so the wiring, when it happens, cannot be wired to the forgeable version.
 
-## Proposed disposition of the 11 polluted records — NOT decided here
+## Disposition of the 11 polluted records — DECIDED 2026-08-19 (Soraya)
 
-**Leave and annotate.** Not deleted, not rewritten. They are real recorded facts
-about what this system did, and Memory Preservation (manifesto §5) applies to
-embarrassing history too — the same call `audit-observe-event-filenames.ts`
-`FROZEN_LEGACY_NAMES` made about the three hex-JSON filenames.
+**Superseded in the corpus, never removed from it.** The proposal below was
+"leave and annotate", explicitly not decided. It is decided now, and the decision
+is one step further than the proposal: a **recorded retraction**.
 
-What is implemented: they are pinned by name in
-`verify-attestation-events.test.ts` and asserted to be REFUSED, so they serve as
-the falsifier for the persona gate. Nothing is mutated.
+The three options and what each costs:
 
-What is NOT implemented, deliberately: emitting retraction events. Retraction as a
-recorded correction is the right shape and beats erasure, but writing nine or
-eleven `-1` facts into the shared log is a decision about the ledger rather than a
-fix to this defect, and it belongs to whoever owns that call.
+| option | cost |
+|---|---|
+| leave-and-annotate as-is | the correction lives only in a TEST. A consumer that reads the folder and does not run this verifier still sees eleven ordinary-looking attestations, three phantom personas, and `hasTrioAttestation: true`. The data says nothing about itself. |
+| **recorded retraction that supersedes without removing** | a new event kind, and a consumer that ignores retractions is no better off than under option 1. But the correction is IN the corpus, and **the eleven files are not touched at all**. |
+| quarantine into a fixture path | breaks the falsifier — the pinning test asserts those filenames exist in the corpus directory — and moving a committed event is itself an edit to the history of where it lived. |
+
+**Taken: the recorded retraction.** It is the repo's own Z-set discipline (emit a
+`-1`, never delete the `+1`) and §5 Memory Preservation applied to embarrassing
+history, which is the only kind that tests it.
+
+What is implemented:
+
+- `docs/observe-events/080d00cbefd01810a01300081e96dbff.json` — one retraction naming
+  all eleven. `kind: "attestation-retraction"`, so `loadAttestationRecords` does not
+  see it and the corpus baseline does not shift under it.
+- `src/Core.TypeScript/observe/attestation-retraction.ts` — schema, loader, and a
+  coverage check that fails in **both** directions: an identity-band refusal with no
+  retraction (under-retraction) **and** a retraction naming a record that is absent or
+  was never refused (over-retraction).
+- The eleven files are **byte-identical to what merged**. The falsifier survives
+  verbatim, and both pinning tests still assert every one of them REFUSED.
+
+The retraction claims no authority: it is unsigned, and it carries a `basis` naming
+the check that re-derives it. Anyone can run the verifier and observe the same
+refusals. Its truth does not rest on who wrote it — which matters, because the
+finding this work-item opened with is that `by` is a self-claim.
 
 ## Deliberately NOT done
 

@@ -141,18 +141,52 @@ export interface LoadedRecord {
  * `society` the only attestable peer.
  */
 export function loadAttestationRecords(dir: string): readonly LoadedRecord[] {
-  const out: LoadedRecord[] = [];
+  return selectAttestationRecords(loadEventJson(dir));
+}
+
+/** One parsed event file, before anything decides what kind of event it is. */
+export interface LoadedEventJson {
+  readonly file: string;
+  readonly raw: unknown;
+}
+
+/**
+ * Read and parse every `.json` in an event directory, once.
+ *
+ * Split out from `loadAttestationRecords` so a caller that needs TWO views of the corpus — the
+ * attestations and the retractions that supersede them — pays for one disk pass instead of two.
+ * The folder is ~2,550 files; a suite that scans it four times spends its budget on `JSON.parse`
+ * rather than on assertions, and the tests that noticed did so by timing out.
+ *
+ * A file that will not parse is skipped rather than thrown on: this folder holds three naming
+ * schemes and several unrelated file kinds, and `audit-observe-event-filenames.ts` owns shape.
+ */
+export function loadEventJson(dir: string): readonly LoadedEventJson[] {
+  const out: LoadedEventJson[] = [];
   for (const f of readdirSync(dir).sort()) {
     if (!f.endsWith(".json")) continue;
-    let raw: unknown;
     try {
-      raw = JSON.parse(readFileSync(join(dir, f), "utf8"));
+      out.push({ file: f, raw: JSON.parse(readFileSync(join(dir, f), "utf8")) });
     } catch {
       continue; // not our file to judge; `audit-observe-event-filenames.ts` owns shape
     }
+  }
+  return out;
+}
+
+/**
+ * Select the attestation records out of already-parsed event JSON.
+ *
+ * Selection is by `kind === "attestation"` on the parsed content, never by filename — unchanged
+ * from when this logic lived inside `loadAttestationRecords`, and load-bearing for the same
+ * reason: this folder holds three naming schemes and lexical order is not time order.
+ */
+export function selectAttestationRecords(entries: readonly LoadedEventJson[]): readonly LoadedRecord[] {
+  const out: LoadedRecord[] = [];
+  for (const { file, raw } of entries) {
     const rec = raw as Partial<AttestationRecord>;
     if (rec?.kind !== "attestation" || typeof rec.attestation !== "object" || rec.attestation === null) continue;
-    out.push({ file: f, record: rec as AttestationRecord });
+    out.push({ file, record: rec as AttestationRecord });
   }
   return out;
 }
