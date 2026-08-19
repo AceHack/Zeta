@@ -1,12 +1,12 @@
 {
-  "t": "2026-08-19T10:56:35.325Z",
-  "total_events": 2266,
-  "last_action": "retract_attestation",
-  "last_mode": "work",
+  "t": "2026-08-19T11:40:09.319Z",
+  "total_events": 2274,
+  "last_action": "explore",
+  "last_mode": "explore",
   "last_agent": "soraya",
   "entropy_state": 0,
   "entropy_heat": 0,
-  "ticks_24h": 337,
+  "ticks_24h": 329,
   "agents_active": 3,
   "claims_pending": 3
 }
