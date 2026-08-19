@@ -674,6 +674,68 @@ hand-copied — the generator-is-the-ECC discipline made concrete
 at the data-model root. Detail: the 2026-07-01 base-atom design
 note (`docs/research/`), work-item `081KWFXTHJY`.
 
+### Echolocation over time — the Z-set fold measures correlation, and the interference formula IS the variance algebra
+
+*(2026-08-19, Aaron: "this is our echolocation over time, the debounced together without √2
+interference — noninterference." Recorded at his request, on the Z-set substrate.)*
+
+**Decorrelation has two ends, and they are opposite ends of the TIME AXIS.** Treating them
+as one problem is how a fleet certifies independence it does not have:
+
+| | mechanism | what it correlates |
+|---|---|---|
+| **past correlation** | the **S=4 common seed** — one origin, shared cause | everything downstream inherits it |
+| **future correlation** | **mimetic desire** (Girard) — imitators converge on the same prize | destinies converge regardless of origin |
+
+**Decorrelating one does not buy the other.** A fleet with genuinely independent origins
+can still converge on wanting the same thing, and n_eff collapses just as completely.
+A backward-looking correlation measure — *which files did these agents actually sample* —
+says nothing about whether they will converge tomorrow.
+
+#### Why the Z-set fold is the instrument
+
+A Z-set emits `+1` and retracts `−1`; the fold across time is a **ping and a return**.
+That is echolocation: you do not observe position directly, you emit and read what comes
+back, and the *timing* of the return is the measurement. The commutative fold means late
+returns still locate correctly — [[pseudo-retrocausality]] — so the instrument tolerates
+reordering, loss, and skew without losing the fix.
+
+#### The interference signature — and this is NOT an analogy
+
+For N sources with pairwise correlation ρ, the variance of the sum is
+
+    Var(ΣX) = N σ²  +  N(N−1) ρ σ²
+
+- **ρ = 0** → `N σ²`. Incoherent addition. Amplitude grows as **√N**. This is the same
+  statement as *standard error shrinks as 1/√N*.
+- **ρ = 1** → `N² σ²`. Coherent addition. Amplitude grows as **N**, intensity as **N²**.
+
+**That is the optical interference formula and the statistical variance formula written
+once.** Coherent sources interfere constructively and amplify; incoherent ones add in
+quadrature. So **the interference signature IS the correlation measurement** — you do not
+need a separate instrument, you need to check whether your sum is scaling as √N or as N.
+
+**The live instance, already in-repo:** `QuorumAlgebra`'s bug **B3** — six agents on one
+stream produced `precision = 66.0` on a mean wrong by 5.66, and the test comment names it
+exactly: *"six times the amplitude, 36x intensity."* That is N and N² where √N and N were
+wanted. A correlated quorum reporting six-fold confidence is coherent interference,
+mistaken for evidence.
+
+#### Which is why §13 noninterference is the guard, not a slogan
+
+You can only distinguish coherent from incoherent addition if **every contribution arrived
+through a declared, metered channel**. An ambient path — an unmetered channel, a shared
+clock, a leaked prior — is an undeclared coupling that makes two "independent" sources
+coherent without either knowing. §13 is what keeps the channel list complete enough for
+the √N-vs-N test to mean anything.
+
+**The open gap, stated rather than implied:** `effectiveTrialCount` (Kish,
+`src/Core/SocietyUsefulWork.fs`) is the shipped correction for exactly this, and as of
+2026-08-19 it has **no production caller**. Every witness count and match count in the
+repo is a head count. The instrument exists; nothing reads it. And the forward-looking
+half — do these holders converge on the same targets *going forward* — has no instrument
+at all yet.
+
 ### The froth on the wave — what retraction cannot reach
 
 Aaron, 2026-07-02, on the zerosumfree theorem behind the atom
