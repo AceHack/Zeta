@@ -1,0 +1,14 @@
+{
+  "id": "080d00ded0e23010a0130008daff4e24",
+  "at": "2026-08-19T21:07:54.054Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DXM725087G0R002YDM382",
+    "type": "bug",
+    "title": "Routing skill step-0 points at tools/alignment/concept_registry.ts which does not exist",
+    "slug": "routing-skill-step-0-points-at-tools-alignment-concept-regis",
+    "priority": "P2",
+    "filename": "081M0DXM725087G0R002YDM382-routing-skill-step-0-points-at-tools-alignment-concept-regis.md"
+  }
+}

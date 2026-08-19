@@ -1,0 +1,14 @@
+{
+  "id": "080d00ded0e14010a01300081c6bd3ef",
+  "at": "2026-08-19T21:07:54.024Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DXM717087G0R001G4YWAC",
+    "type": "bug",
+    "title": "Wire a production caller for Kish effectiveTrialCount -- shipped, tested, zero callers",
+    "slug": "wire-a-production-caller-for-kish-effectivetrialcount-shippe",
+    "priority": "P2",
+    "filename": "081M0DXM717087G0R001G4YWAC-wire-a-production-caller-for-kish-effectivetrialcount-shippe.md"
+  }
+}

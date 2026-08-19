@@ -1331,3 +1331,38 @@ biconditional: `docs/research/2026-08-17-path-independence-in-four-costumes-crdt
   predating every CS use; and the vector-calculus root (conservative field ⟺ exact 1-form ⟺ zero curl,
   Poincaré lemma). Six domains sharing "order doesn't matter" is evidence that **commutativity is widely
   instantiated**, not that these are one theorem — the `numerology-vs-number-theory` warning, applied.
+
+## Identification of social influence — the forward-correlation anchors (added 2026-08-19, Soraya)
+
+Added because a repo-wide `rg` returned **zero** hits for Manski, Shalizi, homophily, or
+"reflection problem" while `docs/GLOSSARY.md` already carried Girard's mimetic *mechanism*.
+Holding the mechanism literature without the identification literature is how a fleet
+builds the obvious forward-correlation meter and believes it. See
+`docs/research/2026-08-19-the-forward-correlation-instrument-mimetic-convergence-is-not-observationally-identified.md`.
+
+- **Charles F. Manski (1993) — "Identification of Endogenous Social Effects: The Reflection
+  Problem"** (*Review of Economic Studies* 60(3):531–542). Endogenous social effects (my
+  behaviour depends on the group's) are **not identified** separately from correlated
+  effects (we are similar / face the same environment) in the linear-in-means model — the
+  group mean is a function of the very behaviours it is meant to explain. The reason a
+  work-item-claim convergence metric cannot distinguish "both picked the P0 row because it
+  is the P0 row" from "B picked it because A did."
+- **Cosma Rohilla Shalizi & Andrew C. Thomas (2011) — "Homophily and Contagion Are
+  Generically Confounded in Observational Social Network Studies"** (*Sociological Methods
+  & Research* 40(2):211–239). The sharper anchor for us: latent homophily makes contagion
+  **non-parametrically** non-identifiable — not fixable by a better estimator or more data.
+  Our fleet has latent homophily in its strongest form (the **S=4 common seed**), so this
+  is the operative result, not a caveat.
+- **Judea Pearl (2009) — *Causality: Models, Reasoning, and Inference*, 2nd ed., ch. 3.**
+  The `do(·)` operator; why the escape from the two results above is an **intervention**
+  rather than a cleverer statistic. DST replay is what makes the intervention affordable
+  here — the ideal randomised experiment social science cannot run.
+- **Leslie Kish (1965) — *Survey Sampling*, ch. 5** (already shipped as
+  `SocietyUsefulWork.effectiveTrialCount`). Listed here because it is the **consumer** the
+  forward measure would feed: `deff = 1 + (n−1)ρ`. As of 2026-08-19 it has zero production
+  callers.
+- **Joseph A. Goguen & José Meseguer (1982) — "Security Policies and Security Models"**
+  (IEEE S&P). Noninterference. Load-bearing here in an unusual direction: it is the
+  **precondition of measurability**, not only a safety property — you can only ablate a
+  channel if the channel list is complete, and an incomplete list biases the forward
+  instrument toward falsely declaring independence.

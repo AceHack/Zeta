@@ -32,6 +32,7 @@ and 8 Z3 lemmas. Superseded: the TLA+ leg alone is now 52 gated model runs.
 
 ## Pruning log
 
+- 2026-08-19 (forward-correlation lane): pruned the 2026-08-14 spec-flags round to a conclusion stub to hold the cap.
 - 2026-08-19 (identity-server lane): pruned the stale round-21 running observations to hold the cap after the distributed-identity-server routing entry.
 - 2026-08-18 (ambient-time lane): pruned Round 41, Safety-floor arc, Vacuity/Landauer
   round and the Z-EPS run to hold the 3000-word cap after two same-day entries merged.
@@ -64,55 +65,7 @@ misread the axiom the same way (dropped the `. c_{B,A} . c_{A,B}` on the right).
 
 ## 2026-08-14 -- Z-EPS -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
 
-## Round 2026-08-14 — the flags a spec is measured under ARE part of the claim
-
-Closed `081KZYRDMZW087G0R0012K4QA0`, which I raised and then raised P2 to P1 after it bit me.
-
-The defect was not in a model. `QuorumPhaseCancellation` went red on CI with exit 11 because my
-recorded runs were driven by a script passing `-deadlock` (which DISABLES deadlock checking) and
-the gate passed no such flag. **A hand-run green and a gated green were not the same result and
-nothing anywhere said so.** Adding `-config` was necessary and not sufficient: the next mismatch
-would have been a different flag.
-
-Routing call, and it generalises past TLC: **a recorded verdict that does not carry the exact
-invocation that produced it is a claim about an unknown experiment.** So the fix is not a flag,
-it is `registry/tlc-models.json` -- 53 pinned model runs, both consumers building argv from that
-one file, the id quotable next to any result.
-
-Portfolio delta: configs executing in the PR lane **34 -> 52 of 53**. Configs no runner opened
-**19 -> 0**. Negative configs that fail when the witness stops firing **0 -> 14**. Exhaustive
-state counts asserted **0 -> 37**. One model (`BftLiveness`) is `extended` tier with a written
-reason: at `-workers 1` it takes ~26 min against the `11min 14s` recorded from a 4-worker run.
-Declared gap, not a silent one.
-
-**Verdict on a `tlc-solver-floor.json` sibling to `smt2-solver-floor.json`: NO, and the cheaper
-answer is better.** z3/cvc5 come from the runner `apt`, so their version is ambient and degrades
-silently -- a floor is the only lever. `tla2tools.jar` is COMMITTED to git (since #8053), so the
-toolchain is already byte-pinned by the diff. What was missing was not a floor but an assertion
-that the jar loaded is the pinned one; the registry now carries its sha256 and version banner and
-the gate checks the banner on every run. One field, not a second registry.
-
-Two things found while pinning, both real:
-
-- `tools/setup/manifests/from-url` downloads `tla2tools.jar` to `tools/tla/tla2tools.jar`, **a
-  path no runner reads**, unchecksummed. The committed jar reports `2026.05.18.174321`, not the
-  `v1.8.0` two docs claim.
-- My own state-count parser matched a TLC *progress* line rather than the final summary, reading
-  122647 off `BftConsensus` against a pinned 4665495. The tempting fix was to relax the pin. The
-  correct one was to chase the number -- **the assertion caught my parser on its first real run,** 
-  which is what a falsifier is for.
-
-Carried forward: the deadlock caveat is now IN the artefact, not only in prose.
-`QuorumCollateral` and `WagerSolvency` stutter, so their deadlock checks cannot fail; each model
-records `deadlock` as `off-cfg` / `on-vacuous` / `on`, and the linter cross-checks `off-cfg`
-against what the `.cfg` actually declares.
-
-Not exposed to the bun 5s cap (`081KZZ3JHP1087G0R00027ARRR`, reproduced here: `bunfig.toml`
-`timeout = 20000` is ignored, a 6s test dies at 5002ms). The gate is `dotnet test`; the bun-side
-TLC tests only run metadata commands. A comment in `run-tlc.test.ts` names the hazard so nobody
-adds a real model check there and reads a 5s truncation as a failed proof.
-
----
+## Round 2026-08-14 -- flags a spec is measured under ARE part of the claim -- PRUNED 2026-08-19 (3000-word cap). Conclusion retained: a spec's verification flags (bounds, symmetry reduction, fairness) are part of the claim, not harness detail; a spec re-run under weaker flags is a DIFFERENT claim and must be re-stated, not silently inherited.
 
 ## 2026-08-18 -- consolidated map + vacuity sweep
 
@@ -278,3 +231,81 @@ and never plotted together -- G13, 081M0DMH30Y087G0R001C2B1PT, composes with the
 open rho measurement. ClaimLane is the babel dial already built (G14). Also found an ACTIVE
 trajectory (local-trust-view-decentralized-identity) already carving C5 sharper than I did --
 C5 now defers to it (G10). Lesson: the duplication risk in this domain is real and I hit it.
+
+## 2026-08-19 -- forward correlation: the measure cannot be an observation
+
+**The gap.** Decorrelation fails from two ends of the time axis. Past = the S=4 common seed
+(backward rho measured: which files agents sampled). Future = mimetic desire, Girard
+(no instrument at all). Decorrelating one does not buy the other.
+
+**Headline, and it is a negative.** The forward measure is not a harder backward measure;
+it is a different epistemic object. Mimetic convergence is NOT identified from
+observational choice data -- Manski 1993 (reflection problem), Shalizi & Thomas 2011
+(homophily/contagion generically confounded, NON-PARAMETRICALLY). Our fleet has latent
+homophily in its strongest form: the S=4 seed IS the textbook unobserved common trait.
+Not separable observationally, and I did not propose a statistic pretending otherwise.
+
+**Anchor gap was the real finding.** GLOSSARY carries Girard's MECHANISM; repo-wide rg
+returns ZERO for Manski / Shalizi / homophily / reflection problem. Mechanism literature
+without identification literature is how a fleet builds the obvious meter and believes it.
+Added both + Pearl ch.3 + Goguen-Meseguer to PRIOR-ART-LIST.
+
+**Observable rejected, and the reason is mechanical.** Declared intentions is the natural
+design and is WORSE THAN NONE: a public declaration board IS Girard's subject->model edge,
+built on purpose. It creates the coupling, raises true correlation, then reports the
+correlation it caused. An instrument whose bias points at its own alarm. Work-item claims
+rejected too -- shared priority queue is Manski's correlated effect, and a healthy fleet
+correctly prioritising scores as MAXIMALLY mimetic (false red on the good case).
+
+**Observable accepted: the interventional contrast.** Not what they picked -- how much
+peer-visibility CHANGES the pick, value landscape fixed. m_i = TV(C_i(s,shown),
+C_i(s,substituted)). Identified BY CONSTRUCTION; confound absent rather than adjusted-for.
+Three design points: (a) DST gives the counterfactual free; (b) ablation is marginal-
+preserving SUBSTITUTION not deletion -- deletion is detectable, and the C3 theorem
+(marginals do not determine the joint) is what makes substitution undetectable; (c) a
+PLACEBO arm A/A' is mandatory -- agents are LLMs, DST determinism covers the substrate NOT
+the model, so model noise alone yields m>0 and reads as mimesis. Statistic is d(A,B)
+measured against the d(A,A') floor, never absolute.
+
+**Routing.** M1 substitution undetectable-by-marginals -> Z3 QF_LRA (TLC categorically
+wrong, no reals -- QuorumPhaseCancellation precedent). M2 channel completeness -> Semgrep,
+it is a grep (TLA+ would mean modelling an LLM: unmodelable). M3 harness does not leak arm
+identity -> TLA+/TLC, small, models the HARNESS never the agent. M4 estimator calibration
+-> FsCheck + the existing gaussianCopula. M5 the impossibility result -> NO TOOL, CITE IT;
+routing a prover at Manski/Shalizi is human-weeks for zero information, the cheapest
+correct instrument is a citation. M6 -> wiring, not verification.
+
+**Swept existing instruments first** (I routed past BitGan last round). Reusable:
+Kish effectiveTrialCount (IS the consumer -- m is exactly the rho it waits for),
+gaussianCopula (M4 synthesiser), AntiSybil lag-k (downstream aggregation),
+CoordinationSpectrum (dual-use-neutral reporting shape), BitGan discriminatorEdge
+(mixed-strategy route from F4). NOT reusable: AntiSybil.correlation (exact replays only),
+Orbit.largestLyapunov (trajectory divergence, silent on the causal channel),
+BeliefConvergence (proves the fold COMMUTES -- orthogonal to what aggregation may DEPEND
+on; same C3 distinction, next reader will hit it), TravelerRankLedger.
+
+**F5 pre-registered, both readings.** A: d(A,B) exceeds placebo floor -> forward coupling
+real, head-count n_eff overstates, channel needs metering. B: inside the floor ->
+convergence is AGREEMENT not mimesis, S=4 remains the only demonstrated source, effort
+belongs at the ORIGIN not on a forward damper. Neither is hoped-for; B is a measured zero,
+which is a result. Kill condition: if M4 reports m>0 on a zero-channel synthetic fleet the
+instrument is broken and F5 is VOID. Asymmetry stated up front: M2 failure biases toward
+Reading B (leaky ablation looks like independence), so Reading B is only meaningful if M2
+passed; Reading A is robust to M2 failure.
+
+**Verified, not assumed.** effectiveTrialCount has ZERO production callers -- 3 occurrences
+repo-wide (definition, tests, one STALE comment in tick-dial.ts naming it while the
+ScoreTrajectory type that comment serves has zero implementations). The vision doc's claim
+holds. Also: routing skill step-0 points at tools/alignment/concept_registry.ts which DOES
+NOT EXIST -- the anchor-registry lookup silently no-ops for every agent following the
+procedure literally.
+
+**Register.** All unmetered. The only metered thing is the negative (M5, cited). Did not
+invent a metric to fill the table, per the brief.
+
+**Filed:** 081M0DXM6XE087G0R003PTMMQ3 (Z3 M1), 081M0DXM6YD087G0R00397CAQE (Semgrep M2),
+081M0DXM6ZB087G0R0014VTR3S (TLA+ M3), 081M0DXM709087G0R000YY6YZZ (FsCheck M4),
+081M0DXM717087G0R001G4YWAC (Kish caller), 081M0DXM725087G0R002YDM382 (stale registry path).
+
+**Correction to the brief:** it stated the echolocation framing is "now on main" in
+PR #12528. It is OPEN, not merged. Built on it as a premise and said so in the doc.
