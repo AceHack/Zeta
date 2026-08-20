@@ -1,0 +1,12 @@
+{
+  "pr_number": 12974,
+  "archive_path": "docs/history/pr-reviews/PR-12974-research-the-hardware-probe-met-real-hardware-and-spusbdatatype-is-a-vacuity-tra.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T23:39:19.257Z",
+  "schema_version": "v1",
+  "commit_sha": "a9e590a110df3e58394fc4f7a9a7e49c46c01072",
+  "title": "research: the hardware probe met real hardware — and SPUSBDataType is a vacuity trap under a sandbox",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T23:38:42Z",
+  "head_ref": "research/hardware-probe-met-real-hardware"
+}
