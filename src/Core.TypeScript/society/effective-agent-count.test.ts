@@ -341,8 +341,19 @@ describe("the measurement over db/mutation-findings/", () => {
     expect(r.rhoIcc).toBeLessThan(0.45);
     expect(r.effectiveCount).toBeLessThan(r.headCount);
     expect(r.effectiveCount).toBeGreaterThan(1);
-    expect(r.effectiveCount).toBeCloseTo(1.666, 2);
-    expect(r.designEffect).toBeCloseTo(1.8, 2);
+
+    // NOT a literal pin. `db/mutation-findings/*.jsonl` is an append-only corpus that every
+    // heartbeat tick grows, so any exact expected value here is a snapshot with an expiry date:
+    // the first pins (nEff 1.666 / deff 1.800, authored at 362 draws) went red on main the next
+    // time otto's lane appended, at no point having caught a defect. What is actually invariant
+    // is Kish's identity itself, recomputed here from the measured rho rather than restated:
+    //   deff = 1 + (n-1) rho   and   nEff = n / deff
+    // That holds at every corpus size and still fails the arithmetic mutants -- verified: the
+    // `deff = 1 + n*rho` mutant (drop the -1) survives the rho band above and dies here.
+    // Exact values are pinned where they belong, on the synthetic (n, rho) golden vectors, which
+    // are frozen by construction. Measured at authoring: rho 0.439, deff 1.878, nEff 1.598.
+    expect(r.designEffect).toBeCloseTo(1 + (r.headCount - 1) * r.rhoIcc, 12);
+    expect(r.effectiveCount).toBeCloseTo(r.headCount / r.designEffect, 12);
   });
 
   test("the two pairwise-family estimators agree, as exchangeability requires", () => {
