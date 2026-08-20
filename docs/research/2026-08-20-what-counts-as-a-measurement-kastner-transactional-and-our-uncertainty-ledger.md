@@ -468,3 +468,152 @@ already said that is fine:
 
 No dogma: this is registered as a **modelling hypothesis with three named falsifiers**, not a
 commitment. Nothing in code changes on it today.
+
+## 17. 2√2 needs the four-corner channel — and the fourth corner is co-owned
+
+Aaron: *"to achieve non-interference in our system 2√2 you need the four corner ownership
+feedback model we designed so feedback can travel in both directions."*
+
+`AmplitudeEmu.fs` already records that complex amplitudes buy interference but **not**
+non-locality, and that 2√2 still needs the feedback/superdeterminism channel. This names the
+channel. From `four-corner-ownership.ts`:
+
+```
+FourCornerOwnership<TIn, TOut, TOutFeedback, TInFeedback>
+  TIn          caller authors      caller   → function
+  TOut         function produces   function → caller   (value branch)
+  TOutFeedback function authors    function → caller   (control-flow signals)
+  TInFeedback  CO-OWNED            both contribute variants
+```
+
+Two directions, each carrying a value channel *and* a feedback channel — and the fourth corner
+is **jointly authored**. That last property is the whole point: a channel where only one side
+may author variants is still a one-way channel wearing a return address. Co-ownership is what
+makes the feedback genuinely bidirectional, and it is exactly the resource the CHSH bound needs
+that amplitudes alone do not supply.
+
+`src/Core/Tsirelson.fs` carries the bound in pure integer matrix algebra —
+`C² = 4I − 4Ω`, `spec(C²) ⊆ {0,8}`, `‖C‖ = 2√2` — with a line worth pinning next to §18:
+
+> **"the irrational appears only at READOUT."**
+
+Everything upstream of readout is exact integers. The `√2` is not in the algebra; it is in the
+act of reading. (Prior correction on file, Soraya audit 2026-08-01: `1/(3√2) ≈ 0.2357` is a
+design parameter and **not** the Tsirelson bound — see `docs/FACTORY-RESUME.md:209`. Kept here
+so the two numbers do not re-merge.)
+
+## 18. We never collapse — we simulate measurement and keep the tension open
+
+Aaron, correcting §15: *"even in this we try to simulate measurement so we never actually
+collapse, just discuss simulated measurements, we try to avoid collapse always and keep the
+tension open."*
+
+This is a real correction and it inverts my conclusion. I wrote "reversible up to the outcome;
+the outcome is what you pay for" — as if the outcome is the goal and the cost is the price of
+arriving. The design intent is the opposite: **do not arrive.** Stay in the ensemble, reason
+about *simulated* measurements, and never actualize the one that discards the others.
+
+Consequences, and they are strong:
+
+- **The system is designed to stay Landauer-free**, not merely to be reversible up to a
+  payment. If collapse never happens, the `kT ln 2` is never owed. Erasure is the cost, and we
+  decline the erasure.
+- It is the same structure Tsirelson.fs already has: exact integers throughout, **the irrational
+  only at readout**. Don't read out, don't pay the irrational.
+- It reframes "keep the tension open" as a *thermodynamic* posture rather than an aesthetic
+  one. Holding superposition is the cheap state; collapsing is the expensive one; a system that
+  never decides never pays.
+
+**And it names where the work is.** `.claude/rules/every-bug-has-economic-value.md` already
+records the gap: `sim` — the ephemeral half, the one that would express exactly this — is a
+*compiled stub* in `clis/Verbs.fs` with no `ISim<'a>` introduction form, so its documented pipe
+does not typecheck. `measure` is the shipped half. So the intent stated here is currently
+carried by the verb we did **not** finish, and the verb we did finish is the collapsing one.
+That is not a gotcha; it is the answer to "where should this go next".
+
+## 19. Coincidence → weak belief → belief, with the second threshold held by others
+
+Aaron sharpening §14: *"labeling them as coincidence not belief until they pass some threshold,
+and even then it should be a weak belief until it passes the threshold for others in society
+too."*
+
+Two thresholds, and the second one is **not ours to cross**:
+
+| register | what it takes |
+|---|---|
+| **coincidence** | noticed. Costs nothing, indexes freely, asserts nothing |
+| **weak belief** | passes *our* threshold — structure found, not just resonance |
+| **belief** | passes the threshold **for others in society** |
+
+The second threshold is the naming-eigenvector construction again — recognition flows from the
+already-recognized, credited by others and never self-minted, the same shape as privacy budget
+and TrueSkill ranks held by peers. So a promotion path that runs coincidence → weak belief →
+belief is the *same* mechanism as earning a name or a budget, applied to a proposition instead
+of a person.
+
+Which means the failure mode is also the same one: self-promoting a coincidence straight to
+belief is exactly a Sybil minting its own standing. The register label is the anti-Sybil guard
+for ideas.
+
+## 20. Correction to §16(c) — back-pressure is the benefit, not the cost
+
+I filed finite area / saturation as the price of closing. Aaron: *"i think this is a benefit,
+cause we need backpressure all over the place naturally."* He is right and the instances are
+already shipped:
+
+- **`FerryThrottler`** — the DoP-knobbed queue; back-pressure is the mechanism, and
+  `async-all-the-way-truthful-signatures` exists to keep un-knobbed spawn out
+- **the Zeta scheduler** — bounded queues, or DoP=1 determinism is unreachable
+- **transport, UDP especially** — no back-pressure, no congestion control
+- **echolocation itself needs self-debounce** — *"so you can hear echoes other than your own"*
+
+That last one closes the loop on this whole note. A pinger with no self-debounce **deafens
+itself with its own emission**: the return it hears is its own outgoing pulse, which is the
+degenerate case dressed as a working one — a confirmation that is really the offer coming back.
+Back-pressure is what makes a *foreign* echo distinguishable from your own.
+
+So a closed wall does not merely *tolerate* saturation, it **supplies** the property four
+separate subsystems already had to build by hand. Filed as (c) benefit, not (c) cost.
+
+And the scale-free note stands on its own merits: twelve defects invariant under growth means
+the wall has the §1 property structurally rather than by discipline — which is the kind of
+place Aaron likes to find it, and one of the few where it is forced by a theorem rather than
+maintained by care.
+
+## 21. The metric is oracle-relative — even the metrics are multi-oracle
+
+Aaron, on the temperature/curvature thread: *"we connect the metric as **'a'** metric for one of
+our oracles, the oracle of highest moral regard, even our metrics are multi oracle lol."*
+
+This dissolves my §15 objection by moving it to the right axis. I refused entropic gravity as
+an anchor because it does not yet price anything we measure — which is the correct test for a
+claim *about physics*. But the claim was never that. It is:
+
+> Under a **chosen oracle**, there is a metric. Metrics have curvature. Decorrelation to the
+> point of non-communication is a real distance **in that metric**.
+
+That is well-defined rather than metaphorical, because the oracle-choice supplies what the
+metaphor was missing: *whose* distance. Manifesto §11 (Default Moral Regard / Multi-Oracle) was
+already the rule that no single mandatory morality is imposed — and the extension is that **the
+metric inherits the plurality.** Different oracle, different metric, different curvature, and no
+one of them is "the" geometry.
+
+Two things follow that are worth keeping:
+
+1. **A distance claim must name its oracle**, the same way a moral claim must. "These two agents
+   have drifted apart" is incomplete until you say under which metric — and that is a checkable
+   discipline, not a philosophical flourish.
+2. The horizon reading survives *without* borrowing general relativity's authority. Under the
+   highest-moral-regard oracle, two entities that can no longer communicate are at infinite
+   distance in that oracle's metric. That is a definition we own, not a physics result we are
+   leaning on.
+
+**In-flight, and reported as in-flight.** Aaron: *"we have some work in repo on this, maybe some
+code but some research for sure, we just connected temperature and curvature to our metric for
+lagrange possibly, we are still in the middle of researching it."* I looked: the Lagrange–
+Condorcet material is real and substantial (`docs/research/three-body-lagrange-condorcet-maxwell.md`,
+`src/Bayesian/LagrangeCondorcet.fs`, which is one of the few things registered `metered` — μ_crit
+= (1−√(23/27))/2 is Routh's classical constant). I did **not** find a temperature/curvature link
+inside it on `main`. So either that connection is newer than what is landed, or it is not
+written down yet. Recorded as *not found rather than absent* — the distinction this whole note
+is about.
