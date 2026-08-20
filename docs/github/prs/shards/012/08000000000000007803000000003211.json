@@ -1,0 +1,12 @@
+{
+  "pr_number": 12817,
+  "archive_path": "docs/history/pr-reviews/PR-12817-setup-declare-the-yubikey-tooling-on-windows-the-exception-was-an-unrun-check-an.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T15:40:55.809Z",
+  "schema_version": "v1",
+  "commit_sha": "125a7b5c870d042bab4b8e2e3af2fbcb69a2c905",
+  "title": "setup: declare the YubiKey tooling on Windows — the exception was an unrun check, and it was wrong",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T15:40:16Z",
+  "head_ref": "feat/windows-yubico-declared"
+}
