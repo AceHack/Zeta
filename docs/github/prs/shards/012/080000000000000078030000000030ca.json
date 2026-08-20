@@ -1,0 +1,12 @@
+{
+  "pr_number": 12490,
+  "archive_path": "docs/history/pr-reviews/PR-12490-docs-security-correlated-witness-collapse-the-near-wall-of-the-decorrelation-arc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T16:14:47.349Z",
+  "schema_version": "v1",
+  "commit_sha": "0c1fac98757273c58922b03b1f4d00fbe06b98e3",
+  "title": "docs(security): correlated-witness collapse — the near wall of the decorrelation arc, in both threat models",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T16:09:54Z",
+  "head_ref": "aminata/correlated-witness-collapse"
+}
