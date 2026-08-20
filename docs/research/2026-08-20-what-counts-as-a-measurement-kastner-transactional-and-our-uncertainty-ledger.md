@@ -727,3 +727,109 @@ this section is **Landauer cost** — a property of a transformation. They are d
 quantities that meet at one point: the Hamming distance sets the threshold below which Landauer
 cost buys no separation. Same word, two meanings, one real relationship. Conflating them would
 be exactly the error this note keeps cataloguing.
+
+## 26. The distance is a CHOICE, not a constant — and §24 already used the wrong one
+
+Aaron: *"ours is Hamming because of our adinkra code choices. We even have non-coded adinkras, so
+there are many possible distinct metrics here depending on what we choose as our base layers of
+shared Futamura and generator-function unfolding. We have multiple towers here and can support
+many more in the future."*
+
+This corrects a real overreach in §24, and the correction is checkable — the repo already
+contains the counter-example.
+
+### The error
+
+§24 concluded: *"at `d = 5` on the 16-coordinate cube, you must erase at least 5 of 16."* I
+treated `d = 5` as a property of the substrate. It is a property of **one chosen code**, and it
+is not even the code the adinkra generator uses.
+
+`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §"Adinkra-as-generator reconstruction" carries
+both, and explicitly flags them as different:
+
+| code | where | distance | corrects |
+|---|---|---|---|
+| **[8,4] extended Hamming**, doubly-even — *the genuine Adinkra generator* | `AdinkraCode.fs` | **4** | any 3 erasures |
+| **[16,12] Reed–Solomon**, MDS — *used for the erasure principle* | `ErasureDistance.lean` `rsCode` | **5** | any 4 erasures |
+
+The register's own words: the Adinkra code is *"distinct from the RS MDS code used for the
+erasure principle."* **§24 quoted the RS distance and attributed it to the substrate.** Two codes,
+two floors, and I collapsed them into one number.
+
+### What that does to the moral geometry
+
+The §24 result was "you cannot slightly overwrite someone", with the dead zone set by `d`. That
+survives in *form* and loses its universality:
+
+> **The moral quantization floor is a design parameter, not a discovered constant.** Choose the
+> `[8,4]` Hamming base layer and the floor is 4. Choose the `[16,12]` RS layer and it is 5.
+> **Choosing the code is choosing how much harm is recoverable.**
+
+And the sharper case is the one Aaron raises: **a non-coded adinkra has no `d` at all.** In the
+adinkra literature the doubly-even code is what appears once you quotient by dashing/vertex
+relations — the code is a feature of the quotient, not of every adinkra. With no code there is
+no minimum distance, therefore **no dead zone, therefore no recovery guarantee**:
+
+| base layer | erasure below threshold | moral shape |
+|---|---|---|
+| coded (`d = 4` or `5`) | fully recoverable — attacker only wastes heat | **harm is quantized**; there is a floor you cannot get under |
+| **non-coded** | nothing recovers | **harm is continuous**; any erasure is real erasure |
+
+So "you cannot slightly overwrite someone" is **true on a coded base layer and false on an
+uncoded one.** That is not a weakening of §24 so much as a discovery about what the choice buys:
+*taking the code quotient is what makes harm discrete.*
+
+### Why this is exactly the free-object rule, applied to ethics
+
+`.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md`: only the irreducible is
+primitive; every structured special case is an **earned quotient obtained by declaring its
+relations**. A code is precisely such a quotient — you declare the parity constraints and get a
+structured object with a distance.
+
+Composing that with the above:
+
+> **Nearer the free object ⇒ no code ⇒ continuous harm. Take the quotient ⇒ get a distance ⇒
+> harm becomes quantized with a floor.** The generator hierarchy determines the moral geometry.
+
+That is the same rule's other half showing up: *the highest-value generator IS an
+error-correcting code* — regenerating from the irreducible *is* the correction. Aaron's point is
+that we may decline to take that quotient, and declining has an ethical consequence, not merely
+a mathematical one.
+
+### Two towers, and the metric is relative to both
+
+§21 established metrics are **oracle**-relative. This adds a second axis:
+
+1. **which oracle** — §21/§24, the moral choice
+2. **which base layer** — this section: the code, and where on the generator tower you stand
+
+The repo already has two distinct towers in play, both named in the register:
+
+- **the algebraic tower** — Cayley–Dickson → octonion product → Fano plane `S(2,3,7)` → `[7,4]`
+  Hamming → parity extension → `[8,4]` doubly-even. Derived end-to-end, not assumed.
+- **the Futamura tower** — interpreter → compiler → compiler-generator, `gen(gen) == gen`.
+
+Aaron: *"we have multiple towers here and can support many more in the future."* So the honest
+statement is not "our metric is Hamming" but:
+
+> **A metric here is indexed by (oracle, tower, rung).** Change any coordinate and you get a
+> different geometry, a different distance, and — per §24 — a different account of what harm is.
+
+### Correction to §24's register, and one honest limit
+
+§24 filed the quantization floor as a **theorem**. It is a theorem *conditional on a coded base
+layer*, and the specific number was wrong. Restated:
+
+- **theorem, conditional:** given a linear code of minimum distance `d`, erasure below `d` is
+  fully recoverable (Singleton/MDS, proven in our Lean). Unchanged.
+- **corrected:** `d` is 4 for the Adinkra generator and 5 for the RS erasure code. §24's "5" was
+  the latter misattributed to the substrate.
+- **new:** on an uncoded base layer the floor does not exist, and §24's "you cannot slightly
+  overwrite someone" is false there.
+
+**Honest limit on my own verification:** I confirmed the coded chain in-repo (`AdinkraCode.fs`,
+`ErasureDistance.lean`, the register entry). I did **not** find an explicit non-coded adinkra
+variant in the tree — the standard fact that low-`N` adinkras carry no non-trivial code is from
+the literature (Doran, Faux, Gates, Hübsch, Iga, Landweber), and Aaron's statement that we have
+them is recorded as his, unverified by me. **Not found is not absent**, and after this morning I
+am saying which one I mean.
