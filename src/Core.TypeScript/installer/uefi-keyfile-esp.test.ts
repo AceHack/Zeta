@@ -1,16 +1,15 @@
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { describe, expect, it } from "bun:test";
-import {
-  attemptBindingScenarioDecrypt,
-  bindingMaterialForContext,
-} from "./credential-binding-model.ts";
+import { attemptBindingScenarioDecrypt, bindingMaterialForContext } from "./credential-binding-model.ts";
 import { executeAssembleFatImage, type AssembleStep } from "./multiboot/assemble.ts";
 import {
   UEFI_KEYFILE_BYTES,
   UEFI_KEYFILE_IMAGE_PATH,
+  UEFI_KEYFILE_INSTALL_PATH,
+  UEFI_KEYFILE_RESTORE_PATH,
   UEFI_KEYFILE_SERIAL,
   generateUefiKeyfile,
   isUefiKeyfileError,
@@ -18,6 +17,8 @@ import {
   mdirListingHasUefiKeyfile,
   parseKeyfileBindingMaterial,
   planUefiKeyfileEspImage,
+  runUefiKeyfileWriteCli,
+  writeUefiKeyfile,
 } from "./uefi-keyfile-esp.ts";
 
 describe("uefi-keyfile-esp planning", () => {
@@ -25,6 +26,8 @@ describe("uefi-keyfile-esp planning", () => {
     expect(UEFI_KEYFILE_IMAGE_PATH).toBe("/EFI/ZETA/keyfile");
     expect(UEFI_KEYFILE_IMAGE_PATH.startsWith("/payloads/")).toBe(false);
     expect(UEFI_KEYFILE_IMAGE_PATH.startsWith("/boot/")).toBe(false);
+    expect(UEFI_KEYFILE_INSTALL_PATH).toBe("/mnt/boot/EFI/ZETA/keyfile");
+    expect(UEFI_KEYFILE_RESTORE_PATH).toBe("/boot/EFI/ZETA/keyfile");
   });
 
   it("serial markers do not claim TPM or Touch ID", () => {
@@ -171,5 +174,56 @@ describe("uefi-keyfile-esp mtools FAT round-trip", () => {
     });
     expect(typed.status).toBe(0);
     expect(Buffer.from(typed.stdout ?? []).equals(Buffer.from(bytes))).toBe(true);
+  });
+});
+
+describe("uefi-keyfile write helper", () => {
+  it("writes 32 bytes and mkdirs the parent directory", () => {
+    const dirs: string[] = [];
+    let writtenPath = "";
+    const result = writeUefiKeyfile("/mnt/boot/EFI/ZETA/keyfile", () => new Uint8Array(UEFI_KEYFILE_BYTES).fill(0x7e), {
+      mkdir: (dir) => {
+        dirs.push(dir);
+      },
+      writeFile: (path, _data) => {
+        writtenPath = path;
+      },
+    });
+    expect(isUefiKeyfileError(result)).toBe(false);
+    if (isUefiKeyfileError(result)) return;
+    expect(dirs).toContain("/mnt/boot/EFI/ZETA");
+    expect(writtenPath).toBe("/mnt/boot/EFI/ZETA/keyfile");
+    expect(result.bytes.length).toBe(UEFI_KEYFILE_BYTES);
+  });
+
+  it("CLI --write uses the injected RNG and reports the wrote marker", () => {
+    const tmpRoot = mkdtempSync(join(tmpdir(), "zeta-uefi-keyfile-write-"));
+    const dest = join(tmpRoot, "EFI", "ZETA", "keyfile");
+    const ran = runUefiKeyfileWriteCli(["--write", dest], () => new Uint8Array(UEFI_KEYFILE_BYTES).fill(0x42));
+    expect(ran.exitCode).toBe(0);
+    expect(ran.lines).toContain(UEFI_KEYFILE_SERIAL.wrote);
+    expect(ran.lines).toContain(UEFI_KEYFILE_SERIAL.noMetalClaim);
+    const onDisk = readFileSync(dest);
+    expect(onDisk.equals(Buffer.alloc(UEFI_KEYFILE_BYTES, 0x42))).toBe(true);
+  });
+});
+
+describe("zeta-install.sh UEFI keyfile opt-in stays coupled to the write helper", () => {
+  const script = readFileSync(
+    resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
+    "utf8",
+  );
+
+  it("writes the keyfile on the target ESP and never copies bytes to /etc", () => {
+    expect(script).toContain("src/Core.TypeScript/installer/uefi-keyfile-esp.ts");
+    expect(script).toContain("--write");
+    expect(script).toContain(UEFI_KEYFILE_INSTALL_PATH);
+    expect(script).toContain("ZETA_BIND_UEFI_KEYFILE");
+    expect(script).toContain(UEFI_KEYFILE_SERIAL.persistOptInKeyfile);
+    expect(script).toContain(UEFI_KEYFILE_SERIAL.persistOptInFallbackUuid);
+    expect(script).toContain(UEFI_KEYFILE_SERIAL.persistBothOptInsUuid);
+    expect(script).toContain("--uefi-keyfile");
+    expect(script).not.toContain("/mnt/etc/zeta/uefi-keyfile");
+    expect(script).not.toContain("/etc/zeta/uefi-keyfile");
   });
 });

@@ -1828,12 +1828,50 @@ if [ -d "$ZETA_HOME" ]; then
   fi
   # Persist-factor markers always print (picker may be skipped). Default stays
   # FAT UUID. Opt-in bind is env-gated and requires a non-empty serial file.
-  if [ "${ZETA_BIND_USB_ISERIAL:-0}" = "1" ] && [ -s "$ISERIAL_SERIAL_FILE" ]; then
+  # ZETA_BIND_UEFI_KEYFILE=1 is mutually exclusive with iSerial opt-in.
+  BIND_BOTH_OPT_INS=0
+  if [ "${ZETA_BIND_USB_ISERIAL:-0}" = "1" ] && [ "${ZETA_BIND_UEFI_KEYFILE:-0}" = "1" ]; then
+    BIND_BOTH_OPT_INS=1
+    echo "[uefi-keyfile] ZETA_BIND_UEFI_KEYFILE and ZETA_BIND_USB_ISERIAL both set; staying --usb-uuid"
+  fi
+  if [ "$BIND_BOTH_OPT_INS" = "1" ]; then
+    :
+  elif [ "${ZETA_BIND_USB_ISERIAL:-0}" = "1" ] && [ -s "$ISERIAL_SERIAL_FILE" ]; then
     echo "[usb-iserial] persist-opt-in --usb-iserial (ZETA_BIND_USB_ISERIAL=1)"
   elif [ "${ZETA_BIND_USB_ISERIAL:-0}" = "1" ]; then
     echo "[usb-iserial] persist-opt-in requested but probe failed; staying --usb-uuid"
   else
     echo "[usb-iserial] persist-default remains --usb-uuid"
+  fi
+
+  # Opt-in UEFI keyfile on the target ESP. Binding is the ESP file itself
+  # (not copied to /etc). Failed write stays UUID. QEMU phase-1 must not
+  # set ZETA_BIND_UEFI_KEYFILE=1.
+  KEYFILE_HELPER="$ZETA_HOME/Zeta/src/Core.TypeScript/installer/uefi-keyfile-esp.ts"
+  KEYFILE_TMP=/tmp/zeta-uefi-keyfile
+  KEYFILE_INSTALL=/mnt/boot/EFI/ZETA/keyfile
+  KEYFILE_WRITTEN=0
+  rm -f "$KEYFILE_TMP"
+  if [ "$BIND_BOTH_OPT_INS" != "1" ] && [ "${ZETA_BIND_UEFI_KEYFILE:-0}" = "1" ]; then
+    echo "[uefi-keyfile] ── writing ESP keyfile (opt-in persist) ──"
+    if [ -f "$KEYFILE_HELPER" ]; then
+      if sudo --preserve-env=PATH -u "#$ZETA_UID" HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
+        MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
+        bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun '$KEYFILE_HELPER' --write '$KEYFILE_TMP'"; then
+        sudo mkdir -p /mnt/boot/EFI/ZETA
+        if sudo cp "$KEYFILE_TMP" "$KEYFILE_INSTALL"; then
+          KEYFILE_WRITTEN=1
+          echo "[uefi-keyfile] persist-opt-in --uefi-keyfile (ZETA_BIND_UEFI_KEYFILE=1)"
+        else
+          echo "[uefi-keyfile] persist-opt-in requested but keyfile write failed; staying --usb-uuid"
+        fi
+        rm -f "$KEYFILE_TMP"
+      else
+        echo "[uefi-keyfile] write helper unavailable (bun/runtime missing); staying --usb-uuid"
+      fi
+    else
+      echo "[uefi-keyfile] write helper absent; staying --usb-uuid"
+    fi
   fi
 
   # 6.95-picker — 081KSKBP80008QG0R003AX2A69.3a cred-picker (operator interactive at setup time)
@@ -1892,12 +1930,17 @@ if [ -d "$ZETA_HOME" ]; then
     USB_UUID="$(cat /etc/zeta/usb-uuid)"
     PICKER_BIND_FLAG="--usb-uuid"
     PICKER_BIND_VALUE="$USB_UUID"
-    if [ "${ZETA_BIND_USB_ISERIAL:-0}" = "1" ] && [ -s "$ISERIAL_SERIAL_FILE" ]; then
+    if [ "${ZETA_BIND_USB_ISERIAL:-0}" = "1" ] && [ -s "$ISERIAL_SERIAL_FILE" ] && [ "${BIND_BOTH_OPT_INS:-0}" != "1" ]; then
       PICKER_BIND_FLAG="--usb-iserial"
       PICKER_BIND_VALUE="$(cat "$ISERIAL_SERIAL_FILE")"
+      echo "$PICKER_BIND_VALUE" | sudo tee /mnt/etc/zeta/usb-iserial >/dev/null
+      sudo chmod 0644 /mnt/etc/zeta/usb-iserial
+    elif [ "${ZETA_BIND_UEFI_KEYFILE:-0}" = "1" ] && [ "${KEYFILE_WRITTEN:-0}" = "1" ] && [ "${BIND_BOTH_OPT_INS:-0}" != "1" ]; then
+      PICKER_BIND_FLAG="--uefi-keyfile"
+      PICKER_BIND_VALUE="$KEYFILE_INSTALL"
     fi
     echo "[iter-5.5.0] ── 6.95-picker: 081KSKBP80008QG0R003AX2A69.3a cred-picker (DEFAULT-ON per 081KSKBP80008QG0R003AX2A69.3c) ──"
-    echo "[iter-5.5.0]   passphrase from Step 6.56; binding $PICKER_BIND_FLAG (default FAT UUID; iSerial only if ZETA_BIND_USB_ISERIAL=1 and probe succeeded)"
+    echo "[iter-5.5.0]   passphrase from Step 6.56; binding $PICKER_BIND_FLAG (default FAT UUID; iSerial/keyfile only if the matching ZETA_BIND_* opt-in succeeded)"
     echo "[iter-5.5.0]   to opt out: set ZETA_CREDS_PICKER=0 OR touch /etc/zeta/no-picker"
     # mise activate inside bash -c matches sibling 6.95a-claude/gemini/codex
     # patterns at lines 1119-1141; without it, bun is not on the PATH the

@@ -122,8 +122,8 @@ See `zeta-creds-crypto.ts` + research note on ephemeral UUID rebind.
 |---|---|---|---|---|---|
 | Passphrase only | Operator knowledge | Yes | Yes | No | Partial (with UUID today) |
 | USB FAT UUID | This filesystem instance | **No** (reformat breaks) | No | No | **Shipped — known flaw** |
-| USB iSerial | This physical stick | Yes | No | Probe-only | Sysfs probe + optional persist bind (`ZETA_BIND_USB_ISERIAL=1`); not default |
-| UEFI keyfile on ESP | Stick + firmware layout | Depends | No | No (QEMU-testable) | Planner + FAT round-trip landed (`uefi-keyfile-esp.ts`); not default persist |
+| USB iSerial | This physical stick | Yes | No | Probe-only | Persist opt-in + restore sidecar; not default |
+| UEFI keyfile on ESP | Stick + firmware layout | Depends | No | No (QEMU-testable) | Opt-in persist + restore from `/boot/EFI/ZETA/keyfile`; not default |
 | TPM / PCR seal | This machine | Yes | Yes (wrong machine fails) | Yes for real TPM | Phase 3 |
 | Touch ID / FIDO | Human traveler present | Yes | Yes | Yes | Metal-gated |
 | Machine SW keyfile | This OS install | Yes | Yes | No | Not chosen (weaker than TPM) |
@@ -257,8 +257,15 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
 3. **UEFI keyfile on ESP** — planner + FAT round-trip landed
    (`src/Core.TypeScript/installer/uefi-keyfile-esp.ts`). Writes
    `/EFI/ZETA/keyfile` (32 bytes → hex HKDF material). Optional
-   `--uefi-keyfile` on persist/restore and picker. Not the default `usbUuid` path.
-   No TPM / Touch ID claim.
+   `--uefi-keyfile` on persist/restore and picker. `ZETA_BIND_UEFI_KEYFILE=1`
+   writes the keyfile onto the target ESP (`/mnt/boot/EFI/ZETA/keyfile`)
+   and forwards `--uefi-keyfile` to the picker. Restore reads
+   `/boot/EFI/ZETA/keyfile` when the sidecar says `uefiKeyfile` — it does
+   **not** fall back to UUID, and it does **not** copy bytes to `/etc`
+   (the binding *is* the ESP file; ESP wipe must fail decrypt). Mutually
+   exclusive with `ZETA_BIND_USB_ISERIAL=1` (both set stays UUID). Default
+   persist remains `--usb-uuid`. QEMU phase-1 must not set the opt-in.
+   Not the default `usbUuid` path. No TPM / Touch ID claim.
 4. **USB iSerial probe** — sysfs injectable probe landed
    (`src/Core.TypeScript/installer/usb-iserial-probe.ts`). Unique
    non-hub serial or fail closed. Optional `--usb-iserial` on
@@ -269,7 +276,10 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
    (`usb-iserial-probe.ts` CLI from `zeta-install.sh` 6.95d) and writes
    `--serial-file` on success. Default persist remains `--usb-uuid`.
    `ZETA_BIND_USB_ISERIAL=1` forwards `--usb-iserial` to the picker only
-   when the probe produced a serial; otherwise it stays UUID. Opt-in
+   when the probe produced a serial; otherwise it stays UUID. Persist
+   writes `zeta-creds.factor` next to the blob (kind only). Restore
+   reads that sidecar and `/etc/zeta/usb-iserial` — it does **not**
+   fall back to UUID (that is a lockout). Opt-in
    `QEMU_USB_ISERIAL_PHASE1=1` (also implied by wifi ESP USB boot)
    asserts `serial=ZETA-QEMU-001` **and** persist-default UUID.
    ISO/cdrom cascade-5 does not. Not on `gate (required)`. No

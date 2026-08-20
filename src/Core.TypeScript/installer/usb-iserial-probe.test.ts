@@ -179,5 +179,6 @@ describe("usb-iserial-probe", () => {
     expect(script).toContain(USB_ISERIAL_SERIAL.persistOptInFallbackUuid);
     expect(script).toContain("ZETA_BIND_USB_ISERIAL");
     expect(script).toContain("PICKER_BIND_FLAG");
+    expect(script).toContain("/mnt/etc/zeta/usb-iserial");
   });
 });

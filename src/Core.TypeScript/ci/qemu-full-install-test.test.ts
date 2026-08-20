@@ -22,6 +22,7 @@ import {
   PHASE2_SERIAL_SEPARATOR,
 } from "./qemu-full-install-test.ts";
 import { QEMU_USB_TEST_SERIAL } from "../installer/qemu-usb-storage.ts";
+import { UEFI_KEYFILE_SERIAL } from "../installer/uefi-keyfile-esp.ts";
 import { USB_ISERIAL_SERIAL, usbISerialValueMarker } from "../installer/usb-iserial-probe.ts";
 
 describe("validateSelfRegCiCoherent", () => {
@@ -140,6 +141,22 @@ describe("qemu-full-install-test usb iSerial phase-1 contract", () => {
     }
   });
 
+  it("fails when persist silently switches to UEFI keyfile on the default QEMU path", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.found,
+      usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      USB_ISERIAL_SERIAL.persistDefaultUuid,
+      UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUsbISerialPhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("UEFI keyfile persist-opt-in");
+    }
+  });
+
   it("fails when probe succeeded but persist-default marker is missing", () => {
     const serial = [
       USB_ISERIAL_SERIAL.found,
@@ -213,10 +230,7 @@ describe("qemu-full-install-test serial log artifact merge", () => {
 
 describe("qemu-full-install-test 081KSGS9H0008QG0R00120EEHM hostname regression guard", () => {
   it("fails when generated node identity was expected but control-plane login appears", () => {
-    const reason = detectUnexpectedControlPlaneLogin(
-      "booting...\ncontrol-plane login:",
-      "zeta-a1b2c3",
-    );
+    const reason = detectUnexpectedControlPlaneLogin("booting...\ncontrol-plane login:", "zeta-a1b2c3");
 
     expect(reason).toContain("081KSGS9H0008QG0R00120EEHM Bug 1 regression");
     expect(reason).toContain("zeta-a1b2c3");

@@ -7,7 +7,8 @@ import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { buildBlob, composeBundle, parseArgs as parsePersistArgs } from "./zeta-creds-persist";
+import { buildBlob, composeBundle, parseArgs as parsePersistArgs, writePersistOutputs } from "./zeta-creds-persist";
+import { bindingFactorSidecarPath } from "./installer-binding-cli.ts";
 import { applyPlan, parseArgs as parseRestoreArgs, planRestore, resolveCredPaths } from "./zeta-creds-restore";
 import { DEFAULT_MANIFEST } from "./zeta-creds-manifest";
 
@@ -40,6 +41,19 @@ describe("parsePersistArgs", () => {
     if ("error" in result) throw new Error(result.error);
     expect(result.bindingMaterial).toBe("ZETA-STICK-001");
     expect(result.usbISerial).toBe("ZETA-STICK-001");
+    expect(result.bindingFactor).toBe("usbISerial");
+  });
+
+  it("accepts --uefi-keyfile without --usb-uuid", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zcreds-keyfile-"));
+    const keyfile = join(dir, "keyfile");
+    writeFileSync(keyfile, Buffer.alloc(32, 0xab));
+    const result = parsePersistArgs(["--uefi-keyfile", keyfile, "--output", "/tmp/blob", "--passphrase-env", "TP"], {
+      TP: PASS,
+    });
+    if ("error" in result) throw new Error(result.error);
+    expect(result.bindingFactor).toBe("uefiKeyfile");
+    expect(result.bindingMaterial).toBe("ab".repeat(32));
   });
 
   it("rejects missing --output", () => {
@@ -206,10 +220,7 @@ describe("persist → restore round-trip via tmpdir", () => {
     const firstPlan = planRestore(readFileSync(persistArgs.output), UUID, PASS, null, firstRoot);
     if ("error" in firstPlan) throw new Error(firstPlan.error);
     expect(applyPlan(firstPlan)).toBe(1);
-    const firstGhPath = resolveCredPaths(
-      DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli")!,
-      firstRoot,
-    )[0]!;
+    const firstGhPath = resolveCredPaths(DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli")!, firstRoot)[0]!;
     expect(readFileSync(firstGhPath, "utf8")).toBe("RETENTION-TOKEN-VALUE");
 
     // Simulates root reformat: target root is removed while ESP blob remains.
@@ -218,10 +229,7 @@ describe("persist → restore round-trip via tmpdir", () => {
     const reformatPlan = planRestore(readFileSync(persistArgs.output), UUID, PASS, null, secondRoot);
     if ("error" in reformatPlan) throw new Error(reformatPlan.error);
     expect(applyPlan(reformatPlan)).toBe(1);
-    const secondGhPath = resolveCredPaths(
-      DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli")!,
-      secondRoot,
-    )[0]!;
+    const secondGhPath = resolveCredPaths(DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli")!, secondRoot)[0]!;
     expect(readFileSync(secondGhPath, "utf8")).toBe("RETENTION-TOKEN-VALUE");
 
     const idempotentPlan = planRestore(readFileSync(persistArgs.output), UUID, PASS, null, secondRoot);
@@ -372,10 +380,7 @@ describe("parseRestoreArgs", () => {
     const dir = mkdtempSync(join(tmpdir(), "zcreds-empty-"));
     const empty = join(dir, "empty.pass");
     writeFileSync(empty, "");
-    const result = parseRestoreArgs(
-      ["--usb-uuid", UUID, "--input", "/x.enc", "--passphrase-file", empty],
-      {},
-    );
+    const result = parseRestoreArgs(["--usb-uuid", UUID, "--input", "/x.enc", "--passphrase-file", empty], {});
     expect("error" in result).toBe(true);
   });
 
@@ -385,10 +390,7 @@ describe("parseRestoreArgs", () => {
     const dir = mkdtempSync(join(tmpdir(), "zcreds-nl-"));
     const nl = join(dir, "nl.pass");
     writeFileSync(nl, "\n");
-    const result = parseRestoreArgs(
-      ["--usb-uuid", UUID, "--input", "/x.enc", "--passphrase-file", nl],
-      {},
-    );
+    const result = parseRestoreArgs(["--usb-uuid", UUID, "--input", "/x.enc", "--passphrase-file", nl], {});
     expect("error" in result).toBe(true);
   });
 
@@ -396,5 +398,29 @@ describe("parseRestoreArgs", () => {
     const result = parseRestoreArgs(["--usb-uuid", UUID, "--input", "/x", "--passphrase-env", "PP"], { PP: "x" });
     if ("error" in result) throw new Error(result.error);
     expect(result.targetRoot).toBe("/");
+  });
+});
+
+describe("writePersistOutputs binding-factor sidecar", () => {
+  it("writes usbISerial next to the blob so restore does not guess UUID", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zcreds-factor-"));
+    const blob = join(dir, "zeta-creds.enc");
+    writePersistOutputs(blob, Buffer.from("not-a-real-blob"), "usbISerial");
+    expect(readFileSync(blob).equals(Buffer.from("not-a-real-blob"))).toBe(true);
+    expect(readFileSync(bindingFactorSidecarPath(blob), "utf8")).toBe("usbISerial\n");
+  });
+
+  it("writes usbUuid for the default persist path", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zcreds-factor-uuid-"));
+    const blob = join(dir, "zeta-creds.enc");
+    writePersistOutputs(blob, Buffer.from("x"), "usbUuid");
+    expect(readFileSync(bindingFactorSidecarPath(blob), "utf8")).toBe("usbUuid\n");
+  });
+
+  it("writes uefiKeyfile so restore does not guess UUID", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zcreds-factor-uefi-"));
+    const blob = join(dir, "zeta-creds.enc");
+    writePersistOutputs(blob, Buffer.from("x"), "uefiKeyfile");
+    expect(readFileSync(bindingFactorSidecarPath(blob), "utf8")).toBe("uefiKeyfile\n");
   });
 });
