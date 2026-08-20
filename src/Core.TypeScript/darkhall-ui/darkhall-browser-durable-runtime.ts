@@ -59,7 +59,7 @@ import {
 } from "./darkhall-browser-bootstrap";
 import type { RoomRunTranscript } from "./darkhall-room";
 
-export const DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA = "zeta.darkhall.browser-durable-runtime.v5" as const;
+export const DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA = "zeta.darkhall.browser-durable-runtime.v6" as const;
 
 const MAX_CAUSAL_CHECKPOINT_SAVE_ATTEMPTS = 4;
 
@@ -401,11 +401,15 @@ export async function startDurableDarkHallBrowser(
   };
   let causalRenderFeedback: DarkHallBrowserDurableFeedback | null = null;
   let causalHandoffGeneration = 0;
-  let pendingCausalHandoff: {
-    readonly handoffId: string;
-    readonly targetTabId: string;
-    readonly correctionCount: number;
-  } | null = null;
+  const maxPendingCausalHandoffs = Math.max(0, options.maxTrackedTabs - 1);
+  const pendingCausalHandoffs = new Map<
+    string,
+    {
+      readonly handoffId: string;
+      readonly targetTabId: string;
+      readonly correctionCount: number;
+    }
+  >();
   let causalCheckpointRecord = recoveredCausalCheckpoint.value;
   let causalCheckpointPendingWrites = 0;
   let causalCheckpointSync: DarkHallBrowserDurableReadout["causalCheckpoint"] = {
@@ -421,7 +425,13 @@ export async function startDurableDarkHallBrowser(
   let causalRenderPending = false;
 
   const currentCausalHandoffReadout = (): DarkHallCausalHandoffReadout =>
-    darkHallCausalHandoffReadout(options.tabId, options.maxCausalCorrections, causalHandoffState);
+    darkHallCausalHandoffReadout(
+      options.tabId,
+      options.maxCausalCorrections,
+      pendingCausalHandoffs.size,
+      maxPendingCausalHandoffs,
+      causalHandoffState,
+    );
 
   const renderCausalProjection = (): void => {
     if (browserRuntimeForCausalRender === null) {
@@ -613,8 +623,9 @@ export async function startDurableDarkHallBrowser(
   };
 
   const acknowledgeCausalCorrectionReplay = (acknowledgement: BrowserCausalCorrectionReplayAcknowledgement): void => {
+    const pendingCausalHandoff = pendingCausalHandoffs.get(acknowledgement.sourceTabId);
     if (
-      pendingCausalHandoff === null ||
+      pendingCausalHandoff === undefined ||
       acknowledgement.handoffId !== pendingCausalHandoff.handoffId ||
       acknowledgement.sourceTabId !== pendingCausalHandoff.targetTabId ||
       acknowledgement.targetTabId !== options.tabId ||
@@ -636,18 +647,21 @@ export async function startDurableDarkHallBrowser(
       admittedCorrections: acknowledgement.admittedCorrections,
       feedback: acknowledgement.feedback === null ? null : { ...acknowledgement.feedback },
     };
-    pendingCausalHandoff = null;
+    pendingCausalHandoffs.delete(acknowledgement.sourceTabId);
     renderCausalProjection();
+  };
+
+  const nextCausalHandoffId = (): string => {
+    causalHandoffGeneration = causalHandoffGeneration === Number.MAX_SAFE_INTEGER ? 1 : causalHandoffGeneration + 1;
+    return `replay/${String(causalHandoffGeneration)}`;
   };
 
   const causalCorrectionReplay: BrowserCausalCorrectionReplayPort = {
     maxCorrections: options.maxCausalCorrections,
     snapshot: (targetTabId) => {
       const corrections = causalLedger.corrections.map((correction) => ({ ...correction }));
-      causalHandoffGeneration = causalHandoffGeneration === Number.MAX_SAFE_INTEGER ? 1 : causalHandoffGeneration + 1;
-      const handoffId = `replay/${String(causalHandoffGeneration)}`;
       if (corrections.length === 0) {
-        pendingCausalHandoff = null;
+        const handoffId = nextCausalHandoffId();
         causalHandoffState = {
           status: "idle",
           direction: "none",
@@ -660,7 +674,29 @@ export async function startDurableDarkHallBrowser(
         renderCausalProjection();
         return { handoffId, corrections };
       }
-      pendingCausalHandoff = { handoffId, targetTabId, correctionCount: corrections.length };
+
+      const pending = pendingCausalHandoffs.get(targetTabId);
+      if (pending === undefined && pendingCausalHandoffs.size >= maxPendingCausalHandoffs) {
+        const handoffId = nextCausalHandoffId();
+        causalHandoffState = {
+          status: "backpressured",
+          direction: "outbound",
+          handoffId,
+          peerTabId: targetTabId,
+          correctionCount: corrections.length,
+          admittedCorrections: 0,
+          feedback: {
+            severity: "backpressure",
+            code: "causal-correction-replay-pending-capacity-exhausted",
+            detail: `The runtime retained ${String(pendingCausalHandoffs.size)} pending peer handoffs and will not discard one to admit ${targetTabId}.`,
+          },
+        };
+        renderCausalProjection();
+        return { handoffId, corrections: [] };
+      }
+
+      const handoffId = pending?.correctionCount === corrections.length ? pending.handoffId : nextCausalHandoffId();
+      pendingCausalHandoffs.set(targetTabId, { handoffId, targetTabId, correctionCount: corrections.length });
       causalHandoffState = {
         status: "offered",
         direction: "outbound",

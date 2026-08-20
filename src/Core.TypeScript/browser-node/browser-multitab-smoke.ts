@@ -11,7 +11,7 @@ import type {
 import type { ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 import type { BrowserDatabaseIntentReadout } from "./browser-database-intent-outbox";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v14" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v15" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -76,6 +76,8 @@ export interface BrowserMultitabPageObservation {
       readonly direction: string;
       readonly handoffId: string;
       readonly peerTabId: string;
+      readonly pendingHandoffs: string;
+      readonly maxPendingHandoffs: string;
       readonly text: string;
     };
     readonly irisLabel: string;
@@ -135,8 +137,11 @@ export interface BrowserMultitabSmokeTranscript {
     readonly removed: boolean;
   };
   readonly afterRetraction: {
+    readonly pageCWhilePending: BrowserMultitabPageObservation;
+    readonly pageCAfterFirstAcknowledgement: BrowserMultitabPageObservation;
     readonly pageC: BrowserMultitabPageObservation;
     readonly pageD: BrowserMultitabPageObservation;
+    readonly pageE: BrowserMultitabPageObservation;
   };
   readonly intentRecovery: {
     readonly recovered: DarkHallDatabaseReadout;
@@ -273,6 +278,8 @@ async function observe(page: Page): Promise<BrowserMultitabPageObservation> {
           direction: sourceRoot?.getAttribute("data-causal-handoff-direction") ?? "",
           handoffId: sourceRoot?.getAttribute("data-causal-handoff-id") ?? "",
           peerTabId: sourceRoot?.getAttribute("data-causal-handoff-peer") ?? "",
+          pendingHandoffs: sourceRoot?.getAttribute("data-causal-handoff-pending") ?? "",
+          maxPendingHandoffs: sourceRoot?.getAttribute("data-causal-handoff-capacity") ?? "",
           text: causalHandoff?.textContent?.trim() ?? "",
         },
         irisLabel: irisLabel?.textContent?.trim() ?? "",
@@ -343,6 +350,19 @@ async function waitForTwoPages(page: Page): Promise<void> {
       const source = root.__zetaBrowserSmoke?.read();
       const iris = root.ZetaMesh?.snapshot();
       return source?.ok === true && source.value.host.coordinator.liveness.liveTabIds.length === 2 && iris?.tabs === 2;
+    },
+    undefined,
+    { timeout: timeoutMs },
+  );
+}
+
+async function waitForThreePages(page: Page): Promise<void> {
+  await page.waitForFunction(
+    () => {
+      const root = globalThis as unknown as Partial<BrowserSmokeGlobal>;
+      const source = root.__zetaBrowserSmoke?.read();
+      const iris = root.ZetaMesh?.snapshot();
+      return source?.ok === true && source.value.host.coordinator.liveness.liveTabIds.length === 3 && iris?.tabs === 3;
     },
     undefined,
     { timeout: timeoutMs },
@@ -422,6 +442,7 @@ async function waitForCausalHandoff(
   direction: "outbound" | "inbound",
   status: "offered" | "acknowledged" | "received" | "duplicate",
   peerTabId: string,
+  pendingHandoffs?: number,
 ): Promise<void> {
   await page.waitForFunction(
     (expected) => {
@@ -434,13 +455,31 @@ async function waitForCausalHandoff(
         handoff.status === expected.status &&
         handoff.peerTabId === expected.peerTabId &&
         handoff.handoffId !== null &&
+        (expected.pendingHandoffs === undefined || handoff.pendingHandoffs === expected.pendingHandoffs) &&
         room?.getAttribute("data-causal-handoff-direction") === expected.direction &&
         room.getAttribute("data-causal-handoff-status") === expected.status &&
         room.getAttribute("data-causal-handoff-id") === handoff.handoffId &&
         room.getAttribute("data-causal-handoff-peer") === expected.peerTabId
       );
     },
-    { direction, status, peerTabId },
+    { direction, status, peerTabId, pendingHandoffs },
+    { timeout: timeoutMs },
+  );
+}
+
+async function waitForPendingCausalHandoffs(page: Page, pendingHandoffs: number): Promise<void> {
+  await page.waitForFunction(
+    (expectedPending) => {
+      const root = globalThis as unknown as Partial<BrowserSmokeGlobal>;
+      const source = root.__zetaBrowserSmoke?.read();
+      const handoff = source?.ok === true ? source.value.causal.handoff : null;
+      const room = root.document?.querySelector("[data-causal-handoff-readout]");
+      return (
+        handoff?.pendingHandoffs === expectedPending &&
+        room?.getAttribute("data-causal-handoff-pending") === String(expectedPending)
+      );
+    },
+    pendingHandoffs,
     { timeout: timeoutMs },
   );
 }
@@ -717,6 +756,7 @@ function validateCausalCheckpointRestart(transcript: BrowserMultitabSmokeTranscr
   for (const [label, observation] of [
     ["page C", transcript.afterRestart.pageC],
     ["page D", transcript.afterRetraction.pageD],
+    ["page E", transcript.afterRetraction.pageE],
   ] as const) {
     if (!observation.source.ok) {
       failures.push(`${label} did not start after causal checkpoint recovery`);
@@ -734,59 +774,75 @@ function validateCausalCheckpointRestart(transcript: BrowserMultitabSmokeTranscr
     }
   }
 
-  if (transcript.afterRetraction.pageC.source.ok) {
-    const offered = transcript.afterRetraction.pageC.source.value.causal.handoff;
+  if (transcript.afterRetraction.pageCWhilePending.source.ok) {
+    const pending = transcript.afterRetraction.pageCWhilePending.source.value.causal.handoff;
     if (
-      offered.status !== "duplicate" ||
-      offered.direction !== "outbound" ||
-      offered.handoffId === null ||
-      offered.peerTabId !== "tab-d" ||
-      offered.correctionCount !== 1 ||
-      offered.admittedCorrections !== 0 ||
-      offered.feedback !== null
+      pending.status !== "offered" ||
+      pending.direction !== "outbound" ||
+      pending.handoffId === null ||
+      pending.correctionCount !== 1 ||
+      pending.pendingHandoffs !== 2 ||
+      pending.maxPendingHandoffs !== 7 ||
+      pending.feedback !== null
     ) {
-      failures.push("page C did not expose page D's duplicate acknowledgement of its outbound causal offer");
+      failures.push("page C did not retain both concurrent causal offers before acknowledgement");
+    }
+    const rendered = transcript.afterRetraction.pageCWhilePending.rendered.causalHandoff;
+    if (
+      rendered.schema !== "zeta.darkhall.causal-handoff-readout.v3" ||
+      rendered.status !== "offered" ||
+      rendered.direction !== "outbound" ||
+      rendered.handoffId !== pending.handoffId ||
+      rendered.pendingHandoffs !== "2" ||
+      rendered.maxPendingHandoffs !== "7" ||
+      !rendered.text.includes("peer handoff") ||
+      !rendered.text.includes("offered · outbound") ||
+      !rendered.text.includes("2 / 7 pending")
+    ) {
+      failures.push("page C did not render both pending causal peer offers on the room surface");
+    }
+  } else {
+    failures.push("page C failed while retaining concurrent causal peer offers");
+  }
+
+  if (transcript.afterRetraction.pageCAfterFirstAcknowledgement.source.ok) {
+    const first = transcript.afterRetraction.pageCAfterFirstAcknowledgement.source.value.causal.handoff;
+    if (
+      first.status !== "duplicate" ||
+      first.direction !== "outbound" ||
+      first.peerTabId !== "tab-d" ||
+      first.pendingHandoffs !== 1 ||
+      first.maxPendingHandoffs !== 7
+    ) {
+      failures.push("page C did not retain page E while acknowledging page D");
+    }
+  } else {
+    failures.push("page C failed after the first concurrent acknowledgement");
+  }
+
+  if (transcript.afterRetraction.pageC.source.ok) {
+    const final = transcript.afterRetraction.pageC.source.value.causal.handoff;
+    if (
+      final.status !== "duplicate" ||
+      final.direction !== "outbound" ||
+      final.peerTabId !== "tab-e" ||
+      final.pendingHandoffs !== 0 ||
+      final.maxPendingHandoffs !== 7
+    ) {
+      failures.push("page C did not independently acknowledge both concurrent peer offers");
     }
     const rendered = transcript.afterRetraction.pageC.rendered.causalHandoff;
     if (
-      rendered.schema !== "zeta.darkhall.causal-handoff-readout.v2" ||
       rendered.status !== "duplicate" ||
       rendered.direction !== "outbound" ||
-      rendered.handoffId !== offered.handoffId ||
-      rendered.peerTabId !== "tab-d" ||
-      !rendered.text.includes("peer handoff") ||
-      !rendered.text.includes("duplicate · outbound")
+      rendered.peerTabId !== "tab-e" ||
+      rendered.pendingHandoffs !== "0" ||
+      !rendered.text.includes("0 / 7 pending")
     ) {
-      failures.push("page C did not render the acknowledged outbound causal peer offer on the room surface");
+      failures.push("page C did not render completion of both concurrent peer acknowledgements");
     }
   } else {
-    failures.push("page C failed while exposing the causal peer offer");
-  }
-  if (transcript.afterRetraction.pageD.source.ok) {
-    const received = transcript.afterRetraction.pageD.source.value.causal.handoff;
-    if (
-      received.status !== "duplicate" ||
-      received.direction !== "inbound" ||
-      received.handoffId === null ||
-      received.peerTabId !== "tab-c" ||
-      received.correctionCount !== 1 ||
-      received.admittedCorrections !== 0 ||
-      received.feedback !== null
-    ) {
-      failures.push("page D did not expose idempotent admission of page C's recovered causal history");
-    }
-    const rendered = transcript.afterRetraction.pageD.rendered.causalHandoff;
-    if (
-      rendered.schema !== "zeta.darkhall.causal-handoff-readout.v2" ||
-      rendered.status !== "duplicate" ||
-      rendered.direction !== "inbound" ||
-      rendered.handoffId !== received.handoffId ||
-      rendered.peerTabId !== "tab-c" ||
-      !rendered.text.includes("peer handoff") ||
-      !rendered.text.includes("duplicate · inbound")
-    ) {
-      failures.push("page D did not render idempotent causal peer admission on the room surface");
-    }
+    failures.push("page C failed after the final concurrent acknowledgement");
   }
 }
 
@@ -802,8 +858,8 @@ function validateCheckpointRetraction(transcript: BrowserMultitabSmokeTranscript
       failures.push("page D retained semantic room checkpoint state after retraction");
     if (restarted.host.coordinator.liveness.checkpoint !== "none")
       failures.push("page D reported durable continuity after checkpoint retraction");
-    if (restarted.host.coordinator.liveness.liveTabIds.join(",") !== "tab-c,tab-d")
-      failures.push("page D did not distinguish its live peer from obsolete tab-presence state");
+    if (restarted.host.coordinator.liveness.liveTabIds.join(",") !== "tab-c,tab-d,tab-e")
+      failures.push("page D did not distinguish its live peers from obsolete tab-presence state");
   } else {
     failures.push("page D did not start after checkpoint retraction");
   }
@@ -1075,21 +1131,53 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     });
     if (!retraction.ok) return failed("smoke-failed", retraction.feedback.detail);
 
+    stage = "open concurrent causal replay peers";
     const pageD = await context.newPage();
+    const pageE = await context.newPage();
     await pageD.addInitScript(initIrisId("iris-d"));
-    await pageD.goto(`${baseUrl}?tab=tab-d&sequence=500`);
-    await waitForReady(pageD);
-    await pageD.evaluate("globalThis.ZetaMesh.announce()");
-    await Promise.all([waitForTwoPages(pageC), waitForTwoPages(pageD)]);
+    await pageE.addInitScript(initIrisId("iris-e"));
     await Promise.all([
-      waitForCausalHandoff(pageC, "outbound", "duplicate", "tab-d"),
-      waitForCausalHandoff(pageD, "inbound", "duplicate", "tab-c"),
+      pageD.goto(`${baseUrl}?tab=tab-d&sequence=500&holdCausalAcksFor=tab-c`),
+      pageE.goto(`${baseUrl}?tab=tab-e&sequence=600&holdCausalAcksFor=tab-c`),
     ]);
+    stage = "wait for concurrent causal replay peers";
+    await Promise.all([waitForReady(pageD), waitForReady(pageE)]);
+    await Promise.all([
+      pageD.evaluate("globalThis.ZetaMesh.announce()"),
+      pageE.evaluate("globalThis.ZetaMesh.announce()"),
+    ]);
+    await Promise.all([waitForThreePages(pageC), waitForThreePages(pageD), waitForThreePages(pageE)]);
+    stage = "wait for two held causal replay acknowledgements";
+    await waitForPendingCausalHandoffs(pageC, 2);
+    const pageCWhilePending = await observe(pageC);
+    const pageDAfterRetraction = await observe(pageD);
+    const pageEAfterRetraction = await observe(pageE);
+
+    stage = "release first held causal replay acknowledgement";
+    const releasedD = await pageD.evaluate(() => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      return root.__zetaBrowserSmoke.releaseCausalReplayAcknowledgements();
+    });
+    if (!releasedD.ok || releasedD.value !== 1) {
+      return failed("smoke-failed", "Page D did not release exactly one held causal replay acknowledgement.");
+    }
+    await waitForCausalHandoff(pageC, "outbound", "duplicate", "tab-d", 1);
+    const pageCAfterFirstAcknowledgement = await observe(pageC);
+
+    stage = "release second held causal replay acknowledgement";
+    const releasedE = await pageE.evaluate(() => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      return root.__zetaBrowserSmoke.releaseCausalReplayAcknowledgements();
+    });
+    if (!releasedE.ok || releasedE.value !== 1) {
+      return failed("smoke-failed", "Page E did not release exactly one held causal replay acknowledgement.");
+    }
+    await waitForCausalHandoff(pageC, "outbound", "duplicate", "tab-e", 0);
 
     stage = "observe final peer handoff after room retraction";
-    const [pageCAfterPeerHandoff, pageDAfterRetraction] = await Promise.all([observe(pageC), observe(pageD)]);
+    const pageCAfterPeerHandoff = await observe(pageC);
     await Promise.all(
-      [pageC, pageD].map((page) =>
+      [pageC, pageD, pageE].map((page) =>
         page.evaluate(() => {
           const root = globalThis as unknown as BrowserSmokeGlobal;
           root.__zetaBrowserSmoke.stop();
@@ -1097,7 +1185,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
         }),
       ),
     );
-    await Promise.all([pageC.close(), pageD.close()]);
+    await Promise.all([pageC.close(), pageD.close(), pageE.close()]);
 
     stage = "recover persisted intent after writer page closes";
     const intentRecovery = await runIntentRecoveryProof(context, baseUrl);
@@ -1124,7 +1212,13 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
       stoppedPageA: stoppedA.value,
       afterRestart: { pageC: pageCAfterRestart },
       retraction: retraction.value,
-      afterRetraction: { pageC: pageCAfterPeerHandoff, pageD: pageDAfterRetraction },
+      afterRetraction: {
+        pageCWhilePending,
+        pageCAfterFirstAcknowledgement,
+        pageC: pageCAfterPeerHandoff,
+        pageD: pageDAfterRetraction,
+        pageE: pageEAfterRetraction,
+      },
       intentRecovery,
     };
     const failures = validateTranscript(transcript);

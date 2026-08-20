@@ -324,6 +324,8 @@ describe("Dark Hall CSS room UI", () => {
         schema: DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA,
         localTabId: "tab-a",
         maxCorrections: 4,
+        pendingHandoffs: 1,
+        maxPendingHandoffs: 3,
         status: "offered",
         direction: "outbound",
         handoffId: "handoff/room",
@@ -356,8 +358,10 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain('data-causal-handoff-peer="tab-b"');
     expect(html).toContain('data-causal-handoff-corrections="1"');
     expect(html).toContain('data-causal-handoff-admitted="0"');
+    expect(html).toContain('data-causal-handoff-pending="1"');
+    expect(html).toContain('data-causal-handoff-capacity="3"');
     expect(html).toContain("peer handoff");
-    expect(html).toContain("1 records · 0 new");
+    expect(html).toContain("1 records · 0 new · 1 / 3 pending");
     expect(css).toContain(".zeta-room-causality");
     expect(css).toContain(".zeta-causal-correction");
     expect(css).toContain(".zeta-causal-handoff");
@@ -374,6 +378,8 @@ describe("Dark Hall CSS room UI", () => {
     expect(llmtv).toContain('data-causal-handoff-direction="outbound"');
     expect(llmtv).toContain('data-causal-handoff-id="handoff/room"');
     expect(llmtv).toContain('data-causal-handoff-peer="tab-b"');
+    expect(llmtv).toContain('data-causal-handoff-pending="1"');
+    expect(llmtv).toContain('data-causal-handoff-capacity="3"');
     expect(llmtv).toContain("handoff · offered");
   });
 
