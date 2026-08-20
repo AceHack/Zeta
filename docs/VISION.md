@@ -704,7 +704,9 @@ reordering, loss, and skew without losing the fix.
 
 For N sources with pairwise correlation ρ, the variance of the sum is
 
-    Var(ΣX) = N σ²  +  N(N−1) ρ σ²
+```
+Var(ΣX) = N σ²  +  N(N−1) ρ σ²
+```
 
 - **ρ = 0** → `N σ²`. Incoherent addition. Amplitude grows as **√N**. This is the same
   statement as *standard error shrinks as 1/√N*.
