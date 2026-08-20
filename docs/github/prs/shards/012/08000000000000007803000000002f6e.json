@@ -1,0 +1,12 @@
+{
+  "pr_number": 12142,
+  "archive_path": "docs/history/pr-reviews/PR-12142-docs-book-raw-balance-not-suppression-the-two-tensions-he-installs-mechanisms-fo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T22:03:23.424Z",
+  "schema_version": "v1",
+  "commit_sha": "bce381fa2fb620d4cb613e8ba674e8f2515bda39",
+  "title": "docs(book): RAW — balance, not suppression: the two tensions he installs mechanisms for",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T22:02:44Z",
+  "head_ref": "shadow/raw-balance-not-suppression"
+}
