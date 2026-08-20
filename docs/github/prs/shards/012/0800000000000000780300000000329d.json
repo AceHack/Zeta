@@ -1,0 +1,12 @@
+{
+  "pr_number": 12957,
+  "archive_path": "docs/history/pr-reviews/PR-12957-hygiene-two-guards-for-the-12876-fork-class-plus-the-declaration-format-they-ser.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T23:04:28.075Z",
+  "schema_version": "v1",
+  "commit_sha": "e36e5b1d54e59c64b136214d09f91563e25d2948",
+  "title": "hygiene: two guards for the #12876 fork class, plus the declaration format they serve",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T23:03:47Z",
+  "head_ref": "hygiene/surface-declaration-guards"
+}
