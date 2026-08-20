@@ -1,0 +1,12 @@
+{
+  "pr_number": 12723,
+  "archive_path": "docs/history/pr-reviews/PR-12723-fix-skills-137-dead-pointers-in-the-executable-playbooks-the-auditor-that-found-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T11:33:25.797Z",
+  "schema_version": "v1",
+  "commit_sha": "bb7ae9c778ccc7e5044139b5b8ad6d6797df208f",
+  "title": "fix(skills): 137 dead pointers in the executable playbooks + the auditor that found them",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T11:32:48Z",
+  "head_ref": "fix/skills-blueprints-stale-pointers"
+}
