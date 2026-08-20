@@ -1,12 +1,12 @@
 {
-  "t": "2026-08-20T19:55:25.097Z",
-  "total_events": 2954,
+  "t": "2026-08-20T20:07:59.415Z",
+  "total_events": 2969,
   "last_action": "attest_peer",
   "last_mode": "work",
-  "last_agent": "otto",
+  "last_agent": "soraya",
   "entropy_state": 0,
   "entropy_heat": 0,
-  "ticks_24h": 509,
+  "ticks_24h": 521,
   "agents_active": 3,
   "claims_pending": 3
 }
