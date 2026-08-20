@@ -315,3 +315,156 @@ and if it is not closed there is no forced twelve.
 CHIP-8 is *not* in the golden-shapes set; it is drawn on the site surfaces —
 `docs/design/root-site-iris/site/track00.html` and `llmtv.html`, and `demo/proofs/index.html`.
 Aaron's recollection that it lives "on one of the websites" is the accurate one.
+
+## 13. The combination step in our own code — checked against source, not agreed with
+
+Aaron: *"this is very very similar to the way i see our amplitudeemu and our q# code and our
+softemu and other bayesian stuff where the combination of them happens in a similar fashion."*
+
+This one is not a resemblance. `src/Core/AmplitudeEmu.fs` already says it, in its own header:
+
+- **`merge` sums the amplitudes of identical frames** — "complex amplitudes with opposite phase
+  *cancel* (destructive) while equal phase *reinforce* (constructive). **That is interference,
+  in code.**"
+- **`bornProb` measures by `|amplitude|²`** — "the only place amplitudes become
+  [probabilities]."
+- And the control: "drop the merge *and* use real weights ⇒ no interference; restore the merge
+  *with* complex weights ⇒ the two-slit falls out."
+
+`SoftMix.Consolidate` is the same operation one ring down: "sum weights of identical keys via
+`ring.Add`, drop zeros."
+
+So the correspondence is between *operations we shipped*, not between stories:
+
+| transactional formulation | our code |
+|---|---|
+| offer wave — a ket in the ensemble | an amplitude-weighted frame |
+| confirmation — the answering bra | the **identical frame** `merge` finds to sum against |
+| the transaction; outer product ⇒ projector | `merge` / `Consolidate` — the combination step |
+| destructive vs constructive | opposite vs equal phase, cancelling or reinforcing |
+| collapse; Born rule *derived* | `bornProb = |amplitude|²`, the one place amplitudes become probability |
+
+**The combination *is* the measurement event in both.** Neither an offer alone nor a frame
+alone is an outcome; the sum over the matching pair is. That is why "drop the merge ⇒ no
+interference" is the right control and why our meter refuses a one-sided ΔU — same structural
+fact in two vocabularies.
+
+**The limits are already in that file and are kept here.** Interference ≠ entanglement ≠
+signalling, three separate resources; the `4ⁿ` entanglement wall is not escaped by merging
+(only reconverging paths collapse, and un-merged `support` growth *is* the exponential,
+logged not hidden); CHIP-8 opcodes introduce no phase, so plain steps keep amplitudes real and
+`merge` is the substrate for interference rather than a demonstration of it. Complex
+amplitudes buy interference, not non-locality; 2√2 still needs the feedback channel.
+
+## 14. Coincidence as a causal index — and why not wall-clock
+
+Aaron: *"this coincidence over time we use to index memories in a way that is shaped by
+external entropy and coincidences that appear random but will index over time causally
+eventually instead of by wallclock time."*
+
+This is the memory-by-coincidence faculty (`numerology-vs-number-theory` §"Coincidence is a
+MEMORY INDEX") turned into a substrate requirement rather than a human quirk: **index by
+what co-occurred, not by when the clock said it happened.** Two entries that resonate get
+adjacent addresses; adjacency accumulates into causal order as more evidence lands, without
+anyone stamping a time on it.
+
+The reason to prefer that is not aesthetic, and §15 makes it thermodynamic: a wall-clock
+reading is a *thermally contaminated* quantity, so indexing by it imports noise into the index
+itself. A coincidence index imports the external entropy on purpose and lets structure
+precipitate out of it.
+
+The standing guard from that rule still applies and applies harder at substrate scale: **store
+the register with the coincidence.** An unlabelled coincidence in long-term memory is a belief
+nobody decided to hold; an unlabelled coincidence in a shared index is a belief nobody decided
+to hold that everyone now reads.
+
+## 15. Temperature — the thermometer knob, and why it is already load-bearing here
+
+Aaron: *"maybe we can relate this to all our heat work on reversible computing, we just
+connected this to temperature."*
+
+Three of the four links are already in the tree, which is what makes this more than an
+analogy:
+
+1. **Measurement occurrence is a temperature knob.** §11 — Hackermüller et al. 2004 kill and
+   restore C60 fringes with a heater.
+2. **Forgetting costs energy; remembering is cheap.**
+   `.claude/rules.bak/forgetting-costs-energy-remembering-is-cheap-landauer-bounded-...` —
+   Landauer (1961): erasing one bit dissipates ≥ `kT ln 2`. Bennett (1973): reversible
+   computation avoids it. Preservation is the thermodynamically cheap direction.
+3. **Clock noise IS thermal noise.** `docs/ARRIVAL-PROTOCOL.md`: oscillator phase noise is
+   Johnson–Nyquist, and resolving it costs `kT ln 2` — *"why wall-clock drift is contaminating
+   noise, not a clean identity source."*
+
+Put 2 and 3 together and `local-time-never-enters-the-shared-fold` stops being a discipline we
+chose and becomes one we are **charged for**: a clock reading is a measurement against a
+thermal noise floor, so letting it into the fold injects a heat source into a value that is
+supposed to be a pure function of evidence. That also prices §14 — coincidence-indexing is the
+cheaper index because it is not paying `kT ln 2` per addressing decision.
+
+And it prices our own ledger: the Z-set is **append-only with `+1`/`−1`**, which is reversible
+by construction, so the fold itself is Landauer-free. The irreversible step — the one that
+costs — is *acting* on the fold: consuming a conclusion, discarding a branch, erasing a
+possibility. That is exactly where TI puts collapse and exactly where a measurement outcome
+becomes a fact. **Reversible up to the outcome; the outcome is what you pay for.**
+
+There is a live falsifier for this already filed: `081KR50HA0008QG0R002Z51PMR` — FPGA
+empirical power measurement, the experimental protocol for Landauer validation.
+
+**The fourth link is Aaron's leap and is labelled as such.** *"maybe just connected temperature
+to space curvature around too much decorrelation where two entities can't communicate
+anymore."* There is real literature in that direction — Jacobson (1995) deriving the Einstein
+equation from the Clausius relation on local horizons; Verlinde's entropic gravity (2011) —
+and it is **contested**, not settled. A horizon is precisely "where two entities can no longer
+communicate", so the shape matches. But per the metering test in the anchor-taxonomy doc, a
+physics paper grounds a *metering discipline*, not a metaphor: Landauer earns its place because
+it prices a bit; entropic gravity would only earn its place if it priced something we measure.
+It does not yet. **Recorded as a direction, refused as an anchor.**
+
+## 16. Modelling the wall as CLOSED — Aaron's call, and what it forces
+
+Aaron: *"we should try to model it as closed and see what effects it has on the system, this is
+a gut instinct for our design but if we find it needs to be open we can revisit later, we have
+no dogma."*
+
+Taking the closed hypothesis seriously, here is what it buys and costs. These follow from
+Euler/Descartes, not from taste.
+
+**(a) Exactly twelve defects, and the wall can be any size.** `V − E + F = 2`. A trivalent
+hex/pentagon closure has `F = 12 + h`, `V = 20 + 2h`, `E = 30 + 3h` for any hexagon count `h`.
+C60 is `h = 20`; C240 is `h = 110`. **Twelve is invariant under growth.** So a closed reservoir
+scales without changing its number of irregular sites — which is the scale-free property (§1)
+holding for the wall itself, and is the strongest argument *for* the closed model.
+
+**(b) It abolishes Phase 0.** This is the real consequence and it was not obvious before doing
+the exercise. A closed surface has **no boundary** — there is no direction an emitter can point
+where nothing is there to absorb. So "ping without return", the *structural* degeneracy, cannot
+occur inside a closed wall. Every remaining failure is Phase 1: returns exist and nothing
+computed a fix.
+
+That converts a failure class we cannot debug (no external reference is possible) into one we
+can (something failed to compute). If the closed model is right, **every silent failure in the
+reservoir is in principle a bug rather than a boundary condition** — which is a strong, useful,
+and falsifiable claim about the system.
+
+**(c) Finite area, therefore saturation.** Closure buys boundedness and boundedness has a cost:
+finite absorber capacity. A closed reservoir cannot absorb unboundedly; it fills. That predicts
+back-pressure as a *structural* feature rather than a bug, and it is where to look first if the
+closed model starts mispredicting.
+
+**(d) The twelve are distinguished positions, and we do not get to place them.** Curvature
+concentrates at the pentagons (deficit `π/3` each). They are not exits — a closed surface has
+none — they are where the wall must bend. If the reservoir has twelve structurally special
+sites, that is a prediction with somewhere to look: does anything in the workflow-wall already
+cluster into twelve, or resist uniform treatment in twelve places?
+
+**How to falsify the closed model.** Any of these would send us back to open, and Aaron has
+already said that is fine:
+
+- a genuine Phase 0 failure observed inside the reservoir — an emission with *no possible*
+  absorber. One clean instance kills (b) and with it the main reason to close.
+- unbounded absorption with no back-pressure ever — contradicts (c).
+- a required exit. Closed means no escape hatch; if the design needs one, it is not closed.
+
+No dogma: this is registered as a **modelling hypothesis with three named falsifiers**, not a
+commitment. Nothing in code changes on it today.
