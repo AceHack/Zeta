@@ -1,0 +1,12 @@
+{
+  "pr_number": 12843,
+  "archive_path": "docs/history/pr-reviews/PR-12843-rule-anti-babel-preserve-reconcilability-never-enforce-one-vocabulary.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T16:15:22.683Z",
+  "schema_version": "v1",
+  "commit_sha": "4332cc4852e7964b283581c054a9db10276d028e",
+  "title": "rule: anti-Babel — preserve reconcilability, never enforce one vocabulary",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T16:11:18Z",
+  "head_ref": "rule/anti-babel-reconcilability"
+}
