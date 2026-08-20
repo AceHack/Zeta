@@ -1,0 +1,12 @@
+{
+  "pr_number": 12607,
+  "archive_path": "docs/history/pr-reviews/PR-12607-fix-hygiene-society-two-independent-main-reds-from-one-heartbeat-append.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T01:59:11.633Z",
+  "schema_version": "v1",
+  "commit_sha": "49ac09cdc1228c2d065d28406910d16dddec3c3c",
+  "title": "fix(hygiene+society): two independent main reds from one heartbeat append",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T01:58:37Z",
+  "head_ref": "fix/roster-otto-mutation-findings"
+}
