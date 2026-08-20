@@ -1,11 +1,12 @@
 ---
 id: 081M0DY68KN087G0R002MQ1BDR
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: memory-index-drift-check-conflates-calendar-drift-with-index
 title: "memory-index-drift check conflates calendar drift with index drift -- daily false positive on any memory/** PR"
 created: 2026-08-19T21:17:45.461Z
+completed: 2026-08-20T12:23:18.982Z
 depends_on: []
 composes_with: []
 ---
