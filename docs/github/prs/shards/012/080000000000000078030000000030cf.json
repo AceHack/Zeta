@@ -1,0 +1,12 @@
+{
+  "pr_number": 12495,
+  "archive_path": "docs/history/pr-reviews/PR-12495-feat-design-confusable-shape-guard-a-uts-39-skeleton-for-the-mark-vocabulary-and.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T21:14:08.398Z",
+  "schema_version": "v1",
+  "commit_sha": "005ebe26b03c330ae424ae4190d9380f8102ec6c",
+  "title": "feat(design): confusable-shape guard — a UTS #39 skeleton for the mark vocabulary, and the fix it demanded",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T21:08:30Z",
+  "head_ref": "iris/confusable-shape-guard"
+}
