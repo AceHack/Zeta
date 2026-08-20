@@ -1,0 +1,14 @@
+{
+  "id": "080d00da97289010a0130008d213d293",
+  "at": "2026-08-19T18:40:12.562Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DN5S8H087G0R0024X3JEQ",
+    "type": "task",
+    "title": "Witness independence is assumed, never measured: measure the fleet's actual delta-U correlation rho and floor quorums on effective witness count",
+    "slug": "witness-independence-is-assumed-never-measured-measure-the-f",
+    "priority": "P1",
+    "filename": "081M0DN5S8H087G0R0024X3JEQ-witness-independence-is-assumed-never-measured-measure-the-f.md"
+  }
+}

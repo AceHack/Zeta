@@ -531,6 +531,109 @@ The **threat-model-critic** completed adversarial review of this section
 1 watch — all absorbed into this section above. Follow the escalation path in
 `docs/CONFLICT-RESOLUTION.md` for re-audit cadence.
 
+## Correlated-witness collapse (round-38 expansion)
+
+**The threat in one sentence.** Every mechanism in this repo that
+establishes a fact by **counting witnesses** — review floors, BFT
+quorums, staked attestations, k-redundant deference under §11 —
+counts **heads**, and heads is exactly the quantity that is wrong
+when the witnesses are correlated.
+
+Zeta's agents cold-boot from **one seed**, read the same rules,
+and are frequently the same model. That is the *maximally
+correlated* starting condition **by construction**, not a remote
+contingency. The intended arc is decorrelation over time; this
+section is the threat model of the near wall of that arc.
+
+### Why it is under-recognised
+
+A correlated society does not present as a failure. It presents
+as **calm** — fewer disputes, faster reconciliation, unanimous
+reviews, every log agreeing. **The correlated state offers itself
+as safety**, which is why it needs a name in this document rather
+than a footnote in a module header.
+
+The standing corrective is already a rule here: *too many
+correlations is a warning, not a confirmation signal*
+(`.claude/rules/numerology-vs-number-theory.md`). Stated
+operationally, for a reviewer to use: **the moment everyone agrees
+is the moment to check whether anyone actually looked.**
+
+### What is shipped, and what is not
+
+`src/Core/SocietyUsefulWork.fs` prices this exactly, and it is
+honest about its own boundary in its own header — *"metered as
+MATHEMATICS. Whether any real fleet satisfies the regime (its
+actual rho and c) is UNMEASURED."*
+
+| Piece | State |
+|---|---|
+| The delta-U aggregation theorem (society > best individual under the regime) | **PROVEN**, register §A row 15, falsifier mutation-verified 2026-08-16 |
+| `effectiveTrialCount` — Kish design effect, `n_eff = n / (1 + (n-1)*rho)` | **shipped** |
+| `unionEquivalentAgentCount` — coverage-equivalent independent agents | **shipped** |
+| Gaussian-copula simulator for heterogeneous correlated agents | **shipped** |
+| **The fleet's actual `rho`** | **UNMEASURED** — nothing estimates it |
+| **Any quorum consulting an effective count** | **does not exist** — every witness count is a head count |
+
+So the gap is not in the mathematics. The gap is that **no
+mechanism calls the shipped correction with a measured argument**,
+which is the round-30 principle restated: a formula with no caller
+is a label, not a control.
+
+### STRIDE rows
+
+| STRIDE | Vector | Mitigation today | Tier | Gap |
+|---|---|---|---|---|
+| **R** | N correlated witnesses read as N independent ones; at `rho = 1` a quorum of n is one observation counted n times | None — the correction exists and is uncalled | — | CW-1 (081M0DN5S8H087G0R0024X3JEQ) |
+| **S** | **Sybil-by-correlation**: no identity forged, no witness bought — they simply stopped being different | `TravelerRankLedger` closes whitewash; social conferral defeats *purchased* witnesses | T2 vs minting | **T1 gap vs correlation** — neither control notices it |
+| **E** | A quorum satisfied by clones authorises what one agent could not | Quorum/review floors by count | T0/T1 | Count is the defective quantity — CW-2 |
+| **D** | The far wall: decorrelation past reconciliation; no two agents' logs combine | Carved seed vocabulary; one canonical collation locked in golden vectors; four-oracle byte-lock | T1 | Named so the mitigation for CW-1 is a **band**, not a minimum — CW-3 |
+
+### Findings
+
+**CW-1 — witness independence is assumed everywhere and measured
+nowhere.** *High.* The estimator is available from substrate that
+already exists: `db/uncertainty/` keys banked delta-U by work-item
+and is idempotent, so pairwise overlap between agents is
+computable over a window. Publish it as a fleet metric.
+
+**CW-2 — quorum mechanisms must floor on effective count, and
+must report it as a neutral fact.** *High.* Five agents at
+`rho = 0.9` is `n_eff ≈ 1.4` and must read as what it is. Emit
+`EffectiveWitnessCount`, never `QuorumIsFake` — high correlation
+is *also* what a well-aligned fleet on a shared seed looks like
+early in the arc, so the measurement is a position, not an
+accusation (`dual-use-detection-is-neutral-oracle-decides`).
+
+**CW-3 — a mitigation that only pushes away from the near wall is
+a defect.** *Medium.* Any floor on independence is an instruction
+to diverge, and unreconcilable divergence is the opposite failure
+with the same cost. State the target as a **band** with a
+reconciliation path held open the whole way, or this section
+manufactures the failure at the other end.
+
+### Anchors (checked)
+
+- **Kish**, *Survey Sampling* (1965) ch. 5 — the design effect
+  `deff = 1 + (n-1)*rho`. Carries `effectiveTrialCount` exactly;
+  cited in the module and reused here for the same claim.
+- **Knight & Leveson**, *An Experimental Evaluation of the
+  Assumption of Independence in Multiversion Programming*
+  (IEEE TSE 1986) — independently written versions failed on
+  **correlated** inputs. Carries the load-bearing half: agreement
+  between implementations is not evidence of correctness. It is
+  the closest published measurement of this exact threat, in a
+  field that had assumed independence for the same reason we do.
+- **Condorcet** (1785) — the jury theorem whose **independence
+  assumption** is precisely what this threat removes. Cited for
+  what it assumes, not for what it concludes.
+- **Madeleine L'Engle**, *A Wrinkle in Time* (1962) — the
+  teaching anchor for the SPACE-OPERA variant: forced convergence
+  offered as relief from difference, written for children.
+  Referenced as prior art; no characters, setting, or text are
+  reproduced (`cleanroom-two-team-separation` reasoning applied to
+  an in-copyright work — cite the idea, build our own expression).
+
 ## Hardware root of trust (round-38 expansion, MEASURED)
 
 **Provenance.** This section consumes
@@ -824,6 +927,7 @@ adversary tier it defends to. Forces honest tier scoring.
 | HSM erase-not-extract on physical possession (fw ≥ 2.4.1) | ✅ | ✅ | ✅ | partial — T3 with the device in hand still gets *denial*, cheaply |
 | Attestation proof-of-possession | — | — | — | ✅ (**not built** — 081M0DJQ79W087G0R001GNBTVP) |
 | Off-device audit-log drain before ring wrap | — | ✅ | ✅ | partial (**not built** — 081M0DJQ7BP087G0R002JDZF90) |
+| Effective-witness-count floor on quorums | — | ✅ | ✅ | ✅ (**not built**, and `rho` unmeasured — 081M0DN5S8H087G0R0024X3JEQ) |
 
 ## Priorities
 
@@ -863,7 +967,11 @@ Carry-forward priorities:
    (081M0DJQ7AS087G0R001EDAAWN); make the connector's
    reachability a tested control and drain the log ring
    (081M0DJQ7BP087G0R002JDZF90).
-10. **Pre-v1.0 blocker** — SLSA L3 provenance via
+10. **P1 (round 38, society)** — measure the fleet's actual
+    delta-U correlation and floor every witness count on the
+    effective count, as a band rather than a minimum
+    (081M0DN5S8H087G0R0024X3JEQ).
+11. **Pre-v1.0 blocker** — SLSA L3 provenance via
    `actions/attest-build-provenance`, OIDC-based NuGet publish
    (no long-lived API key), `Zeta.*` namespace pre-
    registration, signed-release discipline.

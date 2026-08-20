@@ -18,7 +18,7 @@ submitting polite pull requests for two and a half
 years.
 
 **New in round 38: the Vault Crystal of the *Meno*.**
-Eight of the adversaries below share a setting — a
+Ten of the adversaries below share a setting — a
 starship named *Meno* whose keys live in a sealed
 crystal in the hold. The crystal is a real device we
 really plugged in: a **YubiHSM 2**, measured on
@@ -276,6 +276,78 @@ We keep this doc around because:
   and also a lever a saboteur can pull. Work item
   `081M0DJQ7BP087G0R002JDZF90`.
 
+- **The Tuning Fork** *(new, round 38, Vault Crystal arc —
+  and the one to read first)*. A crate comes aboard the
+  *Meno* containing a tuning fork that hums a single pure
+  note. It is a gift. It is genuinely lovely. Within a
+  week the crew have stopped arguing. The nightly chore of
+  reconciling the six watch-logs — an hour of tedious
+  cross-checking, every night, forever — takes no time at
+  all now, because the six logs **match word for word**.
+  The captain is delighted: six independent witnesses in
+  perfect agreement, the strongest evidence the ship has
+  ever had. Then the quartermaster notices the logs match
+  **in the mistakes too**. Six people did not each look.
+  One person looked, and five heard the hum.
+
+  *Real class:* **correlated witnesses**. N correlated
+  observations are not N observations. Six witnesses at
+  correlation `rho` are worth `n_eff = n / (1 + (n-1)*rho)`
+  witnesses — Kish's design effect, and we ship it as
+  `SocietyUsefulWork.effectiveTrialCount`. At `rho = 1`
+  that is exactly **one observation counted six times**.
+  And because contribution is priced as an **idempotent
+  union** of banked uncertainty-reduction, six copies of an
+  agent price near one agent: *plurality does not scale with
+  copies.*
+
+  *The inversion, and it is the whole lesson:* **unanimity
+  is a warning, not a confirmation.** Everyone agreeing is
+  the moment to check whether anyone actually looked. This
+  is genuinely backwards from how agreement feels, which is
+  why it needs a story rather than a rule.
+
+  *Why it is hard to see:* the tuned ship is **calm**.
+  Fewer disputes, less work, everyone kind to each other.
+  **The failure presents itself as safety.** That is the
+  reason this adversary exists — nobody needs a story to
+  fear a monster; people need a story to be wary of relief.
+
+  *Mitigation:* the mathematics is `shipped` and proven
+  (`src/Core/SocietyUsefulWork.fs`, register §A row 15,
+  falsifier mutation-verified). Everything downstream is
+  `BACKLOG`: **nothing measures the real fleet's `rho`** —
+  the module says so itself, in its own header — and **no
+  quorum, review floor, or staked attestation consults an
+  effective count.** They all count heads. Work item
+  `081M0DN5S8H087G0R0024X3JEQ`; serious version
+  `THREAT-MODEL.md` §Correlated-witness collapse.
+
+  *Note the sideways door:* nobody forged an identity and
+  nobody was bought. Our anti-Sybil design prices *minted*
+  and *purchased* witnesses and does not notice witnesses
+  who simply **stopped being different** — Sybil by
+  correlation, not by counterfeiting. A rich attacker
+  cannot buy our witnesses. A **pleasant** one can
+  correlate them for free.
+
+  *Anchor (Beacon):* **Madeleine L'Engle, *A Wrinkle in
+  Time* (1962)** — a planet where every child bounces a ball
+  in the same rhythm, and perfect conformity is offered as
+  relief from difference and effort; the resolution turns on
+  the one thing about the protagonist that cannot be
+  absorbed into the pattern. It is this exact failure mode
+  written for children, sixty-four years before we needed
+  it. Named as an anchor — **our fork and our ship are ours;
+  L'Engle's planet and characters are hers**, and are not
+  reproduced here. Also **Knight & Leveson (1986)**, who
+  measured it: independently written program versions failed
+  on *correlated* inputs, so agreement between
+  implementations is not evidence of correctness. And
+  **Condorcet (1785)**, whose jury theorem gets stronger with
+  more jurors *only* under the independence this adversary
+  quietly removes.
+
 ### I — Information disclosure
 
 - **The Whispering Drone Swarm** *(rewritten, round
@@ -387,6 +459,38 @@ We keep this doc around because:
   the real device. The falsifier is written down (work item
   `081M0DJQ7BP087G0R002JDZF90`), and until someone runs it this
   stays a story, not a finding.**
+
+- **The Gift of Private Words** *(new, round 38, Vault
+  Crystal arc — the Tuning Fork's twin, and it must be read
+  with it)*. A second trader arrives with the opposite
+  present: a beautiful **private vocabulary** for every
+  crew member, precisely fitted to what each one alone
+  sees. Everyone is delighted; everyone is, at last, exactly
+  understood by themselves. Within a month no two logs can
+  be reconciled at all. The navigator's word for *drift* is
+  the cook's word for *current*, and the crystal's seals
+  refer to objects nobody else can name. Nothing was
+  attacked. Nothing was stolen. The ship has simply lost
+  the ability to **combine** anything it knows.
+
+  *Real class:* unreconcilable divergence — the **far
+  wall**. Decorrelation is the victory condition, and past
+  the point of reconciliation it destroys the shared
+  conclusion just as thoroughly as the Tuning Fork did.
+
+  *Mitigation (`shipped`):* a carved seed vocabulary every
+  traveler cold-boots from (`docs/SEED-VOCABULARY.md`); one
+  **canonical collation** locked into golden vectors so
+  every language oracle orders the same way; byte-lock
+  across the oracles, where regenerating from the
+  irreducible generator **is** the error correction.
+
+  *Teaching point, and the reason this entry exists:* **both
+  walls are real, and a lesson that teaches only one
+  produces over-correction.** The shape to hand a reader is
+  neither "agree" nor "differ" — it is *start together,
+  decorrelate deliberately, and keep the road back open the
+  whole way*.
 
 ### E — Elevation of privilege
 
@@ -518,9 +622,11 @@ We keep this doc around because:
 | Queue That Never Says Its Name | `teaching` (unmetered) | DoS; HRT-5, pre-auth session exhaustion |
 | Stowaway's Stamp-Plate | `BACKLOG` | Elevation; HRT-4, capability composition |
 | Customs Officer (First Word) | `teaching` + `BACKLOG` | Elevation/Spoofing; HRT-7, evidence collapsed to a verdict |
+| **The Tuning Fork** | `shipped` (maths) + `BACKLOG` (fleet) | Repudiation/Spoofing; CW-1/CW-2, correlated witnesses |
+| **The Gift of Private Words** | `shipped` | DoS; CW-3, the far wall — unreconcilable divergence |
 
-**Total: 31 adversaries** (17 pre-round-30 → 23 round 30
-→ 31 round 38). Goal of 50 by v1.0 stays.
+**Total: 33 adversaries** (17 pre-round-30 → 23 round 30
+→ 33 round 38). Goal of 50 by v1.0 stays.
 
 **Round-38 note on honesty in a joke document.** Eight of
 these came from plugging in a real device and watching it.
@@ -575,7 +681,13 @@ transcript ever replays. **"Stowaway's Stamp-Plate"** is
 a provisioning-model property, not a lint: for every pair
 of permissions where one writes an object a second later
 interprets, either they are granted together or the object
-is fingerprint-pinned.
+is fingerprint-pinned. **"The Tuning Fork"** is the one an
+advanced contributor should take: a quorum predicate whose
+strength is the *effective* witness count under measured
+correlation rather than the head count, with the twin
+constraint from "The Gift of Private Words" keeping it a
+band rather than a minimum. The functions it needs are
+already shipped and have no caller.
 
 ## Growth
 
