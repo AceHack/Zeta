@@ -167,3 +167,23 @@ llvm tier=standard
 # single-source-of-truth discipline (the maintainer 2026-08-06: "download whatever
 # tools we need and link them in our declarative installers for all our OS shields").
 pandoc tier=standard
+
+# ── YubiKey hardware-token substrate ──────────────────────────────────────────
+# macOS counterpart of the block appended to manifests/apt. Deliberately SHORTER
+# than the apt block, and the asymmetry is the point:
+#
+#   - no pcscd/libpcsclite1: macOS ships its own CCID stack (verified on the
+#     maintainer's host -- the YubiKey appears under SPSmartCardsDataType with an
+#     Apple ifd-ccid driver and no daemon installed by us).
+#   - no yubihsm-shell: THERE IS NO BREW FORMULA. `brew info yubihsm-shell`
+#     resolves to nothing (checked 2026-08-20). Yubico ships the YubiHSM SDK as a
+#     macOS .pkg, which is why the working copy on the maintainer's host lives at
+#     /usr/local/bin rather than /opt/homebrew/bin -- it did not come from brew.
+#     Wiring that pkg through the from-installer mechanism is deliberately NOT
+#     done in this commit: it needs a pinned URL + checksum, and an unpinned
+#     installer download is exactly the kind of unverified binary the proof-lineage
+#     rule refuses. Tracked separately rather than half-declared here.
+#
+# Verified against brew 2026-08-20: ykman 5.9.2, yubico-piv-tool 2.7.3.
+ykman             # YubiKey CLI — PIV/FIDO2/OpenPGP/YubiHSM-Auth applet management
+yubico-piv-tool   # PIV slot + attestation tooling

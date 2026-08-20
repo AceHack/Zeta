@@ -178,3 +178,47 @@ llvm
 # NOTE: apt entries are BARE package names (the awk parser passes the whole line to
 # apt-get; a `tier=` suffix would be read as a version-pin — brew uses tier=, apt does NOT).
 pandoc          # document conversion — book/EPUB build (tools/book-build)
+
+# ── YubiKey / YubiHSM hardware-token substrate ────────────────────────────────
+# Declarative per the maintainer's standing rule quoted in manifests/brew:
+# "download whatever tools we need and link them in our declarative installers
+# for all our OS shields". Hardware present on the maintainer's bench 2026-08-20:
+# YubiHSM 2 (serial 39160506, fw 2.4.1) + 2x YubiKey 5 (fw 5.7.4).
+#
+# WHY LINUX NEEDS MORE THAN macOS HERE. macOS ships a CCID smartcard stack in the
+# OS, so `brew install ykman` is sufficient there. Linux does not: without a
+# running PC/SC daemon the CCID interface is invisible and ykman reports NO device
+# even though it is plugged in and enumerated on USB. That is a silent
+# half-working install -- the tool present, the device unreachable -- so pcscd and
+# its client library are declared HERE rather than assumed from the runner image.
+#
+# udev: the yubikey-manager deb ships rules under /lib/udev/rules.d/ granting
+# non-root access to the Yubico vendor id (0x1050). (The yubihsm-shell deb ships
+# its own rules for the HSM, but that package is not declared here -- see below --
+# so an HSM on a Linux host still needs those rules from Yubico's own repo.)
+# Installing via apt is what puts them there; a pip/binary install of ykman does
+# NOT, which is the usual reason a working macOS setup fails to reproduce on Linux.
+#
+# Verified installable on the runner 2026-08-20. Two corrections are recorded here
+# because both are the same error in different disguises:
+#
+#   1. A first lookup returned 000 for four names. That is a FAILED REQUEST, not an
+#      absent package; re-running returned 200. Reading a timeout as "not packaged"
+#      is how a check that did not run gets treated as one that did.
+#
+#   2. yubihsm-shell WAS declared here on the strength of a 200 from
+#      packages.ubuntu.com/noble, and CI then failed with
+#      `E: Unable to locate package yubihsm-shell`. The 200 proved the package
+#      exists IN THE DISTRO ARCHIVE. It did not prove it is installable FROM THE
+#      SOURCES THIS RUNNER HAS CONFIGURED, which is the proposition that actually
+#      had to hold. Verifying the weaker claim and treating it as the stronger one
+#      is the whole failure mode -- so the entry is gone rather than papered over
+#      with an apt-source change nobody asked for. It is now absent on BOTH
+#      platforms (see manifests/brew), which is at least honest and symmetric:
+#      the YubiHSM CLI is undeclared everywhere until it can be pinned properly.
+#
+# The four below are confirmed installable: CI installed them.
+yubikey-manager   # ykman CLI — PIV/FIDO2/OpenPGP/YubiHSM-Auth applet management
+yubico-piv-tool   # PIV slot + attestation tooling (hardware proof a key never left)
+pcscd             # PC/SC smartcard daemon — REQUIRED for CCID; macOS has this built in
+libpcsclite1      # PC/SC client library ykman links against

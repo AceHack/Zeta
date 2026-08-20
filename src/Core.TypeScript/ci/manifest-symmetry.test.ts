@@ -95,6 +95,24 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
     "Emscripten is a large full compiler-lane dependency; defer Windows installation until manifests/windows supports host tiers instead of forcing it onto every base host.",
   llvm: "LLVM is a large full compiler-lane dependency; defer Windows installation until manifests/windows supports host tiers instead of forcing it onto every base host.",
   zig: "Zig is already installed cross-platform by mise from .mise.toml; it does not belong in the Windows system-package manifest.",
+
+  // ── YubiKey / YubiHSM (2026-08-20) ──────────────────────────────────────────
+  // Windows disposition is an EXCEPTION rather than a scoop id, and the reason is
+  // the same for all five: Yubico distributes its Windows tooling as signed MSI
+  // installers, and neither the scoop main/extras buckets nor a winget id was
+  // verifiable from the host this was authored on. Guessing an id here would put an
+  // unverified package name into the install path for every Windows host -- a claim
+  // dressed as a declaration. An honest exception beats a plausible guess.
+  "yubikey-manager":
+    "Yubico ships the YubiKey Manager CLI for Windows as a signed MSI, not via scoop/winget-verified id; declare only once a pinned installer id is verified rather than guessed.",
+  ykman:
+    "brew's formula name for the same YubiKey Manager CLI as apt's yubikey-manager; same Windows disposition as that entry.",
+  "yubico-piv-tool":
+    "Yubico ships the PIV tool for Windows inside the YubiKey Manager/PIV MSI bundle rather than as a standalone scoop/winget package.",
+  pcscd:
+    "Windows has a built-in smartcard service (SCardSvr); no package to install. The Linux-only entry exists because Linux has no equivalent running by default.",
+  libpcsclite1:
+    "PC/SC client library is Linux-only; the Windows equivalent (WinSCard) is an OS component.",
 };
 
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {
