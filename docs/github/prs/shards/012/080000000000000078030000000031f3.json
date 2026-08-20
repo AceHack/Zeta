@@ -1,0 +1,12 @@
+{
+  "pr_number": 12787,
+  "archive_path": "docs/history/pr-reviews/PR-12787-craft-research-teach-the-free-object-rule-from-our-own-source-correct-a-third-fa.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T14:19:12.564Z",
+  "schema_version": "v1",
+  "commit_sha": "7f3a97ec75783ab7c9c716ba9585860a2d240162",
+  "title": "craft+research: teach the free-object rule from our own source; correct a third false absence; the towers join at homoiconicity",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T14:18:35Z",
+  "head_ref": "craft/free-object-rule-and-universal-isa"
+}
