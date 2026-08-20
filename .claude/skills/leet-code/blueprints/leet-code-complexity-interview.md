@@ -246,6 +246,6 @@ Common probes and the right response shape:
 - `.claude/skills/mathematics-and-physics/blueprints/complexity-theory-expert.md` —
   theoretical rigour; lower bounds, class membership,
   reductions.
-- `.claude/skills/algorithms-expert/SKILL.md` — when
+- `.claude/skills/leet-code/SKILL.md` — when
   the analysis is a genuine research-grade question
   rather than interview rigor.

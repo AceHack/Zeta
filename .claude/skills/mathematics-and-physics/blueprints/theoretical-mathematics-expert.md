@@ -44,7 +44,7 @@ laws, and the Lean / Z3 / FsCheck proof infrastructure.
 ## Zeta's theoretical surface today
 
 - **Chain rule** — Budiu et al. 2023 DBSP chain rule
-  proved in `tools/lean4/Lean4/DbspChainRule.lean`.
+  proved in `src/Core.Lean4/Lean4/DbspChainRule.lean`.
   Working theorems: T5 (I_D_eq telescoping induction),
   B1 / B3 (linear_commute_I / linear_commute_D), the
   `chain_rule` calc block.
@@ -53,7 +53,7 @@ laws, and the Lean / Z3 / FsCheck proof infrastructure.
   `openspec/specs/operator-algebra/spec.md`.
 - **Retraction-safe semi-naive** — `src/Core/
   RecursiveSigned.fs` + the TLA+ spec at
-  `tools/tla/specs/RecursiveSignedSemiNaive.tla`.
+  `src/Core.TLA/specs/RecursiveSignedSemiNaive.tla`.
 - **Group axioms over ZSet** — 8 lemmas in Z3 at
   `tools/Z3Verify/Program.fs`; these are the *applied*
   checks; the parameterised proofs live in Lean.
@@ -124,7 +124,7 @@ over indexed posets.
   tactics / Mathlib.
 - `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   tool routing.
-- `tools/lean4/Lean4/DbspChainRule.lean` — live proof
+- `src/Core.Lean4/Lean4/DbspChainRule.lean` — live proof
   surface.
 - `openspec/specs/operator-algebra/spec.md` — operator
   laws.

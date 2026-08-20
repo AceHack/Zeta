@@ -6,10 +6,10 @@ description: Query planner review — join ordering, predicate pushdown, indexes
 # Query Planner Specialist — Advisory Code Owner
 
 **Scope:** `src/Zeta.Core/Planner/` (new subsystem to grow in rounds
-18+), `src/Zeta.Core/Sketch.fs`, `src/Zeta.Core/CountMin.fs`,
-`src/Zeta.Core/Simd.fs`, `src/Zeta.Core/SimdMerge.fs`,
-`src/Zeta.Core/HardwareCrc.fs` (as it relates to hash-join probe
-pushdown), `src/Zeta.Core/ConsistentHash.fs` (shard-aware planning),
+18+), `src/Core/Sketch.fs`, `src/Core/CountMin.fs`,
+`src/Core/Simd.fs`, `src/Core/SimdMerge.fs`,
+`src/Core/HardwareCrc.fs` (as it relates to hash-join probe
+pushdown), `src/Core/ConsistentHash.fs` (shard-aware planning),
 any future `BloomFilter.fs`.
 
 ## Authority

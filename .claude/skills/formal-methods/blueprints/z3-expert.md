@@ -255,7 +255,7 @@ without ever running.
 
 - `tools/Z3Verify/Program.fs` — the 16+ lemmas, each a
   worked SMT example.
-- `tools/Z3Verify/Z3Verify.fsproj` — .NET 10 console exe,
+- `src/Core.FSharp.Z3Verify/Z3Verify.fsproj` — .NET 10 console exe,
   FSharp.Core only.
 - `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` — xUnit
   wrapper; pattern to match for new lemmas.

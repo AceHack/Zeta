@@ -72,9 +72,9 @@ DocuSign). Record which tier was used.
 ## Composes with
 
 - `docs/consent/glass-halo/README.md` (convention) + `SIGNING.md` (Touch-ID mechanism)
-- `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (named-human acceptance)
-- `.claude/rules/non-coercion-invariant.md` (HC-8) + 081KRW63S0008QG0R001WKJN53 (consent-as-Limit, revocable)
-- `.claude/rules/glass-halo-bidirectional.md` + the externalized-record economy (the record IS the consent)
+- `.claude/rules.bak/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (named-human acceptance)
+- `.claude/rules.bak/non-coercion-invariant.md` (HC-8) + 081KRW63S0008QG0R001WKJN53 (consent-as-Limit, revocable)
+- `.claude/rules.bak/glass-halo-bidirectional.md` + the externalized-record economy (the record IS the consent)
 - 081KRW63S0008QG0R002WT5VTQ (child-safety > consent) + 081KSRGFP0008QG0R00091PP56 (kid-safety-absolute) -- the overriding floor
 
 ## Origin

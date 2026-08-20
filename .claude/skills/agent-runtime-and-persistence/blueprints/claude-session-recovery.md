@@ -85,7 +85,7 @@ further before recommending a fix.
 
 The Claude Code auto-mode classifier blocks the agent from running
 the `--apply` invocation directly. This is correct per
-`.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`
+`.claude/rules.bak/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`
 — editing `.jsonl` files in `~/.claude/projects/` is harness-state
 modification + needs operator-level authorization beyond chat agreement.
 
@@ -152,13 +152,13 @@ the human-audit-attribution rule.
 - `src/Core.TypeScript/claude-code-recovery/repair-jsonl-strip-images.ts` — the
   script this skill drives
 - `src/Core.TypeScript/claude-code-recovery/README.md` — full tool documentation
-- `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`
+- `.claude/rules.bak/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`
   — the standing operator-self-constraint that mandates the
   operator-runs split for `--apply`
-- `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`
+- `.claude/rules.bak/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`
   — the four-field attribution scaffold (would apply if this becomes
   recurring enough to want automation past operator-runs)
-- `.claude/rules/verify-before-deferring.md` — verify the target
+- `.claude/rules.bak/verify-before-deferring.md` — verify the target
   exists + is in the state you expect before recommending any action
 
 ## Empirical anchor

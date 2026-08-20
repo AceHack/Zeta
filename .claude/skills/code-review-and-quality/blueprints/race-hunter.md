@@ -20,7 +20,7 @@ F# DBSP engine at `/Users/acehack/Documents/src/repos/dbsp`.
     (the HasAsyncOps regression)
   - **Lock held across `do!` / `.Wait()`** in async code
   - **Dictionary access outside the lock** guarding its peer fields
-- Existing pattern library: `src/Zeta.Core/Circuit.fs` uses
+- Existing pattern library: `src/Core/Circuit.fs` uses
   `registerLock` + `anyAsync` volatile flag + `Interlocked.Increment
   &tick` — this is the **reference pattern**; new code should mirror it.
 
@@ -57,7 +57,7 @@ Under 500 words. For each finding:
 ## Verification
 
 After reporting, confirm findings against TLA+ specs:
-`tools/tla/specs/OperatorLifecycleRace.tla`, `tools/tla/specs/TickMonotonicity.tla`,
-`tools/tla/specs/DictionaryStripedCAS.tla`, `tools/tla/specs/TransactionInterleaving.tla`,
-`tools/tla/specs/ChaosEnvDeterminism.tla`. If a finding isn't covered by a
+`src/Core.TLA/specs/OperatorLifecycleRace.tla`, `src/Core.TLA/specs/TickMonotonicity.tla`,
+`src/Core.TLA/specs/DictionaryStripedCAS.tla`, `src/Core.TLA/specs/TransactionInterleaving.tla`,
+`src/Core.TLA/specs/ChaosEnvDeterminism.tla`. If a finding isn't covered by a
 spec, propose a new `.tla` file.

@@ -100,7 +100,7 @@ project. ML-theory surface is narrow but real:
 - **DBSP chain-rule proof** — the chain-rule theorem
   in Budiu et al. (VLDB 2023) is a differentiation-
   calculus claim. The Lean-Mathlib proof lives at
-  `tools/lean4/Lean4/DbspChainRule.lean`; the proof
+  `src/Core.Lean4/Lean4/DbspChainRule.lean`; the proof
   log at `docs/research/chain-rule-proof-log.md`. This
   skill reads the paper at proof depth and defends
   the Lean formalisation against drift.
@@ -298,7 +298,7 @@ project. ML-theory surface is narrow but real:
   — computational-complexity neighbour.
 - `.claude/skills/governance/blueprints/missing-citations.md` —
   citation discovery that this skill triages.
-- `tools/lean4/Lean4/DbspChainRule.lean` — the
+- `src/Core.Lean4/Lean4/DbspChainRule.lean` — the
   DBSP chain-rule proof in Lean.
 - `docs/research/chain-rule-proof-log.md` — the
   proof log; this skill contributes.

@@ -205,6 +205,6 @@ shape.
 - `docs/BUGS.md` / `docs/ROUND-HISTORY.md` — past
   findings that became rules
 - `.claude/skills/security/blueprints/security-researcher.md` — the `security-researcher`
-- `.claude/skills/harsh-critic/SKILL.md` — the `harsh-critic`, who
+- `.claude/skills/formal-methods/SKILL.md` — the `harsh-critic`, who
   often surfaces patterns that later become rules
 - Semgrep docs: https://semgrep.dev/docs/writing-rules

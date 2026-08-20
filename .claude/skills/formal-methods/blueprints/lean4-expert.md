@@ -129,7 +129,7 @@ mode for the one-line base cases.
 ## Writing a new proof file
 
 1. Create `tools/lean4/Lean4/MyProof.lean`.
-2. Add `import Lean4.MyProof` to `tools/lean4/Lean4.lean`
+2. Add `import Lean4.MyProof` to `src/Core.Lean4/Lean4.lean`
    (the library root). Without this, `lake build` won't
    elaborate the new file.
 3. Set imports at the top of the new file; prefer
@@ -198,7 +198,7 @@ but tractable. Open when someone has the time.
 
 ## Reference patterns
 
-- `tools/lean4/Lean4/DbspChainRule.lean` — the real
+- `src/Core.Lean4/Lean4/DbspChainRule.lean` — the real
   proof
 - `tools/lean4/lakefile.toml` + `lake-manifest.json` +
   `lean-toolchain` — load-bearing project scaffolding

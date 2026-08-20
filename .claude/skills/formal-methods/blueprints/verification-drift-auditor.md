@@ -13,7 +13,7 @@ this is her audit surface, not a new persona.
 
 ## Why this skill exists
 
-Round-35 case study. `tools/lean4/Lean4/DbspChainRule.lean`
+Round-35 case study. `src/Core.Lean4/Lean4/DbspChainRule.lean`
 shipped a theorem named `chain_rule`, advertised as "the DBSP
 chain rule from Budiu et al.", with F# / TLA+ / Lean all
 cross-referencing that name. A peer-reviewer cross-check

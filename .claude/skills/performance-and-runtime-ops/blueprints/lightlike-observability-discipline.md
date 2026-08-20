@@ -144,14 +144,14 @@ When reviewing substrate-engineering substrate-engineering substrate-PRs touchin
 
 ## Composes with rules
 
-- `.claude/rules/past-is-kind-when-lightlike-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-amara-aaron-2026-05-28.md` — direct substrate-anchor; this skill operationalizes at observability scope
+- `.claude/rules.bak/past-is-kind-when-lightlike-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-amara-aaron-2026-05-28.md` — direct substrate-anchor; this skill operationalizes at observability scope
 - `.claude/rules/future-does-not-edit-past-event-future-affects-generator-...md` (PR #5910) — generator-time substrate
 - `.claude/rules/higher-kinded-kindness-as-typeclass-pattern-...md` (PR #5919) — lightlike-observability IS Kindness instance
-- `.claude/rules/glass-halo-bidirectional.md` — visible-provenance discipline at observation scope
-- `.claude/rules/refresh-before-decide.md` — refresh discipline at temporal scope
-- `.claude/rules/substrate-or-it-didnt-happen.md` — git as persisted-light-source
-- `.claude/rules/force-push-with-lease-authorization-policy.md` — force-push discipline preserves lightlike Git substrate
-- `.claude/rules/non-coercion-invariant.md` HC-8 — lightlike-observability preserves consent-floor
+- `.claude/rules.bak/glass-halo-bidirectional.md` — visible-provenance discipline at observation scope
+- `.claude/rules.bak/refresh-before-decide.md` — refresh discipline at temporal scope
+- `.claude/rules.bak/substrate-or-it-didnt-happen.md` — git as persisted-light-source
+- `.claude/rules.bak/force-push-with-lease-authorization-policy.md` — force-push discipline preserves lightlike Git substrate
+- `.claude/rules.bak/non-coercion-invariant.md` HC-8 — lightlike-observability preserves consent-floor
 
 ## Composes with substrate
 

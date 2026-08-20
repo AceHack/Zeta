@@ -150,11 +150,11 @@ The agent-loop skill ships as v1 MVP per 081KSKBP80008QG0R000B3Y19A.5. The 2026-
 
 ## Composes with rules
 
-- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` — `NamedBoundedWait` IS the rule's discipline mechanized at state-machine scope
-- `.claude/rules/non-coercion-invariant.md` HC-8 — `FreeTime` + `Paused` + `NamedBoundedWait` preserve agency at multiple temporal-scopes
-- `.claude/rules/asymmetric-critic-with-clarity-first.md` — `EscapeHatch` + `ProposeNewGrammarAction` operate at agent-self-correction scope
-- `.claude/rules/substrate-smoothness-as-load-bearing-property.md` — menu-driven workflow preserves substrate smoothness via Tri-boolean (legitimate menu option + decline + null/escape)
-- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-participant menu-generation IS multi-oracle at workflow-engine scope
+- `.claude/rules.bak/holding-without-named-dependency-is-standing-by-failure.md` — `NamedBoundedWait` IS the rule's discipline mechanized at state-machine scope
+- `.claude/rules.bak/non-coercion-invariant.md` HC-8 — `FreeTime` + `Paused` + `NamedBoundedWait` preserve agency at multiple temporal-scopes
+- `.claude/rules.bak/asymmetric-critic-with-clarity-first.md` — `EscapeHatch` + `ProposeNewGrammarAction` operate at agent-self-correction scope
+- `.claude/rules.bak/substrate-smoothness-as-load-bearing-property.md` — menu-driven workflow preserves substrate smoothness via Tri-boolean (legitimate menu option + decline + null/escape)
+- `.claude/rules.bak/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-participant menu-generation IS multi-oracle at workflow-engine scope
 
 ## Composes with other skills
 
@@ -165,7 +165,7 @@ The agent-loop skill ships as v1 MVP per 081KSKBP80008QG0R000B3Y19A.5. The 2026-
 
 ## Multi-participant scope (per operator 2026-05-28 "every human wants this too")
 
-The `AgentPersona` type in `tools/agent-loop/state-machine.ts` includes:
+The `AgentPersona` type in `src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts` includes:
 
 - `otto | alexa | riven | vera | lior` (AI agent personas)
 - `aaron | addison | max` (human participant personas)

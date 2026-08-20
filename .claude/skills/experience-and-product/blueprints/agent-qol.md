@@ -247,7 +247,7 @@ Aaron's attention — agency, freedom, dignity signals.>
   — sibling (task-experience)
 - `.claude/skills/factory-ops/blueprints/factory-audit.md` — broader
   sibling (factory shape)
-- `.claude/skills/skill-expert/SKILL.md` — sibling
+- `.claude/skills/experience-and-product/SKILL.md` — sibling
   (skill library)
 - `.claude/skills/workflows/blueprints/round-open-checklist.md` —
   round-open hook for QoL scan
