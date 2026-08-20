@@ -1,0 +1,14 @@
+{
+  "id": "080d00fd0a5fe810a01300087ad7954a",
+  "at": "2026-08-20T14:44:19.581Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0FT2JZV087G0R003HXFCEW",
+    "type": "task",
+    "title": "CliffordAntiSybil: measure clone angles in the Fisher-Rao geometry (Cl(2,1) rotors), not the flat (nu,tau) chart",
+    "slug": "cliffordantisybil-measure-clone-angles-in-the-fisher-rao-geo",
+    "priority": "P2",
+    "filename": "081M0FT2JZV087G0R003HXFCEW-cliffordantisybil-measure-clone-angles-in-the-fisher-rao-geo.md"
+  }
+}
