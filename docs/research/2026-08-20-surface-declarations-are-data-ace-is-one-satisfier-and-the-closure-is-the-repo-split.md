@@ -209,3 +209,113 @@ argument for externalizing it and also the reason not to pretend it already is.
 - `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md` — the split whose boundaries §4 would make computable
 - `docs/research/2026-08-19-repo-split-round-*` — where the dependency-closure argument was measured out
 - PR #12876 — the fork that is evidence for §1
+
+---
+
+## 7. MEASURED on one surface — and it adjudicates §4 against this note
+
+§6 said the enumeration is "one surface per language CLI" and §4 claimed the closure makes the repo
+split *"computable rather than argued."* One surface was then traced end to end. The result supports
+the framing and **refutes the central claim as stated**.
+
+*(Result: the surface-closure agent, 2026-08-20. Deriver + 11 passing tests at
+`src/Core.TypeScript/ci/derive-job-closure.ts`; re-run before landing.)*
+
+### 7.1 `lint (Go)` needs 6 units. It is provisioned ~442.
+
+Chosen because it is measurably the narrowest: `lint (Go)` and `lint (Python)` are byte-identical
+jobs in `gate.yml` differing only in the leaf script, and Python's leaf pulls a 22-package `uv.lock`
+while Go's pulls 4 modules / 1.6 MB.
+
+| provisioned | count | needed |
+|---|---:|---:|
+| apt packages | **34** | **3** (`curl`, `ca-certificates`, `git`) |
+| mise tools | **18** (23 at tier=full) | **3** (`go`, `golangci-lint`, `bun`) |
+| dotnet SDK + global tools | 1 + **7** | 0 |
+| npm packages (`bun install`) | **377** | 0 |
+| elan / Lean · uv-tool · agda cubical · **E prover built from source** | 4 | 0 |
+
+Measured work: `golangci-lint run ./...` = **10.0 s, 0 issues, cold caches**. Job timeout: 15 min.
+
+### 7.2 It is NOT a strict subset — the "surfaces ⊆ union" model is false at N=1
+
+The Go module graph is a **needed** dependency that `install.sh` does not provide and **no manifest
+declares**. Verified both directions: `GOPROXY=off` → *"module lookup disabled"*; `GOPROXY=on` →
+1.6 MB fetched. Nothing in `tools/` or `gate.yml` prefetches it, and the cache path list contains no
+`~/go/pkg/mod`.
+
+> **Language-native registries (`go.mod`, `bun.lock`, `uv.lock`, NuGet) are a fifth dependency
+> category the surface model as sketched does not cover.** A declaration that only names apt/mise
+> units would be *incomplete for every language surface*, silently.
+
+### 7.3 §1's fork is not the first — four gate jobs already forked, inside `gate.yml`
+
+The note used PR #12876's `.cursor/install.sh` as evidence of a missing seam. There is an older,
+in-repo instance, and it states its own reason:
+
+> `lint (actionlint)`: *"This job installs only actionlint instead of running the full install.sh
+> bootstrap; otherwise apt proof/QEMU/R substrate can consume the timeout before actionlint itself
+> runs."*
+
+It then `go install`s actionlint, duplicating `.mise.toml`'s pin. `lint (yaml/k8s)` hand-rolls a
+venv + `pip install yamllint==1.38.0` + `go install kubeconform@v0.7.0`, duplicating pins in **both**
+`.mise.toml` and `.mise.full.toml`. Two more "bump in lockstep" pairs. A **fifth** mechanism exists:
+five jobs use `setup-bun@v2` with no `bun-version`, so they get latest rather than `.mise.toml`'s
+`bun = "1.3"`.
+
+**`gate.yml` already diagnoses the whole class in a comment** — *"It needs a JS runtime and nothing
+else, yet installs an entire toolchain to get one."* The seam has been missing long enough that the
+canonical CI file forked from itself, four times, with reasons written down.
+
+### 7.4 Two costs nobody is choosing
+
+- **Every gate job installs Claude Code and Codex.** `from-bun-global` runs
+  `bun install --global @anthropic-ai/claude-code @openai/codex` with **no CI guard**, while its
+  siblings (`from-installer`, `from-ollama`, `from-opam-git`, `from-uv-venv`) all skip on non-TTY or
+  without `ZETA_INSTALL_FULL=1`.
+- **Every gate job compiles E prover 3.2.0 from source.** `from-autotools-tarball` runs
+  `./configure && make -j`. The gate caches the **tarball**, not the built binary. This already cost
+  the fleet: **PR #11486 (2026-08-17)** — three unrelated PRs went red on
+  `lint (tick-shard relative-paths)` because GitHub 429'd the eprover tarball. **A bun-only lint job,
+  killed by a first-order-logic prover.**
+
+### 7.5 Derivability is about INVOCATION SHAPE, not language — and §4 is not yet true
+
+The deriver was run against all 29 gate jobs. **`lint (Go)` is the only one with an empty
+`unresolved` set.**
+
+| job | derived | actual | why it fails |
+|---|---|---|---|
+| `lint (Python)` | `bun, uv` | `+ python, ruff, mypy` | `ruff`/`mypy` are **arguments to `uv run`** |
+| `lint (Rust)` | `bun` | `+ rust, cargo` | dynamic spawn |
+| `lint (TS)` | `bun` | `+ node, tsc` | `tsc` lives in `node_modules/.bin` |
+
+> **A closure is derivable exactly when the leaf spawns literal command *heads*.** The moment a tool
+> is invoked *through* another (`uv run X`, `dotnet X`, `mise exec -- X`, `npx X`), head-scanning
+> goes blind — **and silently**, which is the dangerous direction.
+
+The deriver reports those as `unresolved` rather than under-claiming, and its tests pin the Python
+shortfall **as an assertion** so it cannot quietly become a claim.
+
+**So §4's *"the repo split becomes computable rather than argued"* is NOT yet true.** The honest
+correction, and the useful part:
+
+> It is **not blocked on effort or on a smarter parser — it is blocked on a missing declaration.**
+> `build-graph.json` + `affected-legs.ts` already declare **files → jobs** as data, explicitly
+> "derived from the graph at run time, never hand-maintained." The inverse edge, **jobs → tools**, is
+> declared **nowhere** — and the four already-forked gate jobs are what a missing edge looks like
+> from outside.
+
+The move is therefore **one declared field per job**, checked against a deriver like this one so the
+declaration cannot drift from what the job actually runs. That is the same
+declaration-plus-falsifier shape the repo already uses everywhere else, and it is what §0's
+"declaration is data" buys once it exists.
+
+### 7.6 Where the closure stays undecidable
+
+Named rather than guessed: **host tier is a runtime property** (`host-tier.sh` reads the runner's
+RAM; the gate lint jobs declare no `ZETA_HOST_TIER`, so whether 7 dotnet tools install cannot be read
+out of the tree); **best-effort realizers change the set by succeeding or failing** (a network hiccup
+silently subtracts, exit 0); **conditional realizers key on what earlier steps installed**
+(`from-agda-cubical` runs iff `agda` is on PATH, true only because it is in `manifests/apt`); and
+second-hop spawns through imported modules are unreadable.
