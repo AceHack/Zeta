@@ -27,8 +27,9 @@ an attached YubiHSM.
 Design + evidence:
 `docs/research/2026-08-18-yubihsm2-sdk-on-linux-the-cluster-is-nixos-so-the-apt-question-was-the-wrong-question.md`
 
-**Blocked on maintainer sign-off** — eight numbered open questions in section 8 of that
-doc. Round-29 discipline: no CI/infra decision lands before the answers do.
+**Blocked on maintainer sign-off** — Q1-Q6 + Q9 in section 8/11 of that doc. (Q7, the
+macOS parity question, was superseded 2026-08-20 by evidence rather than answered: see
+section 12.) Round-29 discipline: no CI/infra decision lands before the answers do.
 
 ## The shape (pending sign-off)
 
@@ -44,12 +45,17 @@ Cluster nodes are **NixOS**, so this is not an apt question. The pinned nixpkgs
    the device.
 2. **Nothing** on CI runners. An apt entry would cost 24 uncached jobs every run
    forever and reach zero nodes (`linux.sh` skips apt on NixOS).
-3. macOS parity DEBT: Homebrew has no `yubihsm-shell` formula, so `manifests/brew`
-   cannot close the laptop leg.
+3. ~~macOS parity DEBT: Homebrew has no `yubihsm-shell` formula, so `manifests/brew`
+   cannot close the laptop leg.~~ **CLOSED 2026-08-20.** There is no *formula* (still
+   404), but there IS a *cask*: `yubihsm2-sdk`, tap `homebrew/cask`, version `2026-04`,
+   installing Yubico's own signed `.pkg` under a Homebrew-maintained sha256. Declared in
+   `tools/setup/manifests/brew-cask`. The original claim was a formula-namespace check
+   read as a Homebrew-wide one -- see section 12 of the design doc.
 
 ## Acceptance
 
-- [ ] Section 8 Q1–Q8 answered by the maintainer; sign-off date recorded in the doc.
+- [ ] Section 8 Q1–Q6 answered by the maintainer; sign-off date recorded in the doc.
+      (Q7 no longer needs an answer -- see the macOS row below.)
 - [ ] Probe path contract settled: NixOS resolves the module to
       `yubihsm_pkcs11.so` under `/run/current-system/sw/lib/pkcs11/`, which matches **none** of the
       three Linux paths in `frost-hardware-probe.ts` (PR #12042). A correctly provisioned
@@ -67,6 +73,28 @@ Cluster nodes are **NixOS**, so this is not an apt question. The pinned nixpkgs
       exists already: cross the unprivileged sysfs read with the connector's
       `/connector/status` (`status=OK|NO_DEVICE`, and `usbCheck` really opens the device, so
       it is permission-sensitive). See section 11 of the design doc for the five-way table.
+- [x] **macOS leg landed 2026-08-20** (Aaron: *"make sure new contributors to Zeta just
+      get this for free on Mac, Windows, Linux, and our own micro/uni kernel"*):
+      `manifests/brew-cask` gains `yubihsm2-sdk`; `manifests/brew` + `manifests/apt` +
+      `manifests/windows` gain `opensc` (`pkcs11-tool`), which was MISSING everywhere and
+      is what actually loads `yubihsm_pkcs11`. Un-tier-gated on purpose so
+      `macos-install-sh-test` exercises the cask rather than skipping it.
+- [ ] **Windows HSM leg: still no route.** Re-verified 2026-08-20 -- winget-pkgs
+      `manifests/y/Yubico` has no HSM entry, scoop Main 404, chocolatey 404. Yubico ships
+      `yubihsm2-sdk-2026-04-windows-amd64.zip` + detached `.sig`; this repo has no
+      unzip-to-PATH mechanism and no signature verifier. Needs a decision: new mechanism,
+      an upstream winget contribution (GOVERNANCE section 23), or documented-manual.
+- [ ] **Debian/Ubuntu HSM leg: still no route,** now proven by index parse rather than by
+      a CI failure -- `yubihsm-shell` / `yubihsm-connector` / `libyubihsm2` are ABSENT
+      from noble universe, noble main and jammy universe. Yubico ships a tarball-of-debs;
+      `from-deb` takes one `.deb`, verifies nothing, and cannot install a library-only
+      package. Do NOT re-add an apt row.
+- [ ] **micro/uni kernel: NO SUCH TARGET EXISTS IN-REPO.** Searched 2026-08-20: the term
+      appears only in `memory/` and in open P2 rows (`081KSV2WD0008QG0R000WNY74Q` umbrella,
+      `081KTSZN10008QG0R000VZHRQ4`, `081KTSZN10008QG0R00349SM6P`); no seL4/Unikraft/Mirage,
+      no image build, no package-selection surface. Blocked on the target existing, and
+      before packaging, on whether it has a USB host stack at all -- a YubiHSM 2 is a USB
+      bulk device. Design doc section 12d states what a row would need.
 - [ ] Module lands and an ISO build validates it.
 
 ## Related

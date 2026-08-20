@@ -14,6 +14,89 @@ ASCII only (BP-09). Prune every third audit.
 
 ---
 
+## Round: YubiKey/YubiHSM packaging, three OSes (2026-08-20)
+
+Aaron: "save all the yubikey and yubihsm software/drivers i
+installed today as ACE packagemanager missing ... free on
+Mac, Windows, Linux, and our own micro/uni kernel."
+
+**I WAS WRONG ON 2026-08-18 AND THE ERROR CLASS IS MINE.**
+Section 6 of my own design doc said Homebrew cannot install
+the YubiHSM SDK. I checked `api/formula/yubihsm-shell.json`
+(404, still 404) and never checked the CASK namespace.
+`api/cask/yubihsm2-sdk.json` is a 200: homebrew/cask,
+version 2026-04, installs Yubico's own signed .pkg under a
+digest Homebrew maintains. That is the SAME failure the apt
+block one manifest over warns about in writing -- verify
+the weak proposition, assert the strong one. I wrote that
+warning and then committed it. Lesson: when a lookup says
+ABSENT, ask what namespace the lookup covered.
+
+**Landed (manifest rows only, no new mechanism):**
+- brew-cask: `yubihsm2-sdk`. NOT tier-gated on purpose --
+  a tier= token makes macos-install-sh-test (7 GB runner)
+  skip it, and a row CI never runs is an unrun check
+  wearing a green face. Cost: one 15 MB download on a
+  path-filtered workflow, not on the 24 gate jobs.
+- brew + apt + windows: `opensc` (pkcs11-tool). Was
+  MISSING on every platform including Aaron's Mac. The SDK
+  ships yubihsm_pkcs11 and nothing declared could LOAD a
+  PKCS#11 module. Vendor-neutral half of the block.
+
+**Verification technique worth reusing.** For apt I stopped
+trusting packages.ubuntu.com and parsed the archive's own
+binary indices, reading the COMPONENT: noble/universe
+opensc 0.25.0~rc1 (64,754 pkgs), jammy/universe 0.22.0
+(58,824), noble/main ABSENT (6,099). universe is where
+yubikey-manager/yubico-piv-tool/pcscd already come from and
+CI installs those, so the entailment is real. Same parse
+proved yubihsm-shell ABSENT from all three -- the CI
+failure is now backed by the strong check.
+
+**Resolver defect found in install.ps1 (DEBT).** The
+windows loop picks the first available SOURCE, not the
+first that SUCCEEDS: `if (Have scoop) { scoop install ... }`
+with no fallthrough, and scoop is bootstrapped
+unconditionally. So a winget-only package hard-fails the
+whole Windows install unless marked `optional`. `tailscale`
+already carries that workaround (scoop Main 404, verified).
+Consequence: `opensc optional` installs NOTHING on a
+scoop-primary host and warns. Named in the manifest, not
+hidden. Real fix is fallthrough-on-failure in install.ps1.
+
+**Second DEBT: manifests/apt has no tier= gate.** brew and
+brew-cask do. So every apt row is +1 package on 24 gate
+jobs forever, uncached, and there is no way to say
+"contributor yes, CI no". Five hardware rows now sit there
+with zero CI benefit.
+
+**Third DEBT: manifest-symmetry parses apt+brew only, not
+brew-cask.** So a cask can drift from Windows with nothing
+flagging it -- which is exactly what yubihsm2-sdk (mac) vs
+nothing (Windows) now is.
+
+**Still open, and none closable by a row today:**
+- Windows HSM: winget-pkgs manifests/y/Yubico has no HSM
+  entry (listed today), scoop 404, choco 404. Yubico ships
+  a .zip + detached .sig. No unzip mechanism, no signature
+  verifier here. Did NOT compute a sha256 from my own
+  download -- that is trust-on-first-download in a pin's
+  clothes.
+- Debian/Ubuntu HSM: tarball-of-debs. from-deb takes one
+  .deb, verifies nothing, cannot install a library-only
+  package. Do not re-add an apt row.
+- NixOS node module: still blocked on Q1-Q6 + Q9.
+- micro/uni kernel: THERE IS NO SUCH TARGET. Only memory/
+  files and open P2 umbrellas. Before packaging, the
+  question is whether it has a USB host stack -- a
+  YubiHSM 2 is a USB bulk device, so no packaging decision
+  reaches it otherwise.
+
+**Parity DEBT retired:** the macOS "no clean route" item
+from 2026-08-18 is closed. Do not re-state it.
+
+---
+
 ## Round 29 (anchor: CI + build-machine setup) — 2026-04-18
 
 **Context.** Spawned this round as the persona who owns

@@ -22,3 +22,56 @@
 # "update our special one off cask to use our new general framework too"). The tap= token
 # taps + trusts cvc5/cvc5 before the cask install.
 cvc5  tap=cvc5/cvc5
+
+# ── YubiHSM 2 SDK (2026-08-20) ────────────────────────────────────────────────
+# Aaron, 2026-08-20: "can we save all the yubikey and yubihsm software/drivers i
+# installed today as ACE packagemanager missing, we need to make sure new
+# contributors to Zeta just get this for free on Mac, Windows, Linux".
+#
+# THIS ROW CORRECTS A CLAIM I MADE MYSELF. On 2026-08-18 I wrote, in
+# docs/research/2026-08-18-yubihsm2-sdk-on-linux-*.md section 6, that "Homebrew
+# has no yubihsm-shell and no yubihsm-connector formula (checked against
+# formulae.brew.sh -- both 404)" and concluded no clean macOS route existed. The
+# 404s were real and are still real (re-checked today: both formulae 404). The
+# conclusion was wrong, because I checked the FORMULA namespace and the SDK is
+# packaged as a CASK. That is the same error the manifests/apt block records
+# against itself one manifest over -- verifying the weaker proposition and
+# treating it as the stronger one -- committed by the person who wrote that
+# warning. Recorded rather than quietly fixed.
+#
+# Verified 2026-08-20 against the Homebrew API, not from memory:
+#   https://formulae.brew.sh/api/cask/yubihsm2-sdk.json
+#   token yubihsm2-sdk | tap homebrew/cask | version 2026-04 | Apache-2.0 upstream
+#   arm64  yubihsm2-sdk-2026-04-darwin-arm64.pkg  sha256 2f8e80e9...9e0612  (15,361,954 bytes)
+#   amd64  yubihsm2-sdk-2026-04-darwin-amd64.pkg  sha256 89d22782...2cca59
+#   artifact: pkg + uninstall pkgutil com.yubico.yubihsm2-sdk
+#
+# WHY THIS AND NOT from-url. from-url would need a hand-supplied sha256 and could
+# only DOWNLOAD the .pkg -- its realizer fetches to a path and stops; nothing in
+# it runs `installer -pkg`. The cask carries the digest upstream (maintained in a
+# public repo with history, so it is a pin somebody else also has to defend) AND
+# performs the pkg install AND registers an uninstall receipt. Same vendor bytes,
+# a digest we did not invent, an existing mechanism. No new mechanism was needed.
+#
+# WHAT IT INSTALLS, and why it is exactly the hand-install being replaced: the
+# .pkg writes /usr/local, which is why the working copy on the maintainer's host
+# is /usr/local/bin/yubihsm-shell + /usr/local/bin/yubihsm-connector rather than
+# /opt/homebrew/bin. The PKCS#11 module lands at
+# /usr/local/lib/pkcs11/yubihsm_pkcs11.dylib -- measured on the attached device
+# 2026-08-18 (Q8 in the design doc), so the path contract here is verified, not
+# assumed.
+#
+# NOT tier-gated, deliberately. A tier= token would make macos-install-sh-test
+# (a 7 GB runner, so slim/standard) skip the row, and a row CI never exercises is
+# a check that did not run wearing the face of one that passed. Un-gated, the
+# macOS install shield actually proves the cask installs. Cost: one 15 MB
+# download on macos-install-sh-test, which is path-filtered to tools/setup/** and
+# .mise.toml -- not on the 24 gate jobs. The shield's 2nd (idempotency) run hits
+# `brew list --cask` -> `brew upgrade --cask`, a metadata check, not a re-download.
+#
+# SUDO: a `pkg` cask artifact runs `sudo installer -pkg ... -target /`. That is
+# not new to this script -- common/fd-limits.sh already runs `sudo sysctl` on the
+# macOS path and the shield is green with it -- but it is the reason a contributor
+# running macos.sh may be prompted for a password at this step. Named so it is a
+# known behaviour and not a surprise.
+yubihsm2-sdk   # YubiHSM 2 SDK — yubihsm-shell, yubihsm-connector, yubihsm-setup, yubihsm_pkcs11.dylib

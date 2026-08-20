@@ -222,3 +222,82 @@ yubikey-manager   # ykman CLI — PIV/FIDO2/OpenPGP/YubiHSM-Auth applet manageme
 yubico-piv-tool   # PIV slot + attestation tooling (hardware proof a key never left)
 pcscd             # PC/SC smartcard daemon — REQUIRED for CCID; macOS has this built in
 libpcsclite1      # PC/SC client library ykman links against
+
+# ── OpenSC / pkcs11-tool (2026-08-20) ─────────────────────────────────────────
+# OpenSC (`pkcs11-tool`), added 2026-08-20 with the macOS + Windows legs. This is
+# the piece that makes the YubiHSM PKCS#11 module usable by something: the SDK
+# ships yubihsm_pkcs11.so and, before this row, nothing in the declared toolchain
+# could load a PKCS#11 module at all. It also drives a YubiKey PIV slot through
+# OpenSC's own module, so it is the vendor-neutral half of this block.
+#
+# VERIFIED, and by the check the yubihsm-shell entry above failed. The lesson
+# recorded above is that a 200 from packages.ubuntu.com proves a package exists in
+# the DISTRO ARCHIVE, not that it is installable FROM THE SOURCES THIS RUNNER HAS.
+# So this row was checked by parsing the archive's own binary-package indices and
+# reading the COMPONENT each package sits in (2026-08-20):
+#
+#   dists/noble/universe/binary-amd64  opensc 0.25.0~rc1-1build2   (64,754 pkgs parsed)
+#   dists/jammy/universe/binary-amd64  opensc 0.22.0-1ubuntu2      (58,824 pkgs parsed)
+#   dists/noble/main/binary-amd64      opensc ABSENT               ( 6,099 pkgs parsed)
+#
+# universe, not main -- and universe is exactly the component yubikey-manager,
+# yubico-piv-tool and pcscd above already come from, all three of which CI has
+# installed successfully. That is the entailment this row rests on: same suite,
+# same component, same runner sources. Both Ubuntu releases linux.sh supports
+# carry it, so no jammy alias mapping is needed (contrast libicu74 -> libicu70).
+#
+# /usr/bin/pkcs11-tool ships in the `opensc` binary package itself, not in
+# `opensc-pkcs11` (that one is the .so). Confirmed from the package's own file
+# list; `opensc-pkcs11` is a dependency and is pulled in automatically.
+#
+# COST, stated rather than assumed. manifests/apt has no tier= gate, so this is
+# +1 package on all 24 gate jobs, uncached, forever -- the most expensive shelf
+# in the repo (install-v2 caches only $HOME; nothing apt writes to /usr survives).
+# A CI runner has no HSM and no YubiKey, so the CI benefit is zero. It is landed
+# anyway because the four rows above already made exactly that trade for exactly
+# this hardware, and refusing the fifth on cost while keeping the four would be a
+# razor applied to the cheapest row instead of the decision. The right fix is a
+# tier= gate for apt, which does not exist yet -- filed as DEBT, not smuggled in
+# here as a bespoke skip.
+opensc            # pkcs11-tool — vendor-neutral PKCS#11 CLI; module loader for yubihsm_pkcs11.so
+
+# ── YubiHSM 2 SDK: STILL UNDECLARED ON DEBIAN/UBUNTU (2026-08-20) ─────────────
+# Re-verified today by the index parse above, so the removal recorded earlier is
+# now backed by the strong check rather than by a CI failure:
+#
+#   dists/noble/universe   yubihsm-shell ABSENT · yubihsm-connector ABSENT · libyubihsm2 ABSENT
+#   dists/noble/main       (none of the three)
+#   dists/jammy/universe   yubihsm-shell ABSENT
+#
+# There is genuinely no apt route. Yubico ships
+# https://developers.yubico.com/YubiHSM2/Releases/yubihsm2-sdk-2026-04-ubuntu2404-amd64.tar.gz
+# (+ a detached .sig) -- a TARBALL OF .debs, not a .deb. No mechanism here fits:
+#   from-deb   takes ONE .deb url, performs NO checksum and NO signature check
+#              (bare `dpkg -i`), and its binary-only idempotence check cannot
+#              install the library-only yubihsm-pkcs11 package at all. Using the
+#              repo's one unverified mechanism to install an HSM driver would
+#              invert our own standard at the point it matters most.
+#   from-url   downloads to a path and stops. It cannot untar or dpkg anything.
+#
+# AND AN APT ROW WOULD BE THE WRONG SHAPE EVEN IF ONE EXISTED. linux.sh skips apt
+# entirely on NixOS (the /etc/NIXOS marker), and the cluster nodes -- the only
+# machines that will hold an HSM -- are NixOS. So an apt entry would cost 24 gate
+# jobs every run forever and reach zero nodes. The pinned nixpkgs already carries
+# yubihsm-connector 3.0.7 and yubihsm-shell 2.7.3, source-built and hash-pinned.
+#
+# TODO, owned by workitem 081M0B5V6Z5087G0R0026RANJ3, BLOCKED on maintainer
+# sign-off (Q1-Q7 + Q9 in the design doc). What must be supplied before Linux can
+# be declarative for the HSM:
+#   1. Answers to Q2 (which SDK pieces land on a node; yubihsm-setup excluded?),
+#      Q4 (yubihsm-shell CLI on nodes at all?) and Q5 (all nodes or HSM-holders).
+#   2. Then full-ai-cluster/nixos/modules/yubihsm.nix -- NOT a tools/setup row:
+#      the connector daemon, a yubihsm-connector system user, a systemd unit
+#      (nixpkgs ships no services.yubihsm-connector module), and
+#      services.udev.extraRules for 1050:0030 with OWNER="yubihsm-connector".
+#      The udev rule is REQUIRED: a YubiHSM 2 is a USB BULK device, invisible to
+#      pcscd/OpenSC/ykman, and without the rule the node device is root-only --
+#      which presents as a healthy daemon that cannot see a plugged-in HSM.
+#      The 1050:0030 constant is Yubico's own, read from deb/70-yubihsm-connector.rules
+#      at tag 3.0.7, not inferred.
+# Design + evidence: docs/research/2026-08-18-yubihsm2-sdk-on-linux-the-cluster-
+# is-nixos-so-the-apt-question-was-the-wrong-question.md
