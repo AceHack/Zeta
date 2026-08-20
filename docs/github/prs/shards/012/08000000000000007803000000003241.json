@@ -1,0 +1,12 @@
+{
+  "pr_number": 12865,
+  "archive_path": "docs/history/pr-reviews/PR-12865-fix-hygiene-my-glossary-cell-shipped-two-localecompare-calls-the-collation-lint-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T17:19:04.863Z",
+  "schema_version": "v1",
+  "commit_sha": "faeaed7b198069509a75d9fa9c5c7c304955f894",
+  "title": "fix(hygiene): my glossary cell shipped two localeCompare calls — the collation lint caught them on main",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T17:14:53Z",
+  "head_ref": "fix/glossary-cell-ordinal-collation"
+}
