@@ -1167,3 +1167,113 @@ simplex": `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` and
 (2015/2017, the infinite-dimensional extension Čencov does not cover) · Morozova & Chentsov
 (1989/91) · Petz (1996) · Kubo & Ando (1980) · Bures (1969) · Uhlmann (1976) · Braunstein & Caves
 (1994) · Ozawa (2000) · Kish (1965).
+
+## 35. Does the monotonicity claim on our fold survive on the CONE? Monotonicity yes, uniqueness no
+
+§34 handed over one question: `BeliefConvergence.observe` folds **unnormalized** `int64[]` weights,
+and Čencov's hypothesis is **normalized** measures — so does the claim survive, or does it need the
+normalization quotient? Checked in
+`src/Core.TypeScript/research/campbell-cone-vs-simplex-belief-fold-check.ts` (**12/12**, seed
+`S = 4`, every positive paired with a negative computed by the same function). *(Result: Soraya.)*
+
+### 35.1 The claim does not live where you would look for it
+
+`src/Core/BeliefConvergence.fs` makes **no metric claim** — commutativity, associativity,
+non-idempotence, dedup, zero-absorbing, nothing else. Its tests make none. The claim lives in three
+prose surfaces, all downstream of **one sentence** in
+`docs/research/2026-08-18-falsifier-1-fails-*.md` §1, repeated in `FROZEN-CORE` §B-torsion item 1
+and in the header of `information-geometry-contortion-falsifier.ts`:
+
+> folds **unnormalized** non-negative weights … **Čencov's theorem (1982)** singles out [Fisher–Rao]
+> as the *only* metric invariant under sufficient statistics, up to scale.
+
+**The hypothesis violation is inside that sentence, one clause apart.** And the module computing
+from it silently takes the quotient the code does not: `probabilities()` is a softmax on a reduced
+chart with pivot `θₙ = 0`, which kills exactly the direction Campbell's term measures.
+
+### 35.2 The verdict — the quotient buys UNIQUENESS, not MONOTONICITY
+
+- **D1** Fisher–Rao contracts under 20000 random Markov morphisms on genuinely unnormalized `p`
+  (mass in `[0.2, 20]`): **0 violations, worst ratio `0.9494151528`**.
+  **D1n** Euclidean, same scan, same morphisms: **2673 violations, worst ratio `2.5430683899`**.
+- **D3** `g_Fisher + c·mass` is monotone for **every** `c ∈ {0, 0.5, 1, 5, 100}` — worst ratios
+  `0.94942 / 0.96508 / 0.97334 / 0.99084 / 0.99945`, 0 violations each.
+
+So **monotonicity needs no normalization. Uniqueness does.** The three surfaces want the words
+"up to scale, **on the simplex**"; on the cone, Campbell (1986) gives a one-parameter family and
+"the only metric" is **false**.
+
+### 35.3 Currently VACUOUS — and a distinction that changes no value is not a bug
+
+`BeliefConvergence` has **zero non-test callers in `src/`**; nothing computes a belief distance; KL
+runs on `SoftValue`, whose `build` divides by `total`, so it is **on the simplex by construction**.
+Nothing in the tree computes a number a different `c` would change. Recorded so the finding is not
+inflated.
+
+The one non-vacuous residue is **documentary**: §B-torsion quotes `0.0462936` as *the* deviation of
+our fold from Levi-Civita. That is a reduced-simplex-chart quantity. Its cone analogue spans
+**`1.00688` → `77.27067`** across `c ∈ [0,100]` at the same `θ = (0.7, −0.4, 0.25)` — spread ratio
+**76.743**, closed form cross-checked against central differences to `7.12e-9` (**D6**). A different
+object, not a discrepancy — but a **convention-dependent number presented as a property**.
+
+### 35.4 Where it becomes load-bearing — a `c` nobody would notice choosing
+
+> **A choice of `c` decides which of two beliefs is closer, and on the simplex that choice is
+> invisible.**
+
+- **D4** — **8833 / 20000 random tangent pairs (44.2%)** on the cone are order-flippable by some
+  `c ≥ 0`; median crossing `c* ≈ 10.382`. Hand instance `p = (1,1,1,1)`, `u = (1,−1,1,−1)`,
+  `v = (0.9,0.9,0.9,0.9)`: crossing at **`c* = 19/81 = 0.2345679012`**, gap `+0.76` at `c = 0`,
+  `−15.44` at `c = 5`. **D4n** the same scan on zero-sum tangents: **0 / 20000**.
+- **D2n** — max mass term: cone `61.4896`, simplex `2.4074e-31`. That is *why* it is invisible.
+- **D3n** — the family is positive definite for `c > −1`; `c = −1.5` admits squared length
+  `−7.6104`; and `c = −1` degenerates **exactly on the radial direction**
+  (`|g⁻¹(p,p)| ≤ 7.11e-15` against `g⁰(p,p) ≥ 0.2008`). **The `c = −1` endpoint IS normalization**,
+  computed rather than asserted.
+
+`c = 0` is therefore a **choice, not a default**: it asserts total evidence mass carries no
+information. Design consequence: **any future metric on this fold must record its `c` at the point
+the choice is made.**
+
+### 35.5 What monotonicity even means FOR THE FOLD (the category slip, disentangled)
+
+Monotonicity is about morphisms *between* outcome spaces; the fold moves a point *within* one. The
+only contact is **D5**: coarse-graining commutes with `observe` **exactly in the integer algebra iff
+the likelihood is block-constant** — gap `0` (`lhs = rhs = (20,144)`) block-constant, gap `14`
+(`(34,144)` vs `(20,144)`) otherwise. That is Fisher's sufficient-statistic hypothesis, stated in the
+algebra the fold actually runs.
+
+### 35.6 What SURVIVES unchanged
+
+**D6n**: the antisymmetric part of the Levi-Civita Christoffels is **exactly 0 for every `c`**, while
+the symmetric part is `≥ 2.0138`. So the §B-torsion refutation — *contortion is identically zero on
+our fold* — **survives the entire `c`-freedom.** Only the magnitude was convention-dependent, never
+the verdict. **`Conjecture Z-2` stays REFUTED, on strictly stronger grounds than before.**
+
+### 35.7 Register and honest limits
+
+**The mathematics is CHECKED; every mapping onto the substrate stays a toy.**
+
+1. **Uniqueness is not checkable by this method** — that nothing outside the Campbell family is
+   invariant is Campbell's proof, cited. Lean is the only route, and is **not** recommended while
+   the fold has zero callers.
+2. **Constant-coefficient sub-family only.** Campbell allows mass-dependent coefficients.
+3. **D2 pins invariance, not form** — mutation-verified: `(Σv)²/(Σp)²` *survives* D2 and dies at
+   D3n. Stated in the file so the survivor cannot read as coverage.
+4. **D6 is a different object from `0.0462936`** (cone chart vs reduced simplex chart).
+5. `n = 5`, `m = 3`, one `θ`. Not a proof for all `n`.
+6. **Inspection-level, not checked:** for a *uniform* likelihood, redelivery is invisible after
+   normalization and visible on the cone — so the radial direction the quotient erases is where one
+   class of the fold's known multiplicity defect lives.
+7. **Mutation-checked, not merely green:** neutering `c` reddens D3n/D4/D4n; corrupting the mass
+   normalization reddens D3n.
+
+**Routing note.** Soraya rejected TLA+ explicitly as her own hammer (no state machine, no
+interleaving), rejected Lean this round (uniqueness needs a "for all metrics" quantifier no sampling
+reaches, and the fold has zero callers), and named the cheap Z3 residue (2 of 12 facts). **Follow-up
+routed, not done:** a Semgrep rule refusing an unqualified "Čencov uniqueness" sentence on any
+surface that also says "unnormalized". Prose rots; a check does not.
+
+**Anchors (Beacon).** Rao (1945) · Čencov/Chentsov (1972/1982) · **Campbell, *An extended Čencov
+characterisation of the information metric*, Proc. AMS 98 (1986) 135–141** · Amari & Nagaoka (2000) ·
+Fisher (1922), sufficient statistics.
