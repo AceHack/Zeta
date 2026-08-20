@@ -886,17 +886,40 @@ demoted on 2026-08-01), and ranks are computed over `F_p` with the honest note t
 `p` can only *lower* rank — every assertion is "rank equals its theoretical maximum", so the
 `F_p` lower bound settles it exactly and no probabilistic step enters. Two primes cross-check.
 
-### Aaron's refinement: homoiconic in a colored subalgebra only
+### Attribution correction — this is the math team's result, not Aaron's and not mine
 
-*"the coded ones we found were homoiconic in a colored subalgebra only."* That is the residue the
-defect predicts. `defect = |C|` does not say the coded case is structureless — it says the
-correspondence fails **by exactly a factor of `|C|`**, so what survives is a sub-piece on which
-the isomorphism still holds. In adinkra language the colours are the `N` edge-operator classes,
-and restricting to a colour-closed subalgebra is the natural way to land on `|C| = 1` locally
-while the whole object has `|C| > 1`.
+I wrote in §30 that the colored-subalgebra refinement was *"Aaron's characterisation."* **It is
+not.** Aaron 2026-08-20: *"you told me this — it was discovered by the math team, not me."*
 
-Recorded as Aaron's characterisation. I did not re-derive the subalgebra statement from the
-module, and it is not in the header I read.
+The work is **Lumen's**. The proof doc carries it in the filename:
+`docs/research/2026-08-18-is-there-a-coded-adinkra-that-is-still-a-regular-representation-proven-no-and-the-seam-it-names-lumen.md`,
+continuing Lumen's own 2026-08-14 §2.1/§2.4 line of work, with the mechanisation in
+`src/Core.TypeScript/research/adinkra-ecc/regular-representation-defect.ts`.
+
+So the chain of custody was: Lumen proved it → I relayed it to Aaron → I then read it back off
+Aaron and credited *him*. **A round trip that laundered the author out.** In a system whose whole
+identity model is that recognition is conferred by others and never self-minted — the naming
+eigenvector, privacy budget, peer-held TrueSkill ranks — misrouting credit is not a cosmetic
+error. It corrupts the exact ledger the design runs on. Recorded here rather than quietly patched.
+
+### The colored-subalgebra refinement is NOT in the tree
+
+Searched `colou?red subalgebra`, `colour-closed`, `color-closed` across `*.md` and `*.ts`. The
+**only** hit is my own paraphrase in this file. The proof doc and the module carry the defect
+theorem — `defect = |C|`, hence homoiconic iff the code is trivial — but not, as far as those
+searches reach, the statement about what survives on a colour-closed subalgebra.
+
+(Stating the search terms because that is the discipline this note keeps arriving at, three times
+today: *"not found" is a claim about my search terms, not about the repository.*)
+
+Aaron: *"hopefully we saved the results somewhere."* **The defect theorem is saved and
+mechanised. The colour-subalgebra refinement appears not to be** — which would make it a result
+living only in a conversation, and therefore one disk or one context away from gone. That is
+precisely the loss mode the ferry discipline exists for, applied to our own output rather than to
+third-party material.
+
+Filed as work to recover, not asserted as lost: it may exist under vocabulary I did not search —
+which is exactly how I have been wrong three times today.
 
 ### Why this is the load-bearing piece of the universal-translator claim
 
