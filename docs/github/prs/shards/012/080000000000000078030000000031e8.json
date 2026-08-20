@@ -1,0 +1,12 @@
+{
+  "pr_number": 12776,
+  "archive_path": "docs/history/pr-reviews/PR-12776-research-choosing-a-lagrangian-for-the-highest-moral-regard-oracle-kt-d-kl-is-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T14:03:25.261Z",
+  "schema_version": "v1",
+  "commit_sha": "61e7217f6c1b1f50db9756d5988f5669bb624e16",
+  "title": "research: choosing a Lagrangian for the highest-moral-regard oracle — kT·D_KL is the bridge",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T14:02:44Z",
+  "head_ref": "research/lagrangian-for-moral-regard-oracle"
+}
