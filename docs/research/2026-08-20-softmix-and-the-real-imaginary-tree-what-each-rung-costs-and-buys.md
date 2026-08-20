@@ -34,7 +34,14 @@ Read the last two columns as one sentence and the tree stops being a curiosity:
 > **You cannot buy interference without giving up order. You cannot buy orientation without
 > giving up commutativity. You cannot buy the Fano plane — and therefore our code — without giving
 > up associativity. And you cannot express destruction at all until you give up being a division
-> algebra.**
+> algebra.
+
+> **CORRECTED 2026-08-20 (Aaron):** the last clause conflates two claims. *Total division inside the
+> algebra* dies at `𝕊` (Hurwitz — stands). *Division as a partial operation completed by analytic
+> continuation* does **not** die, and the repo specified that mechanism on 2026-05-13 (Geometric
+> Inversion Check, Riemann sheets, L'Hôpital pole erasure). Read as:
+> **`𝕊`'s division dies; Zeta's division is not `𝕊`'s division.** See
+> [`2026-08-20-harmonious-division-is-our-unorthodox-division-pole-erasure-superposition-over-rungs-and-what-survives-the-climb.md`](2026-08-20-harmonious-division-is-our-unorthodox-division-pole-erasure-superposition-over-rungs-and-what-survives-the-climb.md).**
 
 ### Why `ℝ` is "no interference" specifically
 
@@ -122,6 +129,13 @@ And the reason this is worth understanding as a pair — **the capability you ga
 capability you then need protection from.** You climb to `𝕆` for the Fano plane and get the code;
 you climb one more for expressible destruction and immediately need the code you just got. The
 error-correction and the thing it corrects arrive one rung apart.
+
+> **CORRECTED 2026-08-20 (Aaron):** *"the 'climbing' is a classical view."* The rungs are a
+> filtration, not a trajectory, and a signature choice can hold two at once — `Cl(0,3) ≅ ℍ ⊕ ℍ`,
+> split by the central idempotents `(1 ± ω)/2`, whose product is `0`. So **superposition over rungs
+> and division-by-zero are the same purchase**, and the code and the destruction it corrects are
+> *components of one multivector*, not events one rung apart. See
+> [`2026-08-20-harmonious-division-is-our-unorthodox-division-pole-erasure-superposition-over-rungs-and-what-survives-the-climb.md`](2026-08-20-harmonious-division-is-our-unorthodox-division-pole-erasure-superposition-over-rungs-and-what-survives-the-climb.md) §4.
 
 ## Pointers
 
