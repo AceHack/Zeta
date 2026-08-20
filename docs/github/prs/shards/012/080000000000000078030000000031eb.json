@@ -1,0 +1,12 @@
+{
+  "pr_number": 12779,
+  "archive_path": "docs/history/pr-reviews/PR-12779-research-the-distance-is-a-choice-not-a-constant-and-24-used-the-wrong-code.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T14:01:27.686Z",
+  "schema_version": "v1",
+  "commit_sha": "00046f94c049cdfbb211a245c5e202a98117961a",
+  "title": "research: the distance is a CHOICE not a constant — and §24 used the wrong code",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T14:00:49Z",
+  "head_ref": "research/metric-is-base-layer-relative"
+}
