@@ -966,3 +966,85 @@ primes, with the `F_p` caveat stated in the source. The colored-subalgebra refin
 **Aaron's**, unverified by me. The universal-translator reading is an **argument** built on
 those, and its load-bearing step — that homoiconicity is what distinguishes translation from
 encoding — is stated here for the first time and is where to attack it.
+
+## 33. "What is Fisher–Rao at 2√2?" — it is really there, and it still does not identify anything
+
+Aaron: *"Fisher-Rao is NOT Euclidean (under p → 2√p it is the round sphere) — what is Fisher-Rao
+at 2√2? Also this keeps popping up, I think this metric is connected in some way to our work on
+Zeta."*
+
+### The direct answer
+
+Under `φ(p) = 2(√p₁, …, √pₙ)` the simplex maps into the positive orthant of the sphere of
+**radius 2** (`Σφᵢ² = 4Σpᵢ = 4`), and Fisher–Rao pulls back to the round metric there. Two
+distinct *vertices* — two mutually exclusive certainties, `e₁` and `e₂` — map to `(2,0,…)` and
+`(0,2,…)`, which are orthogonal. So:
+
+| quantity | value |
+|---|---|
+| geodesic distance between vertices | `R·θ = 2 · π/2` = **π** |
+| **chordal (ambient Euclidean) distance** | `√(2² + 2²)` = `√8` = **2√2** |
+
+> **`2√2` is the chordal Fisher–Rao distance between maximally distinguishable beliefs** — the
+> straight-line separation, through the ambient space, between two certainties that share no
+> support. It is genuinely there and it is exactly `√8`.
+
+Computed, not recalled: `chord = 2.828427`, `geodesic = 3.141593`.
+
+### And now the part that matters — it is convention-dependent
+
+The other standard embedding is `φ(p) = (√p₁, …, √pₙ)`, giving the **unit** sphere. Same geometry,
+same metric up to a constant scale, and then:
+
+| convention | radius | vertex chord | vertex geodesic |
+|---|---|---|---|
+| `p ↦ √p` | 1 | **√2** | π/2 |
+| `p ↦ 2√p` | 2 | **2√2** | π |
+
+**The `2` is a normalisation choice, not a fact about the geometry.** Pick the other convention
+and the number becomes `√2`. So `2√2` here is an artefact of how someone chose to scale the
+embedding — and a quantity that changes when you change units is not an invariant of anything.
+
+Contrast `Tsirelson.fs`, where `‖C‖ = 2√2` is an **operator norm**: `C² = 4I − 4Ω`,
+`spec(C²) ⊆ {0,8}`, so `‖C‖ = √8`. **That one is convention-independent.** No rescaling of the
+observables moves it, which is exactly why it is a *bound* and not a coordinate.
+
+> So: one `2√2` is an invariant and the other is a unit choice. **They are not the same kind of
+> number**, and the match is therefore not evidence of a shared mechanism.
+
+### Applying the rule to a case where the answer is disappointing
+
+`.claude/rules/numerology-vs-number-theory.md` asks for the competitors and the invariant that
+excludes each. Here it is short and decisive:
+
+- **What else is `√8`?** Anything of the form `√(a² + b²)` with `a = b = 2`. That is a very large
+  class, and both of our instances land in it for *unrelated* reasons — one because a sphere was
+  scaled to radius 2, the other because a CHSH operator's square has an eigenvalue at 8.
+- **The excluding invariant:** rescale. Tsirelson survives; Fisher–Rao's `2√2` becomes `√2`. **A
+  number that moves under a change of units cannot identify a structure that does not.**
+
+This is the register the rule exists to protect, and it applies with more force, not less, when
+the coincidence is attractive. The repo already carries the cautionary case: the
+`F = D_f² − 3.42·D_f + 0.5` "prediction" whose vertex was *exactly* the answer it predicted,
+because `3.42/2 = 1.71`.
+
+**Filed as: real number, real geometry, no identification.**
+
+### But the underlying instinct is not wrong — the connection just runs elsewhere
+
+*"This metric is connected in some way to our work on Zeta"* is very likely true, and there is a
+non-numerological route to it worth naming:
+
+- Fisher–Rao's classical uniqueness is **Čencov (1982)** — the only metric invariant under
+  sufficient statistics. Its *quantum* counterpart is the **Bures / quantum-Fisher-information**
+  metric, with a matching uniqueness story (Petz's classification of monotone metrics, 1996).
+- So the classical belief geometry our fold lives on and the quantum-information geometry the
+  Tsirelson bound lives in are **genuinely related objects** — related as *classical and quantum
+  members of one family of monotone metrics*, not because two derived quantities both printed
+  `2.828`.
+- That is a checkable direction with real theorems in it, and it is the one to pursue.
+
+**Register.** The chordal/geodesic values are **computed**. The convention-dependence is
+**arithmetic**. The refusal to treat the `2√2` match as identification is the **rule applied**.
+The Čencov ↔ Petz / Fisher–Rao ↔ Bures relation is a **real published connection**, cited here and
+*not yet checked against our code* — which is the next thing to do if this thread is pursued.

@@ -674,6 +674,71 @@ hand-copied — the generator-is-the-ECC discipline made concrete
 at the data-model root. Detail: the 2026-07-01 base-atom design
 note (`docs/research/`), work-item `081KWFXTHJY`.
 
+### Temperature is the decorrelation dial and consensus is the thermostat — the system is annealing
+
+*(2026-08-20, Aaron: "distributed consensus gets things bent towards it because of runaway
+decorrelation without it; when temperature rises it's warning of too much decorrelation, and then
+it bends towards our 'gravity' to restore the minimum correlation." Recorded at his request. The
+falsifier at the end is recorded with it, deliberately.)*
+
+**Decorrelation is a band, not a direction, and both edges are cliffs.**
+
+| regime | failure | what it looks like |
+|---|---|---|
+| **ρ → 1** | agents are clones | no independent evidence; correlated failure; a "contained" collapse propagates everywhere |
+| **ρ → 0** | fragmentation | no shared conclusion; the fold cannot converge — **Babel**, runaway etymology |
+| **middle** | working | independent enough to be worth aggregating, overlapping enough to still agree |
+
+This resolves a tension that ran through the whole arc: *"decorrelation is scarce and valuable"*
+and *"don't hit the tower of Babel"* were never competing goals. **They are the two edges of one
+band.**
+
+#### The mechanism is annealing
+
+Anchor: Kirkpatrick, Gelatt & Vecchi (1983), on Metropolis *et al.* (1953). High temperature
+explores widely and *accepts disagreement*; **cooling is what drives a system into agreement.**
+Cool too fast and you freeze into a bad local optimum — the ρ→1 failure. Never cool and you never
+converge — the ρ→0 failure.
+
+And it composes with the information/energy bridge rather than sitting beside it. The minimum work
+to reconcile two beliefs at temperature `T` is `kT · D_KL(p‖q)` (Landauer 1961 for the one-bit
+case; Jarzynski 1997 / Crooks 1999 for the general relation). So **as agents diverge, `D_KL` grows
+and the price of agreement rises with it** — meaning *"the system is heating up"* and
+*"reconciliation is getting expensive"* are **one statement**, and the cost is the sensor.
+
+> **Temperature is the decorrelation dial. Consensus is the thermostat. Gravity — things bending
+> toward heavy consensus — is the restoring force that keeps the band.**
+
+#### Which makes hub formation a control problem, not a moral one
+
+Consensus attracts: heavier consensus slows phase, which draws work, which makes it heavier. That
+is the *same* force doing its job and overshooting. **Gravity restores; hub formation is what
+happens when it is underdamped.** So §11's k-redundant deference — consult ≥ k independently
+accrued hubs, never simply the top one — is not a philosophical preference here. **It is the
+damping coefficient on a restoring force we want to keep.** We do not want the attraction removed;
+it is what stops Babel. We want it damped.
+
+#### The falsifier, recorded here on purpose
+
+This model predicts **ρ should be mean-reverting** — wandering inside a band with excursions
+pulled back. What we have actually measured is a **monotone rise**: `0.400 → 0.439 → 0.4647`
+across three measurements. **The model says mean-reverting; the measurement says monotone. That
+disagreement is unresolved.**
+
+Three readings, and we do not know which: the restoring force is real but too weak at current
+gain; it acts only below some floor we are above; or the rise is a corpus-growth artefact, since
+successive ρ values are computed over corpora that contain their predecessors and are therefore
+strongly autocorrelated. **The third is cheapest to eliminate** — difference the series, or
+recompute on disjoint windows.
+
+Honest statistics, since the trend has been quoted several times: three samples have six
+orderings and one is strictly increasing, so `p ≈ 0.17` under exchangeability. **Suggestive, not
+significant.** Four samples reach `0.042`, five reach `0.008`.
+
+This section is in VISION because the frame is load-bearing. The falsifier is in VISION *with* it
+because a vision that records only the part that felt right is how a meter stops being honest
+about its own manufacturing.
+
 ### Echolocation over time — the Z-set fold measures correlation, and the interference formula IS the variance algebra
 
 *(2026-08-19, Aaron: "this is our echolocation over time, the debounced together without √2
