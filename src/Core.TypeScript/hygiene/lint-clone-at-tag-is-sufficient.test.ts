@@ -7,7 +7,12 @@
 // disabled guard is the appointed hub arriving on schedule.
 
 import { describe, expect, test } from "bun:test";
-import { RESOLVER_INVOCATION, scanSurfaces, scanText } from "./lint-clone-at-tag-is-sufficient.ts";
+import {
+  BOOTSTRAP_SURFACES,
+  RESOLVER_INVOCATION,
+  scanSurfaces,
+  scanText,
+} from "./lint-clone-at-tag-is-sufficient.ts";
 
 describe("fires on ace-as-resolver", () => {
   const cases = [
@@ -80,5 +85,62 @@ describe("the real repo", () => {
     let seen = 0;
     scanSurfaces(undefined, () => { seen++; return ""; });
     expect(seen).toBeGreaterThan(20);
+  });
+});
+
+describe("`.cursor` is a bootstrap surface", () => {
+  // A cloud-agent environment provisions a fresh clone before anything is built, which
+  // makes it a bootstrap surface by definition. It is also the NEWEST one -- so it is
+  // the single place `ace` could become mandatory while every older surface stays
+  // untouched. The roster is therefore asserted, not assumed.
+  test("`.cursor` is enumerated", () => {
+    expect(BOOTSTRAP_SURFACES).toContain(".cursor");
+  });
+
+  test("...and the roster is still NARROW -- `docs`/`src` are not bootstrap surfaces", () => {
+    // The paired negative. A lint that scanned the whole tree would flag `ace`'s own
+    // suite and be disabled within a week, and a disabled guard is the appointed hub
+    // arriving on schedule. Narrowness is a property, not an oversight.
+    expect(BOOTSTRAP_SURFACES).not.toContain("docs");
+    expect(BOOTSTRAP_SURFACES).not.toContain("src");
+  });
+
+  test("a resolver line under `.cursor` FIRES", () => {
+    // Same code path as the real scan; only the file CONTENT is injected. That is what
+    // proves the surface is genuinely WALKED rather than merely listed.
+    const found = scanSurfaces([".cursor"], () => "  ace install --frozen");
+    expect(found.length).toBeGreaterThan(0);
+    expect(found.every((v) => v.file.startsWith(".cursor"))).toBe(true);
+  });
+
+  test("...and a legitimate line under `.cursor` STAYS SILENT", () => {
+    expect(scanSurfaces([".cursor"], () => "  run: bun src/Core.TypeScript/ace/ace-cli.ts --help")).toEqual([]);
+  });
+
+  test("the real `.cursor` is clean today", () => {
+    expect(scanSurfaces([".cursor"])).toEqual([]);
+  });
+});
+
+describe("a bootstrap surface that does not exist yet degrades to silence", () => {
+  // `.cursor/install.sh` and `.cursor/environment.json` are not on `main` at the time of
+  // writing -- they arrive with the Cursor cloud-agent PR. Listing the surface early must
+  // therefore be free. Both halves are needed: an absent path must contribute nothing,
+  // AND a present one must still be read, or "the lint is green" would only mean
+  // "nothing was opened".
+  test("a missing path reads zero files and finds zero violations", () => {
+    let seen = 0;
+    const found = scanSurfaces([".cursor/definitely-absent-surface"], () => {
+      seen++;
+      return "ace pull forge@v1";
+    });
+    expect(seen).toBe(0);
+    expect(found).toEqual([]);
+  });
+
+  test("...while a present path reads real files through the same call", () => {
+    let seen = 0;
+    scanSurfaces([".cursor"], () => { seen++; return ""; });
+    expect(seen).toBeGreaterThan(0);
   });
 });

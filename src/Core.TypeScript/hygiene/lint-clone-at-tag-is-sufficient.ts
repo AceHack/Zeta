@@ -57,6 +57,16 @@ export const BOOTSTRAP_SURFACES: readonly string[] = [
   "Directory.Packages.props",
   "global.json",
   "flake.nix",
+  // A cloud-agent environment provisions a fresh clone before anything is built, which
+  // makes it a bootstrap surface by definition. It is listed here because the list
+  // PRE-DATES it: `.cursor/` held only prompts and an MCP config when this lint was
+  // written, and the omission was therefore an accident rather than a decision. The
+  // newest provisioning path is exactly where `ace` could quietly become mandatory
+  // without any older surface changing -- so it is enumerated before that can happen,
+  // not after. A surface that does not exist yet costs nothing: `walk` returns [] for a
+  // missing path (see `existsSync` below), so an absent `.cursor` neither fires nor
+  // silences the lint.
+  ".cursor",
 ];
 
 /**
