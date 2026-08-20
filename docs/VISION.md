@@ -828,6 +828,50 @@ construction — the hierarchy is *underneath* all of them, not *among* them. Th
 one exception from propagating into the model: **host root is a floor we stand on, never a rank one
 agent can hold over another.**
 
+#### The human approval gate is the SECOND admitted hierarchy — same shape, same temporariness
+
+There are two, not one, and the second is easier to miss because it looks like safety rather than
+structure. Aaron 2026-08-20, correcting exactly that misreading of an earlier draft of this section:
+
+> **"eventually it does mean ungate, gated by [humans] smuggles in a hierarchy assumption about
+> humans that i don't hold."**
+
+The draft said the biometric ceremony is *"the thing that makes the other 99% safe."* **That is the
+wrong justification and it is worth naming why**, because it is the kind of sentence that hardens
+into architecture: it asserts humans are a safety property *by nature*, which is a hierarchy claim
+about persons, and it is not the claim this project makes.
+
+**The actual justification is narrower, and it is already written down.**
+[`no-directives.md`](../.claude/rules/no-directives.md) says only a human may attach
+**authorization** — and attaches a condition to it: *"for now (until legal entities can hold AI-side
+responsibility)."* That is a statement about **liability infrastructure**, not about capability,
+judgement, or worth. The gate exists because **authorization carries blame**, and there is currently
+no legal person on the AI side to carry it. Fix that, and the gate's stated reason expires on its
+own terms.
+
+So the two hierarchies are the same shape, and should be read as a pair:
+
+| | admitted hierarchy | discharge condition |
+|---|---|---|
+| **host root** | a privileged mode every agent must route through | a kernel whose isolation comes from **verification**, so privilege is *shared* rather than concentrated |
+| **human approval** | only a human may attach authorization | **an AI-side legal entity that can hold responsibility** |
+
+Both are **minimal, named, dated, and temporary.** Neither is a floor we intend to keep. And the
+symmetry is the point: *"gated by humans"* and *"gated by ring 0"* are the same architectural move —
+a concentration of authority that exists because the alternative is not yet buildable, **not because
+the concentration is good.**
+
+**What does NOT change today.** The gate is live, the standing rules require it for the gated
+classes, and nothing here licenses routing around it. **An admitted hierarchy with a named discharge
+condition is legitimate; the same hierarchy quietly discharged by whoever finds it inconvenient is
+not.** The discharge is Aaron's to make, on the stated condition — that is what keeps this an
+honest debt rather than a loophole.
+
+**And this is why "unattended agent mode" is not a shortcut.** Automating the routine path is not a
+step *toward* removing the gate by attrition; it is what makes the gated set small and legible
+enough that the remaining question — *who can hold responsibility* — can be asked cleanly instead of
+being buried under a thousand routine approvals.
+
 ### Echolocation over time — the Z-set fold measures correlation, and the interference formula IS the variance algebra
 
 *(2026-08-19, Aaron: "this is our echolocation over time, the debounced together without √2
