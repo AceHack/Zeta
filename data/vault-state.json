@@ -1,10 +1,10 @@
 {
   "schema": "zeta.vault-state.v1",
   "status": "stale",
-  "reason": "latest frame 30min ago",
-  "generated_at_ms": 1787245204594,
+  "reason": "latest frame 44min ago",
+  "generated_at_ms": 1787246053207,
   "tick_frame_t": "2026-08-20T16:30:03.027Z",
-  "total_events_read": 2898,
+  "total_events_read": 2900,
   "max_phase": 78,
   "vaults": [
     {
@@ -41,13 +41,13 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-20T17:00:04.129Z",
+              "at": "2026-08-20T17:14:09.554Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-20T16:59:02.880Z",
+              "at": "2026-08-20T17:00:04.129Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
@@ -81,13 +81,13 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-20T17:00:04.129Z",
+              "at": "2026-08-20T17:14:09.554Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-20T16:59:02.880Z",
+              "at": "2026-08-20T17:00:04.129Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
@@ -124,15 +124,15 @@
           "dwellers": [
             {
               "agent_id": "otto",
-              "last_seen": "2026-08-20T17:00:04.390Z",
+              "last_seen": "2026-08-20T17:14:12.997Z",
               "hat_id": "healer",
               "last_action": {
                 "kind": "attest_peer",
-                "at": "2026-08-20T17:00:04.390Z"
+                "at": "2026-08-20T17:14:12.997Z"
               },
               "reputation": {
                 "value": 0.9055555555555556,
-                "epsilon": -0.042409446483998546,
+                "epsilon": -0.04233337566673017,
                 "silent": false
               },
               "reputation_history": [
@@ -205,7 +205,7 @@
                 "at": "2026-08-20T16:32:41.549Z"
               },
               "reputation": {
-                "value": 0.9166666666666667,
+                "value": 0.9173611111111112,
                 "epsilon": -0.04173919355648411,
                 "silent": false
               },
@@ -269,7 +269,7 @@
                 "at": "2026-08-20T15:58:51.409Z"
               },
               "reputation": {
-                "value": 0.8416666666666667,
+                "value": 0.8430555555555556,
                 "epsilon": 0.04667600280093366,
                 "silent": false
               },
@@ -278,7 +278,7 @@
                 0.010416666666666666,
                 0,
                 1,
-                0.78125,
+                0.8020833333333334,
                 1,
                 1
               ]
@@ -312,7 +312,7 @@
                 "at": "2026-08-20T15:58:51.409Z"
               },
               "reputation": {
-                "value": 0.8416666666666667,
+                "value": 0.8430555555555556,
                 "epsilon": 0.04667600280093366,
                 "silent": false
               },
@@ -321,7 +321,7 @@
                 0.010416666666666666,
                 0,
                 1,
-                0.78125,
+                0.8020833333333334,
                 1,
                 1
               ]
@@ -364,13 +364,13 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-20T17:00:04.129Z",
+              "at": "2026-08-20T17:14:09.554Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-20T16:59:02.880Z",
+              "at": "2026-08-20T17:00:04.129Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
