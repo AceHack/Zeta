@@ -1,0 +1,12 @@
+{
+  "pr_number": 12844,
+  "archive_path": "docs/history/pr-reviews/PR-12844-bp-29-track-falsifiers-not-features-and-density-is-a-proxy-because-the-exact-qua.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T16:22:50.724Z",
+  "schema_version": "v1",
+  "commit_sha": "baf4b2291306430c5bea00751877979022204d79",
+  "title": "BP-29: track falsifiers, not features — and density is a proxy because the exact quantity is UNDECIDABLE",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T16:22:09Z",
+  "head_ref": "feat/bp-29-falsifier-density-v3"
+}
