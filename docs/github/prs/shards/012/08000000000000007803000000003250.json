@@ -1,0 +1,12 @@
+{
+  "pr_number": 12880,
+  "archive_path": "docs/history/pr-reviews/PR-12880-fix-browser-retain-concurrent-causal-handoffs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T18:02:28.740Z",
+  "schema_version": "v1",
+  "commit_sha": "ea74433f5c839750ad70d9eaa12e6b6cbeb74290",
+  "title": "fix(browser): retain concurrent causal handoffs",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T18:01:35Z",
+  "head_ref": "codex/browser-causal-multipeer-handoff"
+}
