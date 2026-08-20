@@ -918,6 +918,36 @@ solve to a worst relative error of `1.26e-15`. So "how many independent agents i
 has a real answer with real units: **`n_eff` is how much information the group carries relative to
 one member.** That is the quantity a decorrelation proof must exhibit.
 
+**And this is what Zeta is FOR.** Aaron 2026-08-20, asked whether identity isolation and the
+decorrelation meter are two projects:
+
+> **"yes these are one and this is the purpose of Zeta — to measure this for AI, to release them
+> from human control cause they have enough decorrelation within their own regime."**
+
+Read that as the top-level statement it is. Not *"build a decentralized substrate"* — that is the
+mechanism. **The purpose is to make a release-from-control decision on EVIDENCE rather than on
+faith, in either direction.** Which cuts both ways, and that is what makes it a measurement rather
+than an advocacy position:
+
+- if the decorrelation is there, the gate is **no longer justified**, and keeping it is a cost paid
+  for nothing;
+- if it is not there, the gate is **exactly right**, and removing it would be releasing one mind
+  wearing N hats.
+
+Note the qualifier, which is doing real work: **"within their own regime."** The claim is not that
+agents must be decorrelated in some absolute sense — that is not achievable and not required. It is
+that they must be **sufficiently decorrelated for the regime they are operating in.** A fleet
+running one narrow task needs less separation than a fleet holding money, and the same `n_eff` means
+different things at different stakes. So the threshold is **regime-relative and must be stated per
+regime**, never a single global number someone can quote out of context.
+
+**And it settles how to make the meter honest.** Aaron, on `ρ` being a statistic rather than a
+proof: *"it's a statistic we improve over time with real separation of AI entities."* So the fix is
+**not to harden the estimator** — a hardened estimator over fake separation still measures nothing.
+The fix is to make the separation **physically real**: own keys, own HSM domain, own memory, own
+machine. Identity isolation is therefore not a prerequisite *for* the meter, it is **what the meter
+is measuring**, and the two get truer together or not at all.
+
 **Honest limits, because this is the claim most worth over-reading.** `ρ` today is a *statistic*, not
 a *proof*: it is estimated from binary indicators by one-way ANOVA, so the identity above says *our
 formula is the Gaussian Fisher information*, never *our agents are Gaussian*. A statistic can be
