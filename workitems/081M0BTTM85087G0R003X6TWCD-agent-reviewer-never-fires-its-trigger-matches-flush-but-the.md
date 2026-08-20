@@ -104,10 +104,10 @@ Three separable jobs; two were already covered, and the gap was the third.
 
 | job | who does it today | state |
 |---|---|---|
-| EMIT peer attestations | `observe/emit-attestation.ts`, invoked every tick by `agent-heartbeat.yml` | live, 380 records on `main` |
-| VERIFY an attestation record | `observe/attestation-record.ts` + `observe/verify-attestation-events.ts` (#12256) | complete and tested, **called by no workflow** |
+| EMIT peer attestations | `src/Core.TypeScript/observe/emit-attestation.ts`, invoked every tick by `agent-heartbeat.yml` | live, 380 records on `main` |
+| VERIFY an attestation record | `src/Core.TypeScript/observe/attestation-record.ts` + `src/Core.TypeScript/observe/verify-attestation-events.ts` (#12256) | complete and tested, **called by no workflow** |
 | GATE on the result | nothing | `summarizeAttestations` is referenced only by its own test |
-| filename shape in `docs/observe-events/` | `hygiene/audit-observe-event-filenames.ts`, inside `gate (required)` | live |
+| filename shape in `docs/observe-events/` | `src/Core.TypeScript/hygiene/audit-observe-event-filenames.ts`, inside `gate (required)` | live |
 
 So the emit half did not need this workflow, and the filename check it performed
 was a redundant second opinion. The genuine gap: **nothing ran the verifier.**
@@ -116,7 +116,7 @@ was a redundant second opinion. The genuine gap: **nothing ran the verifier.**
 
 `agent-reviewer.yml` is armed against the branch form the fleet actually
 produces (`heartbeat/<agent>-flush-<sha>`), and the auto-approver is REMOVED
-rather than armed. The job now runs `observe/verify-flush-batch.ts`, which
+rather than armed. The job now runs `src/Core.TypeScript/observe/verify-flush-batch.ts`, which
 performs the two checks nothing else performs — the producer/`by` binding and
 `verifyAttestationRecord` over the records the batch adds — and holds
 `contents: read` / `pull-requests: read` and nothing more.

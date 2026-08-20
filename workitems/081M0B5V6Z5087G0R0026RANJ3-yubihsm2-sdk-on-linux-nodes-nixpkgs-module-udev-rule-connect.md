@@ -36,7 +36,7 @@ Cluster nodes are **NixOS**, so this is not an apt question. The pinned nixpkgs
 (`b77b3de8775677f84492abe84635f87b0e153f0f`) already carries `yubihsm-connector` 3.0.7 and
 `yubihsm-shell` 2.7.3 — no third-party apt source, no vendored `.deb`.
 
-1. New `full-ai-cluster/nixos/modules/yubihsm.nix`: `yubihsm-connector` +
+1. A new `yubihsm.nix` under `full-ai-cluster/nixos/modules/`: `yubihsm-connector` +
    `yubihsm-shell`, a `yubihsm-connector` system user, a `systemd.services` unit
    (nixpkgs ships **no** `services.yubihsm-connector` module), and
    `services.udev.extraRules` for `1050:0030` with `OWNER="yubihsm-connector"`.
@@ -51,7 +51,7 @@ Cluster nodes are **NixOS**, so this is not an apt question. The pinned nixpkgs
 
 - [ ] Section 8 Q1–Q8 answered by the maintainer; sign-off date recorded in the doc.
 - [ ] Probe path contract settled: NixOS resolves the module to
-      `/run/current-system/sw/lib/pkcs11/yubihsm_pkcs11.so`, which matches **none** of the
+      `yubihsm_pkcs11.so` under `/run/current-system/sw/lib/pkcs11/`, which matches **none** of the
       three Linux paths in `frost-hardware-probe.ts` (PR #12042). A correctly provisioned
       node reports `yubiHsm2Pkcs11ModuleFound: false` until this is fixed — add the exact
       fourth path, never a wildcard or fallback.

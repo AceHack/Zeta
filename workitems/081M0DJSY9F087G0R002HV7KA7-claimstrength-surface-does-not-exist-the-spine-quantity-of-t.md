@@ -24,7 +24,7 @@ The nearest surfaces each answer an adjacent question, and each is *correct* not
 
 - `src/Core/TravelerRankLedger.fs` — a posterior over **outcome calibration** per (traveler, hat-domain), not over accrued mutual observation.
 - `src/Core/QuorumAlgebra.fs` — deduplicates by source, returns no scalar.
-- `src/Core/GossipTelemetry.fs` — carries the observations and deliberately attaches no verdict (dual-use).
+- `src/Bayesian/GossipTelemetry.fs` — carries the observations and deliberately attaches no verdict (dual-use).
 - `src/Core/SocietyUsefulWork.fs` / `src/Bayesian/CondorcetBoundary.fs` — the correct *functional* (`N_eff`), over the wrong random variables (competence over facts, not observation over claims).
 
 **The composition point does not exist.** The pieces are the arguments of a function nobody wrote, which is why the design reads as unfinished.

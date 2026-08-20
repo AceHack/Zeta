@@ -22,14 +22,14 @@ forecloses no later split.
 
 ## Shipped in this PR
 
-- `hygiene/audit-build-graph-completeness.ts` (+24 tests) -- the acceptance gate.
+- `src/Core.TypeScript/hygiene/audit-build-graph-completeness.ts` (+24 tests) -- the acceptance gate.
   Three directions, fails closed: target->leg, leg->job, job->target. Two rosters
   (`INFRASTRUCTURE_JOBS`, `UNCOVERED_TARGETS`), each checked for rot in BOTH
   directions so an exemption cannot quietly grow or shadow real coverage.
-- `ci/affected-legs.ts` (+9 tests) -- the run-time selector. Emits one explicit
+- `src/Core.TypeScript/ci/affected-legs.ts` (+9 tests) -- the run-time selector. Emits one explicit
   boolean per leg, **derived from the graph at run time**, never hand-maintained.
   Fail-safe: any error emits `mode=full`, so the selector can only ever ADD work.
-- `hygiene/lint-clone-at-tag-is-sufficient.ts` (+22 tests) + the carved-sentence
+- `src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.ts` (+22 tests) + the carved-sentence
   rule -- the §1 guard, as a falsifier rather than prose.
 - `gate.yml` job `build-graph-completeness` -- **bun-only** (`setup-bun`, not
   `install.sh`), which is the first job in the repo to take its subset rather than
