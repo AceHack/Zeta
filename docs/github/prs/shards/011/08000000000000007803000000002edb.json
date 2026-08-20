@@ -1,0 +1,12 @@
+{
+  "pr_number": 11995,
+  "archive_path": "docs/history/pr-reviews/PR-11995-ferry-ip-questionable-the-hidden-structure-of-rule-30-left-permutivity-backward-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T15:29:33.545Z",
+  "schema_version": "v1",
+  "commit_sha": "130a624dc965998e78e3533b4a1a64b3135a25e0",
+  "title": "ferry(ip-questionable): \"The Hidden Structure of Rule 30\" — left permutivity, backward time, local nested structure",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T15:28:56Z",
+  "head_ref": "shadow/ferry-rule-30-hidden-structure"
+}
