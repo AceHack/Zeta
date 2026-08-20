@@ -7,6 +7,7 @@ import {
   TERM_RE,
   documentFrequency,
   concentration,
+  ordinalCompare,
 } from "./glossary-adoption-cell";
 
 // Per BP-29: every positive is paired with a negative computed by the SAME function.
@@ -110,5 +111,21 @@ describe("breadth — the 'by others' axis that separates a tic from substrate",
     // division by df must not produce a number that would sort to the top of a
     // "most concentrated" list purely because nothing uses the term
     expect(concentration(5, 0)).toBe(0);
+  });
+});
+
+describe("collation is ordinal, never locale-sensitive", () => {
+  test("ordinalCompare orders by UTF-16 code unit", () => {
+    // uppercase sorts before lowercase in code-unit order; a locale collator
+    // typically does the opposite, which is exactly the machine-dependence banned
+    expect(ordinalCompare("Z-a", "a-z")).toBe(-1);
+    expect(ordinalCompare("a-z", "Z-a")).toBe(1);
+    expect(ordinalCompare("a-z", "a-z")).toBe(0);
+  });
+
+  test("PAIRED NEGATIVE: it disagrees with localeCompare — so the choice is load-bearing", () => {
+    // If these agreed, swapping one for the other would be invisible and this
+    // test would be pinning nothing. They do not agree, which is the point.
+    expect(ordinalCompare("Z-a", "a-z")).not.toBe("Z-a".localeCompare("a-z"));
   });
 });

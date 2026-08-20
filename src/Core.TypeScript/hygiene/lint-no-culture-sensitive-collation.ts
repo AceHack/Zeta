@@ -180,6 +180,11 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
     reason: "the collation treaty's differential test — it compares candidate orders against each other on purpose",
   },
   {
+    file: "src/Core.TypeScript/hygiene/glossary-adoption-cell.test.ts",
+    reason:
+      "pins that the glossary cell's tie-break is ordinal by exhibiting the locale order it must not be; the disagreement IS the assertion, so removing the localeCompare call would leave the test pinning nothing",
+  },
+  {
     file: "src/Core.TypeScript/society/society.test.ts",
     reason: "asserts that the canonical address order DIVERGES from localeCompare; the divergence is the assertion",
   },

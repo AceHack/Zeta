@@ -137,6 +137,22 @@ export const PLUMBING = new Set([
   "pr-archive-on-merge",
 ]);
 
+/**
+ * ORDINAL tie-break. Not `localeCompare`, which consults a runtime locale (and an
+ * ICU version) that differs between machines -- so the same corpus would sort
+ * differently on two hosts and the emitted work-list would not be byte-identical.
+ * `<`/`>` on JS strings compares UTF-16 code units, which is machine-independent.
+ *
+ * This file shipped with two `localeCompare` calls and
+ * `lint-no-culture-sensitive-collation` caught them. Recorded here rather than
+ * quietly patched, because that lint's own docstring predicted exactly this: the
+ * rule is a build error in C# (CA1310) and was unguarded in TypeScript, so "these
+ * keep reappearing" is a property of the asymmetry, not of carelessness.
+ */
+export function ordinalCompare(a: string, b: string): number {
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+
 export interface Cell {
   /** glossary terms the corpus uses at most `quietBelow` times */
   readonly coinedNotAdopted: ReadonlyArray<readonly [string, number]>;
@@ -165,8 +181,8 @@ export function cell(
     (PLUMBING.has(t) ? plumbing : used).push([t, n]);
   }
   plumbing.sort((a, b) => b[1] - a[1]);
-  coined.sort((a, b) => a[1] - b[1] || a[0].localeCompare(b[0]));
-  used.sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  coined.sort((a, b) => a[1] - b[1] || ordinalCompare(a[0], b[0]));
+  used.sort((a, b) => b[1] - a[1] || ordinalCompare(a[0], b[0]));
   return {
     coinedNotAdopted: coined,
     usedNotDefined: used,
