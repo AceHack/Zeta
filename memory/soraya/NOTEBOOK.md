@@ -15,28 +15,43 @@ Surface `.claude/skills/verification-drift-auditor/SKILL.md`; registry `docs/res
 
 Formal-coverage ratio = gated artefacts / paths flagged as needing one. Trend beats absolute.
 
-### Round 21 baseline -- PRUNED 2026-08-14. Ratio was ~15/18 = 0.83 over 4 gated TLA+ specs
-and 8 Z3 lemmas. Superseded: the TLA+ leg alone is now 52 gated model runs.
+### Round 21 -- PRUNED. Ratio ~0.83; the TLA+ leg alone is now 52 gated runs.
 
 ---
 
 ## Current-round routing recommendations
 
+### 2026-08-20 -- Clifford signature audit + Lorentzian phase order (PR #12805)
+
+Doc: `docs/research/2026-08-20-clifford-signature-audit-cl13-vs-cl31-is-inert-*.md`.
+
+- **Cl(1,3) vs Cl(3,1): NO crossing, not a bug.** The split is inert -- every in-tree use sits
+  in the even part or the Lorentz Lie algebra, both p<->q swap-invariant (o(p,q) = o(q,p)
+  literally; Cl0 clock positions sum to 2 mod 8, same table row). Computed: 0 counterexamples
+  over 196 pairs; full algebras differ in 168 of 210. Guard filed as 081M0FTPJ4X087G0R000E91P3Y
+  -- **FsCheck, P1, one tool.** BP-16 does not fire and I said so rather than over-buying the
+  triple; Lean on a finite-table identity is human-weeks for an hour's work.
+- **Lorentzian phase order: clean negative, by theorem.** Malament 1977 -- causal order fixes the
+  metric only up to a conformal factor; Sorkin -- counting supplies that factor. Geometry buys
+  nothing over poset+count, and importing it imports the open Hauptvermutung. Two computed
+  falsifiers gated in `src/Core.TypeScript/research/causal-order-minkowski-embedding.test.ts`.
+- **Routing note:** "does our causal order embed in M^{1,1}" is **structural shape** -> **Alloy**,
+  not TLA+. Reflex-TLA+ on a static poset fact is the table's own wrong-tool cost.
+- **Portfolio signal for Kenji:** the persisted causal set has concurrency width **1.000** (main
+  is a chain; squash erases the fan). A spec reasoning about concurrency on `main` is reasoning
+  about an artefact with none. Denominator problem, not a tool problem.
+
 ## Running observations
 
-- Round-21 running observations (seeded / TLA+-hammer check / Stainless viability) -- PRUNED 2026-08-19 (3000-word cap). Superseded: the TLA+-hammer finding is now a standing routing habit, and Stainless never left Assess.
-
-### Round 21 targets -- PRUNED 2026-08-14, all dispatched and long landed.
+- Round-21 observations + targets -- PRUNED. TLA+-hammer check is now a standing habit; Stainless never left Assess.
 
 ---
 
 ## Pruning log
 
-- 2026-08-19 (forward-correlation lane): pruned the 2026-08-14 spec-flags round to a conclusion stub to hold the cap.
-- 2026-08-19 (identity-server lane): pruned the stale round-21 running observations to hold the cap after the distributed-identity-server routing entry.
-- 2026-08-18 (ambient-time lane): pruned Round 41, Safety-floor arc, Vacuity/Landauer
-  round and the Z-EPS run to hold the 3000-word cap after two same-day entries merged.
-
+- 2026-08-19: pruned the spec-flags round to a conclusion stub, and the stale round-21 observations.
+- 2026-08-18: pruned Round 41, Safety-floor arc, Vacuity/Landauer, Z-EPS (tombstone dropped 2026-08-20).
+- 2026-08-20 (Clifford/Lorentz lane): compressed three round-21 stubs and the Meno stub.
 
 ---
 
@@ -44,28 +59,22 @@ and 8 Z3 lemmas. Superseded: the TLA+ leg alone is now 52 gated model runs.
 
 One line per round where a trigger fired and routing was decided WITHOUT filing a row. Forward-only.
 
-| Round | Trigger | Outcome | Artifact |
-|---|---|---|---|
-| 59 | PR #4795 (081KSBMG30008QG0R003B46GWG) merged | recognition-without-row-filing (umbrella covers subitem (b) acceptance criteria; execution is Kenji's lane) | n/a (chat-only) |
-| 66 | PR #4797 merged | recognition-without-row-filing (audit execution is Kenji's lane) | n/a (chat-only) |
-| 69 | PR #4810 merged | routed to Option 1: this section; rejected in-place (wrong change-rate partition) and a new ledger (premature) | this section |
+| Round | Trigger                                      | Outcome                                                                                                        | Artifact        |
+| ----- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------- |
+| 59    | PR #4795 (081KSBMG30008QG0R003B46GWG) merged | recognition-without-row-filing (umbrella covers subitem (b) acceptance criteria; execution is Kenji's lane)    | n/a (chat-only) |
+| 66    | PR #4797 merged                              | recognition-without-row-filing (audit execution is Kenji's lane)                                               | n/a (chat-only) |
+| 69    | PR #4810 merged                              | routed to Option 1: this section; rejected in-place (wrong change-rate partition) and a new ledger (premature) | this section    |
 
 If this section saturates, revisit Option 3: a separate cross-cutting ledger.
 
+## 2026-08-14 -- Meno braided ladder -- PRUNED again 2026-08-20. Conclusion retained: the Q3
 
-## 2026-08-14 -- Meno braided ladder -- PRUNED 2026-08-19 (3000-word cap). Conclusions retained:
+obstruction was misread (the deterministic SUBCATEGORY is cartesian, not the ambient tensor);
+the real, sharper one is that a cartesian monoidal category has a UNIQUE BRAIDING. Escape via
+Fox 1976. Deliverable was a GUARD -- MenoBraided.rep already is the minimal non-cartesian tensor
+under a hom-restriction.
 
-Q3 obstruction NOT real as stated (the brief misread Meno.fs:38 -- the DETERMINISTIC
-SUBCATEGORY is cartesian, not the ambient tensor), but the ADJACENT obstruction is real and
-sharper: a cartesian monoidal category has a UNIQUE BRAIDING, not merely a unique symmetric
-structure. Escape: every <V> morphism is a basis bijection, copy/discard cannot enter, Fox 1976
-gives non-cartesian. Deliverable was a GUARD, nothing to construct -- MenoBraided.rep already
-IS the minimal non-cartesian tensor under a hom-restriction. Q1 balanced; both prior reviews
-misread the axiom the same way (dropped the `. c_{B,A} . c_{A,B}` on the right).
-
-## 2026-08-14 -- Z-EPS -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
-
-## Round 2026-08-14 -- flags a spec is measured under ARE part of the claim -- PRUNED 2026-08-19 (3000-word cap). Conclusion retained: a spec's verification flags (bounds, symmetry reduction, fairness) are part of the claim, not harness detail; a spec re-run under weaker flags is a DIFFERENT claim and must be re-stated, not silently inherited.
+## 2026-08-14 -- spec flags ARE part of the claim -- PRUNED. A spec's verification flags (bounds, symmetry reduction, fairness) are part of the claim; a re-run under weaker flags is a DIFFERENT claim and must be re-stated, never silently inherited.
 
 ## 2026-08-18 -- consolidated map + vacuity sweep
 
@@ -168,7 +177,7 @@ most-worked area of Zeta. Correct, and understated. Sweep found 37 TLA+ specs / 
 6 Alloy models, 26+ Lean files, 9 Z3 lemmas, 8 Q# oracle modules, 23 identity-named F# modules,
 ~80 research docs. The reason there was no overall design is not missing pieces, it is a missing
 MAP -- so every attempt re-derives proven work. Deliverable:
-docs/research/2026-08-19-draft-the-distributed-identity-server-*.md (DRAFT).
+docs/research/2026-08-19-draft-the-distributed-identity-server-\*.md (DRAFT).
 
 **Routing calls (full table in the doc §5, not restated here).** Headline: C1 -> F# private
 constructor + Alloy, NOT TLA+ (inexpressible beats unreachable). C3a -> Lean on the existing
