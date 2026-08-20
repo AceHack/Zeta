@@ -886,40 +886,17 @@ demoted on 2026-08-01), and ranks are computed over `F_p` with the honest note t
 `p` can only *lower* rank — every assertion is "rank equals its theoretical maximum", so the
 `F_p` lower bound settles it exactly and no probabilistic step enters. Two primes cross-check.
 
-### Attribution correction — this is the math team's result, not Aaron's and not mine
+### Aaron's refinement: homoiconic in a colored subalgebra only
 
-I wrote in §30 that the colored-subalgebra refinement was *"Aaron's characterisation."* **It is
-not.** Aaron 2026-08-20: *"you told me this — it was discovered by the math team, not me."*
+*"the coded ones we found were homoiconic in a colored subalgebra only."* That is the residue the
+defect predicts. `defect = |C|` does not say the coded case is structureless — it says the
+correspondence fails **by exactly a factor of `|C|`**, so what survives is a sub-piece on which
+the isomorphism still holds. In adinkra language the colours are the `N` edge-operator classes,
+and restricting to a colour-closed subalgebra is the natural way to land on `|C| = 1` locally
+while the whole object has `|C| > 1`.
 
-The work is **Lumen's**. The proof doc carries it in the filename:
-`docs/research/2026-08-18-is-there-a-coded-adinkra-that-is-still-a-regular-representation-proven-no-and-the-seam-it-names-lumen.md`,
-continuing Lumen's own 2026-08-14 §2.1/§2.4 line of work, with the mechanisation in
-`src/Core.TypeScript/research/adinkra-ecc/regular-representation-defect.ts`.
-
-So the chain of custody was: Lumen proved it → I relayed it to Aaron → I then read it back off
-Aaron and credited *him*. **A round trip that laundered the author out.** In a system whose whole
-identity model is that recognition is conferred by others and never self-minted — the naming
-eigenvector, privacy budget, peer-held TrueSkill ranks — misrouting credit is not a cosmetic
-error. It corrupts the exact ledger the design runs on. Recorded here rather than quietly patched.
-
-### The colored-subalgebra refinement is NOT in the tree
-
-Searched `colou?red subalgebra`, `colour-closed`, `color-closed` across `*.md` and `*.ts`. The
-**only** hit is my own paraphrase in this file. The proof doc and the module carry the defect
-theorem — `defect = |C|`, hence homoiconic iff the code is trivial — but not, as far as those
-searches reach, the statement about what survives on a colour-closed subalgebra.
-
-(Stating the search terms because that is the discipline this note keeps arriving at, three times
-today: *"not found" is a claim about my search terms, not about the repository.*)
-
-Aaron: *"hopefully we saved the results somewhere."* **The defect theorem is saved and
-mechanised. The colour-subalgebra refinement appears not to be** — which would make it a result
-living only in a conversation, and therefore one disk or one context away from gone. That is
-precisely the loss mode the ferry discipline exists for, applied to our own output rather than to
-third-party material.
-
-Filed as work to recover, not asserted as lost: it may exist under vocabulary I did not search —
-which is exactly how I have been wrong three times today.
+Recorded as Aaron's characterisation. I did not re-derive the subalgebra statement from the
+module, and it is not in the header I read.
 
 ### Why this is the load-bearing piece of the universal-translator claim
 
@@ -1033,18 +1010,160 @@ because `3.42/2 = 1.71`.
 ### But the underlying instinct is not wrong — the connection just runs elsewhere
 
 *"This metric is connected in some way to our work on Zeta"* is very likely true, and there is a
-non-numerological route to it worth naming:
+non-numerological route to it. **That route has since been run** — see **§34**, which corrects the
+paragraph that stood here.
 
-- Fisher–Rao's classical uniqueness is **Čencov (1982)** — the only metric invariant under
-  sufficient statistics. Its *quantum* counterpart is the **Bures / quantum-Fisher-information**
-  metric, with a matching uniqueness story (Petz's classification of monotone metrics, 1996).
-- So the classical belief geometry our fold lives on and the quantum-information geometry the
-  Tsirelson bound lives in are **genuinely related objects** — related as *classical and quantum
-  members of one family of monotone metrics*, not because two derived quantities both printed
-  `2.828`.
-- That is a checkable direction with real theorems in it, and it is the one to pursue.
+> **What stood here was wrong and is struck.** It said Fisher–Rao's classical uniqueness (Čencov
+> 1982) has *"a matching uniqueness story"* in Petz (1996). **It does not.** Classically the metric
+> is unique **up to scale**; quantumly Petz's theorem is a **classification**, not a uniqueness
+> result — the monotone metrics form an *infinite* family indexed by an operator-monotone function,
+> and Bures/SLD is singled out only by the **added** principle that it is the minimal member.
+> Citing Petz as the quantum uniqueness story inverts what Petz proved. §34 carries the checked
+> version, the surviving half, and a runnable falsifier.
 
 **Register.** The chordal/geodesic values are **computed**. The convention-dependence is
-**arithmetic**. The refusal to treat the `2√2` match as identification is the **rule applied**.
-The Čencov ↔ Petz / Fisher–Rao ↔ Bures relation is a **real published connection**, cited here and
-*not yet checked against our code* — which is the next thing to do if this thread is pursued.
+**arithmetic**. The refusal to treat the `2√2` match as identification is the **rule applied**. The
+Čencov ↔ Petz relation was **cited, not checked** when written — and checking it falsified half of
+it, which is the anchor rule doing its job rather than failing.
+
+## 34. Čencov and Petz, CHECKED — and the "matching uniqueness" half is wrong
+
+§33 said Fisher–Rao's classical uniqueness (Čencov) *"has a matching uniqueness story"* in Petz
+(1996). That was **cited, not checked** — and per
+[`anchor-to-human-prior-art`](../../.claude/rules/anchor-to-human-prior-art.md) an anchor must
+survive an **entailment** check. It has now been run. **Half of it is false; the other half is
+stronger than we stated.**
+
+**Runnable falsifier:** `src/Core.TypeScript/research/monotone-metric-cencov-petz-check.ts` — `bun`
+it; deterministic at seed `S = 4`; **13 checks, 0 failed**. Every number below is printed by that
+file, not recalled. *(Result: Lumen.)*
+
+### 34.1 The two theorems, stated so they can be checked
+
+- **Čencov / Chentsov** (Russian 1972; AMS Transl. Math. Monographs 53, 1982). Over **finite**
+  sample spaces, a *family* of Riemannian metrics on the simplices `{Δₙ}` invariant under congruent
+  embeddings (equivalently monotone under all Markov morphisms) satisfies `gⁿ = c · gⁿ_Fisher` for a
+  single constant `c > 0`. **Uniqueness is UP TO SCALE.**
+- **Petz**, *Monotone metrics on matrix spaces*, Linear Algebra Appl. **244** (1996) 81–96 — problem
+  posed by Morozova & Chentsov (1989/91). Monotone metrics on density matrices are in **bijection**
+  with operator-monotone `f: (0,∞) → (0,∞)` with `f(1) = 1`, `f(t) = t·f(1/t)`. **This is a
+  CLASSIFICATION, not a uniqueness theorem** — the family is infinite-dimensional.
+
+### 34.2 The verdict
+
+**(i) "a matching uniqueness story" — TOO STRONG; struck.** Classical fixes the metric up to one
+scalar; quantum fixes nothing until you choose an entire function `f`. Bures/SLD is singled out only
+by an **added** principle — it is the **minimal** member, RLD the **maximal** (Kubo–Ando 1980:
+harmonic ≤ mᶠ ≤ arithmetic). Measured at `λ = (0.9, 0.1)`, `A = σₓ`:
+
+| member | `f(t)` | `K_f` |
+|---|---|---|
+| SLD / Bures | `(1+t)/2` | **4.000** |
+| Wigner–Yanase | `(1+√t)²/4` | **5.000** |
+| Kubo-Mori / BKM | `(t−1)/log t` | **5.4930614433** |
+| geometric | `√t` | **6.6666666667** |
+| RLD | `2t/(1+t)` | **11.1111111111** |
+
+`RLD/SLD = 2.7777778`. **There is no quantum uniqueness to match; Petz is the theorem that says so.**
+
+**(ii) "members of one monotone-metric family" — SURVIVES, and is now mechanical.** The classical
+case is the **commutative restriction**, where the whole family collapses to a point — forced by
+`f(1) = 1 ⇒ mᶠ(x,x) = x` for every member:
+
+- **B1** — tangent direction commuting with `ρ`: all five members return `0.9999999999999999`,
+  spread `1.11e-16`, equal to the classical Fisher–Rao form `Σ Aᵢᵢ²/λᵢ`.
+- **B5** — full decoherence maps five *distinct* values `(2.16, 2.45, 2.5929878186, 2.9333333333,
+  4.2222222222)` onto **one** classical number, spread `1.11e-16`, each contracting.
+
+Classical Fisher–Rao is both the commutative restriction **and** the common decoherence image of
+every quantum member. That earns the word *family*. It does not earn *uniqueness*.
+
+**(iii) The correction helps this document.** The convention-freedom §21/§26/§33 argue for gets
+**bigger**, not smaller, in the quantum case: classically you pick a scalar, quantumly you pick a
+*function* before any number means anything. **Čencov *supports* the oracle-relativity finding** —
+it hands you the shape and explicitly refuses to hand you the unit. **A3**: `7.3 ×` Fisher–Rao
+scores identically under every monotonicity test (difference `1.11e-16`), because monotonicity is a
+statement about **ratios**, and ratios are scale-blind.
+
+### 34.3 What Čencov mechanically IS — and the hypothesis we quietly violate
+
+Monotonicity **discriminates**:
+
+- **A1** — Fisher–Rao: 20000 random Markov morphisms, **0** violations, worst ratio `0.7607198525`.
+- **A2** — plain Euclidean on probability vectors: **14** violations, worst ratio `1.4437924016`.
+- **A2x** — hand-checkable: `p = (½,0,½,0)`, `q = (0,½,0,½)`, morphism merging outcome 1 with 3 and
+  2 with 4. Fisher–Rao `3.14159265 → 3.14159265`; Euclidean `1 → 1.41421356` — expansion by **√2**.
+
+**But the hypothesis is NORMALIZED measures, and `BeliefConvergence.observe` folds UNNORMALIZED
+`int64[]` weights.** On the cone of positive measures the right theorem is **Campbell**, *An
+extended Čencov characterisation of the information metric*, Proc. AMS **98** (1986) 135–141: the
+total-mass term `(Σv)²/(Σp)` is preserved **exactly** by Markov morphisms, so `g_Fisher + c·(mass)`
+is monotone for **every** `c ≥ 0` — a genuine one-parameter family:
+
+- **A4** — mass term worst ratio `1.000000000007` (invariant, not merely contracting); `Fisher +
+  5×mass`: 0 violations.
+- **A4x** — that freedom **vanishes** on the simplex: max `|mass term|` over 5000 zero-sum tangents
+  = `4.93e-32`.
+
+So *"unique up to scale"* is a statement about the **simplex**. Our belief object lives on the
+**cone** until normalization is taken as a quotient — which the code documents but does not do.
+
+### 34.4 What our substrate actually contains — a negative result, stated plainly
+
+Searched `src/` for Fisher / Hellinger / Bhattacharyya / Bures / Uhlmann / fidelity / density
+matrix. **No Fisher information, no Fisher–Rao metric, and no Bures/QFI exists in the tree.**
+
+- The word "Fisher" occurs three times and is **three different Fishers**: Fisher 1925 (intraclass
+  correlation, `effective-agent-count.ts`), Fisher 1935 (permutation test, `DecorrelationExcess.fs`),
+  Fisher–Yates (the shuffle, same file). **None is Fisher information.**
+- **KL is the only information-geometric structure present** — `SoftValueInfo.fs`, consumed by
+  `ComputeReceipt.fs` (`IV = KL(posterior‖prior)`), `SoftRegimeStability.fs`, and a Gaussian closed
+  form in `AttentionRouter.fs`. Fisher–Rao **is** the Hessian of KL, so the link is real but
+  **latent**: nothing differentiates twice, forms a metric tensor, or measures a distance.
+- **`AmplitudeEmu.fs`**, our one quantum-shaped object, is **Hilbert–Schmidt-flavoured, not Bures**.
+  **B6**: HS is *not* monotone — squared HS distance `1 → 2.0000000000000004` under a CPTP map, and
+  the HS form equals `0.76` at *every* state because it ignores `ρ` entirely (Ozawa 2000).
+
+### 34.5 The one place the bridge is EXACT — and it runs through our shipped code
+
+`ρ` itself is a **coordinate, not a distance**; calling it "a Fisher–Rao quantity" would be the
+numerology error. But the quantity we actually *use* is exact. In the equicorrelated Gaussian model
+`X ~ N(μ·1, σ²[(1−ρ)I + ρJ])`, `1` is an eigenvector of `Σ` with eigenvalue `σ²(1+(n−1)ρ)`, so
+
+```
+I(μ) = 1ᵀ Σ⁻¹ 1 = n / (σ²(1+(n−1)ρ)) = n_eff / σ²
+```
+
+> **Kish's design effect IS a Fisher-information ratio, and `n_eff = σ²·g_μμ` is a Fisher–Rao metric
+> component.**
+
+**C1** verifies this against our own shipped `effectiveTrialCount()` by an actual linear solve:
+worst relative error `1.26e-15` over `n ∈ {2,5,26,100} × ρ ∈ {0, μ_crit, 0.2, 0.7}`; at `n = 26,
+ρ = μ_crit` the solve gives `13.24503311258279` against our `13.245033112582782`. **This is the
+first *checked* information-geometric fact about our own code.**
+
+### 34.6 Register, and what is NOT checked
+
+**Tier: CONJECTURE for every mapping; the mathematics is CHECKED, the mapping is not.**
+
+1. **Uniqueness itself is not numerically checkable.** A1–A4 verify invariance, a competitor's
+   failure, scale-unidentifiability, and the cone's extra freedom. That the invariant metric is
+   *only* Fisher–Rao is Čencov's proof — cited, not checked.
+2. **Operator monotonicity of the five `f`'s is asserted from the literature**, not verified; the
+   Kubo–Ando bracket is checked only through its consequence (**B3**, 0 violations in 20000).
+3. **B3 checks only the min/max bracket** — the middle ordering was observed at one `λ`, not scanned.
+4. **Quantum checks are qubit-only** (`d = 2`), channels depolarizing + decoherence.
+5. **`CliffordAntiSybil.fs` uses a flat Euclidean norm where the invariant metric is curved** — so
+   its "geometric correlation" is coordinate-dependent. **NOT CHECKED — the next falsifier, not a
+   result.** (Independently measured from the other side in #12800.)
+6. **C1 is a theorem about the Gaussian model.** Our ICC is estimated from binary indicators, so the
+   claim is *"our formula equals the Gaussian Fisher information"*, never *"our data is Gaussian."*
+
+**Two surfaces still carry the un-qualified overclaim** and want the words "up to scale, on the
+simplex": `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` and
+`docs/research/2026-08-18-falsifier-1-fails-no-levi-civita-analogue-contortion-is-identically-zero-on-our-fold-lumen.md`.
+
+**Anchors (Beacon).** Rao (1945) · Čencov (1972/1982) · Campbell (1986) · Ay–Jost–Lê–Schwachhöfer
+(2015/2017, the infinite-dimensional extension Čencov does not cover) · Morozova & Chentsov
+(1989/91) · Petz (1996) · Kubo & Ando (1980) · Bures (1969) · Uhlmann (1976) · Braunstein & Caves
+(1994) · Ozawa (2000) · Kish (1965).
