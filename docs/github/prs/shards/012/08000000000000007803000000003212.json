@@ -1,0 +1,12 @@
+{
+  "pr_number": 12818,
+  "archive_path": "docs/history/pr-reviews/PR-12818-vision-per-agent-identity-isolation-is-what-makes-dop-1-honest-on-one-node.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T15:48:12.506Z",
+  "schema_version": "v1",
+  "commit_sha": "fe00a569d542b67cd893479efad90d19d973fa74",
+  "title": "vision: per-agent identity isolation is what makes DoP=1..∞ honest on one node",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T15:47:33Z",
+  "head_ref": "vision/identity-isolation-makes-dop-honest"
+}
