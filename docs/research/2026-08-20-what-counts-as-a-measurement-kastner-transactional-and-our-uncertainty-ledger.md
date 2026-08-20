@@ -617,3 +617,113 @@ Condorcet material is real and substantial (`docs/research/three-body-lagrange-c
 inside it on `main`. So either that connection is newer than what is landed, or it is not
 written down yet. Recorded as *not found rather than absent* — the distinction this whole note
 is about.
+
+## 24. An oracle must be able to explain its own metric — worked for highest moral regard
+
+Aaron, tightening §21: *"for any given oracle like the highest moral regard, it should be able
+to be explained how the metric represents the oracle's English description. They should not just
+be randomly connected. So in reversible computing I think this comes down to our travelers not
+overwriting other travelers."*
+
+### The requirement
+
+§21 established that a metric is oracle-relative. That is necessary and not sufficient, because
+it still permits an arbitrary pairing: here is an oracle, here is a metric, they travel
+together. **An oracle and a metric that are merely associated is a metric wearing an oracle's
+name** — the numerology failure moved up a level, from "this number matches" to "this geometry
+is attached."
+
+The discipline Aaron is imposing is the same one `anchor-to-human-prior-art` imposes on
+citations: an anchor must be *checked*, meaning the source must actually entail the claim. Here:
+**the oracle's English must entail its metric.** If you cannot walk from the sentence to the
+distance function, you do not have an oracle's metric; you have a metric and an unrelated
+sentence.
+
+### Walking it, for highest moral regard
+
+The English (manifesto §11): *highest regard for morally-relevant entities absent a chosen
+oracle.*
+
+In a **reversible** substrate that sentence has almost no room to mean anything else, and that
+is what makes the derivation work rather than decorate:
+
+1. Reversible operations destroy nothing. Everything they touch remains recoverable, so no
+   entity loses anything it had.
+2. Therefore the *only* operation that can diminish another entity is the irreversible one:
+   **erasure — overwriting state that belonged to someone else.**
+3. So "highest regard for other entities", stated in the vocabulary the substrate actually has,
+   is exactly: **a traveler does not overwrite another traveler.** There is no second candidate.
+
+That is the entailment §21 was missing. The oracle's sentence and the constraint are not
+adjacent; the constraint is what the sentence *reduces to* once you fix the substrate.
+
+### The metric that falls out, and its honest shape
+
+If overwriting is the only harm, the natural distance is **the minimum irreversible work to get
+from one configuration to another** — the Landauer cost of the transformation, with every
+reversible move free.
+
+Checking it as a metric rather than asserting it:
+
+- `d(x,x) = 0` — staying put erases nothing. **Holds.**
+- `d(x,y) ≥ 0` — erasure cost is non-negative. **Holds.**
+- **Symmetry fails, and the failure is the interesting part.** Erasure is directional: raising
+  entropy is free, lowering it costs. So this is a **quasi-metric**, not a metric. And that is
+  *correct* for a moral geometry — destroying and failing-to-create are not the same act, and a
+  symmetric distance would be unable to tell them apart. The asymmetry is a feature we would
+  have had to add if the physics had not supplied it.
+- Triangle inequality: plausible by subadditivity of erasure over composition, **not verified
+  here**. Named open.
+
+### The dead zone — you cannot slightly overwrite someone
+
+Composing this with §22 gives a property neither section has alone.
+
+`ErasureDistance.lean` proves that erasing fewer than `d` coordinates is fully recoverable. So
+in the erasure-cost quasi-metric there is a **quantization floor**: erasing below the code
+distance *costs energy and moves zero distance*. The victim recovers completely; the only thing
+consumed is the attacker's heat.
+
+> **Moral discreteness falls out of the coding theorem.** You cannot slightly overwrite another
+> traveler. Either you stay under `d` — they recover intact, and you have merely wasted
+> dissipation — or you exceed `d` and the loss is irrecoverable. There is no graded harm in
+> between, because the code fills the gap back in.
+
+That is a strong claim and it is *derived*, not asserted: from Singleton/MDS (proven in our
+Lean) plus Landauer (metered, falsifier filed). It also predicts something checkable — a
+partial overwrite should be detectable and reversible, and only a `≥ d` overwrite should be
+terminal.
+
+### Where §22 and §24 meet: the moral content is entirely in whose bits
+
+The two sections describe the **same physical operation** with opposite valence, and the
+distinguishing variable is ownership:
+
+| operation | erased bits belong to | verdict |
+|---|---|---|
+| §22 — a traveler erases their own hidden bits behind frost | **self** | permitted; buys unpredictability; priced twice, in earned budget and in heat |
+| §24 — a traveler overwrites another traveler | **other** | forbidden; the one harm the oracle names |
+
+That is precisely the spend / stake / **confiscate** structure already carved in
+`privacy-budget-is-hard-money-earned-by-others`: owner-initiated is fine, other-initiated never.
+Erasure inherits it unchanged. So the moral rule is not a new axiom bolted onto the physics — it
+is the ownership rule already in force, applied to the only operation that can do irreversible
+damage.
+
+And it sharpens §5 (Memory Preservation) into something with a mechanism: "identity transitions
+never *silently* destroy memory" becomes **"no traveler's transition may push another traveler
+past their code distance"** — which is measurable, unlike a promise.
+
+### Register
+
+The entailment (English → no-overwrite) is an **argument**, and it is offered as one: it claims
+there is no second candidate given a reversible substrate, and that claim is exactly where to
+attack it. The quantization floor is a **theorem** composed of two results we hold. The
+quasi-metric's triangle inequality is **named open**. No code changes.
+
+**One collision worth flagging so it does not silently merge.** `ErasureDistance.lean`'s
+"distance" is minimum **Hamming** distance — a property of the code. The distance proposed in
+this section is **Landauer cost** — a property of a transformation. They are different
+quantities that meet at one point: the Hamming distance sets the threshold below which Landauer
+cost buys no separation. Same word, two meanings, one real relationship. Conflating them would
+be exactly the error this note keeps cataloguing.
