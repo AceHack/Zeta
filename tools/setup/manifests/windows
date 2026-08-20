@@ -80,3 +80,28 @@ pandoc    winget=JohnMacFarlane.Pandoc    choco=pandoc
 # precedent). headscale-cli is the SERVER-side CLI (Linux/macOS ops) — allowlisted exception
 # in manifest-symmetry.test.ts, not installed on Windows dev boxes.
 tailscale    winget=Tailscale.Tailscale    choco=tailscale    optional
+
+# ── YubiKey hardware-token substrate (2026-08-20) ─────────────────────────────
+# These were WINDOWS_EXCEPTIONS until 2026-08-20 on the stated ground that no scoop
+# or winget id "was verifiable from the host this was authored on". That was an
+# honest exception and it was also a check that had not been run. It has now been
+# run against the registries themselves, and the exception was wrong:
+#
+#   scoop  ScoopInstaller/Main/bucket/yubikey-manager-cli.json  v5.9.2  bin ykman.exe
+#   scoop  ScoopInstaller/Main/bucket/yubico-piv-tool.json      v2.7.3  bin yubico-piv-tool.exe
+#   winget microsoft/winget-pkgs manifests/y/Yubico/YubiKeyManagerCLI/5.9.2  Yubico.YubiKeyManagerCLI
+#   winget microsoft/winget-pkgs manifests/y/Yubico/PIVTool/2.7.3           Yubico.PIVTool
+#
+# Both are in scoop MAIN (the primary, user-mode, no-admin resolver), and all three
+# sources agree on both versions -- 5.9.2 and 2.7.3 match what brew reports. Package
+# ids are copied from the manifests' own PackageIdentifier/filename, not inferred.
+#
+# choco is deliberately omitted rather than guessed: no chocolatey id was checked,
+# and the resolver falls back scoop -> winget without it.
+#
+# NOT here: the YubiHSM SDK (yubihsm-shell / yubihsm-connector). Checked the same way
+# and genuinely absent -- manifests/y/Yubico in winget-pkgs has no HSM entry, and the
+# SDK ships as a signed Yubico installer on every OS. Undeclared on all three
+# platforms, matching the note in manifests/apt.
+yubikey-manager-cli    winget=Yubico.YubiKeyManagerCLI    # ykman CLI — PIV/FIDO2/OpenPGP/YubiHSM-Auth applet management
+yubico-piv-tool        winget=Yubico.PIVTool              # PIV slot + attestation tooling

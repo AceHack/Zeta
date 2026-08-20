@@ -97,22 +97,29 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   zig: "Zig is already installed cross-platform by mise from .mise.toml; it does not belong in the Windows system-package manifest.",
 
   // ── YubiKey / YubiHSM (2026-08-20) ──────────────────────────────────────────
-  // Windows disposition is an EXCEPTION rather than a scoop id, and the reason is
-  // the same for all five: Yubico distributes its Windows tooling as signed MSI
-  // installers, and neither the scoop main/extras buckets nor a winget id was
-  // verifiable from the host this was authored on. Guessing an id here would put an
-  // unverified package name into the install path for every Windows host -- a claim
-  // dressed as a declaration. An honest exception beats a plausible guess.
+  // The three tool entries that stood here -- yubikey-manager, ykman, yubico-piv-tool --
+  // were removed once the check they deferred was actually run. Their stated reason was
+  // that no scoop/winget id "was verifiable from the host this was authored on", which is
+  // an honest exception and also an unrun check. Run against the registries, all three
+  // resolve: scoop Main carries yubikey-manager-cli (ykman.exe) and yubico-piv-tool, and
+  // winget carries Yubico.YubiKeyManagerCLI and Yubico.PIVTool, versions agreeing with
+  // brew. They are declared in manifests/windows now, so no exception is needed.
+  //
+  // Two of the three remaining entries are NAME-ALIAS exceptions, not missing-tool ones:
+  // the same binary is declared in manifests/windows under the ecosystem's own package
+  // name. Same shape as lua5.4 (apt) vs lua (brew/windows). The alias is recorded rather
+  // than resolved because this matcher compares names literally and has no alias table --
+  // adding one is a bigger change than this row needs.
   "yubikey-manager":
-    "Yubico ships the YubiKey Manager CLI for Windows as a signed MSI, not via scoop/winget-verified id; declare only once a pinned installer id is verified rather than guessed.",
+    "apt's name for the YubiKey Manager CLI; declared in manifests/windows as scoop `yubikey-manager-cli` (winget Yubico.YubiKeyManagerCLI, v5.9.2, bin ykman.exe). Verified against ScoopInstaller/Main and microsoft/winget-pkgs 2026-08-20 -- present, not absent.",
   ykman:
-    "brew's formula name for the same YubiKey Manager CLI as apt's yubikey-manager; same Windows disposition as that entry.",
-  "yubico-piv-tool":
-    "Yubico ships the PIV tool for Windows inside the YubiKey Manager/PIV MSI bundle rather than as a standalone scoop/winget package.",
+    "brew's name for the same binary; same Windows row as yubikey-manager above. (yubico-piv-tool needs no entry: scoop, winget, apt and brew all spell it identically, so it matches literally.)",
+
+  // The two below are genuine Windows BUILT-INS -- nothing to install, a different class
+  // of reason from the aliases above.
   pcscd:
     "Windows has a built-in smartcard service (SCardSvr); no package to install. The Linux-only entry exists because Linux has no equivalent running by default.",
-  libpcsclite1:
-    "PC/SC client library is Linux-only; the Windows equivalent (WinSCard) is an OS component.",
+  libpcsclite1: "PC/SC client library is Linux-only; the Windows equivalent (WinSCard) is an OS component.",
 };
 
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {
