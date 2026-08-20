@@ -14,6 +14,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Result.fs" />
     <Compile Include="ErasureClass.fs" />
+    <Compile Include="ErasureCharge.fs" />
     <Compile Include="Mixin.fs" />
     <Compile Include="Finalizer.fs" />
     <Compile Include="Algebra.fs" />
@@ -390,6 +391,7 @@
     <Compile Include="AmplitudeEmu.fs" />
     <Compile Include="CyclotomicAmplitude.fs" />
     <Compile Include="QuorumAlgebra.fs" />
+    <Compile Include="WitnessCorrelationErasure.fs" />
     <Compile Include="ClaimLane.fs" />
     <Compile Include="HlAmplitudeEmu.fs" />
     <Compile Include="QuantumArith.fs" />

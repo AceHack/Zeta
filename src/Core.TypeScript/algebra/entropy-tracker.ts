@@ -87,6 +87,24 @@
  * than thrown — the house rule is Result-over-exception and this is a `void` counter — but it
  * is the one thing that falsifies `second_law_satisfied`, so it can no longer pass silently.
  *
+ * ## `unmeasured` — the third door, added 2026-08-19 (Soraya)
+ *
+ * Until now this tracker had exactly two ways to record an operation: `measure(k)` (pay `k`) and
+ * `permutation()` (pay nothing, because the operation is a bijection). There was **no way to say
+ * "the cost of this one is unknown"** — so a caller facing an unswept operation had to pick
+ * between charging an invented number and charging nothing, and charging nothing is the
+ * closed-ledger free lunch this module's own header calls a demon.
+ *
+ * `unmeasured(reason)` is that missing door. It moves no bits, and it is deliberately **not** a
+ * silent no-op: it records a hole, and `auditEntropyLedger` reports `chargeComplete: false`
+ * forever after. `readHeat` returns the bit total **together with** whether it is the whole cost,
+ * so no caller can obtain the number without learning that it is a lower bound.
+ *
+ * Why a hole and not an upper bound: there is no upper bound to state without inventing a
+ * coefficient, and an invented coefficient is the toy-presented-as-metered failure. Landauer's is
+ * a **floor**, so "at least this much, plus N operations of unknown cost" is the true statement.
+ * This is the TypeScript twin of `src/Core/ErasureCharge.fs` `Reading.LowerBound`.
+ *
  * Anchors: Landauer 1961 (Irreversibility and Heat Generation in the Computing Process);
  * Bennett 1973 (Logical Reversibility of Computation); Schmiedl and Seifert 2007 (finite-time
  * thermodynamics, the L^2/tau excess).
@@ -120,6 +138,14 @@ export interface EntropyState {
   bits_admitted: number;
   /** Cumulative bits presented to `measure()`, summed as given (negatives included). */
   bits_erased: number;
+  /**
+   * Invocations of operations whose erasure nobody has measured. **These are not zero-cost
+   * operations** — they are operations of unknown cost, and counting them is what keeps the
+   * heat figure honest as a lower bound rather than a total.
+   */
+  unmeasured_operations: number;
+  /** The distinct written reasons behind those invocations. A set: the same hole is one hole. */
+  unmeasured_reasons: readonly string[];
 }
 
 // ─── The Entropy Tracker (Injected Effect) ──────────────────────────────
@@ -140,6 +166,15 @@ export interface EntropyTracker {
   measure(bitsErased: number): void;
   /** Record a permutation (mul/xorshr/join): no entropy change. */
   permutation(): void;
+  /**
+   * Record an operation whose erasure has **no admissible measurement**.
+   *
+   * Moves no bits — because inventing a number is worse than admitting a hole — but it is NOT
+   * the same as `permutation()`, which asserts a *measured* bijection. After any call to this,
+   * `auditEntropyLedger().chargeComplete` is `false` and `readHeat()` returns a lower bound.
+   * `reason` must be non-empty; a hole with no written reason is refused and recorded as such.
+   */
+  unmeasured(reason: string): void;
   /** Reset the tracker. Re-baselines the heat-monotonicity watch. */
   reset(): void;
 }
@@ -153,6 +188,8 @@ export function createEntropyTracker(): EntropyTracker {
     second_law_satisfied: true,
     bits_admitted: 0,
     bits_erased: 0,
+    unmeasured_operations: 0,
+    unmeasured_reasons: [],
   };
 
   // The heat level at the previous observation point. The second law is checked as a DELTA,
@@ -198,6 +235,17 @@ export function createEntropyTracker(): EntropyTracker {
       checkSecondLaw();
     },
 
+    unmeasured(reason: string) {
+      // No bits move. The point is the RECORD, not the arithmetic: a ledger that cannot
+      // represent "unknown" reports unknown as zero, and zero is a claim.
+      state.unmeasured_operations += 1;
+      const written = reason.trim().length > 0 ? reason : "(no reason written — itself a defect)";
+      if (!state.unmeasured_reasons.includes(written)) {
+        state.unmeasured_reasons = [...state.unmeasured_reasons, written];
+      }
+      checkSecondLaw();
+    },
+
     reset() {
       state.entropy_state = 0;
       state.entropy_heat = 0;
@@ -206,6 +254,8 @@ export function createEntropyTracker(): EntropyTracker {
       state.second_law_satisfied = true;
       state.bits_admitted = 0;
       state.bits_erased = 0;
+      state.unmeasured_operations = 0;
+      state.unmeasured_reasons = [];
       previous_heat = 0;
     },
   };
@@ -259,6 +309,44 @@ export interface EntropyLedgerAudit {
    * `event-sink-folder` make this false in normal operation by design (module header).
    */
   readonly erasuresFullyAdmitted: boolean;
+
+  // ── The holes: operations of UNKNOWN cost, which are not operations of zero cost ──
+  /** Invocations recorded through `unmeasured()`. */
+  readonly unmeasuredOperations: number;
+  /** The distinct written reasons for them. */
+  readonly unmeasuredReasons: readonly string[];
+  /**
+   * `true` iff no `unmeasured()` was ever recorded — i.e. iff `heatPaid` is the whole cost
+   * rather than a lower bound. This is the field a caller must read before quoting a total.
+   */
+  readonly chargeComplete: boolean;
+}
+
+/**
+ * The heat figure **and** whether it is complete, returned together on purpose.
+ *
+ * There is deliberately no `totalHeat(tracker): number` beside this: reading the number and
+ * learning whether it is the whole cost are one act. Same refusal as
+ * `ErasureClass.bitsErasedPpm` returning `int64 option` rather than defaulting to `0L`, and same
+ * shape as `ErasureCharge.Reading` on the F# side.
+ */
+export interface HeatReading {
+  /** Bits of heat actually charged. When `complete` is false this is a LOWER BOUND. */
+  readonly bitsErased: number;
+  /** `false` when at least one operation of unknown cost was recorded. */
+  readonly complete: boolean;
+  /** The written reasons for the unknowns. Empty iff `complete`. */
+  readonly holes: readonly string[];
+}
+
+/** Read the heat total together with its completeness. See `HeatReading`. */
+export function readHeat(tracker: EntropyTracker): HeatReading {
+  const s = tracker.state;
+  return {
+    bitsErased: s.entropy_heat,
+    complete: s.unmeasured_operations === 0,
+    holes: s.unmeasured_reasons,
+  };
 }
 
 /**
@@ -281,6 +369,9 @@ export function auditEntropyLedger(tracker: EntropyTracker): EntropyLedgerAudit 
     heatMonotone: s.second_law_satisfied,
     heatNonNegative: s.entropy_heat >= 0,
     erasuresFullyAdmitted: s.bits_erased <= s.bits_admitted,
+    unmeasuredOperations: s.unmeasured_operations,
+    unmeasuredReasons: s.unmeasured_reasons,
+    chargeComplete: s.unmeasured_operations === 0,
   };
 }
 

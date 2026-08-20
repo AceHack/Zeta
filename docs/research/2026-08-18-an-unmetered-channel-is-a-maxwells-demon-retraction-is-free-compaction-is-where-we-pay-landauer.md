@@ -579,3 +579,151 @@ reachable from a shipped code path, and is neither declared nor caught by the dr
 exhibit a declared row whose class disagrees with what a sweep of its own representation measures —
 which is exactly the check the law packs run, so the honest form of this falsifier is *find a site
 the drift guard's interface list does not reach.*
+
+## 13. The CHARGE side (2026-08-19) — §12g's deferral taken up, and what it does with `Unmeasured`
+
+§12g deferred exactly one thing: *"No entropy charge. `algebra/entropy-tracker.ts` is untouched.
+This work classifies; metering is a separate decision with its own review."* That decision is taken
+here. It is deliberately **narrow**, because §12g's reason for deferring was good: two of §12's rows
+moved in the *opposite* direction from the intuition that motivated this thread, and a meter wired
+to an intuition would have been charging for months.
+
+### 13a. The rule: the classification IS the charge, and there is no second list
+
+`src/Core/ErasureCharge.fs` (and its TypeScript oracle `algebra/erasure-charge.ts`) folds an
+`ErasureClass.Profile` into a disposition, reading **`Classification` and `Evidence` only**. It
+never inspects `Representation`, `Operation`, or `Observation`, and it holds no table keyed by name.
+
+That restriction is §11b/§11i made mechanical rather than aspirational. A name-keyed list of erasing
+operations was written twice in this document and was wrong twice, and cannot be completed in
+principle, because `TruncateAsync` is `Erasing` under `InMemoryDeltaLog` and `Reversible` under
+`GitDeltaLog`. **A second list is the defect**, so the charge is derived from the first one. Both law
+packs pin this by renaming all three string fields of a real profile to garbage and requiring the
+disposition to be unchanged — a name-based special case fails the moment it is added.
+
+Four dispositions, and only the first is free:
+
+| disposition | reached from | ledger effect |
+|---|---|---|
+| `Free` | `Reversible` **backed by a measured fibre of 1** | nothing — Bennett |
+| `Charged ppm` | `Erasing` backed by a sweep, `ppm > 0` | the declared, measured bits |
+| `Unmeasured reason` | `NoAdmissibleMeasurement` with a written reason | a **hole**, never a zero |
+| `Malformed complaint` | a declaration at war with its own evidence | a hole — **fails closed** |
+
+`Malformed` is the case that did not exist before. A profile claiming `Reversible` over a fibre of 4
+is not free and is not measured; it is broken, and charging it `0` would be the closed-ledger free
+lunch arriving through a data-entry error rather than through a missing meter.
+
+### 13b. `Unmeasured` charges nothing and is not free — the type is what enforces it
+
+Three treatments were available, and the middle one is the trap:
+
+| option | verdict |
+|---|---|
+| charge `0` | §2's demon exactly — a channel that reads as free because the ledger is closed |
+| charge a stated upper bound | **there is none to state without inventing a coefficient**, which is the toy-presented-as-metered failure this whole thread exists to prevent |
+| refuse the fold, and carry the hole **in the total's type** | taken |
+
+So a settled account is a `Reading`, and a `Reading` is `Complete bits` or
+`LowerBound (bits, holes)`. There is **no function in either implementation that returns the bit
+total as a bare number** — `readingParts` returns the pair, `readHeat` returns the flag beside the
+figure — so a caller cannot obtain a total without also learning whether it is the whole cost. That
+is `ErasureClass.bitsErasedPpm` returning `int64 option` rather than `0L`, moved to the place where
+a total is actually formed.
+
+A `LowerBound` is also the physically correct direction: Landauer's `kT ln 2` is a **floor**, so *"at
+least this much, plus N operations of unknown cost"* is a true statement about the world, whereas any
+specific larger number would be a guess wearing an instrument's clothes.
+
+**Measured-zero and unknown are now different values.** `GroupCommitDiskDeltaLog`'s no-op truncation
+reads `Complete 0`; an undeclared backend reads `LowerBound (0, [hole])`. Before this they were both
+"nothing happened."
+
+### 13c. Bits are never summed across observations
+
+§12b established that one representation's one operation can carry opposite classes under two
+observations and both be honest. The charge honours that structurally: an `Account` is keyed by
+observation, `Readings` is a list, and **there is no operation that collapses it to one number**. A
+sum across observations would describe no observer.
+
+### 13d. The wired site: `RecoverableSpine`, which §11e named as charging nothing
+
+> *"`RecoverableSpine.fs:74` (`TruncateAsync … // GC the absorbed tail`) is the one genuine
+> snapshot-supersedes-log site and charges nothing."* (§11e)
+
+It charges now, and at the class the **injected** backend declares — the same code path, three
+different bills:
+
+- over `InMemoryDeltaLog`: `Complete 3_700_440` ppm per truncation (fibre 13);
+- over `GroupCommitDiskDeltaLog`: `Complete 0` — a **measured** zero;
+- over a backend implementing no `IErasureDeclaring`: `LowerBound (0, [hole])`, the hole naming the
+  undeclared backend. This is the drift guard at runtime, where a reflection test over our own
+  assembly cannot reach a caller-supplied type.
+
+The fold is charged separately and on a different cadence — **every commit**, not every snapshot —
+which is §11a's headline (the bits are in the ordinary arithmetic) expressed as an accumulating
+figure rather than as a sentence.
+
+### 13e. Witness-correlation formation: a hook and a declared hole, not a number
+
+§7e worried that the ledger might meter compaction but not witness-correlation formation. §11i
+corrected that to *"it meters **neither**, so the antecedent is false and the worry was understated
+rather than validated."* Half of that is now closed and the other half is **named rather than
+filled**, which is the honest order.
+
+`WitnessCorrelationErasureDeclaration` declares `QuorumAlgebra.join` — the formation step, where
+independent sources become one correlated quorum — with **two rows for two questions**:
+
+1. **The marginal cost, MEASURED.** `join` is idempotent and commutative, so arrival order and
+   contribution multiplicity are gone from the result. Swept over a bounded 2-source/2-value model:
+   fibre 3, `1_584_963` ppm. *Idempotence is erasure* — the same finding `IBackingStore.Save`
+   produced in §12d from an unrelated direction.
+2. **The conditional cost, UNMEASURED and written down.** The quantity §7c's result runs on is
+   `H(A|B)` — the cost of erasing given the side information a correlated witness retains (del Rio
+   et al., Nature 474:61–63, 2011). The repo states its own gap at
+   `algebra/erasure-derivation.ts:49`: the finer figure *"requires modelling caller-retained side
+   information, which the two-ledger tracker does not carry."* There is no upper bound to charge
+   that would not be an invented coefficient, so the fold **refuses** the row and reports it as a
+   hole. Folding both rows yields a `LowerBound` whose named hole is the conditional.
+
+Declaring the conditional `Unmeasured` is not a dodge, and the structure is what shows it: **row 1 is
+swept.** The declaration does not use `Unmeasured` to avoid measuring something measurable; it uses
+it for the one observation this substrate has no instrument for. That distinction only exists because
+`(Representation, Operation, Observation)` is the key — §12b's lesson paying out again.
+
+`entropy-tracker.ts` gains the missing third door for the same reason: it had `measure(k)` and
+`permutation()` and **no way to say "unknown"**, so a caller facing an unswept operation had to pick
+between an invented number and a silent zero. `unmeasured(reason)` moves no bits, records the hole,
+and makes `chargeComplete` false thereafter.
+
+### 13f. Verified by mutation, both directions, both oracles
+
+- **A self-consistent mis-declaration.** `InMemoryDeltaLog.TruncateAsync` flipped from
+  `Erasing`/fibre 13/`3_700_440` to `Reversible`/fibre 1/`0` — internally coherent, so no
+  well-formedness check can catch it. **4 tests red**: three in the classification pack (declared
+  vs measured, both directions, plus the spine-inheritance pin) and one in the charge pack (the
+  spine's bill changed). Reverted.
+- **The demon itself.** `dispositionOf` rewired so `Unmeasured` returns `Free`. **6 F# tests red**
+  and, applied to the TypeScript twin, **5 red**. Reverted.
+
+Both mutations were run against `origin/main` at `9ffc0e9884`, and `dotnet build -c Release`
+(0 warnings) plus `dotnet test Zeta.sln -c Release` (5444 passed) are green with them reverted.
+
+### 13g. What was NOT done — the edges, stated
+
+- **`SybilBft.decide`, `Consensus`, and `TravelerRankLedger` are still unclassified and uncharged.**
+  Their marginals are sweepable; this work does **not** pretend otherwise by declaring them
+  `Unmeasured`, it simply does not cover them. Tracked as `081M0CP6V2N087G0R001P6SJ7C`.
+- **`GiftOfErasure.mix` declares (since §12f) but nothing posts it at runtime.** `AnonymitySet` is an
+  immutable value and threading a ledger through it changes a heavily-tested shape, so the charge is
+  available to any caller and wired into none. Same work item.
+- **§11f's demon is untouched.** `Heat.fs:285` `dispositionOfKind` still reads
+  `denied-list.compacted` as free. It is a different ledger (shed disposition, not bits) and the
+  file already carries a declared-field escape hatch; conflating the two would be the lifecycle
+  taxonomy error one more time.
+- **The Rust / C# / Q# oracles remain unclassified** (§11h, §12h — unchanged).
+
+**Falsifier for this section:** exhibit a `Reading` that is `Complete` while some posting behind it
+was unmeasured, or a code path that obtains an erasure bit total without the completeness flag. Or:
+exhibit a declared row the charge fold treats differently from the way `Erasure.Representation.Laws`
+measures it.

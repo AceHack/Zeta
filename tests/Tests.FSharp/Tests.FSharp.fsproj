@@ -635,6 +635,7 @@
     <Compile Include="Formal/WSet.FourCornerTrace.Laws.Tests.fs" />
     <Compile Include="Formal/WSet.ErasureClassification.Laws.Tests.fs" />
     <Compile Include="Formal/Erasure.Representation.Laws.Tests.fs" />
+    <Compile Include="Formal/Erasure.Charge.Laws.Tests.fs" />
     <Compile Include="Formal/ByteCost.Laws.Tests.fs" />
     <Compile Include="Formal/Jaccard.Laws.Tests.fs" />
     <Compile Include="Formal/Clock.Laws.Tests.fs" />
