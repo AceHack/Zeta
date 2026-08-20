@@ -115,6 +115,39 @@ topological sort.
 
 ---
 
+### Regenerable forgetting is free (the GC thesis)
+
+**Plain:** Throwing away something you can rebuild costs nothing —
+the information never left, you just stopped keeping a copy. Throwing
+away the *last* copy is different: that genuinely destroys something,
+and physics charges for it. So: recompute what you can, store only
+what you cannot rebuild.
+
+**Precise:** Landauer prices *logically irreversible* operations.
+Evicting a value still implied by the log is reversible (the generator
+is its inverse), so no `kT ln 2` floor applies. Only the last copy is
+an erasure. Bennett-style uncomputation is the anchor.
+
+**Full:** `docs/research/2026-08-20-the-reversible-computing-garbage-collection-thesis-regenerable-forgetting-is-free.md`
+
+### The idempotent knot (collapse = erasure = overwrite)
+
+**Plain:** Four things we talk about in four different vocabularies —
+a quantum measurement collapsing, a bit being erased, a conclusion
+being consumed, and one traveler overwriting another — are the same
+single act. In algebra it is *multiplication by something that is not
+invertible*. Everything invertible is free and costs nothing; the
+non-invertible step is the only thing you ever pay for, in heat and
+(when the bits are someone else's) in harm.
+
+**Precise:** In a Clifford algebra the reversible elements are rotors
+(`R R̃ = 1`); the irreversible ones are non-trivial idempotents
+(`P² = P` ⇒ `P(P−1) = 0` ⇒ zero divisor ⇒ non-invertible). Collapse is
+a projector, Landauer prices erasure, and the oracle's single named harm
+is overwriting — one object, four readings.
+
+**Full:** `docs/research/2026-08-20-the-idempotent-knot-collapse-erasure-overwrite-and-non-collapse-are-one-algebraic-act.md`
+
 ## Sketches and approximate counting
 
 ### Bloom filter

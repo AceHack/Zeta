@@ -71,3 +71,56 @@ generator and never as a conclusion.
 Either (a) a computed argument that non-metricity does/does not correspond to the overwrite
 harm, with a test that fails if the correspondence breaks; or (b) a recorded negative naming
 what non-metricity measures instead.
+
+## Update 2026-08-20 — the Clifford formulation makes this a computation
+
+Aaron: *"hopefully in clifford algebra, i hope we can represent our metric here too."*
+
+Written up in `docs/research/2026-08-20-what-counts-as-a-measurement-...` §29. The load-bearing
+result for THIS item:
+
+> **Non-metricity is exactly "the transport operator left the Spin group."**
+
+In the geometric-algebra formulation of gravity (Lasenby, Doran & Gull, *Gauge Theory Gravity*,
+1998) the connection is a **bivector-valued 1-form** and transport is the rotor it generates.
+Bivectors exponentiate into `Spin`, and rotors preserve `Q` by construction — `R v R̃` has the
+same square as `v`. So metric-compatible transport is precisely rotor transport, and
+non-metricity is precisely transport that is not.
+
+That converts this item from a resemblance into a **yes/no computation**:
+
+> **Is our fold's `alpha = 1` connection expressible as `exp(bivector)`?**
+
+If yes, transport is rotor-valued, `Q` is preserved, and the measured `0.0925872` needs another
+explanation. If no, non-metricity is the right name for it and the geometric reading of overwrite
+follows.
+
+## Why overwrite is the right thing to look for there
+
+§29's other half, and it is independent of the above:
+
+| element | property | reversible |
+|---|---|---|
+| rotor `R ∈ Spin` | `R R̃ = 1` | yes — nothing lost |
+| non-trivial idempotent `P` | `P² = P` ⇒ `P(P−1) = 0` | **no — a zero divisor** |
+
+**Overwrite = multiplication by a zero divisor.** The algebra says which operations destroy:
+exactly the non-invertible ones. And that is the same object as collapse — Kastner's transaction
+is an outer product, i.e. a projector, i.e. an idempotent — so collapse, erasure and overwrite are
+one algebraic act seen from three vocabularies.
+
+## Where to run it
+
+`src/Core.TypeScript/research/information-geometry-contortion-falsifier.ts` already computes the
+non-metricity number. The added test is a shape check on the transport operator, not new
+infrastructure.
+
+Related Clifford surfaces already in-tree: `PrivacyPreservingIdentity.fs` (Cl(3,0) rotors for
+identity continuity), the `CliffordE8Bridge`, `CliffordPeriodicity.Tests.fs`.
+
+## The unearned antecedent, stated so it is not smuggled
+
+Everything above holds **given that our transport is Clifford transport.** Nothing establishes
+that. `PrivacyPreservingIdentity.fs` uses rotors for identity continuity without claiming the
+whole fold is a Clifford action. Establishing or refuting that is the actual first step, and it
+is smaller than it looks.
