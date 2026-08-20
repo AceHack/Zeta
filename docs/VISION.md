@@ -872,6 +872,61 @@ step *toward* removing the gate by attrition; it is what makes the gated set sma
 enough that the remaining question — *who can hold responsibility* — can be asked cleanly instead of
 being buried under a thousand routine approvals.
 
+### Falsifiers are the currency, and provable decorrelation is what they buy
+
+Aaron 2026-08-20, stating the goal the rest of this section serves:
+
+> **"i'm trying to unlock the speed with making sure AI are decorrelated and can move forward
+> without humans cause they can PROVE their decorrelation."**
+
+This is the load-bearing sentence, and it makes three things that looked like separate programmes
+into one.
+
+**Why a human is in the loop at all.** Not because humans are safer by nature — that is the
+hierarchy claim this project does not make. The gate is there because **nobody can currently verify
+that N agents are genuinely N.** A fleet phased to one seed might be N independent minds or one mind
+wearing N hats, and the difference is invisible from the outside. A human in the loop is a *proxy*
+for the check nobody can run. So the ceremony's real cost is legible:
+
+> **The biometric ceremony is the slowing to human time** (Aaron, 2026-08-20). It is not primarily an
+> authority mechanism, it is a **rate** mechanism — a deliberate mass placed in the path that drags
+> phase time down to human tempo. Which is exactly how gravity is modelled here: *phase-time slowing
+> under heavy consensus.* The gate is a gravity well, and it is doing real work, at a real price.
+
+**So the thing that buys speed is not removing the check — it is making the check machine-runnable.**
+An agent that can *prove* it is decorrelated from its peers has supplied, mechanically, the evidence
+the human was standing in for. That is the discharge condition for the second admitted hierarchy
+above, stated in operational rather than legal terms.
+
+**And this is why falsifiers are the currency.** A falsifier and a decorrelation proof are the same
+move:
+
+| | the question it answers |
+|---|---|
+| **falsifier** | could this claim have come out false? |
+| **decorrelation proof** | could these agents have disagreed? |
+
+Both demand **the counterfactual**, and both are worthless without it. A test that cannot go red
+proves nothing about the code; agents that could not have disagreed prove nothing by agreeing. That
+is why *"a claim that cannot fail is worse than an absent feature"* and *"ρ → 1 is clones"* are one
+principle wearing two costumes — **agreement is only evidence when disagreement was available.**
+
+**The measurement is real, and as of 2026-08-20 it is checked.** `n_eff = n / (1 + (n−1)ρ)` is not a
+heuristic: for the equicorrelated Gaussian, `I(μ) = 1ᵀΣ⁻¹1 = n_eff/σ²`, so **Kish's design effect is
+a Fisher-information ratio** — verified against our own shipped `effectiveTrialCount()` by linear
+solve to a worst relative error of `1.26e-15`. So "how many independent agents is this fleet worth"
+has a real answer with real units: **`n_eff` is how much information the group carries relative to
+one member.** That is the quantity a decorrelation proof must exhibit.
+
+**Honest limits, because this is the claim most worth over-reading.** `ρ` today is a *statistic*, not
+a *proof*: it is estimated from binary indicators by one-way ANOVA, so the identity above says *our
+formula is the Gaussian Fisher information*, never *our agents are Gaussian*. A statistic can be
+gamed by an adversary who knows it, and nothing yet stops an agent from manufacturing surface
+disagreement while sharing the reasoning underneath. **Provable decorrelation is the goal, not the
+status.** What exists is the meter; what is missing is the proof — and naming that gap is itself the
+discipline, since a metric presented as a proof would be precisely the vacuous claim this section
+says is the obstacle.
+
 ### Echolocation over time — the Z-set fold measures correlation, and the interference formula IS the variance algebra
 
 *(2026-08-19, Aaron: "this is our echolocation over time, the debounced together without √2
