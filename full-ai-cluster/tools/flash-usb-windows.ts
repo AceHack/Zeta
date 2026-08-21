@@ -54,11 +54,9 @@ import { execFileSync } from "node:child_process";
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 
-// ── Safety-rail constants (mirror flash-usb.ts exactly) ──────────────
-export const MIN_ISO_BYTES = 200 * 1024 * 1024;
-export const MAX_ISO_BYTES = 8 * 1024 * 1024 * 1024;
-export const MIN_USB_BYTES = 4 * 1024 * 1024 * 1024;
-export const MAX_USB_BYTES = 256 * 1024 * 1024 * 1024;
+// ── Safety-rail constants — shared with every arm, not mirrored ──────
+import { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES } from "../../src/Core.TypeScript/zflash/size-bounds.ts";
+export { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES };
 
 export const ISO_GLOB_PREFIX = "zeta-installer-";
 
